@@ -532,4 +532,127 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "No payment method is available right now.":
     "এই মুহূর্তে কোনো পেমেন্ট পদ্ধতি নেই।",
   "Payment method": "পেমেন্ট পদ্ধতি",
+
+  /* ------------------------------------------------ clothing-heritage · chrome */
+  "Free nationwide delivery on orders over BDT 3,000":
+    "৩,০০০ টাকার বেশি অর্ডারে সারাদেশে ফ্রি ডেলিভারি",
+  "Eid & Festive Collection 2026 is now live":
+    "ঈদ ও উৎসবের কালেকশন ২০২৬ এখন লাইভ",
+  "Handcrafted by master artisans across 64 districts":
+    "৬৪ জেলার দক্ষ কারিগরদের হাতে তৈরি",
+  "Flagship stores open 10am - 9pm in Dhaka, Chattogram & Sylhet":
+    "ঢাকা, চট্টগ্রাম ও সিলেটে ফ্ল্যাগশিপ আউটলেট সকাল ১০টা - রাত ৯টা খোলা",
+  "Artisan stories": "কারিগরদের গল্প",
+  "Store locator": "আউটলেট লোকেশন",
+  "Search sarees, panjabis, nakshi kantha, jewelry...":
+    "শাড়ি, পাঞ্জাবি, নকশিকাঁথা, গয়না খুঁজুন...",
+  Departments: "বিভাগসমূহ",
+  "Tangail Taant\nJamdani Saree\nSilk Panjabi\nNakshi Kantha\nArtisan Jewelry":
+    "টাঙ্গাইল তাঁত\nজামদানি শাড়ি\nসিল্ক পাঞ্জাবি\nনকশিকাঁথা\nহাতে তৈরি গয়না",
+  "Customer Care": "গ্রাহক সেবা",
+  "Size guide\nOrder tracking\nReturns & exchanges\nStore locations\nContact us":
+    "সাইজ গাইড\nঅর্ডার ট্র্যাকিং\nবদল ও ফেরত\nআউটলেট লোকেশন\nযোগাযোগ",
+  "Our Heritage": "আমাদের ঐতিহ্য",
+  "Artisan communities\nHandloom preservation\nFair trade charter\nSustainability":
+    "কারিগর পল্লী\nতাঁতশিল্প সংরক্ষণ\nন্যায্য বাণিজ্য সনদ\nটেকসই উন্নয়ন",
+  "About Framique": "ফ্রেমিকে সম্পর্কে",
+  "Our story\nMedia & press\nCareers\nTerms & privacy":
+    "আমাদের গল্প\nমিডিয়া ও প্রেস\nক্যারিয়ার\nশর্ত ও গোপনীয়তা",
+  "Payment methods": "পেমেন্ট মাধ্যম",
+  "bKash\nNagad\nRocket\nVisa\nMastercard\nCash on Delivery":
+    "বিকাশ\nনগদ\nরকেট\nভিসা\nমাস্টারকার্ড\nক্যাশ অন ডেলিভারি",
+  "Follow our craft journey": "আমাদের কারুশিল্পের যাত্রা অনুসরণ করুন",
+  "About Framique Heritage": "ফ্রেমিকে হেরিটেজ সম্পর্কে",
+  "Celebrating Bengal's timeless handloom traditions, empowering generational artisan families across Bangladesh.":
+    "বাংলার আবহমান তাঁত ঐতিহ্য উদযাপন এবং সারাদেশের বংশানুক্রমিক কারিগর পরিবারগুলোর ক্ষমতায়ন।",
+
+  /* -------------------------------------------------- clothing-heritage · home */
+  "Heritage Weaves & Living Crafts": "ঐতিহ্যবাহী তাঁত ও কারুশিল্প",
+  "Woven with patience, worn with pride": "ধৈর্যে বোনা, গর্বে পরা",
+  "Every thread tells the story of our master weavers. Authentic Tangail taant, Jamdani masterpieces, and hand-embroidered silks.":
+    "প্রতিটি সুতোয় রয়েছে আমাদের তাঁতশিল্পীদের গল্প। আসল টাঙ্গাইল তাঁত, জামদানি এবং হাতে এমব্রয়ডারি করা সিল্ক।",
+  "Shop the collection": "কালেকশন দেখুন",
+  "100% Handloom & Natural Dyes": "১০০% তাঁত ও প্রাকৃতিক রঙ",
+  "Over 65,000 Rural Artisans": "৬৫,০০০-এর বেশি গ্রামীণ কারিগর",
+  "Nationwide 48-Hour Dispatch": "সারাদেশে ৪৮ ঘণ্টায় পাঠানো হয়",
+  "The festive lookbook": "উৎসবের লুকবুক",
+  "The master weavers": "তাঁতশিল্পী",
+  "Tangail & Jamdani: A living UNESCO legacy": "টাঙ্গাইল ও জামদানি: ইউনেস্কোর জীবন্ত ঐতিহ্য",
+  "Centuries of geometry and craftsmanship in every weave. Crafted by generational artisan families on traditional wooden pit looms.":
+    "প্রতি বুননে শত বছরের জ্যামিতি ও কারিগরি। কাঠের খাঁটি পিট লুমে বংশপরম্পরায় তৈরি।",
+  "Artisan showcase": "কারিগরদের প্রদর্শনী",
+  "Festive Occasions": "উৎসবের দিনগুলো",
+  "Pure silk panjabi & fine muslin": "খাঁটি সিল্কের পাঞ্জাবি ও মিহি মসলিন",
+  "Intricate necklines, mother-of-pearl buttons, and breathable natural fibers cut for elegance in Bangladeshi celebrations.":
+    "সূক্ষ্ম গলার কাজ, মুক্তার বোতাম ও আরামদায়ক সুতা—বাংলাদেশের উৎসবে মার্জিত রূপ।",
+  "Celebrating in Framique Heritage": "ফ্রেমিকে হেরিটেজে উদযাপন",
+  "Tag us on Instagram to be featured.": "ফিচার হতে ইনস্টাগ্রামে ট্যাগ করুন।",
+  "Curated masterpieces": "বাছাইকৃত সেরা সৃষ্টি",
+  "The Jamdani saree exceeded all expectations. The texture, fall, and intricate motif work are truly world-class.":
+    "জামদানি শাড়িটি প্রত্যাশাতীত সুন্দর। টেক্সচার, কুঁচি এবং সূক্ষ্ম মোটিফের কাজ সত্যিই বিশ্বমানের।",
+  "Farhana Ahmed, Gulshan, Dhaka": "ফারহানা আহমেদ, গুলশান, ঢাকা",
+  "Visit our flagship outlets": "আমাদের ফ্ল্যাগশিপ আউটলেটে আসুন",
+  "Uttara Flagship": "উত্তরা ফ্ল্যাগশিপ",
+  "Sector 3, Uttara, Dhaka": "সেক্টর ৩, উত্তরা, ঢাকা",
+  "10am - 9pm": "সকাল ১০টা - রাত ৯টা",
+  "Gulshan Galleria": "গুলশান গ্যালারিয়া",
+  "Gulshan Avenue, Dhaka": "গুলশান অ্যাভিনিউ, ঢাকা",
+  "Chattogram GEC": "চট্টগ্রাম জিইসি",
+  "GEC Circle, Chattogram": "জিইসি মোড়, চট্টগ্রাম",
+
+  /* ---------------------------------------- clothing-heritage · sustainability */
+  "Fair Trade & Craft Preservation": "ন্যায্য বাণিজ্য ও ঐতিহ্য রক্ষা",
+  "Artisan-owned co-ops": "কারিগরদের সমবায়",
+  "65,000+ rural artisans supported": "৬৫,০০০+ গ্রামীণ কারিগর সমর্থিত",
+  "Azo-free botanical dyes": "অ্যাজো-মুক্ত ভেষজ রঙ",
+  "Safe for skin and waterways": "ত্বক ও নদী উভয়ের জন্য নিরাপদ",
+  "Plastic-free packaging": "প্লাস্টিক-মুক্ত প্যাকেজিং",
+  "Biodegradable jute and paper": "পরিবেশবান্ধব পাট ও কাগজ",
+
+  /* ----------------------------------------------- clothing-heritage · product */
+  "All government taxes & VAT included.": "সরকারি ভ্যাট ও ট্যাক্স অন্তর্ভুক্ত।",
+  "Garment size guide": "পোশাকের সাইজ গাইড",
+  "All measurements are in inches. Garment laid flat.":
+    "সব মাপ ইঞ্চিতে এবং পোশাকটি সমান করে রেখে পরিমাপ করা।",
+  in: "ইঞ্চি",
+  Sleeve: "হাতা",
+  "Tailored fit through the chest, comfortable through the waist.":
+    "বুকে মানানসই কাটিং, কোমরে আরামদায়ক ফিট।",
+  "Model is 182cm": "মডেলের উচ্চতা ১৮২ সেমি",
+  "Wearing size 40": "সাইজ ৪০ পরা",
+  "Our master artisans produce small batches. Leave your email for restock notification.":
+    "আমাদের কারিগরেরা ছোট ব্যাচে তৈরি করেন। পুনরায় এলে জানতে ইমেইল দিন।",
+  "Fabric & craft care": "কাপড় ও যত্নের নির্দেশনা",
+  "100% handspun cotton & mulberry silk": "১০০% হাতে কাটা সুতি ও তসর/তুঁত সিল্ক",
+  "Dry clean recommended. Iron on reverse side on low heat.":
+    "ড্রাই ক্লিন করার পরামর্শ দেওয়া হয়। কম তাপে উল্টো পিঠে ইস্ত্রি করুন।",
+  "Handwoven in Tangail & Sonargaon, Bangladesh":
+    "টাঙ্গাইল ও সোনারগাঁওয়ে হাতে বোনা, বাংলাদেশ",
+  "Pair with handcrafted accents": "হাতে তৈরি অ্যাকসেন্টের সাথে মিলিয়ে পরুন",
+  "More from this craft": "এই কারুশিল্পের আরও পণ্য",
+
+  /* -------------------------------------------- clothing-heritage · collection */
+  "Heritage Craft Collection": "ঐতিহ্যবাহী কারুশিল্প কালেকশন",
+  "Filter by artisan district, weave type, size, and occasion.":
+    "জেলা, বুনন শৈলী, সাইজ ও উপলক্ষ অনুযায়ী ফিল্টার করুন।",
+  "All handcrafted pieces": "হাতে তৈরি সব পোশাক ও পণ্য",
+
+  /* -------------------------------------------------- clothing-heritage · blog */
+  "The heritage journal": "ঐতিহ্যের জার্নাল",
+  "Preserving Bengal's 500-year-old handloom heritage":
+    "বাংলার ৫০০ বছরের তাঁত ঐতিহ্য সংরক্ষণ",
+  "How community-led weaving clusters are empowering women artisans across rural Bangladesh.":
+    "কীভাবে সমবায় তাঁত পল্লীগুলো গ্রামীণ নারী কারিগরদের স্বাবলম্বী করে তুলছে।",
+  "Join the heritage guild": "হেরিটেজ গিল্ডে যুক্ত হোন",
+  "Receive intimate stories from weaver villages and private invitations to seasonal drops.":
+    "তাঁত পল্লীর গল্প ও নতুন কালেকশনের আমন্ত্রণ সবার আগে পান।",
+
+  /* --------------------------------------- clothing-heritage · cart & checkout */
+  "more for free nationwide delivery": "যোগ করলেই সারাদেশে ফ্রি ডেলিভারি",
+  "Your shopping bag": "আপনার শপিং ব্যাগ",
+  "Handcrafted guarantee": "হাতে তৈরি খাঁটি পণ্যের নিশ্চয়তা",
+  "Each piece is individually inspected for weaving excellence before dispatch. Cash on delivery available.":
+    "প্রতিটি পণ্য পাঠানোর আগে বুননের মান পরীক্ষা করা হয়। ক্যাশ অন ডেলিভারি সুবিধা আছে।",
+  "Complementary crafts": "মানানসই আরও কিছু পণ্য",
+  "7-day easy exchange": "৭ দিনে সহজ বদল",
 };

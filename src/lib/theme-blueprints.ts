@@ -1982,8 +1982,499 @@ function rupaboti(): ThemePreset {
   };
 }
 
-/** The four blueprint themes, in registry sort order. */
+/* -------------------------------------------------------- clothing-heritage */
+
+function clothingHeritage(): ThemePreset {
+  const k = "clothing-heritage";
+  const s = bound(k);
+  const sustain = () =>
+    s("sustain_badge", {
+      heading: "Fair Trade & Craft Preservation",
+      c1Label: "Artisan-owned co-ops",
+      c1Source: "65,000+ rural artisans supported",
+      c2Label: "Azo-free botanical dyes",
+      c2Source: "Safe for skin and waterways",
+      c3Label: "Plastic-free packaging",
+      c3Source: "Biodegradable jute and paper",
+    });
+  const footer = (): Section[] => [
+    s("footer_sitemap", {
+      c1Title: "Collections",
+      c1Links:
+        "Tangail Taant\nJamdani Saree\nSilk Panjabi\nNakshi Kantha\nArtisan Jewelry",
+      c2Title: "Customer Care",
+      c2Links:
+        "Size guide\nOrder tracking\nReturns & exchanges\nStore locations\nContact us",
+      c3Title: "Our Heritage",
+      c3Links:
+        "Artisan communities\nHandloom preservation\nFair trade charter\nSustainability",
+      c4Title: "About Framique",
+      c4Links: "Our story\nMedia & press\nCareers\nTerms & privacy",
+    }),
+    s("payment_icons", {
+      heading: "Payment methods",
+      marks: "bKash\nNagad\nRocket\nVisa\nMastercard\nCash on Delivery",
+    }),
+    s("social_strip", { heading: "Follow our craft journey" }),
+    s("rich_text", {
+      heading: "About Framique Heritage",
+      body: "Celebrating Bengal's timeless handloom traditions, empowering generational artisan families across Bangladesh.",
+    }),
+  ];
+  const header = (): Section[] => [
+    s("announcement_bar", {
+      m1: "Free nationwide delivery on orders over BDT 3,000",
+      m2: "Eid & Festive Collection 2026 is now live",
+      m3: "Handcrafted by master artisans across 64 districts",
+      dismissible: true,
+      rotateMs: 6000,
+    }),
+    s("utility_bar", {
+      note: "Flagship stores open 10am - 9pm in Dhaka, Chattogram & Sylhet",
+      l1Label: "Artisan stories",
+      l1Href: "/blog",
+      l2Label: "Store locator",
+      l2Href: "/pages/stores",
+      l3Label: "Track order",
+      l3Href: "/pages/track-order",
+      showLanguage: true,
+    }),
+    s("search_command", {
+      placeholder: "Search sarees, panjabis, nakshi kantha, jewelry...",
+      buttonLabel: "Search",
+      limit: 8,
+    }),
+    s("mega_menu", { label: "Departments", limit: 8, columns: 4 }),
+  ];
+  return {
+    key: k,
+    nameEn: "Clothing Heritage",
+    nameBn: "ক্লোদিং হেরিটেজ",
+    summaryEn:
+      "Aarong-grade heritage clothing storefront with mega menus, artisan stories, lookbooks and fit guides.",
+    summaryBn:
+      "মেগা মেনু, তাঁতির গল্প, লুকবুক ও ফিট গাইডসহ আড়ং-মানের ঐতিহ্যবাহী পোশাক স্টোরফ্রন্ট।",
+    category: "fashion",
+    version: "1.0.0",
+    api: "^3.0.0",
+    sortOrder: 65,
+    tokens: tokens({
+      brand: "#111827",
+      accent: "#B45309",
+      surface: "#FDFBF7",
+      ink: "#1C1917",
+      radius: "4px",
+      container: "1280px",
+      density: "airy",
+      typeScale: "expressive",
+      spaceUnit: "24px",
+      shadow: "soft",
+      motion: "subtle",
+      fontPairing: "editorial-mix",
+      fontDisplay: "Hind Siliguri",
+      fontBody: "Inter",
+      dark: {
+        brand: "#FDFBF7",
+        accent: "#F59E0B",
+        surface: "#121110",
+        ink: "#F5F1EA",
+      },
+    }),
+    templates: withSearch(k, {
+      index: {
+        header: header(),
+        main: [
+          s("editorial_hero", {
+            eyebrow: "Heritage Weaves & Living Crafts",
+            heading: "Woven with patience, worn with pride",
+            body: "Every thread tells the story of our master weavers. Authentic Tangail taant, Jamdani masterpieces, and hand-embroidered silks.",
+            ctaLabel: "Shop the collection",
+            ctaHref: "/collections/heritage-handloom",
+            layout: "split",
+            scrim: true,
+          }),
+          s("feature_row", {
+            itemOne: "100% Handloom & Natural Dyes",
+            itemTwo: "Over 65,000 Rural Artisans",
+            itemThree: "Nationwide 48-Hour Dispatch",
+          }),
+          s("lookbook", { heading: "The festive lookbook", offset: true }),
+          s("split_feature", {
+            eyebrow: "The master weavers",
+            heading: "Tangail & Jamdani: A living UNESCO legacy",
+            body: "Centuries of geometry and craftsmanship in every weave. Crafted by generational artisan families on traditional wooden pit looms.",
+            ctaLabel: "Read the story",
+            ctaHref: "/blog/master-weavers",
+            flip: false,
+          }),
+          s("shoppable_image", {
+            heading: "Artisan showcase",
+            limit: 4,
+            p1x: 28,
+            p1y: 38,
+            p2x: 64,
+            p2y: 58,
+          }),
+          s("collection_story", {
+            eyebrow: "Festive Occasions",
+            heading: "Pure silk panjabi & fine muslin",
+            body: "Intricate necklines, mother-of-pearl buttons, and breathable natural fibers cut for elegance in Bangladeshi celebrations.",
+            ctaLabel: "See the collection",
+            ctaHref: "/collections/eid-festive",
+            scrim: true,
+          }),
+          sustain(),
+          s("ugc_gallery", {
+            heading: "Celebrating in Framique Heritage",
+            limit: 8,
+            note: "Tag us on Instagram to be featured.",
+          }),
+          s(
+            "product_grid",
+            {
+              heading: "Curated masterpieces",
+              limit: 8,
+              columns: 4,
+              cardVariant: "editorial",
+            },
+            COLS(4),
+          ),
+          s("testimonial", {
+            quote:
+              "The Jamdani saree exceeded all expectations. The texture, fall, and intricate motif work are truly world-class.",
+            author: "Farhana Ahmed, Gulshan, Dhaka",
+          }),
+          s("store_locator", {
+            heading: "Visit our flagship outlets",
+            s1Name: "Uttara Flagship",
+            s1Address: "Sector 3, Uttara, Dhaka",
+            s1Hours: "10am - 9pm",
+            s2Name: "Gulshan Galleria",
+            s2Address: "Gulshan Avenue, Dhaka",
+            s2Hours: "10am - 9pm",
+            s3Name: "Chattogram GEC",
+            s3Address: "GEC Circle, Chattogram",
+            s3Hours: "10am - 9pm",
+          }),
+        ],
+        footer: footer(),
+      },
+      product: {
+        header: [s("breadcrumb", { homeLabel: "Home" })],
+        main: [
+          s(
+            "product_media",
+            { ratio: "4/3", showThumbnails: true, zoom: true },
+            { bp: { mobile: { showThumbnails: false } } },
+          ),
+          s("price_block", {
+            showCompareAt: true,
+            note: "All government taxes & VAT included.",
+          }),
+          s("size_selector", {
+            heading: "Select a size",
+            notifyLabel: "Notify me",
+            guideLabel: "Size guide",
+          }),
+          s("size_guide", {
+            heading: "Garment size guide",
+            openLabel: "Open size guide",
+            unit: "in",
+            c1Label: "Chest",
+            c2Label: "Length",
+            c3Label: "Sleeve",
+            r1Label: "38",
+            r1c1: 40,
+            r1c2: 40,
+            r1c3: 24,
+            r2Label: "40",
+            r2c1: 42,
+            r2c2: 42,
+            r2c3: 25,
+            r3Label: "42",
+            r3c1: 44,
+            r3c2: 44,
+            r3c3: 25,
+            r4Label: "44",
+            r4c1: 46,
+            r4c2: 45,
+            r4c3: 26,
+            note: "All measurements are in inches. Garment laid flat.",
+          }),
+          s("fit_note", {
+            fit: "true",
+            note: "Tailored fit through the chest, comfortable through the waist.",
+            modelHeight: "Model is 182cm",
+            modelSize: "Wearing size 40",
+          }),
+          s("add_to_cart", { label: "Add to bag", showQuantity: true }),
+          s("wishlist_button", {
+            addLabel: "Save for later",
+            savedLabel: "Saved",
+            showCount: true,
+          }),
+          s("back_in_stock", {
+            heading: "Sold out in your size?",
+            body: "Our master artisans produce small batches. Leave your email for restock notification.",
+            buttonLabel: "Notify me",
+            consentText: "I agree to receive one restock email.",
+          }),
+          s("care_panel", {
+            heading: "Fabric & craft care",
+            composition: "100% handspun cotton & mulberry silk",
+            care: "Dry clean recommended. Iron on reverse side on low heat.",
+            origin: "Handwoven in Tangail & Sonargaon, Bangladesh",
+            open: false,
+          }),
+          sustain(),
+          s("complete_the_look", {
+            heading: "Pair with handcrafted accents",
+            limit: 4,
+            buttonLabel: "Add the look",
+          }),
+          s("review_list", {
+            heading: "Customer reviews",
+            limit: 5,
+            sort: "recent",
+            verifiedOnly: true,
+            emptyText: "No reviews yet.",
+          }),
+          s(
+            "product_grid",
+            {
+              heading: "More from this craft",
+              limit: 4,
+              columns: 4,
+              cardVariant: "editorial",
+            },
+            COLS(4),
+          ),
+        ],
+        footer: footer(),
+      },
+      collection: {
+        header: [s("breadcrumb", { homeLabel: "Home" })],
+        main: [
+          s("category_header", {
+            heading: "Heritage Craft Collection",
+            body: "Filter by artisan district, weave type, size, and occasion.",
+            showCount: true,
+            showBreadcrumb: true,
+            homeLabel: "Home",
+          }),
+          s("filter_chips", {
+            clearLabel: "Clear all",
+            emptyText: "No filters applied.",
+          }),
+          s("facet_sidebar", {
+            heading: "Filters",
+            limit: 12,
+            showCategories: true,
+            showKinds: true,
+            showPrice: true,
+            showStock: true,
+            drawerLabel: "Filters",
+            clearLabel: "Clear all",
+            categoryLabel: "Category",
+            kindLabel: "Type",
+            priceLabel: "Price",
+            stockLabel: "Availability",
+            inStockLabel: "In stock only",
+          }),
+          s("result_toolbar", {
+            countLabel: "pieces",
+            showSort: true,
+            showDensity: false,
+            filtersLabel: "Filters",
+            sortLabel: "Sort",
+          }),
+          s(
+            "product_grid",
+            {
+              heading: "All handcrafted pieces",
+              limit: 16,
+              columns: 4,
+              cardVariant: "editorial",
+            },
+            COLS(4),
+          ),
+          s("pagination", {
+            mode: "more",
+            moreLabel: "Load more",
+            prevLabel: "Previous",
+            nextLabel: "Next",
+            pageLabel: "Page",
+          }),
+          s("empty_state", {
+            heading: "Nothing matches those filters",
+            body: "Try removing a filter or two.",
+            clearLabel: "Clear all",
+            showSuggestions: true,
+            limit: 4,
+          }),
+        ],
+        footer: footer(),
+      },
+      page: {
+        header: [s("breadcrumb", { homeLabel: "Home" })],
+        main: [
+          s("page_content", {}),
+          s("size_guide", {
+            heading: "Garment size guide",
+            openLabel: "Open size guide",
+            unit: "in",
+            c1Label: "Chest",
+            c2Label: "Length",
+            c3Label: "Sleeve",
+            r1Label: "38",
+            r1c1: 40,
+            r1c2: 40,
+            r1c3: 24,
+            r2Label: "40",
+            r2c1: 42,
+            r2c2: 42,
+            r2c3: 25,
+            r3Label: "42",
+            r3c1: 44,
+            r3c2: 44,
+            r3c3: 25,
+            r4Label: "44",
+            r4c1: 46,
+            r4c2: 45,
+            r4c3: 26,
+            note: "All measurements are in inches. Garment laid flat.",
+          }),
+          s("care_panel", {
+            heading: "Fabric & craft care",
+            composition: "100% handspun cotton & mulberry silk",
+            care: "Dry clean recommended. Iron on reverse side on low heat.",
+            origin: "Handwoven in Tangail & Sonargaon, Bangladesh",
+            open: true,
+          }),
+          s("store_locator", {
+            heading: "Visit our flagship outlets",
+            s1Name: "Uttara Flagship",
+            s1Address: "Sector 3, Uttara, Dhaka",
+            s1Hours: "10am - 9pm",
+            s2Name: "Gulshan Galleria",
+            s2Address: "Gulshan Avenue, Dhaka",
+            s2Hours: "10am - 9pm",
+            s3Name: "Chattogram GEC",
+            s3Address: "GEC Circle, Chattogram",
+            s3Hours: "10am - 9pm",
+          }),
+        ],
+        footer: footer(),
+      },
+      blog: {
+        header: [s("breadcrumb", { homeLabel: "Home" })],
+        main: [
+          s("blog_terms", { heading: "", style: "pills", showCounts: true }),
+          s(
+            "blog_archive",
+            {
+              heading: "",
+              layout: "grid",
+              columns: 3,
+              limit: 9,
+              showCover: true,
+              showExcerpt: true,
+              showMeta: true,
+              emptyText: "No articles yet.",
+            },
+            COLS(3),
+          ),
+          s("split_feature", {
+            eyebrow: "The heritage journal",
+            heading: "Preserving Bengal's 500-year-old handloom heritage",
+            body: "How community-led weaving clusters are empowering women artisans across rural Bangladesh.",
+            ctaLabel: "Read the story",
+            ctaHref: "/blog/handloom-heritage",
+            flip: true,
+          }),
+          s("blog_pager", { align: "center" }),
+          s("newsletter", {
+            heading: "Join the heritage guild",
+            body: "Receive intimate stories from weaver villages and private invitations to seasonal drops.",
+            buttonLabel: "Subscribe",
+          }),
+        ],
+        footer: footer(),
+      },
+      cart: {
+        header: [],
+        main: [
+          s("free_shipping_bar", {
+            freeShippingLabel: "Add",
+            freeShippingSuffix: "more for free nationwide delivery",
+            freeShippingDone: "Free delivery unlocked",
+          }),
+          s("cart_lines", { heading: "" }),
+          s("cart_summary", { heading: "Order summary" }),
+          s("heading", {
+            text: "Your shopping bag",
+            level: "h2",
+            align: "left",
+          }),
+          s("rich_text", {
+            heading: "Handcrafted guarantee",
+            body: "Each piece is individually inspected for weaving excellence before dispatch. Cash on delivery available.",
+          }),
+          s(
+            "product_grid",
+            {
+              heading: "Complementary crafts",
+              limit: 4,
+              columns: 4,
+              cardVariant: "editorial",
+            },
+            COLS(4),
+          ),
+        ],
+        footer: footer(),
+      },
+      checkout: {
+        header: [s("banner", { text: "Secure checkout", tone: "info" })],
+        main: [
+          s("payment_methods", {
+            heading: "",
+            note: "Payments are processed server-side.",
+            emptyText: "No payment method is enabled yet.",
+          }),
+          s("checkout_steps", {
+            heading: "Checkout",
+            step1: "Bag",
+            step2: "Address",
+            step3: "Payment",
+            step4: "Done",
+            activeStep: 3,
+          }),
+          s("cart_lines", { heading: "" }),
+          s("cart_summary", { heading: "Order summary" }),
+          s("delivery_promise", {
+            heading: "Delivery",
+            insideLabel: "Inside Dhaka",
+            insideDays: "1-2 days",
+            outsideLabel: "Outside Dhaka",
+            outsideDays: "2-4 days",
+            note: "Courier charge shown at checkout.",
+          }),
+        ],
+        footer: [
+          s("feature_row", {
+            itemOne: "7-day easy exchange",
+            itemTwo: "bKash / Nagad",
+            itemThree: "Nationwide courier",
+          }),
+        ],
+      },
+    }),
+  };
+}
+
+/** The blueprint themes, in registry sort order. */
 export const BLUEPRINT_PRESETS: ThemePreset[] = [
+  clothingHeritage(),
   bazaar(),
   atelier(),
   circuit(),
@@ -1999,6 +2490,7 @@ export const BLUEPRINT_KEYS = BLUEPRINT_PRESETS.map((preset) => preset.key);
  * publish gate can never be tripped by a shipped preset.
  */
 export const SHIPPED_BLUEPRINT_KEYS = [
+  "clothing-heritage",
   "bazaar",
   "atelier",
   "circuit",

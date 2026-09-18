@@ -146,7 +146,9 @@ import { Route as AuthenticatedDashboardMarketingCouponsRouteImport } from './ro
 import { Route as AuthenticatedDashboardMarketingFormsRouteImport } from './routes/_authenticated/dashboard/marketing/forms'
 import { Route as AuthenticatedDashboardMarketingMediaRouteImport } from './routes/_authenticated/dashboard/marketing/media'
 import { Route as AuthenticatedDashboardMarketingSeoRouteImport } from './routes/_authenticated/dashboard/marketing/seo'
+import { Route as AuthenticatedDashboardMarketingSequencesRouteImport } from './routes/_authenticated/dashboard/marketing/sequences'
 import { Route as AuthenticatedDashboardMarketingSubscribersRouteImport } from './routes/_authenticated/dashboard/marketing/subscribers'
+import { Route as AuthenticatedDashboardMarketingTemplatesRouteImport } from './routes/_authenticated/dashboard/marketing/templates'
 import { Route as AuthenticatedDashboardMarketplaceIndexRouteImport } from './routes/_authenticated/dashboard/marketplace/index'
 import { Route as AuthenticatedDashboardMarketplaceCreatorRouteImport } from './routes/_authenticated/dashboard/marketplace/creator'
 import { Route as AuthenticatedDashboardMarketplaceModerationRouteImport } from './routes/_authenticated/dashboard/marketplace/moderation'
@@ -161,6 +163,7 @@ import { Route as AuthenticatedDashboardProductsProductIdRouteImport } from './r
 import { Route as AuthenticatedDashboardProductsNewRouteImport } from './routes/_authenticated/dashboard/products/new'
 import { Route as AuthenticatedDashboardSettingsApiRouteImport } from './routes/_authenticated/dashboard/settings_.api'
 import { Route as AuthenticatedDashboardSettingsDomainsRouteImport } from './routes/_authenticated/dashboard/settings_.domains'
+import { Route as AuthenticatedDashboardSettingsEmailRouteImport } from './routes/_authenticated/dashboard/settings_.email'
 import { Route as AuthenticatedDashboardSettingsInfrastructureRouteImport } from './routes/_authenticated/dashboard/settings_.infrastructure'
 import { Route as AuthenticatedDashboardSettingsProvidersRouteImport } from './routes/_authenticated/dashboard/settings_.providers'
 import { Route as AuthenticatedDashboardSettingsSecurityRouteImport } from './routes/_authenticated/dashboard/settings_.security'
@@ -950,10 +953,22 @@ const AuthenticatedDashboardMarketingSeoRoute =
     path: '/marketing/seo',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardMarketingSequencesRoute =
+  AuthenticatedDashboardMarketingSequencesRouteImport.update({
+    id: '/marketing/sequences',
+    path: '/marketing/sequences',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardMarketingSubscribersRoute =
   AuthenticatedDashboardMarketingSubscribersRouteImport.update({
     id: '/marketing/subscribers',
     path: '/marketing/subscribers',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardMarketingTemplatesRoute =
+  AuthenticatedDashboardMarketingTemplatesRouteImport.update({
+    id: '/marketing/templates',
+    path: '/marketing/templates',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardMarketplaceIndexRoute =
@@ -1038,6 +1053,12 @@ const AuthenticatedDashboardSettingsDomainsRoute =
   AuthenticatedDashboardSettingsDomainsRouteImport.update({
     id: '/settings_/domains',
     path: '/settings/domains',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardSettingsEmailRoute =
+  AuthenticatedDashboardSettingsEmailRouteImport.update({
+    id: '/settings_/email',
+    path: '/settings/email',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardSettingsInfrastructureRoute =
@@ -1419,7 +1440,9 @@ export interface FileRoutesByFullPath {
   '/dashboard/marketing/forms': typeof AuthenticatedDashboardMarketingFormsRoute
   '/dashboard/marketing/media': typeof AuthenticatedDashboardMarketingMediaRoute
   '/dashboard/marketing/seo': typeof AuthenticatedDashboardMarketingSeoRoute
+  '/dashboard/marketing/sequences': typeof AuthenticatedDashboardMarketingSequencesRoute
   '/dashboard/marketing/subscribers': typeof AuthenticatedDashboardMarketingSubscribersRoute
+  '/dashboard/marketing/templates': typeof AuthenticatedDashboardMarketingTemplatesRoute
   '/dashboard/marketplace/creator': typeof AuthenticatedDashboardMarketplaceCreatorRoute
   '/dashboard/marketplace/moderation': typeof AuthenticatedDashboardMarketplaceModerationRoute
   '/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
@@ -1430,6 +1453,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
   '/dashboard/settings/api': typeof AuthenticatedDashboardSettingsApiRoute
   '/dashboard/settings/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
+  '/dashboard/settings/email': typeof AuthenticatedDashboardSettingsEmailRoute
   '/dashboard/settings/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
   '/dashboard/settings/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
   '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
@@ -1615,7 +1639,9 @@ export interface FileRoutesByTo {
   '/dashboard/marketing/forms': typeof AuthenticatedDashboardMarketingFormsRoute
   '/dashboard/marketing/media': typeof AuthenticatedDashboardMarketingMediaRoute
   '/dashboard/marketing/seo': typeof AuthenticatedDashboardMarketingSeoRoute
+  '/dashboard/marketing/sequences': typeof AuthenticatedDashboardMarketingSequencesRoute
   '/dashboard/marketing/subscribers': typeof AuthenticatedDashboardMarketingSubscribersRoute
+  '/dashboard/marketing/templates': typeof AuthenticatedDashboardMarketingTemplatesRoute
   '/dashboard/marketplace/creator': typeof AuthenticatedDashboardMarketplaceCreatorRoute
   '/dashboard/marketplace/moderation': typeof AuthenticatedDashboardMarketplaceModerationRoute
   '/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
@@ -1626,6 +1652,7 @@ export interface FileRoutesByTo {
   '/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
   '/dashboard/settings/api': typeof AuthenticatedDashboardSettingsApiRoute
   '/dashboard/settings/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
+  '/dashboard/settings/email': typeof AuthenticatedDashboardSettingsEmailRoute
   '/dashboard/settings/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
   '/dashboard/settings/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
   '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
@@ -1815,7 +1842,9 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/marketing/forms': typeof AuthenticatedDashboardMarketingFormsRoute
   '/_authenticated/dashboard/marketing/media': typeof AuthenticatedDashboardMarketingMediaRoute
   '/_authenticated/dashboard/marketing/seo': typeof AuthenticatedDashboardMarketingSeoRoute
+  '/_authenticated/dashboard/marketing/sequences': typeof AuthenticatedDashboardMarketingSequencesRoute
   '/_authenticated/dashboard/marketing/subscribers': typeof AuthenticatedDashboardMarketingSubscribersRoute
+  '/_authenticated/dashboard/marketing/templates': typeof AuthenticatedDashboardMarketingTemplatesRoute
   '/_authenticated/dashboard/marketplace/creator': typeof AuthenticatedDashboardMarketplaceCreatorRoute
   '/_authenticated/dashboard/marketplace/moderation': typeof AuthenticatedDashboardMarketplaceModerationRoute
   '/_authenticated/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
@@ -1826,6 +1855,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
   '/_authenticated/dashboard/settings_/api': typeof AuthenticatedDashboardSettingsApiRoute
   '/_authenticated/dashboard/settings_/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
+  '/_authenticated/dashboard/settings_/email': typeof AuthenticatedDashboardSettingsEmailRoute
   '/_authenticated/dashboard/settings_/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
   '/_authenticated/dashboard/settings_/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
   '/_authenticated/dashboard/settings_/security': typeof AuthenticatedDashboardSettingsSecurityRoute
@@ -2015,7 +2045,9 @@ export interface FileRouteTypes {
     | '/dashboard/marketing/forms'
     | '/dashboard/marketing/media'
     | '/dashboard/marketing/seo'
+    | '/dashboard/marketing/sequences'
     | '/dashboard/marketing/subscribers'
+    | '/dashboard/marketing/templates'
     | '/dashboard/marketplace/creator'
     | '/dashboard/marketplace/moderation'
     | '/dashboard/marketplace/versions'
@@ -2026,6 +2058,7 @@ export interface FileRouteTypes {
     | '/dashboard/products/new'
     | '/dashboard/settings/api'
     | '/dashboard/settings/domains'
+    | '/dashboard/settings/email'
     | '/dashboard/settings/infrastructure'
     | '/dashboard/settings/providers'
     | '/dashboard/settings/security'
@@ -2211,7 +2244,9 @@ export interface FileRouteTypes {
     | '/dashboard/marketing/forms'
     | '/dashboard/marketing/media'
     | '/dashboard/marketing/seo'
+    | '/dashboard/marketing/sequences'
     | '/dashboard/marketing/subscribers'
+    | '/dashboard/marketing/templates'
     | '/dashboard/marketplace/creator'
     | '/dashboard/marketplace/moderation'
     | '/dashboard/marketplace/versions'
@@ -2222,6 +2257,7 @@ export interface FileRouteTypes {
     | '/dashboard/products/new'
     | '/dashboard/settings/api'
     | '/dashboard/settings/domains'
+    | '/dashboard/settings/email'
     | '/dashboard/settings/infrastructure'
     | '/dashboard/settings/providers'
     | '/dashboard/settings/security'
@@ -2410,7 +2446,9 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/marketing/forms'
     | '/_authenticated/dashboard/marketing/media'
     | '/_authenticated/dashboard/marketing/seo'
+    | '/_authenticated/dashboard/marketing/sequences'
     | '/_authenticated/dashboard/marketing/subscribers'
+    | '/_authenticated/dashboard/marketing/templates'
     | '/_authenticated/dashboard/marketplace/creator'
     | '/_authenticated/dashboard/marketplace/moderation'
     | '/_authenticated/dashboard/marketplace/versions'
@@ -2421,6 +2459,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/products/new'
     | '/_authenticated/dashboard/settings_/api'
     | '/_authenticated/dashboard/settings_/domains'
+    | '/_authenticated/dashboard/settings_/email'
     | '/_authenticated/dashboard/settings_/infrastructure'
     | '/_authenticated/dashboard/settings_/providers'
     | '/_authenticated/dashboard/settings_/security'
@@ -3535,11 +3574,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardMarketingSeoRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/marketing/sequences': {
+      id: '/_authenticated/dashboard/marketing/sequences'
+      path: '/marketing/sequences'
+      fullPath: '/dashboard/marketing/sequences'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingSequencesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/marketing/subscribers': {
       id: '/_authenticated/dashboard/marketing/subscribers'
       path: '/marketing/subscribers'
       fullPath: '/dashboard/marketing/subscribers'
       preLoaderRoute: typeof AuthenticatedDashboardMarketingSubscribersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/templates': {
+      id: '/_authenticated/dashboard/marketing/templates'
+      path: '/marketing/templates'
+      fullPath: '/dashboard/marketing/templates'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingTemplatesRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/marketplace/': {
@@ -3638,6 +3691,13 @@ declare module '@tanstack/react-router' {
       path: '/settings/domains'
       fullPath: '/dashboard/settings/domains'
       preLoaderRoute: typeof AuthenticatedDashboardSettingsDomainsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings_/email': {
+      id: '/_authenticated/dashboard/settings_/email'
+      path: '/settings/email'
+      fullPath: '/dashboard/settings/email'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsEmailRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/settings_/infrastructure': {
@@ -4011,7 +4071,9 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardMarketingFormsRoute: typeof AuthenticatedDashboardMarketingFormsRoute
   AuthenticatedDashboardMarketingMediaRoute: typeof AuthenticatedDashboardMarketingMediaRoute
   AuthenticatedDashboardMarketingSeoRoute: typeof AuthenticatedDashboardMarketingSeoRoute
+  AuthenticatedDashboardMarketingSequencesRoute: typeof AuthenticatedDashboardMarketingSequencesRoute
   AuthenticatedDashboardMarketingSubscribersRoute: typeof AuthenticatedDashboardMarketingSubscribersRoute
+  AuthenticatedDashboardMarketingTemplatesRoute: typeof AuthenticatedDashboardMarketingTemplatesRoute
   AuthenticatedDashboardMarketplaceCreatorRoute: typeof AuthenticatedDashboardMarketplaceCreatorRoute
   AuthenticatedDashboardMarketplaceModerationRoute: typeof AuthenticatedDashboardMarketplaceModerationRoute
   AuthenticatedDashboardMarketplaceVersionsRoute: typeof AuthenticatedDashboardMarketplaceVersionsRoute
@@ -4022,6 +4084,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardProductsNewRoute: typeof AuthenticatedDashboardProductsNewRoute
   AuthenticatedDashboardSettingsApiRoute: typeof AuthenticatedDashboardSettingsApiRoute
   AuthenticatedDashboardSettingsDomainsRoute: typeof AuthenticatedDashboardSettingsDomainsRoute
+  AuthenticatedDashboardSettingsEmailRoute: typeof AuthenticatedDashboardSettingsEmailRoute
   AuthenticatedDashboardSettingsInfrastructureRoute: typeof AuthenticatedDashboardSettingsInfrastructureRoute
   AuthenticatedDashboardSettingsProvidersRoute: typeof AuthenticatedDashboardSettingsProvidersRoute
   AuthenticatedDashboardSettingsSecurityRoute: typeof AuthenticatedDashboardSettingsSecurityRoute
@@ -4119,8 +4182,12 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardMarketingMediaRoute,
     AuthenticatedDashboardMarketingSeoRoute:
       AuthenticatedDashboardMarketingSeoRoute,
+    AuthenticatedDashboardMarketingSequencesRoute:
+      AuthenticatedDashboardMarketingSequencesRoute,
     AuthenticatedDashboardMarketingSubscribersRoute:
       AuthenticatedDashboardMarketingSubscribersRoute,
+    AuthenticatedDashboardMarketingTemplatesRoute:
+      AuthenticatedDashboardMarketingTemplatesRoute,
     AuthenticatedDashboardMarketplaceCreatorRoute:
       AuthenticatedDashboardMarketplaceCreatorRoute,
     AuthenticatedDashboardMarketplaceModerationRoute:
@@ -4141,6 +4208,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardSettingsApiRoute,
     AuthenticatedDashboardSettingsDomainsRoute:
       AuthenticatedDashboardSettingsDomainsRoute,
+    AuthenticatedDashboardSettingsEmailRoute:
+      AuthenticatedDashboardSettingsEmailRoute,
     AuthenticatedDashboardSettingsInfrastructureRoute:
       AuthenticatedDashboardSettingsInfrastructureRoute,
     AuthenticatedDashboardSettingsProvidersRoute:

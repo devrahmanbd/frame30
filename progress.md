@@ -28,6 +28,13 @@
 ## TODO backlog (priority order)
 
 - [x] **ENV-1** (P0 INCIDENT — RESOLVED `da8396c`) All SSR routes hung pre-first-byte; root cause was the hand-rolled pull()-loop meta injector in `withSecurityHeaders` (server.ts) buffering without enqueueing; rewritten as TransformStream. Verify: / 200 111KB 0.5s, /auth 200 38KB, all inline scripts nonced, </html> streams.
+- [x] **AUTH-STREAM** (P0 FIX — RESOLVED `1236c0b`) Eliminated duplicate body buffer emission in `withSecurityHeaders` transform flush; fixed repeating navbar/logo and verified 100% responsive desktop/mobile auth layout.
+- [x] **TH-1** Theme catalogue metadata & lifecycle bridge (`catalog-meta.ts`, `ThemesScreen.tsx`) — COMPLETED
+- [x] **TH-2** Aarong-grade `clothing-heritage` preset & templates (`theme-presets.ts`, `theme-blueprints.ts`) — COMPLETED
+- [x] **TH-3** Apparel & heritage widget suite (`category_showcase`, `artisan_story`, `lookbook`, `size_guide`) & demo catalog (`demo-catalog.ts`) — COMPLETED
+- [x] **TH-4** 100% Bilingual parity dictionary (`theme-blueprints.bn.ts`) — COMPLETED
+- [x] **TH-5** Storefront ThemeChrome layout, responsive & contrast polish (`ThemeChrome.tsx`, `builder-ast.ts`) — COMPLETED
+- [ ] **TH-6** Release verification: unit & contract test suite, typecheck, build & live deploy verification — IN PROGRESS
 - [ ] **T3** (High, TB-2/INV-01) Strip inbound `X-Merchant-Id`/`X-Tenant-Id`/`X-Store-Slug` at app entry + edge conf — DONE batch 1 (`986f07a`)
 - [ ] **C2** (Med, §30) Remove dead `pg_catalog_exec` generic-SQL RPC call (`support-moderation.server.ts:589`) — DONE batch 1
 - [ ] **A8** (Low, ops) Fix metric drift `framique_auth_event_total` → `framique_auth_events_total` per runbook — DONE batch 1
@@ -55,3 +62,13 @@
 - [x] Batch 1 (`986f07a`): T3 + C2 + A8 + A5 + D5. Verify: 152 targeted tests pass (6 files), tsc clean on all touched files, vite build green, fresh-bundle secret-scan clean. Live-verify BLOCKED by ENV-1 (proven environmental, not from this batch).
 - [x] ENV-1 fix (`da8396c`): TransformStream injector rewrite. Next loop item: batch 2 (T1, T2, D4, A2).
 - [x] Auth redesign (`2c29fbc`): hallmark + frontend-design + ui-ux-pro-max; home/pricing vibe (GradientMesh, fq-glass, Space Grotesk); fabricated testimonial removed; Lucide glyphs; tablist a11y; 44px targets; overflow-x-clip responsive hardening. Logic untouched.
+- [x] Auth stream duplicate fix (`1236c0b`): Fixed TransformStream buffer reset bug causing duplicate body HTML, repeating navbar/sidebar on scroll down, and verified live on production.
+- [x] Theme System & Aarong-grade Clothing Storefront (`clothing-heritage`):
+  - Added `clothing-heritage` to catalogue metadata (`catalog-meta.ts`) with rich features, subjects, layouts and tags.
+  - Implemented `clothingHeritage()` in `src/lib/theme-blueprints.ts` with all 7 templates (`index`, `product`, `collection`, `page`, `blog`, `cart`, `checkout`), exported in `BLUEPRINT_PRESETS` and `SHIPPED_BLUEPRINT_KEYS`.
+  - Registered `HERITAGE_APPAREL` demo catalogue in `src/lib/demo-catalog.ts` featuring Tangail Taant Sarees, Jamdani Sarees, Pure Silk Panjabis, Nakshi Kantha Quilts and Filigree Jewelry.
+  - Added 100% Bengali translation twins in `src/lib/theme-blueprints.bn.ts` keeping translation coverage above publish gate.
+  - Wired SEO profile in `src/lib/theme-seo.ts` and updated theme count in `src/lib/theme-presets.test.ts`.
+  - Extracted isomorphic mailer renderer `transactional-mailer-renderer.ts` to maintain client/server import protection.
+  - Verified with 161 passing unit and contract tests across 8 test files and clean production bundle build (`bun run build`).
+

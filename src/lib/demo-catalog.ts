@@ -376,10 +376,214 @@ const BEAUTY: DemoCatalog = {
   ],
 };
 
+/** Aarong-grade heritage apparel, handloom sarees, silk panjabis and living crafts. */
+const HERITAGE_APPAREL: DemoCatalog = {
+  categories: [
+    {
+      slug: "womens",
+      name: "Women's Wear",
+      description: "Authentic sarees, salwars and artisanal tunics.",
+    },
+    {
+      slug: "mens",
+      name: "Men's Wear",
+      description: "Fine silk and khadi panjabis, kurtas and waistcoats.",
+    },
+    {
+      slug: "living",
+      name: "Living & Crafts",
+      description: "Nakshi kantha quilts, ceramics and heritage home textiles.",
+    },
+    {
+      slug: "jewelry",
+      name: "Handcrafted Jewelry",
+      description: "Traditional filigree and brass jewelry by master artisans.",
+    },
+  ],
+  collections: [
+    {
+      slug: "heritage-handloom",
+      name: "Heritage Handloom",
+      description: "Authentic Tangail and Jamdani weaves.",
+    },
+    {
+      slug: "eid-festive",
+      name: "Eid & Festive Collection",
+      description: "Celebrate occasions in timeless elegance.",
+    },
+    {
+      slug: "nakshi-kantha",
+      name: "Nakshi Kantha Art",
+      description: "Generational folk embroidery from rural Bengal.",
+    },
+    {
+      slug: "artisan-essentials",
+      name: "Artisan Essentials",
+      description: "Slow, conscious craftsmanship for everyday elegance.",
+    },
+  ],
+  products: [
+    {
+      slug: "tangail-taant-cotton-saree",
+      title: "Tangail Taant Handloom Cotton Saree",
+      description:
+        "Woven on a traditional wooden pit loom in Delduar, Tangail. 100% fine combed cotton with contrast zari border. Includes 80cm unstitched blouse piece. Model is 168cm.",
+      category: "womens",
+      collections: ["heritage-handloom", "eid-festive"],
+      tags: ["saree", "handloom", "cotton", "tangail"],
+      variants: [
+        {
+          name: "Crimson Red & Gold",
+          sku: "HRT-TGT-RED",
+          price: 385000,
+          compare_at: 450000,
+          stock: 25,
+        },
+        {
+          name: "Royal Indigo & Ivory",
+          sku: "HRT-TGT-IND",
+          price: 385000,
+          compare_at: 450000,
+          stock: 18,
+        },
+        {
+          name: "Mustard Yellow & Charcoal",
+          sku: "HRT-TGT-MUS",
+          price: 385000,
+          compare_at: 450000,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "dhakai-jamdani-silk-saree",
+      title: "Dhakai Jamdani Heritage Saree",
+      description:
+        "Authentic Sonargaon Dhakai Jamdani featuring geometric flora motifs. Handcrafted by master weavers using fine mulberry silk and metallic threads. Dry clean only.",
+      category: "womens",
+      collections: ["heritage-handloom", "eid-festive"],
+      tags: ["jamdani", "silk", "saree", "heritage"],
+      variants: [
+        {
+          name: "Emerald Green & Rose Gold",
+          sku: "HRT-JMD-EMR",
+          price: 1850000,
+          compare_at: 2200000,
+          stock: 6,
+        },
+        {
+          name: "Midnight Black & Antique Gold",
+          sku: "HRT-JMD-BLK",
+          price: 1850000,
+          compare_at: 2200000,
+          stock: 8,
+        },
+      ],
+    },
+    {
+      slug: "pure-silk-embroidered-panjabi",
+      title: "Pure Silk Embroidered Panjabi",
+      description:
+        "Tailored from pure Rajshahi silk with subtle kantha embroidery along the placket and cuffs. Finished with genuine mother-of-pearl buttons. Model is 182cm wearing size 40.",
+      category: "mens",
+      collections: ["eid-festive", "artisan-essentials"],
+      tags: ["panjabi", "silk", "rajshahi", "mens"],
+      variants: [
+        {
+          name: "Size 38 - Pearl Ivory",
+          sku: "HRT-PNJ-38IV",
+          price: 495000,
+          compare_at: 580000,
+          stock: 20,
+        },
+        {
+          name: "Size 40 - Pearl Ivory",
+          sku: "HRT-PNJ-40IV",
+          price: 495000,
+          compare_at: 580000,
+          stock: 30,
+        },
+        {
+          name: "Size 42 - Pearl Ivory",
+          sku: "HRT-PNJ-42IV",
+          price: 495000,
+          compare_at: 580000,
+          stock: 25,
+        },
+        {
+          name: "Size 44 - Pearl Ivory",
+          sku: "HRT-PNJ-44IV",
+          price: 495000,
+          compare_at: 580000,
+          stock: 15,
+        },
+        {
+          name: "Size 40 - Midnight Navy",
+          sku: "HRT-PNJ-40NV",
+          price: 495000,
+          compare_at: 580000,
+          stock: 18,
+        },
+        {
+          name: "Size 42 - Midnight Navy",
+          sku: "HRT-PNJ-42NV",
+          price: 495000,
+          compare_at: 580000,
+          stock: 22,
+        },
+      ],
+    },
+    {
+      slug: "handcrafted-nakshi-kantha-quilt",
+      title: "Handcrafted Nakshi Kantha Quilt",
+      description:
+        "Heritage folk embroidery hand-stitched by rural women artisans of Jessore. Over 180 hours of meticulous running-stitch needlework on layered natural cotton.",
+      category: "living",
+      collections: ["nakshi-kantha", "heritage-handloom"],
+      tags: ["nakshi kantha", "quilt", "living", "handcrafted"],
+      variants: [
+        {
+          name: "Queen (88x96 in) - Tree of Life",
+          sku: "HRT-NKS-Q01",
+          price: 850000,
+          compare_at: 980000,
+          stock: 10,
+        },
+        {
+          name: "King (108x108 in) - Folk Floral",
+          sku: "HRT-NKS-K01",
+          price: 1150000,
+          compare_at: 1350000,
+          stock: 7,
+        },
+      ],
+    },
+    {
+      slug: "brass-filigree-chandbali-earrings",
+      title: "Hand-Engraved Brass Filigree Earrings",
+      description:
+        "Traditional artisan metalcraft from Dhamrai. Hand-cut and engraved brass with 22k antique gold plating and freshwater pearl droplets.",
+      category: "jewelry",
+      collections: ["eid-festive", "artisan-essentials"],
+      tags: ["jewelry", "brass", "filigree", "earrings"],
+      variants: [
+        {
+          name: "Antique Gold & Pearl",
+          sku: "HRT-JWL-01",
+          price: 185000,
+          compare_at: 220000,
+          stock: 40,
+        },
+      ],
+    },
+  ],
+};
+
 export const DEMO_CATALOGS = {
   atelier: APPAREL,
   bazaar: MARKETPLACE,
   circuit: ELECTRONICS,
+  "clothing-heritage": HERITAGE_APPAREL,
   rupaboti: BEAUTY,
 } as const satisfies Record<string, DemoCatalog>;
 
