@@ -15,6 +15,7 @@ import { readServerBootLang } from "@/lib/lang-boot.server";
 import { FONT_PRELOAD } from "@/lib/web-vitals";
 import appCss from "@/styles.css?url";
 import { installClientErrorReporter } from "@/lib/client-error-reporter";
+import { getCurrentNonce } from "@/lib/ssr-nonce";
 
 // Phase 12 — one browser reporter for onerror + unhandled rejections. Runs at
 // module scope on the client only; the server import is a no-op.
@@ -95,6 +96,7 @@ function RootDocument() {
       <head>
         <HeadContent />
         <script
+          nonce={typeof window === "undefined" ? getCurrentNonce() : undefined}
           dangerouslySetInnerHTML={{
             __html: `
               try {

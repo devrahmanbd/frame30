@@ -17,6 +17,7 @@ import {
 } from "./lib/risk-tier";
 import { getMerchantRiskContext } from "./lib/risk-tier.server";
 import { buildCsp, newNonce } from "./lib/custom-code";
+import { setCurrentNonce, getCurrentNonce } from "./lib/ssr-nonce";
 
 type ServerEntry = {
   fetch: (
@@ -137,11 +138,11 @@ function withSecurityHeaders(
   }
   headers.set("permissions-policy", "camera=(), microphone=(), geolocation=(), payment=()");
 
-  // Emit tier-aware CSP header based on resolved risk tier
+  // Emit tier-aware CSP header using pre-generated nonce from request phase
   const policy = resolvePolicy(riskTier);
   let nonce = "";
   if (policy.csp.nonce) {
-    nonce = newNonce();
+    nonce = getCurrentNonce() || newNonce();
     headers.set("content-security-policy", buildCsp(nonce, {}, riskTier));
   } else {
     // medium / high: no nonce, strict script-src 'self'
@@ -518,6 +519,15 @@ export default {
 
       // Resolve risk tier per-request for CSP header emission
       const { tier: riskTier } = await resolveRequestTier(merchantId);
+
+      // Generate nonce BEFORE SSR so TanStack Router can inject it into <script> tags
+      const policy = resolvePolicy(riskTier);
+      if (policy.csp.nonce) {
+        const nonce = newNonce();
+        // Make nonce available to getRouter() during SSR via module-level store
+        setCurrentNonce(nonce);
+        request.headers.set("x-csp-nonce", nonce);
+      }
 
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
