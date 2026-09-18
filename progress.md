@@ -46,3 +46,4 @@
 - [x] Batch 0: swarm analysis (6 agents) + mem0 context + this file.
 - [x] Batch 1 (`986f07a`): T3 + C2 + A8 + A5 + D5. Verify: 152 targeted tests pass (6 files), tsc clean on all touched files, vite build green, fresh-bundle secret-scan clean. Live-verify BLOCKED by ENV-1 (proven environmental, not from this batch).
 - [x] ENV-1 fix (`da8396c`): TransformStream injector rewrite. Next loop item: batch 2 (T1, T2, D4, A2).
+- [x] Auth redesign (`2c29fbc`): hallmark + frontend-design + ui-ux-pro-max; home/pricing vibe (GradientMesh, fq-glass, Space Grotesk); fabricated testimonial removed; Lucide glyphs; tablist a11y; 44px targets; overflow-x-clip responsive hardening. Logic untouched.
