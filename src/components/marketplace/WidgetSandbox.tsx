@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { authorizeWidgetCall, type WidgetCall } from "@/lib/marketplace-scopes";
 import { useLang } from "@/lib/i18n";
+import { type RiskTier, resolvePolicy } from "@/lib/risk-tier";
 
 /**
  * Sandbox host for third-party marketplace bundles.
@@ -10,9 +11,14 @@ import { useLang } from "@/lib/i18n";
  * app only through postMessage, and every message is checked against the scopes
  * the merchant approved at install time before the host answers.
  */
-export type SandboxHandler = (method: string, params: unknown) => Promise<unknown>;
+export type SandboxHandler = (
+  method: string,
+  params: unknown,
+) => Promise<unknown>;
 
-const FRAME_HTML = (entry: string) => `<!doctype html><html><head><meta charset="utf-8">
+const FRAME_HTML = (
+  entry: string,
+) => `<!doctype html><html><head><meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline';">
 <style>body{margin:0;font:14px/1.6 system-ui;color:#111}</style></head>
 <body><div id="root"></div><script>
@@ -44,14 +50,17 @@ export function WidgetSandbox({
   grantedScopes,
   onCall,
   height = 320,
+  riskTier = "low",
 }: {
   title: string;
   entry: string;
   grantedScopes: string[];
   onCall: SandboxHandler;
   height?: number;
+  riskTier?: RiskTier;
 }) {
   const { t } = useLang();
+  const policy = resolvePolicy(riskTier);
   const ref = useRef<HTMLIFrameElement | null>(null);
   const [denied, setDenied] = useState<string[]>([]);
   const srcDoc = useMemo(() => FRAME_HTML(entry), [entry]);
@@ -63,11 +72,16 @@ export function WidgetSandbox({
       const msg = event.data as WidgetCall;
       const verdict = authorizeWidgetCall(msg, grantedScopes);
       const reply = (body: Record<string, unknown>) =>
-        frame.contentWindow?.postMessage({ id: (msg as { id?: string })?.id, ...body }, "*");
+        frame.contentWindow?.postMessage(
+          { id: (msg as { id?: string })?.id, ...body },
+          "*",
+        );
 
       if (!verdict.allowed) {
         if (verdict.reason === "scope_denied" && verdict.method) {
-          setDenied((d) => (d.includes(verdict.method!) ? d : [...d, verdict.method!]));
+          setDenied((d) =>
+            d.includes(verdict.method!) ? d : [...d, verdict.method!],
+          );
         }
         reply({ error: `sandbox.${verdict.reason}` });
         return;
@@ -75,7 +89,9 @@ export function WidgetSandbox({
       try {
         reply({ result: await onCall(verdict.method, msg.params) });
       } catch (err) {
-        reply({ error: err instanceof Error ? err.message : "sandbox.host_error" });
+        reply({
+          error: err instanceof Error ? err.message : "sandbox.host_error",
+        });
       }
     }
     window.addEventListener("message", onMessage);
@@ -88,15 +104,22 @@ export function WidgetSandbox({
         ref={ref}
         title={title}
         srcDoc={srcDoc}
-        sandbox="allow-scripts"
-        referrerPolicy="no-referrer"
+        sandbox={policy.iframe.sandbox}
+        referrerPolicy={policy.iframe.referrerPolicy}
         loading="lazy"
         style={{ height }}
         className="w-full rounded-fq-md border border-border bg-background"
       />
       {denied.length > 0 && (
-        <p role="status" className="rounded-fq-md border border-destructive/40 bg-destructive/10 p-2 text-xs">
-          {t("Blocked calls without permission:", "অনুমতি ছাড়া কল আটকানো হয়েছে:")} {denied.join(", ")}
+        <p
+          role="status"
+          className="rounded-fq-md border border-destructive/40 bg-destructive/10 p-2 text-xs"
+        >
+          {t(
+            "Blocked calls without permission:",
+            "অনুমতি ছাড়া কল আটকানো হয়েছে:",
+          )}{" "}
+          {denied.join(", ")}
         </p>
       )}
     </div>

@@ -1,16 +1,15 @@
 /**
  * Phase 4 — the `html` widget's isolation boundary.
  *
- * Merchant markup renders inside an iframe with `sandbox="allow-forms
- * allow-popups"` and no `allow-same-origin`, so it has no reach into the
+ * Merchant markup renders inside an iframe with tier-adjusted sandbox
+ * attributes and no `allow-same-origin`, so it has no reach into the
  * storefront's cookies, storage or DOM. Height is negotiated over
  * `postMessage`: the frame measures itself and posts up, the host clamps the
  * value so a runaway document can never take over the page.
  */
 import { useEffect, useRef, useState } from "react";
 import { sandboxSrcDoc } from "@/lib/custom-code";
-
-const MAX_HEIGHT = 4000;
+import { type RiskTier, resolvePolicy } from "@/lib/risk-tier";
 
 type Props = {
   markup: string;
@@ -18,11 +17,22 @@ type Props = {
   css?: string;
   title: string;
   className?: string;
+  /** Risk tier controlling iframe sandbox strictness. Defaults to "low". */
+  riskTier?: RiskTier;
 };
 
-export function HtmlSandbox({ markup, css, title, className }: Props) {
+export function HtmlSandbox({
+  markup,
+  css,
+  title,
+  className,
+  riskTier = "low",
+}: Props) {
+  const policy = resolvePolicy(riskTier);
   const ref = useRef<HTMLIFrameElement | null>(null);
   const [height, setHeight] = useState(120);
+
+  const maxHeight = policy.iframe.maxHeight || 4000;
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
@@ -33,20 +43,23 @@ export function HtmlSandbox({ markup, css, title, className }: Props) {
       if (!data || data.type !== "fq:html-height") return;
       const next = Number(data.height);
       if (!Number.isFinite(next)) return;
-      setHeight(Math.max(40, Math.min(MAX_HEIGHT, Math.ceil(next))));
+      setHeight(Math.max(40, Math.min(maxHeight, Math.ceil(next))));
     };
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, []);
+  }, [maxHeight]);
 
   if (!markup.trim()) return null;
+
+  // Tier with maxHeight=0 (high) disables rendering entirely.
+  if (policy.iframe.maxHeight === 0) return null;
 
   return (
     <iframe
       ref={ref}
       title={title}
-      sandbox="allow-forms allow-popups"
-      referrerPolicy="no-referrer"
+      sandbox={policy.iframe.sandbox}
+      referrerPolicy={policy.iframe.referrerPolicy}
       loading="lazy"
       srcDoc={sandboxSrcDoc(markup, css ? { css } : {})}
       className={className ?? "w-full border-0"}
