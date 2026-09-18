@@ -238,7 +238,7 @@ export function validBaseUrl(value: string) {
  * scraper still scraping, are logs still arriving, is anything firing, how many
  * errors landed in the last hour, and how old is the newest backup.
  */
-export const SIGNAL_KEYS = ["last_scrape", "last_log", "active_alerts", "errors_1h", "backup_age"] as const;
+export const SIGNAL_KEYS = ["last_scrape", "last_log", "active_alerts", "errors_1h", "backup_age", "glitchtip_errors"] as const;
 
 export type SignalKey = (typeof SIGNAL_KEYS)[number];
 
@@ -258,6 +258,7 @@ export const SIGNAL_SPECS: Record<SignalKey, SignalSpec> = {
   active_alerts: { key: "active_alerts", label: "Active alerts", unit: "count", warn: 1, bad: 5, source: "alertmanager" },
   errors_1h: { key: "errors_1h", label: "Errors (1h)", unit: "count", warn: 10, bad: 100, source: "loki" },
   backup_age: { key: "backup_age", label: "Newest backup", unit: "seconds", warn: 26 * 3600, bad: 48 * 3600, source: "supabase" },
+  glitchtip_errors: { key: "glitchtip_errors", label: "Tracked errors (1h)", unit: "count", warn: 5, bad: 50, source: "glitchtip" },
 };
 
 export type OpsSignal = { key: SignalKey; value: number | null; detail: string | null };

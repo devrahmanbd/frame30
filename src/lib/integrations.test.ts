@@ -130,13 +130,14 @@ describe("setup wizard", () => {
 });
 
 describe("health strip", () => {
-  it("covers the five numbers an operator checks", () => {
+  it("covers the six numbers an operator checks", () => {
     expect(SIGNAL_KEYS).toEqual([
       "last_scrape",
       "last_log",
       "active_alerts",
       "errors_1h",
       "backup_age",
+      "glitchtip_errors",
     ]);
   });
 

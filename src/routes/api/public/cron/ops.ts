@@ -38,6 +38,12 @@ export const Route = createFileRoute("/api/public/cron/ops")({
             (OPS_OBJECTIVES.drillMaxAgeDays / 2) * 86_400_000;
         const drill = drillDue ? await runBackupDrill({ scope: "platform", actor: null }) : null;
 
+        // Integration probes: hit every connected service's health endpoint,
+        // record the result, and publish worst-case to the public status page.
+        const { probeAllIntegrations, sweepIntegrationProbes } = await import("@/lib/integrations.server");
+        const probes = await probeAllIntegrations();
+        const pruned = await sweepIntegrationProbes();
+
         const { refreshComponentHealth } = await import("@/lib/status-health.server");
         const status = await refreshComponentHealth();
         const fleet = await watchFleet();
@@ -58,6 +64,8 @@ export const Route = createFileRoute("/api/public/cron/ops")({
           statusChanged: status.changed,
           jobsNeedingAttention: fleet.attention.length,
           alerted: fleet.alerted.length,
+          integrationProbes: probes.length,
+          integrationProbesPruned: pruned,
         };
       }),
     },

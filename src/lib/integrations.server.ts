@@ -55,6 +55,7 @@ type ConnectionRow = {
 };
 
 const PROBE_TIMEOUT_MS = 5000;
+const STALE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes
 
 function credentialHeaders(service: IntegrationService): Record<string, string> {
   const spec = SERVICE_CATALOG[service];
@@ -167,7 +168,20 @@ export async function loadIntegrations(db: Client, userId: string) {
       .order("checked_at", { ascending: false })
       .limit(2000),
   ]);
-  const byService = new Map((rows ?? []).map((r) => [(r as ConnectionRow).service, r as ConnectionRow]));
+
+  // If any enabled connection hasn't been probed in >5 minutes, fire a
+  // background probe so the next poll (60s) picks up fresh data.
+  const connRows = (rows ?? []) as ConnectionRow[];
+  const stale = connRows.some((r) => {
+    if (!r.enabled || !isIntegrationService(r.service)) return false;
+    if (!r.last_checked_at) return true;
+    return Date.now() - new Date(r.last_checked_at).getTime() > STALE_THRESHOLD_MS;
+  });
+  if (stale) {
+    probeAllIntegrations().catch((err) => log("warn", "integration.background_probe_failed", { error: String(err) }));
+  }
+
+  const byService = new Map(connRows.map((r) => [r.service, r]));
   const probeRows = (probes ?? []) as { service: string; status: string; checked_at: string }[];
 
   const views: ServiceView[] = Object.values(SERVICE_CATALOG).map((spec) => {
@@ -425,6 +439,21 @@ export async function loadOpsSignals(db: Client, userId: string): Promise<{ sign
   } catch {
     put("backup_age", null, "Backup ledger unavailable");
   }
+
+  // GlitchTip: count unresolved issues from the last hour.
+  if (urls.glitchtip) {
+    const token = process.env.GLITCHTIP_API_TOKEN;
+    const headers = token ? { authorization: `Bearer ${token}` } : {};
+    const issues = await getJson(
+      `${urls.glitchtip}/api/0/issues/?query=&statsPeriod=1h&short=1`,
+      headers,
+    );
+    if (Array.isArray(issues)) {
+      put("glitchtip_errors", issues.length);
+    } else {
+      put("glitchtip_errors", null, issues ? "GlitchTip did not answer" : "GlitchTip not connected");
+    }
+  } else put("glitchtip_errors", null, "GlitchTip not connected");
 
   return {
     signals: SIGNAL_KEYS.map((key) => ({
