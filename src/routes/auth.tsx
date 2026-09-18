@@ -6,7 +6,6 @@ import { useLang } from "@/lib/i18n";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import { ThemeToggle } from "@/components/public/ThemeToggle";
 import { GradientMesh } from "@/components/public/motion/GradientMesh";
-import { LanguageToggle } from "@/components/LanguageToggle";
 import {
   consumeRecoveryCodeFn,
   recordAuthEventFn,
@@ -22,9 +21,9 @@ import {
   ChevronDown,
   AlertCircle,
   ShieldCheck,
-  Zap,
-  Truck,
-  CreditCard,
+  Gauge,
+  Wallet,
+  PackageCheck,
   Building2,
   Globe,
   Sparkles,
@@ -537,9 +536,9 @@ function AuthPage() {
 
   return (
     <main className="fq-site fq-marketing min-h-screen overflow-x-clip bg-background selection:bg-primary/20 selection:text-primary">
-      <div className="grid min-h-screen lg:grid-cols-12">
+      <div className="grid min-h-screen lg:h-screen lg:grid-cols-12 lg:overflow-hidden">
         {/* ── Left Column: Brand Showcase Panel (Desktop) ─────────────────── */}
-        <aside className="relative hidden min-w-0 flex-col justify-between overflow-hidden border-r border-border/70 bg-accent/50 p-10 backdrop-blur-xl dark:bg-card/30 lg:col-span-5 lg:flex xl:p-14">
+        <aside className="relative hidden min-w-0 flex-col justify-between overflow-hidden border-r border-border/70 bg-accent/50 p-10 backdrop-blur-xl dark:bg-card/30 lg:col-span-5 lg:flex lg:h-screen xl:p-14">
           <GradientMesh intensity={0.55} />
 
           {/* Top Brand & Home Link */}
@@ -563,26 +562,16 @@ function AuthPage() {
             </Link>
 
             <div className="mt-12 space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 backdrop-blur-md">
-                <Sparkles className="size-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>
-                  {t(
-                    "0% Transaction Fees • No App Bloat",
-                    "০% ট্রানজ্যাকশন ফি • কোনো গোপন চার্জ নেই",
-                  )}
-                </span>
-              </div>
-
               <h1 className="fq-display text-[clamp(1.75rem,1.2rem+1.8vw,2.5rem)] font-extrabold tracking-tight text-foreground leading-[1.12] text-balance">
                 {t(
-                  "Empower your e-commerce with sovereign infrastructure.",
-                  "আপনার অনলাইন ব্যবসার জন্য নির্ভরযোগ্য ক্লাউড কমার্স প্ল্যাটফর্ম।",
+                  "Open your online store in under 2 minutes.",
+                  "২ মিনিটেরও কম সময়ে আপনার অনলাইন স্টোর খুলুন।",
                 )}
               </h1>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
                 {t(
-                  "Join Bangladesh's premier direct-to-consumer platform. Built with native bKash checkout, automated SteadFast dispatch, and sub-second page loads.",
-                  "বিকাশ টোকেনাইজড পেমেন্ট, স্টিডফাস্ট ও পাঠাও অটোমেশন এবং দ্রুতগতির স্টোরফ্রন্ট নিয়ে ফ্রেমিক-এ আপনার ব্র্যান্ড শুরু করুন।",
+                  "Take payments with bKash, Nagad, cards and cash on delivery, and dispatch with SteadFast, Pathao and RedX — all from one merchant console.",
+                  "বিকাশ, নগদ, কার্ড ও ক্যাশ অন ডেলিভারিতে পেমেন্ট নিন, স্টিডফাস্ট, পাঠাও ও রেডএক্সে ডেলিভারি দিন — সব এক মার্চেন্ট কনসোল থেকে।",
                 )}
               </p>
             </div>
@@ -591,16 +580,16 @@ function AuthPage() {
             <div className="mt-8 space-y-3.5">
               <div className="flex items-center gap-3 rounded-fq-md border border-border/70 bg-card/90 p-3 text-xs shadow-sm backdrop-blur-sm transition-all hover:border-border dark:bg-card/50 dark:border-border/60">
                 <span className="grid size-8 shrink-0 place-items-center rounded-fq-sm bg-primary/10 text-primary ring-1 ring-inset ring-primary/20">
-                  <Zap className="size-4" />
+                  <Gauge className="size-4" />
                 </span>
                 <span className="text-foreground">
                   <strong className="font-semibold text-foreground">
-                    {t("Sub-second Speed:", "বিদ্যুৎগতি:")}
+                    {t("Loads in under a second:", "১ সেকেন্ডের কমে লোড:")}
                   </strong>{" "}
                   <span className="text-muted-foreground">
                     {t(
-                      "Edge CDN deployed in Dhaka for instant mobile checkout.",
-                      "ঢাকায় এজ সিডিএন-এর কারণে মোবাইলে ১ সেকেন্ডের কম লোড টাইম।",
+                      "Edge CDN in Dhaka keeps mobile checkout instant.",
+                      "ঢাকার এজ সিডিএন মোবাইল চেকআউট রাখে তাত্ক্ষণিক।",
                     )}
                   </span>
                 </span>
@@ -608,16 +597,16 @@ function AuthPage() {
 
               <div className="flex items-center gap-3 rounded-fq-md border border-border/70 bg-card/90 p-3 text-xs shadow-sm backdrop-blur-sm transition-all hover:border-border dark:bg-card/50 dark:border-border/60">
                 <span className="grid size-8 shrink-0 place-items-center rounded-fq-sm bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
-                  <CreditCard className="size-4" />
+                  <Wallet className="size-4" />
                 </span>
                 <span className="text-foreground">
                   <strong className="font-semibold text-foreground">
-                    {t("MFS Payments:", "বিকাশ ও নগদ:")}
+                    {t("bKash, Nagad & cards:", "বিকাশ, নগদ ও কার্ড:")}
                   </strong>{" "}
                   <span className="text-muted-foreground">
                     {t(
-                      "Direct tokenized checkout with instant ledger reconciliation.",
-                      "টোকেনাইজড পেমেন্ট ও সরাসরি লেজার ট্র্যাকিং।",
+                      "Tokenized checkout with automatic ledger entries.",
+                      "টোকেনাইজড চেকআউট ও স্বয়ংক্রিয় লেজার এন্ট্রি।",
                     )}
                   </span>
                 </span>
@@ -625,16 +614,16 @@ function AuthPage() {
 
               <div className="flex items-center gap-3 rounded-fq-md border border-border/70 bg-card/90 p-3 text-xs shadow-sm backdrop-blur-sm transition-all hover:border-border dark:bg-card/50 dark:border-border/60">
                 <span className="grid size-8 shrink-0 place-items-center rounded-fq-sm bg-blue-500/10 text-blue-600 dark:text-blue-400 ring-1 ring-inset ring-blue-500/20">
-                  <Truck className="size-4" />
+                  <PackageCheck className="size-4" />
                 </span>
                 <span className="text-foreground">
                   <strong className="font-semibold text-foreground">
-                    {t("Courier Sync:", "কুরিয়ার অটোমেশন:")}
+                    {t("One-click courier booking:", "এক ক্লিকে কুরিয়ার বুকিং:")}
                   </strong>{" "}
                   <span className="text-muted-foreground">
                     {t(
-                      "1-Click SteadFast, Pathao & RedX manifests across 64 districts.",
-                      "৬৪ জেলায় স্টিডফাস্ট, পাঠাও ও রেডএক্স বুকিং।",
+                      "SteadFast, Pathao and RedX manifests across 64 districts.",
+                      "৬৪ জেলায় স্টিডফাস্ট, পাঠাও ও রেডএক্স চালান।",
                     )}
                   </span>
                 </span>
@@ -686,7 +675,7 @@ function AuthPage() {
         </aside>
 
         {/* ── Right Column: Interactive Form ──────────────────────────────── */}
-        <section className="flex min-w-0 flex-col justify-between p-6 sm:p-10 lg:col-span-7 lg:p-12 xl:p-16">
+        <section className="flex min-w-0 flex-col justify-between p-6 sm:p-10 lg:col-span-7 lg:h-screen lg:overflow-y-auto lg:p-12 xl:p-16">
           {/* Top Bar Navigation */}
           <header className="flex items-center justify-between pb-6">
             <div className="flex items-center gap-2 lg:hidden">
@@ -707,7 +696,6 @@ function AuthPage() {
               </Link>
             </div>
             <div className="flex items-center gap-2">
-              <LanguageToggle />
               <ThemeToggle />
             </div>
           </header>
