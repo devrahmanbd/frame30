@@ -320,7 +320,7 @@ function Empty({ text, slug }: { text: string; slug: string }) {
   return (
     <div className="rounded-fq-lg border border-border bg-card p-6">
       <p className="text-sm text-muted-foreground">{text}</p>
-      <Link to="/store/$slug" params={{ slug }} className="mt-3 inline-block text-sm text-primary underline">
+      <Link to="/store/$slug" search={{ preview_token: undefined }} params={{ slug }} className="mt-3 inline-block text-sm text-primary underline">
         {t("Start shopping", "কেনাকাটা শুরু করুন")}
       </Link>
     </div>

@@ -44,7 +44,7 @@ function StorePageView() {
 
   const breadcrumb = (
     <nav aria-label={t("Breadcrumb", "ব্রেডক্রাম্ব")} className="text-xs text-muted-foreground">
-      <Link to="/store/$slug" params={{ slug }} className="underline">
+      <Link to="/store/$slug" search={{ preview_token: undefined }} params={{ slug }} className="underline">
         {merchant.name}
       </Link>
       <span aria-hidden> / </span>

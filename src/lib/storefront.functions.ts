@@ -9,11 +9,25 @@ const cartSchema = z.array(
 const methodSchema = z.enum(PAYMENT_METHOD_KEYS);
 
 export const getStorefront = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) => z.object({ slug: z.string().min(1) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z
+      .object({ slug: z.string().min(1), previewToken: z.string().max(500).nullish() })
+      .parse(d),
+  )
   .handler(async ({ data }) => {
     const { loadStorefront } = await import("./storefront.server");
     const { requestOrigin } = await import("./site-origin.server");
-    const found = await loadStorefront(data.slug);
+    let preview: { merchantId: string; themeId: string } | null = null;
+    if (data.previewToken) {
+      try {
+        const { verifyPreviewToken, previewSecret } = await import("./theme-preview.server");
+        preview = verifyPreviewToken(previewSecret(), data.previewToken);
+      } catch {
+        // Unverifiable token: fall through to the published theme below.
+        preview = null;
+      }
+    }
+    const found = await loadStorefront(data.slug, preview);
     if (!found) return null;
     // Signed responsive variants are built here, not in the cached tenant
     // loader: the HMAC secret is server-only and the URLs are cheap to derive.

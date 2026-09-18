@@ -890,6 +890,47 @@ export async function publishedThemeById(
   );
 }
 
+/**
+ * Preview a theme draft for its owning merchant (WP live-preview equivalent).
+ *
+ * Reads theme_drafts — NEVER the shared storefront cache (drafts are private
+ * per merchant). The caller must present a verified preview token; this
+ * function only enforces the merchant/theme binding, not the token itself.
+ * Returns null when there is nothing to preview (caller falls back to the
+ * published theme).
+ */
+export async function previewTheme(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+): Promise<{
+  templates: ThemeTemplates;
+  tokens: ThemeTokens;
+  themeKey: string | null;
+  revision: number;
+} | null> {
+  assertTenantId(merchantId, "previewTheme");
+  const { data: theme } = await db
+    .from("store_themes")
+    .select("id, source_listing_slug")
+    .eq("id", themeId)
+    .eq("merchant_id", merchantId)
+    .maybeSingle();
+  if (!theme) return null;
+  const { data: draft } = await db
+    .from("theme_drafts")
+    .select("templates, tokens, revision")
+    .eq("theme_id", theme.id)
+    .maybeSingle();
+  if (!draft) return null;
+  return {
+    templates: parseTemplates(draft.templates),
+    tokens: parseTokens(draft.tokens),
+    themeKey: theme.source_listing_slug ?? null,
+    revision: draft.revision ?? 0,
+  };
+}
+
 /* ------------------------------------------------------- demo content import */
 
 export type DemoImportResult = {

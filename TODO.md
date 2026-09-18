@@ -72,10 +72,12 @@
   - [ ] **Follow-up [REPORT WF-01]**: kill the second install path — `installCatalogTheme` (`appearance.server.ts:148-172`) direct-inserts with no ledger/`source_install_id`, so Appearance installs are invisible to Marketplace `themeStates`. Single `installTheme` path only.
 - [x] **Direct Activate Action**: working **Activate** button per installed marketplace card (reuses `themeActivateFn`; Active badge + storefront sync).
   - [ ] **Follow-up [REPORT WF-07]**: activate forks the wrong draft — RPC `theme_install_preset` picks `ORDER BY is_active DESC, created_at ASC LIMIT 1`, not the `themeId` being activated; REST `themes/:id/activate` never forks. Fork by explicit `themeId`, share one implementation, contract-test published AST follows `is_active`.
-- [x] **Live Preview Action** — SHIPPED (code-verified Sept 18): `ThemeCard.tsx:78-80` hover overlay button → `ThemesScreen.tsx:135-139` `previewInstalled()` navigates `/dashboard/builder?preview_theme_id=:id` (`:316`); consumer parses it (`builder.tsx:107,193-199`).
-  - [ ] **Follow-up [REPORT WF-04]**: current `?preview_theme=`/`?preview_device=` params are dead — `getStorefront({slug})` ignores search, `loadPublished` always renders the active theme. Real inactive-theme isolated preview route required.
+- [x] **Live Preview Action (two complementary flows)**:
+  - Builder-internal preview (friend track): `ThemeCard` hover overlay → `previewInstalled()` navigates `/dashboard/builder?preview_theme_id=:id`, consumed by builder.
+  - Storefront signed-URL preview: 10-min HMAC bearer tokens (`theme-preview.server.ts`) render the merchant's draft in `ThemePreviewSplit` on marketplace cards/modal; fail-closed to published (expired/forged/cross-tenant all verified live 5/5); private/no-store + noindex on preview responses; shared-cache bypass in `server.ts`.
+- [x] **Published themes actually render** (found + fixed Sept 18): `store_themes`/`theme_versions` had member-only SELECT, so anon storefronts silently fell back to default tokens everywhere. Public-read policies added (phase 2h); drafts stay member-only.
 - [x] **Add Theme tile + directory button states**: filter-clearing tile on the themes grid; dynamic states Install → Activate → Activated/Customize (WP `theme-install.php` parity).
-- [x] **Theme Details modal parity**: modal carries Activate/Delete (+linked-theme gating) alongside Install; Live Preview still open (see below).
+- [x] **Theme Details modal parity**: modal carries Activate/Preview/Delete (+linked-theme gating) alongside Install.
 - [x] **Direct Delete Action**: working **Delete** button per installed theme (server refuses active; cascades drafts/versions; ledger → `removed` status).
   - [ ] **Follow-up [REPORT WF-02]**: `removed` is not in the `market_install_status` enum (`installed|trial|paused|rolled_back`) — real Postgres rejects the retire update. Migration for terminal status + atomic delete-then-retire required.
 - [x] **State-Driven Badges & Buttons**: real state on marketplace cards (`isLiveInstall` + `themeStates`).

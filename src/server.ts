@@ -122,7 +122,8 @@ function withStorefrontCache(request: Request, response: Response): Response {
   if (response.status !== 200) return response;
   const type = response.headers.get("content-type") ?? "";
   if (!type.includes("text/html")) return response;
-  const { pathname } = new URL(request.url);
+  const url = new URL(request.url);
+  const { pathname } = url;
   // PII guard FIRST (REPORT WF-09): cart/checkout/account/order/track render
   // shopper-specific data and must never sit in a shared cache — including on
   // custom domains, where isStorefrontPath() marks /cart|/checkout|/order
@@ -130,6 +131,16 @@ function withStorefrontCache(request: Request, response: Response): Response {
   if (isPersonalizedStorefrontPath(pathname)) {
     const headers = new Headers(response.headers);
     for (const [key, value] of Object.entries(personalizedNoStoreHeaders())) headers.set(key, value);
+    return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  }
+  // Draft previews must never enter the shared cache: same URL shape as the
+  // live page, but per-merchant private content. The route also emits noindex.
+  if (url.searchParams.has("preview_token")) {
+    const headers = new Headers(response.headers);
+    headers.set("cache-control", "private, no-store");
+    // Belt and suspenders with the noindex meta on preview pages: header
+    // wins even if the head-tag pipeline dedupes the robots meta.
+    headers.set("x-robots-tag", "noindex, nofollow");
     return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
   }
   if (!isStorefrontPath(pathname)) return response;

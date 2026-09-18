@@ -169,7 +169,7 @@ function OrderConfirmation() {
         </section>
 
         <Link
-          to="/store/$slug"
+          to="/store/$slug" search={{ preview_token: undefined }}
           params={{ slug }}
           className="mt-8 inline-flex min-h-12 items-center rounded-fq-md border border-border px-5 text-sm font-medium"
         >

@@ -150,6 +150,39 @@ export const marketInstallStatusFn = createServerFn({ method: "POST" })
     return setInstallStatus(context.supabase, merchantId, data.installId, data.status);
   });
 
+/**
+ * Mint a short-lived signed preview URL for an installed theme. The token
+ * binds (merchant, theme, expiry); the storefront honors it without any
+ * session, and everyone else sees the published theme.
+ */
+export const marketPreviewTokenFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ themeId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const merchantId = await scope(context.supabase, context.userId);
+    const { data: theme } = await context.supabase
+      .from("store_themes")
+      .select("id, merchant_id")
+      .eq("id", data.themeId)
+      .eq("merchant_id", merchantId)
+      .maybeSingle();
+    if (!theme) throw new Error("market_theme_not_linked");
+    const { data: merchant } = await context.supabase
+      .from("merchants")
+      .select("slug")
+      .eq("id", merchantId)
+      .maybeSingle();
+    if (!merchant?.slug) throw new Error("market_store_missing");
+    const { issuePreviewToken, previewSecret, PREVIEW_TTL_MS } = await import(
+      "./theme-preview.server"
+    );
+    const token = issuePreviewToken(previewSecret(), merchantId, data.themeId);
+    return {
+      url: `/store/${merchant.slug}?preview_token=${encodeURIComponent(token)}`,
+      expiresAt: new Date(Date.now() + PREVIEW_TTL_MS).toISOString(),
+    };
+  });
+
 /** WordPress-style uninstall: removes an inactive installed theme. */
 export const marketUninstallThemeFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

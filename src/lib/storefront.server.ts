@@ -1,5 +1,5 @@
 import { publicClient } from "./pricing.server";
-import { observe } from "./observability.server";
+import { log, observe } from "./observability.server";
 import { templateOf, type TemplateKey, type ThemeAst, type ThemeTokens } from "./builder-ast";
 import { publishedTheme } from "./themes.server";
 
@@ -156,7 +156,50 @@ export async function loadStoreCollection(slug: string, collectionSlug: string) 
   };
 }
 
-export async function loadStorefront(slug: string) {
+export type StorefrontPreview = { merchantId: string; themeId: string } | null;
+
+/**
+ * Resolve the index theme, preferring a verified draft preview. The preview
+ * token is validated by the caller; the merchant binding is re-checked here
+ * so a token minted for one tenant can never render another tenant's draft.
+ * Preview responses must never enter the shared storefront cache (see
+ * withStorefrontCache) and are always noindex (see the route head).
+ */
+async function resolveIndexTheme(merchantId: string, preview: StorefrontPreview) {
+  if (preview && preview.merchantId === merchantId) {
+    try {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { previewTheme } = await import("./themes.server");
+      const { templateOf } = await import("./builder-ast");
+      const draft = await previewTheme(supabaseAdmin as never, merchantId, preview.themeId);
+      if (draft) {
+        return {
+          ast: templateOf(draft.templates, "index"),
+          tokens: draft.tokens,
+          themeKey: draft.themeKey,
+          versionId: null as string | null,
+          preview: true as const,
+        };
+      }
+    } catch (err) {
+      // Any preview failure degrades to the published theme, never to nothing —
+      // but the reason is logged: silent fallback hides data bugs (Sep 2026).
+      // NOTE: log is a STATIC import here. Never switch this to a dynamic
+      // import: Rolldown mangles dynamic re-export chains (observability's
+      // `log` alias resolved to the wrong export at runtime), which would
+      // throw inside this catch and mask the original error.
+      try {
+        log("warn", "storefront.preview_failed", { message: String(err).slice(0, 200) });
+      } catch {
+        // Logging must never break the storefront.
+      }
+    }
+  }
+  const published = await loadPublished(merchantId, "index");
+  return published ? { ...published, preview: false as const } : null;
+}
+
+export async function loadStorefront(slug: string, preview: StorefrontPreview = null) {
   const db = publicClient();
   const { data: merchant, error } = await db
     .from("merchants")
@@ -188,7 +231,7 @@ export async function loadStorefront(slug: string) {
         .eq("merchant_id", merchant.id)
         .eq("is_published", true)
         .order("position"),
-      loadPublished(merchant.id, "index"),
+      resolveIndexTheme(merchant.id, preview),
     ]);
 
   // Phase 3: entity SEO first, the builder's per-template record behind it.
@@ -235,6 +278,7 @@ export async function loadStorefront(slug: string) {
     tokens: theme?.tokens ?? null,
     themeKey: theme?.themeKey ?? null,
     themeVersionId: theme?.versionId ?? null,
+    preview: theme?.preview ?? false,
     widgetBundle,
     widgetData,
     customCode,

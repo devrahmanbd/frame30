@@ -18,8 +18,25 @@ import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/store/$slug/")({
-  loader: async ({ params }) => {
-    const data = await getStorefront({ data: { slug: params.slug } });
+  validateSearch: (s: Record<string, unknown>): { preview_token?: string } => ({
+    preview_token: typeof s.preview_token === "string" ? s.preview_token : undefined,
+  }),
+  // NOTE: this repo's TanStack version does NOT pass `search` to route
+  // loaders (verified in router-core load-matches.js: getLoaderContext
+  // carries params/deps/location but no search key), so the token is read
+  // off the request URL directly. validateSearch above still documents +
+  // types the param for Links and useSearch consumers.
+  loader: async ({ params, location }: any) => {
+    let previewToken: string | undefined;
+    try {
+      // location.href may be origin-relative in SSR ("/store/x?..."); the
+      // dummy base is ignored when href is already absolute.
+      const raw = new URL(location.href, "http://localhost").searchParams.get("preview_token");
+      previewToken = typeof raw === "string" && raw ? raw : undefined;
+    } catch {
+      previewToken = undefined;
+    }
+    const data = await getStorefront({ data: { slug: params.slug as string, previewToken } });
     if (!data) throw notFound();
     return data;
   },
@@ -44,9 +61,13 @@ export const Route = createFileRoute("/store/$slug/")({
         image_url: p.image_url,
       })),
     });
+    const previewMeta = loaderData.preview
+      ? [{ name: "robots", content: "noindex, nofollow" }]
+      : [];
     return {
       ...base,
       meta: [
+        ...previewMeta,
         ...(base.meta ?? []),
         // Phase 5: search-engine ownership tags, server-rendered so a crawler
         // sees them on the very first fetch.
@@ -109,6 +130,7 @@ function StorefrontHome() {
     widgetData,
     customCode,
     siteKit,
+    preview,
   } = Route.useLoaderData();
 
 
@@ -265,6 +287,14 @@ function StorefrontHome() {
   // live catalogue and collection data the theme's widgets ask for.
   return (
     <WidgetDataProvider bundle={widgetBundle} map={widgetData}>
+      {preview && (
+        <p
+          role="status"
+          className="bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground"
+        >
+          {t("Previewing an unpublished draft — shoppers see the live theme.", "অপ্রকাশিত খসড়ার প্রিভিউ — ক্রেতারা লাইভ থিম দেখছেন।")}
+        </p>
+      )}
       <CustomCodeSurface code={customCode} />
       <ThemeChrome
         template="index"

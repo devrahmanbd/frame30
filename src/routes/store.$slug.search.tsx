@@ -330,7 +330,7 @@ function SearchPage() {
               )}
             </p>
             <Link
-              to="/store/$slug"
+              to="/store/$slug" search={{ preview_token: undefined }}
               params={{ slug }}
               className="mt-3 inline-block text-sm text-primary underline"
             >

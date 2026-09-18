@@ -46,6 +46,7 @@ export function ThemePreviewSplit({
   onClose,
   onStep,
   onPrimary,
+  previewSrc,
 }: {
   subject: PreviewSubject;
   storeSlug: string | null;
@@ -53,11 +54,16 @@ export function ThemePreviewSplit({
   onClose: () => void;
   onStep: (direction: -1 | 1) => void;
   onPrimary: () => void;
+  /**
+   * Pre-resolved iframe URL (e.g. a signed draft-preview URL). When set, the
+   * device toggle still resizes the frame but the URL is used verbatim.
+   */
+  previewSrc?: string | null;
 }) {
   const [device, setDevice] = useState<PreviewDevice>("desktop");
   const [collapsed, setCollapsed] = useState(false);
   const width = PREVIEW_WIDTHS[device];
-  const src = storeSlug ? previewUrl(storeSlug, subject.key, device) : null;
+  const src = previewSrc ?? (storeSlug ? previewUrl(storeSlug, subject.key, device) : null);
   const primaryLabel = subject.active ? "Customize" : subject.installed ? "Activate" : "Install";
   const host = useRef<HTMLDivElement | null>(null);
   if (!host.current && typeof document !== "undefined")

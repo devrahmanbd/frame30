@@ -9,9 +9,11 @@ import {
   marketInstallFn,
   marketInstallStatusFn,
   marketListingVersionsFn,
+  marketPreviewTokenFn,
   marketUninstallThemeFn,
   marketUninstallWidgetFn,
 } from "@/lib/marketplace.functions";
+import { ThemePreviewSplit } from "@/components/admin/themes/ThemePreviewSplit";
 import { themeActivateFn, themeDeleteFn } from "@/lib/themes/appearance.functions";
 import { InstallConsent, type ConsentVersion } from "@/components/marketplace/InstallConsent";
 import { InstalledApps } from "@/components/marketplace/InstalledApps";
@@ -73,6 +75,8 @@ function Marketplace() {
   const [pendingDelete, setPendingDelete] = useState<
     { installId: string; name: string; kind: "theme" | "widget" } | null
   >(null);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
 
   const source = tab === "theme" ? data.themes : data.widgets;
   const themeStateBySlug = useMemo(
@@ -201,6 +205,35 @@ function Marketplace() {
     } finally {
       setBusy(false);
     }
+  }
+
+  /** Preview pool: installed themes only — uninstalled presets have no draft to render. */
+  const previewable = listings.filter(
+    (l) => l.kind === "theme" && themeStateBySlug.has(l.slug),
+  );
+
+  /** WordPress-style live preview: signed draft URL in the shared previewer. */
+  async function openPreview(index: number) {
+    const listing = previewable[index];
+    const state = listing ? themeStateBySlug.get(listing.slug) : undefined;
+    if (!listing || !state) return;
+    setBusy(true);
+    setMsg(null);
+    try {
+      const res = await marketPreviewTokenFn({ data: { themeId: state.themeId } });
+      setPreviewSrc(res.url);
+      setPreviewIndex(index);
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Preview failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function stepPreview(direction: -1 | 1) {
+    if (previewIndex === null || previewable.length === 0) return;
+    const next = (previewIndex + direction + previewable.length) % previewable.length;
+    void openPreview(next);
   }
 
   /** WordPress-style plugin uninstall: removes the plugin row, retires the ledger row. */
@@ -397,6 +430,19 @@ function Marketplace() {
                       {t("Active", "সক্রিয়")}
                     </span>
                   )}
+                  {themeState && (
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => {
+                        const idx = previewable.findIndex((p) => p.slug === l.slug);
+                        if (idx >= 0) void openPreview(idx);
+                      }}
+                      className="min-h-11 rounded-fq-md border border-border px-3 text-sm disabled:opacity-60"
+                    >
+                      {t("Preview", "প্রিভিউ")}
+                    </button>
+                  )}
                   {liveInstall && themeState && (
                     <button
                       type="button"
@@ -461,6 +507,17 @@ function Marketplace() {
                         setPendingDelete({ installId: live.id, name: active.name, kind: active.kind })
                     : undefined
                 }
+                onPreview={
+                  state
+                    ? () => {
+                        const idx = previewable.findIndex((p) => p.slug === active.slug);
+                        if (idx >= 0) {
+                          setActive(null);
+                          void openPreview(idx);
+                        }
+                      }
+                    : undefined
+                }
               />
             );
           })()
@@ -476,6 +533,46 @@ function Marketplace() {
             onApprove={(v, s) => consent && install(consent.listing, consent.trial, v, s)}
           />
         )}
+
+        {previewIndex !== null &&
+          (() => {
+            const listing = previewable[previewIndex];
+            if (!listing || !previewSrc) return null;
+            const state = themeStateBySlug.get(listing.slug);
+            return (
+              <ThemePreviewSplit
+                subject={{
+                  key: listing.slug,
+                  name: listing.name,
+                  author: listing.vendor_name ?? "",
+                  version: listing.version,
+                  summary: listing.description ?? "",
+                  rating: listing.rating ?? undefined,
+                  installed: true,
+                  active: state?.isActive ?? false,
+                }}
+                storeSlug={null}
+                previewSrc={previewSrc}
+                busy={busy}
+                onClose={() => {
+                  setPreviewIndex(null);
+                  setPreviewSrc(null);
+                }}
+                onStep={stepPreview}
+                onPrimary={() => {
+                  if (state?.isActive) {
+                    void router.navigate({ to: "/dashboard/builder" as never });
+                  } else if (state) {
+                    void activateInstalledTheme(state.themeId).then(() => {
+                      setPreviewIndex(null);
+                      setPreviewSrc(null);
+                    });
+                  }
+                }}
+              />
+            );
+          })()
+        }
 
         <ConfirmDialog
           open={pendingDelete !== null}
@@ -571,6 +668,7 @@ function DetailModal({
   liveInstallId,
   onActivate,
   onDelete,
+  onPreview,
 }: {
   listing: Listing;
   installed?: boolean;
@@ -581,6 +679,7 @@ function DetailModal({
   liveInstallId?: string | null;
   onActivate?: (themeId: string) => void;
   onDelete?: () => void;
+  onPreview?: () => void;
 }) {
   const { t, tk } = useLang();
   const history = Array.isArray(listing.version_history)
@@ -649,6 +748,16 @@ function DetailModal({
               ? t("Reinstall / Update", "পুনরায় ইনস্টল / আপডেট")
               : t("Install", "ইনস্টল করুন")}
           </button>
+          {themeState && onPreview && (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onPreview}
+              className="min-h-11 rounded-fq-md border border-border px-4 text-sm disabled:opacity-60"
+            >
+              {t("Preview", "প্রিভিউ")}
+            </button>
+          )}
           {listing.trial_allowed && listing.price_minor_int > 0 && (
             <button
               type="button"
