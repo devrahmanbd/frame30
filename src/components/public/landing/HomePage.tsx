@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { motion, AnimatePresence } from "motion/react";
 import {
   Smartphone,
   Truck,
@@ -11,7 +10,6 @@ import {
   Store,
   BarChart3,
   PackageCheck,
-  Zap,
 } from "lucide-react";
 import {
   Band,
@@ -40,23 +38,6 @@ const PRIMARY_CTA =
 const SECONDARY_CTA =
   "w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center rounded-fq-md px-6 py-3 text-sm fq-cta-secondary";
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 24 },
-  },
-};
-
 export function HomePage({ data }: { data: LandingData }) {
   const { demoSlug, plans } = data;
   const teaser = planTeaser(plans);
@@ -72,19 +53,14 @@ export function HomePage({ data }: { data: LandingData }) {
         subBn="সহজ অনলাইন স্টোর, ওয়ান-ক্লিক বিকাশ-নগদ পেমেন্ট এবং স্বয়ংক্রিয় কুরিয়ার বুকিং — সবই এক প্ল্যাটফর্মে।"
         proof={null}
         visual={
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="relative z-10 w-full"
-          >
+          <div className="relative z-10 w-full">
             <div className="absolute inset-0 fq-halo bg-primary/20 blur-3xl -z-10 rounded-[2rem]" />
             <img
               src={dashboardImg}
               alt="Dashboard"
               className="w-full h-auto rounded-xl shadow-2xl border border-white/20 dark:border-white/10"
             />
-          </motion.div>
+          </div>
         }
         actions={
           <>
@@ -117,35 +93,20 @@ export function HomePage({ data }: { data: LandingData }) {
         <EcosystemSlide />
       </Band>
 
-      {/* 2. BENTO GRID - REDESIGNED WITH ANIMATION */}
+      {/* 2. BENTO GRID */}
       <Band surface="glass" divided labelledBy="platform-title" tight>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <BandHeading
             id="platform-title"
             eyebrow="Bangladesh Retail Infrastructure"
             title="Built for how commerce actually works in Bangladesh."
             sub="Foreign platforms force you to stitch together fragile plugins for bKash, deal with delayed payouts, and copy-paste addresses into courier portals. Framique handles it all out of the box."
           />
-        </motion.div>
+        </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[340px]"
-        >
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[340px]">
           {/* Card 1: Spans 2 columns */}
-          <motion.div
-            variants={itemVariants}
-            whileHover={{ y: -4 }}
-            className="md:col-span-2 lg:col-span-2 rounded-fq-lg bg-card/60 backdrop-blur-xl border border-white/10 p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg transition-all duration-300 hover:shadow-primary/5 hover:border-primary/30"
-          >
+          <div className="md:col-span-2 lg:col-span-2 rounded-fq-lg bg-card/60 backdrop-blur-xl border border-white/10 p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg transition-all duration-300 hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="z-10 max-w-lg">
               <span className="grid size-12 place-items-center rounded-fq-md bg-primary/10 text-primary mb-5 ring-1 ring-inset ring-primary/20">
@@ -168,14 +129,10 @@ export function HomePage({ data }: { data: LandingData }) {
                 className="w-full h-full object-cover object-top rounded-tl-2xl shadow-2xl border-t border-l border-white/10"
               />
             </div>
-          </motion.div>
+          </div>
 
           {/* Card 2: Spans 2 rows on large screens */}
-          <motion.div
-            variants={itemVariants}
-            whileHover={{ y: -4 }}
-            className="md:col-span-1 lg:row-span-2 rounded-fq-lg bg-muted/20 backdrop-blur-xl border border-white/10 p-8 flex flex-col relative overflow-hidden group shadow-lg transition-all duration-300 hover:shadow-primary/5 hover:border-primary/30"
-          >
+          <div className="md:col-span-1 lg:row-span-2 rounded-fq-lg bg-muted/20 backdrop-blur-xl border border-white/10 p-8 flex flex-col relative overflow-hidden group shadow-lg transition-all duration-300 hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
             <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="z-10">
               <span className="grid size-12 place-items-center rounded-fq-md bg-primary/10 text-primary mb-5 ring-1 ring-inset ring-primary/20">
@@ -210,14 +167,10 @@ export function HomePage({ data }: { data: LandingData }) {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Card 3 */}
-          <motion.div
-            variants={itemVariants}
-            whileHover={{ y: -4 }}
-            className="md:col-span-1 rounded-fq-lg bg-card/60 backdrop-blur-xl border border-white/10 p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg transition-all duration-300 hover:shadow-primary/5 hover:border-primary/30"
-          >
+          <div className="md:col-span-1 rounded-fq-lg bg-card/60 backdrop-blur-xl border border-white/10 p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg transition-all duration-300 hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="z-10">
               <span className="grid size-12 place-items-center rounded-fq-md bg-primary/10 text-primary mb-5 ring-1 ring-inset ring-primary/20">
@@ -231,14 +184,10 @@ export function HomePage({ data }: { data: LandingData }) {
                 drawer. Generate bulk thermal airway bills instantly.
               </p>
             </div>
-          </motion.div>
+          </div>
 
           {/* Card 4 */}
-          <motion.div
-            variants={itemVariants}
-            whileHover={{ y: -4 }}
-            className="md:col-span-1 rounded-fq-lg bg-card/60 backdrop-blur-xl border border-white/10 p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg transition-all duration-300 hover:shadow-primary/5 hover:border-primary/30"
-          >
+          <div className="md:col-span-1 rounded-fq-lg bg-card/60 backdrop-blur-xl border border-white/10 p-8 flex flex-col justify-between relative overflow-hidden group shadow-lg transition-all duration-300 hover:shadow-primary/5 hover:border-primary/30 hover:-translate-y-1">
             <div className="absolute inset-0 bg-gradient-to-tl from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="z-10">
               <span className="grid size-12 place-items-center rounded-fq-md bg-primary/10 text-primary mb-5 ring-1 ring-inset ring-primary/20">
@@ -252,25 +201,20 @@ export function HomePage({ data }: { data: LandingData }) {
                 you ship, saving you up to 42% on returned freight losses.
               </p>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </Band>
 
-      {/* 3. PRODUCT TOUR - Z-PATTERN WITH ANIMATIONS */}
+      {/* 3. PRODUCT TOUR - Z-PATTERN */}
       <Band labelledBy="tour-title" tight>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <BandHeading
             id="tour-title"
             eyebrow="Product Architecture"
             title="The complete retail engine in one login."
             sub="Storefront, checkout, fulfilment, catalogue, POS and reporting — one clean system moving together."
           />
-        </motion.div>
+        </div>
 
         <div className="mt-16">
           <div className="flex flex-wrap items-center justify-center gap-3 border-b border-border/60 pb-6">
@@ -303,180 +247,154 @@ export function HomePage({ data }: { data: LandingData }) {
           </div>
 
           <div className="mt-12">
-            <AnimatePresence mode="wait">
-              {activeTourTab === 0 && (
-                <motion.div
-                  key="tab0"
-                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.98 }}
-                  transition={{ duration: 0.4 }}
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center"
-                >
-                  <div className="space-y-6 order-2 lg:order-1">
-                    <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest rounded-full">
-                      Speed & Conversion
-                    </span>
-                    <h3 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
-                      Storefronts crafted to turn visitors into buyers.
-                    </h3>
-                    <p className="text-base text-muted-foreground leading-relaxed">
-                      Customise your layout, typography, and colour accents
-                      without coding. Every template is engineered with
-                      sub-second page loads, instant cart drawers, and
-                      responsive image compression.
-                    </p>
-                    <ul className="space-y-3 pt-4 text-sm text-foreground font-medium">
-                      {[
-                        "Custom domain support with automated SSL",
-                        "Built-in product variants & color swatches",
-                        "Automatic SEO & structured schema tags",
-                      ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-3">
-                          <span className="grid place-items-center size-5 rounded-full bg-primary/20 text-primary shrink-0">
-                            <Check className="size-3" />
-                          </span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="order-1 lg:order-2">
-                    <MarketingFigure
-                      src={themesImg}
-                      alt="Storefront Themes"
-                      className="w-full rounded-2xl shadow-xl border border-border/50"
-                    />
-                  </div>
-                </motion.div>
-              )}
+            {activeTourTab === 0 && (
+              <div
+                key="tab0"
+                className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center transition-opacity duration-300"
+              >
+                <div className="space-y-6 order-2 lg:order-1">
+                  <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest rounded-full">
+                    Speed & Conversion
+                  </span>
+                  <h3 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
+                    Storefronts crafted to turn visitors into buyers.
+                  </h3>
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    Customise your layout, typography, and colour accents
+                    without coding. Every template is engineered with
+                    sub-second page loads, instant cart drawers, and
+                    responsive image compression.
+                  </p>
+                  <ul className="space-y-3 pt-4 text-sm text-foreground font-medium">
+                    {[
+                      "Custom domain support with automated SSL",
+                      "Built-in product variants & color swatches",
+                      "Automatic SEO & structured schema tags",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-center gap-3">
+                        <span className="grid place-items-center size-5 rounded-full bg-primary/20 text-primary shrink-0">
+                          <Check className="size-3" />
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="order-1 lg:order-2">
+                  <MarketingFigure
+                    src={themesImg}
+                    alt="Storefront Themes"
+                    className="w-full rounded-2xl shadow-xl border border-border/50"
+                  />
+                </div>
+              </div>
+            )}
 
-              {activeTourTab === 1 && (
-                <motion.div
-                  key="tab1"
-                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.98 }}
-                  transition={{ duration: 0.4 }}
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center"
-                >
-                  <div className="order-1">
-                    <MarketingFigure
-                      src={courierImg}
-                      alt="Courier Booking"
-                      className="w-full rounded-2xl shadow-xl border border-border/50"
-                    />
-                  </div>
-                  <div className="space-y-6 order-2">
-                    <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest rounded-full">
-                      Logistics
-                    </span>
-                    <h3 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
-                      Ship 100 orders in the time it used to take for ten.
-                    </h3>
-                    <p className="text-base text-muted-foreground leading-relaxed">
-                      Say goodbye to manual courier exports and endless WhatsApp
-                      coordinate confirmations. Automated courier assignment
-                      selects the best carrier by district, books pickup, and
-                      notifies the buyer.
-                    </p>
-                    <ul className="space-y-3 pt-4 text-sm text-foreground font-medium">
-                      {[
-                        "Instant consignment for Steadfast & Pathao",
-                        "Bulk thermal shipping label printing",
-                        "Automated delivery tracking SMS",
-                      ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-3">
-                          <span className="grid place-items-center size-5 rounded-full bg-primary/20 text-primary shrink-0">
-                            <Check className="size-3" />
-                          </span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </motion.div>
-              )}
+            {activeTourTab === 1 && (
+              <div
+                key="tab1"
+                className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center transition-opacity duration-300"
+              >
+                <div className="order-1">
+                  <MarketingFigure
+                    src={courierImg}
+                    alt="Courier Booking"
+                    className="w-full rounded-2xl shadow-xl border border-border/50"
+                  />
+                </div>
+                <div className="space-y-6 order-2">
+                  <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest rounded-full">
+                    Logistics
+                  </span>
+                  <h3 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
+                    Ship 100 orders in the time it used to take for ten.
+                  </h3>
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    Say goodbye to manual courier exports and endless WhatsApp
+                    coordinate confirmations. Automated courier assignment
+                    selects the best carrier by district, books pickup, and
+                    notifies the buyer.
+                  </p>
+                  <ul className="space-y-3 pt-4 text-sm text-foreground font-medium">
+                    {[
+                      "Instant consignment for Steadfast & Pathao",
+                      "Bulk thermal shipping label printing",
+                      "Automated delivery tracking SMS",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-center gap-3">
+                        <span className="grid place-items-center size-5 rounded-full bg-primary/20 text-primary shrink-0">
+                          <Check className="size-3" />
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
 
-              {activeTourTab === 2 && (
-                <motion.div
-                  key="tab2"
-                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -10, scale: 0.98 }}
-                  transition={{ duration: 0.4 }}
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center"
-                >
-                  <div className="space-y-6 order-2 lg:order-1">
-                    <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest rounded-full">
-                      Clarity
-                    </span>
-                    <h3 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
-                      Know your true profit after shipping and fees.
-                    </h3>
-                    <p className="text-base text-muted-foreground leading-relaxed">
-                      Most merchants calculate gross sales while ignoring
-                      returned COD shipping costs and gateway cuts. Framique
-                      gives you true net margin per product, per channel, and
-                      per month.
-                    </p>
-                    <ul className="space-y-3 pt-4 text-sm text-foreground font-medium">
-                      {[
-                        "Automated gross margin & courier cost breakdown",
-                        "Abandoned cart recovery via SMS/WhatsApp",
-                        "Customer lifetime value analytics",
-                      ].map((item, i) => (
-                        <li key={i} className="flex items-center gap-3">
-                          <span className="grid place-items-center size-5 rounded-full bg-primary/20 text-primary shrink-0">
-                            <Check className="size-3" />
-                          </span>
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <div className="order-1 lg:order-2">
-                    <MarketingFigure
-                      src={dashboardImg}
-                      alt="Dashboard Analytics"
-                      className="w-full rounded-2xl shadow-xl border border-border/50"
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {activeTourTab === 2 && (
+              <div
+                key="tab2"
+                className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center transition-opacity duration-300"
+              >
+                <div className="space-y-6 order-2 lg:order-1">
+                  <span className="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest rounded-full">
+                    Clarity
+                  </span>
+                  <h3 className="text-3xl lg:text-4xl font-bold text-foreground tracking-tight">
+                    Know your true profit after shipping and fees.
+                  </h3>
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    Most merchants calculate gross sales while ignoring
+                    returned COD shipping costs and gateway cuts. Framique
+                    gives you true net margin per product, per channel, and
+                    per month.
+                  </p>
+                  <ul className="space-y-3 pt-4 text-sm text-foreground font-medium">
+                    {[
+                      "Automated gross margin & courier cost breakdown",
+                      "Abandoned cart recovery via SMS/WhatsApp",
+                      "Customer lifetime value analytics",
+                    ].map((item, i) => (
+                      <li key={i} className="flex items-center gap-3">
+                        <span className="grid place-items-center size-5 rounded-full bg-primary/20 text-primary shrink-0">
+                          <Check className="size-3" />
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="order-1 lg:order-2">
+                  <MarketingFigure
+                    src={dashboardImg}
+                    alt="Dashboard Analytics"
+                    className="w-full rounded-2xl shadow-xl border border-border/50"
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </Band>
 
       {/* 4. TRANSPARENT PRICING */}
       <Band surface="glass" divided labelledBy="pricing-title">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <BandHeading
             id="pricing-title"
             eyebrow="Transparent Pricing"
             title="Simple, predictable plans. Zero hidden fees."
             sub="No percentage cuts from your sales. You keep 100% of your top-line revenue."
           />
-        </motion.div>
+        </div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
-          className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
-        >
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {plans.slice(0, 3).map((plan) => {
             const isFeatured = plan.plan === "growth";
             return (
-              <motion.div
-                variants={itemVariants}
+              <div
                 key={plan.plan}
                 className={cn(
                   "relative rounded-fq-lg border p-8 flex flex-col justify-between transition-all hover:-translate-y-1",
@@ -548,46 +466,36 @@ export function HomePage({ data }: { data: LandingData }) {
                     Get started
                   </Link>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
-        </motion.div>
+        </div>
       </Band>
 
       {/* 5. MERCHANT STORIES / TESTIMONIALS */}
       <Band labelledBy="cases-title">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <BandHeading
             id="cases-title"
             eyebrow={TESTIMONIALS.eyebrow}
             title="Built for the merchants shaping Bangladesh retail."
             sub="Real businesses seeing real results with Framique's native commerce platform."
           />
-        </motion.div>
+        </div>
 
         <TestimonialList />
       </Band>
 
       {/* 6. FAQ ACCORDION */}
       <Band divided labelledBy="faq-title">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <BandHeading
             id="faq-title"
             eyebrow="Frequently Asked Questions"
             title="Everything you need to know before joining."
             sub="Clear answers to common questions about payouts, setup, and courier connections."
           />
-        </motion.div>
+        </div>
         <div className="mt-10">
           <FaqBand
             entries={FAQ_ROWS.map((row) => ({

@@ -214,7 +214,8 @@ export async function installCatalogTheme(
       merchant_id: merchantId,
       theme_id: themeId,
       version: 1,
-      status: "draft",
+      status: "published",
+      published_at: new Date().toISOString(),
       label: key,
       templates: pkg.templates as never,
       tokens: pkg.tokens as never,
@@ -275,6 +276,7 @@ export async function installCatalogTheme(
     .from("store_themes")
     .update({
       source_install_id: (ledger as { id: string }).id,
+      published_version_id: (version as { id: string }).id,
     })
     .eq("id", themeId);
   await db.from("theme_audit").insert({
@@ -312,6 +314,46 @@ export async function activateTheme(
     .eq("merchant_id", merchantId)
     .eq("id", themeId);
   if (error) throw error;
+
+  // Keep published version coherent: ensure the activated theme points to a published version
+  let publishedVersionId = (row as { published_version_id?: string | null })
+    .published_version_id;
+  if (!publishedVersionId) {
+    const { data: latestVersion } = await db
+      .from("theme_versions")
+      .select("id, status")
+      .eq("merchant_id", merchantId)
+      .eq("theme_id", themeId)
+      .order("version", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (latestVersion) {
+      if (latestVersion.status !== "published") {
+        await db
+          .from("theme_versions")
+          .update({
+            status: "published",
+            published_at: new Date().toISOString(),
+          })
+          .eq("id", latestVersion.id);
+      }
+      publishedVersionId = latestVersion.id;
+      await db
+        .from("store_themes")
+        .update({ published_version_id: publishedVersionId })
+        .eq("merchant_id", merchantId)
+        .eq("id", themeId);
+    }
+  } else {
+    await db
+      .from("theme_versions")
+      .update({ status: "published", published_at: new Date().toISOString() })
+      .eq("id", publishedVersionId)
+      .eq("merchant_id", merchantId)
+      .eq("status", "draft");
+  }
+
   await db.from("theme_audit").insert({
     merchant_id: merchantId,
     theme_id: themeId,
@@ -320,6 +362,13 @@ export async function activateTheme(
     before: null,
     after: { name: (row as { name?: unknown }).name ?? null },
   });
+
+  try {
+    const { purgeStorefront } = await import("../themes.server");
+    purgeStorefront("publish", merchantId);
+  } catch {
+    // Non-redis or test doubles silently continue
+  }
 
   let applied = false;
   if (row.source_listing_slug) {
@@ -354,6 +403,37 @@ export async function deleteTheme(
       "Activate another theme before deleting this one.",
     );
   }
+
+  // Cascade drafts and versions for this theme
+  await db
+    .from("theme_drafts")
+    .delete()
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", themeId);
+  await db
+    .from("theme_versions")
+    .delete()
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", themeId);
+
+  // Update marketplace ledger row to terminal status
+  const sourceInstallId = (row as { source_install_id?: string | null })
+    .source_install_id;
+  if (sourceInstallId) {
+    await db
+      .from("marketplace_installs")
+      .update({ status: "uninstalled" })
+      .eq("merchant_id", merchantId)
+      .eq("id", sourceInstallId);
+  } else if (row.source_listing_slug) {
+    await db
+      .from("marketplace_installs")
+      .update({ status: "uninstalled" })
+      .eq("merchant_id", merchantId)
+      .eq("listing_slug", row.source_listing_slug)
+      .eq("kind", "theme");
+  }
+
   const { error } = await db
     .from("store_themes")
     .delete()

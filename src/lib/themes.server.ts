@@ -357,7 +357,7 @@ export async function commitVersion(
  * Passing no merchant is an operator action (`purgeThemeCache`) and is the only
  * path allowed to clear every tenant.
  */
-function purgeStorefront(reason: string, merchantId?: string) {
+export function purgeStorefront(reason: string, merchantId?: string) {
   invalidate(merchantId ? tenantCachePrefix(merchantId) : "storefront:");
   incr("framique_theme_purge_total", {
     reason,

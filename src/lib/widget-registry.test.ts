@@ -61,6 +61,7 @@ describe("widget registry — closed enum", () => {
       "group",
       "html",
       "array",
+      "menu",
     ]);
     for (const meta of Object.values(WIDGET_REGISTRY)) {
       for (const field of meta.fields) {
