@@ -170,6 +170,15 @@ function SidebarNav({
               className="relative"
               onMouseEnter={() => setHoveredGroup(g.key)}
               onMouseLeave={() => setHoveredGroup(null)}
+              onFocus={() => setHoveredGroup(g.key)}
+              onBlur={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+                  setHoveredGroup(null);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") setHoveredGroup(null);
+              }}
             >
               <Link
                 to={target}

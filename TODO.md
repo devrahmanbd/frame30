@@ -35,7 +35,9 @@
 - [ ] **Presigned media uploads** (§2.3: base64 RPC uploads risk V8 heap blowups + Nitro 413s).
 
 ### P2 — Console parity + growth
-- [ ] **WP P1**: sidebar collapse/flyout/keyboard parity (WF-17/18: elevate Appearance + Plugins top-level, accordion + hover flyouts, `current` propagation), `requirePermission` on theme/plugin fns (WF-19), retire stub-backed legacy pages desk (WF-20: two page systems), Pages-table "Edit with Page Builder" on real AST.
+- [x] **WP P1 sidebar core**: collapsed rail + hover flyouts + accordion + `aria-current` already in `AdminShell` (verified); **keyboard gap closed** — flyouts now open on focus, close on blur-away/Escape.
+- [ ] **WP P1 remaining**: elevate Appearance + Plugins top-level (WF-17/18), `requirePermission` on theme/plugin fns (WF-19), retire stub-backed legacy pages desk (WF-20: two page systems).
+- [x] **Pages-table "Edit with Page Builder"**: verified fully wired (`rowActions` → `?editor=builder` → `EditorShell` mode switch, covered by existing test).
 - [ ] **WP P2**: theme screenshot pipeline; honest-zero catalog counts (WF-22: hardcoded 4.4–4.9 ratings/2600–12800 installs violate no-fabrication rule); Upload Theme server path or remove button (WF-23); audit rows for all lifecycle mutations (WF-24); preview ‹ › pooling (WF-25); canary header hygiene (WF-26); CI gates workflow (WF-27: `.github/workflows/gates.yml` missing).
 - [ ] **Design §1.4 leftovers + SEO programmatic pages** (§3 matrix is reference, execute per quarter).
 
