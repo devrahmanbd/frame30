@@ -57,16 +57,16 @@
 - [x] **Decoupled Marketplace Install**: install creates a **new inactive** `store_themes` row (`marketplace_install_preset` routine + `installBuiltinTheme`, replay-guarded), never mutating the active draft.
 - [x] **Direct Activate Action**: working **Activate** button per installed marketplace card (reuses `themeActivateFn`; Active badge + storefront sync).
 - [ ] **Live Preview Action**: per installed theme — WP shows preview on hover + in details modal; wire existing `ThemePreviewSplit` into marketplace cards/modal (read-only builder preview, e.g. `/dashboard/builder?preview_theme_id=:id`).
-- [ ] **Add Theme tile + directory button states**: dashed Add New tile routing to full catalog; dynamic states Install → Activate → Activated/Customize (WP `theme-install.php` parity).
-- [ ] **Theme Details modal parity**: WP details modal carries Activate/Live Preview/Delete together; ours splits actions between card and modal.
+- [x] **Add Theme tile + directory button states**: filter-clearing tile on the themes grid; dynamic states Install → Activate → Activated/Customize (WP `theme-install.php` parity).
+- [x] **Theme Details modal parity**: modal carries Activate/Delete (+linked-theme gating) alongside Install; Live Preview still open (see below).
 - [x] **Direct Delete Action**: working **Delete** button per installed theme (server refuses active; cascades drafts/versions; ledger → `removed` status).
 - [x] **State-Driven Badges & Buttons**: real state on marketplace cards (`isLiveInstall` + `themeStates`).
 
 ### P0 — Plugin Lifecycle (Installed Plugins Table Parity)
 - [x] **Activate / Deactivate toggles + Settings form** (`InstalledApps.tsx` + `PluginSettingsForm.tsx` + `pluginToggleFn`).
 - [x] **Bridged widgets**: 6 official plugins install on-demand via `upsertPlugin` (`builtin-plugins.ts`, manifests validated, honest zero counts).
-- [ ] **Delete Action**: per installed plugin (remove `plugin_state` row, ledger to terminal status, confirm dialog).
-- [ ] **Add New Plugin navigation**: Add New flow routes to marketplace widgets tab; 1-click Install → Activate (WP `plugin-install.php` parity).
+- [x] **Delete Action**: per installed plugin (`uninstallWidgetInstall` + `marketUninstallWidgetFn`; removes `plugin_state` row, ledger → `removed`, confirm dialog; RLS-proven live).
+- [x] **Add New Plugin navigation**: InstalledApps Add New → marketplace `?tab=widget`; route search param added (creator/moderation links fixed).
 - [ ] **Bulk activate/deactivate/delete** via table checkboxes (WP shows it on the same screen).
 
 ### P1 — Sidebar System (WP Admin Menu Parity)

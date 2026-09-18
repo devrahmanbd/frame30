@@ -397,7 +397,7 @@ function Marketplace() {
                       {t("Active", "সক্রিয়")}
                     </span>
                   )}
-                  {liveInstall && (
+                  {liveInstall && themeState && (
                     <button
                       type="button"
                       disabled={busy}
@@ -411,21 +411,60 @@ function Marketplace() {
               </li>
             );
           })}
+          {tab === "theme" && (
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  setQuery("");
+                  setCategory("all");
+                  setPriceFilter("all");
+                }}
+                className="flex min-h-48 w-full flex-col items-center justify-center rounded-fq-md border border-dashed border-border bg-card p-4 text-center transition-colors hover:border-primary"
+              >
+                <span aria-hidden="true" className="text-3xl text-muted-foreground">+</span>
+                <span className="mt-2 font-medium">{t("Show all themes", "সব থিম দেখুন")}</span>
+                <span className="mt-1 text-xs text-muted-foreground">
+                  {t("Clear search and filters.", "সার্চ ও ফিল্টার মুছুন।")}
+                </span>
+              </button>
+            </li>
+          )}
         </ul>
 
-        {active && (
-          <DetailModal
-            listing={active}
-            installed={data.installs.some(
+        {active &&
+          (() => {
+            const live = data.installs.find(
               (i) =>
-                (active.builtin ? i.listing_slug === active.slug : i.theme_id === active.id || i.widget_id === active.id) &&
+                (active.builtin
+                  ? i.listing_slug === active.slug
+                  : i.theme_id === active.id || i.widget_id === active.id) &&
                 isLiveInstall(i.status),
-            )}
-            busy={busy}
-            onClose={() => setActive(null)}
-            onInstall={requestInstall}
-          />
-        )}
+            );
+            const state = active.kind === "theme" ? themeStateBySlug.get(active.slug) : undefined;
+            // Delete needs a linked theme row (third-party installs without
+            // linkage can only be paused/rolled back from My installs).
+            const deletable = live && (active.kind === "widget" || state);
+            return (
+              <DetailModal
+                listing={active}
+                installed={Boolean(live)}
+                busy={busy}
+                onClose={() => setActive(null)}
+                onInstall={requestInstall}
+                themeState={state}
+                liveInstallId={deletable ? live?.id ?? null : null}
+                onActivate={activateInstalledTheme}
+                onDelete={
+                  deletable && live
+                    ? () =>
+                        setPendingDelete({ installId: live.id, name: active.name, kind: active.kind })
+                    : undefined
+                }
+              />
+            );
+          })()
+        }
 
         {consent && (
           <InstallConsent
@@ -528,12 +567,20 @@ function DetailModal({
   busy,
   onClose,
   onInstall,
+  themeState,
+  liveInstallId,
+  onActivate,
+  onDelete,
 }: {
   listing: Listing;
   installed?: boolean;
   busy: boolean;
   onClose: () => void;
   onInstall: (l: Listing, trial: boolean) => void;
+  themeState?: { themeId: string; isActive: boolean } | null;
+  liveInstallId?: string | null;
+  onActivate?: (themeId: string) => void;
+  onDelete?: () => void;
 }) {
   const { t, tk } = useLang();
   const history = Array.isArray(listing.version_history)
@@ -610,6 +657,31 @@ function DetailModal({
               className="min-h-11 rounded-fq-md border border-border px-4 text-sm disabled:opacity-60"
             >
               {t("14-day trial", "১৪ দিনের ট্রায়াল")}
+            </button>
+          )}
+          {themeState && !themeState.isActive && onActivate && (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => onActivate(themeState.themeId)}
+              className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground disabled:opacity-60"
+            >
+              {t("Activate", "সক্রিয় করুন")}
+            </button>
+          )}
+          {themeState?.isActive && (
+            <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary/10 px-3 text-sm font-medium text-primary">
+              {t("Active", "সক্রিয়")}
+            </span>
+          )}
+          {liveInstallId && onDelete && (
+            <button
+              type="button"
+              disabled={busy}
+              onClick={onDelete}
+              className="min-h-11 rounded-fq-md border border-destructive/40 px-4 text-sm text-destructive disabled:opacity-60"
+            >
+              {t("Delete", "মুছুন")}
             </button>
           )}
           {!listing.compatible && (
