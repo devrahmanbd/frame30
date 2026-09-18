@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requirePermission } from "./authz-middleware";
 import { CUSTOM_CODE_LIMITS } from "./custom-code";
 
 async function scope(db: SupabaseClient<Database>, userId: string) {
@@ -61,7 +62,7 @@ export const customCodeRestoreFn = createServerFn({ method: "POST" })
 
 /** Platform owner only — RLS rejects a merchant who tries. */
 export const customCodeKillFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireSupabaseAuth, requirePermission("flags.write")])
   .inputValidator((d: unknown) =>
     z
       .object({

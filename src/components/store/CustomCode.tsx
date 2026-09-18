@@ -53,10 +53,10 @@ export function CustomCodeScript({ code, consented = false }: Props) {
       el.type = "text/javascript";
       el.defer = true;
       el.dataset["fqCustomJs"] = "";
-      // TODO(security): When storefront CSP is enforced with per-request nonces,
-      // read the nonce from a <meta name="csp-nonce"> or cookie and set
-      // el.nonce = nonce here. Currently no document-level CSP is set on
-      // storefront pages — only the console (admin) gets a CSP header.
+      // Read the per-request CSP nonce from the <meta> tag injected during SSR
+      // by withSecurityHeaders(). This allows the script to pass the CSP check.
+      const meta = document.querySelector('meta[name="csp-nonce"]');
+      if (meta) el.nonce = meta.getAttribute("content") || "";
       el.textContent = code.js;
       document.body.appendChild(el);
       setRan(true);

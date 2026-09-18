@@ -15,16 +15,14 @@
  * With neither configured the caller gets 404 — an unconfigured deploy exposes
  * no scheduled surface at all. Failures never echo which check failed.
  */
+import { timingSafeEqual } from "node:crypto";
 import { incr, log } from "./observability.server";
 
 export type CronAuth = { ok: true } | { ok: false; response: Response };
 
-function safeEqual(a: string, b: string) {
+function safeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i += 1)
-    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
+  return timingSafeEqual(Buffer.from(a), Buffer.from(b));
 }
 
 async function tokenRegistered(token: string) {

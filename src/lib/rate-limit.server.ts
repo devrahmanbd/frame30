@@ -24,6 +24,11 @@ import { incr, log, observe, registerMetric } from "./observability.server";
 import { redisConfigured, redisEval, redisKey } from "./redis.server";
 import { type RiskTier, resolvePolicy } from "./risk-tier";
 
+/** Circuit breaker: tracks consecutive unavailable verdicts per bucket. */
+const circuitBreaker = new Map<string, { count: number; firstAt: number }>();
+const CB_THRESHOLD = 5; // consecutive failures before rejecting
+const CB_WINDOW_MS = 60_000; // 1-minute window
+
 registerMetric(
   "framique_rate_limit_ms",
   "histogram",
@@ -485,6 +490,7 @@ export async function rateLimit(
       outcome: shared.allowed ? "allowed" : "blocked",
       source: "redis",
     });
+    circuitBreaker.delete(bucket);
     return shared;
   }
   if (redisConfigured()) {
@@ -505,6 +511,7 @@ export async function rateLimit(
       outcome: local.allowed ? "allowed" : "blocked",
       source: "postgres",
     });
+    circuitBreaker.delete(bucket);
     return local;
   }
 
@@ -516,6 +523,31 @@ export async function rateLimit(
     outcome: "unavailable",
     source: "none",
   });
+
+  // Circuit breaker: after CB_THRESHOLD consecutive failures within CB_WINDOW_MS,
+  // start rejecting to prevent abuse during extended outages.
+  const now = Date.now();
+  const state = circuitBreaker.get(bucket);
+  if (state && state.count >= CB_THRESHOLD && now - state.firstAt < CB_WINDOW_MS) {
+    log("warn", "rate_limit.circuit_open", { bucket });
+    incr("framique_rate_limit_total", { bucket, outcome: "circuit_blocked", source: "none" });
+    return {
+      allowed: false,
+      hits: cfg.limit,
+      limit: cfg.limit,
+      remaining: 0,
+      reset_at: new Date(state.firstAt + CB_WINDOW_MS).toISOString(),
+      source: "none",
+    };
+  }
+
+  const prev = circuitBreaker.get(bucket);
+  if (prev && now - prev.firstAt < CB_WINDOW_MS) {
+    circuitBreaker.set(bucket, { count: prev.count + 1, firstAt: prev.firstAt });
+  } else {
+    circuitBreaker.set(bucket, { count: 1, firstAt: now });
+  }
+
   return {
     allowed: true,
     hits: 0,

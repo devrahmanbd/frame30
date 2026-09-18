@@ -117,7 +117,8 @@ const RECORDED: Record<string, unknown> = {
 };
 
 async function hashSubject(value: string): Promise<string> {
-  const salt = process.env["AUTH_HASH_SALT"] ?? "framique-docs";
+  const salt = process.env["AUTH_HASH_SALT"];
+  if (!salt || salt === "framique-docs") throw new Error("AUTH_HASH_SALT must be set in production");
   const digest = await crypto.subtle.digest(
     "SHA-256",
     new TextEncoder().encode(`${salt}:${value}`),

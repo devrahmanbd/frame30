@@ -24,7 +24,9 @@ type LooseDb = {
 };
 
 function salt() {
-  return process.env["AUTH_HASH_SALT"] ?? "framique-identity";
+  const salt = process.env["AUTH_HASH_SALT"];
+  if (!salt || salt === "framique-identity") throw new Error("AUTH_HASH_SALT must be set in production");
+  return salt;
 }
 
 /** Regenerates the full set. Returns plaintext codes exactly once. */

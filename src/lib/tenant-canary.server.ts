@@ -197,10 +197,16 @@ export async function extractTenantIdentifier(request: Request): Promise<{
       /(?:framique_tenant_id|framique_store_slug)=([^;]+)/,
     );
     if (cookieMatch && cookieMatch[1]) {
-      return {
-        identifier: decodeURIComponent(cookieMatch[1]).trim().toLowerCase(),
-        source: "cookie",
-      };
+      const cookieTenant = decodeURIComponent(cookieMatch[1]).trim().toLowerCase();
+      // Validate cookie tenant matches the request host when both are available.
+      // If the host resolved to a different tenant, the cookie is stale/spoofed.
+      const hostIdentifier = headers.get("x-forwarded-host") || headers.get("host") || "";
+      // Cookie validation is best-effort: only reject if we have a host signal AND it conflicts
+      if (hostIdentifier && !hostIdentifier.includes(cookieTenant)) {
+        // Host and cookie disagree — fall through to other resolution methods
+      } else {
+        return { identifier: cookieTenant, source: "cookie" };
+      }
     }
   } catch {
     // Malformed URL safety

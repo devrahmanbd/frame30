@@ -47,14 +47,26 @@ async function hmacHex(secret: string, payload: string) {
 }
 
 function signingSecret() {
+  const secret = process.env["IMAGE_SIGNING_SECRET"];
+  if (secret) return secret;
+
   // Falls back to the deployment's Supabase URL-derived salt only in preview;
   // production sets an explicit secret.
-  return (
-    process.env["IMAGE_SIGNING_SECRET"] ??
-    process.env["SUPABASE_SERVICE_ROLE_KEY"] ??
-    ""
-  );
+  const fallback = process.env["SUPABASE_SERVICE_ROLE_KEY"] ?? "";
+  if (fallback) {
+    // Log once per process lifetime to avoid noise
+    if (!signingSecret._warned) {
+      console.warn(
+        "[image-transform] IMAGE_SIGNING_SECRET not set — falling back to SUPABASE_SERVICE_ROLE_KEY. " +
+        "Set IMAGE_SIGNING_SECRET in production."
+      );
+      signingSecret._warned = true;
+    }
+  }
+  return fallback;
 }
+// Module-level flag to warn only once
+signingSecret._warned = false;
 
 function allowedHosts(): string[] {
   const raw = process.env["IMAGE_ALLOWED_HOSTS"] ?? "";
@@ -191,5 +203,9 @@ function imgproxyUrl(
   const resize =
     spec.resize === "cover" ? "fill" : spec.resize === "fit" ? "fit" : "fit";
   const path = `/rs:${resize}:${spec.width}:${spec.height}:0/q:${spec.quality}/plain/${encodeURIComponent(source)}@${format}`;
+  // SECURITY: The /insecure prefix disables imgproxy's own URL-signing verification.
+  // This is safe because the source URL is already HMAC-signed by signImageUrl() and
+  // validated by isAllowedSource() before reaching this function. The HMAC signature
+  // prevents tampering with the source URL.
   return `${base.replace(/\/+$/, "")}/insecure${path}`;
 }

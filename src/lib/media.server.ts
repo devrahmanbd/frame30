@@ -124,6 +124,26 @@ export async function uploadMedia(
     throw new MediaError(magicCheck.reason, magicCheck.message);
   }
 
+  // Extension normalization (REPORT L4): ensure the file extension matches the
+  // detected MIME type, preventing double-extension attacks like image.jpg.php
+  const ext = fileName.split(".").pop()?.toLowerCase() ?? "";
+  const mimeToExt: Record<string, string[]> = {
+    "image/jpeg": ["jpg", "jpeg"],
+    "image/png": ["png"],
+    "image/gif": ["gif"],
+    "image/webp": ["webp"],
+    "image/svg+xml": ["svg"],
+    "image/avif": ["avif"],
+    "application/pdf": ["pdf"],
+  };
+  const allowedExts = mimeToExt[contentType.toLowerCase()];
+  if (allowedExts && !allowedExts.includes(ext)) {
+    throw new MediaError(
+      "bad_extension",
+      `File extension .${ext} does not match content type ${contentType}`
+    );
+  }
+
   // Active SVG sanitization (REPORT WF-13): strip script, event handlers and dangerous tags
   let uploadBytes = bytes;
   if (contentType.toLowerCase() === "image/svg+xml") {

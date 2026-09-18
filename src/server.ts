@@ -132,11 +132,16 @@ function withSecurityHeaders(
   const headers = new Headers(response.headers);
   headers.set("x-content-type-options", "nosniff");
   headers.set("referrer-policy", "strict-origin-when-cross-origin");
+  if (!isLocalHostname(new URL(request.url).hostname)) {
+    headers.set("strict-transport-security", "max-age=31536000; includeSubDomains");
+  }
+  headers.set("permissions-policy", "camera=(), microphone=(), geolocation=(), payment=()");
 
   // Emit tier-aware CSP header based on resolved risk tier
   const policy = resolvePolicy(riskTier);
+  let nonce = "";
   if (policy.csp.nonce) {
-    const nonce = newNonce();
+    nonce = newNonce();
     headers.set("content-security-policy", buildCsp(nonce, {}, riskTier));
   } else {
     // medium / high: no nonce, strict script-src 'self'
@@ -149,7 +154,51 @@ function withSecurityHeaders(
     headers.set("x-frame-options", "SAMEORIGIN");
   }
 
-  return new Response(response.body, {
+  // When a CSP nonce is active, inject a <meta> tag so client-side code
+  // (CustomCodeScript) can read it and attach it to dynamically created scripts.
+  // The meta tag is harmless on non-storefront pages.
+  let body = response.body;
+  if (nonce) {
+    const metaTag = `<meta name="csp-nonce" content="${nonce}">`;
+    const reader = response.body!.getReader();
+    const decoder = new TextDecoder();
+    const encoder = new TextEncoder();
+    let buffer = "";
+    let injected = false;
+
+    body = new ReadableStream({
+      async pull(controller) {
+        const { done, value } = await reader.read();
+        if (done) {
+          // Inject before </head> if not yet done
+          if (!injected && buffer.includes("</head>")) {
+            const idx = buffer.indexOf("</head>");
+            controller.enqueue(
+              encoder.encode(buffer.slice(0, idx) + metaTag + buffer.slice(idx)),
+            );
+          } else if (!injected) {
+            // No </head> found — append meta at end as fallback
+            controller.enqueue(encoder.encode(buffer + metaTag));
+          } else if (buffer) {
+            controller.enqueue(encoder.encode(buffer));
+          }
+          controller.close();
+          return;
+        }
+        buffer += decoder.decode(value, { stream: true });
+        // Flush complete chunks up to the </head> occurrence
+        const idx = buffer.indexOf("</head>");
+        if (idx !== -1) {
+          const end = idx + "</head>".length;
+          controller.enqueue(encoder.encode(buffer.slice(0, end) + metaTag));
+          injected = true;
+          buffer = buffer.slice(end);
+        }
+      },
+    });
+  }
+
+  return new Response(body, {
     status: response.status,
     statusText: response.statusText,
     headers,
@@ -171,7 +220,6 @@ function withConsoleHeaders(request: Request, response: Response): Response {
   if (isEditorPreviewHost(request)) {
     // Keep noindex + private caching, drop the framing denial for the editor.
     headers.delete("x-frame-options");
-    headers.delete("content-security-policy");
   }
   return new Response(response.body, {
     status: response.status,

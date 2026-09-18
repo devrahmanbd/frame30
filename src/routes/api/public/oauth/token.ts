@@ -6,18 +6,38 @@ import { createFileRoute } from "@tanstack/react-router";
  * per RFC 6749 and JSON for convenience. Errors follow the OAuth error shape,
  * never leaking whether a client id exists.
  */
-const CORS = {
-  "access-control-allow-origin": "*",
-  "access-control-allow-methods": "POST,OPTIONS",
-  "access-control-allow-headers": "authorization,content-type",
-};
+function getAllowedOrigin(request: Request): string {
+  const origin = request.headers.get("origin");
+  if (!origin) return "*";
+  try {
+    const { hostname } = new URL(origin);
+    if (
+      hostname.endsWith(".framique.store") ||
+      hostname.endsWith(".framique.com") ||
+      hostname === "framique.qubickle.com" ||
+      hostname === "localhost"
+    ) {
+      return origin;
+    }
+  } catch { /* ignore */ }
+  return "*";
+}
 
-function oauthError(code: string, status: number, detail?: string) {
+function corsHeaders(request: Request): Record<string, string> {
+  return {
+    "access-control-allow-origin": getAllowedOrigin(request),
+    "access-control-allow-methods": "POST,OPTIONS",
+    "access-control-allow-headers": "authorization,content-type",
+    "access-control-allow-credentials": "true",
+  };
+}
+
+function oauthError(code: string, status: number, detail?: string, request?: Request) {
   return Response.json(
     { error: code, error_description: detail },
     {
       status,
-      headers: { ...CORS, "cache-control": "no-store", pragma: "no-cache" },
+      headers: { ...(request ? corsHeaders(request) : {}), "cache-control": "no-store", pragma: "no-cache" },
     },
   );
 }
@@ -64,7 +84,8 @@ function basicAuth(request: Request) {
 export const Route = createFileRoute("/api/public/oauth/token")({
   server: {
     handlers: {
-      OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
+      OPTIONS: async ({ request }) =>
+        new Response(null, { status: 204, headers: corsHeaders(request) }),
       POST: async ({ request }) => {
         const params = await readParams(request);
         const basic = basicAuth(request);
@@ -72,7 +93,7 @@ export const Route = createFileRoute("/api/public/oauth/token")({
         const clientSecret =
           basic?.clientSecret ?? params["client_secret"] ?? null;
         if (!clientId)
-          return oauthError("invalid_client", 401, "client_id is required.");
+          return oauthError("invalid_client", 401, "client_id is required.", request);
 
         const { OAuthError, exchangeCode, refreshToken } =
           await import("@/lib/oauth.server");
@@ -88,7 +109,7 @@ export const Route = createFileRoute("/api/public/oauth/token")({
             });
             return Response.json(pair, {
               headers: {
-                ...CORS,
+                ...corsHeaders(request),
                 "cache-control": "no-store",
                 pragma: "no-cache",
               },
@@ -102,7 +123,7 @@ export const Route = createFileRoute("/api/public/oauth/token")({
             });
             return Response.json(pair, {
               headers: {
-                ...CORS,
+                ...corsHeaders(request),
                 "cache-control": "no-store",
                 pragma: "no-cache",
               },
@@ -112,13 +133,14 @@ export const Route = createFileRoute("/api/public/oauth/token")({
             "unsupported_grant_type",
             400,
             "Use authorization_code or refresh_token.",
+            request,
           );
         } catch (err) {
           if (err instanceof OAuthError)
-            return oauthError(err.code, err.status, err.detail);
+            return oauthError(err.code, err.status, err.detail, request);
           const { captureError } = await import("@/lib/observability.server");
           void captureError(err, { route: "oauth.token" });
-          return oauthError("server_error", 500);
+          return oauthError("server_error", 500, undefined, request);
         }
       },
     },

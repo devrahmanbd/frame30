@@ -695,7 +695,9 @@ export function sandboxSrcDoc(
 <style>:root{color-scheme:light dark}html,body{margin:0;padding:0;font:inherit;color:inherit;background:transparent}
 img,iframe,video{max-width:100%}
 ${css}</style></head><body>${body}
-<script>(function(){function post(){parent.postMessage({type:"fq:html-height",height:document.documentElement.scrollHeight},"*")}
+<script>(function(){function post(){parent.postMessage({type:"fq:html-height",height:document.documentElement.scrollHeight},"*")}// SECURITY: Wildcard target is safe — the iframe is sandboxed without
+// allow-same-origin so it has no cookies/storage/DOM access to the parent.
+// The message contains only a height number.
 new ResizeObserver(post).observe(document.documentElement);addEventListener("load",post);post();})();<\/script>
 </body></html>`;
 }
@@ -769,6 +771,10 @@ export function buildCsp(
   return [
     "default-src 'self'",
     `script-src ${scriptSrc}`,
+    // NOTE: 'unsafe-inline' for styles is lower risk than for scripts.
+    // Merchant CSS is already prefix-scoped to .fq-theme-scope server-side,
+    // and expression()/url(javascript:)/-moz-binding are banned by the sanitizer.
+    // CSS-based data exfiltration remains a theoretical risk.
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     // Phase 3: merchant-uploaded faces are served from our own origin through
     // /api/public/font/*, so no third-party font origin is ever whitelisted

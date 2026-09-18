@@ -18,8 +18,9 @@ export type SandboxHandler = (
 
 const FRAME_HTML = (
   entry: string,
+  parentOrigin: string,
 ) => `<!doctype html><html><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; font-src 'none';">
 <style>body{margin:0;font:14px/1.6 system-ui;color:#111}</style></head>
 <body><div id="root"></div><script>
 const pending = new Map();
@@ -29,7 +30,7 @@ window.framique = {
     const id = String(++seq);
     return new Promise((resolve, reject) => {
       pending.set(id, { resolve, reject });
-      parent.postMessage({ v: 1, id, method, params }, "*");
+      parent.postMessage({ v: 1, id, method, params }, "${parentOrigin}");
     });
   },
   mount(node) { document.getElementById("root").replaceChildren(node); },
@@ -63,7 +64,7 @@ export function WidgetSandbox({
   const policy = resolvePolicy(riskTier);
   const ref = useRef<HTMLIFrameElement | null>(null);
   const [denied, setDenied] = useState<string[]>([]);
-  const srcDoc = useMemo(() => FRAME_HTML(entry), [entry]);
+  const srcDoc = useMemo(() => FRAME_HTML(entry, window.location.origin), [entry]);
 
   useEffect(() => {
     async function onMessage(event: MessageEvent) {
@@ -74,7 +75,7 @@ export function WidgetSandbox({
       const reply = (body: Record<string, unknown>) =>
         frame.contentWindow?.postMessage(
           { id: (msg as { id?: string })?.id, ...body },
-          "*",
+          window.location.origin,
         );
 
       if (!verdict.allowed) {
