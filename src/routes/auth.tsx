@@ -565,9 +565,11 @@ function AuthPage() {
 
   return (
     <main className="fq-site fq-marketing min-h-screen overflow-x-clip bg-background selection:bg-primary/20 selection:text-primary">
-      <div className="grid min-h-screen lg:grid-cols-12">
+      <div className="grid min-h-screen lg:h-screen lg:grid-cols-12 lg:overflow-hidden">
         {/* ── Left Column: Brand Showcase Panel (Desktop) ─────────────────── */}
-        <aside className="relative hidden min-w-0 flex-col justify-between overflow-hidden border-r border-border/70 bg-accent/50 p-10 backdrop-blur-xl dark:bg-card/30 lg:col-span-5 lg:flex lg:sticky lg:top-0 lg:h-screen xl:p-14">
+        {/* Sticky-height panel: start-aligned so nothing clips when the
+            column scrolls internally on short viewports. */}
+        <aside className="relative hidden min-w-0 flex-col justify-start gap-0 overflow-y-auto border-r border-border/70 bg-accent/50 p-10 backdrop-blur-xl dark:bg-card/30 lg:col-span-5 lg:flex lg:h-screen xl:p-14">
           <GradientMesh intensity={0.55} />
 
           {/* Top Brand & Home Link */}
@@ -704,7 +706,10 @@ function AuthPage() {
         </aside>
 
         {/* ── Right Column: Interactive Form ──────────────────────────────── */}
-        <section className="flex min-w-0 flex-col justify-between p-6 sm:p-10 lg:col-span-7 lg:p-12 xl:p-16">
+        {/* Form column scrolls internally; justify-start + auto margins
+            (never justify-between/center) so overflowed content stays
+            reachable instead of clipping off the top. */}
+        <section className="flex min-w-0 flex-col justify-start p-6 sm:p-10 lg:col-span-7 lg:h-screen lg:overflow-y-auto lg:px-12 lg:py-8 xl:px-16">
           {/* Top Bar Navigation */}
           <header className="flex items-center justify-between pb-6">
             <div className="flex items-center gap-2 lg:hidden">
@@ -1471,7 +1476,7 @@ function AuthPage() {
           </div>
 
           {/* Footer Note */}
-          <footer className="pt-6 text-center text-[11px] text-muted-foreground">
+          <footer className="mt-auto pt-6 text-center text-[11px] text-muted-foreground">
             © {new Date().getFullYear()} Framique Technologies. All rights
             reserved. Sovereign Cloud Commerce.
           </footer>
