@@ -208,6 +208,9 @@ function AuthPage() {
 
   const [mode, setMode] = useState<Mode>(search.mode ?? "signup");
   const [stage, setStage] = useState<Stage>("credentials");
+  // Signup wizard step (signin/reset/MFA are single-step). Splits the long
+  // signup form so it fits the viewport without page scroll on desktop.
+  const [signupStep, setSignupStep] = useState<1 | 2>(1);
 
   // Signup fields
   const [firstName, setFirstName] = useState("");
@@ -240,6 +243,11 @@ function AuthPage() {
       setNotice(null);
     }
   }, [search.mode]);
+
+  // Restart the signup wizard whenever the mode changes
+  useEffect(() => {
+    setSignupStep(1);
+  }, [mode]);
 
   // If already logged in, redirect directly to merchant dashboard
   useEffect(() => {
@@ -315,32 +323,53 @@ function AuthPage() {
     navigate({ to: target as never, replace: true });
   }
 
+  /** Client-side signup basics check. Returns a localized error or null. */
+  function validateSignupBasics(): string | null {
+    if (!firstName.trim()) {
+      return t("First name is required.", "প্রথম নাম আবশ্যক।");
+    }
+    if (!lastName.trim()) {
+      return t("Last name is required.", "শেষ নাম আবশ্যক।");
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return t(
+        "Enter a valid email address.",
+        "সঠিক ইমেইল অ্যাড্রেস দিন।",
+      );
+    }
+    if (password.length < 8) {
+      return t(
+        "Password must be at least 8 characters long.",
+        "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।",
+      );
+    }
+    if (password !== confirmPassword) {
+      return t("Passwords do not match.", "পাসওয়ার্ড দুটি মিলছে না।");
+    }
+    return null;
+  }
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrorMsg(null);
     setNotice(null);
 
-    // Client-side validations for Signup
+    // Signup wizard step 1: validate account basics, then advance
+    if (mode === "signup" && signupStep === 1) {
+      const err = validateSignupBasics();
+      if (err) {
+        setErrorMsg(err);
+        return;
+      }
+      setSignupStep(2);
+      return;
+    }
+
+    // Client-side validations for Signup (final submit re-checks everything)
     if (mode === "signup") {
-      if (!firstName.trim()) {
-        setErrorMsg(t("First name is required.", "প্রথম নাম আবশ্যক।"));
-        return;
-      }
-      if (!lastName.trim()) {
-        setErrorMsg(t("Last name is required.", "শেষ নাম আবশ্যক।"));
-        return;
-      }
-      if (password.length < 8) {
-        setErrorMsg(
-          t(
-            "Password must be at least 8 characters long.",
-            "পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।",
-          ),
-        );
-        return;
-      }
-      if (password !== confirmPassword) {
-        setErrorMsg(t("Passwords do not match.", "পাসওয়ার্ড দুটি মিলছে না।"));
+      const err = validateSignupBasics();
+      if (err) {
+        setErrorMsg(err);
         return;
       }
     }
@@ -759,6 +788,39 @@ function AuthPage() {
               </div>
             )}
 
+            {/* Signup wizard progress */}
+            {mode === "signup" && stage === "credentials" && (
+              <div className="mb-4">
+                <div className="flex items-center justify-between text-[11px] font-medium text-muted-foreground">
+                  <span>
+                    {signupStep === 1
+                      ? t(
+                          "Step 1 of 2 · Account details",
+                          "ধাপ ১/২ · অ্যাকাউন্টের তথ্য",
+                        )
+                      : t(
+                          "Step 2 of 2 · Business profile",
+                          "ধাপ ২/২ · ব্যবসার তথ্য",
+                        )}
+                  </span>
+                  <span className="tabular-nums">{signupStep}/2</span>
+                </div>
+                <div
+                  className="mt-1.5 h-1 overflow-hidden rounded-full bg-muted"
+                  role="progressbar"
+                  aria-valuenow={signupStep}
+                  aria-valuemin={1}
+                  aria-valuemax={2}
+                >
+                  <div
+                    className={`h-full rounded-full bg-primary transition-all ${
+                      signupStep === 1 ? "w-1/2" : "w-full"
+                    }`}
+                  />
+                </div>
+              </div>
+            )}
+
             {/* Header Titles */}
             <div className="mb-6 space-y-1.5">
               <h2 className="fq-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
@@ -950,8 +1012,8 @@ function AuthPage() {
             ) : (
               /* ── Stage: Credentials (Signup, Signin, Reset) ─────────────── */
               <form onSubmit={onSubmit} className="space-y-4">
-                {/* Signup-Specific Profile Fields */}
-                {mode === "signup" && (
+                {/* Signup-Specific Profile Fields (wizard step 1) */}
+                {mode === "signup" && signupStep === 1 && (
                   <>
                     {/* First Name & Last Name (2 columns) */}
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -1002,7 +1064,8 @@ function AuthPage() {
                   </>
                 )}
 
-                {/* Email Address */}
+                {/* Email Address (wizard step 1) */}
+                {(mode !== "signup" || signupStep === 1) && (
                 <div>
                   <label className="block text-xs font-semibold text-foreground mb-1.5">
                     {mode === "signup"
@@ -1026,9 +1089,11 @@ function AuthPage() {
                     />
                   </div>
                 </div>
+                )}
 
-                {/* Password & Confirm Password */}
-                {mode !== "reset" && (
+                {/* Password & Confirm Password (wizard step 1) */}
+                {(mode !== "reset" &&
+                  (mode !== "signup" || signupStep === 1)) && (
                   <div
                     className={
                       mode === "signup"
@@ -1159,8 +1224,8 @@ function AuthPage() {
                   </div>
                 )}
 
-                {/* Additional Business Onboarding Metadata (Signup Only) */}
-                {mode === "signup" && (
+                {/* Additional Business Onboarding Metadata (wizard step 2) */}
+                {mode === "signup" && signupStep === 2 && (
                   <>
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 pt-1">
                       {/* Business Industry */}
@@ -1282,6 +1347,19 @@ function AuthPage() {
 
                 {/* Primary Submit CTA */}
                 <div className="pt-2">
+                  {mode === "signup" && signupStep === 2 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSignupStep(1);
+                        setErrorMsg(null);
+                      }}
+                      className="mb-3 inline-flex min-h-9 items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+                    >
+                      <ArrowLeft className="size-3.5" aria-hidden="true" />
+                      {t("Back to account details", "অ্যাকাউন্টের তথ্যে ফিরুন")}
+                    </button>
+                  )}
                   <button
                     type="submit"
                     disabled={
@@ -1299,15 +1377,22 @@ function AuthPage() {
                         `লক · ${lockedFor} সেকেন্ডে পুনরায় চেষ্টা করুন`,
                       )
                     ) : mode === "signup" ? (
-                      <>
-                        <span>
-                          {t(
-                            "Create Store & Start Free Trial",
-                            "স্টোর তৈরি করুন ও ফ্রি ট্রায়াল শুরু করুন",
-                          )}
-                        </span>
-                        <ArrowRight className="size-4" />
-                      </>
+                      signupStep === 1 ? (
+                        <>
+                          <span>{t("Continue", "এগিয়ে যান")}</span>
+                          <ArrowRight className="size-4" />
+                        </>
+                      ) : (
+                        <>
+                          <span>
+                            {t(
+                              "Create Store & Start Free Trial",
+                              "স্টোর তৈরি করুন ও ফ্রি ট্রায়াল শুরু করুন",
+                            )}
+                          </span>
+                          <ArrowRight className="size-4" />
+                        </>
+                      )
                     ) : mode === "signin" ? (
                       <>
                         <span>
