@@ -19,7 +19,7 @@
 
 ## TODO backlog (priority order)
 
-- [ ] **ENV-1** (P0 INCIDENT — blocks all deploy verification + live site) All SSR routes hang pre-first-byte; `SSR stream transform exceeded maximum lifetime (120000ms)`; proven environmental via baseline-build bisect (stashed batch-1, rebuilt, same hang); healthz/static/REST healthy; REST→DB 1ms; zero-byte responses; no uncaught errors in journal — NEXT LOOP ITEM
+- [x] **ENV-1** (P0 INCIDENT — RESOLVED `da8396c`) All SSR routes hung pre-first-byte; root cause was the hand-rolled pull()-loop meta injector in `withSecurityHeaders` (server.ts) buffering without enqueueing; rewritten as TransformStream. Verify: / 200 111KB 0.5s, /auth 200 38KB, all inline scripts nonced, </html> streams.
 - [ ] **T3** (High, TB-2/INV-01) Strip inbound `X-Merchant-Id`/`X-Tenant-Id`/`X-Store-Slug` at app entry + edge conf — DONE batch 1 (`986f07a`)
 - [ ] **C2** (Med, §30) Remove dead `pg_catalog_exec` generic-SQL RPC call (`support-moderation.server.ts:589`) — DONE batch 1
 - [ ] **A8** (Low, ops) Fix metric drift `framique_auth_event_total` → `framique_auth_events_total` per runbook — DONE batch 1
@@ -45,3 +45,4 @@
 
 - [x] Batch 0: swarm analysis (6 agents) + mem0 context + this file.
 - [x] Batch 1 (`986f07a`): T3 + C2 + A8 + A5 + D5. Verify: 152 targeted tests pass (6 files), tsc clean on all touched files, vite build green, fresh-bundle secret-scan clean. Live-verify BLOCKED by ENV-1 (proven environmental, not from this batch).
+- [x] ENV-1 fix (`da8396c`): TransformStream injector rewrite. Next loop item: batch 2 (T1, T2, D4, A2).
