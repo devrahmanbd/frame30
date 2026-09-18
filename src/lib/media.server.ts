@@ -25,12 +25,18 @@ export class MediaError extends Error {
   }
 }
 
-export async function listMedia(merchantId: string, limit = 60): Promise<MediaItem[]> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin.storage.from(BUCKET).list(merchantId, {
-    limit,
-    sortBy: { column: "created_at", order: "desc" },
-  });
+export async function listMedia(
+  merchantId: string,
+  limit = 60,
+): Promise<MediaItem[]> {
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin.storage
+    .from(BUCKET)
+    .list(merchantId, {
+      limit,
+      sortBy: { column: "created_at", order: "desc" },
+    });
   if (error) throw new MediaError("list_failed", error.message);
   const items = (data ?? [])
     .filter((entry) => entry.name && !entry.name.startsWith("."))
@@ -64,7 +70,12 @@ export async function listMedia(merchantId: string, limit = 60): Promise<MediaIt
   return items.map((item) => {
     const asset = byPath.get(item.path);
     return asset
-      ? { ...item, altText: asset.alt_text ?? null, width: asset.width ?? null, height: asset.height ?? null }
+      ? {
+          ...item,
+          altText: asset.alt_text ?? null,
+          width: asset.width ?? null,
+          height: asset.height ?? null,
+        }
       : item;
   });
 }
@@ -80,15 +91,17 @@ type LooseDb = {
           col: string,
           values: string[],
         ) => Promise<{
-          data:
-            | Array<{ storage_path: string; alt_text: string | null; width: number | null; height: number | null }>
-            | null;
+          data: Array<{
+            storage_path: string;
+            alt_text: string | null;
+            width: number | null;
+            height: number | null;
+          }> | null;
         }>;
       };
     };
   };
 };
-
 
 export async function uploadMedia(
   merchantId: string,
@@ -97,23 +110,32 @@ export async function uploadMedia(
   base64: string,
   db?: unknown,
 ): Promise<MediaItem> {
-  if (!isAcceptedMime(contentType)) throw new MediaError("bad_type", "Unsupported file type");
+  if (!isAcceptedMime(contentType))
+    throw new MediaError("bad_type", "Unsupported file type");
   const bytes = decodeBase64(base64);
   if (bytes.length === 0) throw new MediaError("empty", "File is empty");
-  if (bytes.length > MEDIA_MAX_BYTES) throw new MediaError("too_large", "File is larger than 5 MB");
+  if (bytes.length > MEDIA_MAX_BYTES)
+    throw new MediaError("too_large", "File is larger than 5 MB");
 
   /* Storage quota is charged in bytes, so the cap is checked with the *actual*
    * decoded size — not the client-declared length, which is trivially lied
    * about. The check runs before the upload so we never have to delete an
    * object we just accepted. */
   if (db) {
-    const { assertEntitlement, invalidateEntitlements } = await import("./entitlements.server");
-    await assertEntitlement(db as never, merchantId, "media_bytes", bytes.length);
+    const { assertEntitlement, invalidateEntitlements } =
+      await import("./entitlements.server");
+    await assertEntitlement(
+      db as never,
+      merchantId,
+      "media_bytes",
+      bytes.length,
+    );
     invalidateEntitlements(merchantId);
   }
 
   const path = `${merchantId}/${safeFileName(fileName, contentType)}`;
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const up = await supabaseAdmin.storage.from(BUCKET).upload(path, bytes, {
     contentType,
     upsert: false,
@@ -130,11 +152,61 @@ export async function uploadMedia(
   };
 }
 
-export async function deleteMedia(merchantId: string, path: string): Promise<void> {
+export async function createPresignedUploadUrl(
+  merchantId: string,
+  fileName: string,
+  contentType: string,
+  declaredSize: number,
+  db?: unknown,
+): Promise<{ path: string; signedUrl: string; token: string; url: string }> {
+  if (!isAcceptedMime(contentType))
+    throw new MediaError("bad_type", "Unsupported file type");
+  if (declaredSize <= 0) throw new MediaError("empty", "File is empty");
+  if (declaredSize > MEDIA_MAX_BYTES)
+    throw new MediaError("too_large", "File is larger than 5 MB");
+
+  if (db) {
+    const { assertEntitlement, invalidateEntitlements } =
+      await import("./entitlements.server");
+    await assertEntitlement(
+      db as never,
+      merchantId,
+      "media_bytes",
+      declaredSize,
+    );
+    invalidateEntitlements(merchantId);
+  }
+
+  const path = `${merchantId}/${safeFileName(fileName, contentType)}`;
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin.storage
+    .from(BUCKET)
+    .createSignedUploadUrl(path);
+  if (error || !data) {
+    throw new MediaError(
+      "upload_failed",
+      error?.message ?? "Could not issue presigned URL",
+    );
+  }
+
+  return {
+    path,
+    signedUrl: data.signedUrl,
+    token: data.token,
+    url: mediaUrl(path),
+  };
+}
+
+export async function deleteMedia(
+  merchantId: string,
+  path: string,
+): Promise<void> {
   if (!isMediaObjectPath(path) || !path.startsWith(`${merchantId}/`)) {
     throw new MediaError("forbidden", "Not your file");
   }
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
   const { error } = await supabaseAdmin.storage.from(BUCKET).remove([path]);
   if (error) throw new MediaError("delete_failed", error.message);
 }
@@ -142,14 +214,19 @@ export async function deleteMedia(merchantId: string, path: string): Promise<voi
 /** Streams one object for the public media route. Path is validated first. */
 export async function readMedia(path: string) {
   if (!isMediaObjectPath(path)) return null;
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin.storage.from(BUCKET).download(path);
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin.storage
+    .from(BUCKET)
+    .download(path);
   if (error || !data) return null;
   return data;
 }
 
 function decodeBase64(input: string): Uint8Array {
-  const clean = input.includes(",") ? input.slice(input.indexOf(",") + 1) : input;
+  const clean = input.includes(",")
+    ? input.slice(input.indexOf(",") + 1)
+    : input;
   const binary = atob(clean);
   const out = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i += 1) out[i] = binary.charCodeAt(i);

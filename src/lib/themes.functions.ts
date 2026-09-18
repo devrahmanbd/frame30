@@ -14,10 +14,11 @@ const tree: z.ZodType<unknown> = z.custom<unknown>(() => true);
 
 export const builderWorkspaceFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .validator((d?: { previewThemeId?: string }) => d)
+  .handler(async ({ data, context }) => {
     const { loadWorkspace } = await import("./themes.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return loadWorkspace(context.supabase, merchantId);
+    return loadWorkspace(context.supabase, merchantId, data?.previewThemeId);
   });
 
 export const builderAutosaveFn = createServerFn({ method: "POST" })

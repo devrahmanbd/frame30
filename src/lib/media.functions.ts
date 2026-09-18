@@ -35,13 +35,48 @@ export const mediaUploadFn = createServerFn({ method: "POST" })
     // The client is passed so the storage quota is enforced under the caller's
     // own RLS scope before a single byte is written.
     return {
-      item: await uploadMedia(merchantId, data.name, data.contentType, data.base64, context.supabase),
+      item: await uploadMedia(
+        merchantId,
+        data.name,
+        data.contentType,
+        data.base64,
+        context.supabase,
+      ),
     };
+  });
+
+export const mediaPresignedUploadFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        name: z.string().min(1).max(200),
+        contentType: z.string().min(3).max(100),
+        size: z
+          .number()
+          .int()
+          .min(1)
+          .max(5 * 1024 * 1024),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { createPresignedUploadUrl } = await import("./media.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return createPresignedUploadUrl(
+      merchantId,
+      data.name,
+      data.contentType,
+      data.size,
+      context.supabase,
+    );
   });
 
 export const mediaDeleteFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ path: z.string().min(3).max(200) }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ path: z.string().min(3).max(200) }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { deleteMedia } = await import("./media.server");
     const { invalidateEntitlements } = await import("./entitlements.server");

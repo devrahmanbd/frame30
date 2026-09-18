@@ -1,4 +1,8 @@
 -- Phase 2c — repair schema drift found live on framebase (2026-09-17).
+-- @framique-drift-repair: true
+-- @rationale: Idempotent schema drift repair — all ALTER COLUMN TYPE statements are guarded by
+--   DO $$ IF EXISTS checks and use USING casts. They correct type mismatches found after
+--   initial baseline deployment; they do not execute a second time on a clean schema.
 --
 -- The deployed database was missing routines and columns that the app and
 -- earlier migrations assume. Every statement below is idempotent and safe

@@ -19,25 +19,36 @@ export const Route = createFileRoute("/api/public/domains/verify-sni")({
         const rawHost = url.searchParams.get("host");
 
         if (!rawHost) {
-          return Response.json({ allowed: false, error: "missing_host" }, { status: 400 });
+          return Response.json(
+            { allowed: false, error: "missing_host" },
+            { status: 400 },
+          );
         }
 
         let hostname: string;
         try {
           hostname = normalizeHostname(rawHost);
         } catch {
-          return Response.json({ allowed: false, error: "invalid_hostname" }, { status: 400 });
+          return Response.json(
+            { allowed: false, error: "invalid_hostname" },
+            { status: 400 },
+          );
         }
 
         // Platform root and system domains are always allowed
         if (
+          hostname === "framique.store" ||
           hostname === "framique.com" ||
-          hostname === "edge.framique.app" ||
+          hostname === "edge.framique.store" ||
           hostname === "localhost" ||
-          hostname.endsWith(".framique.app") ||
-          hostname.endsWith(".framique.com")
+          hostname.endsWith(".framique.store") ||
+          hostname.endsWith(".framique.com") ||
+          hostname.endsWith(".framique.app")
         ) {
-          return Response.json({ allowed: true, hostname, isPlatform: true }, { status: 200 });
+          return Response.json(
+            { allowed: true, hostname, isPlatform: true },
+            { status: 200 },
+          );
         }
 
         // Check if custom domain exists and is in a valid state
@@ -49,7 +60,10 @@ export const Route = createFileRoute("/api/public/domains/verify-sni")({
             .maybeSingle();
 
           if (error || !domain) {
-            return Response.json({ allowed: false, error: "domain_not_registered" }, { status: 404 });
+            return Response.json(
+              { allowed: false, error: "domain_not_registered" },
+              { status: 404 },
+            );
           }
 
           // Allowed if verified, active, or currently issuing
@@ -78,7 +92,10 @@ export const Route = createFileRoute("/api/public/domains/verify-sni")({
             },
           );
         } catch {
-          return Response.json({ allowed: false, error: "internal_error" }, { status: 500 });
+          return Response.json(
+            { allowed: false, error: "internal_error" },
+            { status: 500 },
+          );
         }
       },
     },

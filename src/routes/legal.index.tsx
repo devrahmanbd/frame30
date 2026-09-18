@@ -11,7 +11,8 @@ export const Route = createFileRoute("/legal/")({
   // from the same constant — a footer and a schema that disagree is the
   // classic local-SEO defect.
   head: ({ loaderData }) => buildMarketingHead({ route: "legal", origin: loaderData?.origin ?? null }),
-  component: LegalIndex});
+  component: LegalIndex,
+});
 
 function LegalIndex() {
   const { tk, lang } = useLang();

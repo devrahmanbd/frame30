@@ -137,18 +137,22 @@ export const EXPAND_CONTRACT_RULES: LintRule[] = [
  * Example:
  *   -- @framique-stage: contract
  *   -- @rationale: Decommissioning legacy orders.total_old column after 60-day dual-run
+ *   -- @framique-drift-repair: true   (schema drift repairs: idempotent IF-EXISTS guarded type corrections)
  */
 export function parseMigrationMetadata(sqlContent: string): {
   isContract: boolean;
+  isDriftRepair: boolean;
   rationale?: string;
 } {
   const contractMatch = sqlContent.match(/--\s*@framique-stage:\s*(contract|expand)/i);
   const rationaleMatch = sqlContent.match(/--\s*@rationale:\s*(.+)/i);
+  const driftRepairMatch = sqlContent.match(/--\s*@framique-drift-repair:\s*true/i);
 
   const isContract = contractMatch ? contractMatch[1].toLowerCase() === "contract" : false;
+  const isDriftRepair = Boolean(driftRepairMatch);
   const rationale = rationaleMatch ? rationaleMatch[1].trim() : undefined;
 
-  return { isContract, rationale };
+  return { isContract, isDriftRepair, rationale };
 }
 
 /**
@@ -203,7 +207,7 @@ function stripComments(sql: string): { cleanSql: string; lines: string[] } {
  * Lint SQL content against Expand-and-Contract rules.
  */
 export function lintMigrationSql(sqlContent: string, filePath?: string): LintResult {
-  const { isContract, rationale } = parseMigrationMetadata(sqlContent);
+  const { isContract, isDriftRepair, rationale } = parseMigrationMetadata(sqlContent);
   const { lines } = stripComments(sqlContent);
   const violations: LintViolation[] = [];
 
@@ -236,6 +240,12 @@ export function lintMigrationSql(sqlContent: string, filePath?: string): LintRes
     for (const rule of EXPAND_CONTRACT_RULES) {
       if (isContract && rule.allowedInContract) {
         // Permitted in Stage 4 Contract migrations
+        continue;
+      }
+
+      // Drift-repair migrations may use ALTER COLUMN TYPE when guarded by IF EXISTS PL/pgSQL blocks.
+      // All other destructive DDL (DROP COLUMN, RENAME, DROP TABLE) is still blocked.
+      if (isDriftRepair && rule.id === "RULE_NO_IN_PLACE_TYPE_ALTERATION") {
         continue;
       }
 

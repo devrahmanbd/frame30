@@ -59,8 +59,14 @@ describe("8.2 caching — tenant · template · locale · theme_version", () => 
   it("marks only storefront documents shared-cacheable", () => {
     expect(isStorefrontPath("/store/acme")).toBe(true);
     expect(isStorefrontPath("/store/acme/p/shirt")).toBe(true);
+    expect(isStorefrontPath("/")).toBe(true);
+    expect(isStorefrontPath("/p/shirt")).toBe(true);
+    expect(isStorefrontPath("/c/shoes")).toBe(true);
+    expect(isStorefrontPath("/pages/about")).toBe(true);
+    expect(isStorefrontPath("/cart")).toBe(true);
     expect(isStorefrontPath("/dashboard/products")).toBe(false);
     expect(isStorefrontPath("/root")).toBe(false);
+    expect(isStorefrontPath("/api/public/metrics")).toBe(false);
   });
 
   it("varies on language and validates on theme version", () => {

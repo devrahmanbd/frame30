@@ -9,7 +9,6 @@ import { fmtMinor } from "@/lib/money";
 import { billingClaimTrialFn } from "@/lib/billing.functions";
 import { toast } from "sonner";
 
-
 type Plan = "launch" | "growth" | "business" | "enterprise";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
@@ -35,7 +34,7 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
 });
 
 function Onboarding() {
-  const { tk, tError, lang } = useLang();
+  const { t, tk, tError, lang } = useLang();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { data: merchant, isPending } = useMerchant();
@@ -75,7 +74,9 @@ function Onboarding() {
     queryKey: ["slug-status", slug],
     enabled: slug.length >= 3,
     queryFn: async () => {
-      const { data, error } = await supabase.rpc("store_slug_status", { p_slug: slug });
+      const { data, error } = await supabase.rpc("store_slug_status", {
+        p_slug: slug,
+      });
       if (error) throw error;
       return data as string;
     },
@@ -111,7 +112,8 @@ function Onboarding() {
 
   const slugMessage = useMemo(() => {
     if (slug.length === 0) return null;
-    if (slug.length < 3 || slugStatus === "invalid") return tk("store.slug_invalid");
+    if (slug.length < 3 || slugStatus === "invalid")
+      return tk("store.slug_invalid");
     if (slugChecking) return tk("common.loading");
     if (slugStatus === "reserved") return tk("store.slug_reserved");
     if (slugStatus === "taken") return tk("store.slug_taken");
@@ -120,22 +122,35 @@ function Onboarding() {
   }, [slug, slugStatus, slugChecking, tk]);
 
   const slugOk = slugStatus === "available";
+  const [customDomain, setCustomDomain] = useState("");
   const steps = [
     tk("onboarding.step_details"),
     tk("onboarding.step_address"),
+    t("Custom domain", "কাস্টম ডোমেইন"),
     tk("onboarding.step_plan"),
   ];
 
   if (isPending) {
-    return <p className="p-8 text-sm text-muted-foreground">{tk("common.loading")}</p>;
+    return (
+      <p className="p-8 text-sm text-muted-foreground">
+        {tk("common.loading")}
+      </p>
+    );
   }
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-12">
-      <h1 className="font-bangla-display text-2xl font-bold">{tk("onboarding.title")}</h1>
-      <p className="mt-2 text-sm text-muted-foreground">{tk("onboarding.subtitle")}</p>
+      <h1 className="font-bangla-display text-2xl font-bold">
+        {tk("onboarding.title")}
+      </h1>
+      <p className="mt-2 text-sm text-muted-foreground">
+        {tk("onboarding.subtitle")}
+      </p>
 
-      <ol className="mt-6 flex gap-2 text-xs" aria-label={tk("onboarding.title")}>
+      <ol
+        className="mt-6 flex gap-2 text-xs"
+        aria-label={tk("onboarding.title")}
+      >
         {steps.map((label, i) => (
           <li
             key={label}
@@ -167,7 +182,9 @@ function Onboarding() {
               placeholder={tk("onboarding.store_name_placeholder")}
               autoFocus
             />
-            <p className="text-xs text-muted-foreground">{tk("onboarding.store_name_hint")}</p>
+            <p className="text-xs text-muted-foreground">
+              {tk("onboarding.store_name_hint")}
+            </p>
           </div>
         )}
 
@@ -182,12 +199,16 @@ function Onboarding() {
                 value={slug}
                 onChange={(e) => {
                   setSlugTouched(true);
-                  setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""));
+                  setSlug(
+                    e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""),
+                  );
                 }}
                 aria-describedby="slug-status"
                 className="w-56 rounded-fq-md border border-border bg-background px-3 py-2"
               />
-              <span className="text-muted-foreground">.store.framique.com</span>
+              <span className="text-muted-foreground font-mono">
+                .framique.store
+              </span>
             </div>
             <p
               id="slug-status"
@@ -196,21 +217,120 @@ function Onboarding() {
             >
               {slugMessage}
             </p>
-            <p className="text-xs text-muted-foreground">{tk("onboarding.web_address_hint")}</p>
+            <p className="text-xs text-muted-foreground">
+              {t(
+                "Your store will be hosted on an isolated wildcard subdomain with dedicated cookies and secure origin.",
+                "আপনার স্টোরটি ডেডিকেটেড কুকি এবং সুরক্ষিত অরিজিন সহ একটি পৃথক ওয়াইল্ডকার্ড সাবডোমেইনে হোস্ট করা হবে।",
+              )}
+            </p>
           </div>
         )}
 
         {step === 2 && (
+          <div className="space-y-4">
+            <div>
+              <h2 className="text-sm font-semibold text-foreground">
+                {t(
+                  "Connect Custom Domain (Optional)",
+                  "কাস্টম ডোমেইন যুক্ত করুন (ঐচ্ছিক)",
+                )}
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {t(
+                  `Your storefront is always accessible at ${slug || "your-store"}.framique.store. You can also connect your own custom domain or skip and configure it later.`,
+                  `আপনার স্টোরফ্রন্ট সবসময় ${slug || "your-store"}.framique.store ঠিকানায় চালু থাকবে। আপনি চাইলে এখনই নিজের ডোমেইন যুক্ত করতে পারেন অথবা পরে সেটিংস থেকে করতে পারেন।`,
+                )}
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <label
+                className="block text-xs font-medium"
+                htmlFor="custom-domain"
+              >
+                {t("Custom Domain", "কাস্টম ডোমেইন")}
+              </label>
+              <input
+                id="custom-domain"
+                value={customDomain}
+                onChange={(e) =>
+                  setCustomDomain(e.target.value.toLowerCase().trim())
+                }
+                className="w-full rounded-fq-md border border-border bg-background px-3 py-2 text-sm font-mono"
+                placeholder="e.g. mystore.com"
+              />
+            </div>
+
+            {/* DNS Instructions Card */}
+            <div className="rounded-fq-md border border-border bg-muted/40 p-3.5 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-foreground">
+                  {t("Required DNS Records", "প্রয়োজনীয় DNS রেকর্ড")}
+                </span>
+                <span className="text-[11px] text-muted-foreground font-mono">
+                  Edge TLS
+                </span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs font-mono">
+                  <thead>
+                    <tr className="border-b border-border text-muted-foreground text-[11px]">
+                      <th className="pb-1 font-medium">Type</th>
+                      <th className="pb-1 font-medium">Host</th>
+                      <th className="pb-1 font-medium">Target</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/40 text-[11px]">
+                    <tr>
+                      <td className="py-1 font-semibold text-primary">CNAME</td>
+                      <td className="py-1">www</td>
+                      <td className="py-1 text-foreground">
+                        edge.framique.store
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="py-1 font-semibold text-primary">A</td>
+                      <td className="py-1">@</td>
+                      <td className="py-1 text-foreground">76.76.21.21</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <button
+                type="button"
+                onClick={() => setStep(3)}
+                className="text-xs font-medium text-primary hover:underline cursor-pointer"
+              >
+                {t(
+                  "Skip for now — I'll connect it from Settings › Domains",
+                  "এখনই নয় — আমি পরে সেটিংস থেকে ডোমেইন যুক্ত করব",
+                )}{" "}
+                →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {step === 3 && (
           <fieldset className="space-y-3">
-            <legend className="text-sm font-medium">{tk("onboarding.choose_plan")}</legend>
+            <legend className="text-sm font-medium">
+              {tk("onboarding.choose_plan")}
+            </legend>
             {(plans ?? []).length === 0 && (
-              <p className="text-sm text-muted-foreground">{tk("billing.limits.unconfigured")}</p>
+              <p className="text-sm text-muted-foreground">
+                {tk("billing.limits.unconfigured")}
+              </p>
             )}
             {(plans ?? []).map((p) => (
               <label
                 key={p.plan}
                 className={`flex cursor-pointer items-start gap-3 rounded-fq-md border p-4 ${
-                  plan === p.plan ? "border-primary bg-info-soft" : "border-border"
+                  plan === p.plan
+                    ? "border-primary bg-info-soft"
+                    : "border-border"
                 }`}
               >
                 <input
@@ -234,7 +354,9 @@ function Onboarding() {
                       products: p.products_limit,
                       staff: p.staff_limit,
                     })}
-                    {p.trial_days > 0 ? ` · ${tk("onboarding.trial_days", { days: p.trial_days })}` : ""}
+                    {p.trial_days > 0
+                      ? ` · ${tk("onboarding.trial_days", { days: p.trial_days })}`
+                      : ""}
                   </span>
                 </span>
               </label>
@@ -251,11 +373,17 @@ function Onboarding() {
           >
             {tk("common.previous")}
           </button>
-          {step < 2 ? (
+          {step < 3 ? (
             <button
               type="button"
               onClick={() => setStep((s) => s + 1)}
-              disabled={step === 0 ? name.trim().length < 2 : !slugOk}
+              disabled={
+                step === 0
+                  ? name.trim().length < 2
+                  : step === 1
+                    ? !slugOk
+                    : false
+              }
               className="rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-40"
             >
               {tk("common.next")}
@@ -267,7 +395,9 @@ function Onboarding() {
               disabled={!plan || !slugOk || create.isPending}
               className="rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-40"
             >
-              {create.isPending ? tk("common.loading") : tk("onboarding.create_store")}
+              {create.isPending
+                ? tk("common.loading")
+                : tk("onboarding.create_store")}
             </button>
           )}
         </div>

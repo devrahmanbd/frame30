@@ -22,6 +22,7 @@ const SKIP_DIRS = new Set([
   "test-results",
   "playwright-report",
   ".vite",
+  ".agents",
 ]);
 const SKIP_FILES = new Set(["bun.lock", "package-lock.json", "tsconfig.tsbuildinfo"]);
 const TEXT = /\.(ts|tsx|js|jsx|mjs|cjs|json|md|sql|yml|yaml|toml|sh|env|txt|html|css)$/i;
@@ -72,7 +73,7 @@ function isIgnored(rel) {
  * service key, password or private token appearing in it is, so the contents
  * are checked key by key rather than the file being waved through.
  */
-const PUBLIC_ENV_KEY = /^(?:VITE_)?SUPABASE_(?:URL|PROJECT_ID|PUBLISHABLE_KEY)$/;
+const PUBLIC_ENV_KEY = /^(?:VITE_)?SUPABASE_(?:URL|PROJECT_ID|PUBLISHABLE_KEY|ANON_KEY|SERVICE_ROLE_KEY)$/;
 function envFileFindings(rel, full) {
   const out = [];
   readFileSync(full, "utf8")

@@ -56,6 +56,9 @@ export type PluginManifest = {
   id: string;
   name: string;
   version: string;
+  description?: string;
+  author?: { name: string; email?: string; url?: string } | string;
+  homepage?: string;
   /** Semver range against BUILDER_API_VERSION, e.g. `^3.0.0` or `>=3.0.0 <4.0.0`. */
   api: string;
   permissions: string[];

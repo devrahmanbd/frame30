@@ -37,6 +37,13 @@ import {
 type Client = SupabaseClient<Database>;
 type DomainRow = Database["public"]["Tables"]["merchant_domains"]["Row"];
 
+export const PLAN_DOMAIN_QUOTA: Record<string, number> = {
+  launch: 1,
+  growth: 3,
+  business: 5,
+  enterprise: 10,
+};
+
 const MAX_DOMAINS_PER_MERCHANT = 10;
 const DNS_TIMEOUT_MS = 4000;
 

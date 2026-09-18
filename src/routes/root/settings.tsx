@@ -668,8 +668,7 @@ export function OwnerSettings() {
           title={confirmSwitch.title}
           description={confirmSwitch.description}
           confirmLabel={t("Confirm Action", "নিশ্চিত করুন")}
-          cancelLabel={t("Cancel", "বাতিল")}
-          tone={confirmSwitch.tone}
+          tone={confirmSwitch.tone === "danger" ? "danger" : "primary"}
           busy={saveBoolFlag.isPending}
           onConfirm={() =>
             saveBoolFlag.mutate({

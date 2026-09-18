@@ -55,6 +55,32 @@ export type ThemeSummary = {
   sourceVersion: string | null;
 };
 
+async function resolveTheme(
+  db: Client,
+  merchantId: string,
+  previewThemeId?: string | null,
+): Promise<ThemeSummary> {
+  if (previewThemeId) {
+    const { data } = await db
+      .from("store_themes")
+      .select("id, name, is_active, published_version_id, source_listing_slug, source_version")
+      .eq("merchant_id", merchantId)
+      .eq("id", previewThemeId)
+      .maybeSingle();
+    if (data) {
+      return {
+        id: data.id,
+        name: data.name,
+        isActive: data.is_active,
+        publishedVersionId: data.published_version_id,
+        sourceKey: data.source_listing_slug,
+        sourceVersion: data.source_version,
+      };
+    }
+  }
+  return ensureTheme(db, merchantId);
+}
+
 async function ensureTheme(db: Client, merchantId: string): Promise<ThemeSummary> {
   const { data, error } = await db
     .from("store_themes")
@@ -121,12 +147,17 @@ export type BuilderWorkspace = {
   versions: VersionRow[];
   schedules: ScheduleRow[];
   issues: Record<string, ReturnType<typeof lintTemplate>>;
+  isPreview?: boolean;
 };
 
 /** Editor bootstrap: newest autosave draft wins over the newest committed version. */
-export async function loadWorkspace(db: Client, merchantId: string): Promise<BuilderWorkspace> {
+export async function loadWorkspace(
+  db: Client,
+  merchantId: string,
+  previewThemeId?: string | null,
+): Promise<BuilderWorkspace> {
   return withSpan("builder.workspace", async () => {
-    const theme = await ensureTheme(db, merchantId);
+    const theme = await resolveTheme(db, merchantId, previewThemeId);
 
     const [draftRes, versionsRes, scheduleRes] = await Promise.all([
       db
@@ -201,6 +232,7 @@ export async function loadWorkspace(db: Client, merchantId: string): Promise<Bui
         lastError: row.last_error,
       })),
       issues,
+      isPreview: Boolean(previewThemeId && !theme.isActive),
     };
   });
 }

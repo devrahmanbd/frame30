@@ -154,6 +154,8 @@ import { Route as AuthenticatedDashboardMarketplaceVersionsRouteImport } from '.
 import { Route as AuthenticatedDashboardMoneyPaymentsRouteImport } from './routes/_authenticated/dashboard/money/payments'
 import { Route as AuthenticatedDashboardOrdersIndexRouteImport } from './routes/_authenticated/dashboard/orders/index'
 import { Route as AuthenticatedDashboardOrdersOrderIdRouteImport } from './routes/_authenticated/dashboard/orders/$orderId'
+import { Route as AuthenticatedDashboardPluginsIndexRouteImport } from './routes/_authenticated/dashboard/plugins/index'
+import { Route as AuthenticatedDashboardPluginsNewRouteImport } from './routes/_authenticated/dashboard/plugins/new'
 import { Route as AuthenticatedDashboardProductsIndexRouteImport } from './routes/_authenticated/dashboard/products/index'
 import { Route as AuthenticatedDashboardProductsProductIdRouteImport } from './routes/_authenticated/dashboard/products/$productId'
 import { Route as AuthenticatedDashboardProductsNewRouteImport } from './routes/_authenticated/dashboard/products/new'
@@ -996,6 +998,18 @@ const AuthenticatedDashboardOrdersOrderIdRoute =
     path: '/orders/$orderId',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardPluginsIndexRoute =
+  AuthenticatedDashboardPluginsIndexRouteImport.update({
+    id: '/plugins/',
+    path: '/plugins/',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardPluginsNewRoute =
+  AuthenticatedDashboardPluginsNewRouteImport.update({
+    id: '/plugins/new',
+    path: '/plugins/new',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardProductsIndexRoute =
   AuthenticatedDashboardProductsIndexRouteImport.update({
     id: '/products/',
@@ -1411,6 +1425,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
   '/dashboard/money/payments': typeof AuthenticatedDashboardMoneyPaymentsRoute
   '/dashboard/orders/$orderId': typeof AuthenticatedDashboardOrdersOrderIdRoute
+  '/dashboard/plugins/new': typeof AuthenticatedDashboardPluginsNewRoute
   '/dashboard/products/$productId': typeof AuthenticatedDashboardProductsProductIdRoute
   '/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
   '/dashboard/settings/api': typeof AuthenticatedDashboardSettingsApiRoute
@@ -1461,6 +1476,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/marketing/': typeof AuthenticatedDashboardMarketingIndexRoute
   '/dashboard/marketplace/': typeof AuthenticatedDashboardMarketplaceIndexRoute
   '/dashboard/orders/': typeof AuthenticatedDashboardOrdersIndexRoute
+  '/dashboard/plugins/': typeof AuthenticatedDashboardPluginsIndexRoute
   '/dashboard/products/': typeof AuthenticatedDashboardProductsIndexRoute
   '/dashboard/orders/$orderId/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
   '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
@@ -1605,6 +1621,7 @@ export interface FileRoutesByTo {
   '/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
   '/dashboard/money/payments': typeof AuthenticatedDashboardMoneyPaymentsRoute
   '/dashboard/orders/$orderId': typeof AuthenticatedDashboardOrdersOrderIdRoute
+  '/dashboard/plugins/new': typeof AuthenticatedDashboardPluginsNewRoute
   '/dashboard/products/$productId': typeof AuthenticatedDashboardProductsProductIdRoute
   '/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
   '/dashboard/settings/api': typeof AuthenticatedDashboardSettingsApiRoute
@@ -1655,6 +1672,7 @@ export interface FileRoutesByTo {
   '/dashboard/marketing': typeof AuthenticatedDashboardMarketingIndexRoute
   '/dashboard/marketplace': typeof AuthenticatedDashboardMarketplaceIndexRoute
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersIndexRoute
+  '/dashboard/plugins': typeof AuthenticatedDashboardPluginsIndexRoute
   '/dashboard/products': typeof AuthenticatedDashboardProductsIndexRoute
   '/dashboard/orders/$orderId/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
   '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
@@ -1803,6 +1821,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
   '/_authenticated/dashboard/money/payments': typeof AuthenticatedDashboardMoneyPaymentsRoute
   '/_authenticated/dashboard/orders/$orderId': typeof AuthenticatedDashboardOrdersOrderIdRoute
+  '/_authenticated/dashboard/plugins/new': typeof AuthenticatedDashboardPluginsNewRoute
   '/_authenticated/dashboard/products/$productId': typeof AuthenticatedDashboardProductsProductIdRoute
   '/_authenticated/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
   '/_authenticated/dashboard/settings_/api': typeof AuthenticatedDashboardSettingsApiRoute
@@ -1853,6 +1872,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/marketing/': typeof AuthenticatedDashboardMarketingIndexRoute
   '/_authenticated/dashboard/marketplace/': typeof AuthenticatedDashboardMarketplaceIndexRoute
   '/_authenticated/dashboard/orders/': typeof AuthenticatedDashboardOrdersIndexRoute
+  '/_authenticated/dashboard/plugins/': typeof AuthenticatedDashboardPluginsIndexRoute
   '/_authenticated/dashboard/products/': typeof AuthenticatedDashboardProductsIndexRoute
   '/_authenticated/dashboard/orders/$orderId_/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
   '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
@@ -2001,6 +2021,7 @@ export interface FileRouteTypes {
     | '/dashboard/marketplace/versions'
     | '/dashboard/money/payments'
     | '/dashboard/orders/$orderId'
+    | '/dashboard/plugins/new'
     | '/dashboard/products/$productId'
     | '/dashboard/products/new'
     | '/dashboard/settings/api'
@@ -2051,6 +2072,7 @@ export interface FileRouteTypes {
     | '/dashboard/marketing/'
     | '/dashboard/marketplace/'
     | '/dashboard/orders/'
+    | '/dashboard/plugins/'
     | '/dashboard/products/'
     | '/dashboard/orders/$orderId/invoice'
     | '/api/public/payments/live/$provider'
@@ -2195,6 +2217,7 @@ export interface FileRouteTypes {
     | '/dashboard/marketplace/versions'
     | '/dashboard/money/payments'
     | '/dashboard/orders/$orderId'
+    | '/dashboard/plugins/new'
     | '/dashboard/products/$productId'
     | '/dashboard/products/new'
     | '/dashboard/settings/api'
@@ -2245,6 +2268,7 @@ export interface FileRouteTypes {
     | '/dashboard/marketing'
     | '/dashboard/marketplace'
     | '/dashboard/orders'
+    | '/dashboard/plugins'
     | '/dashboard/products'
     | '/dashboard/orders/$orderId/invoice'
     | '/api/public/payments/live/$provider'
@@ -2392,6 +2416,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/marketplace/versions'
     | '/_authenticated/dashboard/money/payments'
     | '/_authenticated/dashboard/orders/$orderId'
+    | '/_authenticated/dashboard/plugins/new'
     | '/_authenticated/dashboard/products/$productId'
     | '/_authenticated/dashboard/products/new'
     | '/_authenticated/dashboard/settings_/api'
@@ -2442,6 +2467,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/marketing/'
     | '/_authenticated/dashboard/marketplace/'
     | '/_authenticated/dashboard/orders/'
+    | '/_authenticated/dashboard/plugins/'
     | '/_authenticated/dashboard/products/'
     | '/_authenticated/dashboard/orders/$orderId_/invoice'
     | '/api/public/payments/live/$provider'
@@ -3565,6 +3591,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardOrdersOrderIdRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/plugins/': {
+      id: '/_authenticated/dashboard/plugins/'
+      path: '/plugins'
+      fullPath: '/dashboard/plugins/'
+      preLoaderRoute: typeof AuthenticatedDashboardPluginsIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/plugins/new': {
+      id: '/_authenticated/dashboard/plugins/new'
+      path: '/plugins/new'
+      fullPath: '/dashboard/plugins/new'
+      preLoaderRoute: typeof AuthenticatedDashboardPluginsNewRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/products/': {
       id: '/_authenticated/dashboard/products/'
       path: '/products'
@@ -3977,6 +4017,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardMarketplaceVersionsRoute: typeof AuthenticatedDashboardMarketplaceVersionsRoute
   AuthenticatedDashboardMoneyPaymentsRoute: typeof AuthenticatedDashboardMoneyPaymentsRoute
   AuthenticatedDashboardOrdersOrderIdRoute: typeof AuthenticatedDashboardOrdersOrderIdRoute
+  AuthenticatedDashboardPluginsNewRoute: typeof AuthenticatedDashboardPluginsNewRoute
   AuthenticatedDashboardProductsProductIdRoute: typeof AuthenticatedDashboardProductsProductIdRoute
   AuthenticatedDashboardProductsNewRoute: typeof AuthenticatedDashboardProductsNewRoute
   AuthenticatedDashboardSettingsApiRoute: typeof AuthenticatedDashboardSettingsApiRoute
@@ -3991,6 +4032,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardMarketingIndexRoute: typeof AuthenticatedDashboardMarketingIndexRoute
   AuthenticatedDashboardMarketplaceIndexRoute: typeof AuthenticatedDashboardMarketplaceIndexRoute
   AuthenticatedDashboardOrdersIndexRoute: typeof AuthenticatedDashboardOrdersIndexRoute
+  AuthenticatedDashboardPluginsIndexRoute: typeof AuthenticatedDashboardPluginsIndexRoute
   AuthenticatedDashboardProductsIndexRoute: typeof AuthenticatedDashboardProductsIndexRoute
   AuthenticatedDashboardOrdersOrderIdInvoiceRoute: typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
 }
@@ -4089,6 +4131,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardMoneyPaymentsRoute,
     AuthenticatedDashboardOrdersOrderIdRoute:
       AuthenticatedDashboardOrdersOrderIdRoute,
+    AuthenticatedDashboardPluginsNewRoute:
+      AuthenticatedDashboardPluginsNewRoute,
     AuthenticatedDashboardProductsProductIdRoute:
       AuthenticatedDashboardProductsProductIdRoute,
     AuthenticatedDashboardProductsNewRoute:
@@ -4117,6 +4161,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardMarketplaceIndexRoute,
     AuthenticatedDashboardOrdersIndexRoute:
       AuthenticatedDashboardOrdersIndexRoute,
+    AuthenticatedDashboardPluginsIndexRoute:
+      AuthenticatedDashboardPluginsIndexRoute,
     AuthenticatedDashboardProductsIndexRoute:
       AuthenticatedDashboardProductsIndexRoute,
     AuthenticatedDashboardOrdersOrderIdInvoiceRoute:
@@ -4298,13 +4344,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

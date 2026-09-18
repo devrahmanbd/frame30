@@ -58,7 +58,9 @@ export function ThemesScreen() {
   const [query, setQuery] = useState("");
   const [detailsId, setDetailsId] = useState<string | null>(null);
   const [preview, setPreview] = useState<PreviewSubject | null>(null);
-  const [confirmDelete, setConfirmDelete] = useState<InstalledTheme | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<InstalledTheme | null>(
+    null,
+  );
   const [busy, setBusy] = useState<string | null>(null);
 
   const workspace = useQuery<ThemesWorkspace>({
@@ -71,7 +73,8 @@ export function ThemesScreen() {
   }, [queryClient]);
 
   const installed = useMemo(
-    () => orderInstalled(searchInstalled(workspace.data?.installed ?? [], query)),
+    () =>
+      orderInstalled(searchInstalled(workspace.data?.installed ?? [], query)),
     [workspace.data, query],
   );
   const catalogue = workspace.data?.catalogue ?? [];
@@ -93,7 +96,9 @@ export function ThemesScreen() {
     onMutate: (vars: { data: { key: string } }) => setBusy(vars.data.key),
     onSuccess: (result: { alreadyInstalled: boolean }) => {
       toast.success(
-        result.alreadyInstalled ? "That theme is already installed" : "Theme installed",
+        result.alreadyInstalled
+          ? "That theme is already installed"
+          : "Theme installed",
       );
       refresh();
     },
@@ -108,7 +113,8 @@ export function ThemesScreen() {
       setDetailsId(null);
       refresh();
     },
-    onError: () => toast.error("Activate another theme before deleting this one"),
+    onError: () =>
+      toast.error("Activate another theme before deleting this one"),
   });
 
   const flags = useMutation({
@@ -123,17 +129,13 @@ export function ThemesScreen() {
     onError: () => toast.error("That change could not be saved"),
   });
 
-  const openCustomize = () => void navigate({ to: "/dashboard/builder" as never });
+  const openCustomize = () =>
+    void navigate({ to: "/dashboard/builder" as never });
 
   const previewInstalled = (theme: InstalledTheme) =>
-    setPreview({
-      key: theme.key,
-      name: theme.name,
-      author: theme.author,
-      version: theme.version,
-      summary: theme.description || "This theme has no description yet.",
-      installed: true,
-      active: theme.isActive,
+    void navigate({
+      to: "/dashboard/builder" as never,
+      search: { preview_theme_id: theme.id } as never,
     });
 
   const previewCatalog = (theme: CatalogTheme) =>
@@ -204,10 +206,18 @@ export function ThemesScreen() {
       actions={
         mode === "installed" ? (
           <div className="flex flex-wrap gap-2">
-            <button type="button" className={btnGhost} onClick={() => setMode("assets")}>
+            <button
+              type="button"
+              className={btnGhost}
+              onClick={() => setMode("assets")}
+            >
               Custom CSS &amp; assets
             </button>
-            <button type="button" className={btnPrimary} onClick={() => setMode("add")}>
+            <button
+              type="button"
+              className={btnPrimary}
+              onClick={() => setMode("add")}
+            >
               <Plus className="size-4" aria-hidden /> Add theme
             </button>
           </div>
@@ -243,7 +253,9 @@ export function ThemesScreen() {
           }}
           onPreview={previewCatalog}
           onToggleFavourite={(theme) =>
-            favouriteCatalog.mutate({ data: { key: theme.key, favourite: !theme.favourite } })
+            favouriteCatalog.mutate({
+              data: { key: theme.key, favourite: !theme.favourite },
+            })
           }
         />
       ) : (
@@ -270,14 +282,22 @@ export function ThemesScreen() {
 
           {installed.length === 0 ? (
             <EmptyState
-              title={query ? "No installed theme matches that search" : "No themes installed yet"}
+              title={
+                query
+                  ? "No installed theme matches that search"
+                  : "No themes installed yet"
+              }
               description={
                 query
                   ? "Clear the search to see everything installed on this store."
                   : "Install one of the official themes to give your storefront a starting point."
               }
               action={
-                <button type="button" className={btnPrimary} onClick={() => setMode("add")}>
+                <button
+                  type="button"
+                  className={btnPrimary}
+                  onClick={() => setMode("add")}
+                >
                   Add theme
                 </button>
               }
@@ -290,11 +310,15 @@ export function ThemesScreen() {
                     theme={theme}
                     busy={busy === theme.id}
                     onDetails={() => setDetailsId(theme.id)}
-                    onActivate={() => activate.mutate({ data: { id: theme.id } })}
+                    onActivate={() =>
+                      activate.mutate({ data: { id: theme.id } })
+                    }
                     onPreview={() => previewInstalled(theme)}
                     onCustomize={openCustomize}
                     onToggleFavourite={() =>
-                      flags.mutate({ data: { id: theme.id, favourite: !theme.favourite } })
+                      flags.mutate({
+                        data: { id: theme.id, favourite: !theme.favourite },
+                      })
                     }
                   />
                 </li>
@@ -307,11 +331,15 @@ export function ThemesScreen() {
 
           <Card title="How themes work">
             <p className="text-sm fq-sub">
-              Activating a theme replaces your storefront layout with that theme's templates and
-              colours. Your products, pages and posts are never touched, and you can switch back at
-              any time.
+              Activating a theme replaces your storefront layout with that
+              theme's templates and colours. Your products, pages and posts are
+              never touched, and you can switch back at any time.
             </p>
-            <button type="button" className={cn(btnGhost, "mt-3")} onClick={openCustomize}>
+            <button
+              type="button"
+              className={cn(btnGhost, "mt-3")}
+              onClick={openCustomize}
+            >
               Open the customizer
             </button>
           </Card>

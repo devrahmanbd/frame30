@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import gsap from "gsap";
+import { loadMotionEngine } from "@/lib/motion-engine";
 import { cn } from "@/lib/utils";
 import { TESTIMONIALS } from "@/lib/marketing/testimonials.content";
 
@@ -36,25 +36,38 @@ export function TestimonialList() {
       return;
     }
 
-    const ctx = gsap.context(() => {
-      const xOffset = direction === "right" ? 30 : -30;
-      
-      // Prepare next slide
-      gsap.set(nextSlide, { autoAlpha: 0, x: xOffset, zIndex: 20 });
-      gsap.set(currentSlide, { zIndex: 10 });
-
-      const tl = gsap.timeline({
-        onComplete: () => {
+    loadMotionEngine()
+      .then((engine) => {
+        if (!engine) {
           setActiveIndex(newIndex);
           isAnimating.current = false;
-          // Clear GSAP styles so React/Tailwind state takes back over cleanly for responsiveness
-          gsap.set([currentSlide, nextSlide], { clearProps: "all" });
+          return;
         }
-      });
+        const { gsap } = engine;
+        gsap.context(() => {
+          const xOffset = direction === "right" ? 30 : -30;
 
-      tl.to(currentSlide, { autoAlpha: 0, x: -xOffset, duration: 0.5, ease: "power2.inOut" }, 0)
-        .to(nextSlide, { autoAlpha: 1, x: 0, duration: 0.5, ease: "power2.inOut" }, 0.1);
-    }, containerRef);
+          // Prepare next slide
+          gsap.set(nextSlide, { autoAlpha: 0, x: xOffset, zIndex: 20 });
+          gsap.set(currentSlide, { zIndex: 10 });
+
+          const tl = gsap.timeline({
+            onComplete: () => {
+              setActiveIndex(newIndex);
+              isAnimating.current = false;
+              // Clear GSAP styles so React/Tailwind state takes back over cleanly for responsiveness
+              gsap.set([currentSlide, nextSlide], { clearProps: "all" });
+            },
+          });
+
+          tl.to(currentSlide, { autoAlpha: 0, x: -xOffset, duration: 0.5, ease: "power2.inOut" }, 0)
+            .to(nextSlide, { autoAlpha: 1, x: 0, duration: 0.5, ease: "power2.inOut" }, 0.1);
+        }, containerRef);
+      })
+      .catch(() => {
+        setActiveIndex(newIndex);
+        isAnimating.current = false;
+      });
   };
 
   const handleNext = () => {

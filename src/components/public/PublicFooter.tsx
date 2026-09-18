@@ -1,6 +1,6 @@
 import { useState, useId, useRef, useEffect, useCallback, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import gsap from "gsap";
+import { withEngine } from "@/lib/motion-engine";
 import { ArrowRight, Loader2, Check } from "lucide-react";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import { useLang } from "@/lib/i18n";
@@ -72,106 +72,113 @@ function SculpturalEmblem() {
   useEffect(() => {
     if (!containerRef.current || !svgRef.current) return;
 
-    const mm = gsap.matchMedia();
+    const scope = withEngine(({ gsap }) => {
+      const mm = gsap.matchMedia();
 
-    mm.add(
-      {
-        reduceMotion: "(prefers-reduced-motion: reduce)",
-        noPreference: "(prefers-reduced-motion: no-preference)",
-      },
-      (context) => {
-        const { reduceMotion } = context.conditions as {
-          reduceMotion: boolean;
-          noPreference: boolean;
-        };
+      mm.add(
+        {
+          reduceMotion: "(prefers-reduced-motion: reduce)",
+          noPreference: "(prefers-reduced-motion: no-preference)",
+        },
+        (context) => {
+          const { reduceMotion } = context.conditions as {
+            reduceMotion: boolean;
+            noPreference: boolean;
+          };
 
-        if (reduceMotion) {
-          gsap.set([svgRef.current, shadowRef.current], {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-          });
-          return;
-        }
+          if (reduceMotion) {
+            gsap.set([svgRef.current, shadowRef.current], {
+              opacity: 1,
+              y: 0,
+              scale: 1,
+            });
+            return;
+          }
 
-        // 1. Entrance animation on mount
-        gsap.fromTo(
-          svgRef.current,
-          { autoAlpha: 0, y: 24, scale: 0.94 },
-          { autoAlpha: 1, y: 0, scale: 1, duration: 1.2, ease: "power2.out" }
-        );
-
-        // 2. Coordinated floating levitation cycle (physics-inspired)
-        const floatTl = gsap.timeline({
-          repeat: -1,
-          yoyo: true,
-          defaults: { ease: "sine.inOut" },
-        });
-
-        floatTl
-          .to(
+          // 1. Entrance animation on mount
+          gsap.fromTo(
             svgRef.current,
-            {
-              y: -12,
-              rotation: 1.6,
-              duration: 3.2,
-            },
-            0
-          )
-          .to(
-            shadowRef.current,
-            {
-              scaleX: 0.84,
-              scaleY: 0.42,
-              opacity: 0.35,
-              duration: 3.2,
-            },
-            0
+            { autoAlpha: 0, y: 24, scale: 0.94 },
+            { autoAlpha: 1, y: 0, scale: 1, duration: 1.2, ease: "power2.out" }
           );
 
-        // 3. Specular rim highlight shimmer
-        if (rimRef.current) {
-          gsap.to(rimRef.current, {
-            opacity: 1,
-            strokeWidth: 4,
-            duration: 2.2,
+          // 2. Coordinated floating levitation cycle (physics-inspired)
+          const floatTl = gsap.timeline({
             repeat: -1,
             yoyo: true,
-            ease: "sine.inOut",
+            defaults: { ease: "sine.inOut" },
           });
-        }
 
-        // 4. Subtle underfold ambient depth breathing
-        if (foldRef.current) {
-          gsap.to(foldRef.current, {
-            opacity: 0.8,
-            duration: 3.2,
-            repeat: -1,
-            yoyo: true,
-            ease: "sine.inOut",
-          });
-        }
+          floatTl
+            .to(
+              svgRef.current,
+              {
+                y: -12,
+                rotation: 1.6,
+                duration: 3.2,
+              },
+              0
+            )
+            .to(
+              shadowRef.current,
+              {
+                scaleX: 0.84,
+                scaleY: 0.42,
+                opacity: 0.35,
+                duration: 3.2,
+              },
+              0
+            );
 
-        // 5. GPU & CPU conservation: pause infinite animation when tab is inactive
-        const handleVisibilityChange = () => {
-          if (document.hidden) {
-            floatTl.pause();
-          } else {
-            floatTl.resume();
+          // 3. Specular rim highlight shimmer
+          if (rimRef.current) {
+            gsap.to(rimRef.current, {
+              opacity: 1,
+              strokeWidth: 4,
+              duration: 2.2,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+            });
           }
-        };
 
-        document.addEventListener("visibilitychange", handleVisibilityChange);
+          // 4. Subtle underfold ambient depth breathing
+          if (foldRef.current) {
+            gsap.to(foldRef.current, {
+              opacity: 0.8,
+              duration: 3.2,
+              repeat: -1,
+              yoyo: true,
+              ease: "sine.inOut",
+            });
+          }
 
-        return () => {
-          document.removeEventListener("visibilitychange", handleVisibilityChange);
-        };
-      },
-      containerRef
-    );
+          // 5. GPU & CPU conservation: pause infinite animation when tab is inactive
+          const handleVisibilityChange = () => {
+            if (document.hidden) {
+              floatTl.pause();
+            } else {
+              floatTl.resume();
+            }
+          };
+
+          document.addEventListener("visibilitychange", handleVisibilityChange);
+
+          return () => {
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            floatTl.kill();
+          };
+        },
+        containerRef
+      );
+
+      return () => {
+        mm.revert();
+      };
+    });
 
     return () => {
-      mm.revert();
+      scope.dispose();
     };
   }, []);
 

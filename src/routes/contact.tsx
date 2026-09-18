@@ -5,6 +5,7 @@ import { buildMarketingHead } from "@/lib/marketing-seo";
 import { Band, BandHeading } from "@/components/public/bands";
 import { Mail, MessageSquare, MapPin } from "lucide-react";
 import { AnimatedIcon } from "@/components/public/AnimatedIcon";
+import { ORG_NAP } from "@/lib/nap";
 
 export const Route = createFileRoute("/contact")({
   loader: async () => {
@@ -38,7 +39,7 @@ function ContactPage() {
              </span>
              <h3 className="text-2xl font-bold text-foreground mb-3">Email Us</h3>
              <p className="text-muted-foreground mb-6">For general inquiries and support, drop us an email anytime.</p>
-             <a href="mailto:support@framique.com" className="text-primary font-semibold hover:underline mt-auto">support@framique.com</a>
+             <a href={`mailto:${ORG_NAP.supportEmail}`} className="text-primary font-semibold hover:underline mt-auto">{ORG_NAP.supportEmail}</a>
           </div>
 
           <div className="fq-span-4 rounded-fq-lg bg-card border border-border/70 p-8 flex flex-col items-center text-center shadow-sm fq-reveal fq-anim-rise" style={{animationDelay: '200ms'}}>
@@ -56,7 +57,7 @@ function ContactPage() {
              </span>
              <h3 className="text-2xl font-bold text-foreground mb-3">Office</h3>
              <p className="text-muted-foreground mb-6">We are operating out of Dhaka, Bangladesh, building the future of local commerce.</p>
-             <span className="text-primary font-semibold mt-auto">Dhaka, Bangladesh</span>
+             <span className="text-primary font-semibold mt-auto">{ORG_NAP.locality}, {ORG_NAP.country}</span>
           </div>
         </div>
       </Band>
