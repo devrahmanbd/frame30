@@ -158,45 +158,47 @@ function withSecurityHeaders(
   // When a CSP nonce is active, inject a <meta> tag so client-side code
   // (CustomCodeScript) can read it and attach it to dynamically created scripts.
   // The meta tag is harmless on non-storefront pages.
+  //
+  // Implementation note (ENV-1 root cause, 2026-09-18): this MUST be a
+  // TransformStream, not a hand-rolled ReadableStream with an async pull()
+  // loop. The pull version stalled SSR bodies: chunks buffered while waiting
+  // for `</head>` were never enqueued, and the stream made no progress, so
+  // every SSR page hung with zero bytes until TanStack's 120s stream killer
+  // fired. TransformStream applies backpressure per chunk and keeps pumping
+  // whether or not the transform enqueues output.
   let body = response.body;
   if (nonce) {
     const metaTag = `<meta name="csp-nonce" content="${nonce}">`;
-    const reader = response.body!.getReader();
-    const decoder = new TextDecoder();
     const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
     let buffer = "";
     let injected = false;
-
-    body = new ReadableStream({
-      async pull(controller) {
-        const { done, value } = await reader.read();
-        if (done) {
-          // Inject before </head> if not yet done
-          if (!injected && buffer.includes("</head>")) {
-            const idx = buffer.indexOf("</head>");
-            controller.enqueue(
-              encoder.encode(buffer.slice(0, idx) + metaTag + buffer.slice(idx)),
-            );
-          } else if (!injected) {
-            // No </head> found — append meta at end as fallback
+    body = response.body!.pipeThrough(
+      new TransformStream({
+        transform(chunk, controller) {
+          if (injected) {
+            controller.enqueue(chunk);
+            return;
+          }
+          buffer += decoder.decode(chunk, { stream: true });
+          const idx = buffer.indexOf("</head>");
+          if (idx === -1) return; // hold until the marker arrives; pumping continues
+          const end = idx + "</head>".length;
+          controller.enqueue(encoder.encode(buffer.slice(0, end) + metaTag));
+          buffer = buffer.slice(end);
+          injected = true;
+          if (buffer) controller.enqueue(encoder.encode(buffer));
+        },
+        flush(controller) {
+          if (!injected) {
             controller.enqueue(encoder.encode(buffer + metaTag));
           } else if (buffer) {
             controller.enqueue(encoder.encode(buffer));
           }
-          controller.close();
-          return;
-        }
-        buffer += decoder.decode(value, { stream: true });
-        // Flush complete chunks up to the </head> occurrence
-        const idx = buffer.indexOf("</head>");
-        if (idx !== -1) {
-          const end = idx + "</head>".length;
-          controller.enqueue(encoder.encode(buffer.slice(0, end) + metaTag));
-          injected = true;
-          buffer = buffer.slice(end);
-        }
-      },
-    });
+          buffer = "";
+        },
+      }),
+    );
   }
 
   return new Response(body, {
@@ -540,7 +542,7 @@ export default {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       const normalized = await normalizeCatastrophicSsrResponse(response);
-      return withTenantCanaryHeaders(
+      const final = withTenantCanaryHeaders(
         withConsoleHeaders(
           request,
           withStorefrontCache(
@@ -550,6 +552,7 @@ export default {
         ),
         canaryDecision,
       );
+      return final;
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {

@@ -19,11 +19,13 @@
 
 ## TODO backlog (priority order)
 
-- [ ] **T3** (High, TB-2/INV-01) Strip inbound `X-Merchant-Id`/`X-Tenant-Id`/`X-Store-Slug` at app entry + edge conf — BATCH 1
-- [ ] **C2** (Med, §30) Remove dead `pg_catalog_exec` generic-SQL RPC call (`support-moderation.server.ts:589`) — BATCH 1
-- [ ] **A8** (Low, ops) Fix metric drift `framique_auth_event_total` → `framique_auth_events_total` per runbook — BATCH 1
-- [ ] **A5** (Med, SLO-K03) Extend `secret-scan.mjs` to built bundles (`.output/`, `dist/`) — BATCH 1
-- [ ] **D5** (Med, INV-06) `queueIndexOps` idempotency key uses `Date.now()` — replace with content hash — BATCH 1
+- [ ] **ENV-1** (P0 INCIDENT — blocks all deploy verification + live site) All SSR routes hang pre-first-byte; `SSR stream transform exceeded maximum lifetime (120000ms)`; proven environmental via baseline-build bisect (stashed batch-1, rebuilt, same hang); healthz/static/REST healthy; REST→DB 1ms; zero-byte responses; no uncaught errors in journal — NEXT LOOP ITEM
+- [ ] **T3** (High, TB-2/INV-01) Strip inbound `X-Merchant-Id`/`X-Tenant-Id`/`X-Store-Slug` at app entry + edge conf — DONE batch 1 (`986f07a`)
+- [ ] **C2** (Med, §30) Remove dead `pg_catalog_exec` generic-SQL RPC call (`support-moderation.server.ts:589`) — DONE batch 1
+- [ ] **A8** (Low, ops) Fix metric drift `framique_auth_event_total` → `framique_auth_events_total` per runbook — DONE batch 1
+- [ ] **A5** (Med, SLO-K03) Extend `secret-scan.mjs` to built bundles (`.output/`, `dist/`) — DONE batch 1 (bundles clean; only pre-existing `.env` finding)
+- [ ] **D5** (Med, INV-06) `queueIndexOps` idempotency key uses `Date.now()` — replace with content hash — DONE batch 1
+- [ ] Follow-up: `.env` is git-tracked and trips `secrets:scan` (`AUTH_HASH_SALT`) — pre-existing on main; decide: untrack + `.env.example` vs documented exception (careful: systemd `EnvironmentFile=/opt/frame28/.env`)
 - [ ] **T1** (Critical, INV-01/SLO-S01) Reorder `extractTenantIdentifier` to verified-host-first; update `tenant-canary.test.ts` — BATCH 2
 - [ ] **T2** (High, INV-13) Introduce immutable per-request `TenantContext` (AsyncLocalStorage) + migrate middleware — BATCH 2
 - [ ] **D4** (High, TB-4) Jobs: add `resource_id`/`operation`, require `merchantId` on sched path, ownership re-verify in `search.sync` — BATCH 2
@@ -42,3 +44,4 @@
 ## Batches completed
 
 - [x] Batch 0: swarm analysis (6 agents) + mem0 context + this file.
+- [x] Batch 1 (`986f07a`): T3 + C2 + A8 + A5 + D5. Verify: 152 targeted tests pass (6 files), tsc clean on all touched files, vite build green, fresh-bundle secret-scan clean. Live-verify BLOCKED by ENV-1 (proven environmental, not from this batch).
