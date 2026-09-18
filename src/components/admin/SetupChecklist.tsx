@@ -95,28 +95,30 @@ export function SetupChecklist() {
       aria-labelledby="setup-heading"
       className="mb-6 rounded-fq-md border border-border bg-card"
     >
-      <div className="flex flex-wrap items-center gap-3 border-b border-border px-4 py-3">
-        <h2 id="setup-heading" className="text-sm font-semibold">
-          {t("Finish setting up your store", "স্টোর সেটআপ শেষ করুন")}
-        </h2>
-        <span className="text-xs tabular-nums text-muted-foreground">
-          {setup.done}/{setup.total}
-        </span>
-        <div
-          role="progressbar"
-          aria-valuenow={pct}
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-label={t("Setup progress", "সেটআপ অগ্রগতি")}
-          className="h-2 w-32 overflow-hidden rounded-full bg-muted"
-        >
-          <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <h2 id="setup-heading" className="text-sm font-semibold">
+            {t("Finish setting up your store", "স্টোর সেটআপ শেষ করুন")}
+          </h2>
+          <span className="text-xs tabular-nums text-muted-foreground">
+            {setup.done}/{setup.total}
+          </span>
+          <div
+            role="progressbar"
+            aria-valuenow={pct}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={t("Setup progress", "সেটআপ অগ্রগতি")}
+            className="h-2 w-24 sm:w-32 overflow-hidden rounded-full bg-muted"
+          >
+            <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
+          </div>
         </div>
         <button
           type="button"
           onClick={dismiss}
           disabled={busy}
-          className="ml-auto inline-flex min-h-9 items-center gap-1 rounded-fq-md px-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="ml-auto inline-flex min-h-11 sm:min-h-9 items-center gap-1 rounded-fq-md px-2.5 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
         >
           <X className="size-3.5" aria-hidden />
           {t("Dismiss", "লুকান")}

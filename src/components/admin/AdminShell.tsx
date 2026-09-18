@@ -408,8 +408,8 @@ function SectionTabs({
   const moreActive = more.some((i) => isActive(pathname, i.to));
 
   return (
-    <div className="sticky top-14 z-20 -mx-4 mb-4 bg-background/95 backdrop-blur sm:-mx-6">
-      <div className="flex items-center px-4 sm:px-6">
+    <div className="sticky top-14 z-20 -mx-3 mb-4 bg-background/95 backdrop-blur sm:-mx-6">
+      <div className="flex items-center px-3 sm:px-6">
         {/* Scrollable primary tabs */}
         <div
           ref={scrollRef}
@@ -435,7 +435,7 @@ function SectionTabs({
                   to={i.to}
                   search={i.search}
                   aria-current={active ? "page" : undefined}
-                  className={`inline-flex min-h-9 sm:min-h-8 shrink-0 items-center whitespace-nowrap rounded-fq-md px-3.5 sm:px-3 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer ${
+                  className={`inline-flex min-h-11 sm:min-h-8 shrink-0 items-center whitespace-nowrap rounded-fq-md px-3.5 sm:px-3 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer ${
                     active
                       ? "bg-foreground/[0.07] font-semibold text-foreground shadow-xs"
                       : "text-muted-foreground hover:bg-muted hover:text-foreground active:bg-muted"
@@ -548,7 +548,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           type="button"
           onClick={() => setDrawer(true)}
           aria-label={t("Open menu", "মেনু খুলুন")}
-          className="fq-iconbtn grid size-10 place-items-center rounded-fq-md text-muted-foreground hover:bg-muted hover:text-foreground md:hidden"
+          className="fq-iconbtn grid size-11 place-items-center rounded-fq-md text-muted-foreground hover:bg-muted hover:text-foreground md:hidden"
         >
           <Menu className="size-5" aria-hidden />
         </button>
@@ -642,6 +642,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
         </div>
 
         <div className="ml-auto flex items-center gap-1 sm:ml-0">
+          <button
+            type="button"
+            onClick={() => palette.setOpen(true)}
+            aria-label={t("Search anything", "যেকোনো কিছু খুঁজুন")}
+            className="fq-iconbtn grid size-11 place-items-center rounded-fq-md text-muted-foreground hover:bg-muted hover:text-foreground sm:hidden"
+          >
+            <Search className="size-4" aria-hidden />
+          </button>
           {merchant?.slug ? (
             <a
               href={`/store/${merchant.slug}`}
@@ -660,7 +668,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
       <div className="flex min-h-0 flex-1">
         <aside
-          className={`sticky top-14 hidden h-[calc(100vh-3.5rem)] shrink-0 flex-col border-r border-border/70 transition-[width] duration-200 md:flex ${
+          className={`sticky top-14 hidden h-[calc(100dvh-3.5rem)] shrink-0 flex-col border-r border-border/70 transition-[width] duration-200 md:flex ${
             collapsed ? "w-[4.25rem]" : "w-60"
           }`}
         >
@@ -703,7 +711,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               role="presentation"
               onClick={() => setDrawer(false)}
             />
-            <div className="absolute inset-y-0 left-0 flex w-72 flex-col bg-card">
+            <div className="absolute inset-y-0 left-0 flex w-72 max-w-[calc(100vw-3rem)] flex-col bg-card">
               <div className="flex h-14 items-center justify-between border-b border-border px-3">
                 <span className="font-bangla-display text-sm font-semibold">
                   {merchant?.name ?? t("Framique Admin", "ফ্রেমিক অ্যাডমিন")}
@@ -712,9 +720,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
                   type="button"
                   onClick={() => setDrawer(false)}
                   aria-label={t("Close menu", "মেনু বন্ধ")}
-                  className="fq-iconbtn grid size-10 place-items-center rounded-fq-md text-muted-foreground hover:bg-muted"
+                  className="fq-iconbtn grid size-11 place-items-center rounded-fq-md text-muted-foreground hover:bg-muted"
                 >
-                  <X className="size-4" aria-hidden />
+                  <X className="size-5" aria-hidden />
                 </button>
               </div>
               <SidebarNav
@@ -731,7 +739,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                           to={i.to}
                           search={i.search}
                           onClick={() => setDrawer(false)}
-                          className="block min-h-9 rounded-fq-md px-2.5 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
+                          className="flex min-h-11 items-center rounded-fq-md px-3 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
                         >
                           {t(i.en, i.bn)}
                         </Link>
@@ -744,7 +752,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           </div>
         )}
 
-        <main className="min-w-0 flex-1 p-4 sm:p-6">
+        <main className="min-w-0 flex-1 p-3 sm:p-6">
           <div className="mx-auto max-w-6xl">
             <SectionTabs group={activeGroup} pathname={pathname} />
             {children}

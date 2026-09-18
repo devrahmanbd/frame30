@@ -654,10 +654,10 @@ export async function optimistic<T>({
 /* ----------------------------------------------------------------- buttons */
 
 export const btnPrimary =
-  "fq-shine inline-flex min-h-9 items-center justify-center gap-1.5 rounded-fq-md bg-primary px-3 text-sm font-medium text-primary-foreground shadow-[0_1px_0_0_rgb(255_255_255/0.18)_inset,0_6px_16px_-10px_var(--fq-signal)] transition-[transform,box-shadow,opacity] duration-150 hover:-translate-y-px hover:opacity-95 active:translate-y-0 disabled:pointer-events-none disabled:opacity-50";
+  "fq-shine inline-flex min-h-11 md:min-h-9 items-center justify-center gap-1.5 rounded-fq-md bg-primary px-3 text-sm font-medium text-primary-foreground shadow-[0_1px_0_0_rgb(255_255_255/0.18)_inset,0_6px_16px_-10px_var(--fq-signal)] transition-[transform,box-shadow,opacity] duration-150 hover:-translate-y-px hover:opacity-95 active:translate-y-0 disabled:pointer-events-none disabled:opacity-50";
 
 export const btnGhost =
-  "inline-flex min-h-9 items-center justify-center gap-1.5 rounded-fq-md border border-border bg-card px-2.5 text-sm text-foreground transition-[background-color,border-color,transform] duration-150 hover:-translate-y-px hover:border-[color-mix(in_oklab,var(--fq-signal)_30%,var(--color-border))] hover:bg-muted active:translate-y-0 disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex min-h-11 md:min-h-9 items-center justify-center gap-1.5 rounded-fq-md border border-border bg-card px-2.5 text-sm text-foreground transition-[background-color,border-color,transform] duration-150 hover:-translate-y-px hover:border-[color-mix(in_oklab,var(--fq-signal)_30%,var(--color-border))] hover:bg-muted active:translate-y-0 disabled:pointer-events-none disabled:opacity-50";
 
 /* --------------------------------------------------------------- DataTable */
 
@@ -889,7 +889,7 @@ export function DataTable<T>({
                     <td className={cn(CELL_PAD[d], "text-right")}>
                       <div
                         onClick={(e) => e.stopPropagation()}
-                        className="flex items-center justify-end gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 group-focus:opacity-100"
+                        className="flex items-center justify-end gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 sm:group-focus:opacity-100 transition-opacity duration-150"
                       >
                         {rowActions(row)}
                       </div>
@@ -912,7 +912,7 @@ export function DataTable<T>({
               type="button"
               disabled={page <= 1}
               onClick={() => onPage(page - 1)}
-              className="rounded-fq-md border border-border px-2 py-1 disabled:opacity-40"
+              className="inline-flex min-h-11 sm:min-h-8 items-center justify-center rounded-fq-md border border-border px-3 sm:px-2 py-1 disabled:opacity-40"
             >
               Previous
             </button>
@@ -920,7 +920,7 @@ export function DataTable<T>({
               type="button"
               disabled={page >= pages}
               onClick={() => onPage(page + 1)}
-              className="rounded-fq-md border border-border px-2 py-1 disabled:opacity-40"
+              className="inline-flex min-h-11 sm:min-h-8 items-center justify-center rounded-fq-md border border-border px-3 sm:px-2 py-1 disabled:opacity-40"
             >
               Next
             </button>
@@ -982,7 +982,7 @@ export function Drawer({
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="rounded-fq-md p-1 hover:bg-muted"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-fq-md p-1 hover:bg-muted"
           >
             <X className="size-4" aria-hidden />
           </button>
@@ -1290,7 +1290,7 @@ export function ActionMenu({
                 a.onSelect();
               }}
               className={cn(
-                "block w-full rounded-fq-sm px-2 py-1.5 text-left text-sm hover:bg-muted disabled:opacity-40",
+                "flex min-h-11 md:min-h-8 w-full items-center rounded-fq-sm px-2.5 py-1.5 text-left text-sm hover:bg-muted disabled:opacity-40",
                 a.destructive && "text-[var(--fq-danger)]",
               )}
             >

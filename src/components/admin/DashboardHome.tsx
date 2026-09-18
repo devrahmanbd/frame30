@@ -62,7 +62,7 @@ export function TodayStrip({ data }: { data: HomeData }) {
         <p className="text-xs font-medium uppercase tracking-[0.14em] text-primary-foreground/70">
           {t("Revenue today", "আজকের বিক্রি")}
         </p>
-        <p className="fq-num mt-2 text-4xl font-semibold tracking-tight sm:text-5xl">
+        <p className="fq-num mt-2 text-3xl sm:text-5xl font-semibold tracking-tight break-words">
           {fmtMinor(data.strip.revenue.valueMinorInt, c)}
         </p>
         <p className="mt-3 flex flex-wrap items-center gap-2">
@@ -136,7 +136,7 @@ export function NeedsQueue({ data }: { data: HomeData }) {
               </div>
               <Link
                 to={n.to}
-                className="inline-flex min-h-8 shrink-0 items-center rounded-full border border-border bg-card px-3 text-xs font-medium transition-colors hover:border-primary/40 hover:text-primary"
+                className="inline-flex min-h-11 sm:min-h-8 shrink-0 items-center rounded-full border border-border bg-card px-3 text-xs font-medium transition-colors hover:border-primary/40 hover:text-primary"
               >
                 {t(n.actionEn, n.actionBn)}
               </Link>
@@ -173,11 +173,11 @@ export function LiveActivity({ data }: { data: HomeData }) {
           {data.feed.slice(0, 8).map((f) => (
             <li
               key={f.id}
-              className="flex items-baseline justify-between gap-3 py-2"
+              className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-3 py-2"
             >
               <Link
                 to={f.to}
-                className="flex min-h-8 min-w-0 items-center truncate hover:text-primary hover:underline"
+                className="flex min-h-11 sm:min-h-8 min-w-0 items-center truncate hover:text-primary hover:underline"
               >
                 {t(f.titleEn, f.titleBn)}
               </Link>

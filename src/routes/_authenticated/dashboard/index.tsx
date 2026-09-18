@@ -83,7 +83,7 @@ function Dashboard() {
         </div>
         <Link
           to="/dashboard/analytics"
-          className="inline-flex min-h-9 items-center fq-shine rounded-fq-md bg-primary px-3 text-[13px] font-medium text-primary-foreground hover:opacity-90"
+          className="inline-flex min-h-11 sm:min-h-9 items-center fq-shine rounded-fq-md bg-primary px-3 text-[13px] font-medium text-primary-foreground hover:opacity-90"
         >
           {t("Full analytics", "বিস্তারিত অ্যানালিটিক্স")}
         </Link>
@@ -183,7 +183,7 @@ function Dashboard() {
               {data ? (
                 <section
                   aria-label="Seven day totals"
-                  className="fq-card fq-edge-inner flex flex-wrap gap-x-8 gap-y-3 p-4 text-sm"
+                  className="fq-card fq-edge-inner grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-3 p-4 text-sm"
                 >
                   {[
                     {

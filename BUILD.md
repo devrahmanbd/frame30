@@ -418,7 +418,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [~] Onboarding checklist + guided tours — `SetupChecklist.tsx` dynamic progress checklist on dashboard; interactive tour pending
 - [ ] In-app changelog + feature announcements
 - [ ] Merchant newsletter from platform
-- [~] Mobile-responsive admin pass — `scripts/responsive-sweep.mjs` viewport sweep (320px-1920px), zero horizontal scroll and 44px touch targets enforced across core surfaces
+- [x] Mobile-responsive admin pass — `scripts/responsive-sweep.mjs` viewport sweep (320px-1920px), zero horizontal scroll and 44px touch targets enforced across core surfaces
 
 ---
 
