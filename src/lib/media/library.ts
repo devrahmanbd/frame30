@@ -532,7 +532,7 @@ export function validateMagicBytes(
       ...AUDIO_MIME,
       ...DOC_MIME,
     ]);
-    if (!KNOWN_MIMES.has(mime)) {
+    if (!(KNOWN_MIMES as Set<string>).has(mime)) {
       return {
         ok: false,
         reason: "mime_not_allowed",

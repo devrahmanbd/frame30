@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import {
-  RiskTier,
+  type RiskTier,
   resolvePolicy,
   resolveTierFromSignals,
   RESOLUTION_REASONS,
