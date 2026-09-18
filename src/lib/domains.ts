@@ -254,3 +254,23 @@ export function evaluateDns(input: {
   if (!routing) return { ownership, routing, reason: "domain.routing_missing" };
   return { ownership, routing, reason: null };
 }
+
+export type BillingPlanKey = "launch" | "growth" | "business" | "enterprise";
+
+/**
+ * Custom-domain cap per plan tier (Let's Encrypt quota protection).
+ * Unknown input fails closed to the launch quota — never unlimited.
+ */
+export function domainQuotaForPlan(plan: BillingPlanKey): number {
+  switch (plan) {
+    case "growth":
+      return 3;
+    case "business":
+      return 10;
+    case "enterprise":
+      return 25;
+    case "launch":
+    default:
+      return 1;
+  }
+}

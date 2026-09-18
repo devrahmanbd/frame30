@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -19,13 +19,16 @@ import {
   pluginToggleFn,
   pluginUninstallFn,
 } from "@/lib/plugins.functions";
+import { marketUninstallWidgetFn } from "@/lib/marketplace.functions";
 import {
   satisfiesApiRange,
   type InstalledPlugin,
   type SettingsValues,
 } from "@/lib/plugin-manifest";
-import { ConfirmDialog } from "@/components/console/kit";
 import { PluginSettingsForm } from "./PluginSettingsForm";
+import { ConfirmDialog } from "@/components/console/kit";
+
+type InstallRef = { id: string; listing_slug: string; status: string };
 
 /**
  * WordPress Plugins › Installed Plugins (`plugins.php`) Parity Desk.
@@ -33,13 +36,15 @@ import { PluginSettingsForm } from "./PluginSettingsForm";
  * status filters (All, Active, Inactive), multi-select bulk operations, and
  * settings modal.
  */
-export function InstalledApps() {
+export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
   const { t } = useLang();
   const qc = useQueryClient();
+  const router = useRouter();
   const list = useServerFn(pluginListFn);
   const save = useServerFn(pluginSettingsSaveFn);
   const toggle = useServerFn(pluginToggleFn);
-  const uninstall = useServerFn(pluginUninstallFn);
+  const uninstallWidget = useServerFn(marketUninstallWidgetFn);
+  const uninstallPlugin = useServerFn(pluginUninstallFn);
 
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
@@ -65,8 +70,12 @@ export function InstalledApps() {
     () => pluginsQuery.data?.plugins ?? [],
     [pluginsQuery.data?.plugins],
   );
-  const refresh = () =>
+  const refresh = () => {
     qc.invalidateQueries({ queryKey: ["admin", "plugins"] });
+    void router.invalidate();
+  };
+  const liveInstallFor = (pluginId: string) =>
+    installs.find((i) => i.listing_slug === pluginId && isLiveStatus(i.status));
 
   const filteredPlugins = useMemo(() => {
     return allPlugins.filter((p) => {
@@ -94,7 +103,13 @@ export function InstalledApps() {
   });
 
   const uninstallMutation = useMutation({
-    mutationFn: (pluginId: string) => uninstall({ data: { pluginId } }),
+    mutationFn: async (pluginId: string) => {
+      const install = liveInstallFor(pluginId);
+      if (install) {
+        return uninstallWidget({ data: { installId: install.id } });
+      }
+      return uninstallPlugin({ data: { pluginId } });
+    },
     onSuccess: () => {
       toast.success(
         t("Plugin deleted successfully", "প্লাগইন সফলভাবে মুছে ফেলা হয়েছে"),
@@ -545,7 +560,12 @@ export function InstalledApps() {
         onCancel={() => setConfirmBulkDelete(false)}
         onConfirm={async () => {
           for (const id of selectedIds) {
-            await uninstall({ data: { pluginId: id } });
+            const install = liveInstallFor(id);
+            if (install) {
+              await uninstallWidget({ data: { installId: install.id } });
+            } else {
+              await uninstallPlugin({ data: { pluginId: id } });
+            }
           }
           toast.success(
             t("Selected plugins deleted", "নির্বাচিত প্লাগইন মুছে ফেলা হয়েছে"),
@@ -558,4 +578,8 @@ export function InstalledApps() {
       />
     </section>
   );
+}
+
+function isLiveStatus(status: string) {
+  return status === "installed" || status === "trial" || status === "paused";
 }

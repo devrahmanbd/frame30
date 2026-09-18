@@ -122,3 +122,18 @@ describe("evaluateDns", () => {
     ).toBe("domain.routing_missing");
   });
 });
+
+describe("domainQuotaForPlan", () => {
+  it("caps custom domains per plan tier (LE quota protection)", async () => {
+    const { domainQuotaForPlan } = await import("./domains");
+    expect(domainQuotaForPlan("launch")).toBe(1);
+    expect(domainQuotaForPlan("growth")).toBe(3);
+    expect(domainQuotaForPlan("business")).toBe(10);
+    expect(domainQuotaForPlan("enterprise")).toBe(25);
+  });
+
+  it("fails closed to launch quota on unknown input", async () => {
+    const { domainQuotaForPlan } = await import("./domains");
+    expect(domainQuotaForPlan("unknown" as never)).toBe(1);
+  });
+});

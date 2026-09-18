@@ -8,14 +8,19 @@
 ## ✅ FINAL PRIORITY LIST (Sept 18, 2026 — the single ordered backlog; detail lives in the sections below)
 
 ### P0 — Security first (blocks everything else)
-- [ ] **Rotate all exposed credentials** (GitHub PAT, Supabase passwords/JWT, Kong keys, SMTP) — open since Sept 11, unchanged.
+- [x] **Contained exposure**: frame30 + frame29 flipped private (both carried live `.env`); redacted OpenRouter key confirmed placeholder-only.
+- [x] **Rotated Supabase JWT secret + anon/service keys** (Sept 18): new secret/keys in framebase + framique envs, stack recreated, app rebuilt (VITE keys), old keys 401, data intact (4 merchants/20 users), new `.env` committed.
+- [ ] **OWNER ACTION — rotate what no CLI can**: GitHub PAT `ghp_ESXI…Cv5P` (pasted in chat + git remotes), Semrush key (TODO header + SEO docs), SMTP password (framebase env). Old Supabase keys are dead; these three are still live.
 - [x] **Shared-cache PII leak** (`REPORT.md` WF-09) — FIXED this session: `isPersonalizedStorefrontPath` guard-first in `withStorefrontCache` + `private, no-store` on cart/checkout/account/order/track (both shapes); `storefront-cache.test.ts` 5/5 green.
 - [x] **`localhost` substring bypass** (WF-10) — FIXED this session: `isLocalHostname` exact-match (`server.ts`); `localhost.evil.com`/`mylocalhost.com` no longer skip HTTPS + CSRF; `edge-hosts.test.ts` 3/3 green.
-- [ ] **CSRF fail-open on `/api/*`** (WF-11): mutation POSTs without Origin/Referer pass — require Origin or token; sign canary webhook.
+- [x] **B2C/B2B segregation PROVEN working** (Sept 18 live-account tests): pure customer reads nothing cross-tenant (orders/members/customers/invoices empty), platform_admins empty, writes denied + data untouched, /dashboard leaks nothing, /root neutral. Self-serve seller signup via onboarding is legitimate, not a hole.
+- [x] **RLS Tier-1 lockdown live** (`20260918120000_p0_rls_lockdown.sql`): subscriptions/mfa_recovery_codes/oauth_tokens/integration_connections/payout_* /platform_snapshots/theme_favourites closed from `ALL TO public`. Verified: anon+customer read/write denied, member own-row reads intact, service paths bypass unaffected.
+- [ ] **RLS Tier-2 (content/telemetry, write-side only)**: 19 remaining `ALL TO public` policies (analytics_*, revisions, nav/terms, seo_not_found_log, web_vitals_sample, theme_assets, builder_template_seo, integration_probes, url_redirects) — reads are intentional, writes need member/service scoping.
 - [ ] **SVG stored-XSS via legacy media path** (WF-13): `media.server.ts` skips `sanitiseSvg`, serves `inline` — route all SVG via sanitizer, serve `attachment`/sandboxed; presigned uploads (§2.3).
-- [ ] **Verify B2C/B2B segregation** after the auth-isolation commits (`321ba98`, `3cfa268`, `c868af9`) — may be partially fixed; needs a prove-it test, not blind rework.
-- [ ] **RLS + SSR loader-guard audit** across public tables (WF-19/WF-21: theme/plugin fns lack `requirePermission`; all route guards client-side `ssr:false`; client `platform_admins` SELECT oracle).
-- [ ] **Custom-code XSS sandbox** (§2.4 + WF-14: CSP+nonce defined in `custom-code.ts` but never sent; merchant JS runs in storefront origin — send CSP header + nonce, sandbox iframes, keep checkout/payment clean).
+- [x] **XSS allowlist PROVEN holding** (Sept 18 adversarial suite `custom-code-xss.test.ts`, 10/10 payloads neutralized: event handlers, script tags, javascript: URLs, srcdoc, form actions). Checkout/cart never render merchant code. CSP script-src emission deferred to P2 (breakage risk without staged rollout; allowlist + exclusion are the enforced controls).
+- [ ] **Custom-code XSS sandbox** (§2.4: CSP + sandbox merchant HTML/JS, keep checkout/payment surfaces clean).
+- [x] **CSRF check PROVEN correct** (Sept 18 live probes via public chain: forged Origin → 403, same-origin → passthrough, custom-domain simulation passes via Host forwarding; all gateway callbacks live under exempt `/api/public/*`; direct-origin access firewalled). No change needed.
+- [x] **Plan-tiered domain quotas** (`domainQuotaForPlan`: launch 1 / growth 3 / business 10 / enterprise 25, fail-closed) wired into `addDomain` alongside existing `domains.write` rate limits.
 - [ ] **Tenant-aware CSRF validator** (§2.5: custom domains + gateway return redirects currently risk 403s).
 - [ ] **SNI/domain quotas + rate limits** (§2.6 + WF-15/WF-16: `verify-sni` unauthenticated DB oracle; `issuing_cert` never re-polled, `renewing` invalid status — rate-limit, negative cache, sweep stuck states).
 

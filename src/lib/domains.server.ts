@@ -26,6 +26,7 @@ import {
   certHealth,
   challengeHost,
   dnsInstructions,
+  domainQuotaForPlan,
   evaluateDns,
   nextCheckDelaySeconds,
   normalizeHostname,
@@ -40,10 +41,11 @@ type DomainRow = Database["public"]["Tables"]["merchant_domains"]["Row"];
 export const PLAN_DOMAIN_QUOTA: Record<string, number> = {
   launch: 1,
   growth: 3,
-  business: 5,
-  enterprise: 10,
+  business: 10,
+  enterprise: 25,
 };
 
+/** List-page cap only — the add gate uses per-plan quotas (domainQuotaForPlan). */
 const MAX_DOMAINS_PER_MERCHANT = 10;
 const DNS_TIMEOUT_MS = 4000;
 
@@ -258,7 +260,17 @@ export async function addDomain(db: Client, merchantId: string, userId: string, 
       .from("merchant_domains")
       .select("id", { count: "exact", head: true })
       .eq("merchant_id", merchantId);
-    if ((count ?? 0) >= MAX_DOMAINS_PER_MERCHANT) throw new DomainError("domain.limit_reached", 409);
+    // Plan-tiered quota (LE quota protection). Missing subscription reads
+    // as launch — fail closed, never unlimited.
+    const { data: sub } = await db
+      .from("subscriptions")
+      .select("plan")
+      .eq("merchant_id", merchantId)
+      .maybeSingle();
+    const quota = domainQuotaForPlan(
+      (sub?.plan ?? "launch") as "launch" | "growth" | "business" | "enterprise",
+    );
+    if ((count ?? 0) >= quota) throw new DomainError("domain.limit_reached", 409);
 
     const service = await admin();
     // Global uniqueness is enforced by a unique index; surfacing it as a clean
