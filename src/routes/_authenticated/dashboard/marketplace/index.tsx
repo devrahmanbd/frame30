@@ -10,6 +10,7 @@ import {
   marketInstallStatusFn,
   marketListingVersionsFn,
   marketUninstallThemeFn,
+  marketUninstallWidgetFn,
 } from "@/lib/marketplace.functions";
 import { themeActivateFn, themeDeleteFn } from "@/lib/themes/appearance.functions";
 import { InstallConsent, type ConsentVersion } from "@/components/marketplace/InstallConsent";
@@ -17,6 +18,9 @@ import { InstalledApps } from "@/components/marketplace/InstalledApps";
 import { ConfirmDialog } from "@/components/console/kit";
 
 export const Route = createFileRoute("/_authenticated/dashboard/marketplace/")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    tab: s.tab === "widget" ? ("widget" as const) : ("theme" as const),
+  }),
   loader: () => marketCatalogFn(),
   head: () => ({
     meta: [
@@ -53,7 +57,8 @@ function Marketplace() {
   const router = useRouter();
   const qc = useQueryClient();
   const { t, tk } = useLang();
-  const [tab, setTab] = useState<"theme" | "widget">("theme");
+  const { tab: initialTab } = Route.useSearch();
+  const [tab, setTab] = useState<"theme" | "widget">(initialTab);
   const [query, setQuery] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
   const [category, setCategory] = useState("all");
@@ -65,7 +70,9 @@ function Marketplace() {
     { listing: Listing; trial: boolean; version: ConsentVersion | null } | null
   >(null);
 
-  const [pendingDelete, setPendingDelete] = useState<{ installId: string; name: string } | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<
+    { installId: string; name: string; kind: "theme" | "widget" } | null
+  >(null);
 
   const source = tab === "theme" ? data.themes : data.widgets;
   const themeStateBySlug = useMemo(
@@ -189,6 +196,24 @@ function Marketplace() {
       setPendingDelete(null);
       setActive(null);
       await router.invalidate();
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Delete failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /** WordPress-style plugin uninstall: removes the plugin row, retires the ledger row. */
+  async function deleteInstalledWidget() {
+    if (!pendingDelete) return;
+    setBusy(true);
+    try {
+      await marketUninstallWidgetFn({ data: { installId: pendingDelete.installId } });
+      setMsg(tk("marketplace.widget_deleted"));
+      setPendingDelete(null);
+      setActive(null);
+      await router.invalidate();
+      await qc.invalidateQueries({ queryKey: ["admin", "plugins"] });
     } catch (e) {
       setMsg(e instanceof Error ? e.message : "Delete failed");
     } finally {
@@ -376,7 +401,7 @@ function Marketplace() {
                     <button
                       type="button"
                       disabled={busy}
-                      onClick={() => setPendingDelete({ installId: liveInstall.id, name: l.name })}
+                      onClick={() => setPendingDelete({ installId: liveInstall.id, name: l.name, kind: "theme" })}
                       className="min-h-11 rounded-fq-md border border-destructive/40 px-3 text-sm text-destructive disabled:opacity-60"
                     >
                       {t("Delete", "মুছুন")}
@@ -415,11 +440,21 @@ function Marketplace() {
 
         <ConfirmDialog
           open={pendingDelete !== null}
-          title={t("Delete theme", "থিম মুছুন")}
-          description={tk("marketplace.confirm_delete_theme")}
+          title={
+            pendingDelete?.kind === "widget"
+              ? t("Delete app", "অ্যাপ মুছুন")
+              : t("Delete theme", "থিম মুছুন")
+          }
+          description={
+            pendingDelete?.kind === "widget"
+              ? tk("marketplace.confirm_delete_widget")
+              : tk("marketplace.confirm_delete_theme")
+          }
           confirmLabel={t("Delete", "মুছুন")}
           destructive
-          onConfirm={() => deleteInstalledTheme()}
+          onConfirm={() =>
+            pendingDelete?.kind === "widget" ? deleteInstalledWidget() : deleteInstalledTheme()
+          }
           onCancel={() => setPendingDelete(null)}
         />
 
@@ -453,14 +488,27 @@ function Marketplace() {
                       >
                         {i.status === "paused" ? t("Enable", "চালু") : t("Pause", "স্থগিত")}
                       </button>
-                      <button
-                        type="button"
-                        disabled={busy}
-                        onClick={() => setStatus(i.id, "rolled_back")}
-                        className="min-h-11 rounded-fq-md border border-border px-3 disabled:opacity-60"
-                      >
-                        {t("Restore original files", "মূল ফাইল ফেরান")}
-                      </button>
+                      {i.kind === "theme" ? (
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() => setStatus(i.id, "rolled_back")}
+                          className="min-h-11 rounded-fq-md border border-border px-3 disabled:opacity-60"
+                        >
+                          {t("Restore original files", "মূল ফাইল ফেরান")}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() =>
+                            setPendingDelete({ installId: i.id, name: i.listing_name, kind: "widget" })
+                          }
+                          className="min-h-11 rounded-fq-md border border-destructive/40 px-3 text-sm text-destructive disabled:opacity-60"
+                        >
+                          {t("Delete", "মুছুন")}
+                        </button>
+                      )}
                     </>
                   )}
                 </span>
@@ -469,7 +517,7 @@ function Marketplace() {
           </ul>
         </section>
 
-        <InstalledApps />
+        <InstalledApps installs={data.installs} />
       </div>
   );
 }

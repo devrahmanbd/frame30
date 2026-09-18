@@ -394,3 +394,39 @@ export async function uninstallBuiltinTheme(db: Client, merchantId: string, inst
     .eq("id", installId);
   return { ok: true };
 }
+
+/**
+ * WordPress-style plugin uninstall: removes the plugin_state row (if the
+ * install maps to one) and retires the ledger row to `removed`. Unlike
+ * pause/resume this is terminal — reinstalling creates a fresh row.
+ */
+export async function uninstallWidgetInstall(db: Client, merchantId: string, installId: string) {
+  const { data: row } = await db
+    .from("marketplace_installs")
+    .select("id, kind, listing_slug, status")
+    .eq("merchant_id", merchantId)
+    .eq("id", installId)
+    .maybeSingle();
+  if (!row || row.kind !== "widget") throw new Error("market_install_not_found");
+
+  const { data: plugins } = await db
+    .from("plugin_state")
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("plugin_id", row.listing_slug);
+  const matched = (plugins ?? []) as { id: string }[];
+  if (matched.length) {
+    await db
+      .from("plugin_state")
+      .delete()
+      .eq("merchant_id", merchantId)
+      .eq("plugin_id", row.listing_slug);
+  }
+
+  await db
+    .from("marketplace_installs")
+    .update({ status: "removed" as never })
+    .eq("merchant_id", merchantId)
+    .eq("id", installId);
+  return { ok: true, removedPlugin: matched.length > 0 };
+}

@@ -160,6 +160,16 @@ export const marketUninstallThemeFn = createServerFn({ method: "POST" })
     return uninstallBuiltinTheme(context.supabase, merchantId, data.installId);
   });
 
+/** WordPress-style plugin uninstall: removes the plugin row, retires the ledger row. */
+export const marketUninstallWidgetFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ installId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { uninstallWidgetInstall } = await import("./marketplace-install.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return uninstallWidgetInstall(context.supabase, merchantId, data.installId);
+  });
+
 export const marketMineFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {

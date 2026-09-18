@@ -270,6 +270,11 @@ export const DICT = {
     en: "Delete this theme and its versions? This cannot be undone.",
     bn: "এই থিম ও এর সংস্করণগুলো মুছুন? এটি ফেরানো যাবে না।",
   },
+  "marketplace.widget_deleted": { en: "App deleted.", bn: "অ্যাপ মুছে ফেলা হয়েছে।" },
+  "marketplace.confirm_delete_widget": {
+    en: "Remove this app and its settings? This cannot be undone.",
+    bn: "এই অ্যাপ ও এর সেটিংস সরিয়ে ফেলুন? এটি ফেরানো যাবে না।",
+  },
   "marketplace.status_updated": { en: "Status updated.", bn: "স্ট্যাটাস হালনাগাদ।" },
   "marketplace.rolled_back": { en: "Rolled back.", bn: "রোলব্যাক সম্পন্ন।" },
   "marketplace.theme.applied": {

@@ -6,6 +6,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
  */
 export const Route = createFileRoute("/_authenticated/dashboard/marketplace/moderation")({
   beforeLoad: () => {
-    throw redirect({ to: "/dashboard/marketplace" });
+    throw redirect({ to: "/dashboard/marketplace", search: { tab: "theme" } });
   },
 });
