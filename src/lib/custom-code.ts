@@ -728,6 +728,8 @@ export function reviewHtmlWidget(markup: string): Finding[] {
 
 /* ------------------------------------------------------------------- CSP */
 
+import { type RiskTier, resolvePolicy } from "./risk-tier";
+
 /** Cryptographically random per-request nonce (base64url, 128 bits). */
 export function newNonce(): string {
   const bytes = new Uint8Array(16);
@@ -740,21 +742,33 @@ export function newNonce(): string {
 /**
  * Strict storefront CSP. `unsafe-inline` is never emitted: every inline script
  * we ship (hydration payload, custom JS island) carries the request nonce.
+ *
+ * The optional `tier` parameter adjusts the policy via `resolvePolicy`:
+ *   - low / lower_medium: nonce + strict-dynamic + full frame-src
+ *   - medium: script-src 'self' only, no nonce, self-only frame
+ *   - high: script-src 'self', no frame-src at all
  */
 export function buildCsp(
   nonce: string,
   opts: { connect?: string[]; frame?: string[] } = {},
+  tier: RiskTier = "low",
 ): string {
-  const connect = ["'self'", ...(opts.connect ?? [])].join(" ");
-  const frame = [
-    "'self'",
-    "https://www.youtube.com",
-    "https://player.vimeo.com",
-    ...(opts.frame ?? []),
-  ].join(" ");
+  const policy = resolvePolicy(tier);
+
+  const connect = policy.features.apiWrite
+    ? ["'self'", ...(opts.connect ?? [])].join(" ")
+    : "'self'";
+
+  const frame =
+    policy.csp.frameSrc.length > 0 ? policy.csp.frameSrc.join(" ") : "'none'";
+
+  const scriptSrc = policy.csp.nonce
+    ? `'self' 'nonce-${nonce}' 'strict-dynamic'`
+    : "'self'";
+
   return [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    `script-src ${scriptSrc}`,
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     // Phase 3: merchant-uploaded faces are served from our own origin through
     // /api/public/font/*, so no third-party font origin is ever whitelisted
