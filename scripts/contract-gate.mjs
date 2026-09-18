@@ -207,6 +207,20 @@ MANIFEST.push({
   ],
 });
 
+MANIFEST.push({
+  file: "src/lib/disaster-proof-backup.contract.test.ts",
+  why: "Disaster-Proof Blue/Green Deployment & Whole-System Time-Machine Backup & Restore Architecture.",
+  mustCover: [
+    "db.dump",
+    "roles.sql",
+    "storage.tar.zst",
+    "manifest.json",
+    "rehearse.sh",
+    "restore.sh",
+    "Whole-System Time-Machine Backup",
+  ],
+});
+
 const failures = [];
 const rows = [];
 

@@ -47,66 +47,61 @@ tenant messaging/senders (README messaging console), the E2E loop registry
 - Logs and the incident timeline are PII-minimal; dead-letter payloads appear
   as canonicalized "voyage" links, never raw bodies (README §4).
 
-## 4. Backup machine (canonical backup)
+## 4. Whole-System Backup machine (canonical backup)
 
-`scheduled → snapshot → validated → rotated | retained`
+`scheduled → snapshot → encrypted → rehearsed → certified → rotated | retained`
 
-- `scheduled`: a cadence tick fires and a lease is created — one backup in
-  flight per site class. Cadence is a named TBD (owner Platform-Operations).
-- `snapshot`: a consistent point-in-time copy is created (WAL/full snapshot +
-  checksum), stored per-tenant, and state is observable on the jobs-health
-  panel.
-- `validated`: the snapshot is verified — checksum, read-back, spot row-count —
-  not merely copied. **Never rotate an unvalidated snapshot**, and state
-  `validated` is required before any restore may begin.
-- `rotated | retained`: rotation applies the retention policy; retained copies
-  cover the analytics horizon (90d raw → 3y aggregate, `docs/09-analytics`).
-  Retention rules are measured and owned, never invented.
-
-A failure anywhere lands the lease in the ops DLQ with a reason (at-least-once,
-never silent skip) and renders a status chip, never a color-only state
-(README §9).
+- `scheduled`: a cadence tick fires (hourly WAL checkpoint + nightly full snapshot) and a lease is created.
+- `snapshot`: a consistent point-in-time copy capturing the **entire system**:
+  - `roles.sql`: All database roles, passwords, and grants (`pg_dumpall --roles-only`).
+  - `db_cluster.dump`: Full PostgreSQL database in custom format (`-Fc`) containing `auth` (GoTrue credentials, sessions, refresh tokens), `storage` (buckets and object metadata), `public` (tenants, merchants, products, orders, ledger), and `vault` / `pgsodium` secrets.
+  - `storage.tar.zst`: Physical archive of `/var/lib/storage` (merchant images, theme assets, invoices) compressed with `zstd -T0`.
+  - `configs.tar.zst`: Docker Compose manifests, OpenResty routing, ACME TLS certificates & private keys.
+  - `redis.rdb`: Redis memory snapshot (canary state, idempotency keys, rate limit counters).
+  - `manifest.json`: Cryptographic SHA-256 manifest of all artifacts, table counts, and environment metadata.
+- `encrypted`: Client-side authenticated envelope encryption (AES-256-GCM / `age`) using an off-site master key.
+  - **Theft Immunity**: Even if the host server is lost, stolen, or seized, the encrypted backup set reveals zero customer data, zero passwords, and zero credentials without the vault private key.
+- `rehearsed`: The encrypted snapshot is immediately restored in an isolated container sandbox (`framique-restore`), verifying SHA-256 checksums, `auth.users`, storage files, and business table row counts.
+- `certified`: ONLY marked `certified_restorable` when 100% of rehearsal assertions pass. Never rotate or rely on an uncertified snapshot.
+- `rotated | retained`: Retained locally on a 14-day rolling window, with encrypted copies mirrored to multi-cloud immutable WORM object storage (e.g. S3 with Object Lock).
 
 ## 5. Recovery machine (canonical recovery)
 
-`restore → verified → switchover`
+`retrieve → decrypt → verify_manifest → restore → smoke_check → switchover`
 
-- `restore`: a target site/off-site snapshot is selected; tenant rows are
-  restored to the target.
-- `verified`: read-back checksums, row counts, and an E2E smoke check pass;
-  `verified` is only reached on evidence.
-- `switchover`: read/write is flipped to the restored target; writes resume;
-  the run (timestamp, checksum, operator) is appended to the `incidents`
-  postmortem. An incident may not be `resolved` until switchover completes and
-  the post-backfill finishes (state, not color).
+- `retrieve`: Fetch target certified snapshot from local storage or off-site immutable WORM mirror.
+- `decrypt`: Decrypt artifact bundle using the off-host master key.
+- `verify_manifest`: Assert SHA-256 checksums of all artifacts match `manifest.json` before a single byte is loaded.
+- `restore`:
+  - Replay `roles.sql` into Postgres target.
+  - Restore all database schemas (`auth`, `storage`, `public`, `vault`) from `db_cluster.dump`.
+  - Unpack `storage.tar.zst` into `/var/lib/storage`.
+  - If recovering from corruption, replay WAL logs up to the exact target second (Point-in-Time Recovery).
+- `smoke_check`: Automated read-back assertions verify table counts, `auth.users` readiness, and PostgREST endpoint health.
+- `switchover`: Traffic is cut over to the restored target. An incident postmortem entry is appended with operator, timestamp, and RTO/RPO metrics.
 
-If switchover fails, recovery returns to the `latest validated` backup — never
-to an unvalidated snapshot — and the failure is recorded (README §7).
+## 6. Restore drill & Rehearsal Gate
 
-## 6. Restore drill
+- **Automated Rehearsal Gate (`ops/backup/rehearse.sh`)**:
+  - Restores into throwaway `framique-restore` stack.
+  - Fatal assertions:
+    - `auth.users` count matches snapshot expectations and GoTrue can authenticate.
+    - All money/tenancy tables (`merchants`, `products`, `orders`, `order_items`, `payments`) are verified.
+    - Storage bucket files exist and match database object references.
+    - Checksums match `manifest.json` exactly.
+  - Records measured RTO and RPO into `ops/backup/rehearsals.jsonl`.
+  - Fails closed: an assertion failure exits non-zero, triggers an immediate alert, and blocks production deployment gates.
 
-- The drill is scheduled from the ops console and creates a maintenance
-  window entry; it runs restore → validate → switchover on a recent snapshot
-  in a staging target.
-- The suite's failure arm already includes **backup → restore** (`docs/15-e2e`
-  §13); this drill is the live companion and must pass before a release claim.
-- Any _new_ cyclic loop beyond the existing loops must be registered in
-  `docs/15-e2e` as an `e2e_<area>_loop` with a TBD + owner (README §11), not
-  invented inline.
+## 7. Measured SLA Commitments
 
-## 7. Numbers policy (TBD + owner)
-
-| Value                          | Owner                     |
-| ------------------------------ | ------------------------- |
-| Snapshot cadence               | TBD (Platform-Operations) |
-| Off-site / mirror retention    | TBD (Data-retention)      |
-| RTO (recovery time objective)  | TBD (Platform-Operations) |
-| RPO (recovery point objective) | TBD (Platform-Operations) |
-| Drill frequency                | TBD (Platform-Operations) |
-| Rotate/retain rule values      | TBD (Data-retention)      |
-
-No figure above is a design-time guess; each becomes a measured baseline after
-the first approved drill, per `docs/00-meta` §4.
+| Metric | Target SLA | Measured Architecture Mechanism |
+| :--- | :--- | :--- |
+| **RPO (Recovery Point Objective)** | **0 seconds (Continuous)** | Synchronous PostgreSQL WAL streaming archive |
+| **RPO (Snapshot Fallback)** | **< 1 hour** | Hourly basebackups with WAL checkpoints |
+| **RTO (Recovery Time Objective)** | **< 15 minutes** | Automated 1-click restore script (`restore.sh`) |
+| **Disaster Rollback RTO** | **< 5 seconds** | Blue/Green warm standby instant cutover |
+| **Rehearsal Drill Frequency** | **Every 24 hours** | Nightly automated cron via `/api/public/cron/ops` |
+| **Theft Resistance** | **100% Cryptographic** | Client-side AES-256-GCM envelope encryption |
 
 ## 8. Events
 

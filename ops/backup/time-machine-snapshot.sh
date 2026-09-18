@@ -91,7 +91,7 @@ EOF
 
   verify)
     echo "[VERIFY SNAPSHOT HEALTH]"
-    if [ -f "${BACKUP_DIR}/${SNAPSHOT_TAG}/metadata.json" ] || [ -d "${BACKUP_DIR}/${SNAPSHOT_TAG}/base" ]; then
+    if [ -f "${BACKUP_DIR}/${SNAPSHOT_TAG}/metadata.json" ] || [ -f "${BACKUP_DIR}/${SNAPSHOT_TAG}/manifest.json" ] || [ -d "${BACKUP_DIR}/${SNAPSHOT_TAG}/base" ]; then
       echo "  ✓ Snapshot ${SNAPSHOT_TAG} exists and is structurally sound."
       exit 0
     else

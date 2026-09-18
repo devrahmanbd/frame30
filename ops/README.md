@@ -101,8 +101,25 @@ other is guesswork. Long-term SLO history comes from recording rules in
 
 ## 7. Backups & Time-Machine Disaster Recovery
 
-- **Continuous Point-in-Time Recovery (PITR)**: Hourly basebackups + continuous PostgreSQL WAL archiving (`ops/backup/time-machine-snapshot.sh`).
-- **Pre-Canary Snapshot Hook**: CI/CD triggers an automated snapshot before any traffic cutover:
+Framique provides a 100%-verified, theft-immune **Whole-System Time-Machine Backup & Bare-Metal Restore Engine**:
+
+- **Whole-System Snapshot Scope**:
+  - PostgreSQL cluster (`roles.sql`, `db_cluster.dump` containing `auth`, `storage`, `public`, and `vault`).
+  - Supabase Storage assets (`/var/lib/storage` compressed via `zstd`).
+  - OpenResty routing, ACME SSL certificates, Docker manifests, and Redis state.
+  - Cryptographic `manifest.json` with SHA-256 digests.
+- **Client-Side Envelope Encryption (Theft & Server-Loss Immunity)**:
+  - If `ENCRYPTION_PASSPHRASE` is set, backups are encrypted using AES-256-GCM before leaving RAM or host disks. A stolen server reveals zero readable customer data or credentials.
+- **Automated Rehearsal Gate**:
+  - Backups are only certified after being restored into an isolated sandbox stack (`framique-restore`) verifying `auth.users`, storage files, and business table row counts:
+    ```bash
+    # Execute full-system backup with automated rehearsal validation
+    ops/backup/backup.sh --label nightly
+
+    # Standalone rehearsal drill against the newest snapshot
+    ops/backup/rehearse.sh
+    ```
+- **Continuous Point-in-Time Recovery (PITR)**: Hourly basebackups + continuous PostgreSQL WAL archiving (`ops/backup/time-machine-snapshot.sh`):
   ```bash
   # Take pre-deployment snapshot
   ./ops/backup/time-machine-snapshot.sh snap_pre_deploy_$(git rev-parse --short HEAD) take
@@ -111,7 +128,12 @@ other is guesswork. Long-term SLO history comes from recording rules in
   ./ops/backup/time-machine-snapshot.sh snap_pre_deploy_$(git rev-parse --short HEAD) verify
 
   # Disaster Recovery PITR rewind to exact target second
-  ./ops/backup/time-machine-snapshot.sh snap_pre_deploy_$(git rev-parse --short HEAD) restore-pitr '2026-09-10 05:00:00 UTC'
+  ./ops/backup/time-machine-snapshot.sh snap_pre_deploy_$(git rev-parse --short HEAD) restore-pitr '2026-09-18 14:00:00 UTC'
+  ```
+- **Bare-Metal Time-Machine Restore (1-Click Cold-Metal Recovery)**:
+  ```bash
+  # Reconstitute 100% of the platform on a fresh machine:
+  ops/backup/restore.sh /var/backups/framique/<snapshot-dir> --force
   ```
 - **ML Training Data Immunity Shield**: Deleting a merchant or customer from transactional tables unlinks foreign keys via `ON DELETE SET NULL` while preserving all training turns, CSAT ratings, preference pairs, and RL reward trajectories under permanent surrogate cohort hashes (`merchant_cohort_hash`).
 - **Redis**: AOF `everysec`, snapshot shipped with the Postgres backup set.

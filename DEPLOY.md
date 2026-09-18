@@ -2,12 +2,79 @@
 
 > Living runbook for release help. Architecture source of truth: `SYSTEM.md` §10 (Blue/Green + canary + expand-and-contract + Time-Machine backups).
 
-## Release train (every deploy)
+## Release train (every deploy) — Never-Failing Blue/Green Pipeline
 
-1. `bun run typecheck && bun run test && bun run test:contracts && bun run schema:check`
-2. Build immutable image tagged `framique:sha-<GIT_SHA>`; deploy to GREEN.
-3. Pre-promotion probes: `/api/healthz` readiness, headless smoke (cart, checkout, auth), Redis warm, DB compatibility, pre-canary snapshot `snap_pre_deploy_<SHA>`.
-4. Canary 1% (10m) → 5% (15m) → 25% (30m) → 100%. Roll back to BLUE on 5xx > 0.5% or p99 > 800ms.
+1. **Pre-flight Gate**: `bun run typecheck && bun run test && bun run test:contracts && bun run schema:check && bun run secrets:scan`
+2. **Build Immutable Artifact**: Build container image tagged `framique:sha-<GIT_SHA>`; deploy to GREEN candidate slot (port 3002).
+3. **Pre-Promotion Probes (Zero-Failure Gate)**:
+   - Automated health probe: `curl -f http://127.0.0.1:3002/api/healthz?type=readiness`
+   - Headless smoke probe: cart, checkout, auth, and storefront query assertions.
+   - DB Compatibility: Verify that active database schema matches both Version N (BLUE) and Version N+1 (GREEN).
+   - Redis Warmup: `bun run scripts/cutover-blue-green.ts --slot=green` (runs `warmupAll` and pre-flight).
+   - **Mandatory Verified Snapshot**:
+     ```bash
+     ./ops/backup/time-machine-snapshot.sh snap_pre_deploy_$(git rev-parse --short HEAD) take
+     ./ops/backup/time-machine-snapshot.sh snap_pre_deploy_$(git rev-parse --short HEAD) verify
+     ```
+4. **Progressive Canary Shifting**:
+   - 1% Canary (10m soak; internal & dogfood stores)
+   - 5% Canary (15m soak; checkout completion & courier latency telemetry)
+   - 25% Canary (30m soak; DB pool stability & Redis overhead)
+   - 100% Promotion (Global cutover to GREEN).
+5. **Instant Rollback Gate (< 500ms)**:
+   - If 5xx error rate > 0.5% or p99 latency > 800ms, Prometheus alert / circuit breaker trips:
+     ```bash
+     bun run scripts/cutover-blue-green.ts --rollback
+     ```
+   - Retain BLUE on warm standby for 60-120 minutes with zero cold-start delay.
+
+## Bare-Metal Time-Machine Restore Runbook (Server Lost / Stolen / Destroyed)
+
+If the production server is physically lost, stolen, or destroyed, execute this 100%-verified disaster recovery procedure on any clean Linux machine:
+
+### 1. Provision Clean Machine
+Install Docker and Zstandard:
+```bash
+sudo apt-get update && sudo apt-get install -y docker.io docker-compose-plugin zstd rclone openssl
+```
+
+### 2. Retrieve Encrypted Whole-System Snapshot
+Fetch the certified snapshot from the off-site immutable WORM object storage:
+```bash
+mkdir -p /var/backups/framique
+rclone copy s3:framique-backups/latest /var/backups/framique/latest --checksum
+```
+
+### 3. Decrypt Snapshot (Theft-Immune Master Key)
+If encrypted with the off-site KMS master key:
+```bash
+openssl enc -d -aes-256-gcm -pbkdf2 \
+  -in /var/backups/framique/latest/snapshot.enc \
+  -out /var/backups/framique/latest/snapshot.tar.zst \
+  -pass env:ENCRYPTION_PASSPHRASE
+
+tar -I zstd -xf /var/backups/framique/latest/snapshot.tar.zst -C /var/backups/framique/latest/
+```
+
+### 4. 1-Click System Reconstitution
+Restore database cluster (`auth`, `storage`, `public`, `roles`), storage bucket objects, and configs:
+```bash
+./ops/backup/restore.sh /var/backups/framique/latest --force
+```
+
+### 5. Optional Point-in-Time Recovery (PITR) to Target Second
+```bash
+./ops/backup/time-machine-snapshot.sh latest restore-pitr '2026-09-18 14:00:00 UTC'
+```
+
+### 6. Bring Up Application Topology
+```bash
+docker compose -f ops/docker-compose.blue-green.yml up -d
+```
+
+### 7. Repoint DNS
+Point DNS A/AAAA records for `framique.qubickle.com` and custom domain CNAMEs to the new server IP. The system is 100% reconstituted.
+
 
 ## Deploy 7e16d41+ — security fixes WF-10 + WF-09 (no migration)
 

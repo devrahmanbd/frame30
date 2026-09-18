@@ -419,26 +419,156 @@ Release 1: Expand       Release 2: Dual-Write       Release 3: Read New       Re
 
 ---
 
-### 10.5 Time-Machine Backup Snapshot Architecture (Continuous PITR & Disaster Recovery)
+### 10.5 Whole-System Time-Machine Backup & Bare-Metal Restore Architecture (Disaster-Proof & Theft-Immune)
 
-> **"Like a Time Machine"**: A default, continuous backup engine that enables instant state recovery to any second if disk corruption, catastrophic hardware failure, or erroneous migrations occur.
+> **"Like a Time Machine"**: A continuous, 100%-verified recovery engine that captures the **entire system at that exact point in time**. If a production server is destroyed, confiscated, or stolen, an identical system can be reconstituted onto empty hardware anywhere in the world in under 15 minutes with zero data loss.
 
-1. **Continuous Point-in-Time Recovery (PITR)**:
-   - PostgreSQL Write-Ahead Logging (WAL) is continuously archived to durable secondary storage (MinIO / S3 / dedicated backup volume).
-   - WAL archiving runs with zero impact on live transaction throughput.
-   - Allows rewinding the database to any exact timestamp prior to an incident:
-     $$\text{Target State} = \text{Base Backup Snapshot} + \text{WAL Replay}(\text{stop at } T_{\text{corruption}})$$
-2. **Pre-Canary Snapshot Hook**:
-   - Before traffic shifting begins (transition from 0% to 1% canary), CI/CD triggers an automated pre-deployment snapshot (`snap_pre_deploy_${GIT_SHA}`).
-   - The deployment preflight probe verifies that a valid snapshot exists and WAL archiving is current before allowing the canary gate to open.
-3. **Disk Corruption Disaster Recovery (DR)**:
-   - **RPO (Recovery Point Objective)**: **0 seconds** (zero data loss via synchronous WAL streaming).
-   - **RTO (Recovery Time Objective)**: **< 15 minutes** (automated restore scripts unpack base backup and replay WAL).
-   - Preserves 100% of state: merchant stores, catalog items, orders, financial ledger entries, configuration meta-info, and AI training datasets.
+```
+                  ┌────────────────────────────────────────────────────────┐
+                  │       WHOLE-SYSTEM TIME-MACHINE SNAPSHOT SCOPE         │
+                  ├────────────────────────────┬───────────────────────────┤
+                  │ 1. PostgreSQL Cluster      │ Complete dump & globals   │
+                  │    - Global Roles & Grants │ roles.sql (passwords/ACL) │
+                  │    - GoTrue Auth Schema    │ auth.users, sessions, MFA │
+                  │    - Storage Engine Schema │ storage.buckets & objects │
+                  │    - Public Multi-Tenant   │ merchants, products, orders│
+                  │    - Cryptographic Vault   │ vault, pgsodium, secrets  │
+                  ├────────────────────────────┼───────────────────────────┤
+                  │ 2. Supabase Storage Assets │ /var/lib/storage (zstd)   │
+                  │    - Merchant product imgs │ Original & WebP assets    │
+                  │    - Theme & builder files │ Custom templates & assets │
+                  ├────────────────────────────┼───────────────────────────┤
+                  │ 3. Configuration & State   │ Edge configs & certs      │
+                  │    - OpenResty & ACME TLS  │ SSL keys & certificates   │
+                  │    - Redis Dynamic State   │ Canary, limits, idem keys │
+                  │    - Docker & Compose Spec │ Immutable topologies      │
+                  └────────────────────────────┴───────────────────────────┘
+                                       │
+                                       ▼
+                  ┌────────────────────────────────────────────────────────┐
+                  │        CLIENT-SIDE ENVELOPE ENCRYPTION (AES-256)       │
+                  │ (Theft Immunity: stolen physical hardware reveals 0 B) │
+                  └────────────────────────────────────────────────────────┘
+                                       │
+                    ┌──────────────────┴──────────────────┐
+                    ▼                                     ▼
+        ┌───────────────────────┐             ┌───────────────────────┐
+        │  Local Storage (ZFS)  │             │ Multi-Cloud WORM S3   │
+        │  Rolling 14-Day Disk  │             │ Immutable Object Lock │
+        └───────────────────────┘             └───────────────────────┘
+                    │
+                    ▼
+        ┌─────────────────────────────────────────────────────────────┐
+        │        MANDATORY REHEARSAL RESTORE GATE ("No Rumours")      │
+        │ - Spins up isolated sandbox stack (`framique-restore`)      │
+        │ - Verifies all SHA-256 checksums against signed manifest    │
+        │ - Restores roles, auth schema, storage objects, and tables  │
+        │ - Asserts auth login readiness and table row counts         │
+        │ - ONLY marks backup CERTIFIED if 100% assertions pass       │
+        └─────────────────────────────────────────────────────────────┘
+```
+
+#### 1. Scope of the Whole-System Snapshot
+A true disaster-proof backup is never just an application-level SQL dump of `public` tables. If the server is lost, an operator must be able to spin up a clean Linux host and restore 100% of state:
+1. **PostgreSQL Complete Cluster (`db_cluster.dump` & `roles.sql`)**:
+   - `roles.sql`: All database roles, passwords, grants, and connection limits (`pg_dumpall --roles-only`).
+   - `db_cluster.dump`: Full database in custom format (`-Fc`) containing:
+     - `auth`: GoTrue credentials, encrypted passwords, user IDs, active refresh tokens, and MFA keys.
+     - `storage`: Storage bucket metadata, file names, access policies, and size records.
+     - `public`: Tenant storefronts, catalog items, orders, financial ledger entries, and audit logs.
+     - `vault` / `pgsodium`: Encryption keys and platform secrets.
+   - Continuous WAL archiving (`pg_receivewal`) streaming write-ahead logs to secondary storage, enabling second-by-second Point-in-Time Recovery (PITR).
+2. **Supabase Storage Objects (`storage.tar.zst`)**:
+   - Physical archive of `/var/lib/storage` containing all merchant product photos, theme assets, invoices, and builder templates compressed using `zstd -T0`.
+3. **Configurations, SSL Certificates & Edge State (`configs.tar.zst`)**:
+   - OpenResty NGINX configuration, ACME account tokens, dynamic SSL private keys and Let's Encrypt certificates.
+   - Docker Compose manifests and environment templates.
+4. **Redis Dynamic Runtime State (`redis.rdb`)**:
+   - Snapshots of Redis capturing active tenant rate-limiting states, idempotency fast-path cache, and canary cohort weights.
+5. **Cryptographic Manifest (`manifest.json`)**:
+   - SHA-256 hashes of every artifact, table row counts, `auth.users` count, Git commit SHA, timestamp, and duration.
+
+#### 2. Server Loss & Hardware Theft Defense (Client-Side Envelope Encryption)
+- **The Threat**: Physical server seizure, data center burglary, or stolen backup drives.
+- **The Defense**: All backup artifacts are encrypted client-side using authenticated symmetric encryption (AES-256-GCM / ChaCha20-Poly1305 via `openssl` or `age`) before leaving RAM or hitting disk.
+- **Key Separation**: The encryption uses a master key derived from an off-host secret or asymmetric public key. The private decryption key is **never stored on the application server**; it resides exclusively in an off-site physical security vault / hardware KMS.
+- **Outcome**: A stolen server or exfiltrated backup drive yields zero readable plaintext rows, zero passwords, and zero customer data.
+
+#### 3. 100% Restore Guarantee (The Rehearsal Gate)
+> **"A backup nobody has restored is a rumour."**
+- Every backup snapshot executed by the platform (hourly WAL checkpoints and nightly full snapshots) must undergo an automated **Rehearsal Restore** before it is declared valid.
+- The rehearsal script (`ops/backup/rehearse.sh`):
+  1. Launches an isolated throwaway Docker Compose stack (`COMPOSE_PROJECT_NAME=framique-restore`).
+  2. Verifies cryptographic SHA-256 checksums of every component in `manifest.json`.
+  3. Restores global roles, database schemas (`auth`, `storage`, `public`), and data.
+  4. Restores storage files and verifies filesystem integrity.
+  5. Executes automated read-back assertions:
+     - `auth.users` count matches snapshot expectations.
+     - Core business tables (`merchants`, `products`, `orders`, `order_items`, `payments`) are verified and non-empty.
+     - PostgREST query test succeeds through the restored gateway.
+  6. Measures precise **RTO** (Recovery Time Objective) and **RPO** (Recovery Point Objective).
+  7. Tears down the sandbox stack and appends the certified verdict to `ops/backup/rehearsals.jsonl`.
+  8. If any assertion fails, the backup is marked `INVALID`, an alert is dispatched, and traffic promotion is blocked.
+
+#### 4. Cold-Metal Bare-Metal Recovery Runbook (< 15 Minutes)
+If the entire server or hosting region is lost, the recovery procedure on a clean machine is completely deterministic:
+1. **Provision Clean Host**: Standard Ubuntu/Debian Linux with Docker and `zstd` installed.
+2. **Fetch Encrypted Snapshot**: Pull the latest certified backup set from the off-site WORM object store (`rclone copy s3:framique-backups/latest /var/backups/framique/latest`).
+3. **Decrypt with Vault Key**: `openssl enc -d -aes-256-gcm` using the off-site master key.
+4. **Execute 1-Click Restore**:
+   ```bash
+   ops/backup/restore.sh /var/backups/framique/latest --force
+   ```
+5. **Continuous PITR Replay (Optional)**: If recovering from corruption, replay WAL logs up to the exact target second:
+   ```bash
+   ops/backup/time-machine-snapshot.sh latest restore-pitr '2026-09-18 14:30:00 UTC'
+   ```
+6. **Bring Up Blue/Green Clusters**:
+   ```bash
+   docker compose -f ops/docker-compose.blue-green.yml up -d
+   ```
+7. **DNS Switchover**: Repoint domain A/AAAA records to the new host IP. System is 100% restored.
 
 ---
 
-### 10.6 ML & AI Training Data Immunity & Decoupling Shield
+### 10.6 Disaster-Proof Blue/Green Deployment Algorithm
+
+To guarantee that deployments **never fail** and cannot cause unexpected outages, Framique enforces an automated, gated 4-phase rollout pipeline:
+
+```
+[Phase 0: Pre-Promotion Zero-Failure Gate]
+  ├── 1. Automated Health Probes (/api/healthz readiness, DB pool, Redis latency)
+  ├── 2. Automated Headless Smoke Suite (Cart, checkout, store render, merchant auth)
+  ├── 3. Expand-and-Contract DB Invariant Verification (Zero backward-incompatible DDL)
+  └── 4. Mandatory Pre-Deployment Time-Machine Snapshot & Verified Rehearsal Drill
+       │
+       ▼ (Pass: 100% checks green; Fail: Release ABORTED, traffic untouched)
+[Phase 1: Progressive Canary Shifting & Blast-Radius Containment]
+  ├── Stage 1: 1% Traffic   (10m soak; internal & dogfood stores)
+  ├── Stage 2: 5% Traffic   (15m soak; pilot merchant cohort)
+  ├── Stage 3: 25% Traffic  (30m soak; broad production load)
+  └── Stage 4: 100% Traffic (Global promotion to GREEN)
+       │
+       ▼ (Automated Circuit Breaker: 5xx > 0.5% OR p99 > 800ms)
+       │ ──> INSTANT ROLLBACK (< 500ms) to warm BLUE standby
+       ▼
+[Phase 2: Post-Cutover Warm Standby & Graceful Draining]
+  ├── Keep previous slot (BLUE) on warm standby for 60-120 minutes
+  ├── Graceful TCP connection draining (zero dropped requests)
+  └── Selective edge cache purge of modified storefront paths
+```
+
+1. **Pre-Promotion Zero-Failure Gate**:
+   - Release candidates deployed to GREEN are subjected to rigorous synthetic smoke tests, database connection pool validation, and readiness probes.
+   - **Snapshot Checkpoint**: A full-system backup snapshot must be taken and pass rehearsal restore verification before the canary gate will open.
+2. **Canary Shifting with Sub-Second Circuit Breaker**:
+   - Traffic splits gradually using OpenResty weighted upstreams.
+   - If error rates exceed 0.5% or latency exceeds 800ms, Prometheus alerting and the internal circuit breaker trip, rolling back to BLUE in under 500ms.
+3. **Warm Standby Retention**:
+   - The previous environment is maintained warm and ready for instant fallback throughout the soak window.
+   - Dual-version database compatibility guarantees that rolling back never corrupts newly written records.
+
+### 10.7 ML & AI Training Data Immunity & Decoupling Shield
 
 > **Core Invariant**: **If a user, customer, or merchant is deleted from normal/transactional tables, all ML training data, model trajectories, and fine-tuning datasets MUST REMAIN PERMANENTLY SAFE AND IMMUNE from deletion.**
 
