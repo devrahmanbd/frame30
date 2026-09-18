@@ -225,18 +225,41 @@ export async function sendCampaign(
       "No recipients with active consent",
     );
 
-  const rows = members.map((m) => {
-    const ok = mockDeliver(m.email);
-    return {
-      merchant_id: merchantId,
-      campaign_id: campaignId,
-      subscriber_id: m.id,
-      email: m.email,
-      status: ok ? "sent" : "failed",
-      error: ok ? null : "mock_smtp_rejected",
-      sent_at: ok ? new Date().toISOString() : null,
-    };
-  });
+  const { sendTenantMail } = await import("./smtp.server");
+  const { renderEmailHtml } = await import("./transactional-mailer.server");
+
+  const rows = await Promise.all(
+    members.map(async (m) => {
+      const unsubUrl = `https://store.framique.com/unsubscribe?email=${encodeURIComponent(m.email)}`;
+      const html = renderEmailHtml({
+        storeName: "Framique Store",
+        brandColor: "#0f172a",
+        headerTitle: campaign.subject,
+        bodyText: campaign.body_template,
+        unsubscribeUrl: unsubUrl,
+      });
+
+      const res = await sendTenantMail(supabase, merchantId, {
+        to: m.email,
+        subject: campaign.subject,
+        text: `${campaign.subject}\n\n${campaign.body_template}\n\nUnsubscribe: ${unsubUrl}`,
+        html,
+        unsubscribeUrl: unsubUrl,
+      });
+
+      return {
+        merchant_id: merchantId,
+        campaign_id: campaignId,
+        subscriber_id: m.id,
+        email: m.email,
+        status: res.ok ? "sent" : "failed",
+        error: res.ok
+          ? null
+          : (res as { error?: string }).error || "delivery_rejected",
+        sent_at: res.ok ? new Date().toISOString() : null,
+      };
+    }),
+  );
   const { error: sendError } = await supabase
     .from("campaign_sends")
     .insert(rows);
@@ -269,16 +292,33 @@ export async function retryCampaignSend(
     .eq("merchant_id", merchantId)
     .maybeSingle();
   if (!row) throw new MarketingError("send_not_found", "Record not found");
-  const ok = mockDeliver(row.email);
+
+  const { sendTenantMail } = await import("./smtp.server");
+  const { data: camp } = await supabase
+    .from("campaigns")
+    .select("subject, body_template")
+    .eq("id", row.campaign_id)
+    .maybeSingle();
+
+  const unsubUrl = `https://store.framique.com/unsubscribe?email=${encodeURIComponent(row.email)}`;
+  const res = await sendTenantMail(supabase, merchantId, {
+    to: row.email,
+    subject: camp?.subject || "Newsletter Update",
+    text: `${camp?.body_template || ""}\n\nUnsubscribe: ${unsubUrl}`,
+    unsubscribeUrl: unsubUrl,
+  });
+
   await supabase
     .from("campaign_sends")
     .update({
-      status: ok ? "sent" : "failed",
-      error: ok ? null : "mock_smtp_rejected",
-      sent_at: ok ? new Date().toISOString() : null,
+      status: res.ok ? "sent" : "failed",
+      error: res.ok
+        ? null
+        : (res as { error?: string }).error || "mock_smtp_rejected",
+      sent_at: res.ok ? new Date().toISOString() : null,
     })
     .eq("id", sendId);
-  return { ok };
+  return { ok: res.ok };
 }
 
 export async function deleteArticle(

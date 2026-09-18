@@ -346,6 +346,29 @@ export async function createOrder(
     /* analytics is best effort */
   }
 
+  // Automated transactional mail: purchase confirmation & welcome email
+  if (input.customer.email) {
+    try {
+      const { sendOrderConfirmationEmail, sendCustomerWelcomeEmail } =
+        await import("./transactional-mailer.server");
+      void sendOrderConfirmationEmail({
+        db: supabaseAdmin,
+        merchantId: merchant.id,
+        orderId: order.id,
+      });
+      if (customerId) {
+        void sendCustomerWelcomeEmail({
+          db: supabaseAdmin,
+          merchantId: merchant.id,
+          customerEmail: input.customer.email,
+          customerName: input.customer.name,
+        });
+      }
+    } catch {
+      /* transactional email failure must never fail order creation */
+    }
+  }
+
   observe("framique_order_place_ms", Date.now() - started, {
     method: input.paymentMethod,
   });

@@ -34,7 +34,7 @@
 - [x] **TH-3** Apparel & heritage widget suite (`category_showcase`, `artisan_story`, `lookbook`, `size_guide`) & demo catalog (`demo-catalog.ts`) — COMPLETED
 - [x] **TH-4** 100% Bilingual parity dictionary (`theme-blueprints.bn.ts`) — COMPLETED
 - [x] **TH-5** Storefront ThemeChrome layout, responsive & contrast polish (`ThemeChrome.tsx`, `builder-ast.ts`) — COMPLETED
-- [ ] **TH-6** Release verification: unit & contract test suite, typecheck, build & live deploy verification — IN PROGRESS
+- [x] **TH-6** Release verification: unit & contract test suite, typecheck, build & live deploy verification — COMPLETED
 - [ ] **T3** (High, TB-2/INV-01) Strip inbound `X-Merchant-Id`/`X-Tenant-Id`/`X-Store-Slug` at app entry + edge conf — DONE batch 1 (`986f07a`)
 - [ ] **C2** (Med, §30) Remove dead `pg_catalog_exec` generic-SQL RPC call (`support-moderation.server.ts:589`) — DONE batch 1
 - [ ] **A8** (Low, ops) Fix metric drift `framique_auth_event_total` → `framique_auth_events_total` per runbook — DONE batch 1
@@ -70,5 +70,11 @@
   - Added 100% Bengali translation twins in `src/lib/theme-blueprints.bn.ts` keeping translation coverage above publish gate.
   - Wired SEO profile in `src/lib/theme-seo.ts` and updated theme count in `src/lib/theme-presets.test.ts`.
   - Extracted isomorphic mailer renderer `transactional-mailer-renderer.ts` to maintain client/server import protection.
-  - Verified with 161 passing unit and contract tests across 8 test files and clean production bundle build (`bun run build`).
+  - Hardened theme lifecycle persistence in `src/lib/themes/appearance.server.ts`: sets published version on install, guarantees coherent published version on activate, cascades version/draft deletion, and triggers tenant storefront cache purge.
+  - Fixed `src/lib/widget-registry.test.ts` to include `menu` in FieldKind test set.
+  - Removed `motion` dependency to strictly satisfy single animation engine (`gsap`) contract gate (`motion.contract.test.ts`).
+  - Ran `bun run test:contracts` — all 13 suites, 258 tests passed with 100% success.
+  - Ran `bun run build` — Nitro client/server build succeeded in 1.38s.
+  - Deployed to live production host (`root@88.99.250.99`), verified active `framique.service` on port 3200.
+  - Verified live storefront on `https://framique.qubickle.com/store/flame-fashion-bd` rendering full Aarong-grade `clothing-heritage` theme in English and Bengali with full responsive and visual capture verification.
 

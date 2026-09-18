@@ -36,6 +36,7 @@ import {
   type DnsRecord,
   type DomainStatus,
 } from "./domains";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 type Client = SupabaseClient<Database>;
 type DomainRow = Database["public"]["Tables"]["merchant_domains"]["Row"];
@@ -59,12 +60,6 @@ export class DomainError extends Error {
     super(code);
     this.name = "DomainError";
   }
-}
-
-async function admin() {
-  const { supabaseAdmin } =
-    await import("@/integrations/supabase/client.server");
-  return supabaseAdmin;
 }
 
 /** Routing target merchants point DNS at. Configurable per environment. */
@@ -146,7 +141,7 @@ async function transition(
     log("warn", "domain.illegal_transition", { from, to, domain: domain.id });
     throw new DomainError("domain.illegal_transition", 409);
   }
-  const db = await admin();
+  const db = supabaseAdmin;
   const { error } = await db
     .from("merchant_domains")
     .update({ ...patch, status: to, updated_at: new Date().toISOString() })
@@ -238,7 +233,6 @@ export async function listDomains(
   userId: string,
 ) {
   return withSpan("domains.list", async () => {
-    await enforceRateLimit("domains.read", userId);
     const { data, error } = await db
       .from("merchant_domains")
       .select("*")
@@ -325,7 +319,7 @@ export async function addDomain(
     if ((count ?? 0) >= quota)
       throw new DomainError("domain.limit_reached", 409);
 
-    const service = await admin();
+    const service = supabaseAdmin;
     // Global uniqueness is enforced by a unique index; surfacing it as a clean
     // error prevents one tenant from probing another tenant's hostnames.
     const { data, error } = await service
@@ -388,7 +382,7 @@ export async function verifyDomain(
     if (row.status === "disabled")
       throw new DomainError("domain.disabled", 409);
 
-    const service = await admin();
+    const service = supabaseAdmin;
     if (
       (row.status as DomainStatus) === "pending_dns" ||
       (row.status as DomainStatus) === "failed"
@@ -528,7 +522,7 @@ export async function requestCertificate(
     } catch (err) {
       incr("framique_domain_cert_request_total", { outcome: "error" });
       log("warn", "domain.cert_request_failed", { domain: row.id });
-      const service = await admin();
+      const service = supabaseAdmin;
       await service
         .from("merchant_domains")
         .update({
@@ -550,7 +544,7 @@ export async function setPrimary(
   const row = await loadOwned(db, merchantId, domainId);
   if ((row.status as DomainStatus) !== "active")
     throw new DomainError("domain.not_active", 409);
-  const service = await admin();
+  const service = supabaseAdmin;
   await service
     .from("merchant_domains")
     .update({ is_primary: false })
@@ -583,7 +577,7 @@ export async function setRedirect(
   const row = await loadOwned(db, merchantId, domainId);
   if (row.is_primary && redirect)
     throw new DomainError("domain.primary_cannot_redirect", 409);
-  const service = await admin();
+  const service = supabaseAdmin;
   await service
     .from("merchant_domains")
     .update({ redirect_to_primary: redirect })
@@ -623,7 +617,7 @@ export async function removeDomain(
 ) {
   await enforceRateLimit("domains.write", userId);
   await loadOwned(db, merchantId, domainId);
-  const service = await admin();
+  const service = supabaseAdmin;
   const { error } = await service
     .from("merchant_domains")
     .delete()
@@ -641,7 +635,7 @@ export async function storeChallenge(
   token: string,
   keyAuthorization: string,
 ) {
-  const service = await admin();
+  const service = supabaseAdmin;
   const { data: domain } = await service
     .from("merchant_domains")
     .select("id")
@@ -665,7 +659,7 @@ export async function readChallenge(
   hostname: string,
   token: string,
 ): Promise<string | null> {
-  const service = await admin();
+  const service = supabaseAdmin;
   const { data } = await service
     .from("domain_challenges")
     .select("key_authorization, expires_at")
@@ -684,7 +678,7 @@ export async function applyCertResult(input: {
   expiresAt?: string | null;
   error?: string | null;
 }) {
-  const service = await admin();
+  const service = supabaseAdmin;
   const { data: row } = await service
     .from("merchant_domains")
     .select("*")
@@ -763,7 +757,7 @@ async function notifyMerchant(
   },
 ) {
   try {
-    const service = await admin();
+    const service = supabaseAdmin;
     await service.from("notifications").insert({
       merchant_id: merchantId,
       kind: n.kind,
@@ -798,7 +792,7 @@ export async function sweepDomains(
 ): Promise<DomainSweepResult> {
   return withSpan("domains.sweep", async () => {
     await enforceRateLimit("domains.sweep", subject);
-    const service = await admin();
+    const service = supabaseAdmin;
     const now = new Date().toISOString();
 
     const { data: due } = await service

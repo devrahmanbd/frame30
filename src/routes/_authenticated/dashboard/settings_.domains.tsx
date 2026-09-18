@@ -28,6 +28,8 @@ export const Route = createFileRoute(
   "/_authenticated/dashboard/settings_/domains",
 )({
   loader: async () => domainsListFn(),
+  pendingComponent: DomainsPending,
+  errorComponent: DomainsError,
   head: () => ({
     meta: [
       { title: "Custom domains — Framique admin" },
@@ -57,9 +59,55 @@ function fmt(value: string | null) {
   return value ? new Date(value).toLocaleString() : "—";
 }
 
+function DomainsPending() {
+  return (
+    <div
+      className="space-y-5 p-4 md:p-6"
+      aria-busy="true"
+      aria-label="Loading custom domains"
+    >
+      <div className="space-y-2">
+        <div className="h-6 w-48 animate-pulse rounded-md bg-muted" />
+        <div className="h-4 w-96 max-w-full animate-pulse rounded-md bg-muted" />
+      </div>
+      <div className="h-32 animate-pulse rounded-fq-md border border-border bg-muted/40" />
+      <div className="h-48 animate-pulse rounded-fq-md border border-border bg-muted/40" />
+    </div>
+  );
+}
+
+function DomainsError({ error }: { error: Error }) {
+  const router = useRouter();
+  return (
+    <div className="space-y-3 p-4 md:p-6" role="alert">
+      <h1 className="font-bangla-display text-xl font-semibold">
+        Custom domains
+      </h1>
+      <p className="text-sm text-muted-foreground">
+        Could not load your domains{error?.message ? `: ${error.message}` : "."}
+      </p>
+      <button
+        type="button"
+        className={btnPrimary}
+        onClick={() => void router.invalidate()}
+      >
+        Retry
+      </button>
+    </div>
+  );
+}
+
+const EMPTY_LIST: ListResult = {
+  domains: [],
+  target: { cname: "", ips: [] },
+  edgeConfigured: false,
+  limit: 10,
+};
+
 function DomainsPage() {
   const { t } = useLang();
-  const initial = Route.useLoaderData() as ListResult;
+  const loaded = Route.useLoaderData() as ListResult | undefined;
+  const initial: ListResult = loaded ?? EMPTY_LIST;
   const router = useRouter();
   const [data, setData] = useState<ListResult>(initial);
   const [hostname, setHostname] = useState("");

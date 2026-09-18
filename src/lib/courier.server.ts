@@ -172,14 +172,12 @@ async function logEvent(
 ) {
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
-  await supabaseAdmin
-    .from("delivery_events")
-    .insert({
-      merchant_id: merchantId,
-      shipment_id: shipmentId,
-      event_type: eventType,
-      payload,
-    });
+  await supabaseAdmin.from("delivery_events").insert({
+    merchant_id: merchantId,
+    shipment_id: shipmentId,
+    event_type: eventType,
+    payload,
+  });
 }
 
 /** Every status change — manual or carrier-driven — funnels through here. */
@@ -211,6 +209,34 @@ async function applyEvent(args: {
     source: args.source,
     outcome: result.applied ? "applied" : (result.reason ?? "skipped"),
   });
+
+  if (
+    result.applied &&
+    (args.status === "picked_up" ||
+      args.status === "in_transit" ||
+      args.status === "delivered")
+  ) {
+    try {
+      const { data: shipmentRow } = await supabaseAdmin
+        .from("carrier_shipments")
+        .select("merchant_id")
+        .eq("id", args.shipmentId)
+        .maybeSingle();
+
+      if (shipmentRow?.merchant_id) {
+        const { sendShipmentDispatchedEmail } =
+          await import("./transactional-mailer.server");
+        void sendShipmentDispatchedEmail({
+          db: supabaseAdmin,
+          merchantId: shipmentRow.merchant_id,
+          shipmentId: args.shipmentId,
+        });
+      }
+    } catch {
+      /* delivery notification failure must never block courier status advance */
+    }
+  }
+
   return result;
 }
 

@@ -5,7 +5,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant, slugify } from "@/hooks/use-merchant";
 import { useLang } from "@/lib/i18n";
-import { LIVE_EDGE_CNAME, LIVE_EDGE_IPS } from "@/lib/domains";
 import { fmtMinor } from "@/lib/money";
 import { billingClaimTrialFn } from "@/lib/billing.functions";
 import { toast } from "sonner";
@@ -125,7 +124,6 @@ function Onboarding() {
   }, [slug, slugStatus, slugChecking, tk]);
 
   const slugOk = slugStatus === "available";
-  const [customDomain, setCustomDomain] = useState("");
   const steps = [
     tk("onboarding.step_details"),
     tk("onboarding.step_address"),
@@ -261,12 +259,14 @@ function Onboarding() {
             >
               {slugMessage}
             </p>
-            <p className="text-xs text-muted-foreground">
-              {t(
-                "Your store will be live at framique.qubickle.com/store/your-name. Isolated wildcard subdomains (your-name.framique.store) are being provisioned and will replace this address automatically when ready.",
-                "আপনার স্টোরটি framique.qubickle.com/store/your-name ঠিকানায় চালু হবে। পৃথক ওয়াইল্ডকার্ড সাবডোমেইন (your-name.framique.store) প্রস্তুত হচ্ছে এবং তৈরি হলেই স্বয়ংক্রিয়ভাবে চালু হবে।",
-              )}
-            </p>
+            {slug.length >= 3 && slugOk && (
+              <p className="mt-2 rounded-fq-md border border-border bg-muted/40 px-3 py-2 text-xs font-mono text-foreground">
+                <span className="text-muted-foreground mr-1">Your store URL:</span>
+                <span className="font-semibold">
+                  https://framique.qubickle.com/store/{slug}
+                </span>
+              </p>
+            )}
           </div>
         )}
 
@@ -275,86 +275,25 @@ function Onboarding() {
             <div>
               <h2 className="text-sm font-semibold text-foreground">
                 {t(
-                  "Connect Custom Domain (Optional)",
+                  "Connect a Custom Domain (Optional)",
                   "কাস্টম ডোমেইন যুক্ত করুন (ঐচ্ছিক)",
                 )}
               </h2>
               <p className="mt-1 text-xs text-muted-foreground">
                 {t(
-                  `Your storefront is always accessible at framique.qubickle.com/store/${slug || "your-store"}. You can also connect your own custom domain or skip and configure it later.`,
-                  `আপনার স্টোরফ্রন্ট সবসময় framique.qubickle.com/store/${slug || "your-store"} ঠিকানায় চালু থাকবে। আপনি চাইলে এখনই নিজের ডোমেইন যুক্ত করতে পারেন অথবা পরে সেটিংস থেকে করতে পারেন।`,
+                  `Your store is live at https://framique.qubickle.com/store/${slug}. You can connect your own domain later from Settings > Domains.`,
+                  `আপনার স্টোর https://framique.qubickle.com/store/${slug} ঠিকানায় চালু আছে। আপনি পরে Settings > Domains থেকে নিজের ডোমেইন যুক্ত করতে পারেন।`,
                 )}
               </p>
             </div>
-
-            <div className="space-y-1.5">
-              <label
-                className="block text-xs font-medium"
-                htmlFor="custom-domain"
-              >
-                {t("Custom Domain", "কাস্টম ডোমেইন")}
-              </label>
-              <input
-                id="custom-domain"
-                value={customDomain}
-                onChange={(e) =>
-                  setCustomDomain(e.target.value.toLowerCase().trim())
-                }
-                className="w-full rounded-fq-md border border-border bg-background px-3 py-2 text-sm font-mono"
-                placeholder="e.g. mystore.com"
-              />
-            </div>
-
-            {/* DNS Instructions Card */}
-            <div className="rounded-fq-md border border-border bg-muted/40 p-3.5 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-foreground">
-                  {t("Required DNS Records", "প্রয়োজনীয় DNS রেকর্ড")}
-                </span>
-                <span className="text-[11px] text-muted-foreground font-mono">
-                  Edge TLS
-                </span>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs font-mono">
-                  <thead>
-                    <tr className="border-b border-border text-muted-foreground text-[11px]">
-                      <th className="pb-1 font-medium">Type</th>
-                      <th className="pb-1 font-medium">Host</th>
-                      <th className="pb-1 font-medium">Target</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-border/40 text-[11px]">
-                    <tr>
-                      <td className="py-1 font-semibold text-primary">CNAME</td>
-                      <td className="py-1">www</td>
-                      <td className="py-1 text-foreground">
-                        {LIVE_EDGE_CNAME}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="py-1 font-semibold text-primary">A</td>
-                      <td className="py-1">@</td>
-                      <td className="py-1 text-foreground">
-                        {LIVE_EDGE_IPS[0]}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
             <div>
               <button
                 type="button"
                 onClick={() => setStep(3)}
-                className="text-xs font-medium text-primary hover:underline cursor-pointer"
+                className="rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
               >
-                {t(
-                  "Skip for now — I'll connect it from Settings › Domains",
-                  "এখনই নয় — আমি পরে সেটিংস থেকে ডোমেইন যুক্ত করব",
-                )}{" "}
-                →
+                {tk("common.next")}{" "}
+                <span className="text-primary-foreground/70">→</span>
               </button>
             </div>
           </div>
