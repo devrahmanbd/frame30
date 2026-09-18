@@ -310,7 +310,7 @@ function AuthPage() {
     }).catch(() => undefined);
 
     const target = await landingFor(session.user.id, search?.redirect);
-    navigate({ to: target as any, replace: true });
+    navigate({ to: target as never, replace: true });
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -533,17 +533,21 @@ function AuthPage() {
     password === confirmPassword;
 
   return (
-    <main className="min-h-screen bg-background selection:bg-primary/20 selection:text-primary">
+    <main className="fq-site fq-marketing min-h-screen bg-background selection:bg-primary/20 selection:text-primary">
       <div className="grid min-h-screen lg:grid-cols-12">
         {/* ── Left Column: Brand Showcase Panel (Desktop) ─────────────────── */}
-        <aside className="relative hidden flex-col justify-between overflow-hidden border-r border-border/60 bg-zinc-950 p-10 text-white dark:bg-zinc-900/80 lg:col-span-5 lg:flex xl:p-14">
+        <aside className="relative hidden flex-col justify-between overflow-hidden border-r border-border/70 bg-muted/40 p-10 backdrop-blur-xl dark:bg-card/30 lg:col-span-5 lg:flex xl:p-14">
           {/* Ambient Background Radial Gradient */}
           <div
-            className="pointer-events-none absolute -left-20 -top-20 size-[32rem] rounded-full bg-primary/20 blur-[100px] opacity-70"
+            className="pointer-events-none absolute -left-20 -top-20 size-[32rem] rounded-full bg-primary/10 blur-[100px] opacity-80 dark:bg-primary/20 dark:opacity-70"
             aria-hidden="true"
           />
           <div
-            className="pointer-events-none absolute -bottom-20 -right-20 size-[28rem] rounded-full bg-emerald-500/15 blur-[100px] opacity-60"
+            className="pointer-events-none absolute -bottom-20 -right-20 size-[28rem] rounded-full bg-emerald-500/10 blur-[100px] opacity-70 dark:bg-emerald-500/15 dark:opacity-60"
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute top-1/2 left-1/3 size-[24rem] rounded-full bg-amber-500/5 blur-[120px] opacity-50 dark:bg-amber-500/10"
             aria-hidden="true"
           />
 
@@ -558,7 +562,7 @@ function AuthPage() {
                 className="group-hover:scale-105 transition-transform"
               />
               <div className="flex flex-col">
-                <span className="fq-display text-xl font-bold tracking-tight text-white">
+                <span className="fq-display text-xl font-bold tracking-tight text-foreground">
                   Framique
                 </span>
                 <span className="text-[10px] uppercase tracking-widest text-primary font-semibold">
@@ -568,8 +572,8 @@ function AuthPage() {
             </Link>
 
             <div className="mt-12 space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-emerald-400 backdrop-blur-md">
-                <Sparkles className="size-3.5" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 backdrop-blur-md">
+                <Sparkles className="size-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>
                   {t(
                     "0% Transaction Fees • No App Bloat",
@@ -578,13 +582,13 @@ function AuthPage() {
                 </span>
               </div>
 
-              <h1 className="text-3xl font-extrabold tracking-tight text-white xl:text-4xl leading-[1.15]">
+              <h1 className="fq-display text-3xl font-extrabold tracking-tight text-foreground xl:text-4xl leading-[1.15]">
                 {t(
                   "Empower your e-commerce with sovereign infrastructure.",
                   "আপনার অনলাইন ব্যবসার জন্য নির্ভরযোগ্য ক্লাউড কমার্স প্ল্যাটফর্ম।",
                 )}
               </h1>
-              <p className="text-sm text-zinc-400 leading-relaxed max-w-md">
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
                 {t(
                   "Join Bangladesh's premier direct-to-consumer platform. Built with native bKash checkout, automated SteadFast dispatch, and sub-second page loads.",
                   "বিকাশ টোকেনাইজড পেমেন্ট, স্টিডফাস্ট ও পাঠাও অটোমেশন এবং দ্রুতগতির স্টোরফ্রন্ট নিয়ে ফ্রেমিক-এ আপনার ব্র্যান্ড শুরু করুন।",
@@ -594,56 +598,62 @@ function AuthPage() {
 
             {/* Core Value Highlights */}
             <div className="mt-8 space-y-3.5">
-              <div className="flex items-center gap-3 rounded-fq-md border border-white/10 bg-white/[0.03] p-3 text-xs text-zinc-200 backdrop-blur-sm">
-                <span className="grid size-7 shrink-0 place-items-center rounded-fq-sm bg-primary/20 text-primary">
+              <div className="flex items-center gap-3 rounded-fq-md border border-border/70 bg-card/90 p-3 text-xs shadow-sm backdrop-blur-sm transition-all hover:border-border dark:bg-card/50 dark:border-border/60">
+                <span className="grid size-8 shrink-0 place-items-center rounded-fq-sm bg-primary/10 text-primary ring-1 ring-inset ring-primary/20">
                   <Zap className="size-4" />
                 </span>
-                <span>
-                  <strong className="font-semibold text-white">
+                <span className="text-foreground">
+                  <strong className="font-semibold text-foreground">
                     {t("Sub-second Speed:", "বিদ্যুৎগতি:")}
                   </strong>{" "}
-                  {t(
-                    "Edge CDN deployed in Dhaka for instant mobile checkout.",
-                    "ঢাকায় এজ সিডিএন-এর কারণে মোবাইলে ১ সেকেন্ডের কম লোড টাইম।",
-                  )}
+                  <span className="text-muted-foreground">
+                    {t(
+                      "Edge CDN deployed in Dhaka for instant mobile checkout.",
+                      "ঢাকায় এজ সিডিএন-এর কারণে মোবাইলে ১ সেকেন্ডের কম লোড টাইম।",
+                    )}
+                  </span>
                 </span>
               </div>
 
-              <div className="flex items-center gap-3 rounded-fq-md border border-white/10 bg-white/[0.03] p-3 text-xs text-zinc-200 backdrop-blur-sm">
-                <span className="grid size-7 shrink-0 place-items-center rounded-fq-sm bg-emerald-500/20 text-emerald-400">
+              <div className="flex items-center gap-3 rounded-fq-md border border-border/70 bg-card/90 p-3 text-xs shadow-sm backdrop-blur-sm transition-all hover:border-border dark:bg-card/50 dark:border-border/60">
+                <span className="grid size-8 shrink-0 place-items-center rounded-fq-sm bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
                   <CreditCard className="size-4" />
                 </span>
-                <span>
-                  <strong className="font-semibold text-white">
+                <span className="text-foreground">
+                  <strong className="font-semibold text-foreground">
                     {t("MFS Payments:", "বিকাশ ও নগদ:")}
                   </strong>{" "}
-                  {t(
-                    "Direct tokenized checkout with instant ledger reconciliation.",
-                    "টোকেনাইজড পেমেন্ট ও সরাসরি লেজার ট্র্যাকিং।",
-                  )}
+                  <span className="text-muted-foreground">
+                    {t(
+                      "Direct tokenized checkout with instant ledger reconciliation.",
+                      "টোকেনাইজড পেমেন্ট ও সরাসরি লেজার ট্র্যাকিং।",
+                    )}
+                  </span>
                 </span>
               </div>
 
-              <div className="flex items-center gap-3 rounded-fq-md border border-white/10 bg-white/[0.03] p-3 text-xs text-zinc-200 backdrop-blur-sm">
-                <span className="grid size-7 shrink-0 place-items-center rounded-fq-sm bg-blue-500/20 text-blue-400">
+              <div className="flex items-center gap-3 rounded-fq-md border border-border/70 bg-card/90 p-3 text-xs shadow-sm backdrop-blur-sm transition-all hover:border-border dark:bg-card/50 dark:border-border/60">
+                <span className="grid size-8 shrink-0 place-items-center rounded-fq-sm bg-blue-500/10 text-blue-600 dark:text-blue-400 ring-1 ring-inset ring-blue-500/20">
                   <Truck className="size-4" />
                 </span>
-                <span>
-                  <strong className="font-semibold text-white">
+                <span className="text-foreground">
+                  <strong className="font-semibold text-foreground">
                     {t("Courier Sync:", "কুরিয়ার অটোমেশন:")}
                   </strong>{" "}
-                  {t(
-                    "1-Click SteadFast, Pathao & RedX manifests across 64 districts.",
-                    "৬৪ জেলায় স্টিডফাস্ট, পাঠাও ও রেডএক্স বুকিং।",
-                  )}
+                  <span className="text-muted-foreground">
+                    {t(
+                      "1-Click SteadFast, Pathao & RedX manifests across 64 districts.",
+                      "৬৪ জেলায় স্টিডফাস্ট, পাঠাও ও রেডএক্স বুকিং।",
+                    )}
+                  </span>
                 </span>
               </div>
             </div>
           </div>
 
           {/* Bottom Merchant Testimonial Card */}
-          <div className="relative z-10 mt-10 rounded-fq-lg border border-white/10 bg-white/[0.04] p-5 backdrop-blur-md">
-            <p className="text-xs italic leading-relaxed text-zinc-300">
+          <div className="relative z-10 mt-10 rounded-fq-lg border border-border/70 bg-card/90 p-5 shadow-sm backdrop-blur-md dark:bg-card/50 dark:border-border/60">
+            <p className="text-xs italic leading-relaxed text-muted-foreground">
               "
               {t(
                 "Moving our store to Framique cut out 2% third-party app fees and allowed us to book courier shipments with a single click. Our conversion rate jumped within 48 hours.",
@@ -651,12 +661,14 @@ function AuthPage() {
               )}
               "
             </p>
-            <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-3 text-[11px]">
+            <div className="mt-3 flex items-center justify-between border-t border-border/60 pt-3 text-[11px]">
               <div>
-                <div className="font-semibold text-white">Adnan Karim</div>
-                <div className="text-zinc-400">Founder @ Velvet Dhaka</div>
+                <div className="font-semibold text-foreground">Adnan Karim</div>
+                <div className="text-muted-foreground">
+                  Founder @ Velvet Dhaka
+                </div>
               </div>
-              <div className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-0.5 text-[10px] font-medium text-emerald-400">
+              <div className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
                 <ShieldCheck className="size-3" />
                 <span>Verified Merchant</span>
               </div>
@@ -693,6 +705,19 @@ function AuthPage() {
 
           {/* Form Container */}
           <div className="mx-auto my-auto w-full max-w-lg py-4">
+            {/* Mobile Marketing Value Pill */}
+            {mode === "signup" && stage === "credentials" && (
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400 lg:hidden">
+                <Sparkles className="size-3.5" />
+                <span>
+                  {t(
+                    "0% Transaction Fees • 14-Day Free Trial",
+                    "০% ট্রানজ্যাকশন ফি • ১৪ দিনের ফ্রি ট্রায়াল",
+                  )}
+                </span>
+              </div>
+            )}
+
             {/* Mode Switcher Tabs */}
             {stage === "credentials" && mode !== "reset" && (
               <div className="mb-6 grid grid-cols-2 rounded-fq-md bg-muted p-1 text-xs font-semibold">
@@ -840,7 +865,7 @@ function AuthPage() {
                     }}
                     autoComplete="one-time-code"
                     placeholder={useBackup ? "XXXX-XXXX" : "123456"}
-                    className={`min-h-12 w-full rounded-fq-md border border-input bg-background px-3.5 text-center font-mono text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary ${
+                    className={`min-h-12 w-full rounded-fq-md border border-border bg-background px-3.5 text-center font-mono text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary ${
                       useBackup
                         ? "text-base tracking-wider"
                         : "text-xl tracking-[0.3em]"
@@ -937,7 +962,7 @@ function AuthPage() {
                             value={firstName}
                             onChange={(e) => setFirstName(e.target.value)}
                             placeholder={t("e.g. Shakib", "যেমন: সাকিব")}
-                            className="min-h-11 w-full rounded-fq-md border border-input bg-background pl-9 pr-3 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                            className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-3 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
                           />
                           <User
                             className="absolute left-3 top-3.5 size-4 text-muted-foreground"
@@ -959,7 +984,7 @@ function AuthPage() {
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
                             placeholder={t("e.g. Al Hasan", "যেমন: আল হাসান")}
-                            className="min-h-11 w-full rounded-fq-md border border-input bg-background pl-9 pr-3 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                            className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-3 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
                           />
                           <User
                             className="absolute left-3 top-3.5 size-4 text-muted-foreground"
@@ -987,7 +1012,7 @@ function AuthPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="merchant@yourbrand.com"
-                      className="min-h-11 w-full rounded-fq-md border border-input bg-background pl-9 pr-3 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                      className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-3 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
                     />
                     <Mail
                       className="absolute left-3 top-3.5 size-4 text-muted-foreground"
@@ -1037,7 +1062,7 @@ function AuthPage() {
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="••••••••"
-                          className="min-h-11 w-full rounded-fq-md border border-input bg-background pl-9 pr-10 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                          className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-10 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
                         />
                         <Lock
                           className="absolute left-3 top-3.5 size-4 text-muted-foreground"
@@ -1095,7 +1120,7 @@ function AuthPage() {
                             className={`min-h-11 w-full rounded-fq-md border bg-background pl-9 pr-10 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 ${
                               !isPasswordMatch
                                 ? "border-destructive focus-visible:ring-destructive"
-                                : "border-input focus-visible:ring-primary"
+                                : "border-border focus-visible:ring-primary"
                             }`}
                           />
                           <Lock
@@ -1141,7 +1166,7 @@ function AuthPage() {
                             onChange={(e) =>
                               setBusinessIndustry(e.target.value)
                             }
-                            className="min-h-11 w-full appearance-none rounded-fq-md border border-input bg-background pl-9 pr-8 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                            className="min-h-11 w-full appearance-none rounded-fq-md border border-border bg-background pl-9 pr-8 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
                           >
                             {INDUSTRIES.map((ind) => (
                               <option key={ind.value} value={ind.value}>
@@ -1171,7 +1196,7 @@ function AuthPage() {
                           <select
                             value={previousCms}
                             onChange={(e) => setPreviousCms(e.target.value)}
-                            className="min-h-11 w-full appearance-none rounded-fq-md border border-input bg-background pl-9 pr-8 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                            className="min-h-11 w-full appearance-none rounded-fq-md border border-border bg-background pl-9 pr-8 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
                           >
                             {PREVIOUS_CMS_LIST.map((cms) => (
                               <option key={cms.value} value={cms.value}>
@@ -1202,7 +1227,7 @@ function AuthPage() {
                         <select
                           value={referralSource}
                           onChange={(e) => setReferralSource(e.target.value)}
-                          className="min-h-11 w-full appearance-none rounded-fq-md border border-input bg-background pl-9 pr-8 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                          className="min-h-11 w-full appearance-none rounded-fq-md border border-border bg-background pl-9 pr-8 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
                         >
                           {REFERRAL_SOURCES.map((ref) => (
                             <option key={ref.value} value={ref.value}>

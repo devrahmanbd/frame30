@@ -78,12 +78,6 @@ export function PublicShell({
             <ThemeToggle />
             <Link
               to="/auth"
-              className="hidden min-h-10 items-center rounded-fq-md px-3.5 py-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground sm:inline-flex"
-            >
-              {tk("site.nav.sign_in")}
-            </Link>
-            <Link
-              to="/auth"
               search={{ mode: "signup" }}
               className="inline-flex min-h-10 shrink-0 items-center rounded-fq-md fq-cta-blazing px-3.5 py-2 text-xs font-semibold shadow-sm ring-1 ring-inset ring-white/20 sm:px-4"
             >
