@@ -13,6 +13,13 @@ import { LayerTree, NODE_NAME_PROP } from "@/components/builder/LayerTree";
 import { SectionInspector } from "@/components/builder/SectionInspector";
 import { TokenEditor } from "@/components/builder/TokenEditor";
 import { VersionTimeline } from "@/components/builder/VersionTimeline";
+import { BuilderTopBar } from "@/components/builder/BuilderTopBar";
+import { PublishModal } from "@/components/builder/PublishModal";
+import { FinderPalette } from "@/components/builder/FinderPalette";
+import { HistoryPanel } from "@/components/builder/HistoryPanel";
+import { GlobalBlockBar } from "@/components/builder/GlobalBlockBar";
+import { TemplatesLibrary } from "@/components/builder/TemplatesLibrary";
+import { MaintenanceSettings } from "@/components/builder/MaintenanceSettings";
 import { useBuilderEditor } from "@/hooks/use-builder-editor";
 import { cloneNodes, locate, topMost } from "@/lib/builder-tree";
 import {
@@ -212,7 +219,7 @@ function BuilderStudio() {
   const [blocks, setBlocks] = useState<SavedBlock[]>([]);
   const [blockName, setBlockName] = useState("");
   const [panel, setPanel] = useState<
-    "inspect" | "seo" | "brand" | "history" | "themes"
+    "inspect" | "seo" | "brand" | "history" | "themes" | "templates" | "maintenance"
   >("inspect");
   const [runAt, setRunAt] = useState("");
   const [pendingInstall, setPendingInstall] = useState<string | null>(null);
@@ -221,6 +228,9 @@ function BuilderStudio() {
   const [clip, setClip] = useState<ClipboardPayload | null>(null);
   const [platform, setPlatform] = useState<Platform>("other");
   const [helpOpen, setHelpOpen] = useState(false);
+  const [publishOpen, setPublishOpen] = useState(false);
+  const [finderOpen, setFinderOpen] = useState(false);
+  const [previewMode, setPreviewMode] = useState(false);
   const [menu, setMenu] = useState<{
     x: number;
     y: number;
@@ -1098,59 +1108,80 @@ function BuilderStudio() {
           ? t("Draft saved", "ড্রাফট সেভ হয়েছে")
           : t("Up to date", "আপ টু ডেট");
 
+  const finderActions = useMemo(
+    () => [
+      ...TEMPLATE_KEYS.map((key) => ({
+        id: `tpl-${key}`,
+        label: `${t("Go to", "যান")} ${TEMPLATE_LABEL[key].en}`,
+        section: t("Templates", "টেমপ্লেট"),
+        run: () => setTemplate(key),
+      })),
+      {
+        id: "undo", label: t("Undo", "আনডু"), section: t("Edit", "এডিট"), run: () => editor.undo(),
+      },
+      {
+        id: "redo", label: t("Redo", "রিডু"), section: t("Edit", "এডিট"), run: () => editor.redo(),
+      },
+      {
+        id: "save", label: t("Save version", "ভার্সন সেভ"), section: t("File", "ফাইল"), run: () => commitDraft.mutate(),
+      },
+      {
+        id: "publish", label: t("Publish", "পাবলিশ"), section: t("File", "ফাইল"), run: () => setPublishOpen(true),
+      },
+      {
+        id: "seo", label: t("SEO settings", "SEO সেটিংস"), section: t("Panels", "প্যানেল"), run: () => setPanel("seo"),
+      },
+      {
+        id: "brand", label: t("Brand tokens", "ব্র্যান্ড টোকেন"), section: t("Panels", "প্যানেল"), run: () => setPanel("brand"),
+      },
+      {
+        id: "history", label: t("History", "ইতিহাস"), section: t("Panels", "প্যানেল"), run: () => setPanel("history"),
+      },
+    ],
+    [t, editor, commitDraft],
+  );
+
   return (
     <PluginProvider plugins={pluginsQuery.data?.plugins ?? []}>
-      <div className="space-y-4">
-        <header className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h1 className="font-bangla-display text-2xl font-bold">
-              {t("Theme studio", "থিম স্টুডিও")}
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              {t(
-                "Build every storefront template, tune brand tokens, then publish or schedule the release.",
-                "প্রতিটি স্টোরফ্রন্ট টেমপ্লেট তৈরি করুন, ব্র্যান্ড টোকেন ঠিক করুন, তারপর পাবলিশ বা শিডিউল করুন।",
-              )}
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <p aria-live="polite" className="text-xs text-muted-foreground">
-              {status}
-            </p>
-            <button
-              type="button"
-              onClick={editor.undo}
-              disabled={!editor.canUndo}
-              className="rounded-fq-md border border-border px-3 py-2 text-sm disabled:opacity-50"
-            >
-              {t("Undo", "আনডু")}
-            </button>
-            <button
-              type="button"
-              onClick={editor.redo}
-              disabled={!editor.canRedo}
-              className="rounded-fq-md border border-border px-3 py-2 text-sm disabled:opacity-50"
-            >
-              {t("Redo", "রিডু")}
-            </button>
-            <button
-              type="button"
-              onClick={() => commitDraft.mutate()}
-              disabled={busy || !doc}
-              className="rounded-fq-md border border-border px-3 py-2 text-sm disabled:opacity-50"
-            >
-              {t("Save version", "ভার্সন সেভ")}
-            </button>
-            <button
-              type="button"
-              onClick={() => publishNow.mutate()}
-              disabled={busy || !doc || issues.some((i) => i.level === "error")}
-              className="rounded-fq-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
-            >
-              {t("Publish", "পাবলিশ")}
-            </button>
-          </div>
-        </header>
+      <div className="flex h-screen flex-col overflow-hidden">
+        <BuilderTopBar
+          title={workspace.data?.theme?.name ?? t("Untitled", "শিরোনামহীন")}
+          status={status}
+          device={device}
+          previewWidth={previewWidth}
+          onWidthChange={setPreviewWidth}
+          canUndo={editor.canUndo}
+          canRedo={editor.canRedo}
+          onUndo={editor.undo}
+          onRedo={editor.redo}
+          onPreview={() => setPreviewMode((m) => !m)}
+          isPreview={previewMode}
+          onSave={() => commitDraft.mutate()}
+          onPublish={() => setPublishOpen(true)}
+          saveDisabled={busy || !doc}
+          publishDisabled={busy || !doc}
+          onFinderOpen={() => setFinderOpen(true)}
+          onStructureToggle={() => setLeftTab((t) => t === "layers" ? "add" : "layers")}
+          structureVisible={leftTab === "layers"}
+          onChecklistOpen={() => setPublishOpen(true)}
+          issueCount={issues.filter((i) => i.level === "error").length}
+        />
+
+        <PublishModal
+          open={publishOpen}
+          onClose={() => setPublishOpen(false)}
+          onPublish={() => { publishNow.mutate(); setPublishOpen(false); }}
+          issues={issues}
+          templateName={TEMPLATE_LABEL[template].en}
+          hasChanges={editor.dirty}
+        />
+
+        <FinderPalette
+          open={finderOpen}
+          onClose={() => setFinderOpen(false)}
+          actions={finderActions}
+        />
+
 
         {workspace.data?.isPreview && (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-fq-md border border-primary/40 bg-primary/10 px-4 py-2 text-sm shadow-xs">
@@ -1673,7 +1704,35 @@ function BuilderStudio() {
             )}
           </aside>
 
-          <section
+                  {selected && linkedBlockId(selected) && (
+          <GlobalBlockBar
+            blockName={String(selected.props[NODE_NAME_PROP] ?? "Global block")}
+            onEdit={() => {
+              const gid = linkedBlockId(selected);
+              if (gid) {
+                const g = globals.find((b) => b.id === gid);
+                if (g) {
+                  const ids = editor.insert(template, slot, g.nodes);
+                  if (ids?.length) setSelectedIds(ids);
+                }
+              }
+            }}
+            onUnlink={() => {
+              if (!selected) return;
+              const gid = linkedBlockId(selected);
+              if (gid) {
+                const g = globals.find((b) => b.id === gid);
+                if (g) {
+                  editor.remove(template, slot, selected.id);
+                  const ids = editor.insert(template, slot, g.nodes);
+                  if (ids?.length) setSelectedIds(ids);
+                }
+              }
+            }}
+          />
+        )}
+
+<section
             className="space-y-3 rounded-fq-lg border border-border bg-muted p-4"
             aria-label={t("Preview", "প্রিভিউ")}
           >
@@ -1841,6 +1900,8 @@ function BuilderStudio() {
                   ["brand", t("Brand", "ব্র্যান্ড")],
                   ["history", t("History", "ইতিহাস")],
                   ["themes", t("Themes", "থিম")],
+                  ["templates", t("Templates", "টেমপ্লেট")],
+                  ["maintenance", t("Maintenance", "মেইনটেন্যান্স")],
                 ] as const
               ).map(([key, label]) => (
                 <button
@@ -1939,12 +2000,14 @@ function BuilderStudio() {
                     {t("Schedule", "শিডিউল")}
                   </button>
                 </form>
-                <VersionTimeline
-                  versions={workspace.data?.versions ?? []}
-                  schedules={workspace.data?.schedules ?? []}
-                  busy={busy}
-                  onRollback={(id) => restore.mutate(id)}
-                  onCancelSchedule={(id) => dropSchedule.mutate(id)}
+                <HistoryPanel
+                  actions={[]}
+                  revisions={workspace.data?.versions ?? []}
+                  canUndo={editor.canUndo}
+                  canRedo={editor.canRedo}
+                  onUndo={editor.undo}
+                  onRedo={editor.redo}
+                  onRestore={(id) => restore.mutate(id)}
                 />
               </div>
             )}
@@ -2168,7 +2231,21 @@ function BuilderStudio() {
                 ))}
               </div>
             )}
-          </aside>
+          
+            {panel === "templates" && themeId && (
+              <TemplatesLibrary
+                themeId={themeId}
+                onInsert={(nodes) => {
+                  const ids = editor.insert(template, slot, nodes);
+                  if (ids?.length) setSelectedIds(ids);
+                }}
+              />
+            )}
+
+            {panel === "maintenance" && (
+              <MaintenanceSettings />
+            )}
+</aside>
         </div>
 
         {/* Phase 1.2 / 1.4 overlays live at the end so they escape panel overflow. */}

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { catalogEntry, type Breakpoint, type Section } from "@/lib/builder-ast";
 import { isContainer, outline, type DropPosition } from "@/lib/builder-tree";
 import { useLang } from "@/lib/i18n";
@@ -29,6 +29,9 @@ type Props = {
   onRename?: (id: string, name: string) => void;
   /** Phase 1.6: case-insensitive match on custom name or widget type/label. */
   filter?: string;
+  /** Expand or collapse all nodes from outside. */
+  expandAll?: boolean;
+  collapseAll?: boolean;
 };
 
 type DropHint = { id: string | null; position: DropPosition } | null;
@@ -58,11 +61,34 @@ export function LayerTree({
   onContextMenu,
   onRename,
   filter,
+  expandAll,
+  collapseAll,
 }: Props) {
   const { t } = useLang();
   const [dragId, setDragId] = useState<string | null>(null);
   const [hint, setHint] = useState<DropHint>(null);
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+
+  // B-03: expand-all / collapse-all from parent
+  useEffect(() => {
+    if (expandAll) setCollapsed(new Set());
+  }, [expandAll]);
+  useEffect(() => {
+    if (collapseAll) {
+      const allIds = sections.flatMap((s) => {
+        const flat: string[] = [];
+        const walk = (nodes: Section[]) => {
+          for (const n of nodes) {
+            if (n.children?.length) flat.push(n.id);
+            if (n.children) walk(n.children);
+          }
+        };
+        walk(s.children ?? []);
+        return flat;
+      });
+      setCollapsed(new Set(allIds));
+    }
+  }, [collapseAll, sections]);
   const [renaming, setRenaming] = useState<string | null>(null);
 
   const rows = useMemo(() => outline(sections), [sections]);

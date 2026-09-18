@@ -824,7 +824,7 @@ export async function publishedTheme(
         .select("ast, templates, tokens")
         .eq("id", versionId)
         .eq("merchant_id", merchantId)
-        .eq("status", "published")
+        .eq("status", "published")  // B-13: status discipline — only published versions evaluate at runtime; drafts are preview-only
         .maybeSingle();
       if (!version) return null;
       const templates = parseTemplates(

@@ -112,7 +112,7 @@ function BiTextField({
 }
 
 
-type PanelKey = "content" | "layout" | "style" | "advanced";
+type PanelKey = "content" | "style" | "advanced";
 
 type Props = {
   section: Section | null;
@@ -136,10 +136,9 @@ const BP_LABEL: Record<Breakpoint, { en: string; bn: string }> = {
   mobile: { en: "Mobile", bn: "মোবাইল" },
 };
 
-const PANEL_ORDER: PanelKey[] = ["content", "layout", "style", "advanced"];
+const PANEL_ORDER: PanelKey[] = ["content", "style", "advanced"];
 const PANEL_LABEL: Record<PanelKey, { en: string; bn: string }> = {
   content: { en: "Content", bn: "কন্টেন্ট" },
-  layout: { en: "Layout", bn: "লেআউট" },
   style: { en: "Style", bn: "স্টাইল" },
   advanced: { en: "Advanced", bn: "অ্যাডভান্সড" },
 };
@@ -176,7 +175,7 @@ export function SectionInspector({
   const entry = section ? catalogEntry(section.type) : undefined;
 
   const grouped = useMemo(() => {
-    const out: Record<PanelKey, Field[]> = { content: [], layout: [], style: [], advanced: [] };
+    const out: Record<PanelKey, Field[]> = { content: [], style: [], advanced: [] };
     const fields = entry?.fields ?? [];
     // Phase 3.3: alt text and the sizes preset are rendered inside their image
     // field's block, so they are skipped here.
