@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useLang } from "@/lib/i18n";
+import { useLang, LanguageProvider } from "@/lib/i18n";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import { ThemeToggle } from "@/components/public/ThemeToggle";
 import { GradientMesh } from "@/components/public/motion/GradientMesh";
@@ -202,6 +202,16 @@ async function landingFor(
 }
 
 function AuthPage() {
+  // Signup is English-only: pin the subtree locale so Bengali strings never
+  // render here regardless of the visitor's site-wide language.
+  return (
+    <LanguageProvider initialLang="en">
+      <AuthPageInner />
+    </LanguageProvider>
+  );
+}
+
+function AuthPageInner() {
   const { t } = useLang();
   const navigate = useNavigate();
   const search = Route.useSearch();
@@ -569,7 +579,7 @@ function AuthPage() {
         {/* ── Left Column: Brand Showcase Panel (Desktop) ─────────────────── */}
         {/* Sticky-height panel: start-aligned so nothing clips when the
             column scrolls internally on short viewports. */}
-        <aside className="relative hidden min-w-0 flex-col justify-start gap-0 overflow-y-auto border-r border-border/70 bg-accent/50 p-10 backdrop-blur-xl dark:bg-card/30 lg:col-span-5 lg:flex lg:h-screen xl:p-14">
+        <aside className="relative hidden min-w-0 flex-col justify-start gap-0 overflow-y-auto border-r border-border/70 bg-accent/50 p-8 backdrop-blur-xl dark:bg-card/30 lg:col-span-5 lg:flex lg:h-screen xl:p-14">
           <GradientMesh intensity={0.55} />
 
           {/* Top Brand & Home Link */}
@@ -592,7 +602,7 @@ function AuthPage() {
               </div>
             </Link>
 
-            <div className="mt-12 space-y-4">
+            <div className="mt-8 space-y-4">
               <h1 className="fq-display text-[clamp(1.75rem,1.2rem+1.8vw,2.5rem)] font-extrabold tracking-tight text-foreground leading-[1.12] text-balance">
                 {t(
                   "Open your online store in under 2 minutes.",
@@ -608,7 +618,7 @@ function AuthPage() {
             </div>
 
             {/* Core Value Highlights */}
-            <div className="mt-8 space-y-3.5">
+            <div className="mt-6 space-y-3.5">
               <div className="flex items-center gap-3 rounded-fq-md border border-border/70 bg-card/90 p-3 text-xs shadow-sm backdrop-blur-sm transition-all hover:border-border dark:bg-card/50 dark:border-border/60">
                 <span className="grid size-8 shrink-0 place-items-center rounded-fq-sm bg-primary/10 text-primary ring-1 ring-inset ring-primary/20">
                   <Gauge className="size-4" />
@@ -663,7 +673,7 @@ function AuthPage() {
           </div>
 
           {/* Bottom Trial Guarantee Card (truthful terms, no invented proof) */}
-          <div className="fq-glass relative z-10 mt-10 rounded-fq-lg p-5">
+          <div className="fq-glass relative z-10 mt-6 rounded-fq-lg p-5">
             <div className="flex items-center gap-2">
               <ShieldCheck className="size-4 text-primary" />
               <p className="text-sm font-semibold text-foreground">
@@ -709,9 +719,9 @@ function AuthPage() {
         {/* Form column scrolls internally; justify-start + auto margins
             (never justify-between/center) so overflowed content stays
             reachable instead of clipping off the top. */}
-        <section className="flex min-w-0 flex-col justify-start p-6 sm:p-10 lg:col-span-7 lg:h-screen lg:overflow-y-auto lg:px-12 lg:py-8 xl:px-16">
+        <section className="flex min-w-0 flex-col justify-start p-6 sm:p-10 lg:col-span-7 lg:h-screen lg:overflow-y-auto lg:px-12 lg:py-6 xl:px-16">
           {/* Top Bar Navigation */}
-          <header className="flex items-center justify-between pb-6">
+          <header className="flex items-center justify-between pb-4">
             <div className="flex items-center gap-2 lg:hidden">
               <Link to="/" className="inline-flex items-center gap-2">
                 <BrandLogo size={28} />
@@ -742,8 +752,8 @@ function AuthPage() {
                 <Sparkles className="size-3.5" />
                 <span>
                   {t(
-                    "0% Transaction Fees • 14-Day Free Trial",
-                    "০% ট্রানজ্যাকশন ফি • ১৪ দিনের ফ্রি ট্রায়াল",
+                    "14-Day Free Trial • No Card Required",
+                    "১৪ দিনের ফ্রি ট্রায়াল • কার্ড লাগবে না",
                   )}
                 </span>
               </div>
@@ -754,7 +764,7 @@ function AuthPage() {
               <div
                 role="tablist"
                 aria-label={t("Authentication mode", "অথেনটিকেশন মোড")}
-                className="mb-6 grid grid-cols-2 rounded-fq-md bg-muted p-1 text-xs font-semibold"
+                className="mb-4 grid grid-cols-2 rounded-fq-md bg-muted p-1 text-xs font-semibold"
               >
                 <button
                   type="button"
@@ -827,7 +837,7 @@ function AuthPage() {
             )}
 
             {/* Header Titles */}
-            <div className="mb-6 space-y-1.5">
+            <div className="mb-4 space-y-1.5">
               <h2 className="fq-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                 {stage === "mfa"
                   ? t("Two-factor security check", "দুই-ধাপ নিরাপত্তা যাচাই")
@@ -1016,7 +1026,7 @@ function AuthPage() {
               </form>
             ) : (
               /* ── Stage: Credentials (Signup, Signin, Reset) ─────────────── */
-              <form onSubmit={onSubmit} className="space-y-4">
+              <form onSubmit={onSubmit} className="space-y-3">
                 {/* Signup-Specific Profile Fields (wizard step 1) */}
                 {mode === "signup" && signupStep === 1 && (
                   <>
@@ -1420,7 +1430,7 @@ function AuthPage() {
                 </div>
 
                 {/* Secondary Switchers */}
-                <div className="pt-4 text-center text-xs text-muted-foreground">
+                <div className="pt-3 text-center text-xs text-muted-foreground">
                   {mode === "signup" ? (
                     <p>
                       {t(
@@ -1476,7 +1486,7 @@ function AuthPage() {
           </div>
 
           {/* Footer Note */}
-          <footer className="mt-auto pt-6 text-center text-[11px] text-muted-foreground">
+          <footer className="mt-auto pt-4 text-center text-[11px] text-muted-foreground">
             © {new Date().getFullYear()} Framique Technologies. All rights
             reserved. Sovereign Cloud Commerce.
           </footer>
