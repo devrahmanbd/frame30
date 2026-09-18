@@ -252,7 +252,7 @@ function SidebarNav({
                 to={target}
                 onClick={onNavigate}
                 aria-current={groupActive ? "page" : undefined}
-                className={`flex flex-1 min-h-9 items-center gap-3 rounded-fq-md px-2.5 text-[13px] font-medium transition-colors duration-150 ${
+                className={`flex flex-1 ${onNavigate ? "min-h-11" : "min-h-9"} items-center gap-3 rounded-fq-md px-2.5 text-[13px] font-medium transition-colors duration-150 ${
                   groupActive
                     ? "bg-primary/10 text-foreground font-semibold"
                     : "text-foreground/70 hover:bg-foreground/[0.04] hover:text-foreground"
@@ -269,7 +269,7 @@ function SidebarNav({
                   type="button"
                   onClick={() => toggleSection(g.key, groupActive)}
                   aria-label={isOpen ? `Collapse ${label}` : `Expand ${label}`}
-                  className="flex size-8 items-center justify-center rounded-fq-sm text-muted-foreground hover:bg-foreground/[0.04] hover:text-foreground cursor-pointer"
+                  className={`flex ${onNavigate ? "size-11" : "size-8"} items-center justify-center rounded-fq-sm text-muted-foreground hover:bg-foreground/[0.04] hover:text-foreground cursor-pointer`}
                 >
                   <ChevronDown
                     className={`size-3.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -290,7 +290,7 @@ function SidebarNav({
                       to={sub.to}
                       search={sub.search}
                       onClick={onNavigate}
-                      className={`flex min-h-7 items-center gap-2 rounded-fq-sm px-2 text-xs transition-colors duration-150 ${
+                      className={`flex ${onNavigate ? "min-h-11" : "min-h-7"} items-center gap-2 rounded-fq-sm px-2 text-xs transition-colors duration-150 ${
                         subActive
                           ? "bg-primary/10 font-semibold text-primary"
                           : "text-muted-foreground hover:bg-foreground/[0.04] hover:text-foreground"
@@ -341,7 +341,7 @@ function MoreMenu({
           }
           type="button"
           aria-label={t("More", "আরও")}
-          className={`inline-flex min-h-9 sm:min-h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-fq-md px-3 sm:px-2.5 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer active:scale-95 ${
+          className={`inline-flex min-h-11 sm:min-h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-fq-md px-3 sm:px-2.5 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer active:scale-95 ${
             moreActive
               ? "bg-foreground/[0.07] font-semibold text-foreground shadow-xs"
               : "text-muted-foreground hover:bg-muted hover:text-foreground active:bg-muted"
@@ -364,7 +364,7 @@ function MoreMenu({
               <Link
                 to={i.to}
                 search={i.search}
-                className={`flex min-h-9 sm:min-h-8 w-full items-center rounded-fq-md px-3 py-2 text-[13px] transition-colors select-none touch-manipulation ${
+                className={`flex min-h-11 sm:min-h-8 w-full items-center rounded-fq-md px-3 py-2 text-[13px] transition-colors select-none touch-manipulation ${
                   active
                     ? "bg-primary/10 font-semibold text-primary"
                     : "text-foreground/80 hover:bg-muted hover:text-foreground active:bg-muted"
