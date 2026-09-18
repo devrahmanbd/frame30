@@ -29,7 +29,9 @@ RUN apk update && \
              /etc/openresty/conf.d \
              /etc/nginx/conf.d \
              /var/cache/nginx \
+             /var/cache/nginx/storefront \
              /var/log/nginx && \
+    chmod -R 777 /var/cache/nginx && \
     # Generate self-signed fallback certificate for default SNI fallback
     openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
         -keyout /etc/openresty/ssl/default.key \

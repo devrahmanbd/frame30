@@ -55,6 +55,13 @@ export type RateVerdict = {
 
 /** Named buckets keep limits reviewable in one place instead of inline magic numbers. */
 export const BUCKETS = {
+  // Multi-tier tenant isolation & ingress protection
+  "tenant.ingress.aggregate": { limit: 1200, windowSeconds: 60 },
+  "tenant.ingress.shopper": { limit: 180, windowSeconds: 60 },
+  "tenant.api": { limit: 300, windowSeconds: 60 },
+  "system.ingress": { limit: 300, windowSeconds: 60 },
+  "system.auth": { limit: 15, windowSeconds: 300 },
+
   "auth.signin": { limit: 10, windowSeconds: 300 },
   "auth.reset": { limit: 5, windowSeconds: 900 },
   "auth.recovery": { limit: 8, windowSeconds: 900 },
@@ -524,6 +531,27 @@ export async function enforceRateLimit(bucket: BucketName, subject: string) {
   const verdict = await rateLimit(bucket, subject);
   if (!verdict.allowed) throw new RateLimitError(bucket, verdict.reset_at);
   return verdict;
+}
+
+/**
+ * Enforce multi-tier rate limiting for tenant storefronts.
+ * Evaluates both the tenant's aggregate inbound capacity (noisy neighbor protection)
+ * and the specific client IP within the tenant's perimeter.
+ */
+export async function enforceTenantRateLimit(
+  merchantId: string,
+  clientIp: string,
+): Promise<{ allowed: boolean; verdict: RateVerdict }> {
+  // 1. Check tenant aggregate limit (aggregate capacity)
+  await enforceRateLimit("tenant.ingress.aggregate", merchantId);
+
+  // 2. Check individual shopper within tenant boundary
+  const verdict = await enforceRateLimit(
+    "tenant.ingress.shopper",
+    `${merchantId}:${clientIp}`,
+  );
+
+  return { allowed: verdict.allowed, verdict };
 }
 
 export function rateLimitHeaders(v: RateVerdict) {

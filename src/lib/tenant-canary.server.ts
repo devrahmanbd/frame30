@@ -169,16 +169,25 @@ export async function extractTenantIdentifier(request: Request): Promise<{
       !host.includes("localhost") &&
       !host.endsWith("framique.dev")
     ) {
-      const { supabaseAdmin } =
-        await import("@/integrations/supabase/client.server");
-      const { data } = await supabaseAdmin
-        .from("merchant_domains")
-        .select("merchant_id")
-        .eq("hostname", host)
-        .eq("status", "active")
-        .maybeSingle();
-      if (data?.merchant_id) {
-        return { identifier: data.merchant_id, source: "host" };
+      const { cached } = await import("./cache.server");
+      const merchantId = await cached<string | null>(
+        `domain_tenant:${host}`,
+        300,
+        async () => {
+          const { supabaseAdmin } =
+            await import("@/integrations/supabase/client.server");
+          const { data } = await supabaseAdmin
+            .from("merchant_domains")
+            .select("merchant_id")
+            .eq("hostname", host)
+            .eq("status", "active")
+            .maybeSingle();
+          return data?.merchant_id ?? null;
+        },
+        { shared: true, sharedTtlSeconds: 300 },
+      );
+      if (merchantId) {
+        return { identifier: merchantId, source: "host" };
       }
     }
 

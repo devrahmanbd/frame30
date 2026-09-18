@@ -357,6 +357,8 @@ export async function listPayouts(
   });
 }
 
+import { withTenantLock } from "./redis-lock.server";
+
 export async function requestPayout(
   db: Client,
   merchantId: string,
@@ -373,20 +375,25 @@ export async function requestPayout(
   const { requireStepUp } = await import("./identity.server");
   await requireStepUp(db, "payout", merchantId);
 
-  const service = await admin();
-  const key = input.idempotencyKey.trim();
-  if (key.length < 8)
-    throw new PayoutError("payout.missing_idempotency_key", 400);
+  return withTenantLock(
+    merchantId,
+    "payout:request",
+    15_000,
+    async () => {
+      const service = await admin();
+      const key = input.idempotencyKey.trim();
+      if (key.length < 8)
+        throw new PayoutError("payout.missing_idempotency_key", 400);
 
-  // Replay protection: an identical key returns the original instruction rather
-  // than paying twice when the browser retries.
-  const { data: existing } = await service
-    .from("payouts")
-    .select("*")
-    .eq("merchant_id", merchantId)
-    .eq("idempotency_key", key)
-    .maybeSingle();
-  if (existing) return toView(existing as PayoutRow, []);
+      // Replay protection: an identical key returns the original instruction rather
+      // than paying twice when the browser retries.
+      const { data: existing } = await service
+        .from("payouts")
+        .select("*")
+        .eq("merchant_id", merchantId)
+        .eq("idempotency_key", key)
+        .maybeSingle();
+      if (existing) return toView(existing as PayoutRow, []);
 
   const { data: account } = await service
     .from("payout_accounts")
@@ -447,7 +454,9 @@ export async function requestPayout(
   );
   incr("framique_payout_request_total", { outcome: "ok" });
   observe("framique_payout_amount_minor", input.amountMinor, { method });
-  return toView(row, []);
+      return toView(row, []);
+    },
+  );
 }
 
 export async function decidePayout(

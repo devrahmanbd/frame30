@@ -8,6 +8,8 @@
 import { incr, log, observe } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
 
+import { withTenantLock } from "./redis-lock.server";
+
 export const HOLD_TTL_SECONDS = 900;
 
 export type HoldLine = { variantId: string; quantity: number };
@@ -36,7 +38,7 @@ export class CheckoutError extends Error {
 }
 
 function translate(message: string): CheckoutError {
-  if (message.includes("stock_hold.insufficient")) {
+  if (message.includes("stock_hold.insufficient") || message.includes("stock_insufficient")) {
     const item =
       message.split("stock_hold.insufficient:")[1]?.trim() || "an item";
     return new CheckoutError(
@@ -44,7 +46,7 @@ function translate(message: string): CheckoutError {
       `Not enough stock for ${item}`,
     );
   }
-  if (message.includes("stock_hold.variant_not_found")) {
+  if (message.includes("stock_hold.variant_not_found") || message.includes("product_not_found")) {
     return new CheckoutError(
       "variant_missing",
       "A product in your cart is no longer available",
@@ -64,44 +66,60 @@ export async function reserveStock(
   subject: string,
 ) {
   await enforceRateLimit("checkout.reserve", subject);
-  const started = Date.now();
-  const db = await admin();
-  const { data, error } = await db.rpc("stock_hold_acquire", {
-    _merchant_id: merchantId,
-    _checkout_token: checkoutToken,
-    _lines: lines,
-    _ttl_seconds: HOLD_TTL_SECONDS,
-  });
-  observe("framique_checkout_reserve_ms", Date.now() - started);
-  if (error) {
-    incr("framique_checkout_reserve_total", { outcome: "rejected" });
-    log("warn", "checkout.reserve_rejected", {
-      merchantId,
-      reason: error.message,
-    });
-    throw translate(error.message);
-  }
-  incr("framique_checkout_reserve_total", { outcome: "held" });
-  return data as { token: string; expires_at: string };
+  return withTenantLock(
+    merchantId,
+    `stock:reserve:${checkoutToken}`,
+    10_000,
+    async () => {
+      const started = Date.now();
+      const db = await admin();
+      const { data, error } = await db.rpc("stock_hold_acquire", {
+        _merchant_id: merchantId,
+        _checkout_token: checkoutToken,
+        _lines: lines,
+        _ttl_seconds: HOLD_TTL_SECONDS,
+      });
+      observe("framique_checkout_reserve_ms", Date.now() - started);
+      if (error) {
+        incr("framique_checkout_reserve_total", { outcome: "rejected" });
+        log("warn", "checkout.reserve_rejected", {
+          merchantId,
+          reason: error.message,
+        });
+        throw translate(error.message);
+      }
+      incr("framique_checkout_reserve_total", { outcome: "held" });
+      return data as { token: string; expires_at: string };
+    },
+    { retries: 3, retryDelayMs: 40 },
+  );
 }
 
 /** Convert holds into real stock decrements. Called once, inside order creation. */
 export async function consumeStock(checkoutToken: string, orderId: string) {
-  const db = await admin();
-  const { data, error } = await db.rpc("stock_hold_consume", {
-    _checkout_token: checkoutToken,
-    _order_id: orderId,
-  });
-  if (error) {
-    incr("framique_checkout_consume_total", { outcome: "error" });
-    log("error", "checkout.consume_failed", { orderId, reason: error.message });
-    throw new CheckoutError(
-      "stock_consume_failed",
-      "Order placed but stock sync failed",
-    );
-  }
-  incr("framique_checkout_consume_total", { outcome: "ok" });
-  return Number(data ?? 0);
+  return withTenantLock(
+    checkoutToken,
+    `stock:consume:${orderId}`,
+    15_000,
+    async () => {
+      const db = await admin();
+      const { data, error } = await db.rpc("stock_hold_consume", {
+        _checkout_token: checkoutToken,
+        _order_id: orderId,
+      });
+      if (error) {
+        incr("framique_checkout_consume_total", { outcome: "error" });
+        log("error", "checkout.consume_failed", { orderId, reason: error.message });
+        throw new CheckoutError(
+          "stock_consume_failed",
+          "Order placed but stock sync failed",
+        );
+      }
+      incr("framique_checkout_consume_total", { outcome: "ok" });
+      return Number(data ?? 0);
+    },
+    { retries: 3, retryDelayMs: 40 },
+  );
 }
 
 export async function releaseStock(checkoutToken: string) {

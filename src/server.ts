@@ -362,36 +362,6 @@ export default {
         }
       }
 
-      // Global Security Middleware: Global Ingress Rate Limiting
-      if (
-        !isLocalhost &&
-        !url.pathname.startsWith("/api/healthz") &&
-        url.pathname !== "/healthz"
-      ) {
-        try {
-          const { enforceRateLimit, rateLimitHeaders } =
-            await import("./lib/rate-limit.server");
-          const clientIp =
-            request.headers.get("cf-connecting-ip") ||
-            request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-            "127.0.0.1";
-
-          // Use the infra.read bucket as a fallback global ingress limit (120 req / 60s per IP)
-          // We apply this broadly to prevent volumetric scraping
-          const verdict = await enforceRateLimit(
-            "infra.read",
-            `ingress:${clientIp}`,
-          );
-          // Note: In a true global middleware we'd attach headers to every response,
-          // but for simplicity we only halt on block. The internal rate limiters will append their own specific headers.
-        } catch (err: unknown) {
-          if ((err as Error)?.name === "RateLimitError") {
-            return new Response("Too Many Requests", { status: 429 });
-          }
-          // Ignore rate limit backend failures, failing open
-        }
-      }
-
       if (url.pathname === "/api/healthz" || url.pathname === "/healthz") {
         const mode =
           url.searchParams.get("type") === "liveness"
@@ -432,14 +402,73 @@ export default {
         });
       }
 
+      // Resolve Tenant Canary & Routing context
       const { resolveTenantCanaryRoute } =
         await import("./lib/tenant-canary.server");
       const canaryDecision = await resolveTenantCanaryRoute(request).catch(
         () => undefined,
       );
+      const merchantId =
+        canaryDecision?.tenantId && canaryDecision.tenantId !== "manual-override"
+          ? canaryDecision.tenantId
+          : undefined;
+
+      // Multi-Tier Ingress Rate Limiting: Tenant Isolation vs System Ingress
+      const isStaticAsset =
+        url.pathname.startsWith("/assets/") ||
+        url.pathname.startsWith("/fonts/") ||
+        url.pathname === "/favicon.ico" ||
+        url.pathname.startsWith("/.well-known/") ||
+        /\.(png|jpe?g|webp|gif|svg|ico|css|js|woff2?|map)$/i.test(url.pathname);
+
+      if (!isLocalhost && !isStaticAsset) {
+        try {
+          const clientIp =
+            request.headers.get("cf-connecting-ip") ||
+            request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+            "127.0.0.1";
+
+          if (merchantId) {
+            // Tenant Storefront: enforce tenant aggregate capacity + shopper limit
+            const { enforceTenantRateLimit } = await import("./lib/rate-limit.server");
+            await enforceTenantRateLimit(merchantId, clientIp);
+          } else if (url.pathname.startsWith("/auth")) {
+            // Sensitive Auth Endpoints
+            const { enforceRateLimit } = await import("./lib/rate-limit.server");
+            await enforceRateLimit("system.auth", clientIp);
+          } else {
+            // Platform System Ingress
+            const { enforceRateLimit } = await import("./lib/rate-limit.server");
+            await enforceRateLimit("system.ingress", clientIp);
+          }
+        } catch (err: unknown) {
+          if ((err as Error)?.name === "RateLimitError") {
+            const rlErr = err as { bucket: string; resetAt: string };
+            const resetSeconds = Math.max(
+              1,
+              Math.ceil((Date.parse(rlErr.resetAt) - Date.now()) / 1000),
+            );
+            return new Response(
+              JSON.stringify({
+                error: "rate_limit_exceeded",
+                bucket: rlErr.bucket,
+                reset_at: rlErr.resetAt,
+              }),
+              {
+                status: 429,
+                headers: {
+                  "content-type": "application/json",
+                  "retry-after": String(resetSeconds),
+                  "x-ratelimit-reset": rlErr.resetAt,
+                },
+              },
+            );
+          }
+          // Fail open on rate limiter infrastructure faults
+        }
+      }
 
       // Resolve risk tier per-request for CSP header emission
-      const merchantId = canaryDecision?.tenantId ?? undefined;
       const { tier: riskTier } = await resolveRequestTier(merchantId);
 
       const handler = await getServerEntry();

@@ -193,6 +193,20 @@ MANIFEST.push({
   ],
 });
 
+MANIFEST.push({
+  file: "src/lib/concurrency-and-caching.contract.test.ts",
+  why: "Platform & Tenant Concurrency, Distributed Locking, Micro-Caching & Multi-Tier Rate Limiting.",
+  mustCover: [
+    "acquireLock",
+    "withDistributedLock",
+    "withTenantLock",
+    "withSystemLock",
+    "enforceTenantRateLimit",
+    "tenant.ingress.aggregate",
+    "proxy_cache_path",
+  ],
+});
+
 const failures = [];
 const rows = [];
 

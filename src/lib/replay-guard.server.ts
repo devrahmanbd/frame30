@@ -11,6 +11,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { incr, log } from "./observability.server";
+import { redisCommand, redisConfigured, redisKey } from "./redis.server";
 
 type Client = SupabaseClient<Database>;
 
@@ -29,6 +30,10 @@ export async function hashRequest(value: string) {
     .join("");
 }
 
+function idemRedisKey(merchantId: string, route: string, key: string): string {
+  return redisKey("idem", merchantId, route, key);
+}
+
 /**
  * Atomically claim a key. The insert is the lock — we never read-then-write,
  * which would be a race under concurrency.
@@ -42,6 +47,23 @@ export async function claimIdempotency(
     requestHash: string;
   },
 ): Promise<ClaimVerdict> {
+  // Fast L2 Redis check for already-completed replays
+  if (redisConfigured()) {
+    try {
+      const res = await redisCommand(["GET", idemRedisKey(input.merchantId, input.route, input.key)]);
+      if (res.ok && typeof res.value === "string") {
+        const parsed = JSON.parse(res.value) as { hash: string; response: unknown; status: number };
+        if (parsed.hash !== input.requestHash) {
+          incr("framique_idempotency_total", { route: input.route, outcome: "conflict" });
+          return { status: "conflict" };
+        }
+        incr("framique_idempotency_total", { route: input.route, outcome: "replay_redis" });
+        return { status: "replay", response: parsed.response, httpStatus: parsed.status };
+      }
+    } catch {
+      // Degrade to Postgres
+    }
+  }
   const { error } = await admin.from("api_idempotency_keys").insert({
     merchant_id: input.merchantId,
     route: input.route,
@@ -100,6 +122,7 @@ export async function completeIdempotency(
     key: string;
     response: unknown;
     httpStatus: number;
+    requestHash?: string;
   },
 ) {
   await admin
@@ -108,6 +131,26 @@ export async function completeIdempotency(
     .eq("merchant_id", input.merchantId)
     .eq("route", input.route)
     .eq("idem_key", input.key);
+
+  if (redisConfigured()) {
+    try {
+      const payload = JSON.stringify({
+        hash: input.requestHash ?? "",
+        response: input.response,
+        status: input.httpStatus,
+      });
+      // Cache replay for 24 hours (86,400 seconds)
+      void redisCommand([
+        "SET",
+        idemRedisKey(input.merchantId, input.route, input.key),
+        payload,
+        "EX",
+        86400,
+      ]);
+    } catch {
+      // Best-effort cache
+    }
+  }
 }
 
 /** Release a claim when the handler failed, so a retry is not swallowed. */
@@ -121,6 +164,10 @@ export async function releaseIdempotency(
     .eq("merchant_id", input.merchantId)
     .eq("route", input.route)
     .eq("idem_key", input.key);
+
+  if (redisConfigured()) {
+    void redisCommand(["DEL", idemRedisKey(input.merchantId, input.route, input.key)]);
+  }
 }
 
 /** Housekeeping: keys older than the replay window carry no value. */

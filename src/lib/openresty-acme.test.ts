@@ -138,6 +138,36 @@ describe("OpenResty & lua-resty-acme Custom Domain Edge Router Integration", () 
     });
   });
 
+  describe("Edge Storefront Caching & Rate Limiting", () => {
+    it("configures proxy_cache_path with keys_zone and stampede lock", () => {
+      const content = readFileSync(nginxConfPath, "utf8");
+      expect(content).toContain("proxy_cache_path /var/cache/nginx/storefront");
+      expect(content).toContain("keys_zone=framique_storefront_cache:32m");
+      expect(content).toContain("proxy_cache_lock on;");
+      expect(content).toContain("proxy_cache_lock_timeout 5s;");
+      expect(content).toContain("proxy_cache_use_stale error timeout updating");
+      expect(content).toContain("add_header X-Cache-Status $upstream_cache_status always;");
+    });
+
+    it("configures edge IP rate limiting and connection zones", () => {
+      const content = readFileSync(nginxConfPath, "utf8");
+      expect(content).toContain("limit_req_zone $binary_remote_addr zone=edge_ip_limit:32m rate=50r/s;");
+      expect(content).toContain("limit_conn_zone $binary_remote_addr zone=edge_ip_conn:32m;");
+      expect(content).toContain("limit_req zone=edge_ip_limit burst=50 nodelay;");
+      expect(content).toContain("limit_conn edge_ip_conn 25;");
+      expect(content).toContain("limit_req_status 429;");
+    });
+
+    it("bypasses edge cache on personalized and authenticated paths", () => {
+      const content = readFileSync(nginxConfPath, "utf8");
+      expect(content).toContain("map $request_uri $path_skip_cache");
+      expect(content).toContain("map $http_authorization $auth_skip_cache");
+      expect(content).toContain("map $http_cookie $cookie_skip_cache");
+      expect(content).toContain("proxy_cache_bypass $skip_cache;");
+      expect(content).toContain("proxy_no_cache $skip_cache;");
+    });
+  });
+
   describe("Observability & Prometheus Metrics Scrape Targets", () => {
     it("scrapes active blue and green application pods", () => {
       const content = readFileSync(prometheusPath, "utf8");
