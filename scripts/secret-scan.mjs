@@ -66,6 +66,10 @@ const ALLOW = [
   /YOUR_|EXAMPLE|PLACEHOLDER|xxxx|changeme|\.\.\./i,
   /sb_publishable_/,
   /forged-value/,
+  // supabase-js placeholder defaults baked into vendored client bundles —
+  // literal placeholder text, never a credential (real keys still trip the
+  // sb_secret_/jwt/service-role rules above).
+  /your-(?:publishable|anon|service[-_]role)-key/,
   // A CSS custom property is a design token, not a credential: the generic
   // `token: "…"` rule fires on every themed colour/spacing variable.
   /token:\s*["']--/,
@@ -146,6 +150,78 @@ function walk(dir) {
 }
 
 walk(root);
+
+// GAP-A5 (SLO-K03): the tree walk above skips build output, but client
+// bundles inline `VITE_*` env values — a service-role key baked into a
+// shipped bundle is a leak the source scan can never see. Scan emitted
+// bundles explicitly (regardless of gitignore status).
+const BUNDLE_DIRS = [".output", "dist", "build"];
+const BUNDLE_TEXT = /\.(js|mjs|cjs)$/i;
+const BUNDLE_MAX_BYTES = 5_000_000;
+
+function scanBundles() {
+  // A Supabase anon/publishable key is public by design and is inlined into
+  // every client bundle — failing on it would keep this gate permanently red.
+  // What must NEVER appear in a bundle is a service-role (or any privileged)
+  // JWT, so anon-role tokens are waved through by payload inspection while
+  // every other JWT-shaped string still fails.
+  const anonJwt = (text) => {
+    const m = text.match(/\bey[A-Za-z0-9_-]{10,}\.([A-Za-z0-9_-]{10,})\.[A-Za-z0-9_-]{10,}/);
+    if (!m) return false;
+    try {
+      const payload = JSON.parse(
+        Buffer.from(m[1].replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8"),
+      );
+      return payload && payload.role === "anon";
+    } catch {
+      return false;
+    }
+  };
+  for (const dir of BUNDLE_DIRS) {
+    const base = join(root, dir);
+    let st;
+    try {
+      st = statSync(base);
+    } catch {
+      continue;
+    }
+    if (!st.isDirectory()) continue;
+    const stack = [base];
+    while (stack.length > 0) {
+      const cur = stack.pop();
+      for (const entry of readdirSync(cur)) {
+        const full = join(cur, entry);
+        const s = statSync(full);
+        if (s.isDirectory()) {
+          stack.push(full);
+          continue;
+        }
+        if (entry.endsWith(".map")) continue;
+        if (!BUNDLE_TEXT.test(entry)) continue;
+        if (s.size > BUNDLE_MAX_BYTES) continue;
+        const rel = relative(root, full);
+        const lines = readFileSync(full, "utf8").split("\n");
+        lines.forEach((text, i) => {
+          if (ALLOW.some((a) => a.test(text))) return;
+          for (const rule of RULES) {
+            if (rule.re.test(text)) {
+              // Bundle-only carve-out: public anon JWTs are expected inline.
+              if (rule.id === "jwt" && anonJwt(text)) continue;
+              findings.push({
+                file: `${rel} (bundle)`,
+                line: i + 1,
+                rule: rule.id,
+                text: text.trim().slice(0, 120),
+              });
+            }
+          }
+        });
+      }
+    }
+  }
+}
+
+scanBundles();
 
 if (findings.length > 0) {
   console.error(`secret scan FAILED — ${findings.length} finding(s):\n`);

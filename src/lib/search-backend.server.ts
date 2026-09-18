@@ -35,6 +35,7 @@ import {
   type NeutralQuery,
   type SearchEngine,
 } from "./search-backend";
+import { createHash } from "node:crypto";
 import { unsealSecret, sealSecret } from "./webhook-secret.server";
 import {
   captureError,
@@ -383,13 +384,21 @@ export async function queueIndexOps(
   const coalesced = coalesceIndexOps(
     ops.map((o, i) => ({ ...o, seq: o.seq ?? i })),
   );
+  // GAP-D5: idempotency key must be a deterministic content hash, not
+  // `Date.now()` — a timestamp key never dedupes, so retries double-enqueue.
+  // (`coalesceIndexOps` output carries only documentId+op; that pair fully
+  // identifies the batch payload below.)
+  const fingerprint = createHash("sha256")
+    .update(JSON.stringify(coalesced.map((o) => [o.documentId, o.op])))
+    .digest("hex")
+    .slice(0, 32);
   await enqueueJob(
     {
       queue: "search-index",
       name: "search.sync",
       merchantId,
       payload: { ops: coalesced },
-      idempotencyKey: `idx:${merchantId}:${Date.now()}`,
+      idempotencyKey: `idx:${merchantId}:${fingerprint}`,
     },
     db,
   );

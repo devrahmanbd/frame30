@@ -585,17 +585,10 @@ export async function verifyPhase12Schema(): Promise<SchemaVerificationResult> {
   try {
     const db = await admin();
 
-    // Check columns
-    const { data: cols } = await db.rpc("pg_catalog_exec" as never, {
-      query: `
-        select column_name
-        from information_schema.columns
-        where table_schema = 'public'
-          and table_name = 'ai_conversations'
-          and column_name = any($1)
-      `,
-      args: [REQUIRED_COLUMNS],
-    });
+    // Check columns via the typed query builder below. NOTE (§30/GAP-C2):
+    // a generic `pg_catalog_exec`-style SQL gateway must never exist — even
+    // as dead code — so column verification uses only the allowlisted
+    // `.from().select()` path.
 
     // Try a simpler direct query
     const { data: columnCheck, error: colError } = await db
@@ -613,7 +606,6 @@ export async function verifyPhase12Schema(): Promise<SchemaVerificationResult> {
       );
       result.allColumnsPresent = result.missingColumns.length === 0;
     }
-    void cols; // suppress unused
 
     // Check functions exist
     const { data: funcs } = await (

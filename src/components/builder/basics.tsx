@@ -170,7 +170,7 @@ const NavMenuWidget: WidgetComponent = ({ section, str, editing }) => {
     ? (raw as never[])
     : rowsOf(section, "items").map((r) => ({
         label: readString(r, "label"),
-        href: safeHref(readString(r, "href")),
+        href: safeHref(readString(r, "href")) ?? "",
       }));
   const column = str("layout") === "column";
   const align =
@@ -215,7 +215,7 @@ const NavMenuWidget: WidgetComponent = ({ section, str, editing }) => {
                   <nav className={`grid grid-cols-${item.mega!.columns} gap-4`}>
                     {item.children!.map((child, ci) => (
                       <div key={ci}>
-                        <a href={safeHref(child.href)} className="block text-sm font-semibold hover:underline">
+                        <a href={safeHref(child.href) ?? "#"} className="block text-sm font-semibold hover:underline">
                           {child.label}
                         </a>
                       </div>
@@ -228,7 +228,7 @@ const NavMenuWidget: WidgetComponent = ({ section, str, editing }) => {
                 <ul className="absolute left-0 top-full z-30 mt-1 hidden min-w-[12rem] rounded-fq-lg border border-border bg-card py-1 shadow-md group-hover:block">
                   {item.children!.map((child, ci) => (
                     <li key={ci}>
-                      <a href={safeHref(child.href)} className="block px-3 py-1.5 text-sm hover:bg-muted hover:text-primary">
+                        <a href={safeHref(child.href) ?? "#"} className="block px-3 py-1.5 text-sm hover:bg-muted hover:text-primary">
                         {child.label}
                       </a>
                     </li>

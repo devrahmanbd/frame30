@@ -316,6 +316,14 @@ export default {
     try {
       const url = new URL(request.url);
 
+      // TB-2 ingress hygiene (GAP-T3): `x-framique-*` headers are
+      // app-injected downstream identity (see `headersToInject` in
+      // tenant-canary.server.ts). A client-supplied value must never
+      // arrive at the resolver — strip before any tenant logic runs.
+      request.headers.delete("x-framique-tenant-id");
+      request.headers.delete("x-framique-target-slot");
+      request.headers.delete("x-framique-cohort-tier");
+
       // Global Security Middleware: Enforce HTTPS
       const proto =
         request.headers.get("x-forwarded-proto") ||

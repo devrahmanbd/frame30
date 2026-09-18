@@ -139,7 +139,9 @@ export type AuthEventInput = {
 /** Append-only audit row. Failure to audit must never break the request. */
 export async function recordAuthEvent(input: AuthEventInput) {
   const { event, outcome } = input;
-  incr("framique_auth_event_total", { event, outcome });
+  // GAP-A8: canonical name per docs/ops/secret-rotation.md runbook
+  // (`framique_auth_events_total`, plural) — alert queries depend on it.
+  incr("framique_auth_events_total", { event, outcome });
   try {
     const { supabaseAdmin } =
       await import("@/integrations/supabase/client.server");
