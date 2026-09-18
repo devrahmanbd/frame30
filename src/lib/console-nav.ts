@@ -57,6 +57,8 @@ export type IconKey =
 
 export type NavItem = {
   to: string;
+  /** Optional search params (e.g. marketplace tab deep-links). Absent = none. */
+  search?: Record<string, string>;
   en: string;
   bn: string;
   icon: IconKey;
@@ -78,9 +80,10 @@ export type NavGroup = {
 };
 
 /**
- * Eight sections, each with at most five tabs (Phase 5 of the console
- * redesign). Everything that used to own a sidebar row now lives as a tab of
- * the section it belongs to, or under that section's "More" menu; see
+ * Nine sections, each with at most five tabs (Phase 5 of the console
+ * redesign, plus the Marketplace group). Everything that used to own a
+ * sidebar row now lives as a tab of the section it belongs to, or under
+ * that section's "More" menu; see
  * `docs/02-merchant/console-route-audit.md` for the full mapping.
  */
 export const ADMIN_NAV: readonly NavGroup[] = [
@@ -365,6 +368,44 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         to: "/dashboard/plugins/new",
         en: "Add New",
         bn: "নতুন প্লাগইন",
+        icon: "marketplace",
+        permission: "themes.read",
+      },
+    ],
+  },
+  {
+    key: "marketplace",
+    en: "Marketplace",
+    bn: "মার্কেটপ্লেস",
+    icon: "marketplace",
+    to: "/dashboard/marketplace",
+    items: [
+      {
+        to: "/dashboard/marketplace",
+        en: "Themes",
+        bn: "থিম",
+        icon: "marketplace",
+        permission: "themes.read",
+      },
+      {
+        to: "/dashboard/marketplace",
+        search: { tab: "widget" },
+        en: "Widgets & Plugins",
+        bn: "উইজেট ও প্লাগইন",
+        icon: "catalog",
+        permission: "themes.read",
+      },
+      {
+        to: "/dashboard/plugins",
+        en: "Installed",
+        bn: "ইনস্টলড",
+        icon: "infra",
+        permission: "themes.read",
+      },
+      {
+        to: "/dashboard/plugins/new",
+        en: "Add New",
+        bn: "নতুন যোগ",
         icon: "marketplace",
         permission: "themes.read",
       },

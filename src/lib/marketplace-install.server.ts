@@ -134,6 +134,13 @@ export async function installListing(
 
   const applied = input.kind === "theme" ? await applyTheme(db, install.id) : null;
 
+  // Third-party themes materialize their own inactive theme row (same shape
+  // as builtin installs) so Activate/Delete/badges work uniformly. Listings
+  // whose manifest carries no usable AST stay ledger-only, as before.
+  if (input.kind === "theme") {
+    await materializeListingTheme(db, merchantId, install.id, listing).catch(() => null);
+  }
+
   return {
     installId: install.id,
     replayed: false,
@@ -142,6 +149,65 @@ export async function installListing(
     themeApplied: applied?.ok ?? null,
     themeNoticeKey: applied?.noticeKey ?? null,
   };
+}
+
+/**
+ * Best-effort theme row for a third-party install. Returns null (leaving the
+ * install ledger-only) when the manifest has no usable templates — never throws.
+ */
+async function materializeListingTheme(
+  db: Client,
+  merchantId: string,
+  installId: string,
+  listing: { id: string; slug: string; name: string; manifest: unknown },
+): Promise<string | null> {
+  try {
+    const manifest = (listing.manifest ?? {}) as { templates?: unknown; tokens?: unknown };
+    if (!manifest.templates || typeof manifest.templates !== "object") return null;
+    const { parseTemplates, parseTokens } = await import("./builder-ast");
+    const templates = parseTemplates(manifest.templates);
+    if (!Object.values(templates).some((t) => t && typeof t === "object")) return null;
+    const tokens = parseTokens(manifest.tokens ?? {});
+    const { data: theme, error: themeError } = await db
+      .from("store_themes")
+      .insert({ merchant_id: merchantId, name: listing.name, is_active: false })
+      .select("id")
+      .single();
+    if (themeError || !theme) return null;
+    const themeId = (theme as { id: string }).id;
+    const { data: version, error: versionError } = await db
+      .from("theme_versions")
+      .insert({
+        merchant_id: merchantId,
+        theme_id: themeId,
+        version: 1,
+        status: "draft",
+        label: listing.slug,
+        templates: templates as never,
+        tokens: tokens as never,
+        created_by: null,
+      })
+      .select("id")
+      .single();
+    if (versionError || !version) {
+      await db.from("store_themes").delete().eq("id", themeId);
+      return null;
+    }
+    await db.from("theme_drafts").insert({
+      merchant_id: merchantId,
+      theme_id: themeId,
+      revision: 1,
+      templates: templates as never,
+      tokens: tokens as never,
+    });
+    await db
+      .from("store_themes")
+      .update({ source_install_id: installId, source_listing_slug: listing.slug })
+      .eq("id", themeId);
+    return themeId;
+  } catch {
+    return null;
+  }
 }
 
 async function applyTheme(db: Client, installId: string) {

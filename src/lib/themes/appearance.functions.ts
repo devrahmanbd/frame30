@@ -28,6 +28,7 @@ export const themeInstallFn = createServerFn({ method: "POST" })
       context.supabase,
       await scope(context.supabase, context.userId),
       data.key,
+      context.userId,
     );
   });
 

@@ -9,7 +9,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { listRegistry, installRegistryTheme } from "@/lib/themes.server";
+import { listRegistry, installRegistryTheme, registryPackage } from "@/lib/themes.server";
 import { presetByKey } from "@/lib/theme-presets";
 import { catalogMeta } from "./catalog-meta";
 import {
@@ -144,14 +144,27 @@ async function requireRow(db: Client, merchantId: string, themeId: string): Prom
   return data as unknown as Row;
 }
 
-/** Add a catalogue theme to the installed list (idempotent per key). */
-export async function installCatalogTheme(db: Client, merchantId: string, key: string) {
+/**
+ * Add a catalogue theme to the installed list (idempotent per key).
+ *
+ * A complete install, like the marketplace path: theme row + version 1 +
+ * draft + ledger row + linkage + audit. A bare theme row is invisible to
+ * Marketplace themeStates and Activate/Delete, so partial installs are
+ * worse than none — every step below runs, or the call throws.
+ */
+export async function installCatalogTheme(
+  db: Client,
+  merchantId: string,
+  key: string,
+  actorId?: string | null,
+) {
   const registry = await listRegistry(db);
   const entry = registry.find((theme) => theme.key === key);
   if (!entry) throw new ThemeDeskError("theme.unknown", "That theme is not in the catalogue.");
   const existing = (await rows(db, merchantId)).find((row) => row.source_listing_slug === key);
   if (existing) return { id: existing.id, alreadyInstalled: true };
 
+  const pkg = registryPackage(key);
   const meta = catalogMeta(key);
   const { data, error } = await db
     .from("store_themes")
@@ -167,8 +180,81 @@ export async function installCatalogTheme(db: Client, merchantId: string, key: s
     })
     .select("id")
     .single();
-  if (error) throw error;
-  return { id: data.id, alreadyInstalled: false };
+  if (error || !data) throw error ?? new ThemeDeskError("theme.install_failed", "Install failed.");
+  const themeId = (data as { id: string }).id;
+
+  const { data: version, error: versionError } = await db
+    .from("theme_versions")
+    .insert({
+      merchant_id: merchantId,
+      theme_id: themeId,
+      version: 1,
+      status: "draft",
+      label: key,
+      templates: pkg.templates as never,
+      tokens: pkg.tokens as never,
+      source_registry_key: key,
+      source_registry_version: pkg.version,
+      created_by: actorId ?? null,
+    })
+    .select("id")
+    .single();
+  if (versionError || !version) {
+    await db.from("store_themes").delete().eq("id", themeId);
+    throw versionError ?? new ThemeDeskError("theme.install_failed", "Install failed.");
+  }
+
+  const { error: draftError } = await db.from("theme_drafts").insert({
+    merchant_id: merchantId,
+    theme_id: themeId,
+    revision: 1,
+    templates: pkg.templates as never,
+    tokens: pkg.tokens as never,
+    updated_by: actorId ?? null,
+  });
+  if (draftError) {
+    await db.from("store_themes").delete().eq("id", themeId);
+    throw draftError;
+  }
+
+  const { data: ledger, error: ledgerError } = await db
+    .from("marketplace_installs")
+    .insert({
+      merchant_id: merchantId,
+      kind: "theme",
+      theme_id: null,
+      widget_id: null,
+      listing_slug: key,
+      listing_name: entry.nameEn,
+      version: entry.version,
+      price_minor_int: 0,
+      currency_code: "BDT",
+      is_trial: false,
+      status: "installed",
+      idempotency_key: `catalog:${merchantId}:${key}`,
+    })
+    .select("id")
+    .single();
+  if (ledgerError || !ledger) {
+    await db.from("store_themes").delete().eq("id", themeId);
+    throw ledgerError ?? new ThemeDeskError("theme.install_failed", "Install failed.");
+  }
+
+  await db
+    .from("store_themes")
+    .update({
+      source_install_id: (ledger as { id: string }).id,
+    })
+    .eq("id", themeId);
+  await db.from("theme_audit").insert({
+    merchant_id: merchantId,
+    theme_id: themeId,
+    actor: actorId ?? null,
+    action: "theme.installed",
+    before: null,
+    after: { key, version_id: (version as { id: string }).id, via: "catalog" },
+  });
+  return { id: themeId, alreadyInstalled: false };
 }
 
 /**
@@ -207,7 +293,10 @@ export async function activateTheme(
   let applied = false;
   if (row.source_listing_slug) {
     try {
-      await installRegistryTheme(db, merchantId, row.source_listing_slug, true);
+      // Refresh-only, never overwrite: overwrite=true here silently destroyed
+      // merchant customizations on every activation (Sept 2026). A present
+      // draft wins; absent drafts get seeded from the registry.
+      await installRegistryTheme(db, merchantId, row.source_listing_slug, false);
       applied = true;
     } catch {
       applied = false;

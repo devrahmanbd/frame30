@@ -215,6 +215,7 @@ function SidebarNav({
                         <Link
                           key={sub.to}
                           to={sub.to}
+                          search={sub.search}
                           onClick={() => {
                             setHoveredGroup(null);
                             onNavigate?.();
@@ -287,6 +288,7 @@ function SidebarNav({
                     <Link
                       key={sub.to}
                       to={sub.to}
+                      search={sub.search}
                       onClick={onNavigate}
                       className={`flex min-h-7 items-center gap-2 rounded-fq-sm px-2 text-xs transition-colors duration-150 ${
                         subActive
@@ -361,6 +363,7 @@ function MoreMenu({
             <DropdownMenuItem key={i.to} asChild className="cursor-pointer">
               <Link
                 to={i.to}
+                search={i.search}
                 className={`flex min-h-9 sm:min-h-8 w-full items-center rounded-fq-md px-3 py-2 text-[13px] transition-colors select-none touch-manipulation ${
                   active
                     ? "bg-primary/10 font-semibold text-primary"
@@ -430,6 +433,7 @@ function SectionTabs({
                       : undefined
                   }
                   to={i.to}
+                  search={i.search}
                   aria-current={active ? "page" : undefined}
                   className={`inline-flex min-h-9 sm:min-h-8 shrink-0 items-center whitespace-nowrap rounded-fq-md px-3.5 sm:px-3 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer ${
                     active
@@ -725,6 +729,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                       <li key={i.to}>
                         <Link
                           to={i.to}
+                          search={i.search}
                           onClick={() => setDrawer(false)}
                           className="block min-h-9 rounded-fq-md px-2.5 py-2 text-muted-foreground hover:bg-muted hover:text-foreground"
                         >
