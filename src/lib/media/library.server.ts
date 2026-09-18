@@ -13,11 +13,13 @@ import {
   ACCEPTED_MIME,
   MEDIA_UPLOAD_MAX_BYTES,
   type Attachment,
+  isAllowedMimeType,
   sanitiseSvg,
   titleFromFileName,
   uniqueFileName,
   validateMagicBytes,
 } from "./library";
+import { type RiskTier, resolvePolicy } from "../risk-tier";
 
 type Db = SupabaseClient<Database>;
 
@@ -117,21 +119,45 @@ export async function uploadAttachment(
   db: Db,
   merchantId: string,
   input: UploadInput,
+  riskTier: RiskTier = "low",
 ): Promise<Attachment> {
+  const policy = resolvePolicy(riskTier);
+
+  // Feature gate: high-risk merchants cannot upload at all
+  if (!policy.features.uploads) {
+    throw new MediaLibraryError(
+      "uploads_disabled_by_risk_policy",
+      "Uploads are disabled by your risk policy.",
+    );
+  }
+
   const mime = input.contentType.toLowerCase();
-  if (!ACCEPTED_MIME.includes(mime))
-    throw new MediaLibraryError("bad_type", "Unsupported file type");
+
+  // Tier-aware mime type check
+  if (!isAllowedMimeType(mime, policy.upload.allowedMimeTypes)) {
+    throw new MediaLibraryError(
+      "mime_type_not_allowed_for_tier",
+      `File type is not allowed for your risk tier.`,
+    );
+  }
 
   let bytes = decodeBase64(input.base64);
   if (bytes.length === 0) throw new MediaLibraryError("empty", "File is empty");
-  if (bytes.length > MEDIA_UPLOAD_MAX_BYTES) {
-    throw new MediaLibraryError("too_large", "File is larger than 25 MB");
+
+  // Tier-aware file size check
+  if (bytes.length > policy.upload.maxFileSizeBytes) {
+    throw new MediaLibraryError(
+      "file_too_large_for_tier",
+      `File exceeds the size limit for your risk tier.`,
+    );
   }
 
-  // Magic-bytes validation: verify file content matches declared MIME type.
-  // Catches MIME-type spoofing where a malicious file is uploaded with a
-  // harmless-looking content-type (e.g. an executable disguised as a JPEG).
-  const magicCheck = validateMagicBytes(bytes, mime);
+  // Magic-bytes validation with tier-aware scanning strictness
+  const magicCheck = validateMagicBytes(
+    bytes,
+    mime,
+    policy.upload.scanningStrictness,
+  );
   if (!magicCheck.ok) {
     throw new MediaLibraryError(magicCheck.reason, magicCheck.message);
   }

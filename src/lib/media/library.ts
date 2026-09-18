@@ -213,21 +213,36 @@ export function isSvgSafe(input: string): boolean {
 
 /* --------------------------------------------------------- magic bytes */
 
+export type ScanningStrictness =
+  | "standard"
+  | "enhanced"
+  | "strict"
+  | "forensic";
+
 export type MagicBytesCheck =
-  { ok: true } | { ok: false; reason: string; message: string };
+  | { ok: true }
+  | { ok: false; reason: string; message: string };
 
 /**
  * Validates that file content matches the declared MIME type by checking magic
  * bytes (file signatures). Catches MIME-type spoofing where a malicious file
  * is uploaded with a harmless-looking extension and content-type.
  *
- * Text-based formats (SVG, CSV, plain text) are validated differently — they
- * check for valid encoding rather than magic bytes.
+ * `strictness` controls how aggressively we reject:
+ *   - standard: basic magic-byte checks
+ *   - enhanced: also validates file size header hints
+ *   - strict: reject any mime not in the explicit allowlist
+ *   - forensic: block everything (uploads disabled)
  */
 export function validateMagicBytes(
   bytes: Uint8Array,
   contentType: string,
+  strictness: ScanningStrictness = "standard",
 ): MagicBytesCheck {
+  if (strictness === "forensic") {
+    return { ok: false, reason: "uploads_disabled", message: "Uploads are disabled by risk policy." };
+  }
+
   const mime = contentType.toLowerCase();
   if (bytes.length === 0)
     return { ok: false, reason: "empty", message: "File is empty." };
@@ -336,6 +351,17 @@ export function validateMagicBytes(
         message: "File does not look like an AVIF image.",
       };
     }
+    if (strictness === "enhanced" || strictness === "strict") {
+      const declaredSize =
+        (header[0] << 24) | (header[1] << 16) | (header[2] << 8) | header[3];
+      if (declaredSize > 0 && declaredSize > bytes.length * 2) {
+        return {
+          ok: false,
+          reason: "size_header_mismatch",
+          message: "Container file size header does not match actual file size.",
+        };
+      }
+    }
     return { ok: true };
   }
 
@@ -370,6 +396,17 @@ export function validateMagicBytes(
         message: "File does not look like an MP4 video.",
       };
     }
+    if (strictness === "enhanced" || strictness === "strict") {
+      const declaredSize =
+        (header[0] << 24) | (header[1] << 16) | (header[2] << 8) | header[3];
+      if (declaredSize > 0 && declaredSize > bytes.length * 2) {
+        return {
+          ok: false,
+          reason: "size_header_mismatch",
+          message: "Container file size header does not match actual file size.",
+        };
+      }
+    }
     return { ok: true };
   }
 
@@ -386,6 +423,15 @@ export function validateMagicBytes(
         reason: "magic_mismatch",
         message: "File does not look like a WebM video.",
       };
+    }
+    if (strictness === "enhanced" || strictness === "strict") {
+      if (header.length >= 5 && header[4] === 0x00) {
+        return {
+          ok: false,
+          reason: "ebml_header_invalid",
+          message: "WebM EBML header size is zero.",
+        };
+      }
     }
     return { ok: true };
   }
@@ -476,7 +522,42 @@ export function validateMagicBytes(
   }
 
   // Unknown MIME — pass through (the allowlist already gates what's accepted)
+
+  // strict mode: reject any MIME not in a known explicit allowlist
+  if (strictness === "strict") {
+    const KNOWN_MIMES = new Set([
+      ...IMAGE_MIME,
+      ...VECTOR_MIME,
+      ...VIDEO_MIME,
+      ...AUDIO_MIME,
+      ...DOC_MIME,
+    ]);
+    if (!KNOWN_MIMES.has(mime)) {
+      return {
+        ok: false,
+        reason: "mime_not_allowed",
+        message: "File type is not in the allowed list for strict scanning.",
+      };
+    }
+  }
+
   return { ok: true };
+}
+
+/** Check if a MIME type matches an allowlist that may contain wildcards. */
+export function isAllowedMimeType(
+  mimeType: string,
+  allowed: string[],
+): boolean {
+  const mime = mimeType.toLowerCase();
+  for (const pattern of allowed) {
+    if (pattern === mime) return true;
+    if (pattern.endsWith("/*")) {
+      const prefix = pattern.slice(0, -2);
+      if (mime.startsWith(`${prefix}/`)) return true;
+    }
+  }
+  return false;
 }
 
 /* -------------------------------------------------------------- filtering */
