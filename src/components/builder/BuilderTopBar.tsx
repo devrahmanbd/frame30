@@ -22,6 +22,7 @@ export type BuilderTopBarProps = {
   structureVisible?: boolean;
   onChecklistOpen?: () => void;
   issueCount?: number;
+  contentOnly?: boolean;
 };
 
 export function BuilderTopBar({
@@ -45,6 +46,7 @@ export function BuilderTopBar({
   structureVisible,
   onChecklistOpen,
   issueCount = 0,
+  contentOnly,
 }: BuilderTopBarProps) {
   const { t } = useLang();
 
@@ -62,6 +64,11 @@ export function BuilderTopBar({
         <span className="hidden truncate max-w-[180px] font-medium sm:inline">
           {title}
         </span>
+        {contentOnly && (
+          <span className="rounded-full bg-warning-soft px-2 py-0.5 text-[0.6rem] font-medium text-warning-foreground">
+            {t("Content only", "শুধু কন্টেন্ট")}
+          </span>
+        )}
       </div>
 
       <div

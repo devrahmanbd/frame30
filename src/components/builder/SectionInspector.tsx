@@ -128,6 +128,8 @@ type Props = {
   onWhenChange?: (rules: VisibilityRule[]) => void;
   /** Phase 3.2: bind this node to an experiment variant. */
   onAbChange?: (ab: Section["ab"]) => void;
+  /** Content-only mode: editors cannot change style or advanced settings. */
+  contentOnly?: boolean;
 };
 
 const BP_LABEL: Record<Breakpoint, { en: string; bn: string }> = {
@@ -169,6 +171,7 @@ export function SectionInspector({
   onDuplicate,
   onWhenChange,
   onAbChange,
+  contentOnly,
 }: Props) {
   const { t } = useLang();
   const [panel, setPanel] = useState<PanelKey>("content");
@@ -184,13 +187,15 @@ export function SectionInspector({
     );
     for (const field of fields) {
       if (owned.has(field.key)) continue;
-      out[field.panel ?? "content"].push(field);
+      const panel = field.panel ?? "content";
+      if (contentOnly && panel !== "content" && panel !== "layout") continue;
+      out[panel].push(field);
     }
     // Elementor parity: the Advanced controls exist on every widget, so they
     // are appended here rather than repeated across the catalog.
-    out.advanced.push(...ADVANCED_FIELDS);
+    if (!contentOnly) out.advanced.push(...ADVANCED_FIELDS);
     return out;
-  }, [entry]);
+  }, [entry, contentOnly]);
 
 
   if (!section) {
@@ -216,7 +221,10 @@ export function SectionInspector({
 
   const hidden = section.hidden ?? [];
   const mismatch = isContextMismatch(section.type, template);
-  const activePanels = PANEL_ORDER.filter((key) => grouped[key].length > 0);
+  const allActivePanels = PANEL_ORDER.filter((key) => grouped[key].length > 0);
+  const activePanels = contentOnly
+    ? allActivePanels.filter((key) => key === "content")
+    : allActivePanels;
   const current = activePanels.includes(panel) ? panel : (activePanels[0] ?? "content");
 
   const renderField = (field: Field) => {
@@ -605,6 +613,15 @@ export function SectionInspector({
           </p>
         );
       })()}
+
+      {contentOnly && (
+        <p className="rounded-fq-md border border-info bg-info-soft p-2 text-xs text-info-foreground">
+          {t(
+            "Content-only mode — ask an admin to unlock design fields",
+            "শুধু কন্টেন্ট মোড — ডিজাইন ফিল্ড আনলক করতে অ্যাডমিনকে বলুন",
+          )}
+        </p>
+      )}
 
       {activePanels.length > 1 && (
         <div role="tablist" aria-label={t("Field groups", "ফিল্ড গ্রুপ")} className="flex flex-wrap gap-1">

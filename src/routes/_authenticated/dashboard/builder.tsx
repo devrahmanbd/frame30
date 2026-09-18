@@ -20,7 +20,10 @@ import { HistoryPanel } from "@/components/builder/HistoryPanel";
 import { GlobalBlockBar } from "@/components/builder/GlobalBlockBar";
 import { TemplatesLibrary } from "@/components/builder/TemplatesLibrary";
 import { MaintenanceSettings } from "@/components/builder/MaintenanceSettings";
+import { FormsPanel } from "@/components/builder/FormsPanel";
+import { PopupSettings } from "@/components/builder/PopupSettings";
 import { useBuilderEditor } from "@/hooks/use-builder-editor";
+import { useMembership } from "@/hooks/use-membership";
 import { cloneNodes, locate, topMost } from "@/lib/builder-tree";
 import {
   deleteBlock,
@@ -173,6 +176,8 @@ function errorMessage(error: unknown) {
 function BuilderStudio() {
   const { t } = useLang();
   const qc = useQueryClient();
+  const membership = useMembership();
+  const contentOnly = membership.data?.role === "editor";
 
   const loadWorkspace = useServerFn(builderWorkspaceFn);
   const autosave = useServerFn(builderAutosaveFn);
@@ -219,7 +224,7 @@ function BuilderStudio() {
   const [blocks, setBlocks] = useState<SavedBlock[]>([]);
   const [blockName, setBlockName] = useState("");
   const [panel, setPanel] = useState<
-    "inspect" | "seo" | "brand" | "history" | "themes" | "templates" | "maintenance"
+    "inspect" | "seo" | "brand" | "history" | "themes" | "templates" | "maintenance" | "forms" | "popups"
   >("inspect");
   const [runAt, setRunAt] = useState("");
   const [pendingInstall, setPendingInstall] = useState<string | null>(null);
@@ -1135,6 +1140,9 @@ function BuilderStudio() {
         id: "brand", label: t("Brand tokens", "ব্র্যান্ড টোকেন"), section: t("Panels", "প্যানেল"), run: () => setPanel("brand"),
       },
       {
+        id: "popups", label: t("Popup settings", "পপআপ সেটিংস"), section: t("Panels", "প্যানেল"), run: () => setPanel("popups"),
+      },
+      {
         id: "history", label: t("History", "ইতিহাস"), section: t("Panels", "প্যানেল"), run: () => setPanel("history"),
       },
     ],
@@ -1165,6 +1173,7 @@ function BuilderStudio() {
           structureVisible={leftTab === "layers"}
           onChecklistOpen={() => setPublishOpen(true)}
           issueCount={issues.filter((i) => i.level === "error").length}
+          contentOnly={contentOnly}
         />
 
         <PublishModal
@@ -1902,6 +1911,8 @@ function BuilderStudio() {
                   ["themes", t("Themes", "থিম")],
                   ["templates", t("Templates", "টেমপ্লেট")],
                   ["maintenance", t("Maintenance", "মেইনটেন্যান্স")],
+                  ["forms", t("Forms", "ফর্ম")],
+                  ["popups", t("Popups", "পপআপ")],
                 ] as const
               ).map(([key, label]) => (
                 <button
@@ -1926,6 +1937,7 @@ function BuilderStudio() {
                 section={selected}
                 template={template}
                 device={device}
+                contentOnly={contentOnly}
                 onChange={(key, value, bp) =>
                   selected &&
                   editor.setPropAt(template, slot, selected.id, key, value, bp)
@@ -2244,6 +2256,14 @@ function BuilderStudio() {
 
             {panel === "maintenance" && (
               <MaintenanceSettings />
+            )}
+
+            {panel === "forms" && (
+              <FormsPanel />
+            )}
+
+            {panel === "popups" && (
+              <PopupSettings />
             )}
 </aside>
         </div>
