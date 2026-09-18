@@ -196,12 +196,14 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex min-h-8 items-center gap-1.5 rounded-fq-md border border-border bg-muted/40 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground cursor-pointer"
+        aria-label={`${tk("common.search")} (⌘K)`}
+        className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border/80 bg-muted/30 px-3 py-1.5 text-xs text-muted-foreground transition-all duration-150 hover:bg-muted/70 hover:text-foreground hover:border-border cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1"
       >
-        <Search className="size-3.5" />
-        <span>{tk("common.search")}</span>
-        <kbd className="ml-1 rounded-fq-xs border border-border/80 bg-background px-1 py-0.5 font-mono text-[10px] text-muted-foreground">
-          ⌘K
+        <Search className="size-3.5 shrink-0" aria-hidden="true" />
+        <span className="hidden sm:inline font-medium">{tk("common.search")}</span>
+        <kbd className="inline-flex items-center gap-0.5 rounded border border-border/80 bg-card px-1.5 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground shadow-2xs">
+          <span>⌘</span>
+          <span>K</span>
         </kbd>
       </button>
     );
@@ -209,7 +211,7 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-xs p-4 pt-20"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-xs p-4 pt-16 sm:pt-24"
       role="presentation"
       onClick={() => setOpen(false)}
     >
@@ -217,11 +219,11 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
         role="dialog"
         aria-modal="true"
         aria-label={tk("platform.console")}
-        className="w-full max-w-xl overflow-hidden rounded-fq-xl border border-border bg-card shadow-2xl animate-in fade-in-0 zoom-in-95 duration-100"
+        className="w-full max-w-xl overflow-hidden rounded-xl border border-border/80 bg-card shadow-2xl animate-in fade-in-0 zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="relative flex items-center border-b border-border px-4 py-3">
-          <Search className="size-4 shrink-0 text-muted-foreground mr-3" />
+        <div className="relative flex items-center border-b border-border/80 px-4 py-3 bg-muted/20">
+          <Search className="size-4 shrink-0 text-muted-foreground mr-3" aria-hidden="true" />
           <input
             ref={inputRef}
             value={query}
@@ -250,14 +252,14 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
               "ডেস্ক, স্টোরের নাম, স্ল্যাগ বা অ্যাকশন খুঁজুন...",
             )}
             aria-label={tk("common.search")}
-            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+            className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none font-sans"
           />
-          <span className="rounded-fq-xs bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
+          <kbd className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground border border-border/60">
             ESC
-          </span>
+          </kbd>
         </div>
 
-        <ul className="max-h-84 overflow-y-auto p-1.5 divide-y divide-border/20">
+        <ul className="max-h-84 overflow-y-auto p-2 space-y-1 divide-y divide-border/20">
           {results.map((r, i) => (
             <li key={r.key}>
               <button
@@ -265,43 +267,45 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
                 onMouseEnter={() => setCursor(i)}
                 onClick={() => go(i)}
                 aria-current={i === cursor ? "true" : undefined}
-                className={`flex w-full items-center justify-between gap-3 rounded-fq-md px-3.5 py-2.5 text-left text-sm transition-colors cursor-pointer ${
-                  i === cursor ? "bg-primary/10 text-primary" : "hover:bg-muted"
+                className={`flex w-full min-h-11 items-center justify-between gap-3 rounded-lg px-3.5 py-2 text-left text-sm transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                  i === cursor
+                    ? "bg-primary/10 text-primary font-medium"
+                    : "hover:bg-muted/70 text-foreground"
                 }`}
               >
                 {r.kind === "action" ? (
                   <>
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="flex size-6 shrink-0 items-center justify-center rounded-fq-sm bg-primary/10 text-primary">
+                      <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
                         <r.icon className="size-3.5" />
                       </div>
-                      <span className="truncate font-medium text-foreground">
+                      <span className="truncate font-medium">
                         {r.label}
                       </span>
                     </div>
-                    <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                    <span className="shrink-0 rounded-full border border-primary/20 bg-primary/5 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary font-mono">
                       {r.group}
                     </span>
                   </>
                 ) : r.kind === "dest" ? (
                   <>
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="truncate text-foreground font-medium">
+                      <span className="truncate font-medium">
                         {r.label}
                       </span>
                     </div>
-                    <span className="shrink-0 text-xs text-muted-foreground">
+                    <span className="shrink-0 text-xs text-muted-foreground font-mono">
                       {r.group}
                     </span>
                   </>
                 ) : (
                   <>
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="flex size-6 shrink-0 items-center justify-center rounded-fq-sm bg-muted text-muted-foreground">
+                      <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
                         <Building2 className="size-3.5" />
                       </div>
                       <div className="min-w-0">
-                        <span className="truncate font-medium text-foreground block">
+                        <span className="truncate font-medium block">
                           {r.tenant.name}
                         </span>
                         <span className="text-[11px] font-mono text-muted-foreground">
@@ -310,7 +314,7 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
                       </div>
                     </div>
                     <div className="shrink-0 flex items-center gap-2 text-xs text-muted-foreground">
-                      <span>{r.tenant.plan ?? "launch"}</span>
+                      <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] uppercase">{r.tenant.plan ?? "launch"}</span>
                       <span className="text-border">·</span>
                       <span className="capitalize">{r.tenant.status}</span>
                       <ArrowRight className="size-3 text-muted-foreground" />
@@ -330,8 +334,8 @@ export function RootCommandPalette({ destinations }: { destinations: Dest[] }) {
           ) : null}
         </ul>
 
-        <div className="border-t border-border bg-muted/20 px-4 py-2 flex items-center justify-between text-[11px] text-muted-foreground">
-          <div className="flex items-center gap-2">
+        <div className="border-t border-border/80 bg-muted/30 px-4 py-2 flex items-center justify-between text-[11px] text-muted-foreground font-mono">
+          <div className="flex items-center gap-3">
             <span>↑↓ Navigate</span>
             <span>↵ Select</span>
             <span>ESC Close</span>
