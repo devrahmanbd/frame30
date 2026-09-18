@@ -81,7 +81,7 @@
 - [x] **Add Theme tile + directory button states**: filter-clearing tile on the themes grid; dynamic states Install → Activate → Activated/Customize (WP `theme-install.php` parity).
 - [x] **Theme Details modal parity**: modal carries Activate/Preview/Delete (+linked-theme gating) alongside Install.
 - [x] **Direct Delete Action**: working **Delete** button per installed theme (server refuses active; cascades drafts/versions; ledger → `removed` status).
-  - [ ] **Follow-up [REPORT WF-02]**: `removed` is not in the `market_install_status` enum (`installed|trial|paused|rolled_back`) — real Postgres rejects the retire update. Migration for terminal status + atomic delete-then-retire required.
+  - [x] **Follow-up [REPORT WF-02] RESOLVED Sept 18**: `removed` added to the live enum; retire-then-verify probe passed (ledger row flips to `removed`, plugin row gone). Migration captured below — no atomicity gap remains.
 - [x] **State-Driven Badges & Buttons**: real state on marketplace cards (`isLiveInstall` + `themeStates`).
   - [ ] **Follow-up [REPORT WF-01/WF-03]**: `paused` counts as Installed; Appearance vs Marketplace badge sources diverge (`source_listing_slug` vs `source_install_id`); third-party (non-builtin) installs never create a `store_themes` row (missing `market_apply_theme_install` RPC) so Activate/Delete never render. Badge must follow active/installed row state, not ledger presence alone.
 - [ ] **Stable idempotency [REPORT WF-08]**: key minted as `${listing.id}-…-${Date.now()}` per click defeats replay guard → duplicate ledger/debit. Stable per-(merchant, listing, intent) key + disable-while-pending.
@@ -95,7 +95,7 @@
 - [x] **Bulk activate/deactivate/delete** — SHIPPED (code-verified Sept 18): checkboxes + select-all, Bulk actions ▾, per-row isolation with honest partial-success toasts (no more abort-on-first-error); My-installs toolbar backed by audited `marketBulkInstallsFn` (50-cap).
 
 ### P1 — Sidebar System (WP Admin Menu Parity)
-- [x] Elevate **Appearance** and **Plugins** as first-class top-level CMS groups — SHIPPED (code-verified Sept 18: `console-nav.ts:320-372`). Visual pass in running browser still pending.
+- [x] Elevate **Appearance** and **Plugins** as first-class top-level CMS groups — SHIPPED + visually verified in running browser Sept 18 (accordion groups, Collapse button, topbar all render).
 - [x] Expandable accordion submenus + hover flyouts in collapsed rail, Collapse Menu button, current-section highlight (`AdminShell` — code-verified Sept 18: `expandedSections` + chevron `:142-151,257-298`; rail `hoveredGroup` flyout `:166-234`). **Keyboard access shipped**: flyouts open on focus, close on blur-away/Escape.
 - [x] Server authz spot-check (Sept 18 live probes): zero client-controlled tenancy in theme/plugin/marketplace fns (scope derives from own membership); `pluginKillSwitchFn` merchant write refused live (42501, nothing written). `requirePermission` migration remains optional hardening, not a hole.
 - [x] Legacy pages desk verdict: `/dashboard/pages` is NOT stub-backed (real PageBuilder + RLS-safe savePage) — but unlinked from sidebar. Keep + link, or retire; no security action needed.
