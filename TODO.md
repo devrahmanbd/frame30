@@ -96,7 +96,9 @@
 
 ### P1 — Sidebar System (WP Admin Menu Parity)
 - [x] Elevate **Appearance** and **Plugins** as first-class top-level CMS groups — SHIPPED (code-verified Sept 18: `console-nav.ts:320-372`). Visual pass in running browser still pending.
-- [x] Expandable accordion submenus + hover flyouts in collapsed rail, Collapse Menu button, current-section highlight (`AdminShell` — code-verified Sept 18: `expandedSections` + chevron `:142-151,257-298`; rail `hoveredGroup` flyout `:166-234`). Keyboard-access + visual pass pending.
+- [x] Expandable accordion submenus + hover flyouts in collapsed rail, Collapse Menu button, current-section highlight (`AdminShell` — code-verified Sept 18: `expandedSections` + chevron `:142-151,257-298`; rail `hoveredGroup` flyout `:166-234`). **Keyboard access shipped**: flyouts open on focus, close on blur-away/Escape.
+- [x] Server authz spot-check (Sept 18 live probes): zero client-controlled tenancy in theme/plugin/marketplace fns (scope derives from own membership); `pluginKillSwitchFn` merchant write refused live (42501, nothing written). `requirePermission` migration remains optional hardening, not a hole.
+- [x] Legacy pages desk verdict: `/dashboard/pages` is NOT stub-backed (real PageBuilder + RLS-safe savePage) — but unlinked from sidebar. Keep + link, or retire; no security action needed.
 - [x] Single nav source of truth — SHIPPED (code-verified Sept 18): `ADMIN_NAV` + `HIDDEN_DESTINATIONS` + `filterNav`/`permissionForPath`/`isNavActive` (`console-nav.ts:549-615`).
 - [ ] Server authz parity [REPORT WF-19]: `themes.functions.ts` + `plugins.functions.ts` use only `requireSupabaseAuth` while content/editor enforce `requirePermission` — add `requirePermission("themes.read/update")` etc. so hidden-nav = refused-route.
 

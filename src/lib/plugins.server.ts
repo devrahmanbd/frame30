@@ -183,20 +183,20 @@ export async function uninstallPlugin(
   return { ok: true };
 }
 
-/** Platform owner only — RLS refuses everyone else. */
+/**
+ * Platform owner only — RLS refuses everyone else. Kill switches are global
+ * per plugin (not per merchant): the live table is keyed by plugin_id.
+ */
 export async function setPluginKillSwitch(
   db: Client,
-  merchantId: string,
+  pluginId: string,
   disabled: boolean,
   reason: string | null,
-  setBy: string | null,
 ) {
-  const { error } = await db
-    .from("plugin_kill_switch")
-    .upsert(
-      { merchant_id: merchantId, disabled, reason, set_by: setBy, updated_at: new Date().toISOString() },
-      { onConflict: "merchant_id" },
-    );
+  const { error } = await db.from("plugin_kill_switch").upsert(
+    { plugin_id: pluginId, disabled, reason, updated_at: new Date().toISOString() },
+    { onConflict: "plugin_id" },
+  );
   if (error) throw new Error("plugin_kill_switch_failed");
   return { ok: true, disabled };
 }

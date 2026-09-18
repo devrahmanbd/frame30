@@ -69,13 +69,13 @@ export const pluginUninstallFn = createServerFn({ method: "POST" })
     return uninstallPlugin(context.supabase, merchantId, data.pluginId, context.userId);
   });
 
-/** Platform owner only — RLS rejects a merchant who tries. */
+/** Platform owner only — RLS rejects a merchant who tries. Kill switches are global per plugin. */
 export const pluginKillSwitchFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z
       .object({
-        merchantId: z.string().uuid(),
+        pluginId: z.string().min(1).max(80),
         disabled: z.boolean(),
         reason: z.string().max(200).nullable(),
       })
@@ -83,11 +83,5 @@ export const pluginKillSwitchFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { setPluginKillSwitch } = await import("./plugins.server");
-    return setPluginKillSwitch(
-      context.supabase,
-      data.merchantId,
-      data.disabled,
-      data.reason,
-      context.userId,
-    );
+    return setPluginKillSwitch(context.supabase, data.pluginId, data.disabled, data.reason);
   });
