@@ -90,7 +90,7 @@
 - [x] **Delete Action** — SHIPPED (code-verified Sept 18): inactive-only row Delete (`InstalledApps.tsx:378-390`) + `ConfirmDialog` (`:513-531`) + bulk-delete loop (`:533-558`) → `pluginUninstallFn` & `marketUninstallWidgetFn` (ledger retired to `removed`, removes `plugin_state` row, confirm dialog).
 - [x] **Widget uninstall [REPORT WF-06]**: added `marketUninstallWidgetFn` + wired into `InstalledApps` delete button and bulk actions, retiring install ledger to `removed`.
 - [x] **Add New Plugin navigation** — SHIPPED: `/dashboard/plugins/new` → `/dashboard/marketplace?tab=widget` (`plugins/new.tsx:11`); route search param added (`creator.tsx`/`moderation.tsx` links fixed).
-- [x] **Bulk activate/deactivate/delete** — SHIPPED (code-verified Sept 18): checkboxes + select-all (`InstalledApps.tsx:276-290,312-320`), Bulk actions ▾ (`:242-268`), `handleApplyBulk` (`:144-171`).
+- [x] **Bulk activate/deactivate/delete** — SHIPPED (code-verified Sept 18): checkboxes + select-all, Bulk actions ▾, per-row isolation with honest partial-success toasts (no more abort-on-first-error); My-installs toolbar backed by audited `marketBulkInstallsFn` (50-cap).
 
 ### P1 — Sidebar System (WP Admin Menu Parity)
 - [x] Elevate **Appearance** and **Plugins** as first-class top-level CMS groups — SHIPPED (code-verified Sept 18: `console-nav.ts:320-372`). Visual pass in running browser still pending.

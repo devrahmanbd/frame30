@@ -148,7 +148,28 @@ export const marketInstallStatusFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { setInstallStatus } = await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return setInstallStatus(context.supabase, merchantId, data.installId, data.status);
+    return setInstallStatus(context.supabase, merchantId, data.installId, data.status, context.userId);
+  });
+
+/**
+ * WordPress-style bulk actions on installs. Applies per row and reports each
+ * result — one bad row (unknown id, active theme, unlinked install) never
+ * aborts the rest of the batch.
+ */
+export const marketBulkInstallsFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        installIds: z.array(z.string().uuid()).min(1).max(50),
+        action: z.enum(["enable", "pause", "delete"]),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { bulkInstallStatus } = await import("./marketplace-install.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return bulkInstallStatus(context.supabase, merchantId, context.userId, data.installIds, data.action);
   });
 
 /**
@@ -191,7 +212,7 @@ export const marketUninstallThemeFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { uninstallBuiltinTheme } = await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return uninstallBuiltinTheme(context.supabase, merchantId, data.installId);
+    return uninstallBuiltinTheme(context.supabase, merchantId, data.installId, context.userId);
   });
 
 /** WordPress-style plugin uninstall: removes the plugin row, retires the ledger row. */

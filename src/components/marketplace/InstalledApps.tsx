@@ -164,19 +164,35 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
       return;
     }
 
+    const ids = [...selectedIds];
+    const enabled = bulkAction === "activate";
+    let ok = 0;
     try {
-      const enabled = bulkAction === "activate";
-      for (const id of selectedIds) {
-        await toggle({ data: { pluginId: id, enabled } });
+      for (const id of ids) {
+        try {
+          await toggle({ data: { pluginId: id, enabled } });
+          ok += 1;
+        } catch {
+          // Per-row isolation: one bad row never aborts the batch.
+        }
       }
-      toast.success(
-        enabled
-          ? t("Selected plugins activated", "নির্বাচিত প্লাগইন সক্রিয় হয়েছে")
-          : t(
-              "Selected plugins deactivated",
-              "নির্বাচিত প্লাগইন নিষ্ক্রিয় হয়েছে",
-            ),
-      );
+      if (ok === ids.length) {
+        toast.success(
+          enabled
+            ? t("Selected plugins activated", "নির্বাচিত প্লাগইন সক্রিয় হয়েছে")
+            : t(
+                "Selected plugins deactivated",
+                "নির্বাচিত প্লাগইন নিষ্ক্রিয় হয়েছে",
+              ),
+        );
+      } else if (ok === 0) {
+        toast.error(t("Bulk action failed", "বাল্ক অ্যাকশন ব্যর্থ হয়েছে"));
+      } else {
+        toast.warning(
+          t("Bulk action partially applied.", "বাল্ক অ্যাকশন আংশিক প্রয়োগ হয়েছে।") +
+            ` ${ok}/${ids.length}`,
+        );
+      }
       setSelectedIds(new Set());
       setBulkAction("");
       refresh();
@@ -558,21 +574,37 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
         )}
         confirmLabel={t("Delete Selected", "নির্বাচিত মুছুন")}
         onCancel={() => setConfirmBulkDelete(false)}
-        onConfirm={async () => {
-          for (const id of selectedIds) {
-            const install = liveInstallFor(id);
-            if (install) {
-              await uninstallWidget({ data: { installId: install.id } });
-            } else {
-              await uninstallPlugin({ data: { pluginId: id } });
+          onConfirm={async () => {
+            const ids = [...selectedIds];
+            let ok = 0;
+            for (const id of ids) {
+              try {
+                const install = liveInstallFor(id);
+                if (install) {
+                  await uninstallWidget({ data: { installId: install.id } });
+                } else {
+                  await uninstallPlugin({ data: { pluginId: id } });
+                }
+                ok += 1;
+              } catch {
+                // Per-row isolation: one bad row never aborts the batch.
+              }
             }
-          }
-          toast.success(
-            t("Selected plugins deleted", "নির্বাচিত প্লাগইন মুছে ফেলা হয়েছে"),
-          );
-          setConfirmBulkDelete(false);
-          setSelectedIds(new Set());
-          setBulkAction("");
+            if (ok === ids.length) {
+              toast.success(
+                t("Selected plugins deleted", "নির্বাচিত প্লাগইন মুছে ফেলা হয়েছে"),
+              );
+            } else if (ok === 0) {
+              toast.error(t("Bulk delete failed", "বাল্ক মোছা ব্যর্থ হয়েছে"));
+            } else {
+              toast.warning(
+                t("Bulk delete partially applied.", "বাল্ক মোছা আংশিক প্রয়োগ হয়েছে।") +
+                  ` ${ok}/${ids.length}`,
+              );
+            }
+            setConfirmBulkDelete(false);
+            setSelectedIds(new Set());
+            setBulkAction("");
           refresh();
         }}
       />

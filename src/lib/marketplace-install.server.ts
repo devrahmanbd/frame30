@@ -176,6 +176,7 @@ export async function setInstallStatus(
   merchantId: string,
   installId: string,
   status: "paused" | "installed" | "rolled_back",
+  actorId?: string | null,
 ) {
   const { data: row } = await db
     .from("marketplace_installs")
@@ -193,6 +194,10 @@ export async function setInstallStatus(
     .eq("merchant_id", merchantId)
     .eq("id", installId);
   if (error) throw new Error("market_install_update_failed");
+  const { auditAction } = await import("./hardening.server");
+  await auditAction(db, merchantId, actorId ?? null, `market.${next}`, row.kind, {
+    slug: row.listing_slug,
+  }, installId);
 
   let themeNoticeKey: string | null = null;
   if (row.kind === "theme") {
@@ -367,7 +372,12 @@ export async function installBuiltinTheme(
  * retires its ledger row. The active theme is refused (deleteTheme throws
  * theme.active) — activate something else first.
  */
-export async function uninstallBuiltinTheme(db: Client, merchantId: string, installId: string) {
+export async function uninstallBuiltinTheme(
+  db: Client,
+  merchantId: string,
+  installId: string,
+  actorId?: string | null,
+) {
   const { data: row } = await db
     .from("marketplace_installs")
     .select("id, kind, listing_slug, status")
@@ -385,7 +395,7 @@ export async function uninstallBuiltinTheme(db: Client, merchantId: string, inst
   if (!theme) throw new Error("market_theme_not_linked");
 
   const { deleteTheme } = await import("./themes/appearance.server");
-  await deleteTheme(db, merchantId, theme.id as string);
+  await deleteTheme(db, merchantId, theme.id as string, actorId ?? null);
 
   await db
     .from("marketplace_installs")
@@ -438,4 +448,57 @@ export async function uninstallWidgetInstall(
     plugin: row.listing_slug,
   }, installId);
   return { ok: true, removedPlugin: matched.length > 0 };
+}
+
+export type BulkAction = "enable" | "pause" | "delete";
+export type BulkResult = { installId: string; ok: boolean; error?: string };
+
+/**
+ * Apply one action across many installs, isolating failures per row.
+ * Delete routes by kind (themes need their linked row, widgets their plugin
+ * row); enable/pause reuse the single-install gate so trials, consent and
+ * theme apply/revert behave identically to one-at-a-time clicks.
+ */
+export async function bulkInstallStatus(
+  db: Client,
+  merchantId: string,
+  actorId: string | null,
+  installIds: string[],
+  action: BulkAction,
+): Promise<{ results: BulkResult[] }> {
+  const results: BulkResult[] = [];
+  for (const installId of installIds) {
+    try {
+      if (action === "delete") {
+        const { data: row } = await db
+          .from("marketplace_installs")
+          .select("id, kind")
+          .eq("merchant_id", merchantId)
+          .eq("id", installId)
+          .maybeSingle();
+        if (!row) throw new Error("market_install_not_found");
+        if (row.kind === "theme") {
+          await uninstallBuiltinTheme(db, merchantId, installId, actorId);
+        } else {
+          await uninstallWidgetInstall(db, merchantId, installId, actorId);
+        }
+      } else {
+        await setInstallStatus(
+          db,
+          merchantId,
+          installId,
+          action === "enable" ? "installed" : "paused",
+          actorId,
+        );
+      }
+      results.push({ installId, ok: true });
+    } catch (e) {
+      results.push({
+        installId,
+        ok: false,
+        error: e instanceof Error ? e.message : "bulk_failed",
+      });
+    }
+  }
+  return { results };
 }

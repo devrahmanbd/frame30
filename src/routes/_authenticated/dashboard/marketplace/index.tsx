@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
 import {
+  marketBulkInstallsFn,
   marketCatalogFn,
   marketInstallFn,
   marketInstallStatusFn,
@@ -75,6 +76,7 @@ function Marketplace() {
   const [pendingDelete, setPendingDelete] = useState<
     { installId: string; name: string; kind: "theme" | "widget" } | null
   >(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
 
@@ -234,6 +236,33 @@ function Marketplace() {
     if (previewIndex === null || previewable.length === 0) return;
     const next = (previewIndex + direction + previewable.length) % previewable.length;
     void openPreview(next);
+  }
+
+  /** WordPress-style bulk actions: per-row results, failures never abort the batch. */
+  async function bulkRun(action: "enable" | "pause" | "delete") {
+    if (selected.size === 0) return;
+    setBusy(true);
+    setMsg(null);
+    try {
+      const res = await marketBulkInstallsFn({
+        data: { installIds: [...selected], action },
+      });
+      const ok = res.results.filter((r) => r.ok).length;
+      const failed = res.results.length - ok;
+      setMsg(
+        failed === 0
+          ? t("Bulk action complete.", "বাল্ক অ্যাকশন সম্পন্ন।")
+          : t("Bulk action partially applied.", "বাল্ক অ্যাকশন আংশিক প্রয়োগ হয়েছে।") +
+              ` ${ok}/${res.results.length}`,
+      );
+      setSelected(new Set());
+      await router.invalidate();
+      await qc.invalidateQueries({ queryKey: ["admin", "plugins"] });
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : "Bulk action failed");
+    } finally {
+      setBusy(false);
+    }
   }
 
   /** WordPress-style plugin uninstall: removes the plugin row, retires the ledger row. */
@@ -595,14 +624,86 @@ function Marketplace() {
         />
 
         <section className="space-y-2">
-          <h2 className="font-bangla-display text-lg font-semibold">{t("My installs", "আমার ইনস্টল")}</h2>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="font-bangla-display text-lg font-semibold">{t("My installs", "আমার ইনস্টল")}</h2>
+            {data.installs.length > 0 && (
+              <label className="flex items-center gap-2 text-sm text-muted-foreground">
+                <input
+                  type="checkbox"
+                  checked={selected.size > 0 && selected.size === data.installs.length}
+                  onChange={(e) =>
+                    setSelected(e.target.checked ? new Set(data.installs.map((r) => r.id)) : new Set())
+                  }
+                  aria-label={t("Select all installs", "সব ইনস্টল নির্বাচন")}
+                  className="size-4"
+                />
+                {t("Select all", "সব নির্বাচন")}
+              </label>
+            )}
+          </div>
+          {selected.size > 0 && (
+            <div
+              role="toolbar"
+              aria-label={t("Bulk actions", "বাল্ক অ্যাকশন")}
+              className="flex flex-wrap items-center gap-2 rounded-fq-md border border-border bg-muted/40 p-2 text-sm"
+            >
+              <span className="tabular-nums text-muted-foreground">
+                {selected.size} {t("selected", "নির্বাচিত")}
+              </span>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => bulkRun("enable")}
+                className="min-h-11 rounded-fq-md border border-border bg-card px-3 disabled:opacity-60"
+              >
+                {t("Enable", "চালু")}
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => bulkRun("pause")}
+                className="min-h-11 rounded-fq-md border border-border bg-card px-3 disabled:opacity-60"
+              >
+                {t("Pause", "স্থগিত")}
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => bulkRun("delete")}
+                className="min-h-11 rounded-fq-md border border-destructive/40 bg-card px-3 text-destructive disabled:opacity-60"
+              >
+                {t("Delete", "মুছুন")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelected(new Set())}
+                className="min-h-11 rounded-fq-md px-2 text-muted-foreground"
+              >
+                {t("Clear", "পরিষ্কার")}
+              </button>
+            </div>
+          )}
           <ul className="divide-y divide-border rounded-fq-md border border-border bg-card">
             {data.installs.length === 0 && (
               <li className="p-4 text-sm text-muted-foreground">{t("Nothing installed yet.", "এখনো কিছু ইনস্টল করা হয়নি।")}</li>
             )}
             {data.installs.map((i) => (
               <li key={i.id} className="flex flex-wrap items-center justify-between gap-2 p-3 text-sm">
-                <span>
+                <span className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={selected.has(i.id)}
+                    onChange={(e) =>
+                      setSelected((prev) => {
+                        const next = new Set(prev);
+                        if (e.target.checked) next.add(i.id);
+                        else next.delete(i.id);
+                        return next;
+                      })
+                    }
+                    aria-label={`${i.listing_name}`}
+                    className="size-4"
+                  />
                   <span className="font-medium">{i.listing_name}</span>{" "}
                   <span className="text-muted-foreground">
                     · {INSTALL_LABEL[i.status] ? t(INSTALL_LABEL[i.status].en, INSTALL_LABEL[i.status].bn) : i.status}
