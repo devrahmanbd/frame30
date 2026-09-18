@@ -17,15 +17,22 @@
 set -euo pipefail
 
 cd "$(dirname "$0")/../.."
-COMPOSE="supabase/docker/docker-compose.yml"
+# Fortress B1: single-source the LIVE stack. The old
+# "supabase/docker/docker-compose.yml" path resolves to a stale in-repo
+# compose sharing the same project name — targeting it could shadow or harm
+# the live framique-supabase stack. Never point this at staging.
+COMPOSE_FILE="${SUPABASE_COMPOSE_FILE:-/root/supabase-docker-framebase/docker-compose.yml}"
+COMPOSE_DIR="$(dirname "$COMPOSE_FILE")"
+STORAGE_DIR="${SUPABASE_STORAGE_DIR:-$COMPOSE_DIR/volumes/storage}"
 LABEL="nightly"
 SKIP_REHEARSE=0
 
-for arg in "$@"; do
-  case "$arg" in
-    --label=*) LABEL="${arg#*=}" ;;
-    --label) shift; LABEL="${1:-nightly}" ;;
-    --skip-rehearse) SKIP_REHEARSE=1 ;;
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --label=*) LABEL="${1#*=}"; shift ;;
+    --label) LABEL="${2:-nightly}"; shift 2 ;;
+    --skip-rehearse) SKIP_REHEARSE=1; shift ;;
+    *) echo "[backup] Unknown arg: $1" >&2; exit 2 ;;
   esac
 done
 
@@ -41,29 +48,36 @@ echo "[backup] Whole-System Time-Machine Snapshot: $TS (label=$LABEL)"
 echo "[backup] Target Directory: $OUT"
 echo "=============================================================================="
 
-dc() { docker compose -f "$COMPOSE" "$@"; }
+dc() { docker compose -f "$COMPOSE_FILE" --project-directory "$COMPOSE_DIR" "$@"; }
 
 # 1. Database: Complete Cluster (auth, storage, public, vault, extensions)
 echo "[1/6] Dumping PostgreSQL database cluster (all schemas + globals)..."
+DB_SOURCE="none"
 if dc ps -q db >/dev/null 2>&1 && dc exec -T db pg_isready -U postgres >/dev/null 2>&1; then
   dc exec -T db pg_dump -U postgres -d postgres -Fc --no-owner --no-acl > "$OUT/db.dump"
   dc exec -T db pg_dumpall -U postgres --roles-only > "$OUT/roles.sql"
+  DB_SOURCE="docker-exec"
 else
-  echo "[backup] WARNING: Docker db container not reachable, checking local/socket postgres..."
-  if command -v pg_dump >/dev/null 2>&1 && pg_isready -h "${PGHOST:-127.0.0.1}" -p "${PGPORT:-5432}" >/dev/null 2>&1; then
-    pg_dump -h "${PGHOST:-127.0.0.1}" -p "${PGPORT:-5432}" -U "${PGUSER:-postgres}" -d postgres -Fc --no-owner --no-acl > "$OUT/db.dump"
-    pg_dumpall -h "${PGHOST:-127.0.0.1}" -p "${PGPORT:-5432}" -U "${PGUSER:-postgres}" --roles-only > "$OUT/roles.sql"
+  echo "[backup] WARNING: Docker db container not reachable, checking session pooler..."
+  # NOTE: 6546 is transaction-pool mode (pg_dump-incompatible); 5436 is session mode.
+  if command -v pg_dump >/dev/null 2>&1 && pg_isready -h "${PGHOST:-127.0.0.1}" -p "${PGPORT:-5436}" >/dev/null 2>&1; then
+    pg_dump -h "${PGHOST:-127.0.0.1}" -p "${PGPORT:-5436}" -U "${PGUSER:-postgres}" -d postgres -Fc --no-owner --no-acl > "$OUT/db.dump"
+    pg_dumpall -h "${PGHOST:-127.0.0.1}" -p "${PGPORT:-5436}" -U "${PGUSER:-postgres}" --roles-only > "$OUT/roles.sql"
+    DB_SOURCE="pooler-5436"
   else
     echo "[backup] Standby mode: writing fallback database archive stub for non-docker test environment..."
     touch "$OUT/db.dump"
     echo "-- roles fallback" > "$OUT/roles.sql"
+    DB_SOURCE="stub"
   fi
 fi
 
 # 2. Storage objects: All merchant media and theme assets
 echo "[2/6] Archiving Supabase Storage assets..."
-if dc ps -q storage >/dev/null 2>&1; then
-  dc exec -T storage tar -C /var/lib/storage -cf - . | zstd -q -T0 -o "$OUT/storage.tar.zst"
+# Live storage is a host bind ($STORAGE_DIR), not a named volume: tar it
+# directly instead of exec'ing into the container.
+if [ -d "$STORAGE_DIR" ]; then
+  tar -C "$STORAGE_DIR" -cf - . | zstd -q -T0 -o "$OUT/storage.tar.zst"
 else
   mkdir -p "$OUT/tmp_storage"
   tar -cf - -C "$OUT/tmp_storage" . | zstd -q -T0 -o "$OUT/storage.tar.zst"
@@ -72,17 +86,69 @@ fi
 
 # 3. Platform Configurations & Routing
 echo "[3/6] Packaging platform configs, OpenResty routing, and compose specs..."
+# Live compose + routing. The live .env (secrets) is deliberately EXCLUDED:
+# restore it from the secret store / off-site separately (see manifest notice).
 tar -cf - \
   --exclude="node_modules" \
   --exclude=".git" \
-  supabase/docker/docker-compose.yml \
+  -C / "${COMPOSE_FILE#/}" \
+  -C "$PWD" \
   ops/routing/nginx-blue-green.conf \
   ops/docker-compose.blue-green.yml \
   2>/dev/null | zstd -q -T0 -o "$OUT/configs.tar.zst" || touch "$OUT/configs.tar.zst"
 
-# 4. Redis dynamic runtime state snapshot (optional)
+# 4. Redis dynamic runtime state snapshot (real BGSAVE or graceful skip)
+#
+# NOTE: the framique app cache is memory-only (no REDIS_URL), hence trivially
+# reconstructable — a skipped Redis snapshot does NOT fail the backup. Only
+# point REDIS_HOST at a framique-owned instance; never snapshot foreign
+# services' Redis into framique backups.
 echo "[4/6] Capturing dynamic cache state..."
-touch "$OUT/redis.rdb"
+REDIS_CLI="${REDIS_CLI:-redis-cli}"
+REDIS_HOST="${REDIS_HOST:-127.0.0.1}"
+REDIS_PORT="${REDIS_PORT:-6379}"
+REDIS_STATUS="skipped"
+REDIS_REASON="unreachable"
+RDB_SRC=""
+REDIS_AUTH=()
+if [ -n "${REDIS_PASSWORD:-}" ]; then
+  REDIS_AUTH=(-a "$REDIS_PASSWORD")
+fi
+rcli() { "$REDIS_CLI" -h "$REDIS_HOST" -p "$REDIS_PORT" "${REDIS_AUTH[@]}" "$@"; }
+PING_OUT=""
+if command -v "$REDIS_CLI" >/dev/null 2>&1; then
+  PING_OUT=$(rcli ping 2>&1 || true)
+fi
+if [ "$PING_OUT" = "PONG" ]; then
+  if rcli BGSAVE >/dev/null 2>&1; then
+    for _ in $(seq 1 60); do
+      if [ "$(rcli INFO persistence 2>/dev/null | grep -c "rdb_bgsave_in_progress:0")" -ge 1 ]; then
+        break
+      fi
+      sleep 1
+    done
+    RDB_DIR=$(rcli --raw CONFIG GET dir 2>/dev/null | tail -1)
+    RDB_FILE=$(rcli --raw CONFIG GET dbfilename 2>/dev/null | tail -1)
+    RDB_SRC="${RDB_DIR:-/var/lib/redis}/${RDB_FILE:-dump.rdb}"
+    if [ -f "$RDB_SRC" ] && [ -s "$RDB_SRC" ]; then
+      cp -f "$RDB_SRC" "$OUT/redis.rdb" && REDIS_STATUS="captured" && REDIS_REASON=""
+    else
+      REDIS_REASON="rdb_not_found:$RDB_SRC"
+      touch "$OUT/redis.rdb"
+    fi
+  else
+    REDIS_REASON="bgsave_rejected"
+    touch "$OUT/redis.rdb"
+  fi
+elif echo "$PING_OUT" | grep -qi "NOAUTH"; then
+  # Auth-gated (likely foreign) instance: never snapshot it without an
+  # explicit REDIS_PASSWORD pointing at a framique-owned Redis.
+  REDIS_REASON="auth-required"
+  touch "$OUT/redis.rdb"
+else
+  touch "$OUT/redis.rdb"
+fi
+echo "[4/6] Redis: $REDIS_STATUS ${REDIS_REASON:+($REDIS_REASON)}"
 
 # 5. Cryptographic Manifest with SHA-256 digests
 echo "[5/6] Generating cryptographic manifest..."
@@ -114,6 +180,9 @@ cat > "$OUT/manifest.json" <<JSON
     "configs.tar.zst": { "sha256": "$(sum "$OUT/configs.tar.zst")", "bytes": $(size "$OUT/configs.tar.zst") },
     "redis.rdb":       { "sha256": "$(sum "$OUT/redis.rdb")",       "bytes": $(size "$OUT/redis.rdb") }
   },
+  "db_source": "$DB_SOURCE",
+  "redis": { "status": "$REDIS_STATUS", "reason": "$REDIS_REASON", "source": "$RDB_SRC" },
+  "env_included": false,
   "schemas_covered": ["public", "auth", "storage", "realtime", "vault"],
   "encryption": "${ENCRYPTION_PASSPHRASE:+aes-256-gcm}",
   "duration_s": $(( $(date +%s) - started ))
@@ -150,6 +219,10 @@ fi
 find "$BACKUP_DIR" -maxdepth 1 -type d -name '20*' -mtime "+$RETAIN_DAYS" -exec rm -rf {} + 2>/dev/null || true
 
 echo "=============================================================================="
-echo "[backup] SUCCESS: Whole-system snapshot $TS verified & certified in $(( $(date +%s) - started ))s"
+if [[ "$SKIP_REHEARSE" -eq 0 ]]; then
+  echo "[backup] SUCCESS: Whole-system snapshot $TS verified & certified in $(( $(date +%s) - started ))s"
+else
+  echo "[backup] DONE (UNCERTIFIED): snapshot $TS captured without rehearsal in $(( $(date +%s) - started ))s — do not rely on it until rehearse.sh passes"
+fi
 echo "=============================================================================="
 
