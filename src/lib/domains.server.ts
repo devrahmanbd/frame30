@@ -21,6 +21,8 @@ import { incr, log, observe, withSpan } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
 import {
   DomainInputError,
+  LIVE_EDGE_CNAME,
+  LIVE_EDGE_IPS,
   MAX_AUTO_ATTEMPTS,
   canTransition,
   certHealth,
@@ -66,12 +68,12 @@ async function admin() {
 
 /** Routing target merchants point DNS at. Configurable per environment. */
 export function edgeTarget(): { cname: string; ips: string[] } {
-  const cname = process.env["DOMAIN_EDGE_CNAME"] ?? "edge.framique.app";
-  const ips = (process.env["DOMAIN_EDGE_IPS"] ?? "")
+  const cname = process.env["DOMAIN_EDGE_CNAME"] ?? LIVE_EDGE_CNAME;
+  const envIps = (process.env["DOMAIN_EDGE_IPS"] ?? "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
-  return { cname, ips };
+  return { cname, ips: envIps.length > 0 ? envIps : [...LIVE_EDGE_IPS] };
 }
 
 /* ------------------------------- DNS reads ------------------------------- */

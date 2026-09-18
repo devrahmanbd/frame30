@@ -14,6 +14,17 @@ export const RESERVED_SUFFIXES = [
   "localhost",
 ] as const;
 
+/**
+ * Live edge deployment (REPORT §2 / onboarding DNS fix, Sept 18 2026).
+ *
+ * Single source of truth for "where do merchants point DNS". The server
+ * `edgeTarget()` prefers `DOMAIN_EDGE_CNAME` / `DOMAIN_EDGE_IPS` env vars and
+ * falls back to these; client surfaces (onboarding, settings) import these
+ * directly so instructions can never disagree with the edge again.
+ */
+export const LIVE_EDGE_CNAME = "framique.qubickle.com";
+export const LIVE_EDGE_IPS = ["88.99.250.99"] as const;
+
 const RESERVED_LABELS = new Set([
   "admin",
   "api",

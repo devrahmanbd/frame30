@@ -52,7 +52,15 @@ export async function loadMemberships(): Promise<MerchantMembership[]> {
 }
 
 /** Resolves the store the signed-in user belongs to. Stores are never created
- * implicitly — creation goes through the /onboarding wizard and create_store. */
+ * implicitly — creation goes through the /onboarding wizard and create_store.
+ *
+ * Read path is deliberately two-step (Sept 18 2026 onboarding-loop fix):
+ * memberships first, then the merchant row by id. A single embedded
+ * `merchants(...)` join silently drops to null when the merchants RLS policy
+ * denies the row — indistinguishable from "no store" — which bounced completed
+ * merchants back to /onboarding forever. Here that case throws a diagnostic
+ * error so the UI shows a retry/wrong-account card instead of the wizard.
+ */
 async function loadMerchant(): Promise<Merchant | null> {
   const memberships = await loadMemberships();
   if (memberships.length === 0) return null;
@@ -65,11 +73,25 @@ async function loadMerchant(): Promise<Merchant | null> {
   const matched = activeId ? memberships.find((m) => m.merchant_id === activeId) : null;
   const current = matched ?? memberships[0];
 
-  if (typeof window !== "undefined" && current) {
+  const { data: merchantRow, error: merchantError } = await supabase
+    .from("merchants")
+    .select("id, name, slug, currency_code, status")
+    .eq("id", current.merchant_id)
+    .maybeSingle();
+  if (merchantError) {
+    throw new Error(`merchant.read_failed: ${merchantError.message}`);
+  }
+  if (!merchantRow) {
+    throw new Error(
+      "merchant.inaccessible: you have a store membership but the store row is not readable (RLS). Retry, or sign in with the account that created the store.",
+    );
+  }
+
+  if (typeof window !== "undefined") {
     window.localStorage.setItem(ACTIVE_MERCHANT_KEY, current.merchant_id);
   }
 
-  return current?.merchant ?? null;
+  return merchantRow as Merchant;
 }
 
 export function useMerchant() {

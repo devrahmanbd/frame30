@@ -137,3 +137,25 @@ describe("domainQuotaForPlan", () => {
     expect(domainQuotaForPlan("unknown" as never)).toBe(1);
   });
 });
+
+describe("live edge target (onboarding DNS fix, Sept 18 2026)", () => {
+  it("points merchants at the live deployment, never a placeholder", async () => {
+    const { LIVE_EDGE_CNAME, LIVE_EDGE_IPS } = await import("./domains");
+    expect(LIVE_EDGE_CNAME).toBe("framique.qubickle.com");
+    expect([...LIVE_EDGE_IPS]).toEqual(["88.99.250.99"]);
+  });
+
+  it("renders live target into DNS instructions", async () => {
+    const { dnsInstructions, LIVE_EDGE_CNAME, LIVE_EDGE_IPS } = await import("./domains");
+    const records = dnsInstructions("shop.example.com", "tok", {
+      cname: LIVE_EDGE_CNAME,
+      ips: [...LIVE_EDGE_IPS],
+    });
+    expect(records.find((r) => r.type === "CNAME")?.value).toBe("framique.qubickle.com");
+    const apex = dnsInstructions("example.com", "tok", {
+      cname: LIVE_EDGE_CNAME,
+      ips: [...LIVE_EDGE_IPS],
+    });
+    expect(apex.find((r) => r.type === "A")?.value).toBe("88.99.250.99");
+  });
+});

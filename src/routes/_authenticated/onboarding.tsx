@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant, slugify } from "@/hooks/use-merchant";
 import { useLang } from "@/lib/i18n";
+import { LIVE_EDGE_CNAME, LIVE_EDGE_IPS } from "@/lib/domains";
 import { fmtMinor } from "@/lib/money";
 import { billingClaimTrialFn } from "@/lib/billing.functions";
 import { toast } from "sonner";
@@ -37,7 +38,7 @@ function Onboarding() {
   const { t, tk, tError, lang } = useLang();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { data: merchant, isPending } = useMerchant();
+  const { data: merchant, isPending, isError, error, refetch } = useMerchant();
 
   const claimTrial = useServerFn(billingClaimTrialFn);
   const [step, setStep] = useState(0);
@@ -103,7 +104,9 @@ function Onboarding() {
       } else {
         toast.success(tk("onboarding.created"));
       }
-      await qc.invalidateQueries({ queryKey: ["merchant"] });
+      // Refetch (not just invalidate) so a slow/denied merchant read cannot
+      // strand a completed merchant back on this wizard unseen.
+      await qc.refetchQueries({ queryKey: ["merchant"] }).catch(() => null);
       void navigate({ to: "/dashboard", replace: true });
     },
 
@@ -135,6 +138,45 @@ function Onboarding() {
       <p className="p-8 text-sm text-muted-foreground">
         {tk("common.loading")}
       </p>
+    );
+  }
+
+  // Completed merchants whose store read fails must NEVER see the wizard
+  // again silently (Sept 18 2026 loop fix): show why + recovery instead.
+  if (isError) {
+    return (
+      <main className="mx-auto max-w-2xl px-4 py-12">
+        <h1 className="font-bangla-display text-2xl font-bold">
+          {t("We couldn't load your store", "আপনার স্টোর লোড করা যায়নি")}
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {error instanceof Error ? error.message : tError(error)}
+        </p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          {t(
+            "If you already created a store, you may be signed in with a different account (e.g. Google vs email) — those are separate logins. Otherwise retry; the read may have been transient.",
+            "আপনি ইতিমধ্যে স্টোর তৈরি করে থাকলে, হয়তো ভিন্ন অ্যাকাউন্টে সাইন ইন করেছেন (যেমন Google বনাম ইমেইল) — এগুলো আলাদা লগইন। অন্যথায় আবার চেষ্টা করুন।",
+          )}
+        </p>
+        <div className="mt-6 flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => void refetch()}
+            className="rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+          >
+            {t("Retry", "আবার চেষ্টা করুন")}
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              void supabase.auth.signOut().then(() => navigate({ to: "/auth", replace: true }))
+            }
+            className="rounded-fq-md border border-border px-4 py-2 text-sm"
+          >
+            {t("Switch account", "অ্যাকাউন্ট বদলান")}
+          </button>
+        </div>
+      </main>
     );
   }
 
@@ -193,7 +235,10 @@ function Onboarding() {
             <label className="block text-sm font-medium" htmlFor="store-slug">
               {tk("onboarding.web_address")}
             </label>
-            <div className="flex items-center gap-1 text-sm">
+            <div className="flex flex-wrap items-center gap-1 text-sm">
+              <span className="text-muted-foreground font-mono">
+                framique.qubickle.com/store/
+              </span>
               <input
                 id="store-slug"
                 value={slug}
@@ -206,9 +251,6 @@ function Onboarding() {
                 aria-describedby="slug-status"
                 className="w-56 rounded-fq-md border border-border bg-background px-3 py-2"
               />
-              <span className="text-muted-foreground font-mono">
-                .framique.store
-              </span>
             </div>
             <p
               id="slug-status"
@@ -219,8 +261,8 @@ function Onboarding() {
             </p>
             <p className="text-xs text-muted-foreground">
               {t(
-                "Your store will be hosted on an isolated wildcard subdomain with dedicated cookies and secure origin.",
-                "আপনার স্টোরটি ডেডিকেটেড কুকি এবং সুরক্ষিত অরিজিন সহ একটি পৃথক ওয়াইল্ডকার্ড সাবডোমেইনে হোস্ট করা হবে।",
+                "Your store will be live at framique.qubickle.com/store/your-name. Isolated wildcard subdomains (your-name.framique.store) are being provisioned and will replace this address automatically when ready.",
+                "আপনার স্টোরটি framique.qubickle.com/store/your-name ঠিকানায় চালু হবে। পৃথক ওয়াইল্ডকার্ড সাবডোমেইন (your-name.framique.store) প্রস্তুত হচ্ছে এবং তৈরি হলেই স্বয়ংক্রিয়ভাবে চালু হবে।",
               )}
             </p>
           </div>
@@ -237,8 +279,8 @@ function Onboarding() {
               </h2>
               <p className="mt-1 text-xs text-muted-foreground">
                 {t(
-                  `Your storefront is always accessible at ${slug || "your-store"}.framique.store. You can also connect your own custom domain or skip and configure it later.`,
-                  `আপনার স্টোরফ্রন্ট সবসময় ${slug || "your-store"}.framique.store ঠিকানায় চালু থাকবে। আপনি চাইলে এখনই নিজের ডোমেইন যুক্ত করতে পারেন অথবা পরে সেটিংস থেকে করতে পারেন।`,
+                  `Your storefront is always accessible at framique.qubickle.com/store/${slug || "your-store"}. You can also connect your own custom domain or skip and configure it later.`,
+                  `আপনার স্টোরফ্রন্ট সবসময় framique.qubickle.com/store/${slug || "your-store"} ঠিকানায় চালু থাকবে। আপনি চাইলে এখনই নিজের ডোমেইন যুক্ত করতে পারেন অথবা পরে সেটিংস থেকে করতে পারেন।`,
                 )}
               </p>
             </div>
@@ -285,13 +327,13 @@ function Onboarding() {
                       <td className="py-1 font-semibold text-primary">CNAME</td>
                       <td className="py-1">www</td>
                       <td className="py-1 text-foreground">
-                        edge.framique.store
+                        {LIVE_EDGE_CNAME}
                       </td>
                     </tr>
                     <tr>
                       <td className="py-1 font-semibold text-primary">A</td>
                       <td className="py-1">@</td>
-                      <td className="py-1 text-foreground">76.76.21.21</td>
+                      <td className="py-1 text-foreground">{LIVE_EDGE_IPS[0]}</td>
                     </tr>
                   </tbody>
                 </table>

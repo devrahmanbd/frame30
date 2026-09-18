@@ -27,6 +27,25 @@
   ```
 - **Rollback**: safe — both changes are header/classification-only with no schema or state dependency. Reverting restores old caching/HTTPS behavior; re-purge personalized paths after rollback too.
 
+## Edge DNS environment (onboarding DNS fix, Sept 18 2026)
+
+Live deployment: `framique.qubickle.com` on `88.99.250.99`. These defaults are
+baked in as `LIVE_EDGE_CNAME` / `LIVE_EDGE_IPS` (`src/lib/domains.ts`) so
+onboarding + Settings › Domains can never disagree with the edge again.
+Override per environment with:
+
+```bash
+DOMAIN_EDGE_CNAME=framique.qubickle.com
+DOMAIN_EDGE_IPS=88.99.250.99
+DOMAIN_EDGE_HOOK_URL=<edge provisioning hook, if any>
+DOMAIN_EDGE_TOKEN=<hook bearer token>
+```
+
+Without the hook vars, custom domains park in `issuing_cert` (fail closed) —
+that is expected until edge automation lands; merchants still serve on the
+platform path. Never point merchants at `edge.framique.*` or `76.76.21.21`
+(Vercel) — those were placeholder values that shipped wrong instructions.
+
 ## Pending deploy-sensitive items (do NOT ship without these steps)
 
 - **WF-02 `removed` enum**: needs a real migration (`ALTER TYPE market_install_status ADD VALUE 'removed'`) via expand-and-contract (SYSTEM.md §10.3) — new enum value is backward-compatible (additive), old code ignores it. Deploy migration Release 1 before the code that writes it.
