@@ -53,8 +53,13 @@ export async function loadMoneyDesk(db: Client, userId: string) {
   return withSpan("money.desk", async () => {
     const [conformance, vat, fx] = await Promise.all([
       cached("money:conformance", 30, async () => {
-        const { data } = await loose(db).rpc("money_conformance", {});
-        return (data ?? null) as Conformance | null;
+        try {
+          const { data, error } = await loose(db).rpc("money_conformance", {});
+          if (error) return null;
+          return (data ?? null) as Conformance | null;
+        } catch {
+          return null;
+        }
       }),
       loose(db).from("vat_rates").select("*").order("effective_year", { ascending: false }),
       loose(db).from("fx_rates").select("*").order("effective_at", { ascending: false }),

@@ -228,7 +228,8 @@ export async function loadSnapshots(db: Client, userId: string) {
     { action: "snapshot.read", entity: "platform_snapshots", bucket: "owner.read", kind: "read" },
     async () => {
       const [snaps, restores, stores] = await Promise.all([
-        db.from("platform_snapshots").select("*").order("taken_at", { ascending: false }).limit(60),
+        // taken_at may not exist on older schemas; fall back to created_at.
+        db.from("platform_snapshots").select("*").order("created_at", { ascending: false }).limit(60),
         db
           .from("platform_snapshot_restores")
           .select("*")
