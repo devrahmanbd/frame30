@@ -592,10 +592,25 @@ export async function reconcileCod(
   await requireShipment(supabase, merchantId, shipmentId);
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
+  const { data: shipment } = await supabaseAdmin
+    .from("carrier_shipments")
+    .select("order_id, carrier_code")
+    .eq("id", shipmentId)
+    .eq("merchant_id", merchantId)
+    .maybeSingle();
+  const orderId = (shipment as { order_id: string | null } | null)?.order_id;
+  if (!orderId)
+    throw new CourierError(
+      "cod_not_order_shipment",
+      "COD can only be reconciled against an order shipment",
+    );
   const { data, error } = await supabaseAdmin.rpc("cod_reconcile", {
-    _shipment_id: shipmentId,
-    _reported_minor_int: reportedMinorInt,
-    _reference: reference ?? undefined,
+    _order_id: orderId,
+    _collected_minor: reportedMinorInt,
+    _carrier_code:
+      (shipment as { carrier_code: string | null } | null)?.carrier_code ??
+      null,
+    _note: reference,
   });
   if (error) throw error;
   const result = (data ?? {}) as {
