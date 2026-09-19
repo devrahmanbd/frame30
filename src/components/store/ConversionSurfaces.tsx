@@ -22,6 +22,7 @@ import {
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
+import { StoreImage } from "@/components/store/StoreImage";
 
 const SESSION_STORAGE_KEY = "fq_sid";
 
@@ -147,18 +148,15 @@ function ProductRail({
               params={{ slug, productSlug: item.slug }}
               className="group block rounded-fq-md border border-border bg-card p-2 transition-colors hover:border-primary"
             >
-              <div className="aspect-square overflow-hidden rounded-fq-sm bg-muted">
-                {item.image_url && (
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    loading="lazy"
-                    decoding="async"
-                    width={300}
-                    height={300}
-                    className="size-full object-cover"
-                  />
-                )}
+              <div className="aspect-square overflow-hidden rounded-fq-sm">
+                <StoreImage
+                  image={null}
+                  fallbackSrc={item.image_url}
+                  alt={item.title}
+                  seed={item.id}
+                  sizes="300px"
+                  className="size-full object-cover"
+                />
               </div>
               <p className="mt-2 line-clamp-2 text-xs font-medium group-hover:text-primary">
                 {item.title}

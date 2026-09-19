@@ -1475,20 +1475,20 @@ function rupaboti(): ThemePreset {
   const s = bound(k);
   const claims = () =>
     s("claim_chips", {
-      heading: "Tested claims",
-      c1Label: "Dermatologist tested",
-      c1Source: "Clinical panel, 2026",
-      c2Label: "Non-comedogenic",
-      c2Source: "Lab report, 2026",
-      c3Label: "Fragrance free",
-      c3Source: "Formulation sheet",
-      c4Label: "Cruelty free",
-      c4Source: "Supplier declaration",
+      heading: "What each claim means",
+      c1Label: "Full ingredients listed",
+      c1Source: "INCI list on every product",
+      c2Label: "Batch coded stock",
+      c2Source: "Batch and expiry shown",
+      c3Label: "Fragrance free options",
+      c3Source: "Filter by ingredients list",
+      c4Label: "Shade help included",
+      c4Source: "Finder and consult in store hours",
     });
   const consult = () =>
     s("consult_cta", {
       heading: "Not sure what suits you?",
-      body: "Send a photo and your concerns; our advisor replies the same day.",
+      body: "Send your concern and a photo if you like; the advisor replies between 10am and 8pm.",
       whatsappLabel: "Chat on WhatsApp",
       callLabel: "Call the advisor",
       fieldLabel: "Your skin concern",
@@ -1514,7 +1514,7 @@ function rupaboti(): ThemePreset {
     s("social_strip", { heading: "Follow for routines" }),
     s("rich_text", {
       heading: "About this store",
-      body: "Authentic beauty with batch codes, full ingredient lists and honest shade matching.",
+      body: "Authentic beauty products in Bangladesh with batch codes, full ingredients lists and shade help.",
     }),
   ];
   const header = (): Section[] => [
@@ -1547,9 +1547,9 @@ function rupaboti(): ThemePreset {
     nameEn: "Rupaboti",
     nameBn: "রূপবতী",
     summaryEn:
-      "Guided beauty selling: shade finder, skin quiz, ingredient transparency and routines.",
+      "Beauty products in Bangladesh: serums, foundation and routines with shade help and full ingredients lists.",
     summaryBn:
-      "গাইডেড বিউটি সেলিং: শেড ফাইন্ডার, স্কিন কুইজ, উপাদানের স্বচ্ছতা ও রুটিন।",
+      "বাংলাদেশে বিউটি পণ্য: শেড সহায়তা ও পূর্ণ উপাদান তালিকাসহ সিরাম, ফাউন্ডেশন ও রুটিন।",
     category: "beauty",
     version: "1.0.0",
     api: "^3.0.0",
@@ -1570,36 +1570,36 @@ function rupaboti(): ThemePreset {
         header: header(),
         main: [
           s("editorial_hero", {
-            eyebrow: "Skin first",
-            heading: "Beauty that matches your skin",
-            body: "Shade matched, ingredient transparent, batch coded.",
+            eyebrow: "Shade matched in Bangladesh",
+            heading: "Beauty products in Bangladesh matched to your skin",
+            body: "Shop serum, foundation and cleansers with full ingredients lists, batch codes and shade help for acne, dullness and sensitive skin.",
             ctaLabel: "Find your shade",
             ctaHref: "/pages/shade-finder",
             layout: "split",
             scrim: true,
           }),
           s("shade_finder", {
-            heading: "Find your shade",
+            heading: "Find your foundation shade",
             undertonePrompt: "Pick your undertone",
             depthPrompt: "Pick your depth",
             emptyText: "No match yet — try another depth.",
           }),
           s("skin_quiz", {
-            heading: "Two-minute skin quiz",
-            body: "Four questions, one routine.",
+            heading: "Skin quiz for acne, dullness and dryness",
+            body: "Four questions. See only products that fit your answers.",
             typePrompt: "Your skin type",
             concernPrompt: "Your main concern",
             sensitivityPrompt: "How sensitive is your skin?",
             finishPrompt: "Finish you prefer",
-            resultText: "Here is a routine for you.",
+            resultText: "Here is a routine that fits your answers.",
             resultLabel: "See my routine",
             resultPath: "/collections/routine",
           }),
           claims(),
           s("before_after", {
-            heading: "Eight weeks of use",
-            beforeLabel: "Week 0",
-            afterLabel: "Week 8",
+            heading: "How it looks in daily light",
+            beforeLabel: "Before",
+            afterLabel: "After",
             disclaimer:
               "Individual results vary. Photos are unretouched and taken in the same light.",
           }),
@@ -1612,11 +1612,11 @@ function rupaboti(): ThemePreset {
           }),
           s(
             "collection_grid",
-            { heading: "Shop by category", limit: 8, columns: 4 },
+            { heading: "Shop skincare, makeup and haircare", limit: 8, columns: 4 },
             COLS(4),
           ),
           s("product_rail", {
-            heading: "Best sellers this week",
+            heading: "Bestsellers to start with",
             source: "bestsellers",
             showRating: true,
             cardVariant: "standard",
@@ -1627,7 +1627,7 @@ function rupaboti(): ThemePreset {
             pmLabel: "Evening",
             swapLabel: "Swap",
             addAllLabel: "Add the routine",
-            note: "Routine totals are calculated on the server.",
+            note: "Total shown at checkout from current prices.",
             limit: 6,
           }),
           s("sample_picker", {
@@ -1638,7 +1638,7 @@ function rupaboti(): ThemePreset {
           s("ingredient_glossary", {
             heading: "Ingredient glossary",
             g1Term: "Niacinamide",
-            g1Body: "Evens tone and supports the barrier.",
+            g1Body: "Evens the look of tone and supports the skin barrier.",
             g2Term: "Hyaluronic acid",
             g2Body: "Holds water in the upper layers of skin.",
             g3Term: "Salicylic acid",
@@ -1646,15 +1646,15 @@ function rupaboti(): ThemePreset {
             g4Term: "SPF",
             g4Body: "Sun protection factor; reapply every few hours.",
           }),
-          s("loyalty_strip", { label: "Earn points on every order" }),
+          s("loyalty_strip", { label: "Points counted at checkout" }),
           s("ugc_gallery", {
             heading: "Worn by you",
             limit: 8,
             note: "Tag us to be featured.",
           }),
           s("testimonial", {
-            quote: "The shade match was right the first time.",
-            author: "Verified buyer, Dhaka",
+            quote: "Check shade, ingredients and batch before you buy.",
+            author: "How to shop this store",
           }),
           consult(),
         ],
@@ -1683,7 +1683,7 @@ function rupaboti(): ThemePreset {
             heading: "Ingredients",
             i1Name: "Niacinamide",
             i1Amount: "5%",
-            i1Gloss: "Evens tone and supports the barrier.",
+            i1Gloss: "Evens the look of tone and supports the skin barrier.",
             i2Name: "Hyaluronic acid",
             i2Amount: "2%",
             i2Gloss: "Holds water in the upper layers of skin.",
@@ -1743,7 +1743,7 @@ function rupaboti(): ThemePreset {
             size: 3,
             messageLabel: "Gift message",
             buttonLabel: "Add the gift box",
-            note: "Gift box totals are calculated on the server.",
+            note: "Total shown at checkout from current prices.",
             limit: 6,
           }),
           s("rating_summary", {
@@ -1775,8 +1775,8 @@ function rupaboti(): ThemePreset {
         header: [s("breadcrumb", { homeLabel: "Home" })],
         main: [
           s("category_header", {
-            heading: "Shop the range",
-            body: "Filter by concern, finish and price.",
+            heading: "Shop beauty products by concern",
+            body: "Filter serums, foundation and more by concern, finish and price.",
             showCount: true,
             showBreadcrumb: true,
             homeLabel: "Home",
@@ -1847,7 +1847,7 @@ function rupaboti(): ThemePreset {
           s("ingredient_glossary", {
             heading: "Ingredient glossary",
             g1Term: "Niacinamide",
-            g1Body: "Evens tone and supports the barrier.",
+            g1Body: "Evens the look of tone and supports the skin barrier.",
             g2Term: "Hyaluronic acid",
             g2Body: "Holds water in the upper layers of skin.",
             g3Term: "Salicylic acid",
@@ -1933,7 +1933,7 @@ function rupaboti(): ThemePreset {
           }),
           s(
             "product_grid",
-            { heading: "Add something else", limit: 3, columns: 3 },
+            { heading: "Complete your routine", limit: 3, columns: 3 },
             COLS(3),
           ),
           s("payment_icons", {
@@ -1998,6 +1998,21 @@ function clothingHeritage(): ThemePreset {
       c3Source: "Biodegradable jute and paper",
     });
   const footer = (): Section[] => [
+    s("support_strip", {
+      heading: "Customer Support & Concierge",
+      t1Title: "Order Tracking",
+      t1Body: "Real-time dispatch updates",
+      t1Href: "/pages/track-order",
+      t2Title: "Store Locator",
+      t2Body: "Find your nearest flagship",
+      t2Href: "/pages/stores",
+      t3Title: "Size & Fit Advice",
+      t3Body: "Personal styling helpline",
+      t3Href: "/pages/size-guide",
+      t4Title: "Easy Exchanges",
+      t4Body: "7-day doorstep exchange",
+      t4Href: "/pages/returns",
+    }),
     s("footer_sitemap", {
       c1Title: "Collections",
       c1Links:
@@ -2022,6 +2037,20 @@ function clothingHeritage(): ThemePreset {
     }),
   ];
   const header = (): Section[] => [
+    s("subbrand_bar", {
+      activeBrand: "Aarong",
+      tagline: "A Social Enterprise",
+      b1Name: "Aarong",
+      b1Href: "/",
+      b2Name: "Taaga",
+      b2Href: "/collections/taaga",
+      b3Name: "Taaga Man",
+      b3Href: "/collections/taaga-man",
+      b4Name: "Herstory",
+      b4Href: "/collections/herstory",
+      b5Name: "Grassroots",
+      b5Href: "/pages/grassroots",
+    }),
     s("announcement_bar", {
       m1: "Free nationwide delivery on orders over BDT 3,000",
       m2: "Eid & Festive Collection 2026 is now live",
@@ -2045,6 +2074,11 @@ function clothingHeritage(): ThemePreset {
       limit: 8,
     }),
     s("mega_menu", { label: "Departments", limit: 8, columns: 4 }),
+    s("account_cart", {
+      accountLabel: "Account",
+      cartLabel: "Bag",
+      showCount: true,
+    }),
   ];
   return {
     key: k,
@@ -2088,17 +2122,59 @@ function clothingHeritage(): ThemePreset {
             eyebrow: "Heritage Weaves & Living Crafts",
             heading: "Woven with patience, worn with pride",
             body: "Every thread tells the story of our master weavers. Authentic Tangail taant, Jamdani masterpieces, and hand-embroidered silks.",
-            ctaLabel: "Shop the collection",
-            ctaHref: "/collections/heritage-handloom",
+            ctaLabel: "Explore the festive edit",
+            ctaHref: "/collections/eid-festive",
+            imageUrl:
+              "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop",
             layout: "split",
             scrim: true,
           }),
-          s("feature_row", {
-            itemOne: "100% Handloom & Natural Dyes",
-            itemTwo: "Over 65,000 Rural Artisans",
-            itemThree: "Nationwide 48-Hour Dispatch",
+          s("trust_bar", {
+            i1Icon: "delivery",
+            i1Title: "100% Handloom & Natural Dyes",
+            i1Body: "Safe for skin and waterways",
+            i2Icon: "support",
+            i2Title: "Over 65,000 Rural Artisans",
+            i2Body: "Empowering generational weavers",
+            i3Icon: "secure",
+            i3Title: "Nationwide 48-Hour Dispatch",
+            i3Body: "Express courier across all 64 districts",
+            i4Icon: "returns",
+            i4Title: "7-Day Easy Size Exchanges",
+            i4Body: "Hassle-free returns at any outlet",
           }),
-          s("lookbook", { heading: "The festive lookbook", offset: true }),
+          s("department_strip", {
+            heading: "Shop by department",
+            limit: 6,
+          }),
+          s("product_rail", {
+            heading: "New Festive Arrivals",
+            collection: "new-in",
+            limit: 8,
+            cardVariant: "editorial",
+            showRating: true,
+            promise: "In stock · Dispatched in 24h",
+          }),
+          s("lookbook", {
+            heading: "The festive lookbook",
+            offset: true,
+            i1Image:
+              "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop",
+            i1Alt: "Dhakai Jamdani royal drape",
+            i1Href: "/collections/heritage-handloom",
+            i2Image:
+              "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+            i2Alt: "Rajshahi pure silk festive panjabi",
+            i2Href: "/collections/eid-festive",
+            i3Image:
+              "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?q=80&w=800&auto=format&fit=crop",
+            i3Alt: "Tangail handloom taant cotton saree",
+            i3Href: "/collections/heritage-handloom",
+            i4Image:
+              "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
+            i4Alt: "Dhamrai brass filigree artisan earrings",
+            i4Href: "/collections/artisan-essentials",
+          }),
           s("split_feature", {
             eyebrow: "The master weavers",
             heading: "Tangail & Jamdani: A living UNESCO legacy",
@@ -2115,12 +2191,23 @@ function clothingHeritage(): ThemePreset {
             p2x: 64,
             p2y: 58,
           }),
+          s("product_rail", {
+            heading: "Trending & Best Sellers",
+            source: "bestsellers",
+            collection: "best-sellers",
+            limit: 8,
+            cardVariant: "editorial",
+            showRating: true,
+            promise: "Crafted in limited small batches",
+          }),
           s("collection_story", {
             eyebrow: "Festive Occasions",
             heading: "Pure silk panjabi & fine muslin",
             body: "Intricate necklines, mother-of-pearl buttons, and breathable natural fibers cut for elegance in Bangladeshi celebrations.",
             ctaLabel: "See the collection",
             ctaHref: "/collections/eid-festive",
+            imageUrl:
+              "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=1200&auto=format&fit=crop",
             scrim: true,
           }),
           sustain(),
@@ -2133,7 +2220,7 @@ function clothingHeritage(): ThemePreset {
             "product_grid",
             {
               heading: "Curated masterpieces",
-              limit: 8,
+              limit: 16,
               columns: 4,
               cardVariant: "editorial",
             },
@@ -2156,6 +2243,11 @@ function clothingHeritage(): ThemePreset {
             s3Address: "GEC Circle, Chattogram",
             s3Hours: "10am - 9pm",
           }),
+          s("newsletter", {
+            heading: "Join the Heritage Guild",
+            body: "Receive intimate stories from weaver villages and private invitations to seasonal drops.",
+            buttonLabel: "Subscribe",
+          }),
         ],
         footer: footer(),
       },
@@ -2170,6 +2262,18 @@ function clothingHeritage(): ThemePreset {
           s("price_block", {
             showCompareAt: true,
             note: "All government taxes & VAT included.",
+          }),
+          s("stock_delivery", {
+            lowStockAt: 8,
+            cutOff: "Order within 2 hrs for same-day dispatch in Dhaka",
+          }),
+          s("delivery_promise", {
+            heading: "Delivery & Returns",
+            insideLabel: "Inside Dhaka",
+            insideDays: "Same-day or next-day",
+            outsideLabel: "Outside Dhaka",
+            outsideDays: "48-72 hours",
+            note: "Carefully packed in eco-friendly protective wrapping.",
           }),
           s("size_selector", {
             heading: "Select a size",
@@ -2232,6 +2336,11 @@ function clothingHeritage(): ThemePreset {
             limit: 4,
             buttonLabel: "Add the look",
           }),
+          s("rating_summary", {
+            heading: "Customer ratings",
+            showHistogram: true,
+            verifiedOnly: true,
+          }),
           s("review_list", {
             heading: "Customer reviews",
             limit: 5,
@@ -2239,16 +2348,26 @@ function clothingHeritage(): ThemePreset {
             verifiedOnly: true,
             emptyText: "No reviews yet.",
           }),
-          s(
-            "product_grid",
-            {
-              heading: "More from this craft",
-              limit: 4,
-              columns: 4,
-              cardVariant: "editorial",
-            },
-            COLS(4),
-          ),
+          s("product_qna", {
+            heading: "Craft & sizing questions",
+            askLabel: "Ask a question",
+            q1: "How do I care for 100% natural dye Jamdani and Tangail sarees?",
+            a1: "We recommend professional dry clean for the first two washes to preserve natural botanical pigments. Always iron on reverse side using low-medium heat.",
+            q2: "Can I exchange the size if the Panjabi or Kurta does not fit?",
+            a2: "Yes, Framique offers 7-day hassle-free size exchanges across all flagship retail stores and via courier pickup.",
+            q3: "Are these items authentically handwoven on wooden pit looms?",
+            a3: "Every garment in our Heritage collection is certified handloom, directly supporting artisan weaving cooperatives in Tangail, Sonargaon, and Comilla.",
+          }),
+          s("product_rail", {
+            heading: "More from this craft",
+            limit: 6,
+            cardVariant: "editorial",
+            showRating: true,
+          }),
+          s("sticky_buy_bar", {
+            label: "Add to bag",
+            showPrice: true,
+          }),
         ],
         footer: footer(),
       },
@@ -2344,13 +2463,6 @@ function clothingHeritage(): ThemePreset {
             r4c3: 26,
             note: "All measurements are in inches. Garment laid flat.",
           }),
-          s("care_panel", {
-            heading: "Fabric & craft care",
-            composition: "100% handspun cotton & mulberry silk",
-            care: "Dry clean recommended. Iron on reverse side on low heat.",
-            origin: "Handwoven in Tangail & Sonargaon, Bangladesh",
-            open: true,
-          }),
           s("store_locator", {
             heading: "Visit our flagship outlets",
             s1Name: "Uttara Flagship",
@@ -2362,6 +2474,15 @@ function clothingHeritage(): ThemePreset {
             s3Name: "Chattogram GEC",
             s3Address: "GEC Circle, Chattogram",
             s3Hours: "10am - 9pm",
+          }),
+          s("faq", {
+            heading: "Frequently Asked Questions",
+            q1: "What are your delivery timelines?",
+            a1: "Orders within Dhaka city are delivered within 24-48 hours. Nationwide deliveries across all 64 districts take 48-72 hours via premium courier.",
+            q2: "Can I exchange an item at a physical store?",
+            a2: "Yes! Any item purchased online can be exchanged at any Framique flagship outlet in Dhaka, Chattogram, or Sylhet within 7 days with the original invoice.",
+            q3: "Are your handloom fabrics pre-shrunk?",
+            a3: "All our pure cotton and silk garments undergo traditional pre-wash finishing. Follow our care guidelines for minimal shrinkage.",
           }),
         ],
         footer: footer(),
@@ -2415,6 +2536,25 @@ function clothingHeritage(): ThemePreset {
             text: "Your shopping bag",
             level: "h2",
             align: "left",
+          }),
+          s("trust_bar", {
+            i1Icon: "delivery",
+            i1Title: "Nationwide 48h dispatch",
+            i1Body: "Fast, tracked delivery across 64 districts",
+            i2Icon: "returns",
+            i2Title: "7-day easy exchange",
+            i2Body: "Return or exchange in any flagship store",
+            i3Icon: "secure",
+            i3Title: "100% genuine craft",
+            i3Body: "Certified handloom & fair trade co-ops",
+            i4Icon: "support",
+            i4Title: "Dedicated helpline",
+            i4Body: "Live customer assistance 10am - 9pm",
+          }),
+          s("payment_methods", {
+            heading: "",
+            note: "Secure encrypted transaction.",
+            emptyText: "No payment method is enabled yet.",
           }),
           s("rich_text", {
             heading: "Handcrafted guarantee",
@@ -2472,6 +2612,553 @@ function clothingHeritage(): ThemePreset {
   };
 }
 
+/* ------------------------------------------------------------ supershop */
+
+/**
+ * Supershop — Daraz-grade online marketplace: orange flash sales, countdown
+ * timers, multi-slide hero, department icon strip, brand rail, dense compact
+ * product cards with ratings & sold counts. Bilingual EN/BN throughout.
+ */
+function supershop(): ThemePreset {
+  const k = "supershop";
+  const s = bound(k);
+
+  const footer = (): Section[] => [
+    s("support_strip", {
+      heading: "Need help? We're always here.",
+      t1Title: "Hotline 16212",
+      t1Body: "7 AM – 11 PM, seven days",
+      t1Href: "tel:16212",
+      t2Title: "Live Chat",
+      t2Body: "Instant reply on WhatsApp",
+      t2Href: "https://wa.me/8801700000000",
+      t3Title: "Track My Order",
+      t3Body: "Real-time parcel tracking",
+      t3Href: "/pages/track-order",
+      t4Title: "Easy Returns",
+      t4Body: "7-day hassle-free returns",
+      t4Href: "/pages/returns",
+    }),
+    s("footer_sitemap", {
+      c1Title: "Shop by Category",
+      c1Links:
+        "Electronics\nFashion\nHome & Living\nBeauty\nSports & Outdoors",
+      c2Title: "Customer Service",
+      c2Links:
+        "Track Order\nReturn Policy\nWarranty Claims\nPayment Methods\nContact Us",
+      c3Title: "Seller Centre",
+      c3Links:
+        "Sell on Supershop\nSeller Policies\nBrand Protection\nAdvert Solutions\nLogistics Partners",
+      c4Title: "About Us",
+      c4Links: "About Supershop\nPress Room\nCareers\nPrivacy Policy",
+    }),
+    s("payment_icons", {
+      heading: "Secure payments",
+      marks: "bKash\nNagad\nRocket\nVisa\nMastercard\nAmex\nCash on Delivery",
+    }),
+    s("social_strip", { heading: "Follow us for daily deals" }),
+    s("rich_text", {
+      heading: "About Supershop",
+      body: "Bangladesh's largest online marketplace — millions of products, guaranteed authenticity, and next-day delivery nationwide.",
+    }),
+  ];
+
+  const header = (): Section[] => [
+    s("announcement_bar", {
+      m1: "🔥 Flash Sale Live Now — Up to 70% OFF on top brands!",
+      m2: "Free delivery on orders over BDT 999 · bKash & Nagad accepted",
+      m3: "🎁 New user voucher: BDT 200 OFF on first order — code WELCOME200",
+      dismissible: false,
+      rotateMs: 4000,
+    }),
+    s("utility_bar", {
+      note: "Sell on Supershop · Download App",
+      l1Label: "Track order",
+      l1Href: "/pages/track-order",
+      l2Label: "Seller Centre",
+      l2Href: "/pages/seller-centre",
+      l3Label: "Help",
+      l3Href: "/pages/help",
+      showLanguage: true,
+    }),
+    s("search_command", {
+      placeholder:
+        "Search in 5 million+ products — phones, fashion, groceries…",
+      buttonLabel: "Search",
+      limit: 8,
+    }),
+    s("mega_menu", { label: "All Categories", limit: 10, columns: 5 }),
+    s("account_cart", {
+      accountLabel: "Account",
+      cartLabel: "Cart",
+      showCount: true,
+    }),
+  ];
+
+  return {
+    key: k,
+    nameEn: "Supershop",
+    nameBn: "সুপারশপ",
+    summaryEn:
+      "Daraz-style marketplace with flash sales, countdown timers, brand strips, voucher deals and dense product grids — ready for millions of SKUs.",
+    summaryBn:
+      "ফ্ল্যাশ সেল, কাউন্টডাউন, ব্র্যান্ড স্ট্রিপ ও ভাউচার ডিলসহ দারাজ-মানের মার্কেটপ্লেস — লক্ষাধিক পণ্যের জন্য প্রস্তুত।",
+    category: "marketplace",
+    version: "2.0.0",
+    api: "^3.0.0",
+    sortOrder: 50,
+    tokens: tokens({
+      brand: "#F57224",
+      accent: "#FBBF24",
+      surface: "#F5F5F5",
+      ink: "#1A1A1A",
+      radius: "4px",
+      container: "1360px",
+      density: "dense",
+      typeScale: "compact",
+      spaceUnit: "8px",
+      shadow: "soft",
+      motion: "subtle",
+      fontPairing: "bengali-classic",
+      fontDisplay: "Noto Sans Bengali",
+      fontBody: "Noto Sans Bengali",
+      dark: {
+        brand: "#FB923C",
+        accent: "#FCD34D",
+        surface: "#111111",
+        ink: "#F5F5F5",
+      },
+    }),
+    templates: withSearch(k, {
+      index: {
+        header: header(),
+        main: [
+          /* ── 1. Urgency marquee ticker ── */
+          s("marquee", {
+            text: "⚡ MEGA DEALS: Up to 70% Off on Top Electronics · Extra 15% bKash & Nagad Cashback · Nationwide Free Delivery · 100% Genuine Mall Stores",
+            speed: 30,
+            pauseOnHover: true,
+          }),
+
+          /* ── 2. Multi-slide hero carousel with real banner imagery ── */
+          s("hero", {
+            heading: "Mega Flash Sale — Up to 70% OFF",
+            subheading:
+              "Smartphones, premium gadgets, lifestyle fashion and everyday essentials at Bangladesh's lowest prices.",
+            ctaLabel: "Shop Flash Sale",
+            ctaHref: "/collections/flash-sale",
+            align: "left",
+            image:
+              "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1400&auto=format&fit=crop",
+            s2Heading: "New Season Fashion Carnival",
+            s2Image:
+              "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1400&auto=format&fit=crop",
+            s3Heading: "DarazMall Official Brand Festival",
+            s3Image:
+              "https://images.unsplash.com/photo-1550009158-9ebf69173e03?q=80&w=1400&auto=format&fit=crop",
+          }),
+
+          /* ── 3. Trust bar ── */
+          s("trust_bar", {
+            i1Icon: "delivery",
+            i1Title: "Free Delivery",
+            i1Body: "On orders above BDT 999",
+            i2Icon: "secure",
+            i2Title: "Genuine Products",
+            i2Body: "100% authenticity guaranteed",
+            i3Icon: "returns",
+            i3Title: "Easy 7-Day Returns",
+            i3Body: "Hassle-free return & refund",
+            i4Icon: "support",
+            i4Title: "24/7 Support",
+            i4Body: "Live chat & hotline 16212",
+          }),
+
+          /* ── 4. Flash sale countdown + product strip ── */
+          s("countdown", {
+            label: "Flash Sale ends in",
+            endsAt: "2026-12-31T20:00:00Z",
+          }),
+          s("deal_strip", {
+            heading: "Flash Sale",
+            badgeLabel: "% OFF",
+            cardVariant: "compact",
+          }),
+
+          /* ── 5. Department / category icon strip ── */
+          s("department_strip", {
+            heading: "Shop by Category",
+            limit: 12,
+          }),
+
+          /* ── 6. Voucher / deal card ── */
+          s("deal_card", {
+            heading: "Today's Deal — Don't Miss Out!",
+            badgeLabel: "Save up to 60%",
+            endsAt: "2026-12-31T20:00:00Z",
+            ctaLabel: "Grab the deal",
+            ctaHref: "/collections/todays-deals",
+          }),
+
+          /* ── 7. Top picks — electronics ── */
+          s("product_rail", {
+            heading: "Best Sellers in Electronics",
+            collection: "electronics",
+            limit: 10,
+            cardVariant: "compact",
+            showRating: true,
+            promise: "Nationwide delivery",
+          }),
+
+          /* ── 8. Brand rail ── */
+          s("brand_strip", {
+            heading: "Top Brands",
+            limit: 12,
+            columns: 4,
+          }),
+
+          /* ── 9. Fashion Category Story Banner Breakout ── */
+          s("collection_story", {
+            heading: "Trending Fashion & Streetwear",
+            body: "Discover the latest festive collections, premium cotton polos, Punjabi and designer footwear.",
+            ctaLabel: "Explore Fashion",
+            ctaHref: "/collections/fashion",
+            imageUrl:
+              "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1200&auto=format&fit=crop",
+            scrim: true,
+          }),
+
+          /* ── 10. Fashion picks ── */
+          s("product_rail", {
+            heading: "Trending in Fashion",
+            collection: "fashion",
+            limit: 10,
+            cardVariant: "compact",
+            showRating: true,
+            promise: "Free returns",
+          }),
+
+          /* ── 11. Sponsored / featured sellers ── */
+          s("sponsored_slot", {
+            heading: "Featured Brands",
+            limit: 4,
+            cardVariant: "compact",
+          }),
+
+          /* ── 12. Home & Living Category Story Banner Breakout ── */
+          s("collection_story", {
+            heading: "Smart Home & Kitchen Living",
+            body: "Upgrade your space with non-stick cookware, rechargeable fans, kitchen blenders and ergonomic home comfort.",
+            ctaLabel: "Shop Home Living",
+            ctaHref: "/collections/home-living",
+            imageUrl:
+              "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=1200&auto=format&fit=crop",
+            scrim: true,
+          }),
+
+          /* ── 13. Home & living ── */
+          s("product_rail", {
+            heading: "Home & Living Essentials",
+            collection: "home-living",
+            limit: 10,
+            cardVariant: "compact",
+            showRating: true,
+            promise: "Same-day dispatch",
+          }),
+
+          /* ── 14. Top Ranking Bestsellers Leaderboard ── */
+          s("rank_list", {
+            heading: "Top Ranking Bestsellers",
+            limit: 5,
+          }),
+
+          /* ── 15. Dense product grid — recommended ── */
+          s(
+            "product_grid",
+            {
+              heading: "Recommended For You",
+              limit: 20,
+              columns: 5,
+              cardVariant: "compact",
+              showRating: true,
+            },
+            COLS(5),
+          ),
+
+          /* ── 16. Testimonials / Verified Shopper Reviews ── */
+          s("testimonial", {
+            quote:
+              "Ordered a 5G smartphone during the Flash Sale — arrived next day in sealed original packaging with warranty.",
+            author: "Tanvir Hasan — Verified Buyer, Dhaka",
+          }),
+
+          /* ── 17. Newsletter ── */
+          s("newsletter", {
+            heading: "Get exclusive vouchers & deals",
+            body: "Subscribe for flash sale alerts, new arrival drops and member-only coupon codes.",
+            buttonLabel: "Subscribe",
+          }),
+        ],
+        footer: footer(),
+      },
+
+      product: {
+        header: [s("breadcrumb", { homeLabel: "Home" })],
+        main: [
+          s(
+            "product_media",
+            { ratio: "1/1", showThumbnails: true },
+            { bp: { mobile: { showThumbnails: false } } },
+          ),
+          s("price_block", {
+            showCompareAt: true,
+            note: "Inclusive of all taxes & fees.",
+          }),
+          s("add_to_cart", { label: "Add to Cart", showQuantity: true }),
+          s("stock_delivery", {
+            lowStockAt: 5,
+            cutOff: "Order before 2 PM for same-day dispatch",
+          }),
+          s("delivery_promise", {
+            heading: "Delivery options",
+            insideLabel: "Inside Dhaka",
+            insideDays: "1–2 business days",
+            outsideLabel: "Outside Dhaka",
+            outsideDays: "2–5 business days",
+            note: "Delivered by Supershop Logistics. Free above BDT 999.",
+          }),
+          s("authenticity_badge", {
+            label: "100% Genuine — Supershop Certified",
+            note: "All items sourced directly from authorised brand distributors.",
+            verified: true,
+          }),
+          s("product_meta", { heading: "Product details" }),
+          s("faq", {
+            heading: "Frequently asked questions",
+            q1: "Is this product genuine?",
+            a1: "Yes. All products on Supershop pass our authenticity verification. Counterfeit items are removed immediately.",
+            q2: "Can I return this item?",
+            a2: "You have 7 days from delivery to return unused items in original packaging for a full refund.",
+            q3: "Which payment methods are accepted?",
+            a3: "Cash on delivery, bKash, Nagad, Rocket, Visa, Mastercard and Amex are all accepted.",
+          }),
+          s(
+            "product_grid",
+            {
+              heading: "Customers also viewed",
+              limit: 5,
+              columns: 5,
+              cardVariant: "compact",
+              showRating: true,
+            },
+            COLS(5),
+          ),
+        ],
+        footer: footer(),
+      },
+
+      collection: {
+        header: [s("breadcrumb", { homeLabel: "Home" })],
+        main: [
+          s("category_header", {
+            heading: "All Products",
+            body: "Browse millions of genuine products at the best prices.",
+            scrim: false,
+            showCount: true,
+            showBreadcrumb: true,
+            homeLabel: "Home",
+          }),
+          s("filter_chips", { clearLabel: "Clear all" }),
+          s("result_toolbar", {
+            countLabel: "products",
+            showSort: true,
+            showDensity: true,
+            filtersLabel: "Filters",
+            sortLabel: "Sort",
+          }),
+          s("facet_sidebar", {
+            heading: "Filter",
+            limit: 20,
+            showCategories: true,
+            showKinds: true,
+            showPrice: true,
+            showStock: true,
+            drawerLabel: "Filters",
+            clearLabel: "Clear all",
+            categoryLabel: "Category",
+            kindLabel: "Type",
+            priceLabel: "Price",
+            stockLabel: "Availability",
+            inStockLabel: "In stock only",
+          }),
+          s(
+            "product_grid",
+            {
+              heading: "",
+              limit: 20,
+              columns: 5,
+              cardVariant: "compact",
+              showRating: true,
+            },
+            COLS(5),
+          ),
+          s("pagination", {
+            mode: "more",
+            moreLabel: "Load more products",
+            prevLabel: "Previous",
+            nextLabel: "Next",
+            pageLabel: "Page",
+          }),
+        ],
+        footer: footer(),
+      },
+
+      cart: {
+        header: [
+          s("announcement_bar", {
+            m1: "Add BDT 999 more to unlock Free Delivery!",
+            m2: "Pay with bKash or Nagad for instant cashback",
+            dismissible: false,
+          }),
+        ],
+        main: [
+          s("checkout_steps", {
+            heading: "Order progress",
+            step1: "Cart",
+            step2: "Address",
+            step3: "Payment",
+            step4: "Done",
+            activeStep: 1,
+          }),
+          s("cart_lines", {
+            heading: "",
+            removeLabel: "Remove",
+            emptyText: "Your cart is empty. Discover millions of products.",
+          }),
+          s("cart_summary", { heading: "Order summary" }),
+          s("delivery_promise", {
+            heading: "Estimated delivery",
+            insideLabel: "Dhaka Metropolitan",
+            insideDays: "1–2 business days",
+            outsideLabel: "Rest of Bangladesh",
+            outsideDays: "3–5 business days",
+            note: "Free delivery on orders above BDT 999.",
+          }),
+          s(
+            "product_grid",
+            {
+              heading: "You may also like",
+              limit: 5,
+              columns: 5,
+              cardVariant: "compact",
+              showRating: true,
+            },
+            COLS(5),
+          ),
+        ],
+        footer: footer(),
+      },
+
+      checkout: {
+        header: [
+          s("announcement_bar", {
+            m1: "🔒 Secure checkout — SSL encrypted & PCI-DSS compliant",
+            dismissible: false,
+          }),
+        ],
+        main: [
+          s("checkout_steps", {
+            heading: "Checkout",
+            step1: "Cart",
+            step2: "Address",
+            step3: "Payment",
+            step4: "Done",
+            activeStep: 3,
+          }),
+          s("payment_methods", {
+            heading: "",
+            note: "Cash on delivery, bKash, Nagad, Rocket, Visa and Mastercard accepted.",
+            emptyText: "No payment method is enabled yet.",
+          }),
+          s("cart_lines", { heading: "" }),
+          s("cart_summary", { heading: "Order total" }),
+          s("delivery_promise", {
+            heading: "Delivery guarantee",
+            insideLabel: "Inside Dhaka",
+            insideDays: "1–2 days",
+            outsideLabel: "Outside Dhaka",
+            outsideDays: "3–5 days",
+            note: "You will receive an SMS with tracking details.",
+          }),
+        ],
+        footer: footer(),
+      },
+
+      page: {
+        header: [s("breadcrumb", { homeLabel: "Home" })],
+        main: [
+          s("heading", {
+            text: "About Supershop",
+            level: "h1",
+            align: "left",
+          }),
+          s("page_content", {}),
+          s("support_strip", {
+            heading: "Need help? We're always here.",
+            t1Title: "Hotline 16212",
+            t1Body: "7 AM – 11 PM, seven days",
+            t1Href: "tel:16212",
+            t2Title: "Live Chat",
+            t2Body: "Instant reply on WhatsApp",
+            t2Href: "https://wa.me/8801700000000",
+            t3Title: "Track My Order",
+            t3Body: "Real-time parcel tracking",
+            t3Href: "/pages/track-order",
+            t4Title: "Easy Returns",
+            t4Body: "7-day hassle-free returns",
+            t4Href: "/pages/returns",
+          }),
+          s("faq", {
+            heading: "Common questions",
+            q1: "How do I sell on Supershop?",
+            a1: "Register at our Seller Centre, list your products and start selling to millions of buyers.",
+            q2: "What is the return policy?",
+            a2: "7-day returns on most items. Seller must accept returns within 3 business days.",
+            q3: "Are all products genuine?",
+            a3: "We verify all sellers and products. Counterfeit listings are immediately removed.",
+          }),
+        ],
+        footer: footer(),
+      },
+
+      blog: {
+        header: [s("breadcrumb", { homeLabel: "Home" })],
+        main: [
+          s("heading", {
+            text: "Shopping Guides & Product Reviews",
+            level: "h1",
+            align: "left",
+          }),
+          s("blog_archive", {
+            heading: "",
+            limit: 12,
+            columns: 3,
+            cardVariant: "standard",
+            showExcerpt: true,
+          }),
+          s("blog_pager", { align: "center" }),
+          s("newsletter", {
+            heading: "Get deals & guides in your inbox",
+            body: "Flash sale alerts, expert buying guides and exclusive member vouchers — weekly.",
+            buttonLabel: "Subscribe",
+          }),
+        ],
+        footer: footer(),
+      },
+    }),
+  };
+}
+
 /** The blueprint themes, in registry sort order. */
 export const BLUEPRINT_PRESETS: ThemePreset[] = [
   clothingHeritage(),
@@ -2479,6 +3166,7 @@ export const BLUEPRINT_PRESETS: ThemePreset[] = [
   atelier(),
   circuit(),
   rupaboti(),
+  supershop(),
 ];
 
 /** Blueprint keys, for demo content and docs. */
@@ -2495,6 +3183,7 @@ export const SHIPPED_BLUEPRINT_KEYS = [
   "atelier",
   "circuit",
   "rupaboti",
+  "supershop",
 ] as const;
 
 export const SHIPPED_BLUEPRINTS: ThemePreset[] = BLUEPRINT_PRESETS.filter(
@@ -2509,3 +3198,4 @@ export function blueprintTemplates(
 ): Record<TemplateKey, ThemeAst> | undefined {
   return BLUEPRINT_PRESETS.find((preset) => preset.key === key)?.templates;
 }
+

@@ -132,6 +132,7 @@ function ProductDetail() {
         image={product.image ?? null}
         fallbackSrc={product.image_url}
         alt={product.title}
+        seed={product.id}
         priority
         sizes="(max-width: 768px) 100vw, 600px"
         className="size-full object-cover"

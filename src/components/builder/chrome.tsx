@@ -429,6 +429,7 @@ function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
                         alt={hit.title}
                         ratio="square"
                         className="w-10 shrink-0"
+                        artSeed={hit.id}
                       />
                       <span className="min-w-0 truncate">{hit.title}</span>
                     </a>
@@ -477,10 +478,63 @@ function AccountCart({ str, bool, storeSlug }: WidgetCtx) {
   );
 }
 
+function SubbrandBar({ str }: WidgetCtx) {
+  const active = (str("activeBrand") || "aarong").trim().toLowerCase();
+  const brands = [1, 2, 3, 4, 5]
+    .map((n) => ({
+      name: str(`b${n}Name`),
+      href: str(`b${n}Href`) || "#",
+    }))
+    .filter((b) => b.name.length > 0);
+
+  if (brands.length === 0) return null;
+
+  const tagline = str("tagline");
+
+  return (
+    <nav
+      aria-label="Brand family"
+      className="border-b border-border/40 bg-muted/30 text-xs"
+    >
+      <div className="mx-auto flex max-w-[var(--fq-container,1280px)] items-center justify-between px-4 sm:px-6">
+        <ul className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-1">
+          {brands.map((b) => {
+            const isActive =
+              b.name.toLowerCase() === active ||
+              b.name.toLowerCase().replace(/\s+/g, "") ===
+                active.replace(/\s+/g, "");
+            return (
+              <li key={b.name} className="shrink-0">
+                <a
+                  href={b.href}
+                  className={`inline-flex items-center px-2.5 py-1 rounded text-[11px] font-semibold uppercase tracking-widest transition-colors ${
+                    isActive
+                      ? "bg-foreground text-background font-bold shadow-xs"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  }`}
+                  aria-current={isActive ? "page" : undefined}
+                >
+                  {b.name}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+        {tagline && (
+          <span className="hidden md:inline-flex items-center text-[10px] tracking-widest text-muted-foreground font-medium uppercase">
+            {tagline}
+          </span>
+        )}
+      </div>
+    </nav>
+  );
+}
+
 /** Phase 2.1 renderers, merged into the closed widget map. */
 export const CHROME_WIDGETS: Record<
   Extract<
     SectionType,
+    | "subbrand_bar"
     | "announcement_bar"
     | "utility_bar"
     | "trust_bar"
@@ -494,6 +548,7 @@ export const CHROME_WIDGETS: Record<
   >,
   WidgetComponent
 > = {
+  subbrand_bar: SubbrandBar,
   announcement_bar: AnnouncementBar,
   utility_bar: UtilityBar,
   trust_bar: TrustBar,

@@ -211,6 +211,7 @@ function BrandTile({ row }: { row: WidgetRow }) {
         alt={row.title}
         ratio="landscape"
         className="w-full rounded-fq-sm"
+        artSeed={row.id}
       />
       <span className="line-clamp-1 text-xs font-medium">{row.title}</span>
     </a>

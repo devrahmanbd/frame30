@@ -396,36 +396,41 @@ export const BLUEPRINT_BN: Record<string, string> = {
   Ingredients: "উপাদান",
   "Search by concern or ingredient": "সমস্যা বা উপাদান দিয়ে খুঁজুন",
   "Shop all": "সব দেখুন",
-  "Skin first": "আগে ত্বক",
+  "Shade matched in Bangladesh": "বাংলাদেশে শেড মিলিয়ে",
 
   /* ---------------------------------------------------- rupaboti · home */
-  "Beauty that matches your skin": "আপনার ত্বকের সাথে মেলে এমন বিউটি",
-  "Shade matched, ingredient transparent, batch coded.":
-    "শেড মিলিয়ে দেওয়া, উপাদান স্বচ্ছ, ব্যাচ কোডসহ।",
+  "Beauty products in Bangladesh matched to your skin":
+    "আপনার ত্বকের সাথে মিলিয়ে বাংলাদেশে বিউটি পণ্য",
+  "Shop serum, foundation and cleansers with full ingredients lists, batch codes and shade help for acne, dullness and sensitive skin.":
+    "একনে, কালচে ভাব ও সংবেদনশীল ত্বকের জন্য পূর্ণ উপাদান তালিকা, ব্যাচ কোড ও শেড সহায়তাসহ সিরাম, ফাউন্ডেশন ও ক্লেনজার কিনুন।",
+  "Find your foundation shade": "ফাউন্ডেশনের শেড খুঁজুন",
   "Find your shade": "আপনার শেড খুঁজুন",
   "Pick your undertone": "আন্ডারটোন বাছুন",
   "Pick your depth": "গভীরতা বাছুন",
   "No match yet — try another depth.": "এখনও মিল নেই — অন্য গভীরতা দেখুন।",
-  "Two-minute skin quiz": "দুই মিনিটের স্কিন কুইজ",
-  "Four questions, one routine.": "চারটি প্রশ্ন, একটি রুটিন।",
+  "Skin quiz for acne, dullness and dryness":
+    "ব্রণ, কালচে ভাব ও শুষ্কতার জন্য স্কিন কুইজ",
+  "Four questions. See only products that fit your answers.":
+    "চারটি প্রশ্ন। শুধু আপনার উত্তরের সাথে মানান পণ্য দেখুন।",
   "Your skin type": "আপনার ত্বকের ধরন",
   "Your main concern": "আপনার প্রধান সমস্যা",
   "How sensitive is your skin?": "আপনার ত্বক কতটা সংবেদনশীল?",
   "Finish you prefer": "যে ফিনিশ পছন্দ করেন",
-  "Here is a routine for you.": "আপনার জন্য একটি রুটিন।",
+  "Here is a routine that fits your answers.":
+    "আপনার উত্তরের সাথে মানান একটি রুটিন।",
   "See my routine": "আমার রুটিন দেখুন",
-  "Tested claims": "যাচাই করা দাবি",
-  "Dermatologist tested": "ডার্মাটোলজিস্ট পরীক্ষিত",
-  "Clinical panel, 2026": "ক্লিনিক্যাল প্যানেল, ২০২৬",
-  "Non-comedogenic": "নন-কমেডোজেনিক",
-  "Lab report, 2026": "ল্যাব রিপোর্ট, ২০২৬",
-  "Fragrance free": "সুগন্ধিমুক্ত",
-  "Formulation sheet": "ফর্মুলেশন শিট",
-  "Cruelty free": "প্রাণী পরীক্ষা ছাড়া",
-  "Supplier declaration": "সরবরাহকারীর ঘোষণা",
-  "Eight weeks of use": "আট সপ্তাহের ব্যবহার",
-  "Week 0": "সপ্তাহ ০",
-  "Week 8": "সপ্তাহ ৮",
+  "What each claim means": "প্রতিটি দাবির অর্থ",
+  "Full ingredients listed": "পূর্ণ উপাদান তালিকা দেওয়া",
+  "INCI list on every product": "প্রতিটি পণ্যে INCI তালিকা",
+  "Batch coded stock": "ব্যাচ কোডসহ স্টক",
+  "Batch and expiry shown": "ব্যাচ ও মেয়াদ দেখানো হয়",
+  "Fragrance free options": "সুগন্ধিমুক্ত অপশন",
+  "Filter by ingredients list": "উপাদান তালিকা দিয়ে বাছুন",
+  "Shade help included": "শেড সহায়তাসহ",
+  "Finder and consult in store hours": "ফাইন্ডার ও পরামর্শ দোকানের সময়ে",
+  "How it looks in daily light": "দৈনন্দিন আলোয় যেমন দেখায়",
+  Before: "আগে",
+  After: "পরে",
   "Individual results vary. Photos are unretouched and taken in the same light.":
     "ফল একেকজনের একেক রকম। ছবিগুলো এডিট করা নয়, একই আলোয় তোলা।",
   "How it feels": "কেমন লাগে",
@@ -438,14 +443,14 @@ export const BLUEPRINT_BN: Record<string, string> = {
   Evening: "সন্ধ্যা",
   Swap: "বদলান",
   "Add the routine": "রুটিন যোগ করুন",
-  "Routine totals are calculated on the server.":
-    "রুটিনের মোট হিসাব সার্ভারে করা হয়।",
+  "Total shown at checkout from current prices.":
+    "বর্তমান দাম অনুযায়ী মোট চেকআউটে দেখানো হয়।",
   "Pick a free sample": "একটি ফ্রি স্যাম্পল বাছুন",
   "Free on orders over BDT 1,500": "১,৫০০ টাকার বেশি অর্ডারে ফ্রি",
   "Ingredient glossary": "উপাদান পরিচিতি",
   Niacinamide: "নায়াসিনামাইড",
-  "Evens tone and supports the barrier.":
-    "ত্বকের টোন সমান করে ও ব্যারিয়ার শক্ত রাখে।",
+  "Evens the look of tone and supports the skin barrier.":
+    "ত্বকের টোনের দেখা সমান করে ও স্কিন ব্যারিয়ার শক্ত রাখে।",
   "Hyaluronic acid": "হায়ালুরনিক অ্যাসিড",
   "Holds water in the upper layers of skin.":
     "ত্বকের উপরের স্তরে পানি ধরে রাখে।",
@@ -454,14 +459,16 @@ export const BLUEPRINT_BN: Record<string, string> = {
   SPF: "এসপিএফ",
   "Sun protection factor; reapply every few hours.":
     "সান প্রোটেকশন ফ্যাক্টর; কয়েক ঘণ্টা পরপর আবার লাগান।",
-  "Earn points on every order": "প্রতিটি অর্ডারে পয়েন্ট জমান",
-  "The shade match was right the first time.": "প্রথমবারেই শেড ঠিকঠাক মিলেছে।",
+  "Points counted at checkout": "চেকআউটে পয়েন্ট গোনা হয়",
+  "Check shade, ingredients and batch before you buy.":
+    "কেনার আগে শেড, উপাদান ও ব্যাচ দেখে নিন।",
+  "How to shop this store": "এই দোকান থেকে যেভাবে কিনবেন",
 
   /* -------------------------------------------------- rupaboti · footer */
   Guides: "গাইড",
   "Not sure what suits you?": "কোনটা আপনার জন্য বুঝতে পারছেন না?",
-  "Send a photo and your concerns; our advisor replies the same day.":
-    "ছবি ও আপনার সমস্যা পাঠান; আমাদের পরামর্শক একই দিনে উত্তর দেন।",
+  "Send your concern and a photo if you like; the advisor replies between 10am and 8pm.":
+    "আপনার সমস্যা পাঠান, চাইলে ছবিসহ; পরামর্শক সকাল ১০টা থেকে রাত ৮টার মধ্যে উত্তর দেন।",
   "Chat on WhatsApp": "হোয়াটসঅ্যাপে চ্যাট করুন",
   "Call the advisor": "পরামর্শককে কল করুন",
   "Your skin concern": "আপনার ত্বকের সমস্যা",
@@ -469,8 +476,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "I agree to be contacted about this request.":
     "এই অনুরোধ নিয়ে আমার সাথে যোগাযোগে আমি সম্মত।",
   "Follow for routines": "রুটিনের জন্য ফলো করুন",
-  "Authentic beauty with batch codes, full ingredient lists and honest shade matching.":
-    "ব্যাচ কোড, পূর্ণ উপাদান তালিকা ও সৎ শেড ম্যাচিংসহ আসল বিউটি পণ্য।",
+  "Authentic beauty products in Bangladesh with batch codes, full ingredients lists and shade help.":
+    "ব্যাচ কোড, পূর্ণ উপাদান তালিকা ও শেড সহায়তাসহ বাংলাদেশে আসল বিউটি পণ্য।",
 
   /* ----------------------------------------------------- rupaboti · pdp */
   "Choose your shade": "আপনার শেড বাছুন",
@@ -509,13 +516,14 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Make it a gift": "উপহার হিসেবে পাঠান",
   "Gift message": "উপহারের বার্তা",
   "Add the gift box": "গিফট বক্স যোগ করুন",
-  "Gift box totals are calculated on the server.":
-    "গিফট বক্সের মোট হিসাব সার্ভারে করা হয়।",
 
   /* --------------------------------- rupaboti · collection, page, cart */
-  "Shop the range": "সব পণ্য দেখুন",
-  "Filter by concern, finish and price.":
-    "সমস্যা, ফিনিশ ও দাম দিয়ে ফিল্টার করুন।",
+  "Shop beauty products by concern": "সমস্যা অনুযায়ী বিউটি পণ্য কিনুন",
+  "Filter serums, foundation and more by concern, finish and price.":
+    "সমস্যা, ফিনিশ ও দাম দিয়ে সিরাম, ফাউন্ডেশনসহ আরও পণ্য বাছুন।",
+  "Complete your routine": "আপনার রুটিন পূর্ণ করুন",
+  "Shop skincare, makeup and haircare": "স্কিনকেয়ার, মেকআপ ও হেয়ারকেয়ার কিনুন",
+  "Bestsellers to start with": "শুরু করতে সেরা বিক্রিত",
   products: "পণ্য",
   "Beauty counters": "বিউটি কাউন্টার",
   "Dhanmondi counter": "ধানমন্ডি কাউন্টার",
@@ -534,6 +542,12 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Payment method": "পেমেন্ট পদ্ধতি",
 
   /* ------------------------------------------------ clothing-heritage · chrome */
+  Aarong: "আড়ং",
+  Taaga: "তাগা",
+  "Taaga Man": "তাগা ম্যান",
+  Herstory: "হারস্টোরি",
+  Grassroots: "গ্রাসরুটস",
+  "A Social Enterprise": "একটি সামাজিক উদ্যোগ",
   "Free nationwide delivery on orders over BDT 3,000":
     "৩,০০০ টাকার বেশি অর্ডারে সারাদেশে ফ্রি ডেলিভারি",
   "Eid & Festive Collection 2026 is now live":
@@ -576,11 +590,17 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Over 65,000 Rural Artisans": "৬৫,০০০-এর বেশি গ্রামীণ কারিগর",
   "Nationwide 48-Hour Dispatch": "সারাদেশে ৪৮ ঘণ্টায় পাঠানো হয়",
   "The festive lookbook": "উৎসবের লুকবুক",
+  "Dhakai Jamdani royal drape": "ঢাকাই জামদানি রাজকীয় সাজ",
+  "Rajshahi pure silk festive panjabi": "রাজশাহী সিল্কের উৎসবের পাঞ্জাবি",
+  "Tangail handloom taant cotton saree": "টাঙ্গাইল তাঁত সুতি শাড়ি",
+  "Dhamrai brass filigree artisan earrings": "ধামরাই কাঁসা-পিতলের হস্তনির্মিত দুল",
   "The master weavers": "তাঁতশিল্পী",
   "Tangail & Jamdani: A living UNESCO legacy": "টাঙ্গাইল ও জামদানি: ইউনেস্কোর জীবন্ত ঐতিহ্য",
   "Centuries of geometry and craftsmanship in every weave. Crafted by generational artisan families on traditional wooden pit looms.":
     "প্রতি বুননে শত বছরের জ্যামিতি ও কারিগরি। কাঠের খাঁটি পিট লুমে বংশপরম্পরায় তৈরি।",
+  "Master weaver on traditional wooden pit loom": "ঐতিহ্যবাহী কাঠের পিট লুমে প্রবীণ তাঁতি",
   "Artisan showcase": "কারিগরদের প্রদর্শনী",
+  "Handcrafted Eid styling collection": "হাতে তৈরি ঈদের পোশাক সম্ভার",
   "Festive Occasions": "উৎসবের দিনগুলো",
   "Pure silk panjabi & fine muslin": "খাঁটি সিল্কের পাঞ্জাবি ও মিহি মসলিন",
   "Intricate necklines, mother-of-pearl buttons, and breathable natural fibers cut for elegance in Bangladeshi celebrations.":
@@ -655,4 +675,244 @@ export const BLUEPRINT_BN: Record<string, string> = {
     "প্রতিটি পণ্য পাঠানোর আগে বুননের মান পরীক্ষা করা হয়। ক্যাশ অন ডেলিভারি সুবিধা আছে।",
   "Complementary crafts": "মানানসই আরও কিছু পণ্য",
   "7-day easy exchange": "৭ দিনে সহজ বদল",
+
+  /* ------------------------------------------- clothing-heritage additions */
+  "Empowering generational weavers": "বংশানুক্রমিক তাঁতিদের ক্ষমতায়ন",
+  "Express courier across all 64 districts": "৬৪ জেলায় এক্সপ্রেস কুরিয়ার ডেলিভারি",
+  "7-Day Easy Size Exchanges": "৭ দিনে সাইজ পরিবর্তনের সহজ সুবিধা",
+  "Hassle-free returns at any outlet": "যেকোনো আউটলেটে ঝামেলামুক্ত বদল",
+  "New Festive Arrivals": "নতুন উৎসবের কালেকশন",
+  "In stock · Dispatched in 24h": "স্টকে আছে · ২৪ ঘণ্টায় ডিসপ্যাচ",
+  "Trending & Best Sellers": "জনপ্রিয় ও সেরা বিক্রিত",
+  "Crafted in limited small batches": "সীমিত ছোট ব্যাচে হাতে তৈরি",
+  "Explore the festive edit": "উৎসবের কালেকশন দেখুন",
+  "Join the Heritage Guild": "হেরিটেজ গিল্ডে যুক্ত হোন",
+  "Customer Support & Concierge": "গ্রাহক সেবা ও সহায়তা",
+  "Order Tracking": "অর্ডার ট্র্যাকিং",
+  "Store Locator": "আউটলেট লোকেশন",
+  "Real-time dispatch updates": "রিয়েল-টাইম ডেলিভারি আপডেট",
+  "Find your nearest flagship": "নিকটস্থ ফ্ল্যাগশিপ আউটলেট খুঁজুন",
+  "Size & Fit Advice": "সাইজ ও ফিট পরামর্শ",
+  "Personal styling helpline": "ব্যক্তিগত স্টাইলিং হেল্পলাইন",
+  "Easy Exchanges": "সহজ এক্সচেঞ্জ",
+  "7-day doorstep exchange": "৭ দিনের দোরগোড়ায় এক্সচেঞ্জ",
+  "Order within 2 hrs for same-day dispatch in Dhaka":
+    "ঢাকায় একই দিনে পেতে ২ ঘণ্টার মধ্যে অর্ডার করুন",
+  "Delivery & Returns": "ডেলিভারি ও রিটার্ন",
+  "Same-day or next-day": "একই দিন বা পরের দিন",
+  "48-72 hours": "৪৮-৭২ ঘণ্টা",
+  "Carefully packed in eco-friendly protective wrapping.":
+    "পরিবেশবান্ধব সুরক্ষামূলক মোড়কে সাবধানে প্যাকেজকৃত।",
+  "Customer ratings": "গ্রাহক মূল্যায়ন",
+  "Craft & sizing questions": "কারুশিল্প ও সাইজ সংক্রান্ত প্রশ্ন",
+  "How do I care for 100% natural dye Jamdani and Tangail sarees?":
+    "১০০% প্রাকৃতিক রঙের জামদানি ও টাঙ্গাইল শাড়ির যত্ন কীভাবে নেব?",
+  "We recommend professional dry clean for the first two washes to preserve natural botanical pigments. Always iron on reverse side using low-medium heat.":
+    "প্রাকৃতিক ভেষজ রঙের স্থায়িত্ব বজায় রাখতে প্রথম দুটি ধোয়ার জন্য প্রফেশনাল ড্রাই ক্লিন করার পরামর্শ দিই। সর্বদা মৃদু তাপে উল্টো পিঠে ইস্ত্রি করুন।",
+  "Can I exchange the size if the Panjabi or Kurta does not fit?":
+    "পাঞ্জাবি বা কুর্তার সাইজ ঠিক না হলে কি পরিবর্তন করা যাবে?",
+  "Yes, Framique offers 7-day hassle-free size exchanges across all flagship retail stores and via courier pickup.":
+    "হ্যাঁ, ফ্রেমিকে সকল ফ্ল্যাগশিপ রিটেল আউটলেটে এবং কুরিয়ার পিকআপের মাধ্যমে ৭ দিনের ঝামেলামুক্ত সাইজ পরিবর্তনের সুবিধা দেয়।",
+  "Are these items authentically handwoven on wooden pit looms?":
+    "এই পণ্যগুলো কি সত্যিই ঐতিহ্যবাহী কাঠের পিট লুমে হাতে বোনা?",
+  "Every garment in our Heritage collection is certified handloom, directly supporting artisan weaving cooperatives in Tangail, Sonargaon, and Comilla.":
+    "আমাদের হেরিটেজ কালেকশনের প্রতিটি পোশাক শতভাগ খাঁটি তাঁতের তৈরি, যা সরাসরি টাঙ্গাইল, সোনারগাঁও ও কুমিল্লার কারিগর সমবায়কে সহায়তা করে।",
+  "Nationwide 48h dispatch": "সারাদেশে ৪৮ ঘণ্টায় ডেলিভারি",
+  "Fast, tracked delivery across 64 districts":
+    "৬৪ জেলায় দ্রুত ও ট্র্যাকিং সুবিধাসহ ডেলিভারি",
+  "Return or exchange in any flagship store":
+    "যেকোনো ফ্ল্যাগশিপ আউটলেটে ফেরত বা পরিবর্তন করুন",
+  "100% genuine craft": "১০০% খাঁটি ঐতিহ্যবাহী কারুশিল্প",
+  "Certified handloom & fair trade co-ops":
+    "প্রত্যয়িত তাঁত ও ন্যায্য বাণিজ্য সমবায়",
+  "Dedicated helpline": "নিবেদিত গ্রাহক হেল্পলাইন",
+  "Live customer assistance 10am - 9pm":
+    "সকাল ১০টা থেকে রাত ৯টা পর্যন্ত সরাসরি সহায়তা",
+  "Accepted payment methods": "অনুমোদিত পেমেন্ট মাধ্যম",
+  "Secure encrypted transaction.": "নিরাপদ ও এনক্রিপ্ট করা লেনদেন।",
+  "Frequently Asked Questions": "সাধারণ জিজ্ঞাসা ও উত্তর",
+  "What are your delivery timelines?": "ডেলিভারির সময়সীমা কত?",
+  "Orders within Dhaka city are delivered within 24-48 hours. Nationwide deliveries across all 64 districts take 48-72 hours via premium courier.":
+    "ঢাকা সিটির ভেতরে ২৪-৪৮ ঘণ্টার মধ্যে ডেলিভারি দেওয়া হয়। ৬৪ জেলার যেকোনো প্রান্তে প্রিমিয়াম কুরিয়ারের মাধ্যমে ৪৮-৭২ ঘণ্টার মধ্যে পৌঁছে যায়।",
+  "Can I exchange an item at a physical store?":
+    "আমি কি সরাসরি আউটলেটে এসে পণ্য বদল করতে পারি?",
+  "Yes! Any item purchased online can be exchanged at any Framique flagship outlet in Dhaka, Chattogram, or Sylhet within 7 days with the original invoice.":
+    "হ্যাঁ! অনলাইনে কেনা যেকোনো পণ্য আসল ইনভয়েসসহ ৭ দিনের মধ্যে ঢাকা, চট্টগ্রাম বা সিলেটের যেকোনো ফ্ল্যাগশিপ আউটলেটে বদল করা যাবে।",
+  "Are your handloom fabrics pre-shrunk?":
+    "আপনাদের তাঁতের কাপড় কি ধোয়ার পর ছোট হয়ে যায়?",
+  "All our pure cotton and silk garments undergo traditional pre-wash finishing. Follow our care guidelines for minimal shrinkage.":
+    "আমাদের শতভাগ সুতি ও সিল্কের পোশাকগুলো ঐতিহ্যবাহী প্রি-ওয়াশ ফিনিশিং করা থাকে। কাপড়ের সুরক্ষায় যত্নের নির্দেশিকা মেনে চলুন।",
+
+  /* ---------------------------------------------------- supershop · chrome */
+  "🔥 Flash Sale Live Now — Up to 70% OFF on top brands!":
+    "🔥 ফ্ল্যাশ সেল চলছে — শীর্ষ ব্র্যান্ডে ৭০% পর্যন্ত ছাড়!",
+  "Free delivery on orders over BDT 999 · bKash & Nagad accepted":
+    "৯৯৯ টাকার বেশি অর্ডারে ফ্রি ডেলিভারি · বিকাশ ও নগদ গ্রহণযোগ্য",
+  "🎁 New user voucher: BDT 200 OFF on first order — code WELCOME200":
+    "🎁 নতুন ব্যবহারকারীর ভাউচার: প্রথম অর্ডারে ২০০ টাকা ছাড় — কোড WELCOME200",
+  "Sell on Supershop · Download App": "সুপারশপে বিক্রি করুন · অ্যাপ ডাউনলোড করুন",
+  "Seller Centre": "সেলার সেন্টার",
+  "Search in 5 million+ products — phones, fashion, groceries…":
+    "৫০ লাখ+ পণ্যে খুঁজুন — ফোন, ফ্যাশন, মুদিখানা…",
+  "All Categories": "সব ক্যাটাগরি",
+
+  /* ------------------------------------------------------ supershop · home */
+  "⚡ MEGA DEALS: Up to 70% Off on Top Electronics · Extra 15% bKash & Nagad Cashback · Nationwide Free Delivery · 100% Genuine Mall Stores":
+    "⚡ মেগা ডিল: শীর্ষ ইলেকট্রনিক্সে ৭০% পর্যন্ত ছাড় · বিকাশ ও নগদে অতিরিক্ত ১৫% ক্যাশব্যাক · সারা দেশে ফ্রি ডেলিভারি · ১০০% আসল মল স্টোর",
+  "Flash Sale — Up to 70% OFF": "ফ্ল্যাশ সেল — ৭০% পর্যন্ত ছাড়",
+  "Mega Flash Sale — Up to 70% OFF": "মেগা ফ্ল্যাশ সেল — ৭০% পর্যন্ত ছাড়",
+  "Smartphones, premium gadgets, lifestyle fashion and everyday essentials at Bangladesh's lowest prices.":
+    "স্মার্টফোন, গ্যাজেট, লাইফস্টাইল ফ্যাশন ও নিত্যপ্রয়োজনীয় পণ্য — বাংলাদেশের সবচেয়ে কম দামে।",
+  "Shop Flash Sale": "ফ্ল্যাশ সেলে কিনুন",
+  "New Season Fashion Is Here": "নতুন সিজনের ফ্যাশন এসে গেছে",
+  "New Season Fashion Carnival": "নতুন মৌসুমের ফ্যাশন কার্নিভাল",
+  "Home & Living — Big Brand Sale": "হোম ও লিভিং — বিগ ব্র্যান্ড সেল",
+  "DarazMall Official Brand Festival": "দারাজমল অফিসিয়াল ব্র্যান্ড উৎসব",
+  "Free Delivery": "ফ্রি ডেলিভারি",
+  "On orders above BDT 999": "৯৯৯ টাকার বেশি অর্ডারে",
+  "Genuine Products": "খাঁটি পণ্য",
+  "100% authenticity guaranteed": "১০০% আসল পণ্যের নিশ্চয়তা",
+  "Easy 7-Day Returns": "সহজ ৭-দিনের রিটার্ন",
+  "Hassle-free return & refund": "ঝামেলামুক্ত রিটার্ন ও রিফান্ড",
+  "24/7 Support": "২৪/৭ সাপোর্ট",
+  "Live chat & hotline 16212": "লাইভ চ্যাট ও হটলাইন ১৬২১২",
+  "Flash Sale ends in": "ফ্ল্যাশ সেল শেষ হচ্ছে",
+  "Flash Sale": "ফ্ল্যাশ সেল",
+  "% OFF": "% ছাড়",
+  "Shop by Category": "ক্যাটাগরি অনুযায়ী কিনুন",
+  "Today's Deal — Don't Miss Out!": "আজকের ডিল — মিস করবেন না!",
+  "Save up to 60%": "৬০% পর্যন্ত সাশ্রয়",
+  "Grab the deal": "ডিলটি নিন",
+  "Best Sellers in Electronics": "ইলেকট্রনিক্সে সর্বাধিক বিক্রীত",
+  "electronics": "electronics",
+  "Nationwide delivery": "সারা দেশে ডেলিভারি",
+  "Top Brands": "শীর্ষ ব্র্যান্ড",
+  "Trending Fashion & Streetwear": "ট্রেন্ডিং ফ্যাশন ও স্ট্রিটওয়্যার",
+  "Discover the latest festive collections, premium cotton polos, Punjabi and designer footwear.":
+    "আবিষ্কার করুন উৎসবের কালেকশন, প্রিমিয়াম কটন পোলো, পাঞ্জাবি ও ডিজাইনার জুতো।",
+  "Explore Fashion": "ফ্যাশন দেখুন",
+  "Trending in Fashion": "ফ্যাশনে ট্রেন্ডিং",
+  "fashion": "fashion",
+  "Free returns": "ফ্রি রিটার্ন",
+  "Featured Brands": "ফিচার্ড ব্র্যান্ড",
+  "Smart Home & Kitchen Living": "স্মার্ট হোম ও কিচেন লিভিং",
+  "Upgrade your space with non-stick cookware, rechargeable fans, kitchen blenders and ergonomic home comfort.":
+    "নন-স্টিক কুকওয়্যার, রিচার্জেবল ফ্যান, ব্লেন্ডার ও আরামদায়ক হোম প্রডাক্টে আপনার ঘর সাজান।",
+  "Shop Home Living": "হোম লিভিং কিনুন",
+  "Home & Living Essentials": "হোম ও লিভিং এসেনশিয়ালস",
+  "home-living": "home-living",
+  "Same-day dispatch": "একই দিনে ডিসপ্যাচ",
+  "Top Ranking Bestsellers": "সর্বাধিক বিক্রিত শীর্ষ তালিকা",
+  "Recommended For You": "আপনার জন্য বাছাই করা",
+  "Ordered a 5G smartphone during the Flash Sale — arrived next day in sealed original packaging with warranty.":
+    "ফ্ল্যাশ সেলে ৫জি স্মার্টফোন অর্ডার করেছিলাম — পরদিনই আসল সিলড প্যাকেজিং ও ওয়ারেন্টিসহ হাতে পেয়েছি।",
+  "Tanvir Hasan — Verified Buyer, Dhaka": "তানভীর হাসান — ভেরিফাইড ক্রেতা, ঢাকা",
+  "Get exclusive vouchers & deals": "এক্সক্লুসিভ ভাউচার ও ডিল পান",
+  "Subscribe for flash sale alerts, new arrival drops and member-only coupon codes.":
+    "ফ্ল্যাশ সেলের নোটিফিকেশন, নতুন পণ্য ও সদস্যদের জন্য বিশেষ কুপন কোড পেতে সাবস্ক্রাইব করুন।",
+
+  /* --------------------------------------------------- supershop · product */
+  "Inclusive of all taxes & fees.": "সকল কর ও চার্জ অন্তর্ভুক্ত।",
+  "Add to Cart": "কার্টে যোগ করুন",
+  "Order before 2 PM for same-day dispatch":
+    "একই দিনে ডিসপ্যাচের জন্য দুপুর ২টার আগে অর্ডার করুন",
+  "Delivery options": "ডেলিভারি অপশন",
+  "1–2 business days": "১–২ কর্মদিবস",
+  "2–5 business days": "২–৫ কর্মদিবস",
+  "Delivered by Supershop Logistics. Free above BDT 999.":
+    "সুপারশপ লজিস্টিক্স ডেলিভারি করে। ৯৯৯ টাকার উপরে বিনামূল্যে।",
+  "100% Genuine — Supershop Certified": "১০০% আসল — সুপারশপ সার্টিফাইড",
+  "All items sourced directly from authorised brand distributors.":
+    "সব পণ্য সরাসরি অনুমোদিত ব্র্যান্ড ডিস্ট্রিবিউটর থেকে সংগ্রহ করা।",
+  "Product details": "পণ্যের বিবরণ",
+  "Frequently asked questions": "সচরাচর জিজ্ঞাসা",
+  "Is this product genuine?": "এই পণ্যটি কি আসল?",
+  "Yes. All products on Supershop pass our authenticity verification. Counterfeit items are removed immediately.":
+    "হ্যাঁ। সুপারশপের সব পণ্য আমাদের অথেনটিসিটি যাচাই পাস করে। নকল পণ্য তাৎক্ষণিকভাবে সরিয়ে ফেলা হয়।",
+  "Can I return this item?": "এই পণ্য কি ফেরত দেওয়া যাবে?",
+  "You have 7 days from delivery to return unused items in original packaging for a full refund.":
+    "ডেলিভারির ৭ দিনের মধ্যে অব্যবহৃত ও আসল প্যাকেজিংসহ পণ্য ফেরত দিতে পারবেন।",
+  "Which payment methods are accepted?": "কোন পেমেন্ট পদ্ধতি গ্রহণযোগ্য?",
+  "Cash on delivery, bKash, Nagad, Rocket, Visa, Mastercard and Amex are all accepted.":
+    "ক্যাশ অন ডেলিভারি, বিকাশ, নগদ, রকেট, ভিসা, মাস্টারকার্ড ও অ্যামেক্স সবই গ্রহণযোগ্য।",
+  "Customers also viewed": "অন্য ক্রেতারাও দেখেছেন",
+
+  /* ------------------------------------------------ supershop · collection */
+  "All Products": "সব পণ্য",
+  "Browse millions of genuine products at the best prices.":
+    "সেরা দামে লক্ষাধিক আসল পণ্য ব্রাউজ করুন।",
+  "Filter": "ফিল্টার",
+  products: "টি পণ্য",
+  "Load more products": "আরও পণ্য দেখুন",
+
+  /* ------------------------------------------- supershop · cart & checkout */
+  "Add BDT 999 more to unlock Free Delivery!":
+    "ফ্রি ডেলিভারি পেতে আরও ৯৯৯ টাকার পণ্য যোগ করুন!",
+  "Pay with bKash or Nagad for instant cashback":
+    "বিকাশ বা নগদে পেমেন্টে তাৎক্ষণিক ক্যাশব্যাক",
+  "Order progress": "অর্ডারের অগ্রগতি",
+  Cart: "কার্ট",
+  Address: "ঠিকানা",
+  Payment: "পেমেন্ট",
+  Done: "সম্পন্ন",
+  "Your cart is empty. Discover millions of products.":
+    "আপনার কার্ট খালি। লক্ষাধিক পণ্য আবিষ্কার করুন।",
+  "Estimated delivery": "আনুমানিক ডেলিভারি",
+  "Dhaka Metropolitan": "ঢাকা মেট্রোপলিটন",
+  "Rest of Bangladesh": "বাংলাদেশের বাকি অংশ",
+  "3–5 business days": "৩–৫ কর্মদিবস",
+  "Free delivery on orders above BDT 999.":
+    "৯৯৯ টাকার বেশি অর্ডারে ফ্রি ডেলিভারি।",
+  "🔒 Secure checkout — SSL encrypted & PCI-DSS compliant":
+    "🔒 নিরাপদ চেকআউট — SSL এনক্রিপ্টেড ও PCI-DSS কমপ্লায়েন্ট",
+  Checkout: "চেকআউট",
+  "Cash on delivery, bKash, Nagad, Rocket, Visa and Mastercard accepted.":
+    "ক্যাশ অন ডেলিভারি, বিকাশ, নগদ, রকেট, ভিসা ও মাস্টারকার্ড গ্রহণযোগ্য।",
+  "Order total": "সর্বমোট মূল্য",
+  "Delivery guarantee": "ডেলিভারি গ্যারান্টি",
+  "1–2 days": "১–২ দিন",
+  "3–5 days": "৩–৫ দিন",
+  "You will receive an SMS with tracking details.":
+    "ট্র্যাকিং তথ্যসহ আপনি একটি এসএমএস পাবেন।",
+
+  /* ----------------------------------------- supershop · page, blog & footer */
+  "About Supershop": "সুপারশপ সম্পর্কে",
+  "Bangladesh's largest online marketplace — millions of products, guaranteed authenticity, and next-day delivery nationwide.":
+    "বাংলাদেশের সবচেয়ে বড় অনলাইন মার্কেটপ্লেস — লক্ষাধিক পণ্য, নিশ্চিত আসলতা ও সারা দেশে পরদিন ডেলিভারি।",
+  "Shopping Guides & Product Reviews": "কেনার গাইড ও পণ্য রিভিউ",
+  "Get deals & guides in your inbox": "ইনবক্সে ডিল ও গাইড পান",
+  "Flash sale alerts, expert buying guides and exclusive member vouchers — weekly.":
+    "ফ্ল্যাশ সেলের নোটিফিকেশন, বিশেষজ্ঞ কেনার গাইড এবং এক্সক্লুসিভ সদস্য ভাউচার — সাপ্তাহিক।",
+  "Need help? We're always here.": "সাহায্য দরকার? আমরা সবসময় আছি।",
+  "Hotline 16212": "হটলাইন ১৬২১২",
+  "7 AM – 11 PM, seven days": "সকাল ৭টা – রাত ১১টা, সপ্তাহের সাত দিন",
+  "Live Chat": "লাইভ চ্যাট",
+  "Instant reply on WhatsApp": "হোয়াটসঅ্যাপে তাৎক্ষণিক উত্তর",
+  "Track My Order": "আমার অর্ডার ট্র্যাক করুন",
+  "Real-time parcel tracking": "রিয়েল-টাইম পার্সেল ট্র্যাকিং",
+  "Easy Returns": "সহজ রিটার্ন",
+  "7-day hassle-free returns": "৭ দিনের ঝামেলামুক্ত রিটার্ন",
+  "Electronics\nFashion\nHome & Living\nBeauty\nSports & Outdoors":
+    "ইলেকট্রনিক্স\nফ্যাশন\nহোম ও লিভিং\nবিউটি\nস্পোর্টস ও আউটডোর",
+  "Customer Service": "কাস্টমার সার্ভিস",
+  "Track Order\nReturn Policy\nWarranty Claims\nPayment Methods\nContact Us":
+    "অর্ডার ট্র্যাক\nরিটার্ন পলিসি\nওয়ারেন্টি দাবি\nপেমেন্ট পদ্ধতি\nযোগাযোগ",
+  "Sell on Supershop\nSeller Policies\nBrand Protection\nAdvert Solutions\nLogistics Partners":
+    "সুপারশপে বিক্রি করুন\nসেলার পলিসি\nব্র্যান্ড সুরক্ষা\nবিজ্ঞাপন সমাধান\nলজিস্টিক্স পার্টনার",
+  "About Us": "আমাদের সম্পর্কে",
+  "About Supershop\nPress Room\nCareers\nPrivacy Policy":
+    "সুপারশপ সম্পর্কে\nপ্রেস রুম\nক্যারিয়ার\nগোপনীয়তা নীতি",
+  "Secure payments": "নিরাপদ পেমেন্ট",
+  "Follow us for daily deals": "প্রতিদিনের ডিলের জন্য আমাদের ফলো করুন",
+  "How do I sell on Supershop?": "সুপারশপে কীভাবে বিক্রি করব?",
+  "Register at our Seller Centre, list your products and start selling to millions of buyers.":
+    "আমাদের সেলার সেন্টারে নিবন্ধন করুন, পণ্য তালিকাভুক্ত করুন এবং লক্ষাধিক ক্রেতার কাছে বিক্রি শুরু করুন।",
+  "What is the return policy?": "রিটার্ন পলিসি কী?",
+  "7-day returns on most items. Seller must accept returns within 3 business days.":
+    "বেশিরভাগ পণ্যে ৭ দিনের রিটার্ন। সেলারকে ৩ কর্মদিবসের মধ্যে রিটার্ন গ্রহণ করতে হবে।",
+  "Are all products genuine?": "সব পণ্য কি আসল?",
+  "We verify all sellers and products. Counterfeit listings are immediately removed.":
+    "আমরা সব সেলার ও পণ্য যাচাই করি। নকল লিস্টিং তাৎক্ষণিকভাবে সরিয়ে নেওয়া হয়।",
 };
+
+

@@ -24,7 +24,7 @@ export const THEME_SEO_CATEGORY: Record<string, string> = {
   modern: "general",
   landing: "landing",
   "heavy-shop": "general",
-  supershop: "grocery",
+  supershop: "marketplace",
   b2b: "wholesale",
   "clothing-modern": "fashion",
   "clothing-classic": "fashion",
@@ -113,7 +113,9 @@ const CATEGORY_PROFILE: Record<string, Partial<ThemeSeoProfile>> = {
     homeTitleTemplate: "{store} — Official-warranty electronics",
     jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, faq: true },
   },
-  beauty: { homeTitleTemplate: "{store} — Beauty matched to your skin" },
+  beauty: {
+    homeTitleTemplate: "Beauty products in Bangladesh shop — {store}",
+  },
 };
 
 /** SEO behaviour for an installed official theme (falls back to the default). */
@@ -460,9 +462,13 @@ export function buildStoreHead(input: StoreHeadInput): HeadOutput {
     "Online store",
     input.storeName,
   );
+  const beautyFallback =
+    "Shop serums, moisturiser, foundation and lipstick for acne and brightening. Check ingredients, shades and batch codes, then build your routine.";
   const description =
     input.tagline?.trim() ||
-    `Shop ${input.storeName} with cash on delivery, bKash, Nagad and nationwide courier across Bangladesh.`;
+    (THEME_SEO_CATEGORY[input.themeKey ?? ""] === "beauty"
+      ? beautyFallback
+      : `Shop ${input.storeName} with cash on delivery, bKash, Nagad and nationwide courier across Bangladesh.`);
   const hero =
     input.image ?? input.products?.find((p) => p.image_url)?.image_url ?? null;
   const head = baseHead(

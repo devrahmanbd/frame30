@@ -424,6 +424,7 @@ function SearchPage() {
                     image={p.image ?? null}
                     fallbackSrc={p.image_url}
                     alt={p.title}
+                    seed={p.id}
                     sizes="(max-width: 768px) 50vw, 300px"
                     className="size-full object-cover"
                   />

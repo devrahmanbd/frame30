@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { decodeSource, type ResponsiveImage } from "@/lib/image-transform";
+import { ProductTileArt } from "@/components/store/ProductTileArt";
 
 /**
  * The signed variant URL carries the original source, so the raw retry works
@@ -29,6 +30,7 @@ export function StoreImage({
   className,
   priority = false,
   sizes,
+  seed,
 }: {
   image: ResponsiveImage | null | undefined;
   fallbackSrc?: string | null;
@@ -37,6 +39,11 @@ export function StoreImage({
   /** Above-the-fold hero: eager + high priority, everything else lazy. */
   priority?: boolean;
   sizes?: string;
+  /**
+   * Stable product key (id or slug) for the deterministic imageless tile.
+   * Falls back to `alt` so the tile stays stable even when omitted.
+   */
+  seed?: string | null;
 }) {
   const transformed = image?.src ?? null;
   const raw = fallbackSrc ?? originalOf(transformed);
@@ -58,12 +65,14 @@ export function StoreImage({
   const src =
     stage === "transformed" ? transformed : stage === "raw" ? raw : null;
   if (!src) {
+    // Imageless product: designed monogram tile, never an empty grey box.
+    // `className` carries the caller's sizing (e.g. `size-full`); the tile
+    // root already pins `h-full w-full` so it fills any square media frame.
     return (
-      <div
-        className={className}
-        role="presentation"
-        aria-hidden
-        data-placeholder="image"
+      <ProductTileArt
+        seed={seed ?? alt}
+        title={alt}
+        className={`h-full w-full ${className ?? ""}`}
       />
     );
   }

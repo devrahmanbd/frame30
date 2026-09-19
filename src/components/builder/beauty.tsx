@@ -42,6 +42,8 @@ import { StepFlow } from "./primitives/StepFlow";
 import { SwatchDot, type SwatchValue } from "./primitives/SwatchDot";
 import type { WidgetComponent } from "./widgets";
 
+import { useMomentEntrance } from "./moment-entrance";
+
 /* -------------------------------------------------------------- utilities */
 
 /** Inline bilingual fallback for built-in UI copy that is not merchant-authored. */
@@ -49,19 +51,114 @@ function t(locale: Locale, en: string, bn: string): string {
   return locale === "bn" ? bn : en;
 }
 
+/**
+ * Rupaboti vibrant redesign — voiced section shells.
+ *
+ * The old page read as a template because every section rendered the same
+ * `Panel` card (border, p-4, h-heading). Each voice below keeps the same
+ * props, copy and logic, but gives the section its own structural fingerprint:
+ * tool bands, inline proof strips, editorial dividers, one elevated commerce
+ * card, one slim loyalty band, one centered close. Voices alternate down the
+ * page so the hero → quiz → claims → grid metronome is broken.
+ *
+ * Token discipline: semantic utilities only (`bg-muted`, `bg-primary`,
+ * `border-border`, `rounded-fq-*`). The locked rupaboti tokens (ivory
+ * surface, deep ink, rose-clay brand, amber accent) flow through them —
+ * no raw colour is introduced here. Saturated accents stay under ~5% per
+ * viewport: the slim loyalty band plus primary buttons, nothing else.
+ */
+type Voice =
+  | "tool" // shade_finder — full-width tinted band, biggest display voice
+  | "tool-split" // skin_quiz — heading left, steps right on desktop
+  | "proof-inline" // claim_chips — borderless chip strip, quiet voice
+  | "proof-split" // before_after — borderless paired figures
+  | "sense" // texture_strip — hairline strip, right-aligned heading
+  | "commerce" // routine_builder — the ONE elevated card on the page
+  | "pick" // sample_picker — borderless pill picker
+  | "know" // ingredient_glossary — editorial dividers, no box
+  | "band" // loyalty_strip — slim primary band
+  | "close"; // consult_cta — the one intentional centered moment
+
+const VOICE_CLASS: Record<Voice, string> = {
+  tool: "rounded-fq-lg bg-muted p-5 sm:p-8",
+  "tool-split": "rounded-fq-lg bg-muted p-5 sm:p-8",
+  "proof-inline": "py-2",
+  "proof-split": "py-2",
+  sense: "border-y border-border py-6",
+  commerce:
+    "rounded-fq-lg border border-border bg-card p-5 shadow-fq-md sm:p-6",
+  pick: "py-2",
+  know: "py-2",
+  band: "rounded-full bg-primary px-5 py-3 text-primary-foreground",
+  close:
+    "mx-auto max-w-prose rounded-fq-lg border border-border bg-card p-5 text-center sm:p-8",
+};
+
+const VOICE_HEADING: Record<Voice, string> = {
+  tool: "mb-3 text-2xl font-bold tracking-tight sm:text-3xl",
+  "tool-split": "mb-2 text-xl font-bold tracking-tight sm:text-2xl",
+  "proof-inline": "mb-2 text-sm font-semibold",
+  "proof-split": "mb-3 text-xl font-bold tracking-tight",
+  sense: "mb-4 text-left text-lg font-bold tracking-tight sm:text-right",
+  commerce: "mb-3 text-2xl font-bold tracking-tight",
+  pick: "mb-2 text-lg font-bold tracking-tight",
+  know: "mb-3 text-lg font-bold tracking-tight",
+  band: "m-0 text-sm font-medium",
+  close: "mb-2 text-2xl font-bold tracking-tight",
+};
+
 function Panel({
   heading,
   Heading,
+  voice,
+  splitIntro,
   children,
 }: {
   heading?: string;
   Heading: "h1" | "h2";
+  /** Structural voice. Defaults to the legacy card for PDP widgets. */
+  voice?: Voice;
+  /** Intro column for the `tool-split` voice (heading renders above it). */
+  splitIntro?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  if (!voice) {
+    return (
+      <section className="rounded-fq-lg border border-border bg-card p-4">
+        {heading ? (
+          <Heading className="mb-3 text-base font-semibold">{heading}</Heading>
+        ) : null}
+        {children}
+      </section>
+    );
+  }
+  if (voice === "band") {
+    return (
+      <section className={VOICE_CLASS[voice]}>
+        {heading ? <p className={VOICE_HEADING[voice]}>{heading}</p> : null}
+        {children}
+      </section>
+    );
+  }
+  if (voice === "tool-split") {
+    return (
+      <section className={VOICE_CLASS[voice]}>
+        <div className="grid gap-6 md:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] md:gap-8">
+          <div className="min-w-0">
+            {heading ? (
+              <Heading className={VOICE_HEADING[voice]}>{heading}</Heading>
+            ) : null}
+            {splitIntro}
+          </div>
+          <div className="min-w-0">{children}</div>
+        </div>
+      </section>
+    );
+  }
   return (
-    <section className="rounded-fq-lg border border-border bg-card p-4">
+    <section className={VOICE_CLASS[voice]}>
       {heading ? (
-        <Heading className="mb-3 text-base font-semibold">{heading}</Heading>
+        <Heading className={VOICE_HEADING[voice]}>{heading}</Heading>
       ) : null}
       {children}
     </section>
@@ -164,67 +261,74 @@ const ShadeFinder: WidgetComponent = ({ str, data, locale, Heading }) => {
     return depthOk && toneOk;
   });
   const shown = matches.length ? matches : rows;
+  const moment = useMomentEntrance(true);
 
   return (
-    <Panel heading={str("heading")} Heading={Heading}>
-      <StepFlow
-        steps={steps}
-        state={state}
-        onAnswer={(step, value) =>
-          setState((current) => answerStep(current, step, value))
-        }
-        onBack={() => setState(goBack)}
-        onNext={() => setState((current) => goNext(current, steps))}
-        labels={{
-          back: t(locale, "Back", "পেছনে"),
-          next: t(locale, "Next", "পরবর্তী"),
-          finish: t(locale, "See shades", "শেড দেখুন"),
-          progress: str("heading") || t(locale, "Shade finder", "শেড ফাইন্ডার"),
-        }}
+    <Panel heading={str("heading")} Heading={Heading} voice="tool">
+      <div
+        ref={moment.ref as React.RefObject<HTMLDivElement | null>}
+        data-rupaboti-moment=""
       >
-        {data?.pending ? (
-          <Skeleton lines={2} />
-        ) : shown.length === 0 ? (
-          <p className="m-0 text-sm text-muted-foreground">
-            {str("emptyText")}
-          </p>
-        ) : (
-          <>
+        <StepFlow
+          steps={steps}
+          state={state}
+          onAnswer={(step, value) =>
+            setState((current) => answerStep(current, step, value))
+          }
+          onBack={() => setState(goBack)}
+          onNext={() => setState((current) => goNext(current, steps))}
+          labels={{
+            back: t(locale, "Back", "পেছনে"),
+            next: t(locale, "Next", "পরবর্তী"),
+            finish: t(locale, "See shades", "শেড দেখুন"),
+            progress:
+              str("heading") || t(locale, "Shade finder", "শেড ফাইন্ডার"),
+          }}
+        >
+          {data?.pending ? (
+            <Skeleton lines={2} />
+          ) : shown.length === 0 ? (
             <p className="m-0 text-sm text-muted-foreground">
-              {t(locale, "Recommended for you", "আপনার জন্য প্রস্তাবিত")}
+              {str("emptyText")}
             </p>
-            <ul
-              className="mt-3 m-0 flex list-none flex-wrap gap-2 p-0"
-              role="radiogroup"
-              aria-label={t(locale, "Recommended shades", "প্রস্তাবিত শেড")}
-            >
-              {shown.slice(0, 8).map((row) => (
-                <li key={row.id}>
-                  <SwatchDot
-                    value={rowSwatch(row)}
-                    label={`${row.title}${row.subtitle ? ` — ${row.subtitle}` : ""}`}
-                    disabled={row.inStock === false}
-                  />
-                </li>
-              ))}
-            </ul>
-            <div className="mt-3">
-              <SkinToneBackdrop
-                value={rowSwatch(shown[0]!)}
-                label={t(locale, "Swatch on skin", "ত্বকে শেড")}
-                toneLabels={toneLabels(locale)}
-              />
-            </div>
-            <button
-              type="button"
-              onClick={() => setState(emptyQuizState)}
-              className="mt-3 min-h-[44px] rounded-full border border-border px-4 text-sm"
-            >
-              {t(locale, "Start over", "আবার শুরু")}
-            </button>
-          </>
-        )}
-      </StepFlow>
+          ) : (
+            <>
+              <p className="m-0 text-sm text-muted-foreground">
+                {t(locale, "Shades that match your answers", "আপনার উত্তরের সাথে মানান শেড")}
+              </p>
+              <ul
+                className="mt-3 m-0 flex list-none flex-wrap gap-2 p-0"
+                role="radiogroup"
+                aria-label={t(locale, "Recommended shades", "প্রস্তাবিত শেড")}
+              >
+                {shown.slice(0, 8).map((row) => (
+                  <li key={row.id} data-rupaboti-swatch="">
+                    <SwatchDot
+                      value={rowSwatch(row)}
+                      label={`${row.title}${row.subtitle ? ` — ${row.subtitle}` : ""}`}
+                      disabled={row.inStock === false}
+                    />
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3">
+                <SkinToneBackdrop
+                  value={rowSwatch(shown[0]!)}
+                  label={t(locale, "Swatch on skin", "ত্বকে শেড")}
+                  toneLabels={toneLabels(locale)}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => setState(emptyQuizState)}
+                className="mt-3 min-h-[44px] rounded-full border border-border px-4 text-sm"
+              >
+                {t(locale, "Start over", "আবার শুরু")}
+              </button>
+            </>
+          )}
+        </StepFlow>
+      </div>
     </Panel>
   );
 };
@@ -279,10 +383,16 @@ const SkinQuiz: WidgetComponent = ({ str, locale, Heading }) => {
   const href = resultHref(str("resultPath") || "/search", state, mapping);
 
   return (
-    <Panel heading={str("heading")} Heading={Heading}>
-      {str("body") ? (
-        <p className="mb-3 text-sm text-muted-foreground">{str("body")}</p>
-      ) : null}
+    <Panel
+      heading={str("heading")}
+      Heading={Heading}
+      voice="tool-split"
+      splitIntro={
+        str("body") ? (
+          <p className="m-0 text-sm text-muted-foreground">{str("body")}</p>
+        ) : null
+      }
+    >
       <StepFlow
         steps={steps}
         state={state}
@@ -333,11 +443,11 @@ const RoutineBuilder: WidgetComponent = ({
   const rows = (data?.rows ?? []).slice(0, limit);
   const labels = {
     am: str("amLabel") || t(locale, "Morning", "সকাল"),
-    pm: str("pmLabel") || t(locale, "Night", "রাত"),
+    pm: str("pmLabel") || t(locale, "Evening", "সন্ধ্যা"),
   };
 
   return (
-    <Panel heading={str("heading")} Heading={Heading}>
+    <Panel heading={str("heading")} Heading={Heading} voice="commerce">
       <div role="tablist" aria-label={str("heading")} className="flex gap-2">
         {(["am", "pm"] as const).map((key) => (
           <button
@@ -468,12 +578,14 @@ const IngredientGlossary: WidgetComponent = ({ str, Heading }) => {
   const terms = repeated(str, "g", ["Term", "Body"], 6);
   if (terms.length === 0) return null;
   return (
-    <Panel heading={str("heading")} Heading={Heading}>
-      <div className="rounded-fq-md border border-border">
+    <Panel heading={str("heading")} Heading={Heading} voice="know">
+      <div className="border-t border-border">
         {terms.map((term) => (
-          <Disclosure key={term.key} summary={term.Term!}>
-            <p className="m-0 text-sm text-muted-foreground">{term.Body}</p>
-          </Disclosure>
+          <div key={term.key} className="border-b border-border">
+            <Disclosure summary={term.Term!}>
+              <p className="m-0 text-sm text-muted-foreground">{term.Body}</p>
+            </Disclosure>
+          </div>
         ))}
       </div>
     </Panel>
@@ -486,7 +598,7 @@ const ClaimChips: WidgetComponent = ({ str, Heading }) => {
   const claims = repeated(str, "c", ["Label", "Source"], 6);
   if (claims.length === 0) return null;
   return (
-    <Panel heading={str("heading")} Heading={Heading}>
+    <Panel heading={str("heading")} Heading={Heading} voice="proof-inline">
       <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
         {claims.map((claim) => (
           <li key={claim.key}>
@@ -521,7 +633,7 @@ const BeforeAfter: WidgetComponent = ({ str, Heading, locale }) => {
   const disclaimer = str("disclaimer").trim();
   if (!before || !after || !disclaimer) return null;
   return (
-    <Panel heading={str("heading")} Heading={Heading}>
+    <Panel heading={str("heading")} Heading={Heading} voice="proof-split">
       <div className="grid gap-2 sm:grid-cols-2">
         <figure className="m-0">
           <MediaFrame
@@ -624,10 +736,10 @@ const TextureStrip: WidgetComponent = ({ str, Heading }) => {
   const tiles = repeated(str, "t", ["Image", "Label", "Alt"], 4);
   if (tiles.length === 0) return null;
   return (
-    <Panel heading={str("heading")} Heading={Heading}>
+    <Panel heading={str("heading")} Heading={Heading} voice="sense">
       <ul className="m-0 grid list-none grid-cols-2 gap-3 p-0 sm:grid-cols-4">
         {tiles.map((tile) => (
-          <li key={tile.key} className="min-w-0">
+          <li key={tile.key} className="min-w-0 text-center">
             <MediaFrame
               src={tile.Image}
               alt={tile.Alt || tile.Label || ""}
@@ -826,7 +938,7 @@ const SamplePicker: WidgetComponent = ({
   const threshold = data?.rows?.[0]?.compareAtMinor;
   if (rows.length === 0) return null;
   return (
-    <Panel heading={str("heading")} Heading={Heading}>
+    <Panel heading={str("heading")} Heading={Heading} voice="pick">
       {typeof threshold === "number" ? (
         <p className="m-0 text-sm text-muted-foreground">
           {str("thresholdText") ||
@@ -872,11 +984,11 @@ const ConsultCta: WidgetComponent = ({ section, str, locale, Heading }) => {
   const phone = str("phone").trim();
 
   return (
-    <Panel heading={str("heading")} Heading={Heading}>
+    <Panel heading={str("heading")} Heading={Heading} voice="close">
       {str("body") ? (
         <p className="m-0 text-sm text-muted-foreground">{str("body")}</p>
       ) : null}
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-3 flex flex-wrap justify-center gap-2">
         {whatsapp ? (
           <a
             href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, "")}`}
@@ -901,7 +1013,7 @@ const ConsultCta: WidgetComponent = ({ section, str, locale, Heading }) => {
         </p>
       ) : (
         <form
-          className="mt-3 space-y-2"
+          className="mt-3 space-y-2 text-left"
           onSubmit={(event) => {
             event.preventDefault();
             setSent(true);
@@ -946,7 +1058,13 @@ const ConsultCta: WidgetComponent = ({ section, str, locale, Heading }) => {
 /* -------------------------------------------------------------- loyalty_strip */
 
 /** Points are valued by the server; the widget prints what it is handed. */
-const LoyaltyStrip: WidgetComponent = ({ str, data, locale, money }) => {
+const LoyaltyStrip: WidgetComponent = ({
+  str,
+  data,
+  locale,
+  money,
+  Heading,
+}) => {
   const row = data?.rows?.[0];
   const points = row?.count;
   const label =
@@ -955,17 +1073,19 @@ const LoyaltyStrip: WidgetComponent = ({ str, data, locale, money }) => {
   if (typeof points !== "number" && typeof row?.priceMinor !== "number")
     return null;
   return (
-    <p className="m-0 flex flex-wrap items-center justify-between gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm">
-      <span>{label}</span>
-      <span className="tabular-nums">
-        {typeof points === "number" ? points : null}
-        {typeof row?.priceMinor === "number" ? (
-          <span className="ms-2 text-muted-foreground">
-            {money(row.priceMinor, row.currency)}
-          </span>
-        ) : null}
-      </span>
-    </p>
+    <Panel Heading={Heading} voice="band">
+      <p className="m-0 flex flex-wrap items-center justify-between gap-2 text-sm">
+        <span>{label}</span>
+        <span className="tabular-nums">
+          {typeof points === "number" ? points : null}
+          {typeof row?.priceMinor === "number" ? (
+            <span className="ms-2 opacity-80">
+              {money(row.priceMinor, row.currency)}
+            </span>
+          ) : null}
+        </span>
+      </p>
+    </Panel>
   );
 };
 
