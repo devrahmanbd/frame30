@@ -59,7 +59,9 @@ function translate(message: string): CheckoutError {
 }
 
 /**
- * Reserve stock for a checkout token. Idempotent: re-acquiring replaces prior holds.
+ * Reserve stock for a checkout token. Reserves converge to the wanted
+ * quantities by signed delta, so overlapping re-quotes can neither
+ * double-take nor wipe stock — a re-acquire with identical lines is a no-op.
  *
  * NOTE (Sept 2026): the `stock_hold_*` RPCs in the live database were written
  * against a `stock_holds.lines jsonb` shape that does not exist there — the
@@ -67,8 +69,8 @@ function translate(message: string): CheckoutError {
  * (checkout_token, merchant_id, variant_id, quantity, expires_at,
  * consumed_at, released_at, order_id) — and DDL repair is blocked (not table
  * owner), so holds are managed here with the service-role client instead.
- * Reserves are serialized per merchant (not per token) so the
- * read-modify-write below cannot oversell under concurrency.
+ * Reserves are serialized per merchant (not per token) so concurrent
+ * checkouts cannot oversell the same variant.
  */
 export async function reserveStock(
   merchantId: string,
@@ -83,127 +85,136 @@ export async function reserveStock(
     10_000,
     async () => {
       const started = Date.now();
+      const fail = (message: string): never => {
+        observe("framique_checkout_reserve_ms", Date.now() - started);
+        incr("framique_checkout_reserve_total", { outcome: "rejected" });
+        log("warn", "checkout.reserve_rejected", {
+          merchantId,
+          reason: message.slice(0, 160),
+        });
+        throw translate(message);
+      };
       const { supabaseAdmin } =
         await import("@/integrations/supabase/client.server");
-      const wanted = lines.filter((l) => l.quantity > 0);
-      if (wanted.length === 0) throw translate("stock_hold.variant_not_found");
+      const wanted = new Map<string, number>();
+      for (const l of lines) {
+        const q = Math.max(1, Math.floor(l.quantity));
+        wanted.set(l.variantId, Math.max(wanted.get(l.variantId) ?? 0, q));
+      }
+      if (wanted.size === 0) fail("stock_hold.variant_not_found");
+      const variantIds = [...wanted.keys()];
 
-      // Restore + drop any prior unconsumed holds for this token first, so a
-      // re-quote never double-takes stock.
-      const { data: prior } = await supabaseAdmin
+      // Live (unconsumed, unreleased) holds for this token.
+      const { data: heldRows } = await supabaseAdmin
         .from("stock_holds")
         .select("variant_id, quantity")
         .eq("checkout_token", checkoutToken)
-        .is("consumed_at", null);
-      for (const h of prior ?? []) {
-        const cur = await supabaseAdmin
+        .is("consumed_at", null)
+        .is("released_at", null);
+      const held = new Map<string, number>(
+        ((heldRows ?? []) as { variant_id: string; quantity: number }[]).map(
+          (h) => [h.variant_id, Number(h.quantity ?? 0)],
+        ),
+      );
+
+      // Release holds for variants no longer wanted.
+      for (const [variantId, qty] of held) {
+        if (wanted.has(variantId) || qty <= 0) continue;
+        const { data: cur } = await supabaseAdmin
           .from("product_variants")
           .select("stock_quantity")
-          .eq("id", (h as { variant_id: string }).variant_id)
+          .eq("id", variantId)
           .maybeSingle();
-        const qty = Number((cur as unknown as { stock_quantity: number } | null)?.stock_quantity ?? 0);
+        const stock = Number(
+          (cur as unknown as { stock_quantity: number } | null)
+            ?.stock_quantity ?? 0,
+        );
         await supabaseAdmin
           .from("product_variants")
-          .update({
-            stock_quantity:
-              qty + Number((h as { quantity: number }).quantity ?? 0),
-          })
-          .eq("id", (h as { variant_id: string }).variant_id);
-      }
-      await supabaseAdmin
-        .from("stock_holds")
-        .delete()
-        .eq("checkout_token", checkoutToken)
-        .is("consumed_at", null);
-
-      // Take stock line by line; on any shortfall restore what was taken.
-      const taken: { variantId: string; quantity: number }[] = [];
-      try {
-        for (const line of wanted) {
-          const { data: v } = await supabaseAdmin
-            .from("product_variants")
-            .select("id, stock_quantity, merchant_id")
-            .eq("id", line.variantId)
-            .maybeSingle();
-          const row = v as {
-            id: string;
-            stock_quantity: number;
-            merchant_id: string;
-          } | null;
-          if (!row || row.merchant_id !== merchantId) {
-            throw new Error(`stock_hold.variant_not_found: ${line.variantId}`);
-          }
-          const quantity = Math.max(1, Math.floor(line.quantity));
-          if (Number(row.stock_quantity) < quantity) {
-            throw new Error(`stock_hold.insufficient: ${line.variantId}`);
-          }
-          const { error: takeError } = await supabaseAdmin
-            .from("product_variants")
-            .update({ stock_quantity: Number(row.stock_quantity) - quantity })
-            .eq("id", line.variantId);
-          if (takeError) throw new Error(`stock_hold.insufficient: ${line.variantId}`);
-          taken.push({ variantId: line.variantId, quantity });
-        }
-      } catch (err) {
-        for (const t of taken) {
-          const { data: cur } = await supabaseAdmin
-            .from("product_variants")
-            .select("stock_quantity")
-            .eq("id", t.variantId)
-            .maybeSingle();
-          const qty = Number(
-            (cur as unknown as { stock_quantity: number } | null)?.stock_quantity ?? 0,
-          );
-          await supabaseAdmin
-            .from("product_variants")
-            .update({ stock_quantity: qty + t.quantity })
-            .eq("id", t.variantId);
-        }
-        observe("framique_checkout_reserve_ms", Date.now() - started);
-        incr("framique_checkout_reserve_total", { outcome: "rejected" });
-        log("warn", "checkout.reserve_rejected", {
-          merchantId,
-          reason: String((err as Error)?.message ?? err).slice(0, 160),
-        });
-        throw translate(String((err as Error)?.message ?? err));
+          .update({ stock_quantity: stock + qty })
+          .eq("id", variantId);
+        await supabaseAdmin
+          .from("stock_holds")
+          .delete()
+          .eq("checkout_token", checkoutToken)
+          .eq("variant_id", variantId)
+          .is("consumed_at", null);
       }
 
+      // Converge each wanted line by signed delta. Never below zero.
       const expiresAt = new Date(
         Date.now() + HOLD_TTL_SECONDS * 1000,
       ).toISOString();
-      const { error: holdError } = await supabaseAdmin
-        .from("stock_holds")
-        .insert(
-          taken.map((t) => ({
-            checkout_token: checkoutToken,
-            merchant_id: merchantId,
-            variant_id: t.variantId,
-            quantity: t.quantity,
-            expires_at: expiresAt,
-          })),
-        );
-      if (holdError) {
-        for (const t of taken) {
-          const { data: cur } = await supabaseAdmin
-            .from("product_variants")
-            .select("stock_quantity")
-            .eq("id", t.variantId)
-            .maybeSingle();
-          const qty = Number(
-            (cur as unknown as { stock_quantity: number } | null)?.stock_quantity ?? 0,
-          );
+      for (const [variantId, qty] of wanted) {
+        const delta = qty - (held.get(variantId) ?? 0);
+        if (delta === 0) {
           await supabaseAdmin
-            .from("product_variants")
-            .update({ stock_quantity: qty + t.quantity })
-            .eq("id", t.variantId);
+            .from("stock_holds")
+            .update({ expires_at: expiresAt })
+            .eq("checkout_token", checkoutToken)
+            .eq("variant_id", variantId)
+            .is("consumed_at", null);
+          continue;
         }
-        observe("framique_checkout_reserve_ms", Date.now() - started);
-        incr("framique_checkout_reserve_total", { outcome: "rejected" });
-        log("warn", "checkout.reserve_rejected", {
-          merchantId,
-          reason: holdError.message,
-        });
-        throw translate(holdError.message);
+        const { data: v } = await supabaseAdmin
+          .from("product_variants")
+          .select("id, stock_quantity, merchant_id")
+          .eq("id", variantId)
+          .maybeSingle();
+        const row = v as unknown as {
+          id: string;
+          stock_quantity: number;
+          merchant_id: string;
+        } | null;
+        if (!row || row.merchant_id !== merchantId) {
+          fail(`stock_hold.variant_not_found: ${variantId}`);
+        }
+        const stock = Number(
+          (row as { stock_quantity: number }).stock_quantity,
+        );
+        if (delta > 0 && stock < delta) {
+          fail(`stock_hold.insufficient: ${variantId}`);
+        }
+        const { error: takeError } = await supabaseAdmin
+          .from("product_variants")
+          .update({ stock_quantity: Math.max(0, stock - delta) })
+          .eq("id", variantId);
+        if (takeError) fail(takeError.message);
+        if (held.has(variantId)) {
+          await supabaseAdmin
+            .from("stock_holds")
+            .update({ quantity: qty, expires_at: expiresAt })
+            .eq("checkout_token", checkoutToken)
+            .eq("variant_id", variantId)
+            .is("consumed_at", null);
+        } else {
+          const { error: holdError } = await supabaseAdmin
+            .from("stock_holds")
+            .insert({
+              checkout_token: checkoutToken,
+              merchant_id: merchantId,
+              variant_id: variantId,
+              quantity: qty,
+              expires_at: expiresAt,
+            });
+          if (holdError) {
+            // Roll back this line's take; the shopper sees a retryable error.
+            const { data: cur } = await supabaseAdmin
+              .from("product_variants")
+              .select("stock_quantity")
+              .eq("id", variantId)
+              .maybeSingle();
+            const curStock = Number(
+              (cur as unknown as { stock_quantity: number } | null)
+                ?.stock_quantity ?? 0,
+            );
+            await supabaseAdmin
+              .from("product_variants")
+              .update({ stock_quantity: curStock - delta })
+              .eq("id", variantId);
+            fail(holdError.message);
+          }
+        }
       }
       observe("framique_checkout_reserve_ms", Date.now() - started);
       incr("framique_checkout_reserve_total", { outcome: "held" });
