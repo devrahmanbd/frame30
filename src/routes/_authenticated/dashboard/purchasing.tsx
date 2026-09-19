@@ -478,7 +478,11 @@ function PurchasingPage() {
           );
         })}
         {data.isLoading ? (
-          <p className="text-sm text-muted-foreground">Loading…</p>
+          <div
+            className="h-24 animate-pulse rounded-fq-md bg-muted/40"
+            aria-busy="true"
+            aria-label="Loading"
+          />
         ) : null}
         {!data.isLoading && !(data.data?.purchaseOrders ?? []).length ? (
           <p className="text-sm text-muted-foreground">

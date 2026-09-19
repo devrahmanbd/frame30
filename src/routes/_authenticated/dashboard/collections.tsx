@@ -207,7 +207,14 @@ function CollectionsPage() {
             Collections
           </h2>
           {isLoading ? (
-            <p className="p-3 text-sm text-muted-foreground">Loading…</p>
+            <div className="space-y-2 p-3" aria-busy="true" aria-label="Loading">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="h-10 animate-pulse rounded-fq-md bg-muted/40"
+                />
+              ))}
+            </div>
           ) : !collections?.length ? (
             <p className="p-3 text-sm text-muted-foreground">
               No collections yet.

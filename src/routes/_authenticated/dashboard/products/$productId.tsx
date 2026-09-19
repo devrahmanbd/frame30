@@ -74,7 +74,12 @@ function EditProduct() {
   });
 
   if (isLoading || !merchant || !data)
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return (
+      <div className="space-y-4" aria-busy="true" aria-label="Loading">
+        <div className="h-8 w-56 animate-pulse rounded-fq-md bg-muted/50" />
+        <div className="h-80 animate-pulse rounded-fq-lg border border-border bg-muted/40" />
+      </div>
+    );
 
   const p = data.product;
   const draft: ProductDraft = {

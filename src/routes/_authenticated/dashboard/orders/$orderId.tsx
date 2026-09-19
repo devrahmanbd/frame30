@@ -154,7 +154,12 @@ function OrderDetailPage() {
   });
 
   if (isLoading)
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return (
+      <div className="space-y-4" aria-busy="true" aria-label="Loading">
+        <div className="h-8 w-48 animate-pulse rounded-fq-md bg-muted/50" />
+        <div className="h-72 animate-pulse rounded-fq-lg border border-border bg-muted/40" />
+      </div>
+    );
   if (error)
     return (
       <p role="alert" className="text-sm text-danger-foreground">

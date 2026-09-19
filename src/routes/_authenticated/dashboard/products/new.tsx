@@ -58,7 +58,12 @@ function NewProduct() {
   });
 
   if (!merchant)
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return (
+      <div className="space-y-4" aria-busy="true" aria-label="Loading">
+        <div className="h-8 w-48 animate-pulse rounded-fq-md bg-muted/50" />
+        <div className="h-64 animate-pulse rounded-fq-lg border border-border bg-muted/40" />
+      </div>
+    );
 
   return (
     <div className="space-y-5">
