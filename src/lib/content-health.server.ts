@@ -221,7 +221,7 @@ export async function loadContentGraph(
         .eq("merchant_id", merchantId)
         .limit(20_000),
       loose
-        .from("custom_domains")
+        .from("merchant_domains")
         .select("hostname, status")
         .eq("merchant_id", merchantId)
         .limit(20),
