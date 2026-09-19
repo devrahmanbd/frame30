@@ -47,7 +47,21 @@ export function mergePublicVariants<
 export async function fetchPublicVariants(
   productIds: string[],
 ): Promise<PublicVariant[]> {
-  if (productIds.length === 0) return [];
+  return fetchPublicVariantsBy("product_id", productIds);
+}
+
+/** Same rows by variant id (cart/checkout lines reference variants). */
+export async function fetchPublicVariantsById(
+  variantIds: string[],
+): Promise<PublicVariant[]> {
+  return fetchPublicVariantsBy("id", variantIds);
+}
+
+async function fetchPublicVariantsBy(
+  column: "product_id" | "id",
+  values: string[],
+): Promise<PublicVariant[]> {
+  if (values.length === 0) return [];
   try {
     const { supabaseAdmin } =
       await import("@/integrations/supabase/client.server");
@@ -56,7 +70,7 @@ export async function fetchPublicVariants(
       .select(
         "product_id, id, name, sku, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity",
       )
-      .in("product_id", productIds);
+      .in(column, values);
     if (error || !data) return [];
     return data as PublicVariant[];
   } catch {

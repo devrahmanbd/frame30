@@ -123,8 +123,8 @@ export async function priceCart(
   // Resolve through the service-role helper the storefront loaders use.
   // Exposure matches the intended public policy: a line survives only when
   // its product is active and owned by this merchant.
-  const { fetchPublicVariants } = await import("./storefront.server");
-  const fetched = await fetchPublicVariants(ids);
+  const { fetchPublicVariantsById } = await import("./storefront.server");
+  const fetched = await fetchPublicVariantsById(ids);
   const parentIds = [...new Set(fetched.map((r) => r.product_id))];
   const { data: parentProducts } = await db
     .from("products")
