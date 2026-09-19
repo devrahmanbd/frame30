@@ -33,6 +33,7 @@ import { CART_WIDGETS } from "./cart";
 import { MERCH_WIDGETS, cardVariantOf } from "./merch";
 import { APPAREL_WIDGETS } from "./apparel";
 import { BEAUTY_WIDGETS } from "./beauty";
+import { BEAUTY_HOME_WIDGETS } from "./beauty-home";
 import { CIRCUIT_WIDGETS } from "./electronics";
 import { BASIC_WIDGETS } from "./basics";
 import { BLOG_WIDGETS } from "./blog";
@@ -1251,4 +1252,6 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   // Phase 2.7 — Circuit (electronics), including the upgraded spec table.
   ...CIRCUIT_WIDGETS,
   ...BEAUTY_WIDGETS,
+  // Rupaboti homepage gap set: badges, packs and taxonomy rails.
+  ...BEAUTY_HOME_WIDGETS,
 };

@@ -120,6 +120,7 @@ export type SectionType =
   | "quick_view"
   | "bundle_offer"
   // Phase 2.1 chrome widgets.
+  | "subbrand_bar"
   | "announcement_bar"
   | "utility_bar"
   | "trust_bar"
@@ -209,6 +210,11 @@ export type SectionType =
   | "sample_picker"
   | "consult_cta"
   | "loyalty_strip"
+  // Phase 2.8 — Rupaboti homepage gap widgets (beauty-home.tsx).
+  | "discount_badge"
+  | "combo_card"
+  | "concern_rail"
+  | "ingredient_rail"
   // Phase 7 — layout primitives (Elementor-grade basics).
   | "button"
   | "icon"
@@ -1254,6 +1260,41 @@ const BASE_CATALOG: CatalogEntry[] = [
   },
 
   /* ---------------------------- Phase 2.1 — chrome widgets ----------------- */
+  {
+    type: "subbrand_bar",
+    label: "Sub-brand bar",
+    group: "engagement",
+    slots: ["header"],
+    heading: false,
+    defaults: {
+      activeBrand: "Aarong",
+      tagline: "A Social Enterprise",
+      b1Name: "Aarong",
+      b1Href: "/",
+      b2Name: "Taaga",
+      b2Href: "/collections/taaga",
+      b3Name: "Taaga Man",
+      b3Href: "/collections/taaga-man",
+      b4Name: "Herstory",
+      b4Href: "/collections/herstory",
+      b5Name: "Grassroots",
+      b5Href: "/pages/grassroots",
+    },
+    fields: [
+      text("activeBrand", "Active brand", 40),
+      text("tagline", "Tagline", 60),
+      text("b1Name", "Brand 1 name", 40),
+      url("b1Href", "Brand 1 link"),
+      text("b2Name", "Brand 2 name", 40),
+      url("b2Href", "Brand 2 link"),
+      text("b3Name", "Brand 3 name", 40),
+      url("b3Href", "Brand 3 link"),
+      text("b4Name", "Brand 4 name", 40),
+      url("b4Href", "Brand 4 link"),
+      text("b5Name", "Brand 5 name", 40),
+      url("b5Href", "Brand 5 link"),
+    ],
+  },
   {
     type: "announcement_bar",
     label: "Announcement bar",
@@ -3391,6 +3432,114 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [text("label", "Label", 80), text("handle", "Product handle", 120)],
   },
+  {
+    // Display-only badge: the TK saving next to the percent ProductCard shows.
+    type: "discount_badge",
+    label: "Discount badge",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      label: "",
+      priceMinor: 80000,
+      compareAtMinor: 100000,
+    },
+    fields: [
+      text("label", "Prefix label", 40),
+      num("priceMinor", "Price (minor units)"),
+      num("compareAtMinor", "Was price (minor units)"),
+    ],
+  },
+  {
+    // Fixed pack quoted by the server; the CTA needs variant IDs to work.
+    type: "combo_card",
+    label: "Combo card",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Combo pack",
+      body: "",
+      buttonLabel: "Add combo to cart",
+      note: "",
+      collection: "",
+      limit: 3,
+      i1VariantId: "",
+      i2VariantId: "",
+      i3VariantId: "",
+      i4VariantId: "",
+    },
+    fields: [
+      text("heading", "Heading"),
+      area("body", "Body", 300),
+      text("buttonLabel", "Button label", 40),
+      text("note", "Note", 200),
+      text("collection", "Pack collection handle", 120),
+      num("limit", "Items shown (2-6)"),
+      text("i1VariantId", "Item 1 variant ID", 80),
+      text("i2VariantId", "Item 2 variant ID", 80),
+      text("i3VariantId", "Item 3 variant ID", 80),
+      text("i4VariantId", "Item 4 variant ID", 80),
+    ],
+  },
+  {
+    // Rail filtered to concern taxonomy terms with bilingual chips.
+    type: "concern_rail",
+    label: "Concern rail",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Shop by concern",
+      terms: "acne,dark-spots,dryness",
+      collection: "",
+      limit: 12,
+      cardVariant: "compact",
+      showRating: false,
+    },
+    fields: [
+      text("heading", "Heading"),
+      text("terms", "Concern slugs (comma separated)", 200),
+      text("collection", "Collection handle", 120),
+      bool("showRating", "Show rating"),
+      CARD_VARIANT,
+    ],
+  },
+  {
+    // Rail grouped by key ingredients; names stay Latin with a Bangla gloss.
+    type: "ingredient_rail",
+    label: "Ingredient rail",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Shop by ingredient",
+      i1Name: "Niacinamide",
+      i1Gloss: "",
+      i2Name: "",
+      i2Gloss: "",
+      i3Name: "",
+      i3Gloss: "",
+      i4Name: "",
+      i4Gloss: "",
+      collection: "",
+      limit: 12,
+      cardVariant: "compact",
+    },
+    fields: [
+      text("heading", "Heading"),
+      text("i1Name", "Ingredient 1 (Latin)", 80),
+      text("i1Gloss", "Ingredient 1 gloss", 120),
+      text("i2Name", "Ingredient 2 (Latin)", 80),
+      text("i2Gloss", "Ingredient 2 gloss", 120),
+      text("i3Name", "Ingredient 3 (Latin)", 80),
+      text("i3Gloss", "Ingredient 3 gloss", 120),
+      text("i4Name", "Ingredient 4 (Latin)", 80),
+      text("i4Gloss", "Ingredient 4 gloss", 120),
+      text("collection", "Collection handle", 120),
+      CARD_VARIANT,
+    ],
+  },
 
   /* ------------------------------------- Phase 7 — layout primitive pack.
    * Elementor-grade basics. Without these a merchant can only assemble
@@ -3948,6 +4097,14 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
     "i3Label",
     "i4Label",
   ],
+  subbrand_bar: [
+    "tagline",
+    "b1Name",
+    "b2Name",
+    "b3Name",
+    "b4Name",
+    "b5Name",
+  ],
   announcement_bar: ["m1", "m2", "m3"],
   utility_bar: ["note", "l1Label", "l2Label", "l3Label"],
   trust_bar: [
@@ -4251,6 +4408,10 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
     "consentText",
   ],
   loyalty_strip: ["label"],
+  discount_badge: ["label"],
+  combo_card: ["heading", "body", "buttonLabel", "note"],
+  concern_rail: ["heading"],
+  ingredient_rail: ["heading"],
   // Phase 7 — layout primitive pack.
   button: ["label"],
   icon: ["label"],

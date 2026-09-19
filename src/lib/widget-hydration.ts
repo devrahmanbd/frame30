@@ -40,6 +40,9 @@ const STATIC: ReadonlySet<string> = new Set([
   "spec_table",
   "page_content",
   "hero",
+  "subbrand_bar",
+  // Markup-only: the badge prints two server-valued prices, no state.
+  "discount_badge",
 ]);
 
 /** Above-the-fold or buy-path widgets: correctness beats byte savings. */

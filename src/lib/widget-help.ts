@@ -156,6 +156,10 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
     en: "A discounted bundle of this product with companions.",
     bn: "এই প্রোডাক্টের সাথে ছাড়যুক্ত বান্ডল অফার।",
   },
+  subbrand_bar: {
+    en: "Top navigation strip across sister brands and sub-labels.",
+    bn: "সহযোগী ব্র্যান্ড ও সাব-লেবেলের মধ্যে নেভিগেশন করার জন্য শীর্ষ স্ট্রিপ।",
+  },
   announcement_bar: {
     en: "A thin site-wide message strip, optionally dismissible and rotating.",
     bn: "সাইট-জুড়ে সরু বার্তা স্ট্রিপ — বন্ধ করা ও রোটেট করা যায়।",
@@ -483,6 +487,22 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
   loyalty_strip: {
     en: "Points balance and the reward the shopper is close to.",
     bn: "পয়েন্ট ব্যালান্স ও কাছাকাছি থাকা রিওয়ার্ড।",
+  },
+  discount_badge: {
+    en: "The taka saving next to the percent-off on a deal.",
+    bn: "ছাড়ের শতাংশের পাশে টাকায় সাশ্রয়।",
+  },
+  combo_card: {
+    en: "A fixed pack of products with one server-priced combo button.",
+    bn: "নির্দিষ্ট পণ্যের প্যাক — একটি সার্ভার-মূল্যের কম্বো বাটন সহ।",
+  },
+  concern_rail: {
+    en: "A product rail filtered by skin concerns, with bilingual chips.",
+    bn: "ত্বকের সমস্যা অনুযায়ী ফিল্টার করা প্রোডাক্ট রেল — দ্বিভাষিক চিপ সহ।",
+  },
+  ingredient_rail: {
+    en: "A product rail grouped by key ingredients, named in Latin.",
+    bn: "মূল উপাদান অনুযায়ী প্রোডাক্ট রেল — নাম লাতিন ভাষায়।",
   },
   // Phase 7 — layout primitives.
   button: {
@@ -958,6 +978,13 @@ export const PROP_HINT_PATTERNS: { test: RegExp; hint: BiText }[] = [
     hint: {
       en: "Measurement cell, in centimetres. Leave blank to hide the row.",
       bn: "মাপের ঘর (সেন্টিমিটার)। খালি রাখলে সারি লুকাবে।",
+    },
+  },
+  {
+    test: /Minor$/,
+    hint: {
+      en: "Money in minor units (poisha). The theme formats it — never type decimals or currency symbols.",
+      bn: "ক্ষুদ্র এককে মূল্য (পয়সা)। থিম নিজে ফরম্যাট করে — দশমিক বা মুদ্রা চিহ্ন লিখবেন না।",
     },
   },
 ];

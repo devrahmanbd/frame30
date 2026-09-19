@@ -799,6 +799,55 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     seo: { heading: false },
   },
   consult_cta: { seo: { heading: false } },
+  discount_badge: { seo: { heading: false } },
+  combo_card: {
+    data: {
+      source: "collection",
+      params: [
+        { key: "limit", label: "Items", kind: "number", panel: "content" },
+        {
+          key: "collection",
+          label: "Pack collection handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
+    },
+    skeleton: true,
+    seo: { heading: true },
+  },
+  concern_rail: {
+    data: {
+      source: "collection",
+      params: [
+        { key: "limit", label: "Max products", kind: "number", panel: "content" },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
+    },
+    skeleton: true,
+    seo: { jsonLd: "ItemList", heading: false },
+  },
+  ingredient_rail: {
+    data: {
+      source: "collection",
+      params: [
+        { key: "limit", label: "Max products", kind: "number", panel: "content" },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
+      ],
+    },
+    skeleton: true,
+    seo: { jsonLd: "ItemList", heading: false },
+  },
   loyalty_strip: {
     data: {
       source: "product",
