@@ -6,7 +6,53 @@
  * nothing here knows about selection, drag state or the panels.
  */
 import type { CSSProperties } from "react";
-import * as Icons from "lucide-react";
+// NOTE (perf batch 2): named imports only — the previous `import * as Icons`
+// with a dynamic registry key defeated tree-shaking and pulled all of
+// lucide-react (~1.1MB) into the builder chunk. The set below covers every
+// icon the studio catalogue and the icon widget can produce; anything else
+// falls back to Star (same as before).
+import {
+  AlignLeft,
+  Anchor,
+  BadgeCheck,
+  Blocks,
+  Check,
+  ChevronDown,
+  ChevronsUpDown,
+  Clock,
+  Code,
+  GalleryHorizontal,
+  GalleryVerticalEnd,
+  Gauge,
+  Hash,
+  Heading,
+  Heart,
+  Image,
+  Images,
+  LayoutGrid,
+  List,
+  Mail,
+  MapPin,
+  Minus,
+  MousePointerClick,
+  MoveVertical,
+  PanelTop,
+  Phone,
+  Quote,
+  Rows3,
+  Search,
+  Share2,
+  Shield,
+  ShoppingCart,
+  Spline,
+  Square,
+  Star,
+  TextCursorInput,
+  TriangleAlert,
+  Truck,
+  Type,
+  Video,
+} from "lucide-react";
 import { HtmlSandbox } from "@/components/builder/HtmlSandbox";
 import type { NodeSettings, StudioNode } from "@/lib/studio/model";
 import {
@@ -15,6 +61,53 @@ import {
   type Maybe,
 } from "@/lib/studio/responsive";
 import { cn } from "@/lib/utils";
+
+const ICON_REGISTRY: Record<
+  string,
+  React.ComponentType<{ className?: string; size?: number }>
+> = {
+  alignleft: AlignLeft,
+  anchor: Anchor,
+  badgecheck: BadgeCheck,
+  blocks: Blocks,
+  check: Check,
+  chevrondown: ChevronDown,
+  chevronsupdown: ChevronsUpDown,
+  clock: Clock,
+  code: Code,
+  galleryhorizontal: GalleryHorizontal,
+  galleryverticalend: GalleryVerticalEnd,
+  gauge: Gauge,
+  hash: Hash,
+  heading: Heading,
+  heart: Heart,
+  image: Image,
+  images: Images,
+  layoutgrid: LayoutGrid,
+  list: List,
+  mail: Mail,
+  mappin: MapPin,
+  minus: Minus,
+  mousepointerclick: MousePointerClick,
+  movevertical: MoveVertical,
+  paneltop: PanelTop,
+  phone: Phone,
+  quote: Quote,
+  rows3: Rows3,
+  search: Search,
+  share2: Share2,
+  shield: Shield,
+  shoppingcart: ShoppingCart,
+  cart: ShoppingCart,
+  spline: Spline,
+  square: Square,
+  star: Star,
+  textcursorinput: TextCursorInput,
+  trianglealert: TriangleAlert,
+  truck: Truck,
+  type: Type,
+  video: Video,
+};
 
 export function LucideIcon({
   name,
@@ -25,12 +118,11 @@ export function LucideIcon({
   className?: string;
   size?: number;
 }) {
-  const key = typeof name === "string" && name ? name : "Star";
-  const registry = Icons as unknown as Record<
-    string,
-    React.ComponentType<{ className?: string; size?: number }>
-  >;
-  const Cmp = registry[key] ?? Icons.Star;
+  const key =
+    typeof name === "string" && name
+      ? name.toLowerCase().replace(/[^a-z0-9]/g, "")
+      : "star";
+  const Cmp = ICON_REGISTRY[key] ?? Star;
   return <Cmp className={className} size={size} aria-hidden />;
 }
 
@@ -247,7 +339,7 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             <details key={index} open={index === 0} className="group px-4 py-3">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-medium">
                 {typeof item.title === "string" ? item.title : "Item"}
-                <Icons.ChevronDown
+                <ChevronDown
                   className="size-4 shrink-0 transition-transform group-open:rotate-180"
                   aria-hidden
                 />
@@ -511,7 +603,7 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
           aria-label={`${value} out of ${max}`}
         >
           {Array.from({ length: max }).map((_, index) => (
-            <Icons.Star
+            <Star
               key={index}
               size={18}
               aria-hidden

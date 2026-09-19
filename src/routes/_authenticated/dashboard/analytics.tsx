@@ -1,8 +1,34 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Traffic } from "@/components/admin/analytics/Traffic";
-import { Insights } from "@/components/admin/analytics/Insights";
-import { Reports } from "@/components/admin/analytics/Reports";
-import { ActivityLog } from "@/components/admin/analytics/ActivityLog";
+import { Suspense, lazy } from "react";
+// Tab panels load on demand: each pulls its own data + chart deps, so the
+// analytics route shell paints without waiting for all four (perf batch 2).
+const Traffic = lazy(() =>
+  import("@/components/admin/analytics/Traffic").then((m) => ({
+    default: m.Traffic,
+  })),
+);
+const Insights = lazy(() =>
+  import("@/components/admin/analytics/Insights").then((m) => ({
+    default: m.Insights,
+  })),
+);
+const Reports = lazy(() =>
+  import("@/components/admin/analytics/Reports").then((m) => ({
+    default: m.Reports,
+  })),
+);
+const ActivityLog = lazy(() =>
+  import("@/components/admin/analytics/ActivityLog").then((m) => ({
+    default: m.ActivityLog,
+  })),
+);
+const TabFallback = () => (
+  <div
+    className="h-64 animate-pulse rounded-fq-lg border border-border bg-muted/40"
+    aria-busy="true"
+    aria-label="Loading"
+  />
+);
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -105,10 +131,14 @@ function AnalyticsHub() {
       </div>
 
       {tab === "overview" && <AnalyticsPage />}
-      {tab === "traffic" && <Traffic />}
-      {tab === "insights" && <Insights />}
-      {tab === "reports" && <Reports />}
-      {tab === "activity" && <ActivityLog />}
+      {tab !== "overview" && (
+        <Suspense fallback={<TabFallback />}>
+          {tab === "traffic" && <Traffic />}
+          {tab === "insights" && <Insights />}
+          {tab === "reports" && <Reports />}
+          {tab === "activity" && <ActivityLog />}
+        </Suspense>
+      )}
     </div>
   );
 }

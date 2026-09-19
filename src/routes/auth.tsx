@@ -299,9 +299,11 @@ function AuthPageInner() {
       return;
     }
 
-    const { data: aal } =
-      await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-    const factors = await supabase.auth.mfa.listFactors();
+    // AAL + factor list are independent — fetch concurrently (perf batch 2).
+    const [{ data: aal }, factors] = await Promise.all([
+      supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
+      supabase.auth.mfa.listFactors(),
+    ]);
     const verifiedTotp =
       factors.data?.totp?.find((f) => f.status === "verified") ??
       factors.data?.totp?.[0];

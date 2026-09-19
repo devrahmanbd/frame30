@@ -297,38 +297,40 @@ export async function loadStorefront(
 
   // Phase 3: entity SEO first, the builder's per-template record behind it.
   // Never throws: a failed template read leaves the entity override in charge.
+  // Perf batch 2: the four merchant-scoped resolutions below are independent
+  // of each other — run them concurrently instead of sequentially.
   const { resolveSeo } = await import("./seo.server");
   const { resolveSeoWithTemplate } = await import("./template-seo.server");
-  const seo = await resolveSeoWithTemplate(
-    merchant.id,
-    "index",
-    await resolveSeo(merchant.id, "store", null),
-  );
-
-  // Phase 4: the published custom-code snapshot for the live theme version.
-  // Null when nothing is published, the merchant disabled it, or the platform
-  // owner pulled the kill switch for this tenant.
   const { publishedCustomCode } = await import("./custom-code.server");
-  const customCode = await publishedCustomCode(merchant.id);
-
-  // Phase 5: verification metas + the consent-gated analytics plan for this
-  // tenant. Cached, never throws, and never carries the chosen Search Console
-  // property into a shopper's browser.
   const { storefrontSiteKit } = await import("./search-console.server");
-  const siteKit = await storefrontSiteKit(merchant.id);
-
-  // Phase 0.3: every data widget in the published layout is resolved here, in
-  // one batched call, and shipped inside the SSR payload — the client reads
-  // rows from the map instead of refetching on hydrate.
   const { collectWidgetRequests, EMPTY_BUNDLE } = await import("./widget-data");
   const widgetBundle = theme?.ast
     ? collectWidgetRequests(theme.ast)
     : EMPTY_BUNDLE;
-  let widgetData = {};
-  if (widgetBundle.requests.length > 0) {
-    const { resolveWidgetData } = await import("./widget-data.server");
-    widgetData = await resolveWidgetData(merchant.id, widgetBundle);
-  }
+  const [seo, customCode, siteKit, widgetData] = await Promise.all([
+    (async () =>
+      resolveSeoWithTemplate(
+        merchant.id,
+        "index",
+        await resolveSeo(merchant.id, "store", null),
+      ))(),
+    // Phase 4: the published custom-code snapshot for the live theme version.
+    // Null when nothing is published, the merchant disabled it, or the platform
+    // owner pulled the kill switch for this tenant.
+    publishedCustomCode(merchant.id),
+    // Phase 5: verification metas + the consent-gated analytics plan for this
+    // tenant. Cached, never throws, and never carries the chosen Search Console
+    // property into a shopper's browser.
+    storefrontSiteKit(merchant.id),
+    // Phase 0.3: every data widget in the published layout is resolved here, in
+    // one batched call, and shipped inside the SSR payload — the client reads
+    // rows from the map instead of refetching on hydrate.
+    (async () => {
+      if (widgetBundle.requests.length === 0) return {};
+      const { resolveWidgetData } = await import("./widget-data.server");
+      return resolveWidgetData(merchant.id, widgetBundle);
+    })(),
+  ]);
 
   return {
     merchant,
