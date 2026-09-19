@@ -1,0 +1,12 @@
+[Unit]
+Description=Fortress nightly whole-system backup (framique)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/frame28
+Environment=BACKUP_DIR=/var/backups/framique
+# NOTE: --skip-rehearse until B3 lands the safe rehearsal sandbox.
+# Rehearsal then becomes mandatory and this flag is removed.
+ExecStart=/opt/frame28/ops/backup/backup.sh --label=nightly --skip-rehearse

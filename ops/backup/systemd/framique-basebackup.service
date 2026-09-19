@@ -1,0 +1,10 @@
+[Unit]
+Description=Fortress weekly physical base backup (PITR anchor)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/frame28
+Environment=BACKUP_DIR=/var/backups/framique
+ExecStart=/opt/frame28/ops/backup/pgbasebackup.sh --label=weekly

@@ -1,0 +1,11 @@
+[Unit]
+Description=Fortress WAL archive freshness probe (SLO-R02)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=WAL_DIR=/var/backups/framique/wal
+ExecStart=/opt/frame28/ops/backup/wal-lag-probe.sh
+# Non-zero exit (stale archive) surfaces in the timer status + journal.
+SuccessExitStatus=0

@@ -1,0 +1,10 @@
+[Unit]
+Description=Fortress nightly backup timer (02:30 UTC)
+
+[Timer]
+OnCalendar=02:30
+Persistent=true
+Unit=framique-backup.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Fortress WAL lag probe timer (hourly)
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=framique-wal-lag.service
+
+[Install]
+WantedBy=timers.target
