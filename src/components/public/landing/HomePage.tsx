@@ -58,6 +58,11 @@ export function HomePage({ data }: { data: LandingData }) {
             <img
               src={dashboardImg}
               alt="Dashboard"
+              width={1280}
+              height={960}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
               className="w-full h-auto rounded-xl shadow-2xl border border-white/20 dark:border-white/10"
             />
           </div>

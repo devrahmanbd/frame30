@@ -103,11 +103,17 @@ export async function getMerchantRiskContext(
 ): Promise<MerchantRiskContext> {
   const supabaseAdmin = await getDb();
 
-  // Fetch stored tier — reuse existing RPC
-  const { data: tierData, error: tierError } = await supabaseAdmin.rpc(
-    "get_merchant_risk_tier",
-    { p_merchant_id: merchantId },
-  );
+  // Fetch stored tier + abuse signals in parallel (were sequential awaits;
+  // the signals RPC failure path already fails open — preserved below).
+  const [tierRes, signalsRes] = await Promise.all([
+    supabaseAdmin.rpc("get_merchant_risk_tier", {
+      p_merchant_id: merchantId,
+    }),
+    supabaseAdmin.rpc("get_merchant_risk_signals", {
+      p_merchant_id: merchantId,
+    }),
+  ]);
+  const { data: tierData, error: tierError } = tierRes;
 
   if (tierError) {
     console.error(
@@ -121,12 +127,7 @@ export async function getMerchantRiskContext(
 
   // Fetch abuse score from merchant record
   // The abuse_score column is maintained by recordAbuseSignal RPC
-  const { data: merchantData, error: merchantError } = await supabaseAdmin.rpc(
-    "get_merchant_risk_signals",
-    {
-      p_merchant_id: merchantId,
-    },
-  );
+  const { data: merchantData, error: merchantError } = signalsRes;
 
   if (merchantError) {
     // Non-fatal: proceed with stored tier and zero abuse score
