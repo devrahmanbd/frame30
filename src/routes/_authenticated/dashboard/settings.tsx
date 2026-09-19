@@ -133,20 +133,25 @@ function SettingsPage() {
         allow_customer_timezone: form.allow_customer_timezone,
       };
 
-      const { error } = await supabase.from("merchant_settings").upsert({
-        merchant_id: merchant!.id,
-        tagline: form.tagline || null,
-        cod_enabled: form.cod_enabled,
-        mfs_enabled: form.mfs_enabled,
-        cod_surcharge_minor_int: Math.round(form.cod_surcharge_taka * 100),
-        shipping_flat_minor_int: Math.round(form.shipping_flat_taka * 100),
-        free_shipping_threshold_minor_int:
-          form.free_shipping_taka === null
-            ? null
-            : Math.round(form.free_shipping_taka * 100),
-        prices_include_vat: form.prices_include_vat,
-        setup_steps: nextSteps as any,
-      });
+      // merchant_settings has UNIQUE(merchant_id) but no PK, so the
+      // conflict target must be explicit — otherwise PostgREST answers 409.
+      const { error } = await supabase.from("merchant_settings").upsert(
+        {
+          merchant_id: merchant!.id,
+          tagline: form.tagline || null,
+          cod_enabled: form.cod_enabled,
+          mfs_enabled: form.mfs_enabled,
+          cod_surcharge_minor_int: Math.round(form.cod_surcharge_taka * 100),
+          shipping_flat_minor_int: Math.round(form.shipping_flat_taka * 100),
+          free_shipping_threshold_minor_int:
+            form.free_shipping_taka === null
+              ? null
+              : Math.round(form.free_shipping_taka * 100),
+          prices_include_vat: form.prices_include_vat,
+          setup_steps: nextSteps as any,
+        },
+        { onConflict: "merchant_id" },
+      );
       if (error) throw error;
     },
     onSuccess: () =>

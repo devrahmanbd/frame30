@@ -252,3 +252,39 @@ export const getStoreCollection = createServerFn({ method: "GET" })
     );
     return { ...found, products, origin: requestOrigin() };
   });
+
+/**
+ * Custom-domain host resolution (public, unauthenticated).
+ *
+ * Reads the request host server-side and returns the active-domain mapping,
+ * or null when this host is a platform host / unknown / not active. Null
+ * means "fall through to normal routes" — the `/` landing is never hijacked.
+ */
+export const resolveStorefrontHostFn = createServerFn({
+  method: "GET",
+}).handler(async () => {
+  const { resolveStorefrontHost } = await import("./storefront-host.server");
+  return resolveStorefrontHost();
+});
+
+/**
+ * `redirect_to_primary` enforcement for `/store/<slug>` path URLs (public).
+ *
+ * Returns `{ to }` with an absolute `https://<primary>/` URL when the
+ * merchant has an active primary custom domain and the request did not
+ * already arrive on it; otherwise `{ to: null }` and the path URL keeps
+ * serving. Never throws: resolution failure degrades to no-redirect.
+ */
+export const resolveStoreRedirectFn = createServerFn({ method: "GET" })
+  .inputValidator((d: unknown) =>
+    z.object({ slug: z.string().min(1).max(120) }).parse(d),
+  )
+  .handler(async ({ data }) => {
+    try {
+      const { resolveStoreRedirectForSlug } =
+        await import("./storefront-host.server");
+      return { to: await resolveStoreRedirectForSlug(data.slug) };
+    } catch {
+      return { to: null };
+    }
+  });
