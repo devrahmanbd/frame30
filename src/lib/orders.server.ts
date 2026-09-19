@@ -176,6 +176,11 @@ export async function createOrder(
   }
 
   const status = input.paymentMethod === "cod" ? "confirmed" : "paid";
+  // The orders table defaults access_token to '' — generate it here so the
+  // receipt page (which requires ≥16 chars) always has a token to load.
+  const accessToken = [...crypto.getRandomValues(new Uint8Array(16))]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 
   const { data: order, error } = await supabaseAdmin
     .from("orders")
@@ -183,6 +188,7 @@ export async function createOrder(
       merchant_id: merchant.id,
       customer_id: customerId,
       order_number: orderNumber(),
+      access_token: accessToken,
       status,
       payment_method: input.paymentMethod,
       currency_code: totals.currency,
@@ -387,7 +393,7 @@ export async function createOrder(
   return {
     orderId: order.id,
     orderNumber: order.order_number,
-    accessToken: order.access_token as string,
+    accessToken,
   };
 }
 
@@ -405,6 +411,11 @@ export type PublicOrderView = {
  * Guest-safe order read. Returns null unless the caller holds the order's
  * access token, owns the order, or is staff of the store — an order id alone
  * is never enough.
+ *
+ * NOTE (Sept 2026): the live `order_public_view` RPC is a stub that neither
+ * checks the token nor matches the orders columns, so the read is composed
+ * here with the service-role client. The token gate below is strict: empty
+ * or mismatched tokens are denied exactly like a missing order.
  */
 export async function loadOrder(
   orderId: string,
@@ -412,25 +423,61 @@ export async function loadOrder(
   subject = "anonymous",
 ) {
   await enforceRateLimit("order.lookup", subject);
-  const db = publicClient();
-  const { data, error } = await db.rpc(
-    "order_public_view" as never,
-    {
-      _order_id: orderId,
-      _token: accessToken ?? null,
-    } as never,
-  );
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  const { data: order, error } = await supabaseAdmin
+    .from("orders")
+    .select("*")
+    .eq("id", orderId)
+    .maybeSingle();
   if (error) {
     log("warn", "order.lookup_failed", { orderId, reason: error.message });
     return null;
   }
-  if (!data) {
+  const row = order as (Record<string, unknown> & {
+    access_token?: string;
+    idempotency_key?: string;
+    merchant_id?: string;
+  }) | null;
+  if (
+    !row ||
+    typeof row.access_token !== "string" ||
+    row.access_token.length < 16 ||
+    row.access_token !== accessToken
+  ) {
     incr("framique_order_lookup_total", { outcome: "denied" });
     return null;
   }
+  const [{ data: items }, { data: events }, { data: merchant }] =
+    await Promise.all([
+      supabaseAdmin
+        .from("order_items")
+        .select("*")
+        .eq("order_id", orderId)
+        .order("created_at", { ascending: true }),
+      supabaseAdmin
+        .from("order_events")
+        .select("event_type, note, created_at")
+        .eq("order_id", orderId)
+        .order("created_at", { ascending: true }),
+      supabaseAdmin
+        .from("merchants")
+        .select("name, slug")
+        .eq("id", row.merchant_id as string)
+        .maybeSingle(),
+    ]);
   incr("framique_order_lookup_total", { outcome: "ok" });
-  const payload = data as unknown as PublicOrderView;
-  return payload;
+  const { access_token: _t, idempotency_key: _k, ...publicOrder } = row;
+  return {
+    order: publicOrder,
+    items: (items ?? []) as Row<"order_items">[],
+    events: ((events ?? []) as {
+      event_type: string;
+      note: string | null;
+      created_at: string;
+    }[]),
+    merchant: (merchant ?? null) as { name: string; slug: string } | null,
+  } as PublicOrderView;
 }
 
 /** Hold stock while the shopper fills in the checkout form. */
