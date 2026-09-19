@@ -118,20 +118,26 @@ export async function priceCart(
   const ids = cart.filter((l) => l.quantity > 0).map((l) => l.variantId);
   if (ids.length === 0) throw new Error("Cart is empty");
 
-  const { data: variants, error: vErr } = await db
-    .from("product_variants")
-    .select(
-      "id, name, sku, price_amount_minor_int, stock_quantity, currency_code, products(title, status, merchant_id)",
-    )
-    .in("id", ids);
-  if (vErr) throw vErr;
+  // product_variants exposes no public SELECT policy, so the anon read below
+  // would resolve to [] and every cart would die as "no longer available".
+  // Resolve through the service-role helper the storefront loaders use.
+  // Exposure matches the intended public policy: a line survives only when
+  // its product is active and owned by this merchant.
+  const { fetchPublicVariants } = await import("./storefront.server");
+  const fetched = await fetchPublicVariants(ids);
+  const parentIds = [...new Set(fetched.map((r) => r.product_id))];
+  const { data: parentProducts } = await db
+    .from("products")
+    .select("id, title, status, merchant_id")
+    .in(
+      "id",
+      parentIds.length ? parentIds : ["00000000-0000-0000-0000-000000000000"],
+    );
 
   const lines: Totals["lines"] = [];
   for (const line of cart) {
-    const v = variants?.find((x) => x.id === line.variantId);
-    const product = one<{ title: string; status: string; merchant_id: string }>(
-      v?.products,
-    );
+    const v = fetched.find((x) => x.id === line.variantId);
+    const product = parentProducts?.find((p) => p.id === v?.product_id);
     if (
       !v ||
       !product ||

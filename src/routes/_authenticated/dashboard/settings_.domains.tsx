@@ -156,6 +156,10 @@ function DomainsPage() {
     initial.domains[0]?.id ?? null,
   );
   const [history, setHistory] = useState<Record<string, HistoryRow[]>>({});
+  // Inline two-step delete confirmation. The native window.confirm used to
+  // leak across navigations (a stale dialog followed the user to checkout),
+  // so removal now arms inline and executes only on explicit confirm.
+  const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
 
   const add = useServerFn(domainAddFn);
   const verify = useServerFn(domainVerifyFn);
@@ -503,27 +507,48 @@ function DomainsPage() {
                   ? t("Resume", "চালু করুন")
                   : t("Pause", "বন্ধ করুন")}
               </button>
-              <button
-                type="button"
-                className="min-h-9 rounded-fq-md border border-destructive px-3 text-sm text-destructive"
-                disabled={busy}
-                onClick={() => {
-                  if (
-                    !window.confirm(
-                      t(
-                        `Remove ${domain.hostname}?`,
-                        `${domain.hostname} সরাবেন?`,
-                      ),
-                    )
-                  )
-                    return;
-                  void run(domain.id, () =>
-                    remove({ data: { id: domain.id } }),
-                  );
-                }}
-              >
-                {t("Remove", "সরান")}
-              </button>
+              {confirmRemoveId === domain.id ? (
+                <span
+                  className="inline-flex min-h-9 flex-wrap items-center gap-2 rounded-fq-md border border-destructive px-3 py-1 text-sm"
+                  role="alert"
+                >
+                  <span>
+                    {t(
+                      `Remove ${domain.hostname}?`,
+                      `${domain.hostname} সরাবেন?`,
+                    )}
+                  </span>
+                  <button
+                    type="button"
+                    className="rounded-fq-md bg-destructive px-2 py-0.5 text-sm font-semibold text-destructive-foreground"
+                    disabled={busy}
+                    onClick={() => {
+                      setConfirmRemoveId(null);
+                      void run(domain.id, () =>
+                        remove({ data: { id: domain.id } }),
+                      );
+                    }}
+                  >
+                    {t("Confirm", "নিশ্চিত করুন")}
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded-fq-md px-2 py-0.5 text-sm underline"
+                    onClick={() => setConfirmRemoveId(null)}
+                  >
+                    {t("Cancel", "বাতিল")}
+                  </button>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  className="min-h-9 rounded-fq-md border border-destructive px-3 text-sm text-destructive"
+                  disabled={busy}
+                  onClick={() => setConfirmRemoveId(domain.id)}
+                >
+                  {t("Remove", "সরান")}
+                </button>
+              )}
               <button
                 type="button"
                 className="min-h-9 rounded-fq-md px-3 text-sm underline"
