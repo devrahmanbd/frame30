@@ -19,7 +19,15 @@ export function slugify(input: string) {
   return base || `item-${Date.now().toString(36)}`;
 }
 
-export const ACTIVE_MERCHANT_KEY = "fq.active_merchant_id";
+/** Mirror of lib/merchant-scope.server.ts ACTIVE_MERCHANT_COOKIE (keep in sync). */
+export const ACTIVE_MERCHANT_COOKIE = "fq.active_merchant_id";
+export const ACTIVE_MERCHANT_KEY = ACTIVE_MERCHANT_COOKIE;
+
+function writeMerchantCookie(merchantId: string) {
+  if (typeof document === "undefined") return;
+  document.cookie =
+    `${ACTIVE_MERCHANT_COOKIE}=${merchantId}; path=/; max-age=31536000; SameSite=Lax`;
+}
 
 export type MerchantMembership = {
   merchant_id: string;
@@ -98,6 +106,7 @@ async function loadMerchant(): Promise<Merchant | null> {
 
   if (typeof window !== "undefined") {
     window.localStorage.setItem(ACTIVE_MERCHANT_KEY, current.merchant_id);
+    writeMerchantCookie(current.merchant_id);
   }
 
   return merchantRow as Merchant;
@@ -125,6 +134,7 @@ export function useMerchants() {
     if (typeof window !== "undefined") {
       window.localStorage.setItem(ACTIVE_MERCHANT_KEY, merchantId);
     }
+    writeMerchantCookie(merchantId);
     void qc.invalidateQueries({ queryKey: ["merchant"] });
     void qc.invalidateQueries({ queryKey: ["products"] });
     void qc.invalidateQueries({ queryKey: ["orders"] });

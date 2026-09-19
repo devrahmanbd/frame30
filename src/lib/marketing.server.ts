@@ -18,11 +18,16 @@ export async function currentMerchantId(supabase: Client, userId: string) {
   const { data } = await supabase
     .from("merchant_members")
     .select("merchant_id")
-    .eq("user_id", userId)
-    .limit(1)
-    .maybeSingle();
-  if (!data) throw new MarketingError("no_merchant", "No store found");
-  return data.merchant_id;
+    .eq("user_id", userId);
+  const rows = (data ?? []) as { merchant_id: string }[];
+  if (rows.length === 0)
+    throw new MarketingError("no_merchant", "No store found");
+  // Prefer the dashboard's active store (verified membership); fall back to
+  // the first row, which is the legacy single-store behavior.
+  const { pickMembership, requestMerchantHint } = await import(
+    "./merchant-scope.server"
+  );
+  return pickMembership(rows, requestMerchantHint())!.merchant_id;
 }
 
 export type CouponInput = {

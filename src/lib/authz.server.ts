@@ -49,7 +49,8 @@ function asGrantRows(value: unknown): { group: string; action: string }[] {
 
 /**
  * Resolves the caller's effective grants for one tenant. When `merchantId` is
- * omitted the caller's single membership is used; ambiguity is not guessed.
+ * omitted the dashboard's active-store hint (verified against memberships) is
+ * used, then a single membership; ambiguity beyond that is not guessed.
  */
 export async function loadActor(
   supabase: Client,
@@ -69,11 +70,23 @@ export async function loadActor(
   ]);
 
   const rows = memberships ?? [];
-  const member = merchantId
+  // An explicit merchant the caller is not a member of stays denied — the
+  // hint fallback below only runs when no merchant was requested at all.
+  let member = merchantId
     ? (rows.find((r) => r.merchant_id === merchantId) ?? null)
-    : rows.length === 1
-      ? rows[0]!
-      : null;
+    : null;
+  if (!member && !merchantId) {
+    // No merchant requested: honor the dashboard's active-store hint when it
+    // names a real membership, else single membership, else deny (unchanged
+    // legacy rule — ambiguity is still not guessed).
+    const { requestMerchantHint } = await import("./merchant-scope.server");
+    const hint = requestMerchantHint();
+    member = hint
+      ? (rows.find((r) => r.merchant_id === hint) ?? null)
+      : rows.length === 1
+        ? rows[0]!
+        : null;
+  }
 
   let permissions: readonly Permission[] = [];
   if (member) {
