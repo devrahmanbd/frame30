@@ -137,8 +137,11 @@ describe("Race Condition Elimination in Critical Flows", () => {
     expect(source).toContain(
       'import { withTenantLock } from "./redis-lock.server"',
     );
+    // Reserves serialize per merchant (not per token): concurrent checkouts
+    // for the same variant must line up behind one lock, otherwise overlapping
+    // re-quotes can double-take stock (Sept 2026 night-shift incident).
     expect(source).toMatch(
-      /withTenantLock\s*\(\s*merchantId\s*,\s*`stock:reserve:\${checkoutToken}`/,
+      /withTenantLock\s*\(\s*merchantId\s*,\s*"stock:reserve"/,
     );
     expect(source).toMatch(
       /withTenantLock\s*\(\s*checkoutToken\s*,\s*`stock:consume:\${orderId}`/,
