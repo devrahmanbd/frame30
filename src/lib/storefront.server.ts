@@ -1,12 +1,68 @@
 import { publicClient } from "./pricing.server";
-import { log, observe } from "./observability.server";
-import {
+import { log, observe } from "./observability.server";import {
   templateOf,
   type TemplateKey,
   type ThemeAst,
   type ThemeTokens,
 } from "./builder-ast";
 import { publishedTheme } from "./themes.server";
+
+/**
+ * Public variant rows for storefront reads.
+ *
+ * `product_variants` currently exposes no public/anon SELECT policy (only
+ * tenant member reads), so the anon join inside product queries resolves to
+ * `[]` for shoppers: every price renders 0.00 and everything shows out of
+ * stock. Until the public policy lands via migrations (`20260919050000`),
+ * this fetches the same rows through the service role. Exposure is identical
+ * to the intended policy: callers only ever pass IDs of active products of
+ * an already-verified active merchant. Never throws — on failure the page
+ * keeps today's behavior (empty variants) instead of 500ing the storefront.
+ */
+export type PublicVariant = {
+  product_id: string;
+  id: string;
+  name: string;
+  sku: string | null;
+  price_amount_minor_int: number;
+  compare_at_amount_minor_int: number | null;
+  stock_quantity: number;
+};
+
+export function mergePublicVariants<
+  P extends { id: string; product_variants?: unknown },
+>(products: P[], rows: PublicVariant[]): (P & { product_variants: PublicVariant[] })[] {
+  const byProduct = new Map<string, PublicVariant[]>();
+  for (const row of rows) {
+    const list = byProduct.get(row.product_id) ?? [];
+    list.push(row);
+    byProduct.set(row.product_id, list);
+  }
+  return products.map((p) => ({
+    ...p,
+    product_variants: byProduct.get(p.id) ?? [],
+  }));
+}
+
+export async function fetchPublicVariants(
+  productIds: string[],
+): Promise<PublicVariant[]> {
+  if (productIds.length === 0) return [];
+  try {
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("product_variants")
+      .select(
+        "product_id, id, name, sku, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity",
+      )
+      .in("product_id", productIds);
+    if (error || !data) return [];
+    return data as PublicVariant[];
+  } catch {
+    return [];
+  }
+}
 
 /**
  * Published layout + tokens for a store template, or null when nothing is
@@ -180,7 +236,10 @@ export async function loadStoreCollection(
       slug: collection.slug,
       description: collection.description,
     },
-    products: products ?? [],
+    products: mergePublicVariants(
+      products ?? [],
+      await fetchPublicVariants((products ?? []).map((p) => p.id)),
+    ),
     settings,
     seo,
     siteKit,
@@ -336,7 +395,10 @@ export async function loadStorefront(
     merchant,
     seo,
     settings,
-    products: products ?? [],
+    products: mergePublicVariants(
+      products ?? [],
+      await fetchPublicVariants((products ?? []).map((p) => p.id)),
+    ),
     categories: categories ?? [],
     collections: collections ?? [],
     ast: theme?.ast ?? null,
@@ -371,6 +433,10 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
     .eq("status", "active")
     .maybeSingle();
   if (!product) return null;
+  const [productResolved] = mergePublicVariants(
+    [product],
+    await fetchPublicVariants([product.id]),
+  );
 
   // Phase 7.2: reviews and delivery terms feed the Product/Offer graph, so the
   // rich result reflects the same numbers the page shows a shopper.
@@ -405,7 +471,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
 
   return {
     merchant,
-    product,
+    product: productResolved,
     seo,
     settings,
     siteKit,
