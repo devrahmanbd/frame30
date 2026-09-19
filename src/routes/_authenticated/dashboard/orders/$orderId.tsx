@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { fmtMinor } from "@/lib/money";
 import { statusLabel, statusTone } from "./index";
-import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { ConfirmDialog } from "@/components/console/kit";
 import {
   advanceOrder,
   amendOrder,

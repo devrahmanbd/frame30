@@ -1008,6 +1008,8 @@ export function ConfirmDialog({
   cancelLabel = "Cancel",
   destructive = true,
   requireReason,
+  tone,
+  busy,
   onCancel,
   onConfirm,
 }: {
@@ -1019,6 +1021,14 @@ export function ConfirmDialog({
   destructive?: boolean;
   /** Destructive actions capture a reason that lands in the audit trail. */
   requireReason?: boolean;
+  /**
+   * Shorthand for destructive styling (merged from the old per-console
+   * dialogs): tone="danger" renders destructive, tone="primary" renders
+   * standard. Explicit `destructive` still wins when both are passed.
+   */
+  tone?: "danger" | "primary";
+  /** Disables the confirm button while an async action is pending. */
+  busy?: boolean;
   onCancel: () => void;
   onConfirm: (reason: string) => void;
 }) {
@@ -1037,7 +1047,8 @@ export function ConfirmDialog({
   }, [open, onCancel]);
 
   if (!open) return null;
-  const blocked = Boolean(requireReason) && reason.trim().length < 4;
+  const danger = tone !== undefined ? tone === "danger" : destructive;
+  const blocked = Boolean(busy) || (Boolean(requireReason) && reason.trim().length < 4);
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-[var(--fq-scrim)] p-4 backdrop-blur-sm">
@@ -1072,8 +1083,9 @@ export function ConfirmDialog({
             onClick={() => onConfirm(reason.trim())}
             className={cn(
               btnPrimary,
-              destructive &&
+              danger &&
                 "bg-[var(--fq-danger)] text-[var(--color-destructive-foreground,oklch(0.99_0_0))]",
+              busy && "opacity-70",
             )}
           >
             {confirmLabel}
