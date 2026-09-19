@@ -356,6 +356,13 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         icon: "categories",
         permission: "marketing.read",
       },
+      {
+        to: "/dashboard/content/custom-code",
+        en: "Custom CSS, JS",
+        bn: "কাস্টম সিএসএস ও জেএস",
+        icon: "developers",
+        permission: "themes.read",
+      },
     ],
   },
   {
@@ -390,6 +397,7 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     items: [
       {
         to: "/dashboard/marketplace",
+        search: { tab: "theme" },
         en: "Themes",
         bn: "থিম",
         icon: "marketplace",
@@ -397,24 +405,10 @@ export const ADMIN_NAV: readonly NavGroup[] = [
       },
       {
         to: "/dashboard/marketplace",
-        search: { tab: "widget" },
-        en: "Widgets & Plugins",
-        bn: "উইজেট ও প্লাগইন",
+        search: { tab: "plugin" },
+        en: "Plugins",
+        bn: "প্লাগইন",
         icon: "catalog",
-        permission: "themes.read",
-      },
-      {
-        to: "/dashboard/plugins",
-        en: "Installed",
-        bn: "ইনস্টলড",
-        icon: "infra",
-        permission: "themes.read",
-      },
-      {
-        to: "/dashboard/plugins/new",
-        en: "Add New",
-        bn: "নতুন যোগ",
-        icon: "marketplace",
         permission: "themes.read",
       },
     ],

@@ -40,6 +40,7 @@ import {
   themeInstallFn,
   themesWorkspaceFn,
 } from "@/lib/themes/appearance.functions";
+import { builderDemoImportFn } from "@/lib/themes.functions";
 import { AddThemeCard, ThemeCard } from "./ThemeCard";
 import { ThemeDetailsModal } from "./ThemeDetailsModal";
 import { AddThemeScreen } from "./AddThemeScreen";
@@ -127,6 +128,22 @@ export function ThemesScreen() {
     mutationFn: useServerFn(themeCatalogFavouriteFn),
     onSuccess: refresh,
     onError: () => toast.error("That change could not be saved"),
+  });
+
+  const importDemo = useMutation({
+    mutationFn: useServerFn(builderDemoImportFn),
+    onMutate: (vars: { data: { themeKey: string } }) =>
+      setBusy(vars.data.themeKey),
+    onSuccess: (result: { imported: boolean; products: number }) => {
+      toast.success(
+        result.imported
+          ? `Demo store imported (${result.products} products)`
+          : "Demo content already present",
+      );
+      refresh();
+    },
+    onError: () => toast.error("That demo content could not be imported"),
+    onSettled: () => setBusy(null),
   });
 
   const openCustomize = () =>
@@ -335,13 +352,6 @@ export function ThemesScreen() {
               theme's templates and colours. Your products, pages and posts are
               never touched, and you can switch back at any time.
             </p>
-            <button
-              type="button"
-              className={cn(btnGhost, "mt-3")}
-              onClick={openCustomize}
-            >
-              Open the customizer
-            </button>
           </Card>
         </div>
       )}
@@ -361,6 +371,10 @@ export function ThemesScreen() {
           onDelete={() => setConfirmDelete(details)}
           onToggleAutoUpdate={(next) =>
             flags.mutate({ data: { id: details.id, autoUpdate: next } })
+          }
+          onImportDemo={() =>
+            details.key &&
+            importDemo.mutate({ data: { themeKey: details.key } })
           }
         />
       ) : null}
