@@ -119,10 +119,9 @@ function RootDocument() {
   // and would otherwise flash blank while the session check runs). If JS
   // fails entirely the splash stays — brand, not blankness.
   useEffect(() => {
-    if (showSplash) {
-      document.getElementById("fq-boot")?.remove();
-      setShowSplash(false);
-    }
+    // Let React remove the node via state (never removeChild it directly —
+    // direct removal races the reconciler and throws NotFoundError).
+    if (showSplash) setShowSplash(false);
   }, [showSplash]);
   // The router owns the QueryClient; the provider makes it reachable from
   // useQuery/useMutation in every route below.
