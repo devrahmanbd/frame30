@@ -123,7 +123,28 @@ async function resolveRequestTier(
   }
 }
 
-export function withSecurityHeaders(
+export /** Origins the browser must be allowed to fetch (CSP connect-src). */
+function cspConnectOrigins(): string[] {
+  const out = new Set<string>();
+  const candidates = [
+    process.env["SUPABASE_URL"],
+    process.env["VITE_SUPABASE_URL"],
+    ...(process.env["CSP_CONNECT_EXTRA"] ?? "").split(/\s+/),
+  ];
+  for (const raw of candidates) {
+    const value = raw?.trim();
+    if (!value) continue;
+    try {
+      const origin = new URL(value).origin;
+      if (origin !== "null") out.add(origin);
+    } catch {
+      // Not a parseable URL — skip rather than emit an invalid CSP source.
+    }
+  }
+  return [...out];
+}
+
+function withSecurityHeaders(
   request: Request,
   response: Response,
   riskTier: RiskTier = "low",
@@ -146,13 +167,24 @@ export function withSecurityHeaders(
 
   // Emit tier-aware CSP header using pre-generated nonce from request phase
   const policy = resolvePolicy(riskTier);
+  // connect-src must cover the Supabase backend: auth/token, REST, storage
+  // and realtime all run on a different origin (framebase.qubickle.com).
+  // Without it the browser blocks sign-in with a CSP violation (seen live
+  // 2026-09-19: connect to .../auth/v1/token blocked by "connect-src 'self'").
+  const connectOrigins = cspConnectOrigins();
   let nonce = "";
   if (policy.csp.nonce) {
     nonce = getCurrentNonce() || newNonce();
-    headers.set("content-security-policy", buildCsp(nonce, {}, riskTier));
+    headers.set(
+      "content-security-policy",
+      buildCsp(nonce, { connect: connectOrigins }, riskTier),
+    );
   } else {
     // medium / high: no nonce, strict script-src 'self'
-    headers.set("content-security-policy", buildCsp("", {}, riskTier));
+    headers.set(
+      "content-security-policy",
+      buildCsp("", { connect: connectOrigins }, riskTier),
+    );
   }
 
   if (isEditorPreviewHost(request)) {
