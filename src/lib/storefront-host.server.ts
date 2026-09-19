@@ -117,12 +117,25 @@ export function currentRequestHost(): string | null {
 }
 
 /**
+ * Hosts the edge may serve a storefront on: exactly the set the TLS edge
+ * gate (`verify-sni`) allows a certificate for. Ownership + routing are
+ * proven for all three; only the certificate state differs (edge-owned).
+ * Everything else (pending_dns, verifying, failed, disabled, unknown)
+ * falls through to normal platform routing.
+ */
+export const SERVABLE_DOMAIN_STATUSES = [
+  "dns_verified",
+  "issuing_cert",
+  "active",
+] as const;
+
+/**
  * Pure resolution decision: given a normalized hostname and the
  * merchant_domains row for it (null when no row), decide.
  *
- * - No row, platform host, or any non-`active` status (pending_dns,
- *   verifying, dns_verified, issuing_cert, failed, disabled) → null.
- * - Active rows resolve — primary and non-primary alike serve the store
+ * - No row, platform host, or any non-servable status (pending_dns,
+ *   verifying, failed, disabled) → null.
+ * - Servable rows resolve — primary and non-primary alike serve the store
  *   (non-primary serves, no redirect; canonicalisation to the primary is a
  *   separate redirect concern, not a serving gate).
  */
@@ -132,7 +145,8 @@ export function decideHostResolution(
 ): StorefrontHostResolution | null {
   if (!hostname) return null;
   if (isPlatformHost(hostname)) return null;
-  if (!row || row.status !== "active") return null;
+  if (!row || !(SERVABLE_DOMAIN_STATUSES as readonly string[]).includes(row.status))
+    return null;
   if (!row.merchantSlug) return null;
   return {
     merchantId: row.merchant_id,
@@ -155,7 +169,7 @@ async function lookupDomainRow(
         .from("merchant_domains")
         .select("merchant_id, hostname, status, is_primary")
         .eq("hostname", hostname)
-        .eq("status", "active")
+        .in("status", [...SERVABLE_DOMAIN_STATUSES])
         .maybeSingle();
       if (!domain) return null;
       const { data: merchant } = await supabaseAdmin

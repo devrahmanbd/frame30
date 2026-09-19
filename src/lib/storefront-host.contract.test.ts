@@ -105,12 +105,10 @@ describe("decideHostResolution", () => {
     expect(decideHostResolution(null, ACTIVE_PRIMARY)).toBeNull();
   });
 
-  it("inactive and disabled rows resolve to null", () => {
+  it("unproven rows resolve to null", () => {
     for (const status of [
       "pending_dns",
       "verifying",
-      "dns_verified",
-      "issuing_cert",
       "failed",
       "disabled",
     ]) {
@@ -121,6 +119,17 @@ describe("decideHostResolution", () => {
         }),
         status,
       ).toBeNull();
+    }
+  });
+
+  it("proven-but-uncertified rows resolve (same set the edge SNI gate allows)", () => {
+    for (const status of ["dns_verified", "issuing_cert", "active"]) {
+      const out = decideHostResolution("microscrop.shop", {
+        ...ACTIVE_PRIMARY,
+        status,
+      });
+      expect(out, status).not.toBeNull();
+      expect(out?.merchantSlug).toBe("flame-fashion-bd");
     }
   });
 
