@@ -169,7 +169,7 @@ function SettingsPage() {
               className="font-medium text-primary hover:underline"
               href={`/store/${merchant.slug}`}
             >
-              store.framique.store/{merchant.slug} ↗
+              framique.qubickle.com/store/{merchant.slug} ↗
             </a>
           </p>
         )}

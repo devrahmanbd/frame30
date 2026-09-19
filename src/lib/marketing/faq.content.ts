@@ -33,7 +33,7 @@ export const FAQ_SECTIONS: readonly FaqSection[] = [
         id: "how-long",
         question: "How long does it take to open a store?",
         answer:
-          "Most merchants have a live storefront on a Framique subdomain within an hour: sign up, name the store, pick a theme, add your first products. Connecting bKash or Nagad adds roughly ten minutes per rail because you paste merchant credentials you already hold.",
+          "Most merchants have a live storefront at framique.qubickle.com/store/<slug> within an hour: sign up, name the store, pick a theme, add your first products. Connecting bKash or Nagad adds roughly ten minutes per rail because you paste merchant credentials you already hold.",
       },
       {
         id: "developer",

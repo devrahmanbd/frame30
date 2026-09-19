@@ -592,7 +592,7 @@ export const disclosure = {
   contactEmail: "security@framique.com",
   scope: {
     inScope:
-      "The production application and API surfaces at *.framique.com and merchant subdomains.",
+      "The production application and API surfaces at framique.qubickle.com and merchant custom domains.",
     outOfScope:
       "Third-party subprocessor infrastructure (report to them directly), denial-of-service testing, and social engineering of staff or merchants.",
   },

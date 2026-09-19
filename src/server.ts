@@ -357,7 +357,7 @@ export default {
 
       // Global Security Middleware: Tenant-aware CSRF Protection on Mutations [A]
       // Uses `isTrustedCsrfOrigin` (csrf.server.ts) which handles:
-      //   - Same-host (platform, *.framique.store, custom domains via x-forwarded-host)
+      //   - Same-host (platform path-based storefronts /store/<slug>, custom domains via x-forwarded-host)
       //   - Merchant custom domains — DB-backed allow-list with 30s TTL cache
       //   - Payment gateway POST-back origins — only on /api/public/payments/* path
       if (["POST", "PUT", "DELETE", "PATCH"].includes(request.method)) {

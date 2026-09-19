@@ -121,7 +121,7 @@ function DripSequencesPage() {
           bodyTemplate:
             "Hi {{customer_name}},\n\nI wanted to personally reach out and introduce you to our curated products.",
           ctaText: "Visit Store",
-          ctaUrl: "https://store.framique.com/{{store_slug}}",
+          ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}",
         },
         {
           id: `step_${Date.now()}_2`,
@@ -132,7 +132,7 @@ function DripSequencesPage() {
           bodyTemplate:
             "Hi {{customer_name}},\n\nFollowing up on my previous note. Did you have a chance to check out our recent collection?",
           ctaText: "Explore Collection",
-          ctaUrl: "https://store.framique.com/{{store_slug}}",
+          ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}",
         },
       ],
       createdAt: new Date().toISOString(),
@@ -889,7 +889,7 @@ function DripSequencesPage() {
                       bodyTemplate:
                         "Hi {{customer_name}},\n\nWanted to check in and see if you had any questions.",
                       ctaText: "Shop Now",
-                      ctaUrl: "https://store.framique.com/{{store_slug}}",
+                      ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}",
                     };
                     setEditingSeq({
                       ...editingSeq,

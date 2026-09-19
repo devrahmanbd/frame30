@@ -83,7 +83,7 @@ export const FRAMIQUE_CANONICAL_KB_DOCS = [
 To configure SteadFast Courier in Framique:
 1. Navigate to Admin Settings -> Shipping -> SteadFast Courier.
 2. Enter your SteadFast API Key and Secret Key retrieved from your SteadFast merchant portal.
-3. Configure the Webhook Callback URL: Copy the Framique webhook endpoint URL (e.g., https://your-store.framique.com/api/webhooks/courier/steadfast) and paste it into SteadFast portal settings.
+3. Configure the Webhook Callback URL: Copy the Framique webhook endpoint URL (e.g., https://framique.qubickle.com/api/webhooks/courier/steadfast) and paste it into SteadFast portal settings.
 4. When orders transition to 'Processing' or 'Ready to Ship', click 'Book SteadFast Parcel' to generate an AWB tracking code and consignment ID.
 5. SteadFast delivers webhook callbacks on status changes ('in_transit', 'delivered', 'cancelled', 'returned') which automatically update order fulfillment status and customer shipment tracking.`,
   },
@@ -291,7 +291,7 @@ export const PLATFORM_KB_DOCS = [
     tags: ["platform", "overview", "free-trial", "features", "getting-started"],
     sourceUrl: "/about",
     body: `Framique is an all-in-one cloud hosting and e-commerce service provider built for merchants in Bangladesh and worldwide.
-Merchants get a complete high-performance storefront hosted at store.framique.com/<slug> or on their own custom domain.
+Merchants get a complete high-performance storefront hosted at framique.qubickle.com/store/<slug> or on their own custom domain.
 Key Platform Features:
 1. All-in-One Infrastructure: Managed edge CDN hosting, automated TLS certificates, PostgreSQL databases with Row Level Security, Redis caching, and continuous zero-downtime deployments.
 2. 14-Day Free Trial: Merchants can launch and test their storefront for 14 days without entering credit card information.

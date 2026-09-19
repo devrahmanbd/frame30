@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { btnPrimary, inputClass } from "@/components/admin/MarketingUi";
@@ -27,7 +27,20 @@ import { useLang } from "@/lib/i18n";
 export const Route = createFileRoute(
   "/_authenticated/dashboard/settings_/domains",
 )({
-  loader: async () => domainsListFn(),
+  // A tripped rate-limit bucket degrades to a notice, never to the error
+  // boundary: SSR succeeding while the client gets a 429 is exactly the
+  // divergence that surfaces as React hydration error #418 (Sept 2026).
+  loader: async () => {
+    try {
+      return { ...(await domainsListFn()), rateLimited: false as const };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err ?? "");
+      if (/rate_limit|429|too many requests/i.test(message)) {
+        return { ...EMPTY_LIST, rateLimited: true as const };
+      }
+      throw err;
+    }
+  },
   pendingComponent: DomainsPending,
   errorComponent: DomainsError,
   head: () => ({
@@ -54,6 +67,8 @@ export const Route = createFileRoute(
 
 type ListResult = Awaited<ReturnType<typeof domainsListFn>>;
 type HistoryRow = Awaited<ReturnType<typeof domainHistoryFn>>[number];
+/** Loader data plus the degraded-429 flag (absent on older cached payloads). */
+type ViewList = ListResult & { rateLimited?: boolean };
 
 function fmt(value: string | null) {
   return value ? new Date(value).toLocaleString() : "—";
@@ -97,19 +112,42 @@ function DomainsError({ error }: { error: Error }) {
   );
 }
 
-const EMPTY_LIST: ListResult = {
+const EMPTY_LIST: ViewList = {
   domains: [],
   target: { cname: "", ips: [] },
   edgeConfigured: false,
   limit: 10,
+  rateLimited: false,
 };
+
+/** Shown instead of the error boundary when the loader was rate-limited. */
+function RateLimitedBanner({ onRetry }: { onRetry: () => void }) {
+  const { t } = useLang();
+  const [secs, setSecs] = useState(15);
+  useEffect(() => {
+    if (secs <= 0) {
+      onRetry();
+      return;
+    }
+    const id = setTimeout(() => setSecs((s) => s - 1), 1000);
+    return () => clearTimeout(id);
+  }, [secs, onRetry]);
+  return (
+    <InlineNote tone="warning">
+      {t(
+        `Too many requests — retrying automatically in ${secs}s.`,
+        `অনেক অনুরোধ — ${secs} সেকেন্ডে স্বয়ংক্রিয়ভাবে আবার চেষ্টা করা হবে।`,
+      )}
+    </InlineNote>
+  );
+}
 
 function DomainsPage() {
   const { t } = useLang();
-  const loaded = Route.useLoaderData() as ListResult | undefined;
-  const initial: ListResult = loaded ?? EMPTY_LIST;
+  const loaded = Route.useLoaderData() as ViewList | undefined;
+  const initial: ViewList = loaded ?? EMPTY_LIST;
   const router = useRouter();
-  const [data, setData] = useState<ListResult>(initial);
+  const [data, setData] = useState<ViewList>(initial);
   const [hostname, setHostname] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -126,6 +164,8 @@ function DomainsPage() {
   const enabled = useServerFn(domainEnabledFn);
   const remove = useServerFn(domainRemoveFn);
   const loadHistory = useServerFn(domainHistoryFn);
+  const list = useServerFn(domainsListFn);
+  const retryList = useCallback(() => void router.invalidate(), [router]);
 
   /** Error codes are stable ids from the server; the copy lives here. */
   const message = useMemo(
@@ -204,16 +244,21 @@ function DomainsPage() {
 
   async function run(
     id: string | null,
-    action: () => Promise<ListResult>,
+    action: () => Promise<unknown>,
     ok?: string,
   ) {
     setBusyId(id ?? "new");
     setError(null);
     setNotice(null);
     try {
-      setData(await action());
+      // Actions return heterogeneous shapes (verify returns a single view,
+      // the rest return the list), so ignore the return and refresh from
+      // the list endpoint directly. Do NOT router.invalidate() here: that
+      // refires every active route loader and fans out into a request
+      // storm (Sept 2026 429 incident).
+      await action();
+      setData({ ...(await list()), rateLimited: false });
       if (ok) setNotice(ok);
-      void router.invalidate();
     } catch (err) {
       const code = err instanceof Error ? err.message : "error";
       setError(message(code.replace(/^Error:\s*/, "")));
@@ -251,6 +296,7 @@ function DomainsPage() {
 
       {error && <InlineNote tone="danger">{error}</InlineNote>}
       {notice && <InlineNote tone="success">{notice}</InlineNote>}
+      {data.rateLimited && <RateLimitedBanner onRetry={retryList} />}
       {!data.edgeConfigured && (
         <InlineNote tone="warning">
           {t(

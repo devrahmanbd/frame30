@@ -286,7 +286,7 @@ export const sendTemplatePreviewFn = createServerFn({ method: "POST" })
       ctaText: data.ctaText || "View Collection",
       ctaUrl: data.ctaUrl
         ? interpolate(data.ctaUrl, vars)
-        : "https://store.framique.com",
+        : "https://framique.qubickle.com",
       footerText: data.footerText
         ? interpolate(data.footerText, vars)
         : "Preview test transmission",

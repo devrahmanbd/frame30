@@ -79,7 +79,7 @@ const DEFAULT_WELCOME_SEQUENCE: DripSequence = {
       bodyTemplate:
         "Hi {{customer_name}},\n\nThank you for joining our community! We are excited to have you with us.\n\nOver the coming days, we will share exclusive updates, customer stories, and early access to our newest arrivals.",
       ctaText: "Explore the Store",
-      ctaUrl: "https://store.framique.com/{{store_slug}}",
+      ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}",
     },
     {
       id: "step_2",
@@ -90,7 +90,7 @@ const DEFAULT_WELCOME_SEQUENCE: DripSequence = {
       bodyTemplate:
         "Hi {{customer_name}},\n\nEvery piece in our catalog is crafted with care and passion. Here are a few hand-picked favorites that our customers love.",
       ctaText: "View Best Sellers",
-      ctaUrl: "https://store.framique.com/{{store_slug}}",
+      ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}",
     },
     {
       id: "step_3",
@@ -101,7 +101,7 @@ const DEFAULT_WELCOME_SEQUENCE: DripSequence = {
       bodyTemplate:
         "Hi {{customer_name}},\n\nAs a thank you for being with us, use the code WELCOME10 at checkout to receive an exclusive welcome discount on your next order.",
       ctaText: "Claim Your Gift",
-      ctaUrl: "https://store.framique.com/{{store_slug}}",
+      ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}",
     },
   ],
   createdAt: new Date().toISOString(),
@@ -468,9 +468,9 @@ export async function processDueDripSteps(
       const bodyText = interpolate(step.bodyTemplate, vars);
       const ctaUrl = step.ctaUrl
         ? interpolate(step.ctaUrl, vars)
-        : `https://store.framique.com/${merchant.slug}`;
+        : `https://framique.qubickle.com/store/${merchant.slug}`;
 
-      const unsubscribeUrl = `https://store.framique.com/unsubscribe?email=${encodeURIComponent(enrollment.email)}`;
+      const unsubscribeUrl = `https://framique.qubickle.com/unsubscribe?email=${encodeURIComponent(enrollment.email)}`;
 
       const html = renderEmailHtml({
         storeName: merchant.name,

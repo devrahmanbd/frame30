@@ -26,7 +26,7 @@ export const DEFAULT_TEMPLATES: Record<EmailTemplateKind, EmailTemplateConfig> =
       bodyTemplate:
         "Hello {{customer_name}},\n\nHere is the latest news and curated picks from our store.",
       ctaText: "Shop the Collection",
-      ctaUrl: "https://store.framique.com/{{store_slug}}",
+      ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}",
       footerText:
         "You received this email because you subscribed to updates from {{store_name}}.",
     },
@@ -37,7 +37,7 @@ export const DEFAULT_TEMPLATES: Record<EmailTemplateKind, EmailTemplateConfig> =
       bodyTemplate:
         "Hi {{customer_name}},\n\nThank you for your order! We have received your purchase and are preparing it for shipment.",
       ctaText: "Track Your Order",
-      ctaUrl: "https://store.framique.com/{{store_slug}}/track",
+      ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}/track",
       footerText:
         "Questions about your order? Reply to this email or contact support.",
     },
@@ -48,7 +48,7 @@ export const DEFAULT_TEMPLATES: Record<EmailTemplateKind, EmailTemplateConfig> =
       bodyTemplate:
         "Hi {{customer_name}},\n\nPlease find attached your official tax invoice document.",
       ctaText: "View Invoice Online",
-      ctaUrl: "https://store.framique.com/invoice/{{invoice_token}}",
+      ctaUrl: "https://framique.qubickle.com/invoice/{{invoice_token}}",
       footerText: "Official invoice record issued by {{store_name}}.",
     },
     order_dispatched: {
@@ -69,7 +69,7 @@ export const DEFAULT_TEMPLATES: Record<EmailTemplateKind, EmailTemplateConfig> =
       bodyTemplate:
         "Hi {{customer_name}},\n\nYour package has been successfully delivered. We hope you love your purchase!",
       ctaText: "Leave a Review",
-      ctaUrl: "https://store.framique.com/{{store_slug}}",
+      ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}",
       footerText: "Thank you for supporting {{store_name}}.",
     },
     customer_welcome: {
@@ -79,7 +79,7 @@ export const DEFAULT_TEMPLATES: Record<EmailTemplateKind, EmailTemplateConfig> =
       bodyTemplate:
         "Welcome aboard! We are thrilled to have you as part of our community. Explore our catalog and find the best items tailored for you.",
       ctaText: "Start Shopping",
-      ctaUrl: "https://store.framique.com/{{store_slug}}",
+      ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}",
       footerText: "Thank you for registering at {{store_name}}.",
     },
   };

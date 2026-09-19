@@ -268,7 +268,7 @@ export const DOC_PAGES: readonly DocPage[] = [
         kind: "code",
         lang: "http",
         code: `GET /api/public/v1/products?limit=25 HTTP/1.1
-Host: your-store.framique.com
+Host: framique.qubickle.com
 Authorization: Bearer fq_live_9f2c…
 Accept: application/json`,
       },

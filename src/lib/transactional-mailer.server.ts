@@ -165,7 +165,7 @@ export async function sendOrderConfirmationEmail(args: {
     );
     const bodyText = interpolate(tpl.bodyTemplate ?? "", vars);
     const headerTitle = interpolate(tpl.headerTitle ?? "Order Confirmed", vars);
-    const ctaUrl = `https://store.framique.com/${merchant.slug}/track?order=${order.order_number}`;
+    const ctaUrl = `https://framique.qubickle.com/store/${merchant.slug}/track?order=${order.order_number}`;
 
     // Itemized table HTML
     const itemsHtml = `
@@ -293,7 +293,7 @@ export async function sendInvoiceEmail(args: {
     );
     const bodyText = interpolate(tpl.bodyTemplate ?? "", vars);
     const headerTitle = interpolate(tpl.headerTitle ?? "Tax Invoice", vars);
-    const ctaUrl = `https://store.framique.com/invoice/${doc.order.id}`;
+    const ctaUrl = `https://framique.qubickle.com/invoice/${doc.order.id}`;
 
     const plainText = `${headerTitle}\n\nInvoice: ${doc.invoice.number}\nOrder: #${doc.order.number}\nTotal: ${formatMoneyMinor(doc.invoice.totalMinor, currency)}\n\nView online: ${ctaUrl}`;
 
@@ -374,7 +374,7 @@ export async function sendShipmentDispatchedEmail(args: {
       awb_number: shipment.awb ?? "Assigned",
       tracking_url:
         shipment.tracking_url ??
-        `https://store.framique.com/${merchant.slug}/track`,
+        `https://framique.qubickle.com/store/${merchant.slug}/track`,
     };
 
     const subject = interpolate(
@@ -457,7 +457,7 @@ export async function sendCustomerWelcomeEmail(args: {
     );
     const bodyText = interpolate(tpl.bodyTemplate ?? "", vars);
     const headerTitle = interpolate(tpl.headerTitle ?? "Welcome!", vars);
-    const ctaUrl = `https://store.framique.com/${merchant.slug}`;
+    const ctaUrl = `https://framique.qubickle.com/store/${merchant.slug}`;
 
     const plainText = `${headerTitle}\n\n${bodyText}\n\nVisit store: ${ctaUrl}`;
 

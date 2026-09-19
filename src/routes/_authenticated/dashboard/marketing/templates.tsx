@@ -121,7 +121,7 @@ const SAMPLE_VARS: Record<string, string> = {
   invoice_number: "INV-2026-0042",
   carrier_name: "Steadfast Express",
   awb_number: "SF-991042",
-  tracking_url: "https://store.framique.com/artisan-leather/track",
+  tracking_url: "https://framique.qubickle.com/store/artisan-leather/track",
 };
 
 const PALETTE = [

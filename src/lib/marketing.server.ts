@@ -230,7 +230,7 @@ export async function sendCampaign(
 
   const rows = await Promise.all(
     members.map(async (m) => {
-      const unsubUrl = `https://store.framique.com/unsubscribe?email=${encodeURIComponent(m.email)}`;
+      const unsubUrl = `https://framique.qubickle.com/unsubscribe?email=${encodeURIComponent(m.email)}`;
       const html = renderEmailHtml({
         storeName: "Framique Store",
         brandColor: "#0f172a",
@@ -300,7 +300,7 @@ export async function retryCampaignSend(
     .eq("id", row.campaign_id)
     .maybeSingle();
 
-  const unsubUrl = `https://store.framique.com/unsubscribe?email=${encodeURIComponent(row.email)}`;
+  const unsubUrl = `https://framique.qubickle.com/unsubscribe?email=${encodeURIComponent(row.email)}`;
   const res = await sendTenantMail(supabase, merchantId, {
     to: row.email,
     subject: camp?.subject || "Newsletter Update",

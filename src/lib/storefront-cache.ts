@@ -94,7 +94,7 @@ export const EDGE_TTL_SECONDS = 60;
 export const EDGE_STALE_SECONDS = 300;
 
 /** Storefront document paths — the only HTML we let a shared cache keep.
- * Covers both path-based (/store/:slug) and custom domains / wildcard subdomains (/, /p/*, /c/*, /pages/*, /cart, /checkout).
+ * Covers both path-based (/store/:slug) and custom domains (/, /p/*, /c/*, /pages/*, /cart, /checkout).
  */
 export function isStorefrontPath(pathname: string): boolean {
   if (/^\/store\/[^/]+(\/.*)?$/.test(pathname)) return true;

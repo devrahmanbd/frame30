@@ -3,7 +3,7 @@
  *
  * The naive `origin === host` check in `server.ts` correctly handles:
  *   - Same-origin requests from the platform apex
- *   - Wildcard subdomain requests (<slug>.framique.store) when x-forwarded-host
+ *   - Path-based storefront requests (/store/<slug>) when x-forwarded-host
  *     is set by OpenResty before it reaches Nitro
  *   - Merchant custom domains when x-forwarded-host is the custom domain
  *

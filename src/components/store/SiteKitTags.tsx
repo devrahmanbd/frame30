@@ -35,7 +35,7 @@ import {
 export type StorefrontSiteKit = {
   verification: VerificationSettings;
   analytics: AnalyticsSettings;
-  /** False on store.framique.com/<slug> — tags must not fire there. */
+  /** False on framique.qubickle.com/store/<slug> — tags must not fire there. */
   hasCustomDomain: boolean;
   /** Merchant-enabled bot protection via Cloudflare Turnstile. */
   botProtection: boolean;

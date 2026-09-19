@@ -374,8 +374,8 @@ function SeoSettingsPage() {
                 </p>
                 <p className="mt-1 text-xs">
                   {t(
-                    "IDs saved here will not fire on store.framique.com URLs. Once you connect a custom domain under Settings → Domains, tags will activate automatically.",
-                    "এখানে সেভ করা আইডি store.framique.com URL-এ কাজ করবে না। Settings → Domains-এ কাস্টম ডোমেইন যুক্ত করলে ট্যাগগুলো স্বয়ংক্রিয়ভাবে সক্রিয় হবে।",
+                    "IDs saved here will not fire on framique.qubickle.com/store/<slug> URLs. Once you connect a custom domain under Settings → Domains, tags will activate automatically.",
+                    "এখানে সেভ করা আইডি framique.qubickle.com/store/<slug> URL-এ কাজ করবে না। Settings → Domains-এ কাস্টম ডোমেইন যুক্ত করলে ট্যাগগুলো স্বয়ংক্রিয়ভাবে সক্রিয় হবে।",
                   )}
                 </p>
               </div>

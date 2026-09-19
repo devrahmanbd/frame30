@@ -478,7 +478,7 @@ export type StorefrontSiteKit = {
   verification: VerificationSettings;
   /**
    * Analytics is ONLY populated when the merchant has an active custom domain.
-   * On slug-based storefronts (store.framique.com/<slug>) this is always
+   * On slug-based storefronts (framique.qubickle.com/store/<slug>) this is always
    * DEFAULT_ANALYTICS so no tag IDs ever reach the shopper's browser.
    */
   analytics: AnalyticsSettings;
