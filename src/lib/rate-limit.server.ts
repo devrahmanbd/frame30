@@ -65,6 +65,13 @@ export const BUCKETS = {
   "tenant.ingress.shopper": { limit: 180, windowSeconds: 60 },
   "tenant.api": { limit: 300, windowSeconds: 60 },
   "system.ingress": { limit: 300, windowSeconds: 60 },
+  // Console paths (/root, /dashboard) get their own budget, isolated from
+  // public crawl bursts sharing a carrier-NAT IP (incident 2026-09-19:
+  // /root 429'd on system.ingress while bots crawled storefronts).
+  "system.console": { limit: 600, windowSeconds: 60 },
+  // Loopback-sourced traffic (monitoring, proofs, health checks, local ops)
+  // shares one IP by construction — give it headroom, still bounded.
+  "system.ingress.loopback": { limit: 3000, windowSeconds: 60 },
   "system.auth": { limit: 15, windowSeconds: 300 },
 
   "auth.signin": { limit: 10, windowSeconds: 300 },

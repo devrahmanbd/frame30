@@ -506,6 +506,22 @@ export default {
             const { enforceRateLimit } =
               await import("./lib/rate-limit.server");
             await enforceRateLimit("system.auth", clientIp);
+          } else if (isConsolePath(url.pathname)) {
+            // Operator console gets its own budget so public crawl bursts
+            // on a shared egress IP can't lock admins out (2026-09-19).
+            const { enforceRateLimit } =
+              await import("./lib/rate-limit.server");
+            await enforceRateLimit("system.console", clientIp);
+          } else if (
+            clientIp === "127.0.0.1" ||
+            clientIp === "::1" ||
+            clientIp === "::ffff:127.0.0.1"
+          ) {
+            // Loopback-sourced monitoring/proofs share one IP by
+            // construction — bounded headroom instead of the shared budget.
+            const { enforceRateLimit } =
+              await import("./lib/rate-limit.server");
+            await enforceRateLimit("system.ingress.loopback", clientIp);
           } else {
             // Platform System Ingress
             const { enforceRateLimit } =
