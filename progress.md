@@ -19,9 +19,9 @@
 
 ## DR build loop (spec: docs/superpowers/specs/2026-09-18-fortress-backup-restore-design.md)
 
-- [ ] **B1** U1 WAL archiving + approved restart + lag verify; U2 backup.sh compose-path fix + real Redis BGSAVE
-- [ ] **B2** U3 systemd timers (nightly/weekly/hourly/daily) + integrity verify job
-- [ ] **B3** U5 rehearsal automation: sandbox restore + assertions + rehearsals.jsonl, fail-closed
+- [x] **B1** (`99df678`): WAL archiving LIVE (segments streaming, lag ~4s) + approved db recreate; backup.sh retargeted to live stack; pooler-5436 fallback; host-bind storage tar; real Redis BGSAVE path (graceful skip, app cache is memory-only); wal-lag-probe.sh; pgbasebackup.sh; live snapshot verified (db.dump 1.8MB docker-exec).
+- [x] **B2** (`1636249`): 4 systemd timers installed+enabled (nightly 02:30Z, base Sun 03:30Z, hourly lag, daily verify 04:30Z); integrity-verify.sh writes integrity.json (5/5 digests OK live); B5 sync gate reads it.
+- [ ] **B3** U5 rehearsal automation: sandbox restore + assertions + rehearsals.jsonl, fail-closed (rehearse.sh currently dangerous: stale compose, down -v, mock pass — DO NOT RUN as-is)
 - [ ] **B4** U6 portable restore.sh + U7 restoref same-host stack + OpenResty vhost
 - [ ] **B5** U4 rclone FTP+S3 checksum sync + U8 /root dashboards + doc sign-off + full proof
 
