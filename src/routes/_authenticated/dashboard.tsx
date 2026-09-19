@@ -73,9 +73,28 @@ function MerchantDashboardLayout() {
 
   if (isPending) {
     return (
-      <p className="p-8 text-sm text-muted-foreground">
-        {tk("common.loading")}
-      </p>
+      <div
+        className="flex min-h-screen w-full bg-background"
+        aria-busy="true"
+        aria-label="Loading"
+      >
+        <div className="hidden w-60 shrink-0 space-y-2 border-r border-border p-4 md:block">
+          <div className="h-8 w-32 animate-pulse rounded-fq-md bg-muted/50" />
+          {[0, 1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="h-10 animate-pulse rounded-fq-md bg-muted/40"
+            />
+          ))}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="h-14 border-b border-border" />
+          <div className="mx-auto max-w-6xl space-y-4 p-6">
+            <div className="h-8 w-56 animate-pulse rounded-fq-md bg-muted/50" />
+            <div className="h-64 animate-pulse rounded-fq-lg border border-border bg-muted/40" />
+          </div>
+        </div>
+      </div>
     );
   }
   if (!merchant) {
