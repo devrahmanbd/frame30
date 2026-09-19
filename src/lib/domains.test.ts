@@ -141,15 +141,15 @@ describe("evaluateDns", () => {
 });
 
 describe("domainQuotaForPlan", () => {
-  it("caps custom domains per plan tier (LE quota protection)", async () => {
+  it("caps custom domains at 1 per store on every plan (owner policy)", async () => {
     const { domainQuotaForPlan } = await import("./domains");
     expect(domainQuotaForPlan("launch")).toBe(1);
-    expect(domainQuotaForPlan("growth")).toBe(3);
-    expect(domainQuotaForPlan("business")).toBe(10);
-    expect(domainQuotaForPlan("enterprise")).toBe(25);
+    expect(domainQuotaForPlan("growth")).toBe(1);
+    expect(domainQuotaForPlan("business")).toBe(1);
+    expect(domainQuotaForPlan("enterprise")).toBe(1);
   });
 
-  it("fails closed to launch quota on unknown input", async () => {
+  it("fails closed to 1 on unknown input", async () => {
     const { domainQuotaForPlan } = await import("./domains");
     expect(domainQuotaForPlan("unknown" as never)).toBe(1);
   });

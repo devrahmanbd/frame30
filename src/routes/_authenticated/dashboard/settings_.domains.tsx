@@ -309,8 +309,8 @@ function DomainsPage() {
       <SectionCard
         title={t("Connect a domain", "ডোমেইন যুক্ত করুন")}
         hint={t(
-          `Up to ${data.limit} domains. Use the apex (example.com) or a sub-domain (shop.example.com).`,
-          `সর্বোচ্চ ${data.limit}টি ডোমেইন। apex (example.com) বা সাব-ডোমেইন (shop.example.com) দিন।`,
+          `One domain per store. Use the apex (example.com) or a sub-domain (shop.example.com).`,
+          `প্রতি স্টোরে একটি ডোমেইন। apex (example.com) বা সাব-ডোমেইন (shop.example.com) দিন।`,
         )}
       >
         <form

@@ -296,19 +296,11 @@ export function evaluateDns(input: {
 export type BillingPlanKey = "launch" | "growth" | "business" | "enterprise";
 
 /**
- * Custom-domain cap per plan tier (Let's Encrypt quota protection).
- * Unknown input fails closed to the launch quota — never unlimited.
+ * Custom-domain cap: exactly 1 per store on every plan (owner policy
+ * 2026-09-19 — 1 store = 1 domain, never more). Kept as a function (not a
+ * constant) so the call sites and quota error path stay unchanged.
+ * Unknown input fails closed to 1 — never unlimited.
  */
-export function domainQuotaForPlan(plan: BillingPlanKey): number {
-  switch (plan) {
-    case "growth":
-      return 3;
-    case "business":
-      return 10;
-    case "enterprise":
-      return 25;
-    case "launch":
-    default:
-      return 1;
-  }
+export function domainQuotaForPlan(_plan: BillingPlanKey): number {
+  return 1;
 }
