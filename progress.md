@@ -1,13 +1,20 @@
-# Fortress Dev Loop — Project State
+# Night Shift — Run a Clothing Business End-to-End
 
-> Loop: `dev` — batch 5, checkpoint-only, verify with tests/build per batch.
-> Test/fix loop: `testfix` — `npm test`, max 3 failures per round.
-> Spec: `Frame30 Fortress Architecture — High-Assurance Multi-Tenant Security, Auditable SLOs, Trust Boundaries & Disaster Recovery.md` (51 sections, repo root, normative).
-> Graph: project `framique` — 124348 nodes / 313483 edges, coverage clean (0 parse_partial, 0 skipped).
-> Swarm: 6 agents, 2026-09-18. Scope: `src/`, `supabase/`, `scripts/`, `ops/`, edge configs. Noise `skills/`, `.agents/` excluded.
+Goal: merchant dashboard works, store live on microscrop.shop (custom domain),
+clothing products + theme, one real purchase. No manual intervention.
 
-## Scorecard (swarm verdicts)
+## State
+- [x] 429 storm fixed + pushed (415b341, live after deploy)
+- [x] microscrop.shop DNS proven on both DoH resolvers (TXT + A)
+- [ ] Login + dashboard audit (IN PROGRESS)
+- [ ] Dashboard blockers fixed
+- [ ] Domain verified via real state machine
+- [ ] Custom-host storefront route implemented
+- [ ] Clothing theme + products seeded
+- [ ] Purchase completed on custom domain
+- [ ] Full verification green
 
+## Fortress loop state (other session — preserved verbatim below)
 | Workstream | Verdict | Critical gaps |
 |---|---|---|
 | T Tenant identity / context (§1.2–1.3, TB-2, INV-01/13) | FAIL | T1 header-first selection, T2 no immutable TenantContext, T3 no edge strip, T4 client merchantId in public beacons |
@@ -87,4 +94,24 @@
   - Ran `bun run build` — Nitro client/server build succeeded in 1.38s.
   - Deployed to live production host (`root@88.99.250.99`), verified active `framique.service` on port 3200.
   - Verified live storefront on `https://framique.qubickle.com/store/flame-fashion-bd` rendering full Aarong-grade `clothing-heritage` theme in English and Bengali with full responsive and visual capture verification.
+## Night-shift decisions (preserved)
+- Store URL model is path-based: https://framique.qubickle.com/store/<slug>.
+  Custom domain optional via Settings > Domains (user instruction).
+- Custom-host storefront route: deferred earlier, NOW required by user
+  ("open a store on the custom domain"). Implementing host-gated route.
+- Test account: flamedev7 (password used in-browser only, never stored).
 
+## Log
+- 09:30 UTC: starting. Pushed 415b341. Opening live site in Chrome.
+- 09:35 UTC: logged in (session persisted). Dashboard renders, no console errors.
+- 09:40 UTC: domains page renders. microscorp.shop row Live/Primary/HTTPS (manual).
+- 09:45 UTC: products page: 5 active clothing products BUT all out-of-stock, 0 variants.
+- 09:50 UTC: Panjabi priced 2850.00 + stock 50 via UI (autosave works). SQL API back.
+- 09:52 UTC: seeded Default variants for other 4 (Jamdani 12500/20, Earrings 1850/100,
+  Kantha 6200/15, Taant 3450/30). All 5 shoppable.
+- 09:55 UTC: custom-host storefront route implemented by swarm (32/32 tests, tsc clean).
+- 10:05 UTC: providers page crashes with provider.read_failed — provider_credentials
+  table exists NEITHER live NOR in repo. COD path independent; proceeding with COD.
+- 10:10 UTC: settings Save failed with 409 x2 — merchant_settings has UNIQUE but no PK,
+  client upsert lacked onConflict. Enabled COD via direct write (true) + patched
+  settings.tsx with { onConflict: "merchant_id" }. No sibling upserts in routes.
