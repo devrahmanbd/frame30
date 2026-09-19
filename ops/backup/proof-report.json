@@ -1,0 +1,72 @@
+{
+  "proved_at": "2026-09-19T02:49:24Z",
+  "domain": "restoref.qubickle.com",
+  "verdict": "pass",
+  "checks": [
+    {
+      "name": "home-200",
+      "result": "pass",
+      "detail": ""
+    },
+    {
+      "name": "home-complete",
+      "result": "pass",
+      "detail": ""
+    },
+    {
+      "name": "home-nonce",
+      "result": "pass",
+      "detail": ""
+    },
+    {
+      "name": "signup-200",
+      "result": "pass",
+      "detail": ""
+    },
+    {
+      "name": "signup-wizard",
+      "result": "pass",
+      "detail": ""
+    },
+    {
+      "name": "signup-english-only",
+      "result": "pass",
+      "detail": ""
+    },
+    {
+      "name": "rest-parity",
+      "result": "pass",
+      "detail": " 5 rows"
+    },
+    {
+      "name": "rls-parity",
+      "result": "pass",
+      "detail": " 540 policies"
+    },
+    {
+      "name": "auth-pipeline",
+      "result": "pass",
+      "detail": " invalid login rejected 400"
+    },
+    {
+      "name": "parity-merchants",
+      "result": "pass",
+      "detail": " 5"
+    },
+    {
+      "name": "parity-products",
+      "result": "pass",
+      "detail": " 7"
+    },
+    {
+      "name": "parity-orders",
+      "result": "pass",
+      "detail": " 0"
+    },
+    {
+      "name": "parity-users",
+      "result": "pass",
+      "detail": " 20"
+    }
+  ]
+}

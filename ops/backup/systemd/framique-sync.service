@@ -1,0 +1,12 @@
+[Unit]
+Description=Fortress off-site backup sync (rclone, checksum-verified)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/frame28
+Environment=BACKUP_DIR=/var/backups/framique
+# Remotes configured via EnvironmentFile (credentials live there, not in git).
+EnvironmentFile=-/etc/framique/backup-remotes.env
+ExecStart=/opt/frame28/ops/backup/rclone-sync.sh

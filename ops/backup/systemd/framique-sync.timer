@@ -1,0 +1,10 @@
+[Unit]
+Description=Fortress off-site sync timer (daily 05:00 UTC)
+
+[Timer]
+OnCalendar=05:00
+Persistent=true
+Unit=framique-sync.service
+
+[Install]
+WantedBy=timers.target

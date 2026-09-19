@@ -27,7 +27,7 @@ mkdir -p "$OUT"
 
 echo "[basebackup] Streaming physical base backup: $TS (label=$LABEL)"
 docker compose -f "$COMPOSE_FILE" --project-directory "$COMPOSE_DIR" exec -T db \
-  pg_basebackup -U postgres -D - -Ft -z -P > "$OUT/base.tar.gz"
+  pg_basebackup -U postgres -D - -Ft -z -X fetch -P > "$OUT/base.tar.gz"
 
 sha256sum "$OUT/base.tar.gz" | cut -d' ' -f1 > "$OUT/base.tar.gz.sha256"
 cat > "$OUT/manifest.json" <<JSON
