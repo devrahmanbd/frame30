@@ -1,0 +1,10 @@
+[Unit]
+Description=Fortress rehearsal timer (Sunday 05:30 UTC)
+
+[Timer]
+OnCalendar=Sun 05:30
+Persistent=true
+Unit=framique-rehearse.service
+
+[Install]
+WantedBy=timers.target

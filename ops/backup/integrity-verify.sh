@@ -11,8 +11,13 @@
 set -euo pipefail
 
 BACKUP_DIR="${BACKUP_DIR:-/var/backups/framique}"
-TARGET="${1:-$(ls -t "$BACKUP_DIR" | grep -E '^20[0-9]{6}T' | head -1)}"
-SET="$BACKUP_DIR/$TARGET"
+ARG="${1:-$(ls -t "$BACKUP_DIR" | grep -E '^20[0-9]{6}T' | head -1)}"
+# Accept either a bare timestamp dir or an absolute set path.
+if [[ "$ARG" == /* ]]; then
+  SET="$ARG"
+else
+  SET="$BACKUP_DIR/$ARG"
+fi
 
 fail() { echo "[integrity] FAIL: $1" >&2; exit 1; }
 [ -d "$SET" ] || fail "set not found: $SET"
@@ -65,7 +70,7 @@ cat > "$SET/integrity.json" <<JSON
 {
   "verdict": "integrity-certified",
   "checked_at": "$(date -u +%FT%TZ)",
-  "set": "$TARGET"
+  "set": "$(basename "$SET")"
 }
 JSON
-echo "[integrity] PASS: $TARGET integrity-certified"
+echo "[integrity] PASS: $(basename "$SET") integrity-certified"

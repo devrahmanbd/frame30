@@ -1,0 +1,12 @@
+[Unit]
+Description=Fortress weekly restore rehearsal (sandbox, fail-closed)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/frame28
+Environment=BACKUP_DIR=/var/backups/framique
+# No args = latest set. Non-zero exit on failure surfaces in timer status
+# and is wired to block the release gate.
+ExecStart=/opt/frame28/ops/backup/rehearse.sh
