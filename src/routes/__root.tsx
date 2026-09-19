@@ -1,5 +1,4 @@
 /// <reference types="vite/client" />
-import { useEffect, useState } from "react";
 import {
   HeadContent,
   Outlet,
@@ -17,8 +16,6 @@ import { FONT_PRELOAD } from "@/lib/web-vitals";
 import appCss from "@/styles.css?url";
 import { installClientErrorReporter } from "@/lib/client-error-reporter";
 import { getCurrentNonce } from "@/lib/ssr-nonce";
-import { isClientGatedPath } from "@/lib/boot-splash";
-import { readServerBootSplash } from "@/lib/boot-splash.server";
 
 // Phase 12 — one browser reporter for onerror + unhandled rejections. Runs at
 // module scope on the client only; the server import is a no-op.
@@ -35,18 +32,6 @@ installClientErrorReporter();
 const resolveBootLang = createIsomorphicFn()
   .client((): BootLang => readClientBootLang())
   .server((): BootLang => readServerBootLang());
-
-const resolveBootSplash = createIsomorphicFn()
-  .client(
-    (): boolean =>
-      typeof window === "undefined"
-        ? false
-        : isClientGatedPath(window.location.pathname),
-  )
-  .server((): boolean => readServerBootSplash());
-
-// Module-scope consumption flag for the one-shot splash (see RootDocument).
-let bootSplashConsumed = false;
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -102,27 +87,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 );
 
 function RootDocument() {
-  // Boot splash shows exactly once per full document load on client-gated
-  // routes — never on client-side navigations (which would flash it on
-  // every dashboard click). First mount consumes the SSR-rendered splash;
-  // later mounts skip it. Same-URL determinism keeps hydration matched.
-  const [showSplash, setShowSplash] = useState(() => {
-    // Server: derive purely from the request (module state is shared across
-    // requests — never consult the consumption flag here).
-    if (typeof window === "undefined") return resolveBootSplash();
-    if (bootSplashConsumed) return false;
-    bootSplashConsumed = true;
-    return resolveBootSplash();
-  });
-  // Remove the server-rendered boot splash the moment React hydrates, so a
-  // reload never sits on a white void (authenticated routes are client-gated
-  // and would otherwise flash blank while the session check runs). If JS
-  // fails entirely the splash stays — brand, not blankness.
-  useEffect(() => {
-    // Let React remove the node via state (never removeChild it directly —
-    // direct removal races the reconciler and throws NotFoundError).
-    if (showSplash) setShowSplash(false);
-  }, [showSplash]);
   // The router owns the QueryClient; the provider makes it reachable from
   // useQuery/useMutation in every route below.
   const { queryClient } = Route.useRouteContext();
@@ -150,55 +114,6 @@ function RootDocument() {
         />
       </head>
       <body>
-        {/* Boot splash: static, zero-JS brand cover for the reload gap on
-            client-gated routes ONLY (public SSR pages stream content at
-            once — a splash there would cover real pixels and hurt LCP).
-            Inline styles on purpose — it must paint before any stylesheet
-            or script arrives. Removed on hydration (see useEffect above). */}
-        {showSplash ? (
-        <div
-          id="fq-boot"
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 50,
-            minHeight: "100vh",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "16px",
-            background: "#FFF1F3",
-            color: "#0F172A",
-            fontFamily:
-              '"Space Grotesk","DM Sans",system-ui,-apple-system,sans-serif',
-          }}
-        >
-          <div style={{ fontSize: "28px", fontWeight: 700, letterSpacing: "-0.5px" }}>
-            Framique
-          </div>
-          <div
-            style={{
-              width: "120px",
-              height: "3px",
-              borderRadius: "999px",
-              background: "rgba(24,119,242,0.18)",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                width: "40%",
-                height: "100%",
-                borderRadius: "999px",
-                background: "#1877F2",
-                animation: "fq-boot-slide 1.1s ease-in-out infinite alternate",
-              }}
-            />
-          </div>
-          <style>{`@keyframes fq-boot-slide{from{transform:translateX(-100%)}to{transform:translateX(280%)}}`}</style>
-        </div>
-        ) : null}
         <QueryClientProvider client={queryClient}>
           <LanguageProvider initialLang={lang}>
             <Outlet />
