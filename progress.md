@@ -25,6 +25,7 @@
 - [x] **B4** (`488e0f6`): setup-restore-stack.sh + restore-target.sh (profile registry, fail-closed); restoref stack live (db/auth/rest/storage/kong); OpenResty vhost + HAProxy ACL + LE cert; framique-restore.service :3201; FULL PROOF 13/13 PASS (pages, wizard, EN-only, REST/RLS/row parity, auth pipeline).
 - [x] **B5** (`488e0f6`): rclone-sync.sh (certified-only, --checksum --immutable, check, state) + timer (needs remotes — BLOCKED on credentials); recovery-status.sh aggregator; pg_hba replication rules; WAL prune 4.8G→1.3G.
 - [ ] **Follow-up**: FTP/S3 credentials for rclone remotes (only manual input outstanding); live-container deletion incident documented (recovered in minutes, collision guard added); WAL write rate ~40MB/min — investigate writer volume.
+- [x] **Guide** (`04f90aa`): `docs/14-operations/backup-restore.md` rewritten as the complete step-by-step operator guide (A–G operations) with verified/unverified ledger; same-host restore test record included.
 - [ ] **B3** U5 rehearsal automation: sandbox restore + assertions + rehearsals.jsonl, fail-closed (rehearse.sh currently dangerous: stale compose, down -v, mock pass — DO NOT RUN as-is)
 - [ ] **B4** U6 portable restore.sh + U7 restoref same-host stack + OpenResty vhost
 - [ ] **B5** U4 rclone FTP+S3 checksum sync + U8 /root dashboards + doc sign-off + full proof
