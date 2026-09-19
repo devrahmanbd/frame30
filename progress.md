@@ -103,6 +103,13 @@ clothing products + theme, one real purchase. No manual intervention.
 
 ## Log
 - 09:30 UTC: starting. Pushed 415b341. Opening live site in Chrome.
+- DEPLOY REQUEST (night shift -> whoever deploys): main has 3 undeployed
+  commits needed for the clothing-business E2E: 415b341 (429 storm fixes),
+  a55e410 (custom-host storefront route + settings onConflict fix),
+  97156bc (variant prices for anon shoppers). Please deploy app to blue
+  AND check edge: microscorp.shop is NXDOMAIN at registry (owner must
+  restore zone), HAProxy has no SNI/default rule for custom hosts (502),
+  autossl never issued for microscorp.shop. No SSH from here.
 - 09:35 UTC: logged in (session persisted). Dashboard renders, no console errors.
 - 09:40 UTC: domains page renders. microscorp.shop row Live/Primary/HTTPS (manual).
 - 09:45 UTC: products page: 5 active clothing products BUT all out-of-stock, 0 variants.
@@ -115,3 +122,10 @@ clothing products + theme, one real purchase. No manual intervention.
 - 10:10 UTC: settings Save failed with 409 x2 — merchant_settings has UNIQUE but no PK,
   client upsert lacked onConflict. Enabled COD via direct write (true) + patched
   settings.tsx with { onConflict: "merchant_id" }. No sibling upserts in routes.
+- 10:40 UTC: PDP showed 0.00/out-of-stock — product_variants has NO public SELECT
+  policy (anon join = []). Wrote migration 20260919050000 (DDL blocked live:
+  not table owner) + app-side service-role merge (same exposure). Proven on
+  local dev: 2,850 + in stock. Committed 97156bc + pushed. Awaiting deploy.
+- NOTE: microscorp.shop (correct spelling, 'corp') is NXDOMAIN as of ~10:30 UTC
+  on both DoH resolvers — registration/zone gone. microscrop.shop row is a
+  typo stray (issuing_cert). Real Verify run flipped row to Verifying attempt 1.
