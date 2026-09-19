@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   HeadContent,
   Outlet,
@@ -44,6 +44,9 @@ const resolveBootSplash = createIsomorphicFn()
         : isClientGatedPath(window.location.pathname),
   )
   .server((): boolean => readServerBootSplash());
+
+// Module-scope consumption flag for the one-shot splash (see RootDocument).
+let bootSplashConsumed = false;
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -99,13 +102,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 );
 
 function RootDocument() {
+  // Boot splash shows exactly once per full document load on client-gated
+  // routes — never on client-side navigations (which would flash it on
+  // every dashboard click). First mount consumes the SSR-rendered splash;
+  // later mounts skip it. Same-URL determinism keeps hydration matched.
+  const [showSplash, setShowSplash] = useState(() => {
+    // Server: derive purely from the request (module state is shared across
+    // requests — never consult the consumption flag here).
+    if (typeof window === "undefined") return resolveBootSplash();
+    if (bootSplashConsumed) return false;
+    bootSplashConsumed = true;
+    return resolveBootSplash();
+  });
   // Remove the server-rendered boot splash the moment React hydrates, so a
   // reload never sits on a white void (authenticated routes are client-gated
   // and would otherwise flash blank while the session check runs). If JS
   // fails entirely the splash stays — brand, not blankness.
   useEffect(() => {
-    document.getElementById("fq-boot")?.remove();
-  }, []);
+    if (showSplash) {
+      document.getElementById("fq-boot")?.remove();
+      setShowSplash(false);
+    }
+  }, [showSplash]);
   // The router owns the QueryClient; the provider makes it reachable from
   // useQuery/useMutation in every route below.
   const { queryClient } = Route.useRouteContext();
@@ -138,10 +156,13 @@ function RootDocument() {
             once — a splash there would cover real pixels and hurt LCP).
             Inline styles on purpose — it must paint before any stylesheet
             or script arrives. Removed on hydration (see useEffect above). */}
-        {resolveBootSplash() ? (
+        {showSplash ? (
         <div
           id="fq-boot"
           style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 50,
             minHeight: "100vh",
             display: "flex",
             flexDirection: "column",
