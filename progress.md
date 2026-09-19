@@ -22,6 +22,9 @@
 - [x] **B1** (`99df678`): WAL archiving LIVE (segments streaming, lag ~4s) + approved db recreate; backup.sh retargeted to live stack; pooler-5436 fallback; host-bind storage tar; real Redis BGSAVE path (graceful skip, app cache is memory-only); wal-lag-probe.sh; pgbasebackup.sh; live snapshot verified (db.dump 1.8MB docker-exec).
 - [x] **B2** (`1636249`): 4 systemd timers installed+enabled (nightly 02:30Z, base Sun 03:30Z, hourly lag, daily verify 04:30Z); integrity-verify.sh writes integrity.json (5/5 digests OK live); B5 sync gate reads it.
 - [x] **B3** (`3ad17d9`): rehearse.sh rewritten around isolated scratch PG (unique names, --network none, trap cleanup); manifest gate + pg_restore + row assertions + storage check + honest RTO/age/lag to rehearsals.jsonl; LIVE PASS RTO=10s; weekly timer Sun 05:30Z.
+- [x] **B4** (`488e0f6`): setup-restore-stack.sh + restore-target.sh (profile registry, fail-closed); restoref stack live (db/auth/rest/storage/kong); OpenResty vhost + HAProxy ACL + LE cert; framique-restore.service :3201; FULL PROOF 13/13 PASS (pages, wizard, EN-only, REST/RLS/row parity, auth pipeline).
+- [x] **B5** (`488e0f6`): rclone-sync.sh (certified-only, --checksum --immutable, check, state) + timer (needs remotes — BLOCKED on credentials); recovery-status.sh aggregator; pg_hba replication rules; WAL prune 4.8G→1.3G.
+- [ ] **Follow-up**: FTP/S3 credentials for rclone remotes (only manual input outstanding); live-container deletion incident documented (recovered in minutes, collision guard added); WAL write rate ~40MB/min — investigate writer volume.
 - [ ] **B3** U5 rehearsal automation: sandbox restore + assertions + rehearsals.jsonl, fail-closed (rehearse.sh currently dangerous: stale compose, down -v, mock pass — DO NOT RUN as-is)
 - [ ] **B4** U6 portable restore.sh + U7 restoref same-host stack + OpenResty vhost
 - [ ] **B5** U4 rclone FTP+S3 checksum sync + U8 /root dashboards + doc sign-off + full proof
