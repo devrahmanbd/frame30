@@ -105,6 +105,15 @@ bun run a11y:gate                 # axe-core, >= 90 score
 - `[A]` (money, security, tenant isolation) features need deny cases + replay cases + audit assertions, not just happy paths.
 - E2E suites: `store_loop`, `admin_loop`, `builder_loop`, `market_loop`, `public_loop`, `failure_loop`, `owner_loop`, `currency_gate`, `fraud_loop`, `ai_support_loop`, `tenant_isolation`.
 
+## CI — CircleCI only (no GitHub Actions)
+
+- **CircleCI is the only CI system.** Never create or edit anything under `.github/` — no Actions workflows, period. The old `gates.yml` was deleted in this migration.
+- **Single pipeline file:** all CI lives in `.circleci/config.yml`. Jobs mirror the Commands section: `lint-typecheck` (ESLint + `tsgo --noEmit`), `unit-contract` (Vitest + contract gate), `scan` (blocking secret scan; advisory dep audit), `build` (Vite + Nitro production build), `e2e-critical` (Playwright critical suites).
+- **Task-finish rule:** when a task finishes, update `.circleci/config.yml` so the pipeline actually exercises the change — extend the relevant job (test, build, lint, e2e) instead of assuming existing coverage. New suites, scripts, or gates must be wired into a job in the same commit.
+- **E2E auto-activation:** the `e2e-critical` job passes by design until `.e2e/playwright.config.ts` lands in the repo, then it installs Chromium (`--with-deps`) and runs `bun run e2e:critical`. Do not "fix" the skip — build the harness instead.
+- **Tooling (verified via Context7 against current CircleCI docs):** `circleci/node` orb for Bun (`install-bun: true`, `bun-version: "1.3.14"` pinned like local dev; `install-packages` with `pkg-manager: bun` runs frozen-lockfile installs that honour the `bunfig.toml` 24h supply-chain guard). Executors are `cimg/node:24.21` (there is no `cimg/bun` image) and `cimg/node:24.21-browsers` for E2E.
+- Validate config edits with `circleci config validate` (CLI) when available; at minimum keep the YAML parseable and the job list in sync with this section.
+
 ## Bun Supply-Chain Guard
 
 `bunfig.toml` enforces a **24h minimum release age** for all npm packages. No bypasses in `minimumReleaseAgeExcludes` without explicit approval. This prevents supply-chain attacks from freshly published malicious packages.

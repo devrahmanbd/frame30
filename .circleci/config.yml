@@ -1,0 +1,112 @@
+# Framique CI — CircleCI is the ONLY CI system. Do not add GitHub Actions
+# (see AGENTS.md "CI" section). This pipeline mirrors `.github/workflows`
+# tooling choices verified against current CircleCI docs via Context7:
+# - `circleci/node` orb provides first-class Bun support (`install-bun`,
+#   `install-packages` with `pkg-manager: bun`, frozen-lockfile installs
+#   that honour the bunfig.toml 24h supply-chain guard).
+# - No `cimg/bun` image exists — Bun is installed onto `cimg/node`.
+# - E2E uses the `-browsers` image variant + Playwright's own browser
+#   install (`--with-deps` needs the apt access convenience images provide).
+version: 2.1
+
+orbs:
+  node: circleci/node@7.2
+
+executors:
+  bun-executor:
+    docker:
+      - image: cimg/node:24.21
+    resource_class: medium
+  e2e-executor:
+    docker:
+      - image: cimg/node:24.21-browsers
+    resource_class: large
+
+commands:
+  setup-bun:
+    description: Install pinned Bun and project dependencies (frozen lockfile).
+    steps:
+      - node/install:
+          install-bun: true
+          bun-version: "1.3.14"
+      - node/install-packages:
+          pkg-manager: bun
+          app-dir: ~/project
+
+jobs:
+  lint-typecheck:
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: ESLint
+          command: bun run lint
+      - run:
+          name: Typecheck (tsgo --noEmit)
+          command: bun run typecheck
+
+  unit-contract:
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Unit + contract tests (Vitest)
+          command: bun run test
+      - run:
+          name: Contract gate
+          command: bun run test:contracts
+
+  scan:
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Secret scan (blocking)
+          command: bun run secrets:scan
+      - run:
+          name: Dependency audit (advisory only)
+          command: bun run scan:deps || true
+
+  build:
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Production build (Vite + Nitro)
+          command: bun run build
+
+  e2e-critical:
+    executor: e2e-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Install Playwright Chromium (if harness present)
+          command: |
+            if [ -f .e2e/playwright.config.ts ]; then
+              bunx playwright install --with-deps chromium
+            else
+              echo "No .e2e/playwright.config.ts yet — skipping browser install (see AGENTS.md)."
+            fi
+      - run:
+          name: E2E critical suites (if harness present)
+          command: |
+            if [ -f .e2e/playwright.config.ts ]; then
+              bun run e2e:critical
+            else
+              echo "E2E harness not present yet — passing by design (see AGENTS.md)."
+            fi
+
+workflows:
+  version: 2
+  gates:
+    jobs:
+      - lint-typecheck
+      - unit-contract
+      - scan
+      - build
+      - e2e-critical
