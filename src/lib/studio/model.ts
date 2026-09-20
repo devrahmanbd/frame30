@@ -204,7 +204,16 @@ export function parseStudioBody(
   try {
     return parseStudioDoc(JSON.parse(json));
   } catch {
-    return null;
+    // Tolerate historically-escaped payloads where brackets were stored as
+    // `\[` `\]` (invalid JSON on its own): unescape once and retry rather
+    // than blanking authored content into an empty canvas.
+    try {
+      return parseStudioDoc(
+        JSON.parse(json.replace(/\\\[/g, "[").replace(/\\\]/g, "]")),
+      );
+    } catch {
+      return null;
+    }
   }
 }
 
