@@ -16,6 +16,7 @@ import type {
   SectionType,
 } from "@/lib/builder-ast";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
+import { placeholderSeed } from "@/lib/placeholder";
 
 /* ---------------------------------------------------------------- helpers */
 
@@ -102,6 +103,15 @@ const HeroCarousel: WidgetComponent = ({
           <img
             src={slide.image}
             alt={slide.headline}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+          />
+        )}
+        {!slide.image && (
+          <img
+            src={`/api/public/ph/${placeholderSeed(slide.headline || "heritage")}`}
+            alt=""
+            aria-hidden="true"
             className="absolute inset-0 h-full w-full object-cover"
             loading="lazy"
           />
@@ -207,12 +217,13 @@ const DepartmentGrid: WidgetComponent = ({
                   loading="lazy"
                 />
               ) : (
-                <span
-                  className="text-4xl font-bold text-foreground/15 select-none"
+                <img
+                  src={`/api/public/ph/${placeholderSeed(dept.name || "department")}`}
+                  alt=""
                   aria-hidden="true"
-                >
-                  {dept.name?.charAt(0) || "D"}
-                </span>
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
               )}
             </div>
             <div className="p-3">
@@ -269,12 +280,13 @@ const HeritageStory: WidgetComponent = ({
             loading="lazy"
           />
         ) : (
-          <span
-            className="text-[6rem] font-bold text-foreground/10 select-none"
+          <img
+            src={`/api/public/ph/${placeholderSeed(headline || "heritage-story")}`}
+            alt=""
             aria-hidden="true"
-          >
-            {headline?.charAt(0) || "H"}
-          </span>
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
         )}
       </div>
     </div>
@@ -373,12 +385,13 @@ const TextileShowcase: WidgetComponent = ({
                   loading="lazy"
                 />
               ) : (
-                <span
-                  className="text-5xl font-bold text-foreground/10 select-none"
+                <img
+                  src={`/api/public/ph/${placeholderSeed(product.name || "textile")}`}
+                  alt=""
                   aria-hidden="true"
-                >
-                  {product.name?.charAt(0) || "T"}
-                </span>
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
               )}
             </div>
             <div className="p-4">
@@ -460,6 +473,15 @@ const EditorialBanner: WidgetComponent = ({
           <img
             src={image}
             alt={headline}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+          />
+        )}
+        {!image && (
+          <img
+            src={`/api/public/ph/${placeholderSeed(headline || "editorial")}`}
+            alt=""
+            aria-hidden="true"
             className="absolute inset-0 h-full w-full object-cover"
             loading="lazy"
           />
