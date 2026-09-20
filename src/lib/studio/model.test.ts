@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { parseStudioBody, serializeStudioBody } from "./model";
+import {
+  defaultPageSettings,
+  parseStudioBody,
+  sectionsToStudioNodes,
+  serializeStudioBody,
+} from "./model";
 import type { StudioDoc } from "./model";
 
 function doc(): StudioDoc {
@@ -15,6 +20,7 @@ function doc(): StudioDoc {
         ],
       },
     ],
+    page: defaultPageSettings(),
   };
 }
 
@@ -41,5 +47,64 @@ describe("parseStudioBody", () => {
     expect(parseStudioBody("<!--fq-studio:v2\nnot json\nfq-studio:end-->")).toBeNull();
     expect(parseStudioBody(null)).toBeNull();
     expect(parseStudioBody("plain markdown")).toBeNull();
+  });
+});
+
+describe("sectionsToStudioNodes", () => {
+  const section = (overrides = {}) => ({
+    id: "old-id",
+    type: "container",
+    props: {},
+    ...overrides,
+  });
+
+  it("maps type/props/children and regenerates ids", () => {
+    const [node] = sectionsToStudioNodes([
+      section({
+        type: "heading",
+        props: { text: "Hi" },
+        children: [{ id: "c", type: "text", props: { text: "x" } }],
+      }),
+    ]);
+    expect(node.el).toBe("heading");
+    expect(node.settings).toMatchObject({ text: "Hi" });
+    expect(node.id).not.toBe("old-id");
+    expect(node.children?.[0]?.el).toBe("text");
+    expect(node.children?.[0]?.id).not.toBe("c");
+  });
+
+  it("fans breakpoint visibility out onto device keys", () => {
+    const [node] = sectionsToStudioNodes([
+      section({ hidden: ["mobile", "nonsense"] }),
+    ]);
+    expect(node.hiddenOn).toEqual(["mobile", "mobileLandscape"]);
+  });
+
+  it("drops invalid, typeless, and non-object entries but keeps siblings", () => {
+    const nodes = sectionsToStudioNodes([
+      section({ type: "button", props: { label: "Keep" } }),
+      section({ invalid: "bad" }),
+      { id: "no-type", props: {} },
+      null,
+      "text",
+    ]);
+    expect(nodes.map((n) => n.el)).toEqual(["button"]);
+  });
+
+  it("returns [] for non-arrays and truncates runaway depth", () => {
+    expect(sectionsToStudioNodes(null)).toEqual([]);
+    expect(sectionsToStudioNodes({})).toEqual([]);
+    let deep: unknown = { id: "x", type: "container", props: {} };
+    for (let i = 0; i < 20; i++)
+      deep = { id: "x", type: "container", props: {}, children: [deep] };
+    const [top] = sectionsToStudioNodes([deep]);
+    let count = 0;
+    let cursor = top;
+    while (cursor?.children?.[0] && count < 30) {
+      count += 1;
+      cursor = cursor.children[0];
+    }
+    expect(top.el).toBe("container");
+    expect(count).toBeLessThanOrEqual(13);
   });
 });

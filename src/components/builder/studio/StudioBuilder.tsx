@@ -23,9 +23,13 @@ import {
   type StudioPlatform,
 } from "@/lib/studio/shortcuts";
 import { BREAKPOINT_BY_KEY, type DeviceKey } from "@/lib/studio/responsive";
-import { flatten, type DropTarget } from "@/lib/studio/tree";
+import { cloneNode, flatten, type DropTarget } from "@/lib/studio/tree";
 import { widgetLabel } from "@/lib/studio/catalog";
-import { isContainerNode, type StudioDoc } from "@/lib/studio/model";
+import {
+  isContainerNode,
+  type StudioDoc,
+  type StudioNode,
+} from "@/lib/studio/model";
 import {
   builtInTemplates,
   instantiate,
@@ -97,6 +101,14 @@ export type StudioBuilderProps = {
    */
   resetKey?: string | null;
   /**
+   * Shared (global) blocks available for detached insertion. Each insert
+   * clones with fresh ids, so placing the same block twice never collides.
+   * Detached on purpose: the studio model has no linked-placement concept,
+   * so edits stay local to this page (the theme studio owns live-linked
+   * globals).
+   */
+  globalBlocks?: { id: string; name: string; nodes: StudioNode[] }[];
+  /**
    * Extra left-panel tab rendered beside Elements when nothing is selected
    * (e.g. the host's SEO panel). A host-provided React node; the studio only
    * owns the tab strip.
@@ -109,10 +121,14 @@ function ElementsPanelInner({
   studio,
   templates,
   dragWidget,
+  globals,
+  onInsertGlobal,
 }: {
   studio: ReturnType<typeof useStudio>;
   templates: StudioTemplate[];
   dragWidget: { current: string | null };
+  globals: { id: string; name: string }[];
+  onInsertGlobal: (id: string) => void;
 }) {
   return (
     <ElementsPanel
@@ -128,10 +144,8 @@ function ElementsPanelInner({
         if (template)
           instantiate(template).forEach((node) => studio.addNode(node));
       }}
-      globals={[]}
-      onInsertGlobal={() =>
-        toast.info("Global elements arrive with the design system.")
-      }
+      globals={globals}
+      onInsertGlobal={onInsertGlobal}
     />
   );
 }
@@ -147,8 +161,23 @@ export function StudioBuilder({
   fill = false,
   sideTab = null,
   resetKey = null,
+  globalBlocks = [],
 }: StudioBuilderProps) {
   const studio = useStudio(initialDoc, resetKey);
+
+  /** Detached insert of a shared block: fresh ids, appended at the cursor. */
+  const insertGlobalBlock = useCallback(
+    (id: string) => {
+      const block = globalBlocks.find((candidate) => candidate.id === id);
+      if (!block || block.nodes.length === 0) {
+        toast.error("That block is empty.");
+        return;
+      }
+      block.nodes.forEach((node) => studio.addNode(cloneNode(node)));
+      toast.success(`Inserted “${block.name}” (editable copy).`);
+    },
+    [globalBlocks, studio],
+  );
   const {
     doc,
     selected,
@@ -591,6 +620,11 @@ export function StudioBuilder({
                       studio={studio}
                       templates={templates}
                       dragWidget={dragWidget}
+                      globals={globalBlocks.map(({ id, name }) => ({
+                        id,
+                        name,
+                      }))}
+                      onInsertGlobal={insertGlobalBlock}
                     />
                   )}
                 </div>
@@ -600,6 +634,8 @@ export function StudioBuilder({
                 studio={studio}
                 templates={templates}
                 dragWidget={dragWidget}
+                globals={globalBlocks.map(({ id, name }) => ({ id, name }))}
+                onInsertGlobal={insertGlobalBlock}
               />
             )}
           </div>

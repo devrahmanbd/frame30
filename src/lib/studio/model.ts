@@ -217,6 +217,65 @@ export function parseStudioBody(
   }
 }
 
+/* ------------------------------------------------- global-block import -- */
+
+/** Builder breakpoints fan out onto the finer studio device keys. */
+const BREAKPOINT_TO_DEVICES: Record<string, DeviceKey[]> = {
+  mobile: ["mobile", "mobileLandscape"],
+  tablet: ["tablet"],
+  desktop: ["desktop", "laptop", "widescreen"],
+};
+
+/**
+ * Global-block port: convert stored builder sections into studio nodes for
+ * detached insertion into a page canvas. Deliberately dependency-free (no
+ * catalog import — the renderers show unknown elements as placeholders, so
+ * nothing here can crash the canvas). Ids are regenerated so inserts never
+ * collide with existing nodes; invalid sections are dropped.
+ */
+export function sectionsToStudioNodes(input: unknown): StudioNode[] {
+  if (!Array.isArray(input)) return [];
+  const out: StudioNode[] = [];
+  for (const section of input) {
+    const node = sectionToStudioNode(section, 0);
+    if (node) out.push(node);
+  }
+  return out;
+}
+
+function sectionToStudioNode(input: unknown, depth: number): StudioNode | null {
+  if (!input || typeof input !== "object" || depth > 12) return null;
+  const section = input as {
+    type?: unknown;
+    props?: unknown;
+    children?: unknown;
+    hidden?: unknown;
+    invalid?: unknown;
+  };
+  if (typeof section.type !== "string" || !section.type) return null;
+  if (section.invalid) return null;
+  const settings =
+    section.props && typeof section.props === "object"
+      ? (section.props as NodeSettings)
+      : {};
+  const node: StudioNode = { id: uid(), el: section.type, settings };
+  if (Array.isArray(section.hidden)) {
+    const hiddenOn = section.hidden.flatMap((bp) =>
+      typeof bp === "string" ? (BREAKPOINT_TO_DEVICES[bp] ?? []) : [],
+    );
+    if (hiddenOn.length > 0) node.hiddenOn = hiddenOn;
+  }
+  if (Array.isArray(section.children)) {
+    const children: StudioNode[] = [];
+    for (const child of section.children) {
+      const converted = sectionToStudioNode(child, depth + 1);
+      if (converted) children.push(converted);
+    }
+    if (children.length > 0) node.children = children;
+  }
+  return node;
+}
+
 export function serializeStudioBody(doc: StudioDoc): string {
   return `${OPEN}\n${JSON.stringify(doc)}\n${CLOSE}\n\n${renderStudioHtml(doc)}`;
 }

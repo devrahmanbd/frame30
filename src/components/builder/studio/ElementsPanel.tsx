@@ -175,8 +175,8 @@ export function ElementsPanel(props: ElementsPanelProps) {
           >
             {props.globals.length === 0 ? (
               <p className="text-xs text-muted-foreground">
-                Global blocks stay in sync everywhere they are placed. Create
-                one from a container’s menu.
+                No shared blocks on this theme yet — save one from the theme
+                studio to reuse it here. Inserts land as editable copies.
               </p>
             ) : (
               props.globals.map((block) => (

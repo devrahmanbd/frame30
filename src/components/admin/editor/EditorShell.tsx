@@ -9,6 +9,10 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { globalBlockListFn } from "@/lib/global-blocks.functions";
+import { sectionsToStudioNodes } from "@/lib/studio/model";
 import { AlertTriangle } from "lucide-react";
 import { ClassicEditor } from "@/components/admin/blog/ClassicEditor";
 import { ShortcutHelp } from "@/components/admin/content/ShortcutHelp";
@@ -269,6 +273,27 @@ export function EditorShell({
 
   const setBody = (body: string) => update({ body }, "body");
 
+  // Shared (global) blocks for the page's theme, inserted as detached
+  // editable copies. Fail-soft: without a theme pin or without the themes
+  // permission the Globals tab simply shows its empty state.
+  const listGlobals = useServerFn(globalBlockListFn);
+  const globalsQuery = useQuery({
+    queryKey: ["editor-globals", doc.themeId],
+    queryFn: () => listGlobals({ data: { themeId: doc.themeId ?? null } }),
+    enabled: doc.editor === "builder" && !!doc.themeId,
+    staleTime: 60_000,
+    retry: 1,
+  });
+  const globalBlocks = useMemo(
+    () =>
+      (globalsQuery.data ?? []).map((block) => ({
+        id: block.id,
+        name: block.name,
+        nodes: sectionsToStudioNodes(block.nodes),
+      })),
+    [globalsQuery.data],
+  );
+
   // Pages are builder-only: no switch back to the removed block surface.
   // Posts keep the classic ⇄ builder toggle.
   const menu: MenuAction[] = [
@@ -503,6 +528,7 @@ export function EditorShell({
                       doc.id ? `${kind}:${doc.id}:${doc.updatedAt ?? ""}` : "new"
                     }
                     fill
+                    globalBlocks={globalBlocks}
                     sideTab={
                       context
                         ? {
