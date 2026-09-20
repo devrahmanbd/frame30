@@ -1,7 +1,22 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import {
+  ShieldAlert,
+  ShieldCheck,
+  Shield,
+  CheckCircle2,
+  XCircle,
+  Search,
+  UserX,
+  Sliders,
+  ExternalLink,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  Info,
+  RefreshCw,
+} from "lucide-react";
 import { fmtMinor } from "@/lib/money";
-import { useLang } from "@/lib/i18n";
 import {
   fraudDeskFn,
   fraudScanFn,
@@ -15,15 +30,20 @@ export const Route = createFileRoute("/_authenticated/dashboard/fraud/")({
   loader: () => fraudDeskFn(),
   head: () => ({
     meta: [
-      { title: "ফ্রড ও রিস্ক ডেস্ক — Framique admin" },
+      { title: "Fraud & Risk Protection — Framique Admin" },
       {
         name: "description",
-        content: "Review flagged orders, risk rules and blacklist entries.",
+        content:
+          "Automated risk screening for your store orders. Review flagged transactions and manage blocked customers.",
       },
-      { property: "og:title", content: "ফ্রড ও রিস্ক ডেস্ক — Framique admin" },
+      {
+        property: "og:title",
+        content: "Fraud & Risk Protection — Framique Admin",
+      },
       {
         property: "og:description",
-        content: "Risk review queue, rules and blacklist.",
+        content:
+          "Automated risk screening for your store orders. Review flagged transactions and manage blocked customers.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -33,283 +53,555 @@ export const Route = createFileRoute("/_authenticated/dashboard/fraud/")({
   component: FraudDesk,
 });
 
-const STATUS_LABEL: Record<string, { en: string; bn: string }> = {
-  open: { en: "Awaiting review", bn: "পর্যালোচনার অপেক্ষায়" },
-  evidence_requested: { en: "Evidence requested", bn: "প্রমাণ চাওয়া হয়েছে" },
-  approved: { en: "Approved", bn: "অনুমোদিত" },
-  rejected: { en: "Rejection recommended", bn: "বাতিল সুপারিশ" },
+type Desk = Awaited<ReturnType<typeof fraudDeskFn>>;
+type ProtectionPreset = "balanced" | "strict" | "relaxed";
+
+const FRIENDLY_SIGNALS: Record<string, string> = {
+  BLACKLIST_MATCH: "Customer is on your store blocklist",
+  HONEYPOT_TRIP: "Automated checkout bot detected",
+  BOT_BEACON: "Automated browser script or scraper detected",
+  CARDTESTING: "Multiple failed payment attempts detected",
+  VELOCITY_LIMIT: "Unusually rapid checkout burst from this shopper",
+  COD_REFUSAL_HISTORY: "Past record of refusing Cash on Delivery parcels",
+  ADDRESS_CLUSTER: "Unusual shipping address cluster detected",
+  NEW_DEVICE_HIGH_VALUE: "High-value cart placed from a new device",
+  COD_MAX_AMOUNT: "Cash on Delivery total exceeds standard threshold",
 };
 
+const PRESET_INFO: Record<
+  ProtectionPreset,
+  {
+    title: string;
+    badge: string;
+    description: string;
+  }
+> = {
+  balanced: {
+    title: "Balanced",
+    badge: "Recommended",
+    description:
+      "Blocks checkout bots, repeated failed payments, and known spam while keeping the checkout smooth for genuine shoppers.",
+  },
+  strict: {
+    title: "Strict",
+    badge: "High Security",
+    description:
+      "Maximum scrutiny. Flags high-value carts from new devices and unverified customers for manual sign-off before shipping.",
+  },
+  relaxed: {
+    title: "Relaxed",
+    badge: "Fast Checkout",
+    description:
+      "Permissive mode. Blocks explicitly blacklisted phone numbers and honeypot bots without holding orders for review.",
+  },
+};
+
+function getActivePreset(rules: Desk["rules"]): ProtectionPreset {
+  const highVal = rules.find((r) => r.code === "NEW_DEVICE_HIGH_VALUE");
+  if (highVal && !highVal.enabled) return "relaxed";
+  const botBeacon = rules.find((r) => r.code === "BOT_BEACON");
+  if (
+    botBeacon &&
+    (botBeacon.params as Record<string, number>)?.bot_score_max === 40
+  )
+    return "strict";
+  return "balanced";
+}
+
 function riskTone(score: number) {
-  if (score > 70) return "bg-destructive/10 text-destructive";
-  if (score >= 40) return "bg-warning/15 text-warning-foreground";
-  return "bg-muted text-muted-foreground";
+  if (score > 70)
+    return "border-destructive/30 bg-destructive/10 text-destructive";
+  if (score >= 40)
+    return "border-warning/30 bg-warning/15 text-warning-foreground";
+  return "border-border bg-muted text-muted-foreground";
 }
 
-function Kpi({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="rounded-fq-md border border-border bg-card p-4">
-      <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tabular-nums">{value}</p>
-    </div>
-  );
+function riskLevelLabel(score: number) {
+  if (score > 70) return "High Risk";
+  if (score >= 40) return "Medium Risk";
+  return "Low Risk";
 }
 
-function FraudDesk() {
+export function FraudDesk() {
   const desk = Route.useLoaderData();
   const router = useRouter();
-  const { t } = useLang();
-  const [statusFilter, setStatusFilter] = useState("all");
+
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "open" | "approved" | "rejected"
+  >("all");
   const [search, setSearch] = useState("");
-  const [note, setNote] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const cases = useMemo(
-    () =>
-      desk.cases.filter(
-        (c) =>
-          (statusFilter === "all" || c.status === statusFilter) &&
-          (!search.trim() ||
-            c.order_number.toLowerCase().includes(search.trim().toLowerCase())),
-      ),
-    [desk.cases, statusFilter, search],
-  );
+  // Blacklist form state
+  const [blacklistInput, setBlacklistInput] = useState("");
+  const [blacklistReason, setBlacklistReason] = useState("");
 
-  async function run(fn: () => Promise<unknown>, ok: string) {
+  // Optional note inputs for cases
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  const [expandedNoteId, setExpandedNoteId] = useState<string | null>(null);
+
+  // Advanced tuning disclosure
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
+  const activePreset = useMemo(() => getActivePreset(desk.rules), [desk.rules]);
+
+  const filteredCases = useMemo(() => {
+    return desk.cases.filter((c) => {
+      if (
+        statusFilter === "open" &&
+        c.status !== "open" &&
+        c.status !== "evidence_requested"
+      )
+        return false;
+      if (statusFilter === "approved" && c.status !== "approved") return false;
+      if (statusFilter === "rejected" && c.status !== "rejected") return false;
+      if (search.trim()) {
+        const query = search.trim().toLowerCase();
+        const matchesNum = c.order_number.toLowerCase().includes(query);
+        const matchesPhone = c.customer_phone_masked
+          .toLowerCase()
+          .includes(query);
+        if (!matchesNum && !matchesPhone) return false;
+      }
+      return true;
+    });
+  }, [desk.cases, statusFilter, search]);
+
+  async function run(fn: () => Promise<unknown>, successMsg: string) {
     setBusy(true);
     setMsg(null);
     try {
       await fn();
-      setMsg(ok);
+      setMsg(successMsg);
       await router.invalidate();
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : "Operation failed");
+      setMsg(e instanceof Error ? e.message : "Action failed. Please try again.");
     } finally {
       setBusy(false);
     }
   }
 
+  async function applyPreset(preset: ProtectionPreset) {
+    setBusy(true);
+    setMsg(null);
+    try {
+      if (preset === "relaxed") {
+        for (const rule of desk.rules) {
+          if (
+            rule.code === "NEW_DEVICE_HIGH_VALUE" ||
+            rule.code === "ADDRESS_CLUSTER"
+          ) {
+            await fraudRuleFn({
+              data: {
+                code: rule.code,
+                enabled: false,
+                params: rule.params as Record<string, number>,
+              },
+            });
+          } else if (
+            !rule.enabled &&
+            (rule.code === "BLACKLIST_MATCH" || rule.code === "HONEYPOT_TRIP")
+          ) {
+            await fraudRuleFn({
+              data: {
+                code: rule.code,
+                enabled: true,
+                params: rule.params as Record<string, number>,
+              },
+            });
+          }
+        }
+      } else if (preset === "strict") {
+        for (const rule of desk.rules) {
+          const params = { ...(rule.params as Record<string, number>) };
+          if (rule.code === "BOT_BEACON") params.bot_score_max = 40;
+          if (rule.code === "CARDTESTING") params.failed_attempts = 2;
+          await fraudRuleFn({
+            data: {
+              code: rule.code,
+              enabled: true,
+              params,
+            },
+          });
+        }
+      } else {
+        // Balanced
+        for (const rule of desk.rules) {
+          const cat = desk.catalog.find((c) => c.code === rule.code);
+          await fraudRuleFn({
+            data: {
+              code: rule.code,
+              enabled: true,
+              params:
+                (cat?.defaults as Record<string, number>) ??
+                (rule.params as Record<string, number>),
+            },
+          });
+        }
+      }
+      setMsg(`Protection sensitivity updated to ${PRESET_INFO[preset].title}.`);
+      await router.invalidate();
+    } catch (e) {
+      setMsg(
+        e instanceof Error
+          ? e.message
+          : "Failed to update protection sensitivity.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleAddBlacklist(e: React.FormEvent) {
+    e.preventDefault();
+    const val = blacklistInput.trim();
+    if (!val || val.length < 3) return;
+    const kind = val.includes("@") ? "email" : "phone";
+    await run(
+      () =>
+        fraudBlacklistAddFn({
+          data: {
+            kind,
+            value: val,
+            reason: blacklistReason.trim() || null,
+          },
+        }),
+      `Blocked ${val} from placing future orders.`,
+    );
+    setBlacklistInput("");
+    setBlacklistReason("");
+  }
+
+  const pendingCount = desk.counts.pending;
+  const blockedThreats = desk.counts.blocked + desk.counts.blacklisted;
+
   return (
-    <div className="space-y-6 p-6">
-      <header className="flex flex-wrap items-start justify-between gap-3">
+    <div className="space-y-8 p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
+      {/* Header */}
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-bangla-display text-xl font-semibold">
-            {t("Fraud & Risk Desk", "ফ্রড ও রিস্ক ডেস্ক")}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {t(
-              "The system only flags — it never cancels or refunds an order on its own.",
-              "সিস্টেম শুধু ফ্ল্যাগ করে — অর্ডার বাতিল বা রিফান্ড কখনো নিজে করে না।",
-            )}
+          <div className="flex items-center gap-2.5">
+            <div className="flex size-9 items-center justify-center rounded-fq-lg bg-primary/10 text-primary">
+              <ShieldCheck className="size-5" />
+            </div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              Fraud & Risk Protection
+            </h1>
+          </div>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Automated screening protects your store against bots, payment
+            testing, and fraudulent orders.
           </p>
         </div>
-        <div className="flex gap-2">
+
+        <div className="flex items-center gap-2">
           <Link
             to="/dashboard/fraud/audit"
-            className="min-h-11 rounded-fq-md border border-border px-3 py-2 text-sm"
+            className="inline-flex h-10 items-center gap-1.5 rounded-fq-md border border-border bg-card px-3.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
           >
-            {t("Audit trail", "অডিট ট্রেইল")}
+            Audit Log
           </Link>
           <button
             type="button"
             disabled={busy}
             onClick={() =>
-              run(() => fraudScanFn(), t("Scan complete", "স্ক্যান সম্পন্ন"))
+              run(() => fraudScanFn(), "Risk scan finished. All orders updated.")
             }
-            className="min-h-11 rounded-fq-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground disabled:opacity-60"
+            className="inline-flex h-10 items-center gap-1.5 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
-            {t("Run risk scan", "রিস্ক স্ক্যান চালান")}
+            <RefreshCw className={`size-4 ${busy ? "animate-spin" : ""}`} />
+            Scan Recent Orders
           </button>
         </div>
       </header>
 
+      {/* Notification banner */}
       {msg && (
-        <p
+        <div
           role="status"
-          className="rounded-fq-md border border-border bg-muted p-3 text-sm"
+          className="flex items-center gap-2.5 rounded-fq-lg border border-primary/20 bg-primary/5 p-4 text-sm text-foreground"
         >
-          {msg}
-        </p>
+          <Info className="size-4 shrink-0 text-primary" />
+          <p className="flex-1">{msg}</p>
+          <button
+            type="button"
+            onClick={() => setMsg(null)}
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            Dismiss
+          </button>
+        </div>
       )}
 
-      <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        <Kpi
-          label={t("Awaiting review", "পর্যালোচনার অপেক্ষায়")}
-          value={desk.counts.pending}
-        />
-        <Kpi
-          label={t("Flagged orders", "ফ্ল্যাগড অর্ডার")}
-          value={desk.counts.flagged}
-        />
-        <Kpi
-          label={t("Auto-blocked", "স্বয়ংক্রিয় ব্লক")}
-          value={desk.counts.blocked}
-        />
-        <Kpi
-          label={t("Sent to review", "রিভিউতে পাঠানো")}
-          value={desk.counts.reviewed}
-        />
-        <Kpi
-          label={t("Failed payments", "ব্যর্থ পেমেন্ট")}
-          value={desk.counts.failedPayments}
-        />
-        <Kpi
-          label={t("Blacklisted", "ব্ল্যাকলিস্টেড")}
-          value={desk.counts.blacklisted}
-        />
-      </section>
-
-      <section className="space-y-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <label className="text-sm" htmlFor="fraud-status">
-            {t("Status", "স্ট্যাটাস")}
-          </label>
-          <select
-            id="fraud-status"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="min-h-11 rounded-fq-md border border-border bg-background px-2 text-sm"
-          >
-            <option value="all">{t("All", "সব")}</option>
-            {Object.entries(STATUS_LABEL).map(([k, v]) => (
-              <option key={k} value={k}>
-                {t(v.en, v.bn)}
-              </option>
-            ))}
-          </select>
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t("Search order number", "অর্ডার নম্বর খুঁজুন")}
-            aria-label={t("Search order number", "অর্ডার নম্বর খুঁজুন")}
-            className="min-h-11 flex-1 rounded-fq-md border border-border bg-background px-3 text-sm"
-          />
+      {/* 3 Metric Cards */}
+      <section className="grid gap-4 sm:grid-cols-3">
+        <div
+          className={`rounded-fq-xl border p-5 transition-shadow ${
+            pendingCount > 0
+              ? "border-warning/40 bg-warning/5"
+              : "border-border bg-card"
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Awaiting Review
+            </span>
+            {pendingCount > 0 ? (
+              <span className="flex size-2 rounded-full bg-warning animate-pulse" />
+            ) : (
+              <span className="flex size-2 rounded-full bg-success-strong" />
+            )}
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-3xl font-bold tabular-nums">
+              {pendingCount}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              {pendingCount === 1 ? "order held" : "orders held"}
+            </span>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {pendingCount > 0
+              ? "Needs your approval before shipping"
+              : "All clear — zero orders on hold"}
+          </p>
         </div>
 
-        {cases.length === 0 && (
-          <p className="rounded-fq-md border border-dashed border-border p-6 text-sm text-muted-foreground">
-            {t("No cases match this filter.", "এই ফিল্টারে কোনো কেস নেই।")}
+        <div className="rounded-fq-xl border border-border bg-card p-5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Threats Blocked
+            </span>
+            <ShieldAlert className="size-4 text-muted-foreground" />
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-3xl font-bold tabular-nums">
+              {blockedThreats}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              prevented attempts
+            </span>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Bots, blacklisted shoppers, and honeypot hits
           </p>
-        )}
+        </div>
 
-        <ul className="space-y-3">
-          {cases.map((c) => {
-            const signals = (c.signals ?? []) as Array<{
-              code: string;
-              label?: string;
-              detail?: string;
-              weight?: number;
-              observed?: number;
-              threshold?: number | null;
-            }>;
-            const decided = c.status === "approved" || c.status === "rejected";
-            const held =
-              c.status === "open" || c.status === "evidence_requested";
+        <div className="rounded-fq-xl border border-border bg-card p-5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Total Screened
+            </span>
+            <Shield className="size-4 text-muted-foreground" />
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-3xl font-bold tabular-nums">
+              {desk.counts.flagged}
+            </span>
+            <span className="text-xs text-muted-foreground">
+              evaluated cases
+            </span>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Protected across all checkouts
+          </p>
+        </div>
+      </section>
+
+      {/* Store Protection Level Presets */}
+      <section className="rounded-fq-xl border border-border bg-card p-5 sm:p-6 space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight">
+            Protection Sensitivity
+          </h2>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Choose how strictly Framique screens incoming transactions. No manual
+            formula or math required.
+          </p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          {(Object.keys(PRESET_INFO) as ProtectionPreset[]).map((presetKey) => {
+            const info = PRESET_INFO[presetKey];
+            const isSelected = activePreset === presetKey;
             return (
-              <li
-                key={c.id}
-                className="rounded-fq-md border border-border bg-card p-4"
+              <button
+                key={presetKey}
+                type="button"
+                disabled={busy}
+                onClick={() => applyPreset(presetKey)}
+                className={`relative flex flex-col justify-between rounded-fq-lg border p-4 text-left transition-all ${
+                  isSelected
+                    ? "border-primary bg-primary/[0.03] ring-2 ring-primary/20 shadow-sm"
+                    : "border-border bg-card hover:border-primary/40 hover:bg-muted/30"
+                }`}
               >
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="font-medium">#{c.order_number}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {c.customer_phone_masked} ·{" "}
-                      <span className="tabular-nums">
-                        {fmtMinor(c.amount_minor_int, c.currency_code)}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {held && (
-                      <span className="rounded-fq-sm bg-warning/15 px-2 py-1 text-xs font-medium text-warning-foreground">
-                        {t("Fulfilment held", "ফুলফিলমেন্ট আটকানো")}
-                      </span>
-                    )}
+                <div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-semibold text-sm">{info.title}</span>
                     <span
-                      className={`rounded-fq-sm px-2 py-1 text-xs font-medium tabular-nums ${riskTone(c.risk_score)}`}
+                      className={`rounded-fq-sm px-2 py-0.5 text-[11px] font-medium ${
+                        isSelected
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground"
+                      }`}
                     >
-                      {t("Risk", "রিস্ক")} {c.risk_score}/100
-                    </span>
-                    <span className="rounded-fq-sm border border-border px-2 py-1 text-xs">
-                      {STATUS_LABEL[c.status]
-                        ? t(
-                            STATUS_LABEL[c.status].en,
-                            STATUS_LABEL[c.status].bn,
-                          )
-                        : c.status}
+                      {isSelected ? "Active" : info.badge}
                     </span>
                   </div>
-                </div>
-
-                <ul className="mt-2 space-y-1">
-                  {signals.map((s) => (
-                    <li
-                      key={s.code}
-                      className="flex flex-wrap items-center gap-2 rounded-fq-sm bg-muted px-2 py-1 text-xs text-muted-foreground"
-                    >
-                      <span className="font-medium text-foreground">
-                        {s.code}
-                      </span>
-                      <span>{s.detail ?? s.label}</span>
-                      {typeof s.weight === "number" && (
-                        <span className="tabular-nums">+{s.weight}</span>
-                      )}
-                      {typeof s.threshold === "number" && (
-                        <span className="tabular-nums">
-                          {t("threshold", "থ্রেশহোল্ড")} {s.threshold}
-                        </span>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-
-                {decided ? (
-                  <p className="mt-3 text-xs text-muted-foreground">
-                    {t("Decision", "সিদ্ধান্ত")}:{" "}
-                    {STATUS_LABEL[c.status]
-                      ? t(STATUS_LABEL[c.status].en, STATUS_LABEL[c.status].bn)
-                      : c.status}{" "}
-                    ·{" "}
-                    {c.decision_at
-                      ? new Date(c.decision_at).toLocaleString("en-GB")
-                      : "—"}
-                    {c.decision_note ? ` · ${c.decision_note}` : ""}
+                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                    {info.description}
                   </p>
-                ) : (
-                  <div className="mt-3 space-y-2">
-                    <input
-                      value={note[c.id] ?? ""}
-                      onChange={(e) =>
-                        setNote((n) => ({ ...n, [c.id]: e.target.value }))
-                      }
-                      placeholder={t(
-                        "Decision note (kept in audit)",
-                        "সিদ্ধান্তের নোট (অডিটে থাকবে)",
-                      )}
-                      aria-label={t(
-                        `Note ${c.order_number}`,
-                        `নোট ${c.order_number}`,
-                      )}
-                      className="min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm"
-                    />
-                    <div className="flex flex-wrap gap-2">
-                      {(
-                        [
-                          ["approved", { en: "Approve", bn: "অনুমোদন" }],
-                          [
-                            "rejected",
-                            { en: "Recommend rejection", bn: "বাতিল সুপারিশ" },
-                          ],
-                          [
-                            "evidence_requested",
-                            { en: "Request evidence", bn: "প্রমাণ চান" },
-                          ],
-                        ] as const
-                      ).map(([decision, label]) => (
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Orders Flagged for Review */}
+      <section className="space-y-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-lg font-semibold tracking-tight">
+              Flagged Orders Review
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Review suspicious orders. Approve to release fulfillment hold, or
+              cancel to safeguard inventory.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search order or phone..."
+                className="h-9 w-48 sm:w-60 rounded-fq-md border border-border bg-background pl-8 pr-3 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
+
+            <select
+              value={statusFilter}
+              onChange={(e) =>
+                setStatusFilter(
+                  e.target.value as "all" | "open" | "approved" | "rejected",
+                )
+              }
+              className="h-9 rounded-fq-md border border-border bg-background px-2.5 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option value="all">All Statuses</option>
+              <option value="open">Awaiting Review ({pendingCount})</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Cancelled / Rejected</option>
+            </select>
+          </div>
+        </div>
+
+        {filteredCases.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-fq-xl border border-dashed border-border bg-card/50 py-12 px-4 text-center">
+            <div className="flex size-12 items-center justify-center rounded-full bg-success-strong/10 text-success-strong">
+              <ShieldCheck className="size-6" />
+            </div>
+            <h3 className="mt-3 text-sm font-semibold">
+              {search.trim() || statusFilter !== "all"
+                ? "No matching orders found"
+                : "All orders are verified safe"}
+            </h3>
+            <p className="mt-1 max-w-sm text-xs text-muted-foreground">
+              {search.trim() || statusFilter !== "all"
+                ? "Try adjusting your filters or search terms."
+                : "No orders are currently held for fraud review. New flagged orders will appear here automatically."}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredCases.map((c) => {
+              const isPending =
+                c.status === "open" || c.status === "evidence_requested";
+              const signals = (c.signals ?? []) as Array<{
+                code: string;
+                label?: string;
+                detail?: string;
+              }>;
+              const hasNoteOpen = expandedNoteId === c.id;
+
+              return (
+                <div
+                  key={c.id}
+                  className={`rounded-fq-xl border p-4 sm:p-5 transition-all ${
+                    isPending
+                      ? "border-warning/30 bg-card shadow-xs"
+                      : "border-border bg-card/60"
+                  }`}
+                >
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {c.order_id ? (
+                          <Link
+                            to="/dashboard/orders/$orderId"
+                            params={{ orderId: c.order_id }}
+                            className="font-bold text-base hover:underline inline-flex items-center gap-1"
+                          >
+                            #{c.order_number}
+                            <ExternalLink className="size-3 text-muted-foreground" />
+                          </Link>
+                        ) : (
+                          <span className="font-bold text-base">
+                            #{c.order_number}
+                          </span>
+                        )}
+
+                        <span
+                          className={`rounded-fq-full border px-2.5 py-0.5 text-xs font-semibold tabular-nums ${riskTone(
+                            c.risk_score,
+                          )}`}
+                        >
+                          {riskLevelLabel(c.risk_score)} ({c.risk_score}/100)
+                        </span>
+
+                        {isPending && (
+                          <span className="inline-flex items-center gap-1 rounded-fq-full bg-warning/15 px-2.5 py-0.5 text-xs font-medium text-warning-foreground">
+                            <Clock className="size-3" />
+                            Fulfillment Held
+                          </span>
+                        )}
+
+                        {c.status === "approved" && (
+                          <span className="inline-flex items-center gap-1 rounded-fq-full bg-success-strong/15 px-2.5 py-0.5 text-xs font-medium text-success-strong">
+                            <CheckCircle2 className="size-3" />
+                            Approved
+                          </span>
+                        )}
+
+                        {c.status === "rejected" && (
+                          <span className="inline-flex items-center gap-1 rounded-fq-full bg-destructive/15 px-2.5 py-0.5 text-xs font-medium text-destructive">
+                            <XCircle className="size-3" />
+                            Rejected / Cancelled
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="mt-1 text-xs sm:text-sm text-muted-foreground">
+                        Customer:{" "}
+                        <span className="font-medium text-foreground">
+                          {c.customer_phone_masked}
+                        </span>{" "}
+                        · Total:{" "}
+                        <span className="font-semibold text-foreground tabular-nums">
+                          {fmtMinor(c.amount_minor_int, c.currency_code)}
+                        </span>
+                      </p>
+                    </div>
+
+                    {/* Critical Actions for Pending Orders */}
+                    {isPending ? (
+                      <div className="flex flex-wrap items-center gap-2 pt-1 sm:pt-0">
                         <button
-                          key={decision}
                           type="button"
                           disabled={busy}
                           onClick={() =>
@@ -318,324 +610,302 @@ function FraudDesk() {
                                 fraudDecideFn({
                                   data: {
                                     caseId: c.id,
-                                    decision,
-                                    note: note[c.id]?.trim() || null,
+                                    decision: "approved",
+                                    note:
+                                      notes[c.id]?.trim() ||
+                                      "Approved by merchant",
                                   },
                                 }),
-                              decision === "rejected"
-                                ? t(
-                                    "Rejection recommendation saved — process refund from order page",
-                                    "বাতিল সুপারিশ সংরক্ষিত — রিফান্ড অর্ডার পেজ থেকে করুন",
-                                  )
-                                : t("Decision saved", "সিদ্ধান্ত সংরক্ষিত"),
+                              `Order #${c.order_number} approved and released for fulfillment.`,
                             )
                           }
-                          className="min-h-11 rounded-fq-md border border-border px-3 py-2 text-sm disabled:opacity-60"
+                          className="inline-flex h-9 items-center gap-1.5 rounded-fq-md bg-success-strong px-3.5 text-xs font-semibold text-white shadow-xs hover:bg-success-strong/90 disabled:opacity-50"
                         >
-                          {t(label.en, label.bn)}
+                          <CheckCircle2 className="size-3.5" />
+                          Approve Order
                         </button>
-                      ))}
-                      {c.order_id && (
-                        <Link
-                          to="/dashboard/orders/$orderId"
-                          params={{ orderId: c.order_id }}
-                          className="min-h-11 rounded-fq-md px-3 py-2 text-sm underline"
+
+                        <button
+                          type="button"
+                          disabled={busy}
+                          onClick={() =>
+                            run(
+                              () =>
+                                fraudDecideFn({
+                                  data: {
+                                    caseId: c.id,
+                                    decision: "rejected",
+                                    note:
+                                      notes[c.id]?.trim() ||
+                                      "Cancelled due to risk",
+                                  },
+                                }),
+                              `Order #${c.order_number} marked as rejected.`,
+                            )
+                          }
+                          className="inline-flex h-9 items-center gap-1.5 rounded-fq-md border border-destructive/30 bg-destructive/10 px-3.5 text-xs font-semibold text-destructive hover:bg-destructive/20 disabled:opacity-50"
                         >
-                          {t("View order", "অর্ডার দেখুন")}
-                        </Link>
-                      )}
-                    </div>
+                          <XCircle className="size-3.5" />
+                          Cancel Order
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setExpandedNoteId(hasNoteOpen ? null : c.id)
+                          }
+                          className="inline-flex h-9 items-center gap-1 rounded-fq-md border border-border px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted"
+                          title="Add decision note"
+                        >
+                          Note
+                          {hasNoteOpen ? (
+                            <ChevronUp className="size-3" />
+                          ) : (
+                            <ChevronDown className="size-3" />
+                          )}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="text-right text-xs text-muted-foreground">
+                        {c.decision_at && (
+                          <p>
+                            Decided{" "}
+                            {new Date(c.decision_at).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "numeric",
+                                month: "short",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              },
+                            )}
+                          </p>
+                        )}
+                        {c.decision_note && (
+                          <p className="italic mt-0.5 max-w-xs truncate">
+                            &quot;{c.decision_note}&quot;
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+
+                  {/* Why Flagged (Plain English Reasons) */}
+                  <div className="mt-3 flex flex-wrap items-center gap-1.5 pt-2 border-t border-border/60">
+                    <span className="text-xs font-medium text-muted-foreground">
+                      Detection reasons:
+                    </span>
+                    {signals.length > 0 ? (
+                      signals.map((s, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center rounded-fq-sm bg-muted px-2 py-0.5 text-xs font-medium text-foreground"
+                        >
+                          {FRIENDLY_SIGNALS[s.code] ??
+                            s.detail ??
+                            s.label ??
+                            s.code}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">
+                        General risk score threshold exceeded
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Optional Note Field */}
+                  {hasNoteOpen && isPending && (
+                    <div className="mt-3 pt-3 border-t border-border/60">
+                      <input
+                        value={notes[c.id] ?? ""}
+                        onChange={(e) =>
+                          setNotes((prev) => ({
+                            ...prev,
+                            [c.id]: e.target.value,
+                          }))
+                        }
+                        placeholder="Add an optional internal note for this decision..."
+                        className="h-9 w-full rounded-fq-md border border-border bg-background px-3 text-xs focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
-      <RulesPanel desk={desk} busy={busy} run={run} />
-      <VerdictsPanel desk={desk} />
-      <BlacklistPanel desk={desk} busy={busy} run={run} />
-    </div>
-  );
-}
+      {/* Customer Blocklist */}
+      <section className="rounded-fq-xl border border-border bg-card p-5 sm:p-6 space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight">
+            Customer Blocklist
+          </h2>
+          <p className="text-xs sm:text-sm text-muted-foreground">
+            Instantly prevent problematic phone numbers or email addresses from
+            placing orders on your storefront.
+          </p>
+        </div>
 
-type Desk = Awaited<ReturnType<typeof fraudDeskFn>>;
-type Runner = (fn: () => Promise<unknown>, ok: string) => Promise<void>;
+        <form
+          onSubmit={handleAddBlacklist}
+          className="flex flex-col sm:flex-row gap-2"
+        >
+          <input
+            value={blacklistInput}
+            onChange={(e) => setBlacklistInput(e.target.value)}
+            placeholder="Enter customer phone or email..."
+            className="h-10 flex-1 rounded-fq-md border border-border bg-background px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+          <input
+            value={blacklistReason}
+            onChange={(e) => setBlacklistReason(e.target.value)}
+            placeholder="Reason (optional, e.g. Fake COD returns)"
+            className="h-10 flex-1 rounded-fq-md border border-border bg-background px-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+          <button
+            type="submit"
+            disabled={busy || blacklistInput.trim().length < 3}
+            className="inline-flex h-10 items-center justify-center gap-1.5 rounded-fq-md bg-destructive px-4 text-sm font-semibold text-white shadow-xs hover:bg-destructive/90 disabled:opacity-50 shrink-0"
+          >
+            <UserX className="size-4" />
+            Block Customer
+          </button>
+        </form>
 
-function ActionBadge({ action }: { action: string }) {
-  const tone =
-    action === "block"
-      ? "bg-destructive/10 text-destructive"
-      : action === "review"
-        ? "bg-warning/15 text-warning-foreground"
-        : "bg-muted text-muted-foreground";
-  return (
-    <span className={`rounded-fq-sm px-2 py-1 text-xs font-medium ${tone}`}>
-      {action}
-    </span>
-  );
-}
-
-function VerdictsPanel({ desk }: { desk: Desk }) {
-  const { t } = useLang();
-  return (
-    <section className="space-y-3">
-      <h2 className="font-bangla-display text-lg font-semibold">
-        {t("Recent checkout verdicts", "সাম্প্রতিক চেকআউট রায়")}
-      </h2>
-      <p className="text-sm text-muted-foreground">
-        {t(
-          "Every checkout is scored before stock moves. Blocked attempts never create an order.",
-          "প্রতিটি চেকআউট স্টক নড়ার আগে স্কোর হয়। ব্লক হওয়া চেষ্টায় অর্ডার তৈরি হয় না।",
-        )}
-      </p>
-      {desk.assessments.length === 0 ? (
-        <p className="rounded-fq-md border border-dashed border-border p-6 text-sm text-muted-foreground">
-          {t("No verdicts recorded yet.", "এখনো কোনো রায় নেই।")}
-        </p>
-      ) : (
-        <ul className="divide-y divide-border rounded-fq-md border border-border bg-card">
-          {desk.assessments.slice(0, 25).map((a) => (
-            <li
-              key={a.id}
-              className="flex flex-wrap items-center gap-3 p-3 text-sm"
-            >
-              <ActionBadge action={a.action} />
-              <span className="tabular-nums">{a.score}/100</span>
-              <span className="text-muted-foreground">
-                {a.decisive_code ?? t("no blocking rule", "ব্লকিং রুল নেই")}
-              </span>
-              <span className="ml-auto text-xs text-muted-foreground tabular-nums">
-                {new Date(a.created_at).toLocaleString("en-GB")}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
-
-function RulesPanel({
-  desk,
-  busy,
-  run,
-}: {
-  desk: Desk;
-  busy: boolean;
-  run: Runner;
-}) {
-  const { t } = useLang();
-  const ordered = [...desk.catalog].sort((a, b) => a.precedence - b.precedence);
-  return (
-    <section className="space-y-3">
-      <h2 className="font-bangla-display text-lg font-semibold">
-        {t("Risk rules", "রিস্ক রুল")}
-      </h2>
-      <p className="text-sm text-muted-foreground">
-        {t(
-          "Rules run top to bottom. The first blocking rule that fires decides the outcome; the rest add weight to the score.",
-          "রুল উপর থেকে নিচে চলে। প্রথম ব্লকিং রুলই সিদ্ধান্ত নেয়; বাকিগুলো স্কোরে যোগ হয়।",
-        )}
-      </p>
-      <ul className="grid gap-3 md:grid-cols-2">
-        {ordered.map((def, index) => {
-          const row = desk.rules.find((r) => r.code === def.code);
-          const params = (row?.params ?? {}) as Record<string, number>;
-          const value = def.paramKey
-            ? Number(params[def.paramKey] ?? def.defaults[def.paramKey] ?? 0)
-            : 0;
-          return (
-            <li
-              key={def.code}
-              className="rounded-fq-md border border-border bg-card p-4"
-            >
-              <div className="flex items-start justify-between gap-3">
+        <div className="rounded-fq-lg border border-border divide-y divide-border overflow-hidden">
+          {desk.blacklist.length === 0 ? (
+            <p className="p-4 text-xs text-muted-foreground text-center">
+              No blocked customers. Add a phone number or email above to block.
+            </p>
+          ) : (
+            desk.blacklist.map((item) => (
+              <div
+                key={item.id}
+                className="flex items-center justify-between gap-3 p-3 text-sm bg-card hover:bg-muted/30"
+              >
                 <div>
-                  <p className="flex items-center gap-2 font-medium">
-                    <span className="tabular-nums text-muted-foreground">
-                      {index + 1}.
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-sm">{item.value}</span>
+                    <span className="rounded-fq-sm bg-muted px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      {item.kind}
                     </span>
-                    {def.title}
-                    <ActionBadge action={def.action} />
-                  </p>
-                  <p className="text-xs text-muted-foreground">{def.hint}</p>
+                    {!item.active && (
+                      <span className="rounded-fq-sm bg-warning/15 px-1.5 py-0.5 text-[10px] font-medium text-warning-foreground">
+                        Whitelisted
+                      </span>
+                    )}
+                  </div>
+                  {item.reason && (
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      {item.reason}
+                    </p>
+                  )}
                 </div>
 
-                <label className="flex items-center gap-2 text-xs">
-                  <input
-                    type="checkbox"
-                    checked={row?.enabled ?? true}
-                    disabled={busy}
-                    onChange={(e) =>
-                      run(
-                        () =>
-                          fraudRuleFn({
-                            data: {
-                              code: def.code,
-                              enabled: e.target.checked,
-                              params,
-                            },
-                          }),
-                        t("Rule updated", "রুল হালনাগাদ"),
-                      )
-                    }
-                  />
-                  {t("Enabled", "সক্রিয়")}
-                </label>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() =>
+                    run(
+                      () =>
+                        fraudBlacklistToggleFn({
+                          data: { id: item.id, active: !item.active },
+                        }),
+                      item.active
+                        ? `Unblocked ${item.value}.`
+                        : `Re-blocked ${item.value}.`,
+                    )
+                  }
+                  className="h-8 rounded-fq-md border border-border px-3 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-50"
+                >
+                  {item.active ? "Unblock" : "Re-block"}
+                </button>
               </div>
-              {def.paramKey && (
-                <label className="mt-3 block text-xs text-muted-foreground">
-                  {def.paramLabel}
-                  <input
-                    type="number"
-                    min={0}
-                    defaultValue={value}
-                    disabled={busy}
-                    onBlur={(e) =>
-                      run(
-                        () =>
-                          fraudRuleFn({
-                            data: {
-                              code: def.code,
-                              enabled: row?.enabled ?? true,
-                              params: {
-                                [def.paramKey as string]:
-                                  Number(e.target.value) || 0,
-                              },
-                            },
-                          }),
-                        t("Threshold updated", "থ্রেশহোল্ড হালনাগাদ"),
-                      )
-                    }
-                    className="mt-1 min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm tabular-nums text-foreground"
-                  />
-                </label>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  );
-}
+            ))
+          )}
+        </div>
+      </section>
 
-function BlacklistPanel({
-  desk,
-  busy,
-  run,
-}: {
-  desk: Desk;
-  busy: boolean;
-  run: Runner;
-}) {
-  const { t } = useLang();
-  const [kind, setKind] = useState<"phone" | "email">("phone");
-  const [value, setValue] = useState("");
-  const [reason, setReason] = useState("");
-
-  return (
-    <section className="space-y-3">
-      <h2 className="font-bangla-display text-lg font-semibold">
-        {t("Blacklist", "ব্ল্যাকলিস্ট")}
-      </h2>
-      <p className="text-sm text-muted-foreground">
-        {t(
-          "Blocking happens server-side at order placement; this is management only.",
-          "ব্লকিং সার্ভারে অর্ডার প্লেসমেন্টের সময় হয়; এখানে শুধু ব্যবস্থাপনা।",
-        )}
-      </p>
-      <div className="flex flex-wrap gap-2">
-        <select
-          value={kind}
-          onChange={(e) => setKind(e.target.value as "phone" | "email")}
-          aria-label={t("Type", "ধরন")}
-          className="min-h-11 rounded-fq-md border border-border bg-background px-2 text-sm"
-        >
-          <option value="phone">{t("Phone", "ফোন")}</option>
-          <option value="email">{t("Email", "ইমেইল")}</option>
-        </select>
-        <input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder={t("Value", "মান")}
-          aria-label={t("Blacklist value", "ব্ল্যাকলিস্ট মান")}
-          className="min-h-11 flex-1 rounded-fq-md border border-border bg-background px-3 text-sm"
-        />
-        <input
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          placeholder={t("Reason", "কারণ")}
-          aria-label={t("Reason", "কারণ")}
-          className="min-h-11 flex-1 rounded-fq-md border border-border bg-background px-3 text-sm"
-        />
+      {/* Advanced Rule Tuning Accordion */}
+      <section className="rounded-fq-xl border border-border bg-card p-5">
         <button
           type="button"
-          disabled={busy || value.trim().length < 3}
-          onClick={() =>
-            run(
-              () =>
-                fraudBlacklistAddFn({
-                  data: {
-                    kind,
-                    value: value.trim(),
-                    reason: reason.trim() || null,
-                  },
-                }),
-              t("Added to blacklist", "ব্ল্যাকলিস্টে যোগ হয়েছে"),
-            ).then(() => {
-              setValue("");
-              setReason("");
-            })
-          }
-          className="min-h-11 rounded-fq-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground disabled:opacity-60"
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className="flex w-full items-center justify-between text-left"
         >
-          {t("Add", "যোগ করুন")}
-        </button>
-      </div>
-      <ul className="divide-y divide-border rounded-fq-md border border-border bg-card">
-        {desk.blacklist.length === 0 && (
-          <li className="p-4 text-sm text-muted-foreground">
-            {t("No entries.", "কোনো এন্ট্রি নেই।")}
-          </li>
-        )}
-        {desk.blacklist.map((b) => (
-          <li
-            key={b.id}
-            className="flex items-center justify-between gap-3 p-3 text-sm"
-          >
-            <span>
-              <span className="font-medium">{b.value}</span>{" "}
-              <span className="text-muted-foreground">
-                ({b.kind}) {b.reason ?? ""}{" "}
-                {b.active
-                  ? ""
-                  : t(
-                      "· inactive (whitelisted)",
-                      "· নিষ্ক্রিয় (হোয়াইটলিস্টেড)",
-                    )}
-              </span>
+          <div className="flex items-center gap-2">
+            <Sliders className="size-4 text-muted-foreground" />
+            <span className="text-sm font-semibold">
+              Advanced Rule Customization
             </span>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() =>
-                run(
-                  () =>
-                    fraudBlacklistToggleFn({
-                      data: { id: b.id, active: !b.active },
-                    }),
-                  t("Updated", "হালনাগাদ হয়েছে"),
-                )
-              }
-              className="min-h-11 rounded-fq-md border border-border px-3 text-sm disabled:opacity-60"
-            >
-              {b.active ? t("Remove", "সরান") : t("Restore", "ফেরান")}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </section>
+          </div>
+          {showAdvanced ? (
+            <ChevronUp className="size-4 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="size-4 text-muted-foreground" />
+          )}
+        </button>
+
+        {showAdvanced && (
+          <div className="mt-4 space-y-3 pt-3 border-t border-border">
+            <p className="text-xs text-muted-foreground">
+              These underlying rules run automatically during checkout. You can
+              enable or disable specific checks below.
+            </p>
+            <div className="grid gap-2.5 sm:grid-cols-2">
+              {desk.catalog.map((cat) => {
+                const rule = desk.rules.find((r) => r.code === cat.code);
+                const isEnabled = rule?.enabled ?? true;
+                return (
+                  <div
+                    key={cat.code}
+                    className="flex items-start justify-between gap-3 rounded-fq-lg border border-border/80 bg-background/50 p-3"
+                  >
+                    <div>
+                      <p className="font-semibold text-xs text-foreground">
+                        {cat.title}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">
+                        {cat.hint}
+                      </p>
+                    </div>
+
+                    <label className="flex items-center gap-1.5 text-xs shrink-0 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isEnabled}
+                        disabled={busy}
+                        onChange={(e) =>
+                          run(
+                            () =>
+                              fraudRuleFn({
+                                data: {
+                                  code: cat.code,
+                                  enabled: e.target.checked,
+                                  params:
+                                    (rule?.params as Record<string, number>) ??
+                                    {},
+                                },
+                              }),
+                            `Rule ${cat.title} updated.`,
+                          )
+                        }
+                        className="rounded border-border"
+                      />
+                      <span className="text-[11px] text-muted-foreground">
+                        {isEnabled ? "Active" : "Off"}
+                      </span>
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </section>
+    </div>
   );
 }

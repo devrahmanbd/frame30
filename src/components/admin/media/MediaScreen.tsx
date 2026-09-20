@@ -9,7 +9,8 @@
 import { useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Images, LayoutGrid, List, Plus } from "lucide-react";
+import { Copy, Images, LayoutGrid, List, Plus } from "lucide-react";
+import { toast } from "sonner";
 import {
   BulkBar,
   Card,
@@ -33,6 +34,7 @@ import {
   EMPTY_FILTERS,
   type Attachment,
   type MediaFilters,
+  type MediaSortKey,
   type MediaTypeFilter,
   type MediaView,
   filterAttachments,
@@ -42,6 +44,7 @@ import {
   monthOptions,
   neighbourAttachment,
   selectRange,
+  sortAttachments,
   toggleSelected,
   typeCounts,
 } from "@/lib/media/library";
@@ -49,13 +52,18 @@ import { AttachmentModal, type AttachmentPatch } from "./AttachmentModal";
 import { MediaGrid, MediaList } from "./MediaGrid";
 import { UploadDropzone, toPendingUpload } from "./UploadDropzone";
 
-const TYPE_OPTIONS: { key: MediaTypeFilter; label: string }[] = [
+const TYPE_PILLS: { key: MediaTypeFilter; label: string }[] = [
   { key: "all", label: "All media" },
   { key: "image", label: "Images" },
-  { key: "vector", label: "SVG" },
   { key: "video", label: "Video" },
   { key: "audio", label: "Audio" },
   { key: "document", label: "Documents" },
+  { key: "vector", label: "SVG" },
+  { key: "missing-alt", label: "Missing Alt" },
+];
+
+const TYPE_OPTIONS: { key: MediaTypeFilter; label: string }[] = [
+  ...TYPE_PILLS,
 ];
 
 export function MediaScreen() {
@@ -67,6 +75,7 @@ export function MediaScreen() {
 
   const [view, setView] = useState<MediaView>("grid");
   const [filters, setFilters] = useState<MediaFilters>(EMPTY_FILTERS);
+  const [sortKey, setSortKey] = useState<MediaSortKey>("date-desc");
   const [uploadOpen, setUploadOpen] = useState(false);
   const [selecting, setSelecting] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
@@ -90,8 +99,8 @@ export function MediaScreen() {
 
   const items = useMemo(() => query.data?.items ?? [], [query.data]);
   const visible = useMemo(
-    () => filterAttachments(items, filters),
-    [items, filters],
+    () => sortAttachments(filterAttachments(items, filters), sortKey),
+    [items, filters, sortKey],
   );
   const counts = useMemo(() => typeCounts(items), [items]);
   const months = useMemo(() => monthOptions(items), [items]);
@@ -181,17 +190,47 @@ export function MediaScreen() {
               <LayoutGrid className="size-4" aria-hidden />
             </ViewButton>
           </div>
-          <button
-            type="button"
-            className={btnGhost}
-            aria-pressed={selecting}
-            onClick={() => {
-              setSelecting((current) => !current);
-              setSelected([]);
-            }}
-          >
-            {selecting ? "Cancel select" : "Bulk select"}
-          </button>
+          {selecting ? (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                className={btnGhost}
+                onClick={() => {
+                  if (selected.length === visible.length && visible.length > 0) {
+                    setSelected([]);
+                  } else {
+                    setSelected(visible.map((item) => item.id));
+                  }
+                }}
+              >
+                {selected.length === visible.length && visible.length > 0
+                  ? "Deselect all"
+                  : `Select all (${visible.length})`}
+              </button>
+              <button
+                type="button"
+                className={btnGhost}
+                onClick={() => {
+                  setSelecting(false);
+                  setSelected([]);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className={btnGhost}
+              aria-pressed={selecting}
+              onClick={() => {
+                setSelecting(true);
+                setSelected([]);
+              }}
+            >
+              Bulk select
+            </button>
+          )}
           <button
             type="button"
             className={btnPrimary}
@@ -215,6 +254,37 @@ export function MediaScreen() {
       )}
 
       <Card>
+        <div className="flex flex-wrap items-center gap-1.5 border-b border-border pb-3 mb-3">
+          {TYPE_PILLS.map((pill) => {
+            const active = filters.type === pill.key;
+            return (
+              <button
+                key={pill.key}
+                type="button"
+                onClick={() => setFilters({ ...filters, type: pill.key })}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors",
+                  active
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+              >
+                <span>{pill.label}</span>
+                <span
+                  className={cn(
+                    "rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
+                    active
+                      ? "bg-primary-foreground/20 text-primary-foreground"
+                      : "bg-background text-muted-foreground",
+                  )}
+                >
+                  {counts[pill.key] ?? 0}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
         <div className="flex flex-wrap items-end gap-3">
           <label className="min-w-[220px] flex-1 space-y-1">
             <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -246,7 +316,7 @@ export function MediaScreen() {
             >
               {TYPE_OPTIONS.map((option) => (
                 <option key={option.key} value={option.key}>
-                  {option.label} ({counts[option.key]})
+                  {option.label} ({counts[option.key] ?? 0})
                 </option>
               ))}
             </select>
@@ -268,6 +338,25 @@ export function MediaScreen() {
                   {month.label}
                 </option>
               ))}
+            </select>
+          </label>
+          <label className="space-y-1">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Sort
+            </span>
+            <select
+              className={inputClass}
+              value={sortKey}
+              onChange={(event) =>
+                setSortKey(event.target.value as MediaSortKey)
+              }
+            >
+              <option value="date-desc">Newest first</option>
+              <option value="date-asc">Oldest first</option>
+              <option value="name-asc">Name (A–Z)</option>
+              <option value="name-desc">Name (Z–A)</option>
+              <option value="size-desc">Largest size</option>
+              <option value="size-asc">Smallest size</option>
             </select>
           </label>
           {filtersActive(filters) && (
@@ -336,6 +425,8 @@ export function MediaScreen() {
           selected={selected}
           onOpen={(item) => setOpenId(item.id)}
           onToggle={toggle}
+          onSelectAll={(ids) => setSelected(ids)}
+          onClearSelection={() => setSelected([])}
         />
       ) : (
         <MediaList
@@ -344,23 +435,44 @@ export function MediaScreen() {
           selected={selected}
           onOpen={(item) => setOpenId(item.id)}
           onToggle={toggle}
+          onSelectAll={(ids) => setSelected(ids)}
+          onClearSelection={() => setSelected([])}
         />
       )}
 
       {selecting && selected.length > 0 && (
         <BulkBar count={selected.length} onClear={() => setSelected([])}>
-          <button
-            type="button"
-            className="inline-flex min-h-11 items-center rounded-fq-md px-3 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
-            onClick={() =>
-              setConfirm({
-                ids: selected,
-                label: `${selected.length} file${selected.length === 1 ? "" : "s"}`,
-              })
-            }
-          >
-            Delete permanently
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-fq-md px-3 text-sm font-medium transition-colors hover:bg-muted"
+              onClick={() => {
+                const urls = items
+                  .filter((i) => selected.includes(i.id))
+                  .map((i) => i.url)
+                  .join("\n");
+                void navigator.clipboard.writeText(urls);
+                toast.success(
+                  `${selected.length} URL${selected.length === 1 ? "" : "s"} copied to clipboard`,
+                );
+              }}
+            >
+              <Copy className="size-4" />
+              <span>Copy URLs</span>
+            </button>
+            <button
+              type="button"
+              className="inline-flex min-h-11 items-center rounded-fq-md px-3 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10"
+              onClick={() =>
+                setConfirm({
+                  ids: selected,
+                  label: `${selected.length} file${selected.length === 1 ? "" : "s"}`,
+                })
+              }
+            >
+              Delete permanently
+            </button>
+          </div>
         </BulkBar>
       )}
 

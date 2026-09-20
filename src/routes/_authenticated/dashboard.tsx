@@ -8,7 +8,7 @@ import {
 import { useEffect } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { useMerchant } from "@/hooks/use-merchant";
-import { useLang } from "@/lib/i18n";
+import { useLang, AdminLangProvider } from "@/lib/i18n";
 import { chromeFromMatches } from "@/lib/console-routes";
 import { supabase } from "@/integrations/supabase/client";
 import { SupportWidget } from "@/components/store/SupportWidget";
@@ -109,11 +109,13 @@ function MerchantDashboardLayout() {
   if (!chrome) return <Outlet />;
 
   return (
-    <AdminShell>
-      <Outlet />
-      {merchant?.slug ? (
-        <SupportWidget slug={merchant.slug} mode="dashboard" />
-      ) : null}
-    </AdminShell>
+    <AdminLangProvider>
+      <AdminShell>
+        <Outlet />
+        {merchant?.slug ? (
+          <SupportWidget slug={merchant.slug} mode="dashboard" />
+        ) : null}
+      </AdminShell>
+    </AdminLangProvider>
   );
 }

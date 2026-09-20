@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { THEME_PRESETS } from "./theme-presets";
 import { BUILTIN_PREFIX, builtinWidgets } from "./builtin-plugins";
+import { catalogMeta } from "./themes/catalog-meta";
 
 type Client = SupabaseClient<Database>;
 
@@ -48,7 +49,7 @@ export async function listCatalog(db: Client, merchantId: string) {
       .order("created_at", { ascending: false }),
     db
       .from("store_themes")
-      .select("id, is_active, source_install_id")
+      .select("id, is_active, source_install_id, source_listing_slug, name")
       .eq("merchant_id", merchantId),
   ]);
 
@@ -60,10 +61,14 @@ export async function listCatalog(db: Client, merchantId: string) {
       rating: r.rating_count ? r.rating_sum / r.rating_count : null,
       mine: r.seller_merchant_id === merchantId,
       builtin: false as const,
+      tags: [] as string[],
+      features: [] as string[],
+      layouts: [] as string[],
+      subjects: [] as string[],
     }));
 
   // WordPress parity: which installed listings already have a theme row,
-  // and which of those is live. Linked through source_install_id.
+  // and which of those is live. Linked through source_install_id or source_listing_slug.
   const installById = new Map(
     ((installs.data ?? []) as { id: string; listing_slug: string }[]).map(
       (i) => [i.id, i],
@@ -74,13 +79,21 @@ export async function listCatalog(db: Client, merchantId: string) {
       id: string;
       is_active: boolean;
       source_install_id: string | null;
+      source_listing_slug?: string | null;
+      name?: string | null;
     }[]
   ).flatMap((t) => {
-    if (!t.source_install_id) return [];
-    const inst = installById.get(t.source_install_id);
-    return inst
-      ? [{ slug: inst.listing_slug, themeId: t.id, isActive: t.is_active }]
-      : [];
+    const inst = t.source_install_id
+      ? installById.get(t.source_install_id)
+      : undefined;
+    let slug = inst?.listing_slug ?? t.source_listing_slug;
+    if (!slug && t.name) {
+      const match = THEME_PRESETS.find(
+        (p) => p.nameEn.toLowerCase() === (t.name ?? "").toLowerCase(),
+      );
+      if (match) slug = match.key;
+    }
+    return slug ? [{ slug, themeId: t.id, isActive: t.is_active }] : [];
   });
 
   return {
@@ -110,33 +123,40 @@ export async function listCatalog(db: Client, merchantId: string) {
  * ledger, consent and payment flow.
  */
 function builtinThemes() {
-  return THEME_PRESETS.map((p) => ({
-    id: `${BUILTIN_PREFIX}${p.key}`,
-    seller_merchant_id: null as string | null,
-    name: p.nameEn,
-    slug: p.key,
-    description: p.summaryEn,
-    vendor_name: "Framique",
-    thumbnail_url: null as string | null,
-    category: p.category,
-    version: p.version,
-    compatible_versions: [] as string[],
-    price_minor_int: 0,
-    currency_code: "BDT",
-    trial_allowed: false,
-    status: "active",
-    manifest: null,
-    version_history: [] as string[],
-    install_count: 0,
-    rating_sum: 0,
-    rating_count: 0,
-    created_at: new Date(0).toISOString(),
-    kind: "theme" as const,
-    compatible: true,
-    rating: null as number | null,
-    mine: false,
-    builtin: true as const,
-  }));
+  return THEME_PRESETS.map((p) => {
+    const meta = catalogMeta(p.key);
+    return {
+      id: `${BUILTIN_PREFIX}${p.key}`,
+      seller_merchant_id: null as string | null,
+      name: p.nameEn,
+      slug: p.key,
+      description: p.summaryEn,
+      vendor_name: meta.author || "Framique",
+      thumbnail_url: null as string | null,
+      category: p.category,
+      version: p.version,
+      compatible_versions: [] as string[],
+      price_minor_int: 0,
+      currency_code: "BDT",
+      trial_allowed: false,
+      status: "active",
+      manifest: null,
+      version_history: [] as string[],
+      install_count: meta.installs || 0,
+      rating_sum: 0,
+      rating_count: 0,
+      created_at: new Date(0).toISOString(),
+      kind: "theme" as const,
+      compatible: true,
+      rating: meta.rating ?? null,
+      mine: false,
+      builtin: true as const,
+      tags: meta.tags ?? [],
+      features: meta.features ?? [],
+      layouts: meta.layouts ?? [],
+      subjects: meta.subjects ?? [],
+    };
+  });
 }
 
 export async function listMine(db: Client, merchantId: string) {

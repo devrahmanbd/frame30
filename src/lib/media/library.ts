@@ -562,8 +562,16 @@ export function isAllowedMimeType(
 
 /* -------------------------------------------------------------- filtering */
 
-export type MediaTypeFilter = "all" | MediaKind;
+export type MediaTypeFilter = "all" | MediaKind | "missing-alt";
 export type MediaView = "grid" | "list";
+
+export type MediaSortKey =
+  | "date-desc"
+  | "date-asc"
+  | "name-asc"
+  | "name-desc"
+  | "size-desc"
+  | "size-asc";
 
 export type MediaFilters = {
   query: string;
@@ -577,6 +585,38 @@ export const EMPTY_FILTERS: MediaFilters = {
   type: "all",
   month: "all",
 };
+
+export function sortAttachments(
+  items: readonly Attachment[],
+  sortKey: MediaSortKey = "date-desc",
+): Attachment[] {
+  const sorted = [...items];
+  switch (sortKey) {
+    case "date-asc":
+      return sorted.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      );
+    case "name-asc":
+      return sorted.sort((a, b) =>
+        (a.title || a.fileName).localeCompare(b.title || b.fileName),
+      );
+    case "name-desc":
+      return sorted.sort((a, b) =>
+        (b.title || b.fileName).localeCompare(a.title || a.fileName),
+      );
+    case "size-desc":
+      return sorted.sort((a, b) => b.sizeBytes - a.sizeBytes);
+    case "size-asc":
+      return sorted.sort((a, b) => a.sizeBytes - b.sizeBytes);
+    case "date-desc":
+    default:
+      return sorted.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+  }
+}
 
 export function monthKey(iso: string): string {
   return iso.slice(0, 7);
@@ -628,8 +668,12 @@ export function typeCounts(
     audio: 0,
     document: 0,
     other: 0,
+    "missing-alt": 0,
   };
-  for (const item of items) counts[mediaKind(item.contentType)] += 1;
+  for (const item of items) {
+    counts[mediaKind(item.contentType)] += 1;
+    if (needsAltText(item)) counts["missing-alt"] += 1;
+  }
   return counts;
 }
 
@@ -652,8 +696,14 @@ export function filterAttachments(
   filters: MediaFilters,
 ): Attachment[] {
   return searchAttachments(items, filters.query).filter((item) => {
-    if (filters.type !== "all" && mediaKind(item.contentType) !== filters.type)
+    if (filters.type === "missing-alt") {
+      if (!needsAltText(item)) return false;
+    } else if (
+      filters.type !== "all" &&
+      mediaKind(item.contentType) !== filters.type
+    ) {
       return false;
+    }
     if (filters.month !== "all" && monthKey(item.createdAt) !== filters.month)
       return false;
     return true;

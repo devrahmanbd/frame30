@@ -103,7 +103,26 @@ const loadCollectionSource: SourceLoader = async (merchantId, requests) => {
   const handleToId = new Map(
     (collections.data ?? []).map((c) => [c.slug, c.id]),
   );
-  const rows = (products ?? []) as ProductRow[];
+  let rows = (products ?? []) as ProductRow[];
+  if (rows.length === 0) {
+    const { demoCatalogFor } = await import("./demo-catalog");
+    const demo = demoCatalogFor("clothing-heritage");
+    rows = demo.products.map((dp) => ({
+      id: `demo-${dp.slug}`,
+      title: dp.title,
+      slug: dp.slug,
+      image_url: dp.image_url ?? null,
+      created_at: new Date().toISOString(),
+      product_variants: dp.variants.map((v) => ({
+        price_amount_minor_int: v.price,
+        compare_at_amount_minor_int: v.compare_at ?? null,
+        stock_quantity: v.stock ?? 10,
+      })),
+      collection_products: dp.collections.map((c) => ({
+        collection_id: c,
+      })),
+    }));
+  }
   const out: Record<string, WidgetRow[]> = {};
 
   for (const request of requests) {
@@ -202,7 +221,17 @@ const loadTaxonomySource: SourceLoader = async (merchantId, requests) => {
     .eq("is_published", true)
     .order("position")
     .limit(MAX_WIDGET_ROWS);
-  const rows = data ?? [];
+  let rows = data ?? [];
+  if (rows.length === 0) {
+    const { demoCatalogFor } = await import("./demo-catalog");
+    const demo = demoCatalogFor("clothing-heritage");
+    rows = demo.collections.map((c) => ({
+      id: `demo-${c.slug}`,
+      name: c.name,
+      slug: c.slug,
+      collection_products: [],
+    })) as any;
+  }
   const out: Record<string, WidgetRow[]> = {};
   for (const request of requests) {
     const limit = Math.min(

@@ -31,6 +31,7 @@ import { THEME_PRESETS, presetByKey } from "./theme-presets";
 import { PRESET_API_RANGE, checkApiCompatibility } from "./registry-version";
 import { translationGate } from "./builder-guardrails";
 import { translationCoverage } from "./translation-coverage";
+import { demoCatalogFor } from "./demo-catalog";
 
 type Client = SupabaseClient<Database>;
 
@@ -1131,15 +1132,27 @@ export async function importDemoContent(
   await rateLimit("builder.demo_import", merchantId);
   return withSpan("builder.demo_import", async () => {
     const pkg = registryPackage(themeKey);
-    const { demoCatalogFor } = await import("./demo-catalog");
+    const catalog = demoCatalogFor(themeKey);
     const raw = await rpc<unknown>(db, "theme_import_demo", {
       _merchant_id: merchantId,
       _theme_key: themeKey,
       _ast: templateOf(pkg.templates, "index") as unknown as Json,
       _tokens: pkg.tokens as unknown as Json,
-      _catalog: demoCatalogFor(themeKey) as unknown as Json,
+      _catalog: catalog as unknown as Json,
     });
     const result = demoResult(raw);
+    if (result.imported) {
+      for (const prod of catalog.products) {
+        if (prod.image_url) {
+          await db
+            .from("products")
+            .update({ image_url: prod.image_url } as never)
+            .eq("merchant_id", merchantId)
+            .eq("slug", prod.slug)
+            .eq("is_demo", true);
+        }
+      }
+    }
     incr("framique_theme_demo_total", {
       action: "import",
       result: result.imported ? "ok" : "noop",

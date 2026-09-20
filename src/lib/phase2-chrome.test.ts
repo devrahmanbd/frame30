@@ -5,6 +5,7 @@ import { WIDGET_COMPONENTS } from "@/components/builder/widgets";
 import { parseLinkList } from "@/components/builder/chrome";
 
 const CHROME: SectionType[] = [
+  "subbrand_bar",
   "announcement_bar",
   "utility_bar",
   "trust_bar",

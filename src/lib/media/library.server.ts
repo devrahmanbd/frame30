@@ -54,22 +54,24 @@ type Row = {
   created_at: string;
 };
 
-function toAttachment(row: Row): Attachment {
+function toAttachment(row: any): Attachment {
+  const fileName = row.file_name || "untitled";
+  const storagePath = row.storage_path || "";
   return {
     id: row.id,
-    fileName: row.file_name,
-    title: row.title ?? titleFromFileName(row.file_name),
+    fileName,
+    title: row.title ?? titleFromFileName(fileName),
     altText: row.alt_text ?? "",
     caption: row.caption ?? "",
     description: row.description ?? "",
-    storagePath: row.storage_path,
-    url: mediaUrl(row.storage_path),
-    contentType: row.content_type,
+    storagePath,
+    url: row.url?.startsWith("http") ? row.url : mediaUrl(storagePath),
+    contentType: row.content_type || "application/octet-stream",
     sizeBytes: Number(row.size_bytes ?? 0),
-    width: row.width,
-    height: row.height,
+    width: row.width ? Number(row.width) : null,
+    height: row.height ? Number(row.height) : null,
     sanitised: Boolean(row.sanitised),
-    createdAt: row.created_at,
+    createdAt: row.created_at || new Date().toISOString(),
   };
 }
 
@@ -78,15 +80,39 @@ export async function listAttachments(
   merchantId: string,
   limit = 400,
 ): Promise<Attachment[]> {
-  const { data, error } = await db
-    .from("media_assets")
-    .select(SELECT)
-    .eq("merchant_id", merchantId)
-    .is("deleted_at", null)
-    .order("created_at", { ascending: false })
-    .limit(limit);
-  if (error) throw new MediaLibraryError("list_failed", error.message);
-  return ((data ?? []) as unknown as Row[]).map(toAttachment);
+  try {
+    let { data, error } = await db
+      .from("media_assets")
+      .select("*")
+      .eq("merchant_id", merchantId)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+    if (error) {
+      const res = await db
+        .from("media_assets")
+        .select("*")
+        .eq("merchant_id", merchantId)
+        .order("created_at", { ascending: false })
+        .limit(limit);
+      data = res.data;
+      error = res.error;
+    }
+    if (error) {
+      const res = await db
+        .from("media_assets")
+        .select("*")
+        .eq("merchant_id", merchantId)
+        .limit(limit);
+      data = res.data;
+      error = res.error;
+    }
+    if (error) throw new MediaLibraryError("list_failed", error.message);
+    return ((data ?? []) as unknown as Row[]).map(toAttachment);
+  } catch (e: any) {
+    if (e instanceof MediaLibraryError) throw e;
+    throw new MediaLibraryError("list_failed", e?.message || "Failed to load media");
+  }
 }
 
 async function takenNames(db: Db, merchantId: string): Promise<string[]> {
@@ -189,22 +215,40 @@ export async function uploadAttachment(
   });
   if (up.error) throw new MediaLibraryError("upload_failed", up.error.message);
 
-  const { data, error } = await db
+  const fullRow = {
+    merchant_id: merchantId,
+    file_name: fileName,
+    title: titleFromFileName(fileName),
+    storage_path: path,
+    url: path,
+    content_type: mime,
+    size_bytes: bytes.length,
+    width: input.width ?? null,
+    height: input.height ?? null,
+    sanitised,
+  };
+  let { data, error } = await db
     .from("media_assets")
-    .insert({
+    .insert(fullRow as never)
+    .select("*")
+    .single();
+  if (error && error.message?.includes("column")) {
+    const baselineRow = {
       merchant_id: merchantId,
       file_name: fileName,
-      title: titleFromFileName(fileName),
       storage_path: path,
       url: path,
       content_type: mime,
       size_bytes: bytes.length,
-      width: input.width ?? null,
-      height: input.height ?? null,
-      sanitised,
-    } as never)
-    .select(SELECT)
-    .single();
+    };
+    const retry = await db
+      .from("media_assets")
+      .insert(baselineRow as never)
+      .select("*")
+      .single();
+    data = retry.data;
+    error = retry.error;
+  }
   if (error) {
     // Never leave an orphan object behind when the row fails.
     await supabaseAdmin.storage.from(BUCKET).remove([path]);
@@ -243,7 +287,7 @@ export async function updateAttachment(
     .update(update as never)
     .eq("id", id)
     .eq("merchant_id", merchantId)
-    .select(SELECT)
+    .select("*")
     .maybeSingle();
   if (error) throw new MediaLibraryError("update_failed", error.message);
   if (!data)

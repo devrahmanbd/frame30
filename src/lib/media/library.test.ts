@@ -17,6 +17,7 @@ import {
   searchAttachments,
   selectRange,
   slugFileName,
+  sortAttachments,
   titleFromFileName,
   toggleSelected,
   typeCounts,
@@ -173,9 +174,38 @@ describe("filtering", () => {
     expect(monthLabel("2026-02")).toBe("February 2026");
   });
 
-  it("counts images missing alt text only", () => {
+  it("counts images missing alt text only and supports missing-alt filter", () => {
     expect(missingAltCount(items)).toBe(0);
-    expect(missingAltCount([att({ altText: "" })])).toBe(1);
+    const withMissing = [
+      ...items,
+      att({
+        id: "4",
+        fileName: "unnamed.png",
+        contentType: "image/png",
+        altText: "",
+      }),
+    ];
+    expect(missingAltCount(withMissing)).toBe(1);
+    const filtered = filterAttachments(withMissing, {
+      query: "",
+      type: "missing-alt",
+      month: "all",
+    });
+    expect(filtered.map((i) => i.id)).toEqual(["4"]);
+  });
+
+  it("sorts attachments by date, name, and size", () => {
+    const list = [
+      att({ id: "a", title: "Zebra", fileName: "zebra.png", sizeBytes: 500, createdAt: "2026-01-01T00:00:00Z" }),
+      att({ id: "b", title: "Apple", fileName: "apple.png", sizeBytes: 1500, createdAt: "2026-03-01T00:00:00Z" }),
+      att({ id: "c", title: "Mango", fileName: "mango.png", sizeBytes: 100, createdAt: "2026-02-01T00:00:00Z" }),
+    ];
+    expect(sortAttachments(list, "name-asc").map((i) => i.id)).toEqual(["b", "c", "a"]);
+    expect(sortAttachments(list, "name-desc").map((i) => i.id)).toEqual(["a", "c", "b"]);
+    expect(sortAttachments(list, "size-desc").map((i) => i.id)).toEqual(["b", "a", "c"]);
+    expect(sortAttachments(list, "size-asc").map((i) => i.id)).toEqual(["c", "a", "b"]);
+    expect(sortAttachments(list, "date-desc").map((i) => i.id)).toEqual(["b", "c", "a"]);
+    expect(sortAttachments(list, "date-asc").map((i) => i.id)).toEqual(["a", "c", "b"]);
   });
 });
 

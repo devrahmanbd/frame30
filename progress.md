@@ -52,6 +52,7 @@ clothing products + theme, one real purchase. No manual intervention.
 - [x] **TH-4** 100% Bilingual parity dictionary (`theme-blueprints.bn.ts`) — COMPLETED
 - [x] **TH-5** Storefront ThemeChrome layout, responsive & contrast polish (`ThemeChrome.tsx`, `builder-ast.ts`) — COMPLETED
 - [x] **TH-6** Release verification: unit & contract test suite, typecheck, build & live deploy verification — COMPLETED
+- [x] **TH-7** Complete Atelier theme blueprint (7 templates), 12-item APPAREL demo catalog, and 100% Bengali dictionary — COMPLETED
 - [ ] **T3** (High, TB-2/INV-01) Strip inbound `X-Merchant-Id`/`X-Tenant-Id`/`X-Store-Slug` at app entry + edge conf — DONE batch 1 (`986f07a`)
 - [ ] **C2** (Med, §30) Remove dead `pg_catalog_exec` generic-SQL RPC call (`support-moderation.server.ts:589`) — DONE batch 1
 - [ ] **A8** (Low, ops) Fix metric drift `framique_auth_event_total` → `framique_auth_events_total` per runbook — DONE batch 1
@@ -100,9 +101,25 @@ clothing products + theme, one real purchase. No manual intervention.
 - Custom-host storefront route: deferred earlier, NOW required by user
   ("open a store on the custom domain"). Implementing host-gated route.
 - Test account: flamedev7 (password used in-browser only, never stored).
+- Hallmark VIBRANT redesign — Rupaboti homepage (2026-09-19, tree left dirty for review):
+  - Voiced section shells in `src/components/builder/beauty.tsx` (same props/copy/logic, new structure):
+    shade_finder `tool` band + one gsap moment, skin_quiz `tool-split` (heading left/steps right),
+    claim_chips `proof-inline` borderless, before_after `proof-split`, texture_strip `sense`
+    (hairline strip, right-aligned heading), routine_builder `commerce` (page's only elevated card),
+    sample_picker `pick`, ingredient_glossary `know` (dividers, no box), loyalty_strip `band`
+    (slim primary band), consult_cta `close` (only centered moment). PDP widgets keep legacy Panel.
+  - New `src/components/builder/moment-entrance.tsx` (one-shot gsap cascade via `withEngine` +
+    `useMotionIntent`; null under reduced/off — motion-contract safe, no static gsap import).
+  - Tests: `moment-entrance.test.ts` (3) + `rupaboti-voices.test.ts` (13) — 212/212 pass across
+    builder dir + phase2-beauty + widget-registry + motion.contract. tsc clean on touched files
+    (repo has pre-existing errors: PageCanvas/PageBuilder/studio-model; `tsgo` binary missing so
+    verified with `tsc --noEmit`). Full suite: 3361 pass / 26 fail — all pre-existing (HEAD baseline
+    8) or from the co-existing dirty tree (chrome.tsx uppercase, supershop mega_menu, server/infra).
+  - Locked tokens untouched (ivory/ink/rose-clay/amber flow via semantic utilities, no raw colour —
+    registry contract holds). No routes/server/DB/checkout/admin touched. No deletions.
+  - Visual check (desktop + 375px screenshots) left for the orchestrator — no browser tools here.
 
 ## Log
-- 09:30 UTC: starting. Pushed 415b341. Opening live site in Chrome.
 - DEPLOY REQUEST (night shift -> whoever deploys): main has 3 undeployed
   commits needed for the clothing-business E2E: 415b341 (429 storm fixes),
   a55e410 (custom-host storefront route + settings onConflict fix),
@@ -129,3 +146,18 @@ clothing products + theme, one real purchase. No manual intervention.
 - NOTE: microscorp.shop (correct spelling, 'corp') is NXDOMAIN as of ~10:30 UTC
   on both DoH resolvers — registration/zone gone. microscrop.shop row is a
   typo stray (issuing_cert). Real Verify run flipped row to Verifying attempt 1.
+- Elementor program: 6 reader agents completed file-by-file analysis (editor
+  shell, controls+CSS pipeline, documents/elements, frontend/kits, library,
+  pro: theme-builder/popup/loop/forms/motion/notes/query). Indexed to mem0.
+- WP UX study: logged into maxwilliam.shop, built+published Container>Heading
+  in Elementor (panel/tabs/live preview/structure/publish all observed).
+- Customizer removed (ThemesScreen button + Builder nav label), committed
+  0b2bbf9. Builder forced EN-only via nested provider (uncommitted — sits
+  atop Fortress's in-flight builder diff which has 4 tsc errors of its own).
+- No-Bangla rule for page builder recorded; canvas previews keep locale props.
+- Builder slice (drag-drop): tray cards draggable (default preset), canvas gap
+  indicator + drop inserts at position via editor.add (canDrop-guarded).
+  Verified in local browser: Heading inserted, autosaved, Undo enabled.
+  Right-click menu already had Elementor parity — no build needed.
+  Committed codec only (7380c18); tray+route wiring stays uncommitted until
+  the concurrent builder WIP settles (their hunks carry 2 tsc errors).

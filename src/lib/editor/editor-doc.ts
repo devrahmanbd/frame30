@@ -124,7 +124,7 @@ export function emptyEditorDoc(kind: ContentKind): EditorDoc {
     titleEn: "",
     slug: "",
     body: "",
-    editor: "classic",
+    editor: kind === "page" ? "builder" : "classic",
     excerpt: "",
     status: "draft",
     publishAt: null,

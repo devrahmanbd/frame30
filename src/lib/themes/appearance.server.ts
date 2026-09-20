@@ -344,6 +344,50 @@ export async function activateTheme(
         .update({ published_version_id: publishedVersionId })
         .eq("merchant_id", merchantId)
         .eq("id", themeId);
+    } else {
+      const { data: draft } = await db
+        .from("theme_drafts")
+        .select("templates, tokens")
+        .eq("merchant_id", merchantId)
+        .eq("theme_id", themeId)
+        .maybeSingle();
+
+      let templates = draft?.templates;
+      let tokens = draft?.tokens;
+      if (!templates && row.source_listing_slug) {
+        try {
+          const pkg = registryPackage(row.source_listing_slug);
+          templates = pkg.templates as never;
+          tokens = pkg.tokens as never;
+        } catch {
+          // Preset not found
+        }
+      }
+      if (templates) {
+        const { data: createdVersion } = await db
+          .from("theme_versions")
+          .insert({
+            merchant_id: merchantId,
+            theme_id: themeId,
+            version: 1,
+            status: "published",
+            published_at: new Date().toISOString(),
+            label: row.source_listing_slug ?? row.name,
+            templates: templates as never,
+            tokens: (tokens ?? {}) as never,
+            created_by: actorId ?? null,
+          })
+          .select("id")
+          .single();
+        if (createdVersion) {
+          publishedVersionId = (createdVersion as { id: string }).id;
+          await db
+            .from("store_themes")
+            .update({ published_version_id: publishedVersionId })
+            .eq("merchant_id", merchantId)
+            .eq("id", themeId);
+        }
+      }
     }
   } else {
     await db
@@ -422,13 +466,13 @@ export async function deleteTheme(
   if (sourceInstallId) {
     await db
       .from("marketplace_installs")
-      .update({ status: "uninstalled" })
+      .update({ status: "removed" })
       .eq("merchant_id", merchantId)
       .eq("id", sourceInstallId);
   } else if (row.source_listing_slug) {
     await db
       .from("marketplace_installs")
-      .update({ status: "uninstalled" })
+      .update({ status: "removed" })
       .eq("merchant_id", merchantId)
       .eq("listing_slug", row.source_listing_slug)
       .eq("kind", "theme");

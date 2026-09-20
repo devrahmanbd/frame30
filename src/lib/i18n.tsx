@@ -193,3 +193,24 @@ export function TK({ k, vars }: { k: string; vars?: Vars }) {
   const { tk } = useLang();
   return <>{tk(k, vars)}</>;
 }
+
+/**
+ * Merchant console provider: enforces English-only across all /dashboard routes.
+ * Ensures zero Bengali text renders anywhere inside the admin dashboard.
+ */
+export function AdminLangProvider({ children }: { children: ReactNode }) {
+  const value = useMemo<LangContextValue>(
+    () => ({
+      lang: "en",
+      setLang: () => undefined,
+      setScope: () => undefined,
+      toggle: () => undefined,
+      t: (en) => en,
+      tk: (key, vars) => lookup("en", key, vars),
+      tError: (error) => translateError("en", error),
+    }),
+    [],
+  );
+
+  return <LangContext.Provider value={value}>{children}</LangContext.Provider>;
+}

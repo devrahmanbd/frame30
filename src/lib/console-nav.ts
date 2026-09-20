@@ -194,8 +194,8 @@ export const ADMIN_NAV: readonly NavGroup[] = [
       },
       {
         to: "/dashboard/categories",
-        en: "Organisation",
-        bn: "সংগঠন",
+        en: "Category",
+        bn: "ক্যাটাগরি",
         icon: "categories",
         permission: "catalog.read",
       },
@@ -441,6 +441,13 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         icon: "users",
         permission: "marketing.read",
       },
+      {
+        to: "/dashboard/settings/seo",
+        en: "SEO",
+        bn: "এসইও",
+        icon: "seo",
+        permission: "marketing.read",
+      },
     ],
     more: [
       {
@@ -561,13 +568,6 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         icon: "security",
         permission: "settings.read",
       },
-      {
-        to: "/dashboard/settings/seo",
-        en: "SEO",
-        bn: "এসইও",
-        icon: "settings",
-        permission: "settings.read",
-      },
     ],
     more: [
       {
@@ -591,13 +591,6 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         bn: "API কী",
         icon: "apikeys",
         permission: "apikeys.read",
-      },
-      {
-        to: "/dashboard/settings/infrastructure",
-        en: "Infrastructure",
-        bn: "ইনফ্রাস্ট্রাকচার",
-        icon: "infra",
-        permission: "settings.read",
       },
       {
         to: "/dashboard/ai/settings",

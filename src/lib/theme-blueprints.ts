@@ -541,7 +541,39 @@ function atelier(): ThemePreset {
       c3Label: "Recycled packaging",
       c3Source: "Packaging spec, 2026",
     });
+  const trust = () =>
+    s("trust_bar", {
+      i1Icon: "artisan",
+      i1Title: "Artisan certified",
+      i1Body: "Hand-loomed in Tangail & Rajshahi",
+      i2Icon: "returns",
+      i2Title: "7-day easy exchange",
+      i2Body: "Hassle-free size & fit swaps",
+      i3Icon: "delivery",
+      i3Title: "Nationwide delivery",
+      i3Body: "Inside Dhaka in 24-48 hours",
+      i4Icon: "secure",
+      i4Title: "Ethical craft",
+      i4Body: "Fair artisan living wages",
+    });
   const footer = (): Section[] => [
+    trust(),
+    s("social_strip", {
+      heading: "Follow the studio",
+      href: "https://instagram.com",
+      i1Image:
+        "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=600&auto=format&fit=crop",
+      i2Image:
+        "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=600&auto=format&fit=crop",
+      i3Image:
+        "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=600&auto=format&fit=crop",
+      i4Image:
+        "https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=600&auto=format&fit=crop",
+      i5Image:
+        "https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?q=80&w=600&auto=format&fit=crop",
+      i6Image:
+        "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=600&auto=format&fit=crop",
+    }),
     s("footer_sitemap", {
       c1Title: "Shop",
       c1Links: "New arrivals\nDresses\nSari",
@@ -556,7 +588,6 @@ function atelier(): ThemePreset {
       heading: "Ways to pay",
       marks: "bKash\nNagad\nRocket\nVisa",
     }),
-    s("social_strip", { heading: "Follow the studio" }),
     s("rich_text", {
       heading: "About this store",
       body: "Small-batch clothing cut and finished in Dhaka, photographed on real bodies.",
@@ -631,11 +662,37 @@ function atelier(): ThemePreset {
             heading: "Cut for the way you live",
             body: "Limited runs, natural fibres, honest photography.",
             ctaLabel: "Shop the edit",
-            ctaHref: "/collections/new",
+            ctaHref: "/collections/new-in",
             layout: "split",
             scrim: true,
+            imageUrl:
+              "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1400&auto=format&fit=crop",
           }),
-          s("lookbook", { heading: "The lookbook", offset: true }),
+          s("marquee", {
+            text: "Pure Rajshahi Silk • Tangail Pit Loom Handloom • Ethical Fair Wages • Free Size Exchange Within 7 Days • Nationwide Delivery",
+            speed: 36,
+            pauseOnHover: true,
+          }),
+          s("lookbook", {
+            heading: "The lookbook",
+            offset: true,
+            i1Image:
+              "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop",
+            i1Alt: "Look 01 — Earth Tone Drapery",
+            i1Href: "/collections/artisan-silk",
+            i2Image:
+              "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=800&auto=format&fit=crop",
+            i2Alt: "Look 02 — Natural Indigo Robe",
+            i2Href: "/collections/everyday-edit",
+            i3Image:
+              "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=800&auto=format&fit=crop",
+            i3Alt: "Look 03 — Relaxed Flax Linen",
+            i3Href: "/collections/capsule-wardrobe",
+            i4Image:
+              "https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=800&auto=format&fit=crop",
+            i4Alt: "Look 04 — Modern Minimalist Dress",
+            i4Href: "/collections/new-in",
+          }),
           s("split_feature", {
             eyebrow: "The fabric",
             heading: "Handloom cotton, woven in Tangail",
@@ -643,27 +700,46 @@ function atelier(): ThemePreset {
             ctaLabel: "Read the story",
             ctaHref: "/blog/handloom",
             flip: false,
+            scrim: true,
+            imageUrl:
+              "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=1000&auto=format&fit=crop",
+            imageAlt: "Tangail handloom pit loom weaving",
+          }),
+          s("product_rail", {
+            heading: "Curator's edit",
+            limit: 8,
+            source: "collection",
+            collection: "capsule-wardrobe",
+            cardVariant: "editorial",
+            showRating: false,
+            promise: "Dispatches tomorrow",
           }),
           s("collection_story", {
             eyebrow: "Collection",
             heading: "Everyday tailoring",
             body: "Twelve pieces that work from office to iftar.",
             ctaLabel: "See the collection",
-            ctaHref: "/collections/tailoring",
+            ctaHref: "/collections/everyday-edit",
             scrim: true,
+            imageUrl:
+              "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1200&auto=format&fit=crop",
           }),
           s("shoppable_image", {
             heading: "Shop the look",
             limit: 4,
-            p1x: 30,
-            p1y: 40,
-            p2x: 60,
-            p2y: 55,
+            scrim: true,
+            imageUrl:
+              "https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?q=80&w=1000&auto=format&fit=crop",
+            altText: "Complete Atelier Studio Look",
+            p1x: 35,
+            p1y: 35,
+            p2x: 65,
+            p2y: 60,
           }),
           sustain(),
           s("ugc_gallery", {
             heading: "Worn by you",
-            limit: 8,
+            limit: 6,
             note: "Tag us to be featured.",
           }),
           s(
@@ -680,6 +756,11 @@ function atelier(): ThemePreset {
             quote: "The fit is exactly what the size chart promised.",
             author: "Verified buyer, Dhaka",
           }),
+          s("newsletter", {
+            heading: "The Studio Dispatch",
+            body: "Invitations to limited fabric drops, maker stories and seasonal edits. No noise, no spam.",
+            buttonLabel: "Subscribe to dispatch",
+          }),
         ],
         footer: footer(),
       },
@@ -694,6 +775,12 @@ function atelier(): ThemePreset {
           s("price_block", {
             showCompareAt: true,
             note: "VAT included where applicable.",
+          }),
+          s("variant_picker", {
+            heading: "Choose an option",
+            mode: "swatch",
+            axisOneLabel: "Shade",
+            axisTwoLabel: "Size",
           }),
           s("size_selector", {
             heading: "Select a size",
@@ -731,11 +818,20 @@ function atelier(): ThemePreset {
             modelHeight: "Model is 175cm",
             modelSize: "Wearing size M",
           }),
+          s("stock_delivery", {
+            lowStockAt: 5,
+            cutOff: "Order before 4pm for same-day dispatch",
+          }),
           s("add_to_cart", { label: "Add to bag", showQuantity: true }),
           s("wishlist_button", {
             addLabel: "Save for later",
             savedLabel: "Saved",
             showCount: true,
+          }),
+          s("sticky_buy_bar", {
+            label: "Add to bag",
+            showPrice: true,
+            dockAfter: 320,
           }),
           s("back_in_stock", {
             heading: "Sold out in your size?",
@@ -751,10 +847,16 @@ function atelier(): ThemePreset {
             open: false,
           }),
           sustain(),
+          s("product_meta", { heading: "Product details" }),
           s("complete_the_look", {
             heading: "Complete the look",
             limit: 4,
             buttonLabel: "Add the look",
+          }),
+          s("rating_summary", {
+            heading: "Customer ratings",
+            showHistogram: true,
+            verifiedOnly: true,
           }),
           s("review_list", {
             heading: "Customer reviews",
@@ -762,6 +864,19 @@ function atelier(): ThemePreset {
             sort: "recent",
             verifiedOnly: true,
             emptyText: "No reviews yet.",
+          }),
+          s("product_qna", {
+            heading: "Questions and answers",
+            askLabel: "Ask a question",
+            q1: "Is this pre-shrunk?",
+            a1: "Yes, all our handloom fabrics undergo gentle hot water wash before cutting.",
+            q2: "Can I exchange for a different size?",
+            a2: "Yes, complimentary size exchange within 7 days anywhere in Bangladesh.",
+          }),
+          s("quick_view", {
+            heading: "Quick view",
+            buttonLabel: "Quick view",
+            limit: 6,
           }),
           s(
             "product_grid",
@@ -782,6 +897,9 @@ function atelier(): ThemePreset {
           s("category_header", {
             heading: "The collection",
             body: "Filter by size, fabric and price.",
+            imageUrl:
+              "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1200&auto=format&fit=crop",
+            scrim: true,
             showCount: true,
             showBreadcrumb: true,
             homeLabel: "Home",
@@ -843,6 +961,14 @@ function atelier(): ThemePreset {
         header: [s("breadcrumb", { homeLabel: "Home" })],
         main: [
           s("page_content", {}),
+          s("order_tracker", {
+            heading: "Order status",
+            step1: "Placed",
+            step2: "Confirmed",
+            step3: "Shipped",
+            step4: "Delivered",
+            note: "Courier charge shown at checkout.",
+          }),
           s("size_guide", {
             heading: "Size guide",
             openLabel: "Open size guide",
@@ -868,12 +994,26 @@ function atelier(): ThemePreset {
             r4c3: 72,
             note: "Measurements are of the garment, laid flat.",
           }),
-          s("care_panel", {
-            heading: "Fabric and care",
-            composition: "100% handloom cotton",
-            care: "Cold hand wash, dry in shade",
-            origin: "Cut and sewn in Dhaka",
-            open: true,
+          s("buying_guide", {
+            heading: "How to choose",
+            body: "Handloom cotton has natural texture and breathes in humidity.",
+            l1Label: "Size guide",
+            l1Href: "/pages/size-guide",
+            l2Label: "Exchanges",
+            l2Href: "/pages/exchanges",
+            author: "Atelier Studio",
+            authorRole: "Studio Master",
+            reviewedBy: "Textile Conservator",
+            reviewedOn: "2026-09",
+          }),
+          s("faq", {
+            heading: "Frequently asked",
+            q1: "How do size exchanges work?",
+            a1: "Contact our team within 7 days. Our courier picks up the original and delivers your replacement at no charge.",
+            q2: "Do you ship outside Dhaka?",
+            a2: "Yes, we ship nationwide across all 64 districts in Bangladesh with cash on delivery and bKash/Nagad.",
+            q3: "Can I get bespoke alterations?",
+            a3: "Visit our Dhanmondi studio for complimentary sleeve or length alterations on any of our pieces.",
           }),
           s("store_locator", {
             heading: "Visit the studio",
@@ -883,6 +1023,21 @@ function atelier(): ThemePreset {
             s2Name: "Gulshan counter",
             s2Address: "Gulshan 2, Dhaka",
             s2Hours: "11am - 8pm",
+          }),
+          s("support_strip", {
+            heading: "Support",
+            t1Title: "Hotline",
+            t1Body: "+880 1700 000000",
+            t1Href: "tel:+8801700000000",
+            t2Title: "WhatsApp",
+            t2Body: "Instant stylist advice",
+            t2Href: "https://wa.me/8801700000000",
+            t3Title: "Exchanges",
+            t3Body: "Self-service returns",
+            t3Href: "/pages/exchanges",
+            t4Title: "Studio",
+            t4Body: "Directions & hours",
+            t4Href: "/pages/stores",
           }),
         ],
         footer: footer(),
@@ -912,6 +1067,10 @@ function atelier(): ThemePreset {
             ctaLabel: "Read the story",
             ctaHref: "/blog/makers",
             flip: true,
+            scrim: true,
+            imageUrl:
+              "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=1000&auto=format&fit=crop",
+            imageAlt: "Weaving families in Tangail",
           }),
           s("blog_pager", { align: "center" }),
           s("newsletter", {
@@ -932,6 +1091,20 @@ function atelier(): ThemePreset {
           }),
           s("cart_lines", { heading: "" }),
           s("cart_summary", { heading: "Order summary" }),
+          s("loyalty_strip", { label: "Points on this order" }),
+          s("cart_drawer", {
+            heading: "Your bag",
+            triggerLabel: "Bag",
+            removeLabel: "Remove",
+            emptyText: "Your bag is currently empty.",
+            totalLabel: "Total",
+            subtotalLabel: "Subtotal",
+            shippingLabel: "Delivery",
+            ctaLabel: "Checkout",
+            showCoupon: false,
+            showCta: true,
+            showFreeShipping: true,
+          }),
           s("heading", { text: "Your bag", level: "h2", align: "left" }),
           s("rich_text", {
             heading: "",
@@ -1612,7 +1785,11 @@ function rupaboti(): ThemePreset {
           }),
           s(
             "collection_grid",
-            { heading: "Shop skincare, makeup and haircare", limit: 8, columns: 4 },
+            {
+              heading: "Shop skincare, makeup and haircare",
+              limit: 8,
+              columns: 4,
+            },
             COLS(4),
           ),
           s("product_rail", {
@@ -2048,8 +2225,8 @@ function clothingHeritage(): ThemePreset {
       b3Href: "/collections/taaga-man",
       b4Name: "Herstory",
       b4Href: "/collections/herstory",
-      b5Name: "Grassroots",
-      b5Href: "/pages/grassroots",
+      b5Name: "Aarong Earth",
+      b5Href: "/collections/beauty",
     }),
     s("announcement_bar", {
       m1: "Free nationwide delivery on orders over BDT 3,000",
@@ -2129,6 +2306,41 @@ function clothingHeritage(): ThemePreset {
             layout: "split",
             scrim: true,
           }),
+          s("circle_categories", {
+            heading: "Explore by Category",
+            c1Title: "Women's Sarees",
+            c1Image:
+              "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=400&auto=format&fit=crop",
+            c1Href: "/collections/womens",
+            c2Title: "Men's Panjabi",
+            c2Image:
+              "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=400&auto=format&fit=crop",
+            c2Href: "/collections/mens",
+            c3Title: "Taaga",
+            c3Image:
+              "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=400&auto=format&fit=crop",
+            c3Href: "/collections/taaga",
+            c4Title: "Jamdani Weaves",
+            c4Image:
+              "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=400&auto=format&fit=crop",
+            c4Href: "/collections/heritage-handloom",
+            c5Title: "Nakshi Kantha",
+            c5Image:
+              "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?q=80&w=400&auto=format&fit=crop",
+            c5Href: "/collections/nakshi-kantha",
+            c6Title: "Handcrafted Jewelry",
+            c6Image:
+              "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=400&auto=format&fit=crop",
+            c6Href: "/collections/jewelry",
+            c7Title: "Home & Living",
+            c7Image:
+              "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=400&auto=format&fit=crop",
+            c7Href: "/collections/living",
+            c8Title: "Aarong Earth",
+            c8Image:
+              "https://images.unsplash.com/photo-1608248597358-1f60875e5e4e?q=80&w=400&auto=format&fit=crop",
+            c8Href: "/collections/beauty",
+          }),
           s("trust_bar", {
             i1Icon: "delivery",
             i1Title: "100% Handloom & Natural Dyes",
@@ -2154,6 +2366,31 @@ function clothingHeritage(): ThemePreset {
             cardVariant: "editorial",
             showRating: true,
             promise: "In stock · Dispatched in 24h",
+          }),
+          s("subbrand_spotlight", {
+            heading: "Our Sub-Brands",
+            subheading:
+              "Curated lifestyle edits from our house of heritage craft",
+            b1Name: "TAAGA",
+            b1Tagline: "Bohemian & contemporary youth fusion",
+            b1Image:
+              "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop",
+            b1Href: "/collections/taaga",
+            b2Name: "TAAGA MAN",
+            b2Tagline: "Modern urban essentials & relaxed cuts",
+            b2Image:
+              "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800&auto=format&fit=crop",
+            b2Href: "/collections/mens",
+            b3Name: "HERSTORY",
+            b3Tagline: "Luxury couture & handwoven silk drapes",
+            b3Image:
+              "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
+            b3Href: "/collections/womens",
+            b4Name: "AARONG EARTH",
+            b4Tagline: "Pure chemical-free botanical wellness",
+            b4Image:
+              "https://images.unsplash.com/photo-1608248597358-1f60875e5e4e?q=80&w=800&auto=format&fit=crop",
+            b4Href: "/collections/beauty",
           }),
           s("lookbook", {
             heading: "The festive lookbook",
@@ -2641,8 +2878,7 @@ function supershop(): ThemePreset {
     }),
     s("footer_sitemap", {
       c1Title: "Shop by Category",
-      c1Links:
-        "Electronics\nFashion\nHome & Living\nBeauty\nSports & Outdoors",
+      c1Links: "Electronics\nFashion\nHome & Living\nBeauty\nSports & Outdoors",
       c2Title: "Customer Service",
       c2Links:
         "Track Order\nReturn Policy\nWarranty Claims\nPayment Methods\nContact Us",
@@ -3198,4 +3434,3 @@ export function blueprintTemplates(
 ): Record<TemplateKey, ThemeAst> | undefined {
   return BLUEPRINT_PRESETS.find((preset) => preset.key === key)?.templates;
 }
-

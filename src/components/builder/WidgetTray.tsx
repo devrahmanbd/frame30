@@ -11,6 +11,7 @@ import {
   type WidgetVertical,
 } from "@/lib/widget-metadata";
 import { createRecentStore } from "@/lib/widget-recent";
+import { TRAY_MIME, encodeTrayDrop } from "./dnd";
 import { useInstalledPlugins } from "./PluginContext";
 
 const REASON_LABEL: Record<
@@ -38,18 +39,68 @@ const GROUP_LABEL: Record<string, { en: string; bn: string }> = {
   context: { en: "Page context", bn: "পেজ কনটেক্সট" },
 };
 
-/**
- * Phase 2.4 — the widget palette.
- *
- * Three behaviours the old grid did not have:
- *  - **Search that understands merchants.** `searchWidgets` matches labels,
- *    synonyms ("banner" → hero) and help prose, ranks deterministically, and is
- *    always filtered to the widgets this slot legally accepts.
- *  - **Recently used, persisted.** The MRU list survives reloads through a
- *    store that tolerates private mode, quota errors and hostile JSON.
- *  - **Preset before insert.** A widget with designed variants opens a small
- *    picker, so a merchant starts from a layout rather than from defaults.
- */
+function WidgetIcon({ type }: { type: string }) {
+  if (type.includes("grid") || type.includes("rail") || type.includes("product")) {
+    return (
+      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect width="7" height="7" x="3" y="3" rx="1" />
+        <rect width="7" height="7" x="14" y="3" rx="1" />
+        <rect width="7" height="7" x="14" y="14" rx="1" />
+        <rect width="7" height="7" x="3" y="14" rx="1" />
+      </svg>
+    );
+  }
+  if (type.includes("hero") || type.includes("banner")) {
+    return (
+      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect width="18" height="12" x="3" y="6" rx="2" />
+        <path d="m3 14 5-4 4 3 6-5 3 2" />
+      </svg>
+    );
+  }
+  if (type.includes("menu") || type.includes("strip") || type.includes("subbrand")) {
+    return (
+      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <line x1="3" x2="21" y1="6" y2="6" />
+        <line x1="3" x2="21" y1="12" y2="12" />
+        <line x1="3" x2="21" y1="18" y2="18" />
+      </svg>
+    );
+  }
+  if (type.includes("cart") || type.includes("checkout")) {
+    return (
+      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="8" cy="21" r="1" />
+        <circle cx="19" cy="21" r="1" />
+        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+      </svg>
+    );
+  }
+  if (type.includes("container") || type.includes("columns")) {
+    return (
+      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect width="18" height="18" x="3" y="3" rx="2" />
+        <line x1="12" x2="12" y1="3" y2="21" />
+      </svg>
+    );
+  }
+  if (type.includes("faq") || type.includes("care") || type.includes("help")) {
+    return (
+      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+        <line x1="12" x2="12.01" y1="17" y2="17" />
+      </svg>
+    );
+  }
+  return (
+    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <rect width="18" height="18" x="3" y="3" rx="2" />
+      <path d="M9 3v18" />
+    </svg>
+  );
+}
+
 export function WidgetTray({
   slot,
   onAdd,
@@ -131,55 +182,82 @@ export function WidgetTray({
     const presets = presetsFor(pending);
     const entry = catalogEntry(pending);
     return (
-      <div className="space-y-3">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-semibold">{entry?.label ?? pending}</h3>
+      <div className="space-y-3.5 animate-in fade-in duration-150">
+        <div className="flex items-center justify-between gap-2 border-b border-border/80 pb-2.5">
+          <div className="flex items-center gap-2">
+            <div className="flex size-7 items-center justify-center rounded-fq-md bg-primary/10 text-primary">
+              <WidgetIcon type={pending} />
+            </div>
+            <div>
+              <h3 className="text-xs font-bold text-foreground">{entry?.label ?? pending}</h3>
+              <p className="text-[10px] text-muted-foreground">{t("Choose a layout preset", "একটি প্রিসেট বেছে নিন")}</p>
+            </div>
+          </div>
           <button
             type="button"
             onClick={() => setPending(null)}
-            className="text-xs underline"
+            className="rounded-fq-md border border-border/70 px-2 py-1 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
           >
             {t("Back", "ফিরে যান")}
           </button>
         </div>
-        <p className="text-xs text-muted-foreground">
+
+        <p className="text-xs text-muted-foreground leading-relaxed">
           {t(widgetHelp(pending).en, widgetHelp(pending).bn)}
         </p>
-        <p className="text-xs font-medium">{t("Start from", "শুরু করুন")}</p>
-        <ul className="space-y-1">
-          {presets.map((preset) => (
-            <li key={preset.key}>
-              <button
-                type="button"
-                onClick={() => insert(pending, preset.key)}
-                className="w-full rounded-fq-md border border-border bg-card px-2 py-2 text-left text-xs hover:bg-accent hover:text-accent-foreground"
-              >
-                {t(preset.label.en, preset.label.bn)}
-              </button>
-            </li>
-          ))}
-        </ul>
+
+        <div className="space-y-1.5">
+          <p className="text-[11px] font-semibold text-foreground uppercase tracking-wider">
+            {t("Start from", "শুরু করুন")}
+          </p>
+          <ul className="space-y-1.5">
+            {presets.map((preset) => (
+              <li key={preset.key}>
+                <button
+                  type="button"
+                  onClick={() => insert(pending, preset.key)}
+                  className="flex w-full items-center justify-between rounded-fq-md border border-border/70 bg-card p-2.5 text-left text-xs font-medium hover:border-primary hover:bg-primary/5 hover:text-primary transition-all cursor-pointer shadow-xs"
+                >
+                  <span>{t(preset.label.en, preset.label.bn)}</span>
+                  <svg className="size-3.5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="space-y-3">
-      <label
-        className="block text-xs font-medium text-muted-foreground"
-        htmlFor="widget-search"
-      >
-        {t("Find a widget", "উইজেট খুঁজুন")}
-      </label>
-      <input
-        id="widget-search"
-        type="search"
-        value={term}
-        onChange={(e) => setTerm(e.target.value)}
-        placeholder={t("Search widgets", "উইজেট সার্চ")}
-        className="w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm"
-      />
+      {/* Search Input with Icon */}
+      <div className="space-y-1">
+        <label
+          htmlFor="widget-search"
+          className="block text-xs font-semibold text-foreground"
+        >
+          {t("Find a widget", "উইজেট খুঁজুন")}
+        </label>
+        <div className="relative">
+          <svg className="absolute left-2.5 top-2.5 size-3.5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+          <input
+            id="widget-search"
+            type="search"
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+            placeholder={t("Search widgets (e.g. hero, grid, care)…", "উইজেট সার্চ")}
+            className="w-full rounded-fq-md border border-border/80 bg-background pl-8 pr-3 py-1.5 text-xs shadow-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+        </div>
+      </div>
 
+      {/* Vertical Store Pills */}
       <div
         role="group"
         aria-label={t("Store type", "স্টোরের ধরন")}
@@ -191,10 +269,10 @@ export function WidgetTray({
             type="button"
             aria-pressed={vertical === key}
             onClick={() => setVertical(key)}
-            className={`rounded-fq-md px-2 py-1 text-[11px] ${
+            className={`rounded-fq-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
               vertical === key
-                ? "bg-primary text-primary-foreground"
-                : "border border-border bg-card"
+                ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                : "border border-border/70 bg-card text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             {t(VERTICAL_LABEL[key].en, VERTICAL_LABEL[key].bn)}
@@ -202,21 +280,33 @@ export function WidgetTray({
         ))}
       </div>
 
+      {/* Recently Used Widgets */}
       {recentHits.length > 0 && !term && (
-        <section aria-label={t("Recently used", "সম্প্রতি ব্যবহৃত")}>
-          <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <section aria-label={t("Recently used", "সম্প্রতি ব্যবহৃত")} className="space-y-1.5">
+          <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
             {t("Recently used", "সম্প্রতি ব্যবহৃত")}
           </h3>
-          <ul className="flex flex-wrap gap-1">
+          <ul className="grid grid-cols-2 gap-1.5">
             {recentHits.map((type) => (
               <li key={type}>
                 <button
                   type="button"
                   onClick={() => pick(type)}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData(
+                      TRAY_MIME,
+                      encodeTrayDrop({ type, presetKey: "default" }),
+                    );
+                    e.dataTransfer.effectAllowed = "copy";
+                  }}
                   title={widgetHelp(type).en}
-                  className="rounded-fq-md border border-border bg-card px-2 py-1 text-[11px] hover:bg-accent hover:text-accent-foreground"
+                  className="flex w-full items-center gap-2 rounded-fq-md border border-border/70 bg-card p-2 text-left text-xs font-medium hover:border-primary hover:bg-accent/60 transition-all cursor-pointer shadow-xs"
                 >
-                  {catalogEntry(type)?.label ?? type}
+                  <div className="flex size-6 shrink-0 items-center justify-center rounded bg-primary/10 text-primary">
+                    <WidgetIcon type={type} />
+                  </div>
+                  <span className="truncate text-foreground">{catalogEntry(type)?.label ?? type}</span>
                 </button>
               </li>
             ))}
@@ -224,23 +314,27 @@ export function WidgetTray({
         </section>
       )}
 
+      {/* Zero State */}
       {hits.length === 0 && (
-        <p className="text-xs text-muted-foreground">
-          {term
-            ? t(
-                "Nothing matches that search in this slot.",
-                "এই স্লটে সার্চের সাথে কিছু মেলেনি।",
-              )
-            : t("No widgets match this slot.", "এই স্লটে কোনো উইজেট মেলেনি।")}
-        </p>
+        <div className="rounded-fq-md border border-dashed border-border p-4 text-center">
+          <p className="text-xs text-muted-foreground">
+            {term
+              ? t(
+                  "Nothing matches that search in this slot.",
+                  "এই স্লটে সার্চের সাথে কিছু মেলেনি।",
+                )
+              : t("No widgets match this slot.", "এই স্লটে কোনো উইজেট মেলেনি।")}
+          </p>
+        </div>
       )}
 
+      {/* Installed Apps / Plugins */}
       {appEntries.length > 0 && (
-        <section aria-label={t("Apps", "অ্যাপ")}>
-          <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <section aria-label={t("Apps", "অ্যাপ")} className="space-y-1.5">
+          <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
             {t("Apps", "অ্যাপ")}
           </h3>
-          <ul className="grid grid-cols-2 gap-1">
+          <ul className="grid grid-cols-2 gap-1.5">
             {appEntries.map((entry) => (
               <li key={entry.key}>
                 <button
@@ -248,12 +342,12 @@ export function WidgetTray({
                   onClick={() => onAddPlugin?.(entry.key)}
                   disabled={!onAddPlugin}
                   title={entry.pluginName}
-                  className="flex w-full items-center gap-1 rounded-fq-md border border-border bg-card px-2 py-2 text-left text-xs hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
+                  className="flex w-full items-center gap-1.5 rounded-fq-md border border-border/70 bg-card p-2 text-left text-xs hover:border-primary hover:bg-accent/60 transition-all cursor-pointer shadow-xs disabled:opacity-50"
                 >
-                  <span className="rounded-fq-sm bg-primary/10 px-1 text-[10px] font-semibold uppercase text-primary">
+                  <span className="rounded-fq-xs bg-primary/15 px-1 py-0.5 text-[9px] font-bold uppercase text-primary">
                     {t("App", "অ্যাপ")}
                   </span>
-                  <span className="truncate">{entry.label}</span>
+                  <span className="truncate text-foreground font-medium">{entry.label}</span>
                 </button>
               </li>
             ))}
@@ -261,6 +355,7 @@ export function WidgetTray({
         </section>
       )}
 
+      {/* Categorized Widget Cards */}
       {grouped.map(([group, entries]) => (
         <section
           key={group}
@@ -268,39 +363,71 @@ export function WidgetTray({
             GROUP_LABEL[group]?.en ?? group,
             GROUP_LABEL[group]?.bn ?? group,
           )}
+          className="space-y-1.5"
         >
-          <h3 className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
             {t(
               GROUP_LABEL[group]?.en ?? group,
               GROUP_LABEL[group]?.bn ?? group,
             )}
           </h3>
-          <ul className="grid grid-cols-2 gap-1">
-            {entries.map((hit) => (
-              <li key={hit.type}>
-                <button
-                  type="button"
-                  onClick={() => pick(hit.type)}
-                  title={widgetHelp(hit.type).en}
-                  className="w-full rounded-fq-md border border-border bg-card px-2 py-2 text-left text-xs hover:bg-accent hover:text-accent-foreground"
-                >
-                  <span className="block truncate">{hit.label}</span>
-                  {term && hit.reason !== "label" && (
-                    <span className="mt-0.5 block text-[10px] text-muted-foreground">
-                      {t(
-                        REASON_LABEL[hit.reason].en,
-                        REASON_LABEL[hit.reason].bn,
+          <ul className="grid grid-cols-1 gap-1.5">
+            {entries.map((hit) => {
+              const variants = presetsFor(hit.type);
+              return (
+                <li key={hit.type}>
+                  <button
+                    type="button"
+                    onClick={() => pick(hit.type)}
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData(
+                        TRAY_MIME,
+                        encodeTrayDrop({ type: hit.type, presetKey: "default" }),
+                      );
+                      e.dataTransfer.effectAllowed = "copy";
+                    }}
+                    title={widgetHelp(hit.type).en}
+                    className="flex w-full items-center justify-between rounded-fq-md border border-border/70 bg-card p-2 text-left text-xs hover:border-primary hover:bg-accent/50 hover:shadow-xs transition-all cursor-pointer group"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="flex size-7 shrink-0 items-center justify-center rounded-fq-md bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                        <WidgetIcon type={hit.type} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <span className="block truncate font-semibold text-foreground group-hover:text-primary transition-colors">
+                          {hit.label}
+                        </span>
+                        {term && hit.reason !== "label" ? (
+                          <span className="block text-[10px] text-muted-foreground">
+                            {t(
+                              REASON_LABEL[hit.reason].en,
+                              REASON_LABEL[hit.reason].bn,
+                            )}
+                          </span>
+                        ) : (
+                          <span className="block text-[10px] text-muted-foreground truncate">
+                            {t(widgetHelp(hit.type).en, widgetHelp(hit.type).bn)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="shrink-0 ml-2">
+                      {variants.length > 1 ? (
+                        <span className="rounded-fq-xs bg-muted px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground">
+                          {variants.length} {t("presets", "প্রিসেট")}
+                        </span>
+                      ) : (
+                        <svg className="size-3.5 text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-0.5 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
                       )}
-                    </span>
-                  )}
-                  {presetsFor(hit.type).length > 1 && (
-                    <span className="mt-0.5 block text-[10px] text-muted-foreground">
-                      {t("Variants available", "ভ্যারিয়েন্ট আছে")}
-                    </span>
-                  )}
-                </button>
-              </li>
-            ))}
+                    </div>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </section>
       ))}

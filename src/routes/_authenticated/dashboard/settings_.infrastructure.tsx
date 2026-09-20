@@ -21,16 +21,19 @@ import {
 export const Route = createFileRoute(
   "/_authenticated/dashboard/settings_/infrastructure",
 )({
+  staticData: {
+    permission: "staff.manage_grants",
+  },
   loader: () => infraOverviewFn(),
   head: () => ({
     meta: [
-      { title: "ইনফ্রাস্ট্রাকচার — Framique admin" },
+      { title: "Infrastructure — Framique admin" },
       {
         name: "description",
         content:
           "Background queues, fast search health, image delivery and load-test results for your store.",
       },
-      { property: "og:title", content: "ইনফ্রাস্ট্রাকচার — Framique admin" },
+      { property: "og:title", content: "Infrastructure — Framique admin" },
       {
         property: "og:description",
         content:

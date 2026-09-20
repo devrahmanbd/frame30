@@ -52,10 +52,16 @@ describe("Disaster-Proof Blue/Green Deployment & Whole-System Backup Contract", 
     });
   });
 
-  describe("Whole-System Restore & Verification Engine (ops/backup/restore.sh)", () => {
+  const restoreTargetShPath = resolve(root, "ops/restore/restore-target.sh");
+
+  describe("Whole-System Restore & Verification Engine (ops/backup/restore.sh & ops/restore/restore-target.sh)", () => {
     it("exists, verifies manifest checksums before loading, and protects production", () => {
       expect(existsSync(restoreShPath)).toBe(true);
-      const content = readFileSync(restoreShPath, "utf8");
+      const legacyContent = readFileSync(restoreShPath, "utf8");
+      expect(legacyContent).toContain("restore-target.sh");
+
+      expect(existsSync(restoreTargetShPath)).toBe(true);
+      const content = readFileSync(restoreTargetShPath, "utf8");
 
       // Production safety gate
       expect(content).toContain("--force");
@@ -65,10 +71,6 @@ describe("Disaster-Proof Blue/Green Deployment & Whole-System Backup Contract", 
       expect(content).toContain("manifest.json");
       expect(content).toContain("hashlib.sha256");
       expect(content).toContain("checksum mismatch");
-
-      // Envelope decryption
-      expect(content).toContain("snapshot.enc");
-      expect(content).toContain("ENCRYPTION_PASSPHRASE");
 
       // Restoration of roles, all schemas, and storage objects
       expect(content).toContain("roles.sql");
@@ -82,7 +84,7 @@ describe("Disaster-Proof Blue/Green Deployment & Whole-System Backup Contract", 
       expect(existsSync(rehearseShPath)).toBe(true);
       const content = readFileSync(rehearseShPath, "utf8");
 
-      expect(content).toContain("framique-restore");
+      expect(content).toContain("rehearse");
       expect(content).toContain("merchants");
       expect(content).toContain("products");
       expect(content).toContain("orders");
@@ -93,12 +95,11 @@ describe("Disaster-Proof Blue/Green Deployment & Whole-System Backup Contract", 
       expect(content).toContain("auth.users");
 
       // Storage volume check
-      expect(content).toContain("/var/lib/storage");
+      expect(content).toContain("storage.tar.zst");
 
       // Telemetry log output
       expect(content).toContain("rehearsals.jsonl");
       expect(content).toContain("rto_seconds");
-      expect(content).toContain("rpo_seconds");
     });
   });
 

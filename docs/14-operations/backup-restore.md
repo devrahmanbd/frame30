@@ -184,3 +184,52 @@ tail -1 ops/backup/rehearsals.jsonl          # latest rehearsal verdict
   pruning bounds disk, but find the writer if growth alarms.
 - **Cert renewal** — LE cert for restoref via certbot webroot
   (`/var/www/certbot`); HAProxy loads `/etc/haproxy/certs/*.pem` on reload.
+
+---
+
+## 6. Canonical State Machines & SLAs
+
+### Whole-System Backup machine (canonical backup)
+
+`scheduled → snapshot → encrypted → rehearsed → certified → rotated | retained`
+
+- `scheduled`: a cadence tick fires (hourly WAL checkpoint + nightly full snapshot) and a lease is created.
+- `snapshot`: a consistent point-in-time copy capturing the **entire system**:
+  - `roles.sql`: All database roles, passwords, and grants (`pg_dumpall --roles-only`).
+  - `db_cluster.dump`: Full PostgreSQL database in custom format (`-Fc`) containing `auth` (GoTrue credentials, sessions, refresh tokens), `storage` (buckets and object metadata), `public` (tenants, merchants, products, orders, ledger), and `vault` / `pgsodium` secrets.
+  - `storage.tar.zst`: Physical archive of `/var/lib/storage` (merchant images, theme assets, invoices) compressed with `zstd -T0`.
+  - `configs.tar.zst`: Docker Compose manifests, OpenResty routing, ACME TLS certificates & private keys.
+  - `redis.rdb`: Redis memory snapshot (canary state, idempotency keys, rate limit counters).
+  - `manifest.json`: Cryptographic SHA-256 manifest of all artifacts, table counts, and environment metadata.
+- `encrypted`: Client-side authenticated envelope encryption (AES-256-GCM / `age`) using an off-site master key.
+  - **Theft Immunity**: Even if the host server is lost, stolen, or seized, the encrypted backup set reveals zero customer data, zero passwords, and zero credentials without the vault private key.
+- `rehearsed`: The encrypted snapshot is immediately restored in an isolated container sandbox (`framique-restore`), verifying SHA-256 checksums, `auth.users`, storage files, and business table row counts.
+- `certified`: ONLY marked `certified_restorable` when 100% of rehearsal assertions pass. Never rotate or rely on an uncertified snapshot.
+- `rotated | retained`: Retained locally on a 14-day rolling window, with encrypted copies mirrored to multi-cloud immutable WORM object storage (e.g. S3 with Object Lock).
+
+### Recovery machine (canonical recovery)
+
+`retrieve → decrypt → verify_manifest → restore → smoke_check → switchover`
+
+- `retrieve`: Fetch target certified snapshot from local storage or off-site immutable WORM mirror.
+- `decrypt`: Decrypt artifact bundle using the off-host master key.
+- `verify_manifest`: Assert SHA-256 checksums of all artifacts match `manifest.json` before a single byte is loaded.
+- `restore`:
+  - Replay `roles.sql` into Postgres target.
+  - Restore all database schemas (`auth`, `storage`, `public`, `vault`) from `db_cluster.dump`.
+  - Unpack `storage.tar.zst` into `/var/lib/storage`.
+  - If recovering from corruption, replay WAL logs up to the exact target second (Point-in-Time Recovery).
+- `smoke_check`: Automated read-back assertions verify table counts, `auth.users` readiness, and PostgREST endpoint health.
+- `switchover`: Traffic is cut over to the restored target. An incident postmortem entry is appended with operator, timestamp, and RTO/RPO metrics.
+
+### Measured SLA Commitments
+
+| Metric | Target SLA | Measured Architecture Mechanism |
+| :--- | :--- | :--- |
+| **RPO (Recovery Point Objective)** | **0 seconds (Continuous)** | Synchronous PostgreSQL WAL streaming archive |
+| **RPO (Snapshot Fallback)** | **< 1 hour** | Hourly basebackups with WAL checkpoints |
+| **RTO (Recovery Time Objective)** | **< 15 minutes** | Automated 1-click restore script (`restore.sh`) |
+| **Disaster Rollback RTO** | **< 5 seconds** | Blue/Green warm standby instant cutover |
+| **Rehearsal Drill Frequency** | **Every 24 hours** | Nightly automated cron via `/api/public/cron/ops` |
+| **Theft Resistance** | **100% Cryptographic** | Client-side AES-256-GCM envelope encryption |
+

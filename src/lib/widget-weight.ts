@@ -444,6 +444,7 @@ export const HYDRATION_POLICY: Record<
 
 /** Widget → policy class. Anything unlisted is classified from the registry. */
 const CLASS_OVERRIDES: Partial<Record<SectionType, HydrationClass>> = {
+  subbrand_bar: "chrome",
   announcement_bar: "chrome",
   utility_bar: "chrome",
   account_cart: "chrome",

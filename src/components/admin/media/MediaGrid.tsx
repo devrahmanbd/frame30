@@ -22,6 +22,8 @@ type SharedProps = {
   selected: string[];
   onOpen: (item: Attachment) => void;
   onToggle: (item: Attachment, shift: boolean) => void;
+  onSelectAll?: (ids: string[]) => void;
+  onClearSelection?: () => void;
 };
 
 export function MediaGrid({
@@ -30,12 +32,38 @@ export function MediaGrid({
   selected,
   onOpen,
   onToggle,
+  onSelectAll,
+  onClearSelection,
 }: SharedProps) {
+  const allPicked = items.length > 0 && selected.length === items.length;
   return (
-    <ul
-      className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
-      aria-label="Media files"
-    >
+    <div className="space-y-3">
+      {selecting && (
+        <div className="flex items-center justify-between rounded-fq-md border border-border bg-card/60 px-3 py-2 text-xs text-muted-foreground">
+          <label className="inline-flex cursor-pointer items-center gap-2 font-medium text-foreground">
+            <input
+              type="checkbox"
+              className="size-4 rounded border-border text-primary focus:ring-primary"
+              checked={allPicked}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  onSelectAll?.(items.map((i) => i.id));
+                } else {
+                  onClearSelection?.();
+                }
+              }}
+            />
+            <span>{allPicked ? "Deselect all" : "Select all visible"}</span>
+          </label>
+          <span>
+            {selected.length} of {items.length} selected
+          </span>
+        </div>
+      )}
+      <ul
+        className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
+        aria-label="Media files"
+      >
       {items.map((item) => {
         const picked = selected.includes(item.id);
         return (
@@ -87,7 +115,8 @@ export function MediaGrid({
           </li>
         );
       })}
-    </ul>
+      </ul>
+    </div>
   );
 }
 
@@ -97,14 +126,35 @@ export function MediaList({
   selected,
   onOpen,
   onToggle,
+  onSelectAll,
+  onClearSelection,
 }: SharedProps) {
+  const allPicked = items.length > 0 && selected.length === items.length;
   return (
     <div className="overflow-x-auto rounded-fq-md border border-border bg-card">
       <table className="w-full min-w-[640px] text-sm">
         <caption className="sr-only">Media files</caption>
         <thead className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
           <tr>
-            {selecting && <th scope="col" className="w-10 px-3 py-2" />}
+            {selecting && (
+              <th scope="col" className="w-10 px-3 py-2">
+                <label className="grid size-11 place-items-center">
+                  <span className="sr-only">Select all files</span>
+                  <input
+                    type="checkbox"
+                    className="size-4 rounded border-border text-primary focus:ring-primary"
+                    checked={allPicked}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        onSelectAll?.(items.map((i) => i.id));
+                      } else {
+                        onClearSelection?.();
+                      }
+                    }}
+                  />
+                </label>
+              </th>
+            )}
             <th scope="col" className="px-3 py-2">
               File
             </th>

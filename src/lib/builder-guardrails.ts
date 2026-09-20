@@ -27,11 +27,15 @@ function filled(props: Record<string, unknown>, keys: string[]): boolean {
   return keys.some((key) => String(props[key] ?? "").trim().length > 0);
 }
 
+/** Types where the layout places text alongside or above the image, not over it. */
+const NON_OVERLAY_TYPES = new Set(["split_feature", "shoppable_image"]);
+
 /** No text over an image without a scrim token — contrast is not a guess. */
 export function scrimIssues(sections: Section[]): GuardrailIssue[] {
   const issues: GuardrailIssue[] = [];
   for (const section of sections) {
     if (section.invalid) continue;
+    if (NON_OVERLAY_TYPES.has(section.type)) continue;
     const layers = [
       section.props,
       ...Object.values(section.bp ?? {}),

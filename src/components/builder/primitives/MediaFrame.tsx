@@ -13,6 +13,7 @@
  */
 import { useState } from "react";
 import { decodeSource } from "@/lib/image-transform";
+import { ProductTileArt, TILE_BASE } from "@/components/store/ProductTileArt";
 
 export type MediaRatio = "square" | "portrait" | "landscape" | "wide" | "auto";
 
@@ -41,6 +42,7 @@ export function MediaFrame({
   fit = "cover",
   className = "",
   children,
+  artSeed,
 }: {
   src: string | null | undefined;
   alt: string;
@@ -51,6 +53,13 @@ export function MediaFrame({
   fit?: "cover" | "contain";
   className?: string;
   children?: React.ReactNode;
+  /**
+   * Opt-in to the deterministic product tile when `src` is null/empty.
+   * Only product surfaces pass this (ProductCard, brand tiles); authored
+   * content frames keep the neutral placeholder so a missing hero never
+   * gains a product monogram.
+   */
+  artSeed?: string | null;
 }) {
   // "given" → "original" → placeholder. One-way, so it can never loop.
   const [stage, setStage] = useState<"given" | "original" | "failed">("given");
@@ -60,9 +69,13 @@ export function MediaFrame({
       : stage === "original"
         ? originalSource(src ?? "")
         : null;
+  // Imageless product frames sit on the tile's ivory base, never grey: the
+  // tile itself is opaque, so this only matters before hydration / at edges.
+  const tiling = !shown && artSeed !== undefined;
   return (
     <div
-      className={`relative overflow-hidden rounded-fq-md bg-muted ${RATIO_CLASS[ratio]} ${className}`}
+      className={`relative overflow-hidden rounded-fq-md ${tiling ? "" : "bg-muted"} ${RATIO_CLASS[ratio]} ${className}`}
+      {...(tiling ? { style: { backgroundColor: TILE_BASE } } : {})}
     >
       {shown ? (
         <img
@@ -81,6 +94,8 @@ export function MediaFrame({
             )
           }
         />
+      ) : artSeed !== undefined ? (
+        <ProductTileArt seed={artSeed ?? alt} title={alt} className="h-full w-full" />
       ) : (
         <div aria-hidden="true" className="h-full w-full bg-muted" />
       )}

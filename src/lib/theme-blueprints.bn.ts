@@ -28,6 +28,14 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "About this store": "এই স্টোর সম্পর্কে",
   "Small-batch clothing cut and finished in Dhaka, photographed on real bodies.":
     "ঢাকায় ছোট ব্যাচে কাটা ও ফিনিশ করা পোশাক, সত্যিকারের মানুষের গায়ে ছবি তোলা।",
+  "Artisan certified": "কারিগর প্রত্যয়িত",
+  "Hand-loomed in Tangail & Rajshahi": "টাঙ্গাইল ও রাজশাহীর হাতে বোনা",
+  "7-day easy exchange": "৭ দিনে সহজ বদল",
+  "Hassle-free size & fit swaps": "ঝামেলাহীন সাইজ ও ফিট বদল",
+  "Nationwide delivery": "সারাদেশে ডেলিভারি",
+  "Inside Dhaka in 24-48 hours": "ঢাকার ভেতরে ২৪-৪৮ ঘণ্টায়",
+  "Ethical craft": "নৈতিক হস্তশিল্প",
+  "Fair artisan living wages": "কারিগরদের ন্যায্য পারিশ্রমিক",
 
   /* ------------------------------------------------------ atelier · home */
   "Season 04": "সিজন ০৪",
@@ -35,24 +43,38 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Limited runs, natural fibres, honest photography.":
     "সীমিত সংখ্যায় তৈরি, প্রাকৃতিক সুতা, সৎ ফটোগ্রাফি।",
   "Shop the edit": "এডিট দেখুন",
+  "Pure Rajshahi Silk • Tangail Pit Loom Handloom • Ethical Fair Wages • Free Size Exchange Within 7 Days • Nationwide Delivery":
+    "খাঁটি রাজশাহী সিল্ক • টাঙ্গাইল পিট লুম হ্যান্ডলুম • নৈতিক ন্যায্য পারিশ্রমিক • ৭ দিনে ফ্রি সাইজ বদল • সারাদেশে ডেলিভারি",
   "The lookbook": "লুকবুক",
+  "Look 01 — Earth Tone Drapery": "লুক ০১ — মাটির রঙের হ্যান্ডলুম",
+  "Look 02 — Natural Indigo Robe": "লুক ০২ — প্রাকৃতিক নীল রোব",
+  "Look 03 — Relaxed Flax Linen": "লুক ০৩ — রিল্যাক্সড ফ্ল্যাক্স লিনেন",
+  "Look 04 — Modern Minimalist Dress": "লুক ০৪ — আধুনিক মিনিমালিস্ট ড্রেস",
   "The fabric": "কাপড়",
   "Handloom cotton, woven in Tangail": "টাঙ্গাইলে বোনা হ্যান্ডলুম কটন",
   "Breathable in humidity, softer with every wash.":
     "আর্দ্রতায় আরামদায়ক, প্রতিবার ধোয়ার পর আরও নরম।",
   "Read the story": "গল্পটি পড়ুন",
+  "Tangail handloom pit loom weaving": "টাঙ্গাইল হ্যান্ডলুম পিট লুম বুনন",
+  "Curator's edit": "কিউরেটরের এডিট",
+  "Dispatches tomorrow": "আগামীকাল পাঠানো হবে",
   Collection: "কালেকশন",
   "Everyday tailoring": "প্রতিদিনের টেইলারিং",
   "Twelve pieces that work from office to iftar.":
     "অফিস থেকে ইফতার—সব জায়গায় মানানসই বারোটি পিস।",
   "See the collection": "কালেকশন দেখুন",
   "Shop the look": "লুকটি কিনুন",
+  "Complete Atelier Studio Look": "সম্পূর্ণ আটেলিয়ে স্টুডিও লুক",
   "Worn by you": "আপনাদের পরা",
   "Tag us to be featured.": "ফিচার হতে আমাদের ট্যাগ করুন।",
   "This season": "এই সিজন",
   "The fit is exactly what the size chart promised.":
     "সাইজ চার্টে যা লেখা ছিল, ফিট ঠিক তেমনই।",
   "Verified buyer, Dhaka": "ভেরিফায়েড ক্রেতা, ঢাকা",
+  "The Studio Dispatch": "স্টুডিও ডিসপ্যাচ",
+  "Invitations to limited fabric drops, maker stories and seasonal edits. No noise, no spam.":
+    "সীমিত কাপড়ের ড্রপ, কারিগরদের গল্প ও মৌসুমী কালেকশন। কোনো অযথা বার্তা বা স্প্যাম নেই।",
+  "Subscribe to dispatch": "ডিসপ্যাচে সাবস্ক্রাইব করুন",
 
   /* ------------------------------------------------- atelier · sustainability */
   "Made responsibly": "দায়িত্ব নিয়ে তৈরি",
@@ -75,6 +97,10 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Relaxed through the shoulder.": "কাঁধে একটু ঢিলেঢালা।",
   "Model is 175cm": "মডেলের উচ্চতা ১৭৫ সেমি",
   "Wearing size M": "পরেছেন সাইজ M",
+  "Order before 4pm for same-day dispatch":
+    "বিকেল ৪টার আগে অর্ডার করলে আজই পাঠানো হবে",
+  Shade: "শেড",
+  Size: "সাইজ",
   "Save for later": "পরে দেখার জন্য রাখুন",
   Saved: "সংরক্ষিত",
   "Sold out in your size?": "আপনার সাইজ শেষ?",
@@ -88,6 +114,13 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Add the look": "পুরো লুক যোগ করুন",
   "Customer reviews": "ক্রেতাদের রিভিউ",
   "No reviews yet.": "এখনও কোনো রিভিউ নেই।",
+  "Is this pre-shrunk?": "এটি কি আগেই সংকুচিত করা?",
+  "Yes, all our handloom fabrics undergo gentle hot water wash before cutting.":
+    "হ্যাঁ, কাটার আগেই আমাদের সব হ্যান্ডলুম কাপড় গরম পানিতে ধুয়ে নেওয়া হয়।",
+  "Can I exchange for a different size?": "অন্য সাইজে কি বদলানো যাবে?",
+  "Yes, complimentary size exchange within 7 days anywhere in Bangladesh.":
+    "হ্যাঁ, বাংলাদেশের যেকোনো স্থানে ৭ দিনের মধ্যে ফ্রি সাইজ বদলের সুবিধা রয়েছে।",
+  "Quick view": "কুইক ভিউ",
   "You may also like": "আপনার পছন্দ হতে পারে",
   "Add to bag": "ব্যাগে যোগ করুন",
   "VAT included where applicable.": "প্রযোজ্য ক্ষেত্রে ভ্যাট অন্তর্ভুক্ত।",
@@ -115,16 +148,44 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Try removing a filter or two.": "একটি-দুটি ফিল্টার সরিয়ে দেখুন।",
 
   /* ----------------------------------------------- atelier · page / blog */
+  "Order status": "অর্ডারের অবস্থা",
+  Placed: "অর্ডার করা হয়েছে",
+  Confirmed: "নিশ্চিত করা হয়েছে",
+  Shipped: "পাঠানো হয়েছে",
+  "How to choose": "কীভাবে বেছে নেবেন",
+  "Handloom cotton has natural texture and breathes in humidity.":
+    "হ্যান্ডলুম সুতির নিজস্ব প্রাকৃতিক টেক্সচার রয়েছে যা আর্দ্রতায় আরামদায়ক।",
+  "Atelier Studio": "আটেলিয়ে স্টুডিও",
+  "Studio Master": "স্টুডিও মাস্টার",
+  "Textile Conservator": "টেক্সটাইল বিশেষজ্ঞ",
+  "Frequently asked": "সাধারণ জিজ্ঞাসা",
+  "How do size exchanges work?": "সাইজ বদল কীভাবে কাজ করে?",
+  "Contact our team within 7 days. Our courier picks up the original and delivers your replacement at no charge.":
+    "৭ দিনের মধ্যে আমাদের টিমের সাথে যোগাযোগ করুন। আমাদের কুরিয়ার আগের পণ্যটি নিয়ে নতুন সাইজ বিনামূল্যে পৌঁছে দেবে।",
+  "Do you ship outside Dhaka?": "আপনারা কি ঢাকার বাইরে ডেলিভারি দেন?",
+  "Yes, we ship nationwide across all 64 districts in Bangladesh with cash on delivery and bKash/Nagad.":
+    "হ্যাঁ, ক্যাশ অন ডেলিভারি ও বিকাশ/নগদে আমরা বাংলাদেশের ৬৪ জেলাতেই ডেলিভারি দিই।",
+  "Can I get bespoke alterations?": "বিশেষ অলটারেশন সুবিধা কি আছে?",
+  "Visit our Dhanmondi studio for complimentary sleeve or length alterations on any of our pieces.":
+    "আমাদের যেকোনো পোশাকে হাতা বা লম্বায় বিনামূল্যে অলটারেশনের জন্য ধানমন্ডি স্টুডিওতে আসুন।",
   "Visit the studio": "স্টুডিওতে আসুন",
   "Dhanmondi studio": "ধানমন্ডি স্টুডিও",
   "Road 8, Dhanmondi, Dhaka": "রোড ৮, ধানমন্ডি, ঢাকা",
   "11am - 8pm": "সকাল ১১টা - রাত ৮টা",
   "Gulshan counter": "গুলশান কাউন্টার",
   "Gulshan 2, Dhaka": "গুলশান ২, ঢাকা",
+  Support: "সহায়তা",
+  Hotline: "হটলাইন",
+  "+880 1700 000000": "+৮৮০ ১৭০০ ০০০০০০",
+  WhatsApp: "হোয়াটসঅ্যাপ",
+  "Instant stylist advice": "তাৎক্ষণিক স্টাইলিস্ট পরামর্শ",
+  "Self-service returns": "সেলফ-সার্ভিস রিটার্ন",
+  "Directions & hours": "ঠিকানা ও সময়সূচি",
   "Behind the seam": "সেলাইয়ের পেছনে",
   "Meet the makers": "কারিগরদের সাথে পরিচয়",
   "The families who cut and finish every run.":
     "যে পরিবারগুলো প্রতিটি রান কাটে ও ফিনিশ করে।",
+  "Weaving families in Tangail": "টাঙ্গাইলের তাঁতি পরিবার",
   "Get the next post": "পরের লেখাটি পান",
   "One email when we publish. No spam.":
     "প্রকাশ হলে একটি ইমেইল। কোনো স্প্যাম নয়।",
@@ -135,6 +196,11 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "more for free delivery": "আরও যোগ করলে ফ্রি ডেলিভারি",
   "Free delivery unlocked": "ফ্রি ডেলিভারি চালু হয়েছে",
   "Order summary": "অর্ডার সারসংক্ষেপ",
+  "Points on this order": "এই অর্ডারে প্রাপ্ত পয়েন্ট",
+  "Your bag is currently empty.": "আপনার ব্যাগ বর্তমানে খালি।",
+  Total: "মোট",
+  Subtotal: "সাবটোটাল",
+  "Free shipping": "ফ্রি শিপিং",
   "Your bag": "আপনার ব্যাগ",
   "Shipping and COD charges are calculated at checkout.":
     "শিপিং ও ক্যাশ অন ডেলিভারি চার্জ চেকআউটে হিসাব হবে।",
@@ -312,7 +378,6 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Download the PDF for any model.": "যেকোনো মডেলের পিডিএফ ডাউনলোড করুন।",
 
   /* --------------------------------------------------- circuit · footer */
-  Support: "সাপোর্ট",
   Buying: "কেনাকাটা",
   Documents: "ডকুমেন্ট",
   "User manual": "ইউজার ম্যানুয়াল",
@@ -481,7 +546,6 @@ export const BLUEPRINT_BN: Record<string, string> = {
 
   /* ----------------------------------------------------- rupaboti · pdp */
   "Choose your shade": "আপনার শেড বাছুন",
-  Shade: "শেড",
   "Soothes and reduces tightness.": "আরাম দেয় ও টানটান ভাব কমায়।",
   "Full INCI list": "পূর্ণ INCI তালিকা",
   "How to use": "যেভাবে ব্যবহার করবেন",
@@ -522,7 +586,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Filter serums, foundation and more by concern, finish and price.":
     "সমস্যা, ফিনিশ ও দাম দিয়ে সিরাম, ফাউন্ডেশনসহ আরও পণ্য বাছুন।",
   "Complete your routine": "আপনার রুটিন পূর্ণ করুন",
-  "Shop skincare, makeup and haircare": "স্কিনকেয়ার, মেকআপ ও হেয়ারকেয়ার কিনুন",
+  "Shop skincare, makeup and haircare":
+    "স্কিনকেয়ার, মেকআপ ও হেয়ারকেয়ার কিনুন",
   "Bestsellers to start with": "শুরু করতে সেরা বিক্রিত",
   products: "পণ্য",
   "Beauty counters": "বিউটি কাউন্টার",
@@ -547,6 +612,7 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Taaga Man": "তাগা ম্যান",
   Herstory: "হারস্টোরি",
   Grassroots: "গ্রাসরুটস",
+  "Aarong Earth": "আড়ং আর্থ",
   "A Social Enterprise": "একটি সামাজিক উদ্যোগ",
   "Free nationwide delivery on orders over BDT 3,000":
     "৩,০০০ টাকার বেশি অর্ডারে সারাদেশে ফ্রি ডেলিভারি",
@@ -581,6 +647,28 @@ export const BLUEPRINT_BN: Record<string, string> = {
     "বাংলার আবহমান তাঁত ঐতিহ্য উদযাপন এবং সারাদেশের বংশানুক্রমিক কারিগর পরিবারগুলোর ক্ষমতায়ন।",
 
   /* -------------------------------------------------- clothing-heritage · home */
+  "Explore by Category": "ক্যাটাগরি অনুযায়ী কেনাকাটা",
+  "Women's Sarees": "নারীদের শাড়ি",
+  "Men's Panjabi": "পুরুষদের পাঞ্জাবি",
+  "Jamdani Weaves": "জামদানি বুনন",
+  "Nakshi Kantha": "নকশি কাঁথা",
+  "Handcrafted Jewelry": "হস্তনির্মিত গহনা",
+  "Home & Living": "হোম ও লিভিং",
+  "Our Sub-Brands": "আমাদের সাব-ব্র্যান্ডসমূহ",
+  "Curated lifestyle edits from our house of heritage craft":
+    "ঐতিহ্যবাহী কারুশিল্পের ঘর থেকে নির্বাচিত লাইফস্টাইল সংগ্রহ",
+  TAAGA: "তাগা",
+  "Bohemian & contemporary youth fusion":
+    "বোহেমিয়ান ও সমকালীন তারুণ্যের ফিউশন",
+  "TAAGA MAN": "তাগা ম্যান",
+  "Modern urban essentials & relaxed cuts":
+    "আধুনিক শহুরে ফ্যাশন ও আরামদায়ক পোশাক",
+  HERSTORY: "হারস্টোরি",
+  "Luxury couture & handwoven silk drapes":
+    "অভিজাত কুচুর ও হাতে বোনা রেশমি সাজ",
+  "AARONG EARTH": "আড়ং আর্থ",
+  "Pure chemical-free botanical wellness":
+    "রাসায়নিকমুক্ত ভেষজ ও প্রাকৃতিক রূপচর্চা",
   "Heritage Weaves & Living Crafts": "ঐতিহ্যবাহী তাঁত ও কারুশিল্প",
   "Woven with patience, worn with pride": "ধৈর্যে বোনা, গর্বে পরা",
   "Every thread tells the story of our master weavers. Authentic Tangail taant, Jamdani masterpieces, and hand-embroidered silks.":
@@ -593,12 +681,15 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Dhakai Jamdani royal drape": "ঢাকাই জামদানি রাজকীয় সাজ",
   "Rajshahi pure silk festive panjabi": "রাজশাহী সিল্কের উৎসবের পাঞ্জাবি",
   "Tangail handloom taant cotton saree": "টাঙ্গাইল তাঁত সুতি শাড়ি",
-  "Dhamrai brass filigree artisan earrings": "ধামরাই কাঁসা-পিতলের হস্তনির্মিত দুল",
+  "Dhamrai brass filigree artisan earrings":
+    "ধামরাই কাঁসা-পিতলের হস্তনির্মিত দুল",
   "The master weavers": "তাঁতশিল্পী",
-  "Tangail & Jamdani: A living UNESCO legacy": "টাঙ্গাইল ও জামদানি: ইউনেস্কোর জীবন্ত ঐতিহ্য",
+  "Tangail & Jamdani: A living UNESCO legacy":
+    "টাঙ্গাইল ও জামদানি: ইউনেস্কোর জীবন্ত ঐতিহ্য",
   "Centuries of geometry and craftsmanship in every weave. Crafted by generational artisan families on traditional wooden pit looms.":
     "প্রতি বুননে শত বছরের জ্যামিতি ও কারিগরি। কাঠের খাঁটি পিট লুমে বংশপরম্পরায় তৈরি।",
-  "Master weaver on traditional wooden pit loom": "ঐতিহ্যবাহী কাঠের পিট লুমে প্রবীণ তাঁতি",
+  "Master weaver on traditional wooden pit loom":
+    "ঐতিহ্যবাহী কাঠের পিট লুমে প্রবীণ তাঁতি",
   "Artisan showcase": "কারিগরদের প্রদর্শনী",
   "Handcrafted Eid styling collection": "হাতে তৈরি ঈদের পোশাক সম্ভার",
   "Festive Occasions": "উৎসবের দিনগুলো",
@@ -643,7 +734,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Our master artisans produce small batches. Leave your email for restock notification.":
     "আমাদের কারিগরেরা ছোট ব্যাচে তৈরি করেন। পুনরায় এলে জানতে ইমেইল দিন।",
   "Fabric & craft care": "কাপড় ও যত্নের নির্দেশনা",
-  "100% handspun cotton & mulberry silk": "১০০% হাতে কাটা সুতি ও তসর/তুঁত সিল্ক",
+  "100% handspun cotton & mulberry silk":
+    "১০০% হাতে কাটা সুতি ও তসর/তুঁত সিল্ক",
   "Dry clean recommended. Iron on reverse side on low heat.":
     "ড্রাই ক্লিন করার পরামর্শ দেওয়া হয়। কম তাপে উল্টো পিঠে ইস্ত্রি করুন।",
   "Handwoven in Tangail & Sonargaon, Bangladesh":
@@ -674,11 +766,11 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Each piece is individually inspected for weaving excellence before dispatch. Cash on delivery available.":
     "প্রতিটি পণ্য পাঠানোর আগে বুননের মান পরীক্ষা করা হয়। ক্যাশ অন ডেলিভারি সুবিধা আছে।",
   "Complementary crafts": "মানানসই আরও কিছু পণ্য",
-  "7-day easy exchange": "৭ দিনে সহজ বদল",
 
   /* ------------------------------------------- clothing-heritage additions */
   "Empowering generational weavers": "বংশানুক্রমিক তাঁতিদের ক্ষমতায়ন",
-  "Express courier across all 64 districts": "৬৪ জেলায় এক্সপ্রেস কুরিয়ার ডেলিভারি",
+  "Express courier across all 64 districts":
+    "৬৪ জেলায় এক্সপ্রেস কুরিয়ার ডেলিভারি",
   "7-Day Easy Size Exchanges": "৭ দিনে সাইজ পরিবর্তনের সহজ সুবিধা",
   "Hassle-free returns at any outlet": "যেকোনো আউটলেটে ঝামেলামুক্ত বদল",
   "New Festive Arrivals": "নতুন উৎসবের কালেকশন",
@@ -750,7 +842,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
     "৯৯৯ টাকার বেশি অর্ডারে ফ্রি ডেলিভারি · বিকাশ ও নগদ গ্রহণযোগ্য",
   "🎁 New user voucher: BDT 200 OFF on first order — code WELCOME200":
     "🎁 নতুন ব্যবহারকারীর ভাউচার: প্রথম অর্ডারে ২০০ টাকা ছাড় — কোড WELCOME200",
-  "Sell on Supershop · Download App": "সুপারশপে বিক্রি করুন · অ্যাপ ডাউনলোড করুন",
+  "Sell on Supershop · Download App":
+    "সুপারশপে বিক্রি করুন · অ্যাপ ডাউনলোড করুন",
   "Seller Centre": "সেলার সেন্টার",
   "Search in 5 million+ products — phones, fashion, groceries…":
     "৫০ লাখ+ পণ্যে খুঁজুন — ফোন, ফ্যাশন, মুদিখানা…",
@@ -784,15 +877,14 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Save up to 60%": "৬০% পর্যন্ত সাশ্রয়",
   "Grab the deal": "ডিলটি নিন",
   "Best Sellers in Electronics": "ইলেকট্রনিক্সে সর্বাধিক বিক্রীত",
-  "electronics": "electronics",
-  "Nationwide delivery": "সারা দেশে ডেলিভারি",
+  electronics: "electronics",
   "Top Brands": "শীর্ষ ব্র্যান্ড",
   "Trending Fashion & Streetwear": "ট্রেন্ডিং ফ্যাশন ও স্ট্রিটওয়্যার",
   "Discover the latest festive collections, premium cotton polos, Punjabi and designer footwear.":
     "আবিষ্কার করুন উৎসবের কালেকশন, প্রিমিয়াম কটন পোলো, পাঞ্জাবি ও ডিজাইনার জুতো।",
   "Explore Fashion": "ফ্যাশন দেখুন",
   "Trending in Fashion": "ফ্যাশনে ট্রেন্ডিং",
-  "fashion": "fashion",
+  fashion: "fashion",
   "Free returns": "ফ্রি রিটার্ন",
   "Featured Brands": "ফিচার্ড ব্র্যান্ড",
   "Smart Home & Kitchen Living": "স্মার্ট হোম ও কিচেন লিভিং",
@@ -806,7 +898,8 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Recommended For You": "আপনার জন্য বাছাই করা",
   "Ordered a 5G smartphone during the Flash Sale — arrived next day in sealed original packaging with warranty.":
     "ফ্ল্যাশ সেলে ৫জি স্মার্টফোন অর্ডার করেছিলাম — পরদিনই আসল সিলড প্যাকেজিং ও ওয়ারেন্টিসহ হাতে পেয়েছি।",
-  "Tanvir Hasan — Verified Buyer, Dhaka": "তানভীর হাসান — ভেরিফাইড ক্রেতা, ঢাকা",
+  "Tanvir Hasan — Verified Buyer, Dhaka":
+    "তানভীর হাসান — ভেরিফাইড ক্রেতা, ঢাকা",
   "Get exclusive vouchers & deals": "এক্সক্লুসিভ ভাউচার ও ডিল পান",
   "Subscribe for flash sale alerts, new arrival drops and member-only coupon codes.":
     "ফ্ল্যাশ সেলের নোটিফিকেশন, নতুন পণ্য ও সদস্যদের জন্য বিশেষ কুপন কোড পেতে সাবস্ক্রাইব করুন।",
@@ -841,8 +934,7 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "All Products": "সব পণ্য",
   "Browse millions of genuine products at the best prices.":
     "সেরা দামে লক্ষাধিক আসল পণ্য ব্রাউজ করুন।",
-  "Filter": "ফিল্টার",
-  products: "টি পণ্য",
+  Filter: "ফিল্টার",
   "Load more products": "আরও পণ্য দেখুন",
 
   /* ------------------------------------------- supershop · cart & checkout */
@@ -851,10 +943,6 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Pay with bKash or Nagad for instant cashback":
     "বিকাশ বা নগদে পেমেন্টে তাৎক্ষণিক ক্যাশব্যাক",
   "Order progress": "অর্ডারের অগ্রগতি",
-  Cart: "কার্ট",
-  Address: "ঠিকানা",
-  Payment: "পেমেন্ট",
-  Done: "সম্পন্ন",
   "Your cart is empty. Discover millions of products.":
     "আপনার কার্ট খালি। লক্ষাধিক পণ্য আবিষ্কার করুন।",
   "Estimated delivery": "আনুমানিক ডেলিভারি",
@@ -865,7 +953,6 @@ export const BLUEPRINT_BN: Record<string, string> = {
     "৯৯৯ টাকার বেশি অর্ডারে ফ্রি ডেলিভারি।",
   "🔒 Secure checkout — SSL encrypted & PCI-DSS compliant":
     "🔒 নিরাপদ চেকআউট — SSL এনক্রিপ্টেড ও PCI-DSS কমপ্লায়েন্ট",
-  Checkout: "চেকআউট",
   "Cash on delivery, bKash, Nagad, Rocket, Visa and Mastercard accepted.":
     "ক্যাশ অন ডেলিভারি, বিকাশ, নগদ, রকেট, ভিসা ও মাস্টারকার্ড গ্রহণযোগ্য।",
   "Order total": "সর্বমোট মূল্য",
@@ -914,5 +1001,3 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "We verify all sellers and products. Counterfeit listings are immediately removed.":
     "আমরা সব সেলার ও পণ্য যাচাই করি। নকল লিস্টিং তাৎক্ষণিকভাবে সরিয়ে নেওয়া হয়।",
 };
-
-

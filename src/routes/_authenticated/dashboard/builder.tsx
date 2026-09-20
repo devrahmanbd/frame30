@@ -1,10 +1,22 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  Fragment,
+} from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { useLang } from "@/lib/i18n";
+import { useLang, LanguageProvider } from "@/lib/i18n";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
+import {
+  TRAY_MIME,
+  decodeTrayDrop,
+  pickDropIndex,
+} from "@/components/builder/dnd";
 import { WidgetTray } from "@/components/builder/WidgetTray";
 import { PluginProvider } from "@/components/builder/PluginContext";
 import { SupportedViewportGate } from "@/components/builder/SupportedViewportGate";
@@ -24,7 +36,7 @@ import { FormsPanel } from "@/components/builder/FormsPanel";
 import { PopupSettings } from "@/components/builder/PopupSettings";
 import { useBuilderEditor } from "@/hooks/use-builder-editor";
 import { useMembership } from "@/hooks/use-membership";
-import { cloneNodes, locate, topMost } from "@/lib/builder-tree";
+import { cloneNodes, locate, topMost, canDrop } from "@/lib/builder-tree";
 import {
   deleteBlock,
   exportBlocks,
@@ -86,6 +98,7 @@ import {
   EMPTY_AST,
   SLOTS,
   TEMPLATE_KEYS,
+  catalogEntry,
   newSection,
   templateOf,
   tokensToCss,
@@ -141,10 +154,15 @@ export const Route = createFileRoute("/_authenticated/dashboard/builder")({
 });
 
 function BuilderRoute() {
+  // The studio chrome is English-only by policy (merchant-facing tool, not
+  // shopper surface). Canvas content keeps its own locale via explicit
+  // `locale` props, so previews still render EN/বাং side by side.
   return (
-    <SupportedViewportGate>
-      <BuilderStudio />
-    </SupportedViewportGate>
+    <LanguageProvider initialLang="en">
+      <SupportedViewportGate>
+        <BuilderStudio />
+      </SupportedViewportGate>
+    </LanguageProvider>
   );
 }
 
@@ -202,6 +220,7 @@ function BuilderStudio() {
     staleTime: 60_000,
   });
 
+  const navigate = Route.useNavigate();
   const { preview_theme_id } = Route.useSearch();
   const workspace = useQuery({
     queryKey: ["builder", "workspace", preview_theme_id],
@@ -218,7 +237,20 @@ function BuilderStudio() {
   const [slot, setSlot] = useState<Slot>("main");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [previewWidth, setPreviewWidth] = useState<number>(1440);
+  // Fluid full-window canvas (Elementor-style "full width"): the frame fills
+  // the available window instead of a fixed device width. Picking any fixed
+  // preset or device exits fluid mode. Responsive editing targets desktop
+  // while fluid (documented on the toggle).
+  const [fluidCanvas, setFluidCanvas] = useState(false);
+  const [zoom, setZoom] = useState<number>(1);
+  const [lintDrawerOpen, setLintDrawerOpen] = useState(false);
+  const [translationDrawerOpen, setTranslationDrawerOpen] = useState(false);
   const [locale, setLocale] = useState<LocalePreview>("en");
+  // Tray → canvas drag insert (Elementor core gesture). Gap index only;
+  // legality is enforced by the editor's canDrop guard, never here.
+  // Row positions are measured per frame (EN/বাং side-by-side frames share
+  // section order), so no shared ref is kept.
+  const [dropGap, setDropGap] = useState<number | null>(null);
   const [leftTab, setLeftTab] = useState<"layers" | "add" | "blocks">("layers");
   const [addParent, setAddParent] = useState<string | null>(null);
   const [blocks, setBlocks] = useState<SavedBlock[]>([]);
@@ -233,6 +265,7 @@ function BuilderStudio() {
     | "maintenance"
     | "forms"
     | "popups"
+    | "code"
   >("inspect");
   const [runAt, setRunAt] = useState("");
   const [pendingInstall, setPendingInstall] = useState<string | null>(null);
@@ -305,8 +338,10 @@ function BuilderStudio() {
   }, []);
 
   const device: Breakpoint =
-    DEVICE_PRESETS.find((preset) => preset.width === previewWidth)?.bp ??
-    "desktop";
+    fluidCanvas
+      ? "desktop"
+      : (DEVICE_PRESETS.find((preset) => preset.width === previewWidth)?.bp ??
+        "desktop");
 
   const themeId = workspace.data?.theme.id ?? null;
 
@@ -890,6 +925,75 @@ function BuilderStudio() {
     setMenu({ nodeId: owner, x, y });
   }, []);
 
+  const isTrayDrag = useCallback((e: React.DragEvent) => {
+    try {
+      return Array.from(e.dataTransfer.types).includes(TRAY_MIME);
+    } catch {
+      return false;
+    }
+  }, []);
+
+  const rowTops = useCallback((frame: HTMLElement) => {
+    const root = frame.querySelector("[data-drop-root]");
+    const scope: ParentNode = root ?? frame;
+    const tops: number[] = [];
+    scope
+      .querySelectorAll(":scope > [data-node-id]")
+      .forEach((el) =>
+        tops.push((el as HTMLElement).getBoundingClientRect().top),
+      );
+    return tops;
+  }, []);
+
+  const handleCanvasDragOver = useCallback(
+    (e: React.DragEvent) => {
+      if (!isTrayDrag(e)) return;
+      e.preventDefault();
+      try {
+        e.dataTransfer.dropEffect = "copy";
+      } catch {
+        /* noop */
+      }
+      setDropGap(
+        pickDropIndex(e.clientY, rowTops(e.currentTarget as HTMLElement)),
+      );
+    },
+    [isTrayDrag, rowTops],
+  );
+
+  const handleCanvasDragLeave = useCallback((e: React.DragEvent) => {
+    const to = e.relatedTarget as Node | null;
+    if (to && e.currentTarget.contains(to)) return;
+    setDropGap(null);
+  }, []);
+
+  const handleCanvasDrop = useCallback(
+    (e: React.DragEvent) => {
+      if (!isTrayDrag(e)) return;
+      e.preventDefault();
+      setDropGap(null);
+      const drop = decodeTrayDrop(e.dataTransfer);
+      if (!drop) return;
+      const type = drop.type as SectionType;
+      // Unknown/forged types never reach the tree.
+      if (!catalogEntry(type)) {
+        toast.error(t("Unknown widget", "অজানা উইজেট"));
+        return;
+      }
+      const index = pickDropIndex(
+        e.clientY,
+        rowTops(e.currentTarget as HTMLElement),
+      );
+      if (!canDrop(sections, [newSection(type)], null).ok) {
+        toast.error(t("Cannot drop here", "এখানে রাখা যাবে না"));
+        return;
+      }
+      const id = editor.add(template, slot, type, { parentId: null, index });
+      if (id) setSelectedIds([id]);
+    },
+    [isTrayDrag, rowTops, sections, editor, template, slot, t],
+  );
+
   const refresh = () =>
     qc.invalidateQueries({ queryKey: ["builder", "workspace"] });
 
@@ -1183,13 +1287,16 @@ function BuilderStudio() {
 
   return (
     <PluginProvider plugins={pluginsQuery.data?.plugins ?? []}>
-      <div className="flex h-screen flex-col overflow-hidden">
+      <div className="flex h-screen flex-col overflow-hidden bg-background">
         <BuilderTopBar
           title={workspace.data?.theme?.name ?? t("Untitled", "শিরোনামহীন")}
           status={status}
           device={device}
           previewWidth={previewWidth}
-          onWidthChange={setPreviewWidth}
+          onWidthChange={(w) => {
+            setFluidCanvas(false);
+            setPreviewWidth(w);
+          }}
           canUndo={editor.canUndo}
           canRedo={editor.canRedo}
           onUndo={editor.undo}
@@ -1205,9 +1312,18 @@ function BuilderStudio() {
             setLeftTab((t) => (t === "layers" ? "add" : "layers"))
           }
           structureVisible={leftTab === "layers"}
-          onChecklistOpen={() => setPublishOpen(true)}
+          onChecklistOpen={() => setLintDrawerOpen(true)}
           issueCount={issues.filter((i) => i.level === "error").length}
           contentOnly={contentOnly}
+          template={template}
+          onTemplateChange={setTemplate}
+          zoom={zoom}
+          onZoomChange={setZoom}
+          coveragePercent={coverage?.percent}
+          onOpenTranslation={() => setTranslationDrawerOpen(true)}
+          onOpenLint={() => setLintDrawerOpen(true)}
+          errorCount={issues.filter((i) => i.level === "error").length}
+          warningCount={issues.filter((i) => i.level === "warning").length}
         />
 
         <PublishModal
@@ -1229,7 +1345,7 @@ function BuilderStudio() {
         />
 
         {workspace.data?.isPreview && (
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-fq-md border border-primary/40 bg-primary/10 px-4 py-2 text-sm shadow-xs">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-primary/40 bg-primary/10 px-4 py-2 text-xs shadow-xs">
             <div className="flex items-center gap-2">
               <span className="inline-block size-2 rounded-full bg-primary animate-pulse" />
               <span className="font-semibold text-primary">
@@ -1252,7 +1368,16 @@ function BuilderStudio() {
                   data: { id: workspace.data.theme.id },
                 });
                 toast.success(t("Theme activated", "থিম সক্রিয় করা হয়েছে"));
-                qc.invalidateQueries({ queryKey: ["builder", "workspace"] });
+                void navigate({ search: {} as never });
+                void qc.invalidateQueries({
+                  queryKey: ["builder", "workspace"],
+                });
+                void qc.invalidateQueries({
+                  queryKey: ["themes", "workspace"],
+                });
+                void qc.invalidateQueries({
+                  queryKey: ["marketplace", "catalog"],
+                });
               }}
               className="rounded-fq-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 cursor-pointer shadow-xs disabled:opacity-50"
             >
@@ -1263,18 +1388,21 @@ function BuilderStudio() {
 
         <nav
           aria-label={t("Templates", "টেমপ্লেট")}
-          className="flex flex-wrap gap-1"
+          className="flex items-center gap-1 overflow-x-auto border-b border-border/70 bg-card/80 px-3 py-1 text-xs backdrop-blur-xs scrollbar-none"
         >
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mr-1 shrink-0">
+            {t("Templates:", "টেমপ্লেট:")}
+          </span>
           {TEMPLATE_KEYS.map((key) => (
             <button
               key={key}
               type="button"
               aria-current={template === key ? "page" : undefined}
               onClick={() => setTemplate(key)}
-              className={`rounded-fq-md px-3 py-1.5 text-sm ${
+              className={`rounded-fq-md px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer shrink-0 ${
                 template === key
-                  ? "bg-primary text-primary-foreground"
-                  : "border border-border bg-card"
+                  ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
               {t(TEMPLATE_LABEL[key].en, TEMPLATE_LABEL[key].bn)}
@@ -1282,32 +1410,107 @@ function BuilderStudio() {
           ))}
         </nav>
 
-        <LintPanel
-          issues={issues}
-          resolve={(id) => locate(sections, id)?.node ?? null}
-          onFix={applyFix}
-          onSelect={(id) => {
-            setSelectedIds([id]);
-            setPanel("inspect");
-          }}
-        />
-
-        {/* Phase 3.3: বাংলা coverage across every template in this theme. */}
-        {coverage && (
-          <TranslationMeter
-            report={coverage}
-            onJump={(target, sectionId) => {
-              setTemplate(target);
-              setSelectedIds([sectionId]);
-            }}
-          />
+        {/* Slide-out Lint / Quality Drawer */}
+        {lintDrawerOpen && (
+          <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-xs animate-in fade-in duration-150">
+            <div className="flex h-full w-full max-w-md flex-col border-l border-border bg-card p-4 shadow-2xl animate-in slide-in-from-right duration-200">
+              <div className="flex items-center justify-between border-b border-border/80 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex size-7 items-center justify-center rounded-fq-md bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold">
+                    <svg
+                      className="size-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-foreground">
+                      {t(
+                        "Template Audit & Checklist",
+                        "টেমপ্লেট অডিট ও চেকলিস্ট",
+                      )}
+                    </h3>
+                    <p className="text-[10px] text-muted-foreground">
+                      {issues.filter((i) => i.level === "error").length}{" "}
+                      {t("blocking", "ব্লকিং")},{" "}
+                      {issues.filter((i) => i.level === "warning").length}{" "}
+                      {t("advisory", "পরামর্শ")}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLintDrawerOpen(false)}
+                  className="rounded-fq-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer text-xs"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto py-3">
+                <LintPanel
+                  issues={issues}
+                  resolve={(id) => locate(sections, id)?.node ?? null}
+                  onFix={applyFix}
+                  onSelect={(id) => {
+                    setSelectedIds([id]);
+                    setPanel("inspect");
+                    setLintDrawerOpen(false);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         )}
 
-        {/* Phase 4: theme-scoped custom HTML / CSS / JS, versioned with publish. */}
-        <CustomCodeEditor themeId={themeId} />
+        {/* Slide-out Translation Coverage Drawer */}
+        {translationDrawerOpen && coverage && (
+          <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-xs animate-in fade-in duration-150">
+            <div className="flex h-full w-full max-w-md flex-col border-l border-border bg-card p-4 shadow-2xl animate-in slide-in-from-right duration-200">
+              <div className="flex items-center justify-between border-b border-border/80 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex size-7 items-center justify-center rounded-fq-md bg-primary/10 text-primary font-bold">
+                    বাং
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-foreground">
+                      {t("বাংলা Translation Coverage", "বাংলা অনুবাদ অডিট")}
+                    </h3>
+                    <p className="text-[10px] text-muted-foreground">
+                      {coverage.percent}%{" "}
+                      {t("completed across templates", "অনুবাদ সম্পূর্ণ")}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setTranslationDrawerOpen(false)}
+                  className="rounded-fq-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer text-xs"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto py-3">
+                <TranslationMeter
+                  report={coverage}
+                  onJump={(target, sectionId) => {
+                    setTemplate(target);
+                    setSelectedIds([sectionId]);
+                    setTranslationDrawerOpen(false);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
-        <div className="grid gap-4 lg:grid-cols-[300px_1fr_320px]">
-          <aside className="space-y-4 rounded-fq-lg border border-border bg-card p-4">
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-[300px_1fr_340px] overflow-hidden">
+          <aside className="flex flex-col border-r border-border bg-card overflow-y-auto p-3.5 space-y-3.5">
             <div
               role="tablist"
               aria-label={t("Layout slots", "লেআউট স্লট")}
@@ -1780,10 +1983,33 @@ function BuilderStudio() {
           )}
 
           <section
-            className="space-y-3 rounded-fq-lg border border-border bg-muted p-4"
+            className="relative flex flex-col flex-1 min-w-0 overflow-auto bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:20px_20px] bg-muted/40 p-4 sm:p-6 select-none"
             aria-label={t("Preview", "প্রিভিউ")}
           >
-            <div className="flex flex-wrap items-center justify-center gap-2">
+            {/* Canvas Artboard Top Control Bar */}
+            <div className="sticky top-0 z-10 mx-auto mb-4 flex flex-wrap items-center justify-center gap-2 rounded-fq-full border border-border/80 bg-background/90 px-3.5 py-1.5 shadow-lg backdrop-blur-md ring-1 ring-border/40">
+              {/* Breadcrumbs */}
+              <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground pr-2 border-r border-border/60">
+                <span className="font-semibold text-foreground">
+                  {t(TEMPLATE_LABEL[template].en, TEMPLATE_LABEL[template].bn)}
+                </span>
+                <span>›</span>
+                <span className="capitalize">{slot}</span>
+                {selected && (
+                  <>
+                    <span>›</span>
+                    <span className="text-primary font-medium max-w-[100px] truncate">
+                      {String(
+                        selected.props[NODE_NAME_PROP] ??
+                          catalogEntry(selected.type)?.label ??
+                          selected.type,
+                      )}
+                    </span>
+                  </>
+                )}
+              </div>
+
+              {/* Viewport Width Preset Buttons */}
               <div
                 role="tablist"
                 aria-label={t("Preview size", "প্রিভিউ সাইজ")}
@@ -1794,18 +2020,43 @@ function BuilderStudio() {
                     key={preset.width}
                     type="button"
                     role="tab"
-                    aria-selected={previewWidth === preset.width}
-                    onClick={() => setPreviewWidth(preset.width)}
-                    className={`rounded-fq-md px-2.5 py-1.5 text-xs tabular-nums ${
-                      previewWidth === preset.width
-                        ? "bg-primary text-primary-foreground"
-                        : "border border-border bg-card"
+                    aria-selected={!fluidCanvas && previewWidth === preset.width}
+                    onClick={() => {
+                      setFluidCanvas(false);
+                      setPreviewWidth(preset.width);
+                    }}
+                    className={`rounded-fq-md px-2.5 py-1 text-xs font-medium tabular-nums transition-colors cursor-pointer ${
+                      !fluidCanvas && previewWidth === preset.width
+                        ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
                     }`}
                   >
                     {preset.label}
                   </button>
                 ))}
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={fluidCanvas}
+                  aria-label={t(
+                    "Full window width canvas. Responsive editing targets desktop while fluid.",
+                    "পূর্ণ উইন্ডো প্রস্থ ক্যানভাস। ফ্লুইড থাকলে রেসপন্সিভ এডিটিং ডেস্কটপ ধরে।",
+                  )}
+                  title={t("Full width", "পূর্ণ প্রস্থ")}
+                  onClick={() => setFluidCanvas((v) => !v)}
+                  className={`rounded-fq-md px-2.5 py-1 text-xs font-medium tabular-nums transition-colors cursor-pointer ${
+                    fluidCanvas
+                      ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  {t("Full width", "পূর্ণ প্রস্থ")}
+                </button>
               </div>
+
+              <div className="h-3.5 w-px bg-border/60" role="separator" />
+
+              {/* Language Selector */}
               <div
                 role="tablist"
                 aria-label={t("Preview language", "প্রিভিউ ভাষা")}
@@ -1824,133 +2075,256 @@ function BuilderStudio() {
                     role="tab"
                     aria-selected={locale === key}
                     onClick={() => setLocale(key)}
-                    className={`rounded-fq-md px-2.5 py-1.5 text-xs ${
+                    className={`rounded-fq-md px-2 py-1 text-xs font-medium transition-colors cursor-pointer ${
                       locale === key
-                        ? "bg-primary text-primary-foreground"
-                        : "border border-border bg-card"
+                        ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
                     }`}
                   >
                     {label}
                   </button>
                 ))}
               </div>
-              <p className="text-[11px] text-muted-foreground">
+
+              <span className="hidden md:inline text-[11px] text-muted-foreground pl-1">
                 {t("Editing the", "এডিট করছেন")} <strong>{device}</strong>{" "}
                 {t("layer", "লেয়ার")}
-              </p>
+              </span>
             </div>
 
-            <div className="flex justify-center gap-4 overflow-x-auto">
+            {/* Canvas Artboard Viewport Container */}
+            <div className="flex justify-center gap-6 overflow-x-auto flex-1 items-start py-2">
               {(locale === "both"
                 ? (["en", "bn"] as const)
                 : ([locale] as const)
               ).map((frameLang) => (
-                <div key={frameLang} className="shrink-0 space-y-1">
+                <div
+                  key={frameLang}
+                  className={
+                    fluidCanvas
+                      ? "w-full min-w-0 flex-1 space-y-1.5 flex flex-col items-center"
+                      : "shrink-0 space-y-1.5 flex flex-col items-center"
+                  }
+                >
                   {locale === "both" && (
-                    <p className="text-center text-[11px] text-muted-foreground">
+                    <span className="rounded-fq-full bg-background/90 px-3 py-0.5 text-[11px] font-semibold text-muted-foreground shadow-xs border border-border/80">
                       {frameLang === "en" ? "EN" : "বাংলা"}
-                    </p>
+                    </span>
                   )}
+                  {/* Floating Device Frame Mockup */}
                   <div
-                    lang={frameLang}
-                    dir="ltr"
-                    onClick={(event) => {
-                      const node = (event.target as HTMLElement).closest(
-                        "[data-node-id]",
-                      );
-                      const id = node?.getAttribute("data-node-id");
-                      if (id)
-                        selectOnCanvas(
-                          id,
-                          event.metaKey || event.ctrlKey || event.shiftKey
-                            ? "toggle"
-                            : "replace",
-                        );
-                    }}
-                    onContextMenu={(event) => {
-                      const node = (event.target as HTMLElement).closest(
-                        "[data-node-id]",
-                      );
-                      const id = node?.getAttribute("data-node-id");
-                      if (!id) return;
-                      event.preventDefault();
-                      selectOnCanvas(id, "replace");
-                      openMenu(id, event.clientX, event.clientY);
-                    }}
-                    className={`space-y-3 rounded-fq-lg border border-border p-4 transition-[width] ${
-                      frameLang === "bn" ? "font-bangla" : ""
-                    }`}
+                    className="relative transition-[width] duration-300 rounded-fq-xl border border-border/80 shadow-2xl shadow-black/10 dark:shadow-black/50 bg-background overflow-hidden ring-1 ring-border/50"
                     style={{
-                      width: `${previewWidth}px`,
+                      width: fluidCanvas ? "100%" : `${previewWidth}px`,
                       maxWidth: "100%",
-                      ...(doc
-                        ? (tokensToCss(doc.tokens) as React.CSSProperties)
-                        : {}),
-                      backgroundColor: doc?.tokens.surface,
-                      color: doc?.tokens.ink,
+                      transform: zoom !== 1 ? `scale(${zoom})` : undefined,
+                      transformOrigin: "top center",
                     }}
                   >
-                    {canvas.sections.length === 0 ? (
-                      <p className="py-12 text-center text-sm text-muted-foreground">
-                        {t("This slot is empty.", "এই স্লট খালি।")}
-                      </p>
-                    ) : (
-                      canvas.sections.map((section) => (
-                        <SectionRenderer
-                          key={section.id}
-                          section={section}
-                          editing
-                          device={device}
-                          locale={frameLang}
-                          template={template}
-                          selectedIds={selectedIds}
-                          onInlineEdit={(nodeId, key, value) => {
-                            // Grafted global-block content is a projection: editing
-                            // it here would be silently discarded on next resolve.
-                            if (isGraftedId(nodeId)) {
-                              toast.error(
-                                t(
-                                  "Open the global block to edit its content",
-                                  "কনটেন্ট বদলাতে গ্লোবাল ব্লকটি খুলুন",
-                                ),
-                              );
-                              return;
-                            }
-                            editor.setPropAt(
-                              template,
-                              slot,
-                              nodeId,
-                              key,
-                              value,
-                              device,
-                            );
-                          }}
-                        />
-                      ))
+                    {/* Simulated Mobile Notch / Speaker Bar */}
+                    {!fluidCanvas && previewWidth <= 480 && (
+                      <div className="mx-auto my-2.5 h-4 w-24 rounded-full bg-foreground/15 flex items-center justify-center gap-1.5">
+                        <span className="size-2 rounded-full bg-foreground/25 inline-block" />
+                        <span className="size-1.5 rounded-full bg-foreground/25 inline-block" />
+                      </div>
                     )}
+                    <div
+                      lang={frameLang}
+                      dir="ltr"
+                      onDragOver={handleCanvasDragOver}
+                      onDrop={handleCanvasDrop}
+                      onDragLeave={handleCanvasDragLeave}
+                      onClick={(event) => {
+                        const node = (event.target as HTMLElement).closest(
+                          "[data-node-id]",
+                        );
+                        const id = node?.getAttribute("data-node-id");
+                        if (id)
+                          selectOnCanvas(
+                            id,
+                            event.metaKey || event.ctrlKey || event.shiftKey
+                              ? "toggle"
+                              : "replace",
+                          );
+                      }}
+                      onContextMenu={(event) => {
+                        const node = (event.target as HTMLElement).closest(
+                          "[data-node-id]",
+                        );
+                        const id = node?.getAttribute("data-node-id");
+                        if (!id) return;
+                        event.preventDefault();
+                        selectOnCanvas(id, "replace");
+                        openMenu(id, event.clientX, event.clientY);
+                      }}
+                      className={`min-h-[500px] p-4 transition-colors ${
+                        frameLang === "bn" ? "font-bangla" : ""
+                      }`}
+                      style={{
+                        ...(doc
+                          ? (tokensToCss(doc.tokens) as React.CSSProperties)
+                          : {}),
+                        backgroundColor: doc?.tokens.surface,
+                        color: doc?.tokens.ink,
+                      }}
+                    >
+                      {canvas.sections.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-20 px-4 text-center border-2 border-dashed border-border/70 rounded-fq-lg my-6 bg-muted/20">
+                          <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary mb-3">
+                            <svg
+                              className="size-6"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                            >
+                              <rect width="18" height="18" x="3" y="3" rx="2" />
+                              <path d="M12 8v8" />
+                              <path d="M8 12h8" />
+                            </svg>
+                          </div>
+                          <h4 className="text-sm font-bold text-foreground">
+                            {t("This slot is empty", "এই স্লট খালি")}
+                          </h4>
+                          <p className="mt-1 text-xs text-muted-foreground max-w-sm">
+                            {t(
+                              "Compose your storefront by adding headers, heroes, product rails, or banners from the left panel.",
+                              "বাম পাশের প্যানেল থেকে হেডার, হিরো ব্যানার বা প্রোডাক্ট গ্রিড যোগ করে স্টোরফ্রন্ট সাজান।",
+                            )}
+                          </p>
+                          <button
+                            type="button"
+                            onClick={() => setLeftTab("add")}
+                            className="mt-4 inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 cursor-pointer"
+                          >
+                            + {t("Add Section", "সেকশন যোগ করুন")}
+                          </button>
+                        </div>
+                      ) : (
+                        <div data-drop-root className="contents">
+                          {canvas.sections.map((section, i) => (
+                            <Fragment key={section.id}>
+                              {dropGap === i && (
+                                <div
+                                  aria-hidden="true"
+                                  className="h-1 rounded-full bg-primary"
+                                />
+                              )}
+                              <SectionRenderer
+                                key={section.id}
+                                section={section}
+                                editing
+                                device={device}
+                                locale={frameLang}
+                                template={template}
+                                selectedIds={selectedIds}
+                                onInlineEdit={(nodeId, key, value) => {
+                                  // Grafted global-block content is a projection: editing
+                                  // it here would be silently discarded on next resolve.
+                                  if (isGraftedId(nodeId)) {
+                                    toast.error(
+                                      t(
+                                        "Open the global block to edit its content",
+                                        "কনটেন্ট বদলাতে গ্লোবাল ব্লকটি খুলুন",
+                                      ),
+                                    );
+                                    return;
+                                  }
+                                  editor.setPropAt(
+                                    template,
+                                    slot,
+                                    nodeId,
+                                    key,
+                                    value,
+                                    device,
+                                  );
+                                }}
+                              />
+                            </Fragment>
+                          ))}
+                          {dropGap === canvas.sections.length && (
+                            <div
+                              aria-hidden="true"
+                              className="h-1 rounded-full bg-primary"
+                            />
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
+
+            {/* Floating Selection Quick Action Bar */}
+            {selected && (
+              <div className="sticky bottom-4 mx-auto z-20 flex items-center gap-1.5 rounded-fq-full border border-border/80 bg-background/95 px-3.5 py-1.5 shadow-xl backdrop-blur-md ring-1 ring-border/50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-foreground mr-1">
+                  <span className="size-2 rounded-full bg-primary" />
+                  {String(
+                    selected.props[NODE_NAME_PROP] ??
+                      catalogEntry(selected.type)?.label ??
+                      selected.type,
+                  )}
+                </span>
+                <div className="h-3.5 w-px bg-border/80" role="separator" />
+                <button
+                  type="button"
+                  title={t("Move Up", "উপরে নিন")}
+                  onClick={() => editor.nudge(template, slot, selected.id, -1)}
+                  className="inline-flex size-6 items-center justify-center rounded-full hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer font-bold"
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  title={t("Move Down", "নিচে নিন")}
+                  onClick={() => editor.nudge(template, slot, selected.id, 1)}
+                  className="inline-flex size-6 items-center justify-center rounded-full hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer font-bold"
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  title={t("Duplicate", "কপি")}
+                  onClick={() => editor.duplicate(template, slot, selected.id)}
+                  className="inline-flex size-6 items-center justify-center rounded-full hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer text-xs"
+                >
+                  ⎘
+                </button>
+                <button
+                  type="button"
+                  title={t("Delete Section", "মুছুন")}
+                  onClick={() => {
+                    editor.remove(template, slot, selected.id);
+                    setSelectedIds([]);
+                  }}
+                  className="inline-flex size-6 items-center justify-center rounded-full hover:bg-destructive/10 text-muted-foreground hover:text-destructive cursor-pointer text-xs"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
           </section>
 
-          <aside className="space-y-3 rounded-fq-lg border border-border bg-card p-4">
+          <aside className="flex flex-col border-l border-border bg-card overflow-y-auto p-3.5 space-y-3.5">
             <div
               role="tablist"
               aria-label={t("Studio panels", "স্টুডিও প্যানেল")}
-              className="flex flex-wrap gap-1"
+              className="flex flex-wrap gap-1 rounded-fq-md border border-border/70 bg-muted/50 p-1"
             >
               {(
                 [
                   ["inspect", t("Settings", "সেটিংস")],
-                  ["seo", t("SEO", "SEO")],
                   ["brand", t("Brand", "ব্র্যান্ড")],
+                  ["seo", t("SEO", "SEO")],
                   ["history", t("History", "ইতিহাস")],
                   ["themes", t("Themes", "থিম")],
                   ["templates", t("Templates", "টেমপ্লেট")],
                   ["maintenance", t("Maintenance", "মেইনটেন্যান্স")],
                   ["forms", t("Forms", "ফর্ম")],
                   ["popups", t("Popups", "পপআপ")],
+                  ["code", t("Code", "কোড")],
                 ] as const
               ).map(([key, label]) => (
                 <button
@@ -1959,10 +2333,10 @@ function BuilderStudio() {
                   role="tab"
                   aria-selected={panel === key}
                   onClick={() => setPanel(key)}
-                  className={`rounded-fq-md px-2 py-1.5 text-xs ${
+                  className={`rounded-fq-sm px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
                     panel === key
-                      ? "bg-primary text-primary-foreground"
-                      : "border border-border"
+                      ? "bg-background text-foreground shadow-xs font-semibold"
+                      : "text-muted-foreground hover:text-foreground hover:bg-background/40"
                   }`}
                 >
                   {label}
@@ -2297,6 +2671,8 @@ function BuilderStudio() {
             {panel === "forms" && <FormsPanel />}
 
             {panel === "popups" && <PopupSettings />}
+
+            {panel === "code" && <CustomCodeEditor themeId={themeId} />}
           </aside>
         </div>
 

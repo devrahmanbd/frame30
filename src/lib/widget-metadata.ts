@@ -119,6 +119,7 @@ const SYNONYMS: Partial<Record<SectionType, string[]>> = {
   marquee: ["ticker", "scrolling text"],
   newsletter: ["email signup", "subscribe", "lead capture"],
   html: ["custom code", "script", "embed", "iframe"],
+  subbrand_bar: ["sub brand", "brand bar", "sister brands", "brand family"],
   announcement_bar: ["top bar", "promo bar", "notice bar"],
   mega_menu: ["navigation", "nav", "menu"],
   footer_sitemap: ["footer links", "sitemap"],

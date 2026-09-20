@@ -102,35 +102,32 @@ export function EditorShell({
   const action = primaryAction(doc, canPublish);
   const pill = titlePill(doc, lang === "bn" ? "bn" : "en");
   const builderDoc: BuilderDoc | null =
-    doc.editor === "builder" ? parseBuilderBody(doc.body) : null;
-  const needsChoice =
-    kind === "post" &&
-    !doc.id &&
-    !doc.body &&
-    doc.editor === "classic" &&
-    !state.dirty &&
-    choiceNotMade(doc);
+    doc.editor === "builder"
+      ? parseBuilderBody(doc.body) ?? starterDoc(doc.title || undefined)
+      : null;
+  const needsChoice = false;
 
-  // Honour `?editor=builder` once the document has loaded.
+  // Honour `?editor=builder` or `?editor=classic` once the document has loaded.
   const forced = useRef(false);
   useEffect(() => {
-    if (forced.current || !context || !forceEditor) return;
-    forced.current = true;
-    if (forceEditor !== context.doc.editor) {
+    if (forced.current || !context) return;
+    const targetEditor = forceEditor ?? (kind === "page" ? "builder" : "classic");
+    if (targetEditor !== context.doc.editor) {
+      forced.current = true;
       markChoice();
       const next =
-        forceEditor === "builder"
+        targetEditor === "builder"
           ? (parseBuilderBody(context.doc.body) ??
             starterDoc(context.doc.title || undefined))
           : null;
       update(
-        { editor: forceEditor, body: next ? serializeBuilderBody(next) : "" },
+        { editor: targetEditor, body: next ? serializeBuilderBody(next) : "" },
         "editor",
       );
-    } else if (forceEditor === "builder") {
-      markChoice();
+    } else {
+      forced.current = true;
     }
-  }, [context, forceEditor, update]);
+  }, [context, forceEditor, kind, update]);
 
   const leave = useCallback(() => {
     void navigate({ to: listHref });

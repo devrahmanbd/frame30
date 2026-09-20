@@ -207,3 +207,170 @@ export const updateAiGatewayConfigFn = createServerFn({ method: "POST" })
       "admin_ui_key_rotation",
     );
   });
+
+/* ------------------------------------------------------------- DeepWiki & Copilot */
+
+const deepwikiSearchSchema = z.object({
+  query: z.string().trim().max(300),
+  category: z.string().optional(),
+  limit: z.number().int().min(1).max(50).optional(),
+});
+
+export const deepwikiSearchFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => deepwikiSearchSchema.parse(d))
+  .handler(async ({ data }) => {
+    const { searchDeepWikiSemantic } = await import("./semantic-vector.server");
+    const category =
+      data.category && data.category !== "all"
+        ? (data.category as any)
+        : undefined;
+    return searchDeepWikiSemantic(data.query, {
+      category,
+      limit: data.limit ?? 10,
+    });
+  });
+
+export const deepwikiGetCategoriesFn = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async () => {
+    const { DEEPWIKI_CATEGORIES, DEEPWIKI_DATASET } = await import(
+      "./deepwiki-dataset"
+    );
+    const { getVectorEngineStats } = await import("./semantic-vector.server");
+    const counts: Record<string, number> = {};
+    for (const item of DEEPWIKI_DATASET) {
+      counts[item.category] = (counts[item.category] ?? 0) + 1;
+    }
+    return {
+      categories: DEEPWIKI_CATEGORIES.map((c) => ({
+        ...c,
+        count: counts[c.id] ?? 0,
+      })),
+      totalQuestions: DEEPWIKI_DATASET.length,
+      engine: getVectorEngineStats(),
+    };
+  });
+
+const copilotChatSchema = z.object({
+  message: z.string().trim().min(1).max(1000),
+  history: z
+    .array(
+      z.object({
+        role: z.enum(["user", "assistant"]),
+        content: z.string().max(2000),
+      }),
+    )
+    .optional(),
+});
+
+export const aiCopilotChatFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => copilotChatSchema.parse(d))
+  .handler(async ({ data }) => {
+    const { searchDeepWikiSemantic } = await import("./semantic-vector.server");
+    const { getAiGatewayConfig, isPlaceholderApiKey } = await import(
+      "./support-embed.server"
+    );
+
+    const hits = await searchDeepWikiSemantic(data.message, { limit: 3 });
+    const topHit = hits[0];
+
+    const sources = hits.map((h) => ({
+      id: h.item.id,
+      title: h.item.question,
+      category: h.item.category,
+      summary: h.item.summary,
+      url: h.item.citations[0]?.url ?? "/docs",
+      similarity: Number(h.similarity.toFixed(3)),
+    }));
+
+    const cfg = await getAiGatewayConfig();
+    const hasKey = cfg.apiKey && !isPlaceholderApiKey(cfg.apiKey);
+
+    if (hasKey && hits.length > 0) {
+      try {
+        const contextPassages = hits
+          .map(
+            (h, i) =>
+              `[Source ${i + 1}: ${h.item.question} (${h.item.category})]\n${h.item.summary}\n${h.item.answer}`,
+          )
+          .join("\n\n---\n\n");
+
+        const messages = [
+          {
+            role: "system",
+            content:
+              "You are Framique's authoritative Cloud Commerce AI Support and Platform Specialist for merchants in Bangladesh. Answer accurately based on the provided DeepWiki sources. Format your answer with clean markdown, lists, and code blocks. Be concise and actionable.",
+          },
+          ...(data.history ?? []).slice(-4),
+          {
+            role: "user",
+            content: `DeepWiki Sources:\n\n${contextPassages}\n\nQuestion: ${data.message}`,
+          },
+        ];
+
+        const res = await fetch(
+          `${cfg.gatewayUrl || "https://openrouter.ai/api/v1"}/chat/completions`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${cfg.apiKey}`,
+              "HTTP-Referer": "https://framique.com",
+              "X-Title": "Framique Copilot",
+            },
+            body: JSON.stringify({
+              model: cfg.chatModel,
+              messages,
+              max_tokens: 800,
+              temperature: 0.2,
+            }),
+          },
+        );
+
+        if (res.ok) {
+          const json = await res.json();
+          const generated = json.choices?.[0]?.message?.content;
+          if (generated) {
+            return {
+              answer: generated,
+              sources,
+              confidence: (topHit?.similarity ?? 0) > 0.7 ? "verified" : "grounded",
+              similarity: topHit?.similarity ?? 0,
+            };
+          }
+        }
+      } catch {
+        // Fallback to extractive synthesis
+      }
+    }
+
+    // Extractive synthesis from DeepWiki
+    if (topHit) {
+      const best = topHit.item;
+      let synthesized = `### ${best.question}\n\n${best.summary}\n\n${best.answer}`;
+
+      if (hits.length > 1) {
+        synthesized += `\n\n---\n\n**Related DeepWiki Guides:**\n`;
+        for (let i = 1; i < hits.length; i++) {
+          synthesized += `- **${hits[i].item.question}** (${hits[i].item.category}): ${hits[i].item.summary}\n`;
+        }
+      }
+
+      return {
+        answer: synthesized,
+        sources,
+        confidence: topHit.similarity > 0.65 ? "verified" : "grounded",
+        similarity: topHit.similarity,
+      };
+    }
+
+    return {
+      answer:
+        "I couldn't find a direct match in our DeepWiki knowledge base for that question. You can browse our 100+ topics by category (Payments, Couriers, Page Builder, Security, SEO, Orders) or contact live developer care.",
+      sources: [],
+      confidence: "speculative",
+      similarity: 0,
+    };
+  });

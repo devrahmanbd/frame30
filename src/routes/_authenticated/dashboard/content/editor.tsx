@@ -58,7 +58,11 @@ function EditorRoute() {
       onCreated={(newId) =>
         void navigate({
           to: "/dashboard/content/editor",
-          search: { kind, id: newId },
+          search: {
+            kind,
+            id: newId,
+            editor: editor ?? (kind === "page" ? "builder" : "classic"),
+          },
           replace: true,
         })
       }

@@ -181,6 +181,8 @@ export type SectionType =
   | "sustain_badge"
   | "complete_the_look"
   | "wishlist_button"
+  | "circle_categories"
+  | "subbrand_spotlight"
   // Phase 2.7 Circuit (electronics) widgets.
   | "spec_highlights"
   | "compare_tray"
@@ -2631,6 +2633,114 @@ const BASE_CATALOG: CatalogEntry[] = [
       bool("showCount", "Show saved count"),
     ],
   },
+  {
+    type: "circle_categories",
+    label: "Circle categories",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Shop by Category",
+      c1Title: "Women's Sarees",
+      c1Image: "",
+      c1Href: "/collections/womens",
+      c2Title: "Men's Panjabi",
+      c2Image: "",
+      c2Href: "/collections/mens",
+      c3Title: "Taaga",
+      c3Image: "",
+      c3Href: "/collections/taaga",
+      c4Title: "Jamdani Weaves",
+      c4Image: "",
+      c4Href: "/collections/heritage-handloom",
+      c5Title: "Nakshi Kantha",
+      c5Image: "",
+      c5Href: "/collections/nakshi-kantha",
+      c6Title: "Handcrafted Jewelry",
+      c6Image: "",
+      c6Href: "/collections/jewelry",
+      c7Title: "Home & Living",
+      c7Image: "",
+      c7Href: "/collections/living",
+      c8Title: "Aarong Earth",
+      c8Image: "",
+      c8Href: "/collections/beauty",
+    },
+    fields: [
+      text("heading", "Heading", 80),
+      text("c1Title", "Category 1 title", 60),
+      url("c1Image", "Category 1 image"),
+      url("c1Href", "Category 1 link"),
+      text("c2Title", "Category 2 title", 60),
+      url("c2Image", "Category 2 image"),
+      url("c2Href", "Category 2 link"),
+      text("c3Title", "Category 3 title", 60),
+      url("c3Image", "Category 3 image"),
+      url("c3Href", "Category 3 link"),
+      text("c4Title", "Category 4 title", 60),
+      url("c4Image", "Category 4 image"),
+      url("c4Href", "Category 4 link"),
+      text("c5Title", "Category 5 title", 60),
+      url("c5Image", "Category 5 image"),
+      url("c5Href", "Category 5 link"),
+      text("c6Title", "Category 6 title", 60),
+      url("c6Image", "Category 6 image"),
+      url("c6Href", "Category 6 link"),
+      text("c7Title", "Category 7 title", 60),
+      url("c7Image", "Category 7 image"),
+      url("c7Href", "Category 7 link"),
+      text("c8Title", "Category 8 title", 60),
+      url("c8Image", "Category 8 image"),
+      url("c8Href", "Category 8 link"),
+    ],
+  },
+  {
+    type: "subbrand_spotlight",
+    label: "Sub-brand spotlight",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Our Sub-Brands",
+      subheading: "Curated lifestyle edits from our house of heritage craft",
+      b1Name: "TAAGA",
+      b1Tagline: "Bohemian & contemporary youth fusion",
+      b1Image: "",
+      b1Href: "/collections/taaga",
+      b2Name: "TAAGA MAN",
+      b2Tagline: "Modern urban essentials & relaxed cuts",
+      b2Image: "",
+      b2Href: "/collections/mens",
+      b3Name: "HERSTORY",
+      b3Tagline: "Luxury couture & handwoven silk drapes",
+      b3Image: "",
+      b3Href: "/collections/womens",
+      b4Name: "AARONG EARTH",
+      b4Tagline: "Pure chemical-free botanical wellness",
+      b4Image: "",
+      b4Href: "/collections/beauty",
+    },
+    fields: [
+      text("heading", "Heading", 80),
+      text("subheading", "Subheading", 140),
+      text("b1Name", "Brand 1 name", 40),
+      text("b1Tagline", "Brand 1 tagline", 100),
+      url("b1Image", "Brand 1 image"),
+      url("b1Href", "Brand 1 link"),
+      text("b2Name", "Brand 2 name", 40),
+      text("b2Tagline", "Brand 2 tagline", 100),
+      url("b2Image", "Brand 2 image"),
+      url("b2Href", "Brand 2 link"),
+      text("b3Name", "Brand 3 name", 40),
+      text("b3Tagline", "Brand 3 tagline", 100),
+      url("b3Image", "Brand 3 image"),
+      url("b3Href", "Brand 3 link"),
+      text("b4Name", "Brand 4 name", 40),
+      text("b4Tagline", "Brand 4 tagline", 100),
+      url("b4Image", "Brand 4 image"),
+      url("b4Href", "Brand 4 link"),
+    ],
+  },
 
   /* ------------------------------ Phase 2.7 — Circuit (electronics) ------ */
 
@@ -4097,14 +4207,7 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
     "i3Label",
     "i4Label",
   ],
-  subbrand_bar: [
-    "tagline",
-    "b1Name",
-    "b2Name",
-    "b3Name",
-    "b4Name",
-    "b5Name",
-  ],
+  subbrand_bar: ["tagline", "b1Name", "b2Name", "b3Name", "b4Name", "b5Name"],
   announcement_bar: ["m1", "m2", "m3"],
   utility_bar: ["note", "l1Label", "l2Label", "l3Label"],
   trust_bar: [
@@ -4236,6 +4339,29 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   ],
   complete_the_look: ["heading", "buttonLabel"],
   wishlist_button: ["addLabel", "savedLabel"],
+  circle_categories: [
+    "heading",
+    "c1Title",
+    "c2Title",
+    "c3Title",
+    "c4Title",
+    "c5Title",
+    "c6Title",
+    "c7Title",
+    "c8Title",
+  ],
+  subbrand_spotlight: [
+    "heading",
+    "subheading",
+    "b1Name",
+    "b1Tagline",
+    "b2Name",
+    "b2Tagline",
+    "b3Name",
+    "b3Tagline",
+    "b4Name",
+    "b4Tagline",
+  ],
   // Phase 2.7 Circuit.
   spec_highlights: [
     "heading",
@@ -5009,6 +5135,7 @@ export function sanitiseText(value: string, max: number): string {
     .replace(/<\s*(script|style)\b[\s\S]*?(<\s*\/\s*\1\s*>|$)/gi, "")
     .replace(/<[^>]*>/g, "")
     .replace(/[<>]/g, "")
+    // eslint-disable-next-line no-control-regex
     .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "");
   if (cleaned !== value) sanitiserRejects += 1;
   return cleaned.slice(0, max);

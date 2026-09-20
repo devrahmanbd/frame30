@@ -405,16 +405,61 @@ export async function loadStorefront(
     })(),
   ]);
 
+  let resolvedProducts = mergePublicVariants(
+    products ?? [],
+    await fetchPublicVariants((products ?? []).map((p) => p.id)),
+  );
+  let resolvedCategories = categories ?? [];
+  let resolvedCollections = collections ?? [];
+
+  if (
+    resolvedProducts.length === 0 ||
+    resolvedCategories.length === 0 ||
+    resolvedCollections.length === 0
+  ) {
+    const { demoCatalogFor } = await import("./demo-catalog");
+    const demo = demoCatalogFor(theme?.themeKey ?? "clothing-heritage");
+    if (resolvedProducts.length === 0) {
+      resolvedProducts = demo.products.map((dp, idx) => ({
+        id: `demo-${dp.slug}`,
+        title: dp.title,
+        slug: dp.slug,
+        description: dp.description,
+        image_url: dp.image_url ?? null,
+        category_id: null,
+        product_variants: dp.variants.map((v, vIdx) => ({
+          id: `demo-var-${dp.slug}-${vIdx}`,
+          name: v.name,
+          price_amount_minor_int: v.price,
+          compare_at_amount_minor_int: v.compare_at ?? null,
+          stock_quantity: v.stock ?? 10,
+        })),
+      })) as any;
+    }
+    if (resolvedCategories.length === 0) {
+      resolvedCategories = demo.categories.map((c) => ({
+        id: `demo-${c.slug}`,
+        name: c.name,
+        slug: c.slug,
+      })) as any;
+    }
+    if (resolvedCollections.length === 0) {
+      resolvedCollections = demo.collections.map((c) => ({
+        id: `demo-${c.slug}`,
+        name: c.name,
+        slug: c.slug,
+        collection_products: [],
+      })) as any;
+    }
+  }
+
   return {
     merchant,
     seo,
     settings,
-    products: mergePublicVariants(
-      products ?? [],
-      await fetchPublicVariants((products ?? []).map((p) => p.id)),
-    ),
-    categories: categories ?? [],
-    collections: collections ?? [],
+    products: resolvedProducts,
+    categories: resolvedCategories,
+    collections: resolvedCollections,
     ast: theme?.ast ?? null,
     tokens: theme?.tokens ?? null,
     themeKey: theme?.themeKey ?? null,

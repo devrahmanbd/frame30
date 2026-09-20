@@ -838,6 +838,136 @@ const WishlistButton: WidgetComponent = (ctx) => {
   );
 };
 
+/* --------------------------------------------------- circle_categories */
+
+const CircleCategories: WidgetComponent = ({ str, Heading }) => {
+  const heading = str("heading");
+  const categories = [1, 2, 3, 4, 5, 6, 7, 8]
+    .map((n) => ({
+      title: str(`c${n}Title`),
+      imageUrl: str(`c${n}Image`),
+      href: str(`c${n}Href`) || "#",
+    }))
+    .filter((c) => c.title);
+
+  if (categories.length === 0) return null;
+
+  return (
+    <section className="space-y-4 py-4">
+      {heading && (
+        <div className="flex items-center justify-between">
+          <Heading className="text-xl font-bold tracking-tight text-foreground font-serif">
+            {heading}
+          </Heading>
+        </div>
+      )}
+      <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 sm:grid sm:grid-cols-4 md:grid-cols-8 sm:gap-4 sm:overflow-visible">
+        {categories.map((c, idx) => (
+          <a
+            key={idx}
+            href={c.href}
+            className="group flex flex-col items-center text-center snap-start shrink-0 w-20 sm:w-auto transition-transform duration-200 hover:-translate-y-1"
+          >
+            <div className="relative size-18 sm:size-22 md:size-24 rounded-full overflow-hidden p-0.5 ring-2 ring-primary/30 ring-offset-2 ring-offset-background transition-all duration-300 group-hover:ring-primary group-hover:shadow-md bg-muted">
+              {c.imageUrl ? (
+                <img
+                  src={c.imageUrl}
+                  alt={c.title}
+                  className="size-full rounded-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="size-full rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-base sm:text-lg">
+                  {c.title.charAt(0)}
+                </div>
+              )}
+            </div>
+            <span className="mt-2.5 text-xs font-semibold text-foreground tracking-tight line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+              {c.title}
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+/* -------------------------------------------------- subbrand_spotlight */
+
+const SubbrandSpotlight: WidgetComponent = ({ str, Heading, locale }) => {
+  const heading = str("heading");
+  const subheading = str("subheading");
+  const brands = [1, 2, 3, 4]
+    .map((n) => ({
+      name: str(`b${n}Name`),
+      tagline: str(`b${n}Tagline`),
+      imageUrl: str(`b${n}Image`),
+      href: str(`b${n}Href`) || "#",
+    }))
+    .filter((b) => b.name);
+
+  if (brands.length === 0) return null;
+
+  return (
+    <section className="space-y-4 py-6">
+      {(heading || subheading) && (
+        <div className="mx-auto mb-6 max-w-xl space-y-1 text-center">
+          {heading && (
+            <Heading className="font-serif text-2xl font-bold tracking-tight text-foreground">
+              {heading}
+            </Heading>
+          )}
+          {subheading && (
+            <p className="text-xs text-muted-foreground tracking-wider fq-caps">
+              {subheading}
+            </p>
+          )}
+        </div>
+      )}
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {brands.map((b, idx) => (
+          <a
+            key={idx}
+            href={b.href}
+            className="group block overflow-hidden rounded-fq-lg border border-border bg-card shadow-fq-sm transition-all duration-300 hover:border-primary/50 hover:shadow-fq-md"
+          >
+            <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
+              {b.imageUrl ? (
+                <img
+                  src={b.imageUrl}
+                  alt={b.name}
+                  className="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="flex size-full items-center justify-center bg-primary/10">
+                  <span className="font-serif text-2xl font-bold tracking-widest text-primary">
+                    {b.name}
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className="space-y-1.5 p-4">
+              <p className="font-serif text-base font-bold tracking-wide text-foreground transition-colors group-hover:text-primary">
+                {b.name}
+              </p>
+              {b.tagline && (
+                <p className="line-clamp-2 text-xs text-muted-foreground">
+                  {b.tagline}
+                </p>
+              )}
+              <div className="flex items-center gap-1 pt-1 text-xs font-semibold text-primary fq-caps transition-transform group-hover:translate-x-1">
+                <span>{t(locale, "Explore Collection", "কালেকশন দেখুন")}</span>
+                <span aria-hidden="true">→</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+};
+
 export const APPAREL_WIDGETS: Record<
   Extract<
     SectionType,
@@ -857,6 +987,8 @@ export const APPAREL_WIDGETS: Record<
     | "sustain_badge"
     | "complete_the_look"
     | "wishlist_button"
+    | "circle_categories"
+    | "subbrand_spotlight"
   >,
   WidgetComponent
 > = {
@@ -876,6 +1008,8 @@ export const APPAREL_WIDGETS: Record<
   sustain_badge: SustainBadge,
   complete_the_look: CompleteTheLook,
   wishlist_button: WishlistButton,
+  circle_categories: CircleCategories,
+  subbrand_spotlight: SubbrandSpotlight,
 };
 
 export { TileSkeleton };

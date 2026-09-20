@@ -24,7 +24,7 @@ export const Route = createFileRoute(
   },
   head: () => ({
     meta: [
-      { title: "সংস্করণ ও পেআউট — Framique marketplace" },
+      { title: "Version Vault & Payouts — Framique Marketplace" },
       {
         name: "description",
         content:
@@ -32,7 +32,7 @@ export const Route = createFileRoute(
       },
       {
         property: "og:title",
-        content: "সংস্করণ ও পেআউট — Framique marketplace",
+        content: "Version Vault & Payouts — Framique Marketplace",
       },
       {
         property: "og:description",

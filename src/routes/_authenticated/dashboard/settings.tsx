@@ -6,9 +6,6 @@ import {
   Globe,
   Shield,
   CreditCard,
-  Search,
-  KeyRound,
-  Server,
   Clock,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -212,27 +209,6 @@ function SettingsPage() {
         >
           <CreditCard className="size-4" />
           <span>{t("Payments", "পেমেন্ট")}</span>
-        </Link>
-        <Link
-          to="/dashboard/settings/seo"
-          className="flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 font-medium text-muted-foreground hover:text-foreground hover:border-border"
-        >
-          <Search className="size-4" />
-          <span>{t("SEO", "এসইও")}</span>
-        </Link>
-        <Link
-          to="/dashboard/settings/api"
-          className="flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 font-medium text-muted-foreground hover:text-foreground hover:border-border"
-        >
-          <KeyRound className="size-4" />
-          <span>{t("API", "এপিআই")}</span>
-        </Link>
-        <Link
-          to="/dashboard/settings/infrastructure"
-          className="flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 font-medium text-muted-foreground hover:text-foreground hover:border-border"
-        >
-          <Server className="size-4" />
-          <span>{t("Infrastructure", "ইনফ্রাস্ট্রাকচার")}</span>
         </Link>
       </nav>
 

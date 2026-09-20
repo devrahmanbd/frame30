@@ -25,6 +25,7 @@ export type DemoProduct = {
   collections: string[];
   tags?: string[];
   variants: DemoVariant[];
+  image_url?: string;
 };
 
 export type DemoCatalog = {
@@ -39,27 +40,61 @@ const APPAREL: DemoCatalog = {
     {
       slug: "womens",
       name: "Women",
-      description: "Everyday and occasion wear.",
+      description:
+        "Tailored handloom dresses, wide-leg flax trousers and breathable separates.",
     },
-    { slug: "mens", name: "Men", description: "Shirts, kurtas and outerwear." },
+    {
+      slug: "mens",
+      name: "Men",
+      description:
+        "Relaxed poplin shirts, wild tussar panjabis, unstructured jackets and trousers.",
+    },
+    {
+      slug: "handloom-craft",
+      name: "Handloom & Craft",
+      description:
+        "Heirloom weaves straight from master weaving families in Tangail and Rajshahi.",
+    },
+    {
+      slug: "accessories",
+      name: "Accessories & Objects",
+      description:
+        "Handcrafted brass jewellery, woven stoles and vegetable-tanned leather.",
+    },
   ],
   collections: [
-    { slug: "new-in", name: "New In", description: "This week's arrivals." },
+    {
+      slug: "new-in",
+      name: "New In",
+      description: "This week's limited studio drops.",
+    },
     {
       slug: "everyday-edit",
       name: "The Everyday Edit",
-      description: "Wardrobe staples.",
+      description: "Breathable wardrobe staples cut for comfort.",
+    },
+    {
+      slug: "artisan-silk",
+      name: "Artisan Silk & Handloom",
+      description: "Woven on traditional wooden pit looms.",
+    },
+    {
+      slug: "capsule-wardrobe",
+      name: "The Capsule Wardrobe",
+      description: "Versatile pieces designed to interchange effortlessly.",
     },
   ],
   products: [
     {
       slug: "handloom-cotton-saree",
-      title: "Handloom Cotton Saree",
+      title: "Tangail Taant Handloom Cotton Saree",
       description:
-        "Woven on a pit loom in Tangail. 100% cotton, 5.5m with blouse piece. Model is 168cm and wears one size.",
-      category: "womens",
-      collections: ["new-in"],
-      tags: ["cotton", "handloom", "saree"],
+        "Woven on a traditional wooden pit loom in Delduar, Tangail. 100% fine combed cotton with contrast zari border. Breathable in humidity, softer with every wash. Includes 80cm unstitched blouse piece. Model is 168cm and wears one size.",
+      category: "handloom-craft",
+      collections: ["new-in", "artisan-silk"],
+      tags: ["cotton", "handloom", "saree", "tangail"],
+      image_url:
+        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
       variants: [
         {
           name: "Indigo",
@@ -69,50 +104,323 @@ const APPAREL: DemoCatalog = {
           stock: 12,
         },
         { name: "Terracotta", sku: "APP-SAR-TER", price: 349000, stock: 8 },
+        {
+          name: "Ochre Olive",
+          sku: "APP-SAR-OCH",
+          price: 349000,
+          compare_at: 420000,
+          stock: 10,
+        },
       ],
     },
     {
       slug: "oversized-poplin-shirt",
-      title: "Oversized Poplin Shirt",
+      title: "Oversized Pure Poplin Shirt",
       description:
-        "Crisp 120gsm cotton poplin, drop shoulder, mother-of-pearl buttons. Model is 180cm and wears M.",
+        "Crisp 120gsm organic cotton poplin, drop shoulder tailoring, genuine mother-of-pearl buttons. Pre-washed for soft hand-feel. Model is 180cm and wears size M.",
       category: "mens",
-      collections: ["new-in", "everyday-edit"],
-      tags: ["shirt", "cotton"],
+      collections: ["new-in", "everyday-edit", "capsule-wardrobe"],
+      tags: ["shirt", "cotton", "menswear", "oversized"],
+      image_url:
+        "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?q=80&w=800&auto=format&fit=crop",
       variants: [
-        { name: "White / S", sku: "APP-POP-WS", price: 189000, stock: 20 },
-        { name: "White / M", sku: "APP-POP-WM", price: 189000, stock: 18 },
-        { name: "Sage / L", sku: "APP-POP-SL", price: 189000, stock: 6 },
+        { name: "White / S", sku: "APP-POP-WS", price: 289000, stock: 20 },
+        { name: "White / M", sku: "APP-POP-WM", price: 289000, stock: 18 },
+        { name: "White / L", sku: "APP-POP-WL", price: 289000, stock: 15 },
+        {
+          name: "Sage / M",
+          sku: "APP-POP-SM",
+          price: 289000,
+          compare_at: 320000,
+          stock: 12,
+        },
+        {
+          name: "Sage / L",
+          sku: "APP-POP-SL",
+          price: 289000,
+          compare_at: 320000,
+          stock: 8,
+        },
       ],
     },
     {
       slug: "linen-blend-trouser",
-      title: "Linen Blend Trouser",
+      title: "Relaxed Linen Wide-Leg Trouser",
       description:
-        "55% linen, 45% viscose. Elasticated back waist, 28in inseam. Model is 172cm and wears 30.",
+        "Tailored from 60% Belgian flax linen and 40% natural viscose. Elasticated back waistband with deep side slash pockets and 28in inseam. Model is 172cm and wears size 30.",
       category: "womens",
-      collections: ["everyday-edit"],
-      tags: ["linen", "trouser"],
+      collections: ["everyday-edit", "capsule-wardrobe"],
+      tags: ["linen", "trouser", "minimalist", "wide-leg"],
+      image_url:
+        "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=800&auto=format&fit=crop",
       variants: [
-        { name: "Sand / 28", sku: "APP-LIN-S28", price: 229000, stock: 10 },
-        { name: "Sand / 30", sku: "APP-LIN-S30", price: 229000, stock: 14 },
+        { name: "Sand / 28", sku: "APP-LIN-S28", price: 329000, stock: 10 },
+        { name: "Sand / 30", sku: "APP-LIN-S30", price: 329000, stock: 14 },
+        { name: "Sand / 32", sku: "APP-LIN-S32", price: 329000, stock: 12 },
+        {
+          name: "Charcoal / 30",
+          sku: "APP-LIN-C30",
+          price: 329000,
+          compare_at: 380000,
+          stock: 9,
+        },
       ],
     },
     {
       slug: "quilted-cotton-jacket",
-      title: "Quilted Cotton Jacket",
+      title: "Hand-Quilted Nakshi Artisan Jacket",
       description:
-        "Hand-quilted nakshi lining, two patch pockets, unlined cuffs. Model is 175cm and wears M.",
+        "Hand-quilted running stitch on layered natural cotton by rural craftswomen in Jessore. Features unlined cuffs, two generous patch pockets and horn-button closure. Model is 175cm and wears size M.",
       category: "mens",
-      collections: ["new-in"],
-      tags: ["outerwear", "quilted"],
+      collections: ["new-in", "artisan-silk"],
+      tags: ["outerwear", "quilted", "nakshi", "jacket"],
+      image_url:
+        "https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=800&auto=format&fit=crop",
       variants: [
         {
           name: "Charcoal / M",
           sku: "APP-QLT-CM",
-          price: 545000,
-          compare_at: 620000,
+          price: 645000,
+          compare_at: 720000,
+          stock: 8,
+        },
+        {
+          name: "Charcoal / L",
+          sku: "APP-QLT-CL",
+          price: 645000,
+          compare_at: 720000,
+          stock: 6,
+        },
+        {
+          name: "Indigo / M",
+          sku: "APP-QLT-IM",
+          price: 645000,
+          compare_at: 720000,
+          stock: 7,
+        },
+      ],
+    },
+    {
+      slug: "dhakai-jamdani-silk-saree",
+      title: "Heritage Dhakai Jamdani Silk Saree",
+      description:
+        "Authentic Sonargaon hand-loomed Jamdani with intricate floral jall motifs. Spun from fine mulberry silk and metallic threads over 140 artisan loom hours. Model is 170cm and wears one size.",
+      category: "handloom-craft",
+      collections: ["new-in", "artisan-silk"],
+      tags: ["jamdani", "silk", "heritage", "handloom"],
+      image_url:
+        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Crimson Gold",
+          sku: "APP-JAM-CRG",
+          price: 1450000,
+          compare_at: 1680000,
           stock: 5,
+        },
+        {
+          name: "Midnight Emerald",
+          sku: "APP-JAM-MDE",
+          price: 1450000,
+          compare_at: 1680000,
+          stock: 4,
+        },
+      ],
+    },
+    {
+      slug: "tussar-silk-kurta",
+      title: "Hand-Embroidered Tussar Silk Kurta",
+      description:
+        "Pure Rajshahi wild tussar silk featuring delicate kantha stitch along the placket and mandarin collar. Natural textured drape. Model is 182cm and wears size 40.",
+      category: "mens",
+      collections: ["everyday-edit", "artisan-silk"],
+      tags: ["kurta", "panjabi", "tussar", "silk"],
+      image_url:
+        "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Natural Raw / 38",
+          sku: "APP-TUS-N38",
+          price: 485000,
+          compare_at: 550000,
+          stock: 10,
+        },
+        {
+          name: "Natural Raw / 40",
+          sku: "APP-TUS-N40",
+          price: 485000,
+          compare_at: 550000,
+          stock: 12,
+        },
+        {
+          name: "Natural Raw / 42",
+          sku: "APP-TUS-N42",
+          price: 485000,
+          compare_at: 550000,
+          stock: 8,
+        },
+      ],
+    },
+    {
+      slug: "pleated-wrap-dress",
+      title: "Organic Khadi Pleated Wrap Dress",
+      description:
+        "Handspun khadi cotton dyed with botanical pigments. Kimono sleeve, asymmetric wrap closure and soft waist tie. Model is 174cm and wears size S.",
+      category: "womens",
+      collections: ["everyday-edit", "capsule-wardrobe"],
+      tags: ["dress", "khadi", "organic", "wrap"],
+      image_url:
+        "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Terracotta / S",
+          sku: "APP-WRP-TS",
+          price: 420000,
+          compare_at: 480000,
+          stock: 11,
+        },
+        {
+          name: "Terracotta / M",
+          sku: "APP-WRP-TM",
+          price: 420000,
+          compare_at: 480000,
+          stock: 9,
+        },
+        {
+          name: "Ochre Clay / M",
+          sku: "APP-WRP-OM",
+          price: 420000,
+          compare_at: 480000,
+          stock: 7,
+        },
+      ],
+    },
+    {
+      slug: "raw-silk-bandhgala-blazer",
+      title: "Tailored Raw Silk Bandhgala Blazer",
+      description:
+        "Structured unlined jacket cut from heavyweight hand-spun Matka raw silk. Finished with bespoke brass buttons and clean welt pockets. Model is 185cm and wears size 40.",
+      category: "mens",
+      collections: ["new-in", "capsule-wardrobe"],
+      tags: ["blazer", "jacket", "silk", "tailored"],
+      image_url:
+        "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Slate Grey / 38",
+          sku: "APP-BND-S38",
+          price: 890000,
+          compare_at: 1050000,
+          stock: 6,
+        },
+        {
+          name: "Slate Grey / 40",
+          sku: "APP-BND-S40",
+          price: 890000,
+          compare_at: 1050000,
+          stock: 8,
+        },
+        {
+          name: "Deep Navy / 40",
+          sku: "APP-BND-N40",
+          price: 890000,
+          compare_at: 1050000,
+          stock: 5,
+        },
+      ],
+    },
+    {
+      slug: "hand-dyed-indigo-kimono",
+      title: "Botanical Indigo Hand-Dyed Robe",
+      description:
+        "Dyed in fermented natural indigo vats in Jamalpur. 100% breathable cotton cambric with self-fabric sash and generous deep pockets. Model is 176cm and wears one size.",
+      category: "womens",
+      collections: ["new-in", "everyday-edit"],
+      tags: ["indigo", "robe", "kimono", "botanical"],
+      image_url:
+        "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Deep Indigo",
+          sku: "APP-ROB-IND",
+          price: 385000,
+          compare_at: 450000,
+          stock: 14,
+        },
+        {
+          name: "Shibori Wave",
+          sku: "APP-ROB-SHB",
+          price: 425000,
+          compare_at: 490000,
+          stock: 8,
+        },
+      ],
+    },
+    {
+      slug: "chanderi-silk-dupatta",
+      title: "Featherweight Chanderi Silk Stole",
+      description:
+        "Translucent handloom cotton-silk blend with woven zari geometric end borders. Designed as an effortless finishing layer. Length 2.4m. Hand wash cold only.",
+      category: "accessories",
+      collections: ["artisan-silk", "capsule-wardrobe"],
+      tags: ["dupatta", "stole", "chanderi", "silk"],
+      image_url:
+        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Pale Gold",
+          sku: "APP-DUP-GLD",
+          price: 195000,
+          compare_at: 240000,
+          stock: 16,
+        },
+        {
+          name: "Dusty Rose",
+          sku: "APP-DUP-RSE",
+          price: 195000,
+          compare_at: 240000,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "brass-filigree-cuff",
+      title: "Hand-Engraved Brass Filigree Cuff",
+      description:
+        "Crafted by heritage metal artisans in Dhamrai. Pierced and hand-carved solid brass with 22k antique gold electroplate and satin brushed finish. Fits wrists up to 18cm.",
+      category: "accessories",
+      collections: ["new-in", "capsule-wardrobe"],
+      tags: ["jewelry", "brass", "filigree", "artisan"],
+      image_url:
+        "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        { name: "Antique Gold", sku: "APP-JWL-CUF", price: 220000, stock: 20 },
+      ],
+    },
+    {
+      slug: "minimalist-leather-tote",
+      title: "Full-Grain Vegetable Tanned Leather Tote",
+      description:
+        "Constructed from 2.2mm supple vegetable-tanned leather in Hazaribagh. Raw interior, reinforced handles with 10in drop, interior slip phone pocket. W40cm x H36cm x D12cm.",
+      category: "accessories",
+      collections: ["everyday-edit", "capsule-wardrobe"],
+      tags: ["leather", "tote", "bag", "handcrafted"],
+      image_url:
+        "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Cognac Tan",
+          sku: "APP-BAG-COG",
+          price: 750000,
+          compare_at: 890000,
+          stock: 9,
+        },
+        {
+          name: "Espresso Black",
+          sku: "APP-BAG-BLK",
+          price: 750000,
+          compare_at: 890000,
+          stock: 7,
         },
       ],
     },
@@ -390,6 +698,12 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description: "Fine silk and khadi panjabis, kurtas and waistcoats.",
     },
     {
+      slug: "kids",
+      name: "Kids & Teens",
+      description:
+        "Festive attire and handloom garments for young celebrations.",
+    },
+    {
       slug: "living",
       name: "Living & Crafts",
       description: "Nakshi kantha quilts, ceramics and heritage home textiles.",
@@ -398,6 +712,17 @@ const HERITAGE_APPAREL: DemoCatalog = {
       slug: "jewelry",
       name: "Handcrafted Jewelry",
       description: "Traditional filigree and brass jewelry by master artisans.",
+    },
+    {
+      slug: "taaga",
+      name: "Taaga & Taaga Man",
+      description: "Bohemian youth fusion and modern urban relaxed wear.",
+    },
+    {
+      slug: "beauty",
+      name: "Aarong Earth",
+      description:
+        "Pure botanical wellness, handmade cold-pressed soaps and herbal skincare.",
     },
   ],
   collections: [
@@ -421,6 +746,28 @@ const HERITAGE_APPAREL: DemoCatalog = {
       name: "Artisan Essentials",
       description: "Slow, conscious craftsmanship for everyday elegance.",
     },
+    {
+      slug: "taaga-fusion",
+      name: "Taaga Bohemian Fusion",
+      description:
+        "Contemporary cuts, earthy dyes and modern ethnic silhouettes.",
+    },
+    {
+      slug: "aarong-earth",
+      name: "Aarong Earth Botanical Wellness",
+      description:
+        "Handmade organic skincare rooted in Bengal's herbal wisdom.",
+    },
+    {
+      slug: "new-in",
+      name: "New Festive Arrivals",
+      description: "Freshly off the looms for this festive season.",
+    },
+    {
+      slug: "best-sellers",
+      name: "Trending & Best Sellers",
+      description: "Customer favorite artisan masterpieces.",
+    },
   ],
   products: [
     {
@@ -431,6 +778,8 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["heritage-handloom", "eid-festive"],
       tags: ["saree", "handloom", "cotton", "tangail"],
+      image_url:
+        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
       variants: [
         {
           name: "Crimson Red & Gold",
@@ -463,6 +812,8 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["heritage-handloom", "eid-festive"],
       tags: ["jamdani", "silk", "saree", "heritage"],
+      image_url:
+        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop",
       variants: [
         {
           name: "Emerald Green & Rose Gold",
@@ -488,6 +839,8 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["eid-festive", "artisan-essentials"],
       tags: ["panjabi", "silk", "rajshahi", "mens"],
+      image_url:
+        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
       variants: [
         {
           name: "Size 38 - Pearl Ivory",
@@ -541,6 +894,8 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "living",
       collections: ["nakshi-kantha", "heritage-handloom"],
       tags: ["nakshi kantha", "quilt", "living", "handcrafted"],
+      image_url:
+        "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?q=80&w=800&auto=format&fit=crop",
       variants: [
         {
           name: "Queen (88x96 in) - Tree of Life",
@@ -566,6 +921,8 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "jewelry",
       collections: ["eid-festive", "artisan-essentials"],
       tags: ["jewelry", "brass", "filigree", "earrings"],
+      image_url:
+        "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
       variants: [
         {
           name: "Antique Gold & Pearl",
@@ -573,6 +930,1447 @@ const HERITAGE_APPAREL: DemoCatalog = {
           price: 185000,
           compare_at: 220000,
           stock: 40,
+        },
+      ],
+    },
+    {
+      slug: "mirpur-katan-silk-saree",
+      title: "Mirpur Katan Silk Festive Saree",
+      description:
+        "Traditional Mirpur Benarasi Katan silk saree woven with floral zari jaal and ornate pallu. Handcrafted with dyed mulberry silk warp and pure metallic zari weft for grand occasions.",
+      category: "womens",
+      collections: ["eid-festive", "heritage-handloom"],
+      tags: ["katan", "silk", "saree", "mirpur", "festive"],
+      image_url:
+        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Burgundy Maroon & Antique Gold",
+          sku: "HRT-KTN-MRN",
+          price: 1450000,
+          compare_at: 1650000,
+          stock: 8,
+        },
+        {
+          name: "Deep Royal Blue & Silver Zari",
+          sku: "HRT-KTN-BLU",
+          price: 1450000,
+          compare_at: 1650000,
+          stock: 6,
+        },
+      ],
+    },
+    {
+      slug: "comilla-handspun-khadi-kurta",
+      title: "Comilla Hand-Spun Khadi Kurta",
+      description:
+        "Crafted from authentic hand-spun and hand-woven Comilla Khadi cotton. Natural texture with breathable comfort, styled with wooden coconut-shell buttons. Model is 178cm wearing size 40.",
+      category: "mens",
+      collections: ["artisan-essentials", "heritage-handloom"],
+      tags: ["khadi", "kurta", "cotton", "mens", "handloom"],
+      image_url:
+        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Size 38 - Natural Off-White",
+          sku: "HRT-KHD-38OW",
+          price: 285000,
+          compare_at: 320000,
+          stock: 18,
+        },
+        {
+          name: "Size 40 - Natural Off-White",
+          sku: "HRT-KHD-40OW",
+          price: 285000,
+          compare_at: 320000,
+          stock: 24,
+        },
+        {
+          name: "Size 42 - Natural Off-White",
+          sku: "HRT-KHD-42OW",
+          price: 285000,
+          compare_at: 320000,
+          stock: 20,
+        },
+        {
+          name: "Size 40 - Olive Sage",
+          sku: "HRT-KHD-40OL",
+          price: 285000,
+          compare_at: 320000,
+          stock: 15,
+        },
+      ],
+    },
+    {
+      slug: "artisan-block-print-muslin-dupatta",
+      title: "Hand-Block Printed Fine Muslin Dupatta",
+      description:
+        "Featherlight Bengal muslin embellished with geometric woodblock motifs using organic indigo and madder root dyes. Hand-tasseled borders by artisan craft clusters.",
+      category: "womens",
+      collections: ["artisan-essentials", "eid-festive"],
+      tags: ["muslin", "dupatta", "blockprint", "natural-dye", "womens"],
+      image_url:
+        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Indigo Blue & White",
+          sku: "HRT-DUP-IND",
+          price: 225000,
+          compare_at: 260000,
+          stock: 30,
+        },
+        {
+          name: "Madder Terracotta & Beige",
+          sku: "HRT-DUP-TER",
+          price: 225000,
+          compare_at: 260000,
+          stock: 22,
+        },
+      ],
+    },
+    {
+      slug: "embroidered-silk-salwar-suit",
+      title: "Embroidered Pure Silk Salwar Suit",
+      description:
+        "Luxurious three-piece ensemble crafted from pure Rajshahi silk with delicate zari and resham thread embroidery. Accompanied by silk trousers and a printed organza dupatta. Dry clean only.",
+      category: "womens",
+      collections: ["eid-festive", "heritage-handloom"],
+      tags: ["silk", "salwar", "kameez", "festive", "womens"],
+      image_url:
+        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Size 36 - Ruby Crimson",
+          sku: "HRT-SLW-36RB",
+          price: 950000,
+          compare_at: 1100000,
+          stock: 12,
+        },
+        {
+          name: "Size 38 - Ruby Crimson",
+          sku: "HRT-SLW-38RB",
+          price: 950000,
+          compare_at: 1100000,
+          stock: 15,
+        },
+        {
+          name: "Size 40 - Ruby Crimson",
+          sku: "HRT-SLW-40RB",
+          price: 950000,
+          compare_at: 1100000,
+          stock: 10,
+        },
+        {
+          name: "Size 38 - Sage Pistachio",
+          sku: "HRT-SLW-38SG",
+          price: 950000,
+          compare_at: 1100000,
+          stock: 14,
+        },
+      ],
+    },
+    {
+      slug: "tussar-silk-festive-koti",
+      title: "Tussar Silk Festive Waistcoat Koti",
+      description:
+        "Sleeveless festive layering waistcoat tailored from textured wild Tussar silk. Features mandarin collar, welt pockets, and antique metal buttons. Model is 180cm wearing size 40.",
+      category: "mens",
+      collections: ["eid-festive", "artisan-essentials"],
+      tags: ["koti", "waistcoat", "tussar", "silk", "mens"],
+      image_url:
+        "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Size 38 - Natural Golden Tussar",
+          sku: "HRT-KOT-38GT",
+          price: 385000,
+          compare_at: 440000,
+          stock: 16,
+        },
+        {
+          name: "Size 40 - Natural Golden Tussar",
+          sku: "HRT-KOT-40GT",
+          price: 385000,
+          compare_at: 440000,
+          stock: 20,
+        },
+        {
+          name: "Size 42 - Natural Golden Tussar",
+          sku: "HRT-KOT-42GT",
+          price: 385000,
+          compare_at: 440000,
+          stock: 18,
+        },
+        {
+          name: "Size 40 - Charcoal Black",
+          sku: "HRT-KOT-40CH",
+          price: 385000,
+          compare_at: 440000,
+          stock: 15,
+        },
+      ],
+    },
+    {
+      slug: "handcrafted-terracotta-dining-set",
+      title: "Handcrafted Clay & Ceramic Tableware Set",
+      description:
+        "Artisan clay pottery and tableware wheel-thrown by heritage potters in Rayer Bazar. Glazed with lead-free food-safe finish and kiln-fired for durability. Set of 6 bowls and 1 serving platter.",
+      category: "living",
+      collections: ["heritage-handloom", "artisan-essentials"],
+      tags: ["terracotta", "pottery", "tableware", "living", "handcrafted"],
+      image_url:
+        "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "7-Piece Dinner Set - Earth Ochre",
+          sku: "HRT-POT-OCH",
+          price: 420000,
+          compare_at: 480000,
+          stock: 12,
+        },
+        {
+          name: "7-Piece Dinner Set - Slate Glaze",
+          sku: "HRT-POT-SLT",
+          price: 450000,
+          compare_at: 520000,
+          stock: 8,
+        },
+      ],
+    },
+    {
+      slug: "casual-cotton-summer-fotua",
+      title: "Fine Cotton Casual Summer Fotua",
+      description:
+        "Airy and lightweight short-sleeved casual fotua handwoven from breathable Bangladeshi cotton. Styled with band collar, relaxed silhouette, and coconut shell buttons for everyday ease.",
+      category: "mens",
+      collections: ["artisan-essentials"],
+      tags: ["fotua", "cotton", "casual", "mens", "summer"],
+      image_url:
+        "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Size M - Sky Blue Melange",
+          sku: "HRT-FOT-MSKY",
+          price: 165000,
+          compare_at: 195000,
+          stock: 25,
+        },
+        {
+          name: "Size L - Sky Blue Melange",
+          sku: "HRT-FOT-LSKY",
+          price: 165000,
+          compare_at: 195000,
+          stock: 30,
+        },
+        {
+          name: "Size XL - Sky Blue Melange",
+          sku: "HRT-FOT-XSKY",
+          price: 165000,
+          compare_at: 195000,
+          stock: 20,
+        },
+        {
+          name: "Size L - Olive Khadi Stripe",
+          sku: "HRT-FOT-LOLV",
+          price: 165000,
+          compare_at: 195000,
+          stock: 22,
+        },
+      ],
+    },
+    {
+      slug: "hand-painted-silk-festive-saree",
+      title: "Hand-Painted Pure Silk Festive Saree",
+      description:
+        "Pure Rajshahi mulberry silk draped in artistic floral motifs hand-painted with eco-friendly dyes by women artisans. Features a lustrous drape and coordinated unstitched blouse fabric.",
+      category: "womens",
+      collections: ["new-in", "heritage-handloom", "eid-festive"],
+      tags: ["silk", "saree", "handpainted", "festive", "womens"],
+      image_url:
+        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Blush Peach & Gold",
+          sku: "HRT-PNT-PCH",
+          price: 1250000,
+          compare_at: 1450000,
+          stock: 10,
+        },
+        {
+          name: "Ivory Cream & Sage",
+          sku: "HRT-PNT-CRM",
+          price: 1250000,
+          compare_at: 1450000,
+          stock: 8,
+        },
+      ],
+    },
+    {
+      slug: "fine-poplin-formal-pajama",
+      title: "Fine Poplin Cotton Formal Pajama Trouser",
+      description:
+        "Essential companion for festive panjabis. Tailored from 100% breathable poplin cotton with elasticated drawstring waistband and deep side pockets. Cut for crisp drape and ease.",
+      category: "mens",
+      collections: ["artisan-essentials", "best-sellers"],
+      tags: ["pajama", "cotton", "mens", "essentials"],
+      image_url:
+        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Size 38 - Crisp White",
+          sku: "HRT-PJM-38W",
+          price: 125000,
+          compare_at: 150000,
+          stock: 35,
+        },
+        {
+          name: "Size 40 - Crisp White",
+          sku: "HRT-PJM-40W",
+          price: 125000,
+          compare_at: 150000,
+          stock: 40,
+        },
+        {
+          name: "Size 42 - Crisp White",
+          sku: "HRT-PJM-42W",
+          price: 125000,
+          compare_at: 150000,
+          stock: 30,
+        },
+      ],
+    },
+    {
+      slug: "girls-embroidered-silk-ghagra-choli",
+      title: "Girls Embroidered Silk Ghagra Choli Set",
+      description:
+        "Festive three-piece ensemble for young celebrations. Pure silk choli with delicate threadwork, flared ghagra skirt with metallic lace border, and a contrast featherlight dupatta.",
+      category: "kids",
+      collections: ["eid-festive", "new-in"],
+      tags: ["kids", "ghagra", "choli", "silk", "girls", "festive"],
+      image_url:
+        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Age 6-8 Yrs - Coral Rose",
+          sku: "HRT-KID-06CR",
+          price: 425000,
+          compare_at: 490000,
+          stock: 15,
+        },
+        {
+          name: "Age 8-10 Yrs - Coral Rose",
+          sku: "HRT-KID-08CR",
+          price: 450000,
+          compare_at: 520000,
+          stock: 18,
+        },
+        {
+          name: "Age 10-12 Yrs - Coral Rose",
+          sku: "HRT-KID-10CR",
+          price: 485000,
+          compare_at: 550000,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "hand-carved-brass-incense-burner",
+      title: "Hand-Carved Brass Incense Burner & Candle Set",
+      description:
+        "Artisan cast-brass ritual incense burner and decorative candle stand hand-etched by the master coppersmiths of Dhamrai. Antiqued patina with perforated floral lid for fragrant living.",
+      category: "living",
+      collections: ["artisan-essentials", "best-sellers"],
+      tags: ["brass", "decor", "living", "handcrafted", "incense"],
+      image_url:
+        "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "2-Piece Artisan Brass Set",
+          sku: "HRT-DEC-BRS",
+          price: 295000,
+          compare_at: 350000,
+          stock: 20,
+        },
+      ],
+    },
+    {
+      slug: "taaga-bohemian-hand-embroidered-kurti",
+      title: "Taaga Bohemian Hand-Embroidered Tunic Kurti",
+      description:
+        "Effortless youth contemporary style by Taaga. Cut from breathable handspun cotton with geometric kantha yoke embroidery, tassel tie neckline, and relaxed bell sleeves. Pair with denim or cigarette pants.",
+      category: "taaga",
+      collections: ["taaga-fusion", "new-in"],
+      tags: ["taaga", "kurti", "tunic", "boho", "womens", "cotton"],
+      image_url:
+        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Size S - Rust Ochre",
+          sku: "TGA-KRT-SRST",
+          price: 245000,
+          compare_at: 285000,
+          stock: 25,
+        },
+        {
+          name: "Size M - Rust Ochre",
+          sku: "TGA-KRT-MRST",
+          price: 245000,
+          compare_at: 285000,
+          stock: 35,
+        },
+        {
+          name: "Size L - Rust Ochre",
+          sku: "TGA-KRT-LRST",
+          price: 245000,
+          compare_at: 285000,
+          stock: 20,
+        },
+        {
+          name: "Size M - Forest Emerald",
+          sku: "TGA-KRT-MEMR",
+          price: 245000,
+          compare_at: 285000,
+          stock: 28,
+        },
+      ],
+    },
+    {
+      slug: "taaga-man-relaxed-linen-mandarin-shirt",
+      title: "Taaga Man Relaxed Linen Mandarin Collar Shirt",
+      description:
+        "Contemporary urban casual wear for men by Taaga Man. Premium pre-washed breathable linen-cotton blend with wooden button detail, welt chest pocket, and rolled-tab cuffs for tropical ease.",
+      category: "taaga",
+      collections: ["taaga-fusion", "artisan-essentials"],
+      tags: ["taaga", "mens", "linen", "shirt", "casual"],
+      image_url:
+        "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Size M - Natural Sand",
+          sku: "TGM-SHT-MSND",
+          price: 225000,
+          compare_at: 265000,
+          stock: 30,
+        },
+        {
+          name: "Size L - Natural Sand",
+          sku: "TGM-SHT-LSND",
+          price: 225000,
+          compare_at: 265000,
+          stock: 35,
+        },
+        {
+          name: "Size XL - Natural Sand",
+          sku: "TGM-SHT-XSND",
+          price: 225000,
+          compare_at: 265000,
+          stock: 20,
+        },
+        {
+          name: "Size L - Indigo Slub",
+          sku: "TGM-SHT-LIND",
+          price: 225000,
+          compare_at: 265000,
+          stock: 25,
+        },
+      ],
+    },
+    {
+      slug: "aarong-earth-sandalwood-turmeric-handmade-soap",
+      title: "Aarong Earth Sandalwood & Wild Turmeric Cold-Pressed Soap",
+      description:
+        "Authentic herbal bath bar from Aarong Earth. Handcrafted with cold-pressed virgin coconut oil, pure Mysore sandalwood paste, and wild Kasturi turmeric. 100% vegan, SLS and paraben free.",
+      category: "beauty",
+      collections: ["aarong-earth", "best-sellers"],
+      tags: [
+        "beauty",
+        "soap",
+        "herbal",
+        "sandalwood",
+        "turmeric",
+        "aarong-earth",
+      ],
+      image_url:
+        "https://images.unsplash.com/photo-1608248597359-28f0b784a0d9?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "125g Herbal Bar",
+          sku: "AE-SOP-SND125",
+          price: 32000,
+          compare_at: 38000,
+          stock: 120,
+        },
+        {
+          name: "Set of 3 Gift Pack (3x125g)",
+          sku: "AE-SOP-SNDSET3",
+          price: 88000,
+          compare_at: 96000,
+          stock: 60,
+        },
+      ],
+    },
+    {
+      slug: "aarong-earth-wild-rose-ubtan-radiance-kit",
+      title: "Aarong Earth Wild Rose Water & Herbal Ubtan Glow Kit",
+      description:
+        "Complete traditional bridal skincare ritual by Aarong Earth. Includes pure steam-distilled Kashmiri rose water mist (100ml) and slow-stone-ground herbal ubtan powder (150g) enriched with saffron, sandalwood, and gram flour.",
+      category: "beauty",
+      collections: ["aarong-earth", "new-in"],
+      tags: [
+        "beauty",
+        "rosewater",
+        "ubtan",
+        "skincare",
+        "aarong-earth",
+        "herbal",
+      ],
+      image_url:
+        "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "2-Piece Facial Radiance Ritual",
+          sku: "AE-KIT-GLOW01",
+          price: 75000,
+          compare_at: 89000,
+          stock: 45,
+        },
+      ],
+    },
+  ],
+};
+
+/** grocery — authentic high-volume hypermarket & daily-needs catalogue in BDT minor units. */
+const GROCERY: DemoCatalog = {
+  categories: [
+    {
+      slug: "fresh-produce",
+      name: "Fruits & Vegetables",
+      description:
+        "Farm fresh seasonal vegetables, fresh herbs and juicy fruits.",
+    },
+    {
+      slug: "dairy-eggs",
+      name: "Dairy & Eggs",
+      description: "Fresh milk, farm brown eggs, butter, cheese, and yogurt.",
+    },
+    {
+      slug: "meat-fish",
+      name: "Fish & Meat",
+      description:
+        "Fresh formalin-free river fish, premium beef, mutton, and poultry.",
+    },
+    {
+      slug: "cooking-staples",
+      name: "Cooking & Staples",
+      description: "Rice, flour, lentils, cooking oils, ghee, and pure spices.",
+    },
+    {
+      slug: "beverages-snacks",
+      name: "Snacks & Beverages",
+      description: "Tea, coffee, biscuits, juices, crisps, and confectionery.",
+    },
+    {
+      slug: "household-care",
+      name: "Household & Cleaning",
+      description:
+        "Laundry detergents, dishwash, surface cleaners, and hygiene essentials.",
+    },
+  ],
+  collections: [
+    {
+      slug: "daily-basket",
+      name: "Daily Basket",
+      description: "Must-have kitchen staples for everyday cooking.",
+    },
+    {
+      slug: "fresh-today",
+      name: "Fresh Today",
+      description: "Fresh harvest received this morning from local farms.",
+    },
+    {
+      slug: "flash-savings",
+      name: "Flash Savings",
+      description: "Discounted bundles and limited-time grocery deals.",
+    },
+    {
+      slug: "organic-wellness",
+      name: "Organic & Wellness",
+      description:
+        "Cold-pressed oils, organic honey, chia seeds, and whole grains.",
+    },
+    {
+      slug: "bestsellers",
+      name: "Best Sellers",
+      description: "Most ordered household essentials across the city.",
+    },
+  ],
+  products: [
+    {
+      slug: "pran-premium-miniket-rice-5kg",
+      title: "Pran Premium Miniket Rice 5kg",
+      description:
+        "Premium long-grain Miniket rice, carefully sortex-cleaned and aged for aromatic everyday meals. Cooked grains remain slender, separate, and non-sticky.",
+      category: "cooking-staples",
+      collections: ["daily-basket", "bestsellers"],
+      tags: ["rice", "miniket", "staple", "pran", "grains"],
+      image_url:
+        "https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "5kg Sealed Poly Bag",
+          sku: "GRO-RIC-MIN5",
+          price: 41000,
+          compare_at: 45000,
+          stock: 60,
+        },
+      ],
+    },
+    {
+      slug: "rupchanda-fortified-soybean-oil-5l",
+      title: "Rupchanda Fortified Soybean Oil 5 Litre",
+      description:
+        "Vitamin A and D fortified pure refined soybean oil. Low absorb technology retains food crispness while supporting family heart wellness in every preparation.",
+      category: "cooking-staples",
+      collections: ["daily-basket", "flash-savings", "bestsellers"],
+      tags: ["oil", "soybean", "cooking", "rupchanda", "staples"],
+      image_url:
+        "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "5 Litre Pet Jar",
+          sku: "GRO-OIL-RUP5",
+          price: 89000,
+          compare_at: 94500,
+          stock: 45,
+        },
+      ],
+    },
+    {
+      slug: "farm-fresh-brown-eggs-12pcs",
+      title: "Farm Fresh Grade-A Brown Eggs 12 Pieces",
+      description:
+        "Antibiotic-free Grade-A brown poultry eggs sourced daily from bio-secure layer farms. Rich orange yolks packed with protein and essential nutrients.",
+      category: "dairy-eggs",
+      collections: ["daily-basket", "fresh-today", "bestsellers"],
+      tags: ["eggs", "farm", "protein", "breakfast", "dairy"],
+      image_url:
+        "https://images.unsplash.com/photo-1516448620398-c5f44bf9f441?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "12-Piece Safe Carton",
+          sku: "GRO-EGG-BRN12",
+          price: 15500,
+          compare_at: 17500,
+          stock: 80,
+        },
+      ],
+    },
+    {
+      slug: "fresh-padma-hilsa-fish-1kg",
+      title: "Fresh Padma River Hilsa Fish (1kg - 1.2kg Whole)",
+      description:
+        "Authentic silver Padma river Ilish procured at dawn from Chandpur landing stations. 100% formalin-free, delivered chilled in ice packs with intact scales and natural aroma.",
+      category: "meat-fish",
+      collections: ["fresh-today", "flash-savings"],
+      tags: ["fish", "ilish", "hilsa", "padma", "fresh", "seafood"],
+      image_url:
+        "https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "1kg - 1.2kg Whole Chilled Fish",
+          sku: "GRO-FSH-HIL1K",
+          price: 185000,
+          compare_at: 210000,
+          stock: 25,
+        },
+      ],
+    },
+    {
+      slug: "aarong-dairy-pasteurised-liquid-milk-1l",
+      title: "Aarong Dairy Pure Pasteurised Liquid Milk 1 Litre",
+      description:
+        "Fresh cow milk sourced from rural dairy cooperatives, pasteurised and homogenised to lock in 3.5% minimum natural milk fat. Safe and nourishing for the whole family.",
+      category: "dairy-eggs",
+      collections: ["daily-basket", "fresh-today", "bestsellers"],
+      tags: ["milk", "dairy", "aarong", "fresh", "beverage"],
+      image_url:
+        "https://images.unsplash.com/photo-1550583724-b2692b85b150?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "1 Litre Pouch Pack",
+          sku: "GRO-MLK-AAR1L",
+          price: 9500,
+          compare_at: 10000,
+          stock: 90,
+        },
+      ],
+    },
+    {
+      slug: "aci-pure-iodized-salt-1kg",
+      title: "ACI Pure Vacuum Evaporated Iodized Salt 1kg",
+      description:
+        "Triple-refined vacuum evaporated salt infused with potassium iodate. Free-flowing, crystal clear crystals dissolve evenly to enhance daily cooking flavours.",
+      category: "cooking-staples",
+      collections: ["daily-basket"],
+      tags: ["salt", "iodized", "aci", "cooking", "staples"],
+      image_url:
+        "https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "1kg Poly Pack",
+          sku: "GRO-SLT-ACI1K",
+          price: 4200,
+          compare_at: 4500,
+          stock: 120,
+        },
+      ],
+    },
+    {
+      slug: "teer-whole-wheat-atta-2kg",
+      title: "Teer Whole Wheat Atta 2kg",
+      description:
+        "Milled from selected golden whole wheat grains retaining natural bran and dietary fibre. Yields soft, fluffy rotis that stay tender for hours after cooking.",
+      category: "cooking-staples",
+      collections: ["daily-basket", "bestsellers"],
+      tags: ["atta", "flour", "wheat", "teer", "staples", "roti"],
+      image_url:
+        "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "2kg Food Grade Poly Bag",
+          sku: "GRO-FLR-TER2K",
+          price: 13000,
+          compare_at: 14500,
+          stock: 70,
+        },
+      ],
+    },
+    {
+      slug: "fresh-red-potatoes-bogura-5kg",
+      title: "Fresh Red Potatoes (Bogura) 5kg Net Bag",
+      description:
+        "Soil-fresh red round potatoes harvested directly from fertile Bogura fields. Firm texture and naturally sweet earthiness ideal for aloo bhorta, curries, and roasts.",
+      category: "fresh-produce",
+      collections: ["fresh-today", "daily-basket", "bestsellers"],
+      tags: ["potatoes", "vegetables", "fresh", "produce", "bogura"],
+      image_url:
+        "https://images.unsplash.com/photo-1518977676601-b53f82aba655?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "5kg Ventilated Net Bag",
+          sku: "GRO-VEG-POT5K",
+          price: 22000,
+          compare_at: 25000,
+          stock: 55,
+        },
+      ],
+    },
+    {
+      slug: "fresh-deshi-red-onion-1kg",
+      title: "Fresh Deshi Red Onion 1kg",
+      description:
+        "Crisp local red onions with intense aroma and sharp flavour. Essential base for Bangladeshi gravies, meat marinades, and fresh salads.",
+      category: "fresh-produce",
+      collections: ["fresh-today", "daily-basket"],
+      tags: ["onion", "vegetables", "fresh", "deshi", "produce"],
+      image_url:
+        "https://images.unsplash.com/photo-1508747703725-719777637510?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "1kg Net Weight Pack",
+          sku: "GRO-VEG-ONN1K",
+          price: 11000,
+          compare_at: 12500,
+          stock: 65,
+        },
+      ],
+    },
+    {
+      slug: "radhuni-turmeric-powder-200g",
+      title: "Radhuni Pure Turmeric Powder 200g Pack",
+      description:
+        "Ground from premium hand-picked turmeric roots using cryogenic grinding to preserve bright golden colour, active curcumin, and pungent earthy scent.",
+      category: "cooking-staples",
+      collections: ["daily-basket"],
+      tags: ["turmeric", "spices", "radhuni", "cooking", "curcumin"],
+      image_url:
+        "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "200g Moisture Barrier Foil Pack",
+          sku: "GRO-SPC-TUR200",
+          price: 9500,
+          compare_at: 11000,
+          stock: 85,
+        },
+      ],
+    },
+    {
+      slug: "fresh-farm-broiler-chicken-skin-off-1kg",
+      title: "Fresh Halal Broiler Chicken (Cleaned & Cut 1kg)",
+      description:
+        "Strictly 100% Halal slaughtered broiler chicken, dressed, descaled, and curry-cut into standard uniform pieces. Vacuum-sealed under hygienic food-grade facility.",
+      category: "meat-fish",
+      collections: ["fresh-today", "daily-basket"],
+      tags: ["chicken", "meat", "halal", "poultry", "fresh"],
+      image_url:
+        "https://images.unsplash.com/photo-1587593810167-a84920ea0781?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "1kg Net Cleaned Curry Cut",
+          sku: "GRO-MET-CHK1K",
+          price: 21500,
+          compare_at: 24000,
+          stock: 40,
+        },
+      ],
+    },
+    {
+      slug: "dano-daily-pushti-milk-powder-500g",
+      title: "Dano Daily Pushti Full Cream Milk Powder 500g",
+      description:
+        "Fortified instant full cream milk powder enriched with 26 essential vitamins, iron, and calcium. Rich creamy taste for daily tea, coffee, and dessert preparation.",
+      category: "dairy-eggs",
+      collections: ["daily-basket", "flash-savings"],
+      tags: ["milk-powder", "dairy", "dano", "beverage", "tea"],
+      image_url:
+        "https://images.unsplash.com/photo-1563636619-e9143da7973b?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "500g Foil Refill Pack",
+          sku: "GRO-MLK-DAN500",
+          price: 43000,
+          compare_at: 47000,
+          stock: 50,
+        },
+      ],
+    },
+    {
+      slug: "ispahani-mirzapore-best-leaf-tea-400g",
+      title: "Ispahani Mirzapore Best Leaf Tea 400g Foil Pack",
+      description:
+        "Blended from the finest tender tea leaves harvested in high-altitude tea gardens of Sylhet. Delivers intense rich liquor, invigorating aroma, and deep amber colour.",
+      category: "beverages-snacks",
+      collections: ["daily-basket", "bestsellers"],
+      tags: ["tea", "ispahani", "beverage", "sylhet", "chai"],
+      image_url:
+        "https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "400g Aroma Protect Foil Pack",
+          sku: "GRO-BEV-TEA400",
+          price: 24000,
+          compare_at: 26000,
+          stock: 75,
+        },
+      ],
+    },
+    {
+      slug: "maggi-2-minute-noodles-masala-8pack",
+      title: "Nestle Maggi 2-Minute Masala Noodles (8-Pack Family Pack)",
+      description:
+        "The beloved family comfort food made with roasted aromatic spices and quality wheat flour noodles. Quick, delicious, and iron-fortified for hearty tea-time snacks.",
+      category: "beverages-snacks",
+      collections: ["daily-basket", "flash-savings"],
+      tags: ["noodles", "maggi", "snacks", "nestle", "masala"],
+      image_url:
+        "https://images.unsplash.com/photo-1612927601601-6638404737ce?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "8-Pack Family Economy Pack",
+          sku: "GRO-SNK-MAG8P",
+          price: 18000,
+          compare_at: 20000,
+          stock: 65,
+        },
+      ],
+    },
+    {
+      slug: "surf-excel-quick-wash-detergent-powder-1kg",
+      title: "Surf Excel Quick Wash Detergent Powder 1kg",
+      description:
+        "Advanced stain-removal formulation penetrates fabric fibres quickly to dissolve tough stains while preserving fabric colours and releasing a long-lasting floral freshness.",
+      category: "household-care",
+      collections: ["daily-basket", "bestsellers"],
+      tags: ["detergent", "cleaning", "laundry", "surf-excel", "household"],
+      image_url:
+        "https://images.unsplash.com/photo-1583947215259-38e31be8751f?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "1kg Poly Pouch",
+          sku: "GRO-HSE-SRF1K",
+          price: 28500,
+          compare_at: 32000,
+          stock: 55,
+        },
+      ],
+    },
+    {
+      slug: "kazi-kazi-organic-raw-mustard-honey-250g",
+      title: "Kazi & Kazi Organic Raw Sundarban Honey 250g Glass Jar",
+      description:
+        "100% natural, unpasteurised raw wild honey collected from natural blossom apiaries. Rich in natural pollens, enzymes, and antioxidants with amber clarity.",
+      category: "cooking-staples",
+      collections: ["organic-wellness"],
+      tags: ["honey", "organic", "wellness", "sundarban", "raw"],
+      image_url:
+        "https://images.unsplash.com/photo-1587049352846-4a222e784d38?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "250g Glass Hex Jar",
+          sku: "GRO-ORG-HNY250",
+          price: 38000,
+          compare_at: 42000,
+          stock: 35,
+        },
+      ],
+    },
+  ],
+};
+
+/** supershop — flagship Daraz-grade multi-category marketplace with electronics, fashion, home, grocery & beauty. */
+const SUPERSHOP_CATALOG: DemoCatalog = {
+  categories: [
+    {
+      slug: "electronics",
+      name: "Electronics & Gadgets",
+      description:
+        "Smartphones, premium earbuds, smartwatches, fast chargers, and accessories.",
+    },
+    {
+      slug: "fashion",
+      name: "Fashion & Lifestyle",
+      description:
+        "Men's polo shirts, pure cotton sarees, running sneakers, chronograph watches, and eyewear.",
+    },
+    {
+      slug: "home-living",
+      name: "Home & Kitchen Living",
+      description:
+        "Granite cookware sets, rechargeable fans, kitchen blenders, thermal flasks, and memory foam pillows.",
+    },
+    {
+      slug: "beauty",
+      name: "Beauty & Personal Care",
+      description:
+        "Invisible gel sunscreens, brightening vitamin C serums, and dermatologist-tested skincare.",
+    },
+    {
+      slug: "grocery",
+      name: "Daily Groceries & Essentials",
+      description:
+        "Aromatic Chinigura rice, organic Sundarban honey, and cold-pressed mustard oil.",
+    },
+  ],
+  collections: [
+    {
+      slug: "flash-sale",
+      name: "Flash Sale",
+      description:
+        "Limited-time flash discounts with up to 70% off retail prices.",
+    },
+    {
+      slug: "todays-deals",
+      name: "Today's Deals",
+      description: "Hand-picked daily price drops across all top categories.",
+    },
+    {
+      slug: "best-sellers",
+      name: "Best Sellers",
+      description: "Most popular and highly-rated products across Bangladesh.",
+    },
+    {
+      slug: "daraz-mall",
+      name: "Official Brand Stores",
+      description:
+        "100% authentic products directly from certified brand distributors.",
+    },
+    {
+      slug: "electronics",
+      name: "Top Deals in Electronics & Gadgets",
+      description:
+        "Bestselling smartphones, audio devices, smart wearables, and chargers.",
+    },
+    {
+      slug: "fashion",
+      name: "Trending in Fashion & Lifestyle",
+      description:
+        "Latest seasonal styles, ethnic wear, comfortable footwear, and casual basics.",
+    },
+    {
+      slug: "home-living",
+      name: "Home & Living Essentials",
+      description: "Kitchenware, appliances, and home comfort essentials.",
+    },
+    {
+      slug: "daily-essentials",
+      name: "Daily Groceries & Pantry",
+      description:
+        "Farm-fresh aromatic rice, pure raw honey, and pantry staples.",
+    },
+  ],
+  products: [
+    {
+      slug: "pro-5g-smartphone-8gb-128gb",
+      title: "Pro 5G Smartphone 8GB/128GB — AMOLED 120Hz",
+      description:
+        "6.67-inch FHD+ AMOLED 120Hz display, Snapdragon 5G Octa-Core processor, 64MP OIS quad camera, 5000mAh battery with 67W Turbo Charging. 1-year official brand warranty.",
+      category: "electronics",
+      collections: ["flash-sale", "electronics", "best-sellers", "daraz-mall"],
+      tags: ["smartphone", "5g", "amoled", "mobile"],
+      image_url:
+        "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "8GB / 128GB - Phantom Black",
+          sku: "SUP-PHN-BLK",
+          price: 2499900,
+          compare_at: 2999900,
+          stock: 45,
+        },
+        {
+          name: "8GB / 256GB - Glacier Blue",
+          sku: "SUP-PHN-BLU",
+          price: 2799900,
+          compare_at: 3299900,
+          stock: 30,
+        },
+      ],
+    },
+    {
+      slug: "anc-wireless-earbuds-pro",
+      title: "Active Noise Cancelling Wireless Earbuds Pro",
+      description:
+        "Hybrid 42dB Active Noise Cancellation, 11mm dynamic drivers, Bluetooth 5.3, 36 hours total battery with wireless charging case, IPX5 water resistance.",
+      category: "electronics",
+      collections: ["flash-sale", "electronics", "todays-deals"],
+      tags: ["earbuds", "audio", "anc", "bluetooth"],
+      image_url:
+        "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Glossy White",
+          sku: "SUP-EAR-WHT",
+          price: 249000,
+          compare_at: 380000,
+          stock: 80,
+        },
+        {
+          name: "Matte Black",
+          sku: "SUP-EAR-BLK",
+          price: 249000,
+          compare_at: 380000,
+          stock: 65,
+        },
+      ],
+    },
+    {
+      slug: "ultra-slim-smartwatch-2",
+      title: "Ultra-Slim Smartwatch 2.0 with Bluetooth Calling",
+      description:
+        "1.96-inch HD curved AMOLED screen, 120+ sports modes, 24/7 heart rate and SpO2 sensor, Bluetooth phone calling, 10-day battery life.",
+      category: "electronics",
+      collections: ["electronics", "best-sellers", "daraz-mall"],
+      tags: ["smartwatch", "fitness", "bluetooth", "gadgets"],
+      image_url:
+        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Obsidian Black",
+          sku: "SUP-WTC-BLK",
+          price: 325000,
+          compare_at: 450000,
+          stock: 50,
+        },
+        {
+          name: "Silver Metal Strap",
+          sku: "SUP-WTC-SLV",
+          price: 365000,
+          compare_at: 490000,
+          stock: 25,
+        },
+      ],
+    },
+    {
+      slug: "gan-65w-fast-charger-trio",
+      title: "65W GaN Fast Wall Charger — 2x USB-C + USB-A",
+      description:
+        "Next-gen Gallium Nitride (GaN) technology, charges laptop, tablet and phone simultaneously. Power Delivery 3.0, folding plug, multi-protection safety.",
+      category: "electronics",
+      collections: ["flash-sale", "electronics", "todays-deals"],
+      tags: ["charger", "gan", "usb-c", "fast-charging"],
+      image_url:
+        "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "White 65W",
+          sku: "SUP-CHG-WHT",
+          price: 145000,
+          compare_at: 195000,
+          stock: 120,
+        },
+      ],
+    },
+    {
+      slug: "20000mah-fast-charge-powerbank",
+      title: "20000mAh Power Bank 22.5W Two-Way Fast Charge",
+      description:
+        "High-density polymer battery, dual USB-A output and USB-C input/output, digital LED battery percentage display, flight-approved.",
+      category: "electronics",
+      collections: ["electronics", "best-sellers"],
+      tags: ["powerbank", "battery", "fast-charge"],
+      image_url:
+        "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Carbon Black",
+          sku: "SUP-PB-BLK",
+          price: 189000,
+          compare_at: 240000,
+          stock: 95,
+        },
+      ],
+    },
+    {
+      slug: "mens-premium-pique-polo",
+      title: "Men's Premium Combed Pique Cotton Polo Shirt",
+      description:
+        "220gsm 100% combed compact cotton pique, ribbed collar and cuffs, mother-of-pearl buttons, pre-shrunk and bio-washed for lasting softness.",
+      category: "fashion",
+      collections: ["fashion", "best-sellers", "daraz-mall"],
+      tags: ["polo", "menswear", "cotton", "apparel"],
+      image_url:
+        "https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Navy Blue / M",
+          sku: "SUP-POL-NVM",
+          price: 89000,
+          compare_at: 125000,
+          stock: 40,
+        },
+        {
+          name: "Navy Blue / L",
+          sku: "SUP-POL-NVL",
+          price: 89000,
+          compare_at: 125000,
+          stock: 45,
+        },
+        {
+          name: "Maroon / M",
+          sku: "SUP-POL-MRM",
+          price: 89000,
+          compare_at: 125000,
+          stock: 35,
+        },
+      ],
+    },
+    {
+      slug: "handloom-tangail-jamdani-saree",
+      title: "Tangail Pure Cotton Handloom Jamdani Saree",
+      description:
+        "Traditional geometric floral weave on fine count pure cotton yarn by master weavers of Tangail. 5.5 meters length with matching unstitched blouse piece.",
+      category: "fashion",
+      collections: ["flash-sale", "fashion", "best-sellers"],
+      tags: ["saree", "jamdani", "handloom", "womenswear"],
+      image_url:
+        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Royal Teal & Gold",
+          sku: "SUP-SAR-TEL",
+          price: 345000,
+          compare_at: 480000,
+          stock: 20,
+        },
+        {
+          name: "Crimson Red & Black",
+          sku: "SUP-SAR-RED",
+          price: 345000,
+          compare_at: 480000,
+          stock: 15,
+        },
+      ],
+    },
+    {
+      slug: "lightweight-breathable-running-sneakers",
+      title: "Lightweight Breathable Mesh Running Sneakers",
+      description:
+        "Engineered breathable flyknit upper, shock-absorbing EVA cushioned midsole, anti-skid rubber outsole. Ergonomic fit for daily running and training.",
+      category: "fashion",
+      collections: ["fashion", "todays-deals", "daraz-mall"],
+      tags: ["sneakers", "shoes", "running", "footwear"],
+      image_url:
+        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Flame Red / 41",
+          sku: "SUP-SNK-R41",
+          price: 195000,
+          compare_at: 280000,
+          stock: 30,
+        },
+        {
+          name: "Flame Red / 42",
+          sku: "SUP-SNK-R42",
+          price: 195000,
+          compare_at: 280000,
+          stock: 25,
+        },
+        {
+          name: "Stealth Black / 42",
+          sku: "SUP-SNK-B42",
+          price: 195000,
+          compare_at: 280000,
+          stock: 35,
+        },
+      ],
+    },
+    {
+      slug: "classic-chronograph-mens-watch",
+      title: "Classic Chronograph Men's Water-Resistant Watch",
+      description:
+        "Japanese quartz movement, 3 functional sub-dials, date display, scratch-resistant mineral crystal glass, genuine leather strap, 30m water resistance.",
+      category: "fashion",
+      collections: ["fashion", "best-sellers"],
+      tags: ["watch", "chronograph", "accessories", "leather"],
+      image_url:
+        "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Brown Leather / Rose Gold",
+          sku: "SUP-WTC-BRN",
+          price: 215000,
+          compare_at: 320000,
+          stock: 28,
+        },
+      ],
+    },
+    {
+      slug: "polarized-uv400-retro-sunglasses",
+      title: "Polarized UV400 Classic Retro Sunglasses",
+      description:
+        "HD polarized TAC lenses block 100% UVA/UVB rays, durable lightweight acetate frame with reinforced metal hinges. Includes protective travel hardcase.",
+      category: "fashion",
+      collections: ["flash-sale", "fashion", "todays-deals"],
+      tags: ["sunglasses", "polarized", "eyewear"],
+      image_url:
+        "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Glossy Black / Dark Grey",
+          sku: "SUP-SGL-BLK",
+          price: 65000,
+          compare_at: 99000,
+          stock: 90,
+        },
+      ],
+    },
+    {
+      slug: "nonstick-granite-cookware-set-5pc",
+      title: "5-Piece Non-Stick Granite Cookware Set with Glass Lids",
+      description:
+        "Eco-friendly 5-layer German granite non-stick coating, 100% PFOA-free. Induction and gas stove compatible base. Includes 24cm casserole, 28cm kadai, 24cm fry pan and tempered glass lids.",
+      category: "home-living",
+      collections: ["home-living", "best-sellers", "daraz-mall"],
+      tags: ["cookware", "kitchen", "nonstick", "granite"],
+      image_url:
+        "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Granite Grey 5-Piece",
+          sku: "SUP-CW-GRY",
+          price: 485000,
+          compare_at: 650000,
+          stock: 22,
+        },
+      ],
+    },
+    {
+      slug: "rechargeable-oscillating-desk-fan",
+      title: "High-Speed Rechargeable Oscillating Desk Fan 8000mAh",
+      description:
+        "Powerful brushless silent motor, 120-degree auto-oscillation, 4 speed settings, built-in LED night light. 8000mAh battery delivers up to 14 hours of cool breeze on a single charge.",
+      category: "home-living",
+      collections: ["flash-sale", "home-living", "todays-deals"],
+      tags: ["fan", "rechargeable", "appliances", "cooling"],
+      image_url:
+        "https://images.unsplash.com/photo-1618941716939-553df3c6c278?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Polar White",
+          sku: "SUP-FAN-WHT",
+          price: 265000,
+          compare_at: 340000,
+          stock: 40,
+        },
+      ],
+    },
+    {
+      slug: "heavy-duty-750w-kitchen-blender",
+      title: "750W Heavy-Duty Multi-Purpose Kitchen Blender & Grinder",
+      description:
+        "100% copper motor, 3 stainless steel jars for wet grinding, dry spices and chutney making. Overload protection circuit breaker and 3-speed rotary control with pulse.",
+      category: "home-living",
+      collections: ["home-living", "best-sellers"],
+      tags: ["blender", "grinder", "kitchen", "appliances"],
+      image_url:
+        "https://images.unsplash.com/photo-1570222094114-d054a817e56b?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Silver & Maroon / 3 Jars",
+          sku: "SUP-BLN-SLV",
+          price: 375000,
+          compare_at: 499000,
+          stock: 35,
+        },
+      ],
+    },
+    {
+      slug: "insulated-thermal-flask-1000ml",
+      title: "Double-Wall Insulated Stainless Steel Thermal Flask 1000ml",
+      description:
+        "Food-grade 304 stainless steel vacuum insulation, keeps beverages piping hot for 18 hours or ice cold for 24 hours. Sweat-proof powder coated exterior.",
+      category: "home-living",
+      collections: ["home-living", "todays-deals"],
+      tags: ["flask", "bottle", "thermal", "insulated"],
+      image_url:
+        "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Matte Black 1000ml",
+          sku: "SUP-FLK-BLK",
+          price: 95000,
+          compare_at: 140000,
+          stock: 65,
+        },
+      ],
+    },
+    {
+      slug: "ergonomic-memory-foam-pillow",
+      title: "Ergonomic Contour Memory Foam Cervical Bed Pillow",
+      description:
+        "High-density slow-rebound memory foam ergonomically shaped to support cervical spine alignment, alleviating neck and shoulder tension. Breathable removable bamboo cover.",
+      category: "home-living",
+      collections: ["home-living", "best-sellers"],
+      tags: ["pillow", "memoryfoam", "bedding", "home"],
+      image_url:
+        "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "Standard Orthopedic",
+          sku: "SUP-PLW-STD",
+          price: 120000,
+          compare_at: 175000,
+          stock: 50,
+        },
+      ],
+    },
+    {
+      slug: "premium-chinigura-aromatic-rice-5kg",
+      title: "Premium Chinigura Aromatic Rice 5kg — Fresh Harvest",
+      description:
+        "Finest fragrant Chinigura rice from Dinajpur farms, naturally aged for rich polao and biryani aroma. 100% sortex-cleaned, pure and organic grains from this season's fresh harvest.",
+      category: "grocery",
+      collections: ["daily-essentials", "best-sellers", "daraz-mall"],
+      tags: [
+        "rice",
+        "chinigura",
+        "organic",
+        "fresh",
+        "harvest",
+        "pantry",
+        "kg",
+      ],
+      image_url:
+        "https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "5kg Sealed Poly Bag",
+          sku: "SUP-RIC-5KG",
+          price: 65000,
+          compare_at: 72000,
+          stock: 150,
+        },
+      ],
+    },
+    {
+      slug: "pure-sundarban-organic-raw-honey-500g",
+      title: "Pure Sundarban Organic Raw Honey 500g",
+      description:
+        "100% natural, unheated and unfiltered wild floral honey harvested directly from the deep mangrove forests of Sundarban. Rich in natural antioxidants and enzymes.",
+      category: "grocery",
+      collections: ["flash-sale", "daily-essentials", "todays-deals"],
+      tags: ["honey", "organic", "raw", "sundarban", "natural"],
+      image_url:
+        "https://images.unsplash.com/photo-1587049352846-4a222e784d38?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "500g Glass Jar",
+          sku: "SUP-HNY-500",
+          price: 58000,
+          compare_at: 68000,
+          stock: 85,
+        },
+      ],
+    },
+    {
+      slug: "cold-pressed-mustard-oil-1l",
+      title: "Cold-Pressed Pure Mustard Oil 1 Litre — Ghani Fresh",
+      description:
+        "Traditional wooden cold-pressed (Ghani) pure mustard oil from first-grade yellow mustard seeds. Pungent aroma and natural vitamins preserved without chemicals.",
+      category: "grocery",
+      collections: ["daily-essentials", "best-sellers"],
+      tags: ["oil", "mustard", "coldpressed", "ghani", "cooking"],
+      image_url:
+        "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "1 Litre Food-Grade Bottle",
+          sku: "SUP-OIL-1L",
+          price: 34000,
+          compare_at: 39000,
+          stock: 110,
+        },
+      ],
+    },
+    {
+      slug: "spf50-invisible-sunscreen-gel-50g",
+      title: "SPF 50+ PA++++ Broad Spectrum Invisible Sunscreen Gel 50g",
+      description:
+        "Ultra-lightweight water-gel sunscreen with zero white cast, non-comedogenic and grease-free. Infused with Niacinamide and Cica for calm, protected skin under harsh tropical sun.",
+      category: "beauty",
+      collections: ["flash-sale", "todays-deals", "daraz-mall"],
+      tags: ["sunscreen", "skincare", "spf50", "beauty"],
+      image_url:
+        "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "50g Tube",
+          sku: "SUP-SUN-50G",
+          price: 89000,
+          compare_at: 115000,
+          stock: 75,
+        },
+      ],
+    },
+    {
+      slug: "vitamin-c-hyaluronic-brightening-serum",
+      title: "Vitamin C 15% + Hyaluronic Acid Brightening Facial Serum 30ml",
+      description:
+        "Potent antioxidant formula with ethyl ascorbic acid, pure hyaluronic acid and ferulic acid. Fades dark spots, evens skin tone and boosts collagen for radiant, glowing skin.",
+      category: "beauty",
+      collections: ["best-sellers", "daraz-mall"],
+      tags: ["serum", "vitaminc", "skincare", "glow"],
+      image_url:
+        "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=800&auto=format&fit=crop",
+      variants: [
+        {
+          name: "30ml Dropper Bottle",
+          sku: "SUP-SER-30M",
+          price: 75000,
+          compare_at: 110000,
+          stock: 90,
         },
       ],
     },
@@ -585,6 +2383,7 @@ export const DEMO_CATALOGS = {
   circuit: ELECTRONICS,
   "clothing-heritage": HERITAGE_APPAREL,
   rupaboti: BEAUTY,
+  supershop: SUPERSHOP_CATALOG,
 } as const satisfies Record<string, DemoCatalog>;
 
 export type DemoCatalogKey = keyof typeof DEMO_CATALOGS;

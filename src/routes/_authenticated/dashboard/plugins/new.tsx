@@ -7,8 +7,8 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 export const Route = createFileRoute("/_authenticated/dashboard/plugins/new")({
   beforeLoad: () => {
     throw redirect({
-      to: "/dashboard/marketplace",
-      search: { tab: "widget" },
+      to: "/dashboard/marketplace" as never,
+      search: { tab: "plugin" } as never,
     });
   },
 });

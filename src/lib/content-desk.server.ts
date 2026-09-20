@@ -23,6 +23,7 @@ import {
 } from "./content-desk";
 import { analyseSeo } from "./seo-analysis";
 import { incr, log } from "./observability.server";
+import { serializeBuilderBody, starterDoc } from "./page-builder";
 
 type Client = SupabaseClient<Database>;
 type Loose = {
@@ -62,83 +63,160 @@ export async function loadContentDesk(
   merchantId: string,
   kind: ContentKind,
 ): Promise<ContentDesk> {
+  const safeRpc = async (fn: string, args: Record<string, unknown>) => {
+    try {
+      const res = await loose(db).rpc(fn, args);
+      return res?.error ? { data: null } : res;
+    } catch {
+      return { data: null };
+    }
+  };
+
   const [merchant, authorsRes, countsRes, metas] = await Promise.all([
-    db
-      .from("merchants")
-      .select("slug, name")
-      .eq("id", merchantId)
-      .maybeSingle(),
-    loose(db).rpc("content_desk_authors", { _merchant_id: merchantId }),
-    loose(db).rpc("content_desk_counts", {
+    (async () => {
+      try {
+        return await db
+          .from("merchants")
+          .select("slug, name")
+          .eq("id", merchantId)
+          .maybeSingle();
+      } catch {
+        return { data: null };
+      }
+    })(),
+    safeRpc("content_desk_authors", { _merchant_id: merchantId }),
+    safeRpc("content_desk_counts", {
       _merchant_id: merchantId,
       _kind: kind,
     }),
-    db
-      .from("seo_meta")
-      .select("entity_type, entity_id, score, focus_keyword")
-      .eq("merchant_id", merchantId)
-      .eq("entity_type", kind === "page" ? "page" : "article")
-      .limit(LIST_LIMIT),
+    (async () => {
+      try {
+        return await db
+          .from("seo_meta")
+          .select("entity_type, entity_id, score, focus_keyword")
+          .eq("merchant_id", merchantId)
+          .eq("entity_type", kind === "page" ? "page" : "article")
+          .limit(LIST_LIMIT);
+      } catch {
+        return { data: [] };
+      }
+    })(),
   ]);
 
   const authors = new Map<string, string>();
-  for (const a of (authorsRes.data ?? []) as {
+  for (const a of (authorsRes?.data ?? []) as {
     user_id: string;
     full_name: string | null;
   }[]) {
     authors.set(a.user_id, a.full_name || "Team member");
   }
+
+  if (authors.size === 0) {
+    try {
+      const { data: members } = await loose(db)
+        .from("merchant_members")
+        .select("user_id, role")
+        .eq("merchant_id", merchantId)
+        .limit(50);
+      for (const m of (members ?? []) as any[]) {
+        authors.set(m.user_id, `Member (${m.role || "staff"})`);
+      }
+    } catch {
+      // ignore fallback error
+    }
+  }
+
   const seo = new Map<string, { score: number; keyword: string }>();
-  for (const m of (metas.data ?? []) as SeoMetaRow[]) {
+  for (const m of (metas?.data ?? []) as SeoMetaRow[]) {
     if (m.entity_id)
       seo.set(m.entity_id, { score: m.score, keyword: m.focus_keyword ?? "" });
   }
 
-  const storeSlug = merchant.data?.slug ?? "";
-  const storeName = merchant.data?.name ?? "Store";
+  const storeSlug = merchant?.data?.slug ?? "";
+  const storeName = merchant?.data?.name ?? "Store";
 
   let rows: ContentRow[] = [];
   let categories: ContentDesk["categories"] = [];
 
   if (kind === "page") {
-    const { data, error } = await loose(db)
-      .from("storefront_pages")
-      .select(PAGE_COLUMNS)
-      .eq("merchant_id", merchantId)
-      .is("deleted_at", null)
-      .order("updated_at", { ascending: false })
-      .limit(LIST_LIMIT);
-    if (error) throw new Error(error.message);
-    rows = (data as any[]).map((r) => pageRow(r, authors, seo, storeName));
-  } else {
-    const [{ data, error }, terms, links] = await Promise.all([
-      loose(db)
-        .from("articles")
-        .select(ARTICLE_COLUMNS)
+    let pageData: any[] = [];
+    try {
+      const { data, error } = await loose(db)
+        .from("storefront_pages")
+        .select("*")
         .eq("merchant_id", merchantId)
         .is("deleted_at", null)
         .order("updated_at", { ascending: false })
-        .limit(LIST_LIMIT),
-      loose(db)
-        .from("blog_terms")
-        .select("id, name, slug, kind")
+        .limit(LIST_LIMIT);
+      if (error) throw error;
+      pageData = data ?? [];
+    } catch {
+      try {
+        const fallback = await loose(db)
+          .from("storefront_pages")
+          .select("*")
+          .eq("merchant_id", merchantId)
+          .limit(LIST_LIMIT);
+        pageData = fallback.data ?? [];
+      } catch {
+        pageData = [];
+      }
+    }
+    rows = pageData.map((r) => pageRow(r, authors, seo, storeName));
+  } else {
+    let articleData: any[] = [];
+    try {
+      const { data, error } = await loose(db)
+        .from("articles")
+        .select("*")
         .eq("merchant_id", merchantId)
-        .limit(500),
-      loose(db)
-        .from("article_terms")
-        .select("article_id, term_id")
-        .eq("merchant_id", merchantId)
-        .limit(5_000),
-    ]);
-    if (error) throw new Error(error.message);
+        .is("deleted_at", null)
+        .order("updated_at", { ascending: false })
+        .limit(LIST_LIMIT);
+      if (error) throw error;
+      articleData = data ?? [];
+    } catch {
+      try {
+        const fallback = await loose(db)
+          .from("articles")
+          .select("*")
+          .eq("merchant_id", merchantId)
+          .limit(LIST_LIMIT);
+        articleData = fallback.data ?? [];
+      } catch {
+        articleData = [];
+      }
+    }
+
+    let termsData: any[] = [];
+    let linksData: any[] = [];
+    try {
+      const [terms, links] = await Promise.all([
+        loose(db)
+          .from("blog_terms")
+          .select("id, name, slug, kind")
+          .eq("merchant_id", merchantId)
+          .limit(500),
+        loose(db)
+          .from("article_terms")
+          .select("article_id, term_id")
+          .eq("merchant_id", merchantId)
+          .limit(5_000),
+      ]);
+      termsData = terms.data ?? [];
+      linksData = links.data ?? [];
+    } catch {
+      // blog_terms or article_terms optional
+    }
+
     const termById = new Map<
       string,
       { name: string; slug: string; kind: string }
     >();
-    for (const t of (terms.data ?? []) as any[])
+    for (const t of termsData)
       termById.set(t.id, { name: t.name, slug: t.slug, kind: t.kind });
     const catsByArticle = new Map<string, string[]>();
-    for (const l of (links.data ?? []) as any[]) {
+    for (const l of linksData) {
       const term = termById.get(l.term_id);
       if (!term || term.kind !== "category") continue;
       const list = catsByArticle.get(l.article_id) ?? [];
@@ -149,14 +227,28 @@ export async function loadContentDesk(
       .filter(([, t]) => t.kind === "category")
       .map(([id, t]) => ({ id, name: t.name, slug: t.slug }))
       .sort((a, b) => a.name.localeCompare(b.name));
-    rows = (data as any[]).map((r) =>
+    rows = articleData.map((r) =>
       articleRow(r, authors, seo, catsByArticle.get(r.id) ?? [], storeName),
     );
   }
 
+  const computedCounts: StatusCounts = {
+    published: rows.filter((r) => r.status === "published").length,
+    draft: rows.filter((r) => r.status === "draft").length,
+    pending: rows.filter((r) => r.status === "pending").length,
+    scheduled: rows.filter((r) => r.status === "scheduled").length,
+    private: rows.filter((r) => r.status === "private").length,
+    trash: rows.filter((r) => r.status === "trash").length,
+  };
+
+  const counts =
+    countsRes?.data && typeof countsRes.data === "object" && Object.keys(countsRes.data).length > 0
+      ? parseCounts(countsRes.data)
+      : computedCounts;
+
   return {
     rows,
-    counts: parseCounts(countsRes.data),
+    counts,
     authors: [...authors.entries()]
       .map(([id, name]) => ({ id, name }))
       .sort((a, b) => a.name.localeCompare(b.name)),
@@ -233,7 +325,7 @@ function pageRow(
     status: statusOf(r.status, Boolean(r.is_published)),
     visibility: r.visibility ?? "public",
     hasPassword: Boolean(r.password),
-    editor: r.editor === "builder" ? "builder" : "classic",
+    editor: r.editor === "classic" ? "classic" : "builder",
     template: r.template ?? "default",
     parentId: r.parent_id ?? null,
     menuOrder: Number(r.menu_order ?? r.position ?? 0),
@@ -566,6 +658,8 @@ export async function createDraft(
       .replace(/^-+|-+$/g, "")
       .slice(0, 48) || kind;
   const slug = `${base}-${Math.random().toString(36).slice(2, 7)}`;
+  const defaultEditor =
+    opts.editor ?? (kind === "page" ? "builder" : "classic");
   const row: Record<string, unknown> =
     kind === "page"
       ? {
@@ -574,9 +668,9 @@ export async function createDraft(
           slug,
           status: "draft",
           is_published: false,
-          body_markdown: "",
+          body_markdown: serializeBuilderBody(starterDoc(title)),
           author_id: userId,
-          editor: opts.editor ?? "classic",
+          editor: defaultEditor,
           show_in_nav: false,
         }
       : {
@@ -586,7 +680,7 @@ export async function createDraft(
           status: "draft",
           body: "",
           author_id: userId,
-          editor: opts.editor ?? "classic",
+          editor: defaultEditor,
         };
   const { data, error } = await loose(db)
     .from(table(kind))

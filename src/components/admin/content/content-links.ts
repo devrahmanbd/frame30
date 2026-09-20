@@ -10,13 +10,14 @@ export function editHref(
   id: string,
   editor?: "classic" | "builder",
 ): string {
-  const params = new URLSearchParams({ kind, id });
-  if (editor) params.set("editor", editor);
+  const chosen = editor ?? (kind === "page" ? "builder" : "classic");
+  const params = new URLSearchParams({ kind, id, editor: chosen });
   return `/dashboard/content/editor?${params.toString()}`;
 }
 
 export function newHref(kind: ContentKind): string {
-  return `/dashboard/content/editor?kind=${kind}`;
+  const defaultEditor = kind === "page" ? "builder" : "classic";
+  return `/dashboard/content/editor?kind=${kind}&editor=${defaultEditor}`;
 }
 
 export function previewHref(

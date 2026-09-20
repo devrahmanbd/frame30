@@ -74,6 +74,9 @@ describe("per-vertical demo catalogues", () => {
     expect(text("atelier")).toMatch(/cotton|linen|Model is/i);
     expect(text("circuit")).toMatch(/warranty/i);
     expect(text("rupaboti")).toMatch(/Step \d|shade/i);
+    expect(text("clothing-heritage")).toMatch(/handloom|jamdani|silk|taant|khadi/i);
+    expect(text("supershop")).toMatch(/fresh|organic|rice|kg|harvest|farm/i);
     expect(DEMO_CATALOGS.bazaar.categories.length).toBeGreaterThanOrEqual(3);
   });
 });
+

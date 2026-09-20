@@ -23,6 +23,7 @@ export function ThemeDetailsModal({
   onCustomize,
   onDelete,
   onToggleAutoUpdate,
+  onImportDemo,
 }: {
   theme: InstalledTheme;
   busy?: boolean;
@@ -33,6 +34,7 @@ export function ThemeDetailsModal({
   onCustomize: () => void;
   onDelete: () => void;
   onToggleAutoUpdate: (next: boolean) => void;
+  onImportDemo?: () => void;
 }) {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -157,6 +159,16 @@ export function ThemeDetailsModal({
                 Live preview
               </button>
             </>
+          )}
+          {onImportDemo && theme.key && (
+            <button
+              type="button"
+              className={btnGhost}
+              onClick={onImportDemo}
+              disabled={busy}
+            >
+              Import demo data
+            </button>
           )}
           {!theme.isActive ? (
             <button

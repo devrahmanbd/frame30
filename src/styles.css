@@ -563,8 +563,8 @@ body {
 
 /* Phase 2.3 — length elasticity. বাংলা runs 15–30% longer than English, so
    nothing inside a Bangla subtree may be a fixed-width box. */
-:where([lang="bn"])
-  :is(button, a[href], [role="button"], .fq-chip, [role="tab"]) {
+/* prettier-ignore */
+:where([lang="bn"]) :is(button, a[href], [role="button"], .fq-chip, [role="tab"]) {
   width: auto;
   max-width: 100%;
   white-space: normal;

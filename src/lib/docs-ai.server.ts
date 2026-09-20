@@ -14,6 +14,7 @@ import {
   CURRENT_VERSION,
   type DocVersionId,
 } from "./docs";
+import { searchDeepWikiSemantic } from "./semantic-vector.server";
 
 export type DocsAiSource = {
   title: string;
@@ -58,29 +59,55 @@ export async function answerDocsQuestion(input: {
 
   const version = input.version ?? CURRENT_VERSION;
   const index = buildSearchIndex(version);
-  const hits = searchDocs(input.question, index, 6);
+  const hits = searchDocs(input.question, index, 4);
 
-  const sources: DocsAiSource[] = hits.map((hit) => ({
+  // Dense semantic vector search across DeepWiki
+  let vectorHits: Awaited<ReturnType<typeof searchDeepWikiSemantic>> = [];
+  try {
+    vectorHits = await searchDeepWikiSemantic(input.question, { limit: 3 });
+  } catch {
+    vectorHits = [];
+  }
+
+  const docSources: DocsAiSource[] = hits.map((hit) => ({
     title: hit.title,
     heading: hit.heading,
     path: `${docPath(version, hit.slug)}${hit.anchor ? `#${hit.anchor}` : ""}`,
     excerpt: hit.excerpt,
   }));
 
-  const context = hits
+  const vectorSources: DocsAiSource[] = vectorHits.map((v) => ({
+    title: `DeepWiki: ${v.item.question}`,
+    heading: v.item.category.toUpperCase(),
+    path: v.item.citations[0]?.url || "/dashboard/ai/assistant",
+    excerpt: v.item.summary,
+  }));
+
+  const sources = [...docSources, ...vectorSources];
+
+  const docContext = hits
     .map((hit, i) => {
       const entry = index.find(
         (e) => e.slug === hit.slug && e.heading === hit.heading,
       );
       const body = (entry?.text ?? hit.excerpt).slice(0, CONTEXT_CHARS);
-      return `[${i + 1}] ${hit.title}${hit.heading ? ` — ${hit.heading}` : ""}\n${body}`;
+      return `[Doc ${i + 1}] ${hit.title}${hit.heading ? ` — ${hit.heading}` : ""}\n${body}`;
     })
     .join("\n\n");
+
+  const vectorContext = vectorHits
+    .map(
+      (v, i) =>
+        `[DeepWiki ${i + 1}] ${v.item.question} (${v.item.category})\n${v.item.summary}\n${v.item.answer.slice(0, CONTEXT_CHARS)}`,
+    )
+    .join("\n\n");
+
+  const context = [docContext, vectorContext].filter(Boolean).join("\n\n---\n\n");
 
   if (!context) {
     return {
       answer:
-        "I could not find anything in the documentation about that. Try the search box above, or ask about setup, the API, webhooks, payments, or themes.",
+        "I could not find anything in the documentation or DeepWiki about that. Try asking about store setup, bKash, SteadFast courier, custom domains, or page builder.",
       sources: [],
     };
   }

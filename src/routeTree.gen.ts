@@ -129,6 +129,7 @@ import { Route as AuthenticatedDashboardAnalyticsReportsRouteImport } from './ro
 import { Route as AuthenticatedDashboardBillingIndexRouteImport } from './routes/_authenticated/dashboard/billing/index'
 import { Route as AuthenticatedDashboardBillingInvoicesRouteImport } from './routes/_authenticated/dashboard/billing/invoices'
 import { Route as AuthenticatedDashboardContentIndexRouteImport } from './routes/_authenticated/dashboard/content/index'
+import { Route as AuthenticatedDashboardContentCustomCodeRouteImport } from './routes/_authenticated/dashboard/content/custom-code'
 import { Route as AuthenticatedDashboardContentEditorRouteImport } from './routes/_authenticated/dashboard/content/editor'
 import { Route as AuthenticatedDashboardContentMediaRouteImport } from './routes/_authenticated/dashboard/content/media'
 import { Route as AuthenticatedDashboardContentMenusRouteImport } from './routes/_authenticated/dashboard/content/menus'
@@ -851,6 +852,12 @@ const AuthenticatedDashboardContentIndexRoute =
     path: '/content/',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardContentCustomCodeRoute =
+  AuthenticatedDashboardContentCustomCodeRouteImport.update({
+    id: '/content/custom-code',
+    path: '/content/custom-code',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardContentEditorRoute =
   AuthenticatedDashboardContentEditorRouteImport.update({
     id: '/content/editor',
@@ -1425,6 +1432,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/analytics/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
   '/dashboard/analytics/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
   '/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
   '/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
   '/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
   '/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
@@ -1624,6 +1632,7 @@ export interface FileRoutesByTo {
   '/dashboard/analytics/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
   '/dashboard/analytics/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
   '/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
   '/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
   '/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
   '/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
@@ -1827,6 +1836,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/analytics_/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
   '/_authenticated/dashboard/analytics_/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
   '/_authenticated/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/_authenticated/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
   '/_authenticated/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
   '/_authenticated/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
   '/_authenticated/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
@@ -2030,6 +2040,7 @@ export interface FileRouteTypes {
     | '/dashboard/analytics/insights'
     | '/dashboard/analytics/reports'
     | '/dashboard/billing/invoices'
+    | '/dashboard/content/custom-code'
     | '/dashboard/content/editor'
     | '/dashboard/content/media'
     | '/dashboard/content/menus'
@@ -2229,6 +2240,7 @@ export interface FileRouteTypes {
     | '/dashboard/analytics/insights'
     | '/dashboard/analytics/reports'
     | '/dashboard/billing/invoices'
+    | '/dashboard/content/custom-code'
     | '/dashboard/content/editor'
     | '/dashboard/content/media'
     | '/dashboard/content/menus'
@@ -2431,6 +2443,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/analytics_/insights'
     | '/_authenticated/dashboard/analytics_/reports'
     | '/_authenticated/dashboard/billing/invoices'
+    | '/_authenticated/dashboard/content/custom-code'
     | '/_authenticated/dashboard/content/editor'
     | '/_authenticated/dashboard/content/media'
     | '/_authenticated/dashboard/content/menus'
@@ -3455,6 +3468,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardContentIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/content/custom-code': {
+      id: '/_authenticated/dashboard/content/custom-code'
+      path: '/content/custom-code'
+      fullPath: '/dashboard/content/custom-code'
+      preLoaderRoute: typeof AuthenticatedDashboardContentCustomCodeRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/content/editor': {
       id: '/_authenticated/dashboard/content/editor'
       path: '/content/editor'
@@ -4056,6 +4076,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAnalyticsInsightsRoute: typeof AuthenticatedDashboardAnalyticsInsightsRoute
   AuthenticatedDashboardAnalyticsReportsRoute: typeof AuthenticatedDashboardAnalyticsReportsRoute
   AuthenticatedDashboardBillingInvoicesRoute: typeof AuthenticatedDashboardBillingInvoicesRoute
+  AuthenticatedDashboardContentCustomCodeRoute: typeof AuthenticatedDashboardContentCustomCodeRoute
   AuthenticatedDashboardContentEditorRoute: typeof AuthenticatedDashboardContentEditorRoute
   AuthenticatedDashboardContentMediaRoute: typeof AuthenticatedDashboardContentMediaRoute
   AuthenticatedDashboardContentMenusRoute: typeof AuthenticatedDashboardContentMenusRoute
@@ -4152,6 +4173,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardAnalyticsReportsRoute,
     AuthenticatedDashboardBillingInvoicesRoute:
       AuthenticatedDashboardBillingInvoicesRoute,
+    AuthenticatedDashboardContentCustomCodeRoute:
+      AuthenticatedDashboardContentCustomCodeRoute,
     AuthenticatedDashboardContentEditorRoute:
       AuthenticatedDashboardContentEditorRoute,
     AuthenticatedDashboardContentMediaRoute:

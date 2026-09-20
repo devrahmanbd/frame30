@@ -523,12 +523,21 @@ export async function uninstallBuiltinTheme(
     .maybeSingle();
   if (!row || row.kind !== "theme") throw new Error("market_install_not_found");
 
-  const { data: theme } = await db
+  let { data: theme } = await db
     .from("store_themes")
     .select("id, is_active")
     .eq("merchant_id", merchantId)
     .eq("source_install_id", installId)
     .maybeSingle();
+  if (!theme && row.listing_slug) {
+    const { data: fallbackTheme } = await db
+      .from("store_themes")
+      .select("id, is_active")
+      .eq("merchant_id", merchantId)
+      .eq("source_listing_slug", row.listing_slug)
+      .maybeSingle();
+    theme = fallbackTheme;
+  }
   if (!theme) throw new Error("market_theme_not_linked");
 
   const { deleteTheme } = await import("./themes/appearance.server");

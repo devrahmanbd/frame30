@@ -24,12 +24,24 @@ export const Route = createFileRoute("/store/$slug/")({
    * Already on the primary host (or no primary) → null → keep serving.
    * Never throws: resolution failure degrades to no-redirect.
    */
-  beforeLoad: async ({ params }) => {
+  beforeLoad: async ({ params, location }: any) => {
     try {
       const { to } = await resolveStoreRedirectFn({
         data: { slug: params.slug as string },
       });
-      if (to) throw redirect({ href: to, statusCode: 301 });
+      if (to) {
+        let search = "";
+        try {
+          const raw = new URL(location?.href ?? "", "http://localhost").search;
+          search = raw || "";
+        } catch {
+          search = "";
+        }
+        throw redirect({
+          href: `${to.replace(/\/$/, "")}/${search}`,
+          statusCode: 301,
+        });
+      }
     } catch (err) {
       // A redirect throw must pass through; anything else is swallowed so a
       // failed check never breaks the storefront.

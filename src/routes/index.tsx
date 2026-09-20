@@ -18,13 +18,17 @@ import { en } from "@/lib/i18n-dict";
 import { HomePage } from "@/components/public/landing";
 
 export const Route = createFileRoute("/")({
+  validateSearch: (s: Record<string, unknown>): { preview_token?: string } => ({
+    preview_token:
+      typeof s.preview_token === "string" ? s.preview_token : undefined,
+  }),
   // Dual-mode document:
   // - Custom host with an ACTIVE merchant_domains row → that merchant's
   //   storefront (microscrop.shop serves its store at `/`).
   // - Every other host (platform origins, unknown, inactive) → the platform
   //   landing. The landing path is failure-tolerant exactly as before:
   //   `loadLanding` never throws, so prerender and SSR cannot 500.
-  loader: async () => {
+  loader: async ({ location }: any) => {
     let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
     try {
       host = await resolveStorefrontHostFn();
@@ -33,8 +37,18 @@ export const Route = createFileRoute("/")({
     }
     if (host) {
       try {
+        let previewToken: string | undefined;
+        try {
+          const raw = new URL(
+            location?.href ?? "",
+            "http://localhost",
+          ).searchParams.get("preview_token");
+          previewToken = typeof raw === "string" && raw ? raw : undefined;
+        } catch {
+          previewToken = undefined;
+        }
         const storefront = await getStorefront({
-          data: { slug: host.merchantSlug },
+          data: { slug: host.merchantSlug, previewToken },
         });
         if (storefront) return { kind: "store" as const, host, storefront };
       } catch {

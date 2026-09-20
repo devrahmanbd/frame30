@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useLang } from "@/lib/i18n";
-import { LanguageToggle } from "@/components/LanguageToggle";
 import { NotificationBell } from "@/components/admin/NotificationBell";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import {
@@ -114,10 +113,35 @@ const ICONS: Record<IconKey, typeof LayoutDashboard> = {
   settings: Settings,
 };
 
-function isActive(pathname: string, to: string) {
-  return to === "/dashboard"
-    ? pathname === "/dashboard"
-    : pathname === to || pathname.startsWith(`${to}/`);
+function isItemActive(
+  pathname: string,
+  search: Record<string, unknown> | undefined,
+  item: { to: string; search?: Record<string, string> },
+): boolean {
+  const pathMatches =
+    item.to === "/dashboard"
+      ? pathname === "/dashboard"
+      : pathname === item.to || pathname.startsWith(`${item.to}/`);
+
+  if (!pathMatches) return false;
+
+  if (item.search && Object.keys(item.search).length > 0) {
+    return Object.entries(item.search).every(([key, expectedVal]) => {
+      const actualVal = search?.[key];
+      // Default fallback: on /dashboard/marketplace, tab defaults to "theme" if unspecified
+      if (
+        (actualVal === undefined || actualVal === "") &&
+        item.to === "/dashboard/marketplace" &&
+        key === "tab" &&
+        expectedVal === "theme"
+      ) {
+        return true;
+      }
+      return String(actualVal ?? "") === String(expectedVal);
+    });
+  }
+
+  return true;
 }
 
 /**
@@ -128,11 +152,13 @@ function isActive(pathname: string, to: string) {
 function SidebarNav({
   groups,
   pathname,
+  search,
   onNavigate,
   collapsed = false,
 }: {
   groups: NavGroup[];
   pathname: string;
+  search?: Record<string, unknown>;
   onNavigate?: () => void;
   /** Icon-only rail: the label survives as `title` + accessible name. */
   collapsed?: boolean;
@@ -157,7 +183,9 @@ function SidebarNav({
     >
       {groups.map((g) => {
         const GroupIcon = ICONS[g.icon] ?? LayoutDashboard;
-        const groupActive = g.items.some((i) => isActive(pathname, i.to));
+        const groupActive = [...g.items, ...(g.more ?? [])].some((i) =>
+          isItemActive(pathname, search, i),
+        );
         const target = g.to ?? g.items[0]?.to ?? "/dashboard";
         const label = t(g.en, g.bn);
         const hasSubmenu = g.items.length > 1;
@@ -210,10 +238,10 @@ function SidebarNav({
                   </div>
                   <div className="py-1">
                     {g.items.map((sub) => {
-                      const subActive = isActive(pathname, sub.to);
+                      const subActive = isItemActive(pathname, search, sub);
                       return (
                         <Link
-                          key={sub.to}
+                          key={`${sub.to}-${JSON.stringify(sub.search ?? {})}`}
                           to={sub.to}
                           search={sub.search}
                           onClick={() => {
@@ -283,10 +311,10 @@ function SidebarNav({
             {hasSubmenu && isOpen && (
               <div className="ml-5 space-y-0.5 border-l border-border/60 pl-2.5 py-0.5 animate-in fade-in-0 duration-150">
                 {g.items.map((sub) => {
-                  const subActive = isActive(pathname, sub.to);
+                  const subActive = isItemActive(pathname, search, sub);
                   return (
                     <Link
-                      key={sub.to}
+                      key={`${sub.to}-${JSON.stringify(sub.search ?? {})}`}
                       to={sub.to}
                       search={sub.search}
                       onClick={onNavigate}
@@ -317,12 +345,14 @@ function SidebarNav({
 function MoreMenu({
   more,
   pathname,
+  search,
   t,
   moreActive,
   activeRef,
 }: {
   more: NavGroup["more"];
   pathname: string;
+  search?: Record<string, unknown>;
   t: (en: string, bn: string) => string;
   moreActive: boolean;
   activeRef?: React.MutableRefObject<HTMLElement | null>;
@@ -358,9 +388,13 @@ function MoreMenu({
         className="fq-admin z-50 min-w-48 max-w-[calc(100vw-2rem)] rounded-fq-lg border border-border bg-popover/95 p-1.5 text-popover-foreground shadow-xl backdrop-blur-md"
       >
         {more.map((i) => {
-          const active = isActive(pathname, i.to);
+          const active = isItemActive(pathname, search, i);
           return (
-            <DropdownMenuItem key={i.to} asChild className="cursor-pointer">
+            <DropdownMenuItem
+              key={`${i.to}-${JSON.stringify(i.search ?? {})}`}
+              asChild
+              className="cursor-pointer"
+            >
               <Link
                 to={i.to}
                 search={i.search}
@@ -384,9 +418,11 @@ function MoreMenu({
 function SectionTabs({
   group,
   pathname,
+  search,
 }: {
   group: NavGroup | undefined;
   pathname: string;
+  search?: Record<string, unknown>;
 }) {
   const { t } = useLang();
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -401,11 +437,12 @@ function SectionTabs({
         inline: "center",
       });
     }
-  }, [pathname]);
+  }, [pathname, search]);
 
-  if (!group || group.items.length < 2) return null;
+  // Full-screen builder has its own BuilderTopBar. Do not overlay SectionTabs.
+  if (!group || pathname.startsWith("/dashboard/builder") || group.items.length < 2) return null;
   const more = group.more ?? [];
-  const moreActive = more.some((i) => isActive(pathname, i.to));
+  const moreActive = more.some((i) => isItemActive(pathname, search, i));
 
   return (
     <div className="sticky top-14 z-20 -mx-3 mb-4 bg-background/95 backdrop-blur sm:-mx-6">
@@ -420,11 +457,12 @@ function SectionTabs({
             aria-label={group.en}
             className="inline-flex gap-1 rounded-fq-lg border border-border bg-card p-1 shadow-xs"
           >
+            {/* Primary tabs shown on both mobile and desktop */}
             {group.items.map((i) => {
-              const active = isActive(pathname, i.to);
+              const active = isItemActive(pathname, search, i);
               return (
                 <Link
-                  key={i.to}
+                  key={`${i.to}-${JSON.stringify(i.search ?? {})}`}
                   ref={
                     active
                       ? (el) => {
@@ -441,23 +479,37 @@ function SectionTabs({
                       : "text-muted-foreground hover:bg-muted hover:text-foreground active:bg-muted"
                   }`}
                 >
-                  <span className="font-bangla-display">{t(i.en, i.bn)}</span>
+                  <span>{t(i.en, i.bn)}</span>
                 </Link>
               );
             })}
 
-            {/* Desktop: More button is inline inside the nav pill */}
-            {more.length > 0 ? (
-              <div className="hidden sm:block">
-                <MoreMenu
-                  more={more}
-                  pathname={pathname}
-                  t={t}
-                  moreActive={moreActive}
-                  activeRef={activeRef}
-                />
-              </div>
-            ) : null}
+            {/* Desktop: More is not needed in desktop — render secondary items inline directly as tabs */}
+            {more.map((i) => {
+              const active = isItemActive(pathname, search, i);
+              return (
+                <Link
+                  key={`${i.to}-${JSON.stringify(i.search ?? {})}`}
+                  ref={
+                    active
+                      ? (el) => {
+                          if (el) activeRef.current = el;
+                        }
+                      : undefined
+                  }
+                  to={i.to}
+                  search={i.search}
+                  aria-current={active ? "page" : undefined}
+                  className={`hidden sm:inline-flex min-h-8 shrink-0 items-center whitespace-nowrap rounded-fq-md px-3 py-1.5 text-[13px] font-medium transition-colors select-none touch-manipulation cursor-pointer ${
+                    active
+                      ? "bg-foreground/[0.07] font-semibold text-foreground shadow-xs"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground active:bg-muted"
+                  }`}
+                >
+                  <span>{t(i.en, i.bn)}</span>
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
@@ -468,6 +520,7 @@ function SectionTabs({
               <MoreMenu
                 more={more}
                 pathname={pathname}
+                search={search}
                 t={t}
                 moreActive={moreActive}
                 activeRef={activeRef}
@@ -502,7 +555,9 @@ export function AdminShell({ children }: { children: ReactNode }) {
       return next;
     });
 
-  const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const location = useRouterState({ select: (r) => r.location });
+  const pathname = location.pathname;
+  const search = (location.search ?? {}) as Record<string, unknown>;
   const { t } = useLang();
   const can = useCan();
   const palette = useCommandPalette();
@@ -513,9 +568,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const activeGroup = useMemo(
     () =>
       groups.find((g) =>
-        [...g.items, ...(g.more ?? [])].some((i) => isActive(pathname, i.to)),
+        [...g.items, ...(g.more ?? [])].some((i) =>
+          isItemActive(pathname, search, i),
+        ),
       ),
-    [groups, pathname],
+    [groups, pathname, search],
   );
 
   useEffect(() => {
@@ -571,7 +628,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 aria-expanded={openStoreMenu}
                 aria-haspopup="menu"
               >
-                <span className="max-w-[140px] truncate font-bangla-display sm:max-w-[200px]">
+                <span className="max-w-[140px] truncate sm:max-w-[200px]">
                   {merchant?.name ?? t("Framique", "ফ্রেমিক")}
                 </span>
                 <ChevronDown
@@ -619,7 +676,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
               ) : null}
             </div>
           ) : (
-            <span className="hidden min-w-0 truncate font-bangla-display text-sm font-semibold sm:block">
+            <span className="hidden min-w-0 truncate text-sm font-semibold sm:block">
               {merchant?.name ?? t("Framique", "ফ্রেমিক")}
             </span>
           )}
@@ -662,7 +719,6 @@ export function AdminShell({ children }: { children: ReactNode }) {
             </a>
           ) : null}
           <NotificationBell />
-          <LanguageToggle />
         </div>
       </header>
 
@@ -675,6 +731,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           <SidebarNav
             groups={groups}
             pathname={pathname}
+            search={search}
             collapsed={collapsed}
           />
           <button
@@ -713,7 +770,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
             />
             <div className="absolute inset-y-0 left-0 flex w-72 max-w-[calc(100vw-3rem)] flex-col bg-card">
               <div className="flex h-14 items-center justify-between border-b border-border px-3">
-                <span className="font-bangla-display text-sm font-semibold">
+                <span className="text-sm font-semibold">
                   {merchant?.name ?? t("Framique Admin", "ফ্রেমিক অ্যাডমিন")}
                 </span>
                 <button
@@ -728,13 +785,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
               <SidebarNav
                 groups={groups}
                 pathname={pathname}
+                search={search}
                 onNavigate={() => setDrawer(false)}
               />
               {activeGroup && activeGroup.items.length > 1 ? (
                 <ul className="border-t border-border p-3 text-[13px]">
                   {[...activeGroup.items, ...(activeGroup.more ?? [])].map(
                     (i) => (
-                      <li key={i.to}>
+                      <li key={`${i.to}-${JSON.stringify(i.search ?? {})}`}>
                         <Link
                           to={i.to}
                           search={i.search}
@@ -754,7 +812,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
         <main className="min-w-0 flex-1 p-3 sm:p-6">
           <div className="mx-auto max-w-6xl">
-            <SectionTabs group={activeGroup} pathname={pathname} />
+            <SectionTabs
+              group={activeGroup}
+              pathname={pathname}
+              search={search}
+            />
             {children}
           </div>
         </main>

@@ -250,6 +250,27 @@ export async function searchKbHybrid(
         vector_sim: h.vector_sim,
       }));
 
+      if (hits.length < limit) {
+        try {
+          const { searchDeepWikiSemantic } = await import("./semantic-vector.server");
+          const deepHits = await searchDeepWikiSemantic(trimmed, { limit: limit - hits.length });
+          for (const d of deepHits) {
+            hits.push({
+              doc_id: d.item.id,
+              title: d.item.question,
+              body: snippet(`${d.item.summary} ${d.item.answer}`, trimmed, 360),
+              rank: d.score,
+              source_url: d.item.citations[0]?.url ?? null,
+              combined_score: d.score,
+              text_rank: d.score,
+              vector_sim: d.similarity,
+            });
+          }
+        } catch {
+          // ignore optional semantic import
+        }
+      }
+
       const elapsed = Date.now() - started;
       incr("framique_ai_kb_search_total", {
         outcome: hits.length ? "hit" : "miss",
@@ -266,6 +287,28 @@ export async function searchKbHybrid(
         limit,
         rrfK,
       );
+
+      if (fallbackHits.length < limit) {
+        try {
+          const { searchDeepWikiSemantic } = await import("./semantic-vector.server");
+          const deepHits = await searchDeepWikiSemantic(trimmed, { limit: limit - fallbackHits.length });
+          for (const d of deepHits) {
+            fallbackHits.push({
+              doc_id: d.item.id,
+              title: d.item.question,
+              body: snippet(`${d.item.summary} ${d.item.answer}`, trimmed, 360),
+              rank: d.score,
+              source_url: d.item.citations[0]?.url ?? null,
+              combined_score: d.score,
+              text_rank: d.score,
+              vector_sim: d.similarity,
+            });
+          }
+        } catch {
+          // ignore optional semantic import
+        }
+      }
+
       const elapsed = Date.now() - started;
       incr("framique_ai_kb_search_total", {
         outcome: fallbackHits.length ? "hit" : "miss",

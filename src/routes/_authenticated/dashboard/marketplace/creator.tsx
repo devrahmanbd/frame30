@@ -14,14 +14,14 @@ export const Route = createFileRoute(
   loader: () => marketMineFn(),
   head: () => ({
     meta: [
-      { title: "ক্রিয়েটর প্যানেল — Framique marketplace" },
+      { title: "Creator Studio — Framique Marketplace" },
       {
         name: "description",
         content: "Publish themes and widgets, set pricing and track earnings.",
       },
       {
         property: "og:title",
-        content: "ক্রিয়েটর প্যানেল — Framique marketplace",
+        content: "Creator Studio — Framique Marketplace",
       },
       {
         property: "og:description",

@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requirePermission } from "@/lib/authz-middleware";
 
 /**
  * Infrastructure RPC surface (§4.4).
@@ -18,7 +19,7 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
 }
 
 export const infraOverviewFn = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("staff.manage_grants")])
   .handler(async ({ context }) => {
     const [{ enforceRateLimit }, { queueDepths }, { loadBackend }] =
       await Promise.all([
@@ -67,7 +68,7 @@ export const infraOverviewFn = createServerFn({ method: "GET" })
   });
 
 export const infraSaveSearchFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("staff.manage_grants")])
   .inputValidator((d: unknown) =>
     z
       .object({
@@ -92,7 +93,7 @@ export const infraSaveSearchFn = createServerFn({ method: "POST" })
   });
 
 export const infraReindexFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("staff.manage_grants")])
   .handler(async ({ context }) => {
     const [{ enforceRateLimit }, { queueIndexOps }] = await Promise.all([
       import("./rate-limit.server"),
@@ -116,7 +117,7 @@ export const infraReindexFn = createServerFn({ method: "POST" })
   });
 
 export const infraJobActionFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("staff.manage_grants")])
   .inputValidator((d: unknown) =>
     z
       .object({
@@ -151,7 +152,7 @@ export const infraJobActionFn = createServerFn({ method: "POST" })
   });
 
 export const infraRecordLoadTestFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requirePermission("staff.manage_grants")])
   .inputValidator((d: unknown) =>
     z
       .object({

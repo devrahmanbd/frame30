@@ -25,6 +25,7 @@ const WIDGET_FILES = [
   "cart",
   "apparel",
   "beauty",
+  "beauty-home",
   "electronics",
 ].map((n) => readFileSync(`src/components/builder/${n}.tsx`, "utf8"));
 const WIDGET_SRC = WIDGET_FILES.join("\n");

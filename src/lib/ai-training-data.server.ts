@@ -629,3 +629,27 @@ export async function disassociateTenantFromTrainingData(
 
   return { unlinkedCount: count, preservedCohortHash: cohortHash };
 }
+
+/**
+ * Export the complete DeepWiki 105+ verified Q&A dataset in ChatML / SFT format.
+ */
+export async function exportDeepWikiSftDataset(): Promise<ChatMlRecord[]> {
+  const { DEEPWIKI_DATASET } = await import("./deepwiki-dataset");
+  return DEEPWIKI_DATASET.map((item) => ({
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are Framique's authoritative Cloud Commerce AI Support and Platform Specialist. Provide factual, step-by-step guidance formatted in clean markdown.",
+      },
+      {
+        role: "user",
+        content: item.question,
+      },
+      {
+        role: "assistant",
+        content: `${item.summary}\n\n${item.answer}`,
+      },
+    ],
+  }));
+}

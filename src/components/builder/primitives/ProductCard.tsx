@@ -90,6 +90,7 @@ export function ProductCard({
         ratio={RATIO[variant]}
         className="rounded-none"
         eager={eager}
+        artSeed={row.id}
       />
       <div className={`flex min-w-0 flex-1 flex-col ${PAD[variant]}`}>
         <p className={`line-clamp-2 ${TITLE[variant]}`}>{row.title}</p>

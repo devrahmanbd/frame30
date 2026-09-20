@@ -117,9 +117,9 @@ function pageToDoc(row: any): EditorDoc {
     slug: row.slug ?? "",
     body: row.body_markdown ?? "",
     editor:
-      row.editor === "builder" || isBuilderBody(row.body_markdown)
-        ? "builder"
-        : "classic",
+      row.editor === "classic" && !isBuilderBody(row.body_markdown)
+        ? "classic"
+        : "builder",
     excerpt: row.excerpt ?? "",
     status: statusOf(row.status, !!row.is_published),
     publishAt: row.scheduled_for ?? null,
