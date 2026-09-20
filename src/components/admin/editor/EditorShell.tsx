@@ -280,7 +280,9 @@ export function EditorShell({
   const globalsQuery = useQuery({
     queryKey: ["editor-globals", doc.themeId],
     queryFn: () => listGlobals({ data: { themeId: doc.themeId ?? null } }),
-    enabled: doc.editor === "builder" && !!doc.themeId,
+    // Unpinned pages (no theme) see all merchant globals; the server
+    // filters by pin when one exists.
+    enabled: doc.editor === "builder",
     staleTime: 60_000,
     retry: 1,
   });
