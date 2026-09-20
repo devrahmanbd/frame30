@@ -10,6 +10,12 @@ export default defineConfig(async ({ command }) => {
   const plugins: any[] = [
     tanstackStart({
       server: { entry: "server" },
+      // Per-route code splitting: without this the route tree eagerly
+      // imports every route file, so the first dashboard load downloads the
+      // entire app (builder, marketing, blog, storefront…) and the main
+      // thread blocks for seconds parsing it. With splitting, each route
+      // becomes its own chunk loaded on navigation.
+      router: { autoCodeSplitting: true },
     }),
   ];
 

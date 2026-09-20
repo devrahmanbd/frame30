@@ -165,3 +165,25 @@ export const contentCreateDraftFn = createServerFn({ method: "POST" })
       { title: data.title, editor: data.editor },
     );
   });
+
+export const contentHomepageFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("marketing.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ id: z.string().uuid().nullable() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { currentMerchantId } = await import("./marketing.server");
+    const { setHomepagePage } = await import("./content-desk.server");
+    const { enforceRateLimit } = await import("./rate-limit.server");
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await enforceRateLimit("cms.save", `${merchantId}:${context.userId}`);
+    return setHomepagePage(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.id,
+    );
+  });

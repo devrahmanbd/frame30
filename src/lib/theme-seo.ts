@@ -27,7 +27,6 @@ export const THEME_SEO_CATEGORY: Record<string, string> = {
   supershop: "marketplace",
   b2b: "wholesale",
   "clothing-modern": "fashion",
-  "clothing-classic": "fashion",
   "clothing-heritage": "fashion",
   sensory: "accessible",
   festivity: "seasonal",

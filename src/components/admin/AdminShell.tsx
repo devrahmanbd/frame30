@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
 import { NotificationBell } from "@/components/admin/NotificationBell";
+import { UserProfileMenu } from "@/components/admin/UserProfileMenu";
+import { ThemeToggle } from "@/components/public/ThemeToggle";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import {
   CommandPalette,
@@ -41,6 +46,7 @@ import {
   Landmark,
   Layers,
   LayoutDashboard,
+  LogOut,
   LifeBuoy,
   Megaphone,
   Menu,
@@ -440,7 +446,12 @@ function SectionTabs({
   }, [pathname, search]);
 
   // Full-screen builder has its own BuilderTopBar. Do not overlay SectionTabs.
-  if (!group || pathname.startsWith("/dashboard/builder") || group.items.length < 2) return null;
+  if (
+    !group ||
+    pathname.startsWith("/dashboard/builder") ||
+    group.items.length < 2
+  )
+    return null;
   const more = group.more ?? [];
   const moreActive = more.some((i) => isItemActive(pathname, search, i));
 
@@ -557,12 +568,29 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   const location = useRouterState({ select: (r) => r.location });
   const pathname = location.pathname;
-  const search = (location.search ?? {}) as Record<string, unknown>;
+  const search = useMemo(
+    () => (location.search ?? {}) as Record<string, unknown>,
+    [location.search],
+  );
   const { t } = useLang();
   const can = useCan();
   const palette = useCommandPalette();
   const { data: merchant } = useMerchant();
   const { memberships, switchMerchant } = useMerchants();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+
+  const handleQuickSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+      qc.clear();
+      toast.success(t("Signed out successfully", "সফলভাবে লগআউট হয়েছে"));
+      void navigate({ to: "/auth", replace: true });
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Error signing out";
+      toast.error(message);
+    }
+  };
 
   const groups = useMemo(() => filterNav(ADMIN_NAV, can), [can]);
   const activeGroup = useMemo(
@@ -719,6 +747,17 @@ export function AdminShell({ children }: { children: ReactNode }) {
             </a>
           ) : null}
           <NotificationBell />
+          <ThemeToggle className="size-9 rounded-fq-md border-border text-muted-foreground hover:bg-muted hover:text-foreground" />
+          <UserProfileMenu />
+          <button
+            type="button"
+            onClick={() => void handleQuickSignOut()}
+            aria-label={t("Sign out", "সাইন আউট")}
+            title={t("Sign out", "সাইন আউট")}
+            className="fq-iconbtn grid size-11 place-items-center rounded-fq-md text-muted-foreground transition-colors hover:bg-danger/10 hover:text-danger sm:size-9"
+          >
+            <LogOut className="size-4" aria-hidden />
+          </button>
         </div>
       </header>
 
@@ -806,6 +845,19 @@ export function AdminShell({ children }: { children: ReactNode }) {
                   )}
                 </ul>
               ) : null}
+              <div className="mt-auto border-t border-border p-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDrawer(false);
+                    void handleQuickSignOut();
+                  }}
+                  className="flex min-h-11 w-full items-center justify-center gap-2 rounded-fq-md border border-danger/20 bg-danger/5 px-3 py-2 text-xs font-semibold text-danger transition-colors hover:bg-danger/10"
+                >
+                  <LogOut className="size-4" aria-hidden />
+                  <span>{t("Sign out", "সাইন আউট")}</span>
+                </button>
+              </div>
             </div>
           </div>
         )}

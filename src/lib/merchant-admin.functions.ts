@@ -90,3 +90,18 @@ export const adminActivityFn = createServerFn({ method: "GET" })
       action: data.action ?? null,
     });
   });
+
+export const adminRenameStoreFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        name: z.string().trim().min(2).max(60),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { renameStore } = await import("./merchant-admin.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return renameStore(context.supabase, merchantId, context.userId, data.name);
+  });

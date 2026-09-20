@@ -27,6 +27,10 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
     )?.user;
     let user = parentUser;
     if (!user) {
+      const { data: sessionData } = await supabase.auth.getSession();
+      user = sessionData.session?.user;
+    }
+    if (!user) {
       const {
         data: { user: freshUser },
       } = await supabase.auth.getUser();
@@ -74,7 +78,7 @@ function MerchantDashboardLayout() {
   if (isPending) {
     return (
       <div
-        className="flex min-h-screen w-full bg-background"
+        className="fq-admin flex min-h-screen w-full bg-background text-foreground"
         aria-busy="true"
         aria-label="Loading"
       >

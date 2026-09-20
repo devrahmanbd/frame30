@@ -114,15 +114,6 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     rating: 0,
     installs: 0,
   },
-  "clothing-classic": {
-    author: "Framique",
-    subjects: ["fashion"],
-    features: [...BASE_FEATURES, "wishlist", "reviews"],
-    layouts: ["grid", "sidebar left", "boxed"],
-    tags: ["fashion", "heritage", "warm"],
-    rating: 0,
-    installs: 0,
-  },
   sensory: {
     author: "Framique",
     subjects: ["beauty", "home"],

@@ -25,8 +25,7 @@ export const ACTIVE_MERCHANT_KEY = ACTIVE_MERCHANT_COOKIE;
 
 function writeMerchantCookie(merchantId: string) {
   if (typeof document === "undefined") return;
-  document.cookie =
-    `${ACTIVE_MERCHANT_COOKIE}=${merchantId}; path=/; max-age=31536000; SameSite=Lax`;
+  document.cookie = `${ACTIVE_MERCHANT_COOKIE}=${merchantId}; path=/; max-age=31536000; SameSite=Lax`;
 }
 
 export type MerchantMembership = {
@@ -90,6 +89,21 @@ async function loadMerchant(): Promise<Merchant | null> {
     : null;
   const current = matched ?? memberships[0];
 
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(ACTIVE_MERCHANT_KEY, current.merchant_id);
+    writeMerchantCookie(current.merchant_id);
+  }
+
+  // Fast path: if the joined membership already carries the complete merchant row,
+  // use it directly — eliminating a redundant remote round-trip to Supabase.
+  if (
+    current.merchant?.id &&
+    current.merchant?.name &&
+    current.merchant?.slug
+  ) {
+    return current.merchant;
+  }
+
   const { data: merchantRow, error: merchantError } = await supabase
     .from("merchants")
     .select("id, name, slug, currency_code, status")
@@ -102,11 +116,6 @@ async function loadMerchant(): Promise<Merchant | null> {
     throw new Error(
       "merchant.inaccessible: you have a store membership but the store row is not readable (RLS). Retry, or sign in with the account that created the store.",
     );
-  }
-
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(ACTIVE_MERCHANT_KEY, current.merchant_id);
-    writeMerchantCookie(current.merchant_id);
   }
 
   return merchantRow as Merchant;

@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { DeepWikiCategory } from "./deepwiki-dataset";
 
 const askSchema = z.object({
   slug: z.string().min(1).max(80),
@@ -223,7 +224,7 @@ export const deepwikiSearchFn = createServerFn({ method: "POST" })
     const { searchDeepWikiSemantic } = await import("./semantic-vector.server");
     const category =
       data.category && data.category !== "all"
-        ? (data.category as any)
+        ? (data.category as DeepWikiCategory)
         : undefined;
     return searchDeepWikiSemantic(data.query, {
       category,
@@ -234,9 +235,8 @@ export const deepwikiSearchFn = createServerFn({ method: "POST" })
 export const deepwikiGetCategoriesFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async () => {
-    const { DEEPWIKI_CATEGORIES, DEEPWIKI_DATASET } = await import(
-      "./deepwiki-dataset"
-    );
+    const { DEEPWIKI_CATEGORIES, DEEPWIKI_DATASET } =
+      await import("./deepwiki-dataset");
     const { getVectorEngineStats } = await import("./semantic-vector.server");
     const counts: Record<string, number> = {};
     for (const item of DEEPWIKI_DATASET) {
@@ -268,10 +268,23 @@ export const aiCopilotChatFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => copilotChatSchema.parse(d))
   .handler(async ({ data }) => {
+    const { screenInbound, screenOutbound } =
+      await import("./support-guardrails");
+
+    const inbound = screenInbound(data.message);
+    if (!inbound.allowed) {
+      return {
+        answer:
+          "This query was blocked by security guardrails. Framique AI assistant does not disclose internal source code, system secrets, customer data, or vulnerability exploits.",
+        sources: [],
+        confidence: "grounded" as const,
+        similarity: 0,
+      };
+    }
+
     const { searchDeepWikiSemantic } = await import("./semantic-vector.server");
-    const { getAiGatewayConfig, isPlaceholderApiKey } = await import(
-      "./support-embed.server"
-    );
+    const { getAiGatewayConfig, isPlaceholderApiKey } =
+      await import("./support-embed.server");
 
     const hits = await searchDeepWikiSemantic(data.message, { limit: 3 });
     const topHit = hits[0];
@@ -301,7 +314,7 @@ export const aiCopilotChatFn = createServerFn({ method: "POST" })
           {
             role: "system",
             content:
-              "You are Framique's authoritative Cloud Commerce AI Support and Platform Specialist for merchants in Bangladesh. Answer accurately based on the provided DeepWiki sources. Format your answer with clean markdown, lists, and code blocks. Be concise and actionable.",
+              "You are Framique's authoritative Cloud Commerce AI Specialist for merchants in Bangladesh. Answer accurately based on DeepWiki and platform capabilities. CREATIVE COMMERCE: You are empowered to provide creative assistance (e.g. catchy slogans, marketing campaign ideas, product descriptions, promotional headlines, page builder layouts, and theme palettes) tailored specifically to Framique merchants. STRICT SCOPE: You must ONLY answer questions related to Framique, storefront design, themes, marketing, payments, couriers, and ecommerce in Bangladesh. Politely decline any off-topic queries. Never disclose internal code, database secrets, customer data, or vulnerability exploits.",
           },
           ...(data.history ?? []).slice(-4),
           {
@@ -333,12 +346,19 @@ export const aiCopilotChatFn = createServerFn({ method: "POST" })
           const json = await res.json();
           const generated = json.choices?.[0]?.message?.content;
           if (generated) {
-            return {
-              answer: generated,
-              sources,
-              confidence: (topHit?.similarity ?? 0) > 0.7 ? "verified" : "grounded",
-              similarity: topHit?.similarity ?? 0,
-            };
+            const outbound = screenOutbound(generated, {
+              pinned: false,
+              allowNumericClaims: true,
+            });
+            if (outbound.allowed) {
+              return {
+                answer: generated,
+                sources,
+                confidence:
+                  (topHit?.similarity ?? 0) > 0.7 ? "verified" : "grounded",
+                similarity: topHit?.similarity ?? 0,
+              };
+            }
           }
         }
       } catch {
@@ -356,6 +376,15 @@ export const aiCopilotChatFn = createServerFn({ method: "POST" })
         for (let i = 1; i < hits.length; i++) {
           synthesized += `- **${hits[i].item.question}** (${hits[i].item.category}): ${hits[i].item.summary}\n`;
         }
+      }
+
+      const outbound = screenOutbound(synthesized, {
+        pinned: false,
+        allowNumericClaims: true,
+      });
+      if (!outbound.allowed) {
+        synthesized =
+          "Information regarding this topic cannot be displayed due to security policy.";
       }
 
       return {

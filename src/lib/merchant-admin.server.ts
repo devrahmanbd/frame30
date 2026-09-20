@@ -294,3 +294,46 @@ export async function listActivity(
     };
   });
 }
+
+export async function renameStore(
+  supabase: Client,
+  merchantId: string,
+  userId: string,
+  newName: string,
+) {
+  return withSpan("admin.renameStore", async () => {
+    await enforceRateLimit("admin.renameStore", userId);
+    const trimmed = (newName ?? "").trim();
+    if (trimmed.length < 2 || trimmed.length > 60) {
+      fail("Store name must be between 2 and 60 characters");
+    }
+
+    const { data: before } = await supabase
+      .from("merchants")
+      .select("name")
+      .eq("id", merchantId)
+      .single();
+
+    const { data, error } = await supabase
+      .from("merchants")
+      .update({ name: trimmed, updated_at: new Date().toISOString() })
+      .eq("id", merchantId)
+      .select("id, name, slug, currency_code, status")
+      .single();
+
+    if (error) fail(error.message);
+
+    const { auditAction } = await import("./hardening.server");
+    await auditAction(
+      supabase,
+      merchantId,
+      userId,
+      "store.renamed",
+      "merchants",
+      { name: { before: before?.name, after: trimmed } },
+      merchantId,
+    );
+
+    return data;
+  });
+}

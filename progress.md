@@ -161,3 +161,11 @@ clothing products + theme, one real purchase. No manual intervention.
   Right-click menu already had Elementor parity — no build needed.
   Committed codec only (7380c18); tray+route wiring stays uncommitted until
   the concurrent builder WIP settles (their hunks carry 2 tsc errors).
+- Builder full-window canvas: fluid mode + collapsible Layers/Inspector panels,
+  verified live on Rupaboti (screenshot). No new Bangla in builder code
+  (stripped own additions; nested EN provider stands).
+- Drag-drop tray→canvas insert verified in browser (Heading inserted, saved,
+  Undo on). Codec committed 7380c18; tray+route wiring deployed from tree
+  (awaiting Fortress WIP settle before main commit).
+- Pages open in page builder (edit links carry editor=builder, verified live);
+  Appearance submenu has no Customize entry (removed 96e3d60, verified live).

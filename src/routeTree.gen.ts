@@ -70,6 +70,7 @@ import { Route as RootTenancyRouteImport } from './routes/root/tenancy'
 import { Route as RootTenantsRouteImport } from './routes/root/tenants'
 import { Route as RootTrialRouteImport } from './routes/root/trial'
 import { Route as RootUsersRouteImport } from './routes/root/users'
+import { Route as ThemePreviewKeyRouteImport } from './routes/theme-preview.$key'
 import { Route as DotwellKnownAcmeChallengeTokenRouteImport } from './routes/[.]well-known.acme-challenge.$token'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedDashboardActivityRouteImport } from './routes/_authenticated/dashboard/activity'
@@ -514,6 +515,11 @@ const RootUsersRoute = RootUsersRouteImport.update({
   id: '/users',
   path: '/users',
   getParentRoute: () => RootRoute,
+} as any)
+const ThemePreviewKeyRoute = ThemePreviewKeyRouteImport.update({
+  id: '/theme-preview/$key',
+  path: '/theme-preview/$key',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DotwellKnownAcmeChallengeTokenRoute =
   DotwellKnownAcmeChallengeTokenRouteImport.update({
@@ -1371,6 +1377,7 @@ export interface FileRoutesByFullPath {
   '/root/tenants': typeof RootTenantsRoute
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
+  '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog/': typeof BlogIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/legal/': typeof LegalIndexRoute
@@ -1571,6 +1578,7 @@ export interface FileRoutesByTo {
   '/root/tenants': typeof RootTenantsRoute
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
+  '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog': typeof BlogIndexRoute
   '/docs': typeof DocsIndexRoute
   '/legal': typeof LegalIndexRoute
@@ -1775,6 +1783,7 @@ export interface FileRoutesById {
   '/root/tenants': typeof RootTenantsRoute
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
+  '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog/': typeof BlogIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/legal/': typeof LegalIndexRoute
@@ -1979,6 +1988,7 @@ export interface FileRouteTypes {
     | '/root/tenants'
     | '/root/trial'
     | '/root/users'
+    | '/theme-preview/$key'
     | '/blog/'
     | '/docs/'
     | '/legal/'
@@ -2179,6 +2189,7 @@ export interface FileRouteTypes {
     | '/root/tenants'
     | '/root/trial'
     | '/root/users'
+    | '/theme-preview/$key'
     | '/blog'
     | '/docs'
     | '/legal'
@@ -2382,6 +2393,7 @@ export interface FileRouteTypes {
     | '/root/tenants'
     | '/root/trial'
     | '/root/users'
+    | '/theme-preview/$key'
     | '/blog/'
     | '/docs/'
     | '/legal/'
@@ -2562,6 +2574,7 @@ export interface RootRouteChildren {
   LegalDocRoute: typeof LegalDocRoute
   NewsletterVerifyRoute: typeof NewsletterVerifyRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
+  ThemePreviewKeyRoute: typeof ThemePreviewKeyRoute
   BlogIndexRoute: typeof BlogIndexRoute
   DocsIndexRoute: typeof DocsIndexRoute
   LegalIndexRoute: typeof LegalIndexRoute
@@ -3054,6 +3067,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/root/users'
       preLoaderRoute: typeof RootUsersRouteImport
       parentRoute: typeof RootRoute
+    }
+    '/theme-preview/$key': {
+      id: '/theme-preview/$key'
+      path: '/theme-preview/$key'
+      fullPath: '/theme-preview/$key'
+      preLoaderRoute: typeof ThemePreviewKeyRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/.well-known/acme-challenge/$token': {
       id: '/.well-known/acme-challenge/$token'
@@ -4369,6 +4389,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalDocRoute: LegalDocRoute,
   NewsletterVerifyRoute: NewsletterVerifyRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
+  ThemePreviewKeyRoute: ThemePreviewKeyRoute,
   BlogIndexRoute: BlogIndexRoute,
   DocsIndexRoute: DocsIndexRoute,
   LegalIndexRoute: LegalIndexRoute,

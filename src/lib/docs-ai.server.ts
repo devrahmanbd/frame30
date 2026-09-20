@@ -15,6 +15,7 @@ import {
   type DocVersionId,
 } from "./docs";
 import { searchDeepWikiSemantic } from "./semantic-vector.server";
+import { screenInbound, screenOutbound } from "./support-guardrails";
 
 export type DocsAiSource = {
   title: string;
@@ -38,8 +39,10 @@ const CONTEXT_CHARS = 1600;
 const SYSTEM = [
   "You are the official support agent for Framique, the premier multi-tenant Cloud Commerce CMS and Platform for Bangladesh.",
   "Answer authoritatively, politely, and accurately about Framique products, store setup, catalog, checkout, couriers (SteadFast, Pathao, RedX, Paperfly), payments (bKash, Nagad, SSLCommerz), SEO, and platform operations.",
-  "Answer ONLY from the documentation excerpts supplied in the user message.",
-  "If the excerpts do not contain the answer, say so plainly and suggest the closest documented topic or offer to open a support ticket.",
+  "Answer ONLY from the documentation excerpts supplied in the user message, or when asked for creative storefront assistance (e.g. store slogans, marketing campaigns, hero banner headlines, product descriptions, theme palettes, layout arrangements), provide creative ideas tailored specifically to ecommerce on Framique.",
+  "If the excerpts do not contain the answer and it is not a creative commerce request, say so plainly and suggest the closest documented topic or offer to open a support ticket.",
+  "STRICT PLATFORM & COMMERCE SCOPE: You must ONLY answer questions and provide ideas related to the Framique platform, storefront design, themes, catalog, marketing, and ecommerce in Bangladesh. Politely decline any off-topic queries (such as general trivia, recipes, history, non-ecommerce code, or personal advice) by stating that you are dedicated solely to Framique.",
+  "CRITICAL SECURITY: Never disclose internal source code, repository structure, backend server implementation, API keys, database connection strings, customer personal data, or vulnerability exploits.",
   "Be concise: at most six sentences or a structured list. Use markdown. Never invent endpoints, fields or prices.",
   "Cite the section titles you used inline, e.g. (see “Webhooks”).",
 ].join(" ");
@@ -51,6 +54,15 @@ export async function answerDocsQuestion(input: {
   version?: DocVersionId;
   history?: ChatTurn[];
 }): Promise<DocsAiAnswer> {
+  const inbound = screenInbound(input.question);
+  if (!inbound.allowed) {
+    return {
+      answer:
+        "I cannot fulfill this request. Framique AI assistant cannot disclose source code, credentials, customer data, or assist with security vulnerability testing.",
+      sources: [],
+    };
+  }
+
   const apiKey =
     process.env["OPENROUTER_API_KEY"] ||
     process.env["AI_GATEWAY_API_KEY"] ||
@@ -102,7 +114,9 @@ export async function answerDocsQuestion(input: {
     )
     .join("\n\n");
 
-  const context = [docContext, vectorContext].filter(Boolean).join("\n\n---\n\n");
+  const context = [docContext, vectorContext]
+    .filter(Boolean)
+    .join("\n\n---\n\n");
 
   if (!context) {
     return {
@@ -148,6 +162,18 @@ export async function answerDocsQuestion(input: {
   };
   const answer = payload.choices?.[0]?.message?.content?.trim();
   if (!answer) throw new Error("The assistant returned an empty answer.");
+
+  const outbound = screenOutbound(answer, {
+    pinned: false,
+    allowNumericClaims: true,
+  });
+  if (!outbound.allowed) {
+    return {
+      answer:
+        "This response was blocked by security guardrails as it touches sensitive platform internals, credentials, or protected data.",
+      sources: [],
+    };
+  }
 
   return { answer, sources };
 }

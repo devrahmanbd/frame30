@@ -22,9 +22,12 @@ export const getRouter = () => {
     context: { queryClient },
     scrollRestoration: true,
     defaultPreload: "intent",
+    // 200ms delay ensures casual cursor movements over sidebar links don't fire
+    // speculative route compilation and network calls; only intentional hovers do.
+    defaultPreloadDelay: 200,
     // Hovering across the dashboard nav used to refire every route loader
     // with no cooldown, fanning out into hundreds of server-function calls.
-    defaultPreloadStaleTime: 30_000,
+    defaultPreloadStaleTime: 60_000,
     ssr: {
       nonce: typeof window === "undefined" ? getCurrentNonce() : undefined,
     },

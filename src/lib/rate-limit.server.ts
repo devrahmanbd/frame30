@@ -134,6 +134,7 @@ export const BUCKETS = {
   "admin.notifications": { limit: 240, windowSeconds: 60 },
   "admin.activity": { limit: 120, windowSeconds: 60 },
   "admin.setup": { limit: 30, windowSeconds: 300 },
+  "admin.renameStore": { limit: 30, windowSeconds: 300 },
   "notifications.sweep": { limit: 12, windowSeconds: 3600 },
   "commerce.inventory": { limit: 120, windowSeconds: 60 },
   "commerce.transfer": { limit: 30, windowSeconds: 300 },
@@ -535,9 +536,17 @@ export async function rateLimit(
   // start rejecting to prevent abuse during extended outages.
   const now = Date.now();
   const state = circuitBreaker.get(bucket);
-  if (state && state.count >= CB_THRESHOLD && now - state.firstAt < CB_WINDOW_MS) {
+  if (
+    state &&
+    state.count >= CB_THRESHOLD &&
+    now - state.firstAt < CB_WINDOW_MS
+  ) {
     log("warn", "rate_limit.circuit_open", { bucket });
-    incr("framique_rate_limit_total", { bucket, outcome: "circuit_blocked", source: "none" });
+    incr("framique_rate_limit_total", {
+      bucket,
+      outcome: "circuit_blocked",
+      source: "none",
+    });
     return {
       allowed: false,
       hits: cfg.limit,
@@ -550,7 +559,10 @@ export async function rateLimit(
 
   const prev = circuitBreaker.get(bucket);
   if (prev && now - prev.firstAt < CB_WINDOW_MS) {
-    circuitBreaker.set(bucket, { count: prev.count + 1, firstAt: prev.firstAt });
+    circuitBreaker.set(bucket, {
+      count: prev.count + 1,
+      firstAt: prev.firstAt,
+    });
   } else {
     circuitBreaker.set(bucket, { count: 1, firstAt: now });
   }

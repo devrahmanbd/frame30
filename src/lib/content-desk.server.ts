@@ -56,6 +56,8 @@ export type ContentDesk = {
   categories: { id: string; name: string; slug: string }[];
   storeSlug: string;
   homeSlug: string | null;
+  /** CMS page id designated as the storefront homepage, if any. */
+  homepagePageId: string | null;
 };
 
 export async function loadContentDesk(
@@ -72,18 +74,30 @@ export async function loadContentDesk(
     }
   };
 
-  const [merchant, authorsRes, countsRes, metas] = await Promise.all([
-    (async () => {
-      try {
-        return await db
-          .from("merchants")
-          .select("slug, name")
-          .eq("id", merchantId)
-          .maybeSingle();
-      } catch {
-        return { data: null };
-      }
-    })(),
+  const [merchant, settingsRes, authorsRes, countsRes, metas] =
+    await Promise.all([
+      (async () => {
+        try {
+          return await db
+            .from("merchants")
+            .select("slug, name")
+            .eq("id", merchantId)
+            .maybeSingle();
+        } catch {
+          return { data: null };
+        }
+      })(),
+      (async () => {
+        try {
+          return await loose(db)
+            .from("merchant_settings")
+            .select("setup_steps")
+            .eq("merchant_id", merchantId)
+            .maybeSingle();
+        } catch {
+          return { data: null };
+        }
+      })(),
     safeRpc("content_desk_authors", { _merchant_id: merchantId }),
     safeRpc("content_desk_counts", {
       _merchant_id: merchantId,
@@ -135,6 +149,22 @@ export async function loadContentDesk(
   const storeSlug = merchant?.data?.slug ?? "";
   const storeName = merchant?.data?.name ?? "Store";
 
+  // CMS-designated storefront homepage (Settings-free: chosen in the Pages
+  // list). Unknown shapes fall back to null — never crash the desk.
+  const steps = (settingsRes?.data as { setup_steps?: unknown } | null)
+    ?.setup_steps;
+  const rawHomepage =
+    steps && typeof steps === "object"
+      ? (steps as Record<string, unknown>).homepage_page_id
+      : null;
+  const homepagePageId =
+    typeof rawHomepage === "string" &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      rawHomepage,
+    )
+      ? rawHomepage
+      : null;
+
   let rows: ContentRow[] = [];
   let categories: ContentDesk["categories"] = [];
 
@@ -162,7 +192,9 @@ export async function loadContentDesk(
         pageData = [];
       }
     }
-    rows = pageData.map((r) => pageRow(r, authors, seo, storeName));
+    rows = pageData.map((r) =>
+      pageRow(r, authors, seo, storeName, homepagePageId),
+    );
   } else {
     let articleData: any[] = [];
     try {
@@ -255,6 +287,7 @@ export async function loadContentDesk(
     categories,
     storeSlug,
     homeSlug: null,
+    homepagePageId,
   };
 }
 
@@ -316,6 +349,7 @@ function pageRow(
   authors: Map<string, string>,
   seo: Map<string, { score: number; keyword: string }>,
   storeName: string,
+  homepagePageId: string | null = null,
 ): ContentRow {
   return {
     id: r.id,
@@ -339,7 +373,10 @@ function pageRow(
     publishedAt: r.published_at ?? null,
     scheduledFor: r.scheduled_for ?? null,
     trashedAt: r.trashed_at ?? null,
-    isHome: r.slug === "home" || r.slug === "index",
+    isHome:
+      r.slug === "home" ||
+      r.slug === "index" ||
+      (homepagePageId !== null && r.id === homepagePageId),
     seo: quickSeo(r.id, seo, {
       title: r.title,
       metaTitle: r.meta_title ?? "",
@@ -690,6 +727,59 @@ export async function createDraft(
   if (error) throw new Error(error.message);
   incr("framique_content_desk_write_total", { kind, action: "create" });
   return { id: (data as { id: string }).id };
+}
+
+/**
+ * Designate (or clear) the CMS page rendered as the storefront homepage.
+ * Only a published, non-trashed page owned by the merchant qualifies — a
+ * draft can never silently become the live `/`. The storefront falls back
+ * to the theme index template whenever the designation is missing or the
+ * page stops qualifying, so trashing the homepage later degrades instead of
+ * breaking.
+ */
+export async function setHomepagePage(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  id: string | null,
+) {
+  if (id !== null) {
+    const [existing] = await ownedRows(db, merchantId, "page", [id]);
+    if (!existing) throw new Error("homepage.not_found");
+    if (existing.status === "trash") throw new Error("homepage.trashed");
+    if (existing.status !== "published")
+      throw new Error("homepage.unpublished");
+  }
+  const { data: settings } = await loose(db)
+    .from("merchant_settings")
+    .select("setup_steps")
+    .eq("merchant_id", merchantId)
+    .maybeSingle();
+  const current =
+    settings?.setup_steps && typeof settings.setup_steps === "object"
+      ? (settings.setup_steps as Record<string, unknown>)
+      : {};
+  // Partial upsert is safe: every NOT NULL column carries a DB default.
+  const { error } = await loose(db)
+    .from("merchant_settings")
+    .upsert(
+      {
+        merchant_id: merchantId,
+        setup_steps: { ...current, homepage_page_id: id },
+      },
+      { onConflict: "merchant_id" },
+    );
+  if (error) throw new Error(error.message);
+  incr("framique_content_desk_write_total", {
+    kind: "page",
+    action: "set_homepage",
+  });
+  log("info", "content_desk.set_homepage", {
+    merchant_id: merchantId,
+    user_id: userId,
+    page_id: id,
+  });
+  return { homepagePageId: id };
 }
 
 /** Slug rename on a published item keeps the old URL alive as a 301. */

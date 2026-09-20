@@ -1413,6 +1413,9 @@ body {
   font-family: var(--fq-font-display);
 }
 
+:root.dark,
+html.dark,
+.dark,
 .fq-admin.dark,
 .dark .fq-admin {
   --color-background: oklch(0.172 0.014 255);
