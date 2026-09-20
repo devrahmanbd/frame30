@@ -1,0 +1,735 @@
+/**
+ * Phase 9 — Heritage (clothing) theme widgets.
+ *
+ * Eight editorial widgets inspired by Aarong's handcrafted, story-driven
+ * aesthetic. Each accepts a `tokens: ThemeTokens` prop and uses Tailwind CSS
+ * with semantic utility classes — no theme import, no hard-coded colour.
+ *
+ * All text supports bilingual EN/বাং labels via the `t()` helper. Deterministic
+ * monogram tiles are used for images (no external URLs).
+ */
+import { useEffect, useState } from "react";
+import type {
+  PropRow,
+  PropValue,
+  Section,
+  SectionType,
+} from "@/lib/builder-ast";
+import type { WidgetComponent, WidgetCtx } from "./widgets";
+
+/* ---------------------------------------------------------------- helpers */
+
+function t(locale: string, en: string, bn: string) {
+  return locale === "bn" ? bn : en;
+}
+
+function rowsOf(section: Section, key: string): PropRow[] {
+  const value: PropValue | undefined = section.props[key];
+  return Array.isArray(value) ? value : [];
+}
+
+const readString = (row: PropRow, key: string) =>
+  typeof row[key] === "string" ? (row[key] as string) : "";
+
+const readNumber = (row: PropRow, key: string, fallback: number) => {
+  const v = row[key];
+  return typeof v === "number" ? v : Number(v) || fallback;
+};
+
+/* ------------------------------------------------------ hero_carousel */
+
+const HeroCarousel: WidgetComponent = ({
+  section,
+  str,
+  int,
+  Heading,
+  locale,
+  editing,
+}) => {
+  const slides = rowsOf(section, "slides").map((row) => ({
+    image: readString(row, "image"),
+    headline: readString(row, "headline"),
+    subhead: readString(row, "subhead"),
+    ctaLabel: readString(row, "ctaLabel"),
+    ctaUrl: readString(row, "ctaUrl"),
+    caption: readString(row, "caption"),
+  }));
+  const autoAdvanceMs = int("autoAdvanceMs", 5000, 1000, 15000);
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused || slides.length <= 1) return;
+    const id = setInterval(() => {
+      setCurrent((i) => (i + 1) % slides.length);
+    }, autoAdvanceMs);
+    return () => clearInterval(id);
+  }, [paused, slides.length, autoAdvanceMs]);
+
+  if (slides.length === 0) {
+    return editing ? (
+      <p className="text-xs text-muted-foreground">
+        {t(
+          locale,
+          "Hero carousel: add at least one slide.",
+          "হিরো ক্যারোজেল: অন্তত একটি স্লাইড যোগ করুন।",
+        )}
+      </p>
+    ) : null;
+  }
+
+  const slide = slides[current]!;
+  return (
+    <section
+      className="relative overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      aria-label={t(locale, "Hero carousel", "হিরো ক্যারোজেল")}
+    >
+      {/* Monogram tile background */}
+      <div className="relative aspect-[16/9] w-full sm:aspect-[21/9]">
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-900/20 via-rose-900/10 to-amber-800/20">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span
+              className="text-[8rem] font-bold text-foreground/10 select-none"
+              aria-hidden="true"
+            >
+              {slide.headline?.charAt(0) || "H"}
+            </span>
+          </div>
+        </div>
+        {slide.image && (
+          <img
+            src={slide.image}
+            alt={slide.headline}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+          />
+        )}
+        {/* Content overlay */}
+        <div className="absolute inset-0 flex flex-col items-start justify-end bg-gradient-to-t from-black/60 via-black/20 to-transparent p-6 sm:p-12">
+          <div className="max-w-2xl">
+            <Heading className="text-3xl font-bold leading-tight text-white sm:text-5xl">
+              {slide.headline}
+            </Heading>
+            {slide.subhead && (
+              <p className="mt-3 max-w-lg text-base text-white/80 sm:text-lg">
+                {slide.subhead}
+              </p>
+            )}
+            {slide.ctaLabel && (
+              <a
+                href={slide.ctaUrl || "#"}
+                className="mt-6 inline-flex min-h-12 items-center rounded-fq-sm bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
+              >
+                {slide.ctaLabel}
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+      {/* Dots */}
+      {slides.length > 1 && (
+        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+          {slides.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`h-2 rounded-full transition ${
+                i === current ? "w-6 bg-white" : "w-2 bg-white/50"
+              }`}
+              aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+};
+
+/* ------------------------------------------------------ department_grid */
+
+const DepartmentGrid: WidgetComponent = ({
+  section,
+  str,
+  int,
+  Heading,
+  locale,
+  editing,
+}) => {
+  const departments = rowsOf(section, "departments").map((row) => ({
+    image: readString(row, "image"),
+    name: readString(row, "name"),
+    nameBn: readString(row, "name_bn"),
+    count: readNumber(row, "count", 0),
+    href: readString(row, "href"),
+  }));
+  const columns = int("columns", 4, 2, 6);
+
+  if (departments.length === 0) {
+    return editing ? (
+      <p className="text-xs text-muted-foreground">
+        {t(
+          locale,
+          "Department grid: add departments.",
+          "বিভাগ গ্রিড: বিভাগ যোগ করুন।",
+        )}
+      </p>
+    ) : null;
+  }
+
+  const gridCols =
+    columns <= 2
+      ? "sm:grid-cols-2"
+      : columns <= 3
+        ? "sm:grid-cols-3"
+        : columns <= 4
+          ? "sm:grid-cols-2 lg:grid-cols-4"
+          : "sm:grid-cols-3 lg:grid-cols-5";
+  return (
+    <section>
+      <Heading className="mb-4 text-lg font-semibold">
+        {t(locale, "Shop by department", "বিভাগ অনুযায়ী কিনুন")}
+      </Heading>
+      <div className={`grid gap-4 ${gridCols}`}>
+        {departments.map((dept, i) => (
+          <a
+            key={i}
+            href={dept.href || "#"}
+            className="group relative overflow-hidden rounded-fq-sm border border-border bg-card transition hover:shadow-fq-sm"
+          >
+            <div className="aspect-[3/4] bg-gradient-to-br from-amber-100 to-rose-50 flex items-center justify-center">
+              {dept.image ? (
+                <img
+                  src={dept.image}
+                  alt={dept.name}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <span
+                  className="text-4xl font-bold text-foreground/15 select-none"
+                  aria-hidden="true"
+                >
+                  {dept.name?.charAt(0) || "D"}
+                </span>
+              )}
+            </div>
+            <div className="p-3">
+              <p className="text-sm font-medium">
+                {locale === "bn" && dept.nameBn ? dept.nameBn : dept.name}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {dept.count} {t(locale, "items", "পণ্য")}
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+/* ------------------------------------------------------ heritage_story */
+
+const HeritageStory: WidgetComponent = ({
+  section,
+  str,
+  Heading,
+  locale,
+  editing,
+}) => {
+  const image = str("image");
+  const headline = str("headline");
+  const body = str("body");
+  const founderQuote = str("founder_quote");
+  const founderName = str("founder_name");
+  const layout = str("layout") || "left";
+
+  if (!headline && !body) {
+    return editing ? (
+      <p className="text-xs text-muted-foreground">
+        {t(
+          locale,
+          "Heritage story: add a headline.",
+          "হেরিটেজ গল্প: একটি শিরোনাম যোগ করুন।",
+        )}
+      </p>
+    ) : null;
+  }
+
+  const imageBlock = (
+    <div className="relative overflow-hidden rounded-fq-sm">
+      <div className="aspect-[4/5] bg-gradient-to-br from-amber-900/15 to-rose-900/10 flex items-center justify-center">
+        {image ? (
+          <img
+            src={image}
+            alt={headline}
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <span
+            className="text-[6rem] font-bold text-foreground/10 select-none"
+            aria-hidden="true"
+          >
+            {headline?.charAt(0) || "H"}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+
+  const textBlock = (
+    <div className="flex flex-col justify-center">
+      <Heading className="text-2xl font-bold leading-tight sm:text-3xl">
+        {headline}
+      </Heading>
+      {body && (
+        <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
+          {body}
+        </p>
+      )}
+      {founderQuote && (
+        <blockquote className="mt-6 border-l-2 border-amber-700 pl-4 italic text-muted-foreground">
+          "{founderQuote}"
+          {founderName && (
+            <cite className="mt-2 block not-italic text-xs text-muted-foreground">
+              — {founderName}
+            </cite>
+          )}
+        </blockquote>
+      )}
+    </div>
+  );
+
+  return (
+    <section className="grid items-center gap-8 md:grid-cols-2">
+      {layout === "right" ? (
+        <>
+          {textBlock}
+          {imageBlock}
+        </>
+      ) : (
+        <>
+          {imageBlock}
+          {textBlock}
+        </>
+      )}
+    </section>
+  );
+};
+
+/* ------------------------------------------------------ textile_showcase */
+
+const TextileShowcase: WidgetComponent = ({
+  section,
+  str,
+  Heading,
+  locale,
+  editing,
+  money,
+}) => {
+  const products = rowsOf(section, "products").map((row) => ({
+    image: readString(row, "image"),
+    name: readString(row, "name"),
+    nameBn: readString(row, "name_bn"),
+    price: readNumber(row, "price", 0),
+    href: readString(row, "href"),
+  }));
+  const headline = str("headline");
+  const ctaLabel = str("cta_label");
+
+  if (products.length === 0) {
+    return editing ? (
+      <p className="text-xs text-muted-foreground">
+        {t(
+          locale,
+          "Textile showcase: add products.",
+          "টেক্সটাইল শোকেইস: পণ্য যোগ করুন।",
+        )}
+      </p>
+    ) : null;
+  }
+
+  return (
+    <section>
+      {headline && (
+        <Heading className="mb-6 text-2xl font-bold">{headline}</Heading>
+      )}
+      <div className="grid gap-6 sm:grid-cols-2">
+        {products.map((product, i) => (
+          <a
+            key={i}
+            href={product.href || "#"}
+            className="group overflow-hidden rounded-fq-sm border border-border bg-card transition hover:shadow-fq-sm"
+          >
+            <div className="aspect-[4/3] bg-gradient-to-br from-amber-100 to-rose-50 flex items-center justify-center">
+              {product.image ? (
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <span
+                  className="text-5xl font-bold text-foreground/10 select-none"
+                  aria-hidden="true"
+                >
+                  {product.name?.charAt(0) || "T"}
+                </span>
+              )}
+            </div>
+            <div className="p-4">
+              <p className="text-sm font-medium">
+                {locale === "bn" && product.nameBn
+                  ? product.nameBn
+                  : product.name}
+              </p>
+              {product.price > 0 && (
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {money(product.price * 100)}
+                </p>
+              )}
+            </div>
+          </a>
+        ))}
+      </div>
+      {ctaLabel && (
+        <div className="mt-6 text-center">
+          <a
+            href="#"
+            className="inline-flex min-h-11 items-center rounded-fq-sm border border-current px-6 text-sm font-medium transition hover:bg-muted"
+          >
+            {ctaLabel}
+          </a>
+        </div>
+      )}
+    </section>
+  );
+};
+
+/* ------------------------------------------------------ editorial_banner */
+
+const EditorialBanner: WidgetComponent = ({
+  section,
+  str,
+  Heading,
+  locale,
+  editing,
+}) => {
+  const image = str("image");
+  const headline = str("headline");
+  const subhead = str("subhead");
+  const ctaLabel = str("cta_label");
+  const ctaUrl = str("cta_url");
+  const overlay = str("overlay") || "dark";
+
+  if (!headline) {
+    return editing ? (
+      <p className="text-xs text-muted-foreground">
+        {t(
+          locale,
+          "Editorial banner: add a headline.",
+          "এডিটোরিয়াল ব্যানার: একটি শিরোনাম যোগ করুন।",
+        )}
+      </p>
+    ) : null;
+  }
+
+  const overlayCls =
+    overlay === "light"
+      ? "bg-gradient-to-t from-white/80 via-white/40 to-transparent text-black"
+      : "bg-gradient-to-t from-black/70 via-black/30 to-transparent text-white";
+
+  return (
+    <section className="relative overflow-hidden rounded-fq-sm">
+      <div className="relative aspect-[3/1] min-h-[200px] w-full">
+        <div className="absolute inset-0 bg-gradient-to-br from-amber-900/20 via-rose-900/10 to-amber-800/20">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span
+              className="text-[10rem] font-bold text-foreground/10 select-none"
+              aria-hidden="true"
+            >
+              {headline?.charAt(0) || "E"}
+            </span>
+          </div>
+        </div>
+        {image && (
+          <img
+            src={image}
+            alt={headline}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+          />
+        )}
+        <div
+          className={`absolute inset-0 flex flex-col items-start justify-end p-6 sm:p-10 ${overlayCls}`}
+        >
+          <div className="max-w-xl">
+            <Heading className="text-2xl font-bold sm:text-4xl">
+              {headline}
+            </Heading>
+            {subhead && (
+              <p className="mt-2 text-sm sm:text-base opacity-80">{subhead}</p>
+            )}
+            {ctaLabel && (
+              <a
+                href={ctaUrl || "#"}
+                className="mt-4 inline-flex min-h-10 items-center rounded-fq-sm border border-current px-5 text-sm font-medium transition hover:bg-white/10"
+              >
+                {ctaLabel}
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ------------------------------------------------------ testimonial_carousel */
+
+const TestimonialCarousel: WidgetComponent = ({
+  section,
+  str,
+  int,
+  Heading,
+  locale,
+  editing,
+}) => {
+  const testimonials = rowsOf(section, "testimonials").map((row) => ({
+    quote: readString(row, "quote"),
+    author: readString(row, "author"),
+    image: readString(row, "image"),
+  }));
+  const autoAdvanceMs = int("autoAdvanceMs", 4000, 1500, 10000);
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused || testimonials.length <= 1) return;
+    const id = setInterval(() => {
+      setCurrent((i) => (i + 1) % testimonials.length);
+    }, autoAdvanceMs);
+    return () => clearInterval(id);
+  }, [paused, testimonials.length, autoAdvanceMs]);
+
+  if (testimonials.length === 0) {
+    return editing ? (
+      <p className="text-xs text-muted-foreground">
+        {t(
+          locale,
+          "Testimonial carousel: add testimonials.",
+          "টেস্টিমোনিয়াল ক্যারোজেল: টেস্টিমোনিয়াল যোগ করুন।",
+        )}
+      </p>
+    ) : null;
+  }
+
+  const testimonial = testimonials[current]!;
+  return (
+    <section
+      className="rounded-fq-sm border border-border bg-card p-6 sm:p-8"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
+    >
+      <div className="flex flex-col items-center text-center">
+        {testimonial.image && (
+          <img
+            src={testimonial.image}
+            alt={testimonial.author}
+            className="mb-4 h-12 w-12 rounded-full object-cover"
+            loading="lazy"
+          />
+        )}
+        <blockquote className="max-w-xl text-base italic text-foreground/80">
+          "{testimonial.quote}"
+        </blockquote>
+        <figcaption className="mt-3 text-sm font-medium text-muted-foreground">
+          {testimonial.author}
+        </figcaption>
+      </div>
+      {testimonials.length > 1 && (
+        <div className="mt-4 flex justify-center gap-2">
+          {testimonials.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`h-2 rounded-full transition ${
+                i === current ? "w-6 bg-primary" : "w-2 bg-border"
+              }`}
+              aria-label={`${t(locale, "Testimonial", "টেস্টিমোনিয়াল")} ${i + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  );
+};
+
+/* ------------------------------------------------------ marquee_strip */
+
+const MarqueeStrip: WidgetComponent = ({
+  section,
+  str,
+  int,
+  locale,
+  editing,
+}) => {
+  const items = rowsOf(section, "items").map((row) => ({
+    text: readString(row, "text"),
+    icon: readString(row, "icon"),
+  }));
+  const speed = str("speed") || "normal";
+  const direction = str("direction") || "left";
+
+  const speedMap: Record<string, string> = {
+    slow: "40s",
+    normal: "25s",
+    fast: "15s",
+  };
+  const duration = speedMap[speed] ?? "25s";
+
+  if (items.length === 0) {
+    return editing ? (
+      <p className="text-xs text-muted-foreground">
+        {t(
+          locale,
+          "Marquee strip: add items.",
+          "মার্কি স্ট্রিপ: আইটেম যোগ করুন।",
+        )}
+      </p>
+    ) : null;
+  }
+
+  const content = items
+    .map((item) => `${item.icon ? item.icon + " " : ""}${item.text}`)
+    .join("  •  ");
+
+  const animDir = direction === "right" ? "reverse" : "normal";
+
+  return (
+    <div
+      className="overflow-hidden border-y border-border bg-card py-3"
+      aria-label={t(locale, "Marquee", "মার্কি")}
+    >
+      <p
+        className="whitespace-nowrap text-sm font-medium text-muted-foreground motion-safe:animate-[fq-marquee_linear_infinite]"
+        style={{
+          ["--fq-marquee" as string]: duration,
+          animationDirection: animDir,
+        }}
+      >
+        {content} • {content}
+      </p>
+    </div>
+  );
+};
+
+/* ------------------------------------------------------ story_trunk */
+
+const StoryTrunk: WidgetComponent = ({
+  section,
+  str,
+  bool,
+  Heading,
+  locale,
+  editing,
+}) => {
+  const items = rowsOf(section, "items").map((row) => ({
+    question: readString(row, "question"),
+    answer: readString(row, "answer"),
+  }));
+  const allowMultiple = bool("allowMultiple");
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const toggle = (i: number) => {
+    if (allowMultiple) {
+      setOpenIndex((prev) => (prev === i ? null : i));
+    } else {
+      setOpenIndex((prev) => (prev === i ? null : i));
+    }
+  };
+
+  if (items.length === 0) {
+    return editing ? (
+      <p className="text-xs text-muted-foreground">
+        {t(
+          locale,
+          "Story trunk: add FAQ items.",
+          "স্টোরি ট্রাংক: FAQ আইটেম যোগ করুন।",
+        )}
+      </p>
+    ) : null;
+  }
+
+  return (
+    <section className="rounded-fq-sm border border-border bg-card">
+      <Heading className="px-6 pt-6 text-lg font-semibold">
+        {t(locale, "Frequently asked questions", "প্রায়শই জিজ্ঞাসিত প্রশ্ন")}
+      </Heading>
+      <div className="divide-y divide-border">
+        {items.map((item, i) => {
+          const isOpen = openIndex === i;
+          return (
+            <div key={i}>
+              <button
+                onClick={() => toggle(i)}
+                className="flex w-full items-center justify-between px-6 py-4 text-left text-sm font-medium transition hover:bg-muted/50"
+                aria-expanded={isOpen}
+              >
+                <span>{item.question}</span>
+                <svg
+                  className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${
+                    isOpen ? "rotate-180" : ""
+                  }`}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  aria-hidden="true"
+                >
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
+              {isOpen && (
+                <div className="px-6 pb-4 text-sm text-muted-foreground">
+                  {item.answer}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+};
+
+/* ------------------------------------------------------ exports */
+
+export const HERITAGE_WIDGETS: Record<
+  Extract<
+    SectionType,
+    | "hero_carousel"
+    | "department_grid"
+    | "heritage_story"
+    | "textile_showcase"
+    | "editorial_banner"
+    | "testimonial_carousel"
+    | "marquee_strip"
+    | "story_trunk"
+  >,
+  WidgetComponent
+> = {
+  hero_carousel: HeroCarousel,
+  department_grid: DepartmentGrid,
+  heritage_story: HeritageStory,
+  textile_showcase: TextileShowcase,
+  editorial_banner: EditorialBanner,
+  testimonial_carousel: TestimonialCarousel,
+  marquee_strip: MarqueeStrip,
+  story_trunk: StoryTrunk,
+};
