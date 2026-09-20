@@ -1495,6 +1495,155 @@ const CONTENT: Record<string, Control[]> = {
       max: 600,
     }),
   ],
+  // Ported from the theme engine (flat scalar props mirror theme defaults).
+  faq: [
+    c({
+      key: "heading",
+      label: "Heading",
+      type: "text",
+      tab: "content",
+      section: "FAQ",
+    }),
+    ...[1, 2, 3].flatMap((i) => [
+      c({
+        key: `q${i}`,
+        label: `Question ${i}`,
+        type: "text",
+        tab: "content",
+        section: `Item ${i}`,
+      }),
+      c({
+        key: `a${i}`,
+        label: `Answer ${i}`,
+        type: "textarea",
+        tab: "content",
+        section: `Item ${i}`,
+      }),
+    ]),
+  ],
+  marquee: [
+    c({
+      key: "text",
+      label: "Text",
+      type: "text",
+      tab: "content",
+      section: "Marquee",
+    }),
+    c({
+      key: "speed",
+      label: "Seconds per loop",
+      type: "number",
+      tab: "content",
+      section: "Marquee",
+      min: 5,
+      max: 120,
+    }),
+    c({
+      key: "pauseOnHover",
+      label: "Pause on hover",
+      type: "switch",
+      tab: "content",
+      section: "Marquee",
+    }),
+  ],
+  countdown: [
+    c({
+      key: "label",
+      label: "Label",
+      type: "text",
+      tab: "content",
+      section: "Countdown",
+    }),
+    c({
+      key: "endsAt",
+      label: "Ends at (ISO date-time)",
+      type: "text",
+      tab: "content",
+      section: "Countdown",
+      placeholder: "2026-12-31T23:59:00",
+    }),
+  ],
+  banner: [
+    c({
+      key: "text",
+      label: "Message",
+      type: "text",
+      tab: "content",
+      section: "Banner",
+    }),
+    c({
+      key: "tone",
+      label: "Tone",
+      type: "select",
+      tab: "content",
+      section: "Banner",
+      options: [
+        { value: "info", label: "Info" },
+        { value: "warn", label: "Warning" },
+        { value: "success", label: "Success" },
+      ],
+    }),
+  ],
+  trust_bar: [
+    ...[1, 2, 3, 4].flatMap((i) => [
+      c({
+        key: `i${i}Title`,
+        label: `Item ${i} title`,
+        type: "text",
+        tab: "content",
+        section: `Item ${i}`,
+      }),
+      c({
+        key: `i${i}Body`,
+        label: `Item ${i} body`,
+        type: "text",
+        tab: "content",
+        section: `Item ${i}`,
+      }),
+      c({
+        key: `i${i}Icon`,
+        label: `Item ${i} icon key`,
+        type: "text",
+        tab: "content",
+        section: `Item ${i}`,
+      }),
+    ]),
+  ],
+  announcement_bar: [
+    ...[1, 2, 3].map((i) =>
+      c({
+        key: `m${i}`,
+        label: `Message ${i}`,
+        type: "text",
+        tab: "content",
+        section: "Messages",
+      }),
+    ),
+    c({
+      key: "href",
+      label: "Link",
+      type: "text",
+      tab: "content",
+      section: "Messages",
+      placeholder: "https://",
+    }),
+    c({
+      key: "dismissible",
+      label: "Dismissible",
+      type: "switch",
+      tab: "content",
+      section: "Behaviour",
+    }),
+    c({
+      key: "rotateMs",
+      label: "Rotation in ms (0 = off)",
+      type: "number",
+      tab: "content",
+      section: "Behaviour",
+      min: 0,
+      max: 60000,
+    }),
+  ],
 };
 
 const COMMERCE_CONTROLS: Control[] = [

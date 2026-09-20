@@ -5,7 +5,7 @@
  * renderer is presentational: it reads resolved settings and paints tokens, so
  * nothing here knows about selection, drag state or the panels.
  */
-import type { CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 // NOTE (perf batch 2): named imports only — the previous `import * as Icons`
 // with a dynamic registry key defeated tree-shaking and pulled all of
 // lucide-react (~1.1MB) into the builder chunk. The set below covers every
@@ -656,7 +656,205 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         />
       );
 
+    // Ported from the theme engine (same props, same look): page builders
+    // get the storefront vocabulary without the theme studio.
+    case "faq": {
+      const rows = [1, 2, 3]
+        .map((i) => ({
+          q: str(s, `q${i}`),
+          a: str(s, `a${i}`),
+        }))
+        .filter((row) => row.q);
+      if (rows.length === 0) return <Placeholder label="Add a question" />;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <div className="divide-y divide-border">
+            {rows.map((row) => (
+              <details key={row.q}>
+                <summary className="cursor-pointer py-2 text-sm font-medium">
+                  {row.q}
+                </summary>
+                <p className="pb-3 text-sm text-muted-foreground">{row.a}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "marquee": {
+      const text = str(s, "text", "New arrivals every week");
+      const speed = num(s, "speed", 30, device);
+      const paused = s.pauseOnHover ? "group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]" : "";
+      return (
+        <div className="group overflow-hidden rounded-fq-md border border-border bg-card">
+          <p
+            className={`whitespace-nowrap px-4 py-2 text-sm motion-safe:animate-[fq-marquee_var(--fq-marquee)_linear_infinite] ${paused}`}
+            style={{ ["--fq-marquee" as string]: `${Math.min(120, Math.max(5, speed))}s` }}
+          >
+            {text}
+          </p>
+        </div>
+      );
+    }
+
+    case "countdown":
+      return <StudioCountdown label={str(s, "label")} endsAt={str(s, "endsAt")} />;
+
+    case "banner": {
+      const tone = str(s, "tone", "info");
+      const cls =
+        tone === "warn"
+          ? "bg-warning-soft text-warning-foreground"
+          : tone === "success"
+            ? "bg-success-soft text-success-foreground"
+            : "bg-info-soft text-foreground";
+      return (
+        <div className={`rounded-fq-md px-4 py-2 text-sm ${cls}`}>
+          {str(s, "text", "Free delivery over BDT 2,000")}
+        </div>
+      );
+    }
+
+    case "trust_bar": {
+      const items = [1, 2, 3, 4]
+        .map((n) => ({
+          icon: str(s, `i${n}Icon`),
+          title: str(s, `i${n}Title`),
+          body: str(s, `i${n}Body`),
+        }))
+        .filter((item) => item.title);
+      if (items.length === 0)
+        return <Placeholder label="Add a trust badge" />;
+      return (
+        <ul className="grid grid-cols-2 gap-4 rounded-fq-lg border border-border bg-card p-4 sm:grid-cols-4">
+          {items.map((item) => (
+            <li key={item.title} className="flex items-start gap-2">
+              <span aria-hidden="true" className="text-lg leading-none">
+                {STUDIO_TRUST_ICON[item.icon] ?? "•"}
+              </span>
+              <span className="min-w-0">
+                <span className="block text-sm font-medium">{item.title}</span>
+                {item.body && (
+                  <span className="block text-xs text-muted-foreground">
+                    {item.body}
+                  </span>
+                )}
+              </span>
+            </li>
+          ))}
+        </ul>
+      );
+    }
+
+    case "announcement_bar":
+      return (
+        <StudioAnnouncement
+          messages={[str(s, "m1"), str(s, "m2"), str(s, "m3")].filter(Boolean)}
+          href={str(s, "href")}
+          dismissible={s.dismissible !== false}
+          rotateMs={num(s, "rotateMs", 6000, device)}
+        />
+      );
+
     default:
       return <Placeholder label={node.el} />;
   }
+}
+
+const STUDIO_TRUST_ICON: Record<string, string> = {
+  delivery: "🚚",
+  returns: "↩",
+  secure: "🔒",
+  support: "💬",
+  quality: "★",
+};
+
+/** Self-contained countdown: ticks client-side, static text once passed. */
+function StudioCountdown({ label, endsAt }: { label: string; endsAt: string }) {
+  const target = Date.parse(endsAt);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (Number.isNaN(target)) return;
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [target]);
+  if (Number.isNaN(target))
+    return <Placeholder label="Set an end date for the countdown" />;
+  const diff = Math.max(0, target - now);
+  const d = Math.floor(diff / 86_400_000);
+  const h = Math.floor((diff % 86_400_000) / 3_600_000);
+  const m = Math.floor((diff % 3_600_000) / 60_000);
+  const sec = Math.floor((diff % 60_000) / 1000);
+  const parts: string[] = [];
+  if (d > 0) parts.push(`${d}d`);
+  parts.push(`${h}h`, `${m}m`, `${sec}s`);
+  return (
+    <div
+      className="rounded-fq-md border border-border bg-card px-4 py-3 text-center"
+      role="timer"
+      aria-live="off"
+    >
+      {label && (
+        <p className="text-xs text-muted-foreground">
+          {label}
+        </p>
+      )}
+      <p className="font-bangla-display text-2xl font-bold tabular-nums">
+        {diff > 0 ? parts.join(" ") : "Ended"}
+      </p>
+    </div>
+  );
+}
+
+/** Rotating announcement with dismiss; static first message without JS motion. */
+function StudioAnnouncement({
+  messages,
+  href,
+  dismissible,
+  rotateMs,
+}: {
+  messages: string[];
+  href: string;
+  dismissible: boolean;
+  rotateMs: number;
+}) {
+  const [index, setIndex] = useState(0);
+  const [dismissed, setDismissed] = useState(false);
+  useEffect(() => {
+    if (rotateMs < 1000 || messages.length < 2) return;
+    const id = window.setInterval(
+      () => setIndex((i) => (i + 1) % messages.length),
+      rotateMs,
+    );
+    return () => window.clearInterval(id);
+  }, [rotateMs, messages.length]);
+  if (dismissed || messages.length === 0) return null;
+  const message = messages[Math.min(index, messages.length - 1)] as string;
+  return (
+    <div className="flex items-center justify-center gap-3 bg-primary px-4 py-2 text-center text-xs font-medium text-primary-foreground">
+      <p aria-live="polite" className="min-w-0 truncate">
+        {href ? (
+          <a href={href} className="underline underline-offset-2">
+            {message}
+          </a>
+        ) : (
+          message
+        )}
+      </p>
+      {dismissible && (
+        <button
+          type="button"
+          onClick={() => setDismissed(true)}
+          aria-label="Dismiss announcement"
+          className="shrink-0 rounded-fq-sm px-1 leading-none"
+        >
+          ×
+        </button>
+      )}
+    </div>
+  );
 }
