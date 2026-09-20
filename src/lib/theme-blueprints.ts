@@ -2617,7 +2617,7 @@ function clothingHeritage(): ThemePreset {
           }),
           s("editorial_banner", {
             eyebrow: "Our mission",
-            heading: "Fair trade, always",
+            heading: "",
             body: "Every purchase directly supports artisan families across 64 districts. No middlemen, no exploitation — just dignity and craft.",
             ctaLabel: "Our charter",
             ctaHref: "/pages/fair-trade",
@@ -2626,7 +2626,7 @@ function clothingHeritage(): ThemePreset {
             label: "Handloom · Fair Trade · Artisan-Owned · Natural Dyes · Zero Plastic",
           }),
           s("story_trunk", {
-            heading: "Our heritage",
+            heading: "",
             t1Title: "Founded 1972",
             t1Body: "Born from a vision to preserve Bengal's weaving traditions",
             t2Title: "65,000+ artisans",
@@ -2650,7 +2650,7 @@ function clothingHeritage(): ThemePreset {
           }),
           s("page_content", {}),
           s("store_locator", {
-            heading: "Visit our flagship outlets",
+            heading: "",
             s1Name: "Uttara Flagship",
             s1Address: "Sector 3, Uttara, Dhaka",
             s1Hours: "10am - 9pm",
@@ -2662,7 +2662,7 @@ function clothingHeritage(): ThemePreset {
             s3Hours: "10am - 9pm",
           }),
           s("form", {
-            heading: "Send us a message",
+            heading: "",
             body: "We'd love to hear from you. Fill out the form below and our team will get back to you within 24 hours.",
             nameLabel: "Your name",
             emailLabel: "Email address",
@@ -2673,7 +2673,7 @@ function clothingHeritage(): ThemePreset {
             consentText: "I agree to receive a reply to my message.",
           }),
           s("faq", {
-            heading: "Frequently Asked Questions",
+            heading: "",
             q1: "What are your delivery timelines?",
             a1: "Orders within Dhaka city are delivered within 24-48 hours. Nationwide deliveries across all 64 districts take 48-72 hours via premium courier.",
             q2: "Can I exchange an item at a physical store?",
@@ -2682,7 +2682,7 @@ function clothingHeritage(): ThemePreset {
             a3: "All our pure cotton and silk garments undergo traditional pre-wash finishing. Follow our care guidelines for minimal shrinkage.",
           }),
           s("support_strip", {
-            heading: "Customer Support & Concierge",
+            heading: "",
             t1Title: "Order Tracking",
             t1Body: "Real-time dispatch updates",
             t1Href: "/pages/track-order",

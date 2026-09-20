@@ -3981,6 +3981,146 @@ const BASE_CATALOG: CatalogEntry[] = [
       },
     ],
   },
+  // Heritage (clothing) theme widgets.
+  {
+    type: "hero_carousel",
+    label: "Hero carousel",
+    group: "heritage",
+    slots: ["main"],
+    heading: true,
+    defaults: { autoAdvanceMs: 5000 },
+    fields: [
+      { key: "slides", label: "Slides", kind: "array", panel: "content", children: [
+        { key: "image", label: "Image URL", kind: "text", panel: "content" },
+        { key: "headline", label: "Headline", kind: "text", panel: "content" },
+        { key: "subhead", label: "Subhead", kind: "text", panel: "content" },
+        { key: "ctaLabel", label: "CTA label", kind: "text", panel: "content" },
+        { key: "ctaUrl", label: "CTA URL", kind: "text", panel: "content" },
+        { key: "caption", label: "Caption", kind: "text", panel: "content" },
+      ]},
+      { key: "autoAdvanceMs", label: "Auto-advance (ms)", kind: "number", panel: "settings" },
+    ],
+  },
+  {
+    type: "department_grid",
+    label: "Department grid",
+    group: "heritage",
+    slots: ["main"],
+    heading: false,
+    defaults: { columns: 4 },
+    fields: [
+      { key: "departments", label: "Departments", kind: "array", panel: "content", children: [
+        { key: "image", label: "Image URL", kind: "text", panel: "content" },
+        { key: "title", label: "Title", kind: "text", panel: "content" },
+        { key: "href", label: "Link URL", kind: "text", panel: "content" },
+      ]},
+      { key: "columns", label: "Columns", kind: "number", panel: "layout" },
+    ],
+  },
+  {
+    type: "heritage_story",
+    label: "Heritage story",
+    group: "heritage",
+    slots: ["main"],
+    heading: false,
+    defaults: { layout: "image-left" },
+    fields: [
+      { key: "image", label: "Image URL", kind: "text", panel: "content" },
+      { key: "headline", label: "Headline", kind: "text", panel: "content" },
+      { key: "body", label: "Body", kind: "textarea", panel: "content" },
+      { key: "ctaLabel", label: "CTA label", kind: "text", panel: "content" },
+      { key: "ctaUrl", label: "CTA URL", kind: "text", panel: "content" },
+      { key: "layout", label: "Layout", kind: "select", panel: "layout", options: [
+        { value: "image-left", label: "Image left" },
+        { value: "image-right", label: "Image right" },
+        { value: "full-width", label: "Full width" },
+      ]},
+    ],
+  },
+  {
+    type: "textile_showcase",
+    label: "Textile showcase",
+    group: "heritage",
+    slots: ["main"],
+    heading: false,
+    defaults: {},
+    fields: [
+      { key: "headline", label: "Headline", kind: "text", panel: "content" },
+      { key: "items", label: "Items", kind: "array", panel: "content", children: [
+        { key: "image", label: "Image URL", kind: "text", panel: "content" },
+        { key: "title", label: "Title", kind: "text", panel: "content" },
+        { key: "subtitle", label: "Subtitle", kind: "text", panel: "content" },
+      ]},
+    ],
+  },
+  {
+    type: "editorial_banner",
+    label: "Editorial banner",
+    group: "heritage",
+    slots: ["main"],
+    heading: false,
+    defaults: {},
+    fields: [
+      { key: "image", label: "Image URL", kind: "text", panel: "content" },
+      { key: "headline", label: "Headline", kind: "text", panel: "content" },
+      { key: "subhead", label: "Subhead", kind: "text", panel: "content" },
+      { key: "ctaLabel", label: "CTA label", kind: "text", panel: "content" },
+      { key: "ctaUrl", label: "CTA URL", kind: "text", panel: "content" },
+    ],
+  },
+  {
+    type: "testimonial_carousel",
+    label: "Testimonial carousel",
+    group: "heritage",
+    slots: ["main"],
+    heading: false,
+    defaults: { autoAdvanceMs: 6000 },
+    fields: [
+      { key: "testimonials", label: "Testimonials", kind: "array", panel: "content", children: [
+        { key: "quote", label: "Quote", kind: "textarea", panel: "content" },
+        { key: "author", label: "Author", kind: "text", panel: "content" },
+        { key: "role", label: "Role", kind: "text", panel: "content" },
+        { key: "avatar", label: "Avatar URL", kind: "text", panel: "content" },
+      ]},
+      { key: "autoAdvanceMs", label: "Auto-advance (ms)", kind: "number", panel: "settings" },
+    ],
+  },
+  {
+    type: "marquee_strip",
+    label: "Marquee strip",
+    group: "heritage",
+    slots: ["main"],
+    heading: false,
+    defaults: { speed: "normal" },
+    fields: [
+      { key: "items", label: "Items", kind: "array", panel: "content", children: [
+        { key: "text", label: "Text", kind: "text", panel: "content" },
+        { key: "icon", label: "Icon", kind: "text", panel: "content" },
+      ]},
+      { key: "speed", label: "Speed", kind: "select", panel: "settings", options: [
+        { value: "slow", label: "Slow" },
+        { value: "normal", label: "Normal" },
+        { value: "fast", label: "Fast" },
+      ]},
+    ],
+  },
+  {
+    type: "story_trunk",
+    label: "Story trunk",
+    group: "heritage",
+    slots: ["main"],
+    heading: true,
+    defaults: {},
+    fields: [
+      { key: "headline", label: "Headline", kind: "text", panel: "content" },
+      { key: "items", label: "Items", kind: "array", panel: "content", children: [
+        { key: "image", label: "Image URL", kind: "text", panel: "content" },
+        { key: "title", label: "Title", kind: "text", panel: "content" },
+        { key: "body", label: "Body", kind: "textarea", panel: "content" },
+        { key: "year", label: "Year", kind: "text", panel: "content" },
+      ]},
+    ],
+  },
 ];
 
 /* ------------------------------------------------- Phase 0.4 — style layer */

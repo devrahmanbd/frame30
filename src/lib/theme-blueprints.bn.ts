@@ -696,6 +696,11 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "Pure silk panjabi & fine muslin": "খাঁটি সিল্কের পাঞ্জাবি ও মিহি মসলিন",
   "Intricate necklines, mother-of-pearl buttons, and breathable natural fibers cut for elegance in Bangladeshi celebrations.":
     "সূক্ষ্ম গলার কাজ, মুক্তার বোতাম ও আরামদায়ক সুতা—বাংলাদেশের উৎসবে মার্জিত রূপ।",
+  "New arrivals": "নতুন আগমন",
+  "Our textiles": "আমাদের টেক্সটাইল",
+  "Featured textiles": "বিশেষ টেক্সটাইল",
+  "Trending now": "এখন ট্রেন্ডিং",
+  "Explore by department": "বিভাগ অনুযায়ী খুঁজুন",
   "Celebrating in Framique Heritage": "ফ্রেমিকে হেরিটেজে উদযাপন",
   "Tag us on Instagram to be featured.": "ফিচার হতে ইনস্টাগ্রামে ট্যাগ করুন।",
   "Curated masterpieces": "বাছাইকৃত সেরা সৃষ্টি",
@@ -835,7 +840,79 @@ export const BLUEPRINT_BN: Record<string, string> = {
   "All our pure cotton and silk garments undergo traditional pre-wash finishing. Follow our care guidelines for minimal shrinkage.":
     "আমাদের শতভাগ সুতি ও সিল্কের পোশাকগুলো ঐতিহ্যবাহী প্রি-ওয়াশ ফিনিশিং করা থাকে। কাপড়ের সুরক্ষায় যত্নের নির্দেশিকা মেনে চলুন।",
 
-  /* ---------------------------------------------------- supershop · chrome */
+  /* ---------------------------------------- clothing-heritage · split_feature */
+  "Heritage collection": "ঐতিহ্যবাহী কালেকশন",
+  "Handcrafted with care": "যত্নসহকারে হাতে তৈরি",
+  "Each piece tells a story of artisan skill and generational craft traditions.":
+    "প্রতিটি পণ্য বলে কারিগরি ও বংশপরম্পরার কারুশিল্পের গল্প।",
+  "Our heritage": "আমাদের ঐতিহ্য",
+
+  /* -------------------------------------- clothing-heritage · textile tiles */
+  "Textile details": "টেক্সটাইল বিবরণ",
+  "Jamdani": "জামদানি",
+  "Dhakai Jamdani royal drape": "ঢাকাই জামদানি রাজকীয় পোশাক",
+  "Tangail Taant": "টাঙ্গাইল তাঁত",
+  "Tangail handloom taant cotton saree": "টাঙ্গাইল হাতে বোনা তাঁত সুতির শাড়ি",
+  "Nakshi Kantha": "নকশি কাঁথা",
+  "Hand-embroidered nakshi kantha": "হাতে সেলাই করা নকশি কাঁথা",
+  "Pure Silk": "খাঁটি সিল্ক",
+  "Rajshahi pure silk festive panjabi": "রাজশাহী খাঁটি সিল্কের ঈদের পাঞ্জাবি",
+
+  /* -------------------------------------- clothing-heritage · misc */
+  "Select a size": "সাইজ নির্বাচন করুন",
+  "Notify me": "আমাকে জানান",
+  "Size guide": "সাইজ গাইড",
+  "Our story": "আমাদের গল্প",
+  "Meet the artisans": "কারিগরদের সাথে পরিচিত হোন",
+  "Our mission": "আমাদের লক্ষ্য",
+  "Fair trade, always": "ন্যায্য বাণিজ্য, সর্বদা",
+  "Every purchase directly supports artisan families across 64 districts. No middlemen, no exploitation — just dignity and craft.":
+    "প্রতিটি কেনাকাটা সরাসরি ৬৪ জেলার কারিগর পরিবারকে সমর্থন করে। কোনো দালাল নয়, কোনো শোষণ নয় — শুধু মর্যাদা ও কারুশিল্প।",
+  "Our charter": "আমাদের সনদ",
+  "Founded 1972": "১৯৭২ সালে প্রতিষ্ঠিত",
+  "Born from a vision to preserve Bengal's weaving traditions":
+    "বাংলার তাঁত ঐতিহ্য সংরক্ষণের স্বপ্ন থেকে জন্ম",
+  "65,000+ artisans": "৬৫,০০০+ কারিগর",
+  "Rural craftspeople across 64 districts":
+    "৬৪ জেলার গ্রামীণ কারিগর",
+  "Zero plastic": "শূন্য প্লাস্টিক",
+  "Biodegradable jute and paper packaging":
+    "বায়োডিগ্রেডেবল পাট ও কাগজের প্যাকেজিং",
+  "Send us a message": "আমাদের কাছে বার্তা পাঠান",
+  "We'd love to hear from you. Fill out the form below and our team will get back to you within 24 hours.":
+    "আমরা আপনার কাছ থেকে শুনতে চাই। নিচের ফর্ম পূরণ করুন, আমাদের দল ২৪ ঘণ্টার মধ্যে যোগাযোগ করবে।",
+  "Your name": "আপনার নাম",
+  "Email address": "ইমেইল ঠিকানা",
+  "Phone (optional)": "ফোন (ঐচ্ছিক)",
+  "Your message": "আপনার বার্তা",
+  "Send message": "বার্তা পাঠান",
+  "Thank you! We'll be in touch soon.":
+    "ধন্যবাদ! আমরা শীঘ্রই যোগাযোগ করব।",
+  "I agree to receive a reply to my message.":
+    "আমি আমার বার্তার উত্তর পেতে সম্মত।",
+  "Need help?": "সাহায্য দরকার?",
+  "Size Guide": "সাইজ গাইড",
+  "Find your perfect fit": "আপনার পারফেক্ট সাইজ খুঁজুন",
+  "Returns": "ফেরত",
+  "7-day hassle-free exchanges":
+    "৭ দিনের ঝামেলামুক্ত এক্সচেঞ্জ",
+  "Contact Us": "যোগাযোগ",
+  "Personal styling helpline": "ব্যক্তিগত স্টাইলিং হেল্পলাইন",
+  "Sold out in your size?": "আপনার সাইজ শেষ?",
+  "Leave your email for restock notification.":
+    "পুনরায় স্টকে এলে জানতে ইমেইল দিন।",
+  "More from this craft": "এই কারুশিল্পের আরও পণ্য",
+  "The heritage journal": "ঐতিহ্যের জার্নাল",
+  "Nothing matches those filters":
+    "কোনো পণ্য এই ফিল্টারে মিলেনি",
+  "Try removing a filter or two.":
+    "একটি বা দুটি ফিল্টার সরিয়ে দেখুন।",
+  "Load more": "আরও দেখুন",
+  "Previous": "আগের",
+  "Next": "পরের",
+  "Page": "পৃষ্ঠা",
+
+  /* ------------------------------------------- supershop · chrome */
   "🔥 Flash Sale Live Now — Up to 70% OFF on top brands!":
     "🔥 ফ্ল্যাশ সেল চলছে — শীর্ষ ব্র্যান্ডে ৭০% পর্যন্ত ছাড়!",
   "Free delivery on orders over BDT 999 · bKash & Nagad accepted":

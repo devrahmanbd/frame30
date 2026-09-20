@@ -452,7 +452,8 @@ export function searchWidgets(query: WidgetSearchQuery): WidgetSearchHit[] {
     }
     const label = entry.label.toLowerCase();
     const synonyms = synonymsOf(entry.type);
-    const help = WIDGET_HELP[entry.type].en.toLowerCase();
+    const helpEntry = WIDGET_HELP[entry.type];
+    const help = helpEntry ? helpEntry.en.toLowerCase() : "";
     let score = 0;
     let reason: WidgetSearchHit["reason"] = "label";
 

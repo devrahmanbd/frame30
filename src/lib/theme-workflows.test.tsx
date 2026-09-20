@@ -41,11 +41,12 @@ import { SectionRenderer } from "@/components/builder/SectionRenderer";
  */
 const REQUIRED: Partial<Record<TemplateKey, SectionType[][]>> = {
   index: [
-    ["hero", "editorial_hero", "banner"],
+    ["hero", "editorial_hero", "banner", "hero_carousel"],
     ["product_grid", "product_rail", "deal_strip"],
     [
       "collection_grid",
       "department_strip",
+      "department_grid",
       "brand_strip",
       "brand_rail",
       "lookbook",

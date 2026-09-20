@@ -17,10 +17,10 @@ function walk(section: Section, visit: (node: Section) => void) {
 }
 
 describe("official theme presets", () => {
-  it("ships fifteen themes with unique keys and sort order", () => {
-    expect(THEME_PRESETS).toHaveLength(15);
+  it("ships fourteen themes with unique keys and sort order", () => {
+    expect(THEME_PRESETS).toHaveLength(14);
     const keys = new Set(THEME_PRESETS.map((p) => p.key));
-    expect(keys.size).toBe(15);
+    expect(keys.size).toBe(14);
   });
 
   for (const preset of THEME_PRESETS) {

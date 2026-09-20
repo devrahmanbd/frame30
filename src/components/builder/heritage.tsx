@@ -109,18 +109,18 @@ const HeroCarousel: WidgetComponent = ({
         {/* Content overlay */}
         <div className="absolute inset-0 flex flex-col items-start justify-end bg-gradient-to-t from-black/60 via-black/20 to-transparent p-6 sm:p-12">
           <div className="max-w-2xl">
-            <Heading className="text-3xl font-bold leading-tight text-white sm:text-5xl">
+            <Heading className="text-3xl font-bold leading-tight text-primary-foreground sm:text-5xl">
               {slide.headline}
             </Heading>
             {slide.subhead && (
-              <p className="mt-3 max-w-lg text-base text-white/80 sm:text-lg">
+              <p className="mt-3 max-w-lg text-base text-primary-foreground/80 sm:text-lg">
                 {slide.subhead}
               </p>
             )}
             {slide.ctaLabel && (
               <a
                 href={slide.ctaUrl || "#"}
-                className="mt-6 inline-flex min-h-12 items-center rounded-fq-sm bg-white px-6 text-sm font-semibold text-black transition hover:bg-white/90"
+                className="mt-6 inline-flex min-h-12 items-center rounded-fq-sm bg-card px-6 text-sm font-semibold text-card-foreground transition hover:bg-card/90"
               >
                 {slide.ctaLabel}
               </a>
@@ -136,7 +136,7 @@ const HeroCarousel: WidgetComponent = ({
               key={i}
               onClick={() => setCurrent(i)}
               className={`h-2 rounded-full transition ${
-                i === current ? "w-6 bg-white" : "w-2 bg-white/50"
+                i === current ? "w-6 bg-primary-foreground" : "w-2 bg-primary-foreground/50"
               }`}
               aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1}`}
             />
@@ -440,8 +440,8 @@ const EditorialBanner: WidgetComponent = ({
 
   const overlayCls =
     overlay === "light"
-      ? "bg-gradient-to-t from-white/80 via-white/40 to-transparent text-black"
-      : "bg-gradient-to-t from-black/70 via-black/30 to-transparent text-white";
+      ? "bg-gradient-to-t from-background/80 via-background/40 to-transparent text-foreground"
+      : "bg-gradient-to-t from-foreground/70 via-foreground/30 to-transparent text-background";
 
   return (
     <section className="relative overflow-hidden rounded-fq-sm">
@@ -477,7 +477,7 @@ const EditorialBanner: WidgetComponent = ({
             {ctaLabel && (
               <a
                 href={ctaUrl || "#"}
-                className="mt-4 inline-flex min-h-10 items-center rounded-fq-sm border border-current px-5 text-sm font-medium transition hover:bg-white/10"
+                className="mt-4 inline-flex min-h-10 items-center rounded-fq-sm border border-current px-5 text-sm font-medium transition hover:bg-primary/10"
               >
                 {ctaLabel}
               </a>

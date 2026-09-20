@@ -542,6 +542,46 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
     en: "Previous / next page links for the blog archive.",
     bn: "ব্লগ আর্কাইভের আগের / পরের পেজ লিংক।",
   },
+  circle_categories: {
+    en: "Six circular category tiles that link to collection pages.",
+    bn: "ছয়টি গোলাকার ক্যাটাগরি টাইল — কালেকশন পেজে লিংক করে।",
+  },
+  subbrand_spotlight: {
+    en: "Spotlight a sub-brand with image, description and CTA.",
+    bn: "সাব-ব্র্যান্ডকে স্পটলাইট করুন — ইমেজ, বিবরণ ও কল-টু-অ্যাকশনসহ।",
+  },
+  hero_carousel: {
+    en: "Full-width hero carousel with auto-advancing slides, headlines and CTAs.",
+    bn: "সম্পূর্ণ প্রস্থের হিরো ক্যারোজেল — স্বয়ংক্রিয় স্লাইড, শিরোনাম ও কল-টু-অ্যাকশন।",
+  },
+  department_grid: {
+    en: "A grid of department tiles linking to category pages.",
+    bn: "বিভাগের টাইল গ্রিড — ক্যাটাগরি পেজে লিংক করে।",
+  },
+  heritage_story: {
+    en: "A story block with image, headline and body text to share brand heritage.",
+    bn: "ব্র্যান্ডের ঐতিহ্য শেয়ার করার জন্য ইমেজ, শিরোনাম ও বডি টেক্সটসহ গল্প ব্লক।",
+  },
+  textile_showcase: {
+    en: "A showcase of textile products with images and descriptions.",
+    bn: "টেক্সটাইল প্রোডাক্টের শোকেস — ইমেজ ও বিবরণসহ।",
+  },
+  editorial_banner: {
+    en: "A full-width editorial banner with headline, subhead and CTA.",
+    bn: "সম্পূর্ণ প্রস্থের এডিটোরিয়াল ব্যানার — শিরোনাম, সাবহেড ও কল-টু-অ্যাকশন।",
+  },
+  testimonial_carousel: {
+    en: "Auto-advancing carousel of customer testimonials with quotes and avatars.",
+    bn: "গ্রাহকদের প্রশংসাপত্রের স্বয়ংক্রিয় ক্যারোজেল — উদ্ধৃতি ও অ্যাভাটারসহ।",
+  },
+  marquee_strip: {
+    en: "An infinitely scrolling strip of text or icon items.",
+    bn: "টেক্সট বা আইকনের অসীম স্ক্রলিং স্ট্রিপ।",
+  },
+  story_trunk: {
+    en: "A timeline or trunk of heritage stories with images and dates.",
+    bn: "ইমেজ ও তারিখসহ ঐতিহ্যবাহী গল্পের টাইমলাইন বা ট্রাঙ্ক।",
+  },
 };
 
 /** Exact prop-key hints. Keys are catalog `Field.key`s. */
@@ -930,6 +970,18 @@ export const PROP_HINTS: Record<string, BiText> = {
   showArrows: {
     en: "Shows previous/next arrows when some slides are hidden.",
     bn: "কিছু স্লাইড লুকালে আগে/পরে তীর দেখায়।",
+  },
+  autoAdvanceMs: {
+    en: "Milliseconds between auto-advance slides. Lower is faster.",
+    bn: "স্লাইডের মধ্যে স্বয়ংক্রিয় অগ্রগতির মিলিসেকেন্ড। কম = দ্রুত।",
+  },
+  departments: {
+    en: "Repeatable department cards, each with an image and a link.",
+    bn: "পুনরাবৃত্তযোগ্য ডিপার্টমেন্ট কার্ড — প্রতিটিতে ইমেজ ও লিংক।",
+  },
+  testimonials: {
+    en: "Repeatable testimonial entries, each with a quote and author.",
+    bn: "পুনরাবৃত্তযোগ্য প্রশংসাপত্র — প্রতিটিতে উদ্ধৃতি ও লেখক।",
   },
 };
 
