@@ -158,6 +158,13 @@ export function ThemesScreen() {
       search: { preview_theme_id: theme.id } as never,
     });
 
+  /** Opens the public blueprint preview route in a new tab. */
+  const openBlueprintPreview = (theme: InstalledTheme) => {
+    if (theme.key) {
+      window.open(`/theme-preview/${theme.key}`, "_blank", "noopener,noreferrer");
+    }
+  };
+
   const previewCatalog = (theme: CatalogTheme) =>
     setPreview({
       key: theme.key,
@@ -325,7 +332,7 @@ export function ThemesScreen() {
           ) : (
             <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {installed.map((theme) => (
-                <li key={theme.id}>
+                <li key={theme.id} className="space-y-2">
                   <ThemeCard
                     theme={theme}
                     busy={busy === theme.id}
@@ -341,6 +348,15 @@ export function ThemesScreen() {
                       })
                     }
                   />
+                  {theme.key ? (
+                    <button
+                      type="button"
+                      onClick={() => openBlueprintPreview(theme)}
+                      className="w-full rounded-fq-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      Blueprint preview
+                    </button>
+                  ) : null}
                 </li>
               ))}
               <li>
