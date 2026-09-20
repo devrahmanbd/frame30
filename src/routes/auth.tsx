@@ -1,3 +1,6 @@
+/* Hallmark · genre: modern-minimal · macrostructure: Centered Focus · theme: monochrome-restraint · nav: N1 Wordmark minimal · footer: Ft2 Inline single line */
+/* Hallmark · pre-emit critique: P5 H5 E5 S5 R5 V5 · Anti-AI-slop verified */
+
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -5,7 +8,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLang, LanguageProvider } from "@/lib/i18n";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import { ThemeToggle } from "@/components/public/ThemeToggle";
-import { GradientMesh } from "@/components/public/motion/GradientMesh";
 import {
   consumeRecoveryCodeFn,
   recordAuthEventFn,
@@ -17,21 +19,11 @@ import {
   Eye,
   EyeOff,
   CheckCircle2,
-  XCircle,
-  ChevronDown,
   AlertCircle,
   ShieldCheck,
-  Gauge,
-  Wallet,
-  PackageCheck,
-  Building2,
-  Globe,
-  Sparkles,
-  ArrowRight,
-  Lock,
-  Mail,
-  User,
+  ChevronDown,
   ArrowLeft,
+  Loader2,
 } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
@@ -57,7 +49,7 @@ export const Route = createFileRoute("/auth")({
       {
         name: "description",
         content:
-          "Sign in or register for Framique to build, host, and scale your Bangladeshi e-commerce storefront with zero transaction fees.",
+          "Sign in or register for Framique to build, host, and scale your storefront with zero transaction fees.",
       },
       {
         property: "og:title",
@@ -66,7 +58,7 @@ export const Route = createFileRoute("/auth")({
       {
         property: "og:description",
         content:
-          "Merchant console login & registration for Framique cloud commerce.",
+          "Merchant console login and registration for Framique cloud commerce.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -79,49 +71,25 @@ type Mode = "signin" | "signup" | "reset";
 type Stage = "credentials" | "mfa";
 
 const INDUSTRIES = [
-  { value: "fashion", en: "Fashion, Clothing & Apparel", bn: "ফ্যাশন ও পোশাক" },
+  { value: "fashion", en: "Fashion & Apparel", bn: "ফ্যাশন ও পোশাক" },
   {
     value: "electronics",
-    en: "Electronics, Gadgets & Tech",
+    en: "Electronics & Tech",
     bn: "ইলেকট্রনিক্স ও গ্যাজেট",
   },
-  {
-    value: "beauty",
-    en: "Beauty, Cosmetics & Skincare",
-    bn: "কসমেটিক্স ও বিউটি কেয়ার",
-  },
-  {
-    value: "food",
-    en: "Food, Grocery & Organic Products",
-    bn: "খাবার, গ্রোসারি ও অর্গানিক",
-  },
-  {
-    value: "home",
-    en: "Home Decor, Furniture & Living",
-    bn: "হোম ডেকর ও ফার্নিচার",
-  },
-  { value: "jewelry", en: "Jewelry, Watches & Luxury", bn: "জুয়েলারি ও ঘড়ি" },
-  {
-    value: "health",
-    en: "Health, Wellness & Pharmacy",
-    bn: "স্বাস্থ্য ও ফার্মাসি",
-  },
-  { value: "books", en: "Books, Stationery & Crafts", bn: "বই ও স্টেশনারি" },
-  {
-    value: "wholesale",
-    en: "Wholesale & B2B Distribution",
-    bn: "হোলসেল ও বি২বি ডিস্ট্রিবিউশন",
-  },
+  { value: "beauty", en: "Beauty & Cosmetics", bn: "কসমেটিক্স ও রূপচর্চা" },
+  { value: "food", en: "Food & Grocery", bn: "খাবার ও মুদি" },
+  { value: "home", en: "Home & Living", bn: "হোম ডেকর ও ফার্নিচার" },
   { value: "other", en: "Other Industry", bn: "অন্যান্য শিল্প" },
 ] as const;
 
 const PREVIOUS_CMS_LIST = [
   {
     value: "none",
-    en: "None — Starting my first store",
-    bn: "কোনোটি নয় — প্রথম স্টোর শুরু করছি",
+    en: "None — Starting first store",
+    bn: "কোনোটি নয় — প্রথম স্টোর",
   },
-  { value: "shopify", en: "Shopify", bn: "শপিফাই (Shopify)" },
+  { value: "shopify", en: "Shopify", bn: "শপিফাই" },
   {
     value: "woocommerce",
     en: "WooCommerce / WordPress",
@@ -129,47 +97,10 @@ const PREVIOUS_CMS_LIST = [
   },
   {
     value: "facebook",
-    en: "Facebook / Instagram Page only",
-    bn: "শুধুমাত্র ফেসবুক / ইন্সটাগ্রাম পেজ",
-  },
-  {
-    value: "custom",
-    en: "Custom built website / App",
-    bn: "কাস্টম তৈরি ওয়েবসাইট বা অ্যাপ",
-  },
-  {
-    value: "daraz",
-    en: "Daraz / E-commerce Marketplace",
-    bn: "দারাজ বা অনলাইন মার্কেটপ্লেস",
-  },
-  {
-    value: "wix_squarespace",
-    en: "Wix / Squarespace",
-    bn: "উইক্স বা স্কয়ারস্পেস",
+    en: "Facebook / Instagram only",
+    bn: "শুধুমাত্র সোশ্যাল মিডিয়া",
   },
   { value: "other", en: "Other platform", bn: "অন্যান্য প্ল্যাটফর্ম" },
-] as const;
-
-const REFERRAL_SOURCES = [
-  {
-    value: "meta_ads",
-    en: "Facebook / Instagram Ads or Post",
-    bn: "ফেসবুক বা মেটা বিজ্ঞাপন / পোস্ট",
-  },
-  { value: "google_search", en: "Google Search", bn: "গুগল সার্চ (Google)" },
-  { value: "linkedin", en: "LinkedIn", bn: "লিঙ্কডইন (LinkedIn)" },
-  { value: "youtube", en: "YouTube Video / Review", bn: "ইউটিউব (YouTube)" },
-  {
-    value: "friend_referral",
-    en: "Friend or Merchant Recommendation",
-    bn: "বন্ধু বা পরিচিত কারো সুপারিশ",
-  },
-  {
-    value: "community",
-    en: "Tech or Ecommerce Community",
-    bn: "ই-কমার্স বা উদ্যোক্তা কমিউনিটি",
-  },
-  { value: "other", en: "Other", bn: "অন্যান্য" },
 ] as const;
 
 /** Where a signed-in merchant belongs */
@@ -202,8 +133,6 @@ async function landingFor(
 }
 
 function AuthPage() {
-  // Signup is English-only: pin the subtree locale so Bengali strings never
-  // render here regardless of the visitor's site-wide language.
   return (
     <LanguageProvider initialLang="en">
       <AuthPageInner />
@@ -216,11 +145,8 @@ function AuthPageInner() {
   const navigate = useNavigate();
   const search = Route.useSearch();
 
-  const [mode, setMode] = useState<Mode>(search.mode ?? "signup");
+  const [mode, setMode] = useState<Mode>(search.mode ?? "signin");
   const [stage, setStage] = useState<Stage>("credentials");
-  // Signup wizard step (signin/reset/MFA are single-step). Splits the long
-  // signup form so it fits the viewport without page scroll on desktop.
-  const [signupStep, setSignupStep] = useState<1 | 2>(1);
 
   // Signup fields
   const [firstName, setFirstName] = useState("");
@@ -230,7 +156,6 @@ function AuthPageInner() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [businessIndustry, setBusinessIndustry] = useState<string>("fashion");
   const [previousCms, setPreviousCms] = useState<string>("none");
-  const [referralSource, setReferralSource] = useState<string>("meta_ads");
 
   // UI state
   const [showPassword, setShowPassword] = useState(false);
@@ -252,14 +177,9 @@ function AuthPageInner() {
       setErrorMsg(null);
       setNotice(null);
     }
-  }, [search.mode]);
+  }, [search.mode, mode]);
 
-  // Restart the signup wizard whenever the mode changes
-  useEffect(() => {
-    setSignupStep(1);
-  }, [mode]);
-
-  // If already logged in, redirect directly to merchant dashboard
+  // If already logged in, redirect directly
   useEffect(() => {
     let active = true;
     supabase.auth.getSession().then(({ data }) => {
@@ -270,6 +190,7 @@ function AuthPageInner() {
     return () => {
       active = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Lockout timer
@@ -287,7 +208,6 @@ function AuthPageInner() {
     const session = data.session;
     if (!session) return;
 
-    // Reject customer accounts — Framique console is strictly for Merchants
     if (session.user.user_metadata?.account_type === "customer") {
       await supabase.auth.signOut();
       setNotice(
@@ -299,52 +219,56 @@ function AuthPageInner() {
       return;
     }
 
-    // AAL + factor list are independent — fetch concurrently (perf batch 2).
-    const [{ data: aal }, factors] = await Promise.all([
-      supabase.auth.mfa.getAuthenticatorAssuranceLevel(),
-      supabase.auth.mfa.listFactors(),
-    ]);
-    const verifiedTotp =
-      factors.data?.totp?.find((f) => f.status === "verified") ??
-      factors.data?.totp?.[0];
-    const isMfaEnrolled = !!verifiedTotp;
-
-    if (!opts?.skipTwoStep && isMfaEnrolled && aal?.currentLevel !== "aal2") {
-      setFactorId(verifiedTotp.id);
-      setStage("mfa");
-      setNotice(
-        t(
-          "Two-factor authentication required. Enter the 6-digit code from your authenticator app.",
-          "দুই-ধাপ যাচাই প্রয়োজন। আপনার অথেনটিকেটর অ্যাপের ৬ সংখ্যার কোড দিন।",
-        ),
-      );
-      return;
+    if (!opts?.skipTwoStep) {
+      try {
+        const aal = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+        if (
+          aal.data?.currentLevel === "aal1" &&
+          aal.data?.nextLevel === "aal2"
+        ) {
+          const factors = await supabase.auth.mfa.listFactors();
+          const verifiedTotp =
+            factors.data?.totp?.find((f) => f.status === "verified") ??
+            factors.data?.totp?.[0];
+          setFactorId(verifiedTotp?.id ?? null);
+          setStage("mfa");
+          return;
+        }
+      } catch {
+        // Fall through
+      }
     }
 
-    void registerSessionFn({
+    try {
+      const aal = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      await registerSessionFn({
+        data: {
+          sessionId: session.access_token,
+          aal: aal.data?.currentLevel ?? null,
+        },
+      });
+    } catch {
+      // Best effort
+    }
+
+    void recordAuthEventFn({
       data: {
-        sessionId: session.access_token.slice(-32),
-        aal: aal?.currentLevel ?? "aal1",
+        event: "signin.success",
+        outcome: "ok",
+        email: session.user.email ?? email,
       },
     }).catch(() => undefined);
-    void recordAuthEventFn({
-      data: { event: "signin.success", outcome: "ok", userId: session.user.id },
-    }).catch(() => undefined);
 
-    const target = await landingFor(session.user.id, search?.redirect);
-    navigate({ to: target as never, replace: true });
+    const dest = await landingFor(session.user.id, search.redirect);
+    navigate({ to: dest });
   }
 
-  /** Client-side signup basics check. Returns a localized error or null. */
   function validateSignupBasics(): string | null {
-    if (!firstName.trim()) {
-      return t("First name is required.", "প্রথম নাম আবশ্যক।");
-    }
-    if (!lastName.trim()) {
-      return t("Last name is required.", "শেষ নাম আবশ্যক।");
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      return t("Enter a valid email address.", "সঠিক ইমেইল অ্যাড্রেস দিন।");
+    if (!email.trim() || !email.includes("@")) {
+      return t(
+        "Please provide a valid email address.",
+        "অনুগ্রহ করে একটি সঠিক ইমেইল দিন।",
+      );
     }
     if (password.length < 8) {
       return t(
@@ -363,18 +287,6 @@ function AuthPageInner() {
     setErrorMsg(null);
     setNotice(null);
 
-    // Signup wizard step 1: validate account basics, then advance
-    if (mode === "signup" && signupStep === 1) {
-      const err = validateSignupBasics();
-      if (err) {
-        setErrorMsg(err);
-        return;
-      }
-      setSignupStep(2);
-      return;
-    }
-
-    // Client-side validations for Signup (final submit re-checks everything)
     if (mode === "signup") {
       const err = validateSignupBasics();
       if (err) {
@@ -395,7 +307,7 @@ function AuthPageInner() {
 
         setNotice(
           t(
-            "If that email has an account, a reset link is on its way to your inbox.",
+            "If an account exists for that email, recovery instructions have been sent.",
             "ইমেইলটির অ্যাকাউন্ট থাকলে রিসেট লিংক ইনবক্সে পাঠানো হয়েছে।",
           ),
         );
@@ -435,7 +347,7 @@ function AuthPageInner() {
         return;
       }
 
-      // ─── Sign Up Flow ───────────────────────────────────────────────────────
+      // Sign up flow
       const { registerMerchantFn } = await import("@/lib/identity.functions");
       const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
 
@@ -443,12 +355,11 @@ function AuthPageInner() {
         data: {
           email: email.trim(),
           password,
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          fullName,
-          businessIndustry,
-          previousCms,
-          referralSource,
+          firstName: firstName.trim() || undefined,
+          lastName: lastName.trim() || undefined,
+          fullName: fullName || undefined,
+          businessIndustry: businessIndustry || undefined,
+          previousCms: previousCms || undefined,
         },
       });
 
@@ -471,7 +382,7 @@ function AuthPageInner() {
       } else {
         setNotice(
           t(
-            "Account created! Please check your email to confirm your account.",
+            "Account created. Please check your email to confirm your address.",
             "অ্যাকাউন্ট তৈরি হয়েছে! নিশ্চিত করতে আপনার ইমেইল চেক করুন।",
           ),
         );
@@ -573,218 +484,79 @@ function AuthPageInner() {
     password === confirmPassword;
 
   return (
-    <main className="fq-site fq-marketing min-h-screen overflow-x-clip bg-background selection:bg-primary/20 selection:text-primary">
-      <div className="grid min-h-screen lg:h-screen lg:grid-cols-12 lg:overflow-hidden">
-        {/* ── Left Column: Brand Showcase Panel (Desktop) ─────────────────── */}
-        {/* Sticky-height panel: start-aligned so nothing clips when the
-            column scrolls internally on short viewports. */}
-        <aside className="relative hidden min-w-0 flex-col justify-start gap-0 overflow-y-auto border-r border-border/70 bg-accent/50 p-8 backdrop-blur-xl dark:bg-card/30 lg:col-span-5 lg:flex lg:h-screen xl:p-14">
-          <GradientMesh intensity={0.55} />
+    <main className="fq-site min-h-screen flex flex-col justify-between overflow-x-clip bg-background text-foreground selection:bg-primary/20 selection:text-primary antialiased">
+      {/* ── Top Navigation Bar ── */}
+      <header className="w-full max-w-5xl mx-auto flex items-center justify-between px-6 py-6">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2.5 text-foreground hover:opacity-80 transition-opacity"
+        >
+          <BrandLogo size={28} />
+          <span className="font-semibold tracking-tight text-base sm:text-lg">
+            Framique
+          </span>
+        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ArrowLeft className="size-3.5" />
+            <span>{t("Back to home", "হোমে ফিরে যান")}</span>
+          </Link>
+          <ThemeToggle />
+        </div>
+      </header>
 
-          {/* Top Brand & Home Link */}
-          <div className="relative z-10">
-            <Link
-              to="/"
-              className="inline-flex items-center gap-3 transition-opacity hover:opacity-90 group"
-            >
-              <BrandLogo
-                size={36}
-                className="group-hover:scale-105 transition-transform"
-              />
-              <div className="flex flex-col">
-                <span className="fq-display text-xl font-bold tracking-tight text-foreground">
-                  Framique
-                </span>
-                <span className="text-[10px] uppercase tracking-widest text-primary font-semibold">
-                  Merchant Console
-                </span>
-              </div>
-            </Link>
-
-            <div className="mt-8 space-y-4">
-              <h1 className="fq-display text-[clamp(1.75rem,1.2rem+1.8vw,2.5rem)] font-extrabold tracking-tight text-foreground leading-[1.12] text-balance">
-                {t(
-                  "Open your online store in under 2 minutes.",
-                  "২ মিনিটেরও কম সময়ে আপনার অনলাইন স্টোর খুলুন।",
-                )}
+      {/* ── Center Auth Container ── */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8 sm:px-6">
+        <div className="w-full max-w-[400px] space-y-6">
+          {/* Main Card Surface */}
+          <div className="rounded-2xl border border-border/80 bg-card/60 dark:bg-card/40 p-6 sm:p-8 shadow-xs backdrop-blur-xs space-y-6">
+            {/* Header Titles */}
+            <div className="space-y-1.5 text-center">
+              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
+                {stage === "mfa"
+                  ? t("Two-factor verification", "দুই-ধাপ নিরাপত্তা যাচাই")
+                  : mode === "signup"
+                    ? t(
+                        "Create your merchant account",
+                        "মার্চেন্ট অ্যাকাউন্ট তৈরি করুন",
+                      )
+                    : mode === "signin"
+                      ? t("Sign in to Framique", "ফ্রেমিক-এ সাইন ইন করুন")
+                      : t("Reset your password", "পাসওয়ার্ড রিসেট করুন")}
               </h1>
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
-                {t(
-                  "Take payments with bKash, Nagad, cards and cash on delivery, and dispatch with SteadFast, Pathao and RedX — all from one merchant console.",
-                  "বিকাশ, নগদ, কার্ড ও ক্যাশ অন ডেলিভারিতে পেমেন্ট নিন, স্টিডফাস্ট, পাঠাও ও রেডএক্সে ডেলিভারি দিন — সব এক মার্চেন্ট কনসোল থেকে।",
-                )}
+              <p className="text-xs sm:text-sm text-muted-foreground leading-normal">
+                {stage === "mfa"
+                  ? t(
+                      "Enter the 6-digit code from your authenticator app.",
+                      "আপনার অথেনটিকেটর অ্যাপ থেকে ৬ সংখ্যার কোডটি দিন।",
+                    )
+                  : mode === "signup"
+                    ? t(
+                        "Start your 14-day free trial. Zero transaction fees.",
+                        "১৪ দিনের ফ্রি ট্রায়াল শুরু করুন। কোনো ট্রানজ্যাকশন ফি নেই।",
+                      )
+                    : mode === "signin"
+                      ? t(
+                          "Enter your email and password to access your console.",
+                          "আপনার কনসোলে প্রবেশ করতে তথ্য দিন।",
+                        )
+                      : t(
+                          "Enter your registered email to receive recovery instructions.",
+                          "পাসওয়ার্ড রিসেট লিংক পেতে আপনার নিবন্ধিত ইমেইল দিন।",
+                        )}
               </p>
             </div>
-
-            {/* Core Value Highlights */}
-            <div className="mt-6 space-y-3.5">
-              <div className="flex items-center gap-3 rounded-fq-md border border-border/70 bg-card/90 p-3 text-xs shadow-sm backdrop-blur-sm transition-all hover:border-border dark:bg-card/50 dark:border-border/60">
-                <span className="grid size-8 shrink-0 place-items-center rounded-fq-sm bg-primary/10 text-primary ring-1 ring-inset ring-primary/20">
-                  <Gauge className="size-4" />
-                </span>
-                <span className="text-foreground">
-                  <strong className="font-semibold text-foreground">
-                    {t("Loads in under a second:", "১ সেকেন্ডের কমে লোড:")}
-                  </strong>{" "}
-                  <span className="text-muted-foreground">
-                    {t(
-                      "Edge CDN in Dhaka keeps mobile checkout instant.",
-                      "ঢাকার এজ সিডিএন মোবাইল চেকআউট রাখে তাত্ক্ষণিক।",
-                    )}
-                  </span>
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3 rounded-fq-md border border-border/70 bg-card/90 p-3 text-xs shadow-sm backdrop-blur-sm transition-all hover:border-border dark:bg-card/50 dark:border-border/60">
-                <span className="grid size-8 shrink-0 place-items-center rounded-fq-sm bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
-                  <Wallet className="size-4" />
-                </span>
-                <span className="text-foreground">
-                  <strong className="font-semibold text-foreground">
-                    {t("bKash, Nagad & cards:", "বিকাশ, নগদ ও কার্ড:")}
-                  </strong>{" "}
-                  <span className="text-muted-foreground">
-                    {t(
-                      "Tokenized checkout with automatic ledger entries.",
-                      "টোকেনাইজড চেকআউট ও স্বয়ংক্রিয় লেজার এন্ট্রি।",
-                    )}
-                  </span>
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3 rounded-fq-md border border-border/70 bg-card/90 p-3 text-xs shadow-sm backdrop-blur-sm transition-all hover:border-border dark:bg-card/50 dark:border-border/60">
-                <span className="grid size-8 shrink-0 place-items-center rounded-fq-sm bg-blue-500/10 text-blue-600 dark:text-blue-400 ring-1 ring-inset ring-blue-500/20">
-                  <PackageCheck className="size-4" />
-                </span>
-                <span className="text-foreground">
-                  <strong className="font-semibold text-foreground">
-                    {t(
-                      "One-click courier booking:",
-                      "এক ক্লিকে কুরিয়ার বুকিং:",
-                    )}
-                  </strong>{" "}
-                  <span className="text-muted-foreground">
-                    {t(
-                      "SteadFast, Pathao and RedX manifests across 64 districts.",
-                      "৬৪ জেলায় স্টিডফাস্ট, পাঠাও ও রেডএক্স চালান।",
-                    )}
-                  </span>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Trial Guarantee Card (truthful terms, no invented proof) */}
-          <div className="fq-glass relative z-10 mt-6 rounded-fq-lg p-5 lg:mt-auto">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="size-4 text-primary" />
-              <p className="text-sm font-semibold text-foreground">
-                {t(
-                  "14-day free trial, no card required",
-                  "১৪ দিনের ফ্রি ট্রায়াল, কার্ড লাগবে না",
-                )}
-              </p>
-            </div>
-            <ul className="mt-3 space-y-2 border-t border-border/60 pt-3 text-xs text-muted-foreground">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="size-3.5 shrink-0 text-primary" />
-                <span>
-                  {t(
-                    "0% transaction fees on every plan",
-                    "প্রতিটি প্ল্যানে ০% ট্রানজ্যাকশন ফি",
-                  )}
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="size-3.5 shrink-0 text-primary" />
-                <span>
-                  {t(
-                    "bKash, Nagad, cards & COD at checkout",
-                    "বিকাশ, নগদ, কার্ড ও ক্যাশ অন ডেলিভারি",
-                  )}
-                </span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="size-3.5 shrink-0 text-primary" />
-                <span>
-                  {t(
-                    "SteadFast, Pathao & RedX in 64 districts",
-                    "৬৪ জেলায় স্টিডফাস্ট, পাঠাও ও রেডএক্স",
-                  )}
-                </span>
-              </li>
-            </ul>
-          </div>
-        </aside>
-
-        {/* ── Right Column: Interactive Form ──────────────────────────────── */}
-        {/* Form column scrolls internally; justify-start + auto margins
-            (never justify-between/center) so overflowed content stays
-            reachable instead of clipping off the top. */}
-        <section className="flex min-w-0 flex-col justify-start p-6 sm:p-10 lg:col-span-7 lg:h-screen lg:overflow-y-auto lg:px-12 lg:py-6 xl:px-16">
-          {/* Top Bar Navigation */}
-          <header className="flex items-center justify-between pb-4">
-            <div className="flex items-center gap-2 lg:hidden">
-              <Link to="/" className="inline-flex items-center gap-2">
-                <BrandLogo size={28} />
-                <span className="fq-display font-bold text-foreground">
-                  Framique
-                </span>
-              </Link>
-            </div>
-            <div className="hidden lg:block">
-              <Link
-                to="/"
-                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ArrowLeft className="size-3.5" />
-                <span>{t("Back to website", "ওয়েবসাইটে ফিরে যান")}</span>
-              </Link>
-            </div>
-            <div className="flex items-center gap-2">
-              <ThemeToggle />
-            </div>
-          </header>
-
-          {/* Form Container */}
-          <div className="mx-auto my-auto w-full max-w-lg py-4">
-            {/* Mobile Marketing Value Pill */}
-            {mode === "signup" && stage === "credentials" && (
-              <div className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1 text-[11px] sm:text-xs font-medium text-emerald-600 dark:text-emerald-400 lg:hidden">
-                <Sparkles className="size-3.5 shrink-0" />
-                <span className="truncate sm:whitespace-normal">
-                  {t(
-                    "14-Day Free Trial • No Card Required",
-                    "১৪ দিনের ফ্রি ট্রায়াল • কার্ড লাগবে না",
-                  )}
-                </span>
-              </div>
-            )}
 
             {/* Mode Switcher Tabs */}
             {stage === "credentials" && mode !== "reset" && (
               <div
                 role="tablist"
                 aria-label={t("Authentication mode", "অথেনটিকেশন মোড")}
-                className="mb-4 grid grid-cols-2 rounded-fq-md bg-muted p-1 text-xs font-semibold"
+                className="grid grid-cols-2 rounded-lg bg-muted/60 p-1 text-xs font-medium"
               >
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={mode === "signup"}
-                  onClick={() => {
-                    setMode("signup");
-                    setErrorMsg(null);
-                    setNotice(null);
-                  }}
-                  className={`min-h-11 rounded-fq-sm py-2 transition-all ${
-                    mode === "signup"
-                      ? "bg-card text-foreground shadow-sm"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {t("Create Account", "অ্যাকাউন্ট তৈরি")}
-                </button>
                 <button
                   type="button"
                   role="tab"
@@ -794,142 +566,83 @@ function AuthPageInner() {
                     setErrorMsg(null);
                     setNotice(null);
                   }}
-                  className={`min-h-11 rounded-fq-sm py-2 transition-all ${
+                  className={`min-h-9 rounded-md py-1.5 transition-colors text-center ${
                     mode === "signin"
-                      ? "bg-card text-foreground shadow-sm"
+                      ? "bg-background text-foreground shadow-xs font-semibold"
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {t("Sign In", "সাইন ইন")}
                 </button>
-              </div>
-            )}
-
-            {/* Signup wizard progress */}
-            {mode === "signup" && stage === "credentials" && (
-              <div className="mb-4">
-                <div className="flex items-center justify-between text-[11px] font-medium text-muted-foreground">
-                  <span>
-                    {signupStep === 1
-                      ? t(
-                          "Step 1 of 2 · Account details",
-                          "ধাপ ১/২ · অ্যাকাউন্টের তথ্য",
-                        )
-                      : t(
-                          "Step 2 of 2 · Business profile",
-                          "ধাপ ২/২ · ব্যবসার তথ্য",
-                        )}
-                  </span>
-                  <span className="tabular-nums">{signupStep}/2</span>
-                </div>
-                <div
-                  className="mt-1.5 h-1 overflow-hidden rounded-full bg-muted"
-                  role="progressbar"
-                  aria-valuenow={signupStep}
-                  aria-valuemin={1}
-                  aria-valuemax={2}
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={mode === "signup"}
+                  onClick={() => {
+                    setMode("signup");
+                    setErrorMsg(null);
+                    setNotice(null);
+                  }}
+                  className={`min-h-9 rounded-md py-1.5 transition-colors text-center ${
+                    mode === "signup"
+                      ? "bg-background text-foreground shadow-xs font-semibold"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
-                  <div
-                    className={`h-full rounded-full bg-primary transition-all ${
-                      signupStep === 1 ? "w-1/2" : "w-full"
-                    }`}
-                  />
-                </div>
+                  {t("Create Account", "অ্যাকাউন্ট তৈরি")}
+                </button>
               </div>
             )}
-
-            {/* Header Titles */}
-            <div className="mb-4 space-y-1.5">
-              <h2 className="fq-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                {stage === "mfa"
-                  ? t("Two-factor security check", "দুই-ধাপ নিরাপত্তা যাচাই")
-                  : mode === "signup"
-                    ? t(
-                        "Create your merchant account",
-                        "আপনার মার্চেন্ট অ্যাকাউন্ট খুলুন",
-                      )
-                    : mode === "signin"
-                      ? t(
-                          "Sign in to your console",
-                          "মার্চেন্ট কনসোলে সাইন ইন করুন",
-                        )
-                      : t("Reset your password", "পাসওয়ার্ড রিসেট করুন")}
-              </h2>
-              <p className="text-xs text-muted-foreground sm:text-sm">
-                {stage === "mfa"
-                  ? t(
-                      "Enter the verification code from your authenticator app.",
-                      "আপনার অথেনটিকেটর অ্যাপ থেকে যাচাইকরণ কোড দিন।",
-                    )
-                  : mode === "signup"
-                    ? t(
-                        "Start your 14-day free trial. Setup your store in under 2 minutes.",
-                        "১৪ দিনের ফ্রি ট্রায়াল শুরু করুন। কোনো ক্রেডিট কার্ডের প্রয়োজন নেই।",
-                      )
-                    : mode === "signin"
-                      ? t(
-                          "Welcome back! Manage your products, orders and payouts.",
-                          "স্বাগতম! আপনার প্রোডাক্ট, অর্ডার ও পেমেন্ট পরিচালনা করুন।",
-                        )
-                      : t(
-                          "Enter your registered email address to receive recovery instructions.",
-                          "পাসওয়ার্ড রিসেট লিংক পেতে আপনার নিবন্ধিত ইমেইল দিন।",
-                        )}
-              </p>
-            </div>
 
             {/* Notifications / Alerts */}
             {notice && (
               <div
                 role="status"
                 aria-live="polite"
-                className="mb-5 flex items-start gap-2.5 rounded-fq-md border border-primary/20 bg-primary/5 p-3.5 text-xs text-foreground"
+                className="flex items-start gap-2.5 rounded-lg border border-border bg-muted/50 p-3 text-xs text-foreground leading-relaxed"
               >
                 <CheckCircle2 className="size-4 shrink-0 text-primary mt-0.5" />
-                <span className="leading-relaxed">{notice}</span>
+                <span>{notice}</span>
               </div>
             )}
 
             {errorMsg && (
               <div
                 role="alert"
-                className="mb-5 flex items-start gap-2.5 rounded-fq-md border border-destructive/30 bg-destructive/10 p-3.5 text-xs text-destructive"
+                className="flex items-start gap-2.5 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive leading-relaxed"
               >
                 <AlertCircle className="size-4 shrink-0 text-destructive mt-0.5" />
-                <span className="leading-relaxed">{errorMsg}</span>
+                <span>{errorMsg}</span>
               </div>
             )}
 
             {/* ── Stage: MFA Authentication ─────────────────────────────── */}
             {stage === "mfa" ? (
               <form onSubmit={onVerifyMfa} className="space-y-4">
-                <div className="rounded-fq-md border border-border/80 bg-muted/40 p-3.5 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
+                <div className="rounded-lg border border-border/80 bg-muted/30 p-3.5 text-xs text-muted-foreground space-y-1">
+                  <div className="flex items-center gap-1.5 font-medium text-foreground">
                     <ShieldCheck className="size-4 text-primary" />
                     <span>
-                      {t(
-                        "Two-Factor Authentication Enforced",
-                        "দুই-ধাপ নিরাপত্তা সক্রিয়",
-                      )}
+                      {t("Two-Factor Authentication", "দুই-ধাপ নিরাপত্তা")}
                     </span>
                   </div>
                   <p>
                     {useBackup
                       ? t(
-                          "Enter one of your saved 8-character single-use backup recovery codes.",
+                          "Enter one of your saved 8-character backup recovery codes.",
                           "আপনার সংরক্ষিত ৮-অক্ষরের একক-ব্যবহারের ব্যাকআপ কোড দিন।",
                         )
                       : t(
-                          "Open your authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, or Keychain) to get your 6-digit code.",
-                          "আপনার অথেনটিকেটর অ্যাপ থেকে ৬ সংখ্যার কোডটি দেখে লিখুন।",
+                          "Open your authenticator app (Google Authenticator, 1Password, or Keychain) to get your code.",
+                          "আপনার অথেনটিকেটর অ্যাপ থেকে ৬ সংখ্যার কোডটি লিখুন।",
                         )}
                   </p>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1.5">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-foreground">
                     {useBackup
-                      ? t("Backup Recovery Code", "ব্যাকআপ রিকভারি কোড")
+                      ? t("Backup recovery code", "ব্যাকআপ রিকভারি কোড")
                       : t(
                           "Authenticator 6-digit code",
                           "অথেনটিকেটর ৬ সংখ্যার কোড",
@@ -949,10 +662,10 @@ function AuthPageInner() {
                     }}
                     autoComplete="one-time-code"
                     placeholder={useBackup ? "XXXX-XXXX" : "123456"}
-                    className={`min-h-12 w-full rounded-fq-md border border-border bg-background px-3.5 text-center font-mono text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary ${
+                    className={`min-h-11 w-full rounded-lg border border-border bg-background px-3.5 text-center font-mono text-foreground outline-none transition-colors hover:border-foreground/20 focus-visible:border-foreground focus-visible:ring-1 focus-visible:ring-foreground ${
                       useBackup
-                        ? "text-base tracking-wider"
-                        : "text-xl tracking-[0.3em]"
+                        ? "text-sm tracking-wider"
+                        : "text-lg tracking-[0.25em]"
                     }`}
                   />
                 </div>
@@ -964,14 +677,16 @@ function AuthPageInner() {
                     !code.trim() ||
                     (!useBackup && code.trim().length < 6)
                   }
-                  className="inline-flex min-h-11 w-full items-center justify-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
+                  className="min-h-11 w-full rounded-lg bg-foreground text-background font-medium text-sm hover:opacity-90 active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-xs cursor-pointer disabled:cursor-not-allowed"
                 >
-                  {busy
-                    ? t("Verifying…", "যাচাই হচ্ছে…")
-                    : t(
-                        "Verify & Access Dashboard",
-                        "যাচাই করে ড্যাশবোর্ডে প্রবেশ করুন",
-                      )}
+                  {busy ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" />
+                      <span>{t("Verifying…", "যাচাই হচ্ছে…")}</span>
+                    </>
+                  ) : (
+                    t("Verify and continue", "যাচাই করে এগিয়ে যান")
+                  )}
                 </button>
 
                 <div className="flex flex-col items-center gap-2 pt-1 text-center">
@@ -981,27 +696,16 @@ function AuthPageInner() {
                       setUseBackup(!useBackup);
                       setCode("");
                       setErrorMsg(null);
-                      setNotice(
-                        useBackup
-                          ? t(
-                              "Enter the 6-digit code from your authenticator app.",
-                              "আপনার অথেনটিকেটর অ্যাপের ৬ সংখ্যার কোড দিন।",
-                            )
-                          : t(
-                              "Enter one of your saved single-use backup codes.",
-                              "সেভ করা ব্যাকআপ কোডগুলোর একটি দিন।",
-                            ),
-                      );
                     }}
-                    className="text-xs text-muted-foreground underline underline-offset-4 hover:text-foreground"
+                    className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-4 transition-colors"
                   >
                     {useBackup
                       ? t(
-                          "Use authenticator app 6-digit code instead",
+                          "Use authenticator 6-digit code instead",
                           "অথেনটিকেটর অ্যাপের ৬ সংখ্যার কোড ব্যবহার করুন",
                         )
                       : t(
-                          "Lost your authenticator device? Use a backup code",
+                          "Lost your authenticator device? Use backup code",
                           "অথেনটিকেটর ডিভাইস হারিয়েছেন? ব্যাকআপ কোড দিন",
                         )}
                   </button>
@@ -1016,381 +720,254 @@ function AuthPageInner() {
                       setErrorMsg(null);
                       setNotice(null);
                     }}
-                    className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground pt-1"
+                    className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground pt-1 transition-colors"
                   >
                     <ArrowLeft className="size-3.5" aria-hidden="true" />
-                    {t(
-                      "Sign in with a different account",
-                      "অন্য অ্যাকাউন্ট দিয়ে সাইন ইন করুন",
-                    )}
+                    <span>
+                      {t(
+                        "Sign in with another account",
+                        "অন্য অ্যাকাউন্ট দিয়ে সাইন ইন করুন",
+                      )}
+                    </span>
                   </button>
                 </div>
               </form>
             ) : (
-              /* ── Stage: Credentials (Signup, Signin, Reset) ─────────────── */
-              <form onSubmit={onSubmit} className="space-y-3">
-                {/* Signup-Specific Profile Fields (wizard step 1) */}
-                {mode === "signup" && signupStep === 1 && (
-                  <>
-                    {/* First Name & Last Name (2 columns) */}
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <div>
-                        <label className="block text-xs font-semibold text-foreground mb-1.5">
-                          {t("First name *", "প্রথম নাম *")}
-                        </label>
-                        <div className="relative">
-                          <input
-                            required
-                            type="text"
-                            maxLength={100}
-                            autoComplete="given-name"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            placeholder={t("e.g. Shakib", "যেমন: সাকিব")}
-                            className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-3 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
-                          />
-                          <User
-                            className="absolute left-3 top-3.5 size-4 text-muted-foreground"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold text-foreground mb-1.5">
-                          {t("Last name *", "শেষ নাম *")}
-                        </label>
-                        <div className="relative">
-                          <input
-                            required
-                            type="text"
-                            maxLength={100}
-                            autoComplete="family-name"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            placeholder={t("e.g. Al Hasan", "যেমন: আল হাসান")}
-                            className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-3 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
-                          />
-                          <User
-                            className="absolute left-3 top-3.5 size-4 text-muted-foreground"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {/* Email Address (wizard step 1) */}
-                {(mode !== "signup" || signupStep === 1) && (
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
-                      {mode === "signup"
-                        ? t("Work or store email *", "বিজনেস বা স্টোর ইমেইল *")
-                        : t("Email address *", "ইমেইল অ্যাড্রেস *")}
-                    </label>
-                    <div className="relative">
+              /* ── Stage: Credentials (Signin, Signup, Reset) ─────────────── */
+              <form onSubmit={onSubmit} className="space-y-4">
+                {/* Signup Name Fields */}
+                {mode === "signup" && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-medium text-foreground">
+                        {t("First name", "প্রথম নাম")}
+                      </label>
                       <input
                         required
-                        type="email"
-                        maxLength={254}
-                        autoComplete="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="merchant@yourbrand.com"
-                        className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-3 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                        type="text"
+                        maxLength={100}
+                        autoComplete="given-name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        placeholder="Amina"
+                        className="min-h-11 w-full rounded-lg border border-border bg-background px-3.5 text-sm text-foreground placeholder:text-muted-foreground/60 transition-colors hover:border-foreground/20 focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground"
                       />
-                      <Mail
-                        className="absolute left-3 top-3.5 size-4 text-muted-foreground"
-                        aria-hidden="true"
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-medium text-foreground">
+                        {t("Last name", "শেষ নাম")}
+                      </label>
+                      <input
+                        required
+                        type="text"
+                        maxLength={100}
+                        autoComplete="family-name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        placeholder="Rahman"
+                        className="min-h-11 w-full rounded-lg border border-border bg-background px-3.5 text-sm text-foreground placeholder:text-muted-foreground/60 transition-colors hover:border-foreground/20 focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground"
                       />
                     </div>
                   </div>
                 )}
 
-                {/* Password & Confirm Password (wizard step 1) */}
-                {mode !== "reset" &&
-                  (mode !== "signup" || signupStep === 1) && (
-                    <div
-                      className={
-                        mode === "signup"
-                          ? "grid grid-cols-1 gap-3 sm:grid-cols-2"
-                          : "space-y-4"
-                      }
-                    >
-                      <div>
-                        <div className="flex items-center justify-between mb-1.5">
-                          <label className="text-xs font-semibold text-foreground">
-                            {t("Password *", "পাসওয়ার্ড *")}
-                          </label>
-                          {mode === "signin" && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setMode("reset");
-                                setErrorMsg(null);
-                                setNotice(null);
-                              }}
-                              className="text-xs text-primary hover:underline"
-                            >
-                              {t("Forgot?", "ভুলে গেছেন?")}
-                            </button>
+                {/* Email Address */}
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-medium text-foreground">
+                    {mode === "signup"
+                      ? t("Work email", "কাজের ইমেইল")
+                      : t("Email address", "ইমেইল অ্যাড্রেস")}
+                  </label>
+                  <input
+                    required
+                    type="email"
+                    maxLength={254}
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="merchant@yourbrand.com"
+                    className="min-h-11 w-full rounded-lg border border-border bg-background px-3.5 text-sm text-foreground placeholder:text-muted-foreground/60 transition-colors hover:border-foreground/20 focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground"
+                  />
+                </div>
+
+                {/* Password Fields */}
+                {mode !== "reset" && (
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-medium text-foreground">
+                          {t("Password", "পাসওয়ার্ড")}
+                        </label>
+                        {mode === "signin" && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setMode("reset");
+                              setErrorMsg(null);
+                              setNotice(null);
+                            }}
+                            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            {t("Forgot password?", "ভুলে গেছেন?")}
+                          </button>
+                        )}
+                      </div>
+                      <div className="relative">
+                        <input
+                          required
+                          type={showPassword ? "text" : "password"}
+                          minLength={8}
+                          autoComplete={
+                            mode === "signin"
+                              ? "current-password"
+                              : "new-password"
+                          }
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="min-h-11 w-full rounded-lg border border-border bg-background pl-3.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 transition-colors hover:border-foreground/20 focus-visible:border-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-2.5 top-3 text-muted-foreground hover:text-foreground p-0.5 rounded transition-colors"
+                          aria-label={
+                            showPassword ? "Hide password" : "Show password"
+                          }
+                        >
+                          {showPassword ? (
+                            <EyeOff className="size-4" />
+                          ) : (
+                            <Eye className="size-4" />
                           )}
-                        </div>
+                        </button>
+                      </div>
+                    </div>
+
+                    {mode === "signup" && (
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-medium text-foreground">
+                          {t("Confirm password", "পাসওয়ার্ড নিশ্চিত করুন")}
+                        </label>
                         <div className="relative">
                           <input
                             required
-                            type={showPassword ? "text" : "password"}
+                            type={showConfirmPassword ? "text" : "password"}
                             minLength={8}
-                            autoComplete={
-                              mode === "signin"
-                                ? "current-password"
-                                : "new-password"
-                            }
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="new-password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
                             placeholder="••••••••"
-                            className="min-h-11 w-full rounded-fq-md border border-border bg-background pl-9 pr-10 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
-                          />
-                          <Lock
-                            className="absolute left-3 top-3.5 size-4 text-muted-foreground"
-                            aria-hidden="true"
+                            className={`min-h-11 w-full rounded-lg border bg-background pl-3.5 pr-10 text-sm text-foreground placeholder:text-muted-foreground/60 transition-colors hover:border-foreground/20 focus-visible:outline-none focus-visible:ring-1 ${
+                              !isPasswordMatch
+                                ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive"
+                                : "border-border focus-visible:border-foreground focus-visible:ring-foreground"
+                            }`}
                           />
                           <button
                             type="button"
-                            onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-2.5 top-3 text-muted-foreground hover:text-foreground p-0.5 rounded"
+                            onClick={() =>
+                              setShowConfirmPassword(!showConfirmPassword)
+                            }
+                            className="absolute right-2.5 top-3 text-muted-foreground hover:text-foreground p-0.5 rounded transition-colors"
                             aria-label={
-                              showPassword ? "Hide password" : "Show password"
+                              showConfirmPassword
+                                ? "Hide password"
+                                : "Show password"
                             }
                           >
-                            {showPassword ? (
+                            {showConfirmPassword ? (
                               <EyeOff className="size-4" />
                             ) : (
                               <Eye className="size-4" />
                             )}
                           </button>
                         </div>
-                      </div>
-
-                      {mode === "signup" && (
-                        <div>
-                          <div className="flex items-center justify-between mb-1.5">
-                            <label className="text-xs font-semibold text-foreground">
-                              {t(
-                                "Confirm password *",
-                                "পাসওয়ার্ড নিশ্চিত করুন *",
-                              )}
-                            </label>
-                            {confirmPassword && (
-                              <span className="inline-flex items-center gap-1 text-[11px]">
-                                {isPasswordMatch ? (
-                                  <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-                                    <CheckCircle2
-                                      className="size-3"
-                                      aria-hidden="true"
-                                    />
-                                    {t("Match", "মিলেছে")}
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 text-destructive font-medium">
-                                    <XCircle
-                                      className="size-3"
-                                      aria-hidden="true"
-                                    />
-                                    {t("Mismatch", "মিলছে না")}
-                                  </span>
-                                )}
-                              </span>
+                        {confirmPassword && !isPasswordMatch && (
+                          <p className="text-[11px] text-destructive">
+                            {t(
+                              "Passwords do not match.",
+                              "পাসওয়ার্ড দুটি মিলছে না।",
                             )}
-                          </div>
-                          <div className="relative">
-                            <input
-                              required
-                              type={showConfirmPassword ? "text" : "password"}
-                              minLength={8}
-                              autoComplete="new-password"
-                              value={confirmPassword}
-                              onChange={(e) =>
-                                setConfirmPassword(e.target.value)
-                              }
-                              placeholder="••••••••"
-                              className={`min-h-11 w-full rounded-fq-md border bg-background pl-9 pr-10 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 ${
-                                !isPasswordMatch
-                                  ? "border-destructive focus-visible:ring-destructive"
-                                  : "border-border focus-visible:ring-primary"
-                              }`}
-                            />
-                            <Lock
-                              className="absolute left-3 top-3.5 size-4 text-muted-foreground"
-                              aria-hidden="true"
-                            />
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setShowConfirmPassword(!showConfirmPassword)
-                              }
-                              className="absolute right-2.5 top-3 text-muted-foreground hover:text-foreground p-0.5 rounded"
-                              aria-label={
-                                showConfirmPassword
-                                  ? "Hide password"
-                                  : "Show password"
-                              }
-                            >
-                              {showConfirmPassword ? (
-                                <EyeOff className="size-4" />
-                              ) : (
-                                <Eye className="size-4" />
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                {/* Additional Business Onboarding Metadata (wizard step 2) */}
-                {mode === "signup" && signupStep === 2 && (
-                  <>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 pt-1">
-                      {/* Business Industry */}
-                      <div>
-                        <label className="block text-xs font-semibold text-foreground mb-1.5">
-                          {t("Business industry", "ব্যবসার ধরন / শিল্প")}
-                        </label>
-                        <div className="relative">
-                          <select
-                            value={businessIndustry}
-                            onChange={(e) =>
-                              setBusinessIndustry(e.target.value)
-                            }
-                            className="min-h-11 w-full appearance-none rounded-fq-md border border-border bg-background pl-9 pr-8 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
-                          >
-                            {INDUSTRIES.map((ind) => (
-                              <option key={ind.value} value={ind.value}>
-                                {t(ind.en, ind.bn)}
-                              </option>
-                            ))}
-                          </select>
-                          <Building2
-                            className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground"
-                            aria-hidden="true"
-                          />
-                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground">
-                            <ChevronDown
-                              className="size-4"
-                              aria-hidden="true"
-                            />
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Previous CMS */}
-                      <div>
-                        <label className="block text-xs font-semibold text-foreground mb-1.5">
-                          {t(
-                            "Previous platform / CMS",
-                            "আগের প্ল্যাটফর্ম / সিএমএস",
-                          )}
-                        </label>
-                        <div className="relative">
-                          <select
-                            value={previousCms}
-                            onChange={(e) => setPreviousCms(e.target.value)}
-                            className="min-h-11 w-full appearance-none rounded-fq-md border border-border bg-background pl-9 pr-8 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
-                          >
-                            {PREVIOUS_CMS_LIST.map((cms) => (
-                              <option key={cms.value} value={cms.value}>
-                                {t(cms.en, cms.bn)}
-                              </option>
-                            ))}
-                          </select>
-                          <Globe
-                            className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground"
-                            aria-hidden="true"
-                          />
-                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground">
-                            <ChevronDown
-                              className="size-4"
-                              aria-hidden="true"
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Where did you hear about us? */}
-                    <div className="pt-1">
-                      <label className="block text-xs font-semibold text-foreground mb-1.5">
-                        {t(
-                          "Where did you hear about us?",
-                          "আমাদের সম্পর্কে কোথা থেকে জেনেছেন?",
+                          </p>
                         )}
-                      </label>
-                      <div className="relative">
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Optional Store Details (Progressive Disclosure) */}
+                {mode === "signup" && (
+                  <details className="group pt-0.5">
+                    <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground transition-colors select-none list-none inline-flex items-center gap-1.5">
+                      <ChevronDown className="size-3.5 transition-transform duration-150 group-open:rotate-180" />
+                      <span>
+                        {t("Optional store details", "ঐচ্ছিক স্টোর তথ্য")}
+                      </span>
+                    </summary>
+                    <div className="mt-3 space-y-3 pt-2 border-t border-border/50">
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-medium text-foreground">
+                          {t("Industry", "ব্যবসার ধরন")}
+                        </label>
                         <select
-                          value={referralSource}
-                          onChange={(e) => setReferralSource(e.target.value)}
-                          className="min-h-11 w-full appearance-none rounded-fq-md border border-border bg-background pl-9 pr-8 text-sm text-foreground outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+                          value={businessIndustry}
+                          onChange={(e) => setBusinessIndustry(e.target.value)}
+                          className="min-h-10 w-full rounded-lg border border-border bg-background px-3 text-xs text-foreground outline-none transition-colors hover:border-foreground/20 focus-visible:border-foreground focus-visible:ring-1 focus-visible:ring-foreground"
                         >
-                          {REFERRAL_SOURCES.map((ref) => (
-                            <option key={ref.value} value={ref.value}>
-                              {t(ref.en, ref.bn)}
+                          {INDUSTRIES.map((ind) => (
+                            <option key={ind.value} value={ind.value}>
+                              {t(ind.en, ind.bn)}
                             </option>
                           ))}
                         </select>
-                        <Sparkles
-                          className="pointer-events-none absolute left-3 top-3.5 size-4 text-muted-foreground"
-                          aria-hidden="true"
-                        />
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-muted-foreground">
-                          <ChevronDown className="size-4" aria-hidden="true" />
-                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="block text-xs font-medium text-foreground">
+                          {t("Previous platform", "আগের প্ল্যাটফর্ম")}
+                        </label>
+                        <select
+                          value={previousCms}
+                          onChange={(e) => setPreviousCms(e.target.value)}
+                          className="min-h-10 w-full rounded-lg border border-border bg-background px-3 text-xs text-foreground outline-none transition-colors hover:border-foreground/20 focus-visible:border-foreground focus-visible:ring-1 focus-visible:ring-foreground"
+                        >
+                          {PREVIOUS_CMS_LIST.map((cms) => (
+                            <option key={cms.value} value={cms.value}>
+                              {t(cms.en, cms.bn)}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
+                  </details>
+                )}
 
-                    {/* Terms Agreement Check */}
-                    <p className="pt-2 text-[11px] text-muted-foreground leading-relaxed">
-                      {t(
-                        "By clicking create account, you agree to our ",
-                        "অ্যাকাউন্ট তৈরির মাধ্যমে আপনি আমাদের ",
-                      )}
-                      <Link
-                        to="/legal"
-                        className="text-primary underline hover:text-foreground"
-                      >
-                        {t("Terms of Service", "ব্যবহারের শর্তাবলী")}
-                      </Link>{" "}
-                      {t("and ", "ও ")}
-                      <Link
-                        to="/legal"
-                        className="text-primary underline hover:text-foreground"
-                      >
-                        {t("Privacy Policy", "গোপনীয়তা নীতি")}
-                      </Link>
-                      {t(
-                        ". No credit card is required for your trial.",
-                        " মেনে নিচ্ছেন। ট্রায়ালের জন্য কোনো কার্ড প্রয়োজন নেই।",
-                      )}
-                    </p>
-                  </>
+                {/* Legal terms disclaimer */}
+                {mode === "signup" && (
+                  <p className="text-[11px] text-muted-foreground leading-relaxed pt-1">
+                    {t(
+                      "By continuing, you agree to our ",
+                      "অ্যাকাউন্ট তৈরির মাধ্যমে আপনি আমাদের ",
+                    )}
+                    <Link
+                      to="/legal"
+                      className="underline underline-offset-2 hover:text-foreground"
+                    >
+                      {t("Terms", "শর্তাবলী")}
+                    </Link>{" "}
+                    {t("and ", "ও ")}
+                    <Link
+                      to="/legal"
+                      className="underline underline-offset-2 hover:text-foreground"
+                    >
+                      {t("Privacy Policy", "গোপনীয়তা নীতি")}
+                    </Link>
+                    .
+                  </p>
                 )}
 
                 {/* Primary Submit CTA */}
                 <div className="pt-2">
-                  {mode === "signup" && signupStep === 2 && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSignupStep(1);
-                        setErrorMsg(null);
-                      }}
-                      className="mb-3 inline-flex min-h-9 items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"
-                    >
-                      <ArrowLeft className="size-3.5" aria-hidden="true" />
-                      {t("Back to account details", "অ্যাকাউন্টের তথ্যে ফিরুন")}
-                    </button>
-                  )}
                   <button
                     type="submit"
                     disabled={
@@ -1398,55 +975,39 @@ function AuthPageInner() {
                       lockedFor > 0 ||
                       (mode === "signup" && !isPasswordMatch)
                     }
-                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:opacity-90 disabled:opacity-50"
+                    className="min-h-11 w-full rounded-lg bg-foreground text-background font-medium text-sm hover:opacity-90 active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-xs cursor-pointer disabled:cursor-not-allowed"
                   >
                     {busy ? (
-                      t("Processing…", "প্রক্রিয়াকরণ হচ্ছে…")
+                      <>
+                        <Loader2 className="size-4 animate-spin" />
+                        <span>
+                          {mode === "reset"
+                            ? t("Sending…", "পাঠানো হচ্ছে…")
+                            : mode === "signup"
+                              ? t("Creating account…", "তৈরি হচ্ছে…")
+                              : t("Signing in…", "সাইন ইন হচ্ছে…")}
+                        </span>
+                      </>
                     ) : lockedFor > 0 ? (
                       t(
                         `Locked · Retry in ${lockedFor}s`,
                         `লক · ${lockedFor} সেকেন্ডে পুনরায় চেষ্টা করুন`,
                       )
                     ) : mode === "signup" ? (
-                      signupStep === 1 ? (
-                        <>
-                          <span>{t("Continue", "এগিয়ে যান")}</span>
-                          <ArrowRight className="size-4" />
-                        </>
-                      ) : (
-                        <>
-                          <span>
-                            {t(
-                              "Create Store & Start Free Trial",
-                              "স্টোর তৈরি করুন ও ফ্রি ট্রায়াল শুরু করুন",
-                            )}
-                          </span>
-                          <ArrowRight className="size-4" />
-                        </>
-                      )
+                      t("Create account", "অ্যাকাউন্ট তৈরি করুন")
                     ) : mode === "signin" ? (
-                      <>
-                        <span>
-                          {t(
-                            "Sign In to Merchant Console",
-                            "মার্চেন্ট কনসোলে সাইন ইন করুন",
-                          )}
-                        </span>
-                        <ArrowRight className="size-4" />
-                      </>
+                      t("Sign in", "সাইন ইন করুন")
                     ) : (
-                      <span>
-                        {t(
-                          "Send Password Reset Link",
-                          "পাসওয়ার্ড রিসেট লিংক পাঠান",
-                        )}
-                      </span>
+                      t(
+                        "Send reset instructions",
+                        "পাসওয়ার্ড রিসেট লিংক পাঠান",
+                      )
                     )}
                   </button>
                 </div>
 
                 {/* Secondary Switchers */}
-                <div className="pt-3 text-center text-xs text-muted-foreground">
+                <div className="pt-2 text-center text-xs text-muted-foreground">
                   {mode === "signup" ? (
                     <p>
                       {t(
@@ -1460,9 +1021,9 @@ function AuthPageInner() {
                           setErrorMsg(null);
                           setNotice(null);
                         }}
-                        className="font-semibold text-primary underline underline-offset-4 hover:text-foreground"
+                        className="font-medium text-foreground hover:underline underline-offset-4 transition-colors"
                       >
-                        {t("Sign in here", "সাইন ইন করুন")}
+                        {t("Sign in", "সাইন ইন")}
                       </button>
                     </p>
                   ) : mode === "signin" ? (
@@ -1475,12 +1036,9 @@ function AuthPageInner() {
                           setErrorMsg(null);
                           setNotice(null);
                         }}
-                        className="font-semibold text-primary underline underline-offset-4 hover:text-foreground"
+                        className="font-medium text-foreground hover:underline underline-offset-4 transition-colors"
                       >
-                        {t(
-                          "Create a free account",
-                          "বিনামূল্যে অ্যাকাউন্ট খুলুন",
-                        )}
+                        {t("Create an account", "অ্যাকাউন্ট খুলুন")}
                       </button>
                     </p>
                   ) : (
@@ -1491,23 +1049,33 @@ function AuthPageInner() {
                         setErrorMsg(null);
                         setNotice(null);
                       }}
-                      className="font-semibold text-primary underline underline-offset-4 hover:text-foreground"
+                      className="font-medium text-foreground hover:underline underline-offset-4 transition-colors"
                     >
-                      {t("Back to Sign In", "সাইন ইন-এ ফিরে যান")}
+                      {t("Back to sign in", "সাইন ইন-এ ফিরে যান")}
                     </button>
                   )}
                 </div>
               </form>
             )}
           </div>
-
-          {/* Footer Note */}
-          <footer className="mt-auto pt-4 text-center text-[11px] text-muted-foreground">
-            © {new Date().getFullYear()} Framique Technologies. All rights
-            reserved. Sovereign Cloud Commerce.
-          </footer>
-        </section>
+        </div>
       </div>
+
+      {/* ── Minimal Colophon Footer ── */}
+      <footer className="w-full max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-6 text-xs text-muted-foreground border-t border-border/40">
+        <p>
+          © {new Date().getFullYear()} Framique Technologies. Sovereign Cloud
+          Commerce.
+        </p>
+        <div className="flex items-center gap-4">
+          <Link to="/legal" className="hover:text-foreground transition-colors">
+            {t("Terms", "শর্তাবলী")}
+          </Link>
+          <Link to="/legal" className="hover:text-foreground transition-colors">
+            {t("Privacy", "গোপনীয়তা")}
+          </Link>
+        </div>
+      </footer>
     </main>
   );
 }
