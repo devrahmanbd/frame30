@@ -145,7 +145,10 @@ export function decideHostResolution(
 ): StorefrontHostResolution | null {
   if (!hostname) return null;
   if (isPlatformHost(hostname)) return null;
-  if (!row || !(SERVABLE_DOMAIN_STATUSES as readonly string[]).includes(row.status))
+  if (
+    !row ||
+    !(SERVABLE_DOMAIN_STATUSES as readonly string[]).includes(row.status)
+  )
     return null;
   if (!row.merchantSlug) return null;
   return {
@@ -235,6 +238,66 @@ export function decideStoreRedirect(
   return `https://${primary}/`;
 }
 
+/**
+ * Custom-domain-only cutover: path-based storefront URLs (`/store/*`) served
+ * on a platform host are an abuse surface (free platform-trust hosting for
+ * malicious stores) and must not serve. Pure gate decision:
+ *
+ * - platform host + `/store/...` catalog path → true (caller answers 410)
+ * - token-gated order flows (`/track`, `/order/...`) → false (buyers need
+ *   email/SMS links; they carry order tokens, not browsable catalog)
+ * - draft preview (`preview_token`) → false (token-verified downstream)
+ * - loopback dev (`localhost`, `127.0.0.1`) → false (local development)
+ * - non-store paths, custom hosts, null host → false
+ */
+const PATH_STORE_ALLOWLIST = new Set(["track", "order"]);
+
+export function isBlockedPathStorefront(
+  hostname: string | null | undefined,
+  pathname: string,
+  hasPreviewToken: boolean,
+): boolean {
+  if (!hostname || hasPreviewToken) return false;
+  const host = hostname.toLowerCase();
+  if (host === "localhost" || host === "127.0.0.1") return false;
+  if (!isPlatformHost(host)) return false;
+  const match = /^\/store\/[^/]+(?:\/([^/?#]+))?/.exec(pathname);
+  if (!match) return false;
+  const segment = (match[1] ?? "").toLowerCase();
+  if (!segment) return true; // index
+  return !PATH_STORE_ALLOWLIST.has(segment);
+}
+
+/**
+ * Client-safe host-shape check — re-exported here for server consumers.
+ * Canonical home is `./storefront-url` (importable from client bundles).
+ */
+export { isCustomHostPath } from "./storefront-url";
+
+export function decideStoreRedirectForPath(
+  primaryHost: string | null,
+  requestHost: string | null,
+  subpath: string,
+): string | null {
+  if (!primaryHost) return null;
+  const primary = primaryHost.toLowerCase();
+  if (requestHost && requestHost.toLowerCase() === primary) return null;
+  let path = subpath || "/";
+  // Split off query/fragment, normalize leading slash, collapse doubles.
+  let suffix = "";
+  const qIdx = path.search(/[?#]/);
+  if (qIdx >= 0) {
+    suffix = path.slice(qIdx);
+    path = path.slice(0, qIdx);
+  }
+  if (!path.startsWith("/")) path = `/${path}`;
+  path = path.replace(/\/{2,}/g, "/");
+  // Strip a leading `/store/<slug>` prefix — custom hosts serve at `/`.
+  path = path.replace(/^\/store\/[^/]+(?=\/|$)/, "") || "/";
+  if (!path.startsWith("/")) path = `/${path}`;
+  return `https://${primary}${path}${suffix}`;
+}
+
 /** Active primary custom-domain hostname for a merchant id, or null. Cached 300s. */
 export async function primaryHostForMerchant(
   merchantId: string,
@@ -286,6 +349,7 @@ export async function resolveStoreRedirectForSlug(
 }
 
 /**
+<<<<<<< HEAD
  * Custom-domain-only cutover: path-based storefront URLs (`/store/*`) served
  * on a platform host are an abuse surface (free platform-trust hosting for
  * malicious stores) and must not serve. Pure gate decision:

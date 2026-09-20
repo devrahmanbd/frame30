@@ -488,6 +488,18 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
     en: "Points balance and the reward the shopper is close to.",
     bn: "পয়েন্ট ব্যালান্স ও কাছাকাছি থাকা রিওয়ার্ড।",
   },
+  rewards_club: {
+    en: "Membership tiers and join button for the store rewards club.",
+    bn: "স্টোর রিওয়ার্ডস ক্লাবের সদস্যপদ স্তর ও যোগদান বাটন।",
+  },
+  wedding_shop: {
+    en: "Curated bridal, groom and festive gifting collections.",
+    bn: "কনে, বর ও উৎসব উপহারের বাছাই করা কালেকশন।",
+  },
+  gift_finder: {
+    en: "Occasion picker that links straight into matching gift search.",
+    bn: "উপলক্ষ বাছাই — মিলন্ত উপহার সার্চে সরাসরি নিয়ে যায়।",
+  },
   discount_badge: {
     en: "The taka saving next to the percent-off on a deal.",
     bn: "ছাড়ের শতাংশের পাশে টাকায় সাশ্রয়।",

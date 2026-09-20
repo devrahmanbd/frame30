@@ -149,12 +149,12 @@ describe("imageless product surfaces", () => {
     expect(html).not.toContain("bg-muted");
   });
 
-  it("StoreImage renders a tile when both image and fallback are missing", () => {
+  it("StoreImage renders a placeholder image when both image and fallback are missing", () => {
     const html = markup(
       <StoreImage image={null} fallbackSrc={null} alt="Rupaboti Balm" seed="product-9" className="size-full" />,
     );
-    expect(html).toContain("data-tile-art");
-    expect(html).not.toContain("<img");
+    expect(html).toContain("/api/public/ph/product-9");
+    expect(html).toContain('alt="Rupaboti Balm"');
     expect(html).not.toContain("bg-muted");
   });
 

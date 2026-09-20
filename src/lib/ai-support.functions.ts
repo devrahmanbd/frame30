@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import type { DeepWikiCategory } from "./deepwiki-dataset";
 
 const askSchema = z.object({
   slug: z.string().min(1).max(80),
@@ -209,48 +208,7 @@ export const updateAiGatewayConfigFn = createServerFn({ method: "POST" })
     );
   });
 
-/* ------------------------------------------------------------- DeepWiki & Copilot */
-
-const deepwikiSearchSchema = z.object({
-  query: z.string().trim().max(300),
-  category: z.string().optional(),
-  limit: z.number().int().min(1).max(50).optional(),
-});
-
-export const deepwikiSearchFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => deepwikiSearchSchema.parse(d))
-  .handler(async ({ data }) => {
-    const { searchDeepWikiSemantic } = await import("./semantic-vector.server");
-    const category =
-      data.category && data.category !== "all"
-        ? (data.category as DeepWikiCategory)
-        : undefined;
-    return searchDeepWikiSemantic(data.query, {
-      category,
-      limit: data.limit ?? 10,
-    });
-  });
-
-export const deepwikiGetCategoriesFn = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
-  .handler(async () => {
-    const { DEEPWIKI_CATEGORIES, DEEPWIKI_DATASET } =
-      await import("./deepwiki-dataset");
-    const { getVectorEngineStats } = await import("./semantic-vector.server");
-    const counts: Record<string, number> = {};
-    for (const item of DEEPWIKI_DATASET) {
-      counts[item.category] = (counts[item.category] ?? 0) + 1;
-    }
-    return {
-      categories: DEEPWIKI_CATEGORIES.map((c) => ({
-        ...c,
-        count: counts[c.id] ?? 0,
-      })),
-      totalQuestions: DEEPWIKI_DATASET.length,
-      engine: getVectorEngineStats(),
-    };
-  });
+/* ------------------------------------------------------------- Copilot */
 
 const copilotChatSchema = z.object({
   message: z.string().trim().min(1).max(1000),
@@ -282,31 +240,32 @@ export const aiCopilotChatFn = createServerFn({ method: "POST" })
       };
     }
 
-    const { searchDeepWikiSemantic } = await import("./semantic-vector.server");
+    const { searchKbHybrid } = await import("./support-kb.server");
     const { getAiGatewayConfig, isPlaceholderApiKey } =
       await import("./support-embed.server");
 
-    const hits = await searchDeepWikiSemantic(data.message, { limit: 3 });
-    const topHit = hits[0];
+    // Use the live KB hybrid search instead of the retired DeepWiki vector index
+    const kbHits = await searchKbHybrid(null, data.message, 3);
+    const topHit = kbHits[0];
 
-    const sources = hits.map((h) => ({
-      id: h.item.id,
-      title: h.item.question,
-      category: h.item.category,
-      summary: h.item.summary,
-      url: h.item.citations[0]?.url ?? "/docs",
-      similarity: Number(h.similarity.toFixed(3)),
+    const sources = kbHits.map((h) => ({
+      id: h.doc_id,
+      title: h.title,
+      category: "knowledge_base",
+      summary: h.body.slice(0, 200),
+      url: h.source_url ?? "/docs",
+      similarity: Number((h.combined_score ?? 0).toFixed(3)),
     }));
 
     const cfg = await getAiGatewayConfig();
     const hasKey = cfg.apiKey && !isPlaceholderApiKey(cfg.apiKey);
 
-    if (hasKey && hits.length > 0) {
+    if (hasKey && kbHits.length > 0) {
       try {
-        const contextPassages = hits
+        const contextPassages = kbHits
           .map(
             (h, i) =>
-              `[Source ${i + 1}: ${h.item.question} (${h.item.category})]\n${h.item.summary}\n${h.item.answer}`,
+              `[Source ${i + 1}: ${h.title}]\n${h.body}`,
           )
           .join("\n\n---\n\n");
 
@@ -314,12 +273,12 @@ export const aiCopilotChatFn = createServerFn({ method: "POST" })
           {
             role: "system",
             content:
-              "You are Framique's authoritative Cloud Commerce AI Specialist for merchants in Bangladesh. Answer accurately based on DeepWiki and platform capabilities. CREATIVE COMMERCE: You are empowered to provide creative assistance (e.g. catchy slogans, marketing campaign ideas, product descriptions, promotional headlines, page builder layouts, and theme palettes) tailored specifically to Framique merchants. STRICT SCOPE: You must ONLY answer questions related to Framique, storefront design, themes, marketing, payments, couriers, and ecommerce in Bangladesh. Politely decline any off-topic queries. Never disclose internal code, database secrets, customer data, or vulnerability exploits.",
+              "You are Framique's authoritative Cloud Commerce AI Specialist for merchants in Bangladesh. Answer accurately based on platform documentation and knowledge base. CREATIVE COMMERCE: You are empowered to provide creative assistance (e.g. catchy slogans, marketing campaign ideas, product descriptions, promotional headlines, page builder layouts, and theme palettes) tailored specifically to Framique merchants. STRICT SCOPE: You must ONLY answer questions related to Framique, storefront design, themes, marketing, payments, couriers, and ecommerce in Bangladesh. Politely decline any off-topic queries. Never disclose internal code, database secrets, customer data, or vulnerability exploits.",
           },
           ...(data.history ?? []).slice(-4),
           {
             role: "user",
-            content: `DeepWiki Sources:\n\n${contextPassages}\n\nQuestion: ${data.message}`,
+            content: `Knowledge Base Sources:\n\n${contextPassages}\n\nQuestion: ${data.message}`,
           },
         ];
 
@@ -354,27 +313,25 @@ export const aiCopilotChatFn = createServerFn({ method: "POST" })
               return {
                 answer: generated,
                 sources,
-                confidence:
-                  (topHit?.similarity ?? 0) > 0.7 ? "verified" : "grounded",
-                similarity: topHit?.similarity ?? 0,
+                confidence: "grounded",
+                similarity: Number((topHit?.combined_score ?? 0).toFixed(3)),
               };
             }
           }
         }
       } catch {
-        // Fallback to extractive synthesis
+        // Fallback to extractive synthesis below
       }
     }
 
-    // Extractive synthesis from DeepWiki
+    // Extractive synthesis from KB hits
     if (topHit) {
-      const best = topHit.item;
-      let synthesized = `### ${best.question}\n\n${best.summary}\n\n${best.answer}`;
+      let synthesized = `### ${topHit.title}\n\n${topHit.body}`;
 
-      if (hits.length > 1) {
-        synthesized += `\n\n---\n\n**Related DeepWiki Guides:**\n`;
-        for (let i = 1; i < hits.length; i++) {
-          synthesized += `- **${hits[i].item.question}** (${hits[i].item.category}): ${hits[i].item.summary}\n`;
+      if (kbHits.length > 1) {
+        synthesized += `\n\n---\n\n**Related Knowledge Base Articles:**\n`;
+        for (let i = 1; i < kbHits.length; i++) {
+          synthesized += `- **${kbHits[i].title}**: ${kbHits[i].body.slice(0, 150)}\n`;
         }
       }
 
@@ -390,14 +347,14 @@ export const aiCopilotChatFn = createServerFn({ method: "POST" })
       return {
         answer: synthesized,
         sources,
-        confidence: topHit.similarity > 0.65 ? "verified" : "grounded",
-        similarity: topHit.similarity,
+        confidence: "grounded",
+        similarity: Number((topHit.combined_score ?? 0).toFixed(3)),
       };
     }
 
     return {
       answer:
-        "I couldn't find a direct match in our DeepWiki knowledge base for that question. You can browse our 100+ topics by category (Payments, Couriers, Page Builder, Security, SEO, Orders) or contact live developer care.",
+        "I couldn't find a direct match in our knowledge base for that question. You can browse documentation or contact live developer care.",
       sources: [],
       confidence: "speculative",
       similarity: 0,

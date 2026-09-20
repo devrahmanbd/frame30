@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { decodeSource, type ResponsiveImage } from "@/lib/image-transform";
-import { ProductTileArt } from "@/components/store/ProductTileArt";
+import { placeholderSeed } from "@/lib/placeholder";
 
 /**
  * The signed variant URL carries the original source, so the raw retry works
@@ -65,14 +65,18 @@ export function StoreImage({
   const src =
     stage === "transformed" ? transformed : stage === "raw" ? raw : null;
   if (!src) {
-    // Imageless product: designed monogram tile, never an empty grey box.
-    // `className` carries the caller's sizing (e.g. `size-full`); the tile
-    // root already pins `h-full w-full` so it fills any square media frame.
+    // Imageless product: local SVG placeholder image (same monogram
+    // aesthetic as a real asset, so grids, PDP, og: fallback and no-JS all
+    // render complete media instead of an empty box).
     return (
-      <ProductTileArt
-        seed={seed ?? alt}
-        title={alt}
-        className={`h-full w-full ${className ?? ""}`}
+      <img
+        src={`/api/public/ph/${placeholderSeed(seed ?? alt)}`}
+        alt={alt}
+        width={600}
+        height={600}
+        loading={priority ? "eager" : "lazy"}
+        decoding={priority ? "sync" : "async"}
+        className={className}
       />
     );
   }
@@ -92,7 +96,6 @@ export function StoreImage({
       width={image?.width ?? 600}
       height={image?.height ?? 600}
       loading={priority ? "eager" : "lazy"}
-      // eslint-disable-next-line react/no-unknown-property
       fetchPriority={priority ? "high" : "auto"}
       decoding={priority ? "sync" : "async"}
       className={className}

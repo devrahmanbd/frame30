@@ -200,6 +200,7 @@ import { Route as ApiPublicOauthRevokeRouteImport } from './routes/api/public/oa
 import { Route as ApiPublicOauthTokenRouteImport } from './routes/api/public/oauth/token'
 import { Route as ApiPublicPaymentsProviderRouteImport } from './routes/api/public/payments/$provider'
 import { Route as ApiPublicPaymentsReturnRouteImport } from './routes/api/public/payments/return'
+import { Route as ApiPublicPhSplatRouteImport } from './routes/api/public/ph.$'
 import { Route as ApiPublicV1SplatRouteImport } from './routes/api/public/v1/$'
 import { Route as StoreSlugCCollectionSlugRouteImport } from './routes/store.$slug.c.$collectionSlug'
 import { Route as StoreSlugOrderOrderIdRouteImport } from './routes/store.$slug.order.$orderId'
@@ -1258,6 +1259,11 @@ const ApiPublicPaymentsReturnRoute = ApiPublicPaymentsReturnRouteImport.update({
   path: '/api/public/payments/return',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPhSplatRoute = ApiPublicPhSplatRouteImport.update({
+  id: '/api/public/ph/$',
+  path: '/api/public/ph/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1SplatRoute = ApiPublicV1SplatRouteImport.update({
   id: '/api/public/v1/$',
   path: '/api/public/v1/$',
@@ -1503,6 +1509,7 @@ export interface FileRoutesByFullPath {
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
+  '/api/public/ph/$': typeof ApiPublicPhSplatRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
   '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
@@ -1704,6 +1711,7 @@ export interface FileRoutesByTo {
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
+  '/api/public/ph/$': typeof ApiPublicPhSplatRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
   '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
@@ -1909,6 +1917,7 @@ export interface FileRoutesById {
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
+  '/api/public/ph/$': typeof ApiPublicPhSplatRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
   '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
@@ -2114,6 +2123,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/token'
     | '/api/public/payments/$provider'
     | '/api/public/payments/return'
+    | '/api/public/ph/$'
     | '/api/public/v1/$'
     | '/store/$slug/c/$collectionSlug'
     | '/store/$slug/order/$orderId'
@@ -2315,6 +2325,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/token'
     | '/api/public/payments/$provider'
     | '/api/public/payments/return'
+    | '/api/public/ph/$'
     | '/api/public/v1/$'
     | '/store/$slug/c/$collectionSlug'
     | '/store/$slug/order/$orderId'
@@ -2519,6 +2530,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/token'
     | '/api/public/payments/$provider'
     | '/api/public/payments/return'
+    | '/api/public/ph/$'
     | '/api/public/v1/$'
     | '/store/$slug/c/$collectionSlug'
     | '/store/$slug/order/$orderId'
@@ -2627,6 +2639,7 @@ export interface RootRouteChildren {
   ApiPublicOauthTokenRoute: typeof ApiPublicOauthTokenRoute
   ApiPublicPaymentsProviderRoute: typeof ApiPublicPaymentsProviderRoute
   ApiPublicPaymentsReturnRoute: typeof ApiPublicPaymentsReturnRoute
+  ApiPublicPhSplatRoute: typeof ApiPublicPhSplatRoute
   ApiPublicV1SplatRoute: typeof ApiPublicV1SplatRoute
   StoreSlugCCollectionSlugRoute: typeof StoreSlugCCollectionSlugRoute
   StoreSlugOrderOrderIdRoute: typeof StoreSlugOrderOrderIdRoute
@@ -3978,6 +3991,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPaymentsReturnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ph/$': {
+      id: '/api/public/ph/$'
+      path: '/api/public/ph/$'
+      fullPath: '/api/public/ph/$'
+      preLoaderRoute: typeof ApiPublicPhSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/$': {
       id: '/api/public/v1/$'
       path: '/api/public/v1/$'
@@ -4442,6 +4462,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicOauthTokenRoute: ApiPublicOauthTokenRoute,
   ApiPublicPaymentsProviderRoute: ApiPublicPaymentsProviderRoute,
   ApiPublicPaymentsReturnRoute: ApiPublicPaymentsReturnRoute,
+  ApiPublicPhSplatRoute: ApiPublicPhSplatRoute,
   ApiPublicV1SplatRoute: ApiPublicV1SplatRoute,
   StoreSlugCCollectionSlugRoute: StoreSlugCCollectionSlugRoute,
   StoreSlugOrderOrderIdRoute: StoreSlugOrderOrderIdRoute,

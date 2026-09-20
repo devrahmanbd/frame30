@@ -93,8 +93,7 @@ const APPAREL: DemoCatalog = {
       category: "handloom-craft",
       collections: ["new-in", "artisan-silk"],
       tags: ["cotton", "handloom", "saree", "tangail"],
-      image_url:
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/handloom-cotton-saree.svg",
       variants: [
         {
           name: "Indigo",
@@ -121,8 +120,7 @@ const APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["new-in", "everyday-edit", "capsule-wardrobe"],
       tags: ["shirt", "cotton", "menswear", "oversized"],
-      image_url:
-        "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/oversized-poplin-shirt.svg",
       variants: [
         { name: "White / S", sku: "APP-POP-WS", price: 289000, stock: 20 },
         { name: "White / M", sku: "APP-POP-WM", price: 289000, stock: 18 },
@@ -151,8 +149,7 @@ const APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["everyday-edit", "capsule-wardrobe"],
       tags: ["linen", "trouser", "minimalist", "wide-leg"],
-      image_url:
-        "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/linen-blend-trouser.svg",
       variants: [
         { name: "Sand / 28", sku: "APP-LIN-S28", price: 329000, stock: 10 },
         { name: "Sand / 30", sku: "APP-LIN-S30", price: 329000, stock: 14 },
@@ -174,8 +171,7 @@ const APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["new-in", "artisan-silk"],
       tags: ["outerwear", "quilted", "nakshi", "jacket"],
-      image_url:
-        "https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/quilted-cotton-jacket.svg",
       variants: [
         {
           name: "Charcoal / M",
@@ -208,8 +204,7 @@ const APPAREL: DemoCatalog = {
       category: "handloom-craft",
       collections: ["new-in", "artisan-silk"],
       tags: ["jamdani", "silk", "heritage", "handloom"],
-      image_url:
-        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/dhakai-jamdani-silk-saree.svg",
       variants: [
         {
           name: "Crimson Gold",
@@ -235,8 +230,7 @@ const APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["everyday-edit", "artisan-silk"],
       tags: ["kurta", "panjabi", "tussar", "silk"],
-      image_url:
-        "https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/tussar-silk-kurta.svg",
       variants: [
         {
           name: "Natural Raw / 38",
@@ -269,8 +263,7 @@ const APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["everyday-edit", "capsule-wardrobe"],
       tags: ["dress", "khadi", "organic", "wrap"],
-      image_url:
-        "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/pleated-wrap-dress.svg",
       variants: [
         {
           name: "Terracotta / S",
@@ -303,8 +296,7 @@ const APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["new-in", "capsule-wardrobe"],
       tags: ["blazer", "jacket", "silk", "tailored"],
-      image_url:
-        "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/raw-silk-bandhgala-blazer.svg",
       variants: [
         {
           name: "Slate Grey / 38",
@@ -337,8 +329,7 @@ const APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["new-in", "everyday-edit"],
       tags: ["indigo", "robe", "kimono", "botanical"],
-      image_url:
-        "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/hand-dyed-indigo-kimono.svg",
       variants: [
         {
           name: "Deep Indigo",
@@ -364,8 +355,7 @@ const APPAREL: DemoCatalog = {
       category: "accessories",
       collections: ["artisan-silk", "capsule-wardrobe"],
       tags: ["dupatta", "stole", "chanderi", "silk"],
-      image_url:
-        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/chanderi-silk-dupatta.svg",
       variants: [
         {
           name: "Pale Gold",
@@ -391,8 +381,7 @@ const APPAREL: DemoCatalog = {
       category: "accessories",
       collections: ["new-in", "capsule-wardrobe"],
       tags: ["jewelry", "brass", "filigree", "artisan"],
-      image_url:
-        "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/brass-filigree-cuff.svg",
       variants: [
         { name: "Antique Gold", sku: "APP-JWL-CUF", price: 220000, stock: 20 },
       ],
@@ -405,8 +394,7 @@ const APPAREL: DemoCatalog = {
       category: "accessories",
       collections: ["everyday-edit", "capsule-wardrobe"],
       tags: ["leather", "tote", "bag", "handcrafted"],
-      image_url:
-        "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/minimalist-leather-tote.svg",
       variants: [
         {
           name: "Cognac Tan",
@@ -778,8 +766,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["heritage-handloom", "eid-festive"],
       tags: ["saree", "handloom", "cotton", "tangail"],
-      image_url:
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/tangail-taant-cotton-saree.svg",
       variants: [
         {
           name: "Crimson Red & Gold",
@@ -812,8 +799,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["heritage-handloom", "eid-festive"],
       tags: ["jamdani", "silk", "saree", "heritage"],
-      image_url:
-        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/dhakai-jamdani-silk-saree.svg",
       variants: [
         {
           name: "Emerald Green & Rose Gold",
@@ -839,8 +825,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["eid-festive", "artisan-essentials"],
       tags: ["panjabi", "silk", "rajshahi", "mens"],
-      image_url:
-        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/pure-silk-embroidered-panjabi.svg",
       variants: [
         {
           name: "Size 38 - Pearl Ivory",
@@ -894,8 +879,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "living",
       collections: ["nakshi-kantha", "heritage-handloom"],
       tags: ["nakshi kantha", "quilt", "living", "handcrafted"],
-      image_url:
-        "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/handcrafted-nakshi-kantha-quilt.svg",
       variants: [
         {
           name: "Queen (88x96 in) - Tree of Life",
@@ -921,8 +905,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "jewelry",
       collections: ["eid-festive", "artisan-essentials"],
       tags: ["jewelry", "brass", "filigree", "earrings"],
-      image_url:
-        "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/brass-filigree-chandbali-earrings.svg",
       variants: [
         {
           name: "Antique Gold & Pearl",
@@ -941,8 +924,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["eid-festive", "heritage-handloom"],
       tags: ["katan", "silk", "saree", "mirpur", "festive"],
-      image_url:
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/mirpur-katan-silk-saree.svg",
       variants: [
         {
           name: "Burgundy Maroon & Antique Gold",
@@ -968,8 +950,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["artisan-essentials", "heritage-handloom"],
       tags: ["khadi", "kurta", "cotton", "mens", "handloom"],
-      image_url:
-        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/comilla-handspun-khadi-kurta.svg",
       variants: [
         {
           name: "Size 38 - Natural Off-White",
@@ -1009,8 +990,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["artisan-essentials", "eid-festive"],
       tags: ["muslin", "dupatta", "blockprint", "natural-dye", "womens"],
-      image_url:
-        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/artisan-block-print-muslin-dupatta.svg",
       variants: [
         {
           name: "Indigo Blue & White",
@@ -1036,8 +1016,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["eid-festive", "heritage-handloom"],
       tags: ["silk", "salwar", "kameez", "festive", "womens"],
-      image_url:
-        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/embroidered-silk-salwar-suit.svg",
       variants: [
         {
           name: "Size 36 - Ruby Crimson",
@@ -1077,8 +1056,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["eid-festive", "artisan-essentials"],
       tags: ["koti", "waistcoat", "tussar", "silk", "mens"],
-      image_url:
-        "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/tussar-silk-festive-koti.svg",
       variants: [
         {
           name: "Size 38 - Natural Golden Tussar",
@@ -1118,8 +1096,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "living",
       collections: ["heritage-handloom", "artisan-essentials"],
       tags: ["terracotta", "pottery", "tableware", "living", "handcrafted"],
-      image_url:
-        "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/handcrafted-terracotta-dining-set.svg",
       variants: [
         {
           name: "7-Piece Dinner Set - Earth Ochre",
@@ -1145,8 +1122,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["artisan-essentials"],
       tags: ["fotua", "cotton", "casual", "mens", "summer"],
-      image_url:
-        "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/casual-cotton-summer-fotua.svg",
       variants: [
         {
           name: "Size M - Sky Blue Melange",
@@ -1186,8 +1162,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["new-in", "heritage-handloom", "eid-festive"],
       tags: ["silk", "saree", "handpainted", "festive", "womens"],
-      image_url:
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/hand-painted-silk-festive-saree.svg",
       variants: [
         {
           name: "Blush Peach & Gold",
@@ -1213,8 +1188,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["artisan-essentials", "best-sellers"],
       tags: ["pajama", "cotton", "mens", "essentials"],
-      image_url:
-        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/fine-poplin-formal-pajama.svg",
       variants: [
         {
           name: "Size 38 - Crisp White",
@@ -1247,8 +1221,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "kids",
       collections: ["eid-festive", "new-in"],
       tags: ["kids", "ghagra", "choli", "silk", "girls", "festive"],
-      image_url:
-        "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/girls-embroidered-silk-ghagra-choli.svg",
       variants: [
         {
           name: "Age 6-8 Yrs - Coral Rose",
@@ -1281,8 +1254,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "living",
       collections: ["artisan-essentials", "best-sellers"],
       tags: ["brass", "decor", "living", "handcrafted", "incense"],
-      image_url:
-        "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/hand-carved-brass-incense-burner.svg",
       variants: [
         {
           name: "2-Piece Artisan Brass Set",
@@ -1301,8 +1273,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "taaga",
       collections: ["taaga-fusion", "new-in"],
       tags: ["taaga", "kurti", "tunic", "boho", "womens", "cotton"],
-      image_url:
-        "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/taaga-bohemian-hand-embroidered-kurti.svg",
       variants: [
         {
           name: "Size S - Rust Ochre",
@@ -1342,8 +1313,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "taaga",
       collections: ["taaga-fusion", "artisan-essentials"],
       tags: ["taaga", "mens", "linen", "shirt", "casual"],
-      image_url:
-        "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/taaga-man-relaxed-linen-mandarin-shirt.svg",
       variants: [
         {
           name: "Size M - Natural Sand",
@@ -1391,7 +1361,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
         "aarong-earth",
       ],
       image_url:
-        "https://images.unsplash.com/photo-1608248597359-28f0b784a0d9?q=80&w=800&auto=format&fit=crop",
+        "/api/public/ph/aarong-earth-sandalwood-turmeric-handmade-soap.svg",
       variants: [
         {
           name: "125g Herbal Bar",
@@ -1424,8 +1394,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
         "aarong-earth",
         "herbal",
       ],
-      image_url:
-        "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/aarong-earth-wild-rose-ubtan-radiance-kit.svg",
       variants: [
         {
           name: "2-Piece Facial Radiance Ritual",
@@ -1513,8 +1482,7 @@ const GROCERY: DemoCatalog = {
       category: "cooking-staples",
       collections: ["daily-basket", "bestsellers"],
       tags: ["rice", "miniket", "staple", "pran", "grains"],
-      image_url:
-        "https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/pran-premium-miniket-rice-5kg.svg",
       variants: [
         {
           name: "5kg Sealed Poly Bag",
@@ -1533,8 +1501,7 @@ const GROCERY: DemoCatalog = {
       category: "cooking-staples",
       collections: ["daily-basket", "flash-savings", "bestsellers"],
       tags: ["oil", "soybean", "cooking", "rupchanda", "staples"],
-      image_url:
-        "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/rupchanda-fortified-soybean-oil-5l.svg",
       variants: [
         {
           name: "5 Litre Pet Jar",
@@ -1553,8 +1520,7 @@ const GROCERY: DemoCatalog = {
       category: "dairy-eggs",
       collections: ["daily-basket", "fresh-today", "bestsellers"],
       tags: ["eggs", "farm", "protein", "breakfast", "dairy"],
-      image_url:
-        "https://images.unsplash.com/photo-1516448620398-c5f44bf9f441?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/farm-fresh-brown-eggs-12pcs.svg",
       variants: [
         {
           name: "12-Piece Safe Carton",
@@ -1573,8 +1539,7 @@ const GROCERY: DemoCatalog = {
       category: "meat-fish",
       collections: ["fresh-today", "flash-savings"],
       tags: ["fish", "ilish", "hilsa", "padma", "fresh", "seafood"],
-      image_url:
-        "https://images.unsplash.com/photo-1534939561126-855b8675edd7?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/fresh-padma-hilsa-fish-1kg.svg",
       variants: [
         {
           name: "1kg - 1.2kg Whole Chilled Fish",
@@ -1593,8 +1558,7 @@ const GROCERY: DemoCatalog = {
       category: "dairy-eggs",
       collections: ["daily-basket", "fresh-today", "bestsellers"],
       tags: ["milk", "dairy", "aarong", "fresh", "beverage"],
-      image_url:
-        "https://images.unsplash.com/photo-1550583724-b2692b85b150?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/aarong-dairy-pasteurised-liquid-milk-1l.svg",
       variants: [
         {
           name: "1 Litre Pouch Pack",
@@ -1613,8 +1577,7 @@ const GROCERY: DemoCatalog = {
       category: "cooking-staples",
       collections: ["daily-basket"],
       tags: ["salt", "iodized", "aci", "cooking", "staples"],
-      image_url:
-        "https://images.unsplash.com/photo-1518110925495-5fe2fda0442c?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/aci-pure-iodized-salt-1kg.svg",
       variants: [
         {
           name: "1kg Poly Pack",
@@ -1633,8 +1596,7 @@ const GROCERY: DemoCatalog = {
       category: "cooking-staples",
       collections: ["daily-basket", "bestsellers"],
       tags: ["atta", "flour", "wheat", "teer", "staples", "roti"],
-      image_url:
-        "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/teer-whole-wheat-atta-2kg.svg",
       variants: [
         {
           name: "2kg Food Grade Poly Bag",
@@ -1653,8 +1615,7 @@ const GROCERY: DemoCatalog = {
       category: "fresh-produce",
       collections: ["fresh-today", "daily-basket", "bestsellers"],
       tags: ["potatoes", "vegetables", "fresh", "produce", "bogura"],
-      image_url:
-        "https://images.unsplash.com/photo-1518977676601-b53f82aba655?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/fresh-red-potatoes-bogura-5kg.svg",
       variants: [
         {
           name: "5kg Ventilated Net Bag",
@@ -1673,8 +1634,7 @@ const GROCERY: DemoCatalog = {
       category: "fresh-produce",
       collections: ["fresh-today", "daily-basket"],
       tags: ["onion", "vegetables", "fresh", "deshi", "produce"],
-      image_url:
-        "https://images.unsplash.com/photo-1508747703725-719777637510?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/fresh-deshi-red-onion-1kg.svg",
       variants: [
         {
           name: "1kg Net Weight Pack",
@@ -1693,8 +1653,7 @@ const GROCERY: DemoCatalog = {
       category: "cooking-staples",
       collections: ["daily-basket"],
       tags: ["turmeric", "spices", "radhuni", "cooking", "curcumin"],
-      image_url:
-        "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/radhuni-turmeric-powder-200g.svg",
       variants: [
         {
           name: "200g Moisture Barrier Foil Pack",
@@ -1713,8 +1672,7 @@ const GROCERY: DemoCatalog = {
       category: "meat-fish",
       collections: ["fresh-today", "daily-basket"],
       tags: ["chicken", "meat", "halal", "poultry", "fresh"],
-      image_url:
-        "https://images.unsplash.com/photo-1587593810167-a84920ea0781?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/fresh-farm-broiler-chicken-skin-off-1kg.svg",
       variants: [
         {
           name: "1kg Net Cleaned Curry Cut",
@@ -1733,8 +1691,7 @@ const GROCERY: DemoCatalog = {
       category: "dairy-eggs",
       collections: ["daily-basket", "flash-savings"],
       tags: ["milk-powder", "dairy", "dano", "beverage", "tea"],
-      image_url:
-        "https://images.unsplash.com/photo-1563636619-e9143da7973b?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/dano-daily-pushti-milk-powder-500g.svg",
       variants: [
         {
           name: "500g Foil Refill Pack",
@@ -1753,8 +1710,7 @@ const GROCERY: DemoCatalog = {
       category: "beverages-snacks",
       collections: ["daily-basket", "bestsellers"],
       tags: ["tea", "ispahani", "beverage", "sylhet", "chai"],
-      image_url:
-        "https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/ispahani-mirzapore-best-leaf-tea-400g.svg",
       variants: [
         {
           name: "400g Aroma Protect Foil Pack",
@@ -1773,8 +1729,7 @@ const GROCERY: DemoCatalog = {
       category: "beverages-snacks",
       collections: ["daily-basket", "flash-savings"],
       tags: ["noodles", "maggi", "snacks", "nestle", "masala"],
-      image_url:
-        "https://images.unsplash.com/photo-1612927601601-6638404737ce?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/maggi-2-minute-noodles-masala-8pack.svg",
       variants: [
         {
           name: "8-Pack Family Economy Pack",
@@ -1794,7 +1749,7 @@ const GROCERY: DemoCatalog = {
       collections: ["daily-basket", "bestsellers"],
       tags: ["detergent", "cleaning", "laundry", "surf-excel", "household"],
       image_url:
-        "https://images.unsplash.com/photo-1583947215259-38e31be8751f?q=80&w=800&auto=format&fit=crop",
+        "/api/public/ph/surf-excel-quick-wash-detergent-powder-1kg.svg",
       variants: [
         {
           name: "1kg Poly Pouch",
@@ -1813,8 +1768,7 @@ const GROCERY: DemoCatalog = {
       category: "cooking-staples",
       collections: ["organic-wellness"],
       tags: ["honey", "organic", "wellness", "sundarban", "raw"],
-      image_url:
-        "https://images.unsplash.com/photo-1587049352846-4a222e784d38?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/kazi-kazi-organic-raw-mustard-honey-250g.svg",
       variants: [
         {
           name: "250g Glass Hex Jar",
@@ -1918,8 +1872,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "electronics",
       collections: ["flash-sale", "electronics", "best-sellers", "daraz-mall"],
       tags: ["smartphone", "5g", "amoled", "mobile"],
-      image_url:
-        "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/pro-5g-smartphone-8gb-128gb.svg",
       variants: [
         {
           name: "8GB / 128GB - Phantom Black",
@@ -1945,8 +1898,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "electronics",
       collections: ["flash-sale", "electronics", "todays-deals"],
       tags: ["earbuds", "audio", "anc", "bluetooth"],
-      image_url:
-        "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/anc-wireless-earbuds-pro.svg",
       variants: [
         {
           name: "Glossy White",
@@ -1972,8 +1924,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "electronics",
       collections: ["electronics", "best-sellers", "daraz-mall"],
       tags: ["smartwatch", "fitness", "bluetooth", "gadgets"],
-      image_url:
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/ultra-slim-smartwatch-2.svg",
       variants: [
         {
           name: "Obsidian Black",
@@ -1999,8 +1950,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "electronics",
       collections: ["flash-sale", "electronics", "todays-deals"],
       tags: ["charger", "gan", "usb-c", "fast-charging"],
-      image_url:
-        "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/gan-65w-fast-charger-trio.svg",
       variants: [
         {
           name: "White 65W",
@@ -2019,8 +1969,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "electronics",
       collections: ["electronics", "best-sellers"],
       tags: ["powerbank", "battery", "fast-charge"],
-      image_url:
-        "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/20000mah-fast-charge-powerbank.svg",
       variants: [
         {
           name: "Carbon Black",
@@ -2039,8 +1988,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "fashion",
       collections: ["fashion", "best-sellers", "daraz-mall"],
       tags: ["polo", "menswear", "cotton", "apparel"],
-      image_url:
-        "https://images.unsplash.com/photo-1581655353564-df123a1eb820?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/mens-premium-pique-polo.svg",
       variants: [
         {
           name: "Navy Blue / M",
@@ -2073,8 +2021,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "fashion",
       collections: ["flash-sale", "fashion", "best-sellers"],
       tags: ["saree", "jamdani", "handloom", "womenswear"],
-      image_url:
-        "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/handloom-tangail-jamdani-saree.svg",
       variants: [
         {
           name: "Royal Teal & Gold",
@@ -2100,8 +2047,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "fashion",
       collections: ["fashion", "todays-deals", "daraz-mall"],
       tags: ["sneakers", "shoes", "running", "footwear"],
-      image_url:
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/lightweight-breathable-running-sneakers.svg",
       variants: [
         {
           name: "Flame Red / 41",
@@ -2134,8 +2080,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "fashion",
       collections: ["fashion", "best-sellers"],
       tags: ["watch", "chronograph", "accessories", "leather"],
-      image_url:
-        "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/classic-chronograph-mens-watch.svg",
       variants: [
         {
           name: "Brown Leather / Rose Gold",
@@ -2154,8 +2099,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "fashion",
       collections: ["flash-sale", "fashion", "todays-deals"],
       tags: ["sunglasses", "polarized", "eyewear"],
-      image_url:
-        "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/polarized-uv400-retro-sunglasses.svg",
       variants: [
         {
           name: "Glossy Black / Dark Grey",
@@ -2174,8 +2118,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "home-living",
       collections: ["home-living", "best-sellers", "daraz-mall"],
       tags: ["cookware", "kitchen", "nonstick", "granite"],
-      image_url:
-        "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/nonstick-granite-cookware-set-5pc.svg",
       variants: [
         {
           name: "Granite Grey 5-Piece",
@@ -2194,8 +2137,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "home-living",
       collections: ["flash-sale", "home-living", "todays-deals"],
       tags: ["fan", "rechargeable", "appliances", "cooling"],
-      image_url:
-        "https://images.unsplash.com/photo-1618941716939-553df3c6c278?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/rechargeable-oscillating-desk-fan.svg",
       variants: [
         {
           name: "Polar White",
@@ -2214,8 +2156,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "home-living",
       collections: ["home-living", "best-sellers"],
       tags: ["blender", "grinder", "kitchen", "appliances"],
-      image_url:
-        "https://images.unsplash.com/photo-1570222094114-d054a817e56b?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/heavy-duty-750w-kitchen-blender.svg",
       variants: [
         {
           name: "Silver & Maroon / 3 Jars",
@@ -2234,8 +2175,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "home-living",
       collections: ["home-living", "todays-deals"],
       tags: ["flask", "bottle", "thermal", "insulated"],
-      image_url:
-        "https://images.unsplash.com/photo-1602143407151-7111542de6e8?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/insulated-thermal-flask-1000ml.svg",
       variants: [
         {
           name: "Matte Black 1000ml",
@@ -2254,8 +2194,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "home-living",
       collections: ["home-living", "best-sellers"],
       tags: ["pillow", "memoryfoam", "bedding", "home"],
-      image_url:
-        "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/ergonomic-memory-foam-pillow.svg",
       variants: [
         {
           name: "Standard Orthopedic",
@@ -2282,8 +2221,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
         "pantry",
         "kg",
       ],
-      image_url:
-        "https://images.unsplash.com/photo-1586201375761-83865001e31c?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/premium-chinigura-aromatic-rice-5kg.svg",
       variants: [
         {
           name: "5kg Sealed Poly Bag",
@@ -2302,8 +2240,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "grocery",
       collections: ["flash-sale", "daily-essentials", "todays-deals"],
       tags: ["honey", "organic", "raw", "sundarban", "natural"],
-      image_url:
-        "https://images.unsplash.com/photo-1587049352846-4a222e784d38?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/pure-sundarban-organic-raw-honey-500g.svg",
       variants: [
         {
           name: "500g Glass Jar",
@@ -2322,8 +2259,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "grocery",
       collections: ["daily-essentials", "best-sellers"],
       tags: ["oil", "mustard", "coldpressed", "ghani", "cooking"],
-      image_url:
-        "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/cold-pressed-mustard-oil-1l.svg",
       variants: [
         {
           name: "1 Litre Food-Grade Bottle",
@@ -2342,8 +2278,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "beauty",
       collections: ["flash-sale", "todays-deals", "daraz-mall"],
       tags: ["sunscreen", "skincare", "spf50", "beauty"],
-      image_url:
-        "https://images.unsplash.com/photo-1556228720-195a672e8a03?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/spf50-invisible-sunscreen-gel-50g.svg",
       variants: [
         {
           name: "50g Tube",
@@ -2362,8 +2297,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
       category: "beauty",
       collections: ["best-sellers", "daraz-mall"],
       tags: ["serum", "vitaminc", "skincare", "glow"],
-      image_url:
-        "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=800&auto=format&fit=crop",
+      image_url: "/api/public/ph/vitamin-c-hyaluronic-brightening-serum.svg",
       variants: [
         {
           name: "30ml Dropper Bottle",

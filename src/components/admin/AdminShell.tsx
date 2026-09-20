@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
@@ -26,6 +27,8 @@ import {
 } from "@/lib/console-nav";
 import { useCan } from "@/hooks/use-membership";
 import { useMerchant, useMerchants } from "@/hooks/use-merchant";
+import { currentMerchantPrimaryHostFn } from "@/lib/storefront.functions";
+import { storefrontUrlForMerchant } from "@/lib/storefront-url";
 import {
   Activity,
   BarChart3,
@@ -577,6 +580,20 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const palette = useCommandPalette();
   const { data: merchant } = useMerchant();
   const { memberships, switchMerchant } = useMerchants();
+  const getPrimaryHost = useServerFn(currentMerchantPrimaryHostFn);
+  const { data: primaryHost } = useQuery({
+    queryKey: ["merchant-primary-host", merchant?.id],
+    queryFn: async () => {
+      try {
+        const res = await getPrimaryHost();
+        return res.primaryHost;
+      } catch {
+        return null;
+      }
+    },
+    enabled: Boolean(merchant?.id),
+    staleTime: 5 * 60 * 1000,
+  });
   const navigate = useNavigate();
   const qc = useQueryClient();
 
@@ -737,7 +754,10 @@ export function AdminShell({ children }: { children: ReactNode }) {
           </button>
           {merchant?.slug ? (
             <a
-              href={`/store/${merchant.slug}`}
+              href={storefrontUrlForMerchant(
+                primaryHost ?? null,
+                merchant.slug,
+              )}
               target="_blank"
               rel="noreferrer"
               className="hidden items-center gap-1.5 rounded-fq-md px-2.5 py-1.5 text-[13px] text-muted-foreground hover:bg-muted hover:text-foreground lg:flex"
