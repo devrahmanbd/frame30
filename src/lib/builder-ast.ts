@@ -228,7 +228,16 @@ export type SectionType =
   // blog wears the active theme instead of a hand-written wrapper.
   | "blog_archive"
   | "blog_terms"
-  | "blog_pager";
+  | "blog_pager"
+  // Phase 9 — Heritage (clothing) theme widgets.
+  | "hero_carousel"
+  | "department_grid"
+  | "heritage_story"
+  | "textile_showcase"
+  | "editorial_banner"
+  | "testimonial_carousel"
+  | "marquee_strip"
+  | "story_trunk";
 
 export type PropScalar = string | number | boolean;
 /** A repeatable row (Phase 3.2 `array` fields). Always JSON-safe. */
