@@ -513,6 +513,13 @@ export async function applyQuickEdit(
     patch.scheduled_for = null;
     if (patch.published_at === undefined) delete patch.published_at;
   }
+  // The storefront reads `is_published`, not `status` — the editor's save
+  // path sets both, so Quick Edit must too, or "Published" rows stay
+  // invisible publicly. Articles have no such column: pages only.
+  if (kind === "page") {
+    if (input.status === "published") patch.is_published = true;
+    else if (input.status === "trash") patch.is_published = false;
+  }
 
   if (existing.slug !== input.slug && existing.status === "published") {
     await recordRedirect(db, merchantId, kind, existing.slug, input.slug);
@@ -627,9 +634,15 @@ export async function applyBulkVerb(
         r.trashed_from_status && r.trashed_from_status !== "trash"
           ? r.trashed_from_status
           : "draft";
+      const restorePatch: Record<string, unknown> = {
+        status: back,
+        trashed_at: null,
+        trashed_from_status: null,
+      };
+      if (kind === "page") restorePatch.is_published = back === "published";
       const { error } = await loose(db)
         .from(table(kind))
-        .update({ status: back, trashed_at: null, trashed_from_status: null })
+        .update(restorePatch)
         .eq("id", r.id)
         .eq("merchant_id", merchantId);
       if (error) throw new Error(error.message);
@@ -642,13 +655,17 @@ export async function applyBulkVerb(
   if (verb === "trash") {
     let n = 0;
     for (const r of rows.filter((r) => r.status !== "trash")) {
+      const trashPatch: Record<string, unknown> = {
+        status: "trash",
+        trashed_at: now,
+        trashed_from_status: r.status || "draft",
+      };
+      // Pages only: the storefront reads `is_published`, and articles have
+      // no such column.
+      if (kind === "page") trashPatch.is_published = false;
       const { error } = await loose(db)
         .from(table(kind))
-        .update({
-          status: "trash",
-          trashed_at: now,
-          trashed_from_status: r.status || "draft",
-        })
+        .update(trashPatch)
         .eq("id", r.id)
         .eq("merchant_id", merchantId);
       if (error) throw new Error(error.message);
@@ -665,6 +682,7 @@ export async function applyBulkVerb(
   if (targets.length === 0) return { updated: 0 };
   const update: Record<string, unknown> = { status };
   if (verb === "publish") update.published_at = now;
+  if (kind === "page") update.is_published = verb === "publish";
   const { error } = await loose(db)
     .from(table(kind))
     .update(update)
