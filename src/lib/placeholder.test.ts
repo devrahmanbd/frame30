@@ -23,6 +23,12 @@ describe("placeholderSvg", () => {
     expect(svg).not.toContain("onload");
   });
 
+  it("keeps the monogram compact so wide crops never blow it full-bleed", () => {
+    const svg = placeholderSvg("Woven with patience");
+    expect(svg).not.toMatch(/font-size="([2-9]\d\d|[1-9]\d{3,})/);
+    expect(svg).toContain("<pattern");
+  });
+
   it("sanitizes hostile seeds", () => {
     const svg = placeholderSvg('../../etc/passwd"><script>alert(1)</script>');
     expect(svg).not.toContain("<script");

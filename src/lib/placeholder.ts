@@ -51,17 +51,27 @@ export function placeholderSvg(title: string | null | undefined): string {
   const seed = placeholderSeed(title);
   const initial = escXml((seed[0] ?? "p").toUpperCase());
   const motif = hashSeed(seed) % 4;
+  // All-over weave pattern: any crop (wide hero band, square tile,
+  // portrait story) shows texture, never an empty field.
+  const weave =
+    `<pattern id="w" width="56" height="56" patternUnits="userSpaceOnUse">` +
+    `<path d="M0 56 L56 0" stroke="${ACCENT}" stroke-width="2" opacity="0.12"/>` +
+    `</pattern><rect width="800" height="1000" fill="url(#w)"/>`;
   const motifs = [
     `<circle cx="640" cy="180" r="120" fill="none" stroke="${ACCENT}" stroke-width="3" opacity="0.35"/>`,
     `<path d="M0 700 L800 420" stroke="${ACCENT}" stroke-width="3" opacity="0.35"/>`,
     `<g opacity="0.3" fill="${ACCENT}"><circle cx="120" cy="120" r="26"/><circle cx="200" cy="120" r="26"/><circle cx="120" cy="200" r="26"/><circle cx="200" cy="200" r="26"/></g>`,
     `<path d="M120 880 Q400 640 680 880" fill="none" stroke="${ACCENT}" stroke-width="3" opacity="0.35"/>`,
   ];
+  // Center badge: keeps the monogram compact so wide crops never blow it
+  // full-bleed. Badge center (400,500) sits inside every common crop band.
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img">` +
     `<rect width="800" height="1000" fill="${BASE}"/>` +
+    weave +
     motifs[motif]! +
-    `<text x="400" y="560" text-anchor="middle" font-family="${SERIF}" font-size="360" fill="${INK}">${initial}</text>` +
+    `<circle cx="400" cy="500" r="130" fill="${BASE}" stroke="${ACCENT}" stroke-width="4"/>` +
+    `<text x="400" y="548" text-anchor="middle" font-family="${SERIF}" font-size="140" fill="${INK}">${initial}</text>` +
     `</svg>`
   );
 }
