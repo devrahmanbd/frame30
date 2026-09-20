@@ -200,6 +200,72 @@ export const builderDemoImportFn = createServerFn({ method: "POST" })
     return importDemoContent(context.supabase, merchantId, data.themeKey);
   });
 
+/* --------------------------------------------- Phase 15: granular imports */
+
+const importThemeKey = z.string().min(1).max(64);
+
+export const importThemeSlidesFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("themes.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ themeKey: importThemeKey }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { importThemeSlides } = await import("./theme-imports.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return importThemeSlides(context.supabase, merchantId, data.themeKey);
+  });
+
+export const importThemeMediaFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("themes.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ themeKey: importThemeKey }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { importThemeMedia } = await import("./theme-imports.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return importThemeMedia(context.supabase, merchantId, data.themeKey);
+  });
+
+export const importThemeProductsFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("themes.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ themeKey: importThemeKey }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { importThemeProducts } = await import("./theme-imports.server");
+    const { demoCatalogFor } = await import("./demo-catalog");
+    const merchantId = await scope(context.supabase, context.userId);
+    const catalog = demoCatalogFor(data.themeKey);
+    return importThemeProducts(
+      context.supabase,
+      merchantId,
+      data.themeKey,
+      catalog as unknown as Record<string, unknown>,
+    );
+  });
+
+export const importThemePostsFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("themes.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ themeKey: importThemeKey }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { importThemePosts } = await import("./theme-imports.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return importThemePosts(context.supabase, merchantId, data.themeKey);
+  });
+
+export const importThemeAllFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("themes.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ themeKey: importThemeKey }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { importThemeAll } = await import("./theme-imports.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return importThemeAll(context.supabase, merchantId, data.themeKey);
+  });
+
 export const builderDemoPurgeFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("themes.update")])
   .handler(async ({ context }) => {

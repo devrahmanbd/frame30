@@ -40,12 +40,13 @@ import {
   themeInstallFn,
   themesWorkspaceFn,
 } from "@/lib/themes/appearance.functions";
-import { builderDemoImportFn } from "@/lib/themes.functions";
+import { importThemeAllFn } from "@/lib/themes.functions";
 import { AddThemeCard, ThemeCard } from "./ThemeCard";
 import { ThemeDetailsModal } from "./ThemeDetailsModal";
 import { AddThemeScreen } from "./AddThemeScreen";
 import { ThemePreviewSplit, type PreviewSubject } from "./ThemePreviewSplit";
 import { ThemeAssetsPanel } from "./ThemeAssetsPanel";
+import { ImportDemoData } from "./import-demo-data";
 
 type Mode = "installed" | "add" | "assets";
 
@@ -80,6 +81,8 @@ export function ThemesScreen() {
   );
   const catalogue = workspace.data?.catalogue ?? [];
   const details = installed.find((theme) => theme.id === detailsId) ?? null;
+  const activeTheme =
+    installed.find((theme) => theme.isActive) ?? null;
 
   const activate = useMutation({
     mutationFn: useServerFn(themeActivateFn),
@@ -131,13 +134,13 @@ export function ThemesScreen() {
   });
 
   const importDemo = useMutation({
-    mutationFn: useServerFn(builderDemoImportFn),
+    mutationFn: useServerFn(importThemeAllFn),
     onMutate: (vars: { data: { themeKey: string } }) =>
       setBusy(vars.data.themeKey),
-    onSuccess: (result: { imported: boolean; products: number }) => {
+    onSuccess: (result: { totalImported: number }) => {
       toast.success(
-        result.imported
-          ? `Demo store imported (${result.products} products)`
+        result.totalImported > 0
+          ? `Imported ${result.totalImported} content type${result.totalImported > 1 ? "s" : ""}`
           : "Demo content already present",
       );
       refresh();
@@ -353,6 +356,14 @@ export function ThemesScreen() {
               never touched, and you can switch back at any time.
             </p>
           </Card>
+
+          {activeTheme ? (
+            <ImportDemoData
+              themeKey={activeTheme.key}
+              themeName={activeTheme.name}
+              onImported={refresh}
+            />
+          ) : null}
         </div>
       )}
 
