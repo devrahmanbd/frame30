@@ -4,7 +4,14 @@
  * Top bar · left panel (elements ⇄ settings) · device-framed canvas ·
  * floating structure panel · modals. Keyboard shortcuts are bound once here.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useStudio } from "@/lib/studio/useStudio";
@@ -76,7 +83,58 @@ export type StudioBuilderProps = {
    * two documents.
    */
   docId?: string | null;
+  /**
+   * Full-window (Elementor-style) chrome: no card border or fixed viewport
+   * height — the builder fills whatever the host gives it. Hosts that embed
+   * the studio inside their own takeover pass this.
+   */
+  fill?: boolean;
+  /**
+   * Identity of the server document currently shown (e.g. `id:updatedAt`).
+   * When it changes while the canvas is pristine, the studio adopts the new
+   * `doc` prop — this covers content that resolves after mount. Edits in
+   * progress are never clobbered. Omit for uncontrolled (mount-once) use.
+   */
+  resetKey?: string | null;
+  /**
+   * Extra left-panel tab rendered beside Elements when nothing is selected
+   * (e.g. the host's SEO panel). A host-provided React node; the studio only
+   * owns the tab strip.
+   */
+  sideTab?: { id: string; label: string; content: ReactNode } | null;
 };
+
+/** Elements panel shared by the plain and tabbed left-panel layouts. */
+function ElementsPanelInner({
+  studio,
+  templates,
+  dragWidget,
+}: {
+  studio: ReturnType<typeof useStudio>;
+  templates: StudioTemplate[];
+  dragWidget: { current: string | null };
+}) {
+  return (
+    <ElementsPanel
+      onAdd={(key) => studio.addWidget(key)}
+      onDragWidget={(key) => {
+        dragWidget.current = key;
+      }}
+      savedBlocks={templates
+        .filter((t) => t.kind === "mine")
+        .map((t) => ({ id: t.id, name: t.name }))}
+      onInsertSaved={(id) => {
+        const template = templates.find((t) => t.id === id);
+        if (template)
+          instantiate(template).forEach((node) => studio.addNode(node));
+      }}
+      globals={[]}
+      onInsertGlobal={() =>
+        toast.info("Global elements arrive with the design system.")
+      }
+    />
+  );
+}
 
 export function StudioBuilder({
   doc: initialDoc,
@@ -86,8 +144,11 @@ export function StudioBuilder({
   revisions = [],
   saving = false,
   docId = null,
+  fill = false,
+  sideTab = null,
+  resetKey = null,
 }: StudioBuilderProps) {
-  const studio = useStudio(initialDoc);
+  const studio = useStudio(initialDoc, resetKey);
   const {
     doc,
     selected,
@@ -403,8 +464,22 @@ export function StudioBuilder({
     [studio],
   );
 
+  // Host-provided left tab (e.g. SEO) beside Elements when idle. Selecting
+  // a canvas node always switches to its settings; deselecting returns to
+  // the last tab.
+  const [sideTabId, setSideTabId] = useState<string>("elements");
+
   return (
-    <div className="fq-studio flex h-[78vh] min-h-[560px] flex-col overflow-hidden rounded-fq-lg border border-border bg-background">
+    <div
+      className={
+        fill
+          ? // Viewport-relative height: deterministic without relying on an
+            // ancestor height chain (takeover is fixed inset-0; h-14 top bar
+            // plus the host's top padding make up the 4rem offset).
+            "fq-studio flex h-[calc(100dvh-4rem)] min-h-[480px] flex-col overflow-hidden bg-background"
+          : "fq-studio flex h-[78vh] min-h-[560px] flex-col overflow-hidden rounded-fq-lg border border-border bg-background"
+      }
+    >
       <StudioTopBar
         title={doc.page.title}
         device={device}
@@ -463,7 +538,7 @@ export function StudioBuilder({
 
       <div className="flex min-h-0 flex-1">
         {!preview && (
-          <div className="hidden w-80 shrink-0 border-r border-border md:block">
+          <div className="hidden w-80 shrink-0 flex-col border-r border-border md:flex">
             {selected ? (
               <SettingsPanel
                 node={selected}
@@ -478,26 +553,53 @@ export function StudioBuilder({
                 classes={studio.classes}
                 onOpenClassManager={() => setModal("classes")}
               />
+            ) : sideTab ? (
+              <div className="flex min-h-0 flex-1 flex-col">
+                <div
+                  role="tablist"
+                  aria-label="Studio side panel"
+                  className="flex shrink-0 gap-1 border-b border-border p-2"
+                >
+                  {(
+                    [
+                      { id: "elements", label: "Elements" },
+                      { id: sideTab.id, label: sideTab.label },
+                    ] as const
+                  ).map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={sideTabId === tab.id}
+                      onClick={() => setSideTabId(tab.id)}
+                      className={cn(
+                        "flex-1 rounded-fq-sm px-2 py-1.5 text-xs font-medium transition-colors",
+                        sideTabId === tab.id
+                          ? "bg-muted text-foreground"
+                          : "text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="min-h-0 flex-1 overflow-auto">
+                  {sideTabId === sideTab.id ? (
+                    sideTab.content
+                  ) : (
+                    <ElementsPanelInner
+                      studio={studio}
+                      templates={templates}
+                      dragWidget={dragWidget}
+                    />
+                  )}
+                </div>
+              </div>
             ) : (
-              <ElementsPanel
-                onAdd={(key) => studio.addWidget(key)}
-                onDragWidget={(key) => {
-                  dragWidget.current = key;
-                }}
-                savedBlocks={templates
-                  .filter((t) => t.kind === "mine")
-                  .map((t) => ({ id: t.id, name: t.name }))}
-                onInsertSaved={(id) => {
-                  const template = templates.find((t) => t.id === id);
-                  if (template)
-                    instantiate(template).forEach((node) =>
-                      studio.addNode(node),
-                    );
-                }}
-                globals={[]}
-                onInsertGlobal={() =>
-                  toast.info("Global elements arrive with the design system.")
-                }
+              <ElementsPanelInner
+                studio={studio}
+                templates={templates}
+                dragWidget={dragWidget}
               />
             )}
           </div>

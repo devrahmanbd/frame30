@@ -78,8 +78,15 @@ export function EditorShell({
   const state = useEditorDoc(kind, id, onCreated);
   const { doc, update, context } = state;
 
+  // Pages open in the full-window builder: the outer sidebar starts closed
+  // (page settings + SEO live in the builder's own panels) but stays one
+  // toggle away. Posts keep the classic open sidebar.
   const [sidebarOpen, setSidebarOpen] = useState(() =>
-    typeof window === "undefined" ? true : window.innerWidth >= 1024,
+    kind === "page"
+      ? false
+      : typeof window === "undefined"
+        ? true
+        : window.innerWidth >= 1024,
   );
   const [sidebarWidth, setSidebarWidth] = useState(() => {
     if (typeof window === "undefined") return SIDEBAR_MIN;
@@ -343,6 +350,7 @@ export function EditorShell({
         previewHref={previewHref}
         device={device}
         onDevice={setDevice}
+        hideDevice={doc.editor === "builder"}
         sidebarOpen={sidebarOpen}
         onToggleSidebar={() => setSidebarOpen((o) => !o)}
         onSaveDraft={() => void saveDraft()}
@@ -435,7 +443,8 @@ export function EditorShell({
               <div
                 className={cn(
                   "px-4 pb-24 pt-8 sm:px-6",
-                  doc.editor === "builder" && "px-0 pt-4",
+                  // Full-window builder chrome: edge-to-edge canvas.
+                  doc.editor === "builder" && "px-0 pt-2",
                 )}
               >
                 <textarea
@@ -450,7 +459,14 @@ export function EditorShell({
                   aria-label={t("Title", "শিরোনাম")}
                   rows={1}
                   maxLength={160}
-                  className="font-bangla-display fq-focus-glow mb-4 w-full resize-none rounded-fq-md border border-transparent bg-transparent px-1 text-3xl font-bold leading-tight placeholder:text-muted-foreground/60 focus:border-border sm:text-4xl"
+                  // Builder pages get a compact single-line title: the canvas
+                  // owns the window, Elementor-style. Classic keeps the
+                  // large display title.
+                  className={
+                    doc.editor === "builder"
+                      ? "fq-focus-glow mb-2 w-full resize-none rounded-fq-md border border-transparent bg-transparent px-1 text-xl font-bold leading-snug placeholder:text-muted-foreground/60 focus:border-border"
+                      : "font-bangla-display fq-focus-glow mb-4 w-full resize-none rounded-fq-md border border-transparent bg-transparent px-1 text-3xl font-bold leading-tight placeholder:text-muted-foreground/60 focus:border-border sm:text-4xl"
+                  }
                   onInput={(e) => {
                     const el = e.currentTarget;
                     el.style.height = "auto";
@@ -483,6 +499,26 @@ export function EditorShell({
                     }
                     onChange={(next) => setBody(serializeStudioBody(next))}
                     docId={doc.id ? `${kind}:${doc.id}` : null}
+                    resetKey={
+                      doc.id ? `${kind}:${doc.id}:${doc.updatedAt ?? ""}` : "new"
+                    }
+                    fill
+                    sideTab={
+                      context
+                        ? {
+                            id: "seo",
+                            label: t("SEO", "এসইও"),
+                            content: (
+                              <EditorSeoBox
+                                doc={doc}
+                                update={update}
+                                storeName={context.storeName}
+                                storeSlug={context.storeSlug}
+                              />
+                            ),
+                          }
+                        : null
+                    }
                   />
                 ) : (
                   <ClassicBody

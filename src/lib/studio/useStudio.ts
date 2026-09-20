@@ -5,7 +5,7 @@
  * shell stays presentational. Every mutation goes through `commit`, which is
  * what feeds the History panel and the dirty flag.
  */
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   currentDoc,
   initHistory,
@@ -47,12 +47,41 @@ export type StudioClipboard = {
   styles: Record<string, SettingValue> | null;
 };
 
-export function useStudio(initial: StudioDoc) {
+/**
+ * Pure adoption rule (unit-tested): take over a newly-arrived document only
+ * when its key differs from what was adopted and there are no unsaved edits
+ * to clobber. This is what lets an embedded studio show server content that
+ * resolves after mount, without ever discarding in-progress work.
+ */
+export function shouldAdoptDoc(
+  adoptedKey: string | null,
+  nextKey: string | null | undefined,
+  dirty: boolean,
+): boolean {
+  if (nextKey == null || nextKey === adoptedKey) return false;
+  return !dirty;
+}
+
+export function useStudio(initial: StudioDoc, resetKey?: string | null) {
   const [history, setHistory] = useState(() => initHistory(initial));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [device, setDevice] = useState<DeviceKey>("desktop");
   const [dirty, setDirty] = useState(false);
   const clipboard = useRef<StudioClipboard>({ node: null, styles: null });
+
+  // Adopt a newly-loaded server document (e.g. the fetch resolving after the
+  // shell mounted on an empty draft). Runs every render but exits fast
+  // unless the key actually changed; the pristine guard never clobbers edits.
+  const adoptedKey = useRef<string | null>(resetKey ?? null);
+  const dirtyRef = useRef(dirty);
+  dirtyRef.current = dirty;
+  useEffect(() => {
+    if (!shouldAdoptDoc(adoptedKey.current, resetKey ?? null, dirtyRef.current))
+      return;
+    adoptedKey.current = resetKey ?? null;
+    setHistory(initHistory(initial));
+    setSelectedId(null);
+  });
 
   const doc = currentDoc(history);
   const selected = useMemo(

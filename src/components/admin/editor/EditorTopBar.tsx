@@ -49,6 +49,7 @@ export function EditorTopBar({
   previewHref,
   device,
   onDevice,
+  hideDevice = false,
   sidebarOpen,
   onToggleSidebar,
   onSaveDraft,
@@ -73,6 +74,11 @@ export function EditorTopBar({
   previewHref: string | null;
   device: Device;
   onDevice: (d: Device) => void;
+  /**
+   * Builder mode owns its own device switcher inside the canvas chrome;
+   * hide the outer duplicate so there is exactly one, Elementor-style.
+   */
+  hideDevice?: boolean;
   sidebarOpen: boolean;
   onToggleSidebar: () => void;
   onSaveDraft: () => void;
@@ -172,6 +178,7 @@ export function EditorTopBar({
             <ExternalLink className="size-3.5" aria-hidden />
           </a>
         )}
+        {!hideDevice && (
         <div
           role="group"
           aria-label={t("Preview device", "প্রিভিউ ডিভাইস")}
@@ -195,6 +202,7 @@ export function EditorTopBar({
             </IconButton>
           ))}
         </div>
+        )}
         <IconButton
           label={t("Settings sidebar", "সেটিংস সাইডবার")}
           onClick={onToggleSidebar}
