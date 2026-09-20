@@ -14,6 +14,7 @@ import {
   type RowAction,
 } from "@/lib/content-desk";
 import { editHref, previewHref } from "./content-links";
+import { usePageEditorDefault } from "@/hooks/use-page-editor";
 
 /* -------------------------------------------------------------- Title cell */
 
@@ -31,14 +32,14 @@ export function TitleCell({
   const defaultEditor = usePageEditorDefault(row.kind);
   const suffixes = titleSuffixes(row, l);
   // Only the non-default editor gets an explicit action; the default stays
-  // on plain "Edit". The block editor surface is settings-gated.
-  const actions = rowActions(row).filter((a) =>
-    a === "edit-builder"
-      ? defaultEditor === "classic"
-      : a === "edit-blocks"
-        ? defaultEditor === "builder"
-        : true,
-  );
+  // on plain "Edit". Pages are builder-only (no block editor surface), so
+  // "edit-blocks" never appears for pages; posts keep the alternate action.
+  const actions = rowActions(row).filter((a) => {
+    if (row.kind === "page" && a === "edit-blocks") return false;
+    if (a === "edit-builder") return defaultEditor === "classic";
+    if (a === "edit-blocks") return defaultEditor === "builder";
+    return true;
+  });
   const isTrash = row.status === "trash";
 
   return (

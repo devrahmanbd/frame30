@@ -51,7 +51,6 @@ type Settings = {
   prices_include_vat: boolean;
   timezone: string;
   allow_customer_timezone: boolean;
-  page_editor_default: "builder" | "classic";
 };
 
 function SettingsPage() {
@@ -69,7 +68,6 @@ function SettingsPage() {
     prices_include_vat: false,
     timezone: DEFAULT_MERCHANT_TIMEZONE,
     allow_customer_timezone: false,
-    page_editor_default: "builder",
   });
 
   useEffect(() => {
@@ -116,8 +114,6 @@ function SettingsPage() {
         typeof steps.allow_customer_timezone === "boolean"
           ? steps.allow_customer_timezone
           : false,
-      page_editor_default:
-        steps.page_editor_default === "classic" ? "classic" : "builder",
     });
   }, [data]);
 
@@ -132,7 +128,6 @@ function SettingsPage() {
         ...currentSteps,
         timezone: form.timezone,
         allow_customer_timezone: form.allow_customer_timezone,
-        page_editor_default: form.page_editor_default,
       };
 
       // merchant_settings has UNIQUE(merchant_id) but no PK, so the
@@ -430,46 +425,6 @@ function SettingsPage() {
                 </label>
               </div>
             </div>
-          </div>
-
-          <div className="space-y-1 sm:pt-1">
-            <span className="block text-xs font-medium uppercase tracking-wider text-muted-foreground mb-1">
-              {t("Default page editor", "ডিফল্ট পেজ এডিটর")}
-            </span>
-            <div className="grid gap-2 sm:grid-cols-2" role="radiogroup" aria-label={t("Default page editor", "ডিফল্ট পেজ এডিটর")}>
-              {(
-                [
-                  ["builder", "Page builder", "পেজ বিল্ডার"],
-                  ["classic", "Block editor", "ব্লক এডিটর"],
-                ] as const
-              ).map(([value, en, bn]) => (
-                <label
-                  key={value}
-                  className={`flex cursor-pointer items-start gap-2.5 rounded-fq-md border p-3 text-sm transition-colors ${
-                    form.page_editor_default === value
-                      ? "border-primary bg-primary/5"
-                      : "border-border/80 bg-background hover:border-primary/40"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="page-editor-default"
-                    className="mt-0.5 size-4 text-primary"
-                    checked={form.page_editor_default === value}
-                    onChange={() =>
-                      setForm((f) => ({ ...f, page_editor_default: value }))
-                    }
-                  />
-                  <span className="font-medium">{t(en, bn)}</span>
-                </label>
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {t(
-                "Pages open in this editor. The other one stays one click away in the page list.",
-                "পেজ এই এডিটরে খুলবে। অন্যটি পেজ তালিকায় এক ক্লিক দূরে থাকবে।",
-              )}
-            </p>
           </div>
 
           <div className="flex items-center gap-3 pt-2">

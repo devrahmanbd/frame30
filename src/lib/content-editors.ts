@@ -1,10 +1,10 @@
 /**
  * Page/post editor choice (Elementor-parity program).
  *
- * Merchants pick a default page editor in Settings; the list offers the
- * other one explicitly. "classic" here IS the block editor (Visual/Code
- * tabs, block toolbar); "builder" is the visual page builder at
- * /dashboard/builder, which never changes.
+ * Posts honour the merchant's stored default with the other editor offered
+ * explicitly. Pages are builder-only: the block editor was removed from the
+ * pages surface. "classic" here IS the block editor (Visual/Code tabs,
+ * block toolbar); "builder" is the visual page builder, which never changes.
  */
 
 export type EditorChoice = "builder" | "classic";

@@ -108,9 +108,21 @@ export function EditorShell({
   const needsChoice = false;
 
   // Honour `?editor=builder` or `?editor=classic` once the document has loaded.
+  // Pages are builder-only, except legacy classic pages that still hold
+  // content: those stay readable/editable in place (one-way "Edit with
+  // Builder" in the top bar migrates them) so the forced switch can never
+  // blank authored markdown into an empty builder doc.
   const forced = useRef(false);
   useEffect(() => {
     if (forced.current || !context) return;
+    const legacyClassicPage =
+      kind === "page" &&
+      context.doc.editor === "classic" &&
+      context.doc.body.trim() !== "";
+    if (legacyClassicPage) {
+      forced.current = true;
+      return;
+    }
     const targetEditor = forceEditor ?? (kind === "page" ? "builder" : "classic");
     if (targetEditor !== context.doc.editor) {
       forced.current = true;
@@ -250,6 +262,8 @@ export function EditorShell({
 
   const setBody = (body: string) => update({ body }, "body");
 
+  // Pages are builder-only: no switch back to the removed block surface.
+  // Posts keep the classic ⇄ builder toggle.
   const menu: MenuAction[] = [
     {
       id: "outline",
@@ -261,15 +275,21 @@ export function EditorShell({
       label: t("Keyboard shortcuts", "কীবোর্ড শর্টকাট"),
       onSelect: () => setHelpOpen(true),
     },
-    {
-      id: "switch",
-      label:
-        doc.editor === "builder"
-          ? t("Switch to Classic editor", "ক্লাসিক এডিটরে যান")
-          : t("Edit with Builder", "বিল্ডারে সম্পাদনা"),
-      onSelect: () =>
-        switchEditor(doc.editor === "builder" ? "classic" : "builder"),
-    },
+    ...(kind === "page"
+      ? []
+      : [
+          {
+            id: "switch",
+            label:
+              doc.editor === "builder"
+                ? t("Switch to Classic editor", "ক্লাসিক এডিটরে যান")
+                : t("Edit with Builder", "বিল্ডারে সম্পাদনা"),
+            onSelect: () =>
+              switchEditor(
+                doc.editor === "builder" ? "classic" : "builder",
+              ),
+          } as MenuAction,
+        ]),
     {
       id: "trash",
       label: t("Move to trash", "ট্র্যাশে পাঠান"),

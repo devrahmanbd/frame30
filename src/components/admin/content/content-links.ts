@@ -4,13 +4,16 @@ import type { ContentKind, ContentRow } from "@/lib/content-desk";
  * Where each row action goes. Editors are still the existing screens until
  * Phase 12 ships the takeover shell; the desk only needs stable deep links.
  */
-/** Phase 12: both kinds open the full-screen editor takeover. */
+/** Phase 12: both kinds open the full-screen editor takeover. Pages are
+ * builder-only (the block editor was removed for pages); posts keep the
+ * classic writing surface. */
 export function editHref(
   kind: ContentKind,
   id: string,
   editor?: "classic" | "builder",
 ): string {
-  const chosen = editor ?? (kind === "page" ? "builder" : "classic");
+  const chosen =
+    kind === "page" ? "builder" : (editor ?? "classic");
   const params = new URLSearchParams({ kind, id, editor: chosen });
   return `/dashboard/content/editor?${params.toString()}`;
 }

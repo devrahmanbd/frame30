@@ -96,7 +96,9 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
   const deleteForever = useServerFn(contentDeleteForeverFn);
   const createDraft = useServerFn(contentCreateDraftFn);
 
-  const defaultEditor = usePageEditorDefault(kind);
+  // Pages are builder-only; posts keep the merchant's chosen default.
+  const storedDefault = usePageEditorDefault(kind);
+  const defaultEditor = kind === "page" ? "builder" : storedDefault;
 
   const queryKey = useMemo(() => ["content-desk", kind] as const, [kind]);
   const { data, isLoading, error, refetch } = useQuery({

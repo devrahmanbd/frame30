@@ -9,10 +9,10 @@ import {
 import { useMerchant } from "./use-merchant";
 
 /**
- * The merchant's default page editor, from Settings
- * (`setup_steps.page_editor_default`). Falls back to the kind default
- * (pages builder, posts classic) when unset or unreadable — the list and
- * keyboard shortcuts always have something to open.
+ * The merchant's default editor for posts, from the legacy Settings key
+ * (`setup_steps.page_editor_default`; the Settings UI no longer writes it).
+ * Falls back to the kind default (pages builder, posts classic) when unset
+ * or unreadable. Pages bypass this hook entirely — they are builder-only.
  */
 export function usePageEditorDefault(kind: ContentKindChoice): EditorChoice {
   const { data: merchant } = useMerchant();

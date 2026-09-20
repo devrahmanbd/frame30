@@ -44,12 +44,15 @@ export const Route = createFileRoute(
 function EditorRoute() {
   const { kind, id, editor } = Route.useSearch();
   const navigate = useNavigate();
+  // Pages are builder-only; a stale `?editor=classic` link can never open
+  // the removed block surface for pages. Posts honour the query param.
+  const forced = kind === "page" ? "builder" : (editor ?? null);
   return (
     <EditorShell
       key={`${kind}:${id ?? "new"}`}
       kind={kind}
       id={id ?? null}
-      forceEditor={editor ?? null}
+      forceEditor={forced}
       listHref={
         kind === "page"
           ? "/dashboard/content/pages"
@@ -61,7 +64,7 @@ function EditorRoute() {
           search: {
             kind,
             id: newId,
-            editor: editor ?? (kind === "page" ? "builder" : "classic"),
+            editor: kind === "page" ? "builder" : (editor ?? "classic"),
           },
           replace: true,
         })
