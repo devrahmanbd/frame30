@@ -63,15 +63,15 @@ export function placeholderSvg(title: string | null | undefined): string {
     `<g opacity="0.3" fill="${ACCENT}"><circle cx="120" cy="120" r="26"/><circle cx="200" cy="120" r="26"/><circle cx="120" cy="200" r="26"/><circle cx="200" cy="200" r="26"/></g>`,
     `<path d="M120 880 Q400 640 680 880" fill="none" stroke="${ACCENT}" stroke-width="3" opacity="0.35"/>`,
   ];
-  // Center badge: keeps the monogram compact so wide crops never blow it
-  // full-bleed. Badge center (400,500) sits inside every common crop band.
+  // Center-right badge: keeps the monogram compact and clear of left-set
+  // copy so wide hero crops never blow it full-bleed over headlines.
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img">` +
     `<rect width="800" height="1000" fill="${BASE}"/>` +
     weave +
     motifs[motif]! +
-    `<circle cx="400" cy="500" r="130" fill="${BASE}" stroke="${ACCENT}" stroke-width="4"/>` +
-    `<text x="400" y="548" text-anchor="middle" font-family="${SERIF}" font-size="140" fill="${INK}">${initial}</text>` +
+    `<circle cx="600" cy="500" r="100" fill="${BASE}" stroke="${ACCENT}" stroke-width="4"/>` +
+    `<text x="600" y="536" text-anchor="middle" font-family="${SERIF}" font-size="110" fill="${INK}">${initial}</text>` +
     `</svg>`
   );
 }

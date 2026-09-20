@@ -7,14 +7,19 @@
  * SectionRenderer stack the storefront uses, but with placeholder widget
  * data so every section renders something visible.
  */
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Monitor, Smartphone, Tablet, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
+import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
 import {
-  compileResponsiveCss,
-} from "@/lib/responsive-css";
+  collectWidgetRequests,
+  type WidgetDataBundle,
+  type WidgetDataMap,
+} from "@/lib/widget-data";
+import { previewDemoMap } from "@/lib/preview-demo-data";
+import { compileResponsiveCss } from "@/lib/responsive-css";
 import {
   TEMPLATE_KEYS,
   type Section,
@@ -47,6 +52,8 @@ export type ThemePreviewFrameProps = {
   themeName: string;
   /** Blueprint author. */
   author: string;
+  /** Blueprint key — selects the demo catalog for preview rows. */
+  blueprintKey: string;
   /** Theme tokens applied to the preview surface. */
   tokens: ThemeTokens;
   /** All authored templates keyed by template key. */
@@ -58,21 +65,26 @@ export type ThemePreviewFrameProps = {
 export function ThemePreviewFrame({
   themeName,
   author,
+  blueprintKey,
   tokens,
   templates,
   onClose,
 }: ThemePreviewFrameProps) {
   const [template, setTemplate] = useState<TemplateKey>("index");
-  const [device, setDevice] = useState<(typeof DEVICES)[number]["id"]>("desktop");
+  const [device, setDevice] =
+    useState<(typeof DEVICES)[number]["id"]>("desktop");
 
   const ast = templates[template] ?? templates.index;
   const deviceEntry = DEVICES.find((d) => d.id === device)!;
-  const allSections: Section[] = [
-    ...ast.header,
-    ...ast.main,
-    ...ast.footer,
-  ];
+  const allSections: Section[] = [...ast.header, ...ast.main, ...ast.footer];
   const responsiveCss = compileResponsiveCss(allSections);
+  // Preview has no merchant data: feed every data widget demo catalog rows
+  // so grids/rails render products instead of skeleton-spinning forever.
+  const previewData: { bundle: WidgetDataBundle; map: WidgetDataMap } =
+    useMemo(() => {
+      const bundle = collectWidgetRequests(ast);
+      return { bundle, map: previewDemoMap(bundle, blueprintKey) };
+    }, [ast, blueprintKey]);
 
   return (
     <div
@@ -166,42 +178,47 @@ export function ThemePreviewFrame({
           style={{ maxWidth: deviceEntry.width ?? "100%" }}
         >
           <ThemeSurface tokens={tokens}>
-            {/* header slot */}
-            {ast.header.map((section) => (
-              <SectionRenderer
-                key={section.id}
-                section={section}
-                template={template}
-                editing={false}
-              />
-            ))}
-
-            {/* main slot */}
-            {ast.main.length > 0 ? (
-              ast.main.map((section) => (
+            <WidgetDataProvider
+              bundle={previewData.bundle}
+              map={previewData.map}
+            >
+              {/* header slot */}
+              {ast.header.map((section) => (
                 <SectionRenderer
                   key={section.id}
                   section={section}
                   template={template}
                   editing={false}
-                  primary={section.id === ast.main[0]?.id}
                 />
-              ))
-            ) : (
-              <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
-                No sections authored for this template.
-              </div>
-            )}
+              ))}
 
-            {/* footer slot */}
-            {ast.footer.map((section) => (
-              <SectionRenderer
-                key={section.id}
-                section={section}
-                template={template}
-                editing={false}
-              />
-            ))}
+              {/* main slot */}
+              {ast.main.length > 0 ? (
+                ast.main.map((section) => (
+                  <SectionRenderer
+                    key={section.id}
+                    section={section}
+                    template={template}
+                    editing={false}
+                    primary={section.id === ast.main[0]?.id}
+                  />
+                ))
+              ) : (
+                <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
+                  No sections authored for this template.
+                </div>
+              )}
+
+              {/* footer slot */}
+              {ast.footer.map((section) => (
+                <SectionRenderer
+                  key={section.id}
+                  section={section}
+                  template={template}
+                  editing={false}
+                />
+              ))}
+            </WidgetDataProvider>
           </ThemeSurface>
         </div>
       </div>
