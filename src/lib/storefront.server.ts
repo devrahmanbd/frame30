@@ -341,7 +341,7 @@ export async function loadStorefront(
     db
       .from("merchant_settings")
       .select(
-        "tagline, cod_enabled, mfs_enabled, shipping_flat_minor_int, free_shipping_threshold_minor_int",
+        "tagline, cod_enabled, mfs_enabled, shipping_flat_minor_int, free_shipping_threshold_minor_int, setup_steps",
       )
       .eq("merchant_id", merchant.id)
       .maybeSingle(),
@@ -453,6 +453,15 @@ export async function loadStorefront(
     }
   }
 
+  // CMS-designated homepage: a published page the merchant chose in the
+  // Pages list. Anything else (unset, draft, trashed, deleted) falls back
+  // to the theme index template below — never a broken `/`.
+  const homepageSlug = await resolveHomepageSlug(
+    db,
+    merchant.id,
+    (settings as { setup_steps?: unknown } | null)?.setup_steps,
+  );
+
   return {
     merchant,
     seo,
@@ -469,7 +478,42 @@ export async function loadStorefront(
     widgetData,
     customCode,
     siteKit,
+    homepageSlug,
   };
+}
+
+/** Slug of the merchant's designated homepage page, when it is publicly visible. */
+async function resolveHomepageSlug(
+  db: ReturnType<typeof publicClient>,
+  merchantId: string,
+  setupSteps: unknown,
+): Promise<string | null> {
+  const raw =
+    setupSteps && typeof setupSteps === "object"
+      ? (setupSteps as Record<string, unknown>).homepage_page_id
+      : null;
+  if (
+    typeof raw !== "string" ||
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(raw)
+  )
+    return null;
+  try {
+    const { data: page } = await db
+      .from("storefront_pages")
+      .select("slug")
+      .eq("merchant_id", merchantId)
+      .eq("id", raw)
+      .eq("is_published", true)
+      .neq("status", "trash")
+      .is("deleted_at", null)
+      .maybeSingle();
+    return (page as { slug?: unknown } | null)?.slug &&
+      typeof (page as { slug: unknown }).slug === "string"
+      ? ((page as { slug: string }).slug as string)
+      : null;
+  } catch {
+    return null;
+  }
 }
 
 export async function loadStoreProduct(slug: string, productSlug: string) {

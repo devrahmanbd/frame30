@@ -36,6 +36,28 @@ export const getStorefront = createServerFn({ method: "GET" })
     }
     const found = await loadStorefront(data.slug, preview);
     if (!found) return null;
+    // CMS-designated homepage: when the merchant chose a published page as
+    // the storefront home, its rendered payload rides along so both index
+    // routes (path-based and custom host) can serve it at `/` instead of
+    // the theme index template. Unresolvable designations stay null and the
+    // theme template renders — never a broken `/`.
+    let homepage: Awaited<
+      ReturnType<
+        typeof import("./storefront-search.functions").getStorePageFn
+      >
+    > | null = null;
+    if (found.homepageSlug) {
+      try {
+        const { getStorePageFn } = await import(
+          "./storefront-search.functions"
+        );
+        homepage = await getStorePageFn({
+          data: { slug: data.slug, pageSlug: found.homepageSlug },
+        });
+      } catch {
+        homepage = null;
+      }
+    }
     // Signed responsive variants are built here, not in the cached tenant
     // loader: the HMAC secret is server-only and the URLs are cheap to derive.
     const { responsiveImage } = await import("./image-cdn.server");
@@ -46,7 +68,7 @@ export const getStorefront = createServerFn({ method: "GET" })
       })),
     );
     // Origin is per-request, so it is resolved outside the tenant cache.
-    return { ...found, products, origin: requestOrigin() };
+    return { ...found, products, origin: requestOrigin(), homepage };
   });
 
 /**

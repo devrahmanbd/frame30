@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PublicShell } from "@/components/public/PublicShell";
 import { StorefrontPage } from "@/components/store/StorefrontPage";
+import { StoreHomepage } from "@/components/store/StoreHomepage";
 import { getLanding } from "@/lib/landing.functions";
 import { getSiteContext } from "@/lib/site-seo.functions";
 import {
@@ -8,7 +9,7 @@ import {
   resolveStorefrontHostFn,
 } from "@/lib/storefront.functions";
 import { buildMarketingHead, buildGraph } from "@/lib/marketing-seo";
-import { buildStoreHead } from "@/lib/theme-seo";
+import { buildPageHead, buildStoreHead } from "@/lib/theme-seo";
 import { fontHeadLinks } from "@/lib/theme-fonts";
 import { astJsonLd } from "@/lib/structured-data";
 import { flattenAst } from "@/lib/builder-ast";
@@ -62,6 +63,21 @@ export const Route = createFileRoute("/")({
   head: ({ loaderData }) => {
     if (loaderData?.kind === "store") {
       const { host, storefront } = loaderData;
+      // CMS-designated homepage on a custom domain: canonical stays `/`.
+      if (storefront.homepage) {
+        const home = storefront.homepage;
+        return buildPageHead({
+          origin: storefront.origin,
+          path: "/",
+          storePath: `/store/${host.merchantSlug}`,
+          storeName: storefront.merchant.name,
+          themeKey: home.themeKey,
+          robots: home.page.robots,
+          noindex: (home.page.robots ?? "").startsWith("noindex"),
+          seo: home.seo ?? null,
+          page: home.page,
+        });
+      }
       const custom = storefront.customCode?.headTags ?? [];
       const base = buildStoreHead({
         origin: storefront.origin,
@@ -160,6 +176,14 @@ function PlatformHome() {
   // Custom-domain traffic renders the merchant storefront chrome directly —
   // no platform shell, no marketing sections.
   if (data.kind === "store") {
+    if (data.storefront.homepage) {
+      return (
+        <StoreHomepage
+          home={data.storefront.homepage}
+          slug={data.host.merchantSlug}
+        />
+      );
+    }
     return <StorefrontPage data={data.storefront} />;
   }
 

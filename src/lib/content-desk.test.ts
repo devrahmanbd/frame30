@@ -8,6 +8,7 @@ import {
   EMPTY_BULK_EDIT,
   filterRows,
   formatWpDate,
+  homepageActionFor,
   matchesView,
   NO_CHANGE,
   parentOptions,
@@ -114,6 +115,29 @@ describe("row actions", () => {
       "restore",
       "delete",
     ]);
+  });
+  it("set-homepage is offered for non-trash pages except the current one", () => {
+    const page = {
+      kind: "page",
+      status: "draft",
+      id: "00000000-0000-0000-0000-000000000001",
+    } as const;
+    expect(homepageActionFor(page, null)).toBe("set-homepage");
+    expect(
+      homepageActionFor(page, "00000000-0000-0000-0000-000000000002"),
+    ).toBe("set-homepage");
+    expect(
+      homepageActionFor(page, "00000000-0000-0000-0000-000000000001"),
+    ).toBeNull();
+    expect(
+      homepageActionFor(
+        { kind: "page", status: "trash", id: page.id },
+        null,
+      ),
+    ).toBeNull();
+    expect(
+      homepageActionFor({ kind: "post", status: "draft", id: page.id }, null),
+    ).toBeNull();
   });
   it("bulk menu differs on the Trash tab", () => {
     expect(bulkActionsFor("all")).toEqual([

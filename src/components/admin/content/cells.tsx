@@ -5,6 +5,7 @@ import { useLang } from "@/lib/i18n";
 import {
   dateCellLabel,
   formatWpDate,
+  homepageActionFor,
   ROW_ACTION_LABEL,
   rowActions,
   seoBand,
@@ -22,10 +23,12 @@ export function TitleCell({
   row,
   storeSlug,
   onAction,
+  homepagePageId = null,
 }: {
   row: ContentRow;
   storeSlug: string;
   onAction: (action: RowAction, row: ContentRow) => void;
+  homepagePageId?: string | null;
 }) {
   const { lang } = useLang();
   const l = lang === "bn" ? "bn" : "en";
@@ -40,6 +43,10 @@ export function TitleCell({
     if (a === "edit-blocks") return defaultEditor === "builder";
     return true;
   });
+  // "Set as homepage" trails the edit actions; the current homepage shows
+  // its — Home page suffix instead of the action.
+  const homepageAction = homepageActionFor(row, homepagePageId);
+  if (homepageAction) actions.push(homepageAction);
   const isTrash = row.status === "trash";
 
   return (

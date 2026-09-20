@@ -1,7 +1,8 @@
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { StorefrontPage } from "@/components/store/StorefrontPage";
+import { StoreHomepage } from "@/components/store/StoreHomepage";
 
-import { buildStoreHead } from "@/lib/theme-seo";
+import { buildPageHead, buildStoreHead } from "@/lib/theme-seo";
 import { fontHeadLinks } from "@/lib/theme-fonts";
 import { astJsonLd } from "@/lib/structured-data";
 import { flattenAst } from "@/lib/builder-ast";
@@ -85,6 +86,22 @@ export const Route = createFileRoute("/store/$slug/")({
           { name: "robots", content: "noindex" },
         ],
       };
+    }
+    // CMS-designated homepage: the page's own title/robots win; the URL
+    // stays `/store/<slug>`.
+    if (loaderData.homepage) {
+      const home = loaderData.homepage;
+      return buildPageHead({
+        origin: loaderData.origin,
+        path: `/store/${params.slug}`,
+        storePath: `/store/${params.slug}`,
+        storeName: loaderData.merchant.name,
+        themeKey: home.themeKey,
+        robots: home.page.robots,
+        noindex: (home.page.robots ?? "").startsWith("noindex"),
+        seo: home.seo ?? null,
+        page: home.page,
+      });
     }
     // Phase 4: merchant head snippet (verification metas, canonical/alternate
     // links, JSON-LD) is appended after the platform's own tags so it can
@@ -174,5 +191,9 @@ function StoreMissing() {
 
 function StorefrontHome() {
   const data = Route.useLoaderData();
+  const { slug } = Route.useParams();
+  if (data.homepage) {
+    return <StoreHomepage home={data.homepage} slug={slug} />;
+  }
   return <StorefrontPage data={data} />;
 }

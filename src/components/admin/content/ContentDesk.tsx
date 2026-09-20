@@ -45,6 +45,7 @@ import {
   contentCreateDraftFn,
   contentDeleteForeverFn,
   contentDeskFn,
+  contentHomepageFn,
   contentQuickEditFn,
 } from "@/lib/content-desk.functions";
 import type { ContentDesk as DeskPayload } from "@/lib/content-desk.server";
@@ -95,6 +96,7 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
   const bulkVerb = useServerFn(contentBulkVerbFn);
   const deleteForever = useServerFn(contentDeleteForeverFn);
   const createDraft = useServerFn(contentCreateDraftFn);
+  const setHomepage = useServerFn(contentHomepageFn);
 
   // Pages are builder-only; posts keep the merchant's chosen default.
   const storedDefault = usePageEditorDefault(kind);
@@ -274,6 +276,33 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
     if (action === "restore") return void runVerb("restore", [row.id]);
     if (action === "delete")
       return setPending({ action: "delete", ids: [row.id] });
+    if (action === "set-homepage") return void runHomepage(row.id);
+  };
+
+  const runHomepage = async (id: string) => {
+    const snapshot = qc.getQueryData<DeskPayload>(queryKey);
+    try {
+      // Optimistic: the badge moves immediately, the server confirms.
+      setDesk((d) => ({
+        ...d,
+        homepagePageId: id,
+        rows: d.rows.map((r) => ({ ...r, isHome: r.id === id })),
+      }));
+      await setHomepage({ data: { id } });
+      toast.success(t("Homepage updated.", "হোমপেজ আপডেট হয়েছে।"));
+      await refetch();
+    } catch (e) {
+      qc.setQueryData(queryKey, snapshot);
+      const msg = e instanceof Error ? e.message : "";
+      toast.error(
+        msg.includes("homepage.unpublished")
+          ? t(
+              "Publish the page first — only published pages can be the homepage.",
+              "আগে পেজটি প্রকাশ করুন — শুধু প্রকাশিত পেজ হোমপেজ হতে পারে।",
+            )
+          : t("That page could not be set as homepage.", "হোমপেজ সেট করা যায়নি।"),
+      );
+    }
   };
 
   const submitQuick = async (draft: QuickEditDraft) => {
@@ -445,6 +474,7 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
 
   /* --------------------------------------------------------------- columns */
   const storeSlug = data?.storeSlug ?? "";
+  const homepagePageId = data?.homepagePageId ?? null;
   // Cells are memoised per kind/lang; route actions through a ref so they
   // always see the latest rows/counts rather than a stale closure.
   const actionRef = useRef(onRowAction);
@@ -458,7 +488,12 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
         sortable: true,
         width: "auto",
         cell: (row) => (
-          <TitleCell row={row} storeSlug={storeSlug} onAction={act} />
+          <TitleCell
+            row={row}
+            storeSlug={storeSlug}
+            onAction={act}
+            homepagePageId={homepagePageId}
+          />
         ),
       },
       {
@@ -508,7 +543,7 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
     );
     return cols;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind, storeSlug, lang]);
+  }, [kind, storeSlug, homepagePageId, lang]);
 
   const bulkOptions = bulkActionsFor(view);
   const noun = (n: number) => (n === 1 ? copy.one[l] : copy.many[l]);
