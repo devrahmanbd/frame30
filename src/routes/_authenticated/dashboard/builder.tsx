@@ -242,6 +242,19 @@ function BuilderStudio() {
   // preset or device exits fluid mode. Responsive editing targets desktop
   // while fluid (documented on the toggle).
   const [fluidCanvas, setFluidCanvas] = useState(false);
+  // Collapsible side panels: the canvas region is what remains, so hiding
+  // one or both panels is what makes full-window editing real on small
+  // screens. Grid tracks follow the same flags (no empty tracks).
+  const [leftOpen, setLeftOpen] = useState(true);
+  const [rightOpen, setRightOpen] = useState(true);
+  const gridCols =
+    leftOpen && rightOpen
+      ? "lg:grid-cols-[300px_1fr_340px]"
+      : leftOpen
+        ? "lg:grid-cols-[300px_1fr]"
+        : rightOpen
+          ? "lg:grid-cols-[1fr_340px]"
+          : "lg:grid-cols-[1fr]";
   const [zoom, setZoom] = useState<number>(1);
   const [lintDrawerOpen, setLintDrawerOpen] = useState(false);
   const [translationDrawerOpen, setTranslationDrawerOpen] = useState(false);
@@ -977,7 +990,7 @@ function BuilderStudio() {
       const type = drop.type as SectionType;
       // Unknown/forged types never reach the tree.
       if (!catalogEntry(type)) {
-        toast.error(t("Unknown widget", "অজানা উইজেট"));
+        toast.error(t("Unknown widget"));
         return;
       }
       const index = pickDropIndex(
@@ -985,7 +998,7 @@ function BuilderStudio() {
         rowTops(e.currentTarget as HTMLElement),
       );
       if (!canDrop(sections, [newSection(type)], null).ok) {
-        toast.error(t("Cannot drop here", "এখানে রাখা যাবে না"));
+        toast.error(t("Cannot drop here"));
         return;
       }
       const id = editor.add(template, slot, type, { parentId: null, index });
@@ -1509,8 +1522,10 @@ function BuilderStudio() {
           </div>
         )}
 
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-[300px_1fr_340px] overflow-hidden">
-          <aside className="flex flex-col border-r border-border bg-card overflow-y-auto p-3.5 space-y-3.5">
+        <div className={`flex-1 grid grid-cols-1 ${gridCols} overflow-hidden`}>
+          <aside
+            className={`flex-col border-r border-border bg-card overflow-y-auto p-3.5 space-y-3.5 ${leftOpen ? "flex" : "hidden"}`}
+          >
             <div
               role="tablist"
               aria-label={t("Layout slots", "লেআউট স্লট")}
@@ -2040,9 +2055,8 @@ function BuilderStudio() {
                   aria-selected={fluidCanvas}
                   aria-label={t(
                     "Full window width canvas. Responsive editing targets desktop while fluid.",
-                    "পূর্ণ উইন্ডো প্রস্থ ক্যানভাস। ফ্লুইড থাকলে রেসপন্সিভ এডিটিং ডেস্কটপ ধরে।",
                   )}
-                  title={t("Full width", "পূর্ণ প্রস্থ")}
+                  title={t("Full width")}
                   onClick={() => setFluidCanvas((v) => !v)}
                   className={`rounded-fq-md px-2.5 py-1 text-xs font-medium tabular-nums transition-colors cursor-pointer ${
                     fluidCanvas
@@ -2050,7 +2064,33 @@ function BuilderStudio() {
                       : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
-                  {t("Full width", "পূর্ণ প্রস্থ")}
+                  {t("Full width")}
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={!leftOpen}
+                  title={t("Toggle layers panel")}
+                  onClick={() => setLeftOpen((v) => !v)}
+                  className={`rounded-fq-md px-2 py-1 text-xs font-medium tabular-nums transition-colors cursor-pointer ${
+                    !leftOpen
+                      ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  {t("◀ Layers")}
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={!rightOpen}
+                  title={t("Toggle inspector panel")}
+                  onClick={() => setRightOpen((v) => !v)}
+                  className={`rounded-fq-md px-2 py-1 text-xs font-medium tabular-nums transition-colors cursor-pointer ${
+                    !rightOpen
+                      ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  {t("Inspector ▶")}
                 </button>
               </div>
 
@@ -2307,7 +2347,9 @@ function BuilderStudio() {
             )}
           </section>
 
-          <aside className="flex flex-col border-l border-border bg-card overflow-y-auto p-3.5 space-y-3.5">
+          <aside
+            className={`flex-col border-l border-border bg-card overflow-y-auto p-3.5 space-y-3.5 ${rightOpen ? "flex" : "hidden"}`}
+          >
             <div
               role="tablist"
               aria-label={t("Studio panels", "স্টুডিও প্যানেল")}
