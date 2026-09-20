@@ -211,3 +211,39 @@ storefront serves on custom domains only.
   one server — observed interleaved commits, a 502 from another session's
   unpushed-file commit, and a frankenbuild (restart landed mid-build).
   Coordinate deploy windows; never `git reset` shared history.
+
+## Loop decisions (Sept 21 — operator decrees, preserved verbatim in spirit)
+- **Page builder = content editor URL.** Option 1 chosen: pages edit in the
+  full-window Elementor-style `/dashboard/content/editor` (verified live w/
+  screenshots under flamedev7/akira). `/dashboard/builder` stays the theme
+  studio; merge = port page-meaningful powers into the editor, retire
+  `/builder` only later after editor testing.
+- **Merge plan**: content editor already shares StudioBuilder (templates,
+  history, design, finder, SEO, publish). The one real port: global blocks
+  insert (Section -> StudioNode conversion). Theme-scoped powers (tokens,
+  versions, schedules, popups, maintenance, custom code) stay in studio.
+- **No local `bun test`** — tests run in CircleCI `unit-contract` job only.
+- **Verify on production only** (no localhost testing): SSH
+  root@88.99.250.99:/opt/frame28 build+restart, check live URLs in browser.
+- **Push to GitHub**; deploy via SSH when told.
+- **Path storefronts REMOVED** — custom domains only. Homepage render must
+  be exercised on a custom domain (pending: needs published page + domain).
+- **"Invalid token" diagnosis**: expired 1h access token + dead refresh;
+  fix = sign out and sign back in (verified: fresh flamedev7 login works,
+  dashboard + lists healthy). Not a platform breakage.
+- **Shared-clone hazard**: two agents commit/deploy to one clone + one
+  server. Evidence: interleaved origin/main, 502 from unpushed-file commit,
+  frankenbuild (restart landed mid-build), server-local uncommitted cutover
+  (path-410 experiment, since stashed, NOT in git). Coordinate windows.
+
+## Loop batch — widget port into page editor (Sept 21)
+- Ported 6 theme widgets as native studio widgets with identical flat
+  props (`92915f2`): faq, marquee, countdown, banner, trust_bar,
+  announcement_bar (catalog + controls + renderers + contract test).
+- Verified live on production: all six in Elements panel, FAQ
+  insert/settings/render/delete round-trip clean, test page restored
+  (autosave round-trip re-parses; seed block removed).
+- Pattern proven for the remaining ~100 theme widgets; data-backed ones
+  (product/cart/search/nav) need store context and stay theme-side.
+- Deferred: global-blocks save-from-page (needs reverse conversion),
+  testimonial_carousel (array controls), Layers dock parity.
