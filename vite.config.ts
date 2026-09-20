@@ -13,9 +13,21 @@ export default defineConfig(async ({ command }) => {
       // Per-route code splitting: without this the route tree eagerly
       // imports every route file, so the first dashboard load downloads the
       // entire app (builder, marketing, blog, storefront…) and the main
-      // thread blocks for seconds parsing it. With splitting, each route
-      // becomes its own chunk loaded on navigation.
-      router: { autoCodeSplitting: true },
+      // thread blocks for seconds parsing it. Components split by default;
+      // loaders are split too so route data-fetching graphs (server-fn
+      // stubs, validators, schemas) also load on navigation, not upfront.
+      // `head` cannot split (needed synchronously) — keep those imports lean.
+      router: {
+        autoCodeSplitting: true,
+        codeSplittingOptions: {
+          defaultBehavior: [
+            ["component"],
+            ["loader"],
+            ["errorComponent"],
+            ["notFoundComponent"],
+          ],
+        },
+      },
     }),
   ];
 
@@ -41,6 +53,11 @@ export default defineConfig(async ({ command }) => {
 
     build: {
       target: browserslistToEsbuild(),
+      // NOTE: no manualChunks — a manualChunks function collapsed the
+      // framework shared chunks back into the entry (770KB → 1.49MB in a
+      // local build). The TanStack code splitter already separates route
+      // components; vendor chunking needs rolldown advancedChunks instead
+      // (follow-up, verify entry size before shipping).
     },
     resolve: {
       alias: {
