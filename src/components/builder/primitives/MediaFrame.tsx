@@ -13,7 +13,8 @@
  */
 import { useState } from "react";
 import { decodeSource } from "@/lib/image-transform";
-import { ProductTileArt, TILE_BASE } from "@/components/store/ProductTileArt";
+import { TILE_BASE } from "@/components/store/ProductTileArt";
+import { placeholderSeed } from "@/lib/placeholder";
 
 export type MediaRatio = "square" | "portrait" | "landscape" | "wide" | "auto";
 
@@ -95,7 +96,13 @@ export function MediaFrame({
           }
         />
       ) : artSeed !== undefined ? (
-        <ProductTileArt seed={artSeed ?? alt} title={alt} className="h-full w-full" />
+        <img
+          src={`/api/public/ph/${placeholderSeed(artSeed ?? alt)}`}
+          alt={alt}
+          loading={eager ? "eager" : "lazy"}
+          decoding={eager ? "sync" : "async"}
+          className="h-full w-full object-cover"
+        />
       ) : (
         <div aria-hidden="true" className="h-full w-full bg-muted" />
       )}
