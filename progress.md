@@ -169,3 +169,45 @@ clothing products + theme, one real purchase. No manual intervention.
   (awaiting Fortress WIP settle before main commit).
 - Pages open in page builder (edit links carry editor=builder, verified live);
   Appearance submenu has no Customize entry (removed 96e3d60, verified live).
+
+## Loop dev/testfix — page-builder consolidation (Sept 20-21, 2026)
+
+Operator directives (standing): no local `bun test` (tests run in CircleCI
+unit-contract job); verify on production via SSH build+deploy
+(root@88.99.250.99:/opt/frame28); push to GitHub; path storefronts REMOVED —
+storefront serves on custom domains only.
+
+- [x] **Block editor removed from pages** (`ac50aec`): pages builder-only,
+  settings toggle deleted, legacy classic pages preserved readable.
+- [x] **Elementor-parity full-window builder** (`c774c27`, verified live
+  with screenshots): StudioBuilder `fill` mode, left Elements/SEO tabs,
+  compact title, sidebar starts closed, single device switcher.
+- [x] **Stale-canvas root cause fixed** (`c774c27` + `29beccf`): useStudio
+  captured the empty pre-load doc and never adopted the server doc (no
+  sync effect); added pristine-guarded adoption via resetKey + tolerant
+  v2 parse for escaped-bracket payloads. Repaired akira test row in DB.
+  Canvas renders authored content (screenshot proof).
+- [x] **Customizable homepage** (`e196b30`, `35a75d5`): set/remove actions,
+  published-only guard, theme-template fallback, path + custom-host routes.
+  Negative path verified live (draft rejected, rollback clean). Success
+  path NOT render-verified: needs a published page on a custom domain.
+- [x] **Quick Edit/bulk publish flag bug** (`f6cb7bf`): they set status but
+  never is_published, so "Published" rows stayed publicly invisible; editor
+  save already set both. Fixed in all three verbs (pages only).
+- [x] **Themes read-error** (`ce4d4d6`): NULL installed_at crashed
+  orderInstalled; hardened sort, stamped all install paths, backfilled live.
+- [x] **CI migration** (`aa744e8`, `51d7261`, `c805099`): CircleCI only,
+  `.github/workflows/gates.yml` deleted, AGENTS.md task-finish rule.
+- [x] **builder_global_blocks migration** (`35a75d5`): table never migrated;
+  created idempotently with RLS + grants + updated_at trigger, applied live.
+- [ ] **Follow-up**: global-blocks INSERT into page canvas needs
+  builder-ast Section -> StudioNode conversion (deferred: fidelity risk).
+- [ ] **Follow-up**: dashboard LCP still ~2.9s lab (splitting shipped, heavy
+  chunks lazy; eager core = route modules + head libs + 104KB i18n dict).
+  Next lever: head-import diet + per-language i18n split.
+- [ ] **Follow-up**: `.e2e/playwright.config.ts` does not exist; e2e-critical
+  passes by design until the harness lands.
+- [ ] **PROCESS HAZARD (Sept 21)**: two agents share this clone AND deploy to
+  one server — observed interleaved commits, a 502 from another session's
+  unpushed-file commit, and a frankenbuild (restart landed mid-build).
+  Coordinate deploy windows; never `git reset` shared history.
