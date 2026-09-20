@@ -28,8 +28,17 @@ export function TitleCell({
 }) {
   const { lang } = useLang();
   const l = lang === "bn" ? "bn" : "en";
+  const defaultEditor = usePageEditorDefault(row.kind);
   const suffixes = titleSuffixes(row, l);
-  const actions = rowActions(row);
+  // Only the non-default editor gets an explicit action; the default stays
+  // on plain "Edit". The block editor surface is settings-gated.
+  const actions = rowActions(row).filter((a) =>
+    a === "edit-builder"
+      ? defaultEditor === "classic"
+      : a === "edit-blocks"
+        ? defaultEditor === "builder"
+        : true,
+  );
   const isTrash = row.status === "trash";
 
   return (
@@ -41,7 +50,7 @@ export function TitleCell({
           </span>
         ) : (
           <Link
-            to={editHref(row.kind, row.id) as never}
+            to={editHref(row.kind, row.id, defaultEditor) as never}
             className="fq-focus-glow inline-flex min-h-8 items-center rounded-fq-sm font-semibold text-foreground outline-none hover:underline sm:min-h-0"
           >
             {row.title || "(no title)"}
@@ -73,6 +82,7 @@ export function TitleCell({
               row={row}
               storeSlug={storeSlug}
               onAction={onAction}
+              defaultEditor={defaultEditor}
             />
           </span>
         ))}
@@ -93,11 +103,13 @@ function RowActionLink({
   row,
   storeSlug,
   onAction,
+  defaultEditor,
 }: {
   action: RowAction;
   row: ContentRow;
   storeSlug: string;
   onAction: (action: RowAction, row: ContentRow) => void;
+  defaultEditor?: "builder" | "classic";
 }) {
   const { lang } = useLang();
   const label = ROW_ACTION_LABEL[action][lang === "bn" ? "bn" : "en"];
@@ -108,14 +120,18 @@ function RowActionLink({
     danger ? "text-[var(--fq-danger)]" : "text-primary",
   );
 
-  if (action === "edit" || action === "edit-builder") {
+  if (action === "edit" || action === "edit-builder" || action === "edit-blocks") {
     return (
       <Link
         to={
           editHref(
             row.kind,
             row.id,
-            action === "edit-builder" ? "builder" : undefined,
+            action === "edit-builder"
+              ? "builder"
+              : action === "edit-blocks"
+                ? "classic"
+                : defaultEditor,
           ) as never
         }
         className={base}

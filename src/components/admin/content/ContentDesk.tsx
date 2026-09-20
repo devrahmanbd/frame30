@@ -49,6 +49,7 @@ import {
 } from "@/lib/content-desk.functions";
 import type { ContentDesk as DeskPayload } from "@/lib/content-desk.server";
 import { editHref } from "./content-links";
+import { usePageEditorDefault } from "@/hooks/use-page-editor";
 import { StatusStrip } from "./StatusStrip";
 import { QuickEditPlate } from "./QuickEditPlate";
 import { BulkEditPlate } from "./BulkEditPlate";
@@ -94,6 +95,8 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
   const bulkVerb = useServerFn(contentBulkVerbFn);
   const deleteForever = useServerFn(contentDeleteForeverFn);
   const createDraft = useServerFn(contentCreateDraftFn);
+
+  const defaultEditor = usePageEditorDefault(kind);
 
   const queryKey = useMemo(() => ["content-desk", kind] as const, [kind]);
   const { data, isLoading, error, refetch } = useQuery({
@@ -404,7 +407,9 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
         case "e":
           if (row.status !== "trash") {
             e.preventDefault();
-            void navigate({ to: editHref(kind, row.id) as never });
+            void navigate({
+              to: editHref(kind, row.id, defaultEditor) as never,
+            });
           }
           break;
         case "q":
@@ -661,7 +666,7 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
           onToggleAll={toggleAll}
           onRowClick={(r) => {
             if (r.status !== "trash")
-              void navigate({ to: editHref(kind, r.id) as never });
+              void navigate({ to: editHref(kind, r.id, defaultEditor) as never });
           }}
           sort={list.sort}
           dir={list.dir}

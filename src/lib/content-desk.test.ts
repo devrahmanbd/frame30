@@ -103,6 +103,7 @@ describe("row actions", () => {
       "trash",
       "preview",
       "edit-builder",
+      "edit-blocks",
     ]);
     expect(rowActions({ status: "published", editor: "classic" })[3]).toBe(
       "view",

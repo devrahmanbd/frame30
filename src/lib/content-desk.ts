@@ -189,6 +189,7 @@ export type RowAction =
   | "preview"
   | "view"
   | "edit-builder"
+  | "edit-blocks"
   | "restore"
   | "delete";
 
@@ -203,6 +204,7 @@ export function rowActions(
     "trash",
     row.status === "published" ? "view" : "preview",
     "edit-builder",
+    "edit-blocks",
   ];
 }
 
@@ -213,6 +215,7 @@ export const ROW_ACTION_LABEL: Record<RowAction, { en: string; bn: string }> = {
   preview: { en: "Preview", bn: "প্রিভিউ" },
   view: { en: "View", bn: "দেখুন" },
   "edit-builder": { en: "Edit with Page Builder", bn: "পেজ বিল্ডারে সম্পাদনা" },
+  "edit-blocks": { en: "Edit with block editor", bn: "ব্লক এডিটরে সম্পাদনা" },
   restore: { en: "Restore", bn: "ফিরিয়ে আনুন" },
   delete: { en: "Delete permanently", bn: "স্থায়ীভাবে মুছুন" },
 };
