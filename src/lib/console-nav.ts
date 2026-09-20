@@ -343,13 +343,6 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         permission: "themes.read",
       },
       {
-        to: "/dashboard/builder",
-        en: "Customize",
-        bn: "কাস্টমাইজ",
-        icon: "builder",
-        permission: "themes.read",
-      },
-      {
         to: "/dashboard/content/menus",
         en: "Menus",
         bn: "মেনু",
