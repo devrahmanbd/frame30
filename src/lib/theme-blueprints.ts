@@ -2164,55 +2164,6 @@ function rupaboti(): ThemePreset {
 function clothingHeritage(): ThemePreset {
   const k = "clothing-heritage";
   const s = bound(k);
-  const sustain = () =>
-    s("sustain_badge", {
-      heading: "Fair Trade & Craft Preservation",
-      c1Label: "Artisan-owned co-ops",
-      c1Source: "65,000+ rural artisans supported",
-      c2Label: "Azo-free botanical dyes",
-      c2Source: "Safe for skin and waterways",
-      c3Label: "Plastic-free packaging",
-      c3Source: "Biodegradable jute and paper",
-    });
-  const footer = (): Section[] => [
-    s("support_strip", {
-      heading: "Customer Support & Concierge",
-      t1Title: "Order Tracking",
-      t1Body: "Real-time dispatch updates",
-      t1Href: "/pages/track-order",
-      t2Title: "Store Locator",
-      t2Body: "Find your nearest flagship",
-      t2Href: "/pages/stores",
-      t3Title: "Size & Fit Advice",
-      t3Body: "Personal styling helpline",
-      t3Href: "/pages/size-guide",
-      t4Title: "Easy Exchanges",
-      t4Body: "7-day doorstep exchange",
-      t4Href: "/pages/returns",
-    }),
-    s("footer_sitemap", {
-      c1Title: "Collections",
-      c1Links:
-        "Tangail Taant\nJamdani Saree\nSilk Panjabi\nNakshi Kantha\nArtisan Jewelry",
-      c2Title: "Customer Care",
-      c2Links:
-        "Size guide\nOrder tracking\nReturns & exchanges\nStore locations\nContact us",
-      c3Title: "Our Heritage",
-      c3Links:
-        "Artisan communities\nHandloom preservation\nFair trade charter\nSustainability",
-      c4Title: "About Framique",
-      c4Links: "Our story\nMedia & press\nCareers\nTerms & privacy",
-    }),
-    s("payment_icons", {
-      heading: "Payment methods",
-      marks: "bKash\nNagad\nRocket\nVisa\nMastercard\nCash on Delivery",
-    }),
-    s("social_strip", { heading: "Follow our craft journey" }),
-    s("rich_text", {
-      heading: "About Framique Heritage",
-      body: "Celebrating Bengal's timeless handloom traditions, empowering generational artisan families across Bangladesh.",
-    }),
-  ];
   const header = (): Section[] => [
     s("subbrand_bar", {
       activeBrand: "Aarong",
@@ -2257,6 +2208,45 @@ function clothingHeritage(): ThemePreset {
       showCount: true,
     }),
   ];
+  const footer = (): Section[] => [
+    s("support_strip", {
+      heading: "Customer Support & Concierge",
+      t1Title: "Order Tracking",
+      t1Body: "Real-time dispatch updates",
+      t1Href: "/pages/track-order",
+      t2Title: "Store Locator",
+      t2Body: "Find your nearest flagship",
+      t2Href: "/pages/stores",
+      t3Title: "Size & Fit Advice",
+      t3Body: "Personal styling helpline",
+      t3Href: "/pages/size-guide",
+      t4Title: "Easy Exchanges",
+      t4Body: "7-day doorstep exchange",
+      t4Href: "/pages/returns",
+    }),
+    s("footer_sitemap", {
+      c1Title: "Collections",
+      c1Links:
+        "Tangail Taant\nJamdani Saree\nSilk Panjabi\nNakshi Kantha\nArtisan Jewelry",
+      c2Title: "Customer Care",
+      c2Links:
+        "Size guide\nOrder tracking\nReturns & exchanges\nStore locations\nContact us",
+      c3Title: "Our Heritage",
+      c3Links:
+        "Artisan communities\nHandloom preservation\nFair trade charter\nSustainability",
+      c4Title: "About Framique",
+      c4Links: "Our story\nMedia & press\nCareers\nTerms & privacy",
+    }),
+    s("payment_icons", {
+      heading: "Payment methods",
+      marks: "bKash\nNagad\nRocket\nVisa\nMastercard\nCash on Delivery",
+    }),
+    s("social_strip", { heading: "Follow our craft journey" }),
+    s("rich_text", {
+      heading: "About Framique Heritage",
+      body: "Celebrating Bengal's timeless handloom traditions, empowering generational artisan families across Bangladesh.",
+    }),
+  ];
   return {
     key: k,
     nameEn: "Clothing Heritage",
@@ -2270,347 +2260,122 @@ function clothingHeritage(): ThemePreset {
     api: "^3.0.0",
     sortOrder: 65,
     tokens: tokens({
-      brand: "#111827",
-      accent: "#B45309",
-      surface: "#FDFBF7",
-      ink: "#1C1917",
-      radius: "4px",
-      container: "1280px",
+      brand: "#1A1A1A",
+      accent: "#C45D3E",
+      surface: "#FAF8F5",
+      ink: "#2D2A26",
+      radius: "2px",
+      container: "1320px",
       density: "airy",
       typeScale: "expressive",
-      spaceUnit: "24px",
+      fontPairing: "editorial-serif",
+      fontDisplay: "Playfair Display",
+      fontBody: "Inter",
       shadow: "soft",
       motion: "subtle",
-      fontPairing: "editorial-mix",
-      fontDisplay: "Hind Siliguri",
-      fontBody: "Inter",
       dark: {
-        brand: "#FDFBF7",
-        accent: "#F59E0B",
-        surface: "#121110",
-        ink: "#F5F1EA",
+        brand: "#FAF8F5",
+        accent: "#D4784A",
+        surface: "#1A1816",
+        ink: "#F0EDE8",
       },
     }),
     templates: withSearch(k, {
+      /* ---- homepage ---- */
       index: {
         header: header(),
         main: [
-          s("editorial_hero", {
-            eyebrow: "Heritage Weaves & Living Crafts",
-            heading: "Woven with patience, worn with pride",
-            body: "Every thread tells the story of our master weavers. Authentic Tangail taant, Jamdani masterpieces, and hand-embroidered silks.",
-            ctaLabel: "Explore the festive edit",
-            ctaHref: "/collections/eid-festive",
-            imageUrl:
-              "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop",
-            layout: "split",
-            scrim: true,
+          s("hero_carousel", {
+            slides: [
+              {
+                headline: "Woven with patience, worn with pride",
+                subhead: "Heritage Weaves & Living Crafts",
+                ctaLabel: "Explore the collection",
+                ctaUrl: "/collections/all",
+              },
+              {
+                headline: "Eid & Festive Collection 2026",
+                subhead: "Pure silk, handwoven for celebrations",
+                ctaLabel: "Shop festive",
+                ctaUrl: "/collections/eid-festive",
+              },
+              {
+                headline: "65,000+ rural artisans empowered",
+                subhead: "Fair trade handloom from 64 districts",
+                ctaLabel: "Our story",
+                ctaUrl: "/pages/about",
+              },
+            ],
+            autoAdvanceMs: 6000,
           }),
-          s("circle_categories", {
-            heading: "Explore by Category",
-            c1Title: "Women's Sarees",
-            c1Image:
-              "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=400&auto=format&fit=crop",
-            c1Href: "/collections/womens",
-            c2Title: "Men's Panjabi",
-            c2Image:
-              "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=400&auto=format&fit=crop",
-            c2Href: "/collections/mens",
-            c3Title: "Taaga",
-            c3Image:
-              "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=400&auto=format&fit=crop",
-            c3Href: "/collections/taaga",
-            c4Title: "Jamdani Weaves",
-            c4Image:
-              "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=400&auto=format&fit=crop",
-            c4Href: "/collections/heritage-handloom",
-            c5Title: "Nakshi Kantha",
-            c5Image:
-              "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?q=80&w=400&auto=format&fit=crop",
-            c5Href: "/collections/nakshi-kantha",
-            c6Title: "Handcrafted Jewelry",
-            c6Image:
-              "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=400&auto=format&fit=crop",
-            c6Href: "/collections/jewelry",
-            c7Title: "Home & Living",
-            c7Image:
-              "https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=400&auto=format&fit=crop",
-            c7Href: "/collections/living",
-            c8Title: "Aarong Earth",
-            c8Image:
-              "https://images.unsplash.com/photo-1608248597358-1f60875e5e4e?q=80&w=400&auto=format&fit=crop",
-            c8Href: "/collections/beauty",
-          }),
-          s("trust_bar", {
-            i1Icon: "delivery",
-            i1Title: "100% Handloom & Natural Dyes",
-            i1Body: "Safe for skin and waterways",
-            i2Icon: "support",
-            i2Title: "Over 65,000 Rural Artisans",
-            i2Body: "Empowering generational weavers",
-            i3Icon: "secure",
-            i3Title: "Nationwide 48-Hour Dispatch",
-            i3Body: "Express courier across all 64 districts",
-            i4Icon: "returns",
-            i4Title: "7-Day Easy Size Exchanges",
-            i4Body: "Hassle-free returns at any outlet",
-          }),
-          s("department_strip", {
-            heading: "Shop by department",
-            limit: 6,
+          s("department_grid", {
+            heading: "Explore by department",
+            limit: 8,
           }),
           s("product_rail", {
-            heading: "New Festive Arrivals",
+            heading: "New arrivals",
             collection: "new-in",
             limit: 8,
             cardVariant: "editorial",
             showRating: true,
             promise: "In stock · Dispatched in 24h",
           }),
-          s("subbrand_spotlight", {
-            heading: "Our Sub-Brands",
-            subheading:
-              "Curated lifestyle edits from our house of heritage craft",
-            b1Name: "TAAGA",
-            b1Tagline: "Bohemian & contemporary youth fusion",
-            b1Image:
-              "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop",
-            b1Href: "/collections/taaga",
-            b2Name: "TAAGA MAN",
-            b2Tagline: "Modern urban essentials & relaxed cuts",
-            b2Image:
-              "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=800&auto=format&fit=crop",
-            b2Href: "/collections/mens",
-            b3Name: "HERSTORY",
-            b3Tagline: "Luxury couture & handwoven silk drapes",
-            b3Image:
-              "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop",
-            b3Href: "/collections/womens",
-            b4Name: "AARONG EARTH",
-            b4Tagline: "Pure chemical-free botanical wellness",
-            b4Image:
-              "https://images.unsplash.com/photo-1608248597358-1f60875e5e4e?q=80&w=800&auto=format&fit=crop",
-            b4Href: "/collections/beauty",
-          }),
-          s("lookbook", {
-            heading: "The festive lookbook",
-            offset: true,
-            i1Image:
-              "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop",
-            i1Alt: "Dhakai Jamdani royal drape",
-            i1Href: "/collections/heritage-handloom",
-            i2Image:
-              "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=800&auto=format&fit=crop",
-            i2Alt: "Rajshahi pure silk festive panjabi",
-            i2Href: "/collections/eid-festive",
-            i3Image:
-              "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?q=80&w=800&auto=format&fit=crop",
-            i3Alt: "Tangail handloom taant cotton saree",
-            i3Href: "/collections/heritage-handloom",
-            i4Image:
-              "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=800&auto=format&fit=crop",
-            i4Alt: "Dhamrai brass filigree artisan earrings",
-            i4Href: "/collections/artisan-essentials",
-          }),
-          s("split_feature", {
+          s("heritage_story", {
             eyebrow: "The master weavers",
             heading: "Tangail & Jamdani: A living UNESCO legacy",
             body: "Centuries of geometry and craftsmanship in every weave. Crafted by generational artisan families on traditional wooden pit looms.",
             ctaLabel: "Read the story",
             ctaHref: "/blog/master-weavers",
-            flip: false,
           }),
-          s("shoppable_image", {
-            heading: "Artisan showcase",
-            limit: 4,
-            p1x: 28,
-            p1y: 38,
-            p2x: 64,
-            p2y: 58,
+          s("textile_showcase", {
+            heading: "Our textiles",
+            t1Label: "Jamdani",
+            t1Alt: "Dhakai Jamdani royal drape",
+            t2Label: "Tangail Taant",
+            t2Alt: "Tangail handloom taant cotton saree",
+            t3Label: "Nakshi Kantha",
+            t3Alt: "Hand-embroidered nakshi kantha",
+            t4Label: "Pure Silk",
+            t4Alt: "Rajshahi pure silk festive panjabi",
           }),
-          s("product_rail", {
-            heading: "Trending & Best Sellers",
-            source: "bestsellers",
-            collection: "best-sellers",
-            limit: 8,
-            cardVariant: "editorial",
-            showRating: true,
-            promise: "Crafted in limited small batches",
-          }),
-          s("collection_story", {
-            eyebrow: "Festive Occasions",
+          s("editorial_banner", {
+            eyebrow: "Festive occasions",
             heading: "Pure silk panjabi & fine muslin",
             body: "Intricate necklines, mother-of-pearl buttons, and breathable natural fibers cut for elegance in Bangladeshi celebrations.",
             ctaLabel: "See the collection",
             ctaHref: "/collections/eid-festive",
-            imageUrl:
-              "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=1200&auto=format&fit=crop",
-            scrim: true,
           }),
-          sustain(),
-          s("ugc_gallery", {
-            heading: "Celebrating in Framique Heritage",
-            limit: 8,
-            note: "Tag us on Instagram to be featured.",
+          s("testimonial_carousel", {
+            items: [
+              {
+                quote:
+                  "The Jamdani saree exceeded all expectations. The texture, fall, and intricate motif work are truly world-class.",
+                author: "Farhana Ahmed, Gulshan, Dhaka",
+              },
+              {
+                quote:
+                  "Authentic handloom quality at a fair price. My family has worn Aarong for three generations.",
+                author: "Tanvir Rahman, Banani, Dhaka",
+              },
+            ],
           }),
-          s(
-            "product_grid",
-            {
-              heading: "Curated masterpieces",
-              limit: 16,
-              columns: 4,
-              cardVariant: "editorial",
-            },
-            COLS(4),
-          ),
-          s("testimonial", {
-            quote:
-              "The Jamdani saree exceeded all expectations. The texture, fall, and intricate motif work are truly world-class.",
-            author: "Farhana Ahmed, Gulshan, Dhaka",
-          }),
-          s("store_locator", {
-            heading: "Visit our flagship outlets",
-            s1Name: "Uttara Flagship",
-            s1Address: "Sector 3, Uttara, Dhaka",
-            s1Hours: "10am - 9pm",
-            s2Name: "Gulshan Galleria",
-            s2Address: "Gulshan Avenue, Dhaka",
-            s2Hours: "10am - 9pm",
-            s3Name: "Chattogram GEC",
-            s3Address: "GEC Circle, Chattogram",
-            s3Hours: "10am - 9pm",
-          }),
-          s("newsletter", {
-            heading: "Join the Heritage Guild",
-            body: "Receive intimate stories from weaver villages and private invitations to seasonal drops.",
-            buttonLabel: "Subscribe",
+          s("marquee_strip", {
+            label: "Handloom · Fair Trade · Artisan-Owned · Natural Dyes · Zero Plastic",
           }),
         ],
         footer: footer(),
       },
-      product: {
-        header: [s("breadcrumb", { homeLabel: "Home" })],
-        main: [
-          s(
-            "product_media",
-            { ratio: "4/3", showThumbnails: true, zoom: true },
-            { bp: { mobile: { showThumbnails: false } } },
-          ),
-          s("price_block", {
-            showCompareAt: true,
-            note: "All government taxes & VAT included.",
-          }),
-          s("stock_delivery", {
-            lowStockAt: 8,
-            cutOff: "Order within 2 hrs for same-day dispatch in Dhaka",
-          }),
-          s("delivery_promise", {
-            heading: "Delivery & Returns",
-            insideLabel: "Inside Dhaka",
-            insideDays: "Same-day or next-day",
-            outsideLabel: "Outside Dhaka",
-            outsideDays: "48-72 hours",
-            note: "Carefully packed in eco-friendly protective wrapping.",
-          }),
-          s("size_selector", {
-            heading: "Select a size",
-            notifyLabel: "Notify me",
-            guideLabel: "Size guide",
-          }),
-          s("size_guide", {
-            heading: "Garment size guide",
-            openLabel: "Open size guide",
-            unit: "in",
-            c1Label: "Chest",
-            c2Label: "Length",
-            c3Label: "Sleeve",
-            r1Label: "38",
-            r1c1: 40,
-            r1c2: 40,
-            r1c3: 24,
-            r2Label: "40",
-            r2c1: 42,
-            r2c2: 42,
-            r2c3: 25,
-            r3Label: "42",
-            r3c1: 44,
-            r3c2: 44,
-            r3c3: 25,
-            r4Label: "44",
-            r4c1: 46,
-            r4c2: 45,
-            r4c3: 26,
-            note: "All measurements are in inches. Garment laid flat.",
-          }),
-          s("fit_note", {
-            fit: "true",
-            note: "Tailored fit through the chest, comfortable through the waist.",
-            modelHeight: "Model is 182cm",
-            modelSize: "Wearing size 40",
-          }),
-          s("add_to_cart", { label: "Add to bag", showQuantity: true }),
-          s("wishlist_button", {
-            addLabel: "Save for later",
-            savedLabel: "Saved",
-            showCount: true,
-          }),
-          s("back_in_stock", {
-            heading: "Sold out in your size?",
-            body: "Our master artisans produce small batches. Leave your email for restock notification.",
-            buttonLabel: "Notify me",
-            consentText: "I agree to receive one restock email.",
-          }),
-          s("care_panel", {
-            heading: "Fabric & craft care",
-            composition: "100% handspun cotton & mulberry silk",
-            care: "Dry clean recommended. Iron on reverse side on low heat.",
-            origin: "Handwoven in Tangail & Sonargaon, Bangladesh",
-            open: false,
-          }),
-          sustain(),
-          s("complete_the_look", {
-            heading: "Pair with handcrafted accents",
-            limit: 4,
-            buttonLabel: "Add the look",
-          }),
-          s("rating_summary", {
-            heading: "Customer ratings",
-            showHistogram: true,
-            verifiedOnly: true,
-          }),
-          s("review_list", {
-            heading: "Customer reviews",
-            limit: 5,
-            sort: "recent",
-            verifiedOnly: true,
-            emptyText: "No reviews yet.",
-          }),
-          s("product_qna", {
-            heading: "Craft & sizing questions",
-            askLabel: "Ask a question",
-            q1: "How do I care for 100% natural dye Jamdani and Tangail sarees?",
-            a1: "We recommend professional dry clean for the first two washes to preserve natural botanical pigments. Always iron on reverse side using low-medium heat.",
-            q2: "Can I exchange the size if the Panjabi or Kurta does not fit?",
-            a2: "Yes, Framique offers 7-day hassle-free size exchanges across all flagship retail stores and via courier pickup.",
-            q3: "Are these items authentically handwoven on wooden pit looms?",
-            a3: "Every garment in our Heritage collection is certified handloom, directly supporting artisan weaving cooperatives in Tangail, Sonargaon, and Comilla.",
-          }),
-          s("product_rail", {
-            heading: "More from this craft",
-            limit: 6,
-            cardVariant: "editorial",
-            showRating: true,
-          }),
-          s("sticky_buy_bar", {
-            label: "Add to bag",
-            showPrice: true,
-          }),
-        ],
-        footer: footer(),
-      },
+      /* ---- collection ---- */
       collection: {
         header: [s("breadcrumb", { homeLabel: "Home" })],
         main: [
+          s("heritage_story", {
+            eyebrow: "Our craft",
+            heading: "Handwoven heritage",
+            body: "Each piece is crafted by master weavers using techniques passed down through generations.",
+            ctaLabel: "Meet the artisans",
+            ctaHref: "/pages/about",
+          }),
           s("category_header", {
             heading: "Heritage Craft Collection",
             body: "Filter by artisan district, weave type, size, and occasion.",
@@ -2654,6 +2419,26 @@ function clothingHeritage(): ThemePreset {
             },
             COLS(4),
           ),
+          s("product_rail", {
+            heading: "Trending now",
+            source: "bestsellers",
+            collection: "best-sellers",
+            limit: 8,
+            cardVariant: "editorial",
+            showRating: true,
+            promise: "Crafted in limited small batches",
+          }),
+          s("textile_showcase", {
+            heading: "Featured textiles",
+            t1Label: "Jamdani",
+            t1Alt: "Dhakai Jamdani royal drape",
+            t2Label: "Tangail Taant",
+            t2Alt: "Tangail handloom taant cotton saree",
+            t3Label: "Nakshi Kantha",
+            t3Alt: "Hand-embroidered nakshi kantha",
+            t4Label: "Pure Silk",
+            t4Alt: "Rajshahi pure silk festive panjabi",
+          }),
           s("pagination", {
             mode: "more",
             moreLabel: "Load more",
@@ -2671,10 +2456,36 @@ function clothingHeritage(): ThemePreset {
         ],
         footer: footer(),
       },
-      page: {
+      /* ---- product detail page ---- */
+      product: {
         header: [s("breadcrumb", { homeLabel: "Home" })],
         main: [
-          s("page_content", {}),
+          s(
+            "product_media",
+            { ratio: "4/3", showThumbnails: true, zoom: true },
+            { bp: { mobile: { showThumbnails: false } } },
+          ),
+          s("split_feature", {
+            eyebrow: "Heritage collection",
+            heading: "Handcrafted with care",
+            body: "Each piece tells a story of artisan skill and generational craft traditions.",
+            ctaLabel: "Our heritage",
+            ctaHref: "/pages/about",
+            flip: false,
+          }),
+          s("price_block", {
+            showCompareAt: true,
+            note: "All government taxes & VAT included.",
+          }),
+          s("stock_delivery", {
+            lowStockAt: 8,
+            cutOff: "Order within 2 hrs for same-day dispatch in Dhaka",
+          }),
+          s("size_selector", {
+            heading: "Select a size",
+            notifyLabel: "Notify me",
+            guideLabel: "Size guide",
+          }),
           s("size_guide", {
             heading: "Garment size guide",
             openLabel: "Open size guide",
@@ -2700,6 +2511,144 @@ function clothingHeritage(): ThemePreset {
             r4c3: 26,
             note: "All measurements are in inches. Garment laid flat.",
           }),
+          s("fit_note", {
+            fit: "true",
+            note: "Tailored fit through the chest, comfortable through the waist.",
+            modelHeight: "Model is 182cm",
+            modelSize: "Wearing size 40",
+          }),
+          s("add_to_cart", { label: "Add to bag", showQuantity: true }),
+          s("wishlist_button", {
+            addLabel: "Save for later",
+            savedLabel: "Saved",
+            showCount: true,
+          }),
+          s("delivery_promise", {
+            heading: "Delivery & Returns",
+            insideLabel: "Inside Dhaka",
+            insideDays: "Same-day or next-day",
+            outsideLabel: "Outside Dhaka",
+            outsideDays: "48-72 hours",
+            note: "Carefully packed in eco-friendly protective wrapping.",
+          }),
+          s("care_panel", {
+            heading: "Fabric & craft care",
+            composition: "100% handspun cotton & mulberry silk",
+            care: "Dry clean recommended. Iron on reverse side on low heat.",
+            origin: "Handwoven in Tangail & Sonargaon, Bangladesh",
+            open: false,
+          }),
+          s("textile_showcase", {
+            heading: "Textile details",
+            t1Label: "Jamdani",
+            t1Alt: "Dhakai Jamdani royal drape",
+            t2Label: "Tangail Taant",
+            t2Alt: "Tangail handloom taant cotton saree",
+            t3Label: "Nakshi Kantha",
+            t3Alt: "Hand-embroidered nakshi kantha",
+            t4Label: "Pure Silk",
+            t4Alt: "Rajshahi pure silk festive panjabi",
+          }),
+          s("testimonial_carousel", {
+            items: [
+              {
+                quote:
+                  "The Jamdani saree exceeded all expectations. The texture, fall, and intricate motif work are truly world-class.",
+                author: "Farhana Ahmed, Gulshan, Dhaka",
+              },
+            ],
+          }),
+          s("support_strip", {
+            heading: "Need help?",
+            t1Title: "Order Tracking",
+            t1Body: "Real-time dispatch updates",
+            t1Href: "/pages/track-order",
+            t2Title: "Size Guide",
+            t2Body: "Find your perfect fit",
+            t2Href: "/pages/size-guide",
+            t3Title: "Returns",
+            t3Body: "7-day hassle-free exchanges",
+            t3Href: "/pages/returns",
+            t4Title: "Contact Us",
+            t4Body: "Personal styling helpline",
+            t4Href: "/pages/contact",
+          }),
+          s("back_in_stock", {
+            heading: "Sold out in your size?",
+            body: "Our master artisans produce small batches. Leave your email for restock notification.",
+            buttonLabel: "Notify me",
+            consentText: "I agree to receive one restock email.",
+          }),
+          s("rating_summary", {
+            heading: "Customer ratings",
+            showHistogram: true,
+            verifiedOnly: true,
+          }),
+          s("review_list", {
+            heading: "Customer reviews",
+            limit: 5,
+            sort: "recent",
+            verifiedOnly: true,
+            emptyText: "No reviews yet.",
+          }),
+          s("product_rail", {
+            heading: "More from this craft",
+            limit: 6,
+            cardVariant: "editorial",
+            showRating: true,
+          }),
+          s("sticky_buy_bar", {
+            label: "Add to bag",
+            showPrice: true,
+          }),
+        ],
+        footer: footer(),
+      },
+      /* ---- about / contact / fullwidth pages ---- */
+      page: {
+        header: [s("breadcrumb", { homeLabel: "Home" })],
+        main: [
+          s("heritage_story", {
+            eyebrow: "Our story",
+            heading: "Preserving Bengal's 500-year-old handloom heritage",
+            body: "How community-led weaving clusters are empowering women artisans across rural Bangladesh.",
+            ctaLabel: "Meet the artisans",
+            ctaHref: "/blog/master-weavers",
+          }),
+          s("editorial_banner", {
+            eyebrow: "Our mission",
+            heading: "Fair trade, always",
+            body: "Every purchase directly supports artisan families across 64 districts. No middlemen, no exploitation — just dignity and craft.",
+            ctaLabel: "Our charter",
+            ctaHref: "/pages/fair-trade",
+          }),
+          s("marquee_strip", {
+            label: "Handloom · Fair Trade · Artisan-Owned · Natural Dyes · Zero Plastic",
+          }),
+          s("story_trunk", {
+            heading: "Our heritage",
+            t1Title: "Founded 1972",
+            t1Body: "Born from a vision to preserve Bengal's weaving traditions",
+            t2Title: "65,000+ artisans",
+            t2Body: "Rural craftspeople across 64 districts",
+            t3Title: "Zero plastic",
+            t3Body: "Biodegradable jute and paper packaging",
+          }),
+          s("testimonial_carousel", {
+            items: [
+              {
+                quote:
+                  "The Jamdani saree exceeded all expectations. The texture, fall, and intricate motif work are truly world-class.",
+                author: "Farhana Ahmed, Gulshan, Dhaka",
+              },
+              {
+                quote:
+                  "Authentic handloom quality at a fair price. My family has worn Aarong for three generations.",
+                author: "Tanvir Rahman, Banani, Dhaka",
+              },
+            ],
+          }),
+          s("page_content", {}),
           s("store_locator", {
             heading: "Visit our flagship outlets",
             s1Name: "Uttara Flagship",
@@ -2712,6 +2661,17 @@ function clothingHeritage(): ThemePreset {
             s3Address: "GEC Circle, Chattogram",
             s3Hours: "10am - 9pm",
           }),
+          s("form", {
+            heading: "Send us a message",
+            body: "We'd love to hear from you. Fill out the form below and our team will get back to you within 24 hours.",
+            nameLabel: "Your name",
+            emailLabel: "Email address",
+            phoneLabel: "Phone (optional)",
+            messageLabel: "Your message",
+            buttonLabel: "Send message",
+            successText: "Thank you! We'll be in touch soon.",
+            consentText: "I agree to receive a reply to my message.",
+          }),
           s("faq", {
             heading: "Frequently Asked Questions",
             q1: "What are your delivery timelines?",
@@ -2720,6 +2680,21 @@ function clothingHeritage(): ThemePreset {
             a2: "Yes! Any item purchased online can be exchanged at any Framique flagship outlet in Dhaka, Chattogram, or Sylhet within 7 days with the original invoice.",
             q3: "Are your handloom fabrics pre-shrunk?",
             a3: "All our pure cotton and silk garments undergo traditional pre-wash finishing. Follow our care guidelines for minimal shrinkage.",
+          }),
+          s("support_strip", {
+            heading: "Customer Support & Concierge",
+            t1Title: "Order Tracking",
+            t1Body: "Real-time dispatch updates",
+            t1Href: "/pages/track-order",
+            t2Title: "Store Locator",
+            t2Body: "Find your nearest flagship",
+            t2Href: "/pages/stores",
+            t3Title: "Size & Fit Advice",
+            t3Body: "Personal styling helpline",
+            t3Href: "/pages/size-guide",
+            t4Title: "Easy Exchanges",
+            t4Body: "7-day doorstep exchange",
+            t4Href: "/pages/returns",
           }),
         ],
         footer: footer(),
@@ -2742,13 +2717,12 @@ function clothingHeritage(): ThemePreset {
             },
             COLS(3),
           ),
-          s("split_feature", {
+          s("heritage_story", {
             eyebrow: "The heritage journal",
             heading: "Preserving Bengal's 500-year-old handloom heritage",
             body: "How community-led weaving clusters are empowering women artisans across rural Bangladesh.",
             ctaLabel: "Read the story",
             ctaHref: "/blog/handloom-heritage",
-            flip: true,
           }),
           s("blog_pager", { align: "center" }),
           s("newsletter", {
