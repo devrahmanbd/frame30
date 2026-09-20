@@ -191,6 +191,7 @@ export type RowAction =
   | "edit-builder"
   | "edit-blocks"
   | "set-homepage"
+  | "clear-homepage"
   | "restore"
   | "delete";
 
@@ -210,16 +211,17 @@ export function rowActions(
 }
 
 /**
- * Homepage action for the Pages list. Pages only, never trash, never the
- * current homepage (its `— Home page` suffix already says it). Posts have no
- * homepage concept, so they never get the action.
+ * Homepage action for the Pages list. Pages only, never trash. The current
+ * homepage offers removal (its `— Home page` suffix already says it is);
+ * every other page offers to become it. Posts have no homepage concept, so
+ * they never get either action.
  */
 export function homepageActionFor(
   row: Pick<ContentRow, "kind" | "status" | "id">,
   homepagePageId: string | null,
-): "set-homepage" | null {
+): "set-homepage" | "clear-homepage" | null {
   if (row.kind !== "page" || row.status === "trash") return null;
-  if (homepagePageId && row.id === homepagePageId) return null;
+  if (homepagePageId && row.id === homepagePageId) return "clear-homepage";
   return "set-homepage";
 }
 
@@ -232,6 +234,7 @@ export const ROW_ACTION_LABEL: Record<RowAction, { en: string; bn: string }> = {
   "edit-builder": { en: "Edit with Page Builder", bn: "পেজ বিল্ডারে সম্পাদনা" },
   "edit-blocks": { en: "Edit with block editor", bn: "ব্লক এডিটরে সম্পাদনা" },
   "set-homepage": { en: "Set as homepage", bn: "হোমপেজ হিসেবে সেট করুন" },
+  "clear-homepage": { en: "Remove homepage", bn: "হোমপেজ সরান" },
   restore: { en: "Restore", bn: "ফিরিয়ে আনুন" },
   delete: { en: "Delete permanently", bn: "স্থায়ীভাবে মুছুন" },
 };

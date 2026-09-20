@@ -277,19 +277,24 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
     if (action === "delete")
       return setPending({ action: "delete", ids: [row.id] });
     if (action === "set-homepage") return void runHomepage(row.id);
+    if (action === "clear-homepage") return void runHomepage(null);
   };
 
-  const runHomepage = async (id: string) => {
+  const runHomepage = async (id: string | null) => {
     const snapshot = qc.getQueryData<DeskPayload>(queryKey);
     try {
       // Optimistic: the badge moves immediately, the server confirms.
       setDesk((d) => ({
         ...d,
         homepagePageId: id,
-        rows: d.rows.map((r) => ({ ...r, isHome: r.id === id })),
+        rows: d.rows.map((r) => ({ ...r, isHome: id !== null && r.id === id })),
       }));
       await setHomepage({ data: { id } });
-      toast.success(t("Homepage updated.", "হোমপেজ আপডেট হয়েছে।"));
+      toast.success(
+        id === null
+          ? t("Homepage removed.", "হোমপেজ সরানো হয়েছে।")
+          : t("Homepage updated.", "হোমপেজ আপডেট হয়েছে।"),
+      );
       await refetch();
     } catch (e) {
       qc.setQueryData(queryKey, snapshot);
@@ -300,7 +305,7 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
               "Publish the page first — only published pages can be the homepage.",
               "আগে পেজটি প্রকাশ করুন — শুধু প্রকাশিত পেজ হোমপেজ হতে পারে।",
             )
-          : t("That page could not be set as homepage.", "হোমপেজ সেট করা যায়নি।"),
+          : t("That homepage change could not be saved.", "হোমপেজ পরিবর্তন করা যায়নি।"),
       );
     }
   };

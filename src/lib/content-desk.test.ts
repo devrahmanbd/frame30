@@ -116,7 +116,7 @@ describe("row actions", () => {
       "delete",
     ]);
   });
-  it("set-homepage is offered for non-trash pages except the current one", () => {
+  it("set-homepage is offered for non-trash pages; current one offers removal", () => {
     const page = {
       kind: "page",
       status: "draft",
@@ -128,7 +128,7 @@ describe("row actions", () => {
     ).toBe("set-homepage");
     expect(
       homepageActionFor(page, "00000000-0000-0000-0000-000000000001"),
-    ).toBeNull();
+    ).toBe("clear-homepage");
     expect(
       homepageActionFor(
         { kind: "page", status: "trash", id: page.id },

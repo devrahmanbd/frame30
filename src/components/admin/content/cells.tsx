@@ -43,8 +43,8 @@ export function TitleCell({
     if (a === "edit-blocks") return defaultEditor === "builder";
     return true;
   });
-  // "Set as homepage" trails the edit actions; the current homepage shows
-  // its — Home page suffix instead of the action.
+  // Homepage management trails the edit actions: other pages offer
+  // "Set as homepage", the current one offers "Remove homepage".
   const homepageAction = homepageActionFor(row, homepagePageId);
   if (homepageAction) actions.push(homepageAction);
   const isTrash = row.status === "trash";
