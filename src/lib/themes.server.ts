@@ -111,7 +111,12 @@ async function ensureTheme(
   }
   const { data: created, error: createError } = await db
     .from("store_themes")
-    .insert({ merchant_id: merchantId, name: "Default theme" })
+    .insert({
+      merchant_id: merchantId,
+      name: "Default theme",
+      // No DB default on the column; NULL breaks the installed-list sort.
+      installed_at: new Date().toISOString(),
+    })
     .select("id, name, is_active, published_version_id")
     .single();
   if (createError) throw createError;

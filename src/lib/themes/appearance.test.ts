@@ -205,6 +205,25 @@ describe("installed ordering", () => {
       "old",
     ]);
   });
+
+  it("tolerates legacy rows with a null install timestamp", () => {
+    // Live rows written before installed_at was stamped (NULL) once threw
+    // inside the comparator and blanked the whole themes screen.
+    const list = [
+      inst({ id: "legacy", installedAt: null }),
+      inst({ id: "new", installedAt: "2026-05-01T00:00:00.000Z" }),
+      inst({
+        id: "active",
+        isActive: true,
+        installedAt: "2025-01-01T00:00:00.000Z",
+      }),
+    ];
+    expect(orderInstalled(list).map((t) => t.id)).toEqual([
+      "active",
+      "new",
+      "legacy",
+    ]);
+  });
 });
 
 describe("uploads", () => {

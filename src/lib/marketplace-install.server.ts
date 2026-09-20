@@ -198,7 +198,13 @@ async function materializeListingTheme(
     const tokens = parseTokens(manifest.tokens ?? {});
     const { data: theme, error: themeError } = await db
       .from("store_themes")
-      .insert({ merchant_id: merchantId, name: listing.name, is_active: false })
+      // No DB default on installed_at; NULL breaks the installed-list sort.
+      .insert({
+        merchant_id: merchantId,
+        name: listing.name,
+        is_active: false,
+        installed_at: new Date().toISOString(),
+      })
       .select("id")
       .single();
     if (themeError || !theme) return null;

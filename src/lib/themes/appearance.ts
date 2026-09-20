@@ -23,7 +23,8 @@ export type InstalledTheme = {
   isActive: boolean;
   autoUpdate: boolean;
   favourite: boolean;
-  installedAt: string;
+  /** Null for rows written before install timestamps were recorded. */
+  installedAt: string | null;
   /** Newer catalogue version available for `key`, when one exists. */
   updateAvailable: string | null;
 };
@@ -260,13 +261,16 @@ export function catalogView(
 
 /** Active theme first, then favourites, then newest install. */
 export function orderInstalled(themes: InstalledTheme[]): InstalledTheme[] {
+  // installedAt can be null for rows written before the column was reliably
+  // set — a null must sort, never throw (it once blanked the whole screen).
+  const at = (t: InstalledTheme) => t.installedAt ?? "";
   return themes
     .slice()
     .sort(
       (a, b) =>
         Number(b.isActive) - Number(a.isActive) ||
         Number(b.favourite) - Number(a.favourite) ||
-        b.installedAt.localeCompare(a.installedAt) ||
+        at(b).localeCompare(at(a)) ||
         a.name.localeCompare(b.name),
     );
 }

@@ -48,7 +48,8 @@ type Row = {
   tags: string[] | null;
   auto_update: boolean;
   favourite: boolean;
-  installed_at: string;
+  /** Nullable live: pre-existing rows were written without a timestamp. */
+  installed_at: string | null;
 };
 
 const SELECT =
@@ -199,6 +200,9 @@ export async function installCatalogTheme(
       description: entry.summaryEn,
       tags: meta.tags,
       is_active: false,
+      // The column has no DB default; omitting it writes NULL and later
+      // crashes the installed-list sort for the whole merchant.
+      installed_at: new Date().toISOString(),
     })
     .select("id")
     .single();
