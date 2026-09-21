@@ -210,3 +210,11 @@ verify on production; push to GitHub.
 - [x] COD order FQ-20260921-ANRY3 placed + cancelled (TEST-marked, no
   money moved). Gap found: cart page has no checkout CTA (only header
   Cart link) — TODO for slice 5 or UX pass.
+- [x] Slice 5: v2 RELEASED. Registry row live at 2.0.0 (code + DB preset
+  refreshed, seed migration regenerated). Install prove-out on scratch:
+  published v1 row @registry 2.0.0, CTA + Bn hero + testimonials present,
+  draft + audit rows written, deleted clean.
+- Fixed en route: array `children` schemas ignored by parser+studio
+  (all repeatable rows installed EMPTY — slides/testimonials/departments);
+  now honored. Testimonial blueprint key items→testimonials (was null).
+  42/42 tests green.
