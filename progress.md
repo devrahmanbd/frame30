@@ -262,3 +262,5 @@ verify on production; push to GitHub.
 - [x] Preview fixes: taxonomy rows serve collections (menubar shows
   Heritage Handloom / Eid & Festive / Nakshi Kantha / ...); fullscreen
   preview toggle with floating exit. Deployed + screenshot-verified.
+- [x] Frameless preview + weave lattice hero (replaces badge tiles);
+  solid dept tiles; floating tab pill to bottom. Verified desktop+mobile.
