@@ -90,7 +90,7 @@ export function ThemePreviewFrame({
       className="fixed inset-0 z-50 flex flex-col bg-background"
     >
       {/* ---- floating controls (the only chrome): template tabs + close ---- */}
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center p-3">
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center p-3">
         <div className="pointer-events-auto flex max-w-full items-center gap-1 rounded-full border border-border bg-card/90 p-1 shadow-md backdrop-blur">
           <nav
             aria-label="Template"
