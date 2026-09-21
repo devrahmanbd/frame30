@@ -115,14 +115,21 @@ verify on production; push to GitHub.
   denied). Support channel (/dashboard/support) untouched. Verified
   live: ai/* URLs bounce to dashboard, nav has no AI entries. 4 new
   gate tests green.
-- [x] Curated two-theme offer (`f5f0a36` + `2b07c60`, live): grid,
-  add-catalogue AND marketplace catalogue (server-side listCatalog)
-  filtered to Supershop + Clothing Heritage. Verified live: "2 Themes",
-  only demo-product text mentions others. Bridge tests rewritten.
-- INFRA incident same run: disk hit 100% (WAL archive 60G unpruned +
-  shared-box usage) → postgres crash-loop → /cart 307 + deploy verify
-  fail. Freed 3.4G journal, DB healthy, app 200s. WAL retention still
-  open (52 segs/hour) — needs owner decision, NOT auto-deleted.
 - Deploy lesson: deploy script's silent fetch can build stale code
   (19:44 build lacked the filter); re-deploy fixed. Verify-after-
   deploy is mandatory, not optional.
+
+## Settings cleanup (Sept 21) — LIVE VERIFIED via screenshots
+- General (`settings.tsx`): deleted in-page Subnav Tabs (duplicate of the
+  global SectionTabs strip); removed TotpCard teaser (lives on Security
+  page). Page is now header + one form card.
+- Email (`settings_.email.tsx`): removed 3-card overview grid (state already
+  in header StatusPill); single-column flow: header, SMTP config, test,
+  deliverability note. Container narrowed to max-w-3xl like General.
+- Store switcher OFF in AdminShell (`{false && ...}` with comment; code
+  kept for future multi-store). Header shows plain store name.
+- Verified live as flamedev7: dup-tabs 0, 2FA card absent, overview absent,
+  form + test present; screenshots set-general-after/set-email-after.
+- Branch session-settings-cleanup deployed, then merged to main (17-check
+  script: cart 307 was the disk-full postgres incident per above,
+  re-checked 200 after). tsc: only pre-existing errors.

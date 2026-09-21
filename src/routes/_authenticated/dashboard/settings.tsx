@@ -2,17 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Sliders,
-  Globe,
-  Shield,
-  CreditCard,
   Clock,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useStoreUrl } from "@/hooks/use-store-url";
 import { ImpersonationConsent } from "@/components/admin/ImpersonationConsent";
-import { TotpCard } from "@/components/admin/settings/TotpCard";
 import { useLang } from "@/lib/i18n";
 import {
   COMMON_TIMEZONES,
@@ -195,43 +190,9 @@ function SettingsPage() {
           ))}
       </div>
 
-      {/* Settings Subnav Tabs */}
-      <nav
-        aria-label={t("Settings navigation", "সেটিংস নেভিগেশন")}
-        className="flex overflow-x-auto border-b border-border text-sm"
-      >
-        <Link
-          to="/dashboard/settings"
-          className="flex items-center gap-2 border-b-2 border-primary px-4 py-2.5 font-medium text-primary"
-        >
-          <Sliders className="size-4" />
-          <span>{t("General", "সাধারণ")}</span>
-        </Link>
-        <Link
-          to="/dashboard/settings/security"
-          className="flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 font-medium text-muted-foreground hover:text-foreground hover:border-border"
-        >
-          <Shield className="size-4" />
-          <span>{t("Security & 2FA", "নিরাপত্তা ও ২এফএ")}</span>
-        </Link>
-        <Link
-          to="/dashboard/settings/domains"
-          className="flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 font-medium text-muted-foreground hover:text-foreground hover:border-border"
-        >
-          <Globe className="size-4" />
-          <span>{t("Domains", "ডোমেইন")}</span>
-        </Link>
-        <Link
-          to="/dashboard/settings/providers"
-          className="flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 font-medium text-muted-foreground hover:text-foreground hover:border-border"
-        >
-          <CreditCard className="size-4" />
-          <span>{t("Payments", "পেমেন্ট")}</span>
-        </Link>
-      </nav>
-
-      {/* Two-Factor Authentication (TOTP) Card */}
-      <TotpCard showLinkToSecurity={true} />
+      {/* The global SectionTabs strip in AdminShell already covers
+          Settings navigation (General / Staff / Domains / Security / …).
+          No in-page duplicate tabs here — this page stays single-purpose. */}
 
       {/* General Storefront Settings Form */}
       <section className="rounded-fq-lg border border-border bg-card p-5">
