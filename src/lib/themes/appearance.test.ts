@@ -274,9 +274,9 @@ describe("presentation helpers", () => {
     expect(neighbourTheme([list[0]!], list[0]!, 1)).toBeNull();
   });
 
-  it("builds a preview url with device and theme", () => {
+  it("points live preview at the public blueprint route (store paths 404)", () => {
     expect(previewUrl("cloudman", "atelier", "mobile")).toBe(
-      "/store/cloudman?preview_device=mobile&preview_theme=atelier",
+      "/theme-preview/atelier?preview_device=mobile",
     );
     expect(previewUrl("cloudman", null, "desktop")).toBe(
       "/store/cloudman?preview_device=desktop",

@@ -390,7 +390,16 @@ export function previewUrl(
   themeKey: string | null,
   device: PreviewDevice,
 ): string {
+  // Live preview must show the whole theme with demo content. The old
+  // `/store/<slug>?preview_theme=` shape answers bare 404 on platform
+  // hosts since the custom-domain cutover (empty iframe). Point at the
+  // public blueprint preview instead, which renders tokens + sections
+  // with demo rows. Keyless (custom-upload) themes keep the legacy
+  // store URL — same as before, no worse.
+  if (themeKey) {
+    const params = new URLSearchParams({ preview_device: device });
+    return `/theme-preview/${themeKey}?${params.toString()}`;
+  }
   const params = new URLSearchParams({ preview_device: device });
-  if (themeKey) params.set("preview_theme", themeKey);
   return `/store/${storeSlug}?${params.toString()}`;
 }
