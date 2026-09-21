@@ -89,10 +89,23 @@ verify on production; push to GitHub.
   index sections use prop keys with no studio counterpart
   (heritage_story eyebrow/heading, textile_showcase tNLabel/tNAlt,
   editorial_banner eyebrow/heading/body, marquee_strip label,
-  department_grid limit-query). Align theme props to studio widget
-  schemas (headline/items) or ports stay LOSSY forever. DIRECT today:
+  limit-query). Align theme props to studio widget schemas
+  (headline/items) or ports stay LOSSY forever. DIRECT today:
   hero_carousel, product_rail, lookbook, wedding_shop, gift_finder,
   testimonial_carousel, rewards_club.
+- [x] Builder pages render on storefront (`561703f`+`636b5cb`,
+  deployed): getStorePageFn passes Studio nodes through;
+  StoreHomepage + pages twin render them with canvas StudioWidget
+  components (read-only desktop). Markdown path byte-identical.
+  Proven live via preview token on Akira Studio page (35KB SSR,
+  real headings, zero starter markers). 3 new static-render tests.
+- [x] Supershop activation unblocked (same batch): draft-only rows
+  hit undead-end theme.unpublished (no Publish action exists).
+  Activate now materializes from draft/registry; nothing-to-seed
+  refusal stays. Proven live: Supershop ACTIVE on Flame + Akira.
+- Flame homepage seeding pending operator visual choice (Supershop
+  live now vs heritage vision): seed Home + designate + parity check.
+  Contact-Us designation still stale in the meantime.
 
 ## Follow-ups / hazards
 - Homepage success path needs a merchant-owned published page + domain.

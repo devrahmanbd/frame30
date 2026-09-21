@@ -251,6 +251,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Swarm audits: console mostly CLEAN; storefront CLEAN except oracles
   and global blog namespace (logged as follow-ups).
 
+## [2026-09-21] — Studio pages render on storefront + activation fix
+- Builder-authored pages served starter/empty (read path stub-only,
+  export fallback empty for heritage). getStorePageFn now passes
+  Studio nodes; StoreHomepage + pages twin render canvas components.
+  Proven live via preview token (real headings, no starter markers).
+- Supershop activation: draft-only rows hit undead-end unpublished
+  error; Activate now materializes. Live on Flame + Akira.
+- Contract: 3 new static-render tests green.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.
