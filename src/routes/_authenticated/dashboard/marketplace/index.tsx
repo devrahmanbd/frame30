@@ -64,6 +64,7 @@ import {
 import { InstalledApps } from "@/components/marketplace/InstalledApps";
 import { ConfirmDialog } from "@/components/console/kit";
 import { cn } from "@/lib/utils";
+import { resolveThemeBadge } from "@/lib/marketplace-badges";
 
 export const Route = createFileRoute("/_authenticated/dashboard/marketplace/")({
   validateSearch: (
@@ -1072,8 +1073,19 @@ function Marketplace() {
               {listings.map((l) => {
                 const themeState =
                   l.kind === "theme" ? themeStateBySlug.get(l.slug) : undefined;
+                // Row state wins: only `store_themes.is_active` (themeStates)
+                // confers Active; the ledger is fallback for Installed only.
+                const themeBadge =
+                  l.kind === "theme"
+                    ? resolveThemeBadge(l.slug, {
+                        themeStates: data.themeStates ?? [],
+                        installs: data.installs,
+                        listingId: l.id,
+                        builtin: l.builtin,
+                      })
+                    : null;
                 const isInstalled =
-                  (l.kind === "theme" && Boolean(themeState)) ||
+                  (l.kind === "theme" && themeBadge !== null) ||
                   data.installs.some(
                     (i) =>
                       (l.builtin
@@ -1115,13 +1127,13 @@ function Marketplace() {
 
                         {/* Top Badges */}
                         <div className="absolute left-2.5 top-2.5 flex flex-wrap gap-1.5 z-10 pointer-events-none">
-                          {themeState?.isActive && (
+                          {themeBadge === "active" && (
                             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-background/90 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 shadow-xs backdrop-blur-xs dark:text-emerald-400">
                               <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
                               Live Storefront
                             </span>
                           )}
-                          {isInstalled && !themeState?.isActive && (
+                          {themeBadge === "installed" && (
                             <span className="inline-flex items-center gap-1 rounded-full border border-sky-500/30 bg-background/90 px-2 py-0.5 text-xs font-medium text-sky-600 shadow-xs backdrop-blur-xs dark:text-sky-400">
                               <Check className="size-3" /> Installed
                             </span>

@@ -579,7 +579,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const palette = useCommandPalette();
   const { data: merchant } = useMerchant();
   const { memberships, switchMerchant } = useMerchants();
-  const { storeUrl } = useStoreUrl();
+  const { storeUrl, primaryHost } = useStoreUrl();
   const navigate = useNavigate();
   const qc = useQueryClient();
 
@@ -739,15 +739,42 @@ export function AdminShell({ children }: { children: ReactNode }) {
             <Search className="size-4" aria-hidden />
           </button>
           {merchant?.slug ? (
-            <a
-              href={storeUrl()}
-              target="_blank"
-              rel="noreferrer"
-              className="hidden items-center gap-1.5 rounded-fq-md px-2.5 py-1.5 text-[13px] text-muted-foreground hover:bg-muted hover:text-foreground lg:flex"
-            >
-              <ExternalLink className="size-3.5" aria-hidden />
-              {t("View store", "দোকান দেখুন")}
-            </a>
+            primaryHost ? (
+              <a
+                href={storeUrl()}
+                target="_blank"
+                rel="noreferrer"
+                className="hidden items-center gap-1.5 rounded-fq-md px-2.5 py-1.5 text-[13px] text-muted-foreground hover:bg-muted hover:text-foreground lg:flex"
+              >
+                <ExternalLink className="size-3.5" aria-hidden />
+                {t("View store", "দোকান দেখুন")}
+              </a>
+            ) : (
+              <span
+                title={t(
+                  "Connect a custom domain in Settings > Domains to make your storefront reachable — path URLs are retired",
+                  "Settings > Domains-এ কাস্টম ডোমেইন যুক্ত করে স্টোরফ্রন্ট চালু করুন — path URL বন্ধ রয়েছে",
+                )}
+                className="hidden items-center gap-1.5 rounded-fq-md px-2.5 py-1.5 text-[13px] text-muted-foreground lg:flex"
+              >
+                <ExternalLink
+                  className="size-3.5 shrink-0"
+                  aria-hidden
+                />
+                <span className="max-w-[280px] truncate">
+                  {t(
+                    "Storefront not reachable — path URLs are retired",
+                    "স্টোরফ্রন্ট চালু নেই — path URL বন্ধ রয়েছে",
+                  )}
+                </span>
+                <Link
+                  to="/dashboard/settings/domains"
+                  className="shrink-0 font-medium text-primary hover:underline"
+                >
+                  {t("Connect a custom domain", "কাস্টম ডোমেইন যুক্ত করুন")}
+                </Link>
+              </span>
+            )
           ) : null}
           <NotificationBell />
           <ThemeToggle className="size-9 rounded-fq-md border-border text-muted-foreground hover:bg-muted hover:text-foreground" />
