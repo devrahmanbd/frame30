@@ -61,3 +61,22 @@ Versioned `clothing-heritage` v2 through the publish pipeline
 Every slice verified live with screenshots before the next begins.
 Done = demo store running Heritage v2 end-to-end (home → collection
 → PDP → cart → checkout → order) with no lorem ipsum and gates green.
+
+## Slice 3 — Photography brief (per department)
+
+Until merchants upload photos, dept-tinted monogram tiles stand in
+(`paletteForDept` + `/ph/<dept>/<slug>`). When shooting real catalog:
+
+| Dept | Direction |
+|------|-----------|
+| Sarees (womens) | Full-drape on model, close-up weave macro, blouse-piece flat-lay |
+| Panjabis (mens) | On-model festive + detail collar/button macro,off-white backdrop |
+| Kids | Outdoor daylight, movement, matching family sets |
+| Living & crafts | Styled interiors, hands-in-frame process shots |
+| Jewelry | Macro on dark slate, on-model ear/neckline context |
+| Shawls & winter | Texture drape, folded stack color stories |
+| Wedding & festive | Campaign editorial, gold-hour light, full looks |
+| Fabrics | Bolt + drape + weave macro triptych per textile |
+
+Rules: 4:5 portrait master, fronts first, no filters that shift dye
+lots, alt text = fabric + color + occasion.

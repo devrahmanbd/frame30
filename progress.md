@@ -197,3 +197,5 @@ verify on production; push to GitHub.
   keyword fallback, /ph/<dept>/<slug> route, preview map qualified).
   Placeholder/preview tests green. ProductTileArt 2 failures
   PRE-EXISTING on HEAD (other loop's MediaFrame <img> change).
+- [x] Slice 3: dept art (palettes + route + 19 demo seeds qualified +
+  photo brief in spec). Live: tinted tiles in preview. 15/15 tests.
