@@ -11,8 +11,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { globalBlockListFn } from "@/lib/global-blocks.functions";
-import { sectionsToStudioNodes } from "@/lib/studio/model";
+import { toast } from "sonner";
+import {
+  globalBlockCreateFn,
+  globalBlockListFn,
+} from "@/lib/global-blocks.functions";
+import {
+  sectionsToStudioNodes,
+  studioNodesToSections,
+  type StudioNode,
+} from "@/lib/studio/model";
 import { AlertTriangle } from "lucide-react";
 import { ClassicEditor } from "@/components/admin/blog/ClassicEditor";
 import { ShortcutHelp } from "@/components/admin/content/ShortcutHelp";
@@ -296,6 +304,36 @@ export function EditorShell({
     [globalsQuery.data],
   );
 
+  // Reverse port: persist canvas content as a theme global block (named after
+  // the node; rename it in the theme studio). Failures surface as toasts —
+  // the canvas is never touched.
+  const createGlobal = useServerFn(globalBlockCreateFn);
+  const saveGlobalBlock = useCallback(
+    async (name: string, nodes: StudioNode[]) => {
+      try {
+        await createGlobal({
+          data: {
+            themeId: doc.themeId ?? null,
+            name: name.slice(0, 80),
+            nodes: studioNodesToSections(nodes),
+          },
+        });
+        toast.success(
+          t("Saved as a global block.", "গ্লোবাল ব্লক হিসেবে সেভ হয়েছে।"),
+        );
+        void globalsQuery.refetch();
+      } catch {
+        toast.error(
+          t(
+            "Could not save as a global block.",
+            "গ্লোবাল ব্লক হিসেবে সেভ করা যায়নি।",
+          ),
+        );
+      }
+    },
+    [createGlobal, doc.themeId, globalsQuery, t],
+  );
+
   // Pages are builder-only: no switch back to the removed block surface.
   // Posts keep the classic ⇄ builder toggle.
   const menu: MenuAction[] = [
@@ -531,6 +569,7 @@ export function EditorShell({
                     }
                     fill
                     globalBlocks={globalBlocks}
+                    onSaveGlobalBlock={saveGlobalBlock}
                     sideTab={
                       context
                         ? {

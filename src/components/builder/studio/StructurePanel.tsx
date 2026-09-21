@@ -4,8 +4,17 @@
  * Floating, collapsible tree of `Container › Widget`. Drag to reorder, the eye
  * hides an element on every breakpoint, double-click renames.
  */
-import { useState } from "react";
-import { ChevronDown, Eye, EyeOff, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import {
+  ChevronDown,
+  ChevronsDownUp,
+  ChevronsUpDown,
+  Copy,
+  Eye,
+  EyeOff,
+  Trash2,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { widgetLabel } from "@/lib/studio/catalog";
 import { isContainerNode, type StudioNode } from "@/lib/studio/model";
@@ -22,18 +31,42 @@ export type StructurePanelProps = {
   onMove: (dragId: string, target: DropTarget) => void;
   onContextMenu?: (id: string, position: { x: number; y: number }) => void;
   onClose: () => void;
+  onDuplicate?: (id: string) => void;
+  onDelete?: (id: string) => void;
 };
+
+/** Label match including descendants, so filtering keeps ancestor context. */
+function matchesTree(node: StudioNode, query: string): boolean {
+  const label = (
+    node.name ??
+    (node.el === "container" ? "Container" : widgetLabel(node.el))
+  ).toLowerCase();
+  if (label.includes(query)) return true;
+  return (node.children ?? []).some((child) => matchesTree(child, query));
+}
 
 export function StructurePanel({
   nodes,
   selectedId,
   onSelect,
+  onDuplicate,
+  onDelete,
   onRename,
   onToggleHidden,
   onMove,
   onContextMenu,
   onClose,
 }: StructurePanelProps) {
+  const [filter, setFilter] = useState("");
+  const [collapsedAll, setCollapsedAll] = useState(false);
+  const query = filter.trim().toLowerCase();
+  const visible = useMemo(
+    () =>
+      query
+        ? nodes.filter((node) => matchesTree(node, query))
+        : nodes,
+    [nodes, query],
+  );
   return (
     <aside
       aria-label="Structure"
@@ -41,14 +74,44 @@ export function StructurePanel({
     >
       <div className="flex items-center justify-between border-b border-border px-3 py-2">
         <h2 className="text-sm font-semibold">Structure</h2>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close structure panel"
-          className="grid size-9 place-items-center rounded-fq-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-        >
-          <X className="size-4" aria-hidden />
-        </button>
+        <div className="flex items-center">
+          <button
+            type="button"
+            onClick={() => setCollapsedAll(false)}
+            aria-label="Expand all layers"
+            title="Expand all"
+            className="grid size-9 place-items-center rounded-fq-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
+            <ChevronsUpDown className="size-4" aria-hidden />
+          </button>
+          <button
+            type="button"
+            onClick={() => setCollapsedAll(true)}
+            aria-label="Collapse all layers"
+            title="Collapse all"
+            className="grid size-9 place-items-center rounded-fq-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
+            <ChevronsDownUp className="size-4" aria-hidden />
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close structure panel"
+            className="grid size-9 place-items-center rounded-fq-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
+            <X className="size-4" aria-hidden />
+          </button>
+        </div>
+      </div>
+      <div className="shrink-0 border-b border-border p-2">
+        <input
+          type="search"
+          value={filter}
+          onChange={(event) => setFilter(event.target.value)}
+          placeholder="Filter layers"
+          aria-label="Filter layers"
+          className="h-9 w-full rounded-fq-sm border border-border bg-background px-2 text-xs placeholder:text-muted-foreground"
+        />
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-1">
         {nodes.length === 0 ? (
@@ -56,8 +119,12 @@ export function StructurePanel({
             Once you fill your page with content, this window gives an overview
             of every layer.
           </p>
+        ) : visible.length === 0 ? (
+          <p className="px-3 py-8 text-center text-xs text-muted-foreground">
+            No layers match “{filter.trim()}”.
+          </p>
         ) : (
-          nodes.map((node) => (
+          visible.map((node) => (
             <TreeRow
               key={node.id}
               node={node}
@@ -68,6 +135,9 @@ export function StructurePanel({
               onToggleHidden={onToggleHidden}
               onMove={onMove}
               onContextMenu={onContextMenu}
+              onDuplicate={onDuplicate}
+              onDelete={onDelete}
+              forceOpen={query !== "" ? true : collapsedAll ? false : undefined}
             />
           ))
         )}
@@ -79,6 +149,8 @@ export function StructurePanel({
 type RowProps = Omit<StructurePanelProps, "nodes" | "onClose"> & {
   node: StudioNode;
   depth: number;
+  /** When defined (filter active / expand-collapse all), overrides local toggle. */
+  forceOpen?: boolean;
 };
 
 function TreeRow({
@@ -90,9 +162,13 @@ function TreeRow({
   onToggleHidden,
   onMove,
   onContextMenu,
+  onDuplicate,
+  onDelete,
+  forceOpen,
 }: RowProps) {
   const [open, setOpen] = useState(true);
   const [editing, setEditing] = useState(false);
+  const isOpen = forceOpen ?? open;
   const container = isContainerNode(node);
   const label = node.name ?? (container ? "Container" : widgetLabel(node.el));
   const hidden = (node.hiddenOn?.length ?? 0) > 0;
@@ -134,15 +210,15 @@ function TreeRow({
         {container ? (
           <button
             type="button"
-            aria-label={open ? `Collapse ${label}` : `Expand ${label}`}
-            aria-expanded={open}
-            onClick={() => setOpen(!open)}
+            aria-label={isOpen ? `Collapse ${label}` : `Expand ${label}`}
+            aria-expanded={isOpen}
+            onClick={() => setOpen(!isOpen)}
             className="grid size-8 place-items-center text-muted-foreground"
           >
             <ChevronDown
               className={cn(
                 "size-3.5 transition-transform",
-                open ? "" : "-rotate-90",
+                isOpen ? "" : "-rotate-90",
               )}
               aria-hidden
             />
@@ -193,9 +269,29 @@ function TreeRow({
             <Eye className="size-3.5" aria-hidden />
           )}
         </button>
+        {onDuplicate && (
+          <button
+            type="button"
+            onClick={() => onDuplicate(node.id)}
+            aria-label={`Duplicate ${label}`}
+            className="grid size-9 place-items-center rounded-fq-sm text-muted-foreground hover:text-foreground"
+          >
+            <Copy className="size-3.5" aria-hidden />
+          </button>
+        )}
+        {onDelete && (
+          <button
+            type="button"
+            onClick={() => onDelete(node.id)}
+            aria-label={`Delete ${label}`}
+            className="grid size-9 place-items-center rounded-fq-sm text-muted-foreground hover:text-destructive"
+          >
+            <Trash2 className="size-3.5" aria-hidden />
+          </button>
+        )}
       </div>
 
-      {container && open
+      {container && isOpen
         ? (node.children ?? []).map((child) => (
             <TreeRow
               key={child.id}
@@ -207,6 +303,9 @@ function TreeRow({
               onToggleHidden={onToggleHidden}
               onMove={onMove}
               onContextMenu={onContextMenu}
+              onDuplicate={onDuplicate}
+              onDelete={onDelete}
+              forceOpen={forceOpen}
             />
           ))
         : null}

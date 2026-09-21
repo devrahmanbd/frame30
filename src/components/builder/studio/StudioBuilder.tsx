@@ -109,6 +109,12 @@ export type StudioBuilderProps = {
    */
   globalBlocks?: { id: string; name: string; nodes: StudioNode[] }[];
   /**
+   * Persist the selected subtree as a theme global block (reverse of the
+   * insert path above). The host owns the RPC; the name defaults to the
+   * node's name or element label. Shown in the node context menu when set.
+   */
+  onSaveGlobalBlock?: ((name: string, nodes: StudioNode[]) => void) | null;
+  /**
    * Extra left-panel tab rendered beside Elements when nothing is selected
    * (e.g. the host's SEO panel). A host-provided React node; the studio only
    * owns the tab strip.
@@ -162,6 +168,7 @@ export function StudioBuilder({
   sideTab = null,
   resetKey = null,
   globalBlocks = [],
+  onSaveGlobalBlock = null,
 }: StudioBuilderProps) {
   const studio = useStudio(initialDoc, resetKey);
 
@@ -459,6 +466,17 @@ export function StudioBuilder({
         label: "Save as template",
         run: saveTemplate,
       },
+      ...(onSaveGlobalBlock && node
+        ? [
+            {
+              kind: "action",
+              id: "save-global",
+              label: "Save as global block",
+              run: () =>
+                onSaveGlobalBlock(node.name ?? widgetLabel(node.el), [node]),
+            } as const,
+          ]
+        : []),
       {
         kind: "action",
         id: "structure",
@@ -694,6 +712,8 @@ export function StudioBuilder({
                 onMove={studio.move}
                 onContextMenu={(id, at) => setMenu({ id, at })}
                 onClose={() => setStructure(false)}
+                onDuplicate={studio.duplicate}
+                onDelete={studio.remove}
               />
             </div>
           )}

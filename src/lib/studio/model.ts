@@ -243,6 +243,39 @@ export function sectionsToStudioNodes(input: unknown): StudioNode[] {
   return out;
 }
 
+/**
+ * Reverse port: studio nodes back into builder sections (e.g. saving page
+ * content as a theme global block). Mirrors sectionsToStudioNodes; device
+ * visibility folds back onto breakpoints when any mapped device is hidden.
+ */
+export function studioNodesToSections(
+  nodes: StudioNode[],
+): { id: string; type: string; props: Record<string, unknown>; children?: unknown[]; hidden?: string[] }[] {
+  return nodes.map((node) => {
+    const hidden = (node.hiddenOn ?? []).flatMap(
+      (device) => DEVICE_TO_BREAKPOINT[device] ?? [],
+    );
+    return {
+      id: node.id,
+      type: node.el,
+      props: { ...(node.settings as Record<string, unknown>) },
+      ...(node.children?.length
+        ? { children: studioNodesToSections(node.children) }
+        : {}),
+      ...(hidden.length > 0 ? { hidden: [...new Set(hidden)] } : {}),
+    };
+  });
+}
+
+const DEVICE_TO_BREAKPOINT: Record<string, string[]> = {
+  mobile: ["mobile"],
+  mobileLandscape: ["mobile"],
+  tablet: ["tablet"],
+  desktop: ["desktop"],
+  laptop: ["desktop"],
+  widescreen: ["desktop"],
+};
+
 function sectionToStudioNode(input: unknown, depth: number): StudioNode | null {
   if (!input || typeof input !== "object" || depth > 12) return null;
   const section = input as {

@@ -4,6 +4,7 @@ import {
   parseStudioBody,
   sectionsToStudioNodes,
   serializeStudioBody,
+  studioNodesToSections,
 } from "./model";
 import type { StudioDoc } from "./model";
 
@@ -89,6 +90,30 @@ describe("sectionsToStudioNodes", () => {
       "text",
     ]);
     expect(nodes.map((n) => n.el)).toEqual(["button"]);
+  });
+
+  it("round-trips back into sections for global-block save", () => {
+    const nodes = sectionsToStudioNodes([
+      {
+        id: "a",
+        type: "container",
+        props: {},
+        children: [
+          { id: "b", type: "heading", props: { text: "Hi" }, hidden: ["mobile"] },
+        ],
+      },
+    ]);
+    const [section] = studioNodesToSections(nodes);
+    expect(section.type).toBe("container");
+    const child = section.children?.[0] as
+      | { type?: unknown; props?: unknown; hidden?: unknown }
+      | undefined;
+    expect(child).toMatchObject({
+      type: "heading",
+      props: { text: "Hi" },
+    });
+    expect(child?.hidden).toEqual(["mobile"]);
+    expect(section.id).not.toBe("a");
   });
 
   it("returns [] for non-arrays and truncates runaway depth", () => {
