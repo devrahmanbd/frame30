@@ -28,6 +28,8 @@ import {
   neighbourTheme,
   orderInstalled,
   searchInstalled,
+  visibleCatalogue,
+  visibleInstalled,
   type CatalogTheme,
   type InstalledTheme,
   type ThemesWorkspace,
@@ -76,10 +78,15 @@ export function ThemesScreen() {
 
   const installed = useMemo(
     () =>
-      orderInstalled(searchInstalled(workspace.data?.installed ?? [], query)),
+      orderInstalled(
+        searchInstalled(visibleInstalled(workspace.data?.installed ?? []), query),
+      ),
     [workspace.data, query],
   );
-  const catalogue = workspace.data?.catalogue ?? [];
+  const catalogue = useMemo(
+    () => visibleCatalogue(workspace.data?.catalogue ?? []),
+    [workspace.data],
+  );
   const details = installed.find((theme) => theme.id === detailsId) ?? null;
   const activeTheme =
     installed.find((theme) => theme.isActive) ?? null;
