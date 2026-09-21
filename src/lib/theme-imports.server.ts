@@ -37,6 +37,235 @@ function importResult(raw: unknown): ImportResult {
   };
 }
 
+/* ---------------------------------- D1: overwrite preflight ----------- */
+
+/** Fixed demo seeds (mirror the SQL seed inserts — keep in sync). */
+const DEMO_ARTICLE_SLUGS = [
+  "demo-master-weavers",
+  "demo-nakshi-kantha",
+  "demo-festive-collection",
+];
+const DEMO_PAGE_SLUGS = ["about", "shipping-info"];
+const DEMO_MEDIA_FILES = Array.from(
+  { length: 6 },
+  (_, i) => `demo_media_${i}.webp`,
+);
+
+export type ImportConflictKind =
+  | "products"
+  | "collections"
+  | "pages"
+  | "posts"
+  | "media";
+
+export type ImportConflict = { kind: ImportConflictKind; slugs: string[] };
+
+/** Sorted intersection of demo and existing slugs (trimmed, deduped). */
+export function matchConflicts(
+  demoSlugs: string[],
+  existingSlugs: Array<string | null | undefined>,
+): string[] {
+  const norm = (s: string | null | undefined) =>
+    (s ?? "").trim().toLowerCase().replace(/^\/+/, "");
+  const existing = new Set(
+    existingSlugs.map(norm).filter((s) => s.length > 0),
+  );
+  const out = new Set<string>();
+  for (const raw of demoSlugs) {
+    const s = norm(raw);
+    if (s.length > 0 && existing.has(s)) out.add(s);
+  }
+  return [...out].sort();
+}
+
+async function existingSlugs(
+  db: Client,
+  merchantId: string,
+  table:
+    | "products"
+    | "collections"
+    | "storefront_pages"
+    | "articles",
+  column: "slug",
+): Promise<string[]> {
+  const { data } = await (db as unknown as {
+    from: (t: string) => {
+      select: (c: string) => {
+        eq: (k: string, v: string) => Promise<{ data: { slug: string }[] | null }>;
+      };
+    };
+  })
+    .from(table)
+    .select(column)
+    .eq("merchant_id", merchantId);
+  return (data ?? []).map((r) => r.slug);
+}
+
+/**
+ * Conflict preflight: which existing rows (demo OR merchant-owned) would be
+ * overwritten by a demo import because slugs/filenames match. Read-only.
+ */
+export async function importPreflight(
+  db: Client,
+  merchantId: string,
+  themeKey: string,
+): Promise<{ conflicts: ImportConflict[]; total: number }> {
+  assertTenantId(merchantId, "importPreflight");
+  const { demoCatalogFor } = await import("./demo-catalog");
+  const catalog = demoCatalogFor(themeKey);
+  const [products, collections, pages, posts, mediaAssets] = await Promise.all([
+    existingSlugs(db, merchantId, "products", "slug"),
+    existingSlugs(db, merchantId, "collections", "slug"),
+    existingSlugs(db, merchantId, "storefront_pages", "slug"),
+    existingSlugs(db, merchantId, "articles", "slug"),
+    (async () => {
+      const { data } = await (db as unknown as {
+        from: (t: string) => {
+          select: (c: string) => {
+            eq: (k: string, v: string) => Promise<{ data: { file_name: string }[] | null }>;
+          };
+        };
+      })
+        .from("media_assets")
+        .select("file_name")
+        .eq("merchant_id", merchantId);
+      return (data ?? []).map((r) => r.file_name);
+    })(),
+  ]);
+  const all: ImportConflict[] = [
+    {
+      kind: "products",
+      slugs: matchConflicts(
+        catalog.products.map((p) => p.slug),
+        products,
+      ),
+    },
+    {
+      kind: "collections",
+      slugs: matchConflicts(
+        catalog.collections.map((c) => c.slug),
+        collections,
+      ),
+    },
+    { kind: "pages", slugs: matchConflicts(DEMO_PAGE_SLUGS, pages) },
+    { kind: "posts", slugs: matchConflicts(DEMO_ARTICLE_SLUGS, posts) },
+    { kind: "media", slugs: matchConflicts(DEMO_MEDIA_FILES, mediaAssets) },
+  ];
+  const conflicts = all.filter((c) => c.slugs.length > 0);
+  return {
+    conflicts,
+    total: conflicts.reduce((n, c) => n + c.slugs.length, 0),
+  };
+}
+
+async function deleteWhereSlugIn(
+  db: Client,
+  merchantId: string,
+  table: string,
+  slugs: string[],
+  column = "slug",
+): Promise<void> {
+  if (slugs.length === 0) return;
+  const { error } = await (db as unknown as {
+    from: (t: string) => {
+      delete: () => {
+        eq: (k: string, v: string) => {
+          in: (k: string, v: string[]) => Promise<{ error: unknown }>;
+        };
+      };
+    };
+  })
+    .from(table)
+    .delete()
+    .eq("merchant_id", merchantId)
+    .in(column, slugs);
+  if (error) throw error;
+}
+
+/**
+ * Remove exactly the conflicting rows (FK order: links → variants →
+ * products → collections/categories, then pages/posts/media) so a re-import
+ * overwrites instead of nooping. Merchant rows that do NOT collide are
+ * never touched.
+ */
+export async function removeImportConflicts(
+  db: Client,
+  merchantId: string,
+  conflicts: ImportConflict[],
+): Promise<void> {
+  assertTenantId(merchantId, "removeImportConflicts");
+  const byKind = (kind: ImportConflictKind): string[] =>
+    conflicts.find((c) => c.kind === kind)?.slugs ?? [];
+  const productSlugs = byKind("products");
+  if (productSlugs.length > 0) {
+    const { data: rows } = await (db as unknown as {
+      from: (t: string) => {
+        select: (c: string) => {
+          eq: (k: string, v: string) => {
+            in: (k: string, v: string[]) => Promise<{ data: { id: string }[] | null }>;
+          };
+        };
+      };
+    })
+      .from("products")
+      .select("id")
+      .eq("merchant_id", merchantId)
+      .in("slug", productSlugs);
+    const ids = (rows ?? []).map((r) => r.id);
+    if (ids.length > 0) {
+      const raw = db as unknown as {
+        from: (t: string) => {
+          delete: () => {
+            eq: (k: string, v: string) => {
+              in: (k: string, v: string[]) => Promise<{ error: unknown }>;
+            };
+          };
+        };
+      };
+      await raw.from("collection_products").delete().eq("merchant_id", merchantId).in("product_id", ids);
+      await raw.from("product_variants").delete().eq("merchant_id", merchantId).in("product_id", ids);
+      await raw.from("products").delete().eq("merchant_id", merchantId).in("id", ids);
+    }
+  }
+  await deleteWhereSlugIn(db, merchantId, "collections", byKind("collections"));
+  // Categories share product-category slugs in some catalogs; only remove
+  // categories whose slug collides with a demo *category* slug is out of
+  // scope here (products carry the link) — collections covered above.
+  await deleteWhereSlugIn(db, merchantId, "storefront_pages", byKind("pages"));
+  await deleteWhereSlugIn(db, merchantId, "articles", byKind("posts"));
+  const media = byKind("media");
+  if (media.length > 0) {
+    // Capture storage paths BEFORE deleting the rows that reference them.
+    const { data: assetRows } = await (db as unknown as {
+      from: (t: string) => {
+        select: (c: string) => {
+          eq: (k: string, v: string) => {
+            in: (k: string, v: string[]) => Promise<{ data: { storage_path: string }[] | null }>;
+          };
+        };
+      };
+    })
+      .from("media_assets")
+      .select("storage_path")
+      .eq("merchant_id", merchantId)
+      .in("file_name", media);
+    await deleteWhereSlugIn(db, merchantId, "media_assets", media, "file_name");
+    // Storage objects are removed best-effort; a missing object is not fatal.
+    try {
+      const { supabaseAdmin } = await import(
+        "@/integrations/supabase/client.server"
+      );
+      const paths = (assetRows ?? [])
+        .map((r) => r.storage_path)
+        .filter(Boolean);
+      if (paths.length > 0)
+        await supabaseAdmin.storage.from("media").remove(paths);
+    } catch {
+      // best-effort only
+    }
+  }
+}
+
 /**
  * Import hero_carousel slide data from the theme blueprint into the
  * merchant's theme draft. Idempotent: skipped if slides already exist.
@@ -87,7 +316,16 @@ export async function importThemeMedia(
   db: Client,
   merchantId: string,
   themeKey: string,
+  overwrite = false,
 ): Promise<ImportResult> {
+  if (overwrite) {
+    const pre = await importPreflight(db, merchantId, themeKey);
+    await removeImportConflicts(
+      db,
+      merchantId,
+      pre.conflicts.filter((c) => c.kind === "media"),
+    );
+  }
   assertTenantId(merchantId, "importThemeMedia");
   await rateLimit("theme.import_media", merchantId);
   return withSpan("theme.import_media", async () => {
@@ -131,7 +369,16 @@ export async function importThemeProducts(
   merchantId: string,
   themeKey: string,
   catalog: Record<string, unknown>,
+  overwrite = false,
 ): Promise<ImportResult> {
+  if (overwrite) {
+    const pre = await importPreflight(db, merchantId, themeKey);
+    await removeImportConflicts(
+      db,
+      merchantId,
+      pre.conflicts.filter((c) => c.kind === "products" || c.kind === "collections"),
+    );
+  }
   assertTenantId(merchantId, "importThemeProducts");
   await rateLimit("theme.import_products", merchantId);
   return withSpan("theme.import_products", async () => {
@@ -174,7 +421,16 @@ export async function importThemePosts(
   db: Client,
   merchantId: string,
   themeKey: string,
+  overwrite = false,
 ): Promise<ImportResult> {
+  if (overwrite) {
+    const pre = await importPreflight(db, merchantId, themeKey);
+    await removeImportConflicts(
+      db,
+      merchantId,
+      pre.conflicts.filter((c) => c.kind === "posts" || c.kind === "pages"),
+    );
+  }
   assertTenantId(merchantId, "importThemePosts");
   await rateLimit("theme.import_posts", merchantId);
   return withSpan("theme.import_posts", async () => {
@@ -216,6 +472,7 @@ export async function importThemeAll(
   db: Client,
   merchantId: string,
   themeKey: string,
+  overwrite = false,
 ): Promise<{
   slides: ImportResult;
   media: ImportResult;
@@ -230,14 +487,15 @@ export async function importThemeAll(
     const catalog = demoCatalogFor(themeKey);
 
     const slides = await importThemeSlides(db, merchantId, themeKey);
-    const media = await importThemeMedia(db, merchantId, themeKey);
+    const media = await importThemeMedia(db, merchantId, themeKey, overwrite);
     const products = await importThemeProducts(
       db,
       merchantId,
       themeKey,
       catalog as unknown as Record<string, unknown>,
+      overwrite,
     );
-    const posts = await importThemePosts(db, merchantId, themeKey);
+    const posts = await importThemePosts(db, merchantId, themeKey, overwrite);
 
     const totalImported =
       (slides.imported ? 1 : 0) +

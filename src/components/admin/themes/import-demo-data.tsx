@@ -25,9 +25,12 @@ import {
   importThemeProductsFn,
   importThemePostsFn,
   importThemeAllFn,
+  importPreflightFn,
 } from "@/lib/themes.functions";
 
 type ImportKind = "slides" | "media" | "products" | "posts" | "all";
+
+type Conflict = { kind: string; slugs: string[] };
 
 const KINDS: { key: ImportKind; label: string }[] = [
   { key: "slides", label: "Slides" },
@@ -50,6 +53,30 @@ export function ImportDemoData({
 }: ImportDemoDataProps) {
   const [selected, setSelected] = useState<Set<ImportKind>>(new Set());
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [overwriteAck, setOverwriteAck] = useState(false);
+  const [conflicts, setConflicts] = useState<Conflict[]>([]);
+  const [conflictTotal, setConflictTotal] = useState(0);
+  const [checking, setChecking] = useState(false);
+  const preflight = useServerFn(importPreflightFn);
+
+  async function openConfirm() {
+    setConfirmOpen(true);
+    setOverwriteAck(false);
+    setConflicts([]);
+    setConflictTotal(0);
+    setChecking(true);
+    try {
+      const res = await preflight({ data: { themeKey } });
+      setConflicts(res.conflicts ?? []);
+      setConflictTotal(res.total ?? 0);
+    } catch {
+      // Preflight is advisory: a failed check must not block importing.
+      setConflicts([]);
+      setConflictTotal(0);
+    } finally {
+      setChecking(false);
+    }
+  }
 
   const importAll = useMutation({
     mutationFn: useServerFn(importThemeAllFn),
@@ -107,8 +134,9 @@ export function ImportDemoData({
   const runImport = useCallback(async () => {
     const kinds =
       selected.size === 0 ? (["all"] as ImportKind[]) : [...selected];
+    const overwrite = conflictTotal > 0 && overwriteAck;
     if (kinds.includes("all")) {
-      await importAll.mutateAsync({ data: { themeKey } });
+      await importAll.mutateAsync({ data: { themeKey, overwrite } });
     } else {
       let imported = 0;
       for (const kind of kinds) {
@@ -120,7 +148,7 @@ export function ImportDemoData({
             posts: importPosts,
           };
           const result = await mutations[kind].mutateAsync({
-            data: { themeKey },
+            data: { themeKey, overwrite },
           });
           if (result.imported) imported++;
         } catch {
@@ -141,6 +169,8 @@ export function ImportDemoData({
   }, [
     selected,
     themeKey,
+    conflictTotal,
+    overwriteAck,
     importAll,
     importSlides,
     importMedia,
@@ -185,7 +215,7 @@ export function ImportDemoData({
             variant="outline"
             size="sm"
             disabled={busy}
-            onClick={() => setConfirmOpen(true)}
+            onClick={() => void openConfirm()}
             className="ml-auto"
           >
             {busy ? (
@@ -193,7 +223,11 @@ export function ImportDemoData({
             ) : (
               <Download className="size-4" aria-hidden />
             )}
-            {busy ? "Importing\u2026" : "Import"}
+            {busy
+                ? "Importing…"
+                : conflictTotal > 0
+                  ? `Overwrite ${conflictTotal} items`
+                  : "Import"}
           </Button>
         </div>
       </div>
@@ -208,6 +242,40 @@ export function ImportDemoData({
               duplicated.
             </DialogDescription>
           </DialogHeader>
+          {checking ? (
+            <p className="text-sm text-muted-foreground">
+              Checking for conflicting content…
+            </p>
+          ) : (
+            conflictTotal > 0 && (
+              <div
+                role="alert"
+                className="rounded-fq-md border border-warning-foreground/30 bg-warning-soft p-3 text-sm"
+              >
+                <p className="font-semibold text-warning-foreground">
+                  {conflictTotal} existing{" "}
+                  {conflictTotal === 1 ? "item" : "items"} will be overwritten
+                  by demo data.
+                </p>
+                <ul className="mt-2 max-h-32 space-y-1 overflow-y-auto text-xs text-muted-foreground">
+                  {conflicts.map((c) => (
+                    <li key={c.kind}>
+                      <span className="font-medium">{c.kind}:</span>{" "}
+                      {c.slugs.join(", ")}
+                    </li>
+                  ))}
+                </ul>
+                <label className="mt-3 flex cursor-pointer items-start gap-2 text-xs font-medium">
+                  <Checkbox
+                    checked={overwriteAck}
+                    onCheckedChange={(v) => setOverwriteAck(v === true)}
+                  />
+                  I understand existing design, pages, posts and media with
+                  matching names will be replaced.
+                </label>
+              </div>
+            )
+          )}
           <DialogFooter>
             <Button
               variant="outline"
@@ -217,7 +285,11 @@ export function ImportDemoData({
             >
               Cancel
             </Button>
-            <Button size="sm" onClick={() => void runImport()} disabled={busy}>
+            <Button
+              size="sm"
+              onClick={() => void runImport()}
+              disabled={busy || (conflictTotal > 0 && !overwriteAck)}
+            >
               {busy ? (
                 <Loader2 className="size-4 animate-spin" aria-hidden />
               ) : null}
