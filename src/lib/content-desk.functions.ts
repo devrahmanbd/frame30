@@ -187,3 +187,37 @@ export const contentHomepageFn = createServerFn({ method: "POST" })
       data.id,
     );
   });
+
+const permalinkInput = z.object({
+  kind: z.enum(["plain", "day-name", "month-name", "numeric", "postname", "custom"]),
+  custom: z.string().max(200).optional(),
+  categoryBase: z.string().max(60).optional(),
+  tagBase: z.string().max(60).optional(),
+});
+
+export const permalinkGetFn = createServerFn({ method: "GET" })
+  .middleware([requirePermission("marketing.read")])
+  .handler(async ({ context }) => {
+    const { currentMerchantId } = await import("./marketing.server");
+    const { getPermalinkStructure } = await import("./permalinks.server");
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    return getPermalinkStructure(context.supabase, merchantId);
+  });
+
+export const permalinkSetFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("marketing.update")])
+  .inputValidator((d: unknown) => permalinkInput.parse(d))
+  .handler(async ({ data, context }) => {
+    const { currentMerchantId } = await import("./marketing.server");
+    const { setPermalinkStructure } = await import("./permalinks.server");
+    const { enforceRateLimit } = await import("./rate-limit.server");
+    const merchantId = await currentMerchantId(
+      context.supabase,
+      context.userId,
+    );
+    await enforceRateLimit("cms.save", `${merchantId}:${context.userId}`);
+    return setPermalinkStructure(context.supabase, merchantId, data);
+  });

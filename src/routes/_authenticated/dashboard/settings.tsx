@@ -7,6 +7,7 @@ import {
   Shield,
   CreditCard,
   Clock,
+  Link2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant } from "@/hooks/use-merchant";
@@ -213,6 +214,13 @@ function SettingsPage() {
         >
           <CreditCard className="size-4" />
           <span>{t("Payments", "পেমেন্ট")}</span>
+        </Link>
+        <Link
+          to="/dashboard/settings/permalinks"
+          className="flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 font-medium text-muted-foreground hover:text-foreground hover:border-border"
+        >
+          <Link2 className="size-4" />
+          <span>{t("Permalinks", "পার্মালিংক")}</span>
         </Link>
       </nav>
 

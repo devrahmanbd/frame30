@@ -174,6 +174,7 @@ import { Route as AuthenticatedDashboardSettingsApiRouteImport } from './routes/
 import { Route as AuthenticatedDashboardSettingsDomainsRouteImport } from './routes/_authenticated/dashboard/settings_.domains'
 import { Route as AuthenticatedDashboardSettingsEmailRouteImport } from './routes/_authenticated/dashboard/settings_.email'
 import { Route as AuthenticatedDashboardSettingsInfrastructureRouteImport } from './routes/_authenticated/dashboard/settings_.infrastructure'
+import { Route as AuthenticatedDashboardSettingsPermalinksRouteImport } from './routes/_authenticated/dashboard/settings_.permalinks'
 import { Route as AuthenticatedDashboardSettingsProvidersRouteImport } from './routes/_authenticated/dashboard/settings_.providers'
 import { Route as AuthenticatedDashboardSettingsSecurityRouteImport } from './routes/_authenticated/dashboard/settings_.security'
 import { Route as AuthenticatedDashboardSettingsSeoRouteImport } from './routes/_authenticated/dashboard/settings_.seo'
@@ -1123,6 +1124,12 @@ const AuthenticatedDashboardSettingsInfrastructureRoute =
     path: '/settings/infrastructure',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardSettingsPermalinksRoute =
+  AuthenticatedDashboardSettingsPermalinksRouteImport.update({
+    id: '/settings_/permalinks',
+    path: '/settings/permalinks',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardSettingsProvidersRoute =
   AuthenticatedDashboardSettingsProvidersRouteImport.update({
     id: '/settings_/providers',
@@ -1525,6 +1532,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/settings/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
   '/dashboard/settings/email': typeof AuthenticatedDashboardSettingsEmailRoute
   '/dashboard/settings/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  '/dashboard/settings/permalinks': typeof AuthenticatedDashboardSettingsPermalinksRoute
   '/dashboard/settings/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
   '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
   '/dashboard/settings/seo': typeof AuthenticatedDashboardSettingsSeoRoute
@@ -1734,6 +1742,7 @@ export interface FileRoutesByTo {
   '/dashboard/settings/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
   '/dashboard/settings/email': typeof AuthenticatedDashboardSettingsEmailRoute
   '/dashboard/settings/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  '/dashboard/settings/permalinks': typeof AuthenticatedDashboardSettingsPermalinksRoute
   '/dashboard/settings/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
   '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
   '/dashboard/settings/seo': typeof AuthenticatedDashboardSettingsSeoRoute
@@ -1947,6 +1956,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/settings_/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
   '/_authenticated/dashboard/settings_/email': typeof AuthenticatedDashboardSettingsEmailRoute
   '/_authenticated/dashboard/settings_/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  '/_authenticated/dashboard/settings_/permalinks': typeof AuthenticatedDashboardSettingsPermalinksRoute
   '/_authenticated/dashboard/settings_/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
   '/_authenticated/dashboard/settings_/security': typeof AuthenticatedDashboardSettingsSecurityRoute
   '/_authenticated/dashboard/settings_/seo': typeof AuthenticatedDashboardSettingsSeoRoute
@@ -2160,6 +2170,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings/domains'
     | '/dashboard/settings/email'
     | '/dashboard/settings/infrastructure'
+    | '/dashboard/settings/permalinks'
     | '/dashboard/settings/providers'
     | '/dashboard/settings/security'
     | '/dashboard/settings/seo'
@@ -2369,6 +2380,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings/domains'
     | '/dashboard/settings/email'
     | '/dashboard/settings/infrastructure'
+    | '/dashboard/settings/permalinks'
     | '/dashboard/settings/providers'
     | '/dashboard/settings/security'
     | '/dashboard/settings/seo'
@@ -2581,6 +2593,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/settings_/domains'
     | '/_authenticated/dashboard/settings_/email'
     | '/_authenticated/dashboard/settings_/infrastructure'
+    | '/_authenticated/dashboard/settings_/permalinks'
     | '/_authenticated/dashboard/settings_/providers'
     | '/_authenticated/dashboard/settings_/security'
     | '/_authenticated/dashboard/settings_/seo'
@@ -3899,6 +3912,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardSettingsInfrastructureRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/settings_/permalinks': {
+      id: '/_authenticated/dashboard/settings_/permalinks'
+      path: '/settings/permalinks'
+      fullPath: '/dashboard/settings/permalinks'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsPermalinksRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/settings_/providers': {
       id: '/_authenticated/dashboard/settings_/providers'
       path: '/settings/providers'
@@ -4286,6 +4306,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardSettingsDomainsRoute: typeof AuthenticatedDashboardSettingsDomainsRoute
   AuthenticatedDashboardSettingsEmailRoute: typeof AuthenticatedDashboardSettingsEmailRoute
   AuthenticatedDashboardSettingsInfrastructureRoute: typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  AuthenticatedDashboardSettingsPermalinksRoute: typeof AuthenticatedDashboardSettingsPermalinksRoute
   AuthenticatedDashboardSettingsProvidersRoute: typeof AuthenticatedDashboardSettingsProvidersRoute
   AuthenticatedDashboardSettingsSecurityRoute: typeof AuthenticatedDashboardSettingsSecurityRoute
   AuthenticatedDashboardSettingsSeoRoute: typeof AuthenticatedDashboardSettingsSeoRoute
@@ -4414,6 +4435,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardSettingsEmailRoute,
     AuthenticatedDashboardSettingsInfrastructureRoute:
       AuthenticatedDashboardSettingsInfrastructureRoute,
+    AuthenticatedDashboardSettingsPermalinksRoute:
+      AuthenticatedDashboardSettingsPermalinksRoute,
     AuthenticatedDashboardSettingsProvidersRoute:
       AuthenticatedDashboardSettingsProvidersRoute,
     AuthenticatedDashboardSettingsSecurityRoute:
