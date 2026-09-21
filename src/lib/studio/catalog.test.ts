@@ -3,9 +3,9 @@ import { WIDGET_BY_KEY, newWidgetNode } from "./catalog";
 import { contentControls } from "./controls";
 
 /**
- * Ported theme widgets (faq, marquee, countdown, banner, trust_bar,
- * announcement_bar): every control key must exist in the widget defaults,
- * otherwise the settings panel edits a key the node never carries.
+ * Ported theme widgets: every control key must exist in the widget
+ * defaults, otherwise the settings panel edits a key the node never
+ * carries. Batch 1 (engagement) + batch 2 (heritage + hero).
  */
 const PORTED = [
   "faq",
@@ -14,6 +14,17 @@ const PORTED = [
   "banner",
   "trust_bar",
   "announcement_bar",
+  "heritage_story",
+  "editorial_banner",
+  "editorial_hero",
+  "lookbook",
+  "hero",
+  "textile_showcase",
+  "department_grid",
+  "story_trunk",
+  "marquee_strip",
+  "hero_carousel",
+  "testimonial_carousel",
 ] as const;
 
 describe("ported theme widgets", () => {

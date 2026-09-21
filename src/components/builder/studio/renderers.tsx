@@ -5,7 +5,12 @@
  * renderer is presentational: it reads resolved settings and paints tokens, so
  * nothing here knows about selection, drag state or the panels.
  */
-import { useEffect, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 // NOTE (perf batch 2): named imports only — the previous `import * as Icons`
 // with a dynamic registry key defeated tree-shaking and pulled all of
 // lucide-react (~1.1MB) into the builder chunk. The set below covers every
@@ -760,9 +765,418 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         />
       );
 
+    // Heritage + hero batch ported from the theme engine: same props, same
+    // look, so merchants author once and see it everywhere.
+    case "heritage_story": {
+      const headline = str(s, "headline");
+      const body = str(s, "body");
+      if (!headline && !body)
+        return <Placeholder label="Add a headline" />;
+      const image = str(s, "image");
+      const imageBlock = (
+        <div className="relative overflow-hidden rounded-fq-sm">
+          <div className="flex aspect-[4/5] items-center justify-center bg-gradient-to-br from-amber-900/15 to-rose-900/10">
+            {image ? (
+              <img src={image} alt={headline} className="h-full w-full object-cover" loading="lazy" />
+            ) : (
+              <span aria-hidden="true" className="text-[6rem] font-bold text-foreground/10 select-none">
+                {headline?.charAt(0) || "H"}
+              </span>
+            )}
+          </div>
+        </div>
+      );
+      const textBlock = (
+        <div className="flex flex-col justify-center">
+          <h3 className="text-2xl font-bold leading-tight sm:text-3xl">{headline}</h3>
+          {body && <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">{body}</p>}
+          {str(s, "ctaLabel") && (
+            <p className="mt-6">
+              <a href={str(s, "ctaUrl") || "#"} className="inline-flex min-h-11 items-center rounded-fq-sm bg-primary px-6 text-sm font-semibold text-primary-foreground">
+                {str(s, "ctaLabel")}
+              </a>
+            </p>
+          )}
+        </div>
+      );
+      const layout = str(s, "layout", "image-left");
+      return (
+        <section className="grid items-center gap-8 md:grid-cols-2">
+          {layout === "image-right" ? (<>{textBlock}{imageBlock}</>) : (<>{imageBlock}{textBlock}</>)}
+        </section>
+      );
+    }
+
+    case "editorial_banner": {
+      const headline = str(s, "headline");
+      if (!headline) return <Placeholder label="Add a headline" />;
+      const image = str(s, "image");
+      return (
+        <section className="relative overflow-hidden rounded-fq-sm">
+          <div className="relative aspect-[3/1] min-h-[200px] w-full">
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-amber-900/20 via-rose-900/10 to-amber-800/20">
+              <span aria-hidden="true" className="text-[10rem] font-bold text-foreground/10 select-none">
+                {headline?.charAt(0) || "E"}
+              </span>
+            </div>
+            {image && (
+              <img src={image} alt={headline} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+            )}
+            <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-foreground/70 via-foreground/30 to-transparent p-6 text-background">
+              <h3 className="text-2xl font-bold sm:text-3xl">{headline}</h3>
+              {str(s, "subhead") && <p className="mt-1 text-sm opacity-90">{str(s, "subhead")}</p>}
+              {str(s, "ctaLabel") && (
+                <p className="mt-3">
+                  <a href={str(s, "ctaUrl") || "#"} className="inline-flex min-h-10 items-center rounded-fq-sm bg-card px-5 text-sm font-semibold text-card-foreground">
+                    {str(s, "ctaLabel")}
+                  </a>
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    case "editorial_hero": {
+      const image = str(s, "imageUrl");
+      const split = str(s, "layout", "stacked") === "split";
+      const copy = (
+        <div className={split ? "" : "rounded-fq-lg border border-border bg-card p-6 shadow-fq-sm"}>
+          {str(s, "eyebrow") && (
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{str(s, "eyebrow")}</p>
+          )}
+          <h3 className="mt-1 text-3xl font-semibold leading-tight md:text-5xl">{str(s, "heading", "The new season")}</h3>
+          {str(s, "body") && <p className="mt-3 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>}
+          {str(s, "ctaLabel") && (
+            <p className="mt-4">
+              <a href={str(s, "ctaHref") || "#"} className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-5 text-sm font-semibold text-primary-foreground">
+                {str(s, "ctaLabel")}
+              </a>
+            </p>
+          )}
+        </div>
+      );
+      const visual = (
+        <div className="relative overflow-hidden rounded-fq-lg">
+          <div className="flex aspect-[4/3] items-center justify-center bg-gradient-to-br from-amber-900/15 to-rose-900/10">
+            {image ? (
+              <img src={image} alt={str(s, "heading")} className="h-full w-full object-cover" loading="lazy" />
+            ) : (
+              <span aria-hidden="true" className="text-[5rem] font-bold text-foreground/10 select-none">E</span>
+            )}
+          </div>
+          {s.scrim !== false && image && (
+            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+          )}
+        </div>
+      );
+      return split ? (
+        <section className="grid items-center gap-6 md:grid-cols-2">{visual}{copy}</section>
+      ) : (
+        <section className="space-y-6">{visual}{copy}</section>
+      );
+    }
+
+    case "lookbook": {
+      const tiles = [1, 2, 3, 4]
+        .map((n) => ({
+          src: str(s, `i${n}Image`),
+          alt: str(s, `i${n}Alt`),
+          href: str(s, `i${n}Href`),
+        }))
+        .filter((tile) => tile.src);
+      if (tiles.length === 0) return <Placeholder label="Add a lookbook image" />;
+      const offset = s.offset !== false;
+      return (
+        <section>
+          {str(s, "heading") && <h3 className="mb-4 text-lg font-semibold">{str(s, "heading")}</h3>}
+          <div className="grid gap-4 sm:grid-cols-2">
+            {tiles.map((tile, index) => {
+              const body = tile.src ? (
+                <img src={tile.src} alt={tile.alt} loading="lazy" className={`w-full rounded-fq-md object-cover ${index % 2 === 0 ? "aspect-[3/4]" : "aspect-square"}`} />
+              ) : null;
+              return (
+                <div key={index} className={offset && index % 2 === 1 ? "sm:mt-12" : undefined}>
+                  {tile.href ? <a href={tile.href}>{body}</a> : body}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      );
+    }
+
+    case "hero": {
+      const slides = [
+        { heading: str(s, "heading"), image: str(s, "image") },
+        { heading: str(s, "s2Heading"), image: str(s, "s2Image") },
+        { heading: str(s, "s3Heading"), image: str(s, "s3Image") },
+      ].filter((slide, index) => index === 0 || slide.heading || slide.image);
+      const [index, setIndex] = useState(0);
+      const active = slides[Math.min(index, slides.length - 1)]!;
+      const center = str(s, "align", "left") === "center";
+      return (
+        <section className={`overflow-hidden rounded-fq-lg border border-border bg-info-soft ${center ? "text-center" : ""}`}>
+          {active.image && (
+            <img src={active.image} alt={active.heading} loading="lazy" className="aspect-[21/9] w-full object-cover" />
+          )}
+          <div className="p-8">
+            <h3 className="font-bangla-display text-3xl font-bold sm:text-4xl">{active.heading || "Welcome to our store"}</h3>
+            {index === 0 && str(s, "subheading") && (
+              <p className="mt-2 max-w-xl text-muted-foreground">{str(s, "subheading")}</p>
+            )}
+            {str(s, "ctaLabel") && (
+              <p className="mt-4">
+                <a href={str(s, "ctaHref") || "#"} className="inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+                  {str(s, "ctaLabel")}
+                </a>
+              </p>
+            )}
+            {slides.length > 1 && (
+              <div className="mt-4 flex gap-2" role="group" aria-label="Slides">
+                {slides.map((slide, i) => (
+                  <button key={i} type="button" onClick={() => setIndex(i)} aria-current={i === index} aria-label={`Slide ${i + 1}`}
+                    className={`h-11 w-11 rounded-fq-md border border-border text-xs tabular-nums ${i === index ? "bg-primary text-primary-foreground" : "bg-card"}`}>
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    case "textile_showcase": {
+      const items = rows(s, "items");
+      if (items.length === 0) return <Placeholder label="Add showcase items" />;
+      return (
+        <section>
+          {str(s, "headline") && <h3 className="mb-6 text-2xl font-bold">{str(s, "headline")}</h3>}
+          <div className="grid gap-6 sm:grid-cols-2">
+            {items.map((item, i) => (
+              <div key={i} className="overflow-hidden rounded-fq-sm border border-border bg-card">
+                <div className="flex aspect-[4/3] items-center justify-center bg-gradient-to-br from-amber-100 to-rose-50">
+                  {rstr(item, "image") ? (
+                    <img src={rstr(item, "image")} alt={rstr(item, "title")} className="h-full w-full object-cover" loading="lazy" />
+                  ) : (
+                    <span aria-hidden="true" className="text-5xl font-bold text-foreground/10 select-none">
+                      {rstr(item, "title")?.charAt(0) || "T"}
+                    </span>
+                  )}
+                </div>
+                <div className="p-4">
+                  <p className="text-sm font-medium">{rstr(item, "title")}</p>
+                  {rstr(item, "subtitle") && (
+                    <p className="mt-1 text-xs text-muted-foreground">{rstr(item, "subtitle")}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "department_grid": {
+      const departments = rows(s, "departments");
+      if (departments.length === 0) return <Placeholder label="Add departments" />;
+      const columns = num(s, "columns", 4, device);
+      const gridCols =
+        columns <= 2 ? "sm:grid-cols-2" : columns <= 3 ? "sm:grid-cols-3" : columns <= 4 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3 lg:grid-cols-5";
+      return (
+        <section>
+          <div className={`grid gap-4 ${gridCols}`}>
+            {departments.map((dept, i) => {
+              const title = rstr(dept, "title") || rstr(dept, "name");
+              return (
+                <a key={i} href={rstr(dept, "href") || "#"} className="group relative overflow-hidden rounded-fq-sm border border-border bg-card">
+                  <div className="flex aspect-[3/4] items-center justify-center bg-gradient-to-br from-amber-100 to-rose-50">
+                    {rstr(dept, "image") ? (
+                      <img src={rstr(dept, "image")} alt={title} className="h-full w-full object-cover" loading="lazy" />
+                    ) : (
+                      <span aria-hidden="true" className="text-4xl font-bold text-foreground/15 select-none">
+                        {title?.charAt(0) || "D"}
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <p className="text-sm font-medium">{title}</p>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      );
+    }
+
+    case "story_trunk": {
+      const items = rows(s, "items");
+      if (items.length === 0) return <Placeholder label="Add timeline items" />;
+      return (
+        <section>
+          {str(s, "headline") && <h3 className="mb-6 text-2xl font-bold">{str(s, "headline")}</h3>}
+          <ol className="relative space-y-8 border-l-2 border-border pl-6">
+            {items.map((item, i) => (
+              <li key={i} className="relative">
+                <span aria-hidden="true" className="absolute -left-[31px] top-1 size-3 rounded-full bg-primary" />
+                {rstr(item, "year") && (
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{rstr(item, "year")}</p>
+                )}
+                <p className="mt-1 text-base font-semibold">{rstr(item, "title")}</p>
+                {rstr(item, "body") && <p className="mt-1 text-sm text-muted-foreground">{rstr(item, "body")}</p>}
+                {rstr(item, "image") && (
+                  <img src={rstr(item, "image")} alt={rstr(item, "title")} loading="lazy" className="mt-3 max-w-sm rounded-fq-md object-cover" />
+                )}
+              </li>
+            ))}
+          </ol>
+        </section>
+      );
+    }
+
+    case "marquee_strip": {
+      const items = rows(s, "items");
+      if (items.length === 0) return <Placeholder label="Add strip items" />;
+      const speed = str(s, "speed", "normal");
+      const duration = speed === "slow" ? "40s" : speed === "fast" ? "15s" : "25s";
+      const content = items
+        .map((item) => `${rstr(item, "icon") ? rstr(item, "icon") + " " : ""}${rstr(item, "text")}`)
+        .join("  •  ");
+      return (
+        <div className="group overflow-hidden rounded-fq-md border border-border bg-card">
+          <p className="whitespace-nowrap px-4 py-2 text-sm motion-safe:animate-[fq-marquee_var(--fq-marquee)_linear_infinite] group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]"
+            style={{ ["--fq-marquee" as string]: duration }}>
+            {content}
+          </p>
+        </div>
+      );
+    }
+
+    case "hero_carousel": {
+      const slides = rows(s, "slides");
+      if (slides.length === 0) return <Placeholder label="Add carousel slides" />;
+      return (
+        <StudioCarousel
+          count={slides.length}
+          autoAdvanceMs={num(s, "autoAdvanceMs", 5000, device)}
+          render={(index) => {
+            const slide = slides[index]!;
+            return (
+              <div className="relative aspect-[16/9] w-full sm:aspect-[21/9]">
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-amber-900/20 via-rose-900/10 to-amber-800/20">
+                  <span aria-hidden="true" className="text-[8rem] font-bold text-foreground/10 select-none">
+                    {rstr(slide, "headline")?.charAt(0) || "H"}
+                  </span>
+                </div>
+                {rstr(slide, "image") && (
+                  <img src={rstr(slide, "image")} alt={rstr(slide, "headline")} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                )}
+                <div className="absolute inset-0 flex flex-col items-start justify-end bg-gradient-to-t from-black/60 via-black/20 to-transparent p-6 sm:p-12">
+                  <div className="max-w-2xl">
+                    <p className="text-3xl font-bold leading-tight text-primary-foreground sm:text-5xl">{rstr(slide, "headline")}</p>
+                    {rstr(slide, "subhead") && (
+                      <p className="mt-3 max-w-lg text-base text-primary-foreground/80 sm:text-lg">{rstr(slide, "subhead")}</p>
+                    )}
+                    {rstr(slide, "ctaLabel") && (
+                      <a href={rstr(slide, "ctaUrl") || "#"} className="mt-6 inline-flex min-h-12 items-center rounded-fq-sm bg-card px-6 text-sm font-semibold text-card-foreground">
+                        {rstr(slide, "ctaLabel")}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          }}
+        />
+      );
+    }
+
+    case "testimonial_carousel": {
+      const testimonials = rows(s, "testimonials");
+      if (testimonials.length === 0) return <Placeholder label="Add testimonials" />;
+      return (
+        <StudioCarousel
+          count={testimonials.length}
+          autoAdvanceMs={num(s, "autoAdvanceMs", 6000, device)}
+          render={(index) => {
+            const t = testimonials[index]!;
+            return (
+              <figure className="rounded-fq-lg border border-border bg-card p-6 text-center">
+                <blockquote className="text-base italic leading-relaxed">“{rstr(t, "quote") || "Share a customer story."}”</blockquote>
+                <figcaption className="mt-3 flex items-center justify-center gap-2 text-sm">
+                  {rstr(t, "avatar") && (
+                    <img src={rstr(t, "avatar")} alt="" loading="lazy" className="size-8 rounded-full object-cover" />
+                  )}
+                  <span>
+                    <strong className="font-semibold">{rstr(t, "author") || "Customer"}</strong>
+                    {rstr(t, "role") && <span className="text-muted-foreground"> · {rstr(t, "role")}</span>}
+                  </span>
+                </figcaption>
+              </figure>
+            );
+          }}
+        />
+      );
+    }
+
     default:
       return <Placeholder label={node.el} />;
   }
+}
+
+/** Row-string reader for repeater items (mirrors str() for row maps). */
+function rstr(row: NodeSettings, key: string, fallback = ""): string {
+  const value = row[key];
+  return typeof value === "string" && value !== "" ? value : fallback;
+}
+
+/** Shared rotating carousel shell: dots, hover pause, auto-advance. */
+function StudioCarousel({
+  count,
+  autoAdvanceMs,
+  render,
+}: {
+  count: number;
+  autoAdvanceMs: number;
+  render: (index: number) => ReactNode;
+}) {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const safeMs = Math.min(15000, Math.max(1000, autoAdvanceMs));
+  useEffect(() => {
+    if (paused || count <= 1) return;
+    const id = window.setInterval(
+      () => setCurrent((i) => (i + 1) % count),
+      safeMs,
+    );
+    return () => window.clearInterval(id);
+  }, [paused, count, safeMs]);
+  const index = Math.min(current, count - 1);
+  return (
+    <section
+      className="relative overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {render(index)}
+      {count > 1 && (
+        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+          {Array.from({ length: count }, (_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setCurrent(i)}
+              aria-label={`Slide ${i + 1}`}
+              className={`h-2 rounded-full transition ${i === index ? "w-6 bg-primary-foreground" : "w-2 bg-primary-foreground/50"}`}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+  );
 }
 
 const STUDIO_TRUST_ICON: Record<string, string> = {
