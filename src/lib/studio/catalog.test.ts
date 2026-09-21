@@ -221,6 +221,7 @@ describe("ported theme widgets", () => {
       q1: "",
       a1: "",
     });
+    expect(WIDGET_BY_KEY.faq.defaults.items).toEqual([]);
     expect(WIDGET_BY_KEY.marquee.defaults).toMatchObject({
       text: "New arrivals every week",
       speed: 30,

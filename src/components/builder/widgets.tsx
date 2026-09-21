@@ -1023,10 +1023,23 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
 
   // Phase 1.3: one Disclosure primitive, so FAQ, spec groups and size guides
   // all share the same keyboard and ARIA behaviour.
-  faq: ({ str, Heading }) => {
-    const rows = [1, 2, 3]
-      .map((i) => ({ q: str(`q${i}`), a: str(`a${i}`) }))
-      .filter((row) => row.q);
+  faq: ({ str, Heading, section }) => {
+    // Repeater-first: studio `items` rows win when present, scalar q1/a1…
+    // pairs remain as the fallback for theme-authored sections.
+    const itemRows = Array.isArray(section.props.items)
+      ? section.props.items
+          .map((row) => ({
+            q: typeof row.question === "string" ? row.question : "",
+            a: typeof row.answer === "string" ? row.answer : "",
+          }))
+          .filter((row) => row.q)
+      : [];
+    const rows =
+      itemRows.length > 0
+        ? itemRows
+        : [1, 2, 3]
+            .map((i) => ({ q: str(`q${i}`), a: str(`a${i}`) }))
+            .filter((row) => row.q);
     if (!rows.length) return null;
     return (
       <section className="rounded-fq-lg border border-border bg-card p-6">

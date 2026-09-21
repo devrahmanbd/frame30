@@ -1504,22 +1504,29 @@ const CONTENT: Record<string, Control[]> = {
       tab: "content",
       section: "FAQ",
     }),
-    ...[1, 2, 3].flatMap((i) => [
-      c({
-        key: `q${i}`,
-        label: `Question ${i}`,
-        type: "text",
-        tab: "content",
-        section: `Item ${i}`,
-      }),
-      c({
-        key: `a${i}`,
-        label: `Answer ${i}`,
-        type: "textarea",
-        tab: "content",
-        section: `Item ${i}`,
-      }),
-    ]),
+    c({
+      key: "items",
+      label: "Questions",
+      type: "repeater",
+      tab: "content",
+      section: "FAQ",
+      fields: [
+        c({
+          key: "question",
+          label: "Question",
+          type: "text",
+          tab: "content",
+          section: "FAQ",
+        }),
+        c({
+          key: "answer",
+          label: "Answer",
+          type: "textarea",
+          tab: "content",
+          section: "FAQ",
+        }),
+      ],
+    }),
   ],
   marquee: [
     c({

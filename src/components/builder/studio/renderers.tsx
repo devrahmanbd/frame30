@@ -25,6 +25,7 @@ import {
   Check,
   ChevronDown,
   ChevronsUpDown,
+  CircleHelp,
   Clock,
   Code,
   Columns2,
@@ -99,6 +100,7 @@ const ICON_REGISTRY: Record<
   check: Check,
   chevrondown: ChevronDown,
   chevronsupdown: ChevronsUpDown,
+  circlehelp: CircleHelp,
   clock: Clock,
   code: Code,
   galleryhorizontal: GalleryHorizontal,
@@ -730,20 +732,29 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     // Ported from the theme engine (same props, same look): page builders
     // get the storefront vocabulary without the theme studio.
     case "faq": {
-      const rows = [1, 2, 3]
-        .map((i) => ({
-          q: str(s, `q${i}`),
-          a: str(s, `a${i}`),
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          q: String(row.question ?? ""),
+          a: String(row.answer ?? ""),
         }))
         .filter((row) => row.q);
-      if (rows.length === 0) return <Placeholder label="Add a question" />;
+      const list =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3]
+              .map((i) => ({
+                q: str(s, `q${i}`),
+                a: str(s, `a${i}`),
+              }))
+              .filter((row) => row.q);
+      if (list.length === 0) return <Placeholder label="Add a question" />;
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6">
           {str(s, "heading") && (
             <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
           )}
           <div className="divide-y divide-border">
-            {rows.map((row) => (
+            {list.map((row) => (
               <details key={row.q}>
                 <summary className="cursor-pointer py-2 text-sm font-medium">
                   {row.q}

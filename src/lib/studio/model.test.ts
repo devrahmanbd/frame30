@@ -133,3 +133,40 @@ describe("sectionsToStudioNodes", () => {
     expect(count).toBeLessThanOrEqual(13);
   });
 });
+
+describe("faq scalar-to-items migration", () => {
+  function faqDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "f1", el: "faq", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds items from scalar q/a pairs on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        faqDoc({ heading: "FAQ", q1: "Q1?", a1: "A1!", q2: "", a2: "", q3: "Q3?", a3: "" }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { question: "Q1?", answer: "A1!" },
+      { question: "Q3?", answer: "" },
+    ]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        faqDoc({
+          q1: "Old?",
+          a1: "Old.",
+          items: [{ question: "New?", answer: "New." }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ question: "New?", answer: "New." }]);
+  });
+});
