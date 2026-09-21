@@ -8,7 +8,7 @@
  * data so every section renders something visible.
  */
 import { useMemo, useState } from "react";
-import { Monitor, Smartphone, Tablet, X } from "lucide-react";
+import { Monitor, Smartphone, Tablet, X, Maximize2, Minimize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { StoreHeader } from "@/components/store/StoreHeader";
@@ -77,6 +77,7 @@ export function ThemePreviewFrame({
   const [template, setTemplate] = useState<TemplateKey>(
     initialTemplate ?? "index",
   );
+  const [fullscreen, setFullscreen] = useState(false);
   const [device, setDevice] =
     useState<(typeof DEVICES)[number]["id"]>("desktop");
 
@@ -100,6 +101,7 @@ export function ThemePreviewFrame({
       className="fixed inset-0 z-50 flex flex-col bg-background"
     >
       {/* ---- toolbar ---- */}
+      {!fullscreen && (
       <header className="flex items-center gap-3 border-b border-border bg-card px-4 py-2">
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold text-foreground">
@@ -160,6 +162,16 @@ export function ThemePreviewFrame({
 
         <button
           type="button"
+          aria-label="Toggle fullscreen preview"
+          aria-pressed={fullscreen}
+          onClick={() => setFullscreen((v) => !v)}
+          className="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <Maximize2 className="size-4" aria-hidden />
+        </button>
+
+        <button
+          type="button"
           aria-label="Close preview"
           onClick={onClose}
           className="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
@@ -167,6 +179,31 @@ export function ThemePreviewFrame({
           <X className="size-4" aria-hidden />
         </button>
       </header>
+      )}
+
+      {/* ---- fullscreen exit ---- */}
+      {fullscreen && (
+        <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-end p-3">
+          <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-border bg-card/90 p-1 shadow-md backdrop-blur">
+            <button
+              type="button"
+              aria-label="Exit fullscreen preview"
+              onClick={() => setFullscreen(false)}
+              className="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              <Minimize2 className="size-4" aria-hidden />
+            </button>
+            <button
+              type="button"
+              aria-label="Close preview"
+              onClick={onClose}
+              className="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            >
+              <X className="size-4" aria-hidden />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ---- responsive CSS injected once ---- */}
       {responsiveCss && (
@@ -237,6 +274,7 @@ export function ThemePreviewFrame({
       </div>
 
       {/* ---- mobile template picker (stacked below toolbar on small screens) ---- */}
+      {!fullscreen && (
       <nav
         aria-label="Template"
         className="flex gap-1 overflow-x-auto border-t border-border bg-card px-4 py-2 md:hidden"
@@ -258,6 +296,7 @@ export function ThemePreviewFrame({
           </button>
         ))}
       </nav>
+      )}
     </div>
   );
 }

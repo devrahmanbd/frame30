@@ -25,8 +25,23 @@ describe("previewDemoMap (clothing-heritage)", () => {
     for (const row of rows.slice(0, 20)) {
       expect(row.title).toBeTruthy();
       expect(row.href ?? "").toMatch(/^\/(p|c|search)/);
-      expect(row.priceMinor ?? 0).toBeGreaterThan(0);
-      expect(row.imageUrl ?? "").toContain("/api/public/ph/");
+      // Collection rows (taxonomy) carry no price — only products do.
+      if ((row.href ?? "").startsWith("/p/")) {
+        expect(row.priceMinor ?? 0).toBeGreaterThan(0);
+        expect(row.imageUrl ?? "").toContain("/api/public/ph/");
+      }
+    }
+  });
+
+  it("taxonomy requests resolve to collections, not products", () => {
+    const map = previewDemoMap(
+      { requests: [{ key: "k", source: "taxonomy", params: { limit: 6 } }], byNode: {} },
+      "clothing-heritage",
+    );
+    const rows = map["k"] ?? [];
+    expect(rows.length).toBeGreaterThan(0);
+    for (const row of rows) {
+      expect(row.href ?? "").toMatch(/^\/c\//);
     }
   });
 

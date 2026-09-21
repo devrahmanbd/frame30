@@ -35,7 +35,27 @@ export function previewDemoMap(
     reviewCount: 40 + ((i * 37) % 120),
   }));
   const map: WidgetDataMap = {};
+  // Taxonomy-sourced widgets (menus, department strips) get collections,
+  // not products — otherwise a menubar renders product names.
+  const taxRows: WidgetRow[] = catalog.collections.map((c) => ({
+    id: `demo-${c.slug}`,
+    title: c.name,
+    href: `/c/${c.slug}`,
+    subtitle: c.description,
+    priceMinor: 0,
+    currency: "BDT",
+    inStock: true,
+  }));
   for (const req of bundle.requests) {
+    if (req.source === "taxonomy") {
+      const rawLimit = (req.params as Record<string, unknown>)["limit"];
+      const limit =
+        typeof rawLimit === "number" && rawLimit > 0
+          ? Math.min(rawLimit, taxRows.length)
+          : Math.min(8, taxRows.length);
+      map[req.key] = taxRows.slice(0, limit);
+      continue;
+    }
     const rawLimit = (req.params as Record<string, unknown>)["limit"];
     const limit =
       typeof rawLimit === "number" && rawLimit > 0
