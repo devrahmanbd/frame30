@@ -62,9 +62,13 @@ verify on production; push to GitHub.
   repeater with slide-1 fold-in seeding, per-slide CTA, first-slide
   subheading, pager/eager unchanged. Fixed own duplicate-keywords slip
   again (read-before-edit rule re-learned).
-- [ ] Repeater conversions next: 7 footer_sitemap, 8 spec_table (same
-  pattern: test-first, seed-on-load, dual-read theme + SEO).
-  Defer: size_guide (2-D), quiz, shoppable pins, order/checkout steps.
+- [x] Repeaters 7-8/8 footer_sitemap + spec_table (`f512bc1`, TDD +
+  swarm, 412 tests): Columns repeater (textarea links, no nesting),
+  tolerant comma+newline parser (fixes newline-seed blob rendering),
+  Rows repeater with resolved>items>scalars precedence. 8/8 DONE.
+- [ ] Deferred conversions (needs design, not porting): size_guide
+  (2-D matrix), quiz (heterogeneous steps), shoppable pins (canvas
+  UX), order/checkout steps (fixed pipelines, no author value).
 - [ ] Layers dock follow-ups (filter exists; dock/undock toggle).
 - [ ] Global-blocks save-from-page reverse conversion.
 - [ ] Homepage render proof on a custom domain (needs published page).

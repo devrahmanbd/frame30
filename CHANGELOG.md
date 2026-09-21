@@ -186,6 +186,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   when any slide has content).
 - Contract 408/408, studio+hero-adjacent 464/464, tsc clean on ranges.
 
+## [2026-09-21] — footer_sitemap + spec_table repeaters (`f512bc1`)
+- TDD + swarm: one spec+audit agent per widget, both landed.
+- footer: {title, links:textarea} rows (nested repeater unproven in all
+  20 existing blocks); tolerant parser fixes newline blueprint seeds.
+- spec: resolved > items > scalars preserves the resolved-wins
+  contract; tsc caught missing SpecPair.unit on item rows.
+- Icon registry gains FolderTree + Table. Repeaters 8/8 complete.
+- Contract 412/412, 463 incl. adjacent suites, tsc clean on ranges.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.
