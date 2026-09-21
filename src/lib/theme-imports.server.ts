@@ -329,6 +329,7 @@ export async function importThemeMedia(
   merchantId: string,
   themeKey: string,
   overwrite = false,
+  alreadyPurged = false,
 ): Promise<ImportResult> {
   if (overwrite) {
     const pre = await importPreflight(db, merchantId, themeKey);
@@ -337,7 +338,7 @@ export async function importThemeMedia(
       merchantId,
       pre.conflicts.filter((c) => c.kind === "media"),
     );
-    await purgeExistingDemo(db, merchantId);
+    if (!alreadyPurged) await purgeExistingDemo(db, merchantId);
   }
   assertTenantId(merchantId, "importThemeMedia");
   await rateLimit("theme.import_media", merchantId);
@@ -383,6 +384,7 @@ export async function importThemeProducts(
   themeKey: string,
   catalog: Record<string, unknown>,
   overwrite = false,
+  alreadyPurged = false,
 ): Promise<ImportResult> {
   if (overwrite) {
     const pre = await importPreflight(db, merchantId, themeKey);
@@ -391,7 +393,7 @@ export async function importThemeProducts(
       merchantId,
       pre.conflicts.filter((c) => c.kind === "products" || c.kind === "collections"),
     );
-    await purgeExistingDemo(db, merchantId);
+    if (!alreadyPurged) await purgeExistingDemo(db, merchantId);
   }
   assertTenantId(merchantId, "importThemeProducts");
   await rateLimit("theme.import_products", merchantId);
@@ -436,6 +438,7 @@ export async function importThemePosts(
   merchantId: string,
   themeKey: string,
   overwrite = false,
+  alreadyPurged = false,
 ): Promise<ImportResult> {
   if (overwrite) {
     const pre = await importPreflight(db, merchantId, themeKey);
@@ -444,7 +447,7 @@ export async function importThemePosts(
       merchantId,
       pre.conflicts.filter((c) => c.kind === "posts" || c.kind === "pages"),
     );
-    await purgeExistingDemo(db, merchantId);
+    if (!alreadyPurged) await purgeExistingDemo(db, merchantId);
   }
   assertTenantId(merchantId, "importThemePosts");
   await rateLimit("theme.import_posts", merchantId);
@@ -501,16 +504,18 @@ export async function importThemeAll(
     const { demoCatalogFor } = await import("./demo-catalog");
     const catalog = demoCatalogFor(themeKey);
 
+    if (overwrite) await purgeExistingDemo(db, merchantId);
     const slides = await importThemeSlides(db, merchantId, themeKey);
-    const media = await importThemeMedia(db, merchantId, themeKey, overwrite);
+    const media = await importThemeMedia(db, merchantId, themeKey, overwrite, true);
     const products = await importThemeProducts(
       db,
       merchantId,
       themeKey,
       catalog as unknown as Record<string, unknown>,
       overwrite,
+      true,
     );
-    const posts = await importThemePosts(db, merchantId, themeKey, overwrite);
+    const posts = await importThemePosts(db, merchantId, themeKey, overwrite, true);
 
     const totalImported =
       (slides.imported ? 1 : 0) +
