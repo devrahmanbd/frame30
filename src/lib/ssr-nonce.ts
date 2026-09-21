@@ -15,15 +15,16 @@ export const getCurrentNonce = () => _nonce;
  * identical value or React flags #418 (nonce="abc" vs absent mismatches):
  * - server: the per-request store (real nonce, or undefined when unset —
  *   empty string would render as nonce="" and mismatch);
- * - client: the `<meta name="csp-nonce">` tag the server injects alongside
- *   nonce-bearing responses (module scripts run deferred, so the DOM is
- *   parsed when this evaluates).
+ * - client: the csp-nonce meta tag the server injects alongside
+ *   nonce-bearing responses — TanStack emits property="csp-nonce", our
+ *   server gate emits name="csp-nonce"; accept either (module scripts run
+ *   deferred, so the DOM is parsed when this evaluates).
  */
 export const currentNonce = (): string | undefined => {
   if (typeof window === "undefined") return getCurrentNonce() || undefined;
   try {
     const content = document
-      .querySelector('meta[name="csp-nonce"]')
+      .querySelector('meta[name="csp-nonce"], meta[property="csp-nonce"]')
       ?.getAttribute("content")
       ?.trim();
     return content || undefined;
