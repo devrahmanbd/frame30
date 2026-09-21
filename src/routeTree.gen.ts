@@ -31,6 +31,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as RootRouteImport } from './routes/root'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StatusRouteImport } from './routes/status'
@@ -39,6 +40,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as CCollectionSlugRouteImport } from './routes/c.$collectionSlug'
 import { Route as DevBandsRouteImport } from './routes/dev.bands'
 import { Route as DocsIndexRouteImport } from './routes/docs.index'
 import { Route as DocsSitemapDotxmlRouteImport } from './routes/docs.sitemap[.]xml'
@@ -47,6 +49,7 @@ import { Route as LegalIndexRouteImport } from './routes/legal.index'
 import { Route as LegalDocRouteImport } from './routes/legal.$doc'
 import { Route as NewsletterVerifyRouteImport } from './routes/newsletter.verify'
 import { Route as PProductSlugRouteImport } from './routes/p.$productSlug'
+import { Route as PagesPageSlugRouteImport } from './routes/pages.$pageSlug'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as RootIndexRouteImport } from './routes/root/index'
 import { Route as RootAccessRouteImport } from './routes/root/access'
@@ -323,6 +326,11 @@ const RootRoute = RootRouteImport.update({
   path: '/root',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SecurityRoute = SecurityRouteImport.update({
   id: '/security',
   path: '/security',
@@ -363,6 +371,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CCollectionSlugRoute = CCollectionSlugRouteImport.update({
+  id: '/c/$collectionSlug',
+  path: '/c/$collectionSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevBandsRoute = DevBandsRouteImport.update({
   id: '/dev/bands',
   path: '/dev/bands',
@@ -401,6 +414,11 @@ const NewsletterVerifyRoute = NewsletterVerifyRouteImport.update({
 const PProductSlugRoute = PProductSlugRouteImport.update({
   id: '/p/$productSlug',
   path: '/p/$productSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PagesPageSlugRoute = PagesPageSlugRouteImport.update({
+  id: '/pages/$pageSlug',
+  path: '/pages/$pageSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
@@ -1354,6 +1372,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/root': typeof RootRouteWithChildren
+  '/search': typeof SearchRoute
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/status': typeof StatusRoute
@@ -1361,12 +1380,14 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/c/$collectionSlug': typeof CCollectionSlugRoute
   '/dev/bands': typeof DevBandsRoute
   '/docs/sitemap.xml': typeof DocsSitemapDotxmlRoute
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
   '/p/$productSlug': typeof PProductSlugRoute
+  '/pages/$pageSlug': typeof PagesPageSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -1558,18 +1579,21 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/status': typeof StatusRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/c/$collectionSlug': typeof CCollectionSlugRoute
   '/dev/bands': typeof DevBandsRoute
   '/docs/sitemap.xml': typeof DocsSitemapDotxmlRoute
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
   '/p/$productSlug': typeof PProductSlugRoute
+  '/pages/$pageSlug': typeof PagesPageSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -1764,6 +1788,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/root': typeof RootRouteWithChildren
+  '/search': typeof SearchRoute
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/status': typeof StatusRoute
@@ -1771,12 +1796,14 @@ export interface FileRoutesById {
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/c/$collectionSlug': typeof CCollectionSlugRoute
   '/dev/bands': typeof DevBandsRoute
   '/docs/sitemap.xml': typeof DocsSitemapDotxmlRoute
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
   '/p/$productSlug': typeof PProductSlugRoute
+  '/pages/$pageSlug': typeof PagesPageSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -1971,6 +1998,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/robots.txt'
     | '/root'
+    | '/search'
     | '/security'
     | '/sitemap.xml'
     | '/status'
@@ -1978,12 +2006,14 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/onboarding'
     | '/blog/$slug'
+    | '/c/$collectionSlug'
     | '/dev/bands'
     | '/docs/sitemap.xml'
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
     | '/p/$productSlug'
+    | '/pages/$pageSlug'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2175,18 +2205,21 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reset-password'
     | '/robots.txt'
+    | '/search'
     | '/security'
     | '/sitemap.xml'
     | '/status'
     | '/unsubscribe'
     | '/onboarding'
     | '/blog/$slug'
+    | '/c/$collectionSlug'
     | '/dev/bands'
     | '/docs/sitemap.xml'
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
     | '/p/$productSlug'
+    | '/pages/$pageSlug'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2380,6 +2413,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/robots.txt'
     | '/root'
+    | '/search'
     | '/security'
     | '/sitemap.xml'
     | '/status'
@@ -2387,12 +2421,14 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/onboarding'
     | '/blog/$slug'
+    | '/c/$collectionSlug'
     | '/dev/bands'
     | '/docs/sitemap.xml'
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
     | '/p/$productSlug'
+    | '/pages/$pageSlug'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2587,17 +2623,20 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   RootRoute: typeof RootRouteWithChildren
+  SearchRoute: typeof SearchRoute
   SecurityRoute: typeof SecurityRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StatusRoute: typeof StatusRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  CCollectionSlugRoute: typeof CCollectionSlugRoute
   DevBandsRoute: typeof DevBandsRoute
   DocsSitemapDotxmlRoute: typeof DocsSitemapDotxmlRoute
   InvoiceTokenRoute: typeof InvoiceTokenRoute
   LegalDocRoute: typeof LegalDocRoute
   NewsletterVerifyRoute: typeof NewsletterVerifyRoute
   PProductSlugRoute: typeof PProductSlugRoute
+  PagesPageSlugRoute: typeof PagesPageSlugRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   ThemePreviewKeyRoute: typeof ThemePreviewKeyRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -2821,6 +2860,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RootRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/security': {
       id: '/security'
       path: '/security'
@@ -2877,6 +2923,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/c/$collectionSlug': {
+      id: '/c/$collectionSlug'
+      path: '/c/$collectionSlug'
+      fullPath: '/c/$collectionSlug'
+      preLoaderRoute: typeof CCollectionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/bands': {
       id: '/dev/bands'
       path: '/dev/bands'
@@ -2931,6 +2984,13 @@ declare module '@tanstack/react-router' {
       path: '/p/$productSlug'
       fullPath: '/p/$productSlug'
       preLoaderRoute: typeof PProductSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pages/$pageSlug': {
+      id: '/pages/$pageSlug'
+      path: '/pages/$pageSlug'
+      fullPath: '/pages/$pageSlug'
+      preLoaderRoute: typeof PagesPageSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products/$productId': {
@@ -4418,17 +4478,20 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   RootRoute: RootRouteWithChildren,
+  SearchRoute: SearchRoute,
   SecurityRoute: SecurityRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StatusRoute: StatusRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   BlogSlugRoute: BlogSlugRoute,
+  CCollectionSlugRoute: CCollectionSlugRoute,
   DevBandsRoute: DevBandsRoute,
   DocsSitemapDotxmlRoute: DocsSitemapDotxmlRoute,
   InvoiceTokenRoute: InvoiceTokenRoute,
   LegalDocRoute: LegalDocRoute,
   NewsletterVerifyRoute: NewsletterVerifyRoute,
   PProductSlugRoute: PProductSlugRoute,
+  PagesPageSlugRoute: PagesPageSlugRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   ThemePreviewKeyRoute: ThemePreviewKeyRoute,
   BlogIndexRoute: BlogIndexRoute,
