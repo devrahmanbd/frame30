@@ -273,3 +273,12 @@ storefront serves on custom domains only.
   theme versions/schedules, maintenance, popups, forms, custom code.
 - Commerce/data-backed widgets stay placeholders in pages (no store
   context on canvas); same contract as existing studio commerce set.
+
+## Loop batch — anti-wipeout guard (Sept 21)
+- Root-caused a silent content wipe: stale/emptied builder canvas persisted
+  over authored content via autosave (akira test page went 2101 -> 168
+  chars). Repaired the row from validated bytes.
+- `isWipeoutSave` pure predicate in editor-doc + enforcement in
+  useEditorDoc.commit (covers autosave/save/publish): full-to-empty page
+  builder saves abort with a visible error. Unit-tested.
+- Verified guard string present in production bundle (`4c07bb6` live).
