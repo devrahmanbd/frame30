@@ -102,6 +102,18 @@ async function existingSlugs(
 }
 
 /**
+ * Overwrite means "replace the current demo with this theme's demo":
+ * conflicting real rows are deleted by removeImportConflicts, and any
+ * pre-existing is_demo rows are purged — otherwise the SQL idempotency
+ * guard (any is_demo product exists → noop) silently swallows the import
+ * whenever slugs don't collide (e.g. switching themes).
+ */
+async function purgeExistingDemo(db: Client, merchantId: string) {
+  const { purgeDemoContent } = await import("./themes.server");
+  await purgeDemoContent(db, merchantId);
+}
+
+/**
  * Conflict preflight: which existing rows (demo OR merchant-owned) would be
  * overwritten by a demo import because slugs/filenames match. Read-only.
  */
@@ -325,6 +337,7 @@ export async function importThemeMedia(
       merchantId,
       pre.conflicts.filter((c) => c.kind === "media"),
     );
+    await purgeExistingDemo(db, merchantId);
   }
   assertTenantId(merchantId, "importThemeMedia");
   await rateLimit("theme.import_media", merchantId);
@@ -378,6 +391,7 @@ export async function importThemeProducts(
       merchantId,
       pre.conflicts.filter((c) => c.kind === "products" || c.kind === "collections"),
     );
+    await purgeExistingDemo(db, merchantId);
   }
   assertTenantId(merchantId, "importThemeProducts");
   await rateLimit("theme.import_products", merchantId);
@@ -430,6 +444,7 @@ export async function importThemePosts(
       merchantId,
       pre.conflicts.filter((c) => c.kind === "posts" || c.kind === "pages"),
     );
+    await purgeExistingDemo(db, merchantId);
   }
   assertTenantId(merchantId, "importThemePosts");
   await rateLimit("theme.import_posts", merchantId);
