@@ -161,6 +161,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   canvas STUDIO_TRUST_ICON table unchanged, unknown keys still "•".
 - Contract 402/402, studio 416/416, chrome+seo adjacent 26/26.
 
+## [2026-09-21] — announcement_bar repeater conversion (`8c0ddd8`)
+- TDD + swarm: both recon agents landed (theme spec + 9-area audit).
+- Row shape is {text} objects, not strings: PropValue admits PropRow[]
+  only, matching every repeater precedent; porter's String(row) adapted.
+- No SEO/export touch: zero announcement consumers there; m1/m2/m3
+  export invisibility pre-exists and is unchanged.
+- Contract 404/404, studio+chrome 426/426, tsc clean on touched ranges.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.
