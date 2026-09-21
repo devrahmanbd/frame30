@@ -766,7 +766,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["heritage-handloom", "eid-festive"],
       tags: ["saree", "handloom", "cotton", "tangail"],
-      image_url: "/api/public/ph/tangail-taant-cotton-saree.svg",
+      image_url: "/api/public/ph/womens/tangail-taant-cotton-saree.svg",
       variants: [
         {
           name: "Crimson Red & Gold",
@@ -799,7 +799,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["heritage-handloom", "eid-festive"],
       tags: ["jamdani", "silk", "saree", "heritage"],
-      image_url: "/api/public/ph/dhakai-jamdani-silk-saree.svg",
+      image_url: "/api/public/ph/womens/dhakai-jamdani-silk-saree.svg",
       variants: [
         {
           name: "Emerald Green & Rose Gold",
@@ -825,7 +825,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["eid-festive", "artisan-essentials"],
       tags: ["panjabi", "silk", "rajshahi", "mens"],
-      image_url: "/api/public/ph/pure-silk-embroidered-panjabi.svg",
+      image_url: "/api/public/ph/mens/pure-silk-embroidered-panjabi.svg",
       variants: [
         {
           name: "Size 38 - Pearl Ivory",
@@ -879,7 +879,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "living",
       collections: ["nakshi-kantha", "heritage-handloom"],
       tags: ["nakshi kantha", "quilt", "living", "handcrafted"],
-      image_url: "/api/public/ph/handcrafted-nakshi-kantha-quilt.svg",
+      image_url: "/api/public/ph/living/handcrafted-nakshi-kantha-quilt.svg",
       variants: [
         {
           name: "Queen (88x96 in) - Tree of Life",
@@ -905,7 +905,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "jewelry",
       collections: ["eid-festive", "artisan-essentials"],
       tags: ["jewelry", "brass", "filigree", "earrings"],
-      image_url: "/api/public/ph/brass-filigree-chandbali-earrings.svg",
+      image_url: "/api/public/ph/jewelry/brass-filigree-chandbali-earrings.svg",
       variants: [
         {
           name: "Antique Gold & Pearl",
@@ -924,7 +924,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["eid-festive", "heritage-handloom"],
       tags: ["katan", "silk", "saree", "mirpur", "festive"],
-      image_url: "/api/public/ph/mirpur-katan-silk-saree.svg",
+      image_url: "/api/public/ph/womens/mirpur-katan-silk-saree.svg",
       variants: [
         {
           name: "Burgundy Maroon & Antique Gold",
@@ -950,7 +950,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["artisan-essentials", "heritage-handloom"],
       tags: ["khadi", "kurta", "cotton", "mens", "handloom"],
-      image_url: "/api/public/ph/comilla-handspun-khadi-kurta.svg",
+      image_url: "/api/public/ph/mens/comilla-handspun-khadi-kurta.svg",
       variants: [
         {
           name: "Size 38 - Natural Off-White",
@@ -990,7 +990,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["artisan-essentials", "eid-festive"],
       tags: ["muslin", "dupatta", "blockprint", "natural-dye", "womens"],
-      image_url: "/api/public/ph/artisan-block-print-muslin-dupatta.svg",
+      image_url: "/api/public/ph/womens/artisan-block-print-muslin-dupatta.svg",
       variants: [
         {
           name: "Indigo Blue & White",
@@ -1016,7 +1016,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["eid-festive", "heritage-handloom"],
       tags: ["silk", "salwar", "kameez", "festive", "womens"],
-      image_url: "/api/public/ph/embroidered-silk-salwar-suit.svg",
+      image_url: "/api/public/ph/womens/embroidered-silk-salwar-suit.svg",
       variants: [
         {
           name: "Size 36 - Ruby Crimson",
@@ -1056,7 +1056,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["eid-festive", "artisan-essentials"],
       tags: ["koti", "waistcoat", "tussar", "silk", "mens"],
-      image_url: "/api/public/ph/tussar-silk-festive-koti.svg",
+      image_url: "/api/public/ph/mens/tussar-silk-festive-koti.svg",
       variants: [
         {
           name: "Size 38 - Natural Golden Tussar",
@@ -1096,7 +1096,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "living",
       collections: ["heritage-handloom", "artisan-essentials"],
       tags: ["terracotta", "pottery", "tableware", "living", "handcrafted"],
-      image_url: "/api/public/ph/handcrafted-terracotta-dining-set.svg",
+      image_url: "/api/public/ph/living/handcrafted-terracotta-dining-set.svg",
       variants: [
         {
           name: "7-Piece Dinner Set - Earth Ochre",
@@ -1122,7 +1122,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["artisan-essentials"],
       tags: ["fotua", "cotton", "casual", "mens", "summer"],
-      image_url: "/api/public/ph/casual-cotton-summer-fotua.svg",
+      image_url: "/api/public/ph/mens/casual-cotton-summer-fotua.svg",
       variants: [
         {
           name: "Size M - Sky Blue Melange",
@@ -1162,7 +1162,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["new-in", "heritage-handloom", "eid-festive"],
       tags: ["silk", "saree", "handpainted", "festive", "womens"],
-      image_url: "/api/public/ph/hand-painted-silk-festive-saree.svg",
+      image_url: "/api/public/ph/womens/hand-painted-silk-festive-saree.svg",
       variants: [
         {
           name: "Blush Peach & Gold",
@@ -1188,7 +1188,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["artisan-essentials", "best-sellers"],
       tags: ["pajama", "cotton", "mens", "essentials"],
-      image_url: "/api/public/ph/fine-poplin-formal-pajama.svg",
+      image_url: "/api/public/ph/mens/fine-poplin-formal-pajama.svg",
       variants: [
         {
           name: "Size 38 - Crisp White",
@@ -1221,7 +1221,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "kids",
       collections: ["eid-festive", "new-in"],
       tags: ["kids", "ghagra", "choli", "silk", "girls", "festive"],
-      image_url: "/api/public/ph/girls-embroidered-silk-ghagra-choli.svg",
+      image_url: "/api/public/ph/kids/girls-embroidered-silk-ghagra-choli.svg",
       variants: [
         {
           name: "Age 6-8 Yrs - Coral Rose",
@@ -1254,7 +1254,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "living",
       collections: ["artisan-essentials", "best-sellers"],
       tags: ["brass", "decor", "living", "handcrafted", "incense"],
-      image_url: "/api/public/ph/hand-carved-brass-incense-burner.svg",
+      image_url: "/api/public/ph/living/hand-carved-brass-incense-burner.svg",
       variants: [
         {
           name: "2-Piece Artisan Brass Set",
@@ -1273,7 +1273,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "taaga",
       collections: ["taaga-fusion", "new-in"],
       tags: ["taaga", "kurti", "tunic", "boho", "womens", "cotton"],
-      image_url: "/api/public/ph/taaga-bohemian-hand-embroidered-kurti.svg",
+      image_url: "/api/public/ph/taaga/taaga-bohemian-hand-embroidered-kurti.svg",
       variants: [
         {
           name: "Size S - Rust Ochre",
@@ -1313,7 +1313,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
       category: "taaga",
       collections: ["taaga-fusion", "artisan-essentials"],
       tags: ["taaga", "mens", "linen", "shirt", "casual"],
-      image_url: "/api/public/ph/taaga-man-relaxed-linen-mandarin-shirt.svg",
+      image_url: "/api/public/ph/taaga/taaga-man-relaxed-linen-mandarin-shirt.svg",
       variants: [
         {
           name: "Size M - Natural Sand",
@@ -1394,7 +1394,7 @@ const HERITAGE_APPAREL: DemoCatalog = {
         "aarong-earth",
         "herbal",
       ],
-      image_url: "/api/public/ph/aarong-earth-wild-rose-ubtan-radiance-kit.svg",
+      image_url: "/api/public/ph/beauty/aarong-earth-wild-rose-ubtan-radiance-kit.svg",
       variants: [
         {
           name: "2-Piece Facial Radiance Ritual",
