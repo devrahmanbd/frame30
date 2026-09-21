@@ -195,6 +195,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Icon registry gains FolderTree + Table. Repeaters 8/8 complete.
 - Contract 412/412, 463 incl. adjacent suites, tsc clean on ranges.
 
+## [2026-09-21] — Clothing Heritage activated on microscrop.shop
+- Operator-ordered: Flame Fashion BD (owner nahid52flame@gmail.com, not
+  flamedev7's Akira) switched Rupaboti → Clothing Heritage via
+  app-faithful activation (published pointer verified live first, flag
+  flip, coherence kept, theme.activated audit row, actor flamedev7).
+- Browser-verified: heritage homepage renders with zero console errors;
+  cart/quiz/announcement interactions proven earlier same day.
+- Server state: HEAD 933c059, fresh 16:02 CEST build+start, no errors;
+  disk 94% flagged. Registry draft refresh skipped (rendering-safe).
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.

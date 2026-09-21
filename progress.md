@@ -81,7 +81,17 @@ verify on production; push to GitHub.
 - Merchant test data (akira) must be left clean after verification runs.
 - CONTRACT: catalog-controls-defaults parity test must cover every new
   widget (see `catalog.test.ts` PORTED list).
-- Other session (heritage-cutover): placeholder pipeline live
-  (`/api/public/ph/<seed>` SVG route, Unsplash purged, homepage imgs
-  0 broken). NEXT from them: publish clothing-heritage to
-  flame-fashion-bd demo merchant (live store still runs beauty draft).
+- [x] Clothing Heritage ACTIVE on flame-fashion-bd (microscrop.shop):
+  operator-ordered theme change executed via app-faithful server-side
+  activation (flag flip + published-pointer coherence + theme_audit row,
+  actor flamedev7). Verified live in browser: heritage hero, weavers
+  story, artisan showcase, festive, fair-trade, UGC, filters, grid,
+  flagship outlets. Zero console errors.
+- SSH investigation (same run): server HEAD 933c059 (1 docs commit
+  behind GitHub main), service freshly started 16:02 CEST from a
+  16:02 build, zero journal errors (3h), haproxy:443 → openresty:80 →
+  node. Watch: disk 94% (26G free).
+- Note: flamedev7@gmail.com owns AKIRA only; microscrop.shop belongs to
+  Flame Fashion BD (owner nahid52flame@gmail.com) — dashboard theme
+  change was impossible for that account, hence the server-side path.
+  Skipped: installRegistryTheme draft refresh (rendering unaffected).
