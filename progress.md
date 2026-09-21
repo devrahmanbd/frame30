@@ -44,9 +44,13 @@ verify on production; push to GitHub.
 - [x] Repeater 1/8 faq (`4925edd`, TDD: RED watched, 398 tests GREEN):
   items array + repeater panel, scalars kept, load-time seeding,
   canvas/theme/JSON-LD all dual-read. Limitation: rows lack _bn sibs.
-- [ ] Repeater conversions next: 2 product_qna, 3 trust_bar,
-  4 announcement_bar, 5 lookbook, 6 hero, 7 footer_sitemap, 8 spec_table
-  (same pattern: test-first, seed-on-load, dual-read theme + SEO).
+- [x] Repeater 2/8 product_qna (`5d4d96d`, TDD, 400 tests): items +
+  repeater panel + askHref gap fix, seedQaItems generalized, canvas Q&A
+  card, theme precedence items > live rows > scalars, MessageSquareQuote
+  icon. SEO/blueprints untouched by design.
+- [ ] Repeater conversions next: 3 trust_bar, 4 announcement_bar,
+  5 lookbook, 6 hero, 7 footer_sitemap, 8 spec_table (same pattern:
+  test-first, seed-on-load, dual-read theme + SEO).
   Defer: size_guide (2-D), quiz, shoppable pins, order/checkout steps.
 - [ ] Layers dock follow-ups (filter exists; dock/undock toggle).
 - [ ] Global-blocks save-from-page reverse conversion.

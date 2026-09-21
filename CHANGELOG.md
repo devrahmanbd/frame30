@@ -146,6 +146,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Icon registry gains CircleHelp. Known gap: repeater rows lack `_bn`
   bilingual siblings (scalars keep theirs).
 
+## [2026-09-21] — product_qna repeater conversion (`5d4d96d`)
+- TDD + swarm: porter agent's pdp diff verified line-exact, applied as
+  specified; consumer audit replaced direct greps after agent infra
+  failure (icon orphan, askHref gap, SEO DATA_BACKED no-op confirmed).
+- Precedence items > live Q&A rows > scalars keeps scalar-only pages
+  byte-identical; loadQnaSource still stubbed so scalars stay live path.
+- Contract 400/400, studio suite 414/414, tsc clean on touched ranges.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.
