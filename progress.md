@@ -161,3 +161,7 @@ verify on production; push to GitHub.
   "Shop the look" x4 looks, wedding/gift finders surfaced after
   new-arrivals; story/craft/testimonials keep order below).
   Tests 7/7 green. .bn duplicate-key errors pre-existing (untouched).
+- [x] Slice 1 bugfix: wedding_shop/gift_finder/rewards_club rendered
+  NULL everywhere — catalog `templates` (slot-gating) misapplied to
+  prop-driven widgets. Removed the field (3 lines, builder-ast.ts).
+  Tests 10/10. .bn + catalog-group tsc errors pre-existing.

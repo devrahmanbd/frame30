@@ -2518,7 +2518,6 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main", "footer"],
     heading: false,
-    templates: ["index", "page"],
     defaults: {
       heading: "My Rewards",
       body: "Earn points on every purchase and unlock member prices.",
@@ -2550,7 +2549,6 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main"],
     heading: false,
-    templates: ["index", "page", "collection"],
     defaults: {
       heading: "The Wedding Shop",
       body: "Bridal sarees, groom panjabis and festive gifting — curated for the big day.",
@@ -2582,7 +2580,6 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main"],
     heading: false,
-    templates: ["index", "page"],
     defaults: {
       heading: "Find the perfect gift",
       body: "Pick an occasion — we take you straight to matching gifts.",
