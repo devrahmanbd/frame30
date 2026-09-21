@@ -205,6 +205,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Server state: HEAD 933c059, fresh 16:02 CEST build+start, no errors;
   disk 94% flagged. Registry draft refresh skipped (rendering-safe).
 
+## [2026-09-21] — onboarding trap + dead-link fixes (`53e1896`, deployed)
+- fix(auth): post-login always lands /dashboard; dual-gate membership
+  race bounced store owners to /onboarding (row proven returned).
+- fix(settings): no custom domain → connect-domain CTA, never a path
+  URL (bare 404 since cutover). Verified live.
+- Deploy contract green (path 404s hold, custom domain 200s).
+- RLS audit (live): writes clean; public reads uneven (products +
+  store_themes world-readable incl. drafts; variants properly gated).
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.

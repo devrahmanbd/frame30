@@ -95,3 +95,18 @@ verify on production; push to GitHub.
   Flame Fashion BD (owner nahid52flame@gmail.com) — dashboard theme
   change was impossible for that account, hence the server-side path.
   Skipped: installRegistryTheme draft refresh (rendering unaffected).
+- [x] Owner onboarding trap FIXED (`53e1896` + deploy): fresh logins
+  raced concurrent membership checks and bounced real owners to
+  /onboarding despite live membership rows (proven: landing query
+  returned the row, app still routed to wizard). Single-gate rule now:
+  login always lands /dashboard, its gate owns onboarding decisions.
+- [x] Dead storefront link FIXED + deployed: settings showed path URL
+  (bare 404) as "live" with no domain. Now: connect-domain CTA.
+  Verified live on Rupaboti settings. Deploy contract all green.
+- RLS verdict (live DB read): writes all tenant-scoped + WITH CHECKs
+  clean; reads tenant-gated; uneven public reads — products=all rows
+  (drafts/deleted visible), store_themes=all rows (inactive visible),
+  variants properly gated (active+public+not-deleted). Not an active
+  breach path for prices/stock (variant-gated), but draft disclosure.
+- TODO next: API cross-tenant audit (unscoped merchant_id scan over
+  *.functions.ts) + decide products/store_themes public-read tightening.
