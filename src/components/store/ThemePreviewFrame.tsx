@@ -11,6 +11,7 @@ import { useMemo, useState } from "react";
 import { Monitor, Smartphone, Tablet, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
+import { StoreHeader } from "@/components/store/StoreHeader";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
 import {
@@ -183,6 +184,13 @@ export function ThemePreviewFrame({
           style={{ maxWidth: deviceEntry.width ?? "100%" }}
         >
           <ThemeSurface tokens={tokens}>
+            {/* Wordmark row, as on a live storefront — the blueprint's
+                header sections render beneath it. */}
+            <StoreHeader
+              slug={blueprintKey}
+              name={themeName}
+              menus={null}
+            />
             <WidgetDataProvider
               bundle={previewData.bundle}
               map={previewData.map}

@@ -2225,10 +2225,18 @@ function clothingHeritage(): ThemePreset {
       heading: "Payment methods",
       marks: "bKash\nNagad\nRocket\nVisa\nMastercard\nCash on Delivery",
     }),
-    s("social_strip", { heading: "Follow our craft journey" }),
     s("rich_text", {
-      heading: "About Framique Heritage",
-      body: "Celebrating Bengal's timeless handloom traditions, empowering generational artisan families across Bangladesh.",
+      heading: "Wear the story, keep the craft alive",
+      body: "Heritage pieces woven by generational artisan families — fair trade, natural dyes, zero plastic.",
+    }),
+    s("newsletter", {
+      heading: "First to the festive drops",
+      body: "One letter per drop. Weaves, restocks and artisan stories — never spam.",
+      buttonLabel: "Join the list",
+    }),
+    s("rich_text", {
+      heading: "",
+      body: "Flagships: Uttara · Gulshan · Chattogram — open 10am to 9pm.",
     }),
   ];
   return {
@@ -2272,7 +2280,7 @@ function clothingHeritage(): ThemePreset {
           s("hero_carousel", {
             slides: [
               {
-                headline: "The Festive Drop '26 is here",
+                headline: "The Festive Drop ’26 is here",
                 headline_bn: "উৎসব কালেকশন ’২৬ এসে গেছে",
                 subhead: "Pure silk panjabis, Jamdani sarees & wedding finery — woven for the season of celebrations",
                 ctaLabel: "Shop festive",

@@ -7,6 +7,14 @@
  * the server search function — no client ranking, no client money math.
  */
 import { useEffect, useRef, useState } from "react";
+import {
+  ChevronDown,
+  Truck,
+  RotateCcw,
+  ShieldCheck,
+  Headset,
+  Star,
+} from "lucide-react";
 import { useRouterState } from "@tanstack/react-router";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import type { SectionType } from "@/lib/builder-ast";
@@ -43,13 +51,13 @@ const TONE_CLASS: Record<string, string> = {
   danger: "bg-destructive/10 text-foreground",
 };
 
-const TRUST_ICON: Record<string, string> = {
-  delivery: "🚚",
-  returns: "↩",
-  secure: "🔒",
-  support: "💬",
-  quality: "★",
-};
+const TRUST_ICON = {
+  delivery: Truck,
+  returns: RotateCcw,
+  secure: ShieldCheck,
+  support: Headset,
+  quality: Star,
+} as const;
 
 function AnnouncementBar({ str, bool, int, section }: WidgetCtx) {
   // Repeater-first (faq/trust_bar precedent): studio `items` text rows win
@@ -156,21 +164,24 @@ function TrustBar({ str, section }: WidgetCtx) {
   if (items.length === 0) return null;
   return (
     <ul className="grid grid-cols-2 gap-4 rounded-fq-lg border border-border bg-card p-4 sm:grid-cols-4">
-      {items.map((item) => (
-        <li key={item.title} className="flex items-start gap-2">
-          <span aria-hidden="true" className="text-lg leading-none">
-            {TRUST_ICON[item.icon] ?? "•"}
-          </span>
-          <span className="min-w-0">
-            <span className="block text-sm font-medium">{item.title}</span>
-            {item.body && (
-              <span className="block text-xs text-muted-foreground">
-                {item.body}
-              </span>
-            )}
-          </span>
-        </li>
-      ))}
+      {items.map((item) => {
+        const Icon = TRUST_ICON[item.icon] ?? Star;
+        return (
+          <li key={item.title} className="flex items-start gap-2.5">
+            <span className="grid size-9 shrink-0 place-items-center rounded-fq-md bg-primary/10 text-primary">
+              <Icon className="size-4" aria-hidden />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-sm font-medium">{item.title}</span>
+              {item.body && (
+                <span className="block text-xs text-muted-foreground">
+                  {item.body}
+                </span>
+              )}
+            </span>
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -230,16 +241,8 @@ function Notice({ str, bool }: WidgetCtx) {
 function MegaMenu({ str, int, data }: WidgetCtx) {
   const [open, setOpen] = useState(false);
   const rows = data?.rows ?? [];
-  const columns = int("columns", 4, 1, 4);
   const label = str("label") || "Shop";
-  const gridClass =
-    columns === 1
-      ? "grid-cols-1"
-      : columns === 2
-        ? "sm:grid-cols-2"
-        : columns === 3
-          ? "sm:grid-cols-3"
-          : "sm:grid-cols-4";
+  const visible = rows.slice(0, int("limit", 8, 1, 24));
 
   if (data?.pending) {
     return (
@@ -249,47 +252,66 @@ function MegaMenu({ str, int, data }: WidgetCtx) {
       />
     );
   }
+  // No rows, no debris: a lone dropdown button with an empty menu is
+  // worse than no menubar at all.
+  if (visible.length === 0) return null;
+  const inline = visible.slice(0, 6);
+  const overflow = visible.slice(6);
   return (
-    <div className="relative" onMouseLeave={() => setOpen(false)}>
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-haspopup="true"
-        onClick={() => setOpen((v) => !v)}
-        onMouseEnter={() => setOpen(true)}
-        className="min-h-9 rounded-fq-md px-3 text-sm font-medium"
+    <div className="border-y border-border bg-card">
+      <nav
+        aria-label={label}
+        className="mx-auto flex max-w-[var(--fq-container,1280px)] items-center gap-1 overflow-x-auto px-4 sm:px-6"
       >
-        {label}
-      </button>
-      {open && (
-        <div className="absolute left-0 top-full z-30 mt-1 w-[min(90vw,48rem)] rounded-fq-lg border border-border bg-card p-4 shadow-md">
-          <nav
-            aria-label={label}
-            className={`grid grid-cols-1 gap-4 ${gridClass}`}
+        {inline.map((row) => (
+          <a
+            key={row.id}
+            href={row.href ?? "#"}
+            className="inline-flex min-h-11 shrink-0 items-center whitespace-nowrap px-3 text-sm font-medium text-foreground/80 hover:text-primary hover:underline"
           >
-            {rows.slice(0, int("limit", 8, 1, 24)).map((row) => (
-              <div key={row.id}>
-                <a
-                  href={row.href ?? "#"}
-                  className="block text-sm font-semibold hover:underline"
-                >
-                  {row.title}
-                </a>
-                {row.subtitle && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {row.subtitle}
-                  </p>
-                )}
-                {typeof row.count === "number" && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {row.count}
-                  </p>
-                )}
+            {row.title}
+          </a>
+        ))}
+        {overflow.length > 0 && (
+          <div
+            className="relative hidden shrink-0 sm:block"
+            onMouseLeave={() => setOpen(false)}
+          >
+            <button
+              type="button"
+              aria-expanded={open}
+              aria-haspopup="true"
+              onClick={() => setOpen((v) => !v)}
+              onMouseEnter={() => setOpen(true)}
+              className="inline-flex min-h-11 items-center gap-1 whitespace-nowrap px-3 text-sm font-medium text-foreground/80 hover:text-primary"
+            >
+              {label}
+              <ChevronDown className="size-3.5" aria-hidden />
+            </button>
+            {open && (
+              <div className="absolute left-0 top-full z-30 mt-1 w-60 rounded-fq-lg border border-border bg-card p-2 shadow-md">
+                <ul className="grid gap-0.5">
+                  {overflow.map((row) => (
+                    <li key={row.id}>
+                      <a
+                        href={row.href ?? "#"}
+                        className="block rounded-fq-md px-3 py-2 text-sm hover:bg-muted hover:text-primary"
+                      >
+                        {row.title}
+                        {row.subtitle && (
+                          <span className="block text-xs text-muted-foreground">
+                            {row.subtitle}
+                          </span>
+                        )}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ))}
-          </nav>
-        </div>
-      )}
+            )}
+          </div>
+        )}
+      </nav>
     </div>
   );
 }

@@ -83,91 +83,87 @@ const HeroCarousel: WidgetComponent = ({
 
   const slide = slides[current]!;
   const isFirst = current === 0;
+  const artSrc =
+    slide.image ||
+    `/api/public/ph/${placeholderSeed(slide.headline || "heritage")}`;
   return (
     <section
-      className="relative overflow-hidden"
+      aria-label={t(locale, "Hero carousel", "হিরো ক্যারোজেল")}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      aria-label={t(locale, "Hero carousel", "হিরো ক্যারোজেল")}
+      className="border-b border-border bg-card"
     >
-      {/* Monogram tile background */}
-      <div className="relative aspect-[16/9] w-full sm:aspect-[21/9]">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-900/20 via-rose-900/10 to-amber-800/20">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span
-              className="text-[8rem] font-bold text-foreground/10 select-none"
-              aria-hidden="true"
+      <div className="mx-auto grid max-w-[var(--fq-container,1280px)] items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-12 lg:gap-12">
+        {/* Copy — asymmetric left, seven columns */}
+        <div className="min-w-0 lg:col-span-7">
+          {slide.caption && (
+            <p className="text-xs font-semibold tracking-widest text-primary fq-caps">
+              {slide.caption}
+            </p>
+          )}
+          {slide.headlineBn && (
+            <p
+              lang="bn"
+              className="font-bangla-display mt-3 text-2xl font-bold leading-tight text-foreground sm:text-4xl"
             >
-              {slide.headline?.charAt(0) || "H"}
-            </span>
-          </div>
-        </div>
-        {slide.image && (
-          <img
-            src={slide.image}
-            alt={slide.headline}
-            className="absolute inset-0 h-full w-full object-cover"
-            loading={isFirst ? "eager" : "lazy"}
-            fetchPriority={isFirst ? "high" : "auto"}
-            decoding="async"
-          />
-        )}
-        {!slide.image && (
-          <img
-            src={`/api/public/ph/${placeholderSeed(slide.headline || "heritage")}`}
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover"
-            loading="lazy"
-          />
-        )}
-        {/* Content overlay */}
-        <div className="absolute inset-0 flex flex-col items-start justify-end bg-gradient-to-t from-black/60 via-black/20 to-transparent p-6 sm:p-12">
-          <div className="max-w-2xl">
-            {slide.headlineBn && (
-              <p
-                lang="bn"
-                className="font-bangla-display text-2xl font-bold leading-tight text-primary-foreground sm:text-4xl"
-              >
-                {slide.headlineBn}
-              </p>
-            )}
-            <Heading className="text-3xl font-bold leading-tight text-primary-foreground sm:text-5xl">
-              {slide.headline}
-            </Heading>
-            {slide.subhead && (
-              <p className="mt-3 max-w-lg text-base text-primary-foreground/80 sm:text-lg">
-                {locale === "bn" && slide.subheadBn
-                  ? slide.subheadBn
-                  : slide.subhead}
-              </p>
-            )}
+              {slide.headlineBn}
+            </p>
+          )}
+          <Heading className="mt-2 font-bangla-display text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl">
+            {slide.headline}
+          </Heading>
+          {slide.subhead && (
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              {locale === "bn" && slide.subheadBn
+                ? slide.subheadBn
+                : slide.subhead}
+            </p>
+          )}
+          <div className="mt-7 flex flex-wrap items-center gap-3">
             {slide.ctaLabel && (
               <a
                 href={slide.ctaUrl || "#"}
-                className="mt-6 inline-flex min-h-12 items-center rounded-fq-sm bg-card px-6 text-sm font-semibold text-card-foreground transition hover:bg-card/90"
+                className="inline-flex min-h-12 items-center whitespace-nowrap rounded-fq-md bg-primary px-7 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
               >
                 {slide.ctaLabel}
               </a>
             )}
+            {/* Dots live with the copy — never overlapping art or CTA */}
+            {slides.length > 1 && (
+              <div className="flex items-center gap-2" role="tablist" aria-label={t(locale, "Slides", "স্লাইড")}>
+                {slides.map((_, i) => (
+                  <button
+                    key={i}
+                    role="tab"
+                    aria-selected={i === current}
+                    onClick={() => setCurrent(i)}
+                    className={`h-2 rounded-full transition ${
+                      i === current
+                        ? "w-7 bg-primary"
+                        : "w-2 bg-foreground/25 hover:bg-foreground/50"
+                    }`}
+                    aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        {/* Art — five columns, portrait crop, its own zone */}
+        <div className="min-w-0 lg:col-span-5">
+          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-fq-lg border border-border bg-muted sm:aspect-[16/10] lg:aspect-[4/5]">
+            <img
+              src={artSrc}
+              alt={slide.image ? slide.headline : ""}
+              aria-hidden={slide.image ? undefined : true}
+              className="absolute inset-0 h-full w-full object-cover"
+              loading={isFirst ? "eager" : "lazy"}
+              fetchPriority={isFirst ? "high" : "auto"}
+              decoding="async"
+            />
           </div>
         </div>
       </div>
-      {/* Dots */}
-      {slides.length > 1 && (
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`h-2 rounded-full transition ${
-                i === current ? "w-6 bg-primary-foreground" : "w-2 bg-primary-foreground/50"
-              }`}
-              aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1}`}
-            />
-          ))}
-        </div>
-      )}
     </section>
   );
 };
@@ -213,17 +209,29 @@ const DepartmentGrid: WidgetComponent = ({
           : "sm:grid-cols-3 lg:grid-cols-5";
   return (
     <section>
-      <Heading className="mb-4 text-lg font-semibold">
-        {t(locale, "Shop by department", "বিভাগ অনুযায়ী কিনুন")}
-      </Heading>
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
+        <Heading className="font-bangla-display text-2xl font-bold tracking-tight sm:text-3xl">
+          {t(locale, "Shop by department", "বিভাগ অনুযায়ী কিনুন")}
+        </Heading>
+        <p className="text-xs text-muted-foreground">
+          {departments.reduce((n, d) => n + (d.count || 0), 0)}{" "}
+          {t(locale, "handcrafted pieces", "হাতে তৈরি পণ্য")}
+        </p>
+      </div>
       <div className={`grid gap-4 ${gridCols}`}>
         {departments.map((dept, i) => (
           <a
             key={i}
             href={dept.href || "#"}
-            className="group relative overflow-hidden rounded-fq-sm border border-border bg-card transition hover:shadow-fq-sm"
+            className={`group relative overflow-hidden rounded-fq-md border border-border bg-card transition hover:shadow-fq-sm ${
+              i === 0 ? "sm:col-span-2 sm:row-span-2" : ""
+            }`}
           >
-            <div className="aspect-[3/4] bg-gradient-to-br from-amber-100 to-rose-50 flex items-center justify-center">
+            <div
+              className={`bg-gradient-to-br from-amber-100 to-rose-50 flex items-center justify-center ${
+                i === 0 ? "aspect-[3/4] sm:aspect-auto sm:h-full sm:min-h-[28rem]" : "aspect-[3/4]"
+              }`}
+            >
               {dept.image ? (
                 <img
                   src={dept.image}
@@ -242,10 +250,10 @@ const DepartmentGrid: WidgetComponent = ({
               )}
             </div>
             <div className="p-3">
-              <p className="text-sm font-medium">
+              <p className={`font-medium ${i === 0 ? "text-base" : "text-sm"}`}>
                 {locale === "bn" && dept.nameBn ? dept.nameBn : dept.name}
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground tabular-nums">
                 {dept.count} {t(locale, "items", "পণ্য")}
               </p>
             </div>
