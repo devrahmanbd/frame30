@@ -9,6 +9,10 @@ import {
   storefrontCacheHeaders,
 } from "./lib/storefront-cache";
 import { isLocalHostname } from "./lib/edge-hosts";
+import {
+  isBlockedPathStorefront,
+  normalizeRequestHost,
+} from "./lib/storefront-host.server";
 import { consoleSecurityHeaders, isConsolePath } from "./lib/console-headers";
 import {
   resolveTierFromSignals,
@@ -365,6 +369,64 @@ export default {
       request.headers.delete("x-framique-tenant-id");
       request.headers.delete("x-framique-target-slot");
       request.headers.delete("x-framique-cohort-tier");
+
+      // Custom-domain-only cutover: path-based storefront URLs (`/store/*`)
+      // on platform hosts are an abuse surface and never serve (bare 404,
+      // no message body — reveal nothing about the path shape).
+      // Excepted: draft previews (token-verified downstream), token-gated
+      // order flows, and loopback dev — decided pure in
+      // `isBlockedPathStorefront` so contract tests pin the matrix.
+      try {
+        const rawHost =
+          request.headers.get("x-forwarded-host") ??
+          request.headers.get("host") ??
+          url.host;
+        if (
+          isBlockedPathStorefront(
+            normalizeRequestHost(rawHost),
+            url.pathname,
+            url.searchParams.has("preview_token"),
+          )
+        ) {
+          const { incr } = await import("./lib/observability.server");
+          incr("framique_path_storefront_blocked_total", {
+            path: url.pathname.split("/").slice(0, 3).join("/"),
+          });
+          return new Response(null, { status: 404 });
+        }
+      } catch {
+        // A gate failure must never break routing — fall through to SSR.
+      }
+
+      // Custom-domain deep-link rewrite: microscrop.shop/p/x is served by
+      // the same `/store/<slug>/p/x` route internally — one implementation,
+      // no duplicated components. The slug comes from OUR domain allowlist
+      // (resolveStorefrontHostFor), never from user input: no open-redirect,
+      // no cross-tenant. Query strings survive; Host header is untouched so
+      // CSRF/cache/host logic downstream sees the custom host consistently.
+      try {
+        const rawHost2 =
+          request.headers.get("x-forwarded-host") ??
+          request.headers.get("host") ??
+          url.host;
+        const customHost = normalizeRequestHost(rawHost2);
+        const customShape =
+          /^\/(p|products|c|collections|pages|blog|cart|checkout|order|account|search|track)(?=\/|$)/.exec(
+            url.pathname,
+          );
+        if (customHost && customShape) {
+          const { resolveStorefrontHostFor } =
+            await import("./lib/storefront-host.server");
+          const hostRes = await resolveStorefrontHostFor(customHost);
+          if (hostRes) {
+            const target = new URL(request.url);
+            target.pathname = `/store/${hostRes.merchantSlug}${url.pathname}`;
+            request = new Request(target, request);
+          }
+        }
+      } catch {
+        // A rewrite failure must never break routing — fall through to SSR.
+      }
 
       // Global Security Middleware: Enforce HTTPS
       const proto =

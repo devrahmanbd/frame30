@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { PAYMENT_METHOD_KEYS } from "./payment-rails";
 
 const cartSchema = z.array(
@@ -288,6 +289,34 @@ export const resolveStorefrontHostFn = createServerFn({
   const { resolveStorefrontHost } = await import("./storefront-host.server");
   return resolveStorefrontHost();
 });
+
+/**
+ * Primary custom-domain hostname for the signed-in merchant's active store.
+ *
+ * Powers the dashboard "View store" anchor: custom-domain-only storefront
+ * means the link must be `https://<primary>/` when a primary exists, with a
+ * `/store/<slug>` fallback otherwise. Returns `{ primaryHost: null }` when
+ * the merchant has no active primary — never throws.
+ */
+export const currentMerchantPrimaryHostFn = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    try {
+      const { currentMerchantId } = await import("./marketing.server");
+      const merchantId = await currentMerchantId(
+        context.supabase,
+        context.userId,
+      );
+      if (!merchantId) return { primaryHost: null as string | null };
+      const { primaryHostForMerchant } =
+        await import("./storefront-host.server");
+      return {
+        primaryHost: await primaryHostForMerchant(merchantId),
+      };
+    } catch {
+      return { primaryHost: null as string | null };
+    }
+  });
 
 /**
  * `redirect_to_primary` enforcement for `/store/<slug>` path URLs (public).
