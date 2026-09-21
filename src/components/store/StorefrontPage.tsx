@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreImage } from "@/components/store/StoreImage";
+import { isCustomHostPath } from "@/lib/storefront-url";
 import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import {
@@ -44,6 +45,8 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
   } = data;
 
   const slug = merchant.slug;
+  const { location } = useRouterState();
+  const custom = isCustomHostPath(location.pathname);
   const [term, setTerm] = useState("");
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [collectionId, setCollectionId] = useState<string | null>(null);
@@ -153,39 +156,56 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
                 )
               : 0;
             const inStock = variants.some((v) => v.stock_quantity > 0);
+            const cardBody = (
+              <>
+                <div className="aspect-square bg-muted">
+                  <StoreImage
+                    image={p.image ?? null}
+                    fallbackSrc={p.image_url}
+                    alt={p.title}
+                    seed={p.id}
+                    sizes="(max-width: 768px) 50vw, 300px"
+                    className="size-full object-cover"
+                  />
+                </div>
+                <div className="p-3">
+                  <h3 className="line-clamp-2 text-sm font-medium">
+                    {p.title}
+                  </h3>
+                  <p className="money mt-1 text-sm font-semibold">
+                    {fmtMinor(min, merchant.currency_code)}
+                  </p>
+                  <p
+                    className={`mt-1 text-xs ${inStock ? "text-success-foreground" : "text-danger-foreground"}`}
+                  >
+                    {inStock
+                      ? t("In stock", "স্টকে আছে")
+                      : t("Out of stock", "স্টক নেই")}
+                  </p>
+                </div>
+              </>
+            );
+            const cardClass =
+              "group block overflow-hidden rounded-fq-lg border border-border bg-card transition-transform duration-200 hover:-translate-y-0.5";
             return (
               <li key={p.id}>
-                <Link
-                  to="/store/$slug/p/$productSlug"
-                  params={{ slug, productSlug: p.slug }}
-                  className="group block overflow-hidden rounded-fq-lg border border-border bg-card transition-transform duration-200 hover:-translate-y-0.5"
-                >
-                  <div className="aspect-square bg-muted">
-                    <StoreImage
-                      image={p.image ?? null}
-                      fallbackSrc={p.image_url}
-                      alt={p.title}
-                      seed={p.id}
-                      sizes="(max-width: 768px) 50vw, 300px"
-                      className="size-full object-cover"
-                    />
-                  </div>
-                  <div className="p-3">
-                    <h3 className="line-clamp-2 text-sm font-medium">
-                      {p.title}
-                    </h3>
-                    <p className="money mt-1 text-sm font-semibold">
-                      {fmtMinor(min, merchant.currency_code)}
-                    </p>
-                    <p
-                      className={`mt-1 text-xs ${inStock ? "text-success-foreground" : "text-danger-foreground"}`}
-                    >
-                      {inStock
-                        ? t("In stock", "স্টকে আছে")
-                        : t("Out of stock", "স্টক নেই")}
-                    </p>
-                  </div>
-                </Link>
+                {custom ? (
+                  <Link
+                    to="/p/$productSlug"
+                    params={{ productSlug: p.slug }}
+                    className={cardClass}
+                  >
+                    {cardBody}
+                  </Link>
+                ) : (
+                  <Link
+                    to="/store/$slug/p/$productSlug"
+                    params={{ slug, productSlug: p.slug }}
+                    className={cardClass}
+                  >
+                    {cardBody}
+                  </Link>
+                )}
               </li>
             );
           })}
@@ -198,13 +218,23 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
     <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {collections.map((c) => (
         <li key={c.id}>
-          <Link
-            to="/store/$slug/c/$collectionSlug"
-            params={{ slug, collectionSlug: c.slug }}
-            className="block w-full rounded-fq-md border border-border bg-card px-4 py-3 text-left text-sm hover:bg-muted"
-          >
-            {c.name}
-          </Link>
+          {custom ? (
+            <Link
+              to="/c/$collectionSlug"
+              params={{ collectionSlug: c.slug }}
+              className="block w-full rounded-fq-md border border-border bg-card px-4 py-3 text-left text-sm hover:bg-muted"
+            >
+              {c.name}
+            </Link>
+          ) : (
+            <Link
+              to="/store/$slug/c/$collectionSlug"
+              params={{ slug, collectionSlug: c.slug }}
+              className="block w-full rounded-fq-md border border-border bg-card px-4 py-3 text-left text-sm hover:bg-muted"
+            >
+              {c.name}
+            </Link>
+          )}
         </li>
       ))}
     </ul>
