@@ -285,3 +285,34 @@ storefront serves on custom domains only.
 - [x] Placeholder pipeline live: `/api/public/ph/<seed>` SVG route (heritage tokens, immutable cache); StoreImage + MediaFrame terminal stages render ph img; heritage hero/dept/story/product/banner imageless slots render ph img; all Unsplash hotlinks removed from demo-catalog (68 product-seeded) + blueprints (21). Homepage imgs 0→10 loaded, 0 broken. Committed on session-heritage-cutover, rebuilt, restarted, verified live.
 - [ ] NEXT: publish clothing-heritage to flame-fashion-bd demo merchant (live store still runs beauty draft — that is why it does not look like Aarong). Needs merchant publish action; probing installed-theme state first.
 
+
+## Loop — custom-domain verification + homepage state (Sept 21)
+- microscrop.shop serves Flame Fashion BD fully working: Rupaboti theme,
+  shade finder, skin quiz, 5 shoppable products with BDT prices + images,
+  routine builder, consult form, custom-host deep links (`/p/x` style).
+  Path URLs correctly 404 per the cutover decree (verified).
+- Homepage: akira test page published + set as homepage (DB persisted,
+  badge + remove-action live). Render branch unwired-live: no custom
+  domain on akira, and flame-fashion's live business must not take test
+  content — merchant sets their own homepage when ready.
+- Cutover restored as committed code (`e6939d6`) after it was found living
+  only as server-local edits + stash; server also found checked out onto a
+  stale detached HEAD twice — always verify HEAD + bundle markers post
+  deploy, never assume pull succeeded.
+
+## Loop batch — custom-domain merchant links (Sept 21)
+- Audited every merchant-facing path URL (View store x3, page preview/
+  view, quick-edit + document permalink prefixes, editor preview + SEO
+  URLs, sitemap link, settings header text, onboarding copy).
+- New `useStoreUrl` hook + `storefrontPathForMerchant`/`storePageUrlForMerchant`
+  pure builders (unit-tested); all surfaces wired. Blog paths untouched.
+- Onboarding copy no longer promises a `/store/<slug>` URL.
+
+## Loop batch — custom-domain links everywhere (Sept 21)
+- Pure builders + useStoreUrl hook; wired View-store (shell, profile menu,
+  settings), page preview/view, quick-edit + document prefixes, editor
+  preview + SEO canonical, sitemap link, onboarding copy, theme thumbnail
+  mock text, shopper Visit-store (host-shape aware).
+- Buyer paths: mailer CTAs + drip CTA rebasing via storeBaseUrl/
+  rebaseStoreUrl; crawler docs covered by rewrite regex; payments cancel
+  verified already origin-correct; blog + internal analysis prefixes left.

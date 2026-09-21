@@ -27,8 +27,7 @@ import {
 } from "@/lib/console-nav";
 import { useCan } from "@/hooks/use-membership";
 import { useMerchant, useMerchants } from "@/hooks/use-merchant";
-import { currentMerchantPrimaryHostFn } from "@/lib/storefront.functions";
-import { storefrontUrlForMerchant } from "@/lib/storefront-url";
+import { useStoreUrl } from "@/hooks/use-store-url";
 import {
   Activity,
   BarChart3,
@@ -580,20 +579,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const palette = useCommandPalette();
   const { data: merchant } = useMerchant();
   const { memberships, switchMerchant } = useMerchants();
-  const getPrimaryHost = useServerFn(currentMerchantPrimaryHostFn);
-  const { data: primaryHost } = useQuery({
-    queryKey: ["merchant-primary-host", merchant?.id],
-    queryFn: async () => {
-      try {
-        const res = await getPrimaryHost();
-        return res.primaryHost;
-      } catch {
-        return null;
-      }
-    },
-    enabled: Boolean(merchant?.id),
-    staleTime: 5 * 60 * 1000,
-  });
+  const { storeUrl } = useStoreUrl();
   const navigate = useNavigate();
   const qc = useQueryClient();
 
@@ -754,10 +740,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           </button>
           {merchant?.slug ? (
             <a
-              href={storefrontUrlForMerchant(
-                primaryHost ?? null,
-                merchant.slug,
-              )}
+              href={storeUrl()}
               target="_blank"
               rel="noreferrer"
               className="hidden items-center gap-1.5 rounded-fq-md px-2.5 py-1.5 text-[13px] text-muted-foreground hover:bg-muted hover:text-foreground lg:flex"

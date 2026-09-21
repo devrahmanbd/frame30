@@ -11,6 +11,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { useStoreUrl } from "@/hooks/use-store-url";
+import {
+  storefrontPathForMerchant,
+  storePageUrlForMerchant,
+} from "@/lib/storefront-url";
 import { toast } from "sonner";
 import {
   globalBlockCreateFn,
@@ -383,10 +388,16 @@ export function EditorShell({
     if (doc.id) void state.chooseEditor(editor);
   };
 
+  const { primaryHost } = useStoreUrl();
   const previewHref =
     context && doc.id
       ? kind === "page"
-        ? `/store/${context.storeSlug}/pages/${doc.slug}?preview=1`
+        ? storePageUrlForMerchant(
+            primaryHost,
+            context.storeSlug,
+            doc.slug,
+            true,
+          )
         : `/blog/${doc.slug}?preview=1`
       : null;
 
@@ -825,10 +836,17 @@ function EditorSeoBox({
   storeSlug: string;
 }) {
   const origin = typeof window === "undefined" ? "" : window.location.origin;
+  const { primaryHost } = useStoreUrl();
   const path =
     doc.kind === "page"
-      ? `/store/${storeSlug}/pages/${doc.slug || "new-page"}`
+      ? storefrontPathForMerchant(
+          primaryHost,
+          storeSlug,
+          `pages/${doc.slug || "new-page"}`,
+        )
       : `/blog/${doc.slug || "new-post"}`;
+  // Custom-host paths are already absolute; path URLs need the origin.
+  const url = path.startsWith("http") ? path : `${origin}${path}`;
   return (
     <div className="border-t border-border p-3">
       <SeoMetaBox
@@ -838,7 +856,7 @@ function EditorSeoBox({
         fallbackDescription={doc.excerpt}
         content={doc.body}
         excerpt={doc.excerpt}
-        url={`${origin}${path}`}
+        url={url}
         origin={origin}
         siteName={storeName}
         slug={doc.slug}

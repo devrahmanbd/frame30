@@ -369,6 +369,46 @@ export function decideStoreRedirectForPath(
 }
 
 /**
+ * Rebase an outbound storefront URL onto the merchant's primary custom
+ * domain when one exists. Non-store URLs and merchants without a primary
+ * pass through untouched; never throws.
+ */
+export async function rebaseStoreUrl(
+  url: string,
+  merchantId: string,
+): Promise<string> {
+  const match = /^https:\/\/framique\.qubickle\.com\/store\/[^/]+(.*)$/.exec(
+    url,
+  );
+  if (!match) return url;
+  try {
+    const primary = await primaryHostForMerchant(merchantId);
+    if (!primary) return url;
+    return `https://${primary}${match[1] || "/"}`;
+  } catch {
+    return url;
+  }
+}
+
+/**
+ * Absolute storefront base for outbound surfaces (emails, receipts): the
+ * primary custom domain when one exists, else the legacy platform path
+ * URL. Never throws — fail-soft keeps the path URL.
+ */
+export async function storeBaseUrl(
+  merchantId: string,
+  slug: string,
+): Promise<string> {
+  try {
+    const primary = await primaryHostForMerchant(merchantId);
+    if (primary) return `https://${primary}`;
+  } catch {
+    // Fall through to the path URL below.
+  }
+  return `https://framique.qubickle.com/store/${slug}`;
+}
+
+/**
  * Deep-path variant: `/store/<slug>/...` → `https://<primary>/...`.
  * `subpath` is the portion after `/store/<slug>` (e.g. `/p/x?y=1`)
  * or the full path — the `/store/<slug>` prefix is stripped.

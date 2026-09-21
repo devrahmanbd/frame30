@@ -70,7 +70,7 @@ export function ThemeScreenshot({
               </span>
             </div>
             <span className="opacity-90 font-mono text-[8px]">
-              framique.qubickle.com/store
+              your-store.com
             </span>
           </div>
 

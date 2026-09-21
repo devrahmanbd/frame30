@@ -20,6 +20,8 @@ import {
   type QuickEditErrors,
 } from "@/lib/content-desk";
 import { permalinkPrefix } from "./content-links";
+import { useStoreUrl } from "@/hooks/use-store-url";
+import { storefrontPathForMerchant } from "@/lib/storefront-url";
 
 /**
  * WordPress Quick Edit, replicated field-for-field (screenshot
@@ -45,6 +47,11 @@ export function QuickEditPlate({
   onSubmit: (draft: QuickEditDraft) => void;
 }) {
   const { t, lang } = useLang();
+  const { primaryHost } = useStoreUrl();
+  const prefix =
+    row.kind === "page"
+      ? storefrontPathForMerchant(primaryHost, storeSlug, "pages/")
+      : permalinkPrefix(row.kind, storeSlug);
   const l = lang === "bn" ? "bn" : "en";
   const [draft, setDraft] = useState<QuickEditDraft>(() => quickEditFrom(row));
   const [errors, setErrors] = useState<QuickEditErrors>({});
@@ -142,9 +149,9 @@ export function QuickEditPlate({
               <div className="flex items-center gap-1">
                 <span
                   className="hidden max-w-[40%] truncate text-xs fq-sub sm:block"
-                  title={permalinkPrefix(row.kind, storeSlug)}
+                  title={prefix}
                 >
-                  {permalinkPrefix(row.kind, storeSlug)}
+                  {prefix}
                 </span>
                 <input
                   id={id("slug")}

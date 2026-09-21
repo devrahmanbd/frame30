@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant } from "@/hooks/use-merchant";
+import { useStoreUrl } from "@/hooks/use-store-url";
 import { ImpersonationConsent } from "@/components/admin/ImpersonationConsent";
 import { TotpCard } from "@/components/admin/settings/TotpCard";
 import { useLang } from "@/lib/i18n";
@@ -56,6 +57,7 @@ type Settings = {
 function SettingsPage() {
   const { t } = useLang();
   const { data: merchant } = useMerchant();
+  const { storeUrl, primaryHost } = useStoreUrl();
   const qc = useQueryClient();
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const [form, setForm] = useState<Settings>({
@@ -169,9 +171,11 @@ function SettingsPage() {
               target="_blank"
               rel="noreferrer"
               className="font-medium text-primary hover:underline"
-              href={`/store/${merchant.slug}`}
+              href={storeUrl()}
             >
-              framique.qubickle.com/store/{merchant.slug} ↗
+              {primaryHost
+                ? `${primaryHost} ↗`
+                : `framique.qubickle.com/store/${merchant.slug} ↗`}
             </a>
           </p>
         )}

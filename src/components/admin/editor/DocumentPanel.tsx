@@ -20,6 +20,8 @@ import {
   type EditorDoc,
 } from "@/lib/editor/editor-doc";
 import { useLang } from "@/lib/i18n";
+import { useStoreUrl } from "@/hooks/use-store-url";
+import { storefrontPathForMerchant } from "@/lib/storefront-url";
 import { cn } from "@/lib/utils";
 import {
   Collapsible,
@@ -76,6 +78,7 @@ export function DocumentPanel({
   lastSavedAt: string | null;
 }) {
   const { t, lang } = useLang();
+  const { primaryHost } = useStoreUrl();
   const [pop, setPop] = useState<Pop>(null);
   const [excerptOpen, setExcerptOpen] = useState(!!doc.excerpt);
   const [mediaOpen, setMediaOpen] = useState(false);
@@ -98,7 +101,9 @@ export function DocumentPanel({
   const pinnedTheme = themes.find((theme) => theme.id === doc.themeId) ?? null;
   const slug = effectiveSlug(doc) || "…";
   const prefix =
-    doc.kind === "page" ? `/store/${ctx.storeSlug}/pages/` : "/blog/";
+    doc.kind === "page"
+      ? storefrontPathForMerchant(primaryHost, ctx.storeSlug, "pages/")
+      : "/blog/";
 
   return (
     <div className="text-sm">

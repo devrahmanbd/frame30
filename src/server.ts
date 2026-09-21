@@ -403,7 +403,9 @@ export default {
       // /cart, /checkout, /account), so no internal rewrite is needed. An
       // earlier rewrite mapped custom paths to /store/<slug>/* for SSR while
       // the browser hydrated the custom route — different components on each
-      // side, hence React #418 on every deep page. Deleted; do not re-add.
+      // side, hence React #418 on every deep page + the featured-store
+      // bounce. Deleted; do not re-add. OPEN: merchant robots/sitemap/llms
+      // on custom hosts (needs root SEO routes, not a rewrite).
 
       // Global Security Middleware: Enforce HTTPS
       const proto =

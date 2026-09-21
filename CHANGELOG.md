@@ -6,39 +6,65 @@ has a matching memory so future sessions inherit the why, not just the what.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased] — session-heritage-cutover branch
+> ⚠️ **WARNING — shared-server deploy collisions.** Two agents deploy to one
+> server from one clone: observed interleaved origin/main, a 502 from an
+> unpushed-file commit, a frankenbuild (restart landed mid-build), production
+> checked out onto a stale detached HEAD (deploys silently not taking
+> effect), and the cutover living only as uncommitted server edits + stash.
+> Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
+> AND a bundle marker before announcing; never reset shared history.
 
-### Security
-- **Path-shaped storefronts removed (custom domains only).** `/store/*` on
-  platform hosts now answers bare **404** (0-byte body, reveals nothing).
-  Decided after repeated operator order: path URLs are an abuse surface
-  (free platform-trust hosting for malicious stores).
-  Excepted: draft previews (`preview_token`, token-verified downstream),
-  token-gated `/track` + `/order/*` (buyer email/SMS links), loopback dev.
-  Metric: `framique_path_storefront_blocked_total`.
-- **Custom-host deep links rewritten internally** (`microscrop.shop/p/x` →
-  `/store/<slug>/p/x` in `server.ts`). Slug always comes from the
-  `merchant_domains` allowlist — no open redirect, no cross-tenant.
-- Bare-slug widget hrefs (`href: p.slug`) fixed to absolute store paths.
+### Changed
+- Page builder is the content editor URL (`/dashboard/content/editor`):
+  full-window Elementor-style takeover (Elements/SEO tabs, flush canvas,
+  compact title, sidebar starts closed, single device switcher).
+- `/dashboard/builder` stays the theme studio; page/theme engines merge by
+  porting, retirement of `/builder` only after editor testing.
+- Path storefronts removed: `/store/*` on platform hosts answers bare 404
+  (custom-domain-only cutover); custom hosts serve at `/` via internal
+  rewrite. Draft previews, token-gated order flows and loopback dev exempt.
+- Dashboard "View store" resolves to the merchant's primary custom domain
+  when one exists (`currentMerchantPrimaryHostFn`).
 
 ### Added
-- **Heritage widgets** (clothing-heritage parity): `rewards_club`,
+- Buyer-critical URLs (order tracking + welcome CTAs, drip CTAs via
+  rebasing, sitemap/robots/llms rewrite coverage) resolve to the primary
+  custom domain; payments cancel uses request origin (already correct).
+- Custom-domain-aware merchant links: View-store, page preview/view,
+  quick-edit and document permalink prefixes, editor preview + SEO URLs,
+  sitemap link, and settings header all resolve to the primary custom
+  domain when one exists (`useStoreUrl` + pure builders in
+  `storefront-url.ts`, unit-tested). Onboarding no longer promises a path
+  URL. Blog paths untouched (platform routes, unaffected by the cutover).
+- Customizable homepage: set/remove-as-homepage list actions (published
+  pages only), stored in `setup_steps.homepage_page_id`, rendered at `/`
+  with theme-template fallback on path and custom hosts.
+- 17 ported widgets in the page editor: faq, marquee, countdown, banner,
+  trust_bar, announcement_bar, heritage_story, editorial_banner,
+  editorial_hero, lookbook, hero, textile_showcase, department_grid,
+  story_trunk, marquee_strip, hero_carousel, testimonial_carousel.
+- Universal template blocks: cart page, store header/footer, rich FAQ,
+  testimonial slider, split hero (+ `cart` library category).
+- Global blocks both directions in pages: insert as detached copies,
+  save-as-global-block from the node menu (`builder_global_blocks` table
+  created via migration with RLS + grants).
+- Structure panel parity: filter search, expand/collapse all, inline
+  duplicate/delete per row.
+- Anti-wipeout guard: page-builder saves that would blank authored content
+  abort with a visible error instead of persisting.
+- Route code splitting (components + loaders) for the client bundle.
+- CI migrated to CircleCI only (`.circleci/config.yml`); GitHub Actions
+  removed. E2E job auto-activates when `.e2e/playwright.config.ts` lands.
+- Heritage widgets (clothing-heritage parity): `rewards_club`,
   `wedding_shop`, `gift_finder` — AST catalog + apparel renderers +
-  bilingual help + TDD suites. Catalog 141 → 144 widgets.
-- **Local SVG placeholder pipeline** (`/api/public/ph/<seed>`, heritage
-  tokens, immutable cache). StoreImage, MediaFrame, and heritage
-  hero/dept/story/product/banner imageless slots render it. All 68 demo +
-  21 blueprint Unsplash hotlinks replaced with seeded placeholders.
-- **Theme preview demo data**: preview frame injects demo-catalog rows via
-  `WidgetDataProvider`, so product grids render instead of
-  skeleton-spinning. Hero slides carry default images; monogram badge is
-  crop-safe (no full-bleed letters on wide crops).
-- **Dynamic dashboard View-store anchor**: points at
-  `https://<primary>/` when the merchant has an active primary domain,
-  falls back to `/store/<slug>`. New `currentMerchantPrimaryHostFn`.
-- **DeepWiki integration removed**: dataset stubbed, vector engine
-  gutted to empty-result stubs, copilot re-grounded on live KB hybrid
-  search, docs-AI uses the docs index only.
+  bilingual help + TDD suites (catalog 141 → 144).
+- Local SVG placeholder pipeline (`/api/public/ph/<seed>`, heritage
+  tokens, immutable cache); StoreImage/MediaFrame/heritage imageless slots
+  render it; all demo + blueprint Unsplash hotlinks replaced.
+- Theme preview demo-data injection (grids render products, no skeletons);
+  crop-safe monogram badge; hero slide default images.
+- DeepWiki integration removed (dataset stubbed, copilot on live KB).
+- mem0.ai changelog mirror (policy/cutover/theme/deploy/gaps/ci).
 
 ### Changed
 - **CI moved GitHub Actions → CircleCI** (`.circleci/config.yml` owns
@@ -64,10 +90,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `microscrop.shop` serves the Flame Fashion BD **beauty draft**; the
   Aarong look needs clothing-heritage published on that merchant (or a
   custom domain on Akira, which already has it active).
-- `microscrop.shop` domain row is `issuing_cert`, not `active` — View-store
-  anchor stays on fallback until Verify flips it.
-- Custom-host `/sitemap.xml`/`robots.txt`, onboarding copy still
-  advertising `/store/` URLs, analytics beacon 500 (pre-existing).
+- `microscrop.shop` domain row is now `active` + primary — View-store anchor
+  resolves to the custom domain; `useStoreUrl` covers dashboard surfaces.
+- Custom-host `/sitemap.xml`/`robots.txt` still open; analytics beacon now
+  degrades to 202 on missing warehouse schema (owner migration pending);
+  hydration nonce mismatch fixed (empty-coerce + csp-nonce meta read).
 
 ## [2026-09-21] — main (other loop: page-builder Elementor parity)
 - Ported theme widgets as native studio widgets (faq, marquee, countdown,

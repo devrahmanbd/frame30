@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant, useMerchants } from "@/hooks/use-merchant";
+import { useStoreUrl } from "@/hooks/use-store-url";
 import { useLang } from "@/lib/i18n";
 import { adminRenameStoreFn } from "@/lib/merchant-admin.functions";
 import { billingLoadFn } from "@/lib/billing.functions";
@@ -54,6 +55,7 @@ export function UserProfileMenu() {
 
   const { data: merchant } = useMerchant();
   const { memberships } = useMerchants();
+  const { storeUrl, primaryHost } = useStoreUrl();
   const currentMembership = memberships.find(
     (m) => m.merchant_id === merchant?.id,
   );
@@ -402,7 +404,7 @@ export function UserProfileMenu() {
             {merchant?.slug ? (
               <DropdownMenuItem asChild>
                 <a
-                  href={`/store/${merchant.slug}`}
+                  href={storeUrl()}
                   target="_blank"
                   rel="noreferrer"
                   onClick={() => setDropdownOpen(false)}
@@ -412,7 +414,9 @@ export function UserProfileMenu() {
                     <ExternalLink className="size-3.5 text-muted-foreground" />
                     {t("View Live Storefront", "লাইভ দোকান দেখুন")}
                   </span>
-                  <span className="text-[10px] text-muted-foreground">↗</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    {primaryHost ?? merchant.slug} ↗
+                  </span>
                 </a>
               </DropdownMenuItem>
             ) : null}
