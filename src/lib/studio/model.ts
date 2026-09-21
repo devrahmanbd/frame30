@@ -171,7 +171,73 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
   if (raw.el === "announcement_bar") seedAnnouncementItems(node);
   if (raw.el === "lookbook") seedLookbookItems(node);
   if (raw.el === "hero") seedHeroItems(node);
+  if (raw.el === "footer_sitemap") seedFooterSitemapItems(node);
+  if (raw.el === "spec_table") seedSpecItems(node);
   return node;
+}
+
+/**
+ * Tolerant link-list emptiness check mirroring parseLinkList/parseLinks
+ * (comma AND newline delimiters, bare labels count). Kept local so model
+ * stays free of component imports; canonical parsers live in chrome.tsx
+ * and studio/renderers.tsx.
+ */
+function hasFooterLinks(raw: unknown): boolean {
+  if (typeof raw !== "string" || !raw.trim()) return false;
+  return raw
+    .split(/[\r\n,]+/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .some((part) => part.split("|")[0]!.trim().length > 0);
+}
+
+/**
+ * Repeater migration (footer_sitemap): pages saved with scalar cNTitle/
+ * cNLinks pairs get `items` seeded on load, storing the RAW links string
+ * (first paint stays byte-identical; normalisation happens on author
+ * edit). Fully-empty columns are skipped. Never overwrites edits.
+ */
+function seedFooterSitemapItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const seeded: { title: string; links: string }[] = [];
+  for (let i = 1; i <= 4; i += 1) {
+    const title = s[`c${i}Title`];
+    const links = s[`c${i}Links`];
+    const t = typeof title === "string" ? title : "";
+    const l = typeof links === "string" ? links : "";
+    if (!t && !hasFooterLinks(l)) continue;
+    seeded.push({ title: t, links: l });
+  }
+  if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
+}
+
+/**
+ * Repeater migration (spec_table): pages saved with scalar rNGroup/rNLabel/
+ * rNValue triples get `items` seeded on load, dropping label-empty rows
+ * (mirrors the renderer gate). Never overwrites edits. Section-level keys
+ * (caption/columnLabel/grouped/handle) pass through untouched.
+ */
+function seedSpecItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const seeded: { group: string; label: string; value: string }[] = [];
+  for (let i = 1; i <= 6; i += 1) {
+    const label = s[`r${i}Label`];
+    if (typeof label !== "string" || !label.trim()) continue;
+    const group = s[`r${i}Group`];
+    const value = s[`r${i}Value`];
+    seeded.push({
+      group: typeof group === "string" ? group : "",
+      label,
+      value: typeof value === "string" ? value : "",
+    });
+  }
+  if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
 }
 
 /**

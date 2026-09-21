@@ -34,6 +34,7 @@ import {
   ClipboardList,
   FileText,
   Filter,
+  FolderTree,
   GalleryHorizontal,
   GalleryVerticalEnd,
   Gauge,
@@ -72,6 +73,7 @@ import {
   Square,
   Star,
   Store,
+  Table,
   Tags,
   TextCursorInput,
   TriangleAlert,
@@ -144,6 +146,8 @@ const ICON_REGISTRY: Record<
   messagesquarequote: MessageSquareQuote,
   megaphone: Megaphone,
   filter: Filter,
+  foldertree: FolderTree,
+  table: Table,
   compass: Compass,
   filetext: FileText,
   clipboardlist: ClipboardList,
@@ -1339,9 +1343,18 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "footer_sitemap": {
-      const cols = [1, 2, 3, 4]
-        .map((n) => ({ title: str(s, `c${n}Title`), links: parseLinks(str(s, `c${n}Links`)) }))
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          title: String(row.title ?? ""),
+          links: parseLinks(String(row.links ?? "")),
+        }))
         .filter((c) => c.title || c.links.length > 0);
+      const cols =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3, 4]
+              .map((n) => ({ title: str(s, `c${n}Title`), links: parseLinks(str(s, `c${n}Links`)) }))
+              .filter((c) => c.title || c.links.length > 0);
       if (cols.length === 0) return <Placeholder label="Add a sitemap column" />;
       return (
         <nav aria-label="Footer" className="grid grid-cols-2 gap-6 sm:grid-cols-4">
@@ -2116,13 +2129,23 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       return <Placeholder label="Live compare table — renders on the storefront" />;
 
     case "spec_table": {
-      const pairs = [1, 2, 3, 4, 5, 6]
-        .map((i) => ({
-          group: str(s, `r${i}Group`),
-          label: str(s, `r${i}Label`),
-          value: str(s, `r${i}Value`),
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          group: String(row.group ?? ""),
+          label: String(row.label ?? ""),
+          value: String(row.value ?? ""),
         }))
         .filter((r) => r.label);
+      const pairs =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3, 4, 5, 6]
+              .map((i) => ({
+                group: str(s, `r${i}Group`),
+                label: str(s, `r${i}Label`),
+                value: str(s, `r${i}Value`),
+              }))
+              .filter((r) => r.label);
       if (pairs.length === 0) return <Placeholder label="Add a spec row" />;
       return (
         <section className="rounded-fq-lg border border-border bg-card">
@@ -2748,10 +2771,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
   }
 }
 
-/** "Label|/href, …" link-list parser shared by footer-style widgets. */
+/** "Label|/href" link-list parser shared by footer-style widgets (comma AND newline delimiters). */
 function parseLinks(raw: string): { label: string; href: string }[] {
   return raw
-    .split(",")
+    .split(/[\r\n,]+/)
     .map((part) => part.trim())
     .filter(Boolean)
     .map((part) => {

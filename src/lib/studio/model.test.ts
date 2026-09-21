@@ -364,3 +364,94 @@ describe("hero scalar-to-items migration", () => {
     ]);
   });
 });
+
+describe("footer_sitemap scalar-to-items migration", () => {
+  function footerDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "f1", el: "footer_sitemap", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds columns from cNTitle/cNLinks pairs, skipping fully-empty columns", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        footerDoc({
+          c1Title: "Shop",
+          c1Links: "New in|/, Best sellers|/",
+          c2Title: "",
+          c2Links: "Track order\nReturns",
+          c3Title: "",
+          c3Links: "",
+          c4Title: "",
+          c4Links: "",
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { title: "Shop", links: "New in|/, Best sellers|/" },
+      { title: "", links: "Track order\nReturns" },
+    ]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        footerDoc({
+          c1Title: "Old?",
+          items: [{ title: "New?", links: "A|/a" }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ title: "New?", links: "A|/a" }]);
+  });
+});
+
+describe("spec_table scalar-to-items migration", () => {
+  function specDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "s1", el: "spec_table", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds rows from rN triples, dropping label-empty rows", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        specDoc({
+          r1Group: "Display",
+          r1Label: "Size",
+          r1Value: '6.1"',
+          r2Group: "",
+          r2Label: "Weight",
+          r2Value: "",
+          r3Group: "Orphan group",
+          r3Label: "",
+          r3Value: "x",
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { group: "Display", label: "Size", value: '6.1"' },
+      { group: "", label: "Weight", value: "" },
+    ]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        specDoc({
+          r1Label: "Old?",
+          items: [{ group: "", label: "New?", value: "" }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ group: "", label: "New?", value: "" }]);
+  });
+});

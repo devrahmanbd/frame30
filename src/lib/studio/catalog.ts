@@ -659,6 +659,7 @@ export const WIDGETS: WidgetDef[] = [
       c3Links: "",
       c4Title: "",
       c4Links: "",
+      items: [],
     },
   },
   {
@@ -1438,6 +1439,7 @@ export const WIDGETS: WidgetDef[] = [
       r6Group: "",
       r6Label: "",
       r6Value: "",
+      items: [],
     },
   },
   {

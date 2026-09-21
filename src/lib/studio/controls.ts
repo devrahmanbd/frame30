@@ -1852,10 +1852,25 @@ const CONTENT: Record<string, Control[]> = {
     c({ key: "showLanguage", label: "Show language toggle", type: "switch", tab: "content", section: "Bar" }),
   ],
   footer_sitemap: [
-    ...[1, 2, 3, 4].flatMap((i) => [
-      c({ key: `c${i}Title`, label: `Column ${i} title`, type: "text", tab: "content", section: `Column ${i}` }),
-      c({ key: `c${i}Links`, label: `Column ${i} links (Label|/href, …)`, type: "textarea", tab: "content", section: `Column ${i}` }),
-    ]),
+    c({
+      key: "items",
+      label: "Columns",
+      type: "repeater",
+      tab: "content",
+      section: "Columns",
+      fields: [
+        c({ key: "title", label: "Column title", type: "text", tab: "content", section: "Columns" }),
+        c({
+          key: "links",
+          label: "Links (one per line: Label|/href)",
+          type: "textarea",
+          tab: "content",
+          section: "Columns",
+          placeholder: "New in|/\nBest sellers|/sale",
+          help: "One link per line. “Label” alone links to “#”.",
+        }),
+      ],
+    }),
   ],
   doc_links: [
     c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Documents" }),
@@ -2245,11 +2260,18 @@ const CONTENT: Record<string, Control[]> = {
     c({ key: "columnLabel", label: "Column heading", type: "text", tab: "content", section: "Spec table" }),
     c({ key: "grouped", label: "Collapsible groups", type: "switch", tab: "content", section: "Spec table" }),
     c({ key: "handle", label: "Product handle", type: "text", tab: "content", section: "Spec table" }),
-    ...[1, 2, 3, 4, 5, 6].flatMap((i) => [
-      c({ key: `r${i}Group`, label: `Row ${i} group`, type: "text", tab: "content", section: `Row ${i}` }),
-      c({ key: `r${i}Label`, label: `Row ${i} label`, type: "text", tab: "content", section: `Row ${i}` }),
-      c({ key: `r${i}Value`, label: `Row ${i} value`, type: "text", tab: "content", section: `Row ${i}` }),
-    ]),
+    c({
+      key: "items",
+      label: "Rows",
+      type: "repeater",
+      tab: "content",
+      section: "Spec table",
+      fields: [
+        c({ key: "group", label: "Group", type: "text", tab: "content", section: "Spec table" }),
+        c({ key: "label", label: "Label", type: "text", tab: "content", section: "Spec table" }),
+        c({ key: "value", label: "Value", type: "text", tab: "content", section: "Spec table" }),
+      ],
+    }),
   ],
   spec_highlights: [
     c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Highlights" }),

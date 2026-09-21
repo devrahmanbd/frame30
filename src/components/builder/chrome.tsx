@@ -16,10 +16,14 @@ import type { WidgetComponent, WidgetCtx } from "./widgets";
 import { OverlayHost } from "./primitives/OverlayHost";
 import { MediaFrame } from "./primitives/MediaFrame";
 
-/** `Label|/href, Label|/href` → link list. Malformed pairs are dropped. */
+/**
+ * `Label|/href` link list. Accepts legacy comma-separated AND newline
+ * row format (repeater rows store one link per line); bare labels get
+ * href "#". Malformed pairs are dropped, capped at 8.
+ */
 export function parseLinkList(raw: string): { label: string; href: string }[] {
   return raw
-    .split(",")
+    .split(/[\r\n,]+/)
     .map((part) => part.trim())
     .filter(Boolean)
     .map((part) => {
@@ -323,13 +327,28 @@ function DepartmentStrip({ str, int, data, Heading }: WidgetCtx) {
   );
 }
 
-function FooterSitemap({ str }: WidgetCtx) {
-  const columns = [1, 2, 3, 4]
-    .map((n) => ({
-      title: str(`c${n}Title`),
-      links: parseLinkList(str(`c${n}Links`)),
-    }))
-    .filter((col) => col.title || col.links.length > 0);
+function FooterSitemap({ str, section }: WidgetCtx) {
+  // Repeater-first (faq/trust_bar precedent): studio `items` rows win when
+  // present, scalar c1..c4 pairs remain as the fallback for
+  // theme-authored sections. parseLinkList reads both the legacy
+  // "Label|/href, …" and the newline row format.
+  const itemRows = Array.isArray(section.props.items)
+    ? section.props.items
+        .map((row) => ({
+          title: typeof row.title === "string" ? row.title : "",
+          links: parseLinkList(typeof row.links === "string" ? row.links : ""),
+        }))
+        .filter((col) => col.title || col.links.length > 0)
+    : [];
+  const columns =
+    itemRows.length > 0
+      ? itemRows
+      : [1, 2, 3, 4]
+          .map((n) => ({
+            title: str(`c${n}Title`),
+            links: parseLinkList(str(`c${n}Links`)),
+          }))
+          .filter((col) => col.title || col.links.length > 0);
   if (columns.length === 0) return null;
   return (
     <nav aria-label="Footer" className="grid grid-cols-2 gap-6 sm:grid-cols-4">
