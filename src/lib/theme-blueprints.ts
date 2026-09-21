@@ -2240,7 +2240,7 @@ function clothingHeritage(): ThemePreset {
     summaryBn:
       "মেগা মেনু, তাঁতির গল্প, লুকবুক ও ফিট গাইডসহ আড়ং-মানের ঐতিহ্যবাহী পোশাক স্টোরফ্রন্ট।",
     category: "fashion",
-    version: "1.0.0",
+    version: "2.0.0",
     api: "^3.0.0",
     sortOrder: 65,
     tokens: tokens({
@@ -2360,7 +2360,7 @@ function clothingHeritage(): ThemePreset {
             ctaHref: "/collections/eid-festive",
           }),
           s("testimonial_carousel", {
-            items: [
+            testimonials: [
               {
                 quote:
                   "The Jamdani saree exceeded all expectations. The texture, fall, and intricate motif work are truly world-class.",
@@ -2569,7 +2569,7 @@ function clothingHeritage(): ThemePreset {
             t4Alt: "Rajshahi pure silk festive panjabi",
           }),
           s("testimonial_carousel", {
-            items: [
+            testimonials: [
               {
                 quote:
                   "The Jamdani saree exceeded all expectations. The texture, fall, and intricate motif work are truly world-class.",
@@ -2656,7 +2656,7 @@ function clothingHeritage(): ThemePreset {
             t3Body: "Biodegradable jute and paper packaging",
           }),
           s("testimonial_carousel", {
-            items: [
+            testimonials: [
               {
                 quote:
                   "The Jamdani saree exceeded all expectations. The texture, fall, and intricate motif work are truly world-class.",
@@ -2763,7 +2763,13 @@ function clothingHeritage(): ThemePreset {
             freeShippingDone: "Free delivery unlocked",
           }),
           s("cart_lines", { heading: "" }),
-          s("cart_summary", { heading: "Order summary" }),
+          s("cart_summary", {
+            heading: "Order summary",
+            ctaLabel: "Proceed to checkout",
+            showCta: true,
+            showCoupon: true,
+            showFreeShipping: true,
+          }),
           s("heading", {
             text: "Your shopping bag",
             level: "h2",

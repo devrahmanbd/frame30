@@ -27,7 +27,7 @@ type Props = {
 };
 
 function summarise(field: Field, row: PropRow, index: number): string {
-  const key = field.itemLabel ?? field.fields?.[0]?.key ?? "";
+  const key = field.itemLabel ?? (field.fields ?? field.children)?.[0]?.key ?? "";
   const value = key ? row[key] : undefined;
   const text =
     typeof value === "string"
@@ -60,7 +60,7 @@ export function ArrayFieldEditor({
 
   const blank = (): PropRow => {
     const row: PropRow = {};
-    for (const sub of field.fields ?? []) {
+    for (const sub of field.fields ?? field.children ?? []) {
       row[sub.key] =
         sub.kind === "boolean"
           ? false
@@ -145,7 +145,7 @@ export function ArrayFieldEditor({
 
             {open === index && (
               <div className="space-y-3 border-t border-border p-2">
-                {(field.fields ?? []).map((sub) =>
+                {(field.fields ?? field.children ?? []).map((sub) =>
                   renderRowField(sub, row, (key, value) => {
                     const next = rows.slice();
                     next[index] = { ...row, [key]: value };

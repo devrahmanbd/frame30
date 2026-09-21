@@ -326,6 +326,9 @@ export type Field = {
   responsive?: boolean;
   /** `group` / `array`: nested schema. */
   fields?: Field[];
+  /** `array`: legacy spelling of the row schema (heritage widgets).
+   * Honored everywhere `fields` is; new code must use `fields`. */
+  children?: Field[];
   /** Numeric bounds for `number`, `range` and `unit`. */
   min?: number;
   step?: number;
@@ -4088,11 +4091,11 @@ const BASE_CATALOG: CatalogEntry[] = [
     fields: [
       { key: "slides", label: "Slides", kind: "array", panel: "content", children: [
         { key: "image", label: "Image URL", kind: "text", panel: "content" },
-        { key: "headline", label: "Headline", kind: "text", panel: "content" },
-        { key: "subhead", label: "Subhead", kind: "text", panel: "content" },
+        { key: "headline", label: "Headline", kind: "bitext", panel: "content" },
+        { key: "subhead", label: "Subhead", kind: "bitext", panel: "content" },
         { key: "ctaLabel", label: "CTA label", kind: "text", panel: "content" },
         { key: "ctaUrl", label: "CTA URL", kind: "text", panel: "content" },
-        { key: "caption", label: "Caption", kind: "text", panel: "content" },
+        { key: "caption", label: "Caption", kind: "bitext", panel: "content" },
       ]},
       { key: "autoAdvanceMs", label: "Auto-advance (ms)", kind: "number", panel: "settings" },
     ],
@@ -5446,7 +5449,7 @@ function coerceRow(schema: Field[], value: unknown): PropRow | null {
 function coerceProp(field: Field, value: unknown): PropValue | null {
   if (field.kind === "array") {
     if (!Array.isArray(value)) return null;
-    const schema = field.fields ?? [];
+    const schema = field.fields ?? field.children ?? [];
     const cap = Math.min(field.maxRows ?? MAX_ARRAY_ROWS, MAX_ARRAY_ROWS);
     const rows: PropRow[] = [];
     for (const entry of value) {
