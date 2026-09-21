@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogDotatomRouteImport } from './routes/blog[.]atom'
 import { Route as BlogDotjsonRouteImport } from './routes/blog[.]json'
@@ -31,14 +32,17 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as RootRouteImport } from './routes/root'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StatusRouteImport } from './routes/status'
+import { Route as TrackRouteImport } from './routes/track'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as CCollectionSlugRouteImport } from './routes/c.$collectionSlug'
 import { Route as DevBandsRouteImport } from './routes/dev.bands'
 import { Route as DocsIndexRouteImport } from './routes/docs.index'
 import { Route as DocsSitemapDotxmlRouteImport } from './routes/docs.sitemap[.]xml'
@@ -46,6 +50,9 @@ import { Route as InvoiceTokenRouteImport } from './routes/invoice.$token'
 import { Route as LegalIndexRouteImport } from './routes/legal.index'
 import { Route as LegalDocRouteImport } from './routes/legal.$doc'
 import { Route as NewsletterVerifyRouteImport } from './routes/newsletter.verify'
+import { Route as OrderOrderIdRouteImport } from './routes/order.$orderId'
+import { Route as PProductSlugRouteImport } from './routes/p.$productSlug'
+import { Route as PagesPageSlugRouteImport } from './routes/pages.$pageSlug'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as RootIndexRouteImport } from './routes/root/index'
 import { Route as RootAccessRouteImport } from './routes/root/access'
@@ -200,6 +207,7 @@ import { Route as ApiPublicOauthRevokeRouteImport } from './routes/api/public/oa
 import { Route as ApiPublicOauthTokenRouteImport } from './routes/api/public/oauth/token'
 import { Route as ApiPublicPaymentsProviderRouteImport } from './routes/api/public/payments/$provider'
 import { Route as ApiPublicPaymentsReturnRouteImport } from './routes/api/public/payments/return'
+import { Route as ApiPublicPhSplatRouteImport } from './routes/api/public/ph.$'
 import { Route as ApiPublicV1SplatRouteImport } from './routes/api/public/v1/$'
 import { Route as StoreSlugCCollectionSlugRouteImport } from './routes/store.$slug.c.$collectionSlug'
 import { Route as StoreSlugOrderOrderIdRouteImport } from './routes/store.$slug.order.$orderId'
@@ -229,6 +237,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -321,6 +334,11 @@ const RootRoute = RootRouteImport.update({
   path: '/root',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SecurityRoute = SecurityRouteImport.update({
   id: '/security',
   path: '/security',
@@ -334,6 +352,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const StatusRoute = StatusRouteImport.update({
   id: '/status',
   path: '/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackRoute = TrackRouteImport.update({
+  id: '/track',
+  path: '/track',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
@@ -359,6 +382,11 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/blog/$slug',
   path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CCollectionSlugRoute = CCollectionSlugRouteImport.update({
+  id: '/c/$collectionSlug',
+  path: '/c/$collectionSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevBandsRoute = DevBandsRouteImport.update({
@@ -394,6 +422,21 @@ const LegalDocRoute = LegalDocRouteImport.update({
 const NewsletterVerifyRoute = NewsletterVerifyRouteImport.update({
   id: '/newsletter/verify',
   path: '/newsletter/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderOrderIdRoute = OrderOrderIdRouteImport.update({
+  id: '/order/$orderId',
+  path: '/order/$orderId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PProductSlugRoute = PProductSlugRouteImport.update({
+  id: '/p/$productSlug',
+  path: '/p/$productSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PagesPageSlugRoute = PagesPageSlugRouteImport.update({
+  id: '/pages/$pageSlug',
+  path: '/pages/$pageSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
@@ -767,9 +810,9 @@ const DocsVersionSlugRoute = DocsVersionSlugRouteImport.update({
 } as any)
 const OrderOrderIdConfirmationRoute =
   OrderOrderIdConfirmationRouteImport.update({
-    id: '/order/$orderId/confirmation',
-    path: '/order/$orderId/confirmation',
-    getParentRoute: () => rootRouteImport,
+    id: '/confirmation',
+    path: '/confirmation',
+    getParentRoute: () => OrderOrderIdRoute,
   } as any)
 const StoreSlugIndexRoute = StoreSlugIndexRouteImport.update({
   id: '/store/$slug/',
@@ -1258,6 +1301,11 @@ const ApiPublicPaymentsReturnRoute = ApiPublicPaymentsReturnRouteImport.update({
   path: '/api/public/payments/return',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPhSplatRoute = ApiPublicPhSplatRouteImport.update({
+  id: '/api/public/ph/$',
+  path: '/api/public/ph/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1SplatRoute = ApiPublicV1SplatRouteImport.update({
   id: '/api/public/v1/$',
   path: '/api/public/v1/$',
@@ -1324,6 +1372,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
@@ -1342,18 +1391,24 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/root': typeof RootRouteWithChildren
+  '/search': typeof SearchRoute
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/status': typeof StatusRoute
+  '/track': typeof TrackRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/c/$collectionSlug': typeof CCollectionSlugRoute
   '/dev/bands': typeof DevBandsRoute
   '/docs/sitemap.xml': typeof DocsSitemapDotxmlRoute
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/order/$orderId': typeof OrderOrderIdRouteWithChildren
+  '/p/$productSlug': typeof PProductSlugRoute
+  '/pages/$pageSlug': typeof PagesPageSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -1503,6 +1558,7 @@ export interface FileRoutesByFullPath {
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
+  '/api/public/ph/$': typeof ApiPublicPhSplatRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
   '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
@@ -1527,6 +1583,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
@@ -1544,17 +1601,23 @@ export interface FileRoutesByTo {
   '/pricing': typeof PricingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/status': typeof StatusRoute
+  '/track': typeof TrackRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/c/$collectionSlug': typeof CCollectionSlugRoute
   '/dev/bands': typeof DevBandsRoute
   '/docs/sitemap.xml': typeof DocsSitemapDotxmlRoute
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/order/$orderId': typeof OrderOrderIdRouteWithChildren
+  '/p/$productSlug': typeof PProductSlugRoute
+  '/pages/$pageSlug': typeof PagesPageSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -1704,6 +1767,7 @@ export interface FileRoutesByTo {
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
+  '/api/public/ph/$': typeof ApiPublicPhSplatRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
   '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
@@ -1730,6 +1794,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
@@ -1748,18 +1813,24 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/root': typeof RootRouteWithChildren
+  '/search': typeof SearchRoute
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/status': typeof StatusRoute
+  '/track': typeof TrackRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/c/$collectionSlug': typeof CCollectionSlugRoute
   '/dev/bands': typeof DevBandsRoute
   '/docs/sitemap.xml': typeof DocsSitemapDotxmlRoute
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/order/$orderId': typeof OrderOrderIdRouteWithChildren
+  '/p/$productSlug': typeof PProductSlugRoute
+  '/pages/$pageSlug': typeof PagesPageSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -1909,6 +1980,7 @@ export interface FileRoutesById {
   '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
   '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
+  '/api/public/ph/$': typeof ApiPublicPhSplatRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
   '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
@@ -1935,6 +2007,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
+    | '/account'
     | '/auth'
     | '/blog.atom'
     | '/blog.json'
@@ -1953,18 +2026,24 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/robots.txt'
     | '/root'
+    | '/search'
     | '/security'
     | '/sitemap.xml'
     | '/status'
+    | '/track'
     | '/unsubscribe'
     | '/dashboard'
     | '/onboarding'
     | '/blog/$slug'
+    | '/c/$collectionSlug'
     | '/dev/bands'
     | '/docs/sitemap.xml'
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
+    | '/order/$orderId'
+    | '/p/$productSlug'
+    | '/pages/$pageSlug'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2114,6 +2193,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/token'
     | '/api/public/payments/$provider'
     | '/api/public/payments/return'
+    | '/api/public/ph/$'
     | '/api/public/v1/$'
     | '/store/$slug/c/$collectionSlug'
     | '/store/$slug/order/$orderId'
@@ -2138,6 +2218,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
+    | '/account'
     | '/auth'
     | '/blog.atom'
     | '/blog.json'
@@ -2155,17 +2236,23 @@ export interface FileRouteTypes {
     | '/pricing'
     | '/reset-password'
     | '/robots.txt'
+    | '/search'
     | '/security'
     | '/sitemap.xml'
     | '/status'
+    | '/track'
     | '/unsubscribe'
     | '/onboarding'
     | '/blog/$slug'
+    | '/c/$collectionSlug'
     | '/dev/bands'
     | '/docs/sitemap.xml'
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
+    | '/order/$orderId'
+    | '/p/$productSlug'
+    | '/pages/$pageSlug'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2315,6 +2402,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/token'
     | '/api/public/payments/$provider'
     | '/api/public/payments/return'
+    | '/api/public/ph/$'
     | '/api/public/v1/$'
     | '/store/$slug/c/$collectionSlug'
     | '/store/$slug/order/$orderId'
@@ -2340,6 +2428,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/$'
     | '/about'
+    | '/account'
     | '/auth'
     | '/blog.atom'
     | '/blog.json'
@@ -2358,18 +2447,24 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/robots.txt'
     | '/root'
+    | '/search'
     | '/security'
     | '/sitemap.xml'
     | '/status'
+    | '/track'
     | '/unsubscribe'
     | '/_authenticated/dashboard'
     | '/_authenticated/onboarding'
     | '/blog/$slug'
+    | '/c/$collectionSlug'
     | '/dev/bands'
     | '/docs/sitemap.xml'
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
+    | '/order/$orderId'
+    | '/p/$productSlug'
+    | '/pages/$pageSlug'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2519,6 +2614,7 @@ export interface FileRouteTypes {
     | '/api/public/oauth/token'
     | '/api/public/payments/$provider'
     | '/api/public/payments/return'
+    | '/api/public/ph/$'
     | '/api/public/v1/$'
     | '/store/$slug/c/$collectionSlug'
     | '/store/$slug/order/$orderId'
@@ -2545,6 +2641,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   SplatRoute: typeof SplatRoute
   AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
   BlogDotatomRoute: typeof BlogDotatomRoute
   BlogDotjsonRoute: typeof BlogDotjsonRoute
@@ -2563,16 +2660,22 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   RootRoute: typeof RootRouteWithChildren
+  SearchRoute: typeof SearchRoute
   SecurityRoute: typeof SecurityRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StatusRoute: typeof StatusRoute
+  TrackRoute: typeof TrackRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  CCollectionSlugRoute: typeof CCollectionSlugRoute
   DevBandsRoute: typeof DevBandsRoute
   DocsSitemapDotxmlRoute: typeof DocsSitemapDotxmlRoute
   InvoiceTokenRoute: typeof InvoiceTokenRoute
   LegalDocRoute: typeof LegalDocRoute
   NewsletterVerifyRoute: typeof NewsletterVerifyRoute
+  OrderOrderIdRoute: typeof OrderOrderIdRouteWithChildren
+  PProductSlugRoute: typeof PProductSlugRoute
+  PagesPageSlugRoute: typeof PagesPageSlugRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   ThemePreviewKeyRoute: typeof ThemePreviewKeyRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -2587,7 +2690,6 @@ export interface RootRouteChildren {
   BlogCategorySlugRoute: typeof BlogCategorySlugRoute
   BlogTagSlugRoute: typeof BlogTagSlugRoute
   DocsVersionSlugRoute: typeof DocsVersionSlugRoute
-  OrderOrderIdConfirmationRoute: typeof OrderOrderIdConfirmationRoute
   StoreSlugAccountRoute: typeof StoreSlugAccountRoute
   StoreSlugCartRoute: typeof StoreSlugCartRoute
   StoreSlugCheckoutRoute: typeof StoreSlugCheckoutRoute
@@ -2627,6 +2729,7 @@ export interface RootRouteChildren {
   ApiPublicOauthTokenRoute: typeof ApiPublicOauthTokenRoute
   ApiPublicPaymentsProviderRoute: typeof ApiPublicPaymentsProviderRoute
   ApiPublicPaymentsReturnRoute: typeof ApiPublicPaymentsReturnRoute
+  ApiPublicPhSplatRoute: typeof ApiPublicPhSplatRoute
   ApiPublicV1SplatRoute: typeof ApiPublicV1SplatRoute
   StoreSlugCCollectionSlugRoute: typeof StoreSlugCCollectionSlugRoute
   StoreSlugOrderOrderIdRoute: typeof StoreSlugOrderOrderIdRoute
@@ -2667,6 +2770,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -2795,6 +2905,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RootRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/security': {
       id: '/security'
       path: '/security'
@@ -2814,6 +2931,13 @@ declare module '@tanstack/react-router' {
       path: '/status'
       fullPath: '/status'
       preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/unsubscribe': {
@@ -2849,6 +2973,13 @@ declare module '@tanstack/react-router' {
       path: '/blog/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/c/$collectionSlug': {
+      id: '/c/$collectionSlug'
+      path: '/c/$collectionSlug'
+      fullPath: '/c/$collectionSlug'
+      preLoaderRoute: typeof CCollectionSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dev/bands': {
@@ -2898,6 +3029,27 @@ declare module '@tanstack/react-router' {
       path: '/newsletter/verify'
       fullPath: '/newsletter/verify'
       preLoaderRoute: typeof NewsletterVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order/$orderId': {
+      id: '/order/$orderId'
+      path: '/order/$orderId'
+      fullPath: '/order/$orderId'
+      preLoaderRoute: typeof OrderOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/p/$productSlug': {
+      id: '/p/$productSlug'
+      path: '/p/$productSlug'
+      fullPath: '/p/$productSlug'
+      preLoaderRoute: typeof PProductSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pages/$pageSlug': {
+      id: '/pages/$pageSlug'
+      path: '/pages/$pageSlug'
+      fullPath: '/pages/$pageSlug'
+      preLoaderRoute: typeof PagesPageSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products/$productId': {
@@ -3371,10 +3523,10 @@ declare module '@tanstack/react-router' {
     }
     '/order/$orderId/confirmation': {
       id: '/order/$orderId/confirmation'
-      path: '/order/$orderId/confirmation'
+      path: '/confirmation'
       fullPath: '/order/$orderId/confirmation'
       preLoaderRoute: typeof OrderOrderIdConfirmationRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof OrderOrderIdRoute
     }
     '/store/$slug/': {
       id: '/store/$slug/'
@@ -3978,6 +4130,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPaymentsReturnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/ph/$': {
+      id: '/api/public/ph/$'
+      path: '/api/public/ph/$'
+      fullPath: '/api/public/ph/$'
+      preLoaderRoute: typeof ApiPublicPhSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/$': {
       id: '/api/public/v1/$'
       path: '/api/public/v1/$'
@@ -4355,11 +4514,24 @@ const RootRouteChildren: RootRouteChildren = {
 
 const RootRouteWithChildren = RootRoute._addFileChildren(RootRouteChildren)
 
+interface OrderOrderIdRouteChildren {
+  OrderOrderIdConfirmationRoute: typeof OrderOrderIdConfirmationRoute
+}
+
+const OrderOrderIdRouteChildren: OrderOrderIdRouteChildren = {
+  OrderOrderIdConfirmationRoute: OrderOrderIdConfirmationRoute,
+}
+
+const OrderOrderIdRouteWithChildren = OrderOrderIdRoute._addFileChildren(
+  OrderOrderIdRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   SplatRoute: SplatRoute,
   AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
   BlogDotatomRoute: BlogDotatomRoute,
   BlogDotjsonRoute: BlogDotjsonRoute,
@@ -4378,16 +4550,22 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   RootRoute: RootRouteWithChildren,
+  SearchRoute: SearchRoute,
   SecurityRoute: SecurityRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StatusRoute: StatusRoute,
+  TrackRoute: TrackRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   BlogSlugRoute: BlogSlugRoute,
+  CCollectionSlugRoute: CCollectionSlugRoute,
   DevBandsRoute: DevBandsRoute,
   DocsSitemapDotxmlRoute: DocsSitemapDotxmlRoute,
   InvoiceTokenRoute: InvoiceTokenRoute,
   LegalDocRoute: LegalDocRoute,
   NewsletterVerifyRoute: NewsletterVerifyRoute,
+  OrderOrderIdRoute: OrderOrderIdRouteWithChildren,
+  PProductSlugRoute: PProductSlugRoute,
+  PagesPageSlugRoute: PagesPageSlugRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   ThemePreviewKeyRoute: ThemePreviewKeyRoute,
   BlogIndexRoute: BlogIndexRoute,
@@ -4402,7 +4580,6 @@ const rootRouteChildren: RootRouteChildren = {
   BlogCategorySlugRoute: BlogCategorySlugRoute,
   BlogTagSlugRoute: BlogTagSlugRoute,
   DocsVersionSlugRoute: DocsVersionSlugRoute,
-  OrderOrderIdConfirmationRoute: OrderOrderIdConfirmationRoute,
   StoreSlugAccountRoute: StoreSlugAccountRoute,
   StoreSlugCartRoute: StoreSlugCartRoute,
   StoreSlugCheckoutRoute: StoreSlugCheckoutRoute,
@@ -4442,6 +4619,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicOauthTokenRoute: ApiPublicOauthTokenRoute,
   ApiPublicPaymentsProviderRoute: ApiPublicPaymentsProviderRoute,
   ApiPublicPaymentsReturnRoute: ApiPublicPaymentsReturnRoute,
+  ApiPublicPhSplatRoute: ApiPublicPhSplatRoute,
   ApiPublicV1SplatRoute: ApiPublicV1SplatRoute,
   StoreSlugCCollectionSlugRoute: StoreSlugCCollectionSlugRoute,
   StoreSlugOrderOrderIdRoute: StoreSlugOrderOrderIdRoute,

@@ -145,7 +145,10 @@ export function decideHostResolution(
 ): StorefrontHostResolution | null {
   if (!hostname) return null;
   if (isPlatformHost(hostname)) return null;
-  if (!row || !(SERVABLE_DOMAIN_STATUSES as readonly string[]).includes(row.status))
+  if (
+    !row ||
+    !(SERVABLE_DOMAIN_STATUSES as readonly string[]).includes(row.status)
+  )
     return null;
   if (!row.merchantSlug) return null;
   return {
@@ -320,6 +323,26 @@ export function isBlockedPathStorefront(
  * Canonical home is `./storefront-url` (importable from client bundles).
  */
 export { isCustomHostPath } from "./storefront-url";
+
+/**
+ * Link base for widget row hrefs. Custom-host requests render root paths
+ * (""), everything else (localhost dev, previews) renders `/store/<slug>`.
+ * Pure — pinned by contract tests.
+ */
+export function storeLinkBase(
+  requestHost: string | null | undefined,
+  slug: string,
+): string {
+  const host = (requestHost ?? "").toLowerCase();
+  if (
+    host &&
+    !isPlatformHost(host) &&
+    host !== "localhost" &&
+    host !== "127.0.0.1"
+  )
+    return "";
+  return `/store/${slug}`;
+}
 
 export function decideStoreRedirectForPath(
   primaryHost: string | null,

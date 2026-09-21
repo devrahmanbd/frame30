@@ -401,7 +401,12 @@ export async function loadStorefront(
     (async () => {
       if (widgetBundle.requests.length === 0) return {};
       const { resolveWidgetData } = await import("./widget-data.server");
-      return resolveWidgetData(merchant.id, widgetBundle);
+      const { currentRequestHost, storeLinkBase } = await import(
+        "./storefront-host.server"
+      );
+      return resolveWidgetData(merchant.id, widgetBundle, undefined, {
+        base: storeLinkBase(currentRequestHost(), merchant.slug),
+      });
     })(),
   ]);
 

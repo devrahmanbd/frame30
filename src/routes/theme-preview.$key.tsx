@@ -32,6 +32,7 @@ function ThemePreviewRoute() {
     <ThemePreviewFrame
       themeName={preset.nameEn}
       author={preset.key}
+      blueprintKey={preset.key}
       tokens={preset.tokens}
       templates={preset.templates}
       onClose={() => window.history.back()}
@@ -68,9 +69,7 @@ function ThemePreviewNotFound() {
   return (
     <div className="grid min-h-screen place-items-center bg-background p-8 text-center">
       <div className="max-w-md space-y-4">
-        <h1 className="text-2xl font-bold text-foreground">
-          Theme not found
-        </h1>
+        <h1 className="text-2xl font-bold text-foreground">Theme not found</h1>
         <p className="text-sm text-muted-foreground">
           No blueprint matches that key. Check the URL or install a theme first.
         </p>

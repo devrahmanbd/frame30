@@ -561,18 +561,12 @@ function atelier(): ThemePreset {
     s("social_strip", {
       heading: "Follow the studio",
       href: "https://instagram.com",
-      i1Image:
-        "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=600&auto=format&fit=crop",
-      i2Image:
-        "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=600&auto=format&fit=crop",
-      i3Image:
-        "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=600&auto=format&fit=crop",
-      i4Image:
-        "https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=600&auto=format&fit=crop",
-      i5Image:
-        "https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?q=80&w=600&auto=format&fit=crop",
-      i6Image:
-        "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=600&auto=format&fit=crop",
+      i1Image: "/api/public/ph/i1image.svg",
+      i2Image: "/api/public/ph/i2image.svg",
+      i3Image: "/api/public/ph/i3image.svg",
+      i4Image: "/api/public/ph/i4image.svg",
+      i5Image: "/api/public/ph/i5image.svg",
+      i6Image: "/api/public/ph/i6image.svg",
     }),
     s("footer_sitemap", {
       c1Title: "Shop",
@@ -665,8 +659,7 @@ function atelier(): ThemePreset {
             ctaHref: "/collections/new-in",
             layout: "split",
             scrim: true,
-            imageUrl:
-              "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1400&auto=format&fit=crop",
+            imageUrl: "/api/public/ph/imageurl.svg",
           }),
           s("marquee", {
             text: "Pure Rajshahi Silk • Tangail Pit Loom Handloom • Ethical Fair Wages • Free Size Exchange Within 7 Days • Nationwide Delivery",
@@ -676,20 +669,16 @@ function atelier(): ThemePreset {
           s("lookbook", {
             heading: "The lookbook",
             offset: true,
-            i1Image:
-              "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop",
+            i1Image: "/api/public/ph/i1image.svg",
             i1Alt: "Look 01 — Earth Tone Drapery",
             i1Href: "/collections/artisan-silk",
-            i2Image:
-              "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?q=80&w=800&auto=format&fit=crop",
+            i2Image: "/api/public/ph/i2image.svg",
             i2Alt: "Look 02 — Natural Indigo Robe",
             i2Href: "/collections/everyday-edit",
-            i3Image:
-              "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=800&auto=format&fit=crop",
+            i3Image: "/api/public/ph/i3image.svg",
             i3Alt: "Look 03 — Relaxed Flax Linen",
             i3Href: "/collections/capsule-wardrobe",
-            i4Image:
-              "https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=800&auto=format&fit=crop",
+            i4Image: "/api/public/ph/i4image.svg",
             i4Alt: "Look 04 — Modern Minimalist Dress",
             i4Href: "/collections/new-in",
           }),
@@ -701,8 +690,7 @@ function atelier(): ThemePreset {
             ctaHref: "/blog/handloom",
             flip: false,
             scrim: true,
-            imageUrl:
-              "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=1000&auto=format&fit=crop",
+            imageUrl: "/api/public/ph/imageurl.svg",
             imageAlt: "Tangail handloom pit loom weaving",
           }),
           s("product_rail", {
@@ -721,15 +709,13 @@ function atelier(): ThemePreset {
             ctaLabel: "See the collection",
             ctaHref: "/collections/everyday-edit",
             scrim: true,
-            imageUrl:
-              "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1200&auto=format&fit=crop",
+            imageUrl: "/api/public/ph/imageurl.svg",
           }),
           s("shoppable_image", {
             heading: "Shop the look",
             limit: 4,
             scrim: true,
-            imageUrl:
-              "https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?q=80&w=1000&auto=format&fit=crop",
+            imageUrl: "/api/public/ph/imageurl.svg",
             altText: "Complete Atelier Studio Look",
             p1x: 35,
             p1y: 35,
@@ -897,8 +883,7 @@ function atelier(): ThemePreset {
           s("category_header", {
             heading: "The collection",
             body: "Filter by size, fabric and price.",
-            imageUrl:
-              "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1200&auto=format&fit=crop",
+            imageUrl: "/api/public/ph/imageurl.svg",
             scrim: true,
             showCount: true,
             showBreadcrumb: true,
@@ -1068,8 +1053,7 @@ function atelier(): ThemePreset {
             ctaHref: "/blog/makers",
             flip: true,
             scrim: true,
-            imageUrl:
-              "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=1000&auto=format&fit=crop",
+            imageUrl: "/api/public/ph/imageurl.svg",
             imageAlt: "Weaving families in Tangail",
           }),
           s("blog_pager", { align: "center" }),
@@ -2292,18 +2276,21 @@ function clothingHeritage(): ThemePreset {
                 subhead: "Heritage Weaves & Living Crafts",
                 ctaLabel: "Explore the collection",
                 ctaUrl: "/collections/all",
+                image: "/api/public/ph/heritage-weaves.svg",
               },
               {
                 headline: "Eid & Festive Collection 2026",
                 subhead: "Pure silk, handwoven for celebrations",
                 ctaLabel: "Shop festive",
                 ctaUrl: "/collections/eid-festive",
+                image: "/api/public/ph/eid-festive.svg",
               },
               {
                 headline: "65,000+ rural artisans empowered",
                 subhead: "Fair trade handloom from 64 districts",
                 ctaLabel: "Our story",
                 ctaUrl: "/pages/about",
+                image: "/api/public/ph/artisan-story.svg",
               },
             ],
             autoAdvanceMs: 6000,
@@ -2359,8 +2346,21 @@ function clothingHeritage(): ThemePreset {
               },
             ],
           }),
+          s("wedding_shop", {
+            heading: "The Wedding Shop",
+            body: "Bridal sarees, groom panjabis and festive gifting — curated for the big day.",
+          }),
+          s("gift_finder", {
+            heading: "Find the perfect gift",
+            body: "Pick an occasion — we take you straight to matching gifts.",
+          }),
+          s("rewards_club", {
+            heading: "My Rewards",
+            body: "Earn points on every purchase and unlock member prices across Aarong, Taaga and Herstory.",
+          }),
           s("marquee_strip", {
-            label: "Handloom · Fair Trade · Artisan-Owned · Natural Dyes · Zero Plastic",
+            label:
+              "Handloom · Fair Trade · Artisan-Owned · Natural Dyes · Zero Plastic",
           }),
         ],
         footer: footer(),
@@ -2623,12 +2623,14 @@ function clothingHeritage(): ThemePreset {
             ctaHref: "/pages/fair-trade",
           }),
           s("marquee_strip", {
-            label: "Handloom · Fair Trade · Artisan-Owned · Natural Dyes · Zero Plastic",
+            label:
+              "Handloom · Fair Trade · Artisan-Owned · Natural Dyes · Zero Plastic",
           }),
           s("story_trunk", {
             heading: "",
             t1Title: "Founded 1972",
-            t1Body: "Born from a vision to preserve Bengal's weaving traditions",
+            t1Body:
+              "Born from a vision to preserve Bengal's weaving traditions",
             t2Title: "65,000+ artisans",
             t2Body: "Rural craftspeople across 64 districts",
             t3Title: "Zero plastic",
@@ -2958,14 +2960,11 @@ function supershop(): ThemePreset {
             ctaLabel: "Shop Flash Sale",
             ctaHref: "/collections/flash-sale",
             align: "left",
-            image:
-              "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1400&auto=format&fit=crop",
+            image: "/api/public/ph/image.svg",
             s2Heading: "New Season Fashion Carnival",
-            s2Image:
-              "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1400&auto=format&fit=crop",
+            s2Image: "/api/public/ph/s2image.svg",
             s3Heading: "DarazMall Official Brand Festival",
-            s3Image:
-              "https://images.unsplash.com/photo-1550009158-9ebf69173e03?q=80&w=1400&auto=format&fit=crop",
+            s3Image: "/api/public/ph/s3image.svg",
           }),
 
           /* ── 3. Trust bar ── */
@@ -3033,8 +3032,7 @@ function supershop(): ThemePreset {
             body: "Discover the latest festive collections, premium cotton polos, Punjabi and designer footwear.",
             ctaLabel: "Explore Fashion",
             ctaHref: "/collections/fashion",
-            imageUrl:
-              "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?q=80&w=1200&auto=format&fit=crop",
+            imageUrl: "/api/public/ph/imageurl.svg",
             scrim: true,
           }),
 
@@ -3061,8 +3059,7 @@ function supershop(): ThemePreset {
             body: "Upgrade your space with non-stick cookware, rechargeable fans, kitchen blenders and ergonomic home comfort.",
             ctaLabel: "Shop Home Living",
             ctaHref: "/collections/home-living",
-            imageUrl:
-              "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=1200&auto=format&fit=crop",
+            imageUrl: "/api/public/ph/imageurl.svg",
             scrim: true,
           }),
 

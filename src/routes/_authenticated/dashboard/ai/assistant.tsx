@@ -1,74 +1,52 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import {
   Bot,
   Sparkles,
   Send,
-  BookOpen,
-  Layers,
-  CreditCard,
-  Truck,
-  ShoppingBag,
-  Package,
-  Search,
   ShieldCheck,
-  Globe,
-  Server,
   Check,
   Copy,
   ThumbsUp,
   ThumbsDown,
   MessageSquare,
-  ChevronDown,
-  ChevronRight,
-  ExternalLink,
   RefreshCw,
   Filter,
   ArrowRight,
   User,
   Inbox,
   Clock,
-  HelpCircle,
   Hash,
 } from "lucide-react";
 import {
   aiCopilotChatFn,
-  deepwikiGetCategoriesFn,
-  deepwikiSearchFn,
   supportInboxFn,
   supportReplyFn,
   supportStatusFn,
   supportThreadFn,
 } from "@/lib/ai-support.functions";
-import {
-  DEEPWIKI_CATEGORIES,
-  DEEPWIKI_DATASET,
-  type DeepWikiCategory,
-  type DeepWikiItem,
-} from "@/lib/deepwiki-dataset";
 import { Page, Badge } from "@/components/console/kit";
 
 export const Route = createFileRoute("/_authenticated/dashboard/ai/assistant")({
   loader: () => supportInboxFn(),
   head: () => ({
     meta: [
-      { title: "AI Copilot & DeepWiki — Framique Admin" },
+      { title: "AI Copilot & Support Inbox — Framique Admin" },
       {
         name: "description",
         content:
-          "Framique AI Assistant grounded in 100+ DeepWiki topics, dense semantic vector search, and live customer support triage.",
+          "Framique AI Assistant with copilot chat and live customer support triage.",
       },
-      { property: "og:title", content: "AI Copilot & DeepWiki — Framique Admin" },
+      { property: "og:title", content: "AI Copilot & Support Inbox — Framique Admin" },
       { name: "robots", content: "noindex" },
     ],
   }),
   component: AssistantConsole,
 });
 
-type Tab = "copilot" | "deepwiki" | "inbox";
+type Tab = "copilot" | "inbox";
 
 type ChatMessage = {
   id: string;
@@ -97,19 +75,6 @@ const SUGGESTED_PROMPTS = [
   "How does continuous PostgreSQL WAL archiving work?",
 ];
 
-const CATEGORY_ICON_MAP: Record<DeepWikiCategory, typeof Layers> = {
-  architecture: Layers,
-  builder: Layers,
-  payments: CreditCard,
-  couriers: Truck,
-  catalog: ShoppingBag,
-  orders: Package,
-  seo: Search,
-  security: ShieldCheck,
-  domains: Globe,
-  operations: Server,
-};
-
 function AssistantConsole() {
   const initial = Route.useLoaderData();
   const router = useRouter();
@@ -118,8 +83,6 @@ function AssistantConsole() {
 
   // Server functions
   const copilotChat = useServerFn(aiCopilotChatFn);
-  const searchDeepWiki = useServerFn(deepwikiSearchFn);
-  const getCategories = useServerFn(deepwikiGetCategoriesFn);
 
   // Copilot State
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -137,11 +100,6 @@ function AssistantConsole() {
   const [isThinking, setIsThinking] = useState(false);
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
-  // DeepWiki Explorer State
-  const [deepwikiSearchQuery, setDeepwikiSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [expandedItemIds, setExpandedItemIds] = useState<Record<string, boolean>>({});
-
   // Customer Inbox State
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
   const [threadMessages, setThreadMessages] = useState<
@@ -149,17 +107,6 @@ function AssistantConsole() {
   >([]);
   const [inboxDraft, setInboxDraft] = useState("");
   const [inboxFilter, setInboxFilter] = useState<string>("all");
-
-  const categoriesQuery = useQuery({
-    queryKey: ["deepwiki", "categories"],
-    queryFn: () => getCategories(),
-    staleTime: 60_000,
-  });
-
-  const deepwikiSearch = useMutation({
-    mutationFn: (data: { query: string; category?: string }) =>
-      searchDeepWiki({ data }),
-  });
 
   // Auto-scroll chat to bottom on new message
   useEffect(() => {
@@ -211,7 +158,7 @@ function AssistantConsole() {
         id: `ast_err_${Date.now()}`,
         role: "assistant",
         content:
-          "I encountered a temporary connection issue. Please check that your network connection is stable or query our DeepWiki directly in the Explorer tab.",
+          "I encountered a temporary connection issue. Please check that your network connection is stable or try again shortly.",
         confidence: "speculative",
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
@@ -220,40 +167,6 @@ function AssistantConsole() {
       setIsThinking(false);
     }
   }
-
-  // Handle DeepWiki Search
-  function handleRunDeepWikiSearch(q: string, cat?: string) {
-    const queryTerm = q.trim();
-    const categoryTerm = cat !== undefined ? cat : selectedCategory;
-    if (!queryTerm && categoryTerm === "all") {
-      // Clear search
-      return;
-    }
-    deepwikiSearch.mutate({
-      query: queryTerm || "general",
-      category: categoryTerm !== "all" ? categoryTerm : undefined,
-    });
-  }
-
-  // DeepWiki filtered items
-  const displayedDeepWikiItems = useMemo(() => {
-    if (deepwikiSearch.data && deepwikiSearch.data.length > 0) {
-      return deepwikiSearch.data.map((h) => ({
-        ...h.item,
-        similarity: h.similarity,
-      }));
-    }
-    return DEEPWIKI_DATASET.filter((item) => {
-      const matchesCategory =
-        selectedCategory === "all" || item.category === selectedCategory;
-      const matchesText =
-        !deepwikiSearchQuery ||
-        item.question.toLowerCase().includes(deepwikiSearchQuery.toLowerCase()) ||
-        item.summary.toLowerCase().includes(deepwikiSearchQuery.toLowerCase()) ||
-        item.tags.some((t) => t.toLowerCase().includes(deepwikiSearchQuery.toLowerCase()));
-      return matchesCategory && matchesText;
-    });
-  }, [deepwikiSearch.data, selectedCategory, deepwikiSearchQuery]);
 
   // Customer Inbox Thread Handlers
   async function openInboxThread(id: string) {
@@ -295,7 +208,7 @@ function AssistantConsole() {
             <Bot className="size-4.5" />
           </div>
           <div>
-            <span className="font-semibold tracking-tight">AI Copilot & DeepWiki</span>
+            <span className="font-semibold tracking-tight">AI Copilot</span>
           </div>
         </div>
       }
@@ -326,21 +239,6 @@ function AssistantConsole() {
           >
             <Sparkles className="size-4" />
             AI Copilot
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("deepwiki")}
-            className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
-              activeTab === "deepwiki"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <BookOpen className="size-4" />
-            DeepWiki Explorer
-            <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-semibold text-muted-foreground">
-              105
-            </span>
           </button>
           <button
             type="button"
@@ -404,7 +302,7 @@ function AssistantConsole() {
                             }`}
                           >
                             {msg.confidence === "verified"
-                              ? "DeepWiki Verified"
+                              ? "KB Verified"
                               : "Grounded"}
                           </span>
                         )}
@@ -421,8 +319,8 @@ function AssistantConsole() {
                     {msg.sources && msg.sources.length > 0 && (
                       <div className="mt-3.5 pt-3 border-t border-border/40">
                         <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                          <BookOpen className="size-3" />
-                          DeepWiki Verified Sources
+                          <Hash className="size-3" />
+                          Verified Sources
                         </div>
                         <div className="grid gap-1.5 sm:grid-cols-2">
                           {msg.sources.map((src) => (
@@ -567,7 +465,7 @@ function AssistantConsole() {
             <div className="rounded-fq-lg border border-border bg-card p-4 shadow-sm">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
                 <Sparkles className="size-3.5 text-primary" />
-                Suggested DeepWiki Questions
+                Suggested Questions
               </h3>
               <div className="space-y-2">
                 {SUGGESTED_PROMPTS.map((prompt) => (
@@ -583,212 +481,12 @@ function AssistantConsole() {
                 ))}
               </div>
             </div>
-
-            <div className="rounded-fq-lg border border-border bg-card p-4 shadow-sm">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-1.5">
-                <BookOpen className="size-3.5 text-primary" />
-                Knowledge Domains
-              </h3>
-              <div className="grid grid-cols-2 gap-2">
-                {DEEPWIKI_CATEGORIES.slice(0, 6).map((c) => {
-                  const Icon = CATEGORY_ICON_MAP[c.id] ?? Layers;
-                  return (
-                    <button
-                      key={c.id}
-                      type="button"
-                      onClick={() => {
-                        setSelectedCategory(c.id);
-                        setActiveTab("deepwiki");
-                      }}
-                      className="rounded-fq-md border border-border/80 p-2 text-left hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-center gap-1.5 text-xs font-medium text-foreground">
-                        <Icon className="size-3.5 text-primary" />
-                        <span className="truncate">{c.label}</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
         </div>
       )}
 
       {/* ─────────────────────────────────────────────────────────────────── */}
-      {/* TAB 2: DEEPWIKI EXPLORER (100+ TRAINED QUESTIONS)                  */}
-      {/* ─────────────────────────────────────────────────────────────────── */}
-      {activeTab === "deepwiki" && (
-        <div className="space-y-6">
-          {/* Search and Category Filters */}
-          <div className="rounded-fq-lg border border-border bg-card p-4 shadow-sm space-y-4">
-            <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-              <input
-                type="text"
-                value={deepwikiSearchQuery}
-                onChange={(e) => {
-                  setDeepwikiSearchQuery(e.target.value);
-                  handleRunDeepWikiSearch(e.target.value);
-                }}
-                placeholder="Search across 105+ verified topics (e.g. bKash, SteadFast, AST, custom domains, WAL)..."
-                className="w-full rounded-fq-md border border-input bg-background pl-10 pr-4 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              />
-            </div>
-
-            {/* Category Pills */}
-            <div className="flex flex-wrap gap-1.5">
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedCategory("all");
-                  handleRunDeepWikiSearch(deepwikiSearchQuery, "all");
-                }}
-                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                  selectedCategory === "all"
-                    ? "bg-primary text-primary-foreground font-semibold"
-                    : "border border-border bg-background hover:bg-muted text-foreground"
-                }`}
-              >
-                All Topics ({DEEPWIKI_DATASET.length})
-              </button>
-              {DEEPWIKI_CATEGORIES.map((c) => {
-                const isSelected = selectedCategory === c.id;
-                return (
-                  <button
-                    key={c.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedCategory(c.id);
-                      handleRunDeepWikiSearch(deepwikiSearchQuery, c.id);
-                    }}
-                    className={`rounded-full px-3 py-1 text-xs font-medium transition-colors flex items-center gap-1.5 ${
-                      isSelected
-                        ? "bg-primary text-primary-foreground font-semibold"
-                        : "border border-border bg-background hover:bg-muted text-foreground"
-                    }`}
-                  >
-                    <span>{c.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Questions Results List */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
-              <span>Showing {displayedDeepWikiItems.length} verified topics</span>
-              <span>Sorted by semantic relevance</span>
-            </div>
-
-            {displayedDeepWikiItems.length === 0 && (
-              <div className="rounded-fq-lg border border-border bg-card p-12 text-center text-muted-foreground">
-                <HelpCircle className="mx-auto size-8 opacity-40 mb-2" />
-                <p className="text-sm font-medium">No DeepWiki topics matched your query.</p>
-                <p className="text-xs mt-1">Try searching with broader terms or selecting All Topics.</p>
-              </div>
-            )}
-
-            {displayedDeepWikiItems.map((item) => {
-              const isExpanded = Boolean(expandedItemIds[item.id]);
-              const Icon = CATEGORY_ICON_MAP[item.category] ?? BookOpen;
-
-              return (
-                <div
-                  key={item.id}
-                  className="rounded-fq-lg border border-border bg-card shadow-sm transition-all hover:border-primary/30"
-                >
-                  <div
-                    onClick={() =>
-                      setExpandedItemIds((prev) => ({
-                        ...prev,
-                        [item.id]: !prev[item.id],
-                      }))
-                    }
-                    className="flex cursor-pointer items-start justify-between gap-4 p-4 select-none"
-                  >
-                    <div className="space-y-1.5 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center gap-1 rounded bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground uppercase">
-                          <Icon className="size-3" />
-                          {item.category}
-                        </span>
-                        {item.verified && (
-                          <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-[11px] font-semibold">
-                            <Check className="size-3 stroke-[3]" />
-                            Verified Specification
-                          </span>
-                        )}
-                      </div>
-                      <h4 className="text-sm font-semibold text-foreground">
-                        {item.question}
-                      </h4>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {item.summary}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-3 shrink-0 pt-1">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveTab("copilot");
-                          void handleSendCopilot(item.question);
-                        }}
-                        className="inline-flex items-center gap-1 rounded-fq-md border border-border bg-background px-2.5 py-1 text-xs font-medium hover:bg-muted transition-colors"
-                      >
-                        <Sparkles className="size-3 text-primary" />
-                        Ask in Copilot
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Toggle answer"
-                        className="text-muted-foreground hover:text-foreground"
-                      >
-                        {isExpanded ? (
-                          <ChevronDown className="size-4" />
-                        ) : (
-                          <ChevronRight className="size-4" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  {isExpanded && (
-                    <div className="border-t border-border bg-muted/20 p-4 sm:p-6 space-y-4">
-                      <div className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed">
-                        <MarkdownViewer text={item.answer} />
-                      </div>
-
-                      {item.citations && item.citations.length > 0 && (
-                        <div className="pt-3 border-t border-border/60 flex flex-wrap items-center gap-2">
-                          <span className="text-xs text-muted-foreground font-semibold">
-                            Reference Documents:
-                          </span>
-                          {item.citations.map((c) => (
-                            <span
-                              key={c.url}
-                              className="inline-flex items-center gap-1 rounded bg-background border border-border px-2 py-0.5 text-xs text-primary"
-                            >
-                              <ExternalLink className="size-2.5" />
-                              {c.title}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* ─────────────────────────────────────────────────────────────────── */}
-      {/* TAB 3: CUSTOMER SUPPORT INBOX                                      */}
+      {/* TAB 2: CUSTOMER SUPPORT INBOX                                      */}
       {/* ─────────────────────────────────────────────────────────────────── */}
       {activeTab === "inbox" && (
         <div className="space-y-6">

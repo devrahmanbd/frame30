@@ -43,15 +43,12 @@ export const getStorefront = createServerFn({ method: "GET" })
     // the theme index template. Unresolvable designations stay null and the
     // theme template renders — never a broken `/`.
     let homepage: Awaited<
-      ReturnType<
-        typeof import("./storefront-search.functions").getStorePageFn
-      >
+      ReturnType<typeof import("./storefront-search.functions").getStorePageFn>
     > | null = null;
     if (found.homepageSlug) {
       try {
-        const { getStorePageFn } = await import(
-          "./storefront-search.functions"
-        );
+        const { getStorePageFn } =
+          await import("./storefront-search.functions");
         homepage = await getStorePageFn({
           data: { slug: data.slug, pageSlug: found.homepageSlug },
         });
@@ -328,12 +325,22 @@ export const currentMerchantPrimaryHostFn = createServerFn({ method: "GET" })
  */
 export const resolveStoreRedirectFn = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) =>
-    z.object({ slug: z.string().min(1).max(120) }).parse(d),
+    z
+      .object({
+        slug: z.string().min(1).max(120),
+        subpath: z.string().max(500).optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     try {
-      const { resolveStoreRedirectForSlug } =
+      const { resolveStoreRedirectForSlug, resolveStoreRedirectForSlugPath } =
         await import("./storefront-host.server");
+      if (data.subpath) {
+        return {
+          to: await resolveStoreRedirectForSlugPath(data.slug, data.subpath),
+        };
+      }
       return { to: await resolveStoreRedirectForSlug(data.slug) };
     } catch {
       return { to: null };

@@ -14,7 +14,6 @@ import {
   CURRENT_VERSION,
   type DocVersionId,
 } from "./docs";
-import { searchDeepWikiSemantic } from "./semantic-vector.server";
 import { screenInbound, screenOutbound } from "./support-guardrails";
 
 export type DocsAiSource = {
@@ -73,31 +72,14 @@ export async function answerDocsQuestion(input: {
   const index = buildSearchIndex(version);
   const hits = searchDocs(input.question, index, 4);
 
-  // Dense semantic vector search across DeepWiki
-  let vectorHits: Awaited<ReturnType<typeof searchDeepWikiSemantic>> = [];
-  try {
-    vectorHits = await searchDeepWikiSemantic(input.question, { limit: 3 });
-  } catch {
-    vectorHits = [];
-  }
-
-  const docSources: DocsAiSource[] = hits.map((hit) => ({
+  const sources: DocsAiSource[] = hits.map((hit) => ({
     title: hit.title,
     heading: hit.heading,
     path: `${docPath(version, hit.slug)}${hit.anchor ? `#${hit.anchor}` : ""}`,
     excerpt: hit.excerpt,
   }));
 
-  const vectorSources: DocsAiSource[] = vectorHits.map((v) => ({
-    title: `DeepWiki: ${v.item.question}`,
-    heading: v.item.category.toUpperCase(),
-    path: v.item.citations[0]?.url || "/dashboard/ai/assistant",
-    excerpt: v.item.summary,
-  }));
-
-  const sources = [...docSources, ...vectorSources];
-
-  const docContext = hits
+  const context = hits
     .map((hit, i) => {
       const entry = index.find(
         (e) => e.slug === hit.slug && e.heading === hit.heading,
@@ -107,21 +89,10 @@ export async function answerDocsQuestion(input: {
     })
     .join("\n\n");
 
-  const vectorContext = vectorHits
-    .map(
-      (v, i) =>
-        `[DeepWiki ${i + 1}] ${v.item.question} (${v.item.category})\n${v.item.summary}\n${v.item.answer.slice(0, CONTEXT_CHARS)}`,
-    )
-    .join("\n\n");
-
-  const context = [docContext, vectorContext]
-    .filter(Boolean)
-    .join("\n\n---\n\n");
-
   if (!context) {
     return {
       answer:
-        "I could not find anything in the documentation or DeepWiki about that. Try asking about store setup, bKash, SteadFast courier, custom domains, or page builder.",
+        "I could not find anything in the documentation about that. Try asking about store setup, bKash, SteadFast courier, custom domains, or page builder.",
       sources: [],
     };
   }

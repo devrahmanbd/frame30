@@ -1,10 +1,10 @@
-# Changelog
+# Changelog — Framique (frame30)
 
-All notable changes and operator decisions. Newest first. The CI pipeline
-(`.circleci/config.yml`) and the task-finish rule in AGENTS.md keep this file
-honest: every shipped task lands an entry here in the same commit.
+All notable changes, decisions, and policy cutovers. Mirrored as
+long-term memories in mem0.ai (user `devrahmanbd`) — every entry below
+has a matching memory so future sessions inherit the why, not just the what.
 
-## Unreleased
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 > ⚠️ **WARNING — shared-server deploy collisions.** Two agents deploy to one
 > server from one clone: observed interleaved origin/main, a 502 from an
@@ -55,29 +55,56 @@ honest: every shipped task lands an entry here in the same commit.
 - Route code splitting (components + loaders) for the client bundle.
 - CI migrated to CircleCI only (`.circleci/config.yml`); GitHub Actions
   removed. E2E job auto-activates when `.e2e/playwright.config.ts` lands.
+- Heritage widgets (clothing-heritage parity): `rewards_club`,
+  `wedding_shop`, `gift_finder` — AST catalog + apparel renderers +
+  bilingual help + TDD suites (catalog 141 → 144).
+- Local SVG placeholder pipeline (`/api/public/ph/<seed>`, heritage
+  tokens, immutable cache); StoreImage/MediaFrame/heritage imageless slots
+  render it; all demo + blueprint Unsplash hotlinks replaced.
+- Theme preview demo-data injection (grids render products, no skeletons);
+  crop-safe monogram badge; hero slide default images.
+- DeepWiki integration removed (dataset stubbed, copilot on live KB).
+- mem0.ai changelog mirror (policy/cutover/theme/deploy/gaps/ci).
 
-### Fixed
-- Block editor removed from pages (builder-only; legacy classic pages stay
-  readable); Default page editor setting deleted.
-- Empty canvas over saved content: studio adopts late-resolving server docs
-  (pristine-guarded) + tolerant parse of escaped-bracket payloads.
-- Quick Edit and bulk verbs now maintain `is_published` for pages (Published
-  rows were publicly invisible).
-- Themes screen crash from NULL `installed_at` (sort hardened, all install
-  paths stamp it, live rows backfilled).
-- Missing `builder_global_blocks` table (code referenced, never migrated).
-- Auth console redesigned (hallmark modern-minimal).
+### Changed
+- **CI moved GitHub Actions → CircleCI** (`.circleci/config.yml` owns
+  build/test/lint/e2e; no new Actions workflows). Recorded in AGENTS.md.
+- **Deploy convention**: separate worktrees (`/opt/frame28` main,
+  `/opt/frame28-heritage` branch), deploys only via
+  `ops/deploy-from-git.sh <branch>` (pushed branch → ephemeral worktree
+  build → rsync `.output` → restart → live verify). Never build in the
+  live tree, never `git stash` a shared clone.
 
-### Decisions (operator decrees)
-- Content editor URL is the single page builder; `/dashboard/builder`
-  remains theme-only until later retirement.
-- No local `bun test` — tests run in the CircleCI `unit-contract` job.
-- Verify on production only (SSH build+deploy, browser checks); no localhost
-  testing. Push to GitHub; deploy via SSH when told.
-- Path storefronts removed — custom domains only; homepage exercises on a
-  custom domain.
-- Reports of stale UI were stale browser bundles / wrong-merchant sessions,
-  verified with the reporter's own account where possible.
-- Shared clone + single server across agents caused interleaved commits,
-  a 502 from an unpushed-file commit, and a frankenbuild — coordinate
-  deploy windows; never reset shared history.
+### Verification (live, https://framique.qubickle.com)
+- `/store/<slug>` (+ deep paths, fake slugs, case variants) → 404.
+- `/` → 200 landing; `microscrop.shop/` + `/cart` → 200 storefront.
+- Preview Cart tab: 0 skeletons, priced demo products with images.
+- Login as merchant: dashboard renders, no page errors.
+- Targeted suites green (cutover 8, placeholder 5, preview-data 3,
+  heritage 7, registry 8, metadata 9, builder 167).
+
+### Known gaps / follow-ups
+- Full `bun run test`: 3392 pass / 27 fail — remaining failures are
+  pre-existing (authz, nav, CSP, support-agent, time-machine…), untouched
+  by this batch.
+- `microscrop.shop` serves the Flame Fashion BD **beauty draft**; the
+  Aarong look needs clothing-heritage published on that merchant (or a
+  custom domain on Akira, which already has it active).
+- `microscrop.shop` domain row is now `active` + primary — View-store anchor
+  resolves to the custom domain; `useStoreUrl` covers dashboard surfaces.
+- Custom-host `/sitemap.xml`/`robots.txt` still open; analytics beacon now
+  degrades to 202 on missing warehouse schema (owner migration pending);
+  hydration nonce mismatch fixed (empty-coerce + csp-nonce meta read).
+
+## [2026-09-21] — main (other loop: page-builder Elementor parity)
+- Ported theme widgets as native studio widgets (faq, marquee, countdown,
+  banner, trust_bar, announcement_bar; then 11 heritage/hero widgets).
+- Layers parity + save-as-global-block port; anti-wipeout autosave guard.
+- Operator decrees recorded in progress.md: verify on production only,
+  push to GitHub, path storefronts removed, shared-clone hazard noted.
+
+## [2026-09-18/19] — spectacular scope (from git history)
+- CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
+- Clothing-heritage theme + Aarong-grade storefront + demo catalogs.
+- 429 storm fixed (windowed RPC + console/loopback buckets).
+- CMS homepage designation + route code-splitting; auth redesign.

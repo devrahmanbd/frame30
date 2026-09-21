@@ -398,38 +398,14 @@ export default {
         // A gate failure must never break routing — fall through to SSR.
       }
 
-      // Custom-domain deep-link rewrite: microscrop.shop/p/x is served by
-      // the same `/store/<slug>/p/x` route internally — one implementation,
-      // no duplicated components. The slug comes from OUR domain allowlist
-      // (resolveStorefrontHostFor), never from user input: no open-redirect,
-      // no cross-tenant. Query strings survive; Host header is untouched so
-      // CSRF/cache/host logic downstream sees the custom host consistently.
-      try {
-        const rawHost2 =
-          request.headers.get("x-forwarded-host") ??
-          request.headers.get("host") ??
-          url.host;
-        const customHost = normalizeRequestHost(rawHost2);
-        // Crawler documents live under the same rewrite: a custom host
-        // must answer /robots.txt, /sitemap.xml, /llms.txt and shard paths
-        // with merchant content, never the platform files.
-        const customShape =
-          /^\/(p|products|c|collections|pages|blog|cart|checkout|order|account|search|track|sitemap\.xml|sitemaps|robots\.txt|llms\.txt)(?=\/|$)/.exec(
-            url.pathname,
-          );
-        if (customHost && customShape) {
-          const { resolveStorefrontHostFor } =
-            await import("./lib/storefront-host.server");
-          const hostRes = await resolveStorefrontHostFor(customHost);
-          if (hostRes) {
-            const target = new URL(request.url);
-            target.pathname = `/store/${hostRes.merchantSlug}${url.pathname}`;
-            request = new Request(target, request);
-          }
-        }
-      } catch {
-        // A rewrite failure must never break routing — fall through to SSR.
-      }
+      // NOTE (custom-domain cutover, completed): every custom-shape path now
+      // has a dedicated host-gated root route (/p, /c, /pages, /search,
+      // /cart, /checkout, /account), so no internal rewrite is needed. An
+      // earlier rewrite mapped custom paths to /store/<slug>/* for SSR while
+      // the browser hydrated the custom route — different components on each
+      // side, hence React #418 on every deep page + the featured-store
+      // bounce. Deleted; do not re-add. OPEN: merchant robots/sitemap/llms
+      // on custom hosts (needs root SEO routes, not a rewrite).
 
       // Global Security Middleware: Enforce HTTPS
       const proto =

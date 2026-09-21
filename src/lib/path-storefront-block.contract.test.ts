@@ -87,10 +87,24 @@ describe("cutover wiring", () => {
     expect(src).not.toContain("storefronts are served");
   });
 
-  it("server.ts rewrites custom-host deep paths to /store/<slug> internally", () => {
+  it("server.ts does NOT rewrite custom paths (SSR/client route parity)", () => {
     const src = readFileSync("src/server.ts", "utf8");
-    expect(src).toContain("resolveStorefrontHostFor");
-    expect(src).toContain("/store/${hostRes.merchantSlug}");
+    expect(src).not.toContain("/store/${hostRes.merchantSlug}");
+    expect(src).toContain("Deleted; do not re-add");
+  });
+
+  it("custom-host root routes exist for every deep path", () => {
+    for (const file of [
+      "src/routes/p.$productSlug.tsx",
+      "src/routes/c.$collectionSlug.tsx",
+      "src/routes/pages.$pageSlug.tsx",
+      "src/routes/search.tsx",
+      "src/routes/cart.tsx",
+      "src/routes/checkout.tsx",
+    ]) {
+      const src = readFileSync(file, "utf8");
+      expect(src, file).toContain("resolveStorefrontHostFn");
+    }
   });
 
   it("host-explicit resolution exists for entry points", () => {
