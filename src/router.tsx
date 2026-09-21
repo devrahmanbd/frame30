@@ -1,7 +1,7 @@
 import { createRouter as createTanstackRouter } from "@tanstack/react-router";
 import { QueryClient } from "@tanstack/react-query";
 import { routeTree } from "./routeTree.gen";
-import { getCurrentNonce } from "./lib/ssr-nonce";
+import { currentNonce } from "./lib/ssr-nonce";
 import { shouldRetryQuery } from "./lib/should-retry-query";
 
 export const getRouter = () => {
@@ -30,10 +30,10 @@ export const getRouter = () => {
     defaultPreloadStaleTime: 60_000,
     ssr: {
       // Empty string and undefined render differently (nonce="" vs absent)
-      // and React flags it as a hydration mismatch (#418). Coerce: only a
-      // real nonce reaches the attribute; both sides agree otherwise.
-      nonce:
-        typeof window === "undefined" ? getCurrentNonce() || undefined : undefined,
+      // and React flags it as a hydration mismatch (#418). currentNonce()
+      // returns the identical value on both sides: the per-request store on
+      // the server, the injected csp-nonce meta on the client.
+      nonce: currentNonce(),
     },
   });
 };
