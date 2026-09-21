@@ -443,7 +443,9 @@ export function shapeStoreMenus(menus: readonly NavMenu[]): StoreMenus {
  * the header menu — a store with only a header menu still gets mobile
  * navigation instead of an empty drawer.
  */
-export function selectMobileMenu(menus: StoreMenus): MenuNode[] {
+export function selectMobileMenu(
+  menus: Pick<StoreMenus, "header" | "mobile">,
+): MenuNode[] {
   return menus.mobile.length > 0 ? menus.mobile : menus.header;
 }
 
