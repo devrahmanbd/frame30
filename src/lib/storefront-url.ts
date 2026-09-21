@@ -46,11 +46,11 @@ export function storePageUrlForMerchant(
   slug: string,
   pageSlug: string,
   preview = false,
+  isHomepage = false,
 ): string {
-  const url = storefrontPathForMerchant(
-    primaryHost,
-    slug,
-    `pages/${pageSlug}`,
-  );
+  // The designated homepage lives at the store root, not under /pages/.
+  const url = isHomepage
+    ? storefrontPathForMerchant(primaryHost, slug, "")
+    : storefrontPathForMerchant(primaryHost, slug, `pages/${pageSlug}`);
   return preview ? `${url}?preview=1` : url;
 }
