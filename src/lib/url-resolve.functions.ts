@@ -28,5 +28,6 @@ export const resolvePathFn = createServerFn({ method: "GET" })
     const loaded = await loadPublicArticle(resolution.slug);
     if (!loaded)
       return { resolution: { type: "miss" as const }, article: null };
-    return { resolution, article: loaded };
+    const { requestOrigin } = await import("./site-origin.server");
+    return { resolution, article: loaded, origin: requestOrigin() };
   });

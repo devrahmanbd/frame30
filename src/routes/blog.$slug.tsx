@@ -75,10 +75,16 @@ export const Route = createFileRoute("/blog/$slug")({
       return { meta, links, scripts };
     }
     const { article, merchant, author, category } = loaderData;
+    const origin =
+      "origin" in loaderData ? (loaderData.origin as string | null) : null;
     const title = article.meta_title ?? `${article.title} — Framique`;
     const description =
       article.meta_description ?? article.excerpt ?? article.title;
-    const canonical = article.canonical || `/blog/${article.slug}`;
+    const canonicalPath = article.canonical || `/blog/${article.slug}`;
+    const canonical =
+      origin && canonicalPath.startsWith("/")
+        ? `${origin}${canonicalPath}`
+        : canonicalPath;
     const meta = [
       { title },
       { name: "description", content: description },

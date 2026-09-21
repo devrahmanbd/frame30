@@ -40,6 +40,10 @@ export const Route = createFileRoute("/$")({
       };
     }
     const { article, merchant } = loaderData;
+    const origin =
+      "origin" in loaderData ? (loaderData.origin as string | null) : null;
+    const selfPath = article.canonical || loaderData.canonicalPath;
+    const absolute = origin ? `${origin}${selfPath}` : selfPath;
     const title =
       article.meta_title ??
       `${article.title} — ${merchant?.name ?? "Framique"}`;
@@ -64,9 +68,7 @@ export const Route = createFileRoute("/$")({
     }
     return {
       meta,
-      links: article.canonical
-        ? [{ rel: "canonical", href: article.canonical }]
-        : [],
+      links: [{ rel: "canonical", href: absolute }],
     };
   },
   errorComponent: () => (
