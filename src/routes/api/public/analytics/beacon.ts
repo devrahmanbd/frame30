@@ -102,7 +102,28 @@ export const Route = createFileRoute("/api/public/analytics/beacon")({
             },
           });
         } catch (err) {
-          const { captureError } = await import("@/lib/observability.server");
+          const { captureError, incr } = await import(
+            "@/lib/observability.server"
+          );
+          const message =
+            err instanceof Error ? err.message : String(err ?? "");
+          // The warehouse schema has not been migrated on every deployment
+          // (missing table/column). That is an owner migration task, not a
+          // shopper-facing failure: acknowledge without the 500 console noise
+          // and stay loud server-side so the gap cannot hide.
+          if (/relation .* does not exist|column .* does not exist/i.test(message)) {
+            incr("framique_analytics_degraded_total", {
+              reason: "schema_missing",
+            });
+            void captureError(err, {
+              route: "analytics.beacon",
+              degraded: "schema_missing",
+            });
+            return Response.json(
+              { accepted: 0, degraded: true },
+              { status: 202, headers: { "cache-control": "no-store" } },
+            );
+          }
           void captureError(err, { route: "analytics.beacon" });
           return Response.json({ error: "ingest_failed" }, { status: 500 });
         }

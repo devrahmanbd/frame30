@@ -29,7 +29,11 @@ export const getRouter = () => {
     // with no cooldown, fanning out into hundreds of server-function calls.
     defaultPreloadStaleTime: 60_000,
     ssr: {
-      nonce: typeof window === "undefined" ? getCurrentNonce() : undefined,
+      // Empty string and undefined render differently (nonce="" vs absent)
+      // and React flags it as a hydration mismatch (#418). Coerce: only a
+      // real nonce reaches the attribute; both sides agree otherwise.
+      nonce:
+        typeof window === "undefined" ? getCurrentNonce() || undefined : undefined,
     },
   });
 };

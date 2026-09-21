@@ -96,7 +96,11 @@ function RootDocument() {
       <head>
         <HeadContent />
         <script
-          nonce={typeof window === "undefined" ? getCurrentNonce() : undefined}
+          nonce={
+            typeof window === "undefined"
+              ? getCurrentNonce() || undefined
+              : undefined
+          }
           dangerouslySetInnerHTML={{
             __html: `
               try {
