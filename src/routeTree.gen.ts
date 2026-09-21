@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogDotatomRouteImport } from './routes/blog[.]atom'
 import { Route as BlogDotjsonRouteImport } from './routes/blog[.]json'
@@ -35,6 +36,7 @@ import { Route as SearchRouteImport } from './routes/search'
 import { Route as SecurityRouteImport } from './routes/security'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StatusRouteImport } from './routes/status'
+import { Route as TrackRouteImport } from './routes/track'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
@@ -48,6 +50,7 @@ import { Route as InvoiceTokenRouteImport } from './routes/invoice.$token'
 import { Route as LegalIndexRouteImport } from './routes/legal.index'
 import { Route as LegalDocRouteImport } from './routes/legal.$doc'
 import { Route as NewsletterVerifyRouteImport } from './routes/newsletter.verify'
+import { Route as OrderOrderIdRouteImport } from './routes/order.$orderId'
 import { Route as PProductSlugRouteImport } from './routes/p.$productSlug'
 import { Route as PagesPageSlugRouteImport } from './routes/pages.$pageSlug'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
@@ -236,6 +239,11 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -346,6 +354,11 @@ const StatusRoute = StatusRouteImport.update({
   path: '/status',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrackRoute = TrackRouteImport.update({
+  id: '/track',
+  path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
   path: '/unsubscribe',
@@ -409,6 +422,11 @@ const LegalDocRoute = LegalDocRouteImport.update({
 const NewsletterVerifyRoute = NewsletterVerifyRouteImport.update({
   id: '/newsletter/verify',
   path: '/newsletter/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrderOrderIdRoute = OrderOrderIdRouteImport.update({
+  id: '/order/$orderId',
+  path: '/order/$orderId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PProductSlugRoute = PProductSlugRouteImport.update({
@@ -792,9 +810,9 @@ const DocsVersionSlugRoute = DocsVersionSlugRouteImport.update({
 } as any)
 const OrderOrderIdConfirmationRoute =
   OrderOrderIdConfirmationRouteImport.update({
-    id: '/order/$orderId/confirmation',
-    path: '/order/$orderId/confirmation',
-    getParentRoute: () => rootRouteImport,
+    id: '/confirmation',
+    path: '/confirmation',
+    getParentRoute: () => OrderOrderIdRoute,
   } as any)
 const StoreSlugIndexRoute = StoreSlugIndexRouteImport.update({
   id: '/store/$slug/',
@@ -1354,6 +1372,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
@@ -1376,6 +1395,7 @@ export interface FileRoutesByFullPath {
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/status': typeof StatusRoute
+  '/track': typeof TrackRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -1386,6 +1406,7 @@ export interface FileRoutesByFullPath {
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/order/$orderId': typeof OrderOrderIdRouteWithChildren
   '/p/$productSlug': typeof PProductSlugRoute
   '/pages/$pageSlug': typeof PagesPageSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -1562,6 +1583,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
@@ -1583,6 +1605,7 @@ export interface FileRoutesByTo {
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/status': typeof StatusRoute
+  '/track': typeof TrackRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -1592,6 +1615,7 @@ export interface FileRoutesByTo {
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/order/$orderId': typeof OrderOrderIdRouteWithChildren
   '/p/$productSlug': typeof PProductSlugRoute
   '/pages/$pageSlug': typeof PagesPageSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -1770,6 +1794,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
@@ -1792,6 +1817,7 @@ export interface FileRoutesById {
   '/security': typeof SecurityRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/status': typeof StatusRoute
+  '/track': typeof TrackRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
@@ -1802,6 +1828,7 @@ export interface FileRoutesById {
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/order/$orderId': typeof OrderOrderIdRouteWithChildren
   '/p/$productSlug': typeof PProductSlugRoute
   '/pages/$pageSlug': typeof PagesPageSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -1980,6 +2007,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
+    | '/account'
     | '/auth'
     | '/blog.atom'
     | '/blog.json'
@@ -2002,6 +2030,7 @@ export interface FileRouteTypes {
     | '/security'
     | '/sitemap.xml'
     | '/status'
+    | '/track'
     | '/unsubscribe'
     | '/dashboard'
     | '/onboarding'
@@ -2012,6 +2041,7 @@ export interface FileRouteTypes {
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
+    | '/order/$orderId'
     | '/p/$productSlug'
     | '/pages/$pageSlug'
     | '/products/$productId'
@@ -2188,6 +2218,7 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
+    | '/account'
     | '/auth'
     | '/blog.atom'
     | '/blog.json'
@@ -2209,6 +2240,7 @@ export interface FileRouteTypes {
     | '/security'
     | '/sitemap.xml'
     | '/status'
+    | '/track'
     | '/unsubscribe'
     | '/onboarding'
     | '/blog/$slug'
@@ -2218,6 +2250,7 @@ export interface FileRouteTypes {
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
+    | '/order/$orderId'
     | '/p/$productSlug'
     | '/pages/$pageSlug'
     | '/products/$productId'
@@ -2395,6 +2428,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/$'
     | '/about'
+    | '/account'
     | '/auth'
     | '/blog.atom'
     | '/blog.json'
@@ -2417,6 +2451,7 @@ export interface FileRouteTypes {
     | '/security'
     | '/sitemap.xml'
     | '/status'
+    | '/track'
     | '/unsubscribe'
     | '/_authenticated/dashboard'
     | '/_authenticated/onboarding'
@@ -2427,6 +2462,7 @@ export interface FileRouteTypes {
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
+    | '/order/$orderId'
     | '/p/$productSlug'
     | '/pages/$pageSlug'
     | '/products/$productId'
@@ -2605,6 +2641,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   SplatRoute: typeof SplatRoute
   AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
   AuthRoute: typeof AuthRoute
   BlogDotatomRoute: typeof BlogDotatomRoute
   BlogDotjsonRoute: typeof BlogDotjsonRoute
@@ -2627,6 +2664,7 @@ export interface RootRouteChildren {
   SecurityRoute: typeof SecurityRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StatusRoute: typeof StatusRoute
+  TrackRoute: typeof TrackRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CCollectionSlugRoute: typeof CCollectionSlugRoute
@@ -2635,6 +2673,7 @@ export interface RootRouteChildren {
   InvoiceTokenRoute: typeof InvoiceTokenRoute
   LegalDocRoute: typeof LegalDocRoute
   NewsletterVerifyRoute: typeof NewsletterVerifyRoute
+  OrderOrderIdRoute: typeof OrderOrderIdRouteWithChildren
   PProductSlugRoute: typeof PProductSlugRoute
   PagesPageSlugRoute: typeof PagesPageSlugRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
@@ -2651,7 +2690,6 @@ export interface RootRouteChildren {
   BlogCategorySlugRoute: typeof BlogCategorySlugRoute
   BlogTagSlugRoute: typeof BlogTagSlugRoute
   DocsVersionSlugRoute: typeof DocsVersionSlugRoute
-  OrderOrderIdConfirmationRoute: typeof OrderOrderIdConfirmationRoute
   StoreSlugAccountRoute: typeof StoreSlugAccountRoute
   StoreSlugCartRoute: typeof StoreSlugCartRoute
   StoreSlugCheckoutRoute: typeof StoreSlugCheckoutRoute
@@ -2732,6 +2770,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -2888,6 +2933,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StatusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/unsubscribe': {
       id: '/unsubscribe'
       path: '/unsubscribe'
@@ -2977,6 +3029,13 @@ declare module '@tanstack/react-router' {
       path: '/newsletter/verify'
       fullPath: '/newsletter/verify'
       preLoaderRoute: typeof NewsletterVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order/$orderId': {
+      id: '/order/$orderId'
+      path: '/order/$orderId'
+      fullPath: '/order/$orderId'
+      preLoaderRoute: typeof OrderOrderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/p/$productSlug': {
@@ -3464,10 +3523,10 @@ declare module '@tanstack/react-router' {
     }
     '/order/$orderId/confirmation': {
       id: '/order/$orderId/confirmation'
-      path: '/order/$orderId/confirmation'
+      path: '/confirmation'
       fullPath: '/order/$orderId/confirmation'
       preLoaderRoute: typeof OrderOrderIdConfirmationRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof OrderOrderIdRoute
     }
     '/store/$slug/': {
       id: '/store/$slug/'
@@ -4455,11 +4514,24 @@ const RootRouteChildren: RootRouteChildren = {
 
 const RootRouteWithChildren = RootRoute._addFileChildren(RootRouteChildren)
 
+interface OrderOrderIdRouteChildren {
+  OrderOrderIdConfirmationRoute: typeof OrderOrderIdConfirmationRoute
+}
+
+const OrderOrderIdRouteChildren: OrderOrderIdRouteChildren = {
+  OrderOrderIdConfirmationRoute: OrderOrderIdConfirmationRoute,
+}
+
+const OrderOrderIdRouteWithChildren = OrderOrderIdRoute._addFileChildren(
+  OrderOrderIdRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   SplatRoute: SplatRoute,
   AboutRoute: AboutRoute,
+  AccountRoute: AccountRoute,
   AuthRoute: AuthRoute,
   BlogDotatomRoute: BlogDotatomRoute,
   BlogDotjsonRoute: BlogDotjsonRoute,
@@ -4482,6 +4554,7 @@ const rootRouteChildren: RootRouteChildren = {
   SecurityRoute: SecurityRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StatusRoute: StatusRoute,
+  TrackRoute: TrackRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   BlogSlugRoute: BlogSlugRoute,
   CCollectionSlugRoute: CCollectionSlugRoute,
@@ -4490,6 +4563,7 @@ const rootRouteChildren: RootRouteChildren = {
   InvoiceTokenRoute: InvoiceTokenRoute,
   LegalDocRoute: LegalDocRoute,
   NewsletterVerifyRoute: NewsletterVerifyRoute,
+  OrderOrderIdRoute: OrderOrderIdRouteWithChildren,
   PProductSlugRoute: PProductSlugRoute,
   PagesPageSlugRoute: PagesPageSlugRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
@@ -4506,7 +4580,6 @@ const rootRouteChildren: RootRouteChildren = {
   BlogCategorySlugRoute: BlogCategorySlugRoute,
   BlogTagSlugRoute: BlogTagSlugRoute,
   DocsVersionSlugRoute: DocsVersionSlugRoute,
-  OrderOrderIdConfirmationRoute: OrderOrderIdConfirmationRoute,
   StoreSlugAccountRoute: StoreSlugAccountRoute,
   StoreSlugCartRoute: StoreSlugCartRoute,
   StoreSlugCheckoutRoute: StoreSlugCheckoutRoute,
