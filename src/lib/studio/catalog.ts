@@ -564,6 +564,7 @@ export const WIDGETS: WidgetDef[] = [
       s2Image: "",
       s3Heading: "",
       s3Image: "",
+      items: [],
     },
   },
   {

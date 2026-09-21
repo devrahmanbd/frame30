@@ -316,3 +316,51 @@ describe("lookbook scalar-to-items migration", () => {
     expect(settings.items).toEqual([{ image: "/new.jpg", alt: "", href: "" }]);
   });
 });
+
+describe("hero scalar-to-items migration", () => {
+  function heroDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "h1", el: "hero", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds slides from heading/image plus s2/s3 pairs on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        heroDoc({
+          heading: "Welcome",
+          image: "/hero.jpg",
+          subheading: "Sub",
+          ctaLabel: "Shop",
+          ctaHref: "/c",
+          s2Heading: "Slide two",
+          s2Image: "/s2.jpg",
+          s3Heading: "",
+          s3Image: "",
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { heading: "Welcome", image: "/hero.jpg", subheading: "Sub", ctaLabel: "Shop", ctaHref: "/c" },
+      { heading: "Slide two", image: "/s2.jpg", subheading: "", ctaLabel: "Shop", ctaHref: "/c" },
+    ]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        heroDoc({
+          heading: "Old?",
+          items: [{ heading: "New?", image: "", subheading: "", ctaLabel: "", ctaHref: "" }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { heading: "New?", image: "", subheading: "", ctaLabel: "", ctaHref: "" },
+    ]);
+  });
+});

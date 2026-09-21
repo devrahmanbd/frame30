@@ -246,6 +246,7 @@ describe("ported theme widgets", () => {
     });
     expect(WIDGET_BY_KEY.announcement_bar.defaults.items).toEqual([]);
     expect(WIDGET_BY_KEY.lookbook.defaults.items).toEqual([]);
+    expect(WIDGET_BY_KEY.hero.defaults.items).toEqual([]);
     expect(WIDGET_BY_KEY.feature_row.defaults).toMatchObject({
       itemOne: "Cash on delivery",
       itemTwo: "Mobile payments",

@@ -1062,11 +1062,41 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "hero": {
-      const slides = [
-        { heading: str(s, "heading"), image: str(s, "image") },
-        { heading: str(s, "s2Heading"), image: str(s, "s2Image") },
-        { heading: str(s, "s3Heading"), image: str(s, "s3Image") },
-      ].filter((slide, index) => index === 0 || slide.heading || slide.image);
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          heading: String(row.heading ?? ""),
+          image: String(row.image ?? ""),
+          subheading: String(row.subheading ?? ""),
+          ctaLabel: String(row.ctaLabel ?? ""),
+          ctaHref: String(row.ctaHref ?? ""),
+        }))
+        .filter((slide) => slide.heading || slide.image);
+      const slides =
+        fromItems.length > 0
+          ? fromItems
+          : [
+              {
+                heading: str(s, "heading"),
+                image: str(s, "image"),
+                subheading: str(s, "subheading"),
+                ctaLabel: str(s, "ctaLabel"),
+                ctaHref: str(s, "ctaHref"),
+              },
+              {
+                heading: str(s, "s2Heading"),
+                image: str(s, "s2Image"),
+                subheading: "",
+                ctaLabel: str(s, "ctaLabel"),
+                ctaHref: str(s, "ctaHref"),
+              },
+              {
+                heading: str(s, "s3Heading"),
+                image: str(s, "s3Image"),
+                subheading: "",
+                ctaLabel: str(s, "ctaLabel"),
+                ctaHref: str(s, "ctaHref"),
+              },
+            ].filter((slide, index) => index === 0 || slide.heading || slide.image);
       const [index, setIndex] = useState(0);
       const active = slides[Math.min(index, slides.length - 1)]!;
       const center = str(s, "align", "left") === "center";
@@ -1077,13 +1107,13 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
           )}
           <div className="p-8">
             <h3 className="font-bangla-display text-3xl font-bold sm:text-4xl">{active.heading || "Welcome to our store"}</h3>
-            {index === 0 && str(s, "subheading") && (
-              <p className="mt-2 max-w-xl text-muted-foreground">{str(s, "subheading")}</p>
+            {index === 0 && active.subheading && (
+              <p className="mt-2 max-w-xl text-muted-foreground">{active.subheading}</p>
             )}
-            {str(s, "ctaLabel") && (
+            {active.ctaLabel && (
               <p className="mt-4">
-                <a href={str(s, "ctaHref") || "#"} className="inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
-                  {str(s, "ctaLabel")}
+                <a href={active.ctaHref || "#"} className="inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+                  {active.ctaLabel}
                 </a>
               </p>
             )}

@@ -771,12 +771,49 @@ const BundleOfferWidget: WidgetComponent = ({
 };
 
 /** Multi-slide hero. Slide one is the LCP candidate and always renders eager. */
-const HeroWidget: WidgetComponent = ({ str, Heading, locale }) => {
-  const slides = [
-    { heading: str("heading"), image: str("image") },
-    { heading: str("s2Heading"), image: str("s2Image") },
-    { heading: str("s3Heading"), image: str("s3Image") },
-  ].filter((slide, index) => index === 0 || slide.heading || slide.image);
+const HeroWidget: WidgetComponent = ({ str, Heading, locale, section }) => {
+  // Repeater-first (faq/trust_bar/lookbook precedent): studio `items` rows
+  // win when present; scalar heading/image + s2/s3 pairs remain as the
+  // fallback for theme-authored sections. Scalar rows copy the global
+  // ctaLabel/ctaHref and keep subheading on slide 1 only, reproducing the
+  // current global-CTA + first-slide-subheading behavior exactly.
+  const itemRows = Array.isArray(section.props.items)
+    ? section.props.items
+        .map((row) => ({
+          heading: typeof row.heading === "string" ? row.heading : "",
+          image: typeof row.image === "string" ? row.image : "",
+          subheading: typeof row.subheading === "string" ? row.subheading : "",
+          ctaLabel: typeof row.ctaLabel === "string" ? row.ctaLabel : "",
+          ctaHref: typeof row.ctaHref === "string" ? row.ctaHref : "",
+        }))
+        .filter((row) => row.heading || row.image)
+    : [];
+  const slides =
+    itemRows.length > 0
+      ? itemRows
+      : [
+          {
+            heading: str("heading"),
+            image: str("image"),
+            subheading: str("subheading"),
+            ctaLabel: str("ctaLabel"),
+            ctaHref: str("ctaHref"),
+          },
+          {
+            heading: str("s2Heading"),
+            image: str("s2Image"),
+            subheading: "",
+            ctaLabel: str("ctaLabel"),
+            ctaHref: str("ctaHref"),
+          },
+          {
+            heading: str("s3Heading"),
+            image: str("s3Image"),
+            subheading: "",
+            ctaLabel: str("ctaLabel"),
+            ctaHref: str("ctaHref"),
+          },
+        ].filter((slide, index) => index === 0 || slide.heading || slide.image);
   const [index, setIndex] = useState(0);
   const active = slides[Math.min(index, slides.length - 1)]!;
   return (
@@ -799,17 +836,17 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale }) => {
         <Heading className="font-bangla-display text-3xl font-bold sm:text-4xl">
           {active.heading}
         </Heading>
-        {index === 0 && str("subheading") && (
+        {index === 0 && active.subheading && (
           <p className="mt-2 max-w-xl text-muted-foreground">
-            {str("subheading")}
+            {active.subheading}
           </p>
         )}
-        {str("ctaLabel") && (
+        {active.ctaLabel && (
           <a
-            href={str("ctaHref") || "#"}
+            href={active.ctaHref || "#"}
             className="mt-4 inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
           >
-            {str("ctaLabel")}
+            {active.ctaLabel}
           </a>
         )}
         {slides.length > 1 && (

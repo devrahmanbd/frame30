@@ -170,6 +170,7 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
   if (raw.el === "trust_bar") seedTrustItems(node);
   if (raw.el === "announcement_bar") seedAnnouncementItems(node);
   if (raw.el === "lookbook") seedLookbookItems(node);
+  if (raw.el === "hero") seedHeroItems(node);
   return node;
 }
 
@@ -213,6 +214,42 @@ function seedAnnouncementItems(node: StudioNode): void {
     if (typeof m === "string" && m.trim()) seeded.push({ text: m });
   }
   if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
+}
+
+/**
+ * Repeater migration (hero): slide 1 is implicit in top-level
+ * heading/image/subheading/ctaLabel/ctaHref, slides 2-3 in s2/s3 pairs.
+ * Seed mirrors the scalar keep-first filter: slide 1 is always kept when
+ * any slide has content, sN slides only when heading/image non-empty.
+ * Author-edited `items` are never overwritten.
+ */
+function seedHeroItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const text = (v: unknown): string => (typeof v === "string" ? v : "");
+  const slide0 = {
+    heading: text(s.heading),
+    image: text(s.image),
+    subheading: text(s.subheading),
+    ctaLabel: text(s.ctaLabel),
+    ctaHref: text(s.ctaHref),
+  };
+  const slideN = (n: 2 | 3): { heading: string; image: string } | null => {
+    const heading = text(s[`s${n}Heading`]);
+    const image = text(s[`s${n}Image`]);
+    return heading || image ? { heading, image } : null;
+  };
+  const ctaLabel = text(s.ctaLabel);
+  const ctaHref = text(s.ctaHref);
+  const seeded: Record<string, string>[] = [];
+  const s2 = slideN(2);
+  const s3 = slideN(3);
+  if (slide0.heading || slide0.image || s2 || s3) {
+    seeded.push(slide0);
+    if (s2) seeded.push({ ...s2, subheading: "", ctaLabel, ctaHref });
+    if (s3) seeded.push({ ...s3, subheading: "", ctaLabel, ctaHref });
     node.settings = { ...node.settings, items: seeded };
   }
 }

@@ -1705,10 +1705,20 @@ const CONTENT: Record<string, Control[]> = {
     c({ key: "offset", label: "Offset tiles", type: "switch", tab: "content", section: "Lookbook" }),
   ],
   hero: [
-    c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Hero" }),
-    c({ key: "subheading", label: "Subheading", type: "text", tab: "content", section: "Hero" }),
-    c({ key: "ctaLabel", label: "CTA label", type: "text", tab: "content", section: "Hero" }),
-    c({ key: "ctaHref", label: "CTA link", type: "text", tab: "content", section: "Hero" }),
+    c({
+      key: "items",
+      label: "Slides",
+      type: "repeater",
+      tab: "content",
+      section: "Slides",
+      fields: [
+        c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Slides" }),
+        c({ key: "image", label: "Image URL", type: "text", tab: "content", section: "Slides" }),
+        c({ key: "subheading", label: "Subheading", type: "text", tab: "content", section: "Slides" }),
+        c({ key: "ctaLabel", label: "Button label", type: "text", tab: "content", section: "Slides" }),
+        c({ key: "ctaHref", label: "Button link", type: "text", tab: "content", section: "Slides" }),
+      ],
+    }),
     c({
       key: "align",
       label: "Alignment",
@@ -1720,11 +1730,6 @@ const CONTENT: Record<string, Control[]> = {
         { value: "center", label: "Center" },
       ],
     }),
-    c({ key: "image", label: "Image URL", type: "text", tab: "content", section: "Hero" }),
-    c({ key: "s2Heading", label: "Slide 2 heading", type: "text", tab: "content", section: "Slides" }),
-    c({ key: "s2Image", label: "Slide 2 image", type: "text", tab: "content", section: "Slides" }),
-    c({ key: "s3Heading", label: "Slide 3 heading", type: "text", tab: "content", section: "Slides" }),
-    c({ key: "s3Image", label: "Slide 3 image", type: "text", tab: "content", section: "Slides" }),
   ],
   textile_showcase: [
     c({ key: "headline", label: "Headline", type: "text", tab: "content", section: "Showcase" }),
