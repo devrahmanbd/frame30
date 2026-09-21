@@ -310,6 +310,19 @@ function DomainsPage() {
         </InlineNote>
       )}
 
+      {(() => {
+        const atCap = data.domains.length >= (data.limit ?? 1);
+        if (atCap) {
+          return (
+            <InlineNote tone="info">
+              {t(
+                "One domain per store — remove the current domain to connect a different one.",
+                "প্রতি স্টোরে একটি ডোমেইন — ভিন্ন ডোমেইন যুক্ত করতে বর্তমানটি সরান।",
+              )}
+            </InlineNote>
+          );
+        }
+        return (
       <SectionCard
         title={t("Connect a domain", "ডোমেইন যুক্ত করুন")}
         hint={t(
@@ -360,6 +373,8 @@ function DomainsPage() {
           </button>
         </form>
       </SectionCard>
+        );
+      })()}
 
       {data.domains.length === 0 && (
         <p className="rounded-fq-md border border-dashed border-border p-6 text-center text-sm text-muted-foreground">

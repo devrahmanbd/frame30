@@ -239,11 +239,27 @@ export async function listDomains(
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false });
     if (error) throw new DomainError(error.message, 500);
+    // The UI hides the add form at this quota: report the real per-plan
+    // quota (single-store MVP: 1), not the list-page cap.
+    let quota = MAX_DOMAINS_PER_MERCHANT;
+    try {
+      const { data: sub } = await db
+        .from("subscriptions")
+        .select("plan")
+        .eq("merchant_id", merchantId)
+        .maybeSingle();
+      quota = domainQuotaForPlan(
+        ((sub as { plan?: string } | null)?.plan ?? "launch") as
+          "launch" | "growth" | "business" | "enterprise",
+      );
+    } catch {
+      quota = 1;
+    }
     return {
       domains: (data ?? []).map(toView),
       target: edgeTarget(),
       edgeConfigured: Boolean(process.env["DOMAIN_EDGE_HOOK_URL"]),
-      limit: MAX_DOMAINS_PER_MERCHANT,
+      limit: quota,
     };
   });
 }
