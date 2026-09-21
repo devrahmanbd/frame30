@@ -135,16 +135,40 @@ const EditorialHero: WidgetComponent = (ctx) => {
 /* -------------------------------------------------------------- lookbook */
 
 const Lookbook: WidgetComponent = (ctx) => {
-  const { str, bool, Heading } = ctx;
+  const { str, bool, Heading, section } = ctx;
   const offset = bool("offset");
-  const tiles = [1, 2, 3, 4]
-    .map((n) => ({
-      src: str(`i${n}Image`),
-      alt: str(`i${n}Alt`),
-      href: str(`i${n}Href`),
-      ratio: n % 2 === 0 ? ("portrait" as const) : ("landscape" as const),
-    }))
-    .filter((tile) => tile.src);
+  // Repeater-first (faq/trust_bar precedent): studio `items` rows win when
+  // present, scalar i1..i4 triples remain as the fallback for
+  // theme-authored sections. Ratio alternation is index-based so both
+  // paths paint identically.
+  const itemRows = Array.isArray(section.props.items)
+    ? section.props.items
+        .map((row) => ({
+          image: typeof row.image === "string" ? row.image : "",
+          alt: typeof row.alt === "string" ? row.alt : "",
+          href: typeof row.href === "string" ? row.href : "",
+        }))
+        .filter((row) => row.image)
+    : [];
+  const tiles =
+    itemRows.length > 0
+      ? itemRows.map((row, index) => ({
+          src: row.image,
+          alt: row.alt,
+          href: row.href,
+          ratio:
+            index % 2 === 1
+              ? ("portrait" as const)
+              : ("landscape" as const),
+        }))
+      : [1, 2, 3, 4]
+          .map((n) => ({
+            src: str(`i${n}Image`),
+            alt: str(`i${n}Alt`),
+            href: str(`i${n}Href`),
+            ratio: n % 2 === 0 ? ("portrait" as const) : ("landscape" as const),
+          }))
+          .filter((tile) => tile.src);
   if (tiles.length === 0) return null;
   return (
     <section>

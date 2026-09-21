@@ -245,6 +245,7 @@ describe("ported theme widgets", () => {
       rotateMs: 6000,
     });
     expect(WIDGET_BY_KEY.announcement_bar.defaults.items).toEqual([]);
+    expect(WIDGET_BY_KEY.lookbook.defaults.items).toEqual([]);
     expect(WIDGET_BY_KEY.feature_row.defaults).toMatchObject({
       itemOne: "Cash on delivery",
       itemTwo: "Mobile payments",

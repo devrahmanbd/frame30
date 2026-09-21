@@ -169,6 +169,7 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
   if (raw.el === "faq" || raw.el === "product_qna") seedQaItems(node);
   if (raw.el === "trust_bar") seedTrustItems(node);
   if (raw.el === "announcement_bar") seedAnnouncementItems(node);
+  if (raw.el === "lookbook") seedLookbookItems(node);
   return node;
 }
 
@@ -210,6 +211,32 @@ function seedAnnouncementItems(node: StudioNode): void {
   for (let i = 1; i <= 3; i += 1) {
     const m = s[`m${i}`];
     if (typeof m === "string" && m.trim()) seeded.push({ text: m });
+  }
+  if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
+}
+
+/**
+ * Repeater migration (lookbook): pages saved with scalar iNImage/iNAlt/
+ * iNHref triples get `items` seeded on load. Author-edited `items` are
+ * never overwritten. Scalars stay for theme pass-through.
+ */
+function seedLookbookItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const seeded: { image: string; alt: string; href: string }[] = [];
+  for (let i = 1; i <= 4; i += 1) {
+    const image = s[`i${i}Image`];
+    if (typeof image === "string" && image) {
+      const alt = s[`i${i}Alt`];
+      const href = s[`i${i}Href`];
+      seeded.push({
+        image,
+        alt: typeof alt === "string" ? alt : "",
+        href: typeof href === "string" ? href : "",
+      });
+    }
   }
   if (seeded.length > 0) {
     node.settings = { ...node.settings, items: seeded };

@@ -1690,11 +1690,18 @@ const CONTENT: Record<string, Control[]> = {
   ],
   lookbook: [
     c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Lookbook" }),
-    ...[1, 2, 3, 4].flatMap((i) => [
-      c({ key: `i${i}Image`, label: `Image ${i} URL`, type: "text", tab: "content", section: `Tile ${i}` }),
-      c({ key: `i${i}Alt`, label: `Image ${i} alt`, type: "text", tab: "content", section: `Tile ${i}` }),
-      c({ key: `i${i}Href`, label: `Image ${i} link`, type: "text", tab: "content", section: `Tile ${i}` }),
-    ]),
+    c({
+      key: "items",
+      label: "Tiles",
+      type: "repeater",
+      tab: "content",
+      section: "Lookbook",
+      fields: [
+        c({ key: "image", label: "Image URL", type: "text", tab: "content", section: "Lookbook" }),
+        c({ key: "alt", label: "Alt text", type: "text", tab: "content", section: "Lookbook" }),
+        c({ key: "href", label: "Link", type: "text", tab: "content", section: "Lookbook" }),
+      ],
+    }),
     c({ key: "offset", label: "Offset tiles", type: "switch", tab: "content", section: "Lookbook" }),
   ],
   hero: [

@@ -1023,13 +1023,23 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "lookbook": {
-      const tiles = [1, 2, 3, 4]
-        .map((n) => ({
-          src: str(s, `i${n}Image`),
-          alt: str(s, `i${n}Alt`),
-          href: str(s, `i${n}Href`),
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          src: String(row.image ?? ""),
+          alt: String(row.alt ?? ""),
+          href: String(row.href ?? ""),
         }))
         .filter((tile) => tile.src);
+      const tiles =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3, 4]
+              .map((n) => ({
+                src: str(s, `i${n}Image`),
+                alt: str(s, `i${n}Alt`),
+                href: str(s, `i${n}Href`),
+              }))
+              .filter((tile) => tile.src);
       if (tiles.length === 0) return <Placeholder label="Add a lookbook image" />;
       const offset = s.offset !== false;
       return (

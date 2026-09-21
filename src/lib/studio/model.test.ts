@@ -276,3 +276,43 @@ describe("announcement_bar scalar-to-items migration", () => {
     expect(settings.items).toEqual([{ text: "New!" }]);
   });
 });
+
+describe("lookbook scalar-to-items migration", () => {
+  function lookbookDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "l1", el: "lookbook", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds items from scalar image/alt/href triples on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        lookbookDoc({
+          i1Image: "/a.jpg",
+          i1Alt: "Look 1",
+          i1Href: "/c/1",
+          i2Image: "",
+          i2Alt: "",
+          i2Href: "",
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ image: "/a.jpg", alt: "Look 1", href: "/c/1" }]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        lookbookDoc({
+          i1Image: "/old.jpg",
+          items: [{ image: "/new.jpg", alt: "", href: "" }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ image: "/new.jpg", alt: "", href: "" }]);
+  });
+});

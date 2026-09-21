@@ -544,6 +544,7 @@ export const WIDGETS: WidgetDef[] = [
       i4Alt: "",
       i4Href: "",
       offset: true,
+      items: [],
     },
   },
   {
