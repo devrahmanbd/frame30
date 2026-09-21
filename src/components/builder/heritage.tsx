@@ -50,7 +50,9 @@ const HeroCarousel: WidgetComponent = ({
   const slides = rowsOf(section, "slides").map((row) => ({
     image: readString(row, "image"),
     headline: readString(row, "headline"),
+    headlineBn: readString(row, "headline_bn"),
     subhead: readString(row, "subhead"),
+    subheadBn: readString(row, "subhead_bn"),
     ctaLabel: readString(row, "ctaLabel"),
     ctaUrl: readString(row, "ctaUrl"),
     caption: readString(row, "caption"),
@@ -119,12 +121,22 @@ const HeroCarousel: WidgetComponent = ({
         {/* Content overlay */}
         <div className="absolute inset-0 flex flex-col items-start justify-end bg-gradient-to-t from-black/60 via-black/20 to-transparent p-6 sm:p-12">
           <div className="max-w-2xl">
+            {slide.headlineBn && (
+              <p
+                lang="bn"
+                className="font-bangla-display text-2xl font-bold leading-tight text-primary-foreground sm:text-4xl"
+              >
+                {slide.headlineBn}
+              </p>
+            )}
             <Heading className="text-3xl font-bold leading-tight text-primary-foreground sm:text-5xl">
               {slide.headline}
             </Heading>
             {slide.subhead && (
               <p className="mt-3 max-w-lg text-base text-primary-foreground/80 sm:text-lg">
-                {slide.subhead}
+                {locale === "bn" && slide.subheadBn
+                  ? slide.subheadBn
+                  : slide.subhead}
               </p>
             )}
             {slide.ctaLabel && (

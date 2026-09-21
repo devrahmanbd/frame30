@@ -2273,6 +2273,7 @@ function clothingHeritage(): ThemePreset {
             slides: [
               {
                 headline: "The Festive Drop '26 is here",
+                headline_bn: "উৎসব কালেকশন ’২৬ এসে গেছে",
                 subhead: "Pure silk panjabis, Jamdani sarees & wedding finery — woven for the season of celebrations",
                 ctaLabel: "Shop festive",
                 ctaUrl: "/collections/eid-festive",
@@ -2280,6 +2281,7 @@ function clothingHeritage(): ThemePreset {
               },
               {
                 headline: "Woven with patience, worn with pride",
+                headline_bn: "যত্নে বোনা, গর্বে পরা",
                 subhead: "Tangail & Jamdani handloom — a living craft legacy",
                 ctaLabel: "Explore the collection",
                 ctaUrl: "/collections/all",
@@ -2287,6 +2289,7 @@ function clothingHeritage(): ThemePreset {
               },
               {
                 headline: "65,000+ rural artisans empowered",
+                headline_bn: "৬৫,০০০+ গ্রামীণ কারিগরের পাশে",
                 subhead: "Fair-trade handloom from 64 districts",
                 ctaLabel: "Our story",
                 ctaUrl: "/pages/about",
