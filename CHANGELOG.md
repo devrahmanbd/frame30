@@ -214,6 +214,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - RLS audit (live): writes clean; public reads uneven (products +
   store_themes world-readable incl. drafts; variants properly gated).
 
+## [2026-09-21] — curated two-theme offer (`f5f0a36`, deployed)
+- Appearance grids show Supershop + Clothing Heritage only; active
+  theme exempt so the live storefront stays manageable. Reversible.
+- Contract: 23/23 appearance suite (2 new). tsc: only pre-existing
+  drift. Deploy contract green.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.

@@ -110,3 +110,8 @@ verify on production; push to GitHub.
   breach path for prices/stock (variant-gated), but draft disclosure.
 - TODO next: API cross-tenant audit (unscoped merchant_id scan over
   *.functions.ts) + decide products/store_themes public-read tightening.
+- [x] Curated two-theme offer (`f5f0a36`, deployed): installed grid +
+  catalogue filtered to Supershop + Clothing Heritage via pure-layer
+  VISIBLE_THEME_KEYS; active theme always stays visible. 23/23 suite.
+  Verified live: Rupaboti context shows 1 installed (itself, active);
+  fresh 18:29 CEST bundle serving f5f0a36.
