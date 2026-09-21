@@ -1,6 +1,24 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createMiddleware, createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { MERCHANT_AI_ENABLED } from "./merchant-ai";
+
+/**
+ * Merchant AI kill-switch (Sept 2026, operator decision): gateway
+ * configuration, merchant copilot and AI triage are platform-operated
+ * only. Denies the control RPCs even if their UI is reached directly —
+ * hiding links alone never closes an API. askAssistantFn (public
+ * storefront assistant) and /dashboard/support (support.functions.ts)
+ * are intentionally NOT gated here.
+ */
+export const requireMerchantAi = createMiddleware({ type: "function" }).server(
+  async ({ next }) => {
+    if (!MERCHANT_AI_ENABLED) {
+      throw new Error("ai_disabled_for_merchants");
+    }
+    return next();
+  },
+);
 
 const askSchema = z.object({
   slug: z.string().min(1).max(80),
@@ -29,7 +47,7 @@ export const askAssistantFn = createServerFn({ method: "POST" })
   });
 
 export const supportInboxFn = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireSupabaseAuth, requireMerchantAi])
   .handler(async ({ context }) => {
     const { listConversations, computeStats, SUGGESTIONS } =
       await import("./ai-support-admin.server");
@@ -48,7 +66,7 @@ export const supportInboxFn = createServerFn({ method: "GET" })
   });
 
 export const supportThreadFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireSupabaseAuth, requireMerchantAi])
   .inputValidator((d: unknown) =>
     z.object({ conversationId: z.string().uuid() }).parse(d),
   )
@@ -63,7 +81,7 @@ export const supportThreadFn = createServerFn({ method: "POST" })
   });
 
 export const supportReplyFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireSupabaseAuth, requireMerchantAi])
   .inputValidator((d: unknown) =>
     z
       .object({
@@ -88,7 +106,7 @@ export const supportReplyFn = createServerFn({ method: "POST" })
   });
 
 export const supportStatusFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireSupabaseAuth, requireMerchantAi])
   .inputValidator((d: unknown) =>
     z
       .object({
@@ -113,7 +131,7 @@ export const supportStatusFn = createServerFn({ method: "POST" })
   });
 
 export const getAiGatewayConfigFn = createServerFn({ method: "GET" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireSupabaseAuth, requireMerchantAi])
   .handler(async () => {
     const { getAiGatewayConfig, maskApiKey } =
       await import("./support-embed.server");
@@ -141,7 +159,7 @@ const probeSchema = z.object({
 });
 
 export const testAiGatewayProbeFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireSupabaseAuth, requireMerchantAi])
   .inputValidator((d: unknown) => probeSchema.parse(d))
   .handler(async ({ data }) => {
     const started = Date.now();
@@ -190,7 +208,7 @@ const updateConfigSchema = z.object({
 });
 
 export const updateAiGatewayConfigFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireSupabaseAuth, requireMerchantAi])
   .inputValidator((d: unknown) => updateConfigSchema.parse(d))
   .handler(async ({ data }) => {
     const { stageAndPromoteConfig } = await import("./dynamic-config.server");
@@ -223,7 +241,7 @@ const copilotChatSchema = z.object({
 });
 
 export const aiCopilotChatFn = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireSupabaseAuth, requireMerchantAi])
   .inputValidator((d: unknown) => copilotChatSchema.parse(d))
   .handler(async ({ data }) => {
     const { screenInbound, screenOutbound } =

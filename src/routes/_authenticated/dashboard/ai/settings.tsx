@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { MERCHANT_AI_ENABLED } from "@/lib/merchant-ai";
 import { useServerFn } from "@tanstack/react-start";
 import {
   getAiGatewayConfigFn,
@@ -9,6 +10,10 @@ import {
 import { useLang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/_authenticated/dashboard/ai/settings")({
+  // Merchant AI is platform-only: direct URLs bounce to the dashboard.
+  beforeLoad: () => {
+    if (!MERCHANT_AI_ENABLED) throw redirect({ to: "/dashboard", replace: true });
+  },
   loader: () => getAiGatewayConfigFn(),
   head: () => ({
     meta: [

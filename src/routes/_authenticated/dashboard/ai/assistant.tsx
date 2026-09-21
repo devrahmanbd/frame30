@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import { MERCHANT_AI_ENABLED } from "@/lib/merchant-ai";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import {
@@ -30,6 +31,11 @@ import {
 import { Page, Badge } from "@/components/console/kit";
 
 export const Route = createFileRoute("/_authenticated/dashboard/ai/assistant")({
+  // Merchant AI is platform-only: direct URLs bounce to the dashboard.
+  // The merchant↔Framique support channel (/dashboard/support) is untouched.
+  beforeLoad: () => {
+    if (!MERCHANT_AI_ENABLED) throw redirect({ to: "/dashboard", replace: true });
+  },
   loader: () => supportInboxFn(),
   head: () => ({
     meta: [
