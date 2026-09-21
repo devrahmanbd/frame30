@@ -368,8 +368,11 @@ export function ThemesScreen() {
           <Card title="How themes work">
             <p className="text-sm fq-sub">
               Activating a theme replaces your storefront layout with that
-              theme's templates and colours. Your products, pages and posts are
-              never touched, and you can switch back at any time.
+              theme&apos;s templates and colours. Switching themes never
+              touches your content — but importing demo data overwrites any
+              products, pages, posts or media with matching names, after an
+              explicit confirmation listing every conflict. You can switch
+              back at any time.
             </p>
           </Card>
 
