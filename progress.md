@@ -139,3 +139,15 @@ verify on production; push to GitHub.
 - Deployed main: 17/17 contract checks green (platform /store/* 404s,
   microscrop.shop/ + /cart 200, placeholder API 200).
 - Live re-check as flamedev7: General dup-tabs 0, 2FA card absent.
+
+## Heritage v2 complete-theme loop (Sept 21) — AUTONOMOUS
+- Spec: docs/superpowers/specs/2026-09-21-heritage-complete-store-design.md
+  (builds on Sept-20 spec, 8/8 shipped; grounded in 5 live ref screenshots).
+- Audit: all 8 TemplateKeys present; PDP deep (reviews/size/fit/care);
+  95 demo products, 0 real images; finders exist but buried; no gates run.
+- TODO:
+- [ ] Slice 1: campaign homepage (hero copy, occasion entry, lookbook, UGC)
+- [ ] Slice 2: Bangla display identity
+- [ ] Slice 3: demo imagery direction (crop-safe seeds, no hotlinking)
+- [ ] Slice 4: Lighthouse + a11y gates, COD test order
+- [ ] Slice 5: versioned v2 release via publish pipeline
