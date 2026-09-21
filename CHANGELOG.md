@@ -226,6 +226,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   and /dashboard/support intentionally untouched.
 - Contract: 4 new gate tests green. Deploy contract green.
 
+## [2026-09-21] — marketplace curated offer + infra incident (`2b07c60`)
+- listCatalog filters themes server-side (same allowlist); widgets and
+  installs untouched. Bridge tests updated (10/10).
+- Disk-full outage: WAL 60G + shared usage → postgres crash loop.
+  Journal vacuum freed 3.4G, DB recovered, app green. WAL pruning left
+  for DR owner (PITR chain intact).
+- Deploy gap found: silent fetch failure built stale bundle; re-deploy
+  + live catalogue check ("2 Themes") closed it.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.

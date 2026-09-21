@@ -115,8 +115,14 @@ verify on production; push to GitHub.
   denied). Support channel (/dashboard/support) untouched. Verified
   live: ai/* URLs bounce to dashboard, nav has no AI entries. 4 new
   gate tests green.
-- [x] Curated two-theme offer (`f5f0a36`, deployed): installed grid +
-  catalogue filtered to Supershop + Clothing Heritage via pure-layer
-  VISIBLE_THEME_KEYS; active theme always stays visible. 23/23 suite.
-  Verified live: Rupaboti context shows 1 installed (itself, active);
-  fresh 18:29 CEST bundle serving f5f0a36.
+- [x] Curated two-theme offer (`f5f0a36` + `2b07c60`, live): grid,
+  add-catalogue AND marketplace catalogue (server-side listCatalog)
+  filtered to Supershop + Clothing Heritage. Verified live: "2 Themes",
+  only demo-product text mentions others. Bridge tests rewritten.
+- INFRA incident same run: disk hit 100% (WAL archive 60G unpruned +
+  shared-box usage) → postgres crash-loop → /cart 307 + deploy verify
+  fail. Freed 3.4G journal, DB healthy, app 200s. WAL retention still
+  open (52 segs/hour) — needs owner decision, NOT auto-deleted.
+- Deploy lesson: deploy script's silent fetch can build stale code
+  (19:44 build lacked the filter); re-deploy fixed. Verify-after-
+  deploy is mandatory, not optional.
