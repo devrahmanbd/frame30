@@ -42,7 +42,9 @@ export const menuCreateFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { createMenu } = await import("./menu.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return { menu: await createMenu(context.supabase, merchantId, data.name) };
+    const menu = await createMenu(context.supabase, merchantId, data.name);
+    await purgeMenus(merchantId, "menu_created");
+    return { menu };
   });
 
 export const menuSaveFn = createServerFn({ method: "POST" })
@@ -60,7 +62,9 @@ export const menuSaveFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { saveMenu } = await import("./menu.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return { menu: await saveMenu(context.supabase, merchantId, data) };
+    const menu = await saveMenu(context.supabase, merchantId, data);
+    await purgeMenus(merchantId, "menu_saved");
+    return { menu };
   });
 
 export const menuDeleteFn = createServerFn({ method: "POST" })
@@ -72,5 +76,21 @@ export const menuDeleteFn = createServerFn({ method: "POST" })
     const { deleteMenu } = await import("./menu.server");
     const merchantId = await scope(context.supabase, context.userId);
     await deleteMenu(context.supabase, merchantId, data.menuId);
+    await purgeMenus(merchantId, "menu_deleted");
     return { ok: true as const };
   });
+
+/**
+ * Phase 16 T4: menus ride the storefront payloads, so a save/create/delete
+ * purges this tenant's prefix — the same publish-purge pattern themes use
+ * (`purgeStorefront("publish", merchantId)`). Tenant-scoped, never the bare
+ * `storefront:` prefix. A cache failure must never fail the menu mutation.
+ */
+async function purgeMenus(merchantId: string, reason: string): Promise<void> {
+  try {
+    const { purgeStorefront } = await import("../themes.server");
+    purgeStorefront(reason, merchantId);
+  } catch {
+    // Menu writes win; the edge TTL still bounds staleness.
+  }
+}

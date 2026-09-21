@@ -31,9 +31,26 @@ function themeDb(active: boolean) {
   return fakeDb({
     tables: {
       store_themes: [
-        { id: THEME, merchant_id: MERCHANT, name: "T", is_active: active },
+        {
+          id: THEME,
+          merchant_id: MERCHANT,
+          name: "T",
+          is_active: active,
+          // Activation requires a reviewed published version (guard T3+I4).
+          published_version_id: "ver-published",
+        },
       ],
-      theme_versions: [],
+      theme_versions: [
+        {
+          id: "ver-published",
+          merchant_id: MERCHANT,
+          theme_id: THEME,
+          version: 1,
+          status: "published",
+          templates: { index: { header: [], main: [], footer: [] } },
+          tokens: {},
+        },
+      ],
       theme_drafts: [],
       theme_audit: [],
     },

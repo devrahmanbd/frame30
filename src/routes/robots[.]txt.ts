@@ -6,10 +6,43 @@ export const Route = createFileRoute("/robots.txt")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        const { listPublicStores } = await import("@/lib/marketing.server");
         const { marketingAllowPaths, MARKETING_ROUTES } =
           await import("@/lib/marketing-seo");
-        const origin = new URL(request.url).origin;
+        const { requestOrigin } = await import("@/lib/site-origin.server");
+        const origin = requestOrigin() ?? new URL(request.url).origin;
+        // Custom host: this merchant's robots + sitemap pointer. Platform
+        // hosts fall through to the marketing document below.
+        try {
+          const { resolveStorefrontHost } = await import(
+            "@/lib/storefront-host.server"
+          );
+          const host = await resolveStorefrontHost();
+          if (host) {
+            return new Response(
+              [
+                "User-agent: *",
+                "Allow: /",
+                "Disallow: /cart",
+                "Disallow: /checkout",
+                "Disallow: /account",
+                "Disallow: /order",
+                "",
+                `Sitemap: ${origin}/sitemap.xml`,
+                "",
+                `# llms.txt: ${origin}/llms.txt`,
+                "",
+              ].join("\n"),
+              {
+                headers: {
+                  "content-type": "text/plain; charset=utf-8",
+                  "cache-control": "public, max-age=3600",
+                },
+              },
+            );
+          }
+        } catch {
+          // Fall through to the platform document.
+        }
         const lines = [
           "User-agent: *",
           "Allow: /",
@@ -35,9 +68,10 @@ export const Route = createFileRoute("/robots.txt")({
           "",
           `Sitemap: ${origin}/sitemap.xml`,
         ];
-        for (const store of await listPublicStores()) {
-          lines.push(`Sitemap: ${origin}/store/${store.slug}/sitemap.xml`);
-        }
+        // NOTE: per-store /store/<slug>/sitemap.xml locs are intentionally
+        // absent — path storefronts are retired (410), so advertising them
+        // would submit dead URLs. Stores are discovered via their own
+        // domains (see the custom-host branch above).
         // Answer engines get the marketing map the same way each store
         // advertises its own; a plain-text pointer costs nothing and saves a
         // crawler six page fetches to learn what the product is.

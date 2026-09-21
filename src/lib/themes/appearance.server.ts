@@ -48,12 +48,14 @@ type Row = {
   tags: string[] | null;
   auto_update: boolean;
   favourite: boolean;
+  /** Live pointer: the reviewed version the storefront renders. */
+  published_version_id: string | null;
   /** Nullable live: pre-existing rows were written without a timestamp. */
   installed_at: string | null;
 };
 
 const SELECT =
-  "id, name, is_active, source_listing_slug, source_version, screenshot_url, author, description, tags, auto_update, favourite, installed_at";
+  "id, name, is_active, source_listing_slug, source_version, screenshot_url, author, description, tags, auto_update, favourite, published_version_id, installed_at";
 
 function toInstalled(row: Row, latest: Map<string, string>): InstalledTheme {
   const key = row.source_listing_slug;
@@ -295,9 +297,131 @@ export async function installCatalogTheme(
 }
 
 /**
+ * Activation guard: resolve the reviewed published version that goes live.
+ *
+ * The storefront only renders the version named by `published_version_id`
+ * with `status = published`, so activation adopts that pointer when it is
+ * valid, otherwise the newest *published* version — never MAX(version),
+ * which may be an unreviewed draft. Drafts are never auto-published here:
+ * unreviewed content reaches shoppers only through the publish gates. When
+ * the theme has nothing publishable the call throws instead of leaving an
+ * active-but-empty storefront behind.
+ */
+async function resolvePublishedVersionId(
+  db: Client,
+  merchantId: string,
+  row: Row,
+  actorId?: string | null,
+): Promise<string> {
+  if (row.published_version_id) {
+    const { data: pointed } = await db
+      .from("theme_versions")
+      .select("id, status")
+      .eq("merchant_id", merchantId)
+      .eq("theme_id", row.id)
+      .eq("id", row.published_version_id)
+      .maybeSingle();
+    if (pointed && (pointed as { status: string }).status === "published") {
+      return row.published_version_id;
+    }
+    // Stale pointer (version deleted or demoted to draft): fall through to
+    // the newest reviewed version rather than re-publishing unreviewed work.
+  }
+
+  const { data: latestPublished } = await db
+    .from("theme_versions")
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", row.id)
+    .eq("status", "published")
+    .order("version", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (latestPublished) return (latestPublished as { id: string }).id;
+
+  const { data: anyVersion } = await db
+    .from("theme_versions")
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", row.id)
+    .limit(1)
+    .maybeSingle();
+  if (anyVersion) {
+    throw new ThemeDeskError(
+      "theme.unpublished",
+      "That theme has no published version yet. Publish it before activating.",
+    );
+  }
+
+  return materializeLegacyVersion(db, merchantId, row, actorId);
+}
+
+/**
+ * Pre-versioning rows have no version at all: seed v1 from the draft (or the
+ * registry package) so activation never leaves a null pointer behind. When
+ * there is nothing to seed from, refuse instead of going live empty.
+ */
+async function materializeLegacyVersion(
+  db: Client,
+  merchantId: string,
+  row: Row,
+  actorId?: string | null,
+): Promise<string> {
+  const { data: draft } = await db
+    .from("theme_drafts")
+    .select("templates, tokens")
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", row.id)
+    .maybeSingle();
+
+  let templates = draft?.templates;
+  let tokens = draft?.tokens;
+  if (!templates && row.source_listing_slug) {
+    try {
+      const pkg = registryPackage(row.source_listing_slug);
+      templates = pkg.templates as never;
+      tokens = pkg.tokens as never;
+    } catch {
+      // Preset not found
+    }
+  }
+  if (!templates) {
+    throw new ThemeDeskError(
+      "theme.unpublished",
+      "That theme has no published version yet. Publish it before activating.",
+    );
+  }
+  const { data: createdVersion, error: createError } = await db
+    .from("theme_versions")
+    .insert({
+      merchant_id: merchantId,
+      theme_id: row.id,
+      version: 1,
+      status: "published",
+      published_at: new Date().toISOString(),
+      label: row.source_listing_slug ?? row.name,
+      templates: templates as never,
+      tokens: (tokens ?? {}) as never,
+      created_by: actorId ?? null,
+    })
+    .select("id")
+    .single();
+  if (createError || !createdVersion) {
+    throw new ThemeDeskError(
+      "theme.unpublished",
+      "That theme has no published version yet. Publish it before activating.",
+    );
+  }
+  return (createdVersion as { id: string }).id;
+}
+
+/**
  * Make a theme the live one. The flag flip and the package fork are separate
  * steps on purpose: the flag is what the console reads, the fork is what the
  * storefront renders, and a fork failure must not leave two active rows.
+ *
+ * The activation guard runs before any flag flips, so a refusal never strands
+ * the merchant on an active-but-empty theme.
  */
 export async function activateTheme(
   db: Client,
@@ -306,6 +430,13 @@ export async function activateTheme(
   actorId?: string | null,
 ) {
   const row = await requireRow(db, merchantId, themeId);
+  const publishedVersionId = await resolvePublishedVersionId(
+    db,
+    merchantId,
+    row,
+    actorId,
+  );
+
   const { error: clearError } = await db
     .from("store_themes")
     .update({ is_active: false })
@@ -319,87 +450,12 @@ export async function activateTheme(
     .eq("id", themeId);
   if (error) throw error;
 
-  // Keep published version coherent: ensure the activated theme points to a published version
-  let publishedVersionId = (row as { published_version_id?: string | null })
-    .published_version_id;
-  if (!publishedVersionId) {
-    const { data: latestVersion } = await db
-      .from("theme_versions")
-      .select("id, status")
-      .eq("merchant_id", merchantId)
-      .eq("theme_id", themeId)
-      .order("version", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (latestVersion) {
-      if (latestVersion.status !== "published") {
-        await db
-          .from("theme_versions")
-          .update({
-            status: "published",
-            published_at: new Date().toISOString(),
-          })
-          .eq("id", latestVersion.id);
-      }
-      publishedVersionId = latestVersion.id;
-      await db
-        .from("store_themes")
-        .update({ published_version_id: publishedVersionId })
-        .eq("merchant_id", merchantId)
-        .eq("id", themeId);
-    } else {
-      const { data: draft } = await db
-        .from("theme_drafts")
-        .select("templates, tokens")
-        .eq("merchant_id", merchantId)
-        .eq("theme_id", themeId)
-        .maybeSingle();
-
-      let templates = draft?.templates;
-      let tokens = draft?.tokens;
-      if (!templates && row.source_listing_slug) {
-        try {
-          const pkg = registryPackage(row.source_listing_slug);
-          templates = pkg.templates as never;
-          tokens = pkg.tokens as never;
-        } catch {
-          // Preset not found
-        }
-      }
-      if (templates) {
-        const { data: createdVersion } = await db
-          .from("theme_versions")
-          .insert({
-            merchant_id: merchantId,
-            theme_id: themeId,
-            version: 1,
-            status: "published",
-            published_at: new Date().toISOString(),
-            label: row.source_listing_slug ?? row.name,
-            templates: templates as never,
-            tokens: (tokens ?? {}) as never,
-            created_by: actorId ?? null,
-          })
-          .select("id")
-          .single();
-        if (createdVersion) {
-          publishedVersionId = (createdVersion as { id: string }).id;
-          await db
-            .from("store_themes")
-            .update({ published_version_id: publishedVersionId })
-            .eq("merchant_id", merchantId)
-            .eq("id", themeId);
-        }
-      }
-    }
-  } else {
+  if (row.published_version_id !== publishedVersionId) {
     await db
-      .from("theme_versions")
-      .update({ status: "published", published_at: new Date().toISOString() })
-      .eq("id", publishedVersionId)
+      .from("store_themes")
+      .update({ published_version_id: publishedVersionId })
       .eq("merchant_id", merchantId)
-      .eq("status", "draft");
+      .eq("id", themeId);
   }
 
   await db.from("theme_audit").insert({
@@ -413,7 +469,10 @@ export async function activateTheme(
 
   try {
     const { purgeStorefront } = await import("../themes.server");
-    purgeStorefront("publish", merchantId);
+    // T6: await the shared-invalidate promise. Fire-and-forget here let the
+    // HTTP response return while stale isolates/Redis still served the old
+    // theme, adding unbounded tail latency on top of the pointer TTL.
+    await purgeStorefront("publish", merchantId);
   } catch {
     // Non-redis or test doubles silently continue
   }

@@ -12,7 +12,10 @@ import {
   type MenuLocation,
   type MenuSource,
   type NavMenu,
+  EMPTY_STORE_MENUS,
   normalise,
+  shapeStoreMenus,
+  type StoreMenus,
   uniqueHandle,
 } from "./menu";
 
@@ -110,6 +113,28 @@ export async function listMenus(
   }));
 }
 
+/**
+ * Phase 16 T4 — public storefront menu read.
+ *
+ * Takes the already-resolved `merchant.id` (never a client-supplied id — every
+ * storefront loader derives it from the URL slug or the verified custom-host
+ * mapping first). Anon-safe through the public RLS reads
+ * (`nav_menus_public_read` / `nav_menu_items_public_read`, both
+ * `FOR SELECT TO public`), the same posture as the other storefront catalogue
+ * reads — no service role needed. Never throws: a menu read must not 500 a
+ * storefront, so failures degrade to no menus and the theme's static widgets
+ * render as the fallback.
+ */
+export async function loadStoreMenus(merchantId: string): Promise<StoreMenus> {
+  try {
+    const { publicClient } = await import("../pricing.server");
+    const menus = await listMenus(publicClient(), merchantId);
+    return shapeStoreMenus(menus);
+  } catch {
+    return EMPTY_STORE_MENUS;
+  }
+}
+
 export async function createMenu(
   db: Db,
   merchantId: string,
@@ -138,6 +163,8 @@ export async function createMenu(
     .single();
   if (error) throw new MenuError("create_failed", error.message);
   const row = data as unknown as MenuRow;
+  const { purgeStorefront } = await import("../themes.server");
+  purgeStorefront("menus", merchantId);
   return {
     id: row.id,
     name: row.name,
@@ -229,6 +256,8 @@ export async function saveMenu(
   const menus = await listMenus(db, merchantId);
   const saved = menus.find((menu) => menu.id === input.menuId);
   if (!saved) throw new MenuError("not_found", "That menu no longer exists");
+  const { purgeStorefront } = await import("../themes.server");
+  purgeStorefront("menus", merchantId);
   return saved;
 }
 
@@ -244,6 +273,8 @@ export async function deleteMenu(
     .eq("id", menuId)
     .eq("merchant_id", merchantId);
   if (error) throw new MenuError("delete_failed", error.message);
+  const { purgeStorefront } = await import("../themes.server");
+  purgeStorefront("menus", merchantId);
 }
 
 /* --------------------------------------------------------- add-item panel */

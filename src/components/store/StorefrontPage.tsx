@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { StoreHeader } from "@/components/store/StoreHeader";
+import { StoreFooterMenus } from "@/components/store/StoreFooterMenus";
 import { StoreImage } from "@/components/store/StoreImage";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
@@ -42,6 +43,7 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
     customCode,
     siteKit,
     preview,
+    menus,
   } = data;
 
   const slug = merchant.slug;
@@ -303,6 +305,7 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
               tagline={settings?.tagline}
               storeTimezone={tokens?.timezone}
               allowCustomerTimezone={tokens?.allowCustomerTimezone}
+              menus={menus}
             />
             {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
             {/* <SupportWidget slug={slug} /> */}
@@ -317,6 +320,10 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
           </>
         }
       />
+      {/* Phase 16 T4: dashboard-designed footer menu. Renders only when a
+          footer location is claimed; otherwise the theme's static footer
+          widgets stand alone as the fallback. */}
+      {menus && <StoreFooterMenus slug={slug} nodes={menus.footer} />}
       <CustomCodeBody code={customCode} slot="end" />
     </WidgetDataProvider>
   );

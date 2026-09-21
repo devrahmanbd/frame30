@@ -94,7 +94,10 @@ export const getStoreChrome = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }) => {
     const { loadStoreChrome } = await import("./storefront.server");
-    return loadStoreChrome(data.slug, data.template);
+    const { requestOrigin } = await import("./site-origin.server");
+    const chrome = await loadStoreChrome(data.slug, data.template);
+    if (!chrome) return null;
+    return { ...chrome, origin: requestOrigin() };
   });
 
 export const getStoreProduct = createServerFn({ method: "GET" })

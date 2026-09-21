@@ -59,7 +59,7 @@ export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
 
 function CollectionPage() {
   const { t } = useLang();
-  const { merchant, collection, products, settings, ast, tokens, siteKit } =
+  const { merchant, collection, products, settings, ast, tokens, siteKit, menus } =
     Route.useLoaderData();
   const slug = merchant.slug;
 
@@ -154,6 +154,7 @@ function CollectionPage() {
           slug={slug}
           name={merchant.name}
           tagline={settings?.tagline}
+          menus={menus}
         />
       }
       productSlot={grid}

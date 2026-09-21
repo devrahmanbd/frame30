@@ -11,7 +11,10 @@ export const publicArticlePageFn = createServerFn({ method: "GET" })
     const { loadPublicArticlePage } = await import("./blog-reader.server");
     const { ipHash } = await requestFingerprint();
     await enforceRateLimit("blog.read", `blog:${ipHash}`);
-    return loadPublicArticlePage(data.slug);
+    const page = await loadPublicArticlePage(data.slug);
+    if (!page) return null;
+    const { requestOrigin } = await import("./site-origin.server");
+    return { ...page, origin: requestOrigin() };
   });
 
 export const publicArticleResolutionFn = createServerFn({ method: "GET" })

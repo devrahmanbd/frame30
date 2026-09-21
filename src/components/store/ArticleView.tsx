@@ -6,7 +6,8 @@
  * `/journal/%year%/%month%/%slug%` gets a byte-identical page instead of a
  * second, slowly diverging copy of the template.
  */
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { isCustomHostPath } from "@/lib/storefront-url";
 import { ArticleBody } from "@/components/store/ArticleBody";
 import { useLang } from "@/lib/i18n";
 
@@ -30,6 +31,8 @@ export type ArticleViewData = {
 
 export function ArticleView({ article, merchant }: ArticleViewData) {
   const { t } = useLang();
+  const { location } = useRouterState();
+  const custom = isCustomHostPath(location.pathname);
   const published = article.published_at
     ? new Date(article.published_at).toLocaleDateString("en-BD", {
         year: "numeric",
@@ -99,15 +102,23 @@ export function ArticleView({ article, merchant }: ArticleViewData) {
         <ArticleBody body={article.body as never} className="mt-6" />
       </article>
 
-      {merchant?.slug && (
-        <Link
-          to="/store/$slug"
-          params={{ slug: merchant.slug }}
-          className="mt-10 inline-block text-sm text-primary underline"
-        >
-          {t(`View ${merchant.name} store`, `${merchant.name} স্টোর দেখুন`)}
-        </Link>
-      )}
+      {merchant?.slug &&
+        (custom ? (
+          <Link
+            to="/"
+            className="mt-10 inline-block text-sm text-primary underline"
+          >
+            {t(`View ${merchant.name} store`, `${merchant.name} স্টোর দেখুন`)}
+          </Link>
+        ) : (
+          <Link
+            to="/store/$slug"
+            params={{ slug: merchant.slug }}
+            className="mt-10 inline-block text-sm text-primary underline"
+          >
+            {t(`View ${merchant.name} store`, `${merchant.name} স্টোর দেখুন`)}
+          </Link>
+        ))}
     </main>
   );
 }

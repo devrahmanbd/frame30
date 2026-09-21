@@ -203,6 +203,18 @@ export const builderDemoImportFn = createServerFn({ method: "POST" })
 /* --------------------------------------------- Phase 15: granular imports */
 
 const importThemeKey = z.string().min(1).max(64);
+const importOverwrite = z.boolean().optional();
+
+export const importPreflightFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("themes.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ themeKey: importThemeKey }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { importPreflight } = await import("./theme-imports.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return importPreflight(context.supabase, merchantId, data.themeKey);
+  });
 
 export const importThemeSlidesFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("themes.update")])
@@ -218,18 +230,18 @@ export const importThemeSlidesFn = createServerFn({ method: "POST" })
 export const importThemeMediaFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) =>
-    z.object({ themeKey: importThemeKey }).parse(d),
+    z.object({ themeKey: importThemeKey, overwrite: importOverwrite }).parse(d),
   )
   .handler(async ({ data, context }) => {
     const { importThemeMedia } = await import("./theme-imports.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return importThemeMedia(context.supabase, merchantId, data.themeKey);
+    return importThemeMedia(context.supabase, merchantId, data.themeKey, data.overwrite ?? false);
   });
 
 export const importThemeProductsFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) =>
-    z.object({ themeKey: importThemeKey }).parse(d),
+    z.object({ themeKey: importThemeKey, overwrite: importOverwrite }).parse(d),
   )
   .handler(async ({ data, context }) => {
     const { importThemeProducts } = await import("./theme-imports.server");
@@ -241,29 +253,30 @@ export const importThemeProductsFn = createServerFn({ method: "POST" })
       merchantId,
       data.themeKey,
       catalog as unknown as Record<string, unknown>,
+      data.overwrite ?? false,
     );
   });
 
 export const importThemePostsFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) =>
-    z.object({ themeKey: importThemeKey }).parse(d),
+    z.object({ themeKey: importThemeKey, overwrite: importOverwrite }).parse(d),
   )
   .handler(async ({ data, context }) => {
     const { importThemePosts } = await import("./theme-imports.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return importThemePosts(context.supabase, merchantId, data.themeKey);
+    return importThemePosts(context.supabase, merchantId, data.themeKey, data.overwrite ?? false);
   });
 
 export const importThemeAllFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) =>
-    z.object({ themeKey: importThemeKey }).parse(d),
+    z.object({ themeKey: importThemeKey, overwrite: importOverwrite }).parse(d),
   )
   .handler(async ({ data, context }) => {
     const { importThemeAll } = await import("./theme-imports.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return importThemeAll(context.supabase, merchantId, data.themeKey);
+    return importThemeAll(context.supabase, merchantId, data.themeKey, data.overwrite ?? false);
   });
 
 export const builderDemoPurgeFn = createServerFn({ method: "POST" })

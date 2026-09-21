@@ -47,6 +47,10 @@ export const Route = createFileRoute("/c/$collectionSlug")({
       loaderData.seo?.metaDescription ||
       loaderData.collection.description ||
       `Shop ${loaderData.collection.name} at ${loaderData.merchant.name}.`;
+    const canonicalPath = `/c/${loaderData.collection.slug}`;
+    const canonical = loaderData.origin
+      ? `${loaderData.origin}${canonicalPath}`
+      : canonicalPath;
     return {
       meta: [
         { title },
@@ -54,8 +58,10 @@ export const Route = createFileRoute("/c/$collectionSlug")({
         { property: "og:title", content: title },
         { property: "og:description", content: description },
         { property: "og:type", content: "website" },
+        { property: "og:url", content: canonical },
         { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [{ rel: "canonical", href: canonical }],
     };
   },
   component: CollectionPage,
@@ -68,7 +74,7 @@ export const Route = createFileRoute("/c/$collectionSlug")({
 
 function CollectionPage() {
   const { t } = useLang();
-  const { merchant, collection, products, settings, ast, tokens, siteKit } =
+  const { merchant, collection, products, settings, ast, tokens, siteKit, menus } =
     Route.useLoaderData();
   const slug = merchant.slug;
 
@@ -158,6 +164,7 @@ function CollectionPage() {
           slug={slug}
           name={merchant.name}
           tagline={settings?.tagline}
+          menus={menus}
         />
       }
       productSlot={grid}

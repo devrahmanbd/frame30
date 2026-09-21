@@ -63,6 +63,7 @@ function StorePageView() {
     siteKit,
     customCss,
     isBuilder,
+    menus,
   } = Route.useLoaderData();
 
   const breadcrumb = (
@@ -144,7 +145,7 @@ function StorePageView() {
       siteKit={siteKit}
       customCss={customCss}
       ownsPrimary
-      chrome={<StoreHeader slug={slug} name={merchant.name} />}
+      chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}
       contextSlots={{ breadcrumb, page_content: content }}
       containerClassName="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1fr_15rem]"
       fallback={
