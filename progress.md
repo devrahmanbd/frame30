@@ -247,3 +247,16 @@ storefront serves on custom domains only.
   (product/cart/search/nav) need store context and stay theme-side.
 - Deferred: global-blocks save-from-page (needs reverse conversion),
   testimonial_carousel (array controls), Layers dock parity.
+
+## Loop batch — heritage/hero widget port (Sept 21)
+- Ported 11 widgets as native studio widgets (`0403488`): heritage_story,
+  editorial_banner, editorial_hero, lookbook, hero, textile_showcase,
+  department_grid, story_trunk, marquee_strip, hero_carousel,
+  testimonial_carousel (catalog + controls incl. repeaters + renderers;
+  contract test now covers all 17 ported widgets).
+- Verified live on production (akira test page): all listed; department
+  grid insert -> repeater add item -> "Sarees" renders on canvas ->
+  delete; autosave round-trips; DB confirmed clean after.
+- Remaining widget gap is data-backed (product/cart/search/nav/blog) and
+  theme-drifted schemas; Layers dock parity + global-blocks save-from-page
+  still open.
