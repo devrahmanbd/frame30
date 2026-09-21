@@ -163,6 +163,8 @@ export async function createMenu(
     .single();
   if (error) throw new MenuError("create_failed", error.message);
   const row = data as unknown as MenuRow;
+  const { purgeStorefront } = await import("../themes.server");
+  purgeStorefront("menus", merchantId);
   return {
     id: row.id,
     name: row.name,
@@ -254,6 +256,8 @@ export async function saveMenu(
   const menus = await listMenus(db, merchantId);
   const saved = menus.find((menu) => menu.id === input.menuId);
   if (!saved) throw new MenuError("not_found", "That menu no longer exists");
+  const { purgeStorefront } = await import("../themes.server");
+  purgeStorefront("menus", merchantId);
   return saved;
 }
 
@@ -269,6 +273,8 @@ export async function deleteMenu(
     .eq("id", menuId)
     .eq("merchant_id", merchantId);
   if (error) throw new MenuError("delete_failed", error.message);
+  const { purgeStorefront } = await import("../themes.server");
+  purgeStorefront("menus", merchantId);
 }
 
 /* --------------------------------------------------------- add-item panel */
