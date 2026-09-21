@@ -13,11 +13,18 @@ export const Route = createFileRoute("/api/public/ph/$")({
       GET: async ({ params }) => {
         const { placeholderSeed, placeholderSvg } =
           await import("@/lib/placeholder");
-        const splat = (params as { _splat?: string })._splat ?? "";
+        // Slice 3: `/api/public/ph/<dept>/<seed>` tints the tile with the
+        // department palette; single-segment URLs keep heritage default art.
+        const parts = (params as { _splat?: string })._splat
+          ? ((params as { _splat?: string })._splat as string)
+              .split("/")
+              .filter(Boolean)
+          : [];
         const seed = placeholderSeed(
-          decodeURIComponent(splat.split("/").filter(Boolean).join(" ") || ""),
+          decodeURIComponent(parts.at(-1) ?? ""),
         );
-        return new Response(placeholderSvg(seed), {
+        const dept = parts.length > 1 ? placeholderSeed(parts[0]) : null;
+        return new Response(placeholderSvg(seed, dept), {
           status: 200,
           headers: {
             "content-type": "image/svg+xml; charset=utf-8",

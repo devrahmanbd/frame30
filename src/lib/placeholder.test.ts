@@ -5,7 +5,7 @@
  * a brand-toned monogram SVG served from `/api/public/ph/<seed>`.
  */
 import { describe, expect, it } from "vitest";
-import { placeholderSvg, placeholderSeed } from "./placeholder";
+import { placeholderSvg, placeholderSeed, paletteForDept } from "./placeholder";
 
 describe("placeholderSvg", () => {
   it("is deterministic per seed", () => {
@@ -39,5 +39,27 @@ describe("placeholderSvg", () => {
   it("derives a stable slug seed", () => {
     expect(placeholderSeed("  Jamdani Saree! ")).toBe("jamdani-saree");
     expect(placeholderSeed("")).toBe("product");
+  });
+
+  it("tints tiles by department while staying deterministic", () => {
+    const saree = placeholderSvg("jamdani-saree", "womens");
+    expect(saree).toBe(placeholderSvg("jamdani-saree", "womens"));
+    expect(saree).not.toBe(placeholderSvg("jamdani-saree"));
+    expect(saree).not.toBe(placeholderSvg("jamdani-saree", "mens"));
+    expect(saree).toContain("<svg");
+    expect(saree).not.toContain("<script");
+  });
+
+  it("falls back to heritage default for unknown or hostile departments", () => {
+    expect(placeholderSvg("x", "no-such-dept")).toBe(placeholderSvg("x"));
+    const hostile = placeholderSvg("x", '../../etc/passwd"><script>');
+    expect(hostile).not.toContain("<script");
+    expect(hostile).not.toContain("../");
+  });
+
+  it("resolves department palettes by keyword", () => {
+    expect(paletteForDept("bridal-sarees").accent).toBe("#B98A2F");
+    expect(paletteForDept("mens-panjabi").accent).toBe("#3E63C4");
+    expect(paletteForDept("something-else").accent).toBe("#C45D3E");
   });
 });

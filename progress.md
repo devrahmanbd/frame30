@@ -177,3 +177,7 @@ verify on production; push to GitHub.
 - [x] Slice 2: Bangla display identity (hero headline_bn/subhead_bn rows,
   bilingual masthead; announcement m1-m3 already dict-covered).
   tsc clean for touched files, tests 7/7, deployed, screenshot-verified.
+- [x] Slice 3: dept-tinted placeholder art (8 palettes, exact-slug map +
+  keyword fallback, /ph/<dept>/<slug> route, preview map qualified).
+  Placeholder/preview tests green. ProductTileArt 2 failures
+  PRE-EXISTING on HEAD (other loop's MediaFrame <img> change).

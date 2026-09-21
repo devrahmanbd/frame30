@@ -7,6 +7,7 @@
  * store-shaped hrefs.
  */
 import { demoCatalogFor } from "./demo-catalog";
+import { placeholderSeed } from "./placeholder";
 import type { WidgetDataBundle, WidgetDataMap, WidgetRow } from "./widget-data";
 
 export function previewDemoMap(
@@ -19,7 +20,9 @@ export function previewDemoMap(
     title: p.title,
     href: `/p/${p.slug}`,
     subtitle: p.category,
-    imageUrl: p.image_url || `/api/public/ph/${p.slug}.svg`,
+    imageUrl:
+      p.image_url ||
+      `/api/public/ph/${placeholderSeed(p.category)}/${p.slug}.svg`,
     priceMinor: p.price ?? p.variants[0]?.price ?? 0,
     compareAtMinor:
       p.variants[0] &&
