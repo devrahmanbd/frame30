@@ -111,7 +111,12 @@ export function CustomerShell({ children }: { children: ReactNode }) {
           )}
           {account?.storeSlug ? (
             <a
-              href={`/store/${account.storeSlug}`}
+              href={
+                typeof window !== "undefined" &&
+                !window.location.pathname.startsWith("/store/")
+                  ? "/"
+                  : `/store/${account.storeSlug}`
+              }
               className="text-xs text-muted-foreground underline-offset-2 hover:underline"
             >
               {t("Visit store", "দোকানে যান")}

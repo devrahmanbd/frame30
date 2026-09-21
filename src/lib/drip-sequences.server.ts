@@ -466,9 +466,13 @@ export async function processDueDripSteps(
 
       const subject = interpolate(step.subject, vars);
       const bodyText = interpolate(step.bodyTemplate, vars);
-      const ctaUrl = step.ctaUrl
-        ? interpolate(step.ctaUrl, vars)
-        : `https://framique.qubickle.com/store/${merchant.slug}`;
+      const { rebaseStoreUrl } = await import("./storefront-host.server");
+      const ctaUrl = await rebaseStoreUrl(
+        step.ctaUrl
+          ? interpolate(step.ctaUrl, vars)
+          : `https://framique.qubickle.com/store/${merchant.slug}`,
+        merchantId,
+      );
 
       const unsubscribeUrl = `https://framique.qubickle.com/unsubscribe?email=${encodeURIComponent(enrollment.email)}`;
 

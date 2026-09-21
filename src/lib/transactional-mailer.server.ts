@@ -165,7 +165,8 @@ export async function sendOrderConfirmationEmail(args: {
     );
     const bodyText = interpolate(tpl.bodyTemplate ?? "", vars);
     const headerTitle = interpolate(tpl.headerTitle ?? "Order Confirmed", vars);
-    const ctaUrl = `https://framique.qubickle.com/store/${merchant.slug}/track?order=${order.order_number}`;
+    const { storeBaseUrl } = await import("./storefront-host.server");
+    const ctaUrl = `${await storeBaseUrl(args.merchantId, merchant.slug)}/track?order=${order.order_number}`;
 
     // Itemized table HTML
     const itemsHtml = `
@@ -364,6 +365,8 @@ export async function sendShipmentDispatchedEmail(args: {
 
     const templates = await getMerchantEmailTemplates(args.db, args.merchantId);
     const tpl = templates.order_dispatched;
+    const { storeBaseUrl } = await import("./storefront-host.server");
+    const storeBase = await storeBaseUrl(args.merchantId, merchant.slug);
 
     const vars: Record<string, string> = {
       store_name: merchant.name,
@@ -373,8 +376,7 @@ export async function sendShipmentDispatchedEmail(args: {
       carrier_name: shipment.carrier_code?.toUpperCase() ?? "Courier",
       awb_number: shipment.awb ?? "Assigned",
       tracking_url:
-        shipment.tracking_url ??
-        `https://framique.qubickle.com/store/${merchant.slug}/track`,
+        shipment.tracking_url ?? `${storeBase}/track`,
     };
 
     const subject = interpolate(
@@ -457,7 +459,8 @@ export async function sendCustomerWelcomeEmail(args: {
     );
     const bodyText = interpolate(tpl.bodyTemplate ?? "", vars);
     const headerTitle = interpolate(tpl.headerTitle ?? "Welcome!", vars);
-    const ctaUrl = `https://framique.qubickle.com/store/${merchant.slug}`;
+    const { storeBaseUrl } = await import("./storefront-host.server");
+    const ctaUrl = await storeBaseUrl(args.merchantId, merchant.slug);
 
     const plainText = `${headerTitle}\n\n${bodyText}\n\nVisit store: ${ctaUrl}`;
 

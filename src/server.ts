@@ -410,8 +410,11 @@ export default {
           request.headers.get("host") ??
           url.host;
         const customHost = normalizeRequestHost(rawHost2);
+        // Crawler documents live under the same rewrite: a custom host
+        // must answer /robots.txt, /sitemap.xml, /llms.txt and shard paths
+        // with merchant content, never the platform files.
         const customShape =
-          /^\/(p|products|c|collections|pages|blog|cart|checkout|order|account|search|track)(?=\/|$)/.exec(
+          /^\/(p|products|c|collections|pages|blog|cart|checkout|order|account|search|track|sitemap\.xml|sitemaps|robots\.txt|llms\.txt)(?=\/|$)/.exec(
             url.pathname,
           );
         if (customHost && customShape) {

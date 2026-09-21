@@ -334,7 +334,7 @@ export const PLATFORM_KB_DOCS = [
     tags: ["platform", "overview", "free-trial", "features", "getting-started"],
     sourceUrl: "/about",
     body: `Framique is an all-in-one cloud hosting and e-commerce service provider built for merchants in Bangladesh and worldwide.
-Merchants get a complete high-performance storefront hosted at framique.qubickle.com/store/<slug> or on their own custom domain.
+Merchants get a complete high-performance storefront hosted on their own custom domain.
 Key Platform Features:
 1. All-in-One Infrastructure: Managed edge CDN hosting, automated TLS certificates, PostgreSQL databases with Row Level Security, Redis caching, and continuous zero-downtime deployments.
 2. 14-Day Free Trial: Merchants can launch and test their storefront for 14 days without entering credit card information.

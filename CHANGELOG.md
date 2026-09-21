@@ -27,6 +27,9 @@ honest: every shipped task lands an entry here in the same commit.
   when one exists (`currentMerchantPrimaryHostFn`).
 
 ### Added
+- Buyer-critical URLs (order tracking + welcome CTAs, drip CTAs via
+  rebasing, sitemap/robots/llms rewrite coverage) resolve to the primary
+  custom domain; payments cancel uses request origin (already correct).
 - Custom-domain-aware merchant links: View-store, page preview/view,
   quick-edit and document permalink prefixes, editor preview + SEO URLs,
   sitemap link, and settings header all resolve to the primary custom

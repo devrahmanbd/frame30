@@ -304,3 +304,12 @@ storefront serves on custom domains only.
 - New `useStoreUrl` hook + `storefrontPathForMerchant`/`storePageUrlForMerchant`
   pure builders (unit-tested); all surfaces wired. Blog paths untouched.
 - Onboarding copy no longer promises a `/store/<slug>` URL.
+
+## Loop batch — custom-domain links everywhere (Sept 21)
+- Pure builders + useStoreUrl hook; wired View-store (shell, profile menu,
+  settings), page preview/view, quick-edit + document prefixes, editor
+  preview + SEO canonical, sitemap link, onboarding copy, theme thumbnail
+  mock text, shopper Visit-store (host-shape aware).
+- Buyer paths: mailer CTAs + drip CTA rebasing via storeBaseUrl/
+  rebaseStoreUrl; crawler docs covered by rewrite regex; payments cancel
+  verified already origin-correct; blog + internal analysis prefixes left.
