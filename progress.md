@@ -75,6 +75,24 @@ verify on production; push to GitHub.
 - [ ] Dashboard LCP: head-import diet + per-language i18n split.
 - [ ] `.e2e/playwright.config.ts` harness (e2e-critical passes by design).
 - [ ] Retire `/dashboard/builder` after editor testing (explicit user call).
+- [ ] Homepage-as-page program (operator decision: homepage is a real
+  editable page at `/`, theme shows visuals, builder edits).
+  Data flow (verified): builder edits Studio v2 docs in
+  storefront_pages.body_markdown; `/` renders designated page via
+  StoreHomepage in theme chrome, else theme index. Mechanism exists.
+  BLOCKER (verified in code, not seedable today): getStorePageFn only
+  reads stub BuilderDoc (never Studio v2), and widgetHtml returns ""
+  for every heritage el. Seeding now = blank storefront. Build order:
+  Studio-aware read branch → heritage HTML projection → seed Home
+  from v2 index → designate → parity verify → builder re-open check.
+- FLAG for theme designer (needs a fix on the theme side): 5/12 v2
+  index sections use prop keys with no studio counterpart
+  (heritage_story eyebrow/heading, textile_showcase tNLabel/tNAlt,
+  editorial_banner eyebrow/heading/body, marquee_strip label,
+  department_grid limit-query). Align theme props to studio widget
+  schemas (headline/items) or ports stay LOSSY forever. DIRECT today:
+  hero_carousel, product_rail, lookbook, wedding_shop, gift_finder,
+  testimonial_carousel, rewards_club.
 
 ## Follow-ups / hazards
 - Homepage success path needs a merchant-owned published page + domain.
