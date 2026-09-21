@@ -81,6 +81,10 @@ verify on production; push to GitHub.
 - Merchant test data (akira) must be left clean after verification runs.
 - CONTRACT: catalog-controls-defaults parity test must cover every new
   widget (see `catalog.test.ts` PORTED list).
+- mem0 reads need explicit `{"AND": [{"user_id": "rahman"}]}` filters —
+  unfiltered search/get hit the wrong scope and return empty (459
+  memories verified present via filtered get). Get-by-ID is unusable;
+  use filtered search/get instead.
 - [x] Clothing Heritage ACTIVE on flame-fashion-bd (microscrop.shop):
   operator-ordered theme change executed via app-faithful server-side
   activation (flag flip + published-pointer coherence + theme_audit row,
