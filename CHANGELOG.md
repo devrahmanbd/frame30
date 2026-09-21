@@ -134,6 +134,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Contract 388/388 (new MEDIA/LAYOUT category sets); tsc clean on all
   touched ranges (upgradeWidget/widgetHtml/Section drifts pre-existing).
 
+## [2026-09-21] — faq repeater conversion (`4925edd`)
+- TDD: failing contract + migration tests first, then minimal GREEN.
+- faq defaults gain `items: []`; panel uses one repeater (q1-a3 controls
+  removed, scalar defaults kept for pass-through); load migration seeds
+  items from non-empty scalars without overwriting author edits.
+- Canvas, theme renderer, and FAQPage JSON-LD all read items-first with
+  scalar fallback — storefront and SEO cannot diverge.
+- tsc caught a real bug pre-commit: block `const rows` shadowed the
+  `rows()` helper (TDZ) — renamed to `list`.
+- Icon registry gains CircleHelp. Known gap: repeater rows lack `_bn`
+  bilingual siblings (scalars keep theirs).
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.

@@ -41,11 +41,13 @@ verify on production; push to GitHub.
   (gift_builder, bundle_offer, subbrand_spotlight, rewards_club,
   gift_finder). Full SectionType union now ported (minus structural
   primitives + section/paragraph which exist nowhere).
-- [ ] Repeater conversions (arrays safe in defaults; contract pins
-  scalars so each conversion updates catalog.test.ts + dual-reads theme
-  renderers): 1 faq, 2 product_qna, 3 trust_bar, 4 announcement_bar,
-  5 lookbook, 6 hero, 7 footer_sitemap, 8 spec_table. Defer: size_guide
-  (2-D), quiz, shoppable pins, order/checkout steps (fixed pipelines).
+- [x] Repeater 1/8 faq (`4925edd`, TDD: RED watched, 398 tests GREEN):
+  items array + repeater panel, scalars kept, load-time seeding,
+  canvas/theme/JSON-LD all dual-read. Limitation: rows lack _bn sibs.
+- [ ] Repeater conversions next: 2 product_qna, 3 trust_bar,
+  4 announcement_bar, 5 lookbook, 6 hero, 7 footer_sitemap, 8 spec_table
+  (same pattern: test-first, seed-on-load, dual-read theme + SEO).
+  Defer: size_guide (2-D), quiz, shoppable pins, order/checkout steps.
 - [ ] Layers dock follow-ups (filter exists; dock/undock toggle).
 - [ ] Global-blocks save-from-page reverse conversion.
 - [ ] Homepage render proof on a custom domain (needs published page).
