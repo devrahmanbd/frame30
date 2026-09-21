@@ -177,6 +177,12 @@ export const BUCKETS = {
   "builder.seo_read": { limit: 240, windowSeconds: 60 },
   "builder.seo_write": { limit: 60, windowSeconds: 300 },
   "builder.demo_import": { limit: 6, windowSeconds: 3600 },
+  // Granular theme demo imports (each can fan out to purge + RPC writes).
+  "theme.import_all": { limit: 6, windowSeconds: 3600 },
+  "theme.import_slides": { limit: 12, windowSeconds: 3600 },
+  "theme.import_media": { limit: 12, windowSeconds: 3600 },
+  "theme.import_products": { limit: 6, windowSeconds: 3600 },
+  "theme.import_posts": { limit: 12, windowSeconds: 3600 },
 
   "builder.sweep": { limit: 24, windowSeconds: 3600 },
   "shipping.zone_write": { limit: 60, windowSeconds: 300 },
@@ -490,6 +496,24 @@ export async function rateLimit(
   subject: string,
 ): Promise<RateVerdict> {
   const cfg = BUCKETS[bucket];
+  if (!cfg) {
+    // Unknown bucket: fail open with noise, never throw. A missing bucket
+    // entry once crashed every granular demo import (reading 'limit').
+    log("warn", "rate_limit.unknown_bucket", { bucket });
+    incr("framique_rate_limit_total", {
+      bucket,
+      outcome: "unavailable",
+      source: "none",
+    });
+    return {
+      allowed: true,
+      hits: 0,
+      limit: 0,
+      remaining: 0,
+      reset_at: new Date(Date.now() + 60_000).toISOString(),
+      source: "none",
+    };
+  }
 
   const shared = await redisVerdict(bucket, subject, cfg);
   if (shared) {
