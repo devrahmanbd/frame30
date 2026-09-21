@@ -14,7 +14,7 @@ async function db(): Promise<LooseDb> {
 }
 
 const ARTICLE_COLUMNS =
-  "id, merchant_id, author_id, title, title_en, slug, excerpt, body, cover_image_url, published_at, updated_at, meta_title, meta_description, canonical, robots, reading_minutes";
+  "id, merchant_id, title, title_en, slug, excerpt, body, cover_image_url, published_at, updated_at, meta_title, meta_description, canonical, robots";
 const AUTHOR_COLUMNS =
   "id, merchant_id, slug, display_name, display_name_en, role_title, bio, bio_en, avatar_url, website_url, social_links";
 
@@ -142,7 +142,7 @@ export async function loadPublicArticlePage(slug: string) {
               await database
                 .from("articles")
                 .select(
-                  "slug, title, title_en, excerpt, cover_image_url, published_at, reading_minutes, author_id",
+                  "slug, title, title_en, excerpt, cover_image_url, published_at",
                 )
                 .in("id", relatedIds)
                 .eq("status", "published")
@@ -199,7 +199,7 @@ export async function searchPublicBlog(rawQuery: unknown, rawPage: unknown) {
       const { data, count, error } = await database
         .from("articles")
         .select(
-          "slug, title, title_en, excerpt, cover_image_url, published_at, reading_minutes, author_id",
+          "slug, title, title_en, excerpt, cover_image_url, published_at",
           { count: "exact" },
         )
         .eq("status", "published")
@@ -261,7 +261,7 @@ export async function loadAuthorArchive(slug: string, rawPage: unknown) {
         : await database
             .from("articles")
             .select(
-              "slug, title, title_en, excerpt, cover_image_url, published_at, reading_minutes, author_id",
+              "slug, title, title_en, excerpt, cover_image_url, published_at",
             )
             .eq("author_id", row.id)
             .eq("status", "published")
