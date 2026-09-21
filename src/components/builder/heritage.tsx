@@ -37,6 +37,59 @@ const readNumber = (row: PropRow, key: string, fallback: number) => {
   return typeof v === "number" ? v : Number(v) || fallback;
 };
 
+/**
+ * Hand-built Jamdani buti lattice (Tier-B SVG craft — no stock, no blobs).
+ * Deterministic per seed: 4 lattice variants + accent rotation. Used as hero
+ * art when a slide has no real photograph; real merchant photos always win.
+ */
+function WeaveMotif({ seed, className }: { seed: string; className?: string }) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  const v = (h >>> 0) % 4;
+  const diamond = (cx: number, cy: number, r: number, o: string) => (
+    <path
+      key={`${cx}-${cy}`}
+      d={`M${cx} ${cy - r} L${cx + r} ${cy} L${cx} ${cy + r} L${cx - r} ${cy} Z`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      opacity={o}
+    />
+  );
+  return (
+    <svg
+      viewBox="0 0 400 500"
+      preserveAspectRatio="xMidYMid slice"
+      className={className}
+      aria-hidden="true"
+    >
+      {Array.from({ length: 5 }, (_, r) =>
+        Array.from({ length: 4 }, (_, c) =>
+          diamond(50 + c * 100 + (r % 2 ? 50 : 0), 60 + r * 95, v === 2 ? 26 : 20, "0.5"),
+        ),
+      )}
+      {v % 2 === 0 && (
+        <circle cx="200" cy="250" r="70" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.6" />
+      )}
+      {v % 2 === 0 && (
+        <path d="M200 195 L248 250 L200 305 L152 250 Z" fill="currentColor" opacity="0.18" />
+      )}
+      {v === 3 && (
+        <path d="M40 430 Q200 340 360 430" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.5" />
+      )}
+      {v === 1 && (
+        <g fill="currentColor" opacity="0.35">
+          <circle cx="200" cy="120" r="10" />
+          <circle cx="200" cy="380" r="10" />
+        </g>
+      )}
+    </svg>
+  );
+}
+
 /* ------------------------------------------------------ hero_carousel */
 
 const HeroCarousel: WidgetComponent = ({
@@ -83,9 +136,6 @@ const HeroCarousel: WidgetComponent = ({
 
   const slide = slides[current]!;
   const isFirst = current === 0;
-  const artSrc =
-    slide.image ||
-    `/api/public/ph/${placeholderSeed(slide.headline || "heritage")}`;
   return (
     <section
       aria-label={t(locale, "Hero carousel", "হিরো ক্যারোজেল")}
@@ -149,18 +199,25 @@ const HeroCarousel: WidgetComponent = ({
             )}
           </div>
         </div>
-        {/* Art — five columns, portrait crop, its own zone */}
+        {/* Art — five columns, its own zone. Real photographs render;
+            placeholder URLs become hand-built weave lattice instead. */}
         <div className="min-w-0 lg:col-span-5">
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-fq-lg border border-border bg-muted sm:aspect-[16/10] lg:aspect-[4/5]">
-            <img
-              src={artSrc}
-              alt={slide.image ? slide.headline : ""}
-              aria-hidden={slide.image ? undefined : true}
-              className="absolute inset-0 h-full w-full object-cover"
-              loading={isFirst ? "eager" : "lazy"}
-              fetchPriority={isFirst ? "high" : "auto"}
-              decoding="async"
-            />
+          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-fq-lg border border-border bg-[var(--fq-surface,#FAF8F5)] sm:aspect-[16/10] lg:aspect-[4/5]">
+            {slide.image && !slide.image.startsWith("/api/public/ph/") ? (
+              <img
+                src={slide.image}
+                alt={slide.headline}
+                className="absolute inset-0 h-full w-full object-cover"
+                loading={isFirst ? "eager" : "lazy"}
+                fetchPriority={isFirst ? "high" : "auto"}
+                decoding="async"
+              />
+            ) : (
+              <WeaveMotif
+                seed={slide.headline || "heritage"}
+                className="absolute inset-0 h-full w-full text-primary/60"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -228,7 +285,7 @@ const DepartmentGrid: WidgetComponent = ({
             }`}
           >
             <div
-              className={`bg-gradient-to-br from-amber-100 to-rose-50 flex items-center justify-center ${
+              className={`flex items-center justify-center overflow-hidden bg-card ${
                 i === 0 ? "aspect-[3/4] sm:aspect-auto sm:h-full sm:min-h-[28rem]" : "aspect-[3/4]"
               }`}
             >

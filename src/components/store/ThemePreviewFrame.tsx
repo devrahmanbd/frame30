@@ -133,12 +133,9 @@ export function ThemePreviewFrame({
         />
       )}
 
-      {/* ---- preview canvas ---- */}
-      <div className="flex-1 overflow-auto bg-muted p-4">
-        <div
-          className="mx-auto rounded-fq-md border border-border bg-card shadow-fq-md transition-[max-width] duration-200"
-          style={{ maxWidth: "100%" }}
-        >
+      {/* ---- preview canvas: full-bleed, no frame ---- */}
+      <div className="flex-1 overflow-auto bg-background">
+        <div className="mx-auto" style={{ maxWidth: "100%" }}>
           <ThemeSurface tokens={tokens}>
             {/* Wordmark row, as on a live storefront — the blueprint's
                 header sections render beneath it. */}
