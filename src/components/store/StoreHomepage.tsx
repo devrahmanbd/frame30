@@ -1,5 +1,6 @@
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreFooterMenus } from "@/components/store/StoreFooterMenus";
+import { StudioNodes } from "@/components/store/StudioNodes";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { useLang } from "@/lib/i18n";
 import type { getStorePageFn } from "@/lib/storefront-search.functions";
@@ -32,6 +33,7 @@ export function StoreHomepage({
     customCss,
     isBuilder,
     menus,
+    studioNodes,
   } = home;
 
   const content = (
@@ -46,16 +48,23 @@ export function StoreHomepage({
           )}
         </>
       )}
-      <div
-        className={
-          isBuilder
-            ? "fq-builder-page mt-6"
-            : "fq-prose mt-6 space-y-4 text-sm leading-relaxed"
-        }
-        // Rendered server-side through the allow-list renderer (builder) or
-        // the escaped markdown renderer — never raw author HTML.
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      {studioNodes && studioNodes.length > 0 ? (
+        // Studio-authored body: same components as the canvas preview.
+        <div className="fq-builder-page mt-6">
+          <StudioNodes nodes={studioNodes} />
+        </div>
+      ) : (
+        <div
+          className={
+            isBuilder
+              ? "fq-builder-page mt-6"
+              : "fq-prose mt-6 space-y-4 text-sm leading-relaxed"
+          }
+          // Rendered server-side through the allow-list renderer (builder) or
+          // the escaped markdown renderer — never raw author HTML.
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      )}
       {!isBuilder && (
         <p className="mt-8 text-xs text-muted-foreground">
           {t("Last updated", "সর্বশেষ হালনাগাদ")}:{" "}

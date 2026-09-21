@@ -76,8 +76,14 @@ export const getStorePageFn = createServerFn({ method: "GET" })
     // Phase 14/17: a page authored in the builder stores its document inside
     // the markdown column; rendering it through the markdown renderer would
     // print the JSON. The builder renderer escapes every author value itself.
+    // Studio v2 bodies (Sept 2026 homepage program): parsed to nodes and
+    // rendered with the same StudioWidget components as the canvas, so the
+    // storefront matches the builder pixel-for-pixel. Markdown path untouched.
+    const { parseStudioBody } = await import("./studio/model");
     const { isBuilderBody, parseBuilderBody, renderBuilderHtml } =
       await import("./page-builder");
+    const studioDoc = parseStudioBody(found.page.body_markdown);
+    const studioNodes = studioDoc ? studioDoc.root : null;
     const builderDoc = isBuilderBody(found.page.body_markdown)
       ? parseBuilderBody(found.page.body_markdown)
       : null;
@@ -99,6 +105,7 @@ export const getStorePageFn = createServerFn({ method: "GET" })
         ? renderBuilderHtml(builderDoc, builderProducts)
         : renderPageMarkdown(found.page.body_markdown),
       isBuilder: Boolean(builderDoc),
+      studioNodes,
       customCss,
       nav,
       menus,

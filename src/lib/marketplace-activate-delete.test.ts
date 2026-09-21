@@ -138,3 +138,51 @@ describe("third-party install materialization", () => {
     expect(db.rows("marketplace_installs")).toHaveLength(1);
   });
 });
+
+describe("activateTheme with draft-only versions", () => {
+  it("materializes from the draft instead of refusing with theme.unpublished", async () => {
+    const db = fakeDb({
+      tables: {
+        store_themes: [
+          {
+            id: THEME,
+            merchant_id: MERCHANT,
+            name: "Mine",
+            is_active: false,
+            published_version_id: null,
+          },
+          { id: "other", merchant_id: MERCHANT, name: "Live", is_active: true },
+        ],
+        theme_drafts: [
+          {
+            theme_id: THEME,
+            merchant_id: MERCHANT,
+            templates: CUSTOM,
+            tokens: {},
+            revision: 1,
+          },
+        ],
+        theme_versions: [
+          {
+            id: "v-draft",
+            merchant_id: MERCHANT,
+            theme_id: THEME,
+            version: 1,
+            status: "draft",
+          },
+        ],
+        theme_audit: [],
+      },
+    });
+    const out: any = await activateTheme(
+      db.asClient(),
+      MERCHANT,
+      THEME,
+      "user-9",
+    );
+    expect(out.id).toBe(THEME);
+    expect(
+      db.rows("store_themes").find((r) => r.id === THEME)!.is_active,
+    ).toBe(true);
+  });
+});

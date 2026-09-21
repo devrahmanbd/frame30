@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { StoreHeader } from "@/components/store/StoreHeader";
+import { StudioNodes } from "@/components/store/StudioNodes";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { useLang } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/theme-seo";
@@ -64,6 +65,7 @@ function StorePageView() {
     customCss,
     isBuilder,
     menus,
+    studioNodes,
   } = Route.useLoaderData();
 
   const breadcrumb = (
@@ -90,16 +92,22 @@ function StorePageView() {
       {page.excerpt && (
         <p className="mt-2 text-muted-foreground">{page.excerpt}</p>
       )}
-      <div
-        className={
-          isBuilder
-            ? "fq-builder-page mt-6"
-            : "fq-prose mt-6 space-y-4 text-sm leading-relaxed"
-        }
-        // Markdown is rendered server-side through an allow-list renderer that
-        // escapes every raw character before emitting tags.
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      {studioNodes && studioNodes.length > 0 ? (
+        <div className="fq-builder-page mt-6">
+          <StudioNodes nodes={studioNodes} />
+        </div>
+      ) : (
+        <div
+          className={
+            isBuilder
+              ? "fq-builder-page mt-6"
+              : "fq-prose mt-6 space-y-4 text-sm leading-relaxed"
+          }
+          // Markdown is rendered server-side through an allow-list renderer that
+          // escapes every raw character before emitting tags.
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      )}
       <p className="mt-8 text-xs text-muted-foreground">
         {t("Last updated", "সর্বশেষ হালনাগাদ")}:{" "}
         <time dateTime={page.updated_at} className="money">
