@@ -110,6 +110,12 @@ verify on production; push to GitHub.
   breach path for prices/stock (variant-gated), but draft disclosure.
 - TODO next: API cross-tenant audit (unscoped merchant_id scan over
   *.functions.ts) + decide products/store_themes public-read tightening.
+- [x] 0-day CLOSED (`e5e0b06`, deployed + verified): CloudMan chrome
+  served on microscrop.shop via /store/<foreign-slug> whenever host
+  resolution missed (outage-poisoned cache → featured fallback).
+  server.ts now fail-closes foreign slugs on custom hosts (bare 404);
+  own paths unaffected. Live: foreign 404, cart/home 200. 36/36
+  contract tests (5 new).
 - [x] Merchant AI control removed (`1c28cca`, deployed): kill-switch
   MERCHANT_AI_ENABLED=false at nav + route + server layers (8 RPCs
   denied). Support channel (/dashboard/support) untouched. Verified
