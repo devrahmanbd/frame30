@@ -174,3 +174,6 @@ verify on production; push to GitHub.
   NULL everywhere — catalog `templates` (slot-gating) misapplied to
   prop-driven widgets. Removed the field (3 lines, builder-ast.ts).
   Tests 10/10. .bn + catalog-group tsc errors pre-existing.
+- [x] Slice 2: Bangla display identity (hero headline_bn/subhead_bn rows,
+  bilingual masthead; announcement m1-m3 already dict-covered).
+  tsc clean for touched files, tests 7/7, deployed, screenshot-verified.
