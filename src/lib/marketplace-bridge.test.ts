@@ -5,7 +5,6 @@
  */
 import { describe, expect, it, vi } from "vitest";
 import { BUILTIN_PREFIX, listCatalog } from "./marketplace.server";
-import { THEME_PRESETS } from "./theme-presets";
 
 function chain(rows: unknown[]) {
   return {
@@ -17,17 +16,16 @@ function chain(rows: unknown[]) {
 }
 
 describe("marketplace preset bridge", () => {
-  it("prepends one synthetic entry per official preset", async () => {
+  it("lists only the curated offer keys (operator two-theme decision)", async () => {
     const db = { from: vi.fn(() => chain([])) } as never;
     const catalog = await listCatalog(
       db,
       "00000000-0000-4000-a000-000000000001",
     );
-    expect(catalog.themes.length).toBe(THEME_PRESETS.length);
-    expect(THEME_PRESETS.length).toBeGreaterThan(0);
-    for (const [i, entry] of catalog.themes.entries()) {
+    const slugs = catalog.themes.map((t) => t.slug).sort();
+    expect(slugs).toEqual(["clothing-heritage", "supershop"]);
+    for (const entry of catalog.themes) {
       expect(entry.builtin).toBe(true);
-      expect(entry.id).toBe(`${BUILTIN_PREFIX}${THEME_PRESETS[i]!.key}`);
       expect(entry.kind).toBe("theme");
       expect(entry.status).toBe("active");
       expect(entry.price_minor_int).toBe(0);
@@ -36,7 +34,7 @@ describe("marketplace preset bridge", () => {
     }
   });
 
-  it("keeps third-party rows after the presets", async () => {
+  it("hides third-party rows outside the curated offer", async () => {
     const row = {
       id: "11111111-1111-4111-8111-111111111111",
       seller_merchant_id: "00000000-0000-4000-a000-000000000002",
@@ -70,9 +68,7 @@ describe("marketplace preset bridge", () => {
       db,
       "00000000-0000-4000-a000-000000000001",
     );
-    expect(catalog.themes.length).toBe(THEME_PRESETS.length + 1);
-    const last = catalog.themes[catalog.themes.length - 1]!;
-    expect(last.builtin).toBe(false);
+    expect(catalog.themes.map((t) => t.slug)).not.toContain("seller-theme");
   });
 
   it("prepends synthetic entries for official widgets", async () => {

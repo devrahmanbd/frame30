@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { VISIBLE_THEME_KEYS } from "./themes/appearance";
 import { THEME_PRESETS } from "./theme-presets";
 import { BUILTIN_PREFIX, builtinWidgets } from "./builtin-plugins";
 import { catalogMeta } from "./themes/catalog-meta";
@@ -99,12 +100,15 @@ export async function listCatalog(db: Client, merchantId: string) {
   return {
     // Official presets first: the marketplace is never an empty shelf even
     // when no third-party creator has published yet.
+    // Operator-curated offer (Sept 2026): only Supershop + Clothing
+    // Heritage are listed while the directory is rebuilt. Widgets and
+    // per-merchant installs/themeStates pass through untouched.
     themes: [
       ...builtinThemes(),
       ...decorate(themes.data, "theme").filter(
         (r) => r.status === "active" || r.mine,
       ),
-    ],
+    ].filter((t) => VISIBLE_THEME_KEYS.has(t.slug)),
     widgets: [
       ...builtinWidgets(),
       ...decorate(widgets.data, "widget").filter(
