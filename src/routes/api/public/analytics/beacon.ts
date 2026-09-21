@@ -105,8 +105,15 @@ export const Route = createFileRoute("/api/public/analytics/beacon")({
           const { captureError, incr } = await import(
             "@/lib/observability.server"
           );
+          // Supabase/PostgREST failures are plain objects, not Errors —
+          // String(err) would be "[object Object]" and match nothing.
           const message =
-            err instanceof Error ? err.message : String(err ?? "");
+            err instanceof Error
+              ? err.message
+              : typeof (err as { message?: unknown } | null)?.message ===
+                  "string"
+                ? ((err as { message: string }).message as string)
+                : JSON.stringify(err ?? null);
           // The warehouse schema has not been migrated on every deployment
           // (missing table/column). That is an owner migration task, not a
           // shopper-facing failure: acknowledge without the 500 console noise
