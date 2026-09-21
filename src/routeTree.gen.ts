@@ -46,6 +46,7 @@ import { Route as InvoiceTokenRouteImport } from './routes/invoice.$token'
 import { Route as LegalIndexRouteImport } from './routes/legal.index'
 import { Route as LegalDocRouteImport } from './routes/legal.$doc'
 import { Route as NewsletterVerifyRouteImport } from './routes/newsletter.verify'
+import { Route as PProductSlugRouteImport } from './routes/p.$productSlug'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as RootIndexRouteImport } from './routes/root/index'
 import { Route as RootAccessRouteImport } from './routes/root/access'
@@ -395,6 +396,11 @@ const LegalDocRoute = LegalDocRouteImport.update({
 const NewsletterVerifyRoute = NewsletterVerifyRouteImport.update({
   id: '/newsletter/verify',
   path: '/newsletter/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PProductSlugRoute = PProductSlugRouteImport.update({
+  id: '/p/$productSlug',
+  path: '/p/$productSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
@@ -1360,6 +1366,7 @@ export interface FileRoutesByFullPath {
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/p/$productSlug': typeof PProductSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -1562,6 +1569,7 @@ export interface FileRoutesByTo {
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/p/$productSlug': typeof PProductSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -1768,6 +1776,7 @@ export interface FileRoutesById {
   '/invoice/$token': typeof InvoiceTokenRoute
   '/legal/$doc': typeof LegalDocRoute
   '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/p/$productSlug': typeof PProductSlugRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -1974,6 +1983,7 @@ export interface FileRouteTypes {
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
+    | '/p/$productSlug'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2176,6 +2186,7 @@ export interface FileRouteTypes {
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
+    | '/p/$productSlug'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2381,6 +2392,7 @@ export interface FileRouteTypes {
     | '/invoice/$token'
     | '/legal/$doc'
     | '/newsletter/verify'
+    | '/p/$productSlug'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2585,6 +2597,7 @@ export interface RootRouteChildren {
   InvoiceTokenRoute: typeof InvoiceTokenRoute
   LegalDocRoute: typeof LegalDocRoute
   NewsletterVerifyRoute: typeof NewsletterVerifyRoute
+  PProductSlugRoute: typeof PProductSlugRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   ThemePreviewKeyRoute: typeof ThemePreviewKeyRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -2911,6 +2924,13 @@ declare module '@tanstack/react-router' {
       path: '/newsletter/verify'
       fullPath: '/newsletter/verify'
       preLoaderRoute: typeof NewsletterVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/p/$productSlug': {
+      id: '/p/$productSlug'
+      path: '/p/$productSlug'
+      fullPath: '/p/$productSlug'
+      preLoaderRoute: typeof PProductSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products/$productId': {
@@ -4408,6 +4428,7 @@ const rootRouteChildren: RootRouteChildren = {
   InvoiceTokenRoute: InvoiceTokenRoute,
   LegalDocRoute: LegalDocRoute,
   NewsletterVerifyRoute: NewsletterVerifyRoute,
+  PProductSlugRoute: PProductSlugRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   ThemePreviewKeyRoute: ThemePreviewKeyRoute,
   BlogIndexRoute: BlogIndexRoute,

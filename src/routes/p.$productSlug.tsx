@@ -48,7 +48,7 @@ export const Route = createFileRoute("/p/$productSlug")({
       );
     return data;
   },
-  head: ({ loaderData, params }) => {
+  head: ({ loaderData }) => {
     if (!loaderData) {
       return {
         meta: [
@@ -57,6 +57,10 @@ export const Route = createFileRoute("/p/$productSlug")({
         ],
       };
     }
+    const variants = loaderData.product.product_variants ?? [];
+    const cheapest = variants
+      .map((v) => Number(v.price_amount_minor_int ?? 0))
+      .sort((x, y) => x - y)[0];
     const base = buildProductHead({
       origin: loaderData.origin,
       path: `/p/${loaderData.product.slug}`,
@@ -69,11 +73,19 @@ export const Route = createFileRoute("/p/$productSlug")({
         slug: loaderData.product.slug,
         description: loaderData.product.description,
         image_url: loaderData.product.image_url,
-        sku: null,
+        sku: variants[0]?.sku ?? null,
       },
       currency: loaderData.merchant.currency_code,
+      priceMinor: cheapest ?? 0,
+      inStock: variants.some((v) => Number(v.stock_quantity ?? 0) > 0),
+      reviews: loaderData.reviews ?? [],
+      returnPolicy: { days: 7, fees: "shopper" },
+      shipping: {
+        flatMinor: Number(loaderData.settings?.shipping_flat_minor_int ?? 0),
+        freeThresholdMinor:
+          loaderData.settings?.free_shipping_threshold_minor_int ?? null,
+      },
     });
-    void params;
     return {
       ...base,
       meta: [
