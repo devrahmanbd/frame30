@@ -20,6 +20,9 @@ export const Route = createFileRoute("/store/$slug/order/$orderId")({
       data: { orderId: params.orderId, token: deps.t },
     });
     if (!data) throw notFound();
+    // Defense in depth: the path slug is decorative (token gates), but a
+    // mismatched slug must never render another tenant's order page.
+    if (data.merchant?.slug !== params.slug) throw notFound();
     return data;
   },
   head: () => ({

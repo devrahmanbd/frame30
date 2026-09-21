@@ -348,6 +348,27 @@ export async function grantStepUp(
   }
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
+  // Defense in depth: a grant minted for a foreign merchant is useless
+  // only if every consumer re-scopes. Verify membership at mint time so
+  // a forged merchantId fails here, not three calls later.
+  if (input.merchantId) {
+    const { data: member } = await supabaseAdmin
+      .from("merchant_members")
+      .select("merchant_id")
+      .eq("merchant_id", input.merchantId)
+      .eq("user_id", userId)
+      .eq("status", "active")
+      .maybeSingle();
+    if (!member) {
+      await recordAuthEvent({
+        event: "step_up.denied",
+        outcome: "denied",
+        userId,
+        detail: { action: input.action, foreignMerchant: true },
+      });
+      throw new Error("step_up.foreign_merchant");
+    }
+  }
   const expiresAt = new Date(
     Date.now() + STEP_UP_TTL_SECONDS * 1000,
   ).toISOString();

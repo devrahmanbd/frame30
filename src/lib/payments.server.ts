@@ -129,6 +129,22 @@ export async function openCharge(
     .maybeSingle();
   if (frozenCheck) await assertPaymentsNotFrozen(frozenCheck.id);
 
+  // Cross-tenant binding (Sept 2026): slug and order must belong to the
+  // same merchant. Without this, a caller could open (or advance, for COD)
+  // a charge intent on another tenant's order by pairing slugs.
+  const { data: chargeOrder } = await db
+    .from("orders")
+    .select("merchant_id")
+    .eq("id", orderId)
+    .maybeSingle();
+  if (
+    !chargeOrder ||
+    !frozenCheck ||
+    (chargeOrder as { merchant_id: string }).merchant_id !== frozenCheck.id
+  ) {
+    throw new PaymentError("payment.intent_not_found", orderId);
+  }
+
   return withSpan(
     "payments.open_charge",
     async () => {
