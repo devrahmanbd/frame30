@@ -103,6 +103,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Operator decrees recorded in progress.md: verify on production only,
   push to GitHub, path storefronts removed, shared-clone hazard noted.
 
+## [2026-09-21] — 84-widget port batch (`4153d77`)
+- Slices A/B/C/D: 20 layout chrome + 20 trust/commerce + 20 guides/advisors
+  + 24 data-backed placeholders → catalog + controls + renderers.
+- Contract gate: 304/304 pass (registration, category, controls-match,
+  instantiate, per-widget parity expects for all 101 widgets).
+- tsc clean on touched files; pre-existing errors in PageBuilder.tsx /
+  ThemesScreen.tsx untouched. tsgo binary unavailable locally; CircleCI
+  lint-typecheck is the gate.
+- Rebased onto `c6caaf9` (heritage-cutover merge); progress.md rewritten as
+  compact loop state, other session's placeholder-pipeline note preserved.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.
