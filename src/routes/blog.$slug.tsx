@@ -9,6 +9,9 @@ import {
   publicArticlePageFn,
   publicArticleResolutionFn,
 } from "@/lib/blog-reader.functions";
+import { resolveStorefrontHostFn } from "@/lib/storefront.functions";
+import { storeBlogArticleFn } from "@/lib/store-blog.functions";
+import { storeArticleHead } from "@/lib/store-blog-head";
 import { articleJsonLd, articleOutline } from "@/lib/blog-reader";
 import { breadcrumbJsonLd, termArchivePath } from "@/lib/blog-taxonomy";
 import { ArticleView } from "@/components/store/ArticleView";
@@ -17,8 +20,28 @@ import { NewsletterBlock } from "@/components/public/NewsletterForm";
 import { ShareControls } from "@/components/public/ShareControls";
 import { useLang } from "@/lib/i18n";
 
+/**
+ * Dual-mode (T5+D3): on a custom host this route serves the owning
+ * merchant's tenant article (pattern-aware resolution, store canonicals);
+ * everywhere else the global behavior below is unchanged. A resolved host
+ * with no tenant article is a genuine 404 — the global reader must never
+ * serve another merchant's article on a store domain.
+ */
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
+    let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
+    try {
+      host = await resolveStorefrontHostFn();
+    } catch {
+      host = null;
+    }
+    if (host) {
+      const store = await storeBlogArticleFn({
+        data: { slug: host.merchantSlug, articleSlug: params.slug },
+      });
+      if (!store) throw notFound();
+      return { kind: "store" as const, ...store };
+    }
     const result = await publicArticlePageFn({ data: { slug: params.slug } });
     if (!result) {
       const resolution = await publicArticleResolutionFn({
@@ -30,7 +53,7 @@ export const Route = createFileRoute("/blog/$slug")({
         throw new Response("Gone", { status: 410 });
       throw notFound();
     }
-    return result;
+    return { kind: "global" as const, ...result };
   },
   head: ({ loaderData }) => {
     if (!loaderData)
@@ -40,6 +63,17 @@ export const Route = createFileRoute("/blog/$slug")({
           { name: "robots", content: "noindex" },
         ],
       };
+    if (loaderData.kind === "store") {
+      const merchantName =
+        loaderData.article.merchant?.name ?? loaderData.merchantSlug;
+      const { meta, links, scripts } = storeArticleHead({
+        origin: loaderData.origin,
+        settings: loaderData.settings,
+        merchantName,
+        article: loaderData.article,
+      });
+      return { meta, links, scripts };
+    }
     const { article, merchant, author, category } = loaderData;
     const title = article.meta_title ?? `${article.title} — Framique`;
     const description =
@@ -177,6 +211,91 @@ function ReadingProgressBar() {
 
 function ArticlePage() {
   const data = Route.useLoaderData();
+  if (data.kind === "store") {
+    return <StoreArticlePage data={data} />;
+  }
+  return <GlobalArticlePage data={data} />;
+}
+
+/**
+ * Tenant article on a custom host. The scoped reader carries no author or
+ * related rows, so this stays a focused reading surface: the shared
+ * `ArticleView`, share controls and a back-to-blog link. Canonicals and
+ * JSON-LD come from the merchant's permalink settings (store URL wins).
+ */
+function StoreArticlePage({
+  data,
+}: {
+  data: Extract<ReturnType<typeof Route.useLoaderData>, { kind: "store" }>;
+}) {
+  const { t } = useLang();
+  const { article } = data;
+  const merchantName = article.merchant?.name ?? data.merchantSlug;
+  const outline = articleOutline(article.body ?? "");
+  return (
+    <>
+      <ReadingProgressBar />
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 lg:grid-cols-[minmax(0,1fr)_260px]">
+        <ArticleView
+          article={{
+            title: article.title,
+            excerpt: article.excerpt,
+            body: article.body,
+            cover_image_url: article.coverImageUrl,
+            published_at: article.publishedAt,
+            reading_minutes: outline.readingMinutes,
+            author: null,
+          }}
+          merchant={{
+            name: merchantName,
+            slug: article.merchant?.slug ?? data.merchantSlug,
+          }}
+        />
+        {outline.toc.length > 1 ? (
+          <aside className="pt-6 lg:pt-10">
+            <nav
+              aria-label={t("On this page", "এই পাতায়")}
+              className="rounded-fq-md border border-border/70 bg-card/60 p-4 lg:rounded-none lg:border-l lg:border-t-0 lg:border-r-0 lg:border-b-0 lg:bg-transparent lg:p-0 lg:pl-4 lg:sticky lg:top-24"
+            >
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {t("On this page", "এই পাতায়")}
+              </p>
+              <ol className="space-y-2 text-sm text-muted-foreground">
+                {outline.toc.map((item) => (
+                  <li key={item.id} className={item.level > 2 ? "pl-3" : ""}>
+                    <a
+                      href={`#${item.id}`}
+                      className="fq-tap hover:text-primary transition-colors block py-0.5"
+                    >
+                      {item.label}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </aside>
+        ) : null}
+      </div>
+      <div className="mx-auto max-w-3xl space-y-10 px-4 pb-16">
+        <ShareControls slug={article.slug} title={article.title} />
+        <nav aria-label={t("More articles", "আরও লেখা")}>
+          <Link
+            to="/blog"
+            className="inline-flex min-h-11 items-center text-sm text-primary underline"
+          >
+            {t(`More from ${merchantName}`, `${merchantName}-এর আরও লেখা`)}
+          </Link>
+        </nav>
+      </div>
+    </>
+  );
+}
+
+function GlobalArticlePage({
+  data,
+}: {
+  data: Extract<ReturnType<typeof Route.useLoaderData>, { kind: "global" }>;
+}) {
   const { t } = useLang();
   const outline = articleOutline(data.article.body ?? "");
   return (

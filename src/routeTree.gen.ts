@@ -209,6 +209,8 @@ import { Route as ApiPublicPaymentsProviderRouteImport } from './routes/api/publ
 import { Route as ApiPublicPaymentsReturnRouteImport } from './routes/api/public/payments/return'
 import { Route as ApiPublicPhSplatRouteImport } from './routes/api/public/ph.$'
 import { Route as ApiPublicV1SplatRouteImport } from './routes/api/public/v1/$'
+import { Route as StoreSlugBlogIndexRouteImport } from './routes/store.$slug.blog.index'
+import { Route as StoreSlugBlogSlugRouteImport } from './routes/store.$slug.blog.$slug'
 import { Route as StoreSlugCCollectionSlugRouteImport } from './routes/store.$slug.c.$collectionSlug'
 import { Route as StoreSlugOrderOrderIdRouteImport } from './routes/store.$slug.order.$orderId'
 import { Route as StoreSlugPProductSlugRouteImport } from './routes/store.$slug.p.$productSlug'
@@ -1311,6 +1313,16 @@ const ApiPublicV1SplatRoute = ApiPublicV1SplatRouteImport.update({
   path: '/api/public/v1/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StoreSlugBlogIndexRoute = StoreSlugBlogIndexRouteImport.update({
+  id: '/store/$slug/blog/',
+  path: '/store/$slug/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoreSlugBlogSlugRoute = StoreSlugBlogSlugRouteImport.update({
+  id: '/store/$slug/blog/$slug',
+  path: '/store/$slug/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StoreSlugCCollectionSlugRoute =
   StoreSlugCCollectionSlugRouteImport.update({
     id: '/store/$slug/c/$collectionSlug',
@@ -1560,6 +1572,7 @@ export interface FileRoutesByFullPath {
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
   '/api/public/ph/$': typeof ApiPublicPhSplatRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
+  '/store/$slug/blog/$slug': typeof StoreSlugBlogSlugRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
   '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
   '/store/$slug/p/$productSlug': typeof StoreSlugPProductSlugRoute
@@ -1573,6 +1586,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/orders/': typeof AuthenticatedDashboardOrdersIndexRoute
   '/dashboard/plugins/': typeof AuthenticatedDashboardPluginsIndexRoute
   '/dashboard/products/': typeof AuthenticatedDashboardProductsIndexRoute
+  '/store/$slug/blog/': typeof StoreSlugBlogIndexRoute
   '/dashboard/orders/$orderId/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
   '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
   '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
@@ -1769,6 +1783,7 @@ export interface FileRoutesByTo {
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
   '/api/public/ph/$': typeof ApiPublicPhSplatRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
+  '/store/$slug/blog/$slug': typeof StoreSlugBlogSlugRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
   '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
   '/store/$slug/p/$productSlug': typeof StoreSlugPProductSlugRoute
@@ -1782,6 +1797,7 @@ export interface FileRoutesByTo {
   '/dashboard/orders': typeof AuthenticatedDashboardOrdersIndexRoute
   '/dashboard/plugins': typeof AuthenticatedDashboardPluginsIndexRoute
   '/dashboard/products': typeof AuthenticatedDashboardProductsIndexRoute
+  '/store/$slug/blog': typeof StoreSlugBlogIndexRoute
   '/dashboard/orders/$orderId/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
   '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
   '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
@@ -1982,6 +1998,7 @@ export interface FileRoutesById {
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
   '/api/public/ph/$': typeof ApiPublicPhSplatRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
+  '/store/$slug/blog/$slug': typeof StoreSlugBlogSlugRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
   '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
   '/store/$slug/p/$productSlug': typeof StoreSlugPProductSlugRoute
@@ -1995,6 +2012,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/orders/': typeof AuthenticatedDashboardOrdersIndexRoute
   '/_authenticated/dashboard/plugins/': typeof AuthenticatedDashboardPluginsIndexRoute
   '/_authenticated/dashboard/products/': typeof AuthenticatedDashboardProductsIndexRoute
+  '/store/$slug/blog/': typeof StoreSlugBlogIndexRoute
   '/_authenticated/dashboard/orders/$orderId_/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
   '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
   '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
@@ -2195,6 +2213,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/return'
     | '/api/public/ph/$'
     | '/api/public/v1/$'
+    | '/store/$slug/blog/$slug'
     | '/store/$slug/c/$collectionSlug'
     | '/store/$slug/order/$orderId'
     | '/store/$slug/p/$productSlug'
@@ -2208,6 +2227,7 @@ export interface FileRouteTypes {
     | '/dashboard/orders/'
     | '/dashboard/plugins/'
     | '/dashboard/products/'
+    | '/store/$slug/blog/'
     | '/dashboard/orders/$orderId/invoice'
     | '/api/public/payments/live/$provider'
     | '/api/public/payments/mock/$provider'
@@ -2404,6 +2424,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/return'
     | '/api/public/ph/$'
     | '/api/public/v1/$'
+    | '/store/$slug/blog/$slug'
     | '/store/$slug/c/$collectionSlug'
     | '/store/$slug/order/$orderId'
     | '/store/$slug/p/$productSlug'
@@ -2417,6 +2438,7 @@ export interface FileRouteTypes {
     | '/dashboard/orders'
     | '/dashboard/plugins'
     | '/dashboard/products'
+    | '/store/$slug/blog'
     | '/dashboard/orders/$orderId/invoice'
     | '/api/public/payments/live/$provider'
     | '/api/public/payments/mock/$provider'
@@ -2616,6 +2638,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/return'
     | '/api/public/ph/$'
     | '/api/public/v1/$'
+    | '/store/$slug/blog/$slug'
     | '/store/$slug/c/$collectionSlug'
     | '/store/$slug/order/$orderId'
     | '/store/$slug/p/$productSlug'
@@ -2629,6 +2652,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/orders/'
     | '/_authenticated/dashboard/plugins/'
     | '/_authenticated/dashboard/products/'
+    | '/store/$slug/blog/'
     | '/_authenticated/dashboard/orders/$orderId_/invoice'
     | '/api/public/payments/live/$provider'
     | '/api/public/payments/mock/$provider'
@@ -2731,11 +2755,13 @@ export interface RootRouteChildren {
   ApiPublicPaymentsReturnRoute: typeof ApiPublicPaymentsReturnRoute
   ApiPublicPhSplatRoute: typeof ApiPublicPhSplatRoute
   ApiPublicV1SplatRoute: typeof ApiPublicV1SplatRoute
+  StoreSlugBlogSlugRoute: typeof StoreSlugBlogSlugRoute
   StoreSlugCCollectionSlugRoute: typeof StoreSlugCCollectionSlugRoute
   StoreSlugOrderOrderIdRoute: typeof StoreSlugOrderOrderIdRoute
   StoreSlugPProductSlugRoute: typeof StoreSlugPProductSlugRoute
   StoreSlugPagesPageSlugRoute: typeof StoreSlugPagesPageSlugRoute
   StoreSlugSitemapsKindRoute: typeof StoreSlugSitemapsKindRoute
+  StoreSlugBlogIndexRoute: typeof StoreSlugBlogIndexRoute
   ApiPublicPaymentsLiveProviderRoute: typeof ApiPublicPaymentsLiveProviderRoute
   ApiPublicPaymentsMockProviderRoute: typeof ApiPublicPaymentsMockProviderRoute
   ApiPublicPaymentsPlatformProviderRoute: typeof ApiPublicPaymentsPlatformProviderRoute
@@ -4144,6 +4170,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/store/$slug/blog/': {
+      id: '/store/$slug/blog/'
+      path: '/store/$slug/blog'
+      fullPath: '/store/$slug/blog/'
+      preLoaderRoute: typeof StoreSlugBlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/blog/$slug': {
+      id: '/store/$slug/blog/$slug'
+      path: '/store/$slug/blog/$slug'
+      fullPath: '/store/$slug/blog/$slug'
+      preLoaderRoute: typeof StoreSlugBlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/store/$slug/c/$collectionSlug': {
       id: '/store/$slug/c/$collectionSlug'
       path: '/store/$slug/c/$collectionSlug'
@@ -4621,11 +4661,13 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicPaymentsReturnRoute: ApiPublicPaymentsReturnRoute,
   ApiPublicPhSplatRoute: ApiPublicPhSplatRoute,
   ApiPublicV1SplatRoute: ApiPublicV1SplatRoute,
+  StoreSlugBlogSlugRoute: StoreSlugBlogSlugRoute,
   StoreSlugCCollectionSlugRoute: StoreSlugCCollectionSlugRoute,
   StoreSlugOrderOrderIdRoute: StoreSlugOrderOrderIdRoute,
   StoreSlugPProductSlugRoute: StoreSlugPProductSlugRoute,
   StoreSlugPagesPageSlugRoute: StoreSlugPagesPageSlugRoute,
   StoreSlugSitemapsKindRoute: StoreSlugSitemapsKindRoute,
+  StoreSlugBlogIndexRoute: StoreSlugBlogIndexRoute,
   ApiPublicPaymentsLiveProviderRoute: ApiPublicPaymentsLiveProviderRoute,
   ApiPublicPaymentsMockProviderRoute: ApiPublicPaymentsMockProviderRoute,
   ApiPublicPaymentsPlatformProviderRoute:
