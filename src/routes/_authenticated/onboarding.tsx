@@ -281,8 +281,8 @@ function Onboarding() {
               </h2>
               <p className="mt-1 text-xs text-muted-foreground">
                 {t(
-                  `Your store is live at https://framique.qubickle.com/store/${slug}. You can connect your own domain later from Settings > Domains.`,
-                  `আপনার স্টোর https://framique.qubickle.com/store/${slug} ঠিকানায় চালু আছে। আপনি পরে Settings > Domains থেকে নিজের ডোমেইন যুক্ত করতে পারেন।`,
+                  `Your storefront lives on your own custom domain — connect it here so shoppers never see a platform path URL.`,
+                  `আপনার স্টোরফ্রন্ট আপনার নিজের কাস্টম ডোমেইনে থাকে — ক্রেতারা যাতে প্ল্যাটফর্ম ঠিকানা না দেখে সেজন্য এখানেই যুক্ত করুন।`,
                 )}
               </p>
             </div>

@@ -25,6 +25,7 @@ import {
   UnderlineTabs,
 } from "@/components/admin/seo/metabox/parts";
 import { useLang } from "@/lib/i18n";
+import { useStoreUrl } from "@/hooks/use-store-url";
 import { SEPARATORS, applyTokens } from "@/lib/seo/seo-meta";
 import {
   REDIRECT_CODE_OPTIONS,
@@ -89,6 +90,7 @@ function SeoSettingsPage() {
   const bundle = Route.useLoaderData();
   const router = useRouter();
   const { t, lang } = useLang();
+  const { storePath } = useStoreUrl();
   const [tab, setTab] = useState<TabId>("titles");
   const [settings, setSettings] = useState<SiteSeoSettings>(bundle.settings);
   const [busy, setBusy] = useState(false);
@@ -310,7 +312,7 @@ function SeoSettingsPage() {
               </label>
               {bundle.storeSlug && (
                 <a
-                  href={`/store/${bundle.storeSlug}/sitemap.xml`}
+                  href={storePath("sitemap.xml")}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="fq-focus-glow inline-flex min-h-9 items-center rounded-fq-md px-1 text-xs font-medium text-primary hover:underline"

@@ -22,3 +22,35 @@ export function storefrontUrlForMerchant(
   if (primary) return `https://${primary}/`;
   return `/store/${slug}`;
 }
+
+/**
+ * Any storefront subpath (`pages/x`, `sitemap.xml`, `search`, …) resolved
+ * against the merchant's primary custom domain when one exists, else the
+ * legacy path URL. Central rule for every merchant-facing link: path URLs
+ * are retired, so no new caller may hard-code `/store/<slug>`.
+ */
+export function storefrontPathForMerchant(
+  primaryHost: string | null | undefined,
+  slug: string,
+  subpath: string,
+): string {
+  const primary = (primaryHost ?? "").trim().toLowerCase();
+  const clean = subpath.replace(/^\/+/, "");
+  if (primary) return `https://${primary}/${clean}`;
+  return `/store/${slug}/${clean}`;
+}
+
+/** Public page URL for View actions and previews (`preview=1` for drafts). */
+export function storePageUrlForMerchant(
+  primaryHost: string | null | undefined,
+  slug: string,
+  pageSlug: string,
+  preview = false,
+): string {
+  const url = storefrontPathForMerchant(
+    primaryHost,
+    slug,
+    `pages/${pageSlug}`,
+  );
+  return preview ? `${url}?preview=1` : url;
+}

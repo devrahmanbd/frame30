@@ -26,6 +26,7 @@ import {
 } from "@/lib/console-nav";
 import { useCan } from "@/hooks/use-membership";
 import { useMerchant, useMerchants } from "@/hooks/use-merchant";
+import { useStoreUrl } from "@/hooks/use-store-url";
 import {
   Activity,
   BarChart3,
@@ -577,6 +578,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const palette = useCommandPalette();
   const { data: merchant } = useMerchant();
   const { memberships, switchMerchant } = useMerchants();
+  const { storeUrl } = useStoreUrl();
   const navigate = useNavigate();
   const qc = useQueryClient();
 
@@ -737,7 +739,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           </button>
           {merchant?.slug ? (
             <a
-              href={`/store/${merchant.slug}`}
+              href={storeUrl()}
               target="_blank"
               rel="noreferrer"
               className="hidden items-center gap-1.5 rounded-fq-md px-2.5 py-1.5 text-[13px] text-muted-foreground hover:bg-muted hover:text-foreground lg:flex"

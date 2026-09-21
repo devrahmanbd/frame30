@@ -296,3 +296,11 @@ storefront serves on custom domains only.
   only as server-local edits + stash; server also found checked out onto a
   stale detached HEAD twice — always verify HEAD + bundle markers post
   deploy, never assume pull succeeded.
+
+## Loop batch — custom-domain merchant links (Sept 21)
+- Audited every merchant-facing path URL (View store x3, page preview/
+  view, quick-edit + document permalink prefixes, editor preview + SEO
+  URLs, sitemap link, settings header text, onboarding copy).
+- New `useStoreUrl` hook + `storefrontPathForMerchant`/`storePageUrlForMerchant`
+  pure builders (unit-tested); all surfaces wired. Blog paths untouched.
+- Onboarding copy no longer promises a `/store/<slug>` URL.

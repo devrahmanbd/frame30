@@ -6,6 +6,14 @@ honest: every shipped task lands an entry here in the same commit.
 
 ## Unreleased
 
+> ⚠️ **WARNING — shared-server deploy collisions.** Two agents deploy to one
+> server from one clone: observed interleaved origin/main, a 502 from an
+> unpushed-file commit, a frankenbuild (restart landed mid-build), production
+> checked out onto a stale detached HEAD (deploys silently not taking
+> effect), and the cutover living only as uncommitted server edits + stash.
+> Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
+> AND a bundle marker before announcing; never reset shared history.
+
 ### Changed
 - Page builder is the content editor URL (`/dashboard/content/editor`):
   full-window Elementor-style takeover (Elements/SEO tabs, flush canvas,
@@ -19,6 +27,12 @@ honest: every shipped task lands an entry here in the same commit.
   when one exists (`currentMerchantPrimaryHostFn`).
 
 ### Added
+- Custom-domain-aware merchant links: View-store, page preview/view,
+  quick-edit and document permalink prefixes, editor preview + SEO URLs,
+  sitemap link, and settings header all resolve to the primary custom
+  domain when one exists (`useStoreUrl` + pure builders in
+  `storefront-url.ts`, unit-tested). Onboarding no longer promises a path
+  URL. Blog paths untouched (platform routes, unaffected by the cutover).
 - Customizable homepage: set/remove-as-homepage list actions (published
   pages only), stored in `setup_steps.homepage_page_id`, rendered at `/`
   with theme-template fallback on path and custom hosts.

@@ -16,6 +16,7 @@ import {
 } from "@/lib/content-desk";
 import { editHref, previewHref } from "./content-links";
 import { usePageEditorDefault } from "@/hooks/use-page-editor";
+import { useStoreUrl } from "@/hooks/use-store-url";
 
 /* -------------------------------------------------------------- Title cell */
 
@@ -120,6 +121,8 @@ function RowActionLink({
   defaultEditor?: "builder" | "classic";
 }) {
   const { lang } = useLang();
+  // Unconditional (rules-of-hooks): only consumed by preview/view below.
+  const { storePage } = useStoreUrl();
   const label = ROW_ACTION_LABEL[action][lang === "bn" ? "bn" : "en"];
   const danger = action === "trash" || action === "delete";
   // ≥32px tall on touch layouts (WCAG 2.5.8); collapses to text height on desktop where hover reveals it.
@@ -149,9 +152,15 @@ function RowActionLink({
     );
   }
   if (action === "preview" || action === "view") {
+    // Pages resolve against the primary custom domain when one exists
+    // (path storefronts are retired); blog posts stay on platform paths.
+    const href =
+      row.kind === "page"
+        ? storePage(row.slug, action === "preview")
+        : previewHref(row.kind, row, storeSlug);
     return (
       <a
-        href={previewHref(row.kind, row, storeSlug)}
+        href={href}
         target="_blank"
         rel="noreferrer"
         className={cn(base, "inline-flex items-center gap-0.5")}

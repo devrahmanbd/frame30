@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { storefrontUrlForMerchant } from "./storefront-url";
+import {
+  storefrontPathForMerchant,
+  storefrontUrlForMerchant,
+  storePageUrlForMerchant,
+} from "./storefront-url";
 
 describe("storefrontUrlForMerchant (dashboard View-store anchor)", () => {
   it("links to the primary custom domain when one exists", () => {
@@ -10,5 +14,39 @@ describe("storefrontUrlForMerchant (dashboard View-store anchor)", () => {
 
   it("falls back to the path URL when there is no primary", () => {
     expect(storefrontUrlForMerchant(null, "akira")).toBe("/store/akira");
+  });
+});
+
+describe("storefrontPathForMerchant (subpaths)", () => {
+  it("resolves against the primary domain when present", () => {
+    expect(
+      storefrontPathForMerchant("microscrop.shop", "akira", "sitemap.xml"),
+    ).toBe("https://microscrop.shop/sitemap.xml");
+    expect(
+      storefrontPathForMerchant("microscrop.shop", "akira", "/search"),
+    ).toBe("https://microscrop.shop/search");
+  });
+
+  it("falls back to path URLs", () => {
+    expect(storefrontPathForMerchant(null, "akira", "sitemap.xml")).toBe(
+      "/store/akira/sitemap.xml",
+    );
+  });
+});
+
+describe("storePageUrlForMerchant (view + preview)", () => {
+  it("builds page URLs with optional preview flag", () => {
+    expect(
+      storePageUrlForMerchant("microscrop.shop", "akira", "about", false),
+    ).toBe("https://microscrop.shop/pages/about");
+    expect(
+      storePageUrlForMerchant("microscrop.shop", "akira", "about", true),
+    ).toBe("https://microscrop.shop/pages/about?preview=1");
+    expect(storePageUrlForMerchant(null, "akira", "about", false)).toBe(
+      "/store/akira/pages/about",
+    );
+    expect(storePageUrlForMerchant(null, "akira", "about", true)).toBe(
+      "/store/akira/pages/about?preview=1",
+    );
   });
 });
