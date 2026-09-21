@@ -74,24 +74,34 @@ async function scopedFacets(
   db: Db,
   merchantId: string,
 ): Promise<BlogListing["facets"]> {
-  const { data } = await db
-    .from("blog_terms")
-    .select("slug, name, kind, article_count")
-    .eq("merchant_id", merchantId)
-    .gt("article_count", 0)
-    .order("article_count", { ascending: false })
-    .limit(24);
-  return ((data ?? []) as {
-    slug: string;
-    name: string;
-    kind: string;
-    article_count: number;
-  }[]).map((row) => ({
-    slug: row.slug,
-    name: row.name,
-    kind: (row.kind === "tag" ? "tag" : "category") as "tag" | "category",
-    count: row.article_count,
-  }));
+  // Live schema has no per-term merchant scope or counters: derive facets
+  // from the merchant's own articles' tags instead (best-effort, empty rail
+  // when the merchant has no tagged articles).
+  try {
+    const { data } = await db
+      .from("articles")
+      .select("tags")
+      .eq("merchant_id", merchantId)
+      .eq("status", "published")
+      .is("deleted_at", null)
+      .limit(200);
+    const counts = new Map<string, number>();
+    for (const row of ((data ?? []) as { tags?: unknown }[])) {
+      const tags = Array.isArray(row.tags) ? row.tags : [];
+      for (const tag of tags) {
+        if (typeof tag !== "string") continue;
+        const slug = tag.trim().toLowerCase();
+        if (!slug) continue;
+        counts.set(slug, (counts.get(slug) ?? 0) + 1);
+      }
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 24)
+      .map(([slug, count]) => ({ slug, name: slug, kind: "tag" as const, count }));
+  } catch {
+    return [];
+  }
 }
 
 /** Paginated article index for one merchant, newest first. */
@@ -141,37 +151,35 @@ export async function loadStoreBlogIndex(
           .eq("id", merchantId)
           .maybeSingle();
         merchant = (m as { name: string; slug: string } | null) ?? null;
-        const { data: links } = await db
-          .from("article_terms")
-          .select("article_id, term_id, is_primary")
-          .in(
-            "article_id",
-            rows.map((r) => r.id),
-          )
-          .eq("is_primary", true);
-        const termIds = [
-          ...new Set(
-            ((links ?? []) as { term_id: string }[]).map((l) => l.term_id),
-          ),
-        ];
-        if (termIds.length > 0) {
-          const { data: terms } = await db
-            .from("blog_terms")
-            .select("id, slug, name")
-            .in("id", termIds)
-            .eq("merchant_id", merchantId);
-          const byId = new Map(
-            ((terms ?? []) as { id: string; slug: string; name: string }[]).map(
-              (t) => [t.id, { slug: t.slug, name: t.name }],
-            ),
-          );
+        // Live schema stores term strings (no term_id/is_primary): first
+        // category-kind term per article. Best-effort — a missing chip never
+        // blocks the card.
+        try {
+          const { data: links } = await db
+            .from("article_terms")
+            .select("article_id, term, kind")
+            .in(
+              "article_id",
+              rows.map((r) => r.id),
+            );
           for (const l of (links ?? []) as {
             article_id: string;
-            term_id: string;
+            term: string;
+            kind: string;
           }[]) {
-            const term = byId.get(l.term_id);
-            if (term) categoryByArticle.set(l.article_id, term);
+            if (
+              l.kind === "category" &&
+              l.term &&
+              !categoryByArticle.has(l.article_id)
+            ) {
+              categoryByArticle.set(l.article_id, {
+                slug: l.term,
+                name: l.term,
+              });
+            }
           }
+        } catch {
+          // best-effort only
         }
       }
       return {
@@ -238,26 +246,36 @@ export async function loadStoreArticle(
         .maybeSingle();
       const { data: links } = await database
         .from("article_terms")
-        .select("term_id, is_primary")
+        .select("term, kind")
         .eq("article_id", row["id"])
-        .limit(12);
-      const termIds = ((links ?? []) as { term_id: string }[]).map(
-        (l) => l.term_id,
-      );
+        .limit(12)
+        .then(
+          (r: { data: unknown; error: unknown }) =>
+            (r.error ? { data: [] } : r) as {
+            data: { term: string; kind: string }[] | null;
+          },
+        );
+      const termIds: string[] = [];
       let category: { slug: string; name: string } | null = null;
-      if (termIds.length > 0) {
-        const { data: terms } = await database
-          .from("blog_terms")
-          .select("id, kind, slug, name")
-          .in("id", termIds)
-          .eq("merchant_id", merchantId)
-          .limit(12);
-        const found = ((terms ?? []) as {
-          kind: string;
-          slug: string;
-          name: string;
-        }[]).find((t) => t.kind === "category");
-        if (found) category = { slug: found.slug, name: found.name };
+      for (const l of (links ?? []) as { term: string; kind: string }[]) {
+        if (l.kind === "category" && !category && l.term) {
+          category = { slug: l.term, name: l.term };
+          termIds.push(l.term);
+        }
+      }
+      if (category) {
+        // Prefer the canonical display name when the shared term exists.
+        try {
+          const { data: terms } = await database
+            .from("blog_terms")
+            .select("slug, name")
+            .eq("slug", category.slug)
+            .limit(1);
+          const found = ((terms ?? []) as { slug: string; name: string }[])[0];
+          if (found) category = { slug: found.slug, name: found.name };
+        } catch {
+          // best-effort only
+        }
       }
       return {
         slug: row["slug"],
