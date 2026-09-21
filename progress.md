@@ -133,3 +133,9 @@ verify on production; push to GitHub.
 - Branch session-settings-cleanup deployed, then merged to main (17-check
   script: cart 307 was the disk-full postgres incident per above,
   re-checked 200 after). tsc: only pre-existing errors.
+
+## PR #4 merged + main live (Sept 21)
+- Pulled main at c33c56a (PR #4 session-interconnect merged).
+- Deployed main: 17/17 contract checks green (platform /store/* 404s,
+  microscrop.shop/ + /cart 200, placeholder API 200).
+- Live re-check as flamedev7: General dup-tabs 0, 2FA card absent.
