@@ -269,3 +269,10 @@ verify on production; push to GitHub.
   preview toggle with floating exit. Deployed + screenshot-verified.
 - [x] Frameless preview + weave lattice hero (replaces badge tiles);
   solid dept tiles; floating tab pill to bottom. Verified desktop+mobile.
+- [x] Demo import unblocked (nahid report): root causes were (1) SQL
+  idempotency guard noops when ANY is_demo row exists (theme switch =
+  silent zero-import), (2) 5 theme.import_* rate buckets missing ->
+  server throw 'limit' on every granular import, (3) per-wrapper purge
+  wiped just-imported rows (fixed: purge once per operation).
+  Fix: overwrite acks purge demo first + buckets added + fail-open
+  guard. Proven live on akira: totalImported 4, 20 supershop demo rows.
