@@ -11,6 +11,7 @@ import {
   newContainer,
   parseStudioDoc,
   uid,
+  type NodeSettings,
   type StudioDoc,
   type StudioNode,
 } from "./model";
@@ -27,6 +28,7 @@ export const TEMPLATE_CATEGORIES = [
   "subscribe",
   "header",
   "footer",
+  "cart",
   "404",
 ] as const;
 
@@ -269,7 +271,183 @@ export function builtInTemplates(): StudioTemplate[] {
       category: "404",
       nodes: [notFound],
     },
+    ...universalBlocks(),
   ];
+
+  /**
+   * Universal storefront patterns: theme-agnostic, token-styled, usable in
+   * any theme. Built from the ported widget set (faq, marquee, banner,
+   * trust_bar, announcement_bar, heritage + hero batch) so the page editor
+   * carries the same vocabulary as the theme studio.
+   */
+  function universalBlocks(): StudioTemplate[] {
+    const withSettings = (
+      key: string,
+      settings: NodeSettings,
+    ): StudioNode => {
+      const node = newWidgetNode(key);
+      node.settings = { ...node.settings, ...settings };
+      return node;
+    };
+
+    const faqRich = withSettings("faq", {
+      heading: "Frequently asked questions",
+      q1: "How long does delivery take?",
+      a1: "Inside Dhaka 24–48 hours; nationwide 3–5 working days.",
+      q2: "What payment methods do you accept?",
+      a2: "bKash, Nagad, cards and cash on delivery.",
+      q3: "Can I exchange an item?",
+      a3: "Yes — unused items within 7 days, no questions asked.",
+    });
+
+    const testimonialCarousel = withSettings("testimonial_carousel", {
+      testimonials: [
+        {
+          quote: "Ordered Tuesday night, wearing it Friday. Impeccable.",
+          author: "Nusrat A.",
+          role: "Verified buyer",
+          avatar: "",
+        },
+        {
+          quote: "The fabric quality rivals brands triple the price.",
+          author: "Tanvir H.",
+          role: "Verified buyer",
+          avatar: "",
+        },
+      ],
+      autoAdvanceMs: 6000,
+    });
+
+    const heroSplit = withSettings("editorial_hero", {
+      eyebrow: "New season",
+      heading: "Craft you can feel",
+      body: "Limited runs from artisan families. No restocks, no landfill.",
+      ctaLabel: "Shop the collection",
+      ctaHref: "/collections/new",
+      imageUrl: "",
+      layout: "split",
+      scrim: true,
+    });
+
+    const headerBar = newContainer(
+      { layout: "flex", direction: "column", gap: 0, contentWidth: "full" },
+      [
+        newWidgetNode("announcement_bar"),
+        newContainer(
+          {
+            layout: "flex",
+            direction: "row",
+            gap: 16,
+            contentWidth: "boxed",
+          },
+          [
+            heading("Your store", 3, 24),
+            withSettings("button", { label: "Shop now", href: "/collections/new" }),
+          ],
+        ),
+      ],
+    );
+
+    const footerCols = newContainer(
+      { layout: "flex", direction: "column", gap: 16, contentWidth: "boxed" },
+      [
+        row([
+          column(
+            [
+              heading("Shop", 4, 16),
+              paragraph("New arrivals"),
+              paragraph("Best sellers"),
+            ],
+            33,
+          ),
+          column(
+            [
+              heading("Help", 4, 16),
+              paragraph("Track your order"),
+              paragraph("Exchanges & returns"),
+            ],
+            33,
+          ),
+          column(
+            [
+              heading("Visit", 4, 16),
+              paragraph("Dhanmondi Studio, Dhaka"),
+              paragraph("Open 10am – 8pm"),
+            ],
+            33,
+          ),
+        ]),
+        withSettings("banner", {
+          text: "© 2026 — thank you for shopping with us.",
+          tone: "info",
+        }),
+      ],
+    );
+
+    const cartPage = newContainer(
+      { layout: "flex", direction: "column", gap: 16, contentWidth: "boxed" },
+      [
+        heading("Your cart", 2, 32),
+        newWidgetNode("cart"),
+        newWidgetNode("trust_bar"),
+      ],
+    );
+
+    return [
+      {
+        id: "b-cart",
+        name: "Cart page",
+        kind: "block",
+        category: "cart",
+        nodes: [cartPage],
+      },
+      {
+        id: "b-header",
+        name: "Store header",
+        kind: "block",
+        category: "header",
+        nodes: [headerBar],
+      },
+      {
+        id: "b-footer",
+        name: "Store footer",
+        kind: "block",
+        category: "footer",
+        nodes: [footerCols],
+      },
+      {
+        id: "b-faq-rich",
+        name: "FAQ section",
+        kind: "block",
+        category: "faq",
+        nodes: [
+          newContainer(
+            { layout: "flex", direction: "column", gap: 12 },
+            [faqRich],
+          ),
+        ],
+      },
+      {
+        id: "b-testimonial-carousel",
+        name: "Testimonial slider",
+        kind: "block",
+        category: "testimonials",
+        nodes: [
+          newContainer(
+            { layout: "flex", direction: "column", gap: 12 },
+            [testimonialCarousel],
+          ),
+        ],
+      },
+      {
+        id: "b-hero-split",
+        name: "Split hero",
+        kind: "block",
+        category: "hero",
+        nodes: [heroSplit],
+      },
+    ];
+  }
 
   const pages: StudioTemplate[] = [
     {
