@@ -2111,6 +2111,128 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "order_tracker":
       return <Placeholder label="Live order tracker — renders on the storefront" />;
 
+    case "add_to_cart": {
+      const label = str(s, "label", "Add to cart");
+      const showQty = s.showQuantity !== false;
+      return (
+        <div className="flex flex-col gap-3">
+          {showQty && (
+            <div className="flex items-center gap-3 text-sm">
+              <span aria-hidden="true" className="grid h-9 w-9 place-items-center rounded-fq-md border border-border">−</span>
+              <span className="tabular-nums">1</span>
+              <span aria-hidden="true" className="grid h-9 w-9 place-items-center rounded-fq-md border border-border">+</span>
+            </div>
+          )}
+          <span className="inline-flex min-h-11 items-center justify-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+            {label}
+          </span>
+        </div>
+      );
+    }
+
+    case "rewards_club": {
+      const tiers = [1, 2, 3]
+        .map((n) => ({ name: str(s, `tier${n}Name`), points: str(s, `tier${n}Points`) }))
+        .filter((t) => t.name);
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+          {str(s, "heading") && (
+            <h3 className="text-2xl font-bold">{str(s, "heading")}</h3>
+          )}
+          {str(s, "body") && (
+            <p className="mt-2 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          {tiers.length > 0 && (
+            <ol className="mt-5 grid gap-3 sm:grid-cols-3">
+              {tiers.map((tier) => (
+                <li key={tier.name} className="rounded-fq-md border border-border bg-background p-4">
+                  <p className="text-sm font-semibold">{tier.name}</p>
+                  {tier.points && (
+                    <p className="mt-1 text-xs text-muted-foreground">{tier.points}</p>
+                  )}
+                </li>
+              ))}
+            </ol>
+          )}
+          {str(s, "buttonLabel") && (
+            <p className="mt-5">
+              <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+                {str(s, "buttonLabel")}
+              </span>
+            </p>
+          )}
+        </section>
+      );
+    }
+
+    case "wedding_shop": {
+      const collections = [1, 2, 3]
+        .map((n) => ({ name: str(s, `c${n}Name`), href: str(s, `c${n}Href`) || "#" }))
+        .filter((c) => c.name);
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+          {str(s, "heading") && (
+            <h3 className="text-2xl font-bold">{str(s, "heading")}</h3>
+          )}
+          {str(s, "body") && (
+            <p className="mt-2 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          {collections.length > 0 && (
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              {collections.map((c) => (
+                <span key={c.name} className="rounded-fq-md border border-border bg-background p-4">
+                  <p className="text-sm font-semibold">{c.name}</p>
+                  <p aria-hidden="true" className="mt-2 text-primary">→</p>
+                </span>
+              ))}
+            </div>
+          )}
+          {str(s, "buttonLabel") && (
+            <p className="mt-5">
+              <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+                {str(s, "buttonLabel")}
+              </span>
+            </p>
+          )}
+        </section>
+      );
+    }
+
+    case "gift_finder": {
+      const occasions = [1, 2, 3]
+        .map((n) => ({ label: str(s, `o${n}Label`), query: str(s, `o${n}Query`) }))
+        .filter((o) => o.label);
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+          {str(s, "heading") && (
+            <h3 className="text-2xl font-bold">{str(s, "heading")}</h3>
+          )}
+          {str(s, "body") && (
+            <p className="mt-2 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          {occasions.length > 0 && (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {occasions.map((o) => (
+                <span
+                  key={o.label}
+                  className="inline-flex min-h-11 items-center rounded-full border border-border bg-background px-4 text-sm font-medium"
+                >
+                  {o.label}
+                </span>
+              ))}
+            </div>
+          )}
+          {str(s, "buttonLabel") && (
+            <p className="mt-5">
+              <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+                {str(s, "buttonLabel")}
+              </span>
+            </p>
+          )}
+        </section>
+      );
+    }
+
     default:
       return <Placeholder label={node.el} />;
   }

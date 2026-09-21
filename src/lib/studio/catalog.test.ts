@@ -109,6 +109,10 @@ const PORTED = [
   "wishlist_button",
   "compare_tray",
   "bundle_offer",
+  "add_to_cart",
+  "rewards_club",
+  "wedding_shop",
+  "gift_finder",
 ] as const;
 
 const COMMERCE_PORTED = new Set([
@@ -133,6 +137,10 @@ const COMMERCE_PORTED = new Set([
   "wishlist_button",
   "compare_tray",
   "bundle_offer",
+  "add_to_cart",
+  "rewards_club",
+  "wedding_shop",
+  "gift_finder",
 ]);
 
 describe("ported theme widgets", () => {
@@ -606,5 +614,9 @@ describe("ported theme widgets", () => {
       i1Label: "",
       i1VariantId: "",
     });
+    expect(WIDGET_BY_KEY.add_to_cart.defaults).toMatchObject({ label: "Add to cart", showQuantity: true });
+    expect(WIDGET_BY_KEY.rewards_club.defaults).toMatchObject({ heading: "My Rewards", tier1Name: "Silver", tier2Points: "5,000+ points", buttonHref: "/pages/rewards" });
+    expect(WIDGET_BY_KEY.wedding_shop.defaults).toMatchObject({ heading: "The Wedding Shop", c1Name: "Bridal Sarees", c1Href: "/c/bridal", buttonHref: "/c/wedding" });
+    expect(WIDGET_BY_KEY.gift_finder.defaults).toMatchObject({ heading: "Find the perfect gift", o1Label: "For Her", o1Query: "saree", buttonHref: "/search" });
   });
 });

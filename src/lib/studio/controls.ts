@@ -2315,6 +2315,11 @@ const CONTENT: Record<string, Control[]> = {
   product_media: [
     c({ key: "altText", label: "Alt text", type: "text", tab: "content", section: "Media" }),
     c({ key: "ratio", label: "Aspect ratio", type: "select", tab: "content", section: "Media", options: [{ value: "1/1", label: "Square" }, { value: "4/3", label: "4:3" }, { value: "16/9", label: "16:9" }] }),
+    c({ key: "showThumbnails", label: "Show thumbnails", type: "switch", tab: "content", section: "Media" }),
+    c({ key: "zoom", label: "Enable zoom", type: "switch", tab: "content", section: "Media" }),
+    ...[1, 2, 3, 4].map((i) =>
+      c({ key: `image${i}`, label: `Image ${i} URL`, type: "text", tab: "content", section: "Media" }),
+    ),
   ],
   product_meta: [
     c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Details" }),
@@ -2414,7 +2419,44 @@ const CONTENT: Record<string, Control[]> = {
   bundle_offer: [
     c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Bundle" }),
     c({ key: "buttonLabel", label: "Button label", type: "text", tab: "content", section: "Bundle" }),
-    c({ key: "i1Label", label: "Item 1 label", type: "text", tab: "content", section: "Bundle" }),
+    ...[1, 2, 3, 4].flatMap((i) => [
+      c({ key: `i${i}Label`, label: `Item ${i} label`, type: "text", tab: "content", section: `Item ${i}` }),
+      c({ key: `i${i}VariantId`, label: `Item ${i} variant ID`, type: "text", tab: "content", section: `Item ${i}` }),
+    ]),
+  ],
+  add_to_cart: [
+    c({ key: "label", label: "Button label", type: "text", tab: "content", section: "Add to cart" }),
+    c({ key: "showQuantity", label: "Show quantity picker", type: "switch", tab: "content", section: "Add to cart" }),
+  ],
+  rewards_club: [
+    c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Rewards" }),
+    c({ key: "body", label: "Body", type: "textarea", tab: "content", section: "Rewards" }),
+    ...[1, 2, 3].flatMap((i) => [
+      c({ key: `tier${i}Name`, label: `Tier ${i} name`, type: "text", tab: "content", section: `Tier ${i}` }),
+      c({ key: `tier${i}Points`, label: `Tier ${i} threshold`, type: "text", tab: "content", section: `Tier ${i}` }),
+    ]),
+    c({ key: "buttonLabel", label: "Button label", type: "text", tab: "content", section: "Rewards" }),
+    c({ key: "buttonHref", label: "Button link", type: "text", tab: "content", section: "Rewards" }),
+  ],
+  wedding_shop: [
+    c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Wedding" }),
+    c({ key: "body", label: "Body", type: "textarea", tab: "content", section: "Wedding" }),
+    ...[1, 2, 3].flatMap((i) => [
+      c({ key: `c${i}Name`, label: `Collection ${i} name`, type: "text", tab: "content", section: `Collection ${i}` }),
+      c({ key: `c${i}Href`, label: `Collection ${i} link`, type: "text", tab: "content", section: `Collection ${i}` }),
+    ]),
+    c({ key: "buttonLabel", label: "Button label", type: "text", tab: "content", section: "Wedding" }),
+    c({ key: "buttonHref", label: "Button link", type: "text", tab: "content", section: "Wedding" }),
+  ],
+  gift_finder: [
+    c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Finder" }),
+    c({ key: "body", label: "Body", type: "textarea", tab: "content", section: "Finder" }),
+    ...[1, 2, 3].flatMap((i) => [
+      c({ key: `o${i}Label`, label: `Occasion ${i} label`, type: "text", tab: "content", section: `Occasion ${i}` }),
+      c({ key: `o${i}Query`, label: `Occasion ${i} search`, type: "text", tab: "content", section: `Occasion ${i}` }),
+    ]),
+    c({ key: "buttonLabel", label: "Button label", type: "text", tab: "content", section: "Finder" }),
+    c({ key: "buttonHref", label: "Button link", type: "text", tab: "content", section: "Finder" }),
   ],
 };
 
