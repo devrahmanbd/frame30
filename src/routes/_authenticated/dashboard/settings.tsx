@@ -164,21 +164,35 @@ function SettingsPage() {
         <h1 className="font-bangla-display text-2xl font-bold tracking-tight text-foreground">
           {t("Store Settings", "স্টোর সেটিংস")}
         </h1>
-        {merchant && (
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t("Your live storefront:", "আপনার লাইভ স্টোরফ্রন্ট:")}{" "}
-            <a
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium text-primary hover:underline"
-              href={storeUrl()}
-            >
-              {primaryHost
-                ? `${primaryHost} ↗`
-                : `framique.qubickle.com/store/${merchant.slug} ↗`}
-            </a>
-          </p>
-        )}
+        {merchant &&
+          (primaryHost ? (
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("Your live storefront:", "আপনার লাইভ স্টোরফ্রন্ট:")}{" "}
+              <a
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-primary hover:underline"
+                href={storeUrl()}
+              >
+                {`${primaryHost} ↗`}
+              </a>
+            </p>
+          ) : (
+            // Path storefronts are retired (bare 404): with no custom
+            // domain there is no live storefront, so never link one.
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t(
+                "No live storefront yet —",
+                "এখনো কোনো লাইভ স্টোরফ্রন্ট নেই —",
+              )}{" "}
+              <Link
+                className="font-medium text-primary hover:underline"
+                to="/dashboard/settings/domains"
+              >
+                {t("connect a custom domain", "কাস্টম ডোমেইন যুক্ত করুন")}
+              </Link>
+            </p>
+          ))}
       </div>
 
       {/* Settings Subnav Tabs */}
