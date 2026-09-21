@@ -177,6 +177,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   widgetHtml/export untouched (zero consumers; fallback covers).
 - Contract 406/406, studio+atelier 433/433, tsc clean on touched ranges.
 
+## [2026-09-21] — hero repeater conversion (`cd2b57b`)
+- TDD + swarm: theme spec (with seed rule + leftover disposition) and
+  9-area audit both landed; spec applied line-exact after verification.
+- Hardest conversion so far: implicit slide 1 folded into row schema,
+  global CTA copied per scalar row, subheading first-slide-only.
+- Seeding mirrors the scalar keep-first filter exactly (slide 1 kept
+  when any slide has content).
+- Contract 408/408, studio+hero-adjacent 464/464, tsc clean on ranges.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.
