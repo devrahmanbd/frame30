@@ -203,3 +203,10 @@ verify on production; push to GitHub.
   PRE-EXISTING on HEAD (other loop's MediaFrame <img> change).
 - [x] Slice 3: dept art (palettes + route + 19 demo seeds qualified +
   photo brief in spec). Live: tinted tiles in preview. 15/15 tests.
+- [x] Slice 4: gates. a11y 93-100 (PASS), CLS 0-0.07 (PASS), zero console
+  errors (5 preview templates + order flow). LCP 12s simulated-mobile =
+  platform bundle (749KB unused JS), identical on live store — NOT a theme
+  regression; theme shipped eager hero anyway. Follow-up: route code-split.
+- [x] COD order FQ-20260921-ANRY3 placed + cancelled (TEST-marked, no
+  money moved). Gap found: cart page has no checkout CTA (only header
+  Cart link) — TODO for slice 5 or UX pass.
