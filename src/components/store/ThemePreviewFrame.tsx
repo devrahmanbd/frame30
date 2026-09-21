@@ -58,6 +58,8 @@ export type ThemePreviewFrameProps = {
   tokens: ThemeTokens;
   /** All authored templates keyed by template key. */
   templates: Record<TemplateKey, ThemeAst>;
+  /** Deep-linkable starting tab (?template=product). Defaults to homepage. */
+  initialTemplate?: TemplateKey;
   /** Close callback — wired to the × button. */
   onClose: () => void;
 };
@@ -68,9 +70,12 @@ export function ThemePreviewFrame({
   blueprintKey,
   tokens,
   templates,
+  initialTemplate,
   onClose,
 }: ThemePreviewFrameProps) {
-  const [template, setTemplate] = useState<TemplateKey>("index");
+  const [template, setTemplate] = useState<TemplateKey>(
+    initialTemplate ?? "index",
+  );
   const [device, setDevice] =
     useState<(typeof DEVICES)[number]["id"]>("desktop");
 

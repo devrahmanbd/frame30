@@ -14,7 +14,25 @@ import { ThemePreviewFrame } from "@/components/store/ThemePreviewFrame";
 
 type RouteParams = { key: string };
 
+const VALID_TEMPLATES = [
+  "index",
+  "product",
+  "collection",
+  "page",
+  "blog",
+  "cart",
+  "checkout",
+  "search",
+] as const;
+
 export const Route = createFileRoute("/theme-preview/$key")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    template:
+      typeof search.template === "string" &&
+      (VALID_TEMPLATES as readonly string[]).includes(search.template)
+        ? (search.template as (typeof VALID_TEMPLATES)[number])
+        : undefined,
+  }),
   component: ThemePreviewRoute,
   errorComponent: ThemePreviewError,
   notFoundComponent: ThemePreviewNotFound,
@@ -22,6 +40,7 @@ export const Route = createFileRoute("/theme-preview/$key")({
 
 function ThemePreviewRoute() {
   const { key } = Route.useParams() as RouteParams;
+  const { template: initialTemplate } = Route.useSearch();
   const preset = BLUEPRINT_PRESETS.find((p) => p.key === key);
 
   if (!preset) {
@@ -35,6 +54,7 @@ function ThemePreviewRoute() {
       blueprintKey={preset.key}
       tokens={preset.tokens}
       templates={preset.templates}
+      initialTemplate={initialTemplate}
       onClose={() => window.history.back()}
     />
   );
