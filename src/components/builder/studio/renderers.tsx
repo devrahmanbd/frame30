@@ -851,13 +851,23 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "trust_bar": {
-      const items = [1, 2, 3, 4]
-        .map((n) => ({
-          icon: str(s, `i${n}Icon`),
-          title: str(s, `i${n}Title`),
-          body: str(s, `i${n}Body`),
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          icon: String(row.icon ?? ""),
+          title: String(row.title ?? ""),
+          body: String(row.body ?? ""),
         }))
         .filter((item) => item.title);
+      const items =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3, 4]
+              .map((n) => ({
+                icon: str(s, `i${n}Icon`),
+                title: str(s, `i${n}Title`),
+                body: str(s, `i${n}Body`),
+              }))
+              .filter((item) => item.title);
       if (items.length === 0)
         return <Placeholder label="Add a trust badge" />;
       return (

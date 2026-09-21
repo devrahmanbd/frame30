@@ -167,6 +167,7 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
       node.children = children;
   }
   if (raw.el === "faq" || raw.el === "product_qna") seedQaItems(node);
+  if (raw.el === "trust_bar") seedTrustItems(node);
   return node;
 }
 
@@ -188,6 +189,32 @@ function seedQaItems(node: StudioNode): void {
       seeded.push({
         question: q,
         answer: typeof a === "string" ? a : "",
+      });
+    }
+  }
+  if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
+}
+
+/**
+ * Repeater migration (trust_bar): pages saved with scalar iNIcon/iNTitle/
+ * iNBody triples get `items` seeded on load. Author-edited `items` are
+ * never overwritten. Scalars stay for theme pass-through.
+ */
+function seedTrustItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const seeded: { icon: string; title: string; body: string }[] = [];
+  for (let i = 1; i <= 4; i += 1) {
+    const title = s[`i${i}Title`];
+    if (typeof title === "string" && title) {
+      const icon = s[`i${i}Icon`];
+      const body = s[`i${i}Body`];
+      seeded.push({
+        icon: typeof icon === "string" ? icon : "",
+        title,
+        body: typeof body === "string" ? body : "",
       });
     }
   }

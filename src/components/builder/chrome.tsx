@@ -113,14 +113,29 @@ function UtilityBar({ str, bool }: WidgetCtx) {
   );
 }
 
-function TrustBar({ str }: WidgetCtx) {
-  const items = [1, 2, 3, 4]
-    .map((n) => ({
-      icon: str(`i${n}Icon`),
-      title: str(`i${n}Title`),
-      body: str(`i${n}Body`),
-    }))
-    .filter((item) => item.title);
+function TrustBar({ str, section }: WidgetCtx) {
+  // Repeater-first (faq precedent in widgets.tsx): studio `items` rows win
+  // when present, scalar i1/i2/i3/i4 triples remain as the fallback for
+  // theme-authored sections.
+  const itemRows = Array.isArray(section.props.items)
+    ? section.props.items
+        .map((row) => ({
+          icon: typeof row.icon === "string" ? row.icon : "",
+          title: typeof row.title === "string" ? row.title : "",
+          body: typeof row.body === "string" ? row.body : "",
+        }))
+        .filter((row) => row.title)
+    : [];
+  const items =
+    itemRows.length > 0
+      ? itemRows
+      : [1, 2, 3, 4]
+          .map((n) => ({
+            icon: str(`i${n}Icon`),
+            title: str(`i${n}Title`),
+            body: str(`i${n}Body`),
+          }))
+          .filter((item) => item.title);
   if (items.length === 0) return null;
   return (
     <ul className="grid grid-cols-2 gap-4 rounded-fq-lg border border-border bg-card p-4 sm:grid-cols-4">

@@ -1592,29 +1592,18 @@ const CONTENT: Record<string, Control[]> = {
     }),
   ],
   trust_bar: [
-    ...[1, 2, 3, 4].flatMap((i) => [
-      c({
-        key: `i${i}Title`,
-        label: `Item ${i} title`,
-        type: "text",
-        tab: "content",
-        section: `Item ${i}`,
-      }),
-      c({
-        key: `i${i}Body`,
-        label: `Item ${i} body`,
-        type: "text",
-        tab: "content",
-        section: `Item ${i}`,
-      }),
-      c({
-        key: `i${i}Icon`,
-        label: `Item ${i} icon key`,
-        type: "text",
-        tab: "content",
-        section: `Item ${i}`,
-      }),
-    ]),
+    c({
+      key: "items",
+      label: "Badges",
+      type: "repeater",
+      tab: "content",
+      section: "Trust bar",
+      fields: [
+        c({ key: "icon", label: "Icon key", type: "text", tab: "content", section: "Trust bar" }),
+        c({ key: "title", label: "Title", type: "text", tab: "content", section: "Trust bar" }),
+        c({ key: "body", label: "Body", type: "text", tab: "content", section: "Trust bar" }),
+      ],
+    }),
   ],
   announcement_bar: [
     ...[1, 2, 3].map((i) =>

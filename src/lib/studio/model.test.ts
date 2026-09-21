@@ -204,3 +204,45 @@ describe("product_qna scalar-to-items migration", () => {
     expect(settings.items).toEqual([{ question: "New?", answer: "New." }]);
   });
 });
+
+describe("trust_bar scalar-to-items migration", () => {
+  function trustDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "t1", el: "trust_bar", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds items from scalar icon/title/body triples on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        trustDoc({
+          i1Icon: "delivery",
+          i1Title: "Fast delivery",
+          i1Body: "",
+          i2Icon: "returns",
+          i2Title: "",
+          i2Body: "",
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { icon: "delivery", title: "Fast delivery", body: "" },
+    ]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        trustDoc({
+          i1Title: "Old?",
+          items: [{ icon: "secure", title: "New?", body: "" }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ icon: "secure", title: "New?", body: "" }]);
+  });
+});

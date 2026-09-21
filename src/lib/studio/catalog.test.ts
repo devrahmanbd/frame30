@@ -238,6 +238,7 @@ describe("ported theme widgets", () => {
     expect(WIDGET_BY_KEY.trust_bar.defaults).toMatchObject({
       i1Title: "Fast delivery",
     });
+    expect(WIDGET_BY_KEY.trust_bar.defaults.items).toEqual([]);
     expect(WIDGET_BY_KEY.announcement_bar.defaults).toMatchObject({
       m1: "Free delivery over BDT 2,000",
       dismissible: true,

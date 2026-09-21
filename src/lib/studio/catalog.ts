@@ -469,6 +469,7 @@ export const WIDGETS: WidgetDef[] = [
       i4Icon: "support",
       i4Title: "",
       i4Body: "",
+      items: [],
     },
   },
   {
