@@ -113,6 +113,30 @@ const PORTED = [
   "rewards_club",
   "wedding_shop",
   "gift_finder",
+  "rich_text",
+  "form",
+  "nav_menu",
+  "newsletter",
+  "sticky_bar",
+  "mega_menu",
+  "buy_box",
+  "variant_picker",
+  "sticky_buy_bar",
+  "filter_chips",
+  "size_selector",
+  "complete_the_look",
+  "circle_categories",
+  "store_locator",
+  "ugc_gallery",
+  "trade_in",
+  "combo_card",
+  "loyalty_strip",
+  "warranty_panel",
+  "before_after",
+  "refill_widget",
+  "quick_view",
+  "department_strip",
+  "columns",
 ] as const;
 
 const COMMERCE_PORTED = new Set([
@@ -141,7 +165,20 @@ const COMMERCE_PORTED = new Set([
   "rewards_club",
   "wedding_shop",
   "gift_finder",
+  "buy_box",
+  "variant_picker",
+  "sticky_buy_bar",
+  "filter_chips",
+  "size_selector",
+  "complete_the_look",
+  "circle_categories",
+  "refill_widget",
+  "quick_view",
 ]);
+
+const MEDIA_PORTED = new Set(["ugc_gallery", "before_after"]);
+
+const LAYOUT_PORTED = new Set(["columns"]);
 
 describe("ported theme widgets", () => {
   for (const key of PORTED) {
@@ -150,7 +187,13 @@ describe("ported theme widgets", () => {
       expect(def).toBeDefined();
       expect(def.label).toBeTruthy();
       expect(def.category).toBe(
-        COMMERCE_PORTED.has(key) ? "commerce" : "general",
+        COMMERCE_PORTED.has(key)
+          ? "commerce"
+          : MEDIA_PORTED.has(key)
+            ? "media"
+            : LAYOUT_PORTED.has(key)
+              ? "layout"
+              : "general",
       );
     });
 
@@ -618,5 +661,29 @@ describe("ported theme widgets", () => {
     expect(WIDGET_BY_KEY.rewards_club.defaults).toMatchObject({ heading: "My Rewards", tier1Name: "Silver", tier2Points: "5,000+ points", buttonHref: "/pages/rewards" });
     expect(WIDGET_BY_KEY.wedding_shop.defaults).toMatchObject({ heading: "The Wedding Shop", c1Name: "Bridal Sarees", c1Href: "/c/bridal", buttonHref: "/c/wedding" });
     expect(WIDGET_BY_KEY.gift_finder.defaults).toMatchObject({ heading: "Find the perfect gift", o1Label: "For Her", o1Query: "saree", buttonHref: "/search" });
+    expect(WIDGET_BY_KEY.rich_text.defaults).toMatchObject({ heading: "", body: "Tell customers about your store." });
+    expect(WIDGET_BY_KEY.form.defaults).toMatchObject({ heading: "Send us a message", buttonLabel: "Send", showPhone: true });
+    expect(WIDGET_BY_KEY.nav_menu.defaults).toMatchObject({ heading: "", layout: "row", align: "left" });
+    expect(WIDGET_BY_KEY.newsletter.defaults).toMatchObject({ heading: "Stay in touch", buttonLabel: "Subscribe", consentText: "" });
+    expect(WIDGET_BY_KEY.sticky_bar.defaults).toMatchObject({ text: "Free delivery over BDT 2,000", ctaLabel: "", position: "bottom" });
+    expect(WIDGET_BY_KEY.mega_menu.defaults).toMatchObject({ label: "Shop", limit: 8, columns: 4 });
+    expect(WIDGET_BY_KEY.buy_box.defaults).toMatchObject({ handle: "", label: "Add to cart", showQuantity: true, showCompareAt: true });
+    expect(WIDGET_BY_KEY.variant_picker.defaults).toMatchObject({ heading: "Choose an option", mode: "chip", handle: "" });
+    expect(WIDGET_BY_KEY.sticky_buy_bar.defaults).toMatchObject({ label: "Add to cart", showPrice: true, dockAfter: 320 });
+    expect(WIDGET_BY_KEY.filter_chips.defaults).toMatchObject({ clearLabel: "Clear all", emptyText: "", showWhenEmpty: false });
+    expect(WIDGET_BY_KEY.size_selector.defaults).toMatchObject({ heading: "Size", notifyLabel: "Notify me", guideLabel: "Size guide" });
+    expect(WIDGET_BY_KEY.complete_the_look.defaults).toMatchObject({ heading: "Complete the look", limit: 4, buttonLabel: "Add all" });
+    expect(WIDGET_BY_KEY.circle_categories.defaults).toMatchObject({ heading: "Shop by Category", c1Title: "Women's Sarees", c1Href: "/collections/womens" });
+    expect(WIDGET_BY_KEY.store_locator.defaults).toMatchObject({ heading: "Visit us", s1Name: "", s3Phone: "" });
+    expect(WIDGET_BY_KEY.ugc_gallery.defaults).toMatchObject({ heading: "As worn by you", limit: 6, note: "" });
+    expect(WIDGET_BY_KEY.trade_in.defaults).toMatchObject({ heading: "Trade in your old device", buttonLabel: "Get a quote", consentText: "" });
+    expect(WIDGET_BY_KEY.combo_card.defaults).toMatchObject({ heading: "Combo pack", buttonLabel: "Add combo to cart", limit: 3 });
+    expect(WIDGET_BY_KEY.loyalty_strip.defaults).toMatchObject({ label: "Points on this order", handle: "" });
+    expect(WIDGET_BY_KEY.warranty_panel.defaults).toMatchObject({ heading: "Warranty", months: 12, official: true });
+    expect(WIDGET_BY_KEY.before_after.defaults).toMatchObject({ heading: "Real results", beforeLabel: "Before", disclaimer: "Individual results vary. Images are unretouched." });
+    expect(WIDGET_BY_KEY.refill_widget.defaults).toMatchObject({ heading: "Refill & save", c1Value: "30", buttonLabel: "Subscribe" });
+    expect(WIDGET_BY_KEY.quick_view.defaults).toMatchObject({ heading: "Quick view", buttonLabel: "Quick view", limit: 6 });
+    expect(WIDGET_BY_KEY.department_strip.defaults).toMatchObject({ heading: "", limit: 12 });
+    expect(WIDGET_BY_KEY.columns.defaults).toMatchObject({ columns: 2, gap: 24, maxW: "container" });
   });
 });

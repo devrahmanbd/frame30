@@ -125,7 +125,7 @@ export function newGrid(columns = 3, children: StudioNode[] = []): StudioNode {
 }
 
 export function isContainerNode(node: StudioNode): boolean {
-  return node.el === "container" || node.el === "grid";
+  return node.el === "container" || node.el === "grid" || node.el === "columns";
 }
 
 /* ------------------------------------------------------------------ */
@@ -158,7 +158,12 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
     const children = raw.children
       .map((child) => sanitiseNode(child, depth + 1))
       .filter((child): child is StudioNode => child !== null);
-    if (children.length > 0 || raw.el === "container" || raw.el === "grid")
+    if (
+      children.length > 0 ||
+      raw.el === "container" ||
+      raw.el === "grid" ||
+      raw.el === "columns"
+    )
       node.children = children;
   }
   return node;
@@ -472,6 +477,25 @@ function widgetHtml(node: StudioNode): string {
 }
 
 function nodeHtml(node: StudioNode): string {
+  if (node.el === "columns") {
+    const s = node.settings;
+    const n = Math.min(4, Math.max(1, num(s.columns, 2)));
+    const maxW = str(s.maxW, "container");
+    const width = maxW === "full" ? "none" : maxW === "narrow" ? "768px" : "1140px";
+    const bg = str(s.bg, "none");
+    const outer = [
+      bg === "surface"
+        ? "background:var(--card)"
+        : bg === "muted"
+          ? "background:var(--muted)"
+          : "",
+      `padding:${num(s.padY, 0)}px 16px`,
+    ]
+      .filter(Boolean)
+      .join(";");
+    const children = (node.children ?? []).map(nodeHtml).join("");
+    return `<section style="${outer}"><div style="display:grid;grid-template-columns:repeat(${n},minmax(0,1fr));gap:${num(s.gap, 24)}px;max-width:${width};margin:0 auto">${children}</div></section>`;
+  }
   if (node.el === "container" || node.el === "grid") {
     const s = node.settings;
     const layout = str(s.layout, node.el === "grid" ? "grid" : "flex");

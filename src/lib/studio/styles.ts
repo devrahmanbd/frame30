@@ -132,6 +132,21 @@ export function containerInnerCss(
   node: StudioNode,
   device: DeviceKey = "desktop",
 ): CSSProperties {
+  if (node.el === "columns") {
+    // Theme `columns` vocabulary (padY/maxW/bg) mapped onto the studio
+    // container vocabulary so the canvas paints a real side-by-side grid.
+    const s = node.settings as Record<string, unknown>;
+    const maxW = typeof s.maxW === "string" ? s.maxW : "container";
+    return containerCss(
+      {
+        layout: "grid",
+        columns: s.columns,
+        gap: s.gap,
+        contentWidth: maxW === "full" ? "full" : "boxed",
+      } as ContainerSettings,
+      device,
+    );
+  }
   return containerCss(node.settings as ContainerSettings, device);
 }
 

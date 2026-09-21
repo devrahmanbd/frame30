@@ -19,6 +19,7 @@ import {
 import {
   AlignLeft,
   Anchor,
+  ArrowLeftRight,
   BadgeCheck,
   Blocks,
   Check,
@@ -26,37 +27,57 @@ import {
   ChevronsUpDown,
   Clock,
   Code,
+  Columns2,
+  Compass,
+  CreditCard,
+  ClipboardList,
+  FileText,
+  Filter,
   GalleryHorizontal,
   GalleryVerticalEnd,
   Gauge,
+  Gift,
   Hash,
   Heading,
   Heart,
   Image,
   Images,
+  Layers,
   LayoutGrid,
   List,
   Mail,
   MapPin,
+  Megaphone,
+  Menu,
   Minus,
   MousePointerClick,
   MoveVertical,
+  Package,
+  PackagePlus,
+  Palette,
   PanelTop,
   Phone,
   Quote,
   Rows3,
+  Ruler,
   Search,
   Share2,
   Shield,
+  ShieldCheck,
+  Shirt,
   ShoppingCart,
   Spline,
   Square,
   Star,
+  Store,
+  Tags,
   TextCursorInput,
   TriangleAlert,
+  Trophy,
   Truck,
   Type,
   Video,
+  Zap,
 } from "lucide-react";
 import { HtmlSandbox } from "@/components/builder/HtmlSandbox";
 import type { NodeSettings, StudioNode } from "@/lib/studio/model";
@@ -95,15 +116,36 @@ const ICON_REGISTRY: Record<
   minus: Minus,
   mousepointerclick: MousePointerClick,
   movevertical: MoveVertical,
+  package: Package,
+  packageplus: PackagePlus,
+  palette: Palette,
   paneltop: PanelTop,
   phone: Phone,
   quote: Quote,
   rows3: Rows3,
+  ruler: Ruler,
   search: Search,
   share2: Share2,
   shield: Shield,
+  shieldcheck: ShieldCheck,
+  shirt: Shirt,
   shoppingcart: ShoppingCart,
   cart: ShoppingCart,
+  store: Store,
+  tags: Tags,
+  trophy: Trophy,
+  zap: Zap,
+  gift: Gift,
+  layers: Layers,
+  menu: Menu,
+  megaphone: Megaphone,
+  filter: Filter,
+  compass: Compass,
+  filetext: FileText,
+  clipboardlist: ClipboardList,
+  creditcard: CreditCard,
+  columns2: Columns2,
+  arrowleftright: ArrowLeftRight,
   spline: Spline,
   square: Square,
   star: Star,
@@ -2228,6 +2270,356 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
                 {str(s, "buttonLabel")}
               </span>
             </p>
+          )}
+        </section>
+      );
+    }
+
+    case "rich_text": {
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          {str(s, "heading") && (
+            <h3 className="text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <p className="mt-2 block whitespace-pre-line text-sm text-muted-foreground">
+            {str(s, "body", "Tell customers about your store.")}
+          </p>
+        </section>
+      );
+    }
+
+    case "form": {
+      const showPhone = s.showPhone !== false;
+      return (
+        <section className="space-y-3 rounded-fq-lg border border-border bg-card p-6">
+          {str(s, "heading") && (
+            <h3 className="text-xl font-semibold">{str(s, "heading", "Send us a message")}</h3>
+          )}
+          {str(s, "body") && (
+            <p className="text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <p className="text-xs font-medium">{str(s, "nameLabel", "Your name")}</p>
+              <div className="mt-1 min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+                Name
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-medium">{str(s, "emailLabel", "Email")}</p>
+              <div className="mt-1 min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+                you@example.com
+              </div>
+            </div>
+            {showPhone && (
+              <div className="sm:col-span-2">
+                <p className="text-xs font-medium">{str(s, "phoneLabel", "Phone")}</p>
+                <div className="mt-1 min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+                  01XXXXXXXXX
+                </div>
+              </div>
+            )}
+            <div className="sm:col-span-2">
+              <p className="text-xs font-medium">{str(s, "messageLabel", "How can we help?")}</p>
+              <div className="mt-1 min-h-24 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+                Your message
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground">
+              {str(s, "buttonLabel", "Send")}
+            </span>
+            {str(s, "consentText") && (
+              <span className="text-xs text-muted-foreground">{str(s, "consentText")}</span>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    case "nav_menu": {
+      const items = rows(s, "items").filter(
+        (item) => typeof item.label === "string" && item.label !== "",
+      );
+      if (items.length === 0) return <Placeholder label="Add a menu item" />;
+      const column = str(s, "layout", "row") === "column";
+      const align = str(s, "align", "left");
+      return (
+        <nav
+          aria-label={str(s, "heading") || "Menu"}
+          className={`flex flex-col gap-2 ${align === "center" ? "items-center text-center" : "items-start"}`}
+        >
+          {str(s, "heading") && (
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">{str(s, "heading")}</p>
+          )}
+          <ul className={`flex gap-x-5 gap-y-2 ${column ? "flex-col" : "flex-row flex-wrap"}`}>
+            {items.slice(0, 12).map((item, i) => (
+              <li key={`${String(item.label)}-${i}`}>
+                <span className="text-sm text-muted-foreground">{String(item.label)}</span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      );
+    }
+
+    case "newsletter": {
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          <h3 className="text-lg font-semibold">{str(s, "heading", "Stay in touch")}</h3>
+          {str(s, "body") && (
+            <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          <div className="mt-3 flex flex-wrap gap-2">
+            <div className="min-h-11 min-w-40 flex-1 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+              you@example.com
+            </div>
+            <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+              {str(s, "buttonLabel", "Subscribe")}
+            </span>
+          </div>
+          {str(s, "consentText") && (
+            <p className="mt-2 text-xs text-muted-foreground">{str(s, "consentText")}</p>
+          )}
+        </section>
+      );
+    }
+
+    case "sticky_bar": {
+      if (!str(s, "text") && !str(s, "ctaLabel"))
+        return <Placeholder label="Add a sticky bar message" />;
+      const top = str(s, "position", "bottom") === "top";
+      return (
+        <div
+          className={`sticky z-30 flex flex-wrap items-center justify-between gap-3 rounded-fq-md border border-border bg-card px-4 py-2 text-sm ${
+            top ? "top-0" : "bottom-0"
+          }`}
+        >
+          <span className="min-w-0">{str(s, "text")}</span>
+          {str(s, "ctaLabel") && (
+            <span className="rounded-fq-md bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground">
+              {str(s, "ctaLabel")}
+            </span>
+          )}
+        </div>
+      );
+    }
+
+    case "mega_menu":
+      return <Placeholder label="Live mega menu — renders on the storefront" />;
+
+    case "buy_box":
+      return <Placeholder label="Live buy box — renders on the storefront" />;
+
+    case "variant_picker":
+      return <Placeholder label="Live variant picker — renders on the storefront" />;
+
+    case "sticky_buy_bar":
+      return <Placeholder label="Live sticky buy bar — renders on the storefront" />;
+
+    case "filter_chips":
+      return <Placeholder label="Live filter chips — renders on the storefront" />;
+
+    case "size_selector":
+      return <Placeholder label="Live size selector — renders on the storefront" />;
+
+    case "complete_the_look":
+      return <Placeholder label="Live complete the look — renders on the storefront" />;
+
+    case "circle_categories":
+      return <Placeholder label="Live circle categories — renders on the storefront" />;
+
+    case "quick_view":
+      return <Placeholder label="Live quick view — renders on the storefront" />;
+
+    case "refill_widget":
+      return <Placeholder label="Live refill widget — renders on the storefront" />;
+
+    case "combo_card":
+      return <Placeholder label="Live combo card — renders on the storefront" />;
+
+    case "loyalty_strip":
+      return <Placeholder label="Live loyalty strip — renders on the storefront" />;
+
+    case "department_strip":
+      return <Placeholder label="Live department strip — renders on the storefront" />;
+
+    case "ugc_gallery": {
+      const limit = Math.min(12, Math.max(2, num(s, "limit", 6, device)));
+      return (
+        <section>
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <ul className="grid list-none grid-cols-2 gap-2 p-0 sm:grid-cols-3">
+            {Array.from({ length: limit }).map((_, index) => (
+              <li
+                key={index}
+                aria-hidden
+                className="aspect-square rounded-fq-md bg-muted"
+              />
+            ))}
+          </ul>
+          {str(s, "note") && (
+            <p className="mt-2 text-xs text-muted-foreground">{str(s, "note")}</p>
+          )}
+        </section>
+      );
+    }
+
+    case "before_after": {
+      const before = str(s, "beforeImage");
+      const after = str(s, "afterImage");
+      if (!before || !after)
+        return <Placeholder label="Add before and after images" />;
+      return (
+        <section>
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <div className="grid gap-2 sm:grid-cols-2">
+            <figure className="m-0">
+              <img
+                src={before}
+                alt={str(s, "beforeAlt")}
+                loading="lazy"
+                className="aspect-square w-full rounded-fq-md object-cover"
+              />
+              <figcaption className="mt-1 text-xs text-muted-foreground">
+                {str(s, "beforeLabel", "Before")}
+              </figcaption>
+            </figure>
+            <figure className="m-0">
+              <img
+                src={after}
+                alt={str(s, "afterAlt")}
+                loading="lazy"
+                className="aspect-square w-full rounded-fq-md object-cover"
+              />
+              <figcaption className="mt-1 text-xs text-muted-foreground">
+                {str(s, "afterLabel", "After")}
+              </figcaption>
+            </figure>
+          </div>
+          {str(s, "disclaimer") && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              {str(s, "disclaimer")}
+            </p>
+          )}
+        </section>
+      );
+    }
+
+    case "store_locator": {
+      const stores = [1, 2, 3]
+        .map((n) => ({
+          name: str(s, `s${n}Name`),
+          address: str(s, `s${n}Address`),
+          hours: str(s, `s${n}Hours`),
+          phone: str(s, `s${n}Phone`),
+        }))
+        .filter((store) => store.name);
+      if (stores.length === 0) return <Placeholder label="Add a store" />;
+      return (
+        <section>
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <ul className="grid list-none gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
+            {stores.map((store) => (
+              <li
+                key={store.name}
+                className="rounded-fq-md border border-border bg-card p-4"
+              >
+                <p className="text-sm font-semibold">{store.name}</p>
+                {store.address && (
+                  <p className="mt-1 whitespace-pre-line text-sm text-muted-foreground">
+                    {store.address}
+                  </p>
+                )}
+                {store.hours && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {store.hours}
+                  </p>
+                )}
+                {store.phone && (
+                  <p className="mt-2 text-sm underline underline-offset-2">
+                    {store.phone}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    }
+
+    case "trade_in": {
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          <h3 className="text-lg font-semibold">
+            {str(s, "heading", "Trade in your old device")}
+          </h3>
+          {str(s, "body") && (
+            <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          <div className="mt-3 space-y-2">
+            <span className="block min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+              Device details…
+            </span>
+            <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+              {str(s, "buttonLabel", "Get a quote")}
+            </span>
+          </div>
+          {str(s, "consentText") && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              {str(s, "consentText")}
+            </p>
+          )}
+        </section>
+      );
+    }
+
+    case "warranty_panel": {
+      const centres = [1, 2, 3]
+        .map((i) => ({
+          key: `s${i}`,
+          name: str(s, `s${i}Name`),
+          address: str(s, `s${i}Address`),
+        }))
+        .filter((centre) => centre.name);
+      const official = s.official !== false;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-4">
+          <h3 className="text-base font-semibold">
+            {str(s, "heading", "Warranty")}
+          </h3>
+          <p className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+            <span className="rounded-fq-sm border border-border px-2 py-1 font-medium tabular-nums">
+              {num(s, "months", 12, device)}
+            </span>
+            <span className="rounded-fq-sm bg-muted px-2 py-1 text-xs">
+              {official ? str(s, "officialLabel") : str(s, "parallelLabel")}
+            </span>
+          </p>
+          {str(s, "coverage") && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              {str(s, "coverage")}
+            </p>
+          )}
+          {centres.length > 0 && (
+            <dl className="mt-3 rounded-fq-md border border-border">
+              {centres.map((centre) => (
+                <div
+                  key={centre.key}
+                  className="flex items-baseline justify-between gap-3 border-b border-border px-3 py-2 text-sm last:border-b-0"
+                >
+                  <dt className="font-medium">{centre.name}</dt>
+                  <dd className="m-0 text-muted-foreground">{centre.address}</dd>
+                </div>
+              ))}
+            </dl>
           )}
         </section>
       );
