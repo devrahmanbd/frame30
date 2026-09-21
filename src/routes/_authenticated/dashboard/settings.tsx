@@ -166,17 +166,32 @@ function SettingsPage() {
         </h1>
         {merchant && (
           <p className="mt-1 text-sm text-muted-foreground">
-            {t("Your live storefront:", "আপনার লাইভ স্টোরফ্রন্ট:")}{" "}
-            <a
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium text-primary hover:underline"
-              href={storeUrl()}
-            >
-              {primaryHost
-                ? `${primaryHost} ↗`
-                : `framique.qubickle.com/store/${merchant.slug} ↗`}
-            </a>
+            {primaryHost ? (
+              <>
+                {t("Your live storefront:", "আপনার লাইভ স্টোরফ্রন্ট:")}{" "}
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium text-primary hover:underline"
+                  href={storeUrl()}
+                >
+                  {`${primaryHost} ↗`}
+                </a>
+              </>
+            ) : (
+              <>
+                {t(
+                  "No reachable storefront yet — connect a custom domain to go live (path URLs are retired).",
+                  "এখনও কোনো লাইভ স্টোরফ্রন্ট নেই — লাইভ হতে কাস্টম ডোমেইন যুক্ত করুন।",
+                )}{" "}
+                <Link
+                  to="/dashboard/settings/domains"
+                  className="font-medium text-primary hover:underline"
+                >
+                  {t("Connect a custom domain", "কাস্টম ডোমেইন যুক্ত করুন")}
+                </Link>
+              </>
+            )}
           </p>
         )}
       </div>

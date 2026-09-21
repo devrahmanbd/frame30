@@ -389,7 +389,7 @@ export const HOW_IT_WORKS = {
       id: "signup",
       step: "01",
       title: "Open your store",
-      body: "Sign up with a phone number or email, pick your store name and a theme. Your storefront is live at framique.qubickle.com/store/<slug> before you add a single product.",
+      body: "Sign up with a phone number or email, pick your store name and a theme. Connect your custom domain and your storefront is live before you add a single product.",
       effort: "About 5 minutes",
     },
     {

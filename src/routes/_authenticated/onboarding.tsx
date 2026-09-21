@@ -237,7 +237,7 @@ function Onboarding() {
             </label>
             <div className="flex flex-wrap items-center gap-1 text-sm">
               <span className="text-muted-foreground font-mono">
-                framique.qubickle.com/store/
+                store ID:
               </span>
               <input
                 id="store-slug"
@@ -261,10 +261,7 @@ function Onboarding() {
             </p>
             {slug.length >= 3 && slugOk && (
               <p className="mt-2 rounded-fq-md border border-border bg-muted/40 px-3 py-2 text-xs font-mono text-foreground">
-                <span className="text-muted-foreground mr-1">Your store URL:</span>
-                <span className="font-semibold">
-                  https://framique.qubickle.com/store/{slug}
-                </span>
+                <span className="text-muted-foreground mr-1">Your storefront will live on your custom domain (connect it in Settings › Domains after signup).</span>
               </p>
             )}
           </div>
