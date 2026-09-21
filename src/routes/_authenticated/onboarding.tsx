@@ -3,7 +3,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
-import { useMerchant, slugify } from "@/hooks/use-merchant";
+import { useMerchant, slugify, loadMemberships } from "@/hooks/use-merchant";
+import { canCreateAdditionalStore } from "@/lib/store-limits";
 import { useLang } from "@/lib/i18n";
 import { fmtMinor } from "@/lib/money";
 import { billingClaimTrialFn } from "@/lib/billing.functions";
@@ -38,6 +39,15 @@ function Onboarding() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { data: merchant, isPending, isError, error, refetch } = useMerchant();
+
+  // Single-store MVP gate (policy, not deletion): one store per account.
+  // Existing multi-store accounts keep working; no new second store.
+  const { data: memberships } = useQuery({
+    queryKey: ["merchant-memberships"],
+    queryFn: loadMemberships,
+    staleTime: 60_000,
+  });
+  const atCap = !canCreateAdditionalStore(memberships?.length ?? 0);
 
   const claimTrial = useServerFn(billingClaimTrialFn);
   const [step, setStep] = useState(0);
@@ -84,6 +94,7 @@ function Onboarding() {
 
   const create = useMutation({
     mutationFn: async () => {
+      if (atCap) throw new Error("store.limit_reached");
       const { data, error } = await supabase.rpc("create_store", {
         p_name: name.trim(),
         p_slug: slug,
@@ -180,6 +191,33 @@ function Onboarding() {
     );
   }
 
+  // Single-store MVP gate: an account that already owns a store does not
+  // get a second wizard. Existing multi-store accounts keep working.
+  if (!isPending && !isError && !merchant && atCap) {
+    return (
+      <main className="mx-auto max-w-2xl px-4 py-12">
+        <h1 className="font-bangla-display text-2xl font-bold">
+          {t("You already have a store", "আপনার ইতিমধ্যে একটি স্টোর আছে")}
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          {t(
+            "Each account manages one storefront while we are in early access. Head to your dashboard to keep building it.",
+            "আর্লি অ্যাক্সেস চলাকালে প্রতিটি অ্যাকাউন্ট একটি স্টোরফ্রন্ট পরিচালনা করে। এটি তৈরি করতে ড্যাশবোর্ডে যান।",
+          )}
+        </p>
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={() => void navigate({ to: "/dashboard", replace: true })}
+            className="rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+          >
+            {t("Go to dashboard", "ড্যাশবোর্ডে যান")}
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="mx-auto max-w-2xl px-4 py-12">
       <h1 className="font-bangla-display text-2xl font-bold">
@@ -237,7 +275,7 @@ function Onboarding() {
             </label>
             <div className="flex flex-wrap items-center gap-1 text-sm">
               <span className="text-muted-foreground font-mono">
-                framique.qubickle.com/store/
+                store ID:
               </span>
               <input
                 id="store-slug"
@@ -261,10 +299,7 @@ function Onboarding() {
             </p>
             {slug.length >= 3 && slugOk && (
               <p className="mt-2 rounded-fq-md border border-border bg-muted/40 px-3 py-2 text-xs font-mono text-foreground">
-                <span className="text-muted-foreground mr-1">Your store URL:</span>
-                <span className="font-semibold">
-                  https://framique.qubickle.com/store/{slug}
-                </span>
+                <span className="text-muted-foreground mr-1">Your storefront will live on your custom domain (connect it in Settings › Domains after signup).</span>
               </p>
             )}
           </div>

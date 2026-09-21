@@ -92,6 +92,7 @@ export function TitleCell({
               storeSlug={storeSlug}
               onAction={onAction}
               defaultEditor={defaultEditor}
+              isHomepage={row.kind === "page" && homepagePageId !== null && row.id === homepagePageId}
             />
           </span>
         ))}
@@ -113,12 +114,14 @@ function RowActionLink({
   storeSlug,
   onAction,
   defaultEditor,
+  isHomepage = false,
 }: {
   action: RowAction;
   row: ContentRow;
   storeSlug: string;
   onAction: (action: RowAction, row: ContentRow) => void;
   defaultEditor?: "builder" | "classic";
+  isHomepage?: boolean;
 }) {
   const { lang } = useLang();
   // Unconditional (rules-of-hooks): only consumed by preview/view below.
@@ -154,9 +157,10 @@ function RowActionLink({
   if (action === "preview" || action === "view") {
     // Pages resolve against the primary custom domain when one exists
     // (path storefronts are retired); blog posts stay on platform paths.
+    // The designated homepage lives at the store root, not /pages/<slug>.
     const href =
       row.kind === "page"
-        ? storePage(row.slug, action === "preview")
+        ? storePage(row.slug, action === "preview", isHomepage)
         : previewHref(row.kind, row, storeSlug);
     return (
       <a

@@ -239,11 +239,27 @@ export async function listDomains(
       .eq("merchant_id", merchantId)
       .order("created_at", { ascending: false });
     if (error) throw new DomainError(error.message, 500);
+    // The UI hides the add form at this quota: report the real per-plan
+    // quota (single-store MVP: 1), not the list-page cap.
+    let quota = MAX_DOMAINS_PER_MERCHANT;
+    try {
+      const { data: sub } = await db
+        .from("subscriptions")
+        .select("plan")
+        .eq("merchant_id", merchantId)
+        .maybeSingle();
+      quota = domainQuotaForPlan(
+        ((sub as { plan?: string } | null)?.plan ?? "launch") as
+          "launch" | "growth" | "business" | "enterprise",
+      );
+    } catch {
+      quota = 1;
+    }
     return {
       domains: (data ?? []).map(toView),
       target: edgeTarget(),
       edgeConfigured: Boolean(process.env["DOMAIN_EDGE_HOOK_URL"]),
-      limit: MAX_DOMAINS_PER_MERCHANT,
+      limit: quota,
     };
   });
 }
@@ -624,6 +640,53 @@ export async function removeDomain(
     .eq("id", domainId);
   if (error) throw new DomainError(error.message, 500);
   incr("framique_domain_removed_total");
+  return listDomains(db, merchantId, userId);
+}
+
+/**
+ * Rename a domain (edit hostname). Re-validates, enforces global uniqueness,
+ * and resets verification: new hostname starts at pending_dns with a fresh
+ * token, loses primary (a primary must be re-verified before serving), and
+ * records an audit event. Returns the refreshed list.
+ */
+export async function renameDomain(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  domainId: string,
+  rawHostname: string,
+) {
+  await enforceRateLimit("domains.write", userId);
+  const row = await loadOwned(db, merchantId, domainId);
+  const hostname = normalizeHostname(rawHostname);
+  if (hostname === row.hostname) return listDomains(db, merchantId, userId);
+  const service = supabaseAdmin;
+  const { error } = await service
+    .from("merchant_domains")
+    .update({
+      hostname,
+      status: "pending_dns",
+      is_primary: false,
+      verification_token: randomToken(),
+      dns_target: edgeTarget().cname,
+      next_check_at: new Date().toISOString(),
+      last_error: null,
+    })
+    .eq("id", domainId);
+  if (error) {
+    if (error.code === "23505") throw new DomainError("domain.taken", 409);
+    throw new DomainError(error.message, 500);
+  }
+  await service.from("domain_events").insert({
+    domain_id: domainId,
+    merchant_id: merchantId,
+    from_status: row.status,
+    to_status: "pending_dns",
+    reason: "domain.renamed",
+    actor: userId,
+    detail: { from: row.hostname, to: hostname },
+  });
+  incr("framique_domain_renamed_total");
   return listDomains(db, merchantId, userId);
 }
 

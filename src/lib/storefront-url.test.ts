@@ -34,7 +34,22 @@ describe("storefrontPathForMerchant (subpaths)", () => {
   });
 });
 
-describe("storePageUrlForMerchant (view + preview)", () => {
+describe("storePageUrlForMerchant homepage root", () => {
+  it("points the designated homepage at the store root", () => {
+    expect(
+      storePageUrlForMerchant("microscrop.shop", "akira", "anything", false, true),
+    ).toBe("https://microscrop.shop/");
+    expect(
+      storePageUrlForMerchant(null, "akira", "anything", false, true),
+    ).toBe("/store/akira/");
+  });
+
+  it("keeps normal pages on their page URLs", () => {
+    expect(
+      storePageUrlForMerchant("microscrop.shop", "akira", "about", false, false),
+    ).toBe("https://microscrop.shop/pages/about");
+  });
+
   it("builds page URLs with optional preview flag", () => {
     expect(
       storePageUrlForMerchant("microscrop.shop", "akira", "about", false),

@@ -43,7 +43,7 @@ export function useStoreUrl() {
     storeUrl: () => storefrontUrlForMerchant(primary, slug),
     storePath: (subpath: string) =>
       storefrontPathForMerchant(primary, slug, subpath),
-    storePage: (pageSlug: string, preview = false) =>
-      storePageUrlForMerchant(primary, slug, pageSlug, preview),
+    storePage: (pageSlug: string, preview = false, isHomepage = false) =>
+      storePageUrlForMerchant(primary, slug, pageSlug, preview, isHomepage),
   };
 }

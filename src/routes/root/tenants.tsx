@@ -146,15 +146,12 @@ function TenantRow({
           <span className="font-semibold text-foreground text-sm">
             {tenant.name}
           </span>
-          <a
-            href={`/store/${tenant.slug}`}
-            target="_blank"
-            rel="noreferrer"
-            title={t("Visit live storefront", "লাইভ স্টোরফ্রন্ট দেখুন")}
-            className="text-muted-foreground hover:text-primary transition-colors"
+          <span
+            title={t("Storefronts live on merchant custom domains", "স্টোরফ্রন্ট মার্চেন্ট কাস্টম ডোমেইনে থাকে")}
+            className="text-muted-foreground"
           >
             <ExternalLink className="size-3.5" />
-          </a>
+          </span>
         </div>
         <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-muted-foreground">
           <span className="font-mono text-[11px] text-foreground/80">

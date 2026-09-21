@@ -116,6 +116,25 @@ export const domainRemoveFn = createServerFn({ method: "POST" })
     );
   });
 
+export const domainRenameFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({ id: z.string().uuid(), hostname: z.string().trim().min(3).max(253) })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { renameDomain } = await import("./domains.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return renameDomain(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.id,
+      data.hostname,
+    );
+  });
+
 export const domainHistoryFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator(idInput)
