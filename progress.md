@@ -120,3 +120,17 @@ verify on production; push to GitHub.
   VISIBLE_THEME_KEYS; active theme always stays visible. 23/23 suite.
   Verified live: Rupaboti context shows 1 installed (itself, active);
   fresh 18:29 CEST bundle serving f5f0a36.
+
+## Settings cleanup (Sept 21) — LIVE VERIFIED via screenshots
+- General (`settings.tsx`): deleted in-page Subnav Tabs (duplicate of the
+  global SectionTabs strip); removed TotpCard teaser (lives on Security
+  page). Page is now header + one form card.
+- Email (`settings_.email.tsx`): removed 3-card overview grid (state already
+  in header StatusPill); single-column flow: header, SMTP config, test,
+  deliverability note. Container narrowed to max-w-3xl like General.
+- Store switcher OFF in AdminShell (`{false && ...}` with comment; code
+  kept for future multi-store). Header shows plain store name.
+- Verified live as flamedev7: dup-tabs 0, 2FA card absent, overview absent,
+  form + test present; screenshots set-general-after/set-email-after.
+- Branch session-settings-cleanup deployed (17-check script: cart 307 was
+  transient at restart, re-checked 200 after). tsc: only pre-existing errors.
