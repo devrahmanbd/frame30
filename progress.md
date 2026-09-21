@@ -260,3 +260,16 @@ storefront serves on custom domains only.
 - Remaining widget gap is data-backed (product/cart/search/nav/blog) and
   theme-drifted schemas; Layers dock parity + global-blocks save-from-page
   still open.
+
+## Loop batch — layers parity + save-as-global (Sept 21)
+- Structure panel: filter search (ancestor-preserving), expand/collapse
+  all, inline duplicate/delete per row — verified live (filter narrows,
+  "No layers match" empty state).
+- Save-as-global port: studioNodesToSections reverse converter
+  (unit-tested round-trip incl. visibility fold-back), context-menu item,
+  host RPC wiring with toasts. Verified live: saved container subtree,
+  DB row valid with nested children, cleaned up after.
+- Remaining merge gaps (theme-scoped, stay in studio): brand tokens,
+  theme versions/schedules, maintenance, popups, forms, custom code.
+- Commerce/data-backed widgets stay placeholders in pages (no store
+  context on canvas); same contract as existing studio commerce set.
