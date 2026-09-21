@@ -8,7 +8,7 @@
  * data so every section renders something visible.
  */
 import { useMemo, useState } from "react";
-import { Monitor, Smartphone, Tablet, X, Maximize2, Minimize2 } from "lucide-react";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { StoreHeader } from "@/components/store/StoreHeader";
@@ -29,14 +29,7 @@ import {
   type ThemeTokens,
 } from "@/lib/builder-ast";
 
-/* ---- device widths (mirrors appearance.ts but kept local) ---- */
-const DEVICES = [
-  { id: "desktop" as const, label: "Desktop", icon: Monitor, width: null },
-  { id: "tablet" as const, label: "Tablet", icon: Tablet, width: 810 },
-  { id: "mobile" as const, label: "Mobile", icon: Smartphone, width: 390 },
-] as const;
-
-/* ---- tab labels for the template picker ---- */
+/* ---- template tab labels for the floating picker ---- */
 const TAB_LABELS: Record<TemplateKey, string> = {
   index: "Homepage",
   product: "Product",
@@ -77,12 +70,8 @@ export function ThemePreviewFrame({
   const [template, setTemplate] = useState<TemplateKey>(
     initialTemplate ?? "index",
   );
-  const [fullscreen, setFullscreen] = useState(false);
-  const [device, setDevice] =
-    useState<(typeof DEVICES)[number]["id"]>("desktop");
 
   const ast = templates[template] ?? templates.index;
-  const deviceEntry = DEVICES.find((d) => d.id === device)!;
   const allSections: Section[] = [...ast.header, ...ast.main, ...ast.footer];
   const responsiveCss = compileResponsiveCss(allSections);
   // Preview has no merchant data: feed every data widget demo catalog rows
@@ -100,110 +89,40 @@ export function ThemePreviewFrame({
       aria-label={`${themeName} theme preview`}
       className="fixed inset-0 z-50 flex flex-col bg-background"
     >
-      {/* ---- toolbar ---- */}
-      {!fullscreen && (
-      <header className="flex items-center gap-3 border-b border-border bg-card px-4 py-2">
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-foreground">
-            {themeName}
-          </p>
-          <p className="truncate text-xs text-muted-foreground">
-            Preview · {author}
-          </p>
+      {/* ---- floating controls (the only chrome): template tabs + close ---- */}
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center p-3">
+        <div className="pointer-events-auto flex max-w-full items-center gap-1 rounded-full border border-border bg-card/90 p-1 shadow-md backdrop-blur">
+          <nav
+            aria-label="Template"
+            className="flex max-w-[60vw] items-center gap-1 overflow-x-auto"
+          >
+            {TEMPLATE_KEYS.map((key) => (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={template === key}
+                onClick={() => setTemplate(key)}
+                className={cn(
+                  "whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                  template === key
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+              >
+                {TAB_LABELS[key]}
+              </button>
+            ))}
+          </nav>
+          <button
+            type="button"
+            aria-label="Close preview"
+            onClick={onClose}
+            className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <X className="size-4" aria-hidden />
+          </button>
         </div>
-
-        {/* template tabs */}
-        <nav
-          aria-label="Template"
-          className="hidden gap-1 overflow-x-auto md:flex"
-        >
-          {TEMPLATE_KEYS.map((key) => (
-            <button
-              key={key}
-              type="button"
-              aria-pressed={template === key}
-              onClick={() => setTemplate(key)}
-              className={cn(
-                "whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
-                template === key
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
-              )}
-            >
-              {TAB_LABELS[key]}
-            </button>
-          ))}
-        </nav>
-
-        {/* device toggle */}
-        <div
-          role="group"
-          aria-label="Preview width"
-          className="flex items-center gap-1"
-        >
-          {DEVICES.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              type="button"
-              aria-pressed={device === id}
-              aria-label={label}
-              onClick={() => setDevice(id)}
-              className={cn(
-                "grid size-9 place-items-center rounded-full transition-colors",
-                device === id
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
-              )}
-            >
-              <Icon className="size-4" aria-hidden />
-            </button>
-          ))}
-        </div>
-
-        <button
-          type="button"
-          aria-label="Toggle fullscreen preview"
-          aria-pressed={fullscreen}
-          onClick={() => setFullscreen((v) => !v)}
-          className="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-        >
-          <Maximize2 className="size-4" aria-hidden />
-        </button>
-
-        <button
-          type="button"
-          aria-label="Close preview"
-          onClick={onClose}
-          className="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-        >
-          <X className="size-4" aria-hidden />
-        </button>
-      </header>
-      )}
-
-      {/* ---- fullscreen exit ---- */}
-      {fullscreen && (
-        <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-end p-3">
-          <div className="pointer-events-auto flex items-center gap-1 rounded-full border border-border bg-card/90 p-1 shadow-md backdrop-blur">
-            <button
-              type="button"
-              aria-label="Exit fullscreen preview"
-              onClick={() => setFullscreen(false)}
-              className="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            >
-              <Minimize2 className="size-4" aria-hidden />
-            </button>
-            <button
-              type="button"
-              aria-label="Close preview"
-              onClick={onClose}
-              className="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            >
-              <X className="size-4" aria-hidden />
-            </button>
-          </div>
-        </div>
-      )}
+      </div>
 
       {/* ---- responsive CSS injected once ---- */}
       {responsiveCss && (
@@ -218,7 +137,7 @@ export function ThemePreviewFrame({
       <div className="flex-1 overflow-auto bg-muted p-4">
         <div
           className="mx-auto rounded-fq-md border border-border bg-card shadow-fq-md transition-[max-width] duration-200"
-          style={{ maxWidth: deviceEntry.width ?? "100%" }}
+          style={{ maxWidth: "100%" }}
         >
           <ThemeSurface tokens={tokens}>
             {/* Wordmark row, as on a live storefront — the blueprint's
@@ -273,30 +192,6 @@ export function ThemePreviewFrame({
         </div>
       </div>
 
-      {/* ---- mobile template picker (stacked below toolbar on small screens) ---- */}
-      {!fullscreen && (
-      <nav
-        aria-label="Template"
-        className="flex gap-1 overflow-x-auto border-t border-border bg-card px-4 py-2 md:hidden"
-      >
-        {TEMPLATE_KEYS.map((key) => (
-          <button
-            key={key}
-            type="button"
-            aria-pressed={template === key}
-            onClick={() => setTemplate(key)}
-            className={cn(
-              "whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
-              template === key
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
-            )}
-          >
-            {TAB_LABELS[key]}
-          </button>
-        ))}
-      </nav>
-      )}
     </div>
   );
 }
