@@ -16,10 +16,10 @@ import type { BlogListing } from "./blog-index.server";
 import { renderRead } from "./render-read.server";
 
 const CARD_COLUMNS =
-  "id, slug, title, title_en, excerpt, cover_image_url, published_at, merchant_id, author_id, reading_minutes";
+  "id, slug, title, title_en, excerpt, cover_image_url, published_at, merchant_id";
 
 const ARTICLE_COLUMNS =
-  "id, merchant_id, author_id, title, title_en, slug, excerpt, body, cover_image_url, published_at, updated_at, meta_title, meta_description, canonical, robots, reading_minutes";
+  "id, merchant_id, title, title_en, slug, excerpt, body, cover_image_url, published_at, updated_at, meta_title, meta_description, canonical, robots";
 
 type Db = {
   from: (table: string) => any;
