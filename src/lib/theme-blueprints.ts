@@ -2180,17 +2180,7 @@ function clothingHeritage(): ThemePreset {
       l3Href: "/pages/track-order",
       showLanguage: true,
     }),
-    s("search_command", {
-      placeholder: "Search sarees, panjabis, nakshi kantha, jewelry...",
-      buttonLabel: "Search",
-      limit: 8,
-    }),
     s("mega_menu", { label: "Departments", limit: 8, columns: 4 }),
-    s("account_cart", {
-      accountLabel: "Account",
-      cartLabel: "Bag",
-      showCount: true,
-    }),
   ];
   const footer = (): Section[] => [
     s("support_strip", {
