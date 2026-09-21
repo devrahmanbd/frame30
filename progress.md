@@ -282,3 +282,17 @@ storefront serves on custom domains only.
   useEditorDoc.commit (covers autosave/save/publish): full-to-empty page
   builder saves abort with a visible error. Unit-tested.
 - Verified guard string present in production bundle (`4c07bb6` live).
+
+## Loop — custom-domain verification + homepage state (Sept 21)
+- microscrop.shop serves Flame Fashion BD fully working: Rupaboti theme,
+  shade finder, skin quiz, 5 shoppable products with BDT prices + images,
+  routine builder, consult form, custom-host deep links (`/p/x` style).
+  Path URLs correctly 404 per the cutover decree (verified).
+- Homepage: akira test page published + set as homepage (DB persisted,
+  badge + remove-action live). Render branch unwired-live: no custom
+  domain on akira, and flame-fashion's live business must not take test
+  content — merchant sets their own homepage when ready.
+- Cutover restored as committed code (`e6939d6`) after it was found living
+  only as server-local edits + stash; server also found checked out onto a
+  stale detached HEAD twice — always verify HEAD + bundle markers post
+  deploy, never assume pull succeeded.
