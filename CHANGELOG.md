@@ -1,66 +1,83 @@
-# Changelog
+# Changelog — Framique (frame30)
 
-All notable changes and operator decisions. Newest first. The CI pipeline
-(`.circleci/config.yml`) and the task-finish rule in AGENTS.md keep this file
-honest: every shipped task lands an entry here in the same commit.
+All notable changes, decisions, and policy cutovers. Mirrored as
+long-term memories in mem0.ai (user `devrahmanbd`) — every entry below
+has a matching memory so future sessions inherit the why, not just the what.
 
-## Unreleased
+Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-### Changed
-- Page builder is the content editor URL (`/dashboard/content/editor`):
-  full-window Elementor-style takeover (Elements/SEO tabs, flush canvas,
-  compact title, sidebar starts closed, single device switcher).
-- `/dashboard/builder` stays the theme studio; page/theme engines merge by
-  porting, retirement of `/builder` only after editor testing.
-- Path storefronts removed: `/store/*` on platform hosts answers bare 404
-  (custom-domain-only cutover); custom hosts serve at `/` via internal
-  rewrite. Draft previews, token-gated order flows and loopback dev exempt.
-- Dashboard "View store" resolves to the merchant's primary custom domain
-  when one exists (`currentMerchantPrimaryHostFn`).
+## [Unreleased] — session-heritage-cutover branch
+
+### Security
+- **Path-shaped storefronts removed (custom domains only).** `/store/*` on
+  platform hosts now answers bare **404** (0-byte body, reveals nothing).
+  Decided after repeated operator order: path URLs are an abuse surface
+  (free platform-trust hosting for malicious stores).
+  Excepted: draft previews (`preview_token`, token-verified downstream),
+  token-gated `/track` + `/order/*` (buyer email/SMS links), loopback dev.
+  Metric: `framique_path_storefront_blocked_total`.
+- **Custom-host deep links rewritten internally** (`microscrop.shop/p/x` →
+  `/store/<slug>/p/x` in `server.ts`). Slug always comes from the
+  `merchant_domains` allowlist — no open redirect, no cross-tenant.
+- Bare-slug widget hrefs (`href: p.slug`) fixed to absolute store paths.
 
 ### Added
-- Customizable homepage: set/remove-as-homepage list actions (published
-  pages only), stored in `setup_steps.homepage_page_id`, rendered at `/`
-  with theme-template fallback on path and custom hosts.
-- 17 ported widgets in the page editor: faq, marquee, countdown, banner,
-  trust_bar, announcement_bar, heritage_story, editorial_banner,
-  editorial_hero, lookbook, hero, textile_showcase, department_grid,
-  story_trunk, marquee_strip, hero_carousel, testimonial_carousel.
-- Universal template blocks: cart page, store header/footer, rich FAQ,
-  testimonial slider, split hero (+ `cart` library category).
-- Global blocks both directions in pages: insert as detached copies,
-  save-as-global-block from the node menu (`builder_global_blocks` table
-  created via migration with RLS + grants).
-- Structure panel parity: filter search, expand/collapse all, inline
-  duplicate/delete per row.
-- Anti-wipeout guard: page-builder saves that would blank authored content
-  abort with a visible error instead of persisting.
-- Route code splitting (components + loaders) for the client bundle.
-- CI migrated to CircleCI only (`.circleci/config.yml`); GitHub Actions
-  removed. E2E job auto-activates when `.e2e/playwright.config.ts` lands.
+- **Heritage widgets** (clothing-heritage parity): `rewards_club`,
+  `wedding_shop`, `gift_finder` — AST catalog + apparel renderers +
+  bilingual help + TDD suites. Catalog 141 → 144 widgets.
+- **Local SVG placeholder pipeline** (`/api/public/ph/<seed>`, heritage
+  tokens, immutable cache). StoreImage, MediaFrame, and heritage
+  hero/dept/story/product/banner imageless slots render it. All 68 demo +
+  21 blueprint Unsplash hotlinks replaced with seeded placeholders.
+- **Theme preview demo data**: preview frame injects demo-catalog rows via
+  `WidgetDataProvider`, so product grids render instead of
+  skeleton-spinning. Hero slides carry default images; monogram badge is
+  crop-safe (no full-bleed letters on wide crops).
+- **Dynamic dashboard View-store anchor**: points at
+  `https://<primary>/` when the merchant has an active primary domain,
+  falls back to `/store/<slug>`. New `currentMerchantPrimaryHostFn`.
+- **DeepWiki integration removed**: dataset stubbed, vector engine
+  gutted to empty-result stubs, copilot re-grounded on live KB hybrid
+  search, docs-AI uses the docs index only.
 
-### Fixed
-- Block editor removed from pages (builder-only; legacy classic pages stay
-  readable); Default page editor setting deleted.
-- Empty canvas over saved content: studio adopts late-resolving server docs
-  (pristine-guarded) + tolerant parse of escaped-bracket payloads.
-- Quick Edit and bulk verbs now maintain `is_published` for pages (Published
-  rows were publicly invisible).
-- Themes screen crash from NULL `installed_at` (sort hardened, all install
-  paths stamp it, live rows backfilled).
-- Missing `builder_global_blocks` table (code referenced, never migrated).
-- Auth console redesigned (hallmark modern-minimal).
+### Changed
+- **CI moved GitHub Actions → CircleCI** (`.circleci/config.yml` owns
+  build/test/lint/e2e; no new Actions workflows). Recorded in AGENTS.md.
+- **Deploy convention**: separate worktrees (`/opt/frame28` main,
+  `/opt/frame28-heritage` branch), deploys only via
+  `ops/deploy-from-git.sh <branch>` (pushed branch → ephemeral worktree
+  build → rsync `.output` → restart → live verify). Never build in the
+  live tree, never `git stash` a shared clone.
 
-### Decisions (operator decrees)
-- Content editor URL is the single page builder; `/dashboard/builder`
-  remains theme-only until later retirement.
-- No local `bun test` — tests run in the CircleCI `unit-contract` job.
-- Verify on production only (SSH build+deploy, browser checks); no localhost
-  testing. Push to GitHub; deploy via SSH when told.
-- Path storefronts removed — custom domains only; homepage exercises on a
-  custom domain.
-- Reports of stale UI were stale browser bundles / wrong-merchant sessions,
-  verified with the reporter's own account where possible.
-- Shared clone + single server across agents caused interleaved commits,
-  a 502 from an unpushed-file commit, and a frankenbuild — coordinate
-  deploy windows; never reset shared history.
+### Verification (live, https://framique.qubickle.com)
+- `/store/<slug>` (+ deep paths, fake slugs, case variants) → 404.
+- `/` → 200 landing; `microscrop.shop/` + `/cart` → 200 storefront.
+- Preview Cart tab: 0 skeletons, priced demo products with images.
+- Login as merchant: dashboard renders, no page errors.
+- Targeted suites green (cutover 8, placeholder 5, preview-data 3,
+  heritage 7, registry 8, metadata 9, builder 167).
+
+### Known gaps / follow-ups
+- Full `bun run test`: 3392 pass / 27 fail — remaining failures are
+  pre-existing (authz, nav, CSP, support-agent, time-machine…), untouched
+  by this batch.
+- `microscrop.shop` serves the Flame Fashion BD **beauty draft**; the
+  Aarong look needs clothing-heritage published on that merchant (or a
+  custom domain on Akira, which already has it active).
+- `microscrop.shop` domain row is `issuing_cert`, not `active` — View-store
+  anchor stays on fallback until Verify flips it.
+- Custom-host `/sitemap.xml`/`robots.txt`, onboarding copy still
+  advertising `/store/` URLs, analytics beacon 500 (pre-existing).
+
+## [2026-09-21] — main (other loop: page-builder Elementor parity)
+- Ported theme widgets as native studio widgets (faq, marquee, countdown,
+  banner, trust_bar, announcement_bar; then 11 heritage/hero widgets).
+- Layers parity + save-as-global-block port; anti-wipeout autosave guard.
+- Operator decrees recorded in progress.md: verify on production only,
+  push to GitHub, path storefronts removed, shared-clone hazard noted.
+
+## [2026-09-18/19] — spectacular scope (from git history)
+- CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
+- Clothing-heritage theme + Aarong-grade storefront + demo catalogs.
+- 429 storm fixed (windowed RPC + console/loopback buckets).
+- CMS homepage designation + route code-splitting; auth redesign.

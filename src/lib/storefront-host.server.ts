@@ -349,7 +349,6 @@ export async function resolveStoreRedirectForSlug(
 }
 
 /**
-<<<<<<< HEAD
  * Custom-domain-only cutover: path-based storefront URLs (`/store/*`) served
  * on a platform host are an abuse surface (free platform-trust hosting for
  * malicious stores) and must not serve. Pure gate decision:
