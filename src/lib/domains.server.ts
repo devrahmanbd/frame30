@@ -643,6 +643,53 @@ export async function removeDomain(
   return listDomains(db, merchantId, userId);
 }
 
+/**
+ * Rename a domain (edit hostname). Re-validates, enforces global uniqueness,
+ * and resets verification: new hostname starts at pending_dns with a fresh
+ * token, loses primary (a primary must be re-verified before serving), and
+ * records an audit event. Returns the refreshed list.
+ */
+export async function renameDomain(
+  db: Client,
+  merchantId: string,
+  userId: string,
+  domainId: string,
+  rawHostname: string,
+) {
+  await enforceRateLimit("domains.write", userId);
+  const row = await loadOwned(db, merchantId, domainId);
+  const hostname = normalizeHostname(rawHostname);
+  if (hostname === row.hostname) return listDomains(db, merchantId, userId);
+  const service = supabaseAdmin;
+  const { error } = await service
+    .from("merchant_domains")
+    .update({
+      hostname,
+      status: "pending_dns",
+      is_primary: false,
+      verification_token: randomToken(),
+      dns_target: edgeTarget().cname,
+      next_check_at: new Date().toISOString(),
+      last_error: null,
+    })
+    .eq("id", domainId);
+  if (error) {
+    if (error.code === "23505") throw new DomainError("domain.taken", 409);
+    throw new DomainError(error.message, 500);
+  }
+  await service.from("domain_events").insert({
+    domain_id: domainId,
+    merchant_id: merchantId,
+    from_status: row.status,
+    to_status: "pending_dns",
+    reason: "domain.renamed",
+    actor: userId,
+    detail: { from: row.hostname, to: hostname },
+  });
+  incr("framique_domain_renamed_total");
+  return listDomains(db, merchantId, userId);
+}
+
 /* ----------------------------- edge integration --------------------------- */
 
 /** ACME http-01: the edge registers the token, we serve it over plain HTTP. */

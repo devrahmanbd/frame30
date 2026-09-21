@@ -19,6 +19,7 @@ import {
   domainPrimaryFn,
   domainRedirectFn,
   domainRemoveFn,
+  domainRenameFn,
   domainVerifyFn,
   domainsListFn,
 } from "@/lib/domains.functions";
@@ -160,6 +161,9 @@ function DomainsPage() {
   // leak across navigations (a stale dialog followed the user to checkout),
   // so removal now arms inline and executes only on explicit confirm.
   const [confirmRemoveId, setConfirmRemoveId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editHostname, setEditHostname] = useState("");
+  const rename = useServerFn(domainRenameFn);
 
   const add = useServerFn(domainAddFn);
   const verify = useServerFn(domainVerifyFn);
@@ -522,6 +526,59 @@ function DomainsPage() {
                   ? t("Resume", "চালু করুন")
                   : t("Pause", "বন্ধ করুন")}
               </button>
+              {editingId === domain.id ? (
+                <span className="inline-flex min-h-9 flex-wrap items-center gap-2">
+                  <label className="sr-only" htmlFor={`rename-${domain.id}`}>
+                    {t("Domain hostname", "ডোমেইন হোস্টনেম")}
+                  </label>
+                  <input
+                    id={`rename-${domain.id}`}
+                    className={`${inputClass} max-w-xs`}
+                    defaultValue={domain.hostname}
+                    autoComplete="off"
+                    spellCheck={false}
+                    disabled={busy}
+                    onChange={(e) => setEditHostname(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Escape") setEditingId(null);
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className={btnPrimary}
+                    disabled={busy}
+                    onClick={() => {
+                      setEditingId(null);
+                      void run(domain.id, () =>
+                        rename({
+                          data: { id: domain.id, hostname: editHostname },
+                        }),
+                      );
+                    }}
+                  >
+                    {t("Save", "সংরক্ষণ")}
+                  </button>
+                  <button
+                    type="button"
+                    className="min-h-9 rounded-fq-md border border-border px-3 text-sm"
+                    onClick={() => setEditingId(null)}
+                  >
+                    {t("Cancel", "বাতিল")}
+                  </button>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  className="min-h-9 rounded-fq-md border border-border px-3 text-sm"
+                  disabled={busy}
+                  onClick={() => {
+                    setEditHostname(domain.hostname);
+                    setEditingId(domain.id);
+                  }}
+                >
+                  {t("Edit", "সম্পাদনা")}
+                </button>
+              )}
               {confirmRemoveId === domain.id ? (
                 <span
                   className="inline-flex min-h-9 flex-wrap items-center gap-2 rounded-fq-md border border-destructive px-3 py-1 text-sm"
