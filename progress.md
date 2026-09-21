@@ -157,3 +157,7 @@ verify on production; push to GitHub.
 - [ ] Slice 3: demo imagery direction (crop-safe seeds, no hotlinking)
 - [ ] Slice 4: Lighthouse + a11y gates, COD test order
 - [ ] Slice 5: versioned v2 release via publish pipeline
+- [x] Slice 1: campaign homepage (festive-drop hero first, lookbook
+  "Shop the look" x4 looks, wedding/gift finders surfaced after
+  new-arrivals; story/craft/testimonials keep order below).
+  Tests 7/7 green. .bn duplicate-key errors pre-existing (untouched).

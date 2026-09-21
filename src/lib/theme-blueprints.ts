@@ -2272,22 +2272,22 @@ function clothingHeritage(): ThemePreset {
           s("hero_carousel", {
             slides: [
               {
+                headline: "The Festive Drop '26 is here",
+                subhead: "Pure silk panjabis, Jamdani sarees & wedding finery — woven for the season of celebrations",
+                ctaLabel: "Shop festive",
+                ctaUrl: "/collections/eid-festive",
+                image: "/api/public/ph/heritage-festive-drop.svg",
+              },
+              {
                 headline: "Woven with patience, worn with pride",
-                subhead: "Heritage Weaves & Living Crafts",
+                subhead: "Tangail & Jamdani handloom — a living craft legacy",
                 ctaLabel: "Explore the collection",
                 ctaUrl: "/collections/all",
                 image: "/api/public/ph/heritage-weaves.svg",
               },
               {
-                headline: "Eid & Festive Collection 2026",
-                subhead: "Pure silk, handwoven for celebrations",
-                ctaLabel: "Shop festive",
-                ctaUrl: "/collections/eid-festive",
-                image: "/api/public/ph/eid-festive.svg",
-              },
-              {
                 headline: "65,000+ rural artisans empowered",
-                subhead: "Fair trade handloom from 64 districts",
+                subhead: "Fair-trade handloom from 64 districts",
                 ctaLabel: "Our story",
                 ctaUrl: "/pages/about",
                 image: "/api/public/ph/artisan-story.svg",
@@ -2306,6 +2306,30 @@ function clothingHeritage(): ThemePreset {
             cardVariant: "editorial",
             showRating: true,
             promise: "In stock · Dispatched in 24h",
+          }),
+          s("lookbook", {
+            heading: "Shop the look",
+            i1Image: "/api/public/ph/heritage-look-puja.svg",
+            i1Alt: "Puja festive look — silk panjabi and Jamdani saree",
+            i1Href: "/collections/eid-festive",
+            i2Image: "/api/public/ph/heritage-look-wedding.svg",
+            i2Alt: "Wedding look — bridal saree and groom sherwani",
+            i2Href: "/collections/wedding",
+            i3Image: "/api/public/ph/heritage-look-daily.svg",
+            i3Alt: "Everyday look — handloom kurta and stole",
+            i3Href: "/collections/all",
+            i4Image: "/api/public/ph/heritage-look-home.svg",
+            i4Alt: "Home look — nakshi kantha and artisan decor",
+            i4Href: "/collections/home-decor",
+            offset: true,
+          }),
+          s("wedding_shop", {
+            heading: "The Wedding Shop",
+            body: "Bridal sarees, groom panjabis and festive gifting — curated for the big day.",
+          }),
+          s("gift_finder", {
+            heading: "Find the perfect gift",
+            body: "Pick an occasion — we take you straight to matching gifts.",
           }),
           s("heritage_story", {
             eyebrow: "The master weavers",
@@ -2345,14 +2369,6 @@ function clothingHeritage(): ThemePreset {
                 author: "Tanvir Rahman, Banani, Dhaka",
               },
             ],
-          }),
-          s("wedding_shop", {
-            heading: "The Wedding Shop",
-            body: "Bridal sarees, groom panjabis and festive gifting — curated for the big day.",
-          }),
-          s("gift_finder", {
-            heading: "Find the perfect gift",
-            body: "Pick an occasion — we take you straight to matching gifts.",
           }),
           s("rewards_club", {
             heading: "My Rewards",
