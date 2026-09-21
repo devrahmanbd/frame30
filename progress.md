@@ -133,6 +133,22 @@ verify on production; push to GitHub.
 - Deploy lesson: deploy script's silent fetch can build stale code
   (19:44 build lacked the filter); re-deploy fixed. Verify-after-
   deploy is mandatory, not optional.
+- [x] Curated two-theme offer (`f5f0a36` + `2b07c60`): Appearance grid
+  + catalogue + marketplace listCatalog all filtered to Supershop +
+  Clothing Heritage via VISIBLE_THEME_KEYS; active theme exempt.
+  Bridge tests rewritten (10/10). Verified live "2 Themes".
+- [x] Demo import fixed 3 levels deep (`7881523`, applied live):
+  import_* RPCs never applied → applied 20260920_import_rpcs.sql;
+  theme_registry empty → generator script + seed migration (2 rows);
+  supershop hero repeater unmergeable → RPC amendment. Proven
+  end-to-end (imported:true), test draft restored byte-identical.
+- [x] Case collision fixed (`529ccf0`): report.md overwrote REPORT.md
+  twice on case-insensitive checkouts; kept audit doc, renamed deploy
+  report with identical content. Rule: one filename per spelling.
+- [x] WAL prune (disk-full recovery): 1298 pre-base segments removed
+  (~20G) keeping Sept-20 base + full chain after; newest .backup
+  retained. postgres healthy, app 200s. Journal vacuums (3.4G + 0.5G)
+  were stopgaps. Growth ~50 segs/hour still needs DR-owner retention.
 
 ## Settings cleanup (Sept 21) — LIVE VERIFIED via screenshots
 - General (`settings.tsx`): deleted in-page Subnav Tabs (duplicate of the
