@@ -168,6 +168,7 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
   }
   if (raw.el === "faq" || raw.el === "product_qna") seedQaItems(node);
   if (raw.el === "trust_bar") seedTrustItems(node);
+  if (raw.el === "announcement_bar") seedAnnouncementItems(node);
   return node;
 }
 
@@ -191,6 +192,24 @@ function seedQaItems(node: StudioNode): void {
         answer: typeof a === "string" ? a : "",
       });
     }
+  }
+  if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
+}
+
+/**
+ * Repeater migration (announcement_bar): pages saved with scalar m1/m2/m3
+ * get `items` seeded on load. Author-edited `items` are never overwritten.
+ * Scalars stay for theme pass-through.
+ */
+function seedAnnouncementItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const seeded: { text: string }[] = [];
+  for (let i = 1; i <= 3; i += 1) {
+    const m = s[`m${i}`];
+    if (typeof m === "string" && m.trim()) seeded.push({ text: m });
   }
   if (seeded.length > 0) {
     node.settings = { ...node.settings, items: seeded };

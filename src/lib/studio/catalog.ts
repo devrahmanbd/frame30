@@ -485,6 +485,7 @@ export const WIDGETS: WidgetDef[] = [
       href: "",
       dismissible: true,
       rotateMs: 6000,
+      items: [],
     },
   },
   // Heritage + hero batch: flat scalar props mirror the theme defaults, so

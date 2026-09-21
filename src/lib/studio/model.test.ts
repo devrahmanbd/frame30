@@ -246,3 +246,33 @@ describe("trust_bar scalar-to-items migration", () => {
     expect(settings.items).toEqual([{ icon: "secure", title: "New?", body: "" }]);
   });
 });
+
+describe("announcement_bar scalar-to-items migration", () => {
+  function announcementDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "a1", el: "announcement_bar", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds items from scalar m1/m2/m3 on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        announcementDoc({ m1: "Sale!", m2: "", m3: "New in" }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ text: "Sale!" }, { text: "New in" }]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        announcementDoc({ m1: "Old?", items: [{ text: "New!" }] }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ text: "New!" }]);
+  });
+});

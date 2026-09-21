@@ -1606,15 +1606,16 @@ const CONTENT: Record<string, Control[]> = {
     }),
   ],
   announcement_bar: [
-    ...[1, 2, 3].map((i) =>
-      c({
-        key: `m${i}`,
-        label: `Message ${i}`,
-        type: "text",
-        tab: "content",
-        section: "Messages",
-      }),
-    ),
+    c({
+      key: "items",
+      label: "Messages",
+      type: "repeater",
+      tab: "content",
+      section: "Messages",
+      fields: [
+        c({ key: "text", label: "Message", type: "text", tab: "content", section: "Messages" }),
+      ],
+    }),
     c({
       key: "href",
       label: "Link",

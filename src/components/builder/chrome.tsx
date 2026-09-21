@@ -45,8 +45,19 @@ const TRUST_ICON: Record<string, string> = {
   quality: "★",
 };
 
-function AnnouncementBar({ str, bool, int }: WidgetCtx) {
-  const messages = [str("m1"), str("m2"), str("m3")].filter(Boolean);
+function AnnouncementBar({ str, bool, int, section }: WidgetCtx) {
+  // Repeater-first (faq/trust_bar precedent): studio `items` text rows win
+  // when present, scalar m1/m2/m3 remain as the fallback for
+  // theme-authored sections. Rotation/dismiss below apply to both.
+  const itemRows = Array.isArray(section.props.items)
+    ? section.props.items
+        .map((row) => (typeof row.text === "string" ? row.text.trim() : ""))
+        .filter(Boolean)
+    : [];
+  const messages =
+    itemRows.length > 0
+      ? itemRows
+      : [str("m1"), str("m2"), str("m3")].filter(Boolean);
   const rotateMs = int("rotateMs", 6000, 0, 60000);
   const [index, setIndex] = useState(0);
   const [dismissed, setDismissed] = useState(false);

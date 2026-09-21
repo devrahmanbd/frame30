@@ -891,15 +891,23 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       );
     }
 
-    case "announcement_bar":
+    case "announcement_bar": {
+      const fromItems = rows(s, "items")
+        .map((row) => String(row.text ?? "").trim())
+        .filter(Boolean);
+      const messages =
+        fromItems.length > 0
+          ? fromItems
+          : [str(s, "m1"), str(s, "m2"), str(s, "m3")].filter(Boolean);
       return (
         <StudioAnnouncement
-          messages={[str(s, "m1"), str(s, "m2"), str(s, "m3")].filter(Boolean)}
+          messages={messages}
           href={str(s, "href")}
           dismissible={s.dismissible !== false}
           rotateMs={num(s, "rotateMs", 6000, device)}
         />
       );
+    }
 
     // Heritage + hero batch ported from the theme engine: same props, same
     // look, so merchants author once and see it everywhere.
