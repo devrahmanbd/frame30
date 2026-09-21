@@ -108,8 +108,17 @@ verify on production; push to GitHub.
   (drafts/deleted visible), store_themes=all rows (inactive visible),
   variants properly gated (active+public+not-deleted). Not an active
   breach path for prices/stock (variant-gated), but draft disclosure.
-- TODO next: API cross-tenant audit (unscoped merchant_id scan over
-  *.functions.ts) + decide products/store_themes public-read tightening.
+- TODO next: decide products/store_themes public-read tightening +
+  NEEDS-REVIEW backlog (order oracle token, blog global namespace,
+  releaseCheckout binding, recordResolvedMiss attribution, variant
+  reader discipline, domains permission granularity).
+- [x] API audit closed for EXPOSED items (`b8e5b53`, deployed):
+  review RPC had no ownership check AND referenced a missing column
+  (all submissions errored) — fixed, proven live 3 ways, test row
+  removed. Step-up mint now verifies membership. Charge intents bound
+  slug==order merchant. Order page 404s on slug mismatch. Console
+  surface otherwise CLEAN (session-scoped + permissioned); money paths
+  scope before step-up consume.
 - [x] 0-day CLOSED (`e5e0b06`, deployed + verified): CloudMan chrome
   served on microscrop.shop via /store/<foreign-slug> whenever host
   resolution missed (outage-poisoned cache → featured fallback).

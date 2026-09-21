@@ -243,6 +243,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   token/loopback/platform semantics preserved).
 - Contract 36/36 (5 new). Live verified: foreign 404, own 200s.
 
+## [2026-09-21] — API tenant audit fixes (`b8e5b53`, deployed)
+- market_review_submit: ownership enforced (was open + broken column);
+  verified live forbidden/requires_install/success paths.
+- grantStepUp: membership check at mint. openCharge: slug==order
+  binding (COD advance included). Order route: slug check.
+- Swarm audits: console mostly CLEAN; storefront CLEAN except oracles
+  and global blog namespace (logged as follow-ups).
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.
