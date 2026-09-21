@@ -259,3 +259,6 @@ verify on production; push to GitHub.
 - Known residuals: hero art panel still tile art (no photos exist);
   menubar labels are product names (demo data mapping); Inter body +
   .bn dict dupes pre-existing (font-infra owned).
+- [x] Preview fixes: taxonomy rows serve collections (menubar shows
+  Heritage Handloom / Eid & Festive / Nakshi Kantha / ...); fullscreen
+  preview toggle with floating exit. Deployed + screenshot-verified.
