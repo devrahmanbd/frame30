@@ -124,6 +124,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   on storefront; repeater conversion plan ranked (faq first, 8 total).
 - tsc clean on touched files; model.ts/PageBuilder errors pre-existing.
 
+## [2026-09-21] — parity-3 port (`02ef60d`)
+- 24 widgets (2 porter agents × 12): all theme defaults verified verbatim
+  against builder-ast.ts; newsletter canvas uses static mock (no live
+  form elements in the editing surface); icons deduped to resolvable
+  lucide names.
+- columns container support: model + sanitise + nodeHtml + canvas CSS
+  mapping; storefront already resolves via theme Container.
+- Contract 388/388 (new MEDIA/LAYOUT category sets); tsc clean on all
+  touched ranges (upgradeWidget/widgetHtml/Section drifts pre-existing).
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.

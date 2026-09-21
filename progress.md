@@ -33,13 +33,14 @@ verify on production; push to GitHub.
   storefront (generic pass-through, SectionRenderer resolves all).
   Watch items: checkout_steps static activeStep, product_meta silent
   null, canvas blindness + `widgetHtml` "" fallback for data widgets.
-- [ ] Theme parity 3 (24 verified-missing, all exist in builder-ast.ts):
-  rich_text, form, nav_menu, newsletter, sticky_bar, mega_menu, buy_box,
-  variant_picker, sticky_buy_bar, filter_chips, size_selector,
-  complete_the_look, circle_categories, store_locator, ugc_gallery,
-  trade_in, combo_card, loyalty_strip, warranty_panel, before_after,
-  refill_widget, quick_view, department_strip, columns. (section +
-  paragraph exist nowhere, not even theme-side — ignore.)
+- [x] Theme parity 3 (24 widgets, `02ef60d`, 388 tests): set A chrome/
+  forms/commerce + set B discovery/assurance/layout. columns is a real
+  container (isContainerNode, sanitise, nodeHtml, canvas grid mapping).
+  nav_menu keeps theme-verbatim items array + repeater (department_grid
+  precedent). Icon registry +21 imports; fixed Star-fallback orphans
+  (gift_builder, bundle_offer, subbrand_spotlight, rewards_club,
+  gift_finder). Full SectionType union now ported (minus structural
+  primitives + section/paragraph which exist nowhere).
 - [ ] Repeater conversions (arrays safe in defaults; contract pins
   scalars so each conversion updates catalog.test.ts + dual-reads theme
   renderers): 1 faq, 2 product_qna, 3 trust_bar, 4 announcement_bar,
