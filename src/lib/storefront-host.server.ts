@@ -319,6 +319,45 @@ export function isBlockedPathStorefront(
 }
 
 /**
+ * Cross-tenant path guard (Sept 2026 0-day fix): on a custom host,
+ * `/store/<slug>/*` must only serve the host owner's sections. Pure
+ * decision — the async wrapper below resolves the two ids:
+ *
+ * - not a custom host (platform/loopback/null) → false (legacy gate owns it)
+ * - host unresolved → true (fail closed: unknown hosts serve no tenant paths)
+ * - path slug unknown → false (loaders 404 downstream as today)
+ * - ids differ → true (block); ids equal → false (own sections)
+ */
+export function isForeignStorePath(
+  hostMerchantId: string | null,
+  hostIsCustom: boolean,
+  pathMerchantId: string | null,
+): boolean {
+  if (!hostIsCustom) return false;
+  if (!hostMerchantId) return true;
+  if (!pathMerchantId) return false;
+  return hostMerchantId !== pathMerchantId;
+}
+
+/** Async wrapper: resolves host + slug merchants, fails closed. */
+export async function isBlockedForeignStorePath(
+  hostname: string | null | undefined,
+  pathname: string,
+): Promise<boolean> {
+  const match = /^\/store\/([^/?#]+)/.exec(pathname);
+  if (!match) return false;
+  const host = (hostname ?? "").toLowerCase();
+  if (!host || isPlatformHost(host) || host === "localhost" || host === "127.0.0.1")
+    return false;
+  const res = await resolveStorefrontHostFor(host).catch(() => null);
+  if (!res) return true;
+  const slug = (match[1] ?? "").toLowerCase();
+  if (slug === res.merchantSlug.toLowerCase()) return false;
+  const other = await merchantIdForSlug(slug).catch(() => null);
+  return isForeignStorePath(res.merchantId, true, other);
+}
+
+/**
  * Client-safe host-shape check — re-exported here for server consumers.
  * Canonical home is `./storefront-url` (importable from client bundles).
  */

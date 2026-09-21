@@ -235,6 +235,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Deploy gap found: silent fetch failure built stale bundle; re-deploy
   + live catalogue check ("2 Themes") closed it.
 
+## [2026-09-21] — cross-tenant path guard (`e5e0b06`, deployed)
+- Root cause: host-resolution miss (DB outage + cached nulls) funneled
+  /cart into featured-store redirect, and custom hosts never checked
+  path slug against host merchant — CloudMan rendered on Flame domain.
+- Fix: isForeignStorePath pure decision + server.ts gate (fail closed,
+  token/loopback/platform semantics preserved).
+- Contract 36/36 (5 new). Live verified: foreign 404, own 200s.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.

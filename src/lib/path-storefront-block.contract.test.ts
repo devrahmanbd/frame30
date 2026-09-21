@@ -11,6 +11,7 @@ import { readFileSync } from "node:fs";
 import {
   isBlockedPathStorefront,
   isCustomHostPath,
+  isForeignStorePath,
 } from "./storefront-host.server";
 
 describe("isBlockedPathStorefront", () => {
@@ -67,6 +68,33 @@ describe("isBlockedPathStorefront", () => {
       false,
     );
     expect(isBlockedPathStorefront(null, "/store/a", false)).toBe(false);
+  });
+});
+
+describe("isForeignStorePath (cross-tenant path guard)", () => {
+  const FLAME = "b47532e5-9649-4ebd-93a9-06fa2917c00e";
+  const CLOUD = "b1111111-1111-4111-8111-111111111111";
+  it("allows the host merchant's own slug", () => {
+    expect(isForeignStorePath(FLAME, true, FLAME)).toBe(
+      false,
+    );
+  });
+  it("blocks another merchant's slug on a custom host", () => {
+    expect(isForeignStorePath(FLAME, true, CLOUD)).toBe(true);
+  });
+  it("fails closed when the host is unresolved on a custom domain", () => {
+    expect(isForeignStorePath(null, true, CLOUD)).toBe(true);
+  });
+  it("leaves platform and loopback traffic to the legacy gate", () => {
+    expect(isForeignStorePath(FLAME, false, CLOUD)).toBe(
+      false,
+    );
+    expect(isForeignStorePath(null, false, CLOUD)).toBe(
+      false,
+    );
+  });
+  it("leaves unknown slugs to downstream loaders (which 404)", () => {
+    expect(isForeignStorePath(FLAME, true, null)).toBe(false);
   });
 });
 

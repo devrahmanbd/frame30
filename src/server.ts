@@ -394,6 +394,27 @@ export default {
           });
           return new Response(null, { status: 404 });
         }
+        // Cross-tenant path guard (Sept 2026): on a custom host,
+        // `/store/<slug>/*` serves only the host owner's sections. A
+        // foreign slug (or an unresolvable host) answers bare 404.
+        // Preview tokens stay exempt — verified downstream.
+        if (!url.searchParams.has("preview_token")) {
+          const { isBlockedForeignStorePath } = await import(
+            "./lib/storefront-host.server"
+          );
+          if (
+            await isBlockedForeignStorePath(
+              normalizeRequestHost(rawHost),
+              url.pathname,
+            )
+          ) {
+            const { incr } = await import("./lib/observability.server");
+            incr("framique_path_storefront_blocked_total", {
+              path: url.pathname.split("/").slice(0, 3).join("/"),
+            });
+            return new Response(null, { status: 404 });
+          }
+        }
       } catch {
         // A gate failure must never break routing — fall through to SSR.
       }
