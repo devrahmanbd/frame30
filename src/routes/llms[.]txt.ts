@@ -1,6 +1,85 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 /**
+ * Merchant store map for answer engines: catalogue links with root-shape
+ * paths on the requesting custom host. Best-effort reads — the file renders
+ * the store identity even when catalogue tables are unreachable.
+ */
+async function merchantLlmsTxt(
+  slug: string,
+  origin: string,
+): Promise<Response> {
+  const headers = {
+    "content-type": "text/plain; charset=utf-8",
+    "cache-control": "public, max-age=3600, stale-while-revalidate=86400",
+  };
+  try {
+    const { publicClient } = await import("@/lib/pricing.server");
+    const db = publicClient() as unknown as {
+      from: (t: string) => any;
+    };
+    const { data: merchant } = await db
+      .from("merchants")
+      .select("id, name, slug")
+      .eq("slug", slug)
+      .eq("status", "active")
+      .maybeSingle();
+    if (!merchant) throw new Error("unknown_merchant");
+    const m = merchant as { id: string; name: string; slug: string };
+    const [products, collections, pages] = await Promise.all([
+      db
+        .from("products")
+        .select("slug, title")
+        .eq("merchant_id", m.id)
+        .eq("status", "active")
+        .limit(100)
+        .then((r: any) => r.data ?? []),
+      db
+        .from("collections")
+        .select("slug, name")
+        .eq("merchant_id", m.id)
+        .eq("is_published", true)
+        .limit(50)
+        .then((r: any) => r.data ?? []),
+      db
+        .from("storefront_pages")
+        .select("slug, title")
+        .eq("merchant_id", m.id)
+        .eq("is_published", true)
+        .is("deleted_at", null)
+        .limit(50)
+        .then((r: any) => r.data ?? []),
+    ]);
+    const lines = [
+      `# ${m.name}`,
+      "",
+      `Storefront: ${origin}/`,
+      "",
+      "## Products",
+      ...(products as { slug: string; title: string }[]).map(
+        (p) => `- [${p.title}](${origin}/p/${p.slug})`,
+      ),
+      "",
+      "## Collections",
+      ...(collections as { slug: string; name: string }[]).map(
+        (c) => `- [${c.name}](${origin}/c/${c.slug})`,
+      ),
+      "",
+      "## Pages",
+      ...(pages as { slug: string; title: string }[]).map(
+        (p) => `- [${p.title}](${origin}/pages/${p.slug})`,
+      ),
+      "",
+      `Sitemap: ${origin}/sitemap.xml`,
+      "",
+    ];
+    return new Response(lines.join("\n"), { headers });
+  } catch {
+    return new Response(`# Store\n\nStorefront: ${origin}/\n`, { headers });
+  }
+}
+
+/**
  * Phase 10.5 — marketing-site `llms.txt`, the sibling of the per-store one.
  *
  * Answer engines quote text, and the cheapest way to be quoted correctly is to
@@ -17,6 +96,18 @@ export const Route = createFileRoute("/llms.txt")({
     handlers: {
       GET: async ({ request }) => {
         const origin = new URL(request.url).origin;
+        // Custom host: this merchant's store map instead of marketing content.
+        try {
+          const { resolveStorefrontHost } = await import(
+            "@/lib/storefront-host.server"
+          );
+          const host = await resolveStorefrontHost();
+          if (host) {
+            return merchantLlmsTxt(host.merchantSlug, origin);
+          }
+        } catch {
+          // Fall through to the platform document.
+        }
         const { renderMarketingLlmsTxt } = await import("@/lib/marketing-seo");
         const { log } = await import("@/lib/observability.server");
 

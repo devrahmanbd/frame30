@@ -1,6 +1,89 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
+/**
+ * Merchant sitemap branch: catalogue entries with root-shape paths for the
+ * custom host's own merchant. Bounded queries, fail-soft to an index-only
+ * document — a sitemap must render even when catalogue reads fail.
+ */
+async function merchantSitemap(
+  slug: string,
+  origin: string,
+): Promise<Response> {
+  const { renderSitemapXml, buildMerchantSitemapEntries } = await import(
+    "@/lib/store-sitemap.server"
+  );
+  try {
+    const { publicClient } = await import("@/lib/pricing.server");
+    const db = publicClient() as unknown as {
+      from: (t: string) => any;
+    };
+    const { data: merchant } = await db
+      .from("merchants")
+      .select("id")
+      .eq("slug", slug)
+      .eq("status", "active")
+      .maybeSingle();
+    if (!merchant) throw new Error("unknown_merchant");
+    const merchantId = (merchant as { id: string }).id;
+    const now = new Date().toISOString();
+    const [products, collections, pages, articles, settings] =
+      await Promise.all([
+        db
+          .from("products")
+          .select("slug, updated_at")
+          .eq("merchant_id", merchantId)
+          .eq("status", "active")
+          .limit(500)
+          .then((r: any) => r.data ?? []),
+        db
+          .from("collections")
+          .select("slug, updated_at")
+          .eq("merchant_id", merchantId)
+          .eq("is_published", true)
+          .limit(200)
+          .then((r: any) => r.data ?? []),
+        db
+          .from("storefront_pages")
+          .select("slug, updated_at")
+          .eq("merchant_id", merchantId)
+          .eq("is_published", true)
+          .is("deleted_at", null)
+          .limit(200)
+          .then((r: any) => r.data ?? []),
+        db
+          .from("articles")
+          .select("slug, updated_at, published_at")
+          .eq("merchant_id", merchantId)
+          .eq("status", "published")
+          .lte("published_at", now)
+          .is("deleted_at", null)
+          .limit(500)
+          .then((r: any) => r.data ?? []),
+        import("@/lib/permalink.server")
+          .then((m) =>
+            m.permalinkSettingsFor(db as never, merchantId),
+          )
+          .catch(() => null),
+      ]);
+    return renderSitemapXml(
+      origin,
+      buildMerchantSitemapEntries({
+        products,
+        collections,
+        pages,
+        articles,
+        settings,
+      }),
+    );
+  } catch {
+    const { renderSitemapXml } = await import("@/lib/store-sitemap.server");
+    return renderSitemapXml(origin, [
+      { path: "/", changefreq: "daily", priority: "1.0" },
+    ]);
+  }
+}
+
 interface SitemapEntry {
   path: string;
   lastmod?: string;
@@ -25,8 +108,24 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async ({ request }) => {
         const BASE_URL = new URL(request.url).origin;
-        const { listPublishedArticles, listPublicStores } =
-          await import("@/lib/marketing.server");
+        // Custom-domain-only cutover: on a merchant host serve that
+        // merchant's catalogue with root-shape paths. The platform shape
+        // below must not advertise dead /store/* locs (path URLs 410), so
+        // the per-store loop is gone; global articles stay (they resolve).
+        try {
+          const { resolveStorefrontHost } = await import(
+            "@/lib/storefront-host.server"
+          );
+          const host = await resolveStorefrontHost();
+          if (host) {
+            return merchantSitemap(host.merchantSlug, BASE_URL);
+          }
+        } catch {
+          // Fall through to the platform sitemap.
+        }
+        const { listPublishedArticles } = await import(
+          "@/lib/marketing.server"
+        );
         const { marketingSitemapEntries } = await import("@/lib/marketing-seo");
 
         // Marketing URLs come from the one registry that also feeds every
@@ -43,13 +142,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           }),
         );
 
-        for (const store of await listPublicStores()) {
-          entries.push({
-            path: `/store/${store.slug}`,
-            changefreq: "daily",
-            priority: "0.9",
-          });
-        }
+        // NOTE: no per-store /store/<slug> entries — path storefronts are
+        // retired (410); stores are discovered via their own domains.
+        // The custom-host branch above serves merchant catalogues.
 
         for (const article of await listPublishedArticles()) {
           entries.push({
