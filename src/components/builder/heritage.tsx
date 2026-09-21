@@ -82,6 +82,7 @@ const HeroCarousel: WidgetComponent = ({
   }
 
   const slide = slides[current]!;
+  const isFirst = current === 0;
   return (
     <section
       className="relative overflow-hidden"
@@ -106,7 +107,9 @@ const HeroCarousel: WidgetComponent = ({
             src={slide.image}
             alt={slide.headline}
             className="absolute inset-0 h-full w-full object-cover"
-            loading="lazy"
+            loading={isFirst ? "eager" : "lazy"}
+            fetchPriority={isFirst ? "high" : "auto"}
+            decoding="async"
           />
         )}
         {!slide.image && (
