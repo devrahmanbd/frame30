@@ -362,13 +362,20 @@ export async function commitVersion(
  * Phase 8.2: purge is tenant-scoped and happens on publish / rollback only.
  * Passing no merchant is an operator action (`purgeThemeCache`) and is the only
  * path allowed to clear every tenant.
+ *
+ * Returns the shared-invalidate promise so callers (notably `activateTheme`)
+ * can `await` fleet-wide visibility. Fire-and-forget here leaves a window
+ * where the origin flips but stale isolates/Redis still serve the old theme.
  */
-export function purgeStorefront(reason: string, merchantId?: string) {
-  invalidate(merchantId ? tenantCachePrefix(merchantId) : "storefront:");
+export function purgeStorefront(
+  reason: string,
+  merchantId?: string,
+): Promise<void> {
   incr("framique_theme_purge_total", {
     reason,
     scope: merchantId ? "tenant" : "all",
   });
+  return invalidate(merchantId ? tenantCachePrefix(merchantId) : "storefront:");
 }
 
 /** Publish blocks on lint errors: a broken page never reaches shoppers. */
@@ -960,9 +967,16 @@ export async function publishedTheme(
   // Templates and locales share one snapshot (the AST carries both languages),
   // so this value is keyed `tenant · * · * · <version>` once the pointer is
   // read. The pointer lookup itself is the only uncached hop.
+  // T6: pointer TTL is 4s (fresh) + 4s SWR, not 30s+30s. This is a single-row
+  // indexed lookup (`store_themes`: merchant_id + is_active → published_version_id),
+  // so re-reading every few seconds costs one cheap DB round-trip per isolate
+  // at most, while a 30s pointer staleness dominates every origin theme switch:
+  // activation flips the row but shoppers keep seeing the old version until the
+  // pointer entry expires. Version bodies stay at 300s because they are immutable
+  // by versionId — a new publish changes the key instead of mutating the value.
   const pointer = await cached(
     storefrontCacheKey({ merchantId, template: "pointer" }),
-    30,
+    4,
     async () => {
       const { data } = await db
         .from("store_themes")

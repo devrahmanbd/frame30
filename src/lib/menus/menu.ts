@@ -400,6 +400,77 @@ export function locationsLabel(locations: readonly MenuLocation[]): string {
     .join(", ");
 }
 
+/* ------------------------------------------------------- storefront shaping */
+
+/**
+ * Phase 16 T4 — the storefront-facing menu shape.
+ *
+ * Dashboard-designed menus win: each location renders the first menu that
+ * claims it (menus arrive in creation order from `listMenus`), already nested
+ * through `buildTree`. A location no menu claims renders `[]`, and the theme's
+ * own static `nav_menu` widgets stay as the fallback — the widget layer is
+ * deliberately untouched (see `NavMenuWidget`: static props only).
+ */
+export type StoreMenus = {
+  header: MenuNode[];
+  footer: MenuNode[];
+  mobile: MenuNode[];
+};
+
+export const EMPTY_STORE_MENUS: StoreMenus = {
+  header: [],
+  footer: [],
+  mobile: [],
+};
+
+/** First claimant per location; unclaimed locations stay empty. */
+export function shapeStoreMenus(menus: readonly NavMenu[]): StoreMenus {
+  const out: StoreMenus = { header: [], footer: [], mobile: [] };
+  const claimed = new Set<MenuLocation>();
+  for (const menu of menus) {
+    for (const location of menu.locations) {
+      if (claimed.has(location)) continue;
+      claimed.add(location);
+      out[location] = buildTree(menu.items);
+    }
+    if (claimed.size === 3) break;
+  }
+  return out;
+}
+
+/**
+ * Mobile slide-out contents: the mobile menu when one is claimed, otherwise
+ * the header menu — a store with only a header menu still gets mobile
+ * navigation instead of an empty drawer.
+ */
+export function selectMobileMenu(menus: StoreMenus): MenuNode[] {
+  return menus.mobile.length > 0 ? menus.mobile : menus.header;
+}
+
+/**
+ * Rebase a menu href onto a path host (`/store/<slug>`). Root-relative hrefs
+ * (`/pages/x`, `/c/x`, `/p/x`) — the shape `menuSources` emits, correct as-is
+ * on custom hosts — gain the base prefix; absolute, hash, protocol-relative
+ * and contact hrefs pass through untouched.
+ */
+export function rebaseMenuHref(href: string, base: string): string {
+  if (!base) return href;
+  if (href.startsWith("/") && !href.startsWith("//")) return `${base}${href}`;
+  return href;
+}
+
+/** Deep rebase of a menu tree. Returns new nodes; the input is untouched. */
+export function rebaseMenuNodes(
+  nodes: readonly MenuNode[],
+  base: string,
+): MenuNode[] {
+  return nodes.map((node) => ({
+    ...node,
+    url: rebaseMenuHref(node.url, base),
+    children: rebaseMenuNodes(node.children, base),
+  }));
+}
+
 export function toggleLocation(
   locations: readonly MenuLocation[],
   location: MenuLocation,

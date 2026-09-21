@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { isCustomHostPath } from "@/lib/storefront-url";
 import { toast } from "sonner";
 import { Star, StarHalf, Loader2, Flame, BadgeCheck } from "lucide-react";
 import {
@@ -135,6 +136,8 @@ function ProductRail({
   currency: string;
 }) {
   if (items.length === 0) return null;
+  const { location } = useRouterState();
+  const custom = isCustomHostPath(location.pathname);
   return (
     <section className="mt-12">
       <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
@@ -143,30 +146,57 @@ function ProductRail({
       <ul className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {items.map((item) => (
           <li key={item.id}>
-            <Link
-              to="/store/$slug/p/$productSlug"
-              params={{ slug, productSlug: item.slug }}
-              className="group block rounded-fq-md border border-border bg-card p-2 transition-colors hover:border-primary"
-            >
-              <div className="aspect-square overflow-hidden rounded-fq-sm">
-                <StoreImage
-                  image={null}
-                  fallbackSrc={item.image_url}
-                  alt={item.title}
-                  seed={item.id}
-                  sizes="300px"
-                  className="size-full object-cover"
-                />
-              </div>
-              <p className="mt-2 line-clamp-2 text-xs font-medium group-hover:text-primary">
-                {item.title}
-              </p>
-              {item.price_minor != null && (
-                <p className="money mt-1 text-xs text-muted-foreground">
-                  {fmtMinor(Number(item.price_minor), currency)}
+            {custom ? (
+              <Link
+                to="/p/$productSlug"
+                params={{ productSlug: item.slug }}
+                className="group block rounded-fq-md border border-border bg-card p-2 transition-colors hover:border-primary"
+              >
+                <div className="aspect-square overflow-hidden rounded-fq-sm">
+                  <StoreImage
+                    image={null}
+                    fallbackSrc={item.image_url}
+                    alt={item.title}
+                    seed={item.id}
+                    sizes="300px"
+                    className="size-full object-cover"
+                  />
+                </div>
+                <p className="mt-2 line-clamp-2 text-xs font-medium group-hover:text-primary">
+                  {item.title}
                 </p>
-              )}
-            </Link>
+                {item.price_minor != null && (
+                  <p className="money mt-1 text-xs text-muted-foreground">
+                    {fmtMinor(Number(item.price_minor), currency)}
+                  </p>
+                )}
+              </Link>
+            ) : (
+              <Link
+                to="/store/$slug/p/$productSlug"
+                params={{ slug, productSlug: item.slug }}
+                className="group block rounded-fq-md border border-border bg-card p-2 transition-colors hover:border-primary"
+              >
+                <div className="aspect-square overflow-hidden rounded-fq-sm">
+                  <StoreImage
+                    image={null}
+                    fallbackSrc={item.image_url}
+                    alt={item.title}
+                    seed={item.id}
+                    sizes="300px"
+                    className="size-full object-cover"
+                  />
+                </div>
+                <p className="mt-2 line-clamp-2 text-xs font-medium group-hover:text-primary">
+                  {item.title}
+                </p>
+                {item.price_minor != null && (
+                  <p className="money mt-1 text-xs text-muted-foreground">
+                    {fmtMinor(Number(item.price_minor), currency)}
+                  </p>
+                )}
+              </Link>
+            )}
           </li>
         ))}
       </ul>

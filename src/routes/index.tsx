@@ -69,7 +69,7 @@ export const Route = createFileRoute("/")({
         return buildPageHead({
           origin: storefront.origin,
           path: "/",
-          storePath: `/store/${host.merchantSlug}`,
+          storePath: `/`,
           storeName: storefront.merchant.name,
           themeKey: home.themeKey,
           robots: home.page.robots,
@@ -81,7 +81,7 @@ export const Route = createFileRoute("/")({
       const custom = storefront.customCode?.headTags ?? [];
       const base = buildStoreHead({
         origin: storefront.origin,
-        path: `/store/${host.merchantSlug}`,
+        path: `/`,
         storeName: storefront.merchant.name,
         themeKey: storefront.themeKey,
         tagline: storefront.settings?.tagline ?? null,
@@ -119,9 +119,7 @@ export const Route = createFileRoute("/")({
             storefront.ast,
             {
               storeName: storefront.merchant.name,
-              url: storefront.origin
-                ? `${storefront.origin}/store/${host.merchantSlug}`
-                : null,
+              url: storefront.origin ? `${storefront.origin}/` : null,
             },
             flattenAst,
           ).map((node) => ({

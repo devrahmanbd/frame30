@@ -163,11 +163,14 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
     .maybeSingle();
   if (!merchant) return null;
 
-  const [theme, siteKit] = await Promise.all([
+  const [theme, siteKit, menus] = await Promise.all([
     loadPublished(merchant.id, template),
     import("./search-console.server").then((m) =>
       m.storefrontSiteKit(merchant.id),
     ),
+    // Phase 16 T4: dashboard-designed nav menus ride every chrome payload so
+    // the header/footer render the merchant's menus on every template.
+    import("./menus/menu.server").then((m) => m.loadStoreMenus(merchant.id)),
   ]);
 
   return {
@@ -177,6 +180,7 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
     themeKey: theme?.themeKey ?? null,
     themeVersionId: theme?.versionId ?? null,
     siteKit,
+    menus,
   };
 }
 
@@ -241,6 +245,7 @@ export async function loadStoreCollection(
 
   const { storefrontSiteKit } = await import("./search-console.server");
   const siteKit = await storefrontSiteKit(merchant.id);
+  const { loadStoreMenus } = await import("./menus/menu.server");
 
   return {
     merchant,
@@ -257,6 +262,7 @@ export async function loadStoreCollection(
     settings,
     seo,
     siteKit,
+    menus: await loadStoreMenus(merchant.id),
     ast: theme?.ast ?? null,
     tokens: theme?.tokens ?? null,
     themeKey: theme?.themeKey ?? null,
@@ -380,7 +386,7 @@ export async function loadStorefront(
   const widgetBundle = theme?.ast
     ? collectWidgetRequests(theme.ast)
     : EMPTY_BUNDLE;
-  const [seo, customCode, siteKit, widgetData] = await Promise.all([
+  const [seo, customCode, siteKit, widgetData, menus] = await Promise.all([
     (async () =>
       resolveSeoWithTemplate(
         merchant.id,
@@ -408,6 +414,9 @@ export async function loadStorefront(
         base: storeLinkBase(currentRequestHost(), merchant.slug),
       });
     })(),
+    // Phase 16 T4: dashboard-designed nav menus, canonical (root-shaped)
+    // hrefs — each render site rebases for its host shape client-side.
+    import("./menus/menu.server").then((m) => m.loadStoreMenus(merchant.id)),
   ]);
 
   let resolvedProducts = mergePublicVariants(
@@ -484,6 +493,7 @@ export async function loadStorefront(
     customCode,
     siteKit,
     homepageSlug,
+    menus,
   };
 }
 
@@ -576,6 +586,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
 
   const { storefrontSiteKit } = await import("./search-console.server");
   const siteKit = await storefrontSiteKit(merchant.id);
+  const { loadStoreMenus } = await import("./menus/menu.server");
 
   return {
     merchant,
@@ -583,6 +594,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
     seo,
     settings,
     siteKit,
+    menus: await loadStoreMenus(merchant.id),
     reviews: (reviews ?? []).map((r) => ({
       author: r.author_name ?? "",
       rating: Number(r.rating) || 0,

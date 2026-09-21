@@ -54,7 +54,8 @@ export const Route = createFileRoute("/store/$slug/search")({
       }),
       getStoreChrome({ data: { slug: params.slug, template: "search" } }),
     ]);
-    return { ...outcome, chrome };
+    const { requestOrigin } = await import("@/lib/site-origin.server");
+    return { ...outcome, chrome, origin: requestOrigin() };
   },
   head: ({ params, match, loaderData }) => {
     // Phase 7.1 canonical discipline: one allowlisted facet on page 1 stays
@@ -75,6 +76,7 @@ export const Route = createFileRoute("/store/$slug/search")({
       filtered: activeFilterCount(state) > 0 || state.page > 1,
     });
     return buildSearchHead({
+      origin: loaderData && "origin" in loaderData ? (loaderData.origin as string | null) : null,
       path: policy.canonicalPath,
       storePath: `/store/${params.slug}`,
       storeName: params.slug,
@@ -511,7 +513,7 @@ function SearchPage() {
       siteKit={chrome?.siteKit ?? null}
       chrome={
         <>
-          <StoreHeader slug={slug} name={chrome?.merchant.name ?? slug} />
+          <StoreHeader slug={slug} name={chrome?.merchant.name ?? slug} menus={chrome?.menus} />
           {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
           {/* <SupportWidget slug={slug} /> */}
         </>

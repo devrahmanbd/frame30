@@ -469,7 +469,10 @@ export async function activateTheme(
 
   try {
     const { purgeStorefront } = await import("../themes.server");
-    purgeStorefront("publish", merchantId);
+    // T6: await the shared-invalidate promise. Fire-and-forget here let the
+    // HTTP response return while stale isolates/Redis still served the old
+    // theme, adding unbounded tail latency on top of the pointer TTL.
+    await purgeStorefront("publish", merchantId);
   } catch {
     // Non-redis or test doubles silently continue
   }

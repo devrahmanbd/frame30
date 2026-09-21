@@ -1,4 +1,5 @@
 import { StoreHeader } from "@/components/store/StoreHeader";
+import { StoreFooterMenus } from "@/components/store/StoreFooterMenus";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { useLang } from "@/lib/i18n";
 import type { getStorePageFn } from "@/lib/storefront-search.functions";
@@ -21,8 +22,17 @@ export function StoreHomepage({
   slug: string;
 }) {
   const { t } = useLang();
-  const { merchant, page, html, ast, tokens, siteKit, customCss, isBuilder } =
-    home;
+  const {
+    merchant,
+    page,
+    html,
+    ast,
+    tokens,
+    siteKit,
+    customCss,
+    isBuilder,
+    menus,
+  } = home;
 
   const content = (
     <article>
@@ -58,19 +68,23 @@ export function StoreHomepage({
   );
 
   return (
-    <ThemeChrome
-      template="page"
-      storeSlug={slug}
-      merchantId={merchant.id}
-      ast={ast}
-      tokens={tokens}
-      siteKit={siteKit}
-      customCss={customCss}
-      ownsPrimary
-      chrome={<StoreHeader slug={slug} name={merchant.name} />}
-      contextSlots={{ page_content: content }}
-      containerClassName="mx-auto max-w-6xl px-4 py-8"
-      fallback={<div>{content}</div>}
-    />
+    <>
+      <ThemeChrome
+        template="page"
+        storeSlug={slug}
+        merchantId={merchant.id}
+        ast={ast}
+        tokens={tokens}
+        siteKit={siteKit}
+        customCss={customCss}
+        ownsPrimary
+        chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}
+        contextSlots={{ page_content: content }}
+        containerClassName="mx-auto max-w-6xl px-4 py-8"
+        fallback={<div>{content}</div>}
+      />
+      {/* Phase 16 T4: dashboard-designed footer menu; null when unclaimed. */}
+      {menus && <StoreFooterMenus slug={slug} nodes={menus.footer} />}
+    </>
   );
 }

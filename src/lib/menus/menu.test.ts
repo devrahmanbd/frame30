@@ -4,6 +4,7 @@ import {
   buildTree,
   canIndent,
   canOutdent,
+  EMPTY_STORE_MENUS,
   flatten,
   indentItem,
   isMenuValid,
@@ -11,12 +12,18 @@ import {
   menuDirty,
   menuHandle,
   type MenuItem,
+  type MenuNode,
+  type NavMenu,
   moveItem,
   moveVertical,
   normalise,
   outdentItem,
+  rebaseMenuHref,
+  rebaseMenuNodes,
   removeItem,
   searchSources,
+  selectMobileMenu,
+  shapeStoreMenus,
   sourceToItem,
   subtreeIds,
   toggleLocation,
@@ -207,5 +214,105 @@ describe("dirty tracking", () => {
     expect(menuDirty(base, updateItem(base, "a", { label: "Changed" }))).toBe(
       true,
     );
+  });
+});
+
+describe("storefront shaping", () => {
+  function navMenu(
+    id: string,
+    locations: NavMenu["locations"],
+    items: MenuItem[] = [],
+  ): NavMenu {
+    return { id, name: id, handle: id, locations, items };
+  }
+
+  it("returns empty trees when no menu claims a location", () => {
+    expect(shapeStoreMenus([])).toEqual(EMPTY_STORE_MENUS);
+    expect(
+      shapeStoreMenus([navMenu("m1", [], [item("a")])]),
+    ).toEqual(EMPTY_STORE_MENUS);
+  });
+
+  it("gives each location to its first claimant", () => {
+    const shaped = shapeStoreMenus([
+      navMenu("first", ["header", "footer"], [item("a")]),
+      navMenu("second", ["header", "mobile"], [item("b")]),
+    ]);
+    expect(shaped.header.map((n) => n.id)).toEqual(["a"]);
+    expect(shaped.footer.map((n) => n.id)).toEqual(["a"]);
+    expect(shaped.mobile.map((n) => n.id)).toEqual(["b"]);
+  });
+
+  it("nests children through buildTree", () => {
+    const shaped = shapeStoreMenus([
+      navMenu("m1", ["header"], [
+        item("a", { position: 0 }),
+        item("b", { position: 1 }),
+        item("b1", { parentId: "b", position: 0 }),
+      ]),
+    ]);
+    expect(shaped.header.map((n) => n.id)).toEqual(["a", "b"]);
+    expect(shaped.header[1]!.children.map((n) => n.id)).toEqual(["b1"]);
+  });
+
+  it("falls back to the header menu when no mobile menu is claimed", () => {
+    const shaped = shapeStoreMenus([navMenu("m1", ["header"], [item("a")])]);
+    expect(selectMobileMenu(shaped).map((n) => n.id)).toEqual(["a"]);
+    const both = shapeStoreMenus([
+      navMenu("m1", ["header"], [item("a")]),
+      navMenu("m2", ["mobile"], [item("m")]),
+    ]);
+    expect(selectMobileMenu(both).map((n) => n.id)).toEqual(["m"]);
+  });
+});
+
+describe("menu href rebasing", () => {
+  it("prefixes root-relative hrefs with the path-host base", () => {
+    expect(rebaseMenuHref("/pages/about", "/store/acme")).toBe(
+      "/store/acme/pages/about",
+    );
+    expect(rebaseMenuHref("/p/kettle", "/store/acme")).toBe(
+      "/store/acme/p/kettle",
+    );
+    expect(rebaseMenuHref("/c/tea", "/store/acme")).toBe("/store/acme/c/tea");
+  });
+
+  it("leaves custom-host hrefs untouched when the base is empty", () => {
+    expect(rebaseMenuHref("/pages/about", "")).toBe("/pages/about");
+  });
+
+  it("never rewrites absolute, hash, protocol-relative or contact hrefs", () => {
+    for (const href of [
+      "https://example.com/x",
+      "http://example.com/x",
+      "//example.com/x",
+      "#top",
+      "mailto:a@b.test",
+      "tel:+8801",
+    ]) {
+      expect(rebaseMenuHref(href, "/store/acme")).toBe(href);
+    }
+  });
+
+  it("rebases a whole tree without touching anything else", () => {
+    const nodes: MenuNode[] = [
+      {
+        ...item("a", { url: "/pages/about" }),
+        depth: 0,
+        children: [
+          {
+            ...item("b", { url: "https://example.com/x" }),
+            depth: 1,
+            children: [],
+          },
+        ],
+      },
+    ];
+    const next = rebaseMenuNodes(nodes, "/store/acme");
+    expect(next[0]!.url).toBe("/store/acme/pages/about");
+    expect(next[0]!.children[0]!.url).toBe("https://example.com/x");
+    expect(next[0]!.label).toBe("A");
+    // Input is not mutated.
+    expect(nodes[0]!.url).toBe("/pages/about");
   });
 });

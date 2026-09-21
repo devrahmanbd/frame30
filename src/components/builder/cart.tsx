@@ -10,6 +10,8 @@
  * No theme module is imported: colour, radius and shadow come from tokens.
  */
 import { useCallback, useState } from "react";
+import { useRouterState } from "@tanstack/react-router";
+import { isCustomHostPath } from "@/lib/storefront-url";
 import type { SectionType } from "@/lib/builder-ast";
 import {
   METHOD_GROUP_ORDER,
@@ -245,10 +247,20 @@ function SummaryRow({
   );
 }
 
+function storeBase(
+  storeSlug: string | null | undefined,
+  pathname: string | undefined,
+): string {
+  if (pathname !== undefined && isCustomHostPath(pathname)) return "";
+  return storeSlug ? `/store/${storeSlug}` : "";
+}
+
 function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
   const { str, bool, locale, money, storeSlug } = ctx;
   const cart = useCartContext();
   const [draftCoupon, setDraftCoupon] = useState(cart.couponCode);
+  const { location } = useRouterState();
+  const base = storeBase(storeSlug, location.pathname);
   const totals = cart.totals;
 
   if (cart.pending && !totals) return <SummarySkeleton />;
@@ -351,7 +363,7 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
 
       {bool("showCta") && (
         <a
-          href={storeSlug ? `/store/${storeSlug}/checkout` : "#"}
+          href={storeSlug ? `${base}/checkout` : "#"}
           className="inline-flex min-h-11 w-full items-center justify-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground"
         >
           {str("ctaLabel") || t(locale, "Checkout", "চেকআউট")}
@@ -423,7 +435,8 @@ const CartDrawer: WidgetComponent = (ctx) => {
 
 const CheckoutSteps: WidgetComponent = (ctx) => {
   const { str, int, locale, storeSlug } = ctx;
-  const base = storeSlug ? `/store/${storeSlug}` : "";
+  const { location } = useRouterState();
+  const base = storeBase(storeSlug, location.pathname);
   const steps: TrailStep[] = [
     {
       key: "cart",

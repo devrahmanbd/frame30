@@ -546,7 +546,10 @@ export async function loadSitemapShardEntries(
             if (isExcluded(ctx, "collection", row.id)) continue;
             entries.push(
               decorate({
-                path: `${base}/search?collection=${encodeURIComponent(row.slug)}`,
+                path: `${base}${buildPermalink(ctx.permalinks, {
+                  kind: "collection",
+                  slug: row.slug,
+                })}`,
                 lastmod: entityLastmod(row.updated_at),
               }),
             );
@@ -570,11 +573,11 @@ export async function loadSitemapShardEntries(
             if (isExcluded(ctx, "article", row.id, row.robots)) continue;
             entries.push(
               decorate({
-                path: buildPermalink(ctx.permalinks, {
+                path: `${base}${buildPermalink(ctx.permalinks, {
                   kind: "article",
                   slug: row.slug,
                   date: row.published_at ?? null,
-                }),
+                })}`,
                 lastmod: entityLastmod(row.updated_at, row.published_at),
                 images:
                   includeImages && row.cover_image_url

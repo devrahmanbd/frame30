@@ -12,7 +12,10 @@ import {
   type MenuLocation,
   type MenuSource,
   type NavMenu,
+  EMPTY_STORE_MENUS,
   normalise,
+  shapeStoreMenus,
+  type StoreMenus,
   uniqueHandle,
 } from "./menu";
 
@@ -108,6 +111,28 @@ export async function listMenus(
     ),
     items: rows.filter((row) => row.menu_id === menu.id).map(toItem),
   }));
+}
+
+/**
+ * Phase 16 T4 — public storefront menu read.
+ *
+ * Takes the already-resolved `merchant.id` (never a client-supplied id — every
+ * storefront loader derives it from the URL slug or the verified custom-host
+ * mapping first). Anon-safe through the public RLS reads
+ * (`nav_menus_public_read` / `nav_menu_items_public_read`, both
+ * `FOR SELECT TO public`), the same posture as the other storefront catalogue
+ * reads — no service role needed. Never throws: a menu read must not 500 a
+ * storefront, so failures degrade to no menus and the theme's static widgets
+ * render as the fallback.
+ */
+export async function loadStoreMenus(merchantId: string): Promise<StoreMenus> {
+  try {
+    const { publicClient } = await import("../pricing.server");
+    const menus = await listMenus(publicClient(), merchantId);
+    return shapeStoreMenus(menus);
+  } catch {
+    return EMPTY_STORE_MENUS;
+  }
 }
 
 export async function createMenu(

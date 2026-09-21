@@ -7,6 +7,8 @@
  * the server search function — no client ranking, no client money math.
  */
 import { useEffect, useRef, useState } from "react";
+import { useRouterState } from "@tanstack/react-router";
+import { isCustomHostPath } from "@/lib/storefront-url";
 import type { SectionType } from "@/lib/builder-ast";
 import { useCart } from "@/lib/cart";
 import { openCartDrawer } from "./CartContext";
@@ -327,6 +329,14 @@ function FooterSitemap({ str }: WidgetCtx) {
   );
 }
 
+function storeBase(
+  storeSlug: string | null | undefined,
+  pathname: string | undefined,
+): string {
+  if (pathname !== undefined && isCustomHostPath(pathname)) return "";
+  return storeSlug ? `/store/${storeSlug}` : "";
+}
+
 type Suggestion = {
   id: string;
   title: string;
@@ -336,6 +346,8 @@ type Suggestion = {
 
 function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
   const [open, setOpen] = useState(false);
+  const { location } = useRouterState();
+  const base = storeBase(storeSlug, location.pathname);
   const [term, setTerm] = useState("");
   const [hits, setHits] = useState<Suggestion[] | null>(null);
   const [pending, setPending] = useState(false);
@@ -419,9 +431,7 @@ function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
                 {hits.map((hit) => (
                   <li key={hit.id}>
                     <a
-                      href={
-                        storeSlug ? `/store/${storeSlug}/p/${hit.slug}` : "#"
-                      }
+                      href={storeSlug ? `${base}/p/${hit.slug}` : "#"}
                       className="flex items-center gap-3 py-2 text-sm hover:underline"
                     >
                       <MediaFrame
@@ -447,7 +457,8 @@ function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
 function AccountCart({ str, bool, storeSlug }: WidgetCtx) {
   const cart = useCart(storeSlug ?? "");
   const count = cart.count;
-  const base = storeSlug ? `/store/${storeSlug}` : "";
+  const { location } = useRouterState();
+  const base = storeBase(storeSlug, location.pathname);
   return (
     <nav aria-label="Account and cart" className="flex items-center gap-2">
       <a

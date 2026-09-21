@@ -63,11 +63,15 @@ export const getStorePageFn = createServerFn({ method: "GET" })
     const { storefrontSiteKit } = await import("./search-console.server");
     const { storefrontThemeCss } = await import("./themes/assets.server");
     const themeId = found.page.theme_id ?? null;
-    const [nav, theme, siteKit, customCss] = await Promise.all([
+    const [nav, theme, siteKit, customCss, menus] = await Promise.all([
       listStorePageNav(found.merchant.id),
       loadPageTemplate(found.merchant.id, themeId),
       storefrontSiteKit(found.merchant.id),
       storefrontThemeCss(found.merchant.id, themeId),
+      // Phase 16 T4: dashboard-designed nav menus for the page chrome.
+      import("./menus/menu.server").then((m) =>
+        m.loadStoreMenus(found.merchant.id),
+      ),
     ]);
     // Phase 14/17: a page authored in the builder stores its document inside
     // the markdown column; rendering it through the markdown renderer would
@@ -97,6 +101,7 @@ export const getStorePageFn = createServerFn({ method: "GET" })
       isBuilder: Boolean(builderDoc),
       customCss,
       nav,
+      menus,
       ast: theme?.ast ?? null,
       tokens: theme?.tokens ?? null,
       themeKey: theme?.themeKey ?? null,

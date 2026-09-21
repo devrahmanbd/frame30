@@ -88,7 +88,7 @@ function CartPage() {
       siteKit={data.siteKit}
       chrome={
         <>
-          <StoreHeader slug={slug} name={merchant.name} />
+          <StoreHeader slug={slug} name={merchant.name} menus={data.menus} />
         </>
       }
       contextSlots={{

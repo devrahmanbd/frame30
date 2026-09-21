@@ -206,11 +206,18 @@ export async function cached<T>(
  * `KEYS` sweep on a production Redis is a stall, and an invalidation that stalls
  * the write path is worse than one that leaves a key to expire on its TTL. If we
  * hit the page budget we log it so the pattern can be narrowed.
+ *
+ * Returns the shared-invalidate promise so activation/publish paths can `await`
+ * fleet-wide visibility instead of fire-and-forget. L1 is still cleared
+ * synchronously before the promise is created, so the local isolate is fresh
+ * even while L2 deletion is in flight. Never rejects: `redisCommand` already
+ * returns `{ ok: false }` instead of throwing.
  */
-export function invalidate(prefix: string) {
+export function invalidate(prefix: string): Promise<void> {
   for (const key of [...store.keys()])
     if (key.startsWith(prefix)) store.delete(key);
-  if (redisConfigured()) void invalidateShared(prefix);
+  if (redisConfigured()) return invalidateShared(prefix).catch(() => undefined);
+  return Promise.resolve();
 }
 
 const SCAN_PAGES = 20;

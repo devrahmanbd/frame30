@@ -95,7 +95,7 @@ function ProductNotFound() {
 
 function ProductDetail() {
   const { t } = useLang();
-  const { merchant, product, settings, ast, tokens, siteKit } =
+  const { merchant, product, settings, ast, tokens, siteKit, menus } =
     Route.useLoaderData();
   const variants = product.product_variants ?? [];
   const [variantId, setVariantId] = useState(variants[0]?.id ?? "");
@@ -307,7 +307,7 @@ function ProductDetail() {
         ownsPrimary={hasPriceBlock}
         chrome={
           <>
-            <StoreHeader slug={merchant.slug} name={merchant.name} />
+            <StoreHeader slug={merchant.slug} name={merchant.name} menus={menus} />
             {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
             {/* <SupportWidget slug={merchant.slug} /> */}
           </>
