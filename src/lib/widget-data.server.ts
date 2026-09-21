@@ -12,6 +12,7 @@ import { assertTenantId } from "./tenant-scope";
 import { emiPlan, emiPlanKey, isEmiTenure } from "./emi";
 import {
   MAX_WIDGET_ROWS,
+  storeHref,
   type WidgetDataBundle,
   type WidgetDataMap,
   type WidgetDataRequest,
@@ -22,6 +23,7 @@ import type { WidgetDataSource } from "./widget-registry";
 export type SourceLoader = (
   merchantId: string,
   requests: WidgetDataRequest[],
+  ctx?: { base: string },
 ) => Promise<Record<string, WidgetRow[]>>;
 
 export type SourceLoaders = Partial<Record<WidgetDataSource, SourceLoader>>;
@@ -71,7 +73,8 @@ function sortProducts(rows: ProductRow[], sort: string): ProductRow[] {
  * widest window any request asked for; per-request filtering, sorting and
  * slicing then happen in memory.
  */
-const loadCollectionSource: SourceLoader = async (merchantId, requests) => {
+const loadCollectionSource: SourceLoader = async (merchantId, requests, ctx) => {
+  const base = ctx?.base ?? "";
   const db = publicClient();
   const window = Math.min(
     MAX_WIDGET_ROWS,
@@ -155,7 +158,7 @@ const loadCollectionSource: SourceLoader = async (merchantId, requests) => {
         return {
           id: p.id,
           title: p.title,
-          href: p.slug,
+          href: storeHref(base, "product", p.slug),
           imageUrl: p.image_url,
           priceMinor: minPrice(variants),
           ...(compare.length ? { compareAtMinor: Math.max(...compare) } : {}),
@@ -173,6 +176,7 @@ const loadCollectionSource: SourceLoader = async (merchantId, requests) => {
 const loadBrands = async (
   merchantId: string,
   requests: WidgetDataRequest[],
+  base = "",
 ) => {
   const db = publicClient();
   const { data } = await db
@@ -191,7 +195,7 @@ const loadBrands = async (
     out[request.key] = rows.slice(0, limit).map((b) => ({
       id: b.id,
       title: b.name,
-      href: b.slug,
+      href: storeHref(base, "brand", b.name),
       imageUrl: (b as { logo_url?: string | null }).logo_url ?? null,
     }));
   }
@@ -199,16 +203,17 @@ const loadBrands = async (
 };
 
 /** Published collections for every `taxonomy`-sourced widget, in one query. */
-const loadTaxonomySource: SourceLoader = async (merchantId, requests) => {
+const loadTaxonomySource: SourceLoader = async (merchantId, requests, ctx) => {
+  const base = ctx?.base ?? "";
   const brandRequests = requests.filter((r) => r.params["kind"] === "brand");
   const collectionRequests = requests.filter(
     (r) => r.params["kind"] !== "brand",
   );
   if (brandRequests.length > 0) {
     const [brands, rest] = await Promise.all([
-      loadBrands(merchantId, brandRequests),
+      loadBrands(merchantId, brandRequests, base),
       collectionRequests.length > 0
-        ? loadTaxonomySource(merchantId, collectionRequests)
+        ? loadTaxonomySource(merchantId, collectionRequests, ctx)
         : Promise.resolve({} as Record<string, WidgetRow[]>),
     ]);
     return { ...rest, ...brands };
@@ -241,7 +246,7 @@ const loadTaxonomySource: SourceLoader = async (merchantId, requests) => {
     out[request.key] = rows.slice(0, limit).map((c) => ({
       id: c.id,
       title: c.name,
-      href: c.slug,
+      href: storeHref(base, "collection", c.slug),
       count: (c.collection_products ?? []).length,
     }));
   }
@@ -275,7 +280,8 @@ function discountOf(row: WidgetRow): number {
  * picker, stock line and sticky bar. Every request that names the same
  * handle collapses into a single query.
  */
-const loadVariantSource: SourceLoader = async (merchantId, requests) => {
+const loadVariantSource: SourceLoader = async (merchantId, requests, ctx) => {
+  const base = ctx?.base ?? "";
   const db = publicClient();
   const handles = [
     ...new Set(
@@ -307,7 +313,7 @@ const loadVariantSource: SourceLoader = async (merchantId, requests) => {
           id: v.id,
           title: product?.title ?? v.name,
           options: v.name,
-          href: product?.slug,
+          href: storeHref(base, "variant", product?.slug ?? ""),
           imageUrl: product?.image_url ?? null,
           priceMinor: Number(v.price_amount_minor_int) || 0,
           ...(Number(v.compare_at_amount_minor_int) > 0
@@ -442,7 +448,7 @@ const loadFacetsSource: SourceLoader = async (merchantId, requests) => {
         {
           id: category.slug,
           title: category.name,
-          href: category.slug,
+          href: storeHref(base, "category", category.slug),
           count,
           subtitle: "category",
         },
@@ -454,7 +460,7 @@ const loadFacetsSource: SourceLoader = async (merchantId, requests) => {
     .map(([kind, count]) => ({
       id: kind,
       title: kind,
-      href: kind,
+      href: storeHref(base, "brand", kind),
       count,
       subtitle: "kind",
     }))
@@ -679,7 +685,8 @@ const loadFinanceSource: SourceLoader = async (merchantId, requests) => {
  * value that the client must never derive, so the row carries the already
  * computed minor-unit figures and the widget only prints them.
  */
-const loadProductSource: SourceLoader = async (merchantId, requests) => {
+const loadProductSource: SourceLoader = async (merchantId, requests, ctx) => {
+  const base = ctx?.base ?? "";
   const db = publicClient();
   const handles = [
     ...new Set(
@@ -712,7 +719,7 @@ const loadProductSource: SourceLoader = async (merchantId, requests) => {
       {
         id: product.id,
         title: product.title,
-        href: `/products/${product.slug}`,
+        href: storeHref(base, "product", product.slug),
         ...(product.image_url ? { imageUrl: product.image_url } : {}),
         ...(price > 0 ? { priceMinor: price } : {}),
         ...(product.product_variants?.[0]?.currency_code
@@ -814,7 +821,7 @@ export async function resolveWidgetData(
   merchantId: string,
   bundle: WidgetDataBundle,
   loaders: SourceLoaders = DEFAULT_LOADERS,
-  opts: { timeoutMs?: number } = {},
+  opts: { timeoutMs?: number; base?: string } = {},
 ): Promise<WidgetDataMap> {
   if (bundle.requests.length === 0) return {};
   // Phase 8.4: isolation is enforced here, at the only place that turns a
@@ -846,7 +853,10 @@ export async function resolveWidgetData(
         );
       const sourceStarted = Date.now();
       try {
-        const rows = await withTimeout(loader(tenantId, requests), timeoutMs);
+        const rows = await withTimeout(
+          loader(tenantId, requests, { base: opts.base ?? "" }),
+          timeoutMs,
+        );
         observe("framique_widget_resolver_ms", Date.now() - sourceStarted, {
           source,
         });
@@ -886,6 +896,7 @@ export async function resolveWidgetData(
 export async function resolveTemplateData(
   merchantId: string,
   bundle: WidgetDataBundle,
+  opts: { timeoutMs?: number; base?: string } = {},
 ) {
-  return resolveWidgetData(merchantId, bundle);
+  return resolveWidgetData(merchantId, bundle, undefined, opts);
 }

@@ -45,8 +45,16 @@ export const resolveWidgetDataFn = createServerFn({ method: "POST" })
       .maybeSingle();
     if (!merchant) return {};
     const { resolveWidgetData } = await import("./widget-data.server");
-    return resolveWidgetData(merchant.id, {
-      requests: data.requests,
-      byNode: {},
-    });
+    const { currentRequestHost, storeLinkBase } = await import(
+      "./storefront-host.server"
+    );
+    return resolveWidgetData(
+      merchant.id,
+      {
+        requests: data.requests,
+        byNode: {},
+      },
+      undefined,
+      { base: storeLinkBase(currentRequestHost(), data.slug) },
+    );
   });

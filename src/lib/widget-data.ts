@@ -167,3 +167,49 @@ export function nodeRows(
   if (!key || !map) return undefined;
   return map[key];
 }
+
+/** Row link targets. Custom hosts serve root paths; path hosts (localhost
+ * dev) serve under `/store/<slug>`. `base` is "" or `/store/<slug>`. */
+export type StoreHrefKind =
+  | "product"
+  | "collection"
+  | "category"
+  | "brand"
+  | "post"
+  | "variant";
+
+function cleanSlug(slug: string): string {
+  return slug
+    .trim()
+    .toLowerCase()
+    .replace(/^\/+/, "")
+    .split(/[?#]/)[0]!
+    .split("/")
+    .filter(Boolean)
+    .join("-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Absolute storefront href for a row — routable on both host shapes. */
+export function storeHref(
+  base: string,
+  kind: StoreHrefKind,
+  slug: string,
+): string {
+  const clean = cleanSlug(slug);
+  const join = (path: string) => `${base}${path}`.replace(/\/$/, "") || "/";
+  switch (kind) {
+    case "product":
+    case "variant":
+      return join(`/p/${clean}`);
+    case "collection":
+      return join(`/c/${clean}`);
+    case "post":
+      return join(`/blog/${clean}`);
+    case "category":
+      return `${join("/search")}?category=${encodeURIComponent(clean)}`;
+    case "brand":
+      return `${join("/search")}?q=${encodeURIComponent(slug.trim())}`;
+  }
+}
