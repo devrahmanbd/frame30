@@ -54,10 +54,13 @@ verify on production; push to GitHub.
 - [x] Repeater 4/8 announcement_bar (`8c0ddd8`, TDD + swarm, 404
   tests): Messages repeater {text}, seedAnnouncementItems,
   StudioAnnouncement + theme dual-read, rotation/dismiss untouched.
-- [ ] Repeater conversions next: 5 lookbook, 6 hero, 7 footer_sitemap,
-  8 spec_table (same pattern: test-first, seed-on-load, dual-read
-  theme + SEO). Defer: size_guide (2-D), quiz, shoppable pins,
-  order/checkout steps.
+- [x] Repeater 5/8 lookbook (`4195642`, TDD + swarm, 406 tests):
+  Tiles repeater {image,alt,href}, seedLookbookItems, canvas + apparel
+  dual-read with index-based ratio preserved. Caught own duplicate-
+  keywords slip pre-commit.
+- [ ] Repeater conversions next: 6 hero, 7 footer_sitemap, 8 spec_table
+  (same pattern: test-first, seed-on-load, dual-read theme + SEO).
+  Defer: size_guide (2-D), quiz, shoppable pins, order/checkout steps.
 - [ ] Layers dock follow-ups (filter exists; dock/undock toggle).
 - [ ] Global-blocks save-from-page reverse conversion.
 - [ ] Homepage render proof on a custom domain (needs published page).

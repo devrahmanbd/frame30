@@ -169,6 +169,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   export invisibility pre-exists and is unchanged.
 - Contract 404/404, studio+chrome 426/426, tsc clean on touched ranges.
 
+## [2026-09-21] — lookbook repeater conversion (`4195642`)
+- TDD + swarm: both recon agents landed with exact line refs.
+- Ratio alternation is index-based in both paths, so items rows paint
+  identically to scalar order (landscape first).
+- Scope holds: legacy builder-ast fields, blueprints seeds, BITEXT,
+  widgetHtml/export untouched (zero consumers; fallback covers).
+- Contract 406/406, studio+atelier 433/433, tsc clean on touched ranges.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.
