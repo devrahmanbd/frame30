@@ -220,6 +220,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Contract: 23/23 appearance suite (2 new). tsc: only pre-existing
   drift. Deploy contract green.
 
+## [2026-09-21] — merchant AI control removed (`1c28cca`, deployed)
+- Gateway config, copilot, AI triage inbox: hidden from nav, routes
+  redirect, RPCs denied server-side. askAssistantFn (public widget)
+  and /dashboard/support intentionally untouched.
+- Contract: 4 new gate tests green. Deploy contract green.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.

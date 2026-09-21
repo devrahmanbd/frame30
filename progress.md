@@ -110,6 +110,11 @@ verify on production; push to GitHub.
   breach path for prices/stock (variant-gated), but draft disclosure.
 - TODO next: API cross-tenant audit (unscoped merchant_id scan over
   *.functions.ts) + decide products/store_themes public-read tightening.
+- [x] Merchant AI control removed (`1c28cca`, deployed): kill-switch
+  MERCHANT_AI_ENABLED=false at nav + route + server layers (8 RPCs
+  denied). Support channel (/dashboard/support) untouched. Verified
+  live: ai/* URLs bounce to dashboard, nav has no AI entries. 4 new
+  gate tests green.
 - [x] Curated two-theme offer (`f5f0a36`, deployed): installed grid +
   catalogue filtered to Supershop + Clothing Heritage via pure-layer
   VISIBLE_THEME_KEYS; active theme always stays visible. 23/23 suite.
