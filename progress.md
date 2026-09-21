@@ -85,6 +85,11 @@ verify on production; push to GitHub.
   for every heritage el. Seeding now = blank storefront. Build order:
   Studio-aware read branch → heritage HTML projection → seed Home
   from v2 index → designate → parity verify → builder re-open check.
+- [x] Live preview empty (`4e0e2d9`, deployed): split iframe loaded
+  /store/<slug>?preview_theme= which 404s on platform hosts since the
+  cutover. previewUrl now points at /theme-preview/<key> (full theme
+  + demo content, verified 200). Marketplace split unaffected (own
+  signed URLs). Test updated.
 - FLAG for theme designer (needs a fix on the theme side): 5/12 v2
   index sections use prop keys with no studio counterpart
   (heritage_story eyebrow/heading, textile_showcase tNLabel/tNAlt,
