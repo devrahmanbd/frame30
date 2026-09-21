@@ -95,7 +95,8 @@ export const Route = createFileRoute("/llms.txt")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        const origin = new URL(request.url).origin;
+        const { requestOrigin } = await import("@/lib/site-origin.server");
+        const origin = requestOrigin() ?? new URL(request.url).origin;
         // Custom host: this merchant's store map instead of marketing content.
         try {
           const { resolveStorefrontHost } = await import(

@@ -8,7 +8,8 @@ export const Route = createFileRoute("/robots.txt")({
       GET: async ({ request }) => {
         const { marketingAllowPaths, MARKETING_ROUTES } =
           await import("@/lib/marketing-seo");
-        const origin = new URL(request.url).origin;
+        const { requestOrigin } = await import("@/lib/site-origin.server");
+        const origin = requestOrigin() ?? new URL(request.url).origin;
         // Custom host: this merchant's robots + sitemap pointer. Platform
         // hosts fall through to the marketing document below.
         try {

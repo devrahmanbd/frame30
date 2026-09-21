@@ -107,7 +107,8 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        const BASE_URL = new URL(request.url).origin;
+        const { requestOrigin } = await import("@/lib/site-origin.server");
+        const BASE_URL = requestOrigin() ?? new URL(request.url).origin;
         // Custom-domain-only cutover: on a merchant host serve that
         // merchant's catalogue with root-shape paths. The platform shape
         // below must not advertise dead /store/* locs (path URLs 410), so
