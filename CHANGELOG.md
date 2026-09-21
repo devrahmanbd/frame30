@@ -114,6 +114,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Rebased onto `c6caaf9` (heritage-cutover merge); progress.md rewritten as
   compact loop state, other session's placeholder-pipeline note preserved.
 
+## [2026-09-21] — final-4 port + audits (`476da4b`)
+- add_to_cart, rewards_club, wedding_shop, gift_finder → catalog +
+  controls + canvas renderers + parity expects. Contract 316/316.
+- Completed bundle_offer (i1–i4 variant IDs) + product_media (images,
+  thumbnails, zoom) scalar control coverage.
+- 4-agent swarm: slice-E porter + 3 read-only audits. Findings: 24 more
+  theme widgets verified missing (next set); all 24 slice-D widgets LIVE
+  on storefront; repeater conversion plan ranked (faq first, 8 total).
+- tsc clean on touched files; model.ts/PageBuilder errors pre-existing.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.

@@ -26,10 +26,25 @@ verify on production; push to GitHub.
   HEAD + bundle markers post-deploy, never reset shared history.
 
 ## TODO queue (loop works top-down)
-- [ ] Widget batch: remaining presentational theme widgets (see Port index
-  in CHANGELOG.md for what's done; pick next set from the gap list).
-- [ ] Commerce/data-backed placeholders for page canvas parity.
-- [ ] Testimonial array controls + remaining array-kind widgets.
+- [x] Theme parity 1: slices A/B/C/D (84 widgets, `4153d77`, 304 tests).
+- [x] Theme parity 2: final 4 (add_to_cart, rewards_club, wedding_shop,
+  gift_finder — `476da4b`, 316 tests). Union gap closed except 24 below.
+- [x] Storefront round-trip audit: all 24 slice-D widgets LIVE on
+  storefront (generic pass-through, SectionRenderer resolves all).
+  Watch items: checkout_steps static activeStep, product_meta silent
+  null, canvas blindness + `widgetHtml` "" fallback for data widgets.
+- [ ] Theme parity 3 (24 verified-missing, all exist in builder-ast.ts):
+  rich_text, form, nav_menu, newsletter, sticky_bar, mega_menu, buy_box,
+  variant_picker, sticky_buy_bar, filter_chips, size_selector,
+  complete_the_look, circle_categories, store_locator, ugc_gallery,
+  trade_in, combo_card, loyalty_strip, warranty_panel, before_after,
+  refill_widget, quick_view, department_strip, columns. (section +
+  paragraph exist nowhere, not even theme-side — ignore.)
+- [ ] Repeater conversions (arrays safe in defaults; contract pins
+  scalars so each conversion updates catalog.test.ts + dual-reads theme
+  renderers): 1 faq, 2 product_qna, 3 trust_bar, 4 announcement_bar,
+  5 lookbook, 6 hero, 7 footer_sitemap, 8 spec_table. Defer: size_guide
+  (2-D), quiz, shoppable pins, order/checkout steps (fixed pipelines).
 - [ ] Layers dock follow-ups (filter exists; dock/undock toggle).
 - [ ] Global-blocks save-from-page reverse conversion.
 - [ ] Homepage render proof on a custom domain (needs published page).
