@@ -54,8 +54,7 @@ export const Route = createFileRoute("/store/$slug/search")({
       }),
       getStoreChrome({ data: { slug: params.slug, template: "search" } }),
     ]);
-    const { requestOrigin } = await import("@/lib/site-origin.server");
-    return { ...outcome, chrome, origin: requestOrigin() };
+    return { ...outcome, chrome, origin: chrome?.origin ?? null };
   },
   head: ({ params, match, loaderData }) => {
     // Phase 7.1 canonical discipline: one allowlisted facet on page 1 stays

@@ -45,7 +45,6 @@ export const Route = createFileRoute("/search")({
     const state = normalizeSearchParams(deps as Record<string, unknown>);
     // The published `search` template is fetched alongside the results, so the
     // page arrives already wearing the merchant's theme.
-    const { requestOrigin } = await import("@/lib/site-origin.server");
     const [outcome, chrome] = await Promise.all([
       searchStorefrontFn({
         data: {
@@ -63,7 +62,7 @@ export const Route = createFileRoute("/search")({
       }),
       getStoreChrome({ data: { slug: params.slug, template: "search" } }),
     ]);
-    return { ...outcome, chrome, slug: host.merchantSlug, origin: requestOrigin() };
+    return { ...outcome, chrome, slug: host.merchantSlug, origin: chrome?.origin ?? null };
   },
   head: ({ params, match, loaderData }) => {
     // Phase 7.1 canonical discipline: one allowlisted facet on page 1 stays
