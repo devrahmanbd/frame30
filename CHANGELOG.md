@@ -154,6 +154,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   byte-identical; loadQnaSource still stubbed so scalars stay live path.
 - Contract 400/400, studio suite 414/414, tsc clean on touched ranges.
 
+## [2026-09-21] — trust_bar repeater conversion (`04684d4`)
+- TDD + swarm: porter diff applied line-exact; audit via direct greps
+  (second agent hit provider overload twice running).
+- Icon values are TRUST_ICON keys — repeater icon field stays text-kind;
+  canvas STUDIO_TRUST_ICON table unchanged, unknown keys still "•".
+- Contract 402/402, studio 416/416, chrome+seo adjacent 26/26.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.

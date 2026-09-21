@@ -48,9 +48,12 @@ verify on production; push to GitHub.
   repeater panel + askHref gap fix, seedQaItems generalized, canvas Q&A
   card, theme precedence items > live rows > scalars, MessageSquareQuote
   icon. SEO/blueprints untouched by design.
-- [ ] Repeater conversions next: 3 trust_bar, 4 announcement_bar,
-  5 lookbook, 6 hero, 7 footer_sitemap, 8 spec_table (same pattern:
-  test-first, seed-on-load, dual-read theme + SEO).
+- [x] Repeater 3/8 trust_bar (`04684d4`, TDD + swarm, 402 tests):
+  Badges repeater {icon,title,body}, seedTrustItems, canvas + chrome
+  dual-read, scalar sections byte-identical. No SEO/export consumers.
+- [ ] Repeater conversions next: 4 announcement_bar, 5 lookbook, 6 hero,
+  7 footer_sitemap, 8 spec_table (same pattern: test-first,
+  seed-on-load, dual-read theme + SEO).
   Defer: size_guide (2-D), quiz, shoppable pins, order/checkout steps.
 - [ ] Layers dock follow-ups (filter exists; dock/undock toggle).
 - [ ] Global-blocks save-from-page reverse conversion.
