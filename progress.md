@@ -236,3 +236,13 @@ verify on production; push to GitHub.
   (all repeatable rows installed EMPTY — slides/testimonials/departments);
   now honored. Testimonial blueprint key items→testimonials (was null).
   42/42 tests green.
+- [x] Heritage redesign (audit-driven): MegaMenu lone-button -> inline
+  menubar (null when empty); TrustBar emoji -> Lucide; hero rebuilt as
+  asymmetric 7/5 editorial grid (no overlay, dots with copy); footer
+  sitemap/social/about -> statement + newsletter + colophon;
+  StoreHeader in preview (honest chrome); heritage header deduped
+  (search/account live in StoreHeader); dept grid asymmetric lead tile.
+  Desktop + mobile screenshot-verified, zero errors.
+- Known residuals: hero art panel still tile art (no photos exist);
+  menubar labels are product names (demo data mapping); Inter body +
+  .bn dict dupes pre-existing (font-infra owned).
