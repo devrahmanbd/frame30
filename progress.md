@@ -282,3 +282,6 @@ storefront serves on custom domains only.
   useEditorDoc.commit (covers autosave/save/publish): full-to-empty page
   builder saves abort with a visible error. Unit-tested.
 - Verified guard string present in production bundle (`4c07bb6` live).
+- [x] Placeholder pipeline live: `/api/public/ph/<seed>` SVG route (heritage tokens, immutable cache); StoreImage + MediaFrame terminal stages render ph img; heritage hero/dept/story/product/banner imageless slots render ph img; all Unsplash hotlinks removed from demo-catalog (68 product-seeded) + blueprints (21). Homepage imgs 0→10 loaded, 0 broken. Committed on session-heritage-cutover, rebuilt, restarted, verified live.
+- [ ] NEXT: publish clothing-heritage to flame-fashion-bd demo merchant (live store still runs beauty draft — that is why it does not look like Aarong). Needs merchant publish action; probing installed-theme state first.
+
