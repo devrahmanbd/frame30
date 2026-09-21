@@ -19,6 +19,7 @@ import {
 import {
   docSignature,
   emptyEditorDoc,
+  isWipeoutSave,
   type ContentKind,
   type EditorDoc,
 } from "@/lib/editor/editor-doc";
@@ -88,6 +89,11 @@ export function useEditorDoc(
   const [seoScore, setSeoScore] = useState<number | null>(null);
   const loadedFor = useRef<string | null>(null);
 
+  // Body the server had when this document was adopted. The wipeout guard
+  // compares every save against it, so a stale/emptied canvas can never
+  // silently persist over authored content.
+  const baselineBodyRef = useRef<string | null>(null);
+
   // Adopt the server document once per (kind,id).
   useEffect(() => {
     if (!query.data) return;
@@ -95,6 +101,7 @@ export function useEditorDoc(
     if (loadedFor.current === key) return;
     loadedFor.current = key;
     const doc = query.data.doc;
+    baselineBodyRef.current = doc.body;
     setHistory(createHistory(doc));
     setBaseline(docSignature(doc));
     setLastSavedAt(doc.updatedAt);
@@ -147,6 +154,23 @@ export function useEditorDoc(
         (!dirtyRef.current || (!snapshot.title.trim() && !snapshot.body.trim()))
       )
         return false;
+      if (
+        isWipeoutSave(
+          kind,
+          snapshot.editor,
+          baselineBodyRef.current,
+          snapshot.body,
+        )
+      ) {
+        setError({
+          code: "wipeout",
+          field: "body",
+          en: "Refusing to save an empty canvas over your saved content — reload the page to restore it.",
+          bn: "সংরক্ষিত কনটেন্টের উপর খালি ক্যানভাস সংরক্ষণ বন্ধ করা হয়েছে — ফিরিয়ে আনতে পেজটি রিলোড করুন।",
+        });
+        setSaveState("error");
+        return false;
+      }
       inflight.current = true;
       setSaveState("saving");
       try {

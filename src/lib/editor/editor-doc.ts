@@ -21,6 +21,7 @@ import {
   parseEntitySeo,
   type EntitySeo,
 } from "@/lib/seo/seo-meta";
+import { readStudioBody } from "@/lib/studio/model";
 
 export type { ContentKind, ContentStatus, EditorKind, Visibility };
 
@@ -629,4 +630,26 @@ export function parentOptions(
   };
   walk(null, 0, new Set());
   return out;
+}
+
+/* ------------------------------------------------------- wipeout guard -- */
+
+/**
+ * Refuse to persist an empty builder canvas over a loaded document that had
+ * content. Stale tabs, failed parses and race writes must degrade to a
+ * visible error — never to silent data loss. Only pages in builder mode are
+ * covered; classic bodies and posts are compared by the normal dirty check.
+ */
+export function isWipeoutSave(
+  kind: ContentKind,
+  editor: EditorKind,
+  baselineBody: string | null | undefined,
+  nextBody: string,
+): boolean {
+  if (kind !== "page" || editor !== "builder") return false;
+  if (!baselineBody) return false;
+  const before = readStudioBody(baselineBody);
+  if (!before || before.root.length === 0) return false;
+  const after = readStudioBody(nextBody);
+  return !after || after.root.length === 0;
 }

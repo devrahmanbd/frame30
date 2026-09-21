@@ -7,6 +7,7 @@ import {
   emptyEditorDoc,
   formatPublishDate,
   isDirty,
+  isWipeoutSave,
   parentOptions,
   prePublishChecks,
   primaryAction,
@@ -272,5 +273,25 @@ describe("page markdown bridge", () => {
   });
   it("extracts plain text", () => {
     expect(markdownToText("## Hi\n\n**bold** text")).toBe("Hi bold text");
+  });
+});
+
+describe("isWipeoutSave", () => {
+  const full = `<!--fq-studio:v2\n{"version":2,"root":[{"id":"a","el":"text","settings":{"text":"hi"}}]}\nfq-studio:end-->`;
+  const empty = `<!--fq-studio:v2\n{"version":2,"root":[]}\nfq-studio:end-->`;
+
+  it("refuses an emptied builder canvas over loaded page content", () => {
+    expect(isWipeoutSave("page", "builder", full, empty)).toBe(true);
+  });
+
+  it("allows normal saves", () => {
+    expect(isWipeoutSave("page", "builder", full, full)).toBe(false);
+    expect(isWipeoutSave("page", "builder", null, empty)).toBe(false);
+    expect(isWipeoutSave("page", "builder", "", empty)).toBe(false);
+  });
+
+  it("ignores classic editor and posts", () => {
+    expect(isWipeoutSave("page", "classic", full, "")).toBe(false);
+    expect(isWipeoutSave("post", "builder", full, empty)).toBe(false);
   });
 });
