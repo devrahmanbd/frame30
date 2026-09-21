@@ -99,11 +99,30 @@ export function resolvedSpecs(rows: WidgetRow[] | undefined): SpecPair[] {
  * returns anything; otherwise the authored rows render, so a spec table
  * authored before Phase 2.7 keeps working untouched.
  */
-const SpecTable: WidgetComponent = ({ str, bool, data, Heading }) => {
+const SpecTable: WidgetComponent = ({ str, bool, data, Heading, section }) => {
+  // Repeater-first (faq/trust_bar precedent): studio `items` rows sit
+  // between live resolved rows (which keep top precedence per the module
+  // contract) and scalar r1..r6 triples (fallback for theme-authored
+  // sections).
+  const itemRows = useMemo<SpecPair[]>(() => {
+    if (!Array.isArray(section.props.items)) return [];
+    return (section.props.items as Record<string, unknown>[])
+      .map((row, index) => ({
+        key: `item-${index}`,
+        label: typeof row.label === "string" ? row.label.trim() : "",
+        value: typeof row.value === "string" ? row.value.trim() : "",
+        ...(typeof row.group === "string" && row.group.trim()
+          ? { group: row.group.trim() }
+          : {}),
+      }))
+      .filter((row) => row.label);
+  }, [section.props.items]);
   const pairs = useMemo(() => {
     const resolved = resolvedSpecs(data?.rows);
-    return resolved.length ? resolved : authoredSpecs(str);
-  }, [data?.rows, str]);
+    if (resolved.length) return resolved;
+    if (itemRows.length) return itemRows;
+    return authoredSpecs(str);
+  }, [data?.rows, itemRows, str]);
 
   if (data?.pending && pairs.length === 0) return <Skeleton lines={5} />;
   if (pairs.length === 0) return null;

@@ -125,7 +125,7 @@ export function newGrid(columns = 3, children: StudioNode[] = []): StudioNode {
 }
 
 export function isContainerNode(node: StudioNode): boolean {
-  return node.el === "container" || node.el === "grid";
+  return node.el === "container" || node.el === "grid" || node.el === "columns";
 }
 
 /* ------------------------------------------------------------------ */
@@ -158,10 +158,218 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
     const children = raw.children
       .map((child) => sanitiseNode(child, depth + 1))
       .filter((child): child is StudioNode => child !== null);
-    if (children.length > 0 || raw.el === "container" || raw.el === "grid")
+    if (
+      children.length > 0 ||
+      raw.el === "container" ||
+      raw.el === "grid" ||
+      raw.el === "columns"
+    )
       node.children = children;
   }
+  if (raw.el === "faq" || raw.el === "product_qna") seedQaItems(node);
+  if (raw.el === "trust_bar") seedTrustItems(node);
+  if (raw.el === "announcement_bar") seedAnnouncementItems(node);
+  if (raw.el === "lookbook") seedLookbookItems(node);
+  if (raw.el === "hero") seedHeroItems(node);
+  if (raw.el === "footer_sitemap") seedFooterSitemapItems(node);
+  if (raw.el === "spec_table") seedSpecItems(node);
   return node;
+}
+
+/**
+ * Tolerant link-list emptiness check mirroring parseLinkList/parseLinks
+ * (comma AND newline delimiters, bare labels count). Kept local so model
+ * stays free of component imports; canonical parsers live in chrome.tsx
+ * and studio/renderers.tsx.
+ */
+function hasFooterLinks(raw: unknown): boolean {
+  if (typeof raw !== "string" || !raw.trim()) return false;
+  return raw
+    .split(/[\r\n,]+/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .some((part) => part.split("|")[0]!.trim().length > 0);
+}
+
+/**
+ * Repeater migration (footer_sitemap): pages saved with scalar cNTitle/
+ * cNLinks pairs get `items` seeded on load, storing the RAW links string
+ * (first paint stays byte-identical; normalisation happens on author
+ * edit). Fully-empty columns are skipped. Never overwrites edits.
+ */
+function seedFooterSitemapItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const seeded: { title: string; links: string }[] = [];
+  for (let i = 1; i <= 4; i += 1) {
+    const title = s[`c${i}Title`];
+    const links = s[`c${i}Links`];
+    const t = typeof title === "string" ? title : "";
+    const l = typeof links === "string" ? links : "";
+    if (!t && !hasFooterLinks(l)) continue;
+    seeded.push({ title: t, links: l });
+  }
+  if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
+}
+
+/**
+ * Repeater migration (spec_table): pages saved with scalar rNGroup/rNLabel/
+ * rNValue triples get `items` seeded on load, dropping label-empty rows
+ * (mirrors the renderer gate). Never overwrites edits. Section-level keys
+ * (caption/columnLabel/grouped/handle) pass through untouched.
+ */
+function seedSpecItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const seeded: { group: string; label: string; value: string }[] = [];
+  for (let i = 1; i <= 6; i += 1) {
+    const label = s[`r${i}Label`];
+    if (typeof label !== "string" || !label.trim()) continue;
+    const group = s[`r${i}Group`];
+    const value = s[`r${i}Value`];
+    seeded.push({
+      group: typeof group === "string" ? group : "",
+      label,
+      value: typeof value === "string" ? value : "",
+    });
+  }
+  if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
+}
+
+/**
+ * Repeater migration (faq, product_qna): pages saved with scalar q1/a1…
+ * pairs get `items` seeded on load so the repeater panel and canvas show
+ * the same content. Author-edited `items` are never overwritten. Scalars
+ * stay in settings for theme/SEO pass-through until the transition
+ * completes.
+ */
+function seedQaItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const seeded: { question: string; answer: string }[] = [];
+  for (let i = 1; i <= 3; i += 1) {
+    const q = s[`q${i}`];
+    const a = s[`a${i}`];
+    if (typeof q === "string" && q) {
+      seeded.push({
+        question: q,
+        answer: typeof a === "string" ? a : "",
+      });
+    }
+  }
+  if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
+}
+
+/**
+ * Repeater migration (announcement_bar): pages saved with scalar m1/m2/m3
+ * get `items` seeded on load. Author-edited `items` are never overwritten.
+ * Scalars stay for theme pass-through.
+ */
+function seedAnnouncementItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const seeded: { text: string }[] = [];
+  for (let i = 1; i <= 3; i += 1) {
+    const m = s[`m${i}`];
+    if (typeof m === "string" && m.trim()) seeded.push({ text: m });
+  }
+  if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
+}
+
+/**
+ * Repeater migration (hero): slide 1 is implicit in top-level
+ * heading/image/subheading/ctaLabel/ctaHref, slides 2-3 in s2/s3 pairs.
+ * Seed mirrors the scalar keep-first filter: slide 1 is always kept when
+ * any slide has content, sN slides only when heading/image non-empty.
+ * Author-edited `items` are never overwritten.
+ */
+function seedHeroItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const text = (v: unknown): string => (typeof v === "string" ? v : "");
+  const slide0 = {
+    heading: text(s.heading),
+    image: text(s.image),
+    subheading: text(s.subheading),
+    ctaLabel: text(s.ctaLabel),
+    ctaHref: text(s.ctaHref),
+  };
+  const slideN = (n: 2 | 3): { heading: string; image: string } | null => {
+    const heading = text(s[`s${n}Heading`]);
+    const image = text(s[`s${n}Image`]);
+    return heading || image ? { heading, image } : null;
+  };
+  const ctaLabel = text(s.ctaLabel);
+  const ctaHref = text(s.ctaHref);
+  const seeded: Record<string, string>[] = [];
+  const s2 = slideN(2);
+  const s3 = slideN(3);
+  if (slide0.heading || slide0.image || s2 || s3) {
+    seeded.push(slide0);
+    if (s2) seeded.push({ ...s2, subheading: "", ctaLabel, ctaHref });
+    if (s3) seeded.push({ ...s3, subheading: "", ctaLabel, ctaHref });
+    node.settings = { ...node.settings, items: seeded };
+  }
+}
+
+/**
+ * Repeater migration (lookbook): pages saved with scalar iNImage/iNAlt/
+ * iNHref triples get `items` seeded on load. Author-edited `items` are
+ * never overwritten. Scalars stay for theme pass-through.
+ */
+function seedLookbookItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const seeded: { image: string; alt: string; href: string }[] = [];
+  for (let i = 1; i <= 4; i += 1) {
+    const image = s[`i${i}Image`];
+    if (typeof image === "string" && image) {
+      const alt = s[`i${i}Alt`];
+      const href = s[`i${i}Href`];
+      seeded.push({
+        image,
+        alt: typeof alt === "string" ? alt : "",
+        href: typeof href === "string" ? href : "",
+      });
+    }
+  }
+  if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
+}
+
+/**
+ * Repeater migration (trust_bar): pages saved with scalar iNIcon/iNTitle/
+ * iNBody triples get `items` seeded on load. Author-edited `items` are
+ * never overwritten. Scalars stay for theme pass-through.
+ */
+function seedTrustItems(node: StudioNode): void {
+  const s = node.settings as Record<string, unknown>;
+  if (Array.isArray(s.items) && s.items.length > 0) return;
+  const seeded: { icon: string; title: string; body: string }[] = [];
+  for (let i = 1; i <= 4; i += 1) {
+    const title = s[`i${i}Title`];
+    if (typeof title === "string" && title) {
+      const icon = s[`i${i}Icon`];
+      const body = s[`i${i}Body`];
+      seeded.push({
+        icon: typeof icon === "string" ? icon : "",
+        title,
+        body: typeof body === "string" ? body : "",
+      });
+    }
+  }
+  if (seeded.length > 0) {
+    node.settings = { ...node.settings, items: seeded };
+  }
 }
 
 export function parseStudioDoc(input: unknown): StudioDoc | null {
@@ -472,6 +680,25 @@ function widgetHtml(node: StudioNode): string {
 }
 
 function nodeHtml(node: StudioNode): string {
+  if (node.el === "columns") {
+    const s = node.settings;
+    const n = Math.min(4, Math.max(1, num(s.columns, 2)));
+    const maxW = str(s.maxW, "container");
+    const width = maxW === "full" ? "none" : maxW === "narrow" ? "768px" : "1140px";
+    const bg = str(s.bg, "none");
+    const outer = [
+      bg === "surface"
+        ? "background:var(--card)"
+        : bg === "muted"
+          ? "background:var(--muted)"
+          : "",
+      `padding:${num(s.padY, 0)}px 16px`,
+    ]
+      .filter(Boolean)
+      .join(";");
+    const children = (node.children ?? []).map(nodeHtml).join("");
+    return `<section style="${outer}"><div style="display:grid;grid-template-columns:repeat(${n},minmax(0,1fr));gap:${num(s.gap, 24)}px;max-width:${width};margin:0 auto">${children}</div></section>`;
+  }
   if (node.el === "container" || node.el === "grid") {
     const s = node.settings;
     const layout = str(s.layout, node.el === "grid" ? "grid" : "flex");

@@ -259,6 +259,29 @@ export function catalogView(
   return sortCatalog(filtered, options.tab ?? "popular");
 }
 
+/**
+ * Operator-curated themes (Sept 2026): only these catalogue keys are
+ * offered while the directory is being rebuilt. The active theme always
+ * stays visible so the live storefront remains manageable — hiding it
+ * would strand the merchant with no way to configure what shoppers see.
+ */
+export const VISIBLE_THEME_KEYS: ReadonlySet<string> = new Set([
+  "supershop",
+  "clothing-heritage",
+]);
+
+/** Installed grid: the live theme plus allowlisted keys (null-key rows hide). */
+export function visibleInstalled(themes: InstalledTheme[]): InstalledTheme[] {
+  return themes.filter(
+    (t) => t.isActive || (t.key !== null && VISIBLE_THEME_KEYS.has(t.key)),
+  );
+}
+
+/** Catalogue: allowlisted keys only. */
+export function visibleCatalogue(themes: CatalogTheme[]): CatalogTheme[] {
+  return themes.filter((t) => VISIBLE_THEME_KEYS.has(t.key));
+}
+
 /** Active theme first, then favourites, then newest install. */
 export function orderInstalled(themes: InstalledTheme[]): InstalledTheme[] {
   // installedAt can be null for rows written before the column was reliably

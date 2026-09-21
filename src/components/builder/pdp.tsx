@@ -565,14 +565,27 @@ const ReviewList: WidgetComponent = (ctx) => {
 };
 
 const ProductQna: WidgetComponent = (ctx) => {
-  const { str, locale, data } = ctx;
+  const { str, locale, data, section } = ctx;
+  // Repeater-first (faq precedent in widgets.tsx): studio `items` rows win
+  // when present, live Q&A rows next, scalar q1/a1… pairs remain as the
+  // fallback for theme-authored sections.
+  const itemRows = Array.isArray(section.props.items)
+    ? section.props.items
+        .map((row) => ({
+          q: typeof row.question === "string" ? row.question : "",
+          a: typeof row.answer === "string" ? row.answer : "",
+        }))
+        .filter((row) => row.q)
+    : [];
   const live = data?.rows ?? [];
   const authored = [1, 2, 3]
     .map((n) => ({ q: str(`q${n}`), a: str(`a${n}`) }))
     .filter((entry) => entry.q);
-  const entries = live.length
-    ? live.map((row) => ({ q: row.title, a: row.body ?? "" }))
-    : authored;
+  const entries = itemRows.length
+    ? itemRows
+    : live.length
+      ? live.map((row) => ({ q: row.title, a: row.body ?? "" }))
+      : authored;
   if (entries.length === 0) return null;
   return (
     <section

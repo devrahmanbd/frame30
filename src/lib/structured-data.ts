@@ -210,7 +210,14 @@ export function sectionJsonLd(
   const p = section.props;
   switch (section.type) {
     case "faq": {
-      const pairs = numbered(p, ["q#", "a#"]);
+      // Repeater-first, mirroring the faq renderers: studio `items` rows
+      // win when present, scalar q1/a1… pairs stay as the fallback.
+      const itemPairs: string[][] = Array.isArray(p.items)
+        ? (p.items as Record<string, unknown>[])
+            .map((row) => [str(row.question), str(row.answer)])
+            .filter(([q, a]) => q && a)
+        : [];
+      const pairs = itemPairs.length > 0 ? itemPairs : numbered(p, ["q#", "a#"]);
       if (!pairs.length) return null;
       return {
         "@context": SCHEMA,

@@ -19,44 +19,69 @@ import {
 import {
   AlignLeft,
   Anchor,
+  ArrowLeftRight,
   BadgeCheck,
   Blocks,
   Check,
   ChevronDown,
   ChevronsUpDown,
+  CircleHelp,
   Clock,
   Code,
+  Columns2,
+  Compass,
+  CreditCard,
+  ClipboardList,
+  FileText,
+  Filter,
+  FolderTree,
   GalleryHorizontal,
   GalleryVerticalEnd,
   Gauge,
+  Gift,
   Hash,
   Heading,
   Heart,
   Image,
   Images,
+  Layers,
   LayoutGrid,
   List,
   Mail,
   MapPin,
+  Megaphone,
+  Menu,
+  MessageSquareQuote,
   Minus,
   MousePointerClick,
   MoveVertical,
+  Package,
+  PackagePlus,
+  Palette,
   PanelTop,
   Phone,
   Quote,
   Rows3,
+  Ruler,
   Search,
   Share2,
   Shield,
+  ShieldCheck,
+  Shirt,
   ShoppingCart,
   Spline,
   Square,
   Star,
+  Store,
+  Table,
+  Tags,
   TextCursorInput,
   TriangleAlert,
+  Trophy,
   Truck,
   Type,
   Video,
+  Zap,
 } from "lucide-react";
 import { HtmlSandbox } from "@/components/builder/HtmlSandbox";
 import type { NodeSettings, StudioNode } from "@/lib/studio/model";
@@ -78,6 +103,7 @@ const ICON_REGISTRY: Record<
   check: Check,
   chevrondown: ChevronDown,
   chevronsupdown: ChevronsUpDown,
+  circlehelp: CircleHelp,
   clock: Clock,
   code: Code,
   galleryhorizontal: GalleryHorizontal,
@@ -95,15 +121,39 @@ const ICON_REGISTRY: Record<
   minus: Minus,
   mousepointerclick: MousePointerClick,
   movevertical: MoveVertical,
+  package: Package,
+  packageplus: PackagePlus,
+  palette: Palette,
   paneltop: PanelTop,
   phone: Phone,
   quote: Quote,
   rows3: Rows3,
+  ruler: Ruler,
   search: Search,
   share2: Share2,
   shield: Shield,
+  shieldcheck: ShieldCheck,
+  shirt: Shirt,
   shoppingcart: ShoppingCart,
   cart: ShoppingCart,
+  store: Store,
+  tags: Tags,
+  trophy: Trophy,
+  zap: Zap,
+  gift: Gift,
+  layers: Layers,
+  menu: Menu,
+  messagesquarequote: MessageSquareQuote,
+  megaphone: Megaphone,
+  filter: Filter,
+  foldertree: FolderTree,
+  table: Table,
+  compass: Compass,
+  filetext: FileText,
+  clipboardlist: ClipboardList,
+  creditcard: CreditCard,
+  columns2: Columns2,
+  arrowleftright: ArrowLeftRight,
   spline: Spline,
   square: Square,
   star: Star,
@@ -655,29 +705,109 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "cart":
     case "checkout":
     case "menu-cart":
-      return (
-        <Placeholder
-          label={`Live ${node.el.replace("-", " ")} — renders on the storefront`}
-        />
-      );
-
-    // Ported from the theme engine (same props, same look): page builders
-    // get the storefront vocabulary without the theme studio.
-    case "faq": {
-      const rows = [1, 2, 3]
-        .map((i) => ({
-          q: str(s, `q${i}`),
-          a: str(s, `a${i}`),
+    case "product_qna": {
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          q: String(row.question ?? ""),
+          a: String(row.answer ?? ""),
         }))
         .filter((row) => row.q);
-      if (rows.length === 0) return <Placeholder label="Add a question" />;
+      const list =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3]
+              .map((i) => ({
+                q: str(s, `q${i}`),
+                a: str(s, `a${i}`),
+              }))
+              .filter((row) => row.q);
+      if (list.length === 0)
+        return (
+          <Placeholder
+            label="Live questions and answers — renders on the storefront"
+          />
+        );
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6">
           {str(s, "heading") && (
             <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
           )}
           <div className="divide-y divide-border">
-            {rows.map((row) => (
+            {list.map((row) => (
+              <details key={row.q}>
+                <summary className="cursor-pointer py-2 text-sm font-medium">
+                  {row.q}
+                </summary>
+                <p className="pb-3 text-sm text-muted-foreground">{row.a}</p>
+              </details>
+            ))}
+          </div>
+          {str(s, "askLabel") && (
+            <p className="mt-3">
+              <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+                {str(s, "askLabel")}
+              </span>
+            </p>
+          )}
+        </section>
+      );
+    }
+
+    case "product_grid":
+    case "product_rail":
+    case "product_media":
+    case "product_meta":
+    case "collection_grid":
+    case "account_cart":
+    case "cart_drawer":
+    case "cart_lines":
+    case "cart_summary":
+    case "checkout_steps":
+    case "search_command":
+    case "facet_sidebar":
+    case "pagination":
+    case "result_toolbar":
+    case "blog_archive":
+    case "blog_pager":
+    case "blog_terms":
+    case "review_list":
+    case "rating_summary":
+    case "recently_viewed":
+    case "wishlist_button":
+    case "compare_tray":
+    case "bundle_offer":
+      return (
+        <Placeholder
+          label={`Live ${node.el.replace(/_/g, " ")} — renders on the storefront`}
+        />
+      );
+
+    // Ported from the theme engine (same props, same look): page builders
+    // get the storefront vocabulary without the theme studio.
+    case "faq": {
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          q: String(row.question ?? ""),
+          a: String(row.answer ?? ""),
+        }))
+        .filter((row) => row.q);
+      const list =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3]
+              .map((i) => ({
+                q: str(s, `q${i}`),
+                a: str(s, `a${i}`),
+              }))
+              .filter((row) => row.q);
+      if (list.length === 0) return <Placeholder label="Add a question" />;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <div className="divide-y divide-border">
+            {list.map((row) => (
               <details key={row.q}>
                 <summary className="cursor-pointer py-2 text-sm font-medium">
                   {row.q}
@@ -725,13 +855,23 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "trust_bar": {
-      const items = [1, 2, 3, 4]
-        .map((n) => ({
-          icon: str(s, `i${n}Icon`),
-          title: str(s, `i${n}Title`),
-          body: str(s, `i${n}Body`),
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          icon: String(row.icon ?? ""),
+          title: String(row.title ?? ""),
+          body: String(row.body ?? ""),
         }))
         .filter((item) => item.title);
+      const items =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3, 4]
+              .map((n) => ({
+                icon: str(s, `i${n}Icon`),
+                title: str(s, `i${n}Title`),
+                body: str(s, `i${n}Body`),
+              }))
+              .filter((item) => item.title);
       if (items.length === 0)
         return <Placeholder label="Add a trust badge" />;
       return (
@@ -755,15 +895,23 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       );
     }
 
-    case "announcement_bar":
+    case "announcement_bar": {
+      const fromItems = rows(s, "items")
+        .map((row) => String(row.text ?? "").trim())
+        .filter(Boolean);
+      const messages =
+        fromItems.length > 0
+          ? fromItems
+          : [str(s, "m1"), str(s, "m2"), str(s, "m3")].filter(Boolean);
       return (
         <StudioAnnouncement
-          messages={[str(s, "m1"), str(s, "m2"), str(s, "m3")].filter(Boolean)}
+          messages={messages}
           href={str(s, "href")}
           dismissible={s.dismissible !== false}
           rotateMs={num(s, "rotateMs", 6000, device)}
         />
       );
+    }
 
     // Heritage + hero batch ported from the theme engine: same props, same
     // look, so merchants author once and see it everywhere.
@@ -879,13 +1027,23 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "lookbook": {
-      const tiles = [1, 2, 3, 4]
-        .map((n) => ({
-          src: str(s, `i${n}Image`),
-          alt: str(s, `i${n}Alt`),
-          href: str(s, `i${n}Href`),
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          src: String(row.image ?? ""),
+          alt: String(row.alt ?? ""),
+          href: String(row.href ?? ""),
         }))
         .filter((tile) => tile.src);
+      const tiles =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3, 4]
+              .map((n) => ({
+                src: str(s, `i${n}Image`),
+                alt: str(s, `i${n}Alt`),
+                href: str(s, `i${n}Href`),
+              }))
+              .filter((tile) => tile.src);
       if (tiles.length === 0) return <Placeholder label="Add a lookbook image" />;
       const offset = s.offset !== false;
       return (
@@ -908,11 +1066,41 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "hero": {
-      const slides = [
-        { heading: str(s, "heading"), image: str(s, "image") },
-        { heading: str(s, "s2Heading"), image: str(s, "s2Image") },
-        { heading: str(s, "s3Heading"), image: str(s, "s3Image") },
-      ].filter((slide, index) => index === 0 || slide.heading || slide.image);
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          heading: String(row.heading ?? ""),
+          image: String(row.image ?? ""),
+          subheading: String(row.subheading ?? ""),
+          ctaLabel: String(row.ctaLabel ?? ""),
+          ctaHref: String(row.ctaHref ?? ""),
+        }))
+        .filter((slide) => slide.heading || slide.image);
+      const slides =
+        fromItems.length > 0
+          ? fromItems
+          : [
+              {
+                heading: str(s, "heading"),
+                image: str(s, "image"),
+                subheading: str(s, "subheading"),
+                ctaLabel: str(s, "ctaLabel"),
+                ctaHref: str(s, "ctaHref"),
+              },
+              {
+                heading: str(s, "s2Heading"),
+                image: str(s, "s2Image"),
+                subheading: "",
+                ctaLabel: str(s, "ctaLabel"),
+                ctaHref: str(s, "ctaHref"),
+              },
+              {
+                heading: str(s, "s3Heading"),
+                image: str(s, "s3Image"),
+                subheading: "",
+                ctaLabel: str(s, "ctaLabel"),
+                ctaHref: str(s, "ctaHref"),
+              },
+            ].filter((slide, index) => index === 0 || slide.heading || slide.image);
       const [index, setIndex] = useState(0);
       const active = slides[Math.min(index, slides.length - 1)]!;
       const center = str(s, "align", "left") === "center";
@@ -923,13 +1111,13 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
           )}
           <div className="p-8">
             <h3 className="font-bangla-display text-3xl font-bold sm:text-4xl">{active.heading || "Welcome to our store"}</h3>
-            {index === 0 && str(s, "subheading") && (
-              <p className="mt-2 max-w-xl text-muted-foreground">{str(s, "subheading")}</p>
+            {index === 0 && active.subheading && (
+              <p className="mt-2 max-w-xl text-muted-foreground">{active.subheading}</p>
             )}
-            {str(s, "ctaLabel") && (
+            {active.ctaLabel && (
               <p className="mt-4">
-                <a href={str(s, "ctaHref") || "#"} className="inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
-                  {str(s, "ctaLabel")}
+                <a href={active.ctaHref || "#"} className="inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+                  {active.ctaLabel}
                 </a>
               </p>
             )}
@@ -1122,10 +1310,1486 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       );
     }
 
+    case "feature_row": {
+      const items = ["itemOne", "itemTwo", "itemThree"]
+        .map((k) => str(s, k))
+        .filter(Boolean);
+      if (items.length === 0) return <Placeholder label="Add a feature" />;
+      return (
+        <ul className="grid gap-3 sm:grid-cols-3">
+          {items.map((item) => (
+            <li key={item} className="rounded-fq-md border border-border bg-card p-4 text-sm">
+              {item}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+
+    case "utility_bar": {
+      const links = ["l1", "l2", "l3"]
+        .map((p) => ({ label: str(s, `${p}Label`), href: str(s, `${p}Href`) }))
+        .filter((l) => l.label);
+      return (
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-muted px-4 py-1.5 text-xs text-muted-foreground">
+          <p className="min-w-0 truncate">{str(s, "note")}</p>
+          <nav aria-label="Utility" className="flex items-center gap-3">
+            {links.map((l) => (
+              <a key={l.label} href={l.href || "#"} className="hover:text-foreground">{l.label}</a>
+            ))}
+          </nav>
+        </div>
+      );
+    }
+
+    case "footer_sitemap": {
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          title: String(row.title ?? ""),
+          links: parseLinks(String(row.links ?? "")),
+        }))
+        .filter((c) => c.title || c.links.length > 0);
+      const cols =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3, 4]
+              .map((n) => ({ title: str(s, `c${n}Title`), links: parseLinks(str(s, `c${n}Links`)) }))
+              .filter((c) => c.title || c.links.length > 0);
+      if (cols.length === 0) return <Placeholder label="Add a sitemap column" />;
+      return (
+        <nav aria-label="Footer" className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+          {cols.map((col) => (
+            <div key={col.title}>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{col.title}</p>
+              <ul className="mt-2 space-y-1">
+                {col.links.map((l) => (
+                  <li key={`${col.title}-${l.label}`}>
+                    <a href={l.href} className="text-sm hover:underline">{l.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+      );
+    }
+
+    case "doc_links": {
+      const docs = [1, 2, 3, 4]
+        .map((i) => ({ label: str(s, `d${i}Label`), href: str(s, `d${i}Href`), meta: str(s, `d${i}Meta`) }))
+        .filter((d) => d.label);
+      if (docs.length === 0) return <Placeholder label="Add a document" />;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-4">
+          {str(s, "heading") && <h3 className="mb-3 text-base font-semibold">{str(s, "heading")}</h3>}
+          <ul className="space-y-2">
+            {docs.map((d) => (
+              <li key={d.label}>
+                <span className="flex min-h-11 items-center justify-between gap-3 rounded-fq-md border border-border px-3 text-sm">
+                  <span className="min-w-0">{d.label}</span>
+                  {d.meta && <span className="shrink-0 text-xs text-muted-foreground">{d.meta}</span>}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    }
+
+    case "claim_chips": {
+      const claims = [1, 2, 3, 4, 5, 6]
+        .map((i) => ({ label: str(s, `c${i}Label`), source: str(s, `c${i}Source`) }))
+        .filter((c) => c.label);
+      if (claims.length === 0) return <Placeholder label="Add a claim" />;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-4">
+          {str(s, "heading") && <h3 className="mb-3 text-base font-semibold">{str(s, "heading")}</h3>}
+          <ul className="flex flex-wrap gap-2">
+            {claims.map((c) => (
+              <li key={c.label}>
+                <span className="inline-flex min-h-8 items-center rounded-full border border-border px-3 py-1 text-sm" title={c.source || undefined}>
+                  {c.label}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    }
+
+    case "texture_strip": {
+      const tiles = [1, 2, 3, 4]
+        .map((i) => ({ src: str(s, `t${i}Image`), label: str(s, `t${i}Label`), alt: str(s, `t${i}Alt`) }))
+        .filter((t) => t.src);
+      if (tiles.length === 0) return <Placeholder label="Add a texture image" />;
+      return (
+        <section>
+          {str(s, "heading") && <h3 className="mb-3 text-base font-semibold">{str(s, "heading")}</h3>}
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {tiles.map((t) => (
+              <li key={t.src} className="min-w-0 text-center">
+                <img src={t.src} alt={t.alt || t.label} loading="lazy" className="aspect-square w-full rounded-fq-md object-cover" />
+                {t.label && <p className="mt-1 text-xs text-muted-foreground">{t.label}</p>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    }
+
+    case "split_feature": {
+      const heading = str(s, "heading");
+      const flip = s.flip === true;
+      const visual = str(s, "imageUrl") ? (
+        <img src={str(s, "imageUrl")} alt={str(s, "imageAlt") || heading} loading="lazy" className="aspect-[4/3] w-full rounded-fq-lg object-cover" />
+      ) : (
+        <div className="grid aspect-[4/3] place-items-center rounded-fq-lg bg-muted text-2xl font-bold text-muted-foreground">Image</div>
+      );
+      return (
+        <section className="grid items-center gap-6 md:grid-cols-2">
+          <div className={flip ? "md:order-2" : undefined}>{visual}</div>
+          <div className={flip ? "md:order-1" : undefined}>
+            {str(s, "eyebrow") && <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{str(s, "eyebrow")}</p>}
+            <h3 className="text-2xl font-semibold">{heading || "Feature"}</h3>
+            {str(s, "body") && <p className="mt-3 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>}
+            {str(s, "ctaLabel") && (
+              <p className="mt-4">
+                <a href={str(s, "ctaHref") || "#"} className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+                  {str(s, "ctaLabel")}
+                </a>
+              </p>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    case "notice": {
+      const text = str(s, "text");
+      if (!text) return <Placeholder label="Add a notice message" />;
+      const tone = str(s, "tone", "info");
+      const cls =
+        tone === "success" ? "bg-success-soft text-success-foreground"
+        : tone === "warning" ? "bg-warning-soft text-warning-foreground"
+        : tone === "danger" ? "border-danger/40 bg-danger-soft text-danger-foreground"
+        : "bg-info-soft text-foreground";
+      return (
+        <div role="status" className={cn("rounded-fq-md px-4 py-3 text-sm", cls)}>
+          <p className="min-w-0">{text}</p>
+        </div>
+      );
+    }
+
+    case "empty_state": {
+      return (
+        <section aria-label="No results" className="rounded-fq-lg border border-border bg-card p-6 text-center">
+          <p className="text-base font-semibold">{str(s, "heading", "Nothing matches those filters")}</p>
+          {str(s, "body") && <p className="mx-auto mt-2 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>}
+          <p className="mt-4">
+            <span className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-4 text-sm font-medium">
+              {str(s, "clearLabel", "Clear all filters")}
+            </span>
+          </p>
+        </section>
+      );
+    }
+
+    case "breadcrumb": {
+      return (
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-xs text-muted-foreground">
+          <span>{str(s, "homeLabel", "Home")}</span>
+          <span aria-hidden="true">/</span>
+          <span aria-current="page" className="text-foreground">…</span>
+        </nav>
+      );
+    }
+
+    case "brand_strip":
+      return <Placeholder label="Live brand strip — renders on the storefront" />;
+
+    case "subbrand_bar": {
+      const active = str(s, "activeBrand").trim().toLowerCase();
+      const brands = [1, 2, 3, 4, 5]
+        .map((n) => ({ name: str(s, `b${n}Name`), href: str(s, `b${n}Href`) || "#" }))
+        .filter((b) => b.name);
+      if (brands.length === 0) return <Placeholder label="Add a brand" />;
+      return (
+        <nav aria-label="Brand family" className="border-b border-border/40 bg-muted/30 text-xs">
+          <ul className="flex items-center gap-1 overflow-x-auto py-1">
+            {brands.map((b) => (
+              <li key={b.name} className="shrink-0">
+                <span className={cn("inline-flex items-center rounded px-2.5 py-1 text-[11px] font-semibold uppercase tracking-widest", b.name.toLowerCase() === active ? "bg-foreground font-bold text-background" : "text-muted-foreground")}>
+                  {b.name}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      );
+    }
+
+    case "support_strip": {
+      const tiles = [1, 2, 3, 4]
+        .map((i) => ({ title: str(s, `t${i}Title`), body: str(s, `t${i}Body`), href: str(s, `t${i}Href`) }))
+        .filter((t) => t.title);
+      if (tiles.length === 0) return <Placeholder label="Add a support tile" />;
+      return (
+        <section>
+          {str(s, "heading") && <h3 className="mb-3 text-base font-semibold">{str(s, "heading")}</h3>}
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {tiles.map((t) => (
+              <li key={t.title} className="min-w-0 rounded-fq-md border border-border bg-card p-3">
+                <span className="block text-sm font-medium">{t.title}</span>
+                {t.body && <span className="block text-sm text-muted-foreground">{t.body}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    }
+
+    case "social_strip": {
+      const images = [1, 2, 3, 4, 5, 6].map((n) => str(s, `i${n}Image`)).filter(Boolean);
+      if (images.length === 0) return <Placeholder label="Add a social image" />;
+      return (
+        <section>
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">{str(s, "heading")}</p>
+          <div className="flex gap-3 overflow-x-auto">
+            {images.map((src) => (
+              <img key={src} src={src} alt="" loading="lazy" className="aspect-square w-40 shrink-0 rounded-fq-md object-cover" />
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "logo": {
+      const image = str(s, "image");
+      const wordmark = str(s, "text");
+      if (!image && !wordmark) return <Placeholder label="Add a logo" />;
+      const body = image ? (
+        <img src={image} alt={str(s, "alt") || wordmark} style={{ height: num(s, "height", 40, device), width: "auto" }} loading="eager" decoding="async" />
+      ) : (
+        <span className="text-xl font-bold tracking-tight">{wordmark}</span>
+      );
+      return <span className="inline-flex items-center">{body}</span>;
+    }
+
+    case "how_to_use": {
+      const steps = [1, 2, 3, 4, 5]
+        .map((i) => ({ title: str(s, `s${i}Title`), body: str(s, `s${i}Body`) }))
+        .filter((x) => x.title);
+      if (steps.length === 0) return <Placeholder label="Add a step" />;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-4">
+          {str(s, "heading") && <h3 className="mb-3 text-base font-semibold">{str(s, "heading")}</h3>}
+          <ol className="space-y-3">
+            {steps.map((x, i) => (
+              <li key={x.title} className="flex gap-3">
+                <span aria-hidden="true" className="flex size-7 shrink-0 items-center justify-center rounded-full border border-border text-xs tabular-nums">{i + 1}</span>
+                <span className="min-w-0">
+                  <span className="block text-sm font-medium">{x.title}</span>
+                  {x.body && <span className="block text-sm text-muted-foreground">{x.body}</span>}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      );
+    }
+
+    case "buying_guide": {
+      const links = [1, 2, 3, 4]
+        .map((i) => ({ label: str(s, `l${i}Label`), href: str(s, `l${i}Href`) }))
+        .filter((l) => l.label);
+      if (!str(s, "body") && links.length === 0) return <Placeholder label="Add guide text" />;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-4">
+          {str(s, "heading") && <h3 className="mb-2 text-base font-semibold">{str(s, "heading")}</h3>}
+          {str(s, "body") && <p className="whitespace-pre-line text-sm text-muted-foreground">{str(s, "body")}</p>}
+          {links.length > 0 && (
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {links.map((l) => (
+                <li key={l.label}>
+                  <span className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-3 text-sm">{l.label}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      );
+    }
+
+    case "care_panel": {
+      return (
+        <section className="rounded-fq-md border border-border bg-card p-4">
+          <h3 className="text-sm font-semibold">{str(s, "heading", "Material & care")}</h3>
+          <dl className="mt-2 space-y-2 text-sm">
+            {str(s, "composition") && (
+              <div><dt className="font-medium">Composition</dt><dd className="m-0 text-muted-foreground">{str(s, "composition")}</dd></div>
+            )}
+            {str(s, "care") && (
+              <div><dt className="font-medium">Care</dt><dd className="m-0 whitespace-pre-line text-muted-foreground">{str(s, "care")}</dd></div>
+            )}
+            {str(s, "origin") && (
+              <div><dt className="font-medium">Made in</dt><dd className="m-0 text-muted-foreground">{str(s, "origin")}</dd></div>
+            )}
+          </dl>
+        </section>
+      );
+    }
+
+    case "safety_note": {
+      const body = str(s, "body");
+      if (!body) return <Placeholder label="Add safety guidance" />;
+      return (
+        <section className="rounded-fq-md border border-border bg-card p-4">
+          {str(s, "heading") && <h3 className="text-sm font-semibold">{str(s, "heading")}</h3>}
+          <p className="mt-1 text-sm">{body}</p>
+          {str(s, "howTo") && (
+            <details className="mt-3">
+              <summary className="cursor-pointer text-sm font-medium">{str(s, "howToLabel", "How to patch test")}</summary>
+              <p className="whitespace-pre-line pt-2 text-sm text-muted-foreground">{str(s, "howTo")}</p>
+            </details>
+          )}
+        </section>
+      );
+    }
+
+    case "fit_note": {
+      const label = FIT_LABEL[str(s, "fit")] ?? FIT_LABEL["true"];
+      return (
+        <p className="rounded-fq-md border border-border bg-muted/40 p-3 text-sm">
+          <span className="font-medium">{label}</span>
+          {str(s, "note") && <span className="text-muted-foreground"> · {str(s, "note")}</span>}
+          {(str(s, "modelHeight") || str(s, "modelSize")) && (
+            <span className="block text-xs text-muted-foreground">
+              Model: {str(s, "modelHeight")} {str(s, "modelSize") && `· ${str(s, "modelSize")}`}
+            </span>
+          )}
+        </p>
+      );
+    }
+
+    case "authenticity_badge": {
+      const label = str(s, "label");
+      if (!label) return <Placeholder label="Add a badge label" />;
+      const href = str(s, "source");
+      return (
+        <p className="flex flex-wrap items-center gap-2 rounded-fq-md border border-border bg-card px-3 py-2 text-sm">
+          <span aria-hidden="true">{s.verified ? "✓" : "•"}</span>
+          <span className="font-medium">{label}</span>
+          {str(s, "note") && <span className="text-muted-foreground">{str(s, "note")}</span>}
+          {href && <a href={href} className="underline underline-offset-2">{href.replace(/^https?:\/\//, "")}</a>}
+        </p>
+      );
+    }
+
+    case "sustain_badge": {
+      const claims = [1, 2, 3]
+        .map((n) => ({ label: str(s, `c${n}Label`), source: str(s, `c${n}Source`) }))
+        .filter((cl) => cl.label);
+      if (claims.length === 0) return <Placeholder label="Add a sustainability claim" />;
+      return (
+        <section aria-label={str(s, "heading", "Sustainability")}>
+          {str(s, "heading") && <p className="mb-2 text-sm font-medium">{str(s, "heading")}</p>}
+          <ul className="flex list-none flex-wrap gap-2 p-0">
+            {claims.map((cl) => (
+              <li key={cl.label}>
+                <span title={cl.source || undefined} className="inline-flex min-h-11 items-center rounded-full border border-border px-3 text-xs">{cl.label}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    }
+
+    case "discount_badge": {
+      const price = num(s, "priceMinor", 0, device);
+      const was = num(s, "compareAtMinor", 0, device);
+      if (!(was > price)) return <Placeholder label="Set a was-price above the price" />;
+      const pct = Math.round(((was - price) / was) * 100);
+      return (
+        <p className="inline-flex flex-wrap items-center gap-2">
+          {str(s, "label") && <span className="text-sm text-muted-foreground">{str(s, "label")}</span>}
+          <span className="rounded-fq-md bg-destructive/10 px-2 py-0.5 text-xs font-semibold tabular-nums">Save {pct}%</span>
+          <span className="rounded-fq-md bg-success-soft px-2 py-0.5 text-xs font-semibold tabular-nums">{pct}% off</span>
+        </p>
+      );
+    }
+
+    case "batch_info": {
+      const order: [string, string][] = [
+        [str(s, "mfgLabel", "Manufactured"), str(s, "mfgDate")],
+        [str(s, "expiryLabel", "Best before"), str(s, "expiryDate")],
+        [str(s, "batchLabel", "Batch"), str(s, "batchCode")],
+      ].filter(([, v]) => v) as [string, string][];
+      const pao = num(s, "paoMonths", 0, device);
+      if (order.length === 0 && !pao) return <Placeholder label="Add a batch date or code" />;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-4">
+          {str(s, "heading") && <h3 className="mb-2 text-lg font-semibold">{str(s, "heading")}</h3>}
+          <dl className="text-sm">
+            {order.map(([k, v]) => (
+              <div key={k} className="flex justify-between gap-3 border-b border-border py-2 last:border-b-0">
+                <dt className="text-muted-foreground">{k}</dt>
+                <dd className="tabular-nums" dir="ltr">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          {pao > 0 && <p className="mt-2 text-xs text-muted-foreground">Best used within {pao} months of opening.</p>}
+        </section>
+      );
+    }
+
+    case "delivery_promise": {
+      const zones: [string, string][] = [
+        [str(s, "insideLabel"), str(s, "insideDays")],
+        [str(s, "outsideLabel"), str(s, "outsideDays")],
+      ].filter(([l]) => l) as [string, string][];
+      if (zones.length === 0) return <Placeholder label="Add a delivery zone" />;
+      return (
+        <section aria-label={str(s, "heading", "Delivery")} className="rounded-fq-lg border border-border bg-card p-4">
+          <h3 className="mb-3 text-lg font-semibold">{str(s, "heading", "Delivery")}</h3>
+          <dl className="space-y-1 text-sm">
+            {zones.map(([l, d]) => (
+              <div key={l} className="flex justify-between gap-3"><dt className="text-muted-foreground">{l}</dt><dd>{d}</dd></div>
+            ))}
+          </dl>
+          {str(s, "note") && <p className="mt-2 text-xs text-muted-foreground">{str(s, "note")}</p>}
+        </section>
+      );
+    }
+
+    case "free_shipping_bar":
+      return <Placeholder label="Live free shipping bar — renders on the storefront" />;
+
+    case "stock_delivery":
+      return <Placeholder label="Live stock and dispatch — renders on the storefront" />;
+
+    case "rank_list":
+      return <Placeholder label="Live rank list — renders on the storefront" />;
+
+    case "seller_card": {
+      const name = str(s, "name");
+      if (!name) return <Placeholder label="Add a seller name" />;
+      return (
+        <section aria-label="Seller" className="rounded-fq-lg border border-border bg-card p-4">
+          <div className="flex items-center gap-3">
+            {str(s, "logoUrl") && <img src={str(s, "logoUrl")} alt="" loading="lazy" className="h-12 w-12 rounded-fq-md border border-border object-cover" />}
+            <div className="min-w-0">
+              <p className="truncate font-medium">{name}</p>
+              {str(s, "tagline") && <p className="truncate text-sm text-muted-foreground">{str(s, "tagline")}</p>}
+              {num(s, "rating", 0, device) > 0 && <p className="text-xs tabular-nums text-muted-foreground">★ {num(s, "rating", 0, device)} / 5</p>}
+            </div>
+          </div>
+          {str(s, "policy") && <p className="mt-2 text-xs text-muted-foreground">{str(s, "policy")}</p>}
+          {str(s, "linkHref") && <a href={str(s, "linkHref")} className="mt-2 inline-block text-sm underline underline-offset-2">{str(s, "linkLabel", "Visit store")}</a>}
+        </section>
+      );
+    }
+
+    case "category_header": {
+      const title = str(s, "heading", "All products");
+      const image = str(s, "imageUrl");
+      return (
+        <header>
+          {s.showBreadcrumb !== false && (
+            <nav aria-label="Breadcrumb" className="mb-2 text-sm text-muted-foreground">
+              <span className="underline">{str(s, "homeLabel", "Home")}</span>
+              <span aria-hidden="true"> / </span>
+              <span>{title}</span>
+            </nav>
+          )}
+          {image ? (
+            <div className="relative overflow-hidden rounded-fq-lg">
+              <img src={image} alt="" loading="lazy" className="h-auto w-full object-cover" />
+              {s.scrim !== false && <div aria-hidden="true" className="absolute inset-0 bg-foreground/40" />}
+              <div className="absolute inset-0 flex flex-col justify-end p-4">
+                <h3 className="text-2xl font-semibold text-background">{title}</h3>
+                {str(s, "body") && <p className="mt-1 max-w-prose text-sm text-background/90">{str(s, "body")}</p>}
+              </div>
+            </div>
+          ) : (
+            <>
+              <h3 className="text-2xl font-semibold">{title}</h3>
+              {str(s, "body") && <p className="mt-1 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>}
+            </>
+          )}
+        </header>
+      );
+    }
+
+    case "collection_story": {
+      const heading = str(s, "heading");
+      if (!heading && !str(s, "body")) return <Placeholder label="Add a story heading" />;
+      return (
+        <section className="relative overflow-hidden rounded-fq-lg">
+          {str(s, "imageUrl") ? (
+            <img src={str(s, "imageUrl")} alt="" loading="lazy" className="aspect-[16/9] w-full object-cover" />
+          ) : (
+            <div className="aspect-[16/9] w-full bg-muted" />
+          )}
+          {s.scrim !== false && str(s, "imageUrl") && (
+            <div aria-hidden="true" className="absolute inset-0 bg-foreground/40" />
+          )}
+          <div className="absolute inset-0 flex items-end p-6">
+            <div className="max-w-xl text-background">
+              {str(s, "eyebrow") && <p className="text-xs font-semibold uppercase tracking-wider">{str(s, "eyebrow")}</p>}
+              <h3 className="text-2xl font-semibold">{heading}</h3>
+              {str(s, "body") && <p className="mt-2 text-sm opacity-90">{str(s, "body")}</p>}
+              {str(s, "ctaLabel") && (
+                <a href={str(s, "ctaHref") || "#"} className="mt-3 inline-block rounded-fq-md bg-card px-4 py-2 text-sm font-semibold text-card-foreground">
+                  {str(s, "ctaLabel")}
+                </a>
+              )}
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    case "brand_rail":
+      return <Placeholder label="Live brand rail — renders on the storefront" />;
+
+    case "concern_rail":
+      return <Placeholder label="Live concern rail — renders on the storefront" />;
+
+    case "back_in_stock": {
+      return (
+        <section className="rounded-fq-md border border-border bg-card p-4">
+          <p className="text-sm font-semibold">{str(s, "heading", "Notify me when it's back")}</p>
+          {str(s, "body") && <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>}
+          <form className="mt-3 flex flex-wrap gap-2" method="post" action="#back-in-stock" onSubmit={(e) => e.preventDefault()}>
+            <label className="sr-only" htmlFor="bis-email">Email address</label>
+            <input id="bis-email" name="email" type="email" required placeholder="you@example.com" className="min-h-11 min-w-[14rem] flex-1 rounded-fq-md border border-border px-3 text-sm" />
+            <button type="submit" className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">{str(s, "buttonLabel", "Notify me")}</button>
+          </form>
+          {str(s, "consentText") && <p className="mt-2 text-xs text-muted-foreground">{str(s, "consentText")}</p>}
+        </section>
+      );
+    }
+
+    case "price_block":
+      return <Placeholder label="Live price block — renders on the storefront" />;
+
+    case "price_sparkline":
+      return <Placeholder label="Live price history — renders on the storefront" />;
+
+    case "deal_card": {
+      const ends = Date.parse(str(s, "endsAt"));
+      return (
+        <section className="flex flex-col gap-3 rounded-fq-lg border border-border bg-card p-4 sm:flex-row sm:items-center">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-base font-semibold">{str(s, "heading", "Deal of the day")}</h3>
+            {str(s, "badgeLabel") && (
+              <span className="mt-1 inline-block rounded-fq-sm bg-success-soft px-2 py-0.5 text-xs font-semibold">{str(s, "badgeLabel")}</span>
+            )}
+            {!Number.isNaN(ends) && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                <time dateTime={new Date(ends).toISOString()}>Ends {new Date(ends).toLocaleDateString("en-GB")}</time>
+              </p>
+            )}
+          </div>
+          {str(s, "ctaLabel") && (
+            <a href={str(s, "ctaHref") || "#"} className="shrink-0 rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+              {str(s, "ctaLabel")}
+            </a>
+          )}
+        </section>
+      );
+    }
+
+    case "deal_strip":
+      return <Placeholder label="Live deal strip — renders on the storefront" />;
+
+    case "sponsored_slot":
+      return <Placeholder label="Live sponsored slot — renders on the storefront" />;
+
+    case "subbrand_spotlight": {
+      const brands = [1, 2, 3, 4]
+        .map((n) => ({
+          name: str(s, `b${n}Name`),
+          tagline: str(s, `b${n}Tagline`),
+          image: str(s, `b${n}Image`),
+          href: str(s, `b${n}Href`) || "#",
+        }))
+        .filter((b) => b.name);
+      if (brands.length === 0) return <Placeholder label="Add a sub-brand" />;
+      return (
+        <section>
+          {(str(s, "heading") || str(s, "subheading")) && (
+            <div className="mx-auto mb-6 max-w-xl space-y-1 text-center">
+              {str(s, "heading") && <h3 className="text-2xl font-bold tracking-tight">{str(s, "heading")}</h3>}
+              {str(s, "subheading") && <p className="text-xs tracking-wider text-muted-foreground">{str(s, "subheading")}</p>}
+            </div>
+          )}
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {brands.map((b) => (
+              <a key={b.name} href={b.href} className="block overflow-hidden rounded-fq-lg border border-border bg-card">
+                <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
+                  {b.image ? (
+                    <img src={b.image} alt={b.name} loading="lazy" className="size-full object-cover" />
+                  ) : (
+                    <div className="flex size-full items-center justify-center bg-primary/10">
+                      <span className="text-2xl font-bold tracking-widest text-primary">{b.name}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="space-y-1.5 p-4">
+                  <p className="text-base font-bold tracking-wide">{b.name}</p>
+                  {b.tagline && <p className="line-clamp-2 text-xs text-muted-foreground">{b.tagline}</p>}
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "size_guide": {
+      const cols = [1, 2, 3].map((n) => str(s, `c${n}Label`)).filter(Boolean);
+      const body = [1, 2, 3, 4]
+        .map((n) => ({
+          label: str(s, `r${n}Label`),
+          cells: [1, 2, 3].map((m) => num(s, `r${n}c${m}`, 0, device)),
+        }))
+        .filter((r) => r.label);
+      if (cols.length === 0 || body.length === 0)
+        return <Placeholder label="Add measurements and sizes" />;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-4">
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <h3 className="text-base font-semibold">{str(s, "heading", "Size guide")}</h3>
+            <span className="rounded-fq-sm border border-border px-2 py-1 text-xs text-muted-foreground">{str(s, "unit", "cm")}</span>
+          </div>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs text-muted-foreground">
+                {[str(s, "openLabel", "Size"), ...cols].map((h) => (
+                  <th key={h} className="px-2 py-1 font-medium">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {body.map((r) => (
+                <tr key={r.label} className="border-t border-border">
+                  <td className="px-2 py-1 font-medium">{r.label}</td>
+                  {r.cells.map((v, i) => (
+                    <td key={i} className="px-2 py-1 tabular-nums text-muted-foreground">{v}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {str(s, "note") && <p className="mt-2 text-xs text-muted-foreground">{str(s, "note")}</p>}
+        </section>
+      );
+    }
+
+    case "routine_builder":
+      return <Placeholder label="Live routine builder — renders on the storefront" />;
+
+    case "sample_picker":
+      return <Placeholder label="Live sample picker — renders on the storefront" />;
+
+    case "shade_finder": {
+      const u = str(s, "undertonePrompt", "What is your undertone?");
+      const d = str(s, "depthPrompt", "How deep is your skin tone?");
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          <h3 className="text-lg font-semibold">{str(s, "heading", "Find your shade")}</h3>
+          <p className="mt-1 text-xs text-muted-foreground">Step 1 of 2</p>
+          <fieldset className="mt-4 border-0 p-0">
+            <legend className="text-sm font-medium">{u}</legend>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {["Cool", "Neutral", "Warm"].map((o, i) => (
+                <span key={o} className={cn("rounded-fq-md border px-3 py-1.5 text-sm", i === 0 ? "border-primary bg-primary text-primary-foreground" : "border-border")}>{o}</span>
+              ))}
+            </div>
+          </fieldset>
+          <p className="mt-3 text-xs text-muted-foreground">Next: {d}</p>
+        </section>
+      );
+    }
+
+    case "skin_quiz": {
+      const first = str(s, "typePrompt", "Your skin type?");
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          <h3 className="text-lg font-semibold">{str(s, "heading", "Skin quiz")}</h3>
+          {str(s, "body") && <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>}
+          <p className="mt-3 text-xs text-muted-foreground">Step 1 of 4</p>
+          <fieldset className="mt-2 border-0 p-0">
+            <legend className="text-sm font-medium">{first}</legend>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {["Oily", "Dry", "Combination"].map((o) => (
+                <span key={o} className="rounded-fq-md border border-border px-3 py-1.5 text-sm">{o}</span>
+              ))}
+            </div>
+          </fieldset>
+        </section>
+      );
+    }
+
+    case "quiz": {
+      const steps = [1, 2, 3]
+        .map((i) => ({
+          label: str(s, `q${i}Label`),
+          choices: str(s, `q${i}Choices`).split(",").map((x) => x.trim()).filter(Boolean),
+        }))
+        .filter((x) => x.label && x.choices.length > 0);
+      if (steps.length === 0) return <Placeholder label="Add a question with choices" />;
+      const first = steps[0]!;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          <h3 className="text-lg font-semibold">{str(s, "heading", "Find your match")}</h3>
+          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-fq-sm bg-muted">
+            <div className="h-full bg-primary" style={{ width: `${Math.round(100 / steps.length)}%` }} />
+          </div>
+          <fieldset className="mt-4 border-0 p-0">
+            <legend className="text-sm font-medium">{first.label}</legend>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {first.choices.map((ch) => (
+                <span key={ch} className="rounded-fq-md border border-border px-3 py-1.5 text-sm">{ch}</span>
+              ))}
+            </div>
+          </fieldset>
+          <p className="mt-4">
+            <span className="inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+              {str(s, "resultLabel", "See my matches")}
+            </span>
+          </p>
+        </section>
+      );
+    }
+
+    case "consult_cta": {
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6 text-center">
+          <h3 className="text-lg font-semibold">{str(s, "heading", "Talk to a beauty advisor")}</h3>
+          {str(s, "body") && <p className="mx-auto mt-1 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>}
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
+            {str(s, "whatsapp") && (
+              <span className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-4 text-sm">
+                {str(s, "whatsappLabel", "WhatsApp")}
+              </span>
+            )}
+            {str(s, "phone") && (
+              <span className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-4 text-sm">
+                {str(s, "callLabel", "Call us")}
+              </span>
+            )}
+          </div>
+          <p className="mx-auto mt-3 max-w-sm">
+            <span className="block text-left text-sm">
+              <span className="mb-1 block">{str(s, "fieldLabel", "Your number")}</span>
+              <span className="block min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">01XXXXXXXXX</span>
+            </span>
+          </p>
+          <p className="mt-3">
+            <span className="inline-block min-h-11 rounded-fq-md bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground">
+              {str(s, "buttonLabel", "Book a consult")}
+            </span>
+          </p>
+        </section>
+      );
+    }
+
+    case "gift_builder":
+      return <Placeholder label="Live gift builder — renders on the storefront" />;
+
+    case "bundle_builder":
+      return <Placeholder label="Live bundle builder — renders on the storefront" />;
+
+    case "shoppable_image": {
+      const url = str(s, "imageUrl");
+      if (!url) return <Placeholder label="Choose a shoppable image" />;
+      const limit = Math.min(4, Math.max(1, num(s, "limit", 4, device)));
+      const pins = Array.from({ length: limit }, (_, i) => ({
+        x: num(s, `p${i + 1}x`, 25 + i * 15, device),
+        y: num(s, `p${i + 1}y`, 30 + i * 15, device),
+      }));
+      return (
+        <section>
+          {str(s, "heading") && <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>}
+          <div className="relative overflow-hidden rounded-fq-lg">
+            <img src={url} alt={str(s, "altText")} loading="lazy" className="aspect-[4/5] w-full object-cover" />
+            {pins.map((p, i) => (
+              <span key={i} aria-hidden className="absolute grid size-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-border bg-card text-xs font-semibold" style={{ left: `${p.x}%`, top: `${p.y}%` }}>
+                {i + 1}
+              </span>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "compare_table":
+      return <Placeholder label="Live compare table — renders on the storefront" />;
+
+    case "spec_table": {
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          group: String(row.group ?? ""),
+          label: String(row.label ?? ""),
+          value: String(row.value ?? ""),
+        }))
+        .filter((r) => r.label);
+      const pairs =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3, 4, 5, 6]
+              .map((i) => ({
+                group: str(s, `r${i}Group`),
+                label: str(s, `r${i}Label`),
+                value: str(s, `r${i}Value`),
+              }))
+              .filter((r) => r.label);
+      if (pairs.length === 0) return <Placeholder label="Add a spec row" />;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card">
+          {str(s, "caption") && <h3 className="px-3 pt-3 text-sm text-muted-foreground">{str(s, "caption")}</h3>}
+          <dl className="m-0 p-3 pt-1">
+            {pairs.map((r) => (
+              <div key={r.label} className="flex items-baseline justify-between gap-3 border-b border-border py-2 last:border-b-0">
+                <dt className="text-sm font-medium">
+                  {r.group ? <span className="mr-2 text-xs text-muted-foreground">{r.group}</span> : null}
+                  {r.label}
+                </dt>
+                <dd className="m-0 text-sm tabular-nums text-muted-foreground">{r.value || "—"}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      );
+    }
+
+    case "spec_highlights": {
+      const tiles = [1, 2, 3, 4, 5, 6]
+        .map((i) => ({ label: str(s, `t${i}Label`), value: str(s, `t${i}Value`) }))
+        .filter((t) => t.label && t.value);
+      if (tiles.length === 0) return <Placeholder label="Add a spec tile" />;
+      const cols = Math.min(num(s, "columns", 4, device), tiles.length);
+      return (
+        <section>
+          {str(s, "heading") && <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>}
+          <ul className="grid list-none gap-3 p-0" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+            {tiles.map((t) => (
+              <li key={t.label} className="rounded-fq-md border border-border p-3">
+                <p className="m-0 text-xs text-muted-foreground">{t.label}</p>
+                <p className="m-0 text-sm font-semibold tabular-nums">{t.value}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    }
+
+    case "ingredient_glossary": {
+      const terms = [1, 2, 3, 4, 5, 6]
+        .map((i) => ({ term: str(s, `g${i}Term`), body: str(s, `g${i}Body`) }))
+        .filter((t) => t.term);
+      if (terms.length === 0) return <Placeholder label="Add a glossary term" />;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          <h3 className="mb-2 text-lg font-semibold">{str(s, "heading", "Ingredient glossary")}</h3>
+          <div className="divide-y divide-border border-t border-border">
+            {terms.map((t) => (
+              <details key={t.term}>
+                <summary className="cursor-pointer py-2 text-sm font-medium">{t.term}</summary>
+                <p className="pb-3 text-sm text-muted-foreground">{t.body}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    case "ingredient_list": {
+      const items = [1, 2, 3, 4, 5, 6]
+        .map((i) => ({
+          name: str(s, `i${i}Name`),
+          amount: str(s, `i${i}Amount`),
+          gloss: str(s, `i${i}Gloss`),
+        }))
+        .filter((x) => x.name);
+      if (items.length === 0) return <Placeholder label="Add an ingredient" />;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          <h3 className="mb-2 text-lg font-semibold">{str(s, "heading", "Key ingredients")}</h3>
+          <dl className="m-0">
+            {items.map((x) => (
+              <div key={x.name} className="border-b border-border py-2 last:border-b-0">
+                <dt className="text-sm font-medium">
+                  {x.name}
+                  {x.amount && <span className="ms-2 tabular-nums text-muted-foreground">{x.amount}</span>}
+                </dt>
+                {x.gloss && <dd className="m-0 text-sm text-muted-foreground">{x.gloss}</dd>}
+              </div>
+            ))}
+          </dl>
+          {str(s, "inci") && (
+            <details className="mt-3">
+              <summary className="cursor-pointer text-sm font-medium">{str(s, "inciLabel", "Full ingredients (INCI)")}</summary>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{str(s, "inci")}</p>
+            </details>
+          )}
+        </section>
+      );
+    }
+
+    case "ingredient_rail": {
+      const chips = [1, 2, 3, 4]
+        .map((i) => ({ name: str(s, `i${i}Name`), gloss: str(s, `i${i}Gloss`) }))
+        .filter((x) => x.name);
+      if (chips.length === 0) return <Placeholder label="Add an ingredient" />;
+      return (
+        <section>
+          {str(s, "heading") && <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>}
+          <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
+            {chips.map((x) => (
+              <li key={x.name} className="rounded-full border border-border px-3 py-1 text-sm">
+                <span>{x.name}</span>
+                {x.gloss && <span className="ms-2 text-xs text-muted-foreground">{x.gloss}</span>}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-3">
+            <Placeholder label="Live ingredient products — renders on the storefront" />
+          </div>
+        </section>
+      );
+    }
+
+    case "payment_methods":
+      return <Placeholder label="Live payment methods — renders on the storefront" />;
+
+    case "payment_icons": {
+      const marks = str(s, "marks")
+        .split(",")
+        .map((m) => m.trim())
+        .filter(Boolean)
+        .slice(0, 12);
+      if (marks.length === 0) return <Placeholder label="Add a payment mark" />;
+      return (
+        <section className="space-y-2">
+          {str(s, "heading") && (
+            <h3 className="text-xs uppercase tracking-wide text-muted-foreground">{str(s, "heading")}</h3>
+          )}
+          <ul className="flex flex-wrap items-center gap-2">
+            {marks.map((m) => (
+              <li key={m} className="rounded-fq-sm border border-border bg-card px-2 py-1 text-xs text-muted-foreground">
+                {m}
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    }
+
+    case "emi_calculator":
+      return <Placeholder label="Live EMI calculator — renders on the storefront" />;
+
+    case "order_tracker":
+      return <Placeholder label="Live order tracker — renders on the storefront" />;
+
+    case "add_to_cart": {
+      const label = str(s, "label", "Add to cart");
+      const showQty = s.showQuantity !== false;
+      return (
+        <div className="flex flex-col gap-3">
+          {showQty && (
+            <div className="flex items-center gap-3 text-sm">
+              <span aria-hidden="true" className="grid h-9 w-9 place-items-center rounded-fq-md border border-border">−</span>
+              <span className="tabular-nums">1</span>
+              <span aria-hidden="true" className="grid h-9 w-9 place-items-center rounded-fq-md border border-border">+</span>
+            </div>
+          )}
+          <span className="inline-flex min-h-11 items-center justify-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+            {label}
+          </span>
+        </div>
+      );
+    }
+
+    case "rewards_club": {
+      const tiers = [1, 2, 3]
+        .map((n) => ({ name: str(s, `tier${n}Name`), points: str(s, `tier${n}Points`) }))
+        .filter((t) => t.name);
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+          {str(s, "heading") && (
+            <h3 className="text-2xl font-bold">{str(s, "heading")}</h3>
+          )}
+          {str(s, "body") && (
+            <p className="mt-2 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          {tiers.length > 0 && (
+            <ol className="mt-5 grid gap-3 sm:grid-cols-3">
+              {tiers.map((tier) => (
+                <li key={tier.name} className="rounded-fq-md border border-border bg-background p-4">
+                  <p className="text-sm font-semibold">{tier.name}</p>
+                  {tier.points && (
+                    <p className="mt-1 text-xs text-muted-foreground">{tier.points}</p>
+                  )}
+                </li>
+              ))}
+            </ol>
+          )}
+          {str(s, "buttonLabel") && (
+            <p className="mt-5">
+              <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+                {str(s, "buttonLabel")}
+              </span>
+            </p>
+          )}
+        </section>
+      );
+    }
+
+    case "wedding_shop": {
+      const collections = [1, 2, 3]
+        .map((n) => ({ name: str(s, `c${n}Name`), href: str(s, `c${n}Href`) || "#" }))
+        .filter((c) => c.name);
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+          {str(s, "heading") && (
+            <h3 className="text-2xl font-bold">{str(s, "heading")}</h3>
+          )}
+          {str(s, "body") && (
+            <p className="mt-2 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          {collections.length > 0 && (
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              {collections.map((c) => (
+                <span key={c.name} className="rounded-fq-md border border-border bg-background p-4">
+                  <p className="text-sm font-semibold">{c.name}</p>
+                  <p aria-hidden="true" className="mt-2 text-primary">→</p>
+                </span>
+              ))}
+            </div>
+          )}
+          {str(s, "buttonLabel") && (
+            <p className="mt-5">
+              <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+                {str(s, "buttonLabel")}
+              </span>
+            </p>
+          )}
+        </section>
+      );
+    }
+
+    case "gift_finder": {
+      const occasions = [1, 2, 3]
+        .map((n) => ({ label: str(s, `o${n}Label`), query: str(s, `o${n}Query`) }))
+        .filter((o) => o.label);
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+          {str(s, "heading") && (
+            <h3 className="text-2xl font-bold">{str(s, "heading")}</h3>
+          )}
+          {str(s, "body") && (
+            <p className="mt-2 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          {occasions.length > 0 && (
+            <div className="mt-5 flex flex-wrap gap-2">
+              {occasions.map((o) => (
+                <span
+                  key={o.label}
+                  className="inline-flex min-h-11 items-center rounded-full border border-border bg-background px-4 text-sm font-medium"
+                >
+                  {o.label}
+                </span>
+              ))}
+            </div>
+          )}
+          {str(s, "buttonLabel") && (
+            <p className="mt-5">
+              <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+                {str(s, "buttonLabel")}
+              </span>
+            </p>
+          )}
+        </section>
+      );
+    }
+
+    case "rich_text": {
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          {str(s, "heading") && (
+            <h3 className="text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <p className="mt-2 block whitespace-pre-line text-sm text-muted-foreground">
+            {str(s, "body", "Tell customers about your store.")}
+          </p>
+        </section>
+      );
+    }
+
+    case "form": {
+      const showPhone = s.showPhone !== false;
+      return (
+        <section className="space-y-3 rounded-fq-lg border border-border bg-card p-6">
+          {str(s, "heading") && (
+            <h3 className="text-xl font-semibold">{str(s, "heading", "Send us a message")}</h3>
+          )}
+          {str(s, "body") && (
+            <p className="text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <p className="text-xs font-medium">{str(s, "nameLabel", "Your name")}</p>
+              <div className="mt-1 min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+                Name
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-medium">{str(s, "emailLabel", "Email")}</p>
+              <div className="mt-1 min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+                you@example.com
+              </div>
+            </div>
+            {showPhone && (
+              <div className="sm:col-span-2">
+                <p className="text-xs font-medium">{str(s, "phoneLabel", "Phone")}</p>
+                <div className="mt-1 min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+                  01XXXXXXXXX
+                </div>
+              </div>
+            )}
+            <div className="sm:col-span-2">
+              <p className="text-xs font-medium">{str(s, "messageLabel", "How can we help?")}</p>
+              <div className="mt-1 min-h-24 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+                Your message
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground">
+              {str(s, "buttonLabel", "Send")}
+            </span>
+            {str(s, "consentText") && (
+              <span className="text-xs text-muted-foreground">{str(s, "consentText")}</span>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    case "nav_menu": {
+      const items = rows(s, "items").filter(
+        (item) => typeof item.label === "string" && item.label !== "",
+      );
+      if (items.length === 0) return <Placeholder label="Add a menu item" />;
+      const column = str(s, "layout", "row") === "column";
+      const align = str(s, "align", "left");
+      return (
+        <nav
+          aria-label={str(s, "heading") || "Menu"}
+          className={`flex flex-col gap-2 ${align === "center" ? "items-center text-center" : "items-start"}`}
+        >
+          {str(s, "heading") && (
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">{str(s, "heading")}</p>
+          )}
+          <ul className={`flex gap-x-5 gap-y-2 ${column ? "flex-col" : "flex-row flex-wrap"}`}>
+            {items.slice(0, 12).map((item, i) => (
+              <li key={`${String(item.label)}-${i}`}>
+                <span className="text-sm text-muted-foreground">{String(item.label)}</span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      );
+    }
+
+    case "newsletter": {
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          <h3 className="text-lg font-semibold">{str(s, "heading", "Stay in touch")}</h3>
+          {str(s, "body") && (
+            <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          <div className="mt-3 flex flex-wrap gap-2">
+            <div className="min-h-11 min-w-40 flex-1 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+              you@example.com
+            </div>
+            <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+              {str(s, "buttonLabel", "Subscribe")}
+            </span>
+          </div>
+          {str(s, "consentText") && (
+            <p className="mt-2 text-xs text-muted-foreground">{str(s, "consentText")}</p>
+          )}
+        </section>
+      );
+    }
+
+    case "sticky_bar": {
+      if (!str(s, "text") && !str(s, "ctaLabel"))
+        return <Placeholder label="Add a sticky bar message" />;
+      const top = str(s, "position", "bottom") === "top";
+      return (
+        <div
+          className={`sticky z-30 flex flex-wrap items-center justify-between gap-3 rounded-fq-md border border-border bg-card px-4 py-2 text-sm ${
+            top ? "top-0" : "bottom-0"
+          }`}
+        >
+          <span className="min-w-0">{str(s, "text")}</span>
+          {str(s, "ctaLabel") && (
+            <span className="rounded-fq-md bg-primary px-3 py-1.5 text-sm font-semibold text-primary-foreground">
+              {str(s, "ctaLabel")}
+            </span>
+          )}
+        </div>
+      );
+    }
+
+    case "mega_menu":
+      return <Placeholder label="Live mega menu — renders on the storefront" />;
+
+    case "buy_box":
+      return <Placeholder label="Live buy box — renders on the storefront" />;
+
+    case "variant_picker":
+      return <Placeholder label="Live variant picker — renders on the storefront" />;
+
+    case "sticky_buy_bar":
+      return <Placeholder label="Live sticky buy bar — renders on the storefront" />;
+
+    case "filter_chips":
+      return <Placeholder label="Live filter chips — renders on the storefront" />;
+
+    case "size_selector":
+      return <Placeholder label="Live size selector — renders on the storefront" />;
+
+    case "complete_the_look":
+      return <Placeholder label="Live complete the look — renders on the storefront" />;
+
+    case "circle_categories":
+      return <Placeholder label="Live circle categories — renders on the storefront" />;
+
+    case "quick_view":
+      return <Placeholder label="Live quick view — renders on the storefront" />;
+
+    case "refill_widget":
+      return <Placeholder label="Live refill widget — renders on the storefront" />;
+
+    case "combo_card":
+      return <Placeholder label="Live combo card — renders on the storefront" />;
+
+    case "loyalty_strip":
+      return <Placeholder label="Live loyalty strip — renders on the storefront" />;
+
+    case "department_strip":
+      return <Placeholder label="Live department strip — renders on the storefront" />;
+
+    case "ugc_gallery": {
+      const limit = Math.min(12, Math.max(2, num(s, "limit", 6, device)));
+      return (
+        <section>
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <ul className="grid list-none grid-cols-2 gap-2 p-0 sm:grid-cols-3">
+            {Array.from({ length: limit }).map((_, index) => (
+              <li
+                key={index}
+                aria-hidden
+                className="aspect-square rounded-fq-md bg-muted"
+              />
+            ))}
+          </ul>
+          {str(s, "note") && (
+            <p className="mt-2 text-xs text-muted-foreground">{str(s, "note")}</p>
+          )}
+        </section>
+      );
+    }
+
+    case "before_after": {
+      const before = str(s, "beforeImage");
+      const after = str(s, "afterImage");
+      if (!before || !after)
+        return <Placeholder label="Add before and after images" />;
+      return (
+        <section>
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <div className="grid gap-2 sm:grid-cols-2">
+            <figure className="m-0">
+              <img
+                src={before}
+                alt={str(s, "beforeAlt")}
+                loading="lazy"
+                className="aspect-square w-full rounded-fq-md object-cover"
+              />
+              <figcaption className="mt-1 text-xs text-muted-foreground">
+                {str(s, "beforeLabel", "Before")}
+              </figcaption>
+            </figure>
+            <figure className="m-0">
+              <img
+                src={after}
+                alt={str(s, "afterAlt")}
+                loading="lazy"
+                className="aspect-square w-full rounded-fq-md object-cover"
+              />
+              <figcaption className="mt-1 text-xs text-muted-foreground">
+                {str(s, "afterLabel", "After")}
+              </figcaption>
+            </figure>
+          </div>
+          {str(s, "disclaimer") && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              {str(s, "disclaimer")}
+            </p>
+          )}
+        </section>
+      );
+    }
+
+    case "store_locator": {
+      const stores = [1, 2, 3]
+        .map((n) => ({
+          name: str(s, `s${n}Name`),
+          address: str(s, `s${n}Address`),
+          hours: str(s, `s${n}Hours`),
+          phone: str(s, `s${n}Phone`),
+        }))
+        .filter((store) => store.name);
+      if (stores.length === 0) return <Placeholder label="Add a store" />;
+      return (
+        <section>
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <ul className="grid list-none gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
+            {stores.map((store) => (
+              <li
+                key={store.name}
+                className="rounded-fq-md border border-border bg-card p-4"
+              >
+                <p className="text-sm font-semibold">{store.name}</p>
+                {store.address && (
+                  <p className="mt-1 whitespace-pre-line text-sm text-muted-foreground">
+                    {store.address}
+                  </p>
+                )}
+                {store.hours && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {store.hours}
+                  </p>
+                )}
+                {store.phone && (
+                  <p className="mt-2 text-sm underline underline-offset-2">
+                    {store.phone}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    }
+
+    case "trade_in": {
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          <h3 className="text-lg font-semibold">
+            {str(s, "heading", "Trade in your old device")}
+          </h3>
+          {str(s, "body") && (
+            <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>
+          )}
+          <div className="mt-3 space-y-2">
+            <span className="block min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+              Device details…
+            </span>
+            <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+              {str(s, "buttonLabel", "Get a quote")}
+            </span>
+          </div>
+          {str(s, "consentText") && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              {str(s, "consentText")}
+            </p>
+          )}
+        </section>
+      );
+    }
+
+    case "warranty_panel": {
+      const centres = [1, 2, 3]
+        .map((i) => ({
+          key: `s${i}`,
+          name: str(s, `s${i}Name`),
+          address: str(s, `s${i}Address`),
+        }))
+        .filter((centre) => centre.name);
+      const official = s.official !== false;
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-4">
+          <h3 className="text-base font-semibold">
+            {str(s, "heading", "Warranty")}
+          </h3>
+          <p className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+            <span className="rounded-fq-sm border border-border px-2 py-1 font-medium tabular-nums">
+              {num(s, "months", 12, device)}
+            </span>
+            <span className="rounded-fq-sm bg-muted px-2 py-1 text-xs">
+              {official ? str(s, "officialLabel") : str(s, "parallelLabel")}
+            </span>
+          </p>
+          {str(s, "coverage") && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              {str(s, "coverage")}
+            </p>
+          )}
+          {centres.length > 0 && (
+            <dl className="mt-3 rounded-fq-md border border-border">
+              {centres.map((centre) => (
+                <div
+                  key={centre.key}
+                  className="flex items-baseline justify-between gap-3 border-b border-border px-3 py-2 text-sm last:border-b-0"
+                >
+                  <dt className="font-medium">{centre.name}</dt>
+                  <dd className="m-0 text-muted-foreground">{centre.address}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </section>
+      );
+    }
+
     default:
       return <Placeholder label={node.el} />;
   }
 }
+
+/** "Label|/href" link-list parser shared by footer-style widgets (comma AND newline delimiters). */
+function parseLinks(raw: string): { label: string; href: string }[] {
+  return raw
+    .split(/[\r\n,]+/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => {
+      const [label, href] = part.split("|");
+      return { label: (label ?? "").trim(), href: (href ?? "").trim() || "#" };
+    })
+    .filter((link) => link.label.length > 0)
+    .slice(0, 8);
+}
+
+const FIT_LABEL: Record<string, string> = {
+  small: "Runs small — consider sizing up",
+  true: "True to size",
+  large: "Runs large — consider sizing down",
+};
 
 /** Row-string reader for repeater items (mirrors str() for row maps). */
 function rstr(row: NodeSettings, key: string, fallback = ""): string {

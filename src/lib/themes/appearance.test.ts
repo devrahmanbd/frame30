@@ -16,6 +16,8 @@ import {
   themeInitials,
   toggleFeature,
   validateThemeUpload,
+  visibleCatalogue,
+  visibleInstalled,
   type CatalogTheme,
   type InstalledTheme,
 } from "./appearance";
@@ -291,5 +293,31 @@ describe("catalogue honesty (no-fabrication rule)", () => {
       expect(meta.installs, key).toBe(0);
       expect(meta.rating, key).toBe(0);
     }
+  });
+});
+
+describe("curated visibility (two-theme offer)", () => {
+  it("installed grid keeps the active theme plus allowlisted keys only", () => {
+    const themes = [
+      inst({ id: "a", key: "atelier", isActive: true }),
+      inst({ id: "b", key: "classic" }),
+      inst({ id: "c", key: null }),
+      inst({ id: "d", key: "supershop" }),
+      inst({ id: "e", key: "clothing-heritage" }),
+    ];
+    expect(visibleInstalled(themes).map((t) => t.id)).toEqual(["a", "d", "e"]);
+  });
+
+  it("catalogue keeps the two offer keys only", () => {
+    const themes = [
+      cat({ key: "supershop" }),
+      cat({ key: "clothing-heritage" }),
+      cat({ key: "classic" }),
+      cat({ key: "modern" }),
+    ];
+    expect(visibleCatalogue(themes).map((t) => t.key)).toEqual([
+      "supershop",
+      "clothing-heritage",
+    ]);
   });
 });

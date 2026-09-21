@@ -16,7 +16,7 @@ import {
   testSmtpConnectionFn,
 } from "@/lib/email-settings.functions";
 import { useLang } from "@/lib/i18n";
-import { Mail, ShieldCheck, Send, Server, AlertCircle } from "lucide-react";
+import { Send, AlertCircle } from "lucide-react";
 
 export const Route = createFileRoute(
   "/_authenticated/dashboard/settings_/email",
@@ -166,96 +166,42 @@ function EmailSettingsPage() {
   };
 
   return (
-    <div className="space-y-6 p-4 md:p-8 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-5">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-              {t("Email & SMTP Gateway", "ইমেইল ও এসএমটিপি গেটওয়ে")}
-            </h1>
-            <StatusPill
-              tone={
-                smtp.enabled && smtp.configured
-                  ? "success"
-                  : smtp.configured
-                    ? "warning"
-                    : "neutral"
-              }
-              label={
-                smtp.enabled && smtp.configured
-                  ? t("Custom SMTP Active", "কাস্টম এসএমটিপি সক্রিয়")
-                  : smtp.configured
-                    ? t("Configured (Paused)", "সংরক্ষিত (স্থগিত)")
-                    : t("Platform Default", "প্ল্যাটফর্ম ডিফল্ট")
-              }
-            />
-          </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            {t(
-              "Connect SendGrid, Mailgun, Postmark, AWS SES, or private SMTP to send store emails and newsletters from your verified domain.",
-              "আপনার নিজস্ব ডোমেইন থেকে ইমেইল পাঠাতে সেন্ডগ্রিড, মেইলগান, পোস্টমার্ক বা নিজস্ব এসএমটিপি যুক্ত করুন।",
-            )}
-          </p>
+    <div className="max-w-3xl space-y-6">
+      {/* Header — single quiet block; the global SectionTabs strip above
+          already handles Settings navigation. */}
+      <div>
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="font-bangla-display text-2xl font-bold tracking-tight text-foreground">
+            {t("Email & SMTP Gateway", "ইমেইল ও এসএমটিপি গেটওয়ে")}
+          </h1>
+          <StatusPill
+            tone={
+              smtp.enabled && smtp.configured
+                ? "success"
+                : smtp.configured
+                  ? "warning"
+                  : "neutral"
+            }
+            label={
+              smtp.enabled && smtp.configured
+                ? t("Custom SMTP Active", "কাস্টম এসএমটিপি সক্রিয়")
+                : smtp.configured
+                  ? t("Configured (Paused)", "সংরক্ষিত (স্থগিত)")
+                  : t("Platform Default", "প্ল্যাটফর্ম ডিফল্ট")
+            }
+          />
         </div>
+        <p className="text-sm text-muted-foreground mt-1">
+          {t(
+            "Connect SendGrid, Mailgun, Postmark, AWS SES, or private SMTP to send store emails and newsletters from your verified domain.",
+            "আপনার নিজস্ব ডোমেইন থেকে ইমেইল পাঠাতে সেন্ডগ্রিড, মেইলগান, পোস্টমার্ক বা নিজস্ব এসএমটিপি যুক্ত করুন।",
+          )}
+        </p>
       </div>
 
-      {/* Overview Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="rounded-fq-lg border border-border bg-card p-4 flex items-start gap-3">
-          <div className="p-2 rounded-full bg-primary/10 text-primary">
-            <Server className="size-5" />
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">
-              {t("Active Provider", "সক্রিয় প্রোভাইডার")}
-            </div>
-            <div className="font-semibold text-foreground text-sm mt-0.5">
-              {smtp.enabled && smtp.host
-                ? smtp.host
-                : "Framique Resend (Platform)"}
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-fq-lg border border-border bg-card p-4 flex items-start gap-3">
-          <div className="p-2 rounded-full bg-success-soft text-success">
-            <ShieldCheck className="size-5" />
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">
-              {t("Security Sealing", "নিরাপত্তা এনক্রিপশন")}
-            </div>
-            <div className="font-semibold text-foreground text-sm mt-0.5">
-              AES-GCM 256 (
-              {smtp.hasPassword
-                ? t("Key Sealed", "কী সুরক্ষিত")
-                : t("No Pass Stored", "পাসওয়ার্ড নেই")}
-              )
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-fq-lg border border-border bg-card p-4 flex items-start gap-3">
-          <div className="p-2 rounded-full bg-accent text-accent-foreground">
-            <Mail className="size-5" />
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">
-              {t("Sender Address", "প্রেরকের ঠিকানা")}
-            </div>
-            <div className="font-semibold text-foreground text-sm mt-0.5 truncate max-w-[200px]">
-              {smtp.fromEmail
-                ? `${smtp.fromName} <${smtp.fromEmail}>`
-                : t("System default", "সিস্টেম ডিফল্ট")}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Settings Form */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
+      {/* Main Settings Form — single column, quiet order:
+          config first, test second. The header StatusPill already
+          carries provider/state, so no overview cards. */}
           <SectionCard
             title={t(
               "SMTP Server Configuration",
@@ -482,10 +428,8 @@ function EmailSettingsPage() {
               </div>
             </form>
           </SectionCard>
-        </div>
 
         {/* Test Connection Card */}
-        <div className="space-y-6">
           <SectionCard
             title={t("Test Connection", "সংযোগ পরীক্ষা")}
             subtitle={t(
@@ -549,8 +493,6 @@ function EmailSettingsPage() {
               )}
             </p>
           </div>
-        </div>
-      </div>
     </div>
   );
 }

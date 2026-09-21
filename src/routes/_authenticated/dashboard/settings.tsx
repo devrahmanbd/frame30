@@ -2,17 +2,12 @@ import { useEffect, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Sliders,
-  Globe,
-  Shield,
-  CreditCard,
   Clock,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useStoreUrl } from "@/hooks/use-store-url";
 import { ImpersonationConsent } from "@/components/admin/ImpersonationConsent";
-import { TotpCard } from "@/components/admin/settings/TotpCard";
 import { useLang } from "@/lib/i18n";
 import {
   COMMON_TIMEZONES,
@@ -164,75 +159,40 @@ function SettingsPage() {
         <h1 className="font-bangla-display text-2xl font-bold tracking-tight text-foreground">
           {t("Store Settings", "স্টোর সেটিংস")}
         </h1>
-        {merchant && (
-          <p className="mt-1 text-sm text-muted-foreground">
-            {primaryHost ? (
-              <>
-                {t("Your live storefront:", "আপনার লাইভ স্টোরফ্রন্ট:")}{" "}
-                <a
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-medium text-primary hover:underline"
-                  href={storeUrl()}
-                >
-                  {`${primaryHost} ↗`}
-                </a>
-              </>
-            ) : (
-              <>
-                {t(
-                  "No reachable storefront yet — connect a custom domain to go live (path URLs are retired).",
-                  "এখনও কোনো লাইভ স্টোরফ্রন্ট নেই — লাইভ হতে কাস্টম ডোমেইন যুক্ত করুন।",
-                )}{" "}
-                <Link
-                  to="/dashboard/settings/domains"
-                  className="font-medium text-primary hover:underline"
-                >
-                  {t("Connect a custom domain", "কাস্টম ডোমেইন যুক্ত করুন")}
-                </Link>
-              </>
-            )}
-          </p>
-        )}
+        {merchant &&
+          (primaryHost ? (
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t("Your live storefront:", "আপনার লাইভ স্টোরফ্রন্ট:")}{" "}
+              <a
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-primary hover:underline"
+                href={storeUrl()}
+              >
+                {`${primaryHost} ↗`}
+              </a>
+            </p>
+          ) : (
+            // Path storefronts are retired (bare 404): with no custom
+            // domain there is no live storefront, so never link one.
+            <p className="mt-1 text-sm text-muted-foreground">
+              {t(
+                "No live storefront yet —",
+                "এখনো কোনো লাইভ স্টোরফ্রন্ট নেই —",
+              )}{" "}
+              <Link
+                className="font-medium text-primary hover:underline"
+                to="/dashboard/settings/domains"
+              >
+                {t("connect a custom domain", "কাস্টম ডোমেইন যুক্ত করুন")}
+              </Link>
+            </p>
+          ))}
       </div>
 
-      {/* Settings Subnav Tabs */}
-      <nav
-        aria-label={t("Settings navigation", "সেটিংস নেভিগেশন")}
-        className="flex overflow-x-auto border-b border-border text-sm"
-      >
-        <Link
-          to="/dashboard/settings"
-          className="flex items-center gap-2 border-b-2 border-primary px-4 py-2.5 font-medium text-primary"
-        >
-          <Sliders className="size-4" />
-          <span>{t("General", "সাধারণ")}</span>
-        </Link>
-        <Link
-          to="/dashboard/settings/security"
-          className="flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 font-medium text-muted-foreground hover:text-foreground hover:border-border"
-        >
-          <Shield className="size-4" />
-          <span>{t("Security & 2FA", "নিরাপত্তা ও ২এফএ")}</span>
-        </Link>
-        <Link
-          to="/dashboard/settings/domains"
-          className="flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 font-medium text-muted-foreground hover:text-foreground hover:border-border"
-        >
-          <Globe className="size-4" />
-          <span>{t("Domains", "ডোমেইন")}</span>
-        </Link>
-        <Link
-          to="/dashboard/settings/providers"
-          className="flex items-center gap-2 border-b-2 border-transparent px-4 py-2.5 font-medium text-muted-foreground hover:text-foreground hover:border-border"
-        >
-          <CreditCard className="size-4" />
-          <span>{t("Payments", "পেমেন্ট")}</span>
-        </Link>
-      </nav>
-
-      {/* Two-Factor Authentication (TOTP) Card */}
-      <TotpCard showLinkToSecurity={true} />
+      {/* The global SectionTabs strip in AdminShell already covers
+          Settings navigation (General / Staff / Domains / Security / …).
+          No in-page duplicate tabs here — this page stays single-purpose. */}
 
       {/* General Storefront Settings Form */}
       <section className="rounded-fq-lg border border-border bg-card p-5">

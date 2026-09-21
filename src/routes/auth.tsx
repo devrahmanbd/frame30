@@ -103,9 +103,18 @@ const PREVIOUS_CMS_LIST = [
   { value: "other", en: "Other platform", bn: "অন্যান্য প্ল্যাটফর্ম" },
 ] as const;
 
-/** Where a signed-in merchant belongs */
+/**
+ * Where a signed-in merchant belongs.
+ *
+ * Single-gate rule (Sept 2026 onboarding-trap fix): always land on
+ * /dashboard and let its gate own the onboarding decision. A second
+ * membership check here raced concurrent afterSession calls — a slow
+ * unauthenticated query resolving after the authed one bounced real
+ * store owners (with live memberships) to /onboarding on fresh login.
+ * Storeless users still end up on the wizard via the dashboard gate.
+ */
 async function landingFor(
-  userId: string,
+  _userId: string,
   explicitRedirect?: string,
 ): Promise<string> {
   if (
@@ -118,18 +127,7 @@ async function landingFor(
     return explicitRedirect;
   }
 
-  const { data: member } = await supabase
-    .from("merchant_members")
-    .select("merchant_id")
-    .eq("user_id", userId)
-    .eq("status", "active")
-    .limit(1)
-    .maybeSingle();
-
-  if (member) {
-    return "/dashboard";
-  }
-  return "/onboarding";
+  return "/dashboard";
 }
 
 function AuthPage() {

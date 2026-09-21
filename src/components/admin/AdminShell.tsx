@@ -650,7 +650,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
           >
             <BrandLogo size={24} />
           </Link>
-          {memberships.length > 1 ? (
+          {/* Single-store MVP: the store switcher stays off. One account =
+              one storefront, so the header always shows the current store
+              name with no dropdown. The multi-membership switching code
+              below is kept (flagged off) for a future multi-store return. */}
+          {false && memberships.length > 1 ? (
             <div className="relative">
               <button
                 type="button"

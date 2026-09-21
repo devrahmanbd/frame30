@@ -103,6 +103,138 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Operator decrees recorded in progress.md: verify on production only,
   push to GitHub, path storefronts removed, shared-clone hazard noted.
 
+## [2026-09-21] — 84-widget port batch (`4153d77`)
+- Slices A/B/C/D: 20 layout chrome + 20 trust/commerce + 20 guides/advisors
+  + 24 data-backed placeholders → catalog + controls + renderers.
+- Contract gate: 304/304 pass (registration, category, controls-match,
+  instantiate, per-widget parity expects for all 101 widgets).
+- tsc clean on touched files; pre-existing errors in PageBuilder.tsx /
+  ThemesScreen.tsx untouched. tsgo binary unavailable locally; CircleCI
+  lint-typecheck is the gate.
+- Rebased onto `c6caaf9` (heritage-cutover merge); progress.md rewritten as
+  compact loop state, other session's placeholder-pipeline note preserved.
+
+## [2026-09-21] — final-4 port + audits (`476da4b`)
+- add_to_cart, rewards_club, wedding_shop, gift_finder → catalog +
+  controls + canvas renderers + parity expects. Contract 316/316.
+- Completed bundle_offer (i1–i4 variant IDs) + product_media (images,
+  thumbnails, zoom) scalar control coverage.
+- 4-agent swarm: slice-E porter + 3 read-only audits. Findings: 24 more
+  theme widgets verified missing (next set); all 24 slice-D widgets LIVE
+  on storefront; repeater conversion plan ranked (faq first, 8 total).
+- tsc clean on touched files; model.ts/PageBuilder errors pre-existing.
+
+## [2026-09-21] — parity-3 port (`02ef60d`)
+- 24 widgets (2 porter agents × 12): all theme defaults verified verbatim
+  against builder-ast.ts; newsletter canvas uses static mock (no live
+  form elements in the editing surface); icons deduped to resolvable
+  lucide names.
+- columns container support: model + sanitise + nodeHtml + canvas CSS
+  mapping; storefront already resolves via theme Container.
+- Contract 388/388 (new MEDIA/LAYOUT category sets); tsc clean on all
+  touched ranges (upgradeWidget/widgetHtml/Section drifts pre-existing).
+
+## [2026-09-21] — faq repeater conversion (`4925edd`)
+- TDD: failing contract + migration tests first, then minimal GREEN.
+- faq defaults gain `items: []`; panel uses one repeater (q1-a3 controls
+  removed, scalar defaults kept for pass-through); load migration seeds
+  items from non-empty scalars without overwriting author edits.
+- Canvas, theme renderer, and FAQPage JSON-LD all read items-first with
+  scalar fallback — storefront and SEO cannot diverge.
+- tsc caught a real bug pre-commit: block `const rows` shadowed the
+  `rows()` helper (TDZ) — renamed to `list`.
+- Icon registry gains CircleHelp. Known gap: repeater rows lack `_bn`
+  bilingual siblings (scalars keep theirs).
+
+## [2026-09-21] — product_qna repeater conversion (`5d4d96d`)
+- TDD + swarm: porter agent's pdp diff verified line-exact, applied as
+  specified; consumer audit replaced direct greps after agent infra
+  failure (icon orphan, askHref gap, SEO DATA_BACKED no-op confirmed).
+- Precedence items > live Q&A rows > scalars keeps scalar-only pages
+  byte-identical; loadQnaSource still stubbed so scalars stay live path.
+- Contract 400/400, studio suite 414/414, tsc clean on touched ranges.
+
+## [2026-09-21] — trust_bar repeater conversion (`04684d4`)
+- TDD + swarm: porter diff applied line-exact; audit via direct greps
+  (second agent hit provider overload twice running).
+- Icon values are TRUST_ICON keys — repeater icon field stays text-kind;
+  canvas STUDIO_TRUST_ICON table unchanged, unknown keys still "•".
+- Contract 402/402, studio 416/416, chrome+seo adjacent 26/26.
+
+## [2026-09-21] — announcement_bar repeater conversion (`8c0ddd8`)
+- TDD + swarm: both recon agents landed (theme spec + 9-area audit).
+- Row shape is {text} objects, not strings: PropValue admits PropRow[]
+  only, matching every repeater precedent; porter's String(row) adapted.
+- No SEO/export touch: zero announcement consumers there; m1/m2/m3
+  export invisibility pre-exists and is unchanged.
+- Contract 404/404, studio+chrome 426/426, tsc clean on touched ranges.
+
+## [2026-09-21] — lookbook repeater conversion (`4195642`)
+- TDD + swarm: both recon agents landed with exact line refs.
+- Ratio alternation is index-based in both paths, so items rows paint
+  identically to scalar order (landscape first).
+- Scope holds: legacy builder-ast fields, blueprints seeds, BITEXT,
+  widgetHtml/export untouched (zero consumers; fallback covers).
+- Contract 406/406, studio+atelier 433/433, tsc clean on touched ranges.
+
+## [2026-09-21] — hero repeater conversion (`cd2b57b`)
+- TDD + swarm: theme spec (with seed rule + leftover disposition) and
+  9-area audit both landed; spec applied line-exact after verification.
+- Hardest conversion so far: implicit slide 1 folded into row schema,
+  global CTA copied per scalar row, subheading first-slide-only.
+- Seeding mirrors the scalar keep-first filter exactly (slide 1 kept
+  when any slide has content).
+- Contract 408/408, studio+hero-adjacent 464/464, tsc clean on ranges.
+
+## [2026-09-21] — footer_sitemap + spec_table repeaters (`f512bc1`)
+- TDD + swarm: one spec+audit agent per widget, both landed.
+- footer: {title, links:textarea} rows (nested repeater unproven in all
+  20 existing blocks); tolerant parser fixes newline blueprint seeds.
+- spec: resolved > items > scalars preserves the resolved-wins
+  contract; tsc caught missing SpecPair.unit on item rows.
+- Icon registry gains FolderTree + Table. Repeaters 8/8 complete.
+- Contract 412/412, 463 incl. adjacent suites, tsc clean on ranges.
+
+## [2026-09-21] — Clothing Heritage activated on microscrop.shop
+- Operator-ordered: Flame Fashion BD (owner nahid52flame@gmail.com, not
+  flamedev7's Akira) switched Rupaboti → Clothing Heritage via
+  app-faithful activation (published pointer verified live first, flag
+  flip, coherence kept, theme.activated audit row, actor flamedev7).
+- Browser-verified: heritage homepage renders with zero console errors;
+  cart/quiz/announcement interactions proven earlier same day.
+- Server state: HEAD 933c059, fresh 16:02 CEST build+start, no errors;
+  disk 94% flagged. Registry draft refresh skipped (rendering-safe).
+
+## [2026-09-21] — onboarding trap + dead-link fixes (`53e1896`, deployed)
+- fix(auth): post-login always lands /dashboard; dual-gate membership
+  race bounced store owners to /onboarding (row proven returned).
+- fix(settings): no custom domain → connect-domain CTA, never a path
+  URL (bare 404 since cutover). Verified live.
+- Deploy contract green (path 404s hold, custom domain 200s).
+- RLS audit (live): writes clean; public reads uneven (products +
+  store_themes world-readable incl. drafts; variants properly gated).
+
+## [2026-09-21] — curated two-theme offer (`f5f0a36`, deployed)
+- Appearance grids show Supershop + Clothing Heritage only; active
+  theme exempt so the live storefront stays manageable. Reversible.
+- Contract: 23/23 appearance suite (2 new). tsc: only pre-existing
+  drift. Deploy contract green.
+
+## [2026-09-21] — merchant AI control removed (`1c28cca`, deployed)
+- Gateway config, copilot, AI triage inbox: hidden from nav, routes
+  redirect, RPCs denied server-side. askAssistantFn (public widget)
+  and /dashboard/support intentionally untouched.
+- Contract: 4 new gate tests green. Deploy contract green.
+
+## [2026-09-21] — marketplace curated offer + infra incident (`2b07c60`)
+- listCatalog filters themes server-side (same allowlist); widgets and
+  installs untouched. Bridge tests updated (10/10).
+- Disk-full outage: WAL 60G + shared usage → postgres crash loop.
+  Journal vacuum freed 3.4G, DB recovered, app green. WAL pruning left
+  for DR owner (PITR chain intact).
+- Deploy gap found: silent fetch failure built stale bundle; re-deploy
+  + live catalogue check ("2 Themes") closed it.
+
 ## [2026-09-18/19] — spectacular scope (from git history)
 - CI migrated to CircleCI (`aa744e8`); Supabase JWT/keys rotated (Sept 18).
 - Clothing-heritage theme + Aarong-grade storefront + demo catalogs.

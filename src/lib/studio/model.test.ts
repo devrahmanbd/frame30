@@ -133,3 +133,325 @@ describe("sectionsToStudioNodes", () => {
     expect(count).toBeLessThanOrEqual(13);
   });
 });
+
+describe("faq scalar-to-items migration", () => {
+  function faqDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "f1", el: "faq", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds items from scalar q/a pairs on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        faqDoc({ heading: "FAQ", q1: "Q1?", a1: "A1!", q2: "", a2: "", q3: "Q3?", a3: "" }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { question: "Q1?", answer: "A1!" },
+      { question: "Q3?", answer: "" },
+    ]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        faqDoc({
+          q1: "Old?",
+          a1: "Old.",
+          items: [{ question: "New?", answer: "New." }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ question: "New?", answer: "New." }]);
+  });
+});
+
+describe("product_qna scalar-to-items migration", () => {
+  function qnaDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "q1", el: "product_qna", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds items from scalar q/a pairs on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        qnaDoc({ heading: "Q&A", q1: "Size?", a1: "Runs large.", q2: "", a2: "" }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ question: "Size?", answer: "Runs large." }]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        qnaDoc({
+          q1: "Old?",
+          a1: "Old.",
+          items: [{ question: "New?", answer: "New." }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ question: "New?", answer: "New." }]);
+  });
+});
+
+describe("trust_bar scalar-to-items migration", () => {
+  function trustDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "t1", el: "trust_bar", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds items from scalar icon/title/body triples on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        trustDoc({
+          i1Icon: "delivery",
+          i1Title: "Fast delivery",
+          i1Body: "",
+          i2Icon: "returns",
+          i2Title: "",
+          i2Body: "",
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { icon: "delivery", title: "Fast delivery", body: "" },
+    ]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        trustDoc({
+          i1Title: "Old?",
+          items: [{ icon: "secure", title: "New?", body: "" }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ icon: "secure", title: "New?", body: "" }]);
+  });
+});
+
+describe("announcement_bar scalar-to-items migration", () => {
+  function announcementDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "a1", el: "announcement_bar", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds items from scalar m1/m2/m3 on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        announcementDoc({ m1: "Sale!", m2: "", m3: "New in" }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ text: "Sale!" }, { text: "New in" }]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        announcementDoc({ m1: "Old?", items: [{ text: "New!" }] }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ text: "New!" }]);
+  });
+});
+
+describe("lookbook scalar-to-items migration", () => {
+  function lookbookDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "l1", el: "lookbook", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds items from scalar image/alt/href triples on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        lookbookDoc({
+          i1Image: "/a.jpg",
+          i1Alt: "Look 1",
+          i1Href: "/c/1",
+          i2Image: "",
+          i2Alt: "",
+          i2Href: "",
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ image: "/a.jpg", alt: "Look 1", href: "/c/1" }]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        lookbookDoc({
+          i1Image: "/old.jpg",
+          items: [{ image: "/new.jpg", alt: "", href: "" }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ image: "/new.jpg", alt: "", href: "" }]);
+  });
+});
+
+describe("hero scalar-to-items migration", () => {
+  function heroDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "h1", el: "hero", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds slides from heading/image plus s2/s3 pairs on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        heroDoc({
+          heading: "Welcome",
+          image: "/hero.jpg",
+          subheading: "Sub",
+          ctaLabel: "Shop",
+          ctaHref: "/c",
+          s2Heading: "Slide two",
+          s2Image: "/s2.jpg",
+          s3Heading: "",
+          s3Image: "",
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { heading: "Welcome", image: "/hero.jpg", subheading: "Sub", ctaLabel: "Shop", ctaHref: "/c" },
+      { heading: "Slide two", image: "/s2.jpg", subheading: "", ctaLabel: "Shop", ctaHref: "/c" },
+    ]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        heroDoc({
+          heading: "Old?",
+          items: [{ heading: "New?", image: "", subheading: "", ctaLabel: "", ctaHref: "" }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { heading: "New?", image: "", subheading: "", ctaLabel: "", ctaHref: "" },
+    ]);
+  });
+});
+
+describe("footer_sitemap scalar-to-items migration", () => {
+  function footerDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "f1", el: "footer_sitemap", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds columns from cNTitle/cNLinks pairs, skipping fully-empty columns", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        footerDoc({
+          c1Title: "Shop",
+          c1Links: "New in|/, Best sellers|/",
+          c2Title: "",
+          c2Links: "Track order\nReturns",
+          c3Title: "",
+          c3Links: "",
+          c4Title: "",
+          c4Links: "",
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { title: "Shop", links: "New in|/, Best sellers|/" },
+      { title: "", links: "Track order\nReturns" },
+    ]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        footerDoc({
+          c1Title: "Old?",
+          items: [{ title: "New?", links: "A|/a" }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ title: "New?", links: "A|/a" }]);
+  });
+});
+
+describe("spec_table scalar-to-items migration", () => {
+  function specDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "s1", el: "spec_table", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds rows from rN triples, dropping label-empty rows", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        specDoc({
+          r1Group: "Display",
+          r1Label: "Size",
+          r1Value: '6.1"',
+          r2Group: "",
+          r2Label: "Weight",
+          r2Value: "",
+          r3Group: "Orphan group",
+          r3Label: "",
+          r3Value: "x",
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      { group: "Display", label: "Size", value: '6.1"' },
+      { group: "", label: "Weight", value: "" },
+    ]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        specDoc({
+          r1Label: "Old?",
+          items: [{ group: "", label: "New?", value: "" }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ group: "", label: "New?", value: "" }]);
+  });
+});

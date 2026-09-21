@@ -7,6 +7,7 @@
  */
 
 import type { Permission } from "./authz";
+import { MERCHANT_AI_ENABLED } from "./merchant-ai";
 
 export type IconKey =
   | "dashboard"
@@ -289,13 +290,19 @@ export const ADMIN_NAV: readonly NavGroup[] = [
       },
     ],
     more: [
-      {
-        to: "/dashboard/ai/assistant",
-        en: "AI assistant",
-        bn: "AI সহায়তা",
-        icon: "ai",
-        permission: "customers.read",
-      },
+      // Merchant AI is platform-only (MERCHANT_AI_ENABLED=false): the
+      // assistant entry is hidden; /dashboard/support stays the channel.
+      ...(MERCHANT_AI_ENABLED
+        ? [
+            {
+              to: "/dashboard/ai/assistant",
+              en: "AI assistant",
+              bn: "AI সহায়তা",
+              icon: "ai",
+              permission: "customers.read",
+            } as const,
+          ]
+        : []),
     ],
   },
   {
@@ -585,13 +592,18 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         icon: "apikeys",
         permission: "apikeys.read",
       },
-      {
-        to: "/dashboard/ai/settings",
-        en: "AI Gateway",
-        bn: "এআই গেটওয়ে",
-        icon: "ai",
-        permission: "settings.read",
-      },
+      // Merchant AI is platform-only (MERCHANT_AI_ENABLED=false).
+      ...(MERCHANT_AI_ENABLED
+        ? [
+            {
+              to: "/dashboard/ai/settings",
+              en: "AI Gateway",
+              bn: "এআই গেটওয়ে",
+              icon: "ai",
+              permission: "settings.read",
+            } as const,
+          ]
+        : []),
       {
         to: "/dashboard/settings/email",
         en: "Email & SMTP",
