@@ -170,3 +170,37 @@ describe("faq scalar-to-items migration", () => {
     expect(settings.items).toEqual([{ question: "New?", answer: "New." }]);
   });
 });
+
+describe("product_qna scalar-to-items migration", () => {
+  function qnaDoc(settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "q1", el: "product_qna", settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+
+  it("seeds items from scalar q/a pairs on load", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        qnaDoc({ heading: "Q&A", q1: "Size?", a1: "Runs large.", q2: "", a2: "" }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ question: "Size?", answer: "Runs large." }]);
+  });
+
+  it("preserves author-edited items instead of re-seeding", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        qnaDoc({
+          q1: "Old?",
+          a1: "Old.",
+          items: [{ question: "New?", answer: "New." }],
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([{ question: "New?", answer: "New." }]);
+  });
+});

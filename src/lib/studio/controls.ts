@@ -2334,7 +2334,19 @@ const CONTENT: Record<string, Control[]> = {
   product_qna: [
     c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Q&A" }),
     c({ key: "askLabel", label: "Ask button label", type: "text", tab: "content", section: "Q&A" }),
+    c({ key: "askHref", label: "Ask button link", type: "text", tab: "content", section: "Q&A" }),
     c({ key: "handle", label: "Product handle", type: "text", tab: "content", section: "Q&A" }),
+    c({
+      key: "items",
+      label: "Questions",
+      type: "repeater",
+      tab: "content",
+      section: "Q&A",
+      fields: [
+        c({ key: "question", label: "Question", type: "text", tab: "content", section: "Q&A" }),
+        c({ key: "answer", label: "Answer", type: "textarea", tab: "content", section: "Q&A" }),
+      ],
+    }),
   ],
   collection_grid: [
     c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Collections" }),

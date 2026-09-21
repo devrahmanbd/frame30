@@ -50,6 +50,7 @@ import {
   MapPin,
   Megaphone,
   Menu,
+  MessageSquareQuote,
   Minus,
   MousePointerClick,
   MoveVertical,
@@ -140,6 +141,7 @@ const ICON_REGISTRY: Record<
   gift: Gift,
   layers: Layers,
   menu: Menu,
+  messagesquarequote: MessageSquareQuote,
   megaphone: Megaphone,
   filter: Filter,
   compass: Compass,
@@ -699,11 +701,58 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "cart":
     case "checkout":
     case "menu-cart":
+    case "product_qna": {
+      const fromItems = rows(s, "items")
+        .map((row) => ({
+          q: String(row.question ?? ""),
+          a: String(row.answer ?? ""),
+        }))
+        .filter((row) => row.q);
+      const list =
+        fromItems.length > 0
+          ? fromItems
+          : [1, 2, 3]
+              .map((i) => ({
+                q: str(s, `q${i}`),
+                a: str(s, `a${i}`),
+              }))
+              .filter((row) => row.q);
+      if (list.length === 0)
+        return (
+          <Placeholder
+            label="Live questions and answers — renders on the storefront"
+          />
+        );
+      return (
+        <section className="rounded-fq-lg border border-border bg-card p-6">
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <div className="divide-y divide-border">
+            {list.map((row) => (
+              <details key={row.q}>
+                <summary className="cursor-pointer py-2 text-sm font-medium">
+                  {row.q}
+                </summary>
+                <p className="pb-3 text-sm text-muted-foreground">{row.a}</p>
+              </details>
+            ))}
+          </div>
+          {str(s, "askLabel") && (
+            <p className="mt-3">
+              <span className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+                {str(s, "askLabel")}
+              </span>
+            </p>
+          )}
+        </section>
+      );
+    }
+
     case "product_grid":
     case "product_rail":
     case "product_media":
     case "product_meta":
-    case "product_qna":
     case "collection_grid":
     case "account_cart":
     case "cart_drawer":

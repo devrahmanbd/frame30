@@ -1659,6 +1659,7 @@ export const WIDGETS: WidgetDef[] = [
       a2: "",
       q3: "",
       a3: "",
+      items: [],
     },
   },
   {

@@ -558,6 +558,7 @@ describe("ported theme widgets", () => {
       q1: "",
       a1: "",
     });
+    expect(WIDGET_BY_KEY.product_qna.defaults.items).toEqual([]);
     expect(WIDGET_BY_KEY.collection_grid.defaults).toMatchObject({
       heading: "Collections",
       limit: 8,

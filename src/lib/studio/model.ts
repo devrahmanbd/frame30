@@ -166,17 +166,18 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
     )
       node.children = children;
   }
-  if (raw.el === "faq") seedFaqItems(node);
+  if (raw.el === "faq" || raw.el === "product_qna") seedQaItems(node);
   return node;
 }
 
 /**
- * Repeater migration (faq first): pages saved with scalar q1/a1… pairs get
- * `items` seeded on load so the repeater panel and canvas show the same
- * content. Author-edited `items` are never overwritten. Scalars stay in
- * settings for theme/SEO pass-through until the transition completes.
+ * Repeater migration (faq, product_qna): pages saved with scalar q1/a1…
+ * pairs get `items` seeded on load so the repeater panel and canvas show
+ * the same content. Author-edited `items` are never overwritten. Scalars
+ * stay in settings for theme/SEO pass-through until the transition
+ * completes.
  */
-function seedFaqItems(node: StudioNode): void {
+function seedQaItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
   const seeded: { question: string; answer: string }[] = [];
