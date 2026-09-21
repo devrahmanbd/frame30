@@ -66,9 +66,9 @@ function WeaveMotif({ seed, className }: { seed: string; className?: string }) {
       className={className}
       aria-hidden="true"
     >
-      {Array.from({ length: 5 }, (_, r) =>
-        Array.from({ length: 4 }, (_, c) =>
-          diamond(50 + c * 100 + (r % 2 ? 50 : 0), 60 + r * 95, v === 2 ? 26 : 20, "0.5"),
+      {Array.from({ length: 7 }, (_, r) =>
+        Array.from({ length: 6 }, (_, c) =>
+          diamond(34 + c * 66 + (r % 2 ? 33 : 0), 36 + r * 68, v === 2 ? 24 : 18, "0.55"),
         ),
       )}
       {v % 2 === 0 && (
@@ -215,7 +215,7 @@ const HeroCarousel: WidgetComponent = ({
             ) : (
               <WeaveMotif
                 seed={slide.headline || "heritage"}
-                className="absolute inset-0 h-full w-full text-primary/60"
+                className="absolute inset-0 h-full w-full text-primary"
               />
             )}
           </div>
