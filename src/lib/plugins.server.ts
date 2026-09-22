@@ -21,7 +21,8 @@ import {
 
 type Client = SupabaseClient<Database>;
 
-const COLUMNS = "id, plugin_id, manifest, scopes, settings, enabled, auto_updates";
+const COLUMNS =
+  "id, plugin_id, manifest, scopes, settings, enabled, auto_updates, suspended, suspended_reason, suspended_at, version_pin, consented_by, manifest_version";
 
 export async function killSwitchOn(db: Client, pluginId: string) {
   const { data } = await db
@@ -57,7 +58,7 @@ export async function listInstalledPlugins(
         schema,
         row.settings ?? defaultSettings(schema),
       ).values,
-      enabled: !killed && row.enabled !== false,
+      enabled: !killed && row.enabled !== false && row.suspended !== true,
       autoUpdates: (row as any).auto_updates === true,
     });
   }
