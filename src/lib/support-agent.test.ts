@@ -38,6 +38,11 @@ import {
   BD_PHONE_REGEX,
 } from "./support-callbacks.server";
 import { createTicket } from "./support-tickets.server";
+import { resetRateLimitCircuitBreaker } from "./rate-limit.server";
+
+beforeEach(() => {
+  resetRateLimitCircuitBreaker();
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Phase 9.3 — Intent Detection: create_ticket
@@ -601,6 +606,7 @@ import {
   EPISTEMIC_HUMILITY_SIMILARITY_THRESHOLD,
   runSupportAgentTurn,
   askSupport,
+  rateConversation,
   getConversationTakeoverState,
 } from "./support-agent.server";
 import {
@@ -821,6 +827,54 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
       expect(res.contactInfo?.hours).toBe("9 AM – 10 PM BST");
       expect(res.contactInfo?.hoursBn).toBe("সকাল ৯:০০ – রাত ১০:০০ BST");
     });
+
+    it("welcomes customers on greetings without triggering epistemic humility circuit breaker", async () => {
+      const resEn = await runSupportAgentTurn({
+        slug: "demo",
+        message: "Hello there!",
+        locale: "en",
+      });
+
+      expect(resEn.epistemicTriggered).toBeFalsy();
+      expect(resEn.reply).toContain("Welcome to");
+      expect(resEn.reply).not.toContain(EPISTEMIC_ADMISSION_EN);
+
+      const resBn = await runSupportAgentTurn({
+        slug: "demo",
+        message: "হ্যালো, কেমন আছেন?",
+        locale: "bn",
+      });
+
+      expect(resBn.epistemicTriggered).toBeFalsy();
+      expect(resBn.reply).toContain("স্বাগতম");
+      expect(resBn.reply).not.toContain(EPISTEMIC_ADMISSION_BN);
+    });
+
+    it("constructively answers store shipping inquiries without triggering epistemic humility", async () => {
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        message: "What are your delivery charges and shipping times?",
+        locale: "en",
+      });
+
+      expect(res.epistemicTriggered).toBeFalsy();
+      expect(res.reply).not.toContain(EPISTEMIC_ADMISSION_EN);
+      expect(res.reply.toLowerCase()).toMatch(
+        /dhaka|delivery|courier|steadfast|pathao|checkout/i,
+      );
+    });
+
+    it("constructively answers store operating hours without triggering epistemic humility", async () => {
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        message: "What are your shop opening hours?",
+        locale: "en",
+      });
+
+      expect(res.epistemicTriggered).toBeFalsy();
+      expect(res.reply).not.toContain(EPISTEMIC_ADMISSION_EN);
+      expect(res.reply).toMatch(/open|hours|active|9:00|10:00/i);
+    });
   });
 });
 
@@ -964,5 +1018,47 @@ describe("Phase 12.5 — Bot Suppression Middleware for Human Takeover", () => {
 
   it("customerSendChatMessageFn is exported and functions properly", () => {
     expect(typeof customerSendChatMessageFn).toBe("function");
+  });
+
+  describe("Phase 12.6 — DeepWiki Synthesis Engine & RL Integration", () => {
+    it("answers complex platform queries using DeepWiki RAG with citations", async () => {
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        message:
+          "How does SteadFast courier automated dispatch and webhook sync work?",
+        locale: "en",
+        engine: "deepwiki",
+      });
+
+      expect(res.epistemicTriggered).toBeUndefined();
+      expect(res.reply).toContain("SteadFast Courier Logistics");
+      expect(res.reply).toContain("DeepWiki");
+      expect(res.deepWikiCitations).toBeDefined();
+      expect(res.deepWikiCitations!.length).toBeGreaterThan(0);
+      expect(res.deepWikiQueryId).toBeDefined();
+      expect(res.confidence).toBe("grounded");
+    });
+
+    it("reinforces DeepWiki edge weights when customer rates a conversation with 5 stars", async () => {
+      const convId = "conv-deepwiki-feedback-test";
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        conversationId: convId,
+        message:
+          "Tell me about bKash direct tokenized checkout and zero transaction commission",
+        locale: "en",
+        engine: "deepwiki",
+      });
+
+      expect(res.deepWikiQueryId).toBeDefined();
+
+      const ratingResult = await rateConversation(
+        convId,
+        5,
+        "Excellent information!",
+      );
+      expect(ratingResult.ok).toBe(true);
+      expect(ratingResult.rating).toBe(5);
+    });
   });
 });

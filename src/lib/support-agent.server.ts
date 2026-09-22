@@ -10,7 +10,7 @@
  * or order state. Two low-confidence turns in a row hand the thread to a human.
  */
 import { cached } from "./cache.server";
-import { en } from "./i18n-dict";
+import { en, DICT, interpolate, type Entry } from "./i18n-dict";
 import { fmtMinor } from "./money";
 import { incr, log, observe, withSpan } from "./observability.server";
 import { RateLimitError, rateLimit } from "./rate-limit.server";
@@ -38,6 +38,16 @@ import {
   type TrajectoryTurn,
 } from "./support-loop-detector.server";
 import { captureTrainingTurn } from "./ai-training-data.server";
+import {
+  queryDeepWiki,
+  type DeepWikiCitation,
+  type DeepWikiQueryResult,
+} from "./deepwiki-engine.server";
+
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+
+type Client = SupabaseClient<Database>;
 
 let mockAdminClient: unknown = null;
 
@@ -50,7 +60,7 @@ function createTestDbProxy(): unknown {
   let currentTable = "";
   let lastEqCol = "";
   let lastEqVal: unknown = null;
-  const queryBuilder: any = {
+  const queryBuilder: Record<string, unknown> = {
     select: (_cols?: string) => queryBuilder,
     insert: (_record?: unknown) => queryBuilder,
     update: (_record?: unknown) => queryBuilder,
@@ -109,12 +119,15 @@ function createTestDbProxy(): unknown {
         error: null,
       };
     },
-    then: (onfulfilled?: any, onrejected?: any) =>
-      promise.then(onfulfilled, onrejected),
-    catch: (onrejected?: any) => promise.catch(onrejected),
+    then: (
+      onfulfilled?: (value: unknown) => unknown,
+      onrejected?: (reason: unknown) => unknown,
+    ) => promise.then(onfulfilled, onrejected),
+    catch: (onrejected?: (reason: unknown) => unknown) =>
+      promise.catch(onrejected),
   };
 
-  const dbClient: any = {
+  const dbClient: Record<string, unknown> = {
     from: (table: string) => {
       currentTable = table;
       lastEqCol = "";
@@ -127,17 +140,17 @@ function createTestDbProxy(): unknown {
   return dbClient;
 }
 
-async function admin() {
-  if (mockAdminClient) return mockAdminClient as any;
+async function admin(): Promise<Client> {
+  if (mockAdminClient) return mockAdminClient as Client;
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return createTestDbProxy() as any;
+    return createTestDbProxy() as unknown as Client;
   }
   try {
     const { supabaseAdmin } =
       await import("@/integrations/supabase/client.server");
-    return supabaseAdmin;
+    return supabaseAdmin as unknown as Client;
   } catch {
-    return createTestDbProxy() as any;
+    return createTestDbProxy() as unknown as Client;
   }
 }
 
@@ -152,6 +165,7 @@ export type AskInput = {
   locale?: "bn" | "en";
   channel?: "widget" | "whatsapp" | "messenger";
   takeoverMode?: "ai" | "human_takeover" | null;
+  engine?: "kb" | "deepwiki" | "auto";
 };
 
 export type TicketAction = {
@@ -208,6 +222,8 @@ export type AskResult = {
   humanTakeover?: boolean;
   staffActive?: boolean;
   staffIndicator?: string;
+  deepWikiQueryId?: string;
+  deepWikiCitations?: DeepWikiCitation[];
 };
 
 export async function getConversationTakeoverState(
@@ -331,8 +347,16 @@ async function ensureConversation(
   phone: string | null,
   channel: AskInput["channel"],
 ) {
-  const db = await admin();
   if (conversationId) {
+    try {
+      const { getMockConversation } =
+        await import("./support-moderation.server");
+      const mock = getMockConversation(conversationId);
+      if (mock) return mock.id;
+    } catch {
+      // ignore
+    }
+    const db = await admin();
     const { data } = await db
       .from("ai_conversations")
       .select("id")
@@ -341,6 +365,7 @@ async function ensureConversation(
       .maybeSingle();
     if (data) return data.id;
   }
+  const db = await admin();
   const { data, error } = await db
     .from("ai_conversations")
     .insert({
@@ -380,15 +405,13 @@ async function appendMessage(
   if (recent.length > 12) recent.shift();
   CONVERSATION_RECENT_TURNS.set(conversationId, recent);
 
-  await db
-    .from("ai_messages")
-    .insert({
-      merchant_id: merchantId,
-      conversation_id: conversationId,
-      role,
-      body: safe,
-      flagged,
-    });
+  await db.from("ai_messages").insert({
+    merchant_id: merchantId,
+    conversation_id: conversationId,
+    role,
+    body: safe,
+    flagged,
+  });
   await db
     .from("ai_conversations")
     .update({ last_message_at: new Date().toISOString() })
@@ -554,6 +577,34 @@ To ensure you receive accurate and verified assistance, please select one of the
    • 💬 WhatsApp: ${contactInfo.whatsapp}
    • ✉️ Email: ${contactInfo.email}
    • ⏰ Hours: ${contactInfo.hours}`;
+}
+
+export function translate(
+  locale: "bn" | "en",
+  key: string,
+  vars?: Record<string, string | number>,
+): string {
+  const entry = (DICT as Record<string, Entry>)[key];
+  if (!entry) return key;
+  return interpolate(locale === "bn" ? entry.bn : entry.en, vars);
+}
+
+export function getFallbackReply(
+  intent: Intent,
+  locale: "bn" | "en" = "en",
+): string {
+  const keyMap: Record<Intent, string> = {
+    order_status: "support.ask_order_details",
+    refund: "support.faq.refund",
+    faq_shipping: "support.faq.shipping",
+    faq_hours: "support.faq.hours",
+    product: "support.faq.product",
+    create_ticket: "support.ticket_prompt",
+    request_callback: "support.callback_prompt",
+    other: "support.faq.other",
+  };
+  const key = keyMap[intent] || "support.faq.other";
+  return translate(locale, key);
 }
 
 const FALLBACK: Record<Intent, string> = {
@@ -866,11 +917,29 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       intent === "request_callback" ||
       intent === "refund";
 
+    const isCommerceIntent =
+      intent === "faq_shipping" ||
+      intent === "faq_hours" ||
+      intent === "product" ||
+      intent === "order_status";
+
+    const isGreeting =
+      /^(hi|hello|hey|salam|assalamu\s*alaikum|greetings|help|howdy|good\s*(morning|afternoon|evening))\b/i.test(
+        input.message.trim(),
+      ) ||
+      /^(নমস্কার|সালাম|আসসালামু\s*আলাইকুম|হ্যালো|হাই|কেমন আছেন|সাহায্য)/i.test(
+        input.message.trim(),
+      );
+
     const isSpeculative = detectUngroundedOrSpeculative(input.message);
-    const topVectorSim = hits[0]?.vector_sim;
+    const topHit = hits[0];
+    const hasStrongTextMatch =
+      (topHit?.text_rank ?? 0) >= 0.5 || (topHit?.combined_score ?? 0) >= 0.05;
+    const topVectorSim = topHit?.vector_sim;
     const lowVectorSim =
       topVectorSim !== undefined &&
-      topVectorSim < EPISTEMIC_HUMILITY_SIMILARITY_THRESHOLD;
+      topVectorSim < EPISTEMIC_HUMILITY_SIMILARITY_THRESHOLD &&
+      !hasStrongTextMatch;
     const noKbHits = hits.length === 0;
 
     const contactInfo: ContactInfoCard = {
@@ -881,8 +950,37 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       hoursBn: "সকাল ৯:০০ – রাত ১০:০০ BST",
     };
 
+    // 4.1 DeepWiki Synthesis Engine (Multi-Hop RAG + RL + Atropos fallback)
+    const forceDeepWiki = input.engine === "deepwiki";
+    let deepWikiResult: DeepWikiQueryResult | null = null;
+    if (
+      !pinned &&
+      !isActionIntent &&
+      !isGreeting &&
+      !isSpeculative &&
+      (forceDeepWiki || noKbHits || lowVectorSim)
+    ) {
+      try {
+        const dw = await queryDeepWiki({
+          merchantId: merchant.id,
+          query: input.message,
+          locale,
+          conversationId,
+        });
+        if (dw && dw.citations.length > 0) {
+          deepWikiResult = dw;
+        }
+      } catch (err) {
+        log("warn", "deepwiki.query_failed", { error: String(err) });
+      }
+    }
+
     const triggerEpistemicHumility =
-      !pinned && !isActionIntent && (isSpeculative || noKbHits || lowVectorSim);
+      !pinned &&
+      !isActionIntent &&
+      !isGreeting &&
+      !deepWikiResult &&
+      (isSpeculative || noKbHits || lowVectorSim);
 
     if (triggerEpistemicHumility) {
       const humilityReply = buildEpistemicHumilityReply(locale, contactInfo);
@@ -938,7 +1036,14 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     let reply = pinned?.reply ?? "";
     let sources: Source[] = pinned ? [pinned.source] : [];
 
-    if (!pinned && hits.length) {
+    if (deepWikiResult) {
+      reply = deepWikiResult.answer;
+      sources = deepWikiResult.citations.map((c) => ({
+        label: c.citationTag,
+        table: "deepwiki",
+        title: c.title,
+      }));
+    } else if (!pinned && hits.length) {
       const draft = await draftAnswer({
         question: input.message,
         context: hits.map((h) => ({ title: h.title, body: h.body })),
@@ -947,13 +1052,21 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       if (draft) {
         reply = draft.text;
         sources = hits.slice(0, 3).map((h) => ({
-          label: en("support.provenance.kb"),
+          label: translate(locale, "support.provenance.kb"),
           table: "support_kb_docs",
           title: h.title,
         }));
       }
     }
-    if (!reply) reply = FALLBACK[intent];
+
+    if (!reply && isGreeting) {
+      reply =
+        locale === "bn"
+          ? `${merchant.name}-এ আপনাকে স্বাগতম! আমি কীভাবে সাহায্য করতে পারি? আমাদের পণ্য, অর্ডার ট্র্যাক করা, ডেলিভারি চার্জ বা রিটার্ন পলিসি সম্পর্কে যে কোনো তথ্য জানতে পারেন।`
+          : `Welcome to ${merchant.name}! How can I help you today? Feel free to ask about our products, order status, shipping details, or return policy.`;
+    }
+
+    if (!reply) reply = getFallbackReply(intent, locale);
 
     // 5. Outbound guardrail: no authority claims, no unpinned figures.
     const outbound = screenOutbound(reply, { pinned: Boolean(pinned) });
@@ -965,10 +1078,12 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         outbound.rule ?? "unknown",
         reply,
       );
-      reply = en("support.needs_human");
+      reply = translate(locale, "support.needs_human");
     }
 
-    const flagged = confidence === "unsure" || !outbound.allowed;
+    const flagged =
+      (!isGreeting && !pinned && confidence === "unsure" && !hits.length) ||
+      !outbound.allowed;
     await appendMessage(merchant.id, conversationId, "bot", reply, flagged);
 
     // 6. Action tools: ticket creation and callback request.
@@ -1202,23 +1317,33 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
           : "answered",
     }).catch(() => null);
 
+    const finalConfidence: Confidence = deepWikiResult
+      ? deepWikiResult.confidence === "high"
+        ? "grounded"
+        : "speculative"
+      : confidence;
+
     return {
       conversationId,
       reply,
-      provenance: pinned?.source ?? null,
+      provenance: deepWikiResult
+        ? (sources[0] ?? null)
+        : (pinned?.source ?? null),
       sources,
-      confidence,
+      confidence: finalConfidence,
       needsAgent,
       cta,
       ticketId,
       ticketAction,
       callbackAction,
       actionPaths:
-        needsAgent || confidence === "unsure"
+        needsAgent || finalConfidence === "unsure"
           ? EPISTEMIC_ACTION_PATHS
           : undefined,
       contactInfo:
-        needsAgent || confidence === "unsure" ? contactInfo : undefined,
+        needsAgent || finalConfidence === "unsure" ? contactInfo : undefined,
+      deepWikiQueryId: deepWikiResult?.queryId,
+      deepWikiCitations: deepWikiResult?.citations,
     };
   });
 }
@@ -1241,6 +1366,23 @@ export async function rateConversation(
   await updateTurnCsat(conversationId, value, safeReview ?? undefined).catch(
     () => null,
   );
+
+  // 1.1 Update DeepWiki RL Edge Weights via Atropos feedback
+  try {
+    const { getLatestDeepWikiQueryForConversation, applyAtroposFeedback } =
+      await import("./deepwiki-engine.server");
+    const dwRecord = getLatestDeepWikiQueryForConversation(conversationId);
+    if (dwRecord) {
+      await applyAtroposFeedback({
+        queryId: dwRecord.queryId,
+        rating: value,
+        feedbackText: safeReview ?? undefined,
+        isResolved: value >= 4,
+      });
+    }
+  } catch {
+    // Non-blocking RL feedback
+  }
 
   // 2. Persist to Supabase
   try {
