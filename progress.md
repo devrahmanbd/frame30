@@ -25,6 +25,16 @@ verify on production; push to GitHub.
 - D7 two agents share clone + server: coordinate deploy windows, verify
   HEAD + bundle markers post-deploy, never reset shared history.
 
+## Swarm review integration (`2f87586`, deployed + verified)
+- 3-agent swarm (correctness, perf, test-gaps) returned actionable
+  findings; applied after verification (1 agent claim refuted: twin
+  already rendered nodes): container recursion + hidden gating,
+  verified+bound preview tokens (junk token now 404s live), seller
+  mine-flag through filter, atomic activation flip, no-double-H1.
+- 48/48 tests (new: containers, hidden, null-key-active, mine-flag).
+  Perf findings queued (uncached loadStorefront, variant double-read,
+  menus, bundle weight, serial tails, TTL matrix) — not yet built.
+
 ## WP-parity loop (operator order, Sept 22)
 - Rules: /loop dev (batch ≤5, progress.md state, tests/lint/build) +
   /loop testfix (verify, max 3 failures); github push + pull + mem0
