@@ -89,40 +89,14 @@ export function ThemePreviewFrame({
       aria-label={`${themeName} theme preview`}
       className="fixed inset-0 z-50 flex flex-col bg-background"
     >
-      {/* ---- floating controls (the only chrome): template tabs + close ---- */}
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center p-3">
-        <div className="pointer-events-auto flex max-w-full items-center gap-1 rounded-full border border-border bg-card/90 p-1 shadow-md backdrop-blur">
-          <nav
-            aria-label="Template"
-            className="flex max-w-[60vw] items-center gap-1 overflow-x-auto"
-          >
-            {TEMPLATE_KEYS.map((key) => (
-              <button
-                key={key}
-                type="button"
-                aria-pressed={template === key}
-                onClick={() => setTemplate(key)}
-                className={cn(
-                  "whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
-                  template === key
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                )}
-              >
-                {TAB_LABELS[key]}
-              </button>
-            ))}
-          </nav>
-          <button
-            type="button"
-            aria-label="Close preview"
-            onClick={onClose}
-            className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <X className="size-4" aria-hidden />
-          </button>
-        </div>
-      </div>
+      {/* ---- floating controls: a single dot that expands on demand.
+          The preview itself stays chrome-free; nothing here may read as
+          theme navigation. ---- */}
+      <PreviewDock
+        template={template}
+        setTemplate={setTemplate}
+        onClose={onClose}
+      />
 
       {/* ---- responsive CSS injected once ---- */}
       {responsiveCss && (
@@ -189,6 +163,72 @@ export function ThemePreviewFrame({
         </div>
       </div>
 
+    </div>
+  );
+}
+
+/** Collapsed preview dock: one small corner dot, expands on click. */
+function PreviewDock({
+  template,
+  setTemplate,
+  onClose,
+}: {
+  template: TemplateKey;
+  setTemplate: (t: TemplateKey) => void;
+  onClose: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="fixed bottom-3 right-3 z-50">
+      {open ? (
+        <div className="flex max-w-[86vw] items-center gap-1 rounded-2xl border border-border bg-card/95 p-1.5 shadow-lg backdrop-blur">
+          <nav
+            aria-label="Template"
+            className="flex items-center gap-1 overflow-x-auto"
+          >
+            {TEMPLATE_KEYS.map((key) => (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={template === key}
+                onClick={() => {
+                  setTemplate(key);
+                  setOpen(false);
+                }}
+                className={cn(
+                  "whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
+                  template === key
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+              >
+                {TAB_LABELS[key]}
+              </button>
+            ))}
+          </nav>
+          <button
+            type="button"
+            aria-label="Close preview"
+            onClick={onClose}
+            className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <X className="size-4" aria-hidden />
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          aria-label="Preview controls"
+          onClick={() => setOpen(true)}
+          className="grid size-10 place-items-center rounded-full border border-border bg-card/90 text-muted-foreground opacity-60 shadow-md backdrop-blur transition hover:opacity-100"
+        >
+          <span aria-hidden="true" className="flex gap-1">
+            <span className="size-1.5 rounded-full bg-current" />
+            <span className="size-1.5 rounded-full bg-current" />
+            <span className="size-1.5 rounded-full bg-current" />
+          </span>
+        </button>
+      )}
     </div>
   );
 }
