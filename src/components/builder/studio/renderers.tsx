@@ -2881,7 +2881,13 @@ function StudioCountdown({ label, endsAt }: { label: string; endsAt: string }) {
           {label}
         </p>
       )}
-      <p className="font-bangla-display text-2xl font-bold tabular-nums">
+      {/* suppressHydrationWarning: SSR and first client paint compute
+        Date.now() at different seconds; the 1s ticker corrects after
+        mount. Without this, SSR storefront pages throw React #418. */}
+      <p
+        className="font-bangla-display text-2xl font-bold tabular-nums"
+        suppressHydrationWarning
+      >
         {diff > 0 ? parts.join(" ") : "Ended"}
       </p>
     </div>
