@@ -188,7 +188,7 @@ function TrustBar({ str, section }: WidgetCtx) {
 
 function PaymentIcons({ str, Heading }: WidgetCtx) {
   const marks = str("marks")
-    .split(",")
+    .split(/[,\n]+/)
     .map((m) => m.trim())
     .filter(Boolean)
     .slice(0, 12);

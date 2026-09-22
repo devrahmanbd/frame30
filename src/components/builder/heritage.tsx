@@ -237,7 +237,7 @@ const DepartmentGrid: WidgetComponent = ({
 }) => {
   const departments = rowsOf(section, "departments").map((row) => ({
     image: readString(row, "image"),
-    name: readString(row, "name"),
+    name: readString(row, "name") || readString(row, "title"),
     nameBn: readString(row, "name_bn"),
     count: readNumber(row, "count", 0),
     href: readString(row, "href"),
@@ -331,8 +331,11 @@ const HeritageStory: WidgetComponent = ({
   editing,
 }) => {
   const image = str("image");
-  const headline = str("headline");
+  const headline = str("headline") || str("heading");
+  const eyebrow = str("eyebrow") || str("caption");
   const body = str("body");
+  const ctaLabel = str("ctaLabel") || str("buttonLabel");
+  const ctaHref = str("ctaHref") || str("buttonHref");
   const founderQuote = str("founder_quote");
   const founderName = str("founder_name");
   const layout = str("layout") || "left";
@@ -374,6 +377,11 @@ const HeritageStory: WidgetComponent = ({
 
   const textBlock = (
     <div className="flex flex-col justify-center">
+      {eyebrow && (
+        <p className="mb-2 text-[11px] fq-caps tracking-[0.16em] text-muted-foreground">
+          {eyebrow}
+        </p>
+      )}
       <Heading className="text-2xl font-bold leading-tight sm:text-3xl">
         {headline}
       </Heading>
@@ -381,6 +389,14 @@ const HeritageStory: WidgetComponent = ({
         <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
           {body}
         </p>
+      )}
+      {ctaLabel && (
+        <a
+          href={ctaHref || "#"}
+          className="mt-4 inline-flex min-h-11 w-fit items-center rounded-fq-sm border border-current px-5 text-sm font-medium transition hover:bg-muted"
+        >
+          {ctaLabel}
+        </a>
       )}
       {founderQuote && (
         <blockquote className="mt-6 border-l-2 border-amber-700 pl-4 italic text-muted-foreground">
@@ -422,15 +438,26 @@ const TextileShowcase: WidgetComponent = ({
   editing,
   money,
 }) => {
-  const products = rowsOf(section, "products").map((row) => ({
-    image: readString(row, "image"),
-    name: readString(row, "name"),
-    nameBn: readString(row, "name_bn"),
-    price: readNumber(row, "price", 0),
-    href: readString(row, "href"),
-  }));
-  const headline = str("headline");
-  const ctaLabel = str("cta_label");
+  const productRows = rowsOf(section, "products");
+  const itemRows = rowsOf(section, "items");
+  const products =
+    productRows.length > 0
+      ? productRows.map((row) => ({
+          image: readString(row, "image"),
+          name: readString(row, "name"),
+          nameBn: readString(row, "name_bn"),
+          price: readNumber(row, "price", 0),
+          href: readString(row, "href"),
+        }))
+      : itemRows.map((row) => ({
+          image: readString(row, "image"),
+          name: readString(row, "title"),
+          nameBn: "",
+          price: readNumber(row, "price", 0),
+          href: readString(row, "href"),
+        }));
+  const headline = str("headline") || str("heading");
+  const ctaLabel = str("cta_label") || str("ctaLabel");
 
   if (products.length === 0) {
     return editing ? (
@@ -513,10 +540,11 @@ const EditorialBanner: WidgetComponent = ({
   editing,
 }) => {
   const image = str("image");
-  const headline = str("headline");
-  const subhead = str("subhead");
-  const ctaLabel = str("cta_label");
-  const ctaUrl = str("cta_url");
+  const headline = str("headline") || str("heading");
+  const subhead = str("subhead") || str("body");
+  const eyebrow = str("eyebrow");
+  const ctaLabel = str("cta_label") || str("ctaLabel");
+  const ctaUrl = str("cta_url") || str("ctaHref");
   const overlay = str("overlay") || "dark";
 
   if (!headline) {
@@ -570,6 +598,11 @@ const EditorialBanner: WidgetComponent = ({
           className={`absolute inset-0 flex flex-col items-start justify-end p-6 sm:p-10 ${overlayCls}`}
         >
           <div className="max-w-xl">
+            {eyebrow && (
+              <p className="mb-2 text-[11px] fq-caps tracking-[0.16em] opacity-80">
+                {eyebrow}
+              </p>
+            )}
             <Heading className="text-2xl font-bold sm:text-4xl">
               {headline}
             </Heading>
@@ -681,10 +714,20 @@ const MarqueeStrip: WidgetComponent = ({
   locale,
   editing,
 }) => {
-  const items = rowsOf(section, "items").map((row) => ({
+  const rowItems = rowsOf(section, "items").map((row) => ({
     text: readString(row, "text"),
     icon: readString(row, "icon"),
   }));
+  // Blueprint fallback: scalar label split on middle-dot / comma / newline.
+  const labelItems =
+    rowItems.length === 0 && str("label")
+      ? str("label")
+          .split(/[·,|\n]/)
+          .map((part) => part.trim())
+          .filter(Boolean)
+          .map((text) => ({ text, icon: "" }))
+      : [];
+  const items = rowItems.length > 0 ? rowItems : labelItems;
   const speed = str("speed") || "normal";
   const direction = str("direction") || "left";
 
