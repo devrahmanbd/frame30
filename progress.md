@@ -47,6 +47,11 @@ verify on production; push to GitHub.
   backfill), applied live, archive lists all 3. Import tests 13/13.
 - [ ] Category deep-check (surface present: /c/* live 200, admin
   route exists — needs user to pinpoint the exact gap).
+- [x] Collection 404 batch (`39ae95b`, deployed): demo re-imports
+  left all 8 collections unpublished (default false, writer never
+  stamps) while sitemap/links advertised them. Republished live
+  (UPDATE 8, /c/* 200) + import path now publishes catalog slugs.
+  Import tests 13/13. Sitemap self-heals (filters unpublished).
 - [ ] Permalink custom patterns live-proving (code + contract solid,
   Flame still on defaults; custom-pattern switch is SEO-sensitive).
 - [ ] Theme creation test suite (WP Theme-Check style gate for
