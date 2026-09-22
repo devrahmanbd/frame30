@@ -16,14 +16,14 @@ function chain(rows: unknown[]) {
 }
 
 describe("marketplace preset bridge", () => {
-  it("lists only the curated offer keys (operator two-theme decision)", async () => {
+  it("lists no curated offer keys (themes removed Sept 2026)", async () => {
     const db = { from: vi.fn(() => chain([])) } as never;
     const catalog = await listCatalog(
       db,
       "00000000-0000-4000-a000-000000000001",
     );
     const slugs = catalog.themes.map((t) => t.slug).sort();
-    expect(slugs).toEqual(["clothing-heritage", "supershop"]);
+    expect(slugs).toEqual([]);
     for (const entry of catalog.themes) {
       expect(entry.builtin).toBe(true);
       expect(entry.kind).toBe("theme");

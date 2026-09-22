@@ -18,9 +18,9 @@ function walk(section: Section, visit: (node: Section) => void) {
 
 describe("official theme presets", () => {
   it("ships fourteen themes with unique keys and sort order", () => {
-    expect(THEME_PRESETS).toHaveLength(14);
+    expect(THEME_PRESETS).toHaveLength(12);
     const keys = new Set(THEME_PRESETS.map((p) => p.key));
-    expect(keys.size).toBe(14);
+    expect(keys.size).toBe(12);
   });
 
   for (const preset of THEME_PRESETS) {

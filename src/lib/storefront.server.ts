@@ -468,7 +468,7 @@ async function loadStorefrontUncached(
     resolvedCollections.length === 0
   ) {
     const { demoCatalogFor } = await import("./demo-catalog");
-    const demo = demoCatalogFor(theme?.themeKey ?? "clothing-heritage");
+    const demo = demoCatalogFor(theme?.themeKey ?? "bazaar");
     if (resolvedProducts.length === 0) {
       resolvedProducts = demo.products.map((dp, idx) => ({
         id: `demo-${dp.slug}`,
