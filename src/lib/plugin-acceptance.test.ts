@@ -319,6 +319,16 @@ describe("R2-8 step 3 — signed egress + verify-side", () => {
         ),
       ).rejects.toThrow(/plugin_hook_secret_missing/);
       expect(fetchMock).not.toHaveBeenCalled();
+      // Fail-closed path is loud too: warn + unsigned metric before the throw.
+      expect(
+        recorder.logs.some(
+          (l) =>
+            l.level === "warn" && l.event === "plugin.hook.unsigned_secret",
+        ),
+      ).toBe(true);
+      expect(
+        recorder.of("framique_plugin_hook_total", ["status", "unsigned"]),
+      ).toHaveLength(1);
       await expect(
         deliverQueuedHook({
           pluginId: PLUGIN,

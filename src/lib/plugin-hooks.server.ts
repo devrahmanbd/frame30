@@ -200,8 +200,10 @@ async function callOne(
 }
 
 /**
- * Runs every subscriber of a hook in parallel. Never throws and never rejects:
- * the caller inspects outcomes and always keeps its own computed result.
+ * Runs every subscriber of a hook in parallel. Never throws or rejects except
+ * fail-closed `plugin_hook_secret_missing` when `PLUGIN_HOOK_SECRET` is unset
+ * outside tests (no unsigned callback ever leaves us). Host flows stay
+ * protected because every emission site awaits inside try/catch.
  */
 export async function runHook(
   installed: readonly InstalledPlugin[],
