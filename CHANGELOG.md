@@ -96,6 +96,29 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   degrades to 202 on missing warehouse schema (owner migration pending);
   hydration nonce mismatch fixed (empty-coerce + csp-nonce meta read).
 
+## [2026-09-22] — auth tab bounce fix (`2aeb88e`, deployed)
+- Bug: on `/auth?mode=signup`, clicking the Sign In tab focused but the
+  form bounced back to Create Account. Root cause: tab handlers set local
+  `mode` state only (never the URL); the `search.mode` sync effect saw
+  divergence and stomped local state back to `search.mode`.
+- Fix: single source of truth — `mode` derives from `search.mode`;
+  `switchMode()` navigates with `nextAuthSearch()` (preserves `redirect`).
+  Sync effect replaced by clear-notices-on-mode-change; all 7 mode-switch
+  call sites (tabs, MFA, forgot-password, footer links) go through it.
+- New `src/lib/auth-mode.ts` (`parseAuthMode`, `nextAuthSearch`) +
+  `auth-mode.test.ts` with architecture guard asserting no local mode
+  state remains. 6/6 pass; typecheck + lint clean on touched files.
+- Verified on production: signin↔signup tabs, forgot-password→reset, all
+  URL updates confirmed, no console errors.
+
+## [2026-09-22] — WordPress Theme Handbook index (`adb49e5`)
+- `docs/themes/wordpress-handbook-index.md`: 137 pages, 11 chapters
+  (Getting Started, Core Concepts, Templates, Patterns, theme.json,
+  Features, Classic Themes, Advanced Topics, Releasing, Credits).
+- Parity mapping noted: template hierarchy / theme.json / patterns /
+  customizer / review guidelines map to our unified theme system as
+  separate WP chapters.
+
 ## [2026-09-21] — main (other loop: page-builder Elementor parity)
 - Ported theme widgets as native studio widgets (faq, marquee, countdown,
   banner, trust_bar, announcement_bar; then 11 heritage/hero widgets).
