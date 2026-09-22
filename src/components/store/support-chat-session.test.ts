@@ -4,6 +4,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   clearSupportChatSession,
+  getInitialGreeting,
   loadSupportChatSession,
   saveSupportChatSession,
 } from "./SupportWidget";
@@ -60,5 +61,14 @@ describe("support chat session", () => {
     });
     expect(loadSupportChatSession("b", "store")).toBeNull();
     expect(loadSupportChatSession("a", "platform")).toBeNull();
+  });
+});
+
+describe("getInitialGreeting", () => {
+  const t = (en: string) => en;
+  it("varies by mode", () => {
+    expect(getInitialGreeting(t, "store")).toContain("order status");
+    expect(getInitialGreeting(t, "platform")).toContain("Welcome to Framique");
+    expect(getInitialGreeting(t, "dashboard")).toContain("Copilot");
   });
 });
