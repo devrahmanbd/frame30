@@ -13,7 +13,7 @@ import { useLang } from "@/lib/i18n";
 import { Page } from "@/components/console/kit";
 
 export const Route = createFileRoute("/_authenticated/dashboard/plugins/")({
-  staticData: consoleRoute({ permission: "themes.read" }),
+  staticData: consoleRoute({ permission: "plugins.read" }),
   head: () => ({
     meta: [
       { title: "Installed Plugins — Framique Admin" },

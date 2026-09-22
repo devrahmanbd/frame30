@@ -27,6 +27,8 @@ export const SCOPES = [
   "webhooks.write",
   "themes.read",
   "themes.write",
+  "plugins.read",
+  "plugins.write",
 ] as const;
 
 export type Scope = (typeof SCOPES)[number];
@@ -124,6 +126,20 @@ export const SCOPE_CATALOG: ScopeInfo[] = [
     scope: "themes.write",
     en: "Activate a theme on the storefront",
     bn: "স্টোরফ্রন্টে থিম সক্রিয় করা",
+    pii: false,
+    mutating: true,
+  },
+  {
+    scope: "plugins.read",
+    en: "Read installed plugins and their settings",
+    bn: "ইনস্টল করা প্লাগইন ও সেটিংস পড়া",
+    pii: false,
+    mutating: false,
+  },
+  {
+    scope: "plugins.write",
+    en: "Install, configure and toggle plugins",
+    bn: "প্লাগইন ইনস্টল, কনফিগার ও চালু/বন্ধ করা",
     pii: false,
     mutating: true,
   },

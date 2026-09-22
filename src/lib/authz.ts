@@ -57,6 +57,9 @@ export const PERMISSIONS = [
   "themes.update",
   "themes.publish",
   "themes.approve",
+  // plugins
+  "plugins.read",
+  "plugins.update",
   // analytics
   "analytics.read",
   "analytics.export",
