@@ -16,9 +16,10 @@
  * - Step 9 emission fire/no-throw ......... plugin-emission.test.ts
  * - Step 10 full gate suite ............... report (typecheck/test/contracts/
  *                                           schema:check/lint)
- * - PROD GATE (Task 5 review): callbacks go silently unsigned when
- *   PLUGIN_HOOK_SECRET is unset — THIS FILE pins that behavior and the
- *   loud-missing-secret guard is a recorded follow-up (CHANGELOG).
+ * - PROD GATE (Task 5 review): callbacks went silently unsigned when
+ *   PLUGIN_HOOK_SECRET was unset — fixed by the loud-missing-secret guard
+ *   (warn + unsigned metric always; throw outside tests). THIS FILE asserts
+ *   both halves.
  */
 import { describe, expect, it, vi, afterEach, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
@@ -269,7 +270,7 @@ describe("R2-8 step 3 — signed egress + verify-side", () => {
     ).resolves.toBe(false);
   });
 
-  it("PROD GATE (pinned gap): unset secret sends callbacks UNSIGNED — loud-guard follow-up recorded", async () => {
+  it("missing secret is LOUD in test env: warn + unsigned metric, still delivers unsigned", async () => {
     let seen: RequestInit | undefined;
     vi.stubGlobal(
       "fetch",
@@ -291,6 +292,48 @@ describe("R2-8 step 3 — signed egress + verify-side", () => {
     expect(headers["x-framique-delivery"]).toMatch(
       /^hook:r2-8-probe:order\.created:[0-9a-f]+$/,
     );
+    expect(
+      recorder.logs.some(
+        (l) => l.level === "warn" && l.event === "plugin.hook.unsigned_secret",
+      ),
+    ).toBe(true);
+    expect(
+      recorder.of("framique_plugin_hook_total", ["status", "unsigned"]),
+    ).toHaveLength(1);
+  });
+
+  it("missing secret fails closed outside tests: throws, never delivers", async () => {
+    const fetchMock = vi.fn(async () => new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    delete process.env.PLUGIN_HOOK_SECRET;
+    const prevNode = process.env.NODE_ENV;
+    const prevVitest = process.env.VITEST;
+    process.env.NODE_ENV = "production";
+    delete process.env.VITEST;
+    try {
+      await expect(
+        runHook(
+          [subscriber("order.created", HOOK_SCOPE["order.created"])],
+          "order.created",
+          { id: "o1" },
+        ),
+      ).rejects.toThrow(/plugin_hook_secret_missing/);
+      expect(fetchMock).not.toHaveBeenCalled();
+      await expect(
+        deliverQueuedHook({
+          pluginId: PLUGIN,
+          installId: INSTALL,
+          hook: "order.created",
+          body: "{}",
+          hooksUrl: "https://apps.example.com/hooks",
+        }),
+      ).rejects.toThrow(/plugin_hook_secret_missing/);
+    } finally {
+      if (prevNode === undefined) delete process.env.NODE_ENV;
+      else process.env.NODE_ENV = prevNode;
+      if (prevVitest === undefined) delete process.env.VITEST;
+      else process.env.VITEST = prevVitest;
+    }
   });
 });
 

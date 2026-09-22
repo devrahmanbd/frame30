@@ -8,7 +8,7 @@
  * abandoned and the core result stands.
  */
 
-import { incr, observe } from "./observability.server";
+import { incr, log, observe } from "./observability.server";
 import type { InstalledPlugin, ServerHook } from "./plugin-manifest";
 import {
   computeSignature,
@@ -106,6 +106,18 @@ async function callOne(
       status: "skipped:scope",
       ms: 0,
     };
+  }
+  // R2-3: an unset secret is loud, never silent. Always warn + metric;
+  // outside tests fail closed so no unsigned callback ever leaves us.
+  const hookSecret = process.env.PLUGIN_HOOK_SECRET;
+  if (!hookSecret) {
+    log("warn", "plugin.hook.unsigned_secret", {
+      hook,
+      plugin: plugin.manifest.id,
+    });
+    incr("framique_plugin_hook_total", { hook, status: "unsigned" });
+    if (process.env.NODE_ENV !== "test" && !process.env.VITEST)
+      throw new Error("plugin_hook_secret_missing");
   }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -230,6 +242,14 @@ export async function deliverQueuedHook(payload: Record<string, unknown>) {
       ? String(payload["deliveryId"])
       : `hook:${pluginId}:${hook}:${simpleHash(body)}`;
   const secret = process.env.PLUGIN_HOOK_SECRET;
+  // R2-3 (queued half): same loud guard as the live path; a throw here
+  // reaches the worker's error handling — never an unsigned redelivery.
+  if (!secret) {
+    log("warn", "plugin.hook.unsigned_secret", { hook, plugin: pluginId });
+    incr("framique_plugin_hook_total", { hook, status: "unsigned" });
+    if (process.env.NODE_ENV !== "test" && !process.env.VITEST)
+      throw new Error("plugin_hook_secret_missing");
+  }
   const ts = Math.floor(Date.now() / 1000);
   const signature = secret
     ? signatureHeader(ts, [await computeSignature(secret, ts, body)])

@@ -108,6 +108,13 @@ export async function installListing(
     };
   }
 
+  // R2-1: subset-enforced on the ledger path too — a grant outside the
+  // listing manifest's permissions is refused before any write (mirrors
+  // upsertPlugin's unknown check; listingScopes already is those perms).
+  const unknown = granted.filter((s) => !listingScopes.includes(s));
+  if (unknown.length)
+    throw new Error(`plugin_consent_required:${unknown.join(",")}`);
+
   const charge = input.trial ? 0 : listing.price_minor_int;
   const previous = await snapshotCurrent(db, merchantId, input.kind);
 
@@ -592,6 +599,11 @@ export async function uninstallWidgetInstall(
     .maybeSingle();
   if (!row || row.kind !== "widget")
     throw new Error("market_install_not_found");
+
+  // Terminal must be terminal: a purged row is a no-op (mirrors
+  // purgePluginJob's already_purged shape) — never regress to uninstalling.
+  if ((row.status as string) === "purged")
+    return { ok: true, purged: false, reason: "already_purged" };
 
   // R2-6: widget uninstalls ALWAYS purge — mark the ledger row transitional.
   await db

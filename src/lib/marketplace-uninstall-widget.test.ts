@@ -150,4 +150,31 @@ describe("uninstallWidgetInstall", () => {
     await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL, "user-9");
     expect(db.rows("marketplace_widgets")[0].install_count).toBe(4);
   });
+
+  it("second uninstall of a purged row is a no-op (terminal stays terminal)", async () => {
+    const db = fakeDb({
+      tables: {
+        marketplace_installs: [
+          {
+            id: INSTALL,
+            kind: "widget",
+            listing_slug: "whatsapp-chat",
+            status: "purged",
+            merchant_id: MERCHANT,
+          },
+        ],
+        plugin_state: [],
+      },
+    });
+    const out = await uninstallWidgetInstall(
+      db.asClient(),
+      MERCHANT,
+      INSTALL,
+      "user-9",
+    );
+    expect(out).toEqual({ ok: true, purged: false, reason: "already_purged" });
+    expect(db.rows("marketplace_installs")[0].status).toBe("purged");
+    expect(db.rows("job_queue")).toHaveLength(0);
+    expect(db.rows("activity_log")).toHaveLength(0);
+  });
 });

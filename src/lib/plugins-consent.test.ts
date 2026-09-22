@@ -139,6 +139,21 @@ describe("R2-1 consent evidence (installListing)", () => {
     });
   }
 
+  it("rejects an unknown scope with plugin_consent_required and writes nothing", async () => {
+    const db = installDb();
+    await expect(
+      installListing(db.asClient(), MERCHANT, {
+        kind: "widget",
+        listingId: LISTING,
+        trial: false,
+        idempotencyKey: "consent-key-evil",
+        grantedScopes: ["read_shop", "drain_wallet"],
+        consentedBy: ACTOR,
+      }),
+    ).rejects.toThrow(/plugin_consent_required:drain_wallet/);
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+
   it("persists granted_scopes and consented_by on the install row", async () => {
     const db = installDb();
     await installListing(db.asClient(), MERCHANT, {
