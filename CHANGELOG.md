@@ -96,6 +96,46 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   degrades to 202 on missing warehouse schema (owner migration pending);
   hydration nonce mismatch fixed (empty-coerce + csp-nonce meta read).
 
+## [2026-09-22] — Plugin Phase 1 core rebuild CLOSED (P1-0…P1-5)
+- Scope: `docs/superpowers/specs/2026-09-22-plugin-system-rebuild-design.md`
+  §2 + §7 gates (TDD, deny/replay/audit on every `[A]` mutation, prod
+  verification, push + mem0 + CHANGELOG per task).
+- Task 1 probes (`6ad92b2`, empty): `plugin_state` (3 rows) +
+  `plugin_kill_switch` (0 rows) exist live with RLS; browser round-trip
+  UNPROVEN (isolated probe redirected to /auth, no credentials).
+- Task 2 DDL capture (`232009f` + review fix `eb10f3a`): phase2j migration
+  mirrors live columns verbatim (incl. kill-switch `public_read USING
+  (true)`), RLS + GRANTs, `market_install_status` += `purged` (`removed`
+  untouched). Applied live 2026-09-22 as `supabase_admin` (postgres role
+  is not superuser/owner — plain `-u postgres` psql fails with
+  must-be-owner; local-trust `-U supabase_admin` works).
+- Task 2b backfill (`b4f92a1`): phase2k `ADD COLUMN IF NOT EXISTS
+  auto_updates` — phase2j's `CREATE TABLE IF NOT EXISTS` never adds the
+  column on live. Live `\d` proves `auto_updates boolean NOT NULL DEFAULT
+  false`, enum gains `purged`, 3 policies intact, RLS on.
+- Task 3 authz (`b8b3573`): `requirePermission("plugins.*")` on all plugin
+  fns; Plugins routes/nav on `plugins.read`; `PERMISSIONS` +=
+  `plugins.read/update`.
+- Task 4 schema v1.5 (`20539a4`): textarea/color/media/url/date in
+  `validateSettings` + `PluginSettingsForm` (unknown keys dropped, numbers
+  clamped, strict selects preserved).
+- Task 5 parity (`0f17105`): plugin search, auto-updates toggle column
+  (`setPluginAutoUpdates` + `pluginAutoUpdatesFn`), bottom bulk bar,
+  Add-New unified on `tab: "plugin"`, `install_count` decrement on
+  uninstall; presets gain `plugins.read`, matrix trimmed to read/update.
+- Task 6 gate (`4deeb74`): `savePluginSettings(db, m, p, values, actorId?)`
+  writes `plugin.settings_saved` audit; `pluginSettingsSaveFn` passes
+  `context.userId`. Deny (cross-merchant refused + untouched) + replay
+  (double save, one row, last wins) + audit (settings + auto-updates rows).
+- Tests: plugin suite 51/51 (7 files), contracts 258/258 gate OK.
+  `bun run typecheck` infra-blocked (`tsgo: command not found`, exit 127)
+  — CI lint-typecheck owns the loop-closing. `bun run schema:check`
+  infra-blocked (fingerprint RPC 400) — live `\d` + policy list is the
+  drift proof.
+- Concerns: anon role holds table GRANTs (RLS still denies — no anon
+  policy); `/dashboard/plugins` production pass still needs an
+  authenticated session (UNPROVEN, never fabricated).
+
 ## [2026-09-22] — auth tab bounce fix (`2aeb88e`, deployed)
 - Bug: on `/auth?mode=signup`, clicking the Sign In tab focused but the
   form bounced back to Create Account. Root cause: tab handlers set local
