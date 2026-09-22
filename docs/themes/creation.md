@@ -24,7 +24,7 @@ for catalogue review.
 | 9 | Widgets with presets | Every widget the theme renders has catalogue defaults and bilingual props filled at build | `src/lib/theme-section.ts:44-68`, `src/lib/studio/catalog.ts:48-64` |
 | 10 | Forms | Contact (`form`), newsletter, search, quiz/consult/trade-in submittable patterns (see §5) | `src/lib/studio/catalog.ts:2010-2027`, `src/lib/studio/catalog.ts:2046-2057`, `src/lib/contact.functions.ts:4-24`, `src/lib/newsletter.functions.ts:13-50` |
 | 11 | Sign in | Storefront account entry: header `account_cart` link + `src/routes/store.$slug.account.tsx` + `src/routes/account.tsx`; there is **no** sign-in theme template — the theme's job is the link, not the form | `src/lib/studio/catalog.ts:1686-1692`, `src/routes/store.$slug.account.tsx`, `src/routes/account.tsx` |
-| 12 | Sign up | Same surface as sign in (merchant auth routes incl. `src/routes/root/login.tsx`); theme must not invent its own credential form | `src/routes/root/login.tsx` |
+| 12 | Sign up | Same surface as sign in (merchant console auth at `src/routes/auth.tsx`); theme must not invent its own credential form | `src/routes/auth.tsx` |
 
 Notes on areas 11–12: the template keys are fixed at
 `src/lib/builder-ast.ts:46-59` (`index`, `product`, `collection`, `page`,
@@ -92,7 +92,7 @@ Each template is a `ThemeAst` (`src/lib/builder-ast.ts:281-286`):
 Reference compositions:
 
 - Code presets build all eight keys in `build()`
-  (`src/lib/theme-presets.ts:387-410`), with per-key builders at
+  (`src/lib/theme-presets.ts:387-407`), with per-key builders at
   `indexTemplate` (`:123`), `productTemplate` (`:175`),
   `collectionTemplate` (`:211`), `searchTemplate` (`:246`),
   `pageTemplate` (`:266`), `blogTemplate` (`:291`), `cartTemplate` (`:327`),
@@ -140,10 +140,14 @@ export type Section = {
   (`:785-788`) form `THEME_PRESETS`. Lookup: `presetByKey()`
   (`:790-792`). Preset swap without content loss: `applyPreset()`
   (`:824-850`).
-- **Blueprint** (`src/lib/theme-blueprints.ts:1-12`): the four vertical
-  themes (Bazaar, Atelier, Circuit, Rupaboti) built through the shared
-  section factory. The only blueprint currently in the shipped catalogue is
-  Atelier (see `src/lib/theme-presets.ts:780-788`).
+- **Blueprint** (`src/lib/theme-blueprints.ts:1-12`): vertical themes
+  (Bazaar, Atelier, Circuit, Rupaboti) built through the shared section
+  factory, plus the split-out `src/lib/themes/clothing-heritage/`
+  directory (`index.ts` wires `tokens/header/footer/homepage/secondary`;
+  shipped keys at `src/lib/theme-blueprints.ts:578` via
+  `SHIPPED_BLUEPRINT_KEYS`, re-exported into `THEME_PRESETS`
+  (`src/lib/theme-presets.ts:785-787`)). The curated offer ships
+  Supershop + Clothing Heritage.
 - **Catalogue metadata** (`src/lib/themes/catalog-meta.ts:13-21`):
   `{ author, subjects, features, layouts, tags, rating, installs }`.
   `rating`/`installs` are honest zeros until marketplace telemetry exists
@@ -156,8 +160,10 @@ export type Section = {
 
 Start from `DEFAULT_TOKENS` and override brand/accent/surface/ink plus
 layout knobs. Copy an existing `tokens({...})` call, e.g. Atelier
-(`src/lib/theme-blueprints.ts:627-649`) or a preset `Spec.tokens`
-(`src/lib/theme-presets.ts:432-444`).
+(`src/lib/theme-blueprints.ts:618-644`), heritage
+(`src/lib/themes/clothing-heritage/tokens.ts`), or a preset
+`Spec.tokens` (`src/lib/theme-presets.ts:432-444`). Heritage dark sets
+live beside the light set in the same file.
 
 ### Step 2 — Templates
 
@@ -392,7 +398,7 @@ import a noop):
 | Step | Server fn (`src/lib/themes.functions.ts`) | Service (`src/lib/theme-imports.server.ts`) | SQL |
 |------|-------------------------------------------|---------------------------------------------|-----|
 | Preflight (read-only conflicts) | `importPreflightFn` (`:208-217`) `{ themeKey }` | `importPreflight` (`:108-159`) | — |
-| Slides (hero_carousel; `hero` fallback for repeater blueprints) | `importThemeSlidesFn` (`:219-228`) | `importThemeSlides` (`:273-309`) | `import_theme_slides` (`supabase/migrations/20260920_import_rpcs.sql:15-150`, amended `20260922090100_import_slides_hero.sql:8-190`) |
+| Slides (hero_carousel; `hero` fallback for repeater-shaped blueprints — themes whose hero is a `hero` repeater widget rather than `hero_carousel`) | `importThemeSlidesFn` (`:219-228`) | `importThemeSlides` (`:273-309`) | `import_theme_slides` (`supabase/migrations/20260920_import_rpcs.sql:15-150`, amended `20260922090100_import_slides_hero.sql:8-190`) |
 | Media | `importThemeMediaFn` (`:230-239`) `{ themeKey, overwrite? }` | `importThemeMedia` (`:315-360`) | `import_theme_media` |
 | Products (+variants, collections link) | `importThemeProductsFn` (`:241-258`) `{ themeKey, overwrite? }` (+ catalog) | `importThemeProducts` (`:367-414`) | `import_theme_products` |
 | Posts (articles + storefront pages) | `importThemePostsFn` (`:260-269`) `{ themeKey, overwrite? }` | `importThemePosts` (`:420-465`) | `import_theme_posts` |
