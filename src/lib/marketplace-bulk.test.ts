@@ -18,6 +18,7 @@ vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./rate-limit.server", () => allowAllRateLimits());
 
 const { bulkInstallStatus } = await import("./marketplace-install.server");
+const { setPluginAutoUpdates } = await import("./plugins.server");
 
 const MERCHANT = "22222222-2222-2222-2222-222222222222";
 const ACTOR = "99999999-9999-4999-8999-999999999999";
@@ -126,5 +127,14 @@ describe("bulkInstallStatus", () => {
       db.rows("marketplace_installs").find((r) => r.id === W1)!.status,
     ).toBe("removed");
     expect(db.rows("plugin_state")).toHaveLength(0);
+  });
+
+  it("persists the auto-updates flag per install", async () => {
+    // NOTE(deviation from brief): brief uses "some-plugin", but bulkDb()
+    // seeds only "whatsapp-chat" and the server impl is update-only, so an
+    // unknown id could never flip GREEN. Same intent, existing row.
+    const db = bulkDb();
+    await setPluginAutoUpdates(db.asClient(), MERCHANT, "whatsapp-chat", true, ACTOR);
+    expect(db.rows("plugin_state").find((r: any) => r.plugin_id === "whatsapp-chat").auto_updates).toBe(true);
   });
 });

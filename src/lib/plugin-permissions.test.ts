@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PERMISSIONS } from "./authz";
+import { PERMISSIONS, ROLE_PRESETS } from "./authz";
 import { readFileSync } from "node:fs";
 describe("plugins.* permissions", () => {
   it("registers plugins.read and plugins.update", () => {
@@ -18,5 +18,12 @@ describe("plugins.* permissions", () => {
     const nextKey = nav.indexOf('key: "marketplace"', start);
     const block = nav.slice(start, nextKey === -1 ? start + 1500 : nextKey);
     expect(block).not.toMatch(/themes\.(read|update)/);
+  });
+  it("mirrors themes read/update in every role preset with plugins read/update", () => {
+    for (const [name, perms] of Object.entries(ROLE_PRESETS)) {
+      const list = perms as readonly string[];
+      if (list.includes("themes.read")) expect(list, name).toContain("plugins.read");
+      if (list.includes("themes.update")) expect(list, name).toContain("plugins.update");
+    }
   });
 });

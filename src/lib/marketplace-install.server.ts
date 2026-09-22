@@ -591,6 +591,19 @@ export async function uninstallWidgetInstall(
       .eq("plugin_id", row.listing_slug);
   }
 
+  const { data: widget } = await db
+    .from("marketplace_widgets")
+    .select("id, install_count")
+    .eq("slug", row.listing_slug)
+    .maybeSingle();
+  if (widget)
+    await db
+      .from("marketplace_widgets")
+      .update({
+        install_count: Math.max(0, (widget.install_count ?? 1) - 1),
+      })
+      .eq("id", widget.id);
+
   await db
     .from("marketplace_installs")
     .update({ status: "removed" as never })

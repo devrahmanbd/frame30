@@ -406,6 +406,8 @@ export type InstalledPlugin = {
   settings: SettingsValues;
   /** Merchant paused it, or the platform kill switch disabled the tenant. */
   enabled: boolean;
+  /** Per-install auto-updates flag (`plugin_state.auto_updates`, Task 2 column). */
+  autoUpdates?: boolean;
 };
 
 export type PluginResolution =

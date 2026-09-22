@@ -112,4 +112,14 @@ describe("uninstallWidgetInstall", () => {
     expect(out.removedPlugin).toBe(false);
     expect(db.rows("marketplace_installs")[0].status).toBe("removed");
   });
+
+  it("decrements the widget install_count on uninstall", async () => {
+    const db = fakeDb({ tables: {
+      marketplace_installs: [{ id: INSTALL, kind: "widget", listing_slug: "whatsapp-chat", status: "installed", merchant_id: MERCHANT }],
+      plugin_state: [{ id: "p-1", merchant_id: MERCHANT, plugin_id: "whatsapp-chat", enabled: true }],
+      marketplace_widgets: [{ id: "w-1", slug: "whatsapp-chat", install_count: 5 }],
+    }});
+    await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL, "user-9");
+    expect(db.rows("marketplace_widgets")[0].install_count).toBe(4);
+  });
 });

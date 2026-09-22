@@ -75,6 +75,23 @@ export const pluginToggleFn = createServerFn({ method: "POST" })
     );
   });
 
+export const pluginAutoUpdatesFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("plugins.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ pluginId, enabled: z.boolean() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { setPluginAutoUpdates } = await import("./plugins.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return setPluginAutoUpdates(
+      context.supabase,
+      merchantId,
+      data.pluginId,
+      data.enabled,
+      context.userId,
+    );
+  });
+
 export const pluginUninstallFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("plugins.update")])
   .inputValidator((d: unknown) => z.object({ pluginId }).parse(d))

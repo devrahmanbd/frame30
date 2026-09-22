@@ -20,7 +20,7 @@ import {
 
 type Client = SupabaseClient<Database>;
 
-const COLUMNS = "id, plugin_id, manifest, scopes, settings, enabled";
+const COLUMNS = "id, plugin_id, manifest, scopes, settings, enabled, auto_updates";
 
 export async function killSwitchOn(db: Client, pluginId: string) {
   const { data } = await db
@@ -57,6 +57,7 @@ export async function listInstalledPlugins(
         row.settings ?? defaultSettings(schema),
       ).values,
       enabled: !killed && row.enabled !== false,
+      autoUpdates: (row as any).auto_updates === true,
     });
   }
   return out;
@@ -198,6 +199,31 @@ export async function setPluginEnabled(
     },
     null,
   );
+}
+
+export async function setPluginAutoUpdates(
+  db: Client,
+  merchantId: string,
+  pluginId: string,
+  autoUpdates: boolean,
+  actorId?: string | null,
+) {
+  const { error } = await db
+    .from("plugin_state")
+    .update({ auto_updates: autoUpdates, updated_at: new Date().toISOString() })
+    .eq("merchant_id", merchantId)
+    .eq("plugin_id", pluginId);
+  if (error) throw new Error("plugin_auto_updates_failed");
+  await auditAction(
+    db,
+    merchantId,
+    actorId ?? null,
+    autoUpdates ? "plugin.auto_updates_enabled" : "plugin.auto_updates_disabled",
+    "plugin",
+    { plugin: pluginId },
+    null,
+  );
+  return { ok: true, auto_updates: autoUpdates };
 }
 
 export async function uninstallPlugin(
