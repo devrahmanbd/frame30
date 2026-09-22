@@ -73,8 +73,9 @@ export type UpsertInput = {
 };
 
 /**
- * Install or update a plugin. An update that adds permissions is refused
- * unless the merchant re-consented to exactly those scopes.
+ * Install or update a plugin. A grant must be a subset of the manifest's
+ * permissions — partial grants are allowed; unknown/superset scopes are
+ * refused until the merchant re-consents to exactly those scopes.
  */
 export async function upsertPlugin(
   db: Client,
@@ -91,9 +92,9 @@ export async function upsertPlugin(
     throw new Error(`plugin.bundle_rejected:${bundleVerdict.errors.join(",")}`);
 
   const granted = Array.from(new Set(input.grantedScopes)).sort();
-  const missing = manifest.permissions.filter((p) => !granted.includes(p));
-  if (missing.length)
-    throw new Error(`plugin_consent_required:${missing.join(",")}`);
+  const unknown = granted.filter((p) => !manifest.permissions.includes(p));
+  if (unknown.length)
+    throw new Error(`plugin_consent_required:${unknown.join(",")}`);
 
   const { data: existing } = await db
     .from("plugin_state")
@@ -115,10 +116,12 @@ export async function upsertPlugin(
     merchant_id: merchantId,
     plugin_id: manifest.id,
     manifest: manifest as unknown as Json,
-    scopes: manifest.permissions,
+    scopes: granted,
     settings: settings as unknown as Json,
     enabled: (existing as any)?.enabled ?? true,
     updated_at: new Date().toISOString(),
+    consented_by: (input.actorId ?? null) as never,
+    manifest_version: manifest.version as never,
   };
 
   const { error } = await db
@@ -140,6 +143,19 @@ export async function upsertPlugin(
       plugin: manifest.id,
       version: manifest.version,
       scopes: manifest.permissions,
+    },
+    input.installId ?? null,
+  );
+  await auditAction(
+    db,
+    merchantId,
+    input.actorId ?? null,
+    "plugin.scopes_granted",
+    "plugin",
+    {
+      plugin: manifest.id,
+      scopes: granted,
+      manifest_version: manifest.version,
     },
     input.installId ?? null,
   );

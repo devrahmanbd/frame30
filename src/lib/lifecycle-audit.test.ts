@@ -120,12 +120,23 @@ describe("plugin lifecycle audit", () => {
       actorId: ACTOR,
     });
     const rows = db.rows("activity_log");
-    expect(rows).toHaveLength(1);
+    expect(rows).toHaveLength(2);
     expect(rows[0]).toMatchObject({
       merchant_id: MERCHANT,
       actor: ACTOR,
       action: "plugin.installed",
       resource_type: "plugin",
+    });
+    expect(rows[1]).toMatchObject({
+      merchant_id: MERCHANT,
+      actor: ACTOR,
+      action: "plugin.scopes_granted",
+      resource_type: "plugin",
+      changed: {
+        plugin: "audit-probe",
+        scopes: ["render_storefront"],
+        manifest_version: "1.0.0",
+      },
     });
   });
 

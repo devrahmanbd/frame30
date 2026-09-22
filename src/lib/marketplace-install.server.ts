@@ -130,7 +130,9 @@ export async function installListing(
       expires_at: input.trial
         ? new Date(Date.now() + TRIAL_DAYS * 86_400_000).toISOString()
         : null,
-    })
+      granted_scopes: granted as never,
+      consented_by: (input.consentedBy ?? null) as never,
+    } as never)
     .select("id")
     .single();
   if (error || !install) throw new Error("market_install_failed");
