@@ -1,0 +1,276 @@
+import type { Section } from "../../builder-ast";
+import type { SectionBuilder } from "./types";
+
+export function buildHomepageMain(s: SectionBuilder): Section[] {
+  return [
+    s("hero_carousel", {
+      autoAdvanceMs: 6000,
+      slides: [
+        {
+          image: "/api/public/ph/hero/heritage-festive-drop.svg",
+          headline: "The Festive Drop ’26 is here",
+          headline_bn: "উৎসব কালেকশন ’২৬ এসে গেছে",
+          subhead:
+            "Pure silk panjabis, Jamdani sarees & wedding finery — woven for the season of celebrations",
+          ctaLabel: "Shop festive",
+          ctaUrl: "/collections/eid-festive",
+          caption: "Festive Drop ’26",
+        },
+        {
+          image: "/api/public/ph/hero/heritage-weaves.svg",
+          headline: "Woven with patience, worn with pride",
+          headline_bn: "যত্নে বোনা, গর্বে পরা",
+          subhead: "Tangail & Jamdani handloom — a living craft legacy",
+          ctaLabel: "Explore the collection",
+          ctaUrl: "/collections/all",
+          caption: "Living Craft",
+        },
+        {
+          image: "/api/public/ph/hero/artisan-story.svg",
+          headline: "65,000+ rural artisans empowered",
+          headline_bn: "৬৫,০০০+ গ্রামীণ কারিগরের পাশে",
+          subhead: "Fair-trade handloom from 64 districts",
+          ctaLabel: "Our story",
+          ctaUrl: "/pages/about",
+          caption: "Fair Trade",
+        },
+      ],
+    }),
+    s("trust_bar", {
+      items: [
+        {
+          icon: "delivery",
+          title: "Nationwide 48h dispatch",
+          body: "Orders dispatched within 48 hours, anywhere in Bangladesh",
+        },
+        {
+          icon: "returns",
+          title: "7-day easy exchange",
+          body: "Hassle-free size and style exchanges within 7 days",
+        },
+        {
+          icon: "secure",
+          title: "100% genuine craft",
+          body: "Authentic handloom, certified by master weavers",
+        },
+        {
+          icon: "support",
+          title: "Dedicated helpline 10am-9pm",
+          body: "Real humans, every day from 10am to 9pm",
+        },
+      ],
+    }),
+    s("department_grid", {
+      heading: "Explore by department",
+      departments: [
+        {
+          image: "/api/public/ph/womens/tangail-taant-cotton-saree.svg",
+          name: "Women's Wear",
+          name_bn: "নারীদের পোশাক",
+          count: 698,
+          href: "/c/womens",
+        },
+        {
+          image: "/api/public/ph/mens/pure-silk-embroidered-panjabi.svg",
+          name: "Men's Wear",
+          name_bn: "পুরুষদের পোশাক",
+          count: 412,
+          href: "/c/mens",
+        },
+        {
+          image: "/api/public/ph/kids/kids-festive-kurta.svg",
+          name: "Kids & Teens",
+          name_bn: "শিশু ও কিশোর",
+          count: 236,
+          href: "/c/kids",
+        },
+        {
+          image:
+            "/api/public/ph/living/handcrafted-nakshi-kantha-quilt.svg",
+          name: "Living & Crafts",
+          name_bn: "জীবনযাপন ও হস্তশিল্প",
+          count: 184,
+          href: "/c/living",
+        },
+        {
+          image:
+            "/api/public/ph/jewelry/terracotta-heritage-necklace.svg",
+          name: "Handcrafted Jewelry",
+          name_bn: "হস্তনির্মিত গহনা",
+          count: 156,
+          href: "/c/jewelry",
+        },
+        {
+          image: "/api/public/ph/taaga/taaga-fusion-kurti.svg",
+          name: "Taaga Fusion",
+          name_bn: "তাগা ফিউশন",
+          count: 322,
+          href: "/c/taaga-fusion",
+        },
+        {
+          image: "/api/public/ph/earth/aarong-earth-handloom-tote.svg",
+          name: "Aarong Earth",
+          name_bn: "আড়ং আর্থ",
+          count: 148,
+          href: "/c/aarong-earth",
+        },
+        {
+          image: "/api/public/ph/sale/festive-sale-edit.svg",
+          name: "Festive Sale",
+          name_bn: "উৎসব ছাড়",
+          count: 264,
+          href: "/c/festive-sale",
+        },
+      ],
+    }),
+    s("product_rail", {
+      heading: "New arrivals",
+      collection: "new-in",
+      limit: 8,
+      cardVariant: "editorial",
+      showRating: true,
+      promise: "In stock · Dispatched in 24h",
+    }),
+    s("collection_story", {
+      eyebrow: "Puja ’26",
+      heading: "Made for the season of light",
+      body: "Festive silks, handloom cottons and sparkling details — crafted for Puja celebrations.",
+      ctaLabel: "Shop the festive edit",
+      ctaHref: "/collections/eid-festive",
+      imageUrl: "/api/public/ph/hero/heritage-festive-drop.svg",
+      scrim: true,
+    }),
+    s("lookbook", {
+      heading: "Shop the look",
+      i1Image: "/api/public/ph/look/puja-festive-look.svg",
+      i1Alt: "Puja",
+      i1Href: "/collections/eid-festive",
+      i2Image: "/api/public/ph/look/wedding-bridal-look.svg",
+      i2Alt: "Wedding",
+      i2Href: "/collections/wedding",
+      i3Image: "/api/public/ph/look/everyday-handloom-look.svg",
+      i3Alt: "Everyday",
+      i3Href: "/collections/all",
+      i4Image: "/api/public/ph/look/home-decor-look.svg",
+      i4Alt: "Home",
+      i4Href: "/collections/home-decor",
+      offset: true,
+    }),
+    s("textile_showcase", {
+      headline: "Our textiles",
+      items: [
+        {
+          image: "/api/public/ph/textile/dhakai-jamdani.svg",
+          title: "Jamdani",
+          subtitle: "Dhakai royal drape",
+        },
+        {
+          image: "/api/public/ph/textile/tangail-taant.svg",
+          title: "Tangail Taant",
+          subtitle: "Handloom cotton",
+        },
+        {
+          image: "/api/public/ph/textile/nakshi-kantha.svg",
+          title: "Nakshi Kantha",
+          subtitle: "Hand embroidery",
+        },
+        {
+          image: "/api/public/ph/textile/pure-silk.svg",
+          title: "Pure Silk",
+          subtitle: "Rajshahi festive",
+        },
+      ],
+    }),
+    s("wedding_shop", {
+      heading: "The Wedding Shop",
+      body: "Bridal sarees, groom panjabis and festive finery for the big day and every celebration around it.",
+      c1Name: "Bridal Sarees",
+      c1Href: "/collections/bridal-sarees",
+      c2Name: "Groom Panjabis",
+      c2Href: "/collections/groom-panjabis",
+      c3Name: "Festive Gifting",
+      c3Href: "/collections/festive-gifting",
+      buttonLabel: "Shop all wedding",
+      buttonHref: "/collections/wedding",
+    }),
+    s("gift_finder", {
+      heading: "Find the perfect gift",
+      body: "Thoughtful handcrafted gifts for every occasion — pick who you are shopping for.",
+      o1Label: "For Her",
+      o1Query: "saree",
+      o2Label: "For Him",
+      o2Query: "panjabi",
+      o3Label: "For Home",
+      o3Query: "kantha",
+      buttonLabel: "Browse all gifts",
+    }),
+    s("heritage_story", {
+      eyebrow: "The master weavers",
+      headline: "Tangail & Jamdani: A living legacy",
+      body: "On wooden pit looms in Tangail and Sonargaon, master weavers carry forward centuries of handloom craft. Every thread is dyed, warped and woven by hand — no two pieces exactly alike.",
+      ctaLabel: "Read the story",
+      ctaHref: "/blog/master-weavers",
+      image: "/api/public/ph/story/master-weavers.svg",
+    }),
+    s("editorial_banner", {
+      eyebrow: "Festive occasions",
+      headline: "Pure silk panjabi & fine muslin",
+      subhead: "Natural fibers cut for Bangladeshi celebrations.",
+      cta_label: "See the collection",
+      cta_url: "/collections/eid-festive",
+    }),
+    s("testimonial_carousel", {
+      testimonials: [
+        {
+          quote:
+            "My Jamdani from Aarong drapes like a dream — the weave is so fine it feels alive. I get compliments every time I wear it.",
+          author: "Farhana Ahmed",
+        },
+        {
+          quote:
+            "Three generations of our family have worn Aarong panjabis for Eid. The craftsmanship today is as honest as it was decades ago.",
+          author: "Tanvir Rahman",
+        },
+      ],
+    }),
+    s("rewards_club", {
+      heading: "My Rewards",
+      body: "Earn points on every purchase and unlock member-only festive previews.",
+      tier1Name: "Silver",
+      tier1Points: "0+",
+      tier2Name: "Gold",
+      tier2Points: "5000+",
+      tier3Name: "Platinum",
+      tier3Points: "15000+",
+      buttonLabel: "Join free",
+      buttonHref: "/pages/rewards",
+    }),
+    s("subbrand_spotlight", {
+      heading: "One craft, many voices",
+      subheading: "Aarong family brands",
+      b1Name: "Aarong",
+      b1Tagline: "Heritage handloom for the whole family",
+      b1Href: "/",
+      b2Name: "Taaga",
+      b2Tagline: "Contemporary fusion for the bold",
+      b2Href: "/collections/taaga-fusion",
+      b3Name: "Herstory",
+      b3Tagline: "Women-led craft, modern silhouettes",
+      b3Href: "/collections/herstory",
+      b4Name: "Aarong Earth",
+      b4Tagline: "Natural fibers, gentle footprint",
+      b4Href: "/collections/aarong-earth",
+    }),
+    s("marquee_strip", {
+      speed: "normal",
+      direction: "left",
+      items: [
+        { text: "Handloom" },
+        { text: "Fair Trade" },
+        { text: "Artisan-Owned" },
+        { text: "Natural Dyes" },
+        { text: "Zero Plastic" },
+      ],
+    }),
+  ];
+}
