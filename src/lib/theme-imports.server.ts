@@ -424,7 +424,39 @@ export async function importThemeProducts(
       key: themeKey,
       ...result,
     });
-    if (result.imported) purgeStorefront("import_products", merchantId);
+    if (result.imported) {
+      // Demo collections must be visible: writers leave is_published
+      // false by default, which 404s every /c/* page and drops them
+      // from the sitemap despite advertised links. Publish exactly the
+      // catalog's slugs — merchant-owned collections untouched.
+      const slugs = Array.isArray(
+        (catalog as Record<string, unknown>)["collections"],
+      )
+        ? (
+            (catalog as Record<string, unknown>)[
+              "collections"
+            ] as Array<Record<string, unknown>>
+          )
+            .map((c) => c["slug"])
+            .filter((s): s is string => typeof s === "string" && s.length > 0)
+        : [];
+      if (slugs.length > 0) {
+        await (db as unknown as {
+          from: (t: string) => {
+            update: (v: Record<string, unknown>) => {
+              eq: (k: string, v: unknown) => {
+                in: (k: string, v: unknown[]) => Promise<unknown>;
+              };
+            };
+          };
+        })
+          .from("collections")
+          .update({ is_published: true })
+          .eq("merchant_id", merchantId)
+          .in("slug", slugs);
+      }
+      purgeStorefront("import_products", merchantId);
+    }
     return result;
   });
 }
