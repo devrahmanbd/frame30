@@ -14,8 +14,12 @@ export type StudioShortcutId =
   | "pasteStyle"
   | "duplicate"
   | "delete"
+  | "move_up"
+  | "move_down"
+  | "deselect"
   | "resetStyle"
   | "finder"
+  | "search_layers"
   | "templates"
   | "pageSettings"
   | "siteSettings"
@@ -74,6 +78,21 @@ export const STUDIO_SHORTCUTS: StudioShortcut[] = [
   },
   { id: "delete", label: "Delete", group: "Editing", key: "Delete" },
   {
+    id: "move_up",
+    label: "Move up",
+    group: "Editing",
+    key: "ArrowUp",
+    mod: true,
+  },
+  {
+    id: "move_down",
+    label: "Move down",
+    group: "Editing",
+    key: "ArrowDown",
+    mod: true,
+  },
+  { id: "deselect", label: "Deselect", group: "Editing", key: "Escape" },
+  {
     id: "resetStyle",
     label: "Reset style",
     group: "Editing",
@@ -82,6 +101,14 @@ export const STUDIO_SHORTCUTS: StudioShortcut[] = [
     shift: true,
   },
   { id: "finder", label: "Finder", group: "Go to", key: "e", mod: true },
+  {
+    id: "search_layers",
+    label: "Search layers",
+    group: "Go to",
+    key: "f",
+    mod: true,
+    shift: true,
+  },
   {
     id: "templates",
     label: "Templates library",
@@ -154,6 +181,13 @@ export function detectStudioPlatform(nav?: {
   return /mac|iphone|ipad/.test(source) ? "mac" : "pc";
 }
 
+const STUDIO_KEY_LABEL: Record<string, string> = {
+  Delete: "Del",
+  Escape: "Esc",
+  ArrowUp: "↑",
+  ArrowDown: "↓",
+};
+
 export function formatStudioShortcut(
   shortcut: StudioShortcut,
   platform: StudioPlatform = "pc",
@@ -162,7 +196,10 @@ export function formatStudioShortcut(
   if (shortcut.mod) parts.push(platform === "mac" ? "⌘" : "Ctrl");
   if (shortcut.shift) parts.push(platform === "mac" ? "⇧" : "Shift");
   if (shortcut.alt) parts.push(platform === "mac" ? "⌥" : "Alt");
-  parts.push(shortcut.key === "Delete" ? "Del" : shortcut.key.toUpperCase());
+  parts.push(
+    STUDIO_KEY_LABEL[shortcut.key] ??
+      (shortcut.key.length === 1 ? shortcut.key.toUpperCase() : shortcut.key),
+  );
   return parts.join(platform === "mac" ? "" : "+");
 }
 
@@ -176,18 +213,52 @@ export type KeyEventLike = {
 
 export function matchStudioShortcut(
   event: KeyEventLike,
-  platform: StudioPlatform = "pc",
+  // Kept for call-site compatibility: the mod key is accepted from *either*
+  // physical key (like the classic `matchShortcut`), so the platform only
+  // matters for display, never for matching.
+  _platform: StudioPlatform = "pc",
 ): StudioShortcut | undefined {
-  const mod =
-    platform === "mac" ? Boolean(event.metaKey) : Boolean(event.ctrlKey);
-  const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+  // Either ⌘ or Ctrl counts as mod, matching the classic builder behaviour.
+  const mod = Boolean(event.metaKey || event.ctrlKey);
+  const raw = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+  // Backspace deletes, like the classic map's `delete` + `backspace` combos.
+  const key = raw === "Backspace" ? "Delete" : raw;
   return STUDIO_SHORTCUTS.find((shortcut) => {
-    if (shortcut.key.toLowerCase() !== key.toLowerCase()) return false;
-    if (Boolean(shortcut.mod) !== mod) return false;
-    if (Boolean(shortcut.shift) !== Boolean(event.shiftKey)) return false;
+    const want = shortcut.key.length === 1 ? shortcut.key.toLowerCase() : shortcut.key;
+    if (want !== (key.length === 1 ? key.toLowerCase() : key)) {
+      // Bare `?` (with or without the Shift that produces it) opens help.
+      if (shortcut.id === "shortcuts" && (key === "?" || key === "/")) {
+        if (mod || event.altKey) return false;
+        return true;
+      }
+      return false;
+    }
+    if (Boolean(shortcut.mod) !== mod) {
+      // The help entry is declared mod+? but a bare `?` must work too.
+      if (shortcut.id === "shortcuts" && !mod) return true;
+      return false;
+    }
+    // `?` arrives with Shift held on most layouts; tolerate it for
+    // punctuation keys the way the classic matcher does.
+    const punctuation = want.length === 1 && !/[a-z0-9]/.test(want);
+    if (!shortcut.shift && event.shiftKey && !punctuation) return false;
+    if (shortcut.shift && !event.shiftKey) return false;
     if (Boolean(shortcut.alt) !== Boolean(event.altKey)) return false;
     return true;
   });
+}
+
+/**
+ * Normalises the legacy `paste_style` spelling (used by the classic
+ * dispatch table and its contract test) to the studio `pasteStyle` id.
+ * Returns undefined for unknown ids so dispatchers can report "unhandled"
+ * and leave the browser's native binding alone.
+ */
+export function resolveStudioShortcutId(id: string): StudioShortcutId | undefined {
+  if (id === "paste_style") return "pasteStyle";
+  return STUDIO_SHORTCUTS.some((shortcut) => shortcut.id === id)
+    ? (id as StudioShortcutId)
+    : undefined;
 }
 
 export function isTypingElement(target: unknown): boolean {

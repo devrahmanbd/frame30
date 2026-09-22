@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { deriveExcerpt } from "@/lib/blog-body";
 import {
+  bodyBlocks,
   canProceed,
   docOutline,
   docStats,
@@ -276,6 +278,25 @@ describe("page markdown bridge", () => {
   });
 });
 
+describe("excerpt placeholder", () => {
+  it("derives the hint from the body like the old article form", () => {
+    const doc = {
+      ...emptyEditorDoc("post"),
+      body: "<p>Opening lines here.</p><p>More text.</p>",
+    };
+    expect(deriveExcerpt(bodyBlocks(doc))).toBe(
+      "Opening lines here. More text.",
+    );
+    expect(deriveExcerpt(bodyBlocks({ kind: "post", body: "" }))).toBe("");
+  });
+  it("keeps free-text tags and taxonomy tags on separate fields", () => {
+    const doc = emptyEditorDoc("post");
+    expect(doc.tags).toEqual([]);
+    expect(doc.taxonomyTags).toEqual([]);
+    expect(doc.categories).toEqual([]);
+  });
+});
+
 describe("isWipeoutSave", () => {
   const full = `<!--fq-studio:v2\n{"version":2,"root":[{"id":"a","el":"text","settings":{"text":"hi"}}]}\nfq-studio:end-->`;
   const empty = `<!--fq-studio:v2\n{"version":2,"root":[]}\nfq-studio:end-->`;
@@ -290,8 +311,35 @@ describe("isWipeoutSave", () => {
     expect(isWipeoutSave("page", "builder", "", empty)).toBe(false);
   });
 
-  it("ignores classic editor and posts", () => {
+  it("refuses an emptied builder canvas over loaded post content", () => {
+    expect(isWipeoutSave("post", "builder", full, empty)).toBe(true);
+    expect(isWipeoutSave("post", "builder", full, full)).toBe(false);
+    expect(isWipeoutSave("post", "builder", null, empty)).toBe(false);
+  });
+
+  it("refuses blanked classic post markup over loaded text", () => {
+    expect(isWipeoutSave("post", "classic", "<p>hello world</p>", "")).toBe(
+      true,
+    );
+    expect(isWipeoutSave("post", "classic", "<p>hello</p>", "<p></p>")).toBe(
+      true,
+    );
+    expect(
+      isWipeoutSave("post", "classic", "<p>hello</p>", "<p>edited</p>"),
+    ).toBe(false);
+  });
+
+  it("ignores classic pages and text-free baselines", () => {
     expect(isWipeoutSave("page", "classic", full, "")).toBe(false);
-    expect(isWipeoutSave("post", "builder", full, empty)).toBe(false);
+    expect(isWipeoutSave("page", "classic", "<p>hi</p>", "")).toBe(false);
+    // An image-only baseline has no text to lose, so the guard stays quiet.
+    expect(
+      isWipeoutSave(
+        "post",
+        "classic",
+        '<p><img src="https://img.test/a.jpg"></p>',
+        "",
+      ),
+    ).toBe(false);
   });
 });
