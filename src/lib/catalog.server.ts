@@ -216,6 +216,24 @@ export async function applyImport(
     replayed: result.replayed,
   });
   invalidate(`catalog:${merchantId}`);
+  // R2-4: advisory hook — never affects the core result.
+  try {
+    const { listInstalledPlugins } = await import("./plugins.server");
+    const { runHook } = await import("./plugin-hooks.server");
+    const installed = await listInstalledPlugins(supabase, merchantId);
+    const outcomes = await runHook(installed, "product.saved", {
+      merchantId,
+      jobId,
+      replayed: result.replayed,
+    });
+    log("info", "plugin.hook.emitted", {
+      hook: "product.saved",
+      merchantId,
+      outcomes: outcomes.map((o) => `${o.pluginId}:${o.status}`),
+    });
+  } catch {
+    /* emission must never fail catalog import */
+  }
   return result;
 }
 
@@ -319,6 +337,24 @@ export async function saveKindConfig(supabase: Client, input: KindConfigInput) {
 
   incr("framique_catalog_kind_config_total", { kind: input.kind });
   invalidate(`catalog:${input.merchantId}`);
+  // R2-4: advisory hook — never affects the core result.
+  try {
+    const { listInstalledPlugins } = await import("./plugins.server");
+    const { runHook } = await import("./plugin-hooks.server");
+    const installed = await listInstalledPlugins(supabase, input.merchantId);
+    const outcomes = await runHook(installed, "product.saved", {
+      merchantId: input.merchantId,
+      productId: input.productId,
+      kind: input.kind,
+    });
+    log("info", "plugin.hook.emitted", {
+      hook: "product.saved",
+      merchantId: input.merchantId,
+      outcomes: outcomes.map((o) => `${o.pluginId}:${o.status}`),
+    });
+  } catch {
+    /* emission must never fail kind-config persistence */
+  }
   return { ok: true };
 }
 

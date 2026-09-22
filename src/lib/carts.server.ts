@@ -60,6 +60,25 @@ export async function captureCart(
       return null;
     }
     incr("framique_abandoned_cart_total", { outcome: "captured" });
+    // R2-4: advisory hook — never affects the core result.
+    try {
+      const { listInstalledPlugins } = await import("./plugins.server");
+      const { runHook } = await import("./plugin-hooks.server");
+      const installed = await listInstalledPlugins(db, input.merchantId);
+      const outcomes = await runHook(installed, "cart.calculate", {
+        merchantId: input.merchantId,
+        cartToken: input.cartToken,
+        subtotalMinorInt: Math.max(0, Math.floor(input.subtotalMinorInt)),
+        lineCount: input.lines.length,
+      });
+      log("info", "plugin.hook.emitted", {
+        hook: "cart.calculate",
+        merchantId: input.merchantId,
+        outcomes: outcomes.map((o) => `${o.pluginId}:${o.status}`),
+      });
+    } catch {
+      /* emission must never fail cart capture */
+    }
     return data;
   });
 }
