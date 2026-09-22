@@ -276,3 +276,4 @@ verify on production; push to GitHub.
   wiped just-imported rows (fixed: purge once per operation).
   Fix: overwrite acks purge demo first + buckets added + fail-open
   guard. Proven live on akira: totalImported 4, 20 supershop demo rows.
+- [x] Preview dock collapsed to corner dot (tab pill read as theme nav).
