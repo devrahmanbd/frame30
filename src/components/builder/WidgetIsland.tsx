@@ -87,6 +87,24 @@ export function WidgetIsland({ mode, type, children }: Props) {
     );
   }
 
+  if (mode === "static") {
+    // Markup-only widgets never wake, so the client must emit the exact same
+    // markup the server did. The previous dormant placeholder
+    // (dangerouslySetInnerHTML="") made hydration treat the server DOM as a
+    // mismatch and remove it — observed live with subbrand/trust/footer
+    // islands arriving empty. No state, no effects, zero behavior change.
+    return (
+      <div
+        ref={ref}
+        data-island={type}
+        data-hydrate="static"
+        suppressHydrationWarning
+      >
+        {children}
+      </div>
+    );
+  }
+
   return (
     <div
       ref={ref}
