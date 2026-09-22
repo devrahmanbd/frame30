@@ -2,6 +2,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { DEFAULT_PERMALINKS } from "./permalink";
 
 /**
  * Public resolver for a storefront URL that matched no row: the shopper may be
@@ -38,7 +39,8 @@ export const recordSlugChangeFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { currentMerchantId } = await import("./marketing.server");
-    const { recordSlugChange } = await import("./url-lifecycle.server");
+    const { recordPermalinkSlugChange } =
+      await import("./url-lifecycle.server");
     const merchantId = await currentMerchantId(
       context.supabase,
       context.userId,
@@ -50,19 +52,41 @@ export const recordSlugChangeFn = createServerFn({ method: "POST" })
       .eq("id", merchantId)
       .maybeSingle();
     const storeSlug = merchant?.slug ?? undefined;
-    const basePath = {
-      product: `/store/${storeSlug}/p`,
-      collection: `/store/${storeSlug}/search`,
-      page: `/store/${storeSlug}/pages`,
-      article: `/store/${storeSlug}/blog`,
-    }[data.entityType];
-    await recordSlugChange({
+    // Bases come from the merchant's live permalink settings, never from a
+    // hardcoded map: with a custom product base the old `/p` rule would never
+    // fire. A settings outage falls back to the defaults, not to a failure.
+    const { permalinkSettingsFor } = await import("./permalink.server");
+    let settings = DEFAULT_PERMALINKS;
+    try {
+      settings = await permalinkSettingsFor(context.supabase, merchantId);
+    } catch {
+      /* defaults */
+    }
+    // Dated article patterns need the entity's own publish date; without it
+    // the rule would be built with zeroed date parts and never match.
+    let date: string | null = null;
+    if (data.entityType === "article") {
+      try {
+        const { data: row } = await (context.supabase as any)
+          .from("articles")
+          .select("published_at")
+          .eq("merchant_id", merchantId)
+          .in("slug", [data.oldSlug, data.newSlug])
+          .limit(1)
+          .maybeSingle();
+        date = (row?.published_at as string | null) ?? null;
+      } catch {
+        /* null date: defaults apply */
+      }
+    }
+    await recordPermalinkSlugChange({
       merchantId,
       storeSlug,
       entityType: data.entityType,
-      basePath,
+      settings,
       oldSlug: data.oldSlug,
       newSlug: data.newSlug,
+      date,
     });
     return { ok: true as const };
   });

@@ -959,7 +959,7 @@ export async function listRedirects(
 ): Promise<RedirectRow[]> {
   const { data, error } = await db
     .from("url_redirects")
-    .select("id, from_path, to_path, status, entity_type, created_at")
+    .select("id, from_path, to_path, status_code, entity_type, created_at")
     .eq("merchant_id", merchantId)
     .order("created_at", { ascending: false })
     .limit(limit);
@@ -968,7 +968,7 @@ export async function listRedirects(
     id: row.id,
     fromPath: row.from_path,
     toPath: row.to_path ?? "",
-    status: (row.status === 410 ? 410 : 301) as 301 | 410,
+    status: (row.status_code === 410 ? 410 : 301) as 301 | 410,
     entityType: row.entity_type,
     createdAt: row.created_at,
   }));
@@ -1018,11 +1018,11 @@ export async function createRedirect(
         entity_type: "manual",
         from_path: from,
         to_path: to || null,
-        status: input.status,
+        status_code: input.status,
       },
       { onConflict: "merchant_id,from_path" },
     )
-    .select("id, from_path, to_path, status, entity_type, created_at")
+    .select("id, from_path, to_path, status_code, entity_type, created_at")
     .single();
   if (error) throw new SeoError("redirect_write_failed", error.message);
   const slug = await storeSlugOf(db, merchantId);
@@ -1032,7 +1032,7 @@ export async function createRedirect(
     id: data.id,
     fromPath: data.from_path,
     toPath: data.to_path ?? "",
-    status: (data.status === 410 ? 410 : 301) as 301 | 410,
+    status: (data.status_code === 410 ? 410 : 301) as 301 | 410,
     entityType: data.entity_type,
     createdAt: data.created_at,
   };

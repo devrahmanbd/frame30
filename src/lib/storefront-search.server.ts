@@ -21,6 +21,7 @@ import {
   type SearchResult,
   type SearchHit,
 } from "./storefront-search";
+import { DEFAULT_PERMALINKS } from "./permalink";
 
 type Client = SupabaseClient<Database>;
 
@@ -510,17 +511,27 @@ export async function savePage(
   if (error) throw error;
 
   /* A renamed page keeps its old URL alive as a 301: the previous link is
-   * already indexed and shared. Failing to write the redirect must not fail
-   * the save — the content edit is what the merchant asked for. */
+   * already indexed and shared. The rule is built from the merchant's live
+   * permalink settings so a custom page base keeps working. Failing to write
+   * the redirect must not fail the save — the content edit is what the
+   * merchant asked for. */
   if (previousSlug && previousSlug !== input.slug) {
     try {
       const storeSlug = await storeSlugOf(db, merchantId);
-      const { recordSlugChange } = await import("./url-lifecycle.server");
-      await recordSlugChange({
+      const { permalinkSettingsFor } = await import("./permalink.server");
+      const { recordPermalinkSlugChange } =
+        await import("./url-lifecycle.server");
+      let settings = DEFAULT_PERMALINKS;
+      try {
+        settings = await permalinkSettingsFor(db, merchantId);
+      } catch {
+        /* defaults */
+      }
+      await recordPermalinkSlugChange({
         merchantId,
         storeSlug,
         entityType: "page",
-        basePath: `/store/${storeSlug}/pages`,
+        settings,
         oldSlug: previousSlug,
         newSlug: input.slug,
       });
@@ -562,16 +573,25 @@ export async function archivePage(
     .eq("merchant_id", merchantId);
   if (error) throw error;
   // An archived page answers 410 rather than a soft 404, so crawlers drop it
-  // instead of retrying the URL for months.
+  // instead of retrying the URL for months. The tombstone uses the live page
+  // base for the same reason renames do.
   if (before?.slug) {
     try {
       const storeSlug = await storeSlugOf(db, merchantId);
-      const { recordTombstone } = await import("./url-lifecycle.server");
-      await recordTombstone({
+      const { permalinkSettingsFor } = await import("./permalink.server");
+      const { recordPermalinkTombstone } =
+        await import("./url-lifecycle.server");
+      let settings = DEFAULT_PERMALINKS;
+      try {
+        settings = await permalinkSettingsFor(db, merchantId);
+      } catch {
+        /* defaults */
+      }
+      await recordPermalinkTombstone({
         merchantId,
         storeSlug,
         entityType: "page",
-        basePath: `/store/${storeSlug}/pages`,
+        settings,
         slug: before.slug,
       });
     } catch {

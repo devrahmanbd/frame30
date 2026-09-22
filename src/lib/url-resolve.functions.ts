@@ -21,13 +21,32 @@ export const resolvePathFn = createServerFn({ method: "GET" })
     const resolution = await resolveStorefrontPath(data.path);
     if (resolution.type === "miss") {
       await recordResolvedMiss(data.path, data.referrer ?? null);
-      return { resolution, article: null };
+      return { resolution, article: null, target: null };
     }
-    if (resolution.type !== "article") return { resolution, article: null };
+    // Non-article permalink hits (custom product/collection/page bases) carry
+    // everything the route layer needs to render without a second resolve.
+    if (resolution.type !== "article")
+      return {
+        resolution,
+        article: null,
+        target:
+          resolution.type === "redirect" || resolution.type === "gone"
+            ? null
+            : {
+                kind: resolution.type,
+                slug: resolution.slug,
+                merchantSlug: resolution.merchantSlug,
+                canonicalPath: resolution.canonicalPath,
+              },
+      };
     const { loadPublicArticle } = await import("./marketing.server");
     const loaded = await loadPublicArticle(resolution.slug);
     if (!loaded)
-      return { resolution: { type: "miss" as const }, article: null };
+      return {
+        resolution: { type: "miss" as const },
+        article: null,
+        target: null,
+      };
     const { requestOrigin } = await import("./site-origin.server");
     return { resolution, article: loaded, origin: requestOrigin() };
   });
