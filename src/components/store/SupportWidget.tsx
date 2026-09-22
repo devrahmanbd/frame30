@@ -601,7 +601,133 @@ function CallbackForm({
 
 // ─── Pre-Chat Onboarding Form ────────────────────────────────────────────────
 
+type GreetingFn = (en: string, bn?: string) => string;
+
+export function getInitialGreeting(
+  t: GreetingFn,
+  effectiveMode: string,
+): string {
+  if (effectiveMode === "platform") {
+    return t(
+      "Hello! 👋 Welcome to Framique. Ask me anything about creating an online store, pricing plans, bKash & SteadFast integration, or leave your details to talk with our team.",
+      "হ্যালো! 👋 ফ্রেমিক-এ স্বাগতম। অনলাইন স্টোর শুরু করা, প্রাইসিং, বিকাশ পেমেন্ট ও স্টিডফাস্ট কুরিয়ার সংযোগ নিয়ে প্রশ্ন করুন অথবা সেলস টিমের সাথে কথা বলতে তথ্য দিন।",
+    );
+  }
+  if (effectiveMode === "dashboard") {
+    return t(
+      "Hello! I'm your Framique Merchant Copilot. How can I help you set up products, configure bKash, connect SteadFast courier, or design your storefront today?",
+      "হ্যালো! আমি আপনার ফ্রেমিক স্টোর কোপাইলট। প্রোডাক্ট যুক্ত করা, বিকাশ পেমেন্ট, স্টিডফাস্ট কুরিয়ার বা স্টোর ডিজাইন নিয়ে কীভাবে সাহায্য করতে পারি?",
+    );
+  }
+  return t(
+    "Hello! Ask about order status, refunds, or delivery. Prices and stock are always shown on the product page.",
+    "হ্যালো! অর্ডারের অবস্থা, রিফান্ড বা ডেলিভারি নিয়ে প্রশ্ন করতে পারেন। দাম ও স্টক সবসময় পণ্যের পাতা থেকে দেখানো হয়।",
+  );
+}
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+
+// ─── Chat session persistence (sessionStorage + localStorage, shop+mode scoped)
+
+export type SupportChatSnapshot = {
+  msgs: Msg[];
+  conversationId: string | null;
+  customerName: string;
+  customerEmail: string;
+  open: boolean;
+  phone: string;
+  orderNumber: string;
+  staffActive: boolean;
+};
+
+function supportChatKey(slug: string, mode: string): string {
+  return `fq-support-chat:${slug}:${mode}`;
+}
+
+function storageAreas(): Array<{
+  getItem(k: string): string | null;
+  setItem(k: string, v: string): void;
+  removeItem(k: string): void;
+}> {
+  const areas: Array<{
+    getItem(k: string): string | null;
+    setItem(k: string, v: string): void;
+    removeItem(k: string): void;
+  }> = [];
+  for (const name of ["sessionStorage", "localStorage"] as const) {
+    const store = (globalThis as Record<string, unknown>)[name] as
+      | {
+          getItem(k: string): string | null;
+          setItem(k: string, v: string): void;
+          removeItem(k: string): void;
+        }
+      | undefined;
+    if (store) areas.push(store);
+  }
+  return areas;
+}
+
+export function loadSupportChatSession(
+  slug: string,
+  mode: string,
+): SupportChatSnapshot | null {
+  for (const store of storageAreas()) {
+    try {
+      const raw = store.getItem(supportChatKey(slug, mode));
+      if (!raw) continue;
+      const parsed = JSON.parse(raw) as Partial<SupportChatSnapshot>;
+      if (!Array.isArray(parsed.msgs)) continue;
+      return {
+        msgs: parsed.msgs,
+        conversationId:
+          typeof parsed.conversationId === "string"
+            ? parsed.conversationId
+            : null,
+        customerName:
+          typeof parsed.customerName === "string" ? parsed.customerName : "",
+        customerEmail:
+          typeof parsed.customerEmail === "string" ? parsed.customerEmail : "",
+        open: parsed.open === true,
+        phone: typeof parsed.phone === "string" ? parsed.phone : "",
+        orderNumber:
+          typeof parsed.orderNumber === "string" ? parsed.orderNumber : "",
+        staffActive: parsed.staffActive === true,
+      };
+    } catch {
+      continue;
+    }
+  }
+  return null;
+}
+
+export function saveSupportChatSession(
+  snapshot: { slug: string; mode: string } & SupportChatSnapshot,
+): void {
+  const { slug, mode, ...rest } = snapshot;
+  let body = "";
+  try {
+    body = JSON.stringify(rest);
+  } catch {
+    return;
+  }
+  for (const store of storageAreas()) {
+    try {
+      store.setItem(supportChatKey(slug, mode), body);
+    } catch {
+      /* best effort */
+    }
+  }
+}
+
+export function clearSupportChatSession(slug: string, mode: string): void {
+  for (const store of storageAreas()) {
+    try {
+      store.removeItem(supportChatKey(slug, mode));
+    } catch {
+      /* best effort */
+    }
+  }
+}
 
 function PreChatForm({
   initialName = "",
@@ -803,24 +929,9 @@ export function SupportWidget({
     slug === "framique" || slug === "platform" ? "platform" : mode;
 
   const [open, setOpen] = useState(false);
-  const [msgs, setMsgs] = useState<Msg[]>(() => {
-    let initialGreeting = t(
-      "Hello! Ask about order status, refunds, or delivery. Prices and stock are always shown on the product page.",
-      "হ্যালো! অর্ডারের অবস্থা, রিফান্ড বা ডেলিভারি নিয়ে প্রশ্ন করতে পারেন। দাম ও স্টক সবসময় পণ্যের পাতা থেকে দেখানো হয়।",
-    );
-    if (effectiveMode === "platform") {
-      initialGreeting = t(
-        "Hello! 👋 Welcome to Framique. Ask me anything about creating an online store, pricing plans, bKash & SteadFast integration, or leave your details to talk with our team.",
-        "হ্যালো! 👋 ফ্রেমিক-এ স্বাগতম। অনলাইন স্টোর শুরু করা, প্রাইসিং, বিকাশ পেমেন্ট ও স্টিডফাস্ট কুরিয়ার সংযোগ নিয়ে প্রশ্ন করুন অথবা সেলস টিমের সাথে কথা বলতে তথ্য দিন।",
-      );
-    } else if (effectiveMode === "dashboard") {
-      initialGreeting = t(
-        "Hello! I'm your Framique Merchant Copilot. How can I help you set up products, configure bKash, connect SteadFast courier, or design your storefront today?",
-        "হ্যালো! আমি আপনার ফ্রেমিক স্টোর কোপাইলট। প্রোডাক্ট যুক্ত করা, বিকাশ পেমেন্ট, স্টিডফাস্ট কুরিয়ার বা স্টোর ডিজাইন নিয়ে কীভাবে সাহায্য করতে পারি?",
-      );
-    }
-    return [{ id: uid(), role: "bot", body: initialGreeting }];
-  });
+  const [msgs, setMsgs] = useState<Msg[]>(() => [
+    { id: uid(), role: "bot", body: getInitialGreeting(t, effectiveMode) },
+  ]);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -938,7 +1049,7 @@ export function SupportWidget({
     setShowReviewInput(false);
     setActiveForm("none");
     setStaffActive(false);
-    setMsgs([{ id: uid(), role: "bot", body: getInitialGreeting() }]);
+    setMsgs([{ id: uid(), role: "bot", body: getInitialGreeting(t, effectiveMode) }]);
   }
 
   function handlePreChatSubmit(data: {
