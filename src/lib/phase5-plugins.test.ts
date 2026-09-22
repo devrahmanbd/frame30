@@ -228,6 +228,31 @@ describe("settings schema", () => {
     });
     expect(out.errors).toContain("tier.not_an_option");
   });
+
+  it("validates textarea/color/media/url/date kinds", () => {
+    const schema = [
+      { key: "bio", kind: "textarea", max: 50 },
+      { key: "accent", kind: "color" },
+      { key: "logo", kind: "media" },
+      { key: "site", kind: "url" },
+      { key: "launch", kind: "date" },
+    ] as const;
+    const { values, errors } = validateSettings(schema as any, {
+      bio: "x".repeat(99), accent: "#ff0000", logo: "https://cdn/x.png",
+      site: "not a url", launch: "2026-10-01",
+    });
+    expect(errors).toContain("site.not_a_url");
+    expect(values.bio).toHaveLength(50);
+    expect(values.accent).toBe("#ff0000");
+    expect(values.launch).toBe("2026-10-01");
+  });
+  it("rejects bad color/date/url with error codes", () => {
+    const { errors } = validateSettings(
+      [{ key: "c", kind: "color" }, { key: "u", kind: "url" }, { key: "d", kind: "date" }] as any,
+      { c: "red", u: "notaurl", d: "yesterday" },
+    );
+    expect(errors).toEqual(expect.arrayContaining(["c.not_a_color", "u.not_a_url", "d.not_a_date"]));
+  });
 });
 
 describe("server hooks", () => {
