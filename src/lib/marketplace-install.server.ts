@@ -132,7 +132,7 @@ export async function installListing(
         : null,
       granted_scopes: granted as never,
       consented_by: (input.consentedBy ?? null) as never,
-    } as never)
+    })
     .select("id")
     .single();
   if (error || !install) throw new Error("market_install_failed");
