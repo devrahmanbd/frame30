@@ -323,7 +323,7 @@ export function buildSecondaryTemplates(
           s3Hours: "10am - 9pm",
         }),
         s("form", {
-          heading: "Get in touch",
+          heading: "",
           body: "We'd love to hear from you. Fill out the form below and our team will get back to you within 24 hours.",
           nameLabel: "Your name",
           emailLabel: "Email address",
@@ -404,7 +404,7 @@ export function buildSecondaryTemplates(
           freeShippingSuffix: "more for free nationwide delivery",
           freeShippingDone: "Free delivery unlocked",
         }),
-        s("cart_lines", { heading: "Your shopping bag" }),
+        s("cart_lines", { heading: "" }),
         s("cart_summary", {
           heading: "Order summary",
           ctaLabel: "Proceed to checkout",
@@ -432,7 +432,7 @@ export function buildSecondaryTemplates(
           i4Body: "Live customer assistance 10am - 9pm",
         }),
         s("payment_methods", {
-          heading: "Payment methods",
+          heading: "",
           note: "Secure encrypted transaction.",
           emptyText: "No payment method is enabled yet.",
         }),
@@ -454,7 +454,7 @@ export function buildSecondaryTemplates(
       header: [s("banner", { text: "Secure checkout", tone: "info" })],
       main: [
         s("payment_methods", {
-          heading: "Payment methods",
+          heading: "",
           note: "Payments are processed server-side.",
           emptyText: "No payment method is enabled yet.",
         }),
@@ -466,7 +466,7 @@ export function buildSecondaryTemplates(
           step4: "Done",
           activeStep: 3,
         }),
-        s("cart_lines", { heading: "Order items" }),
+        s("cart_lines", { heading: "" }),
         s("cart_summary", { heading: "Order summary" }),
         s("delivery_promise", {
           heading: "Delivery",
