@@ -166,10 +166,9 @@ git commit -m "feat(plugins): capture plugin_state DDL + RLS + purged enum"
 - Consumes: nothing (names are new).
 - Produces: enforced `plugins.read` / `plugins.update` (consumed by Task 6 deny tests).
 
-- [ ] **Step 1: Write the failing test** (extend `src/lib/lifecycle-audit.test.ts` is for audit — instead add to `src/lib/plugin-state-ddl.test.ts`? No: create `src/lib/plugin-permissions.test.ts`)
+- [ ] **Step 1: Write the failing test** (create `src/lib/plugin-permissions.test.ts`)
 
 ```ts
-// src/lib/plugin-permissions.test.ts
 import { describe, expect, it } from "vitest";
 import { PERMISSIONS } from "./authz";
 import { readFileSync } from "node:fs";
@@ -179,21 +178,6 @@ describe("plugins.* permissions", () => {
     expect(PERMISSIONS).toContain("plugins.update");
   });
   it("no plugin fn or route still references themes.*", () => {
-    for (const f of ["src/lib/plugins.functions.ts", "src/lib/console-nav.ts", "src/routes/_authenticated/dashboard/plugins/index.tsx"]) {
-      const src = readFileSync(f, "utf8");
-      const hits = [...src.matchAll(/themes\.(read|update)/g)];
-      const pluginScoped = src.split("\n").filter((l, i) => hits.some(() => false));
-      void pluginScoped; void i;
-      expect(hits.length).toBe(0);
-    }
-  });
-});
-```
-
-Simplify — drop the dead `pluginScoped` lines before saving (they are scaffolding noise, not logic):
-
-```ts
-  it("no plugin fn or route still references themes.*", () => {
     for (const f of ["src/lib/plugins.functions.ts", "src/routes/_authenticated/dashboard/plugins/index.tsx"]) {
       expect(readFileSync(f, "utf8")).not.toMatch(/themes\.(read|update)/);
     }
@@ -201,6 +185,7 @@ Simplify — drop the dead `pluginScoped` lines before saving (they are scaffold
     const block = nav.slice(nav.indexOf('key: "plugins"'), nav.indexOf('key: "plugins"') + 1500);
     expect(block).not.toMatch(/themes\.(read|update)/);
   });
+});
 ```
 
 - [ ] **Step 2: Run it to verify it fails**
