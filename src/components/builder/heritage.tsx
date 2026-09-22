@@ -111,6 +111,7 @@ const HeroCarousel: WidgetComponent = ({
     caption: readString(row, "caption"),
   }));
   const autoAdvanceMs = int("autoAdvanceMs", 5000, 1000, 15000);
+  const atmosphere = str("atmosphere") || "wash";
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -143,10 +144,12 @@ const HeroCarousel: WidgetComponent = ({
       onMouseLeave={() => setPaused(false)}
       className="relative overflow-hidden border-b border-border bg-card"
     >
-      <div
-        aria-hidden="true"
-        className="fq-heritage-aurora pointer-events-none absolute inset-0"
-      />
+      {atmosphere !== "none" && (
+        <div
+          aria-hidden="true"
+          className="fq-theme-aurora pointer-events-none absolute inset-0"
+        />
+      )}
       <div className="mx-auto grid max-w-[var(--fq-container,1280px)] items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-12 lg:gap-12">
         {/* Copy — asymmetric left, seven columns */}
         <div className="min-w-0 lg:col-span-7">
@@ -549,6 +552,7 @@ const EditorialBanner: WidgetComponent = ({
   const ctaLabel = str("cta_label") || str("ctaLabel");
   const ctaUrl = str("cta_url") || str("ctaHref");
   const overlay = str("overlay") || "dark";
+  const surface = str("surface") || "card";
 
   if (!headline) {
     return editing ? (
@@ -568,7 +572,9 @@ const EditorialBanner: WidgetComponent = ({
       : "bg-gradient-to-t from-foreground/70 via-foreground/30 to-transparent text-background";
 
   return (
-    <section className="relative overflow-hidden rounded-fq-sm">
+    <section
+      className={`relative overflow-hidden rounded-fq-sm${surface === "glass" ? " fq-theme-glass" : ""}`}
+    >
       <div className="relative aspect-[3/1] min-h-[200px] w-full">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-900/20 via-rose-900/10 to-amber-800/20">
           <div className="absolute inset-0 flex items-center justify-center">

@@ -468,3 +468,88 @@ Common pitfalls:
 - **Empty registry.** `listRegistry` degrades to the code floor
   (`src/lib/themes.server.ts:553-601`), but demo imports need SQL rows —
   run the seed (§3 step 6) before testing imports.
+
+## 8. Theme effects (atmosphere + motion controls)
+
+Three effects, each token-driven and theme-scoped. They are ports of the
+`.fq-site` marketing-surface utilities into `.fq-theme-scope`: the same
+look, but tinted by the theme instead of the marketing palette. Tints
+derive from `--theme-brand` / `--theme-accent` via `color-mix`; nothing
+else carries a hue.
+
+### 8.1 What each effect does
+
+- **Hero wash (`fq-theme-aurora`).** A low-alpha static gradient wash
+  behind hero copy — atmosphere, never a section fill. Port of
+  `fq-heritage-aurora` (`src/styles.css:352`), which bakes in the
+  terracotta/amber anchors; the theme variant keeps those anchors only as
+  fallbacks and otherwise mixes from `--theme-brand`/`--theme-accent`.
+  The wash layer must be `pointer-events-none` — a wash that intercepts
+  clicks is a catalogue rejection (see §8.5).
+- **Glass card (`fq-theme-glass`).** Card elevation surface for
+  `editorial_banner`: translucent card fill, hairline border, soft shadow,
+  `backdrop-filter` blur. Port of `.fq-site .fq-glass`
+  (`src/styles.css:1004-1009`, dark variant `:1011-1018`) into theme
+  scope, so the surface follows theme tokens instead of marketing tokens.
+- **Line reveal (`fq-theme-linereveal` trigger class).** The one authored
+  typography moment: masked lines that rise into overflow-clipped boxes on
+  a per-line delay. Port of `.fq-line` (`src/styles.css:1056-1074`),
+  which is static before hydration and inert under reduced motion. This
+  sits alongside — not instead of — the existing entrance system: the
+  universal `reveal` style prop (`fq-reveal`, `src/styles.css:417-455`)
+  and per-widget `advAnimation` (`none | fade | rise | slide-left |
+  slide-right | zoom`, `src/lib/builder-advanced.ts:36-44`). One
+  orchestrated moment per viewport; scattered effects read as decoration.
+
+### 8.2 Which prop toggles it
+
+| Effect | Prop | Values | Default |
+|--------|------|--------|---------|
+| Hero wash | `atmosphere` on `hero` | `"wash" \| "none"` | `"wash"` |
+| Banner surface | `surface` on `editorial_banner` | `"glass" \| "card"` | `"card"` |
+| Entrance | `advAnimation` (Advanced tab, every widget) | `"none" \| "fade" \| "rise" \| "slide-left" \| "slide-right" \| "zoom"` | `"none"` |
+
+`atmosphere: "none"` renders no wash div at all — it is not a
+transparent wash, so there is no extra layer in the tree.
+`advAnimation` values are stored as ordinary `adv`-prefixed props and
+flow through the per-breakpoint cascade like any other prop
+(`src/lib/builder-advanced.ts:13-26`).
+
+### 8.3 Reduced-motion behavior
+
+The contract has two halves:
+
+1. **Static effects are inert by construction.** Washes are static
+   gradients with no animation loop — like `fq-heritage-aurora`
+   (`src/styles.css:349-351`) — so there is nothing to gate.
+2. **Animated effects gate on the existing reduced-motion blocks.**
+   `fq-reveal` drops to `animation: none` under
+   `prefers-reduced-motion: reduce` (`src/styles.css:451-455`) and when
+   the theme sets motion `none` (`[data-motion="none"]`,
+   `src/styles.css:447-450`); the aurora-drift pattern shows the same
+   gate for looped motion (`src/styles.css:1195-1199`). `advAnimation:
+   "none"` covers a reduced-motion visitor
+   (`src/lib/builder-advanced.ts:35`). Any new animated variant must
+   hook into these blocks — never its own parallel mechanism.
+
+### 8.4 The no-hardcoded-hues rule
+
+Hard-coded hues are banned outside the two heritage anchors (`#c45d3e`,
+`#d9a441`, `#8a3b1f`) already approved in `fq-heritage-aurora`. Every
+other tint is `color-mix` from `--theme-brand`/`--theme-accent`, with
+the heritage values as fallbacks — so a theme that omits brand/accent
+degrades to the current heritage look instead of rendering unstyled.
+This mirrors the scope fallback pattern (e.g.
+`var(--theme-brand, ...)` in `src/styles.css:387-397`).
+
+### 8.5 Rejection reasons reviewers will apply
+
+1. **Wash layer intercepts clicks.** The wash must be
+   `pointer-events-none` (the `.fq-site` aurora sets this on its
+   `::before` layer, `src/styles.css:1136`). A submission whose wash
+   blocks interaction with hero copy or CTAs is rejected.
+2. **Animated variant ignores reduced-motion.** Any effect with a motion
+   loop must gate on the existing reduced-motion blocks (§8.3). A
+   submission that animates under `prefers-reduced-motion: reduce` — or
+   that invents a separate opt-out instead of reusing `data-motion` /
+   the media query — is rejected.
