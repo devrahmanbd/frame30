@@ -19,17 +19,70 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 
+import type { ReactNode } from "react";
 import { SectionRenderer } from "./SectionRenderer";
+import { OrdersList, ProfileCard } from "./account";
+import { accountSlotCtx } from "@/components/store/account-slots";
 import { TEMPLATE_KEYS, parseTemplates } from "@/lib/builder-ast";
 import type { Section, TemplateKey } from "@/lib/builder-ast";
+import type { WidgetRow } from "@/lib/widget-data";
 import { THEME_PRESETS } from "@/lib/theme-presets";
 import { primarySectionId } from "@/components/store/ThemeChrome";
+
+// Demo rows mirroring the preview catalog: context-gated account widgets
+// render route slots, never fallback markup, so the harness feeds them the
+// same way the preview frame does.
+const DEMO_ORDER_ROWS: WidgetRow[] = [
+  {
+    id: "demo-o1",
+    title: "ORD-1001",
+    subtitle: "delivered",
+    priceMinor: 129900,
+    currency: "BDT",
+    date: "2026-09-01T10:00:00Z",
+  },
+];
+const DEMO_PROFILE_ROWS: WidgetRow[] = [
+  { id: "demo-profile", title: "Demo Shopper", subtitle: "demo@example.com" },
+];
+
+function accountSlots(sections: Section[]): Partial<Record<string, ReactNode>> {
+  const find = (type: string) => sections.find((s) => s.type === type);
+  const out: Partial<Record<string, ReactNode>> = {};
+  const orders = find("orders_list");
+  if (orders)
+    out.orders_list = (
+      <OrdersList
+        {...accountSlotCtx(orders, {
+          rows: DEMO_ORDER_ROWS,
+          pending: false,
+          locale: "en",
+          storeSlug: "contract-store",
+        })}
+      />
+    );
+  const profile = find("profile_card");
+  if (profile)
+    out.profile_card = (
+      <ProfileCard
+        {...accountSlotCtx(profile, {
+          rows: DEMO_PROFILE_ROWS,
+          pending: false,
+          locale: "en",
+          storeSlug: "contract-store",
+        })}
+      />
+    );
+  return out;
+}
 
 function renderTemplate(
   sections: Section[],
   template: TemplateKey,
   primaryId: string | null,
 ) {
+  const slots =
+    template === "account" ? accountSlots(sections) : undefined;
   return renderToStaticMarkup(
     <>
       {sections.map((section) => (
@@ -39,6 +92,7 @@ function renderTemplate(
           template={template}
           storeSlug="contract-store"
           primary={section.id === primaryId}
+          contextSlots={slots}
         />
       ))}
     </>,

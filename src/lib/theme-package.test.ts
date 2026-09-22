@@ -70,4 +70,34 @@ describe("validateThemePackage", () => {
       expect(out.errors.some((e) => /api/i.test(e))).toBe(true);
     }
   });
+
+  it("round-trips builder-shaped state", () => {
+    const out = validateThemePackage({
+      ...good,
+      templates: {
+        index: {
+          header: [],
+          main: [
+            {
+              id: "demo-hero-1",
+              type: "hero_carousel",
+              props: {
+                slides: [{ headline: "Hello" }],
+              },
+            },
+          ],
+          footer: [],
+        },
+      },
+    });
+    expect(out.ok).toBe(true);
+  });
+
+  it("ships a valid example package", async () => {
+    const fs = await import("node:fs");
+    const pkg = JSON.parse(
+      fs.readFileSync("docs/themes/example-studio.theme.json", "utf8"),
+    );
+    expect(validateThemePackage(pkg).ok).toBe(true);
+  });
 });

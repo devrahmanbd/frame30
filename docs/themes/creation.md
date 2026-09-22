@@ -557,3 +557,90 @@ This mirrors the scope fallback pattern (e.g.
    submission that animates under `prefers-reduced-motion: reduce` — or
    that invents a separate opt-out instead of reusing `data-motion` /
    the media query — is rejected.
+
+## 9. External authors: from zero to submitted
+
+You need nothing installed — no checkout, no CLI, no repo access. If you
+can open the builder, you can ship a theme. The whole path is: get
+approved, build, export, submit, respond to review.
+
+### 9.1 The path
+
+1. **Get approved.** Submission is allowlisted: your merchant account must
+   be an approved developer before the Themes screen accepts a package. If
+   there is no submit control, you are not on the list yet — ask staff.
+2. **Build in the builder.** Compose the theme the way §3 describes:
+   tokens first, one composition per template key, catalogue widgets only,
+   every bilingual prop filled in both languages. The builder lints as you
+   go — treat each red error as a rejection arriving early and fix it now.
+3. **Export the package.** Use the "Export package" action beside the
+   builder's commit/publish controls. It runs the package validator first
+   and shows the first error instead of downloading on failure — a file
+   that will not export is a submission that would not pass. On success
+   you get `<key>-<version>.theme.json`.
+4. **Submit via the Themes screen.** Upload the exported file. It lands as
+   `pending`: nothing renders and nothing installs until staff decide.
+5. **Respond to review.** Staff approve or reject with a note. A rejection
+   names the failing gate (§9.2); fix it in the builder, bump `version`,
+   re-export, resubmit.
+
+### 9.2 What review checks
+
+The full gate definitions live in `./packages.md`. In one glance:
+
+1. **Size** — the file is at most 2 MB.
+2. **Budget** — at most 200 sections per template, header + main + footer
+   counted together.
+3. **Clean lint** — zero error-level findings on every template the package
+   defines.
+4. **One H1** — exactly one primary heading per page. Route-headed
+   templates (`product`, `collection`, `page`, `blog`, `search`, `account`)
+   get theirs from the route, so they carry no claimant; any other
+   template you ship carries exactly one.
+5. **Bilingual** — বাংলা coverage at or above 90% of authored strings,
+   with real বাংলা inside every `_bn` twin — never English pasted into
+   the Bengali field.
+6. **No executable content** — no `html` widgets, no script markup, no
+   `javascript:` / `data:` / `vbscript:` URLs anywhere in props.
+7. **API range** — `api` sits inside `^3.0.0`.
+
+A human reader then spot-checks bilingual completeness — the gate counts
+twins, the reviewer reads them.
+
+### 9.3 Versioning rules
+
+- `api` stays inside `^3.0.0`. Anything else is rejected outright: a
+  package that installs but renders broken is worse than one that never
+  ships.
+- `version` is semver and moves forward on every resubmission, rejections
+  included. Patch for fixes (`1.0.0` → `1.0.1`), minor/major for new
+  templates and breaking prop changes.
+- `key` is forever. Choose the slug once — lowercase letters, digits and
+  dashes, max 60 characters. It is the theme's identity across installs,
+  updates and marketplace listings, and it is never renamed after first
+  publish.
+
+### 9.4 Rejection reasons
+
+The closed list. A rejection always names one of these, each mapping to a
+gate in §9.2 or a rule in §9.3:
+
+1. Package over 2 MB.
+2. A template over the 200-section budget.
+3. Lint errors (the note quotes the first; the builder shows the rest).
+4. Missing or duplicated primary heading.
+5. বাংলা coverage below 90%, or `_bn` twins with no বাংলা in them.
+6. Executable content: raw HTML widgets, script markup, blocked URL
+   schemes.
+7. `api` outside `^3.0.0`.
+8. Resubmission without a version bump, or a renamed `key`.
+
+### 9.5 Worked example
+
+`./example-studio.theme.json` is a minimal package that clears every
+gate: a single `index` template — packages ship only the templates they
+define, anything absent falls back to the built-in empty template — with
+a `hero_carousel` claiming the one H1, a `product_rail` for
+merchandising, and a footer `newsletter` signup, every authored string
+twinned in বাংলা. Copy its manifest shape verbatim and grow from there:
+add template keys one at a time, keep the twin discipline, export often.
