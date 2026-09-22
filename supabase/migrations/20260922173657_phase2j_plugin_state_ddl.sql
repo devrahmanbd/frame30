@@ -31,21 +31,18 @@ create table if not exists public.plugin_kill_switch (
 );
 alter table public.plugin_state enable row level security;
 alter table public.plugin_kill_switch enable row level security;
-drop policy if exists plugin_state_tenant_read on public.plugin_state;
-create policy plugin_state_tenant_read on public.plugin_state for select to authenticated
-  using (public.is_merchant_member(merchant_id) or public.is_platform_admin());
-drop policy if exists plugin_state_tenant_write on public.plugin_state;
-create policy plugin_state_tenant_write on public.plugin_state to authenticated
+drop policy if exists plugin_state_merchant_manage on public.plugin_state;
+create policy plugin_state_merchant_manage on public.plugin_state for all to authenticated
   using (public.is_merchant_member(merchant_id)) with check (public.is_merchant_member(merchant_id));
--- kill-switch: platform-admin-only policies (mirror marketplace_themes_platform_only).
+-- kill-switch: mirror live verbatim (both policies, live-identical definitions).
 drop policy if exists plugin_kill_switch_platform_manage on public.plugin_kill_switch;
-create policy plugin_kill_switch_platform_manage on public.plugin_kill_switch to authenticated
-  using (public.is_platform_admin()) with check (public.is_platform_admin());
 drop policy if exists plugin_kill_switch_public_read on public.plugin_kill_switch;
+create policy plugin_kill_switch_platform_manage on public.plugin_kill_switch for all to authenticated
+  using (public.is_platform_admin()) with check (public.is_platform_admin());
 create policy plugin_kill_switch_public_read on public.plugin_kill_switch for select using (true);
 -- GRANTs mirror sibling tenant tables (marketplace_installs, abandoned_carts).
 grant select, insert, delete, update on table public.plugin_state to authenticated;
 grant all on table public.plugin_state to service_role;
-grant select, insert, delete, update on table public.plugin_kill_switch to authenticated;
+grant select on table public.plugin_kill_switch to authenticated;
 grant all on table public.plugin_kill_switch to service_role;
 alter type public.market_install_status add value if not exists 'purged';

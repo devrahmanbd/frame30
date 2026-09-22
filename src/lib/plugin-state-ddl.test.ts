@@ -12,6 +12,7 @@ describe("phase2j plugin_state DDL", () => {
   it("enables RLS with tenant policies and grants", () => {
     expect(sql).toMatch(/ENABLE ROW LEVEL SECURITY/i);
     expect(sql).toContain("is_merchant_member");
+    expect(sql).toContain("plugin_state_merchant_manage");
   });
   it("adds the purged enum value", () => {
     expect(sql).toContain("'purged'");
