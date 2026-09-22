@@ -1141,6 +1141,7 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
           id={`nl-${section.id}`}
           name="email"
           type="email"
+          autoComplete="email"
           required
           className="min-w-[16rem] flex-1 rounded-fq-md border border-border px-3 py-2 text-sm"
           placeholder="you@example.com"
