@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Clock,
-} from "lucide-react";
+import { Clock, ExternalLink, Globe, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useStoreUrl } from "@/hooks/use-store-url";
@@ -15,6 +14,7 @@ import {
   isValidTimezone,
   formatDateTime,
 } from "@/lib/timezone";
+import { Switch } from "@/components/ui/switch";
 
 export const Route = createFileRoute("/_authenticated/dashboard/settings")({
   head: () => ({
@@ -54,7 +54,7 @@ function SettingsPage() {
   const { data: merchant } = useMerchant();
   const { storeUrl, primaryHost } = useStoreUrl();
   const qc = useQueryClient();
-  const [currentTime, setCurrentTime] = useState(() => new Date());
+
   const [form, setForm] = useState<Settings>({
     tagline: "",
     cod_enabled: true,
@@ -67,12 +67,7 @@ function SettingsPage() {
     allow_customer_timezone: false,
   });
 
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["merchant-settings", merchant?.id],
     enabled: !!merchant?.id,
     queryFn: async () => {
@@ -93,6 +88,7 @@ function SettingsPage() {
         ? data.setup_steps
         : {}
     ) as Record<string, unknown>;
+
     setForm({
       tagline: data.tagline ?? "",
       cod_enabled: data.cod_enabled,
@@ -121,7 +117,7 @@ function SettingsPage() {
           ? data.setup_steps
           : {}
       ) as Record<string, unknown>;
-      const nextSteps = {
+      const nextSteps: Record<string, unknown> = {
         ...currentSteps,
         timezone: form.timezone,
         allow_customer_timezone: form.allow_customer_timezone,
@@ -132,95 +128,127 @@ function SettingsPage() {
       const { error } = await supabase.from("merchant_settings").upsert(
         {
           merchant_id: merchant!.id,
-          tagline: form.tagline || null,
+          tagline: form.tagline.trim() || null,
           cod_enabled: form.cod_enabled,
           mfs_enabled: form.mfs_enabled,
           cod_surcharge_minor_int: Math.round(form.cod_surcharge_taka * 100),
           shipping_flat_minor_int: Math.round(form.shipping_flat_taka * 100),
           free_shipping_threshold_minor_int:
-            form.free_shipping_taka === null
+            form.free_shipping_taka === null || form.free_shipping_taka === 0
               ? null
               : Math.round(form.free_shipping_taka * 100),
           prices_include_vat: form.prices_include_vat,
-          setup_steps: nextSteps as any,
+          setup_steps: nextSteps,
         },
         { onConflict: "merchant_id" },
       );
       if (error) throw error;
     },
-    onSuccess: () =>
-      void qc.invalidateQueries({ queryKey: ["merchant-settings"] }),
+    onSuccess: () => {
+      toast.success(
+        t("Settings saved successfully.", "সেটিংস সংরক্ষিত হয়েছে।"),
+      );
+      void qc.invalidateQueries({ queryKey: ["merchant-settings"] });
+    },
+    onError: (err: unknown) => {
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : t("Failed to save settings.", "সেটিংস সংরক্ষণ ব্যর্থ হয়েছে।"),
+      );
+    },
   });
 
+  // Support ⌘S / Ctrl+S to quickly save without breaking focus
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+        e.preventDefault();
+        if (merchant && !save.isPending) {
+          save.mutate();
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [merchant, save]);
+
+  const taglineId = useId();
+  const timezoneId = useId();
+
   return (
-    <div className="max-w-3xl space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="font-bangla-display text-2xl font-bold tracking-tight text-foreground">
-          {t("Store Settings", "স্টোর সেটিংস")}
-        </h1>
-        {merchant &&
-          (primaryHost ? (
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t("Your live storefront:", "আপনার লাইভ স্টোরফ্রন্ট:")}{" "}
+    <div className="max-w-3xl space-y-6 pb-12">
+      {/* Calm Header */}
+      <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="font-bangla-display text-2xl font-bold tracking-tight text-foreground">
+            {t("Store Settings", "স্টোর সেটিংস")}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {t(
+              "Configure your storefront identity, payment options, delivery rates and regional preferences.",
+              "আপনার স্টোরফ্রন্ট পরিচিতি, পেমেন্ট অপশন, ডেলিভারি চার্জ ও আঞ্চলিক পছন্দ নির্ধারণ করুন।",
+            )}
+          </p>
+        </div>
+
+        {merchant && (
+          <div className="pt-1 sm:pt-0">
+            {primaryHost ? (
               <a
                 target="_blank"
                 rel="noreferrer"
-                className="font-medium text-primary hover:underline"
                 href={storeUrl()}
+                className="group inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-xs transition hover:border-border hover:text-foreground"
+                title={t("Open live storefront", "লাইভ স্টোরফ্রন্ট খুলুন")}
               >
-                {`${primaryHost} ↗`}
+                <span className="size-1.5 rounded-full bg-emerald-500" />
+                <span className="font-mono text-xs">{primaryHost}</span>
+                <ExternalLink
+                  className="size-3 text-muted-foreground/70 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  aria-hidden
+                />
               </a>
-            </p>
-          ) : (
-            // Path storefronts are retired (bare 404): with no custom
-            // domain there is no live storefront, so never link one.
-            <p className="mt-1 text-sm text-muted-foreground">
-              {t(
-                "No live storefront yet —",
-                "এখনো কোনো লাইভ স্টোরফ্রন্ট নেই —",
-              )}{" "}
+            ) : (
               <Link
-                className="font-medium text-primary hover:underline"
                 to="/dashboard/settings/domains"
+                className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-border/80 bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-primary/50 hover:text-primary"
               >
-                {t("connect a custom domain", "কাস্টম ডোমেইন যুক্ত করুন")}
+                <Globe className="size-3 text-muted-foreground" aria-hidden />
+                <span>
+                  {t("Connect custom domain", "কাস্টম ডোমেইন যুক্ত করুন")}
+                </span>
               </Link>
-            </p>
-          ))}
-      </div>
+            )}
+          </div>
+        )}
+      </header>
 
-      {/* The global SectionTabs strip in AdminShell already covers
-          Settings navigation (General / Staff / Domains / Security / …).
-          No in-page duplicate tabs here — this page stays single-purpose. */}
-
-      {/* General Storefront Settings Form */}
-      <section className="rounded-fq-lg border border-border bg-card p-5">
-        <h2 className="text-sm font-semibold text-foreground">
-          {t(
-            "Storefront Preferences & Payments",
-            "স্টোরফ্রন্ট পছন্দ ও পেমেন্ট",
+      {/* Main Settings Form */}
+      <form
+        className="space-y-5"
+        onSubmit={(e) => {
+          e.preventDefault();
+          save.mutate();
+        }}
+      >
+        {/* 1. Store Identity */}
+        <SettingsCard
+          title={t("Store Identity", "স্টোর পরিচিতি")}
+          description={t(
+            "Primary tagline and subtitle shown to shoppers and search engines.",
+            "ক্রেতা এবং সার্চ ইঞ্জিনের সামনে প্রদর্শিত প্রধান ট্যাগলাইন ও সাবটাইটেল।",
           )}
-        </h2>
-        <p className="mt-1 text-xs text-muted-foreground">
-          {t(
-            "Configure order payment options, delivery charges and VAT calculation.",
-            "পেমেন্ট অপশন, ডেলিভারি চার্জ ও ভ্যাট নির্ধারণ করুন।",
-          )}
-        </p>
-
-        <form
-          className="mt-5 grid gap-4"
-          onSubmit={(e) => {
-            e.preventDefault();
-            save.mutate();
-          }}
         >
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium text-foreground">
+          <div className="space-y-1.5">
+            <label
+              htmlFor={taglineId}
+              className="text-sm font-medium text-foreground"
+            >
               {t("Store Tagline", "স্টোর ট্যাগলাইন")}
-            </span>
+            </label>
             <input
+              id={taglineId}
               value={form.tagline}
               onChange={(e) =>
                 setForm((f) => ({ ...f, tagline: e.target.value }))
@@ -229,230 +257,370 @@ function SettingsPage() {
                 "e.g. Handcrafted Bangladeshi Artisan Goods",
                 "যেমন: হাতে তৈরি হস্তশিল্প পণ্য",
               )}
-              className="h-11 w-full rounded-fq-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="h-10 w-full rounded-fq-md border border-input bg-background px-3.5 text-sm text-foreground placeholder:text-muted-foreground/50 transition-colors focus:border-foreground/40 focus:outline-none focus:ring-1 focus:ring-foreground/20"
             />
-          </label>
-
-          <div className="space-y-3 pt-1">
-            <label className="flex min-h-6 items-center gap-2.5 text-sm text-foreground">
-              <input
-                type="checkbox"
-                checked={form.cod_enabled}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, cod_enabled: e.target.checked }))
-                }
-                className="size-4 rounded-fq-sm border-border text-primary"
-              />
+            <p className="text-xs text-muted-foreground">
               {t(
+                "Appears below your store name in browser tabs, meta previews, and receipts.",
+                "ব্রাউজার ট্যাব, মেটা প্রিভিউ এবং রসিদে স্টোর নামের নিচে দেখা যাবে।",
+              )}
+            </p>
+          </div>
+        </SettingsCard>
+
+        {/* 2. Payment Methods */}
+        <SettingsCard
+          title={t("Payment Methods", "পেমেন্ট পদ্ধতি")}
+          description={t(
+            "Control which payment options are presented to customers at checkout.",
+            "চেকআউটে ক্রেতাদের জন্য কোন কোন পেমেন্ট অপশন চালু থাকবে তা নির্ধারণ করুন।",
+          )}
+        >
+          <div className="divide-y divide-border/60">
+            <SettingToggleRow
+              id="settings-cod-toggle"
+              title={t(
                 "Enable Cash on Delivery (COD)",
                 "ক্যাশ অন ডেলিভারি (COD) চালু রাখুন",
               )}
-            </label>
+              description={t(
+                "Allow customers to pay in cash upon receiving their order.",
+                "পণ্য হাতে পেয়ে ক্রেতাদের নগদ টাকায় মূল্য পরিশোধের সুযোগ দিন।",
+              )}
+              checked={form.cod_enabled}
+              onCheckedChange={(checked) =>
+                setForm((f) => ({ ...f, cod_enabled: checked }))
+              }
+            />
 
-            <label className="flex min-h-6 items-center gap-2.5 text-sm text-foreground">
-              <input
-                type="checkbox"
-                checked={form.mfs_enabled}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, mfs_enabled: e.target.checked }))
-                }
-                className="size-4 rounded-fq-sm border-border text-primary"
-              />
-              {t(
-                "Enable bKash / Nagad Mobile Financial Services",
+            <SettingToggleRow
+              id="settings-mfs-toggle"
+              title={t(
+                "Enable bKash / Nagad Mobile Payments",
                 "bKash / Nagad মোবাইল পেমেন্ট চালু রাখুন",
               )}
-            </label>
-
-            <label className="flex min-h-6 items-start gap-2.5 text-sm text-foreground">
-              <input
-                type="checkbox"
-                className="mt-1 size-4 rounded-fq-sm border-border text-primary"
-                checked={form.prices_include_vat}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    prices_include_vat: e.target.checked,
-                  }))
-                }
-              />
-              <span>
-                {t(
-                  "Listed prices already include VAT",
-                  "তালিকাভুক্ত দামে ভ্যাট অন্তর্ভুক্ত",
-                )}
-                <span className="block text-xs text-muted-foreground mt-0.5">
-                  {t(
-                    "Checkout extracts VAT from the price shown instead of adding it on top, so the shopper pays exactly the listed amount.",
-                    "চেকআউটে দামের উপরে ভ্যাট যোগ না করে দামের ভেতর থেকে হিসাব হবে।",
-                  )}
-                </span>
-              </span>
-            </label>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3 pt-2">
-            <NumberField
-              label={t("COD surcharge (৳)", "সিওডি অতিরিক্ত চার্জ (৳)")}
-              value={form.cod_surcharge_taka}
-              onChange={(v) =>
-                setForm((f) => ({ ...f, cod_surcharge_taka: v }))
+              description={t(
+                "Accept payments through Bangladesh mobile financial services.",
+                "বাংলাদেশি মোবাইল ফিনান্সিয়াল সার্ভিসের মাধ্যমে ডিজিটাল পেমেন্ট গ্রহণ করুন।",
+              )}
+              checked={form.mfs_enabled}
+              onCheckedChange={(checked) =>
+                setForm((f) => ({ ...f, mfs_enabled: checked }))
               }
             />
-            <NumberField
-              label={t("Flat delivery (৳)", "ফিক্সড ডেলিভারি (৳)")}
+          </div>
+        </SettingsCard>
+
+        {/* 3. Pricing & Taxes */}
+        <SettingsCard
+          title={t("Pricing & Taxes", "মূল্য ও কর")}
+          description={t(
+            "Define how taxes are calculated and presented on product listings.",
+            "পণ্যের মূল্যের সাথে কর ও ভ্যাট কীভাবে হিসাব হবে তা নির্ধারণ করুন।",
+          )}
+        >
+          <SettingToggleRow
+            id="settings-vat-toggle"
+            title={t(
+              "Listed prices already include VAT",
+              "তালিকাভুক্ত দামে ভ্যাট অন্তর্ভুক্ত",
+            )}
+            description={t(
+              "Checkout extracts VAT from the displayed price instead of adding extra charges on top, so shoppers pay exactly the advertised amount.",
+              "চেকআউটে অতিরিক্ত ভ্যাট যোগ না করে পণ্যের প্রদর্শিত দামের ভেতর থেকেই হিসাব হবে, ফলে ক্রেতা সঠিক প্রদর্শিত মূল্যই পরিশোধ করবেন।",
+            )}
+            checked={form.prices_include_vat}
+            onCheckedChange={(checked) =>
+              setForm((f) => ({ ...f, prices_include_vat: checked }))
+            }
+          />
+        </SettingsCard>
+
+        {/* 4. Delivery & Fulfillment Rates */}
+        <SettingsCard
+          title={t("Delivery & Fulfillment Rates", "ডেলিভারি ও শিপিং চার্জ")}
+          description={t(
+            "Standard shipping fees and order thresholds applied to checkouts.",
+            "চেকআউটে প্রযোজ্য স্ট্যান্ডার্ড ডেলিভারি ফি এবং ফ্রি ডেলিভারির সীমা।",
+          )}
+        >
+          <div className="grid gap-4 sm:grid-cols-3">
+            <MoneyField
+              id="settings-shipping-flat"
+              label={t("Flat delivery", "ফিক্সড ডেলিভারি")}
+              hint={t("Default fee", "ডিফল্ট চার্জ")}
               value={form.shipping_flat_taka}
-              onChange={(v) =>
-                setForm((f) => ({ ...f, shipping_flat_taka: v }))
+              onChange={(val) =>
+                setForm((f) => ({ ...f, shipping_flat_taka: val }))
               }
+              placeholder="60"
             />
-            <NumberField
-              label={t("Free delivery above (৳)", "ফ্রি ডেলিভারি নূন্যতম (৳)")}
+
+            <MoneyField
+              id="settings-free-shipping"
+              label={t("Free delivery above", "ফ্রি ডেলিভারি নূন্যতম")}
+              hint={t("0 to disable", "বন্ধ রাখতে ০")}
               value={form.free_shipping_taka ?? 0}
-              onChange={(v) =>
-                setForm((f) => ({ ...f, free_shipping_taka: v || null }))
+              onChange={(val) =>
+                setForm((f) => ({
+                  ...f,
+                  free_shipping_taka: val > 0 ? val : null,
+                }))
               }
+              placeholder="0"
+            />
+
+            <MoneyField
+              id="settings-cod-surcharge"
+              label={t("COD surcharge", "সিওডি অতিরিক্ত চার্জ")}
+              hint={t("Added to COD", "সিওডিতে প্রযোজ্য")}
+              value={form.cod_surcharge_taka}
+              onChange={(val) =>
+                setForm((f) => ({ ...f, cod_surcharge_taka: val }))
+              }
+              placeholder="0"
             />
           </div>
+        </SettingsCard>
 
-          {/* Store Timezone & Customer Experience Section */}
-          <div className="rounded-fq-md border border-border bg-muted/20 p-4 pt-3.5 space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
-              <div className="flex items-center gap-2">
-                <Clock className="size-4 text-primary" aria-hidden />
-                <h3 className="text-sm font-semibold text-foreground">
-                  {t(
-                    "Store Timezone & Shopper Policy",
-                    "স্টোর টাইমজোন ও ক্রেতার পছন্দ",
-                  )}
-                </h3>
-              </div>
-              <div className="flex items-center gap-2 text-xs">
-                <span className="text-muted-foreground">
-                  {t("Current Store Time:", "বর্তমান স্টোর সময়:")}
-                </span>
-                <span className="font-mono font-medium text-foreground bg-background px-2 py-0.5 rounded border border-border">
-                  {formatDateTime(currentTime, form.timezone)}
-                </span>
-              </div>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <label className="block text-sm">
-                <span className="mb-1 block font-medium text-foreground">
-                  {t("Primary Store Timezone", "প্রধান স্টোর টাইমজোন")}
-                </span>
-                <select
-                  value={form.timezone}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, timezone: e.target.value }))
-                  }
-                  className="h-11 w-full rounded-fq-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                >
-                  {Array.from(
-                    new Set(COMMON_TIMEZONES.map((tz) => tz.region)),
-                  ).map((region) => (
-                    <optgroup key={region} label={region}>
-                      {COMMON_TIMEZONES.filter(
-                        (tz) => tz.region === region,
-                      ).map((tz) => (
+        {/* 5. Timezone & Regional Localization */}
+        <SettingsCard
+          title={t("Timezone & Localization", "টাইমজোন ও আঞ্চলিক সেটিংস")}
+          description={t(
+            "Controls order histories, analytics reporting, invoices and scheduled campaign cutoffs.",
+            "অর্ডার ইতিহাস, ইনভয়েস, দৈনিক কাটঅফ এবং নির্ধারিত ক্যাম্পেইনে ব্যবহৃত হবে।",
+          )}
+          headerAction={<LiveTimeBadge timezone={form.timezone} />}
+        >
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <label
+                htmlFor={timezoneId}
+                className="text-sm font-medium text-foreground"
+              >
+                {t("Primary Store Timezone", "প্রধান স্টোর টাইমজোন")}
+              </label>
+              <select
+                id={timezoneId}
+                value={form.timezone}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, timezone: e.target.value }))
+                }
+                className="h-10 w-full rounded-fq-md border border-input bg-background px-3 text-sm text-foreground transition-colors focus:border-foreground/40 focus:outline-none focus:ring-1 focus:ring-foreground/20"
+              >
+                {Array.from(
+                  new Set(COMMON_TIMEZONES.map((tz) => tz.region)),
+                ).map((region) => (
+                  <optgroup key={region} label={region}>
+                    {COMMON_TIMEZONES.filter((tz) => tz.region === region).map(
+                      (tz) => (
                         <option key={tz.value} value={tz.value}>
                           {tz.offset} — {tz.label}
                         </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
-                <span className="mt-1 block text-xs text-muted-foreground">
-                  {t(
-                    "Used for order histories, invoices, daily cutoffs and scheduled campaign launches.",
-                    "অর্ডার ইতিহাস, ইনভয়েস, দৈনিক কাটঅফ এবং নির্ধারিত ক্যাম্পেইনে ব্যবহৃত হবে।",
-                  )}
-                </span>
-              </label>
+                      ),
+                    )}
+                  </optgroup>
+                ))}
+              </select>
+            </div>
 
-              <div className="space-y-1 sm:pt-1">
-                <span className="block text-xs font-medium uppercase tracking-wider text-muted-foreground mb-1">
-                  {t("Shopper Timezone Preference", "ক্রেতার টাইমজোন সুবিধা")}
-                </span>
-                <label className="flex items-start gap-2.5 rounded-fq-md border border-border/80 bg-background p-3 text-sm text-foreground cursor-pointer hover:border-primary/40 transition-colors">
-                  <input
-                    type="checkbox"
-                    className="mt-0.5 size-4 rounded-fq-sm border-border text-primary"
-                    checked={form.allow_customer_timezone}
-                    onChange={(e) =>
-                      setForm((f) => ({
-                        ...f,
-                        allow_customer_timezone: e.target.checked,
-                      }))
-                    }
-                  />
-                  <div>
-                    <span className="font-medium">
-                      {t(
-                        "Allow shoppers to view dates in their local timezone",
-                        "ক্রেতাদের তাদের স্থানীয় টাইমজোনে দেখার অনুমতি দিন",
-                      )}
-                    </span>
-                    <span className="block text-xs text-muted-foreground mt-0.5">
-                      {t(
-                        "If enabled, shoppers can view order timelines and timestamps in their local device timezone or pick from the storefront header. If disabled, all visitors see dates strictly in your store timezone.",
-                        "চালু থাকলে ক্রেতারা তাদের ডিভাইসের স্থানীয় টাইমজোনে স্টোরের তারিখ ও সময় দেখতে পারবেন। বন্ধ থাকলে সবাই আপনার স্টোর টাইমজোন দেখতে পাবে।",
-                      )}
-                    </span>
-                  </div>
-                </label>
-              </div>
+            <div className="pt-2 border-t border-border/60">
+              <SettingToggleRow
+                id="settings-customer-tz-toggle"
+                title={t(
+                  "Allow shoppers to view dates in their local timezone",
+                  "ক্রেতাদের তাদের স্থানীয় টাইমজোনে দেখার অনুমতি দিন",
+                )}
+                description={t(
+                  "When enabled, visitors will see order timelines and tracking timestamps in their device's local timezone. When disabled, all dates strictly adhere to your store timezone.",
+                  "চালু থাকলে ক্রেতারা তাদের ডিভাইসের স্থানীয় টাইমজোনে স্টোরের তারিখ ও সময় দেখতে পারবেন। বন্ধ থাকলে সবাই আপনার স্টোর টাইমজোন দেখতে পাবে।",
+                )}
+                checked={form.allow_customer_timezone}
+                onCheckedChange={(checked) =>
+                  setForm((f) => ({
+                    ...f,
+                    allow_customer_timezone: checked,
+                  }))
+                }
+              />
             </div>
           </div>
+        </SettingsCard>
 
-          <div className="flex items-center gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={!merchant || save.isPending}
-              className="min-h-10 rounded-fq-md bg-primary px-5 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
-            >
-              {save.isPending
-                ? t("Saving…", "সংরক্ষণ হচ্ছে…")
-                : t("Save Settings", "সেটিংস সংরক্ষণ")}
-            </button>
-            <p
-              aria-live="polite"
-              className="text-sm font-medium text-emerald-600"
-            >
-              {save.isSuccess
-                ? t("Settings saved successfully.", "সেটিংস সংরক্ষিত হয়েছে।")
-                : ""}
-            </p>
+        {/* Action / Save Bar */}
+        <div className="flex items-center justify-between pt-2">
+          <div className="text-xs text-muted-foreground hidden sm:block">
+            <span>
+              {t(
+                "Press ⌘S or Ctrl+S to save anytime",
+                "যেকোনো সময় সেভ করতে ⌘S অথবা Ctrl+S চাপুন",
+              )}
+            </span>
           </div>
-        </form>
-      </section>
 
-      {/* Impersonation Consent */}
+          <button
+            type="submit"
+            disabled={!merchant || isLoading || save.isPending}
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground shadow-xs transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {save.isPending ? (
+              <>
+                <Loader2 className="size-4 animate-spin" aria-hidden />
+                <span>{t("Saving…", "সংরক্ষণ হচ্ছে…")}</span>
+              </>
+            ) : (
+              <span>{t("Save Settings", "সেটিংস সংরক্ষণ")}</span>
+            )}
+          </button>
+        </div>
+      </form>
+
+      {/* Platform Support Access */}
       {merchant ? <ImpersonationConsent merchantId={merchant.id} /> : null}
     </div>
   );
 }
 
-function NumberField({
-  label,
-  value,
-  onChange,
+/* -------------------------------------------------------------------------- */
+/* Calm Presentational Subcomponents                                          */
+/* -------------------------------------------------------------------------- */
+
+function SettingsCard({
+  title,
+  description,
+  headerAction,
+  children,
 }: {
-  label: string;
-  value: number;
-  onChange: (v: number) => void;
+  title: string;
+  description?: string;
+  headerAction?: React.ReactNode;
+  children: React.ReactNode;
 }) {
   return (
-    <label className="block text-sm">
-      <span className="mb-1 block font-medium">{label}</span>
-      <input
-        type="number"
-        min={0}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="money h-12 w-full rounded-fq-md border border-border bg-background px-3 text-sm"
+    <section className="rounded-fq-lg border border-border/80 bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-shadow">
+      <header className="flex flex-wrap items-start justify-between gap-3 pb-4">
+        <div>
+          <h2 className="font-bangla-display text-sm font-semibold tracking-tight text-foreground">
+            {title}
+          </h2>
+          {description && (
+            <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
+              {description}
+            </p>
+          )}
+        </div>
+        {headerAction}
+      </header>
+      <div className="pt-1">{children}</div>
+    </section>
+  );
+}
+
+function SettingToggleRow({
+  id,
+  title,
+  description,
+  checked,
+  onCheckedChange,
+}: {
+  id: string;
+  title: string;
+  description?: string;
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4 py-3.5 first:pt-0 last:pb-0">
+      <div className="space-y-0.5 pr-2">
+        <label
+          htmlFor={id}
+          className="text-sm font-medium text-foreground cursor-pointer select-none"
+        >
+          {title}
+        </label>
+        {description && (
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {description}
+          </p>
+        )}
+      </div>
+      <Switch
+        id={id}
+        checked={checked}
+        onCheckedChange={onCheckedChange}
+        className="mt-0.5 shrink-0"
       />
-    </label>
+    </div>
+  );
+}
+
+function MoneyField({
+  id,
+  label,
+  hint,
+  value,
+  onChange,
+  placeholder,
+}: {
+  id: string;
+  label: string;
+  hint?: string;
+  value: number;
+  onChange: (val: number) => void;
+  placeholder?: string;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between text-xs">
+        <label htmlFor={id} className="font-medium text-foreground">
+          {label}
+        </label>
+        {hint && (
+          <span className="text-[11px] text-muted-foreground/80">{hint}</span>
+        )}
+      </div>
+      <div className="relative flex items-center">
+        <span
+          className="pointer-events-none absolute left-3 text-xs font-semibold text-muted-foreground select-none"
+          aria-hidden
+        >
+          ৳
+        </span>
+        <input
+          id={id}
+          type="number"
+          min={0}
+          value={value === 0 ? "0" : value || ""}
+          onChange={(e) => onChange(Number(e.target.value))}
+          placeholder={placeholder}
+          className="h-10 w-full rounded-fq-md border border-input bg-background pl-7 pr-3 text-sm font-mono text-foreground placeholder:text-muted-foreground/50 transition-colors focus:border-foreground/40 focus:outline-none focus:ring-1 focus:ring-foreground/20"
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Live time pill isolated in its own subcomponent so the parent form
+ * does not re-render every 10 seconds.
+ */
+function LiveTimeBadge({ timezone }: { timezone: string }) {
+  const [time, setTime] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 10_000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div
+      className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-muted/40 px-2.5 py-1 text-xs text-muted-foreground"
+      title="Store current time"
+    >
+      <Clock className="size-3.5 text-muted-foreground/70" aria-hidden />
+      <span className="font-mono text-[11px] font-medium text-foreground tabular-nums">
+        {formatDateTime(time, timezone)}
+      </span>
+    </div>
   );
 }

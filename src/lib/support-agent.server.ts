@@ -159,6 +159,8 @@ export type Source = { label: string; table: string; title?: string };
 export type AskInput = {
   slug: string;
   message: string;
+  customerName?: string | null;
+  customerEmail?: string | null;
   conversationId?: string | null;
   orderNumber?: string | null;
   phone?: string | null;
@@ -222,6 +224,7 @@ export type AskResult = {
   humanTakeover?: boolean;
   staffActive?: boolean;
   staffIndicator?: string;
+  adminOnline?: boolean;
   deepWikiQueryId?: string;
   deepWikiCitations?: DeepWikiCitation[];
 };
@@ -549,9 +552,24 @@ export const EPISTEMIC_ACTION_PATHS: EpistemicActionPath[] = [
 export function buildEpistemicHumilityReply(
   locale: "bn" | "en",
   contactInfo: ContactInfoCard = DEFAULT_CONTACT_INFO,
+  options?: { adminOnline?: boolean; customerEmail?: string },
 ): string {
+  const adminNoticeBn =
+    options?.adminOnline === true
+      ? "\n\n🟢 **সাপোর্ট স্পেশালিস্ট অনলাইন আছেন**: আমাদের সাপোর্ট স্পেশালিস্ট বর্তমানে অনলাইনে আছেন। অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন অথবা নিচের মাধ্যম থেকে বেছে নিন।"
+      : options?.adminOnline === false
+        ? `\n\n⚪ **লাইভ সাপোর্ট অফলাইন**: আমাদের লাইভ সাপোর্ট টিম এই মুহূর্তে অফলাইনে আছেন। আপনি সুবিধাজনক সময়ে কলব্যাকের অনুরোধ করতে পারেন অথবা আমাদের টিম আপনার ইমেইলে${options?.customerEmail ? ` (${options.customerEmail})` : ""} উত্তর জানিয়ে দেবে।`
+        : "";
+
+  const adminNoticeEn =
+    options?.adminOnline === true
+      ? "\n\n🟢 **Support Specialist Online**: A human support specialist is currently online. Please wait a moment while I transfer you, or select a callback below if you prefer."
+      : options?.adminOnline === false
+        ? `\n\n⚪ **Live Support Away**: Our live support team is currently away. You can schedule a callback below, or our team will follow up via email${options?.customerEmail ? ` at ${options.customerEmail}` : ""}.`
+        : "";
+
   if (locale === "bn") {
-    return `${EPISTEMIC_ADMISSION_BN}
+    return `${EPISTEMIC_ADMISSION_BN}${adminNoticeBn}
 
 সঠিক তথ্যের জন্য অনুগ্রহ করে নিচের যেকোনো একটি মাধ্যম বেছে নিন:
 
@@ -565,7 +583,7 @@ export function buildEpistemicHumilityReply(
    • ⏰ সময়: ${contactInfo.hoursBn}`;
   }
 
-  return `${EPISTEMIC_ADMISSION_EN}
+  return `${EPISTEMIC_ADMISSION_EN}${adminNoticeEn}
 
 To ensure you receive accurate and verified assistance, please select one of the options below:
 
@@ -975,6 +993,10 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       }
     }
 
+    const { isOperatorOnline } = await import("./support-presence.server");
+    const presence = await isOperatorOnline(merchant.id, conversationId);
+    const adminOnline = presence.isOnline;
+
     const triggerEpistemicHumility =
       !pinned &&
       !isActionIntent &&
@@ -983,14 +1005,20 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       (isSpeculative || noKbHits || lowVectorSim);
 
     if (triggerEpistemicHumility) {
-      const humilityReply = buildEpistemicHumilityReply(locale, contactInfo);
+      const humilityReply = buildEpistemicHumilityReply(locale, contactInfo, {
+        adminOnline,
+        customerEmail: input.customerEmail,
+      });
 
       // Auto-escalate conversation to needs_agent so human operators on /root/ai are notified
       try {
         const db = await admin();
         await db
           .from("ai_conversations")
-          .update({ status: "needs_agent", priority: "normal" } as never)
+          .update({
+            status: "needs_agent",
+            priority: adminOnline ? "high" : "normal",
+          } as never)
           .eq("merchant_id", merchant.id)
           .eq("id", conversationId);
       } catch {
@@ -1022,6 +1050,8 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         confidence: "unsure",
         needsAgent: true,
         cta: "human_transfer",
+        adminOnline,
+        staffActive: adminOnline,
         epistemicTriggered: true,
         epistemicReason: isSpeculative
           ? "speculative_out_of_domain"
@@ -1294,7 +1324,7 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       outcome: needsAgent ? "escalated" : confidence,
       channel,
     });
-    // 7. Continuous Training Data Flywheel Capture
+    // 8. Continuous Training Data Flywheel Capture
     await captureTrainingTurn({
       merchantId: merchant.id,
       conversationId,
@@ -1317,6 +1347,41 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
           : "answered",
     }).catch(() => null);
 
+    // 9. Dispatch Mail Notifications to Admin and Customer (Phase 12.7)
+    if (input.customerEmail?.trim()) {
+      const { sendSupportNotifications } =
+        await import("./support-mail.server");
+      sendSupportNotifications({
+        merchantId: merchant.id,
+        merchantName: merchant.name,
+        slug: input.slug,
+        conversationId,
+        customerName: input.customerName || "Customer",
+        customerEmail: input.customerEmail.trim(),
+        phone: input.phone ?? null,
+        orderNumber: input.orderNumber ?? null,
+        userMessage: input.message,
+        agentReply: reply,
+        ticketId,
+        ticketRef: ticketId ? `#TKT-${ticketId.slice(-8).toUpperCase()}` : null,
+        priority: ticketAction?.priority ?? null,
+        callbackId: callbackAction?.callbackId ?? null,
+        locale,
+        trigger: isHumanTakeover
+          ? "human_takeover"
+          : ticketId
+            ? "ticket_created"
+            : callbackAction
+              ? "callback_requested"
+              : "chat_turn",
+      }).catch((err) => {
+        log("warn", "support.notifications_dispatch_failed", {
+          error: String((err as Error)?.message ?? err),
+          conversationId,
+        });
+      });
+    }
+
     const finalConfidence: Confidence = deepWikiResult
       ? deepWikiResult.confidence === "high"
         ? "grounded"
@@ -1333,6 +1398,7 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       confidence: finalConfidence,
       needsAgent,
       cta,
+      adminOnline,
       ticketId,
       ticketAction,
       callbackAction,
@@ -1357,9 +1423,11 @@ export async function rateConversation(
   conversationId: string,
   rating: number,
   review?: string,
+  isResolved?: boolean,
 ) {
   const value = Math.min(5, Math.max(1, Math.round(rating)));
   const safeReview = review ? redactPii(review).text.slice(0, 1000) : null;
+  const resolved = isResolved !== undefined ? isResolved : value >= 4;
 
   // 1. Update in-memory flywheel
   const { updateTurnCsat } = await import("./ai-training-data.server");
@@ -1368,6 +1436,7 @@ export async function rateConversation(
   );
 
   // 1.1 Update DeepWiki RL Edge Weights via Atropos feedback
+  let dwFeedbackApplied = false;
   try {
     const { getLatestDeepWikiQueryForConversation, applyAtroposFeedback } =
       await import("./deepwiki-engine.server");
@@ -1377,11 +1446,54 @@ export async function rateConversation(
         queryId: dwRecord.queryId,
         rating: value,
         feedbackText: safeReview ?? undefined,
-        isResolved: value >= 4,
+        isResolved: resolved,
       });
+      dwFeedbackApplied = true;
     }
   } catch {
     // Non-blocking RL feedback
+  }
+
+  // 1.2 Step Atropos RL Environment if no prior DeepWiki query record
+  if (!dwFeedbackApplied) {
+    try {
+      const { computeTrajectoryReward, stepAtroposEnv } =
+        await import("./support-rl-reward.server");
+      const stepObs = {
+        userMessage: safeReview || "Customer feedback",
+        grounded: resolved,
+        csatRating: value,
+        actionCompleted: (resolved ? "answered" : undefined) as
+          "answered" | undefined,
+      };
+      const stepReward = computeTrajectoryReward({
+        ...stepObs,
+        agentReply: "Feedback recorded",
+      });
+
+      stepAtroposEnv(
+        { conversationId, turnIndex: 1, history: [], isDone: true },
+        { intent: "feedback", replyText: "Feedback recorded" },
+        stepObs,
+      );
+
+      if (stepReward.label === "high_quality") {
+        const { captureTrainingTurn } =
+          await import("./ai-training-data.server");
+        await captureTrainingTurn({
+          merchantId: "00000000-0000-4000-8000-000000000001",
+          conversationId,
+          userMessage: safeReview || "Customer feedback",
+          agentReply: "Feedback recorded",
+          csatRating: value,
+          csatReview: safeReview,
+          grounded: resolved,
+          actionCompleted: "answered",
+        }).catch(() => null);
+      }
+    } catch {
+      // Non-blocking
+    }
   }
 
   // 2. Persist to Supabase

@@ -1061,4 +1061,80 @@ describe("Phase 12.5 — Bot Suppression Middleware for Human Takeover", () => {
       expect(ratingResult.rating).toBe(5);
     });
   });
+
+  describe("Phase 12.7 — Customer Identity & Mail Notifications via askSupport", () => {
+    it("accepts customerName and customerEmail and completes turn with email notifications dispatched", async () => {
+      const convId = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        conversationId: convId,
+        customerName: "Ayesha Rahman",
+        customerEmail: "ayesha@example.com",
+        phone: "01712345678",
+        orderNumber: "ORD-9988",
+        message: "When will my dress be delivered?",
+        locale: "en",
+      });
+
+      expect(res.conversationId).toBe(convId);
+      expect(res.reply).toBeDefined();
+      expect(typeof res.reply).toBe("string");
+    });
+  });
+
+  describe("Phase 12.8 — Intelligent Admin Online Transfer, Callback Routing & RL+Atropos", () => {
+    it("advises waiting for online admin transfer when operator heartbeat is active", async () => {
+      const { recordOperatorHeartbeat } =
+        await import("./support-presence.server");
+      // Record presence for demo store merchant
+      recordOperatorHeartbeat("merchant-demo-123", "op-1");
+
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        message: "What will the stock price of Apple be tomorrow?",
+        locale: "en",
+      });
+
+      expect(res.epistemicTriggered).toBe(true);
+      expect(res.adminOnline).toBe(true);
+      expect(res.staffActive).toBe(true);
+      expect(res.cta).toBe("human_transfer");
+      expect(res.reply).toContain("Support Specialist Online");
+      expect(res.reply).toContain("transfer you");
+    });
+
+    it("advises callback & email follow-up when admin is offline", async () => {
+      const { clearOperatorHeartbeatsForTest } =
+        await import("./support-presence.server");
+      clearOperatorHeartbeatsForTest();
+
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        customerEmail: "shopper@test.com",
+        message: "What will the stock price of Apple be tomorrow?",
+        locale: "en",
+      });
+
+      expect(res.epistemicTriggered).toBe(true);
+      expect(res.adminOnline).toBe(false);
+      expect(res.staffActive).toBe(false);
+      expect(res.reply).toContain("Live Support Away");
+      expect(res.reply).toContain("shopper@test.com");
+    });
+
+    it("steps Atropos RL environment and updates reward when rating with isResolved", async () => {
+      const { rateConversation } = await import("./support-agent.server");
+      const convId = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+
+      const ratingResult = await rateConversation(
+        convId,
+        5,
+        "Fantastic support, problem was completely resolved!",
+        true,
+      );
+
+      expect(ratingResult.ok).toBe(true);
+      expect(ratingResult.rating).toBe(5);
+    });
+  });
 });
