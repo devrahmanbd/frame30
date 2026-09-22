@@ -1862,7 +1862,7 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
           {str(s, "body") && <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>}
           <form className="mt-3 flex flex-wrap gap-2" method="post" action="#back-in-stock" onSubmit={(e) => e.preventDefault()}>
             <label className="sr-only" htmlFor="bis-email">Email address</label>
-            <input id="bis-email" name="email" type="email" required placeholder="you@example.com" className="min-h-11 min-w-[14rem] flex-1 rounded-fq-md border border-border px-3 text-sm" />
+            <input id="bis-email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" className="min-h-11 min-w-[14rem] flex-1 rounded-fq-md border border-border px-3 text-sm" />
             <button type="submit" className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">{str(s, "buttonLabel", "Notify me")}</button>
           </form>
           {str(s, "consentText") && <p className="mt-2 text-xs text-muted-foreground">{str(s, "consentText")}</p>}

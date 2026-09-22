@@ -472,6 +472,37 @@ const ALIGN: Field = {
   ],
 };
 
+/**
+ * Theme-effects port: hero wash toggle. Declared per hero-family entry (not in
+ * the universal style layer) so only heroes offer it. First option matches the
+ * renderer default (`wash`) for the inspector's unset display.
+ */
+const ATMOSPHERE: Field = {
+  key: "atmosphere",
+  label: "Atmosphere",
+  kind: "select",
+  panel: "style",
+  options: [
+    { value: "wash", label: "Wash" },
+    { value: "none", label: "None" },
+  ],
+};
+
+/**
+ * Theme-effects port: editorial banner surface toggle. Banner-only, same
+ * scoping rationale as ATMOSPHERE; first option matches the default (`card`).
+ */
+const SURFACE: Field = {
+  key: "surface",
+  label: "Surface",
+  kind: "select",
+  panel: "style",
+  options: [
+    { value: "card", label: "Card" },
+    { value: "glass", label: "Glass" },
+  ],
+};
+
 const BASE_CATALOG: CatalogEntry[] = [
   {
     // AST v3 unlock: the only node type that owns a subtree.
@@ -589,6 +620,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       ctaLabel: "",
       ctaHref: "",
       align: "left",
+      atmosphere: "wash",
       image: "",
       s2Heading: "",
       s2Image: "",
@@ -606,6 +638,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("s3Heading", "Slide 3 heading"),
       url("s3Image", "Slide 3 image"),
       ALIGN,
+      ATMOSPHERE,
     ],
   },
   {
@@ -4087,7 +4120,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "heritage",
     slots: ["main"],
     heading: true,
-    defaults: { autoAdvanceMs: 5000 },
+    defaults: { autoAdvanceMs: 5000, atmosphere: "wash" },
     fields: [
       { key: "slides", label: "Slides", kind: "array", panel: "content", children: [
         { key: "image", label: "Image URL", kind: "text", panel: "content" },
@@ -4098,6 +4131,7 @@ const BASE_CATALOG: CatalogEntry[] = [
         { key: "caption", label: "Caption", kind: "bitext", panel: "content" },
       ]},
       { key: "autoAdvanceMs", label: "Auto-advance (ms)", kind: "number", panel: "settings" },
+      ATMOSPHERE,
     ],
   },
   {
@@ -4158,13 +4192,14 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "heritage",
     slots: ["main"],
     heading: false,
-    defaults: {},
+    defaults: { surface: "card" },
     fields: [
       { key: "image", label: "Image URL", kind: "text", panel: "content" },
       { key: "headline", label: "Headline", kind: "text", panel: "content" },
       { key: "subhead", label: "Subhead", kind: "text", panel: "content" },
       { key: "ctaLabel", label: "CTA label", kind: "text", panel: "content" },
       { key: "ctaUrl", label: "CTA URL", kind: "text", panel: "content" },
+      SURFACE,
     ],
   },
   {

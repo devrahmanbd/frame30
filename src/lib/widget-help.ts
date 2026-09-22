@@ -646,6 +646,14 @@ export const PROP_HINTS: Record<string, BiText> = {
     en: "Corner rounding, from the theme radius scale.",
     bn: "কোণের গোলাকৃতি — থিমের রেডিয়াস স্কেল থেকে।",
   },
+  atmosphere: {
+    en: "Hero wash tinted from the theme brand. None removes it entirely.",
+    bn: "থিম ব্র্যান্ড থেকে হিরো ওয়াশ — None দিলে পুরোপুরি সরে যায়।",
+  },
+  surface: {
+    en: "Banner surface: flat card or elevated theme-tinted glass.",
+    bn: "ব্যানার সারফেস — ফ্ল্যাট কার্ড বা থিম-টিন্টেড গ্লাস।",
+  },
   border: { en: "Outline around the widget.", bn: "উইজেটের চারপাশে বর্ডার।" },
   shadow: {
     en: "Elevation. Heavier shadows cost contrast on dark themes.",
