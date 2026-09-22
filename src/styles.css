@@ -785,9 +785,11 @@ body {
    which once left a ~180px white void at the bottom of admin pages. The
    higher-specificity selector wins over the utility. */
 table.sr-only {
+  position: fixed;
+  top: 0;
+  left: 0;
   height: 1px;
   width: 1px;
-  contain: strict;
 }
 .fq-theme-scope {
   min-width: 0;
