@@ -779,6 +779,16 @@ html,
 body {
   overflow-x: clip;
 }
+
+/* Screen-reader data tables (chart fallbacks) must never contribute scroll
+   overflow: some builds size them by content despite sr-only positioning,
+   which once left a ~180px white void at the bottom of admin pages. The
+   higher-specificity selector wins over the utility. */
+table.sr-only {
+  height: 1px;
+  width: 1px;
+  contain: strict;
+}
 .fq-theme-scope {
   min-width: 0;
 }
