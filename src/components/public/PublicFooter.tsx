@@ -495,16 +495,6 @@ export function PublicFooter({ hideCta = false }: PublicFooterProps) {
                 </li>
                 <li>
                   <Link
-                    to="/builder"
-                    className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
-                  >
-                    {lang === "bn"
-                      ? "স্টোরফ্রন্ট বিল্ডার"
-                      : "Storefront Builder"}
-                  </Link>
-                </li>
-                <li>
-                  <Link
                     to="/payments"
                     className="inline-flex min-h-7 items-center text-foreground/80 transition-colors hover:text-primary"
                   >

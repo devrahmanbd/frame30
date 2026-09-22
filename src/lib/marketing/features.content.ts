@@ -8,9 +8,10 @@
  * machine-translated stand-in.
  *
  * This page is the internal-link spine of the marketing graph: each of the
- * six pillar deep-dive rows points onward to its own dedicated page
- * (`/builder`, `/payments`, `/fulfilment`) or, where no dedicated page exists
- * yet for that pillar, to the closest relevant page (`/security`, `/docs`)
+ * five pillar deep-dive rows points onward to its own dedicated page
+ * (`/payments`, `/fulfilment`) or, where no dedicated page exists
+ * yet for that pillar, to the closest relevant page (`/security`, `/docs`,
+ * `/features#storefront`)
  * so link equity never dead-ends on this hub.
  */
 
@@ -233,8 +234,8 @@ export const PILLAR_DEEP_DIVES: PillarDeepDive[] = [
       en: 'It\'s Eid-collection week. The merchant wants to swap the homepage hero for a festive banner without touching the rest of the site. She opens the builder, drags the existing hero section down one slot, drops in a new hero pointed at the Eid collection, and previews it on a draft link she sends to her business partner over WhatsApp. Her partner replies "the button colour is too dark to read" — she opens the token editor, nudges the CTA fill token, and the change propagates to every section using that token, not just the hero. She publishes. Forty minutes later a return customer complains the homepage looks different and she preferred the old layout — she opens version history and rolls back to the version from three days ago in one click, then re-applies just the button-colour fix on top of it.',
     },
     onward: {
-      to: "/builder",
-      label: { en: "See the full builder walkthrough" },
+      to: "/docs",
+      label: { en: "Read the product documentation" },
     },
   },
   {
@@ -299,7 +300,7 @@ export const PILLAR_DEEP_DIVES: PillarDeepDive[] = [
       en: "A saree wholesaler restocks 40 units of a print across four colourways. She uploads a CSV with the new stock counts against existing SKU codes rather than recreating products from scratch. Before publishing the import, the system flags three rows where the SKU code doesn't match anything in the catalogue — likely a typo — so she fixes them in the CSV rather than silently creating four duplicate products. Stock updates instantly on the storefront and at the counter. That afternoon a customer messages in Bangla asking whether the maroon colourway is available in the largest size; the staff member checks the same product page, reads the Bangla name and description, and can answer from the same screen without switching to a translated mirror site.",
     },
     onward: {
-      to: "/builder",
+      to: "/features#storefront",
       label: { en: "See how catalogue data flows into the builder" },
     },
   },
