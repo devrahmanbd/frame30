@@ -164,6 +164,16 @@ export async function purgePluginJob(db: Client, payload: PurgePayload) {
   if (!install) return { ok: true, purged: false, reason: "install_not_found" };
   if ((install.status as string) === "purged")
     return { ok: true, purged: false, reason: "already_purged" };
+  // Brief allowlist: only uninstall-flow states may converge to `purged`.
+  // Checked up front so a non-allowlisted install (e.g. `paused`) loses no
+  // state/queue rows; the `.in()` on the terminal write below re-guards it
+  // at the DB against a status race between this read and the write.
+  if (
+    !["uninstalling", "removed", "installed", "trial"].includes(
+      install.status as string,
+    )
+  )
+    return { ok: true, purged: false, reason: "status_not_purgeable" };
 
   // 1. delete plugin_state row
   const { data: stateRows } = await db
@@ -204,15 +214,19 @@ export async function purgePluginJob(db: Client, payload: PurgePayload) {
     await db.from("job_queue").delete().in("id", jobIds);
   }
 
-  // 3. ledger → purged. No status guard: uninstall always parks `uninstalling`
-  // first, but a purge must converge even from paused/installed on retry paths.
-  const { error: ledgerError } = await db
+  // 3. ledger → purged, guarded to the brief allowlist: retry paths from
+  // `installed`/`trial` converge, but spec-excluded states (e.g. `paused`)
+  // never land here. Zero matched rows = status raced away; no-op, no audit.
+  const { data: landed, error: ledgerError } = await db
     .from("marketplace_installs")
     .update({ status: "purged" as never })
     .eq("merchant_id", merchantId)
-    .eq("id", installId);
+    .eq("id", installId)
+    .in("status", ["uninstalling", "removed", "installed", "trial"]);
   if (ledgerError)
     throw Object.assign(new Error("purge_ledger_failed"), { status: 500 });
+  if (!((landed ?? []) as unknown[]).length)
+    return { ok: true, purged: false, reason: "status_not_purgeable" };
 
   try {
     const { stopSidecar } = await import("./plugin-sidecar.server");

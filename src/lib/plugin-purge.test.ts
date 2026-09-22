@@ -216,4 +216,59 @@ describe("purge machine (R2-6)", () => {
     // Nothing destroyed: state and ledger untouched.
     expect(db.rows("plugin_state")).toHaveLength(1);
   });
+
+  it("purge against a non-allowlisted status (paused) is a no-op; uninstalling still converges", async () => {
+    const pausedDb = fakeDb({
+      tables: {
+        marketplace_installs: [
+          {
+            id: INSTALL,
+            kind: "widget",
+            listing_slug: PLUGIN,
+            status: "paused",
+            merchant_id: MERCHANT,
+          },
+        ],
+        plugin_state: [
+          {
+            id: "p-1",
+            merchant_id: MERCHANT,
+            plugin_id: PLUGIN,
+            enabled: true,
+          },
+        ],
+        job_queue: [],
+        activity_log: [],
+      },
+    });
+    const blocked = (await purgePluginJob(pausedDb.asClient(), {
+      merchantId: MERCHANT,
+      pluginId: PLUGIN,
+      installId: INSTALL,
+      actorId: "u1",
+    })) as unknown as Record<string, unknown>;
+    expect(blocked).toMatchObject({ ok: true, purged: false });
+    // No transition, no terminal audit, nothing destroyed.
+    const { data: pausedRow } = await pausedDb
+      .from("marketplace_installs")
+      .select("status")
+      .eq("id", INSTALL)
+      .maybeSingle();
+    expect((pausedRow as { status: string }).status).toBe("paused");
+    expect(await auditRows(pausedDb, "plugin.purged")).toHaveLength(0);
+    expect(pausedDb.rows("plugin_state")).toHaveLength(1);
+
+    // Allowlisted `uninstalling` still converges to `purged` with one audit.
+    const db = purgeDb();
+    await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL, "u1");
+    const out = (await purgePluginJob(db.asClient(), {
+      merchantId: MERCHANT,
+      pluginId: PLUGIN,
+      installId: INSTALL,
+      actorId: "u1",
+    })) as unknown as Record<string, unknown>;
+    expect(out).toMatchObject({ ok: true, purged: true });
+    expect(await ledgerStatus(db)).toBe("purged");
+    expect(await auditRows(db, "plugin.purged")).toHaveLength(1);
+  });
 });
