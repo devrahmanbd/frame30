@@ -20,6 +20,15 @@ export const submitThemePackageFn = createServerFn({ method: "POST" })
     return submitThemePackage(context.supabase, merchantId, data.package);
   });
 
+export const pendingThemeSubmissionsFn = createServerFn({ method: "GET" })
+  .middleware([requirePermission("themes.publish")])
+  .handler(async ({ context }) => {
+    const { listPendingThemeSubmissions } = await import(
+      "./theme-submissions.server"
+    );
+    return listPendingThemeSubmissions(context.supabase);
+  });
+
 export const decideThemeSubmissionFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("themes.publish")])
   .inputValidator((d: unknown) =>

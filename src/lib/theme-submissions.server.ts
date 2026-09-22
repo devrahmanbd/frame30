@@ -7,6 +7,38 @@ type Client = SupabaseClient<Database>;
 
 export type SubmissionStatus = "pending" | "approved" | "rejected";
 
+export type PendingThemeSubmission = {
+  id: string;
+  merchantId: string;
+  packageKey: string;
+  packageVersion: string;
+  submittedAt: string;
+  status: "pending";
+};
+
+/** Staff review queue: pending submissions oldest-first, permission-gated by the caller. */
+export async function listPendingThemeSubmissions(
+  db: Client,
+): Promise<PendingThemeSubmission[]> {
+  const { data, error } = await (db as SupabaseClient)
+    .from("theme_submissions")
+    .select("id, merchant_id, package, status, submitted_at")
+    .eq("status", "pending")
+    .order("submitted_at", { ascending: true });
+  if (error) throw error;
+  return ((data ?? []) as Array<Record<string, unknown>>).map((row) => {
+    const pkg = (row["package"] ?? {}) as Record<string, unknown>;
+    return {
+      id: String(row["id"]),
+      merchantId: String(row["merchant_id"]),
+      packageKey: String(pkg["key"] ?? ""),
+      packageVersion: String(pkg["version"] ?? ""),
+      submittedAt: String(row["submitted_at"] ?? ""),
+      status: "pending" as const,
+    };
+  });
+}
+
 export async function submitThemePackage(
   db: Client,
   merchantId: string,
