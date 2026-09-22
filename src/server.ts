@@ -140,7 +140,15 @@ function cspConnectOrigins(): string[] {
     if (!value) continue;
     try {
       const origin = new URL(value).origin;
-      if (origin !== "null") out.add(origin);
+      if (origin === "null") continue;
+      out.add(origin);
+      // WebSocket schemes never inherit their https counterpart in CSP, so
+      // Supabase Realtime (wss://…) needs an explicit source (live 2026-09-22:
+      // realtime blocked by "connect-src 'self' https://framebase…").
+      if (origin.startsWith("https://"))
+        out.add(`wss://${origin.slice("https://".length)}`);
+      else if (origin.startsWith("http://"))
+        out.add(`ws://${origin.slice("http://".length)}`);
     } catch {
       // Not a parseable URL — skip rather than emit an invalid CSP source.
     }
