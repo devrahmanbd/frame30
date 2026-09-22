@@ -55,6 +55,7 @@ export const pluginSettingsSaveFn = createServerFn({ method: "POST" })
       merchantId,
       data.pluginId,
       data.values,
+      context.userId,
     );
   });
 

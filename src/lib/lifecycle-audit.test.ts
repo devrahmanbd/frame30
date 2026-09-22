@@ -18,8 +18,13 @@ vi.mock("./rate-limit.server", () => allowAllRateLimits());
 
 const { activateTheme, deleteTheme } =
   await import("./themes/appearance.server");
-const { upsertPlugin, setPluginEnabled, uninstallPlugin } =
-  await import("./plugins.server");
+const {
+  upsertPlugin,
+  savePluginSettings,
+  setPluginAutoUpdates,
+  setPluginEnabled,
+  uninstallPlugin,
+} = await import("./plugins.server");
 
 const MERCHANT = "22222222-2222-2222-2222-222222222222";
 const THEME = "44444444-4444-4444-4444-444444444444";
@@ -162,5 +167,38 @@ describe("plugin lifecycle audit", () => {
       action: "plugin.uninstalled",
       actor: ACTOR,
     });
+  });
+
+  it("audit: settings save and auto-updates toggle write rows", async () => {
+    // NOTE(deviation from brief): rows carry a manifest declaring numeric
+    // setting `level` — without it the server throws plugin_manifest_invalid
+    // before any audit path runs, and validateSettings would drop the
+    // brief's literal `{ a: N }` as an unknown key (KEY_RE needs 2+ chars).
+    // Same audit intent, exercisable seed.
+    const manifest = {
+      ...MANIFEST,
+      id: "settings-probe",
+      settings: [{ key: "level", label: "Level", kind: "number" }],
+    };
+    const db = fakeDb({
+      tables: {
+        plugin_state: [
+          {
+            merchant_id: MERCHANT,
+            plugin_id: "settings-probe",
+            manifest,
+            settings: {},
+            enabled: true,
+            auto_updates: false,
+          },
+        ],
+        activity_log: [],
+      },
+    });
+    await savePluginSettings(db.asClient(), MERCHANT, "settings-probe", { level: 1 }, ACTOR);
+    await setPluginAutoUpdates(db.asClient(), MERCHANT, "settings-probe", true, ACTOR);
+    const actions = db.rows("activity_log").map((r: any) => r.action);
+    expect(actions).toContain("plugin.settings_saved");
+    expect(actions).toContain("plugin.auto_updates_enabled");
   });
 });

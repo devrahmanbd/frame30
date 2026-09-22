@@ -151,6 +151,7 @@ export async function savePluginSettings(
   merchantId: string,
   pluginId: string,
   values: unknown,
+  actorId?: string | null,
 ) {
   const { data: row } = await db
     .from("plugin_state")
@@ -172,6 +173,17 @@ export async function savePluginSettings(
     .eq("merchant_id", merchantId)
     .eq("plugin_id", pluginId);
   if (error) throw new Error("plugin_settings_save_failed");
+  await auditAction(
+    db,
+    merchantId,
+    actorId ?? null,
+    "plugin.settings_saved",
+    "plugin",
+    {
+      plugin: pluginId,
+    },
+    null,
+  );
   return { ok: true, settings: checked.values };
 }
 
