@@ -25,6 +25,18 @@ export const JOB_HANDLERS: Record<string, JobHandler> = {
     return deliverQueuedHook(job.payload);
   },
 
+  "plugin.purge": async (job: ClaimedJob) => {
+    const { purgePluginJob } = await import("./plugin-lifecycle.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    return purgePluginJob(supabaseAdmin as never, {
+      merchantId: String(job.payload["merchantId"] ?? job.merchantId ?? ""),
+      pluginId: String(job.payload["pluginId"] ?? ""),
+      installId: String(job.payload["installId"] ?? ""),
+      actorId: (job.payload["actorId"] as string | null) ?? null,
+    });
+  },
+
   "plugins.supervise": async (job: ClaimedJob) => {
     const { syncSidecars } = await import("./plugin-sidecar.server");
     // Fire per merchant seen in the job payload; skip when none is given.

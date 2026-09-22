@@ -1,6 +1,7 @@
 /**
- * WordPress-parity plugin uninstall (TDD): delete removes the plugin_state
- * row and retires the ledger row; unknown installs are refused.
+ * WordPress-parity plugin uninstall (R2-6): uninstall parks the ledger row on
+ * transitional `uninstalling` and enqueues the durable `plugin.purge` job —
+ * the plugin_state delete happens in the purge handler, never inline.
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
@@ -9,7 +10,9 @@ import {
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+const rec = vi.hoisted<{
+  holder: { observability: Record<string, unknown> } | null;
+}>(() => ({ holder: null }));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
@@ -61,21 +64,30 @@ describe("uninstallWidgetInstall", () => {
     expect(db.rows("plugin_state")).toHaveLength(1);
   });
 
-  it("removes the plugin row and retires the ledger row", async () => {
+  it("parks the ledger on uninstalling and queues the purge job (no inline delete)", async () => {
     const db = widgetDb();
-    const out: any = await uninstallWidgetInstall(
+    const out = await uninstallWidgetInstall(
       db.asClient(),
       MERCHANT,
       INSTALL,
       "user-9",
     );
     expect(out.ok).toBe(true);
-    expect(out.removedPlugin).toBe(true);
-    expect(db.rows("plugin_state")).toHaveLength(0);
-    expect(db.rows("marketplace_installs")[0].status).toBe("removed");
+    expect(out.purging).toBe(true);
+    expect(out.removedPlugin).toBe(false);
+    // State row survives uninstall — the purge handler deletes it.
+    expect(db.rows("plugin_state")).toHaveLength(1);
+    expect(db.rows("marketplace_installs")[0].status).toBe("uninstalling");
+    const jobs = db.rows("job_queue");
+    expect(jobs).toHaveLength(1);
+    expect(jobs[0]).toMatchObject({
+      queue: "plugins",
+      name: "plugin.purge",
+      idempotency_key: `purge:${MERCHANT}:${INSTALL}`,
+    });
   });
 
-  it("writes an audit row attributing the actor", async () => {
+  it("writes an uninstalling audit row attributing the actor", async () => {
     const db = widgetDb();
     await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL, "user-9");
     const rows = db.rows("activity_log");
@@ -83,12 +95,12 @@ describe("uninstallWidgetInstall", () => {
     expect(rows[0]).toMatchObject({
       merchant_id: MERCHANT,
       actor: "user-9",
-      action: "plugin.uninstalled",
+      action: "plugin.uninstalling",
       resource_type: "plugin",
     });
   });
 
-  it("retires the ledger row even when no plugin row matches", async () => {
+  it("parks the ledger row even when no plugin row matches", async () => {
     const db = fakeDb({
       tables: {
         marketplace_installs: [
@@ -103,22 +115,38 @@ describe("uninstallWidgetInstall", () => {
         plugin_state: [],
       },
     });
-    const out: any = await uninstallWidgetInstall(
-      db.asClient(),
-      MERCHANT,
-      INSTALL,
-    );
+    const out = await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL);
     expect(out.ok).toBe(true);
     expect(out.removedPlugin).toBe(false);
-    expect(db.rows("marketplace_installs")[0].status).toBe("removed");
+    expect(out.purging).toBe(true);
+    expect(db.rows("marketplace_installs")[0].status).toBe("uninstalling");
   });
 
   it("decrements the widget install_count on uninstall", async () => {
-    const db = fakeDb({ tables: {
-      marketplace_installs: [{ id: INSTALL, kind: "widget", listing_slug: "whatsapp-chat", status: "installed", merchant_id: MERCHANT }],
-      plugin_state: [{ id: "p-1", merchant_id: MERCHANT, plugin_id: "whatsapp-chat", enabled: true }],
-      marketplace_widgets: [{ id: "w-1", slug: "whatsapp-chat", install_count: 5 }],
-    }});
+    const db = fakeDb({
+      tables: {
+        marketplace_installs: [
+          {
+            id: INSTALL,
+            kind: "widget",
+            listing_slug: "whatsapp-chat",
+            status: "installed",
+            merchant_id: MERCHANT,
+          },
+        ],
+        plugin_state: [
+          {
+            id: "p-1",
+            merchant_id: MERCHANT,
+            plugin_id: "whatsapp-chat",
+            enabled: true,
+          },
+        ],
+        marketplace_widgets: [
+          { id: "w-1", slug: "whatsapp-chat", install_count: 5 },
+        ],
+      },
+    });
     await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL, "user-9");
     expect(db.rows("marketplace_widgets")[0].install_count).toBe(4);
   });

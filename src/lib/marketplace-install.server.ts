@@ -572,9 +572,11 @@ export async function uninstallBuiltinTheme(
 }
 
 /**
- * WordPress-style plugin uninstall: removes the plugin_state row (if the
- * install maps to one) and retires the ledger row to `removed`. Unlike
- * pause/resume this is terminal — reinstalling creates a fresh row.
+ * WordPress-style plugin uninstall: parks the ledger row on transitional
+ * `uninstalling` and enqueues the durable `plugin.purge` job, which deletes
+ * the plugin_state row, drains queued plugin jobs, stops the sidecar, and
+ * lands terminal `purged`. The state delete lives in the purge handler
+ * (`purgePluginJob`), never inline — uninstall is intent, purge is effect.
  */
 export async function uninstallWidgetInstall(
   db: Client,
@@ -591,19 +593,12 @@ export async function uninstallWidgetInstall(
   if (!row || row.kind !== "widget")
     throw new Error("market_install_not_found");
 
-  const { data: plugins } = await db
-    .from("plugin_state")
-    .select("id")
+  // R2-6: widget uninstalls ALWAYS purge — mark the ledger row transitional.
+  await db
+    .from("marketplace_installs")
+    .update({ status: "uninstalling" as never })
     .eq("merchant_id", merchantId)
-    .eq("plugin_id", row.listing_slug);
-  const matched = (plugins ?? []) as { id: string }[];
-  if (matched.length) {
-    await db
-      .from("plugin_state")
-      .delete()
-      .eq("merchant_id", merchantId)
-      .eq("plugin_id", row.listing_slug);
-  }
+    .eq("id", installId);
 
   const { data: widget } = await db
     .from("marketplace_widgets")
@@ -618,24 +613,43 @@ export async function uninstallWidgetInstall(
       })
       .eq("id", widget.id);
 
-  await db
-    .from("marketplace_installs")
-    .update({ status: "removed" as never })
-    .eq("merchant_id", merchantId)
-    .eq("id", installId);
+  try {
+    const { stopSidecar } = await import("./plugin-sidecar.server");
+    stopSidecar(merchantId, row.listing_slug);
+  } catch {
+    /* seam */
+  }
+
+  const { enqueueJob } = await import("./job-queue.server");
+  await enqueueJob(
+    {
+      queue: "plugins",
+      name: "plugin.purge",
+      payload: {
+        merchantId,
+        pluginId: row.listing_slug,
+        installId,
+        actorId: actorId ?? null,
+      },
+      merchantId,
+      idempotencyKey: `purge:${merchantId}:${installId}`,
+    },
+    db,
+  );
+
   const { auditAction } = await import("./hardening.server");
   await auditAction(
     db,
     merchantId,
     actorId ?? null,
-    "plugin.uninstalled",
+    "plugin.uninstalling",
     "plugin",
     {
       plugin: row.listing_slug,
     },
     installId,
   );
-  return { ok: true, removedPlugin: matched.length > 0 };
+  return { ok: true, removedPlugin: false, purging: true };
 }
 
 export type BulkAction = "enable" | "pause" | "delete";
