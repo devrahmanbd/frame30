@@ -25,6 +25,17 @@ export const JOB_HANDLERS: Record<string, JobHandler> = {
     return deliverQueuedHook(job.payload);
   },
 
+  "plugins.supervise": async (job: ClaimedJob) => {
+    const { syncSidecars } = await import("./plugin-sidecar.server");
+    // Fire per merchant seen in the job payload; skip when none is given.
+    const merchantId =
+      job.merchantId ?? (job.payload["merchantId"] as string | undefined);
+    if (!merchantId) return { ok: true, skipped: true };
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    return syncSidecars(supabaseAdmin as never, merchantId);
+  },
+
   "maintenance.noop": async () => ({ ok: true }),
 
   "maintenance.reclaim": async () => {
