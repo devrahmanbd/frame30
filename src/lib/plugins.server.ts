@@ -308,5 +308,40 @@ export async function setPluginKillSwitch(
       { onConflict: "plugin_id" },
     );
   if (error) throw new Error("plugin_kill_switch_failed");
+  // R2-5: engaging the kill switch auto-suspends every merchant install of
+  // this plugin (reason `kill_switch`) so the one `enabled` gate stops hooks,
+  // widgets AND sidecar workers. Best-effort per merchant — the kill switch
+  // write above remains authoritative even if the suspend loop fails.
+  if (disabled === true) {
+    try {
+      const { data: rows } = await db
+        .from("plugin_state")
+        .select("merchant_id")
+        .eq("plugin_id", pluginId);
+      const merchants = [
+        ...new Set(
+          (((rows as unknown[]) ?? []) as { merchant_id: string }[])
+            .map((r) => r.merchant_id)
+            .filter(Boolean),
+        ),
+      ];
+      const { suspendPlugin } = await import("./plugin-lifecycle.server");
+      for (const merchantId of merchants) {
+        try {
+          await suspendPlugin(
+            db as never,
+            merchantId,
+            pluginId,
+            "kill_switch",
+            null,
+          );
+        } catch {
+          /* best-effort per merchant */
+        }
+      }
+    } catch {
+      /* kill switch write remains authoritative */
+    }
+  }
   return { ok: true, disabled };
 }
