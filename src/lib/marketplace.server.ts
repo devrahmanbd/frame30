@@ -108,7 +108,11 @@ export async function listCatalog(db: Client, merchantId: string) {
       ...decorate(themes.data, "theme").filter(
         (r) => r.status === "active" || r.mine,
       ),
-    ].filter((t) => VISIBLE_THEME_KEYS.has(t.slug)),
+    ].filter(
+      // Sellers always see their own listings even outside the curated
+      // offer; everyone else sees allowlisted slugs only.
+      (t) => VISIBLE_THEME_KEYS.has(t.slug) || (t as { mine?: boolean }).mine,
+    ),
     widgets: [
       ...builtinWidgets(),
       ...decorate(widgets.data, "widget").filter(

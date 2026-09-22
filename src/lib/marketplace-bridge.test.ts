@@ -110,3 +110,61 @@ describe("marketplace preset bridge", () => {
     }
   });
 });
+
+describe("curated offer seller visibility", () => {
+  it("keeps the seller's own listing even outside allowlisted slugs", async () => {
+    const { listCatalog } = await import("./marketplace.server");
+    const row = {
+      id: "22222222-2222-4222-8222-222222222222",
+      seller_merchant_id: "00000000-0000-4000-a000-000000000001",
+      name: "My theme",
+      slug: "my-theme",
+      description: "",
+      vendor_name: "Me",
+      thumbnail_url: null,
+      category: "general",
+      version: "1.0.0",
+      compatible_versions: [],
+      price_minor_int: 0,
+      currency_code: "BDT",
+      trial_allowed: false,
+      status: "active",
+      manifest: null,
+      version_history: [],
+      install_count: 0,
+      rating_sum: 0,
+      rating_count: 0,
+      created_at: new Date().toISOString(),
+    };
+    let n = 0;
+    const empty = {
+      select: () => ({
+        order: () => Promise.resolve({ data: [], error: null }),
+        eq: () => ({
+          data: [],
+          error: null,
+          order: () => Promise.resolve({ data: [], error: null }),
+        }),
+      }),
+    };
+    const db = {
+      from: vi.fn(() => {
+        n += 1;
+        return n === 1
+          ? {
+              select: () => ({
+                order: () => Promise.resolve({ data: [row], error: null }),
+              }),
+            }
+          : empty;
+      }),
+    } as never;
+    const catalog = await listCatalog(
+      db,
+      "00000000-0000-4000-a000-000000000001",
+    );
+    const kept = catalog.themes.find((t) => t.slug === "my-theme");
+    expect(kept).toBeDefined();
+    expect(kept!.mine).toBe(true);
+  });
+});

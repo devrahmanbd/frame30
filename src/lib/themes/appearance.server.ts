@@ -435,20 +435,15 @@ export async function activateTheme(
     .eq("merchant_id", merchantId)
     .neq("id", themeId);
   if (clearError) throw clearError;
+  // Single statement for the new live row (flag + pointer together), so a
+  // crash between statements can never strand the merchant on an
+  // active-but-empty theme.
   const { error } = await db
     .from("store_themes")
-    .update({ is_active: true })
+    .update({ is_active: true, published_version_id: publishedVersionId })
     .eq("merchant_id", merchantId)
     .eq("id", themeId);
   if (error) throw error;
-
-  if (row.published_version_id !== publishedVersionId) {
-    await db
-      .from("store_themes")
-      .update({ published_version_id: publishedVersionId })
-      .eq("merchant_id", merchantId)
-      .eq("id", themeId);
-  }
 
   await db.from("theme_audit").insert({
     merchant_id: merchantId,

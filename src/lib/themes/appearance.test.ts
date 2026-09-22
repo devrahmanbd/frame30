@@ -308,6 +308,14 @@ describe("curated visibility (two-theme offer)", () => {
     expect(visibleInstalled(themes).map((t) => t.id)).toEqual(["a", "d", "e"]);
   });
 
+  it("keeps a null-key active theme (live storefront never stranded)", () => {
+    const themes = [
+      inst({ id: "live", key: null, isActive: true }),
+      inst({ id: "dead", key: null }),
+    ];
+    expect(visibleInstalled(themes).map((t) => t.id)).toEqual(["live"]);
+  });
+
   it("catalogue keeps the two offer keys only", () => {
     const themes = [
       cat({ key: "supershop" }),
