@@ -7,9 +7,11 @@ import { useId, useState, type ReactNode } from "react";
 import { ImagePlus, Trash2, X } from "lucide-react";
 import { MediaPicker } from "@/components/builder/MediaPicker";
 import { PAGE_TEMPLATES } from "@/lib/content-desk";
+import { deriveExcerpt } from "@/lib/blog-body";
 import {
   POST_FORMATS,
   STATUS_CHOICES,
+  bodyBlocks,
   docStats,
   effectiveSlug,
   formatPublishDate,
@@ -99,6 +101,7 @@ export function DocumentPanel({
   const format = POST_FORMATS.find((f) => f.id === doc.format);
   const themes = ctx.themes ?? [];
   const pinnedTheme = themes.find((theme) => theme.id === doc.themeId) ?? null;
+  const autoExcerpt = deriveExcerpt(bodyBlocks(doc));
   const slug = effectiveSlug(doc) || "…";
   const prefix =
     doc.kind === "page"
@@ -175,10 +178,10 @@ export function DocumentPanel({
               rows={3}
               maxLength={600}
               className={cn(fieldInput, "mt-1 resize-y")}
-              placeholder={t(
-                "Write an excerpt (optional)",
-                "সারাংশ লিখুন (ঐচ্ছিক)",
-              )}
+              placeholder={
+                autoExcerpt ||
+                t("Write an excerpt (optional)", "সারাংশ লিখুন (ঐচ্ছিক)")
+              }
             />
             <span className="fq-sub fq-num block text-right text-[11px]">
               {doc.excerpt.length}/600
@@ -541,6 +544,13 @@ export function DocumentPanel({
             terms={ctx.terms}
             title={t("Categories", "বিভাগ")}
           />
+          <TermPicker
+            kind="tag"
+            doc={doc}
+            update={update}
+            terms={ctx.terms}
+            title={t("Taxonomy tags", "ট্যাক্সোনমি ট্যাগ")}
+          />
           <TagInput doc={doc} update={update} />
         </>
       ) : (
@@ -569,7 +579,9 @@ function TermPicker({
 }) {
   const { t } = useLang();
   const [filter, setFilter] = useState("");
-  const key = kind === "category" ? "categories" : "tags";
+  // Free-text tags live in `doc.tags`; taxonomy tags have their own picker
+  // backed by `doc.taxonomyTags` so term ids never leak into the text box.
+  const key = kind === "category" ? "categories" : "taxonomyTags";
   const selected = doc[key];
   const list = terms.filter(
     (x) =>

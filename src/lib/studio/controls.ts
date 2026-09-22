@@ -2518,6 +2518,7 @@ const CONTENT: Record<string, Control[]> = {
     c({ key: "showPhone", label: "Ask for a phone number", type: "switch", tab: "content", section: "Fields" }),
   ],
   nav_menu: [
+    c({ key: "menuId", label: "Menu (from Content › Menus — blank for manual links)", type: "text", tab: "content", section: "Menu", placeholder: "Menu ID or handle" }),
     c({ key: "heading", label: "Heading (optional)", type: "text", tab: "content", section: "Menu" }),
     c({
       key: "items",
@@ -2566,6 +2567,7 @@ const CONTENT: Record<string, Control[]> = {
     }),
   ],
   mega_menu: [
+    c({ key: "menuId", label: "Menu (from Content › Menus — blank for live taxonomy)", type: "text", tab: "content", section: "Mega menu", placeholder: "Menu ID or handle" }),
     c({ key: "label", label: "Trigger label", type: "text", tab: "content", section: "Mega menu" }),
     c({ key: "limit", label: "Max top-level entries", type: "number", tab: "content", section: "Mega menu", min: 1, max: 24 }),
     c({ key: "columns", label: "Columns (1-4)", type: "number", tab: "content", section: "Mega menu", min: 1, max: 4 }),

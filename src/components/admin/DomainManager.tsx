@@ -15,7 +15,7 @@ import {
 
 const toneClass: Record<DomainTone, string> = {
   neutral:
-    "border-slate-300 bg-slate-100 text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200",
+    "border-border bg-muted text-foreground",
   info: "border-info/40 bg-info-soft text-info-foreground font-medium",
   success:
     "border-success/40 bg-success-soft text-success-foreground font-medium",
@@ -65,7 +65,7 @@ export function DomainProgress({
                   ? "border-primary bg-primary/10 font-semibold text-primary shadow-xs"
                   : done
                     ? "border-emerald-400/80 bg-emerald-50 text-emerald-800 dark:border-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-200"
-                    : "border-slate-300 bg-slate-100 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                    : "border-border bg-muted text-muted-foreground"
               }`}
             >
               <span aria-hidden className="text-[10px] font-bold">
@@ -76,7 +76,7 @@ export function DomainProgress({
             {i < DOMAIN_STAGES.length - 1 && (
               <span
                 aria-hidden
-                className="h-0.5 w-4 rounded-full bg-slate-300 dark:bg-slate-700"
+                className="h-0.5 w-4 rounded-full bg-border"
               />
             )}
           </li>
@@ -105,7 +105,7 @@ export function DnsRecordTable({
   return (
     <div className="overflow-x-auto rounded-fq-md border border-border/80 bg-card shadow-xs">
       <table className="w-full min-w-[34rem] text-left text-sm">
-        <thead className="border-b border-border/80 bg-slate-50 dark:bg-slate-800/60 text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+        <thead className="border-b border-border/80 bg-muted text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           <tr>
             <th className="px-3.5 py-2.5">{labels.type}</th>
             <th className="px-3.5 py-2.5">{labels.name}</th>

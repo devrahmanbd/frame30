@@ -291,6 +291,60 @@ export type ThemeTemplates = Partial<Record<TemplateKey, ThemeAst>>;
 
 export const EMPTY_AST: ThemeAst = { header: [], main: [], footer: [] };
 
+/* ------------------------- slot / template-map helpers ------------------- */
+
+/**
+ * Slot accessors shared by the theme studio and the page studio.
+ * `slotSections` is the `ast[slot]` read: unknown slots fall back to
+ * `"main"` so a mistyped slot never blanks a canvas.
+ */
+export function isSlot(value: unknown): value is Slot {
+  return value === "header" || value === "main" || value === "footer";
+}
+
+/** Unknown / absent slots read as `"main"`. */
+export function normalizeSlot(value: unknown): Slot {
+  return isSlot(value) ? value : "main";
+}
+
+/** `ast[slot]` with the main fallback above. */
+export function slotSections(ast: ThemeAst, slot: unknown): Section[] {
+  return ast[normalizeSlot(slot)] ?? [];
+}
+
+/** Build an AST from a (possibly partial) slot map. */
+export function themeAstFromSlotMap(
+  map: Partial<Record<Slot, Section[]>>,
+): ThemeAst {
+  return {
+    header: [...(map.header ?? [])],
+    main: [...(map.main ?? [])],
+    footer: [...(map.footer ?? [])],
+  };
+}
+
+/**
+ * Template-map accessors. Unknown keys are not invented: `isTemplateKey`
+ * narrows, and `templateSlotSections` falls back to the empty AST (the same
+ * fallback `templateOf` uses for a missing template).
+ */
+export function isTemplateKey(value: unknown): value is TemplateKey {
+  return (
+    typeof value === "string" &&
+    (TEMPLATE_KEYS as readonly string[]).includes(value)
+  );
+}
+
+/** Sections for one template + slot (`templates[key][slot]`). */
+export function templateSlotSections(
+  templates: ThemeTemplates,
+  key: unknown,
+  slot: unknown,
+): Section[] {
+  if (!isTemplateKey(key)) return [];
+  return slotSections(templateOf(templates, key), slot);
+}
+
 /**
  * Phase 1.1: `bitext` is a text field with a বাংলা sibling stored under
  * `${key}_bn`. It sanitises exactly like `text`/`textarea`; the difference is

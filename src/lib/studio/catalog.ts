@@ -349,7 +349,7 @@ export const WIDGETS: WidgetDef[] = [
     category: "advanced",
     icon: "Blocks",
     keywords: ["shortcode", "plugin", "widget"],
-    defaults: { block: "", params: "" },
+    defaults: { pluginKey: "", height: 320 },
   },
   {
     key: "anchor",
@@ -2033,6 +2033,8 @@ export const WIDGETS: WidgetDef[] = [
     keywords: ["menu", "nav", "navigation", "links", "header"],
     defaults: {
       heading: "",
+      // Widget→menu binding (Content › Menus). Empty = manual `items`.
+      menuId: "",
       layout: "row",
       align: "left",
       items: [
@@ -2074,7 +2076,7 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "Menu",
     keywords: ["mega", "menu", "navigation", "taxonomy", "header"],
-    defaults: { label: "Shop", limit: 8, columns: 4 },
+    defaults: { label: "Shop", limit: 8, columns: 4, menuId: "" },
   },
   {
     key: "buy_box",
