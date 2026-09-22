@@ -81,6 +81,7 @@ import { Route as ThemePreviewKeyRouteImport } from './routes/theme-preview.$key
 import { Route as DotwellKnownAcmeChallengeTokenRouteImport } from './routes/[.]well-known.acme-challenge.$token'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedDashboardActivityRouteImport } from './routes/_authenticated/dashboard/activity'
+import { Route as AuthenticatedDashboardAdminThemeSubmissionsRouteImport } from './routes/_authenticated/dashboard/admin-theme-submissions'
 import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard/analytics'
 import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_authenticated/dashboard/approvals'
 import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_authenticated/dashboard/brands'
@@ -582,6 +583,12 @@ const AuthenticatedDashboardActivityRoute =
   AuthenticatedDashboardActivityRouteImport.update({
     id: '/activity',
     path: '/activity',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardAdminThemeSubmissionsRoute =
+  AuthenticatedDashboardAdminThemeSubmissionsRouteImport.update({
+    id: '/admin-theme-submissions',
+    path: '/admin-theme-submissions',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardAnalyticsRoute =
@@ -1451,6 +1458,7 @@ export interface FileRoutesByFullPath {
   '/root/': typeof RootIndexRoute
   '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
   '/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
+  '/dashboard/admin-theme-submissions': typeof AuthenticatedDashboardAdminThemeSubmissionsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
@@ -1662,6 +1670,7 @@ export interface FileRoutesByTo {
   '/root': typeof RootIndexRoute
   '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
   '/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
+  '/dashboard/admin-theme-submissions': typeof AuthenticatedDashboardAdminThemeSubmissionsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
@@ -1877,6 +1886,7 @@ export interface FileRoutesById {
   '/root/': typeof RootIndexRoute
   '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
   '/_authenticated/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
+  '/_authenticated/dashboard/admin-theme-submissions': typeof AuthenticatedDashboardAdminThemeSubmissionsRoute
   '/_authenticated/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/_authenticated/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/_authenticated/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
@@ -2092,6 +2102,7 @@ export interface FileRouteTypes {
     | '/root/'
     | '/.well-known/acme-challenge/$token'
     | '/dashboard/activity'
+    | '/dashboard/admin-theme-submissions'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
     | '/dashboard/brands'
@@ -2303,6 +2314,7 @@ export interface FileRouteTypes {
     | '/root'
     | '/.well-known/acme-challenge/$token'
     | '/dashboard/activity'
+    | '/dashboard/admin-theme-submissions'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
     | '/dashboard/brands'
@@ -2517,6 +2529,7 @@ export interface FileRouteTypes {
     | '/root/'
     | '/.well-known/acme-challenge/$token'
     | '/_authenticated/dashboard/activity'
+    | '/_authenticated/dashboard/admin-theme-submissions'
     | '/_authenticated/dashboard/analytics'
     | '/_authenticated/dashboard/approvals'
     | '/_authenticated/dashboard/brands'
@@ -3272,6 +3285,13 @@ declare module '@tanstack/react-router' {
       path: '/activity'
       fullPath: '/dashboard/activity'
       preLoaderRoute: typeof AuthenticatedDashboardActivityRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/admin-theme-submissions': {
+      id: '/_authenticated/dashboard/admin-theme-submissions'
+      path: '/admin-theme-submissions'
+      fullPath: '/dashboard/admin-theme-submissions'
+      preLoaderRoute: typeof AuthenticatedDashboardAdminThemeSubmissionsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/analytics': {
@@ -4259,6 +4279,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardActivityRoute: typeof AuthenticatedDashboardActivityRoute
+  AuthenticatedDashboardAdminThemeSubmissionsRoute: typeof AuthenticatedDashboardAdminThemeSubmissionsRoute
   AuthenticatedDashboardAnalyticsRoute: typeof AuthenticatedDashboardAnalyticsRoute
   AuthenticatedDashboardApprovalsRoute: typeof AuthenticatedDashboardApprovalsRoute
   AuthenticatedDashboardBrandsRoute: typeof AuthenticatedDashboardBrandsRoute
@@ -4343,6 +4364,8 @@ interface AuthenticatedDashboardRouteChildren {
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
     AuthenticatedDashboardActivityRoute: AuthenticatedDashboardActivityRoute,
+    AuthenticatedDashboardAdminThemeSubmissionsRoute:
+      AuthenticatedDashboardAdminThemeSubmissionsRoute,
     AuthenticatedDashboardAnalyticsRoute: AuthenticatedDashboardAnalyticsRoute,
     AuthenticatedDashboardApprovalsRoute: AuthenticatedDashboardApprovalsRoute,
     AuthenticatedDashboardBrandsRoute: AuthenticatedDashboardBrandsRoute,
@@ -4677,13 +4700,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
