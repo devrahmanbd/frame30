@@ -110,8 +110,14 @@ async function callOne(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   let body = "";
+  // R2-8: stable vendor-visible delivery identity. Computed from the exact
+  // bytes POSTed so the live attempt, the queued retry, and any redelivery
+  // all carry the same `x-framique-delivery` value — vendors dedupe on it.
+  // (At-least-once transport; the header is the dedupe key, not a mutex.)
+  let deliveryId = "";
   try {
     body = JSON.stringify({ hook, payload, settings: plugin.settings });
+    deliveryId = `hook:${plugin.manifest.id}:${hook}:${simpleHash(body)}`;
     const secret = process.env.PLUGIN_HOOK_SECRET;
     let signature = "";
     if (secret) {
@@ -126,6 +132,7 @@ async function callOne(
         "content-type": "application/json",
         "x-framique-hook": hook,
         "x-framique-plugin": plugin.manifest.id,
+        "x-framique-delivery": deliveryId,
         ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
       },
       body,
@@ -145,7 +152,8 @@ async function callOne(
     const timedOut = (err as Error)?.name === "AbortError";
     try {
       const { enqueueJob } = await import("./job-queue.server");
-      const key = `hook:${plugin.manifest.id}:${hook}:${simpleHash(body)}`;
+      const key =
+        deliveryId || `hook:${plugin.manifest.id}:${hook}:${simpleHash(body)}`;
       await enqueueJob({
         queue: "plugins",
         name: "plugin.hook.deliver",
@@ -155,6 +163,7 @@ async function callOne(
           hook,
           body,
           hooksUrl: plugin.manifest.hooksUrl,
+          deliveryId: key,
         },
         merchantId: null,
         idempotencyKey: key,
@@ -212,6 +221,14 @@ export async function deliverQueuedHook(payload: Record<string, unknown>) {
   const installId = String(payload["installId"] ?? "");
   if (!hooksUrl || !hook) return { ok: false, reason: "malformed" };
   if (breakerOpen(pluginId, hook)) return { ok: false, reason: "breaker_open" };
+  // R2-8: the retry carries the ORIGINAL delivery id when the queue row has
+  // one (enqueue path always sets it); rows enqueued before this field
+  // existed fall back to recomputing from the stored bytes — same function,
+  // same inputs, same key.
+  const deliveryId =
+    typeof payload["deliveryId"] === "string" && payload["deliveryId"]
+      ? String(payload["deliveryId"])
+      : `hook:${pluginId}:${hook}:${simpleHash(body)}`;
   const secret = process.env.PLUGIN_HOOK_SECRET;
   const ts = Math.floor(Date.now() / 1000);
   const signature = secret
@@ -223,6 +240,7 @@ export async function deliverQueuedHook(payload: Record<string, unknown>) {
       "content-type": "application/json",
       "x-framique-hook": hook,
       "x-framique-plugin": pluginId,
+      "x-framique-delivery": deliveryId,
       ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
     },
     body,

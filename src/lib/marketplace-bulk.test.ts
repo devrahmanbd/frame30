@@ -18,7 +18,8 @@ vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./rate-limit.server", () => allowAllRateLimits());
 
 const { bulkInstallStatus } = await import("./marketplace-install.server");
-const { savePluginSettings, setPluginAutoUpdates } = await import("./plugins.server");
+const { savePluginSettings, setPluginAutoUpdates } =
+  await import("./plugins.server");
 
 const MERCHANT = "22222222-2222-2222-2222-222222222222";
 const ACTOR = "99999999-9999-4999-8999-999999999999";
@@ -148,7 +149,7 @@ describe("bulkInstallStatus", () => {
     expect(rows[0]).toMatchObject({ merchant_id: MERCHANT, actor: ACTOR });
   });
 
-  it("deletes widget installs end to end", async () => {
+  it("deletes widget installs end to end (R2-6 two-phase: uninstalling → purged)", async () => {
     const db = bulkDb();
     const out: any = await bulkInstallStatus(
       db.asClient(),
@@ -158,9 +159,26 @@ describe("bulkInstallStatus", () => {
       "delete",
     );
     expect(out.results[0].ok).toBe(true);
+    // Phase 1: transitional — state retained for the purge job, never deleted inline.
     expect(
       db.rows("marketplace_installs").find((r) => r.id === W1)!.status,
-    ).toBe("removed");
+    ).toBe("uninstalling");
+    expect(db.rows("plugin_state")).toHaveLength(1);
+    expect(
+      db.rows("job_queue").filter((r) => r.name === "plugin.purge"),
+    ).toHaveLength(1);
+    // Phase 2: the durable purge converges the ledger and destroys state.
+    const { purgePluginJob } = await import("./plugin-lifecycle.server");
+    const res = (await purgePluginJob(db.asClient(), {
+      merchantId: MERCHANT,
+      pluginId: "whatsapp-chat",
+      installId: W1,
+      actorId: ACTOR,
+    })) as unknown as Record<string, unknown>;
+    expect(res).toMatchObject({ ok: true, purged: true });
+    expect(
+      db.rows("marketplace_installs").find((r) => r.id === W1)!.status,
+    ).toBe("purged");
     expect(db.rows("plugin_state")).toHaveLength(0);
   });
 
@@ -169,8 +187,17 @@ describe("bulkInstallStatus", () => {
     // seeds only "whatsapp-chat" and the server impl is update-only, so an
     // unknown id could never flip GREEN. Same intent, existing row.
     const db = bulkDb();
-    await setPluginAutoUpdates(db.asClient(), MERCHANT, "whatsapp-chat", true, ACTOR);
-    expect(db.rows("plugin_state").find((r: any) => r.plugin_id === "whatsapp-chat").auto_updates).toBe(true);
+    await setPluginAutoUpdates(
+      db.asClient(),
+      MERCHANT,
+      "whatsapp-chat",
+      true,
+      ACTOR,
+    );
+    expect(
+      db.rows("plugin_state").find((r: any) => r.plugin_id === "whatsapp-chat")
+        .auto_updates,
+    ).toBe(true);
   });
 
   it("deny: cross-merchant settings write touches nothing", async () => {
@@ -180,15 +207,21 @@ describe("bulkInstallStatus", () => {
     // same deny intent, plus the untouched-row guard.
     const db = settingsDb();
     await expect(
-      savePluginSettings(db.asClient(), FOREIGN_MERCHANT, "settings-probe", { level: 2 }),
+      savePluginSettings(db.asClient(), FOREIGN_MERCHANT, "settings-probe", {
+        level: 2,
+      }),
     ).rejects.toThrow("plugin_not_installed");
     expect(db.rows("plugin_state")[0].settings).toEqual({ level: 1 });
   });
 
   it("replay: double settings save keeps one row, last wins", async () => {
     const db = settingsDb();
-    await savePluginSettings(db.asClient(), MERCHANT, "settings-probe", { level: 1 });
-    await savePluginSettings(db.asClient(), MERCHANT, "settings-probe", { level: 2 });
+    await savePluginSettings(db.asClient(), MERCHANT, "settings-probe", {
+      level: 1,
+    });
+    await savePluginSettings(db.asClient(), MERCHANT, "settings-probe", {
+      level: 2,
+    });
     expect(db.rows("plugin_state")).toHaveLength(1);
     expect(db.rows("plugin_state")[0].settings).toEqual({ level: 2 });
   });

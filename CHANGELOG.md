@@ -96,6 +96,106 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   degrades to 202 on missing warehouse schema (owner migration pending);
   hydration nonce mismatch fixed (empty-coerce + csp-nonce meta read).
 
+## [2026-09-23] — Plugin Phase 2 runtime + contracts CLOSED (R2-0…R2-8)
+- Scope: `docs/superpowers/specs/2026-09-22-plugin-phase2-runtime-design.md`
+  R2-0…R2-8 + plan `docs/superpowers/plans/2026-09-22-plugin-phase2-runtime.md`
+  Tasks 1–10. TDD per task, deny/replay/audit on every `[A]` mutation, push
+  to main per task, mem0 per shipped task (quota-exhausted at close — see below).
+- Shipped (`git log --oneline`, oldest first): `31b278a` plan, `502a1b7`
+  T1 scope adapter (+ unrelated domain/UI changes in the same commit),
+  `d83fe10` T2 bundle gate, `91d96bc` T3 consent, `8f08dfc` T4 phase2l,
+  `cac6914` T4-fix phase2m, `cbaba01` T5 hook hardening, `e86bc75` T6
+  emissions, `22cb2c4` T7 sidecar, `38bdf65` T8 suspend, `1c52f2f` T9
+  purge, `0936262` T9-fix status guard. Task 10: acceptance matrix +
+  `x-framique-delivery` + this entry.
+- R2-0 scope adapter (`src/lib/scope-adapter.ts`): 8 snake widget scopes ⇔
+  14 dotted API scopes, fail-closed on unknown; `HOOK_SCOPE` gate map for
+  the 4 hooks (T1 `502a1b7`).
+- R2-7 bundle gate: `validateBundle` on `upsertPlugin` +
+  `installListing`, `plugin.bundle_rejected` / `market_bundle_rejected`
+  with zero rows written (T2 `d83fe10`).
+- R2-1 consent evidence: granted subset stored (superset/unknown refused
+  `plugin_consent_required`), `plugin_state.consented_by` /
+  `manifest_version` (phase2l), `marketplace_installs.granted_scopes` /
+  `consented_by` (phase2m `cac6914`), `plugin.scopes_granted` audit
+  (T3 `91d96bc`).
+- R2-3 hook hardening (`src/lib/plugin-hooks.server.ts`, T5 `cbaba01`):
+  `HOOK_SCOPE` deny (`skipped:scope`, zero fetch), HMAC
+  `framique-signature t=,v1=` on every callback, `plugins` queue fallback
+  (`plugin.hook.deliver`, idempotency `hook:<plugin>:<hook>:<hash>`),
+  extended outcome taxonomy. R2-8 addition (Task 10): stable vendor
+  dedupe identity — `deliveryId` = idempotency key in the queued payload
+  + `x-framique-delivery` header on live AND retry POSTs (at-least-once
+  transport; the header is the dedupe key, not a mutex).
+- R2-4 emissions (T6 `e86bc75`): `cart.calculate` (captureCart),
+  `checkout.validate` advisory (reserveStock), `order.created`
+  (createOrder), `product.saved` (applyImport + saveKindConfig). `await`
+  inside try/catch — bounded 800ms × parallel subscribers, never throws
+  into the commit.
+- R2-2 sidecar (`src/lib/plugin-sidecar.server.ts`, T7 `22cb2c4`):
+  in-process supervised runner, one logical worker per ACTIVE install,
+  heartbeat, stop-on-suspend/uninstall; `plugins.supervise` handler
+  registered. OS `child_process` sandbox deliberately deferred (below).
+- R2-5 suspend machine (T8 `38bdf65`): one gate (`suspended` folds into
+  `enabled`), idempotent suspend, kill-switch auto-suspend, resume drains
+  queued rows naturally. R2-6 purge machine (T9 `1c52f2f` + guard
+  `0936262`): widget uninstall → `uninstalling` + queued `plugin.purge`
+  → terminal `purged`; handler idempotent, audit-once, status-allowlisted.
+  Migrations: phase2l suspend/consent columns, phase2m install consent
+  columns, phase2n `uninstalling` enum value.
+- R2-8 acceptance matrix (Task 10, `src/lib/plugin-acceptance.test.ts`,
+  19 tests): 4-hook × full/missing scope matrix; signed-egress-always +
+  verify rejects missing/stale; deliveryId replay suite; cross-merchant
+  deny (suspend/resume → `plugin_not_installed`, purge → no-op);
+  five-action audit flow (exactly one row each); transition table.
+  Steps 1/8/9 covered by their own suites (adapter 3, purge 6, emission
+  15+). Task 10 also fixed the stale Phase-1 `marketplace-bulk` delete
+  expectation (`removed` → two-phase `uninstalling` → `purged`).
+- Gates at close: `test:contracts` 258/258 OK; phase suites 100/100
+  (acceptance 19 + 11 phase files 81); `bun run test` 4031 pass /
+  45 fail — all 45 pre-existing in non-plugin files (themes, builder,
+  a11y, CSP, deepwiki, smtp…; migration-linter flags
+  `20260919090000_careful_additive_a.sql`, Sept-19, untouched by this
+  phase). `bun run typecheck` infra-blocked locally (`tsgo: command not
+  found`); via `bunx tsgo`: 218 errors, all pre-existing, ZERO in phase
+  files. `bun run schema:check` env-blocked (`rpc failed (400)`, no live
+  DB here) — phase2l/m/n still need live apply as `supabase_admin`
+  + live drift proof. Lint: touched files clean except 7 pre-existing
+  `no-explicit-any` in `marketplace-bulk.test.ts` (zero added).
+- PROD GATE (Task 5 review finding, pinned by test): callbacks go
+  silently UNSIGNED when `PLUGIN_HOOK_SECRET` is unset
+  (`plugin-hooks.server.ts` — no secret ⇒ no header). `PLUGIN_HOOK_SECRET`
+  MUST be set in production. Follow-up DECISION (not silently dropped):
+  add a loud-missing-secret guard (warn + metric, throw in non-test env
+  when unset) — open, unassigned.
+- OPS CHECKLIST: `plugins.supervise` never fires until ops inserts the
+  schedule row — `job_schedules` INSERT (`on conflict do nothing`) is
+  required before it runs on schedule (no migration ships the row).
+- PERF NOTE: hook emission `await`s inside `reserveStock`'s
+  `withTenantLock`, holding the tenant lock up to ~800ms of subscriber
+  I/O per checkout. `await` is plan-mandated (ordered logs); if checkout
+  p99 regresses, fire-and-forget is the approved future perf-gate option.
+- DEFERRED (honest, not silent): OS `child_process` sandbox (needs
+  ops/security sign-off on resourceLimits + egress firewall — interface
+  is swap-ready); `ProductForm` client-write → server-fn emission bridge
+  (admin UI writes `products` direct from the client; only server commits
+  emit `product.saved`); vendor→platform ingress HMAC verify — Phase 2
+  signs EGRESS only, ingress verify is Phase 4; Supabase `Database`
+  TS-types regen (casts narrow after); live `schema:check` + migration
+  apply (needs live DB + `supabase_admin` for phase2n);
+  `marketplace_widgets.install_count` semantics + purged-row re-uninstall
+  guard (Task 9 minors); DDL-test hardening nits (per-column idempotency
+  asserts, globSync portability). oauth.md still unapproved (unchanged).
+- mem0: phase record `add_memory` (`user_id="rahman"`,
+  `app_id="devrahmanbd-frame30"`) attempted once at close — async event left
+  `RUNNING`/unconfirmed at commit time (prior quota-exhaustion history:
+  1000/1000 until 2026-10-01); not retried per task budget. This CHANGELOG
+  section is the durable record.
+- Concerns: anon role GRANTs noted in Phase 1 stand; `/dashboard/plugins`
+  production pass still needs an authenticated session (UNPROVEN, never
+  fabricated); `ops/routing/*.conf` working-tree edits seen during Task 10
+  belong to another session — left untouched, NOT in this phase's commits.
+
 ## [2026-09-22] — Plugin Phase 1 core rebuild CLOSED (P1-0…P1-5)
 - Scope: `docs/superpowers/specs/2026-09-22-plugin-system-rebuild-design.md`
   §2 + §7 gates (TDD, deny/replay/audit on every `[A]` mutation, prod
