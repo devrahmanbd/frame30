@@ -10,6 +10,12 @@
 
 import { incr, observe } from "./observability.server";
 import type { InstalledPlugin, ServerHook } from "./plugin-manifest";
+import {
+  computeSignature,
+  signatureHeader,
+  SIGNATURE_HEADER,
+} from "./webhook-signing";
+import { hookAllowed } from "./scope-adapter";
 
 export const HOOK_TIMEOUT_MS = 800;
 const FAILURE_THRESHOLD = 3;
@@ -56,10 +62,24 @@ export function resetBreakers() {
 export type HookOutcome = {
   pluginId: string;
   hook: ServerHook;
-  status: "ok" | "timeout" | "error" | "skipped";
+  status:
+    | "ok"
+    | "timeout"
+    | "error"
+    | "skipped"
+    | "skipped:scope"
+    | "queued"
+    | "failed"
+    | "dead_letter";
   ms: number;
   result?: unknown;
 };
+
+function simpleHash(s: string) {
+  let h = 0;
+  for (let i = 0; i < s.length; i += 1) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return h.toString(16);
+}
 
 async function callOne(
   plugin: InstalledPlugin,
@@ -78,9 +98,27 @@ async function callOne(
   if (breakerOpen(plugin.manifest.id, hook)) {
     return { pluginId: plugin.manifest.id, hook, status: "skipped", ms: 0 };
   }
+  if (!hookAllowed(hook, plugin.grantedScopes)) {
+    incr("framique_plugin_hook_total", { hook, status: "skipped:scope" });
+    return {
+      pluginId: plugin.manifest.id,
+      hook,
+      status: "skipped:scope",
+      ms: 0,
+    };
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  let body = "";
   try {
+    body = JSON.stringify({ hook, payload, settings: plugin.settings });
+    const secret = process.env.PLUGIN_HOOK_SECRET;
+    let signature = "";
+    if (secret) {
+      const ts = Math.floor(Date.now() / 1000);
+      const mac = await computeSignature(secret, ts, body);
+      signature = signatureHeader(ts, [mac]);
+    }
     const res = await fetch(plugin.manifest.hooksUrl, {
       method: "POST",
       signal: controller.signal,
@@ -88,8 +126,9 @@ async function callOne(
         "content-type": "application/json",
         "x-framique-hook": hook,
         "x-framique-plugin": plugin.manifest.id,
+        ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
       },
-      body: JSON.stringify({ hook, payload, settings: plugin.settings }),
+      body,
     });
     if (!res.ok) throw new Error(`status_${res.status}`);
     const result = await res.json().catch(() => null);
@@ -104,12 +143,36 @@ async function callOne(
   } catch (err) {
     recordFailure(plugin.manifest.id, hook);
     const timedOut = (err as Error)?.name === "AbortError";
-    return {
-      pluginId: plugin.manifest.id,
-      hook,
-      status: timedOut ? "timeout" : "error",
-      ms: Date.now() - started,
-    };
+    try {
+      const { enqueueJob } = await import("./job-queue.server");
+      const key = `hook:${plugin.manifest.id}:${hook}:${simpleHash(body)}`;
+      await enqueueJob({
+        queue: "plugins",
+        name: "plugin.hook.deliver",
+        payload: {
+          pluginId: plugin.manifest.id,
+          installId: plugin.installId,
+          hook,
+          body,
+          hooksUrl: plugin.manifest.hooksUrl,
+        },
+        merchantId: null,
+        idempotencyKey: key,
+      });
+      return {
+        pluginId: plugin.manifest.id,
+        hook,
+        status: "queued",
+        ms: Date.now() - started,
+      };
+    } catch {
+      return {
+        pluginId: plugin.manifest.id,
+        hook,
+        status: timedOut ? "timeout" : "error",
+        ms: Date.now() - started,
+      };
+    }
   } finally {
     clearTimeout(timer);
   }
@@ -134,8 +197,40 @@ export async function runHook(
   // degrading before merchants report it.
   for (const outcome of outcomes) {
     incr("framique_plugin_hook_total", { hook, status: outcome.status });
-    if (outcome.status !== "skipped")
+    if (outcome.status !== "skipped" && outcome.status !== "skipped:scope")
       observe("framique_plugin_hook_ms", outcome.ms, { hook });
   }
   return outcomes;
+}
+
+/** Dequeues one previously timed-out/failed delivery. Breaker still gates. */
+export async function deliverQueuedHook(payload: Record<string, unknown>) {
+  const hook = payload["hook"] as Parameters<typeof callOne>[1];
+  const body = String(payload["body"] ?? "");
+  const hooksUrl = String(payload["hooksUrl"] ?? "");
+  const pluginId = String(payload["pluginId"] ?? "");
+  const installId = String(payload["installId"] ?? "");
+  if (!hooksUrl || !hook) return { ok: false, reason: "malformed" };
+  if (breakerOpen(pluginId, hook)) return { ok: false, reason: "breaker_open" };
+  const secret = process.env.PLUGIN_HOOK_SECRET;
+  const ts = Math.floor(Date.now() / 1000);
+  const signature = secret
+    ? signatureHeader(ts, [await computeSignature(secret, ts, body)])
+    : "";
+  const res = await fetch(hooksUrl, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-framique-hook": hook,
+      "x-framique-plugin": pluginId,
+      ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
+    },
+    body,
+  });
+  if (!res.ok)
+    throw Object.assign(new Error(`status_${res.status}`), {
+      status: res.status,
+    });
+  incr("framique_plugin_hook_total", { hook, status: "delivered" });
+  return { ok: true, installId };
 }

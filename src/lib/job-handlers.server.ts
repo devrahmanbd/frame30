@@ -20,6 +20,11 @@ export const JOB_HANDLERS: Record<string, JobHandler> = {
     return applyIndexOps(job.merchantId, ops);
   },
 
+  "plugin.hook.deliver": async (job: ClaimedJob) => {
+    const { deliverQueuedHook } = await import("./plugin-hooks.server");
+    return deliverQueuedHook(job.payload);
+  },
+
   "maintenance.noop": async () => ({ ok: true }),
 
   "maintenance.reclaim": async () => {
@@ -35,4 +40,5 @@ export const WORKER_QUEUES = [
   "notifications",
   "exports",
   "maintenance",
+  "plugins",
 ] as const;
