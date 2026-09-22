@@ -29,7 +29,7 @@ describe("Phase 2 exit gate — widget metadata", () => {
       return !help?.en.trim() || !BENGALI.test(help.bn);
     });
     expect(missing.map((e) => e.type)).toEqual([]);
-    expect(SECTION_CATALOG.length).toBe(144);
+    expect(SECTION_CATALOG.length).toBe(146);
   });
 
   it("every data widget declares an editor empty state", () => {

@@ -42,6 +42,7 @@ describe("Phase 5 — one declared <h1> claimant per template", () => {
     expect([...ROUTE_H1_TEMPLATES]).toEqual([
       "product",
       "collection",
+      "account",
       "page",
       "blog",
       "search",

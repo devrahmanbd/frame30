@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -11,10 +11,18 @@ import {
   User,
 } from "lucide-react";
 import { toast } from "sonner";
+import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
+import { flattenAst } from "@/lib/builder-ast";
+import { OrdersList, ProfileCard } from "@/components/builder/account";
+import {
+  accountSlotCtx,
+  mapOrdersToRows,
+  mapProfileToRow,
+} from "@/components/store/account-slots";
 import {
   accountDeleteAddressFn,
   accountOverviewFn,
@@ -23,8 +31,18 @@ import {
   accountToggleWishlistFn,
   accountUpsertSelfFn,
 } from "@/lib/accounts.functions";
+import { getStoreChrome } from "@/lib/storefront.functions";
 
 export const Route = createFileRoute("/store/$slug/account")({
+  loader: async ({ params }) => {
+    // The published `account` template, when the merchant has one. Rejected
+    // by the storefront validator until the template-key track extends it —
+    // caught to null so the page renders the built-in dashboard regardless.
+    const chrome = await getStoreChrome({
+      data: { slug: params.slug, template: "account" },
+    }).catch(() => null);
+    return { chrome };
+  },
   head: ({ params }) => {
     const title = `Your account — ${params.slug}`;
     const description =
@@ -58,6 +76,7 @@ const CONSENTS = [
 function AccountPage() {
   const { t } = useLang();
   const { slug } = Route.useParams();
+  const { chrome } = Route.useLoaderData();
   const [tab, setTab] = useState<Tab>("orders");
   const qc = useQueryClient();
   const overviewFn = useServerFn(accountOverviewFn);
@@ -137,10 +156,11 @@ function AccountPage() {
     return <ShopperOrderLookup slug={slug} />;
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      <StoreHeader slug={slug} name={store?.name ?? slug} />
-      <main className="mx-auto max-w-5xl px-4 py-8">
+  // Route's default body: used when the theme publishes no `account` main
+  // sections, so the page is never blank. (The `defaultAccountAst` fallback
+  // takes the `ast` slot once the widget registry knows its section types.)
+  const dashboard = (
+    <>
         <h1 className="font-bangla-display text-2xl font-bold sm:text-3xl">
           {t("Your account", "আপনার অ্যাকাউন্ট")}
         </h1>
@@ -402,8 +422,72 @@ function AccountPage() {
             )}
           </section>
         )}
-      </main>
-    </div>
+    </>
+  );
+
+
+  const { lang } = useLang();
+  // Theme account template: feed merchant orders_list / profile_card
+  // sections live session rows. The widgets fall back to their sign-in
+  // prompt when signed out (rows undefined, not pending).
+  const overview = account.data?.overview;
+  const accountSlots = useMemo(() => {
+    const sections = chrome?.ast ? flattenAst(chrome.ast) : [];
+    const out: Partial<Record<string, ReactNode>> = {};
+    const pending = account.isPending;
+    const o = sections.find((s) => s.type === "orders_list");
+    if (o) {
+      out.orders_list = (
+        <OrdersList
+          {...accountSlotCtx(o, {
+            rows: overview
+              ? mapOrdersToRows(overview.orders ?? [])
+              : undefined,
+            pending,
+            locale: lang,
+            storeSlug: slug,
+          })}
+        />
+      );
+    }
+    const p = sections.find((s) => s.type === "profile_card");
+    if (p) {
+      const row = overview?.profile
+        ? mapProfileToRow(overview.profile)
+        : undefined;
+      out.profile_card = (
+        <ProfileCard
+          {...accountSlotCtx(p, {
+            rows: row ? [row] : undefined,
+            pending,
+            locale: lang,
+            storeSlug: slug,
+          })}
+        />
+      );
+    }
+    return out;
+  }, [chrome, account.data, account.isPending, lang, slug]);
+
+  return (
+    <ThemeChrome
+      template="account"
+      ast={chrome?.ast ?? null}
+      tokens={chrome?.tokens ?? null}
+      storeSlug={slug}
+      merchantId={chrome?.merchant.id ?? null}
+      siteKit={chrome?.siteKit ?? null}
+      ownsPrimary
+      contextSlots={accountSlots}
+      chrome={
+        <StoreHeader
+          slug={slug}
+          name={chrome?.merchant.name ?? store?.name ?? slug}
+        />
+      }
+      containerClassName="mx-auto max-w-5xl px-4 py-8"
+      fallback={dashboard}
+    />
   );
 }
 

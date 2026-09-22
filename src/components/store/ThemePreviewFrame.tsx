@@ -20,6 +20,9 @@ import {
   type WidgetDataMap,
 } from "@/lib/widget-data";
 import { previewDemoMap } from "@/lib/preview-demo-data";
+import { OrdersList, ProfileCard } from "@/components/builder/account";
+import { accountSlotCtx } from "./account-slots";
+import { useLang } from "@/lib/i18n";
 import { previewTemplateForHref } from "@/lib/theme-preview-nav";
 import { compileResponsiveCss } from "@/lib/responsive-css";
 import {
@@ -33,6 +36,7 @@ import {
 /* ---- template tab labels for the floating picker ---- */
 const TAB_LABELS: Record<TemplateKey, string> = {
   index: "Homepage",
+  account: "Account",
   product: "Product",
   collection: "Collection",
   page: "Page",
@@ -82,6 +86,32 @@ export function ThemePreviewFrame({
       const bundle = collectWidgetRequests(ast);
       return { bundle, map: previewDemoMap(bundle, blueprintKey) };
     }, [ast, blueprintKey]);
+
+  const { lang } = useLang();
+  // Account center is context-gated: feed the merchant sections demo rows
+  // so the account tab renders instead of parking on skeletons.
+  const accountSlots = useMemo(() => {
+    if (template !== "account") return undefined;
+    const sections = [...ast.header, ...ast.main, ...ast.footer];
+    const build = (type: "orders_list" | "profile_card") => {
+      const section = sections.find((s) => s.type === type);
+      if (!section) return undefined;
+      const key = previewData.bundle.byNode[section.id];
+      const rows = key ? previewData.map[key] : undefined;
+      const ctx = accountSlotCtx(section, {
+        rows,
+        pending: false,
+        locale: lang,
+        storeSlug: blueprintKey,
+      });
+      return type === "orders_list" ? (
+        <OrdersList {...ctx} />
+      ) : (
+        <ProfileCard {...ctx} />
+      );
+    };
+    return { orders_list: build("orders_list"), profile_card: build("profile_card") };
+  }, [template, ast, previewData, lang, blueprintKey]);
 
   // Envato-style demo browsing: mapped links switch the preview tab with
   // demo content instead of escaping to live routes that 404 on hosts
@@ -142,6 +172,7 @@ export function ThemePreviewFrame({
                   section={section}
                   template={template}
                   editing={false}
+                  contextSlots={accountSlots}
                 />
               ))}
 
@@ -153,6 +184,7 @@ export function ThemePreviewFrame({
                     section={section}
                     template={template}
                     editing={false}
+                    contextSlots={accountSlots}
                     primary={section.id === ast.main[0]?.id}
                   />
                 ))
@@ -169,6 +201,7 @@ export function ThemePreviewFrame({
                   section={section}
                   template={template}
                   editing={false}
+                  contextSlots={accountSlots}
                 />
               ))}
             </WidgetDataProvider>

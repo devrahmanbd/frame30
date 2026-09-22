@@ -20,6 +20,7 @@ import type {
 } from "./builder-ast";
 import { PRESET_BN } from "./theme-presets.bn";
 import { sectionFactory } from "./theme-section";
+import { defaultAccountAst } from "./default-account-ast";
 import { SHIPPED_BLUEPRINTS } from "./theme-blueprints";
 
 type Extras = {
@@ -405,6 +406,7 @@ function build(spec: Spec): ThemePreset {
       blog: blogTemplate(spec),
       cart: cartTemplate(spec),
       checkout: checkoutTemplate(spec),
+      account: defaultAccountAst(),
     },
   };
 }

@@ -41,6 +41,7 @@ export const ROUTE_TEMPLATE: Record<string, TemplateKey> = {
   page: "page",
   cart: "cart",
   checkout: "checkout",
+  account: "account",
 };
 
 function text(value: unknown): string {
