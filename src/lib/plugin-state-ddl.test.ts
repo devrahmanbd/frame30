@@ -17,4 +17,11 @@ describe("phase2j plugin_state DDL", () => {
   it("adds the purged enum value", () => {
     expect(sql).toContain("'purged'");
   });
+  it("backfills auto_updates on pre-existing plugin_state (phase2k)", () => {
+    const kfiles = globSync("supabase/migrations/*phase2k*auto_updates*.sql");
+    expect(kfiles.length).toBeGreaterThan(0);
+    const ksql = readFileSync(kfiles[0], "utf8");
+    expect(ksql).toMatch(/ADD COLUMN IF NOT EXISTS/i);
+    expect(ksql).toContain("auto_updates");
+  });
 });
