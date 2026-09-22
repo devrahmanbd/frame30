@@ -4,7 +4,7 @@
  * No authentication required. Resolves a blueprint by its URL key parameter
  * and renders ThemePreviewFrame with the authored tokens and sections.
  *
- * Usage: /theme-preview/clothing-heritage
+ * Usage: /theme-preview/bazaar
  */
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";

@@ -7,19 +7,19 @@ import { collectWidgetRequests } from "./widget-data";
 import { previewDemoMap } from "./preview-demo-data";
 import { BLUEPRINT_PRESETS } from "./theme-blueprints";
 
-describe("previewDemoMap (clothing-heritage)", () => {
-  const preset = BLUEPRINT_PRESETS.find((p) => p.key === "clothing-heritage")!;
+describe("previewDemoMap (bazaar)", () => {
+  const preset = BLUEPRINT_PRESETS.find((p) => p.key === "bazaar")!;
   const bundle = collectWidgetRequests(preset.templates.index);
 
   it("resolves rows for every collected request", () => {
-    const map = previewDemoMap(bundle, "clothing-heritage");
+    const map = previewDemoMap(bundle, "bazaar");
     for (const req of bundle.requests) {
       expect(map[req.key]?.length ?? 0, req.key).toBeGreaterThan(0);
     }
   });
 
   it("rows link into the store with priced BDT products and images", () => {
-    const map = previewDemoMap(bundle, "clothing-heritage");
+    const map = previewDemoMap(bundle, "bazaar");
     const rows = Object.values(map).flat();
     expect(rows.length).toBeGreaterThan(0);
     for (const row of rows.slice(0, 20)) {
