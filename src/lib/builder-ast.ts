@@ -47,6 +47,7 @@ export const TEMPLATE_KEYS = [
   "index",
   "product",
   "collection",
+  "account",
   "page",
   "blog",
   "cart",
@@ -67,6 +68,7 @@ export type TemplateKey = (typeof TEMPLATE_KEYS)[number];
 export const ROUTE_H1_TEMPLATES = [
   "product",
   "collection",
+  "account",
   "page",
   "blog",
   "search",
@@ -240,7 +242,9 @@ export type SectionType =
   | "rewards_club"
   | "wedding_shop"
   | "gift_finder"
-  | "story_trunk";
+  | "story_trunk"
+  | "orders_list"
+  | "profile_card";
 
 export type PropScalar = string | number | boolean;
 /** A repeatable row (Phase 3.2 `array` fields). Always JSON-safe. */
@@ -4253,6 +4257,31 @@ const BASE_CATALOG: CatalogEntry[] = [
         { key: "body", label: "Body", kind: "textarea", panel: "content" },
         { key: "year", label: "Year", kind: "text", panel: "content" },
       ]},
+    ],
+  },
+  {
+    type: "orders_list",
+    label: "Order history",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    templates: ["account"],
+    defaults: { heading: "Your orders", emptyText: "No orders yet." },
+    fields: [
+      { key: "heading", label: "Heading", kind: "bitext", panel: "content" },
+      { key: "emptyText", label: "Empty text", kind: "bitext", panel: "content" },
+    ],
+  },
+  {
+    type: "profile_card",
+    label: "Shopper profile",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    templates: ["account"],
+    defaults: { heading: "Your profile" },
+    fields: [
+      { key: "heading", label: "Heading", kind: "bitext", panel: "content" },
     ],
   },
 ];

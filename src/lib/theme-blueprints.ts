@@ -22,6 +22,7 @@ import type {
 import type { ThemePreset } from "./theme-presets";
 import { BLUEPRINT_BN } from "./theme-blueprints.bn";
 import { sectionFactory } from "./theme-section";
+import { defaultAccountAst } from "./default-account-ast";
 import type { Extras } from "./theme-section";
 
 const make = sectionFactory(BLUEPRINT_BN);
@@ -522,6 +523,7 @@ function bazaar(): ThemePreset {
         ],
         footer: [trust()],
       },
+      account: defaultAccountAst(),
     }),
   };
 }
@@ -1142,6 +1144,7 @@ function atelier(): ThemePreset {
           }),
         ],
       },
+      account: defaultAccountAst(),
     }),
   };
 }
@@ -1621,6 +1624,7 @@ function circuit(): ThemePreset {
         ],
         footer: [support()],
       },
+      account: defaultAccountAst(),
     }),
   };
 }
@@ -2139,6 +2143,7 @@ function rupaboti(): ThemePreset {
           }),
         ],
       },
+      account: defaultAccountAst(),
     }),
   };
 }

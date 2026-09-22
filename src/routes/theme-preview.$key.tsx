@@ -16,6 +16,7 @@ type RouteParams = { key: string };
 
 const VALID_TEMPLATES = [
   "index",
+  "account",
   "product",
   "collection",
   "page",

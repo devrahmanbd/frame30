@@ -33,6 +33,10 @@ template key. A theme satisfies 11–12 by wiring the header account entry
 and by not breaking the account/checkout routes — not by authoring auth
 markup.
 
+Account template (areas 11–12 revision): the `account` template key now exists
+at `src/lib/builder-ast.ts:46-60` with `main`-slot content and a route-supplied
+`<h1>` (same treatment as `collection`); widget scope and preset bodies land separately.
+
 ## 2. Anatomy
 
 ### 2.1 Tokens (light / dark, globals)
