@@ -346,6 +346,28 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Heritage hero atmosphere — warm terracotta/amber wash at low alpha
+   behind hero copy. Static gradient (no animation), so it is inert under
+   prefers-reduced-motion by construction. */
+@utility fq-heritage-aurora {
+  background:
+    radial-gradient(
+      48% 60% at 12% 8%,
+      color-mix(in oklab, #c45d3e 26%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      42% 52% at 85% 10%,
+      color-mix(in oklab, #d9a441 20%, transparent),
+      transparent 72%
+    ),
+    radial-gradient(
+      50% 55% at 60% 95%,
+      color-mix(in oklab, #8a3b1f 18%, transparent),
+      transparent 70%
+    );
+}
+
 /* Phase 3.1 — the designed dark set. Dark is authored, never auto-inverted, so
    it only engages when the theme actually shipped `--theme-dark-*`. */
 .fq-theme-scope[data-theme="dark"] {

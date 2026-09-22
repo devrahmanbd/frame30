@@ -141,8 +141,12 @@ const HeroCarousel: WidgetComponent = ({
       aria-label={t(locale, "Hero carousel", "হিরো ক্যারোজেল")}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className="border-b border-border bg-card"
+      className="relative overflow-hidden border-b border-border bg-card"
     >
+      <div
+        aria-hidden="true"
+        className="fq-heritage-aurora pointer-events-none absolute inset-0"
+      />
       <div className="mx-auto grid max-w-[var(--fq-container,1280px)] items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-12 lg:gap-12">
         {/* Copy — asymmetric left, seven columns */}
         <div className="min-w-0 lg:col-span-7">
