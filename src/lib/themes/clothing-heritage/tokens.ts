@@ -1,7 +1,7 @@
 import type { ThemeTokens } from "../../builder-ast";
 
 export const HERITAGE_TOKEN_PARTIAL: Partial<ThemeTokens> = {
-  brand: "#1A1A1A",
+  brand: "#8A3B1F",
   accent: "#C45D3E",
   surface: "#FAF8F5",
   ink: "#2D2A26",

@@ -11,8 +11,8 @@ describe("clothing-heritage aarong parity", () => {
     const types = preset.templates.index.main.map((s) => s.type);
     for (const need of [
       "hero_carousel",
+      "circle_categories",
       "trust_bar",
-      "department_grid",
       "product_rail",
       "collection_story",
       "lookbook",
@@ -28,12 +28,15 @@ describe("clothing-heritage aarong parity", () => {
     ]) {
       expect(types, need).toContain(need);
     }
-    const dept = preset.templates.index.main.find(
-      (s) => s.type === "department_grid",
+    expect(types).not.toContain("department_grid");
+    const circle = preset.templates.index.main.find(
+      (s) => s.type === "circle_categories",
     )!;
-    expect(
-      (dept.props["departments"] as unknown[]).length,
-    ).toBeGreaterThanOrEqual(8);
+    const tiles = [1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({
+      title: String(circle.props[`c${n}Title`] ?? ""),
+      href: String(circle.props[`c${n}Href`] ?? ""),
+    }));
+    expect(tiles.filter((t) => t.title && t.href)).toHaveLength(8);
     const textile = preset.templates.index.main.find(
       (s) => s.type === "textile_showcase",
     )!;
@@ -43,6 +46,34 @@ describe("clothing-heritage aarong parity", () => {
     ).toBeGreaterThanOrEqual(4);
   });
 
+  it("rails use standard cards and sections breathe", () => {
+    const rails = preset.templates.index.main.filter(
+      (s) => s.type === "product_rail",
+    );
+    expect(rails.length).toBeGreaterThan(0);
+    for (const rail of rails) {
+      expect(rail.props["cardVariant"]).toBe("standard");
+    }
+    const airy = preset.templates.index.main.filter(
+      (s) => Number(s.props["advPadY"] ?? 0) >= 40,
+    ).length;
+    expect(airy).toBeGreaterThanOrEqual(10);
+  });
+
+  it("brand is warm, not hard black, with AA contrast", () => {
+    const hex = String(preset.tokens.brand ?? "");
+    expect(hex.toLowerCase()).not.toBe("#1a1a1a");
+    const lum = (c: string): number => {
+      const v = [1, 3, 5].map((i) => {
+        const s = parseInt(c.slice(i, i + 2), 16) / 255;
+        return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+      });
+      return 0.2126 * v[0]! + 0.7152 * v[1]! + 0.0722 * v[2]!;
+    };
+    const l = lum(hex);
+    const ratio = 1.05 / (l + 0.05);
+    expect(ratio).toBeGreaterThanOrEqual(4.5);
+  });
   it("header has no duplicate language toggle", () => {
     const util = preset.templates.index.header.find(
       (s) => s.type === "utility_bar",

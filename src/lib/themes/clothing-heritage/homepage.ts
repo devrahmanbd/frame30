@@ -4,6 +4,7 @@ import type { SectionBuilder } from "./types";
 export function buildHomepageMain(s: SectionBuilder): Section[] {
   return [
     s("hero_carousel", {
+      advPadY: 40,
       autoAdvanceMs: 6000,
       slides: [
         {
@@ -36,92 +37,45 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         },
       ],
     }),
-    s("trust_bar", {
-      i1Icon: "delivery",
-      i1Title: "Nationwide 48h dispatch",
-      i1Body: "Orders dispatched within 48 hours, anywhere in Bangladesh",
-      i2Icon: "returns",
-      i2Title: "7-day easy exchange",
-      i2Body: "Hassle-free size and style exchanges within 7 days",
-      i3Icon: "secure",
-      i3Title: "100% genuine craft",
-      i3Body: "Authentic handloom, certified by master weavers",
-      i4Icon: "support",
-      i4Title: "Dedicated helpline 10am-9pm",
-      i4Body: "Real humans, every day from 10am to 9pm",
-    }),
-    s("department_grid", {
-      heading: "Explore by department",
-      departments: [
-        {
-          image: "/api/public/ph/womens/tangail-taant-cotton-saree.svg",
-          name: "Women's Wear",
-          name_bn: "নারীদের পোশাক",
-          count: 6,
-          href: "/c/womens",
-        },
-        {
-          image: "/api/public/ph/mens/pure-silk-embroidered-panjabi.svg",
-          name: "Men's Wear",
-          name_bn: "পুরুষদের পোশাক",
-          count: 5,
-          href: "/c/mens",
-        },
-        {
-          image: "/api/public/ph/kids/kids-festive-kurta.svg",
-          name: "Kids & Teens",
-          name_bn: "শিশু ও কিশোর",
-          count: 1,
-          href: "/c/kids",
-        },
-        {
-          image:
-            "/api/public/ph/living/handcrafted-nakshi-kantha-quilt.svg",
-          name: "Living & Crafts",
-          name_bn: "জীবনযাপন ও হস্তশিল্প",
-          count: 3,
-          href: "/c/living",
-        },
-        {
-          image:
-            "/api/public/ph/jewelry/terracotta-heritage-necklace.svg",
-          name: "Handcrafted Jewelry",
-          name_bn: "হস্তনির্মিত গহনা",
-          count: 1,
-          href: "/c/jewelry",
-        },
-        {
-          image: "/api/public/ph/taaga/taaga-fusion-kurti.svg",
-          name: "Taaga Fusion",
-          name_bn: "তাগা ফিউশন",
-          count: 2,
-          href: "/c/taaga-fusion",
-        },
-        {
-          image: "/api/public/ph/earth/aarong-earth-handloom-tote.svg",
-          name: "Aarong Earth",
-          name_bn: "আড়ং আর্থ",
-          count: 2,
-          href: "/c/aarong-earth",
-        },
-        {
-          image: "/api/public/ph/sale/festive-sale-edit.svg",
-          name: "Festive Sale",
-          name_bn: "উৎসব ছাড়",
-          count: 20,
-          href: "/c/festive-sale",
-        },
-      ],
+    s("circle_categories", {
+      heading: "Shop by category",
+      advPadY: 48,
+      c1Title: "Women",
+      c1Image: "/api/public/ph/womens/tangail-taant-cotton-saree.svg",
+      c1Href: "/c/womens",
+      c2Title: "Men",
+      c2Image: "/api/public/ph/mens/pure-silk-embroidered-panjabi.svg",
+      c2Href: "/c/mens",
+      c3Title: "Kids",
+      c3Image: "/api/public/ph/kids/kids-festive-kurta.svg",
+      c3Href: "/c/kids",
+      c4Title: "Living",
+      c4Image: "/api/public/ph/living/handcrafted-nakshi-kantha-quilt.svg",
+      c4Href: "/c/living",
+      c5Title: "Jewelry",
+      c5Image: "/api/public/ph/jewelry/terracotta-heritage-necklace.svg",
+      c5Href: "/c/jewelry",
+      c6Title: "Taaga",
+      c6Image: "/api/public/ph/taaga/taaga-fusion-kurti.svg",
+      c6Href: "/c/taaga-fusion",
+      c7Title: "Earth",
+      c7Image: "/api/public/ph/earth/aarong-earth-handloom-tote.svg",
+      c7Href: "/c/aarong-earth",
+      c8Title: "Sale",
+      c8Image: "/api/public/ph/sale/festive-sale-edit.svg",
+      c8Href: "/c/festive-sale",
     }),
     s("product_rail", {
+      advPadY: 40,
       heading: "New arrivals",
       collection: "new-in",
       limit: 8,
-      cardVariant: "editorial",
+      cardVariant: "standard",
       showRating: true,
       promise: "In stock · Dispatched in 24h",
     }),
     s("collection_story", {
+      advPadY: 56,
       eyebrow: "Puja ’26",
       heading: "Made for the season of light",
       body: "Festive silks, handloom cottons and sparkling details — crafted for Puja celebrations.",
@@ -131,6 +85,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       scrim: true,
     }),
     s("lookbook", {
+      advPadY: 48,
       heading: "Shop the look",
       i1Image: "/api/public/ph/look/puja-festive-look.svg",
       i1Alt: "Puja",
@@ -147,6 +102,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       offset: true,
     }),
     s("textile_showcase", {
+      advPadY: 48,
       headline: "Our textiles",
       items: [
         {
@@ -171,7 +127,23 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         },
       ],
     }),
+    s("trust_bar", {
+      advPadY: 24,
+      i1Icon: "delivery",
+      i1Title: "Nationwide 48h dispatch",
+      i1Body: "Orders dispatched within 48 hours, anywhere in Bangladesh",
+      i2Icon: "returns",
+      i2Title: "7-day easy exchange",
+      i2Body: "Hassle-free size and style exchanges within 7 days",
+      i3Icon: "secure",
+      i3Title: "100% genuine craft",
+      i3Body: "Authentic handloom, certified by master weavers",
+      i4Icon: "support",
+      i4Title: "Dedicated helpline 10am-9pm",
+      i4Body: "Real humans, every day from 10am to 9pm",
+    }),
     s("wedding_shop", {
+      advPadY: 40,
       heading: "The Wedding Shop",
       body: "Bridal sarees, groom panjabis and festive finery for the big day and every celebration around it.",
       c1Name: "Bridal Sarees",
@@ -184,6 +156,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       buttonHref: "/c/wedding",
     }),
     s("gift_finder", {
+      advPadY: 40,
       heading: "Find the perfect gift",
       body: "Thoughtful handcrafted gifts for every occasion — pick who you are shopping for.",
       o1Label: "For Her",
@@ -195,6 +168,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       buttonLabel: "Browse all gifts",
     }),
     s("heritage_story", {
+      advPadY: 56,
       eyebrow: "The master weavers",
       headline: "Tangail & Jamdani: A living legacy",
       body: "On wooden pit looms in Tangail and Sonargaon, master weavers carry forward centuries of handloom craft. Every thread is dyed, warped and woven by hand — no two pieces exactly alike.",
@@ -203,6 +177,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       image: "/api/public/ph/story/master-weavers.svg",
     }),
     s("editorial_banner", {
+      advPadY: 48,
       eyebrow: "Festive occasions",
       headline: "Pure silk panjabi & fine muslin",
       subhead: "Natural fibers cut for Bangladeshi celebrations.",
@@ -210,6 +185,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       cta_url: "/c/eid-festive",
     }),
     s("testimonial_carousel", {
+      advPadY: 48,
       testimonials: [
         {
           quote:
@@ -224,6 +200,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       ],
     }),
     s("rewards_club", {
+      advPadY: 48,
       heading: "My Rewards",
       body: "Earn points on every purchase and unlock member-only festive previews.",
       tier1Name: "Silver",
@@ -236,6 +213,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       buttonHref: "/pages/rewards",
     }),
     s("subbrand_spotlight", {
+      advPadY: 48,
       heading: "One craft, many voices",
       subheading: "Aarong family brands",
       b1Name: "Aarong",

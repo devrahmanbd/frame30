@@ -7,7 +7,7 @@
  * SectionRenderer stack the storefront uses, but with placeholder widget
  * data so every section renders something visible.
  */
-import { useMemo, useState } from "react";
+import { useMemo, useState, type MouseEvent } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
@@ -20,6 +20,7 @@ import {
   type WidgetDataMap,
 } from "@/lib/widget-data";
 import { previewDemoMap } from "@/lib/preview-demo-data";
+import { previewTemplateForHref } from "@/lib/theme-preview-nav";
 import { compileResponsiveCss } from "@/lib/responsive-css";
 import {
   TEMPLATE_KEYS,
@@ -82,6 +83,18 @@ export function ThemePreviewFrame({
       return { bundle, map: previewDemoMap(bundle, blueprintKey) };
     }, [ast, blueprintKey]);
 
+  // Envato-style demo browsing: mapped links switch the preview tab with
+  // demo content instead of escaping to live routes that 404 on hosts
+  // without a merchant. Unmapped links keep default browser behavior.
+  const onCanvasClick = (event: MouseEvent<HTMLDivElement>) => {
+    const anchor = (event.target as HTMLElement).closest?.("a[href]");
+    if (!anchor) return;
+    const next = previewTemplateForHref(anchor.getAttribute("href") ?? "");
+    if (!next) return;
+    event.preventDefault();
+    setTemplate(next);
+  };
+
   return (
     <div
       role="dialog"
@@ -108,7 +121,7 @@ export function ThemePreviewFrame({
       )}
 
       {/* ---- preview canvas: full-bleed, no frame ---- */}
-      <div className="flex-1 overflow-auto bg-background">
+      <div className="flex-1 overflow-auto bg-background" onClick={onCanvasClick}>
         <div className="mx-auto" style={{ maxWidth: "100%" }}>
           <ThemeSurface tokens={tokens}>
             {/* Wordmark row, as on a live storefront — the blueprint's
