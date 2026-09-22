@@ -46,31 +46,14 @@ describe("clothing-heritage wiring", () => {
     expect([...missing]).toEqual([]);
   });
 
-  it("department counts equal demo collection sizes", () => {
-    const deptToCollection: Record<string, string> = {
-      "Women's Wear": "womens",
-      "Men's Wear": "mens",
-      "Kids & Teens": "kids",
-      "Living & Crafts": "living",
-      "Handcrafted Jewelry": "jewelry",
-      "Taaga Fusion": "taaga",
-      "Aarong Earth": "beauty",
-      "Festive Sale": "festive-sale",
-    };
-    const dept = preset.templates.index.main.find(
-      (s) => s.type === "department_grid",
+  it("circle tiles point at demo collections", () => {
+    const circle = preset.templates.index.main.find(
+      (s) => s.type === "circle_categories",
     )!;
-    const rows = dept.props["departments"] as Array<{
-      name: string;
-      count: number;
-    }>;
-    for (const row of rows) {
-      const slug = deptToCollection[row.name];
-      expect(slug, row.name).toBeTruthy();
-      const size = catalog.products.filter((p) =>
-        p.collections.includes(slug!),
-      ).length;
-      expect(row.count, row.name).toBe(size);
+    for (const n of [1, 2, 3, 4, 5, 6, 7, 8]) {
+      const href = String(circle.props[`c${n}Href`] ?? "");
+      const slug = href.replace(/^\/c\//, "");
+      expect(slugs.has(slug), href).toBe(true);
     }
   });
 });
