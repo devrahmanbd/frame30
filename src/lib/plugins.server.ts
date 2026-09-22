@@ -10,6 +10,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
 import { auditAction } from "./hardening.server";
+import { validateBundle } from "./marketplace-scopes";
 import {
   defaultSettings,
   parseManifest,
@@ -84,6 +85,10 @@ export async function upsertPlugin(
   if (!verdict.ok)
     throw new Error(`plugin_manifest_invalid:${verdict.errors.join(",")}`);
   const manifest = verdict.manifest;
+
+  const bundleVerdict = validateBundle(manifest, manifest.permissions);
+  if (!bundleVerdict.ok)
+    throw new Error(`plugin.bundle_rejected:${bundleVerdict.errors.join(",")}`);
 
   const granted = Array.from(new Set(input.grantedScopes)).sort();
   const missing = manifest.permissions.filter((p) => !granted.includes(p));

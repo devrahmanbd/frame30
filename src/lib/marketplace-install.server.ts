@@ -70,6 +70,18 @@ export async function installListing(
   if (input.trial && !listing.trial_allowed)
     throw new Error("market_trial_not_allowed");
 
+  // Bundle gate (R2-7): structural denials fire before any write.
+  const listingManifest = (listing as { manifest?: unknown }).manifest;
+  const listingScopes = Array.isArray(
+    (listingManifest as { permissions?: unknown } | null)?.permissions,
+  )
+    ? (listingManifest as { permissions: string[] }).permissions
+    : (input.grantedScopes ?? []);
+  const { validateBundle } = await import("./marketplace-scopes");
+  const bundleVerdict = validateBundle(listingManifest ?? {}, listingScopes);
+  if (!bundleVerdict.ok)
+    throw new Error(`market_bundle_rejected:${bundleVerdict.errors.join(",")}`);
+
   // Consent gate: an install may never receive more scopes than the merchant
   // saw and approved, and never fewer than the pinned version requires.
   const granted = Array.from(new Set(input.grantedScopes ?? [])).sort();
