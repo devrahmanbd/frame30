@@ -214,7 +214,7 @@ const HeroCarousel: WidgetComponent = ({
         {/* Art — five columns, its own zone. Real photographs render;
             placeholder URLs become hand-built weave lattice instead. */}
         <div className="min-w-0 lg:col-span-5">
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-fq-lg border border-border bg-[var(--fq-surface,#FAF8F5)] sm:aspect-[16/10] lg:aspect-[4/5]">
+          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-fq-lg border border-border bg-card sm:aspect-[16/10] lg:aspect-[4/5]">
             {slide.image && !slide.image.startsWith("/api/public/ph/") ? (
               <img
                 src={slide.image}

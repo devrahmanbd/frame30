@@ -108,6 +108,7 @@ import {
   type TemplateKey,
 } from "@/lib/builder-ast";
 import { z } from "zod";
+import { PACKAGE_API_RANGE, validateThemePackage } from "@/lib/theme-package";
 import {
   builderAutosaveFn,
   builderCancelScheduleFn,
@@ -189,6 +190,15 @@ type LocalePreview = "en" | "bn" | "both";
 
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : "Something went wrong";
+}
+
+/** Fallback package key when the theme has no registry source key. */
+function slugifyThemeKey(name: string) {
+  const slug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug || "custom-theme";
 }
 
 function BuilderStudio() {
@@ -1044,6 +1054,54 @@ function BuilderStudio() {
     onError: (error) => toast.error(errorMessage(error)),
   });
 
+  /**
+   * Developer package export: serializes the in-memory builder document into
+   * a shareable `.theme.json` package. Client-side validated so authors catch
+   * gate failures before submitting for review.
+   */
+  const onExportPackage = useCallback(() => {
+    if (!doc) {
+      toast.error(
+        t("Workspace not ready", "ওয়ার্কস্পেস এখনো প্রস্তুত নয়"),
+      );
+      return;
+    }
+    const themeName = workspace.data?.theme.name ?? "Custom theme";
+    const key =
+      workspace.data?.theme.sourceKey ?? slugifyThemeKey(themeName);
+    const version = workspace.data?.theme.sourceVersion ?? "1.0.0";
+    const pkg = {
+      key,
+      nameEn: themeName,
+      nameBn: themeName,
+      summaryEn: `Exported from ${themeName}.`,
+      summaryBn: `${themeName} থেকে এক্সপোর্ট করা।`,
+      category: "fashion",
+      version,
+      api: PACKAGE_API_RANGE,
+      sortOrder: 50,
+      tokens: doc.tokens,
+      templates: doc.templates,
+    };
+    const checked = validateThemePackage(pkg);
+    if (!checked.ok) {
+      toast.error(checked.errors[0] ?? t("Package invalid", "প্যাকেজ অবৈধ"));
+      return;
+    }
+    const blob = new Blob([JSON.stringify(pkg, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${key}-${version}.theme.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(
+      t("Package exported", "প্যাকেজ এক্সপোর্ট হয়েছে"),
+    );
+  }, [doc, t, workspace.data]);
+
   const restore = useMutation({
     mutationFn: (versionId: string) => rollback({ data: { versionId } }),
     onSuccess: async () => {
@@ -1421,6 +1479,18 @@ function BuilderStudio() {
               {t(TEMPLATE_LABEL[key].en, TEMPLATE_LABEL[key].bn)}
             </button>
           ))}
+          <button
+            type="button"
+            disabled={!doc}
+            onClick={onExportPackage}
+            title={t(
+              "Download this theme as a shareable package file",
+              "এই থিমটি শেয়ারযোগ্য প্যাকেজ ফাইল হিসেবে ডাউনলোড করুন",
+            )}
+            className="ml-auto rounded-fq-md border border-border px-2.5 py-1 text-xs font-medium text-foreground transition-colors cursor-pointer shrink-0 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {t("Export package", "প্যাকেজ এক্সপোর্ট")}
+          </button>
         </nav>
 
         {/* Slide-out Lint / Quality Drawer */}
