@@ -216,6 +216,13 @@ verify on production; push to GitHub.
 - Deploy lesson: deploy script's silent fetch can build stale code
   (19:44 build lacked the filter); re-deploy fixed. Verify-after-
   deploy is mandatory, not optional.
+- Disk-full incident #2 (Sept 22): postgres crash-loop again, 100%
+  full. WAL unprunable (base + chain needed); freed 6.5G via
+  regenerable uv package cache (tools re-download). DBs healthy.
+  containerd grew 17G/h earlier (QBX image pulls?) — watch, not ours
+  to delete. My deploy attempt correctly refused (lock held by
+  heritage-loop); their deploy finished, preview live verified
+  (70KB, 16 prices, heritage content).
 - [x] Curated two-theme offer (`f5f0a36` + `2b07c60`): Appearance grid
   + catalogue + marketplace listCatalog all filtered to Supershop +
   Clothing Heritage via VISIBLE_THEME_KEYS; active theme exempt.
