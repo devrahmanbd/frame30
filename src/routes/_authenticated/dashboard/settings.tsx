@@ -1,11 +1,10 @@
-import { useEffect, useId, useMemo, useState } from "react";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { useEffect, useId, useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Clock, ExternalLink, Globe, Loader2 } from "lucide-react";
+import { Clock, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant } from "@/hooks/use-merchant";
-import { useStoreUrl } from "@/hooks/use-store-url";
 import { ImpersonationConsent } from "@/components/admin/ImpersonationConsent";
 import { useLang } from "@/lib/i18n";
 import {
@@ -52,7 +51,6 @@ type Settings = {
 function SettingsPage() {
   const { t } = useLang();
   const { data: merchant } = useMerchant();
-  const { storeUrl, primaryHost } = useStoreUrl();
   const qc = useQueryClient();
 
   const [form, setForm] = useState<Settings>({
@@ -123,8 +121,6 @@ function SettingsPage() {
         allow_customer_timezone: form.allow_customer_timezone,
       };
 
-      // merchant_settings has UNIQUE(merchant_id) but no PK, so the
-      // conflict target must be explicit — otherwise PostgREST answers 409.
       const { error } = await supabase.from("merchant_settings").upsert(
         {
           merchant_id: merchant!.id,
@@ -177,73 +173,40 @@ function SettingsPage() {
   const timezoneId = useId();
 
   return (
-    <div className="max-w-3xl space-y-6 pb-12">
-      {/* Calm Header */}
-      <header className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-bangla-display text-2xl font-bold tracking-tight text-foreground">
-            {t("Store Settings", "স্টোর সেটিংস")}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t(
-              "Configure your storefront identity, payment options, delivery rates and regional preferences.",
-              "আপনার স্টোরফ্রন্ট পরিচিতি, পেমেন্ট অপশন, ডেলিভারি চার্জ ও আঞ্চলিক পছন্দ নির্ধারণ করুন।",
-            )}
-          </p>
-        </div>
-
-        {merchant && (
-          <div className="pt-1 sm:pt-0">
-            {primaryHost ? (
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href={storeUrl()}
-                className="group inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-xs transition hover:border-border hover:text-foreground"
-                title={t("Open live storefront", "লাইভ স্টোরফ্রন্ট খুলুন")}
-              >
-                <span className="size-1.5 rounded-full bg-emerald-500" />
-                <span className="font-mono text-xs">{primaryHost}</span>
-                <ExternalLink
-                  className="size-3 text-muted-foreground/70 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                  aria-hidden
-                />
-              </a>
-            ) : (
-              <Link
-                to="/dashboard/settings/domains"
-                className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-border/80 bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-primary/50 hover:text-primary"
-              >
-                <Globe className="size-3 text-muted-foreground" aria-hidden />
-                <span>
-                  {t("Connect custom domain", "কাস্টম ডোমেইন যুক্ত করুন")}
-                </span>
-              </Link>
-            )}
-          </div>
-        )}
+    <div className="max-w-4xl space-y-8 pb-16">
+      {/* Calm & Focused Header without extraneous badges */}
+      <header className="border-b border-border/40 pb-5">
+        <h1 className="font-bangla-display text-2xl font-bold tracking-tight text-foreground">
+          {t("Store Settings", "স্টোর সেটিংস")}
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {t(
+            "Manage your store profile, checkout preferences, shipping fees, and timezone.",
+            "আপনার স্টোর পরিচিতি, চেকআউট অপশন, ডেলিভারি ফি এবং টাইমজোন পরিচালনা করুন।",
+          )}
+        </p>
       </header>
 
-      {/* Main Settings Form */}
+      {/* Main Form structured in clean, calm two-column sections */}
       <form
-        className="space-y-5"
+        className="space-y-8"
         onSubmit={(e) => {
           e.preventDefault();
           save.mutate();
         }}
       >
-        {/* 1. Store Identity */}
-        <SettingsCard
-          title={t("Store Identity", "স্টোর পরিচিতি")}
+        {/* 1. Store Profile */}
+        <FormSection
+          title={t("Store Profile", "স্টোর পরিচিতি")}
           description={t(
-            "Primary tagline and subtitle shown to shoppers and search engines.",
-            "ক্রেতা এবং সার্চ ইঞ্জিনের সামনে প্রদর্শিত প্রধান ট্যাগলাইন ও সাবটাইটেল।",
+            "Public branding information displayed across your storefront, browser tabs, and receipts.",
+            "স্টোরফ্রন্ট হেডার, ব্রাউজার ট্যাব এবং রসিদে প্রদর্শিত সাধারণ ব্র্যান্ড তথ্য।",
           )}
         >
           <div className="space-y-1.5">
             <label
               htmlFor={taglineId}
-              className="text-sm font-medium text-foreground"
+              className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
             >
               {t("Store Tagline", "স্টোর ট্যাগলাইন")}
             </label>
@@ -261,28 +224,25 @@ function SettingsPage() {
             />
             <p className="text-xs text-muted-foreground">
               {t(
-                "Appears below your store name in browser tabs, meta previews, and receipts.",
-                "ব্রাউজার ট্যাব, মেটা প্রিভিউ এবং রসিদে স্টোর নামের নিচে দেখা যাবে।",
+                "A short tagline or subtitle displayed beneath your store title.",
+                "আপনার স্টোর নামের নিচে প্রদর্শিত সংক্ষিপ্ত স্লোগান বা সাবটাইটেল।",
               )}
             </p>
           </div>
-        </SettingsCard>
+        </FormSection>
 
-        {/* 2. Payment Methods */}
-        <SettingsCard
-          title={t("Payment Methods", "পেমেন্ট পদ্ধতি")}
+        {/* 2. Checkout & Payments */}
+        <FormSection
+          title={t("Payments & Checkout", "পেমেন্ট ও চেকআউট")}
           description={t(
-            "Control which payment options are presented to customers at checkout.",
-            "চেকআউটে ক্রেতাদের জন্য কোন কোন পেমেন্ট অপশন চালু থাকবে তা নির্ধারণ করুন।",
+            "Control payment methods presented to shoppers and specify how taxes are calculated.",
+            "চেকআউটে কোন কোন পেমেন্ট পদ্ধতি সক্রিয় থাকবে এবং কীভাবে ভ্যাট হিসাব হবে তা নির্ধারণ করুন।",
           )}
         >
-          <div className="divide-y divide-border/60">
+          <div className="divide-y divide-border/50">
             <SettingToggleRow
               id="settings-cod-toggle"
-              title={t(
-                "Enable Cash on Delivery (COD)",
-                "ক্যাশ অন ডেলিভারি (COD) চালু রাখুন",
-              )}
+              title={t("Cash on Delivery (COD)", "ক্যাশ অন ডেলিভারি (COD)")}
               description={t(
                 "Allow customers to pay in cash upon receiving their order.",
                 "পণ্য হাতে পেয়ে ক্রেতাদের নগদ টাকায় মূল্য পরিশোধের সুযোগ দিন।",
@@ -296,11 +256,11 @@ function SettingsPage() {
             <SettingToggleRow
               id="settings-mfs-toggle"
               title={t(
-                "Enable bKash / Nagad Mobile Payments",
-                "bKash / Nagad মোবাইল পেমেন্ট চালু রাখুন",
+                "bKash / Nagad Mobile Payments",
+                "bKash / Nagad মোবাইল পেমেন্ট",
               )}
               description={t(
-                "Accept payments through Bangladesh mobile financial services.",
+                "Accept instant payments through Bangladesh mobile financial services.",
                 "বাংলাদেশি মোবাইল ফিনান্সিয়াল সার্ভিসের মাধ্যমে ডিজিটাল পেমেন্ট গ্রহণ করুন।",
               )}
               checked={form.mfs_enabled}
@@ -308,95 +268,98 @@ function SettingsPage() {
                 setForm((f) => ({ ...f, mfs_enabled: checked }))
               }
             />
-          </div>
-        </SettingsCard>
 
-        {/* 3. Pricing & Taxes */}
-        <SettingsCard
-          title={t("Pricing & Taxes", "মূল্য ও কর")}
-          description={t(
-            "Define how taxes are calculated and presented on product listings.",
-            "পণ্যের মূল্যের সাথে কর ও ভ্যাট কীভাবে হিসাব হবে তা নির্ধারণ করুন।",
-          )}
-        >
-          <SettingToggleRow
-            id="settings-vat-toggle"
-            title={t(
-              "Listed prices already include VAT",
-              "তালিকাভুক্ত দামে ভ্যাট অন্তর্ভুক্ত",
-            )}
-            description={t(
-              "Checkout extracts VAT from the displayed price instead of adding extra charges on top, so shoppers pay exactly the advertised amount.",
-              "চেকআউটে অতিরিক্ত ভ্যাট যোগ না করে পণ্যের প্রদর্শিত দামের ভেতর থেকেই হিসাব হবে, ফলে ক্রেতা সঠিক প্রদর্শিত মূল্যই পরিশোধ করবেন।",
-            )}
-            checked={form.prices_include_vat}
-            onCheckedChange={(checked) =>
-              setForm((f) => ({ ...f, prices_include_vat: checked }))
-            }
-          />
-        </SettingsCard>
-
-        {/* 4. Delivery & Fulfillment Rates */}
-        <SettingsCard
-          title={t("Delivery & Fulfillment Rates", "ডেলিভারি ও শিপিং চার্জ")}
-          description={t(
-            "Standard shipping fees and order thresholds applied to checkouts.",
-            "চেকআউটে প্রযোজ্য স্ট্যান্ডার্ড ডেলিভারি ফি এবং ফ্রি ডেলিভারির সীমা।",
-          )}
-        >
-          <div className="grid gap-4 sm:grid-cols-3">
-            <MoneyField
-              id="settings-shipping-flat"
-              label={t("Flat delivery", "ফিক্সড ডেলিভারি")}
-              hint={t("Default fee", "ডিফল্ট চার্জ")}
-              value={form.shipping_flat_taka}
-              onChange={(val) =>
-                setForm((f) => ({ ...f, shipping_flat_taka: val }))
+            <SettingToggleRow
+              id="settings-vat-toggle"
+              title={t(
+                "Listed prices include VAT",
+                "তালিকাভুক্ত দামে ভ্যাট অন্তর্ভুক্ত",
+              )}
+              description={t(
+                "Checkout extracts VAT from the displayed price instead of adding extra charges, so customers pay exactly the listed amount.",
+                "চেকআউটে অতিরিক্ত ভ্যাট যোগ না করে পণ্যের দামের ভেতর থেকেই হিসাব হবে, ফলে ক্রেতা প্রদর্শিত মূল্যই পরিশোধ করবেন।",
+              )}
+              checked={form.prices_include_vat}
+              onCheckedChange={(checked) =>
+                setForm((f) => ({ ...f, prices_include_vat: checked }))
               }
-              placeholder="60"
-            />
-
-            <MoneyField
-              id="settings-free-shipping"
-              label={t("Free delivery above", "ফ্রি ডেলিভারি নূন্যতম")}
-              hint={t("0 to disable", "বন্ধ রাখতে ০")}
-              value={form.free_shipping_taka ?? 0}
-              onChange={(val) =>
-                setForm((f) => ({
-                  ...f,
-                  free_shipping_taka: val > 0 ? val : null,
-                }))
-              }
-              placeholder="0"
-            />
-
-            <MoneyField
-              id="settings-cod-surcharge"
-              label={t("COD surcharge", "সিওডি অতিরিক্ত চার্জ")}
-              hint={t("Added to COD", "সিওডিতে প্রযোজ্য")}
-              value={form.cod_surcharge_taka}
-              onChange={(val) =>
-                setForm((f) => ({ ...f, cod_surcharge_taka: val }))
-              }
-              placeholder="0"
             />
           </div>
-        </SettingsCard>
+        </FormSection>
 
-        {/* 5. Timezone & Regional Localization */}
-        <SettingsCard
-          title={t("Timezone & Localization", "টাইমজোন ও আঞ্চলিক সেটিংস")}
+        {/* 3. Shipping & Delivery */}
+        <FormSection
+          title={t("Shipping & Delivery", "ডেলিভারি ও শিপিং চার্জ")}
           description={t(
-            "Controls order histories, analytics reporting, invoices and scheduled campaign cutoffs.",
-            "অর্ডার ইতিহাস, ইনভয়েস, দৈনিক কাটঅফ এবং নির্ধারিত ক্যাম্পেইনে ব্যবহৃত হবে।",
+            "Standard delivery fees and threshold policies automatically calculated at checkout.",
+            "চেকআউটে স্বয়ংক্রিয়ভাবে প্রযোজ্য ডেলিভারি চার্জ এবং ফ্রি ডেলিভারির সীমা।",
           )}
-          headerAction={<LiveTimeBadge timezone={form.timezone} />}
+        >
+          <div className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <CurrencyField
+                id="settings-shipping-flat"
+                label={t("Standard Delivery Fee", "স্ট্যান্ডার্ড ডেলিভারি ফি")}
+                hint={t(
+                  "Default flat delivery charge per order",
+                  "প্রতি অর্ডারের সাধারণ ডেলিভারি চার্জ",
+                )}
+                value={form.shipping_flat_taka}
+                onChange={(val) =>
+                  setForm((f) => ({ ...f, shipping_flat_taka: val }))
+                }
+                placeholder="60"
+              />
+
+              <CurrencyField
+                id="settings-free-shipping"
+                label={t("Free Delivery Threshold", "ফ্রি ডেলিভারি নূন্যতম")}
+                hint={t(
+                  "Orders above this amount ship free (0 to disable)",
+                  "এই মূল্যের বেশি অর্ডারে ফ্রি ডেলিভারি (বন্ধ রাখতে ০)",
+                )}
+                value={form.free_shipping_taka ?? 0}
+                onChange={(val) =>
+                  setForm((f) => ({
+                    ...f,
+                    free_shipping_taka: val > 0 ? val : null,
+                  }))
+                }
+                placeholder="0"
+              />
+            </div>
+
+            <div className="pt-2 border-t border-border/40">
+              <CurrencyField
+                id="settings-cod-surcharge"
+                label={t("Cash on Delivery Surcharge", "সিওডি অতিরিক্ত ফি")}
+                hint={t(
+                  "Optional surcharge added only when COD is chosen (0 for none)",
+                  "শুধুমাত্র ক্যাশ অন ডেলিভারি অর্ডারে প্রযোজ্য ফি (না থাকলে ০)",
+                )}
+                value={form.cod_surcharge_taka}
+                onChange={(val) =>
+                  setForm((f) => ({ ...f, cod_surcharge_taka: val }))
+                }
+                placeholder="0"
+              />
+            </div>
+          </div>
+        </FormSection>
+
+        {/* 4. Regional & Timezone */}
+        <FormSection
+          title={t("Regional & Timezone", "টাইমজোন ও সময়")}
+          description={t(
+            "Governs daily cutoff schedules, analytics reporting, order timestamps, and customer date formatting.",
+            "দৈনিক সেলস কাটঅফ, ইনভয়েস, অর্ডার টাইমস্ট্যাম্প এবং রিপোর্ট তৈরিতে ব্যবহৃত হবে।",
+          )}
         >
           <div className="space-y-4">
             <div className="space-y-1.5">
               <label
                 htmlFor={timezoneId}
-                className="text-sm font-medium text-foreground"
+                className="text-xs font-semibold uppercase tracking-wider text-muted-foreground"
               >
                 {t("Primary Store Timezone", "প্রধান স্টোর টাইমজোন")}
               </label>
@@ -422,18 +385,20 @@ function SettingsPage() {
                   </optgroup>
                 ))}
               </select>
+
+              <LiveStoreTime timezone={form.timezone} />
             </div>
 
-            <div className="pt-2 border-t border-border/60">
+            <div className="pt-3 border-t border-border/50">
               <SettingToggleRow
                 id="settings-customer-tz-toggle"
                 title={t(
                   "Allow shoppers to view dates in their local timezone",
-                  "ক্রেতাদের তাদের স্থানীয় টাইমজোনে দেখার অনুমতি দিন",
+                  "ক্রেতাদের তাদের স্থানীয় টাইমজোনে তারিখ দেখার অনুমতি দিন",
                 )}
                 description={t(
-                  "When enabled, visitors will see order timelines and tracking timestamps in their device's local timezone. When disabled, all dates strictly adhere to your store timezone.",
-                  "চালু থাকলে ক্রেতারা তাদের ডিভাইসের স্থানীয় টাইমজোনে স্টোরের তারিখ ও সময় দেখতে পারবেন। বন্ধ থাকলে সবাই আপনার স্টোর টাইমজোন দেখতে পাবে।",
+                  "When enabled, order tracking timestamps display in each visitor's device timezone. When disabled, all timestamps strictly follow your store timezone.",
+                  "চালু থাকলে ক্রেতারা তাদের ডিভাইসের স্থানীয় টাইমজোনে সময় দেখতে পাবেন। বন্ধ থাকলে সবসময় আপনার স্টোর টাইমজোন প্রদর্শিত হবে।",
                 )}
                 checked={form.allow_customer_timezone}
                 onCheckedChange={(checked) =>
@@ -445,23 +410,21 @@ function SettingsPage() {
               />
             </div>
           </div>
-        </SettingsCard>
+        </FormSection>
 
         {/* Action / Save Bar */}
-        <div className="flex items-center justify-between pt-2">
-          <div className="text-xs text-muted-foreground hidden sm:block">
-            <span>
-              {t(
-                "Press ⌘S or Ctrl+S to save anytime",
-                "যেকোনো সময় সেভ করতে ⌘S অথবা Ctrl+S চাপুন",
-              )}
-            </span>
-          </div>
+        <div className="flex items-center justify-between pt-4 border-t border-border/40">
+          <p className="text-xs text-muted-foreground hidden sm:block">
+            {t(
+              "Press ⌘S or Ctrl+S to save changes anytime",
+              "যেকোনো সময় সেভ করতে ⌘S অথবা Ctrl+S চাপুন",
+            )}
+          </p>
 
           <button
             type="submit"
             disabled={!merchant || isLoading || save.isPending}
-            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground shadow-xs transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-fq-md bg-primary px-6 text-sm font-medium text-primary-foreground shadow-xs transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {save.isPending ? (
               <>
@@ -482,36 +445,33 @@ function SettingsPage() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* Calm Presentational Subcomponents                                          */
+/* Calm, Minimal Section Layout Primitives                                    */
 /* -------------------------------------------------------------------------- */
 
-function SettingsCard({
+function FormSection({
   title,
   description,
-  headerAction,
   children,
 }: {
   title: string;
-  description?: string;
-  headerAction?: React.ReactNode;
+  description: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-fq-lg border border-border/80 bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition-shadow">
-      <header className="flex flex-wrap items-start justify-between gap-3 pb-4">
-        <div>
-          <h2 className="font-bangla-display text-sm font-semibold tracking-tight text-foreground">
-            {title}
-          </h2>
-          {description && (
-            <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
-              {description}
-            </p>
-          )}
+    <section className="grid grid-cols-1 gap-x-8 gap-y-4 pt-8 first:pt-0 border-t border-border/50 first:border-0 md:grid-cols-3">
+      <div className="md:col-span-1">
+        <h2 className="text-sm font-semibold text-foreground tracking-tight">
+          {title}
+        </h2>
+        <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+          {description}
+        </p>
+      </div>
+      <div className="md:col-span-2">
+        <div className="rounded-fq-lg border border-border/70 bg-card p-5 shadow-xs">
+          {children}
         </div>
-        {headerAction}
-      </header>
-      <div className="pt-1">{children}</div>
+      </div>
     </section>
   );
 }
@@ -530,7 +490,7 @@ function SettingToggleRow({
   onCheckedChange: (checked: boolean) => void;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-3.5 first:pt-0 last:pb-0">
+    <div className="flex items-start justify-between gap-4 py-4 first:pt-0 last:pb-0">
       <div className="space-y-0.5 pr-2">
         <label
           htmlFor={id}
@@ -554,7 +514,7 @@ function SettingToggleRow({
   );
 }
 
-function MoneyField({
+function CurrencyField({
   id,
   label,
   hint,
@@ -601,10 +561,10 @@ function MoneyField({
 }
 
 /**
- * Live time pill isolated in its own subcomponent so the parent form
- * does not re-render every 10 seconds.
+ * Quiet store time indicator placed naturally below the timezone dropdown.
  */
-function LiveTimeBadge({ timezone }: { timezone: string }) {
+function LiveStoreTime({ timezone }: { timezone: string }) {
+  const { t } = useLang();
   const [time, setTime] = useState(() => new Date());
 
   useEffect(() => {
@@ -613,12 +573,10 @@ function LiveTimeBadge({ timezone }: { timezone: string }) {
   }, []);
 
   return (
-    <div
-      className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-muted/40 px-2.5 py-1 text-xs text-muted-foreground"
-      title="Store current time"
-    >
+    <div className="flex items-center gap-1.5 text-xs text-muted-foreground pt-1">
       <Clock className="size-3.5 text-muted-foreground/70" aria-hidden />
-      <span className="font-mono text-[11px] font-medium text-foreground tabular-nums">
+      <span>{t("Current store time:", "বর্তমান স্টোর সময়:")}</span>
+      <span className="font-mono font-medium text-foreground tabular-nums">
         {formatDateTime(time, timezone)}
       </span>
     </div>

@@ -43,6 +43,7 @@
   ); /* Tuned grey text for 5.5:1 contrast */
 
   --color-border: #e2e8f0;
+  --color-input: #cbd5e1;
 
   /* accent is Calm Pink (#FFF1F3) */
   --color-accent: #fff1f3;
@@ -53,17 +54,21 @@
   --color-success: var(--color-mint-500);
   --color-success-soft: var(--color-mint-100);
   --color-success-foreground: var(--color-mint-800);
+  --color-success-strong: var(--color-mint-800);
   --color-warning: var(--color-bondhu-amber-500);
   --color-warning-soft: var(--color-bondhu-amber-100);
   /* Deep amber ink: 5.2:1 on the amber-500 warning fill, so small badge text stays legible. */
   --color-warning-foreground: hsl(26 90% 20%);
+  --color-warning-strong: hsl(26 90% 20%);
 
   --color-danger: var(--color-rickshaw-red-500);
   --color-danger-soft: var(--color-rickshaw-red-100);
   --color-danger-foreground: var(--color-rickshaw-red-700);
+  --color-danger-strong: var(--color-rickshaw-red-700);
   --color-info: oklch(0.48 0.23 255);
   --color-info-soft: #ebf5ff;
   --color-info-foreground: #003e9c;
+  --color-info-strong: #003e9c;
 
   --font-bangla:
     "Noto Sans Bengali", "Noto Sans Bengali Fallback", "SolaimanLipi",
