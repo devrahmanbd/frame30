@@ -39,7 +39,17 @@ export type StudioNode = {
   collapsed?: boolean;
   /** Responsive visibility: devices the node is hidden on. */
   hiddenOn?: DeviceKey[];
+  /**
+   * Slot this top-level section belongs to. Only meaningful on root-level
+   * nodes; nested children ignore it. Absent = `"main"`, so every document
+   * written before slots keeps rendering exactly as before.
+   */
+  slot?: StudioSlot;
 };
+
+/** Header / main / footer slots — mirrors `SLOTS` in `builder-ast`. */
+export const STUDIO_SLOTS = ["header", "main", "footer"] as const;
+export type StudioSlot = (typeof STUDIO_SLOTS)[number];
 
 export type PageLayout = "default" | "canvas" | "full" | "theme" | "no-title";
 
@@ -62,7 +72,15 @@ export type StudioClass = { id: string; name: string };
 
 export type StudioDoc = {
   version: 2;
+  /** Main slot. Every pre-slot document lives here in full. */
   root: StudioNode[];
+  /**
+   * Page-level header/footer overrides. Absent/empty = no override.
+   * At render time the theme studio's chrome wins when it has content
+   * (see `resolveStudioSlots`); otherwise these apply.
+   */
+  header?: StudioNode[];
+  footer?: StudioNode[];
   page: PageSettings;
   /** Active responsive breakpoints for this document. */
   breakpoints?: DeviceKey[];
@@ -129,6 +147,203 @@ export function isContainerNode(node: StudioNode): boolean {
 }
 
 /* ------------------------------------------------------------------ */
+/* Slots: header / main / footer                                       */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Slot awareness for the page studio. `root` stays the canonical main slot
+ * so every pre-slot document keeps working; `header`/`footer` are optional
+ * page overrides while the theme studio owns the live chrome.
+ * Node-level `slot` is honoured when a root node carries one
+ * (`ast[slot]` semantics): root nodes tagged `header`/`footer` read as
+ * chrome, everything else reads as main.
+ */
+export function isStudioSlot(value: unknown): value is StudioSlot {
+  return (
+    value === "header" || value === "main" || value === "footer"
+  );
+}
+
+/** Unknown / absent slots read as `"main"` — never blank a canvas. */
+export function normalizeStudioSlot(value: unknown): StudioSlot {
+  return isStudioSlot(value) ? value : "main";
+}
+
+/** Slot a node belongs to; absent = `"main"`. */
+export function slotOfNode(node: StudioNode): StudioSlot {
+  return normalizeStudioSlot(node.slot);
+}
+
+/** Tag a node with its slot (top-level sections only). */
+export function withSlot(node: StudioNode, slot: StudioSlot): StudioNode {
+  return { ...node, slot };
+}
+
+export type StudioSlots = {
+  header: StudioNode[];
+  main: StudioNode[];
+  footer: StudioNode[];
+};
+
+/**
+ * Split a document into its three slots. `header`/`footer` arrays read as
+ * chrome regardless of node tags; `root` nodes tagged `header`/`footer`
+ * join them, the rest stay main.
+ */
+export function studioSlots(doc: StudioDoc): StudioSlots {
+  const header: StudioNode[] = [...(doc.header ?? [])];
+  const footer: StudioNode[] = [...(doc.footer ?? [])];
+  const main: StudioNode[] = [];
+  for (const node of doc.root) {
+    const slot = slotOfNode(node);
+    if (slot === "header") header.push(node);
+    else if (slot === "footer") footer.push(node);
+    else main.push(node);
+  }
+  return { header, main, footer };
+}
+
+/**
+ * Build a document from slots. `header`/`footer` are omitted when empty so
+ * old snapshots without those keys round-trip byte-identically.
+ */
+export function studioDocFromSlots(
+  slots: Partial<StudioSlots>,
+  page: PageSettings,
+  extra?: Partial<Omit<StudioDoc, "root" | "page" | "header" | "footer">>,
+): StudioDoc {
+  const doc: StudioDoc = { version: STUDIO_VERSION, root: [...(slots.main ?? [])], page, ...extra };
+  if (slots.header?.length) doc.header = [...slots.header];
+  if (slots.footer?.length) doc.footer = [...slots.footer];
+  return doc;
+}
+
+/**
+ * Resolve which chrome a page shows. The theme studio wins whenever it has
+ * header/footer content; otherwise the page's own overrides apply.
+ */
+export function resolveStudioSlots(
+  page: StudioDoc,
+  theme?: Pick<StudioDoc, "root" | "header" | "footer"> | null,
+): StudioSlots {
+  const mine = studioSlots(page);
+  if (!theme) return mine;
+  const themed = studioSlots({
+    version: STUDIO_VERSION,
+    root: theme.root ?? [],
+    header: theme.header,
+    footer: theme.footer,
+    page: page.page,
+  });
+  return {
+    header: themed.header.length > 0 ? themed.header : mine.header,
+    main: mine.main,
+    footer: themed.footer.length > 0 ? themed.footer : mine.footer,
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Menu binding: widget → menu                                         */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Minimal widget→menu binding. Navigation widgets (`nav_menu`, `mega_menu`)
+ * carry `settings.menuId` (a menu id or handle from Content › Menus).
+ * Empty = manual `items` (back-compat). The canvas preview resolves the
+ * binding through `resolveMenuItems`; the storefront does the same lookup
+ * server-side.
+ */
+export const MENU_BOUND_WIDGETS = ["nav_menu", "mega_menu"] as const;
+
+export function isMenuBoundWidget(el: string): boolean {
+  return (MENU_BOUND_WIDGETS as readonly string[]).includes(el);
+}
+
+export type StudioMenuItem = { label: string; href: string };
+
+/**
+ * Structural menu shape the preview resolver accepts. Compatible with
+ * `NavMenu` (flat `MenuItem[]` with `label`/`url`/`parentId`/`position`)
+ * without importing the menus module.
+ */
+export type StudioMenuSource = {
+  id: string;
+  handle?: string | null;
+  name?: string | null;
+  items: readonly {
+    label: string;
+    url?: string;
+    href?: string;
+    parentId?: string | null;
+    position?: number;
+  }[];
+};
+
+/** Bound menu id/handle, or null when the widget uses manual items. */
+export function menuBindingOf(node: StudioNode): string | null {
+  const raw = node.settings.menuId ?? node.settings.menu;
+  if (typeof raw !== "string") return null;
+  const id = raw.trim();
+  return id ? id : null;
+}
+
+/** Manual `items` fallback — mirrors the canvas renderer rows. */
+export function staticMenuItems(node: StudioNode): StudioMenuItem[] {
+  const raw = node.settings.items;
+  if (!Array.isArray(raw)) return [];
+  const out: StudioMenuItem[] = [];
+  for (const entry of raw) {
+    if (typeof entry === "string") {
+      if (entry.trim()) out.push({ label: entry.trim(), href: "#" });
+      continue;
+    }
+    if (!entry || typeof entry !== "object") continue;
+    const row = entry as Record<string, unknown>;
+    const label =
+      typeof row.label === "string"
+        ? row.label
+        : typeof row.text === "string"
+          ? row.text
+          : "";
+    if (!label.trim()) continue;
+    const href =
+      typeof row.href === "string"
+        ? row.href
+        : typeof row.url === "string"
+          ? row.url
+          : "#";
+    out.push({ label: label.trim(), href: href || "#" });
+  }
+  return out;
+}
+
+/**
+ * Resolve a widget's bound menu to preview items. Returns null when unbound
+ * or when the bound menu is not among `menus` (caller falls back to
+ * `staticMenuItems`); returns the (possibly empty) item list when bound and
+ * found. Top-level entries only, in position order.
+ */
+export function resolveMenuItems(
+  node: StudioNode,
+  menus: readonly StudioMenuSource[] | null | undefined,
+): StudioMenuItem[] | null {
+  const binding = menuBindingOf(node);
+  if (!binding || !menus) return null;
+  const menu = menus.find(
+    (candidate) => candidate.id === binding || candidate.handle === binding,
+  );
+  if (!menu) return null;
+  return [...menu.items]
+    .filter((item) => !item.parentId)
+    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+    .map((item) => ({
+      label: item.label.trim(),
+      href: (item.href ?? item.url ?? "#") || "#",
+    }))
+    .filter((item) => item.label.length > 0);
+}
+
+/* ------------------------------------------------------------------ */
 /* Serialisation                                                       */
 /* ------------------------------------------------------------------ */
 
@@ -154,6 +369,7 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
   if (typeof raw.name === "string") node.name = raw.name;
   if (raw.collapsed === true) node.collapsed = true;
   if (Array.isArray(raw.hiddenOn)) node.hiddenOn = raw.hiddenOn as DeviceKey[];
+  if (isStudioSlot(raw.slot)) node.slot = raw.slot;
   if (Array.isArray(raw.children)) {
     const children = raw.children
       .map((child) => sanitiseNode(child, depth + 1))
@@ -379,9 +595,21 @@ export function parseStudioDoc(input: unknown): StudioDoc | null {
   const root = raw.root
     .map((node) => sanitiseNode(node))
     .filter((node): node is StudioNode => node !== null);
+  const header = Array.isArray(raw.header)
+    ? raw.header
+        .map((node) => sanitiseNode(node))
+        .filter((node): node is StudioNode => node !== null)
+    : undefined;
+  const footer = Array.isArray(raw.footer)
+    ? raw.footer
+        .map((node) => sanitiseNode(node))
+        .filter((node): node is StudioNode => node !== null)
+    : undefined;
   return {
     version: STUDIO_VERSION,
     root,
+    ...(header !== undefined ? { header } : {}),
+    ...(footer !== undefined ? { footer } : {}),
     page: { ...defaultPageSettings(), ...(raw.page ?? {}) },
     breakpoints: Array.isArray(raw.breakpoints)
       ? (raw.breakpoints as DeviceKey[])
@@ -723,7 +951,10 @@ function nodeHtml(node: StudioNode): string {
 }
 
 export function renderStudioHtml(doc: StudioDoc): string {
-  return doc.root.map(nodeHtml).join("\n");
+  const slots = studioSlots(doc);
+  return [...slots.header, ...slots.main, ...slots.footer]
+    .map(nodeHtml)
+    .join("\n");
 }
 
 /** Plain-text projection, used for excerpts and search indexing. */
@@ -749,7 +980,9 @@ export function studioPlainText(doc: StudioDoc): string {
       if (node.children) walk(node.children);
     }
   };
+  walk(doc.header ?? []);
   walk(doc.root);
+  walk(doc.footer ?? []);
   return out.join("\n");
 }
 

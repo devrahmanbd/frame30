@@ -469,11 +469,6 @@ export const OG_CARDS: readonly OgCard[] = [
   },
   { route: "pricing", eyebrow: { en: "Pricing", bn: "মূল্য" }, accent: MINT },
   {
-    route: "builder",
-    eyebrow: { en: "Builder", bn: "বিল্ডার" },
-    accent: AURORA,
-  },
-  {
     route: "payments",
     eyebrow: { en: "Payments", bn: "পেমেন্ট" },
     accent: MINT,

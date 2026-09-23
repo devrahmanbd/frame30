@@ -143,13 +143,15 @@ function AnalyticsHub() {
   );
 }
 
-function deltaTone(pct: number) {
+function deltaTone(pct: number | null) {
+  if (pct === null) return "info" as const;
   if (pct > 0) return "success" as const;
   if (pct < 0) return "danger" as const;
   return "info" as const;
 }
 
-function deltaText(pct: number, suffix: string) {
+function deltaText(pct: number | null, suffix: string, fresh: string) {
+  if (pct === null) return fresh;
   const sign = pct > 0 ? "+" : "";
   return `${sign}${pct}% ${suffix}`;
 }
@@ -239,6 +241,7 @@ function AnalyticsPage() {
                 text: deltaText(
                   data.deltas.revenuePct,
                   t("vs previous period", "vs আগের সময়"),
+                  t("New this period", "এই সময়ে নতুন"),
                 ),
                 tone: deltaTone(data.deltas.revenuePct),
               }}
@@ -252,6 +255,7 @@ function AnalyticsPage() {
                 text: deltaText(
                   data.deltas.ordersPct,
                   t("vs previous period", "vs আগের সময়"),
+                  t("New this period", "এই সময়ে নতুন"),
                 ),
                 tone: deltaTone(data.deltas.ordersPct),
               }}

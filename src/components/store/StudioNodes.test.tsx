@@ -40,6 +40,41 @@ describe("StudioNodes", () => {
     expect(html).toContain("A!");
   });
 
+  it("recurses into containers instead of placeholder boxes", () => {
+    const html = renderToStaticMarkup(
+      createElement(StudioNodes, {
+        nodes: [
+          {
+            id: "c1",
+            el: "container",
+            settings: {},
+            children: [
+              { id: "h1", el: "heading", settings: { text: "Nested", level: 2 } },
+            ],
+          },
+        ],
+      }),
+    );
+    expect(html).toContain("Nested");
+    expect(html).not.toContain("container");
+  });
+
+  it("hides responsive-hidden nodes", () => {
+    const html = renderToStaticMarkup(
+      createElement(StudioNodes, {
+        nodes: [
+          {
+            id: "h1",
+            el: "heading",
+            settings: { text: "Gone" },
+            hiddenOn: ["desktop"],
+          },
+        ],
+      }),
+    );
+    expect(html).not.toContain("Gone");
+  });
+
   it("renders heritage widgets (not the export fallback)", () => {
     const html = renderToStaticMarkup(
       createElement(StudioNodes, {

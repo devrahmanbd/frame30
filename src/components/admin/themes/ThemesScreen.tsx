@@ -383,7 +383,7 @@ export function ThemesScreen() {
             </p>
           </Card>
 
-          {activeTheme ? (
+          {activeTheme && activeTheme.key ? (
             <ImportDemoData
               themeKey={activeTheme.key}
               themeName={activeTheme.name}

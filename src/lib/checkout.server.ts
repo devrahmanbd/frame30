@@ -218,6 +218,27 @@ export async function reserveStock(
       }
       observe("framique_checkout_reserve_ms", Date.now() - started);
       incr("framique_checkout_reserve_total", { outcome: "held" });
+      // R2-4: advisory hook — never affects the core result.
+      try {
+        const { listInstalledPlugins } = await import("./plugins.server");
+        const { runHook } = await import("./plugin-hooks.server");
+        const installed = await listInstalledPlugins(
+          supabaseAdmin as never,
+          merchantId,
+        );
+        const outcomes = await runHook(installed, "checkout.validate", {
+          merchantId,
+          checkoutToken,
+          lineCount: lines.length,
+        });
+        log("info", "plugin.hook.emitted", {
+          hook: "checkout.validate",
+          merchantId,
+          outcomes: outcomes.map((o) => `${o.pluginId}:${o.status}`),
+        });
+      } catch {
+        /* emission must never fail stock reservation */
+      }
       return { token: checkoutToken, expires_at: expiresAt };
     },
     { retries: 3, retryDelayMs: 40 },

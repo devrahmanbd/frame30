@@ -19,10 +19,10 @@ implementations. Merchant scope resolves via `currentMerchantId`
 |---|---|---|---|
 | `themesWorkspaceFn` (`:15-23`) | GET, `themes.read` | — | `loadThemesWorkspace` (`:108-147`) |
 | `themeInstallFn` (`:25-36`) | POST, `themes.update` | `{ key: string(1-64) }` | `installCatalogTheme` (`:174-297`) |
-| `themeActivateFn` (`:38-49`) | POST, `themes.update` | `{ id: uuid }` | `activateTheme` (`:418-490`) |
-| `themeDeleteFn` (`:51-62`) | POST, `themes.update` | `{ id: uuid }` | `deleteTheme` (`:492-551`) |
-| `themeFlagsFn` (`:64-85`) | POST, `themes.update` | `{ id: uuid, autoUpdate?: boolean, favourite?: boolean, name?: string(≤80) }` | `setThemeFlags` (`:553-573`) |
-| `themeCatalogFavouriteFn` (`:87-100`) | POST, `themes.update` | `{ key: string(1-64), favourite: boolean }` | `setCatalogFavourite` (`:576-599`) |
+| `themeActivateFn` (`:38-49`) | POST, `themes.update` | `{ id: uuid }` | `activateTheme` (`:418-485`, flag+pointer flip in one statement) |
+| `themeDeleteFn` (`:51-62`) | POST, `themes.update` | `{ id: uuid }` | `deleteTheme` (`:487-546`) |
+| `themeFlagsFn` (`:64-85`) | POST, `themes.update` | `{ id: uuid, autoUpdate?: boolean, favourite?: boolean, name?: string(≤80) }` | `setThemeFlags` (`:548-568`) |
+| `themeCatalogFavouriteFn` (`:87-100`) | POST, `themes.update` | `{ key: string(1-64), favourite: boolean }` | `setCatalogFavourite` (`:571-594`) |
 
 ### Builder workspace / versions — `src/lib/themes.functions.ts`
 
@@ -131,7 +131,7 @@ drafts + versions and retires the ledger row (`:492-551`).
    `builder.registry_invalid`.
 
 Current curated offer: only `supershop` + `clothing-heritage` are listed —
-enforced in `listCatalog` (`src/lib/marketplace.server.ts:103-111`) and in
+enforced in `listCatalog` (`src/lib/marketplace.server.ts:103-116`, sellers always see their own listings via the `mine` exemption) and in
 `VISIBLE_THEME_KEYS` (`src/lib/themes/appearance.ts:268-271`), with the
 active theme always exempt (`visibleInstalled`, `:274-278`).
 
@@ -181,9 +181,9 @@ await themeActivateFn({ id }); // { id, applied }
 - **Designation.** `merchant_settings.setup_steps.homepage_page_id`
   (a `storefront_pages` UUID) marks the merchant-chosen homepage.
   Resolution (`resolveHomepageSlug`,
-  `src/lib/storefront.server.ts:500-524`): non-UUID → `null`; published +
+  `src/lib/storefront.server.ts:531-538`, called at `:455-458`): non-UUID → `null`; published +
   not-trashed + not-deleted → slug; anything else → `null` and the `/`
-  route falls back to the theme `index` template (`:470-477`). Set from the
+  route falls back to the theme `index` template. Set from the
   Pages list (`src/lib/content-desk.server.ts:773-786`).
 - **Rendering.** `StoreHomepage`
   (`src/components/store/StoreHomepage.tsx:18-99`): same chrome and theme

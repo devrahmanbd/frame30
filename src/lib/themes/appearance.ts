@@ -265,10 +265,9 @@ export function catalogView(
  * stays visible so the live storefront remains manageable — hiding it
  * would strand the merchant with no way to configure what shoppers see.
  */
-export const VISIBLE_THEME_KEYS: ReadonlySet<string> = new Set([
-  "supershop",
-  "clothing-heritage",
-]);
+/** No curated offer: both marketplace themes were removed (Sept 2026).
+ *  Only the active theme stays visible so live storefronts remain manageable. */
+export const VISIBLE_THEME_KEYS: ReadonlySet<string> = new Set([]);
 
 /** Installed grid: the live theme plus allowlisted keys (null-key rows hide). */
 export function visibleInstalled(themes: InstalledTheme[]): InstalledTheme[] {

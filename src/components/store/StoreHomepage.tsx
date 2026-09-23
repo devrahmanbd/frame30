@@ -36,9 +36,13 @@ export function StoreHomepage({
     studioNodes,
   } = home;
 
+  // Studio-authored pages are self-composed (hero/headings live inside
+  // the nodes) — prepending the page title would duplicate H1s.
+  const selfComposed =
+    isBuilder || (studioNodes != null && studioNodes.length > 0);
   const content = (
     <article>
-      {!isBuilder && (
+      {!selfComposed && (
         <>
           <h1 className="font-bangla-display text-3xl font-bold">
             {page.title}
@@ -65,7 +69,7 @@ export function StoreHomepage({
           dangerouslySetInnerHTML={{ __html: html }}
         />
       )}
-      {!isBuilder && (
+      {!selfComposed && (
         <p className="mt-8 text-xs text-muted-foreground">
           {t("Last updated", "সর্বশেষ হালনাগাদ")}:{" "}
           <time dateTime={page.updated_at} className="money">

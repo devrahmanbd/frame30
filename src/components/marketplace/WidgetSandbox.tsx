@@ -16,6 +16,35 @@ export type SandboxHandler = (
   params: unknown,
 ) => Promise<unknown>;
 
+/**
+ * Pure bridge decision: authorize the real frame message first, serve
+ * `plugin.settings` from the mounted plugin's validated values, delegate
+ * everything else to the host. Denial shapes match what the frame already
+ * handles (`sandbox.<reason>`).
+ */
+export async function answerWidgetCall(
+  msg: unknown,
+  ctx: {
+    settings?: Record<string, unknown>;
+    granted: readonly string[];
+    onCall: SandboxHandler;
+  },
+): Promise<{ result: unknown } | { error: string }> {
+  const verdict = authorizeWidgetCall(msg, ctx.granted);
+  if (!verdict.allowed) return { error: `sandbox.${verdict.reason}` };
+  if (verdict.method === "plugin.settings") {
+    return { result: { ...(ctx.settings ?? {}) } };
+  }
+  try {
+    const params = (msg as { params?: unknown } | null)?.params;
+    return { result: await ctx.onCall(verdict.method, params) };
+  } catch (err) {
+    return {
+      error: err instanceof Error ? err.message : "sandbox.host_error",
+    };
+  }
+}
+
 const FRAME_HTML = (
   entry: string,
   parentOrigin: string,
@@ -49,6 +78,7 @@ export function WidgetSandbox({
   title,
   entry,
   grantedScopes,
+  settings,
   onCall,
   height = 320,
   riskTier = "low",
@@ -56,6 +86,8 @@ export function WidgetSandbox({
   title: string;
   entry: string;
   grantedScopes: string[];
+  /** Validated values for exactly the mounted plugin; served to `plugin.settings`. */
+  settings?: Record<string, unknown>;
   onCall: SandboxHandler;
   height?: number;
   riskTier?: RiskTier;
@@ -64,40 +96,37 @@ export function WidgetSandbox({
   const policy = resolvePolicy(riskTier);
   const ref = useRef<HTMLIFrameElement | null>(null);
   const [denied, setDenied] = useState<string[]>([]);
-  const srcDoc = useMemo(() => FRAME_HTML(entry, window.location.origin), [entry]);
+  // SSR-safe: the origin is only needed once the frame posts back, which is
+  // always client-side. Render must never touch `window` (storefront SSR).
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
+  const srcDoc = useMemo(() => FRAME_HTML(entry, origin), [entry, origin]);
 
   useEffect(() => {
     async function onMessage(event: MessageEvent) {
       const frame = ref.current;
       if (!frame || event.source !== frame.contentWindow) return;
       const msg = event.data as WidgetCall;
-      const verdict = authorizeWidgetCall(msg, grantedScopes);
+      const ans = await answerWidgetCall(msg, {
+        settings,
+        granted: grantedScopes,
+        onCall,
+      });
+      if ("error" in ans && ans.error === "sandbox.scope_denied") {
+        const method = (msg as { method?: unknown })?.method;
+        if (typeof method === "string") {
+          setDenied((d) => (d.includes(method) ? d : [...d, method]));
+        }
+      }
       const reply = (body: Record<string, unknown>) =>
         frame.contentWindow?.postMessage(
           { id: (msg as { id?: string })?.id, ...body },
           window.location.origin,
         );
-
-      if (!verdict.allowed) {
-        if (verdict.reason === "scope_denied" && verdict.method) {
-          setDenied((d) =>
-            d.includes(verdict.method!) ? d : [...d, verdict.method!],
-          );
-        }
-        reply({ error: `sandbox.${verdict.reason}` });
-        return;
-      }
-      try {
-        reply({ result: await onCall(verdict.method, msg.params) });
-      } catch (err) {
-        reply({
-          error: err instanceof Error ? err.message : "sandbox.host_error",
-        });
-      }
+      reply(ans);
     }
     window.addEventListener("message", onMessage);
     return () => window.removeEventListener("message", onMessage);
-  }, [grantedScopes, onCall]);
+  }, [grantedScopes, settings, onCall]);
 
   return (
     <div className="space-y-2">

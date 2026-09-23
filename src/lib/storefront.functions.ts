@@ -88,6 +88,7 @@ export const getStoreChrome = createServerFn({ method: "GET" })
           "blog",
           "cart",
           "checkout",
+          "account",
         ]),
       })
       .parse(d),

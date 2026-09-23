@@ -105,7 +105,7 @@ describe("third-party install materialization", () => {
       trial: false,
       idempotencyKey: "k-1",
       versionId: null,
-      grantedScopes: [],
+      grantedScopes: ["render_storefront"],
       consentedBy: null,
     });
     expect(out.replayed).toBe(false);
@@ -130,7 +130,7 @@ describe("third-party install materialization", () => {
       trial: false,
       idempotencyKey: "k-2",
       versionId: null,
-      grantedScopes: [],
+      grantedScopes: ["render_storefront"],
       consentedBy: null,
     });
     expect(out.replayed).toBe(false);

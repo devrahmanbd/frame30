@@ -111,6 +111,7 @@ const HeroCarousel: WidgetComponent = ({
     caption: readString(row, "caption"),
   }));
   const autoAdvanceMs = int("autoAdvanceMs", 5000, 1000, 15000);
+  const atmosphere = str("atmosphere") || "wash";
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
 
@@ -141,8 +142,14 @@ const HeroCarousel: WidgetComponent = ({
       aria-label={t(locale, "Hero carousel", "হিরো ক্যারোজেল")}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className="border-b border-border bg-card"
+      className="relative overflow-hidden border-b border-border bg-card"
     >
+      {atmosphere !== "none" && (
+        <div
+          aria-hidden="true"
+          className="fq-theme-aurora pointer-events-none absolute inset-0"
+        />
+      )}
       <div className="mx-auto grid max-w-[var(--fq-container,1280px)] items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-12 lg:gap-12">
         {/* Copy — asymmetric left, seven columns */}
         <div className="min-w-0 lg:col-span-7">
@@ -180,20 +187,25 @@ const HeroCarousel: WidgetComponent = ({
             )}
             {/* Dots live with the copy — never overlapping art or CTA */}
             {slides.length > 1 && (
-              <div className="flex items-center gap-2" role="tablist" aria-label={t(locale, "Slides", "স্লাইড")}>
+              <div className="flex items-center gap-1" role="tablist" aria-label={t(locale, "Slides", "স্লাইড")}>
                 {slides.map((_, i) => (
                   <button
                     key={i}
                     role="tab"
                     aria-selected={i === current}
                     onClick={() => setCurrent(i)}
-                    className={`h-2 rounded-full transition ${
-                      i === current
-                        ? "w-7 bg-primary"
-                        : "w-2 bg-foreground/25 hover:bg-foreground/50"
-                    }`}
+                    className="grid min-h-11 min-w-11 place-items-center"
                     aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1}`}
-                  />
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={`block h-2 rounded-full transition ${
+                        i === current
+                          ? "w-7 bg-primary"
+                          : "w-2 bg-foreground/25 hover:bg-foreground/50"
+                      }`}
+                    />
+                  </button>
                 ))}
               </div>
             )}
@@ -202,7 +214,7 @@ const HeroCarousel: WidgetComponent = ({
         {/* Art — five columns, its own zone. Real photographs render;
             placeholder URLs become hand-built weave lattice instead. */}
         <div className="min-w-0 lg:col-span-5">
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-fq-lg border border-border bg-[var(--fq-surface,#FAF8F5)] sm:aspect-[16/10] lg:aspect-[4/5]">
+          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-fq-lg border border-border bg-card sm:aspect-[16/10] lg:aspect-[4/5]">
             {slide.image && !slide.image.startsWith("/api/public/ph/") ? (
               <img
                 src={slide.image}
@@ -280,15 +292,9 @@ const DepartmentGrid: WidgetComponent = ({
           <a
             key={i}
             href={dept.href || "#"}
-            className={`group relative overflow-hidden rounded-fq-md border border-border bg-card transition hover:shadow-fq-sm ${
-              i === 0 ? "sm:col-span-2 sm:row-span-2" : ""
-            }`}
+            className="group relative overflow-hidden rounded-fq-md border border-border bg-card transition hover:shadow-fq-sm"
           >
-            <div
-              className={`flex items-center justify-center overflow-hidden bg-card ${
-                i === 0 ? "aspect-[3/4] sm:aspect-auto sm:h-full sm:min-h-[28rem]" : "aspect-[3/4]"
-              }`}
-            >
+            <div className="flex aspect-[3/4] items-center justify-center overflow-hidden bg-card">
               {dept.image ? (
                 <img
                   src={dept.image}
@@ -307,7 +313,7 @@ const DepartmentGrid: WidgetComponent = ({
               )}
             </div>
             <div className="p-3">
-              <p className={`font-medium ${i === 0 ? "text-base" : "text-sm"}`}>
+              <p className="text-sm font-medium">
                 {locale === "bn" && dept.nameBn ? dept.nameBn : dept.name}
               </p>
               <p className="text-xs text-muted-foreground tabular-nums">
@@ -546,6 +552,7 @@ const EditorialBanner: WidgetComponent = ({
   const ctaLabel = str("cta_label") || str("ctaLabel");
   const ctaUrl = str("cta_url") || str("ctaHref");
   const overlay = str("overlay") || "dark";
+  const surface = str("surface") || "card";
 
   if (!headline) {
     return editing ? (
@@ -565,7 +572,9 @@ const EditorialBanner: WidgetComponent = ({
       : "bg-gradient-to-t from-foreground/70 via-foreground/30 to-transparent text-background";
 
   return (
-    <section className="relative overflow-hidden rounded-fq-sm">
+    <section
+      className={`relative overflow-hidden rounded-fq-sm${surface === "glass" ? " fq-theme-glass" : ""}`}
+    >
       <div className="relative aspect-[3/1] min-h-[200px] w-full">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-900/20 via-rose-900/10 to-amber-800/20">
           <div className="absolute inset-0 flex items-center justify-center">
@@ -688,16 +697,21 @@ const TestimonialCarousel: WidgetComponent = ({
         </figcaption>
       </div>
       {testimonials.length > 1 && (
-        <div className="mt-4 flex justify-center gap-2">
+        <div className="mt-4 flex justify-center gap-1">
           {testimonials.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className={`h-2 rounded-full transition ${
-                i === current ? "w-6 bg-primary" : "w-2 bg-border"
-              }`}
+              className="grid min-h-11 min-w-11 place-items-center"
               aria-label={`${t(locale, "Testimonial", "টেস্টিমোনিয়াল")} ${i + 1}`}
-            />
+            >
+              <span
+                aria-hidden="true"
+                className={`block h-2 rounded-full transition ${
+                  i === current ? "w-6 bg-primary" : "w-2 bg-border"
+                }`}
+              />
+            </button>
           ))}
         </div>
       )}

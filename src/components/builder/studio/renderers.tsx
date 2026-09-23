@@ -6,6 +6,7 @@
  * nothing here knows about selection, drag state or the panels.
  */
 import {
+  useCallback,
   useEffect,
   useState,
   type CSSProperties,
@@ -84,7 +85,16 @@ import {
   Zap,
 } from "lucide-react";
 import { HtmlSandbox } from "@/components/builder/HtmlSandbox";
+import { WidgetSandbox } from "@/components/marketplace/WidgetSandbox";
+import { useInstalledPlugins } from "@/components/builder/PluginContext";
+import { resolvePluginWidget } from "@/lib/plugin-manifest";
+import { WIDGET_API } from "@/lib/marketplace-scopes";
 import type { NodeSettings, StudioNode } from "@/lib/studio/model";
+import {
+  resolveMenuItems,
+  staticMenuItems,
+  type StudioMenuSource,
+} from "@/lib/studio/model";
 import {
   resolveResponsive,
   type DeviceKey,
@@ -214,6 +224,13 @@ export type RenderProps = {
   node: StudioNode;
   device: DeviceKey;
   editing?: boolean;
+  /**
+   * Real menus for the widget→menu binding (`settings.menuId`). When
+   * provided, bound navigation widgets preview the resolved menu; when
+   * absent (or unbound) they fall back to manual `items` / placeholders.
+   * The host (StudioCanvas/StudioBuilder) owns passing this down.
+   */
+  menus?: readonly StudioMenuSource[] | null;
 };
 
 function Placeholder({ label }: { label: string }) {
@@ -224,7 +241,64 @@ function Placeholder({ label }: { label: string }) {
   );
 }
 
-export function StudioWidget({ node, device, editing }: RenderProps) {
+/**
+ * Studio twin of the old path's `PluginBlock`: resolves the `plugin:`-
+ * namespaced key through the one shared resolver and renders the widget
+ * bundle inside the null-origin `WidgetSandbox` island. Every failure —
+ * nothing picked, not installed, unknown widget, incompatible builder API,
+ * or disabled (merchant-off and the platform kill switch both surface as
+ * `enabled: false`) — renders a labelled placeholder so the page always
+ * renders. Without a plugin provider every key degrades the same way.
+ */
+function StudioAppBlock({
+  pluginKey,
+  height,
+  editing,
+}: {
+  pluginKey: string;
+  height: number;
+  editing?: boolean;
+}) {
+  const plugins = useInstalledPlugins();
+  const resolved = resolvePluginWidget(pluginKey, plugins);
+
+  const onCall = useCallback(async (method: string, _params: unknown) => {
+    // Host bridge: the sandbox may only reach allow-listed, scoped methods.
+    if (!WIDGET_API[method]) throw new Error("unknown_method");
+    return { ok: true };
+  }, []);
+
+  if (!resolved.ok) {
+    if (!editing && resolved.reason === "bad_key") return null;
+    const label =
+      resolved.reason === "not_installed"
+        ? "This app is not installed"
+        : resolved.reason === "unknown_widget"
+          ? "This app no longer ships this block"
+          : resolved.reason === "incompatible"
+            ? "App not compatible with this builder version"
+            : resolved.reason === "disabled"
+              ? "Apps are switched off for this store"
+              : "No app widget selected";
+    return <Placeholder label={label} />;
+  }
+
+  const { plugin, widget } = resolved;
+  return (
+    <div data-plugin={plugin.manifest.id} data-plugin-widget={widget.key}>
+      <WidgetSandbox
+        title={`${plugin.manifest.name} — ${widget.label}`}
+        entry={widget.entry}
+        grantedScopes={plugin.grantedScopes}
+        settings={plugin.settings}
+        onCall={onCall as (method: string, params: unknown) => Promise<unknown>}
+        height={height || widget.height || 320}
+      />
+    </div>
+  );
+}
+
+export function StudioWidget({ node, device, editing, menus }: RenderProps) {
   const s = node.settings;
   const align = str(s, "textAlign", "left");
 
@@ -625,12 +699,18 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         <HtmlSandbox markup={str(s, "html")} title="Custom HTML block" />
       );
 
-    case "app-block":
+    case "app-block": {
+      // Plugin widgets render in a sandboxed island, never inline — the same
+      // contract as the old path's `plugin_block` (clamped 80–1200px).
+      const height = Math.min(1200, Math.max(80, num(s, "height", 320, device)));
       return (
-        <Placeholder
-          label={`App block: ${str(s, "block", "choose a block")}`}
+        <StudioAppBlock
+          pluginKey={str(s, "pluginKey")}
+          height={height}
+          editing={editing}
         />
       );
+    }
 
     case "anchor":
       return (
@@ -1862,7 +1942,7 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
           {str(s, "body") && <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>}
           <form className="mt-3 flex flex-wrap gap-2" method="post" action="#back-in-stock" onSubmit={(e) => e.preventDefault()}>
             <label className="sr-only" htmlFor="bis-email">Email address</label>
-            <input id="bis-email" name="email" type="email" required placeholder="you@example.com" className="min-h-11 min-w-[14rem] flex-1 rounded-fq-md border border-border px-3 text-sm" />
+            <input id="bis-email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" className="min-h-11 min-w-[14rem] flex-1 rounded-fq-md border border-border px-3 text-sm" />
             <button type="submit" className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">{str(s, "buttonLabel", "Notify me")}</button>
           </form>
           {str(s, "consentText") && <p className="mt-2 text-xs text-muted-foreground">{str(s, "consentText")}</p>}
@@ -2480,10 +2560,20 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "nav_menu": {
-      const items = rows(s, "items").filter(
-        (item) => typeof item.label === "string" && item.label !== "",
-      );
-      if (items.length === 0) return <Placeholder label="Add a menu item" />;
+      // Widget→menu binding: a bound menu previews its real items when the
+      // host passes `menus`; otherwise (or when unbound) manual `items`.
+      const bound = resolveMenuItems(node, menus);
+      const manual = staticMenuItems(node).map((item) => ({
+        label: item.label,
+        href: item.href,
+      }));
+      const items = (bound ?? manual).slice(0, 12);
+      if (items.length === 0)
+        return (
+          <Placeholder
+            label={bound ? "Menu is empty" : "Add a menu item"}
+          />
+        );
       const column = str(s, "layout", "row") === "column";
       const align = str(s, "align", "left");
       return (
@@ -2547,8 +2637,32 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       );
     }
 
-    case "mega_menu":
-      return <Placeholder label="Live mega menu — renders on the storefront" />;
+    case "mega_menu": {
+      // Widget→menu binding: a bound menu previews its top-level entries;
+      // unbound keeps the live-taxonomy placeholder from before.
+      const bound = resolveMenuItems(node, menus);
+      if (!bound || bound.length === 0)
+        return <Placeholder label="Live mega menu — renders on the storefront" />;
+      const limit = Math.min(24, Math.max(1, num(s, "limit", 8, device)));
+      const shown = bound.slice(0, limit);
+      return (
+        <nav
+          aria-label={str(s, "label", "Menu")}
+          className="flex flex-col gap-2"
+        >
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {str(s, "label", "Shop")}
+          </p>
+          <ul className="flex flex-row flex-wrap gap-x-5 gap-y-2">
+            {shown.map((item, i) => (
+              <li key={`${item.label}-${i}`}>
+                <span className="text-sm text-muted-foreground">{item.label}</span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      );
+    }
 
     case "buy_box":
       return <Placeholder label="Live buy box — renders on the storefront" />;
@@ -2881,7 +2995,13 @@ function StudioCountdown({ label, endsAt }: { label: string; endsAt: string }) {
           {label}
         </p>
       )}
-      <p className="font-bangla-display text-2xl font-bold tabular-nums">
+      {/* suppressHydrationWarning: SSR and first client paint compute
+        Date.now() at different seconds; the 1s ticker corrects after
+        mount. Without this, SSR storefront pages throw React #418. */}
+      <p
+        className="font-bangla-display text-2xl font-bold tabular-nums"
+        suppressHydrationWarning
+      >
         {diff > 0 ? parts.join(" ") : "Ended"}
       </p>
     </div>

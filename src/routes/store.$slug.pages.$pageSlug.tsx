@@ -86,11 +86,20 @@ function StorePageView() {
     </nav>
   );
 
+  // Studio-authored pages are self-composed — see StoreHomepage.
+  const selfComposed =
+    isBuilder || (studioNodes != null && studioNodes.length > 0);
   const content = (
     <article>
-      <h1 className="font-bangla-display text-3xl font-bold">{page.title}</h1>
-      {page.excerpt && (
-        <p className="mt-2 text-muted-foreground">{page.excerpt}</p>
+      {!selfComposed && (
+        <>
+          <h1 className="font-bangla-display text-3xl font-bold">
+            {page.title}
+          </h1>
+          {page.excerpt && (
+            <p className="mt-2 text-muted-foreground">{page.excerpt}</p>
+          )}
+        </>
       )}
       {studioNodes && studioNodes.length > 0 ? (
         <div className="fq-builder-page mt-6">

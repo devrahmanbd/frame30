@@ -7,6 +7,7 @@
  * body is used, so a store is never blank because a template is missing.
  */
 import type { ReactNode } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { CartProvider, useLiveCart } from "@/components/builder/CartContext";
 import { VitalsReporter } from "@/components/store/VitalsReporter";
@@ -16,6 +17,8 @@ import {
   type StorefrontSiteKit,
 } from "@/components/store/SiteKitTags";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
+import { StoreWelcome } from "@/components/store/StoreWelcome";
+import { isCustomHostPath } from "@/lib/storefront-url";
 import { useLangScope } from "@/lib/i18n";
 import { compileResponsiveCss } from "@/lib/responsive-css";
 import {
@@ -37,6 +40,8 @@ type Props = {
   collectionSlot?: ReactNode;
   /** Used when the theme publishes no main sections for this template. */
   fallback: ReactNode;
+  /** Display name for the themeless fallback. Defaults to the slug. */
+  storeName?: string | null;
   /** Store slug — namespaces channel state and server bundle quotes. */
   storeSlug?: string;
   /**
@@ -91,6 +96,15 @@ function LiveCartScope({
   return <CartProvider value={cart}>{children}</CartProvider>;
 }
 
+/** True when the merchant has no theme at all: every route then serves the
+ *  single shared welcome page instead of per-template fallbacks. */
+export function isThemeless(
+  ast: ThemeAst | null,
+  tokens: ThemeTokens | null,
+): boolean {
+  return !ast && !tokens;
+}
+
 export function ThemeChrome({
   template,
   ast,
@@ -100,6 +114,7 @@ export function ThemeChrome({
   productSlot,
   collectionSlot,
   storeSlug,
+  storeName,
   merchantId,
   siteKit,
   fallback,
@@ -109,6 +124,16 @@ export function ThemeChrome({
 }: Props) {
   // Phase 2.1: language choice is remembered per storefront.
   useLangScope(storeSlug ?? null);
+  const { pathname } = useRouterState().location;
+  if (isThemeless(ast, tokens)) {
+    return (
+      <StoreWelcome
+        slug={storeSlug ?? ""}
+        name={storeName ?? storeSlug ?? ""}
+        custom={isCustomHostPath(pathname)}
+      />
+    );
+  }
   const themed = ast && ast.main.length > 0 ? ast : null;
   // Header and footer are site chrome: they must survive a template whose body
   // the route renders itself (cart, checkout, search). Dropping them with the

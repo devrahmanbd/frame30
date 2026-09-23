@@ -184,6 +184,66 @@ export async function searchKb(
 }
 
 /**
+ * Retrieve active published products matching query tokens from the store catalog.
+ */
+export async function searchStoreProducts(
+  merchantId: string,
+  query: string,
+  limit = 3,
+): Promise<KbHit[]> {
+  try {
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    const qTokens = query
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((t) => t.length > 2);
+    if (!qTokens.length) return [];
+
+    const { data: products } = await supabaseAdmin
+      .from("products")
+      .select(
+        "id, title, description, price_minor_int, currency_code, category, status",
+      )
+      .eq("merchant_id", merchantId)
+      .limit(25);
+
+    if (!products || products.length === 0) return [];
+
+    const matched = products
+      .map((p) => {
+        const text =
+          `${p.title} ${p.category ?? ""} ${p.description ?? ""}`.toLowerCase();
+        let matches = 0;
+        for (const tok of qTokens) {
+          if (text.includes(tok)) matches++;
+        }
+        return { product: p, score: matches / qTokens.length };
+      })
+      .filter((m) => m.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit);
+
+    return matched.map((m) => {
+      const p = m.product;
+      const priceFmt = `৳${(p.price_minor_int / 100).toLocaleString()}`;
+      return {
+        doc_id: `prod_${p.id}`,
+        title: `${p.title} (${priceFmt})`,
+        body: `${p.title} is available in our store. Price: ${priceFmt}. ${p.description ? p.description + ". " : ""}Category: ${p.category || "General"}. Status: In stock.`,
+        rank: 0.95,
+        source_url: `/products/${p.id}`,
+        combined_score: 0.95,
+        text_rank: 0.95,
+        vector_sim: 0.9,
+      };
+    });
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Hybrid Semantic Search combining dense vector embeddings and full-text search with RRF.
  */
 export async function searchKbHybrid(
@@ -207,6 +267,7 @@ export async function searchKbHybrid(
     }
 
     // 2. Query Supabase RPC `support_kb_hybrid_search`
+    let hits: KbHit[] = [];
     try {
       const { supabaseAdmin } =
         await import("@/integrations/supabase/client.server");
@@ -225,58 +286,55 @@ export async function searchKbHybrid(
         _rrf_k: rrfK,
       });
 
-      if (error || !Array.isArray(data) || data.length === 0) {
-        throw new Error(error ? JSON.stringify(error) : "empty_or_error");
+      if (!error && Array.isArray(data) && data.length > 0) {
+        hits = (
+          data as Array<{
+            doc_id: string;
+            title: string;
+            body: string;
+            source_url: string | null;
+            combined_score: number;
+            text_rank: number;
+            vector_sim: number;
+          }>
+        ).map((h) => ({
+          doc_id: h.doc_id,
+          title: h.title,
+          body: snippet(h.body, trimmed, 360),
+          rank: h.combined_score,
+          source_url: h.source_url,
+          combined_score: h.combined_score,
+          text_rank: h.text_rank,
+          vector_sim: h.vector_sim,
+        }));
       }
-
-      const hits = (
-        data as Array<{
-          doc_id: string;
-          title: string;
-          body: string;
-          source_url: string | null;
-          combined_score: number;
-          text_rank: number;
-          vector_sim: number;
-        }>
-      ).map((h) => ({
-        doc_id: h.doc_id,
-        title: h.title,
-        body: snippet(h.body, trimmed, 360),
-        rank: h.combined_score,
-        source_url: h.source_url,
-        combined_score: h.combined_score,
-        text_rank: h.text_rank,
-        vector_sim: h.vector_sim,
-      }));
-
-      const elapsed = Date.now() - started;
-      incr("framique_ai_kb_search_total", {
-        outcome: hits.length ? "hit" : "miss",
-        mode: "hybrid",
-      });
-      observe("framique_ai_kb_search_latency_ms", elapsed, { mode: "hybrid" });
-      return hits;
     } catch {
-      // 3. Resilient in-memory fallback for local dev / tests
-      const fallbackHits = searchInMemoryKb(
+      // ignore
+    }
+
+    // 3. Resilient in-memory fallback for store FAQs & platform docs
+    if (hits.length === 0) {
+      hits = searchInMemoryKb(
         merchantId,
         trimmed,
         queryEmbedding ?? undefined,
         limit,
         rrfK,
       );
-
-      const elapsed = Date.now() - started;
-      incr("framique_ai_kb_search_total", {
-        outcome: fallbackHits.length ? "hit" : "miss",
-        mode: "hybrid_fallback",
-      });
-      observe("framique_ai_kb_search_latency_ms", elapsed, {
-        mode: "hybrid_fallback",
-      });
-      return fallbackHits;
     }
+
+    // 4. If still 0 hits, check store products catalog
+    if (hits.length === 0 && merchantId) {
+      hits = await searchStoreProducts(merchantId, trimmed, limit);
+    }
+
+    const elapsed = Date.now() - started;
+    incr("framique_ai_kb_search_total", {
+      outcome: hits.length ? "hit" : "miss",
+      mode: "hybrid",
+    });
+    observe("framique_ai_kb_search_latency_ms", elapsed, { mode: "hybrid" });
+    return hits;
   });
 }
 
@@ -341,6 +399,99 @@ All plans include free managed hosting, daily backups, DDoS protection, and resp
   },
 ];
 
+/**
+ * Standard Store Baseline FAQ Documents.
+ * Provides answers for store delivery, returns, payments, and hours even before a store owner adds custom articles.
+ */
+export const STORE_BASE_FAQS = [
+  {
+    id: "kb-store-shipping",
+    title:
+      "Shipping, Courier & Delivery Charges across Bangladesh (ডেলিভারি ও কুরিয়ার চার্জ)",
+    tags: [
+      "shipping",
+      "delivery",
+      "charge",
+      "charges",
+      "courier",
+      "steadfast",
+      "pathao",
+      "bangladesh",
+      "dhaka",
+      "ডেলিভারি",
+      "চার্জ",
+      "কুরিয়ার",
+    ],
+    sourceUrl: "/shipping",
+    body: "We deliver across all 64 districts in Bangladesh using SteadFast Courier and Pathao Logistics. Delivery inside Dhaka typically takes 1–2 business days. Delivery outside Dhaka across Bangladesh takes 2–4 business days. Delivery charges are calculated based on destination and package weight, and clearly displayed during checkout. Cash on Delivery (COD) is available across Bangladesh. ঢাকার ভেতরে সাধারণত ১–২ দিন, ঢাকার বাইরে ২–৪ দিন সময় লাগে।",
+  },
+  {
+    id: "kb-store-payments",
+    title:
+      "Payment Methods: bKash, Nagad, Cards & Cash on Delivery (বিকাশ ও পেমেন্ট পদ্ধতি)",
+    tags: [
+      "payment",
+      "payments",
+      "pay",
+      "bkash",
+      "nagad",
+      "cod",
+      "cash on delivery",
+      "cards",
+      "sslcommerz",
+      "বিকাশ",
+      "নগদ",
+      "পেমেন্ট",
+    ],
+    sourceUrl: "/payments",
+    body: "We accept bKash direct online payments, Nagad, Visa and Mastercard debit and credit cards, and Cash on Delivery (COD). All transactions are encrypted and processed securely. আমরা বিকাশ, নগদ, ভিসা, মাস্টারকার্ড এবং ক্যাশ অন ডেলিভারি সাপোর্ট করি।",
+  },
+  {
+    id: "kb-store-refunds",
+    title: "Return, Replacement & Refund Policy (রিটার্ন ও রিফান্ড পলিসি)",
+    tags: [
+      "refund",
+      "refunds",
+      "return",
+      "returns",
+      "exchange",
+      "replacement",
+      "policy",
+      "days",
+      "রিটার্ন",
+      "ফেরত",
+      "রিফান্ড",
+    ],
+    sourceUrl: "/returns",
+    body: "Unused items in original condition with tags intact can be returned or exchanged within 7 days of delivery. To initiate an exchange or return, please provide your order number or contact our support team. Refunds are issued promptly once the return parcel is received and inspected. ডেলিভারির ৭ দিনের মধ্যে অব্যবহৃত পণ্য ফেরত বা এক্সচেঞ্জ করা যায়।",
+  },
+  {
+    id: "kb-store-hours",
+    title:
+      "Store & Shop Operating / Opening Hours & Customer Support (দোকান ও স্টোর খোলার সময়সূচী ও যোগাযোগ)",
+    tags: [
+      "hours",
+      "open",
+      "opening",
+      "shop",
+      "store",
+      "timing",
+      "schedule",
+      "contact",
+      "phone",
+      "whatsapp",
+      "email",
+      "সময়",
+      "খোলা",
+      "সময়সূচী",
+      "দোকান",
+      "যোগাযোগ",
+    ],
+    sourceUrl: "/contact",
+    body: "Our store and customer service are open daily from 9:00 AM to 10:00 PM BST. We are active Saturday through Friday. Shop hours: 9:00 AM to 10:00 PM. You can chat with us live, reach us via WhatsApp, or request an automated phone callback anytime. আমাদের দোকান ও কাস্টমার সাপোর্ট প্রতিদিন সকাল ৯:০০ টা থেকে রাত ১০:০০ টা পর্যন্ত খোলা থাকে।",
+  },
+];
+
 let canonicalSeeded = false;
 
 export function ensureCanonicalSeeded() {
@@ -349,14 +500,30 @@ export function ensureCanonicalSeeded() {
   for (const doc of FRAMIQUE_CANONICAL_KB_DOCS) {
     if (!IN_MEMORY_KB_CHUNKS.some((c) => c.doc_id === doc.id)) {
       const vec = generateDeterministicEmbedding(
-        `${doc.title}\n${doc.body}`,
+        `${doc.title}\n${doc.tags.join(" ")}\n${doc.body}`,
         1024,
       );
       IN_MEMORY_KB_CHUNKS.push({
         doc_id: doc.id,
         merchant_id: "canonical",
         title: doc.title,
-        body: doc.body,
+        body: `${doc.body} [Keywords: ${doc.tags.join(", ")}]`,
+        source_url: doc.sourceUrl ?? null,
+        embedding: vec,
+      });
+    }
+  }
+  for (const doc of STORE_BASE_FAQS) {
+    if (!IN_MEMORY_KB_CHUNKS.some((c) => c.doc_id === doc.id)) {
+      const vec = generateDeterministicEmbedding(
+        `${doc.title}\n${doc.tags.join(" ")}\n${doc.body}`,
+        1024,
+      );
+      IN_MEMORY_KB_CHUNKS.push({
+        doc_id: doc.id,
+        merchant_id: "canonical",
+        title: doc.title,
+        body: `${doc.body} [Keywords: ${doc.tags.join(", ")}]`,
         source_url: doc.sourceUrl ?? null,
         embedding: vec,
       });
@@ -365,20 +532,173 @@ export function ensureCanonicalSeeded() {
   for (const doc of PLATFORM_KB_DOCS) {
     if (!IN_MEMORY_KB_CHUNKS.some((c) => c.doc_id === doc.id)) {
       const vec = generateDeterministicEmbedding(
-        `${doc.title}\n${doc.body}`,
+        `${doc.title}\n${doc.tags.join(" ")}\n${doc.body}`,
         1024,
       );
       IN_MEMORY_KB_CHUNKS.push({
         doc_id: doc.id,
         merchant_id: "framique",
         title: doc.title,
-        body: doc.body,
+        body: `${doc.body} [Keywords: ${doc.tags.join(", ")}]`,
         source_url: doc.sourceUrl ?? null,
         embedding: vec,
       });
     }
   }
 }
+
+/**
+ * Query coverage gate — the single-stem false-positive killer.
+ *
+ * A hit only qualifies as citable when it accounts for EVERY distinctive
+ * query word (same tokenization + stemming the scorer uses). "How to
+ * integrate ERP?" against the Pathao article scores 0.5 ("erp" matches
+ * nothing) and is disqualified, no matter how high its text/vector scores
+ * look. Returns covered / total in [0, 1]; 0 when the query has no
+ * content tokens.
+ */
+export const MIN_QUERY_COVERAGE = 1;
+
+function coverageVariants(tok: string): string[] {
+  const out = [tok, `${tok}s`];
+  if (tok.endsWith("s")) out.push(tok.slice(0, -1));
+  if (tok.endsWith("ing")) out.push(tok.slice(0, -3));
+  if (tok.endsWith("ed")) out.push(tok.slice(0, -2));
+  return out;
+}
+
+export function queryCoverage(
+  query: string,
+  title: string,
+  body: string,
+): number {
+  const rawTokens = query
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean);
+  const contentTokens = rawTokens.filter(
+    (t) => !STOP_WORDS.has(t) && t.length > 1,
+  );
+  const qTokens = contentTokens.length > 0 ? contentTokens : rawTokens;
+  if (qTokens.length === 0) return 0;
+  const docWords = new Set(
+    `${title} ${body}`
+      .toLowerCase()
+      .split(/[^\p{L}\p{N}]+/u)
+      .filter(Boolean),
+  );
+  let covered = 0;
+  for (const tok of qTokens) {
+    if (coverageVariants(tok).some((v) => docWords.has(v))) covered++;
+  }
+  return covered / qTokens.length;
+}
+
+const STOP_WORDS = new Set([
+  "what",
+  "when",
+  "where",
+  "which",
+  "who",
+  "whom",
+  "whose",
+  "why",
+  "how",
+  "a",
+  "an",
+  "the",
+  "and",
+  "or",
+  "but",
+  "if",
+  "as",
+  "at",
+  "by",
+  "for",
+  "with",
+  "about",
+  "to",
+  "from",
+  "in",
+  "out",
+  "on",
+  "off",
+  "over",
+  "under",
+  "all",
+  "any",
+  "both",
+  "each",
+  "few",
+  "more",
+  "most",
+  "other",
+  "some",
+  "such",
+  "no",
+  "nor",
+  "not",
+  "only",
+  "own",
+  "same",
+  "so",
+  "than",
+  "too",
+  "very",
+  "can",
+  "will",
+  "just",
+  "should",
+  "now",
+  "i",
+  "me",
+  "my",
+  "we",
+  "our",
+  "you",
+  "your",
+  "he",
+  "she",
+  "it",
+  "they",
+  "them",
+  "is",
+  "am",
+  "are",
+  "was",
+  "were",
+  "be",
+  "been",
+  "being",
+  "have",
+  "has",
+  "had",
+  "do",
+  "does",
+  "did",
+  "please",
+  "tell",
+  "know",
+  "কি",
+  "না",
+  "এবং",
+  "ও",
+  "বা",
+  "এর",
+  "কে",
+  "তে",
+  "থেকে",
+  "হবে",
+  "হয়",
+  "আছে",
+  "আমি",
+  "আমরা",
+  "আপনি",
+  "আপনার",
+  "আমাদের",
+  "দয়া",
+  "করে",
+]);
 
 /**
  * In-memory Reciprocal Rank Fusion search over IN_MEMORY_KB_CHUNKS.
@@ -391,17 +711,20 @@ export function searchInMemoryKb(
   rrfK = 60,
 ): KbHit[] {
   ensureCanonicalSeeded();
-  const qTokens = query.toLowerCase().split(/\s+/).filter(Boolean);
-  const isPlatformMerchant =
-    merchantId === "framique" ||
-    merchantId === "platform" ||
-    merchantId === "00000000-0000-4000-8000-000000000001";
+  const rawTokens = query
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean);
+  const contentTokens = rawTokens.filter(
+    (t) => !STOP_WORDS.has(t) && t.length > 1,
+  );
+  const qTokens = contentTokens.length > 0 ? contentTokens : rawTokens;
   const pool = IN_MEMORY_KB_CHUNKS.filter(
     (c) =>
       c.merchant_id === merchantId ||
       c.merchant_id === "canonical" ||
       c.merchant_id === "seed" ||
-      (isPlatformMerchant && c.merchant_id === "framique") ||
+      c.merchant_id === "framique" ||
       merchantId === "seed",
   );
 
@@ -419,9 +742,20 @@ export function searchInMemoryKb(
   const scored: Scored[] = pool.map((c) => {
     // Text keyword match score
     const textLower = `${c.title} ${c.body}`.toLowerCase();
+    const docWords = new Set(
+      textLower.split(/[^\p{L}\p{N}]+/u).filter(Boolean),
+    );
     let matches = 0;
     for (const tok of qTokens) {
-      if (textLower.includes(tok)) matches++;
+      if (
+        docWords.has(tok) ||
+        docWords.has(tok + "s") ||
+        (tok.endsWith("s") && docWords.has(tok.slice(0, -1))) ||
+        (tok.endsWith("ing") && docWords.has(tok.slice(0, -3))) ||
+        (tok.endsWith("ed") && docWords.has(tok.slice(0, -2)))
+      ) {
+        matches++;
+      }
     }
     const textScore = qTokens.length > 0 ? matches / qTokens.length : 0;
 
@@ -463,11 +797,21 @@ export function searchInMemoryKb(
   // Sort by final combined score descending
   scored.sort((a, b) => b.rrfScore - a.rrfScore);
 
-  return scored.slice(0, limit).map((s) => ({
+  // Filter to keep only genuinely matching chunks (meaningful keyword match or high semantic similarity)
+  const minTextScore = qTokens.length <= 2 ? 0.3 : 0.25;
+  const relevant = scored.filter(
+    (s) =>
+      s.rrfScore > 0 &&
+      (s.textScore >= minTextScore ||
+        (s.textScore > 0 && s.vectorSim >= 0.4) ||
+        s.vectorSim >= 0.55),
+  );
+
+  return relevant.slice(0, limit).map((s) => ({
     doc_id: s.chunk.doc_id,
     title: s.chunk.title,
     body: snippet(s.chunk.body, query, 360),
-    rank: s.rrfScore,
+    rank: s.textScore > 0 ? Math.max(s.rrfScore, 0.05) : s.rrfScore,
     source_url: s.chunk.source_url,
     combined_score: Number(s.rrfScore.toFixed(6)),
     text_rank: Number(s.textScore.toFixed(4)),

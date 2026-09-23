@@ -7,7 +7,7 @@
  * SectionRenderer stack the storefront uses, but with placeholder widget
  * data so every section renders something visible.
  */
-import { useMemo, useState } from "react";
+import { useMemo, useState, type MouseEvent } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
@@ -20,6 +20,10 @@ import {
   type WidgetDataMap,
 } from "@/lib/widget-data";
 import { previewDemoMap } from "@/lib/preview-demo-data";
+import { OrdersList, ProfileCard } from "@/components/builder/account";
+import { accountSlotCtx } from "./account-slots";
+import { useLang } from "@/lib/i18n";
+import { previewTemplateForHref } from "@/lib/theme-preview-nav";
 import { compileResponsiveCss } from "@/lib/responsive-css";
 import {
   TEMPLATE_KEYS,
@@ -32,6 +36,7 @@ import {
 /* ---- template tab labels for the floating picker ---- */
 const TAB_LABELS: Record<TemplateKey, string> = {
   index: "Homepage",
+  account: "Account",
   product: "Product",
   collection: "Collection",
   page: "Page",
@@ -82,6 +87,44 @@ export function ThemePreviewFrame({
       return { bundle, map: previewDemoMap(bundle, blueprintKey) };
     }, [ast, blueprintKey]);
 
+  const { lang } = useLang();
+  // Account center is context-gated: feed the merchant sections demo rows
+  // so the account tab renders instead of parking on skeletons.
+  const accountSlots = useMemo(() => {
+    if (template !== "account") return undefined;
+    const sections = [...ast.header, ...ast.main, ...ast.footer];
+    const build = (type: "orders_list" | "profile_card") => {
+      const section = sections.find((s) => s.type === type);
+      if (!section) return undefined;
+      const key = previewData.bundle.byNode[section.id];
+      const rows = key ? previewData.map[key] : undefined;
+      const ctx = accountSlotCtx(section, {
+        rows,
+        pending: false,
+        locale: lang,
+        storeSlug: blueprintKey,
+      });
+      return type === "orders_list" ? (
+        <OrdersList {...ctx} />
+      ) : (
+        <ProfileCard {...ctx} />
+      );
+    };
+    return { orders_list: build("orders_list"), profile_card: build("profile_card") };
+  }, [template, ast, previewData, lang, blueprintKey]);
+
+  // Envato-style demo browsing: mapped links switch the preview tab with
+  // demo content instead of escaping to live routes that 404 on hosts
+  // without a merchant. Unmapped links keep default browser behavior.
+  const onCanvasClick = (event: MouseEvent<HTMLDivElement>) => {
+    const anchor = (event.target as HTMLElement).closest?.("a[href]");
+    if (!anchor) return;
+    const next = previewTemplateForHref(anchor.getAttribute("href") ?? "");
+    if (!next) return;
+    event.preventDefault();
+    setTemplate(next);
+  };
+
   return (
     <div
       role="dialog"
@@ -108,7 +151,7 @@ export function ThemePreviewFrame({
       )}
 
       {/* ---- preview canvas: full-bleed, no frame ---- */}
-      <div className="flex-1 overflow-auto bg-background">
+      <div className="flex-1 overflow-auto bg-background" onClick={onCanvasClick}>
         <div className="mx-auto" style={{ maxWidth: "100%" }}>
           <ThemeSurface tokens={tokens}>
             {/* Wordmark row, as on a live storefront — the blueprint's
@@ -129,6 +172,7 @@ export function ThemePreviewFrame({
                   section={section}
                   template={template}
                   editing={false}
+                  contextSlots={accountSlots}
                 />
               ))}
 
@@ -140,6 +184,7 @@ export function ThemePreviewFrame({
                     section={section}
                     template={template}
                     editing={false}
+                    contextSlots={accountSlots}
                     primary={section.id === ast.main[0]?.id}
                   />
                 ))
@@ -156,6 +201,7 @@ export function ThemePreviewFrame({
                   section={section}
                   template={template}
                   editing={false}
+                  contextSlots={accountSlots}
                 />
               ))}
             </WidgetDataProvider>

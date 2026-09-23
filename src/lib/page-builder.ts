@@ -198,6 +198,16 @@ function renderWidget(w: Widget): string {
       return (w as any).code ?? "";
     case "product_card":
       return `<div class="product-card" data-product-id="${(w as any).productId ?? ""}"></div>`;
+    case "plugin": {
+      // Mount point, not a render: the key + settings ride as data so the
+      // client island (or a future hydrator) can resolve the exact block.
+      const key = String((w as any).pluginKey ?? "");
+      const settings = (w as any).settings ?? {};
+      const encoded = JSON.stringify(settings)
+        .replace(/</g, "\\u003c")
+        .replace(/'/g, "&#39;");
+      return `<div class="plugin-mount" data-plugin-widget="${key}" data-plugin-settings='${encoded}'></div>`;
+    }
     default:
       return `<!-- widget:${w.kind} -->`;
   }

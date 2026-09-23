@@ -109,4 +109,65 @@ describe("heritage contract dual-read", () => {
     );
     expect(html).toContain("Handloom");
   });
+
+  it("hero_carousel renders a warm atmosphere layer", () => {
+    const base = newSection("hero_carousel");
+    const section = {
+      ...base,
+      props: {
+        ...base.props,
+        slides: [{ headline: "Festive Drop" }],
+      },
+    };
+    const Cmp = HERITAGE_WIDGETS["hero_carousel"];
+    const html = renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        ctxFor(section),
+      ),
+    );
+    expect(html).toContain("fq-theme-aurora");
+    expect(html).toContain("pointer-events-none");
+  });
+
+  it("hero_carousel omits the wash when atmosphere is none", () => {
+    const base = newSection("hero_carousel");
+    const section = {
+      ...base,
+      props: {
+        ...base.props,
+        atmosphere: "none",
+        slides: [{ headline: "Festive Drop" }],
+      },
+    };
+    const Cmp = HERITAGE_WIDGETS["hero_carousel"];
+    const html = renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        ctxFor(section),
+      ),
+    );
+    expect(html).not.toContain("fq-theme-aurora");
+    expect(html).not.toContain("fq-heritage-aurora");
+  });
+
+  it("editorial_banner applies glass surface when surface is glass", () => {
+    const base = newSection("editorial_banner");
+    const section = {
+      ...base,
+      props: {
+        ...base.props,
+        heading: "Silk panjabi",
+        surface: "glass",
+      },
+    };
+    const Cmp = HERITAGE_WIDGETS["editorial_banner"];
+    const html = renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        ctxFor(section),
+      ),
+    );
+    expect(html).toContain("fq-theme-glass");
+  });
 });

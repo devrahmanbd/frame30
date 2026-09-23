@@ -24,7 +24,7 @@ for catalogue review.
 | 9 | Widgets with presets | Every widget the theme renders has catalogue defaults and bilingual props filled at build | `src/lib/theme-section.ts:44-68`, `src/lib/studio/catalog.ts:48-64` |
 | 10 | Forms | Contact (`form`), newsletter, search, quiz/consult/trade-in submittable patterns (see §5) | `src/lib/studio/catalog.ts:2010-2027`, `src/lib/studio/catalog.ts:2046-2057`, `src/lib/contact.functions.ts:4-24`, `src/lib/newsletter.functions.ts:13-50` |
 | 11 | Sign in | Storefront account entry: header `account_cart` link + `src/routes/store.$slug.account.tsx` + `src/routes/account.tsx`; there is **no** sign-in theme template — the theme's job is the link, not the form | `src/lib/studio/catalog.ts:1686-1692`, `src/routes/store.$slug.account.tsx`, `src/routes/account.tsx` |
-| 12 | Sign up | Same surface as sign in (merchant auth routes incl. `src/routes/root/login.tsx`); theme must not invent its own credential form | `src/routes/root/login.tsx` |
+| 12 | Sign up | Same surface as sign in (merchant console auth at `src/routes/auth.tsx`); theme must not invent its own credential form | `src/routes/auth.tsx` |
 
 Notes on areas 11–12: the template keys are fixed at
 `src/lib/builder-ast.ts:46-59` (`index`, `product`, `collection`, `page`,
@@ -32,6 +32,10 @@ Notes on areas 11–12: the template keys are fixed at
 template key. A theme satisfies 11–12 by wiring the header account entry
 and by not breaking the account/checkout routes — not by authoring auth
 markup.
+
+Account template (areas 11–12 revision): the `account` template key now exists
+at `src/lib/builder-ast.ts:46-60` with `main`-slot content and a route-supplied
+`<h1>` (same treatment as `collection`); widget scope and preset bodies land separately.
 
 ## 2. Anatomy
 
@@ -92,7 +96,7 @@ Each template is a `ThemeAst` (`src/lib/builder-ast.ts:281-286`):
 Reference compositions:
 
 - Code presets build all eight keys in `build()`
-  (`src/lib/theme-presets.ts:387-410`), with per-key builders at
+  (`src/lib/theme-presets.ts:387-407`), with per-key builders at
   `indexTemplate` (`:123`), `productTemplate` (`:175`),
   `collectionTemplate` (`:211`), `searchTemplate` (`:246`),
   `pageTemplate` (`:266`), `blogTemplate` (`:291`), `cartTemplate` (`:327`),
@@ -140,10 +144,14 @@ export type Section = {
   (`:785-788`) form `THEME_PRESETS`. Lookup: `presetByKey()`
   (`:790-792`). Preset swap without content loss: `applyPreset()`
   (`:824-850`).
-- **Blueprint** (`src/lib/theme-blueprints.ts:1-12`): the four vertical
-  themes (Bazaar, Atelier, Circuit, Rupaboti) built through the shared
-  section factory. The only blueprint currently in the shipped catalogue is
-  Atelier (see `src/lib/theme-presets.ts:780-788`).
+- **Blueprint** (`src/lib/theme-blueprints.ts:1-12`): vertical themes
+  (Bazaar, Atelier, Circuit, Rupaboti) built through the shared section
+  factory, plus the split-out `src/lib/themes/clothing-heritage/`
+  directory (`index.ts` wires `tokens/header/footer/homepage/secondary`;
+  shipped keys at `src/lib/theme-blueprints.ts:578` via
+  `SHIPPED_BLUEPRINT_KEYS`, re-exported into `THEME_PRESETS`
+  (`src/lib/theme-presets.ts:785-787`)). The curated offer ships
+  Supershop + Clothing Heritage.
 - **Catalogue metadata** (`src/lib/themes/catalog-meta.ts:13-21`):
   `{ author, subjects, features, layouts, tags, rating, installs }`.
   `rating`/`installs` are honest zeros until marketplace telemetry exists
@@ -156,8 +164,10 @@ export type Section = {
 
 Start from `DEFAULT_TOKENS` and override brand/accent/surface/ink plus
 layout knobs. Copy an existing `tokens({...})` call, e.g. Atelier
-(`src/lib/theme-blueprints.ts:627-649`) or a preset `Spec.tokens`
-(`src/lib/theme-presets.ts:432-444`).
+(`src/lib/theme-blueprints.ts:618-644`), heritage
+(`src/lib/themes/clothing-heritage/tokens.ts`), or a preset
+`Spec.tokens` (`src/lib/theme-presets.ts:432-444`). Heritage dark sets
+live beside the light set in the same file.
 
 ### Step 2 — Templates
 
@@ -392,7 +402,7 @@ import a noop):
 | Step | Server fn (`src/lib/themes.functions.ts`) | Service (`src/lib/theme-imports.server.ts`) | SQL |
 |------|-------------------------------------------|---------------------------------------------|-----|
 | Preflight (read-only conflicts) | `importPreflightFn` (`:208-217`) `{ themeKey }` | `importPreflight` (`:108-159`) | — |
-| Slides (hero_carousel; `hero` fallback for repeater blueprints) | `importThemeSlidesFn` (`:219-228`) | `importThemeSlides` (`:273-309`) | `import_theme_slides` (`supabase/migrations/20260920_import_rpcs.sql:15-150`, amended `20260922090100_import_slides_hero.sql:8-190`) |
+| Slides (hero_carousel; `hero` fallback for repeater-shaped blueprints — themes whose hero is a `hero` repeater widget rather than `hero_carousel`) | `importThemeSlidesFn` (`:219-228`) | `importThemeSlides` (`:273-309`) | `import_theme_slides` (`supabase/migrations/20260920_import_rpcs.sql:15-150`, amended `20260922090100_import_slides_hero.sql:8-190`) |
 | Media | `importThemeMediaFn` (`:230-239`) `{ themeKey, overwrite? }` | `importThemeMedia` (`:315-360`) | `import_theme_media` |
 | Products (+variants, collections link) | `importThemeProductsFn` (`:241-258`) `{ themeKey, overwrite? }` (+ catalog) | `importThemeProducts` (`:367-414`) | `import_theme_products` |
 | Posts (articles + storefront pages) | `importThemePostsFn` (`:260-269`) `{ themeKey, overwrite? }` | `importThemePosts` (`:420-465`) | `import_theme_posts` |
@@ -462,3 +472,175 @@ Common pitfalls:
 - **Empty registry.** `listRegistry` degrades to the code floor
   (`src/lib/themes.server.ts:553-601`), but demo imports need SQL rows —
   run the seed (§3 step 6) before testing imports.
+
+## 8. Theme effects (atmosphere + motion controls)
+
+Three effects, each token-driven and theme-scoped. They are ports of the
+`.fq-site` marketing-surface utilities into `.fq-theme-scope`: the same
+look, but tinted by the theme instead of the marketing palette. Tints
+derive from `--theme-brand` / `--theme-accent` via `color-mix`; nothing
+else carries a hue.
+
+### 8.1 What each effect does
+
+- **Hero wash (`fq-theme-aurora`).** A low-alpha static gradient wash
+  behind hero copy — atmosphere, never a section fill. Port of
+  `fq-heritage-aurora` (`src/styles.css:352`), which bakes in the
+  terracotta/amber anchors; the theme variant keeps those anchors only as
+  fallbacks and otherwise mixes from `--theme-brand`/`--theme-accent`.
+  The wash layer must be `pointer-events-none` — a wash that intercepts
+  clicks is a catalogue rejection (see §8.5).
+- **Glass card (`fq-theme-glass`).** Card elevation surface for
+  `editorial_banner`: translucent card fill, hairline border, soft shadow,
+  `backdrop-filter` blur. Port of `.fq-site .fq-glass`
+  (`src/styles.css:1004-1009`, dark variant `:1011-1018`) into theme
+  scope, so the surface follows theme tokens instead of marketing tokens.
+- **Line reveal (`fq-theme-linereveal` trigger class).** The one authored
+  typography moment: masked lines that rise into overflow-clipped boxes on
+  a per-line delay. Port of `.fq-line` (`src/styles.css:1056-1074`),
+  which is static before hydration and inert under reduced motion. This
+  sits alongside — not instead of — the existing entrance system: the
+  universal `reveal` style prop (`fq-reveal`, `src/styles.css:417-455`)
+  and per-widget `advAnimation` (`none | fade | rise | slide-left |
+  slide-right | zoom`, `src/lib/builder-advanced.ts:36-44`). One
+  orchestrated moment per viewport; scattered effects read as decoration.
+
+### 8.2 Which prop toggles it
+
+| Effect | Prop | Values | Default |
+|--------|------|--------|---------|
+| Hero wash | `atmosphere` on `hero` | `"wash" \| "none"` | `"wash"` |
+| Banner surface | `surface` on `editorial_banner` | `"glass" \| "card"` | `"card"` |
+| Entrance | `advAnimation` (Advanced tab, every widget) | `"none" \| "fade" \| "rise" \| "slide-left" \| "slide-right" \| "zoom"` | `"none"` |
+
+`atmosphere: "none"` renders no wash div at all — it is not a
+transparent wash, so there is no extra layer in the tree.
+`advAnimation` values are stored as ordinary `adv`-prefixed props and
+flow through the per-breakpoint cascade like any other prop
+(`src/lib/builder-advanced.ts:13-26`).
+
+### 8.3 Reduced-motion behavior
+
+The contract has two halves:
+
+1. **Static effects are inert by construction.** Washes are static
+   gradients with no animation loop — like `fq-heritage-aurora`
+   (`src/styles.css:349-351`) — so there is nothing to gate.
+2. **Animated effects gate on the existing reduced-motion blocks.**
+   `fq-reveal` drops to `animation: none` under
+   `prefers-reduced-motion: reduce` (`src/styles.css:451-455`) and when
+   the theme sets motion `none` (`[data-motion="none"]`,
+   `src/styles.css:447-450`); the aurora-drift pattern shows the same
+   gate for looped motion (`src/styles.css:1195-1199`). `advAnimation:
+   "none"` covers a reduced-motion visitor
+   (`src/lib/builder-advanced.ts:35`). Any new animated variant must
+   hook into these blocks — never its own parallel mechanism.
+
+### 8.4 The no-hardcoded-hues rule
+
+Hard-coded hues are banned outside the two heritage anchors (`#c45d3e`,
+`#d9a441`, `#8a3b1f`) already approved in `fq-heritage-aurora`. Every
+other tint is `color-mix` from `--theme-brand`/`--theme-accent`, with
+the heritage values as fallbacks — so a theme that omits brand/accent
+degrades to the current heritage look instead of rendering unstyled.
+This mirrors the scope fallback pattern (e.g.
+`var(--theme-brand, ...)` in `src/styles.css:387-397`).
+
+### 8.5 Rejection reasons reviewers will apply
+
+1. **Wash layer intercepts clicks.** The wash must be
+   `pointer-events-none` (the `.fq-site` aurora sets this on its
+   `::before` layer, `src/styles.css:1136`). A submission whose wash
+   blocks interaction with hero copy or CTAs is rejected.
+2. **Animated variant ignores reduced-motion.** Any effect with a motion
+   loop must gate on the existing reduced-motion blocks (§8.3). A
+   submission that animates under `prefers-reduced-motion: reduce` — or
+   that invents a separate opt-out instead of reusing `data-motion` /
+   the media query — is rejected.
+
+## 9. External authors: from zero to submitted
+
+You need nothing installed — no checkout, no CLI, no repo access. If you
+can open the builder, you can ship a theme. The whole path is: get
+approved, build, export, submit, respond to review.
+
+### 9.1 The path
+
+1. **Get approved.** Submission is allowlisted: your merchant account must
+   be an approved developer before the Themes screen accepts a package. If
+   there is no submit control, you are not on the list yet — ask staff.
+2. **Build in the builder.** Compose the theme the way §3 describes:
+   tokens first, one composition per template key, catalogue widgets only,
+   every bilingual prop filled in both languages. The builder lints as you
+   go — treat each red error as a rejection arriving early and fix it now.
+3. **Export the package.** Use the "Export package" action beside the
+   builder's commit/publish controls. It runs the package validator first
+   and shows the first error instead of downloading on failure — a file
+   that will not export is a submission that would not pass. On success
+   you get `<key>-<version>.theme.json`.
+4. **Submit via the Themes screen.** Upload the exported file. It lands as
+   `pending`: nothing renders and nothing installs until staff decide.
+5. **Respond to review.** Staff approve or reject with a note. A rejection
+   names the failing gate (§9.2); fix it in the builder, bump `version`,
+   re-export, resubmit.
+
+### 9.2 What review checks
+
+The full gate definitions live in `./packages.md`. In one glance:
+
+1. **Size** — the file is at most 2 MB.
+2. **Budget** — at most 200 sections per template, header + main + footer
+   counted together.
+3. **Clean lint** — zero error-level findings on every template the package
+   defines.
+4. **One H1** — exactly one primary heading per page. Route-headed
+   templates (`product`, `collection`, `page`, `blog`, `search`, `account`)
+   get theirs from the route, so they carry no claimant; any other
+   template you ship carries exactly one.
+5. **Bilingual** — বাংলা coverage at or above 90% of authored strings,
+   with real বাংলা inside every `_bn` twin — never English pasted into
+   the Bengali field.
+6. **No executable content** — no `html` widgets, no script markup, no
+   `javascript:` / `data:` / `vbscript:` URLs anywhere in props.
+7. **API range** — `api` sits inside `^3.0.0`.
+
+A human reader then spot-checks bilingual completeness — the gate counts
+twins, the reviewer reads them.
+
+### 9.3 Versioning rules
+
+- `api` stays inside `^3.0.0`. Anything else is rejected outright: a
+  package that installs but renders broken is worse than one that never
+  ships.
+- `version` is semver and moves forward on every resubmission, rejections
+  included. Patch for fixes (`1.0.0` → `1.0.1`), minor/major for new
+  templates and breaking prop changes.
+- `key` is forever. Choose the slug once — lowercase letters, digits and
+  dashes, max 60 characters. It is the theme's identity across installs,
+  updates and marketplace listings, and it is never renamed after first
+  publish.
+
+### 9.4 Rejection reasons
+
+The closed list. A rejection always names one of these, each mapping to a
+gate in §9.2 or a rule in §9.3:
+
+1. Package over 2 MB.
+2. A template over the 200-section budget.
+3. Lint errors (the note quotes the first; the builder shows the rest).
+4. Missing or duplicated primary heading.
+5. বাংলা coverage below 90%, or `_bn` twins with no বাংলা in them.
+6. Executable content: raw HTML widgets, script markup, blocked URL
+   schemes.
+7. `api` outside `^3.0.0`.
+8. Resubmission without a version bump, or a renamed `key`.
+
+### 9.5 Worked example
+
+`./example-studio.theme.json` is a minimal package that clears every
+gate: a single `index` template — packages ship only the templates they
+define, anything absent falls back to the built-in empty template — with
+a `hero_carousel` claiming the one H1, a `product_rail` for
+merchandising, and a footer `newsletter` signup, every authored string
+twinned in বাংলা. Copy its manifest shape verbatim and grow from there:
+add template keys one at a time, keep the twin discipline, export often.

@@ -38,6 +38,11 @@ import {
   BD_PHONE_REGEX,
 } from "./support-callbacks.server";
 import { createTicket } from "./support-tickets.server";
+import { resetRateLimitCircuitBreaker } from "./rate-limit.server";
+
+beforeEach(() => {
+  resetRateLimitCircuitBreaker();
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Phase 9.3 — Intent Detection: create_ticket
@@ -601,6 +606,7 @@ import {
   EPISTEMIC_HUMILITY_SIMILARITY_THRESHOLD,
   runSupportAgentTurn,
   askSupport,
+  rateConversation,
   getConversationTakeoverState,
 } from "./support-agent.server";
 import {
@@ -609,6 +615,7 @@ import {
   getMockConversation,
 } from "./support-moderation.server";
 import { customerSendChatMessageFn } from "./support.functions";
+import { queryCoverage } from "./support-kb.server";
 
 describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Breaker", () => {
   describe("A. Out-of-Domain & Speculative Query Detection", () => {
@@ -821,6 +828,108 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
       expect(res.contactInfo?.hours).toBe("9 AM – 10 PM BST");
       expect(res.contactInfo?.hoursBn).toBe("সকাল ৯:০০ – রাত ১০:০০ BST");
     });
+
+    it("welcomes customers on greetings without triggering epistemic humility circuit breaker", async () => {
+      const resEn = await runSupportAgentTurn({
+        slug: "demo",
+        message: "Hello there!",
+        locale: "en",
+      });
+
+      expect(resEn.epistemicTriggered).toBeFalsy();
+      expect(resEn.reply).toContain("Welcome to");
+      expect(resEn.reply).not.toContain(EPISTEMIC_ADMISSION_EN);
+
+      const resBn = await runSupportAgentTurn({
+        slug: "demo",
+        message: "হ্যালো, কেমন আছেন?",
+        locale: "bn",
+      });
+
+      expect(resBn.epistemicTriggered).toBeFalsy();
+      expect(resBn.reply).toContain("স্বাগতম");
+      expect(resBn.reply).not.toContain(EPISTEMIC_ADMISSION_BN);
+    });
+
+    it("constructively answers store shipping inquiries without triggering epistemic humility", async () => {
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        message: "What are your delivery charges and shipping times?",
+        locale: "en",
+      });
+
+      expect(res.epistemicTriggered).toBeFalsy();
+      expect(res.reply).not.toContain(EPISTEMIC_ADMISSION_EN);
+      expect(res.reply.toLowerCase()).toMatch(
+        /dhaka|delivery|courier|steadfast|pathao|checkout/i,
+      );
+    });
+
+    it("constructively answers store operating hours without triggering epistemic humility", async () => {
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        message: "What are your shop opening hours?",
+        locale: "en",
+      });
+
+      expect(res.epistemicTriggered).toBeFalsy();
+      expect(res.reply).not.toContain(EPISTEMIC_ADMISSION_EN);
+      expect(res.reply).toMatch(/open|hours|active|9:00|10:00/i);
+    });
+
+    it("refuses to answer from a single-stem match when the decisive word is uncovered (ERP)", async () => {
+      // Regression: "How to integrate ERP?" was answered from the
+      // Pathao/RedX article on the strength of "integrat*" alone while
+      // "ERP" matched nothing. A citation must cover every distinctive
+      // query word or the humility circuit engages.
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        message: "How to integrate ERP?",
+        locale: "en",
+      });
+
+      expect(res.epistemicTriggered).toBe(true);
+      expect(res.confidence).toBe("unsure");
+      expect(res.needsAgent).toBe(true);
+      expect(res.sources ?? []).toHaveLength(0);
+      expect(res.reply).toContain(EPISTEMIC_ADMISSION_EN);
+      expect(res.reply).not.toMatch(/pathao|redx/i);
+    });
+  });
+
+  describe("D1. Query coverage gate (single-stem false positives)", () => {
+    const PATHAO_TITLE =
+      "Pathao & RedX Logistics, Automated Manifests & Real-Time Tracking";
+    const PATHAO_BODY =
+      "In addition to SteadFast, Framique integrates directly with Pathao Logistics and RedX Courier APIs for automated delivery dispatch across Bangladesh.";
+
+    it("scores full coverage when every distinctive word matches", () => {
+      expect(
+        queryCoverage(
+          "What are your delivery charges?",
+          "Delivery Charges",
+          "Inside Dhaka delivery charge is 60 taka. Outside Dhaka 120 taka.",
+        ),
+      ).toBe(1);
+    });
+
+    it("scores partial coverage when the decisive word is absent", () => {
+      expect(
+        queryCoverage("How to integrate ERP?", PATHAO_TITLE, PATHAO_BODY),
+      ).toBe(0.5);
+    });
+
+    it("matches stems the same way the KB scorer does", () => {
+      expect(
+        queryCoverage("integrate couriers", PATHAO_TITLE, PATHAO_BODY),
+      ).toBe(1);
+    });
+
+    it("scores zero when nothing matches", () => {
+      expect(
+        queryCoverage("Martian currency credits", PATHAO_TITLE, PATHAO_BODY),
+      ).toBe(0);
+    });
   });
 });
 
@@ -964,5 +1073,123 @@ describe("Phase 12.5 — Bot Suppression Middleware for Human Takeover", () => {
 
   it("customerSendChatMessageFn is exported and functions properly", () => {
     expect(typeof customerSendChatMessageFn).toBe("function");
+  });
+
+  describe("Phase 12.6 — DeepWiki Synthesis Engine & RL Integration", () => {
+    it("answers complex platform queries using DeepWiki RAG with citations", async () => {
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        message:
+          "How does SteadFast courier automated dispatch and webhook sync work?",
+        locale: "en",
+        engine: "deepwiki",
+      });
+
+      expect(res.epistemicTriggered).toBeUndefined();
+      expect(res.reply).toContain("SteadFast Courier Logistics");
+      expect(res.reply).toContain("DeepWiki");
+      expect(res.deepWikiCitations).toBeDefined();
+      expect(res.deepWikiCitations!.length).toBeGreaterThan(0);
+      expect(res.deepWikiQueryId).toBeDefined();
+      expect(res.confidence).toBe("grounded");
+    });
+
+    it("reinforces DeepWiki edge weights when customer rates a conversation with 5 stars", async () => {
+      const convId = "conv-deepwiki-feedback-test";
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        conversationId: convId,
+        message:
+          "Tell me about bKash direct tokenized checkout and zero transaction commission",
+        locale: "en",
+        engine: "deepwiki",
+      });
+
+      expect(res.deepWikiQueryId).toBeDefined();
+
+      const ratingResult = await rateConversation(
+        convId,
+        5,
+        "Excellent information!",
+      );
+      expect(ratingResult.ok).toBe(true);
+      expect(ratingResult.rating).toBe(5);
+    });
+  });
+
+  describe("Phase 12.7 — Customer Identity & Mail Notifications via askSupport", () => {
+    it("accepts customerName and customerEmail and completes turn with email notifications dispatched", async () => {
+      const convId = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        conversationId: convId,
+        customerName: "Ayesha Rahman",
+        customerEmail: "ayesha@example.com",
+        phone: "01712345678",
+        orderNumber: "ORD-9988",
+        message: "When will my dress be delivered?",
+        locale: "en",
+      });
+
+      expect(res.conversationId).toBe(convId);
+      expect(res.reply).toBeDefined();
+      expect(typeof res.reply).toBe("string");
+    });
+  });
+
+  describe("Phase 12.8 — Intelligent Admin Online Transfer, Callback Routing & RL+Atropos", () => {
+    it("advises waiting for online admin transfer when operator heartbeat is active", async () => {
+      const { recordOperatorHeartbeat } =
+        await import("./support-presence.server");
+      // Record presence for demo store merchant
+      recordOperatorHeartbeat("merchant-demo-123", "op-1");
+
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        message: "What will the stock price of Apple be tomorrow?",
+        locale: "en",
+      });
+
+      expect(res.epistemicTriggered).toBe(true);
+      expect(res.adminOnline).toBe(true);
+      expect(res.staffActive).toBe(true);
+      expect(res.cta).toBe("human_transfer");
+      expect(res.reply).toContain("Support Specialist Online");
+      expect(res.reply).toContain("transfer you");
+    });
+
+    it("advises callback & email follow-up when admin is offline", async () => {
+      const { clearOperatorHeartbeatsForTest } =
+        await import("./support-presence.server");
+      clearOperatorHeartbeatsForTest();
+
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        customerEmail: "shopper@test.com",
+        message: "What will the stock price of Apple be tomorrow?",
+        locale: "en",
+      });
+
+      expect(res.epistemicTriggered).toBe(true);
+      expect(res.adminOnline).toBe(false);
+      expect(res.staffActive).toBe(false);
+      expect(res.reply).toContain("Live Support Away");
+      expect(res.reply).toContain("shopper@test.com");
+    });
+
+    it("steps Atropos RL environment and updates reward when rating with isResolved", async () => {
+      const { rateConversation } = await import("./support-agent.server");
+      const convId = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
+
+      const ratingResult = await rateConversation(
+        convId,
+        5,
+        "Fantastic support, problem was completely resolved!",
+        true,
+      );
+
+      expect(ratingResult.ok).toBe(true);
+      expect(ratingResult.rating).toBe(5);
+    });
   });
 });

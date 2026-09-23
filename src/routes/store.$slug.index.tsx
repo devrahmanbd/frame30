@@ -1,6 +1,8 @@
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
-import { StorefrontPage } from "@/components/store/StorefrontPage";
 import { StoreHomepage } from "@/components/store/StoreHomepage";
+import { StoreWelcome } from "@/components/store/StoreWelcome";
+import { PluginFooterMounts } from "@/components/store/PluginFooterMounts";
+import { PluginProvider } from "@/components/builder/PluginContext";
 
 import { buildPageHead, buildStoreHead } from "@/lib/theme-seo";
 import { fontHeadLinks } from "@/lib/theme-fonts";
@@ -195,5 +197,13 @@ function StorefrontHome() {
   if (data.homepage) {
     return <StoreHomepage home={data.homepage} slug={slug} />;
   }
-  return <StorefrontPage data={data} />;
+  // No designated homepage: every store shows the welcome plate instead
+  // of the theme index. Footer plugin widgets mount here too — themeless
+  // stores get their chat bubble on this very page.
+  return (
+    <PluginProvider plugins={data.installedPlugins ?? []}>
+      <StoreWelcome slug={slug} name={data.merchant.name} custom={false} />
+      <PluginFooterMounts />
+    </PluginProvider>
+  );
 }

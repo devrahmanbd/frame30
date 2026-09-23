@@ -156,12 +156,7 @@ export async function loadAnalytics(
       .slice(0, 8);
   }
 
-  const pct = (now_: number, before: number) =>
-    before === 0
-      ? now_ > 0
-        ? 100
-        : 0
-      : Math.round(((now_ - before) / before) * 1000) / 10;
+
 
   return {
     range,
@@ -178,13 +173,20 @@ export async function loadAnalytics(
       refundedCount,
     },
     deltas: {
-      revenuePct: pct(revenueMinorInt, prevRevenueMinorInt),
-      ordersPct: pct(orderCount, prevOrderCount),
+      revenuePct: deltaPct(revenueMinorInt, prevRevenueMinorInt),
+      ordersPct: deltaPct(orderCount, prevOrderCount),
     },
     series,
     byMethod,
     topProducts,
   };
+}
+
+/** Percent change with an honest zero baseline: activity from nothing is
+ *  not "+100%", it is new — callers render it as such instead. */
+export function deltaPct(now_: number, before: number): number | null {
+  if (before === 0) return now_ > 0 ? null : 0;
+  return Math.round(((now_ - before) / before) * 1000) / 10;
 }
 
 export type AnalyticsSnapshot = Awaited<ReturnType<typeof loadAnalytics>>;

@@ -41,4 +41,42 @@ describe("WidgetIsland", () => {
       'data-hydrate="interaction"',
     );
   });
+
+  it("static widgets render identical markup on the client so hydration keeps SSR DOM", () => {
+    // Live defect: dormant islands rendered dangerouslySetInnerHTML="" on the
+    // client, so hydration wiped the server markup (subbrand/trust/footer
+    // arrived empty). Static islands must emit the same markup client-side.
+    (globalThis as Record<string, unknown>)["document"] = {};
+    try {
+      const html = renderToStaticMarkup(
+        <WidgetIsland mode="static" type="trust_bar">
+          <p>server copy</p>
+        </WidgetIsland>,
+      );
+      expect(html).toContain("server copy");
+      expect(html).toContain('data-hydrate="static"');
+    } finally {
+      delete (globalThis as Record<string, unknown>)["document"];
+    }
+  });
+
+  it("interaction and visible widgets render markup on the client so hydration keeps SSR DOM", () => {
+    // Live defect: dormant interaction/visible islands rendered
+    // dangerouslySetInnerHTML="" on the client, so hydration wiped the
+    // server markup (newsletter/faq/size-guide arrived empty until touch).
+    for (const mode of ["interaction", "visible"] as const) {
+      (globalThis as Record<string, unknown>)["document"] = {};
+      try {
+        const html = renderToStaticMarkup(
+          <WidgetIsland mode={mode} type="newsletter">
+            <p>server copy</p>
+          </WidgetIsland>,
+        );
+        expect(html).toContain("server copy");
+        expect(html).toContain(`data-hydrate="${mode}"`);
+      } finally {
+        delete (globalThis as Record<string, unknown>)["document"];
+      }
+    }
+  });
 });

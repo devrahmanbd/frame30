@@ -86,6 +86,7 @@ function CartPage() {
       ast={data.ast}
       tokens={data.tokens}
       siteKit={data.siteKit}
+      installedPlugins={data.installedPlugins}
       chrome={
         <>
           <StoreHeader slug={slug} name={merchant.name} menus={data.menus} />

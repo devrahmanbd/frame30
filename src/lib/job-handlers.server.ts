@@ -20,6 +20,34 @@ export const JOB_HANDLERS: Record<string, JobHandler> = {
     return applyIndexOps(job.merchantId, ops);
   },
 
+  "plugin.hook.deliver": async (job: ClaimedJob) => {
+    const { deliverQueuedHook } = await import("./plugin-hooks.server");
+    return deliverQueuedHook(job.payload);
+  },
+
+  "plugin.purge": async (job: ClaimedJob) => {
+    const { purgePluginJob } = await import("./plugin-lifecycle.server");
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    return purgePluginJob(supabaseAdmin as never, {
+      merchantId: String(job.payload["merchantId"] ?? job.merchantId ?? ""),
+      pluginId: String(job.payload["pluginId"] ?? ""),
+      installId: String(job.payload["installId"] ?? ""),
+      actorId: (job.payload["actorId"] as string | null) ?? null,
+    });
+  },
+
+  "plugins.supervise": async (job: ClaimedJob) => {
+    const { syncSidecars } = await import("./plugin-sidecar.server");
+    // Fire per merchant seen in the job payload; skip when none is given.
+    const merchantId =
+      job.merchantId ?? (job.payload["merchantId"] as string | undefined);
+    if (!merchantId) return { ok: true, skipped: true };
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    return syncSidecars(supabaseAdmin as never, merchantId);
+  },
+
   "maintenance.noop": async () => ({ ok: true }),
 
   "maintenance.reclaim": async () => {
@@ -35,4 +63,5 @@ export const WORKER_QUEUES = [
   "notifications",
   "exports",
   "maintenance",
+  "plugins",
 ] as const;

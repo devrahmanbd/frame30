@@ -30,6 +30,7 @@ import { CHROME_WIDGETS } from "./chrome";
 import { PDP_WIDGETS } from "./pdp";
 import { COLLECTION_WIDGETS } from "./collection";
 import { CART_WIDGETS } from "./cart";
+import { ACCOUNT_WIDGETS } from "./account";
 import { MERCH_WIDGETS, cardVariantOf } from "./merch";
 import { APPAREL_WIDGETS } from "./apparel";
 import { BEAUTY_WIDGETS } from "./beauty";
@@ -891,6 +892,8 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   ...COLLECTION_WIDGETS,
   // Phase 2.5 — cart / checkout / account.
   ...CART_WIDGETS,
+  // Account template (shopper-scoped): orders_list, profile_card.
+  ...ACCOUNT_WIDGETS,
   // Phase 2.6 — Atelier (apparel).
   ...APPAREL_WIDGETS,
   // Phase 9 — Heritage (clothing).
@@ -1141,6 +1144,7 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
           id={`nl-${section.id}`}
           name="email"
           type="email"
+          autoComplete="email"
           required
           className="min-w-[16rem] flex-1 rounded-fq-md border border-border px-3 py-2 text-sm"
           placeholder="you@example.com"

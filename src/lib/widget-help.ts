@@ -594,6 +594,14 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
     en: "A timeline or trunk of heritage stories with images and dates.",
     bn: "ইমেজ ও তারিখসহ ঐতিহ্যবাহী গল্পের টাইমলাইন বা ট্রাঙ্ক।",
   },
+  orders_list: {
+    en: "Signed-in shopper's order history with status and totals.",
+    bn: "অবস্থা ও মোট মূল্যসহ সাইন-ইন করা ক্রেতার অর্ডার ইতিহাস।",
+  },
+  profile_card: {
+    en: "Signed-in shopper's name and contact details.",
+    bn: "সাইন-ইন করা ক্রেতার নাম ও যোগাযোগের তথ্য।",
+  },
 };
 
 /** Exact prop-key hints. Keys are catalog `Field.key`s. */
@@ -645,6 +653,14 @@ export const PROP_HINTS: Record<string, BiText> = {
   radius: {
     en: "Corner rounding, from the theme radius scale.",
     bn: "কোণের গোলাকৃতি — থিমের রেডিয়াস স্কেল থেকে।",
+  },
+  atmosphere: {
+    en: "Hero wash tinted from the theme brand. None removes it entirely.",
+    bn: "থিম ব্র্যান্ড থেকে হিরো ওয়াশ — None দিলে পুরোপুরি সরে যায়।",
+  },
+  surface: {
+    en: "Banner surface: flat card or elevated theme-tinted glass.",
+    bn: "ব্যানার সারফেস — ফ্ল্যাট কার্ড বা থিম-টিন্টেড গ্লাস।",
   },
   border: { en: "Outline around the widget.", bn: "উইজেটের চারপাশে বর্ডার।" },
   shadow: {

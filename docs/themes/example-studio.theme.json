@@ -1,0 +1,79 @@
+{
+  "api": "^3.0.0",
+  "category": "fashion",
+  "key": "example-studio",
+  "nameBn": "এক্সাম্পল স্টুডিও",
+  "nameEn": "Example Studio",
+  "sortOrder": 50,
+  "summaryBn": "একটি সাধারণ স্টুডিও থিম: হিরো ক্যারোজেল, প্রোডাক্ট রেল ও নিউজলেটার ফুটার।",
+  "summaryEn": "A minimal studio theme: hero carousel, product rail, newsletter footer.",
+  "templates": {
+    "index": {
+      "footer": [
+        {
+          "id": "studio-news-1",
+          "props": {
+            "body": "Offers and new arrivals by email. Unsubscribe any time.",
+            "body_bn": "ইমেইলে অফার ও নতুন পণ্যের খবর। যেকোনো সময় আনসাবস্ক্রাইব করুন।",
+            "buttonLabel": "Subscribe",
+            "buttonLabel_bn": "সাবস্ক্রাইব করুন",
+            "consentText": "By subscribing you agree to receive marketing email.",
+            "consentText_bn": "সাবস্ক্রাইব করে আপনি মার্কেটিং ইমেইল পেতে সম্মত হচ্ছেন।",
+            "heading": "Stay in touch",
+            "heading_bn": "যোগাযোগে থাকুন"
+          },
+          "type": "newsletter"
+        }
+      ],
+      "header": [],
+      "main": [
+        {
+          "id": "studio-hero-1",
+          "props": {
+            "autoAdvanceMs": 5000,
+            "slides": [
+              {
+                "caption": "Winter capsule 01",
+                "caption_bn": "শীতকালীন ক্যাপসুল ০১",
+                "ctaLabel": "Shop new in",
+                "ctaUrl": "#new",
+                "headline": "New season tailoring",
+                "headline_bn": "নতুন সিজনের টেইলরিং",
+                "image": "/images/studio-slide-1.jpg",
+                "subhead": "Hand-finished jackets and staples, cut for Dhaka weather.",
+                "subhead_bn": "ঢাকার আবহাওয়ার জন্য তৈরি হাতে-সেলাই জ্যাকেট ও বেসিক পোশাক।"
+              },
+              {
+                "caption": "Gifting edit",
+                "caption_bn": "গিফট এডিট",
+                "ctaLabel": "Browse gifts",
+                "ctaUrl": "#gifts",
+                "headline": "Festive edits, ready to gift",
+                "headline_bn": "উৎসবের কালেকশন, উপহারের জন্য প্রস্তুত",
+                "image": "/images/studio-slide-2.jpg",
+                "subhead": "Wrapping included on every order this month.",
+                "subhead_bn": "এই মাসে প্রতিটি অর্ডারে গিফট র‍্যাপিং ফ্রি।"
+              }
+            ]
+          },
+          "type": "hero_carousel"
+        },
+        {
+          "id": "studio-rail-1",
+          "props": {
+            "heading": "Trending now",
+            "heading_bn": "এখন জনপ্রিয়",
+            "limit": 8,
+            "promise": "Cash on delivery nationwide",
+            "promise_bn": "সারাদেশে ক্যাশ অন ডেলিভারি",
+            "showRating": false,
+            "source": "bestsellers"
+          },
+          "type": "product_rail"
+        }
+      ]
+    }
+  },
+  "tokens": {},
+  "version": "1.0.0"
+}

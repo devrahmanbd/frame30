@@ -25,6 +25,39 @@ verify on production; push to GitHub.
 - D7 two agents share clone + server: coordinate deploy windows, verify
   HEAD + bundle markers post-deploy, never reset shared history.
 
+## Swarm review integration (`2f87586`, deployed + verified)
+- 3-agent swarm (correctness, perf, test-gaps) returned actionable
+  findings; applied after verification (1 agent claim refuted: twin
+  already rendered nodes): container recursion + hidden gating,
+  verified+bound preview tokens (junk token now 404s live), seller
+  mine-flag through filter, atomic activation flip, no-double-H1.
+- 48/48 tests (new: containers, hidden, null-key-active, mine-flag).
+  Perf findings queued (uncached loadStorefront, variant double-read,
+  menus, bundle weight, serial tails, TTL matrix) — not yet built.
+
+## WP-parity loop (operator order, Sept 22)
+- Rules: /loop dev (batch ≤5, progress.md state, tests/lint/build) +
+  /loop testfix (verify, max 3 failures); github push + pull + mem0
+  after each finished task. WordPress wp-admin (maxwilliam.shop) is
+  the reference implementation.
+- [x] Batch 1 — blog archive: demo-imported articles invisible
+  ("No articles yet" with live URLs) because import RPC stamped
+  status without published_at. Fixed in
+  20260922130000_import_posts_published_at.sql (RPC stamps now() +
+  backfill), applied live, archive lists all 3. Import tests 13/13.
+- [ ] Category deep-check (surface present: /c/* live 200, admin
+  route exists — needs user to pinpoint the exact gap).
+- [x] Collection 404 batch (`39ae95b`, deployed): demo re-imports
+  left all 8 collections unpublished (default false, writer never
+  stamps) while sitemap/links advertised them. Republished live
+  (UPDATE 8, /c/* 200) + import path now publishes catalog slugs.
+  Import tests 13/13. Sitemap self-heals (filters unpublished).
+- [ ] Permalink custom patterns live-proving (code + contract solid,
+  Flame still on defaults; custom-pattern switch is SEO-sensitive).
+- [ ] Theme creation test suite (WP Theme-Check style gate for
+  community buildup) + customization coverage audit.
+- [ ] Plugin system rebuild (config/control/management per report).
+
 ## TODO queue (loop works top-down)
 - [x] Theme parity 1: slices A/B/C/D (84 widgets, `4153d77`, 304 tests).
 - [x] Theme parity 2: final 4 (add_to_cart, rewards_club, wedding_shop,
@@ -75,6 +108,16 @@ verify on production; push to GitHub.
 - [ ] Dashboard LCP: head-import diet + per-language i18n split.
 - [ ] `.e2e/playwright.config.ts` harness (e2e-critical passes by design).
 - [ ] Retire `/dashboard/builder` after editor testing (explicit user call).
+- [ ] WP-parity program (operator order; loop-driven, push/pull + mem0 per task):
+  - [ ] Full checkup vs WordPress (themes + plugins + customizer + SDK).
+  - [ ] Theme creation test for community buildup (WP Theme-Check style gate).
+  - [ ] Customization in merchant hands (customizer coverage per theme area).
+  - [ ] Proper theme SDK (integration + customization APIs).
+  - [ ] Plugin system rebuild: config system, control, management (all
+    currently broken/missing) + plugin SDK + plugin review gate.
+  - [ ] Loop discipline: /loop dev (batch 5, progress.md state, tests/
+    lint/build) + /loop testfix (verify, max 3 failures); github push,
+    pull, mem0 after each finished task.
 - [ ] Homepage-as-page program (operator decision: homepage is a real
   editable page at `/`, theme shows visuals, builder edits).
   Data flow (verified): builder edits Studio v2 docs in
@@ -173,6 +216,13 @@ verify on production; push to GitHub.
 - Deploy lesson: deploy script's silent fetch can build stale code
   (19:44 build lacked the filter); re-deploy fixed. Verify-after-
   deploy is mandatory, not optional.
+- Disk-full incident #2 (Sept 22): postgres crash-loop again, 100%
+  full. WAL unprunable (base + chain needed); freed 6.5G via
+  regenerable uv package cache (tools re-download). DBs healthy.
+  containerd grew 17G/h earlier (QBX image pulls?) — watch, not ours
+  to delete. My deploy attempt correctly refused (lock held by
+  heritage-loop); their deploy finished, preview live verified
+  (70KB, 16 prices, heritage content).
 - [x] Curated two-theme offer (`f5f0a36` + `2b07c60`): Appearance grid
   + catalogue + marketplace listCatalog all filtered to Supershop +
   Clothing Heritage via VISIBLE_THEME_KEYS; active theme exempt.

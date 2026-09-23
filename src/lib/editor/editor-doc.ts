@@ -13,7 +13,13 @@ import type {
   EditorKind,
   Visibility,
 } from "@/lib/content-desk";
-import { BODY_LIMITS, bodyStats, parseBody, type Block } from "@/lib/blog-body";
+import {
+  BODY_LIMITS,
+  bodyStats,
+  blocksToText,
+  parseBody,
+  type Block,
+} from "@/lib/blog-body";
 import { isBuilderBody } from "@/lib/page-builder";
 import { markdownToBlocks } from "./page-markdown";
 import {
@@ -22,6 +28,8 @@ import {
   type EntitySeo,
 } from "@/lib/seo/seo-meta";
 import { readStudioBody } from "@/lib/studio/model";
+import { isStudioBody } from "@/lib/studio/model";
+import type { StudioDoc, StudioNode } from "@/lib/studio/model";
 
 export type { ContentKind, ContentStatus, EditorKind, Visibility };
 
@@ -102,9 +110,12 @@ export type EditorDoc = {
   format: PostFormat;
   featuredImage: string;
   showInNav: boolean;
-  /** Posts: term ids. */
+  /** Posts: category term ids. */
   categories: string[];
+  /** Posts: free-text tags, stored on the `articles.tags` column. */
   tags: string[];
+  /** Posts: taxonomy tag term ids (`blog_terms` kind=`tag`), synced via `article_terms`. */
+  taxonomyTags: string[];
   seo: {
     metaTitle: string;
     metaDescription: string;
@@ -143,6 +154,7 @@ export function emptyEditorDoc(kind: ContentKind): EditorDoc {
     showInNav: false,
     categories: [],
     tags: [],
+    taxonomyTags: [],
     seo: {
       metaTitle: "",
       metaDescription: "",
@@ -378,7 +390,7 @@ export function prePublishChecks(
       bn: `এসইও স্কোর ${extras.seoScore} / ১০০`,
     });
   }
-  if (isBuilderBody(doc.body)) {
+  if (isBuilderStoredBody(doc.body)) {
     checks.push({
       id: "lints",
       ok: extras.builderLints === 0,
@@ -403,6 +415,153 @@ export function prePublishChecks(
     });
   }
   return checks;
+}
+
+/* ------------------------------------------------------- studio lints --- */
+
+/**
+ * One builder-canvas warning for the pre-publish panel. Warn-only by
+ * construction: `prePublishChecks` renders lints at `warn`, so a half-filled
+ * canvas can never block a save — it only shows up as a suggestion.
+ */
+export type StudioLint = {
+  /** Studio node id, or `"empty"` for the empty-canvas case. */
+  id: string;
+  en: string;
+  bn: string;
+};
+
+function lintText(value: unknown): string {
+  if (typeof value === "string") return value.trim();
+  if (typeof value === "number" && Number.isFinite(value))
+    return String(value);
+  return "";
+}
+
+const EMPTY_CONTAINER_ELS = new Set(["container", "grid", "columns"]);
+const EMPTY_TEXT_ELS = new Set(["heading", "text", "text-editor"]);
+
+/**
+ * Walk a studio document and flag what renders as a placeholder: empty
+ * containers, imageless images, linkless videos, blank headings/text, empty
+ * buttons and empty HTML blocks. Unknown element ids (including future
+ * `plugin:*` widgets) are skipped on purpose — the plugin track owns their
+ * renderer cases, and a lint here must never fight it.
+ */
+export function studioLints(doc: StudioDoc | null | undefined): StudioLint[] {
+  if (!doc) return [];
+  if (doc.root.length === 0) {
+    return [
+      {
+        id: "empty",
+        en: "Canvas is empty — add a container to start.",
+        bn: "ক্যানভাস খালি — শুরু করতে একটি কনটেইনার যোগ করুন।",
+      },
+    ];
+  }
+  const out: StudioLint[] = [];
+  const walk = (nodes: StudioNode[]): void => {
+    for (const node of nodes) {
+      const s = node.settings ?? {};
+      const label = node.name ?? node.el;
+      if (EMPTY_CONTAINER_ELS.has(node.el)) {
+        if (!node.children || node.children.length === 0) {
+          out.push({
+            id: node.id,
+            en: `“${label}” is empty — drag a widget inside or delete it.`,
+            bn: `“${label}” খালি — ভেতরে একটি উইজেট টানুন বা মুছে দিন।`,
+          });
+        }
+      } else if (node.el === "image") {
+        // `src` is the legacy v1 key kept verbatim by the v1→v2 upgrade;
+        // either one means the widget actually has a picture.
+        if (!lintText(s.url ?? s.src)) {
+          out.push({
+            id: node.id,
+            en: "An image has no source — pick one or delete the widget.",
+            bn: "একটি ছবির উৎস নেই — ছবি বেছে নিন বা উইজেট মুছে দিন।",
+          });
+        }
+      } else if (node.el === "video") {
+        if (!lintText(s.url)) {
+          out.push({
+            id: node.id,
+            en: "A video has no link — paste one or delete the widget.",
+            bn: "একটি ভিডিওর লিঙ্ক নেই — লিঙ্ক দিন বা উইজেট মুছে দিন।",
+          });
+        }
+      } else if (node.el === "html") {
+        if (!lintText(s.html)) {
+          out.push({
+            id: node.id,
+            en: "A custom HTML block is empty.",
+            bn: "একটি কাস্টম HTML ব্লক খালি।",
+          });
+        }
+      } else if (node.el === "button") {
+        if (!lintText(s.label)) {
+          out.push({
+            id: node.id,
+            en: "A button has no label.",
+            bn: "একটি বোতামের লেবেল নেই।",
+          });
+        }
+      } else if (EMPTY_TEXT_ELS.has(node.el)) {
+        if (!lintText(s.text)) {
+          out.push({
+            id: node.id,
+            en: `A ${node.el === "heading" ? "heading" : "text block"} is empty.`,
+            bn:
+              node.el === "heading"
+                ? "একটি শিরোনাম খালি।"
+                : "একটি লেখার ব্লক খালি।",
+          });
+        }
+      }
+      if (node.children && node.children.length > 0) walk(node.children);
+    }
+  };
+  walk(doc.root);
+  return out;
+}
+
+/**
+ * Stored-body builder check. `isBuilderBody` guards parsed `BuilderDoc`
+ * objects, but `EditorDoc.body` is a string — a studio marker or v1 JSON —
+ * so the pre-publish gate needs this string-aware version. Without it the
+ * "lints" row below never renders for real builder documents.
+ */
+export function isBuilderStoredBody(
+  body: string | null | undefined,
+): boolean {
+  if (!body) return false;
+  if (isStudioBody(body)) return true;
+  try {
+    return isBuilderBody(JSON.parse(body));
+  } catch {
+    return false;
+  }
+}
+
+/** Warning count for an already-parsed studio document. */
+export function countStudioLints(doc: StudioDoc | null | undefined): number {
+  return studioLints(doc).length;
+}
+
+/**
+ * Warning count for a stored body. Non-builder bodies (classic markdown or
+ * block markup) have no canvas to lint, so they count zero.
+ */
+export function countBuilderLints(
+  body: string | null | undefined,
+  title?: string,
+): number {
+  if (!isBuilderStoredBody(body)) return 0;
+  try {
+    return countStudioLints(readStudioBody(body, title));
+  } catch {
+    return 0;
+  }
 }
 
 export function canProceed(checks: PrePublishCheck[]): boolean {
@@ -635,10 +794,11 @@ export function parentOptions(
 /* ------------------------------------------------------- wipeout guard -- */
 
 /**
- * Refuse to persist an empty builder canvas over a loaded document that had
- * content. Stale tabs, failed parses and race writes must degrade to a
- * visible error — never to silent data loss. Only pages in builder mode are
- * covered; classic bodies and posts are compared by the normal dirty check.
+ * Refuse to persist a blanked body over a loaded document that had content.
+ * Stale tabs, failed parses and race writes must degrade to a visible error
+ * — never to silent data loss. Builder canvases (pages and posts) compare
+ * the studio root; classic post markup compares the extracted text so
+ * `<p></p>` counts as blank. Classic pages stay on the normal dirty check.
  */
 export function isWipeoutSave(
   kind: ContentKind,
@@ -646,10 +806,15 @@ export function isWipeoutSave(
   baselineBody: string | null | undefined,
   nextBody: string,
 ): boolean {
-  if (kind !== "page" || editor !== "builder") return false;
   if (!baselineBody) return false;
-  const before = readStudioBody(baselineBody);
-  if (!before || before.root.length === 0) return false;
-  const after = readStudioBody(nextBody);
-  return !after || after.root.length === 0;
+  if (editor === "builder") {
+    if (kind !== "page" && kind !== "post") return false;
+    const before = readStudioBody(baselineBody);
+    if (!before || before.root.length === 0) return false;
+    const after = readStudioBody(nextBody);
+    return !after || after.root.length === 0;
+  }
+  if (kind !== "post") return false;
+  if (!blocksToText(parseBody(baselineBody)).trim()) return false;
+  return !blocksToText(parseBody(nextBody)).trim();
 }

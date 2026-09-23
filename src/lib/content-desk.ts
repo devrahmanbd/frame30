@@ -15,6 +15,7 @@ export const CONTENT_STATUSES = [
   "pending",
   "scheduled",
   "private",
+  "archived",
   "trash",
 ] as const;
 export type ContentStatus = (typeof CONTENT_STATUSES)[number];
@@ -57,6 +58,7 @@ export const STATUS_LABEL: Record<
   pending: { en: "Pending", bn: "অপেক্ষমাণ" },
   scheduled: { en: "Scheduled", bn: "নির্ধারিত" },
   private: { en: "Private", bn: "ব্যক্তিগত" },
+  archived: { en: "Archived", bn: "আর্কাইভ" },
   trash: { en: "Trash", bn: "ট্র্যাশ" },
 };
 
@@ -68,6 +70,7 @@ export const STATUS_SUFFIX: Record<ContentStatus, { en: string; bn: string }> =
     pending: { en: "Pending review", bn: "পর্যালোচনা বাকি" },
     scheduled: { en: "Scheduled", bn: "নির্ধারিত" },
     private: { en: "Private", bn: "ব্যক্তিগত" },
+    archived: { en: "Archived", bn: "আর্কাইভ" },
     trash: { en: "Trash", bn: "ট্র্যাশ" },
   };
 

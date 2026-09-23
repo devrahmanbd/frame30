@@ -217,7 +217,7 @@ export async function loadStoreCollection(
       ? db
           .from("products")
           .select(
-            "id, title, slug, description, image_url, product_variants(id, name, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)",
+            "id, title, slug, description, image_url",
           )
           .eq("merchant_id", merchant.id)
           .eq("status", "active")
@@ -327,6 +327,35 @@ export async function loadStorefront(
   slug: string,
   preview: StorefrontPreview = null,
 ) {
+  // Perf batch: the homepage costs ~13 DB round trips. Cache the whole
+  // payload under the tenant prefix (purgeStorefront clears it on
+  // publish/install/import). Preview drafts are private — never cached.
+  // The one extra merchant lookup per call replaces thirteen on a hit.
+  if (!preview) {
+    const db = publicClient();
+    const { data: merchant } = await db
+      .from("merchants")
+      .select("id")
+      .eq("slug", slug)
+      .eq("status", "active")
+      .maybeSingle();
+    if (!merchant) return null;
+    const { cached } = await import("./cache.server");
+    const { tenantCachePrefix } = await import("./storefront-cache");
+    return cached(
+      `${tenantCachePrefix(merchant.id)}index`,
+      60,
+      () => loadStorefrontUncached(slug, null),
+      { shared: true, staleSeconds: 300 },
+    );
+  }
+  return loadStorefrontUncached(slug, preview);
+}
+
+async function loadStorefrontUncached(
+  slug: string,
+  preview: StorefrontPreview = null,
+) {
   const db = publicClient();
   const { data: merchant, error } = await db
     .from("merchants")
@@ -354,7 +383,7 @@ export async function loadStorefront(
     db
       .from("products")
       .select(
-        "id, title, slug, description, image_url, category_id, product_variants(id, name, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)",
+        "id, title, slug, description, image_url, category_id",
       )
       .eq("merchant_id", merchant.id)
       .eq("status", "active")
@@ -419,10 +448,17 @@ export async function loadStorefront(
     import("./menus/menu.server").then((m) => m.loadStoreMenus(merchant.id)),
   ]);
 
-  let resolvedProducts = mergePublicVariants(
-    products ?? [],
-    await fetchPublicVariants((products ?? []).map((p) => p.id)),
-  );
+  // Perf batch: variant rows and homepage slug are independent — fetch
+  // together instead of serially.
+  const [variantRows, homepageSlug] = await Promise.all([
+    fetchPublicVariants((products ?? []).map((p) => p.id)),
+    resolveHomepageSlug(
+      db,
+      merchant.id,
+      (settings as { setup_steps?: unknown } | null)?.setup_steps,
+    ),
+  ]);
+  let resolvedProducts = mergePublicVariants(products ?? [], variantRows);
   let resolvedCategories = categories ?? [];
   let resolvedCollections = collections ?? [];
 
@@ -432,7 +468,7 @@ export async function loadStorefront(
     resolvedCollections.length === 0
   ) {
     const { demoCatalogFor } = await import("./demo-catalog");
-    const demo = demoCatalogFor(theme?.themeKey ?? "clothing-heritage");
+    const demo = demoCatalogFor(theme?.themeKey ?? "bazaar");
     if (resolvedProducts.length === 0) {
       resolvedProducts = demo.products.map((dp, idx) => ({
         id: `demo-${dp.slug}`,
@@ -467,15 +503,9 @@ export async function loadStorefront(
     }
   }
 
-  // CMS-designated homepage: a published page the merchant chose in the
-  // Pages list. Anything else (unset, draft, trashed, deleted) falls back
-  // to the theme index template below — never a broken `/`.
-  const homepageSlug = await resolveHomepageSlug(
-    db,
-    merchant.id,
-    (settings as { setup_steps?: unknown } | null)?.setup_steps,
-  );
-
+  // CMS-designated homepage: resolved alongside variants above. Unset,
+  // draft, trashed or deleted falls back to the theme index template
+  // below — never a broken `/`.
   return {
     merchant,
     seo,
@@ -544,7 +574,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
   const { data: product } = await db
     .from("products")
     .select(
-      "id, title, slug, description, image_url, product_variants(id, name, sku, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)",
+      "id, title, slug, description, image_url",
     )
     .eq("merchant_id", merchant.id)
     .eq("slug", productSlug)

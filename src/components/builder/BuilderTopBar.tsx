@@ -239,7 +239,7 @@ export function BuilderTopBar({
       role="toolbar"
       aria-label={t("Builder toolbar", "বিল্ডার টুলবার")}
     >
-      {/* LEFT SECTION: Brand, Theme Title, Template Selector */}
+      {/* LEFT SECTION: Brand, Storefront Title, Template Selector */}
       <div className="flex items-center gap-2.5 shrink-0">
         <div className="flex items-center gap-2">
           <div className="flex size-7 items-center justify-center rounded-fq-md bg-primary text-primary-foreground font-bold shadow-xs">
@@ -248,7 +248,7 @@ export function BuilderTopBar({
           <div className="hidden flex-col sm:flex">
             <div className="flex items-center gap-1.5">
               <span className="font-bangla-display text-xs font-semibold tracking-tight">
-                {t("Theme Studio", "থিম স্টুডিও")}
+                {t("Builder Studio", "বিল্ডার স্টুডিও")}
               </span>
               <span className="text-[10px] text-muted-foreground">/</span>
               <span className="max-w-[130px] truncate text-xs font-medium text-foreground">

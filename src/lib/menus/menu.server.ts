@@ -126,10 +126,22 @@ export async function listMenus(
  * render as the fallback.
  */
 export async function loadStoreMenus(merchantId: string): Promise<StoreMenus> {
+  // Perf batch: 2 sequential queries on every storefront view/cart/search/
+  // page. Cached under the tenant prefix so purgeStorefront("menus") clears
+  // it on write; never throws (degrades to empty menus as before).
   try {
-    const { publicClient } = await import("../pricing.server");
-    const menus = await listMenus(publicClient(), merchantId);
-    return shapeStoreMenus(menus);
+    const { cached } = await import("../cache.server");
+    const { tenantCachePrefix } = await import("../storefront-cache");
+    return await cached(
+      `${tenantCachePrefix(merchantId)}menus`,
+      120,
+      async () => {
+        const { publicClient } = await import("../pricing.server");
+        const menus = await listMenus(publicClient(), merchantId);
+        return shapeStoreMenus(menus);
+      },
+      { shared: true, staleSeconds: 300 },
+    );
   } catch {
     return EMPTY_STORE_MENUS;
   }

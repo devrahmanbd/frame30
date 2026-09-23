@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import {
   DOMAIN_STAGES,
   statusTone,
@@ -14,11 +14,14 @@ import {
  */
 
 const toneClass: Record<DomainTone, string> = {
-  neutral: "border-border bg-muted text-muted-foreground",
-  info: "border-info bg-info-soft text-info-strong",
-  success: "border-success bg-success-soft text-success-strong",
-  warning: "border-warning bg-warning-soft text-warning-strong",
-  danger: "border-destructive bg-destructive/10 text-destructive",
+  neutral:
+    "border-border bg-muted text-foreground",
+  info: "border-info/40 bg-info-soft text-info-foreground font-medium",
+  success:
+    "border-success/40 bg-success-soft text-success-foreground font-medium",
+  warning:
+    "border-warning/50 bg-warning-soft text-warning-foreground font-medium",
+  danger: "border-danger/40 bg-danger-soft text-danger-foreground font-medium",
 };
 
 export function DomainStatusPill({
@@ -30,7 +33,7 @@ export function DomainStatusPill({
 }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${toneClass[statusTone(status)]}`}
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold shadow-2xs ${toneClass[statusTone(status)]}`}
     >
       {label}
     </span>
@@ -57,21 +60,24 @@ export function DomainProgress({
           <li key={stage.key} className="flex items-center gap-2">
             <span
               aria-current={current ? "step" : undefined}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs ${
+              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors ${
                 current
-                  ? "border-primary bg-primary/10 font-medium text-primary"
+                  ? "border-primary bg-primary/10 font-semibold text-primary shadow-xs"
                   : done
-                    ? "border-success bg-success-soft text-success-strong"
+                    ? "border-emerald-400/80 bg-emerald-50 text-emerald-800 dark:border-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-200"
                     : "border-border bg-muted text-muted-foreground"
               }`}
             >
-              <span aria-hidden className="text-[10px]">
+              <span aria-hidden className="text-[10px] font-bold">
                 {done && !current ? "✓" : i + 1}
               </span>
               {labels[stage.key] ?? stage.key}
             </span>
             {i < DOMAIN_STAGES.length - 1 && (
-              <span aria-hidden className="h-px w-4 bg-border" />
+              <span
+                aria-hidden
+                className="h-0.5 w-4 rounded-full bg-border"
+              />
             )}
           </li>
         );
@@ -94,44 +100,51 @@ export function DnsRecordTable({
     optional: string;
   };
 }) {
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+
   return (
-    <div className="overflow-x-auto rounded-fq-md border border-border">
+    <div className="overflow-x-auto rounded-fq-md border border-border/80 bg-card shadow-xs">
       <table className="w-full min-w-[34rem] text-left text-sm">
-        <thead className="bg-muted/50 text-xs uppercase text-muted-foreground">
+        <thead className="border-b border-border/80 bg-muted text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           <tr>
-            <th className="px-3 py-2">{labels.type}</th>
-            <th className="px-3 py-2">{labels.name}</th>
-            <th className="px-3 py-2">{labels.value}</th>
-            <th className="px-3 py-2" />
+            <th className="px-3.5 py-2.5">{labels.type}</th>
+            <th className="px-3.5 py-2.5">{labels.name}</th>
+            <th className="px-3.5 py-2.5">{labels.value}</th>
+            <th className="px-3.5 py-2.5 text-right w-24" />
           </tr>
         </thead>
-        <tbody>
-          {records.map((r) => (
+        <tbody className="divide-y divide-border/60">
+          {records.map((r, i) => (
             <tr
               key={`${r.type}-${r.value}`}
-              className="border-t border-border align-top"
+              className="align-top transition-colors hover:bg-muted/40"
             >
-              <td className="px-3 py-2 font-mono text-xs">
+              <td className="px-3.5 py-2.5 font-mono text-xs font-semibold text-foreground">
                 {r.type}
                 {!r.required && (
-                  <span className="ml-1 text-[10px] text-muted-foreground">
+                  <span className="ml-1 font-sans text-[11px] font-normal text-muted-foreground">
                     ({labels.optional})
                   </span>
                 )}
               </td>
-              <td className="break-all px-3 py-2 font-mono text-xs">
+              <td className="break-all px-3.5 py-2.5 font-mono text-xs text-foreground select-all">
                 {r.name}
               </td>
-              <td className="break-all px-3 py-2 font-mono text-xs">
+              <td className="break-all px-3.5 py-2.5 font-mono text-xs text-foreground select-all">
                 {r.value}
               </td>
-              <td className="px-3 py-2 text-right">
+              <td className="px-3.5 py-2.5 text-right">
                 <button
                   type="button"
-                  className="min-h-8 rounded-fq-md border border-border px-2 text-xs"
-                  onClick={() => navigator.clipboard.writeText(r.value)}
+                  className="inline-flex min-h-7 items-center justify-center rounded-fq-md border border-border/80 bg-background px-2.5 text-xs font-medium text-foreground shadow-2xs transition-colors hover:bg-muted hover:border-foreground/30 active:scale-95"
+                  onClick={() => {
+                    void navigator.clipboard.writeText(r.value).then(() => {
+                      setCopiedIndex(i);
+                      setTimeout(() => setCopiedIndex(null), 1500);
+                    });
+                  }}
                 >
-                  {labels.copy}
+                  {copiedIndex === i ? "✓ Copied" : labels.copy}
                 </button>
               </td>
             </tr>
@@ -165,7 +178,7 @@ export function CertBadge({
       : ` · ${Math.max(health.daysLeft, 0)}${labels["days"] ?? "d"}`;
   return (
     <span
-      className={`inline-flex rounded-full border px-2 py-0.5 text-xs ${toneClass[tone]}`}
+      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold shadow-2xs ${toneClass[tone]}`}
     >
       {labels[health.state] ?? health.state}
       {suffix}
@@ -181,9 +194,11 @@ export function InlineNote({
   children: ReactNode;
 }) {
   return (
-    <p className={`rounded-fq-md border px-3 py-2 text-xs ${toneClass[tone]}`}>
+    <div
+      className={`rounded-fq-md border px-3.5 py-2.5 text-xs leading-relaxed font-medium shadow-2xs ${toneClass[tone]}`}
+    >
       {children}
-    </p>
+    </div>
   );
 }
 
@@ -195,11 +210,12 @@ export function ObservedRecords({
   labels: { title: string; none: string };
 }) {
   return (
-    <div className="space-y-1 text-xs text-muted-foreground">
-      <p className="font-medium text-foreground">{labels.title}</p>
+    <div className="space-y-1.5 text-xs text-muted-foreground">
+      <p className="font-semibold text-foreground">{labels.title}</p>
       {observed.map((o) => (
-        <p key={o.type} className="break-all font-mono">
-          {o.type}: {o.values.length ? o.values.join(", ") : labels.none}
+        <p key={o.type} className="break-all font-mono text-foreground/90">
+          <span className="font-semibold text-foreground">{o.type}:</span>{" "}
+          {o.values.length ? o.values.join(", ") : labels.none}
         </p>
       ))}
     </div>

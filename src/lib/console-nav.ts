@@ -377,14 +377,14 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         en: "Installed Plugins",
         bn: "ইনস্টল করা প্লাগইন",
         icon: "infra",
-        permission: "themes.read",
+        permission: "plugins.read",
       },
       {
         to: "/dashboard/plugins/new",
         en: "Add New",
         bn: "নতুন প্লাগইন",
         icon: "marketplace",
-        permission: "themes.read",
+        permission: "plugins.read",
       },
     ],
   },
@@ -396,8 +396,7 @@ export const ADMIN_NAV: readonly NavGroup[] = [
     to: "/dashboard/marketplace",
     items: [
       {
-        to: "/dashboard/marketplace",
-        search: { tab: "theme" },
+        to: "/dashboard/content/themes",
         en: "Themes",
         bn: "থিম",
         icon: "marketplace",

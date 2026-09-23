@@ -34,7 +34,7 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
     manifest: {
       id: "whatsapp-chat",
       name: "WhatsApp Quick Chat",
-      version: "1.1.0",
+      version: "1.2.0",
       api: "^3.0.0",
       permissions: ["render_storefront"],
       widgets: [
@@ -42,7 +42,36 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
           key: "chat_bubble",
           label: "WhatsApp Chat Bubble",
           slots: ["footer"],
-          entry: "framique.mount(document.createElement('div'))",
+          entry: `(function () {
+  function mount(s) {
+    var phone = String(s.phone_number || "").replace(/[^0-9]/g, "");
+    if (!phone) return;
+    var greet = String(s.greeting_message || "Hello!");
+    var left = s.button_position === "bottom-left";
+    var a = document.createElement("a");
+    a.setAttribute("href", "https://wa.me/" + phone + "?text=" + encodeURIComponent(greet));
+    a.setAttribute("target", "_blank");
+    a.setAttribute("rel", "noopener");
+    a.setAttribute("aria-label", "Chat on WhatsApp");
+    a.style.position = "fixed";
+    a.style.bottom = "20px";
+    if (left) { a.style.left = "20px"; } else { a.style.right = "20px"; }
+    a.style.zIndex = "2147483000";
+    a.style.width = "56px";
+    a.style.height = "56px";
+    a.style.borderRadius = "50%";
+    a.style.background = "#25D366";
+    a.style.display = "flex";
+    a.style.alignItems = "center";
+    a.style.justifyContent = "center";
+    a.style.boxShadow = "0 4px 14px rgba(0,0,0,.25)";
+    a.innerHTML = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 3C6.5 3 2 7 2 12c0 1.6.5 3.1 1.3 4.4L2 21l4.7-1.2c1.2.7 2.7 1.1 4.3 1.1 5.5 0 10-4 10-9s-4.5-9-10-9z" fill="#fff"/><circle cx="8.5" cy="12" r="1.2" fill="#25D366"/><circle cx="12" cy="12" r="1.2" fill="#25D366"/><circle cx="15.5" cy="12" r="1.2" fill="#25D366"/></svg>';
+    framique.mount(a);
+  }
+  try {
+    framique.call("plugin.settings", {}).then(function (s) { mount(s || {}); }, function () {});
+  } catch (e) {}
+})();`,
           height: 80,
         },
       ],

@@ -9,7 +9,6 @@
 import { useMemo } from "react";
 import { ShoppingBag, Search, Star, Sparkles } from "lucide-react";
 import { screenshotPlate, themeInitials } from "@/lib/themes/appearance";
-import { presetByKey } from "@/lib/theme-presets";
 import { cn } from "@/lib/utils";
 
 export function ThemeScreenshot({
@@ -27,16 +26,10 @@ export function ThemeScreenshot({
   dim?: boolean;
 }) {
   const plate = useMemo(() => screenshotPlate(seed), [seed]);
-  const preset = useMemo(
-    () =>
-      presetByKey(seed) ?? presetByKey(name.toLowerCase().replace(/\s+/g, "-")),
-    [seed, name],
-  );
-
-  const brandColor = preset?.tokens.brand ?? plate.from;
-  const accentColor = preset?.tokens.accent ?? plate.to;
-  const surfaceColor = preset?.tokens.surface ?? "#ffffff";
-  const inkColor = preset?.tokens.ink ?? "#18181b";
+  const brandColor = plate.from;
+  const accentColor = plate.to;
+  const surfaceColor = "#ffffff";
+  const inkColor = "#18181b";
 
   return (
     <div
@@ -120,14 +113,13 @@ export function ThemeScreenshot({
                 style={{ backgroundColor: brandColor }}
               >
                 <Sparkles className="size-2" />
-                {preset?.category ? `${preset.category}` : "New collection"}
+                "New collection"
               </span>
               <h3 className="line-clamp-1 text-[13px] font-bold tracking-tight text-foreground">
-                {preset?.nameBn ? `${preset.nameEn}` : name}
+                {name}
               </h3>
               <p className="line-clamp-1 text-[9px] text-muted-foreground">
-                {preset?.summaryEn ??
-                  "Minimalist commerce aesthetics for modern brands."}
+                "Minimalist commerce aesthetics for modern brands."
               </p>
               <div className="pt-1">
                 <span

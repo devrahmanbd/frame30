@@ -148,14 +148,11 @@ export const builderPresetSwapFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z.object({ key: z.string().max(60), templates: tree }).parse(d),
   )
-  .handler(async ({ data, context }) => {
-    const { previewPresetSwap } = await import("./themes.server");
-    const merchantId = await scope(context.supabase, context.userId);
-    return previewPresetSwap(
-      context.supabase,
-      merchantId,
-      data.key,
-      data.templates,
+  .handler(async () => {
+    const { BuilderError } = await import("./themes.server");
+    throw new BuilderError(
+      "builder.registry_removed",
+      "Theme presets were removed",
     );
   });
 

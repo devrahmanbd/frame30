@@ -100,15 +100,21 @@ export type RevisionSummary = {
   authorId: string | null;
 };
 
-function statusOf(
+export function statusOf(
   raw: string | null | undefined,
   published: boolean,
 ): ContentStatus {
   const s = (raw ?? "") as ContentStatus;
   if (
-    ["published", "draft", "pending", "scheduled", "private", "trash"].includes(
-      s,
-    )
+    [
+      "published",
+      "draft",
+      "pending",
+      "scheduled",
+      "private",
+      "archived",
+      "trash",
+    ].includes(s)
   )
     return s;
   return published ? "published" : "draft";
@@ -153,10 +159,11 @@ function pageToDoc(row: any): EditorDoc {
   };
 }
 
-function articleToDoc(
+export function articleToDoc(
   row: any,
   categories: string[],
   tags: string[],
+  taxonomyTags: string[],
 ): EditorDoc {
   return {
     ...emptyEditorDoc("post"),
@@ -186,6 +193,7 @@ function articleToDoc(
     featuredImage: row.cover_image_url ?? "",
     categories,
     tags,
+    taxonomyTags,
     seo: {
       metaTitle: row.meta_title ?? "",
       metaDescription: row.meta_description ?? "",
@@ -196,6 +204,21 @@ function articleToDoc(
     updatedAt: row.updated_at ?? null,
     createdAt: row.created_at ?? null,
   };
+}
+
+/** Split `article_terms` rows into category ids vs taxonomy-tag ids. Join misses land with categories, as before. */
+export function splitTermAssignment(
+  assigned:
+    | { term_id: string; blog_terms?: { kind?: string } | null }[]
+    | null
+    | undefined,
+): { categories: string[]; taxonomyTags: string[] } {
+  const categories: string[] = [];
+  const taxonomyTags: string[] = [];
+  for (const a of assigned ?? []) {
+    (a.blog_terms?.kind === "tag" ? taxonomyTags : categories).push(a.term_id);
+  }
+  return { categories, taxonomyTags };
 }
 
 export async function loadEditor(
@@ -269,16 +292,19 @@ export async function loadEditor(
         .select("term_id, blog_terms(kind)")
         .eq("merchant_id", merchantId)
         .eq("article_id", id);
-      const categories: string[] = [];
-      const tags: string[] = [];
-      for (const a of (assigned ?? []) as any[]) {
-        (a.blog_terms?.kind === "tag" ? tags : categories).push(a.term_id);
-      }
-      // Tags: taxonomy tags when the term tables exist, else the free-text `tags[]` column.
+      const { categories, taxonomyTags } = splitTermAssignment(
+        (assigned ?? []) as {
+          term_id: string;
+          blog_terms?: { kind?: string } | null;
+        }[],
+      );
+      // `tags` stays the free-text `tags[]` column; taxonomy tags live in
+      // `taxonomyTags` so term ids never render as chips or overwrite the column.
       doc = articleToDoc(
         row,
         categories,
-        tags.length ? tags : ((row.tags ?? []) as string[]),
+        (row.tags ?? []) as string[],
+        taxonomyTags,
       );
     }
     revisions = await listRevisions(db, merchantId, kind, id);
@@ -680,7 +706,10 @@ export async function saveEditor(
       });
     }
     if (!autosave && doc.kind === "post")
-      await syncTerms(db, merchantId, doc.id, doc.categories);
+      await syncTerms(db, merchantId, doc.id, [
+        ...doc.categories,
+        ...doc.taxonomyTags,
+      ]);
 
     incr("framique_editor_save_total", { kind: doc.kind, mode });
     return {
@@ -727,7 +756,10 @@ export async function saveEditor(
   if (error) throw new Error(error.message);
   const id = (data as { id: string }).id;
   if (!autosave && doc.kind === "post")
-    await syncTerms(db, merchantId, id, doc.categories);
+    await syncTerms(db, merchantId, id, [
+      ...doc.categories,
+      ...doc.taxonomyTags,
+    ]);
   incr("framique_editor_save_total", {
     kind: doc.kind,
     mode: autosave ? "autosave-create" : "create",
@@ -744,7 +776,7 @@ export async function saveEditor(
   };
 }
 
-/** Category links live in `article_terms`; missing taxonomy tables degrade to a warning, never a failed save. */
+/** Category and taxonomy-tag links live in `article_terms`; missing taxonomy tables degrade to a warning, never a failed save. Categories come first so index 0 stays the primary. */
 async function syncTerms(
   db: Client,
   merchantId: string,

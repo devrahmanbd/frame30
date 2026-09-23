@@ -18,7 +18,6 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogDotatomRouteImport } from './routes/blog[.]atom'
 import { Route as BlogDotjsonRouteImport } from './routes/blog[.]json'
 import { Route as BlogDotxmlRouteImport } from './routes/blog[.]xml'
-import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -78,7 +77,6 @@ import { Route as RootTenantsRouteImport } from './routes/root/tenants'
 import { Route as RootTrialRouteImport } from './routes/root/trial'
 import { Route as RootUsersRouteImport } from './routes/root/users'
 import { Route as SitemapsKindRouteImport } from './routes/sitemaps.$kind'
-import { Route as ThemePreviewKeyRouteImport } from './routes/theme-preview.$key'
 import { Route as DotwellKnownAcmeChallengeTokenRouteImport } from './routes/[.]well-known.acme-challenge.$token'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedDashboardActivityRouteImport } from './routes/_authenticated/dashboard/activity'
@@ -265,11 +263,6 @@ const BlogDotjsonRoute = BlogDotjsonRouteImport.update({
 const BlogDotxmlRoute = BlogDotxmlRouteImport.update({
   id: '/blog.xml',
   path: '/blog.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BuilderRoute = BuilderRouteImport.update({
-  id: '/builder',
-  path: '/builder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -565,11 +558,6 @@ const RootUsersRoute = RootUsersRouteImport.update({
 const SitemapsKindRoute = SitemapsKindRouteImport.update({
   id: '/sitemaps/$kind',
   path: '/sitemaps/$kind',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ThemePreviewKeyRoute = ThemePreviewKeyRouteImport.update({
-  id: '/theme-preview/$key',
-  path: '/theme-preview/$key',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DotwellKnownAcmeChallengeTokenRoute =
@@ -1395,7 +1383,6 @@ export interface FileRoutesByFullPath {
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
   '/blog.xml': typeof BlogDotxmlRoute
-  '/builder': typeof BuilderRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
@@ -1451,7 +1438,6 @@ export interface FileRoutesByFullPath {
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
   '/sitemaps/$kind': typeof SitemapsKindRoute
-  '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog/': typeof BlogIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/legal/': typeof LegalIndexRoute
@@ -1609,7 +1595,6 @@ export interface FileRoutesByTo {
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
   '/blog.xml': typeof BlogDotxmlRoute
-  '/builder': typeof BuilderRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
@@ -1663,7 +1648,6 @@ export interface FileRoutesByTo {
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
   '/sitemaps/$kind': typeof SitemapsKindRoute
-  '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog': typeof BlogIndexRoute
   '/docs': typeof DocsIndexRoute
   '/legal': typeof LegalIndexRoute
@@ -1823,7 +1807,6 @@ export interface FileRoutesById {
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
   '/blog.xml': typeof BlogDotxmlRoute
-  '/builder': typeof BuilderRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
@@ -1879,7 +1862,6 @@ export interface FileRoutesById {
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
   '/sitemaps/$kind': typeof SitemapsKindRoute
-  '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog/': typeof BlogIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/legal/': typeof LegalIndexRoute
@@ -2039,7 +2021,6 @@ export interface FileRouteTypes {
     | '/blog.atom'
     | '/blog.json'
     | '/blog.xml'
-    | '/builder'
     | '/cart'
     | '/checkout'
     | '/contact'
@@ -2095,7 +2076,6 @@ export interface FileRouteTypes {
     | '/root/trial'
     | '/root/users'
     | '/sitemaps/$kind'
-    | '/theme-preview/$key'
     | '/blog/'
     | '/docs/'
     | '/legal/'
@@ -2253,7 +2233,6 @@ export interface FileRouteTypes {
     | '/blog.atom'
     | '/blog.json'
     | '/blog.xml'
-    | '/builder'
     | '/cart'
     | '/checkout'
     | '/contact'
@@ -2307,7 +2286,6 @@ export interface FileRouteTypes {
     | '/root/trial'
     | '/root/users'
     | '/sitemaps/$kind'
-    | '/theme-preview/$key'
     | '/blog'
     | '/docs'
     | '/legal'
@@ -2466,7 +2444,6 @@ export interface FileRouteTypes {
     | '/blog.atom'
     | '/blog.json'
     | '/blog.xml'
-    | '/builder'
     | '/cart'
     | '/checkout'
     | '/contact'
@@ -2522,7 +2499,6 @@ export interface FileRouteTypes {
     | '/root/trial'
     | '/root/users'
     | '/sitemaps/$kind'
-    | '/theme-preview/$key'
     | '/blog/'
     | '/docs/'
     | '/legal/'
@@ -2682,7 +2658,6 @@ export interface RootRouteChildren {
   BlogDotatomRoute: typeof BlogDotatomRoute
   BlogDotjsonRoute: typeof BlogDotjsonRoute
   BlogDotxmlRoute: typeof BlogDotxmlRoute
-  BuilderRoute: typeof BuilderRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
@@ -2714,7 +2689,6 @@ export interface RootRouteChildren {
   PagesPageSlugRoute: typeof PagesPageSlugRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   SitemapsKindRoute: typeof SitemapsKindRoute
-  ThemePreviewKeyRoute: typeof ThemePreviewKeyRoute
   BlogIndexRoute: typeof BlogIndexRoute
   DocsIndexRoute: typeof DocsIndexRoute
   LegalIndexRoute: typeof LegalIndexRoute
@@ -2844,13 +2818,6 @@ declare module '@tanstack/react-router' {
       path: '/blog.xml'
       fullPath: '/blog.xml'
       preLoaderRoute: typeof BlogDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/builder': {
-      id: '/builder'
-      path: '/builder'
-      fullPath: '/builder'
-      preLoaderRoute: typeof BuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -3264,13 +3231,6 @@ declare module '@tanstack/react-router' {
       path: '/sitemaps/$kind'
       fullPath: '/sitemaps/$kind'
       preLoaderRoute: typeof SitemapsKindRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/theme-preview/$key': {
-      id: '/theme-preview/$key'
-      path: '/theme-preview/$key'
-      fullPath: '/theme-preview/$key'
-      preLoaderRoute: typeof ThemePreviewKeyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.well-known/acme-challenge/$token': {
@@ -4596,7 +4556,6 @@ const rootRouteChildren: RootRouteChildren = {
   BlogDotatomRoute: BlogDotatomRoute,
   BlogDotjsonRoute: BlogDotjsonRoute,
   BlogDotxmlRoute: BlogDotxmlRoute,
-  BuilderRoute: BuilderRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
@@ -4628,7 +4587,6 @@ const rootRouteChildren: RootRouteChildren = {
   PagesPageSlugRoute: PagesPageSlugRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   SitemapsKindRoute: SitemapsKindRoute,
-  ThemePreviewKeyRoute: ThemePreviewKeyRoute,
   BlogIndexRoute: BlogIndexRoute,
   DocsIndexRoute: DocsIndexRoute,
   LegalIndexRoute: LegalIndexRoute,

@@ -1,12 +1,46 @@
 import { describe, expect, it } from "vitest";
 import {
   defaultPageSettings,
+  emptyStudioDoc,
+  isMenuBoundWidget,
+  isStudioSlot,
+  menuBindingOf,
+  normalizeStudioSlot,
+  renderStudioHtml,
+  resolveMenuItems,
+  resolveStudioSlots,
+  slotOfNode,
+  staticMenuItems,
+  studioDocFromSlots,
+  studioSlots,
+  withSlot,
   parseStudioBody,
   sectionsToStudioNodes,
   serializeStudioBody,
   studioNodesToSections,
 } from "./model";
-import type { StudioDoc } from "./model";
+import type { StudioDoc, StudioNode } from "./model";
+import {
+  asStudioPlacement,
+  detachStudioPlacement,
+  linkedStudioBlockId,
+  linkedStudioRevision,
+  placementOwnerOf,
+  resolveStudioDoc,
+  resolveStudioGlobalBlocks,
+  studioPlacementCounts,
+  studioPlacementsOf,
+  studioSelectionOwnerOf,
+  type StudioGlobalBlock,
+} from "@/lib/global-blocks";
+import {
+  isSlot,
+  isTemplateKey,
+  normalizeSlot,
+  slotSections,
+  templateSlotSections,
+  themeAstFromSlotMap,
+} from "@/lib/builder-ast";
 
 function doc(): StudioDoc {
   return {
@@ -453,5 +487,231 @@ describe("spec_table scalar-to-items migration", () => {
     );
     const settings = parsed?.root[0]?.settings as Record<string, unknown>;
     expect(settings.items).toEqual([{ group: "", label: "New?", value: "" }]);
+  });
+});
+
+describe("studio slots (header / main / footer)", () => {
+  const node = (id: string, slot?: StudioNode["slot"]): StudioNode => ({
+    id,
+    el: "heading",
+    settings: { text: id },
+    ...(slot ? { slot } : {}),
+  });
+
+  it("defaults everything to main", () => {
+    expect(slotOfNode(node("a"))).toBe("main");
+    expect(normalizeStudioSlot("bogus")).toBe("main");
+    expect(normalizeStudioSlot(undefined)).toBe("main");
+    expect(isStudioSlot("header")).toBe(true);
+    expect(isStudioSlot("side")).toBe(false);
+    const slots = studioSlots(doc());
+    expect(slots.main.map((n) => n.id)).toEqual(["c1"]);
+    expect(slots.header).toEqual([]);
+    expect(slots.footer).toEqual([]);
+  });
+
+  it("partitions root nodes that carry a slot (ast[slot] semantics)", () => {
+    const tagged: StudioDoc = {
+      version: 2,
+      root: [node("h", "header"), node("m"), node("f", "footer")],
+      page: defaultPageSettings(),
+    };
+    const slots = studioSlots(tagged);
+    expect(slots.header.map((n) => n.id)).toEqual(["h"]);
+    expect(slots.main.map((n) => n.id)).toEqual(["m"]);
+    expect(slots.footer.map((n) => n.id)).toEqual(["f"]);
+    expect(withSlot(node("x"), "footer").slot).toBe("footer");
+  });
+
+  it("round-trips header/footer without touching legacy single-root docs", () => {
+    const legacy = parseStudioBody(serializeStudioBody(doc()));
+    expect(legacy?.header).toBeUndefined();
+    expect(legacy?.footer).toBeUndefined();
+    // Legacy render output is unchanged (main only, header/footer empty).
+    expect(renderStudioHtml(doc())).toContain("Click");
+
+    const withChrome: StudioDoc = studioDocFromSlots(
+      { header: [node("h")], main: doc().root, footer: [node("f")] },
+      defaultPageSettings(),
+    );
+    const parsed = parseStudioBody(serializeStudioBody(withChrome));
+    expect(parsed?.header?.map((n) => n.id)).toEqual(["h"]);
+    expect(parsed?.root.map((n) => n.id)).toEqual(["c1"]);
+    expect(parsed?.footer?.map((n) => n.id)).toEqual(["f"]);
+    // Slot tags survive the wire.
+    const tagged = parseStudioBody(
+      serializeStudioBody({
+        version: 2,
+        root: [node("h", "header")],
+        page: defaultPageSettings(),
+      }),
+    );
+    expect(tagged?.root[0]?.slot).toBe("header");
+  });
+
+  it("resolves theme chrome over page overrides", () => {
+    const page: StudioDoc = studioDocFromSlots(
+      { header: [node("page-h")], main: [node("m")], footer: [node("page-f")] },
+      defaultPageSettings(),
+    );
+    expect(resolveStudioSlots(page, null).main.map((n) => n.id)).toEqual([
+      "m",
+    ]);
+    const theme: StudioDoc = studioDocFromSlots(
+      { header: [node("theme-h")], main: [], footer: [node("theme-f")] },
+      defaultPageSettings(),
+    );
+    const resolved = resolveStudioSlots(page, theme);
+    expect(resolved.header.map((n) => n.id)).toEqual(["theme-h"]);
+    expect(resolved.main.map((n) => n.id)).toEqual(["m"]);
+    expect(resolved.footer.map((n) => n.id)).toEqual(["theme-f"]);
+    // Empty theme chrome falls back to the page override.
+    const bareTheme = emptyStudioDoc();
+    const fallback = resolveStudioSlots(page, bareTheme);
+    expect(fallback.header.map((n) => n.id)).toEqual(["page-h"]);
+    expect(fallback.footer.map((n) => n.id)).toEqual(["page-f"]);
+  });
+
+  it("mirrors builder-ast slot / template-map helpers", () => {
+    expect(isSlot("main")).toBe(true);
+    expect(normalizeSlot("side")).toBe("main");
+    const ast = themeAstFromSlotMap({ main: [] });
+    expect(ast.header).toEqual([]);
+    expect(slotSections(ast, "header")).toEqual([]);
+    expect(isTemplateKey("page")).toBe(true);
+    expect(isTemplateKey("nope")).toBe(false);
+    expect(templateSlotSections({ index: ast }, "index", "main")).toEqual([]);
+    expect(templateSlotSections({}, "nope", "main")).toEqual([]);
+  });
+});
+
+describe("studio linked placements", () => {
+  const leaf = (id: string): StudioNode => ({
+    id,
+    el: "heading",
+    settings: { text: id },
+  });
+  const block: StudioGlobalBlock = {
+    id: "blk_1",
+    name: "Promo",
+    revision: 3,
+    updatedAt: "2026-01-01T00:00:00.000Z",
+    nodes: [leaf("b1"), leaf("b2")],
+  };
+  const placement = (): StudioNode =>
+    asStudioPlacement(
+      { id: "p1", el: "container", settings: {}, children: [leaf("kid")] },
+      block,
+    );
+
+  it("marks a placement link and drops its own children", () => {
+    const p = placement();
+    expect(linkedStudioBlockId(p)).toBe("blk_1");
+    expect(linkedStudioRevision(p)).toBe(3);
+    expect(p.children ?? []).toHaveLength(0);
+    expect(linkedStudioBlockId(leaf("plain"))).toBeNull();
+  });
+
+  it("grafts content for render without mutating the stored tree", () => {
+    const stored = [placement()];
+    const { nodes, report } = resolveStudioGlobalBlocks(stored, [block]);
+    expect(stored[0]!.children ?? []).toHaveLength(0);
+    expect(nodes[0]!.children ?? []).toHaveLength(2);
+    expect(Object.keys(report.resolved)).toHaveLength(1);
+    expect(report.missing).toHaveLength(0);
+  });
+
+  it("gives grafted nodes deterministic ids with a selection proxy", () => {
+    const p = placement();
+    const first =
+      resolveStudioGlobalBlocks([p], [block]).nodes[0]!.children![0]!.id;
+    const second =
+      resolveStudioGlobalBlocks([p], [block]).nodes[0]!.children![0]!.id;
+    expect(first).toBe(second);
+    expect(placementOwnerOf(first)).toBe(p.id);
+    expect(studioSelectionOwnerOf(first)).toBe(p.id);
+    expect(studioSelectionOwnerOf(p.id)).toBe(p.id);
+  });
+
+  it("reports missing blocks and stale revisions instead of dropping", () => {
+    const { nodes, report } = resolveStudioGlobalBlocks([placement()], []);
+    expect(nodes).toHaveLength(1);
+    expect(report.missing).toEqual(["p1"]);
+    const old = asStudioPlacement(leaf("p2"), { id: "blk_1", revision: 1 });
+    const stale = resolveStudioGlobalBlocks([old], [block]);
+    expect(stale.report.stale).toEqual(["p2"]);
+    expect(stale.nodes[0]!.children ?? []).toHaveLength(2);
+  });
+
+  it("detaches into real, independently editable nodes", () => {
+    const detached = detachStudioPlacement(placement(), block.nodes);
+    expect(linkedStudioBlockId(detached)).toBeNull();
+    expect(detached.children ?? []).toHaveLength(2);
+  });
+
+  it("counts usage and finds placements across slots", () => {
+    const other = asStudioPlacement(leaf("p3"), block);
+    expect(
+      studioPlacementCounts([[placement()], [leaf("x"), other]])["blk_1"],
+    ).toBe(2);
+    expect(studioPlacementsOf([placement(), leaf("x")], "blk_1")).toEqual([
+      "p1",
+    ]);
+    const docWithSlots: StudioDoc = studioDocFromSlots(
+      { header: [placement()], main: [leaf("m")], footer: [] },
+      defaultPageSettings(),
+    );
+    const { doc: resolved, report } = resolveStudioDoc(docWithSlots, [block]);
+    expect(resolved.header?.[0]?.children ?? []).toHaveLength(2);
+    expect(resolved.root.map((n) => n.id)).toEqual(["m"]);
+    expect(Object.keys(report.resolved)).toEqual(["p1"]);
+  });
+});
+
+describe("widget → menu binding", () => {
+  const menus = [
+    {
+      id: "menu-1",
+      handle: "header",
+      items: [
+        { label: "Home", url: "/", position: 1, parentId: null },
+        { label: "Shop", url: "/c/all", position: 0, parentId: null },
+        { label: "Child", url: "/c/sub", position: 0, parentId: "x" },
+      ],
+    },
+  ];
+  const bound = (menuId: string): StudioNode => ({
+    id: "n1",
+    el: "nav_menu",
+    settings: { menuId, items: [{ label: "Manual", href: "/manual" }] },
+  });
+
+  it("reads the binding and keeps manual items as fallback", () => {
+    expect(isMenuBoundWidget("nav_menu")).toBe(true);
+    expect(isMenuBoundWidget("mega_menu")).toBe(true);
+    expect(isMenuBoundWidget("heading")).toBe(false);
+    expect(menuBindingOf(bound("  "))).toBeNull();
+    expect(menuBindingOf(bound("menu-1"))).toBe("menu-1");
+    expect(staticMenuItems(bound("menu-1"))).toEqual([
+      { label: "Manual", href: "/manual" },
+    ]);
+  });
+
+  it("resolves bound menus for the canvas preview", () => {
+    expect(resolveMenuItems(bound(""), menus)).toBeNull();
+    expect(resolveMenuItems(bound("menu-1"), null)).toBeNull();
+    expect(resolveMenuItems(bound("missing"), menus)).toBeNull();
+    // By id, top-level only, in position order.
+    expect(resolveMenuItems(bound("menu-1"), menus)).toEqual([
+      { label: "Shop", href: "/c/all" },
+      { label: "Home", href: "/" },
+    ]);
+    // By handle too.
+    expect(
+      resolveMenuItems(bound("header"), menus)?.map((i) => i.label),
+    ).toEqual(["Shop", "Home"]);
+    // A bound-but-empty menu resolves to [] (not the manual fallback).
+    const empty = [{ id: "e", items: [] as never[] }];
+    expect(resolveMenuItems(bound("e"), empty)).toEqual([]);
   });
 });
