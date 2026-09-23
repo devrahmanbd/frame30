@@ -76,6 +76,7 @@ import { Route as RootTenancyRouteImport } from './routes/root/tenancy'
 import { Route as RootTenantsRouteImport } from './routes/root/tenants'
 import { Route as RootTrialRouteImport } from './routes/root/trial'
 import { Route as RootUsersRouteImport } from './routes/root/users'
+import { Route as SitemapsKindRouteImport } from './routes/sitemaps.$kind'
 import { Route as DotwellKnownAcmeChallengeTokenRouteImport } from './routes/[.]well-known.acme-challenge.$token'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedDashboardActivityRouteImport } from './routes/_authenticated/dashboard/activity'
@@ -553,6 +554,11 @@ const RootUsersRoute = RootUsersRouteImport.update({
   id: '/users',
   path: '/users',
   getParentRoute: () => RootRoute,
+} as any)
+const SitemapsKindRoute = SitemapsKindRouteImport.update({
+  id: '/sitemaps/$kind',
+  path: '/sitemaps/$kind',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DotwellKnownAcmeChallengeTokenRoute =
   DotwellKnownAcmeChallengeTokenRouteImport.update({
@@ -1431,6 +1437,7 @@ export interface FileRoutesByFullPath {
   '/root/tenants': typeof RootTenantsRoute
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
+  '/sitemaps/$kind': typeof SitemapsKindRoute
   '/blog/': typeof BlogIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/legal/': typeof LegalIndexRoute
@@ -1640,6 +1647,7 @@ export interface FileRoutesByTo {
   '/root/tenants': typeof RootTenantsRoute
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
+  '/sitemaps/$kind': typeof SitemapsKindRoute
   '/blog': typeof BlogIndexRoute
   '/docs': typeof DocsIndexRoute
   '/legal': typeof LegalIndexRoute
@@ -1853,6 +1861,7 @@ export interface FileRoutesById {
   '/root/tenants': typeof RootTenantsRoute
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
+  '/sitemaps/$kind': typeof SitemapsKindRoute
   '/blog/': typeof BlogIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/legal/': typeof LegalIndexRoute
@@ -2066,6 +2075,7 @@ export interface FileRouteTypes {
     | '/root/tenants'
     | '/root/trial'
     | '/root/users'
+    | '/sitemaps/$kind'
     | '/blog/'
     | '/docs/'
     | '/legal/'
@@ -2275,6 +2285,7 @@ export interface FileRouteTypes {
     | '/root/tenants'
     | '/root/trial'
     | '/root/users'
+    | '/sitemaps/$kind'
     | '/blog'
     | '/docs'
     | '/legal'
@@ -2487,6 +2498,7 @@ export interface FileRouteTypes {
     | '/root/tenants'
     | '/root/trial'
     | '/root/users'
+    | '/sitemaps/$kind'
     | '/blog/'
     | '/docs/'
     | '/legal/'
@@ -2676,6 +2688,7 @@ export interface RootRouteChildren {
   PProductSlugRoute: typeof PProductSlugRoute
   PagesPageSlugRoute: typeof PagesPageSlugRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
+  SitemapsKindRoute: typeof SitemapsKindRoute
   BlogIndexRoute: typeof BlogIndexRoute
   DocsIndexRoute: typeof DocsIndexRoute
   LegalIndexRoute: typeof LegalIndexRoute
@@ -3212,6 +3225,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/root/users'
       preLoaderRoute: typeof RootUsersRouteImport
       parentRoute: typeof RootRoute
+    }
+    '/sitemaps/$kind': {
+      id: '/sitemaps/$kind'
+      path: '/sitemaps/$kind'
+      fullPath: '/sitemaps/$kind'
+      preLoaderRoute: typeof SitemapsKindRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/.well-known/acme-challenge/$token': {
       id: '/.well-known/acme-challenge/$token'
@@ -4566,6 +4586,7 @@ const rootRouteChildren: RootRouteChildren = {
   PProductSlugRoute: PProductSlugRoute,
   PagesPageSlugRoute: PagesPageSlugRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
+  SitemapsKindRoute: SitemapsKindRoute,
   BlogIndexRoute: BlogIndexRoute,
   DocsIndexRoute: DocsIndexRoute,
   LegalIndexRoute: LegalIndexRoute,

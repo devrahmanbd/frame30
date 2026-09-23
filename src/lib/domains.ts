@@ -192,8 +192,14 @@ export const DOMAIN_TRANSITIONS: Record<DomainStatus, DomainStatus[]> = {
   pending_dns: ["verifying", "disabled", "failed"],
   verifying: ["dns_verified", "pending_dns", "failed", "disabled"],
   dns_verified: ["issuing_cert", "verifying", "failed", "disabled"],
-  issuing_cert: ["active", "failed", "dns_verified", "disabled"],
-  active: ["verifying", "failed", "disabled"],
+  // issuing_cert -> verifying allows stuck re-poll without edge: when
+  // DOMAIN_EDGE_HOOK_URL is unset the domain parks in issuing_cert and the
+  // sweep must be able to send it back through verifying on DNS drift.
+  issuing_cert: ["active", "failed", "dns_verified", "disabled", "verifying"],
+  // active -> issuing_cert is the certificate-renewal edge: expiring certs
+  // (cert_status issued, expires within 30d) re-request via transition(),
+  // never via a raw cert_status write. See sweepDomains renewal loop.
+  active: ["verifying", "failed", "disabled", "issuing_cert"],
   failed: ["verifying", "pending_dns", "disabled"],
   disabled: ["pending_dns"],
 };

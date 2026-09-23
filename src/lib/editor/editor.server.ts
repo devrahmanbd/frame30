@@ -16,6 +16,11 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { normalizeBody, parseBody, validateBody } from "@/lib/blog-body";
 import { isBuilderBody } from "@/lib/page-builder";
+import {
+  buildPermalink,
+  DEFAULT_PERMALINKS,
+  type PermalinkSettings,
+} from "@/lib/permalink";
 import { analyseSeo } from "@/lib/seo-analysis";
 import { parseEntitySeo, robotsContent } from "@/lib/seo/seo-meta";
 import { incr, log } from "@/lib/observability.server";
@@ -375,6 +380,41 @@ function plainText(kind: ContentKind, body: string): string {
     .join(" ");
 }
 
+/** Best-effort primary-category slug for %category% article patterns. */
+async function primaryCategorySlug(
+  db: Client,
+  merchantId: string,
+  termIds: string[],
+): Promise<string | null> {
+  const first = termIds[0];
+  if (!first) return null;
+  try {
+    const { data } = await loose(db)
+      .from("blog_terms")
+      .select("slug")
+      .eq("merchant_id", merchantId)
+      .eq("id", first)
+      .maybeSingle();
+    return (data?.slug as string | null) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Render-path permalink settings; defaults keep the save alive on outage. */
+async function editorPermalinkSettings(
+  db: Client,
+  merchantId: string,
+): Promise<PermalinkSettings> {
+  try {
+    const { permalinkSettingsFor } = await import("@/lib/permalink.server");
+    return await permalinkSettingsFor(db, merchantId);
+  } catch {
+    log("warn", "editor.permalink_fallback", { merchant_id: merchantId });
+    return DEFAULT_PERMALINKS;
+  }
+}
+
 async function slugTaken(
   db: Client,
   merchantId: string,
@@ -515,6 +555,14 @@ export async function saveEditor(
   if (status === "trash") status = "draft";
 
   const now = new Date().toISOString();
+  // The SEO scorer's keyword-in-URL check must see the merchant's live URL,
+  // not the default shape — otherwise a custom base always "fails" the check.
+  const permalinkSettings = await editorPermalinkSettings(db, merchantId);
+  const categorySlug =
+    doc.kind === "post" &&
+    permalinkSettings.articlePattern.includes("%category%")
+      ? await primaryCategorySlug(db, merchantId, doc.categories)
+      : null;
   const extendedSeo = parseEntitySeo(doc.seoExtended);
   const robots = robotsContent(extendedSeo).toLowerCase();
   const seoScore = analyseSeo({
@@ -527,7 +575,12 @@ export async function saveEditor(
     focusKeyword: extendedSeo.focusKeywords[0] ?? "",
     faq: extendedSeo.schema.faq,
     content: plainText(doc.kind, body),
-    url: doc.kind === "page" ? `/pages/${slug}` : `/blog/${slug}`,
+    url: buildPermalink(permalinkSettings, {
+      kind: doc.kind === "page" ? "page" : "article",
+      slug,
+      date: doc.publishedAt ?? null,
+      category: categorySlug,
+    }),
     fallbackTitle: doc.title,
     fallbackDescription: doc.excerpt,
   }).score;
@@ -644,7 +697,13 @@ export async function saveEditor(
       before.slug !== slug &&
       before.status === "published"
     ) {
-      await recordRedirect(db, merchantId, doc.kind, before.slug, slug);
+      await recordRedirect(db, merchantId, doc.kind, before.slug, slug, {
+        date:
+          ((update as any).published_at as string | null) ??
+          (before.published_at as string | null) ??
+          null,
+        category: categorySlug,
+      });
     }
     if (!autosave && doc.kind === "post")
       await syncTerms(db, merchantId, doc.id, [
@@ -758,20 +817,31 @@ async function recordRedirect(
   kind: ContentKind,
   fromSlug: string,
   toSlug: string,
+  opts?: { date?: string | null; category?: string | null },
 ) {
-  const from = kind === "page" ? `/pages/${fromSlug}` : `/blog/${fromSlug}`;
-  const to = kind === "page" ? `/pages/${toSlug}` : `/blog/${toSlug}`;
-  const { error } = await loose(db)
-    .from("url_redirects")
-    .upsert(
-      {
-        merchant_id: merchantId,
-        from_path: from,
-        to_path: to,
-        status_code: 301,
-      },
-      { onConflict: "merchant_id,from_path" },
-    );
+  // Like `cms.server.ts`: the redirect must span the merchant's live URLs.
+  // A custom page/article base makes the default shape a URL this store never
+  // served, so the rule would never fire.
+  const settings = await editorPermalinkSettings(db, merchantId);
+  const permalinkKind = kind === "page" ? "page" : "article";
+  const entity = (slug: string) => ({
+    kind: permalinkKind as "page" | "article",
+    slug,
+    date: opts?.date ?? null,
+    category: opts?.category ?? null,
+  });
+  const from = buildPermalink(settings, entity(fromSlug));
+  const to = buildPermalink(settings, entity(toSlug));
+  if (from === to) return;
+  const { error } = await loose(db).from("url_redirects").upsert(
+    {
+      merchant_id: merchantId,
+      from_path: from,
+      to_path: to,
+      status_code: 301,
+    },
+    { onConflict: "merchant_id,from_path" },
+  );
   if (error)
     log("warn", "editor.redirect_failed", {
       merchant_id: merchantId,

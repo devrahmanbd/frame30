@@ -9,6 +9,12 @@ import { publicClient } from "./pricing.server";
 import { invalidate } from "./cache.server";
 import { renderRead } from "./render-read.server";
 import {
+  DEFAULT_PERMALINKS,
+  buildPermalink,
+  type PermalinkKind,
+  type PermalinkSettings,
+} from "./permalink";
+import {
   buildRedirectMap,
   normalizePath,
   resolveUrl,
@@ -48,14 +54,14 @@ export async function loadRedirectMap(slug: string) {
       if (!merchantId) return [];
       const { data, error } = await publicClient()
         .from("url_redirects")
-        .select("from_path, to_path, status")
+        .select("from_path, to_path, status_code")
         .eq("merchant_id", merchantId)
         .limit(5000);
       if (error) throw new Error(error.message);
       return (data ?? []).map((row) => ({
         from: row.from_path,
         to: row.to_path,
-        status: (row.status === 410 ? 410 : 301) as 301 | 410,
+        status: (row.status_code === 410 ? 410 : 301) as 301 | 410,
       }));
     },
   });
@@ -88,7 +94,7 @@ async function upsertRule(
       entity_type: entityType,
       from_path: rule.from,
       to_path: rule.to,
-      status: rule.status,
+      status_code: rule.status,
     },
     { onConflict: "merchant_id,from_path" },
   );
@@ -129,6 +135,145 @@ export async function recordTombstone(input: {
   const rule = tombstoneRule(input.basePath, input.slug);
   if (!rule) return;
   await upsertRule(input.merchantId, input.entityType, rule, input.storeSlug);
+}
+
+/**
+ * Permalink-aware slug-change rule.
+ *
+ * `recordSlugChange` takes a caller-supplied `basePath`, which is how every
+ * hardcoded `/p` and `/pages` leaked in: the caller guessed the base instead
+ * of reading it. This helper builds both ends from the merchant's live
+ * permalink settings via `buildPermalink`, so a custom base (or a dated
+ * article pattern, where the URL is more than base + slug) produces a rule
+ * that actually matches what the store serves. Settings fall back to
+ * `DEFAULT_PERMALINKS`, never to an exception.
+ *
+ * Both URL namespaces are recorded: the custom-host root path (what
+ * `url-resolve.server.ts` consults) and, when `storeSlug` is known, the
+ * `/store/<slug>`-prefixed path (what the storefront miss path consults).
+ */
+export function permalinkSlugChangePaths(
+  settings: PermalinkSettings,
+  entityType: PermalinkKind,
+  oldSlug: string,
+  newSlug: string,
+  opts?: { date?: string | null; category?: string | null },
+): { from: string; to: string } | null {
+  const entity = (slug: string) => ({
+    kind: entityType,
+    slug,
+    date: opts?.date ?? null,
+    category: opts?.category ?? null,
+  });
+  const from = buildPermalink(settings, entity(oldSlug));
+  const to = buildPermalink(settings, entity(newSlug));
+  if (!oldSlug || !newSlug || from === to) return null;
+  return { from, to };
+}
+
+export function permalinkTombstonePath(
+  settings: PermalinkSettings,
+  entityType: PermalinkKind,
+  slug: string,
+  opts?: { date?: string | null; category?: string | null },
+): string | null {
+  if (!slug) return null;
+  return buildPermalink(settings, {
+    kind: entityType,
+    slug,
+    date: opts?.date ?? null,
+    category: opts?.category ?? null,
+  });
+}
+
+/** Store-prefixed twin of a root permalink path (`/store/<slug>` + path). */
+export function storePermalinkPath(
+  storeSlug: string,
+  permalinkPath: string,
+): string {
+  return normalizePath(`/store/${storeSlug}${permalinkPath}`);
+}
+
+async function upsertPermalinkRule(
+  merchantId: string,
+  storeSlug: string | undefined,
+  entityType: string,
+  from: string,
+  to: string | null,
+  status: 301 | 410,
+) {
+  const rule: RedirectRule =
+    status === 410 ? { from, to: null, status } : { from, to: to!, status };
+  await upsertRule(merchantId, entityType, rule, storeSlug);
+  if (storeSlug) {
+    const storeFrom = storePermalinkPath(storeSlug, from);
+    const storeTo = to ? storePermalinkPath(storeSlug, to) : null;
+    // The store twin is a different source path, so it never collides with
+    // the root rule written above — one rename keeps both surfaces alive.
+    if (storeFrom !== from) {
+      const storeRule: RedirectRule =
+        status === 410
+          ? { from: storeFrom, to: null, status }
+          : { from: storeFrom, to: storeTo!, status };
+      await upsertRule(merchantId, entityType, storeRule, storeSlug);
+    }
+  }
+}
+
+/** Records the 301 a slug rename creates, resolved against live permalinks. */
+export async function recordPermalinkSlugChange(input: {
+  merchantId: string;
+  storeSlug?: string;
+  entityType: PermalinkKind;
+  settings?: PermalinkSettings | null;
+  oldSlug: string;
+  newSlug: string;
+  date?: string | null;
+  category?: string | null;
+}) {
+  const settings = input.settings ?? DEFAULT_PERMALINKS;
+  const paths = permalinkSlugChangePaths(
+    settings,
+    input.entityType,
+    input.oldSlug,
+    input.newSlug,
+    { date: input.date, category: input.category },
+  );
+  if (!paths) return;
+  await upsertPermalinkRule(
+    input.merchantId,
+    input.storeSlug,
+    input.entityType,
+    paths.from,
+    paths.to,
+    301,
+  );
+}
+
+/** Records the 410 a permanent deletion creates, resolved against live permalinks. */
+export async function recordPermalinkTombstone(input: {
+  merchantId: string;
+  storeSlug?: string;
+  entityType: PermalinkKind;
+  settings?: PermalinkSettings | null;
+  slug: string;
+  date?: string | null;
+  category?: string | null;
+}) {
+  const settings = input.settings ?? DEFAULT_PERMALINKS;
+  const path = permalinkTombstonePath(settings, input.entityType, input.slug, {
+    date: input.date,
+    category: input.category,
+  });
+  if (!path) return;
+  await upsertPermalinkRule(
+    input.merchantId,
+    input.storeSlug,
+    input.entityType,
+    path,
+    null,
+    410,
+  );
 }
 
 export { normalizePath };

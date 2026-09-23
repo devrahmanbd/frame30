@@ -310,14 +310,14 @@ function Onboarding() {
             <div>
               <h2 className="text-sm font-semibold text-foreground">
                 {t(
-                  "Connect a Custom Domain (Optional)",
-                  "কাস্টম ডোমেইন যুক্ত করুন (ঐচ্ছিক)",
+                  "Custom Domain (Settings-only, optional)",
+                  "কাস্টম ডোমেইন (শুধু সেটিংসে, ঐচ্ছিক)",
                 )}
               </h2>
               <p className="mt-1 text-xs text-muted-foreground">
                 {t(
-                  `Your storefront lives on your own custom domain — connect it here so shoppers never see a platform path URL.`,
-                  `আপনার স্টোরফ্রন্ট আপনার নিজের কাস্টম ডোমেইনে থাকে — ক্রেতারা যাতে প্ল্যাটফর্ম ঠিকানা না দেখে সেজন্য এখানেই যুক্ত করুন।`,
+                  `Your store gets 1 custom domain (1 store = 1 domain on every plan). Connect it after signup in Settings › Domains — nothing to enter here. Continue to choose your plan.`,
+                  `আপনার স্টোর ১টি কাস্টম ডোমেইন পায় (প্রতিটি প্ল্যানে ১ স্টোর = ১ ডোমেইন)। সাইনআপের পরে Settings › Domains-এ যুক্ত করুন — এখানে কিছু লিখতে হবে না। প্ল্যান বেছে নিতে এগিয়ে যান।`,
                 )}
               </p>
             </div>

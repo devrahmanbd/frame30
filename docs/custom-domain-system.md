@@ -90,7 +90,7 @@ type BillingPlanKey = "launch" | "growth" | "business" | "enterprise";
 | `nextCheckDelaySeconds` | `(attempts) → number` | Exponential backoff: 1m → 2m → 4m … capped at 6h |
 | `certHealth` | `(expiresAt, now?) → CertHealth` | Computes certificate health state + days remaining |
 | `evaluateDns` | `(input) → { ownership, routing, reason }` | Compares observed DNS with expected records |
-| `domainQuotaForPlan` | `(plan) → number` | Per-plan caps: launch=1, growth=3, business=10, enterprise=25 |
+| `domainQuotaForPlan` | `(plan) → number` | Owner policy 2026-09-19: exactly 1 per store on every plan (1 store = 1 domain) |
 
 ### State Machine Transitions
 
@@ -401,11 +401,14 @@ When a merchant adds a domain, they receive these records to configure at their 
 | Plan | Custom Domains |
 |------|----------------|
 | Launch | 1 |
-| Growth | 3 |
-| Business | 10 |
-| Enterprise | 25 |
+| Growth | 1 |
+| Business | 1 |
+| Enterprise | 1 |
 
-Quota protects Let's Encrypt rate limits. Unknown/missing subscription → launch quota (fail-closed).
+Owner policy 2026-09-19: 1 store = 1 domain on every plan. Single source is
+`domainQuotaForPlan()` (`src/lib/domains.ts`); `PLAN_DOMAIN_QUOTA`
+(`src/lib/domains.server.ts`) is derived from it. Quota protects Let's
+Encrypt rate limits. Unknown/missing subscription → launch quota (fail-closed).
 
 ---
 
