@@ -28,7 +28,7 @@ tampered client score is ignored. Checks are grouped `meta`, `social`, `indexing
 `resolveSeo(merchantId, entityType, entityId)` reads through a 60s tenant-keyed
 cache and is called from the store, product and page loaders. `buildStoreHead` /
 `buildProductHead` / `buildPageHead` treat the override as a preference, never a
-blanking tool: an empty field keeps the theme default. Canonicals and social images
+blanking tool: an empty field keeps the design default. Canonicals and social images
 must be absolute `https://` or they are discarded. FAQ answers become a `FAQPage`
 JSON-LD block (max 12 entries).
 

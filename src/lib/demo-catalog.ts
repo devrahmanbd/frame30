@@ -673,7 +673,7 @@ const BEAUTY: DemoCatalog = {
 };
 
 /** Aarong-grade heritage apparel, handloom sarees, silk panjabis and living crafts. */
-const HERITAGE_APPAREL: DemoCatalog = {
+const HANDLOOM_APPAREL: DemoCatalog = {
   categories: [
     {
       slug: "womens",
@@ -1857,7 +1857,7 @@ const GROCERY: DemoCatalog = {
   ],
 };
 
-/** supershop — flagship Daraz-grade multi-category marketplace with electronics, fashion, home, grocery & beauty. */
+/** General store — flagship multi-category marketplace with electronics, fashion, home, grocery & beauty. */
 const SUPERSHOP_CATALOG: DemoCatalog = {
   categories: [
     {
@@ -2387,17 +2387,17 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
 };
 
 export const DEMO_CATALOGS = {
-  atelier: APPAREL,
-  bazaar: MARKETPLACE,
-  circuit: ELECTRONICS,
-  "clothing-heritage": HERITAGE_APPAREL,
-  rupaboti: BEAUTY,
-  supershop: SUPERSHOP_CATALOG,
+  apparel: APPAREL,
+  marketplace: MARKETPLACE,
+  electronics: ELECTRONICS,
+  handloom: HANDLOOM_APPAREL,
+  beauty: BEAUTY,
+  general: SUPERSHOP_CATALOG,
 } as const satisfies Record<string, DemoCatalog>;
 
 export type DemoCatalogKey = keyof typeof DEMO_CATALOGS;
 
-/** Falls back to the marketplace spread for any non-blueprint theme key. */
-export function demoCatalogFor(themeKey: string): DemoCatalog {
-  return DEMO_CATALOGS[themeKey as DemoCatalogKey] ?? MARKETPLACE;
+/** Falls back to the marketplace spread for any unknown vertical key. */
+export function demoCatalogFor(verticalKey: string): DemoCatalog {
+  return DEMO_CATALOGS[verticalKey as DemoCatalogKey] ?? MARKETPLACE;
 }

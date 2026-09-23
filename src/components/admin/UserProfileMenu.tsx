@@ -428,7 +428,7 @@ export function UserProfileMenu() {
                 ) : (
                   <Sun className="size-3.5 text-amber-500" />
                 )}
-                <span>{t("Theme", "থিম")}</span>
+                <span>{t("Mode", "মোড")}</span>
               </span>
               <button
                 type="button"

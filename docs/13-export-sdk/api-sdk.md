@@ -27,7 +27,7 @@ In scope:
 - Deprecation policy and its notification surface.
 
 Out of scope (own files): HMAC/DLQ admin API tooling (`rest-api.md` §8),
-token grant machines (`oauth.md`), theme-hook extension layer (04-builder).
+token grant machines (`oauth.md`), design-hook extension layer (04-builder).
 
 ## 3. Generated patterns + version lockstep
 

@@ -1,7 +1,7 @@
 # 03 — Customer accounts (depth spec)
 
 Status: Planning · Slice S3 · Reference: `/plan.md` §3.2 (`customer accounts & segments`), §3.3 (storefront); `README.md` §Pages (`register/login (OTP email/SMS + password), address book, orders, reorder, wishlist`)
-Design baseline: `00-meta/design-system.md` (auth = AAA surface per AGENTS.md; storefront pages share theme layers)
+Design baseline: `00-meta/design-system.md` (auth = AAA surface per AGENTS.md; storefront pages share design layers)
 Reads: `checkout.md` (DD-9 consent-gated abandonment), `07-commerce/README.md` (abandoned-cart recovery, order state machine), `05-marketing` (consent consumption), `02-merchant/staff-rbac.md` (staff identity pattern, Tenant004/005)
 
 ---
@@ -173,5 +173,5 @@ Feeds `docs/15-e2e`; mirrors admin_loop/store_loop rigor (retries=2, trace on fa
 - Density: storefront-airy on hub pages (24/32/48px sections); forms compact but ≥ 44px targets; bottom-sheet on mobile for address form.
 - Motion: 240ms fade+rise page transition; OTP resend countdown ticks via `aria-live`; reduced-motion → opacity-only.
 - A11y: AAA on auth/OTP/registration/deletion (DD-12); skip-link, focus-visible rings, inline errors `aria-describedby`, `lang="bn"`.
-- Performance: LCP < 2.5s on mid Android; order history virtualized > 50 rows; images (wishlist thumbs) lazy + WebP/AVIF + aspect-ratio (CLS < 0.1); JS ≤ 100KB gz theme budget.
+- Performance: LCP < 2.5s on mid Android; order history virtualized > 50 rows; images (wishlist thumbs) lazy + WebP/AVIF + aspect-ratio (CLS < 0.1); JS ≤ 100KB gz design budget.
 - Anti-slop: distinctive — login screen shows order-token tracking path first (guest-first BD pattern), not a giant "Sign in" wall; consent hub styled like a message-thread (opt-in/out per row like SMS threads); deletion flow states exactly what is erased vs anonymized in plain Bangla; order history reuses the courier-thread timeline from 03 README guidelines.

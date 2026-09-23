@@ -782,8 +782,8 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         />
       );
 
-    // Ported from the theme engine (same props, same look): page builders
-    // get the storefront vocabulary without the theme studio.
+    // Ported from the storefront widget set (same props, same look): page builders
+    // get the storefront vocabulary without the builder studio.
     case "faq": {
       const fromItems = rows(s, "items")
         .map((row) => ({
@@ -913,7 +913,7 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       );
     }
 
-    // Heritage + hero batch ported from the theme engine: same props, same
+    // Heritage + hero batch ported from the storefront widget set: same props, same
     // look, so merchants author once and see it everywhere.
     case "heritage_story": {
       const headline = str(s, "headline");

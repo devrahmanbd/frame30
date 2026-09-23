@@ -6,14 +6,14 @@ import {
   lintTemplate,
   newSection,
   type Breakpoint,
+  type BuilderAst,
+  type BuilderTemplates,
+  type BuilderTokens,
   type PropValue,
   type Section,
   type SectionType,
   type Slot,
   type TemplateKey,
-  type ThemeAst,
-  type ThemeTemplates,
-  type ThemeTokens,
 } from "@/lib/builder-ast";
 import type { VisibilityRule } from "@/lib/visibility";
 import {
@@ -29,11 +29,11 @@ import {
   type DropPosition,
 } from "@/lib/builder-tree";
 
-export type EditorDoc = { templates: ThemeTemplates; tokens: ThemeTokens };
+export type EditorDoc = { templates: BuilderTemplates; tokens: BuilderTokens };
 
 const HISTORY_LIMIT = 50;
 
-function cloneAst(ast: ThemeAst): ThemeAst {
+function cloneAst(ast: BuilderAst): BuilderAst {
   return {
     header: [...ast.header],
     main: [...ast.main],
@@ -69,7 +69,7 @@ export function useBuilderEditor(
   const revision = useRef(opts.revision);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Adopt the server snapshot once it arrives (or when the theme changes).
+  // Adopt the server snapshot once it arrives (or when the workspace changes).
   useEffect(() => {
     if (!initial) return;
     setDoc((current) => current ?? initial);
@@ -365,7 +365,7 @@ export function useBuilderEditor(
           return next;
         });
       },
-      setTokens(patch: Partial<ThemeTokens>) {
+      setTokens(patch: Partial<BuilderTokens>) {
         commit((current) => ({
           ...current,
           tokens: { ...current.tokens, ...patch },

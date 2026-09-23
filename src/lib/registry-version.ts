@@ -8,7 +8,6 @@
  * single descriptor the admin registry view and the docs read from.
  */
 import { BUILDER_API_VERSION, satisfiesApiRange } from "./plugin-manifest";
-import { THEME_PRESETS } from "./theme-presets";
 
 export { BUILDER_API_VERSION };
 
@@ -65,11 +64,11 @@ export function registryVersionInfo() {
   return {
     builderApi: BUILDER_API_VERSION,
     presetApiRange: PRESET_API_RANGE,
-    presets: THEME_PRESETS.map((preset) => ({
-      key: preset.key,
-      version: preset.version,
-      api: preset.api ?? PRESET_API_RANGE,
-      compatible: isCompatiblePackage(preset.api ?? PRESET_API_RANGE),
-    })),
+    presets: [] as {
+      key: string;
+      version: string;
+      api: string;
+      compatible: boolean;
+    }[],
   };
 }

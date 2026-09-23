@@ -59,7 +59,7 @@ New route: `src/routes/about.tsx`
 2. The origin thesis (with mismatch evidence table)
 3. Operating principles (8, cards)
 4. Engineering philosophy
-5. Design philosophy → the 5 themes
+5. Design philosophy → the section library
 6. How we decide what to build (prioritisation framework + scoring table)
 7. How we make money (and why it matters)
 8. Team (template)
@@ -93,7 +93,7 @@ _Lever: problem-first framing — naming the mechanism of failure (localisation-
 
 Most commerce software sold into Bangladesh was designed somewhere a credit card is the default payment method, a national address system is machine-parseable, and the storefront's primary language uses a single case and no conjunct consonants. None of that describes this market. When that software arrives here, "localisation" means a currency symbol, a translated button label, and a cash-on-delivery module maintained as a bolt-on plugin, usually by a third party, usually behind on updates.
 
-That gap doesn't stay theoretical. It shows up as a merchant reconciling COD collections against courier remittance in a spreadsheet at midnight because the platform's ledger assumes every order clears through a payment gateway the moment it's placed. It shows up as a Bangla product title clipped mid-word because the theme's line-height was tuned for Latin ascenders and descenders, not for matras that need vertical room. It shows up as an SMS-OTP checkout flow built for a market where every customer has a stable email address and a laptop, in a market where the phone number _is_ the identity and the checkout happens on a mid-range Android device over 3G.
+That gap doesn't stay theoretical. It shows up as a merchant reconciling COD collections against courier remittance in a spreadsheet at midnight because the platform's ledger assumes every order clears through a payment gateway the moment it's placed. It shows up as a Bangla product title clipped mid-word because the design's line-height was tuned for Latin ascenders and descenders, not for matras that need vertical room. It shows up as an SMS-OTP checkout flow built for a market where every customer has a stable email address and a laptop, in a market where the phone number _is_ the identity and the checkout happens on a mid-range Android device over 3G.
 
 We didn't start Framique to add a "Bangladesh mode" to an existing platform. We started it because the mismatch is structural — it lives in the data model, not the UI chrome — and structural mismatches can't be fixed with a translation file.
 
@@ -144,7 +144,7 @@ _Lever: principles paired with a forbidden behaviour and a real product decision
 ### 5. Bangla is not a translation layer
 
 **Forbids**: applying Latin type rules (negative tracking, Latin line-height) to Bangla text and calling it "localised."
-**Produced**: the `bangla-display` token drops letter-spacing to zero and enforces a 1.35+ line box automatically on any `lang="bn"` subtree — a theme cannot ship a Bangla headline that clips a matra.
+**Produced**: the `bangla-display` token drops letter-spacing to zero and enforces a 1.35+ line box automatically on any `lang="bn"` subtree — a design cannot ship a Bangla headline that clips a matra.
 
 ### 6. Cash is a payment method, not an exception
 
@@ -204,29 +204,29 @@ Every checkout, payout and webhook path emits metrics (`incr`/`observe`), struct
 
 ---
 
-## 5. Design philosophy — canvas, two-column (Z flip) into theme showcase
+## 5. Design philosophy — canvas, two-column (Z flip) into section showcase
 
-_Lever: showing the causal chain from constraint (Bangla typography) to output (5 themes) makes the design system feel like an engineering answer to a real problem rather than a stylistic preference._
+_Lever: showing the causal chain from constraint (Bangla typography) to output (section library) makes the design system feel like an engineering answer to a real problem rather than a stylistic preference._
 
-**H2**: Bangla typography set the constraints. The five themes are what fit inside them.
+**H2**: Bangla typography set the constraints. The section library is what fits inside them.
 
 Type systems built for Latin scripts assume every glyph sits between a baseline and a cap-height, with predictable ascenders and descenders. Bangla doesn't work that way: matras extend above the headline, and conjunct consonants stack vertically in ways that need genuine room, not a squeezed line-height borrowed from a Helvetica-tuned design system. Apply Latin negative tracking to Bangla — the aggressive, confident -4.5% tracking that makes an English headline feel sharp — and Bangla text becomes harder to read, not sharper. Matras clip. Conjuncts collide.
 
-So the type system doesn't have "a Bangla mode." It has a rule: any display token applied inside a `lang="bn"` subtree drops its letter-spacing to zero and enforces a 1.35+ line box, automatically, regardless of which theme a merchant has chosen. That single rule — decided once, in the type token layer — is why every storefront a merchant builds on Framique renders Bangla product names correctly without a merchant ever touching a CSS property.
+So the type system doesn't have "a Bangla mode." It has a rule: any display token applied inside a `lang="bn"` subtree drops its letter-spacing to zero and enforces a 1.35+ line box, automatically, regardless of which sections a merchant has assembled. That single rule — decided once, in the type token layer — is why every storefront a merchant builds on Framique renders Bangla product names correctly without a merchant ever touching a CSS property.
 
-From that constraint, and from the range of retail formats we saw merchants actually running — a boutique with five products and heavy storytelling, a 2,000-SKU wholesale catalogue, a B2B distributor quoting in bulk — five official themes emerged, not as marketing skins but as different answers to "how much room does this catalogue need, and how much of it is Bangla-first."
+From that constraint, and from the range of retail formats we saw merchants actually running — a boutique with five products and heavy storytelling, a 2,000-SKU wholesale catalogue, a B2B distributor quoting in bulk — five section groups emerged, not as marketing skins but as different answers to "how much room does this catalogue need, and how much of it is Bangla-first."
 
-| Theme         | Built for                                     | What its layout optimises                                        | Bangla typography treatment                                                                                                       |
-| ------------- | --------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Classic**   | General retail, balanced catalogue size       | Familiar grid, low cognitive load for first-time online shoppers | Bangla display at 1.4 line-box, product names never truncated mid-conjunct                                                        |
-| **Modern**    | Fashion, lifestyle, visual-first brands       | Large imagery, minimal chrome, editorial pacing                  | Bangla headlines sit in oversized display slots with the same zero-tracking rule, no shrink-to-fit hacks                          |
-| **Landing**   | Single-product launches, campaign pages       | One conversion path, no competing navigation                     | Bangla CTA copy set at button-token line-height so wallet names (bKash, Nagad) never wrap awkwardly                               |
-| **Supershop** | High-SKU grocery/FMCG catalogues              | Dense grid, fast filtering, price-forward cards                  | Tabular numerals for BDT prices sit flush against Bangla unit labels (কেজি, লিটার) without baseline drift                         |
-| **B2B**       | Wholesale, bulk-order, quote-driven merchants | Tables, tiered pricing, MOQ logic front and centre               | Bangla and English render at matched optical size in the same pricing table row — no visual "which language is primary" hierarchy |
+| Section group  | Built for                                     | What its layout optimises                                        | Bangla typography treatment                                                                                                       |
+| -------------- | --------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| **Catalogue**  | General retail, balanced catalogue size       | Familiar grid, low cognitive load for first-time online shoppers | Bangla display at 1.4 line-box, product names never truncated mid-conjunct                                                        |
+| **Lookbook**   | Fashion, lifestyle, visual-first brands       | Large imagery, minimal chrome, editorial pacing                  | Bangla headlines sit in oversized display slots with the same zero-tracking rule, no shrink-to-fit hacks                          |
+| **Campaign**   | Single-product launches, campaign pages       | One conversion path, no competing navigation                     | Bangla CTA copy set at button-token line-height so wallet names (bKash, Nagad) never wrap awkwardly                               |
+| **High-density** | High-SKU grocery/FMCG catalogues            | Dense grid, fast filtering, price-forward cards                  | Tabular numerals for BDT prices sit flush against Bangla unit labels (কেজি, লিটার) without baseline drift                         |
+| **Wholesale**  | Wholesale, bulk-order, quote-driven merchants | Tables, tiered pricing, MOQ logic front and centre               | Bangla and English render at matched optical size in the same pricing table row — no visual "which language is primary" hierarchy |
 
-Every theme shares the same canvas rules from `DESIGN.md`: near-black artboard is the storefront default option, white Geist display type, glass surfaces with a 1px light edge, and the signal-blue accent reserved for links and focus states, never a button fill. What differs between themes is density and rhythm, not the underlying commitment to Bangla being a first-class script rather than a checkbox.
+Every page shares the same canvas rules from `DESIGN.md`: near-black artboard is the storefront default option, white Geist display type, glass surfaces with a 1px light edge, and the signal-blue accent reserved for links and focus states, never a button fill. What differs between section groups is density and rhythm, not the underlying commitment to Bangla being a first-class script rather than a checkbox.
 
-**Design note**: two-column intro (headline + prose left, aurora-mesh Bangla type close-up illustration right) flips into a 5-up card row at 900px→2-up→1-up. Each theme card: name, one-line descriptor, matched-optical-size Bangla/English sample string as the card's visual proof point. Link each card to its `/themes/{slug}` detail page (internal linking plan below).
+**Design note**: two-column intro (headline + prose left, aurora-mesh Bangla type close-up illustration right) flips into a 5-up card row at 900px→2-up→1-up. Each section card: name, one-line descriptor, matched-optical-size Bangla/English sample string as the card's visual proof point. Link each card to its `/builder` section-group anchor (internal linking plan below).
 
 ---
 
@@ -241,7 +241,7 @@ Every roadmap request — from a merchant support ticket, a sales conversation, 
 | Criterion                  | Weight | What it measures                                                                                                                                                                                           | Example                                                                                                                  |
 | -------------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | **Structural fit**         | 35%    | Does this fix a mismatch in the core data model (like the COD/MFS/Bangla rows in Band 2), or does it patch a symptom?                                                                                      | A `cod_pending_settlement` reconciliation view scores high; a one-off CSV export for one merchant's edge case scores low |
-| **Reach**                  | 25%    | How many merchants, across how many themes/tiers, does this unblock?                                                                                                                                       | A courier-abstraction improvement affecting all five themes outranks a single-theme cosmetic request                     |
+| **Reach**                  | 25%    | How many merchants, across how many plans/tiers, does this unblock?                                                                                                                                        | A courier-abstraction improvement affecting every storefront outranks a single cosmetic request                     |
 | **Reversibility risk**     | 20%    | Can we ship it, learn, and adjust without breaking tenant isolation, money correctness or data portability? (Money/tenancy/auth changes score lower on speed, higher on required rigor — see Principle 4.) | A new storefront section block is fast to reverse; a ledger schema change is not, and is scoped accordingly              |
 | **Time-to-merchant-value** | 20%    | Does this reduce a merchant's cost or reconciliation time within one release cycle, or is the payoff distant and speculative?                                                                              | Faster courier-status sync scores higher than a long-horizon AI-merchandising bet with no proven demand yet              |
 
@@ -360,7 +360,7 @@ _Lever: a dated build history substitutes for "trust us" with "here's what happe
 | `{{first_merchant_date}}`       | First merchant storefront live                                          | Internal changelog / order-1 record         |
 | `{{mfs_launch_date}}`           | bKash/Nagad/Rocket payment rails launched                               | Release tag / `docs/06-payments/` changelog |
 | `{{self_host_date}}`            | Self-hosted Supabase + Redis + observability stack in production        | `ops/` changelog                            |
-| `{{themes_launch_date}}`        | Five official themes (Classic, Modern, Landing, Supershop, B2B) shipped | Theme release notes                         |
+| `{{builder_launch_date}}`         | Page builder with section library shipped                                              | Builder release notes                           |
 | `{{today_or_latest_milestone}}` | `{{latest_milestone_description}}`                                      | `{{latest_milestone_evidence}}`             |
 
 **Design note**: horizontal scroll-snap timeline on desktop (dot-and-line on a hairline track), collapses to a vertical stacked list ≤900px. Dates in tabular numerals. Do not render this band at all until at least three rows have confirmed dates — a timeline with all placeholders reads worse than no timeline.
@@ -386,11 +386,11 @@ _Lever: pre-answering the skeptical questions a technical or financial buyer wou
 5. **Which couriers does Framique support?**
    Multiple providers behind a single abstraction merchants configure and switch between by zone, cost and reliability — see Engineering Philosophy. Confirm the current named list against `{{active_courier_integration_list}}` before publishing specific courier names, since integrations are added over time.
 
-6. **Do I have to use one of the five official themes, or can I customize further?**
-   The five themes (Classic, Modern, Landing, Supershop, B2B) are starting points tuned for different catalogue shapes; each is customizable within the token system described in `DESIGN.md`. Deeper theme-building detail lives on `/themes`.
+6. **Do I have to use one of the five section groups, or can I customize further?**
+   The five section groups (Catalogue, Lookbook, Campaign, High-density, Wholesale) are starting points tuned for different catalogue shapes; each is customizable within the token system described in `DESIGN.md`. Deeper page-building detail lives on `/builder`.
 
 7. **How does Bangla typography actually work under the hood — is it just a font swap?**
-   No — it's a token rule: any display type applied inside a `lang="bn"` subtree automatically zeroes letter-spacing and enforces a taller line box, regardless of theme. See Design Philosophy.
+   No — it's a token rule: any display type applied inside a `lang="bn"` subtree automatically zeroes letter-spacing and enforces a taller line box, regardless of layout. See Design Philosophy.
 
 8. **What happens to my payout if bKash or a courier has an outage?**
    Idempotent charge/refund/payout contracts and a Redis `noeviction` policy mean a retry never becomes a duplicate transaction; if a dependency is down, we fail loudly and page an engineer rather than silently degrade correctness. See Engineering Philosophy and `SYSTEM.md` §4.5.
@@ -427,7 +427,7 @@ _Lever: closing on the same specific frictions named in the hero (not a generic 
 ## Internal linking plan
 
 - Band 2 (origin thesis) → `/product#payments` (COD/MFS handling detail) and `/pricing` (no export/analytics upsell claim substantiated there).
-- Band 5 (design philosophy) → `/themes` index and each `/themes/{classic|modern|landing|supershop|b2b}` detail page from its respective card.
+- Band 5 (design philosophy) → `/builder` section-group anchors from each card.
 - Band 6 (prioritisation) → `/changelog` or `/roadmap` if such a page exists, so "public framework" is backed by a visible artifact of decisions made under it.
 - Band 7 (revenue) → `/pricing` inline link.
 - Band 8 (team) → `/careers` (full listing) and `/contact`.
@@ -442,7 +442,7 @@ _Lever: closing on the same specific frictions named in the hero (not a generic 
 
 - **Hero**: no product screenshot; aurora violet/magenta mesh only, per DESIGN.md hero treatment. If a supporting image is required for og:image, use a close crop of the mesh with the wordmark and Bangla subhead sample — never a stock photo of a "team high-fiving."
 - **Band 2 evidence table**: no illustrative image; the table is the visual.
-- **Band 5 theme showcase**: one representative storefront crop per theme card, screenshotted from the actual theme (not a mockup), showing at least one Bangla product name in situ to prove the typography claim — do not use lorem-ipsum or English-only placeholder catalogues in these crops.
+- **Band 5 section showcase**: one representative storefront crop per section card, screenshotted from actual pages (not a mockup), showing at least one Bangla product name in situ to prove the typography claim — do not use lorem-ipsum or English-only placeholder catalogues in these crops.
 - **Band 8 team**: real, consented photographs only, consistent crop (square, neutral background) if/when published; no stock headshots, no illustrated avatars as a substitute.
 - **Band 11 timeline**: no imagery required; if used, small monochrome icon per milestone type (launch, integration, infra), not photography.
 
@@ -474,7 +474,7 @@ _Lever: closing on the same specific frictions named in the hero (not a generic 
 - Bangla display token never inherits Latin negative tracking; enforced at the token layer per DESIGN.md, verified visually in Band 2/5 Bangla samples during QA — check for matra clipping specifically in the Bangla H1 and FAQ Bangla samples.
 - Contrast: body ink-muted on canvas must clear 7:1 (DESIGN.md floor); gradient-spotlight card text (Bands 9, 13) must clear 4.5:1 against the darkest gradient stop — verify both gradient choices (violet in Band 9, magenta/teal in Band 13) against this floor before shipping, since some gradient stops are lighter than others.
 - FAQ accordion: full keyboard operability (Enter/Space toggles, arrow-key navigation between questions optional but recommended), `aria-expanded` state on trigger, `aria-controls` linking trigger to panel.
-- All interactive targets ≥44px on mobile per SYSTEM.md §7 mobile-first baseline, including FAQ row triggers and theme card links in Band 5.
+- All interactive targets ≥44px on mobile per SYSTEM.md §7 mobile-first baseline, including FAQ row triggers and section card links in Band 5.
 - Timeline band (11) must remain operable via keyboard/screen reader in its vertical fallback layout — do not make the horizontal scroll-snap the only accessible path.
 
 ---
@@ -484,7 +484,7 @@ _Lever: closing on the same specific frictions named in the hero (not a generic 
 - **Scroll depth per band**: track band 2 (thesis), band 6 (prioritisation), band 8 (team) completion rate — these are the highest-effort read bands and the best signal of whether the thesis lands versus gets skimmed.
 - **CTA click-through by variant**: hero primary (`Read the origin thesis`) vs. alt (`See open roles`) — tells us whether visitors arrive skeptical (want the argument) or ready (want the job/product).
 - **FAQ expand rate per question**: identifies which objections are most live; questions 2, 3 and 8 (differentiation, data ownership, reliability) are the predicted top three — validate against actual data post-launch.
-- **Internal link click-through** from Band 5 theme cards to `/themes/{slug}` — validates whether the design-philosophy argument converts into theme evaluation.
+- **Internal link click-through** from Band 5 section cards to `/builder` — validates whether the design-philosophy argument converts into builder evaluation.
 - **Careers CTA conversion** (`See open roles` clicks → application starts) tracked separately from the hero's identical-labeled alt CTA, to distinguish "curious visitor" traffic from "job-seeker" traffic landing directly on `/about`.
 - **Time-on-page vs. bounce for evidence table (Band 2)**: a table this dense either engages a serious buyer or triggers an immediate bounce; segment by traffic source (organic search vs. paid vs. referral) to see which channel's visitors are the intended audience for this page.
 - **JSON-LD / rich-result monitoring**: confirm `Organization` structured data validates and surfaces correctly in search console once `{{founder_name}}`, `{{founding_date}}` and address placeholders are resolved — a page shipped with template tokens still in the JSON-LD is a shipping blocker, not a follow-up.
@@ -500,5 +500,5 @@ _Lever: closing on the same specific frictions named in the hero (not a generic 
 - [ ] `{{customer_count_verification}}` — confirm no unqueried metric ships
 - [ ] `{{headcount_band}}`, `{{consented_member_list}}`, per-member `{{member_*}}` fields or use fallback team copy
 - [ ] `{{example_scored_request}}` — real or omitted, never invented
-- [ ] Timeline dates: `{{first_merchant_date}}`, `{{mfs_launch_date}}`, `{{self_host_date}}`, `{{themes_launch_date}}`, `{{latest_milestone_description}}` + evidence — timeline band withheld if fewer than 3 confirmed
+- [ ] Timeline dates: `{{first_merchant_date}}`, `{{mfs_launch_date}}`, `{{self_host_date}}`, `{{builder_launch_date}}`, `{{latest_milestone_description}}` + evidence — timeline band withheld if fewer than 3 confirmed
 - [ ] `{{open_source_license_status}}`, `{{active_courier_integration_list}}`, `{{legal_entity_name}}`, `{{registration_details}}`

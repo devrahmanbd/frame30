@@ -33,7 +33,7 @@ Route: `src/routes/customers.tsx` · Shell: marketing (dark canvas, top-nav, foo
 2. The proof standard (how we build this page)
 3. Featured story — aurora spotlight card (TEMPLATE only until real consent exists)
 4. Story grid — glass cards (TEMPLATE grid)
-5. Five segment archetypes × 5 official themes — operating profiles
+5. Five segment archetypes × 5 official designs — operating profiles
 6. Metric definitions — compute-it-yourself band
 7. How to write your own case study (merchant-facing guide)
 8. Proof-of-platform — uptime, status, live counters
@@ -136,13 +136,13 @@ We do not interview freeform and write from memory — we send this exact form, 
 
 ---
 
-## 5. Five segment archetypes — matched to the five official themes
+## 5. Five segment archetypes — matched to the five official designs
 
 _Lever: recognition — a reader should find their own shop in one of these five profiles within seconds, and immediately see what "good" looks like for a shop like theirs, not a generic benchmark._
 
-These are **operating profiles**, not case studies — they describe the range of numbers a healthy shop in that segment typically shows, drawn from category norms, not attributed to a named merchant. Each maps to one of the five official Framique themes: **Classic, Modern, Landing, Supershop, B2B.**
+These are **operating profiles**, not case studies — they describe the range of numbers a healthy shop in that segment typically shows, drawn from category norms, not attributed to a named merchant. Each maps to one of the five official Framique designs: **Classic, Modern, Landing, Supershop, B2B.**
 
-### 5.1 Fashion boutique → **Modern** theme
+### 5.1 Fashion boutique → **Modern** design
 
 | Attribute               | Typical range                                                                                                                                                                                                                                                                                                                                                                                                   |
 | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -155,7 +155,7 @@ These are **operating profiles**, not case studies — they describe the range o
 
 **বাংলা note**: product titles and size labels should carry Bangla variants (`M/L/XL` alongside `মিডিয়াম/লার্জ/এক্সট্রা লার্জ`) since fit vocabulary is where Bangla-first buyers most often bounce to a WhatsApp question instead of checking out.
 
-### 5.2 Neighbourhood shop (mudir dokan / general store) → **Classic** theme
+### 5.2 Neighbourhood shop (mudir dokan / general store) → **Classic** design
 
 | Attribute               | Typical range                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -168,7 +168,7 @@ These are **operating profiles**, not case studies — they describe the range o
 
 **বাংলা note**: this is the segment most likely to be entirely Bangla-first — product names, categories and the storefront itself should default to Bangla, with English as the toggle, not the reverse.
 
-### 5.3 Single-product drop → **Landing** theme
+### 5.3 Single-product drop → **Landing** design
 
 | Attribute               | Typical range                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -179,9 +179,9 @@ These are **operating profiles**, not case studies — they describe the range o
 | Metrics that matter     | Landing-page-to-checkout conversion · Refund/return rate in the first 14 days · Sell-out-to-restock gap (days the page stayed live with nothing to sell)                                                                                                                                                                                                                                                                            |
 | 30-day improvement plan | Week 1: instrument the page to see where visitors drop before checkout — image, price, or shipping-cost reveal. Week 2: cap ad spend to match confirmed fulfilment capacity, not aspirational capacity. Week 3: pre-build a "sold out — notify me" state before the drop, not after. Week 4: measure conversion and refund rate against week 1; if refunds are rising with conversion, the bottleneck is fulfilment, not marketing. |
 
-**বাংলা note**: countdown and stock-scarcity copy must be literal and current (real stock counts, real close times) — Bangla-first buyers on this theme are the most price- and trust-sensitive segment, and an inflated "3 left" counter is the fastest way to lose them permanently.
+**বাংলা note**: countdown and stock-scarcity copy must be literal and current (real stock counts, real close times) — Bangla-first buyers on this design are the most price- and trust-sensitive segment, and an inflated "3 left" counter is the fastest way to lose them permanently.
 
-### 5.4 Grocery / daily essentials → **Supershop** theme
+### 5.4 Grocery / daily essentials → **Supershop** design
 
 | Attribute               | Typical range                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -194,7 +194,7 @@ These are **operating profiles**, not case studies — they describe the range o
 
 **বাংলা note**: unit and quantity language (কেজি, লিটার, পিস, প্যাকেট) must be consistent across search, filters and the cart line item — grocery is the segment most sensitive to unit-mismatch confusion at checkout.
 
-### 5.5 Wholesale / B2B → **B2B** theme
+### 5.5 Wholesale / B2B → **B2B** design
 
 | Attribute               | Typical range                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -207,7 +207,7 @@ These are **operating profiles**, not case studies — they describe the range o
 
 **বাংলা note**: B2B buyers frequently switch languages mid-negotiation (Bangla on the phone, English in the PO) — product and pricing documents generated from the storefront should support both without the buyer having to ask.
 
-**Design note**: five cards in a horizontal-scroll row on mobile, 3-up-then-2-up grid on desktop, each tagged with its theme name as a small caption chip so the connection to the actual product themes is explicit, not implied.
+**Design note**: five cards in a horizontal-scroll row on mobile, 3-up-then-2-up grid on desktop, each tagged with its design name as a small caption chip so the connection to the actual product designs is explicit, not implied.
 
 ---
 
@@ -341,7 +341,7 @@ _Lever: consistency with the page's own standard — the CTA repeats the same re
 - Hero `Read the stories` → in-page anchor to Section 4 grid
 - Hero/CTA `Start free — no card` → `/signup`
 - Individual story cards → `/customers/{{slug}}` (individual story detail route, out of scope for this page but linked)
-- Section 5 archetype cards → `/themes#{{theme-slug}}` (Classic, Modern, Landing, Supershop, B2B theme detail anchors)
+- Section 5 archetype cards → `/designs#{{design-slug}}` (Classic, Modern, Landing, Supershop, B2B design detail anchors)
 - Section 6 metric names → `/docs/analytics#{{metric-slug}}` where a fuller definitions doc exists
 - Section 9 `Submit your story` → `/customers/submit` (intake form route)
 - FAQ item 5 (ratings) → `/trust` or `/security` if such a trust-centre page exists, otherwise omitted
@@ -351,7 +351,7 @@ _Lever: consistency with the page's own standard — the CTA repeats the same re
 
 - No stock photography of people anywhere on this page. Every photo is either a real, consented merchant/shop photo or absent.
 - Story-grid covers: 16:9, genuine product/shop photography from the merchant, colour-graded consistently (single LUT or preset) so the grid doesn't look visually disjointed despite varied source quality — consistency in post-processing, never in the underlying facts.
-- Archetype cards (Section 5): no photography — use theme-preview thumbnails (actual UI screenshots of the Classic/Modern/Landing/Supershop/B2B themes) since these are category profiles, not real merchants.
+- Archetype cards (Section 5): no photography — use builder screenshots (actual UI screenshots of Catalogue/Lookbook/Campaign/High-density/Wholesale section groups) since these are category profiles, not real merchants.
 - Proof-of-platform band: no photography, numeral/readout treatment only.
 
 ## Icon list

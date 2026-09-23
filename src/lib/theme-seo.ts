@@ -14,28 +14,6 @@
  *  - money in JSON-LD is derived from integer minor units, never floats
  *  - noindex wins over every other directive
  */
-/**
- * Theme key → category. Duplicated deliberately as a tiny literal so shopper
- * pages never pull the full preset ASTs into the client bundle;
- * `theme-seo.test.ts` asserts it stays in sync with `THEME_PRESETS`.
- */
-export const THEME_SEO_CATEGORY: Record<string, string> = {
-  classic: "general",
-  modern: "general",
-  landing: "landing",
-  "heavy-shop": "general",
-  supershop: "marketplace",
-  b2b: "wholesale",
-  "clothing-modern": "fashion",
-  "clothing-heritage": "fashion",
-  sensory: "accessible",
-  festivity: "seasonal",
-  atelier: "fashion",
-  bazaar: "marketplace",
-  circuit: "electronics",
-  rupaboti: "beauty",
-};
-
 import { hreflangAlternates } from "./seo-technical";
 import {
   ITEM_CONDITIONS,
@@ -93,36 +71,9 @@ export const DEFAULT_SEO_PROFILE: ThemeSeoProfile = {
   preloadHero: true,
 };
 
-const CATEGORY_PROFILE: Record<string, Partial<ThemeSeoProfile>> = {
-  landing: {
-    homeTitleTemplate: "{store} — {page}",
-    jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, itemList: false },
-  },
-  wholesale: {
-    socialCard: "summary",
-    jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, faq: true, itemList: false },
-  },
-  fashion: { homeTitleTemplate: "{store} — Shop the collection" },
-  grocery: { homeTitleTemplate: "{store} — Daily grocery delivery" },
-  marketplace: {
-    homeTitleTemplate: "{store} — Everything you need, delivered",
-    jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, itemList: true },
-  },
-  electronics: {
-    homeTitleTemplate: "{store} — Official-warranty electronics",
-    jsonld: { ...DEFAULT_SEO_PROFILE.jsonld, faq: true },
-  },
-  beauty: {
-    homeTitleTemplate: "Beauty products in Bangladesh shop — {store}",
-  },
-};
-
-/** SEO behaviour for an installed official theme (falls back to the default). */
-export function seoProfileFor(themeKey?: string | null): ThemeSeoProfile {
-  if (!themeKey) return DEFAULT_SEO_PROFILE;
-  const category = THEME_SEO_CATEGORY[themeKey];
-  if (!category) return DEFAULT_SEO_PROFILE;
-  return { ...DEFAULT_SEO_PROFILE, ...(CATEGORY_PROFILE[category] ?? {}) };
+/** Single SEO profile for every store (theme categories removed). */
+export function seoProfileFor(_themeKey?: string | null): ThemeSeoProfile {
+  return DEFAULT_SEO_PROFILE;
 }
 
 /* ---------------- Phase 5 — seo_templates shipped with each preset --------- */
@@ -158,74 +109,8 @@ const GENERIC_SEO_TEMPLATES: PresetSeoTemplate[] = [
   },
 ];
 
-/** Category-specific overrides; anything unspecified keeps the generic row. */
-const CATEGORY_SEO_TEMPLATES: Record<
-  string,
-  Partial<Record<PresetSeoTemplate["entityType"], Partial<PresetSeoTemplate>>>
-> = {
-  fashion: {
-    product: {
-      titleTemplate: "{{title}} — {{brand}} | {{store}}",
-      descriptionTemplate:
-        "{{title}} by {{brand}} at {{price}}. Size guide, fabric details and easy returns from {{store}}.",
-    },
-    collection: {
-      descriptionTemplate:
-        "Browse {{title}} at {{store}} — new arrivals, size guides and easy returns.",
-    },
-  },
-  electronics: {
-    product: {
-      titleTemplate: "{{title}} price in Bangladesh — {{store}}",
-      descriptionTemplate:
-        "{{title}} at {{price}} with official warranty, EMI and full specifications from {{store}}.",
-    },
-    collection: {
-      descriptionTemplate:
-        "Compare {{title}} at {{store}} — specs, warranty and EMI options.",
-    },
-  },
-  beauty: {
-    product: {
-      titleTemplate: "{{title}} — {{store}}",
-      descriptionTemplate:
-        "{{title}} at {{price}}. Shades, ingredients and how to use, from {{store}}.",
-    },
-  },
-  marketplace: {
-    product: {
-      titleTemplate: "{{title}} — {{category}} | {{store}}",
-      descriptionTemplate:
-        "{{title}} at {{price}} from {{store}}. Delivery in {{city}} and nationwide.",
-    },
-  },
-  grocery: {
-    product: {
-      descriptionTemplate:
-        "{{title}} at {{price}} — same-day grocery delivery in {{city}} from {{store}}.",
-    },
-  },
-  wholesale: {
-    product: {
-      descriptionTemplate:
-        "{{title}} at wholesale pricing from {{store}}. Bulk rates and trade terms.",
-    },
-  },
-};
-
-/**
- * The starter `seo_templates` rows an official theme ships with. Merchants may
- * edit every row afterwards in the SEO panel — this is a default, not a lock.
- */
-export function presetSeoTemplates(
-  themeKey?: string | null,
-): PresetSeoTemplate[] {
-  const category = themeKey ? THEME_SEO_CATEGORY[themeKey] : undefined;
-  const overrides = (category && CATEGORY_SEO_TEMPLATES[category]) || {};
-  return GENERIC_SEO_TEMPLATES.map((row) => ({
-    ...row,
-    ...(overrides[row.entityType] ?? {}),
-  }));
+export function presetSeoTemplates(): PresetSeoTemplate[] {
+  return GENERIC_SEO_TEMPLATES.map((row) => ({ ...row }));
 }
 
 export function clamp(value: string, max: number): string {
@@ -461,13 +346,9 @@ export function buildStoreHead(input: StoreHeadInput): HeadOutput {
     "Online store",
     input.storeName,
   );
-  const beautyFallback =
-    "Shop serums, moisturiser, foundation and lipstick for acne and brightening. Check ingredients, shades and batch codes, then build your routine.";
   const description =
     input.tagline?.trim() ||
-    (THEME_SEO_CATEGORY[input.themeKey ?? ""] === "beauty"
-      ? beautyFallback
-      : `Shop ${input.storeName} with cash on delivery, bKash, Nagad and nationwide courier across Bangladesh.`);
+    `Shop ${input.storeName} with cash on delivery, bKash, Nagad and nationwide courier across Bangladesh.`;
   const hero =
     input.image ?? input.products?.find((p) => p.image_url)?.image_url ?? null;
   const head = baseHead(

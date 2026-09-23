@@ -1,6 +1,6 @@
 # Rupaboti Beauty Store — Design (beautyproductsbd-style storefront)
 
-Date: 2026-09-19. Approach: theme-first (A). Status: store + catalog + theme
+Date: 2026-09-19. Approach: content-first (A). Status: store + catalog + pages
 live; homepage composition wiring is implementation scope.
 
 ## 1. Objective
@@ -20,10 +20,10 @@ combos, tabbed featured products, category tiles, order tracking + login.
 - Seed: `supabase/migrations/20260919100000_rupaboti_demo_catalog.sql`
   (idempotent fixed-UUID upserts, Frame19 pattern). Applied live.
 
-## 3. Theme install + preview (DONE, live)
+## 3. Page build + preview (DONE, live)
 
-- Rupaboti preset (`theme-presets.ts`) installed via the dashboard catalogue
-  and activated on the new merchant, all in-browser.
+- Rupaboti pages (`design-presets.ts`) built via the dashboard catalogue
+  and published on the new merchant, all in-browser.
 - Live storefront: `/store/rupaboti-beauty` renders 24/24 priced, in-stock,
   with category chips, search, EN/বাং, cart. Works because the public
   variants policy repair is live.

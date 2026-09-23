@@ -7,7 +7,7 @@ Design baseline: `docs/00-meta/design-system.md` (every page spec embeds a per-p
 
 ## 1. What we're building
 
-Commerce-as-a-service for Bangladeshi merchants, competitive with Shopify on breadth and superior on BD-local rails: MFS (bKash/Nagad/Rocket), COD, BNPL, bank integrations, courier carriers, VAT engine, own page-builder engine, headless runtime-agnostic themes, plugin marketplace, AI support & behavior tools.
+Commerce-as-a-service for Bangladeshi merchants, competitive with Shopify on breadth and superior on BD-local rails: MFS (bKash/Nagad/Rocket), COD, BNPL, bank integrations, courier carriers, VAT engine, own page-builder engine, headless runtime-agnostic designs, plugin marketplace, AI support & behavior tools.
 
 ## 2. Stack (locked)
 
@@ -23,7 +23,7 @@ Commerce-as-a-service for Bangladeshi merchants, competitive with Shopify on bre
 | --- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | 01  | Architecture               | system overview, identity, data model, observability                                                                                                                           |
 | 02  | Merchant admin             | dashboard, products, options & variants, customers, inventory, orders, shipping, POS, settings                                                                                 |
-| 03  | Storefront                 | theme runtime, themes, search, product reviews, customer accounts, checkout-skeleton                                                                                           |
+| 03  | Storefront                 | storefront runtime, pages, search, product reviews, customer accounts, checkout-skeleton                                                                                           |
 | 04  | Builder                    | editor, engine, widgets, design tokens, preview                                                                                                                                |
 | 05  | Marketing                  | SEO/AEO, email/forms, ads integrity, campaigns, blog                                                                                                                           |
 | 06  | Payments                   | gateway, MFS, COD, wallet, payouts, refunds, invoices                                                                                                                          |
@@ -32,7 +32,7 @@ Commerce-as-a-service for Bangladeshi merchants, competitive with Shopify on bre
 | 09  | Analytics                  | dashboards, buyer persona, behavior events                                                                                                                                     |
 | 10  | AI support                 | support agent, chat, auto-respond, escalation                                                                                                                                  |
 | 11  | Fraud                      | fake orders/visitors/ad-click protection, scoring                                                                                                                              |
-| 12  | Marketplace                | themes/plugins marketplace, install, reviews                                                                                                                                   |
+| 12  | Marketplace                | designs/plugins marketplace, install, reviews                                                                                                                                   |
 | 13  | Export & SDK               | website export, migration, SDK, webhooks                                                                                                                                       |
 | 14  | Operations                 | platform billing, trials, alerts, RBAC, security                                                                                                                               |
 | 15  | E2E                        | test harness, mock MFS sandbox, golden flows                                                                                                                                   |
@@ -46,14 +46,14 @@ risks live in the **rough master plan at `/plan.md`** — this doc and all
 `docs/01…16` specs reference it. Slices:
 
 - **S1 Foundation**: monorepo scaffold, Supabase bootstrap (RLS tenants), edge,
-  design-system tokens + first admin screens + first storefront theme (Theme "Char").
+  design-system tokens + first admin screens + first storefront design (Design "Char").
   Entitlement skeleton: `plan_definitions` + `tenant_limits` + `check_entitlement` RPC.
 - **S2 Core store**: products, collections, inventory, storefront catalog, search.
 - **S3 Orders & checkouts**: carts, COD-first checkout, order state machine, email.
 - **S4 Payments**: aggregator (bKash/Nagad/Rocket mocks), refunds, wallet, invoices.
 - **S5 POS & delivery**: offline POS, courier carriers, tracking pipeline.
 - **S6 Marketing**: SEO/AEO, email/newsletter, forms, coupons/BOGO, blog, ads integrity.
-- **S7 Marketplace & dev**: themes/plugins marketplace, SDK, export, webhooks.
+- **S7 Marketplace & dev**: designs/plugins marketplace, SDK, export, webhooks.
 - **S8 AI & fraud finish**: AI support agent, behavior events, fraud scoring, harden.
 
 Platform billing (subscriptions, invoicing, dunning) and merchant KYC live in

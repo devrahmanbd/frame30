@@ -11,7 +11,6 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { Rail } from "./primitives/Rail";
 import { MediaFrame } from "./primitives/MediaFrame";
 import { WidgetBoundary } from "./WidgetBoundary";
-import { SHIPPED_BLUEPRINTS } from "@/lib/theme-blueprints";
 import { flattenAst, parseAst } from "@/lib/builder-ast";
 
 const markup = (node: React.ReactElement) => renderToStaticMarkup(node);
@@ -65,11 +64,17 @@ describe("Phase 7 — one bad widget never takes a page down", () => {
     );
   }
 
-  for (const preset of SHIPPED_BLUEPRINTS) {
-    it(`${preset.key}: the surrounding template keeps rendering`, () => {
-      const index = parseAst(
-        (preset.templates as Record<string, unknown>)["index"],
-      );
+  for (const fixture of ["editorial", "minimal"] as const) {
+    it(`${fixture}: the surrounding template keeps rendering`, () => {
+      const index = parseAst({
+        header: [],
+        main: [
+          { id: "a", type: "heading", props: {} },
+          { id: "b", type: "text", props: {} },
+          { id: "c", type: "image", props: {} },
+        ],
+        footer: [],
+      });
       const types = flattenAst(index).map((section) => section.type);
       expect(types.length).toBeGreaterThan(2);
 

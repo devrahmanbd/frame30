@@ -2,7 +2,7 @@
 
 Route: `src/routes/features.tsx`
 Shell: marketing top-nav + footer. Canvas `{colors.canvas}` throughout; two spotlight cards max per viewport per DESIGN.md.
-Scope: full product surface — storefront/builder, catalogue, checkout/payments, fulfilment/couriers, POS/omnichannel, analytics/API — plus data model, themes, language, roles, automation, performance, scope honesty, comparison, FAQ, CTA.
+Scope: full product surface — storefront/builder, catalogue, checkout/payments, fulfilment/couriers, POS/omnichannel, analytics/API — plus data model, pages, language, roles, automation, performance, scope honesty, comparison, FAQ, CTA.
 
 ## SEO
 
@@ -39,7 +39,7 @@ Scope: full product surface — storefront/builder, catalogue, checkout/payments
 7. Pillar 4 — Fulfilment & couriers (flip row + sub-band)
 8. Pillar 5 — POS & omnichannel (Z row + sub-band)
 9. Pillar 6 — Analytics & API (flip row + sub-band)
-10. Five official themes band
+10. Section library band
 11. Multi-language / Bangla-first band
 12. Roles & permissions band
 13. Automation & webhooks band
@@ -87,7 +87,7 @@ _Lever: a scannable map before the deep dive respects the reader's time and lets
 
 _Lever: the "single source of truth" mental model is the strongest differentiator claim in this document — it must be taught, not asserted, so the reader can verify it against their own pain._
 
-Most Bangladeshi merchants we've spoken with run at least three tools that each think they own the product record: a storefront theme, a spreadsheet for stock, and a courier panel for order status. Framique treats a **product** as one row with fan-out, not three rows kept in sync by hand.
+Most Bangladeshi merchants we've spoken with run at least three tools that each think they own the product record: a storefront page, a spreadsheet for stock, and a courier panel for order status. Framique treats a **product** as one row with fan-out, not three rows kept in sync by hand.
 
 **How it works.** A product has a canonical ID. Everything else — its storefront listing, its POS button, its stock ledger entry, its analytics dimension, its order line item — reads and writes against that same ID. There is no import job, no CSV round-trip, no "sync in progress" spinner between your shop and your counter.
 
@@ -293,23 +293,23 @@ At the end of the month, a merchant's accountant asks for the COD-versus-digital
 
 ---
 
-## 10. The five official themes — and when each fits
+## 10. The section library — and when each group fits
 
-_Lever: reducing decision paralysis — naming exactly five, with a fit-for-purpose table, prevents the reader from either freezing or assuming there are more than there are._
+_Lever: reducing decision paralysis — naming exactly five section groups, with a fit-for-purpose table, prevents the reader from either freezing or assuming there is more to choose than there is._
 
-Framique ships five official themes today. Each is a starting point you can still edit token-by-token in the builder — choosing a theme is not a lock-in decision.
+Framique ships five section groups today. Each is a starting point you can still edit token-by-token in the builder — picking sections is not a lock-in decision.
 
-| Theme     | Built for                                      | Typical band count | Notable trait                                                                        |
-| --------- | ---------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------ |
-| Classic   | General retail, apparel, gifting               | 6–8                | Balanced grid, neutral type scale, safe default                                      |
-| Modern    | Fashion, beauty, higher-margin goods           | 5–7                | Larger imagery, tighter type, fewer bands per page                                   |
-| Landing   | Single-product or campaign launches            | 3–5                | Built to convert one SKU or one collection, minimal navigation                       |
-| Supershop | Wide catalogues, groceries, multi-category     | 8–10               | Dense grid, category rail up front, search-forward                                   |
-| B2B       | Wholesale, trade accounts, quote-based selling | 6–9                | Login-gated pricing, quantity breaks, quote-request flow instead of instant checkout |
+| Section group   | Built for                                      | Typical band count | Notable trait                                                                        |
+| --------------- | ---------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------ |
+| Catalogue       | General retail, apparel, gifting               | 6–8                | Balanced grid, neutral type scale, safe default                                      |
+| Lookbook        | Fashion, beauty, higher-margin goods           | 5–7                | Larger imagery, tighter type, fewer bands per page                                   |
+| Campaign        | Single-product or campaign launches            | 3–5                | Built to convert one SKU or one collection, minimal navigation                       |
+| High-density    | Wide catalogues, groceries, multi-category     | 8–10               | Dense grid, category rail up front, search-forward                                   |
+| Wholesale       | Wholesale, trade accounts, quote-based selling | 6–9                | Login-gated pricing, quantity breaks, quote-request flow instead of instant checkout |
 
-**Decision framework**: if the catalogue is under 30 SKUs and centred on one collection, start with Landing. If it's a wide multi-category shop with daily repeat buyers, start with Supershop. If pricing depends on the buyer's account (trade, wholesale), start with B2B — its checkout flow assumes a login before price is shown. Everything else starts with Classic or Modern depending on whether the aesthetic priority is breadth (Classic) or image-led minimalism (Modern).
+**Decision framework**: if the catalogue is under 30 SKUs and centred on one collection, start with Campaign. If it's a wide multi-category shop with daily repeat buyers, start with High-density. If pricing depends on the buyer's account (trade, wholesale), start with Wholesale — its checkout flow assumes a login before price is shown. Everything else starts with Catalogue or Lookbook depending on whether the aesthetic priority is breadth (Catalogue) or image-led minimalism (Lookbook).
 
-**Design note**: 5-up card row → 2-up at 900px; each card shows a thumbnail crop of the theme's homepage, no gradient card usage here (reserve aurora for the two dedicated spotlight bands).
+**Design note**: 5-up card row → 2-up at 900px; each card shows a thumbnail crop of a storefront homepage built from that group, no gradient card usage here (reserve aurora for the two dedicated spotlight bands).
 
 ---
 
@@ -379,7 +379,7 @@ Not every workflow fits inside the dashboard. Webhooks and the REST API let a me
 
 _Lever: trust through measurable commitment — a stated budget, not a vague "fast," gives technical buyers something to hold the product accountable to._
 
-Storefronts are judged on load time by both customers on mid-range Android phones over 3G/4G and by search engines. Framique enforces a performance budget at the platform level rather than leaving it to each theme's discretion.
+Storefronts are judged on load time by both customers on mid-range Android phones over 3G/4G and by search engines. Framique enforces a performance budget at the platform level rather than leaving it to each merchant's discretion.
 
 | Metric                               | Budget                                                            | Why it matters here                                                    |
 | ------------------------------------ | ----------------------------------------------------------------- | ---------------------------------------------------------------------- |
@@ -415,7 +415,7 @@ _Lever: making the switching cost of the status quo visible — most merchants u
 
 | Task                                   | Stitched tools (typical setup)                                                               | Framique                                                              |
 | -------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| Storefront                             | One theme platform (often foreign hosting, foreign payment defaults)                         | Built in, Bangladesh-first payment defaults                           |
+| Storefront                             | One page platform (often foreign hosting, foreign payment defaults)                           | Built in, Bangladesh-first payment defaults                           |
 | Payments                               | Separate gateway integration per rail, manual reconciliation spreadsheet                     | bKash/Nagad/Rocket/Upay/card/COD reconciled against orders natively   |
 | Inventory sync between web and counter | Manual recount or a third-party sync plugin, often lagging by hours                          | Same stock ledger, same instant                                       |
 | Courier booking                        | Log into each courier's own panel separately, copy tracking numbers back into orders by hand | Booked from the order, status returns automatically                   |
@@ -444,8 +444,8 @@ _Lever: answering the specific objections a Bangladeshi merchant would actually 
 4. **Is the storefront actually bilingual, or is Bangla just a translated overlay?**
    Bangla is stored as locale fields on the same product, order and customer records used by the English side — not a separate translated site kept in sync manually.
 
-5. **How many storefront themes are available, and can I customise them?**
-   Five official themes ship today — Classic, Modern, Landing, Supershop and B2B. Every theme remains fully editable in the builder down to individual design tokens.
+5. **How many page layouts are available, and can I customise them?**
+   Five section groups ship today — Catalogue, Lookbook, Campaign, High-density and Wholesale. Every section remains fully editable in the builder down to individual design tokens.
 
 6. **Do the physical counter and the online storefront share the same stock count?**
    Yes. POS and storefront read and write the same stock ledger row per SKU; a sale at the counter is reflected online in the same instant.
@@ -486,9 +486,9 @@ _Lever: specificity of the next step ("your own catalogue," not a generic demo) 
 - Pillar grid anchors (`#storefront`, `#catalogue`, `#checkout`, `#fulfilment`, `#pos`, `#analytics`) link to their own deep-dive bands within this page.
 - "Explore the builder" (hero + mid-page) → `/product/builder` if it exists, else `/features#storefront`.
 - "See pricing" (hero alt) → `/pricing`.
-- Five themes band → `/themes` gallery if present, else anchors to theme thumbnails staying on-page.
+- Section library band → `/builder` gallery if present, else anchors to section thumbnails staying on-page.
 - Comparison table's "Framique" column header → `/pricing#plans`.
-- FAQ Q5 (themes) cross-links to the themes band anchor above it.
+- FAQ Q5 (layouts) cross-links to the section library band anchor above it.
 - FAQ Q9 (what we don't do) cross-links to `#scope-honesty` anchor on the same page.
 - Final CTA "Book a walkthrough" → `/contact` or scheduling route.
 
@@ -497,7 +497,7 @@ _Lever: specificity of the next step ("your own catalogue," not a generic demo) 
 - Hero: product screenshot on glass frame, builder canvas mid-edit, no fabricated customer names in visible order data — use placeholder order IDs like `#FQ-10231`.
 - Pillar deep-dive rows: one UI screenshot per row (builder token panel, bilingual product edit screen, checkout rail selector, order timeline with courier status, POS counter screen on tablet frame, analytics dashboard).
 - Unified data model band: custom diagram, not a screenshot — one node, four spokes.
-- Five themes band: five homepage thumbnail crops, consistent aspect ratio.
+- Section library band: five homepage thumbnail crops, consistent aspect ratio.
 - Bangla band: split-screen same product card in `lang="en"` / `lang="bn"`.
 - Automation band: single JSON payload code block, not a screenshot.
 - No stock photography of generic "happy shopkeeper" imagery; if photography is used at all, it should be UI-first, not lifestyle-first.
@@ -511,7 +511,7 @@ _Lever: specificity of the next step ("your own catalogue," not a generic demo) 
 - All reveal-on-enter animation is opacity + transform only, 320–520ms, `cubic-bezier(0.22, 1, 0.36, 1)`, triggers once per DESIGN.md.
 - Z/flip deep-dive rows: image and copy column each fade+translate in from their respective sides (image from its side, copy from the opposite), staggered 80ms.
 - Unified data model diagram: spokes draw in sequentially, 120ms stagger per spoke, once on first viewport entry.
-- Aurora spotlight cards (themes intro accent, final CTA) drift on a 24–38s loop per DESIGN.md; no drift on the comparison table's gradient column header (kept static so the table stays legible).
+- Aurora spotlight cards (section library intro accent, final CTA) drift on a 24–38s loop per DESIGN.md; no drift on the comparison table's gradient column header (kept static so the table stays legible).
 - Magnetic hover capped at 6px, primary CTA buttons only (`Start free — no card`, `Explore the builder`).
 - Everything collapses to static state under `prefers-reduced-motion: reduce`.
 

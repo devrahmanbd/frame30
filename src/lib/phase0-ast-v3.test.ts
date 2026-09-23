@@ -10,7 +10,6 @@ import {
   type Section,
   type ThemeAst,
 } from "./builder-ast";
-import { THEME_PRESETS } from "./theme-presets";
 
 const box = (children: Section[], id = "box"): Section => ({
   ...newSection("container"),
@@ -129,31 +128,6 @@ describe("AST v2 → v3 migration", () => {
     expect(node["children"]).toHaveLength(1);
   });
 
-  it("is idempotent and non-mutating on every preset", () => {
-    for (const preset of THEME_PRESETS) {
-      for (const ast of Object.values(preset.templates)) {
-        const frozen = JSON.stringify(ast);
-        const once = upgradeAstV2ToV3(ast);
-        expect(JSON.stringify(ast)).toBe(frozen);
-        expect(upgradeAstV2ToV3(once)).toEqual(once);
-      }
-    }
-  });
 });
 
-describe("round trip", () => {
-  it("parse(serialize(x)) === x for every preset template, with zero invalid nodes", () => {
-    for (const preset of THEME_PRESETS) {
-      for (const [key, ast] of Object.entries(preset.templates)) {
-        const round = parseAst(JSON.parse(JSON.stringify(ast)));
-        expect(
-          flattenAst(round).filter((n) => n.invalid),
-          `${preset.key ?? ""} ${key}`,
-        ).toEqual([]);
-        expect(parseAst(JSON.parse(JSON.stringify(round))), `${key}`).toEqual(
-          round,
-        );
-      }
-    }
-  });
-});
+

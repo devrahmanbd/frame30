@@ -135,7 +135,7 @@ function CreatorPanel() {
           </Link>
           <Link
             to="/dashboard/marketplace"
-            search={{ tab: "theme" }}
+            search={{ tab: "plugin" }}
             className="min-h-11 rounded-fq-md border border-border px-3 py-2 text-sm"
           >
             {t("Marketplace", "মার্কেটপ্লেস")}

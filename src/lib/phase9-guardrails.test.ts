@@ -22,8 +22,6 @@ import {
   type SectionType,
   type TemplateKey,
 } from "./builder-ast";
-import { THEME_PRESETS } from "./theme-presets";
-import { SHIPPED_BLUEPRINT_KEYS } from "./theme-blueprints";
 import { translationCoverage } from "./translation-coverage";
 import { WIDGET_TYPES } from "./widget-registry";
 import { hydrationMode } from "./widget-hydration";
@@ -156,74 +154,7 @@ describe("translation gate", () => {
   });
 });
 
-describe("preset conformance", () => {
-  const presets = THEME_PRESETS;
-
-  it("ships all four themes", () => {
-    expect(presets.length).toBeGreaterThanOrEqual(4);
-  });
-
-  it("round-trips and lints clean across every template of every preset", () => {
-    for (const preset of presets) {
-      for (const key of TEMPLATE_KEYS) {
-        const source = preset.templates[key as TemplateKey];
-        if (!source) continue;
-        const parsed = parseAst(source);
-        expect(JSON.parse(JSON.stringify(parseAst(parsed)))).toEqual(
-          JSON.parse(JSON.stringify(parsed)),
-        );
-        const errors = lintTemplate(parsed, key as TemplateKey).filter(
-          (i) => i.level === "error",
-        );
-        expect(
-          errors,
-          `${preset.key}/${key}: ${errors.map((e) => e.message).join(" · ")}`,
-        ).toEqual([]);
-      }
-    }
-  });
-
-  it("keeps বাংলা coverage above the publish floor for every preset", () => {
-    for (const preset of presets) {
-      const stats = translationCoverage(preset.templates as never);
-      expect(
-        translationGate(stats),
-        `${preset.key} at ${stats.percent}%`,
-      ).toEqual([]);
-    }
-  });
-});
-
-describe("registry sharing", () => {
-  it("shares at least 70% of widgets across more than one theme", () => {
-    const usage = new Map<string, Set<string>>();
-    // Blueprint presets intentionally place widgets the ten general presets
-    // never use, so the sharing ratio is measured over the general presets;
-    // blueprint coverage is asserted in definition-of-done.test.ts.
-    const blueprintKeys = new Set<string>(SHIPPED_BLUEPRINT_KEYS);
-    for (const preset of THEME_PRESETS.filter(
-      (p) => !blueprintKeys.has(p.key),
-    )) {
-      for (const key of TEMPLATE_KEYS) {
-        const ast = preset.templates[key as TemplateKey];
-        if (!ast) continue;
-        const walk = (nodes: Section[]) => {
-          for (const item of nodes) {
-            if (!usage.has(item.type)) usage.set(item.type, new Set());
-            usage.get(item.type)!.add(preset.key);
-            if (item.children?.length) walk(item.children);
-          }
-        };
-        const parsed = parseAst(ast);
-        walk([...parsed.header, ...parsed.main, ...parsed.footer]);
-      }
-    }
-    const used = [...usage.values()];
-    const shared = used.filter((themes) => themes.size > 1).length;
-    expect(used.length).toBeGreaterThan(0);
-    expect(shared / used.length).toBeGreaterThanOrEqual(0.7);
-  });
-
+describe("widget hydration modes", () => {
   it("assigns every registered widget a hydration mode, so no theme owns a renderer branch", () => {
     for (const type of WIDGET_TYPES) {
       expect(["static", "eager", "visible", "interaction"]).toContain(

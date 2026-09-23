@@ -227,7 +227,7 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
 
         <Link
           to="/dashboard/marketplace"
-          search={{ tab: "widget" }}
+          search={{ tab: "plugin" }}
           className="inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 transition-colors"
         >
           <Plus className="size-4" />

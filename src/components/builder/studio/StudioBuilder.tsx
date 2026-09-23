@@ -104,12 +104,12 @@ export type StudioBuilderProps = {
    * Shared (global) blocks available for detached insertion. Each insert
    * clones with fresh ids, so placing the same block twice never collides.
    * Detached on purpose: the studio model has no linked-placement concept,
-   * so edits stay local to this page (the theme studio owns live-linked
+   * so edits stay local to this page (the studio owns live-linked
    * globals).
    */
   globalBlocks?: { id: string; name: string; nodes: StudioNode[] }[];
   /**
-   * Persist the selected subtree as a theme global block (reverse of the
+   * Persist the selected subtree as a shared global block (reverse of the
    * insert path above). The host owns the RPC; the name defaults to the
    * node's name or element label. Shown in the node context menu when set.
    */

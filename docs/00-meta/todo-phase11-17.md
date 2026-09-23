@@ -6,7 +6,7 @@ motion, a11y gate) are **done** and stay as the base. Their summary lives in
 
 This file now covers the next block of work, derived from a hands-on walk of a
 live WordPress 7.1 + Elementor 4.2 admin (pages list, quick edit, post editor,
-Elementor canvas/panel, themes screen) plus the Rank Math / Yoast SEO model.
+Elementor canvas/panel) plus the Rank Math / Yoast SEO model.
 The goal: a merchant who knows WordPress should feel at home in **five
 seconds** — same mental model, same words, same click paths — while the visual
 layer stays ours (Phase 2 tokens, no wp-admin grey).
@@ -24,8 +24,8 @@ not done.
 | **Rank Math / Yoast-like extended SEO**   | Not installed on the reference site — spec follows Rank Math's meta box | Score chip in the sidebar header, Desktop/Mobile SERP preview with pixel meters, focus-keyword pills, title/description with `%title% %sep% %sitename%` tokens, grouped pass/fail analysis (Basic · Additional · Title readability · Content readability), plus **General · Advanced · Schema · Social** tabs and a site-level Titles & Meta / Sitemap / Redirections settings page. The current `SeoDrawer` (flat form) goes away.                                                                                                                                                                                           | 13                                                                            |
 | **WordPress-like page management**        | `edit.php?post_type=page` + Quick Edit                                  | Status links `All (3) · Published (1) · Drafts (2) · Trash` above the table, `Bulk actions ▾ Apply · All dates ▾ Filter`, right-aligned search, title cell with `— Draft, Builder` suffix and hover row actions `Edit · Quick Edit · Trash · Preview · Edit with Builder`, **Quick Edit expanding in place of the row** (Title · Slug · Date · Password/Private · Parent · Order · Template · Status), two-line `Last Modified / date` column, Trash with restore.                                                                                                                                                            | 11                                                                            |
 | **Post editor like Classic editor**       | `post.php?post=1&action=edit`                                           | Editor is a takeover (console chrome hidden), top bar `← · + · ↶↷ · Outline · Edit with Builder · title pill · Preview · device · sidebar toggle · Save`, right sidebar with **Post / Block** tabs and the WordPress key-value list (Status · Publish · Slug · Author · Template · Discussion · Format → popovers), `Set featured image`, `Add an excerpt…`, word count + read time, `Move to trash`, collapsible Categories/Tags. Body uses the Classic two-row toolbar with `Visual                                                                                                                                         | Code` tabs. First open of a post asks **Classic editor** or **Page builder**. | 12  |
-| **Theme screen like Appearance › Themes** | `themes.php`                                                            | `Themes` + count badge, `Add theme` button, search on the right, 3-up screenshot cards; active card gets a coloured footer bar `Active: <name>` + `Customize`; hover shows centred `Theme details`, inactive cards reveal `Activate · Live preview`; dashed `+ Add theme` card; `Theme details` is a full-screen modal with prev/next arrows. `Customize` opens the builder in Site-settings mode with the live storefront.                                                                                                                                                                                                   | 15                                                                            |
-| **WordPress management (the rest)**       | Sidebar, Media, Menus, ⌘K                                               | Content lives under one **Content** section with tabs `Pages · Posts · Media · Menus · Themes`; Media grid + attachment drawer + reusable picker modal; Menus with the two-column "Add items / nested drag list" screen; ⌘K stays in the top bar. Sidebar stays at eight sections — we do **not** copy the 13-item wp-admin menu, grey canvas or plugin nags.                                                                                                                                                                                                                                                                 | 11, 16                                                                        |
+| ~~Design screen like Appearance › Designs~~ — RETIRED 2026-09-23 | — | Not built — design packs purged; no Designs screen ships. Appearance covers Customize (page builder) and Menus only. | — |
+| **WordPress management (the rest)**       | Sidebar, Media, Menus, ⌘K                                               | Content lives under one **Content** section with tabs `Pages · Posts · Media · Menus`; Media grid + attachment drawer + reusable picker modal; Menus with the two-column "Add items / nested drag list" screen; ⌘K stays in the top bar. Sidebar stays at eight sections — we do **not** copy the 13-item wp-admin menu, grey canvas or plugin nags.                                                                                                                                                                                                                                                                 | 11, 16                                                                        |
 
 Visual rules on top of all of the above: Phase 2 tokens only (no wp-admin
 `#f0f0f1` / `#2271b1`), two text tones, hairlines, radii 6/10/14, signal colour
@@ -40,24 +40,16 @@ Reference screenshots for everything below are in `docs/02-merchant/wp-reference
 (28 PNGs, named per item). These are **exact behaviours** to reproduce; where a
 WordPress detail is rejected it is marked ✗.
 
-### A. Themes (`themes.php`, `theme-install.php`, `customize.php`) → Phase 15
+### A. Designs — RETIRED 2026-09-23
 
-| Clicked                      | Observed                                                                                                                                                                                                                                                                                                  | Our spec                                                                                                              |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Themes grid                  | 3 installed + dashed `Add Theme` card. Active card label reads **`Active: Twenty Twenty-Five`** with single `Customize` button; inactive cards show `Activate · Live Preview` on hover only. Card = screenshot 4:3, name row 48px.                                                                        | Same three states. Count badge in header. Active footer bar in signal colour.                                         |
-| Theme card → `Theme Details` | Full-screen overlay: `‹ ›` prev/next, `✕`, big screenshot left; right: **`Active Theme` eyebrow**, name + `Version: 1.5`, `By the WordPress team`, **`Enable auto-updates`** link, description, `Tags:` line, footer `Customize` (active) / `Activate · Live Preview · Delete` (inactive).                | Same layout; replace auto-updates with `Auto-update ▢` toggle from `theme_versions`.                                  |
-| `Add Theme`                  | Top filter bar: **count `8555`**, tabs `Popular · Latest · Block Themes · Favorites`, `Feature Filter` toggle, search on the right, **`Upload Theme`** toggle button beside the title.                                                                                                                    | Marketplace grid with the same tab row; `Upload theme` toggle reveals a drop-zone plate.                              |
-| `Upload Theme`               | Inline panel "If you have a theme in a .zip format, you may install or update it by uploading it here." + file input + `Install Now`.                                                                                                                                                                     | Same copy shape; accept `.zip`, show progress + validation result (theme.json present, name, version) before install. |
-| `Feature Filter`             | Drawer with 3 checkbox groups **Subject / Features / Layout** (Blog, E-Commerce, Portfolio… · Accessibility Ready, Custom Colors, Custom Logo… · Grid Layout, One Column, Two Columns…), `Apply Filters` at top and bottom.                                                                               | Same three groups; our tags come from `theme_registry.tags`.                                                          |
-| Card hover in Add Theme      | Buttons **`Install` + `Preview`**, and centre `Details & Preview` overlay.                                                                                                                                                                                                                                | Same. Installed ones show `Installed` disabled + `Activate`.                                                          |
-| `Preview`                    | Full-screen split: left 300px sidebar (`Close · ‹ · ›`, `Install` button, name, author, **star rating "4.0 rating based on 128 ratings"**, version, description, `Collapse` handle at the bottom), right = live iframe of the demo. No device toggle in this WP version.                                  | Same split; add Desktop/Tablet/Mobile toggle at the sidebar bottom (Customizer has it).                               |
-| `Customize` (block theme)    | Customizer shows only `Site Identity · Homepage Settings · Additional CSS`, a "Hurray! Your theme supports site editing" banner, and **device toggle `Desktop · Tablet · Mobile` at the bottom**. Block themes push to the Site Editor (`Identity · Styles · Pages · Navigation · Patterns · Templates`). | `Customize` opens our builder in **Site settings** mode (Elementor model, section C). Keep the bottom device toggle.  |
-| `Appearance` menu            | Only `Themes · Editor · Fonts`; **Menus & Widgets screens say "Your theme does not support navigation menus or widgets"** on block themes.                                                                                                                                                                | Our Menus screen still ships (Phase 16) — we're not block-theme bound.                                                |
+The WP designs-screen research below was retired with the full purge: design
+packs deleted, no Designs screen ships. Appearance covers Customize (page
+builder) and Menus only. Original research table removed; recover via git.
 
 ### B. Elementor editor chrome (`post.php?post=7&action=elementor`) → Phase 14
 
 - **Top bar (48px, `#0c0d0e`)** left→right, exact aria-labels: `Elementor logo (menu)` · `Add Element` · `Angie (AI)` ✗ · `Post Settings` · `History` · `Design System` · centre pill **`Elementor #7 (Draft) ▾`** (document switcher) · device toggle group `Desktop · Tablet Portrait (up to 1024px) · Mobile Portrait (up to 767px)` (tooltip shows breakpoint) · right: `Checklist` ✗ · `What's New` ✗ · `Finder` · `Structure` · `Preview Changes` · **`Publish`** (lilac, 48px tall, disabled until dirty) · `Save Options ▾`.
-- **Logo menu** items: `Site Settings · Theme Builder · User Preferences · Keyboard Shortcuts · Help Center · Connect my account ✗ · Exit to WordPress`. Site Settings is **disabled while the Design System panel is open** — mutually exclusive panels.
+- **Logo menu** items: `Site Settings · Design Builder · User Preferences · Keyboard Shortcuts · Help Center · Connect my account ✗ · Exit to WordPress`. Site Settings is **disabled while the Design System panel is open** — mutually exclusive panels.
 - **Keyboard shortcuts modal** (three columns Actions / Panels / Go To): Undo ⌘Z · Redo ⌘⇧Z · Copy ⌘C · Paste ⌘V · Paste Style ⌘⇧V · Delete ⌦ · Duplicate ⌘D · Save ⌘S · Finder ⌘E · Show/Hide Panel ⌘P · Site Settings ⌘K · Structure ⌘I · Page Settings ⌘⇧Y · History ⌘⇧H · User Preferences ⌘⇧U · Responsive Mode ⌘⇧M · Template Library ⌘⇧L · Keyboard Shortcuts ⇧? · Quit Esc. **Adopt all of them verbatim** (our ⌘K palette moves to ⌘/ inside the builder).
 - **Left panel `Elements` (280px)**: tabs `Widgets · Components · Globals`; search "Search Widget…"; categories are **collapsible headers with a caret** (`Atomic Elements [New] · Atomic Form · Custom Widget · Pro · Layout · Basic · General · Link In Bio · Site · Single · WooCommerce · WordPress`). Cards 120×86 with 24px icon + 12px label; locked cards show a 🔒 top-right; **searching for "Image" returns 7 cards across categories** (fuzzy across all). Footer strip `Access all Pro widgets. Upgrade Now` ✗.
 - **Empty canvas**: dashed plate with three 40px round buttons **`+` (dark), `📁` (dark), `✦` (lilac)** and italic "Drag widget here".
@@ -69,7 +61,7 @@ WordPress detail is rejected it is marked ✗.
 - **Responsive mode**: canvas iframe narrows to the breakpoint width (tablet 1024 → 768-wide canvas centred on dark `#3a3b3c` backdrop) and the device tooltip appears above; **no responsive bar in this version**. In Site Settings › Layout the merchant can enable up to 6 breakpoints (`Mobile Portrait · Mobile Landscape · Tablet Portrait · Tablet Landscape · Laptop · Widescreen`) with editable `Breakpoint (px)` inputs. We ship 3 + the same "Active breakpoints" multiselect.
 - **Publish / Save Options**: `Publish` is disabled when clean; `Save Options ▾` = `Save Draft · Save as Template`; ⌘S saves; opening Design System with unsaved changes shows a modal **"You have unsaved changes — To open the Design System, save your page first"** with `Stay here · Save & Continue`. Copy the guard.
 - **History (⌘⇧H)**: two tabs `Actions · Revisions`. Actions list rows = `<Element> <Verb>` ("Kit Show global settings Edited", "Editing Started"). Revisions empty state: "No Revisions Saved Yet — Revision history lets you save your previous versions…".
-- **Page Settings (⌘⇧Y)**: tabs `Settings · Style · Advanced`. Settings = `Title · Status (Draft/Pending Review/Private/Published) · Featured Image · Order · Allow Comments · Hide Title · Page Layout (Default / Elementor Canvas / Elementor Full Width / Theme / Page No Title)`. Style = `Body Style: Margin · Padding · Background Type`. Advanced = `Custom CSS`.
+- **Page Settings (⌘⇧Y)**: tabs `Settings · Style · Advanced`. Settings = `Title · Status (Draft/Pending Review/Private/Published) · Featured Image · Order · Allow Comments · Hide Title · Page Layout (Default / Elementor Canvas / Elementor Full Width / Design / Page No Title)`. Style = `Body Style: Margin · Padding · Background Type`. Advanced = `Custom CSS`.
 - **User Preferences (⌘⇧U)**: `Panel: Display mode (light/dark/auto) · Width (px)`; `Canvas: Show quick edit options · Expand images in lightbox · Show hidden elements`; `Get Started: Show launchpad checklist` ✗; `Design System: Show global settings`; `Navigation: Exit to (dashboard / this post / all posts)`. Ship Panel + Canvas + Exit-to.
 - **Template Library (⌘⇧L)**: modal header tabs `Blocks · Pages · Templates(My Templates)`, actions `Import Template · Sync Library · Save`, left category list (`about · archive · Benefits · call to action · clients · contact · faq · features · footer · Gallery · header · hero · pricing · services · stats · subscribe · team · testimonials · 404 page …`), `MY FAVORITES`, search. Our Blocks tab reuses the 117 storefront sections grouped by these category names.
 - **Finder (⌘E)**: floating command box that searches pages/templates/settings/"Create new" — our ⌘K palette already does this; keep it reachable at ⌘E inside the builder.
@@ -90,7 +82,7 @@ WordPress detail is rejected it is marked ✗.
   - `Custom CSS 👑` (locked in free)
     Every numeric control = input + unit dropdown (`px % em rem vw auto`); "+" rows open a repeater; every control has a hidden per-breakpoint indicator that appears when the device toggle is not Desktop.
 - **Interactions tab**: empty state "Animate elements with Interactions — Add entrance animations and effects triggered by user interactions such as page load or scroll." + `Create an interaction` button. Ship entrance animation (fade/slide/zoom, duration, delay, once/repeat) here, not in Advanced.
-- **Design System button (💧)** opens a dark panel with tabs **`Variables · Classes`**; `Create a variable ▾` offers **`Color · Font · Size`**; footer `Save changes`. Map to our theme tokens editor.
+- **Design System button (💧)** opens a dark panel with tabs **`Variables · Classes`**; `Create a variable ▾` offers **`Color · Font · Size`**; footer `Save changes`. Map to our design tokens editor.
 
 ### D. Site Settings (⌘K) hierarchy → Phases 14/15 "Customize" mode
 
@@ -98,12 +90,12 @@ Panel title `Site Settings`, back `‹` top-left, `✕` top-right, sticky lilac 
 
 - **DESIGN SYSTEM** — `Global Colors` (System: `Primary #6EC1E4 · Secondary #54595F · Text #7A7A7A · Accent #61CE70`; Custom list + `Add Color`); `Global Fonts` (System: Primary/Secondary/Text/Accent each with ✎ typography popover; Custom + `Add Style`; `Fallback Font Family` input).
   - Toggle **`Show global settings`** ("Temporarily overlay the canvas with the style guide") swaps the canvas for a **live style-guide page** showing colour swatches with hex labels and the four font samples "The five boxing wizards jump quickly." **Build this style-guide overlay** — it is the single best onboarding moment we saw.
-- **THEME STYLE** — `Typography` (Body text colour/typography/paragraph spacing; Link colour/typography; H1–H6 colour+typography), `Buttons` (Typography · Text Shadow · Text Color · Background Type Classic/Gradient · Box Shadow · Border Type · Border Radius · Padding, with Normal/Hover tabs), `Images` (Border Type · Radius · Opacity · Box Shadow · CSS Filters), `Form Fields` (Label colour/typography; Field typography/text/accent/background colour/box shadow/border/radius/padding).
+- **DESIGN STYLE** — `Typography` (Body text colour/typography/paragraph spacing; Link colour/typography; H1–H6 colour+typography), `Buttons` (Typography · Text Shadow · Text Color · Background Type Classic/Gradient · Box Shadow · Border Type · Border Radius · Padding, with Normal/Hover tabs), `Images` (Border Type · Radius · Opacity · Box Shadow · CSS Filters), `Form Fields` (Label colour/typography; Field typography/text/accent/background colour/box shadow/border/radius/padding).
 - **SETTINGS** — `Site Identity` (Site Name · Site Description · Site Logo · Site Favicon), `Background` (Type · Mobile Browser Background · Overscroll Behavior), `Layout` (Content width, gap, breakpoints — see B), `Lightbox` (Image Lightbox on/off · Counter · Fullscreen · Zoom · Share · Title/Description source (None/Title/Caption/Alt/Description) · colours · icon sizes), `Page Transitions 👑`, `Custom CSS 👑`, `Additional Settings`.
 
 ### E. Media & uploads (Elementor media control + `upload.php`) → Phases 14/16
 
-- Media modal = WordPress `Add media` frame: left rail `Actions › Add media · Insert from URL`, top tabs **`Upload files · Media Library`**, filters `All media items ▾ · All dates ▾`, search, big drop-zone "Drop files to upload — or — Select Files — Maximum upload file size: 100 MB", right `ATTACHMENT DETAILS` column (thumb, filename, date, size, dimensions, `Edit with Elementor AI` ✗, `Edit Image`, `Delete permanently`, **`Alt Text` with helper link, `Title`, `Caption`, `Description`, `File URL` + `Copy URL to clipboard`**), footer `Insert into post`. Reproduce this exact modal as `MediaPicker` (also used for featured image, SEO social image, theme logo).
+- Media modal = WordPress `Add media` frame: left rail `Actions › Add media · Insert from URL`, top tabs **`Upload files · Media Library`**, filters `All media items ▾ · All dates ▾`, search, big drop-zone "Drop files to upload — or — Select Files — Maximum upload file size: 100 MB", right `ATTACHMENT DETAILS` column (thumb, filename, date, size, dimensions, `Edit with Elementor AI` ✗, `Edit Image`, `Delete permanently`, **`Alt Text` with helper link, `Title`, `Caption`, `Description`, `File URL` + `Copy URL to clipboard`**), footer `Insert into post`. Reproduce this exact modal as `MediaPicker` (also used for featured image, SEO social image, site logo).
 - **SVG upload is rejected by default** — dropping `t.svg` shows an inline red row "**t.svg — This file cannot be processed by the web server**" with `Dismiss errors`. It only works after `Elementor › Settings › Advanced › Enable Unfiltered File Uploads` (warning copy: "Allowing uploads of any files (SVG & JSON included) is a potential security risk. Elementor will try to sanitize…"). **Our rule**: SVG allowed by default but always sanitised server-side (strip `<script>`, `on*=`, `<foreignObject>`, external hrefs); show a `Sanitised` badge in details; a merchant toggle `Allow raw SVG` under Settings › Media, off.
 - PNG upload works instantly; details show `156 B · 64 by 64 pixels`; re-uploading the same name auto-suffixes (`t-4.png`) — do the same.
 - Atomic **`SVG` widget** and `Image` widget both offer `Upload · Insert from URL`; Image adds `Select image` (library).
@@ -114,7 +106,7 @@ Panel title `Site Settings`, back `‹` top-left, `✕` top-right, sticky lilac 
 
 - **Screen Options** drawer: `Columns ☑ Author ☑ Comments ☑ Date`, `Pagination — Number of items per page`, `View mode ◉ Compact ◯ Extended`. We fold this into the DataTable column chooser + a `Compact / Comfortable` density toggle.
 - Row hover actions exactly: **`Edit | Quick Edit | Trash | Preview | Edit with Elementor`** (published rows say `View` instead of `Preview`).
-- **Quick Edit plate** (screenshot `wp_pages_quick_edit.png`): 2-column grid inside the table width, label column 80px; left `Title (focused on open) · Slug · Date [09-Sep ▾][04],[2026] at [11]:[14] · Password [ ] –OR– ☐ Private`; right `Parent ▾ (Main Page (no parent)) · Order [0] · Template ▾ (Default template / Elementor Canvas / Elementor Full Width / Page No Title / Theme) · ☐ Allow Comments · Status ▾ (Published / Pending Review / Draft)`; footer `Update` (primary) `Cancel` (outline). Field order is fixed — copy it.
+- **Quick Edit plate** (screenshot `wp_pages_quick_edit.png`): 2-column grid inside the table width, label column 80px; left `Title (focused on open) · Slug · Date [09-Sep ▾][04],[2026] at [11]:[14] · Password [ ] –OR– ☐ Private`; right `Parent ▾ (Main Page (no parent)) · Order [0] · Template ▾ (Default template / Elementor Canvas / Elementor Full Width / Page No Title / Design) · ☐ Allow Comments · Status ▾ (Published / Pending Review / Draft)`; footer `Update` (primary) `Cancel` (outline). Field order is fixed — copy it.
 - **Bulk Edit** plate: left list of selected titles each with `✕ Remove`, then `Author · Parent · Template · Comments · Status` all defaulting to **`— No Change —`**, footer `Update · Cancel`.
 - Posts list adds `Categories · Tags · 💬` columns and an `All Categories ▾` filter; Categories screen is the classic **left "Add Category" form (Name · Slug · Parent · Description) + right table** — reuse for our Collections/Categories tab.
 - Comments screen: status links `All · Mine · Pending · Approved · Spam · Trash`, bulk `Unapprove · Approve · Mark as spam · Move to Trash` — map to product reviews moderation.
@@ -123,7 +115,7 @@ Panel title `Site Settings`, back `‹` top-left, `✕` top-right, sticky lilac 
 
 - Top bar buttons, in order: `Block Inserter (+)` · `Undo` · `Redo` · `Document Overview` · **`Edit with Elementor`** (button beside the title) · centre `No title · Page` pill · `Save draft` · `View` · `Preview (opens in a new tab)` · `Settings` · **`Publish`** · `Options ⋮`.
 - Right sidebar `Page | Block` tabs. Page tab order: title, `Set featured image` plate, `Generate with Elementor AI` ✗, `Add an excerpt…`, "15 words, 1 minute read time.", "Last edited 14 hours ago.", then key/value rows `Status Draft · Publish Immediately · Slug 21 · Author maxw · Template Pages · Discussion Closed · Parent None` (posts: `Format Standard`, `Move to trash`, `Categories`, `Tags`).
-- Inserter tabs `Blocks · Patterns · Media` with groups `TEXT · MEDIA · DESIGN · WIDGETS · THEME`; the **`Classic` block** is what gives the TinyMCE two-row toolbar — our Classic editor = that toolbar as the whole body.
+- Inserter tabs `Blocks · Patterns · Media` with groups `TEXT · MEDIA · DESIGN · WIDGETS · DESIGN`; the **`Classic` block** is what gives the TinyMCE two-row toolbar — our Classic editor = that toolbar as the whole body.
 - Admin bar: `W · Site name · Ctrl+K (command palette) · 💬 0 · + New · Howdy, user`. Keep `+ New ▾` (Page · Post · Product · Media) in our top bar.
 
 ### H. Users, Settings, Tools (for "the rest of WordPress management")
@@ -147,7 +139,7 @@ Panel title `Site Settings`, back `‹` top-left, `✕` top-right, sticky lilac 
 | **Editor = full-screen takeover** with its own top bar (back arrow, +, undo/redo, outline, preview device, settings toggle, Save/Publish)                                                                    | Editing is a mode, not a page                                    |
 | **Right settings sidebar with two tabs** — `Page`/`Post` (status, publish date, slug, author, template, featured image, excerpt, discussion, categories, tags, Move to trash) and `Block` (selected element) | Document vs element settings never fight for one panel           |
 | **Trash, not delete**: 30-day restore, count on the Trash tab                                                                                                                                                | Recoverability                                                   |
-| **Themes as cards** with screenshot, `Active:` bar, `Customize`, hover `Theme Details`, `Activate` / `Live Preview` on inactive, dashed `Add Theme` card                                                     | Instantly recognisable                                           |
+| ~~Designs as cards~~ — RETIRED 2026-09-23 (design packs purged; no card grid ships) | — |
 | **Command palette ⌘K** in the top bar                                                                                                                                                                        | Already have it — surface it in the same spot                    |
 
 | WordPress behaviour we **reject**                                              | Why                                                          |
@@ -170,10 +162,10 @@ status strip + counts, search/date filter, hover row actions, Quick Edit in-row 
 Trash → Restore → Delete permanently with 30-day countdown, `j/k/e/q/#/x/?` shortcuts, 390px layout
 with no horizontal overflow, console gate ≥ 90 on both routes.
 Carried forward: the old `/admin/pages` and `/admin/marketing/articles` screens still host the
-editors (deep-linked via `?edit=<id>` / `?new=1`) until Phase 12 replaces them; Media · Menus · Themes
+editors (deep-linked via `?edit=<id>` / `?new=1`) until Phase 12 replaces them; Media · Menus · Designs
 tabs land in Phases 15–16.
 
-Route family: `/admin/content` with tabs **Pages · Posts · Media · Menus · Themes**.
+Route family: `/admin/content` with tabs **Pages · Posts · Media · Menus · Designs**.
 `/admin/pages` and `/admin/marketing/articles` redirect here.
 
 **List screen (both Pages and Posts), built only from `kit.tsx`:**
@@ -295,9 +287,9 @@ Today: sections → columns → 10 widgets, one inspector, device switch, undo/r
 
 **Widget catalogue** — free-Elementor basics first, all styled by tokens: `Container, Grid, Heading, Image, Text editor, Video, Button, Divider, Spacer, Google Maps, Icon, Tabs, Accordion, Toggle, Image box, Icon box, Image carousel, Basic gallery, Icon list, Counter, Progress bar, Testimonial, Social icons, Alert, HTML, Shortcode→App block, Menu anchor, Read more, Rating, Text path`. Commerce widgets (`Products, Product categories, Add to cart, Cart, Checkout, Menu cart, Reviews`) reuse the existing 117 storefront section renderers via adapter.
 
-**Templates & blocks**: `Templates` (⌘⇧L) opens the modal from §B — tabs `Blocks | Pages | My templates`, `Import · Sync · Save` actions, the left category list (hero, features, pricing, testimonials, faq, footer, header, cta, team, stats, subscribe, 404…), favourites, search, `Insert`; `Save as template` on any container; `Import/Export` JSON. **Design System** panel (Variables: Color/Font/Size · Classes) and **Site Settings** (⌘K, hierarchy in §D incl. the _Show global settings_ style-guide overlay) map to the theme token editor.
+**Templates & blocks**: `Templates` (⌘⇧L) opens the modal from §B — tabs `Blocks | Pages | My templates`, `Import · Sync · Save` actions, the left category list (hero, features, pricing, testimonials, faq, footer, header, cta, team, stats, subscribe, 404…), favourites, search, `Insert`; `Save as template` on any container; `Import/Export` JSON. **Design System** panel (Variables: Color/Font/Size · Classes) and **Site Settings** (⌘K, hierarchy in §D incl. the _Show global settings_ style-guide overlay) map to the design token editor.
 
-**Page settings (⌘⇧Y)**: tabs `Settings · Style · Advanced` with the exact fields in §B (Title · Status · Featured image · Order · Allow comments · Hide title · Page layout Default/Canvas/Full width/Theme/No title; Body margin/padding/background; Custom CSS).
+**Page settings (⌘⇧Y)**: tabs `Settings · Style · Advanced` with the exact fields in §B (Title · Status · Featured image · Order · Allow comments · Hide title · Page layout Default/Canvas/Full width/Design/No title; Body margin/padding/background; Custom CSS).
 
 **History (⟲)**: `Actions | Revisions` — actions list with element + verb ("Heading edited"), revisions list with author/time + restore.
 
@@ -305,46 +297,37 @@ Keep: single render path (`PageCanvas`) for edit and preview; JSON in the existi
 
 ---
 
-## Phase 15 — Themes screen (Appearance › Themes parity) — **BUILT**
+## Phase 15 — Designs screen — RETIRED 2026-09-23
 
-Route: `/admin/content/themes` (also linked from Settings). Replaces the marketplace-first view for the merchant.
-
-- Header `Themes` + count badge in a `bg-muted` pill.
-- Toolbar: `Add theme` (signal) left; `Search installed themes` right.
-- Card grid, 3-up ≥1280 / 2-up ≥768 / 1-up: 16:10 screenshot plate, hairline, radius 14, micro-shadow; **hover** darkens the shot and centres a `Theme details` button plate; footer row `Name` + actions.
-  - **Active card**: footer becomes a signal-coloured bar `Active: Atelier` with a white-outline `Customize` button. Same for our accent, not WP blue.
-  - **Inactive card**: `Activate` (ghost) + `Live preview` (signal) appear on hover.
-  - Last cell: dashed `+ Add theme` card.
-- `Theme details` opens a full-screen modal (WordPress behaviour): large screenshot left; right: name, version, author, description, tags; footer `Activate / Live preview / Customize`, `Delete` far right in danger. `‹ ›` arrows to move between themes.
-- `Customize` opens the existing builder in **Site settings** mode with the full §D hierarchy (Design system › Global colours/fonts with the style-guide overlay; Theme style › Typography/Buttons/Images/Form fields; Settings › Identity/Background/Layout/Lightbox) and the storefront live in the iframe, bottom device toggle from the Customizer.
-- `Add theme` = the §A install screen: count badge, tabs `Popular · Latest · Favourites`, `Feature filter` drawer (Subject / Features / Layout), `Upload theme` toggle with .zip drop-zone + validation, cards with `Install · Preview` and centred `Details & Preview`; installed ones show `Installed` + `Activate`.
-- `Preview` = the §A split view (300px sidebar with `‹ ›`, Install, rating, version, description, collapse handle; live iframe; device toggle at bottom).
-- Theme details modal adds `Version · By author · Auto-update toggle · Tags`.
-- Data: `store_themes` (installed), `theme_registry`/`marketplace_themes` (catalogue), `theme_versions`.
+Retired with the full purge: design packs deleted, `/admin/content/designs`
+removed, no Designs screen ships. Original spec removed; recover via git.
 
 ---
 
 ## Phase 16 — Media library & Menus (rounds out "WordPress management")
 
-- **Media**: the §E screen — `List | Grid` toggle, `Add media file` inline drop-zone ("Drop files to upload · Select files · Max size"), filters type/date, `Bulk select`, search; grid click → attachment modal with `‹ ›`, `Edit image`, `Alt text (helper link) · Title · Caption · Description · File URL + Copy`, footer `View · Edit more · Download · Delete permanently`. Same modal as `MediaPicker` (`Upload files | Media library`, `Insert from URL`) used by builder widgets, featured image, SEO social image, theme logo/favicon. **SVG**: accepted, sanitised, badge shown; raw-SVG toggle off by default. Duplicate filenames auto-suffix.
+- **Media**: the §E screen — `List | Grid` toggle, `Add media file` inline drop-zone ("Drop files to upload · Select files · Max size"), filters type/date, `Bulk select`, search; grid click → attachment modal with `‹ ›`, `Edit image`, `Alt text (helper link) · Title · Caption · Description · File URL + Copy`, footer `View · Edit more · Download · Delete permanently`. Same modal as `MediaPicker` (`Upload files | Media library`, `Insert from URL`) used by builder widgets, featured image, SEO social image, site logo/favicon. **SVG**: accepted, sanitised, badge shown; raw-SVG toggle off by default. Duplicate filenames auto-suffix.
 - **Menus**: left column "Add menu items" accordion (`Pages · Posts · Collections · Products · Custom links`) with checkboxes + `Add to menu`; right column nested drag list with expandable item settings (`Navigation label · Title attribute · Open in new tab · CSS class`), depth via drag-right; `Menu settings` display locations (header, footer, mobile); `Save menu`.
 
 ---
 
-## Phase 17 — Storefront theme runtime — **BUILT**
+## Phase 17 — Storefront design runtime — RETIRED 2026-09-23
 
-- `theme_assets` table + `src/lib/themes/assets.ts|.server.ts|.functions.ts`: custom CSS and colour-token overrides, scoped to one installed theme or all, enable/disable without deleting, sanitised client- and server-side (`@import`, `expression()`, `javascript:`, `<script>`, `behavior` stripped), 100 KB cap.
-- Appearance › Themes gains a **Custom CSS & assets** view (`ThemeAssetsPanel`) with live rule/byte counters and a removal warning; zero axe violations at 390/1280.
-- Storefront injects the combined CSS through `ThemeChrome` (`<style data-fq-theme-assets>`).
-- Per-page theme pinning: `storefront_pages.theme_id`, resolved by the page loader via `publishedThemeById`; picked in the editor sidebar (`Theme → Site theme / installed theme`).
-- Builder documents now render as builder HTML on the storefront for both pages (`store/$slug/pages/$pageSlug`) and posts (`ArticleBody`), with the `fq-builder-page` base style utility.
+Retired with the full purge: per-design assets, `DesignChrome` injection, and
+per-page design pinning removed. Stores render builder content with default
+chrome.
+
+Retained (not design-pack specific): builder documents render as builder HTML
+on the storefront for both pages and posts, with the `fq-builder-page` base
+style utility.
+
 
 ---
 
 ## Phase 17b — Verification (extends the Phase 10 gate)
 
-- `scripts/console-gate.mjs` gains `content` (list + quick edit open), `editor-classic`, `editor-builder` (with a widget selected, Style tab open), `themes`, `media`, `menus` scenarios at 390/768/1280/1920 × light/dark/reduced.
-- Contrast: every new signal-on-card element (SEO score chips, active theme bar, selected outlines) asserted ≥ 4.5:1 text / 3:1 UI via `console-a11y.ts`.
+- `scripts/console-gate.mjs` gains `content` (list + quick edit open), `editor-classic`, `editor-builder` (with a widget selected, Style tab open), `media`, `menus` scenarios at 390/768/1280/1920 × light/dark/reduced.
+- Contrast: every new signal-on-card element (SEO score chips, selection outlines) asserted ≥ 4.5:1 text / 3:1 UI via `console-a11y.ts`.
 - Keyboard-only run: list → quick edit → save → open editor → publish → back, without a mouse.
 - The 28 reference screenshots already live under `docs/02-merchant/wp-reference/`; add a side-by-side page to `console-ux-checklist.md` so reviewers compare intent, not memory.
 - Builder-specific checks: drop indicator visible while dragging; click-to-add works; every §B shortcut fires; SVG upload succeeds and is sanitised; tablet/mobile canvas widths are 1024/767; all eight Style accordions open/close with keyboard; unsaved-changes guard blocks Site settings.
@@ -353,4 +336,4 @@ Route: `/admin/content/themes` (also linked from Settings). Replaces the marketp
 
 ## Order of execution
 
-11 (lists + quick edit) → 12 (editor shell + classic) → 13 (SEO box) → 14 (builder) → 15 (themes) → 16 (media/menus) → 17 (gate). Each phase ships behind the existing permission guards and keeps every old `/admin/*` URL redirecting.
+11 (lists + quick edit) → 12 (editor shell + classic) → 13 (SEO box) → 14 (builder) → 15 (retired) → 16 (media/menus) → 17 (gate). Each phase ships behind the existing permission guards and keeps every old `/admin/*` URL redirecting.
