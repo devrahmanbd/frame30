@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" role="img" aria-labelledby="sk-title sk-desc">
+  <title id="sk-title">Songoskriti logo</title>
+  <desc id="sk-desc">Songoskriti wordmark with Bengali twin সংস্কৃতি and a weave-lattice mark</desc>
+  <!-- Weave-lattice mark: interlaced terracotta / ember diamonds -->
+  <g fill="none" stroke-width="6">
+    <rect x="34" y="66" width="68" height="68" transform="rotate(45 68 100)" stroke="#8A3B1F"/>
+    <rect x="48" y="80" width="40" height="40" transform="rotate(45 68 100)" stroke="#C45D3E"/>
+    <line x1="68" y1="52" x2="68" y2="148" stroke="#8A3B1F"/>
+    <line x1="20" y1="100" x2="116" y2="100" stroke="#C45D3E"/>
+  </g>
+  <circle cx="68" cy="100" r="8" fill="#8A3B1F"/>
+  <!-- Wordmark -->
+  <text x="150" y="102" font-family="Georgia, 'Playfair Display', serif" font-size="52" letter-spacing="1" fill="#2D2A26">Songoskriti</text>
+  <text x="152" y="144" font-family="'Tiro Bangla', Georgia, serif" font-size="30" letter-spacing="2" fill="#8A3B1F">সংস্কৃতি</text>
+  <line x1="152" y1="158" x2="560" y2="158" stroke="#C45D3E" stroke-width="2"/>
+</svg>
