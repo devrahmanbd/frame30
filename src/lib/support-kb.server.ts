@@ -547,6 +547,53 @@ export function ensureCanonicalSeeded() {
   }
 }
 
+/**
+ * Query coverage gate — the single-stem false-positive killer.
+ *
+ * A hit only qualifies as citable when it accounts for EVERY distinctive
+ * query word (same tokenization + stemming the scorer uses). "How to
+ * integrate ERP?" against the Pathao article scores 0.5 ("erp" matches
+ * nothing) and is disqualified, no matter how high its text/vector scores
+ * look. Returns covered / total in [0, 1]; 0 when the query has no
+ * content tokens.
+ */
+export const MIN_QUERY_COVERAGE = 1;
+
+function coverageVariants(tok: string): string[] {
+  const out = [tok, `${tok}s`];
+  if (tok.endsWith("s")) out.push(tok.slice(0, -1));
+  if (tok.endsWith("ing")) out.push(tok.slice(0, -3));
+  if (tok.endsWith("ed")) out.push(tok.slice(0, -2));
+  return out;
+}
+
+export function queryCoverage(
+  query: string,
+  title: string,
+  body: string,
+): number {
+  const rawTokens = query
+    .toLowerCase()
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean);
+  const contentTokens = rawTokens.filter(
+    (t) => !STOP_WORDS.has(t) && t.length > 1,
+  );
+  const qTokens = contentTokens.length > 0 ? contentTokens : rawTokens;
+  if (qTokens.length === 0) return 0;
+  const docWords = new Set(
+    `${title} ${body}`
+      .toLowerCase()
+      .split(/[^\p{L}\p{N}]+/u)
+      .filter(Boolean),
+  );
+  let covered = 0;
+  for (const tok of qTokens) {
+    if (coverageVariants(tok).some((v) => docWords.has(v))) covered++;
+  }
+  return covered / qTokens.length;
+}
+
 const STOP_WORDS = new Set([
   "what",
   "when",

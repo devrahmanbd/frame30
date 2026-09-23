@@ -24,6 +24,7 @@ import {
   type GuardKind,
 } from "./support-guardrails";
 import { searchKb, searchKbHybrid, type KbHit } from "./support-kb.server";
+import { queryCoverage, MIN_QUERY_COVERAGE } from "./support-kb.server";
 import { draftAnswer } from "./support-llm.server";
 import { createTicket } from "./support-tickets.server";
 import {
@@ -915,6 +916,16 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     if (!pinned) {
       hits = await searchKbHybrid(merchant.id, input.message);
       steps.push({ step: "retrieve", hits: hits.length });
+      // Coverage gate: a hit is citable only when it accounts for EVERY
+      // distinctive query word. Single-stem matches ("integrat*" without
+      // "ERP") are disqualified here so the humility circuit below sees
+      // zero usable hits instead of a confident-looking false positive.
+      const qualified = hits.filter(
+        (h) =>
+          queryCoverage(input.message, h.title, h.body) >= MIN_QUERY_COVERAGE,
+      );
+      steps.push({ step: "coverage", kept: qualified.length, of: hits.length });
+      hits = qualified;
     }
 
     const confidence = confidenceOf({

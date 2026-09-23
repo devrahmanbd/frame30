@@ -615,6 +615,7 @@ import {
   getMockConversation,
 } from "./support-moderation.server";
 import { customerSendChatMessageFn } from "./support.functions";
+import { queryCoverage } from "./support-kb.server";
 
 describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Breaker", () => {
   describe("A. Out-of-Domain & Speculative Query Detection", () => {
@@ -874,6 +875,60 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
       expect(res.epistemicTriggered).toBeFalsy();
       expect(res.reply).not.toContain(EPISTEMIC_ADMISSION_EN);
       expect(res.reply).toMatch(/open|hours|active|9:00|10:00/i);
+    });
+
+    it("refuses to answer from a single-stem match when the decisive word is uncovered (ERP)", async () => {
+      // Regression: "How to integrate ERP?" was answered from the
+      // Pathao/RedX article on the strength of "integrat*" alone while
+      // "ERP" matched nothing. A citation must cover every distinctive
+      // query word or the humility circuit engages.
+      const res = await runSupportAgentTurn({
+        slug: "demo",
+        message: "How to integrate ERP?",
+        locale: "en",
+      });
+
+      expect(res.epistemicTriggered).toBe(true);
+      expect(res.confidence).toBe("unsure");
+      expect(res.needsAgent).toBe(true);
+      expect(res.sources ?? []).toHaveLength(0);
+      expect(res.reply).toContain(EPISTEMIC_ADMISSION_EN);
+      expect(res.reply).not.toMatch(/pathao|redx/i);
+    });
+  });
+
+  describe("D1. Query coverage gate (single-stem false positives)", () => {
+    const PATHAO_TITLE =
+      "Pathao & RedX Logistics, Automated Manifests & Real-Time Tracking";
+    const PATHAO_BODY =
+      "In addition to SteadFast, Framique integrates directly with Pathao Logistics and RedX Courier APIs for automated delivery dispatch across Bangladesh.";
+
+    it("scores full coverage when every distinctive word matches", () => {
+      expect(
+        queryCoverage(
+          "What are your delivery charges?",
+          "Delivery Charges",
+          "Inside Dhaka delivery charge is 60 taka. Outside Dhaka 120 taka.",
+        ),
+      ).toBe(1);
+    });
+
+    it("scores partial coverage when the decisive word is absent", () => {
+      expect(
+        queryCoverage("How to integrate ERP?", PATHAO_TITLE, PATHAO_BODY),
+      ).toBe(0.5);
+    });
+
+    it("matches stems the same way the KB scorer does", () => {
+      expect(
+        queryCoverage("integrate couriers", PATHAO_TITLE, PATHAO_BODY),
+      ).toBe(1);
+    });
+
+    it("scores zero when nothing matches", () => {
+      expect(
+        queryCoverage("Martian currency credits", PATHAO_TITLE, PATHAO_BODY),
+      ).toBe(0);
     });
   });
 });
