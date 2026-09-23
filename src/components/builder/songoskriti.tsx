@@ -11,7 +11,7 @@
  * Empty `testimonials`/`items` arrays render an editing placeholder and
  * null on the storefront — never a throw, never a blank crash.
  */
-import { useEffect, useState } from "react";
+import { useRef } from "react";
 import type {
   PropRow,
   PropValue,
@@ -19,6 +19,10 @@ import type {
   SectionType,
 } from "@/lib/builder-ast";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
+import {
+  useSongoskritiCarousel,
+  useSongoskritiReveals,
+} from "./songoskriti-motion";
 import { MediaFrame } from "./primitives/MediaFrame";
 import { altKey, sizesAttr, sizesKey } from "@/lib/media";
 import {
@@ -57,6 +61,9 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
     { label: str("o2Label"), href: str("o2Href") },
     { label: str("o3Label"), href: str("o3Href") },
   ].filter((o) => o.label);
+  // Task 5 motion: once-only batch reveal at full intent; static otherwise.
+  const scope = useRef<HTMLElement | null>(null);
+  useSongoskritiReveals(scope, true);
   if (!str("heading") && occasions.length === 0) {
     return editing ? (
       <p className="text-xs text-muted-foreground">
@@ -69,7 +76,11 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
     ) : null;
   }
   return (
-    <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+    <section
+      ref={scope}
+      data-songoskriti-reveal
+      className="rounded-fq-lg border border-border bg-card p-6 sm:p-8"
+    >
       {str("heading") && (
         <Heading className="font-bangla-display text-2xl font-bold">
           {str("heading")}
@@ -108,6 +119,9 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
 /* ------------------------------------------------------------- craft_story */
 
 const CraftStory: WidgetComponent = ({ str, bool, Heading, editing, locale }) => {
+  // Task 5 motion: once-only batch reveal at full intent; static otherwise.
+  const scope = useRef<HTMLElement | null>(null);
+  useSongoskritiReveals(scope, true);
   if (!str("heading") && !str("body")) {
     return editing ? (
       <p className="text-xs text-muted-foreground">
@@ -120,7 +134,11 @@ const CraftStory: WidgetComponent = ({ str, bool, Heading, editing, locale }) =>
     ) : null;
   }
   return (
-    <section className="relative overflow-hidden rounded-fq-lg">
+    <section
+      ref={scope}
+      data-songoskriti-reveal
+      className="relative overflow-hidden rounded-fq-lg"
+    >
       <MediaFrame
         src={str("imageUrl")}
         alt={str(altKey("imageUrl"))}
@@ -175,16 +193,18 @@ const Testimonials: WidgetComponent = ({
     }))
     .filter((item) => item.quote);
   const autoAdvanceMs = int("autoAdvanceMs", 6000, 1500, 15000);
-  const [current, setCurrent] = useState(0);
-  const [paused, setPaused] = useState(false);
-
-  useEffect(() => {
-    if (paused || testimonials.length <= 1) return;
-    const id = setInterval(() => {
-      setCurrent((i) => (i + 1) % testimonials.length);
-    }, autoAdvanceMs);
-    return () => clearInterval(id);
-  }, [paused, testimonials.length, autoAdvanceMs]);
+  // Task 5 motion: snap+buttons controller (spec §3). Reduced/off intents
+  // stay on the static first slide; buttons and dots keep working for all
+  // visitors. Pause-on-hover maps to pause()/resume().
+  const {
+    index: current,
+    goTo,
+    pause,
+    resume,
+  } = useSongoskritiCarousel(testimonials.length, autoAdvanceMs);
+  // Task 5 motion: once-only batch reveal at full intent; static otherwise.
+  const scope = useRef<HTMLElement | null>(null);
+  useSongoskritiReveals(scope, true);
 
   if (testimonials.length === 0) {
     return editing ? (
@@ -201,9 +221,11 @@ const Testimonials: WidgetComponent = ({
   const item = testimonials[current]!;
   return (
     <section
+      ref={scope}
+      data-songoskriti-reveal
       className="rounded-fq-lg border border-border bg-card p-6 sm:p-8"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseEnter={() => pause()}
+      onMouseLeave={() => resume()}
       aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
     >
       <div className="flex flex-col items-center text-center">
@@ -233,7 +255,7 @@ const Testimonials: WidgetComponent = ({
             <button
               key={i}
               type="button"
-              onClick={() => setCurrent(i)}
+              onClick={() => goTo(i)}
               className="grid min-h-11 min-w-11 place-items-center"
               aria-label={`${t(locale, "Testimonial", "প্রশংসাপত্র")} ${i + 1}`}
               aria-current={i === current}
@@ -263,6 +285,9 @@ const TRUST_FOOTER_ICON = {
 } as const;
 
 const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
+  // Task 5 motion: once-only batch reveal at full intent; static otherwise.
+  const scope = useRef<HTMLUListElement | null>(null);
+  useSongoskritiReveals(scope, true);
   // Repeater-first (trust_bar precedent): studio `items` rows win when
   // present, scalar i1–i4 triples remain as the fallback for
   // theme-authored sections.
@@ -295,7 +320,11 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
     ) : null;
   }
   return (
-    <ul className="grid grid-cols-2 gap-4 rounded-fq-lg border border-border bg-card p-4 sm:grid-cols-4">
+    <ul
+      ref={scope}
+      data-songoskriti-reveal
+      className="grid grid-cols-2 gap-4 rounded-fq-lg border border-border bg-card p-4 sm:grid-cols-4"
+    >
       {items.map((item) => {
         const Icon =
           TRUST_FOOTER_ICON[

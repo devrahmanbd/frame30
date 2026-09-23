@@ -8,7 +8,7 @@
  * All text supports bilingual EN/বাং labels via the `t()` helper. Deterministic
  * monogram tiles are used for images (no external URLs).
  */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   PropRow,
   PropValue,
@@ -17,6 +17,7 @@ import type {
 } from "@/lib/builder-ast";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
 import { placeholderSeed } from "@/lib/placeholder";
+import { useSongoskritiHero } from "./songoskriti-motion";
 
 /* ---------------------------------------------------------------- helpers */
 
@@ -114,6 +115,11 @@ const HeroCarousel: WidgetComponent = ({
   const atmosphere = str("atmosphere") || "wash";
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  // Task 5 motion: hero load timeline scoped to this section. SSR-safe
+  // (effects never run under renderToStaticMarkup) and static under
+  // reduced motion — the hook no-ops unless intent is full.
+  const heroScope = useRef<HTMLElement | null>(null);
+  useSongoskritiHero(heroScope, true);
 
   useEffect(() => {
     if (paused || slides.length <= 1) return;
@@ -139,6 +145,8 @@ const HeroCarousel: WidgetComponent = ({
   const isFirst = current === 0;
   return (
     <section
+      ref={heroScope}
+      data-songoskriti-hero
       aria-label={t(locale, "Hero carousel", "হিরো ক্যারোজেল")}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -154,29 +162,39 @@ const HeroCarousel: WidgetComponent = ({
         {/* Copy — asymmetric left, seven columns */}
         <div className="min-w-0 lg:col-span-7">
           {slide.caption && (
-            <p className="text-xs font-semibold tracking-widest text-primary fq-caps">
+            <p
+              data-hero-eyebrow
+              className="text-xs font-semibold tracking-widest text-primary fq-caps"
+            >
               {slide.caption}
             </p>
           )}
           {slide.headlineBn && (
             <p
+              data-hero-headline
               lang="bn"
               className="font-bangla-display mt-3 text-2xl font-bold leading-tight text-foreground sm:text-4xl"
             >
               {slide.headlineBn}
             </p>
           )}
-          <Heading className="mt-2 font-bangla-display text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl">
+          <Heading
+            data-hero-headline
+            className="mt-2 font-bangla-display text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl"
+          >
             {slide.headline}
           </Heading>
           {slide.subhead && (
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p
+              data-hero-sub
+              className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+            >
               {locale === "bn" && slide.subheadBn
                 ? slide.subheadBn
                 : slide.subhead}
             </p>
           )}
-          <div className="mt-7 flex flex-wrap items-center gap-3">
+          <div data-hero-cta className="mt-7 flex flex-wrap items-center gap-3">
             {slide.ctaLabel && (
               <a
                 href={slide.ctaUrl || "#"}
@@ -213,7 +231,7 @@ const HeroCarousel: WidgetComponent = ({
         </div>
         {/* Art — five columns, its own zone. Real photographs render;
             placeholder URLs become hand-built weave lattice instead. */}
-        <div className="min-w-0 lg:col-span-5">
+        <div data-hero-art className="min-w-0 lg:col-span-5">
           <div className="relative aspect-[4/5] w-full overflow-hidden rounded-fq-lg border border-border bg-card sm:aspect-[16/10] lg:aspect-[4/5]">
             {slide.image && !slide.image.startsWith("/api/public/ph/") ? (
               <img
