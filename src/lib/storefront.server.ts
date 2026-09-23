@@ -250,7 +250,7 @@ export async function loadStorefront(
   // payload under the tenant prefix (purgeStorefront clears it on
   // publish/install/import). Preview drafts are private — never cached.
   // The one extra merchant lookup per call replaces thirteen on a hit.
-  if (!preview) {
+  if (!_preview) {
     const db = publicClient();
     const { data: merchant } = await db
       .from("merchants")
@@ -268,7 +268,7 @@ export async function loadStorefront(
       { shared: true, staleSeconds: 300 },
     );
   }
-  return loadStorefrontUncached(slug, preview);
+  return loadStorefrontUncached(slug, _preview);
 }
 
 async function loadStorefrontUncached(
