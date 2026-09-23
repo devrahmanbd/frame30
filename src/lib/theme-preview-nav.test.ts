@@ -2,7 +2,10 @@
  * In-preview navigation — TDD: demo links stay inside the preview frame.
  */
 import { describe, expect, it } from "vitest";
-import { previewTemplateForHref } from "./theme-preview-nav";
+import {
+  previewTemplateForHref,
+  resolveThemePreview,
+} from "./theme-preview-nav";
 
 describe("previewTemplateForHref", () => {
   it("maps collection permalinks to the collection template", () => {
@@ -38,5 +41,31 @@ describe("previewTemplateForHref", () => {
     expect(previewTemplateForHref("mailto:x@y.zz")).toBeNull();
     expect(previewTemplateForHref("#size-guide")).toBeNull();
     expect(previewTemplateForHref("")).toBeNull();
+  });
+});
+
+describe("resolveThemePreview (Task 5: restored preview route)", () => {
+  it("resolves the songoskriti key with brand tokens and homepage AST", () => {
+    const preset = resolveThemePreview("songoskriti");
+    expect(preset).not.toBeNull();
+    expect(preset!.key).toBe("songoskriti");
+    expect(preset!.tokens.brand).toBe("#8A3B1F");
+    expect(preset!.templates.index.main.map((s) => s.type)).toEqual([
+      "announcement_bar",
+      "hero_carousel",
+      "circle_categories",
+      "finder_row",
+      "product_rail",
+      "craft_story",
+      "testimonials",
+      "trust_footer",
+    ]);
+    expect(preset!.templates.index.header.length).toBeGreaterThan(0);
+    expect(preset!.templates.index.footer.length).toBeGreaterThan(0);
+  });
+
+  it("returns null for unknown keys (route renders 404)", () => {
+    expect(resolveThemePreview("not-a-theme")).toBeNull();
+    expect(resolveThemePreview("")).toBeNull();
   });
 });

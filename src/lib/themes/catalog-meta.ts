@@ -181,6 +181,21 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     rating: 0,
     installs: 0,
   },
+  songoskriti: {
+    author: "Framique",
+    subjects: ["fashion", "home"],
+    features: [
+      ...BASE_FEATURES,
+      "mega menu",
+      "quick view",
+      "wishlist",
+      "reviews",
+    ],
+    layouts: ["grid", "full width", "editorial"],
+    tags: ["songoskriti", "heritage", "handloom", "festive", "editorial"],
+    rating: 0,
+    installs: 0,
+  },
 };
 
 const FALLBACK: CatalogMeta = {

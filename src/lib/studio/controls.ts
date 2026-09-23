@@ -2717,6 +2717,62 @@ const CONTENT: Record<string, Control[]> = {
     c({ key: "align", label: "Alignment", type: "select", tab: "content", section: "Layout", options: [{ value: "left", label: "Left" }, { value: "center", label: "Centre" }] }),
     c({ key: "bg", label: "Background", type: "select", tab: "content", section: "Style", options: [{ value: "none", label: "None" }, { value: "surface", label: "Surface" }, { value: "muted", label: "Muted" }] }),
   ],
+  // Songoskriti heritage gap pack. Every control key exists in the matching
+  // studio-catalog defaults (parity test enforces it).
+  finder_row: [
+    c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Finder" }),
+    c({ key: "body", label: "Body", type: "textarea", tab: "content", section: "Finder" }),
+    ...[1, 2, 3].flatMap((i) => [
+      c({ key: `o${i}Label`, label: `Occasion ${i} label`, type: "text", tab: "content", section: `Occasion ${i}` }),
+      c({ key: `o${i}Href`, label: `Occasion ${i} link`, type: "text", tab: "content", section: `Occasion ${i}` }),
+    ]),
+    c({ key: "buttonLabel", label: "Button label", type: "text", tab: "content", section: "Finder" }),
+    c({ key: "buttonHref", label: "Button link", type: "text", tab: "content", section: "Finder" }),
+  ],
+  craft_story: [
+    c({ key: "eyebrow", label: "Eyebrow", type: "text", tab: "content", section: "Story" }),
+    c({ key: "heading", label: "Heading", type: "text", tab: "content", section: "Story" }),
+    c({ key: "body", label: "Prose", type: "textarea", tab: "content", section: "Story" }),
+    c({ key: "ctaLabel", label: "Link label", type: "text", tab: "content", section: "Story" }),
+    c({ key: "ctaHref", label: "Link URL", type: "text", tab: "content", section: "Story" }),
+    c({ key: "imageUrl", label: "Background image", type: "text", tab: "content", section: "Story" }),
+    c({ key: "scrim", label: "Darken image behind text", type: "switch", tab: "content", section: "Story" }),
+  ],
+  testimonials: [
+    c({
+      key: "testimonials",
+      label: "Testimonials",
+      type: "repeater",
+      tab: "content",
+      section: "Testimonials",
+      fields: [
+        c({ key: "quote", label: "Quote", type: "textarea", tab: "content", section: "Testimonials" }),
+        c({ key: "author", label: "Name", type: "text", tab: "content", section: "Testimonials" }),
+        c({ key: "role", label: "Role", type: "text", tab: "content", section: "Testimonials" }),
+        c({ key: "image", label: "Avatar URL", type: "text", tab: "content", section: "Testimonials" }),
+      ],
+    }),
+    c({ key: "autoAdvanceMs", label: "Auto-advance (ms)", type: "number", tab: "content", section: "Testimonials", min: 1000, max: 15000 }),
+  ],
+  trust_footer: [
+    c({
+      key: "items",
+      label: "Badges",
+      type: "repeater",
+      tab: "content",
+      section: "Trust footer",
+      fields: [
+        c({ key: "icon", label: "Icon key", type: "text", tab: "content", section: "Trust footer" }),
+        c({ key: "title", label: "Title", type: "text", tab: "content", section: "Trust footer" }),
+        c({ key: "body", label: "Body", type: "text", tab: "content", section: "Trust footer" }),
+      ],
+    }),
+    ...[1, 2, 3, 4].flatMap((i) => [
+      c({ key: `i${i}Icon`, label: `Item ${i} icon key`, type: "text", tab: "content", section: `Item ${i}` }),
+      c({ key: `i${i}Title`, label: `Item ${i} title`, type: "text", tab: "content", section: `Item ${i}` }),
+      c({ key: `i${i}Body`, label: `Item ${i} body`, type: "text", tab: "content", section: `Item ${i}` }),
+    ]),
+  ],
 };
 
 const COMMERCE_CONTROLS: Control[] = [

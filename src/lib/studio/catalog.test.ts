@@ -137,6 +137,10 @@ const PORTED = [
   "quick_view",
   "department_strip",
   "columns",
+  "finder_row",
+  "craft_story",
+  "testimonials",
+  "trust_footer",
 ] as const;
 
 const COMMERCE_PORTED = new Set([

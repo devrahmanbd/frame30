@@ -2386,6 +2386,210 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
   ],
 };
 
+/** songoskriti — heritage storefront demo (product images: Task-3 placeholders; generator swaps in /ph/songoskriti/* when key lands): jamdani, panjabi, khadi, kantha and brass craft. BDT minor units; image refs point at public/ph/songoskriti/* final paths (files land via Task 3 generation; placeholder fallback covers gaps). */
+const SONGOSKRITI: DemoCatalog = {
+  categories: [
+    {
+      slug: "women",
+      name: "Women",
+      description: "Handloom sarees and festive drapes woven in Tangail and Sonargaon.",
+    },
+    {
+      slug: "men",
+      name: "Men",
+      description: "Rajshahi silk panjabis and breathable khadi kurtas.",
+    },
+    {
+      slug: "kids",
+      name: "Kids",
+      description: "Festive silk sets for young celebrations.",
+    },
+    {
+      slug: "living",
+      name: "Home & Living",
+      description: "Nakshi kantha quilts and artisan home textiles.",
+    },
+    {
+      slug: "jewellery",
+      name: "Jewellery",
+      description: "Hand-engraved brass pieces from Dhamrai metalworkers.",
+    },
+    {
+      slug: "new-in",
+      name: "New In",
+      description: "Fresh off the loom for this festive season.",
+    },
+  ],
+  collections: [
+    {
+      slug: "new-in",
+      name: "New Arrivals",
+      description: "This season's festive drop.",
+    },
+    {
+      slug: "bestsellers",
+      name: "Bestsellers",
+      description: "Most loved handloom staples.",
+    },
+    {
+      slug: "festive",
+      name: "Eid & Festive",
+      description: "Celebration dressing in handwoven silk and cotton.",
+    },
+    {
+      slug: "wedding",
+      name: "Wedding",
+      description: "Bridal sarees, groom panjabis and gifting.",
+    },
+    {
+      slug: "gifting",
+      name: "Gifting",
+      description: "Kantha, brass and keepsakes to gift.",
+    },
+  ],
+  products: [
+    {
+      slug: "rajshahi-silk-festive-panjabi",
+      title: "Rajshahi Silk Festive Panjabi",
+      description:
+        "Pure Rajshahi silk panjabi with subtle kantha stitch along the placket and mother-of-pearl buttons. Model is 182cm and wears size 40.",
+      category: "men",
+      collections: ["new-in", "festive", "wedding"],
+      tags: ["panjabi", "silk", "festive", "mens"],
+      image_url: "/api/public/ph/mens/pure-silk-embroidered-panjabi.svg",
+      variants: [
+        {
+          name: "Size 40 - Ivory",
+          sku: "SNK-PNJ-40IV",
+          price: 495000,
+          compare_at: 580000,
+          stock: 12,
+        },
+        {
+          name: "Size 42 - Ivory",
+          sku: "SNK-PNJ-42IV",
+          price: 495000,
+          compare_at: 580000,
+          stock: 9,
+        },
+        {
+          name: "Size 40 - Midnight Navy",
+          sku: "SNK-PNJ-40NV",
+          price: 495000,
+          stock: 7,
+        },
+      ],
+    },
+    {
+      slug: "dhakai-jamdani-heritage-saree",
+      title: "Dhakai Jamdani Heritage Saree",
+      description:
+        "Authentic Sonargaon Dhakai Jamdani with floral jall motifs in mulberry silk. Includes 80cm unstitched blouse piece. Model is 170cm.",
+      category: "women",
+      collections: ["new-in", "festive", "wedding"],
+      tags: ["jamdani", "saree", "silk", "handloom"],
+      image_url: "/api/public/ph/womens/dhakai-jamdani-silk-saree.svg",
+      variants: [
+        {
+          name: "Emerald & Rose Gold",
+          sku: "SNK-JAM-EMR",
+          price: 1850000,
+          compare_at: 2200000,
+          stock: 5,
+        },
+        {
+          name: "Crimson & Gold",
+          sku: "SNK-JAM-CRM",
+          price: 1850000,
+          stock: 4,
+        },
+      ],
+    },
+    {
+      slug: "comilla-khadi-casual-kurta",
+      title: "Comilla Handspun Khadi Kurta",
+      description:
+        "Authentic handspun Comilla khadi cotton with coconut-shell buttons. Breathable everyday cut. Model is 178cm and wears size 40.",
+      category: "men",
+      collections: ["bestsellers"],
+      tags: ["khadi", "kurta", "cotton", "handloom"],
+      image_url: "/api/public/ph/mens/comilla-handspun-khadi-kurta.svg",
+      variants: [
+        {
+          name: "Size M - Natural Off-White",
+          sku: "SNK-KHD-MOL",
+          price: 285000,
+          compare_at: 320000,
+          stock: 18,
+        },
+        {
+          name: "Size L - Natural Off-White",
+          sku: "SNK-KHD-LOL",
+          price: 285000,
+          compare_at: 320000,
+          stock: 14,
+        },
+      ],
+    },
+    {
+      slug: "jessore-nakshi-kantha-quilt",
+      title: "Jessore Nakshi Kantha Quilt",
+      description:
+        "Hand-stitched running-stitch kantha on layered natural cotton by Jessore craftswomen. Queen size, 88 x 96 in.",
+      category: "living",
+      collections: ["bestsellers", "gifting"],
+      tags: ["kantha", "quilt", "handloom", "living"],
+      image_url: "/api/public/ph/living/handcrafted-nakshi-kantha-quilt.svg",
+      variants: [
+        {
+          name: "Queen - Tree of Life",
+          sku: "SNK-NKS-QTL",
+          price: 850000,
+          compare_at: 980000,
+          stock: 8,
+        },
+      ],
+    },
+    {
+      slug: "dhamrai-brass-heritage-necklace",
+      title: "Dhamrai Brass Heritage Necklace",
+      description:
+        "Hand-cut and engraved brass necklace with 22k antique gold plating by Dhamrai metalworkers.",
+      category: "jewellery",
+      collections: ["festive", "wedding", "gifting"],
+      tags: ["jewellery", "brass", "necklace", "artisan"],
+      image_url: "/api/public/ph/jewelry/brass-filigree-chandbali-earrings.svg",
+      variants: [
+        {
+          name: "Antique Gold",
+          sku: "SNK-NKL-GLD",
+          price: 185000,
+          compare_at: 220000,
+          stock: 20,
+        },
+      ],
+    },
+    {
+      slug: "girls-silk-festive-ghagra-choli",
+      title: "Girls Silk Festive Ghagra Choli Set",
+      description:
+        "Three-piece festive set in pure silk with a threadwork choli, flared ghagra skirt and contrast dupatta.",
+      category: "kids",
+      collections: ["new-in", "festive", "gifting"],
+      tags: ["kids", "silk", "festive", "ghagra"],
+      variants: [
+        {
+          name: "Age 8-10 Yrs - Coral Rose",
+          sku: "SNK-KID-08CR",
+          price: 450000,
+          compare_at: 520000,
+          stock: 10,
+        },
+      ],
+    },
+  ],
+};
+
 export const DEMO_CATALOGS = {
   apparel: APPAREL,
   marketplace: MARKETPLACE,
@@ -2393,6 +2597,7 @@ export const DEMO_CATALOGS = {
   handloom: HANDLOOM_APPAREL,
   beauty: BEAUTY,
   general: SUPERSHOP_CATALOG,
+  songoskriti: SONGOSKRITI,
 } as const satisfies Record<string, DemoCatalog>;
 
 export type DemoCatalogKey = keyof typeof DEMO_CATALOGS;
