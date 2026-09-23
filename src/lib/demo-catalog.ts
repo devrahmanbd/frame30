@@ -874,7 +874,7 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       category: "womens",
       collections: ["heritage-handloom", "eid-festive", "bridal-sarees", "festive-sale", "herstory", "wedding", "womens"],
       tags: ["jamdani", "silk", "saree", "heritage"],
-      image_url: "/api/public/ph/womens/dhakai-jamdani-silk-saree.svg",
+      image_url: "/ph/songoskriti/prod-saree.png",
       variants: [
         {
           name: "Emerald Green & Rose Gold",
@@ -900,7 +900,7 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       category: "mens",
       collections: ["eid-festive", "artisan-essentials", "festive-sale", "groom-panjabis", "mens", "taaga-man", "wedding"],
       tags: ["panjabi", "silk", "rajshahi", "mens"],
-      image_url: "/api/public/ph/mens/pure-silk-embroidered-panjabi.svg",
+      image_url: "/ph/songoskriti/prod-panjabi.png",
       variants: [
         {
           name: "Size 38 - Pearl Ivory",
@@ -980,7 +980,7 @@ const HANDLOOM_APPAREL: DemoCatalog = {
       category: "jewelry",
       collections: ["eid-festive", "artisan-essentials", "festive-gifting", "festive-sale", "jewelry", "wedding"],
       tags: ["jewelry", "brass", "filigree", "earrings"],
-      image_url: "/api/public/ph/jewelry/brass-filigree-chandbali-earrings.svg",
+      image_url: "/ph/songoskriti/prod-necklace.png",
       variants: [
         {
           name: "Antique Gold & Pearl",
@@ -2456,7 +2456,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "men",
       collections: ["new-in", "festive", "wedding"],
       tags: ["panjabi", "silk", "festive", "mens"],
-      image_url: "/api/public/ph/mens/pure-silk-embroidered-panjabi.svg",
+      image_url: "/ph/songoskriti/prod-panjabi.png",
       variants: [
         {
           name: "Size 40 - Ivory",
@@ -2488,7 +2488,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "women",
       collections: ["new-in", "festive", "wedding"],
       tags: ["jamdani", "saree", "silk", "handloom"],
-      image_url: "/api/public/ph/womens/dhakai-jamdani-silk-saree.svg",
+      image_url: "/ph/songoskriti/prod-saree.png",
       variants: [
         {
           name: "Emerald & Rose Gold",
@@ -2558,7 +2558,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "jewellery",
       collections: ["festive", "wedding", "gifting"],
       tags: ["jewellery", "brass", "necklace", "artisan"],
-      image_url: "/api/public/ph/jewelry/brass-filigree-chandbali-earrings.svg",
+      image_url: "/ph/songoskriti/prod-necklace.png",
       variants: [
         {
           name: "Antique Gold",
