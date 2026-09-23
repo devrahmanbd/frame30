@@ -4,11 +4,7 @@ import { buildFooterMain } from "./footer";
 import { buildHeaderMain } from "./header";
 import { buildHomepageMain } from "./homepage";
 import { SONGOSKRITI_TOKENS } from "./tokens";
-import {
-  HOMEPAGE_SECTION_TYPES,
-  MISSING_TYPES,
-  STAND_IN_MAP,
-} from "./types";
+import { HOMEPAGE_SECTION_TYPES } from "./types";
 
 describe("songoskriti wiring", () => {
   it("locks brand tokens", () => {
@@ -40,28 +36,19 @@ describe("songoskriti wiring", () => {
         `${section.type} must exist in the catalog`,
       ).toBeDefined();
     }
-    // Stand-ins resolve 1:1 with the intended order until Task 2 lands.
-    expect(sections.map((n) => n.type)).toEqual(
-      HOMEPAGE_SECTION_TYPES.map((t) => STAND_IN_MAP[t] ?? t),
-    );
-  });
-
-  it("reports the 5 missing catalog types as Task 2 input", () => {
-    expect([...MISSING_TYPES]).toEqual([
-      "hero_carousel",
-      "finder_row",
-      "craft_story",
-      "testimonials",
-      "trust_footer",
-    ]);
-    for (const missing of MISSING_TYPES) {
+    // Task 2: builders emit the intended names directly — no stand-ins.
+    expect(sections.map((n) => n.type)).toEqual([...HOMEPAGE_SECTION_TYPES]);
+    for (const retired of [
+      "editorial_hero",
+      "filter_chips",
+      "collection_story",
+      "testimonial",
+      "trust_bar",
+    ]) {
       expect(
-        catalogEntry(missing as never),
-        `${missing} must stay missing until Task 2`,
-      ).toBeUndefined();
-      const standIn = STAND_IN_MAP[missing];
-      expect(standIn, `${missing} needs a stand-in`).toBeDefined();
-      expect(catalogEntry(standIn)).toBeDefined();
+        sections.map((n) => n.type),
+        `${retired} stand-in must be gone`,
+      ).not.toContain(retired);
     }
   });
 

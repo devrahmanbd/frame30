@@ -231,7 +231,15 @@ export type SectionType =
   | "blog_terms"
   | "blog_pager"
   | "orders_list"
-  | "profile_card";
+  | "profile_card"
+  // Songoskriti (heritage) homepage gap widgets. Renderers live in
+  // heritage.tsx (hero_carousel, already wired) and songoskriti.tsx (the
+  // other four); studio defs mirror these defaults 1:1.
+  | "hero_carousel"
+  | "finder_row"
+  | "craft_story"
+  | "testimonials"
+  | "trust_footer";
 
 export type PropScalar = string | number | boolean;
 /** A repeatable row (Phase 3.2 `array` fields). Always JSON-safe. */
@@ -4106,6 +4114,200 @@ const BASE_CATALOG: CatalogEntry[] = [
       { key: "heading", label: "Heading", kind: "bitext", panel: "content" },
     ],
   },
+  /* --------------------------------------- Songoskriti heritage gap pack */
+  {
+    // Renderer: heritage.tsx HeroCarousel (already wired). Slide rows carry
+    // their own bilingual twins; the carousel shell has no copy of its own.
+    type: "hero_carousel",
+    label: "Hero carousel",
+    group: "content",
+    slots: ["main"],
+    heading: true,
+    defaults: {
+      slides: [],
+      autoAdvanceMs: 6000,
+      atmosphere: "wash",
+    },
+    fields: [
+      {
+        key: "slides",
+        label: "Slides",
+        kind: "array",
+        panel: "content",
+        itemLabel: "headline",
+        maxRows: 3,
+        fields: [
+          { key: "image", label: "Image", kind: "image", panel: "content" },
+          text("headline", "Headline", 120),
+          text("headline_bn", "Headline (বাংলা)", 120),
+          area("subhead", "Subhead", 300),
+          area("subhead_bn", "Subhead (বাংলা)", 300),
+          text("ctaLabel", "CTA label", 40),
+          url("ctaUrl", "CTA link"),
+          text("caption", "Eyebrow caption", 60),
+        ],
+      },
+      num("autoAdvanceMs", "Auto-advance (ms)"),
+      {
+        key: "atmosphere",
+        label: "Backdrop wash",
+        kind: "select",
+        panel: "style",
+        options: [
+          { value: "wash", label: "Wash" },
+          { value: "none", label: "None" },
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: songoskriti.tsx FinderRow. Occasion chips link straight to
+    // collections (spec §2 item 5: Eid/festive, wedding, gifting).
+    type: "finder_row",
+    label: "Occasion finder",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Shop by occasion",
+      body: "",
+      o1Label: "Eid and festive",
+      o1Href: "/c/festive",
+      o2Label: "Wedding",
+      o2Href: "/c/wedding",
+      o3Label: "Gifting",
+      o3Href: "/c/gifting",
+      buttonLabel: "",
+      buttonHref: "",
+    },
+    fields: [
+      text("heading", "Heading"),
+      area("body", "Body", 300),
+      text("o1Label", "Occasion 1 label", 40),
+      url("o1Href", "Occasion 1 link"),
+      text("o2Label", "Occasion 2 label", 40),
+      url("o2Href", "Occasion 2 link"),
+      text("o3Label", "Occasion 3 label", 40),
+      url("o3Href", "Occasion 3 link"),
+      text("buttonLabel", "Button label", 40),
+      url("buttonHref", "Button link"),
+    ],
+  },
+  {
+    // Renderer: songoskriti.tsx CraftStory. Same prop names as
+    // collection_story (copy only, no stats until Task 4 seeds
+    // demo-labeled numbers).
+    type: "craft_story",
+    label: "Craft story",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      eyebrow: "Our craft",
+      heading: "From loom to wardrobe",
+      body: "We work with weaving clusters across Bengal. Every piece carries the name of its maker.",
+      ctaLabel: "Read our story",
+      ctaHref: "/pages/our-craft",
+      imageUrl: "",
+      scrim: true,
+    },
+    fields: [
+      text("eyebrow", "Eyebrow", 60),
+      text("heading", "Heading", 120),
+      area("body", "Prose", 1200),
+      text("ctaLabel", "Link label", 40),
+      url("ctaHref", "Link URL"),
+      url("imageUrl", "Background image"),
+      bool("scrim", "Darken image behind text"),
+    ],
+  },
+  {
+    // Renderer: songoskriti.tsx Testimonials. One quote per row, ≤3 lines
+    // (line-clamp-3), name + role; rows carry their own bilingual twins.
+    type: "testimonials",
+    label: "Testimonials",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      testimonials: [],
+      autoAdvanceMs: 6000,
+    },
+    fields: [
+      {
+        key: "testimonials",
+        label: "Testimonials",
+        kind: "array",
+        panel: "content",
+        itemLabel: "author",
+        maxRows: 6,
+        fields: [
+          area("quote", "Quote", 280),
+          area("quote_bn", "Quote (বাংলা)", 280),
+          text("author", "Name", 80),
+          text("author_bn", "Name (বাংলা)", 80),
+          text("role", "Role", 80),
+          text("role_bn", "Role (বাংলা)", 80),
+          { key: "image", label: "Avatar", kind: "image", panel: "content" },
+        ],
+      },
+      num("autoAdvanceMs", "Auto-advance (ms)"),
+    ],
+  },
+  {
+    // Renderer: songoskriti.tsx TrustFooter. Repeater-first like trust_bar:
+    // studio `items` rows win, scalar i1–i4 triples stay as the fallback for
+    // theme-authored sections.
+    type: "trust_footer",
+    label: "Trust footer",
+    group: "content",
+    slots: ["main", "footer"],
+    heading: false,
+    defaults: {
+      items: [],
+      i1Icon: "delivery",
+      i1Title: "Fast delivery",
+      i1Body: "",
+      i2Icon: "returns",
+      i2Title: "Easy returns",
+      i2Body: "",
+      i3Icon: "secure",
+      i3Title: "Secure payment",
+      i3Body: "",
+      i4Icon: "support",
+      i4Title: "",
+      i4Body: "",
+    },
+    fields: [
+      {
+        key: "items",
+        label: "Badges",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 4,
+        fields: [
+          text("icon", "Icon key", 20),
+          text("title", "Title"),
+          text("title_bn", "Title (বাংলা)"),
+          text("body", "Body", 120),
+          text("body_bn", "Body (বাংলা)", 120),
+        ],
+      },
+      text("i1Icon", "Item 1 icon key", 20),
+      text("i1Title", "Item 1 title"),
+      text("i1Body", "Item 1 body", 120),
+      text("i2Icon", "Item 2 icon key", 20),
+      text("i2Title", "Item 2 title"),
+      text("i2Body", "Item 2 body", 120),
+      text("i3Icon", "Item 3 icon key", 20),
+      text("i3Title", "Item 3 title"),
+      text("i3Body", "Item 3 body", 120),
+      text("i4Icon", "Item 4 icon key", 20),
+      text("i4Title", "Item 4 title"),
+      text("i4Body", "Item 4 body", 120),
+    ],
+  },
 
 ];
 
@@ -4690,6 +4892,28 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   nav_menu: ["heading"],
   logo: ["alt", "text"],
   carousel: ["heading"],
+  // Songoskriti heritage gap pack. Row-level twins (slides, testimonials,
+  // trust items) are read directly by their renderers, so only scalar
+  // theme-authored copy is listed here.
+  finder_row: [
+    "heading",
+    "body",
+    "o1Label",
+    "o2Label",
+    "o3Label",
+    "buttonLabel",
+  ],
+  craft_story: ["eyebrow", "heading", "body", "ctaLabel"],
+  trust_footer: [
+    "i1Title",
+    "i1Body",
+    "i2Title",
+    "i2Body",
+    "i3Title",
+    "i3Body",
+    "i4Title",
+    "i4Body",
+  ],
 };
 
 /**
