@@ -95,7 +95,7 @@ export const DATA_MODEL = {
   eyebrow: { en: "One product, many surfaces" },
   title: { en: "The unified data model." },
   intro: {
-    en: "Most Bangladeshi merchants we've spoken with run at least three tools that each think they own the product record: a storefront page, a spreadsheet for stock, and a courier panel for order status. Framique treats a product as one row with fan-out, not three rows kept in sync by hand.",
+    en: "Most Bangladeshi merchants we've spoken with run at least three tools that each think they own the product record: a storefront theme, a spreadsheet for stock, and a courier panel for order status. Framique treats a product as one row with fan-out, not three rows kept in sync by hand.",
   },
   howItWorks: {
     en: 'A product has a canonical ID. Everything else — its storefront listing, its POS button, its stock ledger entry, its analytics dimension, its order line item — reads and writes against that same ID. There is no import job, no CSV round-trip, no "sync in progress" spinner between your shop and your counter.',
@@ -576,55 +576,55 @@ export const PILLAR_DEEP_DIVES: PillarDeepDive[] = [
 ];
 
 /* -------------------------------------------------------------------------- */
-/* 10 — Five section groups                                                  */
+/* 10 — Five official themes                                                  */
 /* -------------------------------------------------------------------------- */
 
-export const SECTIONS_HEADING = {
-  en: "The section library — and when each group fits",
+export const THEMES_HEADING = {
+  en: "The five official themes — and when each fits",
 } satisfies Bilingual;
-export const SECTIONS_INTRO = {
-  en: "Framique ships five section groups today. Each is a starting point you can still edit token-by-token in the builder — picking sections is not a lock-in decision.",
+export const THEMES_INTRO = {
+  en: "Framique ships five official themes today. Each is a starting point you can still edit token-by-token in the builder — choosing a theme is not a lock-in decision.",
 } satisfies Bilingual;
 
-export type SectionCard = {
+export type ThemeCard = {
   id: string;
   name: string;
   builtFor: string;
   bands: string;
   trait: string;
 };
-export const SECTIONS: SectionCard[] = [
+export const THEMES: ThemeCard[] = [
   {
-    id: "catalogue",
-    name: "Catalogue",
+    id: "classic",
+    name: "Classic",
     builtFor: "General retail, apparel, gifting",
     bands: "6–8 bands",
     trait: "Balanced grid, neutral type scale, safe default",
   },
   {
-    id: "lookbook",
-    name: "Lookbook",
+    id: "modern",
+    name: "Modern",
     builtFor: "Fashion, beauty, higher-margin goods",
     bands: "5–7 bands",
     trait: "Larger imagery, tighter type, fewer bands per page",
   },
   {
-    id: "campaign",
-    name: "Campaign",
+    id: "landing",
+    name: "Landing",
     builtFor: "Single-product or campaign launches",
     bands: "3–5 bands",
     trait: "Built to convert one SKU or one collection, minimal navigation",
   },
   {
-    id: "high-density",
-    name: "High-density",
+    id: "supershop",
+    name: "Supershop",
     builtFor: "Wide catalogues, groceries, multi-category",
     bands: "8–10 bands",
     trait: "Dense grid, category rail up front, search-forward",
   },
   {
-    id: "wholesale",
-    name: "Wholesale",
+    id: "b2b",
+    name: "B2B",
     builtFor: "Wholesale, trade accounts, quote-based selling",
     bands: "6–9 bands",
     trait:
@@ -632,7 +632,7 @@ export const SECTIONS: SectionCard[] = [
   },
 ];
 
-export const SECTIONS_DECISION = {
+export const THEMES_DECISION = {
   en: "If the catalogue is under 30 SKUs and centred on one collection, start with Landing. If it's a wide multi-category shop with daily repeat buyers, start with Supershop. If pricing depends on the buyer's account (trade, wholesale), start with B2B — its checkout flow assumes a login before price is shown. Everything else starts with Classic or Modern depending on whether the aesthetic priority is breadth (Classic) or image-led minimalism (Modern).",
 } satisfies Bilingual;
 
@@ -784,7 +784,7 @@ export const PERFORMANCE = {
   eyebrow: { en: "Performance budget" },
   title: { en: 'A budget, not a vague "fast."' },
   body: {
-    en: "Storefronts are judged on load time by both customers on mid-range Android phones over 3G/4G and by search engines. Framique enforces a performance budget at the platform level rather than leaving it to each merchant's discretion.",
+    en: "Storefronts are judged on load time by both customers on mid-range Android phones over 3G/4G and by search engines. Framique enforces a performance budget at the platform level rather than leaving it to each theme's discretion.",
   },
 } satisfies Record<string, Bilingual>;
 
@@ -880,7 +880,7 @@ export const COMPARISON_ROWS: ComparisonRow[] = [
     id: "storefront",
     task: "Storefront",
     stitched:
-      "One page platform (often foreign hosting, foreign payment defaults)",
+      "One theme platform (often foreign hosting, foreign payment defaults)",
     framique: "Built in, Bangladesh-first payment defaults",
   },
   {
@@ -991,12 +991,12 @@ export const FEATURES_FAQ: FaqItem[] = [
     },
   },
   {
-    id: "layouts",
+    id: "themes",
     question: {
-      en: "How many page layouts are available, and can I customise them?",
+      en: "How many storefront themes are available, and can I customise them?",
     },
     answer: {
-      en: "Five section groups ship today — Catalogue, Lookbook, Campaign, High-density and Wholesale. Every section remains fully editable in the builder down to individual design tokens.",
+      en: "Five official themes ship today — Classic, Modern, Landing, Supershop and B2B. Every theme remains fully editable in the builder down to individual design tokens.",
     },
   },
   {

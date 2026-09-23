@@ -33,6 +33,11 @@ import {
   type Block,
 } from "./blog-body";
 import { incr, log, observe } from "./observability.server";
+import {
+  buildPermalink,
+  DEFAULT_PERMALINKS,
+  type PermalinkSettings,
+} from "./permalink";
 
 type Client = SupabaseClient<Database>;
 
@@ -367,7 +372,9 @@ export async function saveArticle(
       if (error) throw error;
 
       if (!autosave && before.slug && before.slug !== slug) {
-        await recordSlugRedirect(db, merchantId, before.slug, slug);
+        await recordSlugRedirect(db, merchantId, before.slug, slug, {
+          date: publishedAt ?? before.published_at ?? null,
+        });
       }
       outcome("updated");
       log("info", "cms.article_saved", {
@@ -442,26 +449,45 @@ export async function saveArticle(
  * Without collapsing, renaming a post three times leaves A→B→C→D and every
  * visitor on the oldest link pays three redirects (and Google gives up after a
  * handful). Rewriting older hops to the final target keeps every path one hop.
+ *
+ * Paths come from the merchant's live permalink settings via `buildPermalink`,
+ * never from a hardcoded `/blog` shape: with a custom article base or a dated
+ * pattern the default shape is a URL this store never served. Settings arrive
+ * through the cached render-path read and fall back to `DEFAULT_PERMALINKS`,
+ * so a settings outage degrades the redirect rather than failing the save.
  */
 export async function recordSlugRedirect(
   db: Client,
   merchantId: string,
   fromSlug: string,
   toSlug: string,
+  opts?: { date?: string | null; category?: string | null },
 ) {
-  const from = `/blog/${fromSlug}`;
-  const to = `/blog/${toSlug}`;
-  const { error } = await db
-    .from("url_redirects")
-    .upsert(
-      {
-        merchant_id: merchantId,
-        from_path: from,
-        to_path: to,
-        status_code: 301,
-      },
-      { onConflict: "merchant_id,from_path" },
-    );
+  let settings: PermalinkSettings = DEFAULT_PERMALINKS;
+  try {
+    const { permalinkSettingsFor } = await import("./permalink.server");
+    settings = await permalinkSettingsFor(db, merchantId);
+  } catch {
+    log("warn", "cms.permalink_fallback", { merchant_id: merchantId });
+  }
+  const entity = (slug: string) => ({
+    kind: "article" as const,
+    slug,
+    date: opts?.date ?? null,
+    category: opts?.category ?? null,
+  });
+  const from = buildPermalink(settings, entity(fromSlug));
+  const to = buildPermalink(settings, entity(toSlug));
+  if (from === to) return;
+  const { error } = await db.from("url_redirects").upsert(
+    {
+      merchant_id: merchantId,
+      from_path: from,
+      to_path: to,
+      status_code: 301,
+    },
+    { onConflict: "merchant_id,from_path" },
+  );
   if (error) {
     log("warn", "cms.redirect_failed", {
       merchant_id: merchantId,

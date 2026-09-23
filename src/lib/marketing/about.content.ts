@@ -36,7 +36,7 @@ export const THESIS = {
   title: "Most commerce software wasn't built for this market.",
   paragraphs: [
     'Most commerce software sold into Bangladesh was designed somewhere a credit card is the default payment method, a national address system is machine-parseable, and the storefront\'s primary language uses a single case and no conjunct consonants. None of that describes this market. When that software arrives here, "localisation" means a currency symbol, a translated button label, and a cash-on-delivery module maintained as a bolt-on plugin, usually by a third party, usually behind on updates.',
-    "That gap doesn't stay theoretical. It shows up as a merchant reconciling COD collections against courier remittance in a spreadsheet at midnight because the platform's ledger assumes every order clears through a payment gateway the moment it's placed. It shows up as a Bangla product title clipped mid-word because the page's line-height was tuned for Latin ascenders and descenders, not for matras that need vertical room. It shows up as an SMS-OTP checkout flow built for a market where every customer has a stable email address and a laptop, in a market where the phone number *is* the identity and the checkout happens on a mid-range Android device over 3G.",
+    "That gap doesn't stay theoretical. It shows up as a merchant reconciling COD collections against courier remittance in a spreadsheet at midnight because the platform's ledger assumes every order clears through a payment gateway the moment it's placed. It shows up as a Bangla product title clipped mid-word because the theme's line-height was tuned for Latin ascenders and descenders, not for matras that need vertical room. It shows up as an SMS-OTP checkout flow built for a market where every customer has a stable email address and a laptop, in a market where the phone number *is* the identity and the checkout happens on a mid-range Android device over 3G.",
     "We didn't start Framique to add a \"Bangladesh mode\" to an existing platform. We started it because the mismatch is structural — it lives in the data model, not the UI chrome — and structural mismatches can't be fixed with a translation file.",
   ],
   closingClaim:
@@ -174,7 +174,7 @@ export const PRINCIPLES: Principle[] = [
     forbids:
       'applying Latin type rules (negative tracking, Latin line-height) to Bangla text and calling it "localised."',
     produced:
-      'the bangla-display token drops letter-spacing to zero and enforces a 1.35+ line box automatically on any lang="bn" subtree — no page can ship a Bangla headline that clips a matra.',
+      'the bangla-display token drops letter-spacing to zero and enforces a 1.35+ line box automatically on any lang="bn" subtree — a theme cannot ship a Bangla headline that clips a matra.',
   },
   {
     id: "cash-is-a-method",
@@ -255,26 +255,26 @@ export const ENGINEERING_CARDS: EngineeringCard[] = [
 export const DESIGN_PHILOSOPHY = {
   eyebrow: "Design philosophy",
   title:
-    "Bangla typography set the constraints. The section library is what fits inside them.",
+    "Bangla typography set the constraints. The five themes are what fit inside them.",
   paragraphs: [
     "Type systems built for Latin scripts assume every glyph sits between a baseline and a cap-height, with predictable ascenders and descenders. Bangla doesn't work that way: matras extend above the headline, and conjunct consonants stack vertically in ways that need genuine room, not a squeezed line-height borrowed from a Helvetica-tuned design system. Apply Latin negative tracking to Bangla — the aggressive, confident tracking that makes an English headline feel sharp — and Bangla text becomes harder to read, not sharper. Matras clip. Conjuncts collide.",
-    'So the type system doesn\'t have "a Bangla mode." It has a rule: any display token applied inside a lang="bn" subtree drops its letter-spacing to zero and enforces a 1.35+ line box, automatically, regardless of which sections a merchant has assembled. That single rule — decided once, in the type token layer — is why every storefront a merchant builds on Framique renders Bangla product names correctly without a merchant ever touching a CSS property.',
-    'From that constraint, and from the range of retail formats we saw merchants actually running — a boutique with five products and heavy storytelling, a 2,000-SKU wholesale catalogue, a B2B distributor quoting in bulk — five section groups emerged, not as marketing skins but as different answers to "how much room does this catalogue need, and how much of it is Bangla-first."',
+    'So the type system doesn\'t have "a Bangla mode." It has a rule: any display token applied inside a lang="bn" subtree drops its letter-spacing to zero and enforces a 1.35+ line box, automatically, regardless of which theme a merchant has chosen. That single rule — decided once, in the type token layer — is why every storefront a merchant builds on Framique renders Bangla product names correctly without a merchant ever touching a CSS property.',
+    'From that constraint, and from the range of retail formats we saw merchants actually running — a boutique with five products and heavy storytelling, a 2,000-SKU wholesale catalogue, a B2B distributor quoting in bulk — five official themes emerged, not as marketing skins but as different answers to "how much room does this catalogue need, and how much of it is Bangla-first."',
   ],
 } as const;
 
-export type SectionRow = {
+export type ThemeRow = {
   id: string;
-  group: string;
+  theme: string;
   builtFor: string;
   optimises: string;
   bangla: string;
 };
 
-export const SECTION_ROWS: SectionRow[] = [
+export const THEME_ROWS: ThemeRow[] = [
   {
-    id: "catalogue",
-    group: "Catalogue",
+    id: "classic",
+    theme: "Classic",
     builtFor: "General retail, balanced catalogue size",
     optimises:
       "Familiar grid, low cognitive load for first-time online shoppers",
@@ -282,32 +282,32 @@ export const SECTION_ROWS: SectionRow[] = [
       "Bangla display at 1.4 line-box, product names never truncated mid-conjunct",
   },
   {
-    id: "lookbook",
-    group: "Lookbook",
+    id: "modern",
+    theme: "Modern",
     builtFor: "Fashion, lifestyle, visual-first brands",
     optimises: "Large imagery, minimal chrome, editorial pacing",
     bangla:
       "Bangla headlines sit in oversized display slots with the same zero-tracking rule, no shrink-to-fit hacks",
   },
   {
-    id: "campaign",
-    group: "Campaign",
+    id: "landing",
+    theme: "Landing",
     builtFor: "Single-product launches, campaign pages",
     optimises: "One conversion path, no competing navigation",
     bangla:
       "Bangla CTA copy set at button-token line-height so wallet names (bKash, Nagad) never wrap awkwardly",
   },
   {
-    id: "high-density",
-    group: "High-density",
+    id: "supershop",
+    theme: "Supershop",
     builtFor: "High-SKU grocery/FMCG catalogues",
     optimises: "Dense grid, fast filtering, price-forward cards",
     bangla:
       "Tabular numerals for BDT prices sit flush against Bangla unit labels without baseline drift",
   },
   {
-    id: "wholesale",
-    group: "Wholesale",
+    id: "b2b",
+    theme: "B2B",
     builtFor: "Wholesale, bulk-order, quote-driven merchants",
     optimises: "Tables, tiered pricing, MOQ logic front and centre",
     bangla:
@@ -349,9 +349,9 @@ export const SCORING_ROWS: ScoringRow[] = [
     criterion: "Reach",
     weight: "25%",
     measures:
-      "How many merchants, across how many plans/tiers, does this unblock?",
+      "How many merchants, across how many themes/tiers, does this unblock?",
     example:
-      "A courier-abstraction improvement affecting every storefront outranks a single-page cosmetic request",
+      "A courier-abstraction improvement affecting all five themes outranks a single-theme cosmetic request",
   },
   {
     id: "reversibility",
@@ -511,18 +511,18 @@ export const ABOUT_FAQ: { id: string; question: string; answer: string }[] = [
       "Multiple providers behind a single abstraction merchants configure and switch between by zone, cost and reliability — see Engineering Philosophy.",
   },
   {
-    id: "sections-customizable",
+    id: "themes-customizable",
     question:
-      "Do I have to use one of the five section groups, or can I customize further?",
+      "Do I have to use one of the five official themes, or can I customize further?",
     answer:
-      "The five section groups (Catalogue, Lookbook, Campaign, High-density, Wholesale) are starting points tuned for different catalogue shapes; each is customizable within the shared token system.",
+      "The five themes (Classic, Modern, Landing, Supershop, B2B) are starting points tuned for different catalogue shapes; each is customizable within the shared token system.",
   },
   {
     id: "bangla-typography",
     question:
       "How does Bangla typography actually work under the hood — is it just a font swap?",
     answer:
-      'No — it\'s a token rule: any display type applied inside a lang="bn" subtree automatically zeroes letter-spacing and enforces a taller line box, regardless of layout.',
+      'No — it\'s a token rule: any display type applied inside a lang="bn" subtree automatically zeroes letter-spacing and enforces a taller line box, regardless of theme.',
   },
   {
     id: "outage-payout",

@@ -130,7 +130,7 @@
 | Products | `/dashboard/products` | ✅ |
 | Customers | `/dashboard/customers` | ✅ |
 | Content | `/dashboard/content/pages` | ✅ |
-| Appearance | `/dashboard/content/pages` | ✅ (design packs retired 2026-09-23; Appearance covers Customize + Menus) |
+| Appearance | `/dashboard/content/themes` | ✅ |
 | Plugins | `/dashboard/plugins` | ✅ |
 | Marketplace | `/dashboard/marketplace` | ✅ |
 | Marketing | `/dashboard/marketing/campaigns` | ✅ |
@@ -158,7 +158,7 @@
 | 3 | Set pickup address and rates | `/dashboard/shipping` |
 | 4 | Connect a courier | `/dashboard/shipping` |
 | 5 | Publish your first product | `/dashboard/products` |
-| 6 | Publish your storefront design | `/dashboard/builder` |
+| 6 | Publish your storefront theme | `/dashboard/builder` |
 | 7 | Add your VAT registration | `/dashboard/settings` |
 | 8 | Submit store verification | `/dashboard/staff` |
 
@@ -181,7 +181,7 @@
 | **Language toggle** | EN / বাং ✅ |
 | **Product listing** | "All products(0)" — "No products match this view." ✅ |
 
-**Finding:** Storefront is live and fully functional immediately after onboarding. Default design applied with proper B2C Bangladesh copy. Empty state handled gracefully.
+**Finding:** Storefront is live and fully functional immediately after onboarding. Default theme applied with proper B2C Bangladesh copy. Empty state handled gracefully.
 
 ---
 

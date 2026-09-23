@@ -125,7 +125,7 @@ export function DocsAiWidget({
               <div className="space-y-3">
                 <p className="text-sm text-muted-foreground">
                   Ask anything about setup, the API, webhooks, payments or
-                  pages.
+                  themes.
                 </p>
                 <ul className="space-y-2">
                   {SUGGESTIONS.map((suggestion) => (

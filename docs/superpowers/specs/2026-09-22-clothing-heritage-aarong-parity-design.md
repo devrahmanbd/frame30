@@ -18,7 +18,7 @@
 - B) Aarong-parity rebuild (chosen): fix 6 renderer/contract mismatches, rewrite
   blueprint homepage to ref rhythm, enrich demo-mapped sections, fix preview
   duplication. No new infra, no route changes.
-- C) Greenfield design system — rejected: breaks builder-ast contracts + studio panels.
+- C) Greenfield theme system — rejected: breaks builder-ast contracts + studio panels.
 
 ## 3. Reference DNA (what we steal, what we skip)
 
@@ -69,4 +69,4 @@ genuine heritage/editorial brief (taste-skill serif exception).
 TDD: failing test first for each dual-read + payment split + blueprint shape
 (departments/items/testimonials non-empty, no empty headings on index).
 Targeted vitest on touched files + tsc on touched files. No full suite locally
-(CI owns it per progress.md D5). Preview route removed with the purge; verify via the default storefront path.
+(CI owns it per progress.md D5). Preview via /theme-preview/clothing-heritage.

@@ -300,10 +300,22 @@ export function builtInTemplates(): StudioTemplate[] {
       a3: "Yes — unused items within 7 days, no questions asked.",
     });
 
-    const testimonialSingle = withSettings("testimonial", {
-      text: "Ordered Tuesday night, wearing it Friday. Impeccable.",
-      author: "Nusrat A.",
-      role: "Verified buyer",
+    const testimonialCarousel = withSettings("testimonial_carousel", {
+      testimonials: [
+        {
+          quote: "Ordered Tuesday night, wearing it Friday. Impeccable.",
+          author: "Nusrat A.",
+          role: "Verified buyer",
+          avatar: "",
+        },
+        {
+          quote: "The fabric quality rivals brands triple the price.",
+          author: "Tanvir H.",
+          role: "Verified buyer",
+          avatar: "",
+        },
+      ],
+      autoAdvanceMs: 6000,
     });
 
     const heroSplit = withSettings("editorial_hero", {
@@ -423,7 +435,7 @@ export function builtInTemplates(): StudioTemplate[] {
         nodes: [
           newContainer(
             { layout: "flex", direction: "column", gap: 12 },
-            [testimonialSingle],
+            [testimonialCarousel],
           ),
         ],
       },

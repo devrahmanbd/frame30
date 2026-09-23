@@ -5,7 +5,7 @@
  * read-mostly surface with a hard LCP budget in `web-vitals.ts`, and the pages
  * are pre-rendered. So instead of pulling in Shiki/Prism we tokenise the four
  * languages the reference actually uses (bash, ts, json, http) with a single
- * ordered regex pass and emit semantic spans the palette colours through tokens.
+ * ordered regex pass and emit semantic spans the theme colours through tokens.
  *
  * Rules that keep this honest rather than clever:
  *  - the tokeniser NEVER emits HTML; it returns `{ kind, text }` pairs and React

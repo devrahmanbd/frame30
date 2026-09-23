@@ -10,6 +10,7 @@ import {
 } from "./lib/storefront-cache";
 import { isLocalHostname } from "./lib/edge-hosts";
 import {
+  decideStoreRedirectForPath,
   isBlockedPathStorefront,
   normalizeRequestHost,
 } from "./lib/storefront-host.server";
@@ -389,6 +390,7 @@ export default {
           request.headers.get("x-forwarded-host") ??
           request.headers.get("host") ??
           url.host;
+        const normalizedHost = normalizeRequestHost(rawHost);
         // Preview exemption is token-VERIFIED and merchant-bound (Sept
         // 2026): any ?preview_token= value used to lift both path gates.
         // A token minted for merchant A never exempts merchant B's paths.
@@ -423,11 +425,48 @@ export default {
         }
         if (
           isBlockedPathStorefront(
-            normalizeRequestHost(rawHost),
+            normalizedHost,
             url.pathname,
             validPreview,
           )
         ) {
+          // DEV-2 deep-path permalink: /store/<slug>/* → https://<primary>/*.
+          // Centralized here (not per-route beforeLoad) because this gate 404s
+          // before SSR — a per-route beforeLoad would never run on platform
+          // hosts. One lookup covers the index + every deep route (p/c/pages/
+          // search/blog/cart/…), present and future.
+          // WordPress parity: strip the /store/<slug> prefix, collapse //,
+          // preserve ? via url.search (# never reaches the server; #
+          // semantics live in decideStoreRedirectForPath for callers holding
+          // the full subpath, e.g. resolveStoreRedirectFn). Fail-soft: any
+          // lookup failure falls through to the bare 404 below. Exemptions
+          // (preview_token, track/order, localhost, custom hosts) never reach
+          // here — isBlockedPathStorefront already returned false for them.
+          try {
+            const slugMatch = /^\/store\/([^/?#]+)/.exec(url.pathname);
+            const slug = slugMatch?.[1];
+            if (slug && normalizedHost) {
+              const { merchantIdForSlug, primaryHostForMerchant } =
+                await import("./lib/storefront-host.server");
+              const merchantId = await merchantIdForSlug(slug).catch(
+                () => null,
+              );
+              if (merchantId) {
+                const primary = await primaryHostForMerchant(merchantId).catch(
+                  () => null,
+                );
+                const to = decideStoreRedirectForPath(
+                  primary,
+                  normalizedHost,
+                  `${url.pathname}${url.search}`,
+                );
+                if (to) return Response.redirect(to, 301);
+              }
+            }
+          } catch {
+            // A redirect-lookup failure must never break routing — fall
+            // through to the bare 404 below.
+          }
           const { incr } = await import("./lib/observability.server");
           incr("framique_path_storefront_blocked_total", {
             path: url.pathname.split("/").slice(0, 3).join("/"),

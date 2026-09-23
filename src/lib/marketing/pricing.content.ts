@@ -183,7 +183,7 @@ export const FEE_ANATOMY = {
  */
 export const BILLING_GUIDANCE = {
   title: "Annual isn't automatically the right call.",
-  body: "Annual billing is two months free against monthly — a genuine 16.7% discount. It is the right choice once you're confident in your order volume for the next 12 months. It is the wrong choice if you are still validating demand, still deciding your page structure, or likely to upgrade tiers mid-year: the unused portion of an annual plan is not refunded pro-rata against an upgrade, only credited toward the new tier's annual price.",
+  body: "Annual billing is two months free against monthly — a genuine 16.7% discount. It is the right choice once you're confident in your order volume for the next 12 months. It is the wrong choice if you are still validating demand, still deciding your theme, or likely to upgrade tiers mid-year: the unused portion of an annual plan is not refunded pro-rata against an upgrade, only credited toward the new tier's annual price.",
   bodyBn:
     "বার্ষিক বিলিং সবসময় সঠিক সিদ্ধান্ত নয়। আপনার অর্ডার ভলিউম সম্পর্কে নিশ্চিত হলে তবেই এটি বেছে নিন।",
   rows: [
@@ -332,7 +332,7 @@ export const COMPARISON = {
       id: "brand",
       dimension: "Storefront brand control",
       marketplace: "Limited — shared marketplace UI",
-      framique: "Full control over pages, sections and brand tokens",
+      framique: "Full theme control across 5 official themes",
     },
   ],
   diyCaption: "Framique vs self-hosting / DIY (own server + open-source cart)",
@@ -388,7 +388,7 @@ export const OBJECTIONS: { id: string; question: string; answer: string }[] = [
     question:
       '"I don\'t have a developer — can I actually set this up myself?"',
     answer:
-      "Yes. The page builder and payment/courier connections are configured through the dashboard, not code.",
+      "Yes. The theme builder and payment/courier connections are configured through the dashboard, not code.",
   },
   {
     id: "missed-payment",
@@ -474,10 +474,10 @@ export const FAQ: { id: string; question: string; answer: string }[] = [
       "None — courier delivery and COD collection fees are charged by the courier directly and shown as separate line items, never bundled into the plan fee.",
   },
   {
-    id: "change-pages",
-    question: "Can I change my pages after choosing a plan?",
+    id: "themes",
+    question: "Can I switch themes after choosing a plan?",
     answer:
-      "Yes, the full section library is available on every plan at any time; rearranging pages does not affect billing.",
+      "Yes, any of the 5 official themes are available on every plan at any time; switching themes does not affect billing.",
   },
   {
     id: "setup-fee",

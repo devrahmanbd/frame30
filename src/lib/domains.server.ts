@@ -41,14 +41,20 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 type Client = SupabaseClient<Database>;
 type DomainRow = Database["public"]["Tables"]["merchant_domains"]["Row"];
 
+/**
+ * Per-plan custom-domain quota — single source is `domainQuotaForPlan()` in
+ * `./domains` (owner policy 2026-09-19: 1 store = 1 domain on every plan).
+ * This map is derived from it for callers that need a lookup table; do not
+ * edit values here, edit the function.
+ */
 export const PLAN_DOMAIN_QUOTA: Record<string, number> = {
-  launch: 1,
-  growth: 3,
-  business: 10,
-  enterprise: 25,
+  launch: domainQuotaForPlan("launch"),
+  growth: domainQuotaForPlan("growth"),
+  business: domainQuotaForPlan("business"),
+  enterprise: domainQuotaForPlan("enterprise"),
 };
 
-/** List-page cap only — the add gate uses per-plan quotas (domainQuotaForPlan). */
+/** List-page safety cap — the add gate uses per-plan quotas (domainQuotaForPlan). */
 const MAX_DOMAINS_PER_MERCHANT = 10;
 const DNS_TIMEOUT_MS = 4000;
 
@@ -240,8 +246,9 @@ export async function listDomains(
       .order("created_at", { ascending: false });
     if (error) throw new DomainError(error.message, 500);
     // The UI hides the add form at this quota: report the real per-plan
-    // quota (single-store MVP: 1), not the list-page cap.
-    let quota = MAX_DOMAINS_PER_MERCHANT;
+    // quota (owner policy: 1 store = 1 domain on every plan), not the
+    // list-page cap. Single source is domainQuotaForPlan(); fail closed to 1.
+    let quota = domainQuotaForPlan("launch");
     try {
       const { data: sub } = await db
         .from("subscriptions")
@@ -259,7 +266,7 @@ export async function listDomains(
       domains: (data ?? []).map(toView),
       target: edgeTarget(),
       edgeConfigured: Boolean(process.env["DOMAIN_EDGE_HOOK_URL"]),
-      limit: quota,
+      limit: Math.min(quota, MAX_DOMAINS_PER_MERCHANT),
     };
   });
 }
@@ -511,10 +518,18 @@ export async function requestCertificate(
 ): Promise<DomainView> {
   const row = await loadOwned(db, merchantId, domainId);
   const hook = process.env["DOMAIN_EDGE_HOOK_URL"];
+  // Schedule the next sweep visit so a domain parked in issuing_cert without
+  // an edge (or with a failing edge) is re-polled instead of stranding
+  // forever. verifyDomain owns DNS backoff; this 1h fallback only applies
+  // when no callback ever arrives.
   await transition(
     row,
     "issuing_cert",
-    { cert_status: "pending", cert_error: null },
+    {
+      cert_status: "pending",
+      cert_error: null,
+      next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
+    },
     { reason: hook ? "cert.requested" : "cert.awaiting_edge", actor },
   );
 
@@ -849,6 +864,12 @@ export type DomainSweepResult = {
 /**
  * Poll every domain whose next check is due, then flag certificates inside the
  * renewal window so the edge can re-order before expiry.
+ *
+ * Renewal goes through `transition()` (active -> issuing_cert, cert_status
+ * `renewing`) so audit rows, metrics and the illegal-edge guard all apply —
+ * never a raw `cert_status` write. Domains parked in `issuing_cert` without
+ * an edge are re-polled via `verifyDomain` (issuing_cert -> verifying is a
+ * legal edge) instead of stranding forever.
  */
 export async function sweepDomains(
   subject = "cron",
@@ -897,6 +918,32 @@ export async function sweepDomains(
       }
     }
 
+    // Stuck issuing_cert re-poll without edge: when DOMAIN_EDGE_HOOK_URL is
+    // unset no callback ever arrives, so re-queue the oldest parked rows
+    // (even if next_check_at drifted into the future) for verification.
+    if (!process.env["DOMAIN_EDGE_HOOK_URL"]) {
+      const staleAt = new Date(Date.now() - 3_600_000).toISOString();
+      const { data: stuck } = await service
+        .from("merchant_domains")
+        .select("id")
+        .eq("status", "issuing_cert")
+        .lt("updated_at", staleAt)
+        .gt("next_check_at", now)
+        .order("updated_at", { ascending: true })
+        .limit(50);
+      for (const row of stuck ?? []) {
+        await service
+          .from("merchant_domains")
+          .update({ next_check_at: now })
+          .eq("id", row.id);
+      }
+      if ((stuck ?? []).length > 0) {
+        log("info", "domains.sweep_stuck_requeued", {
+          count: (stuck ?? []).length,
+        });
+      }
+    }
+
     const renewAt = new Date(Date.now() + 30 * 86_400_000).toISOString();
     const { data: renewals } = await service
       .from("merchant_domains")
@@ -906,17 +953,62 @@ export async function sweepDomains(
       .lt("cert_expires_at", renewAt)
       .limit(50);
     for (const row of renewals ?? []) {
-      await service
-        .from("merchant_domains")
-        .update({ cert_status: "renewing" })
-        .eq("id", row.id);
-      await requestCertificate(
-        service as unknown as Client,
-        row.merchant_id,
-        row.id,
-        null,
-      ).catch(() => undefined);
-      result.renewals += 1;
+      try {
+        const { data: full } = await service
+          .from("merchant_domains")
+          .select("*")
+          .eq("id", row.id)
+          .maybeSingle();
+        if (!full) continue;
+        // Renewal via the state machine: active -> issuing_cert with
+        // CertStatus `renewing`. Emits domain_events + metrics like any
+        // other edge; the raw-update path bypassed both and then hit
+        // `domain.illegal_transition` inside requestCertificate.
+        await transition(
+          full as unknown as Pick<DomainRow, "id" | "merchant_id" | "status">,
+          "issuing_cert",
+          {
+            cert_status: "renewing",
+            cert_error: null,
+            next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
+          },
+          { reason: "cert.renew_requested" },
+        );
+        const hook = process.env["DOMAIN_EDGE_HOOK_URL"];
+        if (hook) {
+          try {
+            const res = await fetch(hook, {
+              method: "POST",
+              headers: {
+                "content-type": "application/json",
+                authorization: `Bearer ${process.env["DOMAIN_EDGE_TOKEN"] ?? ""}`,
+              },
+              body: JSON.stringify({
+                hostname: row.hostname,
+                domainId: row.id,
+                merchantId: row.merchant_id,
+                renew: true,
+              }),
+              signal: AbortSignal.timeout(8000),
+            });
+            if (!res.ok) throw new Error(`edge_${res.status}`);
+            incr("framique_domain_cert_request_total", { outcome: "ok" });
+          } catch (err) {
+            incr("framique_domain_cert_request_total", { outcome: "error" });
+            log("warn", "domain.cert_request_failed", { domain: row.id });
+            await service
+              .from("merchant_domains")
+              .update({
+                cert_error:
+                  err instanceof Error ? err.message : "edge_unreachable",
+              })
+              .eq("id", row.id);
+          }
+        }
+        result.renewals += 1;
+      } catch {
+        // Illegal edge or missing row: logged inside transition(); keep sweeping.
+      }
     }
 
     const { count } = await service

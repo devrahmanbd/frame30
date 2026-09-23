@@ -2,9 +2,20 @@
  * Client-safe host-shape check for storefront chrome: root paths (`/`,
  * `/p/x`, `/cart` …) render on a custom host; `/store/<slug>/...` renders
  * on the path host (localhost dev). Shared components branch links on this.
+ *
+ * Platform surfaces (`/dashboard`, `/api`, `/auth`, `/onboarding`, `/store`)
+ * are never custom-host paths — without this guard dashboard/API routes
+ * would be misclassified as storefront root paths and link bases break.
  */
 export function isCustomHostPath(pathname: string): boolean {
-  return !pathname.startsWith("/store/");
+  if (pathname === "/store" || pathname.startsWith("/store/")) return false;
+  if (pathname === "/dashboard" || pathname.startsWith("/dashboard/"))
+    return false;
+  if (pathname === "/api" || pathname.startsWith("/api/")) return false;
+  if (pathname === "/auth" || pathname.startsWith("/auth/")) return false;
+  if (pathname === "/onboarding" || pathname.startsWith("/onboarding/"))
+    return false;
+  return true;
 }
 
 /**

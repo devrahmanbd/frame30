@@ -1,7 +1,7 @@
 # Framique
 
 BDT-first commerce platform for Bangladeshi merchants: multi-tenant storefronts,
-COD/MFS checkout, page builder and designs, POS and couriers, marketing, analytics,
+COD/MFS checkout, page builder and themes, POS and couriers, marketing, analytics,
 marketplace, export/SDK, AI support and fraud tooling.
 
 This repository is the running product (TanStack Start + Supabase), not a planning

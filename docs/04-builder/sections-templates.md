@@ -2,7 +2,7 @@
 
 Status: Planning · Approved plan (parent: `04-builder/README.md`) · Slice S1 (skeleton) / S7 (full editor)
 Owners: Builder Platform + Frontend Platform
-References: `04-builder/README.md` (engine, data model, publish machine) · `03-storefront/README.md` (rendered surfaces) · `16-product-pricing/README.md` (entitlements) · `00-meta/design-system.md` §1, §2, §5, §10
+References: `04-builder/README.md` (engine, data model, publish machine) · `theme-registry.md` (theme pins, AST contract) · `theme-runtime.md` (TR-1/TR-2) · `03-storefront/README.md` (rendered surfaces) · `16-product-pricing/README.md` (entitlements) · `00-meta/design-system.md` §1, §2, §5, §10
 Design decision (approved): **a template is the page-type contract** (page, product, article, collection); **a section is a named, reusable group of widgets** that fills one slot in a template; **every page AST is an instance of exactly one template**, and per-page section overrides ride the page draft — the template file itself is never mutated from the editor.
 
 ---
@@ -19,7 +19,7 @@ This plan adds, scoped to the builder:
 - Safe conversion of legacy `pages` rows into template instances (`non-destructive backfill`).
 - Server-side validation for every AST write — the client never decides what a slot may hold.
 
-The runtime keeps owning rendering, data and safety; this plan only changes what the editor can compose and how a page's AST is structured.
+It deliberately does not change `theme-runtime.md` TR-1/TR-2: the runtime keeps owning rendering, data and safety; this plan only changes what the editor can compose and how a page's AST is structured.
 
 ## 2. Template hierarchy
 
@@ -30,10 +30,10 @@ template (kind + slot_schema + widget allowlists)
             └─ widget × 0..n  (existing widget model, instance-pinned)
 ```
 
-1. **Kinds.** Built-in starter kinds: `page` (static/landing), `product`, `collection`, `article`. Merchants can add more kinds from a starter template (`source_template_id`). Every kind has a defined slot schema; store defaults live in `04-builder/README.md`.
+1. **Kinds.** Built-in starter kinds: `page` (static/landing), `product`, `collection`, `article`. Merchants can add more kinds from a starter template (`source_template_id`). Every kind has a defined slot schema; store defaults live in `theme-registry.md`.
 2. **Per-kind.** A store can hold many templates sharing a kind, but every template belongs to exactly one kind.
 3. **Pin rule (mirrors TR-1)**: template installs are pins — a published page renders under the template version it was published with. Template "updates" create a new version; already-published pages are re-rendered only when the merchant opts a page onto the new version (from `draft`), which produces a new `revisions` snapshot.
-4. **Token-only styles**: section styling may only consume the design's semantic tokens (storefront subset, design-system §2) — no arbitrary color/radius values inside a page AST (`save_page_ast` rejects hex).
+4. **Token-only styles**: section styling may only consume the theme's semantic tokens (storefront subset, design-system §2) — no arbitrary color/radius values inside a page AST (`save_page_ast` rejects hex).
 
 ## 3. Section model
 
@@ -44,7 +44,7 @@ template (kind + slot_schema + widget allowlists)
   - `main`: any standard widget.
   - `buybox` (product kind): `buy_box` only, plus `countdown`, `faq_accordion`, `trust` — cart/checkout-sensitive widgets.
   - `grid` (collection kind): `product_grid` / `collection_grid` only.
-  - Store-wide defaults live in `04-builder/README.md`; a template may narrow, never widen, a slot schema.
+  - Store-wide defaults live in `theme-registry.md`; a template may narrow, never widen, a slot schema.
 - **Server-side validation** (AGENTS.md: no client-trusted decisions): RPC `validate_page_ast(template_id, ast)` rejects a section that violates allowlists. The editor polls this RPC before enabling **Publish**.
 
 ## 4. AST shape (page)
@@ -81,7 +81,7 @@ No new tables in S1:
 
 In S7 (editor): `template_favorites` (per-merchant pinning) and `sections_library` (tenant-custom sections), both `merchant_id`-scoped.
 
-**Event additions** (04 event set `page.published`, `widget.installed`, `design.updated`): `template.created`, `template.versioned`, `template.archived`. A `template.updated` never exists — template edits are version bumps (§2-3).
+**Event additions** (04 event set `page.published`, `widget.installed`, `theme.updated`): `template.created`, `template.versioned`, `template.archived`. A `template.updated` never exists — template edits are version bumps (§2-3).
 
 ## 6. Non-destructive backfill
 
@@ -89,7 +89,7 @@ Legacy `pages` rows (flat `children`) become template instances without loss:
 
 1. For each legacy page: create `kind` template `tpl_legacy_page` (slot `main` only); mark `backfilled_from_legacy = true`.
 2. Copy the widget list into `slots.main` in order; preserve `instance` ids.
-3. The conversion is **idempotent** — reruns bind nothing new (`pages.template_id` already set) and never fail a live page: if the backfilled AST fails validation (e.g. an allowlist break), the row stays legacy, the template records `error_reason`, and the storefront keeps the pre-backfill render.
+3. The conversion is **idempotent** — reruns bind nothing new (`pages.template_id` already set) and never fail a live page: if the backfilled AST fails validation (e.g. an allowlist break), the row stays legacy, the template records `error_reason`, and the storefront keeps the pre-backfill render (fallback mirrors `theme-runtime.md` §8).
 4. Notify the merchant whenever a page render would change (`template.migration_completed` notice) — no silent layout changes on a published store.
 
 ## 7. Editor surfaces (inventory)
@@ -131,7 +131,7 @@ Each surface follows the repository per-page Design guidelines (design-system §
 | --------------------- | ------------------------------------------------------------------------ |
 | `template_not_found`  | “এই টেমপ্লেটটি আর নেই” (This template is gone)                           |
 | `slot_not_allowed`    | “এই স্লটে এই উইজেট অনুমোদিত নয়” (Widget not allowed in this slot)       |
-| `token_not_allowed`   | “শুধুমাত্র ডিজাইন টোকেন ব্যবহার করুন” (Only design tokens allowed)           |
+| `token_not_allowed`   | “শুধুমাত্র থিম টোকেন ব্যবহার করুন” (Only theme tokens allowed)           |
 | `plan_limit_exceeded` | “আপনার প্ল্যানের সীমা শেষ — আপগ্রেড করুন” (Plan limit reached — upgrade) |
 
 ## 8. Plan entitlements + usage meter
@@ -151,7 +151,7 @@ Template counts are not inventoried here — they live in the `16-product-pricin
 
 ## 10. Design guidelines — template library & composer
 
-- **Intent**: measured, editorial — composable structure, quiet chrome (near-monochrome slate); the canvas previews the storefront with real design tokens.
+- **Intent**: measured, editorial — composable structure, quiet chrome (near-monochrome slate); the canvas previews the storefront with real theme tokens.
 - **Key surfaces**: template cards, slot-zone indicator, section library rail, dashed 44px placeholders, inspector layout-field group.
 - **Palette emphasis**: mint = publish-valid / network-ok no state; amber = unsaved or blocked; teal = selection/focus. No page invents colors (repo anti-slop rule).
 - **Typography**: compact 0.875rem admin; canvas shows the store's real Bangla font stack; tabular numerals for spacing.

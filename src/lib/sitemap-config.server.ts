@@ -453,11 +453,17 @@ export function isExcluded(
 /**
  * One shard of URLs. Range-queried off a stable ordering so page N costs the
  * same as page 1 and nothing outside the window is materialised.
+ *
+ * `opts.root` serves root-shape paths for a merchant custom host (`/p/x`);
+ * the default serves `/store/<slug>`-prefixed paths for the path storefront.
+ * Permalink bases come from the merchant's own settings in both shapes, so
+ * shard `<loc>`s are always the canonicals the storefront renders.
  */
 export async function loadSitemapShardEntries(
   slug: string,
   kind: SitemapKind,
   page: number,
+  opts: { root?: boolean } = {},
 ): Promise<SitemapEntry[] | null> {
   const ctx = await storeCrawlContext(slug);
   if (!ctx) return null;
@@ -476,7 +482,7 @@ export async function loadSitemapShardEntries(
         );
         const includeImages = ctx.settings.sitemap.includeImages;
         const entries: SitemapEntry[] = [];
-        const base = `/store/${slug}`;
+        const base = opts.root ? "" : `/store/${slug}`;
         const decorate = (entry: SitemapEntry): SitemapEntry => ({
           ...entry,
           changefreq: kindCfg.changefreq,
@@ -489,7 +495,7 @@ export async function loadSitemapShardEntries(
             !ctx.excluded.has("store:-") &&
             !ctx.hiddenTemplates.has("index")
           ) {
-            entries.push(decorate({ path: base }));
+            entries.push(decorate({ path: base || "/" }));
             entries.push(decorate({ path: `${base}/search` }));
           }
           const { data } = await db
@@ -609,13 +615,14 @@ const ROBOTS_CACHE_CONTROL =
 export async function renderStoreSitemapIndex(
   slug: string,
   origin: string,
+  opts: { root?: boolean } = {},
 ): Promise<RenderedDocument | null> {
   const ctx = await storeCrawlContext(slug);
   if (!ctx) return null;
   const counts = (await sitemapCounts(slug)) ?? {};
   const shards: Shard[] = shardPlan(counts, ctx.settings.sitemap);
   return {
-    body: renderSitemapIndexXml(origin, slug, shards),
+    body: renderSitemapIndexXml(origin, slug, shards, {}, opts),
     cacheControl: SITEMAP_CACHE_CONTROL,
   };
 }
@@ -625,10 +632,11 @@ export async function renderStoreSitemapShard(
   kind: SitemapKind,
   page: number,
   origin: string,
+  opts: { root?: boolean } = {},
 ): Promise<RenderedDocument | null> {
   const ctx = await storeCrawlContext(slug);
   if (!ctx) return null;
-  const entries = await loadSitemapShardEntries(slug, kind, page);
+  const entries = await loadSitemapShardEntries(slug, kind, page, opts);
   if (!entries) return null;
   return {
     body: renderUrlset(origin, entries, {
@@ -641,6 +649,7 @@ export async function renderStoreSitemapShard(
 export async function renderStoreRobotsTxt(
   slug: string,
   origin: string,
+  opts: { root?: boolean } = {},
 ): Promise<RenderedDocument | null> {
   const ctx = await storeCrawlContext(slug);
   if (!ctx) return null;
@@ -649,7 +658,15 @@ export async function renderStoreRobotsTxt(
       origin,
       storeSlug: slug,
       settings: ctx.settings.robots,
-      llmsPath: `/store/${slug}/llms.txt`,
+      ...(opts.root
+        ? {
+            storeBase: "",
+            sitemapPath: "/sitemap.xml",
+            llmsPath: "/llms.txt",
+          }
+        : {
+            llmsPath: `/store/${slug}/llms.txt`,
+          }),
     }),
     cacheControl: ROBOTS_CACHE_CONTROL,
   };

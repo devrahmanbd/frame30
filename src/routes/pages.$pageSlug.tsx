@@ -1,6 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { StoreHeader } from "@/components/store/StoreHeader";
-import { StudioNodes } from "@/components/store/StudioNodes";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { useLang } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/theme-seo";
@@ -48,6 +47,7 @@ export const Route = createFileRoute("/pages/$pageSlug")({
       path: `/pages/${loaderData.page.slug}`,
       storePath: `/`,
       storeName: loaderData.merchant.name,
+      themeKey: loaderData.themeKey,
       robots: loaderData.page.robots,
       noindex: (loaderData.page.robots ?? "").startsWith("noindex"),
       seo: loaderData.seo ?? null,
@@ -71,11 +71,12 @@ function StorePageView() {
     page,
     html,
     nav,
+    ast,
+    tokens,
     siteKit,
+    customCss,
     isBuilder,
     menus,
-    installedPlugins,
-    studioNodes,
   } = Route.useLoaderData();
   const slug = merchant.slug;
 
@@ -98,20 +99,14 @@ function StorePageView() {
       {page.excerpt && (
         <p className="mt-2 text-muted-foreground">{page.excerpt}</p>
       )}
-      {studioNodes && studioNodes.length > 0 ? (
-        <div className="fq-builder-page mt-6">
-          <StudioNodes nodes={studioNodes} />
-        </div>
-      ) : (
-        <div
-          className={
-            isBuilder
-              ? "fq-builder-page mt-6"
-              : "fq-prose mt-6 space-y-4 text-sm leading-relaxed"
-          }
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      )}
+      <div
+        className={
+          isBuilder
+            ? "fq-builder-page mt-6"
+            : "fq-prose mt-6 space-y-4 text-sm leading-relaxed"
+        }
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
       <p className="mt-8 text-xs text-muted-foreground">
         {t("Last updated", "সর্বশেষ হালনাগাদ")}:{" "}
         <time dateTime={page.updated_at} className="money">
@@ -152,10 +147,13 @@ function StorePageView() {
       template="page"
       storeSlug={slug}
       merchantId={merchant.id}
+      ast={ast}
+      tokens={tokens}
       siteKit={siteKit}
-      installedPlugins={installedPlugins}
+      customCss={customCss}
       ownsPrimary
       chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}
+      contextSlots={{ breadcrumb, page_content: content }}
       containerClassName="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1fr_15rem]"
       fallback={
         <>

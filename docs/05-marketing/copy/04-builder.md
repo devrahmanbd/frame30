@@ -1,12 +1,12 @@
 # `/builder`
 
-Route: `src/routes/builder.tsx` · Shell: marketing site header/footer, no app chrome · Scope: the visual design/section builder — the surface a Bangladeshi merchant uses to assemble, brand, and publish a storefront without a developer.
+Route: `src/routes/builder.tsx` · Shell: marketing site header/footer, no app chrome · Scope: the visual theme/section builder — the surface a Bangladeshi merchant uses to assemble, brand, and publish a storefront without a developer.
 
 ## SEO
 
 - **Title** (58 chars, 9 words): `Storefront builder — sections, tokens, versions, Bangla`
 - **Description** (159 chars, 24 words): `Assemble your storefront from sections, edit design tokens once for the whole store, publish a version, and roll back in one click. Bangla and English from one catalogue.`
-- **og:title**: `Design the storefront. Don't fight the design.`
+- **og:title**: `Design the storefront. Don't fight the theme.`
 - **og:description**: `Drag sections, edit tokens, ship a version — with instant rollback and a Bangla-first catalogue.`
 - **canonical**: `/builder` · **og:url**: `/builder`
 - **JSON-LD**: `BreadcrumbList` (Home → Product → Builder), `SoftwareApplication` (name: Framique Builder, applicationCategory: BusinessApplication, operatingSystem: Web).
@@ -17,13 +17,13 @@ Route: `src/routes/builder.tsx` · Shell: marketing site header/footer, no app c
   - **Primary**: `online store builder bangladesh`
   - **Secondary**:
     - `drag and drop storefront builder`
-    - `ecommerce design editor`
+    - `ecommerce theme editor`
     - `bangla website builder`
     - `storefront sections and templates`
   - **Long-tail / question intents**:
     - `build an online store without a developer in bangladesh`
     - `ecommerce website builder with bangla support`
-  - **Placement**: H1 (primary), canvas mock caption, sections band, layout decision-tree band. Bangla equivalents belong in the `lang="bn"` variants of the same blocks — never as a hidden duplicate paragraph.
+  - **Placement**: H1 (primary), canvas mock caption, sections band, themes decision-tree band. Bangla equivalents belong in the `lang="bn"` variants of the same blocks — never as a hidden duplicate paragraph.
 - **URL rule**: canonical and `og:url` are **relative** (`/builder`) until a production domain is set, so preview, published and custom-domain traffic each canonicalise to themselves. Never bake `https://framique.com` into source.
 
 ## Band order
@@ -32,7 +32,7 @@ Route: `src/routes/builder.tsx` · Shell: marketing site header/footer, no app c
 2. Canvas mock — glass browser frame
 3. Section-based editing model (Z rows)
 4. Drafts, autosave, versioning, rollback, scheduled publish
-5. Section groups — merchandising guidance + decision table
+5. The five official themes — merchandising guidance + decision table
 6. Design tokens and brand consistency
 7. Bangla + English from one catalogue
 8. Custom fonts — licence attestation, weight budget
@@ -52,8 +52,8 @@ Route: `src/routes/builder.tsx` · Shell: marketing site header/footer, no app c
 _Lever: specificity beats hype — the sub-headline names the exact mechanism (sections, tokens, rollback) instead of promising an outcome._
 
 - **Eyebrow**: `Visual builder · versioned`
-- **H1**: **Design the storefront. Don't fight the design.**
-- **H1 বাংলা**: **স্টোরফ্রন্ট ডিজাইন করুন। ডিজাইনের সাথে লড়াই নয়।**
+- **H1**: **Design the storefront. Don't fight the theme.**
+- **H1 বাংলা**: **স্টোরফ্রন্ট ডিজাইন করুন। থিমের সাথে লড়াই নয়।**
 - **Sub**: Drag sections, edit tokens, ship a version — with instant rollback.
 - **Sub বাংলা**: সেকশন টেনে আনুন, টোকেন এডিট করুন, একটি ভার্সন পাবলিশ করুন — সাথে সাথে রোলব্যাকের সুযোগসহ।
 - **Primary CTA**: `Open a live demo` · **Alt CTA**: `See a store built with it`
@@ -70,7 +70,7 @@ Layered still: section rail left, canvas centre, token panel right, rendered ins
 
 **Caption বাংলা**: `এডিটর ও লাইভ স্টোর একই রেন্ডারার ব্যবহার করে, তাই প্রিভিউ কোনো অনুমান নয়।`
 
-This is a structural claim, not a marketing flourish: most page builders run a simplified preview renderer that diverges from production CSS, web fonts, and JS at the margins — the classic "it looked right in the editor" complaint. Framique's editor iframe loads the identical storefront bundle the shopper sees, so what you see in the canvas is pixel-identical to what a shopper on a Grameenphone 4G connection in Bogura sees.
+This is a structural claim, not a marketing flourish: most page builders run a simplified preview renderer that diverges from production CSS, web fonts, and JS at the margins — the classic "it looked right in the editor" complaint. Framique's editor iframe loads the identical theme bundle the storefront serves, so what you see in the canvas is pixel-identical to what a shopper on a Grameenphone 4G connection in Bogura sees.
 
 ---
 
@@ -83,7 +83,7 @@ This is a structural claim, not a marketing flourish: most page builders run a s
 
 2. **text-right — Tokens, not scattered CSS.**
    _Lever: single-point-of-control — changing one variable that fans out everywhere removes the fear of an incomplete edit._
-   Colour, radius, type scale, and spacing live in one panel. Change the accent colour once and every button, badge, and link across every section updates together — no hunting through forty section-level colour pickers left over from a layout you customised eighteen months ago.
+   Colour, radius, type scale, and spacing live in one panel. Change the accent colour once and every button, badge, and link across every section updates together — no hunting through forty section-level colour pickers left over from a theme you customised eighteen months ago.
    **Proof**: `One token, every section.`
 
 3. **text-left — Versions, not fear.**
@@ -124,34 +124,34 @@ Versions are numbered and immutable: version 14 always means exactly the section
 
 ---
 
-## 5. Section groups — merchandising guidance
+## 5. The five official themes
 
-_Lever: bounded choice — five well-differentiated section groups prevent decision paralysis while still covering the real range of Bangladeshi commerce use cases._
+_Lever: bounded choice — five well-differentiated options prevent decision paralysis while still covering the real range of Bangladeshi commerce use cases._
 
-Framique ships **five section groups**: Catalogue, Lookbook, Campaign, High-density, Wholesale. Each is a complete section library, token set, and default layout — not a colour skin on top of one generic template. Starting from the wrong group early is the single most common cause of a merchant fighting their storefront for months; the paragraphs below exist to prevent that.
+Framique ships **five official themes**: Classic, Modern, Landing, Supershop, B2B. Each is a complete section library, token set, and default layout — not a colour skin on top of one generic template. Choosing the wrong theme early is the single most common cause of a merchant fighting their storefront for months; the paragraphs below exist to prevent that.
 
-**Catalogue** is the group for a merchant who sells a moderate, well-photographed catalogue — apparel, home goods, gift items — and wants the storefront to feel like a trustworthy, unhurried shop rather than a flash sale. It uses generous whitespace, a traditional top-nav-plus-mega-menu structure, and a product grid that privileges photography over badges and countdown timers. Merchandising guidance: use Catalogue when your product photography is genuinely strong, because the group gives images the most room and offers the fewest visual crutches (no urgency banners baked into the grid) to compensate for weak imagery. It is the safest default for a first store and the easiest group to hand to a small team, since its section library is the smallest and least likely to be misconfigured.
+**Classic** is the theme for a merchant who sells a moderate, well-photographed catalogue — apparel, home goods, gift items — and wants the storefront to feel like a trustworthy, unhurried shop rather than a flash sale. It uses generous whitespace, a traditional top-nav-plus-mega-menu structure, and a product grid that privileges photography over badges and countdown timers. Merchandising guidance: use Classic when your product photography is genuinely strong, because the theme gives images the most room and offers the fewest visual crutches (no urgency banners baked into the grid) to compensate for weak imagery. It is the safest default for a first store and the easiest theme to hand to a small team, since its section library is the smallest and least likely to be misconfigured.
 
-**Lookbook** is built for a merchant who wants sharper visual rhythm, tighter type, and a slightly more editorial feel — closer to a D2C brand site than a marketplace stall. It leans on larger imagery blocks, asymmetric grids, and a bolder type scale, and it rewards a merchant who has invested in a consistent visual identity (logo, colour, photography style) because the group has fewer built-in guardrails and more open canvas. Merchandising guidance: choose Lookbook when you sell fewer SKUs at a higher price point and want each product to feel considered rather than commoditised — a 12–30 SKU jewellery, skincare, or lifestyle catalogue is the archetypal fit. Avoid Lookbook for a 500-SKU catalogue; its layouts are not optimised for dense browsing.
+**Modern** is built for a merchant who wants sharper visual rhythm, tighter type, and a slightly more editorial feel — closer to a D2C brand site than a marketplace stall. It leans on larger imagery blocks, asymmetric grids, and a bolder type scale, and it rewards a merchant who has invested in a consistent visual identity (logo, colour, photography style) because the theme has fewer built-in guardrails and more open canvas. Merchandising guidance: choose Modern when you sell fewer SKUs at a higher price point and want each product to feel considered rather than commoditised — a 12–30 SKU jewellery, skincare, or lifestyle catalogue is the archetypal fit. Avoid Modern for a 500-SKU catalogue; its layouts are not optimised for dense browsing.
 
-**Campaign** is not a general storefront group — it is a single-product or single-campaign layout built around one long-scrolling persuasive page rather than a catalogue-and-category structure. Merchandising guidance: use Campaign when you are launching one hero SKU (a single gadget, a course, a limited drop) and want every pixel of the page arguing for that one purchase decision, with testimonial strips, FAQ, and a sticky buy bar doing the work a category page cannot. Do not use Campaign as your only storefront if you plan to add a second product line later — you will need Catalogue, Lookbook, or High-density as the catalogue expands, and Campaign pages can live alongside them as campaign microsites.
+**Landing** is not a general storefront theme — it is a single-product or single-campaign theme built around one long-scrolling persuasive page rather than a catalogue-and-category structure. Merchandising guidance: use Landing when you are launching one hero SKU (a single gadget, a course, a limited drop) and want every pixel of the page arguing for that one purchase decision, with testimonial strips, FAQ, and a sticky buy bar doing the work a category page cannot. Do not use Landing as your only storefront if you plan to add a second product line later — you will need Classic, Modern, or Supershop as the catalogue expands, and Landing pages can live alongside them as campaign microsites.
 
-**High-density** is the highest-density group, designed for catalogues in the hundreds-to-thousands of SKUs — grocery, electronics accessories, general merchandise. It front-loads filters, category rails, and a dense grid, and assumes the shopper arrives with a specific product in mind rather than browsing for inspiration. Merchandising guidance: choose High-density when your customers search and filter more than they scroll, and when your margin comes from volume and repeat purchase rather than a premium unboxing moment. High-density product cards show price, discount badge, and stock status by default; strip them down manually if your catalogue is smaller than it looks.
+**Supershop** is the highest-density theme, designed for catalogues in the hundreds-to-thousands of SKUs — grocery, electronics accessories, general merchandise. It front-loads filters, category rails, and a dense grid, and assumes the shopper arrives with a specific product in mind rather than browsing for inspiration. Merchandising guidance: choose Supershop when your customers search and filter more than they scroll, and when your margin comes from volume and repeat purchase rather than a premium unboxing moment. Supershop's product cards show price, discount badge, and stock status by default; strip them down manually if your catalogue is smaller than it looks.
 
-**Wholesale** serves merchants who sell to other businesses rather than to individual consumers — wholesalers, distributors, manufacturers quoting bulk orders. It replaces the impulse-purchase patterns of the consumer groups with tiered pricing tables, minimum order quantity fields, a request-a-quote flow, and account-gated pricing that only shows once a buyer is signed in. Merchandising guidance: choose Wholesale only if a meaningful share of your revenue is quote-based or requires business verification before checkout; retrofitting a consumer group with wholesale logic is far more fragile than starting on the group built for it.
+**B2B** serves merchants who sell to other businesses rather than to individual consumers — wholesalers, distributors, manufacturers quoting bulk orders. It replaces the impulse-purchase patterns of the consumer themes with tiered pricing tables, minimum order quantity fields, a request-a-quote flow, and account-gated pricing that only shows once a buyer is signed in. Merchandising guidance: choose B2B only if a meaningful share of your revenue is quote-based or requires business verification before checkout; retrofitting a consumer theme with wholesale logic is far more fragile than starting on the theme built for it.
 
-**Section-choice decision table**
+**Theme-choice decision table**
 
 | If your situation is…                                 | Choose                  | Because                                                 |
 | ----------------------------------------------------- | ----------------------- | ------------------------------------------------------- |
-| First store, moderate catalogue, strong photography   | Catalogue               | Safest default, smallest section library, image-forward |
-| Small high-margin catalogue, strong brand identity    | Lookbook                | Editorial layout rewards fewer, better products         |
-| One hero product or campaign launch                   | Campaign                | Single-purchase-decision page, not a catalogue          |
-| Hundreds to thousands of SKUs, filter-driven browsing | High-density            | Density and filters over inspiration                    |
-| Wholesale, quote-based, or account-gated pricing      | Wholesale               | Tiered pricing and MOQ built in, not bolted on          |
-| Unsure, catalogue will grow past 50 SKUs in a year    | Catalogue → extend later | Cleanest section model to extend                       |
+| First store, moderate catalogue, strong photography   | Classic                 | Safest default, smallest section library, image-forward |
+| Small high-margin catalogue, strong brand identity    | Modern                  | Editorial layout rewards fewer, better products         |
+| One hero product or campaign launch                   | Landing                 | Single-purchase-decision page, not a catalogue          |
+| Hundreds to thousands of SKUs, filter-driven browsing | Supershop               | Density and filters over inspiration                    |
+| Wholesale, quote-based, or account-gated pricing      | B2B                     | Tiered pricing and MOQ built in, not bolted on          |
+| Unsure, catalogue will grow past 50 SKUs in a year    | Classic → migrate later | Cleanest section model to extend                        |
 
-**Design note**: section cards render in a 5-up grid at desktop → 2-up at 900px → 1-up at 640px, each card a `{components.pricing-card}` with a static screenshot, not a gradient spotlight (gradients are reserved for the final CTA and one mid-page highlight, per the scarce-aurora rule).
+**Design note**: theme cards render in a 5-up grid at desktop → 2-up at 900px → 1-up at 640px, each card a `{components.pricing-card}` with a static screenshot, not a gradient spotlight (gradients are reserved for the final CTA and one mid-page highlight, per the scarce-aurora rule).
 
 ---
 
@@ -159,7 +159,7 @@ Framique ships **five section groups**: Catalogue, Lookbook, Campaign, High-dens
 
 _Lever: single source of truth — a merchant who edits one token instead of forty section settings makes fewer inconsistent decisions._
 
-A token panel holds four families: **colour** (primary, accent, surface, text), **radius** (from sharp to fully rounded), **type scale** (a ratio-based ladder from caption to display), and **spacing** (a fixed step scale, not freeform pixel entry). Every section in every design reads from these tokens rather than hard-coding its own values, so a brand refresh is a five-field edit, not a section-by-section rebuild.
+A token panel holds four families: **colour** (primary, accent, surface, text), **radius** (from sharp to fully rounded), **type scale** (a ratio-based ladder from caption to display), and **spacing** (a fixed step scale, not freeform pixel entry). Every section in every theme reads from these tokens rather than hard-coding its own values, so a brand refresh is a five-field edit, not a section-by-section rebuild.
 
 **Worked example**: a merchant rebranding from a teal to a maroon accent for Pohela Boishakh changes one colour token. That single change updates the "Add to cart" button, the sale badge, the active nav underline, and the checkout progress bar simultaneously — four surfaces, one edit, zero risk of missing one of them and shipping a mismatched button colour on launch day.
 
@@ -253,7 +253,7 @@ A checklist for the product page a merchant is about to publish, in the order a 
 
 _Lever: implementation intention — a concrete first-session script converts intent to action far more reliably than a features list._
 
-1. **Minute 0–5 — Pick a starting section group.** Use the decision table in Section 5. If genuinely unsure and your catalogue will likely grow, start with Catalogue.
+1. **Minute 0–5 — Pick a theme.** Use the decision table in Section 5. If genuinely unsure and your catalogue will likely grow, start with Classic.
 2. **Minute 5–15 — Set your four core tokens.** Primary colour, accent colour, corner radius, and base font. Everything downstream inherits these; do this before touching any section.
 3. **Minute 15–20 — Edit the hero section.** Replace the placeholder headline and image with your own; enter both the Bangla and English fields, not just one.
 4. **Minute 20–30 — Add your first product grid section and connect it to your catalogue.** Confirm price displays in BDT and that stock status is visible.
@@ -273,16 +273,16 @@ _Lever: contrast framing — naming the exact mechanism competitors lack is more
 | ----------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | Preview fidelity        | Simplified preview renderer, can diverge from production | Same renderer for editor and live store                                         |
 | Bangla support          | Often a bolted-on translation plugin                     | One catalogue, native Bangla + English fields, script-aware typography          |
-| Payment context         | Generic card/PayPal assumptions                          | bKash/Nagad/Rocket/Upay/card/COD built into page sections                        |
+| Payment context         | Generic card/PayPal assumptions                          | bKash/Nagad/Rocket/Upay/card/COD built into theme sections                      |
 | Versioning              | Usually undo history within a session only               | Numbered, immutable, author-stamped versions with one-click rollback            |
 | Scheduled publish       | Rare or third-party plugin                               | Native, queue a draft for a future timestamp                                    |
 | Font governance         | Unlimited weights, no licence step                       | Licence attestation + two-weight budget enforced at upload                      |
 | Custom code safety      | Inline script, can break the whole page                  | Sandboxed iframe, isolated failure                                              |
 | Secret exposure risk    | Unchecked                                                | Secret scanning blocks save on credential-shaped strings                        |
 | Performance enforcement | Advisory at best                                         | Hard budgets enforced at publish time, with auto-compression offered            |
-| Starting points          | Often hundreds of undifferentiated templates             | Five section groups, each purpose-built for a distinct merchandising situation |
+| Themes offered          | Often hundreds of undifferentiated templates             | Five official themes, each purpose-built for a distinct merchandising situation |
 
-The last row is a deliberate design choice, not a limitation: a marketplace of hundreds of templates optimises for browsing variety, not for merchandising fit, and it pushes the layout-choice decision onto a merchant who has no framework for making it. Five section groups, each mapped to a specific business situation in Section 5's decision table, is a smaller but more honest promise.
+The last row is a deliberate design choice, not a limitation: a marketplace of hundreds of templates optimises for browsing variety, not for merchandising fit, and it pushes the theme-choice decision onto a merchant who has no framework for making it. Five themes, each mapped to a specific business situation in Section 5's decision table, is a smaller but more honest promise.
 
 ---
 
@@ -294,8 +294,8 @@ The builder itself and every published storefront share the same accessibility b
 
 ## 15. FAQ
 
-1. **Do I need a developer to use the builder?** No. All fifteen checklist items in Section 11 and every section group in Section 5 are configurable through the section and token panels alone. Custom code and custom fonts are optional, developer-adjacent features for merchants who want them, not requirements.
-2. **Can I rearrange sections after I've already built pages?** Yes — sections are free-form. The decision table in Section 5 is worth reading before starting so the first layout already fits the catalogue.
+1. **Do I need a developer to use the builder?** No. All fifteen checklist items in Section 11 and every theme in Section 5 are configurable through the section and token panels alone. Custom code and custom fonts are optional, developer-adjacent features for merchants who want them, not requirements.
+2. **Can I switch themes after I've already built sections?** Yes, but section content does not automatically remap to a different theme's layout assumptions — expect to re-check each section after a theme switch, which is why the decision table in Section 5 is worth reading before starting.
 3. **What exactly gets saved in a draft versus a published version?** Every edit autosaves to a draft immediately. Nothing in the draft is visible to shoppers until you explicitly publish or it reaches a scheduled publish time; publishing turns the current draft into a new, numbered, immutable version.
 4. **How far back can I roll back?** To any prior published version, not just the immediately preceding one — version history is not limited to a single undo step.
 5. **Can I preview a draft before anyone else sees it?** Yes, via a shareable preview link that renders the draft outside the editor, revocable at any time and never indexed.
@@ -313,7 +313,7 @@ The builder itself and every published storefront share the same accessibility b
 **H2 বাংলা**: দশ মিনিটে প্রথম সেকশন তৈরি করুন।
 **Primary CTA**: `Open a live demo` · **Alt CTA**: `Read the builder docs`
 
-**Design note**: single `{components.gradient-spotlight-card}` (violet stop), the only gradient card on the page beyond the section grid's static screenshots — respecting the one-or-two-gradients-per-long-page rule from DESIGN.md.
+**Design note**: single `{components.gradient-spotlight-card}` (violet stop), the only gradient card on the page beyond the theme grid's static screenshots — respecting the one-or-two-gradients-per-long-page rule from DESIGN.md.
 
 ---
 
@@ -321,7 +321,7 @@ The builder itself and every published storefront share the same accessibility b
 
 - Hero primary CTA → `/demo` (live sandboxed builder instance)
 - "See a store built with it" → `/showcase`
-- Section 5 section cards → `/builder` (section library)
+- Section 5 theme cards → `/themes/classic`, `/themes/modern`, `/themes/landing`, `/themes/supershop`, `/themes/b2b`
 - Section 7 (Bangla catalogue) → `/localization`
 - Section 10 (performance budgets) → `/performance` or the platform-wide `/why-fast` page
 - Section 13 comparison table → `/vs/shopify`, `/vs/webflow` if those pages exist
@@ -332,7 +332,7 @@ The builder itself and every published storefront share the same accessibility b
 - Hero: no photographic image — aurora gradient mesh only, per the scarce-atmosphere rule.
 - Canvas mock (Section 2): a real screenshot of the three-pane builder UI (section rail, canvas, token panel) inside a glass browser frame — must be an actual product screenshot, not an illustration, to support the "same renderer" claim.
 - Z-row proofs (Section 3): small inline UI captures per row (drag handle close-up, token panel close-up, version-history close-up, sandboxed-widget close-up).
-- Section grid (Section 5): one representative storefront screenshot per section group, consistent product category across all five for fair visual comparison (recommend: apparel item shown in Catalogue, Lookbook, High-density, and Wholesale "wholesale apparel," Campaign shown with a single hero SKU).
+- Theme grid (Section 5): one representative storefront screenshot per theme, consistent product category across all five for fair visual comparison (recommend: apparel item shown in Classic, Modern, Supershop, and B2B "wholesale apparel," Landing shown with a single hero SKU).
 - Performance band (Section 10): a simple two-bar chart illustrating the worked LCP-vs-conversion example, labelled with the stated assumptions, not implied as measured data.
 
 ## Icon list
@@ -341,16 +341,16 @@ Section rail (layout-grid), token panel (sliders), version history (clock-rewind
 
 ## Motion spec
 
-Aurora mesh behind the hero: 24–38s drift loop, opacity/transform only. Z-rows reveal-on-enter once (translateY 12px → 0, opacity 0 → 1, 320–420ms, `cubic-bezier(0.22, 1, 0.36, 1)`), never re-triggering on re-scroll. Section cards: no motion beyond a static hover lift (transform translateY(-2px), 200ms) — section choice is a considered decision, not an impulse interaction, so no magnetic or bouncy affordances here. Version-history timeline entries fade/slide in on panel open, staggered 40ms apart, capped at 6 visible before a "load more." All motion collapses to instant state changes under `prefers-reduced-motion`.
+Aurora mesh behind the hero: 24–38s drift loop, opacity/transform only. Z-rows reveal-on-enter once (translateY 12px → 0, opacity 0 → 1, 320–420ms, `cubic-bezier(0.22, 1, 0.36, 1)`), never re-triggering on re-scroll. Theme cards: no motion beyond a static hover lift (transform translateY(-2px), 200ms) — theme selection is a considered decision, not an impulse interaction, so no magnetic or bouncy affordances here. Version-history timeline entries fade/slide in on panel open, staggered 40ms apart, capped at 6 visible before a "load more." All motion collapses to instant state changes under `prefers-reduced-motion`.
 
 ## Accessibility + Bangla notes
 
-All body copy pairs in this deck are provided in both English and Bangla for headline-level and CTA-level strings; full-paragraph Bangla localisation of the design-guidance and performance-example prose is a documentation-team task outside this copy deck's scope, but the structural typography rules (0 letter-spacing, 1.35 minimum line-height, `lang="bn"` subtree scoping) apply to any Bangla rendering of this content without exception. Contrast, focus-ring, and reduced-motion requirements are stated per-band above where they diverge from the DESIGN.md defaults; where not restated, the DESIGN.md accessibility floors apply directly.
+All body copy pairs in this deck are provided in both English and Bangla for headline-level and CTA-level strings; full-paragraph Bangla localisation of the theme-guidance and performance-example prose is a documentation-team task outside this copy deck's scope, but the structural typography rules (0 letter-spacing, 1.35 minimum line-height, `lang="bn"` subtree scoping) apply to any Bangla rendering of this content without exception. Contrast, focus-ring, and reduced-motion requirements are stated per-band above where they diverge from the DESIGN.md defaults; where not restated, the DESIGN.md accessibility floors apply directly.
 
 ## Measurement plan
 
-- **Hero → demo conversion rate**: click-through from `Open a live demo` primary CTA, segmented by section group eventually used in the demo session.
-- **Section usage distribution**: which of the five section groups first-time builder sessions reach for, cross-referenced against catalogue size self-reported in onboarding, to validate the decision-table guidance in Section 5 against actual behaviour.
+- **Hero → demo conversion rate**: click-through from `Open a live demo` primary CTA, segmented by theme eventually selected in the demo session.
+- **Theme selection distribution**: which of the five themes first-time builder sessions choose, cross-referenced against catalogue size self-reported in onboarding, to validate the decision-table guidance in Section 5 against actual behaviour.
 - **Time-to-first-publish**: elapsed time from first builder session start to first published version, benchmarked against the ten-minute claim in the final CTA and the sixty-minute walkthrough in Section 12.
 - **Rollback usage rate**: percentage of published versions that are rolled back within 24 hours, as a proxy for whether the versioning safety net is functioning as intended (a very low rate could mean it is unused; a spike could flag a builder bug).
 - **Performance-budget flag rate**: percentage of publish attempts that trigger an oversized-image or font-weight-budget warning, tracked over time to see whether the enforcement is educating merchants (falling rate) or being routinely ignored (flat/rising rate).

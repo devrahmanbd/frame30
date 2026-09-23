@@ -11,7 +11,7 @@ Design tokens and surfaces: `/DESIGN.md`. Build order and gates: `/TODO.md`.
 | 1   | `01-home.md`       | `/`           | Sell in Bangladesh. Ship worldwide.           |
 | 2   | `02-pricing.md`    | `/pricing`    | Pricing that stays honest at scale.           |
 | 3   | `03-features.md`   | `/features`   | One platform. Every part of the sale.         |
-| 4   | `04-builder.md`    | `/builder`    | Design the storefront. Don't fight the design. |
+| 4   | `04-builder.md`    | `/builder`    | Design the storefront. Don't fight the theme. |
 | 5   | `05-payments.md`   | `/payments`   | bKash, Nagad, card, COD — reconciled.         |
 | 6   | `06-fulfilment.md` | `/fulfilment` | From order to doorstep, tracked.              |
 | 7   | `07-customers.md`  | `/customers`  | Stores that grew on Framique.                 |

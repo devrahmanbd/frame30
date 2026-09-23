@@ -1,5 +1,5 @@
 /**
- * Local SVG product placeholder (clothing-heritage tokens).
+ * Local SVG product placeholder (neutral tokens).
  *
  * Demo catalogue products ship with `image_url NULL` and hotlinking stock
  * photography is banned, so imageless products render a deterministic

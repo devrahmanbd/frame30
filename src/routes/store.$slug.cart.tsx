@@ -1,10 +1,11 @@
 /**
- * `/store/$slug/cart` — the themeless cart page.
+ * `/store/$slug/cart` — the themed cart page.
  *
- * The cart widgets read the live cart themselves through `CartContext`,
+ * The cart widgets (`cart_lines`, `cart_summary`, `checkout_steps`,
+ * `payment_methods`) read the live cart themselves through `CartContext`,
  * which `ThemeChrome` opens for every storefront render. This route therefore
- * only supplies the tenant chrome and a complete cart fallback with default
- * chrome — no theme template, zero tokens.
+ * only supplies the theme document and a plain fallback for stores whose
+ * theme publishes no cart template.
  */
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
@@ -56,15 +57,16 @@ function CartMissing() {
 function CartPage() {
   const { t } = useLang();
   const { slug } = Route.useParams();
-  const { merchant, siteKit, menus, installedPlugins } = Route.useLoaderData();
+  const { merchant, ast, tokens, siteKit, menus } = Route.useLoaderData();
 
   return (
     <ThemeChrome
       template="cart"
       storeSlug={slug}
       merchantId={merchant.id}
+      ast={ast}
+      tokens={tokens}
       siteKit={siteKit}
-      installedPlugins={installedPlugins}
       chrome={
         <>
           <StoreHeader slug={slug} name={merchant.name} menus={menus} />
@@ -72,6 +74,15 @@ function CartPage() {
           {/* <SupportWidget slug={slug} /> */}
         </>
       }
+      // The widgets render live cart data on their own; the keys simply tell
+      // the renderer this page owns the cart context.
+      contextSlots={{
+        cart_lines: null,
+        cart_summary: null,
+        cart_drawer: null,
+        checkout_steps: null,
+        payment_methods: null,
+      }}
       fallback={
         <section className="rounded-fq-lg border border-border bg-card p-8 text-center">
           <h1 className="font-bangla-display text-2xl font-bold">

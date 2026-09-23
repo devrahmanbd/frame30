@@ -153,6 +153,35 @@ describe("domainQuotaForPlan", () => {
     const { domainQuotaForPlan } = await import("./domains");
     expect(domainQuotaForPlan("unknown" as never)).toBe(1);
   });
+
+  it("single source: 1 store = 1 domain on every plan (no tiered quota)", async () => {
+    const { domainQuotaForPlan } = await import("./domains");
+    const plans = ["launch", "growth", "business", "enterprise"] as const;
+    const quotas = plans.map((p) => domainQuotaForPlan(p));
+    // Owner policy 2026-09-19: single-store MVP, exactly 1 domain per store.
+    expect(new Set(quotas)).toEqual(new Set([1]));
+    for (const q of quotas) expect(q).toBe(1);
+  });
+});
+
+describe("domain renewal transitions (quota/status)", () => {
+  it("allows active -> issuing_cert for certificate renewal", async () => {
+    const { canTransition } = await import("./domains");
+    expect(canTransition("active", "issuing_cert")).toBe(true);
+  });
+
+  it("allows issuing_cert -> verifying for stuck re-poll without edge", async () => {
+    const { canTransition } = await import("./domains");
+    expect(canTransition("issuing_cert", "verifying")).toBe(true);
+  });
+
+  it("keeps renewal cert_status valid (renewing is a CertStatus)", async () => {
+    const { DOMAIN_TRANSITIONS } = await import("./domains");
+    // Renewal must go through transition() on DomainStatus, never a raw
+    // cert_status write: active -> issuing_cert is the only renewal edge.
+    expect(DOMAIN_TRANSITIONS["active"]).toContain("issuing_cert");
+    expect(DOMAIN_TRANSITIONS["issuing_cert"]).toContain("verifying");
+  });
 });
 
 describe("live edge target (onboarding DNS fix, Sept 18 2026)", () => {

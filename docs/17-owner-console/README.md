@@ -244,7 +244,7 @@ Writes (console never creates rows):
 - `owner_loop` in `docs/15-e2e`: sign-off flow, gateway env toggles with wallet
   check, consent channel flip honors opt-out, DLQ flush, kill-switch fail-open,
   audit rows every console write; never touches real money (mock raft).
-- All other suites (store/admin/builder/market/design/fraud/ai) must remain
+- All other suites (store/admin/builder/market/theme/fraud/ai) must remain
   green — the console must never make their E2Es flaky.
 
 ## Strict guardrails
