@@ -19,7 +19,6 @@ import {
   parseAst,
   type Section,
 } from "./builder-ast";
-import { THEME_PRESETS } from "./theme-presets";
 import { parseTemplates } from "./builder-ast";
 
 const ctx = { storeName: "Rong", url: "https://shop.test/store/rong" };
@@ -283,13 +282,5 @@ describe("Phase 7.2 — validation gate", () => {
     ).toBe(true);
   });
 
-  it("keeps every official preset's schema valid", () => {
-    for (const preset of THEME_PRESETS) {
-      const parsed = parseTemplates(preset.templates);
-      for (const [key, ast] of Object.entries(parsed)) {
-        const nodes = astJsonLd(ast, ctx, flattenAst);
-        expect(graphIssues(nodes), `${preset.key}/${key}`).toEqual([]);
-      }
-    }
-  });
+
 });

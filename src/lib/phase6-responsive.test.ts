@@ -22,7 +22,6 @@ import {
   resolveProps,
   sectionStyle,
 } from "./builder-ast";
-import { THEME_PRESETS } from "./theme-presets";
 
 describe("Phase 6 — platform breakpoints", () => {
   it("pins the platform breakpoints", () => {
@@ -141,16 +140,5 @@ describe("Phase 6 — elasticity lint", () => {
     ).toBe(true);
   });
 
-  it("ships presets free of fixed widths", () => {
-    for (const preset of THEME_PRESETS) {
-      for (const [template, ast] of Object.entries(preset.templates)) {
-        const issues = lintTemplate(ast, template as never).filter(
-          (i) =>
-            i.level === "error" &&
-            /Fixed pixel width|Uppercase styling/.test(i.message),
-        );
-        expect(issues, `${preset.key}/${template}`).toEqual([]);
-      }
-    }
-  });
+
 });

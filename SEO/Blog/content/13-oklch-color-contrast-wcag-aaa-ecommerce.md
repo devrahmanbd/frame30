@@ -47,6 +47,6 @@ In **FRAMIQUE**, the entire design system is calibrated in OKLCH:
 
 - `--color-primary`: Calibrated to `oklch(0.48 0.23 255)` (`#1360D4`), delivering a solid **5.2:1 readable contrast ratio** against light backgrounds.
 - `--color-muted-foreground`: Calibrated to `oklch(0.40 0.018 25)` to guarantee a **5.5:1 ratio**, completely clearing WCAG AA and approaching WCAG AAA standards.
-- When merchants adjust their store theme color in the Framique admin, the engine mathematically adjusts luminance and chroma to ensure text contrast remains accessible across both Light and Dark modes.
+- When merchants adjust their store design color in the Framique admin, the engine mathematically adjusts luminance and chroma to ensure text contrast remains accessible across both Light and Dark modes.
 
 [Explore Design Tokens on Framique](/features)

@@ -13,7 +13,7 @@ Framique is a SaaS business, not just a product. This doc defines what merchants
 
 | Plan       | Price (BDT/mo)                            | Products  | Staff seats | Payments                 | Highlights                                        |
 | ---------- | ----------------------------------------- | --------- | ----------- | ------------------------ | ------------------------------------------------- |
-| Launch     | BDT 0 (trial 14d → BDT 0 forever, capped) | 25        | 1           | COD only                 | Framique badge, 1 theme                           |
+| Launch     | BDT 0 (trial 14d → BDT 0 forever, capped) | 25        | 1           | COD only                 | Framique badge, 1 design                           |
 | Growth     | BDT 1,200                                 | 250       | 5           | MFS (bKash/Nagad/Rocket) | coupons, basic analytics                          |
 | Business   | BDT 2,500                                 | 2,000     | 20          | MFS + payout wallet      | multi-location, POS, marketing suite              |
 | Enterprise | custom                                    | unlimited | custom      | everything               | marketplace selling, AI support, fraud suite, SLA |

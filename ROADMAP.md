@@ -16,7 +16,7 @@ gantt
     Auto-Suggest & Canned Support Desk          :h1_3, after h1_2, 4d
     section Horizon 2: Elementor & CMS Parity
     Content / Style / Advanced 3-Tab Inspector  :h2_1, 2026-09-22, 6d
-    Theme Live Preview via Signed HMAC URLs     :h2_2, after h2_1, 5d
+    Design Live Preview via Signed HMAC URLs     :h2_2, after h2_1, 5d
     Navigator Structure Tree & Revision Split   :h2_3, after h2_2, 6d
     section Horizon 3: Commerce & Logistics
     bKash & Nagad Real-Time Webhook Verification:h3_1, 2026-10-01, 5d
@@ -42,7 +42,7 @@ gantt
     - 📣 **Campaigns**: _"Plan a Pohela Boishakh flash sale strategy with coupon tiers"_
     - 📦 **Catalog**: _"Write an SEO-optimized product description for organic Sundarbans honey"_
     - 🚚 **Logistics**: _"How do I connect SteadFast and Pathao courier APIs?"_
-  - Contextual injection: Automatically feeds merchant's store category, active theme, and top products into the prompt context.
+  - Contextual injection: Automatically feeds merchant's store category, catalogue shape, and top products into the prompt context.
 
 ### 1.2 Page Builder "Build with AI" Section Engine (Elementor Angie AI Parity)
 
@@ -75,14 +75,10 @@ gantt
     - **Advanced Tab**: Margin/padding sliders (linked/unlinked), z-index, responsive display rules (Hide on Mobile/Tablet/Desktop), custom CSS classes, entrance motion effects (`gsap`).
   - Device toggle synchronized with canvas viewport (Desktop: 1280px, Tablet: 768px, Mobile: 375px).
 
-### 2.2 Appearance › Themes Instant Live Preview
+### 2.2 Appearance preview — RETIRED 2026-09-23
 
-- **Target Surface**: `/dashboard/content/themes` & `/dashboard/marketplace?tab=theme`.
-- **Features**:
-  - Inactive theme cards feature working **Live Preview** action.
-  - Generates a 10-minute HMAC signed preview bearer token (`/store/:slug?preview_theme_id=:id&token=:hmac`).
-  - Split-view preview drawer or full-canvas preview mode with responsive device toggles.
-  - Bottom action bar: **Activate Theme**, **Edit with Builder**, and **Close Preview**.
+Retired with the full purge: no design packs, no Designs surface, no preview
+tokens. Original live-preview spec removed; recover via git.
 
 ### 2.3 Navigator Structure Tree & Visual Revision Split
 
@@ -155,7 +151,7 @@ gantt
 | ------------- | ------------------------------------------------ | -------- | ---------- | -------- |
 | **AI**        | Interactive Creative Prompt Chips                | **P0**   | Low        | High     |
 | **CMS**       | Page Builder 3-Tab Inspector (Content/Style/Adv) | **P0**   | Med        | High     |
-| **CMS**       | Inactive Theme Live Preview (HMAC Signed)        | **P0**   | Low        | High     |
+| **CMS**       | ~~Inactive Design Live Preview (HMAC Signed)~~ — RETIRED 2026-09-23 | **—**      | —          | —        |
 | **AI**        | "Build with AI" AST Section Generator            | **P1**   | Med        | High     |
 | **Logistics** | SteadFast / Pathao One-Click Consignment         | **P1**   | Med        | High     |
 | **CMS**       | Navigator Layer Tree & Revision Split            | **P1**   | Med        | Med      |

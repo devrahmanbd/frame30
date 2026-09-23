@@ -3,15 +3,14 @@
  *
  * Every page is slot-keyed (header / main / footer) and every widget is a plain
  * data node, so a version snapshot is fully serialisable and replayable. A page
- * belongs to a template key (index / product / collection / ...) and a theme
- * carries one AST per template plus a token set.
+ * belongs to a template key (index / product / collection / ...) and a
+ * storefront carries one AST per template plus a design-token set.
  *
  * Nothing here trusts the client: `parseAst` / `parseTemplates` / `parseTokens`
  * are the server-side shape guards, and an unknown or malformed widget is kept
  * as a placeholder instead of breaking the whole page render.
  */
 import { SIZES_LABEL, SIZES_PRESETS, altKey, sizesKey } from "./media";
-import { PRESET_BN } from "./theme-presets.bn";
 import { biTextState, bnKey, readBiText, type Locale } from "./bitext";
 import { isTaxonomyValue, type TaxonomySource } from "./taxonomy";
 import { UNIT_KINDS, type UnitKind } from "./unit-format";
@@ -231,18 +230,6 @@ export type SectionType =
   | "blog_archive"
   | "blog_terms"
   | "blog_pager"
-  // Phase 9 — Heritage (clothing) theme widgets.
-  | "hero_carousel"
-  | "department_grid"
-  | "heritage_story"
-  | "textile_showcase"
-  | "editorial_banner"
-  | "testimonial_carousel"
-  | "marquee_strip"
-  | "rewards_club"
-  | "wedding_shop"
-  | "gift_finder"
-  | "story_trunk"
   | "orders_list"
   | "profile_card";
 
@@ -346,6 +333,22 @@ export function templateSlotSections(
 }
 
 /**
+ * Themeless aliases (theme purge, Task 4). The AST is storefront content, not
+ * theme content: `BuilderAst` is the canonical name going forward. The
+ * `Theme*` names above remain as deprecated aliases because the storefront
+ * (Task 3), presets/blueprints (Tasks 1-2) and DB layer (Task 5) still read
+ * them; they are removed once those tracks land.
+ */
+export type BuilderAst = ThemeAst;
+export type BuilderTemplates = ThemeTemplates;
+export type BuilderTokens = ThemeTokens;
+export const EMPTY_BUILDER_AST: BuilderAst = {
+  header: [],
+  main: [],
+  footer: [],
+};
+
+/**
  * Phase 1.1: `bitext` is a text field with a বাংলা sibling stored under
  * `${key}_bn`. It sanitises exactly like `text`/`textarea`; the difference is
  * that the inspector shows two tabs and lint checks translation coverage.
@@ -384,7 +387,7 @@ export type Field = {
   responsive?: boolean;
   /** `group` / `array`: nested schema. */
   fields?: Field[];
-  /** `array`: legacy spelling of the row schema (heritage widgets).
+  /** `array`: legacy spelling of the row schema (repeatable widget rows).
    * Honored everywhere `fields` is; new code must use `fields`. */
   children?: Field[];
   /** Numeric bounds for `number`, `range` and `unit`. */
@@ -2607,99 +2610,6 @@ const BASE_CATALOG: CatalogEntry[] = [
     ],
   },
   {
-    type: "rewards_club",
-    label: "Rewards club",
-    group: "commerce",
-    slots: ["main", "footer"],
-    heading: false,
-    defaults: {
-      heading: "My Rewards",
-      body: "Earn points on every purchase and unlock member prices.",
-      tier1Name: "Silver",
-      tier1Points: "0+ points",
-      tier2Name: "Gold",
-      tier2Points: "5,000+ points",
-      tier3Name: "Platinum",
-      tier3Points: "15,000+ points",
-      buttonLabel: "Join free",
-      buttonHref: "/pages/rewards",
-    },
-    fields: [
-      text("heading", "Heading", 60),
-      area("body", "Body", 300),
-      text("tier1Name", "Tier 1 name", 40),
-      text("tier1Points", "Tier 1 threshold", 40),
-      text("tier2Name", "Tier 2 name", 40),
-      text("tier2Points", "Tier 2 threshold", 40),
-      text("tier3Name", "Tier 3 name", 40),
-      text("tier3Points", "Tier 3 threshold", 40),
-      text("buttonLabel", "Button label", 40),
-      text("buttonHref", "Button link", 120),
-    ],
-  },
-  {
-    type: "wedding_shop",
-    label: "Wedding shop",
-    group: "commerce",
-    slots: ["main"],
-    heading: false,
-    defaults: {
-      heading: "The Wedding Shop",
-      body: "Bridal sarees, groom panjabis and festive gifting — curated for the big day.",
-      c1Name: "Bridal Sarees",
-      c1Href: "/c/bridal",
-      c2Name: "Groom Panjabis",
-      c2Href: "/c/groom",
-      c3Name: "Festive Gifting",
-      c3Href: "/c/gifting",
-      buttonLabel: "Shop all wedding",
-      buttonHref: "/c/wedding",
-    },
-    fields: [
-      text("heading", "Heading", 60),
-      area("body", "Body", 300),
-      text("c1Name", "Collection 1 name", 40),
-      text("c1Href", "Collection 1 link", 120),
-      text("c2Name", "Collection 2 name", 40),
-      text("c2Href", "Collection 2 link", 120),
-      text("c3Name", "Collection 3 name", 40),
-      text("c3Href", "Collection 3 link", 120),
-      text("buttonLabel", "Button label", 40),
-      text("buttonHref", "Button link", 120),
-    ],
-  },
-  {
-    type: "gift_finder",
-    label: "Gift finder",
-    group: "commerce",
-    slots: ["main"],
-    heading: false,
-    defaults: {
-      heading: "Find the perfect gift",
-      body: "Pick an occasion — we take you straight to matching gifts.",
-      o1Label: "For Her",
-      o1Query: "saree",
-      o2Label: "For Him",
-      o2Query: "panjabi",
-      o3Label: "For Home",
-      o3Query: "home decor",
-      buttonLabel: "Browse all gifts",
-      buttonHref: "/search",
-    },
-    fields: [
-      text("heading", "Heading", 60),
-      area("body", "Body", 300),
-      text("o1Label", "Occasion 1 label", 40),
-      text("o1Query", "Occasion 1 search", 60),
-      text("o2Label", "Occasion 2 label", 40),
-      text("o2Query", "Occasion 2 search", 60),
-      text("o3Label", "Occasion 3 label", 40),
-      text("o3Query", "Occasion 3 search", 60),
-      text("buttonLabel", "Button label", 40),
-      text("buttonHref", "Button link", 120),
-    ],
-  },
-  {
     type: "fit_note",
     label: "Fit note",
     group: "commerce",
@@ -2851,7 +2761,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       c3Href: "/collections/taaga",
       c4Title: "Jamdani Weaves",
       c4Image: "",
-      c4Href: "/collections/heritage-handloom",
+      c4Href: "/collections/handloom",
       c5Title: "Nakshi Kantha",
       c5Image: "",
       c5Href: "/collections/nakshi-kantha",
@@ -2901,7 +2811,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Our Sub-Brands",
-      subheading: "Curated lifestyle edits from our house of heritage craft",
+      subheading: "Curated lifestyle edits from artisan craft houses",
       b1Name: "TAAGA",
       b1Tagline: "Bohemian & contemporary youth fusion",
       b1Image: "",
@@ -4171,148 +4081,6 @@ const BASE_CATALOG: CatalogEntry[] = [
       },
     ],
   },
-  // Heritage (clothing) theme widgets.
-  {
-    type: "hero_carousel",
-    label: "Hero carousel",
-    group: "heritage",
-    slots: ["main"],
-    heading: true,
-    defaults: { autoAdvanceMs: 5000, atmosphere: "wash" },
-    fields: [
-      { key: "slides", label: "Slides", kind: "array", panel: "content", children: [
-        { key: "image", label: "Image URL", kind: "text", panel: "content" },
-        { key: "headline", label: "Headline", kind: "bitext", panel: "content" },
-        { key: "subhead", label: "Subhead", kind: "bitext", panel: "content" },
-        { key: "ctaLabel", label: "CTA label", kind: "text", panel: "content" },
-        { key: "ctaUrl", label: "CTA URL", kind: "text", panel: "content" },
-        { key: "caption", label: "Caption", kind: "bitext", panel: "content" },
-      ]},
-      { key: "autoAdvanceMs", label: "Auto-advance (ms)", kind: "number", panel: "settings" },
-      ATMOSPHERE,
-    ],
-  },
-  {
-    type: "department_grid",
-    label: "Department grid",
-    group: "heritage",
-    slots: ["main"],
-    heading: false,
-    defaults: { columns: 4 },
-    fields: [
-      { key: "departments", label: "Departments", kind: "array", panel: "content", children: [
-        { key: "image", label: "Image URL", kind: "text", panel: "content" },
-        { key: "title", label: "Title", kind: "text", panel: "content" },
-        { key: "href", label: "Link URL", kind: "text", panel: "content" },
-      ]},
-      { key: "columns", label: "Columns", kind: "number", panel: "layout" },
-    ],
-  },
-  {
-    type: "heritage_story",
-    label: "Heritage story",
-    group: "heritage",
-    slots: ["main"],
-    heading: false,
-    defaults: { layout: "image-left" },
-    fields: [
-      { key: "image", label: "Image URL", kind: "text", panel: "content" },
-      { key: "headline", label: "Headline", kind: "text", panel: "content" },
-      { key: "body", label: "Body", kind: "textarea", panel: "content" },
-      { key: "ctaLabel", label: "CTA label", kind: "text", panel: "content" },
-      { key: "ctaUrl", label: "CTA URL", kind: "text", panel: "content" },
-      { key: "layout", label: "Layout", kind: "select", panel: "layout", options: [
-        { value: "image-left", label: "Image left" },
-        { value: "image-right", label: "Image right" },
-        { value: "full-width", label: "Full width" },
-      ]},
-    ],
-  },
-  {
-    type: "textile_showcase",
-    label: "Textile showcase",
-    group: "heritage",
-    slots: ["main"],
-    heading: false,
-    defaults: {},
-    fields: [
-      { key: "headline", label: "Headline", kind: "text", panel: "content" },
-      { key: "items", label: "Items", kind: "array", panel: "content", children: [
-        { key: "image", label: "Image URL", kind: "text", panel: "content" },
-        { key: "title", label: "Title", kind: "text", panel: "content" },
-        { key: "subtitle", label: "Subtitle", kind: "text", panel: "content" },
-      ]},
-    ],
-  },
-  {
-    type: "editorial_banner",
-    label: "Editorial banner",
-    group: "heritage",
-    slots: ["main"],
-    heading: false,
-    defaults: { surface: "card" },
-    fields: [
-      { key: "image", label: "Image URL", kind: "text", panel: "content" },
-      { key: "headline", label: "Headline", kind: "text", panel: "content" },
-      { key: "subhead", label: "Subhead", kind: "text", panel: "content" },
-      { key: "ctaLabel", label: "CTA label", kind: "text", panel: "content" },
-      { key: "ctaUrl", label: "CTA URL", kind: "text", panel: "content" },
-      SURFACE,
-    ],
-  },
-  {
-    type: "testimonial_carousel",
-    label: "Testimonial carousel",
-    group: "heritage",
-    slots: ["main"],
-    heading: false,
-    defaults: { autoAdvanceMs: 6000 },
-    fields: [
-      { key: "testimonials", label: "Testimonials", kind: "array", panel: "content", children: [
-        { key: "quote", label: "Quote", kind: "textarea", panel: "content" },
-        { key: "author", label: "Author", kind: "text", panel: "content" },
-        { key: "role", label: "Role", kind: "text", panel: "content" },
-        { key: "avatar", label: "Avatar URL", kind: "text", panel: "content" },
-      ]},
-      { key: "autoAdvanceMs", label: "Auto-advance (ms)", kind: "number", panel: "settings" },
-    ],
-  },
-  {
-    type: "marquee_strip",
-    label: "Marquee strip",
-    group: "heritage",
-    slots: ["main"],
-    heading: false,
-    defaults: { speed: "normal" },
-    fields: [
-      { key: "items", label: "Items", kind: "array", panel: "content", children: [
-        { key: "text", label: "Text", kind: "text", panel: "content" },
-        { key: "icon", label: "Icon", kind: "text", panel: "content" },
-      ]},
-      { key: "speed", label: "Speed", kind: "select", panel: "settings", options: [
-        { value: "slow", label: "Slow" },
-        { value: "normal", label: "Normal" },
-        { value: "fast", label: "Fast" },
-      ]},
-    ],
-  },
-  {
-    type: "story_trunk",
-    label: "Story trunk",
-    group: "heritage",
-    slots: ["main"],
-    heading: true,
-    defaults: {},
-    fields: [
-      { key: "headline", label: "Headline", kind: "text", panel: "content" },
-      { key: "items", label: "Items", kind: "array", panel: "content", children: [
-        { key: "image", label: "Image URL", kind: "text", panel: "content" },
-        { key: "title", label: "Title", kind: "text", panel: "content" },
-        { key: "body", label: "Body", kind: "textarea", panel: "content" },
-        { key: "year", label: "Year", kind: "text", panel: "content" },
-      ]},
-    ],
-  },
   {
     type: "orders_list",
     label: "Order history",
@@ -4338,6 +4106,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       { key: "heading", label: "Heading", kind: "bitext", panel: "content" },
     ],
   },
+
 ];
 
 /* ------------------------------------------------- Phase 0.4 — style layer */
@@ -4943,7 +4712,7 @@ function withBiText(entry: CatalogEntry): CatalogEntry {
     // freshly dropped widget is not English-only for বাংলা shoppers.
     const en = entry.defaults[field.key];
     defaults[bnKey(field.key)] =
-      typeof en === "string" ? (PRESET_BN[en] ?? "") : "";
+      typeof en === "string" ? "" : "";
   }
   return { ...entry, defaults, fields };
 }
@@ -5171,7 +4940,7 @@ export type ThemeTokens = {
   currencyDisplay: "symbol" | "code";
   /** Theme-level font pairing; sets both faces. `custom` keeps hand-picked ones. */
   fontPairing: FontPairingKey;
-  /** Designed dark set. Null means the theme is light-only. */
+  /** Designed dark set. Null means the storefront is light-only. */
   dark: DarkTokens | null;
   /** Named global colours and fonts every control can bind to. */
   globals: ThemeGlobals;
@@ -5230,6 +4999,9 @@ export const DEFAULT_DARK_TOKENS: DarkTokens = {
   surface: "#0B1220",
   ink: "#E6EDF5",
 };
+
+/** Themeless alias — same default design tokens, canonical name. */
+export const DEFAULT_BUILDER_TOKENS: BuilderTokens = DEFAULT_TOKENS;
 
 const HEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 const LENGTH = /^\d{1,4}(?:px|rem)$/;
@@ -6282,7 +6054,7 @@ export function lintTemplate(
       issues.push({
         level: "error",
         sectionId: section.id,
-        message: "Raw colour value — use a theme token instead.",
+        message: "Raw colour value — use a design token instead.",
       });
     }
     // Phase 6: fixed widths clip বাংলা (15–30% longer than English) and break

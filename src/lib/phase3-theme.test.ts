@@ -15,7 +15,6 @@ import {
   parseTokens,
   tokensToCss,
 } from "./builder-ast";
-import { THEME_PRESETS, applyPreset } from "./theme-presets";
 import { formatDisplayMoney } from "./money-display";
 
 describe("phase 3.1 tokens", () => {
@@ -98,65 +97,5 @@ describe("phase 3.1 tokens", () => {
     });
     expect(code.startsWith("BDT")).toBe(true);
     expect(code).toContain("1,200");
-  });
-});
-
-describe("phase 3.1 preset swap", () => {
-  const preset = THEME_PRESETS[0]!;
-
-  it("replaces tokens but never loses authored sections", () => {
-    const current = {
-      index: {
-        header: [],
-        main: [
-          {
-            id: "mine-1",
-            type: "rich_text" as const,
-            props: { body: "keep me" },
-          },
-        ],
-        footer: [],
-      },
-    };
-    const result = applyPreset(current, preset);
-    const main = result.templates.index!.main;
-    expect(main[0]?.id).toBe("mine-1");
-    expect(main[0]?.props["body"]).toBe("keep me");
-    expect(result.tokens).toEqual(preset.tokens);
-    expect(result.kept).toBeGreaterThan(0);
-    expect(main.length).toBeGreaterThan(1);
-  });
-
-  it("does not duplicate a widget type the document already has", () => {
-    const presetHero = preset.templates.index.main.find(
-      (s) => s.type === "hero",
-    );
-    if (!presetHero) return;
-    const current = {
-      index: {
-        header: [],
-        main: [
-          { ...presetHero, id: "authored-hero", props: { heading: "Mine" } },
-        ],
-        footer: [],
-      },
-    };
-    const result = applyPreset(current, preset);
-    const heroes = result.templates.index!.main.filter(
-      (s) => s.type === "hero",
-    );
-    expect(heroes).toHaveLength(1);
-    expect(heroes[0]?.props["heading"]).toBe("Mine");
-  });
-
-  it("fills every template the preset ships", () => {
-    const result = applyPreset({}, preset);
-    for (const key of Object.keys(preset.templates)) {
-      expect(
-        result.templates[key as keyof typeof result.templates],
-      ).toBeTruthy();
-    }
-    expect(result.kept).toBe(0);
-    expect(result.added).toBeGreaterThan(0);
   });
 });

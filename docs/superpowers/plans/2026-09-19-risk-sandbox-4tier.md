@@ -4,7 +4,7 @@
 
 **Goal:** Implement a 4-level risk-based sandboxing system that dynamically adjusts CSP, iframe isolation, rate limits, upload scanning, and feature access based on merchant trust tier and visitor behavior.
 
-**Architecture:** A `risk_tier` enum on the `merchants` table drives all sandbox decisions. Four tiers — `low` (official theme+plugin), `lower_medium` (custom theme/plugin), `medium` (flagged visitor), `high` (malicious merchant) — each compose stricter restrictions. The tier is resolved per-request via a `resolveRiskTier()` function that considers merchant config, theme source, plugin source, and behavior signals. CSP headers, iframe sandbox attributes, rate limit buckets, and upload scanning policies all read from this tier.
+**Architecture:** A `risk_tier` enum on the `merchants` table drives all sandbox decisions. Four tiers — `low` (official design+plugin), `lower_medium` (custom design/plugin), `medium` (flagged visitor), `high` (malicious merchant) — each compose stricter restrictions. The tier is resolved per-request via a `resolveRiskTier()` function that considers merchant config, design source, plugin source, and behavior signals. CSP headers, iframe sandbox attributes, rate limit buckets, and upload scanning policies all read from this tier.
 
 **Tech Stack:** PostgreSQL enum + RPC, TypeScript (isomorphic risk resolution), TanStack Router middleware, existing rate-limit.server.ts, existing custom-code.ts CSP builder.
 
@@ -120,8 +120,8 @@ describe("risk-tier", () => {
     });
 
     it("returns all resolution reasons", () => {
-      expect(RESOLUTION_REASONS).toContain("official_theme");
-      expect(RESOLUTION_REASONS).toContain("custom_theme");
+      expect(RESOLUTION_REASONS).toContain("official_design");
+      expect(RESOLUTION_REASONS).toContain("custom_design");
       expect(RESOLUTION_REASONS).toContain("custom_plugin");
       expect(RESOLUTION_REASONS).toContain("behavior_signal");
       expect(RESOLUTION_REASONS).toContain("admin_override");
@@ -145,7 +145,7 @@ Expected: FAIL — module not found
  *
  * Tier assignment is per-merchant and resolved from:
  *   1. Admin override (manual set)
- *   2. Theme source (official marketplace = low, custom = lower_medium)
+ *   2. Design source (official marketplace = low, custom = lower_medium)
  *   3. Plugin source (official = low, custom = lower_medium)
  *   4. Behavior signals (fraud engine, bot score, abuse reports)
  *
@@ -157,9 +157,9 @@ export const RISK_TIERS = ["low", "lower_medium", "medium", "high"] as const;
 export type RiskTier = (typeof RISK_TIERS)[number];
 
 export const RESOLUTION_REASONS = [
-  "official_theme",
+  "official_design",
   "official_plugin",
-  "custom_theme",
+  "custom_design",
   "custom_plugin",
   "behavior_signal",
   "fraud_engine",
@@ -397,7 +397,7 @@ export function resolvePolicy(
  */
 export function resolveTierFromSignals(input: {
   storedTier?: RiskTier;
-  themeSource?: "marketplace" | "custom";
+  designSource?: "marketplace" | "custom";
   pluginSources?: ("marketplace" | "custom")[];
   fraudScore?: number;
   botScore?: number;
@@ -433,15 +433,15 @@ export function resolveTierFromSignals(input: {
     return { tier: "lower_medium", reasons };
   }
 
-  // Custom theme → lower_medium
-  if (input.themeSource === "custom") {
-    reasons.push("custom_theme");
+  // Custom design → lower_medium
+  if (input.designSource === "custom") {
+    reasons.push("custom_design");
     return { tier: "lower_medium", reasons };
   }
 
   // Official everything → low
-  if (input.themeSource === "marketplace") {
-    reasons.push("official_theme");
+  if (input.designSource === "marketplace") {
+    reasons.push("official_design");
   }
   if (input.pluginSources?.every((s) => s === "marketplace")) {
     reasons.push("official_plugin");
@@ -750,17 +750,17 @@ export async function recordAbuseSignal(
  */
 export async function getMerchantRiskContext(merchantId: string): Promise<{
   storedTier: RiskTier;
-  themeSource: "marketplace" | "custom";
+  designSource: "marketplace" | "custom";
   pluginSources: ("marketplace" | "custom")[];
   abuseScore: number;
 }> {
-  const [tierResult, themeResult, pluginsResult, merchantResult] =
+  const [tierResult, designResult, pluginsResult, merchantResult] =
     await Promise.all([
       supabaseAdmin.rpc("get_merchant_risk_tier", {
         p_merchant_id: merchantId,
       }),
       supabaseAdmin
-        .from("store_themes")
+        .from("store_designs")
         .select("source_listing_id")
         .eq("merchant_id", merchantId)
         .eq("is_active", true)
@@ -778,7 +778,7 @@ export async function getMerchantRiskContext(merchantId: string): Promise<{
     ]);
 
   const storedTier = (tierResult.data as RiskTier) ?? "low";
-  const themeSource = themeResult.data?.source_listing_id
+  const designSource = designResult.data?.source_listing_id
     ? "marketplace"
     : "custom";
   const pluginSources = (pluginsResult.data ?? []).map(
@@ -787,7 +787,7 @@ export async function getMerchantRiskContext(merchantId: string): Promise<{
   ) as ("marketplace" | "custom")[];
   const abuseScore = merchantResult.data?.abuse_score ?? 0;
 
-  return { storedTier, themeSource, pluginSources, abuseScore };
+  return { storedTier, designSource, pluginSources, abuseScore };
 }
 ```
 
@@ -1333,7 +1333,7 @@ async function resolveRequestTier(
     const ctx = await getMerchantRiskContext(merchantId);
     const { tier, reasons } = resolveTierFromSignals({
       storedTier: ctx.storedTier,
-      themeSource: ctx.themeSource,
+      designSource: ctx.designSource,
       pluginSources: ctx.pluginSources,
       fraudScore: ctx.abuseScore,
     });
@@ -1382,27 +1382,27 @@ Add to `src/lib/risk-tier.test.ts`:
 
 ```typescript
 describe("resolveTierFromSignals", () => {
-  it("returns low for official theme+plugin", () => {
+  it("returns low for official design+plugin", () => {
     const result = resolveTierFromSignals({
-      themeSource: "marketplace",
+      designSource: "marketplace",
       pluginSources: ["marketplace", "marketplace"],
     });
     expect(result.tier).toBe("low");
-    expect(result.reasons).toContain("official_theme");
+    expect(result.reasons).toContain("official_design");
   });
 
-  it("returns lower_medium for custom theme", () => {
+  it("returns lower_medium for custom design", () => {
     const result = resolveTierFromSignals({
-      themeSource: "custom",
+      designSource: "custom",
       pluginSources: ["marketplace"],
     });
     expect(result.tier).toBe("lower_medium");
-    expect(result.reasons).toContain("custom_theme");
+    expect(result.reasons).toContain("custom_design");
   });
 
   it("returns lower_medium for custom plugin", () => {
     const result = resolveTierFromSignals({
-      themeSource: "marketplace",
+      designSource: "marketplace",
       pluginSources: ["marketplace", "custom"],
     });
     expect(result.tier).toBe("lower_medium");
@@ -1411,7 +1411,7 @@ describe("resolveTierFromSignals", () => {
 
   it("returns medium for high bot score", () => {
     const result = resolveTierFromSignals({
-      themeSource: "marketplace",
+      designSource: "marketplace",
       botScore: 70,
     });
     expect(result.tier).toBe("medium");

@@ -18,7 +18,6 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogDotatomRouteImport } from './routes/blog[.]atom'
 import { Route as BlogDotjsonRouteImport } from './routes/blog[.]json'
 import { Route as BlogDotxmlRouteImport } from './routes/blog[.]xml'
-import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -77,11 +76,9 @@ import { Route as RootTenancyRouteImport } from './routes/root/tenancy'
 import { Route as RootTenantsRouteImport } from './routes/root/tenants'
 import { Route as RootTrialRouteImport } from './routes/root/trial'
 import { Route as RootUsersRouteImport } from './routes/root/users'
-import { Route as ThemePreviewKeyRouteImport } from './routes/theme-preview.$key'
 import { Route as DotwellKnownAcmeChallengeTokenRouteImport } from './routes/[.]well-known.acme-challenge.$token'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedDashboardActivityRouteImport } from './routes/_authenticated/dashboard/activity'
-import { Route as AuthenticatedDashboardAdminThemeSubmissionsRouteImport } from './routes/_authenticated/dashboard/admin-theme-submissions'
 import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard/analytics'
 import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_authenticated/dashboard/approvals'
 import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_authenticated/dashboard/brands'
@@ -138,13 +135,11 @@ import { Route as AuthenticatedDashboardAnalyticsReportsRouteImport } from './ro
 import { Route as AuthenticatedDashboardBillingIndexRouteImport } from './routes/_authenticated/dashboard/billing/index'
 import { Route as AuthenticatedDashboardBillingInvoicesRouteImport } from './routes/_authenticated/dashboard/billing/invoices'
 import { Route as AuthenticatedDashboardContentIndexRouteImport } from './routes/_authenticated/dashboard/content/index'
-import { Route as AuthenticatedDashboardContentCustomCodeRouteImport } from './routes/_authenticated/dashboard/content/custom-code'
 import { Route as AuthenticatedDashboardContentEditorRouteImport } from './routes/_authenticated/dashboard/content/editor'
 import { Route as AuthenticatedDashboardContentMediaRouteImport } from './routes/_authenticated/dashboard/content/media'
 import { Route as AuthenticatedDashboardContentMenusRouteImport } from './routes/_authenticated/dashboard/content/menus'
 import { Route as AuthenticatedDashboardContentPagesRouteImport } from './routes/_authenticated/dashboard/content/pages'
 import { Route as AuthenticatedDashboardContentPostsRouteImport } from './routes/_authenticated/dashboard/content/posts'
-import { Route as AuthenticatedDashboardContentThemesRouteImport } from './routes/_authenticated/dashboard/content/themes'
 import { Route as AuthenticatedDashboardFraudIndexRouteImport } from './routes/_authenticated/dashboard/fraud/index'
 import { Route as AuthenticatedDashboardFraudAdDefenseRouteImport } from './routes/_authenticated/dashboard/fraud/ad-defense'
 import { Route as AuthenticatedDashboardFraudAuditRouteImport } from './routes/_authenticated/dashboard/fraud/audit'
@@ -265,11 +260,6 @@ const BlogDotjsonRoute = BlogDotjsonRouteImport.update({
 const BlogDotxmlRoute = BlogDotxmlRouteImport.update({
   id: '/blog.xml',
   path: '/blog.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BuilderRoute = BuilderRouteImport.update({
-  id: '/builder',
-  path: '/builder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -562,11 +552,6 @@ const RootUsersRoute = RootUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => RootRoute,
 } as any)
-const ThemePreviewKeyRoute = ThemePreviewKeyRouteImport.update({
-  id: '/theme-preview/$key',
-  path: '/theme-preview/$key',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DotwellKnownAcmeChallengeTokenRoute =
   DotwellKnownAcmeChallengeTokenRouteImport.update({
     id: '/.well-known/acme-challenge/$token',
@@ -583,12 +568,6 @@ const AuthenticatedDashboardActivityRoute =
   AuthenticatedDashboardActivityRouteImport.update({
     id: '/activity',
     path: '/activity',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardAdminThemeSubmissionsRoute =
-  AuthenticatedDashboardAdminThemeSubmissionsRouteImport.update({
-    id: '/admin-theme-submissions',
-    path: '/admin-theme-submissions',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardAnalyticsRoute =
@@ -910,12 +889,6 @@ const AuthenticatedDashboardContentIndexRoute =
     path: '/content/',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
-const AuthenticatedDashboardContentCustomCodeRoute =
-  AuthenticatedDashboardContentCustomCodeRouteImport.update({
-    id: '/content/custom-code',
-    path: '/content/custom-code',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
 const AuthenticatedDashboardContentEditorRoute =
   AuthenticatedDashboardContentEditorRouteImport.update({
     id: '/content/editor',
@@ -944,12 +917,6 @@ const AuthenticatedDashboardContentPostsRoute =
   AuthenticatedDashboardContentPostsRouteImport.update({
     id: '/content/posts',
     path: '/content/posts',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardContentThemesRoute =
-  AuthenticatedDashboardContentThemesRouteImport.update({
-    id: '/content/themes',
-    path: '/content/themes',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardFraudIndexRoute =
@@ -1396,7 +1363,6 @@ export interface FileRoutesByFullPath {
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
   '/blog.xml': typeof BlogDotxmlRoute
-  '/builder': typeof BuilderRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
@@ -1451,14 +1417,12 @@ export interface FileRoutesByFullPath {
   '/root/tenants': typeof RootTenantsRoute
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
-  '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog/': typeof BlogIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/legal/': typeof LegalIndexRoute
   '/root/': typeof RootIndexRoute
   '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
   '/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
-  '/dashboard/admin-theme-submissions': typeof AuthenticatedDashboardAdminThemeSubmissionsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
@@ -1514,13 +1478,11 @@ export interface FileRoutesByFullPath {
   '/dashboard/analytics/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
   '/dashboard/analytics/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
   '/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
-  '/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
   '/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
   '/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
   '/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
   '/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
   '/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
-  '/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
   '/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
   '/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
   '/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
@@ -1610,7 +1572,6 @@ export interface FileRoutesByTo {
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
   '/blog.xml': typeof BlogDotxmlRoute
-  '/builder': typeof BuilderRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
@@ -1663,14 +1624,12 @@ export interface FileRoutesByTo {
   '/root/tenants': typeof RootTenantsRoute
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
-  '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog': typeof BlogIndexRoute
   '/docs': typeof DocsIndexRoute
   '/legal': typeof LegalIndexRoute
   '/root': typeof RootIndexRoute
   '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
   '/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
-  '/dashboard/admin-theme-submissions': typeof AuthenticatedDashboardAdminThemeSubmissionsRoute
   '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
@@ -1726,13 +1685,11 @@ export interface FileRoutesByTo {
   '/dashboard/analytics/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
   '/dashboard/analytics/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
   '/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
-  '/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
   '/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
   '/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
   '/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
   '/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
   '/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
-  '/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
   '/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
   '/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
   '/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
@@ -1824,7 +1781,6 @@ export interface FileRoutesById {
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
   '/blog.xml': typeof BlogDotxmlRoute
-  '/builder': typeof BuilderRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
@@ -1879,14 +1835,12 @@ export interface FileRoutesById {
   '/root/tenants': typeof RootTenantsRoute
   '/root/trial': typeof RootTrialRoute
   '/root/users': typeof RootUsersRoute
-  '/theme-preview/$key': typeof ThemePreviewKeyRoute
   '/blog/': typeof BlogIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/legal/': typeof LegalIndexRoute
   '/root/': typeof RootIndexRoute
   '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
   '/_authenticated/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
-  '/_authenticated/dashboard/admin-theme-submissions': typeof AuthenticatedDashboardAdminThemeSubmissionsRoute
   '/_authenticated/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
   '/_authenticated/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/_authenticated/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
@@ -1942,13 +1896,11 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/analytics_/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
   '/_authenticated/dashboard/analytics_/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
   '/_authenticated/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
-  '/_authenticated/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
   '/_authenticated/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
   '/_authenticated/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
   '/_authenticated/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
   '/_authenticated/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
   '/_authenticated/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
-  '/_authenticated/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
   '/_authenticated/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
   '/_authenticated/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
   '/_authenticated/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
@@ -2040,7 +1992,6 @@ export interface FileRouteTypes {
     | '/blog.atom'
     | '/blog.json'
     | '/blog.xml'
-    | '/builder'
     | '/cart'
     | '/checkout'
     | '/contact'
@@ -2095,14 +2046,12 @@ export interface FileRouteTypes {
     | '/root/tenants'
     | '/root/trial'
     | '/root/users'
-    | '/theme-preview/$key'
     | '/blog/'
     | '/docs/'
     | '/legal/'
     | '/root/'
     | '/.well-known/acme-challenge/$token'
     | '/dashboard/activity'
-    | '/dashboard/admin-theme-submissions'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
     | '/dashboard/brands'
@@ -2158,13 +2107,11 @@ export interface FileRouteTypes {
     | '/dashboard/analytics/insights'
     | '/dashboard/analytics/reports'
     | '/dashboard/billing/invoices'
-    | '/dashboard/content/custom-code'
     | '/dashboard/content/editor'
     | '/dashboard/content/media'
     | '/dashboard/content/menus'
     | '/dashboard/content/pages'
     | '/dashboard/content/posts'
-    | '/dashboard/content/themes'
     | '/dashboard/fraud/ad-defense'
     | '/dashboard/fraud/audit'
     | '/dashboard/marketing/articles'
@@ -2254,7 +2201,6 @@ export interface FileRouteTypes {
     | '/blog.atom'
     | '/blog.json'
     | '/blog.xml'
-    | '/builder'
     | '/cart'
     | '/checkout'
     | '/contact'
@@ -2307,14 +2253,12 @@ export interface FileRouteTypes {
     | '/root/tenants'
     | '/root/trial'
     | '/root/users'
-    | '/theme-preview/$key'
     | '/blog'
     | '/docs'
     | '/legal'
     | '/root'
     | '/.well-known/acme-challenge/$token'
     | '/dashboard/activity'
-    | '/dashboard/admin-theme-submissions'
     | '/dashboard/analytics'
     | '/dashboard/approvals'
     | '/dashboard/brands'
@@ -2370,13 +2314,11 @@ export interface FileRouteTypes {
     | '/dashboard/analytics/insights'
     | '/dashboard/analytics/reports'
     | '/dashboard/billing/invoices'
-    | '/dashboard/content/custom-code'
     | '/dashboard/content/editor'
     | '/dashboard/content/media'
     | '/dashboard/content/menus'
     | '/dashboard/content/pages'
     | '/dashboard/content/posts'
-    | '/dashboard/content/themes'
     | '/dashboard/fraud/ad-defense'
     | '/dashboard/fraud/audit'
     | '/dashboard/marketing/articles'
@@ -2467,7 +2409,6 @@ export interface FileRouteTypes {
     | '/blog.atom'
     | '/blog.json'
     | '/blog.xml'
-    | '/builder'
     | '/cart'
     | '/checkout'
     | '/contact'
@@ -2522,14 +2463,12 @@ export interface FileRouteTypes {
     | '/root/tenants'
     | '/root/trial'
     | '/root/users'
-    | '/theme-preview/$key'
     | '/blog/'
     | '/docs/'
     | '/legal/'
     | '/root/'
     | '/.well-known/acme-challenge/$token'
     | '/_authenticated/dashboard/activity'
-    | '/_authenticated/dashboard/admin-theme-submissions'
     | '/_authenticated/dashboard/analytics'
     | '/_authenticated/dashboard/approvals'
     | '/_authenticated/dashboard/brands'
@@ -2585,13 +2524,11 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/analytics_/insights'
     | '/_authenticated/dashboard/analytics_/reports'
     | '/_authenticated/dashboard/billing/invoices'
-    | '/_authenticated/dashboard/content/custom-code'
     | '/_authenticated/dashboard/content/editor'
     | '/_authenticated/dashboard/content/media'
     | '/_authenticated/dashboard/content/menus'
     | '/_authenticated/dashboard/content/pages'
     | '/_authenticated/dashboard/content/posts'
-    | '/_authenticated/dashboard/content/themes'
     | '/_authenticated/dashboard/fraud/ad-defense'
     | '/_authenticated/dashboard/fraud/audit'
     | '/_authenticated/dashboard/marketing/articles'
@@ -2683,7 +2620,6 @@ export interface RootRouteChildren {
   BlogDotatomRoute: typeof BlogDotatomRoute
   BlogDotjsonRoute: typeof BlogDotjsonRoute
   BlogDotxmlRoute: typeof BlogDotxmlRoute
-  BuilderRoute: typeof BuilderRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
@@ -2714,7 +2650,6 @@ export interface RootRouteChildren {
   PProductSlugRoute: typeof PProductSlugRoute
   PagesPageSlugRoute: typeof PagesPageSlugRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
-  ThemePreviewKeyRoute: typeof ThemePreviewKeyRoute
   BlogIndexRoute: typeof BlogIndexRoute
   DocsIndexRoute: typeof DocsIndexRoute
   LegalIndexRoute: typeof LegalIndexRoute
@@ -2844,13 +2779,6 @@ declare module '@tanstack/react-router' {
       path: '/blog.xml'
       fullPath: '/blog.xml'
       preLoaderRoute: typeof BlogDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/builder': {
-      id: '/builder'
-      path: '/builder'
-      fullPath: '/builder'
-      preLoaderRoute: typeof BuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -3259,13 +3187,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RootUsersRouteImport
       parentRoute: typeof RootRoute
     }
-    '/theme-preview/$key': {
-      id: '/theme-preview/$key'
-      path: '/theme-preview/$key'
-      fullPath: '/theme-preview/$key'
-      preLoaderRoute: typeof ThemePreviewKeyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/.well-known/acme-challenge/$token': {
       id: '/.well-known/acme-challenge/$token'
       path: '/.well-known/acme-challenge/$token'
@@ -3285,13 +3206,6 @@ declare module '@tanstack/react-router' {
       path: '/activity'
       fullPath: '/dashboard/activity'
       preLoaderRoute: typeof AuthenticatedDashboardActivityRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/admin-theme-submissions': {
-      id: '/_authenticated/dashboard/admin-theme-submissions'
-      path: '/admin-theme-submissions'
-      fullPath: '/dashboard/admin-theme-submissions'
-      preLoaderRoute: typeof AuthenticatedDashboardAdminThemeSubmissionsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/analytics': {
@@ -3686,13 +3600,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardContentIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/dashboard/content/custom-code': {
-      id: '/_authenticated/dashboard/content/custom-code'
-      path: '/content/custom-code'
-      fullPath: '/dashboard/content/custom-code'
-      preLoaderRoute: typeof AuthenticatedDashboardContentCustomCodeRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
     '/_authenticated/dashboard/content/editor': {
       id: '/_authenticated/dashboard/content/editor'
       path: '/content/editor'
@@ -3726,13 +3633,6 @@ declare module '@tanstack/react-router' {
       path: '/content/posts'
       fullPath: '/dashboard/content/posts'
       preLoaderRoute: typeof AuthenticatedDashboardContentPostsRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/content/themes': {
-      id: '/_authenticated/dashboard/content/themes'
-      path: '/content/themes'
-      fullPath: '/dashboard/content/themes'
-      preLoaderRoute: typeof AuthenticatedDashboardContentThemesRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/fraud/': {
@@ -4279,7 +4179,6 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardActivityRoute: typeof AuthenticatedDashboardActivityRoute
-  AuthenticatedDashboardAdminThemeSubmissionsRoute: typeof AuthenticatedDashboardAdminThemeSubmissionsRoute
   AuthenticatedDashboardAnalyticsRoute: typeof AuthenticatedDashboardAnalyticsRoute
   AuthenticatedDashboardApprovalsRoute: typeof AuthenticatedDashboardApprovalsRoute
   AuthenticatedDashboardBrandsRoute: typeof AuthenticatedDashboardBrandsRoute
@@ -4316,13 +4215,11 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAnalyticsInsightsRoute: typeof AuthenticatedDashboardAnalyticsInsightsRoute
   AuthenticatedDashboardAnalyticsReportsRoute: typeof AuthenticatedDashboardAnalyticsReportsRoute
   AuthenticatedDashboardBillingInvoicesRoute: typeof AuthenticatedDashboardBillingInvoicesRoute
-  AuthenticatedDashboardContentCustomCodeRoute: typeof AuthenticatedDashboardContentCustomCodeRoute
   AuthenticatedDashboardContentEditorRoute: typeof AuthenticatedDashboardContentEditorRoute
   AuthenticatedDashboardContentMediaRoute: typeof AuthenticatedDashboardContentMediaRoute
   AuthenticatedDashboardContentMenusRoute: typeof AuthenticatedDashboardContentMenusRoute
   AuthenticatedDashboardContentPagesRoute: typeof AuthenticatedDashboardContentPagesRoute
   AuthenticatedDashboardContentPostsRoute: typeof AuthenticatedDashboardContentPostsRoute
-  AuthenticatedDashboardContentThemesRoute: typeof AuthenticatedDashboardContentThemesRoute
   AuthenticatedDashboardFraudAdDefenseRoute: typeof AuthenticatedDashboardFraudAdDefenseRoute
   AuthenticatedDashboardFraudAuditRoute: typeof AuthenticatedDashboardFraudAuditRoute
   AuthenticatedDashboardMarketingArticlesRoute: typeof AuthenticatedDashboardMarketingArticlesRoute
@@ -4364,8 +4261,6 @@ interface AuthenticatedDashboardRouteChildren {
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
   {
     AuthenticatedDashboardActivityRoute: AuthenticatedDashboardActivityRoute,
-    AuthenticatedDashboardAdminThemeSubmissionsRoute:
-      AuthenticatedDashboardAdminThemeSubmissionsRoute,
     AuthenticatedDashboardAnalyticsRoute: AuthenticatedDashboardAnalyticsRoute,
     AuthenticatedDashboardApprovalsRoute: AuthenticatedDashboardApprovalsRoute,
     AuthenticatedDashboardBrandsRoute: AuthenticatedDashboardBrandsRoute,
@@ -4415,8 +4310,6 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardAnalyticsReportsRoute,
     AuthenticatedDashboardBillingInvoicesRoute:
       AuthenticatedDashboardBillingInvoicesRoute,
-    AuthenticatedDashboardContentCustomCodeRoute:
-      AuthenticatedDashboardContentCustomCodeRoute,
     AuthenticatedDashboardContentEditorRoute:
       AuthenticatedDashboardContentEditorRoute,
     AuthenticatedDashboardContentMediaRoute:
@@ -4427,8 +4320,6 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardContentPagesRoute,
     AuthenticatedDashboardContentPostsRoute:
       AuthenticatedDashboardContentPostsRoute,
-    AuthenticatedDashboardContentThemesRoute:
-      AuthenticatedDashboardContentThemesRoute,
     AuthenticatedDashboardFraudAdDefenseRoute:
       AuthenticatedDashboardFraudAdDefenseRoute,
     AuthenticatedDashboardFraudAuditRoute:
@@ -4599,7 +4490,6 @@ const rootRouteChildren: RootRouteChildren = {
   BlogDotatomRoute: BlogDotatomRoute,
   BlogDotjsonRoute: BlogDotjsonRoute,
   BlogDotxmlRoute: BlogDotxmlRoute,
-  BuilderRoute: BuilderRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
@@ -4630,7 +4520,6 @@ const rootRouteChildren: RootRouteChildren = {
   PProductSlugRoute: PProductSlugRoute,
   PagesPageSlugRoute: PagesPageSlugRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
-  ThemePreviewKeyRoute: ThemePreviewKeyRoute,
   BlogIndexRoute: BlogIndexRoute,
   DocsIndexRoute: DocsIndexRoute,
   LegalIndexRoute: LegalIndexRoute,
@@ -4700,3 +4589,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

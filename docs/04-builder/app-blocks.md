@@ -1,7 +1,7 @@
 # App blocks (widget catalog & sandbox)
 
 Status: Planning · Slices S3/S7 · Reference: `/plan.md` §3.4 (widget API), 3.9 (marketplace/plugins)
-Plans: `theme-registry.md` (widgets install list) · `theme-runtime.md` (TR-8 render contract) · `sections-templates.md` (slot allowlists) · E2E: `docs/15-e2e/theme_registry.md`
+Plans: `sections-templates.md` (slot allowlists)
 Schema: 💾 additive `widget_catalog` + `widgets` columns (Tenant009; Tenant007 marketing, Tenant008 publishing)
 
 ## 1. Purpose
@@ -20,7 +20,7 @@ In scope:
 Out of scope:
 
 - Marketplace storefront UI (that surface is `12-marketplace`); this doc defines the catalog contract it distributes.
-- The render pipeline (`theme-runtime.md` TR-2) and slot rules (`sections-templates.md`) — this doc gates widget kinds, not layout.
+- The render pipeline and slot rules (`sections-templates.md`) — this doc gates widget kinds, not layout.
 - Editor UI chrome; only design guidelines ride here.
 
 ## 3. Block model — how one block connects everywhere
@@ -37,11 +37,11 @@ A **block** is the canonical definition of one widget kind. In the page AST it a
 | `sandbox`           | community only: entry module + capability allowlist (§7)                              |
 | `min_plan`          | plan family gate; matched server-side, never client-side                              |
 
-Catalog rows are written by the registry service only (mirror of `theme_versions` in theme-registry.md §3.1). Everyone else — editor, runtime, marketplace — reads through RPCs: `app.widget_catalog()` (anon-safe, verified + core only) and `app.widget_installed()` (owner scope).
+Catalog rows are written by the registry service only (versioned, immutable packages). Everyone else — editor, runtime, marketplace — reads through RPCs: `app.widget_catalog()` (anon-safe, verified + core only) and `app.widget_installed()` (owner scope).
 
 ## 4. v0 catalog (built-in, `kind = core`)
 
-| slug                                                 | allowed slots (slot schemas live in theme-registry.md) |
+| slug                                                 | allowed slots (slot schemas live in `sections-templates.md`) |
 | ---------------------------------------------------- | ------------------------------------------------------ |
 | `heading`, `text`, `image`, `custom_html`, `marquee` | any slot incl. header/footer layout groups             |
 | `product_grid`, `collection_grid`                    | any main slot                                          |
@@ -74,17 +74,17 @@ Deployed with the marketplace (S7) — the contract is pinned here from day 1 (g
 
 1. A bundle = a versioned catalog row; assets live on the CDN behind a `bundle_sha256` integrity pin. A re-publish ships a new version row; in-place mutation is forbidden.
 2. At install: hash verified, JSON schema validated, then the sandbox capability set is applied. A failing validation means the widget is **never loaded**.
-3. At render: scripts execute only inside a sandboxed iframe with a `postMessage` allowlist (parity with theme-runtime.md §2 bridge). No direct `fetch` / `localStorage` from the widget — data flows through the host's message channel.
+3. At render: scripts execute only inside a sandboxed iframe with a `postMessage` allowlist. No direct `fetch` / `localStorage` from the widget — data flows through the host's message channel.
 4. A runtime sandbox violation degrades the widget to the standard TR-8 placeholder, flips the catalog row to `blocked`, and fires `widget.blocked` with reason: `sandbox_rejected | schema_regression | cves`.
 
-The storefront never executes untrusted JS outside this sandbox; theme upgrades that pull a blocked widget keep serving the last-good bundle (theme-registry.md §8 pattern).
+The storefront never executes untrusted JS outside this sandbox; upgrades that pull a blocked widget keep serving the last-good bundle.
 
 ## 8. Events & audit
 
 - `widget.installed` — install, version change, removal (the install list row is the source of truth).
-- `theme.updated` — unchanged existing event on page-save mutations.
+- `design.updated` — unchanged existing event on page-save mutations.
 - `widget.blocked` — new; fires on §7.4 with the reason enum.
-- All events tenant-scoped, PII-minimal, raw retention 90 days (AGENTS.md §6); audit rows live in the registry `theme_audit` table.
+- All events tenant-scoped, PII-minimal, raw retention 90 days (AGENTS.md §6); audit rows live in the registry `design_audit` table.
 
 ## 9. Persistence (additive, Tenant009)
 
@@ -94,7 +94,7 @@ The storefront never executes untrusted JS outside this sandbox; theme upgrades 
 `widgets` (existing registry table) becomes the per-merchant install list:
 `id, merchant_id, widget_id → catalog, version text, status (installed | blocked), created_at, revoked_at`
 
-- RLS: `merchant_id` scoping on `widgets` mandatory; catalog rows are readable by tenants only through the RPC views (mirror of `theme_versions`).
+- RLS: `merchant_id` scoping on `widgets` mandatory; catalog rows are readable by tenants only through the RPC views (mirror of `design_versions`).
 
 ## 10. Failure & recovery
 
@@ -107,7 +107,7 @@ The storefront never executes untrusted JS outside this sandbox; theme upgrades 
 - Intent: additive and calm — the tray is a picker, the inspector a form, and the canvas stays the star; chrome recedes (builder chrome rules).
 - Key surfaces: tray rail (left), property inspector (right), canvas with drag ghost, amber "unsaved" dot vs publish mint in the top bar; blocked widget shows reason text + icon, never color alone.
 - Palette: monochrome slate chrome; BD-teal accents only for selection; Rickshaw for `blocked`; mint for publish-ready.
-- Typography: compact 0.875rem panels and forms; real theme fonts (Bangla display) in preview; tabular numbers for width/offset inputs.
+- Typography: compact 0.875rem panels and forms; real design fonts (Bangla display) in preview; tabular numbers for width/offset inputs.
 - Density: 4px snap grid, keyboard-first (arrow keys nudge, Enter commits), fields stacked tight.
 - Motion: drag ghost 120ms, panel slide 200ms, device switch crossfade 240ms; `prefers-reduced-motion` collapses to opacity only.
 - A11y: tray items selectable and keyboard-draggable; inspector is a labeled form; focus ring visible; status never color-only.
@@ -127,4 +127,4 @@ The storefront never executes untrusted JS outside this sandbox; theme upgrades 
 - Review/approval for community submissions (catalog `status = draft`) is the marketplace operator flow — routed to the review facility in spec 6 — not yet built.
 - Per-widget entitlements beyond `widget_custom` (custom_html + community) come with a native `check_entitlement` matrix later.
 - `widget.blocked` daemon-event push is v0-polled via snapshot RPC; a pub/sub event bus arrives with the runtime events work.
-- `slider`, `testimonial`, `review`, `action_button` kinds remain on the S7 backlog until a release theme needs them (plan.md §3.4/7).
+- `slider`, `testimonial`, `review`, `action_button` kinds remain on the S7 backlog until a release design needs them (plan.md §3.4/7).

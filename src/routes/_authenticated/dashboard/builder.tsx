@@ -107,41 +107,26 @@ import {
   type Slot,
   type TemplateKey,
 } from "@/lib/builder-ast";
-import { z } from "zod";
-import { PACKAGE_API_RANGE, validateThemePackage } from "@/lib/theme-package";
 import {
   builderAutosaveFn,
   builderCancelScheduleFn,
   builderCommitFn,
-  builderInstallFn,
-  builderDemoImportFn,
-  builderDemoPurgeFn,
-  builderPresetSwapFn,
-  builderRegistryVersionFn,
   builderPublishFn,
-  builderRegistryFn,
   builderRollbackFn,
   builderScheduleFn,
-  builderUpdateApplyFn,
-  builderUpdatePreviewFn,
   builderWorkspaceFn,
-} from "@/lib/themes.functions";
-
-const builderSearchSchema = z.object({
-  preview_theme_id: z.string().optional().catch(undefined),
-});
+} from "@/lib/builder-workspace.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/builder")({
-  validateSearch: (search) => builderSearchSchema.parse(search),
   head: () => ({
     meta: [
-      { title: "Theme studio — Framique admin" },
+      { title: "Builder studio — Framique admin" },
       {
         name: "description",
         content:
-          "Compose storefront templates, tune brand tokens, autosave drafts, publish and schedule theme releases.",
+          "Compose storefront templates, tune brand tokens, autosave drafts, publish and schedule releases.",
       },
-      { property: "og:title", content: "Theme studio" },
+      { property: "og:title", content: "Builder studio" },
       {
         property: "og:description",
         content: "Storefront template editor with versioning and scheduling.",
@@ -214,14 +199,6 @@ function BuilderStudio() {
   const rollback = useServerFn(builderRollbackFn);
   const schedule = useServerFn(builderScheduleFn);
   const cancelSchedule = useServerFn(builderCancelScheduleFn);
-  const registry = useServerFn(builderRegistryFn);
-  const install = useServerFn(builderInstallFn);
-  const presetSwap = useServerFn(builderPresetSwapFn);
-  const registryVersion = useServerFn(builderRegistryVersionFn);
-  const demoImport = useServerFn(builderDemoImportFn);
-  const demoPurge = useServerFn(builderDemoPurgeFn);
-  const previewUpdate = useServerFn(builderUpdatePreviewFn);
-  const applyUpdateFn = useServerFn(builderUpdateApplyFn);
 
   const loadPlugins = useServerFn(pluginListFn);
   const pluginsQuery = useQuery({
@@ -230,16 +207,12 @@ function BuilderStudio() {
     staleTime: 60_000,
   });
 
-  const navigate = Route.useNavigate();
-  const { preview_theme_id } = Route.useSearch();
   const workspace = useQuery({
-    queryKey: ["builder", "workspace", preview_theme_id],
-    queryFn: () =>
-      loadWorkspace({
-        data: preview_theme_id
-          ? { previewThemeId: preview_theme_id }
-          : undefined,
-      }),
+    // Themeless: the builder edits the merchant's single storefront workspace.
+    // Theme preview params and preview payloads are gone with the theme
+    // lifecycle (registry/install/activation).
+    queryKey: ["builder", "workspace"],
+    queryFn: () => loadWorkspace({}),
     staleTime: 30_000,
   });
 
@@ -283,7 +256,6 @@ function BuilderStudio() {
     | "seo"
     | "brand"
     | "history"
-    | "themes"
     | "templates"
     | "maintenance"
     | "forms"
@@ -291,7 +263,6 @@ function BuilderStudio() {
     | "code"
   >("inspect");
   const [runAt, setRunAt] = useState("");
-  const [pendingInstall, setPendingInstall] = useState<string | null>(null);
   // Phase 1 authoring UX state.
   const clipboardRef = useRef<ClipboardStore | null>(null);
   const [clip, setClip] = useState<ClipboardPayload | null>(null);
@@ -366,6 +337,9 @@ function BuilderStudio() {
       : (DEVICE_PRESETS.find((preset) => preset.width === previewWidth)?.bp ??
         "desktop");
 
+  // Workspace identifier. The persistence payloads below still key it as
+  // `themeId` — that server contract (theme_drafts/theme_versions tables) is
+  // owned by Task 5 (DB retirement) and unchanged here.
   const themeId = workspace.data?.theme.id ?? null;
 
   const initial = useMemo(
@@ -1054,53 +1028,7 @@ function BuilderStudio() {
     onError: (error) => toast.error(errorMessage(error)),
   });
 
-  /**
-   * Developer package export: serializes the in-memory builder document into
-   * a shareable `.theme.json` package. Client-side validated so authors catch
-   * gate failures before submitting for review.
-   */
-  const onExportPackage = useCallback(() => {
-    if (!doc) {
-      toast.error(
-        t("Workspace not ready", "ওয়ার্কস্পেস এখনো প্রস্তুত নয়"),
-      );
-      return;
-    }
-    const themeName = workspace.data?.theme.name ?? "Custom theme";
-    const key =
-      workspace.data?.theme.sourceKey ?? slugifyThemeKey(themeName);
-    const version = workspace.data?.theme.sourceVersion ?? "1.0.0";
-    const pkg = {
-      key,
-      nameEn: themeName,
-      nameBn: themeName,
-      summaryEn: `Exported from ${themeName}.`,
-      summaryBn: `${themeName} থেকে এক্সপোর্ট করা।`,
-      category: "fashion",
-      version,
-      api: PACKAGE_API_RANGE,
-      sortOrder: 50,
-      tokens: doc.tokens,
-      templates: doc.templates,
-    };
-    const checked = validateThemePackage(pkg);
-    if (!checked.ok) {
-      toast.error(checked.errors[0] ?? t("Package invalid", "প্যাকেজ অবৈধ"));
-      return;
-    }
-    const blob = new Blob([JSON.stringify(pkg, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${key}-${version}.theme.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success(
-      t("Package exported", "প্যাকেজ এক্সপোর্ট হয়েছে"),
-    );
-  }, [doc, t, workspace.data]);
+
 
   const restore = useMutation({
     mutationFn: (versionId: string) => rollback({ data: { versionId } }),
@@ -1142,146 +1070,8 @@ function BuilderStudio() {
     onError: (error) => toast.error(errorMessage(error)),
   });
 
-  const registryQuery = useQuery({
-    queryKey: ["builder", "registry"],
-    queryFn: () => registry({}),
-    enabled: panel === "themes",
-    staleTime: 300_000,
-  });
-
-  // Phase 8 — which builder API this runtime accepts, so an incompatible
-  // package is visible as such before anyone installs it.
-  const versionQuery = useQuery({
-    queryKey: ["builder", "registry-version"],
-    queryFn: () => registryVersion({}),
-    enabled: panel === "themes",
-    staleTime: 600_000,
-  });
-  const compatByKey = new Map(
-    (versionQuery.data?.presets ?? []).map((preset) => [preset.key, preset]),
-  );
-
-  // Phase 8 — idempotent demo catalogue + draft layout, and a purge that only
-  // touches demo-flagged rows.
-  const importDemo = useMutation({
-    mutationFn: ({ key }: { key: string }) =>
-      demoImport({ data: { themeKey: key } }),
-    onSuccess: async (result) => {
-      toast.success(
-        result.imported
-          ? t(
-              `Demo store imported (${result.products} products)`,
-              `ডেমো স্টোর ইমপোর্ট হয়েছে (${result.products} প্রোডাক্ট)`,
-            )
-          : t("Demo content already present", "ডেমো কনটেন্ট আগেই আছে"),
-      );
-      editor.setDoc(null);
-      await refresh();
-    },
-    onError: (error) => toast.error(errorMessage(error)),
-  });
-
-  const removeDemo = useMutation({
-    mutationFn: () => demoPurge({}),
-    onSuccess: async () => {
-      toast.success(t("Demo content removed", "ডেমো কনটেন্ট মুছে ফেলা হয়েছে"));
-      await refresh();
-    },
-    onError: (error) => toast.error(errorMessage(error)),
-  });
-
-  const installTheme = useMutation({
-    mutationFn: ({
-      key,
-      overwriteDraft,
-    }: {
-      key: string;
-      overwriteDraft?: boolean;
-    }) =>
-      install({ data: { key, ...(overwriteDraft ? { overwriteDraft } : {}) } }),
-    onSuccess: async () => {
-      toast.success(
-        t(
-          "Theme installed as a draft version",
-          "থিম ড্রাফট ভার্সন হিসেবে ইনস্টল হয়েছে",
-        ),
-      );
-      editor.setDoc(null);
-      await refresh();
-    },
-    onError: (error) => {
-      if (errorMessage(error).includes("builder.draft_exists")) {
-        setPendingInstall(installTheme.variables?.key ?? null);
-        return;
-      }
-      toast.error(errorMessage(error));
-    },
-  });
-
-  // Phase 3.1 — swap the visual preset while keeping every authored section.
-  const swapPreset = useMutation({
-    mutationFn: ({ key }: { key: string }) =>
-      presetSwap({ data: { key, templates: editor.doc?.templates ?? {} } }),
-    onSuccess: (result) => {
-      editor.replaceDoc({ templates: result.templates, tokens: result.tokens });
-      toast.success(
-        t(
-          `Preset applied — ${result.kept} sections kept, ${result.added} added`,
-          `প্রিসেট প্রয়োগ হয়েছে — ${result.kept}টি সেকশন রাখা হয়েছে, ${result.added}টি যোগ হয়েছে`,
-        ),
-      );
-    },
-    onError: (error) => toast.error(errorMessage(error)),
-  });
-
-  const updatePreview = useQuery({
-    queryKey: [
-      "builder",
-      "update",
-      workspace.data?.theme.sourceKey ?? "none",
-      workspace.data?.revision ?? 0,
-    ],
-    queryFn: () => previewUpdate({ data: {} }),
-    enabled: panel === "themes" && !!workspace.data?.theme.sourceKey,
-    staleTime: 60_000,
-  });
-
-  const applyUpdate = useMutation({
-    mutationFn: (mode: "adopt" | "keep_mine") => {
-      const preview = updatePreview.data;
-      if (!preview)
-        throw new Error(t("No update to apply", "প্রয়োগ করার মতো আপডেট নেই"));
-      return applyUpdateFn({
-        data: { key: preview.key, mode, expectedRevision: preview.revision },
-      });
-    },
-    onSuccess: async () => {
-      toast.success(
-        t("Theme updated as a draft", "থিম ড্রাফট হিসেবে আপডেট হয়েছে"),
-      );
-      editor.setDoc(null);
-      await refresh();
-      await updatePreview.refetch();
-    },
-    onError: (error) => {
-      const message = errorMessage(error);
-      toast.error(
-        message.includes("builder.update_conflict")
-          ? t(
-              "Someone else edited this theme — reload and review the update again",
-              "অন্য কেউ এই থিম এডিট করেছেন — রিলোড করে আবার আপডেট দেখুন",
-            )
-          : message,
-      );
-    },
-  });
-
   const busy =
-    commitDraft.isPending ||
-    publishNow.isPending ||
-    restore.isPending ||
-    installTheme.isPending ||
-    applyUpdate.isPending;
+    commitDraft.isPending || publishNow.isPending || restore.isPending;
 
   const status = editor.saving
     ? t("Saving…", "সেভ হচ্ছে…")
@@ -1415,48 +1205,6 @@ function BuilderStudio() {
           actions={finderActions}
         />
 
-        {workspace.data?.isPreview && (
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-primary/40 bg-primary/10 px-4 py-2 text-xs shadow-xs">
-            <div className="flex items-center gap-2">
-              <span className="inline-block size-2 rounded-full bg-primary animate-pulse" />
-              <span className="font-semibold text-primary">
-                {t("Live Preview Mode:", "লাইভ প্রিভিউ মোড:")}
-              </span>
-              <span className="text-foreground">
-                {t(
-                  `You are previewing "${workspace.data.theme.name}". Changes are isolated and will not affect your live storefront until activated.`,
-                  `আপনি "${workspace.data.theme.name}" প্রিভিউ করছেন। সক্রিয় না করা পর্যন্ত আপনার লাইভ স্টোরফ্রন্টে কোনো পরিবর্তন হবে না।`,
-                )}
-              </span>
-            </div>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={async () => {
-                const { themeActivateFn } =
-                  await import("@/lib/themes/appearance.functions");
-                await themeActivateFn({
-                  data: { id: workspace.data.theme.id },
-                });
-                toast.success(t("Theme activated", "থিম সক্রিয় করা হয়েছে"));
-                void navigate({ search: {} as never });
-                void qc.invalidateQueries({
-                  queryKey: ["builder", "workspace"],
-                });
-                void qc.invalidateQueries({
-                  queryKey: ["themes", "workspace"],
-                });
-                void qc.invalidateQueries({
-                  queryKey: ["marketplace", "catalog"],
-                });
-              }}
-              className="rounded-fq-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 cursor-pointer shadow-xs disabled:opacity-50"
-            >
-              {t("Activate Theme", "থিম সক্রিয় করুন")}
-            </button>
-          </div>
-        )}
-
         <nav
           aria-label={t("Templates", "টেমপ্লেট")}
           className="flex items-center gap-1 overflow-x-auto border-b border-border/70 bg-card/80 px-3 py-1 text-xs backdrop-blur-xs scrollbar-none"
@@ -1479,18 +1227,6 @@ function BuilderStudio() {
               {t(TEMPLATE_LABEL[key].en, TEMPLATE_LABEL[key].bn)}
             </button>
           ))}
-          <button
-            type="button"
-            disabled={!doc}
-            onClick={onExportPackage}
-            title={t(
-              "Download this theme as a shareable package file",
-              "এই থিমটি শেয়ারযোগ্য প্যাকেজ ফাইল হিসেবে ডাউনলোড করুন",
-            )}
-            className="ml-auto rounded-fq-md border border-border px-2.5 py-1 text-xs font-medium text-foreground transition-colors cursor-pointer shrink-0 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {t("Export package", "প্যাকেজ এক্সপোর্ট")}
-          </button>
         </nav>
 
         {/* Slide-out Lint / Quality Drawer */}
@@ -2431,7 +2167,6 @@ function BuilderStudio() {
                   ["brand", t("Brand", "ব্র্যান্ড")],
                   ["seo", t("SEO", "SEO")],
                   ["history", t("History", "ইতিহাস")],
-                  ["themes", t("Themes", "থিম")],
                   ["templates", t("Templates", "টেমপ্লেট")],
                   ["maintenance", t("Maintenance", "মেইনটেন্যান্স")],
                   ["forms", t("Forms", "ফর্ম")],
@@ -2545,226 +2280,6 @@ function BuilderStudio() {
                   onRedo={editor.redo}
                   onRestore={(id) => restore.mutate(id)}
                 />
-              </div>
-            )}
-
-            {panel === "themes" && (
-              <div className="space-y-2">
-                {updatePreview.data && (
-                  <section
-                    className="rounded-fq-md border border-border p-3"
-                    aria-labelledby="theme-update-heading"
-                  >
-                    <h3
-                      id="theme-update-heading"
-                      className="text-sm font-semibold"
-                    >
-                      {updatePreview.data.available
-                        ? t("Update available", "আপডেট রয়েছে")
-                        : t("Theme is up to date", "থিম আপ টু ডেট")}
-                    </h3>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {updatePreview.data.key} ·{" "}
-                      {updatePreview.data.installedVersion ?? "—"} →{" "}
-                      {updatePreview.data.latestVersion}
-                    </p>
-                    {updatePreview.data.available && (
-                      <>
-                        <ul className="mt-2 space-y-1 text-xs">
-                          {updatePreview.data.diff.length === 0 && (
-                            <li className="text-muted-foreground">
-                              {t(
-                                "No section changes",
-                                "কোনো সেকশন পরিবর্তন নেই",
-                              )}
-                            </li>
-                          )}
-                          {updatePreview.data.diff.map((entry) => (
-                            <li key={entry.template}>
-                              <span className="font-medium">
-                                {t(
-                                  TEMPLATE_LABEL[entry.template].en,
-                                  TEMPLATE_LABEL[entry.template].bn,
-                                )}
-                              </span>{" "}
-                              <span className="text-muted-foreground tabular-nums">
-                                +{entry.added.length} {t("new", "নতুন")} · ~
-                                {entry.changed.length}{" "}
-                                {t("changed", "পরিবর্তিত")} · −
-                                {entry.removed.length}{" "}
-                                {t("yours not upstream", "আপনার নিজস্ব")}
-                              </span>
-                            </li>
-                          ))}
-                          {updatePreview.data.tokensChanged && (
-                            <li className="text-muted-foreground">
-                              {t(
-                                "Brand tokens differ",
-                                "ব্র্যান্ড টোকেন ভিন্ন",
-                              )}
-                            </li>
-                          )}
-                        </ul>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          <button
-                            type="button"
-                            disabled={busy}
-                            onClick={() => applyUpdate.mutate("adopt")}
-                            className="inline-flex min-h-8 items-center rounded-fq-md border border-border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50"
-                          >
-                            {t("Adopt new sections", "নতুন সেকশন নিন")}
-                          </button>
-                          <button
-                            type="button"
-                            disabled={busy}
-                            onClick={() => applyUpdate.mutate("keep_mine")}
-                            className="inline-flex min-h-8 items-center rounded-fq-md border border-border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50"
-                          >
-                            {t(
-                              "Keep mine, add only new",
-                              "আমারটা রাখুন, শুধু নতুন যোগ",
-                            )}
-                          </button>
-                        </div>
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          {t(
-                            "Applied as a draft — review, then publish.",
-                            "ড্রাফট হিসেবে প্রয়োগ হবে — দেখে নিয়ে পাবলিশ করুন।",
-                          )}
-                        </p>
-                      </>
-                    )}
-                  </section>
-                )}
-
-                {pendingInstall && (
-                  <div
-                    role="alertdialog"
-                    aria-label={t("Replace draft", "ড্রাফট প্রতিস্থাপন")}
-                    className="rounded-fq-md border border-border p-3"
-                  >
-                    <p className="text-xs">
-                      {t(
-                        "You have unsaved draft work. Installing replaces it.",
-                        "আপনার অসংরক্ষিত ড্রাফট আছে। ইনস্টল করলে সেটি প্রতিস্থাপিত হবে।",
-                      )}
-                    </p>
-                    <div className="mt-2 flex gap-2">
-                      <button
-                        type="button"
-                        disabled={busy}
-                        onClick={() => {
-                          installTheme.mutate({
-                            key: pendingInstall,
-                            overwriteDraft: true,
-                          });
-                          setPendingInstall(null);
-                        }}
-                        className="inline-flex min-h-8 items-center rounded-fq-md border border-border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50"
-                      >
-                        {t("Replace draft", "ড্রাফট প্রতিস্থাপন")}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPendingInstall(null)}
-                        className="inline-flex min-h-8 items-center rounded-fq-md border border-border px-2 py-1 text-xs hover:bg-muted"
-                      >
-                        {t("Cancel", "বাতিল")}
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {registryQuery.isLoading && (
-                  <p className="text-sm text-muted-foreground">
-                    {t("Loading themes…", "থিম লোড হচ্ছে…")}
-                  </p>
-                )}
-                {versionQuery.data && (
-                  <div className="flex flex-wrap items-center justify-between gap-2 rounded-fq-md border border-border bg-muted/40 p-3 text-xs">
-                    <span className="text-muted-foreground">
-                      {t("Builder API", "বিল্ডার এপিআই")}{" "}
-                      {versionQuery.data.builderApi} ·{" "}
-                      {t("accepts", "গ্রহণ করে")}{" "}
-                      {versionQuery.data.presetApiRange}
-                    </span>
-                    <button
-                      type="button"
-                      disabled={busy || removeDemo.isPending}
-                      onClick={() => removeDemo.mutate()}
-                      className="rounded-fq-md border border-border px-2 py-1 hover:bg-muted disabled:opacity-50"
-                    >
-                      {t("Remove demo content", "ডেমো কনটেন্ট সরান")}
-                    </button>
-                  </div>
-                )}
-                {(registryQuery.data ?? []).map((theme) => (
-                  <article
-                    key={theme.key}
-                    className="rounded-fq-md border border-border p-3"
-                  >
-                    <h3 className="text-sm font-semibold">{theme.nameEn}</h3>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {theme.summaryEn} · v{theme.version}
-                    </p>
-                    <div
-                      className="mt-2 flex items-center gap-1"
-                      aria-hidden="true"
-                    >
-                      {[
-                        theme.tokens.brand,
-                        theme.tokens.accent,
-                        theme.tokens.surface,
-                        theme.tokens.ink,
-                      ].map((colour) => (
-                        <span
-                          key={colour}
-                          className="size-4 rounded-full border border-border"
-                          style={{ backgroundColor: colour }}
-                        />
-                      ))}
-                    </div>
-                    <button
-                      type="button"
-                      disabled={busy}
-                      onClick={() => installTheme.mutate({ key: theme.key })}
-                      className="mt-2 inline-flex min-h-8 items-center rounded-fq-md border border-border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50"
-                    >
-                      {t("Install as draft", "ড্রাফট হিসেবে ইনস্টল")}
-                    </button>
-                    <button
-                      type="button"
-                      disabled={busy || !doc}
-                      onClick={() => swapPreset.mutate({ key: theme.key })}
-                      className="mt-2 ml-2 inline-flex min-h-8 items-center rounded-fq-md border border-border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50"
-                    >
-                      {t(
-                        "Swap preset, keep content",
-                        "প্রিসেট বদলান, কনটেন্ট রাখুন",
-                      )}
-                    </button>
-                    <button
-                      type="button"
-                      disabled={
-                        busy ||
-                        importDemo.isPending ||
-                        compatByKey.get(theme.key)?.compatible === false
-                      }
-                      onClick={() => importDemo.mutate({ key: theme.key })}
-                      className="mt-2 ml-2 inline-flex min-h-8 items-center rounded-fq-md border border-border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50"
-                    >
-                      {t("Install with demo content", "ডেমো কনটেন্ট সহ ইনস্টল")}
-                    </button>
-                    {compatByKey.get(theme.key)?.compatible === false && (
-                      <p className="mt-2 text-xs text-danger">
-                        {t(
-                          "Not compatible with this builder version",
-                          "এই বিল্ডার ভার্সনের সাথে সামঞ্জস্যপূর্ণ নয়",
-                        )}
-                      </p>
-                    )}
-                  </article>
-                ))}
               </div>
             )}
 

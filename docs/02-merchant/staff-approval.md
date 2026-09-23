@@ -1,8 +1,8 @@
 # Review & Approval Workflow (staff approval)
 
-Status: Planning · Slice: S5 · Reference: `/plan.md` §3.1 (settings), staff-rbac.md §4 (permission matrix), content-cms.md §2 (content state machine), publishing.md §4 (themes.publish guard)
-Plans: `staff-rbac.md` (RBAC + elevation) · `content-cms.md` (marketing group) · `publishing.md` (themes group guard) · app-blocks.md (catalog `draft` → `verified` gate) · E2E: `docs/15-e2e/admin_loop.md`
-Schema: 💾 additive — Tenant010 (staff flows 005, themes 006, marketing 007, publishing 008, widgets 009)
+Status: Planning · Slice: S5 · Reference: `/plan.md` §3.1 (settings), staff-rbac.md §4 (permission matrix), content-cms.md §2 (content state machine), publishing.md §4 (designs.publish guard)
+Plans: `staff-rbac.md` (RBAC + elevation) · `content-cms.md` (marketing group) · `publishing.md` (designs group guard) · app-blocks.md (catalog `draft` → `verified` gate) · E2E: `docs/15-e2e/admin_loop.md`
+Schema: 💾 additive — Tenant010 (staff flows 005, designs 006, marketing 007, publishing 008, widgets 009)
 
 ## 1. Purpose
 
@@ -41,7 +41,7 @@ publishing §4; catalog draft → installed)
 ```
 
 - `submitted` is idempotent: re-submitting the same snapshot is a new request; cancel winks the old one.
-- `approved` is the _green light_, not the _do_: the downstream transition still runs under the existing guard (`themes.publish` for pages, `finance.approve` for refunds...). Approval never bypasses RBAC.
+- `approved` is the _green light_, not the _do_: the downstream transition still runs under the existing guard (`designs.publish` for pages, `finance.approve` for refunds...). Approval never bypasses RBAC.
 
 ## 5. RBAC integration
 
@@ -52,7 +52,7 @@ New matrix action, reused, not invented:
 | `marketing`    | `approve`             | approve content/pages/feed submissions                                               |
 | `catalog`      | `approve`             | approve product/catalog flag-worthy submissions (incl. bulk import)                  |
 | `finance`      | `approve` (existing)  | refunds/payouts — the 4-eyes exists here already; this doc generalizes its mechanics |
-| `themes`       | `approve` (new group) | page publish/schedule submissions                                                    |
+| `designs`       | `approve` (new group) | page publish/schedule submissions                                                    |
 
 - Fixed roles: `owner` always holds effective `approve` on every group (and is the only one who can self-approve under the elevation window §6.3); `viewer` never does.
 - When the tenant's toggle = `approve_required` on a resource type, the publish/stage actions (`publish`, `update_status`, `refund`, `update_coupon`) require `approve` on top of the existing base grant. Staff without it get the button relabeled "Submit for review".
@@ -88,7 +88,7 @@ approval_requests (
 | ---------------------- | ------------------------------------------------------------------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `app.submit_approval`  | `(p_resource_text, p_resource_id, p_resource_type, p_action, p_payload) → uuid` | base grant of the resource | Insert snapshot; fires `approval.requested`                                                                                                                                                             |
 | `app.cancel_approval`  | `(p_request_id)`                                                                | submitter                  | Only while `pending`                                                                                                                                                                                    |
-| `app.approve_approval` | `(p_request_id, p_comment)`                                                     | `approve` grant            | Rejects `submitted_by = me` with a hard error (`self_approval_denied`); sets `reviewed_at`, fires `approval.approved`; downstream trigger executes the intended transition (e.g. `themes.publish` body) |
+| `app.approve_approval` | `(p_request_id, p_comment)`                                                     | `approve` grant            | Rejects `submitted_by = me` with a hard error (`self_approval_denied`); sets `reviewed_at`, fires `approval.approved`; downstream trigger executes the intended transition (e.g. `designs.publish` body) |
 | `app.reject_approval`  | `(p_request_id, p_comment)`                                                     | `approve` grant            | `reviewed_at` + fires `approval.rejected` with the comment                                                                                                                                              |
 | `app.expire_approval`  | `()`                                                                            | system scheduler           | Ticks `pending` → `expired` past `expires_at` (same tick as `promote_due` – reuse the pattern, publishing §5)                                                                                           |
 

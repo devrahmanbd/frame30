@@ -10,10 +10,10 @@ type HomepageData = NonNullable<Awaited<ReturnType<typeof getStorePageFn>>>;
 /**
  * CMS-designated storefront homepage (`/`).
  *
- * Renders a merchant-chosen published page with the same chrome and theme
- * tokens as ordinary store pages. Builder-authored pages are self-composed,
- * so no extra title block is prepended for them; markdown pages get the
- * standard title/excerpt header like their `/pages/<slug>` twin.
+ * Themeless (Task 3): renders the merchant-chosen published page with default
+ * chrome — Studio nodes else HTML — zero theme tokens. Builder-authored pages
+ * are self-composed, so no extra title block is prepended for them; markdown
+ * pages get the standard title/excerpt header like their `/pages/<slug>` twin.
  */
 export function StoreHomepage({
   home,
@@ -27,10 +27,7 @@ export function StoreHomepage({
     merchant,
     page,
     html,
-    ast,
-    tokens,
     siteKit,
-    customCss,
     isBuilder,
     menus,
     studioNodes,
@@ -86,13 +83,9 @@ export function StoreHomepage({
         template="page"
         storeSlug={slug}
         merchantId={merchant.id}
-        ast={ast}
-        tokens={tokens}
         siteKit={siteKit}
-        customCss={customCss}
         ownsPrimary
         chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}
-        contextSlots={{ page_content: content }}
         containerClassName="mx-auto max-w-6xl px-4 py-8"
         fallback={<div>{content}</div>}
       />

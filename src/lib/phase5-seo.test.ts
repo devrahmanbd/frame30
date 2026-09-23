@@ -17,7 +17,6 @@ import {
 import { answerBlockIssues } from "./seo-answers";
 import { presetSeoTemplates } from "./theme-seo";
 import { SEO_TEMPLATE_VARS, templateIssues } from "./seo-answers";
-import { THEME_PRESETS } from "./theme-presets";
 
 const ctx = { storeName: "Store", url: "https://shop.example.com/store/demo" };
 
@@ -147,32 +146,29 @@ describe("Phase 5 — answer blocks stay crawlable", () => {
   });
 });
 
-describe("Phase 5 — seo_templates ship with every preset", () => {
-  it("returns one valid row per content type for every preset", () => {
-    for (const preset of THEME_PRESETS) {
-      const rows = presetSeoTemplates(preset.key);
-      expect(rows.map((r) => r.entityType)).toEqual([
-        "product",
-        "collection",
-        "page",
-        "article",
-      ]);
-      for (const row of rows) {
-        expect(templateIssues(row.titleTemplate)).toEqual([]);
-        expect(templateIssues(row.descriptionTemplate)).toEqual([]);
-        expect(row.titleTemplate).toContain("{{title}}");
-      }
+describe("Phase 5 — seo_templates ship as one generic set", () => {
+  it("returns one valid row per content type", () => {
+    const rows = presetSeoTemplates();
+    expect(rows.map((r) => r.entityType)).toEqual([
+      "product",
+      "collection",
+      "page",
+      "article",
+    ]);
+    for (const row of rows) {
+      expect(templateIssues(row.titleTemplate)).toEqual([]);
+      expect(templateIssues(row.descriptionTemplate)).toEqual([]);
+      expect(row.titleTemplate).toContain("{{title}}");
     }
   });
 
   it("only interpolates supported variables", () => {
     const used = new Set<string>();
-    for (const preset of THEME_PRESETS)
-      for (const row of presetSeoTemplates(preset.key))
-        for (const m of `${row.titleTemplate} ${row.descriptionTemplate}`.matchAll(
-          /\{\{(\w+)\}\}/g,
-        ))
-          used.add(m[1]!);
+    for (const row of presetSeoTemplates())
+      for (const m of `${row.titleTemplate} ${row.descriptionTemplate}`.matchAll(
+        /\{\{(\w+)\}\}/g,
+      ))
+        used.add(m[1]!);
     for (const name of used) expect(SEO_TEMPLATE_VARS).toContain(name as never);
   });
 });

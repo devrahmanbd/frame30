@@ -52,7 +52,7 @@ FRAMIQUE captures the sweet spot: **A SaaS Cloud CMS uniting freeform visual des
 | Feature / Dimension          | Shopify                              | FRAMIQUE                                 | Operational Benefit                            |
 | ---------------------------- | ------------------------------------ | ---------------------------------------- | ---------------------------------------------- |
 | **Platform Transaction Fee** | **0.5% – 2.0%** (External Gateways)  | **0.00% (Zero)**                         | Retain 100% of gross merchandise revenue       |
-| **Visual Design Freedom**    | Rigid Liquid Template Engine         | **Freeform Visual Drag-and-Drop Canvas** | Total visual styling without theme constraints |
+| **Visual Design Freedom**    | Rigid Liquid Template Engine         | **Freeform Visual Drag-and-Drop Canvas** | Total visual styling without design constraints |
 | **App Dependencies**         | Requires 15–30 paid third-party apps | **Built-in Native Primitives**           | Saves $350–$800/mo and prevents code bloat     |
 | **Mobile Core Web Vitals**   | Often fails (LCP > 3.2s, CLS > 0.15) | **Sub-300ms LCP, CLS 0.00**              | Higher organic rank and checkout conversion    |
 | **Regional Payment Rails**   | Third-party redirect workarounds     | **Native Tokenized bKash & Nagad APIs**  | Zero drop-offs, instant order verification     |

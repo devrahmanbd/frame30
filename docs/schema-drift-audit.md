@@ -44,7 +44,7 @@ doesn't exist live; same drift class, needs its own fix).
 10. `store_currency_settings` missing — currency gate will fail. Needs DDL.
 11. `support_tickets` drift + missing events/SLA tables. Needs DDL.
 12. `oauth_*` missing/drift. Needs DDL.
-13. `marketplace_versions`/`app_blocks`, `refund_items`, `theme_assets` drift,
+13. `marketplace_versions`/`app_blocks`, `refund_items`, `design_assets` drift,
     `draft_orders` drift + `draft_order_items` unapplied, gift-card RPC bodies,
     `abandoned_cart_capture`, `consent_record`, `review_submit`,
     `customer_save_address`, `customer_overview_impl`, courier event RPCs,
@@ -66,7 +66,7 @@ orders, `support_callbacks`, `support_kb_chunks`, AI training/feedback,
 `integration_connections/probes`, `job_queue`, `marketplace_payouts`,
 `mfa_recovery_codes`, `nav_menus/items`, `newsletter_subscribers`,
 `platform_snapshots/restores`, `plugin_kill_switch`, `seo_not_found_log`,
-`theme_catalog_favourites`, plus the 52 live RPCs with no repo DDL —
+`design_catalog_favourites`, plus the 52 live RPCs with no repo DDL —
 backfill from `pg_get_functiondef` so the repo is source of truth again.
 
 ## What blocks applying repairs

@@ -109,7 +109,7 @@ const loadCollectionSource: SourceLoader = async (merchantId, requests, ctx) => 
   let rows = (products ?? []) as ProductRow[];
   if (rows.length === 0) {
     const { demoCatalogFor } = await import("./demo-catalog");
-    const demo = demoCatalogFor("bazaar");
+    const demo = demoCatalogFor("handloom");
     rows = demo.products.map((dp) => ({
       id: `demo-${dp.slug}`,
       title: dp.title,
@@ -229,7 +229,7 @@ const loadTaxonomySource: SourceLoader = async (merchantId, requests, ctx) => {
   let rows = data ?? [];
   if (rows.length === 0) {
     const { demoCatalogFor } = await import("./demo-catalog");
-    const demo = demoCatalogFor("bazaar");
+    const demo = demoCatalogFor("handloom");
     rows = demo.collections.map((c) => ({
       id: `demo-${c.slug}`,
       name: c.name,

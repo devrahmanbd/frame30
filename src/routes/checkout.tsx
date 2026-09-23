@@ -44,7 +44,7 @@ const GROUP_LABELS: Record<string, { en: string; bn: string }> = {
 /**
  * Custom-host checkout (`microscrop.shop/checkout`) + legacy redirector.
  *
- * Host-first like `/cart`: on a custom host the themed checkout renders
+ * Host-first like `/cart`: on a custom host the checkout renders
  * directly (order confirmation redirects to the path order URL, which serves
  * on custom hosts). Off custom hosts the legacy featured-store redirect
  * applies.
@@ -96,7 +96,7 @@ export const Route = createFileRoute("/checkout")({
 
 function CheckoutPage() {
   const { t, lang } = useLang();
-  const { slug, merchant, ast, tokens, siteKit } = Route.useLoaderData();
+  const { slug, merchant, siteKit } = Route.useLoaderData();
   const navigate = useNavigate();
   const { lines, setQuantity, clear, hydrated } = useCart(slug);
   const [method, setMethod] = useState<Method>("cod");
@@ -248,8 +248,6 @@ function CheckoutPage() {
       template="checkout"
       storeSlug={slug}
       merchantId={merchant.id}
-      ast={ast ? { header: ast.header, main: [], footer: ast.footer } : null}
-      tokens={tokens}
       siteKit={siteKit}
       ownsPrimary
       chrome={<StoreHeader slug={slug} name={merchant.name} />}

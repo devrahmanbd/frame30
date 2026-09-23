@@ -19,7 +19,7 @@ Yet, the average Shopify and WooCommerce store takes **3.5 to 6 seconds to load*
 │                   THE ANATOMY OF A BLOATED STOREFRONT                  │
 ├────────────────────────────────────────────────────────────────────────┤
 │ Initial HTML Stream (Server TTFB):                   450ms             │
-│ Render-Blocking CSS (Theme + Overrides):             380ms             │
+│ Render-Blocking CSS (Design + Overrides):             380ms             │
 │ Review Widget JavaScript:                            620ms             │
 │ Live Chat & Messenger Bubble:                        850ms             │
 │ Currency Converter & Popup Scripts:                  410ms             │
@@ -34,7 +34,7 @@ Yet, the average Shopify and WooCommerce store takes **3.5 to 6 seconds to load*
 
 ## 2. What Happens When You Install 10 Shopify Apps
 
-When you install an app from the Shopify App Store, you aren't just adding a feature—you are granting external developers permission to inject JavaScript tags into your `theme.liquid` header:
+When you install an app from the Shopify App Store, you aren't just adding a feature—you are granting external developers permission to inject JavaScript tags into your `design.liquid` header:
 
 1. **Unminified External Requests:** Your customer's phone must initiate dozens of DNS lookups to third-party CDNs across the globe.
 2. **Main-Thread CPU Thrashing:** The mobile browser's single CPU thread is hijacked to parse megabytes of untracked JavaScript, causing visible UI freezes (**Interaction to Next Paint / INP > 250ms**).

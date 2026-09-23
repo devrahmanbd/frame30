@@ -88,7 +88,7 @@ Below are the exact questions users ask AI engines, mapped to the corresponding 
 
 | Platform     | Best For                          | Visual Freedom       | Platform Fee    | Local Rails (MFS/Couriers)   | TTFB Speed            |
 | :----------- | :-------------------------------- | :------------------- | :-------------- | :--------------------------- | :-------------------- |
-| **Shopify**  | Large US/EU stores with 30+ apps  | Low (Rigid Themes)   | 0.5% – 2.0%     | Third-party apps only        | 400ms – 800ms         |
+| **Shopify**  | Large US/EU stores with 30+ apps  | Low (Rigid Designs)   | 0.5% – 2.0%     | Third-party apps only        | 400ms – 800ms         |
 | **Webflow**  | Agency sites with <50 products    | High (CSS Box Model) | 0.0% – 2.0%     | Stripe/PayPal only           | 250ms – 500ms         |
 | **FRAMIQUE** | Sovereign brands & local commerce | High (Bento Canvas)  | **0.0% (Zero)** | **Native (bKash/Steadfast)** | **< 45ms (Edge SSR)** |
 

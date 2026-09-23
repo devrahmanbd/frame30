@@ -34,8 +34,8 @@ const GROUP_LABELS: Record<string, { en: string; bn: string }> = {
 };
 
 export const Route = createFileRoute("/store/$slug/checkout")({
-  // Checkout wears the active theme like every other storefront page, so the
-  // store's header, footer and tokens stay put at the moment a shopper pays.
+  // Checkout renders default chrome like every other storefront page, so the
+  // store's header stays put at the moment a shopper pays.
   loader: async ({ params }) => {
     const chrome = await getStoreChrome({
       data: { slug: params.slug, template: "checkout" },
@@ -67,7 +67,7 @@ export const Route = createFileRoute("/store/$slug/checkout")({
 function CheckoutPage() {
   const { t, lang } = useLang();
   const { slug } = Route.useParams();
-  const { merchant, ast, tokens, siteKit } = Route.useLoaderData();
+  const { merchant, siteKit } = Route.useLoaderData();
   const navigate = useNavigate();
   const { lines, setQuantity, clear, hydrated } = useCart(slug);
   const [method, setMethod] = useState<Method>("cod");
@@ -230,10 +230,6 @@ function CheckoutPage() {
       template="checkout"
       storeSlug={slug}
       merchantId={merchant.id}
-      // The checkout form is hand-built (server-quoted totals, live rails), so
-      // the theme contributes the header, footer and tokens only.
-      ast={ast ? { header: ast.header, main: [], footer: ast.footer } : null}
-      tokens={tokens}
       siteKit={siteKit}
       ownsPrimary
       chrome={<StoreHeader slug={slug} name={merchant.name} />}

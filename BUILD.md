@@ -39,17 +39,17 @@ only when the owning doc's testing gate is green (`AGENTS.md` §4).
 
 ## 0. Top Priority — WordPress-Grade CMS Architecture & Parity Program
 
-Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/`, reference credentials `user: maxw`). Provides identical merchant user journey, theme/plugin lifecycles, collapsible `#adminmenu` navigation, visual page builder integration, and isolated SaaS cloud architecture.
+Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/`, reference credentials `user: maxw`). Provides identical merchant user journey, design/plugin lifecycles, collapsible `#adminmenu` navigation, visual page builder integration, and isolated SaaS cloud architecture.
 
-### 0.1 Appearance › Themes lifecycle (`themes.php` & `theme-install.php` parity)
+### 0.1 Appearance › Designs lifecycle (`designs.php` & `design-install.php` parity)
 
-- [x] Active storefront theme showcase card (`ThemesScreen.tsx`) with version, author, live badge, and primary `Customize` launcher
-- [x] Installed themes grid with instant `Activate` action (swapping `is_active` while preserving published AST and storefront coherence)
-- [x] `Live Preview` action for installed inactive themes launching isolated preview customizer (`/dashboard/builder?preview_theme_id=:id`) — `ThemeCard.tsx` hover overlay with Activate + Live preview buttons; `ThemesScreen.tsx` calls `previewInstalled(theme)` → `navigate` to builder with `preview_theme_id` search param
-- [x] `[A]` Direct `Delete` action on inactive themes with modal confirmation, cascading draft/version cleanup, and active-theme deletion refusal
-- [x] `[A]` Decoupled marketplace theme installation: creates **new inactive** `store_themes` row (never mutating active draft) + append-only `marketplace_installs` ledger row
+- [x] Active storefront design showcase card (`DesignsScreen.tsx`) with version, author, live badge, and primary `Customize` launcher
+- [x] Installed designs grid with instant `Activate` action (swapping `is_active` while preserving published AST and storefront coherence)
+- [x] `Live Preview` action for installed inactive designs launching isolated preview customizer (`/dashboard/builder?preview_design_id=:id`) — `DesignCard.tsx` hover overlay with Activate + Live preview buttons; `DesignsScreen.tsx` calls `previewInstalled(design)` → `navigate` to builder with `preview_design_id` search param
+- [x] `[A]` Direct `Delete` action on inactive designs with modal confirmation, cascading draft/version cleanup, and active-design deletion refusal
+- [x] `[A]` Decoupled marketplace design installation: creates **new inactive** `store_designs` row (never mutating active draft) + append-only `marketplace_installs` ledger row
 - [x] Dynamic button & badge state machine on marketplace cards (`Install` → `Activate` → `Activated / Customize`)
-- [x] Theme screenshot pipeline: `ThemeScreenshot.tsx` rewritten with dynamic storefront snapshot URL pipeline — renders real screenshot from `screenshotUrl` or falls back to seeded color gradient, dim-on-hover for overlay effects
+- [x] Design screenshot pipeline: `DesignScreenshot.tsx` rewritten with dynamic storefront snapshot URL pipeline — renders real screenshot from `screenshotUrl` or falls back to seeded color gradient, dim-on-hover for overlay effects
 
 ### 0.2 Plugins lifecycle (`plugins.php` & `plugin-install.php` parity)
 
@@ -62,7 +62,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 
 ### 0.3 Hierarchical CMS sidebar navigation (WP `#adminmenu` parity)
 
-- [x] Nav model reorganization: **Appearance** (Themes, Customize, Menus) and **Plugins** (Installed Plugins, Add New) elevated to first-class top-level CMS groups (`src/lib/console-nav.ts`)
+- [x] Nav model reorganization: **Appearance** (Designs, Customize, Menus) and **Plugins** (Installed Plugins, Add New) elevated to first-class top-level CMS groups (`src/lib/console-nav.ts`)
 - [x] Expandable accordion submenus in open sidebar (`AdminShell.tsx`) matching WordPress collapsible submenus — `SidebarNav` accordion with `expandedSections` state and chevron toggle
 - [x] Collapsed hover flyout submenus in rail mode matching WordPress `#adminmenu` flyouts — `hoveredGroup` flyout panel rendered in rail/collapsed mode
 - [x] Capability-gated navigation entries with active-route highlighting and single navigation source of truth (`src/lib/console-nav.ts` `filterNav()` + `consoleRoute()` staticData gate)
@@ -253,21 +253,21 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [~] `[A]` Tax-inclusive/exclusive display parity with stored totals — `commerce-vat.test.ts` covers math, not display parity
 - [x] `[A]` Invoice PDF with BIN, VAT breakdown, sequential numbering — sequential numbering, BIN, legal VAT table, and printable document styling with `@media print` and `window.print()` trigger at `/dashboard/orders/$orderId/invoice`
 
-### 2.3 Builder & themes
+### 2.3 Builder & designs
 
 - [x] Builder AST engine v1 + editor slots (header / main / footer)
-- [x] Theme versions + publish state
+- [x] Design versions + publish state
 - [x] Section renderer with primary-heading resolution
-- [x] Widget tray + inspector (full set required by the official themes)
+- [x] Widget tray + inspector (full set required by the official designs)
 - [x] Global design tokens editor (color, typography, spacing)
 - [x] Template hierarchy (index, product, collection, page, blog, cart, checkout)
 - [x] `[A]` Publish pipeline with immutable versions + rollback
 - [x] Scheduled publish / unpublish
 - [x] Responsive breakpoint controls
 - [x] Undo/redo + autosave drafts
-- [x] 8–10 official themes (classic, modern, landing, heavy shop, supershop, b2b, clothing-modern, clothing-classic, sensory, festivity)
-- [x] Theme registry + install / update / rollback
-- [x] `[A]` Theme sandbox: theme code cannot read cross-tenant data or secrets
+- [x] 8–10 official designs (classic, modern, landing, heavy shop, supershop, b2b, clothing-modern, clothing-classic, sensory, festivity)
+- [x] Design registry + install / update / rollback
+- [x] `[A]` Design sandbox: design code cannot read cross-tenant data or secrets
 
 ### 2.4 Shipping & delivery
 
@@ -364,7 +364,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 
 ### 3.3 Marketplace & ecosystem
 
-- [x] Official themes + plugins store surface
+- [x] Official designs + plugins store surface
 - [x] Creator submit + moderation surfaces
 - [x] Community upload with versioning + reviews — `marketplace-vault.server.ts` + `marketplace-vault.test.ts` (forward-version deny, identical-bytes replay)
 - [x] `[A]` Plugin scope model + install consent screen — `marketplace-scopes.ts` + consent gate; `marketplace-vault.test.ts` covers scope-escalation deny, consent audit row and idempotent install replay
@@ -372,7 +372,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [x] Widget API for third-party bundles — `WIDGET_API` method registry + `authorizeWidgetCall` (`marketplace-scopes.ts`) enforced through the `WidgetSandbox` bridge (`WidgetSandbox.tsx`, gated in `PluginBlock.tsx`)
 - [x] `[A]` Content-addressed immutable source vault for submissions — sha256 content hash + replay short-circuit, proven by key-order-independent replay cases in `marketplace-vault.test.ts`
 - [x] Payouts to creators — `payoutOverview/accruePayout/settlePayout` + double-settle replay/deny cases; `framique_market_payout_total` charted on the ecosystem dashboard
-- [x] App blocks embeddable into merchant themes — `marketplace_app_blocks` insert/listing/entitlement (`marketplace-vault.server.ts`), `marketplace.functions.ts` fn, sandboxed `PluginBlock.tsx` renderer
+- [x] App blocks embeddable into merchant designs — `marketplace_app_blocks` insert/listing/entitlement (`marketplace-vault.server.ts`), `marketplace.functions.ts` fn, sandboxed `PluginBlock.tsx` renderer
 
 ### 3.4 Analytics
 
@@ -456,10 +456,10 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 - [ ] Warehouse barcode picking app
 - [ ] Native mobile admin app
 - [ ] Merchant white-label reseller program
-- [x] Public storefront theme preview sandbox for shoppers — `theme-sandbox.test.ts`
+- [x] Public storefront design preview sandbox for shoppers — `design-sandbox.test.ts`
 - [ ] Voice search / Bangla speech input
 - [ ] AI product-copy and image generation
-- [ ] AI theme generation from a brief
+- [ ] AI design generation from a brief
 
 ### 4.4 Infrastructure options
 

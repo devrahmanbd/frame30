@@ -148,7 +148,7 @@ export function SectionRenderer({
         role="note"
         className="rounded-fq-md border border-dashed border-danger bg-danger-soft p-4 text-sm"
       >
-        Unsupported widget — remove it or reinstall the theme. (
+        Unsupported widget — remove it or pick another widget. (
         {section.invalid})
       </div>
     );

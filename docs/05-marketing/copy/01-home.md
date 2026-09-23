@@ -24,12 +24,12 @@ Route: `src/routes/index.tsx` · Shell: `PublicShell` · Scope: `.fq-site`
     - `how to start an online store in bangladesh`
     - `best ecommerce platform for bkash and nagad`
     - `sell online in bangladesh with cash on delivery`
-  - **Placement**: H1 + hero sub (primary), rails band (bkash/nagad), COD economics band (cash on delivery), themes band (website builder). Bangla equivalents belong in the `lang="bn"` variants of the same blocks — never as a hidden duplicate paragraph.
+  - **Placement**: H1 + hero sub (primary), rails band (bkash/nagad), COD economics band (cash on delivery), builder band (website builder). Bangla equivalents belong in the `lang="bn"` variants of the same blocks — never as a hidden duplicate paragraph.
 - **URL rule**: canonical and `og:url` are **relative** (`/`) until a production domain is set, so preview, published and custom-domain traffic each canonicalise to themselves. Never bake `https://framique.com` into source.
 
 ## Band order
 
-hero → rails marquee → product tour (Z-flip, 6 rows) → themes showcase → numbers → comparison → COD economics worked example → pricing teaser → stories → FAQ → final CTA.
+hero → rails marquee → product tour (Z-flip, 6 rows) → builder band → numbers → comparison → COD economics worked example → pricing teaser → stories → FAQ → final CTA.
 
 ---
 
@@ -67,7 +67,7 @@ _Lever: processing fluency across the whole tour. Alternating 60/40 rows; one cl
 
 | #   | Direction  | H3                                    | Body                                                                                                                                                                             | Proof chip                     |
 | --- | ---------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| 1   | text-left  | Launch a storefront, not a ticket     | Pick a theme, drag sections, publish. Bangla and English from the same catalogue — no duplicate products, no translation plugin drifting out of sync.                            | `Live in a day`                |
+| 1   | text-left  | Launch a storefront, not a ticket     | Drag sections, publish. Bangla and English from the same catalogue — no duplicate products, no translation plugin drifting out of sync.                            | `Live in a day`                |
 | 2   | text-right | Checkout that survives a COD market   | bKash, Nagad, card and cash on delivery in one flow, with fraud scoring before the courier is booked — so you catch a bad order before you pay for a failed delivery, not after. | `4 rails, 1 checkout`          |
 | 3   | text-left  | Fulfilment without a second tab       | Book pickups, print labels and read delivery status inside the same order drawer. No copy-pasting an address between your storefront and a courier's separate merchant portal.   | `4 couriers`                   |
 | 4   | text-right | Numbers you can act on tonight        | Revenue, return rate and rail mix per store, refreshed live — not a nightly CSV export someone has to remember to pull.                                                          | `Live dashboard`               |
@@ -78,36 +78,34 @@ _Lever: processing fluency across the whole tour. Alternating 60/40 rows; one cl
 
 **Why six rows and not four**: the fourth capability (courier fulfilment) is the one most competitors bolt on as an integration; rows 5 and 6 (catalogue hygiene, unified POS ledger) are the two operational pain points Bangladeshi merchants report most often when moving off spreadsheets — they are proof the platform was built for the whole operation, not just the storefront.
 
-## 4. Themes showcase — glass card grid (new band)
+## 4. Builder band — glass card grid (new band)
 
-_Lever: choice architecture. Five options, each named for a use case rather than a design adjective, reduces decision fatigue versus an open-ended "customize everything" promise — and naming the exact count ("5 official themes") sets an honest, checkable expectation._
+_Lever: simplicity. One storefront, no design packs to choose between — the merchant assembles pages from sections on default chrome. This removes the "which design?" decision entirely and replaces it with a "how fast can I publish?" promise._
 
-**H2**: Five themes. Pick the one that matches how you actually sell.
-**Sub**: Every theme ships production-ready — no theme-store hunting, no premium unlock fee.
+**H2**: One storefront. Build it your way.
+**Sub**: Every store starts from the same fast default — drag sections, publish, no design-store hunting, no premium unlock fee.
 
-**Classic** — a timeless wide grid built for a broad catalogue: apparel, homeware, general stores with 50+ SKUs across several categories. Use it when your merchandising problem is _navigation_, not persuasion — customers arrive knowing roughly what they want and need to find it fast. Category rails stay visible, filters sit above the fold, and product cards prioritize price and stock status over lifestyle imagery.
+**Sections** — a catalog of page sections (hero, product grid, collection rail, testimonials, FAQ, buy box) built for common merchandising jobs: apparel, homeware, general stores with 50+ SKUs. Use sections when the merchandising problem is _navigation_, not persuasion — customers arrive knowing roughly what they want and need to find it fast.
 
-**Modern** — an airy editorial lookbook for brands where the photography does the selling: fashion, beauty, home décor. Wide-format hero imagery, generous whitespace, and a slower scroll rhythm trade density for atmosphere. Use it when your margin depends on perceived quality, because this theme's whitespace is itself a signal of price positioning — a cramped grid reads as a discount store even if the price tags say otherwise.
+**Campaign pages** — a single-product conversion layout: one hero, one offer, one CTA, repeated proof bands stacked to the fold line. Built for a launch, a limited drop, or a paid-traffic campaign where every visitor should see the same linear argument in the same order.
 
-**Landing** — a single-product conversion page: one hero, one offer, one CTA, repeated proof bands stacked to the fold line. Built for a launch, a limited drop, or a paid-traffic campaign where every visitor should see the same linear argument in the same order. Do not use Landing for a multi-product catalogue — it actively suppresses category navigation because that navigation would be a conversion leak, not a convenience.
+**High-density grids** — grocery-aisle density with quick-add on every card, built for baskets of 10–30 low-consideration items rather than one considered purchase. Sticky cart summary, quantity steppers inline on the grid, and aisle-style category chips replace the wide hero.
 
-**Supershop** — grocery-aisle density with quick-add on every card, built for baskets of 10–30 low-consideration items rather than one considered purchase. Sticky cart summary, quantity steppers inline on the grid, and aisle-style category chips replace the wide hero — because a grocery buyer's job is speed and completeness, not inspiration. Pairs naturally with COD and cash-heavy checkout flows since basket sizes are small and frequent.
+**Wholesale blocks** — quote-first layouts: tiered pricing tables replace a single price tag, minimum order quantities are enforced at the cart, and a request-a-quote flow sits ahead of the standard checkout for buyers who need terms or bulk negotiation.
 
-**B2B** — a quote-first wholesale layout: tiered pricing tables replace a single price tag, minimum order quantities are enforced at the cart, and a request-a-quote flow sits ahead of the standard checkout for buyers who need net-30 terms or bulk negotiation. Use it when your buyer is a business, not a household — the entire page removes impulse-purchase cues (countdown timers, "only 3 left") because a wholesale buyer is evaluating supplier reliability, not urgency.
+### Assemble your pages
 
-### Pick your theme
+| If your store is…                        | Start with           | Because                                        |
+| ---------------------------------------- | -------------------- | ---------------------------------------------- |
+| A broad catalogue, many categories       | Section library      | Navigation-first grid, filters above the fold  |
+| Fashion, beauty, home décor              | Lookbook sections    | Photography-led, whitespace signals price tier |
+| A single hero product or campaign        | Campaign page        | Linear proof stack, one CTA, no category leak  |
+| Grocery, FMCG, small frequent baskets    | High-density grids   | Quick-add density, sticky cart, COD-friendly   |
+| Wholesale, distributors, business buyers | Wholesale blocks     | Tiered pricing, MOQ enforcement, quote flow    |
 
-| If your store is…                        | Choose    | Because                                        |
-| ---------------------------------------- | --------- | ---------------------------------------------- |
-| A broad catalogue, many categories       | Classic   | Navigation-first grid, filters above the fold  |
-| Fashion, beauty, home décor              | Modern    | Photography-led, whitespace signals price tier |
-| A single hero product or campaign        | Landing   | Linear proof stack, one CTA, no category leak  |
-| Grocery, FMCG, small frequent baskets    | Supershop | Quick-add density, sticky cart, COD-friendly   |
-| Wholesale, distributors, business buyers | B2B       | Tiered pricing, MOQ enforcement, quote flow    |
+**BN sub**: একটি স্টোরফ্রন্ট। আপনার মতো করে সাজান।
 
-**BN sub**: পাঁচটি থিম। আপনি যেভাবে বিক্রি করেন, সেই অনুযায়ী একটি বেছে নিন।
-
-**Design note**: five glass cards, 3-up desktop / 2-up tablet / 1-up mobile, each with a single UI screenshot cropped to its signature interaction (Classic's filter rail, Supershop's quick-add stepper, B2B's tier table). No gradient spotlight here — five cards of equal visual weight communicates "five real, equal options," not "one hero product with four afterthoughts."
+**Design note**: five glass cards, 3-up desktop / 2-up tablet / 1-up mobile, each with a single UI screenshot cropped to its signature interaction (filter rail, quick-add stepper, tier table). No gradient spotlight here — five cards of equal visual weight communicates "five real, equal options," not "one hero product with four afterthoughts."
 
 ## 5. Numbers band — canvas, 4-up, count-up
 
@@ -195,7 +193,7 @@ _Lever: authority + endowment. Real merchants, real receipts; no invented testim
 - No name, logo, quote, or number may be invented to fill this band. If no verified merchant story exists yet, the band ships as an empty state: `Case studies are being verified with real merchants — check back soon`, with the CTA disabled or hidden.
 - Once a story is available, it must cite metrics the merchant has agreed to disclose, sourced from their own dashboard, with an explicit date range (e.g., "Q2 2025, 6 months post-launch") — never an undated or rounded-for-effect figure.
 - Photography must be the merchant's own product or storefront, not stock imagery standing in for them.
-- One story may sit in an aurora spotlight card as the featured story; the rest remain glass cards at equal weight — mirroring the themes band's "no favourites beyond one" rule.
+- One story may sit in an aurora spotlight card as the featured story; the rest remain glass cards at equal weight — mirroring the builder band's "no favourites beyond one" rule.
 
 ## 10. FAQ — canvas, native `<details>`, 10 questions
 
@@ -207,7 +205,7 @@ _Lever: authority + endowment. Real merchants, real receipts; no invented testim
 6. **Which couriers can I book without leaving the order screen?** SteadFast, Pathao, RedX and Paperfly are integrated at checkout and fulfilment level today — you choose per order or set a default, and label printing happens from the same drawer.
 7. **How does VAT/Mushak work on the platform?** Framique surfaces the fields needed to record VAT-relevant information per order (rate applied, invoice reference), but VAT/Mushak compliance is ultimately your obligation as the registered business — confirm your specific filing requirements with the NBR or your accountant, since thresholds and categories change by business type and turnover.
 8. **What happens around Eid or Pohela Boishakh, when order volume spikes?** Seasonal spikes stress two things first: courier pickup capacity and checkout speed under concurrent load. Plan courier pickup windows a week ahead of the peak rather than the day of, and pre-verify high-volume SKUs' stock counts, since a stockout discovered mid-checkout during a traffic spike costs more in abandoned carts than any single marketing push recovers.
-9. **Do I need a developer to launch?** No — the five official themes (Classic, Modern, Landing, Supershop, B2B) are drag-and-drop configurable. A developer becomes useful only if you want custom logic beyond the storefront, which the REST API supports.
+9. **Do I need a developer to launch?** No — pages are assembled from drag-and-drop sections on the default storefront. A developer becomes useful only if you want custom logic beyond the storefront, which the REST API supports.
 10. **Is there a limit on how many products or orders I can have?** Plan tiers differ by feature access (advanced reporting, number of staff seats, API rate limits) rather than by an artificial cap on catalogue size — check the pricing page for the specific plan-by-plan breakdown before committing.
 
 **BN Q1**: আমি কি আমার বর্তমান ডোমেইন রাখতে পারব? — হ্যাঁ। ডোমেইন পয়েন্ট করলেই সার্টিফিকেট স্বয়ংক্রিয়ভাবে ইস্যু হয়।
@@ -224,14 +222,14 @@ _Lever: risk reversal, single decision. One card, one gradient, one choice — a
 **BN H2**: আপনার প্রথম অর্ডার এক বিকেলের দূরত্বে।
 **BN sub**: ফ্রি শুরু করুন, বিকাশ সংযুক্ত করুন, আজই একটি সত্যিকারের অর্ডার নিন।
 
-**Design note**: single gradient-spotlight-card (violet-to-teal, per the "one or two gradient cards per long page" rule — this is the second, after the themes band stays flat). Magnetic hover capped at 6px on the primary pill only. Sits directly on canvas with generous section padding above and below so it reads as a deliberate close, not another row.
+**Design note**: single gradient-spotlight-card (violet-to-teal, per the "one or two gradient cards per long page" rule — this is the second, after the builder band stays flat). Magnetic hover capped at 6px on the primary pill only. Sits directly on canvas with generous section padding above and below so it reads as a deliberate close, not another row.
 
 ---
 
 ## Internal linking plan
 
 - Hero secondary CTA (`See a live store`) → `/showcase` or a specific live storefront demo route.
-- Themes showcase cards → `/themes/classic`, `/themes/modern`, `/themes/landing`, `/themes/supershop`, `/themes/b2b` (or equivalent theme detail routes) for deeper merchandising guidance per theme.
+- Builder band cards → `/builder` (section library) for deeper merchandising guidance per section group.
 - Comparison band → `/pricing` (for the per-order-fee row) and `/docs/exports` (for the data-export row), so a skeptical reader can verify the claim rather than take it on faith.
 - COD economics band → `/docs/fraud-scoring` and `/docs/courier-fulfilment` for merchants who want the mechanism behind the three levers, not just the arithmetic.
 - Pricing teaser → `/pricing` (primary) and `/contact-sales` (alt).
@@ -243,14 +241,14 @@ _Lever: risk reversal, single decision. One card, one gradient, one choice — a
 
 - Hero: abstract aurora mesh background (violet/teal, 8% opacity, no literal photography) plus one foreground UI still of a live storefront on a device frame — real product screenshot, not a mockup illustration.
 - Rails marquee: authentic vector logos for bKash, Nagad, Rocket, Upay, Visa, Mastercard, SteadFast, Pathao, RedX, Paperfly — monochrome-tinted to 60% opacity at rest, full colour on hover.
-- Product tour: six UI stills, one per row, each cropped tightly to the specific interaction named in the H3 (theme editor drag handle, checkout rail selector, order drawer courier panel, live dashboard chart, product variant editor, POS counter-sale screen).
-- Themes showcase: five screenshots, one per theme, each cropped to that theme's signature element (Classic's filter rail, Modern's full-bleed lookbook hero, Landing's single-CTA fold, Supershop's quick-add stepper grid, B2B's tiered price table).
+- Product tour: six UI stills, one per row, each cropped tightly to the specific interaction named in the H3 (page editor drag handle, checkout rail selector, order drawer courier panel, live dashboard chart, product variant editor, POS counter-sale screen).
+- Builder band: five screenshots, one per section group, each cropped to that group's signature element (filter rail, full-bleed lookbook hero, single-CTA fold, quick-add stepper grid, tiered price table).
 - COD economics: no illustration — a clean data table only, to preserve the "sober documentation" tone.
 - Final CTA: gradient card background only, no imagery layered on top, to keep the close visually quiet against ten preceding bands of content.
 
 ## Icon list
 
-Storefront/theme icon, bKash/Nagad/card/COD payment icons, courier/box icon, dashboard/chart icon, catalogue/tag icon, POS/register icon, checkmark (risk reversal), export/download icon, shield (fraud scoring), phone/verification icon.
+Storefront/builder icon, bKash/Nagad/card/COD payment icons, courier/box icon, dashboard/chart icon, catalogue/tag icon, POS/register icon, checkmark (risk reversal), export/download icon, shield (fraud scoring), phone/verification icon.
 
 ## Motion spec
 
@@ -275,7 +273,7 @@ Storefront/theme icon, bKash/Nagad/card/COD payment icons, courier/box icon, das
 - Hero: primary vs secondary CTA click-through rate, split by detected locale (`bn` vs `en`) to see whether Bangla visitors convert differently on the same H1.
 - Rails marquee: hover/tap rate per logo, as a proxy for which payment rail visitors are specifically checking for before continuing.
 - Product tour: scroll-depth per row and time-in-view, to identify which of the six capabilities holds attention longest (a signal for which capability to lead with in future hero tests).
-- Themes showcase: click-through rate per theme card and, downstream, actual theme selection rate at signup — to check whether the showcase's stated guidance matches real merchant behaviour.
+- Builder band: click-through rate per section card and, downstream, actual section usage at signup — to check whether the band's stated guidance matches real merchant behaviour.
 - Numbers band: verify the counter query latency does not block first paint; log any instance where a counter is omitted due to unavailable data.
 - Comparison table: which row (if any) drives hover/expand interaction longest, as a signal for which objection is strongest among visitors.
 - COD economics band: time-on-band and scroll-past rate, since this is the densest content block on the page — a high bounce here signals the worked example needs simplifying, not cutting.

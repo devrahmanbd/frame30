@@ -902,7 +902,7 @@ export async function saveSeoTemplate(
 export async function seedSeoTemplates(
   db: Client,
   merchantId: string,
-  themeKey: string,
+  _themeKey: string,
   userId?: string | null,
 ): Promise<number> {
   const { presetSeoTemplates } = await import("./theme-seo");
@@ -912,7 +912,7 @@ export async function seedSeoTemplates(
       .filter((row) => row.titleTemplate || row.descriptionTemplate)
       .map((row) => row.entityType),
   );
-  const rows = presetSeoTemplates(themeKey)
+  const rows = presetSeoTemplates()
     .filter((row) => !authored.has(row.entityType))
     .map((row) => ({
       merchant_id: merchantId,
@@ -928,14 +928,12 @@ export async function seedSeoTemplates(
   if (error) {
     log("warn", "seo.template.seed_failed", {
       merchantId,
-      themeKey,
       message: error.message,
     });
     return 0;
   }
   log("info", "seo.template.seeded", {
     merchantId,
-    themeKey,
     rows: rows.length,
   });
   return rows.length;
