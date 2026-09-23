@@ -1,0 +1,46 @@
+# Framique CODEOWNERS — shared theme/plugin collision files.
+#
+# CircleCI-only: per AGENTS.md ("CircleCI is the only CI system. Never create
+# or edit anything under `.github/` — no Actions workflows, period."), this
+# file lives at the repo ROOT, never under `.github/`.
+#
+# This file documents required second-eyes review on shared theme/plugin
+# files (the songoskriti theme-restore silently replaced ThemeChrome +
+# loaders + routes with zero Git conflicts, wiping WhatsApp plugin wiring —
+# only failing tests caught it).
+#
+# The enforcing mechanism is the `plugin-storefront-gate` job in
+# `.circleci/config.yml` (blocking Plugin + storefront tripwire suites),
+# which runs on every push. CODEOWNERS review is the human layer; the CI
+# gate is the mechanical layer.
+
+# Shared storefront chrome + plugin mounts
+src/components/store/ThemeChrome.tsx @devrahmanbd
+src/components/store/PluginLayer.tsx @devrahmanbd
+src/components/store/PluginFooterMounts.tsx @devrahmanbd
+src/components/store/StoreHomepage.tsx @devrahmanbd
+
+# Shared storefront server boundary (loaders, RPC)
+src/lib/storefront.server.ts @devrahmanbd
+src/lib/storefront.functions.ts @devrahmanbd
+
+# Storefront routes — tenant theme/plugin surface
+src/routes/store.$slug.index.tsx @devrahmanbd
+src/routes/store.$slug.account.tsx @devrahmanbd
+src/routes/store.$slug.blog.index.tsx @devrahmanbd
+src/routes/store.$slug.blog.$slug.tsx @devrahmanbd
+src/routes/store.$slug.c.$collectionSlug.tsx @devrahmanbd
+src/routes/store.$slug.cart.tsx @devrahmanbd
+src/routes/store.$slug.checkout.tsx @devrahmanbd
+src/routes/store.$slug.order.$orderId.tsx @devrahmanbd
+src/routes/store.$slug.p.$productSlug.tsx @devrahmanbd
+src/routes/store.$slug.pages.$pageSlug.tsx @devrahmanbd
+src/routes/store.$slug.search.tsx @devrahmanbd
+src/routes/store.$slug.track.tsx @devrahmanbd
+src/routes/cart.tsx @devrahmanbd
+src/routes/checkout.tsx @devrahmanbd
+src/routes/search.tsx @devrahmanbd
+src/routes/account.tsx @devrahmanbd
+src/routes/pages.$pageSlug.tsx @devrahmanbd
+src/routes/p.$productSlug.tsx @devrahmanbd
+src/routes/c.$collectionSlug.tsx @devrahmanbd
