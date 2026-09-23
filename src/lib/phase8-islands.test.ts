@@ -12,7 +12,6 @@ import {
   isCompatiblePackage,
   registryVersionInfo,
 } from "./registry-version";
-import { THEME_PRESETS } from "./theme-presets";
 import { WIDGET_TYPES } from "./widget-registry";
 
 describe("island hydration policy", () => {
@@ -85,10 +84,9 @@ describe("registry versioning", () => {
     expect(isCompatiblePackage(null)).toBe(true);
   });
 
-  it("ships every official preset compatible with the running builder API", () => {
+  it("ships an empty preset list (themes removed)", () => {
     const info = registryVersionInfo();
     expect(info.builderApi).toBe(BUILDER_API_VERSION);
-    expect(info.presets).toHaveLength(THEME_PRESETS.length);
-    expect(info.presets.every((preset) => preset.compatible)).toBe(true);
+    expect(info.presets).toEqual([]);
   });
 });

@@ -1,9 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { THEME_PRESETS } from "./theme-presets";
 import {
   DESC_MAX,
   TITLE_MAX,
-  THEME_SEO_CATEGORY,
   absUrl,
   buildPageHead,
   buildProductHead,
@@ -46,22 +44,13 @@ function ld(
     .find((n) => n["@type"] === type) as unknown as never;
 }
 
-describe("theme seo profiles", () => {
-  it("covers every official theme and matches preset categories", () => {
-    for (const preset of THEME_PRESETS) {
-      expect(THEME_SEO_CATEGORY[preset.key], preset.key).toBe(preset.category);
-    }
-    expect(Object.keys(THEME_SEO_CATEGORY).sort()).toEqual(
-      THEME_PRESETS.map((p) => p.key).sort(),
-    );
-  });
-
-  it("falls back to the default profile for unknown themes", () => {
+describe("seo profiles", () => {
+  it("always returns the default profile (no per-theme profiles)", () => {
     expect(seoProfileFor(null).jsonld.product).toBe(true);
     expect(seoProfileFor("does-not-exist").socialCard).toBe(
       "summary_large_image",
     );
-    expect(seoProfileFor("b2b").socialCard).toBe("summary");
+    expect(seoProfileFor("b2b").socialCard).toBe("summary_large_image");
   });
 });
 

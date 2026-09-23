@@ -58,16 +58,11 @@ export const getStorePageFn = createServerFn({ method: "GET" })
     const { renderPageMarkdown } = await import("./storefront-search");
     const found = await loadStorePage(data.slug, data.pageSlug);
     if (!found) return null;
-    const { loadPageTemplate } = await import("./storefront.server");
     const { requestOrigin } = await import("./site-origin.server");
     const { storefrontSiteKit } = await import("./search-console.server");
-    const { storefrontThemeCss } = await import("./themes/assets.server");
-    const themeId = found.page.theme_id ?? null;
-    const [nav, theme, siteKit, customCss, menus] = await Promise.all([
+    const [nav, siteKit, menus] = await Promise.all([
       listStorePageNav(found.merchant.id),
-      loadPageTemplate(found.merchant.id, themeId),
       storefrontSiteKit(found.merchant.id),
-      storefrontThemeCss(found.merchant.id, themeId),
       // Phase 16 T4: dashboard-designed nav menus for the page chrome.
       import("./menus/menu.server").then((m) =>
         m.loadStoreMenus(found.merchant.id),
@@ -106,12 +101,12 @@ export const getStorePageFn = createServerFn({ method: "GET" })
         : renderPageMarkdown(found.page.body_markdown),
       isBuilder: Boolean(builderDoc),
       studioNodes,
-      customCss,
+      customCss: null,
       nav,
       menus,
-      ast: theme?.ast ?? null,
-      tokens: theme?.tokens ?? null,
-      themeKey: theme?.themeKey ?? null,
+      ast: null,
+      tokens: null,
+      themeKey: null,
       siteKit,
       origin: requestOrigin(),
     };

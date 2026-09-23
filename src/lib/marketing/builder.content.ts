@@ -1,5 +1,5 @@
 /**
- * Content module for `/builder` — the storefront theme/section builder page.
+ * Content module for `/builder` — the storefront section builder page.
  *
  * Pure data, no React/JSX. The route file (`src/routes/builder.tsx`) is the
  * only consumer; this separation keeps the copy deck's exact wording under
@@ -23,8 +23,8 @@ export type Bilingual = { en: string; bn?: string };
 
 export const hero = {
   eyebrow: "Visual builder · versioned",
-  title: "Design the storefront. Don't fight the theme.",
-  titleBn: "স্টোরফ্রন্ট ডিজাইন করুন। থিমের সাথে লড়াই নয়।",
+  title: "Design the storefront. Don't fight the layout.",
+  titleBn: "স্টোরফ্রন্ট ডিজাইন করুন। ডিজাইনের সাথে লড়াই নয়।",
   sub: "Drag sections, edit tokens, ship a version — with instant rollback.",
   subBn:
     "সেকশন টেনে আনুন, টোকেন এডিট করুন, একটি ভার্সন পাবলিশ করুন — সাথে সাথে রোলব্যাকের সুযোগসহ।",
@@ -42,7 +42,7 @@ export const canvasMock = {
     "The same renderer draws the editor and the live store, so preview is not an approximation.",
   captionBn:
     "এডিটর ও লাইভ স্টোর একই রেন্ডারার ব্যবহার করে, তাই প্রিভিউ কোনো অনুমান নয়।",
-  body: 'Most page builders run a simplified preview renderer that diverges from production CSS, web fonts, and JS at the margins — the classic "it looked right in the editor" complaint. Framique\'s editor iframe loads the identical theme bundle the storefront serves, so what you see in the canvas is pixel-identical to what a shopper on a Grameenphone 4G connection in Bogura sees.',
+  body: 'Most page builders run a simplified preview renderer that diverges from production CSS, web fonts, and JS at the margins — the classic "it looked right in the editor" complaint. Framique\'s editor iframe loads the identical storefront bundle the shopper sees, so what you see in the canvas is pixel-identical to what a shopper on a Grameenphone 4G connection in Bogura sees.',
   rail: [
     "Hero section",
     "Product grid",
@@ -70,7 +70,7 @@ export const editingRows = [
     direction: "right" as const,
     eyebrow: "Tokens, not scattered CSS",
     title: "Tokens, not scattered CSS.",
-    body: "Colour, radius, type scale, and spacing live in one panel. Change the accent colour once and every button, badge, and link across every section updates together — no hunting through forty section-level colour pickers left over from a theme you customised eighteen months ago.",
+    body: "Colour, radius, type scale, and spacing live in one panel. Change the accent colour once and every button, badge, and link across every section updates together — no hunting through forty section-level colour pickers left over from a layout you customised eighteen months ago.",
     proof: "One token, every section.",
   },
   {
@@ -138,73 +138,73 @@ export const lifecycle = {
 };
 
 /* -------------------------------------------------------------------------- */
-/* Section 5 — five official themes                                         */
+/* Section 5 — five section groups                                         */
 /* -------------------------------------------------------------------------- */
 
 export const themes = [
   {
-    id: "classic",
-    name: "Classic",
+    id: "catalogue",
+    name: "Catalogue",
     body: "Generous whitespace, a traditional top-nav-plus-mega-menu structure, and a product grid that privileges photography over badges. The safest default for a first store — smallest section library, easiest to hand to a small team.",
     fit: "Moderate catalogue, strong photography",
   },
   {
-    id: "modern",
-    name: "Modern",
+    id: "lookbook",
+    name: "Lookbook",
     body: "Sharper visual rhythm, tighter type, a more editorial feel — closer to a D2C brand site than a marketplace stall. Rewards a merchant with a consistent visual identity and fewer, better products.",
     fit: "Small high-margin catalogue, strong brand identity",
   },
   {
-    id: "landing",
-    name: "Landing",
-    body: "Not a general storefront theme — a single-product or single-campaign theme built around one long-scrolling persuasive page, with testimonial strips, FAQ, and a sticky buy bar.",
+    id: "campaign",
+    name: "Campaign",
+    body: "Not a general storefront layout — a single-product or single-campaign layout built around one long-scrolling persuasive page, with testimonial strips, FAQ, and a sticky buy bar.",
     fit: "One hero product or campaign launch",
   },
   {
-    id: "supershop",
-    name: "Supershop",
-    body: "The highest-density theme for catalogues in the hundreds-to-thousands of SKUs. Front-loads filters, category rails, and a dense grid; assumes the shopper arrives with a specific product in mind.",
+    id: "high-density",
+    name: "High-density",
+    body: "The highest-density layout for catalogues in the hundreds-to-thousands of SKUs. Front-loads filters, category rails, and a dense grid; assumes the shopper arrives with a specific product in mind.",
     fit: "Hundreds to thousands of SKUs, filter-driven browsing",
   },
   {
-    id: "b2b",
-    name: "B2B",
+    id: "wholesale",
+    name: "Wholesale",
     body: "Serves merchants who sell to other businesses. Tiered pricing tables, minimum order quantity fields, a request-a-quote flow, and account-gated pricing.",
     fit: "Wholesale, quote-based, or account-gated pricing",
   },
 ];
 
 export const themeDecisionTable = {
-  caption: "Theme-choice decision table",
+  caption: "Section-choice decision table",
   rows: [
     {
       situation: "First store, moderate catalogue, strong photography",
-      theme: "Classic",
+      theme: "Catalogue",
       because: "Safest default, smallest section library, image-forward",
     },
     {
       situation: "Small high-margin catalogue, strong brand identity",
-      theme: "Modern",
+      theme: "Lookbook",
       because: "Editorial layout rewards fewer, better products",
     },
     {
       situation: "One hero product or campaign launch",
-      theme: "Landing",
+      theme: "Campaign",
       because: "Single-purchase-decision page, not a catalogue",
     },
     {
       situation: "Hundreds to thousands of SKUs, filter-driven browsing",
-      theme: "Supershop",
+      theme: "High-density",
       because: "Density and filters over inspiration",
     },
     {
       situation: "Wholesale, quote-based, or account-gated pricing",
-      theme: "B2B",
+      theme: "Wholesale",
       because: "Tiered pricing and MOQ built in, not bolted on",
     },
     {
       situation: "Unsure, catalogue will grow past 50 SKUs in a year",
-      theme: "Classic → migrate later",
+      theme: "Catalogue → extend later",
       because: "Cleanest section model to extend",
     },
   ],
@@ -216,7 +216,7 @@ export const themeDecisionTable = {
 
 export const tokensBand = {
   title: "Design tokens and brand consistency",
-  body: "A token panel holds four families: colour (primary, accent, surface, text), radius (from sharp to fully rounded), type scale (a ratio-based ladder from caption to display), and spacing (a fixed step scale, not freeform pixel entry). Every section in every theme reads from these tokens rather than hard-coding its own values, so a brand refresh is a five-field edit, not a section-by-section rebuild.",
+  body: "A token panel holds four families: colour (primary, accent, surface, text), radius (from sharp to fully rounded), type scale (a ratio-based ladder from caption to display), and spacing (a fixed step scale, not freeform pixel entry). Every section reads from these tokens rather than hard-coding its own values, so a brand refresh is a five-field edit, not a section-by-section rebuild.",
   worked:
     'A merchant rebranding from a teal to a maroon accent for Pohela Boishakh changes one colour token. That single change updates the "Add to cart" button, the sale badge, the active nav underline, and the checkout progress bar simultaneously — four surfaces, one edit, zero risk of shipping a mismatched button colour on launch day.',
   note: "Token changes are draft-scoped like everything else: preview a full rebrand before publishing it, compare it against the live version, discard it without consequence if it doesn't work.",
@@ -317,8 +317,8 @@ export const productPageChecklist = [
 export const firstHour = [
   {
     time: "0–5 min",
-    title: "Pick a theme",
-    body: "Use the decision table above. If genuinely unsure and your catalogue will likely grow, start with Classic.",
+    title: "Pick a starting layout",
+    body: "Use the decision table above. If genuinely unsure and your catalogue will likely grow, start with Catalogue.",
   },
   {
     time: "5–15 min",
@@ -390,7 +390,7 @@ export const comparison = {
       id: "payments",
       label: "Payment context",
       generic: "Generic card/PayPal assumptions",
-      framique: "bKash/Nagad/Rocket/Upay/card/COD built into theme sections",
+      framique: "bKash/Nagad/Rocket/Upay/card/COD built into page sections",
     },
     {
       id: "versioning",
@@ -431,14 +431,14 @@ export const comparison = {
         "Hard budgets enforced at publish time, with auto-compression offered",
     },
     {
-      id: "themes",
-      label: "Themes offered",
+      id: "sections",
+      label: "Starting points",
       generic: "Often hundreds of undifferentiated templates",
       framique:
-        "Five official themes, each purpose-built for a distinct merchandising situation",
+        "Five section groups, each purpose-built for a distinct merchandising situation",
     },
   ],
-  note: "A marketplace of hundreds of templates optimises for browsing variety, not merchandising fit. Five themes, each mapped to a specific business situation, is a smaller but more honest promise.",
+  note: "A marketplace of hundreds of templates optimises for browsing variety, not merchandising fit. Five section groups, each mapped to a specific business situation, is a smaller but more honest promise.",
 };
 
 /* -------------------------------------------------------------------------- */
@@ -459,13 +459,13 @@ export const faq: { id: string; question: string; answer: string }[] = [
     id: "developer",
     question: "Do I need a developer to use the builder?",
     answer:
-      "No. All fifteen checklist items and every theme are configurable through the section and token panels alone. Custom code and custom fonts are optional, developer-adjacent features for merchants who want them, not requirements.",
+      "No. All fifteen checklist items and every section group is configurable through the section and token panels alone. Custom code and custom fonts are optional, developer-adjacent features for merchants who want them, not requirements.",
   },
   {
-    id: "switch-themes",
-    question: "Can I switch themes after I've already built sections?",
+    id: "rearrange-sections",
+    question: "Can I rearrange sections after I've already built pages?",
     answer:
-      "Yes, but section content does not automatically remap to a different theme's layout assumptions — expect to re-check each section after a theme switch, which is why the decision table is worth reading before starting.",
+      "Yes, but section content does not automatically remap to different layout assumptions — expect to re-check each section after rearranging, which is why the decision table is worth reading before starting.",
   },
   {
     id: "draft-vs-published",

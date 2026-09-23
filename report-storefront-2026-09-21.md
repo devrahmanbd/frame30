@@ -7,7 +7,7 @@
 
 ## Verdict: LIVE and HEALTHY, with 3 minor a11y findings
 
-The custom-domain storefront serves the full theme with zero failed requests,
+The custom-domain storefront serves the full design with zero failed requests,
 zero console errors/warnings, working cart + interactive widgets, and
 Lighthouse 94 a11y / 100 best-practices / 100 SEO.
 
@@ -26,7 +26,7 @@ Lighthouse 94 a11y / 100 best-practices / 100 SEO.
 - PDP (`/p/brass-filigree-chandbali-earrings`): breadcrumb, H1, BDT price,
   VAT note, live stock ("99 in stock"), Add to cart → cart badge 0→1 with
   "Added to cart" live-region announcement, COD badge.
-- Ported theme widgets rendering live with real data on PDP: claim_chips,
+- Ported design widgets rendering live with real data on PDP: claim_chips,
   ingredient_list (Niacinamide 5%…), how_to_use (4 steps), safety_note +
   patch-test panel, batch_info (mfg/expiry/batch RB-2601-A), refill_widget
   (30/60/90-day cadences), gift_builder (counter + message field),

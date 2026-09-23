@@ -19,7 +19,7 @@ Prove end-to-end that the staff delegation model works as specified: invite → 
 
 **Out of scope**
 
-- Storefront buyer auth/MFA (`docs/03-storefront`), POS offline drafts, builder/market themes, marketplace platform-operator permissions, SSO/SCIM.
+- Storefront buyer auth/MFA (`docs/03-storefront`), POS offline drafts, builder/market designs, marketplace platform-operator permissions, SSO/SCIM.
 
 ## 3. Harness contract
 

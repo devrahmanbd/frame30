@@ -91,7 +91,7 @@ export const STORY_SECTION = {
 export type Archetype = {
   id: string;
   segment: string;
-  theme: "Classic" | "Modern" | "Landing" | "Supershop" | "B2B";
+  theme: "Catalogue" | "Lookbook" | "Campaign" | "High-density" | "Wholesale";
   aov: string;
   catalogue: string;
   codShare: string;
@@ -103,7 +103,7 @@ export type Archetype = {
 
 export const ARCHETYPES_INTRO = {
   eyebrow: "Recognise your own shop",
-  title: "Five segment archetypes, matched to the five official themes",
+  title: "Five segment archetypes, matched to the five section groups",
   sub: "Operating profiles, not case studies — the range of numbers a healthy shop in that segment typically shows, drawn from category norms rather than attributed to a named merchant.",
 } as const;
 
@@ -111,7 +111,7 @@ export const ARCHETYPES: Archetype[] = [
   {
     id: "fashion",
     segment: "Fashion boutique",
-    theme: "Modern",
+    theme: "Lookbook",
     aov: "BDT 800 – BDT 3,500 average order value",
     catalogue: "40–300 SKUs, frequent turnover (new drops every 1–3 weeks)",
     codShare:
@@ -133,7 +133,7 @@ export const ARCHETYPES: Archetype[] = [
   {
     id: "neighbourhood",
     segment: "Neighbourhood shop (mudir dokan)",
-    theme: "Classic",
+    theme: "Catalogue",
     aov: "BDT 200 – BDT 900 average order value",
     catalogue: "100–600 SKUs, low turnover, high repeat-purchase overlap",
     codShare: "80–95% cash on delivery — established local trust, cash habit",
@@ -154,7 +154,7 @@ export const ARCHETYPES: Archetype[] = [
   {
     id: "single-product",
     segment: "Single-product drop",
-    theme: "Landing",
+    theme: "Campaign",
     aov: "BDT 500 – BDT 4,000, single price point or narrow variant set",
     catalogue: "1–5 SKUs, campaign-driven, time-boxed",
     codShare: "40–60% cash on delivery — often ad-driven, colder traffic",
@@ -175,7 +175,7 @@ export const ARCHETYPES: Archetype[] = [
   {
     id: "grocery",
     segment: "Grocery / daily essentials",
-    theme: "Supershop",
+    theme: "High-density",
     aov: "BDT 600 – BDT 2,200, high basket-item count",
     catalogue:
       "500–3,000+ SKUs, high restock frequency, perishables mixed with shelf-stable",
@@ -197,7 +197,7 @@ export const ARCHETYPES: Archetype[] = [
   {
     id: "b2b",
     segment: "Wholesale / B2B",
-    theme: "B2B",
+    theme: "Wholesale",
     aov: "BDT 15,000 – BDT 500,000+, highly variable by buyer tier",
     catalogue: "50–1,000 SKUs, often with tiered/negotiated pricing per buyer",
     codShare:

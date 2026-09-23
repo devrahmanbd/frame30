@@ -12,7 +12,7 @@ Status: Audit report · 2026-08-08 · Scope: entire `docs/` tree (33 files, area
 
 | #   | Claim                                    | Corpus verdict                                                 | Doc status                                                                |
 | --- | ---------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| 1   | Sections & templates (page-type layouts) | Planned in depth, exact slot model                             | `sections-templates` approved; `theme-registry` **Gate: approved ("go")** |
+| 1   | Sections & templates (page-type layouts) | Planned in depth, exact slot model                             | `sections-templates` approved                                             |
 | 2   | Content CMS (articles, media, menus)     | Planned; grids, trees, archives                                | `05-marketing/content-cms` · S6                                           |
 | 3   | i18n (bn/en)                             | Planned, both locales on in v0                                 | `03-storefront/i18n` · S2/S3                                              |
 | 4   | Scheduled & lifecycle publishing         | Planned; **no time-based unpublish**                           | `04-builder/publishing` · S1 · Tenant008                                  |
@@ -28,19 +28,7 @@ Status: Audit report · 2026-08-08 · Scope: entire `docs/` tree (33 files, area
   (`page | product | article | collection`); sections = named widget groups
   filling fixed slots; per-page overrides live on the page draft — the template
   file is never mutated.
-- `04-builder/theme-runtime.md` TR-1/TR-2: theme = versioned package
-  (`theme.yaml` + layout AST + tokens + assets + optional widget JS); merchant
-  installs are **semver pins**; upgrades explicit; theme owns rendering, runtime
-  owns data/auth/cart/checkout/safety. Theme 01 "Char" first.
-- `04-builder/theme-registry.md` — only doc with an explicit **Gate:
-  approved ("go")**; resolves runtime §8 open item 3 (purge). Tables
-  `theme_versions`, `store_themes`, `pages`, `theme_tokens`, `widgets`,
-  `revisions`, `theme_audit`; new `themes` resource group `read · edit ·
-install · publish · rollback`; anon surface `app.theme_snapshot`
-  (published-only; 404 otherwise).
-- **Buttons / CTAs / actions**: `theme_install` (post-gate), `theme_switch_default`,
-  `app.theme_save_page`, `theme.duplicated`, publish bar → `theme_publish`,
-  rollback (restore previous revision), purge.
+- ~~Storefront design-pack runtime/registry (retired 2026-09-23 with the full purge; docs deleted)~~: was design = versioned package with semver pins. Stores now render builder content with default chrome, no packs.
 - **Machine**: page AST `draft → preview → published`; legacy `pages` backfill
   non-destructive.
 - Residual: no builder `.e2e` artifacts yet (contract-first, P4) — matches the
@@ -70,8 +58,8 @@ install · publish · rollback`; anon surface `app.theme_snapshot`
 ## 4. Scheduled & lifecycle publishing — planned (one real gap)
 
 - `04-builder/publishing.md` (Tenant008): `pages.scheduled_at`; scheduler edge
-  job promotes **through the same `theme_publish` path**; events
-  `page.scheduled`, `page.scheduled_cancelled`, `theme.duplicated`,
+  job promotes **through the same `design_publish` path**; events
+  `page.scheduled`, `page.scheduled_cancelled`, `design.duplicated`,
   `preview_share.created/revoked`; `preview_shares` revocable single-use tokens.
 - Duplicate / switch / rollback / purge explicit.
 - **Gap**: publish-forward only — **no time-based unpublish/expiry on pages or
@@ -94,7 +82,7 @@ install · publish · rollback`; anon surface `app.theme_snapshot`
 
 - `02-merchant/staff-approval.md` (S5): four-eyes invariant — submitter can
   never approve own change (**self-approval = hard server error**); per-resource
-  `approval_level ∈ none | required` (tenant opt-in); resources theme (006),
+  `approval_level ∈ none | required` (tenant opt-in); resources design (006),
   marketing (007), publishing (008), widgets (009), finance/refunds; owner
   override with audit row `approval.owner_override`; expiry + cancellation
   semantics; Schema `Tenant01`.

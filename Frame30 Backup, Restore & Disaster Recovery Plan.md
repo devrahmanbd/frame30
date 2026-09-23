@@ -127,7 +127,7 @@ orders
 customers
 products
 pages
-themes
+designs
 merchant configuration
 staff
 permissions

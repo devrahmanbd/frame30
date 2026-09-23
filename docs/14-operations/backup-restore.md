@@ -197,7 +197,7 @@ tail -1 ops/backup/rehearsals.jsonl          # latest rehearsal verdict
 - `snapshot`: a consistent point-in-time copy capturing the **entire system**:
   - `roles.sql`: All database roles, passwords, and grants (`pg_dumpall --roles-only`).
   - `db_cluster.dump`: Full PostgreSQL database in custom format (`-Fc`) containing `auth` (GoTrue credentials, sessions, refresh tokens), `storage` (buckets and object metadata), `public` (tenants, merchants, products, orders, ledger), and `vault` / `pgsodium` secrets.
-  - `storage.tar.zst`: Physical archive of `/var/lib/storage` (merchant images, theme assets, invoices) compressed with `zstd -T0`.
+  - `storage.tar.zst`: Physical archive of `/var/lib/storage` (merchant images, design assets, invoices) compressed with `zstd -T0`.
   - `configs.tar.zst`: Docker Compose manifests, OpenResty routing, ACME TLS certificates & private keys.
   - `redis.rdb`: Redis memory snapshot (canary state, idempotency keys, rate limit counters).
   - `manifest.json`: Cryptographic SHA-256 manifest of all artifacts, table counts, and environment metadata.

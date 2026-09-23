@@ -38,7 +38,6 @@ import { BEAUTY_HOME_WIDGETS } from "./beauty-home";
 import { CIRCUIT_WIDGETS } from "./electronics";
 import { BASIC_WIDGETS } from "./basics";
 import { BLOG_WIDGETS } from "./blog";
-import { HERITAGE_WIDGETS } from "./heritage";
 import {
   ProductCard,
   ProductCardSkeleton,
@@ -896,8 +895,6 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   ...ACCOUNT_WIDGETS,
   // Phase 2.6 — Atelier (apparel).
   ...APPAREL_WIDGETS,
-  // Phase 9 — Heritage (clothing).
-  ...HERITAGE_WIDGETS,
 
   container: Container,
   columns: Container,

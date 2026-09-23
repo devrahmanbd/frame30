@@ -19,7 +19,7 @@ Scope:
 - An experiment dashboard (running/stopped states, results with confidence intervals) that never claims significance without the pre-registered threshold.
 - Entitlement-gated experiment counts via `check_entitlement(tenant_id, 'experiments', n)` reads from `16-product-pricing`.
 
-It never changes the storefront render path (`04-builder/theme-runtime.md` TR-2): experiments resolve inside the existing widget/presentational slots and fall back to the default variant on any error.
+It never changes the storefront render path: experiments resolve inside the existing widget/presentational slots and fall back to the default variant on any error.
 
 ## 2. Experiment model & lifecycle
 
@@ -52,7 +52,7 @@ experiment {
 
 ## 4. Surfaces & variant content
 
-- **Storefront slots** (with `04-builder`): hero copy/CTA, product-page section order, nav labels, listing grid density. The variant is a `content_ref` to a builder widget/section config — the theme render path is unchanged.
+- **Storefront slots** (with `04-builder`): hero copy/CTA, product-page section order, nav labels, listing grid density. The variant is a `content_ref` to a builder widget/section config — the design render path is unchanged.
 - **Campaign variants** (05 README `campaigns`): subject line, preheader, body block order, CTA button copy. Sent from the campaign pipeline; assignment keyed per recipient with consent on record.
 - **Article headline tests** (content-cms): variant = alternative `title`/`seo` pair on a published article; one variant wins → the winner is written as the canonical title + a 301-safe rename (content-cms §6 slug rules apply).
 - Constraint: variant content must pass the same validation as production content (media must exist, Bangla-first copy, no invented tokens); a variant that fails validation is refused at start (`variant_invalid`), never partially rendered.
@@ -115,5 +115,5 @@ experiment {
 ## 12. Residual v0 gaps
 
 - Multi-armed bandits / auto-traffic-allocation are out of scope (fixed-weight A/B/n only).
-- Storefront theme-level A/B (different themes at once) is out of scope — see `04-builder/theme-runtime.md` preview sandbox instead.
+- Storefront design-level A/B (different designs at once) is out of scope.
 - Statistical details (sequential testing adjustments beyond the fixed plan) deferred; the fixed plan + Wilson CI is the v0 contract.

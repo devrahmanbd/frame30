@@ -20,7 +20,7 @@ No existing engine behavior is removed; this spec adds columns, a conversion bou
 ## 2. Boundary & ownership
 
 - Owned here: money representation, currency scope, presentation-vs-order split, FX sourcing + staleness policy, checkout conversion, rounding + parity, payout isolation, cross-currency refund policy, POS dual display rule, reporting currency, admin permission gates.
-- NOT owned here: the payment machine, order machine, or shipping machine (all parent README-owned); MFS/bank adapter behavior; VAT legal tables (owned `docs/06-payments`); theme display details outside the two surfaces below.
+- NOT owned here: the payment machine, order machine, or shipping machine (all parent README-owned); MFS/bank adapter behavior; VAT legal tables (owned `docs/06-payments`); design display details outside the two surfaces below.
 - The two admin pages described below are spelling/security surfaces; the rest is infra (no new UI beyond them).
 
 ## 3. Scope of currencies

@@ -7,7 +7,7 @@ primitives and the audit spine.
 | ------------ | -------------------------------------------------- | --------------------------- | --------------------------------------------------------- | ---------------------------------------------- |
 | `/root`      | Framique platform owner + platform staff           | cross-tenant                | `RootShell` (dense ops console, command bar, no branding) | `platform_admins` + step-up MFA, IP allow-list |
 | `/admin`     | Platform subscriber (merchant owner + their staff) | single tenant, store-scoped | `AdminShell` (merchant-branded, task-first)               | `merchant_members` + `staff_roles.grants`      |
-| `/dashboard` | The subscriber's **customer** (shopper)            | single tenant, self-scoped  | `CustomerShell` (storefront-themed, calm, mobile-first)   | `customers` ↔ `auth.uid()`, own rows only      |
+| `/dashboard` | The subscriber's **customer** (shopper)            | single tenant, self-scoped  | `CustomerShell` (storefront-designd, calm, mobile-first)   | `customers` ↔ `auth.uid()`, own rows only      |
 
 > Archived reference. The **active roadmap is `/TODO.md`** — polishing the page
 > builder (Elementor-class authoring UX, widget supportiveness, SEO,
@@ -15,8 +15,7 @@ primitives and the audit spine.
 > for console security, shells and tenancy; phases below run only when a
 > console gap resurfaces.
 >
-> Earlier page-builder/theme work: `docs/00-meta/todo-builder-themes.md`
-> (phases 1–8 complete).
+> Earlier page-builder/design work (phases 1–8 complete; plan retired with the design-pack system on 2026-09-23).
 
 Legend: `[ ]` open · `[!]` blocking security/UX gate · `[x]` done.
 Every phase ends with an **Exit gate** — a test that must exist and pass before
@@ -62,7 +61,7 @@ Do this first; every later phase depends on it.
 
 - [x] `src/lib/authz.ts` — pure, isomorphic, declares:
   - `PERMISSIONS` — flat `group.action` union (catalog, inventory, orders,
-    shipping, pos, marketing, themes, analytics, finance, settings, staff,
+    shipping, pos, marketing, designs, analytics, finance, settings, staff,
     audit, customers, fraud, apikeys/webhooks). Superset of the editable
     `PERMISSION_MATRIX`; `grantsToPermissions()` maps `staff_roles.grants`.
   - `ROLE_PRESETS` — `owner`, `admin`, `manager`, `staff`, `support`,
@@ -114,7 +113,7 @@ Do this first; every later phase depends on it.
       store switcher, live-store link, notification bell, setup checklist,
       Bengali/English toggle, mobile drawer nav, and a **grant-filtered** nav
       (a staff member never sees Finance).
-- [ ] `CustomerShell` — inherits the merchant's published theme tokens so the
+- [ ] `CustomerShell` — inherits the merchant's published design tokens so the
       dashboard feels like the store, not like an admin panel. Bottom tab bar on
       mobile (Orders · Track · Wishlist · Profile), max 5 destinations.
 - [ ] Shared primitives only **across `/admin` and `/dashboard`** — `/root` is
@@ -295,7 +294,7 @@ Design principle: this is the **post-purchase product**. Most support tickets
 exist because this page is bad.
 
 - [ ] Route family `/_authenticated/dashboard/*` resolving the store from the
-      session's customer record (or host/domain), themed with that merchant's
+      session's customer record (or host/domain), designd with that merchant's
       published tokens.
 - [ ] Home: active orders with live delivery step, next action ("confirm your
       COD order"), and loyalty/points balance.

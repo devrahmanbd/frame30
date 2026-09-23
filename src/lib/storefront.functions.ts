@@ -24,24 +24,15 @@ export const getStorefront = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { loadStorefront } = await import("./storefront.server");
     const { requestOrigin } = await import("./site-origin.server");
-    let preview: { merchantId: string; themeId: string } | null = null;
-    if (data.previewToken) {
-      try {
-        const { verifyPreviewToken, previewSecret } =
-          await import("./theme-preview.server");
-        preview = verifyPreviewToken(previewSecret(), data.previewToken);
-      } catch {
-        // Unverifiable token: fall through to the published theme below.
-        preview = null;
-      }
-    }
-    const found = await loadStorefront(data.slug, preview);
+    // Themeless: draft preview tokens are gone with the theme system.
+    // The validator keeps `previewToken` for URL compat; it is ignored.
+    const found = await loadStorefront(data.slug, null);
     if (!found) return null;
     // CMS-designated homepage: when the merchant chose a published page as
     // the storefront home, its rendered payload rides along so both index
     // routes (path-based and custom host) can serve it at `/` instead of
-    // the theme index template. Unresolvable designations stay null and the
-    // theme template renders — never a broken `/`.
+    // the default catalogue. Unresolvable designations stay null and the
+    // default catalogue renders — never a broken `/`.
     let homepage: Awaited<
       ReturnType<typeof import("./storefront-search.functions").getStorePageFn>
     > | null = null;
@@ -70,8 +61,8 @@ export const getStorefront = createServerFn({ method: "GET" })
   });
 
 /**
- * Published layout + tokens for a functional storefront page. Lets search,
- * cart and checkout wear the merchant's theme without re-reading the whole
+ * Themeless chrome for a functional storefront page. Lets search,
+ * cart and checkout render default chrome without re-reading the whole
  * catalogue the way the home loader does.
  */
 export const getStoreChrome = createServerFn({ method: "GET" })

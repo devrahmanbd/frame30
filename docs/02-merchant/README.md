@@ -12,7 +12,7 @@ The merchant's day-to-day command surface: onboarding, dashboard, catalog, inven
 
 ## Pages & features
 
-- **Onboarding / store setup wizard**: domain pick, theme pick, payment connect, courier connect, tax (VAT) setup, ship address. Steps persisted; resumable.
+- **Onboarding / store setup wizard**: domain pick, design pick, payment connect, courier connect, tax (VAT) setup, ship address. Steps persisted; resumable.
 - **Dashboard**: today's orders, revenue, low stock, pending shipments, payout next-run, fraud flags.
 - **Products**: CRUD, variants, SKU, price (BDT), inventory, images (Storage+imgproxy), publish status, categories; bulk import/export CSV.
 - **Inventory**: stock per variant, multi-location (shopwarehouse), stock movements, alerts.

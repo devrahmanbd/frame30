@@ -19,7 +19,7 @@ Scope:
 - A category manager with tree-safe deletes (relinked, never orphaned).
 - Entitlement-gated quantities via `check_entitlement(tenant_id, 'articles', n)` reads from `16-product-pricing`.
 
-It never changes the storefront render path (`04-builder/theme-runtime.md` TR-2): menus and articles render through the existing nav widget and the article template.
+It never changes the storefront render path: menus and articles render through the existing nav widget and the article template.
 
 ## 2. Content model & state machine
 
@@ -60,7 +60,7 @@ article {
 
 ## 5. Menus (nav + mega-nav)
 
-- Menu = ordered list of nodes: `{ node_id, label (bn/en), type: page|product|collection|article|url, target, children[] }`, stored per tenant (`nav_config`) — this target is the render source for the storefront **nav slot** (`03-storefront/README.md` populated; fallback to default theme nav when empty).
+- Menu = ordered list of nodes: `{ node_id, label (bn/en), type: page|product|collection|article|url, target, children[] }`, stored per tenant (`nav_config`) — this target is the render source for the storefront **nav slot** (`03-storefront/README.md` populated; fallback to default design nav when empty).
 - The mega-nav extension: node type `mega` = a section with up to 4 columns (category trees or recent articles); a column renders as a static heading + links.
 - Editor surface (`admin/marketing/menus`): tree rows with drag-to-sort, add-child button, per-node static type menu; depth + children-count column; 44px hit targets for tree rows when writing to the nav slot.
 - Guard: render-time fallback loop kills a nav cycle (node linking to itself) at publish; `nav.cycle_detected` event + blocked save with the cycle path.

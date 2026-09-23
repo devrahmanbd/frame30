@@ -83,8 +83,6 @@ function CartPage() {
       template="cart"
       storeSlug={slug}
       merchantId={merchant.id}
-      ast={data.ast}
-      tokens={data.tokens}
       siteKit={data.siteKit}
       installedPlugins={data.installedPlugins}
       chrome={
@@ -92,13 +90,6 @@ function CartPage() {
           <StoreHeader slug={slug} name={merchant.name} menus={data.menus} />
         </>
       }
-      contextSlots={{
-        cart_lines: null,
-        cart_summary: null,
-        cart_drawer: null,
-        checkout_steps: null,
-        payment_methods: null,
-      }}
       fallback={
         <section className="rounded-fq-lg border border-border bg-card p-8 text-center">
           <h1 className="font-bangla-display text-2xl font-bold">

@@ -1,23 +1,16 @@
 /**
- * Phase 3.1 — the single storefront theme surface.
+ * Themeless default surface (theme purge Task 3).
  *
- * Everything theme-level lands here: token CSS variables, the designed dark
- * set (engaged only when the merchant authored one and the visitor's OS asks
- * for dark), the motion budget, and the locale/digit defaults every money
- * string reads. Widgets stay theme-agnostic — they only see semantic tokens.
+ * Ruling 2026-09-23: themeless fallback = builder content + default chrome,
+ * zero theme tokens. Token CSS variables, dark sets and motion budgets are
+ * gone — this is a plain locale scope around the default chrome so every
+ * storefront renders complete content without any theme.
+ *
+ * `tokens` is kept as an ignored optional for cross-track compat
+ * (ThemePreviewFrame still passes it) — it never reaches markup.
  */
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
-import {
-  DEFAULT_TOKENS,
-  tokensToCss,
-  type ThemeTokens,
-} from "@/lib/builder-ast";
+import { createContext, useContext, type ReactNode } from "react";
+import type { ThemeTokens } from "@/lib/builder-ast";
 import { formatDisplayMoney } from "@/lib/money-display";
 
 export type ThemeLocaleValue = {
@@ -27,9 +20,9 @@ export type ThemeLocaleValue = {
 };
 
 const ThemeLocaleContext = createContext<ThemeLocaleValue>({
-  digits: DEFAULT_TOKENS.digits,
-  locale: DEFAULT_TOKENS.locale,
-  currencyDisplay: DEFAULT_TOKENS.currencyDisplay,
+  digits: "latin",
+  locale: "en",
+  currencyDisplay: "symbol",
 });
 
 export function useThemeLocale(): ThemeLocaleValue {
@@ -57,43 +50,26 @@ export function useThemeMoney() {
 }
 
 /** True when the visitor's OS asks for dark. Client-only, so SSR stays light. */
-function usePrefersDark(enabled: boolean): boolean {
-  const [dark, setDark] = useState(false);
-  useEffect(() => {
-    if (!enabled || typeof window === "undefined" || !window.matchMedia) return;
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    setDark(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => setDark(e.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, [enabled]);
-  return dark;
+function usePrefersDark(_enabled: boolean): boolean {
+  return false;
 }
 
 type Props = {
-  tokens: ThemeTokens | null;
+  /** Deprecated: ignored — zero tokens after the theme purge. */
+  tokens?: ThemeTokens | null;
   className?: string;
   children: ReactNode;
 };
 
-export function ThemeSurface({ tokens, className, children }: Props) {
-  const dark = usePrefersDark(Boolean(tokens?.dark));
-  const style = tokens
-    ? (tokensToCss(tokens) as React.CSSProperties)
-    : undefined;
+export function ThemeSurface({ className, children }: Props) {
   const value: ThemeLocaleValue = {
-    digits: tokens?.digits ?? DEFAULT_TOKENS.digits,
-    locale: tokens?.locale ?? DEFAULT_TOKENS.locale,
-    currencyDisplay: tokens?.currencyDisplay ?? DEFAULT_TOKENS.currencyDisplay,
+    digits: "latin",
+    locale: "en",
+    currencyDisplay: "symbol",
   };
   return (
     <ThemeLocaleContext.Provider value={value}>
-      <div
-        className={className ?? "fq-theme-scope min-h-screen bg-background"}
-        style={style}
-        data-motion={tokens?.motion ?? DEFAULT_TOKENS.motion}
-        {...(tokens?.dark && dark ? { "data-theme": "dark" } : {})}
-      >
+      <div className={className ?? "fq-theme-scope min-h-screen bg-background"}>
         {children}
       </div>
     </ThemeLocaleContext.Provider>

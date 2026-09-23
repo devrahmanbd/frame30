@@ -4,13 +4,10 @@
 
 ## 🔴 TOP PRIORITY — WordPress-Parity CMS Program (Sept 2026)
 
-Framique must feel like WordPress to a merchant: same user experience, same user journey, same theme/plugin/page-builder management, same sidebar system. Reference: WP admin (`/wp-admin/`) — Appearance › Themes (grid, Activate, Live Preview, Delete, Add New), Plugins › Installed Plugins (Activate, Deactivate, Delete, Add New), Pages/Posts lists, Settings, collapsible sidebar sections.
+Framique must feel like WordPress to a merchant: same user experience, same user journey, same plugin/page-builder management, same sidebar system. Reference: WP admin (`/wp-admin/`) — Plugins › Installed Plugins (Activate, Deactivate, Delete, Add New), Pages/Posts lists, Settings, collapsible sidebar sections.
 
-**P0 — Marketplace theme lifecycle (the current gap):**
-
-- Marketplace Install MUST create a **new inactive** `store_themes` row — never mutate the active theme's draft. Record the `marketplace_installs` ledger row.
-- Every installed theme card needs **Activate** (switch `is_active`, keep published version coherent), **Live Preview**, and **Delete** (blocked while active; cascade versions/drafts; ledger row to terminal status).
-- "Installed" badge logic must follow the active/installed state, not just ledger presence.
+**P0 — Marketplace design lifecycle: RETIRED 2026-09-23.**
+The design-pack system was fully purged — do NOT build, restore, or reference design lifecycle UI, routes, tables, or RPCs. Marketplace handles plugins/widgets only. Stores render builder content with default chrome.
 
 **P0 — Plugin lifecycle:**
 
@@ -28,23 +25,22 @@ Framique must feel like WordPress to a merchant: same user experience, same user
 
 ## What Framique Is
 
-Framique is a **full-stack cloud hosting service provider** — we do everything: CMS, visual storefront builder, zero-fee commerce engine, payments, courier dispatch, themes, analytics, AI support, and infrastructure. Merchants get a complete storefront at `store.framique.com/<slug>` plus optional custom domains. We handle hosting, databases, auth, CDN, observability, backups, and deployments end-to-end. No third-party app bloat, no per-transaction fees, no vendor lock-in.
+Framique is a **full-stack cloud hosting service provider** — we do everything: CMS, visual storefront builder, zero-fee commerce engine, payments, courier dispatch, analytics, AI support, and infrastructure. Merchants get a complete storefront at `store.framique.com/<slug>` plus optional custom domains. We handle hosting, databases, auth, CDN, observability, backups, and deployments end-to-end. No third-party app bloat, no per-transaction fees, no vendor lock-in.
 
 ## WordPress-Grade CMS Architecture & UX (Priority #1)
 
 Framique must deliver the exact user experience, user journey, and management systems of a full-scale CMS (modeled after WordPress):
 
-1. **Appearance › Themes Management**:
-   - **Active Theme**: The current storefront theme must be prominently featured with a "Customize" button (opening the page builder/customizer), version, and author details.
-   - **Installed Themes Grid**: Every installed theme must have an instant **Activate** action (swapping the live storefront theme), **Live Preview**, and **Delete** (uninstalling inactive themes).
-   - **Theme Directory / Marketplace ("Add New Theme")**: Integrated directory where merchants can browse, filter, search, and 1-click install themes, with the install button immediately changing to **Activate**.
+1. **Appearance (no design packs — retired 2026-09-23)**:
+   - Stores render builder content with default chrome; there is no Active Design showcase, no installed-designs grid, and no design directory/marketplace.
+   - Appearance covers **Customize** (page builder) and **Menus** only.
 2. **Plugins Management**:
    - **Installed Plugins**: Tabular list view showing active and inactive plugins with toggles: **Activate**, **Deactivate**, **Settings**, and **Delete**.
    - **Plugin Catalog / Marketplace ("Add New Plugin")**: Searchable extension store with 1-click install and instant activation.
 3. **Visual Page Builder & Templates**:
    - Visual drag-and-drop page builder seamlessly integrated into Appearance › Customize and Pages table ("Edit with Page Builder").
 4. **Hierarchical CMS Sidebar Navigation**:
-   - CMS-first sidebar hierarchy: Dashboard, Content (Pages, Posts, Media), Appearance (Themes, Customize, Menus), Plugins (Installed Plugins, Add New), Store (Orders, Products, Customers), Settings.
+   - CMS-first sidebar hierarchy: Dashboard, Content (Pages, Posts, Media), Appearance (Customize, Menus), Plugins (Installed Plugins, Add New), Store (Orders, Products, Customers), Settings.
    - Submenus must support expandable accordion toggles and collapsed hover flyouts matching WordPress admin navigation.
 
 ## Stack

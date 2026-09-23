@@ -11,12 +11,11 @@ describe("Phase 6.3 — Redis Cache Pre-Warming Engine", () => {
     vi.restoreAllMocks();
   });
 
-  it("warms theme presets and blueprints without errors", async () => {
+  it("skips removed theme presets and blueprints", async () => {
     const result = await warmThemePresets();
-    expect(result.layer).toBe("Theme Presets & Blueprints");
-    expect(result.durationMs).toBeGreaterThanOrEqual(0);
-    expect(["ok", "skipped"]).toContain(result.status);
-    expect(result.keysWarmed).toBeGreaterThanOrEqual(0);
+    expect(result.layer).toBe("Theme Presets & Blueprints (removed)");
+    expect(result.status).toBe("skipped");
+    expect(result.keysWarmed).toBe(0);
   });
 
   it("warms standard FX currency exchange rates", async () => {

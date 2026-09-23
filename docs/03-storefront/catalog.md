@@ -1,9 +1,9 @@
 # Storefront Catalog — depth spec (S2)
 
 Status: Planning · Slice S2 (core store) · Reference: `plan.md` §3.3, `docs/03-storefront/README.md`
-Design baseline: `00-meta/design-system.md` (semantic+component layers only; themes override)
+Design baseline: `00-meta/design-system.md` (semantic+component layers only; designs override)
 Scope: public catalog arm — homepage, collections, product detail, search/facets, related products.
-Out of scope (own specs): cart/checkout → `07-commerce` + `06-payments` (S3); customer accounts → S3; theme runtime/manifest → `04-builder` (S1 skeleton + S7).
+Out of scope (own specs): cart/checkout → `07-commerce` + `06-payments` (S3); customer accounts → S3; storefront runtime → `04-builder` (S1 skeleton + S7).
 
 ---
 
@@ -11,7 +11,7 @@ Out of scope (own specs): cart/checkout → `07-commerce` + `06-payments` (S3); 
 
 The catalog arm is the read-only public surface of the storefront: it serves
 **published** products, variants, collections, and search to anonymous visitors
-at `<merchant>.store.framique.com`, renderable by any theme runtime. Speed,
+at `<merchant>.store.framique.com`, renderable by the storefront runtime. Speed,
 honesty (BDT + VAT explicit), and correctness of stock/availability are the
 non-negotiables; every rule below exists to keep that surface secure and fast
 without ever trusting the client or leaking unpublished data.
@@ -42,7 +42,7 @@ without ever trusting the client or leaking unpublished data.
   threshold. Out-of-stock → hide add-to-cart + "Out of stock" label; low-stock badge
   only when merchant enables it (no dark patterns — badge is informational).
 - **DD-6 — Variant switching on PDP is server-rendered data.** PDP returns all
-  variants with price/stock; theme switches client-side with zero extra network
+  variants with price/stock; display switches client-side with zero extra network
   calls. Prices in BDT (integer), tabular numerals; VAT note visible at
   checkout per `07-commerce`, not on PDP.
 - **DD-7 — Related products v1 = same collection, merchant-order, limit N.**
@@ -52,7 +52,7 @@ without ever trusting the client or leaking unpublished data.
   be ≤60s stale by design — acceptable; never cache >60s without merchant opt-in.
 - **DD-9 — URLs are slug-based and stable.** `/{product-slug}` and
   `/{collection-slug}`; slugs unique per merchant. Canonical + OG meta are the
-  theme's job (SEO tooling lands S6) but slugs are the contract — never expose
+  design's job (SEO tooling lands S6) but slugs are the contract — never expose
   numeric IDs in public URLs.
 - **DD-10 — Events are fire-and-forget.** `page.viewed`, `product.viewed`,
   `catalog.search` emitted to the analytics pipeline (S8) with zero blocking of
@@ -86,15 +86,15 @@ settings, S1) — otherwise catalog RPCs return 404 for the slug.
 | `search_products(p_merchant_slug, p_query, p_collection_slug, p_price_min, p_price_max, p_tags, p_in_stock, p_cursor, p_page_size)` | filters      | product cards + facet counts + `next_cursor`                       |
 | `get_homepage(p_merchant_slug)`                                                                                                     | slug         | featured collections + featured products (merchant-picked order)   |
 
-All: `volatile`, max page_size 48, response shape fixed (theme-agnostic JSON;
-themes map to their own templates). Errors: `not_found` (bad slug / storefront
+All: `volatile`, max page_size 48, response shape fixed (design-agnostic JSON;
+designs map to their own templates). Errors: `not_found` (bad slug / storefront
 disabled), `invalid_cursor`, `invalid_filter` — literal, testable codes.
 
 ## 5. Failure/recovery
 
-- Edge down → cached HTML serves (README); catalog RPCs never crash the theme —
-  theme falls back to cached page or maintenance template.
-- RPC timeout → 503 + retry-after; theme shows retry state, never partial data.
+- Edge down → cached HTML serves (README); catalog RPCs never crash the design —
+  design falls back to cached page or maintenance template.
+- RPC timeout → 503 + retry-after; design shows retry state, never partial data.
 - Invalid slug → 404 + "Store not found" fallback page.
 - Search unavailability (trigram/translit error) → degrade to plain ILIKE
   prefix match, never blank results.
@@ -118,14 +118,14 @@ disabled), `invalid_cursor`, `invalid_filter` — literal, testable codes.
 
 ---
 
-### Design guidelines — catalog pages (all themes)
+### Design guidelines — catalog pages (all designs)
 
 - Intent: editorial, product-forward, airy — a well-stocked BD boutique, not a template dump; speed is the aesthetic (mobile-first, mid-range Android).
 - Key surfaces: hero, product grid card, PDP (image-first, sticky buy box), search/facets, collection page, cart stub bar.
-- Palette: theme maps merchant brand → semantic; BD teal default; sale = Rickshaw Red badge; contrast auto-checked live (badge warns when brand fails).
+- Palette: design maps merchant brand → semantic; BD teal default; sale = Rickshaw Red badge; contrast auto-checked live (badge warns when brand fails).
 - Typography: "Noto Sans Bengali" display on ≥1 surface; tabular numerals for BDT; fluid `clamp()` scale; line-height ≥1.6 (Bangla conjuncts).
 - Density: storefront-airy — 24/32/48px sections; cards radius xl/2xl; touch targets ≥44px; sticky mobile cart bar; bottom-sheet filters on mobile.
 - Motion: hero/product hover lift 200ms (transform only); page transition 240ms fade+rise; reduced-motion → opacity-only.
 - A11y: skip-link, keyboard carousel, `lang="bn"`, alt text, focus-visible rings, contrast 4.5:1, ARIA live for cart updates.
-- Performance: LCP < 2.5s mid-Android (hero ≤250KB preloaded), JS ≤100KB gz theme budget, no render-blocking third-party, aspect-ratio boxes → CLS < 0.1.
+- Performance: LCP < 2.5s mid-Android (hero ≤250KB preloaded), JS ≤100KB gz design budget, no render-blocking third-party, aspect-ratio boxes → CLS < 0.1.
 - Anti-slop: price always in BDT with VAT line at checkout; COD/MFS/BNPL badges first-class; Bangla display numerals on hero stats; stock labels in Bangla, never color-only.

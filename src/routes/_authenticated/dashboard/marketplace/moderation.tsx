@@ -8,6 +8,6 @@ export const Route = createFileRoute(
   "/_authenticated/dashboard/marketplace/moderation",
 )({
   beforeLoad: () => {
-    throw redirect({ to: "/dashboard/marketplace", search: { tab: "theme" } });
+    throw redirect({ to: "/dashboard/marketplace", search: { tab: "plugin" } });
   },
 });

@@ -175,8 +175,8 @@ export function ElementsPanel(props: ElementsPanelProps) {
           >
             {props.globals.length === 0 ? (
               <p className="text-xs text-muted-foreground">
-                No shared blocks on this theme yet — save one from the theme
-                studio to reuse it here. Inserts land as editable copies.
+                No shared blocks on this storefront yet — save one from the
+                builder studio to reuse it here. Inserts land as editable copies.
               </p>
             ) : (
               props.globals.map((block) => (

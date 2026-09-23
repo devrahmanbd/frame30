@@ -20,7 +20,7 @@ secondary_keywords:
 Over the past five years, the e-commerce industry was caught in a brutal ideological war between two competing paradigms:
 
 1. **The Headless Purists**: Advocated decoupling everything. Spin up Shopify Plus or Medusa as a headless backend, orchestrate Strapi or Sanity for content, build a custom Next.js frontend on Vercel, and deploy Algolia for search.
-2. **The Visual Builder Loyalists**: Demanded that marketing teams have total drag-and-drop autonomy without writing code, flocking to Webflow, Framer, and traditional Shopify theme editors.
+2. **The Visual Builder Loyalists**: Demanded that marketing teams have total drag-and-drop autonomy without writing code, flocking to Webflow, Framer, and traditional Shopify design editors.
 
 Both approaches promised salvation. Both delivered unexpected crises.
 
@@ -85,7 +85,7 @@ Framique was architected to dissolve the false dichotomy between code and visual
 │   ┌───────────────────────────┐         ┌───────────────────────────┐   │
 │   │    VISUAL STUDIO CANVAS   │         │    CODE EDITOR & GITHUB   │   │
 │   │   • Bento Grid Builder    │         │   • TanStack Router       │   │
-│   │   • OKLCH Theme Controls  │◄───────►│   • Custom React SDK      │   │
+│   │   • OKLCH Design Controls  │◄───────►│   • Custom React SDK      │   │
 │   │   • Real-Time Typography  │ Bi-Dir  │   • Tailwind CSS Engine   │   │
 │   │   • Zero-Code Live Edits  │ Sync    │   • Nitro Edge Handlers   │   │
 │   └─────────────┬─────────────┘         └─────────────┬─────────────┘   │

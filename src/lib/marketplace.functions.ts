@@ -51,6 +51,8 @@ export const marketInstallFn = createServerFn({ method: "POST" })
     const builtinSlug = data.listingId.startsWith(BUILTIN_PREFIX)
       ? data.listingId.slice(BUILTIN_PREFIX.length)
       : null;
+    // Theme installs retired (Sept 2026 purge): the marketplace is plugins only.
+    if (data.kind === "theme") throw new Error("market_theme_removed");
     if (builtinSlug) {
       if (data.trial) throw new Error("market_trial_not_allowed");
       // Re-clicks and retries replay the original install instead of
@@ -70,33 +72,11 @@ export const marketInstallFn = createServerFn({ method: "POST" })
           replayed: true,
           impacted: [] as string[],
           appVersion: APP_VERSION,
-          themeApplied: data.kind === "theme" ? true : null,
+          themeApplied: null,
           themeNoticeKey: null,
         };
       }
     }
-    if (data.kind === "theme" && builtinSlug) {
-      // WordPress semantics: a marketplace install adds a NEW INACTIVE
-      // theme. Activation is a separate, explicit step.
-      const { installBuiltinTheme } =
-        await import("./marketplace-install.server");
-      const installed = await installBuiltinTheme(
-        context.supabase,
-        merchantId,
-        builtinSlug,
-        data.idempotencyKey,
-      );
-
-      return {
-        installId: installed.installId,
-        replayed: false,
-        impacted: [] as string[],
-        appVersion: APP_VERSION,
-        themeApplied: false,
-        themeNoticeKey: null,
-      };
-    }
-
     if (data.kind === "widget" && builtinSlug) {
       const pluginId = builtinSlug;
       const { getBuiltinPlugin } = await import("./builtin-plugins");
@@ -194,58 +174,6 @@ export const marketBulkInstallsFn = createServerFn({ method: "POST" })
       context.userId,
       data.installIds,
       data.action,
-    );
-  });
-
-/**
- * Mint a short-lived signed preview URL for an installed theme. The token
- * binds (merchant, theme, expiry); the storefront honors it without any
- * session, and everyone else sees the published theme.
- */
-export const marketPreviewTokenFn = createServerFn({ method: "POST" })
-  .middleware([requirePermission("themes.read")])
-  .inputValidator((d: unknown) =>
-    z.object({ themeId: z.string().uuid() }).parse(d),
-  )
-  .handler(async ({ data, context }) => {
-    const merchantId = await scope(context.supabase, context.userId);
-    const { data: theme } = await context.supabase
-      .from("store_themes")
-      .select("id, merchant_id")
-      .eq("id", data.themeId)
-      .eq("merchant_id", merchantId)
-      .maybeSingle();
-    if (!theme) throw new Error("market_theme_not_linked");
-    const { data: merchant } = await context.supabase
-      .from("merchants")
-      .select("slug")
-      .eq("id", merchantId)
-      .maybeSingle();
-    if (!merchant?.slug) throw new Error("market_store_missing");
-    const { issuePreviewToken, previewSecret, PREVIEW_TTL_MS } =
-      await import("./theme-preview.server");
-    const token = issuePreviewToken(previewSecret(), merchantId, data.themeId);
-    return {
-      url: `/store/${merchant.slug}?preview_token=${encodeURIComponent(token)}`,
-      expiresAt: new Date(Date.now() + PREVIEW_TTL_MS).toISOString(),
-    };
-  });
-
-/** WordPress-style uninstall: removes an inactive installed theme. */
-export const marketUninstallThemeFn = createServerFn({ method: "POST" })
-  .middleware([requirePermission("themes.update")])
-  .inputValidator((d: unknown) =>
-    z.object({ installId: z.string().uuid() }).parse(d),
-  )
-  .handler(async ({ data, context }) => {
-    const { uninstallBuiltinTheme } =
-      await import("./marketplace-install.server");
-    const merchantId = await scope(context.supabase, context.userId);
-    return uninstallBuiltinTheme(
-      context.supabase,
-      merchantId,
-      data.installId,
-      context.userId,
     );
   });
 

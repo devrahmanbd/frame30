@@ -32,8 +32,8 @@ export function SupportedViewportGate({ children }: { children: ReactNode }) {
           {state === "checking"
             ? t("Checking your workspace", "আপনার ওয়ার্কস্পেস পরীক্ষা হচ্ছে")
             : t(
-                "Theme studio needs a desktop",
-                "থিম স্টুডিওর জন্য ডেস্কটপ প্রয়োজন",
+                "Builder studio needs a desktop",
+                "বিল্ডার স্টুডিওর জন্য ডেস্কটপ প্রয়োজন",
               )}
         </h1>
         <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted-foreground">

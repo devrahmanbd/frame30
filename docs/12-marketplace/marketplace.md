@@ -1,16 +1,16 @@
 # Marketplace — registry, listing lifecycle, reviewer persona, install
 
 Status: Planning (depth spec for `docs/12-marketplace`) · Slice S7+ (skeleton S1)
-Reference: `/plan.md` §3.8, `docs/04-builder/theme-runtime.md` (TR-1/TR-2), `docs/04-builder/theme-registry.md` (Tenant006), `docs/02-merchant/staff-rbac.md` + `staff-approval.md` (four-eyes, out-of-scope), `docs/16-product-pricing` (entitlement gate), `docs/06-payments` (payout ledger, 70/30), `docs/15-e2e/theme_registry.md` + `README.md` (acceptance contract)
+Reference: `/plan.md` §3.8, `docs/02-merchant/staff-rbac.md` + `staff-approval.md` (four-eyes, out-of-scope), `docs/16-product-pricing` (entitlement gate), `docs/06-payments` (payout ledger, 70/30), `docs/15-e2e/README.md` (acceptance contract)
 Design baseline: `docs/00-meta/design-system.md`
 
 ---
 
 ## 1. Purpose
 
-The marketplace is where merchant-made themes and plugins cross tenant boundaries to be sold or shared to other merchants' storefronts. It is the only cross-tenant surface on the platform, so it is built around three hard properties: **every install is a pin to a version**, **review is a separate platform-operator persona, never merchant staff**, and **a marketplace outage never touches a running storefront** (channel-level amnesia).
+The marketplace is where merchant-made plugins and widgets cross tenant boundaries to be sold or shared to other merchants' storefronts. It is the only cross-tenant surface on the platform, so it is built around three hard properties: **every install is a pin to a version**, **review is a separate platform-operator persona, never merchant staff**, and **a marketplace outage never touches a running storefront** (channel-level amnesia). (Design packs were retired 2026-09-23 and are out of scope here.)
 
-This file owns the marketplace-wide skeleton: the listing registry, the listing lifecycle, the reviewer persona, per-merchant availability via entitlements, and the install/rollback semantics shared by themes and plugins. Theme-specific install flow is `themes.md`; plugin install/uninstall and the plugin runtime are `plugins.md`.
+This file owns the marketplace-wide skeleton: the listing registry, the listing lifecycle, the reviewer persona, per-merchant availability via entitlements, and the install/rollback semantics shared by plugins and widgets. Plugin install/uninstall and the plugin runtime are `plugins.md`.
 
 ## 2. Scope
 
@@ -25,7 +25,7 @@ This file owns the marketplace-wide skeleton: the listing registry, the listing 
 
 **Out of scope**
 
-- Theme source vault, preview store, publish → rollback stack → `themes.md`.
+- Plugin source, preview, publish → rollback stack → `plugins.md`.
 - Plugin manifest, worker sidecar runtime, event subscription surface → `plugins.md`.
 - Widget catalog validity (status `verified`/`draft`/`blocked`) → `docs/04-builder/app-blocks.md`.
 - OAuth scope design (referenced, not duplicated) → `docs/13-export-sdk/oauth.md` (not yet approved).
@@ -37,7 +37,7 @@ This file owns the marketplace-wide skeleton: the listing registry, the listing 
 
 - A listing is never approved by a marketplace-operator who authored, holds a stake in, or is affiliated with the listing's selling tenant. Self-approval is a hard server-side error, mirroring `staff-approval.md`.
 - Operator review decisions append to the listing's append-only audit chain (`marketplace.listing_reviews`), never mutate history.
-- The reviewer persona is a fixed platform role (`platform.marketplace_operator`) created via the RBAC backfill pattern used in `theme-registry.md` — it is not a merchant `staff_members` row and never appears inside any tenant's RLS scope.
+- The reviewer persona is a fixed platform role (`platform.marketplace_operator`) created via the RBAC backfill pattern — it is not a merchant `staff_members` row and never appears inside any tenant's RLS scope.
 
 ## 4. Data model (cross-tenant, Supabase)
 
@@ -45,8 +45,8 @@ This file owns the marketplace-wide skeleton: the listing registry, the listing 
 marketplace.listings (
   id uuid PK,
   seller_merchant_id uuid NOT NULL,          -- selling tenant; drives RLS + payout
-  listing_type listing_type NOT NULL,        -- theme | plugin
-  package_id uuid NOT NULL,                  -- FK to themes.theme_versions / plugins.plugin_versions
+  listing_type listing_type NOT NULL,        -- plugin | widget
+  package_id uuid NOT NULL,                  -- FK to plugins.plugin_versions / widgets.widget_versions
   name text NOT NULL,                        -- English key; Bengali display name in name_bn
   name_bn text,
   slug text NOT NULL UNIQUE,
@@ -76,7 +76,7 @@ marketplace.installs (
   merchant_id uuid NOT NULL,                 -- installing tenant (RLS-scoped)
   listing_id uuid NOT NULL REFERENCES marketplace.listings(id),
   package_id uuid NOT NULL,                  -- pinned to the exact reviewed version
-  version_pin text NOT NULL,                 -- semver pin (TR-1: installs are pins)
+  version_pin text NOT NULL,                 -- semver pin (installs are pins)
   state install_state NOT NULL DEFAULT 'installing',  -- installing|active|failed|uninstalling|removed
   installed_by uuid REFERENCES staff_members(id),
   created_at timestamptz, updated_at timestamptz
@@ -112,12 +112,12 @@ draft → in-review → listed → deprecated/removed
 
 Listing lifecycle lives on `marketplace.listings.status` with the audit chain on `listing_reviews`. All transitions are idempotent; a rejected `in-review` returns to `draft` for edit → resubmit (loop arrow above).
 
-## 6. Install contract (shared by themes.md / plugins.md)
+## 6. Install contract (shared by plugins.md / app-blocks.md)
 
 - **Installs are pins.** An install always records `(listing_id, package_id, version_pin)`. There is no "install latest" — a storefront upgrade is a deliberate new pin.
-- **Breaking changes.** A package bump marked `is_breaking` (per `theme-runtime.md` TR-1 semver policy) shows a consent screen listing what breaks before the pin moves. Breaking changes are decided server-side from the reviewed package manifest, never from a client flag.
-- **Rollback to last good.** On a failed install, the storefront reverts to the previously applied pin and emits `install.rollback` — this is the same rollback-to-version-stack behavior `themes.md` defines in full and `docs/15-e2e` asserts ("store change rollback on failed install").
-- **Channel-level amnesia.** Marketplace-down (or a failed review infra) never touches a running storefront: reads for install RPCs are unavailable, but the storefront runtime keeps serving the already-pinned theme at the 60s edge cache per `docs/03-storefront`. Matches `docs/15-e2e` market-loop contract: "marketplace-down → installs unavailable while existing storefronts keep running."
+- **Breaking changes.** A package bump marked `is_breaking` shows a consent screen listing what breaks before the pin moves. Breaking changes are decided server-side from the reviewed package manifest, never from a client flag.
+- **Rollback to last good.** On a failed install, the storefront reverts to the previously applied pin and emits `install.rollback` — this is the same rollback-to-version-stack behavior `docs/15-e2e` asserts ("store change rollback on failed install").
+- **Channel-level amnesia.** Marketplace-down (or a failed review infra) never touches a running storefront: reads for install RPCs are unavailable, but the storefront runtime keeps serving the already-published pages at the 60s edge cache per `docs/03-storefront`. Matches `docs/15-e2e` market-loop contract: "marketplace-down → installs unavailable while existing storefronts keep running."
 
 ## 7. Availability & entitlements
 
@@ -144,11 +144,11 @@ Feature-flag surface: listing review is feature-flagged (`marketplace.review`), 
 
 ## 10. Testing gates → loops (per `docs/15-e2e` standard)
 
-- `e2e_marketplace_loop` — named here; register in `docs/15-e2e` before claiming the gate (same discipline as `e2e_promo_loop` in `docs/16-product-pricing` §13). Acceptance contract per `docs/15-e2e/README.md` market loop: publish theme → install → run on your domain storefront; store change rollback on failed install; 70/30 math equals the 06 ledger; marketplace-down → installs unavailable while existing storefronts keep running.
-- `store_loop` — storefront keeps rendering a pinned theme with marketplace down (amnesia arm) and after a failed install rollback.
+- `e2e_marketplace_loop` — named here; register in `docs/15-e2e` before claiming the gate (same discipline as `e2e_promo_loop` in `docs/16-product-pricing` §13). Acceptance contract per `docs/15-e2e/README.md` market loop: publish package → install → run on your domain storefront; store change rollback on failed install; 70/30 math equals the 06 ledger; marketplace-down → installs unavailable while existing storefronts keep running.
+- `store_loop` — storefront keeps rendering published pages with marketplace down (amnesia arm) and after a failed install rollback.
 - `admin_loop` — Side B sale gate: unverified KYC → listing submit blocked; Enterprise + KYC-verified → listing listed.
 - `api_marketplace_review` — unit: self-approval hard error, verdict round increments, rejected → `draft` → resubmit re-enters `in-review`.
-- These are **acceptance contracts, not green/harness claims**: per `docs/15-e2e/theme_registry.md`, the Playwright harness is deferred until the S1 app scaffold + storefront renderer exist (no package.json / dev server / Supabase local / edge / renderer yet).
+- These are **acceptance contracts, not green/harness claims**: the Playwright harness is deferred until the S1 app scaffold + storefront renderer exist (no package.json / dev server / Supabase local / edge / renderer yet).
 
 ## 11. Design guidelines — marketplace grid, listing form, install consent
 

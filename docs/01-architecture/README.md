@@ -14,14 +14,14 @@ Define the system topology: services, tenancy boundary, data flow, edge, securit
 
 - Each **merchant** is a tenant. Tenant data lives in shared tables scoped by a `merchant_id` column on every row; **RLS enforces** the scope via JWT claim `merchant_id` (not per-tenant Postgres schemas). See `AGENTS.md` (merchant_id scoping) and `docs/02-merchant/staff-rbac.md` (§6 `app.staff_has`).
 - Tenant subdomain: `<merchant>.store.framique.com`. Edge (OpenResty) terminates TLS with lua-resty-acme and proxies to the serving layer.
-- Public assets (themes, images) served by Supabase Storage + imgproxy; storefront HTML is rendered by theme runtime (see 03).
+- Public assets (pages, images) served by Supabase Storage + imgproxy; storefront HTML is rendered by the storefront runtime (see 03).
 
 ## 2. Services
 
 | Service                             | Runtime                          | Responsibilities                                                                                                      |
 | ----------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | Admin web app (TanStack SPA)        | Edge + CDN                       | Admin UI, builder, settings. Calls PostgREST + Go gateway.                                                            |
-| Storefront runtime (theme renderer) | OpenResty/Node edge              | Serves themed store pages headless from AST + data API.                                                               |
+| Storefront runtime (design renderer) | OpenResty/Node edge              | Serves designd store pages headless from AST + data API.                                                               |
 | Go payments gateway                 | Go                               | Aggregator: MFS (bKash/Nagad/Rocket), bank, COD preauth; idempotent charge/refund/payout; webhook intake (mock live). |
 | Go rate limiter                     | Go/Redis                         | Per-key limit (signed requests, auth tokens, checkout).                                                               |
 | Redis (BullMQ workers)              | queue                            | Emails, shipping events, refunds, export jobs, analytics aggregation.                                                 |
@@ -30,7 +30,7 @@ Define the system topology: services, tenancy boundary, data flow, edge, securit
 
 ## 3. Data flow (primary happy path)
 
-1. Customer hits `store.framique.com` → edge TLS → theme runtime → hydration → catalog (PostgREST) → checkout (cart service) → payments gateway (Go) → MFS mock/live → webhook → order state machine → courier event → shipping status.
+1. Customer hits `store.framique.com` → edge TLS → storefront runtime → hydration → catalog (PostgREST) → checkout (cart service) → payments gateway (Go) → MFS mock/live → webhook → order state machine → courier event → shipping status.
 2. Merchant admin via TanStack SPA → PostgREST → rows with RLS; writes enqueue BullMQ jobs; observability emits metrics.
 
 ## 4. Security posture
@@ -70,7 +70,7 @@ Define the system topology: services, tenancy boundary, data flow, edge, securit
 
 ### 1. Money & orders
 
-- Money never flows through the edge or stores in the theme runtime: charge/refund/payout live only in the Go payments gateway (see 06).
+- Money never flows through the edge or stores in the storefront runtime: charge/refund/payout live only in the Go payments gateway (see 06).
 - Order state changes are owned by the order state machine (see 03/07 for the transition list), not the data flow above.
 
 ### 2. Data & tenancy

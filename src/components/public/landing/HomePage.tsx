@@ -27,7 +27,7 @@ import { AnimatedIcon } from "@/components/public/AnimatedIcon";
 import { EcosystemSlide } from "@/components/public/landing/EcosystemSlide";
 import { TestimonialList } from "@/components/public/landing/TestimonialList";
 import { MarketingFigure } from "@/components/public/MarketingFigure";
-import themesImg from "@/assets/marketing/themes.jpg";
+import showcaseImg from "@/assets/marketing/showcase.jpg";
 import courierImg from "@/assets/marketing/courier.jpg";
 import dashboardImg from "@/assets/marketing/dashboard.jpg";
 import mobileStoreImg from "@/assets/marketing/mobile-store.jpg";
@@ -224,7 +224,7 @@ export function HomePage({ data }: { data: LandingData }) {
         <div className="mt-16">
           <div className="flex flex-wrap items-center justify-center gap-3 border-b border-border/60 pb-6">
             {[
-              { id: 0, label: "Storefront & Themes", icon: Store },
+              { id: 0, label: "Storefront & Builder", icon: Store },
               { id: 1, label: "Orders & Fulfilment", icon: PackageCheck },
               { id: 2, label: "Analytics & Retention", icon: BarChart3 },
             ].map((tab) => {
@@ -287,8 +287,8 @@ export function HomePage({ data }: { data: LandingData }) {
                 </div>
                 <div className="order-1 lg:order-2">
                   <MarketingFigure
-                    src={themesImg}
-                    alt="Storefront Themes"
+                    src={showcaseImg}
+                    alt="Storefront builder"
                     className="w-full rounded-2xl shadow-xl border border-border/50"
                   />
                 </div>
