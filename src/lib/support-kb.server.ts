@@ -391,9 +391,7 @@ All plans include free managed hosting, daily backups, DDoS protection, and resp
 1. Book a Live Demo: Request a personalized walkthrough of the visual page builder, payment gateways, and automated courier fulfillment.
 2. Free Store Migration: We assist brands migrating from Shopify, WooCommerce, or custom platforms with catalog imports, customer data migration, and zero-downtime cutover.
 3. Schedule a Callback: You can request a callback directly through our AI chat widget by providing your phone number (01XXXXXXXXX) and preferred time window (morning, afternoon, evening).
-4. Direct Contact Channels:
-   • Phone: +880 9612-345678 (9 AM – 10 PM BST)
-   • WhatsApp: +880 1700-000000
+4. Direct Contact Channels (verified via getVerifiedContact, see src/lib/support-contact.server.ts):
    • Email: sales@framique.com or support@framique.com
    • Office: Dhaka, Bangladesh.`,
   },

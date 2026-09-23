@@ -681,7 +681,7 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
       const reply = buildEpistemicHumilityReply("en");
       expect(reply).toContain(EPISTEMIC_ADMISSION_EN);
       expect(reply).toContain(
-        "I don't have enough verified information to answer this accurately.",
+        "I don't have verified info to answer this accurately.",
       );
     });
 
@@ -709,15 +709,16 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
       expect(replyEn).toContain("Open Support Ticket");
       expect(replyBn).toContain("সাপোর্ট টিকিট খুলুন");
 
-      // 4. Direct contact info
+      // 4. Direct contact info (verified truth: no fake phones)
       expect(replyEn).toContain("Direct Contact Info");
-      expect(replyEn).toContain("Phone:");
-      expect(replyEn).toContain("WhatsApp:");
+      expect(replyEn).not.toContain("+880 9612-345678");
+      expect(replyEn).not.toContain("+880 1700-000000");
       expect(replyEn).toContain("Email:");
-      expect(replyEn).toContain("Hours: 9 AM – 10 PM BST");
+      expect(replyEn).toContain("Hours:");
 
       expect(replyBn).toContain("সরাসরি যোগাযোগ");
-      expect(replyBn).toContain("হটলাইন:");
+      expect(replyBn).not.toContain("+880 9612-345678");
+      expect(replyBn).not.toContain("+880 1700-000000");
       expect(replyBn).toContain("সময়: সকাল ৯:০০ – রাত ১০:০০ BST");
     });
   });
@@ -772,7 +773,7 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
       // Assert action paths are populated
       expect(res.actionPaths).toHaveLength(4);
       expect(res.contactInfo).toBeDefined();
-      expect(res.contactInfo?.hours).toContain("9 AM – 10 PM BST");
+      expect(res.contactInfo?.email).toContain("framique.com");
     });
 
     it("triggers epistemic humility in Bangla for out-of-domain query", async () => {
@@ -822,10 +823,10 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
       expect(kinds).toContain("create_ticket");
       expect(kinds).toContain("contact_info");
 
-      // Verify contact card details
-      expect(res.contactInfo?.phone).toBe("+880 9612-345678");
-      expect(res.contactInfo?.whatsapp).toBe("+880 1700-000000");
-      expect(res.contactInfo?.hours).toBe("9 AM – 10 PM BST");
+      // Verify contact card details (verified truth: unverified phones hidden)
+      expect(res.contactInfo?.phone ?? "").not.toBe("+880 9612-345678");
+      expect(res.contactInfo?.whatsapp ?? "").not.toBe("+880 1700-000000");
+      expect(res.contactInfo?.email).toContain("framique.com");
       expect(res.contactInfo?.hoursBn).toBe("সকাল ৯:০০ – রাত ১০:০০ BST");
     });
 
@@ -1091,7 +1092,16 @@ describe("Phase 12.5 — Bot Suppression Middleware for Human Takeover", () => {
       expect(res.deepWikiCitations).toBeDefined();
       expect(res.deepWikiCitations!.length).toBeGreaterThan(0);
       expect(res.deepWikiQueryId).toBeDefined();
-      expect(res.confidence).toBe("grounded");
+      // Honest degraded mode: placeholder key → extractive-only banner + unsure;
+      // live key → grounded. Never confident without provenance.
+      if (res.degraded) {
+        expect(res.confidence).toBe("unsure");
+        expect(res.reply).toMatch(/degraded|extractive/i);
+      } else {
+        expect(res.confidence).toBe("grounded");
+      }
+      // DeepWiki citations are always labeled source:deepwiki, never canonical KB.
+      expect(res.sources[0]?.table).toBe("deepwiki");
     });
 
     it("reinforces DeepWiki edge weights when customer rates a conversation with 5 stars", async () => {

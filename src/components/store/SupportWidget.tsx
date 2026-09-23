@@ -1049,7 +1049,9 @@ export function SupportWidget({
     setShowReviewInput(false);
     setActiveForm("none");
     setStaffActive(false);
-    setMsgs([{ id: uid(), role: "bot", body: getInitialGreeting(t, effectiveMode) }]);
+    setMsgs([
+      { id: uid(), role: "bot", body: getInitialGreeting(t, effectiveMode) },
+    ]);
   }
 
   function handlePreChatSubmit(data: {
@@ -1064,23 +1066,10 @@ export function SupportWidget({
     if (data.orderNumber) setOrderNumber(data.orderNumber);
     setIsEditingProfile(false);
 
-    // If customer hasn't sent messages yet, provide personalized welcome
+    // Greeting stays generic until identity is verified via order/phone-suffix
+    // check server-side. Self-asserted pre-chat names are never echoed back.
     if (!msgs.some((m) => m.role === "customer")) {
-      const welcome =
-        effectiveMode === "platform"
-          ? t(
-              `Hello ${data.name}! 👋 Welcome to Framique. Ask me anything about pricing, online store setup, or bKash & couriers.`,
-              `হ্যালো ${data.name}! 👋 ফ্রেমিক-এ স্বাগতম। প্রাইসিং, অনলাইন স্টোর বা বিকাশ ও কুরিয়ার সংযোগ নিয়ে প্রশ্ন করুন।`,
-            )
-          : effectiveMode === "dashboard"
-            ? t(
-                `Hello ${data.name}! 👋 I'm your Framique Merchant Copilot. How can I help you with your store setup today?`,
-                `হ্যালো ${data.name}! 👋 আমি আপনার ফ্রেমিক কোপাইলট। স্টোর সেটআপ নিয়ে আজ কীভাবে সাহায্য করতে পারি?`,
-              )
-            : t(
-                `Hello ${data.name}! 👋 Ask about order status, refunds, or delivery. Our answers will also be sent to ${data.email}.`,
-                `হ্যালো ${data.name}! 👋 অর্ডার, রিফান্ড বা ডেলিভারি নিয়ে যেকোনো প্রশ্ন করতে পারেন। উত্তর আপনার ইমেইলেও (${data.email}) পাঠানো হবে।`,
-              );
+      const welcome = getInitialGreeting(t, effectiveMode);
       setMsgs([{ id: uid(), role: "bot", body: welcome }]);
     }
   }
@@ -1608,8 +1597,11 @@ export function SupportWidget({
                       <a
                         className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring"
                         href={
-                          supportPhone
-                            ? `tel:${supportPhone}`
+                          supportPhone &&
+                          /^(?:\+8801|01)[3-9]\d{8}$/.test(
+                            supportPhone.replace(/[\s\-().]/g, ""),
+                          )
+                            ? `tel:${supportPhone.replace(/[\s\-().]/g, "")}`
                             : `/store/${slug}`
                         }
                       >
