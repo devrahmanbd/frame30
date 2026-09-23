@@ -14,7 +14,7 @@ import { Page, CardSkeleton, ErrorState } from "@/components/console/kit";
 import { CustomCodeEditor } from "@/components/builder/CustomCodeEditor";
 import { themesWorkspaceFn } from "@/lib/themes/appearance.functions";
 import type { ThemesWorkspace } from "@/lib/themes/appearance";
-import { Code2, Palette } from "lucide-react";
+import { Code2, Palette } from "@/components/icons/tabler";
 
 export const Route = createFileRoute(
   "/_authenticated/dashboard/content/custom-code",

@@ -15,7 +15,7 @@ import {
   Clock,
   Info,
   RefreshCw,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { fmtMinor } from "@/lib/money";
 import {
   fraudDeskFn,

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
 import {

@@ -7,7 +7,7 @@
  * so the attachment details are complete straight away.
  */
 import { useRef, useState, type DragEvent } from "react";
-import { UploadCloud, X } from "lucide-react";
+import { UploadCloud, X } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { btnPrimary } from "@/components/console/kit";
 import {

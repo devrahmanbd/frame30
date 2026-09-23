@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Minus } from "@/components/icons/tabler";
 import { supabase } from "@/integrations/supabase/client";
 import { dashboardHomeFn } from "@/lib/dashboard.functions";
 import { fmtMinor } from "@/lib/money";

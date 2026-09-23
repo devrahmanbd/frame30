@@ -7,7 +7,7 @@
  * bound too, which is how the WP modal behaves.
  */
 import { useEffect } from "react";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import type { InstalledTheme } from "@/lib/themes/appearance";
 import { btnGhost, btnPrimary } from "@/components/console/kit";

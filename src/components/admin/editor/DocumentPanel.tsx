@@ -4,7 +4,7 @@
  * popovers → Move to trash → Categories/Tags or Page attributes → SEO.
  */
 import { useId, useState, type ReactNode } from "react";
-import { ImagePlus, Trash2, X } from "lucide-react";
+import { ImagePlus, Trash2, X } from "@/components/icons/tabler";
 import { MediaPicker } from "@/components/builder/MediaPicker";
 import { PAGE_TEMPLATES } from "@/lib/content-desk";
 import { deriveExcerpt } from "@/lib/blog-body";

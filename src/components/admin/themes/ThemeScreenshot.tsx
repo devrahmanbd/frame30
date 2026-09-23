@@ -7,7 +7,7 @@
  * color blocks with living theme preview assets.
  */
 import { useMemo } from "react";
-import { ShoppingBag, Search, Star, Sparkles } from "lucide-react";
+import { ShoppingBag, Search, Star, Sparkles } from "@/components/icons/tabler";
 import { screenshotPlate, themeInitials } from "@/lib/themes/appearance";
 import { cn } from "@/lib/utils";
 

@@ -15,7 +15,7 @@ import {
   Download,
   Trash2,
   X,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { btnGhost, btnPrimary, inputClass } from "@/components/console/kit";
 import {
   type Attachment,

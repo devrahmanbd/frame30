@@ -10,7 +10,7 @@ import {
   XCircle,
   ExternalLink,
   ShieldCheck,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
 import {

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Keyboard, Plus, Search, X } from "lucide-react";
+import { Keyboard, Plus, Search, X } from "@/components/icons/tabler";
 import { toast } from "sonner";
 import {
   BulkBar,

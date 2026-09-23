@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Trash2 } from "lucide-react";
+import { Trash2 } from "@/components/icons/tabler";
 import { supabase } from "@/integrations/supabase/client";
 import { slugify, useMerchant } from "@/hooks/use-merchant";
 import { TextField } from "@/components/admin/ProductForm";

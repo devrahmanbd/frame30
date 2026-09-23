@@ -27,7 +27,7 @@ import {
   ChevronDown,
   ChevronUp,
   Info,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { fmtMinor } from "@/lib/money";
 import {
   marketBulkInstallsFn,

@@ -34,7 +34,7 @@ import {
   tokensToCss,
   type ThemeTokens,
 } from "@/lib/builder-ast";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "@/components/icons/tabler";
 import { ClassicEditor } from "@/components/admin/blog/ClassicEditor";
 import { ShortcutHelp } from "@/components/admin/content/ShortcutHelp";
 import { StudioBuilder } from "@/components/builder/studio/StudioBuilder";

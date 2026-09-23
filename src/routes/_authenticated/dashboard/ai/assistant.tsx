@@ -20,7 +20,7 @@ import {
   Inbox,
   Clock,
   Hash,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import {
   aiCopilotChatFn,
   supportInboxFn,

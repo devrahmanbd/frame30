@@ -33,7 +33,7 @@ import {
   Truck,
   UserPlus,
   Mail,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 
 export const Route = createFileRoute(
   "/_authenticated/dashboard/marketing/templates",

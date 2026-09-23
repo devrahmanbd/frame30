@@ -12,7 +12,7 @@ import {
   Timer,
   PhoneCall,
   Star,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import {
   getCsatAnalyticsFn,

@@ -39,7 +39,7 @@ import {
   Truck,
   TicketPercent,
   RotateCcw,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { KpiCard } from "@/components/admin/KpiCard";
 import { analyticsFn } from "@/lib/analytics.functions";
 import { fmtMinor } from "@/lib/money";

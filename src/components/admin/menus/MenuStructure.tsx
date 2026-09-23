@@ -14,7 +14,7 @@ import {
   ChevronUp,
   GripVertical,
   Trash2,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { btnGhost, inputClass } from "@/components/console/kit";
 import {

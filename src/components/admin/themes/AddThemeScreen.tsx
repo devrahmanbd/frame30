@@ -7,7 +7,13 @@
  * `Installed` badge plus `Activate`, exactly as WordPress does.
  */
 import { useMemo, useRef, useState, type DragEvent } from "react";
-import { ArrowLeft, Filter, Search, Star, UploadCloud } from "lucide-react";
+import {
+  ArrowLeft,
+  Filter,
+  Search,
+  Star,
+  UploadCloud,
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import {
   CATALOG_TABS,

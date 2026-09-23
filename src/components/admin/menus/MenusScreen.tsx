@@ -8,7 +8,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ListTree, Plus } from "lucide-react";
+import { ListTree, Plus } from "@/components/icons/tabler";
 import {
   Card,
   ConfirmDialog,

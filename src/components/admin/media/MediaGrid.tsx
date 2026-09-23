@@ -5,7 +5,7 @@
  * want file name, author, size and date at a glance. Both share one selection
  * model so Bulk select behaves the same either way.
  */
-import { Check } from "lucide-react";
+import { Check } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import {
   type Attachment,

@@ -4,7 +4,7 @@
  * a failing check disables the confirm button and explains why.
  */
 import { useEffect, useRef } from "react";
-import { AlertTriangle, Check, X, XCircle } from "lucide-react";
+import { AlertTriangle, Check, X, XCircle } from "@/components/icons/tabler";
 import { btnGhost, btnPrimary } from "@/components/console/kit";
 import {
   PRIMARY_LABEL,

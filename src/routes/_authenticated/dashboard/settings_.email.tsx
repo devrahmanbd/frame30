@@ -16,7 +16,7 @@ import {
   testSmtpConnectionFn,
 } from "@/lib/email-settings.functions";
 import { useLang } from "@/lib/i18n";
-import { Send, AlertCircle } from "lucide-react";
+import { Send, AlertCircle } from "@/components/icons/tabler";
 
 export const Route = createFileRoute(
   "/_authenticated/dashboard/settings_/email",

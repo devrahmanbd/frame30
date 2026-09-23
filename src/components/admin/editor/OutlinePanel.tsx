@@ -1,7 +1,7 @@
 /**
  * Phase 12 — "☰ Outline": headings tree plus revisions list on the left.
  */
-import { History, X } from "lucide-react";
+import { History, X } from "@/components/icons/tabler";
 import { relativeTime, type EditorDoc } from "@/lib/editor/editor-doc";
 import { docOutline } from "@/lib/editor/editor-doc";
 import { useLang } from "@/lib/i18n";

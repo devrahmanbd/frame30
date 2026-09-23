@@ -34,7 +34,7 @@ import {
   AlertCircle,
   Layers,
   ArrowRight,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 
 export const Route = createFileRoute(
   "/_authenticated/dashboard/marketing/sequences",

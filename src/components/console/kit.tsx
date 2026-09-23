@@ -25,7 +25,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from "react";
-import { AlertTriangle, Inbox, RotateCcw, X } from "lucide-react";
+import { AlertTriangle, Inbox, RotateCcw, X } from "@/components/icons/tabler";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 

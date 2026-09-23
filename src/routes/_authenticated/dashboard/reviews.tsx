@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Loader2, BadgeCheck } from "lucide-react";
+import { Loader2, BadgeCheck } from "@/components/icons/tabler";
 import { useMerchant } from "@/hooks/use-merchant";
 import { Stars } from "@/components/store/ConversionSurfaces";
 import {

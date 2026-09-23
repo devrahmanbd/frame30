@@ -50,7 +50,7 @@ import {
   Strikethrough,
   Underline,
   Undo2,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { MediaPicker } from "@/components/builder/MediaPicker";
 import { useLang } from "@/lib/i18n";

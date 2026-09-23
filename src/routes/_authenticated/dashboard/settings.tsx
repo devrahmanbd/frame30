@@ -1,7 +1,7 @@
 import { useEffect, useId, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Clock, Loader2 } from "lucide-react";
+import { Clock, Loader2 } from "@/components/icons/tabler";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant } from "@/hooks/use-merchant";

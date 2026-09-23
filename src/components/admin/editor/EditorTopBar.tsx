@@ -16,7 +16,7 @@ import {
   Smartphone,
   Tablet,
   Undo2,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import {
   ActionMenu,
   SaveIndicator,

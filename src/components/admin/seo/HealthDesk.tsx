@@ -8,7 +8,7 @@ import {
   Link2,
   RefreshCw,
   RotateCcw,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { toast } from "sonner";
 import {
   ErrorFrame,

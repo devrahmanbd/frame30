@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Activity, Gauge, RefreshCw, Scale } from "lucide-react";
+import { Activity, Gauge, RefreshCw, Scale } from "@/components/icons/tabler";
 import { toast } from "sonner";
 import {
   ErrorFrame,

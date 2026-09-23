@@ -71,7 +71,7 @@ import {
   UserCog,
   Users,
   X,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 
 const ICONS: Record<IconKey, typeof LayoutDashboard> = {
   dashboard: LayoutDashboard,

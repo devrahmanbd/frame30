@@ -7,7 +7,7 @@
  * a button, and the footer actions are real buttons outside it.
  */
 import { useState } from "react";
-import { Check, Plus, Star } from "lucide-react";
+import { Check, Plus, Star } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import type { InstalledTheme } from "@/lib/themes/appearance";
 import { btnGhost, btnPrimary } from "@/components/console/kit";
