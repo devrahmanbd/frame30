@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { withSecurityHeaders } from "../server";
+import { cspConnectOrigins, withSecurityHeaders } from "../server";
 
 async function readStream(stream: ReadableStream<Uint8Array>): Promise<string> {
   const reader = stream.getReader();
@@ -97,5 +97,20 @@ describe("withSecurityHeaders — streaming CSP injection", () => {
     expect(output).toContain('<meta name="csp-nonce"');
     expect(output.match(/Fragment without head/g)?.length).toBe(1);
     expect(output.match(/<\/html>/g)?.length).toBe(1);
+  });
+});
+
+describe("cspConnectOrigins — realtime schemes", () => {
+  it("covers wss for https supabase origins (live: realtime blocked)", () => {
+    const prev = process.env["SUPABASE_URL"];
+    process.env["SUPABASE_URL"] = "https://framebase.qubickle.com";
+    try {
+      const origins = cspConnectOrigins();
+      expect(origins).toContain("https://framebase.qubickle.com");
+      expect(origins).toContain("wss://framebase.qubickle.com");
+    } finally {
+      if (prev === undefined) delete process.env["SUPABASE_URL"];
+      else process.env["SUPABASE_URL"] = prev;
+    }
   });
 });

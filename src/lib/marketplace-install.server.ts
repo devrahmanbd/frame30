@@ -73,6 +73,18 @@ export async function installListing(
   if (input.trial && !listing.trial_allowed)
     throw new Error("market_trial_not_allowed");
 
+  // Bundle gate (R2-7): structural denials fire before any write.
+  const listingManifest = (listing as { manifest?: unknown }).manifest;
+  const listingScopes = Array.isArray(
+    (listingManifest as { permissions?: unknown } | null)?.permissions,
+  )
+    ? (listingManifest as { permissions: string[] }).permissions
+    : (input.grantedScopes ?? []);
+  const { validateBundle } = await import("./marketplace-scopes");
+  const bundleVerdict = validateBundle(listingManifest ?? {}, listingScopes);
+  if (!bundleVerdict.ok)
+    throw new Error(`market_bundle_rejected:${bundleVerdict.errors.join(",")}`);
+
   // Consent gate: an install may never receive more scopes than the merchant
   // saw and approved, and never fewer than the pinned version requires.
   const granted = Array.from(new Set(input.grantedScopes ?? [])).sort();
@@ -99,6 +111,13 @@ export async function installListing(
     };
   }
 
+  // R2-1: subset-enforced on the ledger path too — a grant outside the
+  // listing manifest's permissions is refused before any write (mirrors
+  // upsertPlugin's unknown check; listingScopes already is those perms).
+  const unknown = granted.filter((s) => !listingScopes.includes(s));
+  if (unknown.length)
+    throw new Error(`plugin_consent_required:${unknown.join(",")}`);
+
   const charge = input.trial ? 0 : listing.price_minor_int;
   const previous = await snapshotCurrent(db, merchantId, input.kind);
 
@@ -121,6 +140,8 @@ export async function installListing(
       expires_at: input.trial
         ? new Date(Date.now() + TRIAL_DAYS * 86_400_000).toISOString()
         : null,
+      granted_scopes: granted as never,
+      consented_by: (input.consentedBy ?? null) as never,
     })
     .select("id")
     .single();
@@ -326,9 +347,11 @@ export async function moderate(
 }
 
 /**
- * WordPress-style plugin uninstall: removes the plugin_state row (if the
- * install maps to one) and retires the ledger row to `removed`. Unlike
- * pause/resume this is terminal — reinstalling creates a fresh row.
+ * WordPress-style plugin uninstall: parks the ledger row on transitional
+ * `uninstalling` and enqueues the durable `plugin.purge` job, which deletes
+ * the plugin_state row, drains queued plugin jobs, stops the sidecar, and
+ * lands terminal `purged`. The state delete lives in the purge handler
+ * (`purgePluginJob`), never inline — uninstall is intent, purge is effect.
  */
 export async function uninstallWidgetInstall(
   db: Client,
@@ -345,38 +368,68 @@ export async function uninstallWidgetInstall(
   if (!row || row.kind !== "widget")
     throw new Error("market_install_not_found");
 
-  const { data: plugins } = await db
-    .from("plugin_state")
-    .select("id")
-    .eq("merchant_id", merchantId)
-    .eq("plugin_id", row.listing_slug);
-  const matched = (plugins ?? []) as { id: string }[];
-  if (matched.length) {
-    await db
-      .from("plugin_state")
-      .delete()
-      .eq("merchant_id", merchantId)
-      .eq("plugin_id", row.listing_slug);
-  }
+  // Terminal must be terminal: a purged row is a no-op (mirrors
+  // purgePluginJob's already_purged shape) — never regress to uninstalling.
+  if ((row.status as string) === "purged")
+    return { ok: true, purged: false, reason: "already_purged" };
 
+  // R2-6: widget uninstalls ALWAYS purge — mark the ledger row transitional.
   await db
     .from("marketplace_installs")
-    .update({ status: "removed" as never })
+    .update({ status: "uninstalling" as never })
     .eq("merchant_id", merchantId)
     .eq("id", installId);
+
+  const { data: widget } = await db
+    .from("marketplace_widgets")
+    .select("id, install_count")
+    .eq("slug", row.listing_slug)
+    .maybeSingle();
+  if (widget)
+    await db
+      .from("marketplace_widgets")
+      .update({
+        install_count: Math.max(0, (widget.install_count ?? 1) - 1),
+      })
+      .eq("id", widget.id);
+
+  try {
+    const { stopSidecar } = await import("./plugin-sidecar.server");
+    stopSidecar(merchantId, row.listing_slug);
+  } catch {
+    /* seam */
+  }
+
+  const { enqueueJob } = await import("./job-queue.server");
+  await enqueueJob(
+    {
+      queue: "plugins",
+      name: "plugin.purge",
+      payload: {
+        merchantId,
+        pluginId: row.listing_slug,
+        installId,
+        actorId: actorId ?? null,
+      },
+      merchantId,
+      idempotencyKey: `purge:${merchantId}:${installId}`,
+    },
+    db,
+  );
+
   const { auditAction } = await import("./hardening.server");
   await auditAction(
     db,
     merchantId,
     actorId ?? null,
-    "plugin.uninstalled",
+    "plugin.uninstalling",
     "plugin",
     {
       plugin: row.listing_slug,
     },
     installId,
   );
-  return { ok: true, removedPlugin: matched.length > 0 };
+  return { ok: true, removedPlugin: false, purging: true };
 }
 
 export type BulkAction = "enable" | "pause" | "delete";

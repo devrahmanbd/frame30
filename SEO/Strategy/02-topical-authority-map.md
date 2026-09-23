@@ -111,7 +111,7 @@ According to Koray Tuğberk Gübür's research, search engines re-rank pages bas
 
 ### 5.1 Macro-Context
 
-The site-wide theme signals: **"High-performance cloud software for sovereign e-commerce brands."** Every published page reinforces:
+The site-wide design signals: **"High-performance cloud software for sovereign e-commerce brands."** Every published page reinforces:
 
 - High page speed / Core Web Vitals.
 - Security and reliability.

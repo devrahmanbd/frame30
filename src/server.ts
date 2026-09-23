@@ -140,7 +140,15 @@ function cspConnectOrigins(): string[] {
     if (!value) continue;
     try {
       const origin = new URL(value).origin;
-      if (origin !== "null") out.add(origin);
+      if (origin === "null") continue;
+      out.add(origin);
+      // WebSocket schemes never inherit their https counterpart in CSP, so
+      // Supabase Realtime (wss://…) needs an explicit source (live 2026-09-22:
+      // realtime blocked by "connect-src 'self' https://framebase…").
+      if (origin.startsWith("https://"))
+        out.add(`wss://${origin.slice("https://".length)}`);
+      else if (origin.startsWith("http://"))
+        out.add(`ws://${origin.slice("http://".length)}`);
     } catch {
       // Not a parseable URL — skip rather than emit an invalid CSP source.
     }
@@ -381,11 +389,43 @@ export default {
           request.headers.get("x-forwarded-host") ??
           request.headers.get("host") ??
           url.host;
+        // Preview exemption is token-VERIFIED and merchant-bound (Sept
+        // 2026): any ?preview_token= value used to lift both path gates.
+        // A token minted for merchant A never exempts merchant B's paths.
+        let validPreview = false;
+        const previewToken = url.searchParams.get("preview_token");
+        if (previewToken) {
+          try {
+            const { verifyPreviewToken, previewSecret } = await import(
+              "./lib/theme-preview.server"
+            );
+            const payload = verifyPreviewToken(
+              previewSecret(),
+              previewToken,
+            );
+            if (payload) {
+              const slugMatch = /^\/store\/([^/?#]+)/.exec(url.pathname);
+              if (!slugMatch) {
+                validPreview = true;
+              } else {
+                const { merchantIdForSlug } = await import(
+                  "./lib/storefront-host.server"
+                );
+                const owner = await merchantIdForSlug(
+                  slugMatch[1] ?? "",
+                ).catch(() => null);
+                validPreview = owner !== null && owner === payload.merchantId;
+              }
+            }
+          } catch {
+            validPreview = false;
+          }
+        }
         if (
           isBlockedPathStorefront(
             normalizeRequestHost(rawHost),
             url.pathname,
-            url.searchParams.has("preview_token"),
+            validPreview,
           )
         ) {
           const { incr } = await import("./lib/observability.server");
@@ -397,8 +437,8 @@ export default {
         // Cross-tenant path guard (Sept 2026): on a custom host,
         // `/store/<slug>/*` serves only the host owner's sections. A
         // foreign slug (or an unresolvable host) answers bare 404.
-        // Preview tokens stay exempt — verified downstream.
-        if (!url.searchParams.has("preview_token")) {
+        // Preview tokens stay exempt — verified above.
+        if (!validPreview) {
           const { isBlockedForeignStorePath } = await import(
             "./lib/storefront-host.server"
           );

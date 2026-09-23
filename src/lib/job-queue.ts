@@ -50,6 +50,7 @@ export type QueueName =
   | "search-index"
   | "exports"
   | "notifications"
+  | "plugins"
   | "maintenance";
 
 export type QueuePolicy = {
@@ -105,6 +106,14 @@ export const QUEUE_POLICIES: Record<QueueName, QueuePolicy> = {
     maxBackoffSeconds: 1800,
     priority: "default",
     batchSize: 40,
+  },
+  plugins: {
+    maxAttempts: 6,
+    leaseSeconds: 60,
+    baseBackoffSeconds: 30,
+    maxBackoffSeconds: 3600,
+    priority: "default",
+    batchSize: 25,
   },
   maintenance: {
     maxAttempts: 2,

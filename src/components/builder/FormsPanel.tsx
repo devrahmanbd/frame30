@@ -245,6 +245,7 @@ function ActionEditor({
               <label className="block text-xs font-medium">{t("Recipient email", "প্রাপক ইমেইল")}</label>
               <input
                 type="email"
+                autoComplete="email"
                 value={action.config.recipient ?? ""}
                 onChange={(e) => onUpdate({ config: { ...action.config, recipient: e.target.value } })}
                 placeholder={action.type === "email_admin" ? "admin@store.com" : "{{email}}"}

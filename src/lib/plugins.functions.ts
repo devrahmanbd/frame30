@@ -12,7 +12,7 @@ async function scope(db: SupabaseClient<Database>, userId: string) {
 const pluginId = z.string().regex(/^[a-z][a-z0-9-]{2,39}$/);
 
 export const pluginListFn = createServerFn({ method: "GET" })
-  .middleware([requirePermission("themes.read")])
+  .middleware([requirePermission("plugins.read")])
   .handler(async ({ context }) => {
     const { listInstalledPlugins } = await import("./plugins.server");
     const merchantId = await scope(context.supabase, context.userId);
@@ -22,7 +22,7 @@ export const pluginListFn = createServerFn({ method: "GET" })
   });
 
 export const pluginInstallFn = createServerFn({ method: "POST" })
-  .middleware([requirePermission("themes.update")])
+  .middleware([requirePermission("plugins.update")])
   .inputValidator((d: unknown) =>
     z
       .object({
@@ -43,7 +43,7 @@ export const pluginInstallFn = createServerFn({ method: "POST" })
   });
 
 export const pluginSettingsSaveFn = createServerFn({ method: "POST" })
-  .middleware([requirePermission("themes.update")])
+  .middleware([requirePermission("plugins.update")])
   .inputValidator((d: unknown) =>
     z.object({ pluginId, values: z.record(z.string(), z.unknown()) }).parse(d),
   )
@@ -55,11 +55,12 @@ export const pluginSettingsSaveFn = createServerFn({ method: "POST" })
       merchantId,
       data.pluginId,
       data.values,
+      context.userId,
     );
   });
 
 export const pluginToggleFn = createServerFn({ method: "POST" })
-  .middleware([requirePermission("themes.update")])
+  .middleware([requirePermission("plugins.update")])
   .inputValidator((d: unknown) =>
     z.object({ pluginId, enabled: z.boolean() }).parse(d),
   )
@@ -75,8 +76,25 @@ export const pluginToggleFn = createServerFn({ method: "POST" })
     );
   });
 
+export const pluginAutoUpdatesFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("plugins.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ pluginId, enabled: z.boolean() }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { setPluginAutoUpdates } = await import("./plugins.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    return setPluginAutoUpdates(
+      context.supabase,
+      merchantId,
+      data.pluginId,
+      data.enabled,
+      context.userId,
+    );
+  });
+
 export const pluginUninstallFn = createServerFn({ method: "POST" })
-  .middleware([requirePermission("themes.update")])
+  .middleware([requirePermission("plugins.update")])
   .inputValidator((d: unknown) => z.object({ pluginId }).parse(d))
   .handler(async ({ data, context }) => {
     const { uninstallPlugin } = await import("./plugins.server");

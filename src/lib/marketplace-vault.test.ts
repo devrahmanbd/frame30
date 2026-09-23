@@ -174,6 +174,10 @@ describe("installListing consent gate", () => {
             currency_code: "BDT",
             trial_allowed: true,
             compatible: [],
+            manifest: {
+              entry: "export default function Widget() { return null; }",
+              permissions: ["read_products"],
+            },
           },
         ],
         marketplace_versions: [

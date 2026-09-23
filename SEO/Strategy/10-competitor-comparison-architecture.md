@@ -77,7 +77,7 @@ To capture maximum organic demand and dominate AI answer engines (ChatGPT Search
 | **Platform Transaction Fee**                      |      **0% Forever**      |      0.5% – 2.0%      |      0% – 2%      |  N/A (3rd party)   | 0% (Hosting extra)  |
 | **Native Local Payments (bKash/Nagad)**           |       ✅ Built-in        | ❌ Paid Apps ($25/mo) |  ❌ Unsupported   |   ❌ Unsupported   | ⚠️ Plugins (Flaky)  |
 | **Automated Courier Dispatch (Steadfast/Pathao)** |       ✅ Built-in        | ❌ Paid Apps ($30/mo) |  ❌ Unsupported   |   ❌ Unsupported   |   ⚠️ Custom Code    |
-| **Visual Canvas Flexibility**                     |   ✅ Bento / Freeform    |   ⚠️ Section-locked   | ✅ Visual Canvas  |  ✅ Visual Canvas  |   ❌ Rigid Themes   |
+| **Visual Canvas Flexibility**                     |   ✅ Bento / Freeform    |   ⚠️ Section-locked   | ✅ Visual Canvas  |  ✅ Visual Canvas  |   ❌ Rigid Designs   |
 | **Catalog Scale Ceiling**                         | **Unlimited (Postgres)** |       Unlimited       |  ⚠️ 10,000 Items  |   ❌ Static CMS    | ⚠️ MySQL bottleneck |
 | **Server-Side Edge Rendering (TTFB)**             |    **< 45ms Global**     |       200–450ms       |     150–350ms     |      80–180ms      |     400–1200ms      |
 | **Database Isolation Architecture**               |    **PostgreSQL RLS**    |  Shared Multi-Tenant  | Proprietary Cloud |    Static JSON     |    Siloed MySQL     |

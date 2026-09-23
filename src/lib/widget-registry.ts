@@ -35,7 +35,12 @@ export type WidgetDataSource =
   | "specs"
   | "finance"
   // Phase 2.8 — a single product row (refill SKU, loyalty accrual).
-  | "product";
+  | "product"
+  // Account center — session-scoped shopper rows. No server loader: the
+  // bundle pipeline has no shopper session, so these resolve empty there
+  // by design; live rows arrive via route contextSlots, preview via demo map.
+  | "orders"
+  | "profile";
 
 export type WidgetData = {
   source: WidgetDataSource;
@@ -593,6 +598,16 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
         },
       ],
     },
+    skeleton: true,
+    seo: { heading: false },
+  },
+  orders_list: {
+    data: { source: "orders", params: [] },
+    skeleton: true,
+    seo: { heading: false },
+  },
+  profile_card: {
+    data: { source: "profile", params: [] },
     skeleton: true,
     seo: { heading: false },
   },

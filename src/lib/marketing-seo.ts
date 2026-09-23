@@ -81,8 +81,7 @@ export type MarketingRouteId =
   | "status"
   | "docs"
   | "faq"
-  // Phase 10.2 — the six product/company deep-dive pages.
-  | "builder"
+  // Phase 10.2 — the five product/company deep-dive pages.
   | "payments"
   | "fulfilment"
   | "customers"
@@ -133,7 +132,6 @@ export const MARKETING_ROUTES: readonly MarketingRoute[] = [
     linksTo: [
       "features",
       "pricing",
-      "builder",
       "payments",
       "fulfilment",
       "customers",
@@ -166,7 +164,6 @@ export const MARKETING_ROUTES: readonly MarketingRoute[] = [
     parent: "home",
     linksTo: [
       "pricing",
-      "builder",
       "payments",
       "fulfilment",
       "security",
@@ -306,26 +303,6 @@ export const MARKETING_ROUTES: readonly MarketingRoute[] = [
     lastmod: "2026-08-14",
   },
   {
-    id: "builder",
-    path: "/builder",
-    title: {
-      en: "Storefront builder — sections, tokens, versions",
-      bn: "স্টোরফ্রন্ট বিল্ডার — সেকশন, টোকেন ও ভার্সন",
-    },
-    description: {
-      en: "Assemble a storefront from sections, edit design tokens for the store, publish and roll back in one click. Bangla and English, one catalogue.",
-      bn: "সেকশন থেকে স্টোরফ্রন্ট সাজান, পুরো স্টোরের ডিজাইন টোকেন একবারেই বদলান, ভার্সন পাবলিশ করুন এবং এক ক্লিকে রোলব্যাক করুন। এক ক্যাটালগেই বাংলা ও ইংরেজি।",
-    },
-    label: { en: "Builder", bn: "বিল্ডার" },
-    parent: "home",
-    linksTo: ["features", "pricing", "customers", "docs", "contact", "home"],
-    indexable: true,
-    changefreq: "monthly",
-    priority: "0.8",
-    schema: ["BreadcrumbList", "SoftwareApplication", "FAQPage"],
-    lastmod: "2026-08-16",
-  },
-  {
     id: "payments",
     path: "/payments",
     title: {
@@ -378,7 +355,7 @@ export const MARKETING_ROUTES: readonly MarketingRoute[] = [
     },
     label: { en: "Customers", bn: "কাস্টমার" },
     parent: "home",
-    linksTo: ["pricing", "builder", "features", "blog", "contact", "home"],
+    linksTo: ["pricing", "features", "blog", "contact", "home"],
     indexable: true,
     changefreq: "weekly",
     priority: "0.7",

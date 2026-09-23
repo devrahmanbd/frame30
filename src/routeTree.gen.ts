@@ -18,7 +18,6 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BlogDotatomRouteImport } from './routes/blog[.]atom'
 import { Route as BlogDotjsonRouteImport } from './routes/blog[.]json'
 import { Route as BlogDotxmlRouteImport } from './routes/blog[.]xml'
-import { Route as BuilderRouteImport } from './routes/builder'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -261,11 +260,6 @@ const BlogDotjsonRoute = BlogDotjsonRouteImport.update({
 const BlogDotxmlRoute = BlogDotxmlRouteImport.update({
   id: '/blog.xml',
   path: '/blog.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BuilderRoute = BuilderRouteImport.update({
-  id: '/builder',
-  path: '/builder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -1369,7 +1363,6 @@ export interface FileRoutesByFullPath {
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
   '/blog.xml': typeof BlogDotxmlRoute
-  '/builder': typeof BuilderRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
@@ -1579,7 +1572,6 @@ export interface FileRoutesByTo {
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
   '/blog.xml': typeof BlogDotxmlRoute
-  '/builder': typeof BuilderRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
@@ -1789,7 +1781,6 @@ export interface FileRoutesById {
   '/blog.atom': typeof BlogDotatomRoute
   '/blog.json': typeof BlogDotjsonRoute
   '/blog.xml': typeof BlogDotxmlRoute
-  '/builder': typeof BuilderRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
@@ -2001,7 +1992,6 @@ export interface FileRouteTypes {
     | '/blog.atom'
     | '/blog.json'
     | '/blog.xml'
-    | '/builder'
     | '/cart'
     | '/checkout'
     | '/contact'
@@ -2211,7 +2201,6 @@ export interface FileRouteTypes {
     | '/blog.atom'
     | '/blog.json'
     | '/blog.xml'
-    | '/builder'
     | '/cart'
     | '/checkout'
     | '/contact'
@@ -2420,7 +2409,6 @@ export interface FileRouteTypes {
     | '/blog.atom'
     | '/blog.json'
     | '/blog.xml'
-    | '/builder'
     | '/cart'
     | '/checkout'
     | '/contact'
@@ -2632,7 +2620,6 @@ export interface RootRouteChildren {
   BlogDotatomRoute: typeof BlogDotatomRoute
   BlogDotjsonRoute: typeof BlogDotjsonRoute
   BlogDotxmlRoute: typeof BlogDotxmlRoute
-  BuilderRoute: typeof BuilderRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
@@ -2792,13 +2779,6 @@ declare module '@tanstack/react-router' {
       path: '/blog.xml'
       fullPath: '/blog.xml'
       preLoaderRoute: typeof BlogDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/builder': {
-      id: '/builder'
-      path: '/builder'
-      fullPath: '/builder'
-      preLoaderRoute: typeof BuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -4510,7 +4490,6 @@ const rootRouteChildren: RootRouteChildren = {
   BlogDotatomRoute: BlogDotatomRoute,
   BlogDotjsonRoute: BlogDotjsonRoute,
   BlogDotxmlRoute: BlogDotxmlRoute,
-  BuilderRoute: BuilderRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,

@@ -70,7 +70,7 @@
 
 1. **Freeform Visual Canvas:**
    - _Title:_ Pixel-Level Freedom Without Liquid Template Constraints
-   - _Body:_ Position elements anywhere on a responsive visual grid. Create animated bento grids, sticky cart drawers, and custom product layouts without writing custom theme code.
+   - _Body:_ Position elements anywhere on a responsive visual grid. Create animated bento grids, sticky cart drawers, and custom product layouts without writing custom design code.
 2. **0% Transaction Fee Commerce Core:**
    - _Title:_ Keep Every Cent of Your Hard-Earned Gross Margin
    - _Body:_ Connect your own Stripe, PayPal, or regional merchant account. FRAMIQUE never charges a 0.5%–2% cut on your sales.

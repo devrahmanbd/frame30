@@ -475,6 +475,7 @@ const FormWidget: WidgetComponent = ({
             id={`${prefix}-email`}
             name="email"
             type="email"
+            autoComplete="email"
             required
             maxLength={120}
             className={field}

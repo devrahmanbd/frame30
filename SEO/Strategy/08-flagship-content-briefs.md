@@ -18,7 +18,7 @@
 - **Working Title:** _The Death of the 2% Fee: Why Modern Merchants Are Leaving Shopify_
 - **Target URL Slug:** `/blog/shopify-fee-exodus`
 - **SEO Title Tag:** `The Death of the 2% Fee: Why Merchants Leave Shopify (2026)` (58 chars)
-- **Meta Description:** `Discover why growing e-commerce brands are leaving Shopify to escape 2% payment penalties, app bloat, and rigid themes. See the 3-year savings breakdown.` (154 chars)
+- **Meta Description:** `Discover why growing e-commerce brands are leaving Shopify to escape 2% payment penalties, app bloat, and rigid designs. See the 3-year savings breakdown.` (154 chars)
 - **Primary Keyword:** `shopify alternative 2026` (Vol: 3,800 | KD: 41%)
 - **Secondary Keywords:** `why leave shopify`, `shopify transaction fee penalty`, `zero fee ecommerce platform`, `cheaper than shopify`
 - **Target Awareness Stage:** **Problem Aware ➔ Solution Aware**
@@ -42,7 +42,7 @@ H1: The Death of the 2% Fee: Why Modern Merchants Are Leaving Shopify
   ├── H2: 3-Year Total Cost of Ownership (TCO) Case Study ($120k Annual GMV)
   │     ├── H3: Shopify Cumulative Cost Breakdown ($14,064)
   │     └── H3: Framique Cumulative Cost Breakdown ($1,044)
-  ├── H2: The Performance Penalty: How Theme Script Bloat Destroys Mobile TTFB
+  ├── H2: The Performance Penalty: How Design Script Bloat Destroys Mobile TTFB
   │     └── H3: Measuring INP and LCP Degradation from 12 Shopify App Scripts
   ├── H2: The Sovereign Commerce Alternative: Direct Gateway Ownership
   │     ├── H3: Connect Direct Merchant API Keys with 0% Intermediary Skimming

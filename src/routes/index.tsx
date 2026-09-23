@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PublicShell } from "@/components/public/PublicShell";
-import { StorefrontPage } from "@/components/store/StorefrontPage";
 import { StoreHomepage } from "@/components/store/StoreHomepage";
+import { StoreWelcome } from "@/components/store/StoreWelcome";
 import { getLanding } from "@/lib/landing.functions";
 import { getSiteContext } from "@/lib/site-seo.functions";
 import {
@@ -160,7 +160,13 @@ function PlatformHome() {
         />
       );
     }
-    return <StorefrontPage data={data.storefront} />;
+    return (
+      <StoreWelcome
+        slug={data.host.merchantSlug}
+        name={data.storefront.merchant.name}
+        custom
+      />
+    );
   }
 
   return (

@@ -43,6 +43,7 @@
   ); /* Tuned grey text for 5.5:1 contrast */
 
   --color-border: #e2e8f0;
+  --color-input: #cbd5e1;
 
   /* accent is Calm Pink (#FFF1F3) */
   --color-accent: #fff1f3;
@@ -53,17 +54,21 @@
   --color-success: var(--color-mint-500);
   --color-success-soft: var(--color-mint-100);
   --color-success-foreground: var(--color-mint-800);
+  --color-success-strong: var(--color-mint-800);
   --color-warning: var(--color-bondhu-amber-500);
   --color-warning-soft: var(--color-bondhu-amber-100);
   /* Deep amber ink: 5.2:1 on the amber-500 warning fill, so small badge text stays legible. */
   --color-warning-foreground: hsl(26 90% 20%);
+  --color-warning-strong: hsl(26 90% 20%);
 
   --color-danger: var(--color-rickshaw-red-500);
   --color-danger-soft: var(--color-rickshaw-red-100);
   --color-danger-foreground: var(--color-rickshaw-red-700);
+  --color-danger-strong: var(--color-rickshaw-red-700);
   --color-info: oklch(0.48 0.23 255);
   --color-info-soft: #ebf5ff;
   --color-info-foreground: #003e9c;
+  --color-info-strong: #003e9c;
 
   --font-bangla:
     "Noto Sans Bengali", "Noto Sans Bengali Fallback", "SolaimanLipi",
@@ -344,6 +349,65 @@ body {
   background-color: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+}
+
+/* Theme-scope hero atmosphere — same wash geometry as fq-heritage-aurora,
+   but tinted from --theme-brand/--theme-accent with the heritage hues as
+   fallbacks, so a theme that omits brand/accent degrades to the current
+   look. Static gradient (no animation, no keyframes), so it is inert under
+   prefers-reduced-motion by construction. */
+@utility fq-theme-aurora {
+  background:
+    radial-gradient(
+      48% 60% at 12% 8%,
+      color-mix(in oklab, var(--theme-brand, #c45d3e) 26%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      42% 52% at 85% 10%,
+      color-mix(in oklab, var(--theme-accent, #d9a441) 20%, transparent),
+      transparent 72%
+    ),
+    radial-gradient(
+      50% 55% at 60% 95%,
+      color-mix(in oklab, var(--theme-brand, #8a3b1f) 18%, transparent),
+      transparent 70%
+    );
+}
+
+/* Theme-scope glass card — elevation derived from theme surface/border/
+   shadow tokens with platform fallbacks. Static (no animation). */
+@utility fq-theme-glass {
+  background-color: color-mix(
+    in oklab,
+    var(--theme-surface, #ffffff) 72%,
+    transparent
+  );
+  border: 1px solid var(--theme-border, #e2e8f0);
+  box-shadow: var(--theme-shadow-md, 0 2px 8px rgb(0 0 0 / 0.08));
+  backdrop-filter: blur(12px);
+}
+
+/* Heritage hero atmosphere — warm terracotta/amber wash at low alpha
+   behind hero copy. Static gradient (no animation), so it is inert under
+   prefers-reduced-motion by construction. */
+@utility fq-heritage-aurora {
+  background:
+    radial-gradient(
+      48% 60% at 12% 8%,
+      color-mix(in oklab, #c45d3e 26%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      42% 52% at 85% 10%,
+      color-mix(in oklab, #d9a441 20%, transparent),
+      transparent 72%
+    ),
+    radial-gradient(
+      50% 55% at 60% 95%,
+      color-mix(in oklab, #8a3b1f 18%, transparent),
+      transparent 70%
+    );
 }
 
 /* Phase 3.1 — the designed dark set. Dark is authored, never auto-inverted, so
@@ -714,6 +778,18 @@ body {
 html,
 body {
   overflow-x: clip;
+}
+
+/* Screen-reader data tables (chart fallbacks) must never contribute scroll
+   overflow: some builds size them by content despite sr-only positioning,
+   which once left a ~180px white void at the bottom of admin pages. The
+   higher-specificity selector wins over the utility. */
+table.sr-only {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 1px;
+  width: 1px;
 }
 .fq-theme-scope {
   min-width: 0;

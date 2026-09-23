@@ -13,15 +13,15 @@ Logged in via `/wp-login.php` → `/wp-admin/` (WP 7.1 per footer).
 
 ### Dashboard (`/wp-admin/`)
 
-- Left `#adminmenu`: Dashboard, Updates, Elementor (Home, Editor, Theme Builder, Submissions, Connect, Upgrade), Posts (All, Add, Categories, Tags), Media (Library, Add), Pages (All, Add), Comments (1 in moderation), **Appearance (Themes, Editor, Fonts)**, **Plugins (Installed Plugins, Add Plugin)**, Users (All, Add, Profile), Tools (Available, Import, Export, Site Health, Export/Erase Personal Data, Theme/Plugin File Editor), Settings (General, Connectors, Writing, Reading, Discussion, Media, Permalinks, Privacy), Collapse button.
+- Left `#adminmenu`: Dashboard, Updates, Elementor (Home, Editor, Design Builder, Submissions, Connect, Upgrade), Posts (All, Add, Categories, Tags), Media (Library, Add), Pages (All, Add), Comments (1 in moderation), **Appearance (Designs, Editor, Fonts)**, **Plugins (Installed Plugins, Add Plugin)**, Users (All, Add, Profile), Tools (Available, Import, Export, Site Health, Export/Erase Personal Data, Design/Plugin File Editor), Settings (General, Connectors, Writing, Reading, Discussion, Media, Permalinks, Privacy), Collapse button.
 - Top toolbar: About WP, site name, `⌘K command palette`, comments bubble, `+ New`, user `Howdy, maxw`.
-- Main: Welcome panel (Add new page / Open site editor / Edit styles), Elementor Overview (Create New Page, Recently Edited, News), Site Health (Good + 4 items), At a Glance (1 post, 1 page, 1 comment, theme Twenty Twenty-Five), Activity (Recently Published + Recent Comments with Approve/Reply/Edit/Spam/Trash), Quick Draft, Events (WordCamp Sylhet 2026).
+- Main: Welcome panel (Add new page / Open site editor / Edit styles), Elementor Overview (Create New Page, Recently Edited, News), Site Health (Good + 4 items), At a Glance (1 post, 1 page, 1 comment, design Twenty Twenty-Five), Activity (Recently Published + Recent Comments with Approve/Reply/Edit/Spam/Trash), Quick Draft, Events (WordCamp Sylhet 2026).
 
-### Themes (`/wp-admin/themes.php`, 3 found)
+### Designs (`/wp-admin/designs.php`, 3 found)
 
 - Active card: `Active: Twenty Twenty-Five` + primary **Customize** (`site-editor.php?return=...`).
-- Inactive cards: **Activate** (`themes.php?action=activate&stylesheet=...&_wpnonce=...`) + **Live Preview** (`site-editor.php?wp_theme_preview=...&return=...`); **Delete** lives in Theme Details modal.
-- Header: **Add Theme** → `theme-install.php`, search installed themes box.
+- Inactive cards: **Activate** (`designs.php?action=activate&stylesheet=...&_wpnonce=...`) + **Live Preview** (`site-editor.php?wp_design_preview=...&return=...`); **Delete** lives in Design Details modal.
+- Header: **Add Design** → `design-install.php`, search installed designs box.
 
 ### Plugins (`/wp-admin/plugins.php`, 1 installed: Elementor 4.2.4)
 
@@ -33,38 +33,38 @@ Logged in via `/wp-login.php` → `/wp-admin/` (WP 7.1 per footer).
 ### WP journey invariants Framique must copy
 
 1. Appearance + Plugins are **first-class top-level** with submenus — never buried under Content/More.
-2. Every installed theme: Activate + Live Preview + Delete (Delete blocked while active). Install → Activate → Activated/Customize state machine.
+2. Every installed design: Activate + Live Preview + Delete (Delete blocked while active). Install → Activate → Activated/Customize state machine.
 3. Installed Plugins is a **table** with All/Active/Inactive views, bulk actions, per-row Activate|Deactivate|Settings|Delete.
-4. `Customize / site-editor` always opens **in context of a theme** (active or `?wp_theme_preview=`), with return URL.
+4. `Customize / site-editor` always opens **in context of a design** (active or `?wp_design_preview=`), with return URL.
 5. Command palette (`⌘K`), Screen Options, Help, collapse menu, At-a-Glance counts are real queries — never fixtures.
 
 ---
 
-## 1. P0 — Theme / Plugin / Marketplace lifecycle (WP `themes.php` parity broken)
+## 1. P0 — Design / Plugin / Marketplace lifecycle (WP `designs.php` parity broken)
 
 ### WF-01 — Two install paths, only one writes the ledger [P0]
 
-- `src/lib/themes/appearance.server.ts:148-172` (`installCatalogTheme`: direct `store_themes` insert, `is_active:false`, no ledger, `source_install_id=NULL`) vs `src/lib/marketplace-install.server.ts:315-363` (`installBuiltinTheme`: RPC `marketplace_install_preset` + `marketplace_installs` + link).
-- Callers: `appearance.functions.ts:22-32` (`themeInstallFn`) from `ThemesScreen.tsx:91-102,237` and `ThemePreviewSplit.tsx:61` + `ThemesScreen.tsx:185-195`; vs `marketplace.functions.ts:69-88` (`marketInstallFn`).
-- Effect: `listCatalog.themeStates` (`marketplace.server.ts:60-66`, joins only via `source_install_id`) is blind to Appearance installs; `loadThemesWorkspace` (`appearance.server.ts:106-130`, matches by `source_listing_slug`) ignores ledger status. Same key installed twice → divergent shapes.
-- Fix: single `installTheme` server path that always creates inactive `store_themes` + ledger row (per `AGENTS.md` TOP PRIORITY). Retire the direct-insert branch.
+- `src/lib/designs/appearance.server.ts:148-172` (`installCatalogDesign`: direct `store_designs` insert, `is_active:false`, no ledger, `source_install_id=NULL`) vs `src/lib/marketplace-install.server.ts:315-363` (`installBuiltinDesign`: RPC `marketplace_install_preset` + `marketplace_installs` + link).
+- Callers: `appearance.functions.ts:22-32` (`designInstallFn`) from `DesignsScreen.tsx:91-102,237` and `DesignPreviewSplit.tsx:61` + `DesignsScreen.tsx:185-195`; vs `marketplace.functions.ts:69-88` (`marketInstallFn`).
+- Effect: `listCatalog.designStates` (`marketplace.server.ts:60-66`, joins only via `source_install_id`) is blind to Appearance installs; `loadDesignsWorkspace` (`appearance.server.ts:106-130`, matches by `source_listing_slug`) ignores ledger status. Same key installed twice → divergent shapes.
+- Fix: single `installDesign` server path that always creates inactive `store_designs` + ledger row (per `AGENTS.md` TOP PRIORITY). Retire the direct-insert branch.
 
 ### WF-02 — `status='removed'` violates Postgres enum [P0, crash on real DB]
 
 - `marketplace-install.server.ts:390-394` writes `removed`; enum is `installed|trial|paused|rolled_back` (`supabase/baseline_parts/part1.sql:26`, `generated_baseline.sql:26`). Test `marketplace-lifecycle.test.ts:127` passes only on fakeDb.
 - Fix: migration adding `removed` (or terminal `uninstalled`), keep delete-then-retire order atomic.
 
-### WF-03 — Non-builtin theme installs never create `store_themes` → Activate/Delete dead [P0]
+### WF-03 — Non-builtin design installs never create `store_designs` → Activate/Delete dead [P0]
 
-- `marketplace-install.server.ts:46-145` (`installListing`: ledger + `install_count` bump, then `applyTheme` only); `applyTheme:147-154` calls `market_apply_theme_install` RPC which **does not exist** in any migration (only a comment ref in `20260917220000_phase2f*`).
-- UI `dashboard/marketplace/index.tsx:360-384` renders Activate/Delete only from `themeStateBySlug`/`liveInstall` (needs `source_install_id`).
-- Fix: implement the RPC (or direct inactive-row insert per WF-01) for `kind=theme` third-party listings; add missing-migration CI check.
+- `marketplace-install.server.ts:46-145` (`installListing`: ledger + `install_count` bump, then `applyDesign` only); `applyDesign:147-154` calls `market_apply_design_install` RPC which **does not exist** in any migration (only a comment ref in `20260917220000_phase2f*`).
+- UI `dashboard/marketplace/index.tsx:360-384` renders Activate/Delete only from `designStateBySlug`/`liveInstall` (needs `source_install_id`).
+- Fix: implement the RPC (or direct inactive-row insert per WF-01) for `kind=design` third-party listings; add missing-migration CI check.
 
-### WF-04 — Live Preview is fake: `?preview_theme=` never consumed [P0, WP Customizer parity]
+### WF-04 — Live Preview is fake: `?preview_design=` never consumed [P0, WP Customizer parity]
 
-- Builder: `appearance.ts:313-321` builds `/store/<slug>?preview_device=&preview_theme=`; `ThemePreviewSplit.tsx:60,186-190` iframes it.
-- Consumer: `store.$slug.index.tsx:20-25` → `getStorefront({slug})` (`storefront.functions.ts:11-26`, zod `{slug}` only) → `loadStorefront` → `loadPublished(merchant.id,"index")` (`storefront.server.ts:159-192`, active theme only). Device toggle only changes iframe `maxWidth` (`181-184`).
-- Fix: `preview_theme_id` loader path (`/dashboard/builder?preview_theme_id=:id` per TODO P0) that resolves inactive theme in isolation, read-only, no publish side-effects.
+- Builder: `appearance.ts:313-321` builds `/store/<slug>?preview_device=&preview_design=`; `DesignPreviewSplit.tsx:60,186-190` iframes it.
+- Consumer: `store.$slug.index.tsx:20-25` → `getStorefront({slug})` (`storefront.functions.ts:11-26`, zod `{slug}` only) → `loadStorefront` → `loadPublished(merchant.id,"index")` (`storefront.server.ts:159-192`, active design only). Device toggle only changes iframe `maxWidth` (`181-184`).
+- Fix: `preview_design_id` loader path (`/dashboard/builder?preview_design_id=:id` per TODO P0) that resolves inactive design in isolation, read-only, no publish side-effects.
 
 ### WF-05 — Plugin Delete exists server-side, zero UI [P0]
 
@@ -74,14 +74,14 @@ Logged in via `/wp-login.php` → `/wp-admin/` (WP 7.1 per footer).
 
 ### WF-06 — Widgets can Pause/Restore but never Uninstall [P0]
 
-- `marketplace-install.server.ts:174-212` + `marketplace.functions.ts:137-151` expose `paused|installed|rolled_back` only. Marketplace UI `index.tsx:375-384,416-424,432-469` wires Delete + `ConfirmDialog` + `marketUninstallThemeFn` for `kind==="theme"` only; no `marketUninstallWidgetFn`.
+- `marketplace-install.server.ts:174-212` + `marketplace.functions.ts:137-151` expose `paused|installed|rolled_back` only. Marketplace UI `index.tsx:375-384,416-424,432-469` wires Delete + `ConfirmDialog` + `marketUninstallDesignFn` for `kind==="design"` only; no `marketUninstallWidgetFn`.
 - Fix: widget uninstall path (delete `plugin_state` + terminal ledger).
 
 ### WF-07 — Activate forks the wrong draft; REST diverges [P0]
 
-- `appearance.server.ts:179-204` flips `is_active` then `installRegistryTheme(...,source_listing_slug,true)` → `themes.server.ts:507-531` → RPC `theme_install_preset` (`20260917200000_phase2d_theme_install_preset.sql:34-44`) picks `ORDER BY is_active DESC, created_at ASC LIMIT 1` (active-or-oldest, **not** the `themeId` being activated).
-- REST `rest-gateway.server.ts:505-530` flips flags with no fork at all; storefront reads versions/drafts (`loadPublished`), so API-activated theme may not render.
-- Fix: fork by explicit `themeId`; single activate implementation shared by UI + REST; contract test asserting published AST follows `is_active`.
+- `appearance.server.ts:179-204` flips `is_active` then `installRegistryDesign(...,source_listing_slug,true)` → `designs.server.ts:507-531` → RPC `design_install_preset` (`20260917200000_phase2d_design_install_preset.sql:34-44`) picks `ORDER BY is_active DESC, created_at ASC LIMIT 1` (active-or-oldest, **not** the `designId` being activated).
+- REST `rest-gateway.server.ts:505-530` flips flags with no fork at all; storefront reads versions/drafts (`loadPublished`), so API-activated design may not render.
+- Fix: fork by explicit `designId`; single activate implementation shared by UI + REST; contract test asserting published AST follows `is_active`.
 
 ### WF-08 — Idempotency key `Date.now()` defeats replay guard [P0, double-charge]
 
@@ -140,23 +140,23 @@ Logged in via `/wp-login.php` → `/wp-admin/` (WP 7.1 per footer).
 
 ### WF-17 — No Appearance/Plugins top-level; Commerce-first taxonomy [P1]
 
-- `console-nav.ts:86-533` has 8 groups (dashboard, orders, products, customers, content, marketing, money, settings). WP Appearance (Themes/Customize/Menus) is flattened into `Content:290-363` (`Pages/Posts/Media/Menus/SEO/Themes & apps` as tabs; `Themes:342-347` + `Page builder:348-354` buried in `more`). No `Plugins` group, no `/dashboard/plugins` route (glob empty); plugins only as builder `WidgetTray` data (`builder.tsx:174-179`).
-- `openCustomize` (`ThemesScreen.tsx:126`) jumps context-free to `/builder`; inactive cards hide Activate/Preview on hover (`ThemeCard.tsx:68-82,109-115`).
-- Fix: elevate Appearance (Themes, Customize, Menus) + Plugins (Installed, Add New) to top-level per `AGENTS.md` P1 + TODO P1; single nav source of truth; no URL-only routes.
+- `console-nav.ts:86-533` has 8 groups (dashboard, orders, products, customers, content, marketing, money, settings). WP Appearance (Designs/Customize/Menus) is flattened into `Content:290-363` (`Pages/Posts/Media/Menus/SEO/Designs & apps` as tabs; `Designs:342-347` + `Page builder:348-354` buried in `more`). No `Plugins` group, no `/dashboard/plugins` route (glob empty); plugins only as builder `WidgetTray` data (`builder.tsx:174-179`).
+- `openCustomize` (`DesignsScreen.tsx:126`) jumps context-free to `/builder`; inactive cards hide Activate/Preview on hover (`DesignCard.tsx:68-82,109-115`).
+- Fix: elevate Appearance (Designs, Customize, Menus) + Plugins (Installed, Add New) to top-level per `AGENTS.md` P1 + TODO P1; single nav source of truth; no URL-only routes.
 
 ### WF-18 — No accordion submenus, no collapsed flyouts [P1]
 
 - `AdminShell.tsx:113-168` renders 8 flat links ("Shopify-style… Sub-pages are not repeated" comment). Collapsed rail `486-510` is icon + `title` tooltip only. Sub-pages are page-level `SectionTabs:230-314` + `MoreMenu:170-227`, not a sidebar tree. Highlight `isActive:109-111` is group-prefix only (no `current-menu-parent` expansion).
 - Fix: accordion in open sidebar + hover flyouts in rail, `current` propagation, matching WP `#adminmenu`.
 
-### WF-19 — Capability gating is affordance-only on theme/plugin paths [P1, authz hole]
+### WF-19 — Capability gating is affordance-only on design/plugin paths [P1, authz hole]
 
-- `console-nav.ts:4-7` + `use-membership.ts:76-84` admit client-only filtering. `themes.functions.ts:15-174` + `plugins.functions.ts:14-60` use **only** `requireSupabaseAuth` (+ `currentMerchantId`), while `content-desk/editor/global-blocks/search-console` attach `requirePermission`. Nav hides by `themes.read` but server never asserts it.
-- Fix: add `requirePermission("themes.read/update")` etc. to every theme/plugin fn.
+- `console-nav.ts:4-7` + `use-membership.ts:76-84` admit client-only filtering. `designs.functions.ts:15-174` + `plugins.functions.ts:14-60` use **only** `requireSupabaseAuth` (+ `currentMerchantId`), while `content-desk/editor/global-blocks/search-console` attach `requirePermission`. Nav hides by `designs.read` but server never asserts it.
+- Fix: add `requirePermission("designs.read/update")` etc. to every design/plugin fn.
 
 ### WF-20 — Two page systems, one stub-backed [P1]
 
-- Real: `dashboard/builder.tsx` (autosave `256-262`, status `938-946`, undo/redo `965-980`, commit `751-763`, publish `765-777`, history/rollback/schedule `779-815,1587-1621`, themes panel `1623-1797`) + `EditorShell.tsx:126-137,328-336` (draft/publish/revisions/restore/schedule via `useEditorDoc.ts:157-168`, `DocumentPanel`, `content/editor.tsx:20,100-115` `?editor=builder` = "Edit with Page Builder").
+- Real: `dashboard/builder.tsx` (autosave `256-262`, status `938-946`, undo/redo `965-980`, commit `751-763`, publish `765-777`, history/rollback/schedule `779-815,1587-1621`, designs panel `1623-1797`) + `EditorShell.tsx:126-137,328-336` (draft/publish/revisions/restore/schedule via `useEditorDoc.ts:157-168`, `DocumentPanel`, `content/editor.tsx:20,100-115` `?editor=builder` = "Edit with Page Builder").
 - Stub: legacy `dashboard/pages.tsx:22-41` (no permission, `isPublished` boolean + `archivePageFn` only) imports `page-builder.ts:12-20,157-169` headed `// Stub — full implementation was not committed` (`1-3`), `starterDoc:91` is `any`-cast, yet exposes a "Page builder" toggle (`279-291,428-430`).
 - Fix: retire/re-route legacy desk; Pages table gets "Edit with Page Builder" loading real AST (TODO P1); schedule form must allow version pick (currently hardcodes `versions[0]:792-793`).
 
@@ -171,10 +171,10 @@ Logged in via `/wp-login.php` → `/wp-admin/` (WP 7.1 per footer).
 
 ## 4. P2 — Polish / trust (violates repo rules today)
 
-- **WF-22 — Fabricated theme ratings/installs**: `catalog-meta.ts:23-121` hardcodes `4.4–4.9` / `2600–12800`; `appearance.server.ts:109-130` never reads real counts (comment claims override); `AddThemeScreen.tsx:262-266` renders as fact; Popular sort `appearance.ts:200-211` is fixture order. Widgets file (`builtin-plugins.ts:356-360`) does "Honest zeros" — themes must match. Violates `AGENTS.md` TOP PRIORITY.
-- **WF-23 — Upload Theme dead end**: `AddThemeScreen.tsx:272-337` validates zip client-side only (`appearance.ts:262-279`), success copy mentions media library, zero server path (no `themeUploadFn`/storage). Violates "no action button without working server path".
-- **WF-24 — No audit rows for theme/plugin lifecycle**: `appearance.server.ts:147-218`, `marketplace-install.server.ts:46-212,315-396`, `plugins.server.ts:71-164` write zero audit; `theme_audit` table (`types.ts:8777`) has no writer. `[A]` requires actor/before/after/reason.
-- **WF-25 — Preview ‹ › pools catalogue only**: `ThemesScreen.tsx:151-166` steps `catalogue`; custom/installed-only (`key=null`, `appearance.ts:13-15,291-301`) breaks. Details stepping (`168-172`) correctly uses `installed`.
+- **WF-22 — Fabricated design ratings/installs**: `catalog-meta.ts:23-121` hardcodes `4.4–4.9` / `2600–12800`; `appearance.server.ts:109-130` never reads real counts (comment claims override); `AddDesignScreen.tsx:262-266` renders as fact; Popular sort `appearance.ts:200-211` is fixture order. Widgets file (`builtin-plugins.ts:356-360`) does "Honest zeros" — designs must match. Violates `AGENTS.md` TOP PRIORITY.
+- **WF-23 — Upload Design dead end**: `AddDesignScreen.tsx:272-337` validates zip client-side only (`appearance.ts:262-279`), success copy mentions media library, zero server path (no `designUploadFn`/storage). Violates "no action button without working server path".
+- **WF-24 — No audit rows for design/plugin lifecycle**: `appearance.server.ts:147-218`, `marketplace-install.server.ts:46-212,315-396`, `plugins.server.ts:71-164` write zero audit; `design_audit` table (`types.ts:8777`) has no writer. `[A]` requires actor/before/after/reason.
+- **WF-25 — Preview ‹ › pools catalogue only**: `DesignsScreen.tsx:151-166` steps `catalogue`; custom/installed-only (`key=null`, `appearance.ts:13-15,291-301`) breaks. Details stepping (`168-172`) correctly uses `installed`.
 - **WF-26 — Tenant canary leaks + spoofing**: `server.ts:131-150` echoes `x-framique-tenant-id` on every shopper response; `tenant-canary.server.ts:111-169,299-311` trusts `X-Merchant-Id/X-Store-Slug/X-Tenant-Id`, `?merchant_id/store_slug`, cookies, and unconditional `X-Framique-Slot-Override: green|blue`. Fix: auth-gate override, stop echoing IDs.
 - **WF-27 — Gates with no enforcer**: `1.9` CI gate green locally but `.github/workflows/gates.yml` missing (BUILD `~` line) — nothing enforces per push.
 
@@ -183,8 +183,8 @@ Logged in via `/wp-login.php` → `/wp-admin/` (WP 7.1 per footer).
 ## 5. Remediation order (maps to TODO/BUILD — do not re-plan elsewhere)
 
 1. **SaaS isolation first** (WF-09–12,16): subdomain + Host rewrite + onboarding domain step (Skip → free subdomain → Settings › Domains) + cache scoping + CSRF tenant-awareness. Unblocks everything Shopify-like.
-2. **Theme/plugin correctness** (WF-01–08): single install path (inactive + ledger), enum migration, third-party row creation, real preview route, plugin/widget Delete, correct fork, stable idempotency.
-3. **Nav + authz** (WF-17–19,21): Appearance/Plugins top-level + accordion/flyouts + `requirePermission` on theme/plugin fns + server guards + persona hardening.
+2. **Design/plugin correctness** (WF-01–08): single install path (inactive + ledger), enum migration, third-party row creation, real preview route, plugin/widget Delete, correct fork, stable idempotency.
+3. **Nav + authz** (WF-17–19,21): Appearance/Plugins top-level + accordion/flyouts + `requirePermission` on design/plugin fns + server guards + persona hardening.
 4. **Builder dedupe** (WF-20): kill stub desk, Pages "Edit with Page Builder" on real AST.
 5. **Trust/polish** (WF-22–27): honest zeros, upload path or remove button, audit writers, preview stepping, canary header hygiene, CI gates workflow.
 
@@ -194,5 +194,5 @@ Every `[A]` fix ships with deny + replay + audit assertion per `AGENTS.md` Testi
 
 ## Appendix — Files touched by this audit (evidence index)
 
-- Chrome: `/wp-admin/` (dashboard), `/wp-admin/themes.php` (3 themes, Customize/Activate/Preview), `/wp-admin/plugins.php` (Elementor row, bulk, views).
-- Repo: `src/lib/console-nav.ts`, `src/components/admin/AdminShell.tsx`, `src/lib/themes/appearance.server.ts`, `appearance.ts`, `appearance.functions.ts`, `catalog-meta.ts`, `src/lib/marketplace-install.server.ts`, `marketplace.server.ts`, `marketplace.functions.ts`, `src/lib/plugins.server.ts`, `plugins.functions.ts`, `src/lib/storefront-cache.ts`, `src/server.ts`, `src/lib/storefront.server.ts`, `storefront.functions.ts`, `src/routes/store.$slug.index.tsx`, `src/routes/_authenticated/onboarding.tsx`, `dashboard/marketplace/index.tsx`, `dashboard/builder.tsx`, `dashboard/pages.tsx`, `content/editor.tsx`, `src/components/admin/themes/*`, `src/components/marketplace/InstalledApps.tsx`, `src/lib/media.server.ts`, `media.functions.ts`, `src/components/store/CustomCode.tsx`, `src/lib/custom-code.ts`, `src/lib/domains.ts`, `domains.server.ts`, `api/public/domains/verify-sni.ts`, `api/public/media/$.ts`, `src/lib/tenant-canary.server.ts`, `src/lib/rest-gateway.server.ts`, `TODO.md` §2.1–2.2, `BUILD.md` §0/§1.9, `SYSTEM.md` §4.2.
+- Chrome: `/wp-admin/` (dashboard), `/wp-admin/designs.php` (3 designs, Customize/Activate/Preview), `/wp-admin/plugins.php` (Elementor row, bulk, views).
+- Repo: `src/lib/console-nav.ts`, `src/components/admin/AdminShell.tsx`, `src/lib/designs/appearance.server.ts`, `appearance.ts`, `appearance.functions.ts`, `catalog-meta.ts`, `src/lib/marketplace-install.server.ts`, `marketplace.server.ts`, `marketplace.functions.ts`, `src/lib/plugins.server.ts`, `plugins.functions.ts`, `src/lib/storefront-cache.ts`, `src/server.ts`, `src/lib/storefront.server.ts`, `storefront.functions.ts`, `src/routes/store.$slug.index.tsx`, `src/routes/_authenticated/onboarding.tsx`, `dashboard/marketplace/index.tsx`, `dashboard/builder.tsx`, `dashboard/pages.tsx`, `content/editor.tsx`, `src/components/admin/designs/*`, `src/components/marketplace/InstalledApps.tsx`, `src/lib/media.server.ts`, `media.functions.ts`, `src/components/store/CustomCode.tsx`, `src/lib/custom-code.ts`, `src/lib/domains.ts`, `domains.server.ts`, `api/public/domains/verify-sni.ts`, `api/public/media/$.ts`, `src/lib/tenant-canary.server.ts`, `src/lib/rest-gateway.server.ts`, `TODO.md` §2.1–2.2, `BUILD.md` §0/§1.9, `SYSTEM.md` §4.2.

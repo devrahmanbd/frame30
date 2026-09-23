@@ -50,7 +50,7 @@ _Psychological State:_ Frustrated with hidden fees, slow site speed, or rigid te
 | **cash on delivery return rate reduction**   | 1,800      | 620        | 26% | Informational | Operational loss from fake orders and non-delivered COD parcels.              |
 | **webflow ecommerce limitations**            | 1,400      | 110        | 31% | Informational | 3,000 item cap, slow multi-variant checkout, absence of regional shipping.    |
 | **framer ecommerce limitations**             | 1,900      | 160        | 29% | Informational | No native cart, external checkout redirects breaking brand immersion.         |
-| **how to speed up shopify store on mobile**  | 4,200      | 510        | 48% | Informational | App script bloat in `theme.liquid` degrading Core Web Vitals (INP/LCP).       |
+| **how to speed up shopify store on mobile**  | 4,200      | 510        | 48% | Informational | App script bloat in `design.liquid` degrading Core Web Vitals (INP/LCP).       |
 | **ecommerce profit margin erosion fees**     | 880        | 140        | 21% | Informational | Cumulative bleed from payment gateways, platform fees, and app subscriptions. |
 
 ---

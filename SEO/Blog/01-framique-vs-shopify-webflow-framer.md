@@ -19,7 +19,7 @@ Choosing an e-commerce platform in 2026 is no longer a simple choice between tem
 │               │ local & regional D2C,│ needing standard app │ marketing teams with │ portfolios, and      │
 │               │ high-growth stores   │ ecosystems in US/EU  │ light catalogue needs│ simple digital sales │
 ├───────────────┼──────────────────────┼──────────────────────┼──────────────────────┼──────────────────────┤
-│ Design Freedom│ 100% Freeform Visual │ Rigid Liquid Themes  │ High Visual Control  │ Superior Freeform    │
+│ Design Freedom│ 100% Freeform Visual │ Rigid Liquid Designs  │ High Visual Control  │ Superior Freeform    │
 │               │ Canvas + Bento Grids │ (Requires Code)      │ (Box Model CSS)      │ Canvas & Animations  │
 ├───────────────┼──────────────────────┼──────────────────────┼──────────────────────┼──────────────────────┤
 │ Transaction   │ **0.0% Platform Fee**│ **0.5% - 2.0% Fee**  │ **0.0% - 2.0% Fee**  │ N/A (External        │
@@ -49,11 +49,11 @@ Choosing an e-commerce platform in 2026 is no longer a simple choice between tem
 
 ### 2.1 Visual Design Flexibility & Storefront Architecture
 
-For a decade, e-commerce platforms forced merchants into rigid theme templates. If a brand wanted a custom layout, it had to hire specialized developers to edit Liquid files (Shopify) or splice together custom React codebases.
+For a decade, e-commerce platforms forced merchants into rigid design templates. If a brand wanted a custom layout, it had to hire specialized developers to edit Liquid files (Shopify) or splice together custom React codebases.
 
 #### How They Compare:
 
-- **Shopify:** Relies on section-based Liquid themes. While the Online Store 2.0 visual customizer improved component rearrangement, you cannot freely position elements, build non-standard bento grids, or customize micro-interactions without custom CSS and developer retainers.
+- **Shopify:** Relies on section-based Liquid designs. While the Online Store 2.0 visual customizer improved component rearrangement, you cannot freely position elements, build non-standard bento grids, or customize micro-interactions without custom CSS and developer retainers.
 - **Webflow:** Offers granular control over HTML/CSS box models. However, building dynamic e-commerce product pages requires navigating complex CMS collection bounds and strict CSS class hierarchies.
 - **Framer:** Industry-standard for motion, typography clamp, and auto-layouts. However, Framer lacks a relational e-commerce backend; dynamic multi-variant inventory matrices cannot be visually configured natively.
 - **FRAMIQUE:** Bridges this architectural gap. Framique provides a **high-precision visual page builder** with bento-grid layouts, CSS OKLCH color tokenization, and responsive viewport clamps—directly connected to a live multi-tenant relational inventory engine. Designers manipulate visual layers while product attributes (SKU, price, stock status, variant options) bind directly to live database records.
@@ -138,10 +138,10 @@ Google’s 2026 ranking algorithms heavily weigh **Interaction to Next Paint (IN
 | **Framework**                       | TanStack Start + Nitro SSR     | Ruby on Rails + Liquid Cache | Static HTML + Client JS |
 | **Edge TTFB (South Asia)**          | **< 45ms**                     | 450ms – 900ms                | 300ms – 650ms           |
 | **INP (Interaction to Next Paint)** | **< 35ms** (Good)              | 120ms – 240ms (Needs Work)   | 80ms – 160ms (Moderate) |
-| **Hydration Overhead**              | Minimal Selective SSR          | Heavy Theme JS + App Scripts | Multi-script overhead   |
-| **CSS Architecture**                | Tailwind CSS v4 + OKLCH Tokens | Custom CSS + Theme Bloat     | Generated Class Names   |
+| **Hydration Overhead**              | Minimal Selective SSR          | Heavy Design JS + App Scripts | Multi-script overhead   |
+| **CSS Architecture**                | Tailwind CSS v4 + OKLCH Tokens | Custom CSS + Design Bloat     | Generated Class Names   |
 
-Shopify stores suffer from "App Bloat." Every app installed inserts tracking scripts, modal bundles, and analytics pixels into the `theme.liquid` header. Over time, the storefront slows to a crawl.  
+Shopify stores suffer from "App Bloat." Every app installed inserts tracking scripts, modal bundles, and analytics pixels into the `design.liquid` header. Over time, the storefront slows to a crawl.  
 **FRAMIQUE** runs on **TanStack Start edge SSR**, compiling storefronts into lightweight, hyper-optimized artifacts with zero unnecessary runtime dependencies.
 
 ---
@@ -192,7 +192,7 @@ Yes. FRAMIQUE provides automated multi-tenant edge domain routing with free SSL 
 
 ## 5. Summary & Next Steps: Upgrading to FRAMIQUE
 
-If your brand has outgrown the rigidity of Shopify themes, the transaction penalties of global platforms, or the e-commerce limitations of Webflow and Framer, FRAMIQUE provides the unified, sovereign solution built for tomorrow's merchant.
+If your brand has outgrown the rigidity of Shopify designs, the transaction penalties of global platforms, or the e-commerce limitations of Webflow and Framer, FRAMIQUE provides the unified, sovereign solution built for tomorrow's merchant.
 
 - **Start Your Free Store:** [Launch your storefront with FRAMIQUE](/auth?mode=signup)
 - **Explore Local Gateways:** [Read our bKash & Nagad Integration Guide](/payments)

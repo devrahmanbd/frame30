@@ -1,14 +1,14 @@
 /**
- * Themeless storefront chrome (theme purge Task 3).
+ * Themeless storefront chrome (theme purge + themeless gate).
  *
- * Ruling 2026-09-23: themeless fallback = builder content + default chrome,
- * zero theme tokens. The route's own fallback IS the page — Studio nodes else
- * HTML, catalogue grids, product detail, cart, search, checkout — wrapped in
- * the default chrome (header, support widget, vitals, site-kit). Theme AST
- * sections, token CSS and theme asset stylesheets are gone: an ACTIVE theme
- * can never blank a store or leak tokens into markup again.
+ * Ruling 2026-09-23 (updated at main-merge): every store is themeless after
+ * the purge, so `isThemeless` is always true and every route serves the
+ * single shared welcome page (PR #20 decision: one page, one HTML for all
+ * stores without a theme). Builder content paths stay in the routes for a
+ * future storefront revival, but the gate owns the render.
  */
 import type { ReactNode } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import { CartProvider, useLiveCart } from "@/components/builder/CartContext";
 import { VitalsReporter } from "@/components/store/VitalsReporter";
 import { TrafficReporter } from "@/components/store/TrafficReporter";
@@ -17,19 +17,19 @@ import {
   type StorefrontSiteKit,
 } from "@/components/store/SiteKitTags";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
+import { StoreWelcome } from "@/components/store/StoreWelcome";
+import { isCustomHostPath } from "@/lib/storefront-url";
 import { useLangScope } from "@/lib/i18n";
-import type {
-  Section,
-  TemplateKey,
-  ThemeAst,
-} from "@/lib/builder-ast";
+import type { TemplateKey } from "@/lib/builder-ast";
 
 type Props = {
   template: TemplateKey;
   /** Store chrome (header, support widget) rendered above the page body. */
   chrome?: ReactNode;
-  /** The route's complete content — always rendered, never blank. */
+  /** The route's complete content — rendered when the gate ever opens. */
   fallback: ReactNode;
+  /** Display name for the themeless fallback. Defaults to the slug. */
+  storeName?: string | null;
   /** Store slug — namespaces channel state and server bundle quotes. */
   storeSlug?: string;
   /**
@@ -48,33 +48,14 @@ type Props = {
   /**
    * Deprecated theme props — ignored after the purge, kept optional so
    * un-migrated callers fail visibly at the type level, not silently.
-   * REPORT: other tracks must stop passing these; see Task 3 report.
    */
-  ast?: ThemeAst | null;
+  ast?: unknown;
   tokens?: unknown;
   customCss?: string | null;
   contextSlots?: unknown;
   productSlot?: ReactNode;
   collectionSlot?: ReactNode;
 };
-
-/**
- * Deprecated: kept for the theme-contract suite owned by another track.
- * The themeless chrome never calls this — every page owns its own h1.
- * REPORT: Task 1/4 owns deletion with the preset contract suite.
- */
-export function primarySectionId(ast: ThemeAst | null): string | null {
-  if (!ast) return null;
-  const candidates = ast.main.filter((s) => !s.invalid);
-  const heading = (s: Section) =>
-    s.type === "hero" ||
-    (typeof s.props["heading"] === "string" && s.props["heading"]);
-  return (
-    candidates.find((s) => s.type === "hero")?.id ??
-    candidates.find(heading)?.id ??
-    null
-  );
-}
 
 /**
  * Phase 2.5: one live cart per storefront render. Every cart widget under it
@@ -92,17 +73,37 @@ function LiveCartScope({
   return <CartProvider value={cart}>{children}</CartProvider>;
 }
 
+/** True when the merchant has no theme at all: every route then serves the
+ *  single shared welcome page instead of per-template fallbacks. After the
+ *  purge the server passes no ast/tokens, so this is always true. */
+export function isThemeless(ast: unknown, tokens: unknown): boolean {
+  return !ast && !tokens;
+}
+
 export function ThemeChrome({
   template,
   chrome,
   storeSlug,
+  storeName,
   merchantId,
   siteKit,
   fallback,
   containerClassName = "mx-auto max-w-6xl px-4 py-8",
+  ast = null,
+  tokens = null,
 }: Props) {
   // Phase 2.1: language choice is remembered per storefront.
   useLangScope(storeSlug ?? null);
+  const { pathname } = useRouterState().location;
+  if (isThemeless(ast, tokens)) {
+    return (
+      <StoreWelcome
+        slug={storeSlug ?? ""}
+        name={storeName ?? storeSlug ?? ""}
+        custom={isCustomHostPath(pathname)}
+      />
+    );
+  }
 
   const body = (
     <ThemeSurface>

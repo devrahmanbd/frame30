@@ -17,6 +17,7 @@ import {
   pluginListFn,
   pluginSettingsSaveFn,
   pluginToggleFn,
+  pluginAutoUpdatesFn,
   pluginUninstallFn,
 } from "@/lib/plugins.functions";
 import { marketUninstallWidgetFn } from "@/lib/marketplace.functions";
@@ -43,12 +44,14 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
   const list = useServerFn(pluginListFn);
   const save = useServerFn(pluginSettingsSaveFn);
   const toggle = useServerFn(pluginToggleFn);
+  const autoUpdates = useServerFn(pluginAutoUpdatesFn);
   const uninstallWidget = useServerFn(marketUninstallWidgetFn);
   const uninstallPlugin = useServerFn(pluginUninstallFn);
 
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
   >("all");
+  const [query, setQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkAction, setBulkAction] = useState<
     "activate" | "deactivate" | "delete" | ""
@@ -78,12 +81,14 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
     installs.find((i) => i.listing_slug === pluginId && isLiveStatus(i.status));
 
   const filteredPlugins = useMemo(() => {
+    const q = query.trim().toLowerCase();
     return allPlugins.filter((p) => {
-      if (statusFilter === "active") return p.enabled;
-      if (statusFilter === "inactive") return !p.enabled;
+      if (statusFilter === "active" && !p.enabled) return false;
+      if (statusFilter === "inactive" && p.enabled) return false;
+      if (q && !p.manifest.name.toLowerCase().includes(q)) return false;
       return true;
     });
-  }, [allPlugins, statusFilter]);
+  }, [allPlugins, statusFilter, query]);
 
   const toggleMutation = useMutation({
     mutationFn: (vars: { pluginId: string; enabled: boolean }) =>
@@ -99,6 +104,23 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
     onError: () =>
       toast.error(
         t("Failed to update plugin state", "প্লাগইন আপডেট করা যায়নি"),
+      ),
+  });
+
+  const autoUpdatesMutation = useMutation({
+    mutationFn: (vars: { pluginId: string; enabled: boolean }) =>
+      autoUpdates({ data: vars }),
+    onSuccess: (_, vars) => {
+      toast.success(
+        vars.enabled
+          ? t("Auto-updates enabled", "স্বয়ংক্রিয় আপডেট চালু হয়েছে")
+          : t("Auto-updates disabled", "স্বয়ংক্রিয় আপডেট বন্ধ হয়েছে"),
+      );
+      refresh();
+    },
+    onError: () =>
+      toast.error(
+        t("Failed to update auto-updates", "স্বয়ংক্রিয় আপডেট বদলানো যায়নি"),
       ),
   });
 
@@ -237,6 +259,15 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
 
       {/* Filter Tabs & Bulk Actions Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+        {/* Search */}
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={t("Search plugins", "প্লাগইন খুঁজুন")}
+          aria-label={t("Search plugins", "প্লাগইন খুঁজুন")}
+          className="rounded-fq-md border border-border bg-background px-2.5 py-1 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+        />
         {/* Status Filters */}
         <div className="flex items-center rounded-fq-md border border-border bg-muted/30 p-0.5 text-xs">
           <button
@@ -328,6 +359,9 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
                 {t("Plugin", "প্লাগইন")}
               </th>
               <th className="px-3.5 py-3">{t("Description", "বিবরণ")}</th>
+              <th className="px-3.5 py-3 w-28 text-center">
+                {t("Auto-updates", "স্বয়ংক্রিয় আপডেট")}
+              </th>
               <th className="px-3.5 py-3 w-28 text-center">
                 {t("Status", "স্ট্যাটাস")}
               </th>
@@ -459,6 +493,22 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
                   </td>
 
                   <td className="px-3.5 py-4 align-top text-center">
+                    <input
+                      type="checkbox"
+                      checked={plugin.autoUpdates === true}
+                      onChange={(e) =>
+                        autoUpdatesMutation.mutate({
+                          pluginId: plugin.manifest.id,
+                          enabled: e.target.checked,
+                        })
+                      }
+                      disabled={autoUpdatesMutation.isPending}
+                      aria-label={t("Auto-updates", "স্বয়ংক্রিয় আপডেট")}
+                      className="rounded border-border text-primary focus:ring-primary mt-1"
+                    />
+                  </td>
+
+                  <td className="px-3.5 py-4 align-top text-center">
                     <span
                       className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${
                         plugin.enabled
@@ -483,7 +533,7 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
             {filteredPlugins.length === 0 && (
               <tr>
                 <td
-                  colSpan={4}
+                  colSpan={5}
                   className="p-8 text-center text-sm text-muted-foreground"
                 >
                   {t(
@@ -495,6 +545,43 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Bottom Bulk Actions Bar (mirrors the top bar) */}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-muted-foreground">
+          {t(
+            `${selectedIds.size} selected`,
+            `${selectedIds.size}টি নির্বাচিত`,
+          )}
+        </p>
+        <div className="flex items-center gap-2">
+          <select
+            value={bulkAction}
+            onChange={(e) =>
+              setBulkAction(
+                e.target.value as "activate" | "deactivate" | "delete" | "",
+              )
+            }
+            aria-label={t("Bulk actions", "বাল্ক অ্যাকশন")}
+            className="rounded-fq-md border border-border bg-background px-2.5 py-1 text-xs text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+          >
+            <option value="">{t("Bulk actions", "বাল্ক অ্যাকশন")}</option>
+            <option value="activate">{t("Activate", "সক্রিয় করুন")}</option>
+            <option value="deactivate">
+              {t("Deactivate", "নিষ্ক্রিয় করুন")}
+            </option>
+            <option value="delete">{t("Delete", "মুছে ফেলুন")}</option>
+          </select>
+          <button
+            type="button"
+            onClick={handleApplyBulk}
+            disabled={!bulkAction || selectedIds.size === 0}
+            className="rounded-fq-md border border-border bg-muted/40 px-3 py-1 text-xs font-medium text-foreground hover:bg-muted disabled:opacity-40 transition-colors cursor-pointer"
+          >
+            {t("Apply", "প্রয়োগ")}
+          </button>
+        </div>
       </div>
 
       {/* Settings Modal Drawer */}

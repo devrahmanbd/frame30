@@ -33,6 +33,8 @@ const BY_SOURCE: Record<WidgetDataSource, SkeletonSpec> = {
   taxonomy: { kind: "chips", count: 6 },
   variants: { kind: "chips", count: 4 },
   specs: { kind: "table", count: 5 },
+  orders: { kind: "lines", count: 4 },
+  profile: { kind: "lines", count: 3 },
 };
 
 /** Widgets whose real layout differs from their source default. */

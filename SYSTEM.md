@@ -11,7 +11,7 @@
 Framique is a **Bangladesh-first ecommerce CMS in the vein of Shopify** —
 merchants launch a storefront, manage orders/products/inventory/POS, take
 payment (COD / MFS bKash–Nagad–Rocket / bank / BNPL), ship via local couriers,
-run promotions and marketing, and extend via themes/widgets. Built docs-first:
+run promotions and marketing, and extend via plugins/widgets. Built docs-first:
 every module ships planning → design guidelines → implementation → E2E.
 
 Pillars:
@@ -217,7 +217,7 @@ invariants:
 - **Palette**: teal (primary), blush (accent), bondhu amber (highlight/promo),
   mint (success). Never invent a colour; extend the token set instead.
 - **Typography**: Bangla display font required on at least one surface per
-  theme; tabular numerals everywhere money appears; Bangla and English must
+  design; tabular numerals everywhere money appears; Bangla and English must
   render at the same optical size without layout shift.
 - **Money**: `fmtBDT`/`fmtMoney` helpers only, `docs/06-payments/currency.md`
   §4. Never format money inline.
@@ -293,7 +293,7 @@ Deploy to GREEN (Target Environment)
  │
  ├── 1. Automated Health Probes (/api/healthz readiness)
  ├── 2. Automated Headless Smoke Tests (E2E cart, checkout, auth)
- ├── 3. Cache Pre-Warming (Redis product, theme, config catalogs)
+ ├── 3. Cache Pre-Warming (Redis product, page, config catalogs)
  ├── 4. DB Compatibility Checks (Active schema matches both versions)
  └── 5. Time-Machine Backup Snapshot Hook (pg_basebackup + WAL checkpoint)
  │
@@ -436,7 +436,7 @@ Release 1: Expand       Release 2: Dual-Write       Release 3: Read New       Re
                   ├────────────────────────────┼───────────────────────────┤
                   │ 2. Supabase Storage Assets │ /var/lib/storage (zstd)   │
                   │    - Merchant product imgs │ Original & WebP assets    │
-                  │    - Theme & builder files │ Custom templates & assets │
+                  │    - Storefront & builder files │ Custom templates & assets │
                   ├────────────────────────────┼───────────────────────────┤
                   │ 3. Configuration & State   │ Edge configs & certs      │
                   │    - OpenResty & ACME TLS  │ SSL keys & certificates   │
@@ -479,7 +479,7 @@ A true disaster-proof backup is never just an application-level SQL dump of `pub
      - `vault` / `pgsodium`: Encryption keys and platform secrets.
    - Continuous WAL archiving (`pg_receivewal`) streaming write-ahead logs to secondary storage, enabling second-by-second Point-in-Time Recovery (PITR).
 2. **Supabase Storage Objects (`storage.tar.zst`)**:
-   - Physical archive of `/var/lib/storage` containing all merchant product photos, theme assets, invoices, and builder templates compressed using `zstd -T0`.
+   - Physical archive of `/var/lib/storage` containing all merchant product photos, storefront assets, invoices, and builder templates compressed using `zstd -T0`.
 3. **Configurations, SSL Certificates & Edge State (`configs.tar.zst`)**:
    - OpenResty NGINX configuration, ACME account tokens, dynamic SSL private keys and Let's Encrypt certificates.
    - Docker Compose manifests and environment templates.
@@ -684,7 +684,7 @@ The agent utilizes OpenRouter free tier models to maintain zero marginal inferen
 
 The agent operates strictly as the **Official Framique Support Agent** with deep domain grounding in:
 
-1. **Framique CMS Core**: Multi-tenant merchant architecture, visual page builder (AST-based), themes, sections, and global blocks.
+1. **Framique CMS Core**: Multi-tenant merchant architecture, visual page builder (AST-based), pages, sections, and global blocks.
 2. **Catalog & Inventory Management**: Products, variants, SKU tracking, low-stock alerts, and category hierarchies.
 3. **Bangladeshi Commerce & Payments**: Native checkout flows, bKash (merchant checkout + direct tokenized payment), Nagad, SSLCommerz, Shurjopay, and Cash on Delivery (COD).
 4. **Bangladeshi Courier Logistics**: Real-time integration with SteadFast, Pathao, RedX, and Paperfly parcel booking, tracking, and automated consignment generation.
@@ -940,7 +940,7 @@ Instead of dead-ending the user, the agent immediately renders interactive actio
 The Platform Owner Control Plane (`/root`) is the topmost administrative shell in Framique's three-tier SaaS topology:
 
 1. **Shopper / Storefront**: Edge-served public storefronts at `<slug>.framique.store` and verified custom domains.
-2. **Merchant Admin (`/admin`, `/dashboard`)**: Tenant-scoped merchant console for products, orders, inventory, POS, settings, and theme customization.
+2. **Merchant Admin (`/admin`, `/dashboard`)**: Tenant-scoped merchant console for products, orders, inventory, POS, settings, and page customization.
 3. **Platform Owner (`/root`)**: Sovereign root console granting platform administrators complete control over multi-tenant isolation, money engine conformance, 4-eyes payouts, AI customer support supervision, gateway rails, ad-fraud defense, and zero-downtime infrastructure operations.
 
 ```

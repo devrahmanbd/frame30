@@ -103,6 +103,61 @@ export function PluginSettingsForm({
                   </option>
                 ))}
               </select>
+            ) : field.kind === "textarea" ? (
+              <textarea
+                id={id}
+                rows={4}
+                value={String(value ?? "")}
+                maxLength={field.max}
+                onChange={(e) => set(field.key, e.target.value)}
+                className="w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm"
+              />
+            ) : field.kind === "color" ? (
+              <div className="flex items-center gap-2">
+                <input
+                  id={id}
+                  type="color"
+                  value={/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(
+                    String(value ?? ""),
+                  )
+                    ? String(value)
+                    : "#000000"}
+                  onChange={(e) => set(field.key, e.target.value)}
+                  className="h-9 w-12 cursor-pointer rounded-fq-md border border-border bg-card"
+                />
+                <input
+                  type="text"
+                  value={String(value ?? "")}
+                  onChange={(e) => set(field.key, e.target.value)}
+                  className="w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm"
+                />
+              </div>
+            ) : field.kind === "media" || field.kind === "url" ? (
+              <div className="space-y-2">
+                <input
+                  id={id}
+                  type="url"
+                  value={String(value ?? "")}
+                  onChange={(e) => set(field.key, e.target.value)}
+                  className="w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm"
+                />
+                {field.kind === "media" &&
+                  String(value ?? "").startsWith("https://") && (
+                    <img
+                      src={String(value)}
+                      alt=""
+                      className="h-16 w-16 rounded-fq-md border border-border object-cover"
+                    />
+                  )}
+              </div>
+            ) : field.kind === "date" ? (
+              <input
+                id={id}
+                type="date"
+                value={String(value ?? "")}
+                onChange={(e) => set(field.key, e.target.value)}
+                className="w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm"
+              />
             ) : (
               <input
                 id={id}

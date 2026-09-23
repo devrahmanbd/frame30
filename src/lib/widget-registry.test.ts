@@ -22,7 +22,8 @@ const WIDGETS_SRC =
   readFileSync("src/components/builder/electronics.tsx", "utf8") +
   readFileSync("src/components/builder/basics.tsx", "utf8") +
   readFileSync("src/components/builder/blog.tsx", "utf8") +
-  readFileSync("src/components/builder/beauty-home.tsx", "utf8");
+  readFileSync("src/components/builder/beauty-home.tsx", "utf8") +
+  readFileSync("src/components/builder/account.tsx", "utf8");
 const RENDERER_SRC = readFileSync(
   "src/components/builder/SectionRenderer.tsx",
   "utf8",

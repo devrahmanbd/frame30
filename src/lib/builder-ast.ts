@@ -46,6 +46,7 @@ export const TEMPLATE_KEYS = [
   "index",
   "product",
   "collection",
+  "account",
   "page",
   "blog",
   "cart",
@@ -66,6 +67,7 @@ export type TemplateKey = (typeof TEMPLATE_KEYS)[number];
 export const ROUTE_H1_TEMPLATES = [
   "product",
   "collection",
+  "account",
   "page",
   "blog",
   "search",
@@ -227,7 +229,9 @@ export type SectionType =
   // blog wears the active theme instead of a hand-written wrapper.
   | "blog_archive"
   | "blog_terms"
-  | "blog_pager";
+  | "blog_pager"
+  | "orders_list"
+  | "profile_card";
 
 export type PropScalar = string | number | boolean;
 /** A repeatable row (Phase 3.2 `array` fields). Always JSON-safe. */
@@ -273,6 +277,60 @@ export type ThemeAst = {
 export type ThemeTemplates = Partial<Record<TemplateKey, ThemeAst>>;
 
 export const EMPTY_AST: ThemeAst = { header: [], main: [], footer: [] };
+
+/* ------------------------- slot / template-map helpers ------------------- */
+
+/**
+ * Slot accessors shared by the theme studio and the page studio.
+ * `slotSections` is the `ast[slot]` read: unknown slots fall back to
+ * `"main"` so a mistyped slot never blanks a canvas.
+ */
+export function isSlot(value: unknown): value is Slot {
+  return value === "header" || value === "main" || value === "footer";
+}
+
+/** Unknown / absent slots read as `"main"`. */
+export function normalizeSlot(value: unknown): Slot {
+  return isSlot(value) ? value : "main";
+}
+
+/** `ast[slot]` with the main fallback above. */
+export function slotSections(ast: ThemeAst, slot: unknown): Section[] {
+  return ast[normalizeSlot(slot)] ?? [];
+}
+
+/** Build an AST from a (possibly partial) slot map. */
+export function themeAstFromSlotMap(
+  map: Partial<Record<Slot, Section[]>>,
+): ThemeAst {
+  return {
+    header: [...(map.header ?? [])],
+    main: [...(map.main ?? [])],
+    footer: [...(map.footer ?? [])],
+  };
+}
+
+/**
+ * Template-map accessors. Unknown keys are not invented: `isTemplateKey`
+ * narrows, and `templateSlotSections` falls back to the empty AST (the same
+ * fallback `templateOf` uses for a missing template).
+ */
+export function isTemplateKey(value: unknown): value is TemplateKey {
+  return (
+    typeof value === "string" &&
+    (TEMPLATE_KEYS as readonly string[]).includes(value)
+  );
+}
+
+/** Sections for one template + slot (`templates[key][slot]`). */
+export function templateSlotSections(
+  templates: ThemeTemplates,
+  key: unknown,
+  slot: unknown,
+): Section[] {
+  if (!isTemplateKey(key)) return [];
+  return slotSections(templateOf(templates, key), slot);
+}
 
 /**
  * Themeless aliases (theme purge, Task 4). The AST is storefront content, not
@@ -475,6 +533,37 @@ const ALIGN: Field = {
   ],
 };
 
+/**
+ * Theme-effects port: hero wash toggle. Declared per hero-family entry (not in
+ * the universal style layer) so only heroes offer it. First option matches the
+ * renderer default (`wash`) for the inspector's unset display.
+ */
+const ATMOSPHERE: Field = {
+  key: "atmosphere",
+  label: "Atmosphere",
+  kind: "select",
+  panel: "style",
+  options: [
+    { value: "wash", label: "Wash" },
+    { value: "none", label: "None" },
+  ],
+};
+
+/**
+ * Theme-effects port: editorial banner surface toggle. Banner-only, same
+ * scoping rationale as ATMOSPHERE; first option matches the default (`card`).
+ */
+const SURFACE: Field = {
+  key: "surface",
+  label: "Surface",
+  kind: "select",
+  panel: "style",
+  options: [
+    { value: "card", label: "Card" },
+    { value: "glass", label: "Glass" },
+  ],
+};
+
 const BASE_CATALOG: CatalogEntry[] = [
   {
     // AST v3 unlock: the only node type that owns a subtree.
@@ -592,6 +681,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       ctaLabel: "",
       ctaHref: "",
       align: "left",
+      atmosphere: "wash",
       image: "",
       s2Heading: "",
       s2Image: "",
@@ -609,6 +699,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("s3Heading", "Slide 3 heading"),
       url("s3Image", "Slide 3 image"),
       ALIGN,
+      ATMOSPHERE,
     ],
   },
   {
@@ -3990,6 +4081,32 @@ const BASE_CATALOG: CatalogEntry[] = [
       },
     ],
   },
+  {
+    type: "orders_list",
+    label: "Order history",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    templates: ["account"],
+    defaults: { heading: "Your orders", emptyText: "No orders yet." },
+    fields: [
+      { key: "heading", label: "Heading", kind: "bitext", panel: "content" },
+      { key: "emptyText", label: "Empty text", kind: "bitext", panel: "content" },
+    ],
+  },
+  {
+    type: "profile_card",
+    label: "Shopper profile",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    templates: ["account"],
+    defaults: { heading: "Your profile" },
+    fields: [
+      { key: "heading", label: "Heading", kind: "bitext", panel: "content" },
+    ],
+  },
+
 ];
 
 /* ------------------------------------------------- Phase 0.4 — style layer */

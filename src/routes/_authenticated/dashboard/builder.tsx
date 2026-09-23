@@ -177,6 +177,15 @@ function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : "Something went wrong";
 }
 
+/** Fallback package key when the theme has no registry source key. */
+function slugifyThemeKey(name: string) {
+  const slug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug || "custom-theme";
+}
+
 function BuilderStudio() {
   const { t } = useLang();
   const qc = useQueryClient();
@@ -1018,6 +1027,8 @@ function BuilderStudio() {
     },
     onError: (error) => toast.error(errorMessage(error)),
   });
+
+
 
   const restore = useMutation({
     mutationFn: (versionId: string) => rollback({ data: { versionId } }),

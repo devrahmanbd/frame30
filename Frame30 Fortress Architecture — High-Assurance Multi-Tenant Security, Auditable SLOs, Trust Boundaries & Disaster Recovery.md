@@ -199,7 +199,7 @@ orders
 customers
 payments
 staff
-themes
+designs
 pages
 content
 analytics
@@ -1614,7 +1614,7 @@ Allowed:
 layouts
 components
 styles
-theme tokens
+design tokens
 data bindings
 collections
 conditions

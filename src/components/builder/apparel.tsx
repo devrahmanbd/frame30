@@ -705,6 +705,7 @@ const BackInStock: WidgetComponent = (ctx) => {
           id={`bis-email-${section.id}`}
           name="email"
           type="email"
+          autoComplete="email"
           required
           placeholder="you@example.com"
           className="min-h-11 min-w-[14rem] flex-1 rounded-fq-md border border-border px-3 text-sm"
