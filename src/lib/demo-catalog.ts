@@ -2386,7 +2386,7 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
   ],
 };
 
-/** songoskriti — heritage storefront demo: jamdani, panjabi, khadi, kantha and brass craft. BDT minor units; image refs point at public/ph/songoskriti/* final paths (files land via Task 3 generation; placeholder fallback covers gaps). */
+/** songoskriti — heritage storefront demo (product images: Task-3 placeholders; generator swaps in /ph/songoskriti/* when key lands): jamdani, panjabi, khadi, kantha and brass craft. BDT minor units; image refs point at public/ph/songoskriti/* final paths (files land via Task 3 generation; placeholder fallback covers gaps). */
 const SONGOSKRITI: DemoCatalog = {
   categories: [
     {
@@ -2456,7 +2456,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "men",
       collections: ["new-in", "festive", "wedding"],
       tags: ["panjabi", "silk", "festive", "mens"],
-      image_url: "/ph/songoskriti/prod-panjabi.png",
+      image_url: "/api/public/ph/mens/pure-silk-embroidered-panjabi.svg",
       variants: [
         {
           name: "Size 40 - Ivory",
@@ -2488,7 +2488,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "women",
       collections: ["new-in", "festive", "wedding"],
       tags: ["jamdani", "saree", "silk", "handloom"],
-      image_url: "/ph/songoskriti/prod-saree.png",
+      image_url: "/api/public/ph/womens/dhakai-jamdani-silk-saree.svg",
       variants: [
         {
           name: "Emerald & Rose Gold",
@@ -2513,7 +2513,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "men",
       collections: ["bestsellers"],
       tags: ["khadi", "kurta", "cotton", "handloom"],
-      image_url: "/ph/songoskriti/prod-kurta.png",
+      image_url: "/api/public/ph/mens/comilla-handspun-khadi-kurta.svg",
       variants: [
         {
           name: "Size M - Natural Off-White",
@@ -2539,7 +2539,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "living",
       collections: ["bestsellers", "gifting"],
       tags: ["kantha", "quilt", "handloom", "living"],
-      image_url: "/ph/songoskriti/prod-kantha.png",
+      image_url: "/api/public/ph/living/handcrafted-nakshi-kantha-quilt.svg",
       variants: [
         {
           name: "Queen - Tree of Life",
@@ -2558,7 +2558,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "jewellery",
       collections: ["festive", "wedding", "gifting"],
       tags: ["jewellery", "brass", "necklace", "artisan"],
-      image_url: "/ph/songoskriti/prod-necklace.png",
+      image_url: "/api/public/ph/jewelry/brass-filigree-chandbali-earrings.svg",
       variants: [
         {
           name: "Antique Gold",
