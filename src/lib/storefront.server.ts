@@ -1,5 +1,11 @@
 import { publicClient } from "./pricing.server";
-import type { TemplateKey } from "./builder-ast";
+import { log, observe } from "./observability.server";import {
+  templateOf,
+  type TemplateKey,
+  type ThemeAst,
+  type ThemeTokens,
+} from "./builder-ast";
+import { publishedTheme } from "./themes.server";
 
 /**
  * Public variant rows for storefront reads.
@@ -73,48 +79,81 @@ async function fetchPublicVariantsBy(
 }
 
 /**
- * Themeless storefront (theme purge Task 3).
- *
- * Ruling 2026-09-23: themeless fallback = builder content + default chrome,
- * zero theme tokens. There is no published layout to load — every route owns
- * its complete content (Studio nodes else HTML, catalogue grids) and the
- * default chrome. These stubs keep the old read API returning null so
- * cross-track callers migrate visibly; Task 5 deletes the tables.
+ * Published layout + tokens for a store template, or null when nothing is
+ * published. Served from the tenant-keyed storefront cache, which the publish /
+ * rollback / sweep paths purge, so a shopper never lands on a stale page.
  */
-type ThemelessTheme = {
-  ast: null;
-  tokens: null;
-  themeKey: null;
-  versionId: null;
-} | null;
-
 async function loadPublished(
-  _merchantId: string,
-  _template: TemplateKey = "index",
-): Promise<ThemelessTheme> {
-  return null;
+  merchantId: string,
+  template: TemplateKey = "index",
+): Promise<{
+  ast: ThemeAst;
+  tokens: ThemeTokens;
+  themeKey: string | null;
+  versionId: string;
+} | null> {
+  // Phase 8.7: render time is tracked per template, which is the unit a
+  // merchant experiences and the unit the cache is keyed by.
+  const started = Date.now();
+  const theme = await publishedTheme(publicClient(), merchantId);
+  observe("framique_template_render_ms", Date.now() - started, { template });
+  if (!theme) return null;
+  const ast = templateOf(theme.templates, template);
+  // A theme that publishes no header/footer for a secondary template (search,
+  // cart, checkout) borrows the home template's chrome, so a shopper never
+  // lands on a page without the store's navigation or its policy links.
+  const home =
+    template === "index" ? ast : templateOf(theme.templates, "index");
+  const withChrome = {
+    header: ast.header.length ? ast.header : home.header,
+    main: ast.main,
+    footer: ast.footer.length ? ast.footer : home.footer,
+  };
+  return {
+    ast: withChrome,
+    tokens: theme.tokens,
+    themeKey: theme.themeKey,
+    versionId: theme.versionId,
+  };
 }
 
 /**
- * Deleted theme template resolution — kept as a null stub for cross-track
- * importers (storefront-search.functions). Always null: pages render
- * Studio nodes else HTML with default chrome. REPORT: delete this export
- * with Task 5 once all callers are themeless.
+ * Published `page` template for a tenant, used by content pages.
+ *
+ * Phase 17: when the page pins a theme (`themeId`) that theme's published
+ * `page` template wins; an unpublished or deleted pin falls back to the
+ * store's active theme so the page still renders.
  */
 export async function loadPageTemplate(
-  _merchantId: string,
-  _themeId?: string | null,
-): Promise<ThemelessTheme> {
-  return null;
+  merchantId: string,
+  themeId?: string | null,
+) {
+  if (themeId) {
+    const { publishedThemeById } = await import("./themes.server");
+    const pinned = await publishedThemeById(
+      publicClient(),
+      merchantId,
+      themeId,
+    );
+    if (pinned)
+      return {
+        ast: templateOf(pinned.templates, "page"),
+        tokens: pinned.tokens,
+        themeKey: pinned.themeKey,
+        versionId: pinned.versionId,
+      };
+  }
+  return loadPublished(merchantId, "page");
 }
 
 /**
- * Themeless chrome for a functional storefront page (search, cart, checkout).
+ * Theme chrome for a functional storefront page (search, cart, checkout).
  *
  * These routes own their own data — the catalogue query, the live cart — so
- * all they need is the tenant identity, site-kit and menus. No theme reads.
+ * all they need from the theme is the published layout, the tokens and the
+ * tenant identity. Kept deliberately small: no catalogue read, no SEO join.
  */
-export async function loadStoreChrome(slug: string, _template: TemplateKey) {
+export async function loadStoreChrome(slug: string, template: TemplateKey) {
   const db = publicClient();
   const { data: merchant } = await db
     .from("merchants")
@@ -124,34 +163,31 @@ export async function loadStoreChrome(slug: string, _template: TemplateKey) {
     .maybeSingle();
   if (!merchant) return null;
 
-  const [siteKit, menus, installedPlugins] = await Promise.all([
+  const [theme, siteKit, menus] = await Promise.all([
+    loadPublished(merchant.id, template),
     import("./search-console.server").then((m) =>
       m.storefrontSiteKit(merchant.id),
     ),
     // Phase 16 T4: dashboard-designed nav menus ride every chrome payload so
     // the header/footer render the merchant's menus on every template.
     import("./menus/menu.server").then((m) => m.loadStoreMenus(merchant.id)),
-    // Plugin footer mounts + placed app-blocks resolve from this list.
-    import("./plugins.server").then((m) =>
-      m.listStorefrontPlugins(merchant.id),
-    ),
   ]);
 
   return {
     merchant,
-    ast: null,
-    tokens: null,
-    themeKey: null,
-    themeVersionId: null,
+    ast: theme?.ast ?? null,
+    tokens: theme?.tokens ?? null,
+    themeKey: theme?.themeKey ?? null,
+    themeVersionId: theme?.versionId ?? null,
     siteKit,
     menus,
-    installedPlugins,
   };
 }
 
 /**
- * One published collection plus its products, rendered with default chrome.
- * No theme template — the route's own grid is the complete content.
+ * One published collection plus its products, wearing the theme's published
+ * `collection` template. Falls back to the store's own chrome when the theme
+ * publishes no collection sections.
  */
 export async function loadStoreCollection(
   slug: string,
@@ -176,7 +212,7 @@ export async function loadStoreCollection(
   if (!collection) return null;
 
   const ids = (collection.collection_products ?? []).map((cp) => cp.product_id);
-  const [{ data: products }, { data: settings }] = await Promise.all([
+  const [{ data: products }, theme, { data: settings }] = await Promise.all([
     ids.length
       ? db
           .from("products")
@@ -188,6 +224,7 @@ export async function loadStoreCollection(
           .in("id", ids)
           .limit(60)
       : Promise.resolve({ data: [] as never[] }),
+    loadPublished(merchant.id, "collection"),
     db
       .from("merchant_settings")
       .select("tagline")
@@ -209,7 +246,6 @@ export async function loadStoreCollection(
   const { storefrontSiteKit } = await import("./search-console.server");
   const siteKit = await storefrontSiteKit(merchant.id);
   const { loadStoreMenus } = await import("./menus/menu.server");
-  const { listStorefrontPlugins } = await import("./plugins.server");
 
   return {
     merchant,
@@ -227,37 +263,75 @@ export async function loadStoreCollection(
     seo,
     siteKit,
     menus: await loadStoreMenus(merchant.id),
-    installedPlugins: await listStorefrontPlugins(merchant.id),
-    ast: null,
-    tokens: null,
-    themeKey: null,
-    themeVersionId: null,
+    ast: theme?.ast ?? null,
+    tokens: theme?.tokens ?? null,
+    themeKey: theme?.themeKey ?? null,
+    themeVersionId: theme?.versionId ?? null,
   };
 }
 
 export type StorefrontPreview = { merchantId: string; themeId: string } | null;
 
 /**
- * Themeless: draft previews are gone with the theme system. Always returns
- * the published (null-theme) payload with preview=false so callers keep
- * compiling while rendering default chrome.
+ * Resolve the index theme, preferring a verified draft preview. The preview
+ * token is validated by the caller; the merchant binding is re-checked here
+ * so a token minted for one tenant can never render another tenant's draft.
+ * Preview responses must never enter the shared storefront cache (see
+ * withStorefrontCache) and are always noindex (see the route head).
  */
 async function resolveIndexTheme(
-  _merchantId: string,
-  _preview: StorefrontPreview,
+  merchantId: string,
+  preview: StorefrontPreview,
 ) {
-  return { ast: null, tokens: null, themeKey: null, versionId: null, preview: false as const };
+  if (preview && preview.merchantId === merchantId) {
+    try {
+      const { supabaseAdmin } =
+        await import("@/integrations/supabase/client.server");
+      const { previewTheme } = await import("./themes.server");
+      const { templateOf } = await import("./builder-ast");
+      const draft = await previewTheme(
+        supabaseAdmin as never,
+        merchantId,
+        preview.themeId,
+      );
+      if (draft) {
+        return {
+          ast: templateOf(draft.templates, "index"),
+          tokens: draft.tokens,
+          themeKey: draft.themeKey,
+          versionId: null as string | null,
+          preview: true as const,
+        };
+      }
+    } catch (err) {
+      // Any preview failure degrades to the published theme, never to nothing —
+      // but the reason is logged: silent fallback hides data bugs (Sep 2026).
+      // NOTE: log is a STATIC import here. Never switch this to a dynamic
+      // import: Rolldown mangles dynamic re-export chains (observability's
+      // `log` alias resolved to the wrong export at runtime), which would
+      // throw inside this catch and mask the original error.
+      try {
+        log("warn", "storefront.preview_failed", {
+          message: String(err).slice(0, 200),
+        });
+      } catch {
+        // Logging must never break the storefront.
+      }
+    }
+  }
+  const published = await loadPublished(merchantId, "index");
+  return published ? { ...published, preview: false as const } : null;
 }
 
 export async function loadStorefront(
   slug: string,
-  _preview: StorefrontPreview = null,
+  preview: StorefrontPreview = null,
 ) {
   // Perf batch: the homepage costs ~13 DB round trips. Cache the whole
   // payload under the tenant prefix (purgeStorefront clears it on
   // publish/install/import). Preview drafts are private — never cached.
   // The one extra merchant lookup per call replaces thirteen on a hit.
-  if (!_preview) {
+  if (!preview) {
     const db = publicClient();
     const { data: merchant } = await db
       .from("merchants")
@@ -275,7 +349,7 @@ export async function loadStorefront(
       { shared: true, staleSeconds: 300 },
     );
   }
-  return loadStorefrontUncached(slug, _preview);
+  return loadStorefrontUncached(slug, preview);
 }
 
 async function loadStorefrontUncached(
@@ -297,6 +371,7 @@ async function loadStorefrontUncached(
     { data: products },
     { data: categories },
     { data: collections },
+    theme,
   ] = await Promise.all([
     db
       .from("merchant_settings")
@@ -325,6 +400,7 @@ async function loadStorefrontUncached(
       .eq("merchant_id", merchant.id)
       .eq("is_published", true)
       .order("position"),
+    resolveIndexTheme(merchant.id, preview),
   ]);
 
   // Phase 3: entity SEO first, the builder's per-template record behind it.
@@ -335,9 +411,11 @@ async function loadStorefrontUncached(
   const { resolveSeoWithTemplate } = await import("./template-seo.server");
   const { publishedCustomCode } = await import("./custom-code.server");
   const { storefrontSiteKit } = await import("./search-console.server");
-  const { EMPTY_BUNDLE } = await import("./widget-data");
-  const widgetBundle = EMPTY_BUNDLE;
-  const [seo, customCode, siteKit, menus] = await Promise.all([
+  const { collectWidgetRequests, EMPTY_BUNDLE } = await import("./widget-data");
+  const widgetBundle = theme?.ast
+    ? collectWidgetRequests(theme.ast)
+    : EMPTY_BUNDLE;
+  const [seo, customCode, siteKit, widgetData, menus] = await Promise.all([
     (async () =>
       resolveSeoWithTemplate(
         merchant.id,
@@ -352,16 +430,23 @@ async function loadStorefrontUncached(
     // tenant. Cached, never throws, and never carries the chosen Search Console
     // property into a shopper's browser.
     storefrontSiteKit(merchant.id),
+    // Phase 0.3: every data widget in the published layout is resolved here, in
+    // one batched call, and shipped inside the SSR payload — the client reads
+    // rows from the map instead of refetching on hydrate.
+    (async () => {
+      if (widgetBundle.requests.length === 0) return {};
+      const { resolveWidgetData } = await import("./widget-data.server");
+      const { currentRequestHost, storeLinkBase } = await import(
+        "./storefront-host.server"
+      );
+      return resolveWidgetData(merchant.id, widgetBundle, undefined, {
+        base: storeLinkBase(currentRequestHost(), merchant.slug),
+      });
+    })(),
     // Phase 16 T4: dashboard-designed nav menus, canonical (root-shaped)
     // hrefs — each render site rebases for its host shape client-side.
     import("./menus/menu.server").then((m) => m.loadStoreMenus(merchant.id)),
   ]);
-  const widgetData = {};
-
-  // Installed plugins for footer mounts + placed app-blocks (fail-safe
-  // to [] inside the helper, so a plugin read can never break the render).
-  const { listStorefrontPlugins } = await import("./plugins.server");
-  const installedPlugins = await listStorefrontPlugins(merchant.id);
 
   // Perf batch: variant rows and homepage slug are independent — fetch
   // together instead of serially.
@@ -383,7 +468,7 @@ async function loadStorefrontUncached(
     resolvedCollections.length === 0
   ) {
     const { demoCatalogFor } = await import("./demo-catalog");
-    const demo = demoCatalogFor("marketplace");
+    const demo = demoCatalogFor(theme?.themeKey ?? "bazaar");
     if (resolvedProducts.length === 0) {
       resolvedProducts = demo.products.map((dp, idx) => ({
         id: `demo-${dp.slug}`,
@@ -418,11 +503,9 @@ async function loadStorefrontUncached(
     }
   }
 
-  // CMS-designated homepage: a published page the merchant chose in the
-  // Pages list (resolved in the perf batch above). Anything else (unset,
-  // draft, trashed, deleted) falls back to the default catalogue below —
-  // never a broken `/`.
-
+  // CMS-designated homepage: resolved alongside variants above. Unset,
+  // draft, trashed or deleted falls back to the theme index template
+  // below — never a broken `/`.
   return {
     merchant,
     seo,
@@ -430,18 +513,17 @@ async function loadStorefrontUncached(
     products: resolvedProducts,
     categories: resolvedCategories,
     collections: resolvedCollections,
-    ast: null,
-    tokens: null,
-    themeKey: null,
-    themeVersionId: null,
-    preview: false,
+    ast: theme?.ast ?? null,
+    tokens: theme?.tokens ?? null,
+    themeKey: theme?.themeKey ?? null,
+    themeVersionId: theme?.versionId ?? null,
+    preview: theme?.preview ?? false,
     widgetBundle,
     widgetData,
     customCode,
     siteKit,
     homepageSlug,
     menus,
-    installedPlugins,
   };
 }
 
@@ -506,7 +588,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
 
   // Phase 7.2: reviews and delivery terms feed the Product/Offer graph, so the
   // rich result reflects the same numbers the page shows a shopper.
-  const [{ data: settings }, { data: reviews }] = await Promise.all([
+  const [{ data: settings }, theme, { data: reviews }] = await Promise.all([
     db
       .from("merchant_settings")
       .select(
@@ -514,6 +596,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
       )
       .eq("merchant_id", merchant.id)
       .maybeSingle(),
+    loadPublished(merchant.id, "product"),
     db
       .from("product_reviews")
       .select("author_name, title, body, rating, published_at")
@@ -534,7 +617,6 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
   const { storefrontSiteKit } = await import("./search-console.server");
   const siteKit = await storefrontSiteKit(merchant.id);
   const { loadStoreMenus } = await import("./menus/menu.server");
-  const { listStorefrontPlugins } = await import("./plugins.server");
 
   return {
     merchant,
@@ -543,7 +625,6 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
     settings,
     siteKit,
     menus: await loadStoreMenus(merchant.id),
-    installedPlugins: await listStorefrontPlugins(merchant.id),
     reviews: (reviews ?? []).map((r) => ({
       author: r.author_name ?? "",
       rating: Number(r.rating) || 0,
@@ -551,10 +632,10 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
       body: r.body,
       published_at: r.published_at,
     })),
-    ast: null,
-    tokens: null,
-    themeKey: null,
-    themeVersionId: null,
+    ast: theme?.ast ?? null,
+    tokens: theme?.tokens ?? null,
+    themeKey: theme?.themeKey ?? null,
+    themeVersionId: theme?.versionId ?? null,
   };
 }
 

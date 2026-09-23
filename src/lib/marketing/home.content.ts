@@ -3,7 +3,7 @@
  *
  * Pure data module: no React, no JSX, no network. It is the typed transcript
  * of `docs/05-marketing/copy/01-home.md` for every band whose copy is *static*
- * marketing prose (hero, rails, product tour, sections, comparison, COD
+ * marketing prose (hero, rails, product tour, themes, comparison, COD
  * economics, pricing framing, stories framing, final CTA).
  *
  * Two things deliberately do NOT live here, because they are not static copy:
@@ -74,7 +74,7 @@ export const TOUR_ROWS: readonly TourRow[] = [
     id: "storefront",
     direction: "left",
     title: "Launch a storefront, not a ticket",
-    body: "Drag sections, publish. Bangla and English from the same catalogue — no duplicate products, no translation plugin drifting out of sync.",
+    body: "Pick a theme, drag sections, publish. Bangla and English from the same catalogue — no duplicate products, no translation plugin drifting out of sync.",
     proof: "Live in a day",
   },
   {
@@ -114,47 +114,47 @@ export const TOUR_ROWS: readonly TourRow[] = [
   },
 ] as const;
 
-/* ----------------------------------------------------------------- sections */
+/* ------------------------------------------------------------------- themes */
 
-export type SectionCard = {
+export type ThemeCard = {
   id: string;
   name: string;
   useCase: string;
   body: string;
 };
 
-export const SECTIONS = {
-  title: "One storefront. Build it your way.",
-  sub: "Every store starts from the same fast default — no design-pack hunting, no premium unlock fee.",
-  subBn: "একটি স্টোরফ্রন্ট। আপনার মতো করে সাজান।",
+export const THEMES = {
+  title: "Five themes. Pick the one that matches how you actually sell.",
+  sub: "Every theme ships production-ready — no theme-store hunting, no premium unlock fee.",
+  subBn: "পাঁচটি থিম। আপনি যেভাবে বিক্রি করেন, সেই অনুযায়ী একটি বেছে নিন।",
   cards: [
     {
-      id: "catalogue",
-      name: "Catalogue",
+      id: "classic",
+      name: "Classic",
       useCase: "A broad catalogue, many categories",
       body: "A timeless wide grid built for apparel, homeware and general stores with 50+ SKUs. Category rails stay visible and filters sit above the fold.",
     },
     {
-      id: "lookbook",
-      name: "Lookbook",
+      id: "modern",
+      name: "Modern",
       useCase: "Fashion, beauty, home décor",
       body: "An airy editorial lookbook where photography does the selling — wide-format hero imagery and generous whitespace that signals price tier.",
     },
     {
-      id: "campaign",
-      name: "Campaign",
+      id: "landing",
+      name: "Landing",
       useCase: "A single hero product or campaign",
       body: "One hero, one offer, one CTA, repeated proof bands stacked to the fold — built for a launch or a paid-traffic campaign, not a multi-product catalogue.",
     },
     {
-      id: "high-density",
-      name: "High-density",
+      id: "supershop",
+      name: "Supershop",
       useCase: "Grocery, FMCG, small frequent baskets",
       body: "Grocery-aisle density with quick-add on every card, a sticky cart summary and aisle-style category chips instead of a wide hero.",
     },
     {
-      id: "wholesale",
-      name: "Wholesale",
+      id: "b2b",
+      name: "B2B",
       useCase: "Wholesale, distributors, business buyers",
       body: "A quote-first wholesale layout: tiered pricing tables, minimum order quantities enforced at the cart, and a request-a-quote flow ahead of checkout.",
     },
@@ -163,7 +163,7 @@ export const SECTIONS = {
   title: string;
   sub: string;
   subBn: string;
-  cards: SectionCard[];
+  cards: ThemeCard[];
 };
 
 /* --------------------------------------------------------------- comparison */
@@ -389,7 +389,7 @@ export const HOW_IT_WORKS = {
       id: "signup",
       step: "01",
       title: "Open your store",
-      body: "Sign up with a phone number or email, pick your store name and a starting layout. Connect your custom domain and your storefront is live before you add a single product.",
+      body: "Sign up with a phone number or email, pick your store name and a theme. Connect your custom domain and your storefront is live before you add a single product.",
       effort: "About 5 minutes",
     },
     {
@@ -467,7 +467,7 @@ export const AUDIENCES = {
       id: "grocery",
       name: "Grocery and FMCG",
       useCase: "Small, frequent baskets",
-      body: "Aisle-dense layouts, quick-add on every card and a sticky basket, because a 22-item order dies on a layout designed for three-item fashion carts.",
+      body: "Aisle-dense layouts, quick-add on every card and a sticky basket, because a 22-item order dies on a theme designed for three-item fashion carts.",
     },
     {
       id: "digital",
@@ -507,7 +507,7 @@ export const OBJECTIONS = {
       id: "technical",
       worry: '"I\'m not technical — will I get stuck?"',
       answer:
-        "Setup is a form and a section picker, not a deployment. If you do get stuck, support answers in Bangla, and a 20-minute walkthrough is free whether or not you ever pay us.",
+        "Setup is a form and a theme picker, not a deployment. If you do get stuck, support answers in Bangla, and a 20-minute walkthrough is free whether or not you ever pay us.",
     },
     {
       id: "cod",

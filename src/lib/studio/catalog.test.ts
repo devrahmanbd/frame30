@@ -14,9 +14,17 @@ const PORTED = [
   "banner",
   "trust_bar",
   "announcement_bar",
+  "heritage_story",
+  "editorial_banner",
   "editorial_hero",
   "lookbook",
   "hero",
+  "textile_showcase",
+  "department_grid",
+  "story_trunk",
+  "marquee_strip",
+  "hero_carousel",
+  "testimonial_carousel",
   "feature_row",
   "utility_bar",
   "footer_sitemap",
@@ -102,6 +110,9 @@ const PORTED = [
   "compare_tray",
   "bundle_offer",
   "add_to_cart",
+  "rewards_club",
+  "wedding_shop",
+  "gift_finder",
   "rich_text",
   "form",
   "nav_menu",
@@ -151,6 +162,9 @@ const COMMERCE_PORTED = new Set([
   "compare_tray",
   "bundle_offer",
   "add_to_cart",
+  "rewards_club",
+  "wedding_shop",
+  "gift_finder",
   "buy_box",
   "variant_picker",
   "sticky_buy_bar",
@@ -652,6 +666,9 @@ describe("ported theme widgets", () => {
       i1VariantId: "",
     });
     expect(WIDGET_BY_KEY.add_to_cart.defaults).toMatchObject({ label: "Add to cart", showQuantity: true });
+    expect(WIDGET_BY_KEY.rewards_club.defaults).toMatchObject({ heading: "My Rewards", tier1Name: "Silver", tier2Points: "5,000+ points", buttonHref: "/pages/rewards" });
+    expect(WIDGET_BY_KEY.wedding_shop.defaults).toMatchObject({ heading: "The Wedding Shop", c1Name: "Bridal Sarees", c1Href: "/c/bridal", buttonHref: "/c/wedding" });
+    expect(WIDGET_BY_KEY.gift_finder.defaults).toMatchObject({ heading: "Find the perfect gift", o1Label: "For Her", o1Query: "saree", buttonHref: "/search" });
     expect(WIDGET_BY_KEY.rich_text.defaults).toMatchObject({ heading: "", body: "Tell customers about your store." });
     expect(WIDGET_BY_KEY.form.defaults).toMatchObject({ heading: "Send us a message", buttonLabel: "Send", showPhone: true });
     expect(WIDGET_BY_KEY.nav_menu.defaults).toMatchObject({ heading: "", layout: "row", align: "left" });

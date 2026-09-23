@@ -1,20 +1,19 @@
 # 12 — Marketplace
 
 Status: Planning · Slice (post-S7) · Reference: `/plan.md` §3.14 (market), `04-builder` (widgets)
-Design: `design-system.md` (marketplace surfaces use official design kit)
-Depth specs: [`marketplace.md`](marketplace.md) (registry, listing lifecycle `draft → active → paused → archived`, reviewer persona, install contract) · [`plugins.md`](plugins.md) (manifest, worker sidecar runtime, consent, purge machine)
+Design: `design-system.md` (marketplace surfaces use official theme kit)
+Depth specs: [`marketplace.md`](marketplace.md) (registry, listing lifecycle `draft → active → paused → archived`, reviewer persona, install contract) · [`plugins.md`](plugins.md) (manifest, worker sidecar runtime, consent, purge machine) · [`themes.md`](themes.md) (source vault, preview sandbox, install → publish → rollback machine)
 
 ---
 
 ## 1. Purpose
 
 Two-sided marketplace. **Side A — extensions marketplace (pre-existing):
-plugins and widgets/extensions (limit: widget registry validated,
+themes (paid/free) and widgets/extensions (limit: widget registry validated,
 pricing rules). Merchants install via Builder; creators publish via sandbox +
 review. Commission on paid items per global policy. Framer is vendor of
 record: it collects payouts; creators get `payouts` (reuse 06 wallet ledger),
-70/30 split; tax/VAT handled; dispute funnel to support. (Design packs were
-retired 2026-09-23 and are not sold here.)
+70/30 split; tax/VAT handled; dispute funnel to support.
 
 **Side B — merchant listings (new).** A tenant merchant can list catalog items
 that appear in other tenants' storefront carts for cross-tenant order -- the
@@ -30,9 +29,9 @@ private data.
 
 ## 2. Pages & features
 
-- **Marketplace grid**: plugins + widgets + product listings; preview (live
-  manifest), badges (formally baked), versioned, compatibility check.
-- **Plugin install flow**: version-aware; breaking-change breakdown; server-side
+- **Marketplace grid**: themes + widgets + product listings; preview (live
+  `theme.yml`), badges (formally baked), versioned, compatibility check.
+- **Theme install flow**: version-aware; breaking-change breakdown; server-side
   price/trial validation; rollback to last-good on failure.
 - **Widget install flow**: built-in (By Framer) + community; review queue w/ AST
   validation + banned-list.
@@ -51,8 +50,8 @@ tenant:
 
 | Table                         | Role                                                                 |
 | ----------------------------- | -------------------------------------------------------------------- |
+| `themes` / `theme_versions`   | installed themes + pinned version                                    |
 | `widgets` / `widget_versions` | registered widgets + versions                                        |
-| `plugins` / `plugin_versions` | registered plugins + versions                                        |
 | `listings`                    | merchant cross-tenant listing (`merchant_id` = seller, `listing_id`) |
 | `reviews`                     | creator reviews                                                      |
 | `sales`                       | sale events tied to ledger                                           |
@@ -126,7 +125,7 @@ Pre-existing events preserved and mapped to canonical keys:
 
 | Legacy key                      | Canonical key                             |
 | ------------------------------- | ----------------------------------------- |
-| `marketplace.plugin.published`    | `marketplace.plugin_published`            |
+| `marketplace.theme.published`   | `marketplace.theme_published`             |
 | `marketplace.widget.installed`  | `marketplace.widget_installed`            |
 | `marketplace.widget.deprecated` | `marketplace.widget_deprecated`           |
 | `marketplace.sale.settled`      | `marketplace.settled` (same ledger event) |
@@ -164,26 +163,26 @@ Marketplace remains vendor-neutral where the platform can sink:
 - Never color-only status: paid/free/deprecated always paired with icon+text.
 - Preview images have alt + keyboard path; install button contrast ≥ 4.5:1.
 - LCP < 2.5 s on mid-range Bengal 3G-class network (design-system §8); preview
-  lazily loads your plugins only; CDN width-resized images.
+  lazily loads your themes only; CDN width-resized images.
 - Marketplace browsing never blocks; a Marketplace outage cannot block a
   running storefront.
 
-## 10. Design guidelines — marketplace browse, plugin preview, creator submit, cross-listing
+## 10. Design guidelines — marketplace browse, theme preview, creator submit, cross-listing
 
 - Intent: discover fast, preview honest, purchase frictionless, install
   visible, cross-sell trustful.
-- Key surfaces: marketplace grid; plugin asset preview (`?preview` embeds a
-  `plugin` JSON); install confirmation (breaking-changes list); creator
+- Key surfaces: marketplace grid; theme asset preview (`?preview` embeds a
+  `theme` JSON); install confirmation (breaking-changes list); creator
   dashboard; revenue card.
 - Palette: platform teal for the primary action; paid badge in gold (BDT), free
   in mint; deprecated amber badge on versions; never color-only.
-- Typography: plugin title/summary Bangla + brand voice; tabular BDT figures;
+- Typography: theme title/summary Bangla + brand voice; tabular BDT figures;
   install CTA weight then moves.
 - Density: marketplace cards editorial (large previews); creator tables dense.
 - Motion: card hover lift 120ms (`--fq-dur-fast`); install progress ring 200ms (`--fq-dur-base`) with a success check; surface-level token at 120ms (`--fq-dur-fast`); `prefers-reduced-motion` → opacity-only, no layout shift.
 - A11y: preview alt + keyboard; install button contrast ≥ 4.5:1; focus
   never color-only; pass-through focus.
-- Performance: preview lazy-loads your plugins; CDN width-resizing; no blocking
+- Performance: preview lazy-loads your themes; CDN width-resizing; no blocking
   analytics.
 - Anti-slop: distinctive proof — live store-count card (real number from the public API); review block explains
   root with a snippet link; paid vs free is unmistakable (gold vs mint).

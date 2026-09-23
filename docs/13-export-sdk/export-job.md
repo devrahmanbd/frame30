@@ -35,7 +35,7 @@ signing → ready_for_download → downloaded | expired`, with a lateral
 
 Out of scope (own files/sections): webhook endpoint + delivery retry machine
 (README §4 + §7), Admin API keys + rate limiting (README), SDK codegen for
-Node/Go (README), plugin hook extension layer.
+Node/Go (README), theme hook extension layer (theme-registry contract).
 
 ## 3. Job records (`exports`) and artifact records (`export_files`)
 

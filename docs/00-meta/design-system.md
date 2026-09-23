@@ -2,11 +2,11 @@
 
 Status: Approved baseline (S1 design-skeleton slice)
 Owners: Product Design + Frontend Platform
-Scope: All pages (merchant admin, storefront designs, builder editor, POS, marketing, platform/auth). Every page-specific plan MUST include a "Design Guidelines" section that derives from this document and adds page-specific intent.
+Scope: All pages (merchant admin, storefront themes, builder editor, POS, marketing, platform/auth). Every page-specific plan MUST include a "Design Guidelines" section that derives from this document and adds page-specific intent.
 
 ---
 
-## 1. Design Principles (every page, every design)
+## 1. Design Principles (every page, every theme)
 
 1. **Bangla-first, English-safe.** UI copy defaults to Bangla for merchants and storefront customers; typography must render both Bangla (Bengali script) and Latin beautifully on one line. Never break Bangla script across lines for headlines (use `word-break` rules; avoid overflow-wrap on long conjuncts).
 2. **Calm density for work, expressive density for storefront.** Admin = high information density with clear visual hierarchy (dense tables, compact controls). Storefront = airy, editorial, product-forward.
@@ -20,15 +20,15 @@ Scope: All pages (merchant admin, storefront designs, builder editor, POS, marke
 
 ## 2. Token Architecture
 
-Three layers, emitted as CSS custom properties (runtime-agnostic — designs consume tokens, not compiled design):
+Three layers, emitted as CSS custom properties (runtime-agnostic — themes consume tokens, not compiled design):
 
 | Layer         | Contents                                                                                                                                                                                                                                               | Mutation                                                  |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
 | **Primitive** | `--fq-color-bd-teal-50..950`, `--fq-radius-xs..3xl`, `--fq-space-1..16`, `--fq-font-bangla`, `--fq-font-latin`, elevation shadows, motion durations/easings                                                                                            | Never changes; semantic maps to them                      |
-| **Semantic**  | `--fq-bg-canvas`, `--fq-bg-surface`, `--fq-text-primary`, `--fq-text-muted`, `--fq-border`, `--fq-accent`, `--fq-accent-fg`, `--fq-success`, `--fq-warning`, `--fq-danger`, `--fq-info`, `--fq-focus-ring`, `--fq-overlay`, status chips, input states | Mapped per design (light/dark; storefront design overrides) |
-| **Component** | button/input/card/table/stepper/kbd/modal variants consuming semantic tokens                                                                                                                                                                           | Per-design tweaks only                                     |
+| **Semantic**  | `--fq-bg-canvas`, `--fq-bg-surface`, `--fq-text-primary`, `--fq-text-muted`, `--fq-border`, `--fq-accent`, `--fq-accent-fg`, `--fq-success`, `--fq-warning`, `--fq-danger`, `--fq-info`, `--fq-focus-ring`, `--fq-overlay`, status chips, input states | Mapped per theme (light/dark; storefront theme overrides) |
+| **Component** | button/input/card/table/stepper/kbd/modal variants consuming semantic tokens                                                                                                                                                                           | Per-theme tweaks only                                     |
 
-Theming rule: **merchant admin designs and storefront designs only ever override semantic + component layers.** Storefront design authors get a documented subset (brand palette → semantic mapping) — see 03-storefront and 04-builder.
+Theming rule: **merchant admin themes and storefront themes only ever override semantic + component layers.** Storefront theme authors get a documented subset (brand palette → semantic mapping) — see 03-storefront and 04-builder.
 
 ---
 
@@ -51,14 +51,14 @@ Theming rule: **merchant admin designs and storefront designs only ever override
 
 ### 3.3 Storefront brand mapping
 
-Designs map merchant brand (primary/secondary/background) → semantic tokens via the builder's brand editor; contrast is auto-checked with a live badge ("This color makes text hard to read" / "contrast too low").
+Themes map merchant brand (primary/secondary/background) → semantic tokens via the builder's brand editor; contrast is auto-checked with a live badge ("This color makes text hard to read" / "contrast too low").
 
 ---
 
 ## 4. Typography
 
 - **Bangla display font**: “Noto Sans Bengali” (variable, free) for headings+body; fallback “SolaimanLipi”/“Kalpurush” for legacy OS. Load via `font-display: swap`, subset Bangla glyphs only, preload the main weight.
-- **Latin font**: Inter (admin UI) / system-ui on storefront designs.
+- **Latin font**: Inter (admin UI) / system-ui on storefront themes.
 - Type scale (fluid, `clamp()`): display 2.5–3.5rem, h1 1.875–2.25rem, h2 1.5–1.875rem, h3 1.25–1.5rem, body 1rem, small 0.875rem, caption 0.75rem. Line-height Bangla ≥ 1.6 (conjunct-heavy glyphs need air).
 - **Numerals**: `font-variant-numeric: tabular-nums` on all prices, order numbers, dashboards.
 - Admin: dense 0.875rem default, 8px line-height increments. Storefront: relaxed 1rem body, 1.75 line-height.
@@ -101,7 +101,7 @@ Designs map merchant brand (primary/secondary/background) → semantic tokens vi
 
 - Storefront LCP: hero image ≤ 250KB (WebP/AVIF), preload font subset, no render-blocking third-party, CLS < 0.1 (reserve aspect ratios).
 - Admin: route-level code splitting, virtualized tables > 200 rows, skeletons over spinners for data pages.
-- Design weight budget: CSS ≤ 60KB gzipped, JS ≤ 100KB gzipped per design.
+- Theme weight budget: CSS ≤ 60KB gzipped, JS ≤ 100KB gzipped per theme.
 
 ---
 
@@ -110,13 +110,13 @@ Designs map merchant brand (primary/secondary/background) → semantic tokens vi
 Adapted from the design-taste/hallmark/frontend-design practices — **every page spec must pass this before sign-off**:
 
 1. No default purple-blue "AI gradient" hero; use BD Teal + brand palette intentionally.
-2. Typography hierarchy exists (no everything-18px-gray). Bangla display font used on at least one display surface per storefront design.
-3. No generic emoji illustrations — iconography from one icon set (custom outline set for admin, designs may use their own).
+2. Typography hierarchy exists (no everything-18px-gray). Bangla display font used on at least one display surface per storefront theme.
+3. No generic emoji illustrations — iconography from one icon set (custom outline set for admin, themes may use their own).
 4. Empty states are designed (illustration + next action), not bare text.
 5. Micro-interactions exist (focus states, hover lifts, loading shimmer) but nothing animated without purpose.
 6. Real content previews (Bengali text, BDT prices, actual product names) — never Lorem Ipsum in mockups.
 7. Consistent radius/space/elevation from tokens — no bespoke values.
-8. Dark mode exists for admin + every official design ships light+dark.
+8. Dark mode exists for admin + every official theme ships light+dark.
 9. Mobile layout is designed, not a CSS afterthought.
 10. Accessibility auto-checks (axe) run in CI on every page snapshot.
 
@@ -144,7 +144,7 @@ Each planning doc page must include:
 
 ## 11. Design Deliverables per Slice (kept in sync with PLAN.md)
 
-- S1: token spec → first admin screens (login, onboarding, dashboard) + first storefront design (Design 01 "Char").
+- S1: token spec → first admin screens (login, onboarding, dashboard) + first storefront theme (Theme 01 "Char").
 - S3/S4: checkout + payment pages (the most sensitive design surface — see 06-payments).
 - S6: marketing pages + email templates (Bangla-first copy, brand palette).
 - S7: builder editor (canvas/tokens/device preview) + marketplace pages.

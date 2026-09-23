@@ -20,7 +20,7 @@ When launching or scaling an online store, founders typically evaluate three dis
 ├────────────────────────┼──────────────────────┼──────────────────────┼──────────────────────┤
 │ Hosting & Maintenance  │ Self-Hosted / Manual │ Fully Managed SaaS   │ Fully Managed Edge   │
 │ Platform Fee on Sales  │ 0.0%                 │ 0.5% – 2.0% Penalty  │ **0.0% (Zero)**      │
-│ Visual Design Canvas   │ Elementor / Clunky   │ Rigid Liquid Designs  │ **Bento Grids & Clamps│
+│ Visual Design Canvas   │ Elementor / Clunky   │ Rigid Liquid Themes  │ **Bento Grids & Clamps│
 │ Vulnerability Risk     │ High (Plugin Hacks)  │ Low (Proprietary)    │ Enterprise (RLS)     │
 │ Native MFS (bKash)     │ Unofficial Plugins   │ Paid App Store Apps  │ **Built-in Native**  │
 │ 1-Click Courier API    │ Complex REST Plugins │ Paid Third-Party Apps│ **Built-in Native**  │
@@ -36,7 +36,7 @@ Many bootstrapped founders choose WooCommerce because WordPress is "free." Howev
 
 - **Hosting Crashes During Flash Sales:** Standard shared or VPS hosting buckles under concurrent checkout traffic on major shopping days.
 - **The "White Screen of Death":** An automatic update to a bKash gateway or courier plugin conflicts with a PHP update, taking your checkout offline until a developer intervenes.
-- **Security Vulnerabilities:** Over 90% of all CMS security breaches target unpatched WordPress plugins and designs.
+- **Security Vulnerabilities:** Over 90% of all CMS security breaches target unpatched WordPress plugins and themes.
 
 ---
 

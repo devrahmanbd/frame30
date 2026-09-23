@@ -15,7 +15,7 @@ Vite converts that policy to its JavaScript syntax target at build time with
 - Native View Transitions and Popover APIs are not required by the storefront.
   Components use ordinary navigation and Radix overlays, so unsupported APIs
   do not remove functionality.
-- The design editor intentionally requires a viewport at least 1024px wide.
+- The theme editor intentionally requires a viewport at least 1024px wide.
   Narrower screens receive a supported-viewport notice instead of mounting the
   data-heavy editor and its canvas.
 

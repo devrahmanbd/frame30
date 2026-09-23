@@ -77,8 +77,8 @@ bookmark 404s (Phase 5 executes this table).
 | `/admin/marketing/media`        | 222  | local                               | med   | merge   | Content › Media tab                   |
 | `/admin/marketing/seo`          | 536  | `seo.functions`                     | med   | merge   | Content › SEO tab                     |
 | `/admin/marketing/forms`        | 330  | `cms.functions`                     | low   | merge   | Content › Forms tab                   |
-| `/admin/builder`                | 1815 | `builder-*`, `designs.functions`     | high  | keep    | Full-screen editor, no console chrome |
-| `/admin/marketplace`            | 432  | `marketplace.functions`             | med   | keep    | Content › Designs & apps tab           |
+| `/admin/builder`                | 1815 | `builder-*`, `themes.functions`     | high  | keep    | Full-screen editor, no console chrome |
+| `/admin/marketplace`            | 432  | `marketplace.functions`             | med   | keep    | Content › Themes & apps tab           |
 | `/admin/marketplace/creator`    | 313  | `marketplace.functions`             | low   | merge   | Marketplace › Creator tab             |
 | `/admin/marketplace/versions`   | 340  | `marketplace.functions`             | low   | merge   | Marketplace › Versions tab            |
 | `/admin/marketplace/moderation` | 226  | `marketplace.functions`             | low   | delete  | Platform concern — belongs to `/root` |
@@ -132,7 +132,7 @@ surfaces (builder, POS, invoice print) and 3 detail routes.
 | Orders    | All · Returns · Drafts · Abandoned · Shipping                                         |
 | Products  | All · Inventory · Organisation · Pricing · More (bundles, subs, purchasing, settings) |
 | Customers | All · Support · Reviews                                                               |
-| Content   | Pages · Posts · Media · SEO · Designs & apps                                           |
+| Content   | Pages · Posts · Media · SEO · Themes & apps                                           |
 | Marketing | Campaigns · Discounts · Audience                                                      |
 | Money     | Payments · Invoices · Plan · Risk · Rails                                             |
 | Settings  | General · Staff · Domains · Security · Developers                                     |

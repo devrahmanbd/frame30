@@ -27,7 +27,7 @@ Nothing here re-runs OAuth. The plugin auth/zap-walk design is owned by `docs/13
 
 - OAuth server internals → `docs/13-export-sdk/oauth.md`.
 - Core analytics pipeline internals → `docs/09-analytics/event-pipeline.md`.
-- Plugin mechanics → `plugins.md`; market/listing mechanics → `marketplace.md`.
+- Theme mechanics → `themes.md`; market/listing mechanics → `marketplace.md`.
 - Widget blade validity → `docs/04-builder/app-blocks.md` (referenced for sandbox rules).
 
 ## 3. Design decision (approved): one runtime — worker sidecar host
@@ -114,7 +114,7 @@ Reader/writer gate uses the permission rules in the manner of `staff-rbac.md` "r
 
 Plugins subscribe to a **closed, short** event list. Event glossary = server-beacon events from `docs/09-analytics/event-pipeline.md` (that's the canonical source; nothing here re-mints) + explicitly-marketed marketing hooks from `docs/05-marketing`. Represented as a literal enum (single source of truth in code; table mirrors it):
 
-- `storefront.pin_published` (plugin install)
+- `storefront.pin_published` (theme install)
 - `checkout.order_placed` / `product_events`
 - `cart.cart_updated`
 - `marketing.consent_updated` (marketing preference changed)

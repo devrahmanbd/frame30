@@ -6,7 +6,7 @@
 > 2. `/pricing` (Flat SaaS Pricing & Taka Margin Savings vs Shopify 2% App Tax)
 > 3. `/features` (All-in-One Hosted Commerce vs Frankenstein Plugin Stacks)
 > 4. `/faq` (Long-Form Decision Resolution & Schema.org FAQPage Graph)
-> 5. `/builder` (Visual Studio Bento Grid Canvas & OKLCH Design Architecture)
+> 5. `/builder` (Visual Studio Bento Grid Canvas & OKLCH Theme Architecture)
 > 6. `/payments` (Native Tokenized bKash/Nagad Rails & Zero Escrow Settlement)
 > 7. `/fulfilment` (1-Click Steadfast/Pathao Courier Dispatch & COD Anti-Fraud)
 > 8. `/about` (Engineering Philosophy & Zero Vendor Lock-in Architecture)
@@ -139,7 +139,7 @@ This blueprint provides **drop-in, SEO-optimized content payloads** that match e
 ##### B. Bento Grid Feature Architecture (Drop-in Copy)
 
 - **Card 1 (Visual Studio):**
-  - _Title:_ `Bento Grid Visual Design Studio`
+  - _Title:_ `Bento Grid Visual Theme Studio`
   - _Copy:_ `Customize layouts, micro-interactions, responsive typography, and OKLCH color palettes visually with instant real-time canvas preview.`
 - **Card 2 (Unified Inventory & POS):**
   - _Title:_ `Unified Online & Physical Counter Ledger`
@@ -200,7 +200,7 @@ This blueprint provides **drop-in, SEO-optimized content payloads** that match e
 #### 2. Key Copy Injection
 
 - **H1 Headline:** `Visual design freedom meets transactional commerce muscle.`
-- **Subheadline:** `Say goodbye to restrictive design templates. Framique's Visual Studio empowers designers to build responsive Bento grid storefronts with freeform typographic control, OKLCH color palettes, and open React extensibility.`
+- **Subheadline:** `Say goodbye to restrictive theme templates. Framique's Visual Studio empowers designers to build responsive Bento grid storefronts with freeform typographic control, OKLCH color palettes, and open React extensibility.`
 
 ---
 

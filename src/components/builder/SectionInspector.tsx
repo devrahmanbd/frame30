@@ -240,8 +240,8 @@ export function SectionInspector({
       <div className="space-y-3">
         <p className="rounded-fq-md border border-danger bg-danger-soft p-3 text-sm text-danger-foreground">
           {t(
-            "This widget is not supported by the current widget set.",
-            "বর্তমান উইজেট সেট এই উইজেট সাপোর্ট করে না।",
+            "This widget is not supported by the current theme engine.",
+            "বর্তমান থিম ইঞ্জিন এই উইজেট সাপোর্ট করে না।",
           )}
         </p>
         <button

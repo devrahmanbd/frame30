@@ -21,7 +21,7 @@ on mobile mid-range Android — the storefront README's state machine
 ## 2. Design decisions
 
 - **DD-1 — Cart is server-side and session-bound.** Line-item state lives in
-  `carts`/`cart_items` (`07-commerce`); design JS is untrusted — every mutation
+  `carts`/`cart_items` (`07-commerce`); theme JS is untrusted — every mutation
   goes through the Go gateway scoped to a cart_id. Anonymous carts bind to an
   anonymous session token (cookie); customer carts bind to the user. Login
   merge is deterministic: `updated_at` wins, other side discarded and logged
@@ -147,7 +147,7 @@ Errors (4xx, code + Bangla message): `cart_empty`, `cart_expired`,
 
 ---
 
-### Design guidelines — cart drawer, checkout steps, confirmation (all designs, AAA)
+### Design guidelines — cart drawer, checkout steps, confirmation (all themes, AAA)
 
 - Intent: the money moment feels instant, trustworthy, zero-friction; Bangla surfaces, every monetary figure tabular BDT, reassurance ("Your payment is secure") without noise.
 - Key surfaces: cart drawer with stub bar, checkout steps (items → method → confirm), payment method cards w/ logos, MFS loading state, confirmation with VAT split line, order tracking skeleton stub.

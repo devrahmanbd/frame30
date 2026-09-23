@@ -35,6 +35,8 @@ export const Route = createFileRoute("/store/$slug/search")({
   // the HTML a crawler (or a shopper on a dead 3G connection) receives.
   loader: async ({ params, deps }) => {
     const state = normalizeSearchParams(deps as Record<string, unknown>);
+    // The published `search` template is fetched alongside the results, so the
+    // page arrives already wearing the merchant's theme.
     const [outcome, chrome] = await Promise.all([
       searchStorefrontFn({
         data: {
@@ -147,8 +149,8 @@ function SearchPage() {
   const pages = pageCount(result?.total ?? 0, result?.limit ?? PAGE_SIZE);
   const filters = activeFilterCount(params);
 
-  // The whole listing — query box, facets, results, pager — is the page,
-  // rendered with default chrome.
+  // The whole listing — query box, facets, results, pager — is one block so a
+  // theme's search template can place and style it wherever it likes.
   const listing = (
     <>
       <form
@@ -505,6 +507,8 @@ function SearchPage() {
       template="search"
       storeSlug={slug}
       merchantId={chrome?.merchant.id ?? null}
+      ast={chrome?.ast ?? null}
+      tokens={chrome?.tokens ?? null}
       siteKit={chrome?.siteKit ?? null}
       installedPlugins={chrome?.installedPlugins ?? []}
       chrome={
@@ -514,6 +518,7 @@ function SearchPage() {
           {/* <SupportWidget slug={slug} /> */}
         </>
       }
+      productSlot={listing}
       fallback={
         <>
           {heading}

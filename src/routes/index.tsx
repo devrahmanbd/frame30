@@ -10,6 +10,9 @@ import {
 } from "@/lib/storefront.functions";
 import { buildMarketingHead, buildGraph } from "@/lib/marketing-seo";
 import { buildPageHead, buildStoreHead } from "@/lib/theme-seo";
+import { fontHeadLinks } from "@/lib/theme-fonts";
+import { astJsonLd } from "@/lib/structured-data";
+import { flattenAst } from "@/lib/builder-ast";
 import { verificationTags } from "@/lib/search-console";
 import { FAQ_ROWS } from "@/lib/landing";
 import { en } from "@/lib/i18n-dict";
@@ -68,6 +71,7 @@ export const Route = createFileRoute("/")({
           path: "/",
           storePath: `/`,
           storeName: storefront.merchant.name,
+          themeKey: home.themeKey,
           robots: home.page.robots,
           noindex: (home.page.robots ?? "").startsWith("noindex"),
           seo: home.seo ?? null,
@@ -79,6 +83,7 @@ export const Route = createFileRoute("/")({
         origin: storefront.origin,
         path: `/`,
         storeName: storefront.merchant.name,
+        themeKey: storefront.themeKey,
         tagline: storefront.settings?.tagline ?? null,
         seo: storefront.seo,
         products: storefront.products.map((p) => ({
@@ -100,10 +105,27 @@ export const Route = createFileRoute("/")({
         ],
         links: [
           ...(base.links ?? []),
+          ...fontHeadLinks(
+            storefront.tokens ?? {
+              fontDisplay: "Noto Sans Bengali",
+              fontBody: "Inter",
+            },
+          ),
           ...custom.filter((t) => t.tag === "link").map((t) => t.attrs),
         ],
         scripts: [
           ...(base.scripts ?? []),
+          ...astJsonLd(
+            storefront.ast,
+            {
+              storeName: storefront.merchant.name,
+              url: storefront.origin ? `${storefront.origin}/` : null,
+            },
+            flattenAst,
+          ).map((node) => ({
+            type: "application/ld+json",
+            children: JSON.stringify(node).replace(/</g, "\\u003c"),
+          })),
           ...custom
             .filter(
               (t): t is Extract<typeof t, { tag: "script" }> =>

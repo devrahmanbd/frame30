@@ -22,7 +22,7 @@ parent_entity: "devrahmanbd (Organization)"
 
 The modern website building landscape forces merchants to pick their poison:
 
-- Choose **Shopify**, and you surrender your design vision to rigid Liquid designs while paying a 2.0% transaction penalty and $300+/month in app subscriptions.
+- Choose **Shopify**, and you surrender your design vision to rigid Liquid themes while paying a 2.0% transaction penalty and $300+/month in app subscriptions.
 - Choose **Webflow**, and you enjoy visual layout precision, only to hit a brick wall when your product catalog reaches 2,000 items or your mobile site bogs down in client-side JavaScript.
 - Choose **Framer**, and you marvel at the Figma-like animations, but discover you cannot track real inventory, manage variant matrices, or integrate local payment gateways without external embed hacks.
 
@@ -41,7 +41,7 @@ The modern website building landscape forces merchants to pick their poison:
 | Core Architectural Dimension    | Shopify Advanced             | Webflow E-Commerce     | Framer Sites            | FRAMIQUE Pro                  |
 | ------------------------------- | ---------------------------- | ---------------------- | ----------------------- | ----------------------------- |
 | **Platform Transaction Fee**    | **2.0% (External Gateways)** | 0% – 2.0%              | N/A (External Embeds)   | **0.00% (Strict Zero)**       |
-| **Visual Design Interface**     | Rigid Liquid Designs          | Visual Box Model       | Freeform Visual Canvas  | **Freeform Visual Canvas**    |
+| **Visual Design Interface**     | Rigid Liquid Themes          | Visual Box Model       | Freeform Visual Canvas  | **Freeform Visual Canvas**    |
 | **Dynamic CMS Catalog Limit**   | Uncapped                     | **2,000 Items Max**    | Limited CMS Collections | **Uncapped (PostgreSQL)**     |
 | **Native Inventory Management** | Full                         | Basic                  | None (Embed Dependent)  | **Full Relational Inventory** |
 | **Local Payment Rails (bKash)** | Redirection Plugins          | None                   | None                    | **Native Tokenized APIs**     |

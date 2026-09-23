@@ -33,13 +33,13 @@ export const FAQ_SECTIONS: readonly FaqSection[] = [
         id: "how-long",
         question: "How long does it take to open a store?",
         answer:
-          "Most merchants have a live storefront on their own domain within an hour: sign up, name the store, pick a starting layout, connect the domain, add your first products. Connecting bKash or Nagad adds roughly ten minutes per rail because you paste merchant credentials you already hold.",
+          "Most merchants have a live storefront on their own domain within an hour: sign up, name the store, pick a theme, connect the domain, add your first products. Connecting bKash or Nagad adds roughly ten minutes per rail because you paste merchant credentials you already hold.",
       },
       {
         id: "developer",
         question: "Do I need a developer?",
         answer:
-          "No. Setup is a form and a section picker — there is nothing to deploy, host or patch. A developer is only useful if you want to build custom sections or call the REST API, and both are documented rather than gated behind a partner programme.",
+          "No. Setup is a form and a theme picker — there is nothing to deploy, host or patch. A developer is only useful if you want to build a custom theme or call the REST API, and both are documented rather than gated behind a partner programme.",
       },
       {
         id: "migrate",
@@ -51,7 +51,7 @@ export const FAQ_SECTIONS: readonly FaqSection[] = [
         id: "trial",
         question: "What is included in the free trial?",
         answer:
-          "Fourteen days of the full platform — every section, all payment rails in test mode, courier booking and the POS. No card is required to start, and the trial does not convert to a paid plan on its own.",
+          "Fourteen days of the full platform — every theme, all payment rails in test mode, courier booking and the POS. No card is required to start, and the trial does not convert to a paid plan on its own.",
       },
       {
         id: "domain",

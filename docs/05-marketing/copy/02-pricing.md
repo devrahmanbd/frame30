@@ -37,7 +37,7 @@ Scope: full pricing narrative — tiers, true unit economics of running a Bangla
 5. Break-even calculator
 6. Annual vs monthly, honestly
 7. Plan-choice decision tree
-8. Builder-to-plan fit
+8. Theme-to-plan fit
 9. Add-ons and limits
 10. Migration and exit guarantees
 11. Comparison — marketplace commission and DIY hosting
@@ -97,14 +97,14 @@ Per-card lines rendered from `plan_definitions`: products limit · staff seats �
 
 _Lever: reducing perceived risk by making every inclusion checkable, row by row, rather than bundled into vague marketing language._
 
-Rows: bKash · Nagad · Rocket · Upay · Card · COD · Bangla storefront · Page builder (sections + default storefront) · Courier booking (SteadFast, Pathao, RedX, Paperfly) · Fraud scoring · POS · API + webhooks · Staff roles · Audit log · Data export · Support channel.
+Rows: bKash · Nagad · Rocket · Upay · Card · COD · Bangla storefront · Theme builder (5 official themes) · Courier booking (SteadFast, Pathao, RedX, Paperfly) · Fraud scoring · POS · API + webhooks · Staff roles · Audit log · Data export · Support channel.
 
 | Feature                      | Starter | Growth       | Scale         | Enterprise     |
 | ---------------------------- | ------- | ------------ | ------------- | -------------- |
 | bKash / Nagad / COD          | ✓       | ✓            | ✓             | ✓              |
 | Rocket / Upay / Card         | —       | ✓            | ✓             | ✓              |
 | Bangla storefront            | ✓       | ✓            | ✓             | ✓              |
-| Page builder (sections)    | ✓       | ✓            | ✓             | ✓              |
+| Theme builder (5 themes)     | ✓       | ✓            | ✓             | ✓              |
 | Courier booking (4 couriers) | ✓       | ✓            | ✓             | ✓              |
 | Fraud scoring                | —       | ✓            | ✓             | ✓              |
 | POS                          | —       | —            | ✓             | ✓              |
@@ -227,7 +227,7 @@ _Lever: letting the visitor plug in their own numbers converts an abstract claim
 _Lever: pre-empting the "annual is always better" reflex with an actual condition, which increases trust in every other number on the page._
 
 **H2**: Annual isn't automatically the right call.
-**Body**: Annual billing is two months free against monthly — a genuine 16.7% discount. It is the right choice once you're confident in your order volume for the next 12 months. It is the wrong choice if you are still validating demand, still deciding your page structure, or likely to upgrade tiers mid-year: the unused portion of an annual plan is not refunded pro-rata against an upgrade, only credited toward the new tier's annual price.
+**Body**: Annual billing is two months free against monthly — a genuine 16.7% discount. It is the right choice once you're confident in your order volume for the next 12 months. It is the wrong choice if you are still validating demand, still deciding your theme, or likely to upgrade tiers mid-year: the unused portion of an annual plan is not refunded pro-rata against an upgrade, only credited toward the new tier's annual price.
 
 | Situation                                 | Recommended billing                                                                                       | Why                                                                        |
 | ----------------------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
@@ -267,22 +267,22 @@ _Lever: decision architecture — replacing "which plan sounds best" with a sequ
 
 ---
 
-## 8. Builder-to-plan fit
+## 8. Theme-to-plan fit
 
-_Lever: reducing post-purchase uncertainty by mapping the abstract plan decision onto a concrete building choice the merchant will make immediately after signing up._
+_Lever: reducing post-purchase uncertainty by mapping the abstract plan decision onto a concrete visual choice the merchant will make immediately after signing up._
 
-**H2**: Which page setup fits your plan.
-**Body**: The full section library is available on every plan; the mapping below is about typical merchant shape, not a feature gate.
+**H2**: Which of the 5 themes fits your plan.
+**Body**: All five official themes — Classic, Modern, Landing, Supershop, B2B — are available on every plan; the mapping below is about typical merchant shape, not a feature gate.
 
-| Setup        | Typical merchant                                            | Best-fit plan     | Why                                                                           |
-| ------------ | ----------------------------------------------------------- | ----------------- | ----------------------------------------------------------------------------- |
-| Catalogue sections | General retail, mixed catalogue                       | Starter, Growth   | Balanced grid layout suits a broad SKU range without heavy customisation      |
-| Lookbook sections  | Fashion, lifestyle, single-brand D2C                  | Growth            | Full-bleed imagery and editorial layout reward a curated, mid-size catalogue  |
-| Campaign page      | Single-product or campaign-led launches               | Starter           | One SKU, one funnel — matches Starter's lower SKU ceiling exactly             |
-| High-density grids | High-SKU, high-frequency reorder categories (grocery, FMCG) | Scale       | Dense grid and fast search infrastructure need Scale's higher limits          |
-| Wholesale blocks   | Wholesale, quote-based, account-gated pricing         | Scale, Enterprise | Account-tiered pricing and staff-role permissions need the higher seat counts |
+| Theme     | Typical merchant                                            | Best-fit plan     | Why                                                                           |
+| --------- | ----------------------------------------------------------- | ----------------- | ----------------------------------------------------------------------------- |
+| Classic   | General retail, mixed catalogue                             | Starter, Growth   | Balanced grid layout suits a broad SKU range without heavy customisation      |
+| Modern    | Fashion, lifestyle, single-brand D2C                        | Growth            | Full-bleed imagery and editorial layout reward a curated, mid-size catalogue  |
+| Landing   | Single-product or campaign-led launches                     | Starter           | One SKU, one funnel — matches Starter's lower SKU ceiling exactly             |
+| Supershop | High-SKU, high-frequency reorder categories (grocery, FMCG) | Scale             | Dense grid and fast search infrastructure need Scale's higher limits          |
+| B2B       | Wholesale, quote-based, account-gated pricing               | Scale, Enterprise | Account-tiered pricing and staff-role permissions need the higher seat counts |
 
-**Design note**: 5-up card row → 2-up at 900px, each card a small section thumbnail (16:10) inside `{components.glass-card}`, plan-fit shown as caption text under the thumbnail, not a badge.
+**Design note**: 5-up card row → 2-up at 900px, each card a small theme thumbnail (16:10) inside `{components.glass-card}`, plan-fit shown as caption text under the thumbnail, not a badge.
 
 ---
 
@@ -343,7 +343,7 @@ _Lever: contrast framing against the two most common alternatives a Bangladeshi 
 | Cost at 50 orders/month, ৳1,200 AOV  | 8% commission benchmark ≈ ৳4,800/month                                      | `[PLACEHOLDER plan price]`/month, e.g. ৳2,490                                            |
 | Cost at 1,000 orders/month, same AOV | 8% commission ≈ ৳96,000/month                                               | Same flat fee, e.g. ৳2,490/month — a materially smaller share of revenue as volume grows |
 | Customer data ownership              | Often restricted or shared with the marketplace                             | Store owns full customer and order data, exportable                                      |
-| Storefront brand control             | Limited — shared marketplace UI                                             | Full control over pages, sections and brand tokens                             |
+| Storefront brand control             | Limited — shared marketplace UI                                             | Full theme control across 5 official themes                                              |
 | Pricing visibility                   | Total commission often bundled with hidden processing and ad-placement fees | Rail fee, courier fee and plan fee are shown as separate line items                      |
 
 ### vs self-hosting / DIY (own server + open-source cart)
@@ -376,7 +376,7 @@ _Lever: addressing the actual hesitation directly, in the merchant's own likely 
    Rail and courier fees are set by bKash, Nagad, the couriers and NBR-mandated VAT — not by Framique, and we don't mark them up. When a rail publishes a new rate, it shows up as a new number in the fee anatomy table, not a stealth increase to your plan price.
 
 3. **"I don't have a developer — can I actually set this up myself?"**
-   Yes. The page builder and payment/courier connections are configured through the dashboard, not code. The trial period exists specifically so you can test this before paying.
+   Yes. The theme builder and payment/courier connections are configured through the dashboard, not code. The trial period exists specifically so you can test this before paying.
 
 4. **"What happens to my store if I miss a payment?"**
    The store pauses — it does not delete. Customer-facing pages go offline, but your product, order and customer data stays intact and exportable while paused.
@@ -408,7 +408,7 @@ _Lever: addressing the actual hesitation directly, in the merchant's own likely 
 5. **Do you charge per staff seat?** Seats are included per tier, not billed individually; extra seats beyond the tier limit are billed per seat, see Section 9.
 6. **Does the plan fee change if my order volume grows?** No. The plan fee is flat; only your effective per-order cost changes, and it falls as volume rises — the mechanics are in Section 4.
 7. **Which courier fees are included in the plan price?** None — courier delivery and COD collection fees are charged by the courier directly and shown as separate line items, never bundled into the plan fee.
-8. **Can I change my pages after choosing a plan?** Yes, the full section library is available on every plan at any time; rearranging pages does not affect billing.
+8. **Can I switch themes after choosing a plan?** Yes, any of the 5 official themes are available on every plan at any time; switching themes does not affect billing.
 9. **Is there a setup fee?** No. The only charges are the plan fee (or nothing, on trial) and pass-through rail/courier fees on actual transactions.
 10. **What if I need custom rate limits or a dedicated engineer?** That's the Enterprise tier — contact sales for a scoped quote; it is the only tier without a published flat price because terms are negotiated per contract.
 
@@ -439,7 +439,7 @@ _Lever: single clear next action once every objection and number has been shown 
 
 - Hero alt CTA (`See the fee breakdown`) anchors to Section 4 in-page.
 - Section 4 methodology footnote links to `/legal/pricing-methodology` (or a footnote modal if that route doesn't exist yet).
-- Section 8 builder cards link to `/builder` (section library).
+- Section 8 theme cards link to `/themes` filtered by theme slug.
 - Section 10 migration guarantees link to `/security` (data handling detail) and `/docs/data-export`.
 - Section 11 comparison band links to `/compare/marketplace` and `/compare/self-hosted` if those exist, otherwise to the blog category `/blog/unit-economics`.
 - Section 12, objection 8, links to `/security` for the reliability claim.
@@ -452,7 +452,7 @@ _Lever: single clear next action once every objection and number has been shown 
 - Section 2 tier cards: no imagery, typographic only.
 - Section 4 worked P&L: no illustration; the tables themselves are the visual, set in tabular-nums Manrope.
 - Section 5 calculator: line chart is the only chart asset on the page — 2 series (flat vs commission), rendered as SVG, stroke-only, no fill gradient beneath the lines to avoid competing with the aurora system.
-- Section 8 builder cards: 5 thumbnail screenshots, 16:10, one per section group, captured from the actual page-builder preview — never mockups.
+- Section 8 theme cards: 5 thumbnail screenshots, 16:10, one per official theme, captured from the actual theme builder preview — never mockups.
 - Section 14: gradient spotlight card, violet stop, no photographic content.
 
 ## Icon list
@@ -486,4 +486,4 @@ _Lever: single clear next action once every objection and number has been shown 
 - **Annual/Monthly toggle**: `pricing_billing_toggle` with the selected state, to measure what fraction of visitors self-select into annual before ever reaching the objection-handling band — a leading indicator of trust.
 - **FAQ/objection expand rate**: `pricing_faq_expand` and `pricing_objection_expand` per item ID, to identify which objections are read most often and should be promoted higher up the page or into the hero sub-copy in future iterations.
 - **Scroll depth**: measured at each band boundary (14 bands total) to see where drop-off concentrates — particularly whether visitors reach the fee-anatomy and calculator bands before leaving, since those are the substantive trust-building sections.
-- **Downstream cohort**: join `pricing_trial_start` to actual trial-to-paid conversion by plan tier, to validate whether the builder-to-plan fit mapping in Section 8 correlates with lower churn (merchants on a setup suited to their plan tier retaining longer than mismatched ones).
+- **Downstream cohort**: join `pricing_trial_start` to actual trial-to-paid conversion by plan tier, to validate whether the theme-to-plan fit mapping in Section 8 correlates with lower churn (merchants on a theme suited to their plan tier retaining longer than mismatched ones).

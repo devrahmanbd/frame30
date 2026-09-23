@@ -993,6 +993,125 @@ const SubbrandSpotlight: WidgetComponent = ({ str, Heading, locale }) => {
   );
 };
 
+/* -------------------------------------------------------- rewards_club */
+
+const RewardsClub: WidgetComponent = (ctx) => {
+  const { str, Heading, locale } = ctx;
+  const tiers = [
+    { name: str("tier1Name"), points: str("tier1Points") },
+    { name: str("tier2Name"), points: str("tier2Points") },
+    { name: str("tier3Name"), points: str("tier3Points") },
+  ].filter((tier) => tier.name);
+  return (
+    <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+      <Eyebrow text={t(locale, "Membership", "সদস্যপদ")} />
+      <Heading className="font-bangla-display text-2xl font-bold">
+        {str("heading") || t(locale, "My Rewards", "আমার রিওয়ার্ড")}
+      </Heading>
+      {str("body") && (
+        <p className="mt-2 max-w-prose text-sm text-muted-foreground">
+          {str("body")}
+        </p>
+      )}
+      {tiers.length > 0 && (
+        <ol className="mt-5 grid gap-3 sm:grid-cols-3">
+          {tiers.map((tier) => (
+            <li
+              key={tier.name}
+              className="rounded-fq-md border border-border bg-background p-4"
+            >
+              <p className="text-sm font-semibold">{tier.name}</p>
+              {tier.points && (
+                <p className="money mt-1 text-xs text-muted-foreground">
+                  {tier.points}
+                </p>
+              )}
+            </li>
+          ))}
+        </ol>
+      )}
+      <Cta label={str("buttonLabel")} href={str("buttonHref")} />
+    </section>
+  );
+};
+
+/* -------------------------------------------------------- wedding_shop */
+
+const WeddingShop: WidgetComponent = (ctx) => {
+  const { str, Heading } = ctx;
+  const collections = [
+    { name: str("c1Name"), href: str("c1Href") },
+    { name: str("c2Name"), href: str("c2Href") },
+    { name: str("c3Name"), href: str("c3Href") },
+  ].filter((c) => c.name);
+  return (
+    <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+      <Heading className="font-bangla-display text-2xl font-bold">
+        {str("heading")}
+      </Heading>
+      {str("body") && (
+        <p className="mt-2 max-w-prose text-sm text-muted-foreground">
+          {str("body")}
+        </p>
+      )}
+      {collections.length > 0 && (
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          {collections.map((c) => (
+            <a
+              key={c.name}
+              href={c.href || "#"}
+              className="group rounded-fq-md border border-border bg-background p-4 transition-colors hover:border-primary/40"
+            >
+              <p className="text-sm font-semibold">{c.name}</p>
+              <p aria-hidden="true" className="mt-2 text-primary">
+                →
+              </p>
+            </a>
+          ))}
+        </div>
+      )}
+      <Cta label={str("buttonLabel")} href={str("buttonHref")} />
+    </section>
+  );
+};
+
+/* -------------------------------------------------------- gift_finder */
+
+const GiftFinder: WidgetComponent = (ctx) => {
+  const { str, Heading } = ctx;
+  const occasions = [
+    { label: str("o1Label"), query: str("o1Query") },
+    { label: str("o2Label"), query: str("o2Query") },
+    { label: str("o3Label"), query: str("o3Query") },
+  ].filter((o) => o.label);
+  return (
+    <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+      <Heading className="font-bangla-display text-2xl font-bold">
+        {str("heading")}
+      </Heading>
+      {str("body") && (
+        <p className="mt-2 max-w-prose text-sm text-muted-foreground">
+          {str("body")}
+        </p>
+      )}
+      {occasions.length > 0 && (
+        <div className="mt-5 flex flex-wrap gap-2">
+          {occasions.map((o) => (
+            <a
+              key={o.label}
+              href={`/search?q=${encodeURIComponent(o.query || "")}`}
+              className="inline-flex min-h-11 items-center rounded-full border border-border bg-background px-4 text-sm font-medium transition-colors hover:border-primary/40"
+            >
+              {o.label}
+            </a>
+          ))}
+        </div>
+      )}
+      <Cta label={str("buttonLabel")} href={str("buttonHref")} />
+    </section>
+  );
+};
+
 export const APPAREL_WIDGETS: Record<
   Extract<
     SectionType,
@@ -1014,6 +1133,9 @@ export const APPAREL_WIDGETS: Record<
     | "wishlist_button"
     | "circle_categories"
     | "subbrand_spotlight"
+    | "rewards_club"
+    | "wedding_shop"
+    | "gift_finder"
   >,
   WidgetComponent
 > = {
@@ -1035,6 +1157,9 @@ export const APPAREL_WIDGETS: Record<
   wishlist_button: WishlistButton,
   circle_categories: CircleCategories,
   subbrand_spotlight: SubbrandSpotlight,
+  rewards_club: RewardsClub,
+  wedding_shop: WeddingShop,
+  gift_finder: GiftFinder,
 };
 
 export { TileSkeleton };
