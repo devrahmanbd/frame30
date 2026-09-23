@@ -8,7 +8,7 @@
 
 - Folder: `docs/07-commerce/`
 - Sources: `docs/07-commerce/README.md` · `docs/05-marketing/content-cms.md` (depth-3 template)
-- Inputs: `docs/16-product-pricing/README.md` (entitlement) · `docs/06-payments/currency.md` (BDT) · `docs/00-meta/design-system.md` (tokens) · `docs/00-meta/audit-verdict.md` (approved gates)
+- Inputs: `docs/16-product-pricing/README.md` (entitlement) · `docs/04-builder/theme-registry.md` (pin rule, publish/purge) · `docs/06-payments/currency.md` (BDT) · `docs/00-meta/design-system.md` (tokens) · `docs/00-meta/audit-verdict.md` (approved gates)
 - Dependencies: 04-builder (publish + purge) · 06-payments (idempotency, shared rate-limiter) · 13-export-sdk (HMAC webhooks) · 16-product-pricing (`check_entitlement`) · 09-analytics (event feed → search index)
 - Related: 02-merchant · 03-storefront · 05-marketing · 08-pos-shipping · 12-marketplace · 10-ai-support · 14-operations
 - Tags: metafields, metaobjects, schema-registry, tenant-data, validation
@@ -92,7 +92,7 @@ The polymorphic value store.
 
 ### `metafield_audits` (append-only)
 
-Every create/update/archive/delete writes a row: `(merchant_id, value_id, action, old_value jsonb, new_value jsonb, actor uuid, at)` — rollback is always a restore of a recorded prior version, never a re-derivation (mirrors the `revisions` ledger in `04-builder/publishing.md`; no deletion).
+Every create/update/archive/delete writes a row: `(merchant_id, value_id, action, old_value jsonb, new_value jsonb, actor uuid, at)` — rollback is always a restore of a recorded prior version, never a re-derivation (mirrors `04-builder/theme-registry.md` `revisions`; no deletion).
 
 ### Index ties to search
 
@@ -124,7 +124,7 @@ draft → published → archived
 ```
 
 - `draft`: value exists in admin + editor; never rendered storefront (even on a published host).
-- `published`: rendered on all surfaces that render it. Transition to `published` is server-side validated (against `definition_version` rules) and **purge-coupled** — the host surface's URLs (and the definition's cache keys) are purged; edge TTL convergence ≤ host surface TTL (mirror the 04 publish+purge contract in `docs/04-builder/publishing.md`).
+- `published`: rendered on all surfaces that render it. Transition to `published` is server-side validated (against `definition_version` rules) and **purge-coupled** — the host surface's URLs (and the definition's cache keys) are purged; edge TTL convergence ≤ host surface TTL (mirror 04 `theme-registry` publish+purge, `docs/04-builder/theme-registry.md`).
 - `archived`: value is not rendered, kept for audit; can be re-published — a republish is a new value `version`, appended to `metafield_audits`.
 - Editing a `published` value is atomic + immediately effective after server-side validation and purge (metafields are data, not long-lived content; staging/rollback belongs to host surfaces page/article revision machines).
 - Deletion: only `draft` rows are hard-deletable; `published`/`archived` rows are integer-deletable only via `archive`.
@@ -136,7 +136,7 @@ Metafield visibility _derives from the host object's own machine_; a metafield r
 | host surface                 | host machine (owned by)                                                                 | metafield visibility rule                                                                                                         |
 | ---------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | product / variant / category | 02-merchant publish machine (`endpoint`): `draft → active → archived`                   | renders only when product `active` AND value `published`                                                                          |
-| page / design                 | 04-builder: `draft → preview → published` (rollback = restore previous `revisions` row) | renders on `?preview`/published pages; drafts + previews render only via preview mode                                             |
+| page / theme                 | 04-builder: `draft → preview → published` (rollback = restore previous `revisions` row) | renders on `?preview`/published pages; drafts + previews render only via preview mode                                             |
 | article / media              | 05-marketing content-cms publish machine                                                | renders when article published                                                                                                    |
 | order / line items           | 07 root order machine (shared with 06)                                                  | **admin-visibility only**; never render; writable until host reaches a terminal state (exact terminal set: TBD — `07` root owner) |
 | offers / coupons             | 07 promotions (server-side calc)                                                        | admin only; never read by discount/VAT math                                                                                       |

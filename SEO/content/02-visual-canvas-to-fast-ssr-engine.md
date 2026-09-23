@@ -23,7 +23,7 @@ parent_entity: "devrahmanbd (Organization)"
 For over a decade, digital creators and e-commerce engineers have operated under a frustrating compromise:
 
 - If you choose a **visual design tool** (like Webflow or Framer), you get exquisite spatial canvas control, but your storefront is burdened with bloated client-side JavaScript runtimes, strict 2,000 CMS collection item limits, and weak transactional backends.
-- If you choose a **traditional commerce engine** (like Shopify or BigCommerce), you get reliable checkout, but you are imprisoned in rigid Liquid templates and must fight design code to move a button three pixels to the left.
+- If you choose a **traditional commerce engine** (like Shopify or BigCommerce), you get reliable checkout, but you are imprisoned in rigid Liquid templates and must fight theme code to move a button three pixels to the left.
 
 **FRAMIQUE** shatters this false dichotomy by introducing an architecture where a freeform visual design canvas compiles directly into a high-concurrency, server-side rendered (SSR) edge application.
 

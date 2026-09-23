@@ -59,7 +59,7 @@ function DocsIndex() {
           <p className="mt-4 text-lg text-muted-foreground">
             {pageCount} pages covering {endpoints} public endpoints, OAuth and
             API keys, signed webhooks, rate limits, error handling, and how to
-            author plugins and apps. Every sample here is runnable.
+            author themes and apps. Every sample here is runnable.
           </p>
         </header>
 

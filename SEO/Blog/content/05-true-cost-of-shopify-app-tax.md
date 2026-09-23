@@ -48,7 +48,7 @@ Printing bulk shipping manifests with barcode labels and pushing customer addres
 
 ### Tax 4: The Performance & Speed Tax
 
-Every app installed on a Shopify store injects external JavaScript tracking tags into `design.liquid`. A store with 10 apps often loads **15+ megabytes of third-party scripts**, degrading **Time to First Byte (TTFB)** and triggering severe Google Core Web Vitals penalties (LCP > 3.5s, INP > 250ms).
+Every app installed on a Shopify store injects external JavaScript tracking tags into `theme.liquid`. A store with 10 apps often loads **15+ megabytes of third-party scripts**, degrading **Time to First Byte (TTFB)** and triggering severe Google Core Web Vitals penalties (LCP > 3.5s, INP > 250ms).
 
 ### Tax 5: The Security & Fragility Tax
 

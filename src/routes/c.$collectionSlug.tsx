@@ -8,6 +8,7 @@ import {
 } from "@/lib/storefront.functions";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
+import { flattenAst } from "@/lib/builder-ast";
 
 /**
  * Custom-host collection page (`microscrop.shop/c/<slug>`).
@@ -73,7 +74,7 @@ export const Route = createFileRoute("/c/$collectionSlug")({
 
 function CollectionPage() {
   const { t } = useLang();
-  const { merchant, collection, products, settings, siteKit, menus, installedPlugins } =
+  const { merchant, collection, products, settings, ast, tokens, siteKit, menus } =
     Route.useLoaderData();
   const slug = merchant.slug;
 
@@ -145,13 +146,18 @@ function CollectionPage() {
     </>
   );
 
+  const hasProductGrid = ast
+    ? flattenAst(ast).some((s) => s.type === "product_grid")
+    : false;
+
   return (
     <ThemeChrome
       template="collection"
+      ast={ast}
+      tokens={tokens}
       storeSlug={slug}
       merchantId={merchant.id}
       siteKit={siteKit}
-      installedPlugins={installedPlugins}
       ownsPrimary
       chrome={
         <StoreHeader
@@ -161,6 +167,8 @@ function CollectionPage() {
           menus={menus}
         />
       }
+      productSlot={grid}
+      {...(hasProductGrid ? {} : { collectionSlot: grid })}
       fallback={grid}
     />
   );

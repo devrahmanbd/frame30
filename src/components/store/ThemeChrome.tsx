@@ -1,14 +1,14 @@
 /**
- * Themeless storefront chrome (theme purge + themeless gate).
+ * Storefront template host.
  *
- * Ruling 2026-09-23 (updated at main-merge): every store is themeless after
- * the purge, so `isThemeless` is always true and every route serves the
- * single shared welcome page (PR #20 decision: one page, one HTML for all
- * stores without a theme). Builder content paths stay in the routes for a
- * future storefront revival, but the gate owns the render.
+ * Renders a published template's header / main / footer slots around the
+ * route's own content. Context-aware widgets receive their live data through
+ * `contextSlots`; when a theme publishes no main sections the route's default
+ * body is used, so a store is never blank because a template is missing.
  */
 import type { ReactNode } from "react";
 import { useRouterState } from "@tanstack/react-router";
+import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { CartProvider, useLiveCart } from "@/components/builder/CartContext";
 import { VitalsReporter } from "@/components/store/VitalsReporter";
 import { TrafficReporter } from "@/components/store/TrafficReporter";
@@ -18,28 +18,30 @@ import {
 } from "@/components/store/SiteKitTags";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { StoreWelcome } from "@/components/store/StoreWelcome";
-import { PluginFooterMounts } from "@/components/store/PluginFooterMounts";
-import { PluginProvider } from "@/components/builder/PluginContext";
-import type { InstalledPlugin } from "@/lib/plugin-manifest";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import { useLangScope } from "@/lib/i18n";
-import type { TemplateKey } from "@/lib/builder-ast";
+import { compileResponsiveCss } from "@/lib/responsive-css";
+import {
+  type Section,
+  type SectionType,
+  type TemplateKey,
+  type ThemeAst,
+  type ThemeTokens,
+} from "@/lib/builder-ast";
 
 type Props = {
   template: TemplateKey;
-  /** Store chrome (header, support widget) rendered above the page body. */
+  ast: ThemeAst | null;
+  tokens: ThemeTokens | null;
+  /** Store chrome (header, support widget) rendered above the theme slots. */
   chrome?: ReactNode;
-  /** The route's complete content — rendered when the gate ever opens. */
+  contextSlots?: Partial<Record<SectionType, ReactNode>>;
+  productSlot?: ReactNode;
+  collectionSlot?: ReactNode;
+  /** Used when the theme publishes no main sections for this template. */
   fallback: ReactNode;
   /** Display name for the themeless fallback. Defaults to the slug. */
   storeName?: string | null;
-  /**
-   * Merchant plugins for this storefront render. Footer-slot widgets of
-   * enabled plugins auto-mount on every page (themed and themeless) via
-   * `PluginFooterMounts`; the same list feeds placed app-blocks through
-   * context. Absent/empty renders zero mount points.
-   */
-  installedPlugins?: InstalledPlugin[];
   /** Store slug — namespaces channel state and server bundle quotes. */
   storeSlug?: string;
   /**
@@ -48,6 +50,7 @@ type Props = {
    * pollute a merchant's real-user data.
    */
   merchantId?: string | null;
+  /** Set when a context slot renders the page h1, so no section claims it. */
   /**
    * Phase 5: verification metas and the consent-gated analytics plan. Mounted
    * here so no admin route can ever load a merchant's pixels.
@@ -56,16 +59,26 @@ type Props = {
   ownsPrimary?: boolean;
   containerClassName?: string;
   /**
-   * Deprecated theme props — ignored after the purge, kept optional so
-   * un-migrated callers fail visibly at the type level, not silently.
+   * Phase 17: the merchant's theme assets, already combined and sanitised on
+   * the server (`storefrontThemeCss`). Inlined for the same reason as the
+   * responsive sheet — it is tiny, tenant-specific and on the critical path.
    */
-  ast?: unknown;
-  tokens?: unknown;
   customCss?: string | null;
-  contextSlots?: unknown;
-  productSlot?: ReactNode;
-  collectionSlot?: ReactNode;
 };
+
+/** Exactly one section per page may render the h1. */
+export function primarySectionId(ast: ThemeAst | null): string | null {
+  if (!ast) return null;
+  const candidates = ast.main.filter((s) => !s.invalid);
+  const heading = (s: Section) =>
+    s.type === "hero" ||
+    (typeof s.props["heading"] === "string" && s.props["heading"]);
+  return (
+    candidates.find((s) => s.type === "hero")?.id ??
+    candidates.find(heading)?.id ??
+    null
+  );
+}
 
 /**
  * Phase 2.5: one live cart per storefront render. Every cart widget under it
@@ -84,43 +97,70 @@ function LiveCartScope({
 }
 
 /** True when the merchant has no theme at all: every route then serves the
- *  single shared welcome page instead of per-template fallbacks. After the
- *  purge the server passes no ast/tokens, so this is always true. */
-export function isThemeless(ast: unknown, tokens: unknown): boolean {
+ *  single shared welcome page instead of per-template fallbacks. */
+export function isThemeless(
+  ast: ThemeAst | null,
+  tokens: ThemeTokens | null,
+): boolean {
   return !ast && !tokens;
 }
 
 export function ThemeChrome({
   template,
+  ast,
+  tokens,
   chrome,
+  contextSlots,
+  productSlot,
+  collectionSlot,
   storeSlug,
   storeName,
   merchantId,
   siteKit,
   fallback,
+  ownsPrimary = false,
   containerClassName = "mx-auto max-w-6xl px-4 py-8",
-  installedPlugins = [],
-  ast = null,
-  tokens = null,
+  customCss = null,
 }: Props) {
   // Phase 2.1: language choice is remembered per storefront.
   useLangScope(storeSlug ?? null);
   const { pathname } = useRouterState().location;
   if (isThemeless(ast, tokens)) {
     return (
-      <PluginProvider plugins={installedPlugins}>
-        <StoreWelcome
-          slug={storeSlug ?? ""}
-          name={storeName ?? storeSlug ?? ""}
-          custom={isCustomHostPath(pathname)}
-        />
-        <PluginFooterMounts />
-      </PluginProvider>
+      <StoreWelcome
+        slug={storeSlug ?? ""}
+        name={storeName ?? storeSlug ?? ""}
+        custom={isCustomHostPath(pathname)}
+      />
     );
   }
+  const themed = ast && ast.main.length > 0 ? ast : null;
+  // Header and footer are site chrome: they must survive a template whose body
+  // the route renders itself (cart, checkout, search). Dropping them with the
+  // body left shoppers on a page with no store navigation and no policy links.
+  const chromeAst =
+    ast && (ast.header.length > 0 || ast.footer.length > 0) ? ast : null;
+  const primary = ownsPrimary ? null : primarySectionId(themed);
+  // Phase 5: the per-device layout overrides authored in the studio are
+  // compiled once per render into a range-scoped stylesheet. It is inlined
+  // (not linked) because it is template-specific, tiny, budget-capped and on
+  // the critical path — a request for it would cost more than the bytes.
+  const responsive = compileResponsiveCss(themed);
 
   const body = (
-    <ThemeSurface>
+    <ThemeSurface tokens={tokens}>
+      {responsive.css ? (
+        <style
+          data-fq-responsive={String(responsive.rules)}
+          dangerouslySetInnerHTML={{ __html: responsive.css }}
+        />
+      ) : null}
+      {customCss ? (
+        <style
+          data-fq-theme-assets=""
+          dangerouslySetInnerHTML={{ __html: customCss }}
+        />
+      ) : null}
       <VitalsReporter
         merchantId={merchantId}
         template={template ?? "unknown"}
@@ -131,22 +171,59 @@ export function ThemeChrome({
       />
       <SiteKitSurface siteKit={siteKit ?? null} />
       {chrome}
-      <main className={containerClassName}>{fallback}</main>
+      {chromeAst && chromeAst.header.length > 0 && (
+        <div className="mx-auto max-w-6xl space-y-2 px-4 pt-4">
+          {chromeAst.header.map((section) => (
+            <SectionRenderer
+              key={section.id}
+              section={section}
+              template={template}
+              storeSlug={storeSlug}
+              contextSlots={contextSlots}
+            />
+          ))}
+        </div>
+      )}
+      <main className={containerClassName}>
+        {themed ? (
+          <div className="space-y-8">
+            {themed.main.map((section) => (
+              <SectionRenderer
+                key={section.id}
+                section={section}
+                template={template}
+                storeSlug={storeSlug}
+                contextSlots={contextSlots}
+                productSlot={productSlot}
+                collectionSlot={collectionSlot}
+                primary={section.id === primary}
+              />
+            ))}
+          </div>
+        ) : (
+          fallback
+        )}
+      </main>
+      {chromeAst && chromeAst.footer.length > 0 && (
+        <footer className="mx-auto max-w-6xl space-y-2 px-4 pb-10">
+          {chromeAst.footer.map((section) => (
+            <SectionRenderer
+              key={section.id}
+              section={section}
+              template={template}
+              storeSlug={storeSlug}
+              contextSlots={contextSlots}
+            />
+          ))}
+        </footer>
+      )}
     </ThemeSurface>
   );
 
   // Without a slug (studio preview) the widgets fall back to the demo cart.
-  // The plugin provider rides the same tree so placed app-blocks and the
-  // footer mounts resolve the merchant's installs, not an empty list.
-  const tree = (
-    <PluginProvider plugins={installedPlugins}>
-      {body}
-      <PluginFooterMounts />
-    </PluginProvider>
-  );
   return storeSlug ? (
-    <LiveCartScope slug={storeSlug}>{tree}</LiveCartScope>
+    <LiveCartScope slug={storeSlug}>{body}</LiveCartScope>
   ) : (
-    tree
+    body
   );
 }

@@ -436,7 +436,7 @@ Type hierarchy is governed by strict functional roles. We pair the geometric cla
 - **Do** use Facebook Blue (`oklch(0.55 0.22 255)`) exclusively for primary high-intent action buttons and trust verification.
 - **Do** write every image placeholder `alt` tag as an explicit AI generation prompt starting with `"Prompt: "`.
 - **Do** maintain bilingual line-height allowances (1.4+ for display, 1.6+ for body) for Bengali script.
-- **Do** provide smooth light/dark mode toggling with 44px touch targets.
+- **Do** provide smooth theme toggling with 44px touch targets.
 
 ### Don't
 
@@ -448,13 +448,13 @@ Type hierarchy is governed by strict functional roles. We pair the geometric cla
 
 ---
 
-## 10. Hallmark & 10-Skill WCAG Contrast Matrix (Light & Dark mode)
+## 10. Hallmark & 10-Skill WCAG Contrast Matrix (Light & Dark Themes)
 
 ### Color Mathematics & Eye-Soothing Calibration
 
-Hallmark enforces perceptual uniformity via OKLCH color space. Instead of blinding 21:1 stark glare or washed-out text, both modes hit the **eye-soothing comfort band**:
+Hallmark enforces perceptual uniformity via OKLCH color space. Instead of blinding 21:1 stark glare or washed-out text, both themes hit the **eye-soothing comfort band**:
 
-#### Light mode (Warm Blush / Minimalist B&W)
+#### Light Theme (Warm Blush / Minimalist B&W)
 
 - **Canvas Base**: `oklch(0.978 0.008 25)` (`#FAF6F7`)
 - **Card / Elevated Plates**: `oklch(0.995 0.003 25)` (`#FDFBFB`)
@@ -464,7 +464,7 @@ Hallmark enforces perceptual uniformity via OKLCH color space. Instead of blindi
 - **Facebook Blue Primary CTA**: `oklch(0.55 0.22 255)` (`#1465E8`) — White text contrast **5.1:1** (WCAG AA)
 - **Brand Pink Focal Pip**: `oklch(0.62 0.22 18)` (`#F43F5E`) — 3% viewport rule
 
-#### Dark mode (Twilight Obsidian)
+#### Dark Theme (Twilight Obsidian)
 
 - **Canvas Base**: `oklch(0.17 0.012 25)` (`#181517`)
 - **Card / Elevated Plates**: `oklch(0.21 0.014 25)` (`#221F22`)

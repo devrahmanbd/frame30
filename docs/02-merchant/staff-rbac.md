@@ -195,7 +195,7 @@ Consumers: `audit_log` (all), `11-fraud` (lockout/break_glass as risk signals), 
 ## 13. Enum vs policy scope (reconciliation)
 
 `merchant_role` intentionally carries four values — `owner | admin | staff | viewer`.
-RLS policies and privileged RPCs (`design_publish`, `kyc_submit`, `review_moderate`,
+RLS policies and privileged RPCs (`theme_publish`, `kyc_submit`, `review_moderate`,
 marketplace apply/revert) cast only `ARRAY['owner','admin']` because those are
 **write/publish** decisions. `staff` and `viewer` are not policy-level writers:
 their capabilities are resolved through `staff_has(merchant_id, group, action)`

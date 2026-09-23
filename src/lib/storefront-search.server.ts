@@ -263,8 +263,8 @@ export type StorePage = {
   cover_image_url: string | null;
   robots: string;
   updated_at: string;
-  /** Deprecated theme pin — always null after the purge (Task 5 drops the column). */
-  theme_id?: string | null;
+  /** Phase 17 — installed theme pinned to this page, or null for the site theme. */
+  theme_id: string | null;
 };
 
 export type StorePageNavItem = { slug: string; title: string };
@@ -283,7 +283,7 @@ export async function loadStorePage(storeSlug: string, pageSlug: string) {
     const { data: page, error } = await db
       .from("storefront_pages")
       .select(
-        "id, slug, title, excerpt, body_markdown, meta_title, meta_description, cover_image_url, robots, updated_at",
+        "id, slug, title, excerpt, body_markdown, meta_title, meta_description, cover_image_url, robots, updated_at, theme_id",
       )
       .eq("merchant_id", merchant.id)
       .eq("slug", pageSlug)

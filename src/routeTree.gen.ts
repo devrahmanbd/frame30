@@ -135,11 +135,13 @@ import { Route as AuthenticatedDashboardAnalyticsReportsRouteImport } from './ro
 import { Route as AuthenticatedDashboardBillingIndexRouteImport } from './routes/_authenticated/dashboard/billing/index'
 import { Route as AuthenticatedDashboardBillingInvoicesRouteImport } from './routes/_authenticated/dashboard/billing/invoices'
 import { Route as AuthenticatedDashboardContentIndexRouteImport } from './routes/_authenticated/dashboard/content/index'
+import { Route as AuthenticatedDashboardContentCustomCodeRouteImport } from './routes/_authenticated/dashboard/content/custom-code'
 import { Route as AuthenticatedDashboardContentEditorRouteImport } from './routes/_authenticated/dashboard/content/editor'
 import { Route as AuthenticatedDashboardContentMediaRouteImport } from './routes/_authenticated/dashboard/content/media'
 import { Route as AuthenticatedDashboardContentMenusRouteImport } from './routes/_authenticated/dashboard/content/menus'
 import { Route as AuthenticatedDashboardContentPagesRouteImport } from './routes/_authenticated/dashboard/content/pages'
 import { Route as AuthenticatedDashboardContentPostsRouteImport } from './routes/_authenticated/dashboard/content/posts'
+import { Route as AuthenticatedDashboardContentThemesRouteImport } from './routes/_authenticated/dashboard/content/themes'
 import { Route as AuthenticatedDashboardFraudIndexRouteImport } from './routes/_authenticated/dashboard/fraud/index'
 import { Route as AuthenticatedDashboardFraudAdDefenseRouteImport } from './routes/_authenticated/dashboard/fraud/ad-defense'
 import { Route as AuthenticatedDashboardFraudAuditRouteImport } from './routes/_authenticated/dashboard/fraud/audit'
@@ -889,6 +891,12 @@ const AuthenticatedDashboardContentIndexRoute =
     path: '/content/',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardContentCustomCodeRoute =
+  AuthenticatedDashboardContentCustomCodeRouteImport.update({
+    id: '/content/custom-code',
+    path: '/content/custom-code',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardContentEditorRoute =
   AuthenticatedDashboardContentEditorRouteImport.update({
     id: '/content/editor',
@@ -917,6 +925,12 @@ const AuthenticatedDashboardContentPostsRoute =
   AuthenticatedDashboardContentPostsRouteImport.update({
     id: '/content/posts',
     path: '/content/posts',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardContentThemesRoute =
+  AuthenticatedDashboardContentThemesRouteImport.update({
+    id: '/content/themes',
+    path: '/content/themes',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardFraudIndexRoute =
@@ -1478,11 +1492,13 @@ export interface FileRoutesByFullPath {
   '/dashboard/analytics/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
   '/dashboard/analytics/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
   '/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
   '/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
   '/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
   '/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
   '/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
   '/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
+  '/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
   '/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
   '/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
   '/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
@@ -1685,11 +1701,13 @@ export interface FileRoutesByTo {
   '/dashboard/analytics/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
   '/dashboard/analytics/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
   '/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
   '/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
   '/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
   '/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
   '/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
   '/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
+  '/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
   '/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
   '/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
   '/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
@@ -1896,11 +1914,13 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/analytics_/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
   '/_authenticated/dashboard/analytics_/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
   '/_authenticated/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/_authenticated/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
   '/_authenticated/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
   '/_authenticated/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
   '/_authenticated/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
   '/_authenticated/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
   '/_authenticated/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
+  '/_authenticated/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
   '/_authenticated/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
   '/_authenticated/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
   '/_authenticated/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
@@ -2107,11 +2127,13 @@ export interface FileRouteTypes {
     | '/dashboard/analytics/insights'
     | '/dashboard/analytics/reports'
     | '/dashboard/billing/invoices'
+    | '/dashboard/content/custom-code'
     | '/dashboard/content/editor'
     | '/dashboard/content/media'
     | '/dashboard/content/menus'
     | '/dashboard/content/pages'
     | '/dashboard/content/posts'
+    | '/dashboard/content/themes'
     | '/dashboard/fraud/ad-defense'
     | '/dashboard/fraud/audit'
     | '/dashboard/marketing/articles'
@@ -2314,11 +2336,13 @@ export interface FileRouteTypes {
     | '/dashboard/analytics/insights'
     | '/dashboard/analytics/reports'
     | '/dashboard/billing/invoices'
+    | '/dashboard/content/custom-code'
     | '/dashboard/content/editor'
     | '/dashboard/content/media'
     | '/dashboard/content/menus'
     | '/dashboard/content/pages'
     | '/dashboard/content/posts'
+    | '/dashboard/content/themes'
     | '/dashboard/fraud/ad-defense'
     | '/dashboard/fraud/audit'
     | '/dashboard/marketing/articles'
@@ -2524,11 +2548,13 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/analytics_/insights'
     | '/_authenticated/dashboard/analytics_/reports'
     | '/_authenticated/dashboard/billing/invoices'
+    | '/_authenticated/dashboard/content/custom-code'
     | '/_authenticated/dashboard/content/editor'
     | '/_authenticated/dashboard/content/media'
     | '/_authenticated/dashboard/content/menus'
     | '/_authenticated/dashboard/content/pages'
     | '/_authenticated/dashboard/content/posts'
+    | '/_authenticated/dashboard/content/themes'
     | '/_authenticated/dashboard/fraud/ad-defense'
     | '/_authenticated/dashboard/fraud/audit'
     | '/_authenticated/dashboard/marketing/articles'
@@ -3600,6 +3626,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardContentIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/content/custom-code': {
+      id: '/_authenticated/dashboard/content/custom-code'
+      path: '/content/custom-code'
+      fullPath: '/dashboard/content/custom-code'
+      preLoaderRoute: typeof AuthenticatedDashboardContentCustomCodeRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/content/editor': {
       id: '/_authenticated/dashboard/content/editor'
       path: '/content/editor'
@@ -3633,6 +3666,13 @@ declare module '@tanstack/react-router' {
       path: '/content/posts'
       fullPath: '/dashboard/content/posts'
       preLoaderRoute: typeof AuthenticatedDashboardContentPostsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/content/themes': {
+      id: '/_authenticated/dashboard/content/themes'
+      path: '/content/themes'
+      fullPath: '/dashboard/content/themes'
+      preLoaderRoute: typeof AuthenticatedDashboardContentThemesRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/fraud/': {
@@ -4215,11 +4255,13 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardAnalyticsInsightsRoute: typeof AuthenticatedDashboardAnalyticsInsightsRoute
   AuthenticatedDashboardAnalyticsReportsRoute: typeof AuthenticatedDashboardAnalyticsReportsRoute
   AuthenticatedDashboardBillingInvoicesRoute: typeof AuthenticatedDashboardBillingInvoicesRoute
+  AuthenticatedDashboardContentCustomCodeRoute: typeof AuthenticatedDashboardContentCustomCodeRoute
   AuthenticatedDashboardContentEditorRoute: typeof AuthenticatedDashboardContentEditorRoute
   AuthenticatedDashboardContentMediaRoute: typeof AuthenticatedDashboardContentMediaRoute
   AuthenticatedDashboardContentMenusRoute: typeof AuthenticatedDashboardContentMenusRoute
   AuthenticatedDashboardContentPagesRoute: typeof AuthenticatedDashboardContentPagesRoute
   AuthenticatedDashboardContentPostsRoute: typeof AuthenticatedDashboardContentPostsRoute
+  AuthenticatedDashboardContentThemesRoute: typeof AuthenticatedDashboardContentThemesRoute
   AuthenticatedDashboardFraudAdDefenseRoute: typeof AuthenticatedDashboardFraudAdDefenseRoute
   AuthenticatedDashboardFraudAuditRoute: typeof AuthenticatedDashboardFraudAuditRoute
   AuthenticatedDashboardMarketingArticlesRoute: typeof AuthenticatedDashboardMarketingArticlesRoute
@@ -4310,6 +4352,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardAnalyticsReportsRoute,
     AuthenticatedDashboardBillingInvoicesRoute:
       AuthenticatedDashboardBillingInvoicesRoute,
+    AuthenticatedDashboardContentCustomCodeRoute:
+      AuthenticatedDashboardContentCustomCodeRoute,
     AuthenticatedDashboardContentEditorRoute:
       AuthenticatedDashboardContentEditorRoute,
     AuthenticatedDashboardContentMediaRoute:
@@ -4320,6 +4364,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardContentPagesRoute,
     AuthenticatedDashboardContentPostsRoute:
       AuthenticatedDashboardContentPostsRoute,
+    AuthenticatedDashboardContentThemesRoute:
+      AuthenticatedDashboardContentThemesRoute,
     AuthenticatedDashboardFraudAdDefenseRoute:
       AuthenticatedDashboardFraudAdDefenseRoute,
     AuthenticatedDashboardFraudAuditRoute:

@@ -1,7 +1,7 @@
 # Product Reviews — depth spec (S2/S3)
 
 Status: Planning · Slices S2/S3 (catalog display + accounts submission) · Reference: `plan.md` §3.3, `docs/03-storefront/README.md`, `docs/02-merchant/staff-approval.md`, `docs/07-commerce/README.md`
-Design baseline: `00-meta/design-system.md` (semantic+component; designs layer only)
+Design baseline: `00-meta/design-system.md` (semantic+component; themes layer only)
 Scope: PDP star ratings + written reviews; verified-purchase gate; moderation queue; merchant reply; aggregate computation server-side. Submission requires a signed-in customer (`03-storefront/accounts.md`, S3); visible/render layer ships with S2 catalog.
 Out of scope: rating on product cards in collections (`catalog.md`, aggregate only), review images/video, seller-to-seller Q&A, analytics → `09-analytics`, review incentive/AI-support pipelines → `10-ai-support`.
 
@@ -9,7 +9,7 @@ Out of scope: rating on product cards in collections (`catalog.md`, aggregate on
 
 ## 1. Purpose
 
-Reviews are the trust layer of the storefront PDP: honest aggregate (mean, 1–5, count, per-star histogram) plus merchant replies, rendered by any design, computed server-side, protected by verification and moderation. Aggregates must never be client-computed; a customer can review only a product they actually ordered once per order.
+Reviews are the trust layer of the storefront PDP: honest aggregate (mean, 1–5, count, per-star histogram) plus merchant replies, rendered by any theme, computed server-side, protected by verification and moderation. Aggregates must never be client-computed; a customer can review only a product they actually ordered once per order.
 
 ## 2. Design decisions
 

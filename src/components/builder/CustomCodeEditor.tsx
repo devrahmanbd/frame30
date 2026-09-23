@@ -112,8 +112,8 @@ export function CustomCodeEditor({ themeId }: { themeId: string | null }) {
           </h2>
           <p className="text-xs text-muted-foreground">
             {t(
-              "CSS is scoped to your storefront. JavaScript runs after the page loads.",
-              "সিএসএস শুধু আপনার স্টোরফ্রন্টে প্রযোজ্য। জাভাস্ক্রিপ্ট পেজ লোডের পরে চলে।",
+              "CSS is scoped to your theme. JavaScript runs after the page loads.",
+              "সিএসএস শুধু আপনার থিমে প্রযোজ্য। জাভাস্ক্রিপ্ট পেজ লোডের পরে চলে।",
             )}
           </p>
         </div>

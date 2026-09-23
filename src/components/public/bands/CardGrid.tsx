@@ -1,5 +1,5 @@
 /**
- * CardGrid — pillars, sections, plans, principles, stories.
+ * CardGrid — pillars, themes, plans, principles, stories.
  *
  * One grid for every "set of comparable things" band, so a pillar card on
  * /features and a plan card on /pricing share the same rhythm, radius and edge

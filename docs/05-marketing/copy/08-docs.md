@@ -131,7 +131,7 @@ Response shape:
 
 - `একটি কী তৈরি করুন` · `এন্ডপয়েন্ট কল করুন` · `ওয়েবহুক সাবস্ক্রাইব করুন`
 
-**Design note**: three glass steps in a row (3-up → 1-up at 640px), each with a number chip in signal blue, code block on `surface-1` with a hairline border and a copy-to-clipboard affordance in the top-right corner. No syntax-design gimmicks — monochrome tokens with signal blue reserved for strings, matching the one-accent-color rule.
+**Design note**: three glass steps in a row (3-up → 1-up at 640px), each with a number chip in signal blue, code block on `surface-1` with a hairline border and a copy-to-clipboard affordance in the top-right corner. No syntax-theme gimmicks — monochrome tokens with signal blue reserved for strings, matching the one-accent-color rule.
 
 ---
 

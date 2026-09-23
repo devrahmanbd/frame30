@@ -1,8 +1,9 @@
 /**
  * Storefront collection page.
  *
- * Themeless (Task 3): renders the collection's live products in the default
- * chrome — no theme collection template. The grid is the complete content.
+ * The active theme's published `collection` template owns the layout; this
+ * route only supplies the collection's live products to the theme's widgets
+ * and keeps a plain grid as the fallback when nothing is published.
  */
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
@@ -11,6 +12,7 @@ import { StoreImage } from "@/components/store/StoreImage";
 import { getStoreCollection } from "@/lib/storefront.functions";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
+import { flattenAst } from "@/lib/builder-ast";
 
 export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
   loader: async ({ params }) => {
@@ -57,7 +59,7 @@ export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
 
 function CollectionPage() {
   const { t } = useLang();
-  const { merchant, collection, products, settings, siteKit, menus, installedPlugins } =
+  const { merchant, collection, products, settings, ast, tokens, siteKit, menus } =
     Route.useLoaderData();
   const slug = merchant.slug;
 
@@ -129,13 +131,23 @@ function CollectionPage() {
     </>
   );
 
+  // A theme's collection template can carry a product grid, a collection grid,
+  // or both. Feeding this collection's products into *both* slots printed the
+  // page twice (two h1s, two grids), so the live rows go to the product grid
+  // and only fall back to the collection grid when the template has no
+  // product grid at all.
+  const hasProductGrid = ast
+    ? flattenAst(ast).some((s) => s.type === "product_grid")
+    : false;
+
   return (
     <ThemeChrome
       template="collection"
+      ast={ast}
+      tokens={tokens}
       storeSlug={slug}
       merchantId={merchant.id}
       siteKit={siteKit}
-      installedPlugins={installedPlugins}
       ownsPrimary
       chrome={
         <StoreHeader
@@ -145,6 +157,8 @@ function CollectionPage() {
           menus={menus}
         />
       }
+      productSlot={grid}
+      {...(hasProductGrid ? {} : { collectionSlot: grid })}
       fallback={grid}
     />
   );

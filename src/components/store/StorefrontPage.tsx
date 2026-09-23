@@ -36,6 +36,8 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
     products,
     categories,
     collections,
+    ast,
+    tokens,
     widgetBundle,
     widgetData,
     customCode,
@@ -270,9 +272,9 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
     </section>
   );
 
-  // Themeless (Task 3): the default catalogue owns the page — header, main
-  // and footer come from default chrome, and this component supplies the
-  // live catalogue and collection data directly.
+  // The published `index` template owns the page: header, main and footer
+  // slots all come from the active theme, and this component only supplies the
+  // live catalogue and collection data the theme's widgets ask for.
   return (
     <WidgetDataProvider bundle={widgetBundle} map={widgetData}>
       {preview && (
@@ -289,6 +291,8 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
       <CustomCodeSurface code={customCode} />
       <ThemeChrome
         template="index"
+        ast={ast}
+        tokens={tokens}
         storeSlug={slug}
         merchantId={merchant.id}
         siteKit={siteKit}
@@ -299,23 +303,19 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
               slug={slug}
               name={merchant.name}
               tagline={settings?.tagline}
+              storeTimezone={tokens?.timezone}
+              allowCustomerTimezone={tokens?.allowCustomerTimezone}
               menus={menus}
             />
             {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
             {/* <SupportWidget slug={slug} /> */}
           </>
         }
+        productSlot={catalog}
+        collectionSlot={collectionSlot}
         fallback={
           <>
             {defaultHero}
-            {collections.length > 0 && (
-              <section aria-label="Collections" className="mt-8">
-                <h2 className="font-bangla-display text-xl font-semibold">
-                  {t("Collections", "কালেকশন")}
-                </h2>
-                <div className="mt-3">{collectionSlot}</div>
-              </section>
-            )}
             {catalog}
           </>
         }

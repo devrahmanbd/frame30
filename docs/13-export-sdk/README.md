@@ -2,16 +2,16 @@
 
 Status: Planning · Slice S7+ · Gate: not yet approved (paper review TBD)
 
-Owners: Platform (export job) · Merchant-admin (consumer) · 04-builder (design hooks) · 06-payments (rate-limit shared) · 12-marketplace (app distribution)
+Owners: Platform (export job) · Merchant-admin (consumer) · 04-builder (theme hooks) · 06-payments (rate-limit shared) · 12-marketplace (app distribution)
 
-References: [`docs/00-meta/design-system.md`](00-meta/design-system.md) §10 (per-page design-guideline template), [`docs/00-meta/audit-verdict.md`](00-meta/audit-verdict.md) (claim map, §12 below), [`docs/15-e2e/README.md`](15-e2e/README.md) (loop house), [`docs/09-analytics`](09-analytics/README.md) (retention), [`docs/02-merchant`](02-merchant/README.md) (admin consumer), [`docs/06-payments`](06-payments/README.md) (shared rate-limit), [`docs/12-marketplace`](12-marketplace/README.md) (apps consuming API keys/design hooks)
+References: [`docs/00-meta/design-system.md`](00-meta/design-system.md) §10 (per-page design-guideline template), [`docs/00-meta/audit-verdict.md`](00-meta/audit-verdict.md) (claim map, §12 below), [`docs/15-e2e/README.md`](15-e2e/README.md) (loop house), [`docs/09-analytics`](09-analytics/README.md) (retention), [`docs/02-merchant`](02-merchant/README.md) (admin consumer), [`docs/06-payments`](06-payments/README.md) (shared rate-limit), [`docs/12-marketplace`](12-marketplace/README.md) (apps consuming API keys/theme hooks)
 
 Depth specs: [`export-job.md`](export-job.md) (export job lifecycle — queued → generating → signing → ready_for_download → downloaded | expired machine, `exports`/`export_files` records, schema versioning, failure/DLQ) · [`oauth.md`](oauth.md) (third-party app auth — OAuth 2.1 code+PKCE/client-credentials, token machine, consent, key rotation) · [`rest-api.md`](rest-api.md) (admin REST — RLS reads, API-key auth + rotation machine, cursor pagination, shared rate-limit, idempotency, webhook endpoint CRUD) · [`api-sdk.md`](api-sdk.md) (Node/Go SDK — contract-lockstep versions, retry/replay, deprecation policy, export download + webhook replay helpers, money/decision boundary)
 
 ## 1. Purpose
 
 Merchant sovereignty: full export (orders, customers, products, variants,
-settings) and an SDK for developers to extend (design hooks, webhooks, admin
+settings) and an SDK for developers to extend (theme hooks, webhooks, admin
 API, apps) so Framique is never a data jail. CSV/JSON export with versioned,
 documented schemas; every export is an async job owned by the machine in §4;
 webhooks and API keys make automation auditable and revocable.
@@ -21,7 +21,7 @@ webhooks and API keys make automation auditable and revocable.
 - **Export center**: pick objects (orders/products/customers/inventory/payments/settings), date range, format (CSV/JSON), privacy filter (PII), one-click or scheduled, share-link with expiry. Full job lifecycle is a sub-plan: `export-job.md`.
 - **Webhooks**: events from every module; HMAC-signed payload; preferred endpoint; retry with backoff + DLQ; "test webhook" sender.
 - **Admin API**: REST bound to tenant via RLS; Node/Go SDK; rate-limit shared with `docs/06-payments`.
-- **Design hooks**: the 12 built-in widgets each expose a JS hook; extensions run in the design sandbox (built by `docs/04-builder`).
+- **Theme hooks**: the 12 built-in widgets each expose a JS hook; extensions run in the theme sandbox (built by `docs/04-builder`).
 
 ## 3. Data model (tenant-scoped) + API surface
 
@@ -87,7 +87,7 @@ payload verifies HMAC before anything executes (README §7).
   the job/webhook tables; route-level code splitting (design-system §8).
 - Export streaming (React 18 concurrent) with a computed row-count estimate
   before download — never an invented number; SDK snippets are static.
-- Design weight budgets (CSS ≤ 60KB gz, JS ≤ 100KB gz) apply to SDK/design-hook
+- Theme weight budgets (CSS ≤ 60KB gz, JS ≤ 100KB gz) apply to SDK/theme-hook
   output (design-system §8).
 
 ## 10. Design decisions per surface
@@ -123,7 +123,7 @@ Follow-up record for `00-meta/audit-verdict.md`; every line verifiable in this p
 - **Consent**: export defaults exclude PII; explicit selection for identifying fields (§8).
 - **Money**: integer BDT, documented unit; revenue totals recomputed at export time (§3, `export-job.md` §5).
 - **Testing gates**: `admin_loop` covers export lifecycle + HMAC + exactly-once; store_loop never calls SDK live (§11).
-- **Owners**: Platform (job/artifacts) · 04-builder (design hooks) · 06-payments (shared rate-limit) · 12-marketplace (app distribution).
+- **Owners**: Platform (job/artifacts) · 04-builder (theme hooks) · 06-payments (shared rate-limit) · 12-marketplace (app distribution).
 - **Performance targets**: image export ≤ 3 s p95; PDF generation ≤ 5 s p95; SDK snippet render ≤ 200 ms p95 (§9).
 - **Acceptance criteria**: export job of a 3-order shop matches source tables (checksum/row-count); webhook HMAC verified end-to-end; dead-letter retry delivers exactly once; SDK snippets render without hydration errors on desktop and mobile viewports.
 

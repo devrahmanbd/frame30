@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 function read(relPath: string): string {
@@ -7,13 +7,13 @@ function read(relPath: string): string {
 }
 
 describe("P0 / P1 CMS Security & Pre-emptive Hardening Contract", () => {
-  it("appearance.functions.ts RPCs are retired with the theme purge (no theme lifecycle surface)", () => {
-    expect(existsSync(resolve(process.cwd(), "src/lib/themes/appearance.functions.ts"))).toBe(
-      false,
-    );
-    expect(existsSync(resolve(process.cwd(), "src/lib/themes/appearance.server.ts"))).toBe(
-      false,
-    );
+  it("enforces requirePermission on all appearance.functions.ts RPCs", () => {
+    const src = read("src/lib/themes/appearance.functions.ts");
+    const declarations = src.match(/createServerFn\(/g) ?? [];
+    const guards = src.match(/requirePermission\(/g) ?? [];
+    expect(declarations.length).toBeGreaterThan(0);
+    expect(guards.length).toBe(declarations.length);
+    expect(src).not.toContain("requireSupabaseAuth");
   });
 
   it("enforces requirePermission on all authenticated themes.functions.ts RPCs", () => {

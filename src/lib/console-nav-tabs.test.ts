@@ -2,18 +2,21 @@ import { describe, expect, it } from "vitest";
 import { ADMIN_NAV } from "./console-nav";
 
 describe("CMS & Dashboard Navigation Hierarchy", () => {
-  it("Marketplace is the dedicated installation hub for plugins only (no theme tab)", () => {
+  it("Marketplace is the dedicated installation hub for themes & plugins only (no standalone widgets)", () => {
     const marketplace = ADMIN_NAV.find((g) => g.key === "marketplace");
     expect(marketplace).toBeDefined();
-    expect(marketplace!.items).toHaveLength(1);
+    expect(marketplace!.items).toHaveLength(2);
 
-    const [pluginsItem] = marketplace!.items;
+    const [themesItem, pluginsItem] = marketplace!.items;
+    expect(themesItem.en).toBe("Themes");
+    expect(themesItem.search).toEqual({ tab: "theme" });
+
     expect(pluginsItem.en).toBe("Plugins");
     expect(pluginsItem.search).toEqual({ tab: "plugin" });
 
-    // No theme menus or legacy installed tabs in marketplace
+    // No widget menus or legacy installed tabs in marketplace
     for (const item of marketplace!.items) {
-      expect(item.en.toLowerCase()).not.toContain("theme");
+      expect(item.en.toLowerCase()).not.toContain("widget");
       expect(item.en.toLowerCase()).not.toBe("installed");
     }
   });
@@ -26,17 +29,19 @@ describe("CMS & Dashboard Navigation Hierarchy", () => {
     expect(catItem!.en).toBe("Category");
   });
 
-  it("Appearance contains Menus and Custom CSS, JS (themes retired)", () => {
+  it("Appearance contains Themes management, Customize (builder), Menus, and Custom CSS, JS", () => {
     const appearance = ADMIN_NAV.find((g) => g.key === "appearance");
     expect(appearance).toBeDefined();
 
     const targets = appearance!.items.map((i) => i.to);
-    expect(targets).not.toContain("/dashboard/content/themes");
+    expect(targets).toContain("/dashboard/content/themes");
+    expect(targets).toContain("/dashboard/builder");
     expect(targets).toContain("/dashboard/content/menus");
     expect(targets).toContain("/dashboard/content/custom-code");
 
     const labels = appearance!.items.map((i) => i.en);
-    expect(labels).not.toContain("Themes");
+    expect(labels).toContain("Themes");
+    expect(labels).toContain("Customize");
     expect(labels).toContain("Menus");
     expect(labels).toContain("Custom CSS, JS");
   });

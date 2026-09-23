@@ -265,8 +265,8 @@ export const MARKETING_ROUTES: readonly MarketingRoute[] = [
       bn: "ডেভেলপার ডকস — Framique এপিআই ও ওয়েবহুক",
     },
     description: {
-      en: "Build on Framique: REST API reference, API keys and OAuth, webhook signature verification, rate limits, error codes, plugin and app authoring.",
-      bn: "Framique-এ ডেভেলপ করুন: REST এপিআই রেফারেন্স, এপিআই কী ও ওএথ, ওয়েবহুক সিগনেচার যাচাই, রেট লিমিট, এরর কোড এবং প্লাগিন ও অ্যাপ অথরিং।",
+      en: "Build on Framique: REST API reference, API keys and OAuth, webhook signature verification, rate limits, error codes, theme and app authoring.",
+      bn: "Framique-এ ডেভেলপ করুন: REST এপিআই রেফারেন্স, এপিআই কী ও ওএথ, ওয়েবহুক সিগনেচার যাচাই, রেট লিমিট, এরর কোড এবং থিম ও অ্যাপ অথরিং।",
     },
     label: { en: "Docs", bn: "ডকস" },
     parent: "home",

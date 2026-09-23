@@ -1,7 +1,7 @@
 /**
  * Phase 3.3 — বাংলা coverage at a glance.
  *
- * Shows how much of the storefront's copy is translated and lets the merchant jump
+ * Shows how much of the theme's copy is translated and lets the merchant jump
  * straight to whatever is missing.
  */
 import type { CoverageReport } from "@/lib/translation-coverage";

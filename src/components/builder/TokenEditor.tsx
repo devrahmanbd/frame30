@@ -17,7 +17,7 @@ type Props = {
   onChange: (patch: Partial<ThemeTokens>) => void;
 };
 
-// Curated color palettes for 1-click styling (storefront-owned, not theme presets)
+// Curated luxury & commerce color palettes for 1-click styling
 const PALETTE_PRESETS: Array<{
   nameEn: string;
   nameBn: string;
@@ -26,6 +26,14 @@ const PALETTE_PRESETS: Array<{
   surface: string;
   ink: string;
 }> = [
+  {
+    nameEn: "Heritage Crimson & Gold",
+    nameBn: "হেরিটেজ ক্রিমসন ও সোনা",
+    brand: "#7A1B16",
+    accent: "#B8860B",
+    surface: "#FCFBF7",
+    ink: "#1C1817",
+  },
   {
     nameEn: "Nordic Minimalist",
     nameBn: "নর্ডিক মিনিমালিস্ট",
@@ -196,7 +204,7 @@ export function TokenEditor({ tokens, onChange }: Props) {
     <div className="space-y-3 text-sm">
       {/* 1. COLOR & BRAND PALETTE */}
       <SectionGroup
-        title={t("Color Palette", "কালার প্যালেট")}
+        title={t("Color Palette & Themes", "কালার প্যালেট ও থিম")}
         subtitle={t("Brand identity, accents, surface & ink tokens", "ব্র্যান্ড পরিচিতি, অ্যাকসেন্ট, সারফেস ও টেক্সট")}
       >
         {/* Light / Dark Mode Segmented Switch */}
@@ -261,8 +269,8 @@ export function TokenEditor({ tokens, onChange }: Props) {
           <div className="rounded-fq-md border border-dashed border-border p-4 text-center space-y-3">
             <p className="text-xs text-muted-foreground leading-relaxed">
               {t(
-                "This storefront is currently light-only. Create a curated dark set tailored for high-contrast evening shopping.",
-                "এই স্টোরফ্রন্ট বর্তমানে শুধু লাইট মোডে। উচ্চ কন্ট্রাস্টের আরামদায়ক অভিজ্ঞতার জন্য ডার্ক সেট তৈরি করুন।",
+                "This theme is currently light-only. Create a curated dark set tailored for high-contrast evening shopping.",
+                "এই থিম বর্তমানে শুধু লাইট মোডে। উচ্চ কন্ট্রাস্টের আরামদায়ক অভিজ্ঞতার জন্য ডার্ক সেট তৈরি করুন।",
               )}
             </p>
             <button
@@ -282,7 +290,7 @@ export function TokenEditor({ tokens, onChange }: Props) {
             {!editingDark && (
               <div className="space-y-1.5">
                 <label className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  {t("Curated Palettes", "নির্বাচিত প্যালেট")}
+                  {t("Curated Luxury Palettes", "নির্বাচিত বিলাসবহুল প্যালেট")}
                 </label>
                 <div className="grid grid-cols-1 gap-1.5">
                   {PALETTE_PRESETS.map((p) => {

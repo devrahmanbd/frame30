@@ -5,6 +5,9 @@ import { PluginFooterMounts } from "@/components/store/PluginFooterMounts";
 import { PluginProvider } from "@/components/builder/PluginContext";
 
 import { buildPageHead, buildStoreHead } from "@/lib/theme-seo";
+import { fontHeadLinks } from "@/lib/theme-fonts";
+import { astJsonLd } from "@/lib/structured-data";
+import { flattenAst } from "@/lib/builder-ast";
 
 import { verificationTags } from "@/lib/search-console";
 import {
@@ -95,6 +98,7 @@ export const Route = createFileRoute("/store/$slug/")({
         path: `/store/${params.slug}`,
         storePath: `/store/${params.slug}`,
         storeName: loaderData.merchant.name,
+        themeKey: home.themeKey,
         robots: home.page.robots,
         noindex: (home.page.robots ?? "").startsWith("noindex"),
         seo: home.seo ?? null,
@@ -109,6 +113,7 @@ export const Route = createFileRoute("/store/$slug/")({
       origin: loaderData.origin,
       path: `/store/${params.slug}`,
       storeName: loaderData.merchant.name,
+      themeKey: loaderData.themeKey,
       tagline: loaderData.settings?.tagline ?? null,
       seo: loaderData.seo,
       products: loaderData.products.map((p) => ({
@@ -130,12 +135,35 @@ export const Route = createFileRoute("/store/$slug/")({
         ...verificationTags(loaderData.siteKit.verification),
         ...custom.filter((t) => t.tag === "meta").map((t) => t.attrs),
       ],
+      // Phase 3: typography links are derived from this store's own pairing,
+      // so a theme never pays for a family it does not use.
       links: [
         ...(base.links ?? []),
+        ...fontHeadLinks(
+          loaderData.tokens ?? {
+            fontDisplay: "Noto Sans Bengali",
+            fontBody: "Inter",
+          },
+        ),
         ...custom.filter((t) => t.tag === "link").map((t) => t.attrs),
       ],
       scripts: [
         ...(base.scripts ?? []),
+        // Phase 7.2: schema emitted by the widgets that are actually on the
+        // page (FAQ, how-to, store locator, video), derived from the AST.
+        ...astJsonLd(
+          loaderData.ast,
+          {
+            storeName: loaderData.merchant.name,
+            url: loaderData.origin
+              ? `${loaderData.origin}/store/${params.slug}`
+              : null,
+          },
+          flattenAst,
+        ).map((node) => ({
+          type: "application/ld+json",
+          children: JSON.stringify(node).replace(/</g, "\\u003c"),
+        })),
         ...custom
           .filter(
             (t): t is Extract<typeof t, { tag: "script" }> =>

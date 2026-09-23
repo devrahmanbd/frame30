@@ -48,6 +48,7 @@ export const Route = createFileRoute("/store/$slug/p/$productSlug")({
       path: `/store/${params.slug}/p/${loaderData.product.slug}`,
       storePath: `/store/${params.slug}`,
       storeName: loaderData.merchant.name,
+      themeKey: loaderData.themeKey,
       seo: loaderData.seo,
       product: {
         title: loaderData.product.title,
@@ -94,7 +95,7 @@ function ProductNotFound() {
 
 function ProductDetail() {
   const { t } = useLang();
-  const { merchant, product, settings, siteKit, menus, installedPlugins } =
+  const { merchant, product, settings, ast, tokens, siteKit, menus } =
     Route.useLoaderData();
   const variants = product.product_variants ?? [];
   const [variantId, setVariantId] = useState(variants[0]?.id ?? "");
@@ -118,6 +119,12 @@ function ProductDetail() {
       payload: { slug: product.slug },
     });
   }, [product.slug]);
+
+  const themed = ast && ast.main.length > 0 ? ast : null;
+  const sections = themed
+    ? [...themed.header, ...themed.main, ...themed.footer]
+    : [];
+  const hasPriceBlock = sections.some((s) => s.type === "price_block");
 
   const media = (
     <div className="aspect-square overflow-hidden rounded-fq-lg border border-border bg-muted">
@@ -272,7 +279,6 @@ function ProductDetail() {
 
   const fallback = (
     <div className="grid gap-8 md:grid-cols-2">
-      <div className="md:col-span-2">{breadcrumb}</div>
       {media}
       <div>
         {priceBlock}
@@ -295,9 +301,10 @@ function ProductDetail() {
         template="product"
         storeSlug={merchant.slug}
         merchantId={merchant.id}
+        ast={ast}
+        tokens={tokens}
         siteKit={siteKit}
-      installedPlugins={installedPlugins}
-        ownsPrimary
+        ownsPrimary={hasPriceBlock}
         chrome={
           <>
             <StoreHeader slug={merchant.slug} name={merchant.name} menus={menus} />
@@ -305,6 +312,13 @@ function ProductDetail() {
             {/* <SupportWidget slug={merchant.slug} /> */}
           </>
         }
+        contextSlots={{
+          breadcrumb,
+          product_media: media,
+          price_block: priceBlock,
+          add_to_cart: addToCart,
+          product_meta: meta,
+        }}
         fallback={fallback}
       />
       <div className="mx-auto max-w-6xl px-4 pb-16">{conversion}</div>

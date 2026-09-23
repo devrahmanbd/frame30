@@ -30,7 +30,7 @@ that actually ship.
 
 - **Allow list** — storefront/pricing reads: `merchants`, `products`,
   `product_variants`, `categories`, `collections`, `collection_products`,
-  `plan_definitions`, `storefront_pages`, `store_designs`, `vat_rates`,
+  `plan_definitions`, `storefront_pages`, `store_themes`, `vat_rates`,
   `merchant_settings` (shipping/COD configuration; no secrets in the row).
 - **Deny list** — 45 tenant, money, identity, risk and platform tables must
   return zero rows to `anon`.
