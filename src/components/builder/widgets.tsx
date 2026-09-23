@@ -39,6 +39,7 @@ import { CIRCUIT_WIDGETS } from "./electronics";
 import { BASIC_WIDGETS } from "./basics";
 import { BLOG_WIDGETS } from "./blog";
 import { HERITAGE_WIDGETS } from "./heritage";
+import { SONGOSKRITI_WIDGETS } from "./songoskriti";
 import {
   ProductCard,
   ProductCardSkeleton,
@@ -898,6 +899,8 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   ...APPAREL_WIDGETS,
   // Phase 9 — Heritage (clothing).
   ...HERITAGE_WIDGETS,
+  // Songoskriti heritage gap pack.
+  ...SONGOSKRITI_WIDGETS,
 
   container: Container,
   columns: Container,
