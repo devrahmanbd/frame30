@@ -22,7 +22,7 @@ import {
   ExternalLink,
   ChevronRight,
   Search,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { RootCommandPalette } from "./RootCommandPalette";

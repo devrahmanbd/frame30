@@ -4,7 +4,7 @@ import { getSiteContext } from "@/lib/site-seo.functions";
 import { buildMarketingHead } from "@/lib/marketing-seo";
 import { getLanding } from "@/lib/landing.functions";
 import { Band, BandHeading, FaqBand } from "@/components/public/bands";
-import { Check, X } from "lucide-react";
+import { Check, X } from "@/components/icons/tabler";
 import { fmtMinor } from "@/lib/money";
 import { cn } from "@/lib/utils";
 

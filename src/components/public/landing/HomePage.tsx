@@ -10,7 +10,7 @@ import {
   Store,
   BarChart3,
   PackageCheck,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import {
   Band,
   BandHeading,

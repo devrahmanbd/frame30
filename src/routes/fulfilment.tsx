@@ -5,7 +5,7 @@ import { getSiteContext } from "@/lib/site-seo.functions";
 import { buildMarketingHead } from "@/lib/marketing-seo";
 import { getLanding } from "@/lib/landing.functions";
 import { Band, BandHeading, CtaBand } from "@/components/public/bands";
-import { Truck, MapPin, PackageCheck, Zap } from "lucide-react";
+import { Truck, MapPin, PackageCheck, Zap } from "@/components/icons/tabler";
 import { AnimatedIcon } from "@/components/public/AnimatedIcon";
 
 type CourierName = { code: string; name: string; nameBn: string };

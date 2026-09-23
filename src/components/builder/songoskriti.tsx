@@ -31,7 +31,7 @@ import {
   ShieldCheck,
   Star,
   Truck,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 
 /* ---------------------------------------------------------------- helpers */
 

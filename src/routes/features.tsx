@@ -11,7 +11,7 @@ import {
   ShieldCheck,
   Layers,
   LineChart,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { Band, BandHeading } from "@/components/public/bands";
 import { AnimatedIcon } from "@/components/public/AnimatedIcon";
 

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/icons/tabler";
 
 import { DocBlocks } from "@/components/docs/DocBlocks";
 import { DocsSearch } from "@/components/docs/DocsSearch";

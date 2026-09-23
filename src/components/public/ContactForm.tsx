@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Send } from "lucide-react";
+import { Send } from "@/components/icons/tabler";
 import { Button } from "@/components/ui/button";
 import { useLang } from "@/lib/i18n";
 import { submitContactFn } from "@/lib/contact.functions";

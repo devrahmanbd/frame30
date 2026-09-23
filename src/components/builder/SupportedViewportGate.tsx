@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { Monitor } from "lucide-react";
+import { Monitor } from "@/components/icons/tabler";
 import { BUILDER_MIN_VIEWPORT_PX } from "@/lib/browser-support";
 import { useLang } from "@/lib/i18n";
 

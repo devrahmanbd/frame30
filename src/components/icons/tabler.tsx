@@ -62,12 +62,20 @@ export function AlignRight(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 6l16 0\" />\n  <path d=\"M10 12l10 0\" />\n  <path d=\"M6 18l14 0\" />", props);
 }
 
+export function Anchor(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 9v12m-8 -8a8 8 0 0 0 16 0m1 0h-2m-14 0h-2\" />\n  <path d=\"M9 6a3 3 0 1 0 6 0a3 3 0 1 0 -6 0\" />", props);
+}
+
 export function ArrowDownRight(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M7 7l10 10\" />\n  <path d=\"M17 8l0 9l-9 0\" />", props);
 }
 
 export function ArrowLeft(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M5 12l14 0\" />\n  <path d=\"M5 12l6 6\" />\n  <path d=\"M5 12l6 -6\" />", props);
+}
+
+export function ArrowLeftRight(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M17 13l4 -4l-4 -4\" />\n  <path d=\"M7 13l-4 -4l4 -4\" />\n  <path d=\"M12 14a5 5 0 0 1 5 -5h4\" />\n  <path d=\"M12 19v-5a5 5 0 0 0 -5 -5h-4\" />", props);
 }
 
 export function ArrowRight(props: IconProps) {
@@ -90,12 +98,20 @@ export function BadgeDollarSign(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2\" />\n  <path d=\"M12 3v3m0 12v3\" />", props);
 }
 
+export function Banknote(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0\" />\n  <path d=\"M3 8a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2l0 -8\" />\n  <path d=\"M18 12h.01\" />\n  <path d=\"M6 12h.01\" />", props);
+}
+
 export function BarChart3(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 13a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -6\" />\n  <path d=\"M15 9a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -10\" />\n  <path d=\"M9 5a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v14a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1l0 -14\" />\n  <path d=\"M4 20h14\" />", props);
 }
 
 export function Bell(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6\" />\n  <path d=\"M9 17v1a3 3 0 0 0 6 0v-1\" />", props);
+}
+
+export function Blocks(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M14 4a1 1 0 0 1 1 -1h5a1 1 0 0 1 1 1v5a1 1 0 0 1 -1 1h-5a1 1 0 0 1 -1 -1l0 -5\" />\n  <path d=\"M3 14h12a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h3a2 2 0 0 1 2 2v12\" />", props);
 }
 
 export function Bold(props: IconProps) {
@@ -134,7 +150,15 @@ export function ChevronDown(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M6 9l6 6l6 -6\" />", props);
 }
 
+export function ChevronDownIcon(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M6 9l6 6l6 -6\" />", props);
+}
+
 export function ChevronLeft(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M15 6l-6 6l6 6\" />", props);
+}
+
+export function ChevronLeftIcon(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M15 6l-6 6l6 6\" />", props);
 }
 
@@ -142,8 +166,16 @@ export function ChevronRight(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M9 6l6 6l-6 6\" />", props);
 }
 
+export function ChevronRightIcon(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M9 6l6 6l-6 6\" />", props);
+}
+
 export function ChevronUp(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M6 15l6 -6l6 6\" />", props);
+}
+
+export function ChevronsDownUp(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M17 3l0 18\" />\n  <path d=\"M10 18l-3 3l-3 -3\" />\n  <path d=\"M7 21l0 -18\" />\n  <path d=\"M20 6l-3 -3l-3 3\" />", props);
 }
 
 export function ChevronsLeft(props: IconProps) {
@@ -154,12 +186,44 @@ export function ChevronsRight(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M7 7l5 5l-5 5\" />\n  <path d=\"M13 7l5 5l-5 5\" />", props);
 }
 
+export function ChevronsUpDown(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M7 3l0 18\" />\n  <path d=\"M10 6l-3 -3l-3 3\" />\n  <path d=\"M20 18l-3 3l-3 -3\" />\n  <path d=\"M17 21l0 -18\" />", props);
+}
+
+export function Circle(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\" />", props);
+}
+
+export function CircleHelp(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0\" />\n  <path d=\"M12 16v.01\" />\n  <path d=\"M12 13a2 2 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483\" />", props);
+}
+
+export function ClipboardList(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2\" />\n  <path d=\"M9 5a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2\" />\n  <path d=\"M9 12l.01 0\" />\n  <path d=\"M13 12l2 0\" />\n  <path d=\"M9 16l.01 0\" />\n  <path d=\"M13 16l2 0\" />", props);
+}
+
 export function Clock(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0\" />\n  <path d=\"M12 7v5l3 3\" />", props);
 }
 
+export function Code(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M7 8l-4 4l4 4\" />\n  <path d=\"M17 8l4 4l-4 4\" />\n  <path d=\"M14 4l-4 16\" />", props);
+}
+
 export function Code2(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M7 8l-4 4l4 4\" />\n  <path d=\"M17 8l4 4l-4 4\" />\n  <path d=\"M14 4l-4 16\" />", props);
+}
+
+export function Columns2(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 4a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v16a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-16\" />\n  <path d=\"M12 3v18\" />", props);
+}
+
+export function Command(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M7 9a2 2 0 1 1 2 -2v10a2 2 0 1 1 -2 -2h10a2 2 0 1 1 -2 2v-10a2 2 0 1 1 2 2h-10\" />", props);
+}
+
+export function Compass(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M8 16l2 -6l6 -2l-2 6l-6 2\" />\n  <path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\" />\n  <path d=\"M12 3l0 2\" />\n  <path d=\"M12 19l0 2\" />\n  <path d=\"M3 12l2 0\" />\n  <path d=\"M19 12l2 0\" />", props);
 }
 
 export function Contact(props: IconProps) {
@@ -230,6 +294,14 @@ export function FolderTree(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M9 3h3l2 2h5a2 2 0 0 1 2 2v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2\" />\n  <path d=\"M17 16v2a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-9a2 2 0 0 1 2 -2h2\" />", props);
 }
 
+export function GalleryHorizontal(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12\" />\n  <path d=\"M12 4l0 16\" />", props);
+}
+
+export function GalleryVerticalEnd(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12\" />\n  <path d=\"M10 4l4 16\" />\n  <path d=\"M12 12l-8 2\" />", props);
+}
+
 export function Gauge(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\" />\n  <path d=\"M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M13.41 10.59l2.59 -2.59\" />\n  <path d=\"M7 12a5 5 0 0 1 5 -5\" />", props);
 }
@@ -254,8 +326,24 @@ export function GripVertical(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M8 5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M8 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M8 19a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M14 5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M14 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M14 19a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />", props);
 }
 
+export function HardDrive(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M7 21h10a2 2 0 0 0 2 -2v-14a2 2 0 0 0 -2 -2h-6.172a2 2 0 0 0 -1.414 .586l-3.828 3.828a2 2 0 0 0 -.586 1.414v10.172a2 2 0 0 0 2 2\" />\n  <path d=\"M13 6v2\" />\n  <path d=\"M16 6v2\" />\n  <path d=\"M10 7v1\" />", props);
+}
+
 export function Hash(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M5 9l14 0\" />\n  <path d=\"M5 15l14 0\" />\n  <path d=\"M11 4l-4 16\" />\n  <path d=\"M17 4l-4 16\" />", props);
+}
+
+export function Heading(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M7 12h10\" />\n  <path d=\"M7 5v14\" />\n  <path d=\"M17 5v14\" />\n  <path d=\"M15 19h4\" />\n  <path d=\"M15 5h4\" />\n  <path d=\"M5 19h4\" />\n  <path d=\"M5 5h4\" />", props);
+}
+
+export function Headset(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 14v-3a8 8 0 1 1 16 0v3\" />\n  <path d=\"M18 19c0 1.657 -2.686 3 -6 3\" />\n  <path d=\"M4 14a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-1a2 2 0 0 1 -2 -2v-3\" />\n  <path d=\"M15 14a2 2 0 0 1 2 -2h1a2 2 0 0 1 2 2v3a2 2 0 0 1 -2 2h-1a2 2 0 0 1 -2 -2v-3\" />", props);
+}
+
+export function Heart(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572\" />", props);
 }
 
 export function HeartPulse(props: IconProps) {
@@ -270,7 +358,15 @@ export function History(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 8l0 4l2 2\" />\n  <path d=\"M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5\" />", props);
 }
 
+export function Home(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M5 12l-2 0l9 -9l9 9l-2 0\" />\n  <path d=\"M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7\" />\n  <path d=\"M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6\" />", props);
+}
+
 export function Image(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M15 8h.01\" />\n  <path d=\"M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12\" />\n  <path d=\"M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5\" />\n  <path d=\"M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3\" />", props);
+}
+
+export function ImageIcon(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M15 8h.01\" />\n  <path d=\"M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12\" />\n  <path d=\"M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5\" />\n  <path d=\"M14 14l1 -1c.928 -.893 2.072 -.893 3 0l3 3\" />", props);
 }
 
@@ -310,6 +406,10 @@ export function Landmark(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 21l18 0\" />\n  <path d=\"M3 10l18 0\" />\n  <path d=\"M5 6l7 -3l7 3\" />\n  <path d=\"M4 10l0 11\" />\n  <path d=\"M20 10l0 11\" />\n  <path d=\"M8 14l0 3\" />\n  <path d=\"M12 14l0 3\" />\n  <path d=\"M16 14l0 3\" />", props);
 }
 
+export function Laptop(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 19l18 0\" />\n  <path d=\"M5 7a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v8a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1l0 -8\" />", props);
+}
+
 export function Layers(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 6l-8 4l8 4l8 -4l-8 -4\" />\n  <path d=\"M4 14l8 4l8 -4\" />", props);
 }
@@ -328,6 +428,10 @@ export function LayoutTemplate(props: IconProps) {
 
 export function LifeBuoy(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\" />\n  <path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\" />\n  <path d=\"M15 15l3.35 3.35\" />\n  <path d=\"M9 15l-3.35 3.35\" />\n  <path d=\"M5.65 5.65l3.35 3.35\" />\n  <path d=\"M18.35 5.65l-3.35 3.35\" />", props);
+}
+
+export function LineChart(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 19l16 0\" />\n  <path d=\"M4 15l4 -6l4 2l4 -5l4 4\" />", props);
 }
 
 export function Link2(props: IconProps) {
@@ -350,12 +454,20 @@ export function Loader2(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 3a9 9 0 1 0 9 9\" />", props);
 }
 
+export function Lock(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6\" />\n  <path d=\"M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0\" />\n  <path d=\"M8 11v-4a4 4 0 1 1 8 0v4\" />", props);
+}
+
 export function LogOut(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2\" />\n  <path d=\"M9 12h12l-3 -3\" />\n  <path d=\"M18 15l3 -3\" />", props);
 }
 
 export function Mail(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10\" />\n  <path d=\"M3 7l9 6l9 -6\" />", props);
+}
+
+export function MapPin(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0\" />\n  <path d=\"M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0\" />", props);
 }
 
 export function Megaphone(props: IconProps) {
@@ -366,8 +478,20 @@ export function Menu(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 8l16 0\" />\n  <path d=\"M4 16l16 0\" />", props);
 }
 
+export function MessageCircle(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 20l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c3.255 2.777 3.695 7.266 1.029 10.501c-2.666 3.235 -7.615 4.215 -11.574 2.293l-4.7 1\" />", props);
+}
+
+export function MessageCircleQuestion(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M15.02 19.52c-2.341 .736 -5 .606 -7.32 -.52l-4.7 1l1.3 -3.9c-2.324 -3.437 -1.426 -7.872 2.1 -10.374c3.526 -2.501 8.59 -2.296 11.845 .48c1.649 1.407 2.575 3.253 2.742 5.152\" />\n  <path d=\"M19 22v.01\" />\n  <path d=\"M19 19a2.003 2.003 0 0 0 .914 -3.782a1.98 1.98 0 0 0 -2.414 .483\" />", props);
+}
+
 export function MessageSquare(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M8 9h8\" />\n  <path d=\"M8 13h6\" />\n  <path d=\"M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12\" />", props);
+}
+
+export function MessageSquareQuote(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M6 15h15\" />\n  <path d=\"M21 19h-15\" />\n  <path d=\"M15 11h6\" />\n  <path d=\"M21 7h-6\" />\n  <path d=\"M9 9h1a1 1 0 1 1 -1 1v-2.5a2 2 0 0 1 2 -2\" />\n  <path d=\"M3 9h1a1 1 0 1 1 -1 1v-2.5a2 2 0 0 1 2 -2\" />", props);
 }
 
 export function Minus(props: IconProps) {
@@ -382,6 +506,18 @@ export function Moon(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454l0 .008\" />", props);
 }
 
+export function MoreHorizontal(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M18 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />", props);
+}
+
+export function MousePointerClick(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 12l3 0\" />\n  <path d=\"M12 3l0 3\" />\n  <path d=\"M7.8 7.8l-2.2 -2.2\" />\n  <path d=\"M16.2 7.8l2.2 -2.2\" />\n  <path d=\"M7.8 16.2l-2.2 2.2\" />\n  <path d=\"M12 12l9 3l-4 2l-2 4l-3 -9\" />", props);
+}
+
+export function MoveVertical(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M9 18l3 3l3 -3\" />\n  <path d=\"M12 15v6\" />\n  <path d=\"M15 6l-3 -3l-3 3\" />\n  <path d=\"M12 3v6\" />", props);
+}
+
 export function Omega(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 19h5v-1a7.35 7.35 0 1 1 6 0v1h5\" />", props);
 }
@@ -390,12 +526,28 @@ export function Package(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5\" />\n  <path d=\"M12 12l8 -4.5\" />\n  <path d=\"M12 12l0 9\" />\n  <path d=\"M12 12l-8 -4.5\" />\n  <path d=\"M16 5.25l-8 4.5\" />", props);
 }
 
+export function PackageCheck(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5\" />\n  <path d=\"M12 12l8 -4.5\" />\n  <path d=\"M12 12l0 9\" />\n  <path d=\"M12 12l-8 -4.5\" />\n  <path d=\"M16 5.25l-8 4.5\" />", props);
+}
+
+export function PackagePlus(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5\" />\n  <path d=\"M12 12l8 -4.5\" />\n  <path d=\"M12 12l0 9\" />\n  <path d=\"M12 12l-8 -4.5\" />\n  <path d=\"M16 5.25l-8 4.5\" />", props);
+}
+
 export function PackageSearch(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M7 16.5l-5 -3l5 -3l5 3v5.5l-5 3l0 -5.5\" />\n  <path d=\"M2 13.5v5.5l5 3\" />\n  <path d=\"M7 16.545l5 -3.03\" />\n  <path d=\"M17 16.5l-5 -3l5 -3l5 3v5.5l-5 3l0 -5.5\" />\n  <path d=\"M12 19l5 3\" />\n  <path d=\"M17 16.5l5 -3\" />\n  <path d=\"M12 13.5v-5.5l-5 -3l5 -3l5 3v5.5\" />\n  <path d=\"M7 5.03v5.455\" />\n  <path d=\"M12 8l5 -3\" />", props);
 }
 
+export function Paintbrush(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 21v-4a4 4 0 1 1 4 4h-4\" />\n  <path d=\"M21 3a16 16 0 0 0 -12.8 10.2\" />\n  <path d=\"M21 3a16 16 0 0 1 -10.2 12.8\" />\n  <path d=\"M10.6 9a9 9 0 0 1 4.4 4.4\" />", props);
+}
+
 export function Palette(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -1 2.25\" />\n  <path d=\"M7.5 10.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M11.5 7.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M15.5 10.5a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />", props);
+}
+
+export function PanelLeft(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12\" />\n  <path d=\"M9 4l0 16\" />", props);
 }
 
 export function PanelLeftClose(props: IconProps) {
@@ -410,8 +562,24 @@ export function PanelRight(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12\" />\n  <path d=\"M15 4l0 16\" />", props);
 }
 
+export function PanelTop(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12\" />\n  <path d=\"M4 9l16 0\" />", props);
+}
+
 export function Pause(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M6 6a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -12\" />\n  <path d=\"M14 6a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -12\" />", props);
+}
+
+export function Pencil(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4\" />\n  <path d=\"M13.5 6.5l4 4\" />", props);
+}
+
+export function Percent(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M16 17a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M6 7a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M6 18l12 -12\" />", props);
+}
+
+export function Phone(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2\" />", props);
 }
 
 export function PhoneCall(props: IconProps) {
@@ -434,6 +602,10 @@ export function Plus(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 5l0 14\" />\n  <path d=\"M5 12l14 0\" />", props);
 }
 
+export function Printer(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2\" />\n  <path d=\"M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4\" />\n  <path d=\"M7 15a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2l0 -4\" />", props);
+}
+
 export function Puzzle(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 7h3a1 1 0 0 0 1 -1v-1a2 2 0 0 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 0 1 1h1a2 2 0 0 1 0 4h-1a1 1 0 0 0 -1 1v3a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-1a2 2 0 0 0 -4 0v1a1 1 0 0 1 -1 1h-3a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h1a2 2 0 0 0 0 -4h-1a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1\" />", props);
 }
@@ -444,6 +616,10 @@ export function QrCode(props: IconProps) {
 
 export function Quote(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M10 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5\" />\n  <path d=\"M19 11h-4a1 1 0 0 1 -1 -1v-3a1 1 0 0 1 1 -1h3a1 1 0 0 1 1 1v6c0 2.667 -1.333 4.333 -4 5\" />", props);
+}
+
+export function Radio(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M14 3l-9.371 3.749a1 1 0 0 0 -.629 .928v11.323a1 1 0 0 0 1 1h14a1 1 0 0 0 1 -1v-11a1 1 0 0 0 -1 -1h-14.5\" />\n  <path d=\"M4 12h16\" />\n  <path d=\"M7 12v-2\" />\n  <path d=\"M17 16v.01\" />\n  <path d=\"M13 16v.01\" />", props);
 }
 
 export function Receipt(props: IconProps) {
@@ -462,6 +638,14 @@ export function RotateCcw(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M15 4.55a8 8 0 0 0 -6 14.9m0 -4.45v5h-5\" />\n  <path d=\"M18.37 7.16l0 .01\" />\n  <path d=\"M13 19.94l0 .01\" />\n  <path d=\"M16.84 18.37l0 .01\" />\n  <path d=\"M19.37 15.1l0 .01\" />\n  <path d=\"M19.94 11l0 .01\" />", props);
 }
 
+export function Rows3(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 6a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2l0 -12\" />\n  <path d=\"M4 12l16 0\" />", props);
+}
+
+export function Ruler(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M5 4h14a1 1 0 0 1 1 1v5a1 1 0 0 1 -1 1h-7a1 1 0 0 0 -1 1v7a1 1 0 0 1 -1 1h-5a1 1 0 0 1 -1 -1v-14a1 1 0 0 1 1 -1\" />\n  <path d=\"M4 8l2 0\" />\n  <path d=\"M4 12l3 0\" />\n  <path d=\"M4 16l2 0\" />\n  <path d=\"M8 4l0 2\" />\n  <path d=\"M12 4l0 3\" />\n  <path d=\"M16 4l0 2\" />", props);
+}
+
 export function Scale(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M7 20l10 0\" />\n  <path d=\"M6 6l6 -1l6 1\" />\n  <path d=\"M12 3l0 17\" />\n  <path d=\"M9 12l-3 -6l-3 6a3 3 0 0 0 6 0\" />\n  <path d=\"M21 12l-3 -6l-3 6a3 3 0 0 0 6 0\" />", props);
 }
@@ -478,12 +662,24 @@ export function Send(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M10 14l11 -11\" />\n  <path d=\"M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5\" />", props);
 }
 
+export function Server(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 7a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-2\" />\n  <path d=\"M3 15a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v2a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3l0 -2\" />\n  <path d=\"M7 8l0 .01\" />\n  <path d=\"M7 16l0 .01\" />", props);
+}
+
 export function Settings(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065\" />\n  <path d=\"M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0\" />", props);
 }
 
+export function Settings2(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M19.875 6.27a2.225 2.225 0 0 1 1.125 1.948v7.284c0 .809 -.443 1.555 -1.158 1.948l-6.75 4.27a2.269 2.269 0 0 1 -2.184 0l-6.75 -4.27a2.225 2.225 0 0 1 -1.158 -1.948v-7.285c0 -.809 .443 -1.554 1.158 -1.947l6.75 -3.98a2.33 2.33 0 0 1 2.25 0l6.75 3.98h-.033\" />\n  <path d=\"M9 12a3 3 0 1 0 6 0a3 3 0 1 0 -6 0\" />", props);
+}
+
 export function Shapes(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M7 21l4 -12m2 0l1.48 4.439m.949 2.847l1.571 4.714\" />\n  <path d=\"M10 7a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\" />\n  <path d=\"M4 12c1.526 2.955 4.588 5 8 5c3.41 0 6.473 -2.048 8 -5\" />\n  <path d=\"M12 5v-2\" />", props);
+}
+
+export function Share2(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M8 9h-1a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-8a2 2 0 0 0 -2 -2h-1\" />\n  <path d=\"M12 14v-11\" />\n  <path d=\"M9 6l3 -3l3 3\" />", props);
 }
 
 export function Shield(props: IconProps) {
@@ -496,6 +692,14 @@ export function ShieldAlert(props: IconProps) {
 
 export function ShieldCheck(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M11.46 20.846a12 12 0 0 1 -7.96 -14.846a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3a12 12 0 0 1 -.09 7.06\" />\n  <path d=\"M15 19l2 2l4 -4\" />", props);
+}
+
+export function ShieldPlus(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12.462 20.87c-.153 .047 -.307 .09 -.462 .13a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3a12 12 0 0 0 8.5 3a12 12 0 0 1 .11 6.37\" />\n  <path d=\"M16 19h6\" />\n  <path d=\"M19 16v6\" />", props);
+}
+
+export function Shirt(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M15 4l6 2v5h-3v8a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1v-8h-3v-5l6 -2a3 3 0 0 0 6 0\" />", props);
 }
 
 export function ShoppingBag(props: IconProps) {
@@ -514,6 +718,10 @@ export function Sliders(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\" />\n  <path d=\"M4 6l8 0\" />\n  <path d=\"M16 6l4 0\" />\n  <path d=\"M6 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\" />\n  <path d=\"M4 12l2 0\" />\n  <path d=\"M10 12l10 0\" />\n  <path d=\"M15 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\" />\n  <path d=\"M4 18l11 0\" />\n  <path d=\"M19 18l1 0\" />", props);
 }
 
+export function SlidersHorizontal(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 6a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\" />\n  <path d=\"M4 6l8 0\" />\n  <path d=\"M16 6l4 0\" />\n  <path d=\"M6 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\" />\n  <path d=\"M4 12l2 0\" />\n  <path d=\"M10 12l10 0\" />\n  <path d=\"M15 18a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\" />\n  <path d=\"M4 18l11 0\" />\n  <path d=\"M19 18l1 0\" />", props);
+}
+
 export function Smartphone(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M6 5a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2v-14\" />\n  <path d=\"M11 4h2\" />\n  <path d=\"M12 17v.01\" />", props);
 }
@@ -522,8 +730,20 @@ export function Sparkles(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M16 18a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2m0 -12a2 2 0 0 1 2 2a2 2 0 0 1 2 -2a2 2 0 0 1 -2 -2a2 2 0 0 1 -2 2m-7 12a6 6 0 0 1 6 -6a6 6 0 0 1 -6 -6a6 6 0 0 1 -6 6a6 6 0 0 1 6 6\" />", props);
 }
 
+export function Spline(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M17 4a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -2\" />\n  <path d=\"M3 18a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1l0 -2\" />\n  <path d=\"M17 5c-6.627 0 -12 5.373 -12 12\" />", props);
+}
+
+export function Square(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14\" />", props);
+}
+
 export function Star(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245\" />", props);
+}
+
+export function StarHalf(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l.007 15.748\" />", props);
 }
 
 export function Store(props: IconProps) {
@@ -538,12 +758,28 @@ export function Sun(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M8 12a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\" />\n  <path d=\"M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7\" />", props);
 }
 
+export function Table(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14\" />\n  <path d=\"M3 10h18\" />\n  <path d=\"M10 3v18\" />", props);
+}
+
 export function Tablet(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M5 4a1 1 0 0 1 1 -1h12a1 1 0 0 1 1 1v16a1 1 0 0 1 -1 1h-12a1 1 0 0 1 -1 -1v-16\" />\n  <path d=\"M11 17a1 1 0 1 0 2 0a1 1 0 0 0 -2 0\" />", props);
 }
 
 export function Tags(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 8v4.172a2 2 0 0 0 .586 1.414l5.71 5.71a2.41 2.41 0 0 0 3.408 0l3.592 -3.592a2.41 2.41 0 0 0 0 -3.408l-5.71 -5.71a2 2 0 0 0 -1.414 -.586h-4.172a2 2 0 0 0 -2 2\" />\n  <path d=\"M18 19l1.592 -1.592a4.82 4.82 0 0 0 0 -6.816l-4.592 -4.592\" />\n  <path d=\"M7 10h-.01\" />", props);
+}
+
+export function Target(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0\" />\n  <path d=\"M7 12a5 5 0 1 0 10 0a5 5 0 1 0 -10 0\" />\n  <path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\" />", props);
+}
+
+export function Terminal(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M5 7l5 5l-5 5\" />\n  <path d=\"M12 19l7 0\" />", props);
+}
+
+export function TextCursorInput(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M10 12h4\" />\n  <path d=\"M9 4a3 3 0 0 1 3 3v10a3 3 0 0 1 -3 3\" />\n  <path d=\"M15 4a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3\" />", props);
 }
 
 export function ThumbsDown(props: IconProps) {
@@ -570,12 +806,32 @@ export function Trash2(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 7l16 0\" />\n  <path d=\"M10 11l0 6\" />\n  <path d=\"M14 11l0 6\" />\n  <path d=\"M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12\" />\n  <path d=\"M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3\" />", props);
 }
 
+export function TrendingDown(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 7l6 6l4 -4l8 8\" />\n  <path d=\"M21 10l0 7l-7 0\" />", props);
+}
+
 export function TrendingUp(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 17l6 -6l4 4l8 -8\" />\n  <path d=\"M14 7l7 0l0 7\" />", props);
 }
 
+export function TriangleAlert(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M12 9v4\" />\n  <path d=\"M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0\" />\n  <path d=\"M12 16h.01\" />", props);
+}
+
+export function Trophy(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M8 21l8 0\" />\n  <path d=\"M12 17l0 4\" />\n  <path d=\"M7 4l10 0\" />\n  <path d=\"M17 4v8a5 5 0 0 1 -10 0v-8\" />\n  <path d=\"M3 9a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\" />\n  <path d=\"M17 9a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\" />", props);
+}
+
 export function Truck(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M5 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\" />\n  <path d=\"M15 17a2 2 0 1 0 4 0a2 2 0 1 0 -4 0\" />\n  <path d=\"M5 17h-2v-11a1 1 0 0 1 1 -1h9v12m-4 0h6m4 0h2v-6h-8m0 -5h5l3 5\" />", props);
+}
+
+export function TvMinimal(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 9a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2l0 -9\" />\n  <path d=\"M16 3l-4 4l-4 -4\" />", props);
+}
+
+export function Type(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M6 4l12 0\" />\n  <path d=\"M12 4l0 16\" />", props);
 }
 
 export function Underline(props: IconProps) {
@@ -584,6 +840,10 @@ export function Underline(props: IconProps) {
 
 export function Undo2(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M9 14l-4 -4l4 -4\" />\n  <path d=\"M5 10h11a4 4 0 1 1 0 8h-1\" />", props);
+}
+
+export function Upload(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2\" />\n  <path d=\"M7 9l5 -5l5 5\" />\n  <path d=\"M12 4l0 12\" />", props);
 }
 
 export function UploadCloud(props: IconProps) {
@@ -610,10 +870,18 @@ export function Users(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M5 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0\" />\n  <path d=\"M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2\" />\n  <path d=\"M16 3.13a4 4 0 0 1 0 7.75\" />\n  <path d=\"M21 21v-2a4 4 0 0 0 -3 -3.85\" />", props);
 }
 
+export function Video(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4\" />\n  <path d=\"M3 8a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l0 -8\" />", props);
+}
+
 export function X(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M18 6l-12 12\" />\n  <path d=\"M6 6l12 12\" />", props);
 }
 
 export function XCircle(props: IconProps) {
   return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0\" />\n  <path d=\"M10 10l4 4m0 -4l-4 4\" />", props);
+}
+
+export function Zap(props: IconProps) {
+  return base("<path stroke=\"none\" d=\"M0 0h24v24H0z\" fill=\"none\" />\n  <path d=\"M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11\" />", props);
 }

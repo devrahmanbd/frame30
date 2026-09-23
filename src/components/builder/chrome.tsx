@@ -14,7 +14,7 @@ import {
   ShieldCheck,
   Headset,
   Star,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { useRouterState } from "@tanstack/react-router";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import type { SectionType } from "@/lib/builder-ast";

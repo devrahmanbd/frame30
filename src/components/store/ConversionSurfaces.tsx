@@ -4,7 +4,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import { toast } from "sonner";
-import { Star, StarHalf, Loader2, Flame, BadgeCheck } from "lucide-react";
+import {
+  Star,
+  StarHalf,
+  Loader2,
+  Flame,
+  BadgeCheck,
+} from "@/components/icons/tabler";
 import {
   countdownSeconds,
   formatCountdown,

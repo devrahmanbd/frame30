@@ -5,7 +5,7 @@ import { buildMarketingHead } from "@/lib/marketing-seo";
 import { Band, BandHeading, FaqBand } from "@/components/public/bands";
 import { FAQ_ROWS } from "@/lib/landing";
 import { en } from "@/lib/i18n-dict";
-import { HelpCircle } from "lucide-react";
+import { HelpCircle } from "@/components/icons/tabler";
 
 export const Route = createFileRoute("/faq")({
   loader: async () => {

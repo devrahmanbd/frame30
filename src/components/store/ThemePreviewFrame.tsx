@@ -8,7 +8,7 @@
  * data so every section renders something visible.
  */
 import { useMemo, useState, type MouseEvent } from "react";
-import { X } from "lucide-react";
+import { X } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { StoreHeader } from "@/components/store/StoreHeader";

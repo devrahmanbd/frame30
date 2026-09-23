@@ -18,7 +18,7 @@ import {
   ShieldCheck,
   Trash2,
   User,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { toast } from "sonner";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { StoreHeader } from "@/components/store/StoreHeader";

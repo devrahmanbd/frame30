@@ -17,7 +17,7 @@ import { getLanding } from "@/lib/landing.functions";
 import { buildMarketingHead, buildGraph } from "@/lib/marketing-seo";
 import { publishableStats, type StoryCard } from "@/lib/landing";
 import { useLang } from "@/lib/i18n";
-import { CheckCircle2, ArrowRight } from "lucide-react";
+import { CheckCircle2, ArrowRight } from "@/components/icons/tabler";
 import { AnimatedIcon } from "@/components/public/AnimatedIcon";
 import { MarketingPlaceholderImage } from "@/components/public/MarketingPlaceholderImage";
 import {

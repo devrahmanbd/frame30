@@ -83,7 +83,7 @@ import {
   Type,
   Video,
   Zap,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { HtmlSandbox } from "@/components/builder/HtmlSandbox";
 import { WidgetSandbox } from "@/components/marketplace/WidgetSandbox";
 import { useInstalledPlugins } from "@/components/builder/PluginContext";

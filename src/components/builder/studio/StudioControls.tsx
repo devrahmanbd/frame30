@@ -15,7 +15,7 @@ import {
   Tablet,
   Trash2,
   TvMinimal,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";

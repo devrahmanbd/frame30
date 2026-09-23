@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Menu, X } from "@/components/icons/tabler";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useLang } from "@/lib/i18n";
 import { PUBLIC_BANGLA_ENABLED } from "@/lib/public-locale";

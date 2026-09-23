@@ -6,7 +6,13 @@
  * widget edge handles, a 4px drop indicator, and the empty-container prompt.
  */
 import { useRef, useState, type DragEvent } from "react";
-import { Copy, GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  Copy,
+  GripVertical,
+  Pencil,
+  Plus,
+  Trash2,
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import {
   isContainerNode,

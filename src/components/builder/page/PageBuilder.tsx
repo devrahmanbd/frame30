@@ -17,7 +17,7 @@ import {
   Tablet,
   Trash2,
   Undo2,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import { PageCanvas, type Selection } from "./PageCanvas";
 import {

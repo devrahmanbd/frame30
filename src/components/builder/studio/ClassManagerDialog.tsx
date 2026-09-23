@@ -6,7 +6,7 @@
  * Classes row at the top of the Style tab.
  */
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "@/components/icons/tabler";
 import {
   Dialog,
   DialogContent,

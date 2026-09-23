@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight } from "@/components/icons/tabler";
 import { AnimatedIcon } from "@/components/public/AnimatedIcon";
 import { MarketingPlaceholderImage } from "@/components/public/MarketingPlaceholderImage";
 

@@ -16,7 +16,7 @@ import {
   Palette,
   Plus,
   Settings2,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,

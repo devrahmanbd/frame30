@@ -10,7 +10,7 @@ import {
   Store,
   ArrowRight,
   Target,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { Band, BandHeading } from "@/components/public/bands";
 import { AnimatedIcon } from "@/components/public/AnimatedIcon";
 import { cn } from "@/lib/utils";

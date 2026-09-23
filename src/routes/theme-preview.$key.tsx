@@ -23,7 +23,7 @@
  * Usage: /theme-preview/songoskriti
  */
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { resolveThemePreview } from "@/lib/theme-preview-nav";
 import { ThemePreviewFrame } from "@/components/store/ThemePreviewFrame";

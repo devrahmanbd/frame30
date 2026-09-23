@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { ImageIcon } from "lucide-react";
+import { ImageIcon } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 
 export interface MarketingPlaceholderImageProps {

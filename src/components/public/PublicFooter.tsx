@@ -8,7 +8,7 @@ import {
 } from "react";
 import { Link } from "@tanstack/react-router";
 import { withEngine } from "@/lib/motion-engine";
-import { ArrowRight, Loader2, Check } from "lucide-react";
+import { ArrowRight, Loader2, Check } from "@/components/icons/tabler";
 import { BrandLogo } from "@/components/public/BrandLogo";
 import { useLang } from "@/lib/i18n";
 import { LEGAL_DOCS, ORG_NAP } from "@/lib/legal";

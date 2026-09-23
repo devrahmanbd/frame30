@@ -3,7 +3,7 @@ import { PublicShell } from "@/components/public/PublicShell";
 import { getSiteContext } from "@/lib/site-seo.functions";
 import { buildMarketingHead } from "@/lib/marketing-seo";
 import { Band, BandHeading } from "@/components/public/bands";
-import { ShieldCheck, Lock, Server, FileText } from "lucide-react";
+import { ShieldCheck, Lock, Server, FileText } from "@/components/icons/tabler";
 import { AnimatedIcon } from "@/components/public/AnimatedIcon";
 
 export const Route = createFileRoute("/security")({

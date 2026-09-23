@@ -14,7 +14,7 @@ import {
   EyeOff,
   Trash2,
   X,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { widgetLabel } from "@/lib/studio/catalog";
 import { isContainerNode, type StudioNode } from "@/lib/studio/model";

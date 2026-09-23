@@ -11,7 +11,7 @@ import {
   CheckCircle2,
   AlertTriangle,
   RotateCcw,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { toast } from "sonner";
 import { RootConfirmDialog } from "@/components/root/RootConfirmDialog";
 import { useLang } from "@/lib/i18n";

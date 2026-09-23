@@ -29,7 +29,7 @@ import {
   RefreshCw,
   Layers,
   Copy,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import {
   Band,
   BandHeading,

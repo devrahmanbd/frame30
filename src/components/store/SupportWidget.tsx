@@ -20,7 +20,7 @@ import {
   RotateCcw,
   User,
   Mail,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import {
   askSupportFn,
   rateSupportFn,

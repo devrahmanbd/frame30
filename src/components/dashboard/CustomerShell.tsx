@@ -7,7 +7,14 @@
  */
 import { useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, Package, Truck, Heart, User, ChevronDown } from "lucide-react";
+import {
+  Home,
+  Package,
+  Truck,
+  Heart,
+  User,
+  ChevronDown,
+} from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useCustomerAccount, useCustomerAccounts } from "@/hooks/use-customer";

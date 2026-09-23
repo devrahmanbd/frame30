@@ -5,7 +5,7 @@
  * page settings, history (Actions | Revisions), finder and the shortcut sheet.
  */
 import { useMemo, useState } from "react";
-import { Search, Star, Upload } from "lucide-react";
+import { Search, Star, Upload } from "@/components/icons/tabler";
 import {
   Dialog,
   DialogContent,

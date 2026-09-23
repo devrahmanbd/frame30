@@ -25,7 +25,7 @@ import {
   ChevronDown,
   ArrowLeft,
   Loader2,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (

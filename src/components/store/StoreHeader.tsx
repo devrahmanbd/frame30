@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu as MenuIcon, Search, ShoppingBag, User, X } from "lucide-react";
+import {
+  Menu as MenuIcon,
+  Search,
+  ShoppingBag,
+  User,
+  X,
+} from "@/components/icons/tabler";
 import { useCart } from "@/lib/cart";
 import { useLang } from "@/lib/i18n";
 import { isCustomHostPath } from "@/lib/storefront-url";

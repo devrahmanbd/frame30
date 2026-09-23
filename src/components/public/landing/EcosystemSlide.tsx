@@ -1,6 +1,12 @@
 import React from "react";
 import { useEffect, useRef, useState } from "react";
-import { Smartphone, CreditCard, Banknote, Truck, Zap } from "lucide-react";
+import {
+  Smartphone,
+  CreditCard,
+  Banknote,
+  Truck,
+  Zap,
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
 import { useMotionIntent } from "@/lib/motion-runtime";
