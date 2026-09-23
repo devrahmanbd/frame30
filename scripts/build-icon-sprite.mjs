@@ -3,8 +3,11 @@
  * Phase 10.5 — builds the single local icon sprite (TODO §10.5 bullet 2).
  *
  * Source of truth is `ICON_NAMES` in `src/lib/marketing-assets.ts`; geometry
- * comes from the installed `lucide-react` icon nodes, so the marks are the real
- * lucide paths at the real 24px grid rather than hand-traced approximations.
+ * comes from the vendored Tabler SVGs in `assets/icons/tabler/<name>.svg`
+ * (MIT, see assets/icons/tabler/LICENSE-MIT + manifest.json for the
+ * lucide→tabler name map), so builds are deterministic with no network and
+ * no icon-library dependency. Files are named by ICON_NAMES, not by Tabler
+ * names, so consumers never change when the source family does.
  * Output is `public/media/icons/sprite.svg`: one `<symbol>` per name, sorted by
  * name so the file is byte-deterministic and a rebuild produces no diff when
  * nothing changed (a churning binary in git is how sprites stop being rebuilt).
@@ -32,56 +35,51 @@ const log = (level, event, fields = {}) =>
     `${JSON.stringify({ ts: new Date().toISOString(), level, gate: "icons", event, ...fields })}\n`,
   );
 
-function attrs(record) {
-  return Object.entries(record)
-    .filter(([key]) => key !== "key")
-    .map(([key, value]) => `${key}="${String(value).replace(/"/g, "&quot;")}"`)
-    .join(" ");
-}
-
 async function main() {
   const { ICON_NAMES, ICONS, SPRITE_PATH } = await import(
     `${ROOT}/src/lib/marketing-assets.ts`
   );
   /**
-   * Path data comes from the per-icon ESM modules (`__iconNode`), not from the
-   * `lucide-react` barrel. In this version the barrel exports forwardRef
-   * components whose only keys are `$$typeof`/`render`: the geometry is simply
-   * not reachable from them, which is why every one of the 30 names reported as
-   * "unknown". Loading `dist/esm/icons/<kebab>.js` also keeps the build off the
-   * 5,800-export barrel, so the sprite build stays fast.
+   * Inner markup of the vendored Tabler file. Rejects anything that is not
+   * static vector geometry (scripts, event handlers, nested svg) — a
+   * compromised asset must fail the build, never ship in the sprite.
    */
-  const iconNodeFor = async (name) => {
-    try {
-      const mod = await import(`lucide-react/dist/esm/icons/${name}.js`);
-      return Array.isArray(mod.__iconNode) ? mod.__iconNode : null;
-    } catch {
+  const iconInnerFor = (name) => {
+    const file = resolve(ROOT, "assets/icons/tabler", `${name}.svg`);
+    if (!existsSync(file)) return null;
+    const raw = readFileSync(file, "utf8");
+    const open = raw.indexOf(">");
+    const close = raw.lastIndexOf("</svg>");
+    if (open === -1 || close === -1 || close <= open) return null;
+    const inner = raw.slice(open + 1, close).trim();
+    if (
+      !inner ||
+      /<script[\s>]|javascript:|on[a-z]+\s*=|<svg[\s>]/i.test(inner)
+    ) {
       return null;
     }
+    return inner;
   };
 
   const missing = [];
   const symbols = [];
 
   for (const name of [...ICON_NAMES].sort()) {
-    const iconNode = await iconNodeFor(name);
-    if (!Array.isArray(iconNode)) {
+    const inner = iconInnerFor(name);
+    if (typeof inner !== "string") {
       missing.push(name);
       continue;
     }
-    const children = iconNode
-      .map(([tag, props]) => `<${tag} ${attrs(props)} />`)
-      .join("");
     symbols.push(
       `<symbol id="${name}" viewBox="${ICONS.viewBox}" fill="none" stroke="currentColor" ` +
-        `stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${children}</symbol>`,
+        `stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">${inner}</symbol>`,
     );
   }
 
   if (missing.length > 0) {
     log("error", "icons.unknown_names", { missing });
     console.error(
-      `icon sprite FAILED: lucide has no icon for ${missing.length} name(s): ${missing.join(", ")}`,
+      `icon sprite FAILED: no vendored Tabler SVG for ${missing.length} name(s): ${missing.join(", ")}`,
     );
     process.exit(1);
   }
