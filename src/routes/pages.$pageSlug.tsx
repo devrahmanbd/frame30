@@ -77,6 +77,7 @@ function StorePageView() {
     customCss,
     isBuilder,
     menus,
+    installedPlugins,
   } = Route.useLoaderData();
   const slug = merchant.slug;
 
@@ -150,6 +151,7 @@ function StorePageView() {
       ast={ast}
       tokens={tokens}
       siteKit={siteKit}
+      installedPlugins={installedPlugins}
       customCss={customCss}
       ownsPrimary
       chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}

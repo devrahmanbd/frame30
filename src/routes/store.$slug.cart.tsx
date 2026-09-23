@@ -57,7 +57,7 @@ function CartMissing() {
 function CartPage() {
   const { t } = useLang();
   const { slug } = Route.useParams();
-  const { merchant, ast, tokens, siteKit, menus } = Route.useLoaderData();
+  const { merchant, ast, tokens, siteKit, menus, installedPlugins } = Route.useLoaderData();
 
   return (
     <ThemeChrome
@@ -67,6 +67,7 @@ function CartPage() {
       ast={ast}
       tokens={tokens}
       siteKit={siteKit}
+      installedPlugins={installedPlugins}
       chrome={
         <>
           <StoreHeader slug={slug} name={merchant.name} menus={menus} />

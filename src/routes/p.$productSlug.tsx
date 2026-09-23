@@ -111,7 +111,7 @@ function ProductNotFound() {
 
 function ProductDetail() {
   const { t } = useLang();
-  const { merchant, product, settings, ast, tokens, siteKit, menus } =
+  const { merchant, product, settings, ast, tokens, siteKit, menus, installedPlugins } =
     Route.useLoaderData();
   const variants = product.product_variants ?? [];
   const [variantId, setVariantId] = useState(variants[0]?.id ?? "");
@@ -308,6 +308,7 @@ function ProductDetail() {
         ast={ast}
         tokens={tokens}
         siteKit={siteKit}
+      installedPlugins={installedPlugins}
         ownsPrimary={hasPriceBlock}
         chrome={
           <>

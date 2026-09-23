@@ -477,6 +477,7 @@ function AccountPage() {
       storeSlug={slug}
       merchantId={chrome?.merchant.id ?? null}
       siteKit={chrome?.siteKit ?? null}
+      installedPlugins={chrome?.installedPlugins ?? []}
       ownsPrimary
       contextSlots={accountSlots}
       chrome={

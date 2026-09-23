@@ -301,7 +301,12 @@ export async function loadStorePage(storeSlug: string, pageSlug: string) {
       "page",
       await resolveSeo(merchant.id, "page", (page as { id: string }).id),
     );
-    return { merchant, page: page as StorePage, seo };
+    // Installed plugins for footer mounts + placed app-blocks.
+    const { listStorefrontPlugins } = await import("./plugins.server");
+    const installedPlugins = await listStorefrontPlugins(
+      (merchant as { id: string }).id,
+    );
+    return { merchant, page: page as StorePage, seo, installedPlugins };
   });
 }
 

@@ -242,6 +242,7 @@ export function isBlockTarget(v: string): v is BlockTarget {
 
 /** Third-party bundles may only call these methods, each behind one scope. */
 export const WIDGET_API: Record<string, { scope: string; write: boolean }> = {
+  "plugin.settings": { scope: "render_storefront", write: false },
   "shop.info": { scope: "read_shop", write: false },
   "products.list": { scope: "read_products", write: false },
   "products.update": { scope: "write_products", write: true },

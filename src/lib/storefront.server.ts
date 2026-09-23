@@ -163,7 +163,7 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
     .maybeSingle();
   if (!merchant) return null;
 
-  const [theme, siteKit, menus] = await Promise.all([
+  const [theme, siteKit, menus, installedPlugins] = await Promise.all([
     loadPublished(merchant.id, template),
     import("./search-console.server").then((m) =>
       m.storefrontSiteKit(merchant.id),
@@ -171,6 +171,10 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
     // Phase 16 T4: dashboard-designed nav menus ride every chrome payload so
     // the header/footer render the merchant's menus on every template.
     import("./menus/menu.server").then((m) => m.loadStoreMenus(merchant.id)),
+    // Plugin footer mounts + placed app-blocks resolve from this list.
+    import("./plugins.server").then((m) =>
+      m.listStorefrontPlugins(merchant.id),
+    ),
   ]);
 
   return {
@@ -181,6 +185,7 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
     themeVersionId: theme?.versionId ?? null,
     siteKit,
     menus,
+    installedPlugins,
   };
 }
 
@@ -246,6 +251,7 @@ export async function loadStoreCollection(
   const { storefrontSiteKit } = await import("./search-console.server");
   const siteKit = await storefrontSiteKit(merchant.id);
   const { loadStoreMenus } = await import("./menus/menu.server");
+  const { listStorefrontPlugins } = await import("./plugins.server");
 
   return {
     merchant,
@@ -263,6 +269,7 @@ export async function loadStoreCollection(
     seo,
     siteKit,
     menus: await loadStoreMenus(merchant.id),
+    installedPlugins: await listStorefrontPlugins(merchant.id),
     ast: theme?.ast ?? null,
     tokens: theme?.tokens ?? null,
     themeKey: theme?.themeKey ?? null,
@@ -448,6 +455,11 @@ async function loadStorefrontUncached(
     import("./menus/menu.server").then((m) => m.loadStoreMenus(merchant.id)),
   ]);
 
+  // Installed plugins for footer mounts + placed app-blocks (fail-safe
+  // to [] inside the helper, so a plugin read can never break the render).
+  const { listStorefrontPlugins } = await import("./plugins.server");
+  const installedPlugins = await listStorefrontPlugins(merchant.id);
+
   // Perf batch: variant rows and homepage slug are independent — fetch
   // together instead of serially.
   const [variantRows, homepageSlug] = await Promise.all([
@@ -524,6 +536,7 @@ async function loadStorefrontUncached(
     siteKit,
     homepageSlug,
     menus,
+    installedPlugins,
   };
 }
 
@@ -617,6 +630,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
   const { storefrontSiteKit } = await import("./search-console.server");
   const siteKit = await storefrontSiteKit(merchant.id);
   const { loadStoreMenus } = await import("./menus/menu.server");
+  const { listStorefrontPlugins } = await import("./plugins.server");
 
   return {
     merchant,
@@ -625,6 +639,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
     settings,
     siteKit,
     menus: await loadStoreMenus(merchant.id),
+    installedPlugins: await listStorefrontPlugins(merchant.id),
     reviews: (reviews ?? []).map((r) => ({
       author: r.author_name ?? "",
       rating: Number(r.rating) || 0,

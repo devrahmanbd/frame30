@@ -510,6 +510,7 @@ function SearchPage() {
       ast={chrome?.ast ?? null}
       tokens={chrome?.tokens ?? null}
       siteKit={chrome?.siteKit ?? null}
+      installedPlugins={chrome?.installedPlugins ?? []}
       chrome={
         <>
           <StoreHeader slug={slug} name={chrome?.merchant.name ?? slug} menus={chrome?.menus} />

@@ -65,6 +65,24 @@ export async function listInstalledPlugins(
   return out;
 }
 
+/**
+ * Storefront-safe installed list for SSR payloads (footer mounts + placed
+ * app-blocks). Uses the service client — `plugin_state` is never
+ * anon-readable — and fails safe to `[]` so a plugin read can never break
+ * a shopper-facing render.
+ */
+export async function listStorefrontPlugins(
+  merchantId: string,
+): Promise<InstalledPlugin[]> {
+  try {
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    return await listInstalledPlugins(supabaseAdmin as never, merchantId);
+  } catch {
+    return [];
+  }
+}
+
 export type UpsertInput = {
   manifest: unknown;
   grantedScopes: string[];
