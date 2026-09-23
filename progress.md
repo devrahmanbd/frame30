@@ -1,8 +1,8 @@
 # Project State (loop source of truth)
 
 Goal: one Elementor-grade page builder at `/dashboard/content/editor`
-(templates + widgets usable on any theme and standalone pages);
-`/dashboard/builder` stays theme-only until later retirement. Custom
+(templates + widgets usable on any design and standalone pages);
+`/dashboard/builder` stays design-only until later retirement. Custom
 domains only (no path storefronts). CI is CircleCI-only; no local tests;
 verify on production; push to GitHub.
 
@@ -10,11 +10,11 @@ verify on production; push to GitHub.
 - Origin/main tip: see `git log --oneline -1` (loop updates this line per
   batch — do NOT trust it stale; production deploys separately).
 - Last verified live: page editor renders saved content, 48 widgets in
-  tray, homepage set/remove, themes screen, custom-domain storefront.
+  tray, homepage set/remove, designs screen, custom-domain storefront.
 
 ## Decisions (mirrored in mem0 + CHANGELOG)
 - D1 content-editor URL = the page builder; block editor removed from pages.
-- D2 merge by porting (no engine rewrite): theme widgets become native
+- D2 merge by porting (no engine rewrite): design widgets become native
   studio widgets; templates become universal blocks.
 - D3 data-backed widgets stay placeholders on canvas, live on storefront.
 - D4 path storefronts retired (bare 404); merchant links resolve to the
@@ -26,34 +26,34 @@ verify on production; push to GitHub.
   HEAD + bundle markers post-deploy, never reset shared history.
 
 ## TODO queue (loop works top-down)
-- [x] Theme parity 1: slices A/B/C/D (84 widgets, `4153d77`, 304 tests).
-- [x] Theme parity 2: final 4 (add_to_cart, rewards_club, wedding_shop,
+- [x] Design parity 1: slices A/B/C/D (84 widgets, `4153d77`, 304 tests).
+- [x] Design parity 2: final 4 (add_to_cart, rewards_club, wedding_shop,
   gift_finder — `476da4b`, 316 tests). Union gap closed except 24 below.
 - [x] Storefront round-trip audit: all 24 slice-D widgets LIVE on
   storefront (generic pass-through, SectionRenderer resolves all).
   Watch items: checkout_steps static activeStep, product_meta silent
   null, canvas blindness + `widgetHtml` "" fallback for data widgets.
-- [x] Theme parity 3 (24 widgets, `02ef60d`, 388 tests): set A chrome/
+- [x] Design parity 3 (24 widgets, `02ef60d`, 388 tests): set A chrome/
   forms/commerce + set B discovery/assurance/layout. columns is a real
   container (isContainerNode, sanitise, nodeHtml, canvas grid mapping).
-  nav_menu keeps theme-verbatim items array + repeater (department_grid
+  nav_menu keeps design-verbatim items array + repeater (department_grid
   precedent). Icon registry +21 imports; fixed Star-fallback orphans
   (gift_builder, bundle_offer, subbrand_spotlight, rewards_club,
   gift_finder). Full SectionType union now ported (minus structural
   primitives + section/paragraph which exist nowhere).
 - [x] Repeater 1/8 faq (`4925edd`, TDD: RED watched, 398 tests GREEN):
   items array + repeater panel, scalars kept, load-time seeding,
-  canvas/theme/JSON-LD all dual-read. Limitation: rows lack _bn sibs.
+  canvas/design/JSON-LD all dual-read. Limitation: rows lack _bn sibs.
 - [x] Repeater 2/8 product_qna (`5d4d96d`, TDD, 400 tests): items +
   repeater panel + askHref gap fix, seedQaItems generalized, canvas Q&A
-  card, theme precedence items > live rows > scalars, MessageSquareQuote
+  card, design precedence items > live rows > scalars, MessageSquareQuote
   icon. SEO/blueprints untouched by design.
 - [x] Repeater 3/8 trust_bar (`04684d4`, TDD + swarm, 402 tests):
   Badges repeater {icon,title,body}, seedTrustItems, canvas + chrome
   dual-read, scalar sections byte-identical. No SEO/export consumers.
 - [x] Repeater 4/8 announcement_bar (`8c0ddd8`, TDD + swarm, 404
   tests): Messages repeater {text}, seedAnnouncementItems,
-  StudioAnnouncement + theme dual-read, rotation/dismiss untouched.
+  StudioAnnouncement + design dual-read, rotation/dismiss untouched.
 - [x] Repeater 5/8 lookbook (`4195642`, TDD + swarm, 406 tests):
   Tiles repeater {image,alt,href}, seedLookbookItems, canvas + apparel
   dual-read with index-based ratio preserved. Caught own duplicate-
@@ -76,25 +76,25 @@ verify on production; push to GitHub.
 - [ ] `.e2e/playwright.config.ts` harness (e2e-critical passes by design).
 - [ ] Retire `/dashboard/builder` after editor testing (explicit user call).
 - [ ] Homepage-as-page program (operator decision: homepage is a real
-  editable page at `/`, theme shows visuals, builder edits).
+  editable page at `/`, design shows visuals, builder edits).
   Data flow (verified): builder edits Studio v2 docs in
   storefront_pages.body_markdown; `/` renders designated page via
-  StoreHomepage in theme chrome, else theme index. Mechanism exists.
+  StoreHomepage in design chrome, else design index. Mechanism exists.
   BLOCKER (verified in code, not seedable today): getStorePageFn only
   reads stub BuilderDoc (never Studio v2), and widgetHtml returns ""
   for every heritage el. Seeding now = blank storefront. Build order:
   Studio-aware read branch → heritage HTML projection → seed Home
   from v2 index → designate → parity verify → builder re-open check.
 - [x] Live preview empty (`4e0e2d9`, deployed): split iframe loaded
-  /store/<slug>?preview_theme= which 404s on platform hosts since the
-  cutover. previewUrl now points at /theme-preview/<key> (full theme
+  /store/<slug>?preview_design= which 404s on platform hosts since the
+  cutover. previewUrl now points at /design-preview/<key> (full design
   + demo content, verified 200). Marketplace split unaffected (own
   signed URLs). Test updated.
-- FLAG for theme designer (needs a fix on the theme side): 5/12 v2
+- FLAG for design designer (needs a fix on the design side): 5/12 v2
   index sections use prop keys with no studio counterpart
   (heritage_story eyebrow/heading, textile_showcase tNLabel/tNAlt,
   editorial_banner eyebrow/heading/body, marquee_strip label,
-  limit-query). Align theme props to studio widget schemas
+  limit-query). Align design props to studio widget schemas
   (headline/items) or ports stay LOSSY forever. DIRECT today:
   hero_carousel, product_rail, lookbook, wedding_shop, gift_finder,
   testimonial_carousel, rewards_club.
@@ -105,7 +105,7 @@ verify on production; push to GitHub.
   Proven live via preview token on Akira Studio page (35KB SSR,
   real headings, zero starter markers). 3 new static-render tests.
 - [x] Supershop activation unblocked (same batch): draft-only rows
-  hit undead-end theme.unpublished (no Publish action exists).
+  hit undead-end design.unpublished (no Publish action exists).
   Activate now materializes from draft/registry; nothing-to-seed
   refusal stays. Proven live: Supershop ACTIVE on Flame + Akira.
 - Flame homepage seeding pending operator visual choice (Supershop
@@ -122,8 +122,8 @@ verify on production; push to GitHub.
   memories verified present via filtered get). Get-by-ID is unusable;
   use filtered search/get instead.
 - [x] Clothing Heritage ACTIVE on flame-fashion-bd (microscrop.shop):
-  operator-ordered theme change executed via app-faithful server-side
-  activation (flag flip + published-pointer coherence + theme_audit row,
+  operator-ordered design change executed via app-faithful server-side
+  activation (flag flip + published-pointer coherence + design_audit row,
   actor flamedev7). Verified live in browser: heritage hero, weavers
   story, artisan showcase, festive, fair-trade, UGC, filters, grid,
   flagship outlets. Zero console errors.
@@ -132,9 +132,9 @@ verify on production; push to GitHub.
   16:02 build, zero journal errors (3h), haproxy:443 → openresty:80 →
   node. Watch: disk 94% (26G free).
 - Note: flamedev7@gmail.com owns AKIRA only; microscrop.shop belongs to
-  Flame Fashion BD (owner nahid52flame@gmail.com) — dashboard theme
+  Flame Fashion BD (owner nahid52flame@gmail.com) — dashboard design
   change was impossible for that account, hence the server-side path.
-  Skipped: installRegistryTheme draft refresh (rendering unaffected).
+  Skipped: installRegistryDesign draft refresh (rendering unaffected).
 - [x] Owner onboarding trap FIXED (`53e1896` + deploy): fresh logins
   raced concurrent membership checks and bounced real owners to
   /onboarding despite live membership rows (proven: landing query
@@ -145,10 +145,10 @@ verify on production; push to GitHub.
   Verified live on Rupaboti settings. Deploy contract all green.
 - RLS verdict (live DB read): writes all tenant-scoped + WITH CHECKs
   clean; reads tenant-gated; uneven public reads — products=all rows
-  (drafts/deleted visible), store_themes=all rows (inactive visible),
+  (drafts/deleted visible), store_designs=all rows (inactive visible),
   variants properly gated (active+public+not-deleted). Not an active
   breach path for prices/stock (variant-gated), but draft disclosure.
-- TODO next: decide products/store_themes public-read tightening +
+- TODO next: decide products/store_designs public-read tightening +
   NEEDS-REVIEW backlog (order oracle token, blog global namespace,
   releaseCheckout binding, recordResolvedMiss attribution, variant
   reader discipline, domains permission granularity).
@@ -173,13 +173,13 @@ verify on production; push to GitHub.
 - Deploy lesson: deploy script's silent fetch can build stale code
   (19:44 build lacked the filter); re-deploy fixed. Verify-after-
   deploy is mandatory, not optional.
-- [x] Curated two-theme offer (`f5f0a36` + `2b07c60`): Appearance grid
+- [x] Curated two-design offer (`f5f0a36` + `2b07c60`): Appearance grid
   + catalogue + marketplace listCatalog all filtered to Supershop +
-  Clothing Heritage via VISIBLE_THEME_KEYS; active theme exempt.
-  Bridge tests rewritten (10/10). Verified live "2 Themes".
+  Clothing Heritage via VISIBLE_DESIGN_KEYS; active design exempt.
+  Bridge tests rewritten (10/10). Verified live "2 Designs".
 - [x] Demo import fixed 3 levels deep (`7881523`, applied live):
   import_* RPCs never applied → applied 20260920_import_rpcs.sql;
-  theme_registry empty → generator script + seed migration (2 rows);
+  design_registry empty → generator script + seed migration (2 rows);
   supershop hero repeater unmergeable → RPC amendment. Proven
   end-to-end (imported:true), test draft restored byte-identical.
 - [x] Case collision fixed (`529ccf0`): report.md overwrote REPORT.md
@@ -211,7 +211,7 @@ verify on production; push to GitHub.
   microscrop.shop/ + /cart 200, placeholder API 200).
 - Live re-check as flamedev7: General dup-tabs 0, 2FA card absent.
 
-## Heritage v2 complete-theme loop (Sept 21) — AUTONOMOUS
+## Heritage v2 complete-design loop (Sept 21) — AUTONOMOUS
 - Spec: docs/superpowers/specs/2026-09-21-heritage-complete-store-design.md
   (builds on Sept-20 spec, 8/8 shipped; grounded in 5 live ref screenshots).
 - Audit: all 8 TemplateKeys present; PDP deep (reviews/size/fit/care);
@@ -241,8 +241,8 @@ verify on production; push to GitHub.
   photo brief in spec). Live: tinted tiles in preview. 15/15 tests.
 - [x] Slice 4: gates. a11y 93-100 (PASS), CLS 0-0.07 (PASS), zero console
   errors (5 preview templates + order flow). LCP 12s simulated-mobile =
-  platform bundle (749KB unused JS), identical on live store — NOT a theme
-  regression; theme shipped eager hero anyway. Follow-up: route code-split.
+  platform bundle (749KB unused JS), identical on live store — NOT a design
+  regression; design shipped eager hero anyway. Follow-up: route code-split.
 - [x] COD order FQ-20260921-ANRY3 placed + cancelled (TEST-marked, no
   money moved). Gap found: cart page has no checkout CTA (only header
   Cart link) — TODO for slice 5 or UX pass.
@@ -270,10 +270,10 @@ verify on production; push to GitHub.
 - [x] Frameless preview + weave lattice hero (replaces badge tiles);
   solid dept tiles; floating tab pill to bottom. Verified desktop+mobile.
 - [x] Demo import unblocked (nahid report): root causes were (1) SQL
-  idempotency guard noops when ANY is_demo row exists (theme switch =
-  silent zero-import), (2) 5 theme.import_* rate buckets missing ->
+  idempotency guard noops when ANY is_demo row exists (design switch =
+  silent zero-import), (2) 5 design.import_* rate buckets missing ->
   server throw 'limit' on every granular import, (3) per-wrapper purge
   wiped just-imported rows (fixed: purge once per operation).
   Fix: overwrite acks purge demo first + buckets added + fail-open
   guard. Proven live on akira: totalImported 4, 20 supershop demo rows.
-- [x] Preview dock collapsed to corner dot (tab pill read as theme nav).
+- [x] Preview dock collapsed to corner dot (tab pill read as design nav).

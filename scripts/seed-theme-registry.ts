@@ -10,7 +10,16 @@
  *
  * Usage: bun scripts/seed-theme-registry.ts > supabase/migrations/<ts>_theme_registry_seed.sql
  * Review the output before applying; apply live as supabase_admin.
+ *
+ * RETIRED 2026-09-23 (theme purge, Task 5): the theming system is removed and
+ * 20260923_retire_themes.sql closes the write surface. This script now refuses
+ * to generate seed migrations so no future theme rows can be (re)introduced.
  */
+throw new Error(
+  "theme system retired 2026-09-23: seed-theme-registry is disabled. " +
+    "See supabase/migrations/20260923_retire_themes.sql.",
+);
+
 import { THEME_PRESETS } from "../src/lib/theme-presets";
 
 const KEYS = ["supershop", "clothing-heritage"];
