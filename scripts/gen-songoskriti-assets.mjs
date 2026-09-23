@@ -5,7 +5,7 @@
  * Generates the 14 raster assets of the manifest via the Gemini Imagen REST
  * API; the 15th file (logo-lockup.svg) is hand-built and committed directly.
  *
- *   POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict
+ *   POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image:generateContent
  *
  * Security (non-negotiable):
  *   - The key is read ONLY from process.env.GEMINI_API_KEY. When absent the
@@ -30,7 +30,7 @@ import { resolve } from "node:path";
 import { pngSize } from "./songoskriti-assets-check.mjs";
 
 const ENDPOINT =
-  "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict";
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image:generateContent";
 const MAX_ATTEMPTS = 3; // initial try + retry x2
 
 const apiKey = process.env.GEMINI_API_KEY;
@@ -153,19 +153,19 @@ async function generateOnce(prompt, aspectRatio) {
       "x-goog-api-key": apiKey,
     },
     body: JSON.stringify({
-      instances: [{ prompt }],
-      parameters: {
-        sampleCount: 1,
-        aspectRatio,
-        personGeneration: "dont_allow",
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseModalities: ["TEXT", "IMAGE"],
+        imageConfig: { aspectRatio },
       },
     }),
   });
   if (!res.ok) throw new Error(`Imagen HTTP ${res.status}`);
   const data = await res.json();
-  const b64 = data?.predictions?.[0]?.bytesBase64Encoded;
-  if (!b64) throw new Error("Imagen returned no image bytes");
-  return Buffer.from(b64, "base64");
+  const parts = data?.candidates?.[0]?.content?.parts ?? [];
+  const img = parts.find((p) => p.inlineData?.data);
+  if (!img) throw new Error("Imagen returned no image bytes");
+  return Buffer.from(img.inlineData.data, "base64");
 }
 
 async function generateAsset([name, aspectRatio, prompt]) {
@@ -200,7 +200,10 @@ async function generateAsset([name, aspectRatio, prompt]) {
 
 mkdirSync(OUT, { recursive: true });
 const results = [];
-for (const asset of ASSETS) results.push(await generateAsset(asset));
+for (const asset of ASSETS) {
+  results.push(await generateAsset(asset));
+  await sleep(4000); // gentle pacing across assets (free-tier quota)
+}
 const failed = results.filter((r) => r === "failed").length;
 console.log(
   `done: ${results.length - failed}/${results.length} generated` +
