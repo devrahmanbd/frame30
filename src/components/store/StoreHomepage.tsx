@@ -2,6 +2,7 @@ import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreFooterMenus } from "@/components/store/StoreFooterMenus";
 import { StudioNodes } from "@/components/store/StudioNodes";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { useLang } from "@/lib/i18n";
 import type { getStorePageFn } from "@/lib/storefront-search.functions";
 
@@ -82,7 +83,7 @@ export function StoreHomepage({
   );
 
   return (
-    <>
+    <PluginLayer plugins={installedPlugins ?? []}>
       <ThemeChrome
         template="page"
         storeSlug={slug}
@@ -90,7 +91,6 @@ export function StoreHomepage({
         ast={ast}
         tokens={tokens}
         siteKit={siteKit}
-        installedPlugins={installedPlugins}
         customCss={customCss}
         ownsPrimary
         chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}
@@ -100,6 +100,6 @@ export function StoreHomepage({
       />
       {/* Phase 16 T4: dashboard-designed footer menu; null when unclaimed. */}
       {menus && <StoreFooterMenus slug={slug} nodes={menus.footer} />}
-    </>
+    </PluginLayer>
   );
 }

@@ -1,7 +1,8 @@
 /**
- * ThemeChrome plugin wiring — TDD: installed footer-slot plugins mount on
- * every storefront render (themed and themeless); without installs the chrome
- * renders zero mount points.
+ * Theme/plugin separation — the theme chrome renders no plugin markup and
+ * accepts no plugin props. Plugin rendering belongs to `PluginLayer` alone,
+ * so theme rewrites can never affect it. (Replaces the old wiring test that
+ * asserted mounts inside ThemeChrome.)
  */
 import { describe, expect, it, vi } from "vitest";
 import { createElement } from "react";
@@ -14,7 +15,6 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
   return {
     ...actual,
     useRouterState: () => ({ location: { pathname: "/" } }),
-    // Navigation is not under test; render links as plain anchors.
     Link: (p: Record<string, unknown>) => {
       const { to, children, ...rest } = p as {
         to?: unknown;
@@ -34,68 +34,78 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 });
 
 import { ThemeChrome } from "./ThemeChrome";
-import type { InstalledPlugin } from "@/lib/plugin-manifest";
-
-const WA: InstalledPlugin = {
-  installId: "i-wa",
-  manifest: {
-    id: "whatsapp-chat",
-    name: "WhatsApp Quick Chat",
-    version: "1.2.0",
-    api: "^3.0.0",
-    permissions: ["render_storefront"],
-    widgets: [
-      {
-        key: "chat_bubble",
-        label: "WhatsApp Chat Bubble",
-        slots: ["footer"],
-        entry: "framique.mount(document.createElement('div'))",
-        height: 80,
-      },
-    ],
-    hooks: [],
-    settings: [],
-    budget: { jsKb: 35, mainThreadMs: 15 },
-    i18n: { en: {}, bn: {} },
-  },
-  grantedScopes: ["render_storefront"],
-  settings: { phone_number: "8801712345678" },
-  enabled: true,
-};
 
 const EMPTY_AST = { header: [], main: [], footer: [] };
 
-function render(installedPlugins: InstalledPlugin[], themed: boolean) {
-  return renderToStaticMarkup(
-    createElement(ThemeChrome, {
-      template: "index",
-      ast: themed ? EMPTY_AST : null,
-      tokens: themed ? {} : null,
-      storeSlug: "s1",
-      storeName: "S One",
-      merchantId: null,
-      siteKit: null,
-      fallback: createElement("div", null, "fallback-body"),
-      installedPlugins,
-    } as never),
-  );
-}
-
-describe("ThemeChrome plugin mounts", () => {
-  it("mounts footer widgets on the themeless welcome page", () => {
-    const html = render([WA], false);
+describe("ThemeChrome theme/plugin separation", () => {
+  it("renders no plugin markup on the themeless welcome page", () => {
+    const html = renderToStaticMarkup(
+      createElement(ThemeChrome, {
+        template: "index",
+        ast: null,
+        tokens: null,
+        storeSlug: "s1",
+        storeName: "S One",
+        merchantId: null,
+        siteKit: null,
+        fallback: createElement("div", null, "fallback-body"),
+      } as never),
+    );
     expect(html).toContain("Welcome to Framique");
-    expect(html).toContain('data-plugin-widget="chat_bubble"');
+    expect(html).not.toContain("data-plugin");
+    expect(html).not.toContain("PluginFooterMounts");
   });
 
-  it("mounts footer widgets on themed pages", () => {
-    const html = render([WA], true);
+  it("renders no plugin markup on themed pages", () => {
+    const html = renderToStaticMarkup(
+      createElement(ThemeChrome, {
+        template: "index",
+        ast: EMPTY_AST,
+        tokens: {},
+        storeSlug: "s1",
+        storeName: "S One",
+        merchantId: null,
+        siteKit: null,
+        fallback: createElement("div", null, "fallback-body"),
+      } as never),
+    );
     expect(html).toContain("fallback-body");
-    expect(html).toContain('data-plugin-widget="chat_bubble"');
+    expect(html).not.toContain("data-plugin");
   });
 
-  it("renders no mount points without installs", () => {
-    expect(render([], false)).not.toContain("data-plugin-widget");
-    expect(render([], true)).not.toContain("data-plugin-widget");
+  it("ignores plugin data even if passed (decoupling is behavioral)", () => {
+    const html = renderToStaticMarkup(
+      createElement(ThemeChrome, {
+        template: "index",
+        ast: EMPTY_AST,
+        tokens: {},
+        storeSlug: "s1",
+        storeName: "S One",
+        merchantId: null,
+        siteKit: null,
+        fallback: createElement("div", null, "fallback-body"),
+        installedPlugins: [
+          {
+            installId: "i-wa",
+            manifest: {
+              id: "whatsapp-chat",
+              widgets: [
+                {
+                  key: "chat_bubble",
+                  slots: ["footer"],
+                  entry: "x",
+                  height: 80,
+                },
+              ],
+            },
+            grantedScopes: ["render_storefront"],
+            settings: {},
+            enabled: true,
+          },
+        ],
+      } as never),
+    );
+    expect(html).toContain("fallback-body");
+    expect(html).not.toContain("data-plugin");
   });
 });

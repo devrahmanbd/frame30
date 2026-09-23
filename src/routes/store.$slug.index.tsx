@@ -1,8 +1,7 @@
 import { createFileRoute, notFound, redirect } from "@tanstack/react-router";
 import { StoreHomepage } from "@/components/store/StoreHomepage";
 import { StoreWelcome } from "@/components/store/StoreWelcome";
-import { PluginFooterMounts } from "@/components/store/PluginFooterMounts";
-import { PluginProvider } from "@/components/builder/PluginContext";
+import { PluginLayer } from "@/components/store/PluginLayer";
 
 import { buildPageHead, buildStoreHead } from "@/lib/theme-seo";
 import { fontHeadLinks } from "@/lib/theme-fonts";
@@ -201,9 +200,8 @@ function StorefrontHome() {
   // of the theme index. Footer plugin widgets mount here too — themeless
   // stores get their chat bubble on this very page.
   return (
-    <PluginProvider plugins={data.installedPlugins ?? []}>
+    <PluginLayer plugins={data.installedPlugins ?? []}>
       <StoreWelcome slug={slug} name={data.merchant.name} custom={false} />
-      <PluginFooterMounts />
-    </PluginProvider>
+    </PluginLayer>
   );
 }

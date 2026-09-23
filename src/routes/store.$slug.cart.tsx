@@ -9,6 +9,7 @@
  */
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { SupportWidget } from "@/components/store/SupportWidget";
 import { getStoreChrome } from "@/lib/storefront.functions";
@@ -60,6 +61,7 @@ function CartPage() {
   const { merchant, ast, tokens, siteKit, menus, installedPlugins } = Route.useLoaderData();
 
   return (
+    <PluginLayer plugins={installedPlugins}>
     <ThemeChrome
       template="cart"
       storeSlug={slug}
@@ -67,7 +69,6 @@ function CartPage() {
       ast={ast}
       tokens={tokens}
       siteKit={siteKit}
-      installedPlugins={installedPlugins}
       chrome={
         <>
           <StoreHeader slug={slug} name={merchant.name} menus={menus} />
@@ -105,5 +106,6 @@ function CartPage() {
         </section>
       }
     />
+    </PluginLayer>
   );
 }

@@ -5,6 +5,7 @@ import {
   redirect,
 } from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import {
   getFeaturedStoreSlug,
@@ -79,6 +80,7 @@ function CartPage() {
   const data = Route.useLoaderData();
   const { slug, merchant } = data;
   return (
+    <PluginLayer plugins={data.installedPlugins}>
     <ThemeChrome
       template="cart"
       storeSlug={slug}
@@ -86,7 +88,6 @@ function CartPage() {
       ast={data.ast}
       tokens={data.tokens}
       siteKit={data.siteKit}
-      installedPlugins={data.installedPlugins}
       chrome={
         <>
           <StoreHeader slug={slug} name={merchant.name} menus={data.menus} />
@@ -119,5 +120,6 @@ function CartPage() {
         </section>
       }
     />
+    </PluginLayer>
   );
 }

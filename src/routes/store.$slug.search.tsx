@@ -15,6 +15,7 @@ import { listingPolicy } from "@/lib/url-lifecycle";
 import { searchStorefrontFn } from "@/lib/storefront-search.functions";
 import { getStoreChrome } from "@/lib/storefront.functions";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { SupportWidget } from "@/components/store/SupportWidget";
 import {
   PAGE_SIZE,
@@ -503,6 +504,7 @@ function SearchPage() {
   );
 
   return (
+    <PluginLayer plugins={chrome?.installedPlugins ?? []}>
     <ThemeChrome
       template="search"
       storeSlug={slug}
@@ -510,7 +512,6 @@ function SearchPage() {
       ast={chrome?.ast ?? null}
       tokens={chrome?.tokens ?? null}
       siteKit={chrome?.siteKit ?? null}
-      installedPlugins={chrome?.installedPlugins ?? []}
       chrome={
         <>
           <StoreHeader slug={slug} name={chrome?.merchant.name ?? slug} menus={chrome?.menus} />
@@ -526,6 +527,7 @@ function SearchPage() {
         </>
       }
     />
+    </PluginLayer>
   );
 }
 

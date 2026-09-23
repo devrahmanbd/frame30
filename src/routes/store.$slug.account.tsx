@@ -12,6 +12,7 @@ import {
 } from "@/components/icons/tabler";
 import { toast } from "sonner";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtMinor } from "@/lib/money";
@@ -470,6 +471,7 @@ function AccountPage() {
   }, [chrome, account.data, account.isPending, lang, slug]);
 
   return (
+    <PluginLayer plugins={chrome?.installedPlugins ?? []}>
     <ThemeChrome
       template="account"
       ast={chrome?.ast ?? null}
@@ -477,7 +479,6 @@ function AccountPage() {
       storeSlug={slug}
       merchantId={chrome?.merchant.id ?? null}
       siteKit={chrome?.siteKit ?? null}
-      installedPlugins={chrome?.installedPlugins ?? []}
       ownsPrimary
       contextSlots={accountSlots}
       chrome={
@@ -489,6 +490,7 @@ function AccountPage() {
       containerClassName="mx-auto max-w-5xl px-4 py-8"
       fallback={dashboard}
     />
+    </PluginLayer>
   );
 }
 

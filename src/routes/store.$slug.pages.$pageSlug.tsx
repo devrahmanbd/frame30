@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StudioNodes } from "@/components/store/StudioNodes";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { useLang } from "@/lib/i18n";
 import { buildPageHead } from "@/lib/theme-seo";
 import { getStorePageFn } from "@/lib/storefront-search.functions";
@@ -154,6 +155,7 @@ function StorePageView() {
   );
 
   return (
+    <PluginLayer plugins={installedPlugins}>
     <ThemeChrome
       template="page"
       storeSlug={slug}
@@ -161,7 +163,6 @@ function StorePageView() {
       ast={ast}
       tokens={tokens}
       siteKit={siteKit}
-      installedPlugins={installedPlugins}
       customCss={customCss}
       ownsPrimary
       chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}
@@ -177,5 +178,6 @@ function StorePageView() {
         </>
       }
     />
+    </PluginLayer>
   );
 }

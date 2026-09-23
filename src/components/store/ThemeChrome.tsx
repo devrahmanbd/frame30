@@ -18,9 +18,6 @@ import {
 } from "@/components/store/SiteKitTags";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { StoreWelcome } from "@/components/store/StoreWelcome";
-import { PluginFooterMounts } from "@/components/store/PluginFooterMounts";
-import { PluginProvider } from "@/components/builder/PluginContext";
-import type { InstalledPlugin } from "@/lib/plugin-manifest";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import { useLangScope } from "@/lib/i18n";
 import { compileResponsiveCss } from "@/lib/responsive-css";
@@ -45,13 +42,6 @@ type Props = {
   fallback: ReactNode;
   /** Display name for the themeless fallback. Defaults to the slug. */
   storeName?: string | null;
-  /**
-   * Merchant plugins for this storefront render. Footer-slot widgets of
-   * enabled plugins auto-mount on every page (themed and themeless) via
-   * `PluginFooterMounts`; the same list feeds placed app-blocks through
-   * context. Absent/empty renders zero mount points.
-   */
-  installedPlugins?: InstalledPlugin[];
   /** Store slug — namespaces channel state and server bundle quotes. */
   storeSlug?: string;
   /**
@@ -131,21 +121,17 @@ export function ThemeChrome({
   ownsPrimary = false,
   containerClassName = "mx-auto max-w-6xl px-4 py-8",
   customCss = null,
-  installedPlugins = [],
 }: Props) {
   // Phase 2.1: language choice is remembered per storefront.
   useLangScope(storeSlug ?? null);
   const { pathname } = useRouterState().location;
   if (isThemeless(ast, tokens)) {
     return (
-      <PluginProvider plugins={installedPlugins}>
-        <StoreWelcome
-          slug={storeSlug ?? ""}
-          name={storeName ?? storeSlug ?? ""}
-          custom={isCustomHostPath(pathname)}
-        />
-        <PluginFooterMounts />
-      </PluginProvider>
+      <StoreWelcome
+        slug={storeSlug ?? ""}
+        name={storeName ?? storeSlug ?? ""}
+        custom={isCustomHostPath(pathname)}
+      />
     );
   }
   const themed = ast && ast.main.length > 0 ? ast : null;
@@ -235,17 +221,11 @@ export function ThemeChrome({
   );
 
   // Without a slug (studio preview) the widgets fall back to the demo cart.
-  // The plugin provider rides the same tree so placed app-blocks and the
-  // footer mounts resolve the merchant's installs, not an empty list.
-  const tree = (
-    <PluginProvider plugins={installedPlugins}>
-      {body}
-      <PluginFooterMounts />
-    </PluginProvider>
-  );
+  // NOTE: plugin rendering lives in `PluginLayer`, never here — this file
+  // is theme territory and must not import plugin modules.
   return storeSlug ? (
-    <LiveCartScope slug={storeSlug}>{tree}</LiveCartScope>
+    <LiveCartScope slug={storeSlug}>{body}</LiveCartScope>
   ) : (
-    tree
+    body
   );
 }

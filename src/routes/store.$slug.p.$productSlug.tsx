@@ -3,6 +3,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreImage } from "@/components/store/StoreImage";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { SupportWidget } from "@/components/store/SupportWidget";
 import { getStoreProduct } from "@/lib/storefront.functions";
 import { handleMissingStoreUrl } from "@/lib/missing-url";
@@ -297,6 +298,7 @@ function ProductDetail() {
 
   return (
     <>
+      <PluginLayer plugins={installedPlugins}>
       <ThemeChrome
         template="product"
         storeSlug={merchant.slug}
@@ -304,7 +306,6 @@ function ProductDetail() {
         ast={ast}
         tokens={tokens}
         siteKit={siteKit}
-      installedPlugins={installedPlugins}
         ownsPrimary={hasPriceBlock}
         chrome={
           <>
@@ -322,6 +323,7 @@ function ProductDetail() {
         }}
         fallback={fallback}
       />
+      </PluginLayer>
       <div className="mx-auto max-w-6xl px-4 pb-16">{conversion}</div>
     </>
   );

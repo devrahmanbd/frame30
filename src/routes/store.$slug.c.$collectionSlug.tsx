@@ -7,6 +7,7 @@
  */
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreImage } from "@/components/store/StoreImage";
 import { getStoreCollection } from "@/lib/storefront.functions";
@@ -141,6 +142,7 @@ function CollectionPage() {
     : false;
 
   return (
+    <PluginLayer plugins={installedPlugins}>
     <ThemeChrome
       template="collection"
       ast={ast}
@@ -148,7 +150,6 @@ function CollectionPage() {
       storeSlug={slug}
       merchantId={merchant.id}
       siteKit={siteKit}
-      installedPlugins={installedPlugins}
       ownsPrimary
       chrome={
         <StoreHeader
@@ -162,5 +163,6 @@ function CollectionPage() {
       {...(hasProductGrid ? {} : { collectionSlot: grid })}
       fallback={grid}
     />
+    </PluginLayer>
   );
 }

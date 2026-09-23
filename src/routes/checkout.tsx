@@ -6,6 +6,7 @@ import {
   useNavigate,
 } from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import {
   getFeaturedStoreSlug,
   getStoreChrome,
@@ -244,6 +245,7 @@ function CheckoutPage() {
   }, [offered, method]);
 
   return (
+    <PluginLayer plugins={installedPlugins}>
     <ThemeChrome
       template="checkout"
       storeSlug={slug}
@@ -251,7 +253,6 @@ function CheckoutPage() {
       ast={ast ? { header: ast.header, main: [], footer: ast.footer } : null}
       tokens={tokens}
       siteKit={siteKit}
-      installedPlugins={installedPlugins}
       ownsPrimary
       chrome={<StoreHeader slug={slug} name={merchant.name} />}
       containerClassName=""
@@ -497,6 +498,7 @@ function CheckoutPage() {
         </div>
       }
     />
+    </PluginLayer>
   );
 }
 
