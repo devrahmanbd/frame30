@@ -49,12 +49,17 @@ check() { # $1 url $2 expected
   if [ "$code" != "$2" ]; then echo "VERIFY FAIL: $1 -> $code (want $2)"; fail=1;
   else echo "VERIFY OK: $1 -> $code"; fi
 }
-# Path storefront: EVERY merchant slug + deep path must 404 on platform hosts.
-# Never assert on one example slug — enumerate live merchants, fake slugs,
-# deep routes, and case tricks.
-for slug in akira flame-fashion-bd nonexistent-store-xyz Akira; do
+# Path storefront: slugs WITHOUT a primary custom host must 404 on platform
+# hosts. A slug WITH a primary host (flame-fashion-bd → microscrop.shop)
+# 301-redirects to it (permalink deep-path gate, PR #21). Never assert on
+# one example slug — enumerate live merchants, fake slugs, deep routes,
+# and case tricks.
+for slug in akira nonexistent-store-xyz Akira; do
   check "https://framique.qubickle.com/store/$slug" "404"
 done
+loc=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "https://framique.qubickle.com/store/flame-fashion-bd")
+if [ "$loc" = "301 https://microscrop.shop/" ]; then echo "VERIFY OK: /store/flame-fashion-bd -> 301 primary";
+else echo "VERIFY FAIL: /store/flame-fashion-bd -> $loc (want 301 https://microscrop.shop/)"; fail=1; fi
 for sub in p/x c/y pages/about search cart checkout account sitemap.xml robots.txt; do
   check "https://framique.qubickle.com/store/akira/$sub" "404"
 done
