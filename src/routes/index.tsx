@@ -49,7 +49,15 @@ export const Route = createFileRoute("/")({
           data: { slug: host.merchantSlug, previewToken },
         });
         if (storefront) return { kind: "store" as const, host, storefront };
-      } catch {
+        // TEMP-DEBUG 2026-09-23: themeless-fallback investigation.
+        console.warn(
+          `[index-loader] host=${host.merchantSlug} storefront=null`,
+        );
+      } catch (err) {
+        // TEMP-DEBUG 2026-09-23: themeless-fallback investigation.
+        console.warn(
+          `[index-loader] host=${host?.merchantSlug} threw: ${err instanceof Error ? err.message : String(err)}`,
+        );
         // A broken storefront on a custom host falls through to the landing
         // rather than 500ing the merchant's domain.
       }
