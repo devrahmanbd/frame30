@@ -34,6 +34,7 @@ export function StoreHomepage({
     isBuilder,
     menus,
     studioNodes,
+    installedPlugins,
   } = home;
 
   // Studio-authored pages are self-composed (hero/headings live inside
@@ -89,6 +90,7 @@ export function StoreHomepage({
         ast={ast}
         tokens={tokens}
         siteKit={siteKit}
+        installedPlugins={installedPlugins}
         customCss={customCss}
         ownsPrimary
         chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}

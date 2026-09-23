@@ -66,6 +66,7 @@ function StorePageView() {
     isBuilder,
     menus,
     studioNodes,
+    installedPlugins,
   } = Route.useLoaderData();
 
   const breadcrumb = (
@@ -160,6 +161,7 @@ function StorePageView() {
       ast={ast}
       tokens={tokens}
       siteKit={siteKit}
+      installedPlugins={installedPlugins}
       customCss={customCss}
       ownsPrimary
       chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}

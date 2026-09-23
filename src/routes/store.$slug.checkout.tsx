@@ -67,7 +67,7 @@ export const Route = createFileRoute("/store/$slug/checkout")({
 function CheckoutPage() {
   const { t, lang } = useLang();
   const { slug } = Route.useParams();
-  const { merchant, ast, tokens, siteKit } = Route.useLoaderData();
+  const { merchant, ast, tokens, siteKit, installedPlugins } = Route.useLoaderData();
   const navigate = useNavigate();
   const { lines, setQuantity, clear, hydrated } = useCart(slug);
   const [method, setMethod] = useState<Method>("cod");
@@ -235,6 +235,7 @@ function CheckoutPage() {
       ast={ast ? { header: ast.header, main: [], footer: ast.footer } : null}
       tokens={tokens}
       siteKit={siteKit}
+      installedPlugins={installedPlugins}
       ownsPrimary
       chrome={<StoreHeader slug={slug} name={merchant.name} />}
       containerClassName=""

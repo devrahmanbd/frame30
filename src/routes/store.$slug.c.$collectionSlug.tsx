@@ -59,7 +59,7 @@ export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
 
 function CollectionPage() {
   const { t } = useLang();
-  const { merchant, collection, products, settings, ast, tokens, siteKit, menus } =
+  const { merchant, collection, products, settings, ast, tokens, siteKit, menus, installedPlugins } =
     Route.useLoaderData();
   const slug = merchant.slug;
 
@@ -148,6 +148,7 @@ function CollectionPage() {
       storeSlug={slug}
       merchantId={merchant.id}
       siteKit={siteKit}
+      installedPlugins={installedPlugins}
       ownsPrimary
       chrome={
         <StoreHeader
