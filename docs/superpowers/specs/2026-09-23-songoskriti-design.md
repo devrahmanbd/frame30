@@ -1,60 +1,63 @@
-# Songoskriti Heritage Theme — Design Spec
+# Songoskriti Heritage Theme — Design Spec (rev 2)
 
-**Status:** approved by owner 2026-09-23 (Approach A: clean-slate, single theme)
-**Goal:** One business-worthy clothing-heritage theme (`songoskriti`, সংস্কৃতি) with Aarong-grade storefront, demo data, and motion — installable, previewable, and compatible with custom CSS/JS, menus, and the theme engine.
+**Status:** owner-approved Approach A; reviewer round 1 (16 findings) addressed below.
+**Goal:** One business-worthy clothing-heritage theme (`songoskriti`, সংস্কৃতি) with Aarong-grade storefront, demo data, and motion — installable, previewable, compatible with custom CSS/JS, menus, and the theme engine.
 
-**Architecture:** New preset pack on the restored theme engine (no engine changes unless a gap is proven): preset AST (8 templates) + blueprints + tokens + demo seed + marketplace listing. Old demo seeds/catalogs/pack rows deleted; live demo rows purged by cleanup migration. Studio widgets added only for proven catalog gaps.
+**Architecture:** New preset pack on the restored theme engine. No engine rewrites: preset AST + blueprints + tokens + demo seed + marketplace listing only. Demo purge scoped to seeded preview IDs with explicit owner order + rollback note (separate runbook, not this build).
 
-**Tech Stack:** TanStack Start, React 19, Tailwind v4, GSAP 3 (tweens, timelines, ScrollTrigger; `useGSAP` + scoped `gsap.context`, `matchMedia` reduced-motion), Vitest, Supabase migrations.
+**Tech Stack:** TanStack Start, React 19, Tailwind v4, GSAP 3.15.0 (SplitText ships free with the pinned npm package since 3.13 — import `gsap/SplitText`, no license; verify at build via lockfile + import smoke), Vitest, Supabase migrations.
 
-## 1. Brand tokens
+**Templates (9 keys in `TEMPLATE_KEYS` `src/lib/builder-ast.ts:45`; 8 designed):** `index, product, collection, page, blog, cart, checkout, search`. `account` explicitly exempt (no account template in this preset). §2 below is ONE homepage (`index`) × 8 sections.
 
-- Palette (locked): terracotta `#8A3B1F` brand, ember `#C45D3E` accent, ivory `#FAF8F5` paper, ink `#2D2A26`. Justification: explicit Aarong-parity brief (warm craft is the brand, not a default reach).
-- Type: display serif EN (restrained, headlines only, roman — never italic headers), Tiro Bangla display for বাংলা, Inter body. Tabular numerals on all BDT money (`fmtBDT` only).
-- Signature: weave-lattice motif + asymmetric 7/5 editorial hero. One marquee max. Mobile verified at 320/375/414/768 (no h-scroll, single-line CTAs, min 44px targets).
+## 1. Brand tokens — Touch: `src/lib/themes/songoskriti/tokens.ts` (new), `src/styles.css` (tokens only)
 
-## 2. Homepage rhythm (8 sections, Aarong DNA)
+- Palette (locked): terracotta `#8A3B1F` brand, ember `#C45D3E` accent, ivory `#FAF8F5` paper, ink `#2D2A26`.
+- Type: display serif EN headlines only, roman (never italic headers); Tiro Bangla display; Inter body. Money via `fmtMoney` (`src/lib/money.ts:171`), tabular numerals.
+- i18n: `_bn` twins where schema supports them (widget prop `*_bn` fields per `builder-ast` bitext; `articles.title_bn/body_bn` per supabase types). Test asserts every authored EN string in the preset has its `_bn` twin or an explicit exemption comment.
+- Signature: weave-lattice motif + 7/5 editorial grid INSIDE each hero slide (resolves carousel-vs-grid: grid is per-slide layout).
+- Responsive matrix (§6 verifies): 320/375/414/768, no h-scroll (`overflow-x: clip`), single-line CTAs, ≥44px targets — snapshot + screenshot per width.
 
-1. Announcement marquee (single, bilingual lines)
-2. Masthead: hand-built SVG logo lockup + search/account/cart; menubar (Women, Men, Kids, Home & Living, Jewellery, New In)
-3. Hero carousel: 3 slides (festive drop, handloom craft, artisan story), autoplay 6s, swipe/dots/keyboard, pause-on-hover, static first slide under reduced motion
-4. Shop-by-category circles (6: Women, Men, Kids, Living, Jewellery, New In)
-5. Occasion entry (Eid/festive, wedding, gifting finders surfaced)
-6. Product rails (New arrivals, Bestsellers — snap scroll + arrows)
-7. Craft story (artisan copy; stats use real or explicitly demo-labeled numbers only — never fabricated metrics)
-8. Testimonials (max 3 lines each, name + role) → trust bar → statement footer + newsletter (single CTA intent per section)
+## 2. Homepage rhythm — Touch: `src/lib/themes/songoskriti/homepage.ts` (new, `buildHomepageMain(s)` pattern), `src/lib/themes/songoskriti/header.ts`, `footer.ts`
 
-## 3. Motion (GSAP)
+1. Announcement marquee (single on page; bilingual lines)
+2. Masthead: hand-built SVG logo lockup + search/account/cart; menubar (Women, Men, Kids, Home & Living, Jewellery, New In) bound to real menus via menu picker
+3. Hero carousel ×3 slides (festive drop, handloom craft, artisan story), 7/5 grid per slide; autoplay 6s, scroll-snap + dots/keyboard/arrows, pause-on-hover; reduced-motion → static first slide
+4. Shop-by-category circles ×6 (Women, Men, Kids, Living, Jewellery, New In)
+5. Occasion finder entry (Eid/festive, wedding, gifting)
+6. Product rails ×2 (New arrivals, Bestsellers; snap + arrows)
+7. Craft story (copy only; stats: real or demo-labeled numbers, never fabricated)
+8. Testimonials (≤3 lines, name + role) → trust bar → statement footer + newsletter (one primary CTA per section: exactly one `cta-primary` anchor each)
 
-- Hero load timeline (gsap-timeline, position parameters, defaults): eyebrow → headline (SplitText words, optional) → sub → CTA → image drift-in.
-- ScrollTrigger batch reveals (`once: true`, `toggleActions` play/none), `start: "top top"` pinning only if a sticky-stack section is approved; `ScrollTrigger.refresh()` after images load.
-- Carousel: CSS scroll-snap + tiny JS controller (dots/keyboard/autoplay); GSAP only for slide transitions (x/autoAlpha); Draggable/Observer optional for swipe.
-- Performance: transforms + opacity only, `will-change` sparingly, `quickTo` for pointer effects, kill off-screen triggers, `content-visibility` on long rails.
-- React: `useGSAP` with scope ref (or `gsap.context` + `ctx.revert()`), client-only (no SSR execution), `gsap.matchMedia` for breakpoints + `prefers-reduced-motion` (duration 0/static fallback).
+## 3. Motion — Touch: `src/components/builder/songoskriti-motion.ts` (new, client-only), hero component
 
-## 4. Imagery + demo data
+- Hero load timeline (`gsap.timeline({defaults:{duration:.6,ease:"power2.out"}})`, position params, labels): eyebrow → SplitText-words headline → sub → CTA → image x/autoAlpha drift.
+- ScrollTrigger.batch reveals, `once:true`, `toggleActions:"play none none none"`; `ScrollTrigger.refresh()` after images load; created top-to-bottom.
+- Swipe decision: scroll-snap + buttons ONLY (no Draggable/Observer). No pinning anywhere (no sticky-stack section exists).
+- React: `useGSAP` + scope ref (fallback `gsap.context` + `ctx.revert()`); `gsap.matchMedia` for ≥768px vs below + `prefers-reduced-motion` (duration 0 / static); transforms + opacity only; `quickTo` for pointer effects; kill off-screen triggers.
 
-- ~14 assets via Gemini Imagen REST, key from `GEMINI_API_KEY` env only (never committed, never logged; user exports it; key past exposure noted — restrict/revoke after). 3 heroes, 6 category, 4–6 product, 1 SVG logo lockup hand-built. Saved `public/ph/songoskriti/`, blueprint seeds reference files.
-- Fallback: dept-tinted SVG placeholders (existing `/api/public/ph` pipeline) if generation fails. No hotlinked stock, no invented brand photography passed off as real.
-- Fresh demo seed migration (products with BDT minor-unit prices, categories, collections, homepage designation); cleanup migration purges `is_demo` rows of retired packs. Old demo seed files + `DEMO_CATALOGS` verticals + preview-demo fallbacks deleted; widget-data fallbacks retargeted to `songoskriti`/marketplace spread.
-- Bilingual EN/BN on every authored string where schema supports `_bn`.
+## 4. Imagery + demo — Touch: `public/ph/songoskriti/` (15 files, manifest below), seed `supabase/migrations/20260924_songoskriti_demo.sql` (new), `src/lib/demo-catalog.ts` (ADD `songoskriti` key only; existing 6 verticals untouched)
 
-## 5. Widgets + engine compatibility
+- Manifest (15): `hero-festive.svg→png, hero-weaves, hero-artisans` (3, 1600×900) + `cat-women/men/kids/living/jewelry/newin` (6, 800×800) + `prod-panjabi/saree/kurta/kantha/necklace` (5, 900×1200) + `logo-lockup.svg` hand-built (1).
+- Generation: Gemini Imagen REST `POST https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict`, key from `GEMINI_API_KEY` env only (never committed/logged; owner rotates key first — generation blocked until rotation confirmed). Retry ×2, then per-asset fallback: file-if-exists else `/api/public/ph` dept-tinted SVG. Seed references files, never remote URLs.
+- Demo seed: products (BDT minor units), categories, collections, homepage designation; bilingual twins. Old demo data untouched (separate purge runbook).
+- Copy gates (checkable): one `cta-primary` anchor per section (grep test), testimonials `line-clamp-3`, sentence case (manual review checklist in PR).
 
-- Audit `builder-ast` catalog + Studio catalog for gaps (carousel, circles, rails, story, testimonials, trust, marquee, newsletter, lookbook). Build ONLY missing widgets (TDD, catalog-controls-defaults parity test updated).
-- New theme must work with: custom CSS/JS (per-theme code), nav menus (menu picker binding), preview tokens (`?preview_theme_id` + signed URLs), install/activate/publish pipeline, demo import, SEO templates/sitemap/canonical.
-- No new dependencies (gsap already in `package.json`).
+## 5. Widgets — Touch: `src/lib/builder-ast.ts` (append only), `src/lib/studio/catalog.ts` (append only), `src/components/builder/songoskriti.tsx` (new renderers, only if gap proven)
 
-## 6. Verification
+- Audit list 1:1 with §2: marquee, masthead/menubar horn (chrome, not widget), hero_carousel, category circles, occasion finder, product rail, craft story, testimonials, trust bar, footer/newsletter. Lookbook DEFERRED (not in §2).
+- Build only proven-missing ones, TDD, each added to `PORTED` in `src/lib/studio/catalog.test.ts:10`, catalog-controls-defaults parity updated.
+- Engine compat smoke (no engine changes): install theme via Appearance, open custom CSS, pick a menu, preview via restored `src/routes/theme-preview.$key.tsx` (restore from `dddfdc2^` — file originates in `de6c9af`; `ba620a1` postdates the purge — verify), publish, demo import, sitemap/canonical render. Failing smoke → gap report, not engine rewrite.
 
-- `theme-preview/songoskriti` screenshot-verified desktop + mobile, zero console errors.
-- Lighthouse a11y ≥ 90, CLS ≈ 0, LCP measured + noted (bundle-owned regressions flagged, not hidden).
-- `vitest run` touched suites green; `tsc --noEmit` zero new errors; `vite build` exit 0.
-- Contract: every new widget in `catalog.test.ts` PORTED list; demo COD order proof optional.
+## 6. Verification (numeric gates, baseline = PR merge-base)
+
+- `theme-preview/songoskriti` + storefront: desktop + mobile screenshots, zero console errors on those routes.
+- a11y ≥ 90, CLS < 0.1, LCP < 2.5s on `/theme-preview/songoskriti` (mobile-simulated noted if infra-bound).
+- 4-width matrix (§1): snapshot + screenshot each, assert no h-scroll, CTA single-line, targets ≥44px.
+- `vitest run` touched suites green; `tsc --noEmit` zero NEW errors vs baseline; `vite build` exit 0.
+- COD order proof: dropped (manual QA, not a gate).
 
 ## Global Constraints
 
-- One theme only (`songoskriti`); no replacement packs.
-- Isolated worktrees (`/tmp/opencode/songoskriti-*`), never `/opt/frame28` directly.
-- TDD, targeted suites, branch-only PRs, no production deploy without explicit order.
-- Copy: plain verbs, sentence case, no filler; no invented metrics/testimonials/counts.
+- Single new key `songoskriti`; additive demo changes only.
+- Work in `/tmp/opencode/songoskriti` worktrees; branch PRs; no deploy without explicit order.
+- TDD, targeted suites only.
