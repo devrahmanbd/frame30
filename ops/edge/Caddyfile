@@ -1,0 +1,60 @@
+# =============================================================================
+# LIVE-SOURCED — /etc/caddy/Caddyfile from bd-primary-1 (88.99.250.99),
+# captured 2026-09-24. Caddy is the haproxy backup backend (:4444).
+#
+# Scope note: every site below belongs to sibling projects (shield/que/
+# supabase/demo) — Framique has no Caddy site of its own. Kept in-repo so a
+# reader can see the full backup path; Framique changes here: none expected.
+# Rule: change live first, then re-port verbatim. No secrets in this file.
+# =============================================================================
+# Caddy fallback — receives plain HTTP from HAProxy edge (:4444)
+# Handles shield.ghostmaster.shop, que.qubickle.com, supabase.ghostmaster.shop
+# when OpenResty is down. HAProxy health-checks OpenResty and routes to Caddy as backup.
+{
+	auto_https off
+}
+
+http://0.0.0.0:4444 {
+	# ShieldGate — shield.ghostmaster.shop
+	@shield host shield.ghostmaster.shop
+	handle @shield {
+		# GoTrue mailer templates
+		handle /auth-templates/* {
+			root * /root/shieldgate2/deploy/auth-templates
+			file_server
+		}
+
+		# Supabase auth routes (GoTrue)
+		handle /auth/v1/* {
+			reverse_proxy http://127.0.0.1:8001
+		}
+
+		# Everything else → ShieldGate app
+		reverse_proxy http://127.0.0.1:8080
+	}
+
+	# QUE — que.qubickle.com
+	@que_host host que.qubickle.com
+	handle @que_host {
+		root * /root/remix-of-que/.output/public
+		try_files {path} @que_fallback
+		@que_fallback {
+			not path /favicon.ico /assets/*
+		}
+		reverse_proxy @que_fallback http://127.0.0.1:3100
+		file_server
+	}
+
+	# Supabase — supabase.ghostmaster.shop
+	@supabase host supabase.ghostmaster.shop
+	handle @supabase {
+		reverse_proxy http://127.0.0.1:8001
+	}
+
+	# Ghost Sender — demo.ghostmaster.shop
+	@demo host demo.ghostmaster.shop
+	handle @demo {
+		reverse_proxy http://127.0.0.1:5001
+		encode zstd gzip
+	}
+}
