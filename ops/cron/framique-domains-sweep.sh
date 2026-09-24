@@ -2,7 +2,6 @@
 # Framique domains sweep trigger (installed in root crontab).
 # Keeps the crontab line trivial: all logic lives here, no quoting traps.
 set -a
-# shellcheck disable=SC1091
 . /opt/frame28/.env
 set +a
 LOG=/var/log/framique-cron.log
@@ -12,3 +11,4 @@ echo "sweep start secret_len=${#BILLING_CRON_SECRET} url=${APP_INTERNAL_URL:-UNS
   -o /dev/null \
   -w "cron domains status=%{http_code} t=%{time_total}s\n" \
   "$APP_INTERNAL_URL/api/public/cron/domains" >> "$LOG" 2>&1
+ 
