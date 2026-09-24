@@ -273,4 +273,24 @@ describe("preview in-canvas template navigation", () => {
     expect(onFocus).not.toHaveBeenCalled();
     expect(toastInfo()).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
   });
+
+  it("honours a ?focus= deep link on first paint", () => {
+    const heading = {
+      ...newSection("heading"),
+      props: { text: "New in", text_bn: "নতুন এসেছে" },
+    };
+    const templates = {
+      ...buildTemplates(),
+      collection: { header: [], main: [heading], footer: [] },
+    };
+    const html = renderToStaticMarkup(
+      <ThemePreviewFrame
+        {...frameProps("collection")}
+        templates={templates}
+        initialFocus="women"
+      />,
+    );
+    expect(html).toContain("Women");
+    expect(html).toContain("<h1");
+  });
 });

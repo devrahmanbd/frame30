@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreImage } from "@/components/store/StoreImage";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
@@ -38,7 +38,20 @@ export const Route = createFileRoute("/p/$productSlug")({
     } catch {
       host = null;
     }
-    if (!host) throw notFound();
+    if (!host) {
+      // No merchant on this host (platform domain): render the theme demo
+      // instead of a dead end. Demo data, blocked actions, noindex.
+      const { defaultPreviewKey } = await import("@/lib/preview-sources");
+      throw redirect({
+        to: "/theme-preview/$key",
+        params: { key: defaultPreviewKey() },
+        search: {
+          template: "product",
+          focus: params.productSlug.toLowerCase().slice(0, 64),
+        },
+        replace: true,
+      });
+    }
     const data = await getStoreProduct({
       data: { slug: host.merchantSlug, productSlug: params.productSlug },
     });

@@ -42,6 +42,8 @@ const VALID_TEMPLATES = [
   "search",
 ] as const;
 
+const FOCUS_RE = /^[a-z0-9]+(?:-[a-z0-9]+){0,7}$/;
+
 export const Route = createFileRoute("/theme-preview/$key")({
   validateSearch: (search: Record<string, unknown>) => ({
     template:
@@ -49,6 +51,22 @@ export const Route = createFileRoute("/theme-preview/$key")({
       (VALID_TEMPLATES as readonly string[]).includes(search.template)
         ? (search.template as (typeof VALID_TEMPLATES)[number])
         : undefined,
+    // Deep-link a demo focus (?template=collection&focus=bestsellers):
+    // merchant-less permalinks redirect here. Slug-shaped only.
+    focus:
+      typeof search.focus === "string" &&
+      search.focus.length <= 64 &&
+      FOCUS_RE.test(search.focus)
+        ? search.focus
+        : undefined,
+  }),
+  // Demo pages must never index: merchant-less URLs redirect here instead
+  // of 404ing, and indexers must not mistake demo for store content.
+  head: () => ({
+    meta: [
+      { title: "Theme preview" },
+      { name: "robots", content: "noindex" },
+    ],
   }),
   component: ThemePreviewRoute,
   errorComponent: ThemePreviewError,
@@ -57,7 +75,7 @@ export const Route = createFileRoute("/theme-preview/$key")({
 
 function ThemePreviewRoute() {
   const { key } = Route.useParams() as RouteParams;
-  const { template: initialTemplate } = Route.useSearch();
+  const { template: initialTemplate, focus: initialFocus } = Route.useSearch();
   const preset = resolveThemePreview(key);
 
   if (!preset) {
@@ -72,6 +90,7 @@ function ThemePreviewRoute() {
       tokens={preset.tokens}
       templates={preset.templates}
       initialTemplate={initialTemplate}
+      initialFocus={initialFocus}
       onClose={() => window.history.back()}
     />
   );

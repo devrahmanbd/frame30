@@ -209,6 +209,9 @@ export type ThemePreviewFrameProps = {
   templates: Record<TemplateKey, ThemeAst>;
   /** Deep-linkable starting tab (?template=product). Defaults to homepage. */
   initialTemplate?: TemplateKey;
+  /** Deep-linkable demo focus (?focus=bestsellers): renders that demo
+      collection/product on first paint. In-canvas clicks replace it. */
+  initialFocus?: string | null;
   /**
    * Retained for route compatibility. The preview renders no chrome, so the
    * close control is gone and this is intentionally unwired.
@@ -222,17 +225,22 @@ export function ThemePreviewFrame({
   tokens,
   templates,
   initialTemplate,
+  initialFocus,
 }: ThemePreviewFrameProps) {
-  const [template, setTemplate] = useState<TemplateKey>(
-    initialTemplate ?? "index",
-  );
+  const startTemplate = initialTemplate ?? "index";
+  const [template, setTemplate] = useState<TemplateKey>(startTemplate);
   // Clicked product/collection slug: renders that demo collection instead
   // of one static page for every /c/* link. Cleared on any switch that
-  // carries no slug.
+  // carries no slug. Deep-linkable via ?focus= for merchant-less URLs.
   const [focus, setFocus] = useState<{
     template: TemplateKey;
     slug: string;
-  } | null>(null);
+  } | null>(() =>
+    initialFocus &&
+    (startTemplate === "collection" || startTemplate === "product")
+      ? { template: startTemplate, slug: initialFocus }
+      : null,
+  );
 
   const ast = templates[template] ?? templates.index;
   const demoFocus =
