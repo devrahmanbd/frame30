@@ -34,7 +34,7 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
     manifest: {
       id: "whatsapp-chat",
       name: "WhatsApp Quick Chat",
-      version: "1.2.1",
+      version: "1.2.2",
       api: "^3.0.0",
       permissions: ["render_storefront"],
       widgets: [
@@ -44,24 +44,41 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
           slots: ["footer"],
           floating: true,
           entry: `(function () {
+  var CSS = "@keyframes waPop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}"
+    + "@keyframes waPulse{0%{box-shadow:0 4px 14px rgba(0,0,0,.25),0 0 0 0 rgba(37,211,102,.55)}70%{box-shadow:0 4px 14px rgba(0,0,0,.25),0 0 0 9px rgba(37,211,102,0)}100%{box-shadow:0 4px 14px rgba(0,0,0,.25),0 0 0 0 rgba(37,211,102,0)}}"
+    + "@keyframes waBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}"
+    + "@keyframes waJump{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-6px) scale(1.03)}55%{transform:translateY(0) scale(.98)}75%{transform:scale(1)}}";
   function mount(s) {
     var phone = String(s.phone_number || "").replace(/[^0-9]/g, "");
     if (!phone) return;
     var greet = String(s.greeting_message || "Hello!");
+    var anim = String(s.animation || "pulse");
+    var reduce = false;
+    try { reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); } catch (e) {}
+    try {
+      var st = document.createElement("style");
+      st.textContent = CSS;
+      document.head.appendChild(st);
+    } catch (e) {}
     var a = document.createElement("a");
     a.setAttribute("href", "https://wa.me/" + phone + "?text=" + encodeURIComponent(greet));
     a.setAttribute("target", "_blank");
     a.setAttribute("rel", "noopener");
     a.setAttribute("aria-label", "Chat on WhatsApp");
-    a.style.width = "100%";
-    a.style.height = "100%";
+    a.style.width = "56px";
+    a.style.height = "56px";
+    a.style.margin = "8px";
     a.style.borderRadius = "50%";
     a.style.background = "#25D366";
     a.style.display = "flex";
     a.style.alignItems = "center";
     a.style.justifyContent = "center";
-    a.style.boxShadow = "0 4px 14px rgba(0,0,0,.25)";
-    a.innerHTML = '<svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M12 3C6.5 3 2 7 2 12c0 1.6.5 3.1 1.3 4.4L2 21l4.7-1.2c1.2.7 2.7 1.1 4.3 1.1 5.5 0 10-4 10-9s-4.5-9-10-9z" fill="#fff"/><circle cx="8.5" cy="12" r="1.2" fill="#25D366"/><circle cx="12" cy="12" r="1.2" fill="#25D366"/><circle cx="15.5" cy="12" r="1.2" fill="#25D366"/></svg>';
+    var mode = (reduce || anim === "off") ? "" : anim;
+    a.style.animation = mode === "bounce" ? "waPop .45s ease-out,waBounce 2.2s ease-in-out .5s infinite"
+      : mode === "jump" ? "waPop .45s ease-out,waJump 2.6s ease-in-out .5s infinite"
+      : mode === "pulse" ? "waPop .45s ease-out,waPulse 2.2s ease-out .6s infinite"
+      : "waPop .35s ease-out";
+    a.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-2.9.8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.6-6.1c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4 0-.5.1-.7l.4-.5c.1-.2.1-.4 0-.5l-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.2-.7.6-.9 2 .3 4.5 2.6 6.3 2.8 2.1 4.5 2.4 5.3 2.2.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.1-.5-.2z"/></svg>';
     framique.mount(a);
   }
   try {
@@ -95,17 +112,31 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
           ],
           default: "bottom-right",
         },
+        {
+          key: "animation",
+          label: "Bubble Animation",
+          kind: "select",
+          options: [
+            { value: "pulse", label: "Pulse ring (default)" },
+            { value: "bounce", label: "Gentle bounce" },
+            { value: "jump", label: "Attention jump" },
+            { value: "off", label: "Off (entrance pop only)" },
+          ],
+          default: "pulse",
+        },
       ],
       i18n: {
         en: {
           phone_number: "WhatsApp Phone Number",
           greeting_message: "Default Greeting Message",
           button_position: "Bubble Position",
+          animation: "Bubble Animation",
         },
         bn: {
           phone_number: "হোয়াটসঅ্যাপ ফোন নম্বর",
           greeting_message: "স্বাগত বার্তা",
           button_position: "বাবল অবস্থান",
+          animation: "বাবল অ্যানিমেশন",
         },
       },
       budget: { jsKb: 35, mainThreadMs: 15 },
