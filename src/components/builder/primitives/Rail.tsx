@@ -10,7 +10,7 @@ import { useCallback, useRef } from "react";
 export function Rail({
   label,
   children,
-  itemClassName = "min-w-[45%] sm:min-w-[30%] lg:min-w-[22%]",
+  itemClassName = "w-[72vw] sm:w-[35vw] lg:w-[22%] max-w-[320px] min-w-[200px]",
   heading,
 }: {
   label: string;

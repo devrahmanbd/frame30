@@ -30,6 +30,7 @@ import { OrdersList, ProfileCard } from "@/components/builder/account";
 import { accountSlotCtx } from "./account-slots";
 import { useLang } from "@/lib/i18n";
 import { compileResponsiveCss } from "@/lib/responsive-css";
+import { fontStylesheetUrl } from "@/lib/theme-fonts";
 import {
   type Section,
   type TemplateKey,
@@ -101,8 +102,7 @@ type PreviewCanvasClickEvent = {
   stopPropagation: () => void;
 };
 
-const SUBMIT_CONTROL_SELECTOR =
-  'button[type="submit"],input[type="submit"]';
+const SUBMIT_CONTROL_SELECTOR = 'button[type="submit"],input[type="submit"]';
 
 /**
  * Capture-phase click interception for the preview canvas: submit controls
@@ -216,7 +216,10 @@ export function ThemePreviewFrame({
         <ProfileCard {...ctx} />
       );
     };
-    return { orders_list: build("orders_list"), profile_card: build("profile_card") };
+    return {
+      orders_list: build("orders_list"),
+      profile_card: build("profile_card"),
+    };
   }, [template, ast, previewData, lang, blueprintKey]);
 
   // Envato-style demo browsing: mapped links switch the preview tab with
@@ -247,24 +250,27 @@ export function ThemePreviewFrame({
         />
       )}
 
+      {/* ---- Google Font stylesheet for theme's font pairings ---- */}
+      {fontStylesheetUrl(tokens) && (
+        <link
+          rel="stylesheet"
+          href={fontStylesheetUrl(tokens)}
+          crossOrigin="anonymous"
+        />
+      )}
+
       {/* ---- preview canvas: full-bleed, no frame. Clicks navigate between
           templates in place; actions and submits are blocked. ---- */}
       <div
         className="flex-1 overflow-auto bg-background"
-        onClickCapture={(event) =>
-          handlePreviewCanvasClick(event, setTemplate)
-        }
+        onClickCapture={(event) => handlePreviewCanvasClick(event, setTemplate)}
         onSubmitCapture={handlePreviewCanvasSubmit}
       >
         <div className="mx-auto" style={{ maxWidth: "100%" }}>
           <ThemeSurface tokens={tokens}>
             {/* Wordmark row, as on a live storefront — the blueprint's
                 header sections render beneath it. */}
-            <StoreHeader
-              slug={blueprintKey}
-              name={themeName}
-              menus={null}
-            />
+            <StoreHeader slug={blueprintKey} name={themeName} menus={null} />
             <WidgetDataProvider
               bundle={previewData.bundle}
               map={previewData.map}
@@ -312,7 +318,6 @@ export function ThemePreviewFrame({
           </ThemeSurface>
         </div>
       </div>
-
     </div>
   );
 }

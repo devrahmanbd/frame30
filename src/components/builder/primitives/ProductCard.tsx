@@ -73,7 +73,7 @@ export function ProductCard({
 }) {
   const save = savePercent(row.priceMinor, row.compareAtMinor);
   return (
-    <article className="relative flex h-full flex-col overflow-hidden rounded-fq-lg border border-border bg-card">
+    <article className="relative flex h-full w-full max-w-full flex-col overflow-hidden rounded-fq-lg border border-border bg-card">
       {typeof rank === "number" && (
         <span className="absolute left-2 top-2 z-10 rounded-fq-sm bg-primary px-2 py-0.5 text-xs font-semibold tabular-nums text-primary-foreground">
           {formatDisplayNumber(rank, { locale })}

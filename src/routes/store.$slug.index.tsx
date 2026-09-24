@@ -201,7 +201,12 @@ function StorefrontHome() {
   // stores get their chat bubble on this very page.
   return (
     <PluginLayer plugins={data.installedPlugins ?? []}>
-      <StoreWelcome slug={slug} name={data.merchant.name} custom={false} />
+      <StoreWelcome
+        slug={slug}
+        name={data.merchant.name}
+        custom={false}
+        tokens={data.tokens}
+      />
     </PluginLayer>
   );
 }

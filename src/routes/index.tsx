@@ -192,6 +192,7 @@ function PlatformHome() {
           slug={data.host.merchantSlug}
           name={data.storefront.merchant.name}
           custom
+          tokens={data.storefront.tokens}
         />
       </PluginLayer>
     );

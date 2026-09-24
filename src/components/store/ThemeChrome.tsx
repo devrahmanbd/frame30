@@ -21,6 +21,7 @@ import { StoreWelcome } from "@/components/store/StoreWelcome";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import { useLangScope } from "@/lib/i18n";
 import { compileResponsiveCss } from "@/lib/responsive-css";
+import { fontStylesheetUrl } from "@/lib/theme-fonts";
 import {
   type Section,
   type SectionType,
@@ -124,13 +125,19 @@ export function ThemeChrome({
 }: Props) {
   // Phase 2.1: language choice is remembered per storefront.
   useLangScope(storeSlug ?? null);
-  const { pathname } = useRouterState().location;
-  if (isThemeless(ast, tokens)) {
+  let pathname = "";
+  try {
+    pathname = useRouterState().location.pathname;
+  } catch {
+    pathname = "";
+  }
+  if (storeSlug && isThemeless(ast, tokens)) {
     return (
       <StoreWelcome
-        slug={storeSlug ?? ""}
-        name={storeName ?? storeSlug ?? ""}
+        slug={storeSlug}
+        name={storeName ?? storeSlug}
         custom={isCustomHostPath(pathname)}
+        tokens={tokens}
       />
     );
   }
@@ -146,9 +153,13 @@ export function ThemeChrome({
   // (not linked) because it is template-specific, tiny, budget-capped and on
   // the critical path — a request for it would cost more than the bytes.
   const responsive = compileResponsiveCss(themed);
+  const fontUrl = tokens ? fontStylesheetUrl(tokens) : null;
 
   const body = (
     <ThemeSurface tokens={tokens}>
+      {fontUrl ? (
+        <link rel="stylesheet" href={fontUrl} crossOrigin="anonymous" />
+      ) : null}
       {responsive.css ? (
         <style
           data-fq-responsive={String(responsive.rules)}
