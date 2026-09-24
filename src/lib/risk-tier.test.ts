@@ -14,7 +14,7 @@ describe("risk-tier", () => {
     it("returns full access for low tier", () => {
       const p = resolvePolicy("low");
       expect(p.csp.scriptSrc).toContain("'strict-dynamic'");
-      expect(p.iframe.sandbox).toBe("allow-forms allow-popups");
+      expect(p.iframe.sandbox).toBe("allow-scripts allow-forms allow-popups");
       expect(p.iframe.allowSameOrigin).toBe(false);
       expect(p.upload.scanningStrictness).toBe("standard");
       expect(p.rateLimitMultiplier).toBe(1.0);

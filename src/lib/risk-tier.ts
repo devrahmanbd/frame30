@@ -91,7 +91,14 @@ const TIER_POLICIES: Record<
       ],
     },
     iframe: {
-      sandbox: "allow-forms allow-popups",
+      // allow-scripts: island bundles must EXECUTE (bridge + entry run as
+      // inline scripts). Isolation does NOT come from here — it comes from
+      // the null origin (allowSameOrigin:false, see below) plus the frame
+      // CSP (default-src 'none'). Without this token every WidgetSandbox
+      // island renders inert: the frame loads, no script ever runs, no
+      // widget ever mounts. Never add allow-same-origin alongside scripts
+      // (definition-of-done.test.ts pins that invariant).
+      sandbox: "allow-scripts allow-forms allow-popups",
       allowSameOrigin: false,
       referrerPolicy: "no-referrer",
       maxHeight: 4000,

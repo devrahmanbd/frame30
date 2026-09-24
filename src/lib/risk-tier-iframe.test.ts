@@ -2,9 +2,9 @@ import { describe, it, expect } from "vitest";
 import { resolvePolicy } from "./risk-tier";
 
 describe("iframe sandbox by tier", () => {
-  it("low: allow-forms allow-popups", () => {
+  it("low: allow-scripts allow-forms allow-popups (islands must execute)", () => {
     expect(resolvePolicy("low").iframe.sandbox).toBe(
-      "allow-forms allow-popups",
+      "allow-scripts allow-forms allow-popups",
     );
   });
 
