@@ -69,7 +69,7 @@ function FooterMount({
       ? "left-4"
       : "right-4";
   const frameClass = floating
-    ? `fixed bottom-4 ${side} z-[60] h-14 w-14`
+    ? `fixed bottom-4 ${side} z-[60] h-[72px] w-[72px]`
     : undefined;
   if (!mounted) {
     return (
@@ -94,7 +94,7 @@ function FooterMount({
         grantedScopes={plugin.grantedScopes}
         settings={plugin.settings}
         onCall={onCall}
-        height={floating ? 56 : height}
+        height={floating ? 72 : height}
         bare={floating}
       />
     </div>

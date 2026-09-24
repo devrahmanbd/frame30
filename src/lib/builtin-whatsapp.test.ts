@@ -20,8 +20,17 @@ type FakeEl = {
 
 function fakeDocument() {
   const created: FakeEl[] = [];
+  const headChildren: FakeEl[] = [];
+  const head = {
+    appendChild(c: FakeEl) {
+      headChildren.push(c);
+      return c;
+    },
+  };
   return {
     created,
+    headChildren,
+    head,
     createElement(tag: string): FakeEl {
       const el: FakeEl = {
         tag,
@@ -56,14 +65,14 @@ function fakeDocument() {
   };
 }
 
-async function runEntry(
+async function runEntryWithDoc(
+  doc: ReturnType<typeof fakeDocument>,
   entry: string,
   settings: Record<string, unknown> | Error,
 ): Promise<{
   mounted: FakeEl | null;
   calls: { method: string; params: unknown }[];
 }> {
-  const doc = fakeDocument();
   let mounted: FakeEl | null = null;
   const calls: { method: string; params: unknown }[] = [];
   const sandbox = {
@@ -91,6 +100,16 @@ async function runEntry(
   await new Promise((r) => setTimeout(r, 0));
   await new Promise((r) => setTimeout(r, 0));
   return { mounted, calls };
+}
+
+async function runEntry(
+  entry: string,
+  settings: Record<string, unknown> | Error,
+): Promise<{
+  mounted: FakeEl | null;
+  calls: { method: string; params: unknown }[];
+}> {
+  return runEntryWithDoc(fakeDocument(), entry, settings);
 }
 
 function whatsappEntry(): string {
@@ -129,10 +148,52 @@ describe("whatsapp chat_bubble entry", () => {
     // The entry renders in-flow and fills the parent-hosted fixed frame —
     // `position:fixed` inside the entry resolves against the tiny iframe
     // viewport and clips, so it must never appear here (frame does the
-    // floating; see PluginFooterMounts).
+    // floating; see PluginFooterMounts). 56px bubble + 8px margin = 72px frame.
     expect(mounted!.style["position"]).toBeUndefined();
-    expect(mounted!.style["width"]).toBe("100%");
-    expect(mounted!.style["height"]).toBe("100%");
+    expect(mounted!.style["width"]).toBe("56px");
+    expect(mounted!.style["height"]).toBe("56px");
+    expect(mounted!.style["margin"]).toBe("8px");
+    // Official multi-layer glyph (shadow + gradient disc + handset), not the
+    // old dots placeholder: the artwork paints its own disc, so the anchor
+    // stays transparent and only carries a drop-shadow.
+    expect(mounted!.style["background"]).toBe("transparent");
+    expect(mounted!.innerHTMLText).toContain("waBubbleGrad");
+    expect(mounted!.innerHTMLText).toContain('viewBox="0 0 512 512"');
+    expect(mounted!.innerHTMLText).not.toContain("cx=");
+  });
+
+  it("defaults to the pulse ring and injects keyframes once", async () => {
+    const doc = fakeDocument();
+    const { mounted } = await runEntryWithDoc(doc, whatsappEntry(), {
+      phone_number: "8801712345678",
+    });
+    expect(mounted!.style["animation"]).toContain("waPop");
+    expect(mounted!.style["animation"]).toContain("waPulse");
+    const styles = doc.headChildren.filter((e) => e.tag === "style");
+    expect(styles).toHaveLength(1);
+    expect(
+      String(
+        (styles[0] as FakeEl & { textContent?: unknown }).textContent ?? "",
+      ),
+    ).toContain("@keyframes waPulse");
+  });
+
+  it("honours bounce / jump / off from plugin control", async () => {
+    for (const [mode, needle] of [
+      ["bounce", "waBounce"],
+      ["jump", "waJump"],
+    ] as const) {
+      const { mounted } = await runEntry(whatsappEntry(), {
+        phone_number: "8801712345678",
+        animation: mode,
+      });
+      expect(mounted!.style["animation"]).toContain(needle);
+    }
+    const { mounted: still } = await runEntry(whatsappEntry(), {
+      phone_number: "8801712345678",
+      animation: "off",
+    });
+    expect(still!.style["animation"]).not.toContain("infinite");
   });
 
   it("is flagged floating so the frame (not the entry) does the positioning", () => {
