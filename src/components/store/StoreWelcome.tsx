@@ -1,12 +1,11 @@
-import { StoreHeader } from "@/components/store/StoreHeader";
 import { useLang } from "@/lib/i18n";
 
 /**
  * Default storefront homepage.
  *
  * Every store without a merchant-designated homepage renders this instead
- * of the theme index: brand chrome plus a quiet welcome plate. Designated
- * homepages are untouched — this only fills the gap.
+ * of the theme index: a flat welcome plate with no navigation chrome.
+ * Designated homepages are untouched — this only fills the gap.
  */
 export function StoreWelcome({
   slug,
@@ -19,12 +18,7 @@ export function StoreWelcome({
   custom: boolean;
 }) {
   const base = custom ? "" : `/store/${slug}`;
-  return (
-    <>
-      <StoreHeader slug={slug} name={name} menus={null} />
-      <WelcomePlate name={name} base={base} />
-    </>
-  );
+  return <WelcomePlate name={name} base={base} />;
 }
 
 export function WelcomePlate({ name, base }: { name: string; base: string }) {
