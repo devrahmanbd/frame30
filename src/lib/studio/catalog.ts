@@ -146,6 +146,21 @@ export const WIDGETS: WidgetDef[] = [
     },
   },
   {
+    key: "whatsapp_button",
+    label: "WhatsApp Button",
+    category: "general",
+    icon: "Phone",
+    keywords: ["whatsapp", "chat", "contact", "support", "message", "call"],
+    defaults: {
+      phone_number: "",
+      label: "Chat on WhatsApp",
+      greeting_message: "Hello! I am interested in your products.",
+      style: "bubble",
+      size: "md",
+      textAlign: "left",
+    },
+  },
+  {
     key: "divider",
     label: "Divider",
     category: "basic",

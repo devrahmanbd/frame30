@@ -141,6 +141,7 @@ const PORTED = [
   "craft_story",
   "testimonials",
   "trust_footer",
+  "whatsapp_button",
 ] as const;
 
 const COMMERCE_PORTED = new Set([

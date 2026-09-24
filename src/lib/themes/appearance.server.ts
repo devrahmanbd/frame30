@@ -338,12 +338,22 @@ async function resolvePublishedVersionId(
     .maybeSingle();
   if (latestPublished) return (latestPublished as { id: string }).id;
 
-  // No published version: materialize from the draft (or registry
-  // package) instead of refusing. Refusing stranded merchants: install
-  // flows write draft-only rows and the UI offers Activate with no
-  // Publish action, so "publish first" was an undead end. Activating is
-  // the explicit go-live intent (WordPress parity); the guard below
-  // still refuses when there is nothing to seed from.
+  const { data: anyVersion } = await db
+    .from("theme_versions")
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", row.id)
+    .limit(1)
+    .maybeSingle();
+  if (anyVersion) {
+    throw new ThemeDeskError(
+      "theme.unpublished",
+      "That theme has no published version yet. Publish it before activating.",
+    );
+  }
+
+  // Pre-versioning legacy rows: materialize from the draft (or registry
+  // package) when no versions exist at all.
   return materializeLegacyVersion(db, merchantId, row, actorId);
 }
 

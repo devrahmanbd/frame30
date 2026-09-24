@@ -602,6 +602,22 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
     en: "Signed-in shopper's name and contact details.",
     bn: "সাইন-ইন করা ক্রেতার নাম ও যোগাযোগের তথ্য।",
   },
+  finder_row: {
+    en: "An occasion-based gift and outfit finder leading to matching collections.",
+    bn: "উপলক্ষভিত্তিক উপহার ও পোশাক সন্ধান — মানানসই কালেকশনে নিয়ে যায়।",
+  },
+  craft_story: {
+    en: "An editorial story block highlighting artisan heritage and handloom craft.",
+    bn: "কারিগরদের ঐতিহ্য ও হাতে বোনা কারুকাজ তুলে ধরার সম্পাদকীয় গল্পের ব্লক।",
+  },
+  testimonials: {
+    en: "A rotating carousel of customer testimonials and verified quotes.",
+    bn: "ক্রেতাদের মতামত ও যাচাইকৃত প্রশংসাপত্রের রোটেটিং ক্যারোজেল।",
+  },
+  trust_footer: {
+    en: "A grid of reassurance badges for shipping, returns, craft quality and support.",
+    bn: "ডেলিভারি, রিটার্ন, পণ্যের মান ও সহায়তার আশ্বাসের ব্যাজ গ্রিড।",
+  },
 };
 
 /** Exact prop-key hints. Keys are catalog `Field.key`s. */

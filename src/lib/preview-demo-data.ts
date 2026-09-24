@@ -108,12 +108,26 @@ export function previewDemoMap(
       map[req.key] = [DEMO_PROFILE];
       continue;
     }
+    let rows = base;
+    if (req.source === "collection") {
+      const colParam = (req.params as Record<string, unknown>)["collection"];
+      if (typeof colParam === "string" && colParam.trim()) {
+        const slug = colParam.trim().toLowerCase();
+        const filtered = base.filter((p) => {
+          const prod = catalog.products.find((item) => item.slug === p.id);
+          return prod?.collections?.includes(slug);
+        });
+        if (filtered.length > 0) {
+          rows = filtered;
+        }
+      }
+    }
     const rawLimit = (req.params as Record<string, unknown>)["limit"];
     const limit =
       typeof rawLimit === "number" && rawLimit > 0
-        ? Math.min(rawLimit, base.length)
-        : Math.min(8, base.length);
-    map[req.key] = base.slice(0, limit);
+        ? Math.min(rawLimit, rows.length)
+        : Math.min(8, rows.length);
+    map[req.key] = rows.slice(0, limit);
   }
   return map;
 }

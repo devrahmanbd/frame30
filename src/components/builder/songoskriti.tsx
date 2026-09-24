@@ -51,10 +51,7 @@ import {
 } from "./songoskriti-motion";
 import { MediaFrame } from "./primitives/MediaFrame";
 import { Rail } from "./primitives/Rail";
-import {
-  ProductCard,
-  ProductCardSkeleton,
-} from "./primitives/ProductCard";
+import { ProductCard, ProductCardSkeleton } from "./primitives/ProductCard";
 import { cardVariantOf } from "./merch";
 import { altKey, sizesAttr, sizesKey } from "@/lib/media";
 import {
@@ -111,51 +108,53 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
     <section
       ref={scope}
       data-songoskriti-reveal
-      className="rounded-fq-lg border border-border bg-card p-6 sm:p-8"
+      className="mx-auto w-full max-w-6xl px-4"
     >
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        <div className="min-w-0 lg:col-span-7">
-          {str("heading") && (
-            <Heading className="font-bangla-display text-2xl font-bold">
-              {str("heading")}
-            </Heading>
-          )}
-          {str("body") && (
-            <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
-              {str("body")}
-            </p>
-          )}
-          {str("buttonLabel") && (
-            <a
-              href={str("buttonHref") || "#"}
-              className="mt-4 inline-flex min-h-11 items-center whitespace-nowrap rounded-fq-md border border-current px-5 text-sm font-medium transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              {str("buttonLabel")}
-            </a>
+      <div className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="min-w-0 lg:col-span-7">
+            {str("heading") && (
+              <Heading className="font-bangla-display text-2xl font-bold">
+                {str("heading")}
+              </Heading>
+            )}
+            {str("body") && (
+              <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
+                {str("body")}
+              </p>
+            )}
+            {str("buttonLabel") && (
+              <a
+                href={str("buttonHref") || "#"}
+                className="mt-4 inline-flex min-h-11 items-center whitespace-nowrap rounded-fq-md border border-current px-5 text-sm font-medium transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                {str("buttonLabel")}
+              </a>
+            )}
+          </div>
+          {occasions.length > 0 && (
+            <div className="min-w-0 lg:col-span-5">
+              <ul
+                aria-label={t(locale, "Occasions", "উপলক্ষ")}
+                className="m-0 flex list-none flex-col gap-2 p-0"
+              >
+                {occasions.map((o) => (
+                  <li key={o.label}>
+                    <a
+                      href={o.href || "#"}
+                      className="flex min-h-11 items-center justify-between gap-3 rounded-fq-md border border-border bg-background px-4 text-sm font-medium transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    >
+                      <span>{o.label}</span>
+                      <span aria-hidden="true" className="text-primary">
+                        →
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </div>
-        {occasions.length > 0 && (
-          <div className="min-w-0 lg:col-span-5">
-            <ul
-              aria-label={t(locale, "Occasions", "উপলক্ষ")}
-              className="m-0 flex list-none flex-col gap-2 p-0"
-            >
-              {occasions.map((o) => (
-                <li key={o.label}>
-                  <a
-                    href={o.href || "#"}
-                    className="flex min-h-11 items-center justify-between gap-3 rounded-fq-md border border-border bg-background px-4 text-sm font-medium transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  >
-                    <span>{o.label}</span>
-                    <span aria-hidden="true" className="text-primary">
-                      →
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
     </section>
   );
@@ -163,7 +162,13 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
 
 /* ------------------------------------------------------------- craft_story */
 
-const CraftStory: WidgetComponent = ({ str, bool, Heading, editing, locale }) => {
+const CraftStory: WidgetComponent = ({
+  str,
+  bool,
+  Heading,
+  editing,
+  locale,
+}) => {
   // Track fallbacks (heritage precedent): headline/button aliases resolve
   // to the canonical craft_story fields.
   const image = str("image") || str("imageUrl");
@@ -190,48 +195,50 @@ const CraftStory: WidgetComponent = ({ str, bool, Heading, editing, locale }) =>
     <section
       ref={scope}
       data-songoskriti-reveal
-      className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12"
+      className="mx-auto w-full max-w-6xl px-4"
     >
-      <div className="min-w-0 lg:col-span-5">
-        <div className="relative overflow-hidden rounded-fq-lg border border-border">
-          <MediaFrame
-            src={image}
-            alt={str(altKey("imageUrl")) || headline}
-            ratio="portrait"
-            sizes={sizesAttr(str(sizesKey("imageUrl")))}
-            className="rounded-fq-lg"
-          />
-          {bool("scrim") && image && (
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-foreground/40"
+      <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
+        <div className="min-w-0 lg:col-span-5">
+          <div className="relative overflow-hidden rounded-fq-lg border border-border">
+            <MediaFrame
+              src={image}
+              alt={str(altKey("imageUrl")) || headline}
+              ratio="portrait"
+              sizes={sizesAttr(str(sizesKey("imageUrl")))}
+              className="rounded-fq-lg"
             />
+            {bool("scrim") && image && (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 bg-foreground/40"
+              />
+            )}
+          </div>
+        </div>
+        <div className="min-w-0 lg:col-span-6 lg:col-start-7">
+          <div aria-hidden="true" className="mb-4 h-px w-16 bg-primary" />
+          {eyebrow && (
+            <p className="mb-2 text-xs font-semibold tracking-widest text-primary fq-caps">
+              {eyebrow}
+            </p>
+          )}
+          <Heading className="font-bangla-display text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
+            {headline}
+          </Heading>
+          {body && (
+            <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground sm:text-base">
+              {body}
+            </p>
+          )}
+          {ctaLabel && (
+            <a
+              href={ctaHref || "#"}
+              className="mt-5 inline-flex min-h-11 items-center whitespace-nowrap rounded-fq-md border border-current px-5 text-sm font-medium transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              {ctaLabel}
+            </a>
           )}
         </div>
-      </div>
-      <div className="min-w-0 lg:col-span-6 lg:col-start-7">
-        <div aria-hidden="true" className="mb-4 h-px w-16 bg-primary" />
-        {eyebrow && (
-          <p className="mb-2 text-xs font-semibold tracking-widest text-primary fq-caps">
-            {eyebrow}
-          </p>
-        )}
-        <Heading className="font-bangla-display text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
-          {headline}
-        </Heading>
-        {body && (
-          <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground sm:text-base">
-            {body}
-          </p>
-        )}
-        {ctaLabel && (
-          <a
-            href={ctaHref || "#"}
-            className="mt-5 inline-flex min-h-11 items-center whitespace-nowrap rounded-fq-md border border-current px-5 text-sm font-medium transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            {ctaLabel}
-          </a>
-        )}
       </div>
     </section>
   );
@@ -239,12 +246,7 @@ const CraftStory: WidgetComponent = ({ str, bool, Heading, editing, locale }) =>
 
 /* ------------------------------------------------------------ testimonials */
 
-const Testimonials: WidgetComponent = ({
-  section,
-  int,
-  locale,
-  editing,
-}) => {
+const Testimonials: WidgetComponent = ({ section, int, locale, editing }) => {
   const testimonials = rowsOf(section, "testimonials")
     .map((row) => ({
       quote: readBn(row, "quote", locale),
@@ -284,60 +286,64 @@ const Testimonials: WidgetComponent = ({
     <section
       ref={scope}
       data-songoskriti-reveal
-      className="rounded-fq-lg border border-border bg-card p-6 sm:p-8"
-      onMouseEnter={() => pause()}
-      onMouseLeave={() => resume()}
+      className="mx-auto w-full max-w-4xl px-4"
       aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
     >
-      <div className="flex flex-col items-center text-center">
-        {item.image ? (
-          <img
-            src={item.image}
-            alt={item.author}
-            className="mb-4 h-12 w-12 rounded-full object-cover"
-            loading="lazy"
-          />
-        ) : (
-          <span
-            aria-hidden="true"
-            className="mb-2 text-3xl leading-none text-primary"
-          >
-            &ldquo;
-          </span>
-        )}
-        <blockquote className="max-w-xl text-base leading-relaxed text-foreground line-clamp-3">
-          {item.image ? <>&ldquo;{item.quote}&rdquo;</> : item.quote}
-        </blockquote>
-        <p className="mt-3 w-full border-t border-border pt-3 text-sm font-medium">
-          {item.author}
-          {item.role && (
-            <span className="block text-xs font-normal text-muted-foreground">
-              {item.role}
+      <div
+        className="rounded-fq-lg border border-border bg-card p-6 sm:p-8"
+        onMouseEnter={() => pause()}
+        onMouseLeave={() => resume()}
+      >
+        <div className="flex flex-col items-center text-center">
+          {item.image ? (
+            <img
+              src={item.image}
+              alt={item.author}
+              className="mb-4 h-12 w-12 rounded-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <span
+              aria-hidden="true"
+              className="mb-2 text-3xl leading-none text-primary"
+            >
+              &ldquo;
             </span>
           )}
-        </p>
-      </div>
-      {testimonials.length > 1 && (
-        <div className="mt-4 flex justify-center gap-1">
-          {testimonials.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => goTo(i)}
-              className="grid min-h-11 min-w-11 place-items-center"
-              aria-label={`${t(locale, "Testimonial", "প্রশংসাপত্র")} ${i + 1}`}
-              aria-current={i === current}
-            >
-              <span
-                aria-hidden="true"
-                className={`block h-2 rounded-full transition ${
-                  i === current ? "w-6 bg-primary" : "w-2 bg-border"
-                }`}
-              />
-            </button>
-          ))}
+          <blockquote className="max-w-xl text-base leading-relaxed text-foreground line-clamp-3">
+            {item.image ? <>&ldquo;{item.quote}&rdquo;</> : item.quote}
+          </blockquote>
+          <p className="mt-3 w-full border-t border-border pt-3 text-sm font-medium">
+            {item.author}
+            {item.role && (
+              <span className="block text-xs font-normal text-muted-foreground">
+                {item.role}
+              </span>
+            )}
+          </p>
         </div>
-      )}
+        {testimonials.length > 1 && (
+          <div className="mt-4 flex justify-center gap-1">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => goTo(i)}
+                className="grid min-h-11 min-w-11 place-items-center"
+                aria-label={`${t(locale, "Testimonial", "প্রশংসাপত্র")} ${i + 1}`}
+                aria-current={i === current}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`block h-2 rounded-full transition ${
+                    i === current ? "w-6 bg-primary" : "w-2 bg-border"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </section>
   );
 };
@@ -354,7 +360,7 @@ const TRUST_FOOTER_ICON = {
 
 const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
   // Task 5 motion: once-only batch reveal at full intent; static otherwise.
-  const scope = useRef<HTMLUListElement | null>(null);
+  const scope = useRef<HTMLDivElement | null>(null);
   useSongoskritiReveals(scope, true);
   // Repeater-first (trust_bar precedent): studio `items` rows win when
   // present, scalar i1–i4 triples remain as the fallback for
@@ -379,42 +385,39 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
   if (items.length === 0) {
     return editing ? (
       <p className="text-xs text-muted-foreground">
-        {t(
-          locale,
-          "Trust footer: add badges.",
-          "আস্থা ফুটার: ব্যাজ যোগ করুন।",
-        )}
+        {t(locale, "Trust footer: add badges.", "আস্থা ফুটার: ব্যাজ যোগ করুন।")}
       </p>
     ) : null;
   }
   return (
-    <ul
+    <div
       ref={scope}
       data-songoskriti-reveal
-      className="grid grid-cols-2 gap-4 rounded-fq-lg border border-border bg-card p-4 sm:grid-cols-4"
+      className="mx-auto w-full max-w-6xl px-4"
     >
-      {items.map((item) => {
-        const Icon =
-          TRUST_FOOTER_ICON[
-            item.icon as keyof typeof TRUST_FOOTER_ICON
-          ] ?? Star;
-        return (
-          <li key={item.title} className="flex min-w-0 items-start gap-2.5">
-            <span className="grid size-11 shrink-0 place-items-center rounded-fq-md bg-primary/10 text-primary">
-              <Icon className="size-5" aria-hidden="true" />
-            </span>
-            <span className="min-w-0">
-              <span className="block text-sm font-medium">{item.title}</span>
-              {item.body && (
-                <span className="block text-xs text-muted-foreground">
-                  {item.body}
-                </span>
-              )}
-            </span>
-          </li>
-        );
-      })}
-    </ul>
+      <ul className="grid grid-cols-2 gap-4 rounded-fq-lg border border-border bg-card p-4 sm:grid-cols-4">
+        {items.map((item) => {
+          const Icon =
+            TRUST_FOOTER_ICON[item.icon as keyof typeof TRUST_FOOTER_ICON] ??
+            Star;
+          return (
+            <li key={item.title} className="flex min-w-0 items-start gap-2.5">
+              <span className="grid size-11 shrink-0 place-items-center rounded-fq-md bg-primary/10 text-primary">
+                <Icon className="size-5" aria-hidden="true" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-sm font-medium">{item.title}</span>
+                {item.body && (
+                  <span className="block text-xs text-muted-foreground">
+                    {item.body}
+                  </span>
+                )}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 };
 
@@ -440,12 +443,14 @@ const SongoskritiProductRail: WidgetComponent = (ctx) => {
   const label =
     str("heading") || (locale === "bn" ? "পণ্যের তালিকা" : "Product rail");
   const heading = str("heading") ? (
-    <Heading className="text-xl font-bold tracking-tight">{str("heading")}</Heading>
+    <Heading className="text-xl font-bold tracking-tight">
+      {str("heading")}
+    </Heading>
   ) : null;
   // An empty rail leaves no hole: null, not a padded empty shell.
   if (rows !== undefined && rows.length === 0 && !data?.pending) return null;
   return (
-    <section className="mx-auto w-full max-w-6xl px-4">
+    <section className="mx-auto w-full max-w-6xl px-4 sm:px-6">
       {data?.pending || rows === undefined ? (
         <Rail label={label} heading={heading ?? undefined}>
           {Array.from({ length: 6 }, (_, i) => (
