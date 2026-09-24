@@ -92,10 +92,11 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
   {
     title: "About",
     title_bn: "আমাদের কথা",
+    // Browser-verified 2026-09-24: "Contact us" appeared twice in the
+    // footer (Customer Care + About). It lives in Customer Care only now.
     links: [
       "Our story|/pages/about",
       "Rewards club|/pages/rewards",
-      "Contact us|/pages/contact",
     ].join("\n"),
   },
 ];

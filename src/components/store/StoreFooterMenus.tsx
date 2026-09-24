@@ -187,7 +187,7 @@ export function StoreFooterMenus({
           </div>
           <nav
             aria-label={t("Footer menu", "ফুটার মেনু")}
-            className="grid min-w-0 grid-cols-1 gap-6 sm:grid-cols-2"
+            className="grid min-w-0 grid-cols-1 gap-8 py-2 sm:grid-cols-2"
           >
             {columns.map((col) => (
               <div key={col.key} className="min-w-0">
@@ -195,7 +195,7 @@ export function StoreFooterMenus({
                   {col.title}
                 </p>
                 {col.links.length > 0 && (
-                  <ul className="mt-2 space-y-1.5">
+                  <ul className="mt-3 space-y-2">
                     {col.links.map((link) => (
                       <li key={link.key}>
                         <a

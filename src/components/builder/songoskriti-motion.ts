@@ -128,6 +128,89 @@ export function revealBatchOptions() {
   } as const;
 }
 
+/* ------------------------------------------- reveal progressive enhancement */
+
+export type RevealMode = "animate" | "static";
+
+/**
+ * Progressive-enhancement gate for batch reveals. Content renders settled
+ * (visible) and the hidden state is applied only inside the engine setup —
+ * so this returns `"animate"` exclusively at full intent with a live scope.
+ * Every other combination (reduced/off intent, or a scope that failed to
+ * resolve so its triggers could never fire) returns `"static"`: the hook
+ * returns early and the settled markup stays visible.
+ */
+export function resolveRevealMode(
+  intent: MotionIntent,
+  scopeAvailable: boolean,
+): RevealMode {
+  if (intent !== "full") return "static";
+  if (!scopeAvailable) return "static";
+  return "animate";
+}
+
+/**
+ * Structural minimum for the scroll-ancestor walk. Real `HTMLElement`
+ * chains satisfy it; tests pass plain fakes so this stays DOM-free.
+ */
+export type RevealScrollNode = {
+  readonly parentElement: RevealScrollNode | null;
+  readonly overflowY: string;
+  readonly scrollHeight: number;
+  readonly clientHeight: number;
+};
+
+/**
+ * Pure scroll-container lookup: the nearest ancestor that actually scrolls
+ * (`overflow-y: auto|scroll` with overflowing content), `"viewport"` when
+ * the page itself is the scroller, `null` when there is no scope at all.
+ */
+export function findRevealScrollerNode(
+  start: RevealScrollNode | null,
+): RevealScrollNode | "viewport" | null {
+  if (!start) return null;
+  let node = start.parentElement;
+  while (node) {
+    const scrolls =
+      node.overflowY === "auto" || node.overflowY === "scroll";
+    if (scrolls && node.scrollHeight > node.clientHeight) return node;
+    node = node.parentElement;
+  }
+  return "viewport";
+}
+
+/**
+ * DOM adapter for the walk above. The theme preview (and any dialog host)
+ * scrolls inside a nested `overflow-auto` container while ScrollTrigger
+ * defaults to the viewport — triggers aimed at the viewport never fire
+ * there, stranding sections at `autoAlpha: 0`. Resolving the real scroller
+ * keeps reveals firing wherever the page scrolls. A detached scope (whose
+ * triggers could never fire either) resolves `null` so the hook leaves it
+ * visible instead of hiding it.
+ */
+export function findRevealScroller(
+  scope: HTMLElement,
+): HTMLElement | Window | null {
+  if (!scope.isConnected) return null;
+  let node = scope.parentElement;
+  while (node) {
+    let overflowY = "";
+    try {
+      overflowY = window.getComputedStyle(node).overflowY;
+    } catch {
+      overflowY = "";
+    }
+    if (
+      (overflowY === "auto" || overflowY === "scroll") &&
+      node.scrollHeight > node.clientHeight
+    ) {
+      return node;
+    }
+    node = node.parentElement;
+  }
+  return window;
+}
+
 /* --------------------------------------------------------- branch decision */
 
 export type SongoskritiBranch = "desktop" | "mobile" | "static";
@@ -426,9 +509,12 @@ export function useSongoskritiHero(
 
 /**
  * ScrollTrigger.batch reveals for `[data-songoskriti-reveal]` nodes under
- * `scopeRef`. Once-only, play-and-hold toggle actions, refresh after
+ * `scopeRef`. Once-only, play-and-hold toggle actions, scoped to the real
+ * scroll container (nested `overflow-auto` preview/dialog hosts included —
+ * viewport-aimed triggers never fire there), refresh after setup and after
  * images load; `ctx.revert()` kills off-screen triggers on unmount.
- * Non-full intents render settled content with no observer at all.
+ * Non-full intents — and scopes whose scroller cannot be resolved — render
+ * settled content with no observer at all (see `resolveRevealMode`).
  */
 export function useSongoskritiReveals(
   scopeRef: { readonly current: HTMLElement | null },
@@ -437,35 +523,50 @@ export function useSongoskritiReveals(
   const intent = useMotionIntent();
 
   useEffect(() => {
-    if (!enabled || intent !== "full") return;
+    if (!enabled) return;
     const scope = scopeRef.current;
     if (!scope || typeof window === "undefined") return;
+    // Progressive enhancement: reduced/off intents stay settled-visible.
+    if (resolveRevealMode(intent, true) !== "animate") return;
     const targets = scopeTargets(scope, SONGOSKRITI_REVEAL_SELECTOR);
     if (targets.length === 0) return;
+    // Scroller lookup failure also stays settled-visible: hiding targets
+    // whose triggers could never fire would strand them at opacity 0.
+    const scroller = findRevealScroller(scope);
+    if (!scroller) return;
     const opts = revealBatchOptions();
 
     const setup = (engine: MotionEngine) => {
       const { gsap, ScrollTrigger } = engine;
       const ctx = gsap.context(() => {
-        gsap.set(targets, { y: 16, autoAlpha: 0 });
-        // once:true + onEnter-only implements exactly the recorded
-        // toggleActions "play none none none" (fire once on enter, never
-        // reverse or replay). toggleActions itself is a per-trigger var
-        // that ScrollTrigger.batch does not accept, so it lives in
-        // revealBatchOptions() as the documented intent.
-        ScrollTrigger.batch(targets, {
-          start: opts.start,
-          once: opts.once,
-          onEnter: (batch) =>
-            gsap.to(batch, {
-              y: 0,
-              autoAlpha: 1,
-              duration: 0.6,
-              ease: "power2.out",
-              overwrite: "auto",
-              clearProps: "transform,opacity,visibility",
-            }),
-        });
+        try {
+          gsap.set(targets, { y: 16, autoAlpha: 0 });
+          // once:true + onEnter-only implements exactly the recorded
+          // toggleActions "play none none none" (fire once on enter, never
+          // reverse or replay). toggleActions itself is a per-trigger var
+          // that ScrollTrigger.batch does not accept, so it lives in
+          // revealBatchOptions() as the documented intent.
+          ScrollTrigger.batch(targets, {
+            start: opts.start,
+            once: opts.once,
+            scroller,
+            onEnter: (batch) =>
+              gsap.to(batch, {
+                y: 0,
+                autoAlpha: 1,
+                duration: 0.6,
+                ease: "power2.out",
+                overwrite: "auto",
+                clearProps: "transform,opacity,visibility",
+              }),
+          });
+          ScrollTrigger.refresh();
+        } catch {
+          // A failed trigger setup must never leave content hidden.
+          gsap.set(targets, {
+            clearProps: "transform,opacity,visibility",
+          });
+        }
       }, scope);
       const onLoad = () => ScrollTrigger.refresh();
       window.addEventListener("load", onLoad);

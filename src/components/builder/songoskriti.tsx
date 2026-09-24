@@ -50,6 +50,12 @@ import {
   useSongoskritiReveals,
 } from "./songoskriti-motion";
 import { MediaFrame } from "./primitives/MediaFrame";
+import { Rail } from "./primitives/Rail";
+import {
+  ProductCard,
+  ProductCardSkeleton,
+} from "./primitives/ProductCard";
+import { cardVariantOf } from "./merch";
 import { altKey, sizesAttr, sizesKey } from "@/lib/media";
 import {
   Headset,
@@ -412,12 +418,69 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
   );
 };
 
+/* ------------------------------------------------------------ product_rail */
+
+/**
+ * Songoskriti product rail (browser-verified rhythm fix, 2026-09-24).
+ *
+ * The shared merch rail rendered a bare section: the H2 sat flush to the
+ * viewport edge, and the prev/next arrows floated in their own row beneath
+ * the cards. This override keeps the merch data semantics byte-identical
+ * (same limit clamp, same variant resolution, same `ProductCard` props for
+ * prices/badges/stars — `ProductCard` itself is untouched) and changes only
+ * the wrapper rhythm: a padded max-w container, the H2 sharing a header row
+ * with docked arrows (via the `Rail` heading slot), and the `MediaFrame`
+ * aspect-ratio box inside every card/skeleton reserving media space so the
+ * rail holds CLS < 0.1 as images land.
+ */
+const SongoskritiProductRail: WidgetComponent = (ctx) => {
+  const { str, bool, int, data, locale, Heading } = ctx;
+  const variant = cardVariantOf(str("cardVariant"), "compact");
+  const rows = data?.rows?.slice(0, int("limit", 12, 1, 24));
+  const label =
+    str("heading") || (locale === "bn" ? "পণ্যের তালিকা" : "Product rail");
+  const heading = str("heading") ? (
+    <Heading className="text-xl font-bold tracking-tight">{str("heading")}</Heading>
+  ) : null;
+  // An empty rail leaves no hole: null, not a padded empty shell.
+  if (rows !== undefined && rows.length === 0 && !data?.pending) return null;
+  return (
+    <section className="mx-auto w-full max-w-6xl px-4">
+      {data?.pending || rows === undefined ? (
+        <Rail label={label} heading={heading ?? undefined}>
+          {Array.from({ length: 6 }, (_, i) => (
+            <ProductCardSkeleton key={i} variant={variant} />
+          ))}
+        </Rail>
+      ) : rows.length === 0 ? null : (
+        <Rail label={label} heading={heading ?? undefined}>
+          {rows.map((row) => (
+            <ProductCard
+              key={row.id}
+              row={row}
+              locale={locale}
+              variant={variant}
+              badgeLabel={str("badgeLabel") || undefined}
+              promise={str("promise") || undefined}
+              showRating={bool("showRating")}
+            />
+          ))}
+        </Rail>
+      )}
+    </section>
+  );
+};
+
 /* ------------------------------------------------------ exports */
 
 export const SONGOSKRITI_WIDGETS: Record<
   Extract<
     SectionType,
-    "finder_row" | "craft_story" | "testimonials" | "trust_footer"
+    | "finder_row"
+    | "craft_story"
+    | "testimonials"
+    | "trust_footer"
+    | "product_rail"
   >,
   WidgetComponent
 > = {
@@ -425,4 +488,5 @@ export const SONGOSKRITI_WIDGETS: Record<
   craft_story: CraftStory,
   testimonials: Testimonials,
   trust_footer: TrustFooter,
+  product_rail: SongoskritiProductRail,
 };

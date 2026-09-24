@@ -11,10 +11,18 @@ export function Rail({
   label,
   children,
   itemClassName = "min-w-[45%] sm:min-w-[30%] lg:min-w-[22%]",
+  heading,
 }: {
   label: string;
   children: React.ReactNode[];
   itemClassName?: string;
+  /**
+   * Optional header node (typically the section H2). When provided the
+   * prev/next arrows dock into the same header row instead of floating in
+   * a separate row beneath the rail; when absent the legacy bottom-row
+   * controls render exactly as before.
+   */
+  heading?: React.ReactNode;
 }) {
   const ref = useRef<HTMLUListElement>(null);
 
@@ -29,8 +37,35 @@ export function Rail({
 
   if (children.length === 0) return null;
 
+  const controls = (
+    <>
+      <button
+        type="button"
+        onClick={() => nudge(-1)}
+        aria-label="Scroll left"
+        className="h-11 w-11 rounded-fq-md border border-border bg-card text-sm"
+      >
+        ‹
+      </button>
+      <button
+        type="button"
+        onClick={() => nudge(1)}
+        aria-label="Scroll right"
+        className="h-11 w-11 rounded-fq-md border border-border bg-card text-sm"
+      >
+        ›
+      </button>
+    </>
+  );
+
   return (
     <div className="relative">
+      {heading !== undefined && (
+        <div className="mb-3 flex items-end justify-between gap-3">
+          <div className="min-w-0 flex-1">{heading}</div>
+          <div className="flex shrink-0 gap-2">{controls}</div>
+        </div>
+      )}
       <ul
         ref={ref}
         aria-label={label}
@@ -52,24 +87,9 @@ export function Rail({
           </li>
         ))}
       </ul>
-      <div className="mt-2 flex justify-end gap-2">
-        <button
-          type="button"
-          onClick={() => nudge(-1)}
-          aria-label="Scroll left"
-          className="h-11 w-11 rounded-fq-md border border-border bg-card text-sm"
-        >
-          ‹
-        </button>
-        <button
-          type="button"
-          onClick={() => nudge(1)}
-          aria-label="Scroll right"
-          className="h-11 w-11 rounded-fq-md border border-border bg-card text-sm"
-        >
-          ›
-        </button>
-      </div>
+      {heading === undefined && (
+        <div className="mt-2 flex justify-end gap-2">{controls}</div>
+      )}
     </div>
   );
 }

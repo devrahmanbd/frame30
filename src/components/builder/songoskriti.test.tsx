@@ -17,6 +17,9 @@ import {
 import { WIDGET_BY_KEY } from "@/lib/studio/catalog";
 import { HERITAGE_WIDGETS } from "./heritage";
 import { SONGOSKRITI_WIDGETS } from "./songoskriti";
+import { MERCH_WIDGETS } from "./merch";
+import { APPAREL_WIDGETS } from "./apparel";
+import type { WidgetRow } from "@/lib/widget-data";
 import {
   WIDGET_COMPONENTS,
   widgetReader,
@@ -259,5 +262,171 @@ describe("trust_footer", () => {
     expect(html).toContain("Fast delivery");
     expect(html).toContain("Easy returns");
     expect(html).toContain("Secure payment");
+  });
+});
+
+describe("songoskriti product_rail rhythm (browser-verified 2026-09-24)", () => {
+  const railSection = (data: WidgetCtx["data"]) => ({
+    ...newSection("product_rail"),
+    props: {
+      ...newSection("product_rail").props,
+      heading: "New arrivals",
+      limit: 8,
+      cardVariant: "editorial",
+      showRating: true,
+      promise: "In stock · Dispatched in 24h",
+    },
+  });
+
+  const rows: WidgetRow[] = [
+    {
+      id: "p1",
+      title: "Dhakai Jamdani saree",
+      priceMinor: 12500_00,
+      compareAtMinor: 15000_00,
+      currency: "BDT",
+      imageUrl: "/ph/songoskriti/prod-saree.png",
+      inStock: true,
+    },
+    {
+      id: "p2",
+      title: "Silk panjabi",
+      priceMinor: 4800_00,
+      currency: "BDT",
+      imageUrl: null,
+      inStock: true,
+    },
+  ];
+
+  function railCtx(section: Section, data: WidgetCtx["data"]): WidgetCtx {
+    return { ...ctxFor(section), data };
+  }
+
+  function renderRail(
+    Cmp: WidgetComponent,
+    section: Section,
+    data: WidgetCtx["data"],
+  ) {
+    return renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        railCtx(section, data),
+      ),
+    );
+  }
+
+  it("wraps the rail in a padded max-w container (H2 never flush)", () => {
+    const html = renderRail(
+      SONGOSKRITI_WIDGETS["product_rail"],
+      railSection({ rows, pending: false }),
+      { rows, pending: false },
+    );
+    expect(html).toContain("max-w-6xl");
+    expect(html).toContain("px-4");
+    expect(html).toContain("New arrivals");
+  });
+
+  it("docks the arrows to the rail header row (no floating controls)", () => {
+    const html = renderRail(
+      SONGOSKRITI_WIDGETS["product_rail"],
+      railSection({ rows, pending: false }),
+      { rows, pending: false },
+    );
+    // Header row carries heading + both arrows before the card list …
+    expect(html).toContain("justify-between");
+    const headingAt = html.indexOf("New arrivals");
+    const arrowsAt = html.indexOf('aria-label="Scroll right"');
+    const listAt = html.indexOf("<ul");
+    expect(headingAt).toBeGreaterThanOrEqual(0);
+    expect(arrowsAt).toBeGreaterThan(headingAt);
+    expect(listAt).toBeGreaterThan(arrowsAt);
+    // … and the legacy floating bottom-row controls are gone.
+    expect(html).not.toContain("mt-2 flex justify-end");
+  });
+
+  it("reserves media space (aspect box) for every card, image or not", () => {
+    const html = renderRail(
+      SONGOSKRITI_WIDGETS["product_rail"],
+      railSection({ rows, pending: false }),
+      { rows, pending: false },
+    );
+    // Editorial variant → landscape box on loaded and imageless cards alike.
+    expect(html.match(/aspect-\[4\/3\]/g)?.length ?? 0).toBeGreaterThanOrEqual(
+      2,
+    );
+  });
+
+  it("keeps prices/badges/stars logic identical to the shared merch rail", () => {
+    const section = railSection({ rows, pending: false });
+    const data = { rows, pending: false };
+    const songo = renderRail(SONGOSKRITI_WIDGETS["product_rail"], section, data);
+    const merch = renderRail(MERCH_WIDGETS["product_rail"], section, data);
+    const cards = (html: string) =>
+      html.split("<article").slice(1).map((part) => part.split("</article>")[0]);
+    // Same cards, same order, byte-identical card markup.
+    expect(cards(songo)).toEqual(cards(merch));
+    expect(songo).toContain("★★★★★");
+  });
+
+  it("renders skeletons while pending and null when empty", () => {
+    const section = railSection({ rows, pending: false });
+    const pending = renderRail(SONGOSKRITI_WIDGETS["product_rail"], section, {
+      rows: undefined,
+      pending: true,
+    });
+    expect(pending).toContain("animate-pulse");
+    expect(
+      renderRail(SONGOSKRITI_WIDGETS["product_rail"], section, {
+        rows: [],
+        pending: false,
+      }),
+    ).toBe("");
+  });
+});
+
+describe("songoskriti categories rhythm (browser-verified 2026-09-24)", () => {
+  const catSection = () => ({
+    ...newSection("circle_categories"),
+    props: {
+      heading: "Shop by category",
+      c1Title: "Women",
+      c1Image: "/ph/songoskriti/cat-women.png",
+      c1Href: "/c/women",
+      c2Title: "Men",
+      c2Image: "/ph/songoskriti/cat-men.png",
+      c2Href: "/c/men",
+      c3Title: "",
+      c3Image: "",
+      c3Href: "",
+      c4Title: "",
+      c4Image: "",
+      c4Href: "",
+      c5Title: "",
+      c5Image: "",
+      c5Href: "",
+      c6Title: "",
+      c6Image: "",
+      c6Href: "",
+      c7Title: "",
+      c7Image: "",
+      c7Href: "",
+      c8Title: "",
+      c8Image: "",
+      c8Href: "",
+    },
+  });
+
+  it("renders circles with images (not cut-off arcs)", () => {
+    const html = render(APPAREL_WIDGETS["circle_categories"], catSection());
+    expect(html).toContain('src="/ph/songoskriti/cat-women.png"');
+    expect(html).toContain("rounded-full object-cover");
+    // The scroll row reserves the ring extent so rings never clip.
+    expect(html).toContain("px-1");
+    expect(html).toContain("pt-1");
+  });
+
+  it("keeps bottom spacing so no void sits between it and the rails", () => {
+    const html = render(APPAREL_WIDGETS["circle_categories"], catSection());
+    expect(html).toContain("py-4");
   });
 });

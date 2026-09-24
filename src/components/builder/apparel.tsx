@@ -886,7 +886,7 @@ const CircleCategories: WidgetComponent = ({ str, Heading }) => {
           </Heading>
         </div>
       )}
-      <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 sm:grid sm:grid-cols-4 md:grid-cols-8 sm:gap-4 sm:overflow-visible">
+      <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-2 pt-1 sm:grid sm:grid-cols-4 md:grid-cols-8 sm:gap-4 sm:overflow-visible sm:p-0">
         {categories.map((c, idx) => (
           <a
             key={idx}
