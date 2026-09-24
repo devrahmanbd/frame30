@@ -25,6 +25,10 @@
   --color-mint-600: hsl(161 94% 30%);
   --color-mint-800: hsl(162 94% 20%);
 
+  /* Third-party brand mark: official WhatsApp glyph green. Tokenized so
+     widgets never hardcode it (widget-registry tokens-only gate). */
+  --color-whatsapp: #25d366;
+
   /* Semantic */
   --color-background: #ffffff;
   --color-foreground: oklch(0.2 0.02 260); /* Deep Ink / Slate */
