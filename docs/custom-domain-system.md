@@ -393,6 +393,8 @@ When a merchant adds a domain, they receive these records to configure at their 
 4. Edge calls back `/api/public/domains/callback` → `applyCertResult()`
 5. Success → `active`, `cert_status: "issued"`; Failure → `failed`, `cert_status: "error"`
 6. Certificates expiring within 30 days → cron re-requests via `requestCertificate()`
+   (hook configured) or refreshes the stored expiry from the served cert
+   (`refreshActiveExpiry`, hookless — the edge auto-renews on its own).
 
 **Issuance observation (the hook, app-side):** the edge issues pull-based
 with no push notification, so the sweep performs a real TLS handshake

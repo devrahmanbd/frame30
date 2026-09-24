@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { reconcileIssuance } from "./domains.server";
+import { reconcileIssuance, refreshActiveExpiry } from "./domains.server";
 
 type TlsMode = "valid" | "refused" | "untrusted";
 let tlsMode: TlsMode = "valid";
@@ -204,5 +204,53 @@ describe("verifyDomain full loop (manual Check now + sweep share one path)", () 
     vi.unstubAllGlobals();
     expect(view.status).toBe("dns_verified");
     expect(rows.get("d1")?.["cert_error"]).toBe("cert.awaiting_edge");
+  });
+});
+
+describe("refreshActiveExpiry (stale cert_expires_at on live rows)", () => {
+  beforeEach(() => {
+    tlsMode = "valid";
+  });
+
+  function seedActive(expiresAt: string) {
+    seed("active");
+    Object.assign(rows.get("d1")!, {
+      cert_status: "issued",
+      cert_expires_at: expiresAt,
+      cert_error: null,
+    });
+  }
+
+  it("refreshes a stale expiry from the served cert, staying active", async () => {
+    seedActive("2026-10-01T00:00:00.000Z");
+    const refreshed = await refreshActiveExpiry("shop.example.com");
+    expect(refreshed).toBe(true);
+    expect(rows.get("d1")?.["status"]).toBe("active");
+    expect(rows.get("d1")?.["cert_status"]).toBe("issued");
+    expect(rows.get("d1")?.["cert_expires_at"]).toContain("2026-12-01");
+  });
+
+  it("leaves a current expiry alone (no write, no event noise)", async () => {
+    seedActive("2026-12-01T00:00:00.000Z");
+    const refreshed = await refreshActiveExpiry("shop.example.com");
+    expect(refreshed).toBe(false);
+    expect(events.length).toBe(0);
+  });
+
+  it("leaves the row alone when 443 is unreachable", async () => {
+    seedActive("2026-10-01T00:00:00.000Z");
+    tlsMode = "refused";
+    const refreshed = await refreshActiveExpiry("shop.example.com");
+    expect(refreshed).toBe(false);
+    expect(rows.get("d1")?.["cert_expires_at"]).toBe(
+      "2026-10-01T00:00:00.000Z",
+    );
+  });
+
+  it("never touches non-active rows", async () => {
+    seed("issuing_cert");
+    const refreshed = await refreshActiveExpiry("shop.example.com");
+    expect(refreshed).toBe(false);
+    expect(rows.get("d1")?.["status"]).toBe("issuing_cert");
   });
 });

@@ -975,6 +975,51 @@ export async function reconcileIssuance(hostname: string): Promise<boolean> {
   }
 }
 
+/**
+ * Refresh a live row's expiry from the publicly served certificate.
+ *
+ * The edge auto-renews on its own with no callback, so `cert_expires_at`
+ * would otherwise decay into false "Expiring" UI on healthy domains. Reads
+ * the served cert (full chain validation) and, when it is newer than the
+ * stored date, updates the date in place — status stays `active`, no state
+ * transition, no event noise (a plain update, not `transition()`).
+ * Never throws; returns whether the date moved.
+ */
+export async function refreshActiveExpiry(hostname: string): Promise<boolean> {
+  try {
+    const host = hostname.toLowerCase();
+    const service = supabaseAdmin;
+    const { data: row } = await service
+      .from("merchant_domains")
+      .select("*")
+      .eq("hostname", host)
+      .maybeSingle();
+    if (!row || (row.status as DomainStatus) !== "active") return false;
+    const seen = await observeEdgeCertificate(host);
+    if (!seen.ok) return false;
+    const current = (row as { cert_expires_at?: unknown }).cert_expires_at;
+    const currentMs =
+      typeof current === "string" ? new Date(current).getTime() : NaN;
+    const seenMs = new Date(seen.expiresAt).getTime();
+    if (!Number.isFinite(seenMs)) return false;
+    if (Number.isFinite(currentMs) && seenMs <= currentMs) return false;
+    const { error } = await service
+      .from("merchant_domains")
+      .update({
+        cert_expires_at: seen.expiresAt,
+        cert_error: null,
+        last_checked_at: new Date().toISOString(),
+      })
+      .eq("id", row.id);
+    if (error) return false;
+    incr("framique_domain_expiry_refreshed_total");
+    return true;
+  } catch {
+    log("warn", "domain.refresh_failed", { hostname });
+    return false;
+  }
+}
+
 async function notifyMerchant(
   merchantId: string,
   n: {
@@ -1128,9 +1173,16 @@ export async function sweepDomains(
         if (!full) continue;
         const hook = process.env["DOMAIN_EDGE_HOOK_URL"];
         if (!hook) {
-          // No edge to renew through: leave the domain `active` so the
-          // storefront keeps serving. Yanking it to issuing_cert here would
-          // strand it (same limbo as issuance) and take a live domain down.
+          // No edge to renew through: never yank a live domain to
+          // issuing_cert (that would strand it and take it down). Instead
+          // refresh the stored expiry from the served cert — the edge
+          // auto-renews on its own — so the UI never cries Expiring on a
+          // healthy domain.
+          try {
+            if (await refreshActiveExpiry(row.hostname)) result.renewals += 1;
+          } catch {
+            // Logged inside refreshActiveExpiry; keep sweeping.
+          }
           log("info", "domains.renewal_skipped_no_edge", {
             domain: row.id,
           });
