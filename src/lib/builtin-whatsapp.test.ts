@@ -153,6 +153,13 @@ describe("whatsapp chat_bubble entry", () => {
     expect(mounted!.style["width"]).toBe("56px");
     expect(mounted!.style["height"]).toBe("56px");
     expect(mounted!.style["margin"]).toBe("8px");
+    // Official multi-layer glyph (shadow + gradient disc + handset), not the
+    // old dots placeholder: the artwork paints its own disc, so the anchor
+    // stays transparent and only carries a drop-shadow.
+    expect(mounted!.style["background"]).toBe("transparent");
+    expect(mounted!.innerHTMLText).toContain("waBubbleGrad");
+    expect(mounted!.innerHTMLText).toContain('viewBox="0 0 512 512"');
+    expect(mounted!.innerHTMLText).not.toContain("cx=");
   });
 
   it("defaults to the pulse ring and injects keyframes once", async () => {
