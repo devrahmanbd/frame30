@@ -281,6 +281,4 @@ describe("Phase 7.2 — validation gate", () => {
       ),
     ).toBe(true);
   });
-
-
 });

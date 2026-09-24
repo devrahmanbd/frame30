@@ -111,7 +111,10 @@ export async function listAttachments(
     return ((data ?? []) as unknown as Row[]).map(toAttachment);
   } catch (e: any) {
     if (e instanceof MediaLibraryError) throw e;
-    throw new MediaLibraryError("list_failed", e?.message || "Failed to load media");
+    throw new MediaLibraryError(
+      "list_failed",
+      e?.message || "Failed to load media",
+    );
   }
 }
 

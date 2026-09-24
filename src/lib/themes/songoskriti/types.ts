@@ -21,5 +21,4 @@ export const HOMEPAGE_SECTION_TYPES = [
   "trust_footer",
 ] as const;
 
-export type IntendedHomepageType =
-  (typeof HOMEPAGE_SECTION_TYPES)[number];
+export type IntendedHomepageType = (typeof HOMEPAGE_SECTION_TYPES)[number];

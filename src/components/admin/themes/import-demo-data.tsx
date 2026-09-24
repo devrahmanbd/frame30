@@ -224,10 +224,10 @@ export function ImportDemoData({
               <Download className="size-4" aria-hidden />
             )}
             {busy
-                ? "Importing…"
-                : conflictTotal > 0
-                  ? `Overwrite ${conflictTotal} items`
-                  : "Import"}
+              ? "Importing…"
+              : conflictTotal > 0
+                ? `Overwrite ${conflictTotal} items`
+                : "Import"}
           </Button>
         </div>
       </div>

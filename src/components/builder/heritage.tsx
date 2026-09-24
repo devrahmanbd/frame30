@@ -69,17 +69,40 @@ function WeaveMotif({ seed, className }: { seed: string; className?: string }) {
     >
       {Array.from({ length: 7 }, (_, r) =>
         Array.from({ length: 6 }, (_, c) =>
-          diamond(34 + c * 66 + (r % 2 ? 33 : 0), 36 + r * 68, v === 2 ? 24 : 18, "0.55"),
+          diamond(
+            34 + c * 66 + (r % 2 ? 33 : 0),
+            36 + r * 68,
+            v === 2 ? 24 : 18,
+            "0.55",
+          ),
         ),
       )}
       {v % 2 === 0 && (
-        <circle cx="200" cy="250" r="70" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.6" />
+        <circle
+          cx="200"
+          cy="250"
+          r="70"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          opacity="0.6"
+        />
       )}
       {v % 2 === 0 && (
-        <path d="M200 195 L248 250 L200 305 L152 250 Z" fill="currentColor" opacity="0.18" />
+        <path
+          d="M200 195 L248 250 L200 305 L152 250 Z"
+          fill="currentColor"
+          opacity="0.18"
+        />
       )}
       {v === 3 && (
-        <path d="M40 430 Q200 340 360 430" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.5" />
+        <path
+          d="M40 430 Q200 340 360 430"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          opacity="0.5"
+        />
       )}
       {v === 1 && (
         <g fill="currentColor" opacity="0.35">
@@ -205,7 +228,11 @@ const HeroCarousel: WidgetComponent = ({
             )}
             {/* Dots live with the copy — never overlapping art or CTA */}
             {slides.length > 1 && (
-              <div className="flex items-center gap-1" role="tablist" aria-label={t(locale, "Slides", "স্লাইড")}>
+              <div
+                className="flex items-center gap-1"
+                role="tablist"
+                aria-label={t(locale, "Slides", "স্লাইড")}
+              >
                 {slides.map((_, i) => (
                   <button
                     key={i}

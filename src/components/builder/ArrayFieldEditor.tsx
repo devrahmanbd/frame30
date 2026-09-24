@@ -27,7 +27,8 @@ type Props = {
 };
 
 function summarise(field: Field, row: PropRow, index: number): string {
-  const key = field.itemLabel ?? (field.fields ?? field.children)?.[0]?.key ?? "";
+  const key =
+    field.itemLabel ?? (field.fields ?? field.children)?.[0]?.key ?? "";
   const value = key ? row[key] : undefined;
   const text =
     typeof value === "string"

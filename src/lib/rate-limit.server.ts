@@ -662,4 +662,3 @@ export function applyTierMultiplier(
 export function resetRateLimitCircuitBreaker(): void {
   circuitBreaker.clear();
 }
-

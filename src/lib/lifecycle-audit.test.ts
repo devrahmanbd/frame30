@@ -206,8 +206,20 @@ describe("plugin lifecycle audit", () => {
         activity_log: [],
       },
     });
-    await savePluginSettings(db.asClient(), MERCHANT, "settings-probe", { level: 1 }, ACTOR);
-    await setPluginAutoUpdates(db.asClient(), MERCHANT, "settings-probe", true, ACTOR);
+    await savePluginSettings(
+      db.asClient(),
+      MERCHANT,
+      "settings-probe",
+      { level: 1 },
+      ACTOR,
+    );
+    await setPluginAutoUpdates(
+      db.asClient(),
+      MERCHANT,
+      "settings-probe",
+      true,
+      ACTOR,
+    );
     const actions = db.rows("activity_log").map((r: any) => r.action);
     expect(actions).toContain("plugin.settings_saved");
     expect(actions).toContain("plugin.auto_updates_enabled");

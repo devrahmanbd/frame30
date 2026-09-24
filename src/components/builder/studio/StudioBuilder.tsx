@@ -45,17 +45,17 @@ import {
   type StudioNode,
   type StudioSlot,
 } from "@/lib/studio/model";
-import {
-  appBlockNodeForPlugin,
-  type PluginTrayEntry,
-} from "./plugin-tray";
+import { appBlockNodeForPlugin, type PluginTrayEntry } from "./plugin-tray";
 
 /**
  * Plugin element accepted on the seam. `pluginName` stays optional so both
  * shapes fit: the shell's minimal `{ key, label }` entries and the full
  * `PluginTrayEntry` rows from `plugin-tray.ts`.
  */
-export type StudioBuilderPluginEntry = Pick<PluginTrayEntry, "key" | "label"> & {
+export type StudioBuilderPluginEntry = Pick<
+  PluginTrayEntry,
+  "key" | "label"
+> & {
   pluginName?: string;
 };
 import {
@@ -302,9 +302,7 @@ export function topMostStudioIds(
   };
   visit(root);
   return flatten(root)
-    .filter(
-      (entry) => wanted.has(entry.node.id) && !covered.has(entry.node.id),
-    )
+    .filter((entry) => wanted.has(entry.node.id) && !covered.has(entry.node.id))
     .map((entry) => entry.node.id);
 }
 
@@ -566,7 +564,11 @@ export function StudioBuilder({
     [setDevice],
   );
   const frameStyle = {
-    maxWidth: fluid ? "100%" : frameWidth ? `${frameWidth}px` : CANVAS_WIDTH[device],
+    maxWidth: fluid
+      ? "100%"
+      : frameWidth
+        ? `${frameWidth}px`
+        : CANVAS_WIDTH[device],
     transform: zoom !== 1 ? `scale(${zoom})` : undefined,
     transformOrigin: "top center" as const,
   };
@@ -750,11 +752,7 @@ export function StudioBuilder({
       },
       paste: () => {
         const payload = studio.peekClipboard();
-        if (
-          !payload ||
-          payload.kind !== "nodes" ||
-          payload.nodes.length === 0
-        )
+        if (!payload || payload.kind !== "nodes" || payload.nodes.length === 0)
           return false;
         studio.paste();
         return true;

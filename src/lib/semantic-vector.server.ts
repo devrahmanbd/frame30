@@ -38,7 +38,10 @@ export async function searchDeepWikiSemantic(
   _query: string,
   _options: VectorSearchOptions = {},
 ): Promise<SemanticHit[]> {
-  incr("framique_semantic_search_total", { category: "all", results: "removed" });
+  incr("framique_semantic_search_total", {
+    category: "all",
+    results: "removed",
+  });
   return [];
 }
 
@@ -48,7 +51,9 @@ export async function searchDeepWikiSemantic(
 export async function getSemanticContextPassages(
   _query: string,
   _limit = 3,
-): Promise<Array<{ title: string; body: string; source: string; similarity: number }>> {
+): Promise<
+  Array<{ title: string; body: string; source: string; similarity: number }>
+> {
   return [];
 }
 

@@ -6,10 +6,7 @@
  * is "Installed", never "Active". The ledger is fallback for Installed only.
  */
 import { describe, expect, it } from "vitest";
-import {
-  isLiveInstallStatus,
-  resolveThemeBadge,
-} from "./marketplace-badges";
+import { isLiveInstallStatus, resolveThemeBadge } from "./marketplace-badges";
 
 const LIVE = "installed";
 

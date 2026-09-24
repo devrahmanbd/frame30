@@ -190,16 +190,14 @@ export async function saveCrawlSettings(
 
   const loose = db as LooseClient;
   const started = Date.now();
-  const { error } = await loose
-    .from("merchant_settings")
-    .upsert(
-      {
-        merchant_id: merchantId,
-        crawl_settings: next,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "merchant_id" },
-    );
+  const { error } = await loose.from("merchant_settings").upsert(
+    {
+      merchant_id: merchantId,
+      crawl_settings: next,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "merchant_id" },
+  );
   if (error) throw new CrawlServerError("write_failed", error.message);
   observe("framique_crawl_settings_write_ms", Date.now() - started);
 

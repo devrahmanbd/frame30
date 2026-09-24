@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import {
   pluginWidgetKey,
   resolvePluginWidget,
@@ -60,24 +60,40 @@ function FooterMount({
   // Floating widgets (chat bubbles): the entry renders in-flow, so the
   // parent hosts the frame viewport-fixed. `position:fixed` inside the entry
   // would resolve against the tiny iframe viewport and clip — never the page.
+  // Corner + pixel offsets come from plugin control (button_position,
+  // offset_x/offset_y, clamped 0–48, default 16); the 88px frame matches the
+  // entry's FRAME constant so bubble sizes (44/56/64) and motion stay
+  // unclipped.
   const floating = widget.floating === true;
-  const side =
-    String(
-      (plugin.settings as Record<string, unknown> | undefined)
-        ?.button_position ?? "bottom-right",
-    ) === "bottom-left"
-      ? "left-4"
-      : "right-4";
-  const frameClass = floating
-    ? `fixed bottom-4 ${side} z-[60] h-[72px] w-[72px]`
+  const settings = (plugin.settings ?? {}) as Record<string, unknown>;
+  const pos = String(settings.button_position ?? "bottom-right");
+  const vTop = pos.startsWith("top");
+  const hLeft = pos.endsWith("left");
+  const clampOff = (v: unknown) => {
+    const n = typeof v === "number" ? v : Number(v);
+    if (!Number.isFinite(n)) return 16;
+    return Math.min(48, Math.max(0, n));
+  };
+  const frameStyle: CSSProperties | undefined = floating
+    ? {
+        position: "fixed",
+        zIndex: 60,
+        width: 88,
+        height: 88,
+        ...(vTop
+          ? { top: clampOff(settings.offset_y) }
+          : { bottom: clampOff(settings.offset_y) }),
+        ...(hLeft
+          ? { left: clampOff(settings.offset_x) }
+          : { right: clampOff(settings.offset_x) }),
+      }
     : undefined;
   if (!mounted) {
     return (
       <div
         data-plugin={plugin.manifest.id}
         data-plugin-widget={widget.key}
-        style={floating ? undefined : { height }}
-        className={frameClass}
+        style={floating ? frameStyle : { height }}
         aria-hidden="true"
       />
     );
@@ -86,7 +102,7 @@ function FooterMount({
     <div
       data-plugin={plugin.manifest.id}
       data-plugin-widget={widget.key}
-      className={frameClass}
+      style={frameStyle}
     >
       <WidgetSandbox
         title={`${plugin.manifest.name} — ${widget.label}`}
@@ -94,7 +110,7 @@ function FooterMount({
         grantedScopes={plugin.grantedScopes}
         settings={plugin.settings}
         onCall={onCall}
-        height={floating ? 72 : height}
+        height={floating ? 88 : height}
         bare={floating}
       />
     </div>

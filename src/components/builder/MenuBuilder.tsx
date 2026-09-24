@@ -80,7 +80,9 @@ function MenuItemRow({
   const megaEnabled = item.mega?.enabled ?? false;
 
   return (
-    <div className={`rounded-fq-md border border-border bg-card ${depth > 0 ? "ml-4 mt-1" : "mt-1"}`}>
+    <div
+      className={`rounded-fq-md border border-border bg-card ${depth > 0 ? "ml-4 mt-1" : "mt-1"}`}
+    >
       {/* Row header */}
       <div className="flex items-center gap-1 px-2 py-1.5">
         {/* Collapse toggle */}
@@ -90,12 +92,36 @@ function MenuItemRow({
           className="size-5 shrink-0 text-muted-foreground hover:text-foreground"
           aria-label={expanded ? t("Collapse", "গুটান") : t("Expand", "খুলুন")}
         >
-          <svg className={`size-3 transition-transform ${expanded ? "rotate-90" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m9 18 6-6-6-6"/></svg>
+          <svg
+            className={`size-3 transition-transform ${expanded ? "rotate-90" : ""}`}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="m9 18 6-6-6-6" />
+          </svg>
         </button>
 
         {/* Move buttons */}
-        <button type="button" onClick={onMoveUp} disabled={!canMoveUp} className="size-5 shrink-0 text-muted-foreground hover:text-foreground disabled:opacity-30" aria-label={t("Move up", "উপরে")}>↑</button>
-        <button type="button" onClick={onMoveDown} disabled={!canMoveDown} className="size-5 shrink-0 text-muted-foreground hover:text-foreground disabled:opacity-30" aria-label={t("Move down", "নিচে")}>↓</button>
+        <button
+          type="button"
+          onClick={onMoveUp}
+          disabled={!canMoveUp}
+          className="size-5 shrink-0 text-muted-foreground hover:text-foreground disabled:opacity-30"
+          aria-label={t("Move up", "উপরে")}
+        >
+          ↑
+        </button>
+        <button
+          type="button"
+          onClick={onMoveDown}
+          disabled={!canMoveDown}
+          className="size-5 shrink-0 text-muted-foreground hover:text-foreground disabled:opacity-30"
+          aria-label={t("Move down", "নিচে")}
+        >
+          ↓
+        </button>
 
         {/* Label */}
         <input
@@ -112,7 +138,14 @@ function MenuItemRow({
         </span>
 
         {/* Delete */}
-        <button type="button" onClick={onRemove} className="size-5 shrink-0 text-muted-foreground hover:text-destructive" aria-label={t("Remove", "বাদ")}>×</button>
+        <button
+          type="button"
+          onClick={onRemove}
+          className="size-5 shrink-0 text-muted-foreground hover:text-destructive"
+          aria-label={t("Remove", "বাদ")}
+        >
+          ×
+        </button>
       </div>
 
       {/* Expanded details */}
@@ -129,27 +162,44 @@ function MenuItemRow({
             />
             <select
               value={item.type}
-              onChange={(e) => onUpdate({ type: e.target.value as MenuItem["type"] })}
+              onChange={(e) =>
+                onUpdate({ type: e.target.value as MenuItem["type"] })
+              }
               className="shrink-0 rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
             >
-              {(Object.keys(ITEM_TYPE_LABEL) as MenuItem["type"][]).map((key) => (
-                <option key={key} value={key}>{t(ITEM_TYPE_LABEL[key].en, ITEM_TYPE_LABEL[key].bn)}</option>
-              ))}
+              {(Object.keys(ITEM_TYPE_LABEL) as MenuItem["type"][]).map(
+                (key) => (
+                  <option key={key} value={key}>
+                    {t(ITEM_TYPE_LABEL[key].en, ITEM_TYPE_LABEL[key].bn)}
+                  </option>
+                ),
+              )}
             </select>
           </div>
 
           {/* Mega menu toggle */}
           {depth === 0 && (
             <div className="flex items-center justify-between">
-              <label className="text-xs text-muted-foreground">{t("Mega menu", "মেগা মেনু")}</label>
+              <label className="text-xs text-muted-foreground">
+                {t("Mega menu", "মেগা মেনু")}
+              </label>
               <button
                 type="button"
                 role="switch"
                 aria-checked={megaEnabled}
-                onClick={() => onUpdate({ mega: { enabled: !megaEnabled, columns: item.mega?.columns ?? 3 } })}
+                onClick={() =>
+                  onUpdate({
+                    mega: {
+                      enabled: !megaEnabled,
+                      columns: item.mega?.columns ?? 3,
+                    },
+                  })
+                }
                 className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${megaEnabled ? "bg-primary" : "bg-muted"}`}
               >
-                <span className={`inline-block size-3.5 rounded-full bg-white transition-transform ${megaEnabled ? "translate-x-4" : "translate-x-0.5"}`} />
+                <span
+                  className={`inline-block size-3.5 rounded-full bg-white transition-transform ${megaEnabled ? "translate-x-4" : "translate-x-0.5"}`}
+                />
               </button>
             </div>
           )}
@@ -157,16 +207,24 @@ function MenuItemRow({
           {/* Mega columns slider */}
           {megaEnabled && depth === 0 && (
             <div className="flex items-center gap-2">
-              <label className="text-xs text-muted-foreground">{t("Columns", "কলাম")}</label>
+              <label className="text-xs text-muted-foreground">
+                {t("Columns", "কলাম")}
+              </label>
               <input
                 type="range"
                 min={1}
                 max={4}
                 value={item.mega?.columns ?? 3}
-                onChange={(e) => onUpdate({ mega: { enabled: true, columns: Number(e.target.value) } })}
+                onChange={(e) =>
+                  onUpdate({
+                    mega: { enabled: true, columns: Number(e.target.value) },
+                  })
+                }
                 className="flex-1"
               />
-              <span className="text-xs tabular-nums">{item.mega?.columns ?? 3}</span>
+              <span className="text-xs tabular-nums">
+                {item.mega?.columns ?? 3}
+              </span>
             </div>
           )}
 
@@ -242,7 +300,11 @@ function MenuItemRow({
 /*  Main component                                                     */
 /* ------------------------------------------------------------------ */
 
-export function MenuBuilder({ value, onChange, maxDepth = 2 }: MenuBuilderProps) {
+export function MenuBuilder({
+  value,
+  onChange,
+  maxDepth = 2,
+}: MenuBuilderProps) {
   const { t } = useLang();
   const [addType, setAddType] = useState<MenuItem["type"]>("link");
 
@@ -263,7 +325,10 @@ export function MenuBuilder({ value, onChange, maxDepth = 2 }: MenuBuilderProps)
       <ul className="space-y-0.5">
         {value.length === 0 && (
           <li className="rounded-fq-md border border-dashed border-border px-3 py-6 text-center text-xs text-muted-foreground">
-            {t("No menu items yet. Add one below.", "এখনো কোনো মেনু আইটেম নেই। নিচে যোগ করুন।")}
+            {t(
+              "No menu items yet. Add one below.",
+              "এখনো কোনো মেনু আইটেম নেই। নিচে যোগ করুন।",
+            )}
           </li>
         )}
         {value.map((item, idx) => (
@@ -303,7 +368,9 @@ export function MenuBuilder({ value, onChange, maxDepth = 2 }: MenuBuilderProps)
           className="shrink-0 rounded-fq-md border border-border bg-card px-2 py-1.5 text-xs"
         >
           {(Object.keys(ITEM_TYPE_LABEL) as MenuItem["type"][]).map((key) => (
-            <option key={key} value={key}>{t(ITEM_TYPE_LABEL[key].en, ITEM_TYPE_LABEL[key].bn)}</option>
+            <option key={key} value={key}>
+              {t(ITEM_TYPE_LABEL[key].en, ITEM_TYPE_LABEL[key].bn)}
+            </option>
           ))}
         </select>
         <button

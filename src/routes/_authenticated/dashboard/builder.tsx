@@ -331,11 +331,10 @@ function BuilderStudio() {
     };
   }, []);
 
-  const device: Breakpoint =
-    fluidCanvas
-      ? "desktop"
-      : (DEVICE_PRESETS.find((preset) => preset.width === previewWidth)?.bp ??
-        "desktop");
+  const device: Breakpoint = fluidCanvas
+    ? "desktop"
+    : (DEVICE_PRESETS.find((preset) => preset.width === previewWidth)?.bp ??
+      "desktop");
 
   // Workspace identifier. The persistence payloads below still key it as
   // `themeId` — that server contract (theme_drafts/theme_versions tables) is
@@ -1027,8 +1026,6 @@ function BuilderStudio() {
     },
     onError: (error) => toast.error(errorMessage(error)),
   });
-
-
 
   const restore = useMutation({
     mutationFn: (versionId: string) => rollback({ data: { versionId } }),
@@ -1841,7 +1838,9 @@ function BuilderStudio() {
                     key={preset.width}
                     type="button"
                     role="tab"
-                    aria-selected={!fluidCanvas && previewWidth === preset.width}
+                    aria-selected={
+                      !fluidCanvas && previewWidth === preset.width
+                    }
                     onClick={() => {
                       setFluidCanvas(false);
                       setPreviewWidth(preset.width);

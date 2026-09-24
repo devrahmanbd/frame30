@@ -38,7 +38,12 @@ export const domainAddFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { addDomain, listDomains } = await import("./domains.server");
     const merchantId = await scope(context.supabase, context.userId);
-    await addDomain(context.supabase, merchantId, context.userId, data.hostname);
+    await addDomain(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data.hostname,
+    );
     return listDomains(context.supabase, merchantId, context.userId);
   });
 
@@ -60,12 +65,7 @@ export const domainPrimaryFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { setPrimary } = await import("./domains.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return setPrimary(
-      context.supabase,
-      merchantId,
-      context.userId,
-      data.id,
-    );
+    return setPrimary(context.supabase, merchantId, context.userId, data.id);
   });
 
 export const domainRedirectFn = createServerFn({ method: "POST" })
@@ -108,19 +108,17 @@ export const domainRemoveFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { removeDomain } = await import("./domains.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return removeDomain(
-      context.supabase,
-      merchantId,
-      context.userId,
-      data.id,
-    );
+    return removeDomain(context.supabase, merchantId, context.userId, data.id);
   });
 
 export const domainRenameFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z
-      .object({ id: z.string().uuid(), hostname: z.string().trim().min(3).max(253) })
+      .object({
+        id: z.string().uuid(),
+        hostname: z.string().trim().min(3).max(253),
+      })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -141,10 +139,5 @@ export const domainHistoryFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { domainHistory } = await import("./domains.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return domainHistory(
-      context.supabase,
-      merchantId,
-      context.userId,
-      data.id,
-    );
+    return domainHistory(context.supabase, merchantId, context.userId, data.id);
   });

@@ -19,8 +19,7 @@ export function usePrimaryHost() {
   return useQuery({
     queryKey: ["merchant-primary-host", merchant?.id],
     queryFn: async () =>
-      ((await loadPrimary({})) as { primaryHost: string | null })
-        .primaryHost,
+      ((await loadPrimary({})) as { primaryHost: string | null }).primaryHost,
     enabled: !!merchant?.id,
     staleTime: 5 * 60_000,
     retry: 1,

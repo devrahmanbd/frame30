@@ -7,9 +7,9 @@ describe("shouldRetryQuery", () => {
   });
 
   it("never retries HTTP 429 failures", () => {
-    expect(shouldRetryQuery(0, new Error("Request failed with status 429"))).toBe(
-      false,
-    );
+    expect(
+      shouldRetryQuery(0, new Error("Request failed with status 429")),
+    ).toBe(false);
     expect(shouldRetryQuery(2, "429 Too Many Requests")).toBe(false);
   });
 

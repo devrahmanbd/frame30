@@ -40,9 +40,19 @@ const GROUP_LABEL: Record<string, { en: string; bn: string }> = {
 };
 
 function WidgetIcon({ type }: { type: string }) {
-  if (type.includes("grid") || type.includes("rail") || type.includes("product")) {
+  if (
+    type.includes("grid") ||
+    type.includes("rail") ||
+    type.includes("product")
+  ) {
     return (
-      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="size-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <rect width="7" height="7" x="3" y="3" rx="1" />
         <rect width="7" height="7" x="14" y="3" rx="1" />
         <rect width="7" height="7" x="14" y="14" rx="1" />
@@ -52,15 +62,31 @@ function WidgetIcon({ type }: { type: string }) {
   }
   if (type.includes("hero") || type.includes("banner")) {
     return (
-      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="size-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <rect width="18" height="12" x="3" y="6" rx="2" />
         <path d="m3 14 5-4 4 3 6-5 3 2" />
       </svg>
     );
   }
-  if (type.includes("menu") || type.includes("strip") || type.includes("subbrand")) {
+  if (
+    type.includes("menu") ||
+    type.includes("strip") ||
+    type.includes("subbrand")
+  ) {
     return (
-      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="size-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <line x1="3" x2="21" y1="6" y2="6" />
         <line x1="3" x2="21" y1="12" y2="12" />
         <line x1="3" x2="21" y1="18" y2="18" />
@@ -69,7 +95,13 @@ function WidgetIcon({ type }: { type: string }) {
   }
   if (type.includes("cart") || type.includes("checkout")) {
     return (
-      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="size-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <circle cx="8" cy="21" r="1" />
         <circle cx="19" cy="21" r="1" />
         <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
@@ -78,7 +110,13 @@ function WidgetIcon({ type }: { type: string }) {
   }
   if (type.includes("container") || type.includes("columns")) {
     return (
-      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="size-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <rect width="18" height="18" x="3" y="3" rx="2" />
         <line x1="12" x2="12" y1="3" y2="21" />
       </svg>
@@ -86,7 +124,13 @@ function WidgetIcon({ type }: { type: string }) {
   }
   if (type.includes("faq") || type.includes("care") || type.includes("help")) {
     return (
-      <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg
+        className="size-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
         <circle cx="12" cy="12" r="10" />
         <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
         <line x1="12" x2="12.01" y1="17" y2="17" />
@@ -94,7 +138,13 @@ function WidgetIcon({ type }: { type: string }) {
     );
   }
   return (
-    <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg
+      className="size-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+    >
       <rect width="18" height="18" x="3" y="3" rx="2" />
       <path d="M9 3v18" />
     </svg>
@@ -189,8 +239,12 @@ export function WidgetTray({
               <WidgetIcon type={pending} />
             </div>
             <div>
-              <h3 className="text-xs font-bold text-foreground">{entry?.label ?? pending}</h3>
-              <p className="text-[10px] text-muted-foreground">{t("Choose a layout preset", "একটি প্রিসেট বেছে নিন")}</p>
+              <h3 className="text-xs font-bold text-foreground">
+                {entry?.label ?? pending}
+              </h3>
+              <p className="text-[10px] text-muted-foreground">
+                {t("Choose a layout preset", "একটি প্রিসেট বেছে নিন")}
+              </p>
             </div>
           </div>
           <button
@@ -219,7 +273,13 @@ export function WidgetTray({
                   className="flex w-full items-center justify-between rounded-fq-md border border-border/70 bg-card p-2.5 text-left text-xs font-medium hover:border-primary hover:bg-primary/5 hover:text-primary transition-all cursor-pointer shadow-xs"
                 >
                   <span>{t(preset.label.en, preset.label.bn)}</span>
-                  <svg className="size-3.5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    className="size-3.5 text-muted-foreground"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <polyline points="9 18 15 12 9 6" />
                   </svg>
                 </button>
@@ -242,7 +302,13 @@ export function WidgetTray({
           {t("Find a widget", "উইজেট খুঁজুন")}
         </label>
         <div className="relative">
-          <svg className="absolute left-2.5 top-2.5 size-3.5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            className="absolute left-2.5 top-2.5 size-3.5 text-muted-foreground"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <circle cx="11" cy="11" r="8" />
             <path d="m21 21-4.3-4.3" />
           </svg>
@@ -251,7 +317,10 @@ export function WidgetTray({
             type="search"
             value={term}
             onChange={(e) => setTerm(e.target.value)}
-            placeholder={t("Search widgets (e.g. hero, grid, care)…", "উইজেট সার্চ")}
+            placeholder={t(
+              "Search widgets (e.g. hero, grid, care)…",
+              "উইজেট সার্চ",
+            )}
             className="w-full rounded-fq-md border border-border/80 bg-background pl-8 pr-3 py-1.5 text-xs shadow-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
@@ -282,7 +351,10 @@ export function WidgetTray({
 
       {/* Recently Used Widgets */}
       {recentHits.length > 0 && !term && (
-        <section aria-label={t("Recently used", "সম্প্রতি ব্যবহৃত")} className="space-y-1.5">
+        <section
+          aria-label={t("Recently used", "সম্প্রতি ব্যবহৃত")}
+          className="space-y-1.5"
+        >
           <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
             {t("Recently used", "সম্প্রতি ব্যবহৃত")}
           </h3>
@@ -306,7 +378,9 @@ export function WidgetTray({
                   <div className="flex size-6 shrink-0 items-center justify-center rounded bg-primary/10 text-primary">
                     <WidgetIcon type={type} />
                   </div>
-                  <span className="truncate text-foreground">{catalogEntry(type)?.label ?? type}</span>
+                  <span className="truncate text-foreground">
+                    {catalogEntry(type)?.label ?? type}
+                  </span>
                 </button>
               </li>
             ))}
@@ -347,7 +421,9 @@ export function WidgetTray({
                   <span className="rounded-fq-xs bg-primary/15 px-1 py-0.5 text-[9px] font-bold uppercase text-primary">
                     {t("App", "অ্যাপ")}
                   </span>
-                  <span className="truncate text-foreground font-medium">{entry.label}</span>
+                  <span className="truncate text-foreground font-medium">
+                    {entry.label}
+                  </span>
                 </button>
               </li>
             ))}
@@ -383,7 +459,10 @@ export function WidgetTray({
                     onDragStart={(e) => {
                       e.dataTransfer.setData(
                         TRAY_MIME,
-                        encodeTrayDrop({ type: hit.type, presetKey: "default" }),
+                        encodeTrayDrop({
+                          type: hit.type,
+                          presetKey: "default",
+                        }),
                       );
                       e.dataTransfer.effectAllowed = "copy";
                     }}
@@ -407,7 +486,10 @@ export function WidgetTray({
                           </span>
                         ) : (
                           <span className="block text-[10px] text-muted-foreground truncate">
-                            {t(widgetHelp(hit.type).en, widgetHelp(hit.type).bn)}
+                            {t(
+                              widgetHelp(hit.type).en,
+                              widgetHelp(hit.type).bn,
+                            )}
                           </span>
                         )}
                       </div>
@@ -419,7 +501,13 @@ export function WidgetTray({
                           {variants.length} {t("presets", "প্রিসেট")}
                         </span>
                       ) : (
-                        <svg className="size-3.5 text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-0.5 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <svg
+                          className="size-3.5 text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-0.5 transition-all"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
                           <polyline points="9 18 15 12 9 6" />
                         </svg>
                       )}

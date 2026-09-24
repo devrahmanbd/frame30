@@ -16,16 +16,16 @@ system. Normative targets come from the Fortress Architecture doc §17–§21, �
 
 ## 1. Units (one purpose, one interface, independently testable)
 
-| # | Unit | Does | Interface | Depends on |
-|---|------|------|-----------|------------|
-| U1 | WAL archiving | Continuous `archive_command=cp` + `archive_timeout=60` → `/var/backups/framique/wal`, lag probe | `archive_status` + lag check script exit code | Postgres restart (approved) |
-| U2 | Full capture | Weekly `pg_basebackup` + nightly `pg_dump -Fc` + roles + storage tar + configs tar + real Redis BGSAVE copy; SHA-256 manifest; fix `backup.sh` compose path (`/root/supabase-docker-framebase`) | `$BACKUP_DIR/<ts>/` + `manifest.json` | U1 (WAL dir exists) |
-| U3 | Schedule | systemd timers: nightly full, weekly base, hourly WAL-lag probe, daily integrity verify | `systemctl list-timers`, journal | U2 scripts |
-| U4 | Off-site sync | `rclone sync --checksum --immutable` to FTP + S3 (or custom remote), `rclone check` after; only certified sets sync; corrupt sets never leave the host | rclone exit code + check log | U2 manifest, U5 verdict |
-| U5 | Rehearsal | Weekly sandbox restore (throwaway compose) + assertions (row counts, auth.users, storage refs, checksums) → `rehearsals.jsonl`; fail-closed into release gate | JSONL report, exit code | U2 artifacts |
-| U6 | Restore (portable) | Parameterized `restore.sh --target={same-host,remote}` (compose project, ports, domain vars); same-host proof now, separate host by vars not scripts | Restored stack health endpoint | U2/U4 artifacts |
-| U7 | restoref proof | Same-host Supabase clone + app instance + OpenResty vhost for `restoref.qubickle.com`; automated proof suite (HTTP 200, A/B tenant isolation, row parity, login) | Proof report JSON | U6 |
-| U8 | Dashboards + docs | `/root/recovery` + `/root/security` data endpoints; sign off implemented sections of `backup-restore.md` | HTTP JSON, doc status line | U3/U5/U7 |
+| #   | Unit               | Does                                                                                                                                                                                            | Interface                                     | Depends on                  |
+| --- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | --------------------------- |
+| U1  | WAL archiving      | Continuous `archive_command=cp` + `archive_timeout=60` → `/var/backups/framique/wal`, lag probe                                                                                                 | `archive_status` + lag check script exit code | Postgres restart (approved) |
+| U2  | Full capture       | Weekly `pg_basebackup` + nightly `pg_dump -Fc` + roles + storage tar + configs tar + real Redis BGSAVE copy; SHA-256 manifest; fix `backup.sh` compose path (`/root/supabase-docker-framebase`) | `$BACKUP_DIR/<ts>/` + `manifest.json`         | U1 (WAL dir exists)         |
+| U3  | Schedule           | systemd timers: nightly full, weekly base, hourly WAL-lag probe, daily integrity verify                                                                                                         | `systemctl list-timers`, journal              | U2 scripts                  |
+| U4  | Off-site sync      | `rclone sync --checksum --immutable` to FTP + S3 (or custom remote), `rclone check` after; only certified sets sync; corrupt sets never leave the host                                          | rclone exit code + check log                  | U2 manifest, U5 verdict     |
+| U5  | Rehearsal          | Weekly sandbox restore (throwaway compose) + assertions (row counts, auth.users, storage refs, checksums) → `rehearsals.jsonl`; fail-closed into release gate                                   | JSONL report, exit code                       | U2 artifacts                |
+| U6  | Restore (portable) | Parameterized `restore.sh --target={same-host,remote}` (compose project, ports, domain vars); same-host proof now, separate host by vars not scripts                                            | Restored stack health endpoint                | U2/U4 artifacts             |
+| U7  | restoref proof     | Same-host Supabase clone + app instance + OpenResty vhost for `restoref.qubickle.com`; automated proof suite (HTTP 200, A/B tenant isolation, row parity, login)                                | Proof report JSON                             | U6                          |
+| U8  | Dashboards + docs  | `/root/recovery` + `/root/security` data endpoints; sign off implemented sections of `backup-restore.md`                                                                                        | HTTP JSON, doc status line                    | U3/U5/U7                    |
 
 ## 2. Data flow
 
@@ -40,6 +40,7 @@ Rehearsal failure freezes the release gate. Scheduled path never passes
 `--skip-rehearse`. Sync refuses uncertified sets (manifest verdict gate).
 
 Two certification levels (explicit to avoid cadence ambiguity):
+
 - **integrity-certified** (daily job): checksums re-verified, row counts sane →
   eligible for off-site sync.
 - **restore-certified** (weekly rehearsal): full sandbox restore + assertions pass →

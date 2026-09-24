@@ -294,7 +294,11 @@ const ShadeFinder: WidgetComponent = ({ str, data, locale, Heading }) => {
           ) : (
             <>
               <p className="m-0 text-sm text-muted-foreground">
-                {t(locale, "Shades that match your answers", "আপনার উত্তরের সাথে মানান শেড")}
+                {t(
+                  locale,
+                  "Shades that match your answers",
+                  "আপনার উত্তরের সাথে মানান শেড",
+                )}
               </p>
               <ul
                 className="mt-3 m-0 flex list-none flex-wrap gap-2 p-0"

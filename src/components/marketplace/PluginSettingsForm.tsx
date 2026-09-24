@@ -117,11 +117,13 @@ export function PluginSettingsForm({
                 <input
                   id={id}
                   type="color"
-                  value={/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(
-                    String(value ?? ""),
-                  )
-                    ? String(value)
-                    : "#000000"}
+                  value={
+                    /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(
+                      String(value ?? ""),
+                    )
+                      ? String(value)
+                      : "#000000"
+                  }
                   onChange={(e) => set(field.key, e.target.value)}
                   className="h-9 w-12 cursor-pointer rounded-fq-md border border-border bg-card"
                 />

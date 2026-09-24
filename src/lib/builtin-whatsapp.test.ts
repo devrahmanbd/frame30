@@ -148,11 +148,11 @@ describe("whatsapp chat_bubble entry", () => {
     // The entry renders in-flow and fills the parent-hosted fixed frame —
     // `position:fixed` inside the entry resolves against the tiny iframe
     // viewport and clips, so it must never appear here (frame does the
-    // floating; see PluginFooterMounts). 56px bubble + 8px margin = 72px frame.
-    expect(mounted!.style["position"]).toBeUndefined();
+    // floating; see PluginFooterMounts). 56px bubble + 16px margin = 88px.
+    expect(mounted!.style["position"]).not.toBe("fixed");
     expect(mounted!.style["width"]).toBe("56px");
     expect(mounted!.style["height"]).toBe("56px");
-    expect(mounted!.style["margin"]).toBe("8px");
+    expect(mounted!.style["margin"]).toBe("16px");
     // Official multi-layer glyph (shadow + gradient disc + handset), not the
     // old dots placeholder: the artwork paints its own disc, so the anchor
     // stays transparent and only carries a drop-shadow.
@@ -178,10 +178,12 @@ describe("whatsapp chat_bubble entry", () => {
     ).toContain("@keyframes waPulse");
   });
 
-  it("honours bounce / jump / off from plugin control", async () => {
+  it("honours bounce / jump / burst / wiggle / off from plugin control", async () => {
     for (const [mode, needle] of [
       ["bounce", "waBounce"],
       ["jump", "waJump"],
+      ["burst", "waBurst"],
+      ["wiggle", "waWiggle"],
     ] as const) {
       const { mounted } = await runEntry(whatsappEntry(), {
         phone_number: "8801712345678",
@@ -194,6 +196,67 @@ describe("whatsapp chat_bubble entry", () => {
       animation: "off",
     });
     expect(still!.style["animation"]).not.toContain("infinite");
+  });
+
+  it("sizes the bubble from control, centered in the 88px frame", async () => {
+    for (const [size, dim, margin] of [
+      ["sm", "44px", "22px"],
+      ["md", "56px", "16px"],
+      ["lg", "64px", "12px"],
+    ] as const) {
+      const { mounted } = await runEntry(whatsappEntry(), {
+        phone_number: "8801712345678",
+        size,
+      });
+      expect(mounted!.style["width"]).toBe(dim);
+      expect(mounted!.style["height"]).toBe(dim);
+      expect(mounted!.style["margin"]).toBe(margin);
+    }
+  });
+
+  it("hides on narrow screens when visibility is desktop-only", async () => {
+    const g = globalThis as Record<string, unknown>;
+    const prev = g["window"];
+    g["window"] = {
+      matchMedia: (q: string) => ({ matches: q.includes("max-width") }),
+    };
+    try {
+      const { mounted } = await runEntry(whatsappEntry(), {
+        phone_number: "8801712345678",
+        visibility: "desktop",
+      });
+      expect(mounted).toBeNull();
+      const { mounted: mobile } = await runEntry(whatsappEntry(), {
+        phone_number: "8801712345678",
+        visibility: "mobile",
+      });
+      expect(mobile).not.toBeNull();
+    } finally {
+      if (prev === undefined) delete g["window"];
+      else g["window"] = prev;
+    }
+  });
+
+  it("exposes the full control set with safe defaults", () => {
+    const def = getBuiltinPlugin("whatsapp-chat");
+    expect(def!.manifest.version).toBe("1.2.4");
+    const keys = def!.manifest.settings.map((s) => s.key);
+    for (const k of [
+      "phone_number",
+      "greeting_message",
+      "button_position",
+      "animation",
+      "size",
+      "offset_x",
+      "offset_y",
+      "visibility",
+    ]) {
+      expect(keys).toContain(k);
+    }
+    const anim = def!.manifest.settings.find((s) => s.key === "animation")!;
+    for (const v of ["pulse", "bounce", "jump", "burst", "wiggle", "off"]) {
+      expect(anim.options?.some((o) => o.value === v)).toBe(true);
+    }
   });
 
   it("is flagged floating so the frame (not the entry) does the positioning", () => {

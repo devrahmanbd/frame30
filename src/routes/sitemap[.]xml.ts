@@ -10,9 +10,8 @@ async function merchantSitemap(
   slug: string,
   origin: string,
 ): Promise<Response> {
-  const { renderSitemapXml, buildMerchantSitemapEntries } = await import(
-    "@/lib/store-sitemap.server"
-  );
+  const { renderSitemapXml, buildMerchantSitemapEntries } =
+    await import("@/lib/store-sitemap.server");
   try {
     const { publicClient } = await import("@/lib/pricing.server");
     const db = publicClient() as unknown as {
@@ -61,9 +60,7 @@ async function merchantSitemap(
           .limit(500)
           .then((r: any) => r.data ?? []),
         import("@/lib/permalink.server")
-          .then((m) =>
-            m.permalinkSettingsFor(db as never, merchantId),
-          )
+          .then((m) => m.permalinkSettingsFor(db as never, merchantId))
           .catch(() => null),
       ]);
     return renderSitemapXml(
@@ -117,15 +114,13 @@ export const Route = createFileRoute("/sitemap.xml")({
         // shape below must not advertise dead /store/* locs (path URLs 410),
         // so the per-store loop is gone; global articles stay (they resolve).
         try {
-          const { resolveStorefrontHost } = await import(
-            "@/lib/storefront-host.server"
-          );
+          const { resolveStorefrontHost } =
+            await import("@/lib/storefront-host.server");
           const host = await resolveStorefrontHost();
           if (host) {
             try {
-              const { renderStoreSitemapIndex } = await import(
-                "@/lib/sitemap-config.server"
-              );
+              const { renderStoreSitemapIndex } =
+                await import("@/lib/sitemap-config.server");
               const doc = await renderStoreSitemapIndex(
                 host.merchantSlug,
                 BASE_URL,
@@ -148,9 +143,8 @@ export const Route = createFileRoute("/sitemap.xml")({
         } catch {
           // Fall through to the platform sitemap.
         }
-        const { listPublishedArticles } = await import(
-          "@/lib/marketing.server"
-        );
+        const { listPublishedArticles } =
+          await import("@/lib/marketing.server");
         const { marketingSitemapEntries } = await import("@/lib/marketing-seo");
 
         // Marketing URLs come from the one registry that also feeds every

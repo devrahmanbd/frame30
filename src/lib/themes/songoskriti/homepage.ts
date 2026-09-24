@@ -192,7 +192,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       testimonials: [
         {
           quote: "The Jamdani drapes like water — fine, alive, unforgettable.",
-          quote_bn: "জামদানিটি পানির মতো ঝরে — সূক্ষ্ম, প্রাণবন্ত, অবিস্মরণীয়।",
+          quote_bn:
+            "জামদানিটি পানির মতো ঝরে — সূক্ষ্ম, প্রাণবন্ত, অবিস্মরণীয়।",
           author: "Farhana Ahmed",
           author_bn: "ফারহানা আহমেদ",
           role: "Dhaka",

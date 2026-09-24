@@ -66,10 +66,9 @@ describe("DoD 3 — one batched data call per template render", () => {
     expect(dataNodes.length).toBeGreaterThan(0);
     // Every data widget maps into the one bundle — no widget fetches alone.
     for (const node of dataNodes) {
-      expect(
-        Object.keys(bundle.byNode),
-        `${node.type}/${node.id}`,
-      ).toContain(node.id);
+      expect(Object.keys(bundle.byNode), `${node.type}/${node.id}`).toContain(
+        node.id,
+      );
     }
   });
 });

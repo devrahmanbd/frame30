@@ -226,7 +226,7 @@ export function EditorShell({
   const pill = titlePill(doc, lang === "bn" ? "bn" : "en");
   const builderDoc: BuilderDoc | null =
     doc.editor === "builder"
-      ? parseBuilderBody(doc.body) ?? starterDoc(doc.title || undefined)
+      ? (parseBuilderBody(doc.body) ?? starterDoc(doc.title || undefined))
       : null;
   const needsChoice = false;
 
@@ -246,7 +246,8 @@ export function EditorShell({
       forced.current = true;
       return;
     }
-    const targetEditor = forceEditor ?? (kind === "page" ? "builder" : "classic");
+    const targetEditor =
+      forceEditor ?? (kind === "page" ? "builder" : "classic");
     if (targetEditor !== context.doc.editor) {
       forced.current = true;
       markChoice();
@@ -498,8 +499,9 @@ export function EditorShell({
     themeOptions.find((t) => t.id === doc.themeId)?.name ??
     themeOptions.find((t) => t.isActive)?.name ??
     null;
-  const [brandOverrides, setBrandOverrides] =
-    useState<Partial<ShellBrandTokens>>({});
+  const [brandOverrides, setBrandOverrides] = useState<
+    Partial<ShellBrandTokens>
+  >({});
   useEffect(() => {
     setBrandOverrides({});
   }, [effectiveThemeId]);
@@ -535,9 +537,7 @@ export function EditorShell({
                 ? t("Switch to Classic editor", "ক্লাসিক এডিটরে যান")
                 : t("Edit with Builder", "বিল্ডারে সম্পাদনা"),
             onSelect: () =>
-              switchEditor(
-                doc.editor === "builder" ? "classic" : "builder",
-              ),
+              switchEditor(doc.editor === "builder" ? "classic" : "builder"),
           } as MenuAction,
         ]),
     {
@@ -1135,7 +1135,9 @@ function ShellBrandTokens({
                 type="color"
                 value={tokens[field.key]}
                 onChange={(e) =>
-                  onChange({ [field.key]: e.target.value } as Partial<ShellBrandTokens>)
+                  onChange({
+                    [field.key]: e.target.value,
+                  } as Partial<ShellBrandTokens>)
                 }
                 aria-label={t("Brand", "ব্র্যান্ড")}
                 className="h-9 w-10 shrink-0 cursor-pointer rounded-fq-sm border border-border bg-card p-1"
@@ -1148,7 +1150,9 @@ function ShellBrandTokens({
         ))}
       </div>
       <label className="mt-3 block">
-        <span className="fq-sub text-xs">{t("Corner radius", "কোণার গোল")}</span>
+        <span className="fq-sub text-xs">
+          {t("Corner radius", "কোণার গোল")}
+        </span>
         <input
           value={tokens.radius}
           onChange={(e) => onChange({ radius: e.target.value })}

@@ -146,28 +146,28 @@ function StorePageView() {
 
   return (
     <PluginLayer plugins={installedPlugins}>
-    <ThemeChrome
-      template="page"
-      storeSlug={slug}
-      merchantId={merchant.id}
-      ast={ast}
-      tokens={tokens}
-      siteKit={siteKit}
-      customCss={customCss}
-      ownsPrimary
-      chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}
-      contextSlots={{ breadcrumb, page_content: content }}
-      containerClassName="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1fr_15rem]"
-      fallback={
-        <>
-          <div>
-            {breadcrumb}
-            {content}
-          </div>
-          {sidebar}
-        </>
-      }
-    />
+      <ThemeChrome
+        template="page"
+        storeSlug={slug}
+        merchantId={merchant.id}
+        ast={ast}
+        tokens={tokens}
+        siteKit={siteKit}
+        customCss={customCss}
+        ownsPrimary
+        chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}
+        contextSlots={{ breadcrumb, page_content: content }}
+        containerClassName="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1fr_15rem]"
+        fallback={
+          <>
+            <div>
+              {breadcrumb}
+              {content}
+            </div>
+            {sidebar}
+          </>
+        }
+      />
     </PluginLayer>
   );
 }

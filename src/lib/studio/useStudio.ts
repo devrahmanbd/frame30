@@ -78,11 +78,7 @@ export type StudioClipboardPayload = {
 };
 
 export type StudioClipboardRejection =
-  | "empty"
-  | "too_many_nodes"
-  | "too_large"
-  | "version_mismatch"
-  | "malformed";
+  "empty" | "too_many_nodes" | "too_large" | "version_mismatch" | "malformed";
 
 export type StudioClipboardWrite =
   | { ok: true; payload: StudioClipboardPayload; persisted: boolean }
@@ -117,7 +113,9 @@ function isStudioNodeLike(value: unknown, depth = 0): value is StudioNode {
  * no server-side AST parser): ids/elements must be strings, children must
  * recurse, and the kind must be known.
  */
-export function parseStudioClipboardPayload(raw: string | null):
+export function parseStudioClipboardPayload(
+  raw: string | null,
+):
   | { ok: true; payload: StudioClipboardPayload }
   | { ok: false; reason: StudioClipboardRejection } {
   if (!raw) return { ok: false, reason: "empty" };
@@ -138,9 +136,7 @@ export function parseStudioClipboardPayload(raw: string | null):
     return { ok: false, reason: "malformed" };
   if (!envelope.nodes.every((node) => isStudioNodeLike(node)))
     return { ok: false, reason: "malformed" };
-  if (
-    countStudioNodesDeep(envelope.nodes) > STUDIO_CLIPBOARD_LIMITS.maxNodes
-  )
+  if (countStudioNodesDeep(envelope.nodes) > STUDIO_CLIPBOARD_LIMITS.maxNodes)
     return { ok: false, reason: "too_many_nodes" };
   const [first] = envelope.nodes;
   const payload: StudioClipboardPayload = {
@@ -367,7 +363,8 @@ export function useStudio(initial: StudioDoc, resetKey?: string | null) {
   const [device, setDevice] = useState<DeviceKey>("desktop");
   const [dirty, setDirty] = useState(false);
   const clipboard = useRef<StudioClipboardStore | null>(null);
-  if (!clipboard.current) clipboard.current = createStudioClipboardStore(browserClipboardDeps());
+  if (!clipboard.current)
+    clipboard.current = createStudioClipboardStore(browserClipboardDeps());
 
   /* Cross-tab fallback: the `storage` event fires when another tab writes. */
   useEffect(() => {
@@ -630,9 +627,7 @@ export function useStudio(initial: StudioDoc, resetKey?: string | null) {
       const payload = clipboard.current?.read();
       const styles =
         payload?.styles ??
-        (payload?.nodes[0]
-          ? pickStyles(payload.nodes[0].settings)
-          : undefined);
+        (payload?.nodes[0] ? pickStyles(payload.nodes[0].settings) : undefined);
       if (!styles) return;
       setRoot(
         updateNode(doc.root, id, (current) => ({

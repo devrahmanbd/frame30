@@ -119,7 +119,11 @@ export type MerchantLlmsInput = {
   products: { slug: string; title?: string | null }[];
   collections: { slug: string; name?: string | null }[];
   pages: { slug: string; title?: string | null }[];
-  articles?: { slug: string; title?: string | null; published_at?: string | null }[];
+  articles?: {
+    slug: string;
+    title?: string | null;
+    published_at?: string | null;
+  }[];
   settings?: PermalinkSettings | null;
 };
 
@@ -142,35 +146,51 @@ export function buildMerchantLlmsTxt(
     `Storefront: ${base}/`,
     "",
     "## Products",
-    ...input.products.map((p) =>
-      absolutePermalink(base, settings, {
-        kind: "product",
-        slug: p.slug,
-      }),
-    ).map((url, i) => `- [${input.products[i]?.title || input.products[i]?.slug}](${url})`),
+    ...input.products
+      .map((p) =>
+        absolutePermalink(base, settings, {
+          kind: "product",
+          slug: p.slug,
+        }),
+      )
+      .map(
+        (url, i) =>
+          `- [${input.products[i]?.title || input.products[i]?.slug}](${url})`,
+      ),
     "",
     "## Collections",
-    ...input.collections.map((c) =>
-      absolutePermalink(base, settings, {
-        kind: "collection",
-        slug: c.slug,
-      }),
-    ).map((url, i) => `- [${input.collections[i]?.name || input.collections[i]?.slug}](${url})`),
+    ...input.collections
+      .map((c) =>
+        absolutePermalink(base, settings, {
+          kind: "collection",
+          slug: c.slug,
+        }),
+      )
+      .map(
+        (url, i) =>
+          `- [${input.collections[i]?.name || input.collections[i]?.slug}](${url})`,
+      ),
     "",
     "## Pages",
-    ...input.pages.map((p) =>
-      absolutePermalink(base, settings, { kind: "page", slug: p.slug }),
-    ).map((url, i) => `- [${input.pages[i]?.title || input.pages[i]?.slug}](${url})`),
+    ...input.pages
+      .map((p) =>
+        absolutePermalink(base, settings, { kind: "page", slug: p.slug }),
+      )
+      .map(
+        (url, i) =>
+          `- [${input.pages[i]?.title || input.pages[i]?.slug}](${url})`,
+      ),
     "",
     ...(input.articles?.length
       ? [
           "## Articles",
-          ...input.articles.map((a) =>
-            `- [${a.title || a.slug}](${absolutePermalink(base, settings, {
-              kind: "article",
-              slug: a.slug,
-              date: a.published_at ?? null,
-            })})`,
+          ...input.articles.map(
+            (a) =>
+              `- [${a.title || a.slug}](${absolutePermalink(base, settings, {
+                kind: "article",
+                slug: a.slug,
+                date: a.published_at ?? null,
+              })})`,
           ),
           "",
         ]

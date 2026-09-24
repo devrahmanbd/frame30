@@ -51,7 +51,8 @@ export const STEP_UP_TTL_SECONDS = 300;
 
 async function sha256(value: string) {
   const salt = process.env["AUTH_HASH_SALT"];
-  if (!salt || salt === "framique-identity") throw new Error("AUTH_HASH_SALT must be set in production");
+  if (!salt || salt === "framique-identity")
+    throw new Error("AUTH_HASH_SALT must be set in production");
   const bytes = new TextEncoder().encode(
     `${salt}:${value.trim().toLowerCase()}`,
   );

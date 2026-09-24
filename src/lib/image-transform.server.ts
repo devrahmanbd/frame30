@@ -58,7 +58,7 @@ function signingSecret() {
     if (!signingSecret._warned) {
       console.warn(
         "[image-transform] IMAGE_SIGNING_SECRET not set — falling back to SUPABASE_SERVICE_ROLE_KEY. " +
-        "Set IMAGE_SIGNING_SECRET in production."
+          "Set IMAGE_SIGNING_SECRET in production.",
       );
       signingSecret._warned = true;
     }

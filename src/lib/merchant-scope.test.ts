@@ -24,9 +24,7 @@ describe("parseActiveMerchantCookie", () => {
       parseActiveMerchantCookie(`${ACTIVE_MERCHANT_COOKIE}=../../etc`),
     ).toBeNull();
     expect(
-      parseActiveMerchantCookie(
-        `${ACTIVE_MERCHANT_COOKIE}=b47532e5-xxxx`,
-      ),
+      parseActiveMerchantCookie(`${ACTIVE_MERCHANT_COOKIE}=b47532e5-xxxx`),
     ).toBeNull();
   });
 });

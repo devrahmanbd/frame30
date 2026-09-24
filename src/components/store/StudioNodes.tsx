@@ -21,9 +21,7 @@ function Node({ node }: { node: StudioNode }) {
   if (isHiddenOn(node, "desktop")) return null;
   if (isContainerNode(node)) {
     return (
-      <div
-        style={{ ...nodeCss(node, "desktop"), ...selfCss(node, "desktop") }}
-      >
+      <div style={{ ...nodeCss(node, "desktop"), ...selfCss(node, "desktop") }}>
         <div style={containerInnerCss(node, "desktop")}>
           {(node.children ?? []).map((child) => (
             <Node key={child.id} node={child} />

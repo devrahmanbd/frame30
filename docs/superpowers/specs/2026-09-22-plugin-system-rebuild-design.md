@@ -69,12 +69,12 @@ TDD (RED watched → GREEN), `typecheck` → `test` → `test:contracts` on touc
 
 ## Decisions log
 
-| Time (+06:00) | Decision |
-|---|---|
-| 16:40 | One combined spec (config + SDK + review gate), option C |
-| 16:44 | Full docs/12 vision incl. sidecar-capable plugin kinds, option C; verticals listed as customization scope |
-| 16:45 | Implement ALL verticals (option C) as phased program |
-| 16:47 | Phases 1–4 specced; phase 5 in ROADMAP.md |
-| 16:50 | "Complete" = real sidecar, no shortcuts |
-| 16:52 | Sequential 1→2→3→4 (approach A); §1 approved |
-| 17:00 | Subagent context sweep: UI parity mostly exists, DDL gap is the real P1 target; spec written |
+| Time (+06:00) | Decision                                                                                                  |
+| ------------- | --------------------------------------------------------------------------------------------------------- |
+| 16:40         | One combined spec (config + SDK + review gate), option C                                                  |
+| 16:44         | Full docs/12 vision incl. sidecar-capable plugin kinds, option C; verticals listed as customization scope |
+| 16:45         | Implement ALL verticals (option C) as phased program                                                      |
+| 16:47         | Phases 1–4 specced; phase 5 in ROADMAP.md                                                                 |
+| 16:50         | "Complete" = real sidecar, no shortcuts                                                                   |
+| 16:52         | Sequential 1→2→3→4 (approach A); §1 approved                                                              |
+| 17:00         | Subagent context sweep: UI parity mostly exists, DDL gap is the real P1 target; spec written              |

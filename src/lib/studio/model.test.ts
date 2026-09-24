@@ -50,9 +50,7 @@ function doc(): StudioDoc {
         id: "c1",
         el: "container",
         settings: {},
-        children: [
-          { id: "b1", el: "button", settings: { label: "Click" } },
-        ],
+        children: [{ id: "b1", el: "button", settings: { label: "Click" } }],
       },
     ],
     page: defaultPageSettings(),
@@ -71,15 +69,15 @@ describe("parseStudioBody", () => {
     const clean = serializeStudioBody(doc());
     const escaped = clean.replace(/\[/g, "\\[").replace(/\]/g, "\\]");
     // Sanity: the escaped form really is invalid JSON on its own.
-    expect(parseStudioBody(escaped)?.root?.[0]?.children?.[0]).toMatchObject(
-      {
-        el: "button",
-      },
-    );
+    expect(parseStudioBody(escaped)?.root?.[0]?.children?.[0]).toMatchObject({
+      el: "button",
+    });
   });
 
   it("returns null for garbage", () => {
-    expect(parseStudioBody("<!--fq-studio:v2\nnot json\nfq-studio:end-->")).toBeNull();
+    expect(
+      parseStudioBody("<!--fq-studio:v2\nnot json\nfq-studio:end-->"),
+    ).toBeNull();
     expect(parseStudioBody(null)).toBeNull();
     expect(parseStudioBody("plain markdown")).toBeNull();
   });
@@ -133,15 +131,19 @@ describe("sectionsToStudioNodes", () => {
         type: "container",
         props: {},
         children: [
-          { id: "b", type: "heading", props: { text: "Hi" }, hidden: ["mobile"] },
+          {
+            id: "b",
+            type: "heading",
+            props: { text: "Hi" },
+            hidden: ["mobile"],
+          },
         ],
       },
     ]);
     const [section] = studioNodesToSections(nodes);
     expect(section.type).toBe("container");
     const child = section.children?.[0] as
-      | { type?: unknown; props?: unknown; hidden?: unknown }
-      | undefined;
+      { type?: unknown; props?: unknown; hidden?: unknown } | undefined;
     expect(child).toMatchObject({
       type: "heading",
       props: { text: "Hi" },
@@ -180,7 +182,15 @@ describe("faq scalar-to-items migration", () => {
   it("seeds items from scalar q/a pairs on load", () => {
     const parsed = parseStudioBody(
       serializeStudioBody(
-        faqDoc({ heading: "FAQ", q1: "Q1?", a1: "A1!", q2: "", a2: "", q3: "Q3?", a3: "" }),
+        faqDoc({
+          heading: "FAQ",
+          q1: "Q1?",
+          a1: "A1!",
+          q2: "",
+          a2: "",
+          q3: "Q3?",
+          a3: "",
+        }),
       ),
     );
     const settings = parsed?.root[0]?.settings as Record<string, unknown>;
@@ -217,11 +227,19 @@ describe("product_qna scalar-to-items migration", () => {
   it("seeds items from scalar q/a pairs on load", () => {
     const parsed = parseStudioBody(
       serializeStudioBody(
-        qnaDoc({ heading: "Q&A", q1: "Size?", a1: "Runs large.", q2: "", a2: "" }),
+        qnaDoc({
+          heading: "Q&A",
+          q1: "Size?",
+          a1: "Runs large.",
+          q2: "",
+          a2: "",
+        }),
       ),
     );
     const settings = parsed?.root[0]?.settings as Record<string, unknown>;
-    expect(settings.items).toEqual([{ question: "Size?", answer: "Runs large." }]);
+    expect(settings.items).toEqual([
+      { question: "Size?", answer: "Runs large." },
+    ]);
   });
 
   it("preserves author-edited items instead of re-seeding", () => {
@@ -277,7 +295,9 @@ describe("trust_bar scalar-to-items migration", () => {
       ),
     );
     const settings = parsed?.root[0]?.settings as Record<string, unknown>;
-    expect(settings.items).toEqual([{ icon: "secure", title: "New?", body: "" }]);
+    expect(settings.items).toEqual([
+      { icon: "secure", title: "New?", body: "" },
+    ]);
   });
 });
 
@@ -334,7 +354,9 @@ describe("lookbook scalar-to-items migration", () => {
       ),
     );
     const settings = parsed?.root[0]?.settings as Record<string, unknown>;
-    expect(settings.items).toEqual([{ image: "/a.jpg", alt: "Look 1", href: "/c/1" }]);
+    expect(settings.items).toEqual([
+      { image: "/a.jpg", alt: "Look 1", href: "/c/1" },
+    ]);
   });
 
   it("preserves author-edited items instead of re-seeding", () => {
@@ -378,8 +400,20 @@ describe("hero scalar-to-items migration", () => {
     );
     const settings = parsed?.root[0]?.settings as Record<string, unknown>;
     expect(settings.items).toEqual([
-      { heading: "Welcome", image: "/hero.jpg", subheading: "Sub", ctaLabel: "Shop", ctaHref: "/c" },
-      { heading: "Slide two", image: "/s2.jpg", subheading: "", ctaLabel: "Shop", ctaHref: "/c" },
+      {
+        heading: "Welcome",
+        image: "/hero.jpg",
+        subheading: "Sub",
+        ctaLabel: "Shop",
+        ctaHref: "/c",
+      },
+      {
+        heading: "Slide two",
+        image: "/s2.jpg",
+        subheading: "",
+        ctaLabel: "Shop",
+        ctaHref: "/c",
+      },
     ]);
   });
 
@@ -388,7 +422,15 @@ describe("hero scalar-to-items migration", () => {
       serializeStudioBody(
         heroDoc({
           heading: "Old?",
-          items: [{ heading: "New?", image: "", subheading: "", ctaLabel: "", ctaHref: "" }],
+          items: [
+            {
+              heading: "New?",
+              image: "",
+              subheading: "",
+              ctaLabel: "",
+              ctaHref: "",
+            },
+          ],
         }),
       ),
     );
@@ -554,9 +596,7 @@ describe("studio slots (header / main / footer)", () => {
       { header: [node("page-h")], main: [node("m")], footer: [node("page-f")] },
       defaultPageSettings(),
     );
-    expect(resolveStudioSlots(page, null).main.map((n) => n.id)).toEqual([
-      "m",
-    ]);
+    expect(resolveStudioSlots(page, null).main.map((n) => n.id)).toEqual(["m"]);
     const theme: StudioDoc = studioDocFromSlots(
       { header: [node("theme-h")], main: [], footer: [node("theme-f")] },
       defaultPageSettings(),
@@ -623,10 +663,10 @@ describe("studio linked placements", () => {
 
   it("gives grafted nodes deterministic ids with a selection proxy", () => {
     const p = placement();
-    const first =
-      resolveStudioGlobalBlocks([p], [block]).nodes[0]!.children![0]!.id;
-    const second =
-      resolveStudioGlobalBlocks([p], [block]).nodes[0]!.children![0]!.id;
+    const first = resolveStudioGlobalBlocks([p], [block]).nodes[0]!
+      .children![0]!.id;
+    const second = resolveStudioGlobalBlocks([p], [block]).nodes[0]!
+      .children![0]!.id;
     expect(first).toBe(second);
     expect(placementOwnerOf(first)).toBe(p.id);
     expect(studioSelectionOwnerOf(first)).toBe(p.id);

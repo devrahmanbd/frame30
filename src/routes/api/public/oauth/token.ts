@@ -19,7 +19,9 @@ function getAllowedOrigin(request: Request): string {
     ) {
       return origin;
     }
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return "*";
 }
 
@@ -32,12 +34,21 @@ function corsHeaders(request: Request): Record<string, string> {
   };
 }
 
-function oauthError(code: string, status: number, detail?: string, request?: Request) {
+function oauthError(
+  code: string,
+  status: number,
+  detail?: string,
+  request?: Request,
+) {
   return Response.json(
     { error: code, error_description: detail },
     {
       status,
-      headers: { ...(request ? corsHeaders(request) : {}), "cache-control": "no-store", pragma: "no-cache" },
+      headers: {
+        ...(request ? corsHeaders(request) : {}),
+        "cache-control": "no-store",
+        pragma: "no-cache",
+      },
     },
   );
 }
@@ -93,7 +104,12 @@ export const Route = createFileRoute("/api/public/oauth/token")({
         const clientSecret =
           basic?.clientSecret ?? params["client_secret"] ?? null;
         if (!clientId)
-          return oauthError("invalid_client", 401, "client_id is required.", request);
+          return oauthError(
+            "invalid_client",
+            401,
+            "client_id is required.",
+            request,
+          );
 
         const { OAuthError, exchangeCode, refreshToken } =
           await import("@/lib/oauth.server");

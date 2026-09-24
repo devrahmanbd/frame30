@@ -447,7 +447,11 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "Megaphone",
     keywords: ["marquee", "ticker", "scrolling", "announcement"],
-    defaults: { text: "New arrivals every week", speed: 30, pauseOnHover: true },
+    defaults: {
+      text: "New arrivals every week",
+      speed: 30,
+      pauseOnHover: true,
+    },
   },
   {
     key: "countdown",
@@ -511,7 +515,14 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "Landmark",
     keywords: ["heritage", "story", "craft", "artisan", "about"],
-    defaults: { image: "", headline: "", body: "", ctaLabel: "", ctaUrl: "", layout: "image-left" },
+    defaults: {
+      image: "",
+      headline: "",
+      body: "",
+      ctaLabel: "",
+      ctaUrl: "",
+      layout: "image-left",
+    },
   },
   {
     key: "editorial_banner",
@@ -519,7 +530,13 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "Newspaper",
     keywords: ["editorial", "banner", "feature", "wide", "cta"],
-    defaults: { image: "", headline: "", subhead: "", ctaLabel: "", ctaUrl: "" },
+    defaults: {
+      image: "",
+      headline: "",
+      subhead: "",
+      ctaLabel: "",
+      ctaUrl: "",
+    },
   },
   {
     key: "editorial_hero",
@@ -796,7 +813,12 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "Store",
     keywords: ["brands", "strip", "logos", "taxonomy"],
-    defaults: { heading: "Shop by brand", limit: 12, columns: 4, kind: "brand" },
+    defaults: {
+      heading: "Shop by brand",
+      limit: 12,
+      columns: 4,
+      kind: "brand",
+    },
   },
   {
     key: "subbrand_bar",
@@ -1784,7 +1806,11 @@ export const WIDGETS: WidgetDef[] = [
     category: "commerce",
     icon: "Search",
     keywords: ["search", "command", "typeahead", "suggestions"],
-    defaults: { placeholder: "Search products", buttonLabel: "Search", limit: 6 },
+    defaults: {
+      placeholder: "Search products",
+      buttonLabel: "Search",
+      limit: 6,
+    },
   },
   {
     key: "facet_sidebar",
@@ -1912,7 +1938,12 @@ export const WIDGETS: WidgetDef[] = [
     category: "commerce",
     icon: "Heart",
     keywords: ["wishlist", "save", "favourite"],
-    defaults: { productId: "", addLabel: "Save", savedLabel: "Saved", showCount: false },
+    defaults: {
+      productId: "",
+      addLabel: "Save",
+      savedLabel: "Saved",
+      showCount: false,
+    },
   },
   {
     key: "compare_tray",
@@ -2279,7 +2310,14 @@ export const WIDGETS: WidgetDef[] = [
     label: "Warranty panel",
     category: "general",
     icon: "ShieldCheck",
-    keywords: ["warranty", "guarantee", "service", "centre", "official", "import"],
+    keywords: [
+      "warranty",
+      "guarantee",
+      "service",
+      "centre",
+      "official",
+      "import",
+    ],
     defaults: {
       heading: "Warranty",
       months: 12,
@@ -2317,7 +2355,14 @@ export const WIDGETS: WidgetDef[] = [
     label: "Refill & subscribe",
     category: "commerce",
     icon: "Package",
-    keywords: ["refill", "subscribe", "cadence", "schedule", "repeat", "delivery"],
+    keywords: [
+      "refill",
+      "subscribe",
+      "cadence",
+      "schedule",
+      "repeat",
+      "delivery",
+    ],
     defaults: {
       heading: "Refill & save",
       body: "Get a refill delivered on your schedule.",
@@ -2344,7 +2389,14 @@ export const WIDGETS: WidgetDef[] = [
     label: "Department strip",
     category: "general",
     icon: "Tags",
-    keywords: ["department", "strip", "chips", "categories", "rail", "taxonomy"],
+    keywords: [
+      "department",
+      "strip",
+      "chips",
+      "categories",
+      "rail",
+      "taxonomy",
+    ],
     defaults: { heading: "", limit: 12 },
   },
   {

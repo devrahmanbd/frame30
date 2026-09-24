@@ -398,24 +398,19 @@ export default {
         const previewToken = url.searchParams.get("preview_token");
         if (previewToken) {
           try {
-            const { verifyPreviewToken, previewSecret } = await import(
-              "./lib/theme-preview.server"
-            );
-            const payload = verifyPreviewToken(
-              previewSecret(),
-              previewToken,
-            );
+            const { verifyPreviewToken, previewSecret } =
+              await import("./lib/theme-preview.server");
+            const payload = verifyPreviewToken(previewSecret(), previewToken);
             if (payload) {
               const slugMatch = /^\/store\/([^/?#]+)/.exec(url.pathname);
               if (!slugMatch) {
                 validPreview = true;
               } else {
-                const { merchantIdForSlug } = await import(
-                  "./lib/storefront-host.server"
+                const { merchantIdForSlug } =
+                  await import("./lib/storefront-host.server");
+                const owner = await merchantIdForSlug(slugMatch[1] ?? "").catch(
+                  () => null,
                 );
-                const owner = await merchantIdForSlug(
-                  slugMatch[1] ?? "",
-                ).catch(() => null);
                 validPreview = owner !== null && owner === payload.merchantId;
               }
             }
@@ -424,11 +419,7 @@ export default {
           }
         }
         if (
-          isBlockedPathStorefront(
-            normalizedHost,
-            url.pathname,
-            validPreview,
-          )
+          isBlockedPathStorefront(normalizedHost, url.pathname, validPreview)
         ) {
           // DEV-2 deep-path permalink: /store/<slug>/* → https://<primary>/*.
           // Centralized here (not per-route beforeLoad) because this gate 404s
@@ -478,9 +469,8 @@ export default {
         // foreign slug (or an unresolvable host) answers bare 404.
         // Preview tokens stay exempt — verified above.
         if (!validPreview) {
-          const { isBlockedForeignStorePath } = await import(
-            "./lib/storefront-host.server"
-          );
+          const { isBlockedForeignStorePath } =
+            await import("./lib/storefront-host.server");
           if (
             await isBlockedForeignStorePath(
               normalizeRequestHost(rawHost),

@@ -107,7 +107,9 @@ const ConcernRail: WidgetComponent = ({
           </Heading>
         )}
         <Rail
-          label={str("heading") || t(locale, "Shop by concern", "সমস্যা অনুযায়ী")}
+          label={
+            str("heading") || t(locale, "Shop by concern", "সমস্যা অনুযায়ী")
+          }
         >
           {Array.from({ length: 4 }, (_, i) => (
             <ProductCardSkeleton key={i} variant="compact" />
@@ -158,7 +160,9 @@ const ConcernRail: WidgetComponent = ({
         </p>
       ) : (
         <Rail
-          label={str("heading") || t(locale, "Shop by concern", "সমস্যা অনুযায়ী")}
+          label={
+            str("heading") || t(locale, "Shop by concern", "সমস্যা অনুযায়ী")
+          }
         >
           {matched.map((row) => (
             <ProductCard
@@ -366,7 +370,8 @@ const ComboCard: WidgetComponent = ({
           disabled={busy}
           className="mt-4 inline-flex min-h-11 items-center rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
-          {str("buttonLabel") || t(locale, "Add combo to cart", "কম্বো কার্টে যোগ করুন")}
+          {str("buttonLabel") ||
+            t(locale, "Add combo to cart", "কম্বো কার্টে যোগ করুন")}
         </button>
       )}
       {total !== null && (

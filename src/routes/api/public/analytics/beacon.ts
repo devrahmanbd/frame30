@@ -102,9 +102,8 @@ export const Route = createFileRoute("/api/public/analytics/beacon")({
             },
           });
         } catch (err) {
-          const { captureError, incr } = await import(
-            "@/lib/observability.server"
-          );
+          const { captureError, incr } =
+            await import("@/lib/observability.server");
           // Supabase/PostgREST failures are plain objects, not Errors —
           // String(err) would be "[object Object]" and match nothing.
           const message =
@@ -118,7 +117,9 @@ export const Route = createFileRoute("/api/public/analytics/beacon")({
           // (missing table/column). That is an owner migration task, not a
           // shopper-facing failure: acknowledge without the 500 console noise
           // and stay loud server-side so the gap cannot hide.
-          if (/relation .* does not exist|column .* does not exist/i.test(message)) {
+          if (
+            /relation .* does not exist|column .* does not exist/i.test(message)
+          ) {
             incr("framique_analytics_degraded_total", {
               reason: "schema_missing",
             });

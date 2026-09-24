@@ -444,14 +444,12 @@ export async function openIncident(
       if (error)
         throw new OwnerError("ops.incident_write_failed", error.message);
       const id = (data as { id: string }).id;
-      await a
-        .from("ops_incident_updates")
-        .insert({
-          incident_id: id,
-          status: "investigating",
-          body,
-          created_by: userId,
-        } as never);
+      await a.from("ops_incident_updates").insert({
+        incident_id: id,
+        status: "investigating",
+        body,
+        created_by: userId,
+      } as never);
       incr("framique_ops_incident_total", {
         severity: input.severity,
         action: "open",
@@ -498,14 +496,12 @@ export async function postIncidentUpdate(
           `Cannot move ${from} to ${input.status}`,
         );
       }
-      await a
-        .from("ops_incident_updates")
-        .insert({
-          incident_id: input.id,
-          status: input.status,
-          body,
-          created_by: userId,
-        } as never);
+      await a.from("ops_incident_updates").insert({
+        incident_id: input.id,
+        status: input.status,
+        body,
+        created_by: userId,
+      } as never);
       const patch: Record<string, unknown> = {
         status: input.status,
         updated_at: new Date().toISOString(),

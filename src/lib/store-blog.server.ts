@@ -86,7 +86,7 @@ async function scopedFacets(
       .is("deleted_at", null)
       .limit(200);
     const counts = new Map<string, number>();
-    for (const row of ((data ?? []) as { tags?: unknown }[])) {
+    for (const row of (data ?? []) as { tags?: unknown }[]) {
       const tags = Array.isArray(row.tags) ? row.tags : [];
       for (const tag of tags) {
         if (typeof tag !== "string") continue;
@@ -98,7 +98,12 @@ async function scopedFacets(
     return [...counts.entries()]
       .sort((a, b) => b[1] - a[1])
       .slice(0, 24)
-      .map(([slug, count]) => ({ slug, name: slug, kind: "tag" as const, count }));
+      .map(([slug, count]) => ({
+        slug,
+        name: slug,
+        kind: "tag" as const,
+        count,
+      }));
   } catch {
     return [];
   }
@@ -252,8 +257,8 @@ export async function loadStoreArticle(
         .then(
           (r: { data: unknown; error: unknown }) =>
             (r.error ? { data: [] } : r) as {
-            data: { term: string; kind: string }[] | null;
-          },
+              data: { term: string; kind: string }[] | null;
+            },
         );
       const termIds: string[] = [];
       let category: { slug: string; name: string } | null = null;

@@ -58,54 +58,55 @@ function CartMissing() {
 function CartPage() {
   const { t } = useLang();
   const { slug } = Route.useParams();
-  const { merchant, ast, tokens, siteKit, menus, installedPlugins } = Route.useLoaderData();
+  const { merchant, ast, tokens, siteKit, menus, installedPlugins } =
+    Route.useLoaderData();
 
   return (
     <PluginLayer plugins={installedPlugins}>
-    <ThemeChrome
-      template="cart"
-      storeSlug={slug}
-      merchantId={merchant.id}
-      ast={ast}
-      tokens={tokens}
-      siteKit={siteKit}
-      chrome={
-        <>
-          <StoreHeader slug={slug} name={merchant.name} menus={menus} />
-          {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
-          {/* <SupportWidget slug={slug} /> */}
-        </>
-      }
-      // The widgets render live cart data on their own; the keys simply tell
-      // the renderer this page owns the cart context.
-      contextSlots={{
-        cart_lines: null,
-        cart_summary: null,
-        cart_drawer: null,
-        checkout_steps: null,
-        payment_methods: null,
-      }}
-      fallback={
-        <section className="rounded-fq-lg border border-border bg-card p-8 text-center">
-          <h1 className="font-bangla-display text-2xl font-bold">
-            {t("Your cart", "আপনার কার্ট")}
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {t(
-              "Continue to checkout to review your items and pay.",
-              "আইটেম দেখতে ও পেমেন্ট করতে চেকআউটে যান।",
-            )}
-          </p>
-          <Link
-            to="/store/$slug/checkout"
-            params={{ slug }}
-            className="mt-4 inline-block min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium leading-[2.75rem] text-primary-foreground"
-          >
-            {t("Go to checkout", "চেকআউটে যান")}
-          </Link>
-        </section>
-      }
-    />
+      <ThemeChrome
+        template="cart"
+        storeSlug={slug}
+        merchantId={merchant.id}
+        ast={ast}
+        tokens={tokens}
+        siteKit={siteKit}
+        chrome={
+          <>
+            <StoreHeader slug={slug} name={merchant.name} menus={menus} />
+            {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+            {/* <SupportWidget slug={slug} /> */}
+          </>
+        }
+        // The widgets render live cart data on their own; the keys simply tell
+        // the renderer this page owns the cart context.
+        contextSlots={{
+          cart_lines: null,
+          cart_summary: null,
+          cart_drawer: null,
+          checkout_steps: null,
+          payment_methods: null,
+        }}
+        fallback={
+          <section className="rounded-fq-lg border border-border bg-card p-8 text-center">
+            <h1 className="font-bangla-display text-2xl font-bold">
+              {t("Your cart", "আপনার কার্ট")}
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t(
+                "Continue to checkout to review your items and pay.",
+                "আইটেম দেখতে ও পেমেন্ট করতে চেকআউটে যান।",
+              )}
+            </p>
+            <Link
+              to="/store/$slug/checkout"
+              params={{ slug }}
+              className="mt-4 inline-block min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium leading-[2.75rem] text-primary-foreground"
+            >
+              {t("Go to checkout", "চেকআউটে যান")}
+            </Link>
+          </section>
+        }
+      />
     </PluginLayer>
   );
 }

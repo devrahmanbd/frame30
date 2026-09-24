@@ -1,4 +1,5 @@
 # Deployment Verification Report — custom-domain storefront
+
 Date: 2026-09-21 · Target: https://microscrop.shop/ (Flame Fashion BD)
 Method: Chrome MCP (new_page, snapshot, screenshot, fill, fill_form, click,
 evaluate_script, list_console_messages, list_network_requests)
@@ -6,18 +7,18 @@ Deployment under test: `main` (post PR #2 + PR #3), `DEPLOY OK: main live`
 
 ## 1. Storefront walk (all root-shape URLs, custom host)
 
-| Page | Result |
-|---|---|
-| `/` homepage | 200 — brand header, utility bar, search, Departments, Account/Bag, hero, shade finder, skin quiz, bestsellers with BDT prices |
-| `/p/tangail-taant-cotton-saree` | 200 — title, ৳ 3,450.00, 29 in stock, working Add to cart, placeholder image loads 800px |
-| `/c/heritage-handloom` | 200, clean |
-| `/pages/shade-finder` | 200, clean |
-| `/search` | 200, canonical `https://microscrop.shop/search`, clean |
-| `/cart` | 200, stays on URL (no featured-store bounce), clean |
-| `/checkout` | 200 — delivery form, COD preselected, server totals, clean |
-| `/account`, `/track` | 200, clean |
-| `/blog`, `/blog/demo-master-weavers` | 200, clean, absolute store canonicals |
-| `/sitemap.xml`, `/robots.txt`, `/llms.txt` | 200 merchant content, root-shape locs, https origins |
+| Page                                       | Result                                                                                                                        |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `/` homepage                               | 200 — brand header, utility bar, search, Departments, Account/Bag, hero, shade finder, skin quiz, bestsellers with BDT prices |
+| `/p/tangail-taant-cotton-saree`            | 200 — title, ৳ 3,450.00, 29 in stock, working Add to cart, placeholder image loads 800px                                      |
+| `/c/heritage-handloom`                     | 200, clean                                                                                                                    |
+| `/pages/shade-finder`                      | 200, clean                                                                                                                    |
+| `/search`                                  | 200, canonical `https://microscrop.shop/search`, clean                                                                        |
+| `/cart`                                    | 200, stays on URL (no featured-store bounce), clean                                                                           |
+| `/checkout`                                | 200 — delivery form, COD preselected, server totals, clean                                                                    |
+| `/account`, `/track`                       | 200, clean                                                                                                                    |
+| `/blog`, `/blog/demo-master-weavers`       | 200, clean, absolute store canonicals                                                                                         |
+| `/sitemap.xml`, `/robots.txt`, `/llms.txt` | 200 merchant content, root-shape locs, https origins                                                                          |
 
 Header links on custom host are all root-shaped: `/`, `/search`,
 `/account`, `/checkout`. Collection cards link `/p/*`.

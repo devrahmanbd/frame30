@@ -224,7 +224,8 @@ export function matchStudioShortcut(
   // Backspace deletes, like the classic map's `delete` + `backspace` combos.
   const key = raw === "Backspace" ? "Delete" : raw;
   return STUDIO_SHORTCUTS.find((shortcut) => {
-    const want = shortcut.key.length === 1 ? shortcut.key.toLowerCase() : shortcut.key;
+    const want =
+      shortcut.key.length === 1 ? shortcut.key.toLowerCase() : shortcut.key;
     if (want !== (key.length === 1 ? key.toLowerCase() : key)) {
       // Bare `?` (with or without the Shift that produces it) opens help.
       if (shortcut.id === "shortcuts" && (key === "?" || key === "/")) {
@@ -254,7 +255,9 @@ export function matchStudioShortcut(
  * Returns undefined for unknown ids so dispatchers can report "unhandled"
  * and leave the browser's native binding alone.
  */
-export function resolveStudioShortcutId(id: string): StudioShortcutId | undefined {
+export function resolveStudioShortcutId(
+  id: string,
+): StudioShortcutId | undefined {
   if (id === "paste_style") return "pasteStyle";
   return STUDIO_SHORTCUTS.some((shortcut) => shortcut.id === id)
     ? (id as StudioShortcutId)

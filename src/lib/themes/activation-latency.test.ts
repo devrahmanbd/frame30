@@ -37,8 +37,7 @@ const shared = vi.hoisted(() => ({
 }));
 
 vi.mock("../cache.server", async (importOriginal) => {
-  const orig =
-    await importOriginal<typeof import("../cache.server")>();
+  const orig = await importOriginal<typeof import("../cache.server")>();
   return {
     ...orig,
     cached: async <T>(
@@ -175,7 +174,9 @@ describe("T6 pointer freshness", () => {
     expect(pointerCalls.length).toBeGreaterThanOrEqual(1);
     for (const c of pointerCalls) expect(c.ttl).toBe(4);
 
-    const versionCalls = shared.cachedCalls.filter((c) => !c.key.includes("pointer"));
+    const versionCalls = shared.cachedCalls.filter(
+      (c) => !c.key.includes("pointer"),
+    );
     expect(versionCalls.length).toBeGreaterThanOrEqual(1);
     for (const c of versionCalls) expect(c.ttl).toBe(300);
   });
@@ -251,8 +252,8 @@ describe("T6 purge is awaited, not fire-and-forget", () => {
     const out: any = await pending;
     expect(settled).toBe(true);
     expect(out.id).toBe(THEME);
-    expect(
-      db.rows("store_themes").find((r) => r.id === THEME)!.is_active,
-    ).toBe(true);
+    expect(db.rows("store_themes").find((r) => r.id === THEME)!.is_active).toBe(
+      true,
+    );
   });
 });

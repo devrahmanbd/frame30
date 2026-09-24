@@ -18,7 +18,9 @@ function getAllowedOrigin(request: Request): string {
     ) {
       return origin;
     }
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return "*";
 }
 
@@ -26,7 +28,8 @@ function corsHeaders(request: Request): Record<string, string> {
   return {
     "access-control-allow-origin": getAllowedOrigin(request),
     "access-control-allow-methods": "GET,POST,PATCH,DELETE,OPTIONS",
-    "access-control-allow-headers": "authorization,content-type,idempotency-key",
+    "access-control-allow-headers":
+      "authorization,content-type,idempotency-key",
     "access-control-max-age": "600",
     "access-control-allow-credentials": "true",
   };

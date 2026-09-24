@@ -240,7 +240,11 @@ function CollectionsPage() {
             Collections
           </h2>
           {isLoading ? (
-            <div className="space-y-2 p-3" aria-busy="true" aria-label="Loading">
+            <div
+              className="space-y-2 p-3"
+              aria-busy="true"
+              aria-label="Loading"
+            >
               {[0, 1, 2].map((i) => (
                 <div
                   key={i}

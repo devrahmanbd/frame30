@@ -50,15 +50,32 @@ export async function claimIdempotency(
   // Fast L2 Redis check for already-completed replays
   if (redisConfigured()) {
     try {
-      const res = await redisCommand(["GET", idemRedisKey(input.merchantId, input.route, input.key)]);
+      const res = await redisCommand([
+        "GET",
+        idemRedisKey(input.merchantId, input.route, input.key),
+      ]);
       if (res.ok && typeof res.value === "string") {
-        const parsed = JSON.parse(res.value) as { hash: string; response: unknown; status: number };
+        const parsed = JSON.parse(res.value) as {
+          hash: string;
+          response: unknown;
+          status: number;
+        };
         if (parsed.hash !== input.requestHash) {
-          incr("framique_idempotency_total", { route: input.route, outcome: "conflict" });
+          incr("framique_idempotency_total", {
+            route: input.route,
+            outcome: "conflict",
+          });
           return { status: "conflict" };
         }
-        incr("framique_idempotency_total", { route: input.route, outcome: "replay_redis" });
-        return { status: "replay", response: parsed.response, httpStatus: parsed.status };
+        incr("framique_idempotency_total", {
+          route: input.route,
+          outcome: "replay_redis",
+        });
+        return {
+          status: "replay",
+          response: parsed.response,
+          httpStatus: parsed.status,
+        };
       }
     } catch {
       // Degrade to Postgres
@@ -166,7 +183,10 @@ export async function releaseIdempotency(
     .eq("idem_key", input.key);
 
   if (redisConfigured()) {
-    void redisCommand(["DEL", idemRedisKey(input.merchantId, input.route, input.key)]);
+    void redisCommand([
+      "DEL",
+      idemRedisKey(input.merchantId, input.route, input.key),
+    ]);
   }
 }
 

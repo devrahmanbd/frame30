@@ -23,7 +23,9 @@ describe("content editor choice", () => {
   });
 
   it("treats unknown settings as unset", () => {
-    expect(resolveEditor({ kind: "page", setting: "gutenberg" })).toBe("builder");
+    expect(resolveEditor({ kind: "page", setting: "gutenberg" })).toBe(
+      "builder",
+    );
     expect(resolveEditor({ kind: "page", setting: null })).toBe("builder");
   });
 

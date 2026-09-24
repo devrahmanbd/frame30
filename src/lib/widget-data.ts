@@ -171,12 +171,7 @@ export function nodeRows(
 /** Row link targets. Custom hosts serve root paths; path hosts (localhost
  * dev) serve under `/store/<slug>`. `base` is "" or `/store/<slug>`. */
 export type StoreHrefKind =
-  | "product"
-  | "collection"
-  | "category"
-  | "brand"
-  | "post"
-  | "variant";
+  "product" | "collection" | "category" | "brand" | "post" | "variant";
 
 function cleanSlug(slug: string): string {
   return slug

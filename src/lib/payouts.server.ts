@@ -375,88 +375,83 @@ export async function requestPayout(
   const { requireStepUp } = await import("./identity.server");
   await requireStepUp(db, "payout", merchantId);
 
-  return withTenantLock(
-    merchantId,
-    "payout:request",
-    15_000,
-    async () => {
-      const service = await admin();
-      const key = input.idempotencyKey.trim();
-      if (key.length < 8)
-        throw new PayoutError("payout.missing_idempotency_key", 400);
+  return withTenantLock(merchantId, "payout:request", 15_000, async () => {
+    const service = await admin();
+    const key = input.idempotencyKey.trim();
+    if (key.length < 8)
+      throw new PayoutError("payout.missing_idempotency_key", 400);
 
-      // Replay protection: an identical key returns the original instruction rather
-      // than paying twice when the browser retries.
-      const { data: existing } = await service
-        .from("payouts")
-        .select("*")
-        .eq("merchant_id", merchantId)
-        .eq("idempotency_key", key)
-        .maybeSingle();
-      if (existing) return toView(existing as PayoutRow, []);
+    // Replay protection: an identical key returns the original instruction rather
+    // than paying twice when the browser retries.
+    const { data: existing } = await service
+      .from("payouts")
+      .select("*")
+      .eq("merchant_id", merchantId)
+      .eq("idempotency_key", key)
+      .maybeSingle();
+    if (existing) return toView(existing as PayoutRow, []);
 
-  const { data: account } = await service
-    .from("payout_accounts")
-    .select("*")
-    .eq("id", input.accountId)
-    .eq("merchant_id", merchantId)
-    .maybeSingle();
-  if (!account) throw new PayoutError("payout.account_not_found", 404);
-  const acct = account as AccountRow;
-  if (acct.state !== "verified")
-    throw new PayoutError("payout.account_not_verified", 409);
+    const { data: account } = await service
+      .from("payout_accounts")
+      .select("*")
+      .eq("id", input.accountId)
+      .eq("merchant_id", merchantId)
+      .maybeSingle();
+    if (!account) throw new PayoutError("payout.account_not_found", 404);
+    const acct = account as AccountRow;
+    if (acct.state !== "verified")
+      throw new PayoutError("payout.account_not_verified", 409);
 
-  const balance = await merchantBalance(merchantId);
-  const amountVerdict = validateAmount(
-    input.amountMinor,
-    balance.availableMinor,
-  );
-  if (!amountVerdict.ok) {
-    incr("framique_payout_request_total", {
-      outcome: amountVerdict.code ?? "invalid",
-    });
-    throw new PayoutError(amountVerdict.code ?? "payout.invalid_amount", 400);
-  }
+    const balance = await merchantBalance(merchantId);
+    const amountVerdict = validateAmount(
+      input.amountMinor,
+      balance.availableMinor,
+    );
+    if (!amountVerdict.ok) {
+      incr("framique_payout_request_total", {
+        outcome: amountVerdict.code ?? "invalid",
+      });
+      throw new PayoutError(amountVerdict.code ?? "payout.invalid_amount", 400);
+    }
 
-  const method = acct.method as PayoutMethod;
-  const fee = payoutFeeMinor(input.amountMinor, method);
-  const { data, error } = await service
-    .from("payouts")
-    .insert({
-      merchant_id: merchantId,
-      account_id: acct.id,
-      amount_minor_int: input.amountMinor,
-      fee_minor_int: fee,
-      net_minor_int: netPayoutMinor(input.amountMinor, method),
-      currency_code: "BDT",
-      method,
-      state: "requested",
-      approvals_required: approvalsRequired(input.amountMinor),
-      idempotency_key: key,
-      requested_by: userId,
-      note: input.note ?? null,
-    })
-    .select("*")
-    .single();
-  if (error || !data) throw new PayoutError("payout.create_failed", 500);
-  const row = data as PayoutRow;
-  await audit(
-    row.id,
-    merchantId,
-    "payout.requested",
-    userId,
-    null,
-    "requested",
-    {
-      amountMinor: input.amountMinor,
-      feeMinor: fee,
-    },
-  );
-  incr("framique_payout_request_total", { outcome: "ok" });
-  observe("framique_payout_amount_minor", input.amountMinor, { method });
-      return toView(row, []);
-    },
-  );
+    const method = acct.method as PayoutMethod;
+    const fee = payoutFeeMinor(input.amountMinor, method);
+    const { data, error } = await service
+      .from("payouts")
+      .insert({
+        merchant_id: merchantId,
+        account_id: acct.id,
+        amount_minor_int: input.amountMinor,
+        fee_minor_int: fee,
+        net_minor_int: netPayoutMinor(input.amountMinor, method),
+        currency_code: "BDT",
+        method,
+        state: "requested",
+        approvals_required: approvalsRequired(input.amountMinor),
+        idempotency_key: key,
+        requested_by: userId,
+        note: input.note ?? null,
+      })
+      .select("*")
+      .single();
+    if (error || !data) throw new PayoutError("payout.create_failed", 500);
+    const row = data as PayoutRow;
+    await audit(
+      row.id,
+      merchantId,
+      "payout.requested",
+      userId,
+      null,
+      "requested",
+      {
+        amountMinor: input.amountMinor,
+        feeMinor: fee,
+      },
+    );
+    incr("framique_payout_request_total", { outcome: "ok" });
+    observe("framique_payout_amount_minor", input.amountMinor, { method });
+    return toView(row, []);
+  });
 }
 
 export async function decidePayout(

@@ -1435,11 +1435,9 @@ export async function saveSeoBulk(
       });
     }
 
-    const { error } = await db
-      .from("seo_meta")
-      .upsert(payload as never, {
-        onConflict: "merchant_id,entity_type,entity_id",
-      });
+    const { error } = await db.from("seo_meta").upsert(payload as never, {
+      onConflict: "merchant_id,entity_type,entity_id",
+    });
     if (error) throw new SeoError("seo_bulk_save_failed", error.message);
 
     const { supabaseAdmin } =

@@ -30,11 +30,7 @@ function SignInPrompt({ ctx, body }: { ctx: WidgetCtx; body: string }) {
         {str("heading") || body}
       </Heading>
       <p className="mt-1 text-sm text-muted-foreground">
-        {t(
-          locale,
-          "Sign in to continue.",
-          "এগিয়ে যেতে সাইন ইন করুন।",
-        )}
+        {t(locale, "Sign in to continue.", "এগিয়ে যেতে সাইন ইন করুন।")}
       </p>
       <a
         href="/account"
@@ -63,9 +59,7 @@ function formatOrderDate(date: string | undefined, locale: string): string {
   if (!date) return "";
   const time = Date.parse(date);
   if (Number.isNaN(time)) return "";
-  return new Date(time).toLocaleDateString(
-    locale === "bn" ? "bn-BD" : "en-GB",
-  );
+  return new Date(time).toLocaleDateString(locale === "bn" ? "bn-BD" : "en-GB");
 }
 
 /**
@@ -148,13 +142,12 @@ export const ProfileCard: WidgetComponent = (ctx) => {
     return (
       <SignInPrompt
         ctx={ctx}
-        body={
-          str("heading") || t(ctx.locale, "Your profile", "আপনার প্রোফাইল")
-        }
+        body={str("heading") || t(ctx.locale, "Your profile", "আপনার প্রোফাইল")}
       />
     );
   }
-  const heading = str("heading") || t(ctx.locale, "Your profile", "আপনার প্রোফাইল");
+  const heading =
+    str("heading") || t(ctx.locale, "Your profile", "আপনার প্রোফাইল");
   return (
     <section className="rounded-fq-lg border border-border bg-card p-6">
       <div className="flex items-center gap-3">

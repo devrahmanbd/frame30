@@ -7,7 +7,9 @@
 
 let _nonce = "";
 
-export const setCurrentNonce = (n: string) => { _nonce = n; };
+export const setCurrentNonce = (n: string) => {
+  _nonce = n;
+};
 export const getCurrentNonce = () => _nonce;
 
 /**

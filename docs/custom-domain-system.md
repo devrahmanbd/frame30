@@ -24,12 +24,12 @@ Framique merchants can connect their own domains (e.g. `shop.example.com`) to th
 
 The system is split into four layers:
 
-| Layer | File | Responsibility |
-|-------|------|----------------|
-| **Pure logic** | `src/lib/domains.ts` | State machine rules, hostname validation, DNS instructions, quota — no I/O |
-| **Server engine** | `src/lib/domains.server.ts` | Database mutations, DNS-over-HTTPS, TLS edge, cron sweep |
-| **RPC boundary** | `src/lib/domains.functions.ts` | TanStack Start server functions — auth middleware + input validation |
-| **UI** | `src/routes/_authenticated/dashboard/settings_.domains.tsx` | Dashboard page — bilingual EN/BN |
+| Layer             | File                                                        | Responsibility                                                             |
+| ----------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **Pure logic**    | `src/lib/domains.ts`                                        | State machine rules, hostname validation, DNS instructions, quota — no I/O |
+| **Server engine** | `src/lib/domains.server.ts`                                 | Database mutations, DNS-over-HTTPS, TLS edge, cron sweep                   |
+| **RPC boundary**  | `src/lib/domains.functions.ts`                              | TanStack Start server functions — auth middleware + input validation       |
+| **UI**            | `src/routes/_authenticated/dashboard/settings_.domains.tsx` | Dashboard page — bilingual EN/BN                                           |
 
 ---
 
@@ -43,27 +43,27 @@ Pure, browser-safe domain logic. No database, no network. Everything is determin
 
 #### Constants
 
-| Export | Description |
-|--------|-------------|
-| `RESERVED_SUFFIXES` | Hostnames merchants can never claim: `framique.app`, `framique.dev`, `supabase.co`, `localhost` |
-| `LIVE_EDGE_CNAME` | `"framique.qubickle.com"` — single source of truth for DNS target |
-| `LIVE_EDGE_IPS` | `["88.99.250.99"]` — fallback A record targets |
-| `CHALLENGE_PREFIX` | `"_framique-challenge"` — TXT record prefix for ownership verification |
-| `MAX_AUTO_ATTEMPTS` | `40` — auto-polling stops after this many failed checks |
-| `DOMAIN_TRANSITIONS` | Allowed state machine edges |
-| `DOMAIN_STAGES` | Ordered checklist for progress rendering |
+| Export               | Description                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------------- |
+| `RESERVED_SUFFIXES`  | Hostnames merchants can never claim: `framique.app`, `framique.dev`, `supabase.co`, `localhost` |
+| `LIVE_EDGE_CNAME`    | `"framique.qubickle.com"` — single source of truth for DNS target                               |
+| `LIVE_EDGE_IPS`      | `["88.99.250.99"]` — fallback A record targets                                                  |
+| `CHALLENGE_PREFIX`   | `"_framique-challenge"` — TXT record prefix for ownership verification                          |
+| `MAX_AUTO_ATTEMPTS`  | `40` — auto-polling stops after this many failed checks                                         |
+| `DOMAIN_TRANSITIONS` | Allowed state machine edges                                                                     |
+| `DOMAIN_STAGES`      | Ordered checklist for progress rendering                                                        |
 
 #### Types
 
 ```typescript
 type DomainStatus =
-  | "pending_dns"   // Initial — waiting for DNS records
-  | "verifying"     // Checking DNS now
-  | "dns_verified"  // TXT + routing confirmed
-  | "issuing_cert"  // TLS certificate requested from edge
-  | "active"        // Serving HTTPS traffic
-  | "failed"        // Too many failed attempts
-  | "disabled";     // Paused by merchant
+  | "pending_dns" // Initial — waiting for DNS records
+  | "verifying" // Checking DNS now
+  | "dns_verified" // TXT + routing confirmed
+  | "issuing_cert" // TLS certificate requested from edge
+  | "active" // Serving HTTPS traffic
+  | "failed" // Too many failed attempts
+  | "disabled"; // Paused by merchant
 
 type CertStatus = "none" | "pending" | "issued" | "renewing" | "error";
 
@@ -80,17 +80,17 @@ type BillingPlanKey = "launch" | "growth" | "business" | "enterprise";
 
 #### Functions
 
-| Function | Signature | Purpose |
-|----------|-----------|---------|
-| `normalizeHostname` | `(input: string) => string` | Strips protocol/path/port, handles punycode, validates against reserved lists |
-| `isApex` | `(hostname: string) => boolean` | True if hostname is the registrable apex (handles multi-part TLDs like `.co.uk`) |
-| `challengeHost` | `(hostname: string) => string` | Returns `_framique-challenge.<hostname>` |
-| `dnsInstructions` | `(hostname, token, target) → DnsRecord[]` | Generates exact DNS records for registrar setup |
-| `canTransition` | `(from, to) → boolean` | Validates state machine edge legality |
-| `nextCheckDelaySeconds` | `(attempts) → number` | Exponential backoff: 1m → 2m → 4m … capped at 6h |
-| `certHealth` | `(expiresAt, now?) → CertHealth` | Computes certificate health state + days remaining |
-| `evaluateDns` | `(input) → { ownership, routing, reason }` | Compares observed DNS with expected records |
-| `domainQuotaForPlan` | `(plan) → number` | Owner policy 2026-09-19: exactly 1 per store on every plan (1 store = 1 domain) |
+| Function                | Signature                                  | Purpose                                                                          |
+| ----------------------- | ------------------------------------------ | -------------------------------------------------------------------------------- |
+| `normalizeHostname`     | `(input: string) => string`                | Strips protocol/path/port, handles punycode, validates against reserved lists    |
+| `isApex`                | `(hostname: string) => boolean`            | True if hostname is the registrable apex (handles multi-part TLDs like `.co.uk`) |
+| `challengeHost`         | `(hostname: string) => string`             | Returns `_framique-challenge.<hostname>`                                         |
+| `dnsInstructions`       | `(hostname, token, target) → DnsRecord[]`  | Generates exact DNS records for registrar setup                                  |
+| `canTransition`         | `(from, to) → boolean`                     | Validates state machine edge legality                                            |
+| `nextCheckDelaySeconds` | `(attempts) → number`                      | Exponential backoff: 1m → 2m → 4m … capped at 6h                                 |
+| `certHealth`            | `(expiresAt, now?) → CertHealth`           | Computes certificate health state + days remaining                               |
+| `evaluateDns`           | `(input) → { ownership, routing, reason }` | Compares observed DNS with expected records                                      |
+| `domainQuotaForPlan`    | `(plan) → number`                          | Owner policy 2026-09-19: exactly 1 per store on every plan (1 store = 1 domain)  |
 
 ### State Machine Transitions
 
@@ -128,13 +128,13 @@ type BillingPlanKey = "launch" | "growth" | "business" | "enterprise";
 
 ```typescript
 DOMAIN_TRANSITIONS = {
-  pending_dns:  ["verifying", "disabled", "failed"],
-  verifying:     ["dns_verified", "pending_dns", "failed", "disabled"],
-  dns_verified:  ["issuing_cert", "verifying", "failed", "disabled"],
-  issuing_cert:  ["active", "failed", "dns_verified", "disabled"],
-  active:        ["verifying", "failed", "disabled"],
-  failed:        ["verifying", "pending_dns", "disabled"],
-  disabled:      ["pending_dns"],
+  pending_dns: ["verifying", "disabled", "failed"],
+  verifying: ["dns_verified", "pending_dns", "failed", "disabled"],
+  dns_verified: ["issuing_cert", "verifying", "failed", "disabled"],
+  issuing_cert: ["active", "failed", "dns_verified", "disabled"],
+  active: ["verifying", "failed", "disabled"],
+  failed: ["verifying", "pending_dns", "disabled"],
+  disabled: ["pending_dns"],
 };
 ```
 
@@ -149,14 +149,14 @@ Two conditions must both pass:
 
 All validation errors throw `DomainInputError` with stable codes the UI can translate:
 
-| Code | Meaning |
-|------|---------|
-| `domain.empty` | Empty input |
-| `domain.invalid` | Failed label/regex validation |
-| `domain.needs_tld` | Single-label hostname (no `.com` etc.) |
-| `domain.too_long` | >253 characters |
-| `domain.ip_not_allowed` | Bare IP address rejected |
-| `domain.reserved` | Matches a reserved suffix |
+| Code                    | Meaning                                    |
+| ----------------------- | ------------------------------------------ |
+| `domain.empty`          | Empty input                                |
+| `domain.invalid`        | Failed label/regex validation              |
+| `domain.needs_tld`      | Single-label hostname (no `.com` etc.)     |
+| `domain.too_long`       | >253 characters                            |
+| `domain.ip_not_allowed` | Bare IP address rejected                   |
+| `domain.reserved`       | Matches a reserved suffix                  |
 | `domain.reserved_label` | First label is `admin`, `api`, `cdn`, etc. |
 
 ### Security Considerations
@@ -185,8 +185,8 @@ async function transition(
   domain: Pick<DomainRow, "id" | "merchant_id" | "status">,
   to: DomainStatus,
   patch: Partial<Update>,
-  meta: { reason?: string; detail?: Record<string, unknown>; actor?: string }
-): Promise<void>
+  meta: { reason?: string; detail?: Record<string, unknown>; actor?: string },
+): Promise<void>;
 ```
 
 - Refuses illegal edges via `canTransition()` — throws `DomainError(409)`
@@ -200,7 +200,7 @@ async function transition(
 export async function resolveDns(
   name: string,
   type: "TXT" | "CNAME" | "A",
-): Promise<string[]>
+): Promise<string[]>;
 ```
 
 - Uses **two independent DoH resolvers**: Cloudflare (`cloudflare-dns.com`) and Google (`dns.google`)
@@ -211,39 +211,42 @@ export async function resolveDns(
 
 #### Read Operations
 
-| Function | Signature | Purpose |
-|----------|-----------|---------|
-| `listDomains` | `(db, merchantId, userId) → ListResult` | Lists all domains for a merchant + edge config |
-| `domainHistory` | `(db, merchantId, userId, domainId) → Event[]` | Returns up to 50 audit events |
-| `toView` | `(row) → DomainView` | Maps DB row to API-friendly view with computed fields |
+| Function        | Signature                                      | Purpose                                               |
+| --------------- | ---------------------------------------------- | ----------------------------------------------------- |
+| `listDomains`   | `(db, merchantId, userId) → ListResult`        | Lists all domains for a merchant + edge config        |
+| `domainHistory` | `(db, merchantId, userId, domainId) → Event[]` | Returns up to 50 audit events                         |
+| `toView`        | `(row) → DomainView`                           | Maps DB row to API-friendly view with computed fields |
 
 #### Mutation Operations
 
-| Function | Rate Limit | Description |
-|----------|------------|-------------|
-| `addDomain` | `domains.write` | Normalizes hostname, checks plan quota, inserts row, logs event |
-| `verifyDomain` | `domains.verify` | One verification pass — safe for UI button and cron |
-| `requestCertificate` | — | Hands hostname to TLS edge via webhook |
-| `setPrimary` | `domains.write` | Sets domain as primary (must be `active`) |
-| `setRedirect` | `domains.write` | Toggles redirect-to-primary flag |
-| `setDomainEnabled` | `domains.write` | Pauses/resumes a domain |
-| `removeDomain` | `domains.write` | Hard-deletes domain row |
+| Function             | Rate Limit       | Description                                                     |
+| -------------------- | ---------------- | --------------------------------------------------------------- |
+| `addDomain`          | `domains.write`  | Normalizes hostname, checks plan quota, inserts row, logs event |
+| `verifyDomain`       | `domains.verify` | One verification pass — safe for UI button and cron             |
+| `requestCertificate` | —                | Hands hostname to TLS edge via webhook                          |
+| `setPrimary`         | `domains.write`  | Sets domain as primary (must be `active`)                       |
+| `setRedirect`        | `domains.write`  | Toggles redirect-to-primary flag                                |
+| `setDomainEnabled`   | `domains.write`  | Pauses/resumes a domain                                         |
+| `removeDomain`       | `domains.write`  | Hard-deletes domain row                                         |
 
 #### Edge Integration
 
-| Function | Purpose |
-|----------|---------|
-| `storeChallenge` | ACME http-01: stores token + keyAuthorization in `domain_challenges` (1h TTL) |
-| `readChallenge` | Serves challenge to ACME validator (plain HTTP) |
-| `applyCertResult` | Callback from edge after ACME order — transitions to `active` or `failed` |
+| Function          | Purpose                                                                       |
+| ----------------- | ----------------------------------------------------------------------------- |
+| `storeChallenge`  | ACME http-01: stores token + keyAuthorization in `domain_challenges` (1h TTL) |
+| `readChallenge`   | Serves challenge to ACME validator (plain HTTP)                               |
+| `applyCertResult` | Callback from edge after ACME order — transitions to `active` or `failed`     |
 
 #### Cron
 
 ```typescript
-export async function sweepDomains(subject?: string): Promise<DomainSweepResult>
+export async function sweepDomains(
+  subject?: string,
+): Promise<DomainSweepResult>;
 ```
 
 Runs periodically and:
+
 1. Finds all domains with `next_check_at ≤ now` in active states
 2. Runs `verifyDomain` on each (up to 50)
 3. Flags certificates expiring within 30 days → requests renewal
@@ -266,16 +269,16 @@ When a domain goes active or fails cert issuance, `notifyMerchant()` inserts a b
 
 ### Error Handling
 
-| Error Code | HTTP Status | When |
-|------------|-------------|------|
-| `domain.illegal_transition` | 409 | Invalid state machine edge |
-| `domain.dns_unavailable` | 503 | Both DoH resolvers failed |
-| `domain.not_found` | 404 | Domain doesn't exist or wrong tenant |
-| `domain.disabled` | 409 | Trying to verify a disabled domain |
-| `domain.limit_reached` | 409 | Plan quota exceeded |
-| `domain.taken` | 409 | Hostname already claimed (unique index) |
-| `domain.not_active` | 409 | Trying to set primary on inactive domain |
-| `domain.primary_cannot_redirect` | 409 | Primary domain can't redirect to itself |
+| Error Code                       | HTTP Status | When                                     |
+| -------------------------------- | ----------- | ---------------------------------------- |
+| `domain.illegal_transition`      | 409         | Invalid state machine edge               |
+| `domain.dns_unavailable`         | 503         | Both DoH resolvers failed                |
+| `domain.not_found`               | 404         | Domain doesn't exist or wrong tenant     |
+| `domain.disabled`                | 409         | Trying to verify a disabled domain       |
+| `domain.limit_reached`           | 409         | Plan quota exceeded                      |
+| `domain.taken`                   | 409         | Hostname already claimed (unique index)  |
+| `domain.not_active`              | 409         | Trying to set primary on inactive domain |
+| `domain.primary_cannot_redirect` | 409         | Primary domain can't redirect to itself  |
 
 ### Observability
 
@@ -291,22 +294,23 @@ When a domain goes active or fails cert issuance, `notifyMerchant()` inserts a b
 ### Purpose
 
 Thin RPC boundary using TanStack Start's `createServerFn`. Each function:
+
 1. Authenticates via `requireSupabaseAuth` middleware
 2. Resolves merchant ID via `scope()` (prevents cross-tenant access)
 3. Delegates to `domains.server.ts`
 
 ### Exports
 
-| Function | Method | Input | Delegates To |
-|----------|--------|-------|-------------|
-| `domainsListFn` | GET | — | `listDomains` |
-| `domainAddFn` | POST | `{ hostname: string }` | `addDomain` → `listDomains` |
-| `domainVerifyFn` | POST | `{ id: UUID }` | `verifyDomain` → `listDomains` |
-| `domainPrimaryFn` | POST | `{ id: UUID }` | `setPrimary` |
-| `domainRedirectFn` | POST | `{ id: UUID, redirect: boolean }` | `setRedirect` |
-| `domainEnabledFn` | POST | `{ id: UUID, enabled: boolean }` | `setDomainEnabled` |
-| `domainRemoveFn` | POST | `{ id: UUID }` | `removeDomain` |
-| `domainHistoryFn` | POST | `{ id: UUID }` | `domainHistory` |
+| Function           | Method | Input                             | Delegates To                   |
+| ------------------ | ------ | --------------------------------- | ------------------------------ |
+| `domainsListFn`    | GET    | —                                 | `listDomains`                  |
+| `domainAddFn`      | POST   | `{ hostname: string }`            | `addDomain` → `listDomains`    |
+| `domainVerifyFn`   | POST   | `{ id: UUID }`                    | `verifyDomain` → `listDomains` |
+| `domainPrimaryFn`  | POST   | `{ id: UUID }`                    | `setPrimary`                   |
+| `domainRedirectFn` | POST   | `{ id: UUID, redirect: boolean }` | `setRedirect`                  |
+| `domainEnabledFn`  | POST   | `{ id: UUID, enabled: boolean }`  | `setDomainEnabled`             |
+| `domainRemoveFn`   | POST   | `{ id: UUID }`                    | `removeDomain`                 |
+| `domainHistoryFn`  | POST   | `{ id: UUID }`                    | `domainHistory`                |
 
 ### Security
 
@@ -331,15 +335,15 @@ Dashboard page for merchants to manage custom domains. Bilingual (English / Beng
 
 ### Components Used
 
-| Component | Source | Purpose |
-|-----------|--------|---------|
-| `DomainStatusPill` | `DomainManager` | Color-coded status badge |
-| `CertBadge` | `DomainManager` | Certificate health indicator |
-| `DomainProgress` | `DomainManager` | Setup progress checklist |
-| `DnsRecordTable` | `DomainManager` | Copyable DNS records for registrar |
-| `ObservedRecords` | `DomainManager` | What the system currently sees in DNS |
-| `InlineNote` | `DomainManager` | Status/error/warning messages |
-| `SectionCard` | `DeveloperUi` | Card wrapper with title + hints |
+| Component          | Source          | Purpose                               |
+| ------------------ | --------------- | ------------------------------------- |
+| `DomainStatusPill` | `DomainManager` | Color-coded status badge              |
+| `CertBadge`        | `DomainManager` | Certificate health indicator          |
+| `DomainProgress`   | `DomainManager` | Setup progress checklist              |
+| `DnsRecordTable`   | `DomainManager` | Copyable DNS records for registrar    |
+| `ObservedRecords`  | `DomainManager` | What the system currently sees in DNS |
+| `InlineNote`       | `DomainManager` | Status/error/warning messages         |
+| `SectionCard`      | `DeveloperUi`   | Card wrapper with title + hints       |
 
 ### Features
 
@@ -368,18 +372,18 @@ When a merchant adds a domain, they receive these records to configure at their 
 
 ### For apex domains (`example.com`):
 
-| Type | Name | Value | Required |
-|------|------|-------|----------|
-| TXT | `_framique-challenge.example.com` | `framique-verification=<token>` | Yes |
-| A | `example.com` | `88.99.250.99` | Yes |
-| ALIAS | `example.com` | `framique.qubickle.com` | No (fallback) |
+| Type  | Name                              | Value                           | Required      |
+| ----- | --------------------------------- | ------------------------------- | ------------- |
+| TXT   | `_framique-challenge.example.com` | `framique-verification=<token>` | Yes           |
+| A     | `example.com`                     | `88.99.250.99`                  | Yes           |
+| ALIAS | `example.com`                     | `framique.qubickle.com`         | No (fallback) |
 
 ### For subdomains (`shop.example.com`):
 
-| Type | Name | Value | Required |
-|------|------|-------|----------|
-| TXT | `_framique-challenge.shop.example.com` | `framique-verification=<token>` | Yes |
-| CNAME | `shop.example.com` | `framique.qubickle.com` | Yes |
+| Type  | Name                                   | Value                           | Required |
+| ----- | -------------------------------------- | ------------------------------- | -------- |
+| TXT   | `_framique-challenge.shop.example.com` | `framique-verification=<token>` | Yes      |
+| CNAME | `shop.example.com`                     | `framique.qubickle.com`         | Yes      |
 
 ---
 
@@ -415,12 +419,12 @@ self-heal back through `verifying` on the next sweep.
 
 ## Plan-Based Quotas
 
-| Plan | Custom Domains |
-|------|----------------|
-| Launch | 1 |
-| Growth | 1 |
-| Business | 1 |
-| Enterprise | 1 |
+| Plan       | Custom Domains |
+| ---------- | -------------- |
+| Launch     | 1              |
+| Growth     | 1              |
+| Business   | 1              |
+| Enterprise | 1              |
 
 Owner policy 2026-09-19: 1 store = 1 domain on every plan. Single source is
 `domainQuotaForPlan()` (`src/lib/domains.ts`); `PLAN_DOMAIN_QUOTA`
@@ -433,16 +437,16 @@ Encrypt rate limits. Unknown/missing subscription → launch quota (fail-closed)
 
 ### Prometheus Metrics
 
-| Metric | Type | Labels |
-|--------|------|--------|
-| `framique_domain_added_total` | counter | — |
-| `framique_domain_verify_total` | counter | `outcome: verified \| pending \| failed` |
-| `framique_domain_transition_total` | counter | `from, to` |
-| `framique_domain_cert_request_total` | counter | `outcome: ok \| error` |
-| `framique_domain_cert_total` | counter | `outcome: issued \| error` |
-| `framique_domain_sweep_total` | counter | `bucket: checked \| verified \| failed \| renewals \| expired_challenges` |
-| `framique_domain_dns_total` | counter | `type, outcome: ok \| error` |
-| `framique_domain_dns_ms` | histogram | `type` |
+| Metric                               | Type      | Labels                                                                    |
+| ------------------------------------ | --------- | ------------------------------------------------------------------------- |
+| `framique_domain_added_total`        | counter   | —                                                                         |
+| `framique_domain_verify_total`       | counter   | `outcome: verified \| pending \| failed`                                  |
+| `framique_domain_transition_total`   | counter   | `from, to`                                                                |
+| `framique_domain_cert_request_total` | counter   | `outcome: ok \| error`                                                    |
+| `framique_domain_cert_total`         | counter   | `outcome: issued \| error`                                                |
+| `framique_domain_sweep_total`        | counter   | `bucket: checked \| verified \| failed \| renewals \| expired_challenges` |
+| `framique_domain_dns_total`          | counter   | `type, outcome: ok \| error`                                              |
+| `framique_domain_dns_ms`             | histogram | `type`                                                                    |
 
 ### Structured Logging
 

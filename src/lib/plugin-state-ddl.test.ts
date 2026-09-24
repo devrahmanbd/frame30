@@ -6,7 +6,16 @@ const files = globSync("supabase/migrations/*phase2j*plugin_state_ddl.sql");
 const sql = files.length ? readFileSync(files[0], "utf8") : "";
 describe("phase2j plugin_state DDL", () => {
   it("creates plugin_state with the code-used columns", () => {
-    for (const col of ["merchant_id", "plugin_id", "manifest", "scopes", "settings", "enabled", "auto_updates", "updated_at"])
+    for (const col of [
+      "merchant_id",
+      "plugin_id",
+      "manifest",
+      "scopes",
+      "settings",
+      "enabled",
+      "auto_updates",
+      "updated_at",
+    ])
       expect(sql).toContain(col);
   });
   it("enables RLS with tenant policies and grants", () => {

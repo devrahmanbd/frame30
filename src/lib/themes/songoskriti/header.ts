@@ -15,21 +15,6 @@ import type { SectionBuilder } from "./types";
  */
 export function buildHeaderMain(s: SectionBuilder): Section[] {
   return [
-    s("subbrand_bar", {
-      activeBrand: "Songoskriti",
-      tagline: "A Social Enterprise for Artisans of Bangladesh",
-      tagline_bn: "বাংলাদেশের তাঁতি ও কারিগরদের সামাজিক উদ্যোগ",
-      b1Name: "Songoskriti",
-      b1Href: "/",
-      b2Name: "Taaga",
-      b2Href: "/c/contemporary",
-      b3Name: "Taaga Man",
-      b3Href: "/c/men",
-      b4Name: "Herstory",
-      b4Href: "/c/heritage-handloom",
-      b5Name: "Earth",
-      b5Href: "/c/living",
-    }),
     s("mega_menu", {
       label: "Shop",
       label_bn: "কেনাকাটা",

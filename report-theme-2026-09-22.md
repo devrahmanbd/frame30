@@ -9,23 +9,23 @@ in sdk.md were re-checked and are CORRECT as written — audit claim rejected).
 
 Scores 0–10 (evidence in repo):
 
-| # | Dimension | Score | One-line justification |
-|---|---|---|---|
-| 1 | Token-driven design | 8 | Full token partial + dark set, panel-editable; container 1320px not in editor choices (`themes/clothing-heritage/tokens.ts:3-23`) |
-| 2 | Section prop coverage | 9 | ~90% visible copy is props; only size-table numbers/fit strings baked in (`homepage.ts:6-265`) |
-| 3 | Data-driven sections | 5 | Rails/grids bind live data; dept grid, textiles, lookbook, testimonials are static rows/placeholders |
-| 4 | Variants/slots | 6 | Layout/offset/cardVariant/columns/scrim/speed/flip exist; no per-section alignment/tone switch |
-| 5 | Responsive controls | 4 | Zero breakpoint/hidden overrides shipped; Tailwind + generic studio controls only |
-| 6 | Bilingual | 8 | EN+BN twins via withBn dict + explicit hero headline_bn; row fields need manual _bn |
-| 7 | Panel editability | 6 | Every widget has catalog+controls, but shapes diverge (panel-dead props below) |
-| 8 | Menu/location integration | 4 | Mega menu + footer links are hardcoded strings, not menu locations |
-| 9 | Presets/blueprints | 5 | One v2.0.0 preset + 6 secondary templates; no merchant-pickable starter variations |
-| 10 | Extensibility | 4 | New section needs core touches (SectionType union + catalog + widget map); only override is contextSlots |
+| #   | Dimension                 | Score | One-line justification                                                                                                            |
+| --- | ------------------------- | ----- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Token-driven design       | 8     | Full token partial + dark set, panel-editable; container 1320px not in editor choices (`themes/clothing-heritage/tokens.ts:3-23`) |
+| 2   | Section prop coverage     | 9     | ~90% visible copy is props; only size-table numbers/fit strings baked in (`homepage.ts:6-265`)                                    |
+| 3   | Data-driven sections      | 5     | Rails/grids bind live data; dept grid, textiles, lookbook, testimonials are static rows/placeholders                              |
+| 4   | Variants/slots            | 6     | Layout/offset/cardVariant/columns/scrim/speed/flip exist; no per-section alignment/tone switch                                    |
+| 5   | Responsive controls       | 4     | Zero breakpoint/hidden overrides shipped; Tailwind + generic studio controls only                                                 |
+| 6   | Bilingual                 | 8     | EN+BN twins via withBn dict + explicit hero headline_bn; row fields need manual _bn                                               |
+| 7   | Panel editability         | 6     | Every widget has catalog+controls, but shapes diverge (panel-dead props below)                                                    |
+| 8   | Menu/location integration | 4     | Mega menu + footer links are hardcoded strings, not menu locations                                                                |
+| 9   | Presets/blueprints        | 5     | One v2.0.0 preset + 6 secondary templates; no merchant-pickable starter variations                                                |
+| 10  | Extensibility             | 4     | New section needs core touches (SectionType union + catalog + widget map); only override is contextSlots                          |
 
 Panel-dead props (visible on site, uneditable in panel): department_grid
-heading/name_bn/count, heritage_story eyebrow/headline_bn/founder_*,
+heading/name_bn/count, heritage_story eyebrow/headline_bn/founder__,
 editorial_banner eyebrow/overlay, hero_carousel headline_bn/subhead_bn,
-trust_bar iN* flat vs items[] repeater.
+trust_bar iN_ flat vs items[] repeater.
 
 ## 2. Docs accuracy (docs/themes/creation.md + sdk.md vs code)
 

@@ -49,15 +49,15 @@ Self-hosted Supabase explicitly places backup and disaster-recovery responsibili
 
 These are the official Frame30 recovery targets.
 
-| System | RPO | RTO |
-|---|---:|---:|
-| PostgreSQL | ≤ 5 minutes | ≤ 30 minutes |
-| Supabase Auth data | ≤ 5 minutes | ≤ 30 minutes |
-| Merchant Storage | ≤ 15 minutes | ≤ 60 minutes |
-| Application configuration | ≤ 15 minutes | ≤ 30 minutes |
-| Redis | ≤ 15 minutes or reconstructable | ≤ 15 minutes |
-| Application runtime | 0 application-data RPO | ≤ 15 minutes |
-| Full platform disaster | ≤ 15 minutes for critical data | ≤ 2 hours |
+| System                    |                             RPO |          RTO |
+| ------------------------- | ------------------------------: | -----------: |
+| PostgreSQL                |                     ≤ 5 minutes | ≤ 30 minutes |
+| Supabase Auth data        |                     ≤ 5 minutes | ≤ 30 minutes |
+| Merchant Storage          |                    ≤ 15 minutes | ≤ 60 minutes |
+| Application configuration |                    ≤ 15 minutes | ≤ 30 minutes |
+| Redis                     | ≤ 15 minutes or reconstructable | ≤ 15 minutes |
+| Application runtime       |          0 application-data RPO | ≤ 15 minutes |
+| Full platform disaster    |  ≤ 15 minutes for critical data |    ≤ 2 hours |
 
 ### Definitions
 
@@ -1809,20 +1809,20 @@ Unknown backup age                      0
 
 This is the only authoritative recovery schedule.
 
-| Frequency | Operation | Owner |
-|---|---|---|
-| Continuous | PostgreSQL WAL/PITR | DBO |
-| Continuous/near-continuous | Storage version/replication | DBO |
-| Daily | Full PostgreSQL backup | DBO |
-| Daily | Logical PostgreSQL backup | DBO |
-| Daily | Storage reconciliation/backup verification | DBO |
-| Daily | Configuration snapshot/reconciliation | DO |
-| Daily | Backup integrity verification | DBO |
-| Weekly | Automated restore smoke test | DBO |
-| Monthly | Full PostgreSQL recovery drill | DBO |
-| Quarterly | Full platform disaster recovery exercise | PL + DBO + DO |
-| Quarterly | Recovery credentials/runbook review | SO + PL |
-| Annually | Full disaster architecture review | PL + SO + DBO |
+| Frequency                  | Operation                                  | Owner         |
+| -------------------------- | ------------------------------------------ | ------------- |
+| Continuous                 | PostgreSQL WAL/PITR                        | DBO           |
+| Continuous/near-continuous | Storage version/replication                | DBO           |
+| Daily                      | Full PostgreSQL backup                     | DBO           |
+| Daily                      | Logical PostgreSQL backup                  | DBO           |
+| Daily                      | Storage reconciliation/backup verification | DBO           |
+| Daily                      | Configuration snapshot/reconciliation      | DO            |
+| Daily                      | Backup integrity verification              | DBO           |
+| Weekly                     | Automated restore smoke test               | DBO           |
+| Monthly                    | Full PostgreSQL recovery drill             | DBO           |
+| Quarterly                  | Full platform disaster recovery exercise   | PL + DBO + DO |
+| Quarterly                  | Recovery credentials/runbook review        | SO + PL       |
+| Annually                   | Full disaster architecture review          | PL + SO + DBO |
 
 No duplicate cadence definitions elsewhere in this plan override this table.
 
@@ -1830,22 +1830,22 @@ No duplicate cadence definitions elsewhere in this plan override this table.
 
 # 67. Ownership Matrix
 
-| Asset/process | Accountable owner | Operational owner |
-|---|---|---|
-| PostgreSQL PITR | DBO | DBO |
-| PostgreSQL full backup | DBO | DBO |
-| Logical DB backup | DBO | DBO |
-| Storage backup | DBO | DBO |
-| Redis recovery | AO | AO |
-| Configuration recovery | DO | DO |
-| Release artifact recovery | PL | DO |
-| Backup repository | DBO | DO |
-| Recovery credentials | SO | SO |
-| Recovery host | DO | DO |
-| Restore automation | DBO | DO |
-| Recovery drills | DBO | DBO |
-| Disaster exercises | PL | DBO + DO |
-| Recovery incident | IRO | IRO |
+| Asset/process             | Accountable owner | Operational owner |
+| ------------------------- | ----------------- | ----------------- |
+| PostgreSQL PITR           | DBO               | DBO               |
+| PostgreSQL full backup    | DBO               | DBO               |
+| Logical DB backup         | DBO               | DBO               |
+| Storage backup            | DBO               | DBO               |
+| Redis recovery            | AO                | AO                |
+| Configuration recovery    | DO                | DO                |
+| Release artifact recovery | PL                | DO                |
+| Backup repository         | DBO               | DO                |
+| Recovery credentials      | SO                | SO                |
+| Recovery host             | DO                | DO                |
+| Restore automation        | DBO               | DO                |
+| Recovery drills           | DBO               | DBO               |
+| Disaster exercises        | PL                | DBO + DO          |
+| Recovery incident         | IRO               | IRO               |
 
 ---
 

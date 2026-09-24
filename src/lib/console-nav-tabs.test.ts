@@ -24,7 +24,9 @@ describe("CMS & Dashboard Navigation Hierarchy", () => {
   it("Categories menu is named Category (not Organisation)", () => {
     const products = ADMIN_NAV.find((g) => g.key === "products");
     expect(products).toBeDefined();
-    const catItem = products!.items.find((i) => i.to === "/dashboard/categories");
+    const catItem = products!.items.find(
+      (i) => i.to === "/dashboard/categories",
+    );
     expect(catItem).toBeDefined();
     expect(catItem!.en).toBe("Category");
   });

@@ -364,6 +364,4 @@ describe("Phase 5 — publish and release wiring", () => {
     expect(entry?.script).toBe("scripts/responsive-sweep.mjs");
     expect(entry?.npm).toBe("responsive:sweep");
   });
-
-
 });

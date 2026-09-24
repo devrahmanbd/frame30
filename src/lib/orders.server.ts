@@ -456,11 +456,13 @@ export async function loadOrder(
     log("warn", "order.lookup_failed", { orderId, reason: error.message });
     return null;
   }
-  const row = order as (Record<string, unknown> & {
-    access_token?: string;
-    idempotency_key?: string;
-    merchant_id?: string;
-  }) | null;
+  const row = order as
+    | (Record<string, unknown> & {
+        access_token?: string;
+        idempotency_key?: string;
+        merchant_id?: string;
+      })
+    | null;
   if (
     !row ||
     typeof row.access_token !== "string" ||
@@ -493,11 +495,11 @@ export async function loadOrder(
   return {
     order: publicOrder,
     items: (items ?? []) as Row<"order_items">[],
-    events: ((events ?? []) as {
+    events: (events ?? []) as {
       event_type: string;
       note: string | null;
       created_at: string;
-    }[]),
+    }[],
     merchant: (merchant ?? null) as { name: string; slug: string } | null,
   } as PublicOrderView;
 }

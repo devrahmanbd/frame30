@@ -181,8 +181,8 @@ describe("activateTheme with draft-only versions", () => {
       "user-9",
     );
     expect(out.id).toBe(THEME);
-    expect(
-      db.rows("store_themes").find((r) => r.id === THEME)!.is_active,
-    ).toBe(true);
+    expect(db.rows("store_themes").find((r) => r.id === THEME)!.is_active).toBe(
+      true,
+    );
   });
 });

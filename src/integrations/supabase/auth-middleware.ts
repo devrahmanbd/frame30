@@ -44,7 +44,9 @@ const claimsCache = new Map<string, CachedClaims>();
 const CLAIMS_CACHE_MAX = 500;
 const CLAIMS_CACHE_TTL_MS = 60_000; // 60 seconds
 
-function getCachedClaims(token: string): (Record<string, unknown> & { sub: string }) | null {
+function getCachedClaims(
+  token: string,
+): (Record<string, unknown> & { sub: string }) | null {
   const entry = claimsCache.get(token);
   if (!entry) return null;
   if (Date.now() > entry.expiresAt) {
@@ -161,4 +163,3 @@ export const requireSupabaseAuth = createMiddleware({
     },
   });
 });
-

@@ -105,7 +105,9 @@ describe("section style panel effect toggles", () => {
     // the serializers must handle the new keys without mangling the old ones.
     const bag = { atmosphere: "wash", surface: "glass", advPadY: 64 };
     expect(advancedAttrs(bag).style["paddingBlock"]).toBe("64px");
-    expect(resolveProps({ id: "x", type: "hero", props: bag }, "mobile")).toEqual(
+    expect(
+      resolveProps({ id: "x", type: "hero", props: bag }, "mobile"),
+    ).toEqual(
       expect.objectContaining({ atmosphere: "wash", surface: "glass" }),
     );
   });

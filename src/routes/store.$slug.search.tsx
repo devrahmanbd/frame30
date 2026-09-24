@@ -76,7 +76,10 @@ export const Route = createFileRoute("/store/$slug/search")({
       filtered: activeFilterCount(state) > 0 || state.page > 1,
     });
     return buildSearchHead({
-      origin: loaderData && "origin" in loaderData ? (loaderData.origin as string | null) : null,
+      origin:
+        loaderData && "origin" in loaderData
+          ? (loaderData.origin as string | null)
+          : null,
       path: policy.canonicalPath,
       storePath: `/store/${params.slug}`,
       storeName: params.slug,
@@ -505,28 +508,32 @@ function SearchPage() {
 
   return (
     <PluginLayer plugins={chrome?.installedPlugins ?? []}>
-    <ThemeChrome
-      template="search"
-      storeSlug={slug}
-      merchantId={chrome?.merchant.id ?? null}
-      ast={chrome?.ast ?? null}
-      tokens={chrome?.tokens ?? null}
-      siteKit={chrome?.siteKit ?? null}
-      chrome={
-        <>
-          <StoreHeader slug={slug} name={chrome?.merchant.name ?? slug} menus={chrome?.menus} />
-          {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
-          {/* <SupportWidget slug={slug} /> */}
-        </>
-      }
-      productSlot={listing}
-      fallback={
-        <>
-          {heading}
-          {listing}
-        </>
-      }
-    />
+      <ThemeChrome
+        template="search"
+        storeSlug={slug}
+        merchantId={chrome?.merchant.id ?? null}
+        ast={chrome?.ast ?? null}
+        tokens={chrome?.tokens ?? null}
+        siteKit={chrome?.siteKit ?? null}
+        chrome={
+          <>
+            <StoreHeader
+              slug={slug}
+              name={chrome?.merchant.name ?? slug}
+              menus={chrome?.menus}
+            />
+            {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+            {/* <SupportWidget slug={slug} /> */}
+          </>
+        }
+        productSlot={listing}
+        fallback={
+          <>
+            {heading}
+            {listing}
+          </>
+        }
+      />
     </PluginLayer>
   );
 }

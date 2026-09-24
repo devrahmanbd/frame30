@@ -217,17 +217,15 @@ async function recordArchiveRedirect(
 ) {
   if (fromPath === toPath) return;
   try {
-    await loose(db)
-      .from("url_redirects")
-      .upsert(
-        {
-          merchant_id: merchantId,
-          from_path: fromPath,
-          to_path: toPath,
-          status_code: 301,
-        },
-        { onConflict: "merchant_id,from_path" },
-      );
+    await loose(db).from("url_redirects").upsert(
+      {
+        merchant_id: merchantId,
+        from_path: fromPath,
+        to_path: toPath,
+        status_code: 301,
+      },
+      { onConflict: "merchant_id,from_path" },
+    );
   } catch (error) {
     log("warn", "taxonomy.redirect_failed", {
       reason: String((error as Error)?.message ?? error).slice(0, 160),

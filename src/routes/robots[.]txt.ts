@@ -15,15 +15,13 @@ export const Route = createFileRoute("/robots.txt")({
         // route, rebased to root paths). Platform hosts fall through to the
         // marketing document below.
         try {
-          const { resolveStorefrontHost } = await import(
-            "@/lib/storefront-host.server"
-          );
+          const { resolveStorefrontHost } =
+            await import("@/lib/storefront-host.server");
           const host = await resolveStorefrontHost();
           if (host) {
             try {
-              const { renderStoreRobotsTxt } = await import(
-                "@/lib/sitemap-config.server"
-              );
+              const { renderStoreRobotsTxt } =
+                await import("@/lib/sitemap-config.server");
               const doc = await renderStoreRobotsTxt(
                 host.merchantSlug,
                 origin,

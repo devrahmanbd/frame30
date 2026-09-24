@@ -98,24 +98,24 @@ export async function loadContentDesk(
           return { data: null };
         }
       })(),
-    safeRpc("content_desk_authors", { _merchant_id: merchantId }),
-    safeRpc("content_desk_counts", {
-      _merchant_id: merchantId,
-      _kind: kind,
-    }),
-    (async () => {
-      try {
-        return await db
-          .from("seo_meta")
-          .select("entity_type, entity_id, score, focus_keyword")
-          .eq("merchant_id", merchantId)
-          .eq("entity_type", kind === "page" ? "page" : "article")
-          .limit(LIST_LIMIT);
-      } catch {
-        return { data: [] };
-      }
-    })(),
-  ]);
+      safeRpc("content_desk_authors", { _merchant_id: merchantId }),
+      safeRpc("content_desk_counts", {
+        _merchant_id: merchantId,
+        _kind: kind,
+      }),
+      (async () => {
+        try {
+          return await db
+            .from("seo_meta")
+            .select("entity_type, entity_id, score, focus_keyword")
+            .eq("merchant_id", merchantId)
+            .eq("entity_type", kind === "page" ? "page" : "article")
+            .limit(LIST_LIMIT);
+        } catch {
+          return { data: [] };
+        }
+      })(),
+    ]);
 
   const authors = new Map<string, string>();
   for (const a of (authorsRes?.data ?? []) as {
@@ -274,7 +274,9 @@ export async function loadContentDesk(
   };
 
   const counts =
-    countsRes?.data && typeof countsRes.data === "object" && Object.keys(countsRes.data).length > 0
+    countsRes?.data &&
+    typeof countsRes.data === "object" &&
+    Object.keys(countsRes.data).length > 0
       ? parseCounts(countsRes.data)
       : computedCounts;
 
@@ -810,17 +812,15 @@ async function recordRedirect(
 ) {
   const from = kind === "page" ? `/pages/${fromSlug}` : `/blog/${fromSlug}`;
   const to = kind === "page" ? `/pages/${toSlug}` : `/blog/${toSlug}`;
-  const { error } = await loose(db)
-    .from("url_redirects")
-    .upsert(
-      {
-        merchant_id: merchantId,
-        from_path: from,
-        to_path: to,
-        status_code: 301,
-      },
-      { onConflict: "merchant_id,from_path" },
-    );
+  const { error } = await loose(db).from("url_redirects").upsert(
+    {
+      merchant_id: merchantId,
+      from_path: from,
+      to_path: to,
+      status_code: 301,
+    },
+    { onConflict: "merchant_id,from_path" },
+  );
   if (error)
     log("warn", "content_desk.redirect_failed", {
       merchant_id: merchantId,

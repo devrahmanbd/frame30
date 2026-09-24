@@ -49,7 +49,11 @@ describe("StudioNodes", () => {
             el: "container",
             settings: {},
             children: [
-              { id: "h1", el: "heading", settings: { text: "Nested", level: 2 } },
+              {
+                id: "h1",
+                el: "heading",
+                settings: { text: "Nested", level: 2 },
+              },
             ],
           },
         ],

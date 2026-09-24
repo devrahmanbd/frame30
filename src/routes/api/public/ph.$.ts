@@ -20,9 +20,7 @@ export const Route = createFileRoute("/api/public/ph/$")({
               .split("/")
               .filter(Boolean)
           : [];
-        const seed = placeholderSeed(
-          decodeURIComponent(parts.at(-1) ?? ""),
-        );
+        const seed = placeholderSeed(decodeURIComponent(parts.at(-1) ?? ""));
         const dept = parts.length > 1 ? placeholderSeed(parts[0]) : null;
         return new Response(placeholderSvg(seed, dept), {
           status: 200,

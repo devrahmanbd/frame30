@@ -17,7 +17,15 @@ function slugs(cat: DemoCatalog) {
 describe("per-vertical demo catalogues", () => {
   it("ships the seven vertical catalogues", () => {
     expect(keys.sort()).toEqual(
-      ["apparel", "beauty", "electronics", "general", "handloom", "marketplace", "songoskriti"].sort(),
+      [
+        "apparel",
+        "beauty",
+        "electronics",
+        "general",
+        "handloom",
+        "marketplace",
+        "songoskriti",
+      ].sort(),
     );
   });
 
@@ -76,7 +84,8 @@ describe("per-vertical demo catalogues", () => {
     expect(text("handloom")).toMatch(/handloom|jamdani|silk|taant|khadi/i);
     expect(text("songoskriti")).toMatch(/jamdani|panjabi|kantha|handloom/i);
     expect(text("general")).toMatch(/fresh|organic|rice|kg|harvest|farm/i);
-    expect(DEMO_CATALOGS.marketplace.categories.length).toBeGreaterThanOrEqual(3);
+    expect(DEMO_CATALOGS.marketplace.categories.length).toBeGreaterThanOrEqual(
+      3,
+    );
   });
 });
-

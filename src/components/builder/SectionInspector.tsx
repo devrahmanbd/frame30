@@ -261,7 +261,9 @@ export function SectionInspector({
   const activePanels = contentOnly
     ? allActivePanels.filter((key) => key === "content")
     : allActivePanels;
-  const current = activePanels.includes(panel) ? panel : (activePanels[0] ?? "content");
+  const current = activePanels.includes(panel)
+    ? panel
+    : (activePanels[0] ?? "content");
 
   const renderField = (field: Field) => {
     const id = `${section.id}-${field.key}-${device}`;
@@ -575,7 +577,9 @@ export function SectionInspector({
         ) : field.kind === "menu" ? (
           <MenuBuilder
             value={Array.isArray(value) ? (value as unknown as MenuItem[]) : []}
-            onChange={(items) => onChange(field.key, items as unknown as PropValue, device)}
+            onChange={(items) =>
+              onChange(field.key, items as unknown as PropValue, device)
+            }
           />
         ) : (
           <input

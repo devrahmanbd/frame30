@@ -11,10 +11,7 @@
  * merchant in the table.
  */
 import { describe, expect, it } from "vitest";
-import {
-  lookupRedirect,
-  resolveTenantForUrl,
-} from "./url-resolve.server";
+import { lookupRedirect, resolveTenantForUrl } from "./url-resolve.server";
 
 type Row = Record<string, unknown>;
 
@@ -24,7 +21,8 @@ function fakeDb(tables: Record<string, Row[]>) {
     const rows = () => tables[table]!.filter((r) => filters.every((f) => f(r)));
     const builder: Record<string, (...a: never[]) => unknown> = {
       select: () => builder,
-      eq: (col: string, val: unknown) => query(table, [...filters, (r) => r[col] === val]),
+      eq: (col: string, val: unknown) =>
+        query(table, [...filters, (r) => r[col] === val]),
       limit: () => builder,
       maybeSingle: async () => ({ data: rows()[0] ?? null }),
       // Best-effort hit accounting: `.update({...}).eq("id", …)` thenable.
@@ -44,11 +42,39 @@ const MERCHANT_B = "merchant-b";
 function redirectTables(): Record<string, Row[]> {
   return {
     url_redirects: [
-      { id: "a1", merchant_id: MERCHANT_A, from_path: "/old-sale", to_path: "/new-a", status_code: 301, hits: 0 },
-      { id: "b1", merchant_id: MERCHANT_B, from_path: "/old-sale", to_path: "/new-b", status_code: 301, hits: 0 },
+      {
+        id: "a1",
+        merchant_id: MERCHANT_A,
+        from_path: "/old-sale",
+        to_path: "/new-a",
+        status_code: 301,
+        hits: 0,
+      },
+      {
+        id: "b1",
+        merchant_id: MERCHANT_B,
+        from_path: "/old-sale",
+        to_path: "/new-b",
+        status_code: 301,
+        hits: 0,
+      },
       // Chain fixtures: A owns /a→/b, B owns /b→/c. A's /a must stop at /b.
-      { id: "a2", merchant_id: MERCHANT_A, from_path: "/a", to_path: "/b", status_code: 301, hits: 0 },
-      { id: "b2", merchant_id: MERCHANT_B, from_path: "/b", to_path: "/c", status_code: 301, hits: 0 },
+      {
+        id: "a2",
+        merchant_id: MERCHANT_A,
+        from_path: "/a",
+        to_path: "/b",
+        status_code: 301,
+        hits: 0,
+      },
+      {
+        id: "b2",
+        merchant_id: MERCHANT_B,
+        from_path: "/b",
+        to_path: "/c",
+        status_code: 301,
+        hits: 0,
+      },
     ],
     merchants: [
       { id: MERCHANT_A, slug: "shop-a", status: "active" },
@@ -129,7 +155,12 @@ describe("resolveTenantForUrl miss attribution", () => {
     const db = dbOf({ merchants: merchants() });
     const resolveHost = async () => ({ merchantId: MERCHANT_B });
     await expect(
-      resolveTenantForUrl(db, "/journal/2026/08/x", "shop-b.example.com", resolveHost),
+      resolveTenantForUrl(
+        db,
+        "/journal/2026/08/x",
+        "shop-b.example.com",
+        resolveHost,
+      ),
     ).resolves.toBe(MERCHANT_B);
   });
 
@@ -137,7 +168,12 @@ describe("resolveTenantForUrl miss attribution", () => {
     const db = dbOf({ merchants: merchants() });
     const resolveHost = async () => null;
     await expect(
-      resolveTenantForUrl(db, "/journal/2026/08/x", "unknown.example.com", resolveHost),
+      resolveTenantForUrl(
+        db,
+        "/journal/2026/08/x",
+        "unknown.example.com",
+        resolveHost,
+      ),
     ).resolves.toBeNull();
     await expect(
       resolveTenantForUrl(db, "/journal/2026/08/x", null, resolveHost),

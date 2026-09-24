@@ -179,29 +179,29 @@ export function EditorTopBar({
           </a>
         )}
         {!hideDevice && (
-        <div
-          role="group"
-          aria-label={t("Preview device", "প্রিভিউ ডিভাইস")}
-          className="hidden items-center rounded-fq-md border border-border p-0.5 md:flex"
-        >
-          {(
-            [
-              ["desktop", Monitor, t("Desktop", "ডেস্কটপ")],
-              ["tablet", Tablet, t("Tablet", "ট্যাবলেট")],
-              ["mobile", Smartphone, t("Mobile", "মোবাইল")],
-            ] as const
-          ).map(([id, Icon, label]) => (
-            <IconButton
-              key={id}
-              label={label}
-              active={device === id}
-              onClick={() => onDevice(id)}
-              className="size-8"
-            >
-              <Icon className="size-3.5" aria-hidden />
-            </IconButton>
-          ))}
-        </div>
+          <div
+            role="group"
+            aria-label={t("Preview device", "প্রিভিউ ডিভাইস")}
+            className="hidden items-center rounded-fq-md border border-border p-0.5 md:flex"
+          >
+            {(
+              [
+                ["desktop", Monitor, t("Desktop", "ডেস্কটপ")],
+                ["tablet", Tablet, t("Tablet", "ট্যাবলেট")],
+                ["mobile", Smartphone, t("Mobile", "মোবাইল")],
+              ] as const
+            ).map(([id, Icon, label]) => (
+              <IconButton
+                key={id}
+                label={label}
+                active={device === id}
+                onClick={() => onDevice(id)}
+                className="size-8"
+              >
+                <Icon className="size-3.5" aria-hidden />
+              </IconButton>
+            ))}
+          </div>
         )}
         <IconButton
           label={t("Settings sidebar", "সেটিংস সাইডবার")}

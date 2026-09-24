@@ -115,17 +115,20 @@ describe("PluginFooterMounts", () => {
       },
     };
     const html = render([floatingWa]);
-    expect(html).toContain("fixed");
-    expect(html).toContain("right-4");
-    expect(html).not.toContain("left-4");
+    expect(html).toContain("position:fixed");
+    expect(html).toContain("bottom:16px");
+    expect(html).toContain("right:16px");
+    expect(html).toContain("width:88px");
   });
 
-  it("honours bottom-left for floating widgets", () => {
+  it("honours corners and pixel offsets from plugin control", () => {
     const floatingWa: InstalledPlugin = {
       ...WA,
       settings: {
         phone_number: "8801712345678",
-        button_position: "bottom-left",
+        button_position: "top-left",
+        offset_x: 32,
+        offset_y: 8,
       },
       manifest: {
         ...WA.manifest,
@@ -133,8 +136,24 @@ describe("PluginFooterMounts", () => {
       },
     };
     const html = render([floatingWa]);
-    expect(html).toContain("left-4");
-    expect(html).not.toContain("right-4");
+    expect(html).toContain("top:8px");
+    expect(html).toContain("left:32px");
+    expect(html).not.toContain("bottom:");
+    expect(html).not.toContain("right:");
+  });
+
+  it("clamps offsets into 0–48px", () => {
+    const floatingWa: InstalledPlugin = {
+      ...WA,
+      settings: { offset_x: 999, offset_y: -5 },
+      manifest: {
+        ...WA.manifest,
+        widgets: [{ ...WA.manifest.widgets[0]!, floating: true }],
+      },
+    };
+    const html = render([floatingWa]);
+    expect(html).toContain("right:48px");
+    expect(html).toContain("bottom:0");
   });
 
   it("keeps non-floating widgets in normal flow", () => {

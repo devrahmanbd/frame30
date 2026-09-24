@@ -127,7 +127,4 @@ describe("AST v2 → v3 migration", () => {
     expect(node["items"]).toBeUndefined();
     expect(node["children"]).toHaveLength(1);
   });
-
 });
-
-

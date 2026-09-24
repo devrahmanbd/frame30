@@ -81,45 +81,45 @@ function CartPage() {
   const { slug, merchant } = data;
   return (
     <PluginLayer plugins={data.installedPlugins}>
-    <ThemeChrome
-      template="cart"
-      storeSlug={slug}
-      merchantId={merchant.id}
-      ast={data.ast}
-      tokens={data.tokens}
-      siteKit={data.siteKit}
-      chrome={
-        <>
-          <StoreHeader slug={slug} name={merchant.name} menus={data.menus} />
-        </>
-      }
-      contextSlots={{
-        cart_lines: null,
-        cart_summary: null,
-        cart_drawer: null,
-        checkout_steps: null,
-        payment_methods: null,
-      }}
-      fallback={
-        <section className="rounded-fq-lg border border-border bg-card p-8 text-center">
-          <h1 className="font-bangla-display text-2xl font-bold">
-            {t("Your cart", "আপনার কার্ট")}
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {t(
-              "Continue to checkout to review your items and pay.",
-              "আইটেম দেখতে ও পেমেন্ট করতে চেকআউটে যান।",
-            )}
-          </p>
-          <Link
-            to="/checkout"
-            className="mt-4 inline-block min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium leading-[2.75rem] text-primary-foreground"
-          >
-            {t("Go to checkout", "চেকআউটে যান")}
-          </Link>
-        </section>
-      }
-    />
+      <ThemeChrome
+        template="cart"
+        storeSlug={slug}
+        merchantId={merchant.id}
+        ast={data.ast}
+        tokens={data.tokens}
+        siteKit={data.siteKit}
+        chrome={
+          <>
+            <StoreHeader slug={slug} name={merchant.name} menus={data.menus} />
+          </>
+        }
+        contextSlots={{
+          cart_lines: null,
+          cart_summary: null,
+          cart_drawer: null,
+          checkout_steps: null,
+          payment_methods: null,
+        }}
+        fallback={
+          <section className="rounded-fq-lg border border-border bg-card p-8 text-center">
+            <h1 className="font-bangla-display text-2xl font-bold">
+              {t("Your cart", "আপনার কার্ট")}
+            </h1>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t(
+                "Continue to checkout to review your items and pay.",
+                "আইটেম দেখতে ও পেমেন্ট করতে চেকআউটে যান।",
+              )}
+            </p>
+            <Link
+              to="/checkout"
+              className="mt-4 inline-block min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium leading-[2.75rem] text-primary-foreground"
+            >
+              {t("Go to checkout", "চেকআউটে যান")}
+            </Link>
+          </section>
+        }
+      />
     </PluginLayer>
   );
 }

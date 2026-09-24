@@ -155,7 +155,10 @@ function SwatchCard({
   return (
     <div className="flex flex-col gap-1.5 rounded-fq-md border border-border/70 bg-background/60 p-2.5 shadow-xs transition-colors hover:border-border">
       <div className="flex items-center justify-between text-xs">
-        <label htmlFor={id} className="font-medium text-foreground cursor-pointer">
+        <label
+          htmlFor={id}
+          className="font-medium text-foreground cursor-pointer"
+        >
           {label}
         </label>
         <span className="font-mono text-[10px] font-semibold text-muted-foreground tabular-nums uppercase">
@@ -205,7 +208,10 @@ export function TokenEditor({ tokens, onChange }: Props) {
       {/* 1. COLOR & BRAND PALETTE */}
       <SectionGroup
         title={t("Color Palette & Themes", "কালার প্যালেট ও থিম")}
-        subtitle={t("Brand identity, accents, surface & ink tokens", "ব্র্যান্ড পরিচিতি, অ্যাকসেন্ট, সারফেস ও টেক্সট")}
+        subtitle={t(
+          "Brand identity, accents, surface & ink tokens",
+          "ব্র্যান্ড পরিচিতি, অ্যাকসেন্ট, সারফেস ও টেক্সট",
+        )}
       >
         {/* Light / Dark Mode Segmented Switch */}
         <div className="flex items-center justify-between gap-2">
@@ -229,7 +235,13 @@ export function TokenEditor({ tokens, onChange }: Props) {
               >
                 {mode === "light" ? (
                   <>
-                    <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      className="size-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <circle cx="12" cy="12" r="4" />
                       <path d="M12 2v2" />
                       <path d="M12 20v2" />
@@ -244,7 +256,13 @@ export function TokenEditor({ tokens, onChange }: Props) {
                   </>
                 ) : (
                   <>
-                    <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg
+                      className="size-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
                     </svg>
                     <span>{t("Dark", "ডার্ক")}</span>
@@ -278,10 +296,18 @@ export function TokenEditor({ tokens, onChange }: Props) {
               onClick={() => onChange({ dark: DEFAULT_DARK_TOKENS })}
               className="inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 cursor-pointer"
             >
-              <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                className="size-3.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
               </svg>
-              <span>{t("Enable Dark Mode Tokens", "ডার্ক মোড টোকেন যোগ করুন")}</span>
+              <span>
+                {t("Enable Dark Mode Tokens", "ডার্ক মোড টোকেন যোগ করুন")}
+              </span>
             </button>
           </div>
         ) : (
@@ -321,10 +347,22 @@ export function TokenEditor({ tokens, onChange }: Props) {
                           </span>
                         </div>
                         <div className="flex items-center gap-1 shrink-0 ml-2">
-                          <span className="size-4 rounded-full border border-border shadow-xs" style={{ backgroundColor: p.brand }} />
-                          <span className="size-4 rounded-full border border-border shadow-xs" style={{ backgroundColor: p.accent }} />
-                          <span className="size-4 rounded-full border border-border shadow-xs" style={{ backgroundColor: p.surface }} />
-                          <span className="size-4 rounded-full border border-border shadow-xs" style={{ backgroundColor: p.ink }} />
+                          <span
+                            className="size-4 rounded-full border border-border shadow-xs"
+                            style={{ backgroundColor: p.brand }}
+                          />
+                          <span
+                            className="size-4 rounded-full border border-border shadow-xs"
+                            style={{ backgroundColor: p.accent }}
+                          />
+                          <span
+                            className="size-4 rounded-full border border-border shadow-xs"
+                            style={{ backgroundColor: p.surface }}
+                          />
+                          <span
+                            className="size-4 rounded-full border border-border shadow-xs"
+                            style={{ backgroundColor: p.ink }}
+                          />
                         </div>
                       </button>
                     );
@@ -370,9 +408,7 @@ export function TokenEditor({ tokens, onChange }: Props) {
                 label={t("Text / Ink", "টেক্সট")}
                 value={String(active.ink)}
                 onChange={(next) =>
-                  editingDark
-                    ? setDark({ ink: next })
-                    : onChange({ ink: next })
+                  editingDark ? setDark({ ink: next }) : onChange({ ink: next })
                 }
               />
             </div>
@@ -395,10 +431,16 @@ export function TokenEditor({ tokens, onChange }: Props) {
       {/* 2. TYPOGRAPHY STUDIO */}
       <SectionGroup
         title={t("Typography & Font Studio", "টাইপোগ্রাফি ও ফন্ট স্টুডিও")}
-        subtitle={t("Display headings, body text, and typographic scale", "হেডিং, বডি ফন্ট ও টাইপ স্কেল")}
+        subtitle={t(
+          "Display headings, body text, and typographic scale",
+          "হেডিং, বডি ফন্ট ও টাইপ স্কেল",
+        )}
       >
         <div className="space-y-2">
-          <label htmlFor="token-font-pairing" className="block text-xs font-semibold text-foreground">
+          <label
+            htmlFor="token-font-pairing"
+            className="block text-xs font-semibold text-foreground"
+          >
             {t("Curated Font Pairings", "ফন্ট পেয়ারিং")}
           </label>
 
@@ -431,12 +473,13 @@ export function TokenEditor({ tokens, onChange }: Props) {
                     )}
                   </div>
                   <div className="flex items-baseline justify-between text-muted-foreground text-xs pt-1 border-t border-border/40">
-                    <span style={{ fontFamily: pair.display }} className="font-semibold text-foreground">
+                    <span
+                      style={{ fontFamily: pair.display }}
+                      className="font-semibold text-foreground"
+                    >
                       Aa Bb Gg 123
                     </span>
-                    <span className="font-bangla text-xs">
-                      বাংলা নমুনা হরফ
-                    </span>
+                    <span className="font-bangla text-xs">বাংলা নমুনা হরফ</span>
                   </div>
                 </button>
               );
@@ -468,14 +511,32 @@ export function TokenEditor({ tokens, onChange }: Props) {
 
         {/* Typographic Scale */}
         <div className="space-y-1.5 pt-2 border-t border-border/60">
-          <label htmlFor="token-type-scale" className="block text-xs font-semibold text-foreground">
+          <label
+            htmlFor="token-type-scale"
+            className="block text-xs font-semibold text-foreground"
+          >
             {t("Typographic Scale", "টাইপ স্কেল")}
           </label>
           <div className="grid grid-cols-3 gap-1.5">
             {[
-              { key: "compact", labelEn: "Compact", labelBn: "কমপ্যাক্ট", desc: "1.125 Major 2nd" },
-              { key: "default", labelEn: "Default", labelBn: "ডিফল্ট", desc: "1.200 Minor 3rd" },
-              { key: "expressive", labelEn: "Expressive", labelBn: "এক্সপ্রেসিভ", desc: "1.250 Major 3rd" },
+              {
+                key: "compact",
+                labelEn: "Compact",
+                labelBn: "কমপ্যাক্ট",
+                desc: "1.125 Major 2nd",
+              },
+              {
+                key: "default",
+                labelEn: "Default",
+                labelBn: "ডিফল্ট",
+                desc: "1.200 Minor 3rd",
+              },
+              {
+                key: "expressive",
+                labelEn: "Expressive",
+                labelBn: "এক্সপ্রেসিভ",
+                desc: "1.250 Major 3rd",
+              },
             ].map((scale) => {
               const isSelected = tokens.typeScale === scale.key;
               return (
@@ -483,7 +544,9 @@ export function TokenEditor({ tokens, onChange }: Props) {
                   key={scale.key}
                   type="button"
                   onClick={() =>
-                    onChange({ typeScale: scale.key as ThemeTokens["typeScale"] })
+                    onChange({
+                      typeScale: scale.key as ThemeTokens["typeScale"],
+                    })
                   }
                   className={`flex flex-col items-center rounded-fq-md border p-2 text-center transition-all cursor-pointer ${
                     isSelected
@@ -491,8 +554,12 @@ export function TokenEditor({ tokens, onChange }: Props) {
                       : "border-border/70 bg-card text-muted-foreground hover:text-foreground hover:bg-accent"
                   }`}
                 >
-                  <span className="text-xs">{t(scale.labelEn, scale.labelBn)}</span>
-                  <span className={`text-[9px] mt-0.5 ${isSelected ? "opacity-90" : "text-muted-foreground"}`}>
+                  <span className="text-xs">
+                    {t(scale.labelEn, scale.labelBn)}
+                  </span>
+                  <span
+                    className={`text-[9px] mt-0.5 ${isSelected ? "opacity-90" : "text-muted-foreground"}`}
+                  >
                     {scale.desc}
                   </span>
                 </button>
@@ -522,11 +589,17 @@ export function TokenEditor({ tokens, onChange }: Props) {
       {/* 3. SHAPE & GEOMETRY */}
       <SectionGroup
         title={t("Shape & Layout Geometry", "আকার ও লেআউট জ্যামিতি")}
-        subtitle={t("Corner radius curves and max container width", "কর্নার রেডিয়াস ও কন্টেন্ট প্রস্থ")}
+        subtitle={t(
+          "Corner radius curves and max container width",
+          "কর্নার রেডিয়াস ও কন্টেন্ট প্রস্থ",
+        )}
       >
         {/* Corner Radius Visual Cards */}
         <div className="space-y-1.5">
-          <label htmlFor="token-radius" className="block text-xs font-semibold text-foreground">
+          <label
+            htmlFor="token-radius"
+            className="block text-xs font-semibold text-foreground"
+          >
             {t("Corner Radius Curve", "কর্নার রেডিয়াস")}
           </label>
           <div className="grid grid-cols-5 gap-1">
@@ -552,7 +625,9 @@ export function TokenEditor({ tokens, onChange }: Props) {
                   <div
                     className={`size-6 border-2 border-primary ${r.radiusClass} bg-background`}
                   />
-                  <span className="text-[10px] tabular-nums font-mono">{r.label}</span>
+                  <span className="text-[10px] tabular-nums font-mono">
+                    {r.label}
+                  </span>
                 </button>
               );
             })}
@@ -574,14 +649,32 @@ export function TokenEditor({ tokens, onChange }: Props) {
 
         {/* Content Width Cards */}
         <div className="space-y-1.5 pt-2 border-t border-border/60">
-          <label htmlFor="token-container" className="block text-xs font-semibold text-foreground">
+          <label
+            htmlFor="token-container"
+            className="block text-xs font-semibold text-foreground"
+          >
             {t("Content Max Width", "কন্টেন্ট প্রস্থ")}
           </label>
           <div className="grid grid-cols-3 gap-1.5">
             {[
-              { val: "1024px", labelEn: "Compact", labelBn: "কমপ্যাক্ট", px: "1024px" },
-              { val: "1200px", labelEn: "Standard", labelBn: "স্ট্যান্ডার্ড", px: "1200px" },
-              { val: "1360px", labelEn: "Wide Canvas", labelBn: "ওয়াইড", px: "1360px" },
+              {
+                val: "1024px",
+                labelEn: "Compact",
+                labelBn: "কমপ্যাক্ট",
+                px: "1024px",
+              },
+              {
+                val: "1200px",
+                labelEn: "Standard",
+                labelBn: "স্ট্যান্ডার্ড",
+                px: "1200px",
+              },
+              {
+                val: "1360px",
+                labelEn: "Wide Canvas",
+                labelBn: "ওয়াইড",
+                px: "1360px",
+              },
             ].map((c) => {
               const isSelected = tokens.container === c.val;
               return (
@@ -596,7 +689,9 @@ export function TokenEditor({ tokens, onChange }: Props) {
                   }`}
                 >
                   <span className="text-xs">{t(c.labelEn, c.labelBn)}</span>
-                  <span className="text-[10px] font-mono opacity-80 mt-0.5">{c.px}</span>
+                  <span className="text-[10px] font-mono opacity-80 mt-0.5">
+                    {c.px}
+                  </span>
                 </button>
               );
             })}
@@ -620,11 +715,17 @@ export function TokenEditor({ tokens, onChange }: Props) {
       {/* 4. SPACING & DENSITY */}
       <SectionGroup
         title={t("Spacing & Density", "স্পেসিং ও ডেনসিটি")}
-        subtitle={t("Vertical rhythm and section padding units", "ভার্টিক্যাল রিদম ও প্যাডিং ইউনিট")}
+        subtitle={t(
+          "Vertical rhythm and section padding units",
+          "ভার্টিক্যাল রিদম ও প্যাডিং ইউনিট",
+        )}
       >
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1">
-            <label htmlFor="token-density" className="block text-xs font-semibold text-foreground">
+            <label
+              htmlFor="token-density"
+              className="block text-xs font-semibold text-foreground"
+            >
               {t("Density", "ডেনসিটি")}
             </label>
             <select
@@ -636,13 +737,18 @@ export function TokenEditor({ tokens, onChange }: Props) {
               className={SELECT_CLASS}
             >
               <option value="dense">{t("Dense", "ঘন (Dense)")}</option>
-              <option value="comfortable">{t("Comfortable", "স্বাভাবিক (Comfortable)")}</option>
+              <option value="comfortable">
+                {t("Comfortable", "স্বাভাবিক (Comfortable)")}
+              </option>
               <option value="airy">{t("Airy", "খোলামেলা (Airy)")}</option>
             </select>
           </div>
 
           <div className="space-y-1">
-            <label htmlFor="token-space" className="block text-xs font-semibold text-foreground">
+            <label
+              htmlFor="token-space"
+              className="block text-xs font-semibold text-foreground"
+            >
               {t("Base Spacing Unit", "স্পেসিং ইউনিট")}
             </label>
             <select
@@ -670,11 +776,19 @@ export function TokenEditor({ tokens, onChange }: Props) {
       {/* 5. ELEVATION & SHADOWS */}
       <SectionGroup
         title={t("Elevation & Depth Shadows", "এলিভেশন ও শ্যাডো")}
-        subtitle={t("Card depth, floating buttons & modal shadows", "কার্ড ডেপথ ও ফ্লোটিং শ্যাডো")}
+        subtitle={t(
+          "Card depth, floating buttons & modal shadows",
+          "কার্ড ডেপথ ও ফ্লোটিং শ্যাডো",
+        )}
       >
         <div className="grid grid-cols-3 gap-2">
           {[
-            { key: "none", labelEn: "Flat", labelBn: "সমতল", shadowStyle: "none" },
+            {
+              key: "none",
+              labelEn: "Flat",
+              labelBn: "সমতল",
+              shadowStyle: "none",
+            },
             {
               key: "soft",
               labelEn: "Soft Glow",
@@ -706,7 +820,9 @@ export function TokenEditor({ tokens, onChange }: Props) {
                   className="size-8 rounded-fq-sm border border-border/80 bg-background"
                   style={{ boxShadow: sh.shadowStyle }}
                 />
-                <span className="text-xs text-foreground">{t(sh.labelEn, sh.labelBn)}</span>
+                <span className="text-xs text-foreground">
+                  {t(sh.labelEn, sh.labelBn)}
+                </span>
               </button>
             );
           })}
@@ -729,17 +845,31 @@ export function TokenEditor({ tokens, onChange }: Props) {
       {/* 6. MOTION & ENTRANCE ANIMATIONS */}
       <SectionGroup
         title={t("Micro-Interactions & Motion", "মাইক্রো-ইন্টারেকশন ও মোশন")}
-        subtitle={t("Page transition speeds and reveal dynamics", "পেজ ট্রানজিশন গতি ও প্রকাশ শৈলী")}
+        subtitle={t(
+          "Page transition speeds and reveal dynamics",
+          "পেজ ট্রানজিশন গতি ও প্রকাশ শৈলী",
+        )}
       >
         <div className="space-y-2">
-          <label htmlFor="token-motion" className="block text-xs font-semibold text-foreground">
+          <label
+            htmlFor="token-motion"
+            className="block text-xs font-semibold text-foreground"
+          >
             {t("Entrance Motion Dynamics", "এন্ট্রান্স মোশন")}
           </label>
           <div className="grid grid-cols-3 gap-1.5">
             {[
               { key: "none", labelEn: "None (Static)", labelBn: "নেই (স্থির)" },
-              { key: "subtle", labelEn: "Subtle (180ms)", labelBn: "মৃদু (১৮০ms)" },
-              { key: "lively", labelEn: "Lively (300ms)", labelBn: "প্রাণবন্ত (৩০০ms)" },
+              {
+                key: "subtle",
+                labelEn: "Subtle (180ms)",
+                labelBn: "মৃদু (১৮০ms)",
+              },
+              {
+                key: "lively",
+                labelEn: "Lively (300ms)",
+                labelBn: "প্রাণবন্ত (৩০০ms)",
+              },
             ].map((m) => {
               const isSelected = tokens.motion === m.key;
               return (
@@ -785,11 +915,17 @@ export function TokenEditor({ tokens, onChange }: Props) {
       {/* 7. COMMERCE & LOCALE */}
       <SectionGroup
         title={t("Storefront Locale & Currency", "লোকেল ও মুদ্রা সেটিংস")}
-        subtitle={t("Default language, numerals format, timezone & currency", "ডিফল্ট ভাষা, সংখ্যা বিন্যাস, টাইমজোন ও মুদ্রা")}
+        subtitle={t(
+          "Default language, numerals format, timezone & currency",
+          "ডিফল্ট ভাষা, সংখ্যা বিন্যাস, টাইমজোন ও মুদ্রা",
+        )}
       >
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1">
-            <label htmlFor="token-locale" className="block text-xs font-semibold text-foreground">
+            <label
+              htmlFor="token-locale"
+              className="block text-xs font-semibold text-foreground"
+            >
               {t("Default Language", "ডিফল্ট ভাষা")}
             </label>
             <select
@@ -806,7 +942,10 @@ export function TokenEditor({ tokens, onChange }: Props) {
           </div>
 
           <div className="space-y-1">
-            <label htmlFor="token-digits" className="block text-xs font-semibold text-foreground">
+            <label
+              htmlFor="token-digits"
+              className="block text-xs font-semibold text-foreground"
+            >
               {t("Numeral Digits", "সংখ্যা বিন্যাস")}
             </label>
             <select
@@ -823,7 +962,10 @@ export function TokenEditor({ tokens, onChange }: Props) {
           </div>
 
           <div className="col-span-2 space-y-1">
-            <label htmlFor="token-currency-display" className="block text-xs font-semibold text-foreground">
+            <label
+              htmlFor="token-currency-display"
+              className="block text-xs font-semibold text-foreground"
+            >
               {t("Currency Display Format", "মুদ্রা প্রদর্শন")}
             </label>
             <select
@@ -843,7 +985,10 @@ export function TokenEditor({ tokens, onChange }: Props) {
           </div>
 
           <div className="col-span-2 space-y-2 pt-2 border-t border-border/60">
-            <label htmlFor="token-timezone" className="block text-xs font-semibold text-foreground">
+            <label
+              htmlFor="token-timezone"
+              className="block text-xs font-semibold text-foreground"
+            >
               {t("Store Timezone", "স্টোর টাইমজোন")}
             </label>
             <select
@@ -852,19 +997,19 @@ export function TokenEditor({ tokens, onChange }: Props) {
               onChange={(e) => onChange({ timezone: e.target.value })}
               className={SELECT_CLASS}
             >
-              {Array.from(
-                new Set(COMMON_TIMEZONES.map((tz) => tz.region)),
-              ).map((region) => (
-                <optgroup key={region} label={region}>
-                  {COMMON_TIMEZONES.filter((tz) => tz.region === region).map(
-                    (tz) => (
-                      <option key={tz.value} value={tz.value}>
-                        {tz.offset} — {tz.label}
-                      </option>
-                    ),
-                  )}
-                </optgroup>
-              ))}
+              {Array.from(new Set(COMMON_TIMEZONES.map((tz) => tz.region))).map(
+                (region) => (
+                  <optgroup key={region} label={region}>
+                    {COMMON_TIMEZONES.filter((tz) => tz.region === region).map(
+                      (tz) => (
+                        <option key={tz.value} value={tz.value}>
+                          {tz.offset} — {tz.label}
+                        </option>
+                      ),
+                    )}
+                  </optgroup>
+                ),
+              )}
             </select>
 
             <label className="flex items-start gap-2.5 pt-1 cursor-pointer text-xs">

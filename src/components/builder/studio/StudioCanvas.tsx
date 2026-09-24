@@ -68,9 +68,7 @@ const INLINE_EDITABLE = new Set(["heading", "text", "button"]);
 function nodeIdFromEvent(event: { target: unknown }): string | null {
   const target = event.target as Partial<HTMLElement> | null;
   if (!target || typeof target.closest !== "function") return null;
-  return (
-    target.closest("[data-node-id]")?.getAttribute("data-node-id") ?? null
-  );
+  return target.closest("[data-node-id]")?.getAttribute("data-node-id") ?? null;
 }
 
 function isModifier(event: {
@@ -191,7 +189,9 @@ function NodeView(props: NodeViewProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
   const container = isContainerNode(node);
-  const selected = selectedIds ? selectedIds.includes(node.id) : selectedId === node.id;
+  const selected = selectedIds
+    ? selectedIds.includes(node.id)
+    : selectedId === node.id;
 
   if (isHiddenOn(node, device)) return null;
 
@@ -314,9 +314,7 @@ function InlineWidget(props: NodeViewProps) {
       }
       className="outline-none"
       role={isSelected ? "textbox" : undefined}
-      aria-label={
-        isSelected ? `Edit ${widgetLabel(node.el)} text` : undefined
-      }
+      aria-label={isSelected ? `Edit ${widgetLabel(node.el)} text` : undefined}
       tabIndex={isSelected ? 0 : undefined}
       data-inline-key={key}
     >

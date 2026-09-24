@@ -237,7 +237,12 @@ export const importThemeMediaFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { importThemeMedia } = await import("./theme-imports.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return importThemeMedia(context.supabase, merchantId, data.themeKey, data.overwrite ?? false);
+    return importThemeMedia(
+      context.supabase,
+      merchantId,
+      data.themeKey,
+      data.overwrite ?? false,
+    );
   });
 
 export const importThemeProductsFn = createServerFn({ method: "POST" })
@@ -267,7 +272,12 @@ export const importThemePostsFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { importThemePosts } = await import("./theme-imports.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return importThemePosts(context.supabase, merchantId, data.themeKey, data.overwrite ?? false);
+    return importThemePosts(
+      context.supabase,
+      merchantId,
+      data.themeKey,
+      data.overwrite ?? false,
+    );
   });
 
 export const importThemeAllFn = createServerFn({ method: "POST" })
@@ -278,7 +288,12 @@ export const importThemeAllFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { importThemeAll } = await import("./theme-imports.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return importThemeAll(context.supabase, merchantId, data.themeKey, data.overwrite ?? false);
+    return importThemeAll(
+      context.supabase,
+      merchantId,
+      data.themeKey,
+      data.overwrite ?? false,
+    );
   });
 
 export const builderDemoPurgeFn = createServerFn({ method: "POST" })

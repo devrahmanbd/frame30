@@ -139,6 +139,4 @@ describe("Phase 6 — elasticity lint", () => {
       ),
     ).toBe(true);
   });
-
-
 });

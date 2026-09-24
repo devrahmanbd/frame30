@@ -20,8 +20,7 @@ function fakeStorage() {
 
 describe("support chat session", () => {
   beforeEach(() => {
-    (globalThis as Record<string, unknown>)["sessionStorage"] =
-      fakeStorage();
+    (globalThis as Record<string, unknown>)["sessionStorage"] = fakeStorage();
     (globalThis as Record<string, unknown>)["localStorage"] = fakeStorage();
   });
 

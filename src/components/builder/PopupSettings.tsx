@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useLang } from "@/lib/i18n";
 
-type PopupType = "modal" | "slide_in" | "notification_bar" | "fullscreen_overlay";
-type Position = "bottom-left" | "bottom-right" | "top-left" | "top-right" | "center";
+type PopupType =
+  "modal" | "slide_in" | "notification_bar" | "fullscreen_overlay";
+type Position =
+  "bottom-left" | "bottom-right" | "top-left" | "top-right" | "center";
 
 interface TriggerRules {
   onPageLoad: boolean;
@@ -44,8 +46,16 @@ interface CloseBehavior {
 const POPUP_TYPES: { value: PopupType; label: string; labelBn: string }[] = [
   { value: "modal", label: "Modal", labelBn: "মডাল" },
   { value: "slide_in", label: "Slide-in", labelBn: "স্লাইড-ইন" },
-  { value: "notification_bar", label: "Notification bar", labelBn: "নোটিফিকেশন বার" },
-  { value: "fullscreen_overlay", label: "Full-screen overlay", labelBn: "ফুল-স্ক্রিন ওভারলে" },
+  {
+    value: "notification_bar",
+    label: "Notification bar",
+    labelBn: "নোটিফিকেশন বার",
+  },
+  {
+    value: "fullscreen_overlay",
+    label: "Full-screen overlay",
+    labelBn: "ফুল-স্ক্রিন ওভারলে",
+  },
 ];
 
 const POSITIONS: { value: Position; label: string; labelBn: string }[] = [
@@ -153,7 +163,9 @@ function NumberField({
           onChange={(e) => onChange(Number(e.target.value))}
           className="w-16 rounded-fq-md border border-border bg-card px-2 py-1 text-xs text-right"
         />
-        {unit && <span className="text-[10px] text-muted-foreground">{unit}</span>}
+        {unit && (
+          <span className="text-[10px] text-muted-foreground">{unit}</span>
+        )}
       </div>
     </div>
   );
@@ -165,8 +177,10 @@ export function PopupSettings() {
   const [popupType, setPopupType] = useState<PopupType>("modal");
   const [position, setPosition] = useState<Position>("bottom-right");
   const [triggers, setTriggers] = useState<TriggerRules>(defaultTriggers);
-  const [conditions, setConditions] = useState<DisplayConditions>(defaultConditions);
-  const [closeBehavior, setCloseBehavior] = useState<CloseBehavior>(defaultClose);
+  const [conditions, setConditions] =
+    useState<DisplayConditions>(defaultConditions);
+  const [closeBehavior, setCloseBehavior] =
+    useState<CloseBehavior>(defaultClose);
 
   const updateTrigger = <K extends keyof TriggerRules>(
     key: K,
@@ -294,7 +308,9 @@ export function PopupSettings() {
                 <input
                   type="text"
                   value={triggers.clickSelector}
-                  onChange={(e) => updateTrigger("clickSelector", e.target.value)}
+                  onChange={(e) =>
+                    updateTrigger("clickSelector", e.target.value)
+                  }
                   placeholder=".cta-button"
                   className="min-w-0 flex-1 rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
                 />
@@ -318,7 +334,10 @@ export function PopupSettings() {
             <Toggle
               checked={triggers.exitIntent}
               onChange={(v) => updateTrigger("exitIntent", v)}
-              label={t("Exit intent (desktop only)", "এক্সিট ইন্টেন্ট (শুধু ডেস্কটপ)")}
+              label={t(
+                "Exit intent (desktop only)",
+                "এক্সিট ইন্টেন্ট (শুধু ডেস্কটপ)",
+              )}
             />
           </div>
 
@@ -373,41 +392,57 @@ export function PopupSettings() {
             )}
 
             <div className="space-y-1">
-              <span className="text-xs">{t("Referrer contains", "রেফারার অন্তর্ভুক্ত")}</span>
+              <span className="text-xs">
+                {t("Referrer contains", "রেফারার অন্তর্ভুক্ত")}
+              </span>
               <input
                 type="text"
                 value={conditions.referrerContains}
-                onChange={(e) => updateCondition("referrerContains", e.target.value)}
+                onChange={(e) =>
+                  updateCondition("referrerContains", e.target.value)
+                }
                 placeholder="example.com"
                 className="w-full rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
               />
             </div>
             <div className="space-y-1">
-              <span className="text-xs">{t("Referrer excludes", "রেফারার বাদ দেয়")}</span>
+              <span className="text-xs">
+                {t("Referrer excludes", "রেফারার বাদ দেয়")}
+              </span>
               <input
                 type="text"
                 value={conditions.referrerExcludes}
-                onChange={(e) => updateCondition("referrerExcludes", e.target.value)}
+                onChange={(e) =>
+                  updateCondition("referrerExcludes", e.target.value)
+                }
                 placeholder="example.com"
                 className="w-full rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
               />
             </div>
             <div className="space-y-1">
-              <span className="text-xs">{t("User role includes", "ব্যবহারকারী ভূমিকা অন্তর্ভুক্ত")}</span>
+              <span className="text-xs">
+                {t("User role includes", "ব্যবহারকারী ভূমিকা অন্তর্ভুক্ত")}
+              </span>
               <input
                 type="text"
                 value={conditions.roleIncludes}
-                onChange={(e) => updateCondition("roleIncludes", e.target.value)}
+                onChange={(e) =>
+                  updateCondition("roleIncludes", e.target.value)
+                }
                 placeholder="admin, editor"
                 className="w-full rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
               />
             </div>
             <div className="space-y-1">
-              <span className="text-xs">{t("User role excludes", "ব্যবহারকারী ভূমিকা বাদ দেয়")}</span>
+              <span className="text-xs">
+                {t("User role excludes", "ব্যবহারকারী ভূমিকা বাদ দেয়")}
+              </span>
               <input
                 type="text"
                 value={conditions.roleExcludes}
-                onChange={(e) => updateCondition("roleExcludes", e.target.value)}
+                onChange={(e) =>
+                  updateCondition("roleExcludes", e.target.value)
+                }
                 placeholder="admin"
                 className="w-full rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
               />
@@ -433,20 +468,28 @@ export function PopupSettings() {
             </div>
             <div className="flex gap-2">
               <div className="flex-1 space-y-1">
-                <span className="text-xs">{t("Schedule start", "শিডিউল শুরু")}</span>
+                <span className="text-xs">
+                  {t("Schedule start", "শিডিউল শুরু")}
+                </span>
                 <input
                   type="datetime-local"
                   value={conditions.scheduleStart}
-                  onChange={(e) => updateCondition("scheduleStart", e.target.value)}
+                  onChange={(e) =>
+                    updateCondition("scheduleStart", e.target.value)
+                  }
                   className="w-full rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
                 />
               </div>
               <div className="flex-1 space-y-1">
-                <span className="text-xs">{t("Schedule end", "শিডিউল শেষ")}</span>
+                <span className="text-xs">
+                  {t("Schedule end", "শিডিউল শেষ")}
+                </span>
                 <input
                   type="datetime-local"
                   value={conditions.scheduleEnd}
-                  onChange={(e) => updateCondition("scheduleEnd", e.target.value)}
+                  onChange={(e) =>
+                    updateCondition("scheduleEnd", e.target.value)
+                  }
                   className="w-full rounded-fq-md border border-border bg-card px-2 py-1 text-xs"
                 />
               </div>
@@ -520,16 +563,19 @@ export function PopupSettings() {
             </p>
             <p className="mt-1">
               {t("Type:", "ধরন:")}{" "}
-              {POPUP_TYPES.find((p) => p.value === popupType)?.label ?? popupType} ·{" "}
-              {t("Position:", "অবস্থান:")} {position.replace("-", " ")}
+              {POPUP_TYPES.find((p) => p.value === popupType)?.label ??
+                popupType}{" "}
+              · {t("Position:", "অবস্থান:")} {position.replace("-", " ")}
             </p>
             <p className="mt-1">
               {t("Triggers:", "ট্রিগার:")}{" "}
               {[
                 triggers.onPageLoad && t("page load", "পেজ লোড"),
-                triggers.onScroll && `${t("scroll", "স্ক্রল")} ${triggers.scrollThreshold}%`,
+                triggers.onScroll &&
+                  `${t("scroll", "স্ক্রল")} ${triggers.scrollThreshold}%`,
                 triggers.onClick && t("click", "ক্লিক"),
-                triggers.onInactivity && `${t("inactivity", "নিষ্ক্রিয়তা")} ${triggers.inactivitySeconds}s`,
+                triggers.onInactivity &&
+                  `${t("inactivity", "নিষ্ক্রিয়তা")} ${triggers.inactivitySeconds}s`,
                 triggers.exitIntent && t("exit intent", "এক্সিট ইন্টেন্ট"),
               ]
                 .filter(Boolean)

@@ -34,7 +34,8 @@ export const Route = createFileRoute("/_authenticated/dashboard/ai/assistant")({
   // Merchant AI is platform-only: direct URLs bounce to the dashboard.
   // The merchant↔Framique support channel (/dashboard/support) is untouched.
   beforeLoad: () => {
-    if (!MERCHANT_AI_ENABLED) throw redirect({ to: "/dashboard", replace: true });
+    if (!MERCHANT_AI_ENABLED)
+      throw redirect({ to: "/dashboard", replace: true });
   },
   loader: () => supportInboxFn(),
   head: () => ({
@@ -45,7 +46,10 @@ export const Route = createFileRoute("/_authenticated/dashboard/ai/assistant")({
         content:
           "Framique AI Assistant with copilot chat and live customer support triage.",
       },
-      { property: "og:title", content: "AI Copilot & Support Inbox — Framique Admin" },
+      {
+        property: "og:title",
+        content: "AI Copilot & Support Inbox — Framique Admin",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -99,7 +103,10 @@ function AssistantConsole() {
         "Hello! I am **Framique AI Copilot**, your dedicated Cloud Commerce platform specialist. I am trained on over **100+ deep platform specifications** spanning architecture, payment gateways (bKash, Nagad, SSLCommerz), couriers (SteadFast, Pathao, RedX), visual page builder AST, and disaster recovery. How can I assist your business today?",
       confidence: "verified",
       similarity: 1.0,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     },
   ]);
   const [inputQuery, setInputQuery] = useState("");
@@ -130,7 +137,10 @@ function AssistantConsole() {
       id: `user_${Date.now()}`,
       role: "user",
       content: text,
-      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     };
 
     setMessages((prev) => [...prev, userMsg]);
@@ -154,19 +164,27 @@ function AssistantConsole() {
         sources: res.sources,
         confidence: res.confidence,
         similarity: res.similarity,
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
 
       setMessages((prev) => [...prev, assistantMsg]);
     } catch {
-      toast.error("Could not complete AI query. Using local knowledge fallback.");
+      toast.error(
+        "Could not complete AI query. Using local knowledge fallback.",
+      );
       const fallbackMsg: ChatMessage = {
         id: `ast_err_${Date.now()}`,
         role: "assistant",
         content:
           "I encountered a temporary connection issue. Please check that your network connection is stable or try again shortly.",
         confidence: "speculative",
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       };
       setMessages((prev) => [...prev, fallbackMsg]);
     } finally {
@@ -192,7 +210,9 @@ function AssistantConsole() {
     toast.success("Reply dispatched to customer.");
   }
 
-  async function updateInboxStatus(status: "open" | "needs_agent" | "resolved" | "closed") {
+  async function updateInboxStatus(
+    status: "open" | "needs_agent" | "resolved" | "closed",
+  ) {
     if (!activeThreadId) return;
     await supportStatusFn({ data: { conversationId: activeThreadId, status } });
     await router.invalidate();
@@ -318,7 +338,10 @@ function AssistantConsole() {
 
                     {/* Markdown Body Rendering */}
                     <div className="space-y-2 prose prose-sm dark:prose-invert max-w-none break-words">
-                      <MarkdownViewer text={msg.content} isUser={msg.role === "user"} />
+                      <MarkdownViewer
+                        text={msg.content}
+                        isUser={msg.role === "user"}
+                      />
                     </div>
 
                     {/* Citations Card */}
@@ -347,7 +370,8 @@ function AssistantConsole() {
                               </p>
                               {src.similarity && (
                                 <div className="mt-1.5 text-[10px] text-emerald-600 dark:text-emerald-400 font-mono">
-                                  {(src.similarity * 100).toFixed(0)}% semantic match
+                                  {(src.similarity * 100).toFixed(0)}% semantic
+                                  match
                                 </div>
                               )}
                             </div>
@@ -379,13 +403,19 @@ function AssistantConsole() {
                             onClick={() => {
                               setMessages((prev) =>
                                 prev.map((m) =>
-                                  m.id === msg.id ? { ...m, feedback: "helpful" } : m,
+                                  m.id === msg.id
+                                    ? { ...m, feedback: "helpful" }
+                                    : m,
                                 ),
                               );
-                              toast.success("Feedback logged for RLHF training.");
+                              toast.success(
+                                "Feedback logged for RLHF training.",
+                              );
                             }}
                             className={`p-1 rounded hover:bg-muted transition-colors ${
-                              msg.feedback === "helpful" ? "text-emerald-500" : ""
+                              msg.feedback === "helpful"
+                                ? "text-emerald-500"
+                                : ""
                             }`}
                             title="Helpful"
                           >
@@ -396,13 +426,17 @@ function AssistantConsole() {
                             onClick={() => {
                               setMessages((prev) =>
                                 prev.map((m) =>
-                                  m.id === msg.id ? { ...m, feedback: "unhelpful" } : m,
+                                  m.id === msg.id
+                                    ? { ...m, feedback: "unhelpful" }
+                                    : m,
                                 ),
                               );
                               toast.info("Feedback noted for fine-tuning.");
                             }}
                             className={`p-1 rounded hover:bg-muted transition-colors ${
-                              msg.feedback === "unhelpful" ? "text-destructive" : ""
+                              msg.feedback === "unhelpful"
+                                ? "text-destructive"
+                                : ""
                             }`}
                             title="Not helpful"
                           >
@@ -568,8 +602,8 @@ function AssistantConsole() {
                             c.status === "needs_agent"
                               ? "bg-destructive/15 text-destructive"
                               : c.status === "resolved"
-                              ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-                              : "bg-muted text-muted-foreground"
+                                ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                                : "bg-muted text-muted-foreground"
                           }`}
                         >
                           {c.status.replace("_", " ")}
@@ -577,7 +611,12 @@ function AssistantConsole() {
                       </div>
                       <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
                         <span>Via {c.channel ?? "Storefront"}</span>
-                        <span>{new Date(c.last_message_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                        <span>
+                          {new Date(c.last_message_at).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
                       </div>
                     </button>
                   </li>
@@ -591,7 +630,9 @@ function AssistantConsole() {
                 <div className="flex flex-1 items-center justify-center p-12 text-center text-muted-foreground">
                   <div>
                     <MessageSquare className="mx-auto size-8 opacity-30 mb-2" />
-                    <p className="text-sm font-medium">Select a conversation to view chat history.</p>
+                    <p className="text-sm font-medium">
+                      Select a conversation to view chat history.
+                    </p>
                   </div>
                 </div>
               ) : (
@@ -599,8 +640,12 @@ function AssistantConsole() {
                   {/* Thread Actions Header */}
                   <div className="flex items-center justify-between border-b border-border p-3.5 bg-muted/20">
                     <div className="flex items-center gap-2 text-xs">
-                      <span className="font-semibold text-foreground">Active Thread:</span>
-                      <span className="font-mono text-muted-foreground">{activeThreadId.slice(0, 8)}...</span>
+                      <span className="font-semibold text-foreground">
+                        Active Thread:
+                      </span>
+                      <span className="font-mono text-muted-foreground">
+                        {activeThreadId.slice(0, 8)}...
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <button
@@ -626,7 +671,9 @@ function AssistantConsole() {
                       <div
                         key={m.id}
                         className={`flex gap-2 ${
-                          m.role === "customer" ? "justify-start" : "justify-end"
+                          m.role === "customer"
+                            ? "justify-start"
+                            : "justify-end"
                         }`}
                       >
                         <div
@@ -637,8 +684,17 @@ function AssistantConsole() {
                           }`}
                         >
                           <div className="flex items-center justify-between gap-4 mb-1 text-[10px] opacity-70">
-                            <span>{m.role === "customer" ? "Shopper" : "Operator / Bot"}</span>
-                            <span>{new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                            <span>
+                              {m.role === "customer"
+                                ? "Shopper"
+                                : "Operator / Bot"}
+                            </span>
+                            <span>
+                              {new Date(m.created_at).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
                           </div>
                           <p>{m.body}</p>
                         </div>
@@ -734,7 +790,10 @@ function MarkdownViewer({ text, isUser }: { text: string; isUser?: boolean }) {
       // Heading 3
       if (line.startsWith("### ")) {
         return (
-          <h4 key={idx} className="font-bold text-base mt-2 mb-1 text-foreground">
+          <h4
+            key={idx}
+            className="font-bold text-base mt-2 mb-1 text-foreground"
+          >
             {line.replace("### ", "")}
           </h4>
         );
@@ -742,7 +801,10 @@ function MarkdownViewer({ text, isUser }: { text: string; isUser?: boolean }) {
       // Heading 4
       if (line.startsWith("#### ")) {
         return (
-          <h5 key={idx} className="font-semibold text-sm mt-1.5 mb-1 text-foreground">
+          <h5
+            key={idx}
+            className="font-semibold text-sm mt-1.5 mb-1 text-foreground"
+          >
             {line.replace("#### ", "")}
           </h5>
         );

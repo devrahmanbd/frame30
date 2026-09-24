@@ -55,10 +55,12 @@
 ### Task 1: R2-0 Scope registry — adapter map + HOOK_SCOPE gate
 
 **Files:**
+
 - Create: `src/lib/scope-adapter.ts`, `src/lib/scope-adapter.test.ts`.
 - Read first: `src/lib/marketplace-scopes.ts` (`SCOPES` lines 24-89), `src/lib/api-scopes.ts` (`SCOPES` lines 17-32), spec R2-0.
 
 **Interfaces:**
+
 - Consumes: 8 snake ids (`read_shop, read_products, write_products, read_orders, read_customers, write_cart, write_analytics, render_storefront`), 14 dotted ids.
 - Produces: `widgetToApiScopes`, `HOOK_SCOPE` (consumed by Task 5 `callOne` gate); contract tests consumable by CI (`bun run test:contracts`).
 
@@ -175,12 +177,14 @@ git push
 ### Task 2: R2-7 `validateBundle` on every install write path
 
 **Files:**
+
 - Modify: `src/lib/plugins.server.ts` (`upsertPlugin` start, after manifest parse at ~`:86`).
 - Modify: `src/lib/marketplace-install.server.ts` (`installListing`, after `loadListing` ~`:69-71`, before consent block `:73`).
 - Read first: `src/lib/marketplace-scopes.ts` `validateBundle` `:192-222`; vault precedent `src/lib/marketplace-vault.server.ts:85-87`.
 - Test: extend `src/lib/phase5-plugins.test.ts` or new cases in `src/lib/marketplace-scopes.test.ts` if present; otherwise `src/lib/plugin-bundle-gate.test.ts`.
 
 **Interfaces:**
+
 - Consumes: `validateBundle(source, scopes)`, `normalizeScopes`.
 - Produces: `plugin.bundle_rejected` throw with zero rows written (consumed by install + upsert callers; deny cases feed R2-8).
 
@@ -219,9 +223,9 @@ Expected: the pure `validateBundle` cases actually PASS (function already exists
 - [ ] **Step 3: Wire the gate into `upsertPlugin`** — insert immediately after manifest parse (`plugins.server.ts` after `:86`):
 
 ```ts
-  const bundleVerdict = validateBundle(manifest, manifest.permissions);
-  if (!bundleVerdict.ok)
-    throw new Error(`plugin.bundle_rejected:${bundleVerdict.errors.join(",")}`);
+const bundleVerdict = validateBundle(manifest, manifest.permissions);
+if (!bundleVerdict.ok)
+  throw new Error(`plugin.bundle_rejected:${bundleVerdict.errors.join(",")}`);
 ```
 
 Add `validateBundle` to the existing `./plugin-manifest` or `./marketplace-scopes` import block (it lives in `marketplace-scopes.ts`).
@@ -229,18 +233,16 @@ Add `validateBundle` to the existing `./plugin-manifest` or `./marketplace-scope
 - [ ] **Step 4: Wire the gate into `installListing`** — insert after trial check (`marketplace-install.server.ts` after `:71`), before consent block `:73`:
 
 ```ts
-  const listingManifest = (listing as { manifest?: unknown }).manifest;
-  const listingScopes = Array.isArray(
-    (listingManifest as { permissions?: unknown } | null)?.permissions,
-  )
-    ? ((listingManifest as { permissions: string[] }).permissions)
-    : (input.grantedScopes ?? []);
-  const { validateBundle } = await import("./marketplace-scopes");
-  const bundleVerdict = validateBundle(listingManifest ?? {}, listingScopes);
-  if (!bundleVerdict.ok)
-    throw new Error(
-      `market_bundle_rejected:${bundleVerdict.errors.join(",")}`,
-    );
+const listingManifest = (listing as { manifest?: unknown }).manifest;
+const listingScopes = Array.isArray(
+  (listingManifest as { permissions?: unknown } | null)?.permissions,
+)
+  ? (listingManifest as { permissions: string[] }).permissions
+  : (input.grantedScopes ?? []);
+const { validateBundle } = await import("./marketplace-scopes");
+const bundleVerdict = validateBundle(listingManifest ?? {}, listingScopes);
+if (!bundleVerdict.ok)
+  throw new Error(`market_bundle_rejected:${bundleVerdict.errors.join(",")}`);
 ```
 
 - [ ] **Step 5: Run green + typecheck**
@@ -261,12 +263,14 @@ git push
 ### Task 3: R2-1 Consent evidence — granted subset + manifest_version + consented_by
 
 **Files:**
+
 - Modify: `src/lib/plugins.server.ts` (`upsertPlugin` payload `:109-117`, consent check `:88-91`, COLUMNS `:23`).
 - Modify: `src/lib/marketplace-install.server.ts` (`installListing` insert `:102-124`, `InstallInput` `:15-26` — already has `grantedScopes`/`consentedBy`).
 - Migration (if columns not yet live): fold `manifest_version text NOT NULL DEFAULT ''`, `consented_by uuid` into Task 4's `phase2l` migration (create columns together — avoids two deploys).
 - Test: extend install + upsert tests (fakeDb).
 
 **Interfaces:**
+
 - Consumes: `installId` optional `UpsertInput.actorId` already present.
 - Produces: `plugin_state.scopes` = granted subset (not `manifest.permissions`); ledger rows carry `granted_scopes` (already on `marketplace_installs` via Phase 1); audit rows `plugin.scopes_granted` / `plugin.scope_revoked` (consumed by Task 8 revoke path).
 
@@ -287,7 +291,11 @@ it("refuses a superset/unknown grant and stores only the granted subset", async 
     grantedScopes: ["read_shop"], // subset: render_storefront intentionally withheld
     actorId: "u1",
   });
-  const row = await db.from("plugin_state").select("scopes").eq("plugin_id", "loyalty-lite").maybeSingle();
+  const row = await db
+    .from("plugin_state")
+    .select("scopes")
+    .eq("plugin_id", "loyalty-lite")
+    .maybeSingle();
   expect(row.scopes).toEqual(["read_shop"]);
 });
 ```
@@ -300,28 +308,28 @@ Expected: FAIL — superset currently accepted (missing-check only), and payload
 - [ ] **Step 3: Fix `upsertPlugin` consent** (replace `:88-91` check + `:113` payload field) — insert after parse:
 
 ```ts
-  const requested = Array.from(new Set(input.grantedScopes ?? [])).sort();
-  const missing = manifest.permissions.filter((p) => !requested.includes(p));
-  if (missing.length)
-    throw new Error(`plugin_consent_required:${missing.join(",")}`);
-  const unknown = requested.filter((p) => !manifest.permissions.includes(p));
-  if (unknown.length)
-    throw new Error(`plugin_consent_required:${unknown.join(",")}`);
-  const granted = requested; // subset == manifest.permissions by construction above
+const requested = Array.from(new Set(input.grantedScopes ?? [])).sort();
+const missing = manifest.permissions.filter((p) => !requested.includes(p));
+if (missing.length)
+  throw new Error(`plugin_consent_required:${missing.join(",")}`);
+const unknown = requested.filter((p) => !manifest.permissions.includes(p));
+if (unknown.length)
+  throw new Error(`plugin_consent_required:${unknown.join(",")}`);
+const granted = requested; // subset == manifest.permissions by construction above
 ```
 
 Change payload line `:113` from `scopes: manifest.permissions` to `scopes: granted`. After successful upsert (after `:125`), audit grant evidence:
 
 ```ts
-  await auditAction(
-    db,
-    merchantId,
-    input.actorId ?? null,
-    "plugin.scopes_granted",
-    "plugin",
-    { plugin: manifest.id, scopes: granted, manifest_version: manifest.version },
-    input.installId ?? null,
-  );
+await auditAction(
+  db,
+  merchantId,
+  input.actorId ?? null,
+  "plugin.scopes_granted",
+  "plugin",
+  { plugin: manifest.id, scopes: granted, manifest_version: manifest.version },
+  input.installId ?? null,
+);
 ```
 
 (Keep the existing `plugin.installed`/`plugin.updated` audit at `:128-140` — the grant row is additional, not a replacement.)
@@ -354,11 +362,13 @@ git push
 ### Task 4: phase2l migration — suspend + consent columns
 
 **Files:**
+
 - Create: `supabase/migrations/<STAMP>_phase2l_plugin_state_suspend.sql` (`STAMP=$(date +%Y%m%d%H%M%S)`, must exceed `20260922182022`).
 - Create: `src/lib/phase2l-ddl.test.ts`.
 - Read first: `supabase/migrations/20260922173657_phase2j_plugin_state_ddl.sql` (idempotent pattern), `20260922182022_phase2k_plugin_state_auto_updates.sql`.
 
 **Interfaces:**
+
 - Consumes: R2-5 column list from spec.
 - Produces: `plugin_state` columns `suspended`, `suspended_reason`, `suspended_at`, `version_pin`, `consented_by`, `manifest_version` (consumed by Tasks 3, 8, 9; COLUMNS select).
 
@@ -444,6 +454,7 @@ git push
 ### Task 5: R2-3 Hook delivery hardening — HOOK_SCOPE gate + HMAC + queue fallback
 
 **Files:**
+
 - Modify: `src/lib/plugin-hooks.server.ts` (full file — `HookOutcome` `:56-62`, `callOne` `:64-116`, `runHook` `:122-141`).
 - Modify: `src/lib/job-queue.ts` (`QueueName` `:47-53`, `QUEUE_POLICIES` `:66-117`).
 - Modify: `src/lib/job-handlers.server.ts` (`JOB_HANDLERS` `:10-29`, `WORKER_QUEUES` `:31-38`).
@@ -451,6 +462,7 @@ git push
 - Test: extend `src/lib/phase5-plugins.test.ts` `describe("server hooks")` `:258-321`.
 
 **Interfaces:**
+
 - Consumes: `hookAllowed` (Task 1), `enqueueJob` (`job-queue.server.ts:77`), `computeSignature`/`signatureHeader`.
 - Produces: `HookOutcome.status` extended taxonomy; `plugin.hook.deliver` job handler; idempotent queue fallback (consumed by Task 6 emission sites + R2-8 deny/replay tests).
 
@@ -459,51 +471,51 @@ git push
 - [ ] **Step 1: Write failing tests** (extend `phase5-plugins.test.ts` server-hooks describe):
 
 ```ts
-  it("skips when HOOK_SCOPE unsatisfied — no fetch (R2-0 deny)", async () => {
-    const fetchMock = vi.fn();
-    vi.stubGlobal("fetch", fetchMock);
-    const out = await runHook(
-      [installed({ grantedScopes: ["read_shop"] })], // missing read_orders for order.created
-      "order.created",
-      { id: "o1" },
-    );
-    expect(out[0].status).toBe("skipped:scope");
-    expect(fetchMock).not.toHaveBeenCalled();
-  });
+it("skips when HOOK_SCOPE unsatisfied — no fetch (R2-0 deny)", async () => {
+  const fetchMock = vi.fn();
+  vi.stubGlobal("fetch", fetchMock);
+  const out = await runHook(
+    [installed({ grantedScopes: ["read_shop"] })], // missing read_orders for order.created
+    "order.created",
+    { id: "o1" },
+  );
+  expect(out[0].status).toBe("skipped:scope");
+  expect(fetchMock).not.toHaveBeenCalled();
+});
 
-  it("signs every callback with framique-signature t=,v1=", async () => {
-    let seen: RequestInit | undefined;
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async (_url: string, init: RequestInit) => {
-        seen = init;
-        return new Response("{}", { status: 200 });
-      }),
-    );
-    process.env.PLUGIN_HOOK_SECRET = "test-secret";
-    await runHook([installed()], "order.created", { id: "o1" });
-    const headers = seen?.headers as Record<string, string>;
-    expect(headers["framique-signature"]).toMatch(/^t=\d+,v1=[0-9a-f]{64}$/);
-    delete process.env.PLUGIN_HOOK_SECRET;
-  });
+it("signs every callback with framique-signature t=,v1=", async () => {
+  let seen: RequestInit | undefined;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_url: string, init: RequestInit) => {
+      seen = init;
+      return new Response("{}", { status: 200 });
+    }),
+  );
+  process.env.PLUGIN_HOOK_SECRET = "test-secret";
+  await runHook([installed()], "order.created", { id: "o1" });
+  const headers = seen?.headers as Record<string, string>;
+  expect(headers["framique-signature"]).toMatch(/^t=\d+,v1=[0-9a-f]{64}$/);
+  delete process.env.PLUGIN_HOOK_SECRET;
+});
 
-  it("queues on timeout instead of only returning timeout (R2-3)", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        (_url: string, init: RequestInit) =>
-          new Promise((_r, reject) => {
-            init.signal?.addEventListener("abort", () =>
-              reject(Object.assign(new Error("a"), { name: "AbortError" })),
-            );
-          }),
-      ),
-    );
-    const out = await runHook([installed()], "order.created", { id: "o9" }, 20);
-    expect(out[0].status).toBe("queued");
-    // enqueueJob called — assert via spy or fakeDb job_queue row with
-    // idempotency key `hook:<plugin>:<hook>:<hash(payload)>`
-  });
+it("queues on timeout instead of only returning timeout (R2-3)", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      (_url: string, init: RequestInit) =>
+        new Promise((_r, reject) => {
+          init.signal?.addEventListener("abort", () =>
+            reject(Object.assign(new Error("a"), { name: "AbortError" })),
+          );
+        }),
+    ),
+  );
+  const out = await runHook([installed()], "order.created", { id: "o9" }, 20);
+  expect(out[0].status).toBe("queued");
+  // enqueueJob called — assert via spy or fakeDb job_queue row with
+  // idempotency key `hook:<plugin>:<hook>:<hash(payload)>`
+});
 ```
 
 - [ ] **Step 2: Run it to verify it fails**
@@ -530,46 +542,50 @@ Extend `HookOutcome.status` union at `:59`:
 Add imports at top:
 
 ```ts
-import { computeSignature, signatureHeader, SIGNATURE_HEADER } from "./webhook-signing";
+import {
+  computeSignature,
+  signatureHeader,
+  SIGNATURE_HEADER,
+} from "./webhook-signing";
 import { hookAllowed } from "./scope-adapter";
 ```
 
 Insert scope gate + signature in `callOne` after the existing skip checks (`:71-80`), before `fetch` (`:84`):
 
 ```ts
-  if (!hookAllowed(hook, plugin.grantedScopes)) {
-    incr("framique_plugin_hook_total", { hook, status: "skipped:scope" });
-    return {
-      pluginId: plugin.manifest.id,
-      hook,
-      status: "skipped:scope",
-      ms: 0,
-    };
-  }
-  const body = JSON.stringify({ hook, payload, settings: plugin.settings });
-  const secret = process.env.PLUGIN_HOOK_SECRET;
-  let signature = "";
-  if (secret) {
-    const ts = Math.floor(Date.now() / 1000);
-    const mac = await computeSignature(secret, ts, body);
-    signature = signatureHeader(ts, [mac]);
-  }
+if (!hookAllowed(hook, plugin.grantedScopes)) {
+  incr("framique_plugin_hook_total", { hook, status: "skipped:scope" });
+  return {
+    pluginId: plugin.manifest.id,
+    hook,
+    status: "skipped:scope",
+    ms: 0,
+  };
+}
+const body = JSON.stringify({ hook, payload, settings: plugin.settings });
+const secret = process.env.PLUGIN_HOOK_SECRET;
+let signature = "";
+if (secret) {
+  const ts = Math.floor(Date.now() / 1000);
+  const mac = await computeSignature(secret, ts, body);
+  signature = signatureHeader(ts, [mac]);
+}
 ```
 
 Change the `fetch` call body/headers (replace `:84-93`):
 
 ```ts
-    const res = await fetch(plugin.manifest.hooksUrl, {
-      method: "POST",
-      signal: controller.signal,
-      headers: {
-        "content-type": "application/json",
-        "x-framique-hook": hook,
-        "x-framique-plugin": plugin.manifest.id,
-        ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
-      },
-      body,
-    });
+const res = await fetch(plugin.manifest.hooksUrl, {
+  method: "POST",
+  signal: controller.signal,
+  headers: {
+    "content-type": "application/json",
+    "x-framique-hook": hook,
+    "x-framique-plugin": plugin.manifest.id,
+    ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
+  },
+  body,
+});
 ```
 
 Replace the `catch` block return (`:104-112`) with queue fallback:
@@ -741,7 +757,10 @@ export async function deliverQueuedHook(payload: Record<string, unknown>) {
     },
     body,
   });
-  if (!res.ok) throw Object.assign(new Error(`status_${res.status}`), { status: res.status });
+  if (!res.ok)
+    throw Object.assign(new Error(`status_${res.status}`), {
+      status: res.status,
+    });
   incr("framique_plugin_hook_total", { hook, status: "delivered" });
   return { ok: true, installId };
 }
@@ -765,6 +784,7 @@ git push
 ### Task 6: R2-4 Emission wiring — the four hooks fire for real
 
 **Files:**
+
 - Modify: `src/lib/carts.server.ts` (`captureCart` after `:62`).
 - Modify: `src/lib/checkout.server.ts` (`reserveStock` success path — read `:131-300` for exact return point; wire after holds converge, before return).
 - Modify: `src/lib/orders.server.ts` (after `:391`, before `return` `:393`).
@@ -773,6 +793,7 @@ git push
 - Read first: `src/lib/plugins.server.ts` `listInstalledPlugins:35-64` (source of `installedFor`).
 
 **Interfaces:**
+
 - Consumes: `listInstalledPlugins`, `runHook`.
 - Produces: fire-on-commit coverage for all four hooks; no-throw guarantee (subscriber failure never fails the commit).
 
@@ -817,14 +838,21 @@ import { resetBreakers, runHook } from "./plugin-hooks.server";
 describe("R2-4 emission contract", () => {
   afterEach(() => resetBreakers());
 
-  it.each(["cart.calculate", "checkout.validate", "order.created", "product.saved"] as const)(
+  it.each([
+    "cart.calculate",
+    "checkout.validate",
+    "order.created",
+    "product.saved",
+  ] as const)(
     "runHook(%s) delivers to subscribers and never rejects",
     async (hook) => {
       vi.stubGlobal(
         "fetch",
         vi.fn(async () => new Response("{}", { status: 200 })),
       );
-      const installed = [/* installed() fixture with hooks:[hook], grantedScopes satisfying HOOK_SCOPE[hook] */];
+      const installed = [
+        /* installed() fixture with hooks:[hook], grantedScopes satisfying HOOK_SCOPE[hook] */
+      ];
       const out = await runHook(installed as never, hook, { merchantId: "m1" });
       expect(out[0]?.status).toBe("ok");
       vi.stubGlobal(
@@ -875,10 +903,12 @@ git push
 ### Task 7: R2-2 Sidecar host — supervised sandboxed process per active install
 
 **Files:**
+
 - Create: `src/lib/plugin-sidecar.server.ts`, `src/lib/plugin-sidecar.server.test.ts`.
 - Read first: `job-queue.server.ts` (drain pattern), `plugins.server.ts` (active predicate = enabled ∧ ¬suspended ∧ ¬killed), spec R2-2, `docs/12-marketplace/plugins.md` §3.
 
 **Interfaces:**
+
 - Consumes: `listInstalledPlugins` / raw `plugin_state` active rows; `runHook` for identity-checked gateway egress (hooks already go through `callOne` — sidecar delivers long-running vendor logic via its own loop, NOT by re-implementing fetch).
 - Produces: `syncSidecars(db)` supervisor entry (consumed by a maintenance schedule — register `job_schedules` row in migration or call from existing maintenance drain; simplest: handler `plugins.supervise` enqueued by `runDueSchedules` if a row exists — document: ops adds the schedule row via SQL in the migration as an INSERT with `on conflict do nothing`).
 
@@ -890,7 +920,11 @@ git push
 // src/lib/plugin-sidecar.server.test.ts
 import { describe, expect, it } from "vitest";
 import { createFakeDb } from "./__fixtures__/fake-db";
-import { syncSidecars, stopSidecar, listSidecars } from "./plugin-sidecar.server";
+import {
+  syncSidecars,
+  stopSidecar,
+  listSidecars,
+} from "./plugin-sidecar.server";
 
 describe("sidecar supervisor (R2-2)", () => {
   it("starts a worker only for active installs (enabled, not suspended, not killed)", async () => {
@@ -1051,12 +1085,14 @@ git push
 ### Task 8: R2-5 Suspend machine — one gate, audit, resume replay
 
 **Files:**
+
 - Create: `src/lib/plugin-lifecycle.server.ts`, `src/lib/plugin-lifecycle.test.ts`.
 - Modify: `src/lib/plugins.server.ts` (export suspend/resume wrappers OR keep all in lifecycle module importing `COLUMNS` logic; prefer lifecycle module + thin re-export).
 - Modify: sidecar call — `stopSidecar` on suspend; `syncSidecars` restart on resume.
 - Read first: phase2l migration (Task 4), `setPluginEnabled` `:190-214` as the audit pattern, spec R2-5.
 
 **Interfaces:**
+
 - Consumes: `plugin_state.suspended*` columns; `auditAction`; `stopSidecar`/`syncSidecars`; `replayJob` (`job-queue.server.ts:391`) for missed durable deliveries — resume does NOT bulk-replay `plugins` queue rows blindly; it re-enqueues nothing and lets queued deliveries drain naturally (idempotency keys prevent doubles). Document: "replay" = allow queued rows to proceed (they were never cancelled) — no explicit replay call needed; audit records resume.
 - Produces: `suspendPlugin`, `resumePlugin` (consumed by desk UI later; tests + audit now). UI buttons WITHOUT server path are forbidden — so if no UI exists yet, ship server fns + tests only (honest: no dead buttons).
 
@@ -1066,18 +1102,35 @@ git push
 // src/lib/plugin-lifecycle.test.ts
 import { describe, expect, it } from "vitest";
 import { createFakeDb } from "./__fixtures__/fake-db";
-import { suspendPlugin, resumePlugin, assertTransition } from "./plugin-lifecycle.server";
+import {
+  suspendPlugin,
+  resumePlugin,
+  assertTransition,
+} from "./plugin-lifecycle.server";
 
 describe("suspend machine (R2-5)", () => {
   it("suspend sets flags, stops sidecar, writes audit", async () => {
     const db = createFakeDb();
     // seed enabled plugin_state row
-    const r = await suspendPlugin(db, "m1", "loyalty-lite", "scope_revoked", "u1");
+    const r = await suspendPlugin(
+      db,
+      "m1",
+      "loyalty-lite",
+      "scope_revoked",
+      "u1",
+    );
     expect(r.suspended).toBe(true);
-    const row = await db.from("plugin_state").select("*").eq("plugin_id", "loyalty-lite").maybeSingle();
+    const row = await db
+      .from("plugin_state")
+      .select("*")
+      .eq("plugin_id", "loyalty-lite")
+      .maybeSingle();
     expect(row.suspended).toBe(true);
     expect(row.suspended_reason).toBe("scope_revoked");
-    const audit = await db.from("activity_log").select("*").eq("action", "plugin.suspended");
+    const audit = await db
+      .from("activity_log")
+      .select("*")
+      .eq("action", "plugin.suspended");
     expect(audit.data?.length).toBe(1);
   });
   it("suspend is idempotent; resume clears flags and writes audit", async () => {
@@ -1086,13 +1139,18 @@ describe("suspend machine (R2-5)", () => {
     await suspendPlugin(db, "m1", "loyalty-lite", "kill_switch", "u1"); // no throw
     const r = await resumePlugin(db, "m1", "loyalty-lite", "u1");
     expect(r.suspended).toBe(false);
-    const audit = await db.from("activity_log").select("*").eq("action", "plugin.resumed");
+    const audit = await db
+      .from("activity_log")
+      .select("*")
+      .eq("action", "plugin.resumed");
     expect(audit.data?.length).toBe(1);
   });
   it("forbids unknown transitions (pure guard)", () => {
     expect(() => assertTransition(false, "already_active")).not.toThrow();
     // pure machine: resume when never suspended throws plugin_invalid_transition
-    expect(() => assertTransition(false, "resume")).toThrow(/plugin_invalid_transition/);
+    expect(() => assertTransition(false, "resume")).toThrow(
+      /plugin_invalid_transition/,
+    );
   });
 });
 ```
@@ -1167,11 +1225,21 @@ export async function suspendPlugin(
   try {
     const { stopSidecar } = await import("./plugin-sidecar.server");
     stopSidecar(merchantId, pluginId);
-  } catch { /* sidecar seam optional in tests */ }
-  await auditAction(db, merchantId, actorId, "plugin.suspended", "plugin", {
-    plugin: pluginId,
-    reason,
-  }, null);
+  } catch {
+    /* sidecar seam optional in tests */
+  }
+  await auditAction(
+    db,
+    merchantId,
+    actorId,
+    "plugin.suspended",
+    "plugin",
+    {
+      plugin: pluginId,
+      reason,
+    },
+    null,
+  );
   return { ok: true, suspended: true, reason };
 }
 
@@ -1201,13 +1269,23 @@ export async function resumePlugin(
     .eq("merchant_id", merchantId)
     .eq("plugin_id", pluginId);
   if (error) throw new Error("plugin_resume_failed");
-  await auditAction(db, merchantId, actorId, "plugin.resumed", "plugin", {
-    plugin: pluginId,
-  }, null);
+  await auditAction(
+    db,
+    merchantId,
+    actorId,
+    "plugin.resumed",
+    "plugin",
+    {
+      plugin: pluginId,
+    },
+    null,
+  );
   try {
     const { syncSidecars } = await import("./plugin-sidecar.server");
     await syncSidecars(db, merchantId);
-  } catch { /* best-effort restart */ }
+  } catch {
+    /* best-effort restart */
+  }
   return { ok: true, suspended: false };
 }
 ```
@@ -1232,6 +1310,7 @@ git push
 ### Task 9: R2-6 Purge machine — uninstalling → purged with idempotent handler
 
 **Files:**
+
 - Modify: `src/lib/marketplace-install.server.ts` (`uninstallWidgetInstall` `:565-625` → enqueue purge instead of immediate delete for `kind === "widget"`).
 - Modify: `src/lib/job-handlers.server.ts` — register `plugin.purge`.
 - Modify: `src/lib/plugin-lifecycle.server.ts` — add `purgePluginState` helper used by handler (or keep purge entirely in the handler file — prefer handler + lifecycle helper split: lifecycle = pure row ops; handler = orchestration).
@@ -1239,6 +1318,7 @@ git push
 - Read first: `marketplace_installs` status enum (`installed/trial/paused/rolled_back/removed/purged` — `purged` added phase2j), `enqueueJob` idempotency, `failJob` retry, spec R2-6.
 
 **Interfaces:**
+
 - Consumes: `enqueueJob({ queue: "plugins", name: "plugin.purge", idempotencyKey })`.
 - Produces: transitional `uninstalling` status on the ledger row; terminal `purged`; `plugin.purged` audit; idempotent handler (second run = no-op success).
 
@@ -1256,22 +1336,42 @@ describe("purge machine (R2-6)", () => {
   it("uninstall enqueues purge and marks ledger uninstalling", async () => {
     const db = createFakeDb();
     // seed marketplace_installs widget row + plugin_state row
-    const { uninstallWidgetInstall } = await import("./marketplace-install.server");
+    const { uninstallWidgetInstall } =
+      await import("./marketplace-install.server");
     await uninstallWidgetInstall(db, "m1", "install-1", "u1");
-    const row = await db.from("marketplace_installs").select("status").eq("id", "install-1").maybeSingle();
+    const row = await db
+      .from("marketplace_installs")
+      .select("status")
+      .eq("id", "install-1")
+      .maybeSingle();
     expect(row.status).toBe("uninstalling");
     // job_queue has plugin.purge with idempotency key
   });
   it("purge handler deletes plugin_state + marks purged + is idempotent", async () => {
     const db = createFakeDb();
     // seed
-    const first = await purgePluginJob(db, { merchantId: "m1", pluginId: "loyalty-lite", installId: "install-1" });
+    const first = await purgePluginJob(db, {
+      merchantId: "m1",
+      pluginId: "loyalty-lite",
+      installId: "install-1",
+    });
     expect(first.purged).toBe(true);
-    const second = await purgePluginJob(db, { merchantId: "m1", pluginId: "loyalty-lite", installId: "install-1" });
+    const second = await purgePluginJob(db, {
+      merchantId: "m1",
+      pluginId: "loyalty-lite",
+      installId: "install-1",
+    });
     expect(second.purged).toBe(false); // already gone / already purged — success no-op
-    const row = await db.from("marketplace_installs").select("status").eq("id", "install-1").maybeSingle();
+    const row = await db
+      .from("marketplace_installs")
+      .select("status")
+      .eq("id", "install-1")
+      .maybeSingle();
     expect(row.status).toBe("purged");
-    const audit = await db.from("activity_log").select("*").eq("action", "plugin.purged");
+    const audit = await db
+      .from("activity_log")
+      .select("*")
+      .eq("action", "plugin.purged");
     expect(audit.data?.length).toBeGreaterThanOrEqual(1);
   });
 });
@@ -1291,45 +1391,47 @@ alter type public.market_install_status add value if not exists 'uninstalling';
 - [ ] **Step 4: Change `uninstallWidgetInstall`** — replace the immediate `plugin_state` delete (`:580-592`) and status write (`:607-611`) with (widget branch):
 
 ```ts
-  // R2-6: widget uninstalls ALWAYS purge — enqueue the durable purge job and
-  // mark the ledger row transitional. Theme uninstalls keep the legacy path.
-  const { enqueueJob } = await import("./job-queue.server");
-  if (row.kind === "widget") {
-    await db
-      .from("marketplace_installs")
-      .update({ status: "uninstalling" as never })
-      .eq("merchant_id", merchantId)
-      .eq("id", installId);
-    try {
-      const { stopSidecar } = await import("./plugin-sidecar.server");
-      stopSidecar(merchantId, row.listing_slug);
-    } catch { /* seam */ }
-    await enqueueJob(
-      {
-        queue: "plugins",
-        name: "plugin.purge",
-        payload: {
-          merchantId,
-          pluginId: row.listing_slug,
-          installId,
-          actorId: actorId ?? null,
-        },
-        merchantId,
-        idempotencyKey: `purge:${merchantId}:${installId}`,
-      },
-      db,
-    );
-    await auditAction(
-      db,
-      merchantId,
-      actorId ?? null,
-      "plugin.uninstalling",
-      "plugin",
-      { plugin: row.listing_slug },
-      installId,
-    );
-    return { ok: true, removedPlugin: false, purging: true };
+// R2-6: widget uninstalls ALWAYS purge — enqueue the durable purge job and
+// mark the ledger row transitional. Theme uninstalls keep the legacy path.
+const { enqueueJob } = await import("./job-queue.server");
+if (row.kind === "widget") {
+  await db
+    .from("marketplace_installs")
+    .update({ status: "uninstalling" as never })
+    .eq("merchant_id", merchantId)
+    .eq("id", installId);
+  try {
+    const { stopSidecar } = await import("./plugin-sidecar.server");
+    stopSidecar(merchantId, row.listing_slug);
+  } catch {
+    /* seam */
   }
+  await enqueueJob(
+    {
+      queue: "plugins",
+      name: "plugin.purge",
+      payload: {
+        merchantId,
+        pluginId: row.listing_slug,
+        installId,
+        actorId: actorId ?? null,
+      },
+      merchantId,
+      idempotencyKey: `purge:${merchantId}:${installId}`,
+    },
+    db,
+  );
+  await auditAction(
+    db,
+    merchantId,
+    actorId ?? null,
+    "plugin.uninstalling",
+    "plugin",
+    { plugin: row.listing_slug },
+    installId,
+  );
+  return { ok: true, removedPlugin: false, purging: true };
+}
 ```
 
 Keep the existing non-widget (theme) legacy delete path intact below this block (the current body applies to `kind === "widget"` only per the guard at `:577` — so the WHOLE existing delete block `:580-624` becomes the enqueue path above; move the old `plugin_state` delete into the purge handler instead).
@@ -1370,7 +1472,8 @@ export async function purgePluginJob(
       .delete()
       .eq("merchant_id", merchantId)
       .eq("plugin_id", pluginId);
-    if (error) throw Object.assign(new Error("purge_state_failed"), { status: 500 });
+    if (error)
+      throw Object.assign(new Error("purge_state_failed"), { status: 500 });
   }
 
   // 2. undelivered queue rows for this plugin die with it (counts only logged)
@@ -1394,13 +1497,16 @@ export async function purgePluginJob(
       .eq("merchant_id", merchantId)
       .eq("id", installId)
       .in("status", ["uninstalling", "removed", "installed", "trial"]);
-    if (error) throw Object.assign(new Error("purge_ledger_failed"), { status: 500 });
+    if (error)
+      throw Object.assign(new Error("purge_ledger_failed"), { status: 500 });
   }
 
   try {
     const { stopSidecar } = await import("./plugin-sidecar.server");
     stopSidecar(merchantId, pluginId);
-  } catch { /* seam */ }
+  } catch {
+    /* seam */
+  }
 
   await auditAction(
     db,
@@ -1408,7 +1514,11 @@ export async function purgePluginJob(
     actorId ?? null,
     "plugin.purged",
     "plugin",
-    { plugin: pluginId, stateDeleted: (stateRows ?? []).length, jobsDeleted: jobIds.length },
+    {
+      plugin: pluginId,
+      stateDeleted: (stateRows ?? []).length,
+      jobsDeleted: jobIds.length,
+    },
     installId,
   );
   return { ok: true, purged: true };
@@ -1448,6 +1558,7 @@ git push
 ### Task 10: R2-8 Acceptance — deny/replay/audit matrix + close
 
 **Files:**
+
 - Create/extend: contract tests listed below; `CHANGELOG.md` Phase 2 section.
 - Read: spec R2-8 checklist.
 
@@ -1496,18 +1607,18 @@ git push
 
 ## Scope Check (writing-plans skill gate)
 
-| Spec item | Task | Status |
-|---|---|---|
-| R2-0 Scope registry + adapter + HOOK_SCOPE | Task 1 | covered |
-| R2-7 validateBundle on install + upsert | Task 2 | covered |
-| R2-1 Consent evidence | Task 3 (+4 columns) | covered |
-| phase2l migration | Task 4 | covered |
-| R2-3 Hook hardening (HMAC, gate, queue) | Task 5 | covered |
-| R2-4 Four emission sites | Task 6 | covered |
-| R2-2 Sidecar host | Task 7 | covered (in-process v1 + documented OS deferral) |
-| R2-5 Suspend machine | Task 8 | covered |
-| R2-6 Purge machine | Task 9 | covered |
-| R2-8 Acceptance matrix | Task 10 | covered |
+| Spec item                                  | Task                | Status                                           |
+| ------------------------------------------ | ------------------- | ------------------------------------------------ |
+| R2-0 Scope registry + adapter + HOOK_SCOPE | Task 1              | covered                                          |
+| R2-7 validateBundle on install + upsert    | Task 2              | covered                                          |
+| R2-1 Consent evidence                      | Task 3 (+4 columns) | covered                                          |
+| phase2l migration                          | Task 4              | covered                                          |
+| R2-3 Hook hardening (HMAC, gate, queue)    | Task 5              | covered                                          |
+| R2-4 Four emission sites                   | Task 6              | covered                                          |
+| R2-2 Sidecar host                          | Task 7              | covered (in-process v1 + documented OS deferral) |
+| R2-5 Suspend machine                       | Task 8              | covered                                          |
+| R2-6 Purge machine                         | Task 9              | covered                                          |
+| R2-8 Acceptance matrix                     | Task 10             | covered                                          |
 
 **Known deferred items (must appear in CHANGELOG, not silent):** OS-level `child_process` sandbox (ops/security sign-off); `ProductForm` client-write → server-fn emission bridge; vendor→platform ingress HMAC verification (Phase 4 — Phase 2 signs egress only); oauth.md approval (blocked by user, unchanged).
 

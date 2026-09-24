@@ -146,14 +146,22 @@ describe("OpenResty & lua-resty-acme Custom Domain Edge Router Integration", () 
       expect(content).toContain("proxy_cache_lock on;");
       expect(content).toContain("proxy_cache_lock_timeout 5s;");
       expect(content).toContain("proxy_cache_use_stale error timeout updating");
-      expect(content).toContain("add_header X-Cache-Status $upstream_cache_status always;");
+      expect(content).toContain(
+        "add_header X-Cache-Status $upstream_cache_status always;",
+      );
     });
 
     it("configures edge IP rate limiting and connection zones", () => {
       const content = readFileSync(nginxConfPath, "utf8");
-      expect(content).toContain("limit_req_zone $binary_remote_addr zone=edge_ip_limit:32m rate=50r/s;");
-      expect(content).toContain("limit_conn_zone $binary_remote_addr zone=edge_ip_conn:32m;");
-      expect(content).toContain("limit_req zone=edge_ip_limit burst=50 nodelay;");
+      expect(content).toContain(
+        "limit_req_zone $binary_remote_addr zone=edge_ip_limit:32m rate=50r/s;",
+      );
+      expect(content).toContain(
+        "limit_conn_zone $binary_remote_addr zone=edge_ip_conn:32m;",
+      );
+      expect(content).toContain(
+        "limit_req zone=edge_ip_limit burst=50 nodelay;",
+      );
       expect(content).toContain("limit_conn edge_ip_conn 25;");
       expect(content).toContain("limit_req_status 429;");
     });
