@@ -16,6 +16,7 @@ import {
   Star,
 } from "@/components/icons/tabler";
 import { useRouterState } from "@tanstack/react-router";
+import { PaymentMark } from "@/components/store/PaymentMarks";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import type { SectionType } from "@/lib/builder-ast";
 import { useCart } from "@/lib/cart";
@@ -202,11 +203,8 @@ function PaymentIcons({ str, Heading }: WidgetCtx) {
       )}
       <ul className="flex flex-wrap items-center gap-2">
         {marks.map((mark) => (
-          <li
-            key={mark}
-            className="rounded-fq-sm border border-border bg-card px-2 py-1 text-xs text-muted-foreground"
-          >
-            {mark}
+          <li key={mark}>
+            <PaymentMark mark={mark} />
           </li>
         ))}
       </ul>

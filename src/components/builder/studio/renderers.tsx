@@ -86,6 +86,7 @@ import {
 } from "@/components/icons/tabler";
 import { HtmlSandbox } from "@/components/builder/HtmlSandbox";
 import { WidgetSandbox } from "@/components/marketplace/WidgetSandbox";
+import { PaymentMark } from "@/components/store/PaymentMarks";
 import { useInstalledPlugins } from "@/components/builder/PluginContext";
 import { resolvePluginWidget } from "@/lib/plugin-manifest";
 import { WIDGET_API } from "@/lib/marketplace-scopes";
@@ -3162,11 +3163,8 @@ export function StudioWidget({ node, device, editing, menus }: RenderProps) {
           )}
           <ul className="flex flex-wrap items-center gap-2">
             {marks.map((m) => (
-              <li
-                key={m}
-                className="rounded-fq-sm border border-border bg-card px-2 py-1 text-xs text-muted-foreground"
-              >
-                {m}
+              <li key={m}>
+                <PaymentMark mark={m} />
               </li>
             ))}
           </ul>
