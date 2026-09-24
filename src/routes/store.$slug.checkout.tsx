@@ -520,10 +520,18 @@ function Row({
 }) {
   return (
     <div className={`flex items-center justify-between gap-4 ${className}`}>
-      <dt className={strong ? "font-bold text-[13px] fq-caps tracking-widest text-foreground" : "text-[13px] font-medium tracking-wide text-muted-foreground"}>
+      <dt
+        className={
+          strong
+            ? "font-bold text-[13px] fq-caps tracking-widest text-foreground"
+            : "text-[13px] font-medium tracking-wide text-muted-foreground"
+        }
+      >
         {label}
       </dt>
-      <dd className={`money ${strong ? "text-[14px] font-bold text-foreground tracking-wide" : "text-[13.5px] font-semibold text-foreground tracking-wide"}`}>
+      <dd
+        className={`money ${strong ? "text-[14px] font-bold text-foreground tracking-wide" : "text-[13.5px] font-semibold text-foreground tracking-wide"}`}
+      >
         {value}
       </dd>
     </div>

@@ -173,17 +173,17 @@ const HeroCarousel: WidgetComponent = ({
       aria-label={t(locale, "Hero carousel", "হিরো ক্যারোজেল")}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className="relative overflow-hidden border-b border-border bg-card"
+      className="relative overflow-hidden bg-background"
     >
       {atmosphere !== "none" && (
         <div
           aria-hidden="true"
-          className="fq-theme-aurora pointer-events-none absolute inset-0"
+          className="fq-theme-aurora pointer-events-none absolute inset-0 opacity-40"
         />
       )}
-      <div className="mx-auto grid max-w-[var(--fq-container,1280px)] items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-12 lg:gap-12">
-        {/* Copy — asymmetric left, seven columns */}
-        <div className="min-w-0 lg:col-span-7">
+      <div className="mx-auto grid max-w-[var(--fq-container,1440px)] items-center gap-12 px-4 py-16 sm:px-8 sm:py-24 lg:grid-cols-12 lg:gap-16">
+        {/* Copy — asymmetric left, six columns */}
+        <div className="min-w-0 lg:col-span-6 lg:pl-8">
           {slide.caption && (
             <p
               data-hero-eyebrow
@@ -221,7 +221,7 @@ const HeroCarousel: WidgetComponent = ({
             {slide.ctaLabel && (
               <a
                 href={slide.ctaUrl || "#"}
-                className="inline-flex min-h-12 items-center whitespace-nowrap rounded-fq-md bg-primary px-7 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+                className="inline-flex min-h-14 items-center whitespace-nowrap bg-foreground px-10 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98]"
               >
                 {slide.ctaLabel}
               </a>
@@ -256,10 +256,10 @@ const HeroCarousel: WidgetComponent = ({
             )}
           </div>
         </div>
-        {/* Art — five columns, its own zone. Real photographs render;
+        {/* Art — six columns, its own zone. Real photographs render;
             placeholder URLs become hand-built weave lattice instead. */}
-        <div data-hero-art className="min-w-0 lg:col-span-5">
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-fq-lg border border-border bg-card sm:aspect-[16/10] lg:aspect-[4/5]">
+        <div data-hero-art className="min-w-0 lg:col-span-6 lg:-mr-8">
+          <div className="relative aspect-[3/4] w-full overflow-hidden bg-transparent sm:aspect-[4/3] lg:aspect-[3/4]">
             {slide.image && !slide.image.startsWith("/api/public/ph/") ? (
               <img
                 src={slide.image}
@@ -322,24 +322,24 @@ const DepartmentGrid: WidgetComponent = ({
           ? "sm:grid-cols-2 lg:grid-cols-4"
           : "sm:grid-cols-3 lg:grid-cols-5";
   return (
-    <section>
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-        <Heading className="font-bangla-display text-2xl font-bold tracking-tight sm:text-3xl">
+    <section className="py-16 sm:py-24 max-w-[var(--fq-container,1440px)] mx-auto px-4 sm:px-8">
+      <div className="mb-10 text-center">
+        <Heading className="font-bangla-display text-3xl font-medium tracking-wide sm:text-4xl text-foreground">
           {t(locale, "Shop by department", "বিভাগ অনুযায়ী কিনুন")}
         </Heading>
-        <p className="text-xs text-muted-foreground">
+        <p className="mt-3 text-[13.5px] font-medium tracking-wide text-muted-foreground">
           {departments.reduce((n, d) => n + (d.count || 0), 0)}{" "}
           {t(locale, "handcrafted pieces", "হাতে তৈরি পণ্য")}
         </p>
       </div>
-      <div className={`grid gap-4 ${gridCols}`}>
+      <div className={`grid gap-6 sm:gap-8 ${gridCols}`}>
         {departments.map((dept, i) => (
           <a
             key={i}
             href={dept.href || "#"}
-            className="group relative overflow-hidden rounded-fq-md border border-border bg-card transition hover:shadow-fq-sm"
+            className="group block relative overflow-hidden transition-transform duration-500 ease-out hover:-translate-y-1"
           >
-            <div className="flex aspect-[3/4] items-center justify-center overflow-hidden bg-card">
+            <div className="relative aspect-[3/4] overflow-hidden bg-muted/20">
               {dept.image ? (
                 <img
                   src={dept.image}
@@ -357,11 +357,11 @@ const DepartmentGrid: WidgetComponent = ({
                 />
               )}
             </div>
-            <div className="p-3">
-              <p className="text-sm font-medium">
+            <div className="mt-4 text-center">
+              <p className="font-bold text-[13px] fq-caps tracking-widest text-foreground transition-colors group-hover:text-muted-foreground">
                 {locale === "bn" && dept.nameBn ? dept.nameBn : dept.name}
               </p>
-              <p className="text-xs text-muted-foreground tabular-nums">
+              <p className="mt-1 text-[12px] font-medium tracking-wide text-muted-foreground tabular-nums">
                 {dept.count} {t(locale, "items", "পণ্য")}
               </p>
             </div>

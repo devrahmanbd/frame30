@@ -162,14 +162,14 @@ function AccountPage() {
   // takes the `ast` slot once the widget registry knows its section types.)
   const dashboard = (
     <>
-      <h1 className="font-bangla-display text-2xl font-bold sm:text-3xl">
-        {t("Your account", "আপনার অ্যাকাউন্ট")}
+      <h1 className="font-bangla-display text-3xl sm:text-4xl font-medium tracking-wide text-foreground/90 text-center sm:text-left">
+        {t("Your Account", "আপনার অ্যাকাউন্ট")}
       </h1>
 
       <div
         role="tablist"
         aria-label={t("Account sections", "অ্যাকাউন্ট বিভাগ")}
-        className="mt-4 flex flex-wrap gap-2"
+        className="mt-10 flex flex-wrap gap-6 border-b border-border/60"
       >
         {TABS.map((key) => (
           <button
@@ -178,10 +178,10 @@ function AccountPage() {
             type="button"
             aria-selected={tab === key}
             onClick={() => setTab(key)}
-            className={`inline-flex min-h-11 items-center gap-2 rounded-fq-md border px-3 text-sm font-medium ${
+            className={`flex h-12 items-center gap-2 border-b-2 px-1 text-[13px] font-bold fq-caps tracking-widest transition-colors ${
               tab === key
-                ? "border-bd-teal-700 bg-bd-teal-700 text-background"
-                : "border-border bg-card text-muted-foreground hover:bg-muted"
+                ? "border-foreground text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             {key === "orders" && <Package className="size-4" aria-hidden />}
@@ -228,29 +228,29 @@ function AccountPage() {
                 slug={slug}
               />
             ) : (
-              <ul className="space-y-2">
+              <ul className="divide-y divide-border/60">
                 {data.orders.map((o) => (
                   <li key={o.id}>
                     <Link
                       to="/store/$slug/order/$orderId"
                       params={{ slug, orderId: o.id }}
-                      className="flex flex-wrap items-center justify-between gap-2 rounded-fq-lg border border-border bg-card p-4 hover:bg-muted"
+                      className="flex flex-wrap items-center justify-between gap-4 py-6 transition-colors hover:bg-muted/30 -mx-4 px-4 sm:mx-0 sm:px-0"
                     >
-                      <span>
-                        <span className="money block text-sm font-semibold">
+                      <span className="min-w-0">
+                        <span className="money block text-[14px] font-bold text-foreground">
                           {o.order_number}
                         </span>
                         <time
                           dateTime={o.created_at}
-                          className="money text-xs text-muted-foreground"
+                          className="money text-[12px] font-medium tracking-wide text-muted-foreground mt-1 block"
                         >
                           {new Date(o.created_at).toLocaleDateString("en-GB")}
                         </time>
                       </span>
-                      <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                      <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
                         {o.status}
                       </span>
-                      <span className="money text-sm font-semibold">
+                      <span className="money text-[14px] font-semibold text-foreground tracking-wide">
                         {fmtMinor(o.total_minor_int, o.currency_code)}
                       </span>
                     </Link>
@@ -261,25 +261,27 @@ function AccountPage() {
 
           {tab === "addresses" && (
             <div className="space-y-4">
-              <ul className="grid gap-3 sm:grid-cols-2">
+              <ul className="grid gap-6 sm:grid-cols-2">
                 {data.addresses.map((a) => (
                   <li
                     key={a.id}
-                    className="rounded-fq-lg border border-border bg-card p-4"
+                    className="flex flex-col justify-between border border-border/60 p-6 bg-transparent"
                   >
-                    <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="text-sm font-semibold">
+                        <p className="text-[13.5px] font-bold text-foreground">
                           {a.label}
                           {a.is_default && (
-                            <span className="ml-2 rounded-full bg-success/15 px-2 py-0.5 text-xs text-success-foreground">
+                            <span className="ml-3 inline-block rounded-full bg-foreground/10 px-2.5 py-1 text-[10px] font-bold fq-caps tracking-widest text-foreground">
                               {t("Default", "ডিফল্ট")}
                             </span>
                           )}
                         </p>
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {a.full_name} ·{" "}
-                          <span className="money">{a.phone}</span>
+                        <p className="mt-3 text-[13.5px] text-muted-foreground leading-relaxed">
+                          <span className="font-medium text-foreground/80">
+                            {a.full_name}
+                          </span>{" "}
+                          · <span className="money">{a.phone}</span>
                           <br />
                           {a.line1}
                           {a.line2 ? `, ${a.line2}` : ""}
@@ -294,9 +296,9 @@ function AccountPage() {
                         onClick={() =>
                           delAddress.mutate({ slug, addressId: a.id })
                         }
-                        className="rounded-fq-md p-2 text-danger-foreground hover:bg-danger/10"
+                        className="text-muted-foreground hover:text-danger-foreground transition-colors p-2 -mr-2 -mt-2"
                       >
-                        <Trash2 className="size-4" aria-hidden />
+                        <Trash2 className="size-5" aria-hidden />
                       </button>
                     </div>
                   </li>
@@ -316,32 +318,32 @@ function AccountPage() {
                 slug={slug}
               />
             ) : (
-              <ul className="grid gap-3 sm:grid-cols-2">
+              <ul className="divide-y divide-border/60">
                 {data.wishlist.map((w) => (
                   <li
                     key={w.id}
-                    className="flex items-center justify-between gap-3 rounded-fq-lg border border-border bg-card p-4"
+                    className="flex items-center justify-between gap-4 py-6"
                   >
                     <Link
                       to="/store/$slug/p/$productSlug"
                       params={{ slug, productSlug: w.product_slug }}
                       className="min-w-0"
                     >
-                      <span className="block truncate text-sm font-medium">
+                      <span className="block truncate text-[14px] font-medium leading-relaxed">
                         {w.product_title}
                       </span>
-                      <span className="block text-xs text-muted-foreground">
+                      <span className="block text-[12px] font-medium tracking-wide text-muted-foreground mt-0.5">
                         {w.variant_name}
                       </span>
-                      <span className="money mt-1 block text-sm font-semibold">
+                      <span className="money mt-2 block text-[13.5px] font-semibold tracking-wide">
                         {fmtMinor(w.price_amount_minor_int, currency)}
                       </span>
                       <span
-                        className={`text-xs ${w.stock_quantity > 0 ? "text-success-foreground" : "text-warn-foreground"}`}
+                        className={`text-[11px] font-bold fq-caps tracking-widest block mt-2 ${w.stock_quantity > 0 ? "text-foreground" : "text-danger-foreground"}`}
                       >
                         {w.stock_quantity > 0
-                          ? t("In stock", "স্টকে আছে")
-                          : t("Out of stock", "স্টক নেই")}
+                          ? t("In Stock", "স্টকে আছে")
+                          : t("Out of Stock", "স্টক নেই")}
                       </span>
                     </Link>
                     <button
@@ -353,7 +355,7 @@ function AccountPage() {
                           stockAlert: false,
                         })
                       }
-                      className="min-h-11 rounded-fq-md border border-border px-3 text-xs"
+                      className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors px-4 py-2"
                     >
                       {t("Remove", "সরান")}
                     </button>
@@ -388,13 +390,13 @@ function AccountPage() {
                 return (
                   <label
                     key={key}
-                    className="flex items-center justify-between gap-3 rounded-fq-lg border border-border bg-card p-4 text-sm"
+                    className="flex items-center justify-between gap-4 py-6 border-b border-border/60"
                   >
                     <span>
-                      <span className="font-medium capitalize">
+                      <span className="font-bold text-[13px] text-foreground block">
                         {c.purpose.replace("_", " ")}
                       </span>
-                      <span className="block text-xs uppercase tracking-wide text-muted-foreground">
+                      <span className="block text-[11px] font-bold uppercase tracking-widest text-muted-foreground mt-1">
                         {c.channel}
                       </span>
                     </span>
@@ -409,7 +411,7 @@ function AccountPage() {
                           granted: e.target.checked,
                         })
                       }
-                      className="size-5 accent-[var(--bd-teal-700)]"
+                      className="size-5 accent-foreground"
                     />
                   </label>
                 );
@@ -479,7 +481,7 @@ function AccountPage() {
             name={chrome?.merchant.name ?? store?.name ?? slug}
           />
         }
-        containerClassName="mx-auto max-w-5xl px-4 py-8"
+        containerClassName="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-12 sm:px-6 lg:px-8"
         fallback={dashboard}
       />
     </PluginLayer>
@@ -489,15 +491,15 @@ function AccountPage() {
 function Empty({ text, slug }: { text: string; slug: string }) {
   const { t } = useLang();
   return (
-    <div className="rounded-fq-lg border border-border bg-card p-6">
-      <p className="text-sm text-muted-foreground">{text}</p>
+    <div className="py-12">
+      <p className="text-[13.5px] text-muted-foreground">{text}</p>
       <Link
         to="/store/$slug"
         search={{ preview_token: undefined }}
         params={{ slug }}
-        className="mt-3 inline-block text-sm text-primary underline"
+        className="mt-6 inline-flex min-h-12 items-center justify-center border border-border px-8 text-[11px] font-bold fq-caps tracking-widest text-foreground hover:bg-muted/50 transition-colors"
       >
-        {t("Start shopping", "কেনাকাটা শুরু করুন")}
+        {t("Start Shopping", "কেনাকাটা শুরু করুন")}
       </Link>
     </div>
   );
@@ -556,23 +558,21 @@ function AddressForm({
 
   return (
     <form
-      className="rounded-fq-lg border border-border bg-card p-4"
+      className="mt-12 max-w-2xl"
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit(v);
       }}
     >
-      <h2 className="font-bangla-display text-lg font-semibold">
-        {t("Add an address", "ঠিকানা যোগ করুন")}
+      <h2 className="text-[11px] font-bold fq-caps tracking-widest text-foreground border-b border-border/60 pb-3 mb-6">
+        {t("Add an Address", "নতুন ঠিকানা যোগ করুন")}
       </h2>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2">
         {fields.map(([key, label, placeholder]) => (
-          <label
-            key={key}
-            htmlFor={`addr-${key}`}
-            className="text-xs text-muted-foreground"
-          >
-            {label}
+          <label key={key} htmlFor={`addr-${key}`} className="block">
+            <span className="mb-2 block text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+              {label}
+            </span>
             <input
               id={`addr-${key}`}
               value={String(v[key])}
@@ -586,28 +586,28 @@ function AddressForm({
                 "city",
                 "district",
               ].includes(key)}
-              className="mt-1 block min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm"
+              className="min-h-12 w-full border-b border-border/60 bg-transparent px-0 text-[13.5px] focus:outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/30"
             />
           </label>
         ))}
       </div>
-      <label className="mt-3 flex items-center gap-2 text-sm">
+      <label className="mt-8 flex items-center gap-3 text-[13px] font-medium text-foreground">
         <input
           type="checkbox"
           checked={v.isDefault}
           onChange={set("isDefault")}
-          className="size-4 accent-[var(--bd-teal-700)]"
+          className="size-4 accent-foreground"
         />
-        {t("Use as my default address", "এটিকে ডিফল্ট ঠিকানা করুন")}
+        {t("Set as default address", "ডিফল্ট ঠিকানা হিসেবে সেট করুন")}
       </label>
       <button
         type="submit"
         disabled={busy}
-        className="mt-4 min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-60"
+        className="mt-8 min-h-14 bg-foreground px-10 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform active:scale-[0.98] disabled:opacity-60"
       >
         {busy
           ? t("Saving…", "সংরক্ষণ হচ্ছে…")
-          : t("Save address", "ঠিকানা সংরক্ষণ")}
+          : t("Save Address", "ঠিকানা সংরক্ষণ করুন")}
       </button>
     </form>
   );
@@ -626,65 +626,62 @@ function ProfileForm({
   const [v, setV] = useState(initial);
   return (
     <form
-      className="max-w-md rounded-fq-lg border border-border bg-card p-4"
+      className="max-w-xl"
       onSubmit={(e) => {
         e.preventDefault();
         onSubmit(v);
       }}
     >
-      <h2 className="font-bangla-display text-lg font-semibold">
-        {t("Your details", "আপনার তথ্য")}
+      <h2 className="text-[11px] font-bold fq-caps tracking-widest text-foreground border-b border-border/60 pb-3 mb-6">
+        {t("Your Details", "আপনার তথ্য")}
       </h2>
-      <div className="mt-3 space-y-3">
-        <label
-          htmlFor="pf-name"
-          className="block text-xs text-muted-foreground"
-        >
-          {t("Full name", "পুরো নাম")}
+      <div className="space-y-6">
+        <label htmlFor="pf-name" className="block">
+          <span className="mb-2 block text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+            {t("Full Name", "পুরো নাম")}
+          </span>
           <input
             id="pf-name"
             value={v.name}
             required
             onChange={(e) => setV((p) => ({ ...p, name: e.target.value }))}
-            className="mt-1 block min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm"
+            className="min-h-12 w-full border-b border-border/60 bg-transparent px-0 text-[13.5px] focus:outline-none focus:border-foreground transition-colors"
           />
         </label>
-        <label
-          htmlFor="pf-phone"
-          className="block text-xs text-muted-foreground"
-        >
-          {t("Phone", "ফোন")}
+        <label htmlFor="pf-phone" className="block">
+          <span className="mb-2 block text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+            {t("Phone", "ফোন")}
+          </span>
           <input
             id="pf-phone"
             value={v.phone}
             required
             inputMode="tel"
             onChange={(e) => setV((p) => ({ ...p, phone: e.target.value }))}
-            className="money mt-1 block min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm"
+            className="money min-h-12 w-full border-b border-border/60 bg-transparent px-0 text-[13.5px] focus:outline-none focus:border-foreground transition-colors"
           />
         </label>
-        <label
-          htmlFor="pf-email"
-          className="block text-xs text-muted-foreground"
-        >
-          {t("Email (optional)", "ইমেইল (ঐচ্ছিক)")}
+        <label htmlFor="pf-email" className="block">
+          <span className="mb-2 block text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+            {t("Email (optional)", "ইমেইল (ঐচ্ছিক)")}
+          </span>
           <input
             id="pf-email"
             type="email"
             value={v.email}
             onChange={(e) => setV((p) => ({ ...p, email: e.target.value }))}
-            className="mt-1 block min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm"
+            className="min-h-12 w-full border-b border-border/60 bg-transparent px-0 text-[13.5px] focus:outline-none focus:border-foreground transition-colors"
           />
         </label>
       </div>
       <button
         type="submit"
         disabled={busy}
-        className="mt-4 min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-60"
+        className="mt-10 min-h-14 bg-foreground px-10 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform active:scale-[0.98] disabled:opacity-60"
       >
         {busy
           ? t("Saving…", "সংরক্ষণ হচ্ছে…")
-          : t("Save details", "তথ্য সংরক্ষণ")}
+          : t("Save Details", "তথ্য সংরক্ষণ করুন")}
       </button>
     </form>
   );
@@ -707,45 +704,43 @@ function ShopperOrderLookup({ slug }: { slug: string }) {
   return (
     <div className="min-h-screen bg-background">
       <StoreHeader slug={slug} name={slug} />
-      <main className="mx-auto max-w-md px-4 py-16 text-center">
-        <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-          <Package className="size-6" />
+      <main className="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-16 sm:px-6 lg:px-8 text-center">
+        <div className="mx-auto max-w-md mt-12">
+          <h1 className="font-bangla-display text-3xl font-medium tracking-wide">
+            {t("Track Your Order", "আপনার অর্ডার খুঁজুন")}
+          </h1>
+          <p className="mt-4 text-[13.5px] text-muted-foreground leading-relaxed">
+            {t(
+              "Enter your Order ID from your confirmation message or receipt to check its status.",
+              "আপনার অর্ডার আইডি দিয়ে অর্ডারের বর্তমান অবস্থা এবং বিস্তারিত তথ্য দেখুন।",
+            )}
+          </p>
+          <form
+            onSubmit={handleLookup}
+            className="mt-10 flex flex-col gap-6 text-left"
+          >
+            <label htmlFor="order-lookup-input" className="block">
+              <span className="mb-2 block text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+                {t("Order ID", "অর্ডার আইডি")}
+              </span>
+              <input
+                id="order-lookup-input"
+                type="text"
+                value={orderId}
+                onChange={(e) => setOrderId(e.target.value)}
+                placeholder={t("e.g. ord_01j7...", "যেমন: ord_01j7...")}
+                required
+                className="min-h-12 w-full border-b border-border/60 bg-transparent px-0 text-[13.5px] focus:outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/30"
+              />
+            </label>
+            <button
+              type="submit"
+              className="min-h-14 w-full bg-foreground px-8 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform active:scale-[0.98]"
+            >
+              {t("View Order Status", "অর্ডার স্ট্যাটাস দেখুন")}
+            </button>
+          </form>
         </div>
-        <h1 className="font-bangla-display text-2xl font-bold">
-          {t("Track Your Order", "আপনার অর্ডার খুঁজুন")}
-        </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {t(
-            "Enter your Order ID from your confirmation message or receipt to check its status.",
-            "আপনার অর্ডার আইডি দিয়ে অর্ডারের বর্তমান অবস্থা এবং বিস্তারিত তথ্য দেখুন।",
-          )}
-        </p>
-        <form
-          onSubmit={handleLookup}
-          className="mt-6 flex flex-col gap-3 text-left"
-        >
-          <label
-            htmlFor="order-lookup-input"
-            className="text-xs font-medium text-muted-foreground"
-          >
-            {t("Order ID", "অর্ডার আইডি")}
-          </label>
-          <input
-            id="order-lookup-input"
-            type="text"
-            value={orderId}
-            onChange={(e) => setOrderId(e.target.value)}
-            placeholder={t("e.g. ord_01j7...", "যেমন: ord_01j7...")}
-            required
-            className="min-h-11 rounded-fq-md border border-border bg-background px-4 text-sm text-foreground focus:border-primary focus:outline-none"
-          />
-          <button
-            type="submit"
-            className="mt-2 min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            {t("View Order Status", "অর্ডার স্ট্যাটাস দেখুন")}
-          </button>
-        </form>
       </main>
     </div>
   );
