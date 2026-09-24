@@ -69,3 +69,10 @@ describe("FRAME_HTML CSP nonce", () => {
     expect(html).not.toContain("nonce=");
   });
 });
+
+describe("pageNonce", () => {
+  it("returns empty without a document (SSR fail-closed)", async () => {
+    const { pageNonce } = await import("./WidgetSandbox");
+    expect(pageNonce()).toBe("");
+  });
+});

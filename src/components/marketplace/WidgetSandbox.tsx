@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { authorizeWidgetCall, type WidgetCall } from "@/lib/marketplace-scopes";
+import { currentNonce } from "@/lib/ssr-nonce";
 import { useLang } from "@/lib/i18n";
 import { type RiskTier, resolvePolicy } from "@/lib/risk-tier";
 
@@ -46,16 +47,17 @@ export async function answerWidgetCall(
 }
 
 /**
- * Per-request CSP nonce from the host document. srcdoc frames inherit the
+ * Per-request CSP nonce for the frame script. srcdoc frames inherit the
  * parent page's script-src (nonce-based, no unsafe-inline), so the frame's
  * script tag must carry the same nonce or nothing inside the island ever
- * executes — silently, in every browser. Empty on the server / when the
- * host carries no nonce (fail closed: inert frame, same as before).
+ * executes — silently, in every browser. Uses the established currentNonce()
+ * pattern (server store during SSR, csp-nonce meta on the client — the same
+ * channel hydration payloads and custom JS islands use). Empty when absent
+ * (fail closed: inert frame, same as before).
  */
 export function pageNonce(): string {
   try {
-    if (typeof document === "undefined") return "";
-    return document.querySelector("script[nonce]")?.getAttribute("nonce") ?? "";
+    return currentNonce() ?? "";
   } catch {
     return "";
   }
