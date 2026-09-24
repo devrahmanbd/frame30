@@ -108,6 +108,16 @@ DOMAIN_EDGE_HOOK_URL=<edge provisioning hook, if any>
 DOMAIN_EDGE_TOKEN=<hook bearer token>
 ```
 
+Leave `DOMAIN_EDGE_HOOK_URL` **unset** unless a push-hook receiver exists:
+no receiver ships in this repo — the edge (OpenResty + lua-resty-acme
+autossl) issues pull-based on first SNI hit via the `verify-sni` whitelist,
+so there is nothing to point the hook at. Pointing it at a dummy URL would
+POST cert orders into the void (`edge_unreachable`). Without the hook,
+verified domains stay `dns_verified` with `cert.awaiting_edge` (fail closed)
+— that is expected until edge automation lands; merchants still serve on the
+platform path. `DOMAIN_EDGE_TOKEN` is still required: it authenticates the
+edge's `verify-sni` checks and signs `/api/public/domains/callback` HMACs.
+
 Without the hook vars, custom domains park in `issuing_cert` (fail closed) —
 that is expected until edge automation lands; merchants still serve on the
 platform path. Never point merchants at `edge.framique.*` or `76.76.21.21`
