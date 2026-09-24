@@ -319,8 +319,8 @@ function DomainsPage() {
             </span>
             <span>
               {t(
-                "TLS edge is not configured on this environment (DOMAIN_EDGE_HOOK_URL unset), so certificates stay pending after DNS passes.",
-                "এই পরিবেশে TLS এজ কনফিগার করা নেই (DOMAIN_EDGE_HOOK_URL সেট নেই), তাই DNS ঠিক হলেও সার্টিফিকেট অপেক্ষায় থাকবে।",
+                "TLS edge has no push hook here (DOMAIN_EDGE_HOOK_URL unset) — this is expected, not an error. DNS verification still runs automatically; once DNS passes, the edge operator issues the certificate and the domain flips Live on the next check. Your storefront keeps serving on the platform path meanwhile.",
+                "এই পরিবেশে TLS এজের পুশ হুক নেই (DOMAIN_EDGE_HOOK_URL সেট নেই) — এটি প্রত্যাশিত, কোনো ত্রুটি নয়। DNS যাচাই স্বয়ংক্রিয়ভাবে চলবে; DNS ঠিক হলে এজ অপারেটর সার্টিফিকেট ইস্যু করবেন এবং পরের চেকেই ডোমেইন চালু হবে। এর মধ্যে প্ল্যাটফর্ম পাথে আপনার স্টোর চলতে থাকবে।",
               )}
             </span>
           </div>
