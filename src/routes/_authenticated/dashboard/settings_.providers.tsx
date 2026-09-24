@@ -455,5 +455,6 @@ function ProvidersPage() {
         </div>
         </div>
       </div>
+    </div>
   );
 }

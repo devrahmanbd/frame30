@@ -306,6 +306,7 @@ const Testimonials: WidgetComponent = ({ section, int, locale, editing }) => {
               className="mb-4 h-12 w-12 rounded-full object-cover"
               loading="lazy"
             />
+          ) : (
             <span
               aria-hidden="true"
               className="mb-6 block font-bangla-display text-6xl leading-none text-foreground/20"
