@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
-import { useMerchant, slugify, loadMemberships } from "@/hooks/use-merchant";
+import { useMerchant, candidateStoreSlugs, loadMemberships } from "@/hooks/use-merchant";
 import { canCreateAdditionalStore } from "@/lib/store-limits";
 import { useLang } from "@/lib/i18n";
 import { fmtMinor } from "@/lib/money";
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
       {
         name: "description",
         content:
-          "Name your store, pick its web address and choose a plan to start your Framique trial.",
+          "Name your store, connect its custom domain and choose a plan to start your Framique trial.",
       },
       { property: "og:title", content: "Create your store" },
       {
@@ -53,17 +53,11 @@ function Onboarding() {
   const [step, setStep] = useState(0);
 
   const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [slugTouched, setSlugTouched] = useState(false);
   const [plan, setPlan] = useState<Plan | null>(null);
 
   useEffect(() => {
     if (merchant) void navigate({ to: "/dashboard", replace: true });
   }, [merchant, navigate]);
-
-  useEffect(() => {
-    if (!slugTouched) setSlug(name ? slugify(name) : "");
-  }, [name, slugTouched]);
 
   const { data: plans } = useQuery({
     queryKey: ["plan-definitions"],
@@ -80,28 +74,25 @@ function Onboarding() {
     },
   });
 
-  const { data: slugStatus, isFetching: slugChecking } = useQuery({
-    queryKey: ["slug-status", slug],
-    enabled: slug.length >= 3,
-    queryFn: async () => {
-      const { data, error } = await supabase.rpc("store_slug_status", {
-        p_slug: slug,
-      });
-      if (error) throw error;
-      return data as string;
-    },
-  });
-
   const create = useMutation({
     mutationFn: async () => {
       if (atCap) throw new Error("store.limit_reached");
-      const { data, error } = await supabase.rpc("create_store", {
-        p_name: name.trim(),
-        p_slug: slug,
-        p_plan: plan!,
-      });
-      if (error) throw error;
-      return data as string;
+      // No address step anymore (custom domains are the identity): derive
+      // name-based candidates and take the first one create_store accepts.
+      let lastError: unknown = null;
+      for (const candidate of candidateStoreSlugs(name)) {
+        const { data, error } = await supabase.rpc("create_store", {
+          p_name: name.trim(),
+          p_slug: candidate,
+          p_plan: plan!,
+        });
+        if (!error) return data as string;
+        lastError = error;
+        if (!/taken|23505|duplicate/i.test(error.message ?? "")) throw error;
+      }
+      throw lastError instanceof Error
+        ? lastError
+        : new Error("store.slug_taken");
     },
     onSuccess: async () => {
       // Trial length and abuse fingerprinting are decided server-side.
@@ -123,21 +114,8 @@ function Onboarding() {
     onError: (error) => toast.error(tError(error)),
   });
 
-  const slugMessage = useMemo(() => {
-    if (slug.length === 0) return null;
-    if (slug.length < 3 || slugStatus === "invalid")
-      return tk("store.slug_invalid");
-    if (slugChecking) return tk("common.loading");
-    if (slugStatus === "reserved") return tk("store.slug_reserved");
-    if (slugStatus === "taken") return tk("store.slug_taken");
-    if (slugStatus === "available") return tk("onboarding.address_available");
-    return null;
-  }, [slug, slugStatus, slugChecking, tk]);
-
-  const slugOk = slugStatus === "available";
   const steps = [
     tk("onboarding.step_details"),
-    tk("onboarding.step_address"),
     t("Custom domain", "কাস্টম ডোমেইন"),
     tk("onboarding.step_plan"),
   ];
@@ -269,44 +247,6 @@ function Onboarding() {
         )}
 
         {step === 1 && (
-          <div className="space-y-3">
-            <label className="block text-sm font-medium" htmlFor="store-slug">
-              {tk("onboarding.web_address")}
-            </label>
-            <div className="flex flex-wrap items-center gap-1 text-sm">
-              <span className="text-muted-foreground font-mono">store ID:</span>
-              <input
-                id="store-slug"
-                value={slug}
-                onChange={(e) => {
-                  setSlugTouched(true);
-                  setSlug(
-                    e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""),
-                  );
-                }}
-                aria-describedby="slug-status"
-                className="w-56 rounded-fq-md border border-border bg-background px-3 py-2"
-              />
-            </div>
-            <p
-              id="slug-status"
-              role="status"
-              className={`text-xs ${slugOk ? "text-success-foreground" : "text-muted-foreground"}`}
-            >
-              {slugMessage}
-            </p>
-            {slug.length >= 3 && slugOk && (
-              <p className="mt-2 rounded-fq-md border border-border bg-muted/40 px-3 py-2 text-xs font-mono text-foreground">
-                <span className="text-muted-foreground mr-1">
-                  Your storefront will live on your custom domain (connect it in
-                  Settings › Domains after signup).
-                </span>
-              </p>
-            )}
-          </div>
-        )}
-
-        {step === 2 && (
           <div className="space-y-4">
             <div>
               <h2 className="text-sm font-semibold text-foreground">
@@ -325,7 +265,7 @@ function Onboarding() {
             <div>
               <button
                 type="button"
-                onClick={() => setStep(3)}
+                onClick={() => setStep(2)}
                 className="rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
               >
                 {tk("common.next")}{" "}
@@ -335,7 +275,7 @@ function Onboarding() {
           </div>
         )}
 
-        {step === 3 && (
+        {step === 2 && (
           <fieldset className="space-y-3">
             <legend className="text-sm font-medium">
               {tk("onboarding.choose_plan")}
@@ -394,17 +334,11 @@ function Onboarding() {
           >
             {tk("common.previous")}
           </button>
-          {step < 3 ? (
+          {step < 2 ? (
             <button
               type="button"
               onClick={() => setStep((s) => s + 1)}
-              disabled={
-                step === 0
-                  ? name.trim().length < 2
-                  : step === 1
-                    ? !slugOk
-                    : false
-              }
+              disabled={step === 0 ? name.trim().length < 2 : false}
               className="rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-40"
             >
               {tk("common.next")}
@@ -413,7 +347,7 @@ function Onboarding() {
             <button
               type="button"
               onClick={() => create.mutate()}
-              disabled={!plan || !slugOk || create.isPending}
+              disabled={!plan || create.isPending}
               className="rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground disabled:opacity-40"
             >
               {create.isPending
