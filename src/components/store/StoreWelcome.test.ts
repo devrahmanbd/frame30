@@ -6,8 +6,8 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { WelcomePlate } from "./StoreWelcome";
 
-describe("WelcomePlate", () => {
-  it("renders the welcome heading with a search CTA (path host)", () => {
+describe("WelcomePlate (h1+h3 only)", () => {
+  it("renders exactly one h1 and one h3, nothing else", () => {
     const html = renderToStaticMarkup(
       createElement(WelcomePlate, {
         name: "Demo Store",
@@ -15,13 +15,10 @@ describe("WelcomePlate", () => {
       }),
     );
     expect(html).toContain("Welcome to Framique");
-    expect(html).toContain("/store/demo-store/search");
-  });
-
-  it("links root-relative on custom hosts", () => {
-    const html = renderToStaticMarkup(
-      createElement(WelcomePlate, { name: "Demo Store", base: "" }),
-    );
-    expect(html).toContain('href="/search"');
+    expect((html.match(/<h1/g) || []).length).toBe(1);
+    expect((html.match(/<h3/g) || []).length).toBe(1);
+    expect(html).not.toContain("<header");
+    expect(html).not.toContain("<nav");
+    expect(html).not.toContain("<a ");
   });
 });
