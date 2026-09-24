@@ -437,4 +437,11 @@ describe("songoskriti categories rhythm (browser-verified 2026-09-24)", () => {
     expect(html).toContain('alt=""');
     expect(html).not.toContain('alt="Women"');
   });
+
+  it("centers the section header on the theme display face", () => {
+    const html = render(APPAREL_WIDGETS["circle_categories"], catSection());
+    expect(html).toContain("justify-center");
+    expect(html).toContain("font-theme-display");
+    expect(html).not.toContain("font-serif");
+  });
 });

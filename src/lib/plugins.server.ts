@@ -89,12 +89,19 @@ export type UpsertInput = {
   installId?: string | null;
   /** Audited actor; when omitted the row is still written but unattributed. */
   actorId?: string | null;
+  /**
+   * Fresh consent-screen confirmation for permission-widening UPDATES.
+   * Fresh installs never need it (the install grant is the consent);
+   * updates whose manifest adds permissions are refused without it.
+   */
+  reconsented?: boolean;
 };
 
 /**
  * Install or update a plugin. A grant must be a subset of the manifest's
  * permissions — partial grants are allowed; unknown/superset scopes are
- * refused until the merchant re-consents to exactly those scopes.
+ * refused until the merchant re-consents to exactly those scopes. Updates
+ * that widen permissions are refused unless reconsented is set.
  */
 export async function upsertPlugin(
   db: Client,
@@ -126,6 +133,11 @@ export async function upsertPlugin(
     (existing as any)?.scopes ?? [],
     manifest.permissions,
   );
+  // Added permissions always require a fresh consent screen at update time:
+  // without reconsent a silent auto-update could escalate a plugin's access.
+  if (existing && diff.requiresConsent && !input.reconsented) {
+    throw new Error(`plugin_consent_required:${diff.added.join(",")}`);
+  }
   const settings = existing
     ? validateSettings(manifest.settings, (existing as any).settings ?? {})
         .values

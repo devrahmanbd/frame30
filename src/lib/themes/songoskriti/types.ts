@@ -1,17 +1,9 @@
-import type {
-  PropValue,
-  Section,
-  SectionType,
-} from "../../builder-ast";
-
 /**
- * Builder callback the engine supplies (id assignment, validation).
- * Tests pass a trivial `(type, props) => ({ id: type, type, props })` stub.
+ * Re-exported from builder-ast (neutral ground) so theme modules keep
+ * their existing import path while the engine shares the same type
+ * without importing any theme folder.
  */
-export type SectionBuilder = (
-  type: SectionType,
-  props?: Record<string, PropValue>,
-) => Section;
+export type { SectionBuilder } from "../../builder-ast";
 
 /**
  * Design intent: the 8 homepage section types from spec §2, in order.

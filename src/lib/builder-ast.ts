@@ -304,8 +304,17 @@ export type Section = {
   ab?: { experiment: string; variant: string };
 };
 
-export type ThemeAst = {
-  header: Section[];
+/**
+ * Builder callback themes use to construct sections (id assignment,
+ * validation). Neutral ground: engine and themes share it without
+ * importing each other.
+ */
+export type SectionBuilder = (
+  type: SectionType,
+  props?: Record<string, PropValue>,
+) => Section;
+
+export type ThemeAst = {  header: Section[];
   main: Section[];
   footer: Section[];
 };

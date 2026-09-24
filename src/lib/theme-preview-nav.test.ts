@@ -115,4 +115,23 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     ).flatMap((t) => [...t.header, ...t.main, ...t.footer].map((s) => s.id));
     expect(new Set(ids).size).toBe(ids.length);
   });
+
+  it("synthesizes generic demo bodies for templates a theme omits", async () => {
+    const { assemblePreviewTemplates } = await import("./theme-preview-nav");
+    const { DEFAULT_TOKENS } = await import("./builder-ast");
+    const stub = {
+      key: "stub",
+      themeName: "Stub",
+      author: "test",
+      tokens: DEFAULT_TOKENS,
+      header: () => [],
+      footer: () => [],
+      main: () => null,
+    };
+    const templates = assemblePreviewTemplates(stub);
+    for (const key of Object.keys(templates) as (keyof typeof templates)[]) {
+      expect(templates[key].main.length, `${key} main`).toBeGreaterThan(0);
+      expect(templates[key].main[0]!.type).toBe("heading");
+    }
+  });
 });

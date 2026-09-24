@@ -183,6 +183,14 @@ body {
   line-height: 1.6;
 }
 
+/* Theme display face: resolves the merchant's display font on storefront
+   surfaces, falling back to the Bangla face and then the system serif.
+   Storefront widgets must use this instead of bare `font-serif`, which
+   ignores the theme entirely (Georgia everywhere). */
+@utility font-theme-display {
+  font-family: var(--theme-font-display, var(--font-bangla), Georgia, serif);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
