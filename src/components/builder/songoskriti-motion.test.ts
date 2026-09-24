@@ -11,9 +11,13 @@ import {
   SONGOSKRITI_DESKTOP_MIN,
   SONGOSKRITI_HERO_DEFAULTS,
   createCarouselController,
+  findRevealScroller,
+  findRevealScrollerNode,
   heroTimelinePlan,
+  resolveRevealMode,
   resolveSongoskritiBranch,
   revealBatchOptions,
+  type RevealScrollNode,
 } from "./songoskriti-motion";
 
 describe("hero timeline plan", () => {
@@ -69,6 +73,78 @@ describe("reveal batch options", () => {
       once: true,
       toggleActions: "play none none none",
     });
+  });
+});
+
+describe("resolveRevealMode", () => {
+  it("animates only at full intent with a live scope", () => {
+    expect(resolveRevealMode("full", true)).toBe("animate");
+  });
+
+  it("leaves content visible when scroller lookup fails (no scope)", () => {
+    // Progressive enhancement: a scope that failed to resolve could never
+    // fire its triggers, so hiding it would strand it at opacity 0.
+    expect(resolveRevealMode("full", false)).toBe("static");
+  });
+
+  it("renders static-visible under reduced motion at any scope", () => {
+    expect(resolveRevealMode("reduced", true)).toBe("static");
+    expect(resolveRevealMode("reduced", false)).toBe("static");
+    expect(resolveRevealMode("off", true)).toBe("static");
+    expect(resolveRevealMode("off", false)).toBe("static");
+  });
+});
+
+describe("findRevealScrollerNode", () => {
+  const node = (
+    partial: Partial<RevealScrollNode> & {
+      parentElement?: RevealScrollNode | null;
+    },
+  ): RevealScrollNode => ({
+    parentElement: partial.parentElement ?? null,
+    overflowY: partial.overflowY ?? "visible",
+    scrollHeight: partial.scrollHeight ?? 0,
+    clientHeight: partial.clientHeight ?? 0,
+  });
+
+  it("returns null when there is no scope (lookup fails → static)", () => {
+    expect(findRevealScrollerNode(null)).toBeNull();
+  });
+
+  it("finds the nearest scrolling ancestor (preview dialog host)", () => {
+    const dialog = node({
+      parentElement: null,
+      overflowY: "auto",
+      scrollHeight: 2000,
+      clientHeight: 800,
+    });
+    const inner = node({ parentElement: dialog, overflowY: "visible" });
+    const scope = node({ parentElement: inner });
+    expect(findRevealScrollerNode(scope)).toBe(dialog);
+  });
+
+  it("skips overflow-hidden ancestors and falls back to the viewport", () => {
+    const page = node({ parentElement: null, overflowY: "visible" });
+    const scope = node({ parentElement: page });
+    expect(findRevealScrollerNode(scope)).toBe("viewport");
+  });
+
+  it("ignores auto containers with no overflowing content", () => {
+    const flat = node({
+      parentElement: null,
+      overflowY: "auto",
+      scrollHeight: 400,
+      clientHeight: 400,
+    });
+    const scope = node({ parentElement: flat });
+    expect(findRevealScrollerNode(scope)).toBe("viewport");
+  });
+});
+
+describe("findRevealScroller (DOM adapter)", () => {
+  it("leaves detached scopes visible (triggers could never fire)", () => {
+    const scope = { isConnected: false } as unknown as HTMLElement;
+    expect(findRevealScroller(scope)).toBeNull();
   });
 });
 

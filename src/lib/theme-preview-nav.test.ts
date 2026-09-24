@@ -50,11 +50,16 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     expect(preset).not.toBeNull();
     expect(preset!.key).toBe("songoskriti");
     expect(preset!.tokens.brand).toBe("#8A3B1F");
+    // The SECTION-track blueprint intentionally doubles the rail (new
+    // arrivals + festive bestsellers — pinned by wiring.test.ts), so main
+    // carries 9 sections on 8 distinct types. Updated 2026-09-24: the old
+    // single-rail expectation predates the second rail.
     expect(preset!.templates.index.main.map((s) => s.type)).toEqual([
       "announcement_bar",
       "hero_carousel",
       "circle_categories",
       "finder_row",
+      "product_rail",
       "product_rail",
       "craft_story",
       "testimonials",
