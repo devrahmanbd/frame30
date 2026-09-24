@@ -144,6 +144,10 @@ export const ProfileCard: WidgetComponent = (ctx) => {
   }
   const heading =
     str("heading") || t(ctx.locale, "Your profile", "আপনার প্রোফাইল");
+  // (Repair 2026-09-24: a parallel edit dropped the `return (` leaving a
+  // dangling JSX block that broke the production build. Restored verbatim —
+  // ProfileCard with row data returns the details section.)
+  return (
     <section className="border border-border/60 p-6 bg-transparent">
       <div className="flex items-start gap-4">
         <span
