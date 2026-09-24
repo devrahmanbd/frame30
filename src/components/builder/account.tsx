@@ -24,22 +24,20 @@ function t(locale: string, en: string, bn: string) {
 /** Signed-out state: prompt + link to the platform sign-in page. */
 function SignInPrompt({ ctx, body }: { ctx: WidgetCtx; body: string }) {
   const { str, Heading, locale } = ctx;
-  return (
-    <section className="rounded-fq-lg border border-border bg-card p-6 text-center">
-      <Heading className="text-lg font-semibold">
+    <section className="py-12 text-center">
+      <Heading className="text-[11px] font-bold fq-caps tracking-widest text-foreground">
         {str("heading") || body}
       </Heading>
-      <p className="mt-1 text-sm text-muted-foreground">
+      <p className="mt-3 text-[13.5px] text-muted-foreground leading-relaxed">
         {t(locale, "Sign in to continue.", "এগিয়ে যেতে সাইন ইন করুন।")}
       </p>
       <a
         href="/account"
-        className="mt-4 inline-block min-h-11 rounded-fq-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+        className="mt-6 inline-flex min-h-12 items-center justify-center border border-border px-8 text-[11px] font-bold fq-caps tracking-widest text-foreground hover:bg-muted/50 transition-colors"
       >
-        {t(locale, "Sign in", "সাইন ইন")}
+        {t(locale, "Sign In", "সাইন ইন")}
       </a>
     </section>
-  );
 }
 
 function ListSkeleton() {
@@ -48,7 +46,7 @@ function ListSkeleton() {
       {Array.from({ length: 3 }, (_, i) => (
         <div
           key={i}
-          className="h-16 animate-pulse rounded-fq-lg border border-border bg-card"
+          className="h-20 animate-pulse border-b border-border/60 bg-muted/20"
         />
       ))}
     </div>
@@ -81,45 +79,43 @@ export const OrdersList: WidgetComponent = (ctx) => {
   }
   const heading = str("heading") || t(locale, "Your orders", "আপনার অর্ডার");
   if (rows.length === 0) {
-    return (
-      <section className="rounded-fq-lg border border-border bg-card p-6">
-        <Heading className="text-lg font-semibold">{heading}</Heading>
-        <p className="mt-1 text-sm text-muted-foreground">
+      <section className="py-8 text-center border-t border-border/60 mt-4">
+        <Heading className="text-[11px] font-bold fq-caps tracking-widest text-foreground mb-4">{heading}</Heading>
+        <p className="mt-2 text-[13.5px] text-muted-foreground">
           {str("emptyText") ||
             t(locale, "No orders yet.", "এখনও কোনো অর্ডার নেই।")}
         </p>
       </section>
-    );
   }
   return (
     <section>
-      <Heading className="mb-3 text-lg font-semibold">{heading}</Heading>
-      <ul className="space-y-2">
+      <Heading className="mb-6 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground border-b border-border/60 pb-3">{heading}</Heading>
+      <ul className="divide-y divide-border/60">
         {rows.map((row) => (
           <li
             key={row.id}
-            className="flex flex-wrap items-center justify-between gap-2 rounded-fq-lg border border-border bg-card p-4"
+            className="flex flex-wrap items-center justify-between gap-4 py-6"
           >
-            <span>
-              <span className="block text-sm font-semibold tabular-nums">
+            <span className="min-w-0">
+              <span className="block text-[14px] font-bold text-foreground tabular-nums">
                 {row.title}
               </span>
               {formatOrderDate(row.date, locale) && (
                 <time
                   dateTime={row.date}
-                  className="text-xs text-muted-foreground tabular-nums"
+                  className="mt-1 block text-[12px] font-medium tracking-wide text-muted-foreground tabular-nums"
                 >
                   {formatOrderDate(row.date, locale)}
                 </time>
               )}
             </span>
             {row.subtitle && (
-              <span className="text-xs uppercase tracking-wide text-muted-foreground">
+              <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground bg-muted/50 px-3 py-1 rounded-full">
                 {row.subtitle}
               </span>
             )}
             {typeof row.priceMinor === "number" && (
-              <span className="text-sm font-semibold tabular-nums">
+              <span className="text-[14px] font-semibold text-foreground tracking-wide tabular-nums">
                 {money(row.priceMinor, row.currency)}
               </span>
             )}
@@ -148,31 +144,30 @@ export const ProfileCard: WidgetComponent = (ctx) => {
   }
   const heading =
     str("heading") || t(ctx.locale, "Your profile", "আপনার প্রোফাইল");
-  return (
-    <section className="rounded-fq-lg border border-border bg-card p-6">
-      <div className="flex items-center gap-3">
+    <section className="border border-border/60 p-6 bg-transparent">
+      <div className="flex items-start gap-4">
         <span
           aria-hidden="true"
-          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-base font-semibold text-primary"
+          className="flex size-12 shrink-0 items-center justify-center rounded-full bg-foreground/10 text-[16px] font-bold text-foreground"
         >
           {(row.title || "?").trim().charAt(0).toUpperCase()}
         </span>
-        <div className="min-w-0">
-          <Heading className="truncate text-lg font-semibold">
+        <div className="min-w-0 pt-1">
+          <Heading className="truncate text-[13.5px] font-bold text-foreground">
             {row.title || heading}
           </Heading>
           {row.subtitle && (
-            <p className="truncate text-sm text-muted-foreground">
+            <p className="mt-1 truncate text-[13px] text-muted-foreground">
               {row.subtitle}
+            </p>
+          )}
+          {row.body && (
+            <p className="mt-2 text-[13px] font-medium tracking-wide tabular-nums text-foreground/80">
+              {row.body}
             </p>
           )}
         </div>
       </div>
-      {row.body && (
-        <p className="mt-3 text-sm tabular-nums text-muted-foreground">
-          {row.body}
-        </p>
-      )}
     </section>
   );
 };

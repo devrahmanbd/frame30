@@ -108,25 +108,25 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
     <section
       ref={scope}
       data-songoskriti-reveal
-      className="mx-auto w-full max-w-6xl px-4"
+      className="w-full py-16 sm:py-24 border-t border-border/60"
     >
-      <div className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
+      <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="min-w-0 lg:col-span-7">
             {str("heading") && (
-              <Heading className="font-bangla-display text-2xl font-bold">
+              <Heading className="font-bangla-display text-3xl font-medium tracking-wide sm:text-4xl text-foreground">
                 {str("heading")}
               </Heading>
             )}
             {str("body") && (
-              <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-4 max-w-prose text-[13.5px] leading-relaxed text-muted-foreground">
                 {str("body")}
               </p>
             )}
             {str("buttonLabel") && (
               <a
                 href={str("buttonHref") || "#"}
-                className="mt-4 inline-flex min-h-11 items-center whitespace-nowrap rounded-fq-md border border-current px-5 text-sm font-medium transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="mt-8 inline-flex min-h-12 items-center justify-center border border-border px-8 text-[11px] font-bold fq-caps tracking-widest text-foreground hover:bg-muted/50 transition-colors"
               >
                 {str("buttonLabel")}
               </a>
@@ -142,10 +142,15 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
                   <li key={o.label}>
                     <a
                       href={o.href || "#"}
-                      className="flex min-h-11 items-center justify-between gap-3 rounded-fq-md border border-border bg-background px-4 text-sm font-medium transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      className="group flex min-h-14 items-center justify-between border-b border-border/60 bg-transparent px-2 text-[13px] font-bold fq-caps tracking-widest transition-colors hover:border-foreground"
                     >
-                      <span>{o.label}</span>
-                      <span aria-hidden="true" className="text-primary">
+                      <span className="text-foreground transition-colors group-hover:text-muted-foreground">
+                        {o.label}
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        className="text-foreground transition-transform group-hover:translate-x-1"
+                      >
                         →
                       </span>
                     </a>
@@ -195,17 +200,17 @@ const CraftStory: WidgetComponent = ({
     <section
       ref={scope}
       data-songoskriti-reveal
-      className="mx-auto w-full max-w-6xl px-4"
+      className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 py-16 sm:py-24"
     >
-      <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
-        <div className="min-w-0 lg:col-span-5">
-          <div className="relative overflow-hidden rounded-fq-lg border border-border">
+      <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="min-w-0 lg:col-span-6">
+          <div className="relative overflow-hidden aspect-[4/5] bg-muted/20">
             <MediaFrame
               src={image}
               alt={str(altKey("imageUrl")) || headline}
               ratio="portrait"
               sizes={sizesAttr(str(sizesKey("imageUrl")))}
-              className="rounded-fq-lg"
+              className="h-full w-full object-cover"
             />
             {bool("scrim") && image && (
               <div
@@ -215,25 +220,24 @@ const CraftStory: WidgetComponent = ({
             )}
           </div>
         </div>
-        <div className="min-w-0 lg:col-span-6 lg:col-start-7">
-          <div aria-hidden="true" className="mb-4 h-px w-16 bg-primary" />
+        <div className="min-w-0 lg:col-span-5 lg:col-start-8">
           {eyebrow && (
-            <p className="mb-2 text-xs font-semibold tracking-widest text-primary fq-caps">
+            <p className="mb-4 text-[11px] font-bold tracking-widest text-muted-foreground fq-caps border-b border-border/60 pb-3 inline-block">
               {eyebrow}
             </p>
           )}
-          <Heading className="font-bangla-display text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
+          <Heading className="font-bangla-display text-3xl font-medium tracking-wide leading-tight sm:text-4xl text-foreground mt-4">
             {headline}
           </Heading>
           {body && (
-            <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground sm:text-base">
+            <p className="mt-6 max-w-prose text-[13.5px] leading-relaxed text-muted-foreground">
               {body}
             </p>
           )}
           {ctaLabel && (
             <a
               href={ctaHref || "#"}
-              className="mt-5 inline-flex min-h-11 items-center whitespace-nowrap rounded-fq-md border border-current px-5 text-sm font-medium transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              className="mt-8 inline-flex min-h-14 items-center justify-center bg-foreground px-10 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98]"
             >
               {ctaLabel}
             </a>

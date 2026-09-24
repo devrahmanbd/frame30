@@ -37,14 +37,11 @@ function LineSkeleton() {
   return (
     <div className="space-y-3" aria-hidden="true">
       {[0, 1, 2].map((i) => (
-        <div
-          key={i}
-          className="flex items-center gap-3 rounded-fq-md border border-border p-3"
-        >
-          <div className="h-16 w-16 shrink-0 animate-pulse rounded-fq-md bg-muted" />
-          <div className="flex-1 space-y-2">
-            <div className="h-4 w-2/3 animate-pulse rounded-fq-sm bg-muted" />
-            <div className="h-4 w-1/3 animate-pulse rounded-fq-sm bg-muted" />
+        <div key={i} className="flex items-center gap-4 py-4">
+          <div className="h-16 w-16 shrink-0 animate-pulse bg-muted/50" />
+          <div className="flex-1 space-y-3">
+            <div className="h-3 w-2/3 animate-pulse bg-muted/50" />
+            <div className="h-3 w-1/3 animate-pulse bg-muted/50" />
           </div>
         </div>
       ))}
@@ -56,10 +53,7 @@ function SummarySkeleton() {
   return (
     <div className="space-y-2" aria-hidden="true">
       {[0, 1, 2, 3].map((i) => (
-        <div
-          key={i}
-          className="h-5 w-full animate-pulse rounded-fq-sm bg-muted"
-        />
+        <div key={i} className="h-3 w-full animate-pulse bg-muted/50" />
       ))}
     </div>
   );
@@ -106,18 +100,18 @@ function LineList({
       {rows.map((line) => (
         <li
           key={line.variantId}
-          className="flex flex-wrap items-center gap-3 rounded-fq-md border border-border bg-card p-3"
+          className="flex flex-wrap items-center gap-4 py-6"
         >
           <div className="min-w-0 flex-1">
-            <p className="break-words text-sm font-medium">
+            <p className="break-words text-[13.5px] font-medium leading-relaxed">
               {line.productTitle}
             </p>
             {line.variantName && (
-              <p className="text-xs text-muted-foreground">
+              <p className="mt-0.5 text-[12px] font-medium tracking-wide text-muted-foreground">
                 {line.variantName}
               </p>
             )}
-            <p className="text-xs text-muted-foreground tabular-nums">
+            <p className="mt-2 text-[13.5px] font-semibold tracking-wide tabular-nums text-foreground">
               {money(line.unitPriceMinor)}
             </p>
           </div>
@@ -133,7 +127,7 @@ function LineList({
             disabled={!cart.live}
             onChange={(next) => cart.setQuantity(line.variantId, next)}
           />
-          <p className="w-24 shrink-0 text-right text-sm font-medium tabular-nums">
+          <p className="w-24 shrink-0 text-right text-[13.5px] font-semibold tracking-wide tabular-nums">
             {money(line.lineTotalMinor)}
           </p>
           {!compact && (
@@ -141,7 +135,7 @@ function LineList({
               type="button"
               onClick={() => cart.remove(line.variantId)}
               disabled={!cart.live}
-              className="inline-flex min-h-11 items-center px-2 text-sm underline"
+              className="inline-flex min-h-11 items-center px-4 py-2 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors"
             >
               {str("removeLabel") || t(locale, "Remove", "সরান")}
               <span className="sr-only"> {line.productTitle}</span>
@@ -189,8 +183,11 @@ function FreeShippingBar({
     Math.min(100, Math.round(((threshold - remaining) / threshold) * 100)),
   );
   return (
-    <div className="rounded-fq-md border border-border bg-card p-3">
-      <p className="text-sm" aria-live="polite">
+    <div className="py-4 border-b border-border/60">
+      <p
+        className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground"
+        aria-live="polite"
+      >
         {earned
           ? str("freeShippingDone") ||
             t(locale, "Free shipping unlocked.", "ফ্রি ডেলিভারি চালু হয়েছে।")
@@ -209,11 +206,10 @@ function FreeShippingBar({
           "Free shipping progress",
           "ফ্রি ডেলিভারির অগ্রগতি",
         )}
-        className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted"
+        className="mt-3 h-1 w-full overflow-hidden bg-muted/50"
       >
-        {/* No transition: motion here would animate on every quote. */}
         <div
-          className="h-full rounded-full bg-primary"
+          className="h-full bg-foreground transition-all duration-500 ease-out"
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -238,11 +234,17 @@ function SummaryRow({
   strong?: boolean;
 }) {
   return (
-    <div
-      className={`flex items-baseline justify-between gap-4 ${strong ? "text-base font-semibold" : "text-sm"}`}
-    >
-      <dt className="min-w-0 break-words text-muted-foreground">{label}</dt>
-      <dd className="m-0 shrink-0 tabular-nums">{value}</dd>
+    <div className={`flex items-baseline justify-between gap-4 py-1.5`}>
+      <dt
+        className={`min-w-0 break-words ${strong ? "text-[13px] font-bold fq-caps tracking-widest text-foreground" : "text-[13px] font-medium tracking-wide text-muted-foreground"}`}
+      >
+        {label}
+      </dt>
+      <dd
+        className={`m-0 shrink-0 tabular-nums tracking-wide ${strong ? "text-[14px] font-bold text-foreground" : "text-[13.5px] font-semibold text-foreground"}`}
+      >
+        {value}
+      </dd>
     </div>
   );
 }
@@ -312,7 +314,7 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
             value={money(totals.vatMinor)}
           />
         )}
-        <div className="border-t border-border pt-2">
+        <div className="border-t border-border/60 pt-4 mt-2">
           <SummaryRow
             label={str("totalLabel") || t(locale, "Total", "সর্বমোট")}
             value={money(totals.totalMinor)}
@@ -364,9 +366,9 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
       {bool("showCta") && (
         <a
           href={storeSlug ? `${base}/checkout` : "#"}
-          className="inline-flex min-h-11 w-full items-center justify-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground"
+          className="inline-flex min-h-14 mt-4 w-full items-center justify-center bg-foreground px-8 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:bg-foreground/90 active:scale-[0.98]"
         >
-          {str("ctaLabel") || t(locale, "Checkout", "চেকআউট")}
+          {str("ctaLabel") || t(locale, "Checkout Now", "চেকআউট")}
         </a>
       )}
     </div>
@@ -386,10 +388,12 @@ const CartSummary: WidgetComponent = (ctx) => {
   return (
     <section
       aria-label={heading || "Order summary"}
-      className="rounded-fq-lg border border-border bg-card p-4"
+      className="p-6 bg-muted/20"
     >
       {heading && (
-        <Heading className="mb-3 text-lg font-semibold">{heading}</Heading>
+        <Heading className="mb-6 text-[11px] font-bold fq-caps tracking-widest text-foreground border-b border-border/60 pb-3">
+          {heading}
+        </Heading>
       )}
       <SummaryBody ctx={ctx} />
     </section>
@@ -409,11 +413,11 @@ const CartDrawer: WidgetComponent = (ctx) => {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex min-h-11 items-center gap-2 rounded-fq-md border border-border bg-card px-3 text-sm"
+        className="inline-flex min-h-12 items-center justify-center gap-2 px-3 text-[12px] font-bold fq-caps tracking-widest text-foreground transition-colors hover:text-muted-foreground"
       >
         {str("triggerLabel") || title}
-        <span className="min-w-5 rounded-full bg-primary px-1.5 text-center text-xs text-primary-foreground tabular-nums">
-          {cart.count}
+        <span className="ml-1 min-w-5 px-1.5 text-center tabular-nums">
+          ({cart.count})
         </span>
       </button>
       <OverlayHost
