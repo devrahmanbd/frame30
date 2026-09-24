@@ -11,8 +11,9 @@
  *   memoised for 30s to keep the "Check now" button cheap under refresh spam.
  * - TLS is issued at the edge (OpenResty + lua-resty-acme). This module owns
  *   the ACME http-01 challenge store and the edge handshake; it never holds a
- *   private key. With no edge configured the domain parks in `issuing_cert`
- *   and the UI says so, rather than pretending to be live.
+ *   private key. With no edge configured the domain stays `dns_verified` with
+ *   the cert marked `cert.awaiting_edge` (1h recheck) and the UI says so,
+ *   rather than pretending an order was placed.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
@@ -518,10 +519,27 @@ export async function requestCertificate(
 ): Promise<DomainView> {
   const row = await loadOwned(db, merchantId, domainId);
   const hook = process.env["DOMAIN_EDGE_HOOK_URL"];
-  // Schedule the next sweep visit so a domain parked in issuing_cert without
-  // an edge (or with a failing edge) is re-polled instead of stranding
-  // forever. verifyDomain owns DNS backoff; this 1h fallback only applies
-  // when no callback ever arrives.
+  if (!hook) {
+    // No edge to place an order with: stay in the current status (normally
+    // dns_verified) with the cert marked awaiting-edge and a 1h recheck.
+    // Moving to issuing_cert here would strand the domain — no callback can
+    // ever arrive, and serving requires `active`.
+    await transition(
+      row,
+      row.status as DomainStatus,
+      {
+        cert_status: "pending",
+        cert_error: "cert.awaiting_edge",
+        next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
+      },
+      { reason: "cert.awaiting_edge", actor },
+    );
+    incr("framique_domain_cert_request_total", { outcome: "awaiting_edge" });
+    return toView(await loadOwned(db, merchantId, domainId));
+  }
+  // Schedule the next sweep visit so a domain parked in issuing_cert with a
+  // failing edge is re-polled instead of stranding forever. verifyDomain
+  // owns DNS backoff; this 1h fallback only applies when no callback arrives.
   await transition(
     row,
     "issuing_cert",
@@ -530,37 +548,35 @@ export async function requestCertificate(
       cert_error: null,
       next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
     },
-    { reason: hook ? "cert.requested" : "cert.awaiting_edge", actor },
+    { reason: "cert.requested", actor },
   );
 
-  if (hook) {
-    try {
-      const res = await fetch(hook, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${process.env["DOMAIN_EDGE_TOKEN"] ?? ""}`,
-        },
-        body: JSON.stringify({
-          hostname: row.hostname,
-          domainId: row.id,
-          merchantId,
-        }),
-        signal: AbortSignal.timeout(8000),
-      });
-      if (!res.ok) throw new Error(`edge_${res.status}`);
-      incr("framique_domain_cert_request_total", { outcome: "ok" });
-    } catch (err) {
-      incr("framique_domain_cert_request_total", { outcome: "error" });
-      log("warn", "domain.cert_request_failed", { domain: row.id });
-      const service = supabaseAdmin;
-      await service
-        .from("merchant_domains")
-        .update({
-          cert_error: err instanceof Error ? err.message : "edge_unreachable",
-        })
-        .eq("id", row.id);
-    }
+  try {
+    const res = await fetch(hook, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${process.env["DOMAIN_EDGE_TOKEN"] ?? ""}`,
+      },
+      body: JSON.stringify({
+        hostname: row.hostname,
+        domainId: row.id,
+        merchantId,
+      }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) throw new Error(`edge_${res.status}`);
+    incr("framique_domain_cert_request_total", { outcome: "ok" });
+  } catch (err) {
+    incr("framique_domain_cert_request_total", { outcome: "error" });
+    log("warn", "domain.cert_request_failed", { domain: row.id });
+    const service = supabaseAdmin;
+    await service
+      .from("merchant_domains")
+      .update({
+        cert_error: err instanceof Error ? err.message : "edge_unreachable",
+      })
+      .eq("id", row.id);
   }
   return toView(await loadOwned(db, merchantId, domainId));
 }
@@ -960,6 +976,16 @@ export async function sweepDomains(
           .eq("id", row.id)
           .maybeSingle();
         if (!full) continue;
+        const hook = process.env["DOMAIN_EDGE_HOOK_URL"];
+        if (!hook) {
+          // No edge to renew through: leave the domain `active` so the
+          // storefront keeps serving. Yanking it to issuing_cert here would
+          // strand it (same limbo as issuance) and take a live domain down.
+          log("info", "domains.renewal_skipped_no_edge", {
+            domain: row.id,
+          });
+          continue;
+        }
         // Renewal via the state machine: active -> issuing_cert with
         // CertStatus `renewing`. Emits domain_events + metrics like any
         // other edge; the raw-update path bypassed both and then hit
@@ -974,36 +1000,33 @@ export async function sweepDomains(
           },
           { reason: "cert.renew_requested" },
         );
-        const hook = process.env["DOMAIN_EDGE_HOOK_URL"];
-        if (hook) {
-          try {
-            const res = await fetch(hook, {
-              method: "POST",
-              headers: {
-                "content-type": "application/json",
-                authorization: `Bearer ${process.env["DOMAIN_EDGE_TOKEN"] ?? ""}`,
-              },
-              body: JSON.stringify({
-                hostname: row.hostname,
-                domainId: row.id,
-                merchantId: row.merchant_id,
-                renew: true,
-              }),
-              signal: AbortSignal.timeout(8000),
-            });
-            if (!res.ok) throw new Error(`edge_${res.status}`);
-            incr("framique_domain_cert_request_total", { outcome: "ok" });
-          } catch (err) {
-            incr("framique_domain_cert_request_total", { outcome: "error" });
-            log("warn", "domain.cert_request_failed", { domain: row.id });
-            await service
-              .from("merchant_domains")
-              .update({
-                cert_error:
-                  err instanceof Error ? err.message : "edge_unreachable",
-              })
-              .eq("id", row.id);
-          }
+        try {
+          const res = await fetch(hook, {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              authorization: `Bearer ${process.env["DOMAIN_EDGE_TOKEN"] ?? ""}`,
+            },
+            body: JSON.stringify({
+              hostname: row.hostname,
+              domainId: row.id,
+              merchantId: row.merchant_id,
+              renew: true,
+            }),
+            signal: AbortSignal.timeout(8000),
+          });
+          if (!res.ok) throw new Error(`edge_${res.status}`);
+          incr("framique_domain_cert_request_total", { outcome: "ok" });
+        } catch (err) {
+          incr("framique_domain_cert_request_total", { outcome: "error" });
+          log("warn", "domain.cert_request_failed", { domain: row.id });
+          await service
+            .from("merchant_domains")
+            .update({
+              cert_error:
+                err instanceof Error ? err.message : "edge_unreachable",
+            })
+            .eq("id", row.id);
         }
         result.renewals += 1;
       } catch {

@@ -392,7 +392,12 @@ When a merchant adds a domain, they receive these records to configure at their 
 5. Success → `active`, `cert_status: "issued"`; Failure → `failed`, `cert_status: "error"`
 6. Certificates expiring within 30 days → cron re-requests via `requestCertificate()`
 
-**No edge configured?** Domain stays in `issuing_cert` with `cert_status: "pending"`. UI shows: "TLS edge is not configured on this environment."
+**No edge configured?** The domain stays `dns_verified` with the cert marked
+`cert.awaiting_edge` (rechecked hourly) — no order is placed, so nothing is
+"issuing" and nothing strands in `issuing_cert`. UI shows: "TLS edge is not
+configured on this environment." Renewals are likewise skipped (live domains
+stay `active` and keep serving). Legacy rows already parked in `issuing_cert`
+self-heal back through `verifying` on the next sweep.
 
 ---
 
