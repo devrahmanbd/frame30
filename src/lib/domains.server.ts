@@ -525,9 +525,13 @@ export async function verifyDomain(
 }
 
 /**
- * Hand the verified hostname to the TLS edge. `lua-resty-acme` performs the
- * ACME order and calls back into `/api/public/domains/callback`; we only track
- * the state and store http-01 challenges it registers.
+ * Hand the verified hostname to the TLS edge, in priority order:
+ * 1. `DOMAIN_EDGE_HOOK_URL` (external edge with a push receiver);
+ * 2. local provisioner (`EDGE_LOCAL_PROVISION=1`): certbot webroot through
+ *    the live :80 challenge path, PEM into haproxy, reload — see
+ *    `edge-provision.server.ts`. Fire-and-forget: the caller gets
+ *    `issuing_cert` immediately; completion lands via `applyCertResult`.
+ * 3. Neither: stay put with `cert.awaiting_edge` (fail closed, 1h recheck).
  */
 export async function requestCertificate(
   db: Client,
@@ -538,6 +542,28 @@ export async function requestCertificate(
   const row = await loadOwned(db, merchantId, domainId);
   const hook = process.env["DOMAIN_EDGE_HOOK_URL"];
   if (!hook) {
+    if (
+      process.env["EDGE_LOCAL_PROVISION"] === "1" &&
+      (await import("./edge-provision.server")).isProvisionableHost(
+        row.hostname,
+      )
+    ) {
+      await transition(
+        row,
+        "issuing_cert",
+        {
+          cert_status: "pending",
+          cert_error: null,
+          next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
+        },
+        { reason: "cert.requested", actor },
+      );
+      incr("framique_domain_cert_request_total", { outcome: "local" });
+      // Never block the caller on ACME (15–120s): the provision settles the
+      // state machine itself on completion.
+      void provisionAndApply(db, merchantId, row.id, row.hostname, actor);
+      return toView(await loadOwned(db, merchantId, domainId));
+    }
     // No edge to place an order with: stay in the current status (normally
     // dns_verified) with the cert marked awaiting-edge and a 1h recheck.
     // Moving to issuing_cert here would strand the domain — no callback can
@@ -597,6 +623,115 @@ export async function requestCertificate(
       .eq("id", row.id);
   }
   return toView(await loadOwned(db, merchantId, domainId));
+}
+
+/** Per-host provision single-flight (module scope: shared by all callers). */
+const provisionInflight = new Map<string, number>();
+
+/**
+ * Traffic trigger — the real-time path that replaces polling and the manual
+ * button for the common case. When edge traffic arrives for a hostname with
+ * a non-terminal domain row (the merchant just pasted DNS and hit their URL
+ * to test it), run one verify→provision chain, coalesced per host per
+ * cooldown window. Never throws, never blocks serving: failures degrade to
+ * the next trigger or the sweep, exactly as before.
+ */
+export async function triggerEdgeVerify(hostname: string): Promise<void> {
+  try {
+    const { shouldProvisionNow } = await import("./edge-provision.server");
+    const host = hostname.toLowerCase();
+    if (shouldProvisionNow(host, provisionInflight) !== "go") return;
+    const service = supabaseAdmin;
+    const { data: row } = await service
+      .from("merchant_domains")
+      .select("id, merchant_id, status")
+      .eq("hostname", host)
+      .maybeSingle();
+    if (!row) return;
+    const st = row.status as DomainStatus;
+    if (
+      st !== "pending_dns" &&
+      st !== "verifying" &&
+      st !== "dns_verified" &&
+      st !== "issuing_cert"
+    ) {
+      return;
+    }
+    provisionInflight.set(host, Date.now());
+    try {
+      await verifyDomain(
+        service as unknown as Client,
+        row.merchant_id as string,
+        `edge:${host}`,
+        row.id as string,
+        { manual: false, actor: "edge-trigger" },
+      );
+    } finally {
+      // Keep the stamp: one trigger per window even when DNS is not ready.
+    }
+  } catch {
+    // Serve first, verify later — a trigger must never break a request.
+  }
+}
+
+/**
+ * Fire-and-forget provision worker: runs the local ACME order, then settles
+ * the state machine through the audited `applyCertResult` path (ok →
+ * `active`, fail → `failed` with `cert_error`). Never throws — the domain
+ * keeps its 1h recheck either way, so a crashed order degrades to the next
+ * trigger instead of stranding.
+ */
+export async function provisionAndApply(
+  db: Client,
+  merchantId: string,
+  domainId: string,
+  hostname: string,
+  actor: string | null,
+): Promise<void> {
+  const { shouldProvisionNow, runProvisionOrder, isProvisionableHost } =
+    await import("./edge-provision.server");
+  const host = hostname.toLowerCase();
+  if (!isProvisionableHost(host)) return;
+  if (shouldProvisionNow(host, provisionInflight) !== "go") return;
+  provisionInflight.set(host, Date.now());
+  try {
+    const result = await runProvisionOrder(host, {
+      staging: process.env["ACME_STAGING"] === "true",
+    });
+    if (result.ok) {
+      await applyCertResult({
+        hostname: host,
+        ok: true,
+        expiresAt: result.expiresAt,
+        error: null,
+      });
+    } else {
+      const service = supabaseAdmin;
+      await service
+        .from("merchant_domains")
+        .update({
+          cert_status: "error",
+          cert_error: result.error,
+          next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
+        })
+        .eq("id", domainId);
+      await service.from("domain_events").insert({
+        domain_id: domainId,
+        merchant_id: merchantId,
+        from_status: "issuing_cert",
+        to_status: "issuing_cert",
+        reason: "cert.provision_failed",
+        detail: { error: result.error },
+        actor,
+      });
+    }
+  } catch (err) {
+    log("warn", "domain.provision_crashed", { domain: domainId });
+    void err;
+  } finally {
+    // Keep the cooldown stamp (not a delete): a finished order — ok or
+    // not — must not immediately re-fire on the next trigger.
+  }
 }
 
 export async function setPrimary(
@@ -1182,15 +1317,36 @@ export async function sweepDomains(
         if (!full) continue;
         const hook = process.env["DOMAIN_EDGE_HOOK_URL"];
         if (!hook) {
-          // No edge to renew through: never yank a live domain to
-          // issuing_cert (that would strand it and take it down). Instead
-          // refresh the stored expiry from the served cert — the edge
-          // auto-renews on its own — so the UI never cries Expiring on a
-          // healthy domain.
-          try {
-            if (await refreshActiveExpiry(row.hostname)) result.renewals += 1;
-          } catch {
-            // Logged inside refreshActiveExpiry; keep sweeping.
+          const { isProvisionableHost } =
+            await import("./edge-provision.server");
+          if (
+            process.env["EDGE_LOCAL_PROVISION"] === "1" &&
+            isProvisionableHost(row.hostname)
+          ) {
+            // Renewal through the local provisioner: same fire-and-forget
+            // order as issuance; applyCertResult flips back to active.
+            await transition(
+              full as unknown as Pick<
+                DomainRow,
+                "id" | "merchant_id" | "status"
+              >,
+              "issuing_cert",
+              {
+                cert_status: "renewing",
+                cert_error: null,
+                next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
+              },
+              { reason: "cert.renew_requested" },
+            );
+            void provisionAndApply(
+              service as unknown as Client,
+              row.merchant_id,
+              row.id,
+              row.hostname,
+              null,
+            );
+            result.renewals += 1;
+            continue;
           }
           log("info", "domains.renewal_skipped_no_edge", {
             domain: row.id,
