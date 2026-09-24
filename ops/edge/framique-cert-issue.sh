@@ -42,8 +42,7 @@ exec 9>"$LOCK"
 flock -n 9 || { echo "order already running for $HOST" >&2; exit 3; }
 
 ARGS=(certonly --non-interactive --agree-tos -m "$EMAIL"
-  --webroot -w /var/www/certbot -d "$HOST"
-  --keep-until-expiry --expand)
+  --webroot -w /var/www/certbot -d "$HOST" --expand)
 if [ "$MODE" = "staging" ]; then
   ARGS+=(--staging)
 fi
