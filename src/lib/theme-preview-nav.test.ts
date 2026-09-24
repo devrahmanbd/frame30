@@ -3,7 +3,9 @@
  */
 import { describe, expect, it } from "vitest";
 import {
+  applyDemoFocus,
   previewTemplateForHref,
+  resolveDemoFocus,
   resolveThemePreview,
 } from "./theme-preview-nav";
 
@@ -133,5 +135,73 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       expect(templates[key].main.length, `${key} main`).toBeGreaterThan(0);
       expect(templates[key].main[0]!.type).toBe("heading");
     }
+  });
+});
+
+describe("demo focus (slug-aware collection preview)", () => {
+  it("resolves known catalog slugs to their rows and names", () => {
+    expect(resolveDemoFocus("songoskriti", "collection", "bestsellers")).toEqual(
+      {
+        template: "collection",
+        slug: "bestsellers",
+        title: "Bestsellers",
+        collection: "bestsellers",
+      },
+    );
+  });
+
+  it("falls back to new-in rows under a humanized title for unknown slugs", () => {
+    expect(
+      resolveDemoFocus("songoskriti", "collection", "contemporary"),
+    ).toEqual({
+      template: "collection",
+      slug: "contemporary",
+      title: "Contemporary",
+      collection: "new-in",
+    });
+  });
+
+  it("resolves product titles from the demo catalog", () => {
+    const focus = resolveDemoFocus(
+      "songoskriti",
+      "product",
+      "dhakai-jamdani-heritage-saree",
+    );
+    expect(focus?.title).toBe("Dhakai Jamdani Heritage Saree");
+  });
+
+  it("returns null without a slug or for non-focus templates", () => {
+    expect(resolveDemoFocus("songoskriti", "collection", null)).toBeNull();
+    expect(resolveDemoFocus("songoskriti", "search", "saree")).toBeNull();
+  });
+
+  it("overrides the first heading and first collection rail, keeping ids", async () => {
+    const { newSection } = await import("./builder-ast");
+    const heading = { ...newSection("heading"), props: { text: "New in" } };
+    const rail = {
+      ...newSection("product_rail"),
+      props: { source: "collection", collection: "new-in", heading: "New" },
+    };
+    const tail = { ...newSection("product_rail"), props: {} };
+    const focus = {
+      template: "collection" as const,
+      slug: "women",
+      title: "Women",
+      collection: "women",
+    };
+    const out = applyDemoFocus([heading, rail, tail], focus);
+    expect(out[0]!.props["text"]).toBe("Women");
+    expect(out[1]!.props["collection"]).toBe("women");
+    expect(out[1]!.props["heading"]).toBe("Women");
+    expect(out[2]).toBe(tail);
+    expect(out.map((s) => s.id)).toEqual(
+      [heading, rail, tail].map((s) => s.id),
+    );
+  });
+
+  it("passes sections through without focus", async () => {
+    const { newSection } = await import("./builder-ast");
+    const sections = [newSection("heading")];
+    expect(applyDemoFocus(sections, null)).toBe(sections);
   });
 });

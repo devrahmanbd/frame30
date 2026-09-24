@@ -22,6 +22,7 @@ import type {
   ThemeTokens,
 } from "./builder-ast";
 import { TEMPLATE_KEYS } from "./builder-ast";
+import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
 
 export function previewTemplateForHref(href: string): TemplateKey | null {
@@ -157,4 +158,94 @@ export function resolveThemePreview(key: string): ThemePreviewPreset | null {
     tokens: source.tokens,
     templates: assemblePreviewTemplates(source),
   };
+}
+
+/* --------------------------------------- demo focus (slug-aware preview) */
+
+export type DemoFocus = {
+  template: TemplateKey;
+  /** Clicked slug, as authored in the link. */
+  slug: string;
+  /** Display heading: catalog name when known, humanized slug otherwise. */
+  title: string;
+  /** Collection key backing the data rails. */
+  collection: string;
+};
+
+const humanizeSlug = (slug: string): string =>
+  slug
+    .split("-")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ") || "Collection";
+
+/**
+ * Resolve a clicked product/collection slug to demo rows + display title.
+ * Known catalog slugs render their own rows under their own name; unknown
+ * slugs fall back to new-in rows under a humanized title, so the page
+ * always changes with the link instead of repeating one static demo.
+ */
+export function resolveDemoFocus(
+  themeKey: string,
+  template: TemplateKey,
+  slug: string | null | undefined,
+): DemoFocus | null {
+  if (!slug) return null;
+  const catalog = demoCatalogFor(themeKey);
+  if (template === "collection") {
+    const match = catalog.collections.find((c) => c.slug === slug);
+    if (match) return { template, slug, title: match.name, collection: slug };
+    return { template, slug, title: humanizeSlug(slug), collection: "new-in" };
+  }
+  if (template === "product") {
+    const match = catalog.products.find((p) => p.slug === slug);
+    return {
+      template,
+      slug,
+      title: match ? match.title : humanizeSlug(slug),
+      collection: "new-in",
+    };
+  }
+  return null;
+}
+
+/**
+ * Render-time override for a focused template: the first heading takes the
+ * focus title and the first collection-sourced rail takes the focus rows.
+ * Authored AST untouched (ids stable, bundle keys align); remaining rails
+ * stay as discovery. bn copy falls back to English by resolveBiText.
+ */
+export function applyDemoFocus(
+  sections: Section[],
+  focus: DemoFocus | null,
+): Section[] {
+  if (!focus) return sections;
+  let head = false;
+  let rail = false;
+  return sections.map((section) => {
+    if (!head && section.type === "heading") {
+      head = true;
+      return {
+        ...section,
+        props: { ...section.props, text: focus.title, text_bn: "" },
+      };
+    }
+    if (
+      !rail &&
+      section.type === "product_rail" &&
+      section.props["source"] === "collection"
+    ) {
+      rail = true;
+      return {
+        ...section,
+        props: {
+          ...section.props,
+          collection: focus.collection,
+          heading: focus.title,
+          heading_bn: "",
+        },
+      };
+    }
+    return section;
+  });
 }
