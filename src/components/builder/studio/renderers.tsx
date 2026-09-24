@@ -1460,11 +1460,12 @@ export function StudioWidget({ node, device, editing, menus }: RenderProps) {
         {
           title: "About",
           links: parseLinks(
-            "Our story|/pages/about\nRewards club|/pages/rewards\nContact us|/pages/contact",
+            "Our story|/pages/about\nRewards club|/pages/rewards",
           ),
         },
       ];
       const cols = authored.length > 0 ? authored : fallback;
+      const year = new Date().getFullYear();
       return (
         <nav aria-label="Footer" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {cols.map((col, index) => (
@@ -1485,6 +1486,9 @@ export function StudioWidget({ node, device, editing, menus }: RenderProps) {
               </ul>
             </div>
           ))}
+          <p className="text-xs text-muted-foreground sm:col-span-2 lg:col-span-4">
+            © {year} Songoskriti
+          </p>
         </nav>
       );
     }
