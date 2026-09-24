@@ -45,13 +45,30 @@ export async function answerWidgetCall(
   }
 }
 
-const FRAME_HTML = (
+/**
+ * Per-request CSP nonce from the host document. srcdoc frames inherit the
+ * parent page's script-src (nonce-based, no unsafe-inline), so the frame's
+ * script tag must carry the same nonce or nothing inside the island ever
+ * executes — silently, in every browser. Empty on the server / when the
+ * host carries no nonce (fail closed: inert frame, same as before).
+ */
+export function pageNonce(): string {
+  try {
+    if (typeof document === "undefined") return "";
+    return document.querySelector("script[nonce]")?.getAttribute("nonce") ?? "";
+  } catch {
+    return "";
+  }
+}
+
+export const FRAME_HTML = (
   entry: string,
   parentOrigin: string,
+  nonce: string,
 ) => `<!doctype html><html><head><meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; font-src 'none';">
 <style>body{margin:0;font:14px/1.6 system-ui;color:#111}</style></head>
-<body><div id="root"></div><script>
+<body><div id="root"></div><script${nonce ? ` nonce="${nonce}"` : ""}>
 const pending = new Map();
 let seq = 0;
 window.framique = {
@@ -104,8 +121,13 @@ export function WidgetSandbox({
   const [denied, setDenied] = useState<string[]>([]);
   // SSR-safe: the origin is only needed once the frame posts back, which is
   // always client-side. Render must never touch `window` (storefront SSR).
+  // The nonce is read lazily for the same reason (no `document` on server).
   const origin = typeof window === "undefined" ? "" : window.location.origin;
-  const srcDoc = useMemo(() => FRAME_HTML(entry, origin), [entry, origin]);
+  const nonce = useMemo(() => pageNonce(), []);
+  const srcDoc = useMemo(
+    () => FRAME_HTML(entry, origin, nonce),
+    [entry, origin, nonce],
+  );
 
   useEffect(() => {
     async function onMessage(event: MessageEvent) {

@@ -26,16 +26,14 @@ describe("WidgetSandbox SSR shell", () => {
   it("serves validated plugin settings to the plugin.settings bridge call", async () => {
     const { authorizeWidgetCall } = await import("@/lib/marketplace-scopes");
     expect(
-      authorizeWidgetCall(
-        { v: 1, id: "1", method: "plugin.settings" },
-        ["render_storefront"],
-      ),
+      authorizeWidgetCall({ v: 1, id: "1", method: "plugin.settings" }, [
+        "render_storefront",
+      ]),
     ).toEqual({ allowed: true, method: "plugin.settings", write: false });
     expect(
-      authorizeWidgetCall(
-        { v: 1, id: "1", method: "plugin.settings" },
-        ["read_orders"],
-      ).allowed,
+      authorizeWidgetCall({ v: 1, id: "1", method: "plugin.settings" }, [
+        "read_orders",
+      ]).allowed,
     ).toBe(false);
   });
 
@@ -46,5 +44,28 @@ describe("WidgetSandbox SSR shell", () => {
         "render_storefront",
       ]),
     ).toEqual({ allowed: false, reason: "malformed" });
+  });
+});
+
+describe("FRAME_HTML CSP nonce", () => {
+  it("carries the page nonce on the frame script so srcdoc executes", async () => {
+    const { FRAME_HTML } = await import("./WidgetSandbox");
+    const html = FRAME_HTML(
+      "framique.mount(document.createElement('div'))",
+      "https://shop.example.com",
+      "abc123",
+    );
+    expect(html).toContain('<script nonce="abc123">');
+  });
+
+  it("omits the attr without a nonce (fail closed, inert frame)", async () => {
+    const { FRAME_HTML } = await import("./WidgetSandbox");
+    const html = FRAME_HTML(
+      "framique.mount(document.createElement('div'))",
+      "https://shop.example.com",
+      "",
+    );
+    expect(html).toContain("<script>");
+    expect(html).not.toContain("nonce=");
   });
 });
