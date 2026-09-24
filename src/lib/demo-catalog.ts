@@ -2511,9 +2511,9 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Authentic handspun Comilla khadi cotton with coconut-shell buttons. Breathable everyday cut. Model is 178cm and wears size 40.",
       category: "men",
-      collections: ["bestsellers"],
+      collections: ["bestsellers", "festive"],
       tags: ["khadi", "kurta", "cotton", "handloom"],
-      image_url: "/api/public/ph/mens/comilla-handspun-khadi-kurta.svg",
+      image_url: "/ph/songoskriti/cat-men.png",
       variants: [
         {
           name: "Size M - Natural Off-White",
@@ -2537,9 +2537,9 @@ const SONGOSKRITI: DemoCatalog = {
       description:
         "Hand-stitched running-stitch kantha on layered natural cotton by Jessore craftswomen. Queen size, 88 x 96 in.",
       category: "living",
-      collections: ["bestsellers", "gifting"],
+      collections: ["bestsellers", "gifting", "new-in"],
       tags: ["kantha", "quilt", "handloom", "living"],
-      image_url: "/api/public/ph/living/handcrafted-nakshi-kantha-quilt.svg",
+      image_url: "/ph/songoskriti/cat-living.png",
       variants: [
         {
           name: "Queen - Tree of Life",
@@ -2577,6 +2577,7 @@ const SONGOSKRITI: DemoCatalog = {
       category: "kids",
       collections: ["new-in", "festive", "gifting"],
       tags: ["kids", "silk", "festive", "ghagra"],
+      image_url: "/ph/songoskriti/cat-kids.png",
       variants: [
         {
           name: "Age 8-10 Yrs - Coral Rose",
@@ -2584,6 +2585,120 @@ const SONGOSKRITI: DemoCatalog = {
           price: 450000,
           compare_at: 520000,
           stock: 10,
+        },
+      ],
+    },
+    {
+      slug: "tangail-handloom-cotton-saree",
+      title: "Tangail Taant Handloom Cotton Saree",
+      description:
+        "Woven on a traditional wooden pit loom in Delduar, Tangail. 100% fine combed cotton with contrast zari border. Includes 80cm blouse piece.",
+      category: "women",
+      collections: ["bestsellers", "festive"],
+      tags: ["cotton", "handloom", "saree", "tangail"],
+      image_url: "/ph/songoskriti/cat-women.png",
+      variants: [
+        {
+          name: "Indigo & Gold",
+          sku: "SNK-TNG-IND",
+          price: 345000,
+          compare_at: 390000,
+          stock: 15,
+        },
+      ],
+    },
+    {
+      slug: "boys-silk-panjabi-pajama-set",
+      title: "Boys Handloom Silk Panjabi & Pajama",
+      description:
+        "Classic handloom silk festive panjabi with mother-of-pearl buttons and fine cotton pajama set for boys.",
+      category: "kids",
+      collections: ["new-in", "festive"],
+      tags: ["kids", "panjabi", "silk", "festive"],
+      image_url: "/ph/songoskriti/cat-kids.png",
+      variants: [
+        {
+          name: "Age 6-8 Yrs - Golden Beige",
+          sku: "SNK-KID-06GB",
+          price: 320000,
+          compare_at: 360000,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "taaga-contemporary-linen-tunic",
+      title: "Taaga Contemporary Asymmetric Linen Tunic",
+      description:
+        "Modern fusion tunic in breathable handloom linen blend with side slit and contrast wood buttons. Model wears size S.",
+      category: "women",
+      collections: ["new-in", "bestsellers"],
+      tags: ["taaga", "tunic", "contemporary", "linen"],
+      image_url: "/ph/songoskriti/cat-newin.png",
+      variants: [
+        {
+          name: "Size M - Terracotta",
+          sku: "SNK-TGA-MTC",
+          price: 265000,
+          compare_at: 310000,
+          stock: 16,
+        },
+      ],
+    },
+    {
+      slug: "taaga-man-relaxed-khadi-shirt",
+      title: "Taaga Man Relaxed Fit Khadi Shirt",
+      description:
+        "Contemporary everyday cut in 100% handspun Comilla khadi with mandarin collar and roll-up sleeves.",
+      category: "men",
+      collections: ["new-in", "bestsellers"],
+      tags: ["taaga-man", "shirt", "khadi", "mens"],
+      image_url: "/ph/songoskriti/cat-men.png",
+      variants: [
+        {
+          name: "Size L - Slate Olive",
+          sku: "SNK-TGM-LSO",
+          price: 225000,
+          compare_at: 260000,
+          stock: 14,
+        },
+      ],
+    },
+    {
+      slug: "bijoypur-terracotta-tea-set",
+      title: "Bijoypur Terracotta Handcrafted Tea Set",
+      description:
+        "Traditional clay tea kettle with six cups hand-thrown and fired by Bijoypur pottery artisans. Lead-free food grade glaze.",
+      category: "living",
+      collections: ["gifting", "bestsellers"],
+      tags: ["terracotta", "pottery", "living", "artisan"],
+      image_url: "/ph/songoskriti/cat-living.png",
+      variants: [
+        {
+          name: "Set of 6 Cups + Kettle",
+          sku: "SNK-POT-SET",
+          price: 240000,
+          compare_at: 280000,
+          stock: 20,
+        },
+      ],
+    },
+    {
+      slug: "antique-silver-filigree-jhumka",
+      title: "Rongpur Silver Filigree Jhumka Earrings",
+      description:
+        "Intricate floral filigree work handcrafted by master silversmiths with delicate bell drops and pearl accents.",
+      category: "jewellery",
+      collections: ["wedding", "festive", "gifting"],
+      tags: ["jewellery", "silver", "filigree", "earrings"],
+      image_url: "/ph/songoskriti/cat-jewelry.png",
+      variants: [
+        {
+          name: "Oxidized Silver",
+          sku: "SNK-JHM-SLV",
+          price: 380000,
+          compare_at: 440000,
+          stock: 18,
         },
       ],
     },

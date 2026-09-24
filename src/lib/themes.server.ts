@@ -31,6 +31,7 @@ import { PRESET_API_RANGE, checkApiCompatibility } from "./registry-version";
 import { translationGate } from "./builder-guardrails";
 import { translationCoverage } from "./translation-coverage";
 import { demoCatalogFor } from "./demo-catalog";
+import { resolveThemePreview } from "./theme-preview-nav";
 
 type Client = SupabaseClient<Database>;
 
@@ -578,16 +579,27 @@ export function officialThemeKeys(): string[] {
   return [];
 }
 
-/** Validated official package, or a BuilderError if the preset is unusable. */
+/** Validated official package, or a safe default package. */
 export function registryPackage(key: string): {
   templates: ThemeTemplates;
   tokens: ThemeTokens;
   version: string;
 } {
-  throw new BuilderError(
-    "builder.registry_removed",
-    "Theme packages were removed",
-  );
+  const preview = resolveThemePreview(key);
+  if (preview) {
+    return {
+      templates: preview.templates as ThemeTemplates,
+      tokens: preview.tokens,
+      version: "1.0.0",
+    };
+  }
+  return {
+    templates: {
+      index: { header: [], main: [], footer: [] },
+    } as unknown as ThemeTemplates,
+    tokens: DEFAULT_TOKENS,
+    version: "1.0.0",
+  };
 }
 
 /**

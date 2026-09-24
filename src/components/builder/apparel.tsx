@@ -157,9 +157,7 @@ const Lookbook: WidgetComponent = (ctx) => {
           alt: row.alt,
           href: row.href,
           ratio:
-            index % 2 === 1
-              ? ("portrait" as const)
-              : ("landscape" as const),
+            index % 2 === 1 ? ("portrait" as const) : ("landscape" as const),
         }))
       : [1, 2, 3, 4]
           .map((n) => ({
@@ -878,7 +876,7 @@ const CircleCategories: WidgetComponent = ({ str, Heading }) => {
   if (categories.length === 0) return null;
 
   return (
-    <section className="space-y-4 py-4">
+    <section className="mx-auto w-full max-w-6xl space-y-4 px-4 py-4">
       {heading && (
         <div className="flex items-center justify-between">
           <Heading className="text-xl font-bold tracking-tight text-foreground font-serif">

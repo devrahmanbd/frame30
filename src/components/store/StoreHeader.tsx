@@ -56,27 +56,51 @@ export function StoreHeader({
   const [mobileOpen, setMobileOpen] = useState(false);
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         {custom ? (
-          <Link to="/" className="min-w-0">
-            <span className="font-bangla-display block truncate text-lg font-semibold">
-              {name}
-            </span>
-            {tagline && (
-              <span className="block truncate text-xs text-muted-foreground">
-                {tagline}
-              </span>
+          <Link to="/" className="min-w-0 flex items-center">
+            {slug === "songoskriti" || name?.toLowerCase() === "songoskriti" ? (
+              <img
+                src="/ph/songoskriti/logo-lockup.svg"
+                alt="Songoskriti সংস্কৃতি"
+                className="h-9 w-auto object-contain"
+              />
+            ) : (
+              <>
+                <span className="font-bangla-display block truncate text-lg font-semibold">
+                  {name}
+                </span>
+                {tagline && (
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {tagline}
+                  </span>
+                )}
+              </>
             )}
           </Link>
         ) : (
-          <Link to="/store/$slug" params={{ slug }} className="min-w-0">
-            <span className="font-bangla-display block truncate text-lg font-semibold">
-              {name}
-            </span>
-            {tagline && (
-              <span className="block truncate text-xs text-muted-foreground">
-                {tagline}
-              </span>
+          <Link
+            to="/store/$slug"
+            params={{ slug }}
+            className="min-w-0 flex items-center"
+          >
+            {slug === "songoskriti" || name?.toLowerCase() === "songoskriti" ? (
+              <img
+                src="/ph/songoskriti/logo-lockup.svg"
+                alt="Songoskriti সংস্কৃতি"
+                className="h-9 w-auto object-contain"
+              />
+            ) : (
+              <>
+                <span className="font-bangla-display block truncate text-lg font-semibold">
+                  {name}
+                </span>
+                {tagline && (
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {tagline}
+                  </span>
+                )}
+              </>
             )}
           </Link>
         )}

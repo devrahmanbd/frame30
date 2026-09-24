@@ -840,6 +840,61 @@ const CONTENT: Record<string, Control[]> = {
       responsive: true,
     }),
   ],
+  whatsapp_button: [
+    c({
+      key: "phone_number",
+      label: "WhatsApp number",
+      type: "text",
+      tab: "content",
+      section: "WhatsApp",
+    }),
+    c({
+      key: "label",
+      label: "Button text",
+      type: "text",
+      tab: "content",
+      section: "WhatsApp",
+    }),
+    c({
+      key: "greeting_message",
+      label: "Prefilled message",
+      type: "textarea",
+      tab: "content",
+      section: "WhatsApp",
+    }),
+    c({
+      key: "style",
+      label: "Style",
+      type: "choice",
+      tab: "content",
+      section: "WhatsApp",
+      options: [
+        { value: "bubble", label: "Bubble" },
+        { value: "bar", label: "Bar" },
+      ],
+    }),
+    c({
+      key: "size",
+      label: "Size",
+      type: "choice",
+      tab: "content",
+      section: "WhatsApp",
+      options: [
+        { value: "sm", label: "Small" },
+        { value: "md", label: "Medium" },
+        { value: "lg", label: "Large" },
+      ],
+    }),
+    c({
+      key: "textAlign",
+      label: "Alignment",
+      type: "choice",
+      tab: "content",
+      section: "WhatsApp",
+      options: ALIGN_OPTIONS,
+      responsive: true,
+    }),
+  ],
   divider: [
     c({
       key: "style",

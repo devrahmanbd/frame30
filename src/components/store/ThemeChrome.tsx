@@ -173,10 +173,10 @@ export function ThemeChrome({
         template={template ?? "unknown"}
       />
       <SiteKitSurface siteKit={siteKit ?? null} />
-      {chrome}
-      {chromeAst && chromeAst.header.length > 0 && (
-        <div className="mx-auto max-w-6xl space-y-2 px-4 pt-4">
-          {chromeAst.header.map((section) => (
+      {chromeAst &&
+        chromeAst.header
+          .filter((section) => section.type === "subbrand_bar")
+          .map((section) => (
             <SectionRenderer
               key={section.id}
               section={section}
@@ -185,8 +185,23 @@ export function ThemeChrome({
               contextSlots={contextSlots}
             />
           ))}
-        </div>
-      )}
+      {chrome}
+      {chromeAst &&
+        chromeAst.header.some((section) => section.type !== "subbrand_bar") && (
+          <div className="mx-auto max-w-7xl space-y-2 px-4 sm:px-6 lg:px-8 pt-4">
+            {chromeAst.header
+              .filter((section) => section.type !== "subbrand_bar")
+              .map((section) => (
+                <SectionRenderer
+                  key={section.id}
+                  section={section}
+                  template={template}
+                  storeSlug={storeSlug}
+                  contextSlots={contextSlots}
+                />
+              ))}
+          </div>
+        )}
       <main className={containerClassName}>
         {themed ? (
           <div className="space-y-8">
@@ -208,7 +223,7 @@ export function ThemeChrome({
         )}
       </main>
       {chromeAst && chromeAst.footer.length > 0 && (
-        <footer className="mx-auto max-w-6xl space-y-2 px-4 pb-10">
+        <footer className="mx-auto max-w-7xl space-y-2 px-4 sm:px-6 lg:px-8 pb-10">
           {chromeAst.footer.map((section) => (
             <SectionRenderer
               key={section.id}

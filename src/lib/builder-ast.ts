@@ -266,7 +266,10 @@ export type SectionType =
   | "finder_row"
   | "craft_story"
   | "testimonials"
-  | "trust_footer";
+  | "trust_footer"
+  // Storefront contact channel as a placeable block (mirrors the
+  // whatsapp-chat plugin bubble; renderers live in the studio twins).
+  | "whatsapp_button";
 
 export type PropScalar = string | number | boolean;
 /** A repeatable row (Phase 3.2 `array` fields). Always JSON-safe. */
@@ -3859,6 +3862,47 @@ const BASE_CATALOG: CatalogEntry[] = [
       },
       bool("fullWidth", "Full width"),
       bool("newTab", "Open in a new tab"),
+    ],
+  },
+  {
+    type: "whatsapp_button",
+    label: "WhatsApp Button",
+    group: "content",
+    slots: ["header", "main", "footer"],
+    heading: false,
+    defaults: {
+      phone_number: "",
+      label: "Chat on WhatsApp",
+      greeting_message: "Hello! I am interested in your products.",
+      style: "bubble",
+      size: "md",
+      textAlign: "left",
+    },
+    fields: [
+      text("phone_number", "WhatsApp number", 24),
+      text("label", "Button text", 60),
+      text("greeting_message", "Prefilled message", 140),
+      {
+        key: "style",
+        label: "Style",
+        kind: "select",
+        panel: "content",
+        options: [
+          { value: "bubble", label: "Bubble" },
+          { value: "bar", label: "Bar" },
+        ],
+      },
+      {
+        key: "size",
+        label: "Size",
+        kind: "select",
+        panel: "style",
+        options: [
+          { value: "sm", label: "Small" },
+          { value: "md", label: "Medium" },
+          { value: "lg", label: "Large" },
+        ],
+      },
     ],
   },
   {

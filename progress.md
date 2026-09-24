@@ -45,6 +45,16 @@ verify on production; push to GitHub.
   status without published_at. Fixed in
   20260922130000_import_posts_published_at.sql (RPC stamps now() +
   backfill), applied live, archive lists all 3. Import tests 13/13.
+- [x] Batch: Aarong & Heritage Commerce Realistic Theme Program + fix/preview-responsive-css integration:
+  - Subbrand Bar: Top-tier sub-brand switcher ribbon (Songoskriti, Taaga, Taaga Man, Herstory, Earth) with bilingual tagline and active pill styling.
+  - Authentic Identity Lockup: Genuine terracotta weave diamond mark + English and Bangla calligraphy ("Songoskriti সংস্কৃতি") in StoreHeader.
+  - Multi-rail merchandising: Curated collection queries in previewDemoMap (`new-in` vs `festive`) showing distinct, realistic catalogs.
+  - Enriched catalog: 12 real products in `DEMO_CATALOGS.songoskriti` with real images, integer minor units, and sync'd SQL seed rows in `supabase/migrations/20260924_songoskriti_demo.sql`.
+  - Responsive & rhythm layout: Containerized `SongoskritiProductRail` (`max-w-6xl px-4 sm:px-6`), containerized `CircleCategories`, flush hero margin.
+  - Preemptively merged and integrated `origin/fix/preview-responsive-css`:
+    - Clean fast-forward of upstream commits `c62c4e1`, `a6262ef`, `2a06d88`, `5f402d3`.
+    - Resolved conflict in `ThemePreviewFrame.tsx` cleanly merging responsive CSS verbatim inlining, primary section H1 election (`primarySectionId`), subbrand bar placement, and demo navigation for all templates (`/cart`, `/checkout`, `/account`, `/c/*`, `/p/*`, `/search`, `/blog`, `/pages/*`).
+  - Verification: 127/127 unit tests green (10 test suites), 258/258 contract tests green (13 suites), production build verified clean (`bun run build` 8.4s), browser screenshots verified via Chrome DevTools.
 - [ ] Category deep-check (surface present: /c/* live 200, admin
   route exists — needs user to pinpoint the exact gap).
 - [x] Collection 404 batch (`39ae95b`, deployed): demo re-imports

@@ -556,7 +556,7 @@ function AccountCart({ str, bool, storeSlug }: WidgetCtx) {
   );
 }
 
-function SubbrandBar({ str }: WidgetCtx) {
+function SubbrandBar({ str, locale }: WidgetCtx) {
   const active = (str("activeBrand") || "aarong").trim().toLowerCase();
   const brands = [1, 2, 3, 4, 5]
     .map((n) => ({
@@ -567,15 +567,16 @@ function SubbrandBar({ str }: WidgetCtx) {
 
   if (brands.length === 0) return null;
 
-  const tagline = str("tagline");
+  const tagline =
+    locale === "bn" && str("tagline_bn") ? str("tagline_bn") : str("tagline");
 
   return (
     <nav
       aria-label="Brand family"
-      className="border-b border-border/40 bg-muted/30 text-xs"
+      className="border-b border-border/40 bg-muted/40 text-xs"
     >
-      <div className="mx-auto flex max-w-[var(--fq-container,1280px)] items-center justify-between px-4 sm:px-6">
-        <ul className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-1">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <ul className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-1.5 scrollbar-none">
           {brands.map((b) => {
             const isActive =
               b.name.toLowerCase() === active ||
@@ -585,10 +586,10 @@ function SubbrandBar({ str }: WidgetCtx) {
               <li key={b.name} className="shrink-0">
                 <a
                   href={b.href}
-                  className={`inline-flex items-center px-2.5 py-1 rounded text-[11px] font-semibold fq-caps tracking-widest transition-colors ${
+                  className={`inline-flex items-center px-3 py-1 rounded-sm text-[11px] font-semibold fq-caps tracking-widest transition-all ${
                     isActive
-                      ? "bg-foreground text-background font-bold shadow-xs"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      ? "bg-primary text-primary-foreground font-bold shadow-xs"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/80"
                   }`}
                   aria-current={isActive ? "page" : undefined}
                 >
@@ -599,7 +600,7 @@ function SubbrandBar({ str }: WidgetCtx) {
           })}
         </ul>
         {tagline && (
-          <span className="hidden md:inline-flex items-center text-[10px] tracking-widest text-muted-foreground font-medium fq-caps">
+          <span className="hidden md:inline-flex items-center text-[10px] tracking-wider text-muted-foreground font-medium fq-caps">
             {tagline}
           </span>
         )}

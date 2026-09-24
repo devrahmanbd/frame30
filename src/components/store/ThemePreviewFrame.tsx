@@ -284,15 +284,11 @@ export function ThemePreviewFrame({
                 dangerouslySetInnerHTML={{ __html: responsive.css }}
               />
             ) : null}
-            {/* Wordmark row, as on a live storefront — the blueprint's
-                header sections render beneath it. */}
-            <StoreHeader slug={blueprintKey} name={themeName} menus={null} />
-            <WidgetDataProvider
-              bundle={previewData.bundle}
-              map={previewData.map}
-            >
-              {/* header slot */}
-              {ast.header.map((section) => (
+
+            {/* Top-level ribbon bar (e.g. subbrand_bar) rendered above the store masthead */}
+            {ast.header
+              .filter((section) => section.type === "subbrand_bar")
+              .map((section) => (
                 <SectionRenderer
                   key={section.id}
                   section={section}
@@ -302,18 +298,40 @@ export function ThemePreviewFrame({
                 />
               ))}
 
-              {/* main slot */}
-              {ast.main.length > 0 ? (
-                ast.main.map((section) => (
+            {/* Wordmark row, as on a live storefront — the blueprint's
+                navigation sections render beneath it. */}
+            <StoreHeader slug={blueprintKey} name={themeName} menus={null} />
+            <WidgetDataProvider
+              bundle={previewData.bundle}
+              map={previewData.map}
+            >
+              {/* Header sections below the masthead (e.g. mega_menu) */}
+              {ast.header
+                .filter((section) => section.type !== "subbrand_bar")
+                .map((section) => (
                   <SectionRenderer
                     key={section.id}
                     section={section}
                     template={template}
                     editing={false}
                     contextSlots={accountSlots}
-                    primary={section.id === primaryId}
                   />
-                ))
+                ))}
+
+              {/* main slot */}
+              {ast.main.length > 0 ? (
+                <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='hero_carousel']]:!mt-0 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
+                  {ast.main.map((section) => (
+                    <SectionRenderer
+                      key={section.id}
+                      section={section}
+                      template={template}
+                      editing={false}
+                      contextSlots={accountSlots}
+                      primary={section.id === primaryId}
+                    />
+                  ))}
+                </main>
               ) : (
                 <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
                   No sections authored for this template.
@@ -322,16 +340,18 @@ export function ThemePreviewFrame({
 
               {/* footer slot — landmark parity with ThemeChrome */}
               {ast.footer.length > 0 && (
-                <footer>
-                  {ast.footer.map((section) => (
-                    <SectionRenderer
-                      key={section.id}
-                      section={section}
-                      template={template}
-                      editing={false}
-                      contextSlots={accountSlots}
-                    />
-                  ))}
+                <footer className="border-t border-border bg-card/40 mt-16 pt-12 pb-16">
+                  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
+                    {ast.footer.map((section) => (
+                      <SectionRenderer
+                        key={section.id}
+                        section={section}
+                        template={template}
+                        editing={false}
+                        contextSlots={accountSlots}
+                      />
+                    ))}
+                  </div>
                 </footer>
               )}
             </WidgetDataProvider>

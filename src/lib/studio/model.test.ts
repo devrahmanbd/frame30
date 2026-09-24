@@ -19,7 +19,7 @@ import {
   serializeStudioBody,
   studioNodesToSections,
 } from "./model";
-import type { StudioDoc, StudioNode } from "./model";
+import type { NodeSettings, StudioDoc, StudioNode } from "./model";
 import {
   asStudioPlacement,
   detachStudioPlacement,
@@ -713,5 +713,41 @@ describe("widget → menu binding", () => {
     // A bound-but-empty menu resolves to [] (not the manual fallback).
     const empty = [{ id: "e", items: [] as never[] }];
     expect(resolveMenuItems(bound("e"), empty)).toEqual([]);
+  });
+});
+
+describe("whatsapp_button", () => {
+  const wa = (settings: NodeSettings): StudioDoc => ({
+    ...emptyStudioDoc(),
+    root: [{ id: "wa1", el: "whatsapp_button", settings }],
+  });
+
+  it("renders a wa.me anchor with digits-only phone", () => {
+    const html = renderStudioHtml(
+      wa({ phone_number: "+880 1540-203662", label: "Chat now" }),
+    );
+    expect(html).toContain("https://wa.me/8801540203662");
+    expect(html).toContain("Chat now");
+    expect(html).toContain('target="_blank"');
+  });
+
+  it("renders the bubble glyph, never the dots placeholder", () => {
+    const html = renderStudioHtml(wa({ phone_number: "8801540203662" }));
+    expect(html).toContain('viewBox="0 0 512 512"');
+    expect(html).toContain("M192.7 146.9");
+    expect(html).not.toContain("+880 1540-203662");
+  });
+
+  it("renders nothing without a phone number (fail closed, no fake links)", () => {
+    expect(renderStudioHtml(wa({ phone_number: "" }))).not.toContain("wa.me");
+    expect(renderStudioHtml(wa({}))).not.toContain("<a");
+  });
+
+  it("escapes the greeting text", () => {
+    const html = renderStudioHtml(
+      wa({ phone_number: "8801", greeting_message: "<b>Hi</b>" }),
+    );
+    expect(html).not.toContain("<b>Hi</b>");
+    expect(html).toContain("wa.me/8801?text=");
   });
 });
