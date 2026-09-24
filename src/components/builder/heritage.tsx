@@ -181,7 +181,7 @@ const HeroCarousel: WidgetComponent = ({
           className="fq-theme-aurora pointer-events-none absolute inset-0 opacity-40"
         />
       )}
-      <div className="mx-auto grid max-w-[var(--fq-container,1440px)] items-center gap-12 px-4 py-16 sm:px-8 sm:py-24 lg:grid-cols-12 lg:gap-16">
+      <div className="mx-auto grid max-w-[var(--fq-container,1440px)] items-center gap-8 px-4 py-12 sm:gap-12 sm:px-8 sm:py-24 lg:grid-cols-12 lg:gap-16">
         {/* Copy — asymmetric left, six columns */}
         <div className="min-w-0 lg:col-span-6 lg:pl-8">
           {slide.caption && (
@@ -203,7 +203,7 @@ const HeroCarousel: WidgetComponent = ({
           )}
           <Heading
             data-hero-headline
-            className="mt-2 font-bangla-display text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl"
+            className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl lg:text-6xl"
           >
             {slide.headline}
           </Heading>
@@ -221,7 +221,7 @@ const HeroCarousel: WidgetComponent = ({
             {slide.ctaLabel && (
               <a
                 href={slide.ctaUrl || "#"}
-                className="inline-flex min-h-14 items-center whitespace-nowrap bg-foreground px-10 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98]"
+                className="inline-flex min-h-12 sm:min-h-14 items-center whitespace-nowrap bg-foreground px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98]"
               >
                 {slide.ctaLabel}
               </a>
@@ -315,16 +315,16 @@ const DepartmentGrid: WidgetComponent = ({
 
   const gridCols =
     columns <= 2
-      ? "sm:grid-cols-2"
+      ? "grid-cols-2 sm:grid-cols-2"
       : columns <= 3
-        ? "sm:grid-cols-3"
+        ? "grid-cols-2 sm:grid-cols-3"
         : columns <= 4
-          ? "sm:grid-cols-2 lg:grid-cols-4"
-          : "sm:grid-cols-3 lg:grid-cols-5";
+          ? "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4"
+          : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5";
   return (
-    <section className="py-16 sm:py-24 max-w-[var(--fq-container,1440px)] mx-auto px-4 sm:px-8">
-      <div className="mb-10 text-center">
-        <Heading className="font-bangla-display text-3xl font-medium tracking-wide sm:text-4xl text-foreground">
+    <section className="py-12 sm:py-24 max-w-[var(--fq-container,1440px)] mx-auto px-4 sm:px-8">
+      <div className="mb-8 sm:mb-10 text-center">
+        <Heading className="font-bangla-display text-2xl sm:text-3xl lg:text-4xl font-medium tracking-wide text-foreground">
           {t(locale, "Shop by department", "বিভাগ অনুযায়ী কিনুন")}
         </Heading>
         <p className="mt-3 text-[13.5px] font-medium tracking-wide text-muted-foreground">
@@ -357,11 +357,11 @@ const DepartmentGrid: WidgetComponent = ({
                 />
               )}
             </div>
-            <div className="mt-4 text-center">
-              <p className="font-bold text-[13px] fq-caps tracking-widest text-foreground transition-colors group-hover:text-muted-foreground">
+            <div className="mt-3 sm:mt-4 text-center">
+              <p className="font-bold text-[11px] sm:text-[13px] fq-caps tracking-widest text-foreground transition-colors group-hover:text-muted-foreground">
                 {locale === "bn" && dept.nameBn ? dept.nameBn : dept.name}
               </p>
-              <p className="mt-1 text-[12px] font-medium tracking-wide text-muted-foreground tabular-nums">
+              <p className="mt-1 text-[10px] sm:text-[12px] font-medium tracking-wide text-muted-foreground tabular-nums">
                 {dept.count} {t(locale, "items", "পণ্য")}
               </p>
             </div>

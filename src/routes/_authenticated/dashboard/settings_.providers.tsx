@@ -139,14 +139,14 @@ function ProvidersPage() {
 
   return (
     <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">
+      <header className="space-y-1.5 pb-4 border-b border-border/40">
+        <h1 className="text-2xl font-medium tracking-tight">
           {t("Payment rails", "পেমেন্ট রেইল")}
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-[13px] text-muted-foreground max-w-2xl">
           {t(
-            "Live money rails need a signed-off credential pack. Submit evidence and secrets here — the Framique payments team reviews and activates them.",
-            "লাইভ পেমেন্ট চালু করতে ডকুমেন্ট ও ক্রেডেনশিয়াল জমা দিন — ফ্রেমিক পেমেন্ট টিম রিভিউ করে চালু করবে।",
+            "Manage credentials and track review status for your live payment integrations.",
+            "আপনার লাইভ পেমেন্ট ইন্টিগ্রেশনের ক্রেডেনশিয়াল এবং রিভিউ স্ট্যাটাস পরিচালনা করুন।"
           )}
         </p>
       </header>
@@ -154,19 +154,19 @@ function ProvidersPage() {
       {error && <InlineAlert tone="danger">{error}</InlineAlert>}
       {notice && <InlineAlert tone="success">{notice}</InlineAlert>}
 
-      <div className="space-y-3">
+      <div className="space-y-1">
         {providers.credentials.map((cred) => {
           const isOpen = open === cred.provider;
           return (
             <section
               key={cred.provider}
-              className="rounded-fq-md border border-border bg-card"
+              className="border-b border-border/40 last:border-0"
             >
               <button
                 type="button"
                 onClick={() => setOpen(isOpen ? null : cred.provider)}
                 aria-expanded={isOpen}
-                className="flex w-full items-center justify-between gap-3 p-4 text-left"
+                className="group flex w-full items-center justify-between gap-4 py-5 text-left transition-colors"
               >
                 <span className="space-y-1">
                   <span className="flex items-center gap-2">
@@ -195,24 +195,27 @@ function ProvidersPage() {
               </button>
 
               {isOpen && (
-                <div className="space-y-4 border-t border-border p-4">
+                <div className="space-y-8 bg-muted/10 p-6 sm:p-8 rounded-lg mb-6 mt-2">
                   {isCommunityPlugin(cred.provider) && (
                     <InlineAlert tone="warning">
                       {pluginNotice(cred.provider, lang === "bn" ? "bn" : "en")}
                     </InlineAlert>
                   )}
 
-                  <SectionCard title={t("Evidence pack", "ডকুমেন্ট প্যাক")}>
-                    <ul className="space-y-2">
+                  <div className="space-y-4">
+                    <h3 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground fq-caps">
+                      {t("Evidence pack", "ডকুমেন্ট প্যাক")}
+                    </h3>
+                    <ul className="space-y-3">
                       {cred.requires.map((key) => (
                         <li
                           key={key}
-                          className="flex items-center gap-2 text-sm"
+                          className="flex items-center gap-3 text-[13px] font-medium"
                         >
                           <input
                             id={`${cred.provider}-${key}`}
                             type="checkbox"
-                            className="h-4 w-4 rounded border-border"
+                            className="h-4 w-4 rounded border-border text-primary"
                             checked={Boolean(cred.checklist[key])}
                             disabled={
                               busy !== null ||
@@ -232,16 +235,21 @@ function ProvidersPage() {
                         </li>
                       ))}
                     </ul>
-                  </SectionCard>
+                  </div>
 
-                  <SectionCard
-                    title={t("Live credentials", "লাইভ ক্রেডেনশিয়াল")}
-                    hint={t(
-                      "Encrypted at rest and never shown again — only the last characters are kept as a hint.",
-                      "এনক্রিপ্ট করে সংরক্ষণ হয়, আর দেখানো হয় না — শুধু শেষ কয়েকটি অক্ষর দেখা যায়।",
-                    )}
-                  >
-                    <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground fq-caps">
+                        {t("Live credentials", "লাইভ ক্রেডেনশিয়াল")}
+                      </h3>
+                      <p className="text-[12px] text-muted-foreground mt-1 max-w-lg">
+                        {t(
+                          "Encrypted at rest and never shown again — only the last characters are kept as a hint.",
+                          "এনক্রিপ্ট করে সংরক্ষণ হয়, আর দেখানো হয় না — শুধু শেষ কয়েকটি অক্ষর দেখা যায়।"
+                        )}
+                      </p>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
                       {cred.secretFields.map((field) => (
                         <label key={field} className="space-y-1 text-sm">
                           <span className="block text-xs text-muted-foreground">
@@ -347,7 +355,7 @@ function ProvidersPage() {
                         {cred.decisionNote}
                       </InlineAlert>
                     )}
-                  </SectionCard>
+                  </div>
                 </div>
               )}
             </section>
@@ -355,13 +363,19 @@ function ProvidersPage() {
         })}
       </div>
 
-      <SectionCard
-        title={t("USD pilot", "ইউএসডি পাইলট")}
-        hint={t(
-          "Selling in USD is opt-in and gated. Every check below must pass, and the gate is re-evaluated on each visit.",
-          "ইউএসডিতে বিক্রি ঐচ্ছিক ও শর্তসাপেক্ষ। নিচের সব শর্ত পূরণ হতে হবে।",
-        )}
-        actions={
+      <div className="mt-12 pt-8 border-t border-border/40">
+        <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-[13px] font-bold uppercase tracking-widest text-foreground fq-caps">
+              {t("USD pilot", "ইউএসডি পাইলট")}
+            </h2>
+            <p className="text-[13px] text-muted-foreground mt-1.5 max-w-xl">
+              {t(
+                "Selling in USD is opt-in and gated. Every check below must pass, and the gate is re-evaluated on each visit.",
+                "ইউএসডিতে বিক্রি ঐচ্ছিক ও শর্তসাপেক্ষ। নিচের সব শর্ত পূরণ হতে হবে।"
+              )}
+            </p>
+          </div>
           <Pill
             tone={
               currency.effectiveMode === "usd_enabled" ? "success" : "neutral"
@@ -369,9 +383,10 @@ function ProvidersPage() {
           >
             {currency.effectiveMode.replace(/_/g, " ")}
           </Pill>
-        }
-      >
-        <GateChecks checks={currency.verdict.checks} />
+        </div>
+        
+        <div className="space-y-6">
+          <GateChecks checks={currency.verdict.checks} />
         <p className="text-xs text-muted-foreground">
           {t("FX rate", "এফএক্স রেট")}:{" "}
           {currency.fx.rate ? currency.fx.rate.toFixed(4) : "—"}{" "}
@@ -438,7 +453,7 @@ function ProvidersPage() {
             </button>
           )}
         </div>
-      </SectionCard>
-    </div>
+        </div>
+      </div>
   );
 }
