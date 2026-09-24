@@ -133,13 +133,18 @@ export const builderInstallFn = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    const { installRegistryTheme } = await import("./themes.server");
+    // P0 separation: installs create a NEW INACTIVE theme row, never mutate
+    // the active theme's draft. The catalogue path owns that contract
+    // (inactive row + version + draft + ledger + audit, idempotent replay),
+    // so the builder endpoint delegates to it. overwriteDraft is accepted
+    // for compatibility and ignored: re-installs replay instead of throwing.
+    const { installCatalogTheme } = await import("./themes/appearance.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return installRegistryTheme(
+    return installCatalogTheme(
       context.supabase,
       merchantId,
       data.key,
-      data.overwriteDraft ?? false,
+      context.userId,
     );
   });
 

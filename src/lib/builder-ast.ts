@@ -77,6 +77,33 @@ export function routeSuppliesH1(template?: TemplateKey | null): boolean {
   return !!template && ROUTE_H1.has(template);
 }
 
+/**
+ * Exactly one section per page may render the h1. Preference order is
+ * deliberate: full heroes first (hero, hero_carousel), then a dedicated
+ * heading widget with text, then any section carrying a heading prop.
+ * Shared by the storefront host and the theme preview so both agree on
+ * which node owns the page's primary heading.
+ */
+export function primarySectionId(ast: ThemeAst | null): string | null {
+  if (!ast) return null;
+  const candidates = ast.main.filter((s) => !s.invalid);
+  const textOf = (s: Section): string => {
+    const v: unknown = s.props["text"];
+    return typeof v === "string" ? v : "";
+  };
+  const headed = (s: Section): boolean => {
+    const v: unknown = s.props["heading"];
+    return typeof v === "string" && v !== "";
+  };
+  return (
+    candidates.find((s) => s.type === "hero" || s.type === "hero_carousel")
+      ?.id ??
+    candidates.find((s) => s.type === "heading" && textOf(s) !== "")?.id ??
+    candidates.find(headed)?.id ??
+    null
+  );
+}
+
 export const SLOTS = ["header", "main", "footer"] as const;
 export type Slot = (typeof SLOTS)[number];
 

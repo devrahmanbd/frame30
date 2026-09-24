@@ -734,6 +734,11 @@ body {
   --fq-step-2: clamp(1.25rem, 1.12rem + 0.6vw, 1.6rem);
   --fq-step-3: clamp(1.5rem, 1.25rem + 1.2vw, 2.25rem);
   --fq-step-4: clamp(1.9rem, 1.4rem + 2.4vw, 3.25rem);
+  /* Container bridge: heritage/chrome widgets read var(--fq-container)
+     while tokens publish --theme-container. Without this the 1280px
+     fallback wins and the theme's own width (e.g. songoskriti 1320px)
+     never applies on storefront surfaces. */
+  --fq-container: var(--theme-container, 1280px);
 }
 .fq-theme-scope h1 {
   font-size: var(--fq-step-4);

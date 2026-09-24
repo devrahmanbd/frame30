@@ -38,6 +38,7 @@ import {
   type ThemeAst,
   type ThemeTokens,
 } from "@/lib/builder-ast";
+import { primarySectionId } from "@/lib/builder-ast";
 
 /** Toast copy shown whenever a preview action is blocked. */
 export const PREVIEW_DISABLED_MESSAGE = "Disabled in preview";
@@ -193,6 +194,9 @@ export function ThemePreviewFrame({
   );
 
   const ast = templates[template] ?? templates.index;
+  // The preview has no route to supply the h1, so the elected primary
+  // section owns it — same election the storefront host runs.
+  const primaryId = primarySectionId(ast);
   const allSections: Section[] = [...ast.header, ...ast.main, ...ast.footer];
   // CompiledResponsive object — the stylesheet is `.css`. The storefront
   // host (ThemeChrome) inlines it verbatim inside ThemeSurface; preview
@@ -307,7 +311,7 @@ export function ThemePreviewFrame({
                     template={template}
                     editing={false}
                     contextSlots={accountSlots}
-                    primary={section.id === ast.main[0]?.id}
+                    primary={section.id === primaryId}
                   />
                 ))
               ) : (

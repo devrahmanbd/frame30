@@ -429,4 +429,12 @@ describe("songoskriti categories rhythm (browser-verified 2026-09-24)", () => {
     const html = render(APPAREL_WIDGETS["circle_categories"], catSection());
     expect(html).toContain("py-4");
   });
+
+  it("names each tile once for assistive tech (decorative image)", () => {
+    const html = render(APPAREL_WIDGETS["circle_categories"], catSection());
+    // Adjacent label carries the name; a titled alt would announce
+    // "Women Women".
+    expect(html).toContain('alt=""');
+    expect(html).not.toContain('alt="Women"');
+  });
 });

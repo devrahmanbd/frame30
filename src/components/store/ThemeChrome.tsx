@@ -29,6 +29,7 @@ import {
   type ThemeAst,
   type ThemeTokens,
 } from "@/lib/builder-ast";
+import { primarySectionId } from "@/lib/builder-ast";
 
 type Props = {
   template: TemplateKey;
@@ -67,19 +68,10 @@ type Props = {
   customCss?: string | null;
 };
 
-/** Exactly one section per page may render the h1. */
-export function primarySectionId(ast: ThemeAst | null): string | null {
-  if (!ast) return null;
-  const candidates = ast.main.filter((s) => !s.invalid);
-  const heading = (s: Section) =>
-    s.type === "hero" ||
-    (typeof s.props["heading"] === "string" && s.props["heading"]);
-  return (
-    candidates.find((s) => s.type === "hero")?.id ??
-    candidates.find(heading)?.id ??
-    null
-  );
-}
+/** Exactly one section per page may render the h1. Shared implementation
+ *  lives in builder-ast so the storefront host and the theme preview agree;
+ *  re-exported here for existing import paths. */
+export { primarySectionId };
 
 /**
  * Phase 2.5: one live cart per storefront render. Every cart widget under it

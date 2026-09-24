@@ -897,7 +897,9 @@ const CircleCategories: WidgetComponent = ({ str, Heading }) => {
               {c.imageUrl ? (
                 <img
                   src={c.imageUrl}
-                  alt={c.title}
+                  // Decorative: the adjacent label names the link, so a
+                  // titled alt would announce "Women Women".
+                  alt=""
                   className="size-full rounded-full object-cover transition-transform duration-500 group-hover:scale-110"
                   loading="lazy"
                 />
