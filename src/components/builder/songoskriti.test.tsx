@@ -169,7 +169,10 @@ describe("craft_story", () => {
     const html = render(Cmp(), section);
     expect(html).toContain("From loom to wardrobe");
     expect(html).toContain("/pages/our-craft");
-    expect(html).not.toMatch(/\d{3,}/);
+    // Metrics live in copy, not in Tailwind size classes (min-h-14,
+    // 1440px containers), so strip tags before asserting.
+    const text = html.replace(/<[^>]*>/g, " ");
+    expect(text).not.toMatch(/\d{3,}/);
   });
 });
 

@@ -30,12 +30,13 @@ describe("songoskritiPreviewSource", () => {
       "announcement_bar",
       "hero_carousel",
       "circle_categories",
+      "trust_footer",
+      "product_rail",
+      "product_rail",
       "finder_row",
-      "product_rail",
-      "product_rail",
+      "store_locator",
       "craft_story",
       "testimonials",
-      "trust_footer",
     ]);
   });
 
