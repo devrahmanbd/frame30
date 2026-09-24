@@ -108,25 +108,25 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
     <section
       ref={scope}
       data-songoskriti-reveal
-      className="w-full py-16 sm:py-24 border-t border-border/60"
+      className="w-full py-12 sm:py-24 border-t border-border/60"
     >
       <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="min-w-0 lg:col-span-7">
             {str("heading") && (
-              <Heading className="font-bangla-display text-3xl font-medium tracking-wide sm:text-4xl text-foreground">
+              <Heading className="font-bangla-display text-2xl sm:text-3xl lg:text-4xl font-medium tracking-wide text-foreground">
                 {str("heading")}
               </Heading>
             )}
             {str("body") && (
-              <p className="mt-4 max-w-prose text-[13.5px] leading-relaxed text-muted-foreground">
+              <p className="mt-3 sm:mt-4 max-w-prose text-[12px] sm:text-[13.5px] leading-relaxed text-muted-foreground">
                 {str("body")}
               </p>
             )}
             {str("buttonLabel") && (
               <a
                 href={str("buttonHref") || "#"}
-                className="mt-8 inline-flex min-h-12 items-center justify-center border border-border px-8 text-[11px] font-bold fq-caps tracking-widest text-foreground hover:bg-muted/50 transition-colors"
+                className="mt-6 sm:mt-8 inline-flex min-h-12 items-center justify-center border border-border px-6 sm:px-8 text-[10px] sm:text-[11px] font-bold fq-caps tracking-widest text-foreground hover:bg-muted/50 transition-colors"
               >
                 {str("buttonLabel")}
               </a>
@@ -142,7 +142,7 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
                   <li key={o.label}>
                     <a
                       href={o.href || "#"}
-                      className="group flex min-h-14 items-center justify-between border-b border-border/60 bg-transparent px-2 text-[13px] font-bold fq-caps tracking-widest transition-colors hover:border-foreground"
+                      className="group flex min-h-12 sm:min-h-14 items-center justify-between border-b border-border/60 bg-transparent px-2 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest transition-colors hover:border-foreground"
                     >
                       <span className="text-foreground transition-colors group-hover:text-muted-foreground">
                         {o.label}
@@ -226,18 +226,18 @@ const CraftStory: WidgetComponent = ({
               {eyebrow}
             </p>
           )}
-          <Heading className="font-bangla-display text-3xl font-medium tracking-wide leading-tight sm:text-4xl text-foreground mt-4">
+          <Heading className="font-bangla-display text-2xl sm:text-3xl lg:text-4xl font-medium tracking-wide leading-tight text-foreground mt-4">
             {headline}
           </Heading>
           {body && (
-            <p className="mt-6 max-w-prose text-[13.5px] leading-relaxed text-muted-foreground">
+            <p className="mt-4 sm:mt-6 max-w-prose text-[12px] sm:text-[13.5px] leading-relaxed text-muted-foreground">
               {body}
             </p>
           )}
           {ctaLabel && (
             <a
               href={ctaHref || "#"}
-              className="mt-8 inline-flex min-h-14 items-center justify-center bg-foreground px-10 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98]"
+              className="mt-6 sm:mt-8 inline-flex min-h-12 sm:min-h-14 items-center justify-center bg-foreground px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98]"
             >
               {ctaLabel}
             </a>
@@ -290,11 +290,11 @@ const Testimonials: WidgetComponent = ({ section, int, locale, editing }) => {
     <section
       ref={scope}
       data-songoskriti-reveal
-      className="mx-auto w-full max-w-4xl px-4"
+      className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 py-12 sm:py-24"
       aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
     >
       <div
-        className="rounded-fq-lg border border-border bg-card p-6 sm:p-8"
+        className="max-w-4xl mx-auto px-4"
         onMouseEnter={() => pause()}
         onMouseLeave={() => resume()}
       >
@@ -306,25 +306,28 @@ const Testimonials: WidgetComponent = ({ section, int, locale, editing }) => {
               className="mb-4 h-12 w-12 rounded-full object-cover"
               loading="lazy"
             />
-          ) : (
             <span
               aria-hidden="true"
-              className="mb-2 text-3xl leading-none text-primary"
+              className="mb-6 block font-bangla-display text-6xl leading-none text-foreground/20"
             >
               &ldquo;
             </span>
           )}
-          <blockquote className="max-w-xl text-base leading-relaxed text-foreground line-clamp-3">
-            {item.image ? <>&ldquo;{item.quote}&rdquo;</> : item.quote}
+          <blockquote className="max-w-2xl font-bangla-display text-lg leading-relaxed text-foreground sm:text-xl lg:text-3xl text-center">
+            {item.quote}
           </blockquote>
-          <p className="mt-3 w-full border-t border-border pt-3 text-sm font-medium">
-            {item.author}
-            {item.role && (
-              <span className="block text-xs font-normal text-muted-foreground">
-                {item.role}
-              </span>
-            )}
-          </p>
+          <div className="mt-8 flex items-center justify-center gap-4">
+            <div className="h-px w-8 bg-foreground/30"></div>
+            <p className="text-[10px] sm:text-[12px] font-bold fq-caps tracking-widest text-foreground">
+              {item.author}
+              {item.role && (
+                <span className="text-muted-foreground ml-2 font-medium">
+                  — {item.role}
+                </span>
+              )}
+            </p>
+            <div className="h-px w-8 bg-foreground/30"></div>
+          </div>
         </div>
         {testimonials.length > 1 && (
           <div className="mt-4 flex justify-center gap-1">
@@ -397,22 +400,22 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
     <div
       ref={scope}
       data-songoskriti-reveal
-      className="mx-auto w-full max-w-6xl px-4"
+      className="w-full border-t border-border/60 bg-muted/10"
     >
-      <ul className="grid grid-cols-2 gap-4 rounded-fq-lg border border-border bg-card p-4 sm:grid-cols-4">
+      <ul className="mx-auto grid max-w-[var(--fq-container,1440px)] grid-cols-1 gap-6 sm:gap-8 px-4 sm:px-8 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-12">
         {items.map((item) => {
           const Icon =
             TRUST_FOOTER_ICON[item.icon as keyof typeof TRUST_FOOTER_ICON] ??
             Star;
           return (
-            <li key={item.title} className="flex min-w-0 items-start gap-2.5">
-              <span className="grid size-11 shrink-0 place-items-center rounded-fq-md bg-primary/10 text-primary">
+            <li key={item.title} className="flex flex-col items-center text-center gap-4">
+              <span className="grid size-12 shrink-0 place-items-center rounded-full bg-foreground text-background">
                 <Icon className="size-5" aria-hidden="true" />
               </span>
               <span className="min-w-0">
-                <span className="block text-sm font-medium">{item.title}</span>
+                <span className="block text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-foreground">{item.title}</span>
                 {item.body && (
-                  <span className="block text-xs text-muted-foreground">
+                  <span className="mt-1 sm:mt-2 block text-[11px] sm:text-[13px] font-medium tracking-wide text-muted-foreground">
                     {item.body}
                   </span>
                 )}
@@ -447,14 +450,14 @@ const SongoskritiProductRail: WidgetComponent = (ctx) => {
   const label =
     str("heading") || (locale === "bn" ? "পণ্যের তালিকা" : "Product rail");
   const heading = str("heading") ? (
-    <Heading className="text-xl font-bold tracking-tight">
+    <Heading className="font-bangla-display text-2xl sm:text-3xl lg:text-4xl font-medium tracking-wide text-foreground">
       {str("heading")}
     </Heading>
   ) : null;
   // An empty rail leaves no hole: null, not a padded empty shell.
   if (rows !== undefined && rows.length === 0 && !data?.pending) return null;
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+    <section className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 py-12 sm:py-24 [&_article]:border-none [&_article]:bg-transparent [&_article]:shadow-none">
       {data?.pending || rows === undefined ? (
         <Rail label={label} heading={heading ?? undefined}>
           {Array.from({ length: 6 }, (_, i) => (

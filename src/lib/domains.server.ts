@@ -720,6 +720,15 @@ export async function renameDomain(
       dns_target: edgeTarget().cname,
       next_check_at: new Date().toISOString(),
       last_error: null,
+      check_attempts: 0,
+      // A certificate belongs to the old hostname: carrying it over would
+      // display "HTTPS valid" for a domain that was never issued one.
+      cert_status: "pending",
+      cert_issued_at: null,
+      cert_expires_at: null,
+      cert_error: null,
+      activated_at: null,
+      verified_at: null,
     })
     .eq("id", domainId);
   if (error) {
