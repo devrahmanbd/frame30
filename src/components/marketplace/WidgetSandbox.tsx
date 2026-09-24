@@ -147,10 +147,18 @@ export function WidgetSandbox({
           setDenied((d) => (d.includes(method) ? d : [...d, method]));
         }
       }
+      // Target "*" is REQUIRED, not lax: the frame is sandboxed without
+      // allow-same-origin so its origin is opaque ("null") and addressing it
+      // by the page origin throws (the reply never delivers — observed live:
+      // "target origin does not match the recipient window's origin
+      // ('null')"). This stays safe because we only ever reply to
+      // event.source after verifying it is exactly our frame's window above,
+      // and the payload is this install's validated settings plus the
+      // request id — no secrets, no cross-install data.
       const reply = (body: Record<string, unknown>) =>
         frame.contentWindow?.postMessage(
           { id: (msg as { id?: string })?.id, ...body },
-          window.location.origin,
+          "*",
         );
       reply(ans);
     }
