@@ -126,17 +126,37 @@ describe("whatsapp chat_bubble entry", () => {
         encodeURIComponent("Hello! I want this."),
     );
     expect(mounted!.attrs["target"]).toBe("_blank");
-    expect(mounted!.style["position"]).toBe("fixed");
-    expect(mounted!.style["right"]).toBe("20px");
+    // The entry renders in-flow and fills the parent-hosted fixed frame —
+    // `position:fixed` inside the entry resolves against the tiny iframe
+    // viewport and clips, so it must never appear here (frame does the
+    // floating; see PluginFooterMounts).
+    expect(mounted!.style["position"]).toBeUndefined();
+    expect(mounted!.style["width"]).toBe("100%");
+    expect(mounted!.style["height"]).toBe("100%");
   });
 
-  it("honours bottom-left positioning", async () => {
+  it("is flagged floating so the frame (not the entry) does the positioning", () => {
+    const def = getBuiltinPlugin("whatsapp-chat");
+    const widget = def!.manifest.widgets.find((w) => w.key === "chat_bubble");
+    expect(widget?.floating).toBe(true);
+    // The flag must survive manifest parse (DB-loaded manifests go through
+    // parseManifest — a dropped flag silently falls back to a flow frame).
+    const verdict = parseManifest(JSON.parse(JSON.stringify(def!.manifest)));
+    expect(verdict.ok).toBe(true);
+    if (verdict.ok) {
+      expect(
+        verdict.manifest.widgets.find((w) => w.key === "chat_bubble")?.floating,
+      ).toBe(true);
+    }
+  });
+
+  it("ignores button_position (the frame hosts left/right)", async () => {
     const { mounted } = await runEntry(whatsappEntry(), {
       phone_number: "8801712345678",
       greeting_message: "Hi",
       button_position: "bottom-left",
     });
-    expect(mounted!.style["left"]).toBe("20px");
+    expect(mounted!.style["left"]).toBeUndefined();
     expect(mounted!.style["right"]).toBeUndefined();
   });
 

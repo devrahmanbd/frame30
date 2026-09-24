@@ -8,10 +8,7 @@
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import {
-  PluginFooterMounts,
-  footerMountKeys,
-} from "./PluginFooterMounts";
+import { PluginFooterMounts, footerMountKeys } from "./PluginFooterMounts";
 import { PluginProvider } from "@/components/builder/PluginContext";
 import type { InstalledPlugin } from "@/lib/plugin-manifest";
 
@@ -107,5 +104,41 @@ describe("PluginFooterMounts", () => {
     expect(render([LOYALTY])).toBe("");
     expect(render([])).toBe("");
     expect(render([{ ...WA, enabled: false }])).toBe("");
+  });
+
+  it("hosts floating widgets in a viewport-fixed frame (entry renders in-flow)", () => {
+    const floatingWa: InstalledPlugin = {
+      ...WA,
+      manifest: {
+        ...WA.manifest,
+        widgets: [{ ...WA.manifest.widgets[0]!, floating: true }],
+      },
+    };
+    const html = render([floatingWa]);
+    expect(html).toContain("fixed");
+    expect(html).toContain("right-4");
+    expect(html).not.toContain("left-4");
+  });
+
+  it("honours bottom-left for floating widgets", () => {
+    const floatingWa: InstalledPlugin = {
+      ...WA,
+      settings: {
+        phone_number: "8801712345678",
+        button_position: "bottom-left",
+      },
+      manifest: {
+        ...WA.manifest,
+        widgets: [{ ...WA.manifest.widgets[0]!, floating: true }],
+      },
+    };
+    const html = render([floatingWa]);
+    expect(html).toContain("left-4");
+    expect(html).not.toContain("right-4");
+  });
+
+  it("keeps non-floating widgets in normal flow", () => {
+    const html = render([WA]);
+    expect(html).not.toContain("fixed");
   });
 });

@@ -82,6 +82,7 @@ export function WidgetSandbox({
   onCall,
   height = 320,
   riskTier = "low",
+  bare = false,
 }: {
   title: string;
   entry: string;
@@ -91,6 +92,11 @@ export function WidgetSandbox({
   onCall: SandboxHandler;
   height?: number;
   riskTier?: RiskTier;
+  /**
+   * Bare frame for floating widgets: no card chrome (border/rounded/bg) —
+   * the entry paints its own shape edge-to-edge.
+   */
+  bare?: boolean;
 }) {
   const { t } = useLang();
   const policy = resolvePolicy(riskTier);
@@ -138,7 +144,11 @@ export function WidgetSandbox({
         referrerPolicy={policy.iframe.referrerPolicy}
         loading="lazy"
         style={{ height }}
-        className="w-full rounded-fq-md border border-border bg-background"
+        className={
+          bare
+            ? "h-full w-full border-0 bg-transparent"
+            : "w-full rounded-fq-md border border-border bg-background"
+        }
       />
       {denied.length > 0 && (
         <p

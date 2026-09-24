@@ -34,7 +34,7 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
     manifest: {
       id: "whatsapp-chat",
       name: "WhatsApp Quick Chat",
-      version: "1.2.0",
+      version: "1.2.1",
       api: "^3.0.0",
       permissions: ["render_storefront"],
       widgets: [
@@ -42,23 +42,19 @@ export const BUILTIN_PLUGINS: readonly BuiltinPluginDef[] = [
           key: "chat_bubble",
           label: "WhatsApp Chat Bubble",
           slots: ["footer"],
+          floating: true,
           entry: `(function () {
   function mount(s) {
     var phone = String(s.phone_number || "").replace(/[^0-9]/g, "");
     if (!phone) return;
     var greet = String(s.greeting_message || "Hello!");
-    var left = s.button_position === "bottom-left";
     var a = document.createElement("a");
     a.setAttribute("href", "https://wa.me/" + phone + "?text=" + encodeURIComponent(greet));
     a.setAttribute("target", "_blank");
     a.setAttribute("rel", "noopener");
     a.setAttribute("aria-label", "Chat on WhatsApp");
-    a.style.position = "fixed";
-    a.style.bottom = "20px";
-    if (left) { a.style.left = "20px"; } else { a.style.right = "20px"; }
-    a.style.zIndex = "2147483000";
-    a.style.width = "56px";
-    a.style.height = "56px";
+    a.style.width = "100%";
+    a.style.height = "100%";
     a.style.borderRadius = "50%";
     a.style.background = "#25D366";
     a.style.display = "flex";

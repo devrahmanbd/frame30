@@ -57,25 +57,45 @@ function FooterMount({
   const resolved = resolvePluginWidget(pluginKey, plugins);
   if (!resolved.ok) return null;
   const { plugin, widget } = resolved;
+  // Floating widgets (chat bubbles): the entry renders in-flow, so the
+  // parent hosts the frame viewport-fixed. `position:fixed` inside the entry
+  // would resolve against the tiny iframe viewport and clip — never the page.
+  const floating = widget.floating === true;
+  const side =
+    String(
+      (plugin.settings as Record<string, unknown> | undefined)
+        ?.button_position ?? "bottom-right",
+    ) === "bottom-left"
+      ? "left-4"
+      : "right-4";
+  const frameClass = floating
+    ? `fixed bottom-4 ${side} z-[60] h-14 w-14`
+    : undefined;
   if (!mounted) {
     return (
       <div
         data-plugin={plugin.manifest.id}
         data-plugin-widget={widget.key}
-        style={{ height }}
+        style={floating ? undefined : { height }}
+        className={frameClass}
         aria-hidden="true"
       />
     );
   }
   return (
-    <div data-plugin={plugin.manifest.id} data-plugin-widget={widget.key}>
+    <div
+      data-plugin={plugin.manifest.id}
+      data-plugin-widget={widget.key}
+      className={frameClass}
+    >
       <WidgetSandbox
         title={`${plugin.manifest.name} — ${widget.label}`}
         entry={widget.entry}
         grantedScopes={plugin.grantedScopes}
         settings={plugin.settings}
         onCall={onCall}
-        height={height}
+        height={floating ? 56 : height}
+        bare={floating}
       />
     </div>
   );
