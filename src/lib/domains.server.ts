@@ -17,6 +17,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
+import { connect } from "node:tls";
 import { cached } from "./cache.server";
 import { incr, log, observe, withSpan } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
@@ -838,6 +839,125 @@ export async function applyCertResult(input: {
   }
 }
 
+/* --------------------- edge issuance observation --------------------- */
+
+/**
+ * Observe the certificate the world currently sees on a hostname.
+ *
+ * The edge (OpenResty + lua-resty-acme autossl) issues pull-based on first
+ * SNI hit — there is no push hook to notify us. So instead of waiting for a
+ * callback that may never come, the sweep performs a real TLS handshake with
+ * full chain validation (`rejectUnauthorized`). Staging, self-signed and
+ * expired certs fail validation inherently and can never flip a domain.
+ */
+export async function observeEdgeCertificate(
+  hostname: string,
+): Promise<{ ok: true; expiresAt: string } | { ok: false; error: string }> {
+  return new Promise((resolve) => {
+    let done = false;
+    let sock: ReturnType<typeof connect> | null = null;
+    const finish = (
+      r: { ok: true; expiresAt: string } | { ok: false; error: string },
+    ) => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      try {
+        sock?.destroy();
+      } catch {
+        /* ignore */
+      }
+      resolve(r);
+    };
+    const timer = setTimeout(
+      () => finish({ ok: false, error: "tls.timeout" }),
+      8000,
+    );
+    try {
+      sock = connect({
+        host: hostname,
+        port: 443,
+        servername: hostname,
+        rejectUnauthorized: true,
+      });
+    } catch {
+      finish({ ok: false, error: "tls.connect_failed" });
+      return;
+    }
+    sock.on("secureConnect", () => {
+      try {
+        const cert = sock?.getPeerCertificate() as
+          { valid_to?: unknown } | undefined;
+        const expires =
+          typeof cert?.valid_to === "string" ? new Date(cert.valid_to) : null;
+        if (
+          !expires ||
+          !Number.isFinite(expires.getTime()) ||
+          expires.getTime() <= Date.now()
+        ) {
+          finish({ ok: false, error: "tls.bad_cert_dates" });
+        } else {
+          finish({ ok: true, expiresAt: expires.toISOString() });
+        }
+      } catch {
+        finish({ ok: false, error: "tls.cert_read_failed" });
+      }
+    });
+    sock.on("error", (err: unknown) => {
+      finish({
+        ok: false,
+        error:
+          err instanceof Error && (err as NodeJS.ErrnoException).code
+            ? `tls.${(err as NodeJS.ErrnoException).code}`.toLowerCase()
+            : "tls.error",
+      });
+    });
+  });
+}
+
+/**
+ * Reconcile one hostname against the publicly served certificate. Flips
+ * `dns_verified`/`issuing_cert` to `active` (via the audited `applyCertResult`
+ * path) when — and only when — a valid public cert is observed. Never throws;
+ * returns whether the domain flipped. Unverified rows are never touched.
+ */
+export async function reconcileIssuance(hostname: string): Promise<boolean> {
+  try {
+    const host = hostname.toLowerCase();
+    const service = supabaseAdmin;
+    const { data: row } = await service
+      .from("merchant_domains")
+      .select("*")
+      .eq("hostname", host)
+      .maybeSingle();
+    if (!row) return false;
+    const status = row.status as DomainStatus;
+    if (status !== "dns_verified" && status !== "issuing_cert") return false;
+    const seen = await observeEdgeCertificate(host);
+    if (!seen.ok) return false;
+    if (status === "dns_verified") {
+      // Bridge through issuing_cert: the edge demonstrably placed the order
+      // (a valid cert exists), so record that before marking issued.
+      await transition(
+        row as unknown as Pick<DomainRow, "id" | "merchant_id" | "status">,
+        "issuing_cert",
+        { cert_status: "pending", cert_error: null },
+        { reason: "cert.edge_observed_order" },
+      );
+    }
+    await applyCertResult({
+      hostname: host,
+      ok: true,
+      expiresAt: seen.expiresAt,
+    });
+    return true;
+  } catch (err) {
+    log("warn", "domain.reconcile_failed", { hostname });
+    void err;
+    return false;
+  }
+}
+
 async function notifyMerchant(
   merchantId: string,
   n: {
@@ -875,6 +995,7 @@ export type DomainSweepResult = {
   failed: number;
   renewals: number;
   expired_challenges: number;
+  activated: number;
 };
 
 /**
@@ -898,7 +1019,12 @@ export async function sweepDomains(
     const { data: due } = await service
       .from("merchant_domains")
       .select("*")
-      .in("status", ["pending_dns", "verifying", "dns_verified", "issuing_cert"])
+      .in("status", [
+        "pending_dns",
+        "verifying",
+        "dns_verified",
+        "issuing_cert",
+      ])
       .lte("next_check_at", now)
       .order("next_check_at", { ascending: true })
       .limit(50);
@@ -909,6 +1035,7 @@ export async function sweepDomains(
       failed: 0,
       renewals: 0,
       expired_challenges: 0,
+      activated: 0,
     };
 
     for (const row of due ?? []) {
@@ -929,6 +1056,19 @@ export async function sweepDomains(
           result.verified += 1;
         }
         if (view.status === "failed") result.failed += 1;
+        // Issuance observation: the edge issues pull-based with no callback,
+        // so check what the world sees. Disabled via DOMAIN_TLS_OBSERVE=false.
+        // Never throws (reconcile returns boolean); sweep continues regardless.
+        if (
+          process.env["DOMAIN_TLS_OBSERVE"] !== "false" &&
+          (view.status === "dns_verified" || view.status === "issuing_cert")
+        ) {
+          try {
+            if (await reconcileIssuance(view.hostname)) result.activated += 1;
+          } catch {
+            // Logged inside reconcileIssuance; keep sweeping.
+          }
+        }
       } catch {
         // Per-domain failures are logged inside verifyDomain; keep sweeping.
       }

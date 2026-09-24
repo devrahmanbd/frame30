@@ -387,10 +387,20 @@ When a merchant adds a domain, they receive these records to configure at their 
 
 1. DNS passes → `dns_verified`
 2. `requestCertificate()` called → `issuing_cert`, `cert_status: "pending"`
+   (or stays `dns_verified` with `cert.awaiting_edge` when no edge hook —
+   no order is placed, so nothing strands)
 3. Edge webhook (`DOMAIN_EDGE_HOOK_URL`) triggers ACME order via `lua-resty-acme`
 4. Edge calls back `/api/public/domains/callback` → `applyCertResult()`
 5. Success → `active`, `cert_status: "issued"`; Failure → `failed`, `cert_status: "error"`
 6. Certificates expiring within 30 days → cron re-requests via `requestCertificate()`
+
+**Issuance observation (the hook, app-side):** the edge issues pull-based
+with no push notification, so the sweep performs a real TLS handshake
+(`observeEdgeCertificate`, full chain validation) on `dns_verified` /
+`issuing_cert` rows and flips to `active` via the audited `applyCertResult`
+path when a valid public cert is served (`reconcileIssuance`). Staging /
+self-signed / expired certs fail validation and can never flip; unverified
+rows are never touched. Disable with `DOMAIN_TLS_OBSERVE=false`.
 
 **No edge configured?** The domain stays `dns_verified` with the cert marked
 `cert.awaiting_edge` (rechecked hourly) — no order is placed, so nothing is

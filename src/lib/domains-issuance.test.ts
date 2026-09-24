@@ -1,0 +1,143 @@
+import { describe, expect, it, vi, beforeEach } from "vitest";
+import { reconcileIssuance } from "./domains.server";
+
+type TlsMode = "valid" | "refused" | "untrusted";
+let tlsMode: TlsMode = "valid";
+
+vi.mock("node:tls", () => ({
+  connect: vi.fn(() => {
+    const handlers: Record<string, ((...a: never[]) => void)[]> = {};
+    const sock = {
+      on: (ev: string, fn: (...a: never[]) => void) => {
+        (handlers[ev] ??= []).push(fn);
+        return sock;
+      },
+      destroy: vi.fn(),
+      getPeerCertificate: () =>
+        tlsMode === "valid"
+          ? {
+              valid_from: "Sep  1 00:00:00 2026 GMT",
+              valid_to: "Dec  1 00:00:00 2026 GMT",
+              subject: { CN: "shop.example.com" },
+            }
+          : {},
+    };
+    queueMicrotask(() => {
+      if (tlsMode === "valid")
+        for (const fn of handlers["secureConnect"] ?? []) fn();
+      else
+        for (const fn of handlers["error"] ?? [])
+          fn(
+            new Error(
+              tlsMode === "refused"
+                ? "ECONNREFUSED"
+                : "UNABLE_TO_VERIFY_LEAF_SIGNATURE",
+            ) as never,
+          );
+    });
+    return sock;
+  }),
+}));
+
+const rows = new Map<string, Record<string, unknown>>();
+const events: Record<string, unknown>[] = [];
+
+function matches(row: Record<string, unknown>, filters: [string, unknown][]) {
+  return filters.every(([k, v]) => row[k] === v);
+}
+
+vi.mock("@/integrations/supabase/client.server", () => ({
+  supabaseAdmin: {
+    from: (table: string) => {
+      if (table === "domain_events" || table === "notifications") {
+        return {
+          insert: vi.fn(
+            async (r: unknown) => (
+              events.push(r as Record<string, unknown>),
+              { error: null }
+            ),
+          ),
+        };
+      }
+      const state = {
+        filters: [] as [string, unknown][],
+        patch: null as Record<string, unknown> | null,
+      };
+      const api = {
+        select: vi.fn(() => api),
+        eq: vi.fn((k: string, v: unknown) => (state.filters.push([k, v]), api)),
+        maybeSingle: vi.fn(async () => ({
+          data:
+            [...rows.values()].find((r) => matches(r, state.filters)) ?? null,
+          error: null,
+        })),
+        update: vi.fn(
+          (p: unknown) => (
+            (state.patch = p as Record<string, unknown>),
+            {
+              eq: vi.fn(async (k: string, v: unknown) => {
+                for (const r of rows.values())
+                  if (r[k] === v) Object.assign(r, state.patch);
+                return { error: null };
+              }),
+            }
+          ),
+        ),
+      };
+      return api;
+    },
+  },
+}));
+
+function seed(status: string) {
+  rows.clear();
+  events.length = 0;
+  rows.set("d1", {
+    id: "d1",
+    merchant_id: "m1",
+    hostname: "shop.example.com",
+    status,
+    verification_token: "tok",
+    check_attempts: 0,
+  });
+}
+
+describe("reconcileIssuance (edge cert observation)", () => {
+  beforeEach(() => {
+    tlsMode = "valid";
+  });
+
+  it("flips dns_verified to active when a valid public cert is served", async () => {
+    seed("dns_verified");
+    const flipped = await reconcileIssuance("shop.example.com");
+    expect(flipped).toBe(true);
+    expect(rows.get("d1")?.["status"]).toBe("active");
+    expect(rows.get("d1")?.["cert_status"]).toBe("issued");
+    expect(rows.get("d1")?.["cert_expires_at"]).toContain("2026-12-01");
+    expect(events.some((e) => e["reason"] === "cert.issued")).toBe(true);
+  });
+
+  it("leaves the domain alone when nothing answers on 443", async () => {
+    seed("dns_verified");
+    tlsMode = "refused";
+    const flipped = await reconcileIssuance("shop.example.com");
+    expect(flipped).toBe(false);
+    expect(rows.get("d1")?.["status"]).toBe("dns_verified");
+    expect(events.some((e) => e["reason"] === "cert.issued")).toBe(false);
+  });
+
+  it("rejects untrusted certs (staging/self-signed can never flip)", async () => {
+    seed("issuing_cert");
+    tlsMode = "untrusted";
+    const flipped = await reconcileIssuance("shop.example.com");
+    expect(flipped).toBe(false);
+    expect(rows.get("d1")?.["status"]).toBe("issuing_cert");
+  });
+
+  it("never flips unverified rows even with a valid cert", async () => {
+    seed("pending_dns");
+    const flipped = await reconcileIssuance("shop.example.com");
+    expect(flipped).toBe(false);
+    expect(rows.get("d1")?.["status"]).toBe("pending_dns");
+  });
+});
