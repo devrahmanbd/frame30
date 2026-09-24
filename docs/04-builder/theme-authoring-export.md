@@ -69,8 +69,8 @@ pairing only.
 export.zip
 design.json          # { apiVersion, theme: { tokens, fonts }, templates: {…AST}, assets: [{ id, path, alt }] }
 images/
-  hero-home.webp
-  product-01.webp
+hero-home.webp
+product-01.webp
 README.txt           # provenance: store, theme key/version, exported_at
 `
 - [ ] Image filenames are derived from the asset's role + slug (never opaque UUIDs) and rewritten

@@ -136,7 +136,7 @@ function ProductDetail() {
   const hasPriceBlock = sections.some((s) => s.type === "price_block");
 
   const media = (
-    <div className="aspect-square overflow-hidden rounded-fq-lg border border-border bg-muted">
+    <div className="aspect-[3/4] w-full overflow-hidden bg-muted/20">
       <StoreImage
         image={product.image ?? null}
         fallbackSrc={product.image_url}
@@ -144,47 +144,49 @@ function ProductDetail() {
         seed={product.id}
         priority
         sizes="(max-width: 768px) 100vw, 600px"
-        className="size-full object-cover"
+        className="size-full object-cover object-top"
       />
     </div>
   );
 
   const priceBlock = (
-    <div>
-      <h1 className="font-bangla-display text-2xl font-bold sm:text-3xl">
+    <div className="mb-6">
+      <h1 className="font-bangla-display text-2xl sm:text-3xl lg:text-4xl leading-tight text-foreground/90 font-medium">
         {product.title}
       </h1>
-      <p className="money mt-3 text-2xl font-semibold">
+      <p className="money mt-4 text-xl font-semibold tracking-wide text-foreground">
         {fmtMinor(
           Number(variant?.price_amount_minor_int ?? 0),
           merchant.currency_code,
         )}
       </p>
-      <p className="mt-1 text-xs text-muted-foreground">
-        VAT shown at checkout
+      <p className="mt-1.5 text-[11px] font-medium tracking-wider fq-caps text-muted-foreground">
+        VAT included. Free shipping available.
       </p>
-      <ScarcityBadge stock={Number(variant?.stock_quantity ?? 0)} />
+      <div className="mt-6">
+        <ScarcityBadge stock={Number(variant?.stock_quantity ?? 0)} />
+      </div>
     </div>
   );
 
   const addToCart = (
-    <div>
+    <div className="mt-8">
       {variants.length > 1 && (
-        <fieldset className="mt-5">
-          <legend className="text-sm font-medium">
-            {t("Variant", "ভ্যারিয়েন্ট")}
+        <fieldset className="mb-8 border-t border-border/60 pt-6">
+          <legend className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground mb-4">
+            {t("Select Variant", "ভ্যারিয়েন্ট বেছে নিন")}
           </legend>
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {variants.map((v) => (
               <button
                 key={v.id}
                 type="button"
                 onClick={() => setVariantId(v.id)}
                 aria-pressed={v.id === variant?.id}
-                className={`min-h-11 rounded-fq-md border px-3 text-sm ${
+                className={`min-h-12 min-w-16 px-5 text-[13px] font-medium tracking-wide transition-colors border ${
                   v.id === variant?.id
-                    ? "border-primary bg-info-soft text-info-foreground"
-                    : "border-border bg-card text-muted-foreground"
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border bg-transparent text-foreground hover:border-foreground/40"
                 }`}
               >
                 {v.name}
@@ -194,22 +196,7 @@ function ProductDetail() {
         </fieldset>
       )}
 
-      <p
-        className={`mt-4 text-sm ${
-          (variant?.stock_quantity ?? 0) > 0
-            ? "text-success-foreground"
-            : "text-danger-foreground"
-        }`}
-      >
-        {(variant?.stock_quantity ?? 0) > 0
-          ? t(
-              `${variant?.stock_quantity} in stock`,
-              `স্টকে ${variant?.stock_quantity} টি`,
-            )
-          : t("Out of stock", "স্টক নেই")}
-      </p>
-
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div className="flex flex-col gap-4">
         <button
           type="button"
           disabled={!variant || variant.stock_quantity <= 0}
@@ -218,33 +205,38 @@ function ProductDetail() {
             add(variant.id, 1);
             setAdded(true);
           }}
-          className="min-h-12 rounded-fq-md bg-primary px-6 text-sm font-medium text-primary-foreground disabled:opacity-50"
+          className="min-h-14 w-full bg-foreground px-8 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
         >
-          {t("Add to cart", "কার্টে যোগ করুন")}
+          {(variant?.stock_quantity ?? 0) > 0
+            ? t("Add to Bag", "ব্যাগ-এ যোগ করুন")
+            : t("Out of Stock", "স্টক নেই")}
         </button>
         <Link
           to="/store/$slug/checkout"
           params={{ slug: merchant.slug }}
-          className="min-h-12 rounded-fq-md border border-border px-6 text-sm font-medium leading-[3rem]"
+          className="min-h-14 flex items-center justify-center w-full border border-border px-8 text-[13px] font-bold fq-caps tracking-widest text-foreground hover:bg-muted/50 transition-colors"
         >
-          {t("Checkout", "চেকআউট")}
+          {t("Checkout Now", "এখনই চেকআউট করুন")}
         </Link>
       </div>
+
       <p
         aria-live="polite"
-        className="mt-2 h-5 text-sm text-success-foreground"
+        className="mt-3 h-5 text-[13px] font-medium text-success-foreground"
       >
-        {added ? t("Added to cart", "কার্টে যোগ হয়েছে") : ""}
+        {added ? t("Added to your bag", "আপনার ব্যাগে যোগ হয়েছে") : ""}
       </p>
 
-      <ul className="mt-6 flex flex-wrap gap-2 text-xs">
+      <ul className="mt-8 flex flex-wrap items-center gap-3 text-[11px] font-semibold fq-caps tracking-widest text-muted-foreground">
         {(settings?.cod_enabled ?? true) && (
-          <li className="rounded-full bg-warning-soft px-3 py-1 text-warning-foreground">
-            COD
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-foreground/20"></span>
+            Cash on Delivery
           </li>
         )}
         {(settings?.mfs_enabled ?? true) && (
-          <li className="rounded-full bg-success-soft px-3 py-1 text-success-foreground">
+          <li className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-foreground/20"></span>
             bKash / Nagad
           </li>
         )}
@@ -253,9 +245,14 @@ function ProductDetail() {
   );
 
   const meta = product.description ? (
-    <p className="whitespace-pre-line leading-relaxed text-muted-foreground">
-      {product.description}
-    </p>
+    <div className="mt-12 border-t border-border/60 pt-8">
+      <h2 className="text-[11px] font-bold fq-caps tracking-widest text-foreground mb-4">
+        {t("Product Details", "পণ্যের বিবরণ")}
+      </h2>
+      <p className="whitespace-pre-line leading-relaxed text-muted-foreground text-[13.5px]">
+        {product.description}
+      </p>
+    </div>
   ) : null;
 
   const breadcrumb = (
@@ -287,19 +284,15 @@ function ProductDetail() {
   );
 
   const fallback = (
-    <div className="grid gap-8 md:grid-cols-2">
-      {media}
-      <div>
-        {priceBlock}
-        {addToCart}
-        {meta && (
-          <div className="mt-8 border-t border-border pt-6">
-            <h2 className="text-sm font-semibold">
-              {t("Description", "বিবরণ")}
-            </h2>
-            <div className="mt-2">{meta}</div>
-          </div>
-        )}
+    <div className="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mb-6">{breadcrumb}</div>
+      <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-16 items-start">
+        <div className="sticky top-24">{media}</div>
+        <div className="py-2">
+          {priceBlock}
+          {addToCart}
+          {meta}
+        </div>
       </div>
     </div>
   );
