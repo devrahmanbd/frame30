@@ -242,31 +242,31 @@ function CheckoutPage() {
         chrome={<StoreHeader slug={slug} name={merchant.name} />}
         containerClassName=""
         fallback={
-          <div className="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1.2fr_1fr]">
-            <section>
-              <h1 className="font-bangla-display text-2xl font-bold">
+          <div className="mx-auto grid max-w-[var(--fq-container,1280px)] gap-12 px-4 py-12 lg:grid-cols-[1.5fr_1fr] lg:gap-16 sm:px-6 lg:px-8">
+            <section className="order-2 lg:order-1">
+              <h1 className="font-bangla-display text-3xl font-medium tracking-wide text-foreground/90">
                 {t("Checkout", "চেকআউট")}
               </h1>
 
-              <h2 className="mt-6 text-sm font-semibold">
-                {t("Your cart", "আপনার কার্ট")}
+              <h2 className="mt-10 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground border-b border-border/60 pb-3">
+                {t("Your Cart", "আপনার কার্ট")}
               </h2>
               {!hydrated ? null : lines.length === 0 ? (
-                <p className="mt-2 text-muted-foreground">
+                <p className="mt-4 text-[13.5px] text-muted-foreground">
                   Your cart is empty.
                 </p>
               ) : (
-                <ul className="mt-2 divide-y divide-border rounded-fq-lg border border-border bg-card">
+                <ul className="mt-2 divide-y divide-border/60">
                   {(totals?.lines ?? []).map((l) => (
                     <li
                       key={l.variantId}
-                      className="flex items-center gap-3 p-3"
+                      className="flex items-center gap-4 py-4"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">
+                        <p className="truncate text-[13.5px] font-medium leading-relaxed">
                           {l.productTitle}
                         </p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-[12px] font-medium tracking-wide text-muted-foreground mt-0.5">
                           {l.variantName}
                         </p>
                       </div>
@@ -282,9 +282,9 @@ function CheckoutPage() {
                         onChange={(e) =>
                           setQuantity(l.variantId, Number(e.target.value))
                         }
-                        className="h-11 w-16 rounded-fq-md border border-border bg-background px-2 text-sm"
+                        className="h-10 w-16 bg-transparent border-b border-border/60 text-center text-[13px] font-medium focus:outline-none focus:border-foreground transition-colors"
                       />
-                      <span className="money w-24 text-right text-sm font-semibold">
+                      <span className="money w-24 text-right text-[13.5px] font-semibold tracking-wide">
                         {fmtMinor(l.lineTotalMinor, totals?.currency)}
                       </span>
                     </li>
@@ -301,16 +301,16 @@ function CheckoutPage() {
               )}
 
               <form
-                className="mt-8 grid gap-4"
+                className="mt-12 grid gap-6"
                 onSubmit={(e) => {
                   e.preventDefault();
                   mutation.mutate(new FormData(e.currentTarget));
                 }}
               >
-                <h2 className="text-sm font-semibold">
-                  {t("Delivery information", "ডেলিভারি তথ্য")}
+                <h2 className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground border-b border-border/60 pb-3">
+                  {t("Delivery Information", "ডেলিভারি তথ্য")}
                 </h2>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-6 sm:grid-cols-2">
                   <Field
                     name="name"
                     label={t("Full name", "নাম / Full name")}
@@ -354,9 +354,9 @@ function CheckoutPage() {
                   />
                 </div>
 
-                <fieldset className="mt-2">
-                  <legend className="text-sm font-semibold">
-                    {t("Payment method", "পেমেন্ট মেথড")}
+                <fieldset className="mt-6">
+                  <legend className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground border-b border-border/60 pb-3 mb-4 w-full">
+                    {t("Payment Method", "পেমেন্ট মেথড")}
                   </legend>
                   {methodGroups.length === 0 ? (
                     <p className="mt-2 text-sm text-muted-foreground">
@@ -440,20 +440,20 @@ function CheckoutPage() {
                 <button
                   type="submit"
                   disabled={!totals || mutation.isPending}
-                  className="min-h-12 rounded-fq-md bg-primary px-6 text-sm font-semibold text-primary-foreground disabled:opacity-50"
+                  className="min-h-14 mt-4 w-full bg-foreground px-8 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
                 >
                   {mutation.isPending
                     ? t("Processing…", "প্রসেসিং…")
-                    : t("Confirm order", "অর্ডার নিশ্চিত করুন")}
+                    : t("Confirm Order", "অর্ডার নিশ্চিত করুন")}
                 </button>
               </form>
             </section>
 
-            <aside className="h-fit rounded-fq-lg border border-border bg-card p-4 lg:sticky lg:top-24">
-              <h2 className="text-sm font-semibold">
-                {t("Summary", "সারসংক্ষেপ")}
+            <aside className="h-fit bg-muted/20 p-6 lg:p-8 lg:sticky lg:top-24 order-1 lg:order-2">
+              <h2 className="text-[11px] font-bold fq-caps tracking-widest text-foreground border-b border-border/60 pb-4">
+                {t("Order Summary", "সারসংক্ষেপ")}
               </h2>
-              <dl className="mt-3 space-y-2 text-sm">
+              <dl className="mt-6 space-y-4 text-sm">
                 <Row
                   label="Subtotal"
                   value={fmtMinor(totals?.subtotalMinor ?? 0, totals?.currency)}
@@ -519,11 +519,11 @@ function Row({
   className?: string;
 }) {
   return (
-    <div className={`flex items-center justify-between gap-3 ${className}`}>
-      <dt className={strong ? "font-semibold" : "text-muted-foreground"}>
+    <div className={`flex items-center justify-between gap-4 ${className}`}>
+      <dt className={strong ? "font-bold text-[13px] fq-caps tracking-widest text-foreground" : "text-[13px] font-medium tracking-wide text-muted-foreground"}>
         {label}
       </dt>
-      <dd className={`money ${strong ? "text-base font-bold" : ""}`}>
+      <dd className={`money ${strong ? "text-[14px] font-bold text-foreground tracking-wide" : "text-[13.5px] font-semibold text-foreground tracking-wide"}`}>
         {value}
       </dd>
     </div>
@@ -544,14 +544,16 @@ function Field({
   inputMode?: "tel" | "text";
 }) {
   return (
-    <label className="block text-sm">
-      <span className="mb-1 block font-medium">{label}</span>
+    <label className="block">
+      <span className="mb-2 block text-[11.5px] font-bold fq-caps tracking-widest text-muted-foreground">
+        {label}
+      </span>
       <input
         name={name}
         type={type}
         required={required}
         inputMode={inputMode}
-        className="h-12 w-full rounded-fq-md border border-border bg-background px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="h-12 w-full border-b border-border/60 bg-transparent px-0 text-[13.5px] font-medium text-foreground focus:border-foreground focus:outline-none transition-colors placeholder:text-muted-foreground/30"
       />
     </label>
   );

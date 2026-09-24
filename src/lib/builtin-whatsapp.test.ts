@@ -182,7 +182,6 @@ describe("whatsapp chat_bubble entry", () => {
     for (const [mode, needle] of [
       ["bounce", "waBounce"],
       ["jump", "waJump"],
-      ["burst", "waBurst"],
       ["wiggle", "waWiggle"],
     ] as const) {
       const { mounted } = await runEntry(whatsappEntry(), {
@@ -191,6 +190,13 @@ describe("whatsapp chat_bubble entry", () => {
       });
       expect(mounted!.style["animation"]).toContain(needle);
     }
+    // Burst rides a shockwave ring child (the anchor itself just pops in).
+    const { mounted: burst } = await runEntry(whatsappEntry(), {
+      phone_number: "8801712345678",
+      animation: "burst",
+    });
+    const ring = burst!.children.find((c) => c.tag === "span");
+    expect(ring?.style["animation"]).toContain("waBurst");
     const { mounted: still } = await runEntry(whatsappEntry(), {
       phone_number: "8801712345678",
       animation: "off",

@@ -87,24 +87,26 @@ function CartPage() {
           payment_methods: null,
         }}
         fallback={
-          <section className="rounded-fq-lg border border-border bg-card p-8 text-center">
-            <h1 className="font-bangla-display text-2xl font-bold">
-              {t("Your cart", "আপনার কার্ট")}
+          <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 lg:px-8 text-center">
+            <h1 className="font-bangla-display text-3xl sm:text-4xl font-medium tracking-wide text-foreground/90">
+              {t("Your Bag", "আপনার ব্যাগ")}
             </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
+            <p className="mt-4 text-[13.5px] text-muted-foreground leading-relaxed">
               {t(
-                "Continue to checkout to review your items and pay.",
-                "আইটেম দেখতে ও পেমেন্ট করতে চেকআউটে যান।",
+                "Review the items in your bag before proceeding to checkout.",
+                "চেকআউটে যাওয়ার আগে আপনার ব্যাগের আইটেমগুলো দেখে নিন।",
               )}
             </p>
-            <Link
-              to="/store/$slug/checkout"
-              params={{ slug }}
-              className="mt-4 inline-block min-h-11 rounded-fq-md bg-primary px-5 text-sm font-medium leading-[2.75rem] text-primary-foreground"
-            >
-              {t("Go to checkout", "চেকআউটে যান")}
-            </Link>
-          </section>
+            <div className="mt-10">
+              <Link
+                to="/store/$slug/checkout"
+                params={{ slug }}
+                className="inline-flex min-h-14 items-center justify-center w-full sm:w-80 bg-foreground px-8 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:bg-foreground/90 active:scale-[0.98]"
+              >
+                {t("Proceed to Checkout", "চেকআউটে যান")}
+              </Link>
+            </div>
+          </div>
         }
       />
     </PluginLayer>
