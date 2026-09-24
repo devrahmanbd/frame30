@@ -1429,22 +1429,57 @@ export function StudioWidget({ node, device, editing, menus }: RenderProps) {
           links: parseLinks(String(row.links ?? "")),
         }))
         .filter((c) => c.title || c.links.length > 0);
-      const cols =
+      const authored =
         fromItems.length > 0
           ? fromItems
           : [1, 2, 3, 4]
               .map((n) => ({ title: str(s, `c${n}Title`), links: parseLinks(str(s, `c${n}Links`)) }))
               .filter((c) => c.title || c.links.length > 0);
-      if (cols.length === 0) return <Placeholder label="Add a sitemap column" />;
+      // Missing data never blanks the footer: fall back to the heritage
+      // columns (verified routes, same set the blueprint authors). Kept
+      // inline so this case stays self-contained.
+      const fallback = [
+        {
+          title: "Collections",
+          links: parseLinks(
+            "Heritage Handloom|/c/heritage-handloom\nFestive & Eid|/c/eid-festive\nNakshi Kantha|/c/nakshi-kantha\nNew arrivals|/c/new-in",
+          ),
+        },
+        {
+          title: "Customer Care",
+          links: parseLinks(
+            "Size guide|/pages/size-guide\nOrder tracking|/pages/track-order\nReturns & exchanges|/pages/returns\nStore locations|/pages/stores\nContact us|/pages/contact",
+          ),
+        },
+        {
+          title: "Our Heritage",
+          links: parseLinks(
+            "Master weavers|/blog/master-weavers\nHandloom heritage|/blog/handloom-heritage\nFair trade|/pages/fair-trade\nRewards|/pages/rewards",
+          ),
+        },
+        {
+          title: "About",
+          links: parseLinks(
+            "Our story|/pages/about\nRewards club|/pages/rewards\nContact us|/pages/contact",
+          ),
+        },
+      ];
+      const cols = authored.length > 0 ? authored : fallback;
       return (
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-6 sm:grid-cols-4">
-          {cols.map((col) => (
-            <div key={col.title}>
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{col.title}</p>
+        <nav aria-label="Footer" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {cols.map((col, index) => (
+            <div key={`${index}-${col.title}`}>
+              {col.title ? (
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {col.title}
+                </p>
+              ) : null}
               <ul className="mt-2 space-y-1">
                 {col.links.map((l) => (
-                  <li key={`${col.title}-${l.label}`}>
-                    <a href={l.href} className="text-sm hover:underline">{l.label}</a>
+                  <li key={`${index}-${l.label}-${l.href}`}>
+                    <a href={l.href} className="text-sm hover:underline">
+                      {l.label}
+                    </a>
                   </li>
                 ))}
               </ul>

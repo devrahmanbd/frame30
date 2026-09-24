@@ -1,15 +1,21 @@
 /**
  * Task 8 — Full-screen theme preview frame.
  *
- * Renders blueprint sections (header / main / footer) with template-tab
- * navigation. No auth required; the route resolves the blueprint from the
- * URL key param and passes it here. Uses the same ThemeSurface +
+ * Renders blueprint sections (header / main / footer) with in-canvas
+ * template navigation. No auth required; the route resolves the blueprint
+ * from the URL key param and passes it here. Uses the same ThemeSurface +
  * SectionRenderer stack the storefront uses, but with placeholder widget
  * data so every section renders something visible.
+ *
+ * The preview is chrome-free: it shows exactly the store. Template switching
+ * happens through in-canvas links (product / collection / search / page /
+ * blog / home) and the `?template=` deep link. Checkout / cart / account
+ * flows and every form submit are blocked with a "Disabled in preview"
+ * toast — capture-phase interception runs before widget handlers so no
+ * contact/newsletter/coupon submission ever fires.
  */
 import { useMemo, useState, type MouseEvent } from "react";
-import { X } from "@/components/icons/tabler";
-import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
@@ -23,28 +29,127 @@ import { previewDemoMap } from "@/lib/preview-demo-data";
 import { OrdersList, ProfileCard } from "@/components/builder/account";
 import { accountSlotCtx } from "./account-slots";
 import { useLang } from "@/lib/i18n";
-import { previewTemplateForHref } from "@/lib/theme-preview-nav";
 import { compileResponsiveCss } from "@/lib/responsive-css";
 import {
-  TEMPLATE_KEYS,
   type Section,
   type TemplateKey,
   type ThemeAst,
   type ThemeTokens,
 } from "@/lib/builder-ast";
 
-/* ---- template tab labels for the floating picker ---- */
-const TAB_LABELS: Record<TemplateKey, string> = {
-  index: "Homepage",
-  account: "Account",
-  product: "Product",
-  collection: "Collection",
-  page: "Page",
-  blog: "Blog",
-  cart: "Cart",
-  checkout: "Checkout",
-  search: "Search",
+/** Toast copy shown whenever a preview action is blocked. */
+export const PREVIEW_DISABLED_MESSAGE = "Disabled in preview";
+
+/**
+ * Href segments that must never act in preview: checkout / cart flows and
+ * account / auth flows, in root shape (`/checkout`) or path shape
+ * (`/store/<slug>/checkout`). Segment-bounded so `/cartoon` never matches.
+ */
+const BLOCKED_HREF_RE =
+  /(^|\/)(checkout|cart|account|sign-?in|sign-?up|login|register)([\/?#]|$)/i;
+
+/** True when an in-canvas href targets a blocked checkout/cart/account flow. */
+export function isPreviewBlockedHref(href: string): boolean {
+  const path = href.split(/[?#]/, 1)[0] ?? "";
+  return BLOCKED_HREF_RE.test(path);
+}
+
+/**
+ * Maps an in-canvas href to the preview template it should switch to.
+ * Blocked and unknown hrefs return null (blocked ones toast, unknown ones
+ * keep their default behaviour). Demo rows use root-shaped `/p/<slug>` and
+ * `/c/<slug>` hrefs; path-shaped `/store/<slug>/…` hrefs are stripped first.
+ */
+export function previewTemplateForHref(href: string): TemplateKey | null {
+  if (isPreviewBlockedHref(href)) return null;
+  const path = (href.split(/[?#]/, 1)[0] ?? "").toLowerCase();
+  if (!path.startsWith("/")) return null;
+  const rest = path.replace(/^\/store\/[^/]+/, "") || "/";
+  if (/^\/p\/[^/]+/.test(rest) || /^\/products?\//.test(rest)) return "product";
+  if (/^\/c\/[^/]+/.test(rest) || /^\/collections?\//.test(rest))
+    return "collection";
+  if (rest === "/search" || rest === "/search/") return "search";
+  if (/^\/pages?\//.test(rest)) return "page";
+  if (rest === "/blog" || rest.startsWith("/blog/")) return "blog";
+  if (rest === "/" || rest === "/index" || rest === "/home") return "index";
+  return null;
+}
+
+export type PreviewClickAction =
+  | { kind: "blocked" }
+  | { kind: "switch"; template: TemplateKey }
+  | { kind: "allow" };
+
+/**
+ * Pure click decision for an in-canvas anchor href. Hash jumps carry no
+ * template meaning and keep their default behaviour.
+ */
+export function previewClickAction(
+  href: string | null | undefined,
+): PreviewClickAction {
+  if (!href || href.startsWith("#")) return { kind: "allow" };
+  if (isPreviewBlockedHref(href)) return { kind: "blocked" };
+  const next = previewTemplateForHref(href);
+  return next ? { kind: "switch", template: next } : { kind: "allow" };
+}
+
+type PreviewCanvasClickEvent = {
+  // `unknown` keeps the fake-event stubs in the node-env suite assignable;
+  // the handler only reads `closest` through a guarded cast.
+  target: unknown;
+  preventDefault: () => void;
+  stopPropagation: () => void;
 };
+
+const SUBMIT_CONTROL_SELECTOR =
+  'button[type="submit"],input[type="submit"]';
+
+/**
+ * Capture-phase click interception for the preview canvas: submit controls
+ * inside any form and checkout / account links are blocked with a toast,
+ * product / collection / search / page / blog / home links switch the
+ * preview template. Everything else passes through untouched.
+ */
+export function handlePreviewCanvasClick(
+  event: PreviewCanvasClickEvent,
+  setTemplate: (template: TemplateKey) => void,
+): void {
+  const el = event.target as HTMLElement | null;
+  const submit = el?.closest?.(SUBMIT_CONTROL_SELECTOR) as HTMLElement | null;
+  if (submit && submit.closest?.("form")) {
+    event.preventDefault();
+    event.stopPropagation();
+    toast.info(PREVIEW_DISABLED_MESSAGE);
+    return;
+  }
+  const anchor = el?.closest?.("a[href]") as HTMLAnchorElement | null;
+  if (!anchor) return;
+  const action = previewClickAction(anchor.getAttribute("href"));
+  if (action.kind === "blocked") {
+    event.preventDefault();
+    event.stopPropagation();
+    toast.info(PREVIEW_DISABLED_MESSAGE);
+  } else if (action.kind === "switch") {
+    event.preventDefault();
+    event.stopPropagation();
+    setTemplate(action.template);
+  }
+}
+
+/**
+ * Capture-phase submit interception for the preview canvas: newsletter,
+ * contact, coupon and every other form is blocked with a toast. Runs in
+ * capture so widget `onSubmit` handlers (contact API, coupon state) never
+ * fire.
+ */
+export function handlePreviewCanvasSubmit(event: {
+  preventDefault: () => void;
+  stopPropagation: () => void;
+}): void {
+  event.preventDefault();
+  event.stopPropagation();
+  toast.info(PREVIEW_DISABLED_MESSAGE);
+}
 
 export type ThemePreviewFrameProps = {
   /** Blueprint name for the header. */
@@ -59,18 +164,19 @@ export type ThemePreviewFrameProps = {
   templates: Record<TemplateKey, ThemeAst>;
   /** Deep-linkable starting tab (?template=product). Defaults to homepage. */
   initialTemplate?: TemplateKey;
-  /** Close callback — wired to the × button. */
+  /**
+   * Retained for route compatibility. The preview renders no chrome, so the
+   * close control is gone and this is intentionally unwired.
+   */
   onClose: () => void;
 };
 
 export function ThemePreviewFrame({
   themeName,
-  author,
   blueprintKey,
   tokens,
   templates,
   initialTemplate,
-  onClose,
 }: ThemePreviewFrameProps) {
   const [template, setTemplate] = useState<TemplateKey>(
     initialTemplate ?? "index",
@@ -132,15 +238,6 @@ export function ThemePreviewFrame({
       aria-label={`${themeName} theme preview`}
       className="fixed inset-0 z-50 flex flex-col bg-background"
     >
-      {/* ---- floating controls: a single dot that expands on demand.
-          The preview itself stays chrome-free; nothing here may read as
-          theme navigation. ---- */}
-      <PreviewDock
-        template={template}
-        setTemplate={setTemplate}
-        onClose={onClose}
-      />
-
       {/* ---- responsive CSS injected once ---- */}
       {responsiveCss && (
         <style
@@ -150,8 +247,15 @@ export function ThemePreviewFrame({
         />
       )}
 
-      {/* ---- preview canvas: full-bleed, no frame ---- */}
-      <div className="flex-1 overflow-auto bg-background" onClick={onCanvasClick}>
+      {/* ---- preview canvas: full-bleed, no frame. Clicks navigate between
+          templates in place; actions and submits are blocked. ---- */}
+      <div
+        className="flex-1 overflow-auto bg-background"
+        onClickCapture={(event) =>
+          handlePreviewCanvasClick(event, setTemplate)
+        }
+        onSubmitCapture={handlePreviewCanvasSubmit}
+      >
         <div className="mx-auto" style={{ maxWidth: "100%" }}>
           <ThemeSurface tokens={tokens}>
             {/* Wordmark row, as on a live storefront — the blueprint's
@@ -209,72 +313,6 @@ export function ThemePreviewFrame({
         </div>
       </div>
 
-    </div>
-  );
-}
-
-/** Collapsed preview dock: one small corner dot, expands on click. */
-function PreviewDock({
-  template,
-  setTemplate,
-  onClose,
-}: {
-  template: TemplateKey;
-  setTemplate: (t: TemplateKey) => void;
-  onClose: () => void;
-}) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="fixed bottom-3 right-3 z-50">
-      {open ? (
-        <div className="flex max-w-[86vw] items-center gap-1 rounded-2xl border border-border bg-card/95 p-1.5 shadow-lg backdrop-blur">
-          <nav
-            aria-label="Template"
-            className="flex items-center gap-1 overflow-x-auto"
-          >
-            {TEMPLATE_KEYS.map((key) => (
-              <button
-                key={key}
-                type="button"
-                aria-pressed={template === key}
-                onClick={() => {
-                  setTemplate(key);
-                  setOpen(false);
-                }}
-                className={cn(
-                  "whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
-                  template === key
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                )}
-              >
-                {TAB_LABELS[key]}
-              </button>
-            ))}
-          </nav>
-          <button
-            type="button"
-            aria-label="Close preview"
-            onClick={onClose}
-            className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <X className="size-4" aria-hidden />
-          </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          aria-label="Preview controls"
-          onClick={() => setOpen(true)}
-          className="grid size-10 place-items-center rounded-full border border-border bg-card/90 text-muted-foreground opacity-60 shadow-md backdrop-blur transition hover:opacity-100"
-        >
-          <span aria-hidden="true" className="flex gap-1">
-            <span className="size-1.5 rounded-full bg-current" />
-            <span className="size-1.5 rounded-full bg-current" />
-            <span className="size-1.5 rounded-full bg-current" />
-          </span>
-        </button>
-      )}
     </div>
   );
 }
