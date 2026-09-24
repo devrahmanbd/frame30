@@ -418,10 +418,41 @@ export default {
             validPreview = false;
           }
         }
+        // Unmapped custom hosts serve nothing at all: not the CMS marketing
+        // site, not a featured store, not an error page with a body. A bare
+        // 404 reveals nothing. Platform hosts, loopback dev, ephemeral
+        // preview deployments (same prefixes the HTTPS gate trusts) and
+        // mapped merchant hosts pass through untouched. Lookup failures
+        // fail OPEN (a DB blip must never take down every custom store);
+        // a definitive no-row blocks.
+        try {
+          const { isPlatformHost, resolveStorefrontHostFor } = await import(
+            "./lib/storefront-host.server"
+          );
+          const host = normalizedHost ?? "";
+          const previewDeploy =
+            host.startsWith("preview.") || host.startsWith("id-preview--");
+          if (
+            host &&
+            !isPlatformHost(host) &&
+            !isLocalHostname(host) &&
+            !previewDeploy
+          ) {
+            const mapped = await resolveStorefrontHostFor(host).catch(
+              () => "lookup-failed" as const,
+            );
+            if (mapped === null) {
+              const { incr } = await import("./lib/observability.server");
+              incr("framique_unmapped_host_blocked_total", {});
+              return new Response(null, { status: 404 });
+            }
+          }
+        } catch {
+          // Fail open: fall through to normal routing.
+        }
         if (
           isBlockedPathStorefront(normalizedHost, url.pathname, validPreview)
-        ) {
-          // DEV-2 deep-path permalink: /store/<slug>/* → https://<primary>/*.
+        ) {          // DEV-2 deep-path permalink: /store/<slug>/* → https://<primary>/*.
           // Centralized here (not per-route beforeLoad) because this gate 404s
           // before SSR — a per-route beforeLoad would never run on platform
           // hosts. One lookup covers the index + every deep route (p/c/pages/
