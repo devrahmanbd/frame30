@@ -145,6 +145,10 @@ describe("preview click blocking", () => {
     "/store/demo/account",
     "/signin",
     "/login",
+    "/order/abc123",
+    "/store/demo/order/abc123",
+    "/track",
+    "/store/demo/track",
   ])("blocks %s", (href) => {
     expect(isPreviewBlockedHref(href)).toBe(true);
     expect(previewClickAction(href)).toEqual({ kind: "blocked" });

@@ -9,8 +9,8 @@
  *
  * The preview is chrome-free: it shows exactly the store. Template switching
  * happens through in-canvas links (product / collection / search / page /
- * blog / home) and the `?template=` deep link. Checkout / cart / account
- * flows and every form submit are blocked with a "Disabled in preview"
+ * blog / home) and the `?template=` deep link. Checkout / cart / order /
+ * account flows and every form submit are blocked with a "Disabled in preview"
  * toast — capture-phase interception runs before widget handlers so no
  * contact/newsletter/coupon submission ever fires.
  */
@@ -42,12 +42,12 @@ import {
 export const PREVIEW_DISABLED_MESSAGE = "Disabled in preview";
 
 /**
- * Href segments that must never act in preview: checkout / cart flows and
- * account / auth flows, in root shape (`/checkout`) or path shape
+ * Href segments that must never act in preview: checkout / cart / order
+ * flows and account / auth flows, in root shape (`/checkout`) or path shape
  * (`/store/<slug>/checkout`). Segment-bounded so `/cartoon` never matches.
  */
 const BLOCKED_HREF_RE =
-  /(^|\/)(checkout|cart|account|sign-?in|sign-?up|login|register)([\/?#]|$)/i;
+  /(^|\/)(checkout|cart|order|track|account|sign-?in|sign-?up|login|register)([\/?#]|$)/i;
 
 /** True when an in-canvas href targets a blocked checkout/cart/account flow. */
 export function isPreviewBlockedHref(href: string): boolean {
@@ -184,7 +184,10 @@ export function ThemePreviewFrame({
 
   const ast = templates[template] ?? templates.index;
   const allSections: Section[] = [...ast.header, ...ast.main, ...ast.footer];
-  const responsiveCss = compileResponsiveCss(allSections);
+  // CompiledResponsive object — the stylesheet is `.css`. The storefront
+  // host (ThemeChrome) inlines it verbatim inside ThemeSurface; preview
+  // must do the same or per-device overrides silently die here.
+  const responsive = compileResponsiveCss(allSections);
   // Preview has no merchant data: feed every data widget demo catalog rows
   // so grids/rails render products instead of skeleton-spinning forever.
   const previewData: { bundle: WidgetDataBundle; map: WidgetDataMap } =
@@ -241,15 +244,6 @@ export function ThemePreviewFrame({
       aria-label={`${themeName} theme preview`}
       className="fixed inset-0 z-50 flex flex-col bg-background"
     >
-      {/* ---- responsive CSS injected once ---- */}
-      {responsiveCss && (
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `.fq-theme-scope{${responsiveCss}}`,
-          }}
-        />
-      )}
-
       {/* ---- Google Font stylesheet for theme's font pairings ---- */}
       {fontStylesheetUrl(tokens) && (
         <link
@@ -268,6 +262,14 @@ export function ThemePreviewFrame({
       >
         <div className="mx-auto" style={{ maxWidth: "100%" }}>
           <ThemeSurface tokens={tokens}>
+            {/* Per-device overrides, same contract as ThemeChrome:
+                verbatim stylesheet, inside the theme scope. */}
+            {responsive.css ? (
+              <style
+                data-fq-responsive={String(responsive.rules)}
+                dangerouslySetInnerHTML={{ __html: responsive.css }}
+              />
+            ) : null}
             {/* Wordmark row, as on a live storefront — the blueprint's
                 header sections render beneath it. */}
             <StoreHeader slug={blueprintKey} name={themeName} menus={null} />
@@ -304,16 +306,20 @@ export function ThemePreviewFrame({
                 </div>
               )}
 
-              {/* footer slot */}
-              {ast.footer.map((section) => (
-                <SectionRenderer
-                  key={section.id}
-                  section={section}
-                  template={template}
-                  editing={false}
-                  contextSlots={accountSlots}
-                />
-              ))}
+              {/* footer slot — landmark parity with ThemeChrome */}
+              {ast.footer.length > 0 && (
+                <footer>
+                  {ast.footer.map((section) => (
+                    <SectionRenderer
+                      key={section.id}
+                      section={section}
+                      template={template}
+                      editing={false}
+                      contextSlots={accountSlots}
+                    />
+                  ))}
+                </footer>
+              )}
             </WidgetDataProvider>
           </ThemeSurface>
         </div>
