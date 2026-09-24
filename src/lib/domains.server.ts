@@ -477,12 +477,29 @@ export async function verifyDomain(
       );
       incr("framique_domain_verify_total", { outcome: "verified" });
       const refreshed = await loadOwned(db, merchantId, domainId);
-      return requestCertificate(
+      const issued = await requestCertificate(
         db,
         merchantId,
         refreshed.id,
         opts.actor ?? null,
       );
+      // Issuance observation, single place: covers both the manual Check now
+      // button and the sweep (which calls verifyDomain per row). If the edge
+      // already serves a valid cert, flip to active in the same pass instead
+      // of waiting for the next sweep. Disabled via DOMAIN_TLS_OBSERVE=false.
+      if (
+        process.env["DOMAIN_TLS_OBSERVE"] !== "false" &&
+        (issued.status === "dns_verified" || issued.status === "issuing_cert")
+      ) {
+        try {
+          if (await reconcileIssuance(row.hostname)) {
+            return toView(await loadOwned(db, merchantId, domainId));
+          }
+        } catch {
+          // Logged inside reconcileIssuance; DNS verdict stands regardless.
+        }
+      }
+      return issued;
     }
 
     const stalled = attempts >= MAX_AUTO_ATTEMPTS;
@@ -1056,27 +1073,20 @@ export async function sweepDomains(
           result.verified += 1;
         }
         if (view.status === "failed") result.failed += 1;
-        // Issuance observation: the edge issues pull-based with no callback,
-        // so check what the world sees. Disabled via DOMAIN_TLS_OBSERVE=false.
-        // Never throws (reconcile returns boolean); sweep continues regardless.
-        if (
-          process.env["DOMAIN_TLS_OBSERVE"] !== "false" &&
-          (view.status === "dns_verified" || view.status === "issuing_cert")
-        ) {
-          try {
-            if (await reconcileIssuance(view.hostname)) result.activated += 1;
-          } catch {
-            // Logged inside reconcileIssuance; keep sweeping.
-          }
+        // Activation is observed inside verifyDomain (single path); count rows
+        // that arrived non-active and left active.
+        if (view.status === "active" && row.status !== "active") {
+          result.activated += 1;
         }
       } catch {
         // Per-domain failures are logged inside verifyDomain; keep sweeping.
       }
     }
 
-    // Stuck issuing_cert re-poll without edge: when DOMAIN_EDGE_HOOK_URL is
-    // unset no callback ever arrives, so re-queue the oldest parked rows
-    // (even if next_check_at drifted into the future) for verification.
+    // Stuck issuing_cert re-poll: rows that reached issuing_cert while an
+    // edge hook was configured (or legacy parked rows) but never received a
+    // callback get re-queued here so verifyDomain + issuance observation can
+    // heal them instead of stranding forever.
     if (!process.env["DOMAIN_EDGE_HOOK_URL"]) {
       const staleAt = new Date(Date.now() - 3_600_000).toISOString();
       const { data: stuck } = await service

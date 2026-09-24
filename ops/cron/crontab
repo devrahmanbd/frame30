@@ -44,7 +44,7 @@ SHELL=/bin/sh
 */20 * * * * curl -sS -X POST -m 50 --retry 1 --retry-delay 5 -H "authorization: Bearer $BILLING_CRON_SECRET" -H "x-cron-trigger: supercronic" -o /dev/null -w 'cron support status=%{http_code} t=%{time_total}s\n' "$APP_INTERNAL_URL/api/public/cron/support"
 
 # Custom domain sweep
-50 */2 * * * curl -sS -X POST -m 60 --retry 1 --retry-delay 5 -H "authorization: Bearer $BILLING_CRON_SECRET" -H "x-cron-trigger: supercronic" -o /dev/null -w 'cron domains status=%{http_code} t=%{time_total}s\n' "$APP_INTERNAL_URL/api/public/cron/domains"
+*/20 * * * * curl -sS -X POST -m 60 --retry 1 --retry-delay 5 -H "authorization: Bearer $BILLING_CRON_SECRET" -H "x-cron-trigger: supercronic" -o /dev/null -w 'cron domains status=%{http_code} t=%{time_total}s\n' "$APP_INTERNAL_URL/api/public/cron/domains"
 
 # Marketplace theme sweep
 45 4 * * * curl -sS -X POST -m 60 --retry 1 --retry-delay 5 -H "authorization: Bearer $BILLING_CRON_SECRET" -H "x-cron-trigger: supercronic" -o /dev/null -w 'cron themes status=%{http_code} t=%{time_total}s\n' "$APP_INTERNAL_URL/api/public/cron/themes"

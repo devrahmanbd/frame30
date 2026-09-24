@@ -141,3 +141,68 @@ describe("reconcileIssuance (edge cert observation)", () => {
     expect(rows.get("d1")?.["status"]).toBe("pending_dns");
   });
 });
+
+describe("verifyDomain full loop (manual Check now + sweep share one path)", () => {
+  beforeEach(() => {
+    tlsMode = "valid";
+  });
+
+  function liveDb() {
+    return {
+      from: () => ({
+        select: () => ({
+          eq: () => ({
+            eq: () => ({
+              maybeSingle: async () => ({
+                data: { ...rows.get("d1") },
+                error: null,
+              }),
+            }),
+          }),
+        }),
+      }),
+    } as never;
+  }
+
+  function dohOk() {
+    return vi.fn(async (url: unknown) => {
+      const u = String(url);
+      const answers = u.includes("type=TXT")
+        ? [{ type: 16, data: "framique-verification=tok" }]
+        : u.includes("type=CNAME")
+          ? [{ type: 5, data: "framique.qubickle.com" }]
+          : [];
+      return { ok: true, json: async () => ({ Answer: answers, Status: 0 }) };
+    });
+  }
+
+  it("pending_dns + good DNS + live edge cert ends active in one pass", async () => {
+    seed("pending_dns");
+    delete process.env["DOMAIN_EDGE_HOOK_URL"];
+    vi.stubGlobal("fetch", dohOk());
+    const { verifyDomain } = await import("./domains.server");
+    const view = await verifyDomain(liveDb(), "m1", "sweep-test", "d1", {
+      manual: false,
+      actor: null,
+    });
+    vi.unstubAllGlobals();
+    expect(view.status).toBe("active");
+    expect(rows.get("d1")?.["cert_status"]).toBe("issued");
+    expect(events.some((e) => e["reason"] === "cert.issued")).toBe(true);
+  });
+
+  it("pending_dns + good DNS + no edge cert yet stays dns_verified awaiting edge", async () => {
+    seed("pending_dns");
+    delete process.env["DOMAIN_EDGE_HOOK_URL"];
+    tlsMode = "refused";
+    vi.stubGlobal("fetch", dohOk());
+    const { verifyDomain } = await import("./domains.server");
+    const view = await verifyDomain(liveDb(), "m1", "sweep-test", "d1", {
+      manual: false,
+      actor: null,
+    });
+    vi.unstubAllGlobals();
+    expect(view.status).toBe("dns_verified");
+    expect(rows.get("d1")?.["cert_error"]).toBe("cert.awaiting_edge");
+  });
+});
