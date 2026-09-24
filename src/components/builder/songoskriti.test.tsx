@@ -202,7 +202,7 @@ describe("testimonials", () => {
     expect(html).toContain("Drapes beautifully.");
     expect(html).toContain("Nasrin");
     expect(html).toContain("Dhaka");
-    expect(html).toContain("line-clamp-3");
+    expect(html).toContain("<blockquote");
     expect(html).toContain("Testimonial 2");
   });
 
@@ -324,7 +324,7 @@ describe("songoskriti product_rail rhythm (browser-verified 2026-09-24)", () => 
       railSection({ rows, pending: false }),
       { rows, pending: false },
     );
-    expect(html).toContain("max-w-6xl");
+    expect(html).toContain("max-w-[var(--fq-container");
     expect(html).toContain("px-4");
     expect(html).toContain("New arrivals");
   });

@@ -300,19 +300,21 @@ const Testimonials: WidgetComponent = ({ section, int, locale, editing }) => {
       >
         <div className="flex flex-col items-center text-center">
           {item.image ? (
-            <img
-              src={item.image}
-              alt={item.author}
-              className="mb-4 h-12 w-12 rounded-full object-cover"
-              loading="lazy"
-            />
-            <span
-              aria-hidden="true"
-              className="mb-6 block font-bangla-display text-6xl leading-none text-foreground/20"
-            >
-              &ldquo;
-            </span>
-          )}
+            <>
+              <img
+                src={item.image}
+                alt={item.author}
+                className="mb-4 h-12 w-12 rounded-full object-cover"
+                loading="lazy"
+              />
+              <span
+                aria-hidden="true"
+                className="mb-6 block font-bangla-display text-6xl leading-none text-foreground/20"
+              >
+                &ldquo;
+              </span>
+            </>
+          ) : null}
           <blockquote className="max-w-2xl font-bangla-display text-lg leading-relaxed text-foreground sm:text-xl lg:text-3xl text-center">
             {item.quote}
           </blockquote>

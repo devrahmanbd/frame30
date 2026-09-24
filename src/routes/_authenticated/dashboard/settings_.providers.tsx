@@ -175,9 +175,7 @@ function ProvidersPage() {
                       {cred.state.replace(/_/g, " ")}
                     </Pill>
                     {isCommunityPlugin(cred.provider) && (
-                      <Pill tone="warning">
-                        {t(UNOFFICIAL_BADGE.en, UNOFFICIAL_BADGE.bn)}
-                      </Pill>
+                      <Pill tone="warning">{UNOFFICIAL_BADGE}</Pill>
                     )}
                   </span>
                   <span className="block text-xs text-muted-foreground">
@@ -198,7 +196,7 @@ function ProvidersPage() {
                 <div className="space-y-8 bg-muted/10 p-6 sm:p-8 rounded-lg mb-6 mt-2">
                   {isCommunityPlugin(cred.provider) && (
                     <InlineAlert tone="warning">
-                      {pluginNotice(cred.provider, lang === "bn" ? "bn" : "en")}
+                      {pluginNotice(cred.provider)}
                     </InlineAlert>
                   )}
 
@@ -455,5 +453,6 @@ function ProvidersPage() {
         </div>
         </div>
       </div>
+    </div>
   );
 }
