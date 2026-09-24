@@ -374,17 +374,14 @@ function FooterSitemap({ str, section }: WidgetCtx) {
           }))
           .filter((col) => col.title || col.links.length > 0);
   if (columns.length === 0) return null;
-  const year = new Date().getFullYear();
   return (
-    // Browser-verified rhythm 2026-09-24: the 2-col mobile stack was
-    // cramped — single column on mobile, roomier gaps, © colophon row.
-    <nav aria-label="Footer" className="grid grid-cols-1 gap-x-6 gap-y-8 py-2 sm:grid-cols-4">
+    <nav aria-label="Footer" className="grid grid-cols-2 gap-6 sm:grid-cols-4">
       {columns.map((col) => (
         <div key={col.title}>
           <p className="text-xs font-semibold fq-caps text-muted-foreground">
             {col.title}
           </p>
-          <ul className="mt-3 space-y-2">
+          <ul className="mt-2 space-y-1">
             {col.links.map((link) => (
               <li key={`${col.title}-${link.label}`}>
                 <a href={link.href} className="text-sm hover:underline">
@@ -395,9 +392,6 @@ function FooterSitemap({ str, section }: WidgetCtx) {
           </ul>
         </div>
       ))}
-      <p className="text-xs text-muted-foreground sm:col-span-4">
-        © {year} Songoskriti
-      </p>
     </nav>
   );
 }
