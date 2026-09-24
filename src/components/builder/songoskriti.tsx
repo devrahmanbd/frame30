@@ -1,10 +1,36 @@
 /**
  * Songoskriti (heritage) homepage widgets.
  *
- * Four editorial widgets with no generic renderer coverage: the occasion
- * finder row, the copy-only craft story, the multi-quote testimonials
- * carousel, and the trust assurances footer. `hero_carousel` is covered by
- * heritage.tsx HeroCarousel and needs no renderer here.
+ * SECTION-track editorial design mapped onto this tree's Task-built catalog
+ * types and platform primitives. The track's five type names
+ * (`department_grid`, `gift_finder`, `heritage_story`,
+ * `testimonial_carousel`, `marquee_strip`) do not exist in this tree's
+ * `builder-ast` catalog — the Task-2 gap pack already covers those roles as
+ * `circle_categories`, `finder_row`, `craft_story`, `testimonials`, and
+ * `announcement_bar` — so the track's JSX lands on the four widgets owned
+ * here (`hero_carousel` stays covered by heritage.tsx HeroCarousel):
+ *
+ * - FinderRow ← track gift_finder: two-zone editorial (copy col + occasion
+ *   list col), bordered occasion rows with arrow affordance, one outline
+ *   CTA. Adapted: links stay `o1Href`-style collection hrefs (the track's
+ *   `/search?q=` queries have no verified route here), not query strings.
+ * - CraftStory ← track heritage_story: offset grid (art 5 cols, copy 6
+ *   cols offset), hairline rule, single eyebrow, outline CTA. Adapted:
+ *   art goes through MediaFrame (CLS-safe + alt/sizes primitives), the
+ *   `scrim` prop keeps working, and headline/button fallbacks match the
+ *   heritage precedent.
+ * - Testimonials ← track testimonial_carousel: quote-card voice (oversized
+ *   quote mark, bordered caption). Adapted: the snap+buttons carousel
+ *   controller + dots + line-clamp-3 stay (pinned by songoskriti.test.tsx),
+ *   motion stays on the shared Task-5 hooks.
+ * - TrustFooter ← track trust_bar: icon-chip assurances grid. Kept
+ *   repeater-first (`items[]` rows win, i1–i4 scalars fall back) with the
+ *   track's larger chip.
+ *
+ * Not ported: the `SongoskritiWeave` lattice (it stands in for the track's
+ * `/api/public/ph/` placeholder prefixes, which this blueprint never
+ * emits — MediaFrame owns the imageless fallback) and the marquee (the
+ * announcement_bar owns the single-marquee slot).
  *
  * Everything reads design tokens through semantic utility classes only and
  * never imports a theme module, so the set stays usable by any theme.
@@ -81,37 +107,50 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
       data-songoskriti-reveal
       className="rounded-fq-lg border border-border bg-card p-6 sm:p-8"
     >
-      {str("heading") && (
-        <Heading className="font-bangla-display text-2xl font-bold">
-          {str("heading")}
-        </Heading>
-      )}
-      {str("body") && (
-        <p className="mt-2 max-w-prose text-sm text-muted-foreground">
-          {str("body")}
-        </p>
-      )}
-      {occasions.length > 0 && (
-        <div className="mt-5 flex flex-wrap gap-2">
-          {occasions.map((o) => (
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <div className="min-w-0 lg:col-span-7">
+          {str("heading") && (
+            <Heading className="font-bangla-display text-2xl font-bold">
+              {str("heading")}
+            </Heading>
+          )}
+          {str("body") && (
+            <p className="mt-2 max-w-prose text-sm leading-relaxed text-muted-foreground">
+              {str("body")}
+            </p>
+          )}
+          {str("buttonLabel") && (
             <a
-              key={o.label}
-              href={o.href || "#"}
-              className="inline-flex min-h-11 items-center rounded-full border border-border bg-background px-4 text-sm font-medium transition-colors hover:border-primary/40"
+              href={str("buttonHref") || "#"}
+              className="mt-4 inline-flex min-h-11 items-center whitespace-nowrap rounded-fq-md border border-current px-5 text-sm font-medium transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
-              {o.label}
+              {str("buttonLabel")}
             </a>
-          ))}
+          )}
         </div>
-      )}
-      {str("buttonLabel") && (
-        <a
-          href={str("buttonHref") || "#"}
-          className="mt-4 inline-flex min-h-11 w-fit items-center rounded-fq-md border border-current px-5 text-sm font-medium"
-        >
-          {str("buttonLabel")}
-        </a>
-      )}
+        {occasions.length > 0 && (
+          <div className="min-w-0 lg:col-span-5">
+            <ul
+              aria-label={t(locale, "Occasions", "উপলক্ষ")}
+              className="m-0 flex list-none flex-col gap-2 p-0"
+            >
+              {occasions.map((o) => (
+                <li key={o.label}>
+                  <a
+                    href={o.href || "#"}
+                    className="flex min-h-11 items-center justify-between gap-3 rounded-fq-md border border-border bg-background px-4 text-sm font-medium transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  >
+                    <span>{o.label}</span>
+                    <span aria-hidden="true" className="text-primary">
+                      →
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </section>
   );
 };
@@ -119,10 +158,18 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
 /* ------------------------------------------------------------- craft_story */
 
 const CraftStory: WidgetComponent = ({ str, bool, Heading, editing, locale }) => {
+  // Track fallbacks (heritage precedent): headline/button aliases resolve
+  // to the canonical craft_story fields.
+  const image = str("image") || str("imageUrl");
+  const headline = str("headline") || str("heading");
+  const eyebrow = str("eyebrow") || str("caption");
+  const body = str("body");
+  const ctaLabel = str("ctaLabel") || str("buttonLabel");
+  const ctaHref = str("ctaHref") || str("buttonHref");
   // Task 5 motion: once-only batch reveal at full intent; static otherwise.
   const scope = useRef<HTMLElement | null>(null);
   useSongoskritiReveals(scope, true);
-  if (!str("heading") && !str("body")) {
+  if (!headline && !body) {
     return editing ? (
       <p className="text-xs text-muted-foreground">
         {t(
@@ -137,40 +184,48 @@ const CraftStory: WidgetComponent = ({ str, bool, Heading, editing, locale }) =>
     <section
       ref={scope}
       data-songoskriti-reveal
-      className="relative overflow-hidden rounded-fq-lg"
+      className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12"
     >
-      <MediaFrame
-        src={str("imageUrl")}
-        alt={str(altKey("imageUrl"))}
-        ratio="wide"
-        sizes={sizesAttr(str(sizesKey("imageUrl")))}
-        className="rounded-fq-lg"
-      />
-      {bool("scrim") && (
-        <div aria-hidden="true" className="absolute inset-0 bg-foreground/40" />
-      )}
-      <div className="absolute inset-0 flex items-end p-6 md:p-10">
-        <div className="max-w-xl text-background">
-          {str("eyebrow") && (
-            <p className="mb-2 text-[11px] fq-caps tracking-[0.16em] opacity-80">
-              {str("eyebrow")}
-            </p>
-          )}
-          <Heading className="text-2xl font-semibold md:text-4xl">
-            {str("heading")}
-          </Heading>
-          {str("body") && (
-            <p className="mt-3 text-sm opacity-90">{str("body")}</p>
-          )}
-          {str("ctaLabel") && (
-            <a
-              href={str("ctaHref") || "#"}
-              className="mt-4 inline-flex min-h-11 items-center rounded-fq-md border border-current px-5 text-sm font-medium"
-            >
-              {str("ctaLabel")}
-            </a>
+      <div className="min-w-0 lg:col-span-5">
+        <div className="relative overflow-hidden rounded-fq-lg border border-border">
+          <MediaFrame
+            src={image}
+            alt={str(altKey("imageUrl")) || headline}
+            ratio="portrait"
+            sizes={sizesAttr(str(sizesKey("imageUrl")))}
+            className="rounded-fq-lg"
+          />
+          {bool("scrim") && image && (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-foreground/40"
+            />
           )}
         </div>
+      </div>
+      <div className="min-w-0 lg:col-span-6 lg:col-start-7">
+        <div aria-hidden="true" className="mb-4 h-px w-16 bg-primary" />
+        {eyebrow && (
+          <p className="mb-2 text-xs font-semibold tracking-widest text-primary fq-caps">
+            {eyebrow}
+          </p>
+        )}
+        <Heading className="font-bangla-display text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
+          {headline}
+        </Heading>
+        {body && (
+          <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground sm:text-base">
+            {body}
+          </p>
+        )}
+        {ctaLabel && (
+          <a
+            href={ctaHref || "#"}
+            className="mt-5 inline-flex min-h-11 items-center whitespace-nowrap rounded-fq-md border border-current px-5 text-sm font-medium transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          >
+            {ctaLabel}
+          </a>
+        )}
       </div>
     </section>
   );
@@ -229,18 +284,25 @@ const Testimonials: WidgetComponent = ({
       aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
     >
       <div className="flex flex-col items-center text-center">
-        {item.image && (
+        {item.image ? (
           <img
             src={item.image}
             alt={item.author}
             className="mb-4 h-12 w-12 rounded-full object-cover"
             loading="lazy"
           />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="mb-2 text-3xl leading-none text-primary"
+          >
+            &ldquo;
+          </span>
         )}
-        <blockquote className="max-w-xl text-base italic leading-relaxed text-foreground/80 line-clamp-3">
-          &ldquo;{item.quote}&rdquo;
+        <blockquote className="max-w-xl text-base leading-relaxed text-foreground line-clamp-3">
+          {item.image ? <>&ldquo;{item.quote}&rdquo;</> : item.quote}
         </blockquote>
-        <p className="mt-3 text-sm font-medium">
+        <p className="mt-3 w-full border-t border-border pt-3 text-sm font-medium">
           {item.author}
           {item.role && (
             <span className="block text-xs font-normal text-muted-foreground">
@@ -331,9 +393,9 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
             item.icon as keyof typeof TRUST_FOOTER_ICON
           ] ?? Star;
         return (
-          <li key={item.title} className="flex items-start gap-2.5">
-            <span className="grid size-9 shrink-0 place-items-center rounded-fq-md bg-primary/10 text-primary">
-              <Icon className="size-4" aria-hidden />
+          <li key={item.title} className="flex min-w-0 items-start gap-2.5">
+            <span className="grid size-11 shrink-0 place-items-center rounded-fq-md bg-primary/10 text-primary">
+              <Icon className="size-5" aria-hidden="true" />
             </span>
             <span className="min-w-0">
               <span className="block text-sm font-medium">{item.title}</span>
