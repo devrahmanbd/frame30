@@ -50,22 +50,32 @@ check() { # $1 url $2 expected
   else echo "VERIFY OK: $1 -> $code"; fi
 }
 # Path storefront: slugs WITHOUT a primary custom host must 404 on platform
-# hosts. A slug WITH a primary host (flame-fashion-bd → microscrop.shop)
-# 301-redirects to it (permalink deep-path gate, PR #21). Never assert on
-# one example slug — enumerate live merchants, fake slugs, deep routes,
-# and case tricks.
-for slug in akira nonexistent-store-xyz Akira; do
-  check "https://framique.qubickle.com/store/$slug" "404"
+# hosts. A slug WITH an active primary host 301-redirects to it (permalink
+# deep-path gate, PR #21). The primary hostname is merchant data, not code —
+# the merchant renamed microscrop.shop → flamelancer.com (2026-09-24,
+# audited in domain_events) — so resolve it live instead of hardcoding.
+# Never assert on one example slug — enumerate live merchants, fake slugs,
+# deep routes, and case tricks.
+PRIMARY_HOST=$(docker exec framique-supabase-db psql -U postgres -tAc "SELECT hostname FROM public.merchant_domains WHERE status='active' AND is_primary LIMIT 1" | tr -d '[:space:]')
+for slug in akira flame-fashion-bd nonexistent-store-xyz Akira; do
+  if [ "$slug" = "flame-fashion-bd" ] && [ -n "$PRIMARY_HOST" ]; then
+    loc=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "https://framique.qubickle.com/store/flame-fashion-bd")
+    if [ "$loc" = "301 https://$PRIMARY_HOST/" ]; then echo "VERIFY OK: /store/flame-fashion-bd -> 301 primary";
+    else echo "VERIFY FAIL: /store/flame-fashion-bd -> $loc (want 301 https://$PRIMARY_HOST/)"; fail=1; fi
+  else
+    check "https://framique.qubickle.com/store/$slug" "404"
+  fi
 done
-loc=$(curl -s -o /dev/null -w "%{http_code} %{redirect_url}" "https://framique.qubickle.com/store/flame-fashion-bd")
-if [ "$loc" = "301 https://microscrop.shop/" ]; then echo "VERIFY OK: /store/flame-fashion-bd -> 301 primary";
-else echo "VERIFY FAIL: /store/flame-fashion-bd -> $loc (want 301 https://microscrop.shop/)"; fail=1; fi
 for sub in p/x c/y pages/about search cart checkout account sitemap.xml robots.txt; do
   check "https://framique.qubickle.com/store/akira/$sub" "404"
 done
 check "https://framique.qubickle.com/" "200"
-check "https://microscrop.shop/" "200"
-check "https://microscrop.shop/cart" "200"
+if [ -n "$PRIMARY_HOST" ]; then
+  check "https://$PRIMARY_HOST/" "200"
+  check "https://$PRIMARY_HOST/cart" "200"
+else
+  echo "SKIP custom-host checks: no active primary (merchant mid-rename)"
+fi
 check "https://framique.qubickle.com/api/public/ph/x" "200"
 [ "$fail" = 0 ] || { echo "DEPLOY VERIFICATION FAILED"; exit 1; }
 echo "DEPLOY OK: $BRANCH live"
