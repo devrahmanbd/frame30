@@ -110,13 +110,6 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         icon: "analytics",
         permission: "analytics.read",
       },
-      {
-        to: "/dashboard/exports",
-        en: "Exports",
-        bn: "এক্সপোর্ট",
-        icon: "exports",
-        permission: "analytics.export",
-      },
     ],
   },
   {
@@ -573,6 +566,13 @@ export const ADMIN_NAV: readonly NavGroup[] = [
         bn: "নিরাপত্তা",
         icon: "security",
         permission: "settings.read",
+      },
+      {
+        to: "/dashboard/exports",
+        en: "Exports",
+        bn: "এক্সপোর্ট",
+        icon: "exports",
+        permission: "analytics.export",
       },
     ],
     more: [

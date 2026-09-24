@@ -40,8 +40,25 @@ import {
   TicketPercent,
   RotateCcw,
 } from "@/components/icons/tabler";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from "recharts";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  ChartLegend,
+  ChartLegendContent,
+} from "@/components/ui/chart";
 import { KpiCard } from "@/components/admin/KpiCard";
-import { analyticsFn } from "@/lib/analytics.functions";
+import { analyticsFn, analyticsTrafficFn } from "@/lib/analytics.functions";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
 
@@ -160,10 +177,18 @@ function AnalyticsPage() {
   const { t } = useLang();
   const [range, setRange] = useState<RangeKey>("30d");
   const fetchAnalytics = useServerFn(analyticsFn);
+  const fetchTraffic = useServerFn(analyticsTrafficFn);
+
+  const rangeDays = range === "7d" ? 7 : range === "90d" ? 90 : 30;
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["analytics", range],
     queryFn: () => fetchAnalytics({ data: { range } }),
+  });
+
+  const { data: trafficData } = useQuery({
+    queryKey: ["admin", "traffic", rangeDays],
+    queryFn: () => fetchTraffic({ data: { rangeDays } }),
   });
 
   const currency = data?.currency ?? "BDT";
@@ -299,80 +324,122 @@ function AnalyticsPage() {
             aria-label="Revenue trend"
             className="mt-6 rounded-fq-lg border border-border bg-card p-4 shadow-xs"
           >
-            <h2 className="font-bangla-display text-sm font-semibold">
+            <h2 className="font-bangla-display text-sm font-semibold mb-4">
               {t("Revenue trend", "বিক্রির ধারা")}
             </h2>
-            <ul className="mt-4 flex h-40 items-end gap-1">
-              {data.series.map((point) => (
-                <li key={point.date} className="flex h-full flex-1 items-end">
-                  <div
-                    className="w-full rounded-t-fq-md bg-primary/80"
-                    style={{
-                      height: `${Math.max(2, (point.revenueMinorInt / maxRevenue) * 100)}%`,
-                    }}
-                    title={`${point.date}: ${fmtMinor(point.revenueMinorInt, currency)} · ${point.orders} orders`}
-                  />
-                </li>
-              ))}
-            </ul>
-            <div className="mt-2 flex justify-between text-xs text-muted-foreground">
-              <span>{data.series[0]?.date}</span>
-              <span>{data.series[data.series.length - 1]?.date}</span>
-            </div>
-            <table className="sr-only">
-              <caption>Revenue by day</caption>
-              <thead>
-                <tr>
-                  <th scope="col">Date</th>
-                  <th scope="col">Revenue</th>
-                  <th scope="col">Orders</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.series.map((p) => (
-                  <tr key={p.date}>
-                    <td>{p.date}</td>
-                    <td>{fmtMinor(p.revenueMinorInt, currency)}</td>
-                    <td>{p.orders}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <ChartContainer
+              config={{
+                revenue: {
+                  label: t("Revenue", "বিক্রি"),
+                  color: "var(--fq-primary)",
+                },
+              }}
+              className="h-64 w-full"
+            >
+              <AreaChart data={data.series}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis
+                  dataKey="date"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  minTickGap={32}
+                  tickFormatter={(value) => {
+                    const d = new Date(value);
+                    return isNaN(d.getTime())
+                      ? value
+                      : d.toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                        });
+                  }}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(value) =>
+                    value > 0 ? (value / 100).toLocaleString() : "0"
+                  }
+                />
+                <ChartTooltip
+                  content={
+                    <ChartTooltipContent
+                      formatter={(value: any, name: string) => [
+                        fmtMinor(value as number, currency),
+                        name,
+                      ]}
+                    />
+                  }
+                />
+                <Area
+                  type="monotone"
+                  dataKey="revenueMinorInt"
+                  fill="var(--color-revenue)"
+                  fillOpacity={0.2}
+                  stroke="var(--color-revenue)"
+                  strokeWidth={2}
+                />
+              </AreaChart>
+            </ChartContainer>
           </section>
 
           <div className="mt-6 grid gap-4 lg:grid-cols-2">
             <section
               aria-label="Payment method mix"
-              className="rounded-fq-lg border border-border bg-card p-4 shadow-xs"
+              className="rounded-fq-lg border border-border bg-card p-4 shadow-xs flex flex-col"
             >
-              <h2 className="font-bangla-display text-sm font-semibold">
+              <h2 className="font-bangla-display text-sm font-semibold mb-4">
                 {t("Payment mix", "পেমেন্ট মাধ্যম")}
               </h2>
-              <ul className="mt-3 space-y-3">
-                {data.byMethod.map((m) => (
-                  <li key={m.method}>
-                    <div className="flex items-baseline justify-between gap-3 text-sm">
-                      <span className="font-bangla-display">
-                        {t(
-                          methodLabel[m.method]?.en ?? m.method,
-                          methodLabel[m.method]?.bn ?? m.method,
-                        )}
-                      </span>
-                      <span className="money text-muted-foreground">
-                        {fmtMinor(m.revenueMinorInt, currency)} · {m.orders}
-                      </span>
-                    </div>
-                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-muted">
-                      <div
-                        className="h-full rounded-full bg-primary"
-                        style={{
-                          width: `${(m.revenueMinorInt / totalMethodRevenue) * 100}%`,
-                        }}
-                      />
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <div className="flex-1 min-h-[200px]">
+                <ChartContainer
+                  config={{
+                    revenue: {
+                      label: t("Revenue", "বিক্রি"),
+                      color: "var(--fq-primary)",
+                    },
+                  }}
+                  className="h-full w-full"
+                >
+                  <BarChart
+                    data={data.byMethod.map((m) => ({
+                      ...m,
+                      methodLabel: t(
+                        methodLabel[m.method]?.en ?? m.method,
+                        methodLabel[m.method]?.bn ?? m.method,
+                      ),
+                    }))}
+                    layout="vertical"
+                    margin={{ left: 24 }}
+                  >
+                    <XAxis type="number" hide />
+                    <YAxis
+                      dataKey="methodLabel"
+                      type="category"
+                      tickLine={false}
+                      axisLine={false}
+                      width={80}
+                    />
+                    <ChartTooltip
+                      cursor={{ fill: "transparent" }}
+                      content={
+                        <ChartTooltipContent
+                          formatter={(value: any, name: string) => [
+                            fmtMinor(value as number, currency),
+                            name,
+                          ]}
+                        />
+                      }
+                    />
+                    <Bar
+                      dataKey="revenueMinorInt"
+                      fill="var(--color-revenue)"
+                      radius={[0, 4, 4, 0]}
+                      barSize={24}
+                    />
+                  </BarChart>
+                </ChartContainer>
+              </div>
             </section>
 
             <section
@@ -415,6 +482,59 @@ function AnalyticsPage() {
                     ))}
                   </tbody>
                 </table>
+              )}
+            </section>
+          </div>
+
+          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            <section
+              aria-label="Source of traffic"
+              className="rounded-fq-lg border border-border bg-card p-4 shadow-xs flex flex-col"
+            >
+              <h2 className="font-bangla-display text-sm font-semibold mb-4">
+                {t("Source of traffic", "ট্রাফিকের উৎস")}
+              </h2>
+              {trafficData?.sources && trafficData.sources.length > 0 ? (
+                <div className="flex-1 min-h-[200px]">
+                  <ChartContainer
+                    config={{
+                      events: {
+                        label: t("Clicks", "ক্লিক"),
+                        color: "var(--fq-accent)",
+                      },
+                    }}
+                    className="h-full w-full"
+                  >
+                    <BarChart
+                      data={trafficData.sources}
+                      layout="vertical"
+                      margin={{ left: 24 }}
+                    >
+                      <XAxis type="number" hide />
+                      <YAxis
+                        dataKey="key"
+                        type="category"
+                        tickLine={false}
+                        axisLine={false}
+                        width={80}
+                      />
+                      <ChartTooltip
+                        cursor={{ fill: "transparent" }}
+                        content={<ChartTooltipContent />}
+                      />
+                      <Bar
+                        dataKey="events"
+                        fill="var(--color-events)"
+                        radius={[0, 4, 4, 0]}
+                        barSize={24}
+                      />
+                    </BarChart>
+                  </ChartContainer>
+                </div>
+              ) : (
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {t("No traffic data yet.", "এখনো কোনো ট্রাফিক ডেটা নেই।")}
+                </p>
               )}
             </section>
           </div>
