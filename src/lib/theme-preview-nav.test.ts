@@ -73,4 +73,46 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     expect(resolveThemePreview("not-a-theme")).toBeNull();
     expect(resolveThemePreview("")).toBeNull();
   });
+
+  it("authors demo content for every template (no empty sub-pages)", () => {
+    const preset = resolveThemePreview("songoskriti")!;
+    for (const key of [
+      "index",
+      "product",
+      "collection",
+      "account",
+      "page",
+      "blog",
+      "cart",
+      "checkout",
+      "search",
+    ] as const) {
+      const ast = preset.templates[key];
+      expect(ast.header.length, `${key} header`).toBeGreaterThan(0);
+      expect(ast.main.length, `${key} main`).toBeGreaterThan(0);
+      expect(ast.footer.length, `${key} footer`).toBeGreaterThan(0);
+      // Main opens with a heading (index opens with its announcement
+      // marquee) so every preview sub-page owns the page h1.
+      expect(ast.main[0]!.type, `${key} first section`).toBe(
+        key === "index" ? "announcement_bar" : "heading",
+      );
+    }
+    // Spot-check demo bodies use proven renderers.
+    expect(
+      preset.templates.collection.main.map((s) => s.type),
+    ).toContain("product_rail");
+    expect(preset.templates.product.main.map((s) => s.type)).toContain(
+      "product_media",
+    );
+    expect(preset.templates.account.main.map((s) => s.type)).toEqual([
+      "heading",
+      "profile_card",
+      "orders_list",
+    ]);
+    // Section ids stay unique across templates sharing one counter.
+    const ids = (
+      Object.values(preset.templates) as typeof preset.templates.index[]
+    ).flatMap((t) => [...t.header, ...t.main, ...t.footer].map((s) => s.id));
+    expect(new Set(ids).size).toBe(ids.length);
+  });
 });

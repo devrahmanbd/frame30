@@ -3,9 +3,9 @@
  *
  * The preview shows exactly the store: no dock, no template tabs, no close
  * button. In-canvas links switch templates (product / collection / search /
- * page / blog / home); checkout, cart, account and auth links plus submit
- * controls inside any form and every form submit are blocked with a
- * "Disabled in preview" toast.
+ * page / blog / cart / checkout / account / home); signup, order tracking
+ * and auth links plus submit controls inside any form and every form
+ * submit are blocked with a "Disabled in preview" toast.
  */
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -57,6 +57,7 @@ function buildTemplates(): Record<TemplateKey, ThemeAst> {
     },
     product: empty(),
     collection: empty(),
+    account: empty(),
     page: empty(),
     blog: empty(),
     cart: empty(),
@@ -137,14 +138,11 @@ describe("ThemePreviewFrame chrome", () => {
 
 describe("preview click blocking", () => {
   it.each([
-    "/checkout",
-    "/store/demo/checkout",
-    "/cart",
-    "/store/demo/cart",
-    "/account",
-    "/store/demo/account",
     "/signin",
+    "/signup",
     "/login",
+    "/register",
+    "/store/demo/login",
     "/order/abc123",
     "/store/demo/order/abc123",
     "/track",
@@ -154,30 +152,37 @@ describe("preview click blocking", () => {
     expect(previewClickAction(href)).toEqual({ kind: "blocked" });
   });
 
-  it.each(["/p/shirt", "/c/shoes", "/search", "/", "/pages/about", "/blog/x"])(
-    "does not block %s",
-    (href) => {
-      expect(isPreviewBlockedHref(href)).toBe(false);
-    },
-  );
+  it.each([
+    "/p/shirt",
+    "/c/shoes",
+    "/search",
+    "/",
+    "/pages/about",
+    "/blog/x",
+    "/cart",
+    "/checkout",
+    "/account",
+  ])("does not block %s", (href) => {
+    expect(isPreviewBlockedHref(href)).toBe(false);
+  });
 
-  it("prevents a checkout link click with a toast", () => {
+  it("switches to the checkout demo template instead of acting", () => {
     const event = clickOn(anchorNode("/store/demo/checkout"));
     const setTemplate = vi.fn();
     handlePreviewCanvasClick(event, setTemplate);
     expect(event.preventDefault).toHaveBeenCalled();
     expect(event.stopPropagation).toHaveBeenCalled();
-    expect(toastInfo()).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
-    expect(setTemplate).not.toHaveBeenCalled();
+    expect(setTemplate).toHaveBeenCalledWith("checkout");
+    expect(toastInfo()).not.toHaveBeenCalled();
   });
 
-  it("prevents an account link click with a toast", () => {
+  it("switches to the account demo template instead of acting", () => {
     const event = clickOn(anchorNode("/account"));
     const setTemplate = vi.fn();
     handlePreviewCanvasClick(event, setTemplate);
     expect(event.preventDefault).toHaveBeenCalled();
-    expect(toastInfo()).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
-    expect(setTemplate).not.toHaveBeenCalled();
+    expect(setTemplate).toHaveBeenCalledWith("account");
+    expect(toastInfo()).not.toHaveBeenCalled();
   });
 
   it("prevents a submit-button click inside a newsletter form", () => {
@@ -206,6 +211,12 @@ describe("preview in-canvas template navigation", () => {
     ["/c/sarees", "collection"],
     ["/store/demo/c/sarees", "collection"],
     ["/search", "search"],
+    ["/cart", "cart"],
+    ["/store/demo/cart", "cart"],
+    ["/checkout", "checkout"],
+    ["/store/demo/checkout", "checkout"],
+    ["/account", "account"],
+    ["/store/demo/account", "account"],
     ["/pages/shipping", "page"],
     ["/blog/how-jamdani-is-woven", "blog"],
     ["/blog", "blog"],
@@ -220,8 +231,8 @@ describe("preview in-canvas template navigation", () => {
   });
 
   it("returns null for blocked and unknown hrefs", () => {
-    expect(previewTemplateForHref("/checkout")).toBeNull();
-    expect(previewTemplateForHref("/account")).toBeNull();
+    expect(previewTemplateForHref("/signup")).toBeNull();
+    expect(previewTemplateForHref("/order/abc")).toBeNull();
     expect(previewTemplateForHref("/unrelated-path")).toBeNull();
   });
 

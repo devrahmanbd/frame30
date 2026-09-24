@@ -9,8 +9,9 @@
  *
  * The preview is chrome-free: it shows exactly the store. Template switching
  * happens through in-canvas links (product / collection / search / page /
- * blog / home) and the `?template=` deep link. Checkout / cart / order /
- * account flows and every form submit are blocked with a "Disabled in preview"
+ * blog / cart / checkout / account / home) and the `?template=` deep link.
+ * Signup, order tracking and every form submit are blocked with a
+ * "Disabled in preview"
  * toast — capture-phase interception runs before widget handlers so no
  * contact/newsletter/coupon submission ever fires.
  */
@@ -42,12 +43,15 @@ import {
 export const PREVIEW_DISABLED_MESSAGE = "Disabled in preview";
 
 /**
- * Href segments that must never act in preview: checkout / cart / order
- * flows and account / auth flows, in root shape (`/checkout`) or path shape
- * (`/store/<slug>/checkout`). Segment-bounded so `/cartoon` never matches.
+ * Href segments that must never act in preview: order tracking and
+ * account / auth flows, in root shape (`/login`) or path shape
+ * (`/store/<slug>/login`). Segment-bounded so `/cartoon` never matches.
+ * Cart, checkout and account have authored demo templates, so they switch
+ * instead of blocking — only the actions inside them (submits, payment)
+ * are disabled.
  */
 const BLOCKED_HREF_RE =
-  /(^|\/)(checkout|cart|order|track|account|sign-?in|sign-?up|login|register)([\/?#]|$)/i;
+  /(^|\/)(order|track|sign-?in|sign-?up|login|register)([\/?#]|$)/i;
 
 /** True when an in-canvas href targets a blocked checkout/cart/account flow. */
 export function isPreviewBlockedHref(href: string): boolean {
@@ -60,6 +64,8 @@ export function isPreviewBlockedHref(href: string): boolean {
  * Blocked and unknown hrefs return null (blocked ones toast, unknown ones
  * keep their default behaviour). Demo rows use root-shaped `/p/<slug>` and
  * `/c/<slug>` hrefs; path-shaped `/store/<slug>/…` hrefs are stripped first.
+ * Cart, checkout and account have authored demo templates — only signup,
+ * order tracking and the actions inside (submits, payment) stay blocked.
  */
 export function previewTemplateForHref(href: string): TemplateKey | null {
   if (isPreviewBlockedHref(href)) return null;
@@ -70,6 +76,9 @@ export function previewTemplateForHref(href: string): TemplateKey | null {
   if (/^\/c\/[^/]+/.test(rest) || /^\/collections?\//.test(rest))
     return "collection";
   if (rest === "/search" || rest === "/search/") return "search";
+  if (rest === "/cart" || rest === "/cart/") return "cart";
+  if (rest === "/checkout" || rest === "/checkout/") return "checkout";
+  if (rest === "/account" || rest.startsWith("/account/")) return "account";
   if (/^\/pages?\//.test(rest)) return "page";
   if (rest === "/blog" || rest.startsWith("/blog/")) return "blog";
   if (rest === "/" || rest === "/index" || rest === "/home") return "index";
@@ -106,9 +115,10 @@ const SUBMIT_CONTROL_SELECTOR = 'button[type="submit"],input[type="submit"]';
 
 /**
  * Capture-phase click interception for the preview canvas: submit controls
- * inside any form and checkout / account links are blocked with a toast,
- * product / collection / search / page / blog / home links switch the
- * preview template. Everything else passes through untouched.
+ * inside any form and signup / order-tracking links are blocked with a
+ * toast, while product / collection / search / page / blog / cart /
+ * checkout / account / home links switch the preview template.
+ * Everything else passes through untouched.
  */
 export function handlePreviewCanvasClick(
   event: PreviewCanvasClickEvent,
