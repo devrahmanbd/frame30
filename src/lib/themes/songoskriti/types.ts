@@ -1,8 +1,4 @@
-import type {
-  PropValue,
-  Section,
-  SectionType,
-} from "../../builder-ast";
+import type { PropValue, Section, SectionType } from "../../builder-ast";
 
 /**
  * Builder callback the engine supplies (id assignment, validation).
@@ -29,5 +25,4 @@ export const HOMEPAGE_SECTION_TYPES = [
   "trust_footer",
 ] as const;
 
-export type IntendedHomepageType =
-  (typeof HOMEPAGE_SECTION_TYPES)[number];
+export type IntendedHomepageType = (typeof HOMEPAGE_SECTION_TYPES)[number];

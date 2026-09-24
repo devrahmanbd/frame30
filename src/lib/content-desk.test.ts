@@ -137,10 +137,7 @@ describe("row actions", () => {
       homepageActionFor(page, "00000000-0000-0000-0000-000000000001"),
     ).toBe("clear-homepage");
     expect(
-      homepageActionFor(
-        { kind: "page", status: "trash", id: page.id },
-        null,
-      ),
+      homepageActionFor({ kind: "page", status: "trash", id: page.id }, null),
     ).toBeNull();
     expect(
       homepageActionFor({ kind: "post", status: "draft", id: page.id }, null),

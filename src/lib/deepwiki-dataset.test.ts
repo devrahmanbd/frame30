@@ -68,9 +68,12 @@ describe("DeepWiki Knowledge Base & Unified Semantic Vector Engine", () => {
   });
 
   it("finds bKash payment configuration with high semantic similarity as top hit", async () => {
-    const hits = await searchDeepWikiSemantic("How do I setup bKash Tokenized Checkout?", {
-      limit: 3,
-    });
+    const hits = await searchDeepWikiSemantic(
+      "How do I setup bKash Tokenized Checkout?",
+      {
+        limit: 3,
+      },
+    );
 
     expect(hits.length).toBeGreaterThan(0);
     const top = hits[0];
@@ -81,9 +84,12 @@ describe("DeepWiki Knowledge Base & Unified Semantic Vector Engine", () => {
   });
 
   it("finds SteadFast courier logistics and webhooks as top hit", async () => {
-    const hits = await searchDeepWikiSemantic("How to connect SteadFast courier webhook?", {
-      limit: 3,
-    });
+    const hits = await searchDeepWikiSemantic(
+      "How to connect SteadFast courier webhook?",
+      {
+        limit: 3,
+      },
+    );
 
     expect(hits.length).toBeGreaterThan(0);
     const top = hits[0];
@@ -93,9 +99,12 @@ describe("DeepWiki Knowledge Base & Unified Semantic Vector Engine", () => {
   });
 
   it("finds Page Builder AST JSON specifications when queried about page layout tree", async () => {
-    const hits = await searchDeepWikiSemantic("Page builder JSON AST sections layout", {
-      limit: 3,
-    });
+    const hits = await searchDeepWikiSemantic(
+      "Page builder JSON AST sections layout",
+      {
+        limit: 3,
+      },
+    );
 
     expect(hits.length).toBeGreaterThan(0);
     const top = hits[0];
@@ -104,9 +113,12 @@ describe("DeepWiki Knowledge Base & Unified Semantic Vector Engine", () => {
   });
 
   it("finds continuous WAL streaming and disaster recovery specifications", async () => {
-    const hits = await searchDeepWikiSemantic("PostgreSQL continuous WAL archiving RPO", {
-      limit: 3,
-    });
+    const hits = await searchDeepWikiSemantic(
+      "PostgreSQL continuous WAL archiving RPO",
+      {
+        limit: 3,
+      },
+    );
 
     expect(hits.length).toBeGreaterThan(0);
     const top = hits[0];
@@ -127,7 +139,10 @@ describe("DeepWiki Knowledge Base & Unified Semantic Vector Engine", () => {
   });
 
   it("formats semantic context passages for AI model grounding", async () => {
-    const passages = await getSemanticContextPassages("How to configure custom domain with SSL?", 2);
+    const passages = await getSemanticContextPassages(
+      "How to configure custom domain with SSL?",
+      2,
+    );
 
     expect(passages).toHaveLength(2);
     expect(passages[0].source).toContain("DeepWiki");

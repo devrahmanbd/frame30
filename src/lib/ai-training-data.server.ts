@@ -629,5 +629,3 @@ export async function disassociateTenantFromTrainingData(
 
   return { unlinkedCount: count, preservedCohortHash: cohortHash };
 }
-
-

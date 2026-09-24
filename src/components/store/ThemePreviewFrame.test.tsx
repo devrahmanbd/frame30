@@ -40,9 +40,7 @@ const {
   previewTemplateForHref,
 } = await import("./ThemePreviewFrame");
 const { toast } = await import("sonner");
-const { DEFAULT_TOKENS, newSection } = await import(
-  "@/lib/builder-ast"
-);
+const { DEFAULT_TOKENS, newSection } = await import("@/lib/builder-ast");
 import type { TemplateKey, ThemeAst } from "@/lib/builder-ast";
 
 const toastInfo = () => vi.mocked(toast.info);
@@ -79,9 +77,7 @@ function frameProps(initialTemplate?: TemplateKey) {
 }
 
 /** Minimal fake for the capture-phase click event the canvas handles. */
-function clickOn(node: {
-  closest: (selector: string) => unknown;
-}) {
+function clickOn(node: { closest: (selector: string) => unknown }) {
   return {
     target: node,
     preventDefault: vi.fn(),

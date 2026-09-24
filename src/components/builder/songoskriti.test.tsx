@@ -359,10 +359,17 @@ describe("songoskriti product_rail rhythm (browser-verified 2026-09-24)", () => 
   it("keeps prices/badges/stars logic identical to the shared merch rail", () => {
     const section = railSection({ rows, pending: false });
     const data = { rows, pending: false };
-    const songo = renderRail(SONGOSKRITI_WIDGETS["product_rail"], section, data);
+    const songo = renderRail(
+      SONGOSKRITI_WIDGETS["product_rail"],
+      section,
+      data,
+    );
     const merch = renderRail(MERCH_WIDGETS["product_rail"], section, data);
     const cards = (html: string) =>
-      html.split("<article").slice(1).map((part) => part.split("</article>")[0]);
+      html
+        .split("<article")
+        .slice(1)
+        .map((part) => part.split("</article>")[0]);
     // Same cards, same order, byte-identical card markup.
     expect(cards(songo)).toEqual(cards(merch));
     expect(songo).toContain("★★★★★");

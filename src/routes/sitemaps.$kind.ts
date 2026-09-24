@@ -19,14 +19,12 @@ export const Route = createFileRoute("/sitemaps/$kind")({
         if (!parsed) return new Response("Not found", { status: 404 });
         const origin = new URL(request.url).origin;
         try {
-          const { resolveStorefrontHost } = await import(
-            "@/lib/storefront-host.server"
-          );
+          const { resolveStorefrontHost } =
+            await import("@/lib/storefront-host.server");
           const host = await resolveStorefrontHost();
           if (!host) return new Response("Not found", { status: 404 });
-          const { renderStoreSitemapShard } = await import(
-            "@/lib/sitemap-config.server"
-          );
+          const { renderStoreSitemapShard } =
+            await import("@/lib/sitemap-config.server");
           const doc = await renderStoreSitemapShard(
             host.merchantSlug,
             parsed.kind,

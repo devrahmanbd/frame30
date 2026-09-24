@@ -129,7 +129,9 @@ describe("robots.txt rebases to root on a custom host", () => {
       llmsPath: "/store/acme/llms.txt",
     });
     expect(body).toContain("Allow: /store/acme");
-    expect(body).toContain("Sitemap: https://platform.test/store/acme/sitemap.xml");
+    expect(body).toContain(
+      "Sitemap: https://platform.test/store/acme/sitemap.xml",
+    );
   });
 });
 
@@ -140,7 +142,13 @@ describe("sitemap index locs rebase to root on a custom host", () => {
   ];
 
   it("custom-host index points at /sitemaps/ with no /store/ leak", () => {
-    const xml = renderSitemapIndexXml("https://shop.test", "acme", shards, {}, { root: true });
+    const xml = renderSitemapIndexXml(
+      "https://shop.test",
+      "acme",
+      shards,
+      {},
+      { root: true },
+    );
     expect(xml).toContain("https://shop.test/sitemaps/products-1.xml");
     expect(xml).toContain("https://shop.test/sitemaps/pages-1.xml");
     expect(xml).not.toContain("/store/");
@@ -169,13 +177,19 @@ describe("custom-host root route wiring", () => {
     );
     expect(read("src/routes/robots[.]txt.ts")).toContain("marketingAllowPaths");
     expect(read("src/routes/llms[.]txt.ts")).toContain("resolveStorefrontHost");
-    expect(read("src/routes/llms[.]txt.ts")).toContain("renderMarketingLlmsTxt");
+    expect(read("src/routes/llms[.]txt.ts")).toContain(
+      "renderMarketingLlmsTxt",
+    );
   });
 
   it("custom-host branches render merchant documents from permalink settings", () => {
-    expect(read("src/routes/sitemap[.]xml.ts")).toContain("renderStoreSitemapIndex");
+    expect(read("src/routes/sitemap[.]xml.ts")).toContain(
+      "renderStoreSitemapIndex",
+    );
     expect(read("src/routes/sitemap[.]xml.ts")).toContain("root");
-    expect(read("src/routes/robots[.]txt.ts")).toContain("renderStoreRobotsTxt");
+    expect(read("src/routes/robots[.]txt.ts")).toContain(
+      "renderStoreRobotsTxt",
+    );
     expect(read("src/routes/llms[.]txt.ts")).toContain("buildMerchantLlmsTxt");
     expect(read("src/routes/llms[.]txt.ts")).toContain("permalinkSettingsFor");
   });

@@ -145,7 +145,7 @@ describe("account preview demo rows", () => {
     for (const row of rows) {
       expect(row.title).toBeTruthy();
       expect(row.currency).toBe("BDT");
-      expect((row.priceMinor ?? 0)).toBeGreaterThan(0);
+      expect(row.priceMinor ?? 0).toBeGreaterThan(0);
     }
   });
 

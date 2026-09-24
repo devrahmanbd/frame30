@@ -104,9 +104,8 @@ export const Route = createFileRoute("/llms.txt")({
         const origin = requestOrigin() ?? new URL(request.url).origin;
         // Custom host: this merchant's store map instead of marketing content.
         try {
-          const { resolveStorefrontHost } = await import(
-            "@/lib/storefront-host.server"
-          );
+          const { resolveStorefrontHost } =
+            await import("@/lib/storefront-host.server");
           const host = await resolveStorefrontHost();
           if (host) {
             return merchantLlmsTxt(host.merchantSlug, origin);

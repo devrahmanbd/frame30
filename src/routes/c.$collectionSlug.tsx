@@ -75,8 +75,17 @@ export const Route = createFileRoute("/c/$collectionSlug")({
 
 function CollectionPage() {
   const { t } = useLang();
-  const { merchant, collection, products, settings, ast, tokens, siteKit, menus, installedPlugins } =
-    Route.useLoaderData();
+  const {
+    merchant,
+    collection,
+    products,
+    settings,
+    ast,
+    tokens,
+    siteKit,
+    menus,
+    installedPlugins,
+  } = Route.useLoaderData();
   const slug = merchant.slug;
 
   const grid = (
@@ -153,26 +162,26 @@ function CollectionPage() {
 
   return (
     <PluginLayer plugins={installedPlugins}>
-    <ThemeChrome
-      template="collection"
-      ast={ast}
-      tokens={tokens}
-      storeSlug={slug}
-      merchantId={merchant.id}
-      siteKit={siteKit}
-      ownsPrimary
-      chrome={
-        <StoreHeader
-          slug={slug}
-          name={merchant.name}
-          tagline={settings?.tagline}
-          menus={menus}
-        />
-      }
-      productSlot={grid}
-      {...(hasProductGrid ? {} : { collectionSlot: grid })}
-      fallback={grid}
-    />
+      <ThemeChrome
+        template="collection"
+        ast={ast}
+        tokens={tokens}
+        storeSlug={slug}
+        merchantId={merchant.id}
+        siteKit={siteKit}
+        ownsPrimary
+        chrome={
+          <StoreHeader
+            slug={slug}
+            name={merchant.name}
+            tagline={settings?.tagline}
+            menus={menus}
+          />
+        }
+        productSlot={grid}
+        {...(hasProductGrid ? {} : { collectionSlot: grid })}
+        fallback={grid}
+      />
     </PluginLayer>
   );
 }

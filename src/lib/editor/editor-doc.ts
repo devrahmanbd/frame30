@@ -433,8 +433,7 @@ export type StudioLint = {
 
 function lintText(value: unknown): string {
   if (typeof value === "string") return value.trim();
-  if (typeof value === "number" && Number.isFinite(value))
-    return String(value);
+  if (typeof value === "number" && Number.isFinite(value)) return String(value);
   return "";
 }
 
@@ -531,9 +530,7 @@ export function studioLints(doc: StudioDoc | null | undefined): StudioLint[] {
  * so the pre-publish gate needs this string-aware version. Without it the
  * "lints" row below never renders for real builder documents.
  */
-export function isBuilderStoredBody(
-  body: string | null | undefined,
-): boolean {
+export function isBuilderStoredBody(body: string | null | undefined): boolean {
   if (!body) return false;
   if (isStudioBody(body)) return true;
   try {

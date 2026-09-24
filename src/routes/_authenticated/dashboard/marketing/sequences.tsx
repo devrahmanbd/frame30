@@ -889,7 +889,8 @@ function DripSequencesPage() {
                       bodyTemplate:
                         "Hi {{customer_name}},\n\nWanted to check in and see if you had any questions.",
                       ctaText: "Shop Now",
-                      ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}",
+                      ctaUrl:
+                        "https://framique.qubickle.com/store/{{store_slug}}",
                     };
                     setEditingSeq({
                       ...editingSeq,

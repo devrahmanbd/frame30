@@ -31,10 +31,12 @@
 ### Task 1: Theme scaffold (tokens, header, footer, homepage shell)
 
 **Files:**
+
 - Create: `src/lib/themes/songoskriti/tokens.ts`, `header.ts`, `footer.ts`, `homepage.ts`, `index.ts`, `types.ts`
 - Test: `src/lib/themes/songoskriti/wiring.test.ts`
 
 **Interfaces:**
+
 - Consumes: `ThemeTokens`, `Section`, `SectionBuilder` types from `src/lib/builder-ast`; `DEFAULT_PERMALINKS` shape for hrefs (`/c/*`, `/pages/*`).
 - Produces: `SONGOSKRITI_TOKENS: ThemeTokens`, `buildHomepageMain(s): Section[]`, `buildHeaderMain(s)`, `buildFooterMain(s)` for Task 2 + Task 4.
 
@@ -52,12 +54,18 @@ describe("songoskriti wiring", () => {
     expect(SONGOSKRITI_TOKENS.surface).toBe("#FAF8F5");
   });
   it("homepage builds 8 sections in order", () => {
-    const s = (type: string, props = {}) => ({ id: type, type, props }) as never;
+    const s = (type: string, props = {}) =>
+      ({ id: type, type, props }) as never;
     const types = buildHomepageMain(s as never).map((n) => n.type);
     expect(types).toEqual([
-      "announcement_bar", "hero_carousel", "circle_categories",
-      "finder_row", "product_rail", "craft_story",
-      "testimonials", "trust_footer",
+      "announcement_bar",
+      "hero_carousel",
+      "circle_categories",
+      "finder_row",
+      "product_rail",
+      "craft_story",
+      "testimonials",
+      "trust_footer",
     ]);
   });
 });
@@ -112,11 +120,13 @@ git commit -m "feat(songoskriti): theme scaffold with tokens + homepage shell"
 ### Task 2: Widget gap audit + build (append-only)
 
 **Files:**
+
 - Modify: `src/lib/builder-ast.ts` (append catalog entries only), `src/lib/studio/catalog.ts` (append defs only)
 - Create: `src/components/builder/songoskriti.tsx` (only if a gap is proven missing)
 - Test: extend `src/lib/studio/catalog.test.ts` PORTED list; new `src/components/builder/songoskriti.test.tsx` if renderers created
 
 **Interfaces:**
+
 - Consumes: Task 1 section-type list (the 8 types the homepage needs).
 - Produces: every homepage type resolvable via `catalogEntry(type)` + `WIDGET_BY_KEY[type]`; parity report.
 
@@ -129,10 +139,12 @@ git commit -m "feat(songoskriti): theme scaffold with tokens + homepage shell"
 ### Task 3: Imagery (BLOCKED on key rotation until owner confirms)
 
 **Files:**
+
 - Create: `scripts/gen-songoskriti-assets.mjs`, `public/ph/songoskriti/` (15 files per spec manifest)
 - Test: `scripts/gen-songoskriti-assets.test.mjs`? No — verification is file-existence + dimensions gate: `scripts/asset-gate.mjs` extension or a new `scripts/songoskriti-assets-check.mjs` asserting 15 files exist with minimum dimensions.
 
 **Interfaces:**
+
 - Consumes: manifest from spec §4.
 - Produces: files referenced by Task 4 blueprint seeds; fallback rule (file-if-exists else `/api/public/ph`).
 
@@ -144,11 +156,13 @@ git commit -m "feat(songoskriti): theme scaffold with tokens + homepage shell"
 ### Task 4: Demo seed + blueprints + marketplace listing
 
 **Files:**
+
 - Create: `supabase/migrations/20260924_songoskriti_demo.sql`, `src/lib/themes/songoskriti/blueprints.ts` (if engine needs per-theme blueprints; else homepage.ts suffices — verify against `theme-blueprints.ts` absence)
 - Modify: `src/lib/demo-catalog.ts` (ADD `songoskriti` key only), `src/lib/themes/catalog-meta.ts` (add listing entry if that file drives the marketplace card)
 - Test: extend `src/lib/phase4-demo-catalog.test.ts` (songoskriti consistency), new `marketplace-songoskriti.test.ts` (listing present, install path resolves key)
 
 **Interfaces:**
+
 - Consumes: Task 1 builders, Task 3 asset files (or fallback paths).
 - Produces: installable key `songoskriti` end-to-end.
 
@@ -160,10 +174,12 @@ git commit -m "feat(songoskriti): theme scaffold with tokens + homepage shell"
 ### Task 5: Preview route restore + motion + engine smoke
 
 **Files:**
+
 - Create: `src/routes/theme-preview.$key.tsx` (restore from `dddfdc2^`, verify), `src/components/builder/songoskriti-motion.ts`
 - Test: `src/lib/theme-preview-nav.test.ts` extension (songoskriti key resolves); motion covered by visual verification + `prefers-reduced-motion` unit test on the controller (static-first-slide branch)
 
 **Interfaces:**
+
 - Consumes: Tasks 1–4.
 - Produces: working `/theme-preview/songoskriti` + motion controller honoring reduced motion.
 
@@ -175,9 +191,11 @@ git commit -m "feat(songoskriti): theme scaffold with tokens + homepage shell"
 ### Task 6: Verification + gates
 
 **Files:**
+
 - Test: screenshots (manual browser pass, saved as PR evidence), existing gates.
 
 **Interfaces:**
+
 - Consumes: Tasks 1–5.
 
 - [ ] **Step 1:** `theme-preview/songoskriti` screenshots desktop + mobile, zero console errors.

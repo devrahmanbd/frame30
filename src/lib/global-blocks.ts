@@ -357,7 +357,16 @@ function walkStudioList(
     const blockId = linkedStudioBlockId(node);
     if (!blockId) {
       return node.children?.length
-        ? { ...node, children: walkStudioList(node.children, index, report, budget, ancestry) }
+        ? {
+            ...node,
+            children: walkStudioList(
+              node.children,
+              index,
+              report,
+              budget,
+              ancestry,
+            ),
+          }
         : node;
     }
     const block = index.get(blockId);

@@ -281,10 +281,7 @@ export const aiCopilotChatFn = createServerFn({ method: "POST" })
     if (hasKey && kbHits.length > 0) {
       try {
         const contextPassages = kbHits
-          .map(
-            (h, i) =>
-              `[Source ${i + 1}: ${h.title}]\n${h.body}`,
-          )
+          .map((h, i) => `[Source ${i + 1}: ${h.title}]\n${h.body}`)
           .join("\n\n---\n\n");
 
         const messages = [

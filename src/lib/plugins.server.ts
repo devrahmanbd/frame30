@@ -270,7 +270,9 @@ export async function setPluginAutoUpdates(
     db,
     merchantId,
     actorId ?? null,
-    autoUpdates ? "plugin.auto_updates_enabled" : "plugin.auto_updates_disabled",
+    autoUpdates
+      ? "plugin.auto_updates_enabled"
+      : "plugin.auto_updates_disabled",
     "plugin",
     { plugin: pluginId },
     null,
@@ -314,17 +316,15 @@ export async function setPluginKillSwitch(
   disabled: boolean,
   reason: string | null,
 ) {
-  const { error } = await db
-    .from("plugin_kill_switch")
-    .upsert(
-      {
-        plugin_id: pluginId,
-        disabled,
-        reason,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "plugin_id" },
-    );
+  const { error } = await db.from("plugin_kill_switch").upsert(
+    {
+      plugin_id: pluginId,
+      disabled,
+      reason,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "plugin_id" },
+  );
   if (error) throw new Error("plugin_kill_switch_failed");
   // R2-5: engaging the kill switch auto-suspends every merchant install of
   // this plugin (reason `kill_switch`) so the one `enabled` gate stops hooks,

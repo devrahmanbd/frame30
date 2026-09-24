@@ -98,9 +98,9 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       );
     }
     // Spot-check demo bodies use proven renderers.
-    expect(
-      preset.templates.collection.main.map((s) => s.type),
-    ).toContain("product_rail");
+    expect(preset.templates.collection.main.map((s) => s.type)).toContain(
+      "product_rail",
+    );
     expect(preset.templates.product.main.map((s) => s.type)).toContain(
       "product_media",
     );
@@ -111,7 +111,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     ]);
     // Section ids stay unique across templates sharing one counter.
     const ids = (
-      Object.values(preset.templates) as typeof preset.templates.index[]
+      Object.values(preset.templates) as (typeof preset.templates.index)[]
     ).flatMap((t) => [...t.header, ...t.main, ...t.footer].map((s) => s.id));
     expect(new Set(ids).size).toBe(ids.length);
   });

@@ -8,7 +8,9 @@ import { renderBuilderHtml } from "./page-builder";
 
 function docWith(widget: Record<string, unknown>) {
   return {
-    sections: [{ id: "s1", columns: [{ id: "c1", width: 1, widgets: [widget] }] }],
+    sections: [
+      { id: "s1", columns: [{ id: "c1", width: 1, widgets: [widget] }] },
+    ],
   };
 }
 
@@ -22,7 +24,9 @@ describe("renderBuilderHtml plugin widgets", () => {
       }) as never,
     );
     expect(html).not.toContain("<!-- widget:plugin -->");
-    expect(html).toContain('data-plugin-widget="plugin:whatsapp-chat/chat_bubble"');
+    expect(html).toContain(
+      'data-plugin-widget="plugin:whatsapp-chat/chat_bubble"',
+    );
     expect(html).toContain("8801712345678");
     expect(html).toContain("I&#39;m \\u003cb>here\\u003c/b>");
   });

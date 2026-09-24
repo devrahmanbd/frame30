@@ -72,14 +72,12 @@ export async function agentReply(
   conversationId: string,
   body: string,
 ) {
-  const { error } = await db
-    .from("ai_messages")
-    .insert({
-      merchant_id: merchantId,
-      conversation_id: conversationId,
-      role: "agent",
-      body,
-    });
+  const { error } = await db.from("ai_messages").insert({
+    merchant_id: merchantId,
+    conversation_id: conversationId,
+    role: "agent",
+    body,
+  });
   if (error) throw new Error("reply_failed");
   await db
     .from("ai_conversations")

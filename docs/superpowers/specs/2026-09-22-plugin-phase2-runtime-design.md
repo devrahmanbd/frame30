@@ -75,8 +75,8 @@
 
 ## Decisions log
 
-| Time (+06:00) | Decision |
-|---|---|
-| 18:55 | Research: queue/Redis/signing exist; hooks never fire; scopes diverge 3 ways; no purge; kill switch real |
-| 18:57 | Complete solution required (user) — full host + contracts, process-level sidecar per docs/12 §3 |
-| 19:00 | oauth.md NOT approved; interim 8-string registry + dotted adapter; ask-as-grant fixed; suspend folds into enabled gate; uninstall always purges for plugins; spec written |
+| Time (+06:00) | Decision                                                                                                                                                                  |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 18:55         | Research: queue/Redis/signing exist; hooks never fire; scopes diverge 3 ways; no purge; kill switch real                                                                  |
+| 18:57         | Complete solution required (user) — full host + contracts, process-level sidecar per docs/12 §3                                                                           |
+| 19:00         | oauth.md NOT approved; interim 8-string registry + dotted adapter; ask-as-grant fixed; suspend folds into enabled gate; uninstall always purges for plugins; spec written |

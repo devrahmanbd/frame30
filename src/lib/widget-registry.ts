@@ -835,7 +835,12 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     data: {
       source: "collection",
       params: [
-        { key: "limit", label: "Max products", kind: "number", panel: "content" },
+        {
+          key: "limit",
+          label: "Max products",
+          kind: "number",
+          panel: "content",
+        },
         {
           key: "collection",
           label: "Collection handle",
@@ -851,7 +856,12 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     data: {
       source: "collection",
       params: [
-        { key: "limit", label: "Max products", kind: "number", panel: "content" },
+        {
+          key: "limit",
+          label: "Max products",
+          kind: "number",
+          panel: "content",
+        },
         {
           key: "collection",
           label: "Collection handle",

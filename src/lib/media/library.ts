@@ -214,14 +214,10 @@ export function isSvgSafe(input: string): boolean {
 /* --------------------------------------------------------- magic bytes */
 
 export type ScanningStrictness =
-  | "standard"
-  | "enhanced"
-  | "strict"
-  | "forensic";
+  "standard" | "enhanced" | "strict" | "forensic";
 
 export type MagicBytesCheck =
-  | { ok: true }
-  | { ok: false; reason: string; message: string };
+  { ok: true } | { ok: false; reason: string; message: string };
 
 /**
  * Validates that file content matches the declared MIME type by checking magic
@@ -240,7 +236,11 @@ export function validateMagicBytes(
   strictness: ScanningStrictness = "standard",
 ): MagicBytesCheck {
   if (strictness === "forensic") {
-    return { ok: false, reason: "uploads_disabled", message: "Uploads are disabled by risk policy." };
+    return {
+      ok: false,
+      reason: "uploads_disabled",
+      message: "Uploads are disabled by risk policy.",
+    };
   }
 
   const mime = contentType.toLowerCase();
@@ -358,7 +358,8 @@ export function validateMagicBytes(
         return {
           ok: false,
           reason: "size_header_mismatch",
-          message: "Container file size header does not match actual file size.",
+          message:
+            "Container file size header does not match actual file size.",
         };
       }
     }
@@ -403,7 +404,8 @@ export function validateMagicBytes(
         return {
           ok: false,
           reason: "size_header_mismatch",
-          message: "Container file size header does not match actual file size.",
+          message:
+            "Container file size header does not match actual file size.",
         };
       }
     }

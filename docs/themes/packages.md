@@ -6,19 +6,19 @@ which reuses the in-repo guards byte-identically — no raw HTML ever executes.
 
 ## Manifest fields
 
-| Field      | Rules                                                        |
-| ---------- | ------------------------------------------------------------ |
-| `key`      | 1–60 chars, slug (`[a-z0-9-]`). Never renamed after publish. |
-| `nameEn`   | English display name (required).                             |
-| `nameBn`   | Bengali display name (required).                             |
-| `summaryEn`| English one-line summary (required).                         |
-| `summaryBn`| Bengali one-line summary (required).                         |
-| `category` | Storefront category, e.g. `fashion` (required).              |
-| `version`  | Semver (`1.0.0`). Bump on every resubmission.                |
-| `api`      | Builder API range. Must fall inside `^3.0.0` (major 3); anything else is rejected to avoid version skew. |
-| `sortOrder`| Marketplace ordering weight (default `50`).                  |
-| `tokens`   | Token bag accepted by `parseTokens`.                         |
-| `templates`| Template map accepted by `parseTemplates`. Unknown route keys are dropped — packages cannot invent routes. |
+| Field       | Rules                                                                                                      |
+| ----------- | ---------------------------------------------------------------------------------------------------------- |
+| `key`       | 1–60 chars, slug (`[a-z0-9-]`). Never renamed after publish.                                               |
+| `nameEn`    | English display name (required).                                                                           |
+| `nameBn`    | Bengali display name (required).                                                                           |
+| `summaryEn` | English one-line summary (required).                                                                       |
+| `summaryBn` | Bengali one-line summary (required).                                                                       |
+| `category`  | Storefront category, e.g. `fashion` (required).                                                            |
+| `version`   | Semver (`1.0.0`). Bump on every resubmission.                                                              |
+| `api`       | Builder API range. Must fall inside `^3.0.0` (major 3); anything else is rejected to avoid version skew.   |
+| `sortOrder` | Marketplace ordering weight (default `50`).                                                                |
+| `tokens`    | Token bag accepted by `parseTokens`.                                                                       |
+| `templates` | Template map accepted by `parseTemplates`. Unknown route keys are dropped — packages cannot invent routes. |
 
 ## Gates (all enforced by the validator)
 

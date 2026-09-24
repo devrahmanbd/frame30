@@ -1,4 +1,9 @@
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  notFound,
+  useNavigate,
+} from "@tanstack/react-router";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -13,7 +18,10 @@ import { buildSearchHead } from "@/lib/theme-seo";
 import { facetIndexPolicy } from "@/lib/seo-technical";
 import { listingPolicy } from "@/lib/url-lifecycle";
 import { searchStorefrontFn } from "@/lib/storefront-search.functions";
-import { getStoreChrome, resolveStorefrontHostFn } from "@/lib/storefront.functions";
+import {
+  getStoreChrome,
+  resolveStorefrontHostFn,
+} from "@/lib/storefront.functions";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { SupportWidget } from "@/components/store/SupportWidget";
@@ -63,7 +71,12 @@ export const Route = createFileRoute("/search")({
       }),
       getStoreChrome({ data: { slug: params.slug, template: "search" } }),
     ]);
-    return { ...outcome, chrome, slug: host.merchantSlug, origin: chrome?.origin ?? null };
+    return {
+      ...outcome,
+      chrome,
+      slug: host.merchantSlug,
+      origin: chrome?.origin ?? null,
+    };
   },
   head: ({ params, match, loaderData }) => {
     // Phase 7.1 canonical discipline: one allowlisted facet on page 1 stays
@@ -84,7 +97,10 @@ export const Route = createFileRoute("/search")({
       filtered: activeFilterCount(state) > 0 || state.page > 1,
     });
     return buildSearchHead({
-      origin: loaderData && "origin" in loaderData ? (loaderData.origin as string | null) : null,
+      origin:
+        loaderData && "origin" in loaderData
+          ? (loaderData.origin as string | null)
+          : null,
       path: policy.canonicalPath,
       storePath: `/`,
       storeName: loaderData?.slug ?? "store",
@@ -509,28 +525,32 @@ function SearchPage() {
 
   return (
     <PluginLayer plugins={chrome?.installedPlugins ?? []}>
-    <ThemeChrome
-      template="search"
-      storeSlug={slug}
-      merchantId={chrome?.merchant.id ?? null}
-      ast={chrome?.ast ?? null}
-      tokens={chrome?.tokens ?? null}
-      siteKit={chrome?.siteKit ?? null}
-      chrome={
-        <>
-          <StoreHeader slug={slug} name={chrome?.merchant.name ?? slug} menus={chrome?.menus} />
-          {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
-          {/* <SupportWidget slug={slug} /> */}
-        </>
-      }
-      productSlot={listing}
-      fallback={
-        <>
-          {heading}
-          {listing}
-        </>
-      }
-    />
+      <ThemeChrome
+        template="search"
+        storeSlug={slug}
+        merchantId={chrome?.merchant.id ?? null}
+        ast={chrome?.ast ?? null}
+        tokens={chrome?.tokens ?? null}
+        siteKit={chrome?.siteKit ?? null}
+        chrome={
+          <>
+            <StoreHeader
+              slug={slug}
+              name={chrome?.merchant.name ?? slug}
+              menus={chrome?.menus}
+            />
+            {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+            {/* <SupportWidget slug={slug} /> */}
+          </>
+        }
+        productSlot={listing}
+        fallback={
+          <>
+            {heading}
+            {listing}
+          </>
+        }
+      />
     </PluginLayer>
   );
 }

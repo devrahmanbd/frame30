@@ -217,7 +217,8 @@ export function sectionJsonLd(
             .map((row) => [str(row.question), str(row.answer)])
             .filter(([q, a]) => q && a)
         : [];
-      const pairs = itemPairs.length > 0 ? itemPairs : numbered(p, ["q#", "a#"]);
+      const pairs =
+        itemPairs.length > 0 ? itemPairs : numbered(p, ["q#", "a#"]);
       if (!pairs.length) return null;
       return {
         "@context": SCHEMA,

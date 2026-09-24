@@ -129,42 +129,38 @@ export function StoreHeader({
             <Link
               to="/search"
               search={{}}
-              className="inline-flex min-h-11 items-center gap-2 rounded-fq-md border border-border px-3 text-sm"
+              aria-label={t("Search", "খুঁজুন")}
+              className="inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
             >
-              <Search className="size-4" aria-hidden />
-              <span className="sr-only sm:not-sr-only">
-                {t("Search", "খুঁজুন")}
-              </span>
+              <Search className="size-5" aria-hidden />
             </Link>
           ) : (
             <Link
               to="/store/$slug/search"
               params={{ slug }}
               search={{}}
-              className="inline-flex min-h-11 items-center gap-2 rounded-fq-md border border-border px-3 text-sm"
+              aria-label={t("Search", "খুঁজুন")}
+              className="inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
             >
-              <Search className="size-4" aria-hidden />
-              <span className="sr-only sm:not-sr-only">
-                {t("Search", "খুঁজুন")}
-              </span>
+              <Search className="size-5" aria-hidden />
             </Link>
           )}
           {custom ? (
             <Link
               to="/account"
               aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
-              className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-3"
+              className="inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
             >
-              <User className="size-4" aria-hidden />
+              <User className="size-5" aria-hidden />
             </Link>
           ) : (
             <Link
               to="/store/$slug/account"
               params={{ slug }}
               aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
-              className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-3"
+              className="inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
             >
-              <User className="size-4" aria-hidden />
+              <User className="size-5" aria-hidden />
             </Link>
           )}
           <TimezoneToggle
@@ -175,12 +171,12 @@ export function StoreHeader({
           {custom ? (
             <Link
               to="/checkout"
-              className="inline-flex min-h-11 items-center gap-2 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+              aria-label={t("Cart", "কার্ট")}
+              className="relative inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
             >
-              <ShoppingBag className="size-4" aria-hidden />
-              <span>{t("Cart", "কার্ট")}</span>
+              <ShoppingBag className="size-5" aria-hidden />
               <span
-                className="money rounded-full bg-primary-foreground/20 px-2 text-xs"
+                className="absolute right-0 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground"
                 aria-live="polite"
               >
                 {hydrated ? count : 0}
@@ -190,12 +186,12 @@ export function StoreHeader({
             <Link
               to="/store/$slug/checkout"
               params={{ slug }}
-              className="inline-flex min-h-11 items-center gap-2 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+              aria-label={t("Cart", "কার্ট")}
+              className="relative inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
             >
-              <ShoppingBag className="size-4" aria-hidden />
-              <span>{t("Cart", "কার্ট")}</span>
+              <ShoppingBag className="size-5" aria-hidden />
               <span
-                className="money rounded-full bg-primary-foreground/20 px-2 text-xs"
+                className="absolute right-0 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground"
                 aria-live="polite"
               >
                 {hydrated ? count : 0}

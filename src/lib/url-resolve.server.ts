@@ -248,8 +248,7 @@ async function resolveUncached(
 
   // One indexed lookup per kind, in parallel. A known tenant scopes every
   // lookup to its own rows so merchant B's slug never resolves on A's host.
-  const scoped = (q: any) =>
-    merchantId ? q.eq("merchant_id", merchantId) : q;
+  const scoped = (q: any) => (merchantId ? q.eq("merchant_id", merchantId) : q);
   const [articleRes, productRes, collectionRes, pageRes] = await Promise.all([
     scoped(
       db

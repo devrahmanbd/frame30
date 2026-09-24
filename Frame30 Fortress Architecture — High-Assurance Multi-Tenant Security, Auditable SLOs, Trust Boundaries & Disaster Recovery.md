@@ -1,4 +1,5 @@
 # Frame30 Fortress Architecture
+
 ## High-Assurance Multi-Tenant Security, Auditable SLOs, Trust Boundaries, Ownership, and Disaster Recovery
 
 **Status:** Normative architecture and operating standard  
@@ -599,23 +600,23 @@ Production can create recovery artifacts where required, but it cannot permanent
 
 The following are non-negotiable release and operating invariants.
 
-| ID | Security invariant | Required result |
-|---|---|---|
-| INV-01 | Client cannot select arbitrary tenant | 0 successful bypasses |
-| INV-02 | Cross-tenant read | 0 successful unauthorized cases |
-| INV-03 | Cross-tenant write | 0 successful unauthorized cases |
-| INV-04 | Cross-tenant storage access | 0 successful unauthorized cases |
-| INV-05 | Cross-tenant cache leakage | 0 successful test cases |
-| INV-06 | Cross-tenant background job | 0 successful unauthorized cases |
-| INV-07 | Cross-tenant lock manipulation | 0 successful unauthorized cases |
-| INV-08 | Application → host admin path | 0 direct paths |
-| INV-09 | Production artifact integrity | 100% digest/provenance verification |
-| INV-10 | Sensitive action auditability | 100% |
-| INV-11 | Recovery copies | At least 2 independent recovery layers |
-| INV-12 | Recovery drill | 100% pass rate |
-| INV-13 | Tenant-owned access has context | 100% |
-| INV-14 | Destructive migration incompatibility | 0 production occurrences |
-| INV-15 | Unowned critical security control | 0 |
+| ID     | Security invariant                    | Required result                        |
+| ------ | ------------------------------------- | -------------------------------------- |
+| INV-01 | Client cannot select arbitrary tenant | 0 successful bypasses                  |
+| INV-02 | Cross-tenant read                     | 0 successful unauthorized cases        |
+| INV-03 | Cross-tenant write                    | 0 successful unauthorized cases        |
+| INV-04 | Cross-tenant storage access           | 0 successful unauthorized cases        |
+| INV-05 | Cross-tenant cache leakage            | 0 successful test cases                |
+| INV-06 | Cross-tenant background job           | 0 successful unauthorized cases        |
+| INV-07 | Cross-tenant lock manipulation        | 0 successful unauthorized cases        |
+| INV-08 | Application → host admin path         | 0 direct paths                         |
+| INV-09 | Production artifact integrity         | 100% digest/provenance verification    |
+| INV-10 | Sensitive action auditability         | 100%                                   |
+| INV-11 | Recovery copies                       | At least 2 independent recovery layers |
+| INV-12 | Recovery drill                        | 100% pass rate                         |
+| INV-13 | Tenant-owned access has context       | 100%                                   |
+| INV-14 | Destructive migration incompatibility | 0 production occurrences               |
+| INV-15 | Unowned critical security control     | 0                                      |
 
 ---
 
@@ -650,24 +651,24 @@ No owner is a security defect.
 
 # 9. Ownership Matrix
 
-| Capability | Accountable | Operational | Evidence |
-|---|---|---|---|
-| Tenant authorization | AO | AO | CI security suite |
-| PostgreSQL RLS | DBO | AO + DBO | migration/test reports |
-| Storage isolation | AO | AO | storage tests |
-| Redis isolation | AO | AO | namespace tests |
-| Worker security | AO | AO | worker tests |
-| Container hardening | DO | DO | image/runtime scan |
-| CI/CD integrity | PL | DO | GitHub audit |
-| Artifact provenance | PL | DO | attestation |
-| Host security | DO | DO | host audit |
-| `/root` security | PL | PL | admin audit |
-| Backup system | DBO | DBO | backup dashboard |
-| Restore testing | DBO | DBO | restore report |
-| Incident response | SO | IRO | incident record |
-| Secrets | SO | DO | secret inventory |
-| Observability | DO | DO | monitoring |
-| Production deployment | PL | DO | deployment history |
+| Capability            | Accountable | Operational | Evidence               |
+| --------------------- | ----------- | ----------- | ---------------------- |
+| Tenant authorization  | AO          | AO          | CI security suite      |
+| PostgreSQL RLS        | DBO         | AO + DBO    | migration/test reports |
+| Storage isolation     | AO          | AO          | storage tests          |
+| Redis isolation       | AO          | AO          | namespace tests        |
+| Worker security       | AO          | AO          | worker tests           |
+| Container hardening   | DO          | DO          | image/runtime scan     |
+| CI/CD integrity       | PL          | DO          | GitHub audit           |
+| Artifact provenance   | PL          | DO          | attestation            |
+| Host security         | DO          | DO          | host audit             |
+| `/root` security      | PL          | PL          | admin audit            |
+| Backup system         | DBO         | DBO         | backup dashboard       |
+| Restore testing       | DBO         | DBO         | restore report         |
+| Incident response     | SO          | IRO         | incident record        |
+| Secrets               | SO          | DO          | secret inventory       |
+| Observability         | DO          | DO          | monitoring             |
+| Production deployment | PL          | DO          | deployment history     |
 
 ---
 
@@ -828,13 +829,13 @@ audit logs
 
 ## SLO-S06 — Security vulnerabilities
 
-| Severity | Triage | Remediation |
-|---|---:|---:|
-| Critical actively exploited | ≤15 min | ≤4 hr |
-| Critical | ≤30 min | ≤24 hr |
-| High | ≤4 hr | ≤7 days |
-| Medium | ≤2 business days | ≤30 days |
-| Low | ≤7 days | ≤90 days |
+| Severity                    |           Triage | Remediation |
+| --------------------------- | ---------------: | ----------: |
+| Critical actively exploited |          ≤15 min |       ≤4 hr |
+| Critical                    |          ≤30 min |      ≤24 hr |
+| High                        |            ≤4 hr |     ≤7 days |
+| Medium                      | ≤2 business days |    ≤30 days |
+| Low                         |          ≤7 days |    ≤90 days |
 
 **Evidence:**
 
@@ -1123,14 +1124,14 @@ before promotion.
 
 These values become the canonical Frame30 recovery targets.
 
-| System | RPO | RTO |
-|---|---:|---:|
-| PostgreSQL | ≤5 min | ≤30 min |
-| Merchant Storage | ≤15 min | ≤60 min |
-| Redis | ≤15 min or reconstructable | ≤15 min |
-| Application code/config | 0 data loss | ≤15 min |
-| Critical configuration | ≤15 min | ≤30 min |
-| Full platform disaster | ≤15 min critical data | ≤2 hr |
+| System                  |                        RPO |     RTO |
+| ----------------------- | -------------------------: | ------: |
+| PostgreSQL              |                     ≤5 min | ≤30 min |
+| Merchant Storage        |                    ≤15 min | ≤60 min |
+| Redis                   | ≤15 min or reconstructable | ≤15 min |
+| Application code/config |                0 data loss | ≤15 min |
+| Critical configuration  |                    ≤15 min | ≤30 min |
+| Full platform disaster  |      ≤15 min critical data |   ≤2 hr |
 
 These are the official operating targets.
 
@@ -1140,19 +1141,19 @@ These are the official operating targets.
 
 This section is authoritative. No other section changes recovery frequency.
 
-| Activity | Cadence | Purpose | Owner |
-|---|---|---|---|
-| PostgreSQL WAL/PITR | Continuous | ≤5 min DB RPO | DBO |
-| Full PostgreSQL backup | Daily | independent restore point | DBO |
-| Storage backup | Daily/continuous replication as supported | ≤15 min Storage RPO | DBO |
-| Configuration backup | On every production configuration change + daily reconciliation | rebuildability | DO |
-| Release artifact retention | Every release | application recovery | DO |
-| Automated backup integrity verification | Daily | verify backup completeness | DBO |
-| Automated restore smoke test | Weekly | prove recoverability | DBO |
-| Full database restore drill | Monthly | measure real DB RTO/RPO | DBO |
-| Full disaster simulation | Quarterly | test complete platform recovery | PL + DBO + IRO |
-| Recovery runbook review | Quarterly | keep procedures current | PL |
-| Recovery credential review | Quarterly | validate recovery access | SO |
+| Activity                                | Cadence                                                         | Purpose                         | Owner          |
+| --------------------------------------- | --------------------------------------------------------------- | ------------------------------- | -------------- |
+| PostgreSQL WAL/PITR                     | Continuous                                                      | ≤5 min DB RPO                   | DBO            |
+| Full PostgreSQL backup                  | Daily                                                           | independent restore point       | DBO            |
+| Storage backup                          | Daily/continuous replication as supported                       | ≤15 min Storage RPO             | DBO            |
+| Configuration backup                    | On every production configuration change + daily reconciliation | rebuildability                  | DO             |
+| Release artifact retention              | Every release                                                   | application recovery            | DO             |
+| Automated backup integrity verification | Daily                                                           | verify backup completeness      | DBO            |
+| Automated restore smoke test            | Weekly                                                          | prove recoverability            | DBO            |
+| Full database restore drill             | Monthly                                                         | measure real DB RTO/RPO         | DBO            |
+| Full disaster simulation                | Quarterly                                                       | test complete platform recovery | PL + DBO + IRO |
+| Recovery runbook review                 | Quarterly                                                       | keep procedures current         | PL             |
+| Recovery credential review              | Quarterly                                                       | validate recovery access        | SO             |
 
 This is the **single source of truth for recovery cadence**.
 
@@ -1171,6 +1172,7 @@ This is the **single source of truth for recovery cadence**.
 Measurement:
 
 ```text rolling 30 days
+
 ```
 
 A failed backup retries automatically.
@@ -1182,11 +1184,13 @@ A failed backup retries automatically.
 **PostgreSQL:**
 
 ```text maximum WAL archive lag ≤5 minutes
+
 ```
 
 **Storage:**
 
 ```text maximum acceptable backup lag ≤15 minutes
+
 ```
 
 Measured continuously.
@@ -1355,15 +1359,15 @@ Every drill produces a report.
 
 # 22. Incident Response SLOs
 
-| Event | Target |
-|---|---:|
-| Critical alert acknowledged | ≤15 min |
-| Incident commander assigned | ≤15 min |
-| Critical tenant quarantined | ≤15 min |
-| Critical credential revoked | ≤30 min |
-| Production deployment frozen | ≤15 min |
+| Event                                    |  Target |
+| ---------------------------------------- | ------: |
+| Critical alert acknowledged              | ≤15 min |
+| Incident commander assigned              | ≤15 min |
+| Critical tenant quarantined              | ≤15 min |
+| Critical credential revoked              | ≤30 min |
+| Production deployment frozen             | ≤15 min |
 | Critical cross-tenant incident contained | ≤30 min |
-| Recovery decision made | ≤30 min |
+| Recovery decision made                   | ≤30 min |
 
 Measurement begins when the monitoring/incident system creates the incident.
 

@@ -7,10 +7,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { newSection, type Section } from "@/lib/builder-ast";
 import type { WidgetRow } from "@/lib/widget-data";
-import {
-  BEAUTY_HOME_WIDGETS,
-  discountParts,
-} from "./beauty-home";
+import { BEAUTY_HOME_WIDGETS, discountParts } from "./beauty-home";
 import { widgetReader, type WidgetCtx } from "./widgets";
 
 function ctxFor(
@@ -121,7 +118,11 @@ describe("concern_rail", () => {
       props: { heading: "Shop by concern", terms: "acne,dark-spots" },
     };
     const html = renderToStaticMarkup(
-      <>{BEAUTY_HOME_WIDGETS.concern_rail(ctxFor(section, "en", { rows, pending: false }))}</>,
+      <>
+        {BEAUTY_HOME_WIDGETS.concern_rail(
+          ctxFor(section, "en", { rows, pending: false }),
+        )}
+      </>,
     );
     expect(html).toContain("Acne clear serum");
     expect(html).toContain("Acne");
@@ -134,7 +135,11 @@ describe("concern_rail", () => {
       props: { heading: "সমস্যা অনুযায়ী", terms: "acne" },
     };
     const html = renderToStaticMarkup(
-      <>{BEAUTY_HOME_WIDGETS.concern_rail(ctxFor(section, "bn", { rows, pending: false }))}</>,
+      <>
+        {BEAUTY_HOME_WIDGETS.concern_rail(
+          ctxFor(section, "bn", { rows, pending: false }),
+        )}
+      </>,
     );
     expect(html).toContain("ব্রণ");
   });
@@ -145,7 +150,11 @@ describe("concern_rail", () => {
       props: { heading: "Shop by concern", terms: "pores" },
     };
     const html = renderToStaticMarkup(
-      <>{BEAUTY_HOME_WIDGETS.concern_rail(ctxFor(section, "en", { rows: [], pending: false }))}</>,
+      <>
+        {BEAUTY_HOME_WIDGETS.concern_rail(
+          ctxFor(section, "en", { rows: [], pending: false }),
+        )}
+      </>,
     );
     expect(html.length).toBeGreaterThan(0);
   });
@@ -162,7 +171,11 @@ describe("ingredient_rail", () => {
       },
     };
     const html = renderToStaticMarkup(
-      <>{BEAUTY_HOME_WIDGETS.ingredient_rail(ctxFor(section, "bn", { rows, pending: false }))}</>,
+      <>
+        {BEAUTY_HOME_WIDGETS.ingredient_rail(
+          ctxFor(section, "bn", { rows, pending: false }),
+        )}
+      </>,
     );
     expect(html).toContain("Niacinamide");
     expect(html).toContain("Niacinamide 10% toner");
@@ -172,7 +185,11 @@ describe("ingredient_rail", () => {
   it("renders nothing when no ingredients are authored", () => {
     const section = { ...newSection("ingredient_rail"), props: {} };
     const html = renderToStaticMarkup(
-      <>{BEAUTY_HOME_WIDGETS.ingredient_rail(ctxFor(section, "en", { rows, pending: false }))}</>,
+      <>
+        {BEAUTY_HOME_WIDGETS.ingredient_rail(
+          ctxFor(section, "en", { rows, pending: false }),
+        )}
+      </>,
     );
     expect(html).toBe("");
   });

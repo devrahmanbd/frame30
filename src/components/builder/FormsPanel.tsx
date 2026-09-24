@@ -5,7 +5,8 @@ import { useLang } from "@/lib/i18n";
 /*  Types                                                                      */
 /* -------------------------------------------------------------------------- */
 
-type FieldType = "text" | "email" | "phone" | "textarea" | "select" | "checkbox" | "radio";
+type FieldType =
+  "text" | "email" | "phone" | "textarea" | "select" | "checkbox" | "radio";
 
 type FormField = {
   id: string;
@@ -54,26 +55,67 @@ const FIELD_TYPES: { value: FieldType; labelEn: string; labelBn: string }[] = [
   { value: "radio", labelEn: "Radio", labelBn: "রেডিও" },
 ];
 
-const ACTION_TYPES: { value: ActionType; labelEn: string; labelBn: string }[] = [
-  { value: "email_admin", labelEn: "Email to admin", labelBn: "অ্যাডমিনকে ইমেইল" },
-  { value: "email_customer", labelEn: "Email to customer", labelBn: "গ্রাহককে ইমেইল" },
-  { value: "redirect", labelEn: "Redirect to URL", labelBn: "ইউআরএলে পুনঃনির্দেশ" },
-  { value: "webhook", labelEn: "Webhook", labelBn: "ওয়েবহুক" },
-];
+const ACTION_TYPES: { value: ActionType; labelEn: string; labelBn: string }[] =
+  [
+    {
+      value: "email_admin",
+      labelEn: "Email to admin",
+      labelBn: "অ্যাডমিনকে ইমেইল",
+    },
+    {
+      value: "email_customer",
+      labelEn: "Email to customer",
+      labelBn: "গ্রাহককে ইমেইল",
+    },
+    {
+      value: "redirect",
+      labelEn: "Redirect to URL",
+      labelBn: "ইউআরএলে পুনঃনির্দেশ",
+    },
+    { value: "webhook", labelEn: "Webhook", labelBn: "ওয়েবহুক" },
+  ];
 
 const SAMPLE_SUBMISSIONS: Submission[] = [
-  { id: "s1", date: "2026-09-18T10:30:00", email: "rafi@example.com", status: "new", data: { name: "Rafi Ahmed", message: "Interested in bulk order" } },
-  { id: "s2", date: "2026-09-17T16:12:00", email: "sara@example.com", status: "read", data: { name: "Sara Khan", message: "When is the next restock?" } },
-  { id: "s3", date: "2026-09-16T09:05:00", email: "dev@example.com", status: "new", data: { name: "Dev Patel", message: "Need help with checkout" } },
-  { id: "s4", date: "2026-09-15T14:44:00", email: "mira@example.com", status: "trashed", data: { name: "Mira Begum", message: "Test submission" } },
+  {
+    id: "s1",
+    date: "2026-09-18T10:30:00",
+    email: "rafi@example.com",
+    status: "new",
+    data: { name: "Rafi Ahmed", message: "Interested in bulk order" },
+  },
+  {
+    id: "s2",
+    date: "2026-09-17T16:12:00",
+    email: "sara@example.com",
+    status: "read",
+    data: { name: "Sara Khan", message: "When is the next restock?" },
+  },
+  {
+    id: "s3",
+    date: "2026-09-16T09:05:00",
+    email: "dev@example.com",
+    status: "new",
+    data: { name: "Dev Patel", message: "Need help with checkout" },
+  },
+  {
+    id: "s4",
+    date: "2026-09-15T14:44:00",
+    email: "mira@example.com",
+    status: "trashed",
+    data: { name: "Mira Begum", message: "Test submission" },
+  },
 ];
 
 /* -------------------------------------------------------------------------- */
 /*  Helpers                                                                     */
 /* -------------------------------------------------------------------------- */
 
-function formatBytes(_b: number) { return ""; }
-function csvEscape(val: string) { return /[",\n]/.test(val) ? `"${val.replace(/"/g, '""')}"` : val; }
+function formatBytes(_b: number) {
+  return "";
+}
+function csvEscape(val: string) {
+  return /[",\n]/.test(val) ? `"${val.replace(/"/g, '""')}"` : val;
+}
 
 /* -------------------------------------------------------------------------- */
 /*  Sub-components                                                              */
@@ -106,11 +148,10 @@ function FieldEditor({
           {field.labelEn || t("Untitled field", "নামহীন ফিল্ড")}
         </span>
         <span className="rounded bg-muted px-1 py-0.5 text-[0.6rem] text-muted-foreground">
-          {FIELD_TYPES.find((ft) => ft.value === field.type)?.labelEn ?? field.type}
+          {FIELD_TYPES.find((ft) => ft.value === field.type)?.labelEn ??
+            field.type}
         </span>
-        {field.required && (
-          <span className="text-danger text-[0.6rem]">*</span>
-        )}
+        {field.required && <span className="text-danger text-[0.6rem]">*</span>}
         <button
           type="button"
           onClick={onRemove}
@@ -124,7 +165,9 @@ function FieldEditor({
       {expanded && (
         <div className="space-y-2 pt-1">
           <div className="space-y-1">
-            <label className="block text-xs font-medium">{t("Type", "ধরন")}</label>
+            <label className="block text-xs font-medium">
+              {t("Type", "ধরন")}
+            </label>
             <select
               value={field.type}
               onChange={(e) => onUpdate({ type: e.target.value as FieldType })}
@@ -162,7 +205,9 @@ function FieldEditor({
 
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
-              <label className="block text-xs font-medium">Placeholder EN</label>
+              <label className="block text-xs font-medium">
+                Placeholder EN
+              </label>
               <input
                 type="text"
                 value={field.placeholderEn}
@@ -171,7 +216,9 @@ function FieldEditor({
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-xs font-medium">Placeholder BN</label>
+              <label className="block text-xs font-medium">
+                Placeholder BN
+              </label>
               <input
                 type="text"
                 value={field.placeholderBn}
@@ -194,11 +241,17 @@ function FieldEditor({
 
           {(field.type === "select" || field.type === "radio") && (
             <div className="space-y-1">
-              <label className="block text-xs font-medium">{t("Options (one per line)", "অপশন (প্রতি লাইনে একটি)")}</label>
+              <label className="block text-xs font-medium">
+                {t("Options (one per line)", "অপশন (প্রতি লাইনে একটি)")}
+              </label>
               <textarea
                 rows={3}
                 value={(field.options ?? []).join("\n")}
-                onChange={(e) => onUpdate({ options: e.target.value.split("\n").filter(Boolean) })}
+                onChange={(e) =>
+                  onUpdate({
+                    options: e.target.value.split("\n").filter(Boolean),
+                  })
+                }
                 className="w-full rounded-fq-md border border-border bg-card px-2 py-1.5 text-xs"
               />
             </div>
@@ -233,33 +286,55 @@ function ActionEditor({
         <span className="flex-1 text-xs font-medium">
           {label ? t(label.labelEn, label.labelBn) : action.type}
         </span>
-        <button type="button" onClick={onRemove} className="text-danger-foreground text-xs" aria-label={t("Remove", "সরান")}>
+        <button
+          type="button"
+          onClick={onRemove}
+          className="text-danger-foreground text-xs"
+          aria-label={t("Remove", "সরান")}
+        >
           ×
         </button>
       </div>
 
       {action.enabled && (
         <div className="space-y-2 pl-6">
-          {(action.type === "email_admin" || action.type === "email_customer") && (
+          {(action.type === "email_admin" ||
+            action.type === "email_customer") && (
             <div className="space-y-1">
-              <label className="block text-xs font-medium">{t("Recipient email", "প্রাপক ইমেইল")}</label>
+              <label className="block text-xs font-medium">
+                {t("Recipient email", "প্রাপক ইমেইল")}
+              </label>
               <input
                 type="email"
                 autoComplete="email"
                 value={action.config.recipient ?? ""}
-                onChange={(e) => onUpdate({ config: { ...action.config, recipient: e.target.value } })}
-                placeholder={action.type === "email_admin" ? "admin@store.com" : "{{email}}"}
+                onChange={(e) =>
+                  onUpdate({
+                    config: { ...action.config, recipient: e.target.value },
+                  })
+                }
+                placeholder={
+                  action.type === "email_admin"
+                    ? "admin@store.com"
+                    : "{{email}}"
+                }
                 className="w-full rounded-fq-md border border-border bg-card px-2 py-1.5 text-xs"
               />
             </div>
           )}
           {action.type === "redirect" && (
             <div className="space-y-1">
-              <label className="block text-xs font-medium">{t("Redirect URL", "পুনঃনির্দেশ ইউআরএল")}</label>
+              <label className="block text-xs font-medium">
+                {t("Redirect URL", "পুনঃনির্দেশ ইউআরএল")}
+              </label>
               <input
                 type="url"
                 value={action.config.url ?? ""}
-                onChange={(e) => onUpdate({ config: { ...action.config, url: e.target.value } })}
+                onChange={(e) =>
+                  onUpdate({
+                    config: { ...action.config, url: e.target.value },
+                  })
+                }
                 placeholder="/thank-you"
                 className="w-full rounded-fq-md border border-border bg-card px-2 py-1.5 text-xs"
               />
@@ -267,11 +342,17 @@ function ActionEditor({
           )}
           {action.type === "webhook" && (
             <div className="space-y-1">
-              <label className="block text-xs font-medium">{t("Webhook URL", "ওয়েবহুক ইউআরএল")}</label>
+              <label className="block text-xs font-medium">
+                {t("Webhook URL", "ওয়েবহুক ইউআরএল")}
+              </label>
               <input
                 type="url"
                 value={action.config.url ?? ""}
-                onChange={(e) => onUpdate({ config: { ...action.config, url: e.target.value } })}
+                onChange={(e) =>
+                  onUpdate({
+                    config: { ...action.config, url: e.target.value },
+                  })
+                }
                 placeholder="https://hooks.example.com/form"
                 className="w-full rounded-fq-md border border-border bg-card px-2 py-1.5 text-xs"
               />
@@ -295,19 +376,45 @@ export function FormsPanel() {
 
   // ---- Field state ----
   const [fields, setFields] = useState<FormField[]>([
-    { id: uid(), type: "text", labelEn: "Name", labelBn: "নাম", required: true, placeholderEn: "Your name", placeholderBn: "আপনার নাম" },
-    { id: uid(), type: "email", labelEn: "Email", labelBn: "ইমেইল", required: true, placeholderEn: "you@example.com", placeholderBn: "you@example.com" },
+    {
+      id: uid(),
+      type: "text",
+      labelEn: "Name",
+      labelBn: "নাম",
+      required: true,
+      placeholderEn: "Your name",
+      placeholderBn: "আপনার নাম",
+    },
+    {
+      id: uid(),
+      type: "email",
+      labelEn: "Email",
+      labelBn: "ইমেইল",
+      required: true,
+      placeholderEn: "you@example.com",
+      placeholderBn: "you@example.com",
+    },
   ]);
 
   const addField = useCallback(() => {
     setFields((prev) => [
       ...prev,
-      { id: uid(), type: "text", labelEn: "", labelBn: "", required: false, placeholderEn: "", placeholderBn: "" },
+      {
+        id: uid(),
+        type: "text",
+        labelEn: "",
+        labelBn: "",
+        required: false,
+        placeholderEn: "",
+        placeholderBn: "",
+      },
     ]);
   }, []);
 
   const updateField = useCallback((id: string, patch: Partial<FormField>) => {
-    setFields((prev) => prev.map((f) => (f.id === id ? { ...f, ...patch } : f)));
+    setFields((prev) =>
+      prev.map((f) => (f.id === id ? { ...f, ...patch } : f)),
+    );
   }, []);
 
   const removeField = useCallback((id: string) => {
@@ -326,25 +433,41 @@ export function FormsPanel() {
 
   // ---- Action state ----
   const [actions, setActions] = useState<SubmitAction[]>([
-    { id: uid(), type: "email_admin", enabled: true, config: { recipient: "" } },
+    {
+      id: uid(),
+      type: "email_admin",
+      enabled: true,
+      config: { recipient: "" },
+    },
   ]);
 
   const addAction = useCallback((type: ActionType) => {
-    setActions((prev) => [...prev, { id: uid(), type, enabled: true, config: {} }]);
+    setActions((prev) => [
+      ...prev,
+      { id: uid(), type, enabled: true, config: {} },
+    ]);
   }, []);
 
-  const updateAction = useCallback((id: string, patch: Partial<SubmitAction>) => {
-    setActions((prev) => prev.map((a) => (a.id === id ? { ...a, ...patch } : a)));
-  }, []);
+  const updateAction = useCallback(
+    (id: string, patch: Partial<SubmitAction>) => {
+      setActions((prev) =>
+        prev.map((a) => (a.id === id ? { ...a, ...patch } : a)),
+      );
+    },
+    [],
+  );
 
   const removeAction = useCallback((id: string) => {
     setActions((prev) => prev.filter((a) => a.id !== id));
   }, []);
 
   // ---- Submission state ----
-  const [submissions, setSubmissions] = useState<Submission[]>(SAMPLE_SUBMISSIONS);
+  const [submissions, setSubmissions] =
+    useState<Submission[]>(SAMPLE_SUBMISSIONS);
   const [selectedSubIds, setSelectedSubIds] = useState<Set<string>>(new Set());
-  const [viewingSubmission, setViewingSubmission] = useState<Submission | null>(null);
+  const [viewingSubmission, setViewingSubmission] = useState<Submission | null>(
+    null,
+  );
 
   const visibleSubmissions = useMemo(
     () => submissions.filter((s) => s.status !== "trashed"),
@@ -354,7 +477,8 @@ export function FormsPanel() {
   const toggleSubSelection = useCallback((id: string) => {
     setSelectedSubIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   }, []);
@@ -368,18 +492,31 @@ export function FormsPanel() {
   }, [visibleSubmissions]);
 
   const markRead = useCallback((ids: string[]) => {
-    setSubmissions((prev) => prev.map((s) => ids.includes(s.id) ? { ...s, status: "read" as const } : s));
+    setSubmissions((prev) =>
+      prev.map((s) =>
+        ids.includes(s.id) ? { ...s, status: "read" as const } : s,
+      ),
+    );
   }, []);
 
   const trashSubmissions = useCallback((ids: string[]) => {
-    setSubmissions((prev) => prev.map((s) => ids.includes(s.id) ? { ...s, status: "trashed" as const } : s));
+    setSubmissions((prev) =>
+      prev.map((s) =>
+        ids.includes(s.id) ? { ...s, status: "trashed" as const } : s,
+      ),
+    );
     setSelectedSubIds(new Set());
   }, []);
 
   const exportCsv = useCallback(() => {
     const rows = submissions.filter((s) => s.status !== "trashed");
     if (!rows.length) return;
-    const headers = ["Date", "Email", "Status", ...fields.map((f) => f.labelEn)];
+    const headers = [
+      "Date",
+      "Email",
+      "Status",
+      ...fields.map((f) => f.labelEn),
+    ];
     const lines = [
       headers.map(csvEscape).join(","),
       ...rows.map((s) =>
@@ -388,7 +525,9 @@ export function FormsPanel() {
           s.email,
           s.status,
           ...fields.map((f) => s.data[f.labelEn.toLowerCase()] ?? ""),
-        ].map(csvEscape).join(","),
+        ]
+          .map(csvEscape)
+          .join(","),
       ),
     ];
     const blob = new Blob([lines.join("\n")], { type: "text/csv" });
@@ -400,7 +539,9 @@ export function FormsPanel() {
     URL.revokeObjectURL(url);
   }, [fields, submissions]);
 
-  const allVisibleSelected = visibleSubmissions.length > 0 && visibleSubmissions.every((s) => selectedSubIds.has(s.id));
+  const allVisibleSelected =
+    visibleSubmissions.length > 0 &&
+    visibleSubmissions.every((s) => selectedSubIds.has(s.id));
 
   const newCount = submissions.filter((s) => s.status === "new").length;
 
@@ -409,7 +550,11 @@ export function FormsPanel() {
   const TABS: { key: PanelTab; labelEn: string; labelBn: string }[] = [
     { key: "fields", labelEn: "Fields", labelBn: "ফিল্ড" },
     { key: "actions", labelEn: "Actions", labelBn: "অ্যাকশন" },
-    { key: "submissions", labelEn: `Submissions${newCount > 0 ? ` (${newCount})` : ""}`, labelBn: `সাবমিশন${newCount > 0 ? ` (${newCount})` : ""}` },
+    {
+      key: "submissions",
+      labelEn: `Submissions${newCount > 0 ? ` (${newCount})` : ""}`,
+      labelBn: `সাবমিশন${newCount > 0 ? ` (${newCount})` : ""}`,
+    },
   ];
 
   return (
@@ -424,7 +569,11 @@ export function FormsPanel() {
         )}
       </p>
 
-      <div role="tablist" aria-label={t("Form sections", "ফর্ম সেকশন")} className="flex gap-1">
+      <div
+        role="tablist"
+        aria-label={t("Form sections", "ফর্ম সেকশন")}
+        className="flex gap-1"
+      >
         {TABS.map((t2) => (
           <button
             key={t2.key}
@@ -433,7 +582,9 @@ export function FormsPanel() {
             aria-selected={tab === t2.key}
             onClick={() => setTab(t2.key)}
             className={`rounded-fq-md px-2 py-1.5 text-xs ${
-              tab === t2.key ? "bg-primary text-primary-foreground" : "border border-border"
+              tab === t2.key
+                ? "bg-primary text-primary-foreground"
+                : "border border-border"
             }`}
           >
             {t(t2.labelEn, t2.labelBn)}
@@ -503,7 +654,9 @@ export function FormsPanel() {
           </div>
 
           <div className="flex flex-wrap gap-1">
-            {ACTION_TYPES.filter((at) => !actions.some((a) => a.type === at.value)).map((at) => (
+            {ACTION_TYPES.filter(
+              (at) => !actions.some((a) => a.type === at.value),
+            ).map((at) => (
               <button
                 key={at.value}
                 type="button"
@@ -513,11 +666,17 @@ export function FormsPanel() {
                 + {t(at.labelEn, at.labelBn)}
               </button>
             ))}
-            {actions.length > 0 && ACTION_TYPES.every((at) => actions.some((a) => a.type === at.value)) && (
-              <p className="text-[0.65rem] text-muted-foreground">
-                {t("All action types added.", "সব অ্যাকশন ধরন যোগ করা হয়েছে।")}
-              </p>
-            )}
+            {actions.length > 0 &&
+              ACTION_TYPES.every((at) =>
+                actions.some((a) => a.type === at.value),
+              ) && (
+                <p className="text-[0.65rem] text-muted-foreground">
+                  {t(
+                    "All action types added.",
+                    "সব অ্যাকশন ধরন যোগ করা হয়েছে।",
+                  )}
+                </p>
+              )}
           </div>
         </div>
       )}
@@ -528,7 +687,9 @@ export function FormsPanel() {
           {viewingSubmission && (
             <div className="rounded-fq-md border border-border bg-card p-3 space-y-2">
               <div className="flex items-center justify-between">
-                <h4 className="text-xs font-semibold">{t("Submission detail", "সাবমিশন বিস্তারিত")}</h4>
+                <h4 className="text-xs font-semibold">
+                  {t("Submission detail", "সাবমিশন বিস্তারিত")}
+                </h4>
                 <button
                   type="button"
                   onClick={() => setViewingSubmission(null)}
@@ -539,11 +700,15 @@ export function FormsPanel() {
               </div>
               <dl className="space-y-1 text-xs">
                 <div className="flex gap-2">
-                  <dt className="text-muted-foreground">{t("Date:", "তারিখ:")} </dt>
+                  <dt className="text-muted-foreground">
+                    {t("Date:", "তারিখ:")}{" "}
+                  </dt>
                   <dd>{new Date(viewingSubmission.date).toLocaleString()}</dd>
                 </div>
                 <div className="flex gap-2">
-                  <dt className="text-muted-foreground">{t("Email:", "ইমেইল:")} </dt>
+                  <dt className="text-muted-foreground">
+                    {t("Email:", "ইমেইল:")}{" "}
+                  </dt>
                   <dd>{viewingSubmission.email}</dd>
                 </div>
                 {Object.entries(viewingSubmission.data).map(([k, v]) => (
@@ -609,7 +774,10 @@ export function FormsPanel() {
               <tbody>
                 {visibleSubmissions.length === 0 && (
                   <tr>
-                    <td colSpan={5} className="py-6 text-center text-muted-foreground">
+                    <td
+                      colSpan={5}
+                      className="py-6 text-center text-muted-foreground"
+                    >
                       {t("No submissions yet.", "এখনো কোনো সাবমিশন নেই।")}
                     </td>
                   </tr>
@@ -627,14 +795,20 @@ export function FormsPanel() {
                     <td className="py-1.5 pr-2 tabular-nums whitespace-nowrap">
                       {new Date(sub.date).toLocaleDateString()}
                     </td>
-                    <td className="py-1.5 pr-2 truncate max-w-[120px]">{sub.email}</td>
+                    <td className="py-1.5 pr-2 truncate max-w-[120px]">
+                      {sub.email}
+                    </td>
                     <td className="py-1.5 pr-2">
-                      <span className={`rounded-full px-1.5 py-0.5 text-[0.6rem] ${
-                        sub.status === "new"
-                          ? "bg-primary/10 text-primary"
-                          : "bg-muted text-muted-foreground"
-                      }`}>
-                        {sub.status === "new" ? t("New", "নতুন") : t("Read", "পঠিত")}
+                      <span
+                        className={`rounded-full px-1.5 py-0.5 text-[0.6rem] ${
+                          sub.status === "new"
+                            ? "bg-primary/10 text-primary"
+                            : "bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        {sub.status === "new"
+                          ? t("New", "নতুন")
+                          : t("Read", "পঠিত")}
                       </span>
                     </td>
                     <td className="py-1.5">

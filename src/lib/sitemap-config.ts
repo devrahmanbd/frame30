@@ -570,7 +570,9 @@ export type RobotsRenderInput = {
 export function renderRobotsTxt(input: RobotsRenderInput): string {
   const origin = input.origin.replace(/\/+$/, "");
   const base =
-    input.storeBase !== undefined ? input.storeBase : `/store/${input.storeSlug}`;
+    input.storeBase !== undefined
+      ? input.storeBase
+      : `/store/${input.storeSlug}`;
   const allowRoot = base || "/";
   const settings = input.settings;
   const lines: string[] = [];

@@ -7,7 +7,8 @@ export async function isApprovedDeveloper(
   db: Client,
   merchantId: string,
 ): Promise<boolean> {
-  const { data } = await (db as SupabaseClient).from("theme_developers")
+  const { data } = await (db as SupabaseClient)
+    .from("theme_developers")
     .select("merchant_id")
     .eq("merchant_id", merchantId)
     .maybeSingle();

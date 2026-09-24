@@ -33,20 +33,26 @@
 If the production server is physically lost, stolen, or destroyed, execute this 100%-verified disaster recovery procedure on any clean Linux machine:
 
 ### 1. Provision Clean Machine
+
 Install Docker and Zstandard:
+
 ```bash
 sudo apt-get update && sudo apt-get install -y docker.io docker-compose-plugin zstd rclone openssl
 ```
 
 ### 2. Retrieve Encrypted Whole-System Snapshot
+
 Fetch the certified snapshot from the off-site immutable WORM object storage:
+
 ```bash
 mkdir -p /var/backups/framique
 rclone copy s3:framique-backups/latest /var/backups/framique/latest --checksum
 ```
 
 ### 3. Decrypt Snapshot (Theft-Immune Master Key)
+
 If encrypted with the off-site KMS master key:
+
 ```bash
 openssl enc -d -aes-256-gcm -pbkdf2 \
   -in /var/backups/framique/latest/snapshot.enc \
@@ -57,24 +63,28 @@ tar -I zstd -xf /var/backups/framique/latest/snapshot.tar.zst -C /var/backups/fr
 ```
 
 ### 4. 1-Click System Reconstitution
+
 Restore database cluster (`auth`, `storage`, `public`, `roles`), storage bucket objects, and configs:
+
 ```bash
 ./ops/backup/restore.sh /var/backups/framique/latest --force
 ```
 
 ### 5. Optional Point-in-Time Recovery (PITR) to Target Second
+
 ```bash
 ./ops/backup/time-machine-snapshot.sh latest restore-pitr '2026-09-18 14:00:00 UTC'
 ```
 
 ### 6. Bring Up Application Topology
+
 ```bash
 docker compose -f ops/docker-compose.blue-green.yml up -d
 ```
 
 ### 7. Repoint DNS
-Point DNS A/AAAA records for `framique.qubickle.com` and custom domain CNAMEs to the new server IP. The system is 100% reconstituted.
 
+Point DNS A/AAAA records for `framique.qubickle.com` and custom domain CNAMEs to the new server IP. The system is 100% reconstituted.
 
 ## Deploy 7e16d41+ — security fixes WF-10 + WF-09 (no migration)
 

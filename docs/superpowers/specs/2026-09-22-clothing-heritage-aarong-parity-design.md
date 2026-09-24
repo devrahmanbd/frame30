@@ -42,10 +42,10 @@
 6. lookbook "Shop the look" (4 tiles, offset)
 7. textile_showcase (items[4]: Jamdani/Taant/Kantha/Silk)
 8. wedding_shop (c1-3 filled) 9. gift_finder (o1-3 filled)
-10. heritage_story (headline variant) 11. editorial_banner (headline variant)
-12. testimonial_carousel (2) 13. rewards_club (tiers+CTA)
-14. subbrand_spotlight (Taaga/Taaga Man/Herstory/Earth)
-15. marquee_strip (items[], single) — footer: support/sitemap/payments(comma-separated)/newsletter/colophon.
+9. heritage_story (headline variant) 11. editorial_banner (headline variant)
+10. testimonial_carousel (2) 13. rewards_club (tiers+CTA)
+11. subbrand_spotlight (Taaga/Taaga Man/Herstory/Earth)
+12. marquee_strip (items[], single) — footer: support/sitemap/payments(comma-separated)/newsletter/colophon.
 
 ## 5. Contracts (renderer dual-read, blueprint aligns)
 

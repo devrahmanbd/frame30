@@ -11,20 +11,20 @@ A complete theme ships all 12 areas below. Treat this list as acceptance
 criteria: a theme missing any area is incomplete and must not be submitted
 for catalogue review.
 
-| # | Area | What "done" means | Where it lives |
-|---|------|-------------------|----------------|
-| 1 | Layout | `header` / `main` / `footer` slot arrays on every template; responsive `bp` overrides per section | `src/lib/builder-ast.ts:79-83`, `src/lib/builder-ast.ts:256-279` |
-| 2 | Design system | Full `ThemeTokens` set incl. light + designed `dark` set, `globals`, font pairing | `src/lib/builder-ast.ts:5085-5114`, `src/lib/theme-globals.ts:32-48` |
-| 3 | Homepage | `index` template with hero, merchandising, trust and footer composition | `src/lib/theme-presets.ts:123-173`, `src/lib/theme-blueprints.ts:190-246` |
-| 4 | Product pages | `product` template: media, price, variant/size, buy box, delivery, reviews/Q&A, related | `src/lib/theme-presets.ts:175-209`, `src/lib/theme-blueprints.ts:247-331` |
-| 5 | Collection pages | `collection` template: category header, facets, toolbar, grid, pagination, empty state | `src/lib/theme-presets.ts:211-239`, `src/lib/theme-blueprints.ts:332-394` |
-| 6 | Posts / blog | `blog` template: `blog_terms` + `blog_archive` + `blog_pager` + newsletter | `src/lib/theme-presets.ts:291-325`, `src/lib/theme-blueprints.ts:431-463` |
-| 7 | Menus | Header nav (`mega_menu`, `nav_menu`, `search_command`, `account_cart`) driven by taxonomy/menu data | `src/lib/builder-ast.ts:1440-1519`, `src/lib/studio/catalog.ts:2029-2044` |
-| 8 | Footer | `footer_sitemap`, `payment_icons`, `social_strip`/`support_strip`, about `rich_text` | `src/lib/theme-presets.ts:107-121`, `src/lib/theme-blueprints.ts:113-135` |
-| 9 | Widgets with presets | Every widget the theme renders has catalogue defaults and bilingual props filled at build | `src/lib/theme-section.ts:44-68`, `src/lib/studio/catalog.ts:48-64` |
-| 10 | Forms | Contact (`form`), newsletter, search, quiz/consult/trade-in submittable patterns (see §5) | `src/lib/studio/catalog.ts:2010-2027`, `src/lib/studio/catalog.ts:2046-2057`, `src/lib/contact.functions.ts:4-24`, `src/lib/newsletter.functions.ts:13-50` |
-| 11 | Sign in | Storefront account entry: header `account_cart` link + `src/routes/store.$slug.account.tsx` + `src/routes/account.tsx`; there is **no** sign-in theme template — the theme's job is the link, not the form | `src/lib/studio/catalog.ts:1686-1692`, `src/routes/store.$slug.account.tsx`, `src/routes/account.tsx` |
-| 12 | Sign up | Same surface as sign in (merchant console auth at `src/routes/auth.tsx`); theme must not invent its own credential form | `src/routes/auth.tsx` |
+| #   | Area                 | What "done" means                                                                                                                                                                                          | Where it lives                                                                                                                                             |
+| --- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Layout               | `header` / `main` / `footer` slot arrays on every template; responsive `bp` overrides per section                                                                                                          | `src/lib/builder-ast.ts:79-83`, `src/lib/builder-ast.ts:256-279`                                                                                           |
+| 2   | Design system        | Full `ThemeTokens` set incl. light + designed `dark` set, `globals`, font pairing                                                                                                                          | `src/lib/builder-ast.ts:5085-5114`, `src/lib/theme-globals.ts:32-48`                                                                                       |
+| 3   | Homepage             | `index` template with hero, merchandising, trust and footer composition                                                                                                                                    | `src/lib/theme-presets.ts:123-173`, `src/lib/theme-blueprints.ts:190-246`                                                                                  |
+| 4   | Product pages        | `product` template: media, price, variant/size, buy box, delivery, reviews/Q&A, related                                                                                                                    | `src/lib/theme-presets.ts:175-209`, `src/lib/theme-blueprints.ts:247-331`                                                                                  |
+| 5   | Collection pages     | `collection` template: category header, facets, toolbar, grid, pagination, empty state                                                                                                                     | `src/lib/theme-presets.ts:211-239`, `src/lib/theme-blueprints.ts:332-394`                                                                                  |
+| 6   | Posts / blog         | `blog` template: `blog_terms` + `blog_archive` + `blog_pager` + newsletter                                                                                                                                 | `src/lib/theme-presets.ts:291-325`, `src/lib/theme-blueprints.ts:431-463`                                                                                  |
+| 7   | Menus                | Header nav (`mega_menu`, `nav_menu`, `search_command`, `account_cart`) driven by taxonomy/menu data                                                                                                        | `src/lib/builder-ast.ts:1440-1519`, `src/lib/studio/catalog.ts:2029-2044`                                                                                  |
+| 8   | Footer               | `footer_sitemap`, `payment_icons`, `social_strip`/`support_strip`, about `rich_text`                                                                                                                       | `src/lib/theme-presets.ts:107-121`, `src/lib/theme-blueprints.ts:113-135`                                                                                  |
+| 9   | Widgets with presets | Every widget the theme renders has catalogue defaults and bilingual props filled at build                                                                                                                  | `src/lib/theme-section.ts:44-68`, `src/lib/studio/catalog.ts:48-64`                                                                                        |
+| 10  | Forms                | Contact (`form`), newsletter, search, quiz/consult/trade-in submittable patterns (see §5)                                                                                                                  | `src/lib/studio/catalog.ts:2010-2027`, `src/lib/studio/catalog.ts:2046-2057`, `src/lib/contact.functions.ts:4-24`, `src/lib/newsletter.functions.ts:13-50` |
+| 11  | Sign in              | Storefront account entry: header `account_cart` link + `src/routes/store.$slug.account.tsx` + `src/routes/account.tsx`; there is **no** sign-in theme template — the theme's job is the link, not the form | `src/lib/studio/catalog.ts:1686-1692`, `src/routes/store.$slug.account.tsx`, `src/routes/account.tsx`                                                      |
+| 12  | Sign up              | Same surface as sign in (merchant console auth at `src/routes/auth.tsx`); theme must not invent its own credential form                                                                                    | `src/routes/auth.tsx`                                                                                                                                      |
 
 Notes on areas 11–12: the template keys are fixed at
 `src/lib/builder-ast.ts:46-59` (`index`, `product`, `collection`, `page`,
@@ -56,16 +56,16 @@ export const DEFAULT_TOKENS: ThemeTokens = {
   fontDisplay: "Noto Sans Bengali",
   fontBody: "Noto Sans Bengali",
   container: "1200px",
-  density: "comfortable",      // "dense" | "airy" | "comfortable"
-  typeScale: "default",        // "compact" | "expressive" | "default"
+  density: "comfortable", // "dense" | "airy" | "comfortable"
+  typeScale: "default", // "compact" | "expressive" | "default"
   spaceUnit: "16px",
-  shadow: "soft",              // "none" | "soft" | "lifted"
-  motion: "subtle",            // "none" | "subtle" | "lively"
-  digits: "latin",             // "latin" | "bengali"
-  locale: "en",                // "en" | "bn"
-  currencyDisplay: "symbol",   // "symbol" | "code"
+  shadow: "soft", // "none" | "soft" | "lifted"
+  motion: "subtle", // "none" | "subtle" | "lively"
+  digits: "latin", // "latin" | "bengali"
+  locale: "en", // "en" | "bn"
+  currencyDisplay: "symbol", // "symbol" | "code"
   fontPairing: "bengali-classic",
-  dark: null,                  // or { brand, accent, surface, ink }
+  dark: null, // or { brand, accent, surface, ink }
   globals: DEFAULT_GLOBALS,
   timezone: DEFAULT_MERCHANT_TIMEZONE,
   allowCustomerTimezone: false,
@@ -85,8 +85,14 @@ colours + two fonts; bindings are stored as `var(--fq-g-<id>)`
 
 ```ts
 export const TEMPLATE_KEYS = [
-  "index", "product", "collection", "page",
-  "blog", "cart", "checkout", "search",
+  "index",
+  "product",
+  "collection",
+  "page",
+  "blog",
+  "cart",
+  "checkout",
+  "search",
 ] as const;
 ```
 
@@ -113,11 +119,11 @@ Reference compositions:
 
 ```ts
 export type Section = {
-  id: string;                 // globally unique, see §3
-  type: SectionType;          // src/lib/builder-ast.ts:85-243
+  id: string; // globally unique, see §3
+  type: SectionType; // src/lib/builder-ast.ts:85-243
   props: Record<string, PropValue>;
-  children?: Section[];       // only when catalogue flags container: true
-  hidden?: Breakpoint[];      // per-breakpoint visibility
+  children?: Section[]; // only when catalogue flags container: true
+  hidden?: Breakpoint[]; // per-breakpoint visibility
   bp?: Partial<Record<Breakpoint, Record<string, PropValue>>>;
   invalid?: string;
   when?: VisibilityRule[];
@@ -130,8 +136,8 @@ export type Section = {
   `MAX_ARRAY_ROWS = 24` (`:250`); nesting caps at `MAX_TREE_DEPTH = 6`,
   `MAX_NODES_PER_TEMPLATE = 300` (`:252-254`).
 - Field kinds for the inspector: `text | textarea | number | select | url |
-  boolean | embed | bitext | color | range | image | taxonomy | unit |
-  group | html | array | menu` (`src/lib/builder-ast.ts:299-316`).
+boolean | embed | bitext | color | range | image | taxonomy | unit |
+group | html | array | menu` (`src/lib/builder-ast.ts:299-316`).
 - `CatalogEntry` (`src/lib/builder-ast.ts:355-371`) declares label, group,
   slots, `heading` (h1-claim), `templates` scope, `container`, `defaults`,
   `fields`.
@@ -139,8 +145,8 @@ export type Section = {
 ### 2.4 Presets vs blueprints
 
 - **Preset** (`ThemePreset`, `src/lib/theme-presets.ts:37-50`): `{ key,
-  nameEn, nameBn, summaryEn, summaryBn, category, version, api, sortOrder,
-  tokens, templates }`. `SPECS` (`:421-778`) + `SHIPPED_BLUEPRINTS`
+nameEn, nameBn, summaryEn, summaryBn, category, version, api, sortOrder,
+tokens, templates }`. `SPECS` (`:421-778`) + `SHIPPED_BLUEPRINTS`
   (`:785-788`) form `THEME_PRESETS`. Lookup: `presetByKey()`
   (`:790-792`). Preset swap without content loss: `applyPreset()`
   (`:824-850`).
@@ -213,12 +219,24 @@ export function myTheme(): ThemePreset {
     version: "1.0.0",
     api: "^3.0.0",
     sortOrder: 140,
-    tokens: { ...DEFAULT_TOKENS, brand: "#0F766E", accent: "#0D9488", surface: "#FFFFFF", ink: "#0F172A" },
+    tokens: {
+      ...DEFAULT_TOKENS,
+      brand: "#0F766E",
+      accent: "#0D9488",
+      surface: "#FFFFFF",
+      ink: "#0F172A",
+    },
     templates: {
       index: {
         header: header(),
         main: [
-          s(k, "hero", { heading: "Welcome", subheading: "", ctaLabel: "Shop now", ctaHref: "#products", align: "left" }),
+          s(k, "hero", {
+            heading: "Welcome",
+            subheading: "",
+            ctaLabel: "Shop now",
+            ctaHref: "#products",
+            align: "left",
+          }),
           s(k, "product_grid", { heading: "Featured", limit: 12, columns: 4 }),
         ],
         footer: footer(),
@@ -235,15 +253,29 @@ export function myTheme(): ThemePreset {
       collection: {
         header: [s(k, "breadcrumb", { homeLabel: "Home" })],
         main: [
-          s(k, "category_header", { heading: "All products", body: "", showCount: true, showBreadcrumb: true, homeLabel: "Home" }),
-          s(k, "product_grid", { heading: "All products", limit: 24, columns: 4 }),
+          s(k, "category_header", {
+            heading: "All products",
+            body: "",
+            showCount: true,
+            showBreadcrumb: true,
+            homeLabel: "Home",
+          }),
+          s(k, "product_grid", {
+            heading: "All products",
+            limit: 24,
+            columns: 4,
+          }),
         ],
         footer: footer(),
       },
       search: {
         header: [s(k, "breadcrumb", { homeLabel: "Home" })],
         main: [
-          s(k, "heading", { text: "Search results", level: "h1", align: "left" }),
+          s(k, "heading", {
+            text: "Search results",
+            level: "h1",
+            align: "left",
+          }),
           s(k, "product_grid", { heading: "", limit: 16, columns: 4 }),
         ],
         footer: footer(),
@@ -257,7 +289,16 @@ export function myTheme(): ThemePreset {
         header: [s(k, "breadcrumb", { homeLabel: "Home" })],
         main: [
           s(k, "blog_terms", { heading: "", style: "pills", showCounts: true }),
-          s(k, "blog_archive", { heading: "", layout: "grid", columns: 3, limit: 9, showCover: true, showExcerpt: true, showMeta: true, emptyText: "No articles yet." }),
+          s(k, "blog_archive", {
+            heading: "",
+            layout: "grid",
+            columns: 3,
+            limit: 9,
+            showCover: true,
+            showExcerpt: true,
+            showMeta: true,
+            emptyText: "No articles yet.",
+          }),
           s(k, "blog_pager", { align: "center" }),
         ],
         footer: footer(),
@@ -273,10 +314,21 @@ export function myTheme(): ThemePreset {
       checkout: {
         header: [s(k, "banner", { text: "Secure checkout", tone: "info" })],
         main: [
-          s(k, "checkout_steps", { heading: "", step1: "Cart", step2: "Details", step3: "Payment", step4: "Done", activeStep: 3 }),
+          s(k, "checkout_steps", {
+            heading: "",
+            step1: "Cart",
+            step2: "Details",
+            step3: "Payment",
+            step4: "Done",
+            activeStep: 3,
+          }),
           s(k, "cart_lines", { heading: "" }),
           s(k, "cart_summary", { heading: "Order summary" }),
-          s(k, "payment_methods", { heading: "", note: "", emptyText: "No payment method is enabled yet." }),
+          s(k, "payment_methods", {
+            heading: "",
+            note: "",
+            emptyText: "No payment method is enabled yet.",
+          }),
         ],
         footer: footer(),
       },
@@ -325,7 +377,10 @@ Semantics: `INSERT ... ON CONFLICT (key) DO UPDATE`
 
 ```ts
 // Appearance desk (merchant scope). Permission: themes.update except where noted.
-import { themeInstallFn, themeActivateFn } from "@/lib/themes/appearance.functions";
+import {
+  themeInstallFn,
+  themeActivateFn,
+} from "@/lib/themes/appearance.functions";
 import { builderPublishFn, builderInstallFn } from "@/lib/themes.functions";
 
 // 1. Install a catalogue theme -> NEW INACTIVE row + v1 published + draft
@@ -375,7 +430,7 @@ Submittable patterns (server validates, client never decides):
   successText/consentText/showPhone) → `submitContactFn`
   (`src/lib/contact.functions.ts:4-24`) with
   `{ name, email, phone?, topic: "sales"|"support"|"migration", message,
-  locale, honeypot?, renderedAt? }`.
+locale, honeypot?, renderedAt? }`.
 - **Newsletter**: `newsletter` widget (`src/lib/builder-ast.ts:827-845`,
   `src/lib/studio/catalog.ts:2046-2057`) → `subscribeNewsletterFn` /
   `verifyNewsletterFn` / `unsubscribeNewsletterFn`
@@ -387,7 +442,7 @@ Submittable patterns (server validates, client never decides):
   to its server path and renders the returned result (see catalogue
   `defaults` in `src/lib/builder-ast.ts` and the studio mirror in
   `src/lib/studio/catalog.ts`).
-- **Sign in / sign up pages**: required as *routes*, not templates. Ship the
+- **Sign in / sign up pages**: required as _routes_, not templates. Ship the
   header `account_cart` entry (`src/lib/studio/catalog.ts:1686-1692`) and
   keep `src/routes/store.$slug.account.tsx`, `src/routes/account.tsx` and
   `src/routes/root/login.tsx` reachable. Do not author credential inputs
@@ -399,16 +454,16 @@ Granular, idempotent import RPCs read blueprints from `theme_registry`
 (`scripts/seed-theme-registry.ts:4-7` — an empty registry makes every demo
 import a noop):
 
-| Step | Server fn (`src/lib/themes.functions.ts`) | Service (`src/lib/theme-imports.server.ts`) | SQL |
-|------|-------------------------------------------|---------------------------------------------|-----|
-| Preflight (read-only conflicts) | `importPreflightFn` (`:208-217`) `{ themeKey }` | `importPreflight` (`:108-159`) | — |
-| Slides (hero_carousel; `hero` fallback for repeater-shaped blueprints — themes whose hero is a `hero` repeater widget rather than `hero_carousel`) | `importThemeSlidesFn` (`:219-228`) | `importThemeSlides` (`:273-309`) | `import_theme_slides` (`supabase/migrations/20260920_import_rpcs.sql:15-150`, amended `20260922090100_import_slides_hero.sql:8-190`) |
-| Media | `importThemeMediaFn` (`:230-239`) `{ themeKey, overwrite? }` | `importThemeMedia` (`:315-360`) | `import_theme_media` |
-| Products (+variants, collections link) | `importThemeProductsFn` (`:241-258`) `{ themeKey, overwrite? }` (+ catalog) | `importThemeProducts` (`:367-414`) | `import_theme_products` |
-| Posts (articles + storefront pages) | `importThemePostsFn` (`:260-269`) `{ themeKey, overwrite? }` | `importThemePosts` (`:420-465`) | `import_theme_posts` |
-| All four in order | `importThemeAllFn` (`:271-280`) `{ themeKey, overwrite? }` | `importThemeAll` (`:471-522`) | slides → media → products → posts |
-| Legacy one-shot | `builderDemoImportFn` (`:192-201`) `{ themeKey }` | `importDemoContent` (`src/lib/themes.server.ts`) | blueprint-dependent |
-| Purge demo rows | `builderDemoPurgeFn` (`:282-288`) | `purgeDemoContent` (`src/lib/themes.server.ts`) | `is_demo` flags (`supabase/migrations/20260917210000_phase2e_theme_engine.sql:7-10`) |
+| Step                                                                                                                                               | Server fn (`src/lib/themes.functions.ts`)                                   | Service (`src/lib/theme-imports.server.ts`)      | SQL                                                                                                                                  |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Preflight (read-only conflicts)                                                                                                                    | `importPreflightFn` (`:208-217`) `{ themeKey }`                             | `importPreflight` (`:108-159`)                   | —                                                                                                                                    |
+| Slides (hero_carousel; `hero` fallback for repeater-shaped blueprints — themes whose hero is a `hero` repeater widget rather than `hero_carousel`) | `importThemeSlidesFn` (`:219-228`)                                          | `importThemeSlides` (`:273-309`)                 | `import_theme_slides` (`supabase/migrations/20260920_import_rpcs.sql:15-150`, amended `20260922090100_import_slides_hero.sql:8-190`) |
+| Media                                                                                                                                              | `importThemeMediaFn` (`:230-239`) `{ themeKey, overwrite? }`                | `importThemeMedia` (`:315-360`)                  | `import_theme_media`                                                                                                                 |
+| Products (+variants, collections link)                                                                                                             | `importThemeProductsFn` (`:241-258`) `{ themeKey, overwrite? }` (+ catalog) | `importThemeProducts` (`:367-414`)               | `import_theme_products`                                                                                                              |
+| Posts (articles + storefront pages)                                                                                                                | `importThemePostsFn` (`:260-269`) `{ themeKey, overwrite? }`                | `importThemePosts` (`:420-465`)                  | `import_theme_posts`                                                                                                                 |
+| All four in order                                                                                                                                  | `importThemeAllFn` (`:271-280`) `{ themeKey, overwrite? }`                  | `importThemeAll` (`:471-522`)                    | slides → media → products → posts                                                                                                    |
+| Legacy one-shot                                                                                                                                    | `builderDemoImportFn` (`:192-201`) `{ themeKey }`                           | `importDemoContent` (`src/lib/themes.server.ts`) | blueprint-dependent                                                                                                                  |
+| Purge demo rows                                                                                                                                    | `builderDemoPurgeFn` (`:282-288`)                                           | `purgeDemoContent` (`src/lib/themes.server.ts`)  | `is_demo` flags (`supabase/migrations/20260917210000_phase2e_theme_engine.sql:7-10`)                                                 |
 
 Preflight + overwrite rules:
 
@@ -502,16 +557,16 @@ else carries a hue.
   sits alongside — not instead of — the existing entrance system: the
   universal `reveal` style prop (`fq-reveal`, `src/styles.css:417-455`)
   and per-widget `advAnimation` (`none | fade | rise | slide-left |
-  slide-right | zoom`, `src/lib/builder-advanced.ts:36-44`). One
+slide-right | zoom`, `src/lib/builder-advanced.ts:36-44`). One
   orchestrated moment per viewport; scattered effects read as decoration.
 
 ### 8.2 Which prop toggles it
 
-| Effect | Prop | Values | Default |
-|--------|------|--------|---------|
-| Hero wash | `atmosphere` on `hero` | `"wash" \| "none"` | `"wash"` |
-| Banner surface | `surface` on `editorial_banner` | `"glass" \| "card"` | `"card"` |
-| Entrance | `advAnimation` (Advanced tab, every widget) | `"none" \| "fade" \| "rise" \| "slide-left" \| "slide-right" \| "zoom"` | `"none"` |
+| Effect         | Prop                                        | Values                                                                  | Default  |
+| -------------- | ------------------------------------------- | ----------------------------------------------------------------------- | -------- |
+| Hero wash      | `atmosphere` on `hero`                      | `"wash" \| "none"`                                                      | `"wash"` |
+| Banner surface | `surface` on `editorial_banner`             | `"glass" \| "card"`                                                     | `"card"` |
+| Entrance       | `advAnimation` (Advanced tab, every widget) | `"none" \| "fade" \| "rise" \| "slide-left" \| "slide-right" \| "zoom"` | `"none"` |
 
 `atmosphere: "none"` renders no wash div at all — it is not a
 transparent wash, so there is no extra layer in the tree.
@@ -532,7 +587,7 @@ The contract has two halves:
    the theme sets motion `none` (`[data-motion="none"]`,
    `src/styles.css:447-450`); the aurora-drift pattern shows the same
    gate for looped motion (`src/styles.css:1195-1199`). `advAnimation:
-   "none"` covers a reduced-motion visitor
+"none"` covers a reduced-motion visitor
    (`src/lib/builder-advanced.ts:35`). Any new animated variant must
    hook into these blocks — never its own parallel mechanism.
 

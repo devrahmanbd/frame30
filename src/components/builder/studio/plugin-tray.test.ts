@@ -208,7 +208,9 @@ describe("app-block manifest keys", () => {
   it("pluginKey default parses as an unselected plugin widget key", () => {
     const def = WIDGET_BY_KEY["app-block"];
     // Empty = nothing picked yet; any picked value must be plugin:-namespaced.
-    expect(parsePluginWidgetKey(String(def.defaults.pluginKey ?? ""))).toBeNull();
+    expect(
+      parsePluginWidgetKey(String(def.defaults.pluginKey ?? "")),
+    ).toBeNull();
     expect(parsePluginWidgetKey(KEY)).toEqual({
       pluginId: "loyalty-lite",
       widget: "points_bar",

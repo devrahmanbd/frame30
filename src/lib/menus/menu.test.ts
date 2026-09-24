@@ -228,9 +228,9 @@ describe("storefront shaping", () => {
 
   it("returns empty trees when no menu claims a location", () => {
     expect(shapeStoreMenus([])).toEqual(EMPTY_STORE_MENUS);
-    expect(
-      shapeStoreMenus([navMenu("m1", [], [item("a")])]),
-    ).toEqual(EMPTY_STORE_MENUS);
+    expect(shapeStoreMenus([navMenu("m1", [], [item("a")])])).toEqual(
+      EMPTY_STORE_MENUS,
+    );
   });
 
   it("gives each location to its first claimant", () => {
@@ -245,11 +245,15 @@ describe("storefront shaping", () => {
 
   it("nests children through buildTree", () => {
     const shaped = shapeStoreMenus([
-      navMenu("m1", ["header"], [
-        item("a", { position: 0 }),
-        item("b", { position: 1 }),
-        item("b1", { parentId: "b", position: 0 }),
-      ]),
+      navMenu(
+        "m1",
+        ["header"],
+        [
+          item("a", { position: 0 }),
+          item("b", { position: 1 }),
+          item("b1", { parentId: "b", position: 0 }),
+        ],
+      ),
     ]);
     expect(shaped.header.map((n) => n.id)).toEqual(["a", "b"]);
     expect(shaped.header[1]!.children.map((n) => n.id)).toEqual(["b1"]);

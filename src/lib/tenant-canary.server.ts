@@ -197,10 +197,13 @@ export async function extractTenantIdentifier(request: Request): Promise<{
       /(?:framique_tenant_id|framique_store_slug)=([^;]+)/,
     );
     if (cookieMatch && cookieMatch[1]) {
-      const cookieTenant = decodeURIComponent(cookieMatch[1]).trim().toLowerCase();
+      const cookieTenant = decodeURIComponent(cookieMatch[1])
+        .trim()
+        .toLowerCase();
       // Validate cookie tenant matches the request host when both are available.
       // If the host resolved to a different tenant, the cookie is stale/spoofed.
-      const hostIdentifier = headers.get("x-forwarded-host") || headers.get("host") || "";
+      const hostIdentifier =
+        headers.get("x-forwarded-host") || headers.get("host") || "";
       // Cookie validation is best-effort: only reject if we have a host signal AND it conflicts
       if (hostIdentifier && !hostIdentifier.includes(cookieTenant)) {
         // Host and cookie disagree — fall through to other resolution methods
@@ -367,7 +370,8 @@ export async function resolveTenantCanaryRoute(
         process.env["NODE_ENV"] === "test";
       const staffSecret = process.env["CANARY_STAFF_TOKEN"];
       const staffToken = request.headers.get("x-framique-staff-token");
-      allowed = isTestOrLocal || (Boolean(staffSecret) && staffToken === staffSecret);
+      allowed =
+        isTestOrLocal || (Boolean(staffSecret) && staffToken === staffSecret);
     } catch {
       allowed = false;
     }

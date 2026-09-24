@@ -73,7 +73,11 @@ function sortProducts(rows: ProductRow[], sort: string): ProductRow[] {
  * widest window any request asked for; per-request filtering, sorting and
  * slicing then happen in memory.
  */
-const loadCollectionSource: SourceLoader = async (merchantId, requests, ctx) => {
+const loadCollectionSource: SourceLoader = async (
+  merchantId,
+  requests,
+  ctx,
+) => {
   const base = ctx?.base ?? "";
   const db = publicClient();
   const window = Math.min(

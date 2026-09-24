@@ -12,7 +12,8 @@ import { useLang } from "@/lib/i18n";
 export const Route = createFileRoute("/_authenticated/dashboard/ai/settings")({
   // Merchant AI is platform-only: direct URLs bounce to the dashboard.
   beforeLoad: () => {
-    if (!MERCHANT_AI_ENABLED) throw redirect({ to: "/dashboard", replace: true });
+    if (!MERCHANT_AI_ENABLED)
+      throw redirect({ to: "/dashboard", replace: true });
   },
   loader: () => getAiGatewayConfigFn(),
   head: () => ({

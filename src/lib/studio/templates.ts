@@ -281,10 +281,7 @@ export function builtInTemplates(): StudioTemplate[] {
    * carries the same vocabulary as the theme studio.
    */
   function universalBlocks(): StudioTemplate[] {
-    const withSettings = (
-      key: string,
-      settings: NodeSettings,
-    ): StudioNode => {
+    const withSettings = (key: string, settings: NodeSettings): StudioNode => {
       const node = newWidgetNode(key);
       node.settings = { ...node.settings, ...settings };
       return node;
@@ -342,7 +339,10 @@ export function builtInTemplates(): StudioTemplate[] {
           },
           [
             heading("Your store", 3, 24),
-            withSettings("button", { label: "Shop now", href: "/collections/new" }),
+            withSettings("button", {
+              label: "Shop now",
+              href: "/collections/new",
+            }),
           ],
         ),
       ],
@@ -421,10 +421,9 @@ export function builtInTemplates(): StudioTemplate[] {
         kind: "block",
         category: "faq",
         nodes: [
-          newContainer(
-            { layout: "flex", direction: "column", gap: 12 },
-            [faqRich],
-          ),
+          newContainer({ layout: "flex", direction: "column", gap: 12 }, [
+            faqRich,
+          ]),
         ],
       },
       {
@@ -433,10 +432,9 @@ export function builtInTemplates(): StudioTemplate[] {
         kind: "block",
         category: "testimonials",
         nodes: [
-          newContainer(
-            { layout: "flex", direction: "column", gap: 12 },
-            [testimonialCarousel],
-          ),
+          newContainer({ layout: "flex", direction: "column", gap: 12 }, [
+            testimonialCarousel,
+          ]),
         ],
       },
       {

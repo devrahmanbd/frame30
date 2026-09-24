@@ -11,11 +11,7 @@
  * (`StoreFooterMenus`) reads the same constants so theme and fallback copy
  * can never drift apart.
  */
-import type {
-  PropValue,
-  Section,
-  SectionType,
-} from "../../builder-ast";
+import type { PropValue, Section, SectionType } from "../../builder-ast";
 import type { Extras } from "../../theme-section";
 import type { SectionBuilder } from "./types";
 
@@ -94,10 +90,7 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
     title_bn: "আমাদের কথা",
     // Browser-verified 2026-09-24: "Contact us" appeared twice in the
     // footer (Customer Care + About). It lives in Customer Care only now.
-    links: [
-      "Our story|/pages/about",
-      "Rewards club|/pages/rewards",
-    ].join("\n"),
+    links: ["Our story|/pages/about", "Rewards club|/pages/rewards"].join("\n"),
   },
 ];
 
@@ -116,8 +109,7 @@ export const PAYMENTS_LIST = [
 
 export const COLOPHON = {
   body: "Flagships: Uttara · Gulshan · Chattogram — open 10am to 9pm.",
-  body_bn:
-    "ফ্ল্যাগশিপ: উত্তরা · গুলশান · চট্টগ্রাম — সকাল ১০টা থেকে রাত ৯টা।",
+  body_bn: "ফ্ল্যাগশিপ: উত্তরা · গুলশান · চট্টগ্রাম — সকাল ১০টা থেকে রাত ৯টা।",
 } as const;
 
 /**

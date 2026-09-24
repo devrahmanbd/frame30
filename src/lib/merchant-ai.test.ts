@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  ADMIN_NAV,
-  flattenNav,
-  permissionForPath,
-} from "./console-nav";
+import { ADMIN_NAV, flattenNav, permissionForPath } from "./console-nav";
 import { MERCHANT_AI_ENABLED } from "./merchant-ai";
 
 describe("merchant AI kill-switch", () => {
@@ -15,9 +11,7 @@ describe("merchant AI kill-switch", () => {
     const entries = flattenNav(ADMIN_NAV);
     expect(entries.map((e) => e.to)).not.toContain("/dashboard/ai/settings");
     expect(entries.map((e) => e.to)).not.toContain("/dashboard/ai/assistant");
-    expect(
-      entries.some((e) => e.to.startsWith("/dashboard/ai/")),
-    ).toBe(false);
+    expect(entries.some((e) => e.to.startsWith("/dashboard/ai/"))).toBe(false);
   });
 
   it("leaves the permission gate with nothing to grant on AI paths", () => {

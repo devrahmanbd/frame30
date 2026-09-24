@@ -469,7 +469,9 @@ Release 1: Expand       Release 2: Dual-Write       Release 3: Read New       Re
 ```
 
 #### 1. Scope of the Whole-System Snapshot
+
 A true disaster-proof backup is never just an application-level SQL dump of `public` tables. If the server is lost, an operator must be able to spin up a clean Linux host and restore 100% of state:
+
 1. **PostgreSQL Complete Cluster (`db_cluster.dump` & `roles.sql`)**:
    - `roles.sql`: All database roles, passwords, grants, and connection limits (`pg_dumpall --roles-only`).
    - `db_cluster.dump`: Full database in custom format (`-Fc`) containing:
@@ -489,13 +491,16 @@ A true disaster-proof backup is never just an application-level SQL dump of `pub
    - SHA-256 hashes of every artifact, table row counts, `auth.users` count, Git commit SHA, timestamp, and duration.
 
 #### 2. Server Loss & Hardware Theft Defense (Client-Side Envelope Encryption)
+
 - **The Threat**: Physical server seizure, data center burglary, or stolen backup drives.
 - **The Defense**: All backup artifacts are encrypted client-side using authenticated symmetric encryption (AES-256-GCM / ChaCha20-Poly1305 via `openssl` or `age`) before leaving RAM or hitting disk.
 - **Key Separation**: The encryption uses a master key derived from an off-host secret or asymmetric public key. The private decryption key is **never stored on the application server**; it resides exclusively in an off-site physical security vault / hardware KMS.
 - **Outcome**: A stolen server or exfiltrated backup drive yields zero readable plaintext rows, zero passwords, and zero customer data.
 
 #### 3. 100% Restore Guarantee (The Rehearsal Gate)
+
 > **"A backup nobody has restored is a rumour."**
+
 - Every backup snapshot executed by the platform (hourly WAL checkpoints and nightly full snapshots) must undergo an automated **Rehearsal Restore** before it is declared valid.
 - The rehearsal script (`ops/backup/rehearse.sh`):
   1. Launches an isolated throwaway Docker Compose stack (`COMPOSE_PROJECT_NAME=framique-restore`).
@@ -511,7 +516,9 @@ A true disaster-proof backup is never just an application-level SQL dump of `pub
   8. If any assertion fails, the backup is marked `INVALID`, an alert is dispatched, and traffic promotion is blocked.
 
 #### 4. Cold-Metal Bare-Metal Recovery Runbook (< 15 Minutes)
+
 If the entire server or hosting region is lost, the recovery procedure on a clean machine is completely deterministic:
+
 1. **Provision Clean Host**: Standard Ubuntu/Debian Linux with Docker and `zstd` installed.
 2. **Fetch Encrypted Snapshot**: Pull the latest certified backup set from the off-site WORM object store (`rclone copy s3:framique-backups/latest /var/backups/framique/latest`).
 3. **Decrypt with Vault Key**: `openssl enc -d -aes-256-gcm` using the off-site master key.

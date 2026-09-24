@@ -243,9 +243,8 @@ function Marketplace() {
         // Installation filter
         const isInstalled = data.installs.some(
           (i) =>
-            (l.builtin
-              ? i.listing_slug === l.slug
-              : i.widget_id === l.id) && isLiveInstall(i.status),
+            (l.builtin ? i.listing_slug === l.slug : i.widget_id === l.id) &&
+            isLiveInstall(i.status),
         );
         if (installFilter === "installed" && !isInstalled) return false;
         if (installFilter === "available" && isInstalled) return false;

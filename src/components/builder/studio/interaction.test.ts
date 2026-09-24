@@ -81,15 +81,15 @@ describe("studio shortcuts — new ids", () => {
   });
 
   it("matches reorder keys with either mod key", () => {
-    expect(
-      matchStudioShortcut({ key: "ArrowUp", metaKey: true })?.id,
-    ).toBe("move_up");
+    expect(matchStudioShortcut({ key: "ArrowUp", metaKey: true })?.id).toBe(
+      "move_up",
+    );
     expect(matchStudioShortcut({ key: "ArrowUp", ctrlKey: true })?.id).toBe(
       "move_up",
     );
-    expect(
-      matchStudioShortcut({ key: "ArrowDown", metaKey: true })?.id,
-    ).toBe("move_down");
+    expect(matchStudioShortcut({ key: "ArrowDown", metaKey: true })?.id).toBe(
+      "move_down",
+    );
     expect(
       matchStudioShortcut({ key: "ArrowDown", ctrlKey: true }, "mac")?.id,
     ).toBe("move_down");
@@ -141,12 +141,7 @@ describe("studio shortcut dispatch", () => {
     expect(runStudioShortcut("move_down", ctx)).toBe(true);
     expect(runStudioShortcut("deselect", ctx)).toBe(true);
     expect(runStudioShortcut("search_layers", ctx)).toBe(true);
-    expect(calls).toEqual([
-      "nudge:-1",
-      "nudge:1",
-      "deselect",
-      "searchLayers",
-    ]);
+    expect(calls).toEqual(["nudge:-1", "nudge:1", "deselect", "searchLayers"]);
   });
 
   it("dispatches both paste-style spellings to the same handler", () => {

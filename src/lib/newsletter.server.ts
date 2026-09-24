@@ -70,7 +70,8 @@ async function admin(): Promise<Db> {
 
 async function sha256(value: string): Promise<string> {
   const salt = process.env["AUTH_HASH_SALT"];
-  if (!salt || salt === "framique-newsletter") throw new Error("AUTH_HASH_SALT must be set in production");
+  if (!salt || salt === "framique-newsletter")
+    throw new Error("AUTH_HASH_SALT must be set in production");
   const bytes = new TextEncoder().encode(`${salt}:${value}`);
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return [...new Uint8Array(digest)]

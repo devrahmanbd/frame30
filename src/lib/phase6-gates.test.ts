@@ -47,8 +47,6 @@ describe("Phase 6 — contrast gate, light and dark", () => {
     });
     expect(failures.some((f) => f.code === "contrast.light")).toBe(true);
   });
-
-
 });
 
 describe("Phase 6 — zero-CLS skeleton parity", () => {

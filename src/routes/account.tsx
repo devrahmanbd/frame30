@@ -177,270 +177,264 @@ function AccountPage() {
   // takes the `ast` slot once the widget registry knows its section types.)
   const dashboard = (
     <>
-        <h1 className="font-bangla-display text-2xl font-bold sm:text-3xl">
-          {t("Your account", "আপনার অ্যাকাউন্ট")}
-        </h1>
+      <h1 className="font-bangla-display text-2xl font-bold sm:text-3xl">
+        {t("Your account", "আপনার অ্যাকাউন্ট")}
+      </h1>
 
-        <div
-          role="tablist"
-          aria-label={t("Account sections", "অ্যাকাউন্ট বিভাগ")}
-          className="mt-4 flex flex-wrap gap-2"
-        >
-          {TABS.map((key) => (
-            <button
-              key={key}
-              role="tab"
-              type="button"
-              aria-selected={tab === key}
-              onClick={() => setTab(key)}
-              className={`inline-flex min-h-11 items-center gap-2 rounded-fq-md border px-3 text-sm font-medium ${
-                tab === key
-                  ? "border-bd-teal-700 bg-bd-teal-700 text-background"
-                  : "border-border bg-card text-muted-foreground hover:bg-muted"
-              }`}
-            >
-              {key === "orders" && <Package className="size-4" aria-hidden />}
-              {key === "addresses" && <MapPin className="size-4" aria-hidden />}
-              {key === "wishlist" && <Heart className="size-4" aria-hidden />}
-              {key === "profile" && <User className="size-4" aria-hidden />}
-              {key === "privacy" && (
-                <ShieldCheck className="size-4" aria-hidden />
-              )}
-              {key === "orders"
-                ? t("Orders", "অর্ডার")
-                : key === "addresses"
-                  ? t("Addresses", "ঠিকানা")
-                  : key === "wishlist"
-                    ? t("Wishlist", "উইশলিস্ট")
-                    : key === "profile"
-                      ? t("Profile", "প্রোফাইল")
-                      : t("Privacy", "গোপনীয়তা")}
-            </button>
-          ))}
-        </div>
-
-        {account.isPending && (
-          <p className="mt-6 text-sm text-muted-foreground" aria-live="polite">
-            {t("Loading your account…", "আপনার অ্যাকাউন্ট লোড হচ্ছে…")}
-          </p>
-        )}
-
-        {account.isError && (
-          <p className="mt-6 rounded-fq-md border border-danger bg-danger/10 p-4 text-sm text-danger-foreground">
-            {t(
-              "We could not load your account right now.",
-              "এখন আপনার অ্যাকাউন্ট লোড করা যায়নি।",
+      <div
+        role="tablist"
+        aria-label={t("Account sections", "অ্যাকাউন্ট বিভাগ")}
+        className="mt-4 flex flex-wrap gap-2"
+      >
+        {TABS.map((key) => (
+          <button
+            key={key}
+            role="tab"
+            type="button"
+            aria-selected={tab === key}
+            onClick={() => setTab(key)}
+            className={`inline-flex min-h-11 items-center gap-2 rounded-fq-md border px-3 text-sm font-medium ${
+              tab === key
+                ? "border-bd-teal-700 bg-bd-teal-700 text-background"
+                : "border-border bg-card text-muted-foreground hover:bg-muted"
+            }`}
+          >
+            {key === "orders" && <Package className="size-4" aria-hidden />}
+            {key === "addresses" && <MapPin className="size-4" aria-hidden />}
+            {key === "wishlist" && <Heart className="size-4" aria-hidden />}
+            {key === "profile" && <User className="size-4" aria-hidden />}
+            {key === "privacy" && (
+              <ShieldCheck className="size-4" aria-hidden />
             )}
-          </p>
-        )}
+            {key === "orders"
+              ? t("Orders", "অর্ডার")
+              : key === "addresses"
+                ? t("Addresses", "ঠিকানা")
+                : key === "wishlist"
+                  ? t("Wishlist", "উইশলিস্ট")
+                  : key === "profile"
+                    ? t("Profile", "প্রোফাইল")
+                    : t("Privacy", "গোপনীয়তা")}
+          </button>
+        ))}
+      </div>
 
-        {data && (
-          <section role="tabpanel" className="mt-6">
-            {tab === "orders" &&
-              (data.orders.length === 0 ? (
-                <Empty
-                  text={t("No orders yet.", "এখনও কোনো অর্ডার নেই।")}
-                  slug={slug}
-                />
-              ) : (
-                <ul className="space-y-2">
-                  {data.orders.map((o) => (
-                    <li key={o.id}>
-                      <Link
-                        to="/store/$slug/order/$orderId"
-                        params={{ slug, orderId: o.id }}
-                        className="flex flex-wrap items-center justify-between gap-2 rounded-fq-lg border border-border bg-card p-4 hover:bg-muted"
-                      >
-                        <span>
-                          <span className="money block text-sm font-semibold">
-                            {o.order_number}
-                          </span>
-                          <time
-                            dateTime={o.created_at}
-                            className="money text-xs text-muted-foreground"
-                          >
-                            {new Date(o.created_at).toLocaleDateString("en-GB")}
-                          </time>
-                        </span>
-                        <span className="text-xs uppercase tracking-wide text-muted-foreground">
-                          {o.status}
-                        </span>
-                        <span className="money text-sm font-semibold">
-                          {fmtMinor(o.total_minor_int, o.currency_code)}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              ))}
+      {account.isPending && (
+        <p className="mt-6 text-sm text-muted-foreground" aria-live="polite">
+          {t("Loading your account…", "আপনার অ্যাকাউন্ট লোড হচ্ছে…")}
+        </p>
+      )}
 
-            {tab === "addresses" && (
-              <div className="space-y-4">
-                <ul className="grid gap-3 sm:grid-cols-2">
-                  {data.addresses.map((a) => (
-                    <li
-                      key={a.id}
-                      className="rounded-fq-lg border border-border bg-card p-4"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <p className="text-sm font-semibold">
-                            {a.label}
-                            {a.is_default && (
-                              <span className="ml-2 rounded-full bg-success/15 px-2 py-0.5 text-xs text-success-foreground">
-                                {t("Default", "ডিফল্ট")}
-                              </span>
-                            )}
-                          </p>
-                          <p className="mt-1 text-sm text-muted-foreground">
-                            {a.full_name} ·{" "}
-                            <span className="money">{a.phone}</span>
-                            <br />
-                            {a.line1}
-                            {a.line2 ? `, ${a.line2}` : ""}
-                            <br />
-                            {a.city}, {a.district}{" "}
-                            <span className="money">{a.postcode ?? ""}</span>
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          aria-label={t(
-                            `Remove ${a.label}`,
-                            `${a.label} মুছুন`,
-                          )}
-                          onClick={() =>
-                            delAddress.mutate({ slug, addressId: a.id })
-                          }
-                          className="rounded-fq-md p-2 text-danger-foreground hover:bg-danger/10"
-                        >
-                          <Trash2 className="size-4" aria-hidden />
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-                <AddressForm
-                  busy={saveAddress.isPending}
-                  onSubmit={(v) => saveAddress.mutate({ slug, ...v })}
-                />
-              </div>
-            )}
+      {account.isError && (
+        <p className="mt-6 rounded-fq-md border border-danger bg-danger/10 p-4 text-sm text-danger-foreground">
+          {t(
+            "We could not load your account right now.",
+            "এখন আপনার অ্যাকাউন্ট লোড করা যায়নি।",
+          )}
+        </p>
+      )}
 
-            {tab === "wishlist" &&
-              (data.wishlist.length === 0 ? (
-                <Empty
-                  text={t("Nothing saved yet.", "এখনও কিছু সংরক্ষিত নেই।")}
-                  slug={slug}
-                />
-              ) : (
-                <ul className="grid gap-3 sm:grid-cols-2">
-                  {data.wishlist.map((w) => (
-                    <li
-                      key={w.id}
-                      className="flex items-center justify-between gap-3 rounded-fq-lg border border-border bg-card p-4"
-                    >
-                      <Link
-                        to="/p/$productSlug"
-                        params={{ productSlug: w.product_slug }}
-                        className="min-w-0"
-                      >
-                        <span className="block truncate text-sm font-medium">
-                          {w.product_title}
-                        </span>
-                        <span className="block text-xs text-muted-foreground">
-                          {w.variant_name}
-                        </span>
-                        <span className="money mt-1 block text-sm font-semibold">
-                          {fmtMinor(w.price_amount_minor_int, currency)}
-                        </span>
-                        <span
-                          className={`text-xs ${w.stock_quantity > 0 ? "text-success-foreground" : "text-warn-foreground"}`}
-                        >
-                          {w.stock_quantity > 0
-                            ? t("In stock", "স্টকে আছে")
-                            : t("Out of stock", "স্টক নেই")}
-                        </span>
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          toggleWish.mutate({
-                            slug,
-                            variantId: w.variant_id,
-                            stockAlert: false,
-                          })
-                        }
-                        className="min-h-11 rounded-fq-md border border-border px-3 text-xs"
-                      >
-                        {t("Remove", "সরান")}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              ))}
-
-            {tab === "profile" && (
-              <ProfileForm
-                busy={saveProfile.isPending}
-                initial={{
-                  name: data.profile?.name ?? "",
-                  email: data.profile?.email ?? "",
-                  phone: data.profile?.phone ?? "",
-                }}
-                onSubmit={(v) =>
-                  saveProfile.mutate({ slug, ...v, locale: "bn" })
-                }
+      {data && (
+        <section role="tabpanel" className="mt-6">
+          {tab === "orders" &&
+            (data.orders.length === 0 ? (
+              <Empty
+                text={t("No orders yet.", "এখনও কোনো অর্ডার নেই।")}
+                slug={slug}
               />
-            )}
-
-            {tab === "privacy" && (
-              <div className="max-w-xl space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  {t(
-                    "You choose which messages this store may send you. Turning one off applies everywhere immediately.",
-                    "এই দোকান আপনাকে কোন বার্তা পাঠাতে পারবে তা আপনি ঠিক করবেন। বন্ধ করলে সব জায়গায় সাথে সাথে প্রযোজ্য হবে।",
-                  )}
-                </p>
-                {CONSENTS.map((c) => {
-                  const key = `${c.channel}:${c.purpose}`;
-                  const on = consentMap.get(key) ?? false;
-                  return (
-                    <label
-                      key={key}
-                      className="flex items-center justify-between gap-3 rounded-fq-lg border border-border bg-card p-4 text-sm"
+            ) : (
+              <ul className="space-y-2">
+                {data.orders.map((o) => (
+                  <li key={o.id}>
+                    <Link
+                      to="/store/$slug/order/$orderId"
+                      params={{ slug, orderId: o.id }}
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-fq-lg border border-border bg-card p-4 hover:bg-muted"
                     >
                       <span>
-                        <span className="font-medium capitalize">
-                          {c.purpose.replace("_", " ")}
+                        <span className="money block text-sm font-semibold">
+                          {o.order_number}
                         </span>
-                        <span className="block text-xs uppercase tracking-wide text-muted-foreground">
-                          {c.channel}
-                        </span>
+                        <time
+                          dateTime={o.created_at}
+                          className="money text-xs text-muted-foreground"
+                        >
+                          {new Date(o.created_at).toLocaleDateString("en-GB")}
+                        </time>
                       </span>
-                      <input
-                        type="checkbox"
-                        checked={on}
-                        onChange={(e) =>
-                          setConsent.mutate({
-                            slug,
-                            channel: c.channel,
-                            purpose: c.purpose,
-                            granted: e.target.checked,
-                          })
+                      <span className="text-xs uppercase tracking-wide text-muted-foreground">
+                        {o.status}
+                      </span>
+                      <span className="money text-sm font-semibold">
+                        {fmtMinor(o.total_minor_int, o.currency_code)}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ))}
+
+          {tab === "addresses" && (
+            <div className="space-y-4">
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {data.addresses.map((a) => (
+                  <li
+                    key={a.id}
+                    className="rounded-fq-lg border border-border bg-card p-4"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <p className="text-sm font-semibold">
+                          {a.label}
+                          {a.is_default && (
+                            <span className="ml-2 rounded-full bg-success/15 px-2 py-0.5 text-xs text-success-foreground">
+                              {t("Default", "ডিফল্ট")}
+                            </span>
+                          )}
+                        </p>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {a.full_name} ·{" "}
+                          <span className="money">{a.phone}</span>
+                          <br />
+                          {a.line1}
+                          {a.line2 ? `, ${a.line2}` : ""}
+                          <br />
+                          {a.city}, {a.district}{" "}
+                          <span className="money">{a.postcode ?? ""}</span>
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        aria-label={t(`Remove ${a.label}`, `${a.label} মুছুন`)}
+                        onClick={() =>
+                          delAddress.mutate({ slug, addressId: a.id })
                         }
-                        className="size-5 accent-[var(--bd-teal-700)]"
-                      />
-                    </label>
-                  );
-                })}
-              </div>
-            )}
-          </section>
-        )}
+                        className="rounded-fq-md p-2 text-danger-foreground hover:bg-danger/10"
+                      >
+                        <Trash2 className="size-4" aria-hidden />
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+              <AddressForm
+                busy={saveAddress.isPending}
+                onSubmit={(v) => saveAddress.mutate({ slug, ...v })}
+              />
+            </div>
+          )}
+
+          {tab === "wishlist" &&
+            (data.wishlist.length === 0 ? (
+              <Empty
+                text={t("Nothing saved yet.", "এখনও কিছু সংরক্ষিত নেই।")}
+                slug={slug}
+              />
+            ) : (
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {data.wishlist.map((w) => (
+                  <li
+                    key={w.id}
+                    className="flex items-center justify-between gap-3 rounded-fq-lg border border-border bg-card p-4"
+                  >
+                    <Link
+                      to="/p/$productSlug"
+                      params={{ productSlug: w.product_slug }}
+                      className="min-w-0"
+                    >
+                      <span className="block truncate text-sm font-medium">
+                        {w.product_title}
+                      </span>
+                      <span className="block text-xs text-muted-foreground">
+                        {w.variant_name}
+                      </span>
+                      <span className="money mt-1 block text-sm font-semibold">
+                        {fmtMinor(w.price_amount_minor_int, currency)}
+                      </span>
+                      <span
+                        className={`text-xs ${w.stock_quantity > 0 ? "text-success-foreground" : "text-warn-foreground"}`}
+                      >
+                        {w.stock_quantity > 0
+                          ? t("In stock", "স্টকে আছে")
+                          : t("Out of stock", "স্টক নেই")}
+                      </span>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        toggleWish.mutate({
+                          slug,
+                          variantId: w.variant_id,
+                          stockAlert: false,
+                        })
+                      }
+                      className="min-h-11 rounded-fq-md border border-border px-3 text-xs"
+                    >
+                      {t("Remove", "সরান")}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ))}
+
+          {tab === "profile" && (
+            <ProfileForm
+              busy={saveProfile.isPending}
+              initial={{
+                name: data.profile?.name ?? "",
+                email: data.profile?.email ?? "",
+                phone: data.profile?.phone ?? "",
+              }}
+              onSubmit={(v) => saveProfile.mutate({ slug, ...v, locale: "bn" })}
+            />
+          )}
+
+          {tab === "privacy" && (
+            <div className="max-w-xl space-y-3">
+              <p className="text-sm text-muted-foreground">
+                {t(
+                  "You choose which messages this store may send you. Turning one off applies everywhere immediately.",
+                  "এই দোকান আপনাকে কোন বার্তা পাঠাতে পারবে তা আপনি ঠিক করবেন। বন্ধ করলে সব জায়গায় সাথে সাথে প্রযোজ্য হবে।",
+                )}
+              </p>
+              {CONSENTS.map((c) => {
+                const key = `${c.channel}:${c.purpose}`;
+                const on = consentMap.get(key) ?? false;
+                return (
+                  <label
+                    key={key}
+                    className="flex items-center justify-between gap-3 rounded-fq-lg border border-border bg-card p-4 text-sm"
+                  >
+                    <span>
+                      <span className="font-medium capitalize">
+                        {c.purpose.replace("_", " ")}
+                      </span>
+                      <span className="block text-xs uppercase tracking-wide text-muted-foreground">
+                        {c.channel}
+                      </span>
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={on}
+                      onChange={(e) =>
+                        setConsent.mutate({
+                          slug,
+                          channel: c.channel,
+                          purpose: c.purpose,
+                          granted: e.target.checked,
+                        })
+                      }
+                      className="size-5 accent-[var(--bd-teal-700)]"
+                    />
+                  </label>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      )}
     </>
   );
-
 
   const { lang } = useLang();
   // Theme account template: feed merchant orders_list / profile_card
@@ -456,9 +450,7 @@ function AccountPage() {
       out.orders_list = (
         <OrdersList
           {...accountSlotCtx(o, {
-            rows: overview
-              ? mapOrdersToRows(overview.orders ?? [])
-              : undefined,
+            rows: overview ? mapOrdersToRows(overview.orders ?? []) : undefined,
             pending,
             locale: lang,
             storeSlug: slug,
@@ -487,24 +479,24 @@ function AccountPage() {
 
   return (
     <PluginLayer plugins={chrome?.installedPlugins ?? []}>
-    <ThemeChrome
-      template="account"
-      ast={chrome?.ast ?? null}
-      tokens={chrome?.tokens ?? null}
-      storeSlug={slug}
-      merchantId={chrome?.merchant.id ?? null}
-      siteKit={chrome?.siteKit ?? null}
-      ownsPrimary
-      contextSlots={accountSlots}
-      chrome={
-        <StoreHeader
-          slug={slug}
-          name={chrome?.merchant.name ?? store?.name ?? slug}
-        />
-      }
-      containerClassName="mx-auto max-w-5xl px-4 py-8"
-      fallback={dashboard}
-    />
+      <ThemeChrome
+        template="account"
+        ast={chrome?.ast ?? null}
+        tokens={chrome?.tokens ?? null}
+        storeSlug={slug}
+        merchantId={chrome?.merchant.id ?? null}
+        siteKit={chrome?.siteKit ?? null}
+        ownsPrimary
+        contextSlots={accountSlots}
+        chrome={
+          <StoreHeader
+            slug={slug}
+            name={chrome?.merchant.name ?? store?.name ?? slug}
+          />
+        }
+        containerClassName="mx-auto max-w-5xl px-4 py-8"
+        fallback={dashboard}
+      />
     </PluginLayer>
   );
 }

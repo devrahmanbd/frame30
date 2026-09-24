@@ -14,8 +14,7 @@ import {
  */
 
 const toneClass: Record<DomainTone, string> = {
-  neutral:
-    "border-border bg-muted text-foreground",
+  neutral: "border-border bg-muted text-foreground",
   info: "border-info/40 bg-info-soft text-info-foreground font-medium",
   success:
     "border-success/40 bg-success-soft text-success-foreground font-medium",
@@ -74,10 +73,7 @@ export function DomainProgress({
               {labels[stage.key] ?? stage.key}
             </span>
             {i < DOMAIN_STAGES.length - 1 && (
-              <span
-                aria-hidden
-                className="h-0.5 w-4 rounded-full bg-border"
-              />
+              <span aria-hidden className="h-0.5 w-4 rounded-full bg-border" />
             )}
           </li>
         );

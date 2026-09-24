@@ -140,7 +140,7 @@ export async function uploadMedia(
   if (allowedExts && !allowedExts.includes(ext)) {
     throw new MediaError(
       "bad_extension",
-      `File extension .${ext} does not match content type ${contentType}`
+      `File extension .${ext} does not match content type ${contentType}`,
     );
   }
 
@@ -172,11 +172,13 @@ export async function uploadMedia(
   const path = `${merchantId}/${safeFileName(fileName, contentType)}`;
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
-  const up = await supabaseAdmin.storage.from(BUCKET).upload(path, uploadBytes, {
-    contentType,
-    upsert: false,
-    cacheControl: "31536000",
-  });
+  const up = await supabaseAdmin.storage
+    .from(BUCKET)
+    .upload(path, uploadBytes, {
+      contentType,
+      upsert: false,
+      cacheControl: "31536000",
+    });
   if (up.error) throw new MediaError("upload_failed", up.error.message);
 
   return {

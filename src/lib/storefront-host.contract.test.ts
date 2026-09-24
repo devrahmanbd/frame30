@@ -106,12 +106,7 @@ describe("decideHostResolution", () => {
   });
 
   it("unproven rows resolve to null", () => {
-    for (const status of [
-      "pending_dns",
-      "verifying",
-      "failed",
-      "disabled",
-    ]) {
+    for (const status of ["pending_dns", "verifying", "failed", "disabled"]) {
       expect(
         decideHostResolution("microscrop.shop", {
           ...ACTIVE_PRIMARY,

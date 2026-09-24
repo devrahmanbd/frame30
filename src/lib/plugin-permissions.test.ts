@@ -7,7 +7,10 @@ describe("plugins.* permissions", () => {
     expect(PERMISSIONS).toContain("plugins.update");
   });
   it("no plugin fn or route still references themes.*", () => {
-    for (const f of ["src/lib/plugins.functions.ts", "src/routes/_authenticated/dashboard/plugins/index.tsx"]) {
+    for (const f of [
+      "src/lib/plugins.functions.ts",
+      "src/routes/_authenticated/dashboard/plugins/index.tsx",
+    ]) {
       expect(readFileSync(f, "utf8")).not.toMatch(/themes\.(read|update)/);
     }
     const nav = readFileSync("src/lib/console-nav.ts", "utf8");
@@ -22,8 +25,10 @@ describe("plugins.* permissions", () => {
   it("mirrors themes read/update in every role preset with plugins read/update", () => {
     for (const [name, perms] of Object.entries(ROLE_PRESETS)) {
       const list = perms as readonly string[];
-      if (list.includes("themes.read")) expect(list, name).toContain("plugins.read");
-      if (list.includes("themes.update")) expect(list, name).toContain("plugins.update");
+      if (list.includes("themes.read"))
+        expect(list, name).toContain("plugins.read");
+      if (list.includes("themes.update"))
+        expect(list, name).toContain("plugins.update");
     }
   });
 });

@@ -81,7 +81,9 @@ export type HeroTimelinePlan = {
  * CTA → image x/autoAlpha drift. Null unless intent is full — reduced and
  * off intents render the static first slide with no scroll animation.
  */
-export function heroTimelinePlan(intent: MotionIntent): HeroTimelinePlan | null {
+export function heroTimelinePlan(
+  intent: MotionIntent,
+): HeroTimelinePlan | null {
   if (intent !== "full") return null;
   return {
     defaults: { ...SONGOSKRITI_HERO_DEFAULTS },
@@ -171,8 +173,7 @@ export function findRevealScrollerNode(
   if (!start) return null;
   let node = start.parentElement;
   while (node) {
-    const scrolls =
-      node.overflowY === "auto" || node.overflowY === "scroll";
+    const scrolls = node.overflowY === "auto" || node.overflowY === "scroll";
     if (scrolls && node.scrollHeight > node.clientHeight) return node;
     node = node.parentElement;
   }
@@ -323,10 +324,7 @@ export function createCarouselController(
 
 type GsapTimeline = ReturnType<MotionEngine["gsap"]["timeline"]>;
 
-function scopeTargets(
-  scope: HTMLElement,
-  selector: string,
-): HTMLElement[] {
+function scopeTargets(scope: HTMLElement, selector: string): HTMLElement[] {
   if (scope.matches(selector)) return [scope];
   return Array.from(scope.querySelectorAll(selector));
 }
@@ -391,9 +389,7 @@ export function useSongoskritiHero(
         };
 
         const buildArt = (parent: GsapTimeline) => {
-          const art = plan.steps.find(
-            (s) => s.target === "[data-hero-art]",
-          )!;
+          const art = plan.steps.find((s) => s.target === "[data-hero-art]")!;
           parent.add(
             gsap.from(art.target, {
               x: art.from.x ?? 0,
@@ -428,10 +424,12 @@ export function useSongoskritiHero(
               const splits: { revert: () => void }[] = [];
               heads.forEach((el) => {
                 try {
-                  const split = new (SplitText as new (target: Element, vars: object) => { words: Element[]; revert: () => void })(
-                    el,
-                    { type: "words", wordsClass: "hero-word" },
-                  );
+                  const split = new (
+                    SplitText as new (
+                      target: Element,
+                      vars: object,
+                    ) => { words: Element[]; revert: () => void }
+                  )(el, { type: "words", wordsClass: "hero-word" });
                   splits.push(split);
                   for (const w of split.words)
                     words.push(w as unknown as string);
@@ -457,7 +455,8 @@ export function useSongoskritiHero(
             const onMove = (event: PointerEvent) => {
               if (event.pointerType !== "mouse") return;
               const rect = scope.getBoundingClientRect();
-              const dx = (event.clientX - rect.left) / Math.max(rect.width, 1) - 0.5;
+              const dx =
+                (event.clientX - rect.left) / Math.max(rect.width, 1) - 0.5;
               qx(dx * 24);
             };
             scope.addEventListener("pointermove", onMove);
@@ -586,10 +585,7 @@ export function useSongoskritiReveals(
  * into React state via `onIndex`, arms the timer only at full intent
  * (reduced/off stay on the static first slide), and stops it on unmount.
  */
-export function useSongoskritiCarousel(
-  count: number,
-  autoAdvanceMs = 6000,
-) {
+export function useSongoskritiCarousel(count: number, autoAdvanceMs = 6000) {
   const intent = useMotionIntent();
   const [index, setIndex] = useState(0);
   const controller = useMemo(

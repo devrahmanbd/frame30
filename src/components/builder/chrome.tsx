@@ -258,16 +258,16 @@ function MegaMenu({ str, int, data }: WidgetCtx) {
   const inline = visible.slice(0, 6);
   const overflow = visible.slice(6);
   return (
-    <div className="border-y border-border bg-card">
+    <div className="bg-background">
       <nav
         aria-label={label}
-        className="mx-auto flex max-w-[var(--fq-container,1280px)] items-center gap-1 overflow-x-auto px-4 sm:px-6"
+        className="mx-auto flex max-w-[var(--fq-container,1280px)] items-center gap-4 overflow-x-auto px-4 sm:px-6 py-2"
       >
         {inline.map((row) => (
           <a
             key={row.id}
             href={row.href ?? "#"}
-            className="inline-flex min-h-11 shrink-0 items-center whitespace-nowrap px-3 text-sm font-medium text-foreground/80 hover:text-primary hover:underline"
+            className="inline-flex min-h-10 shrink-0 items-center whitespace-nowrap px-1 text-[13px] font-semibold tracking-wide fq-caps text-foreground/80 transition-colors hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
           >
             {row.title}
           </a>
@@ -375,16 +375,22 @@ function FooterSitemap({ str, section }: WidgetCtx) {
           .filter((col) => col.title || col.links.length > 0);
   if (columns.length === 0) return null;
   return (
-    <nav aria-label="Footer" className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+    <nav
+      aria-label="Footer"
+      className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4 lg:gap-12 py-8"
+    >
       {columns.map((col) => (
         <div key={col.title}>
-          <p className="text-xs font-semibold fq-caps text-muted-foreground">
+          <p className="text-[11px] font-bold fq-caps tracking-widest text-foreground mb-4">
             {col.title}
           </p>
-          <ul className="mt-2 space-y-1">
+          <ul className="space-y-2.5">
             {col.links.map((link) => (
               <li key={`${col.title}-${link.label}`}>
-                <a href={link.href} className="text-sm hover:underline">
+                <a
+                  href={link.href}
+                  className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
+                >
                   {link.label}
                 </a>
               </li>
@@ -461,10 +467,12 @@ function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex min-h-9 items-center gap-2 rounded-fq-md border border-border bg-card px-3 text-sm text-muted-foreground"
+        className="inline-flex min-h-10 items-center gap-3 rounded-full bg-muted/50 hover:bg-muted/80 px-4 text-sm text-muted-foreground transition-colors w-full sm:w-64"
       >
-        <span aria-hidden="true">⌕</span>
-        {str("placeholder") || "Search"}
+        <span aria-hidden="true" className="text-foreground/60">
+          ⌕
+        </span>
+        {str("placeholder") || "Search for products..."}
       </button>
       <OverlayHost
         open={open}
@@ -473,7 +481,7 @@ function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
         side="center"
       >
         <div className="space-y-3">
-          <label className="block">
+          <label className="block relative">
             <span className="sr-only">
               {str("placeholder") || "Search products"}
             </span>
@@ -482,8 +490,8 @@ function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
               value={term}
               autoComplete="off"
               onChange={(event) => setTerm(event.target.value)}
-              placeholder={str("placeholder") || "Search products"}
-              className="w-full rounded-fq-md border border-border bg-background px-3 py-2 text-sm"
+              placeholder={str("placeholder") || "Search products..."}
+              className="w-full rounded-none border-0 border-b-2 border-primary/20 focus:border-primary bg-transparent px-0 py-3 text-lg outline-none transition-colors"
             />
           </label>
           <div aria-live="polite" className="min-h-24">
@@ -556,57 +564,9 @@ function AccountCart({ str, bool, storeSlug }: WidgetCtx) {
   );
 }
 
-function SubbrandBar({ str, locale }: WidgetCtx) {
-  const active = (str("activeBrand") || "aarong").trim().toLowerCase();
-  const brands = [1, 2, 3, 4, 5]
-    .map((n) => ({
-      name: str(`b${n}Name`),
-      href: str(`b${n}Href`) || "#",
-    }))
-    .filter((b) => b.name.length > 0);
-
-  if (brands.length === 0) return null;
-
-  const tagline =
-    locale === "bn" && str("tagline_bn") ? str("tagline_bn") : str("tagline");
-
-  return (
-    <nav
-      aria-label="Brand family"
-      className="border-b border-border/40 bg-muted/40 text-xs"
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <ul className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-1.5 scrollbar-none">
-          {brands.map((b) => {
-            const isActive =
-              b.name.toLowerCase() === active ||
-              b.name.toLowerCase().replace(/\s+/g, "") ===
-                active.replace(/\s+/g, "");
-            return (
-              <li key={b.name} className="shrink-0">
-                <a
-                  href={b.href}
-                  className={`inline-flex items-center px-3 py-1 rounded-sm text-[11px] font-semibold fq-caps tracking-widest transition-all ${
-                    isActive
-                      ? "bg-primary text-primary-foreground font-bold shadow-xs"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/80"
-                  }`}
-                  aria-current={isActive ? "page" : undefined}
-                >
-                  {b.name}
-                </a>
-              </li>
-            );
-          })}
-        </ul>
-        {tagline && (
-          <span className="hidden md:inline-flex items-center text-[10px] tracking-wider text-muted-foreground font-medium fq-caps">
-            {tagline}
-          </span>
-        )}
-      </div>
-    </nav>
-  );
+function SubbrandBar(_ctx: WidgetCtx) {
+  // Removed per user request: "The top bar is not needed"
+  return null;
 }
 
 /** Phase 2.1 renderers, merged into the closed widget map. */

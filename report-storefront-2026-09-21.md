@@ -47,6 +47,7 @@ Lighthouse 94 a11y / 100 best-practices / 100 SEO.
      root cause class as (2).
 
 Full reports (ephemeral, in MCP temp dir):
+
 - `/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/chrome-devtools-mcp-3JDilp/report.json`
 - `/var/folders/nf/__610j414m92zmwfssljry4h0000gp/T/chrome-devtools-mcp-XwYar4/report.html`
 

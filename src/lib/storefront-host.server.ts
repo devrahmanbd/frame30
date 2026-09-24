@@ -347,7 +347,12 @@ export async function isBlockedForeignStorePath(
   const match = /^\/store\/([^/?#]+)/.exec(pathname);
   if (!match) return false;
   const host = (hostname ?? "").toLowerCase();
-  if (!host || isPlatformHost(host) || host === "localhost" || host === "127.0.0.1")
+  if (
+    !host ||
+    isPlatformHost(host) ||
+    host === "localhost" ||
+    host === "127.0.0.1"
+  )
     return false;
   const res = await resolveStorefrontHostFor(host).catch(() => null);
   if (!res) return true;

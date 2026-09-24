@@ -13,7 +13,10 @@ import { DEMO_CATALOGS, demoCatalogFor } from "./demo-catalog";
 import { CATALOG_META, catalogMeta } from "./themes/catalog-meta";
 
 const SEED_SQL = readFileSync(
-  new URL("../../supabase/migrations/20260924_songoskriti_demo.sql", import.meta.url),
+  new URL(
+    "../../supabase/migrations/20260924_songoskriti_demo.sql",
+    import.meta.url,
+  ),
   "utf8",
 );
 
@@ -63,11 +66,12 @@ describe("songoskriti seed migration", () => {
 
   it("references asset files only, never remote URLs", () => {
     expect(SEED_SQL).not.toMatch(/https?:\/\//);
-    const refs = [...SEED_SQL.matchAll(/\/ph\/songoskriti\/[\w-]+\.(?:png|svg)/g)].map(
-      (m) => m[0],
-    );
+    const refs = [
+      ...SEED_SQL.matchAll(/\/ph\/songoskriti\/[\w-]+\.(?:png|svg)/g),
+    ].map((m) => m[0]);
     expect(refs.length).toBeGreaterThan(0);
-    for (const ref of refs) expect(ref.startsWith("/ph/songoskriti/")).toBe(true);
+    for (const ref of refs)
+      expect(ref.startsWith("/ph/songoskriti/")).toBe(true);
   });
 
   it("stays consistent with the TypeScript demo catalogue", () => {

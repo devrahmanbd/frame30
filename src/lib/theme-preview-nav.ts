@@ -34,8 +34,7 @@ export function previewTemplateForHref(href: string): TemplateKey | null {
   if (path === "/p" || path.startsWith("/p/")) return "product";
   if (path === "/collections" || path.startsWith("/collections/"))
     return "collection";
-  if (path === "/products" || path.startsWith("/products/"))
-    return "product";
+  if (path === "/products" || path.startsWith("/products/")) return "product";
   if (path === "/blog" || path.startsWith("/blog/")) return "blog";
   if (
     path === "/pages" ||

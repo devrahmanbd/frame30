@@ -156,8 +156,6 @@ export async function loadAnalytics(
       .slice(0, 8);
   }
 
-
-
   return {
     range,
     currency,

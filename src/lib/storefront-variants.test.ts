@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { mergePublicVariants, type PublicVariant } from "./storefront.server";
 
-const row = (product_id: string, price: number, stock: number): PublicVariant => ({
+const row = (
+  product_id: string,
+  price: number,
+  stock: number,
+): PublicVariant => ({
   product_id,
   id: `${product_id}-v1`,
   name: "Default",

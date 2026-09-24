@@ -196,16 +196,58 @@ describe("filtering", () => {
 
   it("sorts attachments by date, name, and size", () => {
     const list = [
-      att({ id: "a", title: "Zebra", fileName: "zebra.png", sizeBytes: 500, createdAt: "2026-01-01T00:00:00Z" }),
-      att({ id: "b", title: "Apple", fileName: "apple.png", sizeBytes: 1500, createdAt: "2026-03-01T00:00:00Z" }),
-      att({ id: "c", title: "Mango", fileName: "mango.png", sizeBytes: 100, createdAt: "2026-02-01T00:00:00Z" }),
+      att({
+        id: "a",
+        title: "Zebra",
+        fileName: "zebra.png",
+        sizeBytes: 500,
+        createdAt: "2026-01-01T00:00:00Z",
+      }),
+      att({
+        id: "b",
+        title: "Apple",
+        fileName: "apple.png",
+        sizeBytes: 1500,
+        createdAt: "2026-03-01T00:00:00Z",
+      }),
+      att({
+        id: "c",
+        title: "Mango",
+        fileName: "mango.png",
+        sizeBytes: 100,
+        createdAt: "2026-02-01T00:00:00Z",
+      }),
     ];
-    expect(sortAttachments(list, "name-asc").map((i) => i.id)).toEqual(["b", "c", "a"]);
-    expect(sortAttachments(list, "name-desc").map((i) => i.id)).toEqual(["a", "c", "b"]);
-    expect(sortAttachments(list, "size-desc").map((i) => i.id)).toEqual(["b", "a", "c"]);
-    expect(sortAttachments(list, "size-asc").map((i) => i.id)).toEqual(["c", "a", "b"]);
-    expect(sortAttachments(list, "date-desc").map((i) => i.id)).toEqual(["b", "c", "a"]);
-    expect(sortAttachments(list, "date-asc").map((i) => i.id)).toEqual(["a", "c", "b"]);
+    expect(sortAttachments(list, "name-asc").map((i) => i.id)).toEqual([
+      "b",
+      "c",
+      "a",
+    ]);
+    expect(sortAttachments(list, "name-desc").map((i) => i.id)).toEqual([
+      "a",
+      "c",
+      "b",
+    ]);
+    expect(sortAttachments(list, "size-desc").map((i) => i.id)).toEqual([
+      "b",
+      "a",
+      "c",
+    ]);
+    expect(sortAttachments(list, "size-asc").map((i) => i.id)).toEqual([
+      "c",
+      "a",
+      "b",
+    ]);
+    expect(sortAttachments(list, "date-desc").map((i) => i.id)).toEqual([
+      "b",
+      "c",
+      "a",
+    ]);
+    expect(sortAttachments(list, "date-asc").map((i) => i.id)).toEqual([
+      "a",
+      "c",
+      "b",
+    ]);
   });
 });
 
@@ -240,9 +282,15 @@ describe("formatting", () => {
 });
 
 describe("validateMagicBytes with strictness", () => {
-  const jpegBytes = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x00, 0x01]);
-  const pngBytes = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x00]);
-  const garbageBytes = new Uint8Array([0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b]);
+  const jpegBytes = new Uint8Array([
+    0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x00, 0x01,
+  ]);
+  const pngBytes = new Uint8Array([
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x00,
+  ]);
+  const garbageBytes = new Uint8Array([
+    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
+  ]);
 
   it("forensic: blocks all uploads", () => {
     const r = validateMagicBytes(jpegBytes, "image/jpeg", "forensic");
@@ -264,18 +312,36 @@ describe("validateMagicBytes with strictness", () => {
   it("enhanced: validates container format size headers", () => {
     // MP4 with reasonable declared size (0x0000000C = 12 bytes, actual 12 bytes)
     const mp4Header = new Uint8Array([
-      0x00, 0x00, 0x00, 0x0c, // declared size = 12 (matches actual)
-      0x66, 0x74, 0x79, 0x70, // ftyp
-      0x69, 0x73, 0x6f, 0x6d,
+      0x00,
+      0x00,
+      0x00,
+      0x0c, // declared size = 12 (matches actual)
+      0x66,
+      0x74,
+      0x79,
+      0x70, // ftyp
+      0x69,
+      0x73,
+      0x6f,
+      0x6d,
     ]);
     const r1 = validateMagicBytes(mp4Header, "video/mp4", "enhanced");
     expect(r1.ok).toBe(true);
 
     // MP4 with wildly wrong declared size (0x7FFFFFFF = ~2GB, actual 12 bytes)
     const mp4Bad = new Uint8Array([
-      0x7f, 0xff, 0xff, 0xff, // declared size = ~2GB, actual = 12
-      0x66, 0x74, 0x79, 0x70,
-      0x69, 0x73, 0x6f, 0x6d,
+      0x7f,
+      0xff,
+      0xff,
+      0xff, // declared size = ~2GB, actual = 12
+      0x66,
+      0x74,
+      0x79,
+      0x70,
+      0x69,
+      0x73,
+      0x6f,
+      0x6d,
     ]);
     const r2 = validateMagicBytes(mp4Bad, "video/mp4", "enhanced");
     expect(r2.ok).toBe(false);
@@ -283,7 +349,11 @@ describe("validateMagicBytes with strictness", () => {
   });
 
   it("strict: rejects unknown MIME types", () => {
-    const r = validateMagicBytes(garbageBytes, "application/x-unknown-type", "strict");
+    const r = validateMagicBytes(
+      garbageBytes,
+      "application/x-unknown-type",
+      "strict",
+    );
     expect(r.ok).toBe(false);
     expect(r).toHaveProperty("reason", "mime_not_allowed");
   });

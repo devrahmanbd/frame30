@@ -7,10 +7,7 @@
  *  - server revisions map 1:1 onto the studio `RevisionEntry` shape.
  */
 import { describe, expect, it, vi } from "vitest";
-import {
-  countBuilderLints,
-  countStudioLints,
-} from "@/lib/editor/editor-doc";
+import { countBuilderLints, countStudioLints } from "@/lib/editor/editor-doc";
 import {
   emptyStudioDoc,
   serializeStudioBody,

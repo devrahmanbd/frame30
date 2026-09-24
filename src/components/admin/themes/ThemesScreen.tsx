@@ -79,7 +79,10 @@ export function ThemesScreen() {
   const installed = useMemo(
     () =>
       orderInstalled(
-        searchInstalled(visibleInstalled(workspace.data?.installed ?? []), query),
+        searchInstalled(
+          visibleInstalled(workspace.data?.installed ?? []),
+          query,
+        ),
       ),
     [workspace.data, query],
   );
@@ -88,8 +91,7 @@ export function ThemesScreen() {
     [workspace.data],
   );
   const details = installed.find((theme) => theme.id === detailsId) ?? null;
-  const activeTheme =
-    installed.find((theme) => theme.isActive) ?? null;
+  const activeTheme = installed.find((theme) => theme.isActive) ?? null;
 
   const activate = useMutation({
     mutationFn: useServerFn(themeActivateFn),
@@ -168,7 +170,11 @@ export function ThemesScreen() {
   /** Opens the public blueprint preview route in a new tab. */
   const openBlueprintPreview = (theme: InstalledTheme) => {
     if (theme.key) {
-      window.open(`/theme-preview/${theme.key}`, "_blank", "noopener,noreferrer");
+      window.open(
+        `/theme-preview/${theme.key}`,
+        "_blank",
+        "noopener,noreferrer",
+      );
     }
   };
 
@@ -375,11 +381,11 @@ export function ThemesScreen() {
           <Card title="How themes work">
             <p className="text-sm fq-sub">
               Activating a theme replaces your storefront layout with that
-              theme&apos;s templates and colours. Switching themes never
-              touches your content — but importing demo data overwrites any
-              products, pages, posts or media with matching names, after an
-              explicit confirmation listing every conflict. You can switch
-              back at any time.
+              theme&apos;s templates and colours. Switching themes never touches
+              your content — but importing demo data overwrites any products,
+              pages, posts or media with matching names, after an explicit
+              confirmation listing every conflict. You can switch back at any
+              time.
             </p>
           </Card>
 

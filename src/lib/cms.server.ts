@@ -618,17 +618,15 @@ export async function saveRedirect(
   const from = fromPath.startsWith("/") ? fromPath : `/${fromPath}`;
   const to = toPath.startsWith("/") ? toPath : `/${toPath}`;
   if (from === to) throw new Error("A redirect cannot point at itself");
-  const { error } = await db
-    .from("url_redirects")
-    .upsert(
-      {
-        merchant_id: merchantId,
-        from_path: from,
-        to_path: to,
-        status_code: 301,
-      },
-      { onConflict: "merchant_id,from_path" },
-    );
+  const { error } = await db.from("url_redirects").upsert(
+    {
+      merchant_id: merchantId,
+      from_path: from,
+      to_path: to,
+      status_code: 301,
+    },
+    { onConflict: "merchant_id,from_path" },
+  );
   if (error) throw error;
 }
 

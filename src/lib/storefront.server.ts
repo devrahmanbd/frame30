@@ -1,5 +1,6 @@
 import { publicClient } from "./pricing.server";
-import { log, observe } from "./observability.server";import {
+import { log, observe } from "./observability.server";
+import {
   templateOf,
   type TemplateKey,
   type ThemeAst,
@@ -31,7 +32,10 @@ export type PublicVariant = {
 
 export function mergePublicVariants<
   P extends { id: string; product_variants?: unknown },
->(products: P[], rows: PublicVariant[]): (P & { product_variants: PublicVariant[] })[] {
+>(
+  products: P[],
+  rows: PublicVariant[],
+): (P & { product_variants: PublicVariant[] })[] {
   const byProduct = new Map<string, PublicVariant[]>();
   for (const row of rows) {
     const list = byProduct.get(row.product_id) ?? [];
@@ -222,9 +226,7 @@ export async function loadStoreCollection(
     ids.length
       ? db
           .from("products")
-          .select(
-            "id, title, slug, description, image_url",
-          )
+          .select("id, title, slug, description, image_url")
           .eq("merchant_id", merchant.id)
           .eq("status", "active")
           .in("id", ids)
@@ -390,9 +392,7 @@ async function loadStorefrontUncached(
       .maybeSingle(),
     db
       .from("products")
-      .select(
-        "id, title, slug, description, image_url, category_id",
-      )
+      .select("id, title, slug, description, image_url, category_id")
       .eq("merchant_id", merchant.id)
       .eq("status", "active")
       .order("created_at", { ascending: false })
@@ -444,9 +444,8 @@ async function loadStorefrontUncached(
     (async () => {
       if (widgetBundle.requests.length === 0) return {};
       const { resolveWidgetData } = await import("./widget-data.server");
-      const { currentRequestHost, storeLinkBase } = await import(
-        "./storefront-host.server"
-      );
+      const { currentRequestHost, storeLinkBase } =
+        await import("./storefront-host.server");
       return resolveWidgetData(merchant.id, widgetBundle, undefined, {
         base: storeLinkBase(currentRequestHost(), merchant.slug),
       });
@@ -588,9 +587,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
 
   const { data: product } = await db
     .from("products")
-    .select(
-      "id, title, slug, description, image_url",
-    )
+    .select("id, title, slug, description, image_url")
     .eq("merchant_id", merchant.id)
     .eq("slug", productSlug)
     .eq("status", "active")

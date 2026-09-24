@@ -550,10 +550,7 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
       {/* Bottom Bulk Actions Bar (mirrors the top bar) */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-xs text-muted-foreground">
-          {t(
-            `${selectedIds.size} selected`,
-            `${selectedIds.size}টি নির্বাচিত`,
-          )}
+          {t(`${selectedIds.size} selected`, `${selectedIds.size}টি নির্বাচিত`)}
         </p>
         <div className="flex items-center gap-2">
           <select

@@ -96,8 +96,16 @@ function ProductNotFound() {
 
 function ProductDetail() {
   const { t } = useLang();
-  const { merchant, product, settings, ast, tokens, siteKit, menus, installedPlugins } =
-    Route.useLoaderData();
+  const {
+    merchant,
+    product,
+    settings,
+    ast,
+    tokens,
+    siteKit,
+    menus,
+    installedPlugins,
+  } = Route.useLoaderData();
   const variants = product.product_variants ?? [];
   const [variantId, setVariantId] = useState(variants[0]?.id ?? "");
   const variant = variants.find((v) => v.id === variantId) ?? variants[0];
@@ -299,30 +307,34 @@ function ProductDetail() {
   return (
     <>
       <PluginLayer plugins={installedPlugins}>
-      <ThemeChrome
-        template="product"
-        storeSlug={merchant.slug}
-        merchantId={merchant.id}
-        ast={ast}
-        tokens={tokens}
-        siteKit={siteKit}
-        ownsPrimary={hasPriceBlock}
-        chrome={
-          <>
-            <StoreHeader slug={merchant.slug} name={merchant.name} menus={menus} />
-            {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
-            {/* <SupportWidget slug={merchant.slug} /> */}
-          </>
-        }
-        contextSlots={{
-          breadcrumb,
-          product_media: media,
-          price_block: priceBlock,
-          add_to_cart: addToCart,
-          product_meta: meta,
-        }}
-        fallback={fallback}
-      />
+        <ThemeChrome
+          template="product"
+          storeSlug={merchant.slug}
+          merchantId={merchant.id}
+          ast={ast}
+          tokens={tokens}
+          siteKit={siteKit}
+          ownsPrimary={hasPriceBlock}
+          chrome={
+            <>
+              <StoreHeader
+                slug={merchant.slug}
+                name={merchant.name}
+                menus={menus}
+              />
+              {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+              {/* <SupportWidget slug={merchant.slug} /> */}
+            </>
+          }
+          contextSlots={{
+            breadcrumb,
+            product_media: media,
+            price_block: priceBlock,
+            add_to_cart: addToCart,
+            product_meta: meta,
+          }}
+          fallback={fallback}
+        />
       </PluginLayer>
       <div className="mx-auto max-w-6xl px-4 pb-16">{conversion}</div>
     </>

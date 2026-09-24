@@ -62,9 +62,7 @@ function fingerprint(finding: WeightFinding) {
     .digest("hex");
 }
 
-async function sampleHeads(
-  merchantId: string,
-): Promise<{
+async function sampleHeads(merchantId: string): Promise<{
   heads: { route: string; head: HeadOutput }[];
   partial: string[];
 }> {

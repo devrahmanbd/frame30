@@ -120,10 +120,16 @@ describe("Disaster-Proof Blue/Green Deployment & Whole-System Backup Contract", 
       expect(existsSync(systemMdPath)).toBe(true);
       const content = readFileSync(systemMdPath, "utf8");
 
-      expect(content).toContain("Whole-System Time-Machine Backup & Bare-Metal Restore Architecture");
-      expect(content).toContain("Disaster-Proof Blue/Green Deployment Algorithm");
+      expect(content).toContain(
+        "Whole-System Time-Machine Backup & Bare-Metal Restore Architecture",
+      );
+      expect(content).toContain(
+        "Disaster-Proof Blue/Green Deployment Algorithm",
+      );
       expect(content).toContain("Pre-Promotion Zero-Failure Gate");
-      expect(content).toContain("Canary Shifting with Sub-Second Circuit Breaker");
+      expect(content).toContain(
+        "Canary Shifting with Sub-Second Circuit Breaker",
+      );
       expect(content).toContain("roles.sql");
       expect(content).toContain("db_cluster.dump");
       expect(content).toContain("Cold-Metal Bare-Metal Recovery Runbook");
@@ -143,9 +149,15 @@ describe("Disaster-Proof Blue/Green Deployment & Whole-System Backup Contract", 
       expect(existsSync(opsBackupMdPath)).toBe(true);
       const content = readFileSync(opsBackupMdPath, "utf8");
 
-      expect(content).toContain("Whole-System Backup machine (canonical backup)");
-      expect(content).toContain("scheduled → snapshot → encrypted → rehearsed → certified → rotated | retained");
-      expect(content).toContain("retrieve → decrypt → verify_manifest → restore → smoke_check → switchover");
+      expect(content).toContain(
+        "Whole-System Backup machine (canonical backup)",
+      );
+      expect(content).toContain(
+        "scheduled → snapshot → encrypted → rehearsed → certified → rotated | retained",
+      );
+      expect(content).toContain(
+        "retrieve → decrypt → verify_manifest → restore → smoke_check → switchover",
+      );
       expect(content).toContain("Theft Immunity");
       expect(content).toContain("RPO (Recovery Point Objective)");
       expect(content).toContain("RTO (Recovery Time Objective)");

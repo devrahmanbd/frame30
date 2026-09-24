@@ -176,7 +176,9 @@ export function FraudDesk() {
       setMsg(successMsg);
       await router.invalidate();
     } catch (e) {
-      setMsg(e instanceof Error ? e.message : "Action failed. Please try again.");
+      setMsg(
+        e instanceof Error ? e.message : "Action failed. Please try again.",
+      );
     } finally {
       setBusy(false);
     }
@@ -306,7 +308,10 @@ export function FraudDesk() {
             type="button"
             disabled={busy}
             onClick={() =>
-              run(() => fraudScanFn(), "Risk scan finished. All orders updated.")
+              run(
+                () => fraudScanFn(),
+                "Risk scan finished. All orders updated.",
+              )
             }
             className="inline-flex h-10 items-center gap-1.5 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
@@ -416,8 +421,8 @@ export function FraudDesk() {
             Protection Sensitivity
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground">
-            Choose how strictly Framique screens incoming transactions. No manual
-            formula or math required.
+            Choose how strictly Framique screens incoming transactions. No
+            manual formula or math required.
           </p>
         </div>
 

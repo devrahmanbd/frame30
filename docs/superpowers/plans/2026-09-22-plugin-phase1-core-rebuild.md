@@ -42,10 +42,12 @@
 ### Task 1: P1-0 Live probes (prove the breakage before fixing)
 
 **Files:**
+
 - Read-only: production DB over SSH; production browser.
 - Produce: probe results recorded in the task's commit message body.
 
 **Interfaces:**
+
 - Consumes: nothing.
 - Produces: exact live column lists for `plugin_state` + `plugin_kill_switch`; live enum labels; RLS policy list; settings round-trip verdict (all consumed by Task 2).
 
@@ -78,11 +80,13 @@ settings round-trip: <persist | lost | error>"
 ### Task 2: P1-1 DDL capture migration (tables + RLS + enum + auto_updates)
 
 **Files:**
+
 - Create: `supabase/migrations/<STAMP>_phase2j_plugin_state_ddl.sql` (`STAMP=$(date +%Y%m%d%H%M%S)`, must exceed `20260918140000`).
 - Read first: `src/lib/plugins.server.ts` kill-switch section (~lines 215-252) + Task 1 column lists; copy: `supabase/migrations/20260918140000_phase2i_removed_status.sql` (enum pattern), `migration/0001_baseline.sql:10650,10657` (policy pattern), `:840` (`is_merchant_member` helper — reuse, do not redefine).
 - Test: `src/lib/plugin-state-ddl.test.ts`.
 
 **Interfaces:**
+
 - Consumes: Task 1 column lists.
 - Produces: `plugin_state.auto_updates boolean NOT NULL DEFAULT false` (consumed by Task 5 toggle); `purged` enum value (consumed by Phase 2 purge machine); repo-owned RLS.
 
@@ -97,7 +101,16 @@ const files = globSync("supabase/migrations/*phase2j*plugin_state_ddl.sql");
 const sql = files.length ? readFileSync(files[0], "utf8") : "";
 describe("phase2j plugin_state DDL", () => {
   it("creates plugin_state with the code-used columns", () => {
-    for (const col of ["merchant_id", "plugin_id", "manifest", "scopes", "settings", "enabled", "auto_updates", "updated_at"])
+    for (const col of [
+      "merchant_id",
+      "plugin_id",
+      "manifest",
+      "scopes",
+      "settings",
+      "enabled",
+      "auto_updates",
+      "updated_at",
+    ])
       expect(sql).toContain(col);
   });
   it("enables RLS with tenant policies and grants", () => {
@@ -160,9 +173,11 @@ git commit -m "feat(plugins): capture plugin_state DDL + RLS + purged enum"
 ### Task 3: P1-2 `plugins.*` permissions (registry → fns → nav → route)
 
 **Files:**
+
 - Modify: `src/lib/authz.ts:56`, `src/lib/api-scopes.ts` (mirror themes.read entries), `src/lib/plugins.functions.ts:15,25,46,62,79`, `src/lib/console-nav.ts:380,387`, `src/routes/_authenticated/dashboard/plugins/index.tsx:16`.
 
 **Interfaces:**
+
 - Consumes: nothing (names are new).
 - Produces: enforced `plugins.read` / `plugins.update` (consumed by Task 6 deny tests).
 
@@ -178,11 +193,17 @@ describe("plugins.* permissions", () => {
     expect(PERMISSIONS).toContain("plugins.update");
   });
   it("no plugin fn or route still references themes.*", () => {
-    for (const f of ["src/lib/plugins.functions.ts", "src/routes/_authenticated/dashboard/plugins/index.tsx"]) {
+    for (const f of [
+      "src/lib/plugins.functions.ts",
+      "src/routes/_authenticated/dashboard/plugins/index.tsx",
+    ]) {
       expect(readFileSync(f, "utf8")).not.toMatch(/themes\.(read|update)/);
     }
     const nav = readFileSync("src/lib/console-nav.ts", "utf8");
-    const block = nav.slice(nav.indexOf('key: "plugins"'), nav.indexOf('key: "plugins"') + 1500);
+    const block = nav.slice(
+      nav.indexOf('key: "plugins"'),
+      nav.indexOf('key: "plugins"') + 1500,
+    );
     expect(block).not.toMatch(/themes\.(read|update)/);
   });
 });
@@ -212,10 +233,12 @@ git commit -m "feat(plugins): enforce plugins.read/update permissions"
 ### Task 4: P1-3 Settings schema v1.5 (5 new field kinds)
 
 **Files:**
+
 - Modify: `src/lib/plugin-manifest.ts` (`SettingField` kind union ~line 280-300, `validateSettings` ~line 319, `defaultSettings` ~line 334); `src/components/marketplace/PluginSettingsForm.tsx` (~lines 86-130).
 - Test: extend `src/lib/phase5-plugins.test.ts`.
 
 **Interfaces:**
+
 - Consumes: existing 4 kinds + validation semantics (unknown dropped, numbers clamped, select strict).
 - Produces: 9-kind schema used by Task 5 Settings modal (no modal change needed — form renders kinds generically).
 
@@ -231,8 +254,11 @@ it("validates textarea/color/media/url/date kinds", () => {
     { key: "launch", kind: "date" },
   ] as const;
   const { values, errors } = validateSettings(schema as any, {
-    bio: "x".repeat(99), accent: "#ff0000", logo: "https://cdn/x.png",
-    site: "not a url", launch: "2026-10-01",
+    bio: "x".repeat(99),
+    accent: "#ff0000",
+    logo: "https://cdn/x.png",
+    site: "not a url",
+    launch: "2026-10-01",
   });
   expect(errors).toContain("site.not_a_url");
   expect(values.bio).toHaveLength(50);
@@ -241,10 +267,16 @@ it("validates textarea/color/media/url/date kinds", () => {
 });
 it("rejects bad color/date/url with error codes", () => {
   const { errors } = validateSettings(
-    [{ key: "c", kind: "color" }, { key: "u", kind: "url" }, { key: "d", kind: "date" }] as any,
+    [
+      { key: "c", kind: "color" },
+      { key: "u", kind: "url" },
+      { key: "d", kind: "date" },
+    ] as any,
     { c: "red", u: "notaurl", d: "yesterday" },
   );
-  expect(errors).toEqual(expect.arrayContaining(["c.not_a_color", "u.not_a_url", "d.not_a_date"]));
+  expect(errors).toEqual(
+    expect.arrayContaining(["c.not_a_color", "u.not_a_url", "d.not_a_date"]),
+  );
 });
 ```
 
@@ -279,6 +311,7 @@ plus `SettingField` kind union += `"textarea" | "color" | "media" | "url" | "dat
 
 Run: `bun run test -- src/lib/phase5-plugins.test.ts` Expected: PASS.
 Run: `bun run typecheck` Expected: no new errors.
+
 ```bash
 git add src/lib/plugin-manifest.ts src/components/marketplace/PluginSettingsForm.tsx src/lib/phase5-plugins.test.ts
 git commit -m "feat(plugins): settings schema v1.5 (textarea/color/media/url/date)"
@@ -289,10 +322,12 @@ git commit -m "feat(plugins): settings schema v1.5 (textarea/color/media/url/dat
 ### Task 5: P1-4 Parity remainder (search, auto-updates, bulk bar, Add-New, count fix)
 
 **Files:**
+
 - Modify: `src/components/marketplace/InstalledApps.tsx`, `src/lib/plugins.functions.ts` (add `pluginAutoUpdatesFn`), `src/lib/plugins.server.ts` (add `setPluginAutoUpdates`), `src/lib/marketplace-install.server.ts` (decrement).
 - Test: extend `src/lib/marketplace-bulk.test.ts` + `src/lib/plugin-state-ddl.test.ts`? No — new assertions in `marketplace-uninstall-widget.test.ts` (count decrement) + `marketplace-bulk.test.ts` (auto-updates toggle persists).
 
 **Interfaces:**
+
 - Consumes: Task 2 `auto_updates` column; Task 3 `plugins.update`.
 - Produces: complete WP-parity desk (consumed by Task 6 + production verification).
 
@@ -302,16 +337,44 @@ git commit -m "feat(plugins): settings schema v1.5 (textarea/color/media/url/dat
 // append to src/lib/marketplace-bulk.test.ts
 it("persists the auto-updates flag per install", async () => {
   const db = bulkDb(); // existing helper with plugin_state rows
-  await setPluginAutoUpdates(db.asClient(), MERCHANT, "some-plugin", true, ACTOR);
-  expect(db.rows("plugin_state").find((r: any) => r.plugin_id === "some-plugin").auto_updates).toBe(true);
+  await setPluginAutoUpdates(
+    db.asClient(),
+    MERCHANT,
+    "some-plugin",
+    true,
+    ACTOR,
+  );
+  expect(
+    db.rows("plugin_state").find((r: any) => r.plugin_id === "some-plugin")
+      .auto_updates,
+  ).toBe(true);
 });
 // append to src/lib/marketplace-uninstall-widget.test.ts
 it("decrements the widget install_count on uninstall", async () => {
-  const db = fakeDb({ tables: {
-    marketplace_installs: [{ id: INSTALL, kind: "widget", listing_slug: "whatsapp-chat", status: "installed", merchant_id: MERCHANT }],
-    plugin_state: [{ id: "p-1", merchant_id: MERCHANT, plugin_id: "whatsapp-chat", enabled: true }],
-    marketplace_widgets: [{ id: "w-1", slug: "whatsapp-chat", install_count: 5 }],
-  }});
+  const db = fakeDb({
+    tables: {
+      marketplace_installs: [
+        {
+          id: INSTALL,
+          kind: "widget",
+          listing_slug: "whatsapp-chat",
+          status: "installed",
+          merchant_id: MERCHANT,
+        },
+      ],
+      plugin_state: [
+        {
+          id: "p-1",
+          merchant_id: MERCHANT,
+          plugin_id: "whatsapp-chat",
+          enabled: true,
+        },
+      ],
+      marketplace_widgets: [
+        { id: "w-1", slug: "whatsapp-chat", install_count: 5 },
+      ],
+    },
+  });
   await uninstallWidgetInstall(db.asClient(), MERCHANT, INSTALL, "user-9");
   expect(db.rows("marketplace_widgets")[0].install_count).toBe(4);
 });
@@ -327,11 +390,31 @@ Run: `bun run test -- src/lib/marketplace-bulk.test.ts src/lib/marketplace-unins
 
 ```ts
 // plugins.server.ts
-export async function setPluginAutoUpdates(db: Client, merchantId: string, pluginId: string, autoUpdates: boolean, actorId?: string | null) {
-  const { error } = await db.from("plugin_state").update({ auto_updates: autoUpdates, updated_at: new Date().toISOString() }).eq("merchant_id", merchantId).eq("plugin_id", pluginId);
+export async function setPluginAutoUpdates(
+  db: Client,
+  merchantId: string,
+  pluginId: string,
+  autoUpdates: boolean,
+  actorId?: string | null,
+) {
+  const { error } = await db
+    .from("plugin_state")
+    .update({ auto_updates: autoUpdates, updated_at: new Date().toISOString() })
+    .eq("merchant_id", merchantId)
+    .eq("plugin_id", pluginId);
   if (error) throw new Error("plugin_auto_updates_failed");
   const { auditAction } = await import("./hardening.server");
-  await auditAction(db, merchantId, actorId ?? null, autoUpdates ? "plugin.auto_updates_enabled" : "plugin.auto_updates_disabled", "plugin", { plugin: pluginId }, null);
+  await auditAction(
+    db,
+    merchantId,
+    actorId ?? null,
+    autoUpdates
+      ? "plugin.auto_updates_enabled"
+      : "plugin.auto_updates_disabled",
+    "plugin",
+    { plugin: pluginId },
+    null,
+  );
   return { ok: true, auto_updates: autoUpdates };
 }
 ```
@@ -340,19 +423,35 @@ export async function setPluginAutoUpdates(db: Client, merchantId: string, plugi
 // plugins.functions.ts (after pluginToggleFn)
 export const pluginAutoUpdatesFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("plugins.update")])
-  .inputValidator((d: unknown) => z.object({ pluginId, enabled: z.boolean() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ pluginId, enabled: z.boolean() }).parse(d),
+  )
   .handler(async ({ data, context }) => {
     const { setPluginAutoUpdates } = await import("./plugins.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return setPluginAutoUpdates(context.supabase, merchantId, data.pluginId, data.enabled, context.userId);
+    return setPluginAutoUpdates(
+      context.supabase,
+      merchantId,
+      data.pluginId,
+      data.enabled,
+      context.userId,
+    );
   });
 ```
 
 Decrement in `uninstallWidgetInstall` after the `plugin_state` delete, before ledger retire:
 
 ```ts
-const { data: widget } = await db.from("marketplace_widgets").select("id, install_count").eq("slug", row.listing_slug).maybeSingle();
-if (widget) await db.from("marketplace_widgets").update({ install_count: Math.max(0, (widget.install_count ?? 1) - 1) }).eq("id", widget.id);
+const { data: widget } = await db
+  .from("marketplace_widgets")
+  .select("id, install_count")
+  .eq("slug", row.listing_slug)
+  .maybeSingle();
+if (widget)
+  await db
+    .from("marketplace_widgets")
+    .update({ install_count: Math.max(0, (widget.install_count ?? 1) - 1) })
+    .eq("id", widget.id);
 ```
 
 - [ ] **Step 4: Implement UI** in `InstalledApps.tsx`: (a) search `<input>` above the table filtering `filteredPlugins` by name (client-side, mirrors existing status filter); (b) Auto-updates toggle column calling new `pluginAutoUpdatesFn` (checkbox + `t("Auto-updates", "স্বয়ংক্রিয় আপডেট")`); (c) duplicate the bulk `<select>` + Apply bar below the table (same handlers); (d) Add-New link `search={{ tab: "widget" }}` → `search={{ tab: "plugin" }}`.
@@ -360,6 +459,7 @@ if (widget) await db.from("marketplace_widgets").update({ install_count: Math.ma
 - [ ] **Step 5: Run tests + commit**
 
 Run: `bun run test -- src/lib/marketplace-bulk.test.ts src/lib/marketplace-uninstall-widget.test.ts` Expected: PASS.
+
 ```bash
 git add src/components/marketplace/InstalledApps.tsx src/lib/plugins.functions.ts src/lib/plugins.server.ts src/lib/marketplace-install.server.ts src/lib/marketplace-bulk.test.ts src/lib/marketplace-uninstall-widget.test.ts
 git commit -m "feat(plugins): parity remainder (search, auto-updates, bulk bar, count fix)"
@@ -370,9 +470,11 @@ git commit -m "feat(plugins): parity remainder (search, auto-updates, bulk bar, 
 ### Task 6: P1-5 Regression tests — deny + replay + audit
 
 **Files:**
+
 - Modify: `src/lib/lifecycle-audit.test.ts` (settings-save + auto-updates audit), `src/lib/marketplace-bulk.test.ts` (cross-merchant deny, settings double-save replay).
 
 **Interfaces:**
+
 - Consumes: all tasks.
 - Produces: `[A]` gate evidence for the phase.
 
@@ -380,25 +482,56 @@ git commit -m "feat(plugins): parity remainder (search, auto-updates, bulk bar, 
 
 ```ts
 it("deny: cross-merchant settings write touches nothing", async () => {
-  const db = fakeDb({ tables: { plugin_state: [
-    { merchant_id: MERCHANT, plugin_id: "p", settings: { a: 1 }, enabled: true },
-  ], activity_log: [] } });
-  await savePluginSettings(db.asClient(), "99999999-9999-4999-a999-999999999999", "p", { a: 2 });
+  const db = fakeDb({
+    tables: {
+      plugin_state: [
+        {
+          merchant_id: MERCHANT,
+          plugin_id: "p",
+          settings: { a: 1 },
+          enabled: true,
+        },
+      ],
+      activity_log: [],
+    },
+  });
+  await savePluginSettings(
+    db.asClient(),
+    "99999999-9999-4999-a999-999999999999",
+    "p",
+    { a: 2 },
+  );
   expect(db.rows("plugin_state")[0].settings).toEqual({ a: 1 });
 });
 it("replay: double settings save keeps one row, last wins", async () => {
-  const db = fakeDb({ tables: { plugin_state: [
-    { merchant_id: MERCHANT, plugin_id: "p", settings: {}, enabled: true },
-  ], activity_log: [] } });
+  const db = fakeDb({
+    tables: {
+      plugin_state: [
+        { merchant_id: MERCHANT, plugin_id: "p", settings: {}, enabled: true },
+      ],
+      activity_log: [],
+    },
+  });
   await savePluginSettings(db.asClient(), MERCHANT, "p", { a: 1 });
   await savePluginSettings(db.asClient(), MERCHANT, "p", { a: 2 });
   expect(db.rows("plugin_state")).toHaveLength(1);
   expect(db.rows("plugin_state")[0].settings).toEqual({ a: 2 });
 });
 it("audit: settings save and auto-updates toggle write rows", async () => {
-  const db = fakeDb({ tables: { plugin_state: [
-    { merchant_id: MERCHANT, plugin_id: "p", settings: {}, enabled: true, auto_updates: false },
-  ], activity_log: [] } });
+  const db = fakeDb({
+    tables: {
+      plugin_state: [
+        {
+          merchant_id: MERCHANT,
+          plugin_id: "p",
+          settings: {},
+          enabled: true,
+          auto_updates: false,
+        },
+      ],
+      activity_log: [],
+    },
+  });
   await savePluginSettings(db.asClient(), MERCHANT, "p", { a: 1 }, ACTOR);
   await setPluginAutoUpdates(db.asClient(), MERCHANT, "p", true, ACTOR);
   const actions = db.rows("activity_log").map((r: any) => r.action);

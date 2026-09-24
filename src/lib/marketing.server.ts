@@ -24,9 +24,8 @@ export async function currentMerchantId(supabase: Client, userId: string) {
     throw new MarketingError("no_merchant", "No store found");
   // Prefer the dashboard's active store (verified membership); fall back to
   // the first row, which is the legacy single-store behavior.
-  const { pickMembership, requestMerchantHint } = await import(
-    "./merchant-scope.server"
-  );
+  const { pickMembership, requestMerchantHint } =
+    await import("./merchant-scope.server");
   return pickMembership(rows, requestMerchantHint())!.merchant_id;
 }
 

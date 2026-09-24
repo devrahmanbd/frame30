@@ -4170,7 +4170,12 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: { heading: "Your orders", emptyText: "No orders yet." },
     fields: [
       { key: "heading", label: "Heading", kind: "bitext", panel: "content" },
-      { key: "emptyText", label: "Empty text", kind: "bitext", panel: "content" },
+      {
+        key: "emptyText",
+        label: "Empty text",
+        kind: "bitext",
+        panel: "content",
+      },
     ],
   },
   {
@@ -4379,7 +4384,6 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("i4Body", "Item 4 body", 120),
     ],
   },
-
 ];
 
 /* ------------------------------------------------- Phase 0.4 — style layer */
@@ -5006,8 +5010,7 @@ function withBiText(entry: CatalogEntry): CatalogEntry {
     // Default copy ships translated where the platform dictionary has it, so a
     // freshly dropped widget is not English-only for বাংলা shoppers.
     const en = entry.defaults[field.key];
-    defaults[bnKey(field.key)] =
-      typeof en === "string" ? "" : "";
+    defaults[bnKey(field.key)] = typeof en === "string" ? "" : "";
   }
   return { ...entry, defaults, fields };
 }
