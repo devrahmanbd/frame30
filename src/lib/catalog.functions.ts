@@ -220,6 +220,29 @@ export const catalogPreviewCollectionFn = createServerFn({ method: "POST" })
     );
   });
 
+/** Rename a collection (name and/or URL slug); slug renames auto-301. */
+export const catalogRenameCollectionFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        merchantId,
+        collectionId: z.string().uuid(),
+        name: z.string().trim().min(1).max(120).optional(),
+        slug: z.string().trim().min(1).max(100).optional(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { renameCollection } = await import("./catalog.server");
+    return renameCollection(context.supabase, {
+      merchantId: data.merchantId,
+      collectionId: data.collectionId,
+      name: data.name ?? null,
+      slug: data.slug ?? null,
+    });
+  });
+
 /** Round-trip CSV export of the merchant's catalog. */
 export const catalogExportCsvFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
