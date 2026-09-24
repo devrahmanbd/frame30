@@ -17,11 +17,11 @@ describe("songoskriti wiring", () => {
       "announcement_bar",
       "hero_carousel",
       "circle_categories",
-      "finder_row",
+      "trust_footer",
       "product_rail",
+      "finder_row",
       "craft_story",
       "testimonials",
-      "trust_footer",
     ]);
   });
 
@@ -43,12 +43,12 @@ describe("songoskriti wiring", () => {
       "announcement_bar",
       "hero_carousel",
       "circle_categories",
+      "trust_footer",
+      "product_rail",
+      "product_rail",
       "finder_row",
-      "product_rail",
-      "product_rail",
       "craft_story",
       "testimonials",
-      "trust_footer",
     ]);
     expect(sections.map((n) => n.type)).toEqual(
       expect.arrayContaining([...HOMEPAGE_SECTION_TYPES]),
