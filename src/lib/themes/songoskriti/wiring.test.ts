@@ -25,11 +25,13 @@ describe("songoskriti wiring", () => {
     ]);
   });
 
-  it("homepage builds 8 sections, every type resolvable in the catalog", () => {
+  it("homepage builds 9 sections, every type resolvable in the catalog", () => {
     const s = (type: string, props = {}) =>
       ({ id: type, type, props }) as never;
     const sections = buildHomepageMain(s as never);
-    expect(sections).toHaveLength(8);
+    // SECTION-track blueprint doubles the rail (new arrivals + festive
+    // bestsellers), so 9 sections on 8 distinct intended types.
+    expect(sections).toHaveLength(9);
     for (const section of sections) {
       expect(
         catalogEntry(section.type),
@@ -37,7 +39,20 @@ describe("songoskriti wiring", () => {
       ).toBeDefined();
     }
     // Task 2: builders emit the intended names directly — no stand-ins.
-    expect(sections.map((n) => n.type)).toEqual([...HOMEPAGE_SECTION_TYPES]);
+    expect(sections.map((n) => n.type)).toEqual([
+      "announcement_bar",
+      "hero_carousel",
+      "circle_categories",
+      "finder_row",
+      "product_rail",
+      "product_rail",
+      "craft_story",
+      "testimonials",
+      "trust_footer",
+    ]);
+    expect(sections.map((n) => n.type)).toEqual(
+      expect.arrayContaining([...HOMEPAGE_SECTION_TYPES]),
+    );
     for (const retired of [
       "editorial_hero",
       "filter_chips",
