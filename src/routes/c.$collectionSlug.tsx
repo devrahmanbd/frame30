@@ -18,7 +18,7 @@ import { flattenAst } from "@/lib/builder-ast";
  * merchant collection. Same-route SSR + hydration (no rewrite).
  */
 export const Route = createFileRoute("/c/$collectionSlug")({
-  loader: async ({ params }) => {
+  loader: async ({ params, location }) => {
     let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
     try {
       host = await resolveStorefrontHostFn();
@@ -43,6 +43,20 @@ export const Route = createFileRoute("/c/$collectionSlug")({
       data: { slug: host.merchantSlug, collectionSlug: params.collectionSlug },
     });
     if (!data) throw notFound();
+    // Custom bases: the old prefixed URL still matches this static route,
+    // so canonicalize it here instead of serving duplicates.
+    const { canonicalRedirectFn } = await import(
+      "@/lib/permalink.functions"
+    );
+    const { to } = await canonicalRedirectFn({
+      data: {
+        merchantId: data.merchant.id,
+        kind: "collection",
+        slug: data.collection.slug,
+        pathname: location.pathname,
+      },
+    });
+    if (to) throw redirect({ href: to, replace: true });
     return data;
   },
   head: ({ loaderData }) => {

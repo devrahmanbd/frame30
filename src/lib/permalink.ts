@@ -217,26 +217,31 @@ export function validateSettings(
       "productBase",
       input.productBase ?? DEFAULT_PERMALINKS.productBase,
       {
-        allowEmpty: false,
+        // Empty = root post-name URLs (/%postname%/). Served by the
+        // catch-all; see the multi-root note on the collision check.
+        allowEmpty: true,
       },
     ),
     collectionBase: validateBase(
       "collectionBase",
       input.collectionBase ?? DEFAULT_PERMALINKS.collectionBase,
-      { allowEmpty: false },
+      { allowEmpty: true },
     ),
     pageBase: validateBase(
       "pageBase",
       input.pageBase ?? DEFAULT_PERMALINKS.pageBase,
       {
-        allowEmpty: false,
+        allowEmpty: true,
       },
     ),
   };
 
-  // Two kinds sharing a base makes every URL under it ambiguous, and the
-  // ambiguity only shows up when a product and a page happen to share a slug —
-  // months later, in production. Refuse it now.
+  // Two NON-EMPTY kinds sharing a base makes every URL under it ambiguous,
+  // and the ambiguity only shows up when a product and a page happen to
+  // share a slug — months later, in production. Refuse it now. Empty
+  // (root) bases are exempt: WordPress-style post-name URLs put several
+  // kinds at "/", and the resolver settles ties in candidate order
+  // (article, product, collection, page — first slug match wins).
   const bases: [string, string][] = [
     ["productBase", settings.productBase],
     ["collectionBase", settings.collectionBase],
@@ -245,6 +250,7 @@ export function validateSettings(
   if (settings.articleBase) bases.push(["articleBase", settings.articleBase]);
   const seen = new Map<string, string>();
   for (const [field, base] of bases) {
+    if (!base) continue;
     const previous = seen.get(base);
     if (previous) {
       throw new PermalinkError(
@@ -495,6 +501,24 @@ export function planPermalinkChange(
     moves.push({ from, to, kind: entity.kind, slug: entity.slug });
   }
   return moves;
+}
+
+/**
+ * Canonical guard for custom-host routes: when a merchant moves off the
+ * default bases, the old prefixed URL still matches the static file route.
+ * Returns the canonical path when the request path is stale (caller 301s),
+ * null when it already matches. Query strings are not preserved — matches
+ * the existing redirect style in this codebase.
+ */
+export function canonicalRedirect(
+  settings: PermalinkSettings,
+  kind: "product" | "collection" | "page",
+  slug: string,
+  rawPathname: string,
+): string | null {
+  const canonical = buildPermalink(settings, { kind, slug });
+  const clean = normaliseBase(rawPathname.split(/[?#]/)[0] ?? "");
+  return clean !== canonical ? canonical : null;
 }
 
 /**

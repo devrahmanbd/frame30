@@ -31,7 +31,7 @@ import {
  * SPA hydration stays on this route instead of bouncing to notFound.
  */
 export const Route = createFileRoute("/p/$productSlug")({
-  loader: async ({ params }) => {
+  loader: async ({ params, location }) => {
     let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
     try {
       host = await resolveStorefrontHostFn();
@@ -60,6 +60,20 @@ export const Route = createFileRoute("/p/$productSlug")({
         host.merchantSlug,
         `/p/${params.productSlug}`,
       );
+    // Custom bases: the old prefixed URL still matches this static route,
+    // so canonicalize it here instead of serving duplicates.
+    const { canonicalRedirectFn } = await import(
+      "@/lib/permalink.functions"
+    );
+    const { to } = await canonicalRedirectFn({
+      data: {
+        merchantId: data.merchant.id,
+        kind: "product",
+        slug: data.product.slug,
+        pathname: location.pathname,
+      },
+    });
+    if (to) throw redirect({ href: to, replace: true });
     return data;
   },
   head: ({ loaderData }) => {

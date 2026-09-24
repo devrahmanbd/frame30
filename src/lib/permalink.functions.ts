@@ -17,6 +17,36 @@ import type { PermalinkSettings } from "./permalink";
 const kind = z.enum(["article", "product", "collection", "page"]);
 const statusCode = z.union([z.literal(301), z.literal(302), z.literal(410)]);
 
+/**
+ * Public canonical guard for custom-host routes: returns the canonical path
+ * when the request path is stale under the merchant's live settings, null
+ * when it already matches. Unauthenticated by design (slugs are public
+ * storefront data); input validated, output is a path string only.
+ */
+export const canonicalRedirectFn = createServerFn({ method: "GET" })
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        merchantId: z.string().uuid(),
+        kind: z.enum(["product", "collection", "page"]),
+        slug: z.string().min(1).max(200),
+        pathname: z.string().min(1).max(500),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data }) => {
+    const { permalinkSettingsFor } = await import("./permalink.server");
+    const { canonicalRedirect } = await import("./permalink");
+    const { publicClient } = await import("./pricing.server");
+    const settings = await permalinkSettingsFor(
+      publicClient(),
+      data.merchantId,
+    );
+    return {
+      to: canonicalRedirect(settings, data.kind, data.slug, data.pathname),
+    };
+  });
+
 const settingsSchema = z.object({
   articleBase: z.string().max(120).default("/blog"),
   articlePattern: z.string().max(120).default("/%slug%"),
