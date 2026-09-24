@@ -130,7 +130,7 @@ export function StoreHeader({
               to="/search"
               search={{}}
               aria-label={t("Search", "খুঁজুন")}
-              className="inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
+              className="grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
               <Search className="size-5" aria-hidden />
             </Link>
@@ -140,7 +140,7 @@ export function StoreHeader({
               params={{ slug }}
               search={{}}
               aria-label={t("Search", "খুঁজুন")}
-              className="inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
+              className="grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
               <Search className="size-5" aria-hidden />
             </Link>
@@ -149,7 +149,7 @@ export function StoreHeader({
             <Link
               to="/account"
               aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
-              className="inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
+              className="grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
               <User className="size-5" aria-hidden />
             </Link>
@@ -158,7 +158,7 @@ export function StoreHeader({
               to="/store/$slug/account"
               params={{ slug }}
               aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
-              className="inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
+              className="grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
               <User className="size-5" aria-hidden />
             </Link>
@@ -172,7 +172,7 @@ export function StoreHeader({
             <Link
               to="/checkout"
               aria-label={t("Cart", "কার্ট")}
-              className="relative inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
+              className="relative grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
               <ShoppingBag className="size-5" aria-hidden />
               <span
@@ -187,7 +187,7 @@ export function StoreHeader({
               to="/store/$slug/checkout"
               params={{ slug }}
               aria-label={t("Cart", "কার্ট")}
-              className="relative inline-flex min-h-11 items-center justify-center rounded-full hover:bg-muted p-2 text-foreground/80 hover:text-foreground transition-colors"
+              className="relative grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
               <ShoppingBag className="size-5" aria-hidden />
               <span
