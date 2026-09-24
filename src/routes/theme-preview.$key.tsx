@@ -89,7 +89,7 @@ function ThemePreviewError() {
           URL may be invalid.
         </p>
         <a
-          href="/dashboard/themes"
+          href="/dashboard/content/themes"
           className={cn(
             "inline-flex items-center gap-2 rounded-fq-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90",
           )}
@@ -111,7 +111,7 @@ function ThemePreviewNotFound() {
           No blueprint matches that key. Check the URL or install a theme first.
         </p>
         <a
-          href="/dashboard/themes"
+          href="/dashboard/content/themes"
           className={cn(
             "inline-flex items-center gap-2 rounded-fq-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90",
           )}
