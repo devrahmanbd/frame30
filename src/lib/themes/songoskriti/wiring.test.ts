@@ -12,7 +12,7 @@ describe("songoskriti wiring", () => {
     expect(SONGOSKRITI_TOKENS.surface).toBe("#FAF8F5");
   });
 
-  it("declares 8 homepage sections in spec order", () => {
+  it("declares 9 homepage sections in spec order", () => {
     expect([...HOMEPAGE_SECTION_TYPES]).toEqual([
       "announcement_bar",
       "hero_carousel",
@@ -20,18 +20,19 @@ describe("songoskriti wiring", () => {
       "trust_footer",
       "product_rail",
       "finder_row",
+      "store_locator",
       "craft_story",
       "testimonials",
     ]);
   });
 
-  it("homepage builds 9 sections, every type resolvable in the catalog", () => {
+  it("homepage builds 10 sections, every type resolvable in the catalog", () => {
     const s = (type: string, props = {}) =>
       ({ id: type, type, props }) as never;
     const sections = buildHomepageMain(s as never);
     // SECTION-track blueprint doubles the rail (new arrivals + festive
-    // bestsellers), so 9 sections on 8 distinct intended types.
-    expect(sections).toHaveLength(9);
+    // bestsellers), so 10 sections on 9 distinct intended types.
+    expect(sections).toHaveLength(10);
     for (const section of sections) {
       expect(
         catalogEntry(section.type),
@@ -47,6 +48,7 @@ describe("songoskriti wiring", () => {
       "product_rail",
       "product_rail",
       "finder_row",
+      "store_locator",
       "craft_story",
       "testimonials",
     ]);

@@ -28,11 +28,12 @@ import type { SectionBuilder } from "./types";
  * - track `marquee_strip`    → covered by the `announcement_bar` (one
  *   marquee max per page; the announcement keeps the promo lines)
  *
- * 9 sections, store-first rhythm (merchant order 2026-09-24 — a store,
- * not a luxury brand): announcement, hero ×3 slides (festive first, every
- * CTA shops), category circles ×6, trust assurances up front, TWO product
- * rails (new arrivals + festive bestsellers, standard cards with prices),
- * occasion finder, craft story, testimonials ×3.
+ * 10 sections, store-first rhythm (merchant order 2026-09-24 — a store,
+ * not a luxury brand, but a reputed shop/franchise): announcement, hero ×3
+ * slides (festive first, every CTA shops), category circles ×6, trust
+ * assurances up front, TWO product rails (new arrivals + festive
+ * bestsellers, standard cards with prices), occasion finder, flagship
+ * outlets, craft story, testimonials ×3.
  *
  * Imagery: only real files under `/ph/songoskriti/*.png` (generated hero,
  * category, and product art). The track's `/api/public/ph/songoskriti/*.svg`
@@ -45,13 +46,15 @@ import type { SectionBuilder } from "./types";
 export function buildHomepageMain(s: SectionBuilder): Section[] {
   const c = DEFAULT_PERMALINKS.collectionBase; // "/c"
   return [
-    // 1. Announcement marquee (single on page; bilingual lines).
+    // 1. Announcement marquee (single on page; bilingual lines; m3 carries
+    // the flagship signal for the franchise).
     s("announcement_bar", {
       m1: "Festive drop is live",
       m1_bn: "উৎসবের নতুন কালেকশন এসেছে",
       m2: "Free delivery over BDT 2,000",
       m2_bn: "২,০০০ টাকার বেশি কেনাকাটায় ফ্রি ডেলিভারি",
-      m3: "",
+      m3: "Flagships: Uttara · Gulshan · Chattogram",
+      m3_bn: "ফ্ল্যাগশিপ: উত্তরা · গুলশান · চট্টগ্রাম",
       href: `${c}/new-in`,
       dismissible: true,
       rotateMs: 6000,
@@ -221,8 +224,25 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       buttonLabel_bn: "সব উৎসবের পোশাক দেখুন",
       buttonHref: `${c}/festive`,
     }),
-    // 7. Craft story (track heritage copy on the tree renderer fields;
-    // copy only — no numbers, never fabricated).
+    // 7. Flagship outlets — the franchise proof. Names + hours only (never
+    // invent street addresses or phone numbers); matches the footer colophon.
+    s("store_locator", {
+      heading: "Visit our flagship stores",
+      heading_bn: "আমাদের ফ্ল্যাগশিপ স্টোরে আসুন",
+      s1Name: "Uttara flagship",
+      s1Name_bn: "উত্তরা ফ্ল্যাগশিপ",
+      s1Hours: "Open 10am–9pm daily",
+      s1Hours_bn: "প্রতিদিন সকাল ১০টা–রাত ৯টা",
+      s2Name: "Gulshan flagship",
+      s2Name_bn: "গুলশান ফ্ল্যাগশিপ",
+      s2Hours: "Open 10am–9pm daily",
+      s2Hours_bn: "প্রতিদিন সকাল ১০টা–রাত ৯টা",
+      s3Name: "Chattogram flagship",
+      s3Name_bn: "চট্টগ্রাম ফ্ল্যাগশিপ",
+      s3Hours: "Open 10am–9pm daily",
+      s3Hours_bn: "প্রতিদিন সকাল ১০টা–রাত ৯টা",
+    }),
+    // 8. Craft story (heritage depth below the fold — the shop comes first).
     s("craft_story", {
       eyebrow: "The master weavers",
       eyebrow_bn: "মাস্টার তাঁতিরা",
@@ -237,7 +257,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       imageUrl: "/ph/songoskriti/hero-artisans.png",
       scrim: true,
     }),
-    // 8. Testimonials ×3 (track quote wall on the tree's rows; the
+    // 9. Testimonials ×3 (track quote wall on the tree's rows; the
     // carousel renderer keeps dots + line-clamp-3).
     s("testimonials", {
       testimonials: [
