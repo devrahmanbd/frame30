@@ -133,6 +133,7 @@ export function ThemeChrome({
       />
     );
   }
+  const base = isCustomHostPath(pathname) ? "" : storeSlug ? `/store/${storeSlug}` : "";
   const themed = ast && ast.main.length > 0 ? ast : null;
   // Header and footer are site chrome: they must survive a template whose body
   // the route renders itself (cart, checkout, search). Dropping them with the
@@ -183,6 +184,7 @@ export function ThemeChrome({
               template={template}
               storeSlug={storeSlug}
               contextSlots={contextSlots}
+              linkBase={base}
             />
           ))}
       {chrome}
@@ -198,6 +200,7 @@ export function ThemeChrome({
                   template={template}
                   storeSlug={storeSlug}
                   contextSlots={contextSlots}
+                  linkBase={base}
                 />
               ))}
           </div>
@@ -215,6 +218,7 @@ export function ThemeChrome({
                 productSlot={productSlot}
                 collectionSlot={collectionSlot}
                 primary={section.id === primary}
+                linkBase={base}
               />
             ))}
           </div>
@@ -231,6 +235,7 @@ export function ThemeChrome({
               template={template}
               storeSlug={storeSlug}
               contextSlots={contextSlots}
+              linkBase={base}
             />
           ))}
         </footer>

@@ -84,7 +84,7 @@ function readBn(row: PropRow, key: string, locale: string) {
 
 /* ------------------------------------------------------------- finder_row */
 
-const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
+const FinderRow: WidgetComponent = ({ str, Heading, editing, locale, link }) => {
   const occasions = [
     { label: str("o1Label"), href: str("o1Href") },
     { label: str("o2Label"), href: str("o2Href") },
@@ -125,7 +125,7 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
             )}
             {str("buttonLabel") && (
               <a
-                href={str("buttonHref") || "#"}
+                href={link(str("buttonHref") || "#")}
                 className="mt-6 sm:mt-8 inline-flex min-h-12 items-center justify-center border border-border px-6 sm:px-8 text-[10px] sm:text-[11px] font-bold fq-caps tracking-widest text-foreground hover:bg-muted/50 transition-colors"
               >
                 {str("buttonLabel")}
@@ -141,7 +141,7 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale }) => {
                 {occasions.map((o) => (
                   <li key={o.label}>
                     <a
-                      href={o.href || "#"}
+                      href={link(o.href || "#")}
                       className="group flex min-h-12 sm:min-h-14 items-center justify-between border-b border-border/60 bg-transparent px-2 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest transition-colors hover:border-foreground"
                     >
                       <span className="text-foreground transition-colors group-hover:text-muted-foreground">
@@ -173,6 +173,7 @@ const CraftStory: WidgetComponent = ({
   Heading,
   editing,
   locale,
+  link,
 }) => {
   // Track fallbacks (heritage precedent): headline/button aliases resolve
   // to the canonical craft_story fields.
@@ -236,7 +237,7 @@ const CraftStory: WidgetComponent = ({
           )}
           {ctaLabel && (
             <a
-              href={ctaHref || "#"}
+              href={link(ctaHref || "#")}
               className="mt-6 sm:mt-8 inline-flex min-h-12 sm:min-h-14 items-center justify-center bg-foreground px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98]"
             >
               {ctaLabel}
@@ -409,12 +410,17 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
             TRUST_FOOTER_ICON[item.icon as keyof typeof TRUST_FOOTER_ICON] ??
             Star;
           return (
-            <li key={item.title} className="flex flex-col items-center text-center gap-4">
+            <li
+              key={item.title}
+              className="flex flex-col items-center text-center gap-4"
+            >
               <span className="grid size-12 shrink-0 place-items-center rounded-full bg-foreground text-background">
                 <Icon className="size-5" aria-hidden="true" />
               </span>
               <span className="min-w-0">
-                <span className="block text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-foreground">{item.title}</span>
+                <span className="block text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-foreground">
+                  {item.title}
+                </span>
                 {item.body && (
                   <span className="mt-1 sm:mt-2 block text-[11px] sm:text-[13px] font-medium tracking-wide text-muted-foreground">
                     {item.body}

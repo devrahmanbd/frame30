@@ -64,6 +64,8 @@ export type WidgetCtx = {
     minor: number | string | null | undefined,
     currency?: string,
   ) => string;
+  /** Rebase a root-relative store URL (like `/c/new-in`) for the current host environment. */
+  link: (href: string) => string;
   /** `h1` when this node owns the page's primary heading, else `h2`. */
   Heading: "h1" | "h2";
   primary: boolean;

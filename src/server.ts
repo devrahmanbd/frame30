@@ -157,7 +157,7 @@ function cspConnectOrigins(): string[] {
   return [...out];
 }
 
-function withSecurityHeaders(
+export function withSecurityHeaders(
   request: Request,
   response: Response,
   riskTier: RiskTier = "low",

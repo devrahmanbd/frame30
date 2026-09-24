@@ -146,7 +146,7 @@ function ProvidersPage() {
         <p className="text-[13px] text-muted-foreground max-w-2xl">
           {t(
             "Manage credentials and track review status for your live payment integrations.",
-            "আপনার লাইভ পেমেন্ট ইন্টিগ্রেশনের ক্রেডেনশিয়াল এবং রিভিউ স্ট্যাটাস পরিচালনা করুন।"
+            "আপনার লাইভ পেমেন্ট ইন্টিগ্রেশনের ক্রেডেনশিয়াল এবং রিভিউ স্ট্যাটাস পরিচালনা করুন।",
           )}
         </p>
       </header>
@@ -245,7 +245,7 @@ function ProvidersPage() {
                       <p className="text-[12px] text-muted-foreground mt-1 max-w-lg">
                         {t(
                           "Encrypted at rest and never shown again — only the last characters are kept as a hint.",
-                          "এনক্রিপ্ট করে সংরক্ষণ হয়, আর দেখানো হয় না — শুধু শেষ কয়েকটি অক্ষর দেখা যায়।"
+                          "এনক্রিপ্ট করে সংরক্ষণ হয়, আর দেখানো হয় না — শুধু শেষ কয়েকটি অক্ষর দেখা যায়।",
                         )}
                       </p>
                     </div>
@@ -372,7 +372,7 @@ function ProvidersPage() {
             <p className="text-[13px] text-muted-foreground mt-1.5 max-w-xl">
               {t(
                 "Selling in USD is opt-in and gated. Every check below must pass, and the gate is re-evaluated on each visit.",
-                "ইউএসডিতে বিক্রি ঐচ্ছিক ও শর্তসাপেক্ষ। নিচের সব শর্ত পূরণ হতে হবে।"
+                "ইউএসডিতে বিক্রি ঐচ্ছিক ও শর্তসাপেক্ষ। নিচের সব শর্ত পূরণ হতে হবে।",
               )}
             </p>
           </div>
@@ -384,75 +384,81 @@ function ProvidersPage() {
             {currency.effectiveMode.replace(/_/g, " ")}
           </Pill>
         </div>
-        
+
         <div className="space-y-6">
           <GateChecks checks={currency.verdict.checks} />
-        <p className="text-xs text-muted-foreground">
-          {t("FX rate", "এফএক্স রেট")}:{" "}
-          {currency.fx.rate ? currency.fx.rate.toFixed(4) : "—"}{" "}
-          {currency.fx.ageSeconds !== null
-            ? `· ${Math.floor(currency.fx.ageSeconds / 3600)}h ${t("old", "পুরনো")}`
-            : `· ${t("no feed", "ফিড নেই")}`}
-          {currency.fx.driftAlert
-            ? ` · ${t("drift alert", "ড্রিফট সতর্কতা")}`
-            : ""}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {!currency.consentAt && (
+          <p className="text-xs text-muted-foreground">
+            {t("FX rate", "এফএক্স রেট")}:{" "}
+            {currency.fx.rate ? currency.fx.rate.toFixed(4) : "—"}{" "}
+            {currency.fx.ageSeconds !== null
+              ? `· ${Math.floor(currency.fx.ageSeconds / 3600)}h ${t("old", "পুরনো")}`
+              : `· ${t("no feed", "ফিড নেই")}`}
+            {currency.fx.driftAlert
+              ? ` · ${t("drift alert", "ড্রিফট সতর্কতা")}`
+              : ""}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {!currency.consentAt && (
+              <button
+                type="button"
+                className={btnGhost}
+                disabled={busy !== null}
+                onClick={() =>
+                  void run("consent", async () => {
+                    setCurrency(await consent({}));
+                    setNotice(
+                      t("Consent recorded.", "সম্মতি সংরক্ষিত হয়েছে।"),
+                    );
+                  })
+                }
+              >
+                {t("Record owner consent", "মালিকের সম্মতি দিন")}
+              </button>
+            )}
             <button
               type="button"
-              className={btnGhost}
-              disabled={busy !== null}
-              onClick={() =>
-                void run("consent", async () => {
-                  setCurrency(await consent({}));
-                  setNotice(t("Consent recorded.", "সম্মতি সংরক্ষিত হয়েছে।"));
-                })
+              className={btnPrimary}
+              disabled={
+                busy !== null ||
+                !currency.verdict.allowed ||
+                currency.mode === "usd_enabled"
               }
-            >
-              {t("Record owner consent", "মালিকের সম্মতি দিন")}
-            </button>
-          )}
-          <button
-            type="button"
-            className={btnPrimary}
-            disabled={
-              busy !== null ||
-              !currency.verdict.allowed ||
-              currency.mode === "usd_enabled"
-            }
-            onClick={() =>
-              void run("usd", async () => {
-                const staged =
-                  currency.mode === "bdt_locked"
-                    ? await setMode({ data: { mode: "pilot_assessing" } })
-                    : currency;
-                setCurrency(staged);
-                setCurrency(await setMode({ data: { mode: "usd_enabled" } }));
-                setNotice(t("USD pilot enabled.", "ইউএসডি পাইলট চালু হয়েছে।"));
-              })
-            }
-          >
-            {t("Enable USD pilot", "ইউএসডি পাইলট চালু")}
-          </button>
-          {currency.mode !== "bdt_locked" && (
-            <button
-              type="button"
-              className={btnGhost}
-              disabled={busy !== null}
               onClick={() =>
-                void run("lock", async () => {
-                  setCurrency(await setMode({ data: { mode: "bdt_locked" } }));
+                void run("usd", async () => {
+                  const staged =
+                    currency.mode === "bdt_locked"
+                      ? await setMode({ data: { mode: "pilot_assessing" } })
+                      : currency;
+                  setCurrency(staged);
+                  setCurrency(await setMode({ data: { mode: "usd_enabled" } }));
                   setNotice(
-                    t("Store is BDT-locked.", "স্টোর বিডিটি-তে ফিরেছে।"),
+                    t("USD pilot enabled.", "ইউএসডি পাইলট চালু হয়েছে।"),
                   );
                 })
               }
             >
-              {t("Return to BDT", "বিডিটিতে ফিরুন")}
+              {t("Enable USD pilot", "ইউএসডি পাইলট চালু")}
             </button>
-          )}
-        </div>
+            {currency.mode !== "bdt_locked" && (
+              <button
+                type="button"
+                className={btnGhost}
+                disabled={busy !== null}
+                onClick={() =>
+                  void run("lock", async () => {
+                    setCurrency(
+                      await setMode({ data: { mode: "bdt_locked" } }),
+                    );
+                    setNotice(
+                      t("Store is BDT-locked.", "স্টোর বিডিটি-তে ফিরেছে।"),
+                    );
+                  })
+                }
+              >
+                {t("Return to BDT", "বিডিটিতে ফিরুন")}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
