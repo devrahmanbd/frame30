@@ -148,6 +148,19 @@ export function useMerchant() {
   });
 }
 
+/**
+ * Drops every merchant-scoped read after an identity change (fresh login,
+ * account switch). Without this the dashboard/onboarding keep serving the
+ * previous session's null/merchant until staleTime expires and bounce
+ * completed stores back to the wizard.
+ */
+export async function invalidateMerchantScope(
+  queryClient: Pick<import("@tanstack/react-query").QueryClient, "invalidateQueries">,
+): Promise<void> {
+  await queryClient.invalidateQueries({ queryKey: ["merchant"] });
+  await queryClient.invalidateQueries({ queryKey: ["merchant-memberships"] });
+}
+
 export function useMerchants() {
   const qc = useQueryClient();
   const membershipsQuery = useQuery({

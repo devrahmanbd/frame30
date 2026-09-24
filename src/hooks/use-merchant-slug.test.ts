@@ -3,7 +3,8 @@
  * numeric suffix. The wizard never asks for an address anymore.
  */
 import { describe, expect, it } from "vitest";
-import { candidateStoreSlugs } from "./use-merchant";
+import { QueryClient } from "@tanstack/react-query";
+import { candidateStoreSlugs, invalidateMerchantScope } from "./use-merchant";
 
 describe("candidateStoreSlugs", () => {
   it("derives the slug from the name", () => {
@@ -35,5 +36,18 @@ describe("candidateStoreSlugs", () => {
     for (const slug of candidateStoreSlugs("a".repeat(100), 5)) {
       expect(slug.length).toBeLessThanOrEqual(60);
     }
+  });
+});
+
+describe("invalidateMerchantScope", () => {
+  it("marks merchant reads stale so the next screen refetches", async () => {
+    const qc = new QueryClient();
+    qc.setQueryData(["merchant"], null);
+    qc.setQueryData(["merchant-memberships"], []);
+    await invalidateMerchantScope(qc);
+    expect(qc.getQueryState(["merchant"])?.isInvalidated).toBe(true);
+    expect(qc.getQueryState(["merchant-memberships"])?.isInvalidated).toBe(
+      true,
+    );
   });
 });
