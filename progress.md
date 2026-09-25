@@ -170,6 +170,33 @@ verify on production; push to GitHub.
   live now vs heritage vision): seed Home + designate + parity check.
   Contact-Us designation still stale in the meantime.
 
+## Somvabona theme v1 (Sept 25) — SHIPPED to main, Songoskriti untouched
+
+- Spec: docs/superpowers/specs/2026-09-25-somvabona-design.md (approved).
+  Key `somvabona`, terracotta heritage base (brand #7C2A1A), 11-section
+  homepage rhythm, BDT-first, EN/BN inline props, no invented metrics.
+- [x] Batch 1 — scaffold (`d783026`): tokens, types, homepage blueprint,
+  statement chrome (menubar-only header, statement + single-CTA newsletter
+  + sitemap + payments + colophon footer). Wiring tests 7/7.
+- [x] Batch 2 — widget twins (`681ac87`): 5 SectionTypes + builder-ast
+  entries + help + SOMVABONA_WIDGETS renderers in WIDGET_COMPONENTS.
+  urgency_rail reuses ProductCard (% off computed, lowStockAt hints);
+  rating_stars fail-closes. Contracts 23 green + 1 expected-fail.
+- [x] Batch 3 — studio twins (`cd03a83`): WIDGET_BY_KEY defs, controls
+  (keys ⊆ defaults), PORTED extended, RED flipped green. 449 green.
+- [x] Batch 4 — gates + preview: key registered (catalog-meta +
+  /theme-preview/somvabona via shared buildPreset), stale songoskriti
+  preview expectation corrected to the true 10-section order. 466 green.
+- Follow-ups discovered: (1) merchant photography swaps 1:1 for blueprint
+  image "" slots (spec §6); (2) low-stock flags on collection rails are
+  absent server-side — urgency_rail hints only where row.count exists;
+  (3) category tiles reuse circle_categories (department_grid counts would
+  render "0 pieces"); (4) demo catalog + seed migration for `somvabona`
+  key not built (no live merchants yet — preview resolves via fallback);
+  (5) pre-existing tree breakage nearby (songoskriti.test `link` ctx,
+  widget-registry hex, rewards_club help) belongs to the parallel refactor
+  loop, not this program.
+
 ## Follow-ups / hazards
 
 - Homepage success path needs a merchant-owned published page + domain.

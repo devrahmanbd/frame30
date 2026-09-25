@@ -19,6 +19,12 @@ import { buildHeaderMain } from "./themes/songoskriti/header";
 import { buildFooterMain } from "./themes/songoskriti/footer";
 import { buildHomepageMain } from "./themes/songoskriti/homepage";
 import type { SectionBuilder } from "./themes/songoskriti/types";
+import { SOMVABONA_TOKENS } from "./themes/somvabona/tokens";
+import {
+  buildFooterMain as buildSomvabonaFooter,
+  buildHeaderMain as buildSomvabonaHeader,
+} from "./themes/somvabona/chrome";
+import { buildHomepageMain as buildSomvabonaHomepage } from "./themes/somvabona/homepage";
 
 export function previewTemplateForHref(href: string): TemplateKey | null {
   const raw = href.trim();
@@ -51,8 +57,9 @@ export function previewTemplateForHref(href: string): TemplateKey | null {
 /**
  * Theme preview preset resolution.
  *
- * `songoskriti` builds its authored AST from the Task 1 builders + locked
- * tokens; every other key returns null so the route renders its 404 state.
+ * `songoskriti` and `somvabona` build their authored ASTs from their Task 1
+ * builders + locked tokens; every other key returns null so the route
+ * renders its 404 state.
  *
  * Every template authors demo content: navbar, category, footer and product
  * links must land on a rendered page, never on the empty state. Data rails
@@ -69,7 +76,48 @@ export type ThemePreviewPreset = {
 };
 
 export function resolveThemePreview(key: string): ThemePreviewPreset | null {
-  if (key !== "songoskriti") return null;
+  if (key === "songoskriti") {
+    return buildPreset(
+      "songoskriti",
+      "Songoskriti",
+      SONGOSKRITI_TOKENS,
+      buildHeaderMain,
+      buildFooterMain,
+      buildHomepageMain,
+      {
+        title: "Dhakai Jamdani Heritage Saree",
+        title_bn: "ঢাকাই জামদানি হেরিটেজ শাড়ি",
+        blogImage: "/ph/songoskriti/hero-artisans.png",
+      },
+    );
+  }
+  if (key === "somvabona") {
+    return buildPreset(
+      "somvabona",
+      "Somvabona",
+      SOMVABONA_TOKENS,
+      buildSomvabonaHeader as never,
+      buildSomvabonaFooter as never,
+      buildSomvabonaHomepage as never,
+      {
+        title: "Everyday Cotton Panjabi",
+        title_bn: "প্রতিদিনের সুতি পাঞ্জাবি",
+        blogImage: "",
+      },
+    );
+  }
+  return null;
+}
+
+function buildPreset(
+  key: string,
+  themeName: string,
+  tokens: ThemeTokens,
+  buildHeader: (s: SectionBuilder) => Section[],
+  buildFooter: (s: SectionBuilder) => Section[],
+  buildHome: (s: SectionBuilder) => Section[],
+  demo: { title: string; title_bn: string; blogImage: string },
+): ThemePreviewPreset {
   let n = 0;
   const s: SectionBuilder = (type, props = {}) => {
     const section: Section = {
@@ -79,8 +127,8 @@ export function resolveThemePreview(key: string): ThemePreviewPreset | null {
     };
     return section;
   };
-  const headerBase = buildHeaderMain(s);
-  const footerBase = buildFooterMain(s);
+  const headerBase = buildHeader(s);
+  const footerBase = buildFooter(s);
   // Ids must stay globally unique across templates sharing one counter, so
   // the shared header/footer nodes are cloned under a template-scoped id
   // (same convention as withSearch in theme-blueprints).
@@ -111,7 +159,7 @@ export function resolveThemePreview(key: string): ThemePreviewPreset | null {
       promise_bn,
     });
   const templates: Record<TemplateKey, ThemeAst> = {
-    index: tpl("index", buildHomepageMain(s)),
+    index: tpl("index", buildHome(s)),
     collection: tpl("collection", [
       s("heading", { text: "New in", text_bn: "নতুন এসেছে" }),
       rail(
@@ -131,8 +179,8 @@ export function resolveThemePreview(key: string): ThemePreviewPreset | null {
     ]),
     product: tpl("product", [
       s("heading", {
-        text: "Dhakai Jamdani Heritage Saree",
-        text_bn: "ঢাকাই জামদানি হেরিটেজ শাড়ি",
+        text: demo.title,
+        text_bn: demo.title_bn,
       }),
       s("product_media", {
         image1: "/ph/songoskriti/prod-saree.png",
@@ -170,7 +218,7 @@ export function resolveThemePreview(key: string): ThemePreviewPreset | null {
     blog: tpl("blog", [
       s("heading", { text: "Journal", text_bn: "জার্নাল" }),
       s("image", {
-        src: "/ph/songoskriti/hero-artisans.png",
+        src: demo.blogImage,
         alt: "Artisans weaving on a wooden loom",
         ratio: "16/9",
         caption: "Artisan owned",
@@ -238,10 +286,10 @@ export function resolveThemePreview(key: string): ThemePreviewPreset | null {
     ]),
   };
   return {
-    key: "songoskriti",
-    themeName: "Songoskriti",
+    key,
+    themeName,
     author: "Framique",
-    tokens: SONGOSKRITI_TOKENS,
+    tokens,
     templates,
   };
 }
