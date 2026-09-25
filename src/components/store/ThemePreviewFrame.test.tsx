@@ -37,15 +37,18 @@ vi.mock("@/components/store/StoreHeader", () => ({
   ),
 }));
 
+const { ThemePreviewFrame } = await import("./ThemePreviewFrame");
+// Click routing is single-sourced in @/lib/theme-preview-nav (the Frame
+// defines no local parser/handler copies); this suite pins the lib behavior
+// through the same symbols the Frame imports.
 const {
-  ThemePreviewFrame,
   PREVIEW_DISABLED_MESSAGE,
   handlePreviewCanvasClick,
   handlePreviewCanvasSubmit,
   isPreviewBlockedHref,
   previewClickAction,
   previewTemplateForHref,
-} = await import("./ThemePreviewFrame");
+} = await import("@/lib/theme-preview-nav");
 const { toast } = await import("sonner");
 const { DEFAULT_TOKENS, newSection } = await import("@/lib/builder-ast");
 import type { TemplateKey, ThemeAst } from "@/lib/builder-ast";
@@ -220,18 +223,24 @@ describe("preview in-canvas template navigation", () => {
     ["/store/demo/checkout", "checkout", undefined],
     ["/account", "account", undefined],
     ["/store/demo/account", "account", undefined],
-    ["/pages/shipping", "page", undefined],
-    ["/blog/how-jamdani-is-woven", "blog", undefined],
+    ["/pages/shipping", "page", "shipping"],
+    ["/blog/how-jamdani-is-woven", "blog", "how-jamdani-is-woven"],
     ["/blog", "blog", undefined],
     ["/", "index", undefined],
     ["/store/demo", "index", undefined],
   ])("maps %s to the %s template", (href, template, slug) => {
     expect(previewTemplateForHref(href)).toBe(template);
-    expect(previewClickAction(href)).toEqual(
-      slug === undefined
-        ? { kind: "switch", template, query: null }
-        : { kind: "switch", template, slug, query: null },
-    );
+    // Single-source action shape: { kind: "switch", target } — page/blog
+    // links carry their slug in target (focus stays product/collection-only
+    // in the canvas handler), list forms carry slug: null.
+    expect(previewClickAction(href)).toEqual({
+      kind: "switch",
+      target: {
+        template,
+        slug: slug ?? null,
+        query: null,
+      },
+    });
   });
 
   it("returns null for blocked and unknown hrefs", () => {

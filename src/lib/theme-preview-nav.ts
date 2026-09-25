@@ -22,6 +22,7 @@ import type {
   ThemeTokens,
 } from "./builder-ast";
 import { TEMPLATE_KEYS } from "./builder-ast";
+import { toast } from "sonner";
 import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
 
@@ -104,6 +105,84 @@ export function previewClickAction(
   if (isPreviewBlockedHref(href)) return { kind: "blocked" };
   const target = previewTargetForHref(href);
   return target ? { kind: "switch", target } : { kind: "allow" };
+}
+
+/* ------------------------------ preview canvas interception */
+
+export type PreviewCanvasClickEvent = {
+  // `unknown` keeps the fake-event stubs in the node-env suite assignable;
+  // the handler only reads `closest` through a guarded cast.
+  target: unknown;
+  preventDefault: () => void;
+  stopPropagation: () => void;
+};
+
+/** Toast copy shown whenever a preview action is blocked. */
+export const PREVIEW_DISABLED_MESSAGE = "Disabled in preview";
+
+const SUBMIT_CONTROL_SELECTOR = 'button[type="submit"],input[type="submit"]';
+
+/**
+ * Capture-phase click interception for the preview canvas: submit controls
+ * inside any form and signup / order-tracking links are blocked with a
+ * toast, while product / collection / search / page / blog / cart /
+ * checkout / account / home links report their target through `switchTo`
+ * (template + focus slug + raw search query) so the frame can swap content
+ * and sync the URL. Product/collection links additionally report their slug
+ * through switchTo so the demo renders the clicked collection, not a
+ * static page. Everything else passes through untouched.
+ */
+export function handlePreviewCanvasClick(
+  event: PreviewCanvasClickEvent,
+  switchTo: (
+    template: TemplateKey,
+    focus: string | null,
+    query: string | null,
+  ) => void,
+): void {
+  const el = event.target as HTMLElement | null;
+  const submit = el?.closest?.(SUBMIT_CONTROL_SELECTOR) as HTMLElement | null;
+  if (submit && submit.closest?.("form")) {
+    event.preventDefault();
+    event.stopPropagation();
+    toast.info(PREVIEW_DISABLED_MESSAGE);
+    return;
+  }
+  const anchor = el?.closest?.("a[href]") as HTMLAnchorElement | null;
+  if (!anchor) return;
+  const action = previewClickAction(anchor.getAttribute("href"));
+  if (action.kind === "blocked") {
+    event.preventDefault();
+    event.stopPropagation();
+    toast.info(PREVIEW_DISABLED_MESSAGE);
+  } else if (action.kind === "switch") {
+    event.preventDefault();
+    event.stopPropagation();
+    switchTo(
+      action.target.template,
+      action.target.slug !== null &&
+        (action.target.template === "collection" ||
+          action.target.template === "product")
+        ? action.target.slug
+        : null,
+      action.target.query,
+    );
+  }
+}
+
+/**
+ * Capture-phase submit interception for the preview canvas: newsletter,
+ * contact, coupon and every other form is blocked with a toast. Runs in
+ * capture so widget `onSubmit` handlers (contact API, coupon state) never
+ * fire.
+ */
+export function handlePreviewCanvasSubmit(event: {
+  preventDefault: () => void;
+  stopPropagation: () => void;
+}): void {
+  event.preventDefault();
+  event.stopPropagation();
+  toast.info(PREVIEW_DISABLED_MESSAGE);
 }
 
 /* ---------------------------------- preview search query round-trip */

@@ -315,6 +315,17 @@ describe("previewTargetForHref slug-aware", () => {
   });
 });
 
+describe("click-routing single source", () => {
+  it("maps /products/ list form exactly once", () => {
+    expect(previewTemplateForHref("/products/")).toBe("product");
+    expect(previewTargetForHref("/products/")).toEqual({
+      template: "product",
+      slug: null,
+      query: null,
+    });
+  });
+});
+
 describe("preview search query round-trip", () => {
   it("parses raw in-canvas query into separate keys", () => {
     expect(parsePreviewSearchQuery("max=99900")).toEqual({ max: "99900" });
