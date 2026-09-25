@@ -1,5 +1,6 @@
 import type { SectionBuilder } from "./types";
 import type { PreviewThemeSource } from "../../theme-preview-nav";
+import { withSongoskritiDefaults } from "./skins";
 import { SONGOSKRITI_TOKENS } from "./tokens";
 import { buildHeaderMain } from "./header";
 import { buildFooterMain } from "./footer";
@@ -45,6 +46,9 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
     header: (s) => buildHeaderMain(s),
     footer: (s) => buildFooterMain(s),
     main: (template, s) => {
+      // Non-homepage templates author sections directly (not through the
+      // homepage builder), so they get the same skin-default wrap here.
+      s = withSongoskritiDefaults(s);
       switch (template) {
         case "index":
           return buildHomepageMain(s);
@@ -133,8 +137,7 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
               heading: "Demo search",
               heading_bn: "ডেমো খোঁজ",
               body: "Live search runs on the storefront. Below is what a results rail looks like.",
-              body_bn:
-                "লাইভ খোঁজ দোকানে চলে। নিচে ফলাফলের একটি নমুনা দেখুন।",
+              body_bn: "লাইভ খোঁজ দোকানে চলে। নিচে ফলাফলের একটি নমুনা দেখুন।",
             }),
             rail(
               s,
@@ -177,8 +180,7 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
             }),
             s("payment_icons", {
               heading: "We accept",
-              marks:
-                "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
+              marks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
             }),
           ];
         case "account":

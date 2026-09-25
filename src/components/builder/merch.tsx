@@ -7,6 +7,7 @@
  * one widget set, four themes.
  */
 import type { SectionType } from "@/lib/builder-ast";
+import { resolveSkin } from "@/lib/builder-ast";
 import { formatDisplayNumber } from "@/lib/money-display";
 import type { WidgetRow } from "@/lib/widget-data";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
@@ -55,11 +56,17 @@ function CardRail({
   rows,
   variant,
   sponsored = false,
+  headingClassName = "text-lg font-semibold",
+  itemClassName,
 }: {
   ctx: WidgetCtx;
   rows: WidgetRow[] | undefined;
   variant: CardVariant;
   sponsored?: boolean;
+  /** Skin presentation fork: heading rhythm only, data and controls shared. */
+  headingClassName?: string;
+  /** Skin presentation fork: card tile widths only, card markup untouched. */
+  itemClassName?: string;
 }) {
   const { str, bool, data, locale, Heading } = ctx;
   const label =
@@ -68,7 +75,7 @@ function CardRail({
   // Docked header: arrows share the heading row (startup-grade rhythm)
   // instead of floating in a separate row beneath the rail.
   const heading = headingText ? (
-    <Heading className="text-lg font-semibold">{headingText}</Heading>
+    <Heading className={headingClassName}>{headingText}</Heading>
   ) : undefined;
   const prevLabel =
     locale === "bn" ? "বামে স্ক্রল করুন" : "Scroll products left";
@@ -81,6 +88,7 @@ function CardRail({
         heading={heading}
         prevLabel={prevLabel}
         nextLabel={nextLabel}
+        {...(itemClassName ? { itemClassName } : {})}
       >
         {Array.from({ length: 6 }, (_, i) => (
           <ProductCardSkeleton key={i} variant={variant} />
@@ -95,6 +103,7 @@ function CardRail({
       heading={heading}
       prevLabel={prevLabel}
       nextLabel={nextLabel}
+      {...(itemClassName ? { itemClassName } : {})}
     >
       {rows.map((row) => (
         <ProductCard
@@ -112,29 +121,41 @@ function CardRail({
   );
 }
 
+/**
+ * Widget skins: editorial (default, current rhythm byte-identical), compact
+ * (smaller heading, narrower tiles — more cards per viewport) and minimal
+ * (quiet small-caps heading, narrower tiles). Shared structure — Rail
+ * keyboard/arrows/labels, ProductCard data semantics, skeletons, bn/en copy,
+ * 44px targets, reduced-motion handling — stays common; only presentation
+ * forks.
+ */
 const ProductRail: WidgetComponent = (ctx) => {
+  const skin = resolveSkin("product_rail", ctx.str("skin"));
+  const headingClassName =
+    skin === "compact"
+      ? "text-base font-semibold"
+      : skin === "minimal"
+        ? "text-sm font-semibold fq-caps text-muted-foreground"
+        : undefined;
+  const itemClassName =
+    skin === "editorial"
+      ? undefined
+      : "w-[60vw] max-w-[220px] min-w-[8rem] sm:w-[32vw] sm:max-w-[240px] lg:w-[18%] lg:min-w-0";
+  const rail = (rows: WidgetRow[] | undefined) => (
+    <CardRail
+      ctx={ctx}
+      rows={rows}
+      variant={cardVariantOf(ctx.str("cardVariant"), "compact")}
+      {...(headingClassName ? { headingClassName } : {})}
+      {...(itemClassName ? { itemClassName } : {})}
+    />
+  );
   const rows = ctx.data?.rows?.slice(0, ctx.int("limit", 12, 1, 24));
   if (ctx.data?.pending || rows === undefined) {
-    return (
-      <section>
-        <CardRail
-          ctx={ctx}
-          rows={rows}
-          variant={cardVariantOf(ctx.str("cardVariant"), "compact")}
-        />
-      </section>
-    );
+    return <section>{rail(rows)}</section>;
   }
   if (rows.length === 0) return null;
-  return (
-    <section>
-      <CardRail
-        ctx={ctx}
-        rows={rows}
-        variant={cardVariantOf(ctx.str("cardVariant"), "compact")}
-      />
-    </section>
-  );
+  return <section>{rail(rows)}</section>;
 };
 
 const DealStrip: WidgetComponent = (ctx) => {
@@ -217,7 +238,10 @@ const DealCard: WidgetComponent = ({ str, Heading, locale }) => {
       <div className="min-w-0 flex-1">
         <Heading className="text-base font-semibold">{str("heading")}</Heading>
         {str("badgeLabel") && (
-          <span className="mt-1 inline-block rounded-fq-sm bg-success-soft px-2 py-0.5 text-xs font-semibold">
+          <span
+            data-part="badge"
+            className="mt-1 inline-block rounded-fq-sm bg-success-soft px-2 py-0.5 text-xs font-semibold"
+          >
             {str("badgeLabel")}
           </span>
         )}

@@ -13,6 +13,7 @@
  */
 import type { PropValue, Section, SectionType } from "../../builder-ast";
 import type { Extras } from "../../theme-section";
+import { withSongoskritiDefaults } from "./skins";
 import type { SectionBuilder } from "./types";
 
 export type FooterSectionBuilder = (
@@ -170,5 +171,7 @@ export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
  * directly with no adapter closure.
  */
 export function buildFooterMain(s: SectionBuilder): Section[] {
-  return buildSongoskritiFooter(s);
+  // SectionBuilder drops the unused extras channel (see blueprint note
+  // above), so the skin-default wrapper feeds straight into the blueprint.
+  return buildSongoskritiFooter(withSongoskritiDefaults(s));
 }

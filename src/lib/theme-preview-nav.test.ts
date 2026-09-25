@@ -308,17 +308,6 @@ describe("previewTargetForHref slug-aware", () => {
   });
 });
 
-describe("collectionDisplayName", () => {
-  it("resolves known slugs, title-cases unknown", async () => {
-    const { collectionDisplayName } = await import("./theme-preview-nav");
-    expect(collectionDisplayName("songoskriti", "festive")).toBe(
-      "Eid & Festive",
-    );
-    expect(collectionDisplayName("songoskriti", "women")).toBe("Women");
-    expect(collectionDisplayName("songoskriti", "nope-xyz")).toBe("Nope Xyz");
-  });
-});
-
 describe("preview search query round-trip", () => {
   it("parses raw in-canvas query into separate keys", () => {
     expect(parsePreviewSearchQuery("max=99900")).toEqual({ max: "99900" });
@@ -336,16 +325,29 @@ describe("preview search query round-trip", () => {
     expect(next).not.toHaveProperty("q", "max=99900");
   });
 
+  it("writes focus clicks under the ?focus= contract, never ?slug=", () => {
+    const next = previewSearchForSwitch("collection", "festive", null, {});
+    expect(next).toMatchObject({ template: "collection", focus: "festive" });
+    expect(next).not.toHaveProperty("slug");
+  });
+
   it("clears q/max when leaving the search template", () => {
     const prev = { template: "search", max: "99900", q: "saree" };
     const next = previewSearchForSwitch("collection", "festive", null, prev);
-    expect(next).toMatchObject({ template: "collection", slug: "festive" });
+    expect(next).toMatchObject({ template: "collection", focus: "festive" });
     // Explicit undefined: TanStack Router strips these keys on navigate.
     expect(next.q).toBeUndefined();
     expect(next.max).toBeUndefined();
   });
 
-  it("validateSearch preserves q/max (≤200) so refresh keeps them", () => {
+  it("clears focus when switching to a template with no slug", () => {
+    const prev = { template: "collection", focus: "festive" };
+    const next = previewSearchForSwitch("search", null, "q=saree", prev);
+    expect(next).toMatchObject({ template: "search", q: "saree" });
+    expect(next.focus).toBeUndefined();
+  });
+
+  it("validateSearch preserves focus and q/max (≤200) so refresh keeps them", () => {
     expect(
       validateThemePreviewSearch({
         template: "search",
@@ -354,16 +356,25 @@ describe("preview search query round-trip", () => {
       }),
     ).toEqual({
       template: "search",
-      slug: undefined,
+      focus: undefined,
       q: "saree",
       max: "99900",
     });
+    expect(
+      validateThemePreviewSearch({
+        template: "collection",
+        focus: "bestsellers",
+      }),
+    ).toMatchObject({ template: "collection", focus: "bestsellers" });
     const long = "x".repeat(300);
     const capped = validateThemePreviewSearch({ q: long, max: long });
     expect(capped.q).toHaveLength(200);
     expect(capped.max).toHaveLength(200);
     expect(
       validateThemePreviewSearch({ template: "nope" }).template,
+    ).toBeUndefined();
+    expect(
+      validateThemePreviewSearch({ focus: "NOT A SLUG" }).focus,
     ).toBeUndefined();
   });
 });

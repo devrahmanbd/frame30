@@ -1,0 +1,364 @@
+/**
+ * Songoskriti widget skin sheets (spec §3 — theme-owned skin CSS).
+ *
+ * Keyed by the renderer's `data-widget` + `data-skin` attributes. Until the
+ * core lane emits those attributes these selectors match nothing — the
+ * sheet is inert by design, never a crash, never an unstyled flash.
+ *
+ * TOKEN POLICY: every value reads `var(--theme-*)` (terracotta brand, warm
+ * paper surface, Playfair Display display face all arrive through the
+ * ThemeSurface bridge). Literals are allowed ONLY for artwork — this sheet
+ * uses none: washes are `color-mix()` over theme tokens, so a merchant
+ * re-tint re-skins every rule automatically.
+ *
+ * ACCESSIBILITY: interactive descendants keep 44px targets; motion rules
+ * collapse under `prefers-reduced-motion`; multi-column skins collapse to a
+ * single column below 768px. Headings stay h1-safe (style only, no level
+ * changes) and copy stays bn/en (no content here at all).
+ */
+
+/* ------------------------------------------------- product_rail: editorial */
+
+[data-widget="product_rail"][data-skin="editorial"] {
+  background: var(--theme-surface);
+  border-block-start: 1px solid var(--theme-border);
+  padding-block: var(--theme-space);
+}
+
+/* Editorial serif moment: the rail heading sets in the display face with a
+   terracotta rule above it — the shelf reads like a magazine spread. */
+[data-widget="product_rail"][data-skin="editorial"] h1,
+[data-widget="product_rail"][data-skin="editorial"] h2 {
+  font-family: var(--theme-font-display);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--theme-ink);
+  padding-block-start: calc(var(--theme-space) * 0.5);
+  border-block-start: 2px solid var(--theme-brand);
+  display: inline-block;
+}
+
+/* Delivery promise line picks up the terracotta accent, not body grey. */
+[data-widget="product_rail"][data-skin="editorial"] [data-promise],
+[data-widget="product_rail"][data-skin="editorial"] p {
+  color: var(--theme-muted-ink);
+}
+[data-widget="product_rail"][data-skin="editorial"] [data-promise] {
+  color: var(--theme-brand);
+  font-weight: 600;
+}
+
+/* Cards sit frameless on warm paper; the rail arrows stay 44px targets. */
+[data-widget="product_rail"][data-skin="editorial"] article {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+[data-widget="product_rail"][data-skin="editorial"] button {
+  min-height: 44px;
+  min-width: 44px;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius);
+  color: var(--theme-ink);
+}
+[data-widget="product_rail"][data-skin="editorial"] button:hover {
+  border-color: var(--theme-brand);
+  color: var(--theme-brand);
+}
+
+/* ------------------------------------------------ hero_carousel: split --- */
+/* Split editorial: copy column on warm paper, art column full-bleed. The
+   headline is the serif moment; the CTA is a solid terracotta block. */
+
+[data-widget="hero_carousel"][data-skin="split"] {
+  background: var(--theme-surface);
+  border-block: 1px solid var(--theme-border);
+}
+
+[data-widget="hero_carousel"][data-skin="split"] h1,
+[data-widget="hero_carousel"][data-skin="split"] h2 {
+  font-family: var(--theme-font-display);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  color: var(--theme-ink);
+  text-wrap: balance;
+}
+
+/* Eyebrow caption: small caps, letterspaced, terracotta. */
+[data-widget="hero_carousel"][data-skin="split"] [data-caption] {
+  color: var(--theme-brand);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+[data-widget="hero_carousel"][data-skin="split"] p {
+  color: var(--theme-muted-ink);
+  max-width: 65ch;
+}
+
+/* Primary CTA: terracotta block, readable ink, 44px+ target. */
+[data-widget="hero_carousel"][data-skin="split"] a[data-cta],
+[data-widget="hero_carousel"][data-skin="split"] a[class*="cta"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding-inline: calc(var(--theme-space) * 1.5);
+  background: var(--theme-brand);
+  color: var(--theme-brand-ink);
+  border-radius: var(--theme-radius);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+/* Carousel dots: terracotta current, hairline rest. */
+[data-widget="hero_carousel"][data-skin="split"] button[aria-current="true"] {
+  background: var(--theme-brand);
+}
+[data-widget="hero_carousel"][data-skin="split"] button {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* ------------------------------------------------- testimonials: wall --- */
+/* Quote wall: warm muted panels, oversized terracotta quote mark, serif
+   quote, hairline-ruled attribution. Distinct from the single/carousel
+   skins by showing every voice at once in a grid. */
+
+[data-widget="testimonials"][data-skin="wall"] {
+  background: var(--theme-surface);
+  padding-block: var(--theme-space);
+}
+
+[data-widget="testimonials"][data-skin="wall"] ul,
+[data-widget="testimonials"][data-skin="wall"] ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--theme-gap);
+}
+
+[data-widget="testimonials"][data-skin="wall"] li,
+[data-widget="testimonials"][data-skin="wall"] blockquote {
+  background: var(--theme-muted);
+  border: 1px solid var(--theme-border);
+  border-block-start: 3px solid var(--theme-brand);
+  border-radius: var(--theme-radius);
+  box-shadow: var(--theme-shadow-sm);
+  padding: var(--theme-space);
+}
+
+[data-widget="testimonials"][data-skin="wall"] blockquote {
+  font-family: var(--theme-font-display);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--theme-ink);
+  text-wrap: pretty;
+}
+
+[data-widget="testimonials"][data-skin="wall"] [data-quote-mark] {
+  color: var(--theme-accent);
+  font-family: var(--theme-font-display);
+}
+
+/* Attribution: name in ink small-caps, place in muted tone. */
+[data-widget="testimonials"][data-skin="wall"] [data-author] {
+  color: var(--theme-ink);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  border-block-start: 1px solid var(--theme-border);
+  padding-block-start: calc(var(--theme-space) * 0.5);
+}
+[data-widget="testimonials"][data-skin="wall"] [data-role] {
+  color: var(--theme-muted-ink);
+}
+
+/* ------------------------------------------------- product_grid: cards --- */
+/* Warm cards: paper surface, hairline border, soft lift, serif titles,
+   terracotta price accent. Distinct from `rows` by keeping each product a
+   self-contained card instead of a ledger line. */
+
+[data-widget="product_grid"][data-skin="cards"] {
+  background: var(--theme-surface);
+}
+
+[data-widget="product_grid"][data-skin="cards"] h1,
+[data-widget="product_grid"][data-skin="cards"] h2 {
+  font-family: var(--theme-font-display);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--theme-ink);
+}
+
+[data-widget="product_grid"][data-skin="cards"] ul,
+[data-widget="product_grid"][data-skin="cards"] ol {
+  gap: var(--theme-gap);
+}
+
+[data-widget="product_grid"][data-skin="cards"] article {
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius);
+  box-shadow: var(--theme-shadow-md);
+  overflow: hidden;
+}
+
+[data-widget="product_grid"][data-skin="cards"] article [data-title] {
+  font-family: var(--theme-font-display);
+  color: var(--theme-ink);
+}
+
+[data-widget="product_grid"][data-skin="cards"] article [data-price] {
+  color: var(--theme-brand);
+  font-weight: 700;
+}
+
+[data-widget="product_grid"][data-skin="cards"] button,
+[data-widget="product_grid"][data-skin="cards"] a[data-cta] {
+  min-height: 44px;
+}
+
+/* --------------------------------------- sibling skins (same widgets) --- */
+/* Thin but intentional: every closed-vocabulary value has a distinct face
+   so an inspector override never lands on an unstyled widget. */
+
+/* product_rail compact: tighter rhythm, smaller serif, no top rule. */
+[data-widget="product_rail"][data-skin="compact"] h1,
+[data-widget="product_rail"][data-skin="compact"] h2 {
+  font-family: var(--theme-font-display);
+  font-size: 1.125rem;
+  color: var(--theme-ink);
+}
+[data-widget="product_rail"][data-skin="compact"] button {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* product_rail minimal: chrome stripped — no borders, no rules, body face. */
+[data-widget="product_rail"][data-skin="minimal"] {
+  border: none;
+  background: transparent;
+}
+[data-widget="product_rail"][data-skin="minimal"] h1,
+[data-widget="product_rail"][data-skin="minimal"] h2 {
+  font-family: var(--theme-font-body);
+  border: none;
+  padding: 0;
+}
+[data-widget="product_rail"][data-skin="minimal"] button {
+  min-height: 44px;
+  min-width: 44px;
+  border: none;
+}
+
+/* hero_carousel fullbleed: art fills the frame, copy floats on a
+   theme-ink scrim wash (color-mix over the token, not a literal). */
+[data-widget="hero_carousel"][data-skin="fullbleed"] {
+  background: var(--theme-ink);
+}
+[data-widget="hero_carousel"][data-skin="fullbleed"] h1,
+[data-widget="hero_carousel"][data-skin="fullbleed"] h2 {
+  font-family: var(--theme-font-display);
+  color: var(--theme-surface);
+  text-wrap: balance;
+}
+[data-widget="hero_carousel"][data-skin="fullbleed"] p {
+  color: color-mix(in srgb, var(--theme-surface) 82%, transparent);
+}
+[data-widget="hero_carousel"][data-skin="fullbleed"] [data-scrim] {
+  background: color-mix(in srgb, var(--theme-ink) 55%, transparent);
+}
+
+/* hero_carousel minimal: centred serif headline, text CTA, no frame. */
+[data-widget="hero_carousel"][data-skin="minimal"] {
+  background: transparent;
+  border: none;
+  text-align: center;
+}
+[data-widget="hero_carousel"][data-skin="minimal"] h1,
+[data-widget="hero_carousel"][data-skin="minimal"] h2 {
+  font-family: var(--theme-font-display);
+  color: var(--theme-ink);
+  max-width: 22ch;
+  margin-inline: auto;
+  text-wrap: balance;
+}
+
+/* testimonials carousel: single spotlight card, terracotta dots. */
+[data-widget="testimonials"][data-skin="carousel"] blockquote {
+  font-family: var(--theme-font-display);
+  color: var(--theme-ink);
+  text-align: center;
+  text-wrap: pretty;
+}
+[data-widget="testimonials"][data-skin="carousel"] button {
+  min-height: 44px;
+  min-width: 44px;
+}
+[data-widget="testimonials"][data-skin="carousel"]
+  button[aria-current="true"] {
+  background: var(--theme-brand);
+}
+
+/* testimonials single: narrow centred column, hairline rules top/bottom. */
+[data-widget="testimonials"][data-skin="single"] {
+  max-width: 44rem;
+  margin-inline: auto;
+  border-block: 1px solid var(--theme-border);
+  padding-block: var(--theme-space);
+}
+[data-widget="testimonials"][data-skin="single"] blockquote {
+  font-family: var(--theme-font-display);
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--theme-ink);
+  text-align: center;
+  text-wrap: pretty;
+}
+
+/* product_grid rows: ledger lines instead of cards — hairline dividers,
+   body-face titles, terracotta price at the row end. */
+[data-widget="product_grid"][data-skin="rows"] article {
+  background: transparent;
+  border: none;
+  border-block-end: 1px solid var(--theme-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+[data-widget="product_grid"][data-skin="rows"] article [data-price] {
+  color: var(--theme-brand);
+  font-weight: 700;
+}
+
+/* ----------------------------------------------- reduced motion ------ */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-widget][data-skin],
+  [data-widget][data-skin] *,
+  [data-widget][data-skin] *::before,
+  [data-widget][data-skin] *::after {
+    animation: none;
+    transition: none;
+    scroll-behavior: auto;
+  }
+}
+
+/* --------------------------------------------------------- mobile -------- */
+
+@media (max-width: 767px) {
+  [data-widget="testimonials"][data-skin="wall"] ul,
+  [data-widget="testimonials"][data-skin="wall"] ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  [data-widget="hero_carousel"][data-skin="split"] h1,
+  [data-widget="hero_carousel"][data-skin="split"] h2,
+  [data-widget="testimonials"][data-skin="single"] blockquote {
+    overflow-wrap: break-word;
+  }
+}

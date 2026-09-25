@@ -22,7 +22,6 @@ import type {
   ThemeTokens,
 } from "./builder-ast";
 import { TEMPLATE_KEYS } from "./builder-ast";
-import { toast } from "sonner";
 import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
 
@@ -96,9 +95,25 @@ export function previewTemplateForHref(href: string): TemplateKey | null {
   return previewTargetForHref(href)?.template ?? null;
 }
 
+export type PreviewClickAction =
+  | { kind: "blocked" }
+  | { kind: "switch"; target: PreviewTarget }
+  | { kind: "allow" };
+
+export function previewClickAction(
+  href: string | null | undefined,
+): PreviewClickAction {
+  if (!href || href.startsWith("#")) return { kind: "allow" };
+  if (isPreviewBlockedHref(href)) return { kind: "blocked" };
+  const target = previewTargetForHref(href);
+  return target ? { kind: "switch", target } : { kind: "allow" };
+}
+
 /* ---------------------------------- preview search query round-trip */
 
 const PREVIEW_SEARCH_QUERY_LIMIT = 200;
+
+const PREVIEW_FOCUS_RE = /^[a-z0-9]+(?:-[a-z0-9]+){0,7}$/;
 
 /**
  * Parse the raw in-canvas search query (`/search?max=99900` → `"max=99900"`)
@@ -122,20 +137,22 @@ export function parsePreviewSearchQuery(raw: string | null): {
 
 /**
  * Search updater for the preview frame's `navigate({ to: ".", search })`:
- * writes the parsed query as separate keys (never the raw string as `q`),
- * and clears `q`/`max` when leaving the search template so a previous
- * `/search?max=…` click does not leak into collection/product URLs.
+ * writes the focused slug under the `?focus=` contract (never `?slug=` —
+ * merchant-less redirects use `focus`), writes the parsed query as
+ * separate keys (never the raw string as `q`), and clears `q`/`max` when
+ * leaving the search template so a previous `/search?max=…` click does not
+ * leak into collection/product URLs.
  */
 export function previewSearchForSwitch(
   template: TemplateKey,
-  slug: string | null,
+  focus: string | null,
   query: string | null,
   prev: Record<string, unknown>,
 ): Record<string, unknown> {
   return {
     ...prev,
     template,
-    ...(slug ? { slug } : { slug: undefined }),
+    ...(focus ? { focus } : { focus: undefined }),
     ...(template === "search"
       ? { q: undefined, max: undefined, ...parsePreviewSearchQuery(query) }
       : { q: undefined, max: undefined }),
@@ -143,13 +160,13 @@ export function previewSearchForSwitch(
 }
 
 /**
- * Route `validateSearch` for `/theme-preview/$key`: template + slug plus
+ * Route `validateSearch` for `/theme-preview/$key`: template + focus plus
  * the preserved search query keys (`q`, `max`, strings ≤200) so refresh
  * keeps `?template=search&max=99900` instead of dropping it.
  */
 export function validateThemePreviewSearch(search: Record<string, unknown>): {
   template: TemplateKey | undefined;
-  slug: string | undefined;
+  focus: string | undefined;
   q: string | undefined;
   max: string | undefined;
 } {
@@ -160,9 +177,11 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
       : undefined;
   return {
     template,
-    slug:
-      typeof search.slug === "string"
-        ? (search.slug as string).slice(0, 80)
+    focus:
+      typeof search.focus === "string" &&
+      search.focus.length <= 64 &&
+      PREVIEW_FOCUS_RE.test(search.focus)
+        ? search.focus
         : undefined,
     q:
       typeof search.q === "string"
@@ -173,88 +192,6 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
         ? (search.max as string).slice(0, PREVIEW_SEARCH_QUERY_LIMIT)
         : undefined,
   };
-}
-
-export type PreviewClickAction =
-  | { kind: "blocked" }
-  | { kind: "switch"; target: PreviewTarget }
-  | { kind: "allow" };
-
-export function previewClickAction(
-  href: string | null | undefined,
-): PreviewClickAction {
-  if (!href || href.startsWith("#")) return { kind: "allow" };
-  if (isPreviewBlockedHref(href)) return { kind: "blocked" };
-  const target = previewTargetForHref(href);
-  return target ? { kind: "switch", target } : { kind: "allow" };
-}
-
-/* -------------------------------- preview canvas interception */
-
-/** Toast copy shown whenever a preview action is blocked. */
-export const PREVIEW_DISABLED_MESSAGE = "Disabled in preview";
-
-export type PreviewCanvasClickEvent = {
-  // `unknown` keeps the fake-event stubs in the node-env suite assignable;
-  // the handler only reads `closest` through a guarded cast.
-  target: unknown;
-  preventDefault: () => void;
-  stopPropagation: () => void;
-};
-
-const SUBMIT_CONTROL_SELECTOR = 'button[type="submit"],input[type="submit"]';
-
-/**
- * Capture-phase click interception for the preview canvas: submit controls
- * inside any form and signup / order-tracking links are blocked with a
- * toast, while product / collection / search / page / blog / cart /
- * checkout / account / home links report their target through `switchTo`
- * (template + slug + query) so the frame can swap content and sync the URL.
- * Everything else passes through untouched.
- */
-export function handlePreviewCanvasClick(
-  event: PreviewCanvasClickEvent,
-  switchTo: (
-    template: TemplateKey,
-    slug: string | null,
-    query: string | null,
-  ) => void,
-): void {
-  const el = event.target as HTMLElement | null;
-  const submit = el?.closest?.(SUBMIT_CONTROL_SELECTOR) as HTMLElement | null;
-  if (submit && submit.closest?.("form")) {
-    event.preventDefault();
-    event.stopPropagation();
-    toast.info(PREVIEW_DISABLED_MESSAGE);
-    return;
-  }
-  const anchor = el?.closest?.("a[href]") as HTMLAnchorElement | null;
-  if (!anchor) return;
-  const action = previewClickAction(anchor.getAttribute("href"));
-  if (action.kind === "blocked") {
-    event.preventDefault();
-    event.stopPropagation();
-    toast.info(PREVIEW_DISABLED_MESSAGE);
-  } else if (action.kind === "switch") {
-    event.preventDefault();
-    event.stopPropagation();
-    switchTo(action.target.template, action.target.slug, action.target.query);
-  }
-}
-
-/**
- * Capture-phase submit interception for the preview canvas: newsletter,
- * contact, coupon and every other form is blocked with a toast. Runs in
- * capture so widget `onSubmit` handlers (contact API, coupon state) never
- * fire.
- */
-export function handlePreviewCanvasSubmit(event: {
-  preventDefault: () => void;
-  stopPropagation: () => void;
-}): void {
-  event.preventDefault();
-  event.stopPropagation();
-  toast.info(PREVIEW_DISABLED_MESSAGE);
 }
 
 /* ------------------------------------------------- preview key resolver */
@@ -351,25 +288,6 @@ export function assemblePreviewTemplates(
     };
   }
   return templates;
-}
-
-export function titleCaseSlug(slug: string): string {
-  return slug
-    .split("-")
-    .map((w) => (w ? w[0]!.toUpperCase() + w.slice(1) : w))
-    .join(" ");
-}
-
-export function collectionDisplayName(
-  themeKey: string,
-  slug: string | null,
-): string {
-  if (!slug) return "New in";
-  const catalog = demoCatalogFor(themeKey);
-  const found =
-    catalog.collections.find((c) => c.slug === slug) ??
-    catalog.categories.find((c) => c.slug === slug);
-  return found?.name ?? titleCaseSlug(slug);
 }
 
 export function resolveThemePreview(key: string): ThemePreviewPreset | null {

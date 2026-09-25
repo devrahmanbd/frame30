@@ -254,11 +254,14 @@ const ShoppableImage: WidgetComponent = (ctx) => {
                     className="w-14 shrink-0 rounded-fq-sm"
                   />
                   <span className="min-w-0">
-                    <span className="block truncate text-sm font-medium">
+                    <span data-part="title" className="block truncate text-sm font-medium">
                       {pin.row.title}
                     </span>
                     {pin.row.priceMinor !== undefined && (
-                      <span className="block text-xs tabular-nums text-muted-foreground">
+                      <span
+                        data-part="price"
+                        className="block text-xs tabular-nums text-muted-foreground"
+                      >
                         {money(pin.row.priceMinor, pin.row.currency)}
                       </span>
                     )}

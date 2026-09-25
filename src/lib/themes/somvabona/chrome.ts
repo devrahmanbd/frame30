@@ -14,6 +14,7 @@
  */
 import type { PropValue, Section } from "../../builder-ast";
 import type { SomvabonaBuilder } from "./types";
+import { withSomvabonaWidgetDefaults } from "./skins";
 
 export const BRAND_NAME = "Somvabona";
 export const BRAND_NAME_BN = "সম্ভাবনা";
@@ -105,8 +106,9 @@ export const COLOPHON = {
 } as const;
 
 export function buildHeaderMain(s: SomvabonaBuilder): Section[] {
+  const t = withSomvabonaWidgetDefaults(s);
   return [
-    s("mega_menu", {
+    t("mega_menu", {
       label: "Shop",
       label_bn: "কেনাকাটা",
       limit: 8,
@@ -120,14 +122,15 @@ export function buildHeaderMain(s: SomvabonaBuilder): Section[] {
  * colophon. The newsletter keeps the only button-label prop in the footer.
  */
 export function buildFooterMain(s: SomvabonaBuilder): Section[] {
+  const t = withSomvabonaWidgetDefaults(s);
   return [
-    s("rich_text", {
+    t("rich_text", {
       heading: STATEMENT.heading,
       heading_bn: STATEMENT.heading_bn,
       body: STATEMENT.body,
       body_bn: STATEMENT.body_bn,
     }),
-    s("newsletter", {
+    t("newsletter", {
       heading: NEWSLETTER.heading,
       heading_bn: NEWSLETTER.heading_bn,
       body: NEWSLETTER.body,
@@ -137,7 +140,7 @@ export function buildFooterMain(s: SomvabonaBuilder): Section[] {
       consentText: NEWSLETTER.consentText,
       consentText_bn: NEWSLETTER.consentText_bn,
     }),
-    s("footer_sitemap", {
+    t("footer_sitemap", {
       c1Title: FALLBACK_COLUMNS[0]!.title,
       c1Title_bn: FALLBACK_COLUMNS[0]!.title_bn,
       c1Links: FALLBACK_COLUMNS[0]!.links,
@@ -151,12 +154,12 @@ export function buildFooterMain(s: SomvabonaBuilder): Section[] {
       c4Title_bn: FALLBACK_COLUMNS[3]!.title_bn,
       c4Links: FALLBACK_COLUMNS[3]!.links,
     }),
-    s("payment_icons", {
+    t("payment_icons", {
       heading: PAYMENTS_HEADING,
       heading_bn: PAYMENTS_HEADING_BN,
       marks: PAYMENT_MARKS,
     }),
-    s("rich_text", {
+    t("rich_text", {
       heading: "",
       body: COLOPHON.body,
       body_bn: COLOPHON.body_bn,

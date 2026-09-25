@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import type {
   Breakpoint,
   PropValue,
@@ -6,7 +6,7 @@ import type {
   SectionType,
   TemplateKey,
 } from "@/lib/builder-ast";
-import { resolveProps, safeEmbedUrl } from "@/lib/builder-ast";
+import { resolveProps, resolveSkin, safeEmbedUrl } from "@/lib/builder-ast";
 import { bnKey, textOf, type Locale } from "@/lib/bitext";
 import { formatDisplayMoney, formatDisplayNumber } from "@/lib/money-display";
 import type { WidgetRow } from "@/lib/widget-data";
@@ -888,62 +888,225 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale, section }) => {
           },
         ].filter((slide, index) => index === 0 || slide.heading || slide.image);
   const [index, setIndex] = useState(0);
-  const active = slides[Math.min(index, slides.length - 1)]!;
+  // Reduced-motion gate for pointer-drag only. SSR-safe (effects never run
+  // under renderToStaticMarkup, so first paint assumes no preference, then
+  // corrects from the OS setting and follows mid-session changes). Buttons,
+  // keyboard and touch stay manual-only either way — this widget has no
+  // autoplay to disarm, every slide advances on user action alone.
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(query.matches);
+    const onChange = () => setReducedMotion(query.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+  const touchStartX = useRef<number | null>(null);
+  const pointerStartX = useRef<number | null>(null);
+  const count = slides.length;
+  const current = Math.min(index, count - 1);
+  const active = slides[current]!;
+  const step = (delta: number) =>
+    setIndex((i) => (i + delta + count) % count);
+  const goTo = (i: number) => setIndex(((i % count) + count) % count);
+  const prevLabel = locale === "bn" ? "আগের স্লাইড" : "Previous slide";
+  const nextLabel = locale === "bn" ? "পরের স্লাইড" : "Next slide";
+  const position = `${formatDisplayNumber(current + 1, { locale })} / ${formatDisplayNumber(count, { locale })}`;
+  const statusText =
+    locale === "bn" ? `স্লাইড ${position}` : `Slide ${position}`;
+  const stepperBtn =
+    "inline-flex h-11 w-11 items-center justify-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
+  const onRegionKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      step(1);
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      step(-1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      goTo(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      goTo(count - 1);
+    }
+  };
+  const onTouchStart = (event: React.TouchEvent) => {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  };
+  const onTouchEnd = (event: React.TouchEvent) => {
+    const start = touchStartX.current;
+    touchStartX.current = null;
+    if (start === null) return;
+    const end = event.changedTouches[0]?.clientX ?? start;
+    const delta = end - start;
+    if (Math.abs(delta) < 40) return;
+    if (delta < 0) step(1);
+    else step(-1);
+  };
+  // Desktop pointer-drag: mouse-only (touch already swipes above, so other
+  // pointer types are ignored to avoid double-advancing), pointer capture on
+  // the region, and a 40px threshold so plain clicks still activate. No
+  // visual drag offset — the slide swap is an instant content change, which
+  // is transform-only by construction (nothing animates, nothing reflows).
+  // Disabled under reduced motion; buttons/keyboard/touch keep working.
+  const onPointerDown = (event: React.PointerEvent) => {
+    if (reducedMotion) return;
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest?.("button, a, input, select, textarea, [role='button']"))
+      return;
+    pointerStartX.current = event.clientX;
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // Capture is best-effort (SSR/test renderers may lack it); the
+      // threshold math below still holds without it.
+    }
+  };
+  const onPointerUp = (event: React.PointerEvent) => {
+    const start = pointerStartX.current;
+    pointerStartX.current = null;
+    if (reducedMotion) return;
+    if (event.pointerType !== "mouse") return;
+    if (start === null) return;
+    const delta = event.clientX - start;
+    if (Math.abs(delta) < 40) return;
+    if (delta < 0) step(1);
+    else step(-1);
+  };
+  const onPointerCancel = () => {
+    pointerStartX.current = null;
+  };
+  const shellClass = `overflow-hidden rounded-fq-lg border border-border bg-info-soft ${
+    str("align") === "center" ? "text-center" : ""
+  }`;
+  // Single slide: no carousel semantics, no controls — the static hero the
+  // storefront always rendered. The CTA keeps its focus-visible ring.
+  if (count <= 1) {
+    return (
+      <section className={shellClass}>
+        {active.image && (
+          <MediaFrame
+            src={active.image}
+            alt={active.heading}
+            ratio="wide"
+            eager
+            className="rounded-none"
+            sizes="100vw"
+          />
+        )}
+        <div className="p-8">
+          <Heading className="font-bangla-display text-3xl font-bold sm:text-4xl">
+            {active.heading}
+          </Heading>
+          {active.subheading && (
+            <p className="mt-2 max-w-xl text-muted-foreground">
+              {active.subheading}
+            </p>
+          )}
+          {active.ctaLabel && (
+            <a
+              href={active.ctaHref || "#"}
+              className="mt-4 inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              {active.ctaLabel}
+            </a>
+          )}
+        </div>
+      </section>
+    );
+  }
   return (
     <section
-      className={`overflow-hidden rounded-fq-lg border border-border bg-info-soft ${
-        str("align") === "center" ? "text-center" : ""
-      }`}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label={locale === "bn" ? "হিরো ক্যারোজেল" : "Hero carousel"}
+      onKeyDown={onRegionKeyDown}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerCancel}
+      className={shellClass}
     >
-      {active.image && (
-        <MediaFrame
-          src={active.image}
-          alt={active.heading}
-          ratio="wide"
-          eager={index === 0}
-          className="rounded-none"
-          sizes="100vw"
-        />
-      )}
-      <div className="p-8">
-        <Heading className="font-bangla-display text-3xl font-bold sm:text-4xl">
-          {active.heading}
-        </Heading>
-        {index === 0 && active.subheading && (
-          <p className="mt-2 max-w-xl text-muted-foreground">
-            {active.subheading}
-          </p>
+      <p className="sr-only" role="status">
+        {statusText}
+      </p>
+      <div
+        role="group"
+        aria-roledescription="slide"
+        aria-label={statusText}
+      >
+        {active.image && (
+          <MediaFrame
+            src={active.image}
+            alt={active.heading}
+            ratio="wide"
+            eager={current === 0}
+            className="rounded-none"
+            sizes="100vw"
+          />
         )}
-        {active.ctaLabel && (
-          <a
-            href={active.ctaHref || "#"}
-            className="mt-4 inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
-          >
-            {active.ctaLabel}
-          </a>
-        )}
-        {slides.length > 1 && (
-          <div
-            className="mt-4 flex gap-2"
-            role="group"
-            aria-label={locale === "bn" ? "স্লাইড" : "Slides"}
-          >
-            {slides.map((slide, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setIndex(i)}
-                aria-current={i === index}
-                aria-label={`${locale === "bn" ? "স্লাইড" : "Slide"} ${i + 1}`}
-                className={`h-11 w-11 rounded-fq-md border border-border text-xs tabular-nums ${
-                  i === index ? "bg-primary text-primary-foreground" : "bg-card"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
+        <div className="p-8">
+          <Heading className="font-bangla-display text-3xl font-bold sm:text-4xl">
+            {active.heading}
+          </Heading>
+          {current === 0 && active.subheading && (
+            <p className="mt-2 max-w-xl text-muted-foreground">
+              {active.subheading}
+            </p>
+          )}
+          {active.ctaLabel && (
+            <a
+              href={active.ctaHref || "#"}
+              className="mt-4 inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              {active.ctaLabel}
+            </a>
+          )}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => step(-1)}
+              aria-label={prevLabel}
+              className={stepperBtn}
+            >
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => step(1)}
+              aria-label={nextLabel}
+              className={stepperBtn}
+            >
+              <span aria-hidden="true">›</span>
+            </button>
+            <div
+              className="flex flex-wrap items-center gap-2"
+              role="group"
+              aria-label={locale === "bn" ? "স্লাইড" : "Slides"}
+            >
+              {slides.map((slide, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => goTo(i)}
+                  aria-current={i === current}
+                  aria-label={`${locale === "bn" ? "স্লাইড" : "Slide"} ${formatDisplayNumber(i + 1, { locale })} / ${formatDisplayNumber(count, { locale })}`}
+                  className={`h-11 w-11 rounded-fq-md border border-border text-xs tabular-nums transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+                    i === current
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card"
+                  }`}
+                >
+                  {formatDisplayNumber(i + 1, { locale })}
+                </button>
+              ))}
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </section>
   );
@@ -1134,7 +1297,10 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
           className="rounded-none"
         />
         {str("caption") && (
-          <figcaption className="px-3 py-2 text-xs text-muted-foreground">
+          <figcaption
+            data-part="caption"
+            className="px-3 py-2 text-xs text-muted-foreground"
+          >
             {str("caption")}
           </figcaption>
         )}
@@ -1193,7 +1359,10 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   testimonial: ({ str }) => (
     <figure className="rounded-fq-lg border border-border bg-card p-6">
       <blockquote className="text-sm italic">{str("quote")}</blockquote>
-      <figcaption className="mt-2 text-xs text-muted-foreground">
+      <figcaption
+        data-part="author"
+        className="mt-2 text-xs text-muted-foreground"
+      >
         {str("author")}
       </figcaption>
     </figure>
@@ -1308,27 +1477,67 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
 
   product_grid: ({ str, int, bool, Heading, productSlot, data, locale }) => {
     const cols = int("columns", 4, 2, 4);
+    // Widget skin (spec 2026-09-25): cards (default, current DataGrid grid
+    // byte-identical) and rows (stacked full-width list). Heading, host slot
+    // override, skeleton parity, empty state, bn/en copy and a11y stay
+    // common — only the list composition forks.
+    const skin = resolveSkin("product_grid", str("skin"));
+    const heading = str("heading") ? (
+      <Heading className="mb-3 text-lg font-semibold">
+        {str("heading")}
+      </Heading>
+    ) : null;
+    const pending = data?.pending ?? false;
+    const rowsList = data?.rows ?? [];
+    const rowsBody =
+      pending || data?.rows === undefined ? (
+        <ul className="space-y-3" aria-hidden="true">
+          {Array.from({ length: 4 }, (_, i) => (
+            <li key={i}>
+              <ProductCardSkeleton variant="wide" withPrice />
+            </li>
+          ))}
+        </ul>
+      ) : rowsList.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          Nothing to show here yet.
+        </p>
+      ) : (
+        <ul className="space-y-3">
+          {rowsList.map((row) => (
+            <li key={row.id}>
+              <ProductCard
+                row={row}
+                locale={locale}
+                variant="wide"
+                withPrice
+                promise={str("promise") || undefined}
+                showRating={bool("showRating")}
+              />
+            </li>
+          ))}
+        </ul>
+      );
     return (
       <section>
-        {str("heading") && (
-          <Heading className="mb-3 text-lg font-semibold">
-            {str("heading")}
-          </Heading>
-        )}
-        {productSlot ?? (
-          <DataGrid
-            rows={data?.rows}
-            pending={data?.pending ?? false}
-            cols={cols}
-            ratio="square"
-            locale={locale}
-            withPrice
-            variant={cardVariantOf(str("cardVariant"))}
-            density={str("density") === "compact" ? "compact" : "comfortable"}
-            promise={str("promise") || undefined}
-            showRating={bool("showRating")}
-          />
-        )}
+        {heading}
+        {productSlot ??
+          (skin === "rows" ? (
+            rowsBody
+          ) : (
+            <DataGrid
+              rows={data?.rows}
+              pending={pending}
+              cols={cols}
+              ratio="square"
+              locale={locale}
+              withPrice
+              variant={cardVariantOf(str("cardVariant"))}
+              density={str("density") === "compact" ? "compact" : "comfortable"}
+              promise={str("promise") || undefined}
+              showRating={bool("showRating")}
+            />
+          ))}
       </section>
     );
   },

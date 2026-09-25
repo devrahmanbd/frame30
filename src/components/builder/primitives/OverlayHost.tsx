@@ -56,6 +56,19 @@ export function OverlayHost({
         ? "mt-auto w-full max-h-[85vh]"
         : "m-auto w-full max-w-lg";
 
+  /**
+   * Cart-lane slide language, transform-only and gated behind `motion-safe`
+   * so `prefers-reduced-motion` collapses to an instant appearance. No
+   * `fade-*` is set on purpose: the enter animation touches translate alone.
+   * Behaviour (focus trap, Escape, scroll lock, focus restore) is untouched.
+   */
+  const enter =
+    side === "right"
+      ? "motion-safe:slide-in-from-right"
+      : side === "bottom"
+        ? "motion-safe:slide-in-from-bottom"
+        : "motion-safe:slide-in-from-bottom-2";
+
   return (
     <div
       className="fixed inset-0 z-50 flex bg-foreground/40 p-0 sm:p-4"
@@ -92,7 +105,7 @@ export function OverlayHost({
             first.focus();
           }
         }}
-        className={`${position} overflow-auto rounded-none border border-border bg-card p-4 shadow-md sm:rounded-fq-lg`}
+        className={`${position} overflow-auto rounded-none border border-border bg-card p-4 shadow-md sm:rounded-fq-lg motion-safe:animate-in motion-safe:duration-200 motion-safe:ease-out ${enter}`}
       >
         <div className="mb-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
           <h2 className="truncate font-bangla-display text-base font-semibold">

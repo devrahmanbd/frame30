@@ -1,6 +1,7 @@
 import { DEFAULT_PERMALINKS } from "../../permalink";
 import type { Section } from "../../builder-ast";
 import type { SomvabonaBuilder } from "./types";
+import { withSomvabonaWidgetDefaults } from "./skins";
 
 /**
  * Somvabona homepage rhythm — spec §2, approved 2026-09-25.
@@ -20,9 +21,12 @@ import type { SomvabonaBuilder } from "./types";
  */
 export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
   const c = DEFAULT_PERMALINKS.collectionBase; // "/c"
+  // Theme skin defaults merge UNDER authored props (skins.ts) — every
+  // section below carries its Somvabona skin unless the call overrides it.
+  const t = withSomvabonaWidgetDefaults(s);
   return [
     // 1. Announcement marquee — offer-led, bilingual.
-    s("announcement_bar", {
+    t("announcement_bar", {
       m1: "Festive drop is live",
       m1_bn: "উৎসবের নতুন কালেকশন এসেছে",
       m2: "Free delivery over BDT 2,000",
@@ -34,7 +38,7 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
       rotateMs: 6000,
     }),
     // 2. Hero carousel ×3, festive first — every slide shops.
-    s("hero_carousel", {
+    t("hero_carousel", {
       slides: [
         {
           image: "/ph/somvabona/hero-festive.jpg",
@@ -72,7 +76,7 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
     }),
     // 3. Trust marquee (NEW) — looping proof strip. Qualitative badges
     // only: no counts, no ratings, no invented numbers anywhere.
-    s("trust_marquee", {
+    t("trust_marquee", {
       items: [
         {
           icon: "cod",
@@ -106,7 +110,7 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
       speed: "normal",
     }),
     // 4. Category image tiles (Biba-style role, circle_categories renderer).
-    s("circle_categories", {
+    t("circle_categories", {
       heading: "Shop by category",
       heading_bn: "ক্যাটাগরি অনুযায়ী কিনুন",
       c1Title: "Women",
@@ -142,7 +146,7 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
     }),
     // 5. Price buckets (NEW) — integer minor-unit bounds only, verified
     // `/search?max=` filter hrefs (storefront-search `maxMinor` contract).
-    s("price_buckets", {
+    t("price_buckets", {
       heading: "Shop by budget",
       heading_bn: "বাজেট অনুযায়ী কিনুন",
       buckets: [
@@ -171,7 +175,7 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
     }),
     // 6a. Urgency rail (NEW): new arrivals, product_rail data shape plus
     // computed sale badges, stock hints and the ratings row.
-    s("urgency_rail", {
+    t("urgency_rail", {
       heading: "New arrivals",
       heading_bn: "নতুন এসেছে",
       limit: 8,
@@ -185,7 +189,7 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
       promise_bn: "স্টকে আছে · ২৪ ঘণ্টায় ডিসপ্যাচ",
     }),
     // 6b. Urgency rail: festive bestsellers.
-    s("urgency_rail", {
+    t("urgency_rail", {
       heading: "Festive bestsellers",
       heading_bn: "উৎসবের জনপ্রিয়",
       limit: 8,
@@ -199,7 +203,7 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
       promise_bn: "এই সপ্তাহে দ্রুত বিক্রি হচ্ছে",
     }),
     // 7. Occasion matrix (NEW) — collection × occasion grid.
-    s("occasion_matrix", {
+    t("occasion_matrix", {
       heading: "Dress for the occasion",
       heading_bn: "উপলক্ষের সাজ",
       occasions: [
@@ -234,7 +238,7 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
     }),
     // 8. Flagship outlets — franchise proof. Names + hours only, never
     // invented street addresses or phone numbers.
-    s("store_locator", {
+    t("store_locator", {
       heading: "Visit our flagship stores",
       heading_bn: "আমাদের ফ্ল্যাগশিপ স্টোরে আসুন",
       s1Name: "Uttara flagship",
@@ -251,7 +255,7 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
       s3Hours_bn: "প্রতিদিন সকাল ১০টা–রাত ৯টা",
     }),
     // 9. Craft story — heritage depth below the fold.
-    s("craft_story", {
+    t("craft_story", {
       eyebrow: "Everyday comfort, honestly made",
       eyebrow_bn: "প্রতিদিনের আরাম, সৎভাবে তৈরি",
       heading: "Cotton first, craft always",
@@ -266,7 +270,7 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
       scrim: true,
     }),
     // 10. Testimonials — merchant-authored quotes, never invented metrics.
-    s("testimonials", {
+    t("testimonials", {
       testimonials: [
         {
           quote: "The cotton panjabi survived a whole summer of Fridays.",

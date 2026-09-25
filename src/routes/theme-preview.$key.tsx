@@ -34,6 +34,9 @@ import { ThemePreviewFrame } from "@/components/store/ThemePreviewFrame";
 type RouteParams = { key: string };
 
 export const Route = createFileRoute("/theme-preview/$key")({
+  // Template + focus (?focus= is the contract merchant-less redirects use)
+  // plus preserved search query keys (`q`, `max`) so refresh keeps
+  // `?template=search&max=99900` instead of dropping it.
   validateSearch: (search: Record<string, unknown>) =>
     validateThemePreviewSearch(search),
   // Demo pages must never index: merchant-less URLs redirect here instead
@@ -48,7 +51,7 @@ export const Route = createFileRoute("/theme-preview/$key")({
 
 function ThemePreviewRoute() {
   const { key } = Route.useParams() as RouteParams;
-  const { template: initialTemplate, slug: initialSlug } = Route.useSearch();
+  const { template: initialTemplate, focus: initialFocus } = Route.useSearch();
   const preset = resolveThemePreview(key);
 
   if (!preset) {
@@ -63,7 +66,7 @@ function ThemePreviewRoute() {
       tokens={preset.tokens}
       templates={preset.templates}
       initialTemplate={initialTemplate}
-      initialSlug={initialSlug}
+      initialFocus={initialFocus}
       onClose={() => window.history.back()}
     />
   );

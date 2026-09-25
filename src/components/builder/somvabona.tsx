@@ -369,7 +369,10 @@ const UrgencyRail: WidgetComponent = (ctx) => {
             return (
               <div key={row.id} className="relative">
                 {low && (
-                  <span className="absolute left-2 top-2 z-10 rounded-fq-sm border border-warning-foreground/30 bg-warning-soft px-2 py-0.5 text-xs font-semibold tabular-nums text-warning-foreground">
+                  <span
+                    data-part="badge"
+                    className="absolute left-2 top-2 z-10 rounded-fq-sm border border-warning-foreground/30 bg-warning-soft px-2 py-0.5 text-xs font-semibold tabular-nums text-warning-foreground"
+                  >
                     {t(
                       locale,
                       `Only ${row.count} left`,

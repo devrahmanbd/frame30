@@ -132,7 +132,7 @@ const BuyBox: WidgetComponent = (ctx) => {
   return (
     <Panel label={locale === "bn" ? "কেনার প্যানেল" : "Buy box"}>
       <div className="flex flex-wrap items-baseline gap-2">
-        <span className="text-2xl font-semibold tabular-nums">
+        <span data-part="price" className="text-2xl font-semibold tabular-nums">
           {money(variant?.priceMinor ?? 0, variant?.currency)}
         </span>
         {typeof compareAt === "number" &&
@@ -189,7 +189,9 @@ const BuyBox: WidgetComponent = (ctx) => {
         </button>
       </div>
       {str("promise") && (
-        <p className="mt-3 text-xs text-muted-foreground">{str("promise")}</p>
+        <p data-part="promise" className="mt-3 text-xs text-muted-foreground">
+          {str("promise")}
+        </p>
       )}
     </Panel>
   );
@@ -677,17 +679,27 @@ const StickyBuyBar: WidgetComponent = (ctx) => {
   const content = (
     <>
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium">{variant.title}</p>
+        <p data-part="title" className="truncate text-sm font-medium">
+          {variant.title}
+        </p>
         {bool("showPrice") && (
-          <p className="text-sm tabular-nums">
+          <p data-part="price" className="text-sm tabular-nums">
             {money(variant.priceMinor ?? 0, variant.currency)}
           </p>
         )}
       </div>
+      {/* Cart-lane parity: sr-only total announcement on every re-quote. */}
+      {bool("showPrice") && (
+        <p className="sr-only" aria-live="polite" aria-atomic="true">
+          {locale === "bn"
+            ? `${variant.title}: দাম ${money(variant.priceMinor ?? 0, variant.currency)}`
+            : `${variant.title}: Price ${money(variant.priceMinor ?? 0, variant.currency)}`}
+        </p>
+      )}
       <button
         type="button"
         disabled={variant.inStock === false}
-        className="h-11 shrink-0 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+        className="h-11 shrink-0 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90 motion-safe:transition-transform motion-safe:active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50"
       >
         {variant.inStock === false
           ? locale === "bn"

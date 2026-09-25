@@ -16,6 +16,7 @@ import type {
   SectionType,
 } from "@/lib/builder-ast";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
+import { resolveSkin } from "@/lib/builder-ast";
 import { placeholderSeed } from "@/lib/placeholder";
 import { useSongoskritiHero } from "./songoskriti-motion";
 
@@ -134,6 +135,299 @@ function WeaveMotif({ seed, className }: { seed: string; className?: string }) {
 
 /* ------------------------------------------------------ hero_carousel */
 
+type HeroSlide = {
+  image: string;
+  headline: string;
+  headlineBn: string;
+  subhead: string;
+  subheadBn: string;
+  ctaLabel: string;
+  ctaUrl: string;
+  caption: string;
+};
+
+/**
+ * Dots + arrows shared by the non-split hero skins. Class-identical to the
+ * split branch's inline controls (44px targets, bilingual labels, keyboard
+ * arrows on the group) so every skin keeps the same a11y contract.
+ */
+function HeroSlideControls({
+  slides,
+  current,
+  goTo,
+  next,
+  prev,
+  locale,
+  prevLabel,
+  nextLabel,
+}: {
+  slides: HeroSlide[];
+  current: number;
+  goTo: (i: number) => void;
+  next: () => void;
+  prev: () => void;
+  locale: string;
+  prevLabel: string;
+  nextLabel: string;
+}) {
+  if (slides.length <= 1) return null;
+  return (
+    <div className="flex flex-wrap items-center gap-1">
+      <div className="flex items-center gap-1">
+        <button
+          type="button"
+          onClick={prev}
+          aria-label={prevLabel}
+          className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        >
+          <span aria-hidden="true">‹</span>
+        </button>
+        <button
+          type="button"
+          onClick={next}
+          aria-label={nextLabel}
+          className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        >
+          <span aria-hidden="true">›</span>
+        </button>
+      </div>
+      <div
+        className="flex items-center gap-1"
+        role="group"
+        aria-label={t(locale, "Slides", "স্লাইড")}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            next();
+          } else if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            prev();
+          }
+        }}
+      >
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => goTo(i)}
+            aria-current={i === current}
+            className="grid min-h-11 min-w-11 place-items-center rounded-fq-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1} / ${slides.length}`}
+          >
+            <span
+              aria-hidden="true"
+              className={`block h-2 rounded-full transition ${
+                i === current
+                  ? "w-7 bg-primary"
+                  : "w-2 bg-foreground/25 hover:bg-foreground/50"
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * `fullbleed` + `minimal` hero skins. Same slide data, same carousel shell
+ * (region, keyboard, touch, autoplay gate, live position, 44px CTA and
+ * controls, bn/en copy) — only the composition forks. `split` keeps its
+ * inline branch below byte-identical.
+ */
+function HeroSkinSlide({
+  skin,
+  slide,
+  isFirst,
+  locale,
+  Heading,
+  slides,
+  current,
+  count,
+  goTo,
+  next,
+  prev,
+  prevLabel,
+  nextLabel,
+}: {
+  skin: string;
+  slide: HeroSlide;
+  isFirst: boolean;
+  locale: string;
+  Heading: WidgetCtx["Heading"];
+  slides: HeroSlide[];
+  current: number;
+  count: number;
+  goTo: (i: number) => void;
+  next: () => void;
+  prev: () => void;
+  prevLabel: string;
+  nextLabel: string;
+}) {
+  const slideLabel = `${t(locale, "Slide", "স্লাইড")} ${current + 1} / ${count}`;
+  const subhead =
+    locale === "bn" && slide.subheadBn ? slide.subheadBn : slide.subhead;
+  const art =
+    slide.image && !slide.image.startsWith("/api/public/ph/") ? (
+      <img
+        src={slide.image}
+        alt={slide.headline}
+        className="absolute inset-0 h-full w-full object-cover"
+        loading={isFirst ? "eager" : "lazy"}
+        fetchPriority={isFirst ? "high" : "auto"}
+        decoding="async"
+      />
+    ) : (
+      <WeaveMotif
+        seed={slide.headline || "heritage"}
+        className="absolute inset-0 h-full w-full text-primary"
+      />
+    );
+  const controls = (
+    <HeroSlideControls
+      slides={slides}
+      current={current}
+      goTo={goTo}
+      next={next}
+      prev={prev}
+      locale={locale}
+      prevLabel={prevLabel}
+      nextLabel={nextLabel}
+    />
+  );
+  if (skin === "minimal") {
+    return (
+      <div
+        key={current}
+        role="group"
+        aria-roledescription="slide"
+        aria-label={slideLabel}
+        className="fq-enter-fade mx-auto max-w-3xl px-4 py-12 text-center sm:py-16"
+      >
+        {slide.caption && (
+          <p
+            data-hero-eyebrow
+            data-part="caption"
+            className="text-xs font-semibold tracking-widest text-primary fq-caps"
+          >
+            {slide.caption}
+          </p>
+        )}
+        {slide.headlineBn && (
+          <p
+            data-hero-headline
+            lang="bn"
+            className="font-bangla-display mt-3 text-2xl font-bold leading-tight text-foreground"
+          >
+            {slide.headlineBn}
+          </p>
+        )}
+        <Heading
+          data-hero-headline
+          className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl"
+        >
+          {slide.headline}
+        </Heading>
+        {slide.subhead && (
+          <p
+            data-hero-sub
+            className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground"
+          >
+            {subhead}
+          </p>
+        )}
+        <div
+          data-hero-cta
+          className="mt-7 flex flex-wrap items-center justify-center gap-3"
+        >
+          {slide.ctaLabel && (
+            <a
+              href={slide.ctaUrl || "#"}
+              className="inline-flex min-h-12 items-center whitespace-nowrap bg-foreground px-8 text-[11px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              {slide.ctaLabel}
+            </a>
+          )}
+          {controls}
+        </div>
+        <div
+          data-hero-art
+          className="mx-auto mt-8 max-w-2xl overflow-hidden rounded-fq-lg"
+        >
+          <div className="relative aspect-video w-full overflow-hidden bg-transparent">
+            {art}
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div
+      key={current}
+      role="group"
+      aria-roledescription="slide"
+      aria-label={slideLabel}
+      className="fq-enter-fade relative"
+    >
+      <div className="absolute inset-0">{art}</div>
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-foreground/60"
+      />
+      <div className="relative mx-auto max-w-[var(--fq-container,1440px)] px-4 py-16 sm:px-8 sm:py-28">
+        <div className="min-w-0 max-w-2xl">
+          {slide.caption && (
+            <p
+              data-hero-eyebrow
+              data-part="caption"
+              className="text-xs font-semibold tracking-widest text-background/80 fq-caps"
+            >
+              {slide.caption}
+            </p>
+          )}
+          {slide.headlineBn && (
+            <p
+              data-hero-headline
+              lang="bn"
+              className="font-bangla-display mt-3 text-2xl font-bold leading-tight text-background"
+            >
+              {slide.headlineBn}
+            </p>
+          )}
+          <Heading
+            data-hero-headline
+            className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-background sm:text-4xl lg:text-6xl"
+          >
+            {slide.headline}
+          </Heading>
+          {slide.subhead && (
+            <p
+              data-hero-sub
+              className="mt-4 max-w-xl text-base leading-relaxed text-background/80 sm:text-lg"
+            >
+              {subhead}
+            </p>
+          )}
+          <div
+            data-hero-cta
+            className="mt-7 flex flex-wrap items-center gap-3"
+          >
+            {slide.ctaLabel && (
+              <a
+                href={slide.ctaUrl || "#"}
+                className="inline-flex min-h-12 sm:min-h-14 items-center whitespace-nowrap bg-background px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-foreground transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                {slide.ctaLabel}
+              </a>
+            )}
+            {controls}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const HeroCarousel: WidgetComponent = ({
   section,
   str,
@@ -154,6 +448,11 @@ const HeroCarousel: WidgetComponent = ({
   }));
   const autoAdvanceMs = int("autoAdvanceMs", 5000, 1000, 15000);
   const atmosphere = str("atmosphere") || "wash";
+  // Widget skin (spec 2026-09-25): split (default, current asymmetric
+  // editorial grid), fullbleed (art-bleed overlay) and minimal (centred,
+  // quiet). Autoplay gates, keyboard, touch, live region, 44px targets and
+  // bn/en copy stay common — only presentation forks.
+  const skin = resolveSkin("hero_carousel", str("skin"));
   const reducedMotion = useCarouselReducedMotion();
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -242,7 +541,7 @@ const HeroCarousel: WidgetComponent = ({
       }}
       className="relative overflow-hidden bg-background"
     >
-      {atmosphere !== "none" && (
+      {atmosphere !== "none" && skin === "split" && (
         <div
           aria-hidden="true"
           className="fq-theme-aurora pointer-events-none absolute inset-0 opacity-40"
@@ -251,6 +550,23 @@ const HeroCarousel: WidgetComponent = ({
       <p className="sr-only" role="status">
         {t(locale, "Slide", "স্লাইড")} {current + 1} / {count}
       </p>
+      {skin !== "split" ? (
+        <HeroSkinSlide
+          skin={skin}
+          slide={slide}
+          isFirst={isFirst}
+          locale={locale}
+          Heading={Heading}
+          slides={slides}
+          current={current}
+          count={count}
+          goTo={goTo}
+          next={next}
+          prev={prev}
+          prevLabel={prevLabel}
+          nextLabel={nextLabel}
+        />
+      ) : (
       <div
         key={current}
         role="group"
@@ -263,6 +579,7 @@ const HeroCarousel: WidgetComponent = ({
           {slide.caption && (
             <p
               data-hero-eyebrow
+              data-part="caption"
               className="text-xs font-semibold tracking-widest text-primary fq-caps"
             >
               {slide.caption}
@@ -383,6 +700,7 @@ const HeroCarousel: WidgetComponent = ({
           </div>
         </div>
       </div>
+      )}
     </section>
   );
 };
@@ -658,13 +976,16 @@ const TextileShowcase: WidgetComponent = ({
               )}
             </div>
             <div className="p-4">
-              <p className="text-sm font-medium">
+              <p data-part="title" className="text-sm font-medium">
                 {locale === "bn" && product.nameBn
                   ? product.nameBn
                   : product.name}
               </p>
               {product.price > 0 && (
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p
+                  data-part="price"
+                  className="mt-1 text-sm text-muted-foreground"
+                >
                   {money(product.price * 100)}
                 </p>
               )}
@@ -898,7 +1219,10 @@ const TestimonialCarousel: WidgetComponent = ({
         <blockquote className="max-w-xl text-base italic text-foreground/80">
           "{testimonial.quote}"
         </blockquote>
-        <figcaption className="mt-3 text-sm font-medium text-muted-foreground">
+        <figcaption
+          data-part="author"
+          className="mt-3 text-sm font-medium text-muted-foreground"
+        >
           {testimonial.author}
         </figcaption>
       </div>

@@ -208,7 +208,12 @@ export function ControlField(props: FieldProps) {
         const step = control.step ?? 1;
         const current = typeof value === "number" ? value : min;
         return (
-          <div className="flex items-center gap-3">
+          /* B2-5 — the Radix slider keeps native arrow-key behavior; the
+           * 44px row plus the expanded thumb hit area match the storefront
+           * touch target, track/fill/thumb colors already read theme
+           * tokens inside `ui/slider`, and the thumb transition is gated
+           * off under reduced motion. Control logic is untouched. */
+          <div className="flex min-h-11 items-center gap-3">
             <Slider
               id={id}
               value={[current]}
@@ -217,7 +222,7 @@ export function ControlField(props: FieldProps) {
               step={step}
               aria-label={control.label}
               onValueChange={([next]) => set(next)}
-              className="flex-1"
+              className="min-h-11 flex-1 [&_[role=slider]]:before:absolute [&_[role=slider]]:before:-inset-4 [&_[role=slider]]:before:content-[''] [&_[role=slider]]:motion-reduce:transition-none"
             />
             <Input
               type="number"
