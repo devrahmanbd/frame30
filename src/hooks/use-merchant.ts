@@ -155,7 +155,10 @@ export function useMerchant() {
  * completed stores back to the wizard.
  */
 export async function invalidateMerchantScope(
-  queryClient: Pick<import("@tanstack/react-query").QueryClient, "invalidateQueries">,
+  queryClient: Pick<
+    import("@tanstack/react-query").QueryClient,
+    "invalidateQueries"
+  >,
 ): Promise<void> {
   await queryClient.invalidateQueries({ queryKey: ["merchant"] });
   await queryClient.invalidateQueries({ queryKey: ["merchant-memberships"] });

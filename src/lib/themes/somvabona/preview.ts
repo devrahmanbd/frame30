@@ -18,9 +18,8 @@ import { withSomvabonaWidgetDefaults } from "./skins";
  * way the theme's own tests do (`as never` — see types.ts).
  */
 export function somvabonaPreviewSource(): PreviewThemeSource {
-  const adapt =
-    (build: (s: never) => Section[]) => (s: SectionBuilder) =>
-      build(s as never);
+  const adapt = (build: (s: never) => Section[]) => (s: SectionBuilder) =>
+    build(s as never);
   return {
     key: "somvabona",
     themeName: "Somvabona",

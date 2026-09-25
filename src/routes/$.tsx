@@ -14,6 +14,16 @@ import { buildProductHead, buildPageHead } from "@/lib/theme-seo";
 import { verificationTags } from "@/lib/search-console";
 
 /**
+ * Unknown-safe string field reader for server-fn payloads whose client
+ * types omit passthrough fields (e.g. request origin). Never throws.
+ */
+function stringField(obj: unknown, key: string): string | null {
+  if (typeof obj !== "object" || obj === null) return null;
+  const value: unknown = (obj as Record<string, unknown>)[key];
+  return typeof value === "string" ? value : null;
+}
+
+/**
  * Catch-all permalink resolver.
  *
  * Matched last, after every literal route, so it only ever sees paths the app
@@ -32,15 +42,15 @@ export const Route = createFileRoute("/$")({
         statusCode: result.resolution.status === 302 ? 302 : 301,
       });
     }
-    if (result.resolution.type === "gone" || result.resolution.type === "miss") throw notFound();
+    if (result.resolution.type === "gone" || result.resolution.type === "miss")
+      throw notFound();
 
     if (result.target) {
       // Custom hosts only: the entity's merchant must own this host, or the
       // page would serve one tenant's catalogue on another surface (and a
       // null merchantSlug would 500 in the loaders below instead of 404ing).
-      const { resolveStorefrontHostFn } = await import(
-        "@/lib/storefront.functions"
-      );
+      const { resolveStorefrontHostFn } =
+        await import("@/lib/storefront.functions");
       let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
       try {
         host = await resolveStorefrontHostFn();
@@ -57,23 +67,42 @@ export const Route = createFileRoute("/$")({
       if (result.target.kind === "product") {
         const { getStoreProduct } = await import("@/lib/storefront.functions");
         const productData = await getStoreProduct({
-          data: { slug: result.target.merchantSlug, productSlug: result.target.slug },
+          data: {
+            slug: result.target.merchantSlug,
+            productSlug: result.target.slug,
+          },
         });
         if (!productData) throw notFound();
-        return { type: "product", data: productData, target: result.target } as const;
+        return {
+          type: "product",
+          data: productData,
+          target: result.target,
+        } as const;
       }
       if (result.target.kind === "collection") {
-        const { getStoreCollection } = await import("@/lib/storefront.functions");
+        const { getStoreCollection } =
+          await import("@/lib/storefront.functions");
         const collectionData = await getStoreCollection({
-          data: { slug: result.target.merchantSlug, collectionSlug: result.target.slug },
+          data: {
+            slug: result.target.merchantSlug,
+            collectionSlug: result.target.slug,
+          },
         });
         if (!collectionData) throw notFound();
-        return { type: "collection", data: collectionData, target: result.target } as const;
+        return {
+          type: "collection",
+          data: collectionData,
+          target: result.target,
+        } as const;
       }
       if (result.target.kind === "page") {
-        const { getStorePageFn } = await import("@/lib/storefront-search.functions");
+        const { getStorePageFn } =
+          await import("@/lib/storefront-search.functions");
         const pageData = await getStorePageFn({
-          data: { slug: result.target.merchantSlug, pageSlug: result.target.slug },
+          data: {
+            slug: result.target.merchantSlug,
+            pageSlug: result.target.slug,
+          },
         });
         if (!pageData) throw notFound();
         return { type: "page", data: pageData, target: result.target } as const;
@@ -81,12 +110,12 @@ export const Route = createFileRoute("/$")({
     }
 
     if (!result.article) throw notFound();
-    return { 
-      type: "article", 
-      article: result.article.article, 
-      merchant: result.article.merchant, 
-      canonicalPath: path, 
-      origin: (result as any).origin 
+    return {
+      type: "article",
+      article: result.article.article,
+      merchant: result.article.merchant,
+      canonicalPath: path,
+      origin: stringField(result, "origin"),
     } as const;
   },
   head: ({ loaderData }) => {
@@ -168,7 +197,7 @@ export const Route = createFileRoute("/$")({
     if (loaderData.type === "page") {
       const { data } = loaderData;
       const base = buildPageHead({
-        origin: (data as any).origin ?? "",
+        origin: stringField(data, "origin") ?? "",
         path: loaderData.target.canonicalPath,
         storePath: `/`,
         storeName: data.merchant.name,
@@ -256,7 +285,7 @@ function CatchAllMessage({
 
 function ResolvedPage() {
   const loaderData = Route.useLoaderData();
-  
+
   if (loaderData.type === "product") {
     return <ProductView data={loaderData.data} />;
   }
@@ -266,6 +295,8 @@ function ResolvedPage() {
   if (loaderData.type === "page") {
     return <PageView data={loaderData.data} />;
   }
-  
-  return <ArticleView article={loaderData.article} merchant={loaderData.merchant} />;
+
+  return (
+    <ArticleView article={loaderData.article} merchant={loaderData.merchant} />
+  );
 }
