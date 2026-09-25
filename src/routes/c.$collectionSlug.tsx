@@ -35,7 +35,7 @@ export const Route = createFileRoute("/c/$collectionSlug")({
         params: { key: defaultPreviewKey() },
         search: {
           template: "collection",
-          focus: params.collectionSlug.toLowerCase().slice(0, 64),
+          slug: params.collectionSlug.toLowerCase().slice(0, 64),
         },
         replace: true,
       });
