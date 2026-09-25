@@ -47,14 +47,14 @@ describe("previewTemplateForHref", () => {
 });
 
 describe("resolveThemePreview (Task 5: restored preview route)", () => {
-  it("resolves the songoskriti key with brand tokens and homepage AST", () => {
-    const preset = resolveThemePreview("songoskriti");
+  it("resolves the songoskriti key with brand tokens and homepage AST", () => {    const preset = resolveThemePreview("songoskriti");
     expect(preset).not.toBeNull();
     expect(preset!.key).toBe("songoskriti");
     expect(preset!.tokens.brand).toBe("#8A3B1F");
-    // The SECTION-track blueprint doubles the rail (new arrivals +
-    // festive bestsellers); franchise updates reorder sections and add
-    // flagship outlets — this pins the authored order, whatever it is.
+    // The SECTION-track blueprint intentionally doubles the rail (new
+    // arrivals + festive bestsellers); franchise updates reorder sections
+    // and add flagship outlets — this pins the authored order, whatever
+    // the theme builders produce.
     expect(preset!.templates.index.main.map((s) => s.type)).toEqual([
       "announcement_bar",
       "hero_carousel",
@@ -76,6 +76,14 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     expect(resolveThemePreview("")).toBeNull();
   });
 
+  it("resolves registered themes generically, without engine hardcoding", () => {
+    const preset = resolveThemePreview("somvabona")!;
+    expect(preset.key).toBe("somvabona");
+    expect(preset.tokens.brand).toBe("#7C2A1A");
+    for (const key of Object.keys(preset.templates) as (keyof typeof preset.templates)[]) {
+      expect(preset.templates[key].main.length, `${key} main`).toBeGreaterThan(0);
+    }
+  });
   it("authors demo content for every template (no empty sub-pages)", () => {
     const preset = resolveThemePreview("songoskriti")!;
     for (const key of [
@@ -203,5 +211,55 @@ describe("demo focus (slug-aware collection preview)", () => {
     const { newSection } = await import("./builder-ast");
     const sections = [newSection("heading")];
     expect(applyDemoFocus(sections, null)).toBe(sections);
+  });
+});
+
+describe("resolveThemePreview (somvabona)", () => {
+  it("resolves the somvabona key with its tokens and 11-section homepage", () => {
+    const preset = resolveThemePreview("somvabona");
+    expect(preset).not.toBeNull();
+    expect(preset!.key).toBe("somvabona");
+    expect(preset!.tokens.brand).toBe("#7C2A1A");
+    expect(preset!.templates.index.main.map((s) => s.type)).toEqual([
+      "announcement_bar",
+      "hero_carousel",
+      "trust_marquee",
+      "circle_categories",
+      "price_buckets",
+      "urgency_rail",
+      "urgency_rail",
+      "occasion_matrix",
+      "store_locator",
+      "craft_story",
+      "testimonials",
+    ]);
+    expect(preset!.templates.index.header.map((s) => s.type)).toEqual([
+      "mega_menu",
+    ]);
+    expect(preset!.templates.index.footer.length).toBeGreaterThan(0);
+  });
+
+  it("authors demo content for every somvabona template", () => {
+    const preset = resolveThemePreview("somvabona")!;
+    for (const key of [
+      "index",
+      "product",
+      "collection",
+      "account",
+      "page",
+      "blog",
+      "cart",
+      "checkout",
+      "search",
+    ] as const) {
+      const ast = preset.templates[key];
+      expect(ast.header.length, `${key} header`).toBeGreaterThan(0);
+      expect(ast.main.length, `${key} main`).toBeGreaterThan(0);
+      expect(ast.footer.length, `${key} footer`).toBeGreaterThan(0);
+    }
+    const ids = (
+      Object.values(preset.templates) as (typeof preset.templates.index)[]
+    ).flatMap((t) => [...t.header, ...t.main, ...t.footer].map((s) => s.id));
+    expect(new Set(ids).size).toBe(ids.length);
   });
 });

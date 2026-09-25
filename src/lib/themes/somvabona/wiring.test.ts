@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { catalogEntry } from "../../builder-ast";
 import { SOMVABONA_TOKENS } from "./tokens";
 import { buildFooterMain, buildHeaderMain, FALLBACK_COLUMNS } from "./chrome";
 import { buildHomepageMain } from "./homepage";
@@ -117,5 +118,21 @@ describe("somvabona scaffold", () => {
       (n) => typeof n.props.buttonLabel === "string" && n.props.buttonLabel,
     );
     expect(ctas.map((n) => n.type)).toEqual(["newsletter"]);
+  });
+
+  it("every homepage and chrome section type resolves in the catalog", () => {
+    const s = (type: string, props = {}) =>
+      ({ id: type, type, props }) as never;
+    const sections = [
+      ...buildHomepageMain(s as never),
+      ...buildHeaderMain(s as never),
+      ...buildFooterMain(s as never),
+    ];
+    for (const section of sections) {
+      expect(
+        catalogEntry(section.type),
+        `${section.type} must exist in the catalog`,
+      ).toBeDefined();
+    }
   });
 });

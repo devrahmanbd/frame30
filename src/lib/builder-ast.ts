@@ -267,6 +267,14 @@ export type SectionType =
   | "craft_story"
   | "testimonials"
   | "trust_footer"
+  // Somvabona everyday-ethnic pack (spec 2026-09-25 §3). Renderers live in
+  // somvabona.tsx; studio defs mirror these defaults 1:1. urgency_rail
+  // reuses the product_rail data shape (collection source + limit).
+  | "trust_marquee"
+  | "price_buckets"
+  | "occasion_matrix"
+  | "urgency_rail"
+  | "rating_stars"
   // Storefront contact channel as a placeable block (mirrors the
   // whatsapp-chat plugin bubble; renderers live in the studio twins).
   | "whatsapp_button";
@@ -4393,6 +4401,196 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("i4Body", "Item 4 body", 120),
     ],
   },
+  {
+    // Renderer: somvabona.tsx TrustMarquee. Looping proof strip — items[]
+    // rows only, qualitative badges (no counts, no ratings, no invented
+    // numbers). Freezes under prefers-reduced-motion.
+    type: "trust_marquee",
+    label: "Trust marquee",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      items: [],
+      speed: "normal",
+    },
+    fields: [
+      {
+        key: "items",
+        label: "Badges",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 6,
+        fields: [
+          text("icon", "Icon key", 20),
+          text("title", "Title"),
+          text("title_bn", "Title (বাংলা)"),
+          text("body", "Body", 120),
+          text("body_bn", "Body (বাংলা)", 120),
+        ],
+      },
+      {
+        key: "speed",
+        label: "Speed",
+        kind: "select",
+        panel: "style",
+        options: [
+          { value: "slow", label: "Slow" },
+          { value: "normal", label: "Normal" },
+          { value: "fast", label: "Fast" },
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: somvabona.tsx PriceBuckets. Navigational tiles — label +
+    // integer minor-unit bound + verified href + image. Bounds only, never
+    // computed prices; empty buckets are omitted, never rendered blank.
+    type: "price_buckets",
+    label: "Price buckets",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Shop by budget",
+      buckets: [],
+    },
+    fields: [
+      text("heading", "Heading"),
+      {
+        key: "buckets",
+        label: "Buckets",
+        kind: "array",
+        panel: "content",
+        itemLabel: "label",
+        maxRows: 6,
+        fields: [
+          text("label", "Label", 40),
+          text("label_bn", "Label (বাংলা)", 40),
+          num("maxPrice", "Upper bound (minor units)"),
+          url("href", "Link"),
+          {
+            key: "image",
+            label: "Tile image",
+            kind: "image",
+            panel: "content",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: somvabona.tsx OccasionMatrix. Collection × occasion grid —
+    // occasion links plus collection tiles, all verified hrefs.
+    type: "occasion_matrix",
+    label: "Occasion matrix",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Dress for the occasion",
+      occasions: [],
+      collections: [],
+    },
+    fields: [
+      text("heading", "Heading"),
+      {
+        key: "occasions",
+        label: "Occasions",
+        kind: "array",
+        panel: "content",
+        itemLabel: "label",
+        maxRows: 6,
+        fields: [
+          text("label", "Label", 40),
+          text("label_bn", "Label (বাংলা)", 40),
+          url("href", "Link"),
+        ],
+      },
+      {
+        key: "collections",
+        label: "Collections",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 6,
+        fields: [
+          text("title", "Title", 40),
+          text("title_bn", "Title (বাংলা)", 40),
+          url("href", "Link"),
+          {
+            key: "image",
+            label: "Tile image",
+            kind: "image",
+            panel: "content",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: somvabona.tsx UrgencyRail. product_rail data shape plus
+    // computed sale badges (% off from real minor units), real stock hints
+    // (row.count against lowStockAt — absent counts show no hint) and the
+    // ratings row. Never typed discounts, never "only few left" without a flag.
+    type: "urgency_rail",
+    label: "Urgency rail",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Selling fast",
+      limit: 8,
+      source: "collection",
+      collection: "",
+      cardVariant: "standard",
+      showRating: true,
+      showDiscount: true,
+      showStockHint: true,
+      lowStockAt: 5,
+      promise: "",
+    },
+    fields: [
+      text("heading", "Heading"),
+      {
+        key: "source",
+        label: "Source",
+        kind: "select",
+        panel: "content",
+        options: [
+          { value: "collection", label: "Collection" },
+          { value: "bestsellers", label: "Bestsellers" },
+          { value: "recommended", label: "Recommended" },
+        ],
+      },
+      text("collection", "Collection handle", 80),
+      num("limit", "How many"),
+      bool("showRating", "Show rating"),
+      bool("showDiscount", "Show sale badges"),
+      bool("showStockHint", "Show stock hints"),
+      num("lowStockAt", "Low-stock threshold"),
+      text("promise", "Delivery promise", 60),
+      CARD_VARIANT,
+    ],
+  },
+  {
+    // Renderer: somvabona.tsx RatingStars. Display-only stars from real
+    // review aggregates — renders nothing with no data, never fake 4.8s.
+    type: "rating_stars",
+    label: "Rating stars",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      rating: 0,
+      reviewCount: 0,
+    },
+    fields: [
+      num("rating", "Average rating (0–5)"),
+      num("reviewCount", "Review count"),
+    ],
+  },
 ];
 
 /* ------------------------------------------------- Phase 0.4 — style layer */
@@ -4998,6 +5196,12 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
     "i4Title",
     "i4Body",
   ],
+  // Somvabona pack. Row-level twins (items, buckets, occasions,
+  // collections) are read directly by their renderers, so only scalar
+  // theme-authored copy is listed here.
+  price_buckets: ["heading"],
+  occasion_matrix: ["heading"],
+  urgency_rail: ["heading", "promise"],
 };
 
 /**

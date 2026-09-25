@@ -141,6 +141,11 @@ const PORTED = [
   "craft_story",
   "testimonials",
   "trust_footer",
+  "trust_marquee",
+  "price_buckets",
+  "occasion_matrix",
+  "urgency_rail",
+  "rating_stars",
   "whatsapp_button",
 ] as const;
 
@@ -179,6 +184,8 @@ const COMMERCE_PORTED = new Set([
   "circle_categories",
   "refill_widget",
   "quick_view",
+  "price_buckets",
+  "urgency_rail",
 ]);
 
 const MEDIA_PORTED = new Set(["ugc_gallery", "before_after"]);

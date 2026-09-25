@@ -618,6 +618,26 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
     en: "A grid of reassurance badges for shipping, returns, craft quality and support.",
     bn: "ডেলিভারি, রিটার্ন, পণ্যের মান ও সহায়তার আশ্বাসের ব্যাজ গ্রিড।",
   },
+  trust_marquee: {
+    en: "A looping marquee of trust badges — payment, dispatch, exchange and helpline.",
+    bn: "আস্থার ব্যাজের চলমান মার্কি — পেমেন্ট, ডিসপ্যাচ, বদল ও হেল্পলাইন।",
+  },
+  price_buckets: {
+    en: "Budget tiles linking to price-filtered listings, bounds only.",
+    bn: "বাজেটের টাইল — দাম-ফিল্টার করা তালিকার লিংক, শুধু সীমা।",
+  },
+  occasion_matrix: {
+    en: "A collection-by-occasion grid leading to matching weaves.",
+    bn: "কালেকশন ও উপলক্ষের গ্রিড — মানানসই বুননে নিয়ে যায়।",
+  },
+  urgency_rail: {
+    en: "A product rail with computed sale badges, real stock hints and ratings.",
+    bn: "পণ্যের রেইল — হিসাব করা ছাড়ের ব্যাজ, আসল স্টকের হিন্ট ও রেটিংসহ।",
+  },
+  rating_stars: {
+    en: "Display-only stars from real review aggregates. Renders nothing with no data.",
+    bn: "আসল রিভিউ গড়ের শুধু-দেখার তারা। তথ্য না থাকলে কিছু দেখায় না।",
+  },
 };
 
 /** Exact prop-key hints. Keys are catalog `Field.key`s. */

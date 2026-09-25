@@ -35,6 +35,25 @@ export const Route = createFileRoute("/$")({
     if (result.resolution.type === "gone" || result.resolution.type === "miss") throw notFound();
 
     if (result.target) {
+      // Custom hosts only: the entity's merchant must own this host, or the
+      // page would serve one tenant's catalogue on another surface (and a
+      // null merchantSlug would 500 in the loaders below instead of 404ing).
+      const { resolveStorefrontHostFn } = await import(
+        "@/lib/storefront.functions"
+      );
+      let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
+      try {
+        host = await resolveStorefrontHostFn();
+      } catch {
+        host = null;
+      }
+      if (
+        !host ||
+        !result.target.merchantSlug ||
+        host.merchantSlug !== result.target.merchantSlug
+      ) {
+        throw notFound();
+      }
       if (result.target.kind === "product") {
         const { getStoreProduct } = await import("@/lib/storefront.functions");
         const productData = await getStoreProduct({

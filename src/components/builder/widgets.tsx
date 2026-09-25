@@ -40,6 +40,7 @@ import { BASIC_WIDGETS } from "./basics";
 import { BLOG_WIDGETS } from "./blog";
 import { HERITAGE_WIDGETS } from "./heritage";
 import { SONGOSKRITI_WIDGETS } from "./songoskriti";
+import { SOMVABONA_WIDGETS } from "./somvabona";
 import {
   ProductCard,
   ProductCardSkeleton,
@@ -903,6 +904,8 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   ...HERITAGE_WIDGETS,
   // Songoskriti heritage gap pack.
   ...SONGOSKRITI_WIDGETS,
+  // Somvabona everyday-ethnic pack (spec 2026-09-25 §3).
+  ...SOMVABONA_WIDGETS,
 
   container: Container,
   columns: Container,
