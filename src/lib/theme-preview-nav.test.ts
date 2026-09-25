@@ -4,6 +4,7 @@
 import { describe, expect, it } from "vitest";
 import {
   applyDemoFocus,
+  previewTargetForHref,
   previewTemplateForHref,
   resolveDemoFocus,
   resolveThemePreview,
@@ -261,5 +262,24 @@ describe("resolveThemePreview (somvabona)", () => {
       Object.values(preset.templates) as (typeof preset.templates.index)[]
     ).flatMap((t) => [...t.header, ...t.main, ...t.footer].map((s) => s.id));
     expect(new Set(ids).size).toBe(ids.length);
+  });
+});
+
+describe("previewTargetForHref slug-aware", () => {
+  it("preserves collection slug", () => {
+    expect(previewTargetForHref("/c/women")).toEqual({ template: "collection", slug: "women", query: null });
+    expect(previewTargetForHref("/c/WOMEN")).toEqual({ template: "collection", slug: "women", query: null });
+  });
+  it("preserves product slug", () => {
+    expect(previewTargetForHref("/p/dhakai-jamdani")).toEqual({ template: "product", slug: "dhakai-jamdani", query: null });
+  });
+  it("preserves search query", () => {
+    expect(previewTargetForHref("/search?max=99900")).toEqual({ template: "search", slug: null, query: "max=99900" });
+  });
+  it("maps account (was null in old lib)", () => {
+    expect(previewTargetForHref("/account")?.template).toBe("account");
+  });
+  it("does not block hyphenated track-order", () => {
+    expect(previewTargetForHref("/pages/track-order")?.template).toBe("page");
   });
 });
