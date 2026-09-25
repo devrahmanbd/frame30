@@ -26,9 +26,14 @@ import { toast } from "sonner";
 import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
 
-export type PreviewTarget = { template: TemplateKey; slug: string | null; query: string | null };
+export type PreviewTarget = {
+  template: TemplateKey;
+  slug: string | null;
+  query: string | null;
+};
 
-const BLOCKED_HREF_RE = /(^|\/)(order|track|sign-?in|sign-?up|login|register)([\/?#]|$)/i;
+const BLOCKED_HREF_RE =
+  /(^|\/)(order|track|sign-?in|sign-?up|login|register)([/?#]|$)/i;
 
 export function isPreviewBlockedHref(href: string): boolean {
   const path = href.split(/[?#]/, 1)[0] ?? "";
@@ -46,9 +51,12 @@ export function previewTargetForHref(href: string): PreviewTarget | null {
   if (/^https?:\/\//i.test(href)) {
     try {
       const u = new URL(href);
-      if (typeof window === "undefined" || u.origin !== window.location.origin) return null;
+      if (typeof window === "undefined" || u.origin !== window.location.origin)
+        return null;
       href = u.pathname + u.search + u.hash;
-    } catch { return null; }
+    } catch {
+      return null;
+    }
   }
   if (!href.startsWith("/")) return null;
   if (isPreviewBlockedHref(href)) return null;
@@ -57,20 +65,30 @@ export function previewTargetForHref(href: string): PreviewTarget | null {
   const rest = path.replace(/^\/store\/[^/]+/, "") || "/";
   const query = queryRaw?.split("#", 1)[0] ?? null;
   let m: RegExpMatchArray | null;
-  if ((m = rest.match(/^\/p\/([^/?#]+)/))) return { template: "product", slug: m[1]!, query };
-  if ((m = rest.match(/^\/products?(?:\/([^/?#]+))?/))) return { template: "product", slug: m[1] ?? null, query };
-  if ((m = rest.match(/^\/c\/([^/?#]+)/))) return { template: "collection", slug: m[1]!, query };
-  if ((m = rest.match(/^\/collections?(?:\/([^/?#]+))?/))) return { template: "collection", slug: m[1] ?? null, query };
-  if (rest === "/search" || rest === "/search/") return { template: "search", slug: null, query };
-  if (rest === "/cart" || rest === "/cart/") return { template: "cart", slug: null, query };
-  if (rest === "/checkout" || rest === "/checkout/") return { template: "checkout", slug: null, query };
-  if (rest === "/account" || rest.startsWith("/account/")) return { template: "account", slug: null, query };
-  if ((m = rest.match(/^\/pages?\/([^/?#]+)/))) return { template: "page", slug: m[1]!, query };
+  if ((m = rest.match(/^\/p\/([^/?#]+)/)))
+    return { template: "product", slug: m[1]!, query };
+  if ((m = rest.match(/^\/products?(?:\/([^/?#]+))?/)))
+    return { template: "product", slug: m[1] ?? null, query };
+  if ((m = rest.match(/^\/c\/([^/?#]+)/)))
+    return { template: "collection", slug: m[1]!, query };
+  if ((m = rest.match(/^\/collections?(?:\/([^/?#]+))?/)))
+    return { template: "collection", slug: m[1] ?? null, query };
+  if (rest === "/search" || rest === "/search/")
+    return { template: "search", slug: null, query };
+  if (rest === "/cart" || rest === "/cart/")
+    return { template: "cart", slug: null, query };
+  if (rest === "/checkout" || rest === "/checkout/")
+    return { template: "checkout", slug: null, query };
+  if (rest === "/account" || rest.startsWith("/account/"))
+    return { template: "account", slug: null, query };
+  if ((m = rest.match(/^\/pages?\/([^/?#]+)/)))
+    return { template: "page", slug: m[1]!, query };
   if (rest === "/blog" || rest.startsWith("/blog/")) {
     const sm = rest.match(/^\/blog\/([^/?#]+)/);
     return { template: "blog", slug: sm?.[1] ?? null, query };
   }
-  if (rest === "/" || rest === "/index" || rest === "/home") return { template: "index", slug: null, query };
+  if (rest === "/" || rest === "/index" || rest === "/home")
+    return { template: "index", slug: null, query };
   return null;
 }
 
@@ -83,7 +101,9 @@ export type PreviewClickAction =
   | { kind: "switch"; target: PreviewTarget }
   | { kind: "allow" };
 
-export function previewClickAction(href: string | null | undefined): PreviewClickAction {
+export function previewClickAction(
+  href: string | null | undefined,
+): PreviewClickAction {
   if (!href || href.startsWith("#")) return { kind: "allow" };
   if (isPreviewBlockedHref(href)) return { kind: "blocked" };
   const target = previewTargetForHref(href);
@@ -255,10 +275,16 @@ export function assemblePreviewTemplates(
 }
 
 export function titleCaseSlug(slug: string): string {
-  return slug.split("-").map((w) => (w ? w[0]!.toUpperCase() + w.slice(1) : w)).join(" ");
+  return slug
+    .split("-")
+    .map((w) => (w ? w[0]!.toUpperCase() + w.slice(1) : w))
+    .join(" ");
 }
 
-export function collectionDisplayName(themeKey: string, slug: string | null): string {
+export function collectionDisplayName(
+  themeKey: string,
+  slug: string | null,
+): string {
   if (!slug) return "New in";
   const catalog = demoCatalogFor(themeKey);
   const found =
