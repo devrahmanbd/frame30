@@ -16,12 +16,15 @@ export function OverlayHost({
   onClose,
   title,
   side = "center",
+  closeLabel = "Close",
   children,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   side?: "center" | "right" | "bottom";
+  /** Screen-reader label for the dismiss button; callers pass the locale. */
+  closeLabel?: string;
   children: React.ReactNode;
 }) {
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -89,7 +92,7 @@ export function OverlayHost({
             first.focus();
           }
         }}
-        className={`${position} overflow-auto rounded-fq-lg border border-border bg-card p-4 shadow-md`}
+        className={`${position} overflow-auto rounded-none border border-border bg-card p-4 shadow-md sm:rounded-fq-lg`}
       >
         <div className="mb-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
           <h2 className="truncate font-bangla-display text-base font-semibold">
@@ -98,10 +101,11 @@ export function OverlayHost({
           <button
             type="button"
             onClick={onClose}
-            className="shrink-0 rounded-fq-md border border-border px-2 py-1 text-sm"
+            aria-label={closeLabel}
+            className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-fq-md border border-border text-lg leading-none"
           >
             <span aria-hidden="true">×</span>
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{closeLabel}</span>
           </button>
         </div>
         {children}

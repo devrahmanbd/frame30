@@ -7,24 +7,23 @@
  * links onto its own template tabs so every tap shows authored demo
  * content. Unmapped links (external, tel:, mailto:, anchors) return null
  * and keep default browser behavior.
+ *
+ * Theme-agnostic by design: this module never names a theme, imports no
+ * theme folder, and carries no theme copy. Themes plug in through the
+ * `PreviewThemeSource` port (implemented per theme, wired in
+ * `preview-sources`); templates a theme does not author get a generic
+ * engine-synthesized demo body so no link ever lands on an empty page.
  */
 import type {
   Section,
+  SectionBuilder,
   TemplateKey,
   ThemeAst,
   ThemeTokens,
 } from "./builder-ast";
-import { SONGOSKRITI_TOKENS } from "./themes/songoskriti/tokens";
-import { buildHeaderMain } from "./themes/songoskriti/header";
-import { buildFooterMain } from "./themes/songoskriti/footer";
-import { buildHomepageMain } from "./themes/songoskriti/homepage";
-import type { SectionBuilder } from "./themes/songoskriti/types";
-import { SOMVABONA_TOKENS } from "./themes/somvabona/tokens";
-import {
-  buildFooterMain as buildSomvabonaFooter,
-  buildHeaderMain as buildSomvabonaHeader,
-} from "./themes/somvabona/chrome";
-import { buildHomepageMain as buildSomvabonaHomepage } from "./themes/somvabona/homepage";
+import { TEMPLATE_KEYS } from "./builder-ast";
+import { demoCatalogFor } from "./demo-catalog";
+import { previewSourceFor } from "./preview-sources";
 
 export function previewTemplateForHref(href: string): TemplateKey | null {
   const raw = href.trim();
@@ -55,18 +54,24 @@ export function previewTemplateForHref(href: string): TemplateKey | null {
 /* ------------------------------------------------- preview key resolver */
 
 /**
- * Theme preview preset resolution.
- *
- * `songoskriti` and `somvabona` build their authored ASTs from their Task 1
- * builders + locked tokens; every other key returns null so the route
- * renders its 404 state.
- *
- * Every template authors demo content: navbar, category, footer and product
- * links must land on a rendered page, never on the empty state. Data rails
- * resolve through previewDemoMap; static sections carry copy marked as demo
- * where money or actions are involved. Ordering stays blocked — forms and
- * signup / order-tracking hrefs toast instead of acting.
+ * Port a theme implements to plug into the preview engine. Implemented per
+ * theme (see `lib/themes/<name>/preview.ts`), consumed only through the
+ * `preview-sources` registry — never imported by the engine directly.
  */
+export type PreviewThemeSource = {
+  key: string;
+  themeName: string;
+  author: string;
+  tokens: ThemeTokens;
+  header: (s: SectionBuilder) => Section[];
+  footer: (s: SectionBuilder) => Section[];
+  /**
+   * Authored demo body per template. Return null for templates the theme
+   * does not author — the engine synthesizes a generic demo body.
+   */
+  main: (template: TemplateKey, s: SectionBuilder) => Section[] | null;
+};
+
 export type ThemePreviewPreset = {
   key: string;
   themeName: string;
@@ -75,49 +80,49 @@ export type ThemePreviewPreset = {
   templates: Record<TemplateKey, ThemeAst>;
 };
 
-export function resolveThemePreview(key: string): ThemePreviewPreset | null {
-  if (key === "songoskriti") {
-    return buildPreset(
-      "songoskriti",
-      "Songoskriti",
-      SONGOSKRITI_TOKENS,
-      buildHeaderMain,
-      buildFooterMain,
-      buildHomepageMain,
-      {
-        title: "Dhakai Jamdani Heritage Saree",
-        title_bn: "ঢাকাই জামদানি হেরিটেজ শাড়ি",
-        blogImage: "/ph/songoskriti/hero-artisans.png",
-      },
-    );
-  }
-  if (key === "somvabona") {
-    return buildPreset(
-      "somvabona",
-      "Somvabona",
-      SOMVABONA_TOKENS,
-      buildSomvabonaHeader as never,
-      buildSomvabonaFooter as never,
-      buildSomvabonaHomepage as never,
-      {
-        title: "Everyday Cotton Panjabi",
-        title_bn: "প্রতিদিনের সুতি পাঞ্জাবি",
-        blogImage: "",
-      },
-    );
-  }
-  return null;
+const GENERIC_TITLES: Record<TemplateKey, [string, string]> = {
+  index: ["Home", "হোম"],
+  product: ["Product", "পণ্য"],
+  collection: ["Collection", "কালেকশন"],
+  account: ["Account", "অ্যাকাউন্ট"],
+  page: ["Page", "পাতা"],
+  blog: ["Blog", "ব্লগ"],
+  cart: ["Your bag", "আপনার ব্যাগ"],
+  checkout: ["Checkout", "চেকআউট"],
+  search: ["Search results", "খোঁজার ফলাফল"],
+};
+
+/**
+ * Generic demo body for templates a theme does not author. Static sections
+ * only (heading + rich text always render; no data, no art, no theme copy),
+ * opening with a heading so the page still owns its h1.
+ */
+export function genericDemoMain(
+  template: TemplateKey,
+  s: SectionBuilder,
+): Section[] {
+  const [text, text_bn] = GENERIC_TITLES[template];
+  return [
+    s("heading", { text, text_bn }),
+    s("rich_text", {
+      heading: text,
+      heading_bn: text_bn,
+      body: "Demo page. The live theme authors this template — what you see here is the engine fallback.",
+      body_bn:
+        "ডেমো পাতা। লাইভ থিম এই টেমপ্লেটটি নিজে সাজায় — এখানে ইঞ্জিনের বিকল্প দেখছেন।",
+    }),
+  ];
 }
 
-function buildPreset(
-  key: string,
-  themeName: string,
-  tokens: ThemeTokens,
-  buildHeader: (s: SectionBuilder) => Section[],
-  buildFooter: (s: SectionBuilder) => Section[],
-  buildHome: (s: SectionBuilder) => Section[],
-  demo: { title: string; title_bn: string; blogImage: string },
-): ThemePreviewPreset {
+/**
+ * Assemble every template for a source: one shared id counter, shared
+ * header/footer cloned under template-scoped ids (same convention as
+ * withSearch in theme-blueprints), theme-authored mains where present,
+ * generic synthesis where absent.
+ */
+export function assemblePreviewTemplates(
+  source: PreviewThemeSource,
+): Record<TemplateKey, ThemeAst> {
   let n = 0;
   const s: SectionBuilder = (type, props = {}) => {
     const section: Section = {
@@ -127,169 +132,119 @@ function buildPreset(
     };
     return section;
   };
-  const headerBase = buildHeader(s);
-  const footerBase = buildFooter(s);
-  // Ids must stay globally unique across templates sharing one counter, so
-  // the shared header/footer nodes are cloned under a template-scoped id
-  // (same convention as withSearch in theme-blueprints).
+  const headerBase = source.header(s);
+  const footerBase = source.footer(s);
   const reid = (sections: Section[], scope: string): Section[] =>
     sections.map((section) => ({ ...section, id: `${section.id}-${scope}` }));
-  const tpl = (scope: TemplateKey, main: Section[]): ThemeAst => ({
-    header: reid(headerBase, scope),
-    main,
-    footer: reid(footerBase, scope),
-  });
-  const rail = (
-    heading: string,
-    heading_bn: string,
-    collection: string,
-    promise: string,
-    promise_bn: string,
-    limit = 8,
-  ) =>
-    s("product_rail", {
-      heading,
-      heading_bn,
-      limit,
-      source: "collection",
-      collection,
-      cardVariant: "editorial",
-      showRating: true,
-      promise,
-      promise_bn,
-    });
-  const templates: Record<TemplateKey, ThemeAst> = {
-    index: tpl("index", buildHome(s)),
-    collection: tpl("collection", [
-      s("heading", { text: "New in", text_bn: "নতুন এসেছে" }),
-      rail(
-        "New arrivals",
-        "নতুন এসেছে",
-        "new-in",
-        "In stock · Dispatched in 24h",
-        "স্টকে আছে · ২৪ ঘণ্টায় ডিসপ্যাচ",
-      ),
-      rail(
-        "More to explore",
-        "আরও দেখুন",
-        "festive",
-        "Loved across 64 districts",
-        "সারা দেশে জনপ্রিয়",
-      ),
-    ]),
-    product: tpl("product", [
-      s("heading", {
-        text: demo.title,
-        text_bn: demo.title_bn,
-      }),
-      s("product_media", {
-        image1: "/ph/songoskriti/prod-saree.png",
-        image2: "/ph/songoskriti/prod-panjabi.png",
-        image3: "/ph/songoskriti/prod-necklace.png",
-        image4: "/ph/songoskriti/cat-women.png",
-        ratio: "4/5",
-      }),
-      s("rich_text", {
-        heading: "Details",
-        heading_bn: "বিবরণ",
-        body: "Demo product page. Prices and stock are sample data — ordering is disabled in preview.",
-        body_bn:
-          "ডেমো পণ্যের পাতা। দাম ও স্টক নমুনা তথ্য — প্রিভিউতে অর্ডার বন্ধ আছে।",
-      }),
-      rail(
-        "Complete the look",
-        "লুক সম্পূর্ণ করুন",
-        "festive",
-        "Loved across 64 districts",
-        "সারা দেশে জনপ্রিয়",
-        4,
-      ),
-    ]),
-    page: tpl("page", [
-      s("heading", { text: "Size guide", text_bn: "সাইজ গাইড" }),
-      s("rich_text", {
-        heading: "How to measure",
-        heading_bn: "কীভাবে মাপবেন",
-        body: "Demo article. Chest, waist and length guidance for panjabis, kurtas and saree blouses.",
-        body_bn:
-          "ডেমো নিবন্ধ। পাঞ্জাবি, কুর্তা ও শাড়ির ব্লাউজের জন্য মাপের নির্দেশনা।",
-      }),
-    ]),
-    blog: tpl("blog", [
-      s("heading", { text: "Journal", text_bn: "জার্নাল" }),
-      s("image", {
-        src: demo.blogImage,
-        alt: "Artisans weaving on a wooden loom",
-        ratio: "16/9",
-        caption: "Artisan owned",
-      }),
-      s("rich_text", {
-        heading: "Meet the makers",
-        heading_bn: "কারিগরদের চিনুন",
-        body: "Demo story. Kantha embroidery stitched by rural artisans — full articles ship with the theme.",
-        body_bn:
-          "ডেমো গল্প। গ্রামের কারিগরদের হাতে সেলাই করা কাঁথা — পূর্ণ নিবন্ধ থিমের সাথেই আসে।",
-      }),
-    ]),
-    search: tpl("search", [
-      s("heading", { text: "Search results", text_bn: "খোঁজার ফলাফল" }),
-      s("rich_text", {
-        heading: "Demo search",
-        heading_bn: "ডেমো খোঁজ",
-        body: "Live search runs on the storefront. Below is what a results rail looks like.",
-        body_bn: "লাইভ খোঁজ দোকানে চলে। নিচে ফলাফলের একটি নমুনা দেখুন।",
-      }),
-      rail(
-        "Popular right now",
-        "এখন জনপ্রিয়",
-        "festive",
-        "Loved across 64 districts",
-        "সারা দেশে জনপ্রিয়",
-      ),
-    ]),
-    cart: tpl("cart", [
-      s("heading", { text: "Your bag", text_bn: "আপনার ব্যাগ" }),
-      s("rich_text", {
-        heading: "Demo bag",
-        heading_bn: "ডেমো ব্যাগ",
-        body: "2 items · sample totals. Checkout is disabled in preview — your bag is safe.",
-        body_bn:
-          "২টি পণ্য · নমুনা মোট। প্রিভিউতে চেকআউট বন্ধ আছে — আপনার ব্যাগ নিরাপদ।",
-      }),
-      rail(
-        "You may also like",
-        "আপনার পছন্দ হতে পারে",
-        "new-in",
-        "In stock · Dispatched in 24h",
-        "স্টকে আছে · ২৪ ঘণ্টায় ডিসপ্যাচ",
-        4,
-      ),
-    ]),
-    checkout: tpl("checkout", [
-      s("heading", { text: "Checkout", text_bn: "চেকআউট" }),
-      s("rich_text", {
-        heading: "Demo checkout",
-        heading_bn: "ডেমো চেকআউট",
-        body: "Address, delivery and payment steps render here on the storefront. Placing orders is disabled in preview.",
-        body_bn:
-          "দোকানে এখানে ঠিকানা, ডেলিভারি ও পেমেন্টের ধাপ দেখা যায়। প্রিভিউতে অর্ডার করা বন্ধ আছে।",
-      }),
-      s("payment_icons", {
-        heading: "We accept",
-        marks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
-      }),
-    ]),
-    account: tpl("account", [
-      s("heading", { text: "Account", text_bn: "অ্যাকাউন্ট" }),
-      s("profile_card", {}),
-      s("orders_list", {}),
-    ]),
-  };
+  const templates = {} as Record<TemplateKey, ThemeAst>;
+  for (const templateKey of TEMPLATE_KEYS) {
+    templates[templateKey] = {
+      header: reid(headerBase, templateKey),
+      main: source.main(templateKey, s) ?? genericDemoMain(templateKey, s),
+      footer: reid(footerBase, templateKey),
+    };
+  }
+  return templates;
+}
+
+export function resolveThemePreview(key: string): ThemePreviewPreset | null {
+  const source = previewSourceFor(key);
+  if (!source) return null;
   return {
-    key,
-    themeName,
-    author: "Framique",
-    tokens,
-    templates,
+    key: source.key,
+    themeName: source.themeName,
+    author: source.author,
+    tokens: source.tokens,
+    templates: assemblePreviewTemplates(source),
   };
+}
+
+/* --------------------------------------- demo focus (slug-aware preview) */
+
+export type DemoFocus = {
+  template: TemplateKey;
+  /** Clicked slug, as authored in the link. */
+  slug: string;
+  /** Display heading: catalog name when known, humanized slug otherwise. */
+  title: string;
+  /** Collection key backing the data rails. */
+  collection: string;
+};
+
+const humanizeSlug = (slug: string): string =>
+  slug
+    .split("-")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ") || "Collection";
+
+/**
+ * Resolve a clicked product/collection slug to demo rows + display title.
+ * Known catalog slugs render their own rows under their own name; unknown
+ * slugs fall back to new-in rows under a humanized title, so the page
+ * always changes with the link instead of repeating one static demo.
+ */
+export function resolveDemoFocus(
+  themeKey: string,
+  template: TemplateKey,
+  slug: string | null | undefined,
+): DemoFocus | null {
+  if (!slug) return null;
+  const catalog = demoCatalogFor(themeKey);
+  if (template === "collection") {
+    const match = catalog.collections.find((c) => c.slug === slug);
+    if (match) return { template, slug, title: match.name, collection: slug };
+    return { template, slug, title: humanizeSlug(slug), collection: "new-in" };
+  }
+  if (template === "product") {
+    const match = catalog.products.find((p) => p.slug === slug);
+    return {
+      template,
+      slug,
+      title: match ? match.title : humanizeSlug(slug),
+      collection: "new-in",
+    };
+  }
+  return null;
+}
+
+/**
+ * Render-time override for a focused template: the first heading takes the
+ * focus title and the first collection-sourced rail takes the focus rows.
+ * Authored AST untouched (ids stable, bundle keys align); remaining rails
+ * stay as discovery. bn copy falls back to English by resolveBiText.
+ */
+export function applyDemoFocus(
+  sections: Section[],
+  focus: DemoFocus | null,
+): Section[] {
+  if (!focus) return sections;
+  let head = false;
+  let rail = false;
+  return sections.map((section) => {
+    if (!head && section.type === "heading") {
+      head = true;
+      return {
+        ...section,
+        props: { ...section.props, text: focus.title, text_bn: "" },
+      };
+    }
+    if (
+      !rail &&
+      section.type === "product_rail" &&
+      section.props["source"] === "collection"
+    ) {
+      rail = true;
+      return {
+        ...section,
+        props: {
+          ...section.props,
+          collection: focus.collection,
+          heading: focus.title,
+          heading_bn: "",
+        },
+      };
+    }
+    return section;
+  });
 }

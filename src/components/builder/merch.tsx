@@ -61,12 +61,27 @@ function CardRail({
   variant: CardVariant;
   sponsored?: boolean;
 }) {
-  const { str, bool, data, locale } = ctx;
+  const { str, bool, data, locale, Heading } = ctx;
   const label =
     str("heading") || (locale === "bn" ? "পণ্যের তালিকা" : "Product rail");
+  const headingText = str("heading");
+  // Docked header: arrows share the heading row (startup-grade rhythm)
+  // instead of floating in a separate row beneath the rail.
+  const heading = headingText ? (
+    <Heading className="text-lg font-semibold">{headingText}</Heading>
+  ) : undefined;
+  const prevLabel =
+    locale === "bn" ? "বামে স্ক্রল করুন" : "Scroll products left";
+  const nextLabel =
+    locale === "bn" ? "ডানে স্ক্রল করুন" : "Scroll products right";
   if (data?.pending || rows === undefined) {
     return (
-      <Rail label={label}>
+      <Rail
+        label={label}
+        heading={heading}
+        prevLabel={prevLabel}
+        nextLabel={nextLabel}
+      >
         {Array.from({ length: 6 }, (_, i) => (
           <ProductCardSkeleton key={i} variant={variant} />
         ))}
@@ -75,7 +90,12 @@ function CardRail({
   }
   if (rows.length === 0) return null;
   return (
-    <Rail label={label}>
+    <Rail
+      label={label}
+      heading={heading}
+      prevLabel={prevLabel}
+      nextLabel={nextLabel}
+    >
       {rows.map((row) => (
         <ProductCard
           key={row.id}
@@ -94,9 +114,20 @@ function CardRail({
 
 const ProductRail: WidgetComponent = (ctx) => {
   const rows = ctx.data?.rows?.slice(0, ctx.int("limit", 12, 1, 24));
+  if (ctx.data?.pending || rows === undefined) {
+    return (
+      <section>
+        <CardRail
+          ctx={ctx}
+          rows={rows}
+          variant={cardVariantOf(ctx.str("cardVariant"), "compact")}
+        />
+      </section>
+    );
+  }
+  if (rows.length === 0) return null;
   return (
     <section>
-      <SectionHeading ctx={ctx} />
       <CardRail
         ctx={ctx}
         rows={rows}
@@ -115,9 +146,20 @@ const DealStrip: WidgetComponent = (ctx) => {
         row.compareAtMinor > (row.priceMinor ?? 0),
     )
     .slice(0, ctx.int("limit", 8, 1, 24));
+  if (ctx.data?.pending || rows === undefined) {
+    return (
+      <section>
+        <CardRail
+          ctx={ctx}
+          rows={rows}
+          variant={cardVariantOf(ctx.str("cardVariant"), "compact")}
+        />
+      </section>
+    );
+  }
+  if (rows.length === 0) return null;
   return (
     <section>
-      <SectionHeading ctx={ctx} />
       <CardRail
         ctx={ctx}
         rows={rows}
@@ -249,15 +291,26 @@ const BrandStrip: WidgetComponent = (ctx) => {
 };
 
 const BrandRail: WidgetComponent = (ctx) => {
+  const { Heading } = ctx;
   const rows = ctx.data?.rows?.slice(0, ctx.int("limit", 16, 1, 32));
   const label =
     ctx.str("heading") || (ctx.locale === "bn" ? "ব্র্যান্ড" : "Brands");
+  const headingText = ctx.str("heading");
+  // Same docked-header rhythm as the product rails: arrows share the
+  // heading row, items keep a peek of the next tile on mobile.
+  const heading = headingText ? (
+    <Heading className="text-lg font-semibold">{headingText}</Heading>
+  ) : undefined;
+  if (!ctx.data?.pending && rows !== undefined && rows.length === 0)
+    return null;
   return (
     <section>
-      <SectionHeading ctx={ctx} />
       <Rail
         label={label}
-        itemClassName="min-w-[40%] sm:min-w-[24%] lg:min-w-[16%]"
+        heading={heading}
+        itemClassName="w-[42vw] max-w-[240px] min-w-[9rem] sm:w-[24vw] sm:max-w-[260px] lg:w-[15%] lg:min-w-0"
+        prevLabel={ctx.locale === "bn" ? "বামে স্ক্রল করুন" : "Scroll brands left"}
+        nextLabel={ctx.locale === "bn" ? "ডানে স্ক্রল করুন" : "Scroll brands right"}
       >
         {ctx.data?.pending || rows === undefined
           ? Array.from({ length: 8 }, (_, i) => (

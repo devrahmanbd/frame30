@@ -19,6 +19,7 @@ import {
 import {
   catalogPreviewCollectionFn,
   catalogSaveRulesFn,
+  catalogRenameCollectionFn,
 } from "@/lib/catalog.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/collections")({
@@ -161,6 +162,38 @@ function CollectionsPage() {
     (active?.collection_products ?? []).map((cp) => cp.product_id),
   );
 
+  const renameFn = useServerFn(catalogRenameCollectionFn);
+  const [editName, setEditName] = useState<string | null>(null);
+  const [editSlug, setEditSlug] = useState<string | null>(null);
+  const renameName = editName ?? active?.name ?? "";
+  const renameSlug = editSlug ?? active?.slug ?? "";
+  const rename = useMutation({
+    mutationFn: () =>
+      renameFn({
+        data: {
+          merchantId: merchantId!,
+          collectionId: active!.id,
+          name: renameName.trim(),
+          slug: renameSlug.trim().toLowerCase(),
+        },
+      }),
+    onSuccess: (out) => {
+      setEditName(null);
+      setEditSlug(null);
+      invalidate();
+      toast.success(
+        (out as { redirect?: boolean })?.redirect
+          ? t(
+              "Saved — old links redirect automatically",
+              "সেভ হয়েছে — পুরনো লিংক স্বয়ংক্রিয়ভাবে রিডাইরেক্ট হবে",
+            )
+          : t("Saved", "সেভ হয়েছে"),
+      );
+    },
+    onError: (err) =>
+      toast.error(err instanceof Error ? err.message : "Could not save"),
+  });
+
   return (
     <section>
       <h1 className="font-bangla-display text-xl font-semibold">
@@ -281,6 +314,62 @@ function CollectionsPage() {
           <h2 className="border-b border-border p-3 text-sm font-semibold">
             {active ? `Products in “${active.name}”` : "Select a collection"}
           </h2>
+          {active ? (
+            <form
+              className="grid gap-2 border-b border-border p-3 sm:grid-cols-[1fr_1fr_auto]"
+              onSubmit={(e) => {
+                e.preventDefault();
+                rename.mutate();
+              }}
+            >
+              <div>
+                <label
+                  htmlFor="collection-edit-name"
+                  className="block text-xs font-medium text-muted-foreground"
+                >
+                  {t("Name", "নাম")}
+                </label>
+                <input
+                  id="collection-edit-name"
+                  value={renameName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  required
+                  maxLength={120}
+                  className="mt-1 min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="collection-edit-slug"
+                  className="block text-xs font-medium text-muted-foreground"
+                >
+                  {t("URL slug", "URL স্লাগ")}
+                </label>
+                <input
+                  id="collection-edit-slug"
+                  value={renameSlug}
+                  onChange={(e) => setEditSlug(e.target.value)}
+                  required
+                  maxLength={100}
+                  autoComplete="off"
+                  spellCheck={false}
+                  className="money mt-1 min-h-11 w-full rounded-fq-md border border-border bg-background px-3 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                />
+                <p className="money mt-1 text-xs text-muted-foreground">
+                  /c/{renameSlug.trim().toLowerCase() || "…"}
+                </p>
+              </div>
+              <div className="flex items-end">
+                <button
+                  type="submit"
+                  disabled={rename.isPending}
+                  className="min-h-11 rounded-fq-md bg-bd-teal-700 px-4 text-sm font-semibold text-background disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                >
+                  {t("Save", "সেভ")}
+                </button>
+              </div>
+            </form>
+          ) : null}
           {!active ? (
             <p className="p-3 text-sm text-muted-foreground">
               Pick a collection to assign products.

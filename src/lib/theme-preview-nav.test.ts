@@ -3,7 +3,9 @@
  */
 import { describe, expect, it } from "vitest";
 import {
+  applyDemoFocus,
   previewTemplateForHref,
+  resolveDemoFocus,
   resolveThemePreview,
 } from "./theme-preview-nav";
 
@@ -45,16 +47,14 @@ describe("previewTemplateForHref", () => {
 });
 
 describe("resolveThemePreview (Task 5: restored preview route)", () => {
-  it("resolves the songoskriti key with brand tokens and homepage AST", () => {
-    const preset = resolveThemePreview("songoskriti");
+  it("resolves the songoskriti key with brand tokens and homepage AST", () => {    const preset = resolveThemePreview("songoskriti");
     expect(preset).not.toBeNull();
     expect(preset!.key).toBe("songoskriti");
     expect(preset!.tokens.brand).toBe("#8A3B1F");
     // The SECTION-track blueprint intentionally doubles the rail (new
-    // arrivals + festive bestsellers — pinned by wiring.test.ts), so main
-    // carries 10 sections on 9 distinct types. Updated 2026-09-25: the old
-    // 9-section expectation predates trust_footer moving up front and the
-    // store_locator flagship section (see songoskriti/homepage.ts).
+    // arrivals + festive bestsellers); franchise updates reorder sections
+    // and add flagship outlets — this pins the authored order, whatever
+    // the theme builders produce.
     expect(preset!.templates.index.main.map((s) => s.type)).toEqual([
       "announcement_bar",
       "hero_carousel",
@@ -74,6 +74,15 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
   it("returns null for unknown keys (route renders 404)", () => {
     expect(resolveThemePreview("not-a-theme")).toBeNull();
     expect(resolveThemePreview("")).toBeNull();
+  });
+
+  it("resolves registered themes generically, without engine hardcoding", () => {
+    const preset = resolveThemePreview("somvabona")!;
+    expect(preset.key).toBe("somvabona");
+    expect(preset.tokens.brand).toBe("#7C2A1A");
+    for (const key of Object.keys(preset.templates) as (keyof typeof preset.templates)[]) {
+      expect(preset.templates[key].main.length, `${key} main`).toBeGreaterThan(0);
+    }
   });
   it("authors demo content for every template (no empty sub-pages)", () => {
     const preset = resolveThemePreview("songoskriti")!;
@@ -115,6 +124,93 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       Object.values(preset.templates) as (typeof preset.templates.index)[]
     ).flatMap((t) => [...t.header, ...t.main, ...t.footer].map((s) => s.id));
     expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("synthesizes generic demo bodies for templates a theme omits", async () => {
+    const { assemblePreviewTemplates } = await import("./theme-preview-nav");
+    const { DEFAULT_TOKENS } = await import("./builder-ast");
+    const stub = {
+      key: "stub",
+      themeName: "Stub",
+      author: "test",
+      tokens: DEFAULT_TOKENS,
+      header: () => [],
+      footer: () => [],
+      main: () => null,
+    };
+    const templates = assemblePreviewTemplates(stub);
+    for (const key of Object.keys(templates) as (keyof typeof templates)[]) {
+      expect(templates[key].main.length, `${key} main`).toBeGreaterThan(0);
+      expect(templates[key].main[0]!.type).toBe("heading");
+    }
+  });
+});
+
+describe("demo focus (slug-aware collection preview)", () => {
+  it("resolves known catalog slugs to their rows and names", () => {
+    expect(resolveDemoFocus("songoskriti", "collection", "bestsellers")).toEqual(
+      {
+        template: "collection",
+        slug: "bestsellers",
+        title: "Bestsellers",
+        collection: "bestsellers",
+      },
+    );
+  });
+
+  it("falls back to new-in rows under a humanized title for unknown slugs", () => {
+    expect(
+      resolveDemoFocus("songoskriti", "collection", "contemporary"),
+    ).toEqual({
+      template: "collection",
+      slug: "contemporary",
+      title: "Contemporary",
+      collection: "new-in",
+    });
+  });
+
+  it("resolves product titles from the demo catalog", () => {
+    const focus = resolveDemoFocus(
+      "songoskriti",
+      "product",
+      "dhakai-jamdani-heritage-saree",
+    );
+    expect(focus?.title).toBe("Dhakai Jamdani Heritage Saree");
+  });
+
+  it("returns null without a slug or for non-focus templates", () => {
+    expect(resolveDemoFocus("songoskriti", "collection", null)).toBeNull();
+    expect(resolveDemoFocus("songoskriti", "search", "saree")).toBeNull();
+  });
+
+  it("overrides the first heading and first collection rail, keeping ids", async () => {
+    const { newSection } = await import("./builder-ast");
+    const heading = { ...newSection("heading"), props: { text: "New in" } };
+    const rail = {
+      ...newSection("product_rail"),
+      props: { source: "collection", collection: "new-in", heading: "New" },
+    };
+    const tail = { ...newSection("product_rail"), props: {} };
+    const focus = {
+      template: "collection" as const,
+      slug: "women",
+      title: "Women",
+      collection: "women",
+    };
+    const out = applyDemoFocus([heading, rail, tail], focus);
+    expect(out[0]!.props["text"]).toBe("Women");
+    expect(out[1]!.props["collection"]).toBe("women");
+    expect(out[1]!.props["heading"]).toBe("Women");
+    expect(out[2]).toBe(tail);
+    expect(out.map((s) => s.id)).toEqual(
+      [heading, rail, tail].map((s) => s.id),
+    );
+  });
+
+  it("passes sections through without focus", async () => {
+    const { newSection } = await import("./builder-ast");
+    const sections = [newSection("heading")];
+    expect(applyDemoFocus(sections, null)).toBe(sections);
   });
 });
 

@@ -38,10 +38,10 @@ function LineSkeleton() {
     <div className="space-y-3" aria-hidden="true">
       {[0, 1, 2].map((i) => (
         <div key={i} className="flex items-center gap-4 py-4">
-          <div className="h-16 w-16 shrink-0 animate-pulse bg-muted/50" />
+          <div className="h-16 w-16 shrink-0 motion-safe:animate-pulse bg-muted/50" />
           <div className="flex-1 space-y-3">
-            <div className="h-3 w-2/3 animate-pulse bg-muted/50" />
-            <div className="h-3 w-1/3 animate-pulse bg-muted/50" />
+            <div className="h-3 w-2/3 motion-safe:animate-pulse bg-muted/50" />
+            <div className="h-3 w-1/3 motion-safe:animate-pulse bg-muted/50" />
           </div>
         </div>
       ))}
@@ -53,7 +53,7 @@ function SummarySkeleton() {
   return (
     <div className="space-y-2" aria-hidden="true">
       {[0, 1, 2, 3].map((i) => (
-        <div key={i} className="h-3 w-full animate-pulse bg-muted/50" />
+        <div key={i} className="h-3 w-full motion-safe:animate-pulse bg-muted/50" />
       ))}
     </div>
   );
@@ -68,9 +68,31 @@ function LineList({
   ctx: WidgetCtx;
   compact?: boolean;
 }) {
-  const { str, locale, money } = ctx;
+  const { str, locale, money, storeSlug } = ctx;
   const cart = useCartContext();
-  const rows = cart.totals?.lines ?? [];
+  const { location } = useRouterState();
+  const base = storeBase(storeSlug, location.pathname);
+  const serverRows = cart.totals?.lines ?? [];
+  /**
+   * Optimistic quantities: the local cart updates synchronously on every tap
+   * while the server re-quotes, so the stepper reflects the tap instantly.
+   * Only the quantity (never money) is merged — line totals stay server truth
+   * until the quote lands, covered by `aria-busy` and the status line below.
+   * Removed lines drop out immediately; added lines appear with the quote.
+   */
+  const rows = cart.live
+    ? serverRows
+        .filter((line) =>
+          cart.lines.some((local) => local.variantId === line.variantId),
+        )
+        .map((line) => ({
+          ...line,
+          quantity:
+            cart.lines.find((local) => local.variantId === line.variantId)
+              ?.quantity ?? line.quantity,
+        }))
+    : serverRows;
+  const updating = cart.pending && rows.length > 0;
 
   if (cart.pending && rows.length === 0) return <LineSkeleton />;
   if (cart.error) {
@@ -85,65 +107,89 @@ function LineList({
   }
   if (rows.length === 0) {
     return (
-      <p className="rounded-fq-md border border-border bg-card p-6 text-center text-sm text-muted-foreground">
-        {str("emptyText") ||
-          t(locale, "Your cart is empty.", "আপনার কার্ট খালি।")}
-      </p>
+      <div className="rounded-fq-md border border-border bg-card p-6 text-center">
+        <p className="text-sm font-medium">
+          {str("emptyText") ||
+            t(locale, "Your cart is empty.", "আপনার কার্ট খালি।")}
+        </p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {t(
+            locale,
+            "Add items to see them here.",
+            "এখানে দেখতে পণ্য যোগ করুন।",
+          )}
+        </p>
+        {storeSlug && (
+          <a
+            href={`${base}/`}
+            className="mt-4 inline-flex min-h-11 items-center justify-center rounded-fq-md border border-border px-4 text-sm font-medium"
+          >
+            {t(locale, "Continue shopping", "কেনাকাটা চালিয়ে যান")}
+          </a>
+        )}
+      </div>
     );
   }
 
   return (
-    <ul
-      className="m-0 list-none space-y-3 p-0"
-      aria-busy={cart.pending || undefined}
-    >
-      {rows.map((line) => (
-        <li
-          key={line.variantId}
-          className="flex flex-wrap items-center gap-4 py-6"
-        >
-          <div className="min-w-0 flex-1">
-            <p className="break-words text-[13.5px] font-medium leading-relaxed">
-              {line.productTitle}
-            </p>
-            {line.variantName && (
-              <p className="mt-0.5 text-[12px] font-medium tracking-wide text-muted-foreground">
-                {line.variantName}
+    <>
+      {updating && (
+        <p role="status" aria-live="polite" className="text-xs text-muted-foreground">
+          {t(locale, "Updating your cart…", "কার্ট আপডেট হচ্ছে…")}
+        </p>
+      )}
+      <ul
+        className="m-0 list-none divide-y divide-border p-0"
+        aria-busy={cart.pending || undefined}
+      >
+        {rows.map((line) => (
+          <li
+            key={line.variantId}
+            className="flex flex-wrap items-center gap-x-4 gap-y-3 py-4"
+          >
+            <div className="min-w-0 flex-1 basis-40">
+              <p className="break-words text-[13.5px] font-medium leading-relaxed">
+                {line.productTitle}
               </p>
-            )}
-            <p className="mt-2 text-[13.5px] font-semibold tracking-wide tabular-nums text-foreground">
-              {money(line.unitPriceMinor)}
-            </p>
-          </div>
-          <QtyStepper
-            value={line.quantity}
-            max={line.stock}
-            label={t(
-              locale,
-              `Quantity for ${line.productTitle}`,
-              `${line.productTitle} এর পরিমাণ`,
-            )}
-            locale={locale}
-            disabled={!cart.live}
-            onChange={(next) => cart.setQuantity(line.variantId, next)}
-          />
-          <p className="w-24 shrink-0 text-right text-[13.5px] font-semibold tracking-wide tabular-nums">
-            {money(line.lineTotalMinor)}
-          </p>
-          {!compact && (
-            <button
-              type="button"
-              onClick={() => cart.remove(line.variantId)}
+              {line.variantName && (
+                <p className="mt-0.5 text-[12px] font-medium tracking-wide text-muted-foreground">
+                  {line.variantName}
+                </p>
+              )}
+              <p className="mt-2 text-[13.5px] font-semibold tracking-wide tabular-nums text-foreground">
+                {money(line.unitPriceMinor)}
+              </p>
+            </div>
+            <QtyStepper
+              value={line.quantity}
+              max={line.stock}
+              label={t(
+                locale,
+                `Quantity for ${line.productTitle}`,
+                `${line.productTitle} এর পরিমাণ`,
+              )}
+              locale={locale}
               disabled={!cart.live}
-              className="inline-flex min-h-11 items-center px-4 py-2 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {str("removeLabel") || t(locale, "Remove", "সরান")}
-              <span className="sr-only"> {line.productTitle}</span>
-            </button>
-          )}
-        </li>
-      ))}
-    </ul>
+              onChange={(next) => cart.setQuantity(line.variantId, next)}
+            />
+            <p className="w-24 shrink-0 text-right text-[13.5px] font-semibold tracking-wide tabular-nums">
+              {money(line.lineTotalMinor)}
+            </p>
+            {!compact && (
+              <button
+                type="button"
+                onClick={() => cart.remove(line.variantId)}
+                disabled={!cart.live}
+                className="inline-flex min-h-11 items-center px-4 py-2 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {str("removeLabel") || t(locale, "Remove", "সরান")}
+                <span className="sr-only"> {line.productTitle}</span>
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }
 
@@ -209,7 +255,7 @@ function FreeShippingBar({
         className="mt-3 h-1 w-full overflow-hidden bg-muted/50"
       >
         <div
-          className="h-full bg-foreground transition-all duration-500 ease-out"
+          className="h-full bg-foreground motion-safe:transition-all motion-safe:duration-500 motion-safe:ease-out"
           style={{ width: `${percent}%` }}
         />
       </div>
@@ -322,6 +368,10 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
           />
         </div>
       </dl>
+      {/* Screen-reader announcement for the server total on every re-quote. */}
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {`${str("totalLabel") || t(locale, "Total", "সর্বমোট")}: ${money(totals.totalMinor)}`}
+      </p>
 
       {bool("showCoupon") && (
         <form
@@ -366,7 +416,7 @@ function SummaryBody({ ctx }: { ctx: WidgetCtx }) {
       {bool("showCta") && (
         <a
           href={storeSlug ? `${base}/checkout` : "#"}
-          className="inline-flex min-h-14 mt-4 w-full items-center justify-center bg-foreground px-8 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:bg-foreground/90 active:scale-[0.98]"
+          className="inline-flex min-h-14 mt-4 w-full items-center justify-center bg-foreground px-8 text-[13px] font-bold fq-caps tracking-widest text-background motion-safe:transition-transform hover:bg-foreground/90 motion-safe:active:scale-[0.98]"
         >
           {str("ctaLabel") || t(locale, "Checkout Now", "চেকআউট")}
         </a>
@@ -413,10 +463,15 @@ const CartDrawer: WidgetComponent = (ctx) => {
       <button
         type="button"
         onClick={() => setOpen(true)}
+        aria-haspopup="dialog"
         className="inline-flex min-h-12 items-center justify-center gap-2 px-3 text-[12px] font-bold fq-caps tracking-widest text-foreground transition-colors hover:text-muted-foreground"
       >
         {str("triggerLabel") || title}
-        <span className="ml-1 min-w-5 px-1.5 text-center tabular-nums">
+        <span
+          aria-live="polite"
+          aria-atomic="true"
+          className="ml-1 min-w-5 px-1.5 text-center tabular-nums"
+        >
           ({cart.count})
         </span>
       </button>
@@ -425,10 +480,14 @@ const CartDrawer: WidgetComponent = (ctx) => {
         onClose={() => setOpen(false)}
         title={title}
         side="right"
+        closeLabel={locale === "bn" ? "বন্ধ করুন" : "Close"}
       >
         <div className="space-y-4">
           <LineList ctx={ctx} compact />
-          <SummaryBody ctx={ctx} />
+          {/* Pinned checkout footer: stays visible while lines scroll. */}
+          <div className="sticky bottom-0 -mx-4 -mb-4 border-t border-border bg-card px-4 py-4">
+            <SummaryBody ctx={ctx} />
+          </div>
         </div>
       </OverlayHost>
     </>

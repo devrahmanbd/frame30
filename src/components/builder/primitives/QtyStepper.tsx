@@ -26,7 +26,7 @@ export function QtyStepper({
     onChange(Math.max(0, Math.min(ceiling, next)));
   };
   const btn =
-    "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-fq-md border border-border text-base leading-none disabled:opacity-50";
+    "inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-fq-md border border-border text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50";
   return (
     <div
       className="inline-flex items-center gap-1"
@@ -51,7 +51,7 @@ export function QtyStepper({
         disabled={disabled}
         onChange={(event) => set(Number(event.target.value))}
         aria-label={label}
-        className="h-11 w-14 rounded-fq-md border border-border bg-background text-center text-sm tabular-nums"
+        className="h-11 w-14 rounded-fq-md border border-border bg-background text-center text-sm tabular-nums focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       />
       <button
         type="button"

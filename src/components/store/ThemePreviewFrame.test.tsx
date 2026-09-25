@@ -202,28 +202,29 @@ describe("preview click blocking", () => {
 
 describe("preview in-canvas template navigation", () => {
   it.each([
-    ["/p/jamdani-saree", "product"],
-    ["/store/demo/p/jamdani-saree", "product"],
-    ["/c/sarees", "collection"],
-    ["/store/demo/c/sarees", "collection"],
-    ["/search", "search"],
-    ["/cart", "cart"],
-    ["/store/demo/cart", "cart"],
-    ["/checkout", "checkout"],
-    ["/store/demo/checkout", "checkout"],
-    ["/account", "account"],
-    ["/store/demo/account", "account"],
-    ["/pages/shipping", "page"],
-    ["/blog/how-jamdani-is-woven", "blog"],
-    ["/blog", "blog"],
-    ["/", "index"],
-    ["/store/demo", "index"],
-  ])("maps %s to the %s template", (href, template) => {
+    ["/p/jamdani-saree", "product", "jamdani-saree"],
+    ["/store/demo/p/jamdani-saree", "product", "jamdani-saree"],
+    ["/c/sarees", "collection", "sarees"],
+    ["/store/demo/c/sarees", "collection", "sarees"],
+    ["/search", "search", undefined],
+    ["/cart", "cart", undefined],
+    ["/store/demo/cart", "cart", undefined],
+    ["/checkout", "checkout", undefined],
+    ["/store/demo/checkout", "checkout", undefined],
+    ["/account", "account", undefined],
+    ["/store/demo/account", "account", undefined],
+    ["/pages/shipping", "page", undefined],
+    ["/blog/how-jamdani-is-woven", "blog", undefined],
+    ["/blog", "blog", undefined],
+    ["/", "index", undefined],
+    ["/store/demo", "index", undefined],
+  ])("maps %s to the %s template", (href, template, slug) => {
     expect(previewTemplateForHref(href)).toBe(template);
-    expect(previewClickAction(href)).toEqual({
-      kind: "switch",
-      template,
-    });
+    expect(previewClickAction(href)).toEqual(
+      slug === undefined
+        ? { kind: "switch", template }
+        : { kind: "switch", template, slug },
+    );
   });
 
   it("returns null for blocked and unknown hrefs", () => {
@@ -239,5 +240,53 @@ describe("preview in-canvas template navigation", () => {
     expect(event.preventDefault).toHaveBeenCalled();
     expect(setTemplate).toHaveBeenCalledWith("product");
     expect(toastInfo()).not.toHaveBeenCalled();
+  });
+
+  it("reports the clicked collection slug through onFocus", () => {
+    const event = clickOn(anchorNode("/c/contemporary"));
+    const setTemplate = vi.fn();
+    const onFocus = vi.fn();
+    handlePreviewCanvasClick(event, setTemplate, onFocus);
+    expect(setTemplate).toHaveBeenCalledWith("collection");
+    expect(onFocus).toHaveBeenCalledWith({
+      template: "collection",
+      slug: "contemporary",
+    });
+    expect(toastInfo()).not.toHaveBeenCalled();
+  });
+
+  it("clears focus on switches that carry no slug", () => {
+    const event = clickOn(anchorNode("/search"));
+    const onFocus = vi.fn();
+    handlePreviewCanvasClick(event, vi.fn(), onFocus);
+    expect(onFocus).toHaveBeenCalledWith(null);
+  });
+
+  it("does not touch focus on blocked links", () => {
+    const event = clickOn(anchorNode("/order/abc"));
+    const onFocus = vi.fn();
+    handlePreviewCanvasClick(event, vi.fn(), onFocus);
+    expect(onFocus).not.toHaveBeenCalled();
+    expect(toastInfo()).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
+  });
+
+  it("honours a ?focus= deep link on first paint", () => {
+    const heading = {
+      ...newSection("heading"),
+      props: { text: "New in", text_bn: "নতুন এসেছে" },
+    };
+    const templates = {
+      ...buildTemplates(),
+      collection: { header: [], main: [heading], footer: [] },
+    };
+    const html = renderToStaticMarkup(
+      <ThemePreviewFrame
+        {...frameProps("collection")}
+        templates={templates}
+        initialFocus="women"
+      />,
+    );
+    expect(html).toContain("Women");
+    expect(html).toContain("<h1");
   });
 });

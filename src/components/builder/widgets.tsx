@@ -391,6 +391,11 @@ const ContextSlot: WidgetComponent = ({ str, Heading, slot }) =>
  * keyboard-navigable gallery with thumbnails and tap-to-zoom; with no authored
  * images the host slot (live PDP media) renders exactly as before. The first
  * frame is eager and `fetchPriority="high"` because it is the PDP's LCP.
+ *
+ * Sliders lane: prev/next steppers (44px, bilingual), arrow-key navigation on
+ * the carousel region, a polite live position announcement, token-only
+ * surfaces, and zoom that animates only under `motion-safe` so reduced-motion
+ * users get an instant, non-animated toggle.
  */
 const ProductMedia: WidgetComponent = (ctx) => {
   const { str, bool, locale, slot } = ctx;
@@ -404,39 +409,102 @@ const ProductMedia: WidgetComponent = (ctx) => {
   const active = Math.min(index, images.length - 1);
   const alt =
     str("altText") || (locale === "bn" ? "পণ্যের ছবি" : "Product image");
+  const step = (delta: number) => {
+    setIndex((i) => (i + delta + images.length) % images.length);
+    setZoomed(false);
+  };
+  const prevLabel = locale === "bn" ? "আগের ছবি" : "Previous image";
+  const nextLabel = locale === "bn" ? "পরের ছবি" : "Next image";
+  const position = `${formatDisplayNumber(active + 1, { locale })} / ${formatDisplayNumber(images.length, { locale })}`;
+  const stepperBtn =
+    "absolute top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card/95 text-lg leading-none shadow transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
   return (
-    <section aria-roledescription="carousel" aria-label={alt}>
-      <button
-        type="button"
-        onClick={() => bool("zoom") && setZoomed((z) => !z)}
-        aria-label={
-          bool("zoom")
-            ? zoomed
-              ? locale === "bn"
-                ? "জুম বন্ধ"
-                : "Zoom out"
-              : locale === "bn"
-                ? "জুম করুন"
-                : "Zoom in"
-            : alt
+    <section
+      aria-roledescription="carousel"
+      aria-label={alt}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowLeft") step(-1);
+        else if (e.key === "ArrowRight") step(1);
+        else if (e.key === "Home") {
+          setIndex(0);
+          setZoomed(false);
+        } else if (e.key === "End") {
+          setIndex(images.length - 1);
+          setZoomed(false);
         }
-        className="block w-full overflow-hidden rounded-fq-lg border border-border bg-muted"
-        style={{
-          aspectRatio: ratio,
-          cursor: bool("zoom") ? "zoom-in" : "default",
-        }}
+      }}
+    >
+      <div
+        role="group"
+        aria-roledescription="slide"
+        aria-label={`${alt} ${position}`}
+        className="relative overflow-hidden rounded-fq-lg border border-border bg-muted"
+        style={{ aspectRatio: ratio }}
       >
-        <img
-          src={images[active]!}
-          alt={`${alt} ${active + 1}`}
-          loading={active === 0 ? "eager" : "lazy"}
-          fetchPriority={active === 0 ? "high" : "auto"}
-          decoding="async"
-          className={`h-full w-full object-cover ${zoomed ? "scale-150" : ""}`}
-        />
-      </button>
+        <button
+          type="button"
+          onClick={() => bool("zoom") && setZoomed((z) => !z)}
+          aria-label={
+            bool("zoom")
+              ? zoomed
+                ? locale === "bn"
+                  ? "জুম বন্ধ"
+                  : "Zoom out"
+                : locale === "bn"
+                  ? "জুম করুন"
+                  : "Zoom in"
+              : alt
+          }
+          className="block h-full w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
+          style={{
+            cursor: bool("zoom") ? "zoom-in" : "default",
+          }}
+        >
+          <img
+            src={images[active]!}
+            alt={`${alt} ${active + 1}`}
+            loading={active === 0 ? "eager" : "lazy"}
+            fetchPriority={active === 0 ? "high" : "auto"}
+            decoding="async"
+            className={`h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-300 ${zoomed ? "motion-safe:scale-150" : ""}`}
+          />
+        </button>
+        {images.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={() => step(-1)}
+              aria-label={prevLabel}
+              className={`${stepperBtn} left-2`}
+            >
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => step(1)}
+              aria-label={nextLabel}
+              className={`${stepperBtn} right-2`}
+            >
+              <span aria-hidden="true">›</span>
+            </button>
+            <p
+              aria-hidden="true"
+              className="absolute bottom-2 right-2 rounded-full bg-foreground/70 px-2 py-1 text-xs tabular-nums text-background"
+            >
+              {position}
+            </p>
+          </>
+        )}
+      </div>
+      <p aria-live="polite" className="sr-only">
+        {locale === "bn" ? `ছবি ${position}` : `Image ${position}`}
+      </p>
       {bool("showThumbnails") && images.length > 1 && (
-        <div className="mt-2 flex gap-2 overflow-x-auto">
+        <div
+          role="group"
+          aria-label={locale === "bn" ? "থাম্বনেইল" : "Thumbnails"}
+          className="mt-2 flex gap-2 overflow-x-auto pb-1"
+        >
           {images.map((src, i) => (
             <button
               key={src}
@@ -447,7 +515,7 @@ const ProductMedia: WidgetComponent = (ctx) => {
                 setIndex(i);
                 setZoomed(false);
               }}
-              className={`h-16 w-16 shrink-0 overflow-hidden rounded-fq-md border ${
+              className={`h-16 w-16 shrink-0 overflow-hidden rounded-fq-md border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                 i === active
                   ? "border-primary ring-1 ring-primary"
                   : "border-border"
@@ -947,15 +1015,15 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
         aria-hidden
       >
         <path
-          fill="#fff"
+          style={{ fill: "var(--color-primary-foreground)" }}
           d="M1.1 509.4L37 378.6C14.8 340.2 3.2 296.7 3.3 252.4C3.3 113.2 116.6 0 255.8 0c67.5 0 130.9 26.3 178.6 74s73.9 111.1 73.9 178.6C508.2 391.8 394.9 505 255.8 505h-.1c-42.3 0-83.8-10.6-120.7-30.7z"
         />
         <path
-          fill="#25D366"
+          style={{ fill: "var(--color-whatsapp)" }}
           d="M255.8 42.6c-115.8 0-209.9 94.1-210 209.8c0 39.5 11.2 78.2 32.2 111.7l5 7.9l-21.2 77.4l79.4-20.8l7.7 4.5c32.2 19.1 69.2 29.2 106.8 29.2h.1c115.7 0 209.8-94.1 209.9-209.8c.2-55.7-21.9-109.1-61.4-148.4c-39.3-39.4-92.8-61.6-148.5-61.5"
         />
         <path
-          fill="#fff"
+          style={{ fill: "var(--color-primary-foreground)" }}
           fillRule="evenodd"
           d="M192.7 146.9c-4.7-10.5-9.7-10.7-14.2-10.9l-12.1-.1c-4.2 0-11 1.6-16.8 7.9s-22.1 21.6-22.1 52.6s22.6 61 25.8 65.2s43.6 69.9 107.8 95.2c53.3 21 64.1 16.8 75.7 15.8c11.6-1.1 37.3-15.3 42.6-30s5.3-27.4 3.7-30s-5.8-4.2-12.1-7.4s-37.3-18.4-43.1-20.5s-10-3.2-14.2 3.2c-4.2 6.3-16.3 20.5-20 24.7s-7.4 4.7-13.7 1.6c-6.3-3.2-26.6-9.8-50.7-31.3c-18.8-16.7-31.4-37.4-35.1-43.7s-.4-9.7 2.8-12.9c2.8-2.8 6.3-7.4 9.5-11.1s4.2-6.3 6.3-10.5s1.1-7.9-.5-11.1c-1.8-3-14-34.2-19.6-46.7"
         />
@@ -968,7 +1036,7 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
           target="_blank"
           rel="noopener"
           aria-label={label}
-          className="inline-flex items-center gap-2.5 rounded-full bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white no-underline"
+          className="inline-flex items-center gap-2.5 rounded-full bg-whatsapp px-5 py-2.5 text-sm font-semibold text-primary-foreground no-underline"
         >
           {glyph}
           <span>{label}</span>

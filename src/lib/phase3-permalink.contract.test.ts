@@ -13,6 +13,7 @@ import {
   PermalinkError,
   absolutePermalink,
   buildPermalink,
+  canonicalRedirect,
   collapseRedirects,
   isReservedBase,
   normaliseBase,
@@ -58,10 +59,42 @@ describe("permalink settings validation", () => {
     ).toThrow(PermalinkError);
   });
 
+  it("allows root post-name bases for products, collections and pages", () => {
+    const settings = validateSettings({
+      productBase: "",
+      collectionBase: "",
+      pageBase: "",
+    });
+    expect(settings.productBase).toBe("");
+    expect(settings.collectionBase).toBe("");
+    expect(settings.pageBase).toBe("");
+  });
+
   it("refuses an unsupported pattern instead of silently defaulting", () => {
     expect(() =>
       validateSettings({ articlePattern: "/%postid%" as never }),
     ).toThrow(PermalinkError);
+  });
+});
+
+describe("canonical guard", () => {
+  it("passes through already-canonical paths", () => {
+    expect(
+      canonicalRedirect(DEFAULT_PERMALINKS, "collection", "women", "/c/women"),
+    ).toBeNull();
+  });
+
+  it("flags stale prefixed URLs after a base move", () => {
+    const moved = validateSettings({ collectionBase: "/shop" });
+    expect(canonicalRedirect(moved, "collection", "women", "/c/women")).toBe(
+      "/shop/women",
+    );
+    expect(canonicalRedirect(moved, "collection", "women", "/shop/women")).toBeNull();
+  });
+
+  it("serves root post-name URLs without redirecting", () => {
+    const root = validateSettings({ productBase: "" });
+    expect(canonicalRedirect(root, "product", "x", "/x")).toBeNull();
   });
 });
 

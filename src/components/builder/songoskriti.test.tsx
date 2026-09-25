@@ -50,6 +50,7 @@ function ctxFor(
     storeSlug: "test",
     data: undefined,
     renderChildren: () => null,
+    link: (href: string) => href,
   };
 }
 
@@ -169,7 +170,10 @@ describe("craft_story", () => {
     const html = render(Cmp(), section);
     expect(html).toContain("From loom to wardrobe");
     expect(html).toContain("/pages/our-craft");
-    expect(html).not.toMatch(/\d{3,}/);
+    // Metrics live in copy, not in Tailwind size classes (min-h-14,
+    // 1440px containers), so strip tags before asserting.
+    const text = html.replace(/<[^>]*>/g, " ");
+    expect(text).not.toMatch(/\d{3,}/);
   });
 });
 
@@ -199,7 +203,7 @@ describe("testimonials", () => {
     expect(html).toContain("Drapes beautifully.");
     expect(html).toContain("Nasrin");
     expect(html).toContain("Dhaka");
-    expect(html).toContain("line-clamp-3");
+    expect(html).toContain("<blockquote");
     expect(html).toContain("Testimonial 2");
   });
 
@@ -321,7 +325,7 @@ describe("songoskriti product_rail rhythm (browser-verified 2026-09-24)", () => 
       railSection({ rows, pending: false }),
       { rows, pending: false },
     );
-    expect(html).toContain("max-w-6xl");
+    expect(html).toContain("max-w-[var(--fq-container");
     expect(html).toContain("px-4");
     expect(html).toContain("New arrivals");
   });
@@ -443,5 +447,12 @@ describe("songoskriti categories rhythm (browser-verified 2026-09-24)", () => {
     // "Women Women".
     expect(html).toContain('alt=""');
     expect(html).not.toContain('alt="Women"');
+  });
+
+  it("centers the section header on the theme display face", () => {
+    const html = render(APPAREL_WIDGETS["circle_categories"], catSection());
+    expect(html).toContain("justify-center");
+    expect(html).toContain("font-theme-display");
+    expect(html).not.toContain("font-serif");
   });
 });

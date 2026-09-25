@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang, LanguageProvider } from "@/lib/i18n";
@@ -138,6 +139,7 @@ function AuthPageInner() {
   const { t } = useLang();
   const navigate = useNavigate();
   const search = Route.useSearch();
+  const queryClient = useQueryClient();
 
   // Single source of truth: URL search.mode. Local mode state made the sync
   // effect stomp tab clicks back to the stale search.mode (Sign In "bounce").
@@ -256,6 +258,12 @@ function AuthPageInner() {
     }).catch(() => undefined);
 
     const dest = await landingFor(session.user.id, search.redirect);
+    // Fresh login, fresh identity: drop any merchant reads cached for a
+    // previous session (or the pre-login anonymous state). Without this the
+    // dashboard/onboarding keep serving the stale null/merchant for up to
+    // the 5-minute staleTime and bounce completed stores to the wizard.
+    const { invalidateMerchantScope } = await import("@/hooks/use-merchant");
+    await invalidateMerchantScope(queryClient);
     navigate({ to: dest });
   }
 

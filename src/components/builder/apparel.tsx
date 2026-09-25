@@ -22,6 +22,7 @@ import { MediaFrame } from "./primitives/MediaFrame";
 import { OverlayHost } from "./primitives/OverlayHost";
 import { ProductCard, ProductCardSkeleton } from "./primitives/ProductCard";
 import { Rail } from "./primitives/Rail";
+import { onRadioGroupKeyDown } from "./primitives/RovingRadiogroup";
 import { UnitToggle, convertCm, type SizeUnit } from "./primitives/UnitToggle";
 import { useSectionChannel } from "./useSectionChannel";
 import { altKey, sizesAttr, sizesKey } from "@/lib/media";
@@ -519,6 +520,7 @@ const SizeSelector: WidgetComponent = (ctx) => {
       <div
         role="radiogroup"
         aria-label={str("heading") || "Size"}
+        onKeyDown={onRadioGroupKeyDown}
         className="flex flex-wrap gap-2"
       >
         {rows.map((row) => {
@@ -532,7 +534,7 @@ const SizeSelector: WidgetComponent = (ctx) => {
               aria-checked={selected === row.id}
               onClick={() => setSelected(row.id)}
               className={[
-                "min-h-11 min-w-11 rounded-fq-md border px-3 text-sm",
+                "min-h-11 min-w-11 rounded-fq-md border px-3 text-sm transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                 selected === row.id
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border",
@@ -878,8 +880,8 @@ const CircleCategories: WidgetComponent = ({ str, Heading }) => {
   return (
     <section className="mx-auto w-full max-w-6xl space-y-4 px-4 py-4">
       {heading && (
-        <div className="flex items-center justify-between">
-          <Heading className="text-xl font-bold tracking-tight text-foreground font-serif">
+        <div className="flex items-center justify-center text-center">
+          <Heading className="text-xl font-bold tracking-tight text-foreground font-theme-display text-center">
             {heading}
           </Heading>
         </div>
@@ -938,7 +940,7 @@ const SubbrandSpotlight: WidgetComponent = ({ str, Heading, locale }) => {
       {(heading || subheading) && (
         <div className="mx-auto mb-6 max-w-xl space-y-1 text-center">
           {heading && (
-            <Heading className="font-serif text-2xl font-bold tracking-tight text-foreground">
+            <Heading className="font-theme-display text-2xl font-bold tracking-tight text-foreground">
               {heading}
             </Heading>
           )}
@@ -960,20 +962,21 @@ const SubbrandSpotlight: WidgetComponent = ({ str, Heading, locale }) => {
               {b.imageUrl ? (
                 <img
                   src={b.imageUrl}
-                  alt={b.name}
+                  // Decorative: the card label below names the brand.
+                  alt=""
                   className="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   loading="lazy"
                 />
               ) : (
                 <div className="flex size-full items-center justify-center bg-primary/10">
-                  <span className="font-serif text-2xl font-bold tracking-widest text-primary">
+                  <span className="font-theme-display text-2xl font-bold tracking-widest text-primary">
                     {b.name}
                   </span>
                 </div>
               )}
             </div>
             <div className="space-y-1.5 p-4">
-              <p className="font-serif text-base font-bold tracking-wide text-foreground transition-colors group-hover:text-primary">
+              <p className="font-theme-display text-base font-bold tracking-wide text-foreground transition-colors group-hover:text-primary">
                 {b.name}
               </p>
               {b.tagline && (

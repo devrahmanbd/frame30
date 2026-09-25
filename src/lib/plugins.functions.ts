@@ -29,6 +29,7 @@ export const pluginInstallFn = createServerFn({ method: "POST" })
         manifest: z.unknown(),
         grantedScopes: z.array(z.string()).max(20),
         installId: z.string().uuid().nullable().optional(),
+        reconsented: z.boolean().optional(),
       })
       .parse(d),
   )
@@ -39,6 +40,7 @@ export const pluginInstallFn = createServerFn({ method: "POST" })
       manifest: data.manifest,
       grantedScopes: data.grantedScopes,
       installId: data.installId ?? null,
+      reconsented: data.reconsented ?? false,
     });
   });
 

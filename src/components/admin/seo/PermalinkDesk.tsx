@@ -59,6 +59,49 @@ function errText(error: unknown) {
   return error instanceof Error ? error.message : String(error);
 }
 
+type CommonOption = {
+  id: string;
+  label: string;
+  example: string;
+  selected: boolean;
+  onSelect: () => void;
+};
+
+/** WordPress-style Common Settings radio group with live URL examples. */
+function CommonKindGroup({
+  title,
+  options,
+}: {
+  title: string;
+  options: CommonOption[];
+}) {
+  return (
+    <fieldset className="rounded-lg border border-border p-3">
+      <legend className="px-1 text-xs font-semibold">{title}</legend>
+      <div className="space-y-1">
+        {options.map((option) => (
+          <label
+            key={option.id}
+            className="flex min-h-11 cursor-pointer items-center gap-3 rounded-fq-md px-2 hover:bg-muted"
+          >
+            <input
+              type="radio"
+              name={title}
+              checked={option.selected}
+              onChange={option.onSelect}
+              className="size-4 shrink-0 accent-bd-teal-700"
+            />
+            <span className="text-sm font-medium">{option.label}</span>
+            <code className="money ml-auto text-xs text-muted-foreground">
+              {option.example}
+            </code>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
 export function PermalinkDesk() {
   const { lang } = useLang();
   const bn = lang === "bn";
@@ -247,19 +290,125 @@ export function PermalinkDesk() {
         message={stateQuery.error ? errText(stateQuery.error) : null}
       />
 
-      {/* -------------------------- permalink pattern ------------------- */}
+      {/* ----------------- permalink structure (WP sort) ------------ */}
       <section className="rounded-xl border border-border bg-card p-4 space-y-4">
         <header>
           <h3 className="text-sm font-semibold">
-            {bn ? "পারমালিংক" : "Permalinks"}
+            {bn ? "পারমালিংক গঠন" : "Permalink structure"}
           </h3>
           <p className="text-xs text-muted-foreground">
             {bn
-              ? "URL গঠন বদলালে পুরোনো ঠিকানার জন্য স্বয়ংক্রিয়ভাবে ৩০১ রিডাইরেক্ট তৈরি হবে।"
-              : "Changing the structure writes 301 redirects for every live URL before the new pattern goes live."}
+              ? "সাধারণ সেটিংস থেকে ধরন বেছে নিন, অথবা নিচে কাস্টম বেস লিখুন। URL গঠন বদলালে পুরোনো ঠিকানার জন্য স্বয়ংক্রিয়ভাবে ৩০১ রিডাইরেক্ট তৈরি হবে।"
+              : "Pick a common structure per kind, or type a custom base below. Changing the structure writes 301 redirects for every live URL before the new pattern goes live."}
           </p>
         </header>
 
+        <CommonKindGroup
+          title={bn ? "পণ্য" : "Products"}
+          options={[
+            {
+              id: "product-default",
+              label: bn ? "ডিফল্ট" : "Default",
+              example: "/p/jamdani-saree",
+              selected: settings.productBase === "/p",
+              onSelect: () => set("productBase", "/p"),
+            },
+            {
+              id: "product-postname",
+              label: bn ? "পোস্টের নাম" : "Post name",
+              example: "/jamdani-saree",
+              selected: settings.productBase === "",
+              onSelect: () => set("productBase", ""),
+            },
+            {
+              id: "product-custom",
+              label: bn ? "কাস্টম বেস" : "Custom base",
+              example: `${settings.productBase || "/shop"}/jamdani-saree`,
+              selected:
+                settings.productBase !== "/p" && settings.productBase !== "",
+              onSelect: () =>
+                set("productBase", settings.productBase || "/shop"),
+            },
+          ]}
+        />
+
+        <CommonKindGroup
+          title={bn ? "কালেকশন" : "Collections"}
+          options={[
+            {
+              id: "collection-default",
+              label: bn ? "ডিফল্ট" : "Default",
+              example: "/c/women",
+              selected: settings.collectionBase === "/c",
+              onSelect: () => set("collectionBase", "/c"),
+            },
+            {
+              id: "collection-postname",
+              label: bn ? "পোস্টের নাম" : "Post name",
+              example: "/women",
+              selected: settings.collectionBase === "",
+              onSelect: () => set("collectionBase", ""),
+            },
+            {
+              id: "collection-custom",
+              label: bn ? "কাস্টম বেস" : "Custom base",
+              example: `${settings.collectionBase || "/collections"}/women`,
+              selected:
+                settings.collectionBase !== "/c" &&
+                settings.collectionBase !== "",
+              onSelect: () =>
+                set("collectionBase", settings.collectionBase || "/collections"),
+            },
+          ]}
+        />
+
+        <CommonKindGroup
+          title={bn ? "ব্লগ" : "Articles"}
+          options={[
+            {
+              id: "article-postname",
+              label: bn ? "পোস্টের নাম" : "Post name",
+              example: "/blog/hello-world",
+              selected: settings.articlePattern === "/%slug%",
+              onSelect: () => set("articlePattern", "/%slug%"),
+            },
+            {
+              id: "article-month",
+              label: bn ? "মাস ও নাম" : "Month and name",
+              example: "/blog/2026/09/hello-world",
+              selected: settings.articlePattern === "/%year%/%month%/%slug%",
+              onSelect: () => set("articlePattern", "/%year%/%month%/%slug%"),
+            },
+            {
+              id: "article-day",
+              label: bn ? "দিন ও নাম" : "Day and name",
+              example: "/blog/2026/09/24/hello-world",
+              selected:
+                settings.articlePattern === "/%year%/%month%/%day%/%slug%",
+              onSelect: () =>
+                set("articlePattern", "/%year%/%month%/%day%/%slug%"),
+            },
+          ]}
+        />
+
+        <div className="rounded-lg border border-border bg-muted/40 p-3 text-xs">
+          <p className="font-medium">
+            {bn ? "উপলব্ধ ট্যাগ" : "Available tags"}
+          </p>
+          <p className="mt-1 text-muted-foreground">
+            <code>%postname%</code> <code>%category%</code> <code>%year%</code>{" "}
+            <code>%monthnum%</code> <code>%day%</code>
+          </p>
+          <p className="mt-1 text-muted-foreground">
+            {bn
+              ? "কাস্টম গঠনে শুধু এই ট্যাগগুলো চলে। পণ্য, কালেকশন ও পেজে তারিখ ট্যাগ কাজ করে না — সেগুলো তারিখহীন।"
+              : "Custom structures accept only these tags. Date tags do not apply to products, collections or pages — those kinds are dateless."}
+          </p>
+        </div>
+
+        <h4 className="text-sm font-semibold">
+          {bn ? "ঐচ্ছিক বেস" : "Optional bases"}
+        </h4>
         <div className="grid gap-3 md:grid-cols-2">
           <Field label={bn ? "ব্লগ বেস" : "Blog base"}>
             <input

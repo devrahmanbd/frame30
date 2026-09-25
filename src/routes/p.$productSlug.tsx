@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreImage } from "@/components/store/StoreImage";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
@@ -28,14 +28,27 @@ import { ProductView, ProductNotFound } from "@/components/store/ProductView";
  * SPA hydration stays on this route instead of bouncing to notFound.
  */
 export const Route = createFileRoute("/p/$productSlug")({
-  loader: async ({ params }) => {
+  loader: async ({ params, location }) => {
     let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
     try {
       host = await resolveStorefrontHostFn();
     } catch {
       host = null;
     }
-    if (!host) throw notFound();
+    if (!host) {
+      // No merchant on this host (platform domain): render the theme demo
+      // instead of a dead end. Demo data, blocked actions, noindex.
+      const { defaultPreviewKey } = await import("@/lib/preview-sources");
+      throw redirect({
+        to: "/theme-preview/$key",
+        params: { key: defaultPreviewKey() },
+        search: {
+          template: "product",
+          focus: params.productSlug.toLowerCase().slice(0, 64),
+        },
+        replace: true,
+      });
+    }
     const data = await getStoreProduct({
       data: { slug: host.merchantSlug, productSlug: params.productSlug },
     });
@@ -44,6 +57,20 @@ export const Route = createFileRoute("/p/$productSlug")({
         host.merchantSlug,
         `/p/${params.productSlug}`,
       );
+    // Custom bases: the old prefixed URL still matches this static route,
+    // so canonicalize it here instead of serving duplicates.
+    const { canonicalRedirectFn } = await import(
+      "@/lib/permalink.functions"
+    );
+    const { to } = await canonicalRedirectFn({
+      data: {
+        merchantId: data.merchant.id,
+        kind: "product",
+        slug: data.product.slug,
+        pathname: location.pathname,
+      },
+    });
+    if (to) throw redirect({ href: to, replace: true });
     return data;
   },
   head: ({ loaderData }) => {

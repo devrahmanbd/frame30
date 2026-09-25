@@ -8,7 +8,7 @@
  * All text supports bilingual EN/বাং labels via the `t()` helper. Deterministic
  * monogram tiles are used for images (no external URLs).
  */
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type {
   PropRow,
   PropValue,
@@ -37,6 +37,24 @@ const readNumber = (row: PropRow, key: string, fallback: number) => {
   const v = row[key];
   return typeof v === "number" ? v : Number(v) || fallback;
 };
+
+/**
+ * Carousel-pack shared reduced-motion gate. SSR-safe (effects never run
+ * under renderToStaticMarkup): first paint assumes motion, then corrects
+ * from the OS setting and follows mid-session changes.
+ */
+function useCarouselReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(query.matches);
+    const onChange = () => setReduced(query.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+  return reduced;
+}
 
 /**
  * Hand-built Jamdani buti lattice (Tier-B SVG craft — no stock, no blobs).
@@ -136,21 +154,36 @@ const HeroCarousel: WidgetComponent = ({
   }));
   const autoAdvanceMs = int("autoAdvanceMs", 5000, 1000, 15000);
   const atmosphere = str("atmosphere") || "wash";
+  const reducedMotion = useCarouselReducedMotion();
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
   // Task 5 motion: hero load timeline scoped to this section. SSR-safe
   // (effects never run under renderToStaticMarkup) and static under
   // reduced motion — the hook no-ops unless intent is full.
   const heroScope = useRef<HTMLElement | null>(null);
   useSongoskritiHero(heroScope, true);
 
+  const count = slides.length;
+  const goTo = useCallback(
+    (i: number) => {
+      if (count <= 0) return;
+      setCurrent(((i % count) + count) % count);
+    },
+    [count],
+  );
+  const next = useCallback(() => goTo(current + 1), [current, goTo]);
+  const prev = useCallback(() => goTo(current - 1), [current, goTo]);
+
   useEffect(() => {
-    if (paused || slides.length <= 1) return;
+    // Autoplay never arms under reduced motion; manual dots/arrows/swipe
+    // keep working so every visitor can still reach every slide.
+    if (paused || reducedMotion || slides.length <= 1) return;
     const id = setInterval(() => {
       setCurrent((i) => (i + 1) % slides.length);
     }, autoAdvanceMs);
     return () => clearInterval(id);
-  }, [paused, slides.length, autoAdvanceMs]);
+  }, [paused, reducedMotion, slides.length, autoAdvanceMs]);
 
   if (slides.length === 0) {
     return editing ? (
@@ -166,13 +199,47 @@ const HeroCarousel: WidgetComponent = ({
 
   const slide = slides[current]!;
   const isFirst = current === 0;
+  const prevLabel = t(locale, "Previous slide", "আগের স্লাইড");
+  const nextLabel = t(locale, "Next slide", "পরের স্লাইড");
   return (
     <section
       ref={heroScope}
       data-songoskriti-hero
+      role="region"
+      aria-roledescription="carousel"
       aria-label={t(locale, "Hero carousel", "হিরো ক্যারোজেল")}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      onKeyDown={(event) => {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          next();
+        } else if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          prev();
+        } else if (event.key === "Home") {
+          event.preventDefault();
+          goTo(0);
+        } else if (event.key === "End") {
+          event.preventDefault();
+          goTo(count - 1);
+        }
+      }}
+      onTouchStart={(event) => {
+        touchStartX.current = event.touches[0]?.clientX ?? null;
+      }}
+      onTouchEnd={(event) => {
+        const start = touchStartX.current;
+        touchStartX.current = null;
+        if (start === null) return;
+        const end = event.changedTouches[0]?.clientX ?? start;
+        const delta = end - start;
+        if (Math.abs(delta) < 40) return;
+        if (delta < 0) next();
+        else prev();
+      }}
       className="relative overflow-hidden bg-background"
     >
       {atmosphere !== "none" && (
@@ -181,7 +248,16 @@ const HeroCarousel: WidgetComponent = ({
           className="fq-theme-aurora pointer-events-none absolute inset-0 opacity-40"
         />
       )}
-      <div className="mx-auto grid max-w-[var(--fq-container,1440px)] items-center gap-8 px-4 py-12 sm:gap-12 sm:px-8 sm:py-24 lg:grid-cols-12 lg:gap-16">
+      <p className="sr-only" role="status">
+        {t(locale, "Slide", "স্লাইড")} {current + 1} / {count}
+      </p>
+      <div
+        key={current}
+        role="group"
+        aria-roledescription="slide"
+        aria-label={`${t(locale, "Slide", "স্লাইড")} ${current + 1} / ${count}`}
+        className="fq-enter-fade mx-auto grid max-w-[var(--fq-container,1440px)] items-center gap-8 px-4 py-12 sm:gap-12 sm:px-8 sm:py-24 lg:grid-cols-12 lg:gap-16"
+      >
         {/* Copy — asymmetric left, six columns */}
         <div className="min-w-0 lg:col-span-6 lg:pl-8">
           {slide.caption && (
@@ -221,37 +297,66 @@ const HeroCarousel: WidgetComponent = ({
             {slide.ctaLabel && (
               <a
                 href={slide.ctaUrl || "#"}
-                className="inline-flex min-h-12 sm:min-h-14 items-center whitespace-nowrap bg-foreground px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98]"
+                className="inline-flex min-h-12 sm:min-h-14 items-center whitespace-nowrap bg-foreground px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
                 {slide.ctaLabel}
               </a>
             )}
-            {/* Dots live with the copy — never overlapping art or CTA */}
+            {/* Dots + arrows live with the copy — never overlapping art or CTA */}
             {slides.length > 1 && (
-              <div
-                className="flex items-center gap-1"
-                role="tablist"
-                aria-label={t(locale, "Slides", "স্লাইড")}
-              >
-                {slides.map((_, i) => (
+              <div className="flex flex-wrap items-center gap-1">
+                <div className="flex items-center gap-1">
                   <button
-                    key={i}
-                    role="tab"
-                    aria-selected={i === current}
-                    onClick={() => setCurrent(i)}
-                    className="grid min-h-11 min-w-11 place-items-center"
-                    aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1}`}
+                    type="button"
+                    onClick={prev}
+                    aria-label={prevLabel}
+                    className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   >
-                    <span
-                      aria-hidden="true"
-                      className={`block h-2 rounded-full transition ${
-                        i === current
-                          ? "w-7 bg-primary"
-                          : "w-2 bg-foreground/25 hover:bg-foreground/50"
-                      }`}
-                    />
+                    <span aria-hidden="true">‹</span>
                   </button>
-                ))}
+                  <button
+                    type="button"
+                    onClick={next}
+                    aria-label={nextLabel}
+                    className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  >
+                    <span aria-hidden="true">›</span>
+                  </button>
+                </div>
+                <div
+                  className="flex items-center gap-1"
+                  role="group"
+                  aria-label={t(locale, "Slides", "স্লাইড")}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowRight") {
+                      event.preventDefault();
+                      next();
+                    } else if (event.key === "ArrowLeft") {
+                      event.preventDefault();
+                      prev();
+                    }
+                  }}
+                >
+                  {slides.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => goTo(i)}
+                      aria-current={i === current}
+                      className="grid min-h-11 min-w-11 place-items-center rounded-fq-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                      aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1} / ${slides.length}`}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`block h-2 rounded-full transition ${
+                          i === current
+                            ? "w-7 bg-primary"
+                            : "w-2 bg-foreground/25 hover:bg-foreground/50"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -694,16 +799,29 @@ const TestimonialCarousel: WidgetComponent = ({
     image: readString(row, "image"),
   }));
   const autoAdvanceMs = int("autoAdvanceMs", 4000, 1500, 10000);
+  const reducedMotion = useCarouselReducedMotion();
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+
+  const count = testimonials.length;
+  const goTo = useCallback(
+    (i: number) => {
+      if (count <= 0) return;
+      setCurrent(((i % count) + count) % count);
+    },
+    [count],
+  );
+  const next = useCallback(() => goTo(current + 1), [current, goTo]);
+  const prev = useCallback(() => goTo(current - 1), [current, goTo]);
 
   useEffect(() => {
-    if (paused || testimonials.length <= 1) return;
+    if (paused || reducedMotion || testimonials.length <= 1) return;
     const id = setInterval(() => {
       setCurrent((i) => (i + 1) % testimonials.length);
     }, autoAdvanceMs);
     return () => clearInterval(id);
-  }, [paused, testimonials.length, autoAdvanceMs]);
+  }, [paused, reducedMotion, testimonials.length, autoAdvanceMs]);
 
   if (testimonials.length === 0) {
     return editing ? (
@@ -718,14 +836,57 @@ const TestimonialCarousel: WidgetComponent = ({
   }
 
   const testimonial = testimonials[current]!;
+  const prevLabel = t(locale, "Previous testimonial", "আগের প্রশংসাপত্র");
+  const nextLabel = t(locale, "Next testimonial", "পরের প্রশংসাপত্র");
   return (
     <section
+      role="region"
+      aria-roledescription="carousel"
       className="rounded-fq-sm border border-border bg-card p-6 sm:p-8"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      onKeyDown={(event) => {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          next();
+        } else if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          prev();
+        } else if (event.key === "Home") {
+          event.preventDefault();
+          goTo(0);
+        } else if (event.key === "End") {
+          event.preventDefault();
+          goTo(count - 1);
+        }
+      }}
+      onTouchStart={(event) => {
+        touchStartX.current = event.touches[0]?.clientX ?? null;
+      }}
+      onTouchEnd={(event) => {
+        const start = touchStartX.current;
+        touchStartX.current = null;
+        if (start === null) return;
+        const end = event.changedTouches[0]?.clientX ?? start;
+        const delta = end - start;
+        if (Math.abs(delta) < 40) return;
+        if (delta < 0) next();
+        else prev();
+      }}
       aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
     >
-      <div className="flex flex-col items-center text-center">
+      <p className="sr-only" role="status">
+        {t(locale, "Testimonial", "টেস্টিমোনিয়াল")} {current + 1} / {count}
+      </p>
+      <div
+        key={current}
+        role="group"
+        aria-roledescription="slide"
+        aria-label={`${t(locale, "Testimonial", "টেস্টিমোনিয়াল")} ${current + 1} / ${count}`}
+        className="fq-enter-fade flex flex-col items-center text-center"
+      >
         {testimonial.image && (
           <img
             src={testimonial.image}
@@ -742,22 +903,55 @@ const TestimonialCarousel: WidgetComponent = ({
         </figcaption>
       </div>
       {testimonials.length > 1 && (
-        <div className="mt-4 flex justify-center gap-1">
-          {testimonials.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className="grid min-h-11 min-w-11 place-items-center"
-              aria-label={`${t(locale, "Testimonial", "টেস্টিমোনিয়াল")} ${i + 1}`}
-            >
-              <span
-                aria-hidden="true"
-                className={`block h-2 rounded-full transition ${
-                  i === current ? "w-6 bg-primary" : "w-2 bg-border"
-                }`}
-              />
-            </button>
-          ))}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-1">
+          <button
+            type="button"
+            onClick={prev}
+            aria-label={prevLabel}
+            className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
+            <span aria-hidden="true">‹</span>
+          </button>
+          <div
+            className="flex items-center gap-1"
+            role="group"
+            aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowRight") {
+                event.preventDefault();
+                next();
+              } else if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                prev();
+              }
+            }}
+          >
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-current={i === current}
+                className="grid min-h-11 min-w-11 place-items-center rounded-fq-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                aria-label={`${t(locale, "Testimonial", "টেস্টিমোনিয়াল")} ${i + 1} / ${testimonials.length}`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`block h-2 rounded-full transition ${
+                    i === current ? "w-6 bg-primary" : "w-2 bg-border"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={next}
+            aria-label={nextLabel}
+            className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
+            <span aria-hidden="true">›</span>
+          </button>
         </div>
       )}
     </section>

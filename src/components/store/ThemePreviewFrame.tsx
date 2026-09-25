@@ -15,7 +15,7 @@
  * toast — capture-phase interception runs before widget handlers so no
  * contact/newsletter/coupon submission ever fires.
  */
-import { useMemo, useState, type MouseEvent } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { StoreHeader } from "@/components/store/StoreHeader";
@@ -39,6 +39,10 @@ import {
   type ThemeTokens,
 } from "@/lib/builder-ast";
 import { primarySectionId } from "@/lib/builder-ast";
+import {
+  applyDemoFocus,
+  resolveDemoFocus,
+} from "@/lib/theme-preview-nav";
 
 /** Toast copy shown whenever a preview action is blocked. */
 export const PREVIEW_DISABLED_MESSAGE = "Disabled in preview";
@@ -69,26 +73,44 @@ export function isPreviewBlockedHref(href: string): boolean {
  * order tracking and the actions inside (submits, payment) stay blocked.
  */
 export function previewTemplateForHref(href: string): TemplateKey | null {
+  return parsePreviewHref(href)?.template ?? null;
+}
+
+/**
+ * In-canvas href parser: template plus the product/collection slug when the
+ * link names one. The slug is what lets every /c/* navbar link render its
+ * own collection instead of one static demo page.
+ */
+function parsePreviewHref(
+  href: string,
+): { template: TemplateKey; slug?: string } | null {
   if (isPreviewBlockedHref(href)) return null;
   const path = (href.split(/[?#]/, 1)[0] ?? "").toLowerCase();
   if (!path.startsWith("/")) return null;
   const rest = path.replace(/^\/store\/[^/]+/, "") || "/";
-  if (/^\/p\/[^/]+/.test(rest) || /^\/products?\//.test(rest)) return "product";
-  if (/^\/c\/[^/]+/.test(rest) || /^\/collections?\//.test(rest))
-    return "collection";
-  if (rest === "/search" || rest === "/search/") return "search";
-  if (rest === "/cart" || rest === "/cart/") return "cart";
-  if (rest === "/checkout" || rest === "/checkout/") return "checkout";
-  if (rest === "/account" || rest.startsWith("/account/")) return "account";
-  if (/^\/pages?\//.test(rest)) return "page";
-  if (rest === "/blog" || rest.startsWith("/blog/")) return "blog";
-  if (rest === "/" || rest === "/index" || rest === "/home") return "index";
+  const seg = (re: RegExp): string | undefined => rest.match(re)?.[1];
+  let slug: string | undefined;
+  if ((slug = seg(/^\/(?:p|products?)\/([^/]+)/)) !== undefined)
+    return { template: "product", slug };
+  if (/^\/products?\//.test(rest)) return { template: "product" };
+  if ((slug = seg(/^\/(?:c|collections?)\/([^/]+)/)) !== undefined)
+    return { template: "collection", slug };
+  if (rest === "/search" || rest === "/search/") return { template: "search" };
+  if (rest === "/cart" || rest === "/cart/") return { template: "cart" };
+  if (rest === "/checkout" || rest === "/checkout/")
+    return { template: "checkout" };
+  if (rest === "/account" || rest.startsWith("/account/"))
+    return { template: "account" };
+  if (/^\/pages?\//.test(rest)) return { template: "page" };
+  if (rest === "/blog" || rest.startsWith("/blog/")) return { template: "blog" };
+  if (rest === "/" || rest === "/index" || rest === "/home")
+    return { template: "index" };
   return null;
 }
 
 export type PreviewClickAction =
   | { kind: "blocked" }
-  | { kind: "switch"; template: TemplateKey }
+  | { kind: "switch"; template: TemplateKey; slug?: string }
   | { kind: "allow" };
 
 /**
@@ -100,8 +122,11 @@ export function previewClickAction(
 ): PreviewClickAction {
   if (!href || href.startsWith("#")) return { kind: "allow" };
   if (isPreviewBlockedHref(href)) return { kind: "blocked" };
-  const next = previewTemplateForHref(href);
-  return next ? { kind: "switch", template: next } : { kind: "allow" };
+  const next = parsePreviewHref(href);
+  if (!next) return { kind: "allow" };
+  return next.slug !== undefined
+    ? { kind: "switch", template: next.template, slug: next.slug }
+    : { kind: "switch", template: next.template };
 }
 
 type PreviewCanvasClickEvent = {
@@ -119,11 +144,14 @@ const SUBMIT_CONTROL_SELECTOR = 'button[type="submit"],input[type="submit"]';
  * inside any form and signup / order-tracking links are blocked with a
  * toast, while product / collection / search / page / blog / cart /
  * checkout / account / home links switch the preview template.
+ * Product/collection links additionally report their slug through onFocus
+ * so the demo renders the clicked collection, not a static page.
  * Everything else passes through untouched.
  */
 export function handlePreviewCanvasClick(
   event: PreviewCanvasClickEvent,
   setTemplate: (template: TemplateKey) => void,
+  onFocus?: (focus: { template: TemplateKey; slug: string } | null) => void,
 ): void {
   const el = event.target as HTMLElement | null;
   const submit = el?.closest?.(SUBMIT_CONTROL_SELECTOR) as HTMLElement | null;
@@ -144,6 +172,12 @@ export function handlePreviewCanvasClick(
     event.preventDefault();
     event.stopPropagation();
     setTemplate(action.template);
+    onFocus?.(
+      action.slug !== undefined &&
+        (action.template === "collection" || action.template === "product")
+        ? { template: action.template, slug: action.slug }
+        : null,
+    );
   }
 }
 
@@ -175,6 +209,9 @@ export type ThemePreviewFrameProps = {
   templates: Record<TemplateKey, ThemeAst>;
   /** Deep-linkable starting tab (?template=product). Defaults to homepage. */
   initialTemplate?: TemplateKey;
+  /** Deep-linkable demo focus (?focus=bestsellers): renders that demo
+      collection/product on first paint. In-canvas clicks replace it. */
+  initialFocus?: string | null;
   /**
    * Retained for route compatibility. The preview renders no chrome, so the
    * close control is gone and this is intentionally unwired.
@@ -188,15 +225,37 @@ export function ThemePreviewFrame({
   tokens,
   templates,
   initialTemplate,
+  initialFocus,
 }: ThemePreviewFrameProps) {
-  const [template, setTemplate] = useState<TemplateKey>(
-    initialTemplate ?? "index",
+  const startTemplate = initialTemplate ?? "index";
+  const [template, setTemplate] = useState<TemplateKey>(startTemplate);
+  // Clicked product/collection slug: renders that demo collection instead
+  // of one static page for every /c/* link. Cleared on any switch that
+  // carries no slug. Deep-linkable via ?focus= for merchant-less URLs.
+  const [focus, setFocus] = useState<{
+    template: TemplateKey;
+    slug: string;
+  } | null>(() =>
+    initialFocus &&
+    (startTemplate === "collection" || startTemplate === "product")
+      ? { template: startTemplate, slug: initialFocus }
+      : null,
   );
 
   const ast = templates[template] ?? templates.index;
+  const demoFocus =
+    focus && focus.template === template
+      ? resolveDemoFocus(blueprintKey, focus.template, focus.slug)
+      : null;
+  const focusedMain =
+    demoFocus &&
+    (template === "collection" || template === "product") &&
+    demoFocus.template === template
+      ? applyDemoFocus(ast.main, demoFocus)
+      : ast.main;
   // The preview has no route to supply the h1, so the elected primary
   // section owns it — same election the storefront host runs.
-  const primaryId = primarySectionId(ast);
+  const primaryId = primarySectionId({ ...ast, main: focusedMain });
   const allSections: Section[] = [...ast.header, ...ast.main, ...ast.footer];
   // CompiledResponsive object — the stylesheet is `.css`. The storefront
   // host (ThemeChrome) inlines it verbatim inside ThemeSurface; preview
@@ -206,9 +265,11 @@ export function ThemePreviewFrame({
   // so grids/rails render products instead of skeleton-spinning forever.
   const previewData: { bundle: WidgetDataBundle; map: WidgetDataMap } =
     useMemo(() => {
-      const bundle = collectWidgetRequests(ast);
+      // Focused rails request the focused collection, so bundle from the
+      // focused sections — otherwise rows would not match the heading.
+      const bundle = collectWidgetRequests({ ...ast, main: focusedMain });
       return { bundle, map: previewDemoMap(bundle, blueprintKey) };
-    }, [ast, blueprintKey]);
+    }, [ast, focusedMain, blueprintKey]);
 
   const { lang } = useLang();
   // Account center is context-gated: feed the merchant sections demo rows
@@ -239,18 +300,6 @@ export function ThemePreviewFrame({
     };
   }, [template, ast, previewData, lang, blueprintKey]);
 
-  // Envato-style demo browsing: mapped links switch the preview tab with
-  // demo content instead of escaping to live routes that 404 on hosts
-  // without a merchant. Unmapped links keep default browser behavior.
-  const onCanvasClick = (event: MouseEvent<HTMLDivElement>) => {
-    const anchor = (event.target as HTMLElement).closest?.("a[href]");
-    if (!anchor) return;
-    const next = previewTemplateForHref(anchor.getAttribute("href") ?? "");
-    if (!next) return;
-    event.preventDefault();
-    setTemplate(next);
-  };
-
   return (
     <div
       role="dialog"
@@ -271,7 +320,9 @@ export function ThemePreviewFrame({
           templates in place; actions and submits are blocked. ---- */}
       <div
         className="flex-1 overflow-auto bg-background"
-        onClickCapture={(event) => handlePreviewCanvasClick(event, setTemplate)}
+        onClickCapture={(event) =>
+          handlePreviewCanvasClick(event, setTemplate, setFocus)
+        }
         onSubmitCapture={handlePreviewCanvasSubmit}
       >
         <div className="mx-auto" style={{ maxWidth: "100%" }}>
@@ -319,9 +370,9 @@ export function ThemePreviewFrame({
                 ))}
 
               {/* main slot */}
-              {ast.main.length > 0 ? (
+              {focusedMain.length > 0 ? (
                 <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='hero_carousel']]:!mt-0 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
-                  {ast.main.map((section) => (
+                  {focusedMain.map((section) => (
                     <SectionRenderer
                       key={section.id}
                       section={section}
