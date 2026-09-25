@@ -419,14 +419,26 @@ function hasFooterLinks(raw: unknown): boolean {
 function seedFooterSitemapItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { title: string; links: string }[] = [];
+  const seeded: {
+    title: string;
+    title_bn?: string;
+    links: string;
+    links_bn?: string;
+  }[] = [];
   for (let i = 1; i <= 4; i += 1) {
     const title = s[`c${i}Title`];
     const links = s[`c${i}Links`];
+    const titleBn = s[`c${i}Title_bn`];
+    const linksBn = s[`c${i}Links_bn`];
     const t = typeof title === "string" ? title : "";
     const l = typeof links === "string" ? links : "";
     if (!t && !hasFooterLinks(l)) continue;
-    seeded.push({ title: t, links: l });
+    seeded.push({
+      title: t,
+      links: l,
+      ...(typeof titleBn === "string" && titleBn ? { title_bn: titleBn } : {}),
+      ...(typeof linksBn === "string" && linksBn ? { links_bn: linksBn } : {}),
+    });
   }
   if (seeded.length > 0) {
     node.settings = { ...node.settings, items: seeded };

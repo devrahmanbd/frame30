@@ -142,8 +142,10 @@ type HeroSlide = {
   subhead: string;
   subheadBn: string;
   ctaLabel: string;
+  ctaLabelBn: string;
   ctaUrl: string;
   caption: string;
+  captionBn: string;
 };
 
 /**
@@ -310,23 +312,19 @@ function HeroSkinSlide({
             data-part="caption"
             className="text-xs font-semibold tracking-widest text-primary fq-caps"
           >
-            {slide.caption}
-          </p>
-        )}
-        {slide.headlineBn && (
-          <p
-            data-hero-headline
-            lang="bn"
-            className="font-bangla-display mt-3 text-2xl font-bold leading-tight text-foreground"
-          >
-            {slide.headlineBn}
+            {locale === "bn" && slide.captionBn
+              ? slide.captionBn
+              : slide.caption}
           </p>
         )}
         <Heading
           data-hero-headline
+          {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
           className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl"
         >
-          {slide.headline}
+          {locale === "bn" && slide.headlineBn
+            ? slide.headlineBn
+            : slide.headline}
         </Heading>
         {slide.subhead && (
           <p
@@ -345,7 +343,9 @@ function HeroSkinSlide({
               href={slide.ctaUrl || "#"}
               className="inline-flex min-h-12 items-center whitespace-nowrap bg-foreground px-8 text-[11px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
             >
-              {slide.ctaLabel}
+              {locale === "bn" && slide.ctaLabelBn
+                ? slide.ctaLabelBn
+                : slide.ctaLabel}
             </a>
           )}
           {controls}
@@ -382,23 +382,19 @@ function HeroSkinSlide({
               data-part="caption"
               className="text-xs font-semibold tracking-widest text-background/80 fq-caps"
             >
-              {slide.caption}
-            </p>
-          )}
-          {slide.headlineBn && (
-            <p
-              data-hero-headline
-              lang="bn"
-              className="font-bangla-display mt-3 text-2xl font-bold leading-tight text-background"
-            >
-              {slide.headlineBn}
+              {locale === "bn" && slide.captionBn
+                ? slide.captionBn
+                : slide.caption}
             </p>
           )}
           <Heading
             data-hero-headline
+            {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
             className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-background sm:text-4xl lg:text-6xl"
           >
-            {slide.headline}
+            {locale === "bn" && slide.headlineBn
+              ? slide.headlineBn
+              : slide.headline}
           </Heading>
           {slide.subhead && (
             <p
@@ -417,7 +413,9 @@ function HeroSkinSlide({
                 href={slide.ctaUrl || "#"}
                 className="inline-flex min-h-12 sm:min-h-14 items-center whitespace-nowrap bg-background px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-foreground transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
-                {slide.ctaLabel}
+                {locale === "bn" && slide.ctaLabelBn
+                  ? slide.ctaLabelBn
+                  : slide.ctaLabel}
               </a>
             )}
             {controls}
@@ -443,8 +441,10 @@ const HeroCarousel: WidgetComponent = ({
     subhead: readString(row, "subhead"),
     subheadBn: readString(row, "subhead_bn"),
     ctaLabel: readString(row, "ctaLabel"),
+    ctaLabelBn: readString(row, "ctaLabel_bn"),
     ctaUrl: readString(row, "ctaUrl"),
     caption: readString(row, "caption"),
+    captionBn: readString(row, "caption_bn"),
   }));
   const autoAdvanceMs = int("autoAdvanceMs", 5000, 1000, 15000);
   const atmosphere = str("atmosphere") || "wash";
@@ -582,23 +582,19 @@ const HeroCarousel: WidgetComponent = ({
               data-part="caption"
               className="text-xs font-semibold tracking-widest text-primary fq-caps"
             >
-              {slide.caption}
-            </p>
-          )}
-          {slide.headlineBn && (
-            <p
-              data-hero-headline
-              lang="bn"
-              className="font-bangla-display mt-3 text-2xl font-bold leading-tight text-foreground sm:text-4xl"
-            >
-              {slide.headlineBn}
+              {locale === "bn" && slide.captionBn
+                ? slide.captionBn
+                : slide.caption}
             </p>
           )}
           <Heading
             data-hero-headline
+            {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
             className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl lg:text-6xl"
           >
-            {slide.headline}
+            {locale === "bn" && slide.headlineBn
+              ? slide.headlineBn
+              : slide.headline}
           </Heading>
           {slide.subhead && (
             <p
@@ -616,7 +612,9 @@ const HeroCarousel: WidgetComponent = ({
                 href={slide.ctaUrl || "#"}
                 className="inline-flex min-h-12 sm:min-h-14 items-center whitespace-nowrap bg-foreground px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
-                {slide.ctaLabel}
+                {locale === "bn" && slide.ctaLabelBn
+                  ? slide.ctaLabelBn
+                  : slide.ctaLabel}
               </a>
             )}
             {/* Dots + arrows live with the copy — never overlapping art or CTA */}

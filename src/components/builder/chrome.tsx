@@ -351,17 +351,29 @@ function DepartmentStrip({ str, int, data, Heading }: WidgetCtx) {
   );
 }
 
-function FooterSitemap({ str, section, link }: WidgetCtx) {
+function FooterSitemap({ str, section, link, locale }: WidgetCtx) {
   // Repeater-first (faq/trust_bar precedent): studio `items` rows win when
   // present, scalar c1..c4 pairs remain as the fallback for
   // theme-authored sections. parseLinkList reads both the legacy
-  // "Label|/href, …" and the newline row format.
+  // "Label|/href, …" and the newline row format. Items rows carry the same
+  // `_bn` twins as scalars so menu-claimed footers switch locale too.
   const itemRows = Array.isArray(section.props.items)
     ? section.props.items
-        .map((row) => ({
-          title: typeof row.title === "string" ? row.title : "",
-          links: parseLinkList(typeof row.links === "string" ? row.links : ""),
-        }))
+        .map((row) => {
+          const r = row as Record<string, unknown>;
+          const title = typeof r.title === "string" ? r.title : "";
+          const titleBn = typeof r.title_bn === "string" ? r.title_bn : "";
+          const links = parseLinkList(
+            typeof r.links === "string" ? r.links : "",
+          );
+          const linksBn = parseLinkList(
+            typeof r.links_bn === "string" ? r.links_bn : "",
+          );
+          return {
+            title: locale === "bn" && titleBn ? titleBn : title,
+            links: locale === "bn" && linksBn.length > 0 ? linksBn : links,
+          };
+        })
         .filter((col) => col.title || col.links.length > 0)
     : [];
   const columns =

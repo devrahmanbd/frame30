@@ -472,6 +472,30 @@ describe("footer_sitemap scalar-to-items migration", () => {
     ]);
   });
 
+  it("carries title_bn/links_bn twins when seeding items", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        footerDoc({
+          c1Title: "Shop",
+          c1Title_bn: "কেনাকাটা",
+          c1Links: "New in|/c/new-in",
+          c1Links_bn: "নতুন এসেছে|/c/new-in",
+          c2Title: "",
+          c2Links: "",
+        }),
+      ),
+    );
+    const settings = parsed?.root[0]?.settings as Record<string, unknown>;
+    expect(settings.items).toEqual([
+      {
+        title: "Shop",
+        title_bn: "কেনাকাটা",
+        links: "New in|/c/new-in",
+        links_bn: "নতুন এসেছে|/c/new-in",
+      },
+    ]);
+  });
+
   it("preserves author-edited items instead of re-seeding", () => {
     const parsed = parseStudioBody(
       serializeStudioBody(
