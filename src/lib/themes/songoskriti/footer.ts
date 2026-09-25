@@ -51,6 +51,8 @@ export type FallbackColumn = {
   title_bn: string;
   /** Newline rows in `Label|/href` form — every href is a verified route. */
   links: string;
+  /** Same rows with বাংলা labels; hrefs must match `links` exactly. */
+  links_bn: string;
 };
 
 /** Manual fallback when no dashboard menu claims the footer location. */
@@ -64,6 +66,12 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "Nakshi Kantha|/c/nakshi-kantha",
       "New arrivals|/c/new-in",
     ].join("\n"),
+    links_bn: [
+      "ঐতিহ্যবাহী হাতে বোনা|/c/heritage-handloom",
+      "উৎসব ও ঈদ|/c/eid-festive",
+      "নকশি কাঁথা|/c/nakshi-kantha",
+      "নতুন এসেছে|/c/new-in",
+    ].join("\n"),
   },
   {
     title: "Customer Care",
@@ -75,6 +83,13 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "Store locations|/pages/stores",
       "Contact us|/pages/contact",
     ].join("\n"),
+    links_bn: [
+      "সাইজ গাইড|/pages/size-guide",
+      "অর্ডার ট্র্যাকিং|/pages/track-order",
+      "রিটার্ন ও বদল|/pages/returns",
+      "স্টোরের ঠিকানা|/pages/stores",
+      "যোগাযোগ করুন|/pages/contact",
+    ].join("\n"),
   },
   {
     title: "Our Heritage",
@@ -85,6 +100,12 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "Fair trade|/pages/fair-trade",
       "Rewards|/pages/rewards",
     ].join("\n"),
+    links_bn: [
+      "মাস্টার তাঁতিরা|/blog/master-weavers",
+      "হাতে বোনা ঐতিহ্য|/blog/handloom-heritage",
+      "ন্যায্য বাণিজ্য|/pages/fair-trade",
+      "রিওয়ার্ডস|/pages/rewards",
+    ].join("\n"),
   },
   {
     title: "About",
@@ -92,6 +113,10 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
     // Browser-verified 2026-09-24: "Contact us" appeared twice in the
     // footer (Customer Care + About). It lives in Customer Care only now.
     links: ["Our story|/pages/about", "Rewards club|/pages/rewards"].join("\n"),
+    links_bn: [
+      "আমাদের গল্প|/pages/about",
+      "রিওয়ার্ডস ক্লাব|/pages/rewards",
+    ].join("\n"),
   },
 ];
 
@@ -140,15 +165,19 @@ export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
       c1Title: FALLBACK_COLUMNS[0]!.title,
       c1Title_bn: FALLBACK_COLUMNS[0]!.title_bn,
       c1Links: FALLBACK_COLUMNS[0]!.links,
+      c1Links_bn: FALLBACK_COLUMNS[0]!.links_bn,
       c2Title: FALLBACK_COLUMNS[1]!.title,
       c2Title_bn: FALLBACK_COLUMNS[1]!.title_bn,
       c2Links: FALLBACK_COLUMNS[1]!.links,
+      c2Links_bn: FALLBACK_COLUMNS[1]!.links_bn,
       c3Title: FALLBACK_COLUMNS[2]!.title,
       c3Title_bn: FALLBACK_COLUMNS[2]!.title_bn,
       c3Links: FALLBACK_COLUMNS[2]!.links,
+      c3Links_bn: FALLBACK_COLUMNS[2]!.links_bn,
       c4Title: FALLBACK_COLUMNS[3]!.title,
       c4Title_bn: FALLBACK_COLUMNS[3]!.title_bn,
       c4Links: FALLBACK_COLUMNS[3]!.links,
+      c4Links_bn: FALLBACK_COLUMNS[3]!.links_bn,
     }),
     s("payment_icons", {
       heading: PAYMENTS_HEADING,
