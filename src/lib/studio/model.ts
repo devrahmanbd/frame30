@@ -39,7 +39,17 @@ export type StudioNode = {
   collapsed?: boolean;
   /** Responsive visibility: devices the node is hidden on. */
   hiddenOn?: DeviceKey[];
+  /**
+   * Slot this top-level section belongs to. Only meaningful on root-level
+   * nodes; nested children ignore it. Absent = `"main"`, so every document
+   * written before slots keeps rendering exactly as before.
+   */
+  slot?: StudioSlot;
 };
+
+/** Header / main / footer slots — mirrors `SLOTS` in `builder-ast`. */
+export const STUDIO_SLOTS = ["header", "main", "footer"] as const;
+export type StudioSlot = (typeof STUDIO_SLOTS)[number];
 
 export type PageLayout = "default" | "canvas" | "full" | "theme" | "no-title";
 
@@ -62,7 +72,15 @@ export type StudioClass = { id: string; name: string };
 
 export type StudioDoc = {
   version: 2;
+  /** Main slot. Every pre-slot document lives here in full. */
   root: StudioNode[];
+  /**
+   * Page-level header/footer overrides. Absent/empty = no override.
+   * At render time the theme studio's chrome wins when it has content
+   * (see `resolveStudioSlots`); otherwise these apply.
+   */
+  header?: StudioNode[];
+  footer?: StudioNode[];
   page: PageSettings;
   /** Active responsive breakpoints for this document. */
   breakpoints?: DeviceKey[];
@@ -129,6 +147,206 @@ export function isContainerNode(node: StudioNode): boolean {
 }
 
 /* ------------------------------------------------------------------ */
+/* Slots: header / main / footer                                       */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Slot awareness for the page studio. `root` stays the canonical main slot
+ * so every pre-slot document keeps working; `header`/`footer` are optional
+ * page overrides while the theme studio owns the live chrome.
+ * Node-level `slot` is honoured when a root node carries one
+ * (`ast[slot]` semantics): root nodes tagged `header`/`footer` read as
+ * chrome, everything else reads as main.
+ */
+export function isStudioSlot(value: unknown): value is StudioSlot {
+  return value === "header" || value === "main" || value === "footer";
+}
+
+/** Unknown / absent slots read as `"main"` — never blank a canvas. */
+export function normalizeStudioSlot(value: unknown): StudioSlot {
+  return isStudioSlot(value) ? value : "main";
+}
+
+/** Slot a node belongs to; absent = `"main"`. */
+export function slotOfNode(node: StudioNode): StudioSlot {
+  return normalizeStudioSlot(node.slot);
+}
+
+/** Tag a node with its slot (top-level sections only). */
+export function withSlot(node: StudioNode, slot: StudioSlot): StudioNode {
+  return { ...node, slot };
+}
+
+export type StudioSlots = {
+  header: StudioNode[];
+  main: StudioNode[];
+  footer: StudioNode[];
+};
+
+/**
+ * Split a document into its three slots. `header`/`footer` arrays read as
+ * chrome regardless of node tags; `root` nodes tagged `header`/`footer`
+ * join them, the rest stay main.
+ */
+export function studioSlots(doc: StudioDoc): StudioSlots {
+  const header: StudioNode[] = [...(doc.header ?? [])];
+  const footer: StudioNode[] = [...(doc.footer ?? [])];
+  const main: StudioNode[] = [];
+  for (const node of doc.root) {
+    const slot = slotOfNode(node);
+    if (slot === "header") header.push(node);
+    else if (slot === "footer") footer.push(node);
+    else main.push(node);
+  }
+  return { header, main, footer };
+}
+
+/**
+ * Build a document from slots. `header`/`footer` are omitted when empty so
+ * old snapshots without those keys round-trip byte-identically.
+ */
+export function studioDocFromSlots(
+  slots: Partial<StudioSlots>,
+  page: PageSettings,
+  extra?: Partial<Omit<StudioDoc, "root" | "page" | "header" | "footer">>,
+): StudioDoc {
+  const doc: StudioDoc = {
+    version: STUDIO_VERSION,
+    root: [...(slots.main ?? [])],
+    page,
+    ...extra,
+  };
+  if (slots.header?.length) doc.header = [...slots.header];
+  if (slots.footer?.length) doc.footer = [...slots.footer];
+  return doc;
+}
+
+/**
+ * Resolve which chrome a page shows. The theme studio wins whenever it has
+ * header/footer content; otherwise the page's own overrides apply.
+ */
+export function resolveStudioSlots(
+  page: StudioDoc,
+  theme?: Pick<StudioDoc, "root" | "header" | "footer"> | null,
+): StudioSlots {
+  const mine = studioSlots(page);
+  if (!theme) return mine;
+  const themed = studioSlots({
+    version: STUDIO_VERSION,
+    root: theme.root ?? [],
+    header: theme.header,
+    footer: theme.footer,
+    page: page.page,
+  });
+  return {
+    header: themed.header.length > 0 ? themed.header : mine.header,
+    main: mine.main,
+    footer: themed.footer.length > 0 ? themed.footer : mine.footer,
+  };
+}
+
+/* ------------------------------------------------------------------ */
+/* Menu binding: widget → menu                                         */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Minimal widget→menu binding. Navigation widgets (`nav_menu`, `mega_menu`)
+ * carry `settings.menuId` (a menu id or handle from Content › Menus).
+ * Empty = manual `items` (back-compat). The canvas preview resolves the
+ * binding through `resolveMenuItems`; the storefront does the same lookup
+ * server-side.
+ */
+export const MENU_BOUND_WIDGETS = ["nav_menu", "mega_menu"] as const;
+
+export function isMenuBoundWidget(el: string): boolean {
+  return (MENU_BOUND_WIDGETS as readonly string[]).includes(el);
+}
+
+export type StudioMenuItem = { label: string; href: string };
+
+/**
+ * Structural menu shape the preview resolver accepts. Compatible with
+ * `NavMenu` (flat `MenuItem[]` with `label`/`url`/`parentId`/`position`)
+ * without importing the menus module.
+ */
+export type StudioMenuSource = {
+  id: string;
+  handle?: string | null;
+  name?: string | null;
+  items: readonly {
+    label: string;
+    url?: string;
+    href?: string;
+    parentId?: string | null;
+    position?: number;
+  }[];
+};
+
+/** Bound menu id/handle, or null when the widget uses manual items. */
+export function menuBindingOf(node: StudioNode): string | null {
+  const raw = node.settings.menuId ?? node.settings.menu;
+  if (typeof raw !== "string") return null;
+  const id = raw.trim();
+  return id ? id : null;
+}
+
+/** Manual `items` fallback — mirrors the canvas renderer rows. */
+export function staticMenuItems(node: StudioNode): StudioMenuItem[] {
+  const raw = node.settings.items;
+  if (!Array.isArray(raw)) return [];
+  const out: StudioMenuItem[] = [];
+  for (const entry of raw) {
+    if (typeof entry === "string") {
+      if (entry.trim()) out.push({ label: entry.trim(), href: "#" });
+      continue;
+    }
+    if (!entry || typeof entry !== "object") continue;
+    const row = entry as Record<string, unknown>;
+    const label =
+      typeof row.label === "string"
+        ? row.label
+        : typeof row.text === "string"
+          ? row.text
+          : "";
+    if (!label.trim()) continue;
+    const href =
+      typeof row.href === "string"
+        ? row.href
+        : typeof row.url === "string"
+          ? row.url
+          : "#";
+    out.push({ label: label.trim(), href: href || "#" });
+  }
+  return out;
+}
+
+/**
+ * Resolve a widget's bound menu to preview items. Returns null when unbound
+ * or when the bound menu is not among `menus` (caller falls back to
+ * `staticMenuItems`); returns the (possibly empty) item list when bound and
+ * found. Top-level entries only, in position order.
+ */
+export function resolveMenuItems(
+  node: StudioNode,
+  menus: readonly StudioMenuSource[] | null | undefined,
+): StudioMenuItem[] | null {
+  const binding = menuBindingOf(node);
+  if (!binding || !menus) return null;
+  const menu = menus.find(
+    (candidate) => candidate.id === binding || candidate.handle === binding,
+  );
+  if (!menu) return null;
+  return [...menu.items]
+    .filter((item) => !item.parentId)
+    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+    .map((item) => ({
+      label: item.label.trim(),
+      href: (item.href ?? item.url ?? "#") || "#",
+    }))
+    .filter((item) => item.label.length > 0);
+}
+
+/* ------------------------------------------------------------------ */
 /* Serialisation                                                       */
 /* ------------------------------------------------------------------ */
 
@@ -154,6 +372,7 @@ function sanitiseNode(input: unknown, depth = 0): StudioNode | null {
   if (typeof raw.name === "string") node.name = raw.name;
   if (raw.collapsed === true) node.collapsed = true;
   if (Array.isArray(raw.hiddenOn)) node.hiddenOn = raw.hiddenOn as DeviceKey[];
+  if (isStudioSlot(raw.slot)) node.slot = raw.slot;
   if (Array.isArray(raw.children)) {
     const children = raw.children
       .map((child) => sanitiseNode(child, depth + 1))
@@ -200,14 +419,26 @@ function hasFooterLinks(raw: unknown): boolean {
 function seedFooterSitemapItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { title: string; links: string }[] = [];
+  const seeded: {
+    title: string;
+    title_bn?: string;
+    links: string;
+    links_bn?: string;
+  }[] = [];
   for (let i = 1; i <= 4; i += 1) {
     const title = s[`c${i}Title`];
     const links = s[`c${i}Links`];
+    const titleBn = s[`c${i}Title_bn`];
+    const linksBn = s[`c${i}Links_bn`];
     const t = typeof title === "string" ? title : "";
     const l = typeof links === "string" ? links : "";
     if (!t && !hasFooterLinks(l)) continue;
-    seeded.push({ title: t, links: l });
+    seeded.push({
+      title: t,
+      links: l,
+      ...(typeof titleBn === "string" && titleBn ? { title_bn: titleBn } : {}),
+      ...(typeof linksBn === "string" && linksBn ? { links_bn: linksBn } : {}),
+    });
   }
   if (seeded.length > 0) {
     node.settings = { ...node.settings, items: seeded };
@@ -223,16 +454,29 @@ function seedFooterSitemapItems(node: StudioNode): void {
 function seedSpecItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { group: string; label: string; value: string }[] = [];
+  const seeded: {
+    group: string;
+    group_bn?: string;
+    label: string;
+    label_bn?: string;
+    value: string;
+    value_bn?: string;
+  }[] = [];
   for (let i = 1; i <= 6; i += 1) {
     const label = s[`r${i}Label`];
     if (typeof label !== "string" || !label.trim()) continue;
     const group = s[`r${i}Group`];
     const value = s[`r${i}Value`];
+    const groupBn = s[`r${i}Group_bn`];
+    const labelBn = s[`r${i}Label_bn`];
+    const valueBn = s[`r${i}Value_bn`];
     seeded.push({
       group: typeof group === "string" ? group : "",
       label,
       value: typeof value === "string" ? value : "",
+      ...(typeof groupBn === "string" && groupBn ? { group_bn: groupBn } : {}),
+      ...(typeof labelBn === "string" && labelBn ? { label_bn: labelBn } : {}),
+      ...(typeof valueBn === "string" && valueBn ? { value_bn: valueBn } : {}),
     });
   }
   if (seeded.length > 0) {
@@ -250,14 +494,23 @@ function seedSpecItems(node: StudioNode): void {
 function seedQaItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { question: string; answer: string }[] = [];
+  const seeded: {
+    question: string;
+    question_bn?: string;
+    answer: string;
+    answer_bn?: string;
+  }[] = [];
   for (let i = 1; i <= 3; i += 1) {
     const q = s[`q${i}`];
     const a = s[`a${i}`];
     if (typeof q === "string" && q) {
+      const qBn = s[`q${i}_bn`];
+      const aBn = s[`a${i}_bn`];
       seeded.push({
         question: q,
         answer: typeof a === "string" ? a : "",
+        ...(typeof qBn === "string" && qBn ? { question_bn: qBn } : {}),
+        ...(typeof aBn === "string" && aBn ? { answer_bn: aBn } : {}),
       });
     }
   }
@@ -274,10 +527,16 @@ function seedQaItems(node: StudioNode): void {
 function seedAnnouncementItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { text: string }[] = [];
+  const seeded: { text: string; text_bn?: string }[] = [];
   for (let i = 1; i <= 3; i += 1) {
     const m = s[`m${i}`];
-    if (typeof m === "string" && m.trim()) seeded.push({ text: m });
+    if (typeof m === "string" && m.trim()) {
+      const mBn = s[`m${i}_bn`];
+      seeded.push({
+        text: m,
+        ...(typeof mBn === "string" && mBn ? { text_bn: mBn } : {}),
+      });
+    }
   }
   if (seeded.length > 0) {
     node.settings = { ...node.settings, items: seeded };
@@ -295,17 +554,30 @@ function seedHeroItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
   const text = (v: unknown): string => (typeof v === "string" ? v : "");
+  const twin = (key: string): Record<string, string> => {
+    const v = s[`${key}_bn`];
+    return typeof v === "string" && v ? { [`${key}_bn`]: v } : {};
+  };
   const slide0 = {
     heading: text(s.heading),
     image: text(s.image),
     subheading: text(s.subheading),
     ctaLabel: text(s.ctaLabel),
     ctaHref: text(s.ctaHref),
+    ...twin("heading"),
+    ...twin("subheading"),
+    ...twin("ctaLabel"),
   };
-  const slideN = (n: 2 | 3): { heading: string; image: string } | null => {
+  const slideN = (n: 2 | 3): Record<string, string> | null => {
     const heading = text(s[`s${n}Heading`]);
     const image = text(s[`s${n}Image`]);
-    return heading || image ? { heading, image } : null;
+    if (!heading && !image) return null;
+    const v = s[`s${n}Heading_bn`];
+    return {
+      heading,
+      image,
+      ...(typeof v === "string" && v ? { heading_bn: v } : {}),
+    };
   };
   const ctaLabel = text(s.ctaLabel);
   const ctaHref = text(s.ctaHref);
@@ -314,8 +586,22 @@ function seedHeroItems(node: StudioNode): void {
   const s3 = slideN(3);
   if (slide0.heading || slide0.image || s2 || s3) {
     seeded.push(slide0);
-    if (s2) seeded.push({ ...s2, subheading: "", ctaLabel, ctaHref });
-    if (s3) seeded.push({ ...s3, subheading: "", ctaLabel, ctaHref });
+    if (s2)
+      seeded.push({
+        ...s2,
+        subheading: "",
+        ctaLabel,
+        ctaHref,
+        ...twin("ctaLabel"),
+      });
+    if (s3)
+      seeded.push({
+        ...s3,
+        subheading: "",
+        ctaLabel,
+        ctaHref,
+        ...twin("ctaLabel"),
+      });
     node.settings = { ...node.settings, items: seeded };
   }
 }
@@ -328,16 +614,23 @@ function seedHeroItems(node: StudioNode): void {
 function seedLookbookItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { image: string; alt: string; href: string }[] = [];
+  const seeded: {
+    image: string;
+    alt: string;
+    alt_bn?: string;
+    href: string;
+  }[] = [];
   for (let i = 1; i <= 4; i += 1) {
     const image = s[`i${i}Image`];
     if (typeof image === "string" && image) {
       const alt = s[`i${i}Alt`];
+      const altBn = s[`i${i}Alt_bn`];
       const href = s[`i${i}Href`];
       seeded.push({
         image,
         alt: typeof alt === "string" ? alt : "",
         href: typeof href === "string" ? href : "",
+        ...(typeof altBn === "string" && altBn ? { alt_bn: altBn } : {}),
       });
     }
   }
@@ -354,16 +647,28 @@ function seedLookbookItems(node: StudioNode): void {
 function seedTrustItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { icon: string; title: string; body: string }[] = [];
+  const seeded: {
+    icon: string;
+    title: string;
+    title_bn?: string;
+    body: string;
+    body_bn?: string;
+  }[] = [];
   for (let i = 1; i <= 4; i += 1) {
     const title = s[`i${i}Title`];
     if (typeof title === "string" && title) {
       const icon = s[`i${i}Icon`];
       const body = s[`i${i}Body`];
+      const titleBn = s[`i${i}Title_bn`];
+      const bodyBn = s[`i${i}Body_bn`];
       seeded.push({
         icon: typeof icon === "string" ? icon : "",
         title,
         body: typeof body === "string" ? body : "",
+        ...(typeof titleBn === "string" && titleBn
+          ? { title_bn: titleBn }
+          : {}),
+        ...(typeof bodyBn === "string" && bodyBn ? { body_bn: bodyBn } : {}),
       });
     }
   }
@@ -379,9 +684,21 @@ export function parseStudioDoc(input: unknown): StudioDoc | null {
   const root = raw.root
     .map((node) => sanitiseNode(node))
     .filter((node): node is StudioNode => node !== null);
+  const header = Array.isArray(raw.header)
+    ? raw.header
+        .map((node) => sanitiseNode(node))
+        .filter((node): node is StudioNode => node !== null)
+    : undefined;
+  const footer = Array.isArray(raw.footer)
+    ? raw.footer
+        .map((node) => sanitiseNode(node))
+        .filter((node): node is StudioNode => node !== null)
+    : undefined;
   return {
     version: STUDIO_VERSION,
     root,
+    ...(header !== undefined ? { header } : {}),
+    ...(footer !== undefined ? { footer } : {}),
     page: { ...defaultPageSettings(), ...(raw.page ?? {}) },
     breakpoints: Array.isArray(raw.breakpoints)
       ? (raw.breakpoints as DeviceKey[])
@@ -456,9 +773,13 @@ export function sectionsToStudioNodes(input: unknown): StudioNode[] {
  * content as a theme global block). Mirrors sectionsToStudioNodes; device
  * visibility folds back onto breakpoints when any mapped device is hidden.
  */
-export function studioNodesToSections(
-  nodes: StudioNode[],
-): { id: string; type: string; props: Record<string, unknown>; children?: unknown[]; hidden?: string[] }[] {
+export function studioNodesToSections(nodes: StudioNode[]): {
+  id: string;
+  type: string;
+  props: Record<string, unknown>;
+  children?: unknown[];
+  hidden?: string[];
+}[] {
   return nodes.map((node) => {
     const hidden = (node.hiddenOn ?? []).flatMap(
       (device) => DEVICE_TO_BREAKPOINT[device] ?? [],
@@ -636,6 +957,30 @@ function widgetHtml(node: StudioNode): string {
         : "";
     case "button":
       return `<p style="${align}"><a href="${safeHref(s.href)}" class="fq-btn fq-btn-${str(s.variant, "primary")}">${escapeHtml(str(s.label, "Button"))}</a></p>`;
+    case "whatsapp_button": {
+      const phone = str(s.phone_number).replace(/[^0-9]/g, "");
+      if (!phone) return "";
+      const greet = str(
+        s.greeting_message,
+        "Hello! I am interested in your products.",
+      );
+      const href = `https://wa.me/${phone}?text=${encodeURIComponent(greet)}`;
+      const label = escapeHtml(str(s.label, "Chat on WhatsApp"));
+      const size = str(s.size, "md");
+      const dim = size === "sm" ? 44 : size === "lg" ? 64 : 56;
+      const glyph = `<svg width="${dim - 16}" height="${dim - 16}" viewBox="0 0 512 512" fill="none" aria-hidden="true"><path fill="#b3b3b3" d="m143.8 431.2l7.7 4.5c32.2 19.1 69.2 29.2 106.8 29.2h.1c115.7 0 209.8-94.1 209.9-209.8c0-56.1-21.8-108.8-61.4-148.4c-39.3-39.5-92.7-61.7-148.4-61.5c-115.8 0-209.9 94.1-210 209.8c-.1 39.5 11.1 78.2 32.1 111.7l5 7.9L64.4 452zM3.7 512l35.8-130.8C17.5 342.9 5.8 299.5 5.9 255C5.9 115.8 119.2 2.6 258.4 2.6c67.5 0 130.9 26.3 178.6 74s73.9 111.1 73.9 178.6c-.1 139.2-113.3 252.4-252.5 252.4h-.1c-42.3 0-83.8-10.6-120.7-30.7z"></path><path fill="#fff" d="M1.1 509.4L37 378.6C14.8 340.2 3.2 296.7 3.3 252.4C3.3 113.2 116.6 0 255.8 0c67.5 0 130.9 26.3 178.6 74s73.9 111.1 73.9 178.6C508.2 391.8 394.9 505 255.8 505h-.1c-42.3 0-83.8-10.6-120.7-30.7z"></path><path fill="#25D366" d="M255.8 42.6c-115.8 0-209.9 94.1-210 209.8c0 39.5 11.2 78.2 32.2 111.7l5 7.9l-21.2 77.4l79.4-20.8l7.7 4.5c32.2 19.1 69.2 29.2 106.8 29.2h.1c115.7 0 209.8-94.1 209.9-209.8c.2-55.7-21.9-109.1-61.4-148.4c-39.3-39.4-92.8-61.6-148.5-61.5"></path><path fill="#fff" fill-rule="evenodd" d="M192.7 146.9c-4.7-10.5-9.7-10.7-14.2-10.9l-12.1-.1c-4.2 0-11 1.6-16.8 7.9s-22.1 21.6-22.1 52.6s22.6 61 25.8 65.2s43.6 69.9 107.8 95.2c53.3 21 64.1 16.8 75.7 15.8c11.6-1.1 37.3-15.3 42.6-30s5.3-27.4 3.7-30s-5.8-4.2-12.1-7.4s-37.3-18.4-43.1-20.5s-10-3.2-14.2 3.2c-4.2 6.3-16.3 20.5-20 24.7s-7.4 4.7-13.7 1.6c-6.3-3.2-26.6-9.8-50.7-31.3c-18.8-16.7-31.4-37.4-35.1-43.7s-.4-9.7 2.8-12.9c2.8-2.8 6.3-7.4 9.5-11.1s4.2-6.3 6.3-10.5s1.1-7.9-.5-11.1c-1.8-3-14-34.2-19.6-46.7"></path></svg>`;
+      if (str(s.style, "bubble") === "bar") {
+        const pad =
+          size === "sm"
+            ? "8px 14px"
+            : size === "lg"
+              ? "14px 24px"
+              : "11px 20px";
+        const fs = size === "sm" ? 14 : size === "lg" ? 18 : 16;
+        return `<p style="${align}"><a href="${href}" target="_blank" rel="noopener" aria-label="${label}" style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;border-radius:999px;padding:${pad};font-size:${fs}px;font-weight:600;text-decoration:none">${glyph}<span>${label}</span></a></p>`;
+      }
+      return `<p style="${align}"><a href="${href}" target="_blank" rel="noopener" aria-label="${label}" style="display:inline-flex;width:${dim}px;height:${dim}px;border-radius:50%;background:transparent;filter:drop-shadow(0 4px 14px rgba(0,0,0,.25))">${glyph}</a></p>`;
+    }
     case "divider":
       return `<hr style="border:0;border-top:1px solid rgba(0,0,0,.12)" />`;
     case "spacer":
@@ -684,7 +1029,8 @@ function nodeHtml(node: StudioNode): string {
     const s = node.settings;
     const n = Math.min(4, Math.max(1, num(s.columns, 2)));
     const maxW = str(s.maxW, "container");
-    const width = maxW === "full" ? "none" : maxW === "narrow" ? "768px" : "1140px";
+    const width =
+      maxW === "full" ? "none" : maxW === "narrow" ? "768px" : "1140px";
     const bg = str(s.bg, "none");
     const outer = [
       bg === "surface"
@@ -723,7 +1069,10 @@ function nodeHtml(node: StudioNode): string {
 }
 
 export function renderStudioHtml(doc: StudioDoc): string {
-  return doc.root.map(nodeHtml).join("\n");
+  const slots = studioSlots(doc);
+  return [...slots.header, ...slots.main, ...slots.footer]
+    .map(nodeHtml)
+    .join("\n");
 }
 
 /** Plain-text projection, used for excerpts and search indexing. */
@@ -749,7 +1098,9 @@ export function studioPlainText(doc: StudioDoc): string {
       if (node.children) walk(node.children);
     }
   };
+  walk(doc.header ?? []);
   walk(doc.root);
+  walk(doc.footer ?? []);
   return out.join("\n");
 }
 

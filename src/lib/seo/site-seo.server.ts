@@ -35,9 +35,11 @@ export type SiteSeoBundle = {
 function toRedirect(row: any): RedirectRow {
   return {
     id: row.id,
-    sourcePath: row.source_path ?? "",
-    targetPath: row.target_path ?? "",
-    code: Number(row.code ?? 301),
+    // Canonical `from_path/to_path/status_code` first, legacy
+    // `source_path/target_path/code` as fallback while old rows backfill.
+    sourcePath: row.from_path ?? row.source_path ?? "",
+    targetPath: row.to_path ?? row.target_path ?? "",
+    code: Number(row.status_code ?? row.code ?? 301),
     isActive: row.is_active !== false,
     hits: Number(row.hits ?? 0),
     lastHitAt: row.last_hit_at ?? null,
@@ -139,12 +141,19 @@ export async function upsertRedirect(
 ): Promise<RedirectRow> {
   const issue = validateRedirect(input.sourcePath, input.targetPath);
   if (issue) throw new Error(`redirect.${issue}`);
+  const fromPath = normalisePath(input.sourcePath);
+  const toPath = /^https?:\/\//i.test(input.targetPath.trim())
+    ? input.targetPath.trim()
+    : normalisePath(input.targetPath);
   const row = {
     merchant_id: merchantId,
-    source_path: normalisePath(input.sourcePath),
-    target_path: /^https?:\/\//i.test(input.targetPath.trim())
-      ? input.targetPath.trim()
-      : normalisePath(input.targetPath),
+    // Canonical columns; legacy mirrors kept so pre-backfill readers stay
+    // correct until the table is unified.
+    from_path: fromPath,
+    source_path: fromPath,
+    to_path: toPath,
+    target_path: toPath,
+    status_code: input.code,
     code: input.code,
     is_active: input.isActive,
     note: input.note?.slice(0, 200) ?? null,
@@ -159,7 +168,7 @@ export async function upsertRedirect(
         .single()
     : loose(db)
         .from("url_redirects")
-        .upsert(row, { onConflict: "merchant_id,source_path" })
+        .upsert(row, { onConflict: "merchant_id,from_path" })
         .select("*")
         .single();
   const { data, error } = await query;

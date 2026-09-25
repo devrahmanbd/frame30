@@ -10,17 +10,13 @@ describe("storeHref", () => {
     expect(storeHref("", "product", "saree")).toBe("/p/saree");
     expect(storeHref("", "collection", "eid")).toBe("/c/eid");
     expect(storeHref("", "post", "hello")).toBe("/blog/hello");
-    expect(storeHref("", "category", "womens")).toBe(
-      "/search?category=womens",
-    );
+    expect(storeHref("", "category", "womens")).toBe("/search?category=womens");
     expect(storeHref("", "brand", "Aarong")).toBe("/search?q=Aarong");
   });
 
   it("builds path-shape links for path hosts", () => {
     const base = "/store/akira";
-    expect(storeHref(base, "product", "saree")).toBe(
-      "/store/akira/p/saree",
-    );
+    expect(storeHref(base, "product", "saree")).toBe("/store/akira/p/saree");
     expect(storeHref(base, "collection", "eid")).toBe("/store/akira/c/eid");
     expect(storeHref(base, "category", "womens")).toBe(
       "/store/akira/search?category=womens",

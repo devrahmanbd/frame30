@@ -13,7 +13,7 @@ import {
   Phone,
   MapPin,
   Clock,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { AnimatedIcon } from "@/components/public/AnimatedIcon";
 

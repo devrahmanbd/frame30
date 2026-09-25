@@ -534,7 +534,9 @@ export async function loadOpsSignals(
   // GlitchTip: count unresolved issues from the last hour.
   if (urls.glitchtip) {
     const token = process.env.GLITCHTIP_API_TOKEN;
-    const headers = token ? { authorization: `Bearer ${token}` } : {};
+    const headers: Record<string, string> = token
+      ? { authorization: `Bearer ${token}` }
+      : {};
     const issues = await getJson(
       `${urls.glitchtip}/api/0/issues/?query=&statsPeriod=1h&short=1`,
       headers,

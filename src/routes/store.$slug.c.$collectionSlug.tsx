@@ -6,13 +6,16 @@
  * and keeps a plain grid as the fallback when nothing is published.
  */
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useLang } from "@/lib/i18n";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreImage } from "@/components/store/StoreImage";
 import { getStoreCollection } from "@/lib/storefront.functions";
 import { fmtMinor } from "@/lib/money";
-import { useLang } from "@/lib/i18n";
 import { flattenAst } from "@/lib/builder-ast";
+import { rebaseMenuHref } from "@/lib/menus/menu";
+import { CollectionView } from "@/components/store/CollectionView";
 
 export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
   loader: async ({ params }) => {
@@ -49,7 +52,9 @@ export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
       ],
     };
   },
-  component: CollectionPage,
+  component: function RouteComponent() {
+    return <CollectionView data={Route.useLoaderData()} />;
+  },
   notFoundComponent: () => (
     <main className="mx-auto max-w-xl px-4 py-24 text-center">
       <h1 className="text-2xl font-semibold">Collection not found</h1>
@@ -59,20 +64,57 @@ export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
 
 function CollectionPage() {
   const { t } = useLang();
-  const { merchant, collection, products, settings, ast, tokens, siteKit, menus } =
-    Route.useLoaderData();
+  const {
+    merchant,
+    collection,
+    products,
+    settings,
+    ast,
+    tokens,
+    siteKit,
+    menus,
+    installedPlugins,
+  } = Route.useLoaderData();
   const slug = merchant.slug;
+  const categories = menus?.header?.slice(0, 10) ?? [];
 
   const grid = (
     <>
-      <h1 className="font-bangla-display text-2xl font-semibold sm:text-3xl">
-        {collection.name}
-      </h1>
-      {collection.description && (
-        <p className="mt-2 max-w-2xl text-muted-foreground">
-          {collection.description}
-        </p>
+      <div className="text-center md:text-left mb-10">
+        <h1 className="font-bangla-display text-3xl font-semibold sm:text-4xl">
+          {collection.name}
+        </h1>
+        {collection.description && (
+          <p className="mt-3 max-w-2xl text-muted-foreground md:mx-0 mx-auto">
+            {collection.description}
+          </p>
+        )}
+      </div>
+
+      {categories.length > 0 && (
+        <nav
+          aria-label="Categories"
+          className="mb-10 overflow-x-auto scrollbar-none border-b border-border/60 pb-4"
+        >
+          <ul className="flex items-center gap-8 min-w-max">
+            {categories.map((node) => {
+              if (!node.label) return null;
+              const href = rebaseMenuHref(node.url || "#", `/store/${slug}`);
+              return (
+                <li key={node.id}>
+                  <a
+                    href={href}
+                    className="text-[13px] font-semibold tracking-wider fq-caps text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {node.label}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
       )}
+
       {products.length === 0 ? (
         <p className="mt-6 text-muted-foreground">
           {t(
@@ -81,7 +123,7 @@ function CollectionPage() {
           )}
         </p>
       ) : (
-        <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
           {products.map((p) => {
             const variants = p.product_variants ?? [];
             const min = variants.length
@@ -95,30 +137,30 @@ function CollectionPage() {
                 <Link
                   to="/store/$slug/p/$productSlug"
                   params={{ slug, productSlug: p.slug }}
-                  className="group block overflow-hidden rounded-fq-lg border border-border bg-card transition-transform duration-200 hover:-translate-y-0.5"
+                  className="group block"
                 >
-                  <div className="aspect-square bg-muted">
+                  <div className="aspect-[3/4] w-full overflow-hidden bg-muted/30">
                     <StoreImage
                       image={p.image ?? null}
                       fallbackSrc={p.image_url}
                       alt={p.title}
                       seed={p.id}
                       sizes="(max-width: 768px) 50vw, 300px"
-                      className="size-full object-cover"
+                      className="size-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                     />
                   </div>
-                  <div className="p-3">
-                    <h2 className="line-clamp-2 text-sm font-medium">
+                  <div className="mt-4">
+                    <h2 className="text-[13px] font-medium leading-relaxed text-foreground/90">
                       {p.title}
                     </h2>
-                    <p className="money mt-1 text-sm font-semibold">
+                    <p className="money mt-1 text-[13px] font-semibold tracking-wide">
                       {fmtMinor(min, merchant.currency_code)}
                     </p>
                     <p
-                      className={`mt-1 text-xs ${inStock ? "text-success-foreground" : "text-danger-foreground"}`}
+                      className={`mt-1.5 text-[11px] font-medium fq-caps tracking-widest ${inStock ? "text-muted-foreground" : "text-danger-foreground"}`}
                     >
                       {inStock
-                        ? t("In stock", "স্টকে আছে")
+                        ? t("Available", "স্টকে আছে")
                         : t("Out of stock", "স্টক নেই")}
                     </p>
                   </div>
@@ -141,25 +183,27 @@ function CollectionPage() {
     : false;
 
   return (
-    <ThemeChrome
-      template="collection"
-      ast={ast}
-      tokens={tokens}
-      storeSlug={slug}
-      merchantId={merchant.id}
-      siteKit={siteKit}
-      ownsPrimary
-      chrome={
-        <StoreHeader
-          slug={slug}
-          name={merchant.name}
-          tagline={settings?.tagline}
-          menus={menus}
-        />
-      }
-      productSlot={grid}
-      {...(hasProductGrid ? {} : { collectionSlot: grid })}
-      fallback={grid}
-    />
+    <PluginLayer plugins={installedPlugins}>
+      <ThemeChrome
+        template="collection"
+        ast={ast}
+        tokens={tokens}
+        storeSlug={slug}
+        merchantId={merchant.id}
+        siteKit={siteKit}
+        ownsPrimary
+        chrome={
+          <StoreHeader
+            slug={slug}
+            name={merchant.name}
+            tagline={settings?.tagline}
+            menus={menus}
+          />
+        }
+        productSlot={grid}
+        {...(hasProductGrid ? {} : { collectionSlot: grid })}
+        fallback={grid}
+      />
+    </PluginLayer>
   );
 }

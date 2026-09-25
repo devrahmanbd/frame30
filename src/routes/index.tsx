@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PublicShell } from "@/components/public/PublicShell";
-import { StorefrontPage } from "@/components/store/StorefrontPage";
 import { StoreHomepage } from "@/components/store/StoreHomepage";
+import { StoreWelcome } from "@/components/store/StoreWelcome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { getLanding } from "@/lib/landing.functions";
 import { getSiteContext } from "@/lib/site-seo.functions";
 import {
@@ -182,7 +183,19 @@ function PlatformHome() {
         />
       );
     }
-    return <StorefrontPage data={data.storefront} />;
+    // Themeless custom host: welcome fallback still carries the plugin layer
+    // so footer mounts (chat bubbles etc.) render without a theme — same
+    // wrap pattern as store.$slug.index.tsx.
+    return (
+      <PluginLayer plugins={data.storefront.installedPlugins ?? []}>
+        <StoreWelcome
+          slug={data.host.merchantSlug}
+          name={data.storefront.merchant.name}
+          custom
+          tokens={data.storefront.tokens}
+        />
+      </PluginLayer>
+    );
   }
 
   return (

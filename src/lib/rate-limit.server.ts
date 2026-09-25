@@ -657,3 +657,8 @@ export function applyTierMultiplier(
     windowSeconds: bucket.windowSeconds,
   };
 }
+
+/** Reset the rate limit circuit breaker (for test isolation). */
+export function resetRateLimitCircuitBreaker(): void {
+  circuitBreaker.clear();
+}

@@ -14,22 +14,50 @@ import {
 } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { DEVICE_PRESETS } from "@/lib/responsive";
 import { useStudio } from "@/lib/studio/useStudio";
 import {
   detectStudioPlatform,
   isTypingElement,
   matchStudioShortcut,
-  STUDIO_SHORTCUTS,
+  resolveStudioShortcutId,
   type StudioPlatform,
+  type StudioShortcutId,
 } from "@/lib/studio/shortcuts";
 import { BREAKPOINT_BY_KEY, type DeviceKey } from "@/lib/studio/responsive";
-import { cloneNode, flatten, type DropTarget } from "@/lib/studio/tree";
+import {
+  cloneNode,
+  findNode,
+  flatten,
+  parentOf,
+  siblingsOf,
+  updateNode,
+  type DropTarget,
+} from "@/lib/studio/tree";
 import { widgetLabel } from "@/lib/studio/catalog";
 import {
   isContainerNode,
+  resolveStudioSlots,
+  studioSlots,
+  withSlot,
   type StudioDoc,
+  type StudioMenuSource,
   type StudioNode,
+  type StudioSlot,
 } from "@/lib/studio/model";
+import { appBlockNodeForPlugin, type PluginTrayEntry } from "./plugin-tray";
+
+/**
+ * Plugin element accepted on the seam. `pluginName` stays optional so both
+ * shapes fit: the shell's minimal `{ key, label }` entries and the full
+ * `PluginTrayEntry` rows from `plugin-tray.ts`.
+ */
+export type StudioBuilderPluginEntry = Pick<
+  PluginTrayEntry,
+  "key" | "label"
+> & {
+  pluginName?: string;
+};
 import {
   builtInTemplates,
   instantiate,
@@ -120,6 +148,31 @@ export type StudioBuilderProps = {
    * owns the tab strip.
    */
   sideTab?: { id: string; label: string; content: ReactNode } | null;
+  /**
+   * Real menus for the widget→menu binding (`settings.menuId`). Threaded
+   * through the canvas into each widget renderer; bound navigation widgets
+   * preview the resolved menu, everything else falls back to manual items.
+   * Accepts the shell's spread until every caller provides it.
+   */
+  menus?: readonly StudioMenuSource[] | null;
+  /**
+   * Theme chrome for slot resolution. When present, the header/footer tabs
+   * resolve page overrides against the theme studio's chrome (theme wins
+   * when it has content); absent behaves exactly as before.
+   */
+  themeDoc?: Pick<StudioDoc, "root" | "header" | "footer"> | null;
+  /**
+   * Working restore for the History dialog's revisions tab (the shell owns
+   * the RPC). Falls back to the informational toast when unset.
+   */
+  onRestoreRevision?: ((revisionId: string) => void) | null;
+  /**
+   * Plugin-contributed elements for the Elements rail. The shell spreads
+   * these (its `StudioPluginEntry`) alongside its own restore callback;
+   * entries render as an install-free Plugins group that inserts an
+   * `app-block` node pre-pointed at the namespaced widget key.
+   */
+  pluginEntries?: readonly StudioBuilderPluginEntry[] | null;
 };
 
 /** Elements panel shared by the plain and tabbed left-panel layouts. */
@@ -129,31 +182,278 @@ function ElementsPanelInner({
   dragWidget,
   globals,
   onInsertGlobal,
+  addParent,
+  pluginEntries,
+  onAddPlugin,
 }: {
   studio: ReturnType<typeof useStudio>;
   templates: StudioTemplate[];
   dragWidget: { current: string | null };
   globals: { id: string; name: string }[];
   onInsertGlobal: (id: string) => void;
+  /** Container-scoped add: widget clicks land inside this node when set. */
+  addParent?: string | null;
+  pluginEntries?: readonly StudioBuilderPluginEntry[];
+  onAddPlugin?: (key: string) => void;
 }) {
   return (
-    <ElementsPanel
-      onAdd={(key) => studio.addWidget(key)}
-      onDragWidget={(key) => {
-        dragWidget.current = key;
-      }}
-      savedBlocks={templates
-        .filter((t) => t.kind === "mine")
-        .map((t) => ({ id: t.id, name: t.name }))}
-      onInsertSaved={(id) => {
-        const template = templates.find((t) => t.id === id);
-        if (template)
-          instantiate(template).forEach((node) => studio.addNode(node));
-      }}
-      globals={globals}
-      onInsertGlobal={onInsertGlobal}
-    />
+    <>
+      <ElementsPanel
+        onAdd={(key) =>
+          studio.addWidget(
+            key,
+            addParent ? { id: addParent, position: "inside" } : undefined,
+          )
+        }
+        onDragWidget={(key) => {
+          dragWidget.current = key;
+        }}
+        savedBlocks={templates
+          .filter((t) => t.kind === "mine")
+          .map((t) => ({ id: t.id, name: t.name }))}
+        onInsertSaved={(id) => {
+          const template = templates.find((t) => t.id === id);
+          if (template)
+            instantiate(template).forEach((node) => studio.addNode(node));
+        }}
+        globals={globals}
+        onInsertGlobal={onInsertGlobal}
+      />
+      {pluginEntries && pluginEntries.length > 0 && onAddPlugin && (
+        <div className="border-t border-border p-3">
+          <p className="px-1 pb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            Plugins
+          </p>
+          <div className="flex flex-col gap-1.5">
+            {pluginEntries.map((entry) => (
+              <button
+                key={entry.key}
+                type="button"
+                onClick={() => onAddPlugin(entry.key)}
+                title={
+                  entry.pluginName
+                    ? `${entry.label} — ${entry.pluginName}`
+                    : entry.label
+                }
+                className="min-h-11 rounded-fq-md border border-border px-3 text-left text-sm hover:border-primary"
+              >
+                <span className="block truncate">{entry.label}</span>
+                {entry.pluginName && (
+                  <span className="block truncate text-[11px] text-muted-foreground">
+                    {entry.pluginName}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
+}
+
+/* ---------------- interaction helpers (unit-tested) ----------------
+ *
+ * Pure selection/multi-select/shortcut-dispatch helpers shared by the
+ * keyboard handler and the canvas. Kept outside the component so the
+ * contract test drives them without rendering.
+ */
+
+export type StudioSelectionMode = "replace" | "toggle";
+
+/** Old-builder `select` semantics: replace by default, toggle with mod. */
+export function applySelection(
+  current: readonly string[],
+  id: string | null,
+  mode: StudioSelectionMode,
+): string[] {
+  if (mode === "toggle" && id !== null) {
+    return current.includes(id)
+      ? current.filter((value) => value !== id)
+      : [...current, id];
+  }
+  return id === null ? [] : [id];
+}
+
+function collectDescendantIds(node: StudioNode, out: Set<string>): void {
+  for (const child of node.children ?? []) {
+    out.add(child.id);
+    collectDescendantIds(child, out);
+  }
+}
+
+/**
+ * Old-builder `topMost` semantics: drop any selected id nested under another
+ * selected id so bulk ops never move/copy/delete one subtree twice. Order
+ * follows document order.
+ */
+export function topMostStudioIds(
+  root: StudioNode[],
+  ids: readonly string[],
+): string[] {
+  if (ids.length === 0) return [];
+  const wanted = new Set(ids);
+  const covered = new Set<string>();
+  const visit = (nodes: StudioNode[]): void => {
+    for (const node of nodes) {
+      if (wanted.has(node.id)) collectDescendantIds(node, covered);
+      if (node.children) visit(node.children);
+    }
+  };
+  visit(root);
+  return flatten(root)
+    .filter((entry) => wanted.has(entry.node.id) && !covered.has(entry.node.id))
+    .map((entry) => entry.node.id);
+}
+
+/**
+ * Reorder helper behind `move_up`/`move_down`: swaps the node with the
+ * sibling before/after it, staying inside its own sibling list. Clamped at
+ * the edges (same order back) and identity-stable for unknown ids.
+ */
+export function nudgeStudioNodes(
+  root: StudioNode[],
+  id: string,
+  delta: number,
+): StudioNode[] {
+  const step = delta < 0 ? -1 : 1;
+  const parent = parentOf(root, id);
+  const siblings = parent ? (parent.children ?? []) : root;
+  const index = siblings.findIndex((node) => node.id === id);
+  if (index < 0) return root;
+  const next = index + step;
+  if (next < 0 || next >= siblings.length) return root;
+  const reordered = [...siblings];
+  const [moved] = reordered.splice(index, 1);
+  if (!moved) return root;
+  reordered.splice(next, 0, moved);
+  if (!parent) return reordered;
+  return updateNode(root, parent.id, (current) => ({
+    ...current,
+    children: reordered,
+  }));
+}
+
+/** Handlers behind every studio shortcut; boolean results mean "handled". */
+export type StudioShortcutContext = {
+  hasSelection: boolean;
+  selectedIds: string[];
+  undo: () => boolean | void;
+  redo: () => boolean | void;
+  copy: () => boolean | void;
+  paste: () => boolean | void;
+  duplicate: () => boolean | void;
+  remove: () => boolean | void;
+  pasteStyle: () => boolean | void;
+  resetStyle: () => boolean | void;
+  saveDraft: () => boolean | void;
+  publish: () => boolean | void;
+  togglePreview: () => boolean | void;
+  toggleStructure: () => boolean | void;
+  openModal: (name: string) => void;
+  nudge: (delta: -1 | 1) => boolean | void;
+  deselect: () => void;
+  searchLayers: () => void;
+};
+
+/**
+ * Dispatches one shortcut id, accepting the legacy `paste_style` spelling.
+ * Returns false for unknown ids and for handlers that report `false` (e.g.
+ * copy with nothing selected) so the caller can skip `preventDefault` and
+ * leave the browser's native binding alone.
+ */
+export function runStudioShortcut(
+  id: string,
+  ctx: StudioShortcutContext,
+): boolean {
+  const resolved: StudioShortcutId | undefined = resolveStudioShortcutId(id);
+  if (!resolved) return false;
+  const done = (result: boolean | void): boolean => result !== false;
+  switch (resolved) {
+    case "undo":
+      return done(ctx.undo());
+    case "redo":
+      return done(ctx.redo());
+    case "copy":
+      return done(ctx.copy());
+    case "paste":
+      return done(ctx.paste());
+    case "duplicate":
+      return done(ctx.duplicate());
+    case "delete":
+      return done(ctx.remove());
+    case "pasteStyle":
+      return done(ctx.pasteStyle());
+    case "resetStyle":
+      return done(ctx.resetStyle());
+    case "save":
+      return done(ctx.saveDraft());
+    case "publish":
+      return done(ctx.publish());
+    case "preview":
+    case "hideHandles":
+      return done(ctx.togglePreview());
+    case "navigator":
+      return done(ctx.toggleStructure());
+    case "move_up":
+      return done(ctx.nudge(-1));
+    case "move_down":
+      return done(ctx.nudge(1));
+    case "deselect":
+      ctx.deselect();
+      return true;
+    case "search_layers":
+      ctx.searchLayers();
+      return true;
+    case "finder":
+      ctx.openModal("finder");
+      return true;
+    case "templates":
+      ctx.openModal("templates");
+      return true;
+    case "pageSettings":
+      ctx.openModal("page");
+      return true;
+    case "siteSettings":
+      ctx.openModal("classes");
+      return true;
+    case "history":
+      ctx.openModal("history");
+      return true;
+    case "shortcuts":
+      ctx.openModal("shortcuts");
+      return true;
+    default:
+      return false;
+  }
+}
+
+export type StudioKeyEventLike = {
+  key: string;
+  metaKey?: boolean;
+  ctrlKey?: boolean;
+  shiftKey?: boolean;
+  altKey?: boolean;
+  target: unknown;
+  preventDefault: () => void;
+};
+
+/**
+ * Keyboard entry point: never hijacks typing, never claims unhandled keys,
+ * and only calls `preventDefault` when a handler actually did the work
+ * (so bare ⌘C/⌘V with nothing selected fall through to the browser).
+ */
+export function handleStudioKeyDown(
+  event: StudioKeyEventLike,
+  platform: StudioPlatform,
+  ctx: StudioShortcutContext,
+): boolean {
+  if (isTypingElement(event.target)) return false;
+  const shortcut = matchStudioShortcut(event, platform);
+  if (!shortcut) return false;
+  const handled = runStudioShortcut(shortcut.id, ctx);
+  if (handled) event.preventDefault();
+  return handled;
 }
 
 export function StudioBuilder({
@@ -169,22 +469,13 @@ export function StudioBuilder({
   resetKey = null,
   globalBlocks = [],
   onSaveGlobalBlock = null,
+  menus = null,
+  themeDoc = null,
+  onRestoreRevision = null,
+  pluginEntries = null,
 }: StudioBuilderProps) {
   const studio = useStudio(initialDoc, resetKey);
 
-  /** Detached insert of a shared block: fresh ids, appended at the cursor. */
-  const insertGlobalBlock = useCallback(
-    (id: string) => {
-      const block = globalBlocks.find((candidate) => candidate.id === id);
-      if (!block || block.nodes.length === 0) {
-        toast.error("That block is empty.");
-        return;
-      }
-      block.nodes.forEach((node) => studio.addNode(cloneNode(node)));
-      toast.success(`Inserted “${block.name}” (editable copy).`);
-    },
-    [globalBlocks, studio],
-  );
   const {
     doc,
     selected,
@@ -195,6 +486,126 @@ export function StudioBuilder({
     setSelectedId,
     setDevice,
   } = studio;
+
+  /* ---------------- multi-select (old-builder select() semantics) ----------------
+   *
+   * `selectedIds` is the interaction source of truth; the studio's single
+   * `selectedId` mirrors the primary id so the settings panel, context menu
+   * and every studio mutation keep working unchanged. The sync effect below
+   * converges both directions: canvas/modifier writes flow into the studio,
+   * studio-internal writes (add/duplicate/remove/paste) collapse back here.
+   */
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const select = useCallback(
+    (id: string | null, mode: StudioSelectionMode = "replace") => {
+      setSelectedIds((current) => applySelection(current, id, mode));
+    },
+    [],
+  );
+  useEffect(() => {
+    const primary = selectedIds[0] ?? null;
+    if (primary !== selectedId) {
+      if (selectedId && !selectedIds.includes(selectedId)) {
+        setSelectedIds([selectedId]);
+      } else {
+        setSelectedId(primary);
+      }
+    }
+  }, [selectedIds, selectedId, setSelectedId]);
+  /* Drop ids whose subtree is gone (delete/undo/import) so bulk ops and the
+   * settings panel never act on ghosts. */
+  useEffect(() => {
+    setSelectedIds((current) => {
+      if (current.length === 0) return current;
+      const next = current.filter((id) => findNode(doc.root, id));
+      return next.length === current.length ? current : next;
+    });
+  }, [doc.root]);
+
+  /* ---------------- layout-slot switcher ----------------
+   *
+   * Mirrors the old builder's slot tabs: the canvas shows the active slot
+   * only. Mutations address nodes by id against the full document, so every
+   * studio op keeps working on root-resident nodes whichever tab is open.
+   */
+  const [slot, setSlot] = useState<StudioSlot>("main");
+  const slots = useMemo(() => studioSlots(doc), [doc]);
+  const resolvedSlots = useMemo(
+    () => (themeDoc ? resolveStudioSlots(doc, themeDoc) : null),
+    [doc, themeDoc],
+  );
+  const visibleRoot = useMemo(
+    () =>
+      slot === "main"
+        ? slots.main
+        : ((resolvedSlots ?? slots)[slot] as StudioNode[]),
+    [slot, slots, resolvedSlots],
+  );
+  const viewDoc = useMemo(
+    () => (slot === "main" ? doc : { ...doc, root: visibleRoot }),
+    [doc, slot, visibleRoot],
+  );
+
+  /* ---------------- canvas frames ----------------
+   *
+   * Numeric device presets plus a fluid full-width toggle and zoom, per the
+   * old builder's frame toolbar. Picking a preset or a device exits fluid
+   * mode; zoom only scales the preview and never touches the document.
+   */
+  const [frameWidth, setFrameWidth] = useState<number | null>(null);
+  const [fluid, setFluid] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const pickDevice = useCallback(
+    (next: DeviceKey) => {
+      setDevice(next);
+      setFluid(false);
+      setFrameWidth(null);
+    },
+    [setDevice],
+  );
+  const frameStyle = {
+    maxWidth: fluid
+      ? "100%"
+      : frameWidth
+        ? `${frameWidth}px`
+        : CANVAS_WIDTH[device],
+    transform: zoom !== 1 ? `scale(${zoom})` : undefined,
+    transformOrigin: "top center" as const,
+  };
+
+  /* Container-scoped add (`parentId: addParent` semantics): picking "add
+   * inside" on a container arms the next rail insert to land there. */
+  const [addParent, setAddParent] = useState<string | null>(null);
+  const addPluginNode = useCallback(
+    (pluginKey: string) => {
+      studio.addNode(
+        appBlockNodeForPlugin(pluginKey),
+        addParent ? { id: addParent, position: "inside" } : undefined,
+      );
+      setAddParent(null);
+    },
+    [addParent, studio],
+  );
+
+  /** Detached insert of a shared block: fresh ids, appended at the cursor. */
+  const insertGlobalBlock = useCallback(
+    (id: string) => {
+      const block = globalBlocks.find((candidate) => candidate.id === id);
+      if (!block || block.nodes.length === 0) {
+        toast.error("That block is empty.");
+        return;
+      }
+      block.nodes.forEach((node) => {
+        const fresh = cloneNode(node);
+        studio.addNode(
+          slot === "main" ? fresh : withSlot(fresh, slot),
+          addParent ? { id: addParent, position: "inside" } : undefined,
+        );
+      });
+      toast.success(`Inserted “${block.name}” (editable copy).`);
+    },
+    [addParent, globalBlocks, slot, studio],
+  );
 
   const [platform, setPlatform] = useState<StudioPlatform>("pc");
   const [preview, setPreview] = useState(false);
@@ -315,83 +726,114 @@ export function StudioBuilder({
     toast.success("Saved to My templates");
   }, [doc, selected]);
 
-  /* ---------------- shortcuts ---------------- */
+  /* ---------------- shortcuts ----------------
+   *
+   * Everything routes through handleStudioKeyDown: typing is never
+   * hijacked, unhandled keys fall through to the browser, and
+   * `preventDefault` fires only when a handler actually did the work (so
+   * ⌘C with nothing selected still reaches the browser).
+   */
+  const shortcutCtx = useMemo<StudioShortcutContext>(
+    () => ({
+      hasSelection: selectedIds.length > 0,
+      selectedIds,
+      undo: () => {
+        studio.undo();
+      },
+      redo: () => {
+        studio.redo();
+      },
+      copy: () => {
+        const id = selectedIds[0];
+        if (!id) return false;
+        const node = findNode(doc.root, id);
+        if (!node) return false;
+        return studio.copyNodes([cloneNode(node)]);
+      },
+      paste: () => {
+        const payload = studio.peekClipboard();
+        if (!payload || payload.kind !== "nodes" || payload.nodes.length === 0)
+          return false;
+        studio.paste();
+        return true;
+      },
+      duplicate: () => {
+        const ids = topMostStudioIds(doc.root, selectedIds);
+        if (ids.length === 0) return false;
+        studio.duplicateMany(ids);
+        return true;
+      },
+      remove: () => {
+        const ids = topMostStudioIds(doc.root, selectedIds);
+        if (ids.length === 0) return false;
+        studio.removeMany(ids);
+        return true;
+      },
+      pasteStyle: () => {
+        const id = selectedIds[0];
+        if (!id) return false;
+        studio.pasteStyle(id);
+        return true;
+      },
+      resetStyle: () => {
+        const id = selectedIds[0];
+        if (!id) return false;
+        studio.resetStyle(id);
+        return true;
+      },
+      saveDraft: () => {
+        saveDraft();
+      },
+      publish: () => {
+        void publish();
+      },
+      togglePreview: () => {
+        setPreview((value) => !value);
+      },
+      toggleStructure: () => {
+        setStructure((value) => !value);
+      },
+      openModal: (name) => {
+        if (
+          name === "finder" ||
+          name === "templates" ||
+          name === "page" ||
+          name === "history" ||
+          name === "shortcuts" ||
+          name === "classes" ||
+          name === "layout"
+        )
+          setModal(name);
+      },
+      nudge: (delta) => {
+        const id = selectedIds[0];
+        if (!id) return false;
+        const siblings = siblingsOf(doc.root, id);
+        const index = siblings.findIndex((node) => node.id === id);
+        const target = siblings[index + delta];
+        if (index < 0 || !target) return false;
+        studio.move(id, {
+          id: target.id,
+          position: delta < 0 ? "before" : "after",
+        });
+        return true;
+      },
+      deselect: () => {
+        select(null, "replace");
+      },
+      searchLayers: () => {
+        setStructure(true);
+      },
+    }),
+    [doc.root, selectedIds, studio, saveDraft, publish, select],
+  );
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (isTypingElement(event.target)) return;
-      const id = selectedId;
-      if (event.key === "Escape") {
-        setSelectedId(null);
-        return;
-      }
-      const shortcut = matchStudioShortcut(event, platform);
-      if (!shortcut) return;
-      switch (shortcut.id) {
-        case "undo":
-          studio.undo();
-          break;
-        case "redo":
-          studio.redo();
-          break;
-        case "copy":
-          if (id) studio.copy(id);
-          break;
-        case "paste":
-          studio.paste();
-          break;
-        case "duplicate":
-          if (id) studio.duplicate(id);
-          break;
-        case "delete":
-          if (id) studio.remove(id);
-          break;
-        case "pasteStyle":
-          if (id) studio.pasteStyle(id);
-          break;
-        case "resetStyle":
-          if (id) studio.resetStyle(id);
-          break;
-        case "save":
-          saveDraft();
-          break;
-        case "publish":
-          void publish();
-          break;
-        case "preview":
-          setPreview((value) => !value);
-          break;
-        case "hideHandles":
-          setPreview((value) => !value);
-          break;
-        case "navigator":
-          setStructure((value) => !value);
-          break;
-        case "finder":
-          setModal("finder");
-          break;
-        case "templates":
-          setModal("templates");
-          break;
-        case "pageSettings":
-          setModal("page");
-          break;
-        case "siteSettings":
-          setModal("classes");
-          break;
-        case "history":
-          setModal("history");
-          break;
-        case "shortcuts":
-          setModal("shortcuts");
-          break;
-        default:
-          return;
-      }
-      event.preventDefault();
+      handleStudioKeyDown(event, platform, shortcutCtx);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [platform, publish, saveDraft, selectedId, setSelectedId, studio]);
+  }, [platform, shortcutCtx]);
 
   const finderItems = useMemo(
     () => [
@@ -415,7 +857,7 @@ export function StudioBuilder({
         kind: "action",
         id: "edit",
         label: `Edit ${label}`,
-        run: () => setSelectedId(id),
+        run: () => select(id, "replace"),
       },
       {
         kind: "action",
@@ -494,7 +936,7 @@ export function StudioBuilder({
         run: () => studio.remove(id),
       },
     ];
-  }, [doc.root, menu, saveTemplate, setSelectedId, studio]);
+  }, [doc.root, menu, saveTemplate, select, studio]);
 
   const handleDrop = useCallback(
     (target: DropTarget) => {
@@ -516,6 +958,11 @@ export function StudioBuilder({
   // the last tab.
   const [sideTabId, setSideTabId] = useState<string>("elements");
 
+  const addParentLabel = addParent
+    ? (flatten(doc.root).find((entry) => entry.node.id === addParent)?.node
+        .name ?? "Container")
+    : null;
+
   return (
     <div
       className={
@@ -534,8 +981,8 @@ export function StudioBuilder({
         dirty={dirty}
         saving={saving}
         platform={platform}
-        onDevice={setDevice}
-        onAddElement={() => setSelectedId(null)}
+        onDevice={pickDevice}
+        onAddElement={() => select(null, "replace")}
         onPageSettings={() => setModal("page")}
         onHistory={() => setModal("history")}
         onDesignSystem={() => setModal("templates")}
@@ -595,7 +1042,7 @@ export function StudioBuilder({
                 onChange={(key, value) =>
                   studio.setSetting(selected.id, key, value)
                 }
-                onBack={() => setSelectedId(null)}
+                onBack={() => select(null, "replace")}
                 onResetStyles={() => studio.resetStyle(selected.id)}
                 classes={studio.classes}
                 onOpenClassManager={() => setModal("classes")}
@@ -643,6 +1090,9 @@ export function StudioBuilder({
                         name,
                       }))}
                       onInsertGlobal={insertGlobalBlock}
+                      addParent={addParent}
+                      pluginEntries={pluginEntries ?? undefined}
+                      onAddPlugin={addPluginNode}
                     />
                   )}
                 </div>
@@ -654,6 +1104,9 @@ export function StudioBuilder({
                 dragWidget={dragWidget}
                 globals={globalBlocks.map(({ id, name }) => ({ id, name }))}
                 onInsertGlobal={insertGlobalBlock}
+                addParent={addParent}
+                pluginEntries={pluginEntries ?? undefined}
+                onAddPlugin={addPluginNode}
               />
             )}
           </div>
@@ -663,18 +1116,137 @@ export function StudioBuilder({
           className="relative min-h-0 flex-1 overflow-auto bg-muted/40 p-4"
           aria-label="Page canvas"
         >
+          {/* Layout-slot tabs + frame presets + zoom: the old builder's
+           * canvas toolbar, rescoped to studio slots. */}
+          <div className="mx-auto mb-3 flex max-w-full flex-wrap items-center gap-1.5">
+            <div
+              role="tablist"
+              aria-label="Layout slot"
+              className="flex rounded-fq-md border border-border bg-background p-0.5"
+            >
+              {(["header", "main", "footer"] as const).map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  aria-selected={slot === key}
+                  onClick={() => setSlot(key)}
+                  className={cn(
+                    "min-h-9 rounded-fq-sm px-3 text-xs font-medium capitalize",
+                    slot === key
+                      ? "bg-muted text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {key}
+                </button>
+              ))}
+            </div>
+            <div
+              role="tablist"
+              aria-label="Frame width"
+              className="flex rounded-fq-md border border-border bg-background p-0.5"
+            >
+              {DEVICE_PRESETS.map((preset) => (
+                <button
+                  key={preset.width}
+                  type="button"
+                  role="tab"
+                  aria-selected={
+                    !fluid && (frameWidth ?? null) === preset.width
+                  }
+                  title={`${preset.width}px frame`}
+                  onClick={() => {
+                    setFluid(false);
+                    setFrameWidth(preset.width);
+                  }}
+                  className={cn(
+                    "min-h-9 rounded-fq-sm px-2 text-xs tabular-nums",
+                    !fluid && (frameWidth ?? null) === preset.width
+                      ? "bg-muted font-semibold text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {preset.label}
+                </button>
+              ))}
+              <button
+                type="button"
+                role="tab"
+                aria-selected={fluid}
+                title="Full window width canvas"
+                onClick={() => setFluid((value) => !value)}
+                className={cn(
+                  "min-h-9 rounded-fq-sm px-2 text-xs",
+                  fluid
+                    ? "bg-muted font-semibold text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                Fluid
+              </button>
+            </div>
+            <div
+              role="group"
+              aria-label="Canvas zoom"
+              className="flex items-center rounded-fq-md border border-border bg-background p-0.5"
+            >
+              <button
+                type="button"
+                aria-label="Zoom out"
+                onClick={() =>
+                  setZoom((value) => Math.max(0.5, +(value - 0.25).toFixed(2)))
+                }
+                className="grid min-h-9 min-w-9 place-items-center rounded-fq-sm text-sm text-muted-foreground hover:text-foreground"
+              >
+                −
+              </button>
+              <button
+                type="button"
+                title="Reset zoom"
+                aria-label={`Zoom ${Math.round(zoom * 100)} percent, reset`}
+                onClick={() => setZoom(1)}
+                className="min-h-9 min-w-12 rounded-fq-sm text-xs tabular-nums text-muted-foreground hover:text-foreground"
+              >
+                {Math.round(zoom * 100)}%
+              </button>
+              <button
+                type="button"
+                aria-label="Zoom in"
+                onClick={() =>
+                  setZoom((value) => Math.min(1.5, +(value + 0.25).toFixed(2)))
+                }
+                className="grid min-h-9 min-w-9 place-items-center rounded-fq-sm text-sm text-muted-foreground hover:text-foreground"
+              >
+                +
+              </button>
+            </div>
+            {addParent && (
+              <button
+                type="button"
+                title="Clear container-scoped add"
+                onClick={() => setAddParent(null)}
+                className="inline-flex min-h-9 items-center gap-1 rounded-fq-md border border-border bg-background px-2 text-xs text-muted-foreground hover:text-foreground"
+              >
+                Inside {addParentLabel ?? "container"} ✕
+              </button>
+            )}
+          </div>
           <div
             className={cn(
               "mx-auto min-h-full bg-background shadow-fq-md transition-[max-width] duration-200",
             )}
-            style={{ maxWidth: CANVAS_WIDTH[device] }}
+            style={frameStyle}
           >
             <StudioCanvas
-              doc={doc}
+              doc={viewDoc}
               device={device}
               selectedId={selectedId}
+              selectedIds={selectedIds}
               hideHandles={preview}
-              onSelect={setSelectedId}
+              onSelect={(id) => select(id, "replace")}
+              onSelectMode={(id, mode) => select(id, mode)}
+              menus={menus}
               onDrop={handleDrop}
               onDragNode={(id) => {
                 dragNode.current = id;
@@ -682,6 +1254,7 @@ export function StudioBuilder({
               onDuplicate={studio.duplicate}
               onDelete={studio.remove}
               onAddInside={(id) => {
+                setAddParent(id);
                 setPendingDrop({ id, position: "inside" });
                 setModal("layout");
               }}
@@ -690,7 +1263,7 @@ export function StudioBuilder({
                 setModal("layout");
               }}
               onContextMenu={(id, at) => {
-                setSelectedId(id);
+                select(id, "replace");
                 setMenu({ id, at });
               }}
               onInlineEdit={(id, text) => studio.setSetting(id, "text", text)}
@@ -699,14 +1272,53 @@ export function StudioBuilder({
 
           <p className="pointer-events-none sticky bottom-0 pt-2 text-center text-[11px] text-muted-foreground">
             {BREAKPOINT_BY_KEY[device].label} preview
+            {slot !== "main" ? ` · ${slot} slot` : ""}
           </p>
+
+          {selectedIds.length > 1 && (
+            <div
+              role="status"
+              className="sticky bottom-8 mx-auto flex w-fit items-center gap-2 rounded-fq-md border border-border bg-background px-3 py-1.5 text-xs shadow-fq-md"
+            >
+              <span className="text-muted-foreground">
+                {selectedIds.length} selected
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  const ids = topMostStudioIds(doc.root, selectedIds);
+                  studio.duplicateMany(ids);
+                }}
+                className="font-medium text-primary hover:underline"
+              >
+                Duplicate
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const ids = topMostStudioIds(doc.root, selectedIds);
+                  studio.removeMany(ids);
+                }}
+                className="font-medium text-destructive hover:underline"
+              >
+                Delete
+              </button>
+              <button
+                type="button"
+                onClick={() => select(null, "replace")}
+                className="font-medium text-muted-foreground hover:underline"
+              >
+                Clear
+              </button>
+            </div>
+          )}
 
           {structure && (
             <div className="pointer-events-none absolute right-4 top-4 z-20">
               <StructurePanel
                 nodes={doc.root}
                 selectedId={selectedId}
-                onSelect={setSelectedId}
+                onSelect={(id) => select(id, "replace")}
                 onRename={studio.rename}
                 onToggleHidden={studio.toggleHidden}
                 onMove={studio.move}
@@ -785,10 +1397,12 @@ export function StudioBuilder({
         history={studio.history}
         revisions={revisions}
         onJump={studio.jump}
-        onRestore={() =>
-          toast.info(
-            "Revision restore is handled by the editor's revisions panel.",
-          )
+        onRestore={(revisionId) =>
+          onRestoreRevision
+            ? onRestoreRevision(revisionId)
+            : toast.info(
+                "Revision restore is handled by the editor's revisions panel.",
+              )
         }
       />
 
@@ -797,7 +1411,7 @@ export function StudioBuilder({
         onOpenChange={(open) => setModal(open ? "finder" : null)}
         items={finderItems}
         onPick={(id) => {
-          setSelectedId(id);
+          select(id, "replace");
           const node = doc.root.find((child) => child.id === id);
           if (node && isContainerNode(node)) setStructure(true);
         }}

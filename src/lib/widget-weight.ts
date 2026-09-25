@@ -211,6 +211,7 @@ export const TEMPLATE_JS_BUDGET: Record<TemplateKey, number> = {
   blog: widgetBudget(0.7),
   cart: widgetBudget(0.8),
   checkout: widgetBudget(0.7),
+  account: widgetBudget(0.7),
 };
 
 export function templateBudget(
@@ -444,7 +445,12 @@ export const HYDRATION_POLICY: Record<
 
 /** Widget → policy class. Anything unlisted is classified from the registry. */
 const CLASS_OVERRIDES: Partial<Record<SectionType, HydrationClass>> = {
-  subbrand_bar: "chrome",
+  // Markup-only chrome: the bar prints server values and takes no input, so
+  // it ships as a static island (see STATIC in widget-hydration.ts) — it is
+  // editorial for audit purposes, not tappable chrome.
+  subbrand_bar: "editorial",
+  // Markup-only: the badge prints two server-valued prices, no state.
+  discount_badge: "editorial",
   announcement_bar: "chrome",
   utility_bar: "chrome",
   account_cart: "chrome",

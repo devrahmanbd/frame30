@@ -16,14 +16,14 @@ function chain(rows: unknown[]) {
 }
 
 describe("marketplace preset bridge", () => {
-  it("lists only the curated offer keys (operator two-theme decision)", async () => {
+  it("lists no curated offer keys (themes removed Sept 2026)", async () => {
     const db = { from: vi.fn(() => chain([])) } as never;
     const catalog = await listCatalog(
       db,
       "00000000-0000-4000-a000-000000000001",
     );
     const slugs = catalog.themes.map((t) => t.slug).sort();
-    expect(slugs).toEqual(["clothing-heritage", "supershop"]);
+    expect(slugs).toEqual([]);
     for (const entry of catalog.themes) {
       expect(entry.builtin).toBe(true);
       expect(entry.kind).toBe("theme");
@@ -108,5 +108,64 @@ describe("marketplace preset bridge", () => {
         );
       }
     }
+  });
+});
+
+describe("curated offer seller visibility", () => {
+  it("retires theme offers (purge): themes list stays empty by design", async () => {
+    const { listCatalog } = await import("./marketplace.server");
+    const row = {
+      id: "22222222-2222-4222-8222-222222222222",
+      seller_merchant_id: "00000000-0000-4000-a000-000000000001",
+      name: "My theme",
+      slug: "my-theme",
+      description: "",
+      vendor_name: "Me",
+      thumbnail_url: null,
+      category: "general",
+      version: "1.0.0",
+      compatible_versions: [],
+      price_minor_int: 0,
+      currency_code: "BDT",
+      trial_allowed: false,
+      status: "active",
+      manifest: null,
+      version_history: [],
+      install_count: 0,
+      rating_sum: 0,
+      rating_count: 0,
+      created_at: new Date().toISOString(),
+    };
+    const empty = {
+      select: () => ({
+        order: () => Promise.resolve({ data: [], error: null }),
+        eq: () => ({
+          data: [],
+          error: null,
+          order: () => Promise.resolve({ data: [], error: null }),
+        }),
+      }),
+    };
+    // First query (marketplace_themes table) returns the legacy row, but
+    // the Sept 2026 purge retires theme offers: listCatalog always
+    // surfaces themes: [] regardless of table contents.
+    let n = 0;
+    const db = {
+      from: vi.fn(() => {
+        n += 1;
+        return n === 1
+          ? {
+              select: () => ({
+                order: () => Promise.resolve({ data: [row], error: null }),
+              }),
+            }
+          : empty;
+      }),
+    } as never;
+    const catalog = await listCatalog(
+      db,
+      "00000000-0000-4000-a000-000000000001",
+    );
+    expect(catalog.themes).toEqual([]);
   });
 });

@@ -14,7 +14,7 @@ import { Page, CardSkeleton, ErrorState } from "@/components/console/kit";
 import { CustomCodeEditor } from "@/components/builder/CustomCodeEditor";
 import { themesWorkspaceFn } from "@/lib/themes/appearance.functions";
 import type { ThemesWorkspace } from "@/lib/themes/appearance";
-import { Code2, Palette } from "lucide-react";
+import { Code2, Palette } from "@/components/icons/tabler";
 
 export const Route = createFileRoute(
   "/_authenticated/dashboard/content/custom-code",
@@ -44,7 +44,8 @@ function CustomCodeRoute() {
   });
 
   const installed = workspace.data?.installed ?? [];
-  const activeTheme = installed.find((th) => th.isActive) ?? installed[0] ?? null;
+  const activeTheme =
+    installed.find((th) => th.isActive) ?? installed[0] ?? null;
   const [selectedThemeId, setSelectedThemeId] = useState<string | null>(null);
 
   const themeId = selectedThemeId ?? activeTheme?.id ?? null;
@@ -66,11 +67,15 @@ function CustomCodeRoute() {
               value={themeId ?? ""}
               onChange={(e) => setSelectedThemeId(e.target.value)}
               className="h-9 rounded-fq-md border border-border bg-background px-3 text-xs font-medium"
-              aria-label={t("Select theme for custom code", "কাস্টম কোডের জন্য থিম নির্বাচন")}
+              aria-label={t(
+                "Select theme for custom code",
+                "কাস্টম কোডের জন্য থিম নির্বাচন",
+              )}
             >
               {installed.map((theme) => (
                 <option key={theme.id} value={theme.id}>
-                  {theme.name} {theme.isActive ? `(${t("Active", "Active")})` : ""}
+                  {theme.name}{" "}
+                  {theme.isActive ? `(${t("Active", "Active")})` : ""}
                 </option>
               ))}
             </select>
@@ -83,7 +88,10 @@ function CustomCodeRoute() {
       ) : workspace.isError ? (
         <ErrorState
           title={t("Themes could not be loaded", "থিম লোড করা যায়নি")}
-          message={t("Please retry to load your theme assets.", "আপনার থিম পুনরায় লোড করার চেষ্টা করুন।")}
+          message={t(
+            "Please retry to load your theme assets.",
+            "আপনার থিম পুনরায় লোড করার চেষ্টা করুন।",
+          )}
           onRetry={() => {
             void workspace.refetch();
           }}

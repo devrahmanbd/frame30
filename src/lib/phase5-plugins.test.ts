@@ -14,8 +14,16 @@ import {
   type InstalledPlugin,
 } from "./plugin-manifest";
 import { HOOK_TIMEOUT_MS, resetBreakers, runHook } from "./plugin-hooks.server";
+import { afterFailure, policyFor } from "./job-queue";
+import { verifySignature } from "./webhook-signing";
 import { SECTION_CATALOG } from "./builder-ast";
 import { WIDGET_REGISTRY } from "./widget-registry";
+
+const enqueueJobMock = vi.hoisted(() => vi.fn());
+vi.mock("./job-queue.server", () => ({ enqueueJob: enqueueJobMock }));
+// Queue-down by default: failures report raw error/timeout (existing contract).
+// Queue-path tests override per-test with mockResolvedValue.
+enqueueJobMock.mockRejectedValue(new Error("queue_down"));
 
 const MANIFEST = {
   id: "loyalty-lite",
@@ -228,12 +236,50 @@ describe("settings schema", () => {
     });
     expect(out.errors).toContain("tier.not_an_option");
   });
+
+  it("validates textarea/color/media/url/date kinds", () => {
+    const schema = [
+      { key: "bio", kind: "textarea", max: 50 },
+      { key: "accent", kind: "color" },
+      { key: "logo", kind: "media" },
+      { key: "site", kind: "url" },
+      { key: "launch", kind: "date" },
+    ] as const;
+    const { values, errors } = validateSettings(schema as any, {
+      bio: "x".repeat(99),
+      accent: "#ff0000",
+      logo: "https://cdn/x.png",
+      site: "not a url",
+      launch: "2026-10-01",
+    });
+    expect(errors).toContain("site.not_a_url");
+    expect(values.bio).toHaveLength(50);
+    expect(values.accent).toBe("#ff0000");
+    expect(values.launch).toBe("2026-10-01");
+  });
+  it("rejects bad color/date/url with error codes", () => {
+    const { errors } = validateSettings(
+      [
+        { key: "c", kind: "color" },
+        { key: "u", kind: "url" },
+        { key: "d", kind: "date" },
+      ] as any,
+      { c: "red", u: "notaurl", d: "yesterday" },
+    );
+    expect(errors).toEqual(
+      expect.arrayContaining(["c.not_a_color", "u.not_a_url", "d.not_a_date"]),
+    );
+  });
 });
 
 describe("server hooks", () => {
   afterEach(() => {
     resetBreakers();
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+    enqueueJobMock.mockReset();
+    enqueueJobMock.mockRejectedValue(new Error("queue_down"));
+    delete process.env.PLUGIN_HOOK_SECRET;
   });
 
   it("calls only subscribers and returns their result", async () => {
@@ -243,10 +289,20 @@ describe("server hooks", () => {
         async () => new Response(JSON.stringify({ ok: 1 }), { status: 200 }),
       ),
     );
-    const out = await runHook([installed()], "order.created", { id: "o1" });
+    const out = await runHook(
+      [installed({ grantedScopes: ["read_orders"] })],
+      "order.created",
+      { id: "o1" },
+    );
     expect(out).toHaveLength(1);
     expect(out[0].status).toBe("ok");
-    expect(await runHook([installed()], "cart.calculate", {})).toEqual([]);
+    expect(
+      await runHook(
+        [installed({ grantedScopes: ["read_orders"] })],
+        "cart.calculate",
+        {},
+      ),
+    ).toEqual([]);
   });
 
   it("survives a failing plugin and opens the breaker after repeated failures", async () => {
@@ -254,7 +310,7 @@ describe("server hooks", () => {
       "fetch",
       vi.fn(async () => new Response("nope", { status: 500 })),
     );
-    const plugins = [installed()];
+    const plugins = [installed({ grantedScopes: ["read_orders"] })];
     for (let i = 0; i < 3; i += 1) {
       const out = await runHook(plugins, "order.created", {});
       expect(out[0].status).toBe("error");
@@ -290,7 +346,209 @@ describe("server hooks", () => {
           }),
       ),
     );
-    const out = await runHook([installed()], "order.created", {}, 20);
+    const out = await runHook(
+      [installed({ grantedScopes: ["read_orders"] })],
+      "order.created",
+      {},
+      20,
+    );
     expect(out[0].status).toBe("timeout");
+  });
+
+  it("skips when HOOK_SCOPE unsatisfied — no fetch (R2-0 deny)", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    const out = await runHook(
+      [installed({ grantedScopes: ["read_shop"] })], // missing read_orders for order.created
+      "order.created",
+      { id: "o1" },
+    );
+    expect(out[0].status).toBe("skipped:scope");
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("signs every callback with framique-signature t=,v1=", async () => {
+    let seen: RequestInit | undefined;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (_url: string, init: RequestInit) => {
+        seen = init;
+        return new Response("{}", { status: 200 });
+      }),
+    );
+    process.env.PLUGIN_HOOK_SECRET = "test-secret";
+    const out = await runHook(
+      [installed({ grantedScopes: ["read_orders"] })],
+      "order.created",
+      { id: "o1" },
+    );
+    expect(out[0].status).toBe("ok");
+    const headers = seen?.headers as Record<string, string>;
+    expect(headers["framique-signature"]).toMatch(/^t=\d+,v1=[0-9a-f]{64}$/);
+    const verified = await verifySignature({
+      header: headers["framique-signature"],
+      body: seen?.body as string,
+      secrets: ["test-secret"],
+    });
+    expect(verified).toBe(true);
+  });
+
+  it("queues on timeout instead of only returning timeout (R2-3)", async () => {
+    enqueueJobMock.mockResolvedValue({ id: "job-1", duplicate: false });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        (_url: string, init: RequestInit) =>
+          new Promise((_r, reject) => {
+            init.signal?.addEventListener("abort", () =>
+              reject(Object.assign(new Error("a"), { name: "AbortError" })),
+            );
+          }),
+      ),
+    );
+    const out = await runHook(
+      [installed({ grantedScopes: ["read_orders"] })],
+      "order.created",
+      { id: "o9" },
+      20,
+    );
+    expect(out[0].status).toBe("queued");
+    expect(enqueueJobMock).toHaveBeenCalledTimes(1);
+    const input = enqueueJobMock.mock.calls[0][0];
+    expect(input.queue).toBe("plugins");
+    expect(input.name).toBe("plugin.hook.deliver");
+    expect(String(input.idempotencyKey)).toMatch(
+      /^hook:loyalty-lite:order\.created:[0-9a-f]+$/,
+    );
+  });
+
+  it("keeps a stable idempotency key for identical payloads (R2-3)", async () => {
+    enqueueJobMock.mockResolvedValue({ id: "job-1", duplicate: false });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("nope", { status: 500 })),
+    );
+    const plugins = [installed({ grantedScopes: ["read_orders"] })];
+    await runHook(plugins, "order.created", { id: "same" });
+    await runHook(plugins, "order.created", { id: "same" });
+    const keys = enqueueJobMock.mock.calls.map((c) => c[0].idempotencyKey);
+    expect(keys).toHaveLength(2);
+    expect(keys[0]).toBe(keys[1]);
+    resetBreakers();
+    await runHook(plugins, "order.created", { id: "different" });
+    const later = enqueueJobMock.mock.calls[2][0].idempotencyKey;
+    expect(later).not.toBe(keys[0]);
+  });
+
+  it("runHook never rejects even when fetch and queue both fail", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() => {
+        throw new TypeError("network down");
+      }),
+    );
+    const plugins = [installed({ grantedScopes: ["read_orders"] })];
+    const out = await runHook(plugins, "order.created", { id: "x" });
+    expect(out[0].status).toBe("error");
+    await expect(
+      runHook(plugins, "order.created", { id: "x" }),
+    ).resolves.toBeTruthy();
+  });
+});
+
+describe("queued hook delivery", () => {
+  afterEach(() => {
+    resetBreakers();
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+    enqueueJobMock.mockReset();
+    enqueueJobMock.mockRejectedValue(new Error("queue_down"));
+    delete process.env.PLUGIN_HOOK_SECRET;
+  });
+
+  it("delivers a queued hook with HMAC and reports ok", async () => {
+    let seen: RequestInit | undefined;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (_url: string, init: RequestInit) => {
+        seen = init;
+        return new Response("{}", { status: 200 });
+      }),
+    );
+    process.env.PLUGIN_HOOK_SECRET = "test-secret";
+    const { deliverQueuedHook } = await import("./plugin-hooks.server");
+    const body = JSON.stringify({
+      hook: "order.created",
+      payload: { id: "o1" },
+      settings: {},
+    });
+    const res = await deliverQueuedHook({
+      pluginId: "loyalty-lite",
+      installId: "install-1",
+      hook: "order.created",
+      body,
+      hooksUrl: "https://apps.example.com/hooks",
+    });
+    expect(res).toEqual({ ok: true, installId: "install-1" });
+    const headers = seen?.headers as Record<string, string>;
+    expect(headers["framique-signature"]).toMatch(/^t=\d+,v1=[0-9a-f]{64}$/);
+    await expect(
+      verifySignature({
+        header: headers["framique-signature"],
+        body,
+        secrets: ["test-secret"],
+      }),
+    ).resolves.toBe(true);
+  });
+
+  it("returns malformed when hooksUrl or hook is missing", async () => {
+    const { deliverQueuedHook } = await import("./plugin-hooks.server");
+    await expect(deliverQueuedHook({})).resolves.toEqual({
+      ok: false,
+      reason: "malformed",
+    });
+    await expect(deliverQueuedHook({ hook: "order.created" })).resolves.toEqual(
+      { ok: false, reason: "malformed" },
+    );
+  });
+
+  it("returns breaker_open while the circuit is open (dead_letter via queue)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("nope", { status: 500 })),
+    );
+    const plugins = [installed({ grantedScopes: ["read_orders"] })];
+    for (let i = 0; i < 3; i += 1) {
+      await runHook(plugins, "order.created", {});
+    }
+    const { deliverQueuedHook } = await import("./plugin-hooks.server");
+    await expect(
+      deliverQueuedHook({
+        pluginId: "loyalty-lite",
+        installId: "install-1",
+        hook: "order.created",
+        body: "{}",
+        hooksUrl: "https://apps.example.com/hooks",
+      }),
+    ).resolves.toEqual({ ok: false, reason: "breaker_open" });
+  });
+
+  it("throws on non-2xx so the queue retries toward dead_letter", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("boom", { status: 500 })),
+    );
+    const { deliverQueuedHook } = await import("./plugin-hooks.server");
+    await expect(
+      deliverQueuedHook({
+        pluginId: "loyalty-lite",
+        installId: "install-1",
+        hook: "order.created",
+        body: "{}",
+        hooksUrl: "https://apps.example.com/hooks",
+      }),
+    ).rejects.toThrow(/status_500/);
+    const outcome = afterFailure(policyFor("plugins"), 6, "job-x", true);
+    expect(outcome).toEqual({ next: "dead", runAfterSeconds: 0, dead: true });
   });
 });

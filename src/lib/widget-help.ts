@@ -594,6 +594,54 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
     en: "A timeline or trunk of heritage stories with images and dates.",
     bn: "ইমেজ ও তারিখসহ ঐতিহ্যবাহী গল্পের টাইমলাইন বা ট্রাঙ্ক।",
   },
+  orders_list: {
+    en: "Signed-in shopper's order history with status and totals.",
+    bn: "অবস্থা ও মোট মূল্যসহ সাইন-ইন করা ক্রেতার অর্ডার ইতিহাস।",
+  },
+  profile_card: {
+    en: "Signed-in shopper's name and contact details.",
+    bn: "সাইন-ইন করা ক্রেতার নাম ও যোগাযোগের তথ্য।",
+  },
+  finder_row: {
+    en: "An occasion-based gift and outfit finder leading to matching collections.",
+    bn: "উপলক্ষভিত্তিক উপহার ও পোশাক সন্ধান — মানানসই কালেকশনে নিয়ে যায়।",
+  },
+  craft_story: {
+    en: "An editorial story block highlighting artisan heritage and handloom craft.",
+    bn: "কারিগরদের ঐতিহ্য ও হাতে বোনা কারুকাজ তুলে ধরার সম্পাদকীয় গল্পের ব্লক।",
+  },
+  testimonials: {
+    en: "A rotating carousel of customer testimonials and verified quotes.",
+    bn: "ক্রেতাদের মতামত ও যাচাইকৃত প্রশংসাপত্রের রোটেটিং ক্যারোজেল।",
+  },
+  trust_footer: {
+    en: "A grid of reassurance badges for shipping, returns, craft quality and support.",
+    bn: "ডেলিভারি, রিটার্ন, পণ্যের মান ও সহায়তার আশ্বাসের ব্যাজ গ্রিড।",
+  },
+  trust_marquee: {
+    en: "A looping marquee of trust badges — payment, dispatch, exchange and helpline.",
+    bn: "আস্থার ব্যাজের চলমান মার্কি — পেমেন্ট, ডিসপ্যাচ, বদল ও হেল্পলাইন।",
+  },
+  price_buckets: {
+    en: "Budget tiles linking to price-filtered listings, bounds only.",
+    bn: "বাজেটের টাইল — দাম-ফিল্টার করা তালিকার লিংক, শুধু সীমা।",
+  },
+  occasion_matrix: {
+    en: "A collection-by-occasion grid leading to matching weaves.",
+    bn: "কালেকশন ও উপলক্ষের গ্রিড — মানানসই বুননে নিয়ে যায়।",
+  },
+  urgency_rail: {
+    en: "A product rail with computed sale badges, real stock hints and ratings.",
+    bn: "পণ্যের রেইল — হিসাব করা ছাড়ের ব্যাজ, আসল স্টকের হিন্ট ও রেটিংসহ।",
+  },
+  rating_stars: {
+    en: "Display-only stars from real review aggregates. Renders nothing with no data.",
+    bn: "আসল রিভিউ গড়ের শুধু-দেখার তারা। তথ্য না থাকলে কিছু দেখায় না।",
+  },
+  whatsapp_button: {
+    en: "A WhatsApp chat button that opens a conversation with a prefilled greeting.",
+    bn: "হোয়াটসঅ্যাপ চ্যাট বাটন — আগে থেকে লেখা অভিবাদনসহ কথোপকথন খোলে।",
+  },
 };
 
 /** Exact prop-key hints. Keys are catalog `Field.key`s. */
@@ -645,6 +693,14 @@ export const PROP_HINTS: Record<string, BiText> = {
   radius: {
     en: "Corner rounding, from the theme radius scale.",
     bn: "কোণের গোলাকৃতি — থিমের রেডিয়াস স্কেল থেকে।",
+  },
+  atmosphere: {
+    en: "Hero wash tinted from the theme brand. None removes it entirely.",
+    bn: "থিম ব্র্যান্ড থেকে হিরো ওয়াশ — None দিলে পুরোপুরি সরে যায়।",
+  },
+  surface: {
+    en: "Banner surface: flat card or elevated theme-tinted glass.",
+    bn: "ব্যানার সারফেস — ফ্ল্যাট কার্ড বা থিম-টিন্টেড গ্লাস।",
   },
   border: { en: "Outline around the widget.", bn: "উইজেটের চারপাশে বর্ডার।" },
   shadow: {
@@ -994,6 +1050,34 @@ export const PROP_HINTS: Record<string, BiText> = {
   testimonials: {
     en: "Repeatable testimonial entries, each with a quote and author.",
     bn: "পুনরাবৃত্তযোগ্য প্রশংসাপত্র — প্রতিটিতে উদ্ধৃতি ও লেখক।",
+  },
+  skin: {
+    en: "Visual skin for this widget's cards, from a closed vocabulary. First option is the default.",
+    bn: "উইজেটের কার্ডের ভিজ্যুয়াল স্কিন — নির্দিষ্ট তালিকা থেকে, প্রথমটিই ডিফল্ট।",
+  },
+  buckets: {
+    en: "Repeatable budget tiles, each with a label, an upper price bound and a link.",
+    bn: "পুনরাবৃত্তযোগ্য বাজেট টাইল — প্রতিটিতে লেবেল, সর্বোচ্চ দাম ও লিংক।",
+  },
+  occasions: {
+    en: "Repeatable occasion links shown in the matrix, each with a label and a link.",
+    bn: "ম্যাট্রিক্সে দেখানো উপলক্ষের লিংক — প্রতিটিতে লেবেল ও লিংক।",
+  },
+  collections: {
+    en: "Repeatable collection tiles shown in the matrix, each with a title, link and image.",
+    bn: "ম্যাট্রিক্সে দেখানো কালেকশন টাইল — প্রতিটিতে শিরোনাম, লিংক ও ইমেজ।",
+  },
+  showDiscount: {
+    en: "Shows the computed sale badge, calculated from real prices — never a typed discount.",
+    bn: "আসল দাম থেকে হিসাব করা ছাড়ের ব্যাজ দেখায় — নিজে লেখা ছাড় নয়।",
+  },
+  showStockHint: {
+    en: "Shows a stock hint only when real stock data flags low stock; otherwise nothing.",
+    bn: "আসল স্টক ডেটা কম থাকলেই স্টকের হিন্ট দেখায় — নইলে কিছু নয়।",
+  },
+  reviewCount: {
+    en: "How many reviews the aggregate is based on. 0 renders nothing — never a fake average.",
+    bn: "গড় কতটি রিভিউয়ের উপর ভিত্তি করে। 0 হলে কিছু দেখায় না — ভুয়া গড় নয়।",
   },
 };
 

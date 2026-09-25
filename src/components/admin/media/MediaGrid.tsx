@@ -5,7 +5,7 @@
  * want file name, author, size and date at a glance. Both share one selection
  * model so Bulk select behaves the same either way.
  */
-import { Check } from "lucide-react";
+import { Check } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import {
   type Attachment,
@@ -64,57 +64,57 @@ export function MediaGrid({
         className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6"
         aria-label="Media files"
       >
-      {items.map((item) => {
-        const picked = selected.includes(item.id);
-        return (
-          <li key={item.id}>
-            <button
-              type="button"
-              aria-pressed={selecting ? picked : undefined}
-              onClick={(event) =>
-                selecting ? onToggle(item, event.shiftKey) : onOpen(item)
-              }
-              className={cn(
-                "group relative block w-full overflow-hidden rounded-fq-md border bg-card text-left transition-shadow",
-                picked
-                  ? "border-primary shadow-fq-md"
-                  : "border-border hover:shadow-fq-md",
-              )}
-            >
-              <span className="block aspect-square overflow-hidden">
-                <MediaThumb
-                  item={item}
-                  sizes="(max-width: 640px) 45vw, 200px"
-                />
-              </span>
-              <span
-                className="block truncate border-t border-border px-2 py-1.5 text-xs"
-                title={item.fileName}
+        {items.map((item) => {
+          const picked = selected.includes(item.id);
+          return (
+            <li key={item.id}>
+              <button
+                type="button"
+                aria-pressed={selecting ? picked : undefined}
+                onClick={(event) =>
+                  selecting ? onToggle(item, event.shiftKey) : onOpen(item)
+                }
+                className={cn(
+                  "group relative block w-full overflow-hidden rounded-fq-md border bg-card text-left transition-shadow",
+                  picked
+                    ? "border-primary shadow-fq-md"
+                    : "border-border hover:shadow-fq-md",
+                )}
               >
-                {item.fileName}
-              </span>
-              {selecting && (
+                <span className="block aspect-square overflow-hidden">
+                  <MediaThumb
+                    item={item}
+                    sizes="(max-width: 640px) 45vw, 200px"
+                  />
+                </span>
                 <span
-                  aria-hidden
-                  className={cn(
-                    "absolute left-2 top-2 grid size-6 place-items-center rounded-fq-sm border",
-                    picked
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-card/90 text-transparent",
-                  )}
+                  className="block truncate border-t border-border px-2 py-1.5 text-xs"
+                  title={item.fileName}
                 >
-                  <Check className="size-4" />
+                  {item.fileName}
                 </span>
-              )}
-              {needsAltText(item) && (
-                <span className="absolute right-2 top-2 rounded-full bg-warning px-2 py-0.5 text-[11px] font-semibold text-warning-foreground">
-                  No alt
-                </span>
-              )}
-            </button>
-          </li>
-        );
-      })}
+                {selecting && (
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "absolute left-2 top-2 grid size-6 place-items-center rounded-fq-sm border",
+                      picked
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-card/90 text-transparent",
+                    )}
+                  >
+                    <Check className="size-4" />
+                  </span>
+                )}
+                {needsAltText(item) && (
+                  <span className="absolute right-2 top-2 rounded-full bg-warning px-2 py-0.5 text-[11px] font-semibold text-warning-foreground">
+                    No alt
+                  </span>
+                )}
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

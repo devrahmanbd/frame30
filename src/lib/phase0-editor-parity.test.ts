@@ -66,9 +66,11 @@ describe("canvas", () => {
 });
 
 describe("right rail", () => {
-  it("exposes Settings / Brand / History / Themes", () => {
+  it("exposes Settings / Brand / History / Templates", () => {
     expect(builder).toContain('aria-label={t("Studio panels"');
-    for (const key of ['"inspect"', '"brand"', '"history"', '"themes"']) {
+    // Theme management lives under the Templates panel now (no standalone
+    // "themes" studio tab since the theme-system restore).
+    for (const key of ['"inspect"', '"brand"', '"history"', '"templates"']) {
       expect(builder).toContain(key);
     }
   });

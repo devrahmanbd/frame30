@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   ShieldAlert,
+  AlertOctagon,
   Bot,
   CreditCard,
   Building2,
@@ -26,7 +27,7 @@ import {
   ShieldCheck,
   Server,
   Lock,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import { formatMinor } from "@/lib/revenue";
 import {
@@ -47,6 +48,7 @@ import {
 } from "@/components/root/OwnerUi";
 import { TableRow, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/root/")({
@@ -389,329 +391,426 @@ function RootCommandCenter() {
   ];
 
   return (
-    <section className="space-y-8 pb-12">
-      {/* Top Sovereign Header Banner */}
-      <OwnerHeader
-        title={t("Platform Command Center", "প্ল্যাটফর্ম কমান্ড সেন্টার")}
-        subtitle={t(
-          "Global sovereign control plane for Framique cloud hosting, commerce engine, and multi-tenant infrastructure.",
-          "ফ্রেমিউক ক্লাউড হোস্টিং, কমার্স ও মাল্টি-টেন্যান্ট অবকাঠামোর সার্বভৌমিক কন্ট্রোল প্লেন।",
-        )}
-        badge={
-          <span className="inline-flex items-center gap-1 rounded-sm border border-rose-500/30 bg-rose-500/10 px-2 py-0.5 text-xs font-mono font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
-            <Lock className="size-3 shrink-0" aria-hidden="true" />
-            ROOT PRIVILEGED
-          </span>
-        }
-        actions={
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <StatePill tone={isSystemDegraded ? "warn" : "ok"}>
-              {isSystemDegraded
-                ? t("Attention Required", "মনোযোগ প্রয়োজন")
-                : t("All Systems Nominal", "সকল সিস্টেম স্বাভাবিক")}
-            </StatePill>
-            <div className="hidden items-center gap-1.5 rounded-lg border border-border/70 bg-muted/40 px-3 py-1.5 text-xs text-muted-foreground font-mono md:flex">
-              <kbd className="rounded bg-background px-1.5 py-0.5 text-[10px] font-semibold text-foreground border border-border shadow-2xs">
-                ⌘K
-              </kbd>
-              <span>{t("Command Palette", "কমান্ড প্যালেট")}</span>
+    <div className="flex flex-col min-h-screen bg-background">
+      {/* Elite Hero Section (Always Dark for Command Center feel) */}
+      <div className="relative overflow-hidden bg-slate-950 text-slate-50 pb-24 pt-10 rounded-b-[2.5rem] shadow-[0_10px_40px_-15px_rgba(0,0,0,0.5)]">
+        {/* Glow Effects */}
+        <div className="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-primary/20 to-transparent opacity-40 blur-3xl pointer-events-none" />
+        <div className="absolute right-0 top-0 h-[400px] w-[600px] bg-gradient-to-bl from-blue-500/20 to-transparent opacity-30 blur-3xl rounded-full pointer-events-none" />
+
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 space-y-10">
+          <header className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-primary/20 text-primary border border-primary/30 shadow-[0_0_20px_rgba(var(--primary),0.3)]">
+                  <Lock className="size-6" />
+                </div>
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight font-bangla-display leading-tight text-white">
+                  {t("Platform Command Center", "প্ল্যাটফর্ম কমান্ড সেন্টার")}
+                </h1>
+              </div>
+              <p className="text-sm text-slate-400 font-bangla-body max-w-2xl leading-relaxed">
+                {t(
+                  "Global sovereign control plane for Framique cloud hosting, commerce engine, and multi-tenant infrastructure.",
+                  "ফ্রেমিউক ক্লাউড হোস্টিং, কমার্স ও মাল্টি-টেন্যান্ট অবকাঠামোর সার্বভৌমিক কন্ট্রোল প্লেন।",
+                )}
+              </p>
             </div>
-          </div>
-        }
-      />
 
-      {/* Top-Line Executive KPIs */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground font-mono">
-            {t(
-              "Executive Telemetry & Vital Signals",
-              "এক্সিকিউটিভ টেলিমেট্রি ও ভাইটাল সিগন্যাল",
-            )}
-          </h2>
-          <span className="text-xs text-muted-foreground font-mono">
-            Auto-refresh: 30s
-          </span>
-        </div>
+            <div className="flex flex-wrap items-center gap-3 shrink-0">
+              <StatePill
+                tone={isSystemDegraded ? "warn" : "ok"}
+                className="bg-slate-900 border-slate-800 text-slate-200 shadow-inner px-4 py-1.5"
+              >
+                {isSystemDegraded
+                  ? t("Attention Required", "মনোযোগ প্রয়োজন")
+                  : t("All Systems Nominal", "সকল সিস্টেম স্বাভাবিক")}
+              </StatePill>
+              <div className="hidden items-center gap-1.5 rounded-lg border border-slate-800 bg-slate-900/50 px-3 py-1.5 text-xs text-slate-400 font-mono md:flex shadow-inner">
+                <kbd className="rounded bg-slate-950 px-1.5 py-0.5 text-[10px] font-semibold border border-slate-800 text-slate-300 shadow-sm">
+                  ⌘K
+                </kbd>
+                <span>{t("Command Palette", "কমান্ড প্যালেট")}</span>
+              </div>
+            </div>
+          </header>
 
-        <StatGrid cols={4}>
-          <StatCard
-            label={t("Platform MRR", "প্ল্যাটফর্ম এমআরআর")}
-            value={rev ? formatMinor(rev.mrrMinorInt, rev.currencyCode) : "৳ 0"}
-            subtext={
-              rev
-                ? `${formatMinor(rev.mrrMinorInt * 12, rev.currencyCode)} ARR projected`
-                : undefined
-            }
-            icon={TrendingUp}
-            tone="primary"
-            to="/root/revenue"
-          />
-          <StatCard
-            label={t(
-              "Active Stores (Paying / Trial)",
-              "সক্রিয় স্টোর (পেইং / ট্রায়াল)",
-            )}
-            value={rev ? `${rev.paying} / ${rev.trialing}` : "0 / 0"}
-            subtext={
-              tenants?.total
-                ? `${tenants.total} total hosted stores`
-                : "Tenant store registry"
-            }
-            icon={Building2}
-            tone="ok"
-            to="/root/tenants"
-          />
-          <StatCard
-            label={t(
-              "Support Escalations",
-              "সাপোর্ট এসকেলেশন (হিউম্যান এজেন্ট)",
-            )}
-            value={String(needsAgentCount)}
-            subtext={
-              needsAgentCount > 0
-                ? t("Requires human takeover", "হিউম্যান টেকওভার প্রয়োজন")
-                : t(
-                    "AI handling autonomously",
-                    "এআই স্বয়ংক্রিয়ভাবে সামলাচ্ছে",
-                  )
-            }
-            icon={Bot}
-            tone={needsAgentCount > 0 ? "bad" : "default"}
-            to="/root/ai"
-          />
-          <StatCard
-            label={t("Pending Merchant Payouts", "অপেক্ষমাণ পেআউট")}
-            value={String(pendingPayoutCount)}
-            subtext={t("4-Eyes approval queue", "৪-চোখ অনুমোদন কিউ")}
-            icon={CreditCard}
-            tone={pendingPayoutCount > 0 ? "warn" : "default"}
-            to="/root/payouts"
-          />
-        </StatGrid>
-      </div>
-
-      {/* Emergency Platform Posture & Kill Switches */}
-      <OwnerCard
-        title={t(
-          "Emergency Posture & Sovereign Circuit Breakers",
-          "প্ল্যাটফর্ম জরুরি সুইচ ও সার্কিট ব্রেকার",
-        )}
-        description={t(
-          "Immediate platform-wide fail-open or fail-safe circuit breakers. Fully audited under the 4-eyes principle.",
-          "জরুরি পরিস্থিতিতে প্ল্যাটফর্ম-ব্যাপী অবিলম্বে সার্ভিস বন্ধ বা চালু করার সুইচ।",
-        )}
-        actions={
-          <Link
-            to="/root/settings"
-            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            <span>{t("Manage Circuit Breakers →", "কন্ট্রোল পরিচালনা →")}</span>
-          </Link>
-        }
-      >
-        <div className="flex flex-wrap items-center gap-3 pt-1">
-          <div
-            className={cn(
-              "inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium font-mono transition-colors",
-              flags.ai_kill_switch === false
-                ? "border-rose-500/30 bg-rose-500/10 text-rose-600 dark:text-rose-400"
-                : "border-primary/20 bg-primary/5 text-primary",
-            )}
-          >
-            <Bot className="size-3.5 shrink-0" />
-            <span>
-              {flags.ai_kill_switch === false
-                ? "AI Support: Paused"
-                : "AI Support: Active"}
-            </span>
-          </div>
-
-          <div
-            className={cn(
-              "inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium font-mono transition-colors",
-              flags.fraud_engine_enabled === false
-                ? "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300"
-                : "border-primary/20 bg-primary/5 text-primary",
-            )}
-          >
-            <ShieldAlert className="size-3.5 shrink-0" />
-            <span>
-              {flags.fraud_engine_enabled === false
-                ? "Fraud Defense: Manual Bypass"
-                : "Fraud Defense: Enforced"}
-            </span>
-          </div>
-
-          <div className="inline-flex items-center gap-2 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-3 py-2 text-xs font-medium font-mono text-emerald-700 dark:text-emerald-300">
-            <CheckCircle2 className="size-3.5 shrink-0" />
-            <span>Gateways: Verified Rails</span>
-          </div>
-
-          <div className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-muted/30 px-3 py-2 text-xs font-medium font-mono text-muted-foreground">
-            <ShieldCheck className="size-3.5 shrink-0" />
-            <span>RLS: Tier-1 Live Lockdown</span>
-          </div>
-        </div>
-      </OwnerCard>
-
-      {/* 16 Sovereign Desks Launchpad */}
-      <div className="space-y-6">
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between border-b border-border/70 pb-3">
-          <div>
-            <h2 className="text-lg font-bold tracking-tight text-foreground font-bangla-display">
-              {t(
-                "16 Sovereign Control Desks",
-                "১৬টি সার্বভৌমিক নিয়ন্ত্রণ ডেস্ক",
-              )}
-            </h2>
-            <p className="text-xs text-muted-foreground font-bangla-body">
-              {t(
-                "Direct platform operations, multi-tenant isolation, money conformance, and infrastructure controls.",
-                "সরাসরি প্ল্যাটফর্ম অপারেশন, মাল্টি-টেন্যান্ট আইসোলেশন ও অবকাঠামো কন্ট্রোল।",
-              )}
-            </p>
-          </div>
-          <span className="text-xs font-mono text-muted-foreground">
-            16 / 16 Operational
-          </span>
-        </div>
-
-        <div className="space-y-8">
-          {deskClusters.map((cluster) => (
-            <div key={cluster.title} className="space-y-3">
-              <div className="space-y-0.5">
-                <h3 className="text-sm font-semibold tracking-tight text-foreground font-bangla-display">
-                  {cluster.title}
-                </h3>
-                <p className="text-xs text-muted-foreground font-bangla-body">
-                  {cluster.description}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Link
+              to="/root/revenue"
+              className="group relative overflow-hidden rounded-2xl border border-slate-800/60 bg-slate-900/40 p-5 backdrop-blur-md transition-all hover:border-primary/50 hover:bg-slate-900/60 hover:shadow-[0_0_30px_rgba(var(--primary),0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <div className="flex flex-col gap-1">
+                <div className="flex items-start justify-between">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 font-mono">
+                    Platform MRR
+                  </p>
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 transition-colors group-hover:bg-emerald-500/20">
+                    <TrendingUp className="size-4" />
+                  </div>
+                </div>
+                <div className="mt-2 text-2xl sm:text-3xl font-bold font-mono tabular-nums text-white tracking-tight">
+                  {rev ? formatMinor(rev.mrrMinorInt, rev.currencyCode) : "৳ 0"}
+                </div>
+                <p className="mt-1 text-xs text-slate-500 font-mono">
+                  {rev
+                    ? `${formatMinor(rev.mrrMinorInt * 12, rev.currencyCode)} ARR`
+                    : "..."}
                 </p>
               </div>
+            </Link>
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {cluster.desks.map((desk) => {
-                  const Icon = desk.icon;
-                  return (
-                    <Link
-                      key={desk.to}
-                      to={desk.to}
-                      className="group relative flex flex-col justify-between rounded-xl border border-border/80 bg-card/95 p-4 min-h-[8.5rem] transition-all duration-200 hover:border-primary/50 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                    >
-                      <div>
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex size-9 items-center justify-center rounded-lg bg-muted/60 text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-                            <Icon className="size-4.5" />
-                          </div>
-                          {desk.badge && (
-                            <span
-                              className={cn(
-                                "inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold font-mono tracking-tight",
-                                desk.alert
-                                  ? "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30 animate-pulse"
-                                  : "bg-muted text-muted-foreground",
-                              )}
-                            >
-                              {desk.badge}
-                            </span>
-                          )}
-                        </div>
+            <Link
+              to="/root/tenants"
+              search={{ q: "" }}
+              className="group relative overflow-hidden rounded-2xl border border-slate-800/60 bg-slate-900/40 p-5 backdrop-blur-md transition-all hover:border-primary/50 hover:bg-slate-900/60 hover:shadow-[0_0_30px_rgba(var(--primary),0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <div className="flex flex-col gap-1">
+                <div className="flex items-start justify-between">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 font-mono">
+                    Active Stores
+                  </p>
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 transition-colors group-hover:bg-blue-500/20">
+                    <Building2 className="size-4" />
+                  </div>
+                </div>
+                <div className="mt-2 text-2xl sm:text-3xl font-bold font-mono tabular-nums text-white tracking-tight">
+                  {rev ? `${rev.paying}` : "0"}{" "}
+                  <span className="text-lg text-slate-500 font-normal">
+                    / {rev ? rev.trialing : "0"}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-slate-500 font-mono">
+                  {tenants?.total ? `${tenants.total} Total Registry` : "..."}
+                </p>
+              </div>
+            </Link>
 
-                        <h4 className="mt-3 text-sm font-bold tracking-tight text-foreground transition-colors group-hover:text-primary font-bangla-display leading-snug">
-                          {desk.title}
-                        </h4>
-                        <p className="mt-1 text-xs text-muted-foreground font-bangla-body leading-relaxed line-clamp-2">
-                          {desk.detail}
-                        </p>
-                      </div>
+            <Link
+              to="/root/ai"
+              className="group relative overflow-hidden rounded-2xl border border-slate-800/60 bg-slate-900/40 p-5 backdrop-blur-md transition-all hover:border-rose-500/50 hover:bg-slate-900/60 hover:shadow-[0_0_30px_rgba(244,63,94,0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+            >
+              <div className="flex flex-col gap-1">
+                <div className="flex items-start justify-between">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 font-mono">
+                    Escalations
+                  </p>
+                  <div
+                    className={cn(
+                      "flex size-8 items-center justify-center rounded-lg transition-colors",
+                      needsAgentCount > 0
+                        ? "bg-rose-500/20 text-rose-400 animate-pulse"
+                        : "bg-slate-800 text-slate-400 group-hover:bg-slate-700",
+                    )}
+                  >
+                    <Bot className="size-4" />
+                  </div>
+                </div>
+                <div className="mt-2 text-2xl sm:text-3xl font-bold font-mono tabular-nums text-white tracking-tight">
+                  {needsAgentCount}
+                </div>
+                <p className="mt-1 text-xs text-slate-500 font-mono">
+                  {needsAgentCount > 0
+                    ? "Human Takeover Required"
+                    : "AI Autonomous"}
+                </p>
+              </div>
+            </Link>
 
-                      <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground transition-colors group-hover:text-primary pt-2 border-t border-border/40">
-                        <span>{t("Open Desk", "ডেস্ক খুলুন")}</span>
-                        <ArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
-                      </div>
-                    </Link>
-                  );
-                })}
+            <Link
+              to="/root/payouts"
+              className="group relative overflow-hidden rounded-2xl border border-slate-800/60 bg-slate-900/40 p-5 backdrop-blur-md transition-all hover:border-amber-500/50 hover:bg-slate-900/60 hover:shadow-[0_0_30px_rgba(245,158,11,0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+            >
+              <div className="flex flex-col gap-1">
+                <div className="flex items-start justify-between">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 font-mono">
+                    Pending Payouts
+                  </p>
+                  <div
+                    className={cn(
+                      "flex size-8 items-center justify-center rounded-lg transition-colors",
+                      pendingPayoutCount > 0
+                        ? "bg-amber-500/20 text-amber-400"
+                        : "bg-slate-800 text-slate-400 group-hover:bg-slate-700",
+                    )}
+                  >
+                    <CreditCard className="size-4" />
+                  </div>
+                </div>
+                <div className="mt-2 text-2xl sm:text-3xl font-bold font-mono tabular-nums text-white tracking-tight">
+                  {pendingPayoutCount}
+                </div>
+                <p className="mt-1 text-xs text-slate-500 font-mono">
+                  4-Eyes Approval Queue
+                </p>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Area Overlapping the Hero */}
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 space-y-10 pb-16">
+        {/* Emergency Circuit Breakers (Elevated) */}
+        <div className="rounded-2xl border border-border bg-card/95 backdrop-blur-xl shadow-xl overflow-hidden transition-all hover:shadow-2xl hover:border-border/80">
+          <div className="border-b border-border bg-muted/30 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h2 className="text-base font-bold tracking-tight flex items-center gap-2 font-bangla-display">
+                <AlertOctagon className="size-5 text-rose-500" />
+                {t("Sovereign Circuit Breakers", "জরুরি সার্কিট ব্রেকার")}
+              </h2>
+              <p className="text-xs text-muted-foreground font-bangla-body">
+                {t(
+                  "Immediate platform-wide fail-open or fail-safe triggers. Audited 4-eyes actions.",
+                  "জরুরি পরিস্থিতিতে প্ল্যাটফর্ম-ব্যাপী সার্ভিস বন্ধ বা চালু করার সুইচ।",
+                )}
+              </p>
+            </div>
+            <Link
+              to="/root/settings"
+              className="inline-flex shrink-0 min-h-9 items-center gap-2 rounded-xl border border-border bg-background px-4 py-2 text-xs font-bold text-foreground transition-all hover:bg-muted hover:border-foreground/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary shadow-sm"
+            >
+              <Settings className="size-4" />
+              <span>{t("Manage Controls", "কন্ট্রোল পরিচালনা")}</span>
+            </Link>
+          </div>
+          <div className="p-6">
+            <div className="flex flex-wrap items-center gap-4">
+              <div
+                className={cn(
+                  "inline-flex items-center gap-2.5 rounded-xl border px-4 py-2.5 text-xs font-bold font-mono transition-colors shadow-sm",
+                  flags.ai_kill_switch === false
+                    ? "border-rose-500/40 bg-rose-500/10 text-rose-600 dark:text-rose-400"
+                    : "border-primary/20 bg-primary/5 text-primary",
+                )}
+              >
+                <Bot className="size-4.5 shrink-0" />
+                <span>
+                  {flags.ai_kill_switch === false
+                    ? "AI Support: Paused"
+                    : "AI Support: Active"}
+                </span>
+              </div>
+              <div
+                className={cn(
+                  "inline-flex items-center gap-2.5 rounded-xl border px-4 py-2.5 text-xs font-bold font-mono transition-colors shadow-sm",
+                  flags.fraud_engine_enabled === false
+                    ? "border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400"
+                    : "border-primary/20 bg-primary/5 text-primary",
+                )}
+              >
+                <ShieldAlert className="size-4.5 shrink-0" />
+                <span>
+                  {flags.fraud_engine_enabled === false
+                    ? "Fraud Defense: Bypass"
+                    : "Fraud Defense: Enforced"}
+                </span>
+              </div>
+              <div className="inline-flex items-center gap-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5 text-xs font-bold font-mono text-emerald-700 dark:text-emerald-400 shadow-sm">
+                <CheckCircle2 className="size-4.5 shrink-0" />
+                <span>Gateways: Verified Rails</span>
+              </div>
+              <div className="inline-flex items-center gap-2.5 rounded-xl border border-border/80 bg-muted/40 px-4 py-2.5 text-xs font-bold font-mono text-muted-foreground shadow-sm">
+                <ShieldCheck className="size-4.5 shrink-0" />
+                <span>RLS: Tier-1 Live Lockdown</span>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Recent Privileged Audit Stream */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-bold tracking-tight text-foreground font-bangla-display">
-              {t(
-                "Privileged Platform Audit Stream",
-                "প্রিভিলেজড প্ল্যাটফর্ম অডিট ইভেন্ট",
-              )}
-            </h2>
-            <p className="text-xs text-muted-foreground">
-              {t(
-                "Append-only ledger of cross-tenant actions, kill-switch toggles, and payout approvals.",
-                "ক্রস-টেন্যান্ট অ্যাকশন ও পেআউট অনুমোদনের অপরিবর্তনীয় অডিট লেজার।",
-              )}
-            </p>
           </div>
-          <Link
-            to="/root/audit"
-            className="inline-flex min-h-11 items-center gap-1 text-xs font-semibold text-primary transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xs px-2"
-          >
-            <span>
-              {t("View full audit trail", "সম্পূর্ণ অডিট ট্রেইল দেখুন")}
-            </span>
-            <ArrowRight className="size-3" />
-          </Link>
         </div>
 
-        {audits.length === 0 ? (
-          <div className="rounded-xl border border-border/80 bg-card p-8 text-center text-sm text-muted-foreground">
-            {t(
-              "No recent privileged operations recorded in the ledger.",
-              "কোনো সাম্প্রতিক প্রিভিলেজড অপারেশন রেকর্ড নেই।",
+        {/* 16 Sovereign Desks Launchpad */}
+        <div className="space-y-6 pt-4">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between border-b border-border/70 pb-4">
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-foreground font-bangla-display flex items-center gap-2">
+                <Layers className="size-5 text-primary" />
+                {t(
+                  "16 Sovereign Control Desks",
+                  "১৬টি সার্বভৌমিক নিয়ন্ত্রণ ডেস্ক",
+                )}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground font-bangla-body">
+                {t(
+                  "Direct platform operations, multi-tenant isolation, money conformance, and infrastructure controls.",
+                  "সরাসরি প্ল্যাটফর্ম অপারেশন, মাল্টি-টেন্যান্ট আইসোলেশন ও অবকাঠামো কন্ট্রোল।",
+                )}
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold font-mono text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shadow-sm">
+              <CheckCircle2 className="size-3.5" />
+              16 / 16 Operational
+            </span>
+          </div>
+
+          <Tabs defaultValue={deskClusters[0].title} className="w-full">
+            <TabsList className="flex flex-wrap h-auto gap-2 bg-muted/30 p-2 border border-border/60 rounded-xl justify-start shadow-inner">
+              {deskClusters.map((cluster) => (
+                <TabsTrigger
+                  key={cluster.title}
+                  value={cluster.title}
+                  className="text-xs font-bold px-4 py-2 rounded-lg data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md transition-all"
+                >
+                  {cluster.title}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+
+            <div className="mt-8">
+              {deskClusters.map((cluster) => (
+                <TabsContent
+                  key={cluster.title}
+                  value={cluster.title}
+                  className="outline-none focus:outline-none animate-in fade-in slide-in-from-bottom-2 duration-300"
+                >
+                  <div className="space-y-1 mb-6">
+                    <h3 className="text-lg font-bold tracking-tight text-foreground font-bangla-display">
+                      {cluster.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground font-bangla-body">
+                      {cluster.description}
+                    </p>
+                  </div>
+
+                  <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {cluster.desks.map((desk) => {
+                      const Icon = desk.icon;
+                      return (
+                        <Link
+                          key={desk.to}
+                          to={desk.to}
+                          className="group relative flex flex-col justify-between rounded-2xl border border-border bg-card/50 p-5 min-h-[9rem] transition-all duration-300 hover:border-primary/50 hover:bg-card hover:shadow-xl hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 overflow-hidden"
+                        >
+                          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-primary/0 to-transparent transition-all duration-500 group-hover:via-primary/50" />
+                          <div>
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex size-10 items-center justify-center rounded-xl bg-muted text-muted-foreground transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:shadow-lg group-hover:shadow-primary/20">
+                                <Icon className="size-5" />
+                              </div>
+                              {desk.badge && (
+                                <span
+                                  className={cn(
+                                    "inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold font-mono tracking-tight shadow-sm border",
+                                    desk.alert
+                                      ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30 animate-pulse"
+                                      : "bg-muted text-muted-foreground border-border/50",
+                                  )}
+                                >
+                                  {desk.badge}
+                                </span>
+                              )}
+                            </div>
+
+                            <h4 className="mt-4 text-base font-bold tracking-tight text-foreground transition-colors group-hover:text-primary font-bangla-display leading-snug">
+                              {desk.title}
+                            </h4>
+                            <p className="mt-1.5 text-xs text-muted-foreground font-bangla-body leading-relaxed line-clamp-2">
+                              {desk.detail}
+                            </p>
+                          </div>
+
+                          <div className="mt-5 flex items-center justify-between text-[11px] font-bold text-muted-foreground transition-colors group-hover:text-primary uppercase tracking-wider">
+                            <span>{t("Open Desk", "ডেস্ক খুলুন")}</span>
+                            <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </TabsContent>
+              ))}
+            </div>
+          </Tabs>
+        </div>
+
+        {/* Recent Privileged Audit Stream */}
+        <div className="space-y-4 pt-6">
+          <div className="flex items-end justify-between">
+            <div className="space-y-1">
+              <h2 className="text-lg font-bold tracking-tight text-foreground font-bangla-display flex items-center gap-2">
+                <FileText className="size-5 text-primary" />
+                {t(
+                  "Privileged Platform Audit Stream",
+                  "প্রিভিলেজড প্ল্যাটফর্ম অডিট ইভেন্ট",
+                )}
+              </h2>
+              <p className="text-sm text-muted-foreground font-bangla-body">
+                {t(
+                  "Append-only ledger of cross-tenant actions, kill-switch toggles, and payout approvals.",
+                  "ক্রস-টেন্যান্ট অ্যাকশন ও পেআউট অনুমোদনের অপরিবর্তনীয় অডিট লেজার।",
+                )}
+              </p>
+            </div>
+            <Link
+              to="/root/audit"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-lg bg-muted/50 px-3 text-xs font-bold text-primary transition-all hover:bg-muted hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            >
+              <span>{t("View Full Ledger", "সম্পূর্ণ লেজার দেখুন")}</span>
+              <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+
+          <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+            {audits.length === 0 ? (
+              <div className="p-12 text-center flex flex-col items-center gap-3">
+                <div className="flex size-12 items-center justify-center rounded-full bg-muted">
+                  <ShieldCheck className="size-6 text-muted-foreground" />
+                </div>
+                <p className="text-sm font-medium text-muted-foreground">
+                  {t(
+                    "No recent privileged operations recorded in the ledger.",
+                    "কোনো সাম্প্রতিক প্রিভিলেজড অপারেশন রেকর্ড নেই।",
+                  )}
+                </p>
+              </div>
+            ) : (
+              <OwnerTable
+                head={[
+                  t("Action / Op", "অ্যাকশন / কাজ"),
+                  t("Scope / Tenant", "স্কোপ / টেন্যান্ট"),
+                  t("Timestamp (Local)", "সময়"),
+                  t("Integrity", "ভেরিফিকেশন"),
+                ]}
+                className="border-0 shadow-none rounded-none"
+              >
+                {audits.map((item) => (
+                  <TableRow
+                    key={item.id}
+                    className="hover:bg-muted/30 transition-colors"
+                  >
+                    <TableCell className="font-mono font-bold text-xs text-primary">
+                      {item.action}
+                    </TableCell>
+                    <TableCell className="text-xs">
+                      <span className="text-muted-foreground uppercase text-[10px] tracking-wider font-bold mr-1">
+                        Scope:
+                      </span>
+                      <span className="font-bold text-foreground">
+                        {item.scope ?? "platform"}
+                      </span>
+                      {item.entity_id && (
+                        <span className="ml-1.5 font-mono text-[11px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded-sm">
+                          {item.entity_id.slice(0, 10)}…
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground font-mono font-medium">
+                      {new Date(item.created_at).toLocaleString("en-BD", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })}
+                    </TableCell>
+                    <TableCell>
+                      <StatePill tone="ok" className="shadow-sm">
+                        Audited
+                      </StatePill>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </OwnerTable>
             )}
           </div>
-        ) : (
-          <OwnerTable
-            head={[
-              t("Action / Op", "অ্যাকশন / কাজ"),
-              t("Scope / Tenant", "স্কোপ / টেন্যান্ট"),
-              t("Timestamp (Local)", "সময়"),
-              t("Integrity", "ভেরিফিকেশন"),
-            ]}
-          >
-            {audits.map((item) => (
-              <TableRow key={item.id} className="hover:bg-muted/40">
-                <TableCell className="font-mono font-semibold text-xs text-primary">
-                  {item.action}
-                </TableCell>
-                <TableCell className="text-xs">
-                  <span className="text-muted-foreground">Scope: </span>
-                  <span className="font-medium text-foreground">
-                    {item.scope ?? "platform"}
-                  </span>
-                  {item.entity_id && (
-                    <span className="ml-1.5 font-mono text-[11px] text-muted-foreground">
-                      ({item.entity_id.slice(0, 10)}…)
-                    </span>
-                  )}
-                </TableCell>
-                <TableCell className="text-xs text-muted-foreground font-mono">
-                  {new Date(item.created_at).toLocaleString("en-BD", {
-                    dateStyle: "short",
-                    timeStyle: "short",
-                  })}
-                </TableCell>
-                <TableCell>
-                  <StatePill tone="ok">audited</StatePill>
-                </TableCell>
-              </TableRow>
-            ))}
-          </OwnerTable>
-        )}
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

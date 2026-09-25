@@ -32,7 +32,16 @@ export type ServerHook = (typeof SERVER_HOOKS)[number];
 export const BLOCK_SLOTS = ["header", "main", "footer"] as const;
 export type BlockSlot = (typeof BLOCK_SLOTS)[number];
 
-export type SettingKind = "text" | "number" | "boolean" | "select";
+export type SettingKind =
+  | "text"
+  | "number"
+  | "boolean"
+  | "select"
+  | "textarea"
+  | "color"
+  | "media"
+  | "url"
+  | "date";
 export type SettingField = {
   key: string;
   label: string;
@@ -50,6 +59,13 @@ export type PluginWidgetDef = {
   /** Sandboxed bundle entry evaluated inside the island's null-origin frame. */
   entry: string;
   height?: number;
+  /**
+   * Floating widgets (chat bubbles) are hosted by the parent in a
+   * viewport-fixed 56px frame. The entry must render in-flow (fill the
+   * frame) — `position:fixed` inside the entry resolves against the tiny
+   * iframe viewport, never the page, and renders clipped/invisible.
+   */
+  floating?: boolean;
 };
 
 export type PluginManifest = {
@@ -129,7 +145,19 @@ function settingField(
     return null;
   }
   const kind = String(r.kind ?? "text") as SettingKind;
-  if (!["text", "number", "boolean", "select"].includes(kind)) {
+  if (
+    ![
+      "text",
+      "number",
+      "boolean",
+      "select",
+      "textarea",
+      "color",
+      "media",
+      "url",
+      "date",
+    ].includes(kind)
+  ) {
     errors.push(`settings[${index}].kind`);
     return null;
   }
@@ -231,6 +259,7 @@ export function parseManifest(input: unknown): ManifestVerdict {
         typeof r.height === "number"
           ? Math.min(1200, Math.max(80, r.height))
           : 320,
+      ...(r.floating === true ? { floating: true as const } : {}),
     });
   });
   if (
@@ -358,6 +387,29 @@ export function validateSettings(
         continue;
       }
       out[f.key] = s;
+    } else if (f.kind === "textarea")
+      out[f.key] = String(v).slice(0, f.max ?? 2000);
+    else if (f.kind === "color") {
+      const s = String(v);
+      if (!/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(s)) {
+        errors.push(`${f.key}.not_a_color`);
+        continue;
+      }
+      out[f.key] = s;
+    } else if (f.kind === "media" || f.kind === "url") {
+      const s = String(v);
+      if (s !== "" && !/^https?:\/\//.test(s)) {
+        errors.push(`${f.key}.not_a_url`);
+        continue;
+      }
+      out[f.key] = s;
+    } else if (f.kind === "date") {
+      const s = String(v);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(s) || Number.isNaN(Date.parse(s))) {
+        errors.push(`${f.key}.not_a_date`);
+        continue;
+      }
+      out[f.key] = s;
     } else out[f.key] = String(v).slice(0, f.max ?? 500);
   }
   return { values: out, errors };
@@ -372,6 +424,8 @@ export type InstalledPlugin = {
   settings: SettingsValues;
   /** Merchant paused it, or the platform kill switch disabled the tenant. */
   enabled: boolean;
+  /** Per-install auto-updates flag (`plugin_state.auto_updates`, Task 2 column). */
+  autoUpdates?: boolean;
 };
 
 export type PluginResolution =

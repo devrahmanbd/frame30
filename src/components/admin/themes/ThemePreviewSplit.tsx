@@ -17,7 +17,7 @@ import {
   Star,
   Tablet,
   X,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import {
   PREVIEW_WIDTHS,

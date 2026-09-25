@@ -9,7 +9,10 @@ describe("CMS & Dashboard Navigation Hierarchy", () => {
 
     const [themesItem, pluginsItem] = marketplace!.items;
     expect(themesItem.en).toBe("Themes");
-    expect(themesItem.search).toEqual({ tab: "theme" });
+    // Themes deep-links straight to themes management (no tab param since
+    // the theme-system restore); plugins opens the marketplace plugin tab.
+    expect(themesItem.to).toBe("/dashboard/content/themes");
+    expect(themesItem.search).toBeUndefined();
 
     expect(pluginsItem.en).toBe("Plugins");
     expect(pluginsItem.search).toEqual({ tab: "plugin" });
@@ -24,26 +27,30 @@ describe("CMS & Dashboard Navigation Hierarchy", () => {
   it("Categories menu is named Category (not Organisation)", () => {
     const products = ADMIN_NAV.find((g) => g.key === "products");
     expect(products).toBeDefined();
-    const catItem = products!.items.find((i) => i.to === "/dashboard/categories");
+    const catItem = products!.items.find(
+      (i) => i.to === "/dashboard/categories",
+    );
     expect(catItem).toBeDefined();
     expect(catItem!.en).toBe("Category");
   });
 
-  it("Appearance contains Themes management, Customize (builder), Menus, and Custom CSS, JS", () => {
+  it("Appearance contains Themes management, Menus, and Custom CSS, JS", () => {
     const appearance = ADMIN_NAV.find((g) => g.key === "appearance");
     expect(appearance).toBeDefined();
 
     const targets = appearance!.items.map((i) => i.to);
     expect(targets).toContain("/dashboard/content/themes");
-    expect(targets).toContain("/dashboard/builder");
     expect(targets).toContain("/dashboard/content/menus");
     expect(targets).toContain("/dashboard/content/custom-code");
 
     const labels = appearance!.items.map((i) => i.en);
     expect(labels).toContain("Themes");
-    expect(labels).toContain("Customize");
     expect(labels).toContain("Menus");
     expect(labels).toContain("Custom CSS, JS");
+
+    // The standalone Customize (/dashboard/builder) entry was intentionally
+    // removed from merchant nav; the builder is entered from Themes instead.
+    expect(targets).not.toContain("/dashboard/builder");
   });
 
   it("Plugins is a single parent top-level menu with Installed Plugins and Add New", () => {

@@ -95,7 +95,21 @@ describe("plugin sandbox", () => {
       /rejects invented permissions, unknown hooks and dynamic code/,
     );
     const sandbox = read("src/components/marketplace/WidgetSandbox.tsx");
-    expect(sandbox).toMatch(/sandbox=/);
-    expect(sandbox).not.toMatch(/allow-same-origin/);
+    // The sandbox attribute value must never contain allow-same-origin (a
+    // null origin is what isolates the frame). Comments may discuss the flag
+    // by name, so assert on the attribute/policy values, not the whole file.
+    expect(sandbox).toMatch(/sandbox=\{policy\.iframe\.sandbox\}/);
+    const sandboxAttrs = [
+      ...sandbox.matchAll(/sandbox\s*=\s*(?:"([^"]*)"|\{([^}]*)\})/g),
+    ].map((m) => m[1] ?? m[2] ?? "");
+    for (const attr of sandboxAttrs) {
+      expect(attr).not.toMatch(/allow-same-origin/);
+    }
+    const policy = read("src/lib/risk-tier.ts");
+    for (const m of policy.matchAll(/sandbox:\s*"([^"]*)"/g)) {
+      expect(m[1]).not.toMatch(/allow-same-origin/);
+    }
+    expect(policy).toMatch(/allowSameOrigin:\s*false/);
+    expect(policy).not.toMatch(/allowSameOrigin:\s*true/);
   });
 });

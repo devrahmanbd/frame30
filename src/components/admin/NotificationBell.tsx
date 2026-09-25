@@ -2,7 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Bell, AlertTriangle, AlertOctagon, Info } from "lucide-react";
+import {
+  Bell,
+  AlertTriangle,
+  AlertOctagon,
+  Info,
+} from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import {
   adminNotificationsFn,

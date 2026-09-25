@@ -8,7 +8,7 @@
  *   (w-full) with subtle hairline dividers, zero fake window chrome, and full accessibility.
  */
 import type { ReactNode } from "react";
-import { Check, Minus } from "lucide-react";
+import { Check, Minus } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/public/motion";
 

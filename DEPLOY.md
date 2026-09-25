@@ -33,20 +33,26 @@
 If the production server is physically lost, stolen, or destroyed, execute this 100%-verified disaster recovery procedure on any clean Linux machine:
 
 ### 1. Provision Clean Machine
+
 Install Docker and Zstandard:
+
 ```bash
 sudo apt-get update && sudo apt-get install -y docker.io docker-compose-plugin zstd rclone openssl
 ```
 
 ### 2. Retrieve Encrypted Whole-System Snapshot
+
 Fetch the certified snapshot from the off-site immutable WORM object storage:
+
 ```bash
 mkdir -p /var/backups/framique
 rclone copy s3:framique-backups/latest /var/backups/framique/latest --checksum
 ```
 
 ### 3. Decrypt Snapshot (Theft-Immune Master Key)
+
 If encrypted with the off-site KMS master key:
+
 ```bash
 openssl enc -d -aes-256-gcm -pbkdf2 \
   -in /var/backups/framique/latest/snapshot.enc \
@@ -57,24 +63,28 @@ tar -I zstd -xf /var/backups/framique/latest/snapshot.tar.zst -C /var/backups/fr
 ```
 
 ### 4. 1-Click System Reconstitution
+
 Restore database cluster (`auth`, `storage`, `public`, `roles`), storage bucket objects, and configs:
+
 ```bash
 ./ops/backup/restore.sh /var/backups/framique/latest --force
 ```
 
 ### 5. Optional Point-in-Time Recovery (PITR) to Target Second
+
 ```bash
 ./ops/backup/time-machine-snapshot.sh latest restore-pitr '2026-09-18 14:00:00 UTC'
 ```
 
 ### 6. Bring Up Application Topology
+
 ```bash
 docker compose -f ops/docker-compose.blue-green.yml up -d
 ```
 
 ### 7. Repoint DNS
-Point DNS A/AAAA records for `framique.qubickle.com` and custom domain CNAMEs to the new server IP. The system is 100% reconstituted.
 
+Point DNS A/AAAA records for `framique.qubickle.com` and custom domain CNAMEs to the new server IP. The system is 100% reconstituted.
 
 ## Deploy 7e16d41+ — security fixes WF-10 + WF-09 (no migration)
 
@@ -108,10 +118,46 @@ DOMAIN_EDGE_HOOK_URL=<edge provisioning hook, if any>
 DOMAIN_EDGE_TOKEN=<hook bearer token>
 ```
 
+Edge hook v1 (built 2026-09-24, proven live on flamelancer.com): no
+external push receiver is needed. The `:80` challenge path already serves
+`/.well-known/acme-challenge/` (certbot webroot + autossl fallback), and
+the app orders directly:
+`verifyDomain` → `requestCertificate` → `provisionAndApply`
+(`src/lib/edge-provision.server.ts`: fixed-shape argv, per-host
+single-flight + 10-min cooldown, keys never leave the server) →
+`/usr/local/bin/framique-cert-issue.sh` (`ops/edge/`: hostname
+re-validation, certbot webroot, PEM assembly 0600, haproxy reload) →
+`applyCertResult` → `active`. Traffic for unverified hosts triggers one
+coalesced verify chain (`triggerEdgeVerify`); polling and the manual
+button remain as fallback. Enable with `EDGE_LOCAL_PROVISION=1`
+(+ `ACME_STAGING=true` for safe path proofs). `DOMAIN_EDGE_HOOK_URL`
+stays unset (nothing to point it at); `DOMAIN_EDGE_TOKEN` still
+authenticates verify-sni/callbacks.
+
 Without the hook vars, custom domains park in `issuing_cert` (fail closed) —
 that is expected until edge automation lands; merchants still serve on the
 platform path. Never point merchants at `edge.framique.*` or `76.76.21.21`
 (Vercel) — those were placeholder values that shipped wrong instructions.
+
+## Live verification contract (deploy gate, Sept 25 2026)
+
+`ops/deploy-from-git.sh` verifies, never assumes:
+
+- **Primary host is merchant data.** Resolved live from `merchant_domains`
+  (`status='active'`, `is_primary`); never hardcoded. No active primary →
+  custom-host checks SKIP (merchant mid-rename), everything else still gates.
+- **Custom-host checks retry.** Edge SNI mapping flaps under load
+  (wrong-cert curl 60s from loopback). The gate retries 3×/10s with raw
+  curl (outside `check()` so `set -e` can't kill the script), then fails
+  honestly. A retry storm in the log means edge, not app — verify with
+  `curl -v` (cert subject) before touching code.
+- **Unmapped custom hosts must 404 bare.** No CMS site, no featured-store
+  fallback, no body (`server.ts` gate; `microscrop.shop/` pins it since the
+  flamelancer.com rename). If this check starts serving 200, a mapping
+  changed — check `merchant_domains` first, code second.
+- **Restart precedes verify.** rsync + `systemctl restart` happen before
+  checks, so a red gate means "new code live, proof incomplete" — read
+  which line failed before deciding rollback vs edge wait.
 
 ## Pending deploy-sensitive items (do NOT ship without these steps)
 

@@ -59,7 +59,9 @@ export function HtmlSandbox({
       ref={ref}
       title={title}
       sandbox={policy.iframe.sandbox}
-      referrerPolicy={policy.iframe.referrerPolicy as React.HTMLAttributeReferrerPolicy}
+      referrerPolicy={
+        policy.iframe.referrerPolicy as React.HTMLAttributeReferrerPolicy
+      }
       loading="lazy"
       srcDoc={sandboxSrcDoc(markup, css ? { css } : {})}
       className={className ?? "w-full border-0"}

@@ -10,6 +10,7 @@ import {
 } from "./lib/storefront-cache";
 import { isLocalHostname } from "./lib/edge-hosts";
 import {
+  decideStoreRedirectForPath,
   isBlockedPathStorefront,
   normalizeRequestHost,
 } from "./lib/storefront-host.server";
@@ -140,7 +141,15 @@ function cspConnectOrigins(): string[] {
     if (!value) continue;
     try {
       const origin = new URL(value).origin;
-      if (origin !== "null") out.add(origin);
+      if (origin === "null") continue;
+      out.add(origin);
+      // WebSocket schemes never inherit their https counterpart in CSP, so
+      // Supabase Realtime (wss://…) needs an explicit source (live 2026-09-22:
+      // realtime blocked by "connect-src 'self' https://framebase…").
+      if (origin.startsWith("https://"))
+        out.add(`wss://${origin.slice("https://".length)}`);
+      else if (origin.startsWith("http://"))
+        out.add(`ws://${origin.slice("http://".length)}`);
     } catch {
       // Not a parseable URL — skip rather than emit an invalid CSP source.
     }
@@ -148,7 +157,7 @@ function cspConnectOrigins(): string[] {
   return [...out];
 }
 
-function withSecurityHeaders(
+export function withSecurityHeaders(
   request: Request,
   response: Response,
   riskTier: RiskTier = "low",
@@ -381,13 +390,105 @@ export default {
           request.headers.get("x-forwarded-host") ??
           request.headers.get("host") ??
           url.host;
+        const normalizedHost = normalizeRequestHost(rawHost);
+        // Preview exemption is token-VERIFIED and merchant-bound (Sept
+        // 2026): any ?preview_token= value used to lift both path gates.
+        // A token minted for merchant A never exempts merchant B's paths.
+        let validPreview = false;
+        const previewToken = url.searchParams.get("preview_token");
+        if (previewToken) {
+          try {
+            const { verifyPreviewToken, previewSecret } =
+              await import("./lib/theme-preview.server");
+            const payload = verifyPreviewToken(previewSecret(), previewToken);
+            if (payload) {
+              const slugMatch = /^\/store\/([^/?#]+)/.exec(url.pathname);
+              if (!slugMatch) {
+                validPreview = true;
+              } else {
+                const { merchantIdForSlug } =
+                  await import("./lib/storefront-host.server");
+                const owner = await merchantIdForSlug(slugMatch[1] ?? "").catch(
+                  () => null,
+                );
+                validPreview = owner !== null && owner === payload.merchantId;
+              }
+            }
+          } catch {
+            validPreview = false;
+          }
+        }
+        // Unmapped custom hosts serve nothing at all: not the CMS marketing
+        // site, not a featured store, not an error page with a body. A bare
+        // 404 reveals nothing. Platform hosts, loopback dev, ephemeral
+        // preview deployments (same prefixes the HTTPS gate trusts) and
+        // mapped merchant hosts pass through untouched. Lookup failures
+        // fail OPEN (a DB blip must never take down every custom store);
+        // a definitive no-row blocks.
+        try {
+          const { isPlatformHost, resolveStorefrontHostFor } =
+            await import("./lib/storefront-host.server");
+          const host = normalizedHost ?? "";
+          const previewDeploy =
+            host.startsWith("preview.") || host.startsWith("id-preview--");
+          if (
+            host &&
+            !isPlatformHost(host) &&
+            !isLocalHostname(host) &&
+            !previewDeploy
+          ) {
+            const mapped = await resolveStorefrontHostFor(host).catch(
+              () => "lookup-failed" as const,
+            );
+            if (mapped === null) {
+              const { incr } = await import("./lib/observability.server");
+              incr("framique_unmapped_host_blocked_total", {});
+              return new Response(null, { status: 404 });
+            }
+          }
+        } catch {
+          // Fail open: fall through to normal routing.
+        }
         if (
-          isBlockedPathStorefront(
-            normalizeRequestHost(rawHost),
-            url.pathname,
-            url.searchParams.has("preview_token"),
-          )
+          isBlockedPathStorefront(normalizedHost, url.pathname, validPreview)
         ) {
+          // DEV-2 deep-path permalink: /store/<slug>/* → https://<primary>/*.
+          // Centralized here (not per-route beforeLoad) because this gate 404s
+          // before SSR — a per-route beforeLoad would never run on platform
+          // hosts. One lookup covers the index + every deep route (p/c/pages/
+          // search/blog/cart/…), present and future.
+          // WordPress parity: strip the /store/<slug> prefix, collapse //,
+          // preserve ? via url.search (# never reaches the server; #
+          // semantics live in decideStoreRedirectForPath for callers holding
+          // the full subpath, e.g. resolveStoreRedirectFn). Fail-soft: any
+          // lookup failure falls through to the bare 404 below. Exemptions
+          // (preview_token, track/order, localhost, custom hosts) never reach
+          // here — isBlockedPathStorefront already returned false for them.
+          try {
+            const slugMatch = /^\/store\/([^/?#]+)/.exec(url.pathname);
+            const slug = slugMatch?.[1];
+            if (slug && normalizedHost) {
+              const { merchantIdForSlug, primaryHostForMerchant } =
+                await import("./lib/storefront-host.server");
+              const merchantId = await merchantIdForSlug(slug).catch(
+                () => null,
+              );
+              if (merchantId) {
+                const primary = await primaryHostForMerchant(merchantId).catch(
+                  () => null,
+                );
+                const to = decideStoreRedirectForPath(
+                  primary,
+                  normalizedHost,
+                  `${url.pathname}${url.search}`,
+                );
+                if (to) return Response.redirect(to, 301);
+              }
+            }
+          } catch {
+            // A redirect-lookup failure must never break routing — fall
+            // through to the bare 404 below.
+          }
           const { incr } = await import("./lib/observability.server");
           incr("framique_path_storefront_blocked_total", {
             path: url.pathname.split("/").slice(0, 3).join("/"),
@@ -397,11 +498,10 @@ export default {
         // Cross-tenant path guard (Sept 2026): on a custom host,
         // `/store/<slug>/*` serves only the host owner's sections. A
         // foreign slug (or an unresolvable host) answers bare 404.
-        // Preview tokens stay exempt — verified downstream.
-        if (!url.searchParams.has("preview_token")) {
-          const { isBlockedForeignStorePath } = await import(
-            "./lib/storefront-host.server"
-          );
+        // Preview tokens stay exempt — verified above.
+        if (!validPreview) {
+          const { isBlockedForeignStorePath } =
+            await import("./lib/storefront-host.server");
           if (
             await isBlockedForeignStorePath(
               normalizeRequestHost(rawHost),

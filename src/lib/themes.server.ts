@@ -27,11 +27,11 @@ import {
   type ThemeTemplates,
   type ThemeTokens,
 } from "./builder-ast";
-import { THEME_PRESETS, presetByKey } from "./theme-presets";
 import { PRESET_API_RANGE, checkApiCompatibility } from "./registry-version";
 import { translationGate } from "./builder-guardrails";
 import { translationCoverage } from "./translation-coverage";
 import { demoCatalogFor } from "./demo-catalog";
+import { resolveThemePreview } from "./theme-preview-nav";
 
 type Client = SupabaseClient<Database>;
 
@@ -521,35 +521,12 @@ export type RegistryTheme = {
   templateKeys: string[];
 };
 
-/** Code presets rendered as catalogue rows — the fallback when SQL is empty. */
+/** No code presets ship anymore (themes removed): the registry floor is empty
+ * and SQL rows are listed as-is. */
 function presetCatalogue(): RegistryTheme[] {
-  return THEME_PRESETS.slice()
-    .sort((a, b) => a.sortOrder - b.sortOrder)
-    .map((preset) => ({
-      key: preset.key,
-      nameEn: preset.nameEn,
-      nameBn: preset.nameBn,
-      summaryEn: preset.summaryEn,
-      summaryBn: preset.summaryBn,
-      category: preset.category,
-      version: preset.version,
-      tokens: preset.tokens,
-      templateKeys: Object.keys(preset.templates),
-    }));
+  return [];
 }
 
-/**
- * Public catalogue — tenant-agnostic, so it is safe to cache per isolate.
- * Catalogue *metadata* lives in the database, but the template package itself
- * is the typed preset in `theme-presets.ts`, which is the real source of truth.
- *
- * Consequence: an empty (or unreachable) `theme_registry` must not empty the
- * theme picker — a fresh environment that has never run the catalogue sync
- * would otherwise show a merchant zero themes and no way to start. The code
- * presets are therefore the floor, and SQL rows only override the metadata of
- * keys they name. A read error degrades to the same floor rather than throwing
- * a picker-sized hole into the admin UI.
- */
 export async function listRegistry(db: Client): Promise<RegistryTheme[]> {
   return cached("theme-registry:v3", 300, async () => {
     const floor = presetCatalogue();
@@ -572,15 +549,12 @@ export async function listRegistry(db: Client): Promise<RegistryTheme[]> {
     }
     const byKey = new Map(floor.map((theme) => [theme.key, theme]));
     for (const row of rows) {
-      const code = presetByKey(row.key);
       const dbPreset = (row.preset ?? {}) as {
         tokens?: unknown;
         templates?: unknown;
       };
-      const tokens = code ? code.tokens : parseTokens(dbPreset.tokens);
-      const templates = code
-        ? code.templates
-        : parseTemplates(dbPreset.templates);
+      const tokens = parseTokens(dbPreset.tokens);
+      const templates = parseTemplates(dbPreset.templates);
       byKey.set(row.key, {
         key: row.key,
         nameEn: row.name_en,
@@ -588,7 +562,7 @@ export async function listRegistry(db: Client): Promise<RegistryTheme[]> {
         summaryEn: row.summary_en,
         summaryBn: row.summary_bn,
         category: row.category,
-        version: code?.version ?? row.version,
+        version: row.version,
         tokens,
         templateKeys: Object.keys(templates),
       });
@@ -602,39 +576,29 @@ export async function listRegistry(db: Client): Promise<RegistryTheme[]> {
 
 /** Full template count shipped by the official themes, for docs and tests. */
 export function officialThemeKeys(): string[] {
-  return THEME_PRESETS.map((preset) => preset.key);
+  return [];
 }
 
-/** Validated official package, or a BuilderError if the preset is unusable. */
+/** Validated official package, or a safe default package. */
 export function registryPackage(key: string): {
   templates: ThemeTemplates;
   tokens: ThemeTokens;
   version: string;
 } {
-  const preset = presetByKey(key);
-  const templates = preset
-    ? parseTemplates(preset.templates)
-    : ({} as ThemeTemplates);
-  const templateKeys = Object.keys(templates) as TemplateKey[];
-  const blocked = templateKeys.flatMap((templateKey) =>
-    lintTemplate(templates[templateKey]!, templateKey).filter(
-      (issue) => issue.level === "error",
-    ),
-  );
-  if (!preset || templateKeys.length === 0 || blocked.length > 0) {
-    throw new BuilderError(
-      "builder.registry_invalid",
-      "Theme package failed validation",
-    );
+  const preview = resolveThemePreview(key);
+  if (preview) {
+    return {
+      templates: preview.templates as ThemeTemplates,
+      tokens: preview.tokens,
+      version: "1.0.0",
+    };
   }
-  // Phase 8 registry versioning: a package built for another builder API line
-  // is never installed, so an old AST can't reach a newer runtime.
-  const compat = checkApiCompatibility(preset.api ?? PRESET_API_RANGE);
-  if (!compat.ok) throw new BuilderError(compat.code, compat.message);
   return {
-    templates,
-    tokens: parseTokens(preset.tokens),
-    version: preset.version,
+    templates: {
+      index: { header: [], main: [], footer: [] },
+    } as unknown as ThemeTemplates,
+    tokens: DEFAULT_TOKENS,
+    version: "1.0.0",
   };
 }
 
@@ -699,42 +663,17 @@ export async function installRegistryTheme(
   });
 }
 
-/**
- * Phase 3.1 — preset swap without content loss. Tokens are replaced wholesale;
- * every authored section keeps its props and preset sections are only appended
- * when the merchant's document has no widget of that type. Returns the merged
- * document so the studio can show a confirmation before autosaving it.
- */
+/** Preset swap removed with themes: no code presets exist to swap to. */
 export async function previewPresetSwap(
-  db: Client,
-  merchantId: string,
-  key: string,
-  currentTemplates: unknown,
+  _db: Client,
+  _merchantId: string,
+  _key: string,
+  _currentTemplates: unknown,
 ) {
-  await rateLimit("builder.preset_swap", merchantId);
-  const catalogue = await listRegistry(db);
-  if (!catalogue.some((t) => t.key === key)) {
-    throw new BuilderError(
-      "builder.registry_missing",
-      "Theme not found in the registry",
-    );
-  }
-  const preset = presetByKey(key);
-  if (!preset)
-    throw new BuilderError(
-      "builder.registry_invalid",
-      "Theme package failed validation",
-    );
-  const mine = parseTemplates(currentTemplates);
-  const { applyPreset } = await import("./theme-presets");
-  const result = applyPreset(mine, preset);
-  return {
-    key,
-    tokens: result.tokens,
-    templates: parseTemplates(result.templates),
-    kept: result.kept,
-    added: result.added,
-  };
+  throw new BuilderError(
+    "builder.registry_removed",
+    "Theme presets were removed",
+  );
 }
 
 /* ------------------------------------------------------------ update / diff */

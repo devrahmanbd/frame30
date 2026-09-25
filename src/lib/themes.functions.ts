@@ -133,13 +133,18 @@ export const builderInstallFn = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
-    const { installRegistryTheme } = await import("./themes.server");
+    // P0 separation: installs create a NEW INACTIVE theme row, never mutate
+    // the active theme's draft. The catalogue path owns that contract
+    // (inactive row + version + draft + ledger + audit, idempotent replay),
+    // so the builder endpoint delegates to it. overwriteDraft is accepted
+    // for compatibility and ignored: re-installs replay instead of throwing.
+    const { installCatalogTheme } = await import("./themes/appearance.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return installRegistryTheme(
+    return installCatalogTheme(
       context.supabase,
       merchantId,
       data.key,
-      data.overwriteDraft ?? false,
+      context.userId,
     );
   });
 
@@ -148,14 +153,11 @@ export const builderPresetSwapFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z.object({ key: z.string().max(60), templates: tree }).parse(d),
   )
-  .handler(async ({ data, context }) => {
-    const { previewPresetSwap } = await import("./themes.server");
-    const merchantId = await scope(context.supabase, context.userId);
-    return previewPresetSwap(
-      context.supabase,
-      merchantId,
-      data.key,
-      data.templates,
+  .handler(async () => {
+    const { BuilderError } = await import("./themes.server");
+    throw new BuilderError(
+      "builder.registry_removed",
+      "Theme presets were removed",
     );
   });
 
@@ -235,7 +237,12 @@ export const importThemeMediaFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { importThemeMedia } = await import("./theme-imports.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return importThemeMedia(context.supabase, merchantId, data.themeKey, data.overwrite ?? false);
+    return importThemeMedia(
+      context.supabase,
+      merchantId,
+      data.themeKey,
+      data.overwrite ?? false,
+    );
   });
 
 export const importThemeProductsFn = createServerFn({ method: "POST" })
@@ -265,7 +272,12 @@ export const importThemePostsFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { importThemePosts } = await import("./theme-imports.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return importThemePosts(context.supabase, merchantId, data.themeKey, data.overwrite ?? false);
+    return importThemePosts(
+      context.supabase,
+      merchantId,
+      data.themeKey,
+      data.overwrite ?? false,
+    );
   });
 
 export const importThemeAllFn = createServerFn({ method: "POST" })
@@ -276,7 +288,12 @@ export const importThemeAllFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { importThemeAll } = await import("./theme-imports.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return importThemeAll(context.supabase, merchantId, data.themeKey, data.overwrite ?? false);
+    return importThemeAll(
+      context.supabase,
+      merchantId,
+      data.themeKey,
+      data.overwrite ?? false,
+    );
   });
 
 export const builderDemoPurgeFn = createServerFn({ method: "POST" })

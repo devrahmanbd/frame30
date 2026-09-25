@@ -246,7 +246,14 @@ function FacetPanel({ ctx }: { ctx: WidgetCtx }) {
  * Price bounds stay integer minor units end to end: the input collects whole
  * currency units and multiplies by 100 once, on the way into the URL. No
  * widget ever does money arithmetic on a value it will display.
+ *
+ * Sliders lane: a dual-thumb range (two native inputs, so arrows/Tab/AT work
+ * with no custom key handling) drives the same min/max state as the numeric
+ * fields. Track, fill and thumbs read `--color-*` tokens only; the slider
+ * ceiling adapts to the typed max so the thumbs never pin below real prices.
  */
+const PRICE_CEILING_FLOOR = 20000;
+
 function PriceFacet({ ctx }: { ctx: WidgetCtx }) {
   const { str, locale, money } = ctx;
   const { query, href, go } = useFacetLinks();
@@ -267,35 +274,89 @@ function PriceFacet({ ctx }: { ctx: WidgetCtx }) {
     "max",
     toMinor(max),
   );
+  const parsedMax = Number(max);
+  const ceiling =
+    max !== "" && Number.isFinite(parsedMax) && parsedMax > 0
+      ? Math.max(
+          PRICE_CEILING_FLOOR,
+          Math.ceil(parsedMax / 5000) * 5000,
+        )
+      : PRICE_CEILING_FLOOR;
+  const hi = max === "" ? ceiling : Math.min(parsedMax, ceiling);
+  const lo =
+    min === "" ? 0 : Math.max(0, Math.min(Number(min) || 0, hi));
+  const loPct = Math.min(100, (lo / ceiling) * 100);
+  const hiPct = Math.min(100, (hi / ceiling) * 100);
+  const minLabel = locale === "bn" ? "সর্বনিম্ন দাম" : "Minimum price";
+  const maxLabel = locale === "bn" ? "সর্বোচ্চ দাম" : "Maximum price";
+  const rangeInput =
+    "pointer-events-none absolute inset-x-0 top-1/2 h-11 w-full -translate-y-1/2 appearance-none bg-transparent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:size-6 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-[var(--color-primary)] [&::-moz-range-thumb]:bg-[var(--color-card)] [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-6 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[var(--color-primary)] [&::-webkit-slider-thumb]:bg-[var(--color-card)]";
   return (
     <div className="rounded-fq-md border border-border bg-card p-3">
       <p className="mb-2 text-sm font-medium">
         {str("priceLabel") || (locale === "bn" ? "দাম" : "Price")}
       </p>
+      <div className="relative mb-1">
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-muted"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute top-1/2 h-2 -translate-y-1/2 rounded-full bg-[var(--color-primary)]"
+          style={{ left: `${loPct}%`, width: `${Math.max(0, hiPct - loPct)}%` }}
+        />
+        <input
+          type="range"
+          min={0}
+          max={ceiling}
+          step={50}
+          value={lo}
+          aria-label={minLabel}
+          aria-valuetext={money(lo * 100)}
+          onChange={(e) => setMin(String(Math.min(Number(e.target.value), hi)))}
+          className={rangeInput}
+        />
+        <input
+          type="range"
+          min={0}
+          max={ceiling}
+          step={50}
+          value={hi}
+          aria-label={maxLabel}
+          aria-valuetext={money(hi * 100)}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            if (value < lo) setMin(String(value));
+            setMax(String(value >= ceiling ? "" : value));
+          }}
+          className={rangeInput}
+        />
+      </div>
       <div className="flex flex-wrap items-center gap-2">
         <label className="sr-only" htmlFor="fq-facet-min">
-          {locale === "bn" ? "সর্বনিম্ন দাম" : "Minimum price"}
+          {minLabel}
         </label>
         <input
           id="fq-facet-min"
           inputMode="numeric"
           value={min}
           onChange={(e) => setMin(e.target.value.replace(/[^0-9]/g, ""))}
-          className="h-11 min-w-0 flex-1 rounded-fq-md border border-border bg-background px-2 text-sm tabular-nums"
+          className="h-11 min-w-0 flex-1 rounded-fq-md border border-border bg-background px-2 text-sm tabular-nums focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           placeholder={money(0)}
         />
         <span aria-hidden="true" className="text-muted-foreground">
           –
         </span>
         <label className="sr-only" htmlFor="fq-facet-max">
-          {locale === "bn" ? "সর্বোচ্চ দাম" : "Maximum price"}
+          {maxLabel}
         </label>
         <input
           id="fq-facet-max"
           inputMode="numeric"
           value={max}
           onChange={(e) => setMax(e.target.value.replace(/[^0-9]/g, ""))}
-          className="h-11 min-w-0 flex-1 rounded-fq-md border border-border bg-background px-2 text-sm tabular-nums"
+          className="h-11 min-w-0 flex-1 rounded-fq-md border border-border bg-background px-2 text-sm tabular-nums focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           placeholder={money(0)}
         />
         <a
@@ -308,7 +369,7 @@ function PriceFacet({ ctx }: { ctx: WidgetCtx }) {
                 }
               : undefined
           }
-          className="inline-flex h-11 shrink-0 items-center rounded-fq-md border border-border px-3 text-sm"
+          className="inline-flex h-11 shrink-0 items-center rounded-fq-md border border-border px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           {locale === "bn" ? "প্রয়োগ" : "Apply"}
         </a>

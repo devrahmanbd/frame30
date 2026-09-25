@@ -1,5 +1,5 @@
 import { useId, useState, type FormEvent, type KeyboardEvent } from "react";
-import { X } from "lucide-react";
+import { X } from "@/components/icons/tabler";
 import { btnGhost, btnPrimary, inputClass } from "@/components/console/kit";
 import { useLang } from "@/lib/i18n";
 import {

@@ -38,7 +38,10 @@ export class CheckoutError extends Error {
 }
 
 function translate(message: string): CheckoutError {
-  if (message.includes("stock_hold.insufficient") || message.includes("stock_insufficient")) {
+  if (
+    message.includes("stock_hold.insufficient") ||
+    message.includes("stock_insufficient")
+  ) {
     const item =
       message.split("stock_hold.insufficient:")[1]?.trim() || "an item";
     return new CheckoutError(
@@ -46,7 +49,10 @@ function translate(message: string): CheckoutError {
       `Not enough stock for ${item}`,
     );
   }
-  if (message.includes("stock_hold.variant_not_found") || message.includes("product_not_found")) {
+  if (
+    message.includes("stock_hold.variant_not_found") ||
+    message.includes("product_not_found")
+  ) {
     return new CheckoutError(
       "variant_missing",
       "A product in your cart is no longer available",
@@ -218,6 +224,27 @@ export async function reserveStock(
       }
       observe("framique_checkout_reserve_ms", Date.now() - started);
       incr("framique_checkout_reserve_total", { outcome: "held" });
+      // R2-4: advisory hook — never affects the core result.
+      try {
+        const { listInstalledPlugins } = await import("./plugins.server");
+        const { runHook } = await import("./plugin-hooks.server");
+        const installed = await listInstalledPlugins(
+          supabaseAdmin as never,
+          merchantId,
+        );
+        const outcomes = await runHook(installed, "checkout.validate", {
+          merchantId,
+          checkoutToken,
+          lineCount: lines.length,
+        });
+        log("info", "plugin.hook.emitted", {
+          hook: "checkout.validate",
+          merchantId,
+          outcomes: outcomes.map((o) => `${o.pluginId}:${o.status}`),
+        });
+      } catch {
+        /* emission must never fail stock reservation */
+      }
       return { token: checkoutToken, expires_at: expiresAt };
     },
     { retries: 3, retryDelayMs: 40 },
@@ -242,7 +269,10 @@ export async function consumeStock(checkoutToken: string, orderId: string) {
         .is("consumed_at", null);
       if (error) {
         incr("framique_checkout_consume_total", { outcome: "error" });
-        log("error", "checkout.consume_failed", { orderId, reason: error.message });
+        log("error", "checkout.consume_failed", {
+          orderId,
+          reason: error.message,
+        });
         throw new CheckoutError(
           "stock_consume_failed",
           "Order placed but stock sync failed",
@@ -264,14 +294,18 @@ export async function releaseStock(checkoutToken: string) {
       .select("variant_id, quantity")
       .eq("checkout_token", checkoutToken)
       .is("consumed_at", null);
-    for (const h of (held ?? []) as { variant_id: string; quantity: number }[]) {
+    for (const h of (held ?? []) as {
+      variant_id: string;
+      quantity: number;
+    }[]) {
       const { data: cur } = await supabaseAdmin
         .from("product_variants")
         .select("stock_quantity")
         .eq("id", h.variant_id)
         .maybeSingle();
       const qty = Number(
-        (cur as unknown as { stock_quantity: number } | null)?.stock_quantity ?? 0,
+        (cur as unknown as { stock_quantity: number } | null)?.stock_quantity ??
+          0,
       );
       await supabaseAdmin
         .from("product_variants")

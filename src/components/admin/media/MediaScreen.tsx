@@ -9,7 +9,13 @@
 import { useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Copy, Images, LayoutGrid, List, Plus } from "lucide-react";
+import {
+  Copy,
+  Images,
+  LayoutGrid,
+  List,
+  Plus,
+} from "@/components/icons/tabler";
 import { toast } from "sonner";
 import {
   BulkBar,
@@ -62,9 +68,7 @@ const TYPE_PILLS: { key: MediaTypeFilter; label: string }[] = [
   { key: "missing-alt", label: "Missing Alt" },
 ];
 
-const TYPE_OPTIONS: { key: MediaTypeFilter; label: string }[] = [
-  ...TYPE_PILLS,
-];
+const TYPE_OPTIONS: { key: MediaTypeFilter; label: string }[] = [...TYPE_PILLS];
 
 export function MediaScreen() {
   const qc = useQueryClient();
@@ -196,7 +200,10 @@ export function MediaScreen() {
                 type="button"
                 className={btnGhost}
                 onClick={() => {
-                  if (selected.length === visible.length && visible.length > 0) {
+                  if (
+                    selected.length === visible.length &&
+                    visible.length > 0
+                  ) {
                     setSelected([]);
                   } else {
                     setSelected(visible.map((item) => item.id));

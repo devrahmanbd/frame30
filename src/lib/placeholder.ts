@@ -1,5 +1,5 @@
 /**
- * Local SVG product placeholder (clothing-heritage tokens).
+ * Local SVG product placeholder (neutral tokens).
  *
  * Demo catalogue products ship with `image_url NULL` and hotlinking stock
  * photography is banned, so imageless products render a deterministic
@@ -41,11 +41,26 @@ const DEPT_KEYWORDS: Array<{ match: RegExp; palette: DeptPalette }> = [
   { match: /saree|jamdani|muslin|taant|bridal/, palette: DEPT_EXACT.womens! },
   { match: /panjab|kurta|sherwani|groom/, palette: DEPT_EXACT.mens! },
   { match: /kid|baby|newborn|teen|junior/, palette: DEPT_EXACT.kids! },
-  { match: /living|home|decor|kantha|kitchen|cushion/, palette: DEPT_EXACT.living! },
-  { match: /jewel|accessor|bangle|necklace|earring|gold/, palette: DEPT_EXACT.jewelry! },
-  { match: /shawl|winter|jacket|sweater|stole|scarf/, palette: { base: "#F7EFE6", ink: "#7C2D12", accent: "#A34A24" } },
-  { match: /wedding|festiv|eid|puja|gift/, palette: { base: "#FBEFEF", ink: "#7F1D1D", accent: "#C9A227" } },
-  { match: /lawn|voile|cotton|fabric/, palette: { base: "#F0F6F4", ink: "#1E4D3F", accent: "#3E9B7A" } },
+  {
+    match: /living|home|decor|kantha|kitchen|cushion/,
+    palette: DEPT_EXACT.living!,
+  },
+  {
+    match: /jewel|accessor|bangle|necklace|earring|gold/,
+    palette: DEPT_EXACT.jewelry!,
+  },
+  {
+    match: /shawl|winter|jacket|sweater|stole|scarf/,
+    palette: { base: "#F7EFE6", ink: "#7C2D12", accent: "#A34A24" },
+  },
+  {
+    match: /wedding|festiv|eid|puja|gift/,
+    palette: { base: "#FBEFEF", ink: "#7F1D1D", accent: "#C9A227" },
+  },
+  {
+    match: /lawn|voile|cotton|fabric/,
+    palette: { base: "#F0F6F4", ink: "#1E4D3F", accent: "#3E9B7A" },
+  },
 ];
 
 /** Resolve a department key to a palette. Unknown → heritage default. */

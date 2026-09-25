@@ -143,6 +143,12 @@ function RateLimitedBanner({ onRetry }: { onRetry: () => void }) {
   );
 }
 
+const btnSecondary =
+  "inline-flex min-h-9 items-center justify-center rounded-fq-md border border-border/80 bg-background px-3 text-xs font-medium text-foreground shadow-2xs transition-colors hover:bg-muted hover:border-foreground/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50";
+
+const btnDanger =
+  "inline-flex min-h-9 items-center justify-center rounded-fq-md border border-danger/40 bg-background px-3 text-xs font-medium text-danger shadow-2xs transition-colors hover:bg-danger-soft hover:border-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger disabled:opacity-50";
+
 function DomainsPage() {
   const { t } = useLang();
   const loaded = Route.useLoaderData() as ViewList | undefined;
@@ -307,76 +313,76 @@ function DomainsPage() {
       {data.rateLimited && <RateLimitedBanner onRetry={retryList} />}
       {!data.edgeConfigured && (
         <InlineNote tone="warning">
-          {t(
-            "TLS edge is not configured on this environment, so certificates stay pending after DNS passes.",
-            "এই পরিবেশে TLS এজ কনফিগার করা নেই, তাই DNS ঠিক হলেও সার্টিফিকেট অপেক্ষায় থাকবে।",
-          )}
+          <div className="flex items-start gap-1.5">
+            <span className="font-semibold">
+              {t("Environment notice:", "পরিবেশ বিজ্ঞপ্তি:")}
+            </span>
+            <span>
+              {t(
+                "TLS edge has no push hook here (DOMAIN_EDGE_HOOK_URL unset) — this is expected, not an error. DNS verification still runs automatically; once DNS passes, the edge operator issues the certificate and the domain flips Live on the next check. Your storefront keeps serving on the platform path meanwhile.",
+                "এই পরিবেশে TLS এজের পুশ হুক নেই (DOMAIN_EDGE_HOOK_URL সেট নেই) — এটি প্রত্যাশিত, কোনো ত্রুটি নয়। DNS যাচাই স্বয়ংক্রিয়ভাবে চলবে; DNS ঠিক হলে এজ অপারেটর সার্টিফিকেট ইস্যু করবেন এবং পরের চেকেই ডোমেইন চালু হবে। এর মধ্যে প্ল্যাটফর্ম পাথে আপনার স্টোর চলতে থাকবে।",
+              )}
+            </span>
+          </div>
         </InlineNote>
       )}
 
       {(() => {
         const atCap = data.domains.length >= (data.limit ?? 1);
         if (atCap) {
-          return (
-            <InlineNote tone="info">
-              {t(
-                "One domain per store — remove the current domain to connect a different one.",
-                "প্রতি স্টোরে একটি ডোমেইন — ভিন্ন ডোমেইন যুক্ত করতে বর্তমানটি সরান।",
-              )}
-            </InlineNote>
-          );
+          return null;
         }
         return (
-      <SectionCard
-        title={t("Connect a domain", "ডোমেইন যুক্ত করুন")}
-        hint={t(
-          `One domain per store. Use the apex (example.com) or a sub-domain (shop.example.com).`,
-          `প্রতি স্টোরে একটি ডোমেইন। apex (example.com) বা সাব-ডোমেইন (shop.example.com) দিন।`,
-        )}
-      >
-        <form
-          className="flex flex-wrap items-center gap-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            const value = hostname.trim();
-            if (!value) return;
-            void run(
-              null,
-              async () => {
-                const next = await add({ data: { hostname: value } });
-                setHostname("");
-                return next;
-              },
-              t(
-                "Domain added — add the DNS records below.",
-                "ডোমেইন যুক্ত হয়েছে — নিচের DNS রেকর্ড যোগ করুন।",
-              ),
-            );
-          }}
-        >
-          <label className="sr-only" htmlFor="hostname">
-            {t("Domain", "ডোমেইন")}
-          </label>
-          <input
-            id="hostname"
-            className={`${inputClass} max-w-sm flex-1`}
-            placeholder="shop.example.com"
-            autoComplete="off"
-            spellCheck={false}
-            value={hostname}
-            onChange={(e) => setHostname(e.target.value)}
-          />
-          <button
-            type="submit"
-            className={btnPrimary}
-            disabled={busyId === "new"}
+          <SectionCard
+            title={t("Connect a domain", "ডোমেইন যুক্ত করুন")}
+            hint={t(
+              "Use your apex domain (example.com) or a sub-domain (shop.example.com).",
+              "আপনার apex ডোমেইন (example.com) বা সাব-ডোমেইন (shop.example.com) দিন।",
+            )}
           >
-            {busyId === "new"
-              ? t("Adding…", "যোগ হচ্ছে…")
-              : t("Add domain", "যোগ করুন")}
-          </button>
-        </form>
-      </SectionCard>
+            <form
+              className="flex flex-wrap items-center gap-2"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const value = hostname.trim();
+                if (!value) return;
+                void run(
+                  null,
+                  async () => {
+                    const next = await add({ data: { hostname: value } });
+                    setHostname("");
+                    return next;
+                  },
+                  t(
+                    "Domain added — add the DNS records below.",
+                    "ডোমেইন যুক্ত হয়েছে — নিচের DNS রেকর্ড যোগ করুন।",
+                  ),
+                );
+              }}
+            >
+              <label className="sr-only" htmlFor="hostname">
+                {t("Domain", "ডোমেইন")}
+              </label>
+              <input
+                id="hostname"
+                className={`${inputClass} max-w-sm flex-1`}
+                placeholder="shop.example.com"
+                autoComplete="off"
+                spellCheck={false}
+                value={hostname}
+                onChange={(e) => setHostname(e.target.value)}
+              />
+              <button
+                type="submit"
+                className={btnPrimary}
+                disabled={busyId === "new"}
+              >
+                {busyId === "new"
+                  ? t("Adding…", "যোগ হচ্ছে…")
+                  : t("Add domain", "যোগ করুন")}
+              </button>
+            </form>
+          </SectionCard>
         );
       })()}
 
@@ -399,7 +405,7 @@ function DomainsPage() {
             actions={
               <div className="flex flex-wrap items-center gap-2">
                 {domain.isPrimary && (
-                  <span className="rounded-full border border-primary bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                  <span className="rounded-full border border-primary/40 bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary shadow-2xs">
                     {t("Primary", "প্রাইমারি")}
                   </span>
                 )}
@@ -475,7 +481,7 @@ function DomainsPage() {
               {domain.status === "active" && !domain.isPrimary && (
                 <button
                   type="button"
-                  className="min-h-9 rounded-fq-md border border-border px-3 text-sm"
+                  className={btnSecondary}
                   disabled={busy}
                   onClick={() =>
                     void run(domain.id, () =>
@@ -489,7 +495,7 @@ function DomainsPage() {
               {!domain.isPrimary && (
                 <button
                   type="button"
-                  className="min-h-9 rounded-fq-md border border-border px-3 text-sm"
+                  className={btnSecondary}
                   disabled={busy}
                   onClick={() =>
                     void run(domain.id, () =>
@@ -509,7 +515,7 @@ function DomainsPage() {
               )}
               <button
                 type="button"
-                className="min-h-9 rounded-fq-md border border-border px-3 text-sm"
+                className={btnSecondary}
                 disabled={busy}
                 onClick={() =>
                   void run(domain.id, () =>
@@ -560,7 +566,7 @@ function DomainsPage() {
                   </button>
                   <button
                     type="button"
-                    className="min-h-9 rounded-fq-md border border-border px-3 text-sm"
+                    className={btnSecondary}
                     onClick={() => setEditingId(null)}
                   >
                     {t("Cancel", "বাতিল")}
@@ -569,7 +575,7 @@ function DomainsPage() {
               ) : (
                 <button
                   type="button"
-                  className="min-h-9 rounded-fq-md border border-border px-3 text-sm"
+                  className={btnSecondary}
                   disabled={busy}
                   onClick={() => {
                     setEditHostname(domain.hostname);
@@ -581,7 +587,7 @@ function DomainsPage() {
               )}
               {confirmRemoveId === domain.id ? (
                 <span
-                  className="inline-flex min-h-9 flex-wrap items-center gap-2 rounded-fq-md border border-destructive px-3 py-1 text-sm"
+                  className="inline-flex min-h-9 flex-wrap items-center gap-2 rounded-fq-md border border-danger/50 bg-danger-soft/40 px-3 py-1 text-xs font-medium text-danger-foreground shadow-2xs"
                   role="alert"
                 >
                   <span>
@@ -592,7 +598,7 @@ function DomainsPage() {
                   </span>
                   <button
                     type="button"
-                    className="rounded-fq-md bg-destructive px-2 py-0.5 text-sm font-semibold text-destructive-foreground"
+                    className="rounded-fq-md bg-danger px-2.5 py-1 text-xs font-semibold text-white shadow-2xs transition-colors hover:opacity-90"
                     disabled={busy}
                     onClick={() => {
                       setConfirmRemoveId(null);
@@ -605,7 +611,7 @@ function DomainsPage() {
                   </button>
                   <button
                     type="button"
-                    className="rounded-fq-md px-2 py-0.5 text-sm underline"
+                    className="rounded-fq-md px-2 py-1 text-xs font-medium text-muted-foreground hover:text-foreground underline"
                     onClick={() => setConfirmRemoveId(null)}
                   >
                     {t("Cancel", "বাতিল")}
@@ -614,7 +620,7 @@ function DomainsPage() {
               ) : (
                 <button
                   type="button"
-                  className="min-h-9 rounded-fq-md border border-destructive px-3 text-sm text-destructive"
+                  className={btnDanger}
                   disabled={busy}
                   onClick={() => setConfirmRemoveId(domain.id)}
                 >
@@ -623,7 +629,7 @@ function DomainsPage() {
               )}
               <button
                 type="button"
-                className="min-h-9 rounded-fq-md px-3 text-sm underline"
+                className="inline-flex min-h-9 items-center justify-center rounded-fq-md px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground underline"
                 onClick={() => void toggleHistory(domain.id)}
               >
                 {open === domain.id
@@ -633,7 +639,7 @@ function DomainsPage() {
             </div>
 
             {open === domain.id && (
-              <div className="grid gap-4 border-t border-border pt-3 md:grid-cols-2">
+              <div className="grid gap-4 border-t border-border/80 pt-4 md:grid-cols-2">
                 <ObservedRecords
                   observed={domain.observed}
                   labels={{
@@ -641,16 +647,22 @@ function DomainsPage() {
                     none: t("nothing found", "কিছু পাওয়া যায়নি"),
                   }}
                 />
-                <div className="space-y-1 text-xs text-muted-foreground">
-                  <p className="font-medium text-foreground">
+                <div className="space-y-1.5 text-xs text-muted-foreground">
+                  <p className="font-semibold text-foreground">
                     {t("Event history", "ইভেন্ট ইতিহাস")}
                   </p>
                   {(history[domain.id] ?? []).length === 0 && (
                     <p>{t("No events yet.", "কোনো ইভেন্ট নেই।")}</p>
                   )}
                   {(history[domain.id] ?? []).map((row) => (
-                    <p key={row.id}>
-                      {fmt(row.createdAt)} — {statusLabels[row.to] ?? row.to}
+                    <p key={row.id} className="text-foreground/90">
+                      <span className="font-medium text-foreground">
+                        {fmt(row.createdAt)}
+                      </span>{" "}
+                      —{" "}
+                      <span className="font-semibold">
+                        {statusLabels[row.to] ?? row.to}
+                      </span>
                       {row.reason ? ` (${row.reason})` : ""}
                     </p>
                   ))}

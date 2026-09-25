@@ -1,5 +1,11 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  notFound,
+  redirect,
+} from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreImage } from "@/components/store/StoreImage";
 import {
@@ -9,6 +15,7 @@ import {
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
 import { flattenAst } from "@/lib/builder-ast";
+import { CollectionView } from "@/components/store/CollectionView";
 
 /**
  * Custom-host collection page (`microscrop.shop/c/<slug>`).
@@ -17,18 +24,45 @@ import { flattenAst } from "@/lib/builder-ast";
  * merchant collection. Same-route SSR + hydration (no rewrite).
  */
 export const Route = createFileRoute("/c/$collectionSlug")({
-  loader: async ({ params }) => {
+  loader: async ({ params, location }) => {
     let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
     try {
       host = await resolveStorefrontHostFn();
     } catch {
       host = null;
     }
-    if (!host) throw notFound();
+    if (!host) {
+      // No merchant on this host (platform domain): render the theme demo
+      // instead of a dead end. Demo data, blocked actions, noindex.
+      const { defaultPreviewKey } = await import("@/lib/preview-sources");
+      throw redirect({
+        to: "/theme-preview/$key",
+        params: { key: defaultPreviewKey() },
+        search: {
+          template: "collection",
+          focus: params.collectionSlug.toLowerCase().slice(0, 64),
+          q: undefined,
+          max: undefined,
+        },
+        replace: true,
+      });
+    }
     const data = await getStoreCollection({
       data: { slug: host.merchantSlug, collectionSlug: params.collectionSlug },
     });
     if (!data) throw notFound();
+    // Custom bases: the old prefixed URL still matches this static route,
+    // so canonicalize it here instead of serving duplicates.
+    const { canonicalRedirectFn } = await import("@/lib/permalink.functions");
+    const { to } = await canonicalRedirectFn({
+      data: {
+        merchantId: data.merchant.id,
+        kind: "collection",
+        slug: data.collection.slug,
+        pathname: location.pathname,
+      },
+    });
+    if (to) throw redirect({ href: to, replace: true });
     return data;
   },
   head: ({ loaderData }) => {
@@ -64,112 +98,12 @@ export const Route = createFileRoute("/c/$collectionSlug")({
       links: [{ rel: "canonical", href: canonical }],
     };
   },
-  component: CollectionPage,
+  component: function RouteComponent() {
+    return <CollectionView data={Route.useLoaderData()} />;
+  },
   notFoundComponent: () => (
     <main className="mx-auto max-w-xl px-4 py-24 text-center">
       <h1 className="text-2xl font-semibold">Collection not found</h1>
     </main>
   ),
 });
-
-function CollectionPage() {
-  const { t } = useLang();
-  const { merchant, collection, products, settings, ast, tokens, siteKit, menus } =
-    Route.useLoaderData();
-  const slug = merchant.slug;
-
-  const grid = (
-    <>
-      <h1 className="font-bangla-display text-2xl font-semibold sm:text-3xl">
-        {collection.name}
-      </h1>
-      {collection.description && (
-        <p className="mt-2 max-w-2xl text-muted-foreground">
-          {collection.description}
-        </p>
-      )}
-      {products.length === 0 ? (
-        <p className="mt-6 text-muted-foreground">
-          {t(
-            "No products in this collection yet.",
-            "এই কালেকশনে এখনো কোনো পণ্য নেই।",
-          )}
-        </p>
-      ) : (
-        <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {products.map((p) => {
-            const variants = p.product_variants ?? [];
-            const min = variants.length
-              ? Math.min(
-                  ...variants.map((v) => Number(v.price_amount_minor_int)),
-                )
-              : 0;
-            const inStock = variants.some((v) => v.stock_quantity > 0);
-            return (
-              <li key={p.id}>
-                <Link
-                  to="/p/$productSlug"
-                  params={{ productSlug: p.slug }}
-                  className="group block overflow-hidden rounded-fq-lg border border-border bg-card transition-transform duration-200 hover:-translate-y-0.5"
-                >
-                  <div className="aspect-square bg-muted">
-                    <StoreImage
-                      image={p.image ?? null}
-                      fallbackSrc={p.image_url}
-                      alt={p.title}
-                      seed={p.id}
-                      sizes="(max-width: 768px) 50vw, 300px"
-                      className="size-full object-cover"
-                    />
-                  </div>
-                  <div className="p-3">
-                    <h2 className="line-clamp-2 text-sm font-medium">
-                      {p.title}
-                    </h2>
-                    <p className="money mt-1 text-sm font-semibold">
-                      {fmtMinor(min, merchant.currency_code)}
-                    </p>
-                    <p
-                      className={`mt-1 text-xs ${inStock ? "text-success-foreground" : "text-danger-foreground"}`}
-                    >
-                      {inStock
-                        ? t("In stock", "স্টকে আছে")
-                        : t("Out of stock", "স্টক নেই")}
-                    </p>
-                  </div>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </>
-  );
-
-  const hasProductGrid = ast
-    ? flattenAst(ast).some((s) => s.type === "product_grid")
-    : false;
-
-  return (
-    <ThemeChrome
-      template="collection"
-      ast={ast}
-      tokens={tokens}
-      storeSlug={slug}
-      merchantId={merchant.id}
-      siteKit={siteKit}
-      ownsPrimary
-      chrome={
-        <StoreHeader
-          slug={slug}
-          name={merchant.name}
-          tagline={settings?.tagline}
-          menus={menus}
-        />
-      }
-      productSlot={grid}
-      {...(hasProductGrid ? {} : { collectionSlot: grid })}
-      fallback={grid}
-    />
-  );
-}

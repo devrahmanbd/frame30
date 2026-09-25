@@ -389,6 +389,28 @@ export async function createOrder(
     totalMinor: totals.totalMinor,
     currency: totals.currency,
   });
+  // R2-4: advisory hook — never affects the core result.
+  try {
+    const { listInstalledPlugins } = await import("./plugins.server");
+    const { runHook } = await import("./plugin-hooks.server");
+    const installed = await listInstalledPlugins(
+      supabaseAdmin as never,
+      merchant.id,
+    );
+    const outcomes = await runHook(installed, "order.created", {
+      merchantId: merchant.id,
+      orderId: order.id,
+      totalMinor: totals.totalMinor,
+      currency: totals.currency,
+    });
+    log("info", "plugin.hook.emitted", {
+      hook: "order.created",
+      merchantId: merchant.id,
+      outcomes: outcomes.map((o) => `${o.pluginId}:${o.status}`),
+    });
+  } catch {
+    /* emission must never fail order creation */
+  }
 
   return {
     orderId: order.id,
@@ -434,11 +456,13 @@ export async function loadOrder(
     log("warn", "order.lookup_failed", { orderId, reason: error.message });
     return null;
   }
-  const row = order as (Record<string, unknown> & {
-    access_token?: string;
-    idempotency_key?: string;
-    merchant_id?: string;
-  }) | null;
+  const row = order as
+    | (Record<string, unknown> & {
+        access_token?: string;
+        idempotency_key?: string;
+        merchant_id?: string;
+      })
+    | null;
   if (
     !row ||
     typeof row.access_token !== "string" ||
@@ -471,11 +495,11 @@ export async function loadOrder(
   return {
     order: publicOrder,
     items: (items ?? []) as Row<"order_items">[],
-    events: ((events ?? []) as {
+    events: (events ?? []) as {
       event_type: string;
       note: string | null;
       created_at: string;
-    }[]),
+    }[],
     merchant: (merchant ?? null) as { name: string; slug: string } | null,
   } as PublicOrderView;
 }

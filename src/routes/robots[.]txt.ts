@@ -10,14 +10,34 @@ export const Route = createFileRoute("/robots.txt")({
           await import("@/lib/marketing-seo");
         const { requestOrigin } = await import("@/lib/site-origin.server");
         const origin = requestOrigin() ?? new URL(request.url).origin;
-        // Custom host: this merchant's robots + sitemap pointer. Platform
-        // hosts fall through to the marketing document below.
+        // Custom host: this merchant's robots + sitemap pointer, composed from
+        // the merchant's own crawl settings (same renderer as the per-store
+        // route, rebased to root paths). Platform hosts fall through to the
+        // marketing document below.
         try {
-          const { resolveStorefrontHost } = await import(
-            "@/lib/storefront-host.server"
-          );
+          const { resolveStorefrontHost } =
+            await import("@/lib/storefront-host.server");
           const host = await resolveStorefrontHost();
           if (host) {
+            try {
+              const { renderStoreRobotsTxt } =
+                await import("@/lib/sitemap-config.server");
+              const doc = await renderStoreRobotsTxt(
+                host.merchantSlug,
+                origin,
+                { root: true },
+              );
+              if (doc) {
+                return new Response(doc.body, {
+                  headers: {
+                    "content-type": "text/plain; charset=utf-8",
+                    "cache-control": doc.cacheControl,
+                  },
+                });
+              }
+            } catch {
+              // Fall through to the generic merchant document below.
+            }
             return new Response(
               [
                 "User-agent: *",

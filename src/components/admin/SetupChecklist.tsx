@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Check, ChevronRight, X } from "lucide-react";
+import { Check, ChevronRight, X } from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import {
   adminOverviewFn,

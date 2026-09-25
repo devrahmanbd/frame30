@@ -216,6 +216,18 @@ export async function resolveStorefrontHostFor(
   if (!hostname) return null;
   if (isPlatformHost(hostname)) return null;
   const row = await lookupDomainRow(hostname);
+  if (!row) {
+    // Real-time completion path: traffic for an unverified hostname is the
+    // merchant (or their first visitor) testing freshly pasted DNS. Kick one
+    // coalesced verify→provision chain instead of waiting for a poll or a
+    // button. Fire-and-forget — resolution itself never waits or fails.
+    void import("./domains.server")
+      .then((m) => m.triggerEdgeVerify(hostname))
+      .catch(() => {
+        // Serve first, verify later — a trigger must never break a request.
+      });
+    return null;
+  }
   return decideHostResolution(hostname, row);
 }
 
@@ -347,7 +359,12 @@ export async function isBlockedForeignStorePath(
   const match = /^\/store\/([^/?#]+)/.exec(pathname);
   if (!match) return false;
   const host = (hostname ?? "").toLowerCase();
-  if (!host || isPlatformHost(host) || host === "localhost" || host === "127.0.0.1")
+  if (
+    !host ||
+    isPlatformHost(host) ||
+    host === "localhost" ||
+    host === "127.0.0.1"
+  )
     return false;
   const res = await resolveStorefrontHostFor(host).catch(() => null);
   if (!res) return true;

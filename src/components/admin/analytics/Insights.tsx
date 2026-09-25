@@ -2,7 +2,12 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Users, Filter, PackageSearch, AlertTriangle } from "lucide-react";
+import {
+  Users,
+  Filter,
+  PackageSearch,
+  AlertTriangle,
+} from "@/components/icons/tabler";
 import {
   analyticsFunnelFn,
   analyticsAudienceFn,

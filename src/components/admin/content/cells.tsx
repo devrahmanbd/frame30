@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
 import {
@@ -92,7 +92,11 @@ export function TitleCell({
               storeSlug={storeSlug}
               onAction={onAction}
               defaultEditor={defaultEditor}
-              isHomepage={row.kind === "page" && homepagePageId !== null && row.id === homepagePageId}
+              isHomepage={
+                row.kind === "page" &&
+                homepagePageId !== null &&
+                row.id === homepagePageId
+              }
             />
           </span>
         ))}
@@ -134,7 +138,11 @@ function RowActionLink({
     danger ? "text-[var(--fq-danger)]" : "text-primary",
   );
 
-  if (action === "edit" || action === "edit-builder" || action === "edit-blocks") {
+  if (
+    action === "edit" ||
+    action === "edit-builder" ||
+    action === "edit-blocks"
+  ) {
     return (
       <Link
         to={

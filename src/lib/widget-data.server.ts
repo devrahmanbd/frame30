@@ -73,7 +73,11 @@ function sortProducts(rows: ProductRow[], sort: string): ProductRow[] {
  * widest window any request asked for; per-request filtering, sorting and
  * slicing then happen in memory.
  */
-const loadCollectionSource: SourceLoader = async (merchantId, requests, ctx) => {
+const loadCollectionSource: SourceLoader = async (
+  merchantId,
+  requests,
+  ctx,
+) => {
   const base = ctx?.base ?? "";
   const db = publicClient();
   const window = Math.min(
@@ -109,7 +113,7 @@ const loadCollectionSource: SourceLoader = async (merchantId, requests, ctx) => 
   let rows = (products ?? []) as ProductRow[];
   if (rows.length === 0) {
     const { demoCatalogFor } = await import("./demo-catalog");
-    const demo = demoCatalogFor("clothing-heritage");
+    const demo = demoCatalogFor("handloom");
     rows = demo.products.map((dp) => ({
       id: `demo-${dp.slug}`,
       title: dp.title,
@@ -229,7 +233,7 @@ const loadTaxonomySource: SourceLoader = async (merchantId, requests, ctx) => {
   let rows = data ?? [];
   if (rows.length === 0) {
     const { demoCatalogFor } = await import("./demo-catalog");
-    const demo = demoCatalogFor("clothing-heritage");
+    const demo = demoCatalogFor("handloom");
     rows = demo.collections.map((c) => ({
       id: `demo-${c.slug}`,
       name: c.name,
@@ -400,7 +404,8 @@ const loadQnaSource: SourceLoader = async (_merchantId, requests) =>
  * `subtitle` carries the facet group (`category` / `kind` / `stock`), which
  * keeps the row shape theme-neutral: no widget reads a source-specific column.
  */
-const loadFacetsSource: SourceLoader = async (merchantId, requests) => {
+const loadFacetsSource: SourceLoader = async (merchantId, requests, ctx) => {
+  const base = ctx?.base ?? "";
   const db = publicClient();
   const [{ data: products }, { data: categories }] = await Promise.all([
     db

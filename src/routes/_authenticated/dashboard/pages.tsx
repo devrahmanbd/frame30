@@ -3,7 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { AlertTriangle, Eye, EyeOff, FileText, Trash2 } from "lucide-react";
+import {
+  AlertTriangle,
+  Eye,
+  EyeOff,
+  FileText,
+  Trash2,
+} from "@/components/icons/tabler";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useLang } from "@/lib/i18n";
 import { renderPageMarkdown } from "@/lib/storefront-search";

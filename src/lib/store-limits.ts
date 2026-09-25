@@ -11,7 +11,11 @@ export const MAX_STORES_PER_ACCOUNT = 1;
 export const PLAN_STORE_CAPS: Partial<Record<string, number>> = {};
 
 export function storeCapForPlan(plan?: string | null): number {
-  if (plan && Number.isInteger(PLAN_STORE_CAPS[plan]) && (PLAN_STORE_CAPS[plan] as number) > 0) {
+  if (
+    plan &&
+    Number.isInteger(PLAN_STORE_CAPS[plan]) &&
+    (PLAN_STORE_CAPS[plan] as number) > 0
+  ) {
     return PLAN_STORE_CAPS[plan] as number;
   }
   return MAX_STORES_PER_ACCOUNT;
@@ -22,6 +26,7 @@ export function canCreateAdditionalStore(
   activeMemberships: number,
   plan?: string | null,
 ): boolean {
-  if (!Number.isFinite(activeMemberships) || activeMemberships < 0) return false;
+  if (!Number.isFinite(activeMemberships) || activeMemberships < 0)
+    return false;
   return activeMemberships < storeCapForPlan(plan);
 }

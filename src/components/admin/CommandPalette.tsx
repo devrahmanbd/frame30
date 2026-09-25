@@ -8,7 +8,7 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Search } from "lucide-react";
+import { Search } from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import {
   HIDDEN_DESTINATIONS,

@@ -10,9 +10,8 @@ async function merchantSitemap(
   slug: string,
   origin: string,
 ): Promise<Response> {
-  const { renderSitemapXml, buildMerchantSitemapEntries } = await import(
-    "@/lib/store-sitemap.server"
-  );
+  const { renderSitemapXml, buildMerchantSitemapEntries } =
+    await import("@/lib/store-sitemap.server");
   try {
     const { publicClient } = await import("@/lib/pricing.server");
     const db = publicClient() as unknown as {
@@ -61,9 +60,7 @@ async function merchantSitemap(
           .limit(500)
           .then((r: any) => r.data ?? []),
         import("@/lib/permalink.server")
-          .then((m) =>
-            m.permalinkSettingsFor(db as never, merchantId),
-          )
+          .then((m) => m.permalinkSettingsFor(db as never, merchantId))
           .catch(() => null),
       ]);
     return renderSitemapXml(
@@ -110,23 +107,44 @@ export const Route = createFileRoute("/sitemap.xml")({
         const { requestOrigin } = await import("@/lib/site-origin.server");
         const BASE_URL = requestOrigin() ?? new URL(request.url).origin;
         // Custom-domain-only cutover: on a merchant host serve that
-        // merchant's catalogue with root-shape paths. The platform shape
-        // below must not advertise dead /store/* locs (path URLs 410), so
-        // the per-store loop is gone; global articles stay (they resolve).
+        // merchant's catalogue with root-shape paths. Prefer the sharded
+        // index (same renderer as the per-store route, rebased to root shard
+        // locs via absolutePermalink canonicals); fall back to the flat
+        // merchant urlset when crawl settings are unavailable. The platform
+        // shape below must not advertise dead /store/* locs (path URLs 410),
+        // so the per-store loop is gone; global articles stay (they resolve).
         try {
-          const { resolveStorefrontHost } = await import(
-            "@/lib/storefront-host.server"
-          );
+          const { resolveStorefrontHost } =
+            await import("@/lib/storefront-host.server");
           const host = await resolveStorefrontHost();
           if (host) {
+            try {
+              const { renderStoreSitemapIndex } =
+                await import("@/lib/sitemap-config.server");
+              const doc = await renderStoreSitemapIndex(
+                host.merchantSlug,
+                BASE_URL,
+                { root: true },
+              );
+              if (doc) {
+                return new Response(doc.body, {
+                  headers: {
+                    "Content-Type": "application/xml",
+                    "Cache-Control": doc.cacheControl,
+                    "x-robots-tag": "noindex",
+                  },
+                });
+              }
+            } catch {
+              // Fall through to the flat merchant urlset below.
+            }
             return merchantSitemap(host.merchantSlug, BASE_URL);
           }
         } catch {
           // Fall through to the platform sitemap.
         }
-        const { listPublishedArticles } = await import(
-          "@/lib/marketing.server"
-        );
+        const { listPublishedArticles } =
+          await import("@/lib/marketing.server");
         const { marketingSitemapEntries } = await import("@/lib/marketing-seo");
 
         // Marketing URLs come from the one registry that also feeds every

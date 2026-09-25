@@ -166,11 +166,16 @@ function scanBundles() {
   // JWT, so anon-role tokens are waved through by payload inspection while
   // every other JWT-shaped string still fails.
   const anonJwt = (text) => {
-    const m = text.match(/\bey[A-Za-z0-9_-]{10,}\.([A-Za-z0-9_-]{10,})\.[A-Za-z0-9_-]{10,}/);
+    const m = text.match(
+      /\bey[A-Za-z0-9_-]{10,}\.([A-Za-z0-9_-]{10,})\.[A-Za-z0-9_-]{10,}/,
+    );
     if (!m) return false;
     try {
       const payload = JSON.parse(
-        Buffer.from(m[1].replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8"),
+        Buffer.from(
+          m[1].replace(/-/g, "+").replace(/_/g, "/"),
+          "base64",
+        ).toString("utf8"),
       );
       return payload && payload.role === "anon";
     } catch {

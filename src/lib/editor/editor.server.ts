@@ -16,6 +16,11 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { normalizeBody, parseBody, validateBody } from "@/lib/blog-body";
 import { isBuilderBody } from "@/lib/page-builder";
+import {
+  buildPermalink,
+  DEFAULT_PERMALINKS,
+  type PermalinkSettings,
+} from "@/lib/permalink";
 import { analyseSeo } from "@/lib/seo-analysis";
 import { parseEntitySeo, robotsContent } from "@/lib/seo/seo-meta";
 import { incr, log } from "@/lib/observability.server";
@@ -95,15 +100,21 @@ export type RevisionSummary = {
   authorId: string | null;
 };
 
-function statusOf(
+export function statusOf(
   raw: string | null | undefined,
   published: boolean,
 ): ContentStatus {
   const s = (raw ?? "") as ContentStatus;
   if (
-    ["published", "draft", "pending", "scheduled", "private", "trash"].includes(
-      s,
-    )
+    [
+      "published",
+      "draft",
+      "pending",
+      "scheduled",
+      "private",
+      "archived",
+      "trash",
+    ].includes(s)
   )
     return s;
   return published ? "published" : "draft";
@@ -148,10 +159,11 @@ function pageToDoc(row: any): EditorDoc {
   };
 }
 
-function articleToDoc(
+export function articleToDoc(
   row: any,
   categories: string[],
   tags: string[],
+  taxonomyTags: string[],
 ): EditorDoc {
   return {
     ...emptyEditorDoc("post"),
@@ -181,6 +193,7 @@ function articleToDoc(
     featuredImage: row.cover_image_url ?? "",
     categories,
     tags,
+    taxonomyTags,
     seo: {
       metaTitle: row.meta_title ?? "",
       metaDescription: row.meta_description ?? "",
@@ -191,6 +204,21 @@ function articleToDoc(
     updatedAt: row.updated_at ?? null,
     createdAt: row.created_at ?? null,
   };
+}
+
+/** Split `article_terms` rows into category ids vs taxonomy-tag ids. Join misses land with categories, as before. */
+export function splitTermAssignment(
+  assigned:
+    | { term_id: string; blog_terms?: { kind?: string } | null }[]
+    | null
+    | undefined,
+): { categories: string[]; taxonomyTags: string[] } {
+  const categories: string[] = [];
+  const taxonomyTags: string[] = [];
+  for (const a of assigned ?? []) {
+    (a.blog_terms?.kind === "tag" ? taxonomyTags : categories).push(a.term_id);
+  }
+  return { categories, taxonomyTags };
 }
 
 export async function loadEditor(
@@ -264,16 +292,19 @@ export async function loadEditor(
         .select("term_id, blog_terms(kind)")
         .eq("merchant_id", merchantId)
         .eq("article_id", id);
-      const categories: string[] = [];
-      const tags: string[] = [];
-      for (const a of (assigned ?? []) as any[]) {
-        (a.blog_terms?.kind === "tag" ? tags : categories).push(a.term_id);
-      }
-      // Tags: taxonomy tags when the term tables exist, else the free-text `tags[]` column.
+      const { categories, taxonomyTags } = splitTermAssignment(
+        (assigned ?? []) as {
+          term_id: string;
+          blog_terms?: { kind?: string } | null;
+        }[],
+      );
+      // `tags` stays the free-text `tags[]` column; taxonomy tags live in
+      // `taxonomyTags` so term ids never render as chips or overwrite the column.
       doc = articleToDoc(
         row,
         categories,
-        tags.length ? tags : ((row.tags ?? []) as string[]),
+        (row.tags ?? []) as string[],
+        taxonomyTags,
       );
     }
     revisions = await listRevisions(db, merchantId, kind, id);
@@ -347,6 +378,41 @@ function plainText(kind: ContentKind, body: string): string {
       "inline" in b ? b.inline.map((n) => ("v" in n ? n.v : "")).join("") : "",
     )
     .join(" ");
+}
+
+/** Best-effort primary-category slug for %category% article patterns. */
+async function primaryCategorySlug(
+  db: Client,
+  merchantId: string,
+  termIds: string[],
+): Promise<string | null> {
+  const first = termIds[0];
+  if (!first) return null;
+  try {
+    const { data } = await loose(db)
+      .from("blog_terms")
+      .select("slug")
+      .eq("merchant_id", merchantId)
+      .eq("id", first)
+      .maybeSingle();
+    return (data?.slug as string | null) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Render-path permalink settings; defaults keep the save alive on outage. */
+async function editorPermalinkSettings(
+  db: Client,
+  merchantId: string,
+): Promise<PermalinkSettings> {
+  try {
+    const { permalinkSettingsFor } = await import("@/lib/permalink.server");
+    return await permalinkSettingsFor(db, merchantId);
+  } catch {
+    log("warn", "editor.permalink_fallback", { merchant_id: merchantId });
+    return DEFAULT_PERMALINKS;
+  }
 }
 
 async function slugTaken(
@@ -489,6 +555,14 @@ export async function saveEditor(
   if (status === "trash") status = "draft";
 
   const now = new Date().toISOString();
+  // The SEO scorer's keyword-in-URL check must see the merchant's live URL,
+  // not the default shape — otherwise a custom base always "fails" the check.
+  const permalinkSettings = await editorPermalinkSettings(db, merchantId);
+  const categorySlug =
+    doc.kind === "post" &&
+    permalinkSettings.articlePattern.includes("%category%")
+      ? await primaryCategorySlug(db, merchantId, doc.categories)
+      : null;
   const extendedSeo = parseEntitySeo(doc.seoExtended);
   const robots = robotsContent(extendedSeo).toLowerCase();
   const seoScore = analyseSeo({
@@ -501,7 +575,12 @@ export async function saveEditor(
     focusKeyword: extendedSeo.focusKeywords[0] ?? "",
     faq: extendedSeo.schema.faq,
     content: plainText(doc.kind, body),
-    url: doc.kind === "page" ? `/pages/${slug}` : `/blog/${slug}`,
+    url: buildPermalink(permalinkSettings, {
+      kind: doc.kind === "page" ? "page" : "article",
+      slug,
+      date: doc.publishedAt ?? null,
+      category: categorySlug,
+    }),
     fallbackTitle: doc.title,
     fallbackDescription: doc.excerpt,
   }).score;
@@ -618,10 +697,19 @@ export async function saveEditor(
       before.slug !== slug &&
       before.status === "published"
     ) {
-      await recordRedirect(db, merchantId, doc.kind, before.slug, slug);
+      await recordRedirect(db, merchantId, doc.kind, before.slug, slug, {
+        date:
+          ((update as any).published_at as string | null) ??
+          (before.published_at as string | null) ??
+          null,
+        category: categorySlug,
+      });
     }
     if (!autosave && doc.kind === "post")
-      await syncTerms(db, merchantId, doc.id, doc.categories);
+      await syncTerms(db, merchantId, doc.id, [
+        ...doc.categories,
+        ...doc.taxonomyTags,
+      ]);
 
     incr("framique_editor_save_total", { kind: doc.kind, mode });
     return {
@@ -668,7 +756,10 @@ export async function saveEditor(
   if (error) throw new Error(error.message);
   const id = (data as { id: string }).id;
   if (!autosave && doc.kind === "post")
-    await syncTerms(db, merchantId, id, doc.categories);
+    await syncTerms(db, merchantId, id, [
+      ...doc.categories,
+      ...doc.taxonomyTags,
+    ]);
   incr("framique_editor_save_total", {
     kind: doc.kind,
     mode: autosave ? "autosave-create" : "create",
@@ -685,7 +776,7 @@ export async function saveEditor(
   };
 }
 
-/** Category links live in `article_terms`; missing taxonomy tables degrade to a warning, never a failed save. */
+/** Category and taxonomy-tag links live in `article_terms`; missing taxonomy tables degrade to a warning, never a failed save. Categories come first so index 0 stays the primary. */
 async function syncTerms(
   db: Client,
   merchantId: string,
@@ -726,20 +817,31 @@ async function recordRedirect(
   kind: ContentKind,
   fromSlug: string,
   toSlug: string,
+  opts?: { date?: string | null; category?: string | null },
 ) {
-  const from = kind === "page" ? `/pages/${fromSlug}` : `/blog/${fromSlug}`;
-  const to = kind === "page" ? `/pages/${toSlug}` : `/blog/${toSlug}`;
-  const { error } = await loose(db)
-    .from("url_redirects")
-    .upsert(
-      {
-        merchant_id: merchantId,
-        from_path: from,
-        to_path: to,
-        status_code: 301,
-      },
-      { onConflict: "merchant_id,from_path" },
-    );
+  // Like `cms.server.ts`: the redirect must span the merchant's live URLs.
+  // A custom page/article base makes the default shape a URL this store never
+  // served, so the rule would never fire.
+  const settings = await editorPermalinkSettings(db, merchantId);
+  const permalinkKind = kind === "page" ? "page" : "article";
+  const entity = (slug: string) => ({
+    kind: permalinkKind as "page" | "article",
+    slug,
+    date: opts?.date ?? null,
+    category: opts?.category ?? null,
+  });
+  const from = buildPermalink(settings, entity(fromSlug));
+  const to = buildPermalink(settings, entity(toSlug));
+  if (from === to) return;
+  const { error } = await loose(db).from("url_redirects").upsert(
+    {
+      merchant_id: merchantId,
+      from_path: from,
+      to_path: to,
+      status_code: 301,
+    },
+    { onConflict: "merchant_id,from_path" },
+  );
   if (error)
     log("warn", "editor.redirect_failed", {
       merchant_id: merchantId,

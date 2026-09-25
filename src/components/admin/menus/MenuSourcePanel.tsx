@@ -6,7 +6,7 @@
  * a search box because our catalogues can be long.
  */
 import { useMemo, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { btnGhost, btnPrimary, inputClass } from "@/components/console/kit";
 import {

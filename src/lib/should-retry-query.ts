@@ -10,9 +10,11 @@
  *
  * Non-rate-limit errors keep the previous default (up to 3 attempts).
  */
-export function shouldRetryQuery(failureCount: number, error: unknown): boolean {
-  const message =
-    error instanceof Error ? error.message : String(error ?? "");
+export function shouldRetryQuery(
+  failureCount: number,
+  error: unknown,
+): boolean {
+  const message = error instanceof Error ? error.message : String(error ?? "");
   if (/rate_limit|429|too many requests/i.test(message)) return false;
   return failureCount < 3;
 }

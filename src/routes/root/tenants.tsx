@@ -11,7 +11,7 @@ import {
   CheckCircle2,
   AlertTriangle,
   RotateCcw,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { toast } from "sonner";
 import { RootConfirmDialog } from "@/components/root/RootConfirmDialog";
 import { useLang } from "@/lib/i18n";
@@ -147,7 +147,10 @@ function TenantRow({
             {tenant.name}
           </span>
           <span
-            title={t("Storefronts live on merchant custom domains", "স্টোরফ্রন্ট মার্চেন্ট কাস্টম ডোমেইনে থাকে")}
+            title={t(
+              "Storefronts live on merchant custom domains",
+              "স্টোরফ্রন্ট মার্চেন্ট কাস্টম ডোমেইনে থাকে",
+            )}
             className="text-muted-foreground"
           >
             <ExternalLink className="size-3.5" />

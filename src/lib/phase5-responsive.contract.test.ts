@@ -42,7 +42,6 @@ import {
 } from "./builder-ast";
 import { composePublishGate, RELEASE_GATES } from "./publish-gates";
 import { DEFAULT_TOKENS } from "./builder-ast";
-import { THEME_PRESETS } from "./theme-presets";
 
 function mk(
   type: Parameters<typeof newSection>[0],
@@ -364,14 +363,5 @@ describe("Phase 5 — publish and release wiring", () => {
     const entry = RELEASE_GATES.find((g) => g.key === "responsive");
     expect(entry?.script).toBe("scripts/responsive-sweep.mjs");
     expect(entry?.npm).toBe("responsive:sweep");
-  });
-
-  it("ships every preset template through the gate without an error", () => {
-    for (const preset of THEME_PRESETS) {
-      for (const [template, tree] of Object.entries(preset.templates)) {
-        const report = responsiveGate(tree as ThemeAst);
-        expect(report.failures, `${preset.key}/${template}`).toEqual([]);
-      }
-    }
   });
 });

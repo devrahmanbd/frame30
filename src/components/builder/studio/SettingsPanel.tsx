@@ -14,7 +14,7 @@ import {
   MousePointerClick,
   Paintbrush,
   X,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import {
   isControlVisible,

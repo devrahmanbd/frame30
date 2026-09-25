@@ -8,7 +8,9 @@ import type {
 import {
   catalogEntry,
   isContextMismatch,
+  isSkinnableType,
   resolveProps,
+  resolveSkin,
   sectionStyle,
 } from "@/lib/builder-ast";
 import { advancedAttrs } from "@/lib/builder-advanced";
@@ -66,6 +68,8 @@ type Props = {
   signedIn?: boolean;
   /** Phase 3.2: segments the visitor belongs to (conditional visibility). */
   segments?: string[];
+  /** Optional base path to prefix root-relative links with (e.g. `/store/foo`) */
+  linkBase?: string;
 };
 
 /**
@@ -100,6 +104,7 @@ export function SectionRenderer({
   onInlineEdit,
   signedIn,
   segments,
+  linkBase,
 }: Props) {
   const { lang } = useLang();
   const dynamic = useDynamicContext(editing);
@@ -163,6 +168,14 @@ export function SectionRenderer({
   // hand-rolls padding, background, radius or reveal.
   const resolved = resolveProps(dynSection, device);
   const chrome = sectionStyle(resolved);
+  // Widget skins (spec 2026-09-25 §3): the resolved skin rides on the chrome
+  // wrapper alongside data-fq-node, so theme skin sheets can key on
+  // `[data-widget][data-skin]` without any widget knowing about themes. Only
+  // skinnable widgets emit the pair; every other node renders exactly as
+  // before (no wrapper churn, no DOM change).
+  const skin = isSkinnableType(section.type)
+    ? resolveSkin(section.type, resolved["skin"])
+    : null;
   // Universal Advanced layer: spacing, stacking, custom id/classes and the
   // entrance animation, applied to the same wrapper so a widget never has to
   // know about them.
@@ -200,13 +213,14 @@ export function SectionRenderer({
     Object.keys(chrome.style).length > 0 ||
     Object.keys(advanced.style).length > 0;
   const wrap = (node: React.ReactNode) =>
-    editing || wrapperClass || hasStyle ? (
+    editing || wrapperClass || hasStyle || skin ? (
       <div
         ref={reveal.ref as React.Ref<HTMLDivElement>}
         className={wrapperClass}
         style={{ ...chrome.style, ...advanced.style } as React.CSSProperties}
         {...(advanced.id ? { id: advanced.id } : {})}
         data-fq-node={section.id}
+        {...(skin ? { "data-widget": section.type, "data-skin": skin } : {})}
         {...(locale === "bn" ? { lang: "bn" } : {})}
         {...(editing ? { "data-node-id": section.id } : {})}
       >
@@ -264,6 +278,7 @@ export function SectionRenderer({
         locale={locale}
         selectedIds={selectedIds}
         onInlineEdit={onInlineEdit}
+        linkBase={linkBase}
       />
     ));
 
@@ -293,6 +308,11 @@ export function SectionRenderer({
         data={nodeData}
         productSlot={productSlot}
         collectionSlot={collectionSlot}
+        link={(href: string) => {
+          if (!href || href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:") || href === "#") return href;
+          const h = href.startsWith("/") ? href : `/${href}`;
+          return linkBase ? `${linkBase}${h}` : h;
+        }}
 
         renderChildren={renderChildren}
         {...(onInlineEdit

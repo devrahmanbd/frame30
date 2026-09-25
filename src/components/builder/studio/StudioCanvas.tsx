@@ -6,11 +6,18 @@
  * widget edge handles, a 4px drop indicator, and the empty-container prompt.
  */
 import { useRef, useState, type DragEvent } from "react";
-import { Copy, GripVertical, Pencil, Plus, Trash2 } from "lucide-react";
+import {
+  Copy,
+  GripVertical,
+  Pencil,
+  Plus,
+  Trash2,
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import {
   isContainerNode,
   type StudioDoc,
+  type StudioMenuSource,
   type StudioNode,
 } from "@/lib/studio/model";
 import { widgetLabel } from "@/lib/studio/catalog";
@@ -33,8 +40,18 @@ export type CanvasProps = {
   doc: StudioDoc;
   device: DeviceKey;
   selectedId: string | null;
+  /** Full multi-select set; falls back to `selectedId` when omitted. */
+  selectedIds?: readonly string[] | null;
   hideHandles?: boolean;
   onSelect: (id: string | null) => void;
+  /**
+   * Modifier-aware selection. When provided, canvas clicks resolve the
+   * deepest `[data-node-id]` under the pointer and report toggle/replace;
+   * otherwise clicks fall back to single-select `onSelect`.
+   */
+  onSelectMode?: (id: string | null, mode: "replace" | "toggle") => void;
+  /** Real menus for the widget→menu binding; forwarded to each widget. */
+  menus?: readonly StudioMenuSource[] | null;
   onDrop: (target: DropTarget) => void;
   onDragNode: (id: string) => void;
   onDuplicate: (id: string) => void;
@@ -47,6 +64,21 @@ export type CanvasProps = {
 
 const INLINE_EDITABLE = new Set(["heading", "text", "button"]);
 
+/** Deepest node under the pointer — nested chrome always wins. */
+function nodeIdFromEvent(event: { target: unknown }): string | null {
+  const target = event.target as Partial<HTMLElement> | null;
+  if (!target || typeof target.closest !== "function") return null;
+  return target.closest("[data-node-id]")?.getAttribute("data-node-id") ?? null;
+}
+
+function isModifier(event: {
+  metaKey?: boolean;
+  ctrlKey?: boolean;
+  shiftKey?: boolean;
+}): boolean {
+  return Boolean(event.metaKey || event.ctrlKey || event.shiftKey);
+}
+
 export function StudioCanvas(props: CanvasProps) {
   const { doc, device, onAddRoot } = props;
   const [indicator, setIndicator] = useState<{
@@ -54,10 +86,32 @@ export function StudioCanvas(props: CanvasProps) {
     position: DropPosition;
   } | null>(null);
 
+  const selectAt = (event: {
+    target: unknown;
+    metaKey?: boolean;
+    ctrlKey?: boolean;
+    shiftKey?: boolean;
+  }): void => {
+    const id = nodeIdFromEvent(event);
+    if (props.onSelectMode) {
+      props.onSelectMode(id, isModifier(event) ? "toggle" : "replace");
+    } else {
+      props.onSelect(id);
+    }
+  };
+
   return (
     <div
       className="fq-studio-canvas mx-auto min-h-full w-full bg-card text-card-foreground"
-      onClick={() => props.onSelect(null)}
+      onClick={selectAt}
+      onContextMenu={(event) => {
+        const id = nodeIdFromEvent(event);
+        if (!id) return;
+        event.preventDefault();
+        if (props.onSelectMode) props.onSelectMode(id, "replace");
+        else props.onSelect(id);
+        props.onContextMenu(id, { x: event.clientX, y: event.clientY });
+      }}
     >
       {doc.root.length === 0 ? (
         <EmptyCanvas onAdd={onAddRoot} />
@@ -122,12 +176,22 @@ type NodeViewProps = CanvasProps & {
 };
 
 function NodeView(props: NodeViewProps) {
-  const { node, device, selectedId, hideHandles, indicator, setIndicator } =
-    props;
+  const {
+    node,
+    device,
+    selectedId,
+    selectedIds,
+    hideHandles,
+    indicator,
+    setIndicator,
+    menus,
+  } = props;
   const ref = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
   const container = isContainerNode(node);
-  const selected = selectedId === node.id;
+  const selected = selectedIds
+    ? selectedIds.includes(node.id)
+    : selectedId === node.id;
 
   if (isHiddenOn(node, device)) return null;
 
@@ -186,16 +250,6 @@ function NodeView(props: NodeViewProps) {
         setHovered(true);
       }}
       onMouseLeave={() => setHovered(false)}
-      onClick={(event) => {
-        event.stopPropagation();
-        props.onSelect(node.id);
-      }}
-      onContextMenu={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        props.onSelect(node.id);
-        props.onContextMenu(node.id, { x: event.clientX, y: event.clientY });
-      }}
       className={cn(
         "fq-studio-node relative",
         !hideHandles &&
@@ -243,28 +297,28 @@ function NodeView(props: NodeViewProps) {
 }
 
 function InlineWidget(props: NodeViewProps) {
-  const { node, device } = props;
+  const { node, device, selectedId, selectedIds, menus } = props;
   const editable = INLINE_EDITABLE.has(node.el);
   const key = node.el === "button" ? "label" : "text";
-  if (!editable) return <StudioWidget node={node} device={device} editing />;
+  const isSelected = selectedIds
+    ? selectedIds.includes(node.id)
+    : selectedId === node.id;
+  if (!editable)
+    return <StudioWidget node={node} device={device} editing menus={menus} />;
   return (
     <div
       suppressContentEditableWarning
-      contentEditable={props.selectedId === node.id}
+      contentEditable={isSelected}
       onBlur={(event) =>
         props.onInlineEdit(node.id, event.currentTarget.textContent ?? "")
       }
       className="outline-none"
-      role={props.selectedId === node.id ? "textbox" : undefined}
-      aria-label={
-        props.selectedId === node.id
-          ? `Edit ${widgetLabel(node.el)} text`
-          : undefined
-      }
-      tabIndex={props.selectedId === node.id ? 0 : undefined}
+      role={isSelected ? "textbox" : undefined}
+      aria-label={isSelected ? `Edit ${widgetLabel(node.el)} text` : undefined}
+      tabIndex={isSelected ? 0 : undefined}
       data-inline-key={key}
     >
-      <StudioWidget node={node} device={device} editing />
+      <StudioWidget node={node} device={device} editing menus={menus} />
     </div>
   );
 }
@@ -288,6 +342,7 @@ function Handles({
   onDelete,
   onAddInside,
   onSelect,
+  onSelectMode,
 }: NodeViewProps & { container: boolean }) {
   const label = container
     ? (node.name ?? "Container")
@@ -314,7 +369,12 @@ function Handles({
           <Plus className="size-3.5" aria-hidden />
         </HandleButton>
       ) : (
-        <HandleButton label={`Edit ${label}`} onClick={() => onSelect(node.id)}>
+        <HandleButton
+          label={`Edit ${label}`}
+          onClick={() =>
+            onSelectMode ? onSelectMode(node.id, "replace") : onSelect(node.id)
+          }
+        >
           <Pencil className="size-3.5" aria-hidden />
         </HandleButton>
       )}

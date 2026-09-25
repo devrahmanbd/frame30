@@ -9,15 +9,21 @@ import {
 describe("tray drop payload", () => {
   it("round-trips widget type and preset", () => {
     const encoded = encodeTrayDrop({ type: "hero", presetKey: "split" });
-    expect(decodeTrayDrop({ types: [TRAY_MIME], getData: () => encoded })).toEqual({
+    expect(
+      decodeTrayDrop({ types: [TRAY_MIME], getData: () => encoded }),
+    ).toEqual({
       type: "hero",
       presetKey: "split",
     });
   });
 
   it("rejects foreign drags and malformed payloads", () => {
-    expect(decodeTrayDrop({ types: ["text/plain"], getData: () => "x" })).toBeNull();
-    expect(decodeTrayDrop({ types: [TRAY_MIME], getData: () => "not-json" })).toBeNull();
+    expect(
+      decodeTrayDrop({ types: ["text/plain"], getData: () => "x" }),
+    ).toBeNull();
+    expect(
+      decodeTrayDrop({ types: [TRAY_MIME], getData: () => "not-json" }),
+    ).toBeNull();
     expect(
       decodeTrayDrop({ types: [TRAY_MIME], getData: () => JSON.stringify({}) }),
     ).toBeNull();

@@ -11,11 +11,13 @@
  *   memoised for 30s to keep the "Check now" button cheap under refresh spam.
  * - TLS is issued at the edge (OpenResty + lua-resty-acme). This module owns
  *   the ACME http-01 challenge store and the edge handshake; it never holds a
- *   private key. With no edge configured the domain parks in `issuing_cert`
- *   and the UI says so, rather than pretending to be live.
+ *   private key. With no edge configured the domain stays `dns_verified` with
+ *   the cert marked `cert.awaiting_edge` (1h recheck) and the UI says so,
+ *   rather than pretending an order was placed.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
+import { connect } from "node:tls";
 import { cached } from "./cache.server";
 import { incr, log, observe, withSpan } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
@@ -41,14 +43,20 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 type Client = SupabaseClient<Database>;
 type DomainRow = Database["public"]["Tables"]["merchant_domains"]["Row"];
 
+/**
+ * Per-plan custom-domain quota — single source is `domainQuotaForPlan()` in
+ * `./domains` (owner policy 2026-09-19: 1 store = 1 domain on every plan).
+ * This map is derived from it for callers that need a lookup table; do not
+ * edit values here, edit the function.
+ */
 export const PLAN_DOMAIN_QUOTA: Record<string, number> = {
-  launch: 1,
-  growth: 3,
-  business: 10,
-  enterprise: 25,
+  launch: domainQuotaForPlan("launch"),
+  growth: domainQuotaForPlan("growth"),
+  business: domainQuotaForPlan("business"),
+  enterprise: domainQuotaForPlan("enterprise"),
 };
 
-/** List-page cap only — the add gate uses per-plan quotas (domainQuotaForPlan). */
+/** List-page safety cap — the add gate uses per-plan quotas (domainQuotaForPlan). */
 const MAX_DOMAINS_PER_MERCHANT = 10;
 const DNS_TIMEOUT_MS = 4000;
 
@@ -240,8 +248,9 @@ export async function listDomains(
       .order("created_at", { ascending: false });
     if (error) throw new DomainError(error.message, 500);
     // The UI hides the add form at this quota: report the real per-plan
-    // quota (single-store MVP: 1), not the list-page cap.
-    let quota = MAX_DOMAINS_PER_MERCHANT;
+    // quota (owner policy: 1 store = 1 domain on every plan), not the
+    // list-page cap. Single source is domainQuotaForPlan(); fail closed to 1.
+    let quota = domainQuotaForPlan("launch");
     try {
       const { data: sub } = await db
         .from("subscriptions")
@@ -259,7 +268,7 @@ export async function listDomains(
       domains: (data ?? []).map(toView),
       target: edgeTarget(),
       edgeConfigured: Boolean(process.env["DOMAIN_EDGE_HOOK_URL"]),
-      limit: quota,
+      limit: Math.min(quota, MAX_DOMAINS_PER_MERCHANT),
     };
   });
 }
@@ -468,12 +477,29 @@ export async function verifyDomain(
       );
       incr("framique_domain_verify_total", { outcome: "verified" });
       const refreshed = await loadOwned(db, merchantId, domainId);
-      return requestCertificate(
+      const issued = await requestCertificate(
         db,
         merchantId,
         refreshed.id,
         opts.actor ?? null,
       );
+      // Issuance observation, single place: covers both the manual Check now
+      // button and the sweep (which calls verifyDomain per row). If the edge
+      // already serves a valid cert, flip to active in the same pass instead
+      // of waiting for the next sweep. Disabled via DOMAIN_TLS_OBSERVE=false.
+      if (
+        process.env["DOMAIN_TLS_OBSERVE"] !== "false" &&
+        (issued.status === "dns_verified" || issued.status === "issuing_cert")
+      ) {
+        try {
+          if (await reconcileIssuance(row.hostname)) {
+            return toView(await loadOwned(db, merchantId, domainId));
+          }
+        } catch {
+          // Logged inside reconcileIssuance; DNS verdict stands regardless.
+        }
+      }
+      return issued;
     }
 
     const stalled = attempts >= MAX_AUTO_ATTEMPTS;
@@ -499,9 +525,13 @@ export async function verifyDomain(
 }
 
 /**
- * Hand the verified hostname to the TLS edge. `lua-resty-acme` performs the
- * ACME order and calls back into `/api/public/domains/callback`; we only track
- * the state and store http-01 challenges it registers.
+ * Hand the verified hostname to the TLS edge, in priority order:
+ * 1. `DOMAIN_EDGE_HOOK_URL` (external edge with a push receiver);
+ * 2. local provisioner (`EDGE_LOCAL_PROVISION=1`): certbot webroot through
+ *    the live :80 challenge path, PEM into haproxy, reload — see
+ *    `edge-provision.server.ts`. Fire-and-forget: the caller gets
+ *    `issuing_cert` immediately; completion lands via `applyCertResult`.
+ * 3. Neither: stay put with `cert.awaiting_edge` (fail closed, 1h recheck).
  */
 export async function requestCertificate(
   db: Client,
@@ -511,43 +541,197 @@ export async function requestCertificate(
 ): Promise<DomainView> {
   const row = await loadOwned(db, merchantId, domainId);
   const hook = process.env["DOMAIN_EDGE_HOOK_URL"];
+  if (!hook) {
+    if (
+      process.env["EDGE_LOCAL_PROVISION"] === "1" &&
+      (await import("./edge-provision.server")).isProvisionableHost(
+        row.hostname,
+      )
+    ) {
+      await transition(
+        row,
+        "issuing_cert",
+        {
+          cert_status: "pending",
+          cert_error: null,
+          next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
+        },
+        { reason: "cert.requested", actor },
+      );
+      incr("framique_domain_cert_request_total", { outcome: "local" });
+      // Never block the caller on ACME (15–120s): the provision settles the
+      // state machine itself on completion.
+      void provisionAndApply(db, merchantId, row.id, row.hostname, actor);
+      return toView(await loadOwned(db, merchantId, domainId));
+    }
+    // No edge to place an order with: stay in the current status (normally
+    // dns_verified) with the cert marked awaiting-edge and a 1h recheck.
+    // Moving to issuing_cert here would strand the domain — no callback can
+    // ever arrive, and serving requires `active`.
+    await transition(
+      row,
+      row.status as DomainStatus,
+      {
+        cert_status: "pending",
+        cert_error: "cert.awaiting_edge",
+        next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
+      },
+      { reason: "cert.awaiting_edge", actor },
+    );
+    incr("framique_domain_cert_request_total", { outcome: "awaiting_edge" });
+    return toView(await loadOwned(db, merchantId, domainId));
+  }
+  // Schedule the next sweep visit so a domain parked in issuing_cert with a
+  // failing edge is re-polled instead of stranding forever. verifyDomain
+  // owns DNS backoff; this 1h fallback only applies when no callback arrives.
   await transition(
     row,
     "issuing_cert",
-    { cert_status: "pending", cert_error: null },
-    { reason: hook ? "cert.requested" : "cert.awaiting_edge", actor },
+    {
+      cert_status: "pending",
+      cert_error: null,
+      next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
+    },
+    { reason: "cert.requested", actor },
   );
 
-  if (hook) {
+  try {
+    const res = await fetch(hook, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${process.env["DOMAIN_EDGE_TOKEN"] ?? ""}`,
+      },
+      body: JSON.stringify({
+        hostname: row.hostname,
+        domainId: row.id,
+        merchantId,
+      }),
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) throw new Error(`edge_${res.status}`);
+    incr("framique_domain_cert_request_total", { outcome: "ok" });
+  } catch (err) {
+    incr("framique_domain_cert_request_total", { outcome: "error" });
+    log("warn", "domain.cert_request_failed", { domain: row.id });
+    const service = supabaseAdmin;
+    await service
+      .from("merchant_domains")
+      .update({
+        cert_error: err instanceof Error ? err.message : "edge_unreachable",
+      })
+      .eq("id", row.id);
+  }
+  return toView(await loadOwned(db, merchantId, domainId));
+}
+
+/** Per-host provision single-flight (module scope: shared by all callers). */
+const provisionInflight = new Map<string, number>();
+
+/**
+ * Traffic trigger — the real-time path that replaces polling and the manual
+ * button for the common case. When edge traffic arrives for a hostname with
+ * a non-terminal domain row (the merchant just pasted DNS and hit their URL
+ * to test it), run one verify→provision chain, coalesced per host per
+ * cooldown window. Never throws, never blocks serving: failures degrade to
+ * the next trigger or the sweep, exactly as before.
+ */
+export async function triggerEdgeVerify(hostname: string): Promise<void> {
+  try {
+    const { shouldProvisionNow } = await import("./edge-provision.server");
+    const host = hostname.toLowerCase();
+    if (shouldProvisionNow(host, provisionInflight) !== "go") return;
+    const service = supabaseAdmin;
+    const { data: row } = await service
+      .from("merchant_domains")
+      .select("id, merchant_id, status")
+      .eq("hostname", host)
+      .maybeSingle();
+    if (!row) return;
+    const st = row.status as DomainStatus;
+    if (
+      st !== "pending_dns" &&
+      st !== "verifying" &&
+      st !== "dns_verified" &&
+      st !== "issuing_cert"
+    ) {
+      return;
+    }
+    provisionInflight.set(host, Date.now());
     try {
-      const res = await fetch(hook, {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${process.env["DOMAIN_EDGE_TOKEN"] ?? ""}`,
-        },
-        body: JSON.stringify({
-          hostname: row.hostname,
-          domainId: row.id,
-          merchantId,
-        }),
-        signal: AbortSignal.timeout(8000),
+      await verifyDomain(
+        service as unknown as Client,
+        row.merchant_id as string,
+        `edge:${host}`,
+        row.id as string,
+        { manual: false, actor: "edge-trigger" },
+      );
+    } finally {
+      // Keep the stamp: one trigger per window even when DNS is not ready.
+    }
+  } catch {
+    // Serve first, verify later — a trigger must never break a request.
+  }
+}
+
+/**
+ * Fire-and-forget provision worker: runs the local ACME order, then settles
+ * the state machine through the audited `applyCertResult` path (ok →
+ * `active`, fail → `failed` with `cert_error`). Never throws — the domain
+ * keeps its 1h recheck either way, so a crashed order degrades to the next
+ * trigger instead of stranding.
+ */
+export async function provisionAndApply(
+  db: Client,
+  merchantId: string,
+  domainId: string,
+  hostname: string,
+  actor: string | null,
+): Promise<void> {
+  const { shouldProvisionNow, runProvisionOrder, isProvisionableHost } =
+    await import("./edge-provision.server");
+  const host = hostname.toLowerCase();
+  if (!isProvisionableHost(host)) return;
+  if (shouldProvisionNow(host, provisionInflight) !== "go") return;
+  provisionInflight.set(host, Date.now());
+  try {
+    const result = await runProvisionOrder(host, {
+      staging: process.env["ACME_STAGING"] === "true",
+    });
+    if (result.ok) {
+      await applyCertResult({
+        hostname: host,
+        ok: true,
+        expiresAt: result.expiresAt,
+        error: null,
       });
-      if (!res.ok) throw new Error(`edge_${res.status}`);
-      incr("framique_domain_cert_request_total", { outcome: "ok" });
-    } catch (err) {
-      incr("framique_domain_cert_request_total", { outcome: "error" });
-      log("warn", "domain.cert_request_failed", { domain: row.id });
+    } else {
       const service = supabaseAdmin;
       await service
         .from("merchant_domains")
         .update({
-          cert_error: err instanceof Error ? err.message : "edge_unreachable",
+          cert_status: "error",
+          cert_error: result.error,
+          next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
         })
-        .eq("id", row.id);
+        .eq("id", domainId);
+      await service.from("domain_events").insert({
+        domain_id: domainId,
+        merchant_id: merchantId,
+        from_status: "issuing_cert",
+        to_status: "issuing_cert",
+        reason: "cert.provision_failed",
+        detail: { error: result.error },
+        actor,
+      });
     }
+  } catch (err) {
+    log("warn", "domain.provision_crashed", { domain: domainId });
+    void err;
+  } finally {
+    // Keep the cooldown stamp (not a delete): a finished order — ok or
+    // not — must not immediately re-fire on the next trigger.
   }
-  return toView(await loadOwned(db, merchantId, domainId));
 }
 
 export async function setPrimary(
@@ -671,6 +855,15 @@ export async function renameDomain(
       dns_target: edgeTarget().cname,
       next_check_at: new Date().toISOString(),
       last_error: null,
+      check_attempts: 0,
+      // A certificate belongs to the old hostname: carrying it over would
+      // display "HTTPS valid" for a domain that was never issued one.
+      cert_status: "pending",
+      cert_issued_at: null,
+      cert_expires_at: null,
+      cert_error: null,
+      activated_at: null,
+      verified_at: null,
     })
     .eq("id", domainId);
   if (error) {
@@ -807,6 +1000,170 @@ export async function applyCertResult(input: {
   }
 }
 
+/* --------------------- edge issuance observation --------------------- */
+
+/**
+ * Observe the certificate the world currently sees on a hostname.
+ *
+ * The edge (OpenResty + lua-resty-acme autossl) issues pull-based on first
+ * SNI hit — there is no push hook to notify us. So instead of waiting for a
+ * callback that may never come, the sweep performs a real TLS handshake with
+ * full chain validation (`rejectUnauthorized`). Staging, self-signed and
+ * expired certs fail validation inherently and can never flip a domain.
+ */
+export async function observeEdgeCertificate(
+  hostname: string,
+): Promise<{ ok: true; expiresAt: string } | { ok: false; error: string }> {
+  return new Promise((resolve) => {
+    let done = false;
+    let sock: ReturnType<typeof connect> | null = null;
+    const finish = (
+      r: { ok: true; expiresAt: string } | { ok: false; error: string },
+    ) => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      try {
+        sock?.destroy();
+      } catch {
+        /* ignore */
+      }
+      resolve(r);
+    };
+    const timer = setTimeout(
+      () => finish({ ok: false, error: "tls.timeout" }),
+      8000,
+    );
+    try {
+      sock = connect({
+        host: hostname,
+        port: 443,
+        servername: hostname,
+        rejectUnauthorized: true,
+      });
+    } catch {
+      finish({ ok: false, error: "tls.connect_failed" });
+      return;
+    }
+    sock.on("secureConnect", () => {
+      try {
+        const cert = sock?.getPeerCertificate() as
+          { valid_to?: unknown } | undefined;
+        const expires =
+          typeof cert?.valid_to === "string" ? new Date(cert.valid_to) : null;
+        if (
+          !expires ||
+          !Number.isFinite(expires.getTime()) ||
+          expires.getTime() <= Date.now()
+        ) {
+          finish({ ok: false, error: "tls.bad_cert_dates" });
+        } else {
+          finish({ ok: true, expiresAt: expires.toISOString() });
+        }
+      } catch {
+        finish({ ok: false, error: "tls.cert_read_failed" });
+      }
+    });
+    sock.on("error", (err: unknown) => {
+      finish({
+        ok: false,
+        error:
+          err instanceof Error && (err as NodeJS.ErrnoException).code
+            ? `tls.${(err as NodeJS.ErrnoException).code}`.toLowerCase()
+            : "tls.error",
+      });
+    });
+  });
+}
+
+/**
+ * Reconcile one hostname against the publicly served certificate. Flips
+ * `dns_verified`/`issuing_cert` to `active` (via the audited `applyCertResult`
+ * path) when — and only when — a valid public cert is observed. Never throws;
+ * returns whether the domain flipped. Unverified rows are never touched.
+ */
+export async function reconcileIssuance(hostname: string): Promise<boolean> {
+  try {
+    const host = hostname.toLowerCase();
+    const service = supabaseAdmin;
+    const { data: row } = await service
+      .from("merchant_domains")
+      .select("*")
+      .eq("hostname", host)
+      .maybeSingle();
+    if (!row) return false;
+    const status = row.status as DomainStatus;
+    if (status !== "dns_verified" && status !== "issuing_cert") return false;
+    const seen = await observeEdgeCertificate(host);
+    if (!seen.ok) return false;
+    if (status === "dns_verified") {
+      // Bridge through issuing_cert: the edge demonstrably placed the order
+      // (a valid cert exists), so record that before marking issued.
+      await transition(
+        row as unknown as Pick<DomainRow, "id" | "merchant_id" | "status">,
+        "issuing_cert",
+        { cert_status: "pending", cert_error: null },
+        { reason: "cert.edge_observed_order" },
+      );
+    }
+    await applyCertResult({
+      hostname: host,
+      ok: true,
+      expiresAt: seen.expiresAt,
+    });
+    return true;
+  } catch (err) {
+    log("warn", "domain.reconcile_failed", { hostname });
+    void err;
+    return false;
+  }
+}
+
+/**
+ * Refresh a live row's expiry from the publicly served certificate.
+ *
+ * The edge auto-renews on its own with no callback, so `cert_expires_at`
+ * would otherwise decay into false "Expiring" UI on healthy domains. Reads
+ * the served cert (full chain validation) and, when it is newer than the
+ * stored date, updates the date in place — status stays `active`, no state
+ * transition, no event noise (a plain update, not `transition()`).
+ * Never throws; returns whether the date moved.
+ */
+export async function refreshActiveExpiry(hostname: string): Promise<boolean> {
+  try {
+    const host = hostname.toLowerCase();
+    const service = supabaseAdmin;
+    const { data: row } = await service
+      .from("merchant_domains")
+      .select("*")
+      .eq("hostname", host)
+      .maybeSingle();
+    if (!row || (row.status as DomainStatus) !== "active") return false;
+    const seen = await observeEdgeCertificate(host);
+    if (!seen.ok) return false;
+    const current = (row as { cert_expires_at?: unknown }).cert_expires_at;
+    const currentMs =
+      typeof current === "string" ? new Date(current).getTime() : NaN;
+    const seenMs = new Date(seen.expiresAt).getTime();
+    if (!Number.isFinite(seenMs)) return false;
+    if (Number.isFinite(currentMs) && seenMs <= currentMs) return false;
+    const { error } = await service
+      .from("merchant_domains")
+      .update({
+        cert_expires_at: seen.expiresAt,
+        cert_error: null,
+        last_checked_at: new Date().toISOString(),
+      })
+      .eq("id", row.id);
+    if (error) return false;
+    incr("framique_domain_expiry_refreshed_total");
+    return true;
+  } catch {
+    log("warn", "domain.refresh_failed", { hostname });
+    return false;
+  }
+}
+
 async function notifyMerchant(
   merchantId: string,
   n: {
@@ -844,11 +1201,18 @@ export type DomainSweepResult = {
   failed: number;
   renewals: number;
   expired_challenges: number;
+  activated: number;
 };
 
 /**
  * Poll every domain whose next check is due, then flag certificates inside the
  * renewal window so the edge can re-order before expiry.
+ *
+ * Renewal goes through `transition()` (active -> issuing_cert, cert_status
+ * `renewing`) so audit rows, metrics and the illegal-edge guard all apply —
+ * never a raw `cert_status` write. Domains parked in `issuing_cert` without
+ * an edge are re-polled via `verifyDomain` (issuing_cert -> verifying is a
+ * legal edge) instead of stranding forever.
  */
 export async function sweepDomains(
   subject = "cron",
@@ -861,7 +1225,12 @@ export async function sweepDomains(
     const { data: due } = await service
       .from("merchant_domains")
       .select("*")
-      .in("status", ["pending_dns", "verifying", "dns_verified", "issuing_cert"])
+      .in("status", [
+        "pending_dns",
+        "verifying",
+        "dns_verified",
+        "issuing_cert",
+      ])
       .lte("next_check_at", now)
       .order("next_check_at", { ascending: true })
       .limit(50);
@@ -872,6 +1241,7 @@ export async function sweepDomains(
       failed: 0,
       renewals: 0,
       expired_challenges: 0,
+      activated: 0,
     };
 
     for (const row of due ?? []) {
@@ -892,8 +1262,40 @@ export async function sweepDomains(
           result.verified += 1;
         }
         if (view.status === "failed") result.failed += 1;
+        // Activation is observed inside verifyDomain (single path); count rows
+        // that arrived non-active and left active.
+        if (view.status === "active" && row.status !== "active") {
+          result.activated += 1;
+        }
       } catch {
         // Per-domain failures are logged inside verifyDomain; keep sweeping.
+      }
+    }
+
+    // Stuck issuing_cert re-poll: rows that reached issuing_cert while an
+    // edge hook was configured (or legacy parked rows) but never received a
+    // callback get re-queued here so verifyDomain + issuance observation can
+    // heal them instead of stranding forever.
+    if (!process.env["DOMAIN_EDGE_HOOK_URL"]) {
+      const staleAt = new Date(Date.now() - 3_600_000).toISOString();
+      const { data: stuck } = await service
+        .from("merchant_domains")
+        .select("id")
+        .eq("status", "issuing_cert")
+        .lt("updated_at", staleAt)
+        .gt("next_check_at", now)
+        .order("updated_at", { ascending: true })
+        .limit(50);
+      for (const row of stuck ?? []) {
+        await service
+          .from("merchant_domains")
+          .update({ next_check_at: now })
+          .eq("id", row.id);
+      }
+      if ((stuck ?? []).length > 0) {
+        log("info", "domains.sweep_stuck_requeued", {
+          count: (stuck ?? []).length,
+        });
       }
     }
 
@@ -906,17 +1308,97 @@ export async function sweepDomains(
       .lt("cert_expires_at", renewAt)
       .limit(50);
     for (const row of renewals ?? []) {
-      await service
-        .from("merchant_domains")
-        .update({ cert_status: "renewing" })
-        .eq("id", row.id);
-      await requestCertificate(
-        service as unknown as Client,
-        row.merchant_id,
-        row.id,
-        null,
-      ).catch(() => undefined);
-      result.renewals += 1;
+      try {
+        const { data: full } = await service
+          .from("merchant_domains")
+          .select("*")
+          .eq("id", row.id)
+          .maybeSingle();
+        if (!full) continue;
+        const hook = process.env["DOMAIN_EDGE_HOOK_URL"];
+        if (!hook) {
+          const { isProvisionableHost } =
+            await import("./edge-provision.server");
+          if (
+            process.env["EDGE_LOCAL_PROVISION"] === "1" &&
+            isProvisionableHost(row.hostname)
+          ) {
+            // Renewal through the local provisioner: same fire-and-forget
+            // order as issuance; applyCertResult flips back to active.
+            await transition(
+              full as unknown as Pick<
+                DomainRow,
+                "id" | "merchant_id" | "status"
+              >,
+              "issuing_cert",
+              {
+                cert_status: "renewing",
+                cert_error: null,
+                next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
+              },
+              { reason: "cert.renew_requested" },
+            );
+            void provisionAndApply(
+              service as unknown as Client,
+              row.merchant_id,
+              row.id,
+              row.hostname,
+              null,
+            );
+            result.renewals += 1;
+            continue;
+          }
+          log("info", "domains.renewal_skipped_no_edge", {
+            domain: row.id,
+          });
+          continue;
+        }
+        // Renewal via the state machine: active -> issuing_cert with
+        // CertStatus `renewing`. Emits domain_events + metrics like any
+        // other edge; the raw-update path bypassed both and then hit
+        // `domain.illegal_transition` inside requestCertificate.
+        await transition(
+          full as unknown as Pick<DomainRow, "id" | "merchant_id" | "status">,
+          "issuing_cert",
+          {
+            cert_status: "renewing",
+            cert_error: null,
+            next_check_at: new Date(Date.now() + 3_600_000).toISOString(),
+          },
+          { reason: "cert.renew_requested" },
+        );
+        try {
+          const res = await fetch(hook, {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              authorization: `Bearer ${process.env["DOMAIN_EDGE_TOKEN"] ?? ""}`,
+            },
+            body: JSON.stringify({
+              hostname: row.hostname,
+              domainId: row.id,
+              merchantId: row.merchant_id,
+              renew: true,
+            }),
+            signal: AbortSignal.timeout(8000),
+          });
+          if (!res.ok) throw new Error(`edge_${res.status}`);
+          incr("framique_domain_cert_request_total", { outcome: "ok" });
+        } catch (err) {
+          incr("framique_domain_cert_request_total", { outcome: "error" });
+          log("warn", "domain.cert_request_failed", { domain: row.id });
+          await service
+            .from("merchant_domains")
+            .update({
+              cert_error:
+                err instanceof Error ? err.message : "edge_unreachable",
+            })
+            .eq("id", row.id);
+        }
+        result.renewals += 1;
+      } catch {
+        // Illegal edge or missing row: logged inside transition(); keep sweeping.
+      }
     }
 
     const { count } = await service

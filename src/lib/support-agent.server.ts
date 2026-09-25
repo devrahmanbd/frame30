@@ -10,7 +10,7 @@
  * or order state. Two low-confidence turns in a row hand the thread to a human.
  */
 import { cached } from "./cache.server";
-import { en } from "./i18n-dict";
+import { en, DICT, interpolate, type Entry } from "./i18n-dict";
 import { fmtMinor } from "./money";
 import { incr, log, observe, withSpan } from "./observability.server";
 import { RateLimitError, rateLimit } from "./rate-limit.server";
@@ -24,6 +24,7 @@ import {
   type GuardKind,
 } from "./support-guardrails";
 import { searchKb, searchKbHybrid, type KbHit } from "./support-kb.server";
+import { queryCoverage, MIN_QUERY_COVERAGE } from "./support-kb.server";
 import { draftAnswer } from "./support-llm.server";
 import { createTicket } from "./support-tickets.server";
 import {
@@ -38,6 +39,22 @@ import {
   type TrajectoryTurn,
 } from "./support-loop-detector.server";
 import { captureTrainingTurn } from "./ai-training-data.server";
+import {
+  queryDeepWiki,
+  type DeepWikiCitation,
+  type DeepWikiQueryResult,
+} from "./deepwiki-engine.server";
+import { getVerifiedContact } from "./support-contact.server";
+import {
+  buildHandoffPayload,
+  degradedBanner,
+  isDegradedEnvironment,
+} from "./support-grounding.server";
+
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+
+type Client = SupabaseClient<Database>;
 
 let mockAdminClient: unknown = null;
 
@@ -50,7 +67,7 @@ function createTestDbProxy(): unknown {
   let currentTable = "";
   let lastEqCol = "";
   let lastEqVal: unknown = null;
-  const queryBuilder: any = {
+  const queryBuilder: Record<string, unknown> = {
     select: (_cols?: string) => queryBuilder,
     insert: (_record?: unknown) => queryBuilder,
     update: (_record?: unknown) => queryBuilder,
@@ -109,12 +126,15 @@ function createTestDbProxy(): unknown {
         error: null,
       };
     },
-    then: (onfulfilled?: any, onrejected?: any) =>
-      promise.then(onfulfilled, onrejected),
-    catch: (onrejected?: any) => promise.catch(onrejected),
+    then: (
+      onfulfilled?: (value: unknown) => unknown,
+      onrejected?: (reason: unknown) => unknown,
+    ) => promise.then(onfulfilled, onrejected),
+    catch: (onrejected?: (reason: unknown) => unknown) =>
+      promise.catch(onrejected),
   };
 
-  const dbClient: any = {
+  const dbClient: Record<string, unknown> = {
     from: (table: string) => {
       currentTable = table;
       lastEqCol = "";
@@ -127,17 +147,17 @@ function createTestDbProxy(): unknown {
   return dbClient;
 }
 
-async function admin() {
-  if (mockAdminClient) return mockAdminClient as any;
+async function admin(): Promise<Client> {
+  if (mockAdminClient) return mockAdminClient as Client;
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return createTestDbProxy() as any;
+    return createTestDbProxy() as unknown as Client;
   }
   try {
     const { supabaseAdmin } =
       await import("@/integrations/supabase/client.server");
-    return supabaseAdmin;
+    return supabaseAdmin as unknown as Client;
   } catch {
-    return createTestDbProxy() as any;
+    return createTestDbProxy() as unknown as Client;
   }
 }
 
@@ -146,12 +166,15 @@ export type Source = { label: string; table: string; title?: string };
 export type AskInput = {
   slug: string;
   message: string;
+  customerName?: string | null;
+  customerEmail?: string | null;
   conversationId?: string | null;
   orderNumber?: string | null;
   phone?: string | null;
   locale?: "bn" | "en";
   channel?: "widget" | "whatsapp" | "messenger";
   takeoverMode?: "ai" | "human_takeover" | null;
+  engine?: "kb" | "deepwiki" | "auto";
 };
 
 export type TicketAction = {
@@ -181,11 +204,26 @@ export type EpistemicActionPath = {
 };
 
 export type ContactInfoCard = {
-  phone: string;
-  whatsapp: string;
+  phone: string | null;
+  whatsapp: string | null;
   email: string;
   hours: string;
   hoursBn: string;
+  source?: "org_nap" | "merchant_verified";
+};
+
+export type HandoffPayload = {
+  conversationId: string | null;
+  transcript: Array<{ role: "customer" | "bot" | "agent"; body: string }>;
+  confidence: Confidence;
+  provenance: Source | null;
+  attemptedSources: string[];
+  reason: string;
+  statusFrom: "pending";
+  statusTo: "open";
+  prefilledTicketSubject: string;
+  prefilledTicketBody: string;
+  createdAt: string;
 };
 
 export type AskResult = {
@@ -208,6 +246,11 @@ export type AskResult = {
   humanTakeover?: boolean;
   staffActive?: boolean;
   staffIndicator?: string;
+  adminOnline?: boolean;
+  deepWikiQueryId?: string;
+  deepWikiCitations?: DeepWikiCitation[];
+  handoffPayload?: HandoffPayload | null;
+  degraded?: boolean;
 };
 
 export async function getConversationTakeoverState(
@@ -331,8 +374,16 @@ async function ensureConversation(
   phone: string | null,
   channel: AskInput["channel"],
 ) {
-  const db = await admin();
   if (conversationId) {
+    try {
+      const { getMockConversation } =
+        await import("./support-moderation.server");
+      const mock = getMockConversation(conversationId);
+      if (mock) return mock.id;
+    } catch {
+      // ignore
+    }
+    const db = await admin();
     const { data } = await db
       .from("ai_conversations")
       .select("id")
@@ -341,6 +392,7 @@ async function ensureConversation(
       .maybeSingle();
     if (data) return data.id;
   }
+  const db = await admin();
   const { data, error } = await db
     .from("ai_conversations")
     .insert({
@@ -380,15 +432,13 @@ async function appendMessage(
   if (recent.length > 12) recent.shift();
   CONVERSATION_RECENT_TURNS.set(conversationId, recent);
 
-  await db
-    .from("ai_messages")
-    .insert({
-      merchant_id: merchantId,
-      conversation_id: conversationId,
-      role,
-      body: safe,
-      flagged,
-    });
+  await db.from("ai_messages").insert({
+    merchant_id: merchantId,
+    conversation_id: conversationId,
+    role,
+    body: safe,
+    flagged,
+  });
   await db
     .from("ai_conversations")
     .update({ last_message_at: new Date().toISOString() })
@@ -479,16 +529,17 @@ export function detectUngroundedOrSpeculative(message: string): boolean {
 }
 
 export const EPISTEMIC_ADMISSION_EN =
-  "I don't have enough verified information to answer this accurately.";
+  "I don't have verified info to answer this accurately.";
 export const EPISTEMIC_ADMISSION_BN =
   "আমি এই বিষয়ে নিশ্চিত নই এবং ভুল তথ্য এড়াতে অনুমান করতে চাই না।";
 
 export const DEFAULT_CONTACT_INFO: ContactInfoCard = {
-  phone: "+880 9612-345678",
-  whatsapp: "+880 1700-000000",
+  phone: null,
+  whatsapp: null,
   email: "support@framique.com",
-  hours: "9 AM – 10 PM BST",
+  hours: "Sunday–Thursday, 10:00–18:00 (BST)",
   hoursBn: "সকাল ৯:০০ – রাত ১০:০০ BST",
+  source: "org_nap",
 };
 
 export const EPISTEMIC_ACTION_PATHS: EpistemicActionPath[] = [
@@ -526,34 +577,87 @@ export const EPISTEMIC_ACTION_PATHS: EpistemicActionPath[] = [
 export function buildEpistemicHumilityReply(
   locale: "bn" | "en",
   contactInfo: ContactInfoCard = DEFAULT_CONTACT_INFO,
+  options?: { adminOnline?: boolean; customerEmail?: string },
 ): string {
+  const adminNoticeBn =
+    options?.adminOnline === true
+      ? "\n\n🟢 **সাপোর্ট স্পেশালিস্ট অনলাইন আছেন**: আমাদের সাপোর্ট স্পেশালিস্ট বর্তমানে অনলাইনে আছেন। অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন অথবা নিচের মাধ্যম থেকে বেছে নিন।"
+      : options?.adminOnline === false
+        ? `\n\n⚪ **লাইভ সাপোর্ট অফলাইন**: আমাদের লাইভ সাপোর্ট টিম এই মুহূর্তে অফলাইনে আছেন। আপনি সুবিধাজনক সময়ে কলব্যাকের অনুরোধ করতে পারেন অথবা আমাদের টিম আপনার ইমেইলে${options?.customerEmail ? ` (${options.customerEmail})` : ""} উত্তর জানিয়ে দেবে।`
+        : "";
+
+  const adminNoticeEn =
+    options?.adminOnline === true
+      ? "\n\n🟢 **Support Specialist Online**: A human support specialist is currently online. Please wait a moment while I transfer you, or select a callback below if you prefer."
+      : options?.adminOnline === false
+        ? `\n\n⚪ **Live Support Away**: Our live support team is currently away. You can schedule a callback below, or our team will follow up via email${options?.customerEmail ? ` at ${options.customerEmail}` : ""}.`
+        : "";
+
+  // Contact truth: unverified phones are hidden, never rendered.
+  const phoneLine = (label: string, v: string | null) =>
+    v ? `    • ${label}: ${v}` : null;
+
   if (locale === "bn") {
-    return `${EPISTEMIC_ADMISSION_BN}
-
-সঠিক তথ্যের জন্য অনুগ্রহ করে নিচের যেকোনো একটি মাধ্যম বেছে নিন:
-
-1. 👤 **মানুষের সাথে কথা বলুন (Transfer to Human Agent)** — সরাসরি কাস্টমার সাপোর্ট প্রতিনিধির সাথে যুক্ত হতে 'এজেন্টের সাথে কথা বলুন' লিখুন।
-2. 📞 **কলব্যাক অনুরোধ (Request Callback)** — আমাদের টিম আপনাকে কল করবে, অনুরোধ জানাতে 'কলব্যাক' লিখুন।
-3. 🎫 **সাপোর্ট টিকিট খুলুন (Open Support Ticket)** — ট্র্যাকিং এবং দ্রুত সমাধানের জন্য 'টিকিট তৈরি করুন' লিখুন।
-4. 📋 **সরাসরি যোগাযোগ (Direct Contact)**:
-   • 📞 হটলাইন: ${contactInfo.phone}
-   • 💬 WhatsApp: ${contactInfo.whatsapp}
-   • ✉️ ইমেইল: ${contactInfo.email}
-   • ⏰ সময়: ${contactInfo.hoursBn}`;
+    const lines = [
+      `${EPISTEMIC_ADMISSION_BN}${adminNoticeBn}`,
+      "",
+      "সঠিক তথ্যের জন্য অনুগ্রহ করে নিচের যেকোনো একটি মাধ্যম বেছে নিন:",
+      "",
+      "1. 👤 **মানুষের সাথে কথা বলুন (Transfer to Human Agent)** — সরাসরি কাস্টমার সাপোর্ট প্রতিনিধির সাথে যুক্ত হতে 'এজেন্টের সাথে কথা বলুন' লিখুন।",
+      "2. 📞 **কলব্যাক অনুরোধ (Request Callback)** — আমাদের টিম আপনাকে কল করবে, অনুরোধ জানাতে 'কলব্যাক' লিখুন।",
+      "3. 🎫 **সাপোর্ট টিকিট খুলুন (Open Support Ticket)** — ট্র্যাকিং এবং দ্রুত সমাধানের জন্য 'টিকিট তৈরি করুন' লিখুন।",
+      "4. 📋 **সরাসরি যোগাযোগ (Direct Contact)**:",
+      phoneLine("📞 হটলাইন", contactInfo.phone),
+      phoneLine("💬 WhatsApp", contactInfo.whatsapp),
+      `    • ✉️ ইমেইল: ${contactInfo.email}`,
+      `    • ⏰ সময়: ${contactInfo.hoursBn}`,
+    ].filter(Boolean);
+    return lines.join("\n");
   }
 
-  return `${EPISTEMIC_ADMISSION_EN}
+  const linesEn = [
+    `${EPISTEMIC_ADMISSION_EN}${adminNoticeEn}`,
+    "",
+    "To ensure you receive accurate and verified assistance, please select one of the options below:",
+    "",
+    '1. 👤 **Transfer to Human Agent** — reply "talk to human agent" to connect with a customer specialist.',
+    '2. 📞 **Request Callback** — reply "call me back" and our team will call your phone.',
+    '3. 🎫 **Open Support Ticket** — reply "open ticket" to submit an issue with SLA tracking.',
+    "4. 📋 **Direct Contact Info**:",
+    phoneLine("📞 Phone", contactInfo.phone),
+    phoneLine("💬 WhatsApp", contactInfo.whatsapp),
+    `    • ✉️ Email: ${contactInfo.email}`,
+    `    • ⏰ Hours: ${contactInfo.hours}`,
+  ].filter(Boolean);
+  return linesEn.join("\n");
+}
 
-To ensure you receive accurate and verified assistance, please select one of the options below:
+export function translate(
+  locale: "bn" | "en",
+  key: string,
+  vars?: Record<string, string | number>,
+): string {
+  const entry = (DICT as Record<string, Entry>)[key];
+  if (!entry) return key;
+  return interpolate(locale === "bn" ? entry.bn : entry.en, vars);
+}
 
-1. 👤 **Transfer to Human Agent** — reply "talk to human agent" to connect with a customer specialist.
-2. 📞 **Request Callback** — reply "call me back" and our team will call your phone.
-3. 🎫 **Open Support Ticket** — reply "open ticket" to submit an issue with SLA tracking.
-4. 📋 **Direct Contact Info**:
-   • 📞 Phone: ${contactInfo.phone}
-   • 💬 WhatsApp: ${contactInfo.whatsapp}
-   • ✉️ Email: ${contactInfo.email}
-   • ⏰ Hours: ${contactInfo.hours}`;
+export function getFallbackReply(
+  intent: Intent,
+  locale: "bn" | "en" = "en",
+): string {
+  const keyMap: Record<Intent, string> = {
+    order_status: "support.ask_order_details",
+    refund: "support.faq.refund",
+    faq_shipping: "support.faq.shipping",
+    faq_hours: "support.faq.hours",
+    product: "support.faq.product",
+    create_ticket: "support.ticket_prompt",
+    request_callback: "support.callback_prompt",
+    other: "support.faq.other",
+  };
+  const key = keyMap[intent] || "support.faq.other";
+  return translate(locale, key);
 }
 
 const FALLBACK: Record<Intent, string> = {
@@ -798,6 +902,29 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         cta: "ticket",
         ticketId: loopTicketId,
         ticketAction: loopTicketAction,
+        actionPaths: EPISTEMIC_ACTION_PATHS,
+        contactInfo: getVerifiedContact(),
+        handoffPayload: buildHandoffPayload({
+          conversationId,
+          transcript: [
+            {
+              role: "customer",
+              body: redactPii(input.message).text.slice(0, 2000),
+            },
+            { role: "bot", body: loopReply.slice(0, 2000) },
+          ],
+          confidence: "unsure",
+          provenance: null,
+          attemptedSources: ["kb", "deepwiki"],
+          reason: "loop_circuit_broken",
+        }),
+        degraded: (() => {
+          try {
+            return isDegradedEnvironment();
+          } catch {
+            return false;
+          }
+        })(),
       };
     }
 
@@ -846,6 +973,16 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     if (!pinned) {
       hits = await searchKbHybrid(merchant.id, input.message);
       steps.push({ step: "retrieve", hits: hits.length });
+      // Coverage gate: a hit is citable only when it accounts for EVERY
+      // distinctive query word. Single-stem matches ("integrat*" without
+      // "ERP") are disqualified here so the humility circuit below sees
+      // zero usable hits instead of a confident-looking false positive.
+      const qualified = hits.filter(
+        (h) =>
+          queryCoverage(input.message, h.title, h.body) >= MIN_QUERY_COVERAGE,
+      );
+      steps.push({ step: "coverage", kept: qualified.length, of: hits.length });
+      hits = qualified;
     }
 
     const confidence = confidenceOf({
@@ -866,33 +1003,92 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       intent === "request_callback" ||
       intent === "refund";
 
+    const isCommerceIntent =
+      intent === "faq_shipping" ||
+      intent === "faq_hours" ||
+      intent === "product" ||
+      intent === "order_status";
+
+    const isGreeting =
+      /^(hi|hello|hey|salam|assalamu\s*alaikum|greetings|help|howdy|good\s*(morning|afternoon|evening))\b/i.test(
+        input.message.trim(),
+      ) ||
+      /^(নমস্কার|সালাম|আসসালামু\s*আলাইকুম|হ্যালো|হাই|কেমন আছেন|সাহায্য)/i.test(
+        input.message.trim(),
+      );
+
     const isSpeculative = detectUngroundedOrSpeculative(input.message);
-    const topVectorSim = hits[0]?.vector_sim;
+    const topHit = hits[0];
+    const hasStrongTextMatch =
+      (topHit?.text_rank ?? 0) >= 0.5 || (topHit?.combined_score ?? 0) >= 0.05;
+    const topVectorSim = topHit?.vector_sim;
     const lowVectorSim =
       topVectorSim !== undefined &&
-      topVectorSim < EPISTEMIC_HUMILITY_SIMILARITY_THRESHOLD;
+      topVectorSim < EPISTEMIC_HUMILITY_SIMILARITY_THRESHOLD &&
+      !hasStrongTextMatch;
     const noKbHits = hits.length === 0;
 
-    const contactInfo: ContactInfoCard = {
-      phone: "+880 9612-345678",
-      whatsapp: "+880 1700-000000",
-      email: `support@${merchant.slug}.com`,
-      hours: "9 AM – 10 PM BST",
-      hoursBn: "সকাল ৯:০০ – রাত ১০:০০ BST",
-    };
+    const contactInfo: ContactInfoCard = getVerifiedContact();
+
+    // Honest degraded mode: placeholder key or mock LLM → extractive-only banner.
+    let degraded = false;
+    try {
+      degraded = isDegradedEnvironment();
+    } catch {
+      degraded = false;
+    }
+
+    // 4.1 DeepWiki Synthesis Engine (Multi-Hop RAG + RL + Atropos fallback)
+    const forceDeepWiki = input.engine === "deepwiki";
+    let deepWikiResult: DeepWikiQueryResult | null = null;
+    if (
+      !pinned &&
+      !isActionIntent &&
+      !isGreeting &&
+      !isSpeculative &&
+      (forceDeepWiki || noKbHits || lowVectorSim)
+    ) {
+      try {
+        const dw = await queryDeepWiki({
+          merchantId: merchant.id,
+          query: input.message,
+          locale,
+          conversationId,
+        });
+        if (dw && dw.citations.length > 0) {
+          deepWikiResult = dw;
+        }
+      } catch (err) {
+        log("warn", "deepwiki.query_failed", { error: String(err) });
+      }
+    }
+
+    const { isOperatorOnline } = await import("./support-presence.server");
+    const presence = await isOperatorOnline(merchant.id, conversationId);
+    const adminOnline = presence.isOnline;
 
     const triggerEpistemicHumility =
-      !pinned && !isActionIntent && (isSpeculative || noKbHits || lowVectorSim);
+      !pinned &&
+      !isActionIntent &&
+      !isGreeting &&
+      !deepWikiResult &&
+      (isSpeculative || noKbHits || lowVectorSim);
 
     if (triggerEpistemicHumility) {
-      const humilityReply = buildEpistemicHumilityReply(locale, contactInfo);
+      const humilityReply = buildEpistemicHumilityReply(locale, contactInfo, {
+        adminOnline,
+        customerEmail: input.customerEmail ?? undefined,
+      });
 
       // Auto-escalate conversation to needs_agent so human operators on /root/ai are notified
       try {
         const db = await admin();
         await db
           .from("ai_conversations")
-          .update({ status: "needs_agent", priority: "normal" } as never)
+          .update({
+            status: "needs_agent",
+            priority: adminOnline ? "high" : "normal",
+          } as never)
           .eq("merchant_id", merchant.id)
           .eq("id", conversationId);
       } catch {
@@ -916,6 +1112,26 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         grounded: false,
       }).catch(() => null);
 
+      const humilityReason = isSpeculative
+        ? "speculative_out_of_domain"
+        : noKbHits
+          ? "zero_kb_hits"
+          : "low_vector_similarity";
+      const humilityHandoff = buildHandoffPayload({
+        conversationId,
+        transcript: [
+          {
+            role: "customer",
+            body: redactPii(input.message).text.slice(0, 2000),
+          },
+          { role: "bot", body: humilityReply.slice(0, 2000) },
+        ],
+        confidence: "unsure",
+        provenance: null,
+        attemptedSources: ["kb", "deepwiki"],
+        reason: humilityReason,
+      });
+
       return {
         conversationId,
         reply: humilityReply,
@@ -924,21 +1140,33 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         confidence: "unsure",
         needsAgent: true,
         cta: "human_transfer",
+        adminOnline,
+        staffActive: adminOnline,
         epistemicTriggered: true,
-        epistemicReason: isSpeculative
-          ? "speculative_out_of_domain"
-          : noKbHits
-            ? "zero_kb_hits"
-            : "low_vector_similarity",
+        epistemicReason: humilityReason,
         actionPaths: EPISTEMIC_ACTION_PATHS,
         contactInfo,
+        handoffPayload: humilityHandoff,
+        degraded,
       };
     }
 
     let reply = pinned?.reply ?? "";
     let sources: Source[] = pinned ? [pinned.source] : [];
 
-    if (!pinned && hits.length) {
+    if (deepWikiResult) {
+      reply = deepWikiResult.answer;
+      sources = deepWikiResult.citations.map((c) => ({
+        label: c.citationTag,
+        table: "deepwiki",
+        title: c.title,
+      }));
+      // Honest degraded mode applies to DeepWiki synthesis too: secondary
+      // source, never presented as confident when extractive-only.
+      if (degraded && !pinned) {
+        reply = `${degradedBanner(locale)}\n${reply}`;
+      }
+    } else if (!pinned && hits.length) {
       const draft = await draftAnswer({
         question: input.message,
         context: hits.map((h) => ({ title: h.title, body: h.body })),
@@ -947,13 +1175,57 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       if (draft) {
         reply = draft.text;
         sources = hits.slice(0, 3).map((h) => ({
-          label: en("support.provenance.kb"),
+          label: translate(locale, "support.provenance.kb"),
           table: "support_kb_docs",
           title: h.title,
         }));
       }
     }
-    if (!reply) reply = FALLBACK[intent];
+
+    if (!reply && isGreeting) {
+      reply =
+        locale === "bn"
+          ? `${merchant.name}-এ আপনাকে স্বাগতম! আমি কীভাবে সাহায্য করতে পারি? আমাদের পণ্য, অর্ডার ট্র্যাক করা, ডেলিভারি চার্জ বা রিটার্ন পলিসি সম্পর্কে যে কোনো তথ্য জানতে পারেন।`
+          : `Welcome to ${merchant.name}! How can I help you today? Feel free to ask about our products, order status, shipping details, or return policy.`;
+    }
+
+    // Grounded-answer kernel: no provenance → no factual claims.
+    // Null-context falls back to explicit unsure+handoff, never a bare FAQ.
+    if (!reply && !isGreeting) {
+      reply = buildEpistemicHumilityReply(locale, contactInfo, {
+        adminOnline,
+        customerEmail: input.customerEmail ?? undefined,
+      });
+      sources = [];
+    } else if (!reply) {
+      reply = getFallbackReply(intent, locale);
+    }
+
+    // Honest degraded mode: extractive-only banner + lowered confidence.
+    // Pinned order rows stay pinned (DB truth); KB-grounded never presents as confident.
+    let effectiveConfidence = confidence;
+    if (degraded && !pinned && effectiveConfidence === "grounded") {
+      reply = `${degradedBanner(locale)}\n${reply}`;
+      effectiveConfidence = "unsure";
+    } else if (degraded && !pinned && reply && sources.length > 0) {
+      reply = `${degradedBanner(locale)}\n${reply}`;
+      if (effectiveConfidence !== "unsure") effectiveConfidence = "unsure";
+    }
+
+    // Final kernel guard: grounded confidence without provenance is impossible.
+    if (
+      !pinned &&
+      sources.length === 0 &&
+      !deepWikiResult &&
+      !isGreeting &&
+      effectiveConfidence !== "unsure"
+    ) {
+      reply = buildEpistemicHumilityReply(locale, contactInfo, {
+        adminOnline,
+        customerEmail: input.customerEmail ?? undefined,
+      });
+      effectiveConfidence = "unsure";
+    }
 
     // 5. Outbound guardrail: no authority claims, no unpinned figures.
     const outbound = screenOutbound(reply, { pinned: Boolean(pinned) });
@@ -965,10 +1237,15 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         outbound.rule ?? "unknown",
         reply,
       );
-      reply = en("support.needs_human");
+      reply = translate(locale, "support.needs_human");
     }
 
-    const flagged = confidence === "unsure" || !outbound.allowed;
+    const flagged =
+      (!isGreeting &&
+        !pinned &&
+        effectiveConfidence === "unsure" &&
+        !hits.length) ||
+      !outbound.allowed;
     await appendMessage(merchant.id, conversationId, "bot", reply, flagged);
 
     // 6. Action tools: ticket creation and callback request.
@@ -987,6 +1264,7 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       : 0;
     const needsAgent =
       !outbound.allowed ||
+      effectiveConfidence === "unsure" ||
       intent === "refund" ||
       intent === "create_ticket" ||
       intent === "request_callback" ||
@@ -1035,10 +1313,17 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
               : "support.consecutive_unsure";
 
       const toolStart = Date.now();
+      // Chatwoot parity: ticket prefilled from full transcript, not just the last turn.
+      const recentForTicket =
+        CONVERSATION_RECENT_TURNS.get(conversationId) ?? [];
+      const transcriptText = recentForTicket
+        .map((t) => `${t.role}: ${t.message}`)
+        .join("\n")
+        .slice(0, 3500);
       const ticket = await createTicket({
         merchantId: merchant.id,
-        subject: input.message.slice(0, 120),
-        body: redactPii(input.message).text,
+        subject: input.message.slice(0, 120) || "Support request",
+        body: transcriptText || redactPii(input.message).text,
         priority,
         channel,
         conversationId,
@@ -1172,14 +1457,14 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       subjectHash,
       channel,
       steps,
-      outcome: needsAgent ? "escalated" : confidence,
+      outcome: needsAgent ? "escalated" : effectiveConfidence,
     });
 
     incr("framique_ai_ask_total", {
-      outcome: needsAgent ? "escalated" : confidence,
+      outcome: needsAgent ? "escalated" : effectiveConfidence,
       channel,
     });
-    // 7. Continuous Training Data Flywheel Capture
+    // 8. Continuous Training Data Flywheel Capture
     await captureTrainingTurn({
       merchantId: merchant.id,
       conversationId,
@@ -1193,7 +1478,8 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
             ? [{ tool: "orders.lookup", ok: true }]
             : [],
       agentReply: reply,
-      grounded: confidence === "grounded" || confidence === "pinned",
+      grounded:
+        effectiveConfidence === "grounded" || effectiveConfidence === "pinned",
       guardrailBlocked: !outbound.allowed,
       actionCompleted: ticketId
         ? "ticket"
@@ -1202,23 +1488,128 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
           : "answered",
     }).catch(() => null);
 
+    // 9. Dispatch Mail Notifications to Admin and Customer (Phase 12.7)
+    if (input.customerEmail?.trim()) {
+      const { sendSupportNotifications } =
+        await import("./support-mail.server");
+      sendSupportNotifications({
+        merchantId: merchant.id,
+        merchantName: merchant.name,
+        slug: input.slug,
+        conversationId,
+        customerName: input.customerName || "Customer",
+        customerEmail: input.customerEmail.trim(),
+        phone: input.phone ?? null,
+        orderNumber: input.orderNumber ?? null,
+        userMessage: input.message,
+        agentReply: reply,
+        ticketId,
+        ticketRef: ticketId ? `#TKT-${ticketId.slice(-8).toUpperCase()}` : null,
+        priority: ticketAction?.priority ?? null,
+        callbackId: callbackAction?.callbackId ?? null,
+        locale,
+        trigger: isHumanTakeover
+          ? "human_takeover"
+          : ticketId
+            ? "ticket_created"
+            : callbackAction
+              ? "callback_requested"
+              : "chat_turn",
+      }).catch((err) => {
+        log("warn", "support.notifications_dispatch_failed", {
+          error: String((err as Error)?.message ?? err),
+          conversationId,
+        });
+      });
+    }
+
+    const finalConfidence: Confidence = degraded
+      ? pinned
+        ? "pinned"
+        : "unsure"
+      : deepWikiResult
+        ? deepWikiResult.confidence === "high"
+          ? "grounded"
+          : "unsure"
+        : effectiveConfidence;
+
+    // Chatwoot-grade handoff: full transcript + confidence + provenance + sources.
+    // Status flip pending→open is recorded in the payload; DB keeps needs_agent
+    // for the existing triage queue while humans take over via human_takeover.
+    let handoffPayload: HandoffPayload | null = null;
+    if (needsAgent || finalConfidence === "unsure") {
+      const recent = CONVERSATION_RECENT_TURNS.get(conversationId) ?? [];
+      const transcript = recent.map((t) => ({
+        role: t.role === "customer" ? ("customer" as const) : ("bot" as const),
+        body: t.message.slice(0, 2000),
+      }));
+      if (transcript.length === 0) {
+        transcript.push({
+          role: "customer",
+          body: redactPii(input.message).text.slice(0, 2000),
+        });
+      }
+      handoffPayload = buildHandoffPayload({
+        conversationId,
+        transcript,
+        confidence: finalConfidence,
+        provenance: deepWikiResult
+          ? (sources[0] ?? null)
+          : (pinned?.source ?? null),
+        attemptedSources: [
+          ...(pinned ? ["orders"] : []),
+          ...(hits.length ? ["kb"] : []),
+          ...(deepWikiResult ? ["deepwiki"] : []),
+          ...(!pinned && !hits.length && !deepWikiResult ? ["kb"] : []),
+        ],
+        reason:
+          !pinned && !hits.length && !deepWikiResult && !isGreeting
+            ? "zero_kb_hits"
+            : needsAgent
+              ? "escalated"
+              : "answered",
+      });
+      // Flip triage → human queue (pending→open parity): keep needs_agent for
+      // the existing queue but record open intent via payload; best-effort DB
+      // update to open when explicitly handed off and no ticket already set it.
+      if (!ticketId && !callbackAction) {
+        try {
+          const db = await admin();
+          await db
+            .from("ai_conversations")
+            .update({ status: "open" } as never)
+            .eq("merchant_id", merchant.id)
+            .eq("id", conversationId);
+        } catch {
+          // ignore offline
+        }
+      }
+    }
+
     return {
       conversationId,
       reply,
-      provenance: pinned?.source ?? null,
+      provenance: deepWikiResult
+        ? (sources[0] ?? null)
+        : (pinned?.source ?? null),
       sources,
-      confidence,
+      confidence: finalConfidence,
       needsAgent,
       cta,
+      adminOnline,
       ticketId,
       ticketAction,
       callbackAction,
       actionPaths:
-        needsAgent || confidence === "unsure"
+        needsAgent || finalConfidence === "unsure"
           ? EPISTEMIC_ACTION_PATHS
           : undefined,
       contactInfo:
-        needsAgent || confidence === "unsure" ? contactInfo : undefined,
+        needsAgent || finalConfidence === "unsure" ? contactInfo : undefined,
+      deepWikiQueryId: deepWikiResult?.queryId,
+      deepWikiCitations: deepWikiResult?.citations,
+      handoffPayload,
+      degraded,
     };
   });
 }
@@ -1232,15 +1623,78 @@ export async function rateConversation(
   conversationId: string,
   rating: number,
   review?: string,
+  isResolved?: boolean,
 ) {
   const value = Math.min(5, Math.max(1, Math.round(rating)));
   const safeReview = review ? redactPii(review).text.slice(0, 1000) : null;
+  const resolved = isResolved !== undefined ? isResolved : value >= 4;
 
   // 1. Update in-memory flywheel
   const { updateTurnCsat } = await import("./ai-training-data.server");
   await updateTurnCsat(conversationId, value, safeReview ?? undefined).catch(
     () => null,
   );
+
+  // 1.1 Update DeepWiki RL Edge Weights via Atropos feedback
+  let dwFeedbackApplied = false;
+  try {
+    const { getLatestDeepWikiQueryForConversation, applyAtroposFeedback } =
+      await import("./deepwiki-engine.server");
+    const dwRecord = getLatestDeepWikiQueryForConversation(conversationId);
+    if (dwRecord) {
+      await applyAtroposFeedback({
+        queryId: dwRecord.queryId,
+        rating: value,
+        feedbackText: safeReview ?? undefined,
+        isResolved: resolved,
+      });
+      dwFeedbackApplied = true;
+    }
+  } catch {
+    // Non-blocking RL feedback
+  }
+
+  // 1.2 Step Atropos RL Environment if no prior DeepWiki query record
+  if (!dwFeedbackApplied) {
+    try {
+      const { computeTrajectoryReward, stepAtroposEnv } =
+        await import("./support-rl-reward.server");
+      const stepObs = {
+        userMessage: safeReview || "Customer feedback",
+        grounded: resolved,
+        csatRating: value,
+        actionCompleted: (resolved ? "answered" : undefined) as
+          "answered" | undefined,
+      };
+      const stepReward = computeTrajectoryReward({
+        ...stepObs,
+        agentReply: "Feedback recorded",
+      });
+
+      stepAtroposEnv(
+        { conversationId, turnIndex: 1, history: [], isDone: true },
+        { intent: "feedback", replyText: "Feedback recorded" },
+        stepObs,
+      );
+
+      if (stepReward.label === "high_quality") {
+        const { captureTrainingTurn } =
+          await import("./ai-training-data.server");
+        await captureTrainingTurn({
+          merchantId: "00000000-0000-4000-8000-000000000001",
+          conversationId,
+          userMessage: safeReview || "Customer feedback",
+          agentReply: "Feedback recorded",
+          csatRating: value,
+          csatReview: safeReview,
+          grounded: resolved,
+          actionCompleted: "answered",
+        }).catch(() => null);
+      }
+    } catch {
+      // Non-blocking
+    }
+  }
 
   // 2. Persist to Supabase
   try {
@@ -1297,6 +1751,17 @@ export function degradedAnswer(
     confidence: "unsure",
     needsAgent: true,
     cta: "ticket",
+    actionPaths: EPISTEMIC_ACTION_PATHS,
+    contactInfo: { ...DEFAULT_CONTACT_INFO },
+    handoffPayload: buildHandoffPayload({
+      conversationId,
+      transcript: [{ role: "bot", body: en("support.degraded") }],
+      confidence: "unsure",
+      provenance: null,
+      attemptedSources: ["kb", "deepwiki", "orders"],
+      reason: "outage_degraded",
+    }),
+    degraded: true,
   };
 }
 

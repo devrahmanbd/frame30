@@ -26,7 +26,7 @@ import {
   HardDrive,
   Building2,
   ArrowRight,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { platformTenantsFn } from "@/lib/platform.functions";
 import { useLang } from "@/lib/i18n";
 

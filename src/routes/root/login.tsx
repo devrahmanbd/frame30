@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Lock, ShieldAlert, Loader2, ArrowRight, KeyRound } from "lucide-react";
+import {
+  Lock,
+  ShieldAlert,
+  Loader2,
+  ArrowRight,
+  KeyRound,
+} from "@/components/icons/tabler";
 import { supabase } from "@/integrations/supabase/client";
 import { platformIsAdminFn } from "@/lib/platform.functions";
 

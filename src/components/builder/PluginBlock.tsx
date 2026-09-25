@@ -74,6 +74,7 @@ export function PluginBlock({
         title={`${plugin.manifest.name} — ${widget.label}`}
         entry={widget.entry}
         grantedScopes={plugin.grantedScopes}
+        settings={plugin.settings}
         onCall={onCall as (method: string, params: unknown) => Promise<unknown>}
         height={height || widget.height || 320}
       />

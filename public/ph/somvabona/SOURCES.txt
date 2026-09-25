@@ -1,0 +1,28 @@
+Somvabona theme placeholder art — free to use under the Unsplash License
+(https://unsplash.com/license). hero-festive.jpg is merchant-generated art.
+Replace with real catalog photography before production launch.
+
+hero-newin.jpg ....... woman-poses-elegantly-in-a-traditional-white-saree-mv4l_XPeiko
+hero-wedding.jpg ..... bride-and-groom-in-traditional-indian-wedding-attire-Ui4Imq3m5Ao
+cat-women.jpg ........ woman-in-red-and-blue-sari-dress-Xqa_NWl4xEY
+cat-men.jpg .......... man-in-traditional-gray-kurta-with-blurred-lights-background-n-6nUywZ2Uc
+cat-kids.jpg ......... young-boy-in-traditional-indian-attire-YrommNEMLXY
+cat-living.jpg ....... white-pillows-and-bed-comforter--R2uNyGmeM4
+cat-festive.jpg ...... a-woman-wearing-a-green-sari-and-jewelry-njVir8eVq1M
+cat-newin.jpg ........ a-young-man-in-a-white-kurta-stands-outdoors-Kw6Vpdy-OyM
+bucket-999.jpg ....... woman-in-pink-and-white-sari-dress-EmlZ6WRD-80
+bucket-1999.jpg ...... a-woman-in-a-purple-and-gold-sari-wcgCFUi_Zws
+bucket-2999.jpg ...... a-woman-in-a-yellow-and-red-sari-standing-next-to-a-tree-sRP0vuFnn0s
+occ-women.jpg ........ a-beautiful-woman-in-a-colorful-sari-dCuCMZ9XnHg
+occ-men.jpg .......... man-in-yellow-vest-and-white-kurta-zSLpDXqnSYk
+occ-kids.jpg ......... a-group-of-young-girls-dressed-in-traditional-indian-garb-QSkZps33HE4
+craft-loom.jpg ....... woman-weaving-fabric-on-a-traditional-loom-G1vTTwnqYcU
+testi-1.jpg .......... a-woman-in-a-sari-poses-for-a-picture-0GZ3OTNL1hg
+testi-2.jpg .......... young-man-in-white-kurta-looking-away-from-camera-bUeNPdFZQcc
+testi-3.jpg .......... a-woman-in-a-white-and-red-sari-j7Ljsqhnwag
+occ-wedding.jpg ...... indian-wedding-couple-posing-outdoors-in-traditional-attire-VVHMIKuhHPY
+festive-edit.jpg ..... woman-in-red-and-brown-sari-xTrp1WOq2Do
+newin-edit.jpg ....... woman-in-blue-and-yellow-sari-dress-tjRs987fPfg
+gift-craft.jpg ....... person-weaving-a-colorful-patterned-rug-on-a-loom-8mozX6NgfHo
+
+Full URLs: https://unsplash.com/photos/<slug> per row above.

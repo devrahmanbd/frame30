@@ -27,6 +27,7 @@ function ctxFor(
     locale,
     storeSlug: "rupaboti-beauty",
     data,
+    link: (href: string) => href,
     renderChildren: () => null,
   };
 }

@@ -14,7 +14,7 @@ import {
   EyeOff,
   Trash2,
   X,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { widgetLabel } from "@/lib/studio/catalog";
 import { isContainerNode, type StudioNode } from "@/lib/studio/model";
@@ -38,8 +38,7 @@ export type StructurePanelProps = {
 /** Label match including descendants, so filtering keeps ancestor context. */
 function matchesTree(node: StudioNode, query: string): boolean {
   const label = (
-    node.name ??
-    (node.el === "container" ? "Container" : widgetLabel(node.el))
+    node.name ?? (node.el === "container" ? "Container" : widgetLabel(node.el))
   ).toLowerCase();
   if (label.includes(query)) return true;
   return (node.children ?? []).some((child) => matchesTree(child, query));
@@ -61,10 +60,7 @@ export function StructurePanel({
   const [collapsedAll, setCollapsedAll] = useState(false);
   const query = filter.trim().toLowerCase();
   const visible = useMemo(
-    () =>
-      query
-        ? nodes.filter((node) => matchesTree(node, query))
-        : nodes,
+    () => (query ? nodes.filter((node) => matchesTree(node, query)) : nodes),
     [nodes, query],
   );
   return (

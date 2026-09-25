@@ -4,7 +4,13 @@
  * Images and sanitised vectors show themselves; everything else gets a typed
  * placard so the grid stays scannable without loading a byte.
  */
-import { FileAudio, FileText, FileVideo, ImageOff, Shapes } from "lucide-react";
+import {
+  FileAudio,
+  FileText,
+  FileVideo,
+  ImageOff,
+  Shapes,
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import {
   type Attachment,

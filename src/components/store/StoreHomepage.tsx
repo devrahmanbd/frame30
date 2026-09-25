@@ -2,6 +2,7 @@ import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreFooterMenus } from "@/components/store/StoreFooterMenus";
 import { StudioNodes } from "@/components/store/StudioNodes";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { useLang } from "@/lib/i18n";
 import type { getStorePageFn } from "@/lib/storefront-search.functions";
 
@@ -34,11 +35,16 @@ export function StoreHomepage({
     isBuilder,
     menus,
     studioNodes,
+    installedPlugins,
   } = home;
 
+  // Studio-authored pages are self-composed (hero/headings live inside
+  // the nodes) — prepending the page title would duplicate H1s.
+  const selfComposed =
+    isBuilder || (studioNodes != null && studioNodes.length > 0);
   const content = (
     <article>
-      {!isBuilder && (
+      {!selfComposed && (
         <>
           <h1 className="font-bangla-display text-3xl font-bold">
             {page.title}
@@ -65,7 +71,7 @@ export function StoreHomepage({
           dangerouslySetInnerHTML={{ __html: html }}
         />
       )}
-      {!isBuilder && (
+      {!selfComposed && (
         <p className="mt-8 text-xs text-muted-foreground">
           {t("Last updated", "সর্বশেষ হালনাগাদ")}:{" "}
           <time dateTime={page.updated_at} className="money">
@@ -77,7 +83,7 @@ export function StoreHomepage({
   );
 
   return (
-    <>
+    <PluginLayer plugins={installedPlugins ?? []}>
       <ThemeChrome
         template="page"
         storeSlug={slug}
@@ -94,6 +100,6 @@ export function StoreHomepage({
       />
       {/* Phase 16 T4: dashboard-designed footer menu; null when unclaimed. */}
       {menus && <StoreFooterMenus slug={slug} nodes={menus.footer} />}
-    </>
+    </PluginLayer>
   );
 }

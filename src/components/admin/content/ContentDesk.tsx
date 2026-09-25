@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Keyboard, Plus, Search, X } from "lucide-react";
+import { Keyboard, Plus, Search, X } from "@/components/icons/tabler";
 import { toast } from "sonner";
 import {
   BulkBar,
@@ -305,7 +305,10 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
               "Publish the page first — only published pages can be the homepage.",
               "আগে পেজটি প্রকাশ করুন — শুধু প্রকাশিত পেজ হোমপেজ হতে পারে।",
             )
-          : t("That homepage change could not be saved.", "হোমপেজ পরিবর্তন করা যায়নি।"),
+          : t(
+              "That homepage change could not be saved.",
+              "হোমপেজ পরিবর্তন করা যায়নি।",
+            ),
       );
     }
   };
@@ -708,7 +711,9 @@ export function ContentDesk({ kind }: { kind: ContentKind }) {
           onToggleAll={toggleAll}
           onRowClick={(r) => {
             if (r.status !== "trash")
-              void navigate({ to: editHref(kind, r.id, defaultEditor) as never });
+              void navigate({
+                to: editHref(kind, r.id, defaultEditor) as never,
+              });
           }}
           sort={list.sort}
           dir={list.dir}

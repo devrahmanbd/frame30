@@ -57,15 +57,29 @@ const ARTICLES: Row[] = [
 
 /** Minimal thenable query builder honoring eq/lte/is/in/order/range/limit. */
 function fakeDb() {
-  const state = { table: "", filters: [] as Array<(r: Row) => boolean>, orderKey: "", orderAsc: true, rangeFrom: 0, rangeTo: 49, limitN: 1000, cols: "", countMode: false };
+  const state = {
+    table: "",
+    filters: [] as Array<(r: Row) => boolean>,
+    orderKey: "",
+    orderAsc: true,
+    rangeFrom: 0,
+    rangeTo: 49,
+    limitN: 1000,
+    cols: "",
+    countMode: false,
+  };
   const api: any = {};
   const apply = (rows: Row[]) => {
     let out = rows.filter((r) => state.filters.every((f) => f(r)));
     if (state.orderKey)
       out = [...out].sort((a, b) =>
         state.orderAsc
-          ? String(a[state.orderKey] ?? "") < String(b[state.orderKey] ?? "") ? -1 : 1
-          : String(a[state.orderKey] ?? "") > String(b[state.orderKey] ?? "") ? -1 : 1,
+          ? String(a[state.orderKey] ?? "") < String(b[state.orderKey] ?? "")
+            ? -1
+            : 1
+          : String(a[state.orderKey] ?? "") > String(b[state.orderKey] ?? "")
+            ? -1
+            : 1,
       );
     out = out.slice(state.rangeFrom, state.rangeTo + 1).slice(0, state.limitN);
     return out;
@@ -162,6 +176,8 @@ describe("loadStoreArticle", () => {
 
   it("returns null for unknown slugs and merchants", async () => {
     expect(await loadStoreArticle(FLAME, "nope", fakeDb() as never)).toBeNull();
-    expect(await loadStoreArticle(NOBODY, "hello", fakeDb() as never)).toBeNull();
+    expect(
+      await loadStoreArticle(NOBODY, "hello", fakeDb() as never),
+    ).toBeNull();
   });
 });

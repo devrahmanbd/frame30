@@ -31,11 +31,13 @@
 ### Task 1: Renderer dual-read fixes (heritage.tsx + chrome.tsx)
 
 **Files:**
+
 - Modify: `src/components/builder/heritage.tsx`
 - Modify: `src/components/builder/chrome.tsx`
 - Test: `src/components/builder/heritage-contracts.test.tsx` (create)
 
 **Interfaces:**
+
 - Consumes: existing `WidgetCtx { str, section, Heading, locale }`, `rowsOf` helper.
 - Produces: same component signatures; renderers accept legacy + studio keys.
 
@@ -51,47 +53,102 @@ import { widgetReader, type WidgetCtx } from "./widgets";
 
 function ctxFor(section: Section): WidgetCtx {
   return {
-    section, ...widgetReader(section, undefined, "en"),
-    Heading: "h2", primary: false, editing: false, locale: "en",
-    storeSlug: "test", data: undefined, renderChildren: () => null,
+    section,
+    ...widgetReader(section, undefined, "en"),
+    Heading: "h2",
+    primary: false,
+    editing: false,
+    locale: "en",
+    storeSlug: "test",
+    data: undefined,
+    renderChildren: () => null,
   };
 }
 
 describe("heritage contract dual-read", () => {
   it("heritage_story reads heading/cta aliases", () => {
-    const section = { ...newSection("heritage_story"),
-      props: { ...newSection("heritage_story").props,
-        heading: "Tangail & Jamdani", body: "Woven craft",
-        ctaLabel: "Read the story", ctaHref: "/blog/x" } };
+    const section = {
+      ...newSection("heritage_story"),
+      props: {
+        ...newSection("heritage_story").props,
+        heading: "Tangail & Jamdani",
+        body: "Woven craft",
+        ctaLabel: "Read the story",
+        ctaHref: "/blog/x",
+      },
+    };
     const Cmp = HERITAGE_WIDGETS["heritage_story"];
-    const html = renderToStaticMarkup(createElement(Cmp as (p: WidgetCtx) => React.ReactElement, ctxFor(section)));
+    const html = renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        ctxFor(section),
+      ),
+    );
     expect(html).toContain("Tangail &amp; Jamdani");
     expect(html).toContain("Read the story");
   });
 
   it("textile_showcase reads items[]", () => {
-    const section = { ...newSection("textile_showcase"),
-      props: { ...newSection("textile_showcase").props, headline: "Our textiles",
-        items: [{ image: "/api/public/ph/a.svg", title: "Jamdani", subtitle: "Royal drape" }] } };
+    const section = {
+      ...newSection("textile_showcase"),
+      props: {
+        ...newSection("textile_showcase").props,
+        headline: "Our textiles",
+        items: [
+          {
+            image: "/api/public/ph/a.svg",
+            title: "Jamdani",
+            subtitle: "Royal drape",
+          },
+        ],
+      },
+    };
     const Cmp = HERITAGE_WIDGETS["textile_showcase"];
-    const html = renderToStaticMarkup(createElement(Cmp as (p: WidgetCtx) => React.ReactElement, ctxFor(section)));
+    const html = renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        ctxFor(section),
+      ),
+    );
     expect(html).toContain("Jamdani");
   });
 
   it("editorial_banner reads heading/body aliases", () => {
-    const section = { ...newSection("editorial_banner"),
-      props: { ...newSection("editorial_banner").props, heading: "Silk panjabi",
-        body: "Breathable fibers", ctaLabel: "See collection", ctaHref: "/c/x" } };
+    const section = {
+      ...newSection("editorial_banner"),
+      props: {
+        ...newSection("editorial_banner").props,
+        heading: "Silk panjabi",
+        body: "Breathable fibers",
+        ctaLabel: "See collection",
+        ctaHref: "/c/x",
+      },
+    };
     const Cmp = HERITAGE_WIDGETS["editorial_banner"];
-    const html = renderToStaticMarkup(createElement(Cmp as (p: WidgetCtx) => React.ReactElement, ctxFor(section)));
+    const html = renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        ctxFor(section),
+      ),
+    );
     expect(html).toContain("Silk panjabi");
   });
 
   it("marquee_strip reads label fallback", () => {
-    const section = { ...newSection("marquee_strip"),
-      props: { ...newSection("marquee_strip").props, label: "Handloom · Fair Trade" } };
+    const section = {
+      ...newSection("marquee_strip"),
+      props: {
+        ...newSection("marquee_strip").props,
+        label: "Handloom · Fair Trade",
+      },
+    };
     const Cmp = HERITAGE_WIDGETS["marquee_strip"];
-    const html = renderToStaticMarkup(createElement(Cmp as (p: WidgetCtx) => React.ReactElement, ctxFor(section)));
+    const html = renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        ctxFor(section),
+      ),
+    );
     expect(html).toContain("Handloom");
   });
 });
@@ -130,10 +187,12 @@ git commit -m "fix(heritage): dual-read renderer contracts + payment split"
 ### Task 2: Blueprint rewrite (theme-blueprints.ts clothingHeritage)
 
 **Files:**
+
 - Modify: `src/lib/theme-blueprints.ts`
 - Test: `src/lib/theme-blueprints.heritage.test.ts` (create)
 
 **Interfaces:**
+
 - Consumes: `bound(k)`, `tokens()`, `withSearch()`, `COLS()`, section factory.
 - Produces: `clothingHeritage(): ThemePreset` with filled props per Task 1 contracts.
 
@@ -147,20 +206,49 @@ describe("clothing-heritage aarong parity", () => {
   const preset = BLUEPRINT_PRESETS.find((p) => p.key === "clothing-heritage")!;
   it("homepage has no empty contract sections", () => {
     const types = preset.templates.index.main.map((s) => s.type);
-    for (const need of ["hero_carousel","trust_bar","department_grid","product_rail","collection_story","lookbook","textile_showcase","wedding_shop","gift_finder","heritage_story","editorial_banner","testimonial_carousel","rewards_club","subbrand_spotlight","marquee_strip"]) {
+    for (const need of [
+      "hero_carousel",
+      "trust_bar",
+      "department_grid",
+      "product_rail",
+      "collection_story",
+      "lookbook",
+      "textile_showcase",
+      "wedding_shop",
+      "gift_finder",
+      "heritage_story",
+      "editorial_banner",
+      "testimonial_carousel",
+      "rewards_club",
+      "subbrand_spotlight",
+      "marquee_strip",
+    ]) {
       expect(types, need).toContain(need);
     }
-    const dept = preset.templates.index.main.find((s) => s.type === "department_grid")!;
-    expect((dept.props["departments"] as unknown[]).length).toBeGreaterThanOrEqual(8);
-    const textile = preset.templates.index.main.find((s) => s.type === "textile_showcase")!;
-    expect(((textile.props["items"] ?? textile.props["products"]) as unknown[]).length).toBeGreaterThanOrEqual(4);
+    const dept = preset.templates.index.main.find(
+      (s) => s.type === "department_grid",
+    )!;
+    expect(
+      (dept.props["departments"] as unknown[]).length,
+    ).toBeGreaterThanOrEqual(8);
+    const textile = preset.templates.index.main.find(
+      (s) => s.type === "textile_showcase",
+    )!;
+    expect(
+      ((textile.props["items"] ?? textile.props["products"]) as unknown[])
+        .length,
+    ).toBeGreaterThanOrEqual(4);
   });
   it("header has no duplicate language toggle", () => {
-    const util = preset.templates.index.header.find((s) => s.type === "utility_bar")!;
+    const util = preset.templates.index.header.find(
+      (s) => s.type === "utility_bar",
+    )!;
     expect(util.props["showLanguage"]).toBe(false);
   });
   it("footer payment marks are comma-separated", () => {
-    const pay = preset.templates.index.footer.find((s) => s.type === "payment_icons")!;
+    const pay = preset.templates.index.footer.find(
+      (s) => s.type === "payment_icons",
+    )!;
     expect(String(pay.props["marks"])).toContain(",");
   });
 });

@@ -34,7 +34,7 @@ import {
   AlertCircle,
   Layers,
   ArrowRight,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 
 export const Route = createFileRoute(
   "/_authenticated/dashboard/marketing/sequences",
@@ -401,10 +401,9 @@ function DripSequencesPage() {
       </div>
 
       {statusMsg && (
-        <InlineAlert
-          tone={statusMsg.ok ? "success" : "danger"}
-          message={statusMsg.message}
-        />
+        <InlineAlert tone={statusMsg.ok ? "success" : "danger"}>
+          {statusMsg.message}
+        </InlineAlert>
       )}
 
       {/* KPI Cards */}
@@ -652,7 +651,7 @@ function DripSequencesPage() {
           <form onSubmit={handleSaveSeq} className="space-y-6">
             <SectionCard
               title={t("Sequence Settings", "সিকোয়েন্স সেটিংস")}
-              subtitle={t(
+              hint={t(
                 "Name, trigger condition, and lifecycle status",
                 "নাম ও শুরুর শর্ত",
               )}
@@ -714,7 +713,7 @@ function DripSequencesPage() {
             {/* Steps Timeline Builder */}
             <SectionCard
               title={t("Drip Steps Timeline", "সিকোয়েন্সের ধাপসমূহ")}
-              subtitle={t(
+              hint={t(
                 "Configure delays and subject copy for each chronological step",
                 "প্রতিটি ধাপের বিলম্ব ও ইমেইল বার্তা",
               )}
@@ -889,7 +888,8 @@ function DripSequencesPage() {
                       bodyTemplate:
                         "Hi {{customer_name}},\n\nWanted to check in and see if you had any questions.",
                       ctaText: "Shop Now",
-                      ctaUrl: "https://framique.qubickle.com/store/{{store_slug}}",
+                      ctaUrl:
+                        "https://framique.qubickle.com/store/{{store_slug}}",
                     };
                     setEditingSeq({
                       ...editingSeq,

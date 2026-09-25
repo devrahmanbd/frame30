@@ -4,7 +4,6 @@ import {
   demoCatalogFor,
   type DemoCatalog,
 } from "./demo-catalog";
-import { SHIPPED_BLUEPRINT_KEYS } from "./theme-blueprints";
 
 const keys = Object.keys(DEMO_CATALOGS) as (keyof typeof DEMO_CATALOGS)[];
 
@@ -16,14 +15,23 @@ function slugs(cat: DemoCatalog) {
 }
 
 describe("per-vertical demo catalogues", () => {
-  it("ships one catalogue per shipped blueprint", () => {
-    for (const key of SHIPPED_BLUEPRINT_KEYS) {
-      expect(keys).toContain(key);
-    }
+  it("ships the eight vertical catalogues", () => {
+    expect(keys.sort()).toEqual(
+      [
+        "apparel",
+        "beauty",
+        "electronics",
+        "general",
+        "handloom",
+        "marketplace",
+        "somvabona",
+        "songoskriti",
+      ].sort(),
+    );
   });
 
-  it("falls back to a broad catalogue for unknown theme keys", () => {
-    expect(demoCatalogFor("not-a-theme").products.length).toBeGreaterThan(0);
+  it("falls back to a broad catalogue for unknown vertical keys", () => {
+    expect(demoCatalogFor("not-a-vertical").products.length).toBeGreaterThan(0);
   });
 
   it.each(keys)(
@@ -71,12 +79,14 @@ describe("per-vertical demo catalogues", () => {
           (p) => `${p.description} ${p.variants.map((v) => v.name).join(" ")}`,
         )
         .join(" ");
-    expect(text("atelier")).toMatch(/cotton|linen|Model is/i);
-    expect(text("circuit")).toMatch(/warranty/i);
-    expect(text("rupaboti")).toMatch(/Step \d|shade/i);
-    expect(text("clothing-heritage")).toMatch(/handloom|jamdani|silk|taant|khadi/i);
-    expect(text("supershop")).toMatch(/fresh|organic|rice|kg|harvest|farm/i);
-    expect(DEMO_CATALOGS.bazaar.categories.length).toBeGreaterThanOrEqual(3);
+    expect(text("apparel")).toMatch(/cotton|linen|Model is/i);
+    expect(text("electronics")).toMatch(/warranty/i);
+    expect(text("beauty")).toMatch(/Step \d|shade/i);
+    expect(text("handloom")).toMatch(/handloom|jamdani|silk|taant|khadi/i);
+    expect(text("songoskriti")).toMatch(/jamdani|panjabi|kantha|handloom/i);
+    expect(text("general")).toMatch(/fresh|organic|rice|kg|harvest|farm/i);
+    expect(DEMO_CATALOGS.marketplace.categories.length).toBeGreaterThanOrEqual(
+      3,
+    );
   });
 });
-

@@ -8,7 +8,7 @@ import {
   Check,
   QrCode,
   KeyRound,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/lib/i18n";
 import { recordAuthEventFn } from "@/lib/identity.functions";

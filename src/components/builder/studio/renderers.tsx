@@ -6,6 +6,7 @@
  * nothing here knows about selection, drag state or the panels.
  */
 import {
+  useCallback,
   useEffect,
   useState,
   type CSSProperties,
@@ -82,9 +83,19 @@ import {
   Type,
   Video,
   Zap,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { HtmlSandbox } from "@/components/builder/HtmlSandbox";
+import { WidgetSandbox } from "@/components/marketplace/WidgetSandbox";
+import { PaymentMark } from "@/components/store/PaymentMarks";
+import { useInstalledPlugins } from "@/components/builder/PluginContext";
+import { resolvePluginWidget } from "@/lib/plugin-manifest";
+import { WIDGET_API } from "@/lib/marketplace-scopes";
 import type { NodeSettings, StudioNode } from "@/lib/studio/model";
+import {
+  resolveMenuItems,
+  staticMenuItems,
+  type StudioMenuSource,
+} from "@/lib/studio/model";
 import {
   resolveResponsive,
   type DeviceKey,
@@ -214,6 +225,13 @@ export type RenderProps = {
   node: StudioNode;
   device: DeviceKey;
   editing?: boolean;
+  /**
+   * Real menus for the widget→menu binding (`settings.menuId`). When
+   * provided, bound navigation widgets preview the resolved menu; when
+   * absent (or unbound) they fall back to manual `items` / placeholders.
+   * The host (StudioCanvas/StudioBuilder) owns passing this down.
+   */
+  menus?: readonly StudioMenuSource[] | null;
 };
 
 function Placeholder({ label }: { label: string }) {
@@ -224,7 +242,64 @@ function Placeholder({ label }: { label: string }) {
   );
 }
 
-export function StudioWidget({ node, device, editing }: RenderProps) {
+/**
+ * Studio twin of the old path's `PluginBlock`: resolves the `plugin:`-
+ * namespaced key through the one shared resolver and renders the widget
+ * bundle inside the null-origin `WidgetSandbox` island. Every failure —
+ * nothing picked, not installed, unknown widget, incompatible builder API,
+ * or disabled (merchant-off and the platform kill switch both surface as
+ * `enabled: false`) — renders a labelled placeholder so the page always
+ * renders. Without a plugin provider every key degrades the same way.
+ */
+function StudioAppBlock({
+  pluginKey,
+  height,
+  editing,
+}: {
+  pluginKey: string;
+  height: number;
+  editing?: boolean;
+}) {
+  const plugins = useInstalledPlugins();
+  const resolved = resolvePluginWidget(pluginKey, plugins);
+
+  const onCall = useCallback(async (method: string, _params: unknown) => {
+    // Host bridge: the sandbox may only reach allow-listed, scoped methods.
+    if (!WIDGET_API[method]) throw new Error("unknown_method");
+    return { ok: true };
+  }, []);
+
+  if (!resolved.ok) {
+    if (!editing && resolved.reason === "bad_key") return null;
+    const label =
+      resolved.reason === "not_installed"
+        ? "This app is not installed"
+        : resolved.reason === "unknown_widget"
+          ? "This app no longer ships this block"
+          : resolved.reason === "incompatible"
+            ? "App not compatible with this builder version"
+            : resolved.reason === "disabled"
+              ? "Apps are switched off for this store"
+              : "No app widget selected";
+    return <Placeholder label={label} />;
+  }
+
+  const { plugin, widget } = resolved;
+  return (
+    <div data-plugin={plugin.manifest.id} data-plugin-widget={widget.key}>
+      <WidgetSandbox
+        title={`${plugin.manifest.name} — ${widget.label}`}
+        entry={widget.entry}
+        grantedScopes={plugin.grantedScopes}
+        settings={plugin.settings}
+        onCall={onCall as (method: string, params: unknown) => Promise<unknown>}
+        height={height || widget.height || 320}
+      />
+    </div>
+  );
+}
+
+export function StudioWidget({ node, device, editing, menus }: RenderProps) {
   const s = node.settings;
   const align = str(s, "textAlign", "left");
 
@@ -309,6 +384,58 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
           )}
         >
           {str(s, "label", "Button")}
+        </span>
+      );
+    }
+
+    case "whatsapp_button": {
+      const phone = str(s, "phone_number").replace(/[^0-9]/g, "");
+      if (!phone) {
+        return (
+          <span className="inline-flex min-h-11 items-center rounded-fq-md border border-dashed border-border px-4 text-sm text-muted-foreground">
+            Add a WhatsApp number
+          </span>
+        );
+      }
+      const size = str(s, "size", "md");
+      const dim = size === "sm" ? 44 : size === "lg" ? 64 : 56;
+      const glyph = (
+        <svg
+          width={dim - 16}
+          height={dim - 16}
+          viewBox="0 0 512 512"
+          fill="none"
+          aria-hidden
+        >
+          <path
+            fill="#fff"
+            d="M1.1 509.4L37 378.6C14.8 340.2 3.2 296.7 3.3 252.4C3.3 113.2 116.6 0 255.8 0c67.5 0 130.9 26.3 178.6 74s73.9 111.1 73.9 178.6C508.2 391.8 394.9 505 255.8 505h-.1c-42.3 0-83.8-10.6-120.7-30.7z"
+          />
+          <path
+            fill="#25D366"
+            d="M255.8 42.6c-115.8 0-209.9 94.1-210 209.8c0 39.5 11.2 78.2 32.2 111.7l5 7.9l-21.2 77.4l79.4-20.8l7.7 4.5c32.2 19.1 69.2 29.2 106.8 29.2h.1c115.7 0 209.8-94.1 209.9-209.8c.2-55.7-21.9-109.1-61.4-148.4c-39.3-39.4-92.8-61.6-148.5-61.5"
+          />
+          <path
+            fill="#fff"
+            fillRule="evenodd"
+            d="M192.7 146.9c-4.7-10.5-9.7-10.7-14.2-10.9l-12.1-.1c-4.2 0-11 1.6-16.8 7.9s-22.1 21.6-22.1 52.6s22.6 61 25.8 65.2s43.6 69.9 107.8 95.2c53.3 21 64.1 16.8 75.7 15.8c11.6-1.1 37.3-15.3 42.6-30s5.3-27.4 3.7-30s-5.8-4.2-12.1-7.4s-37.3-18.4-43.1-20.5s-10-3.2-14.2 3.2c-4.2 6.3-16.3 20.5-20 24.7s-7.4 4.7-13.7 1.6c-6.3-3.2-26.6-9.8-50.7-31.3c-18.8-16.7-31.4-37.4-35.1-43.7s-.4-9.7 2.8-12.9c2.8-2.8 6.3-7.4 9.5-11.1s4.2-6.3 6.3-10.5s1.1-7.9-.5-11.1c-1.8-3-14-34.2-19.6-46.7"
+          />
+        </svg>
+      );
+      if (str(s, "style", "bubble") === "bar") {
+        return (
+          <span className="inline-flex items-center gap-2.5 rounded-full bg-[#25D366] px-5 py-2.5 text-sm font-semibold text-white">
+            {glyph}
+            <span>{str(s, "label", "Chat on WhatsApp")}</span>
+          </span>
+        );
+      }
+      return (
+        <span
+          className="inline-flex items-center justify-center rounded-full"
+          style={{ width: dim, height: dim }}
+        >
+          {glyph}
         </span>
       );
     }
@@ -625,12 +752,21 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         <HtmlSandbox markup={str(s, "html")} title="Custom HTML block" />
       );
 
-    case "app-block":
+    case "app-block": {
+      // Plugin widgets render in a sandboxed island, never inline — the same
+      // contract as the old path's `plugin_block` (clamped 80–1200px).
+      const height = Math.min(
+        1200,
+        Math.max(80, num(s, "height", 320, device)),
+      );
       return (
-        <Placeholder
-          label={`App block: ${str(s, "block", "choose a block")}`}
+        <StudioAppBlock
+          pluginKey={str(s, "pluginKey")}
+          height={height}
+          editing={editing}
         />
       );
+    }
 
     case "anchor":
       return (
@@ -723,9 +859,7 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
               .filter((row) => row.q);
       if (list.length === 0)
         return (
-          <Placeholder
-            label="Live questions and answers — renders on the storefront"
-          />
+          <Placeholder label="Live questions and answers — renders on the storefront" />
         );
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6">
@@ -823,12 +957,16 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "marquee": {
       const text = str(s, "text", "New arrivals every week");
       const speed = num(s, "speed", 30, device);
-      const paused = s.pauseOnHover ? "group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]" : "";
+      const paused = s.pauseOnHover
+        ? "group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]"
+        : "";
       return (
         <div className="group overflow-hidden rounded-fq-md border border-border bg-card">
           <p
             className={`whitespace-nowrap px-4 py-2 text-sm motion-safe:animate-[fq-marquee_var(--fq-marquee)_linear_infinite] ${paused}`}
-            style={{ ["--fq-marquee" as string]: `${Math.min(120, Math.max(5, speed))}s` }}
+            style={{
+              ["--fq-marquee" as string]: `${Math.min(120, Math.max(5, speed))}s`,
+            }}
           >
             {text}
           </p>
@@ -837,7 +975,9 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "countdown":
-      return <StudioCountdown label={str(s, "label")} endsAt={str(s, "endsAt")} />;
+      return (
+        <StudioCountdown label={str(s, "label")} endsAt={str(s, "endsAt")} />
+      );
 
     case "banner": {
       const tone = str(s, "tone", "info");
@@ -872,8 +1012,7 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
                 body: str(s, `i${n}Body`),
               }))
               .filter((item) => item.title);
-      if (items.length === 0)
-        return <Placeholder label="Add a trust badge" />;
+      if (items.length === 0) return <Placeholder label="Add a trust badge" />;
       return (
         <ul className="grid grid-cols-2 gap-4 rounded-fq-lg border border-border bg-card p-4 sm:grid-cols-4">
           {items.map((item) => (
@@ -918,16 +1057,23 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "heritage_story": {
       const headline = str(s, "headline");
       const body = str(s, "body");
-      if (!headline && !body)
-        return <Placeholder label="Add a headline" />;
+      if (!headline && !body) return <Placeholder label="Add a headline" />;
       const image = str(s, "image");
       const imageBlock = (
         <div className="relative overflow-hidden rounded-fq-sm">
           <div className="flex aspect-[4/5] items-center justify-center bg-gradient-to-br from-amber-900/15 to-rose-900/10">
             {image ? (
-              <img src={image} alt={headline} className="h-full w-full object-cover" loading="lazy" />
+              <img
+                src={image}
+                alt={headline}
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
             ) : (
-              <span aria-hidden="true" className="text-[6rem] font-bold text-foreground/10 select-none">
+              <span
+                aria-hidden="true"
+                className="text-[6rem] font-bold text-foreground/10 select-none"
+              >
                 {headline?.charAt(0) || "H"}
               </span>
             )}
@@ -936,11 +1082,20 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       );
       const textBlock = (
         <div className="flex flex-col justify-center">
-          <h3 className="text-2xl font-bold leading-tight sm:text-3xl">{headline}</h3>
-          {body && <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">{body}</p>}
+          <h3 className="text-2xl font-bold leading-tight sm:text-3xl">
+            {headline}
+          </h3>
+          {body && (
+            <p className="mt-4 max-w-prose text-sm leading-relaxed text-muted-foreground">
+              {body}
+            </p>
+          )}
           {str(s, "ctaLabel") && (
             <p className="mt-6">
-              <a href={str(s, "ctaUrl") || "#"} className="inline-flex min-h-11 items-center rounded-fq-sm bg-primary px-6 text-sm font-semibold text-primary-foreground">
+              <a
+                href={str(s, "ctaUrl") || "#"}
+                className="inline-flex min-h-11 items-center rounded-fq-sm bg-primary px-6 text-sm font-semibold text-primary-foreground"
+              >
                 {str(s, "ctaLabel")}
               </a>
             </p>
@@ -950,7 +1105,17 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const layout = str(s, "layout", "image-left");
       return (
         <section className="grid items-center gap-8 md:grid-cols-2">
-          {layout === "image-right" ? (<>{textBlock}{imageBlock}</>) : (<>{imageBlock}{textBlock}</>)}
+          {layout === "image-right" ? (
+            <>
+              {textBlock}
+              {imageBlock}
+            </>
+          ) : (
+            <>
+              {imageBlock}
+              {textBlock}
+            </>
+          )}
         </section>
       );
     }
@@ -963,19 +1128,32 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         <section className="relative overflow-hidden rounded-fq-sm">
           <div className="relative aspect-[3/1] min-h-[200px] w-full">
             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-amber-900/20 via-rose-900/10 to-amber-800/20">
-              <span aria-hidden="true" className="text-[10rem] font-bold text-foreground/10 select-none">
+              <span
+                aria-hidden="true"
+                className="text-[10rem] font-bold text-foreground/10 select-none"
+              >
                 {headline?.charAt(0) || "E"}
               </span>
             </div>
             {image && (
-              <img src={image} alt={headline} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              <img
+                src={image}
+                alt={headline}
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+              />
             )}
             <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-foreground/70 via-foreground/30 to-transparent p-6 text-background">
               <h3 className="text-2xl font-bold sm:text-3xl">{headline}</h3>
-              {str(s, "subhead") && <p className="mt-1 text-sm opacity-90">{str(s, "subhead")}</p>}
+              {str(s, "subhead") && (
+                <p className="mt-1 text-sm opacity-90">{str(s, "subhead")}</p>
+              )}
               {str(s, "ctaLabel") && (
                 <p className="mt-3">
-                  <a href={str(s, "ctaUrl") || "#"} className="inline-flex min-h-10 items-center rounded-fq-sm bg-card px-5 text-sm font-semibold text-card-foreground">
+                  <a
+                    href={str(s, "ctaUrl") || "#"}
+                    className="inline-flex min-h-10 items-center rounded-fq-sm bg-card px-5 text-sm font-semibold text-card-foreground"
+                  >
                     {str(s, "ctaLabel")}
                   </a>
                 </p>
@@ -990,15 +1168,32 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const image = str(s, "imageUrl");
       const split = str(s, "layout", "stacked") === "split";
       const copy = (
-        <div className={split ? "" : "rounded-fq-lg border border-border bg-card p-6 shadow-fq-sm"}>
+        <div
+          className={
+            split
+              ? ""
+              : "rounded-fq-lg border border-border bg-card p-6 shadow-fq-sm"
+          }
+        >
           {str(s, "eyebrow") && (
-            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{str(s, "eyebrow")}</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {str(s, "eyebrow")}
+            </p>
           )}
-          <h3 className="mt-1 text-3xl font-semibold leading-tight md:text-5xl">{str(s, "heading", "The new season")}</h3>
-          {str(s, "body") && <p className="mt-3 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>}
+          <h3 className="mt-1 text-3xl font-semibold leading-tight md:text-5xl">
+            {str(s, "heading", "The new season")}
+          </h3>
+          {str(s, "body") && (
+            <p className="mt-3 max-w-prose text-sm text-muted-foreground">
+              {str(s, "body")}
+            </p>
+          )}
           {str(s, "ctaLabel") && (
             <p className="mt-4">
-              <a href={str(s, "ctaHref") || "#"} className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-5 text-sm font-semibold text-primary-foreground">
+              <a
+                href={str(s, "ctaHref") || "#"}
+                className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-5 text-sm font-semibold text-primary-foreground"
+              >
                 {str(s, "ctaLabel")}
               </a>
             </p>
@@ -1009,20 +1204,39 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         <div className="relative overflow-hidden rounded-fq-lg">
           <div className="flex aspect-[4/3] items-center justify-center bg-gradient-to-br from-amber-900/15 to-rose-900/10">
             {image ? (
-              <img src={image} alt={str(s, "heading")} className="h-full w-full object-cover" loading="lazy" />
+              <img
+                src={image}
+                alt={str(s, "heading")}
+                className="h-full w-full object-cover"
+                loading="lazy"
+              />
             ) : (
-              <span aria-hidden="true" className="text-[5rem] font-bold text-foreground/10 select-none">E</span>
+              <span
+                aria-hidden="true"
+                className="text-[5rem] font-bold text-foreground/10 select-none"
+              >
+                E
+              </span>
             )}
           </div>
           {s.scrim !== false && image && (
-            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"
+            />
           )}
         </div>
       );
       return split ? (
-        <section className="grid items-center gap-6 md:grid-cols-2">{visual}{copy}</section>
+        <section className="grid items-center gap-6 md:grid-cols-2">
+          {visual}
+          {copy}
+        </section>
       ) : (
-        <section className="space-y-6">{visual}{copy}</section>
+        <section className="space-y-6">
+          {visual}
+          {copy}
+        </section>
       );
     }
 
@@ -1044,18 +1258,29 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
                 href: str(s, `i${n}Href`),
               }))
               .filter((tile) => tile.src);
-      if (tiles.length === 0) return <Placeholder label="Add a lookbook image" />;
+      if (tiles.length === 0)
+        return <Placeholder label="Add a lookbook image" />;
       const offset = s.offset !== false;
       return (
         <section>
-          {str(s, "heading") && <h3 className="mb-4 text-lg font-semibold">{str(s, "heading")}</h3>}
+          {str(s, "heading") && (
+            <h3 className="mb-4 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
           <div className="grid gap-4 sm:grid-cols-2">
             {tiles.map((tile, index) => {
               const body = tile.src ? (
-                <img src={tile.src} alt={tile.alt} loading="lazy" className={`w-full rounded-fq-md object-cover ${index % 2 === 0 ? "aspect-[3/4]" : "aspect-square"}`} />
+                <img
+                  src={tile.src}
+                  alt={tile.alt}
+                  loading="lazy"
+                  className={`w-full rounded-fq-md object-cover ${index % 2 === 0 ? "aspect-[3/4]" : "aspect-square"}`}
+                />
               ) : null;
               return (
-                <div key={index} className={offset && index % 2 === 1 ? "sm:mt-12" : undefined}>
+                <div
+                  key={index}
+                  className={offset && index % 2 === 1 ? "sm:mt-12" : undefined}
+                >
                   {tile.href ? <a href={tile.href}>{body}</a> : body}
                 </div>
               );
@@ -1100,23 +1325,39 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
                 ctaLabel: str(s, "ctaLabel"),
                 ctaHref: str(s, "ctaHref"),
               },
-            ].filter((slide, index) => index === 0 || slide.heading || slide.image);
+            ].filter(
+              (slide, index) => index === 0 || slide.heading || slide.image,
+            );
       const [index, setIndex] = useState(0);
       const active = slides[Math.min(index, slides.length - 1)]!;
       const center = str(s, "align", "left") === "center";
       return (
-        <section className={`overflow-hidden rounded-fq-lg border border-border bg-info-soft ${center ? "text-center" : ""}`}>
+        <section
+          className={`overflow-hidden rounded-fq-lg border border-border bg-info-soft ${center ? "text-center" : ""}`}
+        >
           {active.image && (
-            <img src={active.image} alt={active.heading} loading="lazy" className="aspect-[21/9] w-full object-cover" />
+            <img
+              src={active.image}
+              alt={active.heading}
+              loading="lazy"
+              className="aspect-[21/9] w-full object-cover"
+            />
           )}
           <div className="p-8">
-            <h3 className="font-bangla-display text-3xl font-bold sm:text-4xl">{active.heading || "Welcome to our store"}</h3>
+            <h3 className="font-bangla-display text-3xl font-bold sm:text-4xl">
+              {active.heading || "Welcome to our store"}
+            </h3>
             {index === 0 && active.subheading && (
-              <p className="mt-2 max-w-xl text-muted-foreground">{active.subheading}</p>
+              <p className="mt-2 max-w-xl text-muted-foreground">
+                {active.subheading}
+              </p>
             )}
             {active.ctaLabel && (
               <p className="mt-4">
-                <a href={active.ctaHref || "#"} className="inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+                <a
+                  href={active.ctaHref || "#"}
+                  className="inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+                >
                   {active.ctaLabel}
                 </a>
               </p>
@@ -1124,8 +1365,14 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             {slides.length > 1 && (
               <div className="mt-4 flex gap-2" role="group" aria-label="Slides">
                 {slides.map((slide, i) => (
-                  <button key={i} type="button" onClick={() => setIndex(i)} aria-current={i === index} aria-label={`Slide ${i + 1}`}
-                    className={`h-11 w-11 rounded-fq-md border border-border text-xs tabular-nums ${i === index ? "bg-primary text-primary-foreground" : "bg-card"}`}>
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => setIndex(i)}
+                    aria-current={i === index}
+                    aria-label={`Slide ${i + 1}`}
+                    className={`h-11 w-11 rounded-fq-md border border-border text-xs tabular-nums ${i === index ? "bg-primary text-primary-foreground" : "bg-card"}`}
+                  >
                     {i + 1}
                   </button>
                 ))}
@@ -1141,15 +1388,28 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       if (items.length === 0) return <Placeholder label="Add showcase items" />;
       return (
         <section>
-          {str(s, "headline") && <h3 className="mb-6 text-2xl font-bold">{str(s, "headline")}</h3>}
+          {str(s, "headline") && (
+            <h3 className="mb-6 text-2xl font-bold">{str(s, "headline")}</h3>
+          )}
           <div className="grid gap-6 sm:grid-cols-2">
             {items.map((item, i) => (
-              <div key={i} className="overflow-hidden rounded-fq-sm border border-border bg-card">
+              <div
+                key={i}
+                className="overflow-hidden rounded-fq-sm border border-border bg-card"
+              >
                 <div className="flex aspect-[4/3] items-center justify-center bg-gradient-to-br from-amber-100 to-rose-50">
                   {rstr(item, "image") ? (
-                    <img src={rstr(item, "image")} alt={rstr(item, "title")} className="h-full w-full object-cover" loading="lazy" />
+                    <img
+                      src={rstr(item, "image")}
+                      alt={rstr(item, "title")}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
                   ) : (
-                    <span aria-hidden="true" className="text-5xl font-bold text-foreground/10 select-none">
+                    <span
+                      aria-hidden="true"
+                      className="text-5xl font-bold text-foreground/10 select-none"
+                    >
                       {rstr(item, "title")?.charAt(0) || "T"}
                     </span>
                   )}
@@ -1157,7 +1417,9 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
                 <div className="p-4">
                   <p className="text-sm font-medium">{rstr(item, "title")}</p>
                   {rstr(item, "subtitle") && (
-                    <p className="mt-1 text-xs text-muted-foreground">{rstr(item, "subtitle")}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {rstr(item, "subtitle")}
+                    </p>
                   )}
                 </div>
               </div>
@@ -1169,22 +1431,41 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "department_grid": {
       const departments = rows(s, "departments");
-      if (departments.length === 0) return <Placeholder label="Add departments" />;
+      if (departments.length === 0)
+        return <Placeholder label="Add departments" />;
       const columns = num(s, "columns", 4, device);
       const gridCols =
-        columns <= 2 ? "sm:grid-cols-2" : columns <= 3 ? "sm:grid-cols-3" : columns <= 4 ? "sm:grid-cols-2 lg:grid-cols-4" : "sm:grid-cols-3 lg:grid-cols-5";
+        columns <= 2
+          ? "sm:grid-cols-2"
+          : columns <= 3
+            ? "sm:grid-cols-3"
+            : columns <= 4
+              ? "sm:grid-cols-2 lg:grid-cols-4"
+              : "sm:grid-cols-3 lg:grid-cols-5";
       return (
         <section>
           <div className={`grid gap-4 ${gridCols}`}>
             {departments.map((dept, i) => {
               const title = rstr(dept, "title") || rstr(dept, "name");
               return (
-                <a key={i} href={rstr(dept, "href") || "#"} className="group relative overflow-hidden rounded-fq-sm border border-border bg-card">
+                <a
+                  key={i}
+                  href={rstr(dept, "href") || "#"}
+                  className="group relative overflow-hidden rounded-fq-sm border border-border bg-card"
+                >
                   <div className="flex aspect-[3/4] items-center justify-center bg-gradient-to-br from-amber-100 to-rose-50">
                     {rstr(dept, "image") ? (
-                      <img src={rstr(dept, "image")} alt={title} className="h-full w-full object-cover" loading="lazy" />
+                      <img
+                        src={rstr(dept, "image")}
+                        alt={title}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
                     ) : (
-                      <span aria-hidden="true" className="text-4xl font-bold text-foreground/15 select-none">
+                      <span
+                        aria-hidden="true"
+                        className="text-4xl font-bold text-foreground/15 select-none"
+                      >
                         {title?.charAt(0) || "D"}
                       </span>
                     )}
@@ -1205,18 +1486,36 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       if (items.length === 0) return <Placeholder label="Add timeline items" />;
       return (
         <section>
-          {str(s, "headline") && <h3 className="mb-6 text-2xl font-bold">{str(s, "headline")}</h3>}
+          {str(s, "headline") && (
+            <h3 className="mb-6 text-2xl font-bold">{str(s, "headline")}</h3>
+          )}
           <ol className="relative space-y-8 border-l-2 border-border pl-6">
             {items.map((item, i) => (
               <li key={i} className="relative">
-                <span aria-hidden="true" className="absolute -left-[31px] top-1 size-3 rounded-full bg-primary" />
+                <span
+                  aria-hidden="true"
+                  className="absolute -left-[31px] top-1 size-3 rounded-full bg-primary"
+                />
                 {rstr(item, "year") && (
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{rstr(item, "year")}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    {rstr(item, "year")}
+                  </p>
                 )}
-                <p className="mt-1 text-base font-semibold">{rstr(item, "title")}</p>
-                {rstr(item, "body") && <p className="mt-1 text-sm text-muted-foreground">{rstr(item, "body")}</p>}
+                <p className="mt-1 text-base font-semibold">
+                  {rstr(item, "title")}
+                </p>
+                {rstr(item, "body") && (
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {rstr(item, "body")}
+                  </p>
+                )}
                 {rstr(item, "image") && (
-                  <img src={rstr(item, "image")} alt={rstr(item, "title")} loading="lazy" className="mt-3 max-w-sm rounded-fq-md object-cover" />
+                  <img
+                    src={rstr(item, "image")}
+                    alt={rstr(item, "title")}
+                    loading="lazy"
+                    className="mt-3 max-w-sm rounded-fq-md object-cover"
+                  />
                 )}
               </li>
             ))}
@@ -1229,14 +1528,20 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const items = rows(s, "items");
       if (items.length === 0) return <Placeholder label="Add strip items" />;
       const speed = str(s, "speed", "normal");
-      const duration = speed === "slow" ? "40s" : speed === "fast" ? "15s" : "25s";
+      const duration =
+        speed === "slow" ? "40s" : speed === "fast" ? "15s" : "25s";
       const content = items
-        .map((item) => `${rstr(item, "icon") ? rstr(item, "icon") + " " : ""}${rstr(item, "text")}`)
+        .map(
+          (item) =>
+            `${rstr(item, "icon") ? rstr(item, "icon") + " " : ""}${rstr(item, "text")}`,
+        )
         .join("  •  ");
       return (
         <div className="group overflow-hidden rounded-fq-md border border-border bg-card">
-          <p className="whitespace-nowrap px-4 py-2 text-sm motion-safe:animate-[fq-marquee_var(--fq-marquee)_linear_infinite] group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]"
-            style={{ ["--fq-marquee" as string]: duration }}>
+          <p
+            className="whitespace-nowrap px-4 py-2 text-sm motion-safe:animate-[fq-marquee_var(--fq-marquee)_linear_infinite] group-hover:[animation-play-state:paused] group-focus-within:[animation-play-state:paused]"
+            style={{ ["--fq-marquee" as string]: duration }}
+          >
             {content}
           </p>
         </div>
@@ -1245,7 +1550,8 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "hero_carousel": {
       const slides = rows(s, "slides");
-      if (slides.length === 0) return <Placeholder label="Add carousel slides" />;
+      if (slides.length === 0)
+        return <Placeholder label="Add carousel slides" />;
       return (
         <StudioCarousel
           count={slides.length}
@@ -1255,21 +1561,36 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             return (
               <div className="relative aspect-[16/9] w-full sm:aspect-[21/9]">
                 <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-amber-900/20 via-rose-900/10 to-amber-800/20">
-                  <span aria-hidden="true" className="text-[8rem] font-bold text-foreground/10 select-none">
+                  <span
+                    aria-hidden="true"
+                    className="text-[8rem] font-bold text-foreground/10 select-none"
+                  >
                     {rstr(slide, "headline")?.charAt(0) || "H"}
                   </span>
                 </div>
                 {rstr(slide, "image") && (
-                  <img src={rstr(slide, "image")} alt={rstr(slide, "headline")} className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                  <img
+                    src={rstr(slide, "image")}
+                    alt={rstr(slide, "headline")}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                  />
                 )}
                 <div className="absolute inset-0 flex flex-col items-start justify-end bg-gradient-to-t from-black/60 via-black/20 to-transparent p-6 sm:p-12">
                   <div className="max-w-2xl">
-                    <p className="text-3xl font-bold leading-tight text-primary-foreground sm:text-5xl">{rstr(slide, "headline")}</p>
+                    <p className="text-3xl font-bold leading-tight text-primary-foreground sm:text-5xl">
+                      {rstr(slide, "headline")}
+                    </p>
                     {rstr(slide, "subhead") && (
-                      <p className="mt-3 max-w-lg text-base text-primary-foreground/80 sm:text-lg">{rstr(slide, "subhead")}</p>
+                      <p className="mt-3 max-w-lg text-base text-primary-foreground/80 sm:text-lg">
+                        {rstr(slide, "subhead")}
+                      </p>
                     )}
                     {rstr(slide, "ctaLabel") && (
-                      <a href={rstr(slide, "ctaUrl") || "#"} className="mt-6 inline-flex min-h-12 items-center rounded-fq-sm bg-card px-6 text-sm font-semibold text-card-foreground">
+                      <a
+                        href={rstr(slide, "ctaUrl") || "#"}
+                        className="mt-6 inline-flex min-h-12 items-center rounded-fq-sm bg-card px-6 text-sm font-semibold text-card-foreground"
+                      >
                         {rstr(slide, "ctaLabel")}
                       </a>
                     )}
@@ -1284,7 +1605,8 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "testimonial_carousel": {
       const testimonials = rows(s, "testimonials");
-      if (testimonials.length === 0) return <Placeholder label="Add testimonials" />;
+      if (testimonials.length === 0)
+        return <Placeholder label="Add testimonials" />;
       return (
         <StudioCarousel
           count={testimonials.length}
@@ -1293,14 +1615,28 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             const t = testimonials[index]!;
             return (
               <figure className="rounded-fq-lg border border-border bg-card p-6 text-center">
-                <blockquote className="text-base italic leading-relaxed">“{rstr(t, "quote") || "Share a customer story."}”</blockquote>
+                <blockquote className="text-base italic leading-relaxed">
+                  “{rstr(t, "quote") || "Share a customer story."}”
+                </blockquote>
                 <figcaption className="mt-3 flex items-center justify-center gap-2 text-sm">
                   {rstr(t, "avatar") && (
-                    <img src={rstr(t, "avatar")} alt="" loading="lazy" className="size-8 rounded-full object-cover" />
+                    <img
+                      src={rstr(t, "avatar")}
+                      alt=""
+                      loading="lazy"
+                      className="size-8 rounded-full object-cover"
+                    />
                   )}
                   <span>
-                    <strong className="font-semibold">{rstr(t, "author") || "Customer"}</strong>
-                    {rstr(t, "role") && <span className="text-muted-foreground"> · {rstr(t, "role")}</span>}
+                    <strong className="font-semibold">
+                      {rstr(t, "author") || "Customer"}
+                    </strong>
+                    {rstr(t, "role") && (
+                      <span className="text-muted-foreground">
+                        {" "}
+                        · {rstr(t, "role")}
+                      </span>
+                    )}
                   </span>
                 </figcaption>
               </figure>
@@ -1318,7 +1654,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       return (
         <ul className="grid gap-3 sm:grid-cols-3">
           {items.map((item) => (
-            <li key={item} className="rounded-fq-md border border-border bg-card p-4 text-sm">
+            <li
+              key={item}
+              className="rounded-fq-md border border-border bg-card p-4 text-sm"
+            >
               {item}
             </li>
           ))}
@@ -1335,7 +1674,13 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
           <p className="min-w-0 truncate">{str(s, "note")}</p>
           <nav aria-label="Utility" className="flex items-center gap-3">
             {links.map((l) => (
-              <a key={l.label} href={l.href || "#"} className="hover:text-foreground">{l.label}</a>
+              <a
+                key={l.label}
+                href={l.href || "#"}
+                className="hover:text-foreground"
+              >
+                {l.label}
+              </a>
             ))}
           </nav>
         </div>
@@ -1353,18 +1698,29 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         fromItems.length > 0
           ? fromItems
           : [1, 2, 3, 4]
-              .map((n) => ({ title: str(s, `c${n}Title`), links: parseLinks(str(s, `c${n}Links`)) }))
+              .map((n) => ({
+                title: str(s, `c${n}Title`),
+                links: parseLinks(str(s, `c${n}Links`)),
+              }))
               .filter((c) => c.title || c.links.length > 0);
-      if (cols.length === 0) return <Placeholder label="Add a sitemap column" />;
+      if (cols.length === 0)
+        return <Placeholder label="Add a sitemap column" />;
       return (
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+        <nav
+          aria-label="Footer"
+          className="grid grid-cols-2 gap-6 sm:grid-cols-4"
+        >
           {cols.map((col) => (
             <div key={col.title}>
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{col.title}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {col.title}
+              </p>
               <ul className="mt-2 space-y-1">
                 {col.links.map((l) => (
                   <li key={`${col.title}-${l.label}`}>
-                    <a href={l.href} className="text-sm hover:underline">{l.label}</a>
+                    <a href={l.href} className="text-sm hover:underline">
+                      {l.label}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -1376,18 +1732,30 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "doc_links": {
       const docs = [1, 2, 3, 4]
-        .map((i) => ({ label: str(s, `d${i}Label`), href: str(s, `d${i}Href`), meta: str(s, `d${i}Meta`) }))
+        .map((i) => ({
+          label: str(s, `d${i}Label`),
+          href: str(s, `d${i}Href`),
+          meta: str(s, `d${i}Meta`),
+        }))
         .filter((d) => d.label);
       if (docs.length === 0) return <Placeholder label="Add a document" />;
       return (
         <section className="rounded-fq-lg border border-border bg-card p-4">
-          {str(s, "heading") && <h3 className="mb-3 text-base font-semibold">{str(s, "heading")}</h3>}
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-base font-semibold">
+              {str(s, "heading")}
+            </h3>
+          )}
           <ul className="space-y-2">
             {docs.map((d) => (
               <li key={d.label}>
                 <span className="flex min-h-11 items-center justify-between gap-3 rounded-fq-md border border-border px-3 text-sm">
                   <span className="min-w-0">{d.label}</span>
-                  {d.meta && <span className="shrink-0 text-xs text-muted-foreground">{d.meta}</span>}
+                  {d.meta && (
+                    <span className="shrink-0 text-xs text-muted-foreground">
+                      {d.meta}
+                    </span>
+                  )}
                 </span>
               </li>
             ))}
@@ -1398,16 +1766,26 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "claim_chips": {
       const claims = [1, 2, 3, 4, 5, 6]
-        .map((i) => ({ label: str(s, `c${i}Label`), source: str(s, `c${i}Source`) }))
+        .map((i) => ({
+          label: str(s, `c${i}Label`),
+          source: str(s, `c${i}Source`),
+        }))
         .filter((c) => c.label);
       if (claims.length === 0) return <Placeholder label="Add a claim" />;
       return (
         <section className="rounded-fq-lg border border-border bg-card p-4">
-          {str(s, "heading") && <h3 className="mb-3 text-base font-semibold">{str(s, "heading")}</h3>}
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-base font-semibold">
+              {str(s, "heading")}
+            </h3>
+          )}
           <ul className="flex flex-wrap gap-2">
             {claims.map((c) => (
               <li key={c.label}>
-                <span className="inline-flex min-h-8 items-center rounded-full border border-border px-3 py-1 text-sm" title={c.source || undefined}>
+                <span
+                  className="inline-flex min-h-8 items-center rounded-full border border-border px-3 py-1 text-sm"
+                  title={c.source || undefined}
+                >
                   {c.label}
                 </span>
               </li>
@@ -1419,17 +1797,35 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "texture_strip": {
       const tiles = [1, 2, 3, 4]
-        .map((i) => ({ src: str(s, `t${i}Image`), label: str(s, `t${i}Label`), alt: str(s, `t${i}Alt`) }))
+        .map((i) => ({
+          src: str(s, `t${i}Image`),
+          label: str(s, `t${i}Label`),
+          alt: str(s, `t${i}Alt`),
+        }))
         .filter((t) => t.src);
-      if (tiles.length === 0) return <Placeholder label="Add a texture image" />;
+      if (tiles.length === 0)
+        return <Placeholder label="Add a texture image" />;
       return (
         <section>
-          {str(s, "heading") && <h3 className="mb-3 text-base font-semibold">{str(s, "heading")}</h3>}
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-base font-semibold">
+              {str(s, "heading")}
+            </h3>
+          )}
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {tiles.map((t) => (
               <li key={t.src} className="min-w-0 text-center">
-                <img src={t.src} alt={t.alt || t.label} loading="lazy" className="aspect-square w-full rounded-fq-md object-cover" />
-                {t.label && <p className="mt-1 text-xs text-muted-foreground">{t.label}</p>}
+                <img
+                  src={t.src}
+                  alt={t.alt || t.label}
+                  loading="lazy"
+                  className="aspect-square w-full rounded-fq-md object-cover"
+                />
+                {t.label && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t.label}
+                  </p>
+                )}
               </li>
             ))}
           </ul>
@@ -1441,20 +1837,38 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const heading = str(s, "heading");
       const flip = s.flip === true;
       const visual = str(s, "imageUrl") ? (
-        <img src={str(s, "imageUrl")} alt={str(s, "imageAlt") || heading} loading="lazy" className="aspect-[4/3] w-full rounded-fq-lg object-cover" />
+        <img
+          src={str(s, "imageUrl")}
+          alt={str(s, "imageAlt") || heading}
+          loading="lazy"
+          className="aspect-[4/3] w-full rounded-fq-lg object-cover"
+        />
       ) : (
-        <div className="grid aspect-[4/3] place-items-center rounded-fq-lg bg-muted text-2xl font-bold text-muted-foreground">Image</div>
+        <div className="grid aspect-[4/3] place-items-center rounded-fq-lg bg-muted text-2xl font-bold text-muted-foreground">
+          Image
+        </div>
       );
       return (
         <section className="grid items-center gap-6 md:grid-cols-2">
           <div className={flip ? "md:order-2" : undefined}>{visual}</div>
           <div className={flip ? "md:order-1" : undefined}>
-            {str(s, "eyebrow") && <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{str(s, "eyebrow")}</p>}
+            {str(s, "eyebrow") && (
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                {str(s, "eyebrow")}
+              </p>
+            )}
             <h3 className="text-2xl font-semibold">{heading || "Feature"}</h3>
-            {str(s, "body") && <p className="mt-3 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>}
+            {str(s, "body") && (
+              <p className="mt-3 max-w-prose text-sm text-muted-foreground">
+                {str(s, "body")}
+              </p>
+            )}
             {str(s, "ctaLabel") && (
               <p className="mt-4">
-                <a href={str(s, "ctaHref") || "#"} className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
+                <a
+                  href={str(s, "ctaHref") || "#"}
+                  className="inline-flex min-h-11 items-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground"
+                >
                   {str(s, "ctaLabel")}
                 </a>
               </p>
@@ -1469,12 +1883,18 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       if (!text) return <Placeholder label="Add a notice message" />;
       const tone = str(s, "tone", "info");
       const cls =
-        tone === "success" ? "bg-success-soft text-success-foreground"
-        : tone === "warning" ? "bg-warning-soft text-warning-foreground"
-        : tone === "danger" ? "border-danger/40 bg-danger-soft text-danger-foreground"
-        : "bg-info-soft text-foreground";
+        tone === "success"
+          ? "bg-success-soft text-success-foreground"
+          : tone === "warning"
+            ? "bg-warning-soft text-warning-foreground"
+            : tone === "danger"
+              ? "border-danger/40 bg-danger-soft text-danger-foreground"
+              : "bg-info-soft text-foreground";
       return (
-        <div role="status" className={cn("rounded-fq-md px-4 py-3 text-sm", cls)}>
+        <div
+          role="status"
+          className={cn("rounded-fq-md px-4 py-3 text-sm", cls)}
+        >
           <p className="min-w-0">{text}</p>
         </div>
       );
@@ -1482,9 +1902,18 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "empty_state": {
       return (
-        <section aria-label="No results" className="rounded-fq-lg border border-border bg-card p-6 text-center">
-          <p className="text-base font-semibold">{str(s, "heading", "Nothing matches those filters")}</p>
-          {str(s, "body") && <p className="mx-auto mt-2 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>}
+        <section
+          aria-label="No results"
+          className="rounded-fq-lg border border-border bg-card p-6 text-center"
+        >
+          <p className="text-base font-semibold">
+            {str(s, "heading", "Nothing matches those filters")}
+          </p>
+          {str(s, "body") && (
+            <p className="mx-auto mt-2 max-w-prose text-sm text-muted-foreground">
+              {str(s, "body")}
+            </p>
+          )}
           <p className="mt-4">
             <span className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-4 text-sm font-medium">
               {str(s, "clearLabel", "Clear all filters")}
@@ -1496,29 +1925,49 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "breadcrumb": {
       return (
-        <nav aria-label="Breadcrumb" className="flex items-center gap-1 text-xs text-muted-foreground">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-1 text-xs text-muted-foreground"
+        >
           <span>{str(s, "homeLabel", "Home")}</span>
           <span aria-hidden="true">/</span>
-          <span aria-current="page" className="text-foreground">…</span>
+          <span aria-current="page" className="text-foreground">
+            …
+          </span>
         </nav>
       );
     }
 
     case "brand_strip":
-      return <Placeholder label="Live brand strip — renders on the storefront" />;
+      return (
+        <Placeholder label="Live brand strip — renders on the storefront" />
+      );
 
     case "subbrand_bar": {
       const active = str(s, "activeBrand").trim().toLowerCase();
       const brands = [1, 2, 3, 4, 5]
-        .map((n) => ({ name: str(s, `b${n}Name`), href: str(s, `b${n}Href`) || "#" }))
+        .map((n) => ({
+          name: str(s, `b${n}Name`),
+          href: str(s, `b${n}Href`) || "#",
+        }))
         .filter((b) => b.name);
       if (brands.length === 0) return <Placeholder label="Add a brand" />;
       return (
-        <nav aria-label="Brand family" className="border-b border-border/40 bg-muted/30 text-xs">
+        <nav
+          aria-label="Brand family"
+          className="border-b border-border/40 bg-muted/30 text-xs"
+        >
           <ul className="flex items-center gap-1 overflow-x-auto py-1">
             {brands.map((b) => (
               <li key={b.name} className="shrink-0">
-                <span className={cn("inline-flex items-center rounded px-2.5 py-1 text-[11px] font-semibold uppercase tracking-widest", b.name.toLowerCase() === active ? "bg-foreground font-bold text-background" : "text-muted-foreground")}>
+                <span
+                  className={cn(
+                    "inline-flex items-center rounded px-2.5 py-1 text-[11px] font-semibold uppercase tracking-widest",
+                    b.name.toLowerCase() === active
+                      ? "bg-foreground font-bold text-background"
+                      : "text-muted-foreground",
+                  )}
+                >
                   {b.name}
                 </span>
               </li>
@@ -1530,17 +1979,32 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "support_strip": {
       const tiles = [1, 2, 3, 4]
-        .map((i) => ({ title: str(s, `t${i}Title`), body: str(s, `t${i}Body`), href: str(s, `t${i}Href`) }))
+        .map((i) => ({
+          title: str(s, `t${i}Title`),
+          body: str(s, `t${i}Body`),
+          href: str(s, `t${i}Href`),
+        }))
         .filter((t) => t.title);
       if (tiles.length === 0) return <Placeholder label="Add a support tile" />;
       return (
         <section>
-          {str(s, "heading") && <h3 className="mb-3 text-base font-semibold">{str(s, "heading")}</h3>}
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-base font-semibold">
+              {str(s, "heading")}
+            </h3>
+          )}
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {tiles.map((t) => (
-              <li key={t.title} className="min-w-0 rounded-fq-md border border-border bg-card p-3">
+              <li
+                key={t.title}
+                className="min-w-0 rounded-fq-md border border-border bg-card p-3"
+              >
                 <span className="block text-sm font-medium">{t.title}</span>
-                {t.body && <span className="block text-sm text-muted-foreground">{t.body}</span>}
+                {t.body && (
+                  <span className="block text-sm text-muted-foreground">
+                    {t.body}
+                  </span>
+                )}
               </li>
             ))}
           </ul>
@@ -1549,14 +2013,25 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "social_strip": {
-      const images = [1, 2, 3, 4, 5, 6].map((n) => str(s, `i${n}Image`)).filter(Boolean);
-      if (images.length === 0) return <Placeholder label="Add a social image" />;
+      const images = [1, 2, 3, 4, 5, 6]
+        .map((n) => str(s, `i${n}Image`))
+        .filter(Boolean);
+      if (images.length === 0)
+        return <Placeholder label="Add a social image" />;
       return (
         <section>
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">{str(s, "heading")}</p>
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            {str(s, "heading")}
+          </p>
           <div className="flex gap-3 overflow-x-auto">
             {images.map((src) => (
-              <img key={src} src={src} alt="" loading="lazy" className="aspect-square w-40 shrink-0 rounded-fq-md object-cover" />
+              <img
+                key={src}
+                src={src}
+                alt=""
+                loading="lazy"
+                className="aspect-square w-40 shrink-0 rounded-fq-md object-cover"
+              />
             ))}
           </div>
         </section>
@@ -1568,7 +2043,13 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const wordmark = str(s, "text");
       if (!image && !wordmark) return <Placeholder label="Add a logo" />;
       const body = image ? (
-        <img src={image} alt={str(s, "alt") || wordmark} style={{ height: num(s, "height", 40, device), width: "auto" }} loading="eager" decoding="async" />
+        <img
+          src={image}
+          alt={str(s, "alt") || wordmark}
+          style={{ height: num(s, "height", 40, device), width: "auto" }}
+          loading="eager"
+          decoding="async"
+        />
       ) : (
         <span className="text-xl font-bold tracking-tight">{wordmark}</span>
       );
@@ -1577,19 +2058,35 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "how_to_use": {
       const steps = [1, 2, 3, 4, 5]
-        .map((i) => ({ title: str(s, `s${i}Title`), body: str(s, `s${i}Body`) }))
+        .map((i) => ({
+          title: str(s, `s${i}Title`),
+          body: str(s, `s${i}Body`),
+        }))
         .filter((x) => x.title);
       if (steps.length === 0) return <Placeholder label="Add a step" />;
       return (
         <section className="rounded-fq-lg border border-border bg-card p-4">
-          {str(s, "heading") && <h3 className="mb-3 text-base font-semibold">{str(s, "heading")}</h3>}
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-base font-semibold">
+              {str(s, "heading")}
+            </h3>
+          )}
           <ol className="space-y-3">
             {steps.map((x, i) => (
               <li key={x.title} className="flex gap-3">
-                <span aria-hidden="true" className="flex size-7 shrink-0 items-center justify-center rounded-full border border-border text-xs tabular-nums">{i + 1}</span>
+                <span
+                  aria-hidden="true"
+                  className="flex size-7 shrink-0 items-center justify-center rounded-full border border-border text-xs tabular-nums"
+                >
+                  {i + 1}
+                </span>
                 <span className="min-w-0">
                   <span className="block text-sm font-medium">{x.title}</span>
-                  {x.body && <span className="block text-sm text-muted-foreground">{x.body}</span>}
+                  {x.body && (
+                    <span className="block text-sm text-muted-foreground">
+                      {x.body}
+                    </span>
+                  )}
                 </span>
               </li>
             ))}
@@ -1600,18 +2097,32 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "buying_guide": {
       const links = [1, 2, 3, 4]
-        .map((i) => ({ label: str(s, `l${i}Label`), href: str(s, `l${i}Href`) }))
+        .map((i) => ({
+          label: str(s, `l${i}Label`),
+          href: str(s, `l${i}Href`),
+        }))
         .filter((l) => l.label);
-      if (!str(s, "body") && links.length === 0) return <Placeholder label="Add guide text" />;
+      if (!str(s, "body") && links.length === 0)
+        return <Placeholder label="Add guide text" />;
       return (
         <section className="rounded-fq-lg border border-border bg-card p-4">
-          {str(s, "heading") && <h3 className="mb-2 text-base font-semibold">{str(s, "heading")}</h3>}
-          {str(s, "body") && <p className="whitespace-pre-line text-sm text-muted-foreground">{str(s, "body")}</p>}
+          {str(s, "heading") && (
+            <h3 className="mb-2 text-base font-semibold">
+              {str(s, "heading")}
+            </h3>
+          )}
+          {str(s, "body") && (
+            <p className="whitespace-pre-line text-sm text-muted-foreground">
+              {str(s, "body")}
+            </p>
+          )}
           {links.length > 0 && (
             <ul className="mt-3 flex flex-wrap gap-2">
               {links.map((l) => (
                 <li key={l.label}>
-                  <span className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-3 text-sm">{l.label}</span>
+                  <span className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-3 text-sm">
+                    {l.label}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -1623,16 +2134,33 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "care_panel": {
       return (
         <section className="rounded-fq-md border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold">{str(s, "heading", "Material & care")}</h3>
+          <h3 className="text-sm font-semibold">
+            {str(s, "heading", "Material & care")}
+          </h3>
           <dl className="mt-2 space-y-2 text-sm">
             {str(s, "composition") && (
-              <div><dt className="font-medium">Composition</dt><dd className="m-0 text-muted-foreground">{str(s, "composition")}</dd></div>
+              <div>
+                <dt className="font-medium">Composition</dt>
+                <dd className="m-0 text-muted-foreground">
+                  {str(s, "composition")}
+                </dd>
+              </div>
             )}
             {str(s, "care") && (
-              <div><dt className="font-medium">Care</dt><dd className="m-0 whitespace-pre-line text-muted-foreground">{str(s, "care")}</dd></div>
+              <div>
+                <dt className="font-medium">Care</dt>
+                <dd className="m-0 whitespace-pre-line text-muted-foreground">
+                  {str(s, "care")}
+                </dd>
+              </div>
             )}
             {str(s, "origin") && (
-              <div><dt className="font-medium">Made in</dt><dd className="m-0 text-muted-foreground">{str(s, "origin")}</dd></div>
+              <div>
+                <dt className="font-medium">Made in</dt>
+                <dd className="m-0 text-muted-foreground">
+                  {str(s, "origin")}
+                </dd>
+              </div>
             )}
           </dl>
         </section>
@@ -1644,12 +2172,18 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       if (!body) return <Placeholder label="Add safety guidance" />;
       return (
         <section className="rounded-fq-md border border-border bg-card p-4">
-          {str(s, "heading") && <h3 className="text-sm font-semibold">{str(s, "heading")}</h3>}
+          {str(s, "heading") && (
+            <h3 className="text-sm font-semibold">{str(s, "heading")}</h3>
+          )}
           <p className="mt-1 text-sm">{body}</p>
           {str(s, "howTo") && (
             <details className="mt-3">
-              <summary className="cursor-pointer text-sm font-medium">{str(s, "howToLabel", "How to patch test")}</summary>
-              <p className="whitespace-pre-line pt-2 text-sm text-muted-foreground">{str(s, "howTo")}</p>
+              <summary className="cursor-pointer text-sm font-medium">
+                {str(s, "howToLabel", "How to patch test")}
+              </summary>
+              <p className="whitespace-pre-line pt-2 text-sm text-muted-foreground">
+                {str(s, "howTo")}
+              </p>
             </details>
           )}
         </section>
@@ -1661,10 +2195,13 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       return (
         <p className="rounded-fq-md border border-border bg-muted/40 p-3 text-sm">
           <span className="font-medium">{label}</span>
-          {str(s, "note") && <span className="text-muted-foreground"> · {str(s, "note")}</span>}
+          {str(s, "note") && (
+            <span className="text-muted-foreground"> · {str(s, "note")}</span>
+          )}
           {(str(s, "modelHeight") || str(s, "modelSize")) && (
             <span className="block text-xs text-muted-foreground">
-              Model: {str(s, "modelHeight")} {str(s, "modelSize") && `· ${str(s, "modelSize")}`}
+              Model: {str(s, "modelHeight")}{" "}
+              {str(s, "modelSize") && `· ${str(s, "modelSize")}`}
             </span>
           )}
         </p>
@@ -1679,24 +2216,41 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         <p className="flex flex-wrap items-center gap-2 rounded-fq-md border border-border bg-card px-3 py-2 text-sm">
           <span aria-hidden="true">{s.verified ? "✓" : "•"}</span>
           <span className="font-medium">{label}</span>
-          {str(s, "note") && <span className="text-muted-foreground">{str(s, "note")}</span>}
-          {href && <a href={href} className="underline underline-offset-2">{href.replace(/^https?:\/\//, "")}</a>}
+          {str(s, "note") && (
+            <span className="text-muted-foreground">{str(s, "note")}</span>
+          )}
+          {href && (
+            <a href={href} className="underline underline-offset-2">
+              {href.replace(/^https?:\/\//, "")}
+            </a>
+          )}
         </p>
       );
     }
 
     case "sustain_badge": {
       const claims = [1, 2, 3]
-        .map((n) => ({ label: str(s, `c${n}Label`), source: str(s, `c${n}Source`) }))
+        .map((n) => ({
+          label: str(s, `c${n}Label`),
+          source: str(s, `c${n}Source`),
+        }))
         .filter((cl) => cl.label);
-      if (claims.length === 0) return <Placeholder label="Add a sustainability claim" />;
+      if (claims.length === 0)
+        return <Placeholder label="Add a sustainability claim" />;
       return (
         <section aria-label={str(s, "heading", "Sustainability")}>
-          {str(s, "heading") && <p className="mb-2 text-sm font-medium">{str(s, "heading")}</p>}
+          {str(s, "heading") && (
+            <p className="mb-2 text-sm font-medium">{str(s, "heading")}</p>
+          )}
           <ul className="flex list-none flex-wrap gap-2 p-0">
             {claims.map((cl) => (
               <li key={cl.label}>
-                <span title={cl.source || undefined} className="inline-flex min-h-11 items-center rounded-full border border-border px-3 text-xs">{cl.label}</span>
+                <span
+                  title={cl.source || undefined}
+                  className="inline-flex min-h-11 items-center rounded-full border border-border px-3 text-xs"
+                >
+                  {cl.label}
+                </span>
               </li>
             ))}
           </ul>
@@ -1707,13 +2261,22 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "discount_badge": {
       const price = num(s, "priceMinor", 0, device);
       const was = num(s, "compareAtMinor", 0, device);
-      if (!(was > price)) return <Placeholder label="Set a was-price above the price" />;
+      if (!(was > price))
+        return <Placeholder label="Set a was-price above the price" />;
       const pct = Math.round(((was - price) / was) * 100);
       return (
         <p className="inline-flex flex-wrap items-center gap-2">
-          {str(s, "label") && <span className="text-sm text-muted-foreground">{str(s, "label")}</span>}
-          <span className="rounded-fq-md bg-destructive/10 px-2 py-0.5 text-xs font-semibold tabular-nums">Save {pct}%</span>
-          <span className="rounded-fq-md bg-success-soft px-2 py-0.5 text-xs font-semibold tabular-nums">{pct}% off</span>
+          {str(s, "label") && (
+            <span className="text-sm text-muted-foreground">
+              {str(s, "label")}
+            </span>
+          )}
+          <span className="rounded-fq-md bg-destructive/10 px-2 py-0.5 text-xs font-semibold tabular-nums">
+            Save {pct}%
+          </span>
+          <span className="rounded-fq-md bg-success-soft px-2 py-0.5 text-xs font-semibold tabular-nums">
+            {pct}% off
+          </span>
         </p>
       );
     }
@@ -1725,19 +2288,31 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         [str(s, "batchLabel", "Batch"), str(s, "batchCode")],
       ].filter(([, v]) => v) as [string, string][];
       const pao = num(s, "paoMonths", 0, device);
-      if (order.length === 0 && !pao) return <Placeholder label="Add a batch date or code" />;
+      if (order.length === 0 && !pao)
+        return <Placeholder label="Add a batch date or code" />;
       return (
         <section className="rounded-fq-lg border border-border bg-card p-4">
-          {str(s, "heading") && <h3 className="mb-2 text-lg font-semibold">{str(s, "heading")}</h3>}
+          {str(s, "heading") && (
+            <h3 className="mb-2 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
           <dl className="text-sm">
             {order.map(([k, v]) => (
-              <div key={k} className="flex justify-between gap-3 border-b border-border py-2 last:border-b-0">
+              <div
+                key={k}
+                className="flex justify-between gap-3 border-b border-border py-2 last:border-b-0"
+              >
                 <dt className="text-muted-foreground">{k}</dt>
-                <dd className="tabular-nums" dir="ltr">{v}</dd>
+                <dd className="tabular-nums" dir="ltr">
+                  {v}
+                </dd>
               </div>
             ))}
           </dl>
-          {pao > 0 && <p className="mt-2 text-xs text-muted-foreground">Best used within {pao} months of opening.</p>}
+          {pao > 0 && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              Best used within {pao} months of opening.
+            </p>
+          )}
         </section>
       );
     }
@@ -1747,25 +2322,42 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         [str(s, "insideLabel"), str(s, "insideDays")],
         [str(s, "outsideLabel"), str(s, "outsideDays")],
       ].filter(([l]) => l) as [string, string][];
-      if (zones.length === 0) return <Placeholder label="Add a delivery zone" />;
+      if (zones.length === 0)
+        return <Placeholder label="Add a delivery zone" />;
       return (
-        <section aria-label={str(s, "heading", "Delivery")} className="rounded-fq-lg border border-border bg-card p-4">
-          <h3 className="mb-3 text-lg font-semibold">{str(s, "heading", "Delivery")}</h3>
+        <section
+          aria-label={str(s, "heading", "Delivery")}
+          className="rounded-fq-lg border border-border bg-card p-4"
+        >
+          <h3 className="mb-3 text-lg font-semibold">
+            {str(s, "heading", "Delivery")}
+          </h3>
           <dl className="space-y-1 text-sm">
             {zones.map(([l, d]) => (
-              <div key={l} className="flex justify-between gap-3"><dt className="text-muted-foreground">{l}</dt><dd>{d}</dd></div>
+              <div key={l} className="flex justify-between gap-3">
+                <dt className="text-muted-foreground">{l}</dt>
+                <dd>{d}</dd>
+              </div>
             ))}
           </dl>
-          {str(s, "note") && <p className="mt-2 text-xs text-muted-foreground">{str(s, "note")}</p>}
+          {str(s, "note") && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              {str(s, "note")}
+            </p>
+          )}
         </section>
       );
     }
 
     case "free_shipping_bar":
-      return <Placeholder label="Live free shipping bar — renders on the storefront" />;
+      return (
+        <Placeholder label="Live free shipping bar — renders on the storefront" />
+      );
 
     case "stock_delivery":
-      return <Placeholder label="Live stock and dispatch — renders on the storefront" />;
+      return (
+        <Placeholder label="Live stock and dispatch — renders on the storefront" />
+      );
 
     case "rank_list":
       return <Placeholder label="Live rank list — renders on the storefront" />;
@@ -1774,17 +2366,46 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const name = str(s, "name");
       if (!name) return <Placeholder label="Add a seller name" />;
       return (
-        <section aria-label="Seller" className="rounded-fq-lg border border-border bg-card p-4">
+        <section
+          aria-label="Seller"
+          className="rounded-fq-lg border border-border bg-card p-4"
+        >
           <div className="flex items-center gap-3">
-            {str(s, "logoUrl") && <img src={str(s, "logoUrl")} alt="" loading="lazy" className="h-12 w-12 rounded-fq-md border border-border object-cover" />}
+            {str(s, "logoUrl") && (
+              <img
+                src={str(s, "logoUrl")}
+                alt=""
+                loading="lazy"
+                className="h-12 w-12 rounded-fq-md border border-border object-cover"
+              />
+            )}
             <div className="min-w-0">
               <p className="truncate font-medium">{name}</p>
-              {str(s, "tagline") && <p className="truncate text-sm text-muted-foreground">{str(s, "tagline")}</p>}
-              {num(s, "rating", 0, device) > 0 && <p className="text-xs tabular-nums text-muted-foreground">★ {num(s, "rating", 0, device)} / 5</p>}
+              {str(s, "tagline") && (
+                <p className="truncate text-sm text-muted-foreground">
+                  {str(s, "tagline")}
+                </p>
+              )}
+              {num(s, "rating", 0, device) > 0 && (
+                <p className="text-xs tabular-nums text-muted-foreground">
+                  ★ {num(s, "rating", 0, device)} / 5
+                </p>
+              )}
             </div>
           </div>
-          {str(s, "policy") && <p className="mt-2 text-xs text-muted-foreground">{str(s, "policy")}</p>}
-          {str(s, "linkHref") && <a href={str(s, "linkHref")} className="mt-2 inline-block text-sm underline underline-offset-2">{str(s, "linkLabel", "Visit store")}</a>}
+          {str(s, "policy") && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              {str(s, "policy")}
+            </p>
+          )}
+          {str(s, "linkHref") && (
+            <a
+              href={str(s, "linkHref")}
+              className="mt-2 inline-block text-sm underline underline-offset-2"
+            >
+              {str(s, "linkLabel", "Visit store")}
+            </a>
+          )}
         </section>
       );
     }
@@ -1795,7 +2416,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       return (
         <header>
           {s.showBreadcrumb !== false && (
-            <nav aria-label="Breadcrumb" className="mb-2 text-sm text-muted-foreground">
+            <nav
+              aria-label="Breadcrumb"
+              className="mb-2 text-sm text-muted-foreground"
+            >
               <span className="underline">{str(s, "homeLabel", "Home")}</span>
               <span aria-hidden="true"> / </span>
               <span>{title}</span>
@@ -1803,17 +2427,37 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
           )}
           {image ? (
             <div className="relative overflow-hidden rounded-fq-lg">
-              <img src={image} alt="" loading="lazy" className="h-auto w-full object-cover" />
-              {s.scrim !== false && <div aria-hidden="true" className="absolute inset-0 bg-foreground/40" />}
+              <img
+                src={image}
+                alt=""
+                loading="lazy"
+                className="h-auto w-full object-cover"
+              />
+              {s.scrim !== false && (
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-foreground/40"
+                />
+              )}
               <div className="absolute inset-0 flex flex-col justify-end p-4">
-                <h3 className="text-2xl font-semibold text-background">{title}</h3>
-                {str(s, "body") && <p className="mt-1 max-w-prose text-sm text-background/90">{str(s, "body")}</p>}
+                <h3 className="text-2xl font-semibold text-background">
+                  {title}
+                </h3>
+                {str(s, "body") && (
+                  <p className="mt-1 max-w-prose text-sm text-background/90">
+                    {str(s, "body")}
+                  </p>
+                )}
               </div>
             </div>
           ) : (
             <>
               <h3 className="text-2xl font-semibold">{title}</h3>
-              {str(s, "body") && <p className="mt-1 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>}
+              {str(s, "body") && (
+                <p className="mt-1 max-w-prose text-sm text-muted-foreground">
+                  {str(s, "body")}
+                </p>
+              )}
             </>
           )}
         </header>
@@ -1822,24 +2466,42 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "collection_story": {
       const heading = str(s, "heading");
-      if (!heading && !str(s, "body")) return <Placeholder label="Add a story heading" />;
+      if (!heading && !str(s, "body"))
+        return <Placeholder label="Add a story heading" />;
       return (
         <section className="relative overflow-hidden rounded-fq-lg">
           {str(s, "imageUrl") ? (
-            <img src={str(s, "imageUrl")} alt="" loading="lazy" className="aspect-[16/9] w-full object-cover" />
+            <img
+              src={str(s, "imageUrl")}
+              alt=""
+              loading="lazy"
+              className="aspect-[16/9] w-full object-cover"
+            />
           ) : (
             <div className="aspect-[16/9] w-full bg-muted" />
           )}
           {s.scrim !== false && str(s, "imageUrl") && (
-            <div aria-hidden="true" className="absolute inset-0 bg-foreground/40" />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-foreground/40"
+            />
           )}
           <div className="absolute inset-0 flex items-end p-6">
             <div className="max-w-xl text-background">
-              {str(s, "eyebrow") && <p className="text-xs font-semibold uppercase tracking-wider">{str(s, "eyebrow")}</p>}
+              {str(s, "eyebrow") && (
+                <p className="text-xs font-semibold uppercase tracking-wider">
+                  {str(s, "eyebrow")}
+                </p>
+              )}
               <h3 className="text-2xl font-semibold">{heading}</h3>
-              {str(s, "body") && <p className="mt-2 text-sm opacity-90">{str(s, "body")}</p>}
+              {str(s, "body") && (
+                <p className="mt-2 text-sm opacity-90">{str(s, "body")}</p>
+              )}
               {str(s, "ctaLabel") && (
-                <a href={str(s, "ctaHref") || "#"} className="mt-3 inline-block rounded-fq-md bg-card px-4 py-2 text-sm font-semibold text-card-foreground">
+                <a
+                  href={str(s, "ctaHref") || "#"}
+                  className="mt-3 inline-block rounded-fq-md bg-card px-4 py-2 text-sm font-semibold text-card-foreground"
+                >
                   {str(s, "ctaLabel")}
                 </a>
               )}
@@ -1850,49 +2512,96 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "brand_rail":
-      return <Placeholder label="Live brand rail — renders on the storefront" />;
+      return (
+        <Placeholder label="Live brand rail — renders on the storefront" />
+      );
 
     case "concern_rail":
-      return <Placeholder label="Live concern rail — renders on the storefront" />;
+      return (
+        <Placeholder label="Live concern rail — renders on the storefront" />
+      );
 
     case "back_in_stock": {
       return (
         <section className="rounded-fq-md border border-border bg-card p-4">
-          <p className="text-sm font-semibold">{str(s, "heading", "Notify me when it's back")}</p>
-          {str(s, "body") && <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>}
-          <form className="mt-3 flex flex-wrap gap-2" method="post" action="#back-in-stock" onSubmit={(e) => e.preventDefault()}>
-            <label className="sr-only" htmlFor="bis-email">Email address</label>
-            <input id="bis-email" name="email" type="email" required placeholder="you@example.com" className="min-h-11 min-w-[14rem] flex-1 rounded-fq-md border border-border px-3 text-sm" />
-            <button type="submit" className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">{str(s, "buttonLabel", "Notify me")}</button>
+          <p className="text-sm font-semibold">
+            {str(s, "heading", "Notify me when it's back")}
+          </p>
+          {str(s, "body") && (
+            <p className="mt-1 text-sm text-muted-foreground">
+              {str(s, "body")}
+            </p>
+          )}
+          <form
+            className="mt-3 flex flex-wrap gap-2"
+            method="post"
+            action="#back-in-stock"
+            onSubmit={(e) => e.preventDefault()}
+          >
+            <label className="sr-only" htmlFor="bis-email">
+              Email address
+            </label>
+            <input
+              id="bis-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="you@example.com"
+              className="min-h-11 min-w-[14rem] flex-1 rounded-fq-md border border-border px-3 text-sm"
+            />
+            <button
+              type="submit"
+              className="min-h-11 rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground"
+            >
+              {str(s, "buttonLabel", "Notify me")}
+            </button>
           </form>
-          {str(s, "consentText") && <p className="mt-2 text-xs text-muted-foreground">{str(s, "consentText")}</p>}
+          {str(s, "consentText") && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              {str(s, "consentText")}
+            </p>
+          )}
         </section>
       );
     }
 
     case "price_block":
-      return <Placeholder label="Live price block — renders on the storefront" />;
+      return (
+        <Placeholder label="Live price block — renders on the storefront" />
+      );
 
     case "price_sparkline":
-      return <Placeholder label="Live price history — renders on the storefront" />;
+      return (
+        <Placeholder label="Live price history — renders on the storefront" />
+      );
 
     case "deal_card": {
       const ends = Date.parse(str(s, "endsAt"));
       return (
         <section className="flex flex-col gap-3 rounded-fq-lg border border-border bg-card p-4 sm:flex-row sm:items-center">
           <div className="min-w-0 flex-1">
-            <h3 className="text-base font-semibold">{str(s, "heading", "Deal of the day")}</h3>
+            <h3 className="text-base font-semibold">
+              {str(s, "heading", "Deal of the day")}
+            </h3>
             {str(s, "badgeLabel") && (
-              <span className="mt-1 inline-block rounded-fq-sm bg-success-soft px-2 py-0.5 text-xs font-semibold">{str(s, "badgeLabel")}</span>
+              <span className="mt-1 inline-block rounded-fq-sm bg-success-soft px-2 py-0.5 text-xs font-semibold">
+                {str(s, "badgeLabel")}
+              </span>
             )}
             {!Number.isNaN(ends) && (
               <p className="mt-1 text-xs text-muted-foreground">
-                <time dateTime={new Date(ends).toISOString()}>Ends {new Date(ends).toLocaleDateString("en-GB")}</time>
+                <time dateTime={new Date(ends).toISOString()}>
+                  Ends {new Date(ends).toLocaleDateString("en-GB")}
+                </time>
               </p>
             )}
           </div>
           {str(s, "ctaLabel") && (
-            <a href={str(s, "ctaHref") || "#"} className="shrink-0 rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+            <a
+              href={str(s, "ctaHref") || "#"}
+              className="shrink-0 rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+            >
               {str(s, "ctaLabel")}
             </a>
           )}
@@ -1901,10 +2610,14 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "deal_strip":
-      return <Placeholder label="Live deal strip — renders on the storefront" />;
+      return (
+        <Placeholder label="Live deal strip — renders on the storefront" />
+      );
 
     case "sponsored_slot":
-      return <Placeholder label="Live sponsored slot — renders on the storefront" />;
+      return (
+        <Placeholder label="Live sponsored slot — renders on the storefront" />
+      );
 
     case "subbrand_spotlight": {
       const brands = [1, 2, 3, 4]
@@ -1920,25 +2633,48 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         <section>
           {(str(s, "heading") || str(s, "subheading")) && (
             <div className="mx-auto mb-6 max-w-xl space-y-1 text-center">
-              {str(s, "heading") && <h3 className="text-2xl font-bold tracking-tight">{str(s, "heading")}</h3>}
-              {str(s, "subheading") && <p className="text-xs tracking-wider text-muted-foreground">{str(s, "subheading")}</p>}
+              {str(s, "heading") && (
+                <h3 className="text-2xl font-bold tracking-tight">
+                  {str(s, "heading")}
+                </h3>
+              )}
+              {str(s, "subheading") && (
+                <p className="text-xs tracking-wider text-muted-foreground">
+                  {str(s, "subheading")}
+                </p>
+              )}
             </div>
           )}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {brands.map((b) => (
-              <a key={b.name} href={b.href} className="block overflow-hidden rounded-fq-lg border border-border bg-card">
+              <a
+                key={b.name}
+                href={b.href}
+                className="block overflow-hidden rounded-fq-lg border border-border bg-card"
+              >
                 <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
                   {b.image ? (
-                    <img src={b.image} alt={b.name} loading="lazy" className="size-full object-cover" />
+                    <img
+                      src={b.image}
+                      alt={b.name}
+                      loading="lazy"
+                      className="size-full object-cover"
+                    />
                   ) : (
                     <div className="flex size-full items-center justify-center bg-primary/10">
-                      <span className="text-2xl font-bold tracking-widest text-primary">{b.name}</span>
+                      <span className="text-2xl font-bold tracking-widest text-primary">
+                        {b.name}
+                      </span>
                     </div>
                   )}
                 </div>
                 <div className="space-y-1.5 p-4">
                   <p className="text-base font-bold tracking-wide">{b.name}</p>
-                  {b.tagline && <p className="line-clamp-2 text-xs text-muted-foreground">{b.tagline}</p>}
+                  {b.tagline && (
+                    <p className="line-clamp-2 text-xs text-muted-foreground">
+                      {b.tagline}
+                    </p>
+                  )}
                 </div>
               </a>
             ))}
@@ -1960,14 +2696,20 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       return (
         <section className="rounded-fq-lg border border-border bg-card p-4">
           <div className="mb-3 flex items-center justify-between gap-2">
-            <h3 className="text-base font-semibold">{str(s, "heading", "Size guide")}</h3>
-            <span className="rounded-fq-sm border border-border px-2 py-1 text-xs text-muted-foreground">{str(s, "unit", "cm")}</span>
+            <h3 className="text-base font-semibold">
+              {str(s, "heading", "Size guide")}
+            </h3>
+            <span className="rounded-fq-sm border border-border px-2 py-1 text-xs text-muted-foreground">
+              {str(s, "unit", "cm")}
+            </span>
           </div>
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-xs text-muted-foreground">
                 {[str(s, "openLabel", "Size"), ...cols].map((h) => (
-                  <th key={h} className="px-2 py-1 font-medium">{h}</th>
+                  <th key={h} className="px-2 py-1 font-medium">
+                    {h}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -1976,35 +2718,60 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
                 <tr key={r.label} className="border-t border-border">
                   <td className="px-2 py-1 font-medium">{r.label}</td>
                   {r.cells.map((v, i) => (
-                    <td key={i} className="px-2 py-1 tabular-nums text-muted-foreground">{v}</td>
+                    <td
+                      key={i}
+                      className="px-2 py-1 tabular-nums text-muted-foreground"
+                    >
+                      {v}
+                    </td>
                   ))}
                 </tr>
               ))}
             </tbody>
           </table>
-          {str(s, "note") && <p className="mt-2 text-xs text-muted-foreground">{str(s, "note")}</p>}
+          {str(s, "note") && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              {str(s, "note")}
+            </p>
+          )}
         </section>
       );
     }
 
     case "routine_builder":
-      return <Placeholder label="Live routine builder — renders on the storefront" />;
+      return (
+        <Placeholder label="Live routine builder — renders on the storefront" />
+      );
 
     case "sample_picker":
-      return <Placeholder label="Live sample picker — renders on the storefront" />;
+      return (
+        <Placeholder label="Live sample picker — renders on the storefront" />
+      );
 
     case "shade_finder": {
       const u = str(s, "undertonePrompt", "What is your undertone?");
       const d = str(s, "depthPrompt", "How deep is your skin tone?");
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6">
-          <h3 className="text-lg font-semibold">{str(s, "heading", "Find your shade")}</h3>
+          <h3 className="text-lg font-semibold">
+            {str(s, "heading", "Find your shade")}
+          </h3>
           <p className="mt-1 text-xs text-muted-foreground">Step 1 of 2</p>
           <fieldset className="mt-4 border-0 p-0">
             <legend className="text-sm font-medium">{u}</legend>
             <div className="mt-2 flex flex-wrap gap-2">
               {["Cool", "Neutral", "Warm"].map((o, i) => (
-                <span key={o} className={cn("rounded-fq-md border px-3 py-1.5 text-sm", i === 0 ? "border-primary bg-primary text-primary-foreground" : "border-border")}>{o}</span>
+                <span
+                  key={o}
+                  className={cn(
+                    "rounded-fq-md border px-3 py-1.5 text-sm",
+                    i === 0
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border",
+                  )}
+                >
+                  {o}
+                </span>
               ))}
             </div>
           </fieldset>
@@ -2017,14 +2784,25 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const first = str(s, "typePrompt", "Your skin type?");
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6">
-          <h3 className="text-lg font-semibold">{str(s, "heading", "Skin quiz")}</h3>
-          {str(s, "body") && <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>}
+          <h3 className="text-lg font-semibold">
+            {str(s, "heading", "Skin quiz")}
+          </h3>
+          {str(s, "body") && (
+            <p className="mt-1 text-sm text-muted-foreground">
+              {str(s, "body")}
+            </p>
+          )}
           <p className="mt-3 text-xs text-muted-foreground">Step 1 of 4</p>
           <fieldset className="mt-2 border-0 p-0">
             <legend className="text-sm font-medium">{first}</legend>
             <div className="mt-2 flex flex-wrap gap-2">
               {["Oily", "Dry", "Combination"].map((o) => (
-                <span key={o} className="rounded-fq-md border border-border px-3 py-1.5 text-sm">{o}</span>
+                <span
+                  key={o}
+                  className="rounded-fq-md border border-border px-3 py-1.5 text-sm"
+                >
+                  {o}
+                </span>
               ))}
             </div>
           </fieldset>
@@ -2036,22 +2814,36 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const steps = [1, 2, 3]
         .map((i) => ({
           label: str(s, `q${i}Label`),
-          choices: str(s, `q${i}Choices`).split(",").map((x) => x.trim()).filter(Boolean),
+          choices: str(s, `q${i}Choices`)
+            .split(",")
+            .map((x) => x.trim())
+            .filter(Boolean),
         }))
         .filter((x) => x.label && x.choices.length > 0);
-      if (steps.length === 0) return <Placeholder label="Add a question with choices" />;
+      if (steps.length === 0)
+        return <Placeholder label="Add a question with choices" />;
       const first = steps[0]!;
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6">
-          <h3 className="text-lg font-semibold">{str(s, "heading", "Find your match")}</h3>
+          <h3 className="text-lg font-semibold">
+            {str(s, "heading", "Find your match")}
+          </h3>
           <div className="mt-3 h-1.5 w-full overflow-hidden rounded-fq-sm bg-muted">
-            <div className="h-full bg-primary" style={{ width: `${Math.round(100 / steps.length)}%` }} />
+            <div
+              className="h-full bg-primary"
+              style={{ width: `${Math.round(100 / steps.length)}%` }}
+            />
           </div>
           <fieldset className="mt-4 border-0 p-0">
             <legend className="text-sm font-medium">{first.label}</legend>
             <div className="mt-2 flex flex-wrap gap-2">
               {first.choices.map((ch) => (
-                <span key={ch} className="rounded-fq-md border border-border px-3 py-1.5 text-sm">{ch}</span>
+                <span
+                  key={ch}
+                  className="rounded-fq-md border border-border px-3 py-1.5 text-sm"
+                >
+                  {ch}
+                </span>
               ))}
             </div>
           </fieldset>
@@ -2067,8 +2859,14 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "consult_cta": {
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6 text-center">
-          <h3 className="text-lg font-semibold">{str(s, "heading", "Talk to a beauty advisor")}</h3>
-          {str(s, "body") && <p className="mx-auto mt-1 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>}
+          <h3 className="text-lg font-semibold">
+            {str(s, "heading", "Talk to a beauty advisor")}
+          </h3>
+          {str(s, "body") && (
+            <p className="mx-auto mt-1 max-w-prose text-sm text-muted-foreground">
+              {str(s, "body")}
+            </p>
+          )}
           <div className="mt-3 flex flex-wrap justify-center gap-2">
             {str(s, "whatsapp") && (
               <span className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-4 text-sm">
@@ -2083,8 +2881,12 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
           </div>
           <p className="mx-auto mt-3 max-w-sm">
             <span className="block text-left text-sm">
-              <span className="mb-1 block">{str(s, "fieldLabel", "Your number")}</span>
-              <span className="block min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">01XXXXXXXXX</span>
+              <span className="mb-1 block">
+                {str(s, "fieldLabel", "Your number")}
+              </span>
+              <span className="block min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
+                01XXXXXXXXX
+              </span>
             </span>
           </p>
           <p className="mt-3">
@@ -2097,10 +2899,14 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "gift_builder":
-      return <Placeholder label="Live gift builder — renders on the storefront" />;
+      return (
+        <Placeholder label="Live gift builder — renders on the storefront" />
+      );
 
     case "bundle_builder":
-      return <Placeholder label="Live bundle builder — renders on the storefront" />;
+      return (
+        <Placeholder label="Live bundle builder — renders on the storefront" />
+      );
 
     case "shoppable_image": {
       const url = str(s, "imageUrl");
@@ -2112,11 +2918,23 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       }));
       return (
         <section>
-          {str(s, "heading") && <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>}
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
           <div className="relative overflow-hidden rounded-fq-lg">
-            <img src={url} alt={str(s, "altText")} loading="lazy" className="aspect-[4/5] w-full object-cover" />
+            <img
+              src={url}
+              alt={str(s, "altText")}
+              loading="lazy"
+              className="aspect-[4/5] w-full object-cover"
+            />
             {pins.map((p, i) => (
-              <span key={i} aria-hidden className="absolute grid size-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-border bg-card text-xs font-semibold" style={{ left: `${p.x}%`, top: `${p.y}%` }}>
+              <span
+                key={i}
+                aria-hidden
+                className="absolute grid size-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-border bg-card text-xs font-semibold"
+                style={{ left: `${p.x}%`, top: `${p.y}%` }}
+              >
                 {i + 1}
               </span>
             ))}
@@ -2126,7 +2944,9 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "compare_table":
-      return <Placeholder label="Live compare table — renders on the storefront" />;
+      return (
+        <Placeholder label="Live compare table — renders on the storefront" />
+      );
 
     case "spec_table": {
       const fromItems = rows(s, "items")
@@ -2149,15 +2969,28 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       if (pairs.length === 0) return <Placeholder label="Add a spec row" />;
       return (
         <section className="rounded-fq-lg border border-border bg-card">
-          {str(s, "caption") && <h3 className="px-3 pt-3 text-sm text-muted-foreground">{str(s, "caption")}</h3>}
+          {str(s, "caption") && (
+            <h3 className="px-3 pt-3 text-sm text-muted-foreground">
+              {str(s, "caption")}
+            </h3>
+          )}
           <dl className="m-0 p-3 pt-1">
             {pairs.map((r) => (
-              <div key={r.label} className="flex items-baseline justify-between gap-3 border-b border-border py-2 last:border-b-0">
+              <div
+                key={r.label}
+                className="flex items-baseline justify-between gap-3 border-b border-border py-2 last:border-b-0"
+              >
                 <dt className="text-sm font-medium">
-                  {r.group ? <span className="mr-2 text-xs text-muted-foreground">{r.group}</span> : null}
+                  {r.group ? (
+                    <span className="mr-2 text-xs text-muted-foreground">
+                      {r.group}
+                    </span>
+                  ) : null}
                   {r.label}
                 </dt>
-                <dd className="m-0 text-sm tabular-nums text-muted-foreground">{r.value || "—"}</dd>
+                <dd className="m-0 text-sm tabular-nums text-muted-foreground">
+                  {r.value || "—"}
+                </dd>
               </div>
             ))}
           </dl>
@@ -2167,18 +3000,31 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "spec_highlights": {
       const tiles = [1, 2, 3, 4, 5, 6]
-        .map((i) => ({ label: str(s, `t${i}Label`), value: str(s, `t${i}Value`) }))
+        .map((i) => ({
+          label: str(s, `t${i}Label`),
+          value: str(s, `t${i}Value`),
+        }))
         .filter((t) => t.label && t.value);
       if (tiles.length === 0) return <Placeholder label="Add a spec tile" />;
       const cols = Math.min(num(s, "columns", 4, device), tiles.length);
       return (
         <section>
-          {str(s, "heading") && <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>}
-          <ul className="grid list-none gap-3 p-0" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
+          <ul
+            className="grid list-none gap-3 p-0"
+            style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+          >
             {tiles.map((t) => (
-              <li key={t.label} className="rounded-fq-md border border-border p-3">
+              <li
+                key={t.label}
+                className="rounded-fq-md border border-border p-3"
+              >
                 <p className="m-0 text-xs text-muted-foreground">{t.label}</p>
-                <p className="m-0 text-sm font-semibold tabular-nums">{t.value}</p>
+                <p className="m-0 text-sm font-semibold tabular-nums">
+                  {t.value}
+                </p>
               </li>
             ))}
           </ul>
@@ -2190,14 +3036,19 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       const terms = [1, 2, 3, 4, 5, 6]
         .map((i) => ({ term: str(s, `g${i}Term`), body: str(s, `g${i}Body`) }))
         .filter((t) => t.term);
-      if (terms.length === 0) return <Placeholder label="Add a glossary term" />;
+      if (terms.length === 0)
+        return <Placeholder label="Add a glossary term" />;
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6">
-          <h3 className="mb-2 text-lg font-semibold">{str(s, "heading", "Ingredient glossary")}</h3>
+          <h3 className="mb-2 text-lg font-semibold">
+            {str(s, "heading", "Ingredient glossary")}
+          </h3>
           <div className="divide-y divide-border border-t border-border">
             {terms.map((t) => (
               <details key={t.term}>
-                <summary className="cursor-pointer py-2 text-sm font-medium">{t.term}</summary>
+                <summary className="cursor-pointer py-2 text-sm font-medium">
+                  {t.term}
+                </summary>
                 <p className="pb-3 text-sm text-muted-foreground">{t.body}</p>
               </details>
             ))}
@@ -2217,22 +3068,39 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       if (items.length === 0) return <Placeholder label="Add an ingredient" />;
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6">
-          <h3 className="mb-2 text-lg font-semibold">{str(s, "heading", "Key ingredients")}</h3>
+          <h3 className="mb-2 text-lg font-semibold">
+            {str(s, "heading", "Key ingredients")}
+          </h3>
           <dl className="m-0">
             {items.map((x) => (
-              <div key={x.name} className="border-b border-border py-2 last:border-b-0">
+              <div
+                key={x.name}
+                className="border-b border-border py-2 last:border-b-0"
+              >
                 <dt className="text-sm font-medium">
                   {x.name}
-                  {x.amount && <span className="ms-2 tabular-nums text-muted-foreground">{x.amount}</span>}
+                  {x.amount && (
+                    <span className="ms-2 tabular-nums text-muted-foreground">
+                      {x.amount}
+                    </span>
+                  )}
                 </dt>
-                {x.gloss && <dd className="m-0 text-sm text-muted-foreground">{x.gloss}</dd>}
+                {x.gloss && (
+                  <dd className="m-0 text-sm text-muted-foreground">
+                    {x.gloss}
+                  </dd>
+                )}
               </div>
             ))}
           </dl>
           {str(s, "inci") && (
             <details className="mt-3">
-              <summary className="cursor-pointer text-sm font-medium">{str(s, "inciLabel", "Full ingredients (INCI)")}</summary>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{str(s, "inci")}</p>
+              <summary className="cursor-pointer text-sm font-medium">
+                {str(s, "inciLabel", "Full ingredients (INCI)")}
+              </summary>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                {str(s, "inci")}
+              </p>
             </details>
           )}
         </section>
@@ -2241,17 +3109,29 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "ingredient_rail": {
       const chips = [1, 2, 3, 4]
-        .map((i) => ({ name: str(s, `i${i}Name`), gloss: str(s, `i${i}Gloss`) }))
+        .map((i) => ({
+          name: str(s, `i${i}Name`),
+          gloss: str(s, `i${i}Gloss`),
+        }))
         .filter((x) => x.name);
       if (chips.length === 0) return <Placeholder label="Add an ingredient" />;
       return (
         <section>
-          {str(s, "heading") && <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>}
+          {str(s, "heading") && (
+            <h3 className="mb-3 text-lg font-semibold">{str(s, "heading")}</h3>
+          )}
           <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
             {chips.map((x) => (
-              <li key={x.name} className="rounded-full border border-border px-3 py-1 text-sm">
+              <li
+                key={x.name}
+                className="rounded-full border border-border px-3 py-1 text-sm"
+              >
                 <span>{x.name}</span>
-                {x.gloss && <span className="ms-2 text-xs text-muted-foreground">{x.gloss}</span>}
+                {x.gloss && (
+                  <span className="ms-2 text-xs text-muted-foreground">
+                    {x.gloss}
+                  </span>
+                )}
               </li>
             ))}
           </ul>
@@ -2263,7 +3143,9 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "payment_methods":
-      return <Placeholder label="Live payment methods — renders on the storefront" />;
+      return (
+        <Placeholder label="Live payment methods — renders on the storefront" />
+      );
 
     case "payment_icons": {
       const marks = str(s, "marks")
@@ -2275,12 +3157,14 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       return (
         <section className="space-y-2">
           {str(s, "heading") && (
-            <h3 className="text-xs uppercase tracking-wide text-muted-foreground">{str(s, "heading")}</h3>
+            <h3 className="text-xs uppercase tracking-wide text-muted-foreground">
+              {str(s, "heading")}
+            </h3>
           )}
           <ul className="flex flex-wrap items-center gap-2">
             {marks.map((m) => (
-              <li key={m} className="rounded-fq-sm border border-border bg-card px-2 py-1 text-xs text-muted-foreground">
-                {m}
+              <li key={m}>
+                <PaymentMark mark={m} />
               </li>
             ))}
           </ul>
@@ -2289,10 +3173,14 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "emi_calculator":
-      return <Placeholder label="Live EMI calculator — renders on the storefront" />;
+      return (
+        <Placeholder label="Live EMI calculator — renders on the storefront" />
+      );
 
     case "order_tracker":
-      return <Placeholder label="Live order tracker — renders on the storefront" />;
+      return (
+        <Placeholder label="Live order tracker — renders on the storefront" />
+      );
 
     case "add_to_cart": {
       const label = str(s, "label", "Add to cart");
@@ -2301,9 +3189,19 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
         <div className="flex flex-col gap-3">
           {showQty && (
             <div className="flex items-center gap-3 text-sm">
-              <span aria-hidden="true" className="grid h-9 w-9 place-items-center rounded-fq-md border border-border">−</span>
+              <span
+                aria-hidden="true"
+                className="grid h-9 w-9 place-items-center rounded-fq-md border border-border"
+              >
+                −
+              </span>
               <span className="tabular-nums">1</span>
-              <span aria-hidden="true" className="grid h-9 w-9 place-items-center rounded-fq-md border border-border">+</span>
+              <span
+                aria-hidden="true"
+                className="grid h-9 w-9 place-items-center rounded-fq-md border border-border"
+              >
+                +
+              </span>
             </div>
           )}
           <span className="inline-flex min-h-11 items-center justify-center rounded-fq-md bg-primary px-4 text-sm font-semibold text-primary-foreground">
@@ -2315,7 +3213,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "rewards_club": {
       const tiers = [1, 2, 3]
-        .map((n) => ({ name: str(s, `tier${n}Name`), points: str(s, `tier${n}Points`) }))
+        .map((n) => ({
+          name: str(s, `tier${n}Name`),
+          points: str(s, `tier${n}Points`),
+        }))
         .filter((t) => t.name);
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
@@ -2323,15 +3224,22 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             <h3 className="text-2xl font-bold">{str(s, "heading")}</h3>
           )}
           {str(s, "body") && (
-            <p className="mt-2 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>
+            <p className="mt-2 max-w-prose text-sm text-muted-foreground">
+              {str(s, "body")}
+            </p>
           )}
           {tiers.length > 0 && (
             <ol className="mt-5 grid gap-3 sm:grid-cols-3">
               {tiers.map((tier) => (
-                <li key={tier.name} className="rounded-fq-md border border-border bg-background p-4">
+                <li
+                  key={tier.name}
+                  className="rounded-fq-md border border-border bg-background p-4"
+                >
                   <p className="text-sm font-semibold">{tier.name}</p>
                   {tier.points && (
-                    <p className="mt-1 text-xs text-muted-foreground">{tier.points}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {tier.points}
+                    </p>
                   )}
                 </li>
               ))}
@@ -2350,7 +3258,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "wedding_shop": {
       const collections = [1, 2, 3]
-        .map((n) => ({ name: str(s, `c${n}Name`), href: str(s, `c${n}Href`) || "#" }))
+        .map((n) => ({
+          name: str(s, `c${n}Name`),
+          href: str(s, `c${n}Href`) || "#",
+        }))
         .filter((c) => c.name);
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
@@ -2358,14 +3269,21 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             <h3 className="text-2xl font-bold">{str(s, "heading")}</h3>
           )}
           {str(s, "body") && (
-            <p className="mt-2 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>
+            <p className="mt-2 max-w-prose text-sm text-muted-foreground">
+              {str(s, "body")}
+            </p>
           )}
           {collections.length > 0 && (
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
               {collections.map((c) => (
-                <span key={c.name} className="rounded-fq-md border border-border bg-background p-4">
+                <span
+                  key={c.name}
+                  className="rounded-fq-md border border-border bg-background p-4"
+                >
                   <p className="text-sm font-semibold">{c.name}</p>
-                  <p aria-hidden="true" className="mt-2 text-primary">→</p>
+                  <p aria-hidden="true" className="mt-2 text-primary">
+                    →
+                  </p>
                 </span>
               ))}
             </div>
@@ -2383,7 +3301,10 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
 
     case "gift_finder": {
       const occasions = [1, 2, 3]
-        .map((n) => ({ label: str(s, `o${n}Label`), query: str(s, `o${n}Query`) }))
+        .map((n) => ({
+          label: str(s, `o${n}Label`),
+          query: str(s, `o${n}Query`),
+        }))
         .filter((o) => o.label);
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6 sm:p-8">
@@ -2391,7 +3312,9 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             <h3 className="text-2xl font-bold">{str(s, "heading")}</h3>
           )}
           {str(s, "body") && (
-            <p className="mt-2 max-w-prose text-sm text-muted-foreground">{str(s, "body")}</p>
+            <p className="mt-2 max-w-prose text-sm text-muted-foreground">
+              {str(s, "body")}
+            </p>
           )}
           {occasions.length > 0 && (
             <div className="mt-5 flex flex-wrap gap-2">
@@ -2434,34 +3357,44 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       return (
         <section className="space-y-3 rounded-fq-lg border border-border bg-card p-6">
           {str(s, "heading") && (
-            <h3 className="text-xl font-semibold">{str(s, "heading", "Send us a message")}</h3>
+            <h3 className="text-xl font-semibold">
+              {str(s, "heading", "Send us a message")}
+            </h3>
           )}
           {str(s, "body") && (
             <p className="text-sm text-muted-foreground">{str(s, "body")}</p>
           )}
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <p className="text-xs font-medium">{str(s, "nameLabel", "Your name")}</p>
+              <p className="text-xs font-medium">
+                {str(s, "nameLabel", "Your name")}
+              </p>
               <div className="mt-1 min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
                 Name
               </div>
             </div>
             <div>
-              <p className="text-xs font-medium">{str(s, "emailLabel", "Email")}</p>
+              <p className="text-xs font-medium">
+                {str(s, "emailLabel", "Email")}
+              </p>
               <div className="mt-1 min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
                 you@example.com
               </div>
             </div>
             {showPhone && (
               <div className="sm:col-span-2">
-                <p className="text-xs font-medium">{str(s, "phoneLabel", "Phone")}</p>
+                <p className="text-xs font-medium">
+                  {str(s, "phoneLabel", "Phone")}
+                </p>
                 <div className="mt-1 min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
                   01XXXXXXXXX
                 </div>
               </div>
             )}
             <div className="sm:col-span-2">
-              <p className="text-xs font-medium">{str(s, "messageLabel", "How can we help?")}</p>
+              <p className="text-xs font-medium">
+                {str(s, "messageLabel", "How can we help?")}
+              </p>
               <div className="mt-1 min-h-24 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
                 Your message
               </div>
@@ -2472,7 +3405,9 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
               {str(s, "buttonLabel", "Send")}
             </span>
             {str(s, "consentText") && (
-              <span className="text-xs text-muted-foreground">{str(s, "consentText")}</span>
+              <span className="text-xs text-muted-foreground">
+                {str(s, "consentText")}
+              </span>
             )}
           </div>
         </section>
@@ -2480,10 +3415,18 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     }
 
     case "nav_menu": {
-      const items = rows(s, "items").filter(
-        (item) => typeof item.label === "string" && item.label !== "",
-      );
-      if (items.length === 0) return <Placeholder label="Add a menu item" />;
+      // Widget→menu binding: a bound menu previews its real items when the
+      // host passes `menus`; otherwise (or when unbound) manual `items`.
+      const bound = resolveMenuItems(node, menus);
+      const manual = staticMenuItems(node).map((item) => ({
+        label: item.label,
+        href: item.href,
+      }));
+      const items = (bound ?? manual).slice(0, 12);
+      if (items.length === 0)
+        return (
+          <Placeholder label={bound ? "Menu is empty" : "Add a menu item"} />
+        );
       const column = str(s, "layout", "row") === "column";
       const align = str(s, "align", "left");
       return (
@@ -2492,12 +3435,18 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
           className={`flex flex-col gap-2 ${align === "center" ? "items-center text-center" : "items-start"}`}
         >
           {str(s, "heading") && (
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">{str(s, "heading")}</p>
+            <p className="text-xs uppercase tracking-wide text-muted-foreground">
+              {str(s, "heading")}
+            </p>
           )}
-          <ul className={`flex gap-x-5 gap-y-2 ${column ? "flex-col" : "flex-row flex-wrap"}`}>
+          <ul
+            className={`flex gap-x-5 gap-y-2 ${column ? "flex-col" : "flex-row flex-wrap"}`}
+          >
             {items.slice(0, 12).map((item, i) => (
               <li key={`${String(item.label)}-${i}`}>
-                <span className="text-sm text-muted-foreground">{String(item.label)}</span>
+                <span className="text-sm text-muted-foreground">
+                  {String(item.label)}
+                </span>
               </li>
             ))}
           </ul>
@@ -2508,9 +3457,13 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
     case "newsletter": {
       return (
         <section className="rounded-fq-lg border border-border bg-card p-6">
-          <h3 className="text-lg font-semibold">{str(s, "heading", "Stay in touch")}</h3>
+          <h3 className="text-lg font-semibold">
+            {str(s, "heading", "Stay in touch")}
+          </h3>
           {str(s, "body") && (
-            <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {str(s, "body")}
+            </p>
           )}
           <div className="mt-3 flex flex-wrap gap-2">
             <div className="min-h-11 min-w-40 flex-1 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
@@ -2521,7 +3474,9 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             </span>
           </div>
           {str(s, "consentText") && (
-            <p className="mt-2 text-xs text-muted-foreground">{str(s, "consentText")}</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {str(s, "consentText")}
+            </p>
           )}
         </section>
       );
@@ -2547,44 +3502,94 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
       );
     }
 
-    case "mega_menu":
-      return <Placeholder label="Live mega menu — renders on the storefront" />;
+    case "mega_menu": {
+      // Widget→menu binding: a bound menu previews its top-level entries;
+      // unbound keeps the live-taxonomy placeholder from before.
+      const bound = resolveMenuItems(node, menus);
+      if (!bound || bound.length === 0)
+        return (
+          <Placeholder label="Live mega menu — renders on the storefront" />
+        );
+      const limit = Math.min(24, Math.max(1, num(s, "limit", 8, device)));
+      const shown = bound.slice(0, limit);
+      return (
+        <nav
+          aria-label={str(s, "label", "Menu")}
+          className="flex flex-col gap-2"
+        >
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {str(s, "label", "Shop")}
+          </p>
+          <ul className="flex flex-row flex-wrap gap-x-5 gap-y-2">
+            {shown.map((item, i) => (
+              <li key={`${item.label}-${i}`}>
+                <span className="text-sm text-muted-foreground">
+                  {item.label}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      );
+    }
 
     case "buy_box":
       return <Placeholder label="Live buy box — renders on the storefront" />;
 
     case "variant_picker":
-      return <Placeholder label="Live variant picker — renders on the storefront" />;
+      return (
+        <Placeholder label="Live variant picker — renders on the storefront" />
+      );
 
     case "sticky_buy_bar":
-      return <Placeholder label="Live sticky buy bar — renders on the storefront" />;
+      return (
+        <Placeholder label="Live sticky buy bar — renders on the storefront" />
+      );
 
     case "filter_chips":
-      return <Placeholder label="Live filter chips — renders on the storefront" />;
+      return (
+        <Placeholder label="Live filter chips — renders on the storefront" />
+      );
 
     case "size_selector":
-      return <Placeholder label="Live size selector — renders on the storefront" />;
+      return (
+        <Placeholder label="Live size selector — renders on the storefront" />
+      );
 
     case "complete_the_look":
-      return <Placeholder label="Live complete the look — renders on the storefront" />;
+      return (
+        <Placeholder label="Live complete the look — renders on the storefront" />
+      );
 
     case "circle_categories":
-      return <Placeholder label="Live circle categories — renders on the storefront" />;
+      return (
+        <Placeholder label="Live circle categories — renders on the storefront" />
+      );
 
     case "quick_view":
-      return <Placeholder label="Live quick view — renders on the storefront" />;
+      return (
+        <Placeholder label="Live quick view — renders on the storefront" />
+      );
 
     case "refill_widget":
-      return <Placeholder label="Live refill widget — renders on the storefront" />;
+      return (
+        <Placeholder label="Live refill widget — renders on the storefront" />
+      );
 
     case "combo_card":
-      return <Placeholder label="Live combo card — renders on the storefront" />;
+      return (
+        <Placeholder label="Live combo card — renders on the storefront" />
+      );
 
     case "loyalty_strip":
-      return <Placeholder label="Live loyalty strip — renders on the storefront" />;
+      return (
+        <Placeholder label="Live loyalty strip — renders on the storefront" />
+      );
 
     case "department_strip":
-      return <Placeholder label="Live department strip — renders on the storefront" />;
+      return (
+        <Placeholder label="Live department strip — renders on the storefront" />
+      );
 
     case "ugc_gallery": {
       const limit = Math.min(12, Math.max(2, num(s, "limit", 6, device)));
@@ -2603,7 +3608,9 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             ))}
           </ul>
           {str(s, "note") && (
-            <p className="mt-2 text-xs text-muted-foreground">{str(s, "note")}</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {str(s, "note")}
+            </p>
           )}
         </section>
       );
@@ -2703,7 +3710,9 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
             {str(s, "heading", "Trade in your old device")}
           </h3>
           {str(s, "body") && (
-            <p className="mt-1 text-sm text-muted-foreground">{str(s, "body")}</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {str(s, "body")}
+            </p>
           )}
           <div className="mt-3 space-y-2">
             <span className="block min-h-11 rounded-fq-md border border-border bg-background px-3 py-2 text-sm text-muted-foreground">
@@ -2757,7 +3766,9 @@ export function StudioWidget({ node, device, editing }: RenderProps) {
                   className="flex items-baseline justify-between gap-3 border-b border-border px-3 py-2 text-sm last:border-b-0"
                 >
                   <dt className="font-medium">{centre.name}</dt>
-                  <dd className="m-0 text-muted-foreground">{centre.address}</dd>
+                  <dd className="m-0 text-muted-foreground">
+                    {centre.address}
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -2876,12 +3887,14 @@ function StudioCountdown({ label, endsAt }: { label: string; endsAt: string }) {
       role="timer"
       aria-live="off"
     >
-      {label && (
-        <p className="text-xs text-muted-foreground">
-          {label}
-        </p>
-      )}
-      <p className="font-bangla-display text-2xl font-bold tabular-nums">
+      {label && <p className="text-xs text-muted-foreground">{label}</p>}
+      {/* suppressHydrationWarning: SSR and first client paint compute
+        Date.now() at different seconds; the 1s ticker corrects after
+        mount. Without this, SSR storefront pages throw React #418. */}
+      <p
+        className="font-bangla-display text-2xl font-bold tabular-nums"
+        suppressHydrationWarning
+      >
         {diff > 0 ? parts.join(" ") : "Ended"}
       </p>
     </div>

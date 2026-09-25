@@ -3,7 +3,7 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "@/components/icons/tabler";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreImage } from "@/components/store/StoreImage";
 import { fmtMinor } from "@/lib/money";
@@ -15,6 +15,7 @@ import { listingPolicy } from "@/lib/url-lifecycle";
 import { searchStorefrontFn } from "@/lib/storefront-search.functions";
 import { getStoreChrome } from "@/lib/storefront.functions";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
+import { PluginLayer } from "@/components/store/PluginLayer";
 import { SupportWidget } from "@/components/store/SupportWidget";
 import {
   PAGE_SIZE,
@@ -75,7 +76,10 @@ export const Route = createFileRoute("/store/$slug/search")({
       filtered: activeFilterCount(state) > 0 || state.page > 1,
     });
     return buildSearchHead({
-      origin: loaderData && "origin" in loaderData ? (loaderData.origin as string | null) : null,
+      origin:
+        loaderData && "origin" in loaderData
+          ? (loaderData.origin as string | null)
+          : null,
       path: policy.canonicalPath,
       storePath: `/store/${params.slug}`,
       storeName: params.slug,
@@ -503,28 +507,34 @@ function SearchPage() {
   );
 
   return (
-    <ThemeChrome
-      template="search"
-      storeSlug={slug}
-      merchantId={chrome?.merchant.id ?? null}
-      ast={chrome?.ast ?? null}
-      tokens={chrome?.tokens ?? null}
-      siteKit={chrome?.siteKit ?? null}
-      chrome={
-        <>
-          <StoreHeader slug={slug} name={chrome?.merchant.name ?? slug} menus={chrome?.menus} />
-          {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
-          {/* <SupportWidget slug={slug} /> */}
-        </>
-      }
-      productSlot={listing}
-      fallback={
-        <>
-          {heading}
-          {listing}
-        </>
-      }
-    />
+    <PluginLayer plugins={chrome?.installedPlugins ?? []}>
+      <ThemeChrome
+        template="search"
+        storeSlug={slug}
+        merchantId={chrome?.merchant.id ?? null}
+        ast={chrome?.ast ?? null}
+        tokens={chrome?.tokens ?? null}
+        siteKit={chrome?.siteKit ?? null}
+        chrome={
+          <>
+            <StoreHeader
+              slug={slug}
+              name={chrome?.merchant.name ?? slug}
+              menus={chrome?.menus}
+            />
+            {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
+            {/* <SupportWidget slug={slug} /> */}
+          </>
+        }
+        productSlot={listing}
+        fallback={
+          <>
+            {heading}
+            {listing}
+          </>
+        }
+      />
+    </PluginLayer>
   );
 }
 

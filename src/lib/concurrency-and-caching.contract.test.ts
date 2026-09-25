@@ -161,9 +161,11 @@ describe("Race Condition Elimination in Critical Flows", () => {
   it("implements fast Redis replay cache in replay-guard.server.ts", () => {
     const source = readFileSync("src/lib/replay-guard.server.ts", "utf8");
     expect(source).toContain("idemRedisKey");
-    expect(source).toContain('redisCommand(["GET"');
+    // Whitespace-tolerant: the redisCommand calls wrap their argv across
+    // lines; the fast GET → SET → DEL path is what matters.
+    expect(source).toMatch(/redisCommand\(\s*\[\s*"GET"/);
     expect(source).toMatch(/redisCommand\(\s*\[\s*"SET"/);
-    expect(source).toContain('redisCommand(["DEL"');
+    expect(source).toMatch(/redisCommand\(\s*\[\s*"DEL"/);
   });
 });
 

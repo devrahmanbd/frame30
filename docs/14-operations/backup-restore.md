@@ -14,19 +14,19 @@ live state in `/opt/frame28/progress.md`.
 
 ## 1. What exists and where
 
-| Piece | Location | Schedule |
-|---|---|---|
-| Nightly full backup (`pg_dump` + roles + storage + configs + manifest) | `ops/backup/backup.sh` → `/var/backups/framique/<ts>/` | timer daily 02:30 UTC (`framique-backup`) |
-| Weekly physical base backup (PITR anchor) | `ops/backup/pgbasebackup.sh` → `/var/backups/framique/base/<ts>/` | timer Sun 03:30 UTC (`framique-basebackup`) |
-| Continuous WAL archive (≤5min RPO) | `archive_command=cp` → `/var/backups/framique/wal/`, `archive_timeout=60` | always on; probe hourly (`framique-wal-lag`) |
-| WAL pruning (keeps anchor + 2h margin) | `ops/backup/prune-wal.sh` | runs at end of basebackup (wire into timer B5+) |
-| Integrity verification → `integrity.json` | `ops/backup/integrity-verify.sh` | timer daily 04:30 UTC (`framique-verify`) |
-| Rehearsal (sandbox restore + assertions → `rehearsals.jsonl`) | `ops/backup/rehearse.sh` | timer Sun 05:30 UTC (`framique-rehearse`) |
-| Portable restore (`--target restoref`) | `ops/restore/restore-target.sh` + `ops/restore/setup-restore-stack.sh` | on demand |
-| Restore proof (13 checks → `proof-report.json`) | `ops/backup/proof-restoref.sh` | on demand / post-restore |
-| Off-site sync (certified-only, checksum, immutable) | `ops/backup/rclone-sync.sh` | timer daily 05:00 UTC (`framique-sync`) |
-| Status aggregator (data for `/root/recovery`) | `ops/backup/recovery-status.sh` → `/var/backups/framique/status.json` | on demand |
-| Live proof site | `https://restoref.qubickle.com` (app :3201 + clone Kong :8011) | always on |
+| Piece                                                                  | Location                                                                  | Schedule                                        |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------- |
+| Nightly full backup (`pg_dump` + roles + storage + configs + manifest) | `ops/backup/backup.sh` → `/var/backups/framique/<ts>/`                    | timer daily 02:30 UTC (`framique-backup`)       |
+| Weekly physical base backup (PITR anchor)                              | `ops/backup/pgbasebackup.sh` → `/var/backups/framique/base/<ts>/`         | timer Sun 03:30 UTC (`framique-basebackup`)     |
+| Continuous WAL archive (≤5min RPO)                                     | `archive_command=cp` → `/var/backups/framique/wal/`, `archive_timeout=60` | always on; probe hourly (`framique-wal-lag`)    |
+| WAL pruning (keeps anchor + 2h margin)                                 | `ops/backup/prune-wal.sh`                                                 | runs at end of basebackup (wire into timer B5+) |
+| Integrity verification → `integrity.json`                              | `ops/backup/integrity-verify.sh`                                          | timer daily 04:30 UTC (`framique-verify`)       |
+| Rehearsal (sandbox restore + assertions → `rehearsals.jsonl`)          | `ops/backup/rehearse.sh`                                                  | timer Sun 05:30 UTC (`framique-rehearse`)       |
+| Portable restore (`--target restoref`)                                 | `ops/restore/restore-target.sh` + `ops/restore/setup-restore-stack.sh`    | on demand                                       |
+| Restore proof (13 checks → `proof-report.json`)                        | `ops/backup/proof-restoref.sh`                                            | on demand / post-restore                        |
+| Off-site sync (certified-only, checksum, immutable)                    | `ops/backup/rclone-sync.sh`                                               | timer daily 05:00 UTC (`framique-sync`)         |
+| Status aggregator (data for `/root/recovery`)                          | `ops/backup/recovery-status.sh` → `/var/backups/framique/status.json`     | on demand                                       |
+| Live proof site                                                        | `https://restoref.qubickle.com` (app :3201 + clone Kong :8011)            | always on                                       |
 
 Key facts: live stack is compose project `framique-supabase` at
 `/root/supabase-docker-framebase` (Postgres 17). The staging stack
@@ -136,34 +136,34 @@ tail -1 ops/backup/rehearsals.jsonl          # latest rehearsal verdict
 
 ## 3. Same-host restore test record (tested ✓)
 
-| Item | Evidence |
-|---|---|
-| Full pipeline `backup → restore → proof` executed by scripts only | 2026-09-19: set `20260919T024909Z` → restoref → proof |
-| Proof verdict | **pass, 13/13** (`ops/backup/proof-report.json`, 2026-09-19T02:49:24Z) |
-| Coverage | HTTPS 200 + complete HTML + CSP nonces; signup 200 + wizard + English-only; REST parity 5 rows; RLS parity 540 policies; auth pipeline (400 on bad login); row parity merchants 5 / products 7 / orders 0 / users 20 |
-| Rehearsal history | `ops/backup/rehearsals.jsonl` incl. one honest `fail` (flag bug, fixed) + `pass` RTO=10s |
-| Restore time | ~12s data load (current 32MB DB; scales with data) |
+| Item                                                              | Evidence                                                                                                                                                                                                             |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Full pipeline `backup → restore → proof` executed by scripts only | 2026-09-19: set `20260919T024909Z` → restoref → proof                                                                                                                                                                |
+| Proof verdict                                                     | **pass, 13/13** (`ops/backup/proof-report.json`, 2026-09-19T02:49:24Z)                                                                                                                                               |
+| Coverage                                                          | HTTPS 200 + complete HTML + CSP nonces; signup 200 + wizard + English-only; REST parity 5 rows; RLS parity 540 policies; auth pipeline (400 on bad login); row parity merchants 5 / products 7 / orders 0 / users 20 |
+| Rehearsal history                                                 | `ops/backup/rehearsals.jsonl` incl. one honest `fail` (flag bug, fixed) + `pass` RTO=10s                                                                                                                             |
+| Restore time                                                      | ~12s data load (current 32MB DB; scales with data)                                                                                                                                                                   |
 
 ---
 
 ## 4. Verified vs unverified ledger (honest)
 
-| Area | Status | Evidence / next step |
-|---|---|---|
-| Nightly `pg_dump` + manifest | ✅ verified live | sets `20260918T210717Z` etc., `db_source=docker-exec` |
-| WAL streaming (RPO path) | ✅ verified live | 16MB segments, lag 4–30s, `archived_count` rising, `failed_count=0` |
-| Weekly basebackup + PITR anchor | ✅ verified live | `base/20260919T024608Z` 6.2MB + manifest with `restore_command` |
-| Integrity verification | ✅ verified live + timer | `integrity.json`, daily 04:30Z (correctly failed-closed during an outage) |
-| Rehearsal (sandbox restore) | ✅ verified live + timer | `rehearsals.jsonl`, weekly Sun 05:30Z |
-| Same-host restore + proof | ✅ verified live | 13/13 `proof-report.json`, restoref.qubickle.com serving |
-| WAL pruning | ✅ verified live | 4.8G → 1.3G against anchor |
-| TLS + edge for restoref | ✅ verified live | LE cert, HAProxy ACL, OpenResty vhost |
-| Point-in-time restore drill | ⚠️ UNVERIFIED | anchor + WAL exist; never yet replayed to a target timestamp — next drill |
-| Off-site sync (FTP/S3) | ⚠️ UNVERIFIED | mechanism + timer ready; no remotes configured (needs credentials) |
-| Separate-host recovery | ⚠️ UNVERIFIED | scripts portable by design; never executed off-host |
-| Quarterly full-DR exercise | ⚠️ UNVERIFIED | scheduled conceptually; first run pending |
-| `/root/recovery` + `/root/security` UI | ⚠️ UNVERIFIED | `status.json` data ready; console pages not built |
-| Redis RDB restore path | ⚠️ UNVERIFIED | app cache is memory-only (reconstructable); BGSAVE capture path untested (no owned Redis) |
+| Area                                   | Status                   | Evidence / next step                                                                      |
+| -------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------- |
+| Nightly `pg_dump` + manifest           | ✅ verified live         | sets `20260918T210717Z` etc., `db_source=docker-exec`                                     |
+| WAL streaming (RPO path)               | ✅ verified live         | 16MB segments, lag 4–30s, `archived_count` rising, `failed_count=0`                       |
+| Weekly basebackup + PITR anchor        | ✅ verified live         | `base/20260919T024608Z` 6.2MB + manifest with `restore_command`                           |
+| Integrity verification                 | ✅ verified live + timer | `integrity.json`, daily 04:30Z (correctly failed-closed during an outage)                 |
+| Rehearsal (sandbox restore)            | ✅ verified live + timer | `rehearsals.jsonl`, weekly Sun 05:30Z                                                     |
+| Same-host restore + proof              | ✅ verified live         | 13/13 `proof-report.json`, restoref.qubickle.com serving                                  |
+| WAL pruning                            | ✅ verified live         | 4.8G → 1.3G against anchor                                                                |
+| TLS + edge for restoref                | ✅ verified live         | LE cert, HAProxy ACL, OpenResty vhost                                                     |
+| Point-in-time restore drill            | ⚠️ UNVERIFIED            | anchor + WAL exist; never yet replayed to a target timestamp — next drill                 |
+| Off-site sync (FTP/S3)                 | ⚠️ UNVERIFIED            | mechanism + timer ready; no remotes configured (needs credentials)                        |
+| Separate-host recovery                 | ⚠️ UNVERIFIED            | scripts portable by design; never executed off-host                                       |
+| Quarterly full-DR exercise             | ⚠️ UNVERIFIED            | scheduled conceptually; first run pending                                                 |
+| `/root/recovery` + `/root/security` UI | ⚠️ UNVERIFIED            | `status.json` data ready; console pages not built                                         |
+| Redis RDB restore path                 | ⚠️ UNVERIFIED            | app cache is memory-only (reconstructable); BGSAVE capture path untested (no owned Redis) |
 
 ---
 
@@ -224,12 +224,11 @@ tail -1 ops/backup/rehearsals.jsonl          # latest rehearsal verdict
 
 ### Measured SLA Commitments
 
-| Metric | Target SLA | Measured Architecture Mechanism |
-| :--- | :--- | :--- |
-| **RPO (Recovery Point Objective)** | **0 seconds (Continuous)** | Synchronous PostgreSQL WAL streaming archive |
-| **RPO (Snapshot Fallback)** | **< 1 hour** | Hourly basebackups with WAL checkpoints |
-| **RTO (Recovery Time Objective)** | **< 15 minutes** | Automated 1-click restore script (`restore.sh`) |
-| **Disaster Rollback RTO** | **< 5 seconds** | Blue/Green warm standby instant cutover |
-| **Rehearsal Drill Frequency** | **Every 24 hours** | Nightly automated cron via `/api/public/cron/ops` |
-| **Theft Resistance** | **100% Cryptographic** | Client-side AES-256-GCM envelope encryption |
-
+| Metric                             | Target SLA                 | Measured Architecture Mechanism                   |
+| :--------------------------------- | :------------------------- | :------------------------------------------------ |
+| **RPO (Recovery Point Objective)** | **0 seconds (Continuous)** | Synchronous PostgreSQL WAL streaming archive      |
+| **RPO (Snapshot Fallback)**        | **< 1 hour**               | Hourly basebackups with WAL checkpoints           |
+| **RTO (Recovery Time Objective)**  | **< 15 minutes**           | Automated 1-click restore script (`restore.sh`)   |
+| **Disaster Rollback RTO**          | **< 5 seconds**            | Blue/Green warm standby instant cutover           |
+| **Rehearsal Drill Frequency**      | **Every 24 hours**         | Nightly automated cron via `/api/public/cron/ops` |
+| **Theft Resistance**               | **100% Cryptographic**     | Client-side AES-256-GCM envelope encryption       |

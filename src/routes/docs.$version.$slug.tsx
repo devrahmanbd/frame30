@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/icons/tabler";
 
 import { DocBlocks } from "@/components/docs/DocBlocks";
 import { DocsSearch } from "@/components/docs/DocsSearch";
@@ -43,7 +43,7 @@ export const Route = createFileRoute("/docs/$version/$slug")({
     const site = await getSiteContext().catch(() => null);
     const version = isDocVersion(params.version) ? params.version : null;
     return {
-      origin: site.origin,
+      origin: site?.origin ?? null,
 
       version,
       slug: params.slug,

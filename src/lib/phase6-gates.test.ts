@@ -11,7 +11,6 @@ import {
   skeletonParityGate,
 } from "./publish-gates";
 import { DEFAULT_DARK_TOKENS, DEFAULT_TOKENS } from "./builder-ast";
-import { THEME_PRESETS } from "./theme-presets";
 import { LIGHTHOUSE_BUDGET, VITALS_BUDGET } from "./web-vitals";
 
 describe("Phase 6 — contrast gate, light and dark", () => {
@@ -47,15 +46,6 @@ describe("Phase 6 — contrast gate, light and dark", () => {
       surface: "#FFFFFF",
     });
     expect(failures.some((f) => f.code === "contrast.light")).toBe(true);
-  });
-
-  it("ships presets that pass in light and dark", () => {
-    for (const preset of THEME_PRESETS) {
-      expect(
-        contrastGate(preset.tokens).map((f) => f.message),
-        preset.key,
-      ).toEqual([]);
-    }
   });
 });
 

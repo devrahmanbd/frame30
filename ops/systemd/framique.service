@@ -1,0 +1,29 @@
+# =============================================================================
+# LIVE-SOURCED — /etc/systemd/system/framique.service from bd-primary-1,
+# captured 2026-09-24. This unit runs the production app.
+#
+# Deploy with ops/deploy-from-git.sh (builds a worktree, rsyncs .output/,
+# restarts this unit, runs the live contract). Never edit the live unit
+# without porting back here.
+# Runtime env comes from EnvironmentFile=/opt/frame28/.env (git-ignored,
+# holds real secrets) plus NITRO_PORT below. Required custom-domain/cron
+# vars (set 2026-09-24): DOMAIN_EDGE_TOKEN, BILLING_CRON_SECRET,
+# APP_INTERNAL_URL=http://127.0.0.1:3200. DOMAIN_EDGE_HOOK_URL stays unset
+# by design (pull autossl, no push receiver — see DEPLOY.md).
+# =============================================================================
+[Unit]
+Description=Framique App
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/frame28
+ExecStart=/usr/bin/node .output/server/index.mjs
+Restart=always
+RestartSec=3
+EnvironmentFile=/opt/frame28/.env
+Environment=NITRO_PORT=3200
+
+[Install]
+WantedBy=multi-user.target

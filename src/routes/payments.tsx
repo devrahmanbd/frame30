@@ -29,7 +29,7 @@ import {
   RefreshCw,
   Layers,
   Copy,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import {
   Band,
   BandHeading,
@@ -81,7 +81,7 @@ import {
 export const Route = createFileRoute("/payments")({
   loader: async () => {
     const site = await getSiteContext().catch(() => null);
-    return { origin: site.origin };
+    return { origin: site?.origin ?? null };
   },
   head: ({ loaderData }) => {
     const origin = loaderData?.origin ?? null;

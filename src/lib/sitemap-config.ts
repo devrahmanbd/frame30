@@ -491,11 +491,22 @@ export function shardPath(
   return `/store/${storeSlug}/sitemaps/${kind}-${Math.max(1, page)}.xml`;
 }
 
+/**
+ * Custom-host shard loc: merchants serve their catalogue at `/` on their own
+ * domain, so shards live at `/sitemaps/<kind>-<n>.xml` — the same shape as
+ * the path route minus the `/store/<slug>` prefix. Permalink sharding is
+ * identical; only the loc base differs.
+ */
+export function rootShardPath(kind: SitemapKind, page: number): string {
+  return `/sitemaps/${kind}-${Math.max(1, page)}.xml`;
+}
+
 export function renderSitemapIndexXml(
   origin: string,
   storeSlug: string,
   shards: readonly Shard[],
   lastmodByKind: Partial<Record<SitemapKind, string | undefined>> = {},
+  opts: { root?: boolean } = {},
 ): string {
   const base = origin.replace(/\/+$/, "");
   const parts: string[] = [
@@ -504,10 +515,11 @@ export function renderSitemapIndexXml(
   ];
   for (const shard of shards) {
     const lastmod = lastmodByKind[shard.kind];
+    const loc = opts.root
+      ? rootShardPath(shard.kind, shard.page)
+      : shardPath(storeSlug, shard.kind, shard.page);
     parts.push("  <sitemap>");
-    parts.push(
-      `    <loc>${xmlEscape(`${base}${shardPath(storeSlug, shard.kind, shard.page)}`)}</loc>`,
-    );
+    parts.push(`    <loc>${xmlEscape(`${base}${loc}`)}</loc>`);
     if (lastmod) parts.push(`    <lastmod>${xmlEscape(lastmod)}</lastmod>`);
     parts.push("  </sitemap>");
   }
@@ -540,6 +552,13 @@ export type RobotsRenderInput = {
   sitemapPath?: string;
   /** Advertise llms.txt (answer engines opted in). */
   llmsPath?: string;
+  /**
+   * Serving base. Path storefronts use `/store/<slug>` (default); a merchant
+   * custom host serves at `/`, so callers pass `""` and every Allow/Disallow
+   * plus the sitemap pointer rebases to root paths. Safety suffixes stay
+   * relative (`/checkout`, `/account`, …) in both shapes.
+   */
+  storeBase?: string;
 };
 
 /**
@@ -550,7 +569,11 @@ export type RobotsRenderInput = {
  */
 export function renderRobotsTxt(input: RobotsRenderInput): string {
   const origin = input.origin.replace(/\/+$/, "");
-  const base = `/store/${input.storeSlug}`;
+  const base =
+    input.storeBase !== undefined
+      ? input.storeBase
+      : `/store/${input.storeSlug}`;
+  const allowRoot = base || "/";
   const settings = input.settings;
   const lines: string[] = [];
 
@@ -564,7 +587,7 @@ export function renderRobotsTxt(input: RobotsRenderInput): string {
 
   const merchantStar = settings.rules.find((r) => r.agent === "*");
   lines.push("User-agent: *");
-  lines.push(`Allow: ${base}`);
+  lines.push(`Allow: ${allowRoot}`);
   for (const path of merchantStar?.allow ?? []) lines.push(`Allow: ${path}`);
   for (const path of merchantStar?.disallow ?? [])
     lines.push(`Disallow: ${path}`);
@@ -590,7 +613,7 @@ export function renderRobotsTxt(input: RobotsRenderInput): string {
   for (const agent of AI_CRAWLER_AGENTS) {
     if (custom.has(agent)) continue;
     lines.push(`User-agent: ${agent}`);
-    lines.push(settings.aiCrawlers ? `Allow: ${base}` : "Disallow: /");
+    lines.push(settings.aiCrawlers ? `Allow: ${allowRoot}` : "Disallow: /");
     lines.push("");
   }
 

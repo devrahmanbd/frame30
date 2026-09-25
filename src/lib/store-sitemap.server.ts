@@ -1,11 +1,12 @@
 /**
  * Merchant sitemap entries (custom-domain cutover).
  *
- * Pure builder: root-shape paths for the merchant catalogue. Articles honor
- * the merchant's permalink settings; everything else uses the fixed shapes
- * the custom routes serve (/, /p, /c, /pages, /blog).
+ * Pure builder: root-shape paths for the merchant catalogue. Every kind honors
+ * the merchant's permalink settings via `buildPermalink`, so the `<loc>`s a
+ * custom host advertises are exactly the canonicals the storefront renders.
  */
 import {
+  absolutePermalink,
   buildPermalink,
   DEFAULT_PERMALINKS,
   type PermalinkSettings,
@@ -15,7 +16,11 @@ export type MerchantSitemapInput = {
   products: { slug: string; updated_at?: string | null }[];
   collections: { slug: string; updated_at?: string | null }[];
   pages: { slug: string; updated_at?: string | null }[];
-  articles: { slug: string; updated_at?: string | null; published_at?: string | null }[];
+  articles: {
+    slug: string;
+    updated_at?: string | null;
+    published_at?: string | null;
+  }[];
   settings?: PermalinkSettings | null;
 };
 
@@ -32,11 +37,15 @@ export function buildMerchantSitemapEntries(
   const settings = input.settings ?? DEFAULT_PERMALINKS;
   const entries: SitemapEntry[] = [
     { path: "/", changefreq: "daily", priority: "1.0" },
-    { path: "/blog", changefreq: "daily", priority: "0.8" },
+    {
+      path: settings.articleBase || "/blog",
+      changefreq: "daily",
+      priority: "0.8",
+    },
   ];
   for (const p of input.products) {
     entries.push({
-      path: `/p/${p.slug}`,
+      path: buildPermalink(settings, { kind: "product", slug: p.slug }),
       lastmod: p.updated_at?.slice(0, 10),
       changefreq: "weekly",
       priority: "0.8",
@@ -44,7 +53,7 @@ export function buildMerchantSitemapEntries(
   }
   for (const c of input.collections) {
     entries.push({
-      path: `/c/${c.slug}`,
+      path: buildPermalink(settings, { kind: "collection", slug: c.slug }),
       lastmod: c.updated_at?.slice(0, 10),
       changefreq: "weekly",
       priority: "0.7",
@@ -52,7 +61,7 @@ export function buildMerchantSitemapEntries(
   }
   for (const p of input.pages) {
     entries.push({
-      path: `/pages/${p.slug}`,
+      path: buildPermalink(settings, { kind: "page", slug: p.slug }),
       lastmod: p.updated_at?.slice(0, 10),
       changefreq: "monthly",
       priority: "0.6",
@@ -103,4 +112,91 @@ export function renderSitemapXml(
       },
     },
   );
+}
+
+export type MerchantLlmsInput = {
+  storeName: string;
+  products: { slug: string; title?: string | null }[];
+  collections: { slug: string; name?: string | null }[];
+  pages: { slug: string; title?: string | null }[];
+  articles?: {
+    slug: string;
+    title?: string | null;
+    published_at?: string | null;
+  }[];
+  settings?: PermalinkSettings | null;
+};
+
+/**
+ * Pure `llms.txt` body for a custom host. Every catalogue link is an
+ * `absolutePermalink` canonical from the merchant's own permalink settings,
+ * so the answer-engine map can never advertise a URL the storefront does not
+ * serve (the exact drift the hardcoded `/p`/`/c`/`/pages` shapes caused after
+ * a merchant renamed a base).
+ */
+export function buildMerchantLlmsTxt(
+  origin: string,
+  input: MerchantLlmsInput,
+): string {
+  const settings = input.settings ?? DEFAULT_PERMALINKS;
+  const base = origin.replace(/\/+$/, "");
+  const lines = [
+    `# ${input.storeName}`,
+    "",
+    `Storefront: ${base}/`,
+    "",
+    "## Products",
+    ...input.products
+      .map((p) =>
+        absolutePermalink(base, settings, {
+          kind: "product",
+          slug: p.slug,
+        }),
+      )
+      .map(
+        (url, i) =>
+          `- [${input.products[i]?.title || input.products[i]?.slug}](${url})`,
+      ),
+    "",
+    "## Collections",
+    ...input.collections
+      .map((c) =>
+        absolutePermalink(base, settings, {
+          kind: "collection",
+          slug: c.slug,
+        }),
+      )
+      .map(
+        (url, i) =>
+          `- [${input.collections[i]?.name || input.collections[i]?.slug}](${url})`,
+      ),
+    "",
+    "## Pages",
+    ...input.pages
+      .map((p) =>
+        absolutePermalink(base, settings, { kind: "page", slug: p.slug }),
+      )
+      .map(
+        (url, i) =>
+          `- [${input.pages[i]?.title || input.pages[i]?.slug}](${url})`,
+      ),
+    "",
+    ...(input.articles?.length
+      ? [
+          "## Articles",
+          ...input.articles.map(
+            (a) =>
+              `- [${a.title || a.slug}](${absolutePermalink(base, settings, {
+                kind: "article",
+                slug: a.slug,
+                date: a.published_at ?? null,
+              })})`,
+          ),
+          "",
+        ]
+      : []),
+    `Sitemap: ${base}/sitemap.xml`,
+    "",
+  ];
+  return lines.join("\n");
 }

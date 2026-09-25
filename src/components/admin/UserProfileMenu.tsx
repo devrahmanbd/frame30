@@ -21,7 +21,7 @@ import {
   CheckCircle2,
   Sun,
   Moon,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { supabase } from "@/integrations/supabase/client";
 import { useMerchant, useMerchants } from "@/hooks/use-merchant";
 import { useStoreUrl } from "@/hooks/use-store-url";

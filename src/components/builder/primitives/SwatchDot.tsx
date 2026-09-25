@@ -43,7 +43,7 @@ export function SwatchDot({
       aria-label={label}
       disabled={disabled}
       onClick={onSelect}
-      className={`flex items-center gap-2 rounded-fq-md border px-2 py-1 text-xs ${
+      className={`flex min-h-11 items-center gap-2 rounded-fq-md border px-2 py-1 text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
         selected ? "border-primary ring-1 ring-primary" : "border-border"
       } ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
     >

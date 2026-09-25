@@ -57,6 +57,9 @@ export const PERMISSIONS = [
   "themes.update",
   "themes.publish",
   "themes.approve",
+  // plugins
+  "plugins.read",
+  "plugins.update",
   // analytics
   "analytics.read",
   "analytics.export",
@@ -142,6 +145,7 @@ const READ_ONLY: Permission[] = [
   "pos.read",
   "marketing.read",
   "themes.read",
+  "plugins.read",
   "analytics.read",
   "finance.read",
   "settings.read",
@@ -204,6 +208,7 @@ export const ROLE_PRESETS: Record<RolePreset, readonly Permission[]> = {
     "marketing.publish",
     "catalog.read",
     "themes.read",
+    "plugins.read",
     "analytics.read",
     "customers.read",
   ],

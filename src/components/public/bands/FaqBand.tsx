@@ -8,7 +8,7 @@
  * caller passes the same array to both.
  */
 import type { ReactNode } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/public/motion";
 

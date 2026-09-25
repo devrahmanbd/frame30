@@ -5,7 +5,7 @@
  * nothing here knows about pages or posts.
  */
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 
 /* ------------------------------------------------------------ IconButton */

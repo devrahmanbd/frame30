@@ -296,28 +296,33 @@ describe("catalogue honesty (no-fabrication rule)", () => {
   });
 });
 
-describe("curated visibility (two-theme offer)", () => {
+describe("curated visibility (offer removed Sept 2026)", () => {
   it("installed grid keeps the active theme plus allowlisted keys only", () => {
     const themes = [
       inst({ id: "a", key: "atelier", isActive: true }),
       inst({ id: "b", key: "classic" }),
       inst({ id: "c", key: null }),
-      inst({ id: "d", key: "supershop" }),
-      inst({ id: "e", key: "clothing-heritage" }),
+      inst({ id: "d", key: "retired-pack-a" }),
+      inst({ id: "e", key: "retired-pack-b" }),
     ];
-    expect(visibleInstalled(themes).map((t) => t.id)).toEqual(["a", "d", "e"]);
+    expect(visibleInstalled(themes).map((t) => t.id)).toEqual(["a"]);
   });
 
-  it("catalogue keeps the two offer keys only", () => {
+  it("keeps a null-key active theme (live storefront never stranded)", () => {
     const themes = [
-      cat({ key: "supershop" }),
-      cat({ key: "clothing-heritage" }),
+      inst({ id: "live", key: null, isActive: true }),
+      inst({ id: "dead", key: null }),
+    ];
+    expect(visibleInstalled(themes).map((t) => t.id)).toEqual(["live"]);
+  });
+
+  it("catalogue is empty with no curated offer", () => {
+    const themes = [
+      cat({ key: "retired-pack-a" }),
+      cat({ key: "retired-pack-b" }),
       cat({ key: "classic" }),
       cat({ key: "modern" }),
     ];
-    expect(visibleCatalogue(themes).map((t) => t.key)).toEqual([
-      "supershop",
-      "clothing-heritage",
-    ]);
+    expect(visibleCatalogue(themes).map((t) => t.key)).toEqual([]);
   });
 });

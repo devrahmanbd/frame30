@@ -1,37 +1,56 @@
 /**
- * Task 8 — Public theme preview route.
+ * Task 8 (restored, Task 5) — Public theme preview route.
  *
- * No authentication required. Resolves a blueprint by its URL key parameter
+ * Restored from `dddfdc2^` (file originates in `de6c9af`; `ba620a1`
+ * postdates the purge and was NOT used). Adaptations vs the original,
+ * required because the tree moved (documented per Task 5 step 1):
+ *
+ * 1. `BLUEPRINT_PRESETS` from `@/lib/theme-blueprints` no longer exists
+ *    (theme packs removed in 1434a6b). Key resolution now goes through
+ *    `resolveThemePreview` in `@/lib/theme-preview-nav`, which builds the
+ *    `songoskriti` preset from the Task 1 builders + locked tokens and
+ *    returns null for every other key (→ 404 state below).
+ * 2. `VALID_TEMPLATES` gains `"account"`: `TEMPLATE_KEYS` in
+ *    `src/lib/builder-ast.ts` now lists account as a first-class template
+ *    and `ThemePreviewFrame` labels it, so the deep-link allow-list stays
+ *    in sync (matches the later `ba48c48` revision of this file).
+ * 3. `preset.nameEn` → `preset.themeName`: the resolver exposes the
+ *    display name under the frame's own prop name.
+ *
+ * No authentication required. Resolves the preset by its URL key parameter
  * and renders ThemePreviewFrame with the authored tokens and sections.
  *
- * Usage: /theme-preview/clothing-heritage
+ * Usage: /theme-preview/songoskriti
  */
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
-import { BLUEPRINT_PRESETS } from "@/lib/theme-blueprints";
+import {
+  resolveThemePreview,
+  validateThemePreviewSearch,
+} from "@/lib/theme-preview-nav";
 import { ThemePreviewFrame } from "@/components/store/ThemePreviewFrame";
 
 type RouteParams = { key: string };
 
-const VALID_TEMPLATES = [
-  "index",
-  "product",
-  "collection",
-  "page",
-  "blog",
-  "cart",
-  "checkout",
-  "search",
-] as const;
-
 export const Route = createFileRoute("/theme-preview/$key")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    template:
-      typeof search.template === "string" &&
-      (VALID_TEMPLATES as readonly string[]).includes(search.template)
-        ? (search.template as (typeof VALID_TEMPLATES)[number])
-        : undefined,
+  // Template + focus (?focus= is the contract merchant-less redirects use)
+  // plus preserved search query keys (`q`, `max`) so refresh keeps
+  // `?template=search&max=99900` instead of dropping it.
+  validateSearch: (search: Record<string, unknown>) =>
+    validateThemePreviewSearch(search),
+  // Demo pages must never index: merchant-less URLs redirect here instead
+  // of 404ing, and indexers must not mistake demo for store content.
+  head: () => ({
+    meta: [
+      { title: "Theme preview" },
+      {
+        name: "description",
+        content:
+          "Live preview of a Framique storefront theme with demo products.",
+      },
+      { name: "robots", content: "noindex" },
+    ],
   }),
   component: ThemePreviewRoute,
   errorComponent: ThemePreviewError,
@@ -40,8 +59,8 @@ export const Route = createFileRoute("/theme-preview/$key")({
 
 function ThemePreviewRoute() {
   const { key } = Route.useParams() as RouteParams;
-  const { template: initialTemplate } = Route.useSearch();
-  const preset = BLUEPRINT_PRESETS.find((p) => p.key === key);
+  const { template: initialTemplate, focus: initialFocus } = Route.useSearch();
+  const preset = resolveThemePreview(key);
 
   if (!preset) {
     return <ThemePreviewNotFound />;
@@ -49,12 +68,13 @@ function ThemePreviewRoute() {
 
   return (
     <ThemePreviewFrame
-      themeName={preset.nameEn}
-      author={preset.key}
+      themeName={preset.themeName}
+      author={preset.author}
       blueprintKey={preset.key}
       tokens={preset.tokens}
       templates={preset.templates}
       initialTemplate={initialTemplate}
+      initialFocus={initialFocus}
       onClose={() => window.history.back()}
     />
   );
@@ -72,7 +92,7 @@ function ThemePreviewError() {
           URL may be invalid.
         </p>
         <a
-          href="/dashboard/themes"
+          href="/dashboard/content/themes"
           className={cn(
             "inline-flex items-center gap-2 rounded-fq-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90",
           )}
@@ -94,7 +114,7 @@ function ThemePreviewNotFound() {
           No blueprint matches that key. Check the URL or install a theme first.
         </p>
         <a
-          href="/dashboard/themes"
+          href="/dashboard/content/themes"
           className={cn(
             "inline-flex items-center gap-2 rounded-fq-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90",
           )}

@@ -3,15 +3,14 @@
  *
  * Every page is slot-keyed (header / main / footer) and every widget is a plain
  * data node, so a version snapshot is fully serialisable and replayable. A page
- * belongs to a template key (index / product / collection / ...) and a theme
- * carries one AST per template plus a token set.
+ * belongs to a template key (index / product / collection / ...) and a
+ * storefront carries one AST per template plus a design-token set.
  *
  * Nothing here trusts the client: `parseAst` / `parseTemplates` / `parseTokens`
  * are the server-side shape guards, and an unknown or malformed widget is kept
  * as a placeholder instead of breaking the whole page render.
  */
 import { SIZES_LABEL, SIZES_PRESETS, altKey, sizesKey } from "./media";
-import { PRESET_BN } from "./theme-presets.bn";
 import { biTextState, bnKey, readBiText, type Locale } from "./bitext";
 import { isTaxonomyValue, type TaxonomySource } from "./taxonomy";
 import { UNIT_KINDS, type UnitKind } from "./unit-format";
@@ -47,6 +46,7 @@ export const TEMPLATE_KEYS = [
   "index",
   "product",
   "collection",
+  "account",
   "page",
   "blog",
   "cart",
@@ -67,6 +67,7 @@ export type TemplateKey = (typeof TEMPLATE_KEYS)[number];
 export const ROUTE_H1_TEMPLATES = [
   "product",
   "collection",
+  "account",
   "page",
   "blog",
   "search",
@@ -74,6 +75,33 @@ export const ROUTE_H1_TEMPLATES = [
 const ROUTE_H1 = new Set<string>(ROUTE_H1_TEMPLATES);
 export function routeSuppliesH1(template?: TemplateKey | null): boolean {
   return !!template && ROUTE_H1.has(template);
+}
+
+/**
+ * Exactly one section per page may render the h1. Preference order is
+ * deliberate: full heroes first (hero, hero_carousel), then a dedicated
+ * heading widget with text, then any section carrying a heading prop.
+ * Shared by the storefront host and the theme preview so both agree on
+ * which node owns the page's primary heading.
+ */
+export function primarySectionId(ast: ThemeAst | null): string | null {
+  if (!ast) return null;
+  const candidates = ast.main.filter((s) => !s.invalid);
+  const textOf = (s: Section): string => {
+    const v: unknown = s.props["text"];
+    return typeof v === "string" ? v : "";
+  };
+  const headed = (s: Section): boolean => {
+    const v: unknown = s.props["heading"];
+    return typeof v === "string" && v !== "";
+  };
+  return (
+    candidates.find((s) => s.type === "hero" || s.type === "hero_carousel")
+      ?.id ??
+    candidates.find((s) => s.type === "heading" && textOf(s) !== "")?.id ??
+    candidates.find(headed)?.id ??
+    null
+  );
 }
 
 export const SLOTS = ["header", "main", "footer"] as const;
@@ -229,18 +257,39 @@ export type SectionType =
   | "blog_archive"
   | "blog_terms"
   | "blog_pager"
-  // Phase 9 — Heritage (clothing) theme widgets.
+  | "orders_list"
+  | "profile_card"
+  // Songoskriti (heritage) homepage gap widgets. Renderers live in
+  // heritage.tsx (hero_carousel, already wired) and songoskriti.tsx (the
+  // other four); studio defs mirror these defaults 1:1.
   | "hero_carousel"
+  | "finder_row"
+  | "craft_story"
+  | "testimonials"
+  | "trust_footer"
+  // Somvabona everyday-ethnic pack (spec 2026-09-25 §3). Renderers live in
+  // somvabona.tsx; studio defs mirror these defaults 1:1. urgency_rail
+  // reuses the product_rail data shape (collection source + limit).
+  | "trust_marquee"
+  | "price_buckets"
+  | "occasion_matrix"
+  | "urgency_rail"
+  | "rating_stars"
+  // Storefront contact channel as a placeable block (mirrors the
+  // whatsapp-chat plugin bubble; renderers live in the studio twins).
+  | "whatsapp_button"
+  // Heritage / apparel packs (renderers in heritage.tsx / apparel.tsx,
+  // studio twins in studio/renderers.tsx, controls in studio/controls.ts).
   | "department_grid"
   | "heritage_story"
   | "textile_showcase"
   | "editorial_banner"
   | "testimonial_carousel"
   | "marquee_strip"
+  | "story_trunk"
   | "rewards_club"
   | "wedding_shop"
-  | "gift_finder"
-  | "story_trunk";
+  | "gift_finder";
 
 export type PropScalar = string | number | boolean;
 /** A repeatable row (Phase 3.2 `array` fields). Always JSON-safe. */
@@ -278,14 +327,93 @@ export type Section = {
   ab?: { experiment: string; variant: string };
 };
 
-export type ThemeAst = {
-  header: Section[];
+/**
+ * Builder callback themes use to construct sections (id assignment,
+ * validation). Neutral ground: engine and themes share it without
+ * importing each other.
+ */
+export type SectionBuilder = (
+  type: SectionType,
+  props?: Record<string, PropValue>,
+) => Section;
+
+export type ThemeAst = {  header: Section[];
   main: Section[];
   footer: Section[];
 };
 export type ThemeTemplates = Partial<Record<TemplateKey, ThemeAst>>;
 
 export const EMPTY_AST: ThemeAst = { header: [], main: [], footer: [] };
+
+/* ------------------------- slot / template-map helpers ------------------- */
+
+/**
+ * Slot accessors shared by the theme studio and the page studio.
+ * `slotSections` is the `ast[slot]` read: unknown slots fall back to
+ * `"main"` so a mistyped slot never blanks a canvas.
+ */
+export function isSlot(value: unknown): value is Slot {
+  return value === "header" || value === "main" || value === "footer";
+}
+
+/** Unknown / absent slots read as `"main"`. */
+export function normalizeSlot(value: unknown): Slot {
+  return isSlot(value) ? value : "main";
+}
+
+/** `ast[slot]` with the main fallback above. */
+export function slotSections(ast: ThemeAst, slot: unknown): Section[] {
+  return ast[normalizeSlot(slot)] ?? [];
+}
+
+/** Build an AST from a (possibly partial) slot map. */
+export function themeAstFromSlotMap(
+  map: Partial<Record<Slot, Section[]>>,
+): ThemeAst {
+  return {
+    header: [...(map.header ?? [])],
+    main: [...(map.main ?? [])],
+    footer: [...(map.footer ?? [])],
+  };
+}
+
+/**
+ * Template-map accessors. Unknown keys are not invented: `isTemplateKey`
+ * narrows, and `templateSlotSections` falls back to the empty AST (the same
+ * fallback `templateOf` uses for a missing template).
+ */
+export function isTemplateKey(value: unknown): value is TemplateKey {
+  return (
+    typeof value === "string" &&
+    (TEMPLATE_KEYS as readonly string[]).includes(value)
+  );
+}
+
+/** Sections for one template + slot (`templates[key][slot]`). */
+export function templateSlotSections(
+  templates: ThemeTemplates,
+  key: unknown,
+  slot: unknown,
+): Section[] {
+  if (!isTemplateKey(key)) return [];
+  return slotSections(templateOf(templates, key), slot);
+}
+
+/**
+ * Themeless aliases (theme purge, Task 4). The AST is storefront content, not
+ * theme content: `BuilderAst` is the canonical name going forward. The
+ * `Theme*` names above remain as deprecated aliases because the storefront
+ * (Task 3), presets/blueprints (Tasks 1-2) and DB layer (Task 5) still read
+ * them; they are removed once those tracks land.
+ */
+export type BuilderAst = ThemeAst;
+export type BuilderTemplates = ThemeTemplates;
+export type BuilderTokens = ThemeTokens;
+export const EMPTY_BUILDER_AST: BuilderAst = {
+  header: [],
+  main: [],
+  footer: [],
+};
 
 /**
  * Phase 1.1: `bitext` is a text field with a বাংলা sibling stored under
@@ -326,7 +454,7 @@ export type Field = {
   responsive?: boolean;
   /** `group` / `array`: nested schema. */
   fields?: Field[];
-  /** `array`: legacy spelling of the row schema (heritage widgets).
+  /** `array`: legacy spelling of the row schema (repeatable widget rows).
    * Honored everywhere `fields` is; new code must use `fields`. */
   children?: Field[];
   /** Numeric bounds for `number`, `range` and `unit`. */
@@ -460,6 +588,167 @@ const CARD_VARIANT: Field = {
   ],
 };
 
+/**
+ * Widget skins (spec 2026-09-25, Core lane). Closed per-widget vocabularies
+ * generalising the `cardVariant` precedent into a system: each skinnable
+ * widget gains a `skin` select field (style panel) whose first option is the
+ * documented default. Unknown or empty values resolve to the widget default —
+ * never a crash, never empty.
+ */
+export const WIDGET_SKINS = {
+  product_rail: ["editorial", "compact", "minimal"],
+  hero_carousel: ["split", "fullbleed", "minimal"],
+  // NB: carousel first — the first option is the documented default
+  // (ATMOSPHERE precedent) and carousel preserves current behaviour.
+  testimonials: ["carousel", "wall", "single"],
+  product_grid: ["cards", "rows"],
+  // B2-3: urgency_rail reuses the product_rail skin vocabulary by design —
+  // it shares the product_rail data shape (collection source + limit +
+  // ProductCard cards) and differs only in computed sale/stock adornments,
+  // so a separate vocabulary would fork styling for identical markup.
+  urgency_rail: ["editorial", "compact", "minimal"],
+} as const;
+export type SkinnableWidgetType = keyof typeof WIDGET_SKINS;
+export type WidgetSkin<T extends SkinnableWidgetType> =
+  (typeof WIDGET_SKINS)[T][number];
+
+/** Documented default per skinnable widget; matches each catalog default. */
+export const DEFAULT_WIDGET_SKIN: Record<SkinnableWidgetType, string> = {
+  product_rail: "editorial",
+  hero_carousel: "split",
+  testimonials: "carousel",
+  product_grid: "cards",
+  // B2-3: core default mirrors product_rail (editorial preserves current
+  // urgency_rail markup); Somvabona overrides to compact via theme defaults.
+  urgency_rail: "editorial",
+};
+
+export function isSkinnableType(
+  type: SectionType,
+): type is SkinnableWidgetType {
+  return Object.hasOwn(WIDGET_SKINS, type);
+}
+
+/**
+ * Resolve a raw `skin` prop to its closed vocabulary. Unknown, empty or
+ * non-string values fall back to the widget default. Non-skinnable types
+ * resolve to "" (no attribute emitted).
+ */
+export function resolveSkin(type: SectionType, raw: unknown): string {
+  if (!isSkinnableType(type)) return "";
+  const fallback = DEFAULT_WIDGET_SKIN[type];
+  return typeof raw === "string" &&
+    (WIDGET_SKINS[type] as readonly string[]).includes(raw)
+    ? raw
+    : fallback;
+}
+
+/** `skin` select field for one skinnable widget (style panel, zero custom UI). */
+const SKIN_FIELD = (type: SkinnableWidgetType): Field => ({
+  key: "skin",
+  label: "Skin",
+  kind: "select",
+  panel: "style",
+  options: WIDGET_SKINS[type].map((value) => ({
+    value,
+    label: value.charAt(0).toUpperCase() + value.slice(1),
+  })),
+});
+
+export type UsedWidgetSkin = {
+  type: SkinnableWidgetType;
+  skin: string;
+  /** `"<type>:<skin>"` — the key theme skin sheets register under. */
+  key: string;
+};
+
+export function skinSheetKeyFor(
+  type: SkinnableWidgetType,
+  skin: string,
+): string {
+  return `${type}:${skin}`;
+}
+
+/**
+ * Collect the skins a page actually uses (base props; per-breakpoint `skin`
+ * overrides stay presentation-only and never pull a new sheet). Walks the
+ * whole subtree, so container children count. This is the `get_style_depends`
+ * input: a theme skin sheet is included only when its key is in this list.
+ */
+export function usedWidgetSkins(
+  sections: Section[] | ThemeAst,
+): UsedWidgetSkin[] {
+  const roots: Section[] = Array.isArray(sections)
+    ? sections
+    : [...sections.header, ...sections.main, ...sections.footer];
+  const seen = new Set<string>();
+  const out: UsedWidgetSkin[] = [];
+  const visit = (nodes: Section[]): void => {
+    for (const node of nodes) {
+      if (isSkinnableType(node.type)) {
+        const skin = resolveSkin(node.type, node.props["skin"]);
+        const key = skinSheetKeyFor(node.type, skin);
+        if (!seen.has(key)) {
+          seen.add(key);
+          out.push({ type: node.type, skin, key });
+        }
+      }
+      if (node.children?.length) visit(node.children);
+    }
+  };
+  visit(roots);
+  return out;
+}
+
+/**
+ * Skin-stylesheet loading contract (spec §3, Core lane seam).
+ *
+ * Theme skin sheets are CSS scoped to the attributes the renderer emits:
+ * `[data-widget="<type>"][data-skin="<skin>"] { … }`. Sheets live with the
+ * theme (merchant `css` theme-assets named `skin-<type>-<skin>.css`, or theme
+ * package sheets in later lanes) and may use `var(--theme-*)` plus literals
+ * for artwork only. A host inlines a sheet only when its key appears in
+ * `usedWidgetSkins(page)` — our `get_style_depends`.
+ *
+ * Today's storefront combines every enabled merchant asset per tenant
+ * (`storefrontThemeCss`, tenant cache — not per page), so per-skin filtering
+ * wires in when theme sheets land (lanes 2–4). This join is the seam they use.
+ */
+export function combineUsedSkinCss(
+  sheets: Partial<Record<string, string>>,
+  usedKeys: string[],
+): string {
+  return usedKeys
+    .map((key) => sheets[key])
+    .filter((css): css is string => typeof css === "string" && css !== "")
+    .join("\n");
+}
+
+/**
+ * Theme preset defaults (spec §4, Core lane seam). Merges a theme package's
+ * default widget props *under* authored props: the merchant's inspector
+ * values always win, and only catalog-known keys are accepted so a theme
+ * can never smuggle unknown props onto a node.
+ */
+export function withThemeWidgetDefaults(
+  type: SectionType,
+  authored: Record<string, PropValue>,
+  themeDefaults?: Partial<Record<SectionType, Record<string, PropValue>>>,
+): Record<string, PropValue> {
+  const base = themeDefaults?.[type];
+  if (!base) return { ...authored };
+  const entry = catalogEntry(type);
+  const known = new Set([
+    ...Object.keys(entry?.defaults ?? {}),
+    ...(entry?.fields ?? []).map((f) => f.key),
+  ]);
+  const out: Record<string, PropValue> = { ...authored };
+  for (const [key, value] of Object.entries(base)) {
+    if (known.has(key) && !(key in out)) out[key] = value;
+  }
+  return out;
+}
+
 const ALIGN: Field = {
   key: "align",
   label: "Alignment",
@@ -469,6 +758,37 @@ const ALIGN: Field = {
   options: [
     { value: "left", label: "Left" },
     { value: "center", label: "Centre" },
+  ],
+};
+
+/**
+ * Theme-effects port: hero wash toggle. Declared per hero-family entry (not in
+ * the universal style layer) so only heroes offer it. First option matches the
+ * renderer default (`wash`) for the inspector's unset display.
+ */
+const ATMOSPHERE: Field = {
+  key: "atmosphere",
+  label: "Atmosphere",
+  kind: "select",
+  panel: "style",
+  options: [
+    { value: "wash", label: "Wash" },
+    { value: "none", label: "None" },
+  ],
+};
+
+/**
+ * Theme-effects port: editorial banner surface toggle. Banner-only, same
+ * scoping rationale as ATMOSPHERE; first option matches the default (`card`).
+ */
+const SURFACE: Field = {
+  key: "surface",
+  label: "Surface",
+  kind: "select",
+  panel: "style",
+  options: [
+    { value: "card", label: "Card" },
+    { value: "glass", label: "Glass" },
   ],
 };
 
@@ -589,6 +909,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       ctaLabel: "",
       ctaHref: "",
       align: "left",
+      atmosphere: "wash",
       image: "",
       s2Heading: "",
       s2Image: "",
@@ -606,6 +927,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("s3Heading", "Slide 3 heading"),
       url("s3Image", "Slide 3 image"),
       ALIGN,
+      ATMOSPHERE,
     ],
   },
   {
@@ -687,6 +1009,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       density: "comfortable",
       showRating: false,
       promise: "",
+      skin: "cards",
     },
     fields: [
       text("heading", "Heading"),
@@ -696,6 +1019,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       bool("showRating", "Show rating"),
       CARD_VARIANT,
       DENSITY,
+      SKIN_FIELD("product_grid"),
     ],
   },
   {
@@ -1534,6 +1858,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       cardVariant: "compact",
       showRating: false,
       promise: "",
+      skin: "editorial",
     },
     fields: [
       text("heading", "Heading"),
@@ -1551,6 +1876,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("promise", "Delivery promise", 60),
       bool("showRating", "Show rating"),
       CARD_VARIANT,
+      SKIN_FIELD("product_rail"),
     ],
   },
   {
@@ -2516,99 +2842,6 @@ const BASE_CATALOG: CatalogEntry[] = [
     ],
   },
   {
-    type: "rewards_club",
-    label: "Rewards club",
-    group: "commerce",
-    slots: ["main", "footer"],
-    heading: false,
-    defaults: {
-      heading: "My Rewards",
-      body: "Earn points on every purchase and unlock member prices.",
-      tier1Name: "Silver",
-      tier1Points: "0+ points",
-      tier2Name: "Gold",
-      tier2Points: "5,000+ points",
-      tier3Name: "Platinum",
-      tier3Points: "15,000+ points",
-      buttonLabel: "Join free",
-      buttonHref: "/pages/rewards",
-    },
-    fields: [
-      text("heading", "Heading", 60),
-      area("body", "Body", 300),
-      text("tier1Name", "Tier 1 name", 40),
-      text("tier1Points", "Tier 1 threshold", 40),
-      text("tier2Name", "Tier 2 name", 40),
-      text("tier2Points", "Tier 2 threshold", 40),
-      text("tier3Name", "Tier 3 name", 40),
-      text("tier3Points", "Tier 3 threshold", 40),
-      text("buttonLabel", "Button label", 40),
-      text("buttonHref", "Button link", 120),
-    ],
-  },
-  {
-    type: "wedding_shop",
-    label: "Wedding shop",
-    group: "commerce",
-    slots: ["main"],
-    heading: false,
-    defaults: {
-      heading: "The Wedding Shop",
-      body: "Bridal sarees, groom panjabis and festive gifting — curated for the big day.",
-      c1Name: "Bridal Sarees",
-      c1Href: "/c/bridal",
-      c2Name: "Groom Panjabis",
-      c2Href: "/c/groom",
-      c3Name: "Festive Gifting",
-      c3Href: "/c/gifting",
-      buttonLabel: "Shop all wedding",
-      buttonHref: "/c/wedding",
-    },
-    fields: [
-      text("heading", "Heading", 60),
-      area("body", "Body", 300),
-      text("c1Name", "Collection 1 name", 40),
-      text("c1Href", "Collection 1 link", 120),
-      text("c2Name", "Collection 2 name", 40),
-      text("c2Href", "Collection 2 link", 120),
-      text("c3Name", "Collection 3 name", 40),
-      text("c3Href", "Collection 3 link", 120),
-      text("buttonLabel", "Button label", 40),
-      text("buttonHref", "Button link", 120),
-    ],
-  },
-  {
-    type: "gift_finder",
-    label: "Gift finder",
-    group: "commerce",
-    slots: ["main"],
-    heading: false,
-    defaults: {
-      heading: "Find the perfect gift",
-      body: "Pick an occasion — we take you straight to matching gifts.",
-      o1Label: "For Her",
-      o1Query: "saree",
-      o2Label: "For Him",
-      o2Query: "panjabi",
-      o3Label: "For Home",
-      o3Query: "home decor",
-      buttonLabel: "Browse all gifts",
-      buttonHref: "/search",
-    },
-    fields: [
-      text("heading", "Heading", 60),
-      area("body", "Body", 300),
-      text("o1Label", "Occasion 1 label", 40),
-      text("o1Query", "Occasion 1 search", 60),
-      text("o2Label", "Occasion 2 label", 40),
-      text("o2Query", "Occasion 2 search", 60),
-      text("o3Label", "Occasion 3 label", 40),
-      text("o3Query", "Occasion 3 search", 60),
-      text("buttonLabel", "Button label", 40),
-      text("buttonHref", "Button link", 120),
-    ],
-  },
-  {
     type: "fit_note",
     label: "Fit note",
     group: "commerce",
@@ -2760,7 +2993,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       c3Href: "/collections/taaga",
       c4Title: "Jamdani Weaves",
       c4Image: "",
-      c4Href: "/collections/heritage-handloom",
+      c4Href: "/collections/handloom",
       c5Title: "Nakshi Kantha",
       c5Image: "",
       c5Href: "/collections/nakshi-kantha",
@@ -2810,7 +3043,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Our Sub-Brands",
-      subheading: "Curated lifestyle edits from our house of heritage craft",
+      subheading: "Curated lifestyle edits from artisan craft houses",
       b1Name: "TAAGA",
       b1Tagline: "Bohemian & contemporary youth fusion",
       b1Image: "",
@@ -3826,6 +4059,47 @@ const BASE_CATALOG: CatalogEntry[] = [
     ],
   },
   {
+    type: "whatsapp_button",
+    label: "WhatsApp Button",
+    group: "content",
+    slots: ["header", "main", "footer"],
+    heading: false,
+    defaults: {
+      phone_number: "",
+      label: "Chat on WhatsApp",
+      greeting_message: "Hello! I am interested in your products.",
+      style: "bubble",
+      size: "md",
+      textAlign: "left",
+    },
+    fields: [
+      text("phone_number", "WhatsApp number", 24),
+      text("label", "Button text", 60),
+      text("greeting_message", "Prefilled message", 140),
+      {
+        key: "style",
+        label: "Style",
+        kind: "select",
+        panel: "content",
+        options: [
+          { value: "bubble", label: "Bubble" },
+          { value: "bar", label: "Bar" },
+        ],
+      },
+      {
+        key: "size",
+        label: "Size",
+        kind: "select",
+        panel: "style",
+        options: [
+          { value: "sm", label: "Small" },
+          { value: "md", label: "Medium" },
+          { value: "lg", label: "Large" },
+        ],
+      },
+    ],
+  },
+  {
     type: "icon",
     label: "Icon",
     group: "content",
@@ -4080,144 +4354,733 @@ const BASE_CATALOG: CatalogEntry[] = [
       },
     ],
   },
-  // Heritage (clothing) theme widgets.
   {
+    type: "orders_list",
+    label: "Order history",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    templates: ["account"],
+    defaults: { heading: "Your orders", emptyText: "No orders yet." },
+    fields: [
+      { key: "heading", label: "Heading", kind: "bitext", panel: "content" },
+      {
+        key: "emptyText",
+        label: "Empty text",
+        kind: "bitext",
+        panel: "content",
+      },
+    ],
+  },
+  {
+    type: "profile_card",
+    label: "Shopper profile",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    templates: ["account"],
+    defaults: { heading: "Your profile" },
+    fields: [
+      { key: "heading", label: "Heading", kind: "bitext", panel: "content" },
+    ],
+  },
+  /* --------------------------------------- Songoskriti heritage gap pack */
+  {
+    // Renderer: heritage.tsx HeroCarousel (already wired). Slide rows carry
+    // their own bilingual twins; the carousel shell has no copy of its own.
     type: "hero_carousel",
     label: "Hero carousel",
-    group: "heritage",
+    group: "content",
     slots: ["main"],
     heading: true,
-    defaults: { autoAdvanceMs: 5000 },
+    defaults: {
+      slides: [],
+      autoAdvanceMs: 6000,
+      atmosphere: "wash",
+      skin: "split",
+    },
     fields: [
-      { key: "slides", label: "Slides", kind: "array", panel: "content", children: [
-        { key: "image", label: "Image URL", kind: "text", panel: "content" },
-        { key: "headline", label: "Headline", kind: "bitext", panel: "content" },
-        { key: "subhead", label: "Subhead", kind: "bitext", panel: "content" },
-        { key: "ctaLabel", label: "CTA label", kind: "text", panel: "content" },
-        { key: "ctaUrl", label: "CTA URL", kind: "text", panel: "content" },
-        { key: "caption", label: "Caption", kind: "bitext", panel: "content" },
-      ]},
-      { key: "autoAdvanceMs", label: "Auto-advance (ms)", kind: "number", panel: "settings" },
+      {
+        key: "slides",
+        label: "Slides",
+        kind: "array",
+        panel: "content",
+        itemLabel: "headline",
+        maxRows: 3,
+        fields: [
+          { key: "image", label: "Image", kind: "image", panel: "content" },
+          text("headline", "Headline", 120),
+          text("headline_bn", "Headline (বাংলা)", 120),
+          area("subhead", "Subhead", 300),
+          area("subhead_bn", "Subhead (বাংলা)", 300),
+          text("ctaLabel", "CTA label", 40),
+          url("ctaUrl", "CTA link"),
+          text("caption", "Eyebrow caption", 60),
+        ],
+      },
+      num("autoAdvanceMs", "Auto-advance (ms)"),
+      {
+        key: "atmosphere",
+        label: "Backdrop wash",
+        kind: "select",
+        panel: "style",
+        options: [
+          { value: "wash", label: "Wash" },
+          { value: "none", label: "None" },
+        ],
+      },
+      SKIN_FIELD("hero_carousel"),
     ],
   },
   {
-    type: "department_grid",
-    label: "Department grid",
-    group: "heritage",
-    slots: ["main"],
-    heading: false,
-    defaults: { columns: 4 },
-    fields: [
-      { key: "departments", label: "Departments", kind: "array", panel: "content", children: [
-        { key: "image", label: "Image URL", kind: "text", panel: "content" },
-        { key: "title", label: "Title", kind: "text", panel: "content" },
-        { key: "href", label: "Link URL", kind: "text", panel: "content" },
-      ]},
-      { key: "columns", label: "Columns", kind: "number", panel: "layout" },
-    ],
-  },
-  {
+    // Renderer: heritage.tsx HeritageStory. Dual-read: `headline` is the
+    // studio key, `heading` the blueprint alias; same for `ctaHref`. Both
+    // spellings are declared so parseAst preserves either.
     type: "heritage_story",
     label: "Heritage story",
-    group: "heritage",
+    group: "content",
     slots: ["main"],
     heading: false,
-    defaults: { layout: "image-left" },
+    defaults: {
+      image: "",
+      headline: "",
+      heading: "",
+      body: "",
+      ctaLabel: "",
+      ctaHref: "",
+      layout: "image-left",
+    },
     fields: [
-      { key: "image", label: "Image URL", kind: "text", panel: "content" },
-      { key: "headline", label: "Headline", kind: "text", panel: "content" },
-      { key: "body", label: "Body", kind: "textarea", panel: "content" },
-      { key: "ctaLabel", label: "CTA label", kind: "text", panel: "content" },
-      { key: "ctaUrl", label: "CTA URL", kind: "text", panel: "content" },
-      { key: "layout", label: "Layout", kind: "select", panel: "layout", options: [
-        { value: "image-left", label: "Image left" },
-        { value: "image-right", label: "Image right" },
-        { value: "full-width", label: "Full width" },
-      ]},
+      url("image", "Image"),
+      text("headline", "Headline", 120),
+      text("heading", "Heading (alias)", 120),
+      area("body", "Body", 1200),
+      text("ctaLabel", "CTA label", 40),
+      url("ctaHref", "CTA link"),
+      {
+        key: "layout",
+        label: "Layout",
+        kind: "select",
+        panel: "layout",
+        options: [
+          { value: "image-left", label: "Image left" },
+          { value: "image-right", label: "Image right" },
+          { value: "full-width", label: "Full width" },
+        ],
+      },
     ],
   },
   {
+    // Renderer: heritage.tsx TextileShowcase. Repeater-first: studio `items`
+    // rows win, `products` rows stay readable by the renderer for
+    // theme-authored sections.
     type: "textile_showcase",
     label: "Textile showcase",
-    group: "heritage",
+    group: "content",
     slots: ["main"],
     heading: false,
-    defaults: {},
+    defaults: { headline: "", items: [] },
     fields: [
-      { key: "headline", label: "Headline", kind: "text", panel: "content" },
-      { key: "items", label: "Items", kind: "array", panel: "content", children: [
-        { key: "image", label: "Image URL", kind: "text", panel: "content" },
-        { key: "title", label: "Title", kind: "text", panel: "content" },
-        { key: "subtitle", label: "Subtitle", kind: "text", panel: "content" },
-      ]},
+      text("headline", "Headline", 120),
+      {
+        key: "items",
+        label: "Items",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 8,
+        fields: [
+          url("image", "Image"),
+          text("title", "Title", 120),
+          text("subtitle", "Subtitle", 120),
+        ],
+      },
     ],
   },
   {
+    // Renderer: heritage.tsx EditorialBanner. Dual-read like heritage_story
+    // (`headline`/`heading`, `subhead`/`body`); SURFACE is the banner-only
+    // style toggle (ATMOSPHERE rationale) defaulting to `card`.
     type: "editorial_banner",
     label: "Editorial banner",
-    group: "heritage",
+    group: "content",
     slots: ["main"],
     heading: false,
-    defaults: {},
+    defaults: {
+      image: "",
+      headline: "",
+      heading: "",
+      subhead: "",
+      body: "",
+      ctaLabel: "",
+      ctaHref: "",
+      surface: "card",
+    },
     fields: [
-      { key: "image", label: "Image URL", kind: "text", panel: "content" },
-      { key: "headline", label: "Headline", kind: "text", panel: "content" },
-      { key: "subhead", label: "Subhead", kind: "text", panel: "content" },
-      { key: "ctaLabel", label: "CTA label", kind: "text", panel: "content" },
-      { key: "ctaUrl", label: "CTA URL", kind: "text", panel: "content" },
+      url("image", "Image"),
+      text("headline", "Headline", 120),
+      text("heading", "Heading (alias)", 120),
+      text("subhead", "Subhead", 300),
+      area("body", "Body (alias)", 600),
+      text("ctaLabel", "CTA label", 40),
+      url("ctaHref", "CTA link"),
+      SURFACE,
     ],
   },
   {
-    type: "testimonial_carousel",
-    label: "Testimonial carousel",
-    group: "heritage",
-    slots: ["main"],
-    heading: false,
-    defaults: { autoAdvanceMs: 6000 },
-    fields: [
-      { key: "testimonials", label: "Testimonials", kind: "array", panel: "content", children: [
-        { key: "quote", label: "Quote", kind: "textarea", panel: "content" },
-        { key: "author", label: "Author", kind: "text", panel: "content" },
-        { key: "role", label: "Role", kind: "text", panel: "content" },
-        { key: "avatar", label: "Avatar URL", kind: "text", panel: "content" },
-      ]},
-      { key: "autoAdvanceMs", label: "Auto-advance (ms)", kind: "number", panel: "settings" },
-    ],
-  },
-  {
+    // Renderer: heritage.tsx MarqueeStrip. Repeater-first like trust_bar:
+    // studio `items` rows win, the scalar `label` (split on ·/,/newline)
+    // stays as the fallback for theme-authored sections.
     type: "marquee_strip",
     label: "Marquee strip",
-    group: "heritage",
+    group: "content",
     slots: ["main"],
     heading: false,
-    defaults: { speed: "normal" },
+    defaults: { label: "", items: [], speed: "normal" },
     fields: [
-      { key: "items", label: "Items", kind: "array", panel: "content", children: [
-        { key: "text", label: "Text", kind: "text", panel: "content" },
-        { key: "icon", label: "Icon", kind: "text", panel: "content" },
-      ]},
-      { key: "speed", label: "Speed", kind: "select", panel: "settings", options: [
-        { value: "slow", label: "Slow" },
-        { value: "normal", label: "Normal" },
-        { value: "fast", label: "Fast" },
-      ]},
+      text("label", "Label (fallback)", 200),
+      {
+        key: "items",
+        label: "Items",
+        kind: "array",
+        panel: "content",
+        itemLabel: "text",
+        maxRows: 8,
+        fields: [
+          text("text", "Text", 80),
+          text("icon", "Icon key", 20),
+        ],
+      },
+      {
+        key: "speed",
+        label: "Speed",
+        kind: "select",
+        panel: "style",
+        options: [
+          { value: "slow", label: "Slow" },
+          { value: "normal", label: "Normal" },
+          { value: "fast", label: "Fast" },
+        ],
+      },
     ],
   },
   {
+    // Renderer: heritage.tsx DepartmentGrid.
+    type: "department_grid",
+    label: "Department grid",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: { columns: 4, departments: [] },
+    fields: [
+      {
+        key: "departments",
+        label: "Departments",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 8,
+        fields: [
+          text("image", "Image URL", 200),
+          text("title", "Title", 80),
+          text("href", "Link URL", 200),
+        ],
+      },
+      num("columns", "Columns"),
+    ],
+  },
+  {
+    // Renderer: heritage.tsx TestimonialCarousel.
+    type: "testimonial_carousel",
+    label: "Testimonial carousel",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: { autoAdvanceMs: 6000, testimonials: [] },
+    fields: [
+      {
+        key: "testimonials",
+        label: "Testimonials",
+        kind: "array",
+        panel: "content",
+        itemLabel: "author",
+        maxRows: 6,
+        fields: [
+          area("quote", "Quote", 280),
+          text("author", "Name", 80),
+          text("role", "Role", 80),
+          text("avatar", "Avatar URL", 200),
+        ],
+      },
+      num("autoAdvanceMs", "Auto-advance (ms)"),
+    ],
+  },
+  {
+    // Renderer: heritage.tsx StoryTrunk.
     type: "story_trunk",
     label: "Story trunk",
-    group: "heritage",
+    group: "content",
     slots: ["main"],
     heading: true,
-    defaults: {},
+    defaults: { headline: "", items: [] },
     fields: [
-      { key: "headline", label: "Headline", kind: "text", panel: "content" },
-      { key: "items", label: "Items", kind: "array", panel: "content", children: [
-        { key: "image", label: "Image URL", kind: "text", panel: "content" },
-        { key: "title", label: "Title", kind: "text", panel: "content" },
-        { key: "body", label: "Body", kind: "textarea", panel: "content" },
-        { key: "year", label: "Year", kind: "text", panel: "content" },
-      ]},
+      text("headline", "Headline", 120),
+      {
+        key: "items",
+        label: "Items",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 8,
+        fields: [
+          text("image", "Image URL", 200),
+          text("title", "Title", 80),
+          area("body", "Body", 400),
+          text("year", "Year", 20),
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: apparel.tsx RewardsClub. Defaults mirror the studio twin 1:1.
+    type: "rewards_club",
+    label: "Rewards club",
+    group: "commerce",
+    slots: ["main", "footer"],
+    heading: false,
+    defaults: {
+      heading: "My Rewards",
+      body: "Earn points on every purchase and unlock member prices.",
+      tier1Name: "Silver",
+      tier1Points: "0+ points",
+      tier2Name: "Gold",
+      tier2Points: "5,000+ points",
+      tier3Name: "Platinum",
+      tier3Points: "15,000+ points",
+      buttonLabel: "Join free",
+      buttonHref: "/pages/rewards",
+    },
+    fields: [
+      text("heading", "Heading", 60),
+      area("body", "Body", 300),
+      text("tier1Name", "Tier 1 name", 40),
+      text("tier1Points", "Tier 1 threshold", 40),
+      text("tier2Name", "Tier 2 name", 40),
+      text("tier2Points", "Tier 2 threshold", 40),
+      text("tier3Name", "Tier 3 name", 40),
+      text("tier3Points", "Tier 3 threshold", 40),
+      text("buttonLabel", "Button label", 40),
+      url("buttonHref", "Button link"),
+    ],
+  },
+  {
+    // Renderer: apparel.tsx WeddingShop. Defaults mirror the studio twin 1:1.
+    type: "wedding_shop",
+    label: "Wedding shop",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "The Wedding Shop",
+      body: "Bridal sarees, groom panjabis and festive gifting — curated for the big day.",
+      c1Name: "Bridal Sarees",
+      c1Href: "/c/bridal",
+      c2Name: "Groom Panjabis",
+      c2Href: "/c/groom",
+      c3Name: "Festive Gifting",
+      c3Href: "/c/gifting",
+      buttonLabel: "Shop all wedding",
+      buttonHref: "/c/wedding",
+    },
+    fields: [
+      text("heading", "Heading", 60),
+      area("body", "Body", 300),
+      text("c1Name", "Collection 1 name", 40),
+      url("c1Href", "Collection 1 link"),
+      text("c2Name", "Collection 2 name", 40),
+      url("c2Href", "Collection 2 link"),
+      text("c3Name", "Collection 3 name", 40),
+      url("c3Href", "Collection 3 link"),
+      text("buttonLabel", "Button label", 40),
+      url("buttonHref", "Button link"),
+    ],
+  },
+  {
+    // Renderer: apparel.tsx GiftFinder. Occasion queries are free text
+    // (`text`, never `url` — "home decor" must survive the sanitiser).
+    // Defaults mirror the studio twin 1:1.
+    type: "gift_finder",
+    label: "Gift finder",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Find the perfect gift",
+      body: "Pick an occasion — we take you straight to matching gifts.",
+      o1Label: "For Her",
+      o1Query: "saree",
+      o2Label: "For Him",
+      o2Query: "panjabi",
+      o3Label: "For Home",
+      o3Query: "home decor",
+      buttonLabel: "Browse all gifts",
+      buttonHref: "/search",
+    },
+    fields: [
+      text("heading", "Heading", 60),
+      area("body", "Body", 300),
+      text("o1Label", "Occasion 1 label", 40),
+      text("o1Query", "Occasion 1 search", 60),
+      text("o2Label", "Occasion 2 label", 40),
+      text("o2Query", "Occasion 2 search", 60),
+      text("o3Label", "Occasion 3 label", 40),
+      text("o3Query", "Occasion 3 search", 60),
+      text("buttonLabel", "Button label", 40),
+      url("buttonHref", "Button link"),
+    ],
+  },
+  {
+    // Renderer: songoskriti.tsx FinderRow. Occasion chips link straight to
+    // collections (spec §2 item 5: Eid/festive, wedding, gifting).
+    type: "finder_row",
+    label: "Occasion finder",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Shop by occasion",
+      body: "",
+      o1Label: "Eid and festive",
+      o1Href: "/c/festive",
+      o2Label: "Wedding",
+      o2Href: "/c/wedding",
+      o3Label: "Gifting",
+      o3Href: "/c/gifting",
+      buttonLabel: "",
+      buttonHref: "",
+    },
+    fields: [
+      text("heading", "Heading"),
+      area("body", "Body", 300),
+      text("o1Label", "Occasion 1 label", 40),
+      url("o1Href", "Occasion 1 link"),
+      text("o2Label", "Occasion 2 label", 40),
+      url("o2Href", "Occasion 2 link"),
+      text("o3Label", "Occasion 3 label", 40),
+      url("o3Href", "Occasion 3 link"),
+      text("buttonLabel", "Button label", 40),
+      url("buttonHref", "Button link"),
+    ],
+  },
+  {
+    // Renderer: songoskriti.tsx CraftStory. Same prop names as
+    // collection_story (copy only, no stats until Task 4 seeds
+    // demo-labeled numbers).
+    type: "craft_story",
+    label: "Craft story",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      eyebrow: "Our craft",
+      heading: "From loom to wardrobe",
+      body: "We work with weaving clusters across Bengal. Every piece carries the name of its maker.",
+      ctaLabel: "Read our story",
+      ctaHref: "/pages/our-craft",
+      imageUrl: "",
+      scrim: true,
+    },
+    fields: [
+      text("eyebrow", "Eyebrow", 60),
+      text("heading", "Heading", 120),
+      area("body", "Prose", 1200),
+      text("ctaLabel", "Link label", 40),
+      url("ctaHref", "Link URL"),
+      url("imageUrl", "Background image"),
+      bool("scrim", "Darken image behind text"),
+    ],
+  },
+  {
+    // Renderer: songoskriti.tsx Testimonials. One quote per row, ≤3 lines
+    // (line-clamp-3), name + role; rows carry their own bilingual twins.
+    type: "testimonials",
+    label: "Testimonials",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      testimonials: [],
+      autoAdvanceMs: 6000,
+      skin: "carousel",
+    },
+    fields: [
+      {
+        key: "testimonials",
+        label: "Testimonials",
+        kind: "array",
+        panel: "content",
+        itemLabel: "author",
+        maxRows: 6,
+        fields: [
+          area("quote", "Quote", 280),
+          area("quote_bn", "Quote (বাংলা)", 280),
+          text("author", "Name", 80),
+          text("author_bn", "Name (বাংলা)", 80),
+          text("role", "Role", 80),
+          text("role_bn", "Role (বাংলা)", 80),
+          { key: "image", label: "Avatar", kind: "image", panel: "content" },
+        ],
+      },
+      num("autoAdvanceMs", "Auto-advance (ms)"),
+      SKIN_FIELD("testimonials"),
+    ],
+  },
+  {
+    // Renderer: songoskriti.tsx TrustFooter. Repeater-first like trust_bar:
+    // studio `items` rows win, scalar i1–i4 triples stay as the fallback for
+    // theme-authored sections.
+    type: "trust_footer",
+    label: "Trust footer",
+    group: "content",
+    slots: ["main", "footer"],
+    heading: false,
+    defaults: {
+      items: [],
+      i1Icon: "delivery",
+      i1Title: "Fast delivery",
+      i1Body: "",
+      i2Icon: "returns",
+      i2Title: "Easy returns",
+      i2Body: "",
+      i3Icon: "secure",
+      i3Title: "Secure payment",
+      i3Body: "",
+      i4Icon: "support",
+      i4Title: "",
+      i4Body: "",
+    },
+    fields: [
+      {
+        key: "items",
+        label: "Badges",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 4,
+        fields: [
+          text("icon", "Icon key", 20),
+          text("title", "Title"),
+          text("title_bn", "Title (বাংলা)"),
+          text("body", "Body", 120),
+          text("body_bn", "Body (বাংলা)", 120),
+        ],
+      },
+      text("i1Icon", "Item 1 icon key", 20),
+      text("i1Title", "Item 1 title"),
+      text("i1Body", "Item 1 body", 120),
+      text("i2Icon", "Item 2 icon key", 20),
+      text("i2Title", "Item 2 title"),
+      text("i2Body", "Item 2 body", 120),
+      text("i3Icon", "Item 3 icon key", 20),
+      text("i3Title", "Item 3 title"),
+      text("i3Body", "Item 3 body", 120),
+      text("i4Icon", "Item 4 icon key", 20),
+      text("i4Title", "Item 4 title"),
+      text("i4Body", "Item 4 body", 120),
+    ],
+  },
+  {
+    // Renderer: somvabona.tsx TrustMarquee. Looping proof strip — items[]
+    // rows only, qualitative badges (no counts, no ratings, no invented
+    // numbers). Freezes under prefers-reduced-motion.
+    type: "trust_marquee",
+    label: "Trust marquee",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      items: [],
+      speed: "normal",
+    },
+    fields: [
+      {
+        key: "items",
+        label: "Badges",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 6,
+        fields: [
+          text("icon", "Icon key", 20),
+          text("title", "Title"),
+          text("title_bn", "Title (বাংলা)"),
+          text("body", "Body", 120),
+          text("body_bn", "Body (বাংলা)", 120),
+        ],
+      },
+      {
+        key: "speed",
+        label: "Speed",
+        kind: "select",
+        panel: "style",
+        options: [
+          { value: "slow", label: "Slow" },
+          { value: "normal", label: "Normal" },
+          { value: "fast", label: "Fast" },
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: somvabona.tsx PriceBuckets. Navigational tiles — label +
+    // integer minor-unit bound + verified href + image. Bounds only, never
+    // computed prices; empty buckets are omitted, never rendered blank.
+    type: "price_buckets",
+    label: "Price buckets",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Shop by budget",
+      buckets: [],
+    },
+    fields: [
+      text("heading", "Heading"),
+      {
+        key: "buckets",
+        label: "Buckets",
+        kind: "array",
+        panel: "content",
+        itemLabel: "label",
+        maxRows: 6,
+        fields: [
+          text("label", "Label", 40),
+          text("label_bn", "Label (বাংলা)", 40),
+          num("maxPrice", "Upper bound (minor units)"),
+          url("href", "Link"),
+          {
+            key: "image",
+            label: "Tile image",
+            kind: "image",
+            panel: "content",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: somvabona.tsx OccasionMatrix. Collection × occasion grid —
+    // occasion links plus collection tiles, all verified hrefs.
+    type: "occasion_matrix",
+    label: "Occasion matrix",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Dress for the occasion",
+      occasions: [],
+      collections: [],
+    },
+    fields: [
+      text("heading", "Heading"),
+      {
+        key: "occasions",
+        label: "Occasions",
+        kind: "array",
+        panel: "content",
+        itemLabel: "label",
+        maxRows: 6,
+        fields: [
+          text("label", "Label", 40),
+          text("label_bn", "Label (বাংলা)", 40),
+          url("href", "Link"),
+        ],
+      },
+      {
+        key: "collections",
+        label: "Collections",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 6,
+        fields: [
+          text("title", "Title", 40),
+          text("title_bn", "Title (বাংলা)", 40),
+          url("href", "Link"),
+          {
+            key: "image",
+            label: "Tile image",
+            kind: "image",
+            panel: "content",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: somvabona.tsx UrgencyRail. product_rail data shape plus
+    // computed sale badges (% off from real minor units), real stock hints
+    // (row.count against lowStockAt — absent counts show no hint) and the
+    // ratings row. Never typed discounts, never "only few left" without a flag.
+    // B2-3 skin: reuses the product_rail skin vocabulary (same cards, same
+    // rail) with an editorial core default; Somvabona overrides to compact.
+    type: "urgency_rail",
+    label: "Urgency rail",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Selling fast",
+      limit: 8,
+      source: "collection",
+      collection: "",
+      cardVariant: "standard",
+      showRating: true,
+      showDiscount: true,
+      showStockHint: true,
+      lowStockAt: 5,
+      promise: "",
+      skin: "editorial",
+    },
+    fields: [
+      text("heading", "Heading"),
+      {
+        key: "source",
+        label: "Source",
+        kind: "select",
+        panel: "content",
+        options: [
+          { value: "collection", label: "Collection" },
+          { value: "bestsellers", label: "Bestsellers" },
+          { value: "recommended", label: "Recommended" },
+        ],
+      },
+      text("collection", "Collection handle", 80),
+      num("limit", "How many"),
+      bool("showRating", "Show rating"),
+      bool("showDiscount", "Show sale badges"),
+      bool("showStockHint", "Show stock hints"),
+      num("lowStockAt", "Low-stock threshold"),
+      text("promise", "Delivery promise", 60),
+      CARD_VARIANT,
+      SKIN_FIELD("urgency_rail"),
+    ],
+  },
+  {
+    // Renderer: somvabona.tsx RatingStars. Display-only stars from real
+    // review aggregates — renders nothing with no data, never fake 4.8s.
+    type: "rating_stars",
+    label: "Rating stars",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      rating: 0,
+      reviewCount: 0,
+    },
+    fields: [
+      num("rating", "Average rating (0–5)"),
+      num("reviewCount", "Review count"),
     ],
   },
 ];
@@ -4803,6 +5666,68 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   nav_menu: ["heading"],
   logo: ["alt", "text"],
   carousel: ["heading"],
+  // Songoskriti heritage gap pack. Row-level twins (slides, testimonials,
+  // trust items) are read directly by their renderers, so only scalar
+  // theme-authored copy is listed here.
+  finder_row: [
+    "heading",
+    "body",
+    "o1Label",
+    "o2Label",
+    "o3Label",
+    "buttonLabel",
+  ],
+  // Heritage / apparel restoration pack. Row-level twins (items,
+  // departments, testimonials) are read directly by their renderers, so
+  // only scalar theme-authored copy is listed here.
+  heritage_story: ["headline", "heading", "body", "ctaLabel"],
+  textile_showcase: ["headline"],
+  editorial_banner: ["headline", "heading", "subhead", "body", "ctaLabel"],
+  marquee_strip: ["label"],
+  wedding_shop: [
+    "heading",
+    "body",
+    "c1Name",
+    "c2Name",
+    "c3Name",
+    "buttonLabel",
+  ],
+  gift_finder: [
+    "heading",
+    "body",
+    "o1Label",
+    "o2Label",
+    "o3Label",
+    "buttonLabel",
+  ],
+  rewards_club: [
+    "heading",
+    "body",
+    "tier1Name",
+    "tier1Points",
+    "tier2Name",
+    "tier2Points",
+    "tier3Name",
+    "tier3Points",
+    "buttonLabel",
+  ],
+  craft_story: ["eyebrow", "heading", "body", "ctaLabel"],
+  trust_footer: [
+    "i1Title",
+    "i1Body",
+    "i2Title",
+    "i2Body",
+    "i3Title",
+    "i3Body",
+    "i4Title",
+    "i4Body",
+  ],
+  // Somvabona pack. Row-level twins (items, buckets, occasions,
+  // collections) are read directly by their renderers, so only scalar
+  // theme-authored copy is listed here.
+  price_buckets: ["heading"],
+  occasion_matrix: ["heading"],
+  urgency_rail: ["heading", "promise"],
 };
 
 /**
@@ -4824,8 +5749,7 @@ function withBiText(entry: CatalogEntry): CatalogEntry {
     // Default copy ships translated where the platform dictionary has it, so a
     // freshly dropped widget is not English-only for বাংলা shoppers.
     const en = entry.defaults[field.key];
-    defaults[bnKey(field.key)] =
-      typeof en === "string" ? (PRESET_BN[en] ?? "") : "";
+    defaults[bnKey(field.key)] = typeof en === "string" ? "" : "";
   }
   return { ...entry, defaults, fields };
 }
@@ -5053,7 +5977,7 @@ export type ThemeTokens = {
   currencyDisplay: "symbol" | "code";
   /** Theme-level font pairing; sets both faces. `custom` keeps hand-picked ones. */
   fontPairing: FontPairingKey;
-  /** Designed dark set. Null means the theme is light-only. */
+  /** Designed dark set. Null means the storefront is light-only. */
   dark: DarkTokens | null;
   /** Named global colours and fonts every control can bind to. */
   globals: ThemeGlobals;
@@ -5112,6 +6036,9 @@ export const DEFAULT_DARK_TOKENS: DarkTokens = {
   surface: "#0B1220",
   ink: "#E6EDF5",
 };
+
+/** Themeless alias — same default design tokens, canonical name. */
+export const DEFAULT_BUILDER_TOKENS: BuilderTokens = DEFAULT_TOKENS;
 
 const HEX = /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
 const LENGTH = /^\d{1,4}(?:px|rem)$/;
@@ -6164,7 +7091,7 @@ export function lintTemplate(
       issues.push({
         level: "error",
         sectionId: section.id,
-        message: "Raw colour value — use a theme token instead.",
+        message: "Raw colour value — use a design token instead.",
       });
     }
     // Phase 6: fixed widths clip বাংলা (15–30% longer than English) and break

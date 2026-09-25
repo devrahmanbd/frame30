@@ -17,6 +17,8 @@ export const askSupportFn = createServerFn({ method: "POST" })
       .object({
         slug: z.string().min(1).max(80),
         message: z.string().trim().min(1).max(1000),
+        customerName: z.string().trim().min(1).max(100).optional(),
+        customerEmail: z.string().trim().email().max(254).optional(),
         conversationId: z.string().uuid().nullable().optional(),
         orderNumber: z.string().trim().max(40).nullable().optional(),
         phone: z.string().trim().max(30).nullable().optional(),
@@ -45,6 +47,8 @@ export const customerSendChatMessageFn = createServerFn({ method: "POST" })
       .object({
         slug: z.string().min(1).max(80),
         message: z.string().trim().min(1).max(1000),
+        customerName: z.string().trim().min(1).max(100).optional(),
+        customerEmail: z.string().trim().email().max(254).optional(),
         conversationId: z.string().uuid().nullable().optional(),
         orderNumber: z.string().trim().max(40).nullable().optional(),
         phone: z.string().trim().max(30).nullable().optional(),
@@ -71,6 +75,7 @@ export const rateSupportFn = createServerFn({ method: "POST" })
         conversationId: z.string().uuid(),
         rating: z.number().int().min(1).max(5),
         review: z.string().trim().max(1000).optional(),
+        isResolved: z.boolean().optional(),
       })
       .parse(d),
   )
@@ -81,6 +86,7 @@ export const rateSupportFn = createServerFn({ method: "POST" })
         data.conversationId,
         data.rating,
         data.review,
+        data.isResolved,
       );
     } catch {
       return {
@@ -297,6 +303,8 @@ export const supportAuditFn = createServerFn({ method: "GET" })
 const widgetTicketSchema = z.object({
   slug: z.string().min(1).max(80),
   conversationId: z.string().uuid().nullable().optional(),
+  customerName: z.string().trim().min(1).max(100).optional(),
+  customerEmail: z.string().trim().email().max(254).optional(),
   subject: z.string().trim().min(3).max(180),
   body: z.string().trim().max(4000).optional(),
   priority: z.enum(["low", "normal", "high", "urgent"]).optional(),
@@ -537,4 +545,48 @@ export const updateCallbackStatusFn = createServerFn({ method: "POST" })
     const merchantId = await merchantOf(context);
     const { updateCallbackStatus } = await import("./support-callbacks.server");
     return updateCallbackStatus(merchantId, data.callbackId, data.status);
+  });
+
+/** Public storefront endpoint to check live operator presence / support availability. */
+export const checkOperatorPresenceFn = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        slug: z.string().min(1).max(80),
+        conversationId: z.string().uuid().nullable().optional(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data }) => {
+    const { getMerchantSupportAvailability } =
+      await import("./support-presence.server");
+    let merchantId = "00000000-0000-4000-8000-000000000001";
+    try {
+      const querySlug = data.slug === "platform" ? "framique" : data.slug;
+      const { supabaseAdmin } =
+        await import("@/integrations/supabase/client.server");
+      const { data: store } = await supabaseAdmin
+        .from("stores")
+        .select("merchant_id")
+        .eq("slug", querySlug)
+        .maybeSingle();
+
+      if (store?.merchant_id) {
+        merchantId = store.merchant_id;
+      }
+    } catch {
+      // Fallback to platform merchant ID
+    }
+
+    return getMerchantSupportAvailability(merchantId, data.conversationId);
+  });
+
+/** Admin desk endpoint to record active operator heartbeat. */
+export const recordOperatorPresenceFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const merchantId = await merchantOf(context);
+    const { recordOperatorHeartbeat } =
+      await import("./support-presence.server");
+    return recordOperatorHeartbeat(merchantId, context.userId);
   });

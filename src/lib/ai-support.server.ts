@@ -172,14 +172,12 @@ export async function appendMessage(
   body: string,
 ) {
   const db = await admin();
-  await db
-    .from("ai_messages")
-    .insert({
-      merchant_id: merchantId,
-      conversation_id: conversationId,
-      role,
-      body,
-    });
+  await db.from("ai_messages").insert({
+    merchant_id: merchantId,
+    conversation_id: conversationId,
+    role,
+    body,
+  });
   await db
     .from("ai_conversations")
     .update({ last_message_at: new Date().toISOString() })
@@ -234,14 +232,18 @@ async function resolveIntent(
   intent: Intent,
   input: AskInput,
 ): Promise<Omit<AskResult, "conversationId">> {
+  // Grounded-answer kernel: legacy keyword FAQ answers carried factual claims
+  // with provenance:null, making fake replies structurally possible.
+  // Null-context now returns explicit unsure+handoff, never a bare FAQ.
+  // Order verification stays pinned (DB truth); everything else escalates.
   if (intent !== "order_status") {
-    const reply = FAQ[intent];
-    const needsAgent = intent === "other" || intent === "refund";
+    const needsAgent = true;
     return {
-      reply,
+      reply:
+        "I don't have verified info to answer this accurately. A member of the store team will take it from here — you can also open a ticket or request a callback.",
       provenance: null,
       needsAgent,
-      cta: needsAgent ? "ticket" : "none",
+      cta: "ticket",
     };
   }
   if (!input.orderNumber || !input.phone)

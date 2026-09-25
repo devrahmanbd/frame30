@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang, LanguageProvider } from "@/lib/i18n";
@@ -15,6 +16,7 @@ import {
   requestPasswordResetFn,
   signInGuardFn,
 } from "@/lib/identity.functions";
+import { nextAuthSearch, parseAuthMode } from "@/lib/auth-mode";
 import {
   Eye,
   EyeOff,
@@ -24,7 +26,7 @@ import {
   ChevronDown,
   ArrowLeft,
   Loader2,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (
@@ -36,12 +38,7 @@ export const Route = createFileRoute("/auth")({
       !search.redirect.startsWith("//")
         ? search.redirect
         : undefined,
-    mode:
-      search.mode === "signup" ||
-      search.mode === "signin" ||
-      search.mode === "reset"
-        ? search.mode
-        : undefined,
+    mode: parseAuthMode(search.mode),
   }),
   head: () => ({
     meta: [
@@ -140,10 +137,16 @@ function AuthPage() {
 
 function AuthPageInner() {
   const { t } = useLang();
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: Route.id });
   const search = Route.useSearch();
+  const queryClient = useQueryClient();
 
-  const [mode, setMode] = useState<Mode>(search.mode ?? "signin");
+  // Single source of truth: URL search.mode. Local mode state made the sync
+  // effect stomp tab clicks back to the stale search.mode (Sign In "bounce").
+  const mode = search.mode ?? "signin";
+  const switchMode = (next: Mode) => {
+    void navigate({ to: ".", search: (prev) => nextAuthSearch(prev, next) });
+  };
   const [stage, setStage] = useState<Stage>("credentials");
 
   // Signup fields
@@ -168,14 +171,11 @@ function AuthPageInner() {
   const [useBackup, setUseBackup] = useState(false);
   const [factorId, setFactorId] = useState<string | null>(null);
 
-  // Sync mode with query parameter
+  // Clear transient notices when the URL-driven mode changes
   useEffect(() => {
-    if (search.mode && search.mode !== mode) {
-      setMode(search.mode);
-      setErrorMsg(null);
-      setNotice(null);
-    }
-  }, [search.mode, mode]);
+    setErrorMsg(null);
+    setNotice(null);
+  }, [search.mode]);
 
   // If already logged in, redirect directly
   useEffect(() => {
@@ -258,6 +258,12 @@ function AuthPageInner() {
     }).catch(() => undefined);
 
     const dest = await landingFor(session.user.id, search.redirect);
+    // Fresh login, fresh identity: drop any merchant reads cached for a
+    // previous session (or the pre-login anonymous state). Without this the
+    // dashboard/onboarding keep serving the stale null/merchant for up to
+    // the 5-minute staleTime and bounce completed stores to the wizard.
+    const { invalidateMerchantScope } = await import("@/hooks/use-merchant");
+    await invalidateMerchantScope(queryClient);
     navigate({ to: dest });
   }
 
@@ -559,11 +565,7 @@ function AuthPageInner() {
                   type="button"
                   role="tab"
                   aria-selected={mode === "signin"}
-                  onClick={() => {
-                    setMode("signin");
-                    setErrorMsg(null);
-                    setNotice(null);
-                  }}
+                  onClick={() => switchMode("signin")}
                   className={`min-h-9 rounded-md py-1.5 transition-colors text-center ${
                     mode === "signin"
                       ? "bg-background text-foreground shadow-xs font-semibold"
@@ -576,11 +578,7 @@ function AuthPageInner() {
                   type="button"
                   role="tab"
                   aria-selected={mode === "signup"}
-                  onClick={() => {
-                    setMode("signup");
-                    setErrorMsg(null);
-                    setNotice(null);
-                  }}
+                  onClick={() => switchMode("signup")}
                   className={`min-h-9 rounded-md py-1.5 transition-colors text-center ${
                     mode === "signup"
                       ? "bg-background text-foreground shadow-xs font-semibold"
@@ -713,7 +711,7 @@ function AuthPageInner() {
                     onClick={() => {
                       void supabase.auth.signOut();
                       setStage("credentials");
-                      setMode("signin");
+                      switchMode("signin");
                       setCode("");
                       setErrorMsg(null);
                       setNotice(null);
@@ -799,11 +797,7 @@ function AuthPageInner() {
                         {mode === "signin" && (
                           <button
                             type="button"
-                            onClick={() => {
-                              setMode("reset");
-                              setErrorMsg(null);
-                              setNotice(null);
-                            }}
+                            onClick={() => switchMode("reset")}
                             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
                           >
                             {t("Forgot password?", "ভুলে গেছেন?")}
@@ -1014,11 +1008,7 @@ function AuthPageInner() {
                       )}
                       <button
                         type="button"
-                        onClick={() => {
-                          setMode("signin");
-                          setErrorMsg(null);
-                          setNotice(null);
-                        }}
+                        onClick={() => switchMode("signin")}
                         className="font-medium text-foreground hover:underline underline-offset-4 transition-colors"
                       >
                         {t("Sign in", "সাইন ইন")}
@@ -1029,11 +1019,7 @@ function AuthPageInner() {
                       {t("New to Framique? ", "ফ্রেমিক-এ নতুন? ")}
                       <button
                         type="button"
-                        onClick={() => {
-                          setMode("signup");
-                          setErrorMsg(null);
-                          setNotice(null);
-                        }}
+                        onClick={() => switchMode("signup")}
                         className="font-medium text-foreground hover:underline underline-offset-4 transition-colors"
                       >
                         {t("Create an account", "অ্যাকাউন্ট খুলুন")}
@@ -1042,11 +1028,7 @@ function AuthPageInner() {
                   ) : (
                     <button
                       type="button"
-                      onClick={() => {
-                        setMode("signin");
-                        setErrorMsg(null);
-                        setNotice(null);
-                      }}
+                      onClick={() => switchMode("signin")}
                       className="font-medium text-foreground hover:underline underline-offset-4 transition-colors"
                     >
                       {t("Back to sign in", "সাইন ইন-এ ফিরে যান")}

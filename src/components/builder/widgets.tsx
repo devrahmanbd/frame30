@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import type {
   Breakpoint,
   PropValue,
@@ -6,7 +6,7 @@ import type {
   SectionType,
   TemplateKey,
 } from "@/lib/builder-ast";
-import { resolveProps, safeEmbedUrl } from "@/lib/builder-ast";
+import { resolveProps, resolveSkin, safeEmbedUrl } from "@/lib/builder-ast";
 import { bnKey, textOf, type Locale } from "@/lib/bitext";
 import { formatDisplayMoney, formatDisplayNumber } from "@/lib/money-display";
 import type { WidgetRow } from "@/lib/widget-data";
@@ -30,6 +30,7 @@ import { CHROME_WIDGETS } from "./chrome";
 import { PDP_WIDGETS } from "./pdp";
 import { COLLECTION_WIDGETS } from "./collection";
 import { CART_WIDGETS } from "./cart";
+import { ACCOUNT_WIDGETS } from "./account";
 import { MERCH_WIDGETS, cardVariantOf } from "./merch";
 import { APPAREL_WIDGETS } from "./apparel";
 import { BEAUTY_WIDGETS } from "./beauty";
@@ -38,6 +39,8 @@ import { CIRCUIT_WIDGETS } from "./electronics";
 import { BASIC_WIDGETS } from "./basics";
 import { BLOG_WIDGETS } from "./blog";
 import { HERITAGE_WIDGETS } from "./heritage";
+import { SONGOSKRITI_WIDGETS } from "./songoskriti";
+import { SOMVABONA_WIDGETS } from "./somvabona";
 import {
   ProductCard,
   ProductCardSkeleton,
@@ -62,6 +65,8 @@ export type WidgetCtx = {
     minor: number | string | null | undefined,
     currency?: string,
   ) => string;
+  /** Rebase a root-relative store URL (like `/c/new-in`) for the current host environment. */
+  link: (href: string) => string;
   /** `h1` when this node owns the page's primary heading, else `h2`. */
   Heading: "h1" | "h2";
   primary: boolean;
@@ -178,6 +183,14 @@ export function widgetReader(
     },
     money(minor: number | string | null | undefined, currency = "BDT") {
       return formatDisplayMoney(minor, { locale, currency });
+    },
+    /**
+     * Test-context link stub (identity): rebasing root-relative store URLs
+     * for the host environment is SectionRenderer's job (linkBase), so unit
+     * contexts resolve links unchanged.
+     */
+    link(href: string) {
+      return href;
     },
   };
 }
@@ -386,6 +399,11 @@ const ContextSlot: WidgetComponent = ({ str, Heading, slot }) =>
  * keyboard-navigable gallery with thumbnails and tap-to-zoom; with no authored
  * images the host slot (live PDP media) renders exactly as before. The first
  * frame is eager and `fetchPriority="high"` because it is the PDP's LCP.
+ *
+ * Sliders lane: prev/next steppers (44px, bilingual), arrow-key navigation on
+ * the carousel region, a polite live position announcement, token-only
+ * surfaces, and zoom that animates only under `motion-safe` so reduced-motion
+ * users get an instant, non-animated toggle.
  */
 const ProductMedia: WidgetComponent = (ctx) => {
   const { str, bool, locale, slot } = ctx;
@@ -399,39 +417,102 @@ const ProductMedia: WidgetComponent = (ctx) => {
   const active = Math.min(index, images.length - 1);
   const alt =
     str("altText") || (locale === "bn" ? "পণ্যের ছবি" : "Product image");
+  const step = (delta: number) => {
+    setIndex((i) => (i + delta + images.length) % images.length);
+    setZoomed(false);
+  };
+  const prevLabel = locale === "bn" ? "আগের ছবি" : "Previous image";
+  const nextLabel = locale === "bn" ? "পরের ছবি" : "Next image";
+  const position = `${formatDisplayNumber(active + 1, { locale })} / ${formatDisplayNumber(images.length, { locale })}`;
+  const stepperBtn =
+    "absolute top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card/95 text-lg leading-none shadow transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
   return (
-    <section aria-roledescription="carousel" aria-label={alt}>
-      <button
-        type="button"
-        onClick={() => bool("zoom") && setZoomed((z) => !z)}
-        aria-label={
-          bool("zoom")
-            ? zoomed
-              ? locale === "bn"
-                ? "জুম বন্ধ"
-                : "Zoom out"
-              : locale === "bn"
-                ? "জুম করুন"
-                : "Zoom in"
-            : alt
+    <section
+      aria-roledescription="carousel"
+      aria-label={alt}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowLeft") step(-1);
+        else if (e.key === "ArrowRight") step(1);
+        else if (e.key === "Home") {
+          setIndex(0);
+          setZoomed(false);
+        } else if (e.key === "End") {
+          setIndex(images.length - 1);
+          setZoomed(false);
         }
-        className="block w-full overflow-hidden rounded-fq-lg border border-border bg-muted"
-        style={{
-          aspectRatio: ratio,
-          cursor: bool("zoom") ? "zoom-in" : "default",
-        }}
+      }}
+    >
+      <div
+        role="group"
+        aria-roledescription="slide"
+        aria-label={`${alt} ${position}`}
+        className="relative overflow-hidden rounded-fq-lg border border-border bg-muted"
+        style={{ aspectRatio: ratio }}
       >
-        <img
-          src={images[active]!}
-          alt={`${alt} ${active + 1}`}
-          loading={active === 0 ? "eager" : "lazy"}
-          fetchPriority={active === 0 ? "high" : "auto"}
-          decoding="async"
-          className={`h-full w-full object-cover ${zoomed ? "scale-150" : ""}`}
-        />
-      </button>
+        <button
+          type="button"
+          onClick={() => bool("zoom") && setZoomed((z) => !z)}
+          aria-label={
+            bool("zoom")
+              ? zoomed
+                ? locale === "bn"
+                  ? "জুম বন্ধ"
+                  : "Zoom out"
+                : locale === "bn"
+                  ? "জুম করুন"
+                  : "Zoom in"
+              : alt
+          }
+          className="block h-full w-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
+          style={{
+            cursor: bool("zoom") ? "zoom-in" : "default",
+          }}
+        >
+          <img
+            src={images[active]!}
+            alt={`${alt} ${active + 1}`}
+            loading={active === 0 ? "eager" : "lazy"}
+            fetchPriority={active === 0 ? "high" : "auto"}
+            decoding="async"
+            className={`h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-300 ${zoomed ? "motion-safe:scale-150" : ""}`}
+          />
+        </button>
+        {images.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={() => step(-1)}
+              aria-label={prevLabel}
+              className={`${stepperBtn} left-2`}
+            >
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => step(1)}
+              aria-label={nextLabel}
+              className={`${stepperBtn} right-2`}
+            >
+              <span aria-hidden="true">›</span>
+            </button>
+            <p
+              aria-hidden="true"
+              className="absolute bottom-2 right-2 rounded-full bg-foreground/70 px-2 py-1 text-xs tabular-nums text-background"
+            >
+              {position}
+            </p>
+          </>
+        )}
+      </div>
+      <p aria-live="polite" className="sr-only">
+        {locale === "bn" ? `ছবি ${position}` : `Image ${position}`}
+      </p>
       {bool("showThumbnails") && images.length > 1 && (
-        <div className="mt-2 flex gap-2 overflow-x-auto">
+        <div
+          role="group"
+          aria-label={locale === "bn" ? "থাম্বনেইল" : "Thumbnails"}
+          className="mt-2 flex gap-2 overflow-x-auto pb-1"
+        >
           {images.map((src, i) => (
             <button
               key={src}
@@ -442,7 +523,7 @@ const ProductMedia: WidgetComponent = (ctx) => {
                 setIndex(i);
                 setZoomed(false);
               }}
-              className={`h-16 w-16 shrink-0 overflow-hidden rounded-fq-md border ${
+              className={`h-16 w-16 shrink-0 overflow-hidden rounded-fq-md border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                 i === active
                   ? "border-primary ring-1 ring-primary"
                   : "border-border"
@@ -780,10 +861,10 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale, section }) => {
   const itemRows = Array.isArray(section.props.items)
     ? section.props.items
         .map((row) => ({
-          heading: typeof row.heading === "string" ? row.heading : "",
+          heading: textOf(row, "heading", locale),
           image: typeof row.image === "string" ? row.image : "",
-          subheading: typeof row.subheading === "string" ? row.subheading : "",
-          ctaLabel: typeof row.ctaLabel === "string" ? row.ctaLabel : "",
+          subheading: textOf(row, "subheading", locale),
+          ctaLabel: textOf(row, "ctaLabel", locale),
           ctaHref: typeof row.ctaHref === "string" ? row.ctaHref : "",
         }))
         .filter((row) => row.heading || row.image)
@@ -815,62 +896,225 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale, section }) => {
           },
         ].filter((slide, index) => index === 0 || slide.heading || slide.image);
   const [index, setIndex] = useState(0);
-  const active = slides[Math.min(index, slides.length - 1)]!;
+  // Reduced-motion gate for pointer-drag only. SSR-safe (effects never run
+  // under renderToStaticMarkup, so first paint assumes no preference, then
+  // corrects from the OS setting and follows mid-session changes). Buttons,
+  // keyboard and touch stay manual-only either way — this widget has no
+  // autoplay to disarm, every slide advances on user action alone.
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(query.matches);
+    const onChange = () => setReducedMotion(query.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+  const touchStartX = useRef<number | null>(null);
+  const pointerStartX = useRef<number | null>(null);
+  const count = slides.length;
+  const current = Math.min(index, count - 1);
+  const active = slides[current]!;
+  const step = (delta: number) =>
+    setIndex((i) => (i + delta + count) % count);
+  const goTo = (i: number) => setIndex(((i % count) + count) % count);
+  const prevLabel = locale === "bn" ? "আগের স্লাইড" : "Previous slide";
+  const nextLabel = locale === "bn" ? "পরের স্লাইড" : "Next slide";
+  const position = `${formatDisplayNumber(current + 1, { locale })} / ${formatDisplayNumber(count, { locale })}`;
+  const statusText =
+    locale === "bn" ? `স্লাইড ${position}` : `Slide ${position}`;
+  const stepperBtn =
+    "inline-flex h-11 w-11 items-center justify-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
+  const onRegionKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      step(1);
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      step(-1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      goTo(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      goTo(count - 1);
+    }
+  };
+  const onTouchStart = (event: React.TouchEvent) => {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  };
+  const onTouchEnd = (event: React.TouchEvent) => {
+    const start = touchStartX.current;
+    touchStartX.current = null;
+    if (start === null) return;
+    const end = event.changedTouches[0]?.clientX ?? start;
+    const delta = end - start;
+    if (Math.abs(delta) < 40) return;
+    if (delta < 0) step(1);
+    else step(-1);
+  };
+  // Desktop pointer-drag: mouse-only (touch already swipes above, so other
+  // pointer types are ignored to avoid double-advancing), pointer capture on
+  // the region, and a 40px threshold so plain clicks still activate. No
+  // visual drag offset — the slide swap is an instant content change, which
+  // is transform-only by construction (nothing animates, nothing reflows).
+  // Disabled under reduced motion; buttons/keyboard/touch keep working.
+  const onPointerDown = (event: React.PointerEvent) => {
+    if (reducedMotion) return;
+    if (event.pointerType !== "mouse" || event.button !== 0) return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest?.("button, a, input, select, textarea, [role='button']"))
+      return;
+    pointerStartX.current = event.clientX;
+    try {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    } catch {
+      // Capture is best-effort (SSR/test renderers may lack it); the
+      // threshold math below still holds without it.
+    }
+  };
+  const onPointerUp = (event: React.PointerEvent) => {
+    const start = pointerStartX.current;
+    pointerStartX.current = null;
+    if (reducedMotion) return;
+    if (event.pointerType !== "mouse") return;
+    if (start === null) return;
+    const delta = event.clientX - start;
+    if (Math.abs(delta) < 40) return;
+    if (delta < 0) step(1);
+    else step(-1);
+  };
+  const onPointerCancel = () => {
+    pointerStartX.current = null;
+  };
+  const shellClass = `overflow-hidden rounded-fq-lg border border-border bg-info-soft ${
+    str("align") === "center" ? "text-center" : ""
+  }`;
+  // Single slide: no carousel semantics, no controls — the static hero the
+  // storefront always rendered. The CTA keeps its focus-visible ring.
+  if (count <= 1) {
+    return (
+      <section className={shellClass}>
+        {active.image && (
+          <MediaFrame
+            src={active.image}
+            alt={active.heading}
+            ratio="wide"
+            eager
+            className="rounded-none"
+            sizes="100vw"
+          />
+        )}
+        <div className="p-8">
+          <Heading className="font-bangla-display text-3xl font-bold sm:text-4xl">
+            {active.heading}
+          </Heading>
+          {active.subheading && (
+            <p className="mt-2 max-w-xl text-muted-foreground">
+              {active.subheading}
+            </p>
+          )}
+          {active.ctaLabel && (
+            <a
+              href={active.ctaHref || "#"}
+              className="mt-4 inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              {active.ctaLabel}
+            </a>
+          )}
+        </div>
+      </section>
+    );
+  }
   return (
     <section
-      className={`overflow-hidden rounded-fq-lg border border-border bg-info-soft ${
-        str("align") === "center" ? "text-center" : ""
-      }`}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label={locale === "bn" ? "হিরো ক্যারোজেল" : "Hero carousel"}
+      onKeyDown={onRegionKeyDown}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerCancel}
+      className={shellClass}
     >
-      {active.image && (
-        <MediaFrame
-          src={active.image}
-          alt={active.heading}
-          ratio="wide"
-          eager={index === 0}
-          className="rounded-none"
-          sizes="100vw"
-        />
-      )}
-      <div className="p-8">
-        <Heading className="font-bangla-display text-3xl font-bold sm:text-4xl">
-          {active.heading}
-        </Heading>
-        {index === 0 && active.subheading && (
-          <p className="mt-2 max-w-xl text-muted-foreground">
-            {active.subheading}
-          </p>
+      <p className="sr-only" role="status">
+        {statusText}
+      </p>
+      <div
+        role="group"
+        aria-roledescription="slide"
+        aria-label={statusText}
+      >
+        {active.image && (
+          <MediaFrame
+            src={active.image}
+            alt={active.heading}
+            ratio="wide"
+            eager={current === 0}
+            className="rounded-none"
+            sizes="100vw"
+          />
         )}
-        {active.ctaLabel && (
-          <a
-            href={active.ctaHref || "#"}
-            className="mt-4 inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
-          >
-            {active.ctaLabel}
-          </a>
-        )}
-        {slides.length > 1 && (
-          <div
-            className="mt-4 flex gap-2"
-            role="group"
-            aria-label={locale === "bn" ? "স্লাইড" : "Slides"}
-          >
-            {slides.map((slide, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setIndex(i)}
-                aria-current={i === index}
-                aria-label={`${locale === "bn" ? "স্লাইড" : "Slide"} ${i + 1}`}
-                className={`h-11 w-11 rounded-fq-md border border-border text-xs tabular-nums ${
-                  i === index ? "bg-primary text-primary-foreground" : "bg-card"
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
+        <div className="p-8">
+          <Heading className="font-bangla-display text-3xl font-bold sm:text-4xl">
+            {active.heading}
+          </Heading>
+          {current === 0 && active.subheading && (
+            <p className="mt-2 max-w-xl text-muted-foreground">
+              {active.subheading}
+            </p>
+          )}
+          {active.ctaLabel && (
+            <a
+              href={active.ctaHref || "#"}
+              className="mt-4 inline-block rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              {active.ctaLabel}
+            </a>
+          )}
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => step(-1)}
+              aria-label={prevLabel}
+              className={stepperBtn}
+            >
+              <span aria-hidden="true">‹</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => step(1)}
+              aria-label={nextLabel}
+              className={stepperBtn}
+            >
+              <span aria-hidden="true">›</span>
+            </button>
+            <div
+              className="flex flex-wrap items-center gap-2"
+              role="group"
+              aria-label={locale === "bn" ? "স্লাইড" : "Slides"}
+            >
+              {slides.map((slide, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => goTo(i)}
+                  aria-current={i === current}
+                  aria-label={`${locale === "bn" ? "স্লাইড" : "Slide"} ${formatDisplayNumber(i + 1, { locale })} / ${formatDisplayNumber(count, { locale })}`}
+                  className={`h-11 w-11 rounded-fq-md border border-border text-xs tabular-nums transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
+                    i === current
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card"
+                  }`}
+                >
+                  {formatDisplayNumber(i + 1, { locale })}
+                </button>
+              ))}
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </section>
   );
@@ -891,10 +1135,16 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   ...COLLECTION_WIDGETS,
   // Phase 2.5 — cart / checkout / account.
   ...CART_WIDGETS,
+  // Account template (shopper-scoped): orders_list, profile_card.
+  ...ACCOUNT_WIDGETS,
   // Phase 2.6 — Atelier (apparel).
   ...APPAREL_WIDGETS,
   // Phase 9 — Heritage (clothing).
   ...HERITAGE_WIDGETS,
+  // Songoskriti heritage gap pack.
+  ...SONGOSKRITI_WIDGETS,
+  // Somvabona everyday-ethnic pack (spec 2026-09-25 §3).
+  ...SOMVABONA_WIDGETS,
 
   container: Container,
   columns: Container,
@@ -913,6 +1163,68 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
           <hr className="border-border" />
         )}
       </div>
+    );
+  },
+
+  // Storefront contact channel as a placeable block. Fail closed with no
+  // phone (never a dead wa.me link); digits-only, greeting encoded.
+  whatsapp_button: ({ str }) => {
+    const phone = str("phone_number").replace(/[^0-9]/g, "");
+    if (!phone) return null;
+    const greet =
+      str("greeting_message") || "Hello! I am interested in your products.";
+    const href = `https://wa.me/${phone}?text=${encodeURIComponent(greet)}`;
+    const label = str("label") || "Chat on WhatsApp";
+    const size = str("size");
+    const dim = size === "sm" ? 44 : size === "lg" ? 64 : 56;
+    const glyph = (
+      <svg
+        width={dim - 16}
+        height={dim - 16}
+        viewBox="0 0 512 512"
+        fill="none"
+        aria-hidden
+      >
+        <path
+          style={{ fill: "var(--color-primary-foreground)" }}
+          d="M1.1 509.4L37 378.6C14.8 340.2 3.2 296.7 3.3 252.4C3.3 113.2 116.6 0 255.8 0c67.5 0 130.9 26.3 178.6 74s73.9 111.1 73.9 178.6C508.2 391.8 394.9 505 255.8 505h-.1c-42.3 0-83.8-10.6-120.7-30.7z"
+        />
+        <path
+          style={{ fill: "var(--color-whatsapp)" }}
+          d="M255.8 42.6c-115.8 0-209.9 94.1-210 209.8c0 39.5 11.2 78.2 32.2 111.7l5 7.9l-21.2 77.4l79.4-20.8l7.7 4.5c32.2 19.1 69.2 29.2 106.8 29.2h.1c115.7 0 209.8-94.1 209.9-209.8c.2-55.7-21.9-109.1-61.4-148.4c-39.3-39.4-92.8-61.6-148.5-61.5"
+        />
+        <path
+          style={{ fill: "var(--color-primary-foreground)" }}
+          fillRule="evenodd"
+          d="M192.7 146.9c-4.7-10.5-9.7-10.7-14.2-10.9l-12.1-.1c-4.2 0-11 1.6-16.8 7.9s-22.1 21.6-22.1 52.6s22.6 61 25.8 65.2s43.6 69.9 107.8 95.2c53.3 21 64.1 16.8 75.7 15.8c11.6-1.1 37.3-15.3 42.6-30s5.3-27.4 3.7-30s-5.8-4.2-12.1-7.4s-37.3-18.4-43.1-20.5s-10-3.2-14.2 3.2c-4.2 6.3-16.3 20.5-20 24.7s-7.4 4.7-13.7 1.6c-6.3-3.2-26.6-9.8-50.7-31.3c-18.8-16.7-31.4-37.4-35.1-43.7s-.4-9.7 2.8-12.9c2.8-2.8 6.3-7.4 9.5-11.1s4.2-6.3 6.3-10.5s1.1-7.9-.5-11.1c-1.8-3-14-34.2-19.6-46.7"
+        />
+      </svg>
+    );
+    if (str("style") === "bar") {
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener"
+          aria-label={label}
+          className="inline-flex items-center gap-2.5 rounded-full bg-whatsapp px-5 py-2.5 text-sm font-semibold text-primary-foreground no-underline"
+        >
+          {glyph}
+          <span>{label}</span>
+        </a>
+      );
+    }
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener"
+        aria-label={label}
+        className="inline-flex items-center justify-center rounded-full"
+        style={{ width: dim, height: dim }}
+      >
+        {glyph}
+      </a>
     );
   },
 
@@ -993,7 +1305,10 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
           className="rounded-none"
         />
         {str("caption") && (
-          <figcaption className="px-3 py-2 text-xs text-muted-foreground">
+          <figcaption
+            data-part="caption"
+            className="px-3 py-2 text-xs text-muted-foreground"
+          >
             {str("caption")}
           </figcaption>
         )}
@@ -1052,7 +1367,10 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   testimonial: ({ str }) => (
     <figure className="rounded-fq-lg border border-border bg-card p-6">
       <blockquote className="text-sm italic">{str("quote")}</blockquote>
-      <figcaption className="mt-2 text-xs text-muted-foreground">
+      <figcaption
+        data-part="author"
+        className="mt-2 text-xs text-muted-foreground"
+      >
         {str("author")}
       </figcaption>
     </figure>
@@ -1060,14 +1378,14 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
 
   // Phase 1.3: one Disclosure primitive, so FAQ, spec groups and size guides
   // all share the same keyboard and ARIA behaviour.
-  faq: ({ str, Heading, section }) => {
+  faq: ({ str, Heading, section, locale }) => {
     // Repeater-first: studio `items` rows win when present, scalar q1/a1…
     // pairs remain as the fallback for theme-authored sections.
     const itemRows = Array.isArray(section.props.items)
       ? section.props.items
           .map((row) => ({
-            q: typeof row.question === "string" ? row.question : "",
-            a: typeof row.answer === "string" ? row.answer : "",
+            q: textOf(row, "question", locale),
+            a: textOf(row, "answer", locale),
           }))
           .filter((row) => row.q)
       : [];
@@ -1141,6 +1459,7 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
           id={`nl-${section.id}`}
           name="email"
           type="email"
+          autoComplete="email"
           required
           className="min-w-[16rem] flex-1 rounded-fq-md border border-border px-3 py-2 text-sm"
           placeholder="you@example.com"
@@ -1166,27 +1485,67 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
 
   product_grid: ({ str, int, bool, Heading, productSlot, data, locale }) => {
     const cols = int("columns", 4, 2, 4);
+    // Widget skin (spec 2026-09-25): cards (default, current DataGrid grid
+    // byte-identical) and rows (stacked full-width list). Heading, host slot
+    // override, skeleton parity, empty state, bn/en copy and a11y stay
+    // common — only the list composition forks.
+    const skin = resolveSkin("product_grid", str("skin"));
+    const heading = str("heading") ? (
+      <Heading className="mb-3 text-lg font-semibold">
+        {str("heading")}
+      </Heading>
+    ) : null;
+    const pending = data?.pending ?? false;
+    const rowsList = data?.rows ?? [];
+    const rowsBody =
+      pending || data?.rows === undefined ? (
+        <ul className="space-y-3" aria-hidden="true">
+          {Array.from({ length: 4 }, (_, i) => (
+            <li key={i}>
+              <ProductCardSkeleton variant="wide" withPrice />
+            </li>
+          ))}
+        </ul>
+      ) : rowsList.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          Nothing to show here yet.
+        </p>
+      ) : (
+        <ul className="space-y-3">
+          {rowsList.map((row) => (
+            <li key={row.id}>
+              <ProductCard
+                row={row}
+                locale={locale}
+                variant="wide"
+                withPrice
+                promise={str("promise") || undefined}
+                showRating={bool("showRating")}
+              />
+            </li>
+          ))}
+        </ul>
+      );
     return (
       <section>
-        {str("heading") && (
-          <Heading className="mb-3 text-lg font-semibold">
-            {str("heading")}
-          </Heading>
-        )}
-        {productSlot ?? (
-          <DataGrid
-            rows={data?.rows}
-            pending={data?.pending ?? false}
-            cols={cols}
-            ratio="square"
-            locale={locale}
-            withPrice
-            variant={cardVariantOf(str("cardVariant"))}
-            density={str("density") === "compact" ? "compact" : "comfortable"}
-            promise={str("promise") || undefined}
-            showRating={bool("showRating")}
-          />
-        )}
+        {heading}
+        {productSlot ??
+          (skin === "rows" ? (
+            rowsBody
+          ) : (
+            <DataGrid
+              rows={data?.rows}
+              pending={pending}
+              cols={cols}
+              ratio="square"
+              locale={locale}
+              withPrice
+              variant={cardVariantOf(str("cardVariant"))}
+              density={str("density") === "compact" ? "compact" : "comfortable"}
+              promise={str("promise") || undefined}
+              showRating={bool("showRating")}
+            />
+          ))}
       </section>
     );
   },

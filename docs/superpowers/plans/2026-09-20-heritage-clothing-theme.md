@@ -26,9 +26,11 @@
 ## Task 1: Add New SectionType Members
 
 **Files:**
+
 - Modify: `src/lib/builder-ast.ts`
 
 **Interfaces:**
+
 - Consumes: existing `SectionType` union
 - Produces: 8 new members in the union
 
@@ -39,6 +41,7 @@ Read `src/lib/builder-ast.ts` and find the `SectionType` type union.
 - [ ] **Step 2: Add 8 new members**
 
 Add these to the `SectionType` union:
+
 ```typescript
 | 'hero_carousel'
 | 'department_grid'
@@ -67,15 +70,18 @@ git commit -m "feat(builder): add 8 heritage section types"
 ## Task 2: Build Heritage Widget Components
 
 **Files:**
+
 - Create: `src/components/builder/heritage.tsx`
 
 **Interfaces:**
+
 - Consumes: SectionType members from Task 1
 - Produces: `HERITAGE_WIDGETS` export — Record mapping SectionType → component
 
 - [ ] **Step 1: Create heritage.tsx with all 8 widgets**
 
 Create `src/components/builder/heritage.tsx` with:
+
 - `HeroCarousel` — full-viewport swiping hero with headline, subhead, CTA, caption. 3-5 slides auto-advance 5s.
 - `DepartmentGrid` — 6-8 image cards with name + count. Tappable categories.
 - `HeritageStory` — Split: large editorial image + story text + founder quote.
@@ -86,6 +92,7 @@ Create `src/components/builder/heritage.tsx` with:
 - `StoryTrunk` — Collapsible FAQ accordion — answers slide open/down.
 
 Each widget must:
+
 - Accept props matching the types defined in the design doc
 - Use Tailwind CSS for styling
 - Use the theme tokens from `ThemeTokens` type
@@ -109,9 +116,11 @@ git commit -m "feat(builder): add 8 heritage widget components"
 ## Task 3: Register Heritage Widgets in WIDGET_COMPONENTS
 
 **Files:**
+
 - Modify: `src/components/builder/widgets.tsx`
 
 **Interfaces:**
+
 - Consumes: `HERITAGE_WIDGETS` from Task 2, `SectionType` from Task 1
 - Produces: Updated `WIDGET_COMPONENTS` record with 8 new entries
 
@@ -122,8 +131,9 @@ Read `src/components/builder/widgets.tsx` and find the `WIDGET_COMPONENTS` recor
 - [ ] **Step 2: Import and register heritage widgets**
 
 Import `HERITAGE_WIDGETS` from `./heritage` and spread into `WIDGET_COMPONENTS`:
+
 ```typescript
-import { HERITAGE_WIDGETS } from './heritage';
+import { HERITAGE_WIDGETS } from "./heritage";
 
 export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   ...HERITAGE_WIDGETS,
@@ -148,9 +158,11 @@ git commit -m "feat(builder): register heritage widgets in WIDGET_COMPONENTS"
 ## Task 4: Rebuild clothing-heritage Blueprint
 
 **Files:**
+
 - Modify: `src/lib/theme-blueprints.ts`
 
 **Interfaces:**
+
 - Consumes: `SectionType` from Task 1, `ThemeTokens` type
 - Produces: Updated `clothing-heritage` blueprint with 6 templates
 
@@ -161,6 +173,7 @@ Read `src/lib/theme-blueprints.ts` and find the `clothing-heritage` blueprint en
 - [ ] **Step 2: Update tokens**
 
 Replace the existing tokens with:
+
 ```typescript
 {
   brand: '#1A1A1A',
@@ -187,6 +200,7 @@ Replace the existing tokens with:
 - [ ] **Step 3: Add 6 templates**
 
 Add templates object with:
+
 - `homepage`: hero_carousel → department_grid → product_rail → heritage_story → textile_showcase → editorial_banner → testimonial_carousel → marquee_strip
 - `collection`: heritage_story → product_rail → textile_showcase
 - `pdp`: split-feature → size-selector → textile_showcase → testimonial_carousel → support_strip
@@ -211,15 +225,18 @@ git commit -m "feat(theme): rebuild clothing-heritage blueprint with 6 templates
 ## Task 5: Write Demo Catalog SQL Migration
 
 **Files:**
+
 - Create: `supabase/migrations/20260920_heritage_demo_catalog.sql`
 
 **Interfaces:**
+
 - Consumes: existing `categories`, `products`, `product_variants`, `product_images` tables
 - Produces: 50+ products, 8 departments, 15 subcategories
 
 - [ ] **Step 1: Create migration file**
 
 Create `supabase/migrations/20260920_heritage_demo_catalog.sql` with:
+
 - 8 top-level categories + 15 subcategories
 - 50+ products with real Bengali names
 - Product variants with BDT pricing
@@ -242,16 +259,19 @@ git commit -m "feat(catalog): add heritage demo catalog migration"
 ## Task 6: Write Import RPCs
 
 **Files:**
+
 - Create: `src/lib/theme-imports.server.ts`
 - Modify: `supabase/migrations/20260920_import_rpcs.sql`
 
 **Interfaces:**
+
 - Consumes: existing service-layer functions
 - Produces: 5 RPCs (import_theme_slides, import_theme_media, import_theme_products, import_theme_posts, import_theme_all)
 
 - [ ] **Step 1: Create theme-imports.server.ts**
 
 Create `src/lib/theme-imports.server.ts` with:
+
 - `importThemeSlides(themeKey: string)` — RPC wrapper
 - `importThemeMedia(themeKey: string)` — RPC wrapper
 - `importThemeProducts(themeKey: string)` — RPC wrapper
@@ -261,6 +281,7 @@ Create `src/lib/theme-imports.server.ts` with:
 - [ ] **Step 2: Create import RPCs migration**
 
 Create migration with 5 RPC functions that:
+
 - Check auth + merchant ownership
 - Use existing service-layer functions (no raw SQL)
 - Are idempotent (check for existing items before insert)
@@ -282,16 +303,19 @@ git commit -m "feat(import): add theme import RPCs"
 ## Task 7: Build Import Demo Data UI
 
 **Files:**
+
 - Create: `src/components/admin/themes/import-demo-data.tsx`
 - Modify: `src/components/admin/themes/ThemesScreen.tsx`
 
 **Interfaces:**
+
 - Consumes: import RPCs from Task 6
 - Produces: Import panel with checkboxes + import button
 
 - [ ] **Step 1: Create import-demo-data.tsx**
 
 Create `src/components/admin/themes/import-demo-data.tsx` with:
+
 - Checkbox group: ☐ Slides, ☐ Media, ☐ Products, ☐ Posts, ☐ All
 - Import button that calls appropriate RPC
 - Loading state + success/error feedback
@@ -318,17 +342,20 @@ git commit -m "feat(import): add import demo data UI"
 ## Task 8: Create Theme Preview Route
 
 **Files:**
+
 - Create: `src/routes/theme-preview.$key.tsx`
 - Create: `src/components/store/ThemePreviewFrame.tsx`
 - Modify: `src/components/admin/themes/ThemesScreen.tsx`
 
 **Interfaces:**
+
 - Consumes: blueprint tokens + demo catalog
 - Produces: Preview route + Preview button in theme cards
 
 - [ ] **Step 1: Create ThemePreviewFrame component**
 
 Create `src/components/store/ThemePreviewFrame.tsx` with:
+
 - Renders theme with demo data (no auth required)
 - Template navigation (Homepage, Collection, PDP, About, Contact)
 - Full-screen modal or new tab
@@ -336,6 +363,7 @@ Create `src/components/store/ThemePreviewFrame.tsx` with:
 - [ ] **Step 2: Create preview route**
 
 Create `src/routes/theme-preview.$key.tsx` with:
+
 - Loads blueprint by key
 - Renders ThemePreviewFrame with demo data
 
@@ -360,9 +388,11 @@ git commit -m "feat(preview): add theme preview route and UI"
 ## Task 9: Run Tests & Fix
 
 **Files:**
+
 - All modified files
 
 **Interfaces:**
+
 - Consumes: all tasks 1-8
 - Produces: Passing typecheck + tests
 
@@ -397,9 +427,11 @@ git commit -m "fix: heritage theme typecheck and test fixes"
 ## Task 10: Deploy & Verify
 
 **Files:**
+
 - All modified files
 
 **Interfaces:**
+
 - Consumes: all tasks 1-9
 - Produces: Deployed and verified Heritage theme
 

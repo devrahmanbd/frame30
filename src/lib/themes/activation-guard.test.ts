@@ -130,24 +130,24 @@ describe("activation guard", () => {
     const out: any = await activateTheme(db.asClient(), MERCHANT, THEME);
     expect(out.id).toBe(THEME);
     expect(
-      db.rows("store_themes").find((r) => r.id === THEME)!
-        .published_version_id,
+      db.rows("store_themes").find((r) => r.id === THEME)!.published_version_id,
     ).toBe("v-reviewed");
     expect(
       db.rows("theme_versions").find((r) => r.id === "v-unreviewed")!.status,
     ).toBe("draft");
     // Activation must not rewrite version rows at all on this path.
-    expect(db.callsOf("update").filter((c) => c.table === "theme_versions"))
-      .toHaveLength(0);
+    expect(
+      db.callsOf("update").filter((c) => c.table === "theme_versions"),
+    ).toHaveLength(0);
   });
 
   it("refuses when nothing publishable exists at all", async () => {
     const db = guardDb({ pointer: null, versions: [], draft: false });
-    await expect(
-      activateTheme(db.asClient(), MERCHANT, THEME),
-    ).rejects.toThrow(/no published version/i);
-    expect(
-      db.rows("store_themes").find((r) => r.id === THEME)!.is_active,
-    ).toBe(false);
+    await expect(activateTheme(db.asClient(), MERCHANT, THEME)).rejects.toThrow(
+      /no published version/i,
+    );
+    expect(db.rows("store_themes").find((r) => r.id === THEME)!.is_active).toBe(
+      false,
+    );
   });
 });

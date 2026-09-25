@@ -484,10 +484,13 @@ describe("spec, tokens and stylesheet agree", () => {
   });
 
   it("parks the drift and every mesh blob under reduced motion", () => {
+    // Whitespace-tolerant: the reduced-motion rule is formatted across lines.
     expect(css).toMatch(
-      /@media \(prefers-reduced-motion: reduce\) {\s*\.fq-aurora\[data-band-drift="true"\]::before { animation: none !important; }/,
+      /@media \(prefers-reduced-motion: reduce\) \{\s*\.fq-aurora\[data-band-drift="true"\]::before \{\s*animation: none !important;\s*\}/,
     );
-    expect(css).toContain(".fq-mesh-blob { animation: none !important; }");
+    expect(css).toMatch(
+      /\.fq-mesh-blob\s*\{\s*animation:\s*none\s*!important;\s*\}/,
+    );
   });
 
   it("caps reduced-motion transitions at the spec ceiling", () => {

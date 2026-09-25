@@ -8,6 +8,7 @@
  * block markup, bridged transparently) or the page builder.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -24,9 +25,16 @@ import {
 import {
   sectionsToStudioNodes,
   studioNodesToSections,
+  type StudioDoc,
   type StudioNode,
 } from "@/lib/studio/model";
-import { AlertTriangle } from "lucide-react";
+import type { RevisionEntry } from "@/lib/studio/history";
+import {
+  DEFAULT_TOKENS,
+  tokensToCss,
+  type ThemeTokens,
+} from "@/lib/builder-ast";
+import { AlertTriangle } from "@/components/icons/tabler";
 import { ClassicEditor } from "@/components/admin/blog/ClassicEditor";
 import { ShortcutHelp } from "@/components/admin/content/ShortcutHelp";
 import { StudioBuilder } from "@/components/builder/studio/StudioBuilder";
@@ -43,6 +51,7 @@ import {
 import { parseBody, serializeBody } from "@/lib/blog-body";
 import {
   EDITOR_SHORTCUTS,
+  countBuilderLints,
   prePublishChecks,
   primaryAction,
   titlePill,
@@ -76,12 +85,89 @@ const DEVICE_WIDTH: Record<Device, string> = {
   mobile: "390px",
 };
 
+/** A plugin-contributed element for the studio Elements panel. */
+export type StudioPluginEntry = {
+  key: string;
+  label: string;
+};
+
+/** Server revision shape the shell maps onto the studio history panel. */
+export type ShellRevisionInput = {
+  id: string;
+  title: string;
+  status: string;
+  isAutosave: boolean;
+  createdAt: string;
+  authorId: string | null;
+};
+
+/**
+ * Map server revisions onto studio `RevisionEntry` values (newest first, as
+ * stored). Unknown authors fall back to "Unknown"; unparseable dates to 0.
+ * Pure so the revisions passthrough is unit-testable without a server.
+ */
+export function toStudioRevisions(
+  revisions: ShellRevisionInput[] | null | undefined,
+  authors: { id: string; name: string }[] | null | undefined,
+): RevisionEntry[] {
+  if (!revisions || revisions.length === 0) return [];
+  const names = new Map((authors ?? []).map((a) => [a.id, a.name] as const));
+  return revisions.map((r) => {
+    const at = Date.parse(r.createdAt);
+    return {
+      id: r.id,
+      author: (r.authorId != null && names.get(r.authorId)) || "Unknown",
+      at: Number.isNaN(at) ? 0 : at,
+      kind: r.isAutosave
+        ? ("autosave" as const)
+        : r.status === "published"
+          ? ("published" as const)
+          : ("revision" as const),
+    };
+  });
+}
+
+/**
+ * Build the studio `onPublish` handler: flush the live canvas into the shell
+ * body first, then run the shell's working `commit("publish")` path. The
+ * flush matters because the shell commit reads the shell document — without
+ * it the last keystrokes would publish one save behind.
+ */
+export function createStudioPublishHandler(
+  serialize: (body: string) => void,
+  publish: () => void | Promise<void>,
+  flush: () => Promise<void> = () =>
+    new Promise((resolve) => setTimeout(resolve, 0)),
+): (next: StudioDoc) => Promise<void> {
+  return async (next) => {
+    serialize(serializeStudioBody(next));
+    await flush();
+    await publish();
+  };
+}
+
+/** Editable subset of theme tokens the shell paints onto the canvas. */
+export type ShellBrandTokens = Pick<
+  ThemeTokens,
+  "brand" | "accent" | "surface" | "ink" | "radius"
+>;
+
+/** Merge local brand overrides over the theme base for canvas painting. */
+export function resolveShellTokens(
+  base: ThemeTokens,
+  overrides: Partial<ShellBrandTokens>,
+): ThemeTokens {
+  return { ...base, ...overrides };
+}
+
 export function EditorShell({
   kind,
   id,
   listHref,
   onCreated,
   forceEditor = null,
+  pluginEntries: pluginEntriesProp,
+  plugins: pluginsProp,
 }: {
   kind: ContentKind;
   id: string | null;
@@ -89,11 +175,24 @@ export function EditorShell({
   onCreated: (id: string) => void;
   /** `?editor=builder` from the list's "Edit with Builder" action. */
   forceEditor?: "classic" | "builder" | null;
+  /**
+   * PLUGIN SEAM (plugin track owns StudioBuilder/ElementsPanel/renderers):
+   * optional plugin element entries. Accepted here and forwarded to the
+   * studio for the Elements tray; defaults to empty (no behaviour change).
+   * `plugins` is an alias so callers can use either name.
+   */
+  pluginEntries?: StudioPluginEntry[];
+  plugins?: StudioPluginEntry[];
 }) {
   const { t, lang } = useLang();
   const navigate = useNavigate();
   const state = useEditorDoc(kind, id, onCreated);
   const { doc, update, context } = state;
+
+  // PLUGIN SEAM (continued): normalized here, forwarded into the studio via
+  // `studioSeamProps` at the <StudioBuilder> call site. Empty by default,
+  // so the Elements tray renders exactly as before until entries exist.
+  const pluginEntries = pluginEntriesProp ?? pluginsProp ?? [];
 
   // Pages open in the full-window builder: the outer sidebar starts closed
   // (page settings + SEO live in the builder's own panels) but stays one
@@ -127,7 +226,7 @@ export function EditorShell({
   const pill = titlePill(doc, lang === "bn" ? "bn" : "en");
   const builderDoc: BuilderDoc | null =
     doc.editor === "builder"
-      ? parseBuilderBody(doc.body) ?? starterDoc(doc.title || undefined)
+      ? (parseBuilderBody(doc.body) ?? starterDoc(doc.title || undefined))
       : null;
   const needsChoice = false;
 
@@ -147,7 +246,8 @@ export function EditorShell({
       forced.current = true;
       return;
     }
-    const targetEditor = forceEditor ?? (kind === "page" ? "builder" : "classic");
+    const targetEditor =
+      forceEditor ?? (kind === "page" ? "builder" : "classic");
     if (targetEditor !== context.doc.editor) {
       forced.current = true;
       markChoice();
@@ -187,14 +287,25 @@ export function EditorShell({
     if (ok) setPrePublish(false);
   }, [state]);
 
+  // Real canvas warnings: the pre-publish "lints" row counts what is actually
+  // on the builder canvas instead of a hardcoded zero, so
+  // `editor-doc.ts:381-395` gates on something real.
+  const builderLintCount = useMemo(
+    () =>
+      doc.editor === "builder"
+        ? countBuilderLints(doc.body, doc.title || undefined)
+        : 0,
+    [doc.editor, doc.body, doc.title],
+  );
+
   const checks = useMemo(
     () =>
       prePublishChecks(doc, {
         seoScore: state.seoScore,
-        builderLints: 0,
+        builderLints: builderLintCount,
         slugTaken: state.error?.code === "slug_taken",
       }),
-    [doc, state.seoScore, state.error],
+    [doc, state.seoScore, state.error, builderLintCount],
   );
 
   // Keyboard shortcuts.
@@ -286,6 +397,41 @@ export function EditorShell({
 
   const setBody = (body: string) => update({ body }, "body");
 
+  // The studio's inner publish button used to toast success while doing
+  // nothing (no `onPublish` was threaded through). This flushes the live
+  // canvas into the shell body first, then runs the working
+  // `commit("publish")` path the shell's own pre-publish flow uses.
+  const publishFromStudio = (next: StudioDoc) =>
+    createStudioPublishHandler(
+      (body) => setBody(body),
+      () => publish(),
+    )(next);
+
+  // Server revisions → studio History panel shape (newest first, as stored).
+  const studioRevisions = useMemo(
+    () => toStudioRevisions(context?.revisions, context?.authors ?? []),
+    [context],
+  );
+
+  // Working restore for the studio History revisions tab. The studio owns
+  // the dialog chrome (other track); this callback is forwarded via
+  // `studioSeamProps` until the studio declares the prop (reported hunk).
+  const restoreStudioRevision = useCallback(
+    (revisionId: string) => {
+      void state.restoreRevision(revisionId);
+    },
+    [state],
+  );
+
+  // Receiver-owned props the studio does not declare yet. Spread (not
+  // explicit attributes) so this file compiles and runs unchanged today —
+  // the extra props are inert until the owning track adds them — and flows
+  // through the moment it does. `pluginEntries` only spreads when non-empty.
+  const studioSeamProps = {
+    ...(pluginEntries.length > 0 ? { pluginEntries } : null),
+    onRestoreRevision: restoreStudioRevision,
+  };
+
   // Shared (global) blocks for the page's theme, inserted as detached
   // editable copies. Fail-soft: without a theme pin or without the themes
   // permission the Globals tab simply shows its empty state.
@@ -339,6 +485,35 @@ export function EditorShell({
     [createGlobal, doc.themeId, globalsQuery, t],
   );
 
+  // Brand tokens surface. The pinned theme (falling back to the active site
+  // theme) paints the canvas + preview through CSS vars on a wrapper div —
+  // vars inherit into the whole studio subtree, so no studio-owned file
+  // needs to change for the paint to land. Overrides below are local preview
+  // state; persisting them to the theme draft is the theme track's hunk
+  // (reported, not implemented here). Base tokens are DEFAULT_TOKENS until
+  // the theme track supplies the effective theme's real tokens (reported).
+  const themeOptions = context?.themes ?? [];
+  const effectiveThemeId =
+    doc.themeId ?? themeOptions.find((t) => t.isActive)?.id ?? null;
+  const effectiveThemeName =
+    themeOptions.find((t) => t.id === doc.themeId)?.name ??
+    themeOptions.find((t) => t.isActive)?.name ??
+    null;
+  const [brandOverrides, setBrandOverrides] = useState<
+    Partial<ShellBrandTokens>
+  >({});
+  useEffect(() => {
+    setBrandOverrides({});
+  }, [effectiveThemeId]);
+  const shellTokens = useMemo(
+    () => resolveShellTokens(DEFAULT_TOKENS, brandOverrides),
+    [brandOverrides],
+  );
+  const shellTokenVars = useMemo(
+    () => tokensToCss(shellTokens) as CSSProperties,
+    [shellTokens],
+  );
+
   // Pages are builder-only: no switch back to the removed block surface.
   // Posts keep the classic ⇄ builder toggle.
   const menu: MenuAction[] = [
@@ -362,9 +537,7 @@ export function EditorShell({
                 ? t("Switch to Classic editor", "ক্লাসিক এডিটরে যান")
                 : t("Edit with Builder", "বিল্ডারে সম্পাদনা"),
             onSelect: () =>
-              switchEditor(
-                doc.editor === "builder" ? "classic" : "builder",
-              ),
+              switchEditor(doc.editor === "builder" ? "classic" : "builder"),
           } as MenuAction,
         ]),
     {
@@ -568,36 +741,46 @@ export function EditorShell({
                   />
                 )}
                 {doc.editor === "builder" && builderDoc ? (
-                  <StudioBuilder
-                    doc={
-                      readStudioBody(doc.body, doc.title || pill.title) ??
-                      upgradeV1(builderDoc, doc.title || pill.title)
-                    }
-                    onChange={(next) => setBody(serializeStudioBody(next))}
-                    docId={doc.id ? `${kind}:${doc.id}` : null}
-                    resetKey={
-                      doc.id ? `${kind}:${doc.id}:${doc.updatedAt ?? ""}` : "new"
-                    }
-                    fill
-                    globalBlocks={globalBlocks}
-                    onSaveGlobalBlock={saveGlobalBlock}
-                    sideTab={
-                      context
-                        ? {
-                            id: "seo",
-                            label: t("SEO", "এসইও"),
-                            content: (
-                              <EditorSeoBox
-                                doc={doc}
-                                update={update}
-                                storeName={context.storeName}
-                                storeSlug={context.storeSlug}
-                              />
-                            ),
-                          }
-                        : null
-                    }
-                  />
+                  <div
+                    style={shellTokenVars}
+                    data-theme-scope={effectiveThemeId ?? "site"}
+                  >
+                    <StudioBuilder
+                      doc={
+                        readStudioBody(doc.body, doc.title || pill.title) ??
+                        upgradeV1(builderDoc, doc.title || pill.title)
+                      }
+                      onChange={(next) => setBody(serializeStudioBody(next))}
+                      onPublish={publishFromStudio}
+                      revisions={studioRevisions}
+                      {...studioSeamProps}
+                      docId={doc.id ? `${kind}:${doc.id}` : null}
+                      resetKey={
+                        doc.id
+                          ? `${kind}:${doc.id}:${doc.updatedAt ?? ""}`
+                          : "new"
+                      }
+                      fill
+                      globalBlocks={globalBlocks}
+                      onSaveGlobalBlock={saveGlobalBlock}
+                      sideTab={
+                        context
+                          ? {
+                              id: "seo",
+                              label: t("SEO", "এসইও"),
+                              content: (
+                                <EditorSeoBox
+                                  doc={doc}
+                                  update={update}
+                                  storeName={context.storeName}
+                                  storeSlug={context.storeSlug}
+                                />
+                              ),
+                            }
+                          : null
+                      }
+                    />
+                  </div>
                 ) : (
                   <ClassicBody
                     kind={kind}
@@ -662,21 +845,34 @@ export function EditorShell({
             />
             <div className="min-h-0 flex-1 overflow-auto">
               {sideTab === "document" ? (
-                <DocumentPanel
-                  doc={doc}
-                  update={update}
-                  ctx={{ ...context, canPublish }}
-                  onTrash={() => setTrashAsk(true)}
-                  lastSavedAt={state.lastSavedAt}
-                  seoSlot={
-                    <EditorSeoBox
-                      doc={doc}
-                      update={update}
-                      storeName={context.storeName}
-                      storeSlug={context.storeSlug}
+                <>
+                  <DocumentPanel
+                    doc={doc}
+                    update={update}
+                    ctx={{ ...context, canPublish }}
+                    onTrash={() => setTrashAsk(true)}
+                    lastSavedAt={state.lastSavedAt}
+                    seoSlot={
+                      <EditorSeoBox
+                        doc={doc}
+                        update={update}
+                        storeName={context.storeName}
+                        storeSlug={context.storeSlug}
+                      />
+                    }
+                  />
+                  {doc.editor === "builder" && effectiveThemeName && (
+                    <ShellBrandTokens
+                      themeName={effectiveThemeName}
+                      tokens={shellTokens}
+                      customized={Object.keys(brandOverrides).length > 0}
+                      onChange={(patch) =>
+                        setBrandOverrides((prev) => ({ ...prev, ...patch }))
+                      }
+                      onReset={() => setBrandOverrides({})}
                     />
-                  }
-                />
+                  )}
+                </>
               ) : (
                 <p className="fq-sub p-4 text-sm">
                   {doc.editor === "builder"
@@ -870,6 +1066,112 @@ function EditorSeoBox({
 }
 
 /* ------------------------------------------------------------ choice memo */
+
+/**
+ * Shell-level brand token editor (pages/posts in builder mode).
+ *
+ * Edits the effective theme's core tokens and paints them onto the canvas +
+ * preview instantly through the `shellTokenVars` wrapper. Preview-only state:
+ * nothing here writes to the theme — permanent saves belong to the theme
+ * studio's draft path (theme track owns that hunk).
+ */
+function ShellBrandTokens({
+  themeName,
+  tokens,
+  customized,
+  onChange,
+  onReset,
+}: {
+  themeName: string;
+  tokens: ShellBrandTokens;
+  customized: boolean;
+  onChange: (patch: Partial<ShellBrandTokens>) => void;
+  onReset: () => void;
+}) {
+  const { t } = useLang();
+  const swatches: {
+    key: keyof ShellBrandTokens;
+    en: string;
+    bn: string;
+  }[] = [
+    { key: "brand", en: "Brand", bn: "ব্র্যান্ড" },
+    { key: "accent", en: "Accent", bn: "অ্যাকসেন্ট" },
+    { key: "surface", en: "Surface", bn: "সারফেস" },
+    { key: "ink", en: "Ink", bn: "কালি" },
+  ];
+  return (
+    <section
+      aria-label={t("Brand tokens", "ব্র্যান্ড টোকেন")}
+      className="border-t border-border p-4"
+    >
+      <div className="flex items-center justify-between gap-2">
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          {t("Brand", "ব্র্যান্ড")} · {themeName}
+        </h3>
+        {customized && (
+          <button
+            type="button"
+            onClick={onReset}
+            className="fq-focus-glow rounded-fq-md text-xs font-medium text-primary hover:underline"
+          >
+            {t("Reset", "রিসেট")}
+          </button>
+        )}
+      </div>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        {swatches.map((field) => (
+          <label key={field.key} className="block">
+            <span className="fq-sub text-xs">
+              {field.key === "brand"
+                ? t("Brand", "ব্র্যান্ড")
+                : field.key === "accent"
+                  ? t("Accent", "অ্যাকসেন্ট")
+                  : field.key === "surface"
+                    ? t("Surface", "সারফেস")
+                    : t("Ink", "কালি")}
+            </span>
+            <span className="mt-1 flex items-center gap-2">
+              <input
+                type="color"
+                value={tokens[field.key]}
+                onChange={(e) =>
+                  onChange({
+                    [field.key]: e.target.value,
+                  } as Partial<ShellBrandTokens>)
+                }
+                aria-label={t("Brand", "ব্র্যান্ড")}
+                className="h-9 w-10 shrink-0 cursor-pointer rounded-fq-sm border border-border bg-card p-1"
+              />
+              <span className="fq-num min-w-0 flex-1 truncate font-mono text-xs text-muted-foreground">
+                {tokens[field.key]}
+              </span>
+            </span>
+          </label>
+        ))}
+      </div>
+      <label className="mt-3 block">
+        <span className="fq-sub text-xs">
+          {t("Corner radius", "কোণার গোল")}
+        </span>
+        <input
+          value={tokens.radius}
+          onChange={(e) => onChange({ radius: e.target.value })}
+          maxLength={12}
+          spellCheck={false}
+          className={cn(fieldInput, "mt-1 font-mono")}
+          placeholder="8px"
+          aria-label={t("Corner radius", "কোণার গোল")}
+        />
+      </label>
+      <p className="fq-sub mt-2 text-[11px]">
+        {t(
+          "Applies to this canvas and preview instantly. Saved with the theme.",
+          "ক্যানভাস ও প্রিভিউতে সাথে সাথে প্রযোজ্য। থিমের সাথে সংরক্ষিত।",
+        )}
+      </p>
+    </section>
+  );
+}
 
 const CHOICE_KEY = "fq.editor.choice-seen";
 function choiceNotMade(doc: EditorDoc): boolean {

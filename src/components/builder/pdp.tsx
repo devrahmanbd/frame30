@@ -7,6 +7,7 @@
  * units, and imports no theme module — one PDP widget set, every theme.
  */
 import { useMemo, useState } from "react";
+import { textOf } from "@/lib/bitext";
 import type { WidgetRow } from "@/lib/widget-data";
 import type { SectionType } from "@/lib/builder-ast";
 import { formatDisplayNumber } from "@/lib/money-display";
@@ -20,6 +21,7 @@ import {
   clampRating,
 } from "./primitives/Stars";
 import { SwatchDot } from "./primitives/SwatchDot";
+import { onRadioGroupKeyDown } from "./primitives/RovingRadiogroup";
 import { StickyBar, useDockedAfterScroll } from "./primitives/StickyBar";
 import { Disclosure } from "./primitives/Disclosure";
 
@@ -131,7 +133,7 @@ const BuyBox: WidgetComponent = (ctx) => {
   return (
     <Panel label={locale === "bn" ? "কেনার প্যানেল" : "Buy box"}>
       <div className="flex flex-wrap items-baseline gap-2">
-        <span className="text-2xl font-semibold tabular-nums">
+        <span data-part="price" className="text-2xl font-semibold tabular-nums">
           {money(variant?.priceMinor ?? 0, variant?.currency)}
         </span>
         {typeof compareAt === "number" &&
@@ -149,10 +151,14 @@ const BuyBox: WidgetComponent = (ctx) => {
       )}
       <div className="mt-4 flex flex-wrap items-center gap-3">
         {bool("showQuantity") && (
-          <span className="inline-flex items-center rounded-fq-md border border-border">
+          <div
+            role="group"
+            aria-label={locale === "bn" ? "পরিমাণ" : "Quantity"}
+            className="inline-flex items-center rounded-fq-md border border-border"
+          >
             <button
               type="button"
-              className="h-11 w-11 text-lg"
+              className="h-11 w-11 rounded-fq-md text-lg transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               aria-label={locale === "bn" ? "কমান" : "Decrease quantity"}
               onClick={() => setQty((n) => Math.max(1, n - 1))}
             >
@@ -163,13 +169,13 @@ const BuyBox: WidgetComponent = (ctx) => {
             </span>
             <button
               type="button"
-              className="h-11 w-11 text-lg"
+              className="h-11 w-11 rounded-fq-md text-lg transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               aria-label={locale === "bn" ? "বাড়ান" : "Increase quantity"}
               onClick={() => setQty((n) => Math.min(99, n + 1))}
             >
               +
             </button>
-          </span>
+          </div>
         )}
         <button
           type="button"
@@ -184,7 +190,9 @@ const BuyBox: WidgetComponent = (ctx) => {
         </button>
       </div>
       {str("promise") && (
-        <p className="mt-3 text-xs text-muted-foreground">{str("promise")}</p>
+        <p data-part="promise" className="mt-3 text-xs text-muted-foreground">
+          {str("promise")}
+        </p>
       )}
     </Panel>
   );
@@ -275,7 +283,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
                           disabled={!match || match.inStock === false}
                           aria-pressed={match?.id === current}
                           onClick={() => match && setSelected(match.id)}
-                          className={`h-9 w-full rounded-fq-md border px-2 text-xs ${
+                          className={`min-h-11 w-full min-w-11 rounded-fq-md border px-2 text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                             match?.id === current
                               ? "border-primary ring-1 ring-primary"
                               : "border-border"
@@ -313,6 +321,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
         <div
           role="radiogroup"
           aria-label={str("heading") || "Shades"}
+          onKeyDown={onRadioGroupKeyDown}
           className="flex flex-wrap gap-2"
         >
           {rows.map((row) => (
@@ -352,6 +361,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
       <div
         role="radiogroup"
         aria-label={str("heading") || "Options"}
+        onKeyDown={onRadioGroupKeyDown}
         className="flex flex-wrap gap-2"
       >
         {rows.map((row) =>
@@ -375,7 +385,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
               aria-checked={row.id === current}
               disabled={row.inStock === false}
               onClick={() => setSelected(row.id)}
-              className={`h-11 rounded-fq-md border px-3 text-sm ${
+              className={`h-11 rounded-fq-md border px-3 text-sm transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                 row.id === current
                   ? "border-primary ring-1 ring-primary"
                   : "border-border"
@@ -572,8 +582,8 @@ const ProductQna: WidgetComponent = (ctx) => {
   const itemRows = Array.isArray(section.props.items)
     ? section.props.items
         .map((row) => ({
-          q: typeof row.question === "string" ? row.question : "",
-          a: typeof row.answer === "string" ? row.answer : "",
+          q: textOf(row, "question", locale),
+          a: textOf(row, "answer", locale),
         }))
         .filter((row) => row.q)
     : [];
@@ -670,17 +680,27 @@ const StickyBuyBar: WidgetComponent = (ctx) => {
   const content = (
     <>
       <div className="min-w-0">
-        <p className="truncate text-sm font-medium">{variant.title}</p>
+        <p data-part="title" className="truncate text-sm font-medium">
+          {variant.title}
+        </p>
         {bool("showPrice") && (
-          <p className="text-sm tabular-nums">
+          <p data-part="price" className="text-sm tabular-nums">
             {money(variant.priceMinor ?? 0, variant.currency)}
           </p>
         )}
       </div>
+      {/* Cart-lane parity: sr-only total announcement on every re-quote. */}
+      {bool("showPrice") && (
+        <p className="sr-only" aria-live="polite" aria-atomic="true">
+          {locale === "bn"
+            ? `${variant.title}: দাম ${money(variant.priceMinor ?? 0, variant.currency)}`
+            : `${variant.title}: Price ${money(variant.priceMinor ?? 0, variant.currency)}`}
+        </p>
+      )}
       <button
         type="button"
         disabled={variant.inStock === false}
-        className="h-11 shrink-0 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50"
+        className="h-11 shrink-0 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90 motion-safe:transition-transform motion-safe:active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50"
       >
         {variant.inStock === false
           ? locale === "bn"

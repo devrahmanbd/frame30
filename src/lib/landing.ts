@@ -352,6 +352,6 @@ export const EMPTY_LANDING: LandingData = {
     measuredAt: "",
   },
   stories: [],
-
+  demoSlug: null,
   degraded: true,
 };

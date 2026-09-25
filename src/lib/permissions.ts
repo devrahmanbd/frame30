@@ -15,6 +15,7 @@ export const PERMISSION_MATRIX: { group: string; actions: string[] }[] = [
     actions: ["read", "create", "update", "publish", "approve"],
   },
   { group: "themes", actions: ["read", "update", "publish", "approve"] },
+  { group: "plugins", actions: ["read", "update"] },
   { group: "analytics", actions: ["read", "export"] },
   { group: "finance", actions: ["read", "initiate", "approve"] },
   { group: "settings", actions: ["read", "update"] },

@@ -71,7 +71,7 @@ import {
   UserCog,
   Users,
   X,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 
 const ICONS: Record<IconKey, typeof LayoutDashboard> = {
   dashboard: LayoutDashboard,
@@ -761,10 +761,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 )}
                 className="hidden items-center gap-1.5 rounded-fq-md px-2.5 py-1.5 text-[13px] text-muted-foreground lg:flex"
               >
-                <ExternalLink
-                  className="size-3.5 shrink-0"
-                  aria-hidden
-                />
+                <ExternalLink className="size-3.5 shrink-0" aria-hidden />
                 <span className="max-w-[280px] truncate">
                   {t(
                     "Storefront not reachable — path URLs are retired",

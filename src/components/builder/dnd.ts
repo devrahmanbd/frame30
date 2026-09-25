@@ -12,7 +12,10 @@ export const TRAY_MIME = "application/x-framique-widget";
 export type TrayDrop = { type: string; presetKey: string };
 
 export function encodeTrayDrop(drop: TrayDrop): string {
-  return JSON.stringify({ type: drop.type, presetKey: drop.presetKey || "default" });
+  return JSON.stringify({
+    type: drop.type,
+    presetKey: drop.presetKey || "default",
+  });
 }
 
 type DataTransferLike = {
@@ -21,7 +24,9 @@ type DataTransferLike = {
 };
 
 /** Null for foreign drags, malformed JSON, or wrong shape. Never throws. */
-export function decodeTrayDrop(dt: DataTransferLike | null | undefined): TrayDrop | null {
+export function decodeTrayDrop(
+  dt: DataTransferLike | null | undefined,
+): TrayDrop | null {
   try {
     if (!dt) return null;
     const types = Array.from(dt.types as unknown as string[]);
@@ -39,7 +44,8 @@ export function decodeTrayDrop(dt: DataTransferLike | null | undefined): TrayDro
     const preset = (parsed as { presetKey?: unknown }).presetKey;
     return {
       type: (parsed as { type: string }).type,
-      presetKey: typeof preset === "string" && preset.length > 0 ? preset : "default",
+      presetKey:
+        typeof preset === "string" && preset.length > 0 ? preset : "default",
     };
   } catch {
     return null;

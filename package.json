@@ -42,6 +42,7 @@
     "assets:icons": "bun scripts/build-icon-sprite.mjs",
     "assets:og": "bun scripts/build-og-images.mjs",
     "assets:stills": "bun scripts/capture-ui-stills.mjs",
+    "assets:tabler": "bun scripts/build-tabler-components.mjs",
     "assets:build": "bun run assets:icons && bun run assets:og && bun run assets:stills",
     "e2e:browsers": "node scripts/browser-smoke.mjs",
     "test:contracts": "node scripts/contract-gate.mjs",

@@ -25,7 +25,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from "react";
-import { AlertTriangle, Inbox, RotateCcw, X } from "lucide-react";
+import { AlertTriangle, Inbox, RotateCcw, X } from "@/components/icons/tabler";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -1048,7 +1048,8 @@ export function ConfirmDialog({
 
   if (!open) return null;
   const danger = tone !== undefined ? tone === "danger" : destructive;
-  const blocked = Boolean(busy) || (Boolean(requireReason) && reason.trim().length < 4);
+  const blocked =
+    Boolean(busy) || (Boolean(requireReason) && reason.trim().length < 4);
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center bg-[var(--fq-scrim)] p-4 backdrop-blur-sm">

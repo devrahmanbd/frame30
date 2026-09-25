@@ -6,14 +6,14 @@
  * per-row action links (Activate, Deactivate, Settings, Delete), and deep-link to Add New.
  */
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
+import { Plus } from "@/components/icons/tabler";
 import { InstalledApps } from "@/components/marketplace/InstalledApps";
 import { consoleRoute } from "@/lib/console-routes";
 import { useLang } from "@/lib/i18n";
 import { Page } from "@/components/console/kit";
 
 export const Route = createFileRoute("/_authenticated/dashboard/plugins/")({
-  staticData: consoleRoute({ permission: "themes.read" }),
+  staticData: consoleRoute({ permission: "plugins.read" }),
   head: () => ({
     meta: [
       { title: "Installed Plugins — Framique Admin" },

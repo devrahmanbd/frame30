@@ -22,7 +22,7 @@ import {
 
 type Client = SupabaseClient<Database>;
 type Loose = {
-  from: (t: string) => any;
+  from: (t: string) => ReturnType<Client["from"]>;
   rpc: (
     fn: string,
     args: Record<string, unknown>,
@@ -216,6 +216,24 @@ export async function applyImport(
     replayed: result.replayed,
   });
   invalidate(`catalog:${merchantId}`);
+  // R2-4: advisory hook — never affects the core result.
+  try {
+    const { listInstalledPlugins } = await import("./plugins.server");
+    const { runHook } = await import("./plugin-hooks.server");
+    const installed = await listInstalledPlugins(supabase, merchantId);
+    const outcomes = await runHook(installed, "product.saved", {
+      merchantId,
+      jobId,
+      replayed: result.replayed,
+    });
+    log("info", "plugin.hook.emitted", {
+      hook: "product.saved",
+      merchantId,
+      outcomes: outcomes.map((o) => `${o.pluginId}:${o.status}`),
+    });
+  } catch {
+    /* emission must never fail catalog import */
+  }
   return result;
 }
 
@@ -319,6 +337,24 @@ export async function saveKindConfig(supabase: Client, input: KindConfigInput) {
 
   incr("framique_catalog_kind_config_total", { kind: input.kind });
   invalidate(`catalog:${input.merchantId}`);
+  // R2-4: advisory hook — never affects the core result.
+  try {
+    const { listInstalledPlugins } = await import("./plugins.server");
+    const { runHook } = await import("./plugin-hooks.server");
+    const installed = await listInstalledPlugins(supabase, input.merchantId);
+    const outcomes = await runHook(installed, "product.saved", {
+      merchantId: input.merchantId,
+      productId: input.productId,
+      kind: input.kind,
+    });
+    log("info", "plugin.hook.emitted", {
+      hook: "product.saved",
+      merchantId: input.merchantId,
+      outcomes: outcomes.map((o) => `${o.pluginId}:${o.status}`),
+    });
+  } catch {
+    /* emission must never fail kind-config persistence */
+  }
   return { ok: true };
 }
 
@@ -432,6 +468,89 @@ export async function saveCollectionRules(
     smart: String(input.isSmart),
   });
   return { ok: true, rules };
+}
+
+/**
+ * Rename a collection (name and/or URL slug). Slug edits are validated
+ * (hygiene + reserved + uniqueness, bilingual verdicts) and a rename writes
+ * a 301 from the old collection URL to the new one — plus deletes any rule
+ * that would now point at the fresh URL — so live links keep working.
+ * Writes go through RLS on the caller's client, mirroring upsertRule
+ * semantics without the untestable admin singleton.
+ */
+export async function renameCollection(
+  supabase: Client,
+  input: {
+    merchantId: string;
+    collectionId: string;
+    name?: string | null;
+    slug?: string | null;
+  },
+) {
+  await assertStaff(supabase, input.merchantId);
+  const db = loose(supabase);
+  const { data: row, error: readError } = await db
+    .from("collections")
+    .select("id,name,slug")
+    .eq("id", input.collectionId)
+    .eq("merchant_id", input.merchantId)
+    .maybeSingle();
+  if (readError) throw readError;
+  if (!row) throw new Error("catalog.collection_not_found");
+
+  const name = (input.name ?? "").trim() || (row as { name: string }).name;
+  if (!name) throw new Error("catalog.name_required");
+  const oldSlug = (row as { slug: string }).slug;
+  let slug = oldSlug;
+  if (
+    input.slug !== undefined &&
+    input.slug !== null &&
+    input.slug !== oldSlug
+  ) {
+    const { checkSlug } = await import("./permalink.server");
+    const verdict = await checkSlug(supabase, input.merchantId, {
+      kind: "collection",
+      slug: input.slug,
+      excludeId: input.collectionId,
+    });
+    if (!verdict.ok) throw new Error(verdict.messageEn);
+    slug = verdict.slug;
+  }
+
+  const { error } = await db
+    .from("collections")
+    .update({ name, slug })
+    .eq("id", input.collectionId)
+    .eq("merchant_id", input.merchantId);
+  if (error) throw error;
+
+  let redirect = false;
+  if (slug !== oldSlug) {
+    const { permalinkSettingsFor } = await import("./permalink.server");
+    const settings = await permalinkSettingsFor(supabase, input.merchantId);
+    const base = settings.collectionBase || "/c";
+    const from = `${base}/${oldSlug}`;
+    const to = `${base}/${slug}`;
+    await db.from("url_redirects").upsert(
+      {
+        merchant_id: input.merchantId,
+        entity_type: "collection",
+        from_path: from,
+        to_path: to,
+        status_code: 301,
+      },
+      { onConflict: "merchant_id,from_path" },
+    );
+    await db
+      .from("url_redirects")
+      .delete()
+      .eq("merchant_id", input.merchantId)
+      .eq("from_path", to);
+    redirect = true;
+  }
+  invalidate(`collection:${input.collectionId}`);
+  incr("framique_collection_renamed_total", {});
+  return { ok: true as const, name, slug, redirect };
 }
 
 /** Preview resolution; cached briefly because the resolver scans the catalog. */

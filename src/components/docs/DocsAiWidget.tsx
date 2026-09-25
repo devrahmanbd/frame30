@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { MessageCircleQuestion, Send, X } from "lucide-react";
+import { MessageCircleQuestion, Send, X } from "@/components/icons/tabler";
 
 import { askDocsAi } from "@/lib/docs-ai.functions";
 import { CURRENT_VERSION, type DocVersionId } from "@/lib/docs";

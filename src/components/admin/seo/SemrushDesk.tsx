@@ -20,7 +20,7 @@ import {
   ShieldCheck,
   TrendingUp,
   Users,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
 import { semrushOverviewFn, semrushAuditFn } from "@/lib/semrush.functions";

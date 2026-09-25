@@ -22,6 +22,7 @@ import {
   type EmailTemplateKind,
   type EmailTemplateConfig,
   DEFAULT_TEMPLATES,
+  escapeHtml,
   formatMoneyMinor,
   interpolate,
   renderEmailHtml,
@@ -375,8 +376,7 @@ export async function sendShipmentDispatchedEmail(args: {
       customer_name: order.customer_name ?? "Customer",
       carrier_name: shipment.carrier_code?.toUpperCase() ?? "Courier",
       awb_number: shipment.awb ?? "Assigned",
-      tracking_url:
-        shipment.tracking_url ?? `${storeBase}/track`,
+      tracking_url: shipment.tracking_url ?? `${storeBase}/track`,
     };
 
     const subject = interpolate(

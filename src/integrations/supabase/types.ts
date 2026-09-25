@@ -9131,40 +9131,55 @@ export type Database = {
         Row: {
           code: number;
           created_at: string;
+          entity_type: string | null;
+          from_path: string | null;
           hits: number;
           id: string;
           is_active: boolean;
           last_hit_at: string | null;
           merchant_id: string;
           note: string | null;
+          origin: string | null;
           source_path: string;
+          status_code: number | null;
           target_path: string;
+          to_path: string | null;
           updated_at: string;
         };
         Insert: {
           code?: number;
           created_at?: string;
+          entity_type?: string | null;
+          from_path?: string | null;
           hits?: number;
           id?: string;
           is_active?: boolean;
           last_hit_at?: string | null;
           merchant_id: string;
           note?: string | null;
+          origin?: string | null;
           source_path: string;
+          status_code?: number | null;
           target_path: string;
+          to_path?: string | null;
           updated_at?: string;
         };
         Update: {
           code?: number;
           created_at?: string;
+          entity_type?: string | null;
+          from_path?: string | null;
           hits?: number;
           id?: string;
           is_active?: boolean;
           last_hit_at?: string | null;
           merchant_id?: string;
           note?: string | null;
+          origin?: string | null;
           source_path?: string;
+          status_code?: number | null;
           target_path?: string;
+          to_path?: string | null;
           updated_at?: string;
         };
         Relationships: [

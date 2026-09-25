@@ -3,21 +3,16 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
-  Palette,
   Puzzle,
   Sparkles,
   Check,
   Star,
   Download,
-  ExternalLink,
   ShieldCheck,
   Trash2,
   Settings,
-  Eye,
   Search,
   X,
-  SlidersHorizontal,
-  ArrowRight,
   Layers,
   Store,
   TrendingUp,
@@ -26,37 +21,22 @@ import {
   Flame,
   Award,
   MessageSquare,
-  Box,
   CheckCircle2,
   AlertCircle,
-  RefreshCw,
   RotateCcw,
-  Edit3,
   ChevronDown,
   ChevronUp,
-  Tag,
   Info,
-  Sliders,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { fmtMinor } from "@/lib/money";
-import { useLang } from "@/lib/i18n";
 import {
   marketBulkInstallsFn,
   marketCatalogFn,
   marketInstallFn,
   marketInstallStatusFn,
   marketListingVersionsFn,
-  marketPreviewTokenFn,
-  marketUninstallThemeFn,
   marketUninstallWidgetFn,
 } from "@/lib/marketplace.functions";
-import { ThemePreviewSplit } from "@/components/admin/themes/ThemePreviewSplit";
-import { ThemeScreenshot } from "@/components/admin/themes/ThemeScreenshot";
-import {
-  themeActivateFn,
-  themeDeleteFn,
-} from "@/lib/themes/appearance.functions";
-import { builderDemoImportFn } from "@/lib/themes.functions";
 import {
   InstallConsent,
   type ConsentVersion,
@@ -64,19 +44,17 @@ import {
 import { InstalledApps } from "@/components/marketplace/InstalledApps";
 import { ConfirmDialog } from "@/components/console/kit";
 import { cn } from "@/lib/utils";
-import { resolveThemeBadge } from "@/lib/marketplace-badges";
 
 export const Route = createFileRoute("/_authenticated/dashboard/marketplace/")({
+  // Theme tabs retired (Sept 2026 purge): every marketplace view is plugins.
+  // Legacy `?tab=theme` deep-links coerce to the plugin catalog.
   validateSearch: (
     s: Record<string, unknown>,
   ): {
-    tab: "theme" | "plugin";
+    tab: "plugin";
     view?: "installed" | "catalog";
   } => ({
-    tab:
-      s.tab === "plugin" || s.tab === "widget"
-        ? ("plugin" as const)
-        : ("theme" as const),
+    tab: "plugin" as const,
     ...(s.view === "installed" ? { view: "installed" as const } : {}),
   }),
   loader: () => marketCatalogFn(),
@@ -86,12 +64,12 @@ export const Route = createFileRoute("/_authenticated/dashboard/marketplace/")({
       {
         name: "description",
         content:
-          "Browse, preview, and install storefront themes and modular extensions verified by Framique Cloud.",
+          "Browse and install modular extensions verified by Framique Cloud.",
       },
       { property: "og:title", content: "Marketplace — Framique Admin" },
       {
         property: "og:description",
-        content: "Verified themes and modular plugins for your storefront.",
+        content: "Verified modular plugins for your storefront.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -102,7 +80,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/marketplace/")({
 });
 
 type Catalog = Awaited<ReturnType<typeof marketCatalogFn>>;
-type Listing = Catalog["themes"][number] | Catalog["widgets"][number];
+type Listing = Catalog["widgets"][number];
 
 /** Ledger rows in these states count as "installed" for badges and actions. */
 function isLiveInstall(status: string) {
@@ -193,18 +171,11 @@ function Marketplace() {
   const data = Route.useLoaderData();
   const router = useRouter();
   const qc = useQueryClient();
-  const { tab: initialTab, view: initialView } = Route.useSearch();
+  const { view: initialView } = Route.useSearch();
 
-  const [tab, setTab] = useState<"theme" | "plugin">(
-    initialTab === "plugin" ? "plugin" : "theme",
-  );
   const [pluginView, setPluginView] = useState<"catalog" | "installed">(
     initialView === "installed" ? "installed" : "catalog",
   );
-
-  useEffect(() => {
-    setTab(initialTab === "plugin" ? "plugin" : "theme");
-  }, [initialTab]);
 
   useEffect(() => {
     setPluginView(initialView === "installed" ? "installed" : "catalog");
@@ -235,31 +206,14 @@ function Marketplace() {
 
   const [pendingDelete, setPendingDelete] = useState<{
     installId?: string;
-    themeId?: string;
     name: string;
-    kind: "theme" | "widget";
   } | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
-  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
   const [showLedger, setShowLedger] = useState(false);
 
-  const source = tab === "theme" ? data.themes : data.widgets;
-  const themeStateBySlug = useMemo(
-    () => new Map((data.themeStates ?? []).map((s) => [s.slug, s])),
-    [data.themeStates],
-  );
+  const source = data.widgets;
 
-  const activeThemeState = useMemo(
-    () => data.themeStates?.find((s) => s.isActive),
-    [data.themeStates],
-  );
-  const activeStorefrontTheme = useMemo(
-    () => data.themes.find((t) => t.slug === activeThemeState?.slug),
-    [data.themes, activeThemeState],
-  );
-
-  // Available categories for current tab
+  // Available categories
   const categories = useMemo(() => {
     const set = new Set<string>();
     source.forEach((l) => {
@@ -268,7 +222,7 @@ function Marketplace() {
     return Array.from(set).sort();
   }, [source]);
 
-  // Reset category if switching tabs and the current category doesn't exist in the new tab
+  // Reset category if the current category doesn't exist
   useEffect(() => {
     if (category !== "all" && !categories.includes(category)) {
       setCategory("all");
@@ -287,15 +241,11 @@ function Marketplace() {
         if (priceFilter === "paid" && l.price_minor_int === 0) return false;
 
         // Installation filter
-        const isInstalled =
-          (l.kind === "theme" && themeStateBySlug.has(l.slug)) ||
-          data.installs.some(
-            (i) =>
-              (l.builtin
-                ? i.listing_slug === l.slug
-                : i.theme_id === l.id || i.widget_id === l.id) &&
-              isLiveInstall(i.status),
-          );
+        const isInstalled = data.installs.some(
+          (i) =>
+            (l.builtin ? i.listing_slug === l.slug : i.widget_id === l.id) &&
+            isLiveInstall(i.status),
+        );
         if (installFilter === "installed" && !isInstalled) return false;
         if (installFilter === "available" && isInstalled) return false;
 
@@ -348,7 +298,6 @@ function Marketplace() {
     query,
     sortBy,
     data.installs,
-    themeStateBySlug,
   ]);
 
   const hasActiveFilters =
@@ -418,12 +367,8 @@ function Marketplace() {
       const base = trial
         ? "Trial license initiated successfully."
         : "Installed successfully.";
-      setMsg(res.themeNoticeKey ? `${base} Note: ${res.themeNoticeKey}` : base);
-      toast.success(
-        listing.kind === "theme"
-          ? "Theme installed successfully"
-          : "Plugin installed successfully",
-      );
+      setMsg(base);
+      toast.success("Plugin installed successfully");
       setConsent(null);
       await router.invalidate();
       await qc.invalidateQueries({ queryKey: ["admin", "plugins"] });
@@ -442,12 +387,12 @@ function Marketplace() {
   ) {
     setBusy(true);
     try {
-      const res = await marketInstallStatusFn({ data: { installId, status } });
+      await marketInstallStatusFn({ data: { installId, status } });
       const base =
         status === "rolled_back"
           ? "Extension files rolled back to clean state."
           : `Extension status updated to ${status}.`;
-      setMsg(res.themeNoticeKey ? `${base} Note: ${res.themeNoticeKey}` : base);
+      setMsg(base);
       toast.success(
         status === "paused"
           ? "Extension paused"
@@ -464,99 +409,6 @@ function Marketplace() {
     } finally {
       setBusy(false);
     }
-  }
-
-  async function activateInstalledTheme(themeId: string) {
-    setBusy(true);
-    setMsg(null);
-    try {
-      await themeActivateFn({ data: { id: themeId } });
-      toast.success("Theme activated live on storefront!");
-      setActive(null);
-      await router.invalidate();
-    } catch (e) {
-      const err = e instanceof Error ? e.message : "Activation failed";
-      setMsg(err);
-      toast.error(err);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function deleteInstalledTheme() {
-    if (!pendingDelete) return;
-    setBusy(true);
-    try {
-      if (pendingDelete.installId) {
-        await marketUninstallThemeFn({
-          data: { installId: pendingDelete.installId },
-        });
-      } else if (pendingDelete.themeId) {
-        await themeDeleteFn({
-          data: { id: pendingDelete.themeId },
-        });
-      }
-      toast.success("Theme deleted successfully");
-      setPendingDelete(null);
-      setActive(null);
-      await router.invalidate();
-    } catch (e) {
-      const err = e instanceof Error ? e.message : "Delete failed";
-      setMsg(err);
-      toast.error(err);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function importDemo(slug: string) {
-    setBusy(true);
-    setMsg(null);
-    try {
-      const res = await builderDemoImportFn({ data: { themeKey: slug } });
-      toast.success(
-        res.imported
-          ? `Demo store imported (${res.products} sample products generated)`
-          : "Demo content already present in catalog",
-      );
-      await router.invalidate();
-    } catch {
-      toast.error("Could not import demo content");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  const previewable = listings.filter(
-    (l) => l.kind === "theme" && themeStateBySlug.has(l.slug),
-  );
-
-  async function openPreview(index: number) {
-    const listing = previewable[index];
-    const state = listing ? themeStateBySlug.get(listing.slug) : undefined;
-    if (!listing || !state) return;
-    setBusy(true);
-    setMsg(null);
-    try {
-      const res = await marketPreviewTokenFn({
-        data: { themeId: state.themeId },
-      });
-      setPreviewSrc(res.url);
-      setPreviewIndex(index);
-    } catch (e) {
-      const err = e instanceof Error ? e.message : "Preview failed";
-      setMsg(err);
-      toast.error(err);
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  function stepPreview(direction: -1 | 1) {
-    if (previewIndex === null || previewable.length === 0) return;
-    const next =
-      (previewIndex + direction + previewable.length) % previewable.length;
-    void openPreview(next);
   }
 
   async function bulkRun(action: "enable" | "pause" | "delete") {
@@ -625,9 +477,9 @@ function Marketplace() {
               Marketplace
             </h1>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Browse, preview, and install storefront themes and modular
-              extensions verified by Framique Cloud. All modules run in
-              sandboxed V8 environments with zero runtime bloat.
+              Browse and install modular extensions verified by Framique Cloud.
+              All modules run in sandboxed V8 environments with zero runtime
+              bloat.
             </p>
           </div>
 
@@ -649,26 +501,9 @@ function Marketplace() {
           </div>
         </div>
 
-        {/* Live Storefront Status & Quick Chips */}
+        {/* Quick Chips */}
         <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border/50 pt-4 text-xs">
           <div className="flex items-center gap-2.5 flex-wrap">
-            {activeStorefrontTheme ? (
-              <div className="flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-700 dark:text-emerald-300">
-                <span className="relative flex size-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
-                </span>
-                <span className="font-medium">Active Theme:</span>
-                <span className="font-bold">{activeStorefrontTheme.name}</span>
-                <Link
-                  to="/dashboard/builder"
-                  className="ml-1 inline-flex items-center gap-1 font-semibold text-emerald-600 underline-offset-2 hover:underline dark:text-emerald-400"
-                >
-                  Customize <ArrowRight className="size-3" />
-                </Link>
-              </div>
-            ) : null}
-
             <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-border/70 bg-background/60 px-3 py-1 text-muted-foreground backdrop-blur-xs">
               <ShieldCheck className="size-3.5 text-emerald-500" />
               <span>100% Sandboxed V8 & Zero Bloat</span>
@@ -676,11 +511,6 @@ function Marketplace() {
           </div>
 
           <div className="flex items-center gap-3 text-muted-foreground">
-            <span>
-              <strong className="text-foreground">{data.themes.length}</strong>{" "}
-              Themes
-            </span>
-            <span>·</span>
             <span>
               <strong className="text-foreground">{data.widgets.length}</strong>{" "}
               Plugins
@@ -733,122 +563,58 @@ function Marketplace() {
         </div>
       )}
 
-      {/* Segmented Navigation (Themes vs Plugins) */}
+      {/* Plugins navigation */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 pb-3">
-        <div
-          role="tablist"
-          aria-label="Marketplace Navigation"
-          className="inline-flex rounded-xl border border-border bg-muted/40 p-1"
-        >
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === "theme"}
-            onClick={() => {
-              setTab("theme");
-              void router.navigate({
-                to: "/dashboard/marketplace",
-                search: { tab: "theme" },
-              });
-            }}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer",
-              tab === "theme"
-                ? "bg-card text-foreground shadow-xs border border-border/50"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            <Palette className="size-4" />
-            <span>Themes</span>
-            <span
-              className={cn(
-                "rounded-full px-2 py-0.2 text-[11px] tabular-nums",
-                tab === "theme"
-                  ? "bg-primary/10 text-primary font-bold"
-                  : "bg-muted text-muted-foreground",
-              )}
-            >
-              {data.themes.length}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === "plugin"}
-            onClick={() => {
-              setTab("plugin");
-              void router.navigate({
-                to: "/dashboard/marketplace",
-                search: { tab: "plugin" },
-              });
-            }}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 cursor-pointer",
-              tab === "plugin"
-                ? "bg-card text-foreground shadow-xs border border-border/50"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            <Puzzle className="size-4" />
-            <span>Plugins & Extensions</span>
-            <span
-              className={cn(
-                "rounded-full px-2 py-0.2 text-[11px] tabular-nums",
-                tab === "plugin"
-                  ? "bg-primary/10 text-primary font-bold"
-                  : "bg-muted text-muted-foreground",
-              )}
-            >
-              {data.widgets.length}
-            </span>
-          </button>
+        <div className="inline-flex items-center gap-2 rounded-xl border border-border bg-muted/40 px-4 py-2 text-sm font-semibold text-foreground">
+          <Puzzle className="size-4" />
+          <span>Plugins & Extensions</span>
+          <span className="rounded-full bg-primary/10 px-2 py-0.2 text-[11px] tabular-nums text-primary font-bold">
+            {data.widgets.length}
+          </span>
         </div>
 
-        {tab === "plugin" && (
-          <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1">
-            <button
-              type="button"
-              onClick={() => {
-                setPluginView("catalog");
-                void router.navigate({
-                  to: "/dashboard/marketplace",
-                  search: { tab: "plugin", view: "catalog" },
-                });
-              }}
-              className={cn(
-                "px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer",
-                pluginView === "catalog"
-                  ? "bg-card text-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              Browse Catalog
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setPluginView("installed");
-                void router.navigate({
-                  to: "/dashboard/marketplace",
-                  search: { tab: "plugin", view: "installed" },
-                });
-              }}
-              className={cn(
-                "px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer",
-                pluginView === "installed"
-                  ? "bg-card text-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              Installed Plugins Desk
-            </button>
-          </div>
-        )}
+        <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1">
+          <button
+            type="button"
+            onClick={() => {
+              setPluginView("catalog");
+              void router.navigate({
+                to: "/dashboard/marketplace",
+                search: { tab: "plugin", view: "catalog" },
+              });
+            }}
+            className={cn(
+              "px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer",
+              pluginView === "catalog"
+                ? "bg-card text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            Browse Catalog
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setPluginView("installed");
+              void router.navigate({
+                to: "/dashboard/marketplace",
+                search: { tab: "plugin", view: "installed" },
+              });
+            }}
+            className={cn(
+              "px-3 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer",
+              pluginView === "installed"
+                ? "bg-card text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            Installed Plugins Desk
+          </button>
+        </div>
       </div>
 
-      {/* If Plugin tab is in 'installed' view, render InstalledApps immediately */}
-      {tab === "plugin" && pluginView === "installed" ? (
+      {/* If in 'installed' view, render InstalledApps immediately */}
+      {pluginView === "installed" ? (
         <div className="space-y-4">
           <InstalledApps installs={data.installs} />
         </div>
@@ -863,11 +629,7 @@ function Marketplace() {
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder={
-                    tab === "theme"
-                      ? "Search themes by name, style, niche, tag..."
-                      : "Search plugins by name, scope, category..."
-                  }
+                  placeholder="Search plugins by name, scope, category..."
                   aria-label="Search catalog"
                   className="h-10 w-full rounded-xl border border-border bg-card pl-10 pr-9 text-sm text-foreground shadow-xs transition-colors focus:border-primary focus:outline-hidden"
                 />
@@ -1053,7 +815,7 @@ function Marketplace() {
                 <Search className="size-6 text-muted-foreground" />
               </div>
               <h3 className="mt-4 text-base font-semibold text-foreground">
-                No {tab === "theme" ? "themes" : "plugins"} found
+                No plugins found
               </h3>
               <p className="mt-1 text-sm text-muted-foreground max-w-sm">
                 No extensions match your current query and filters. Try
@@ -1071,273 +833,12 @@ function Marketplace() {
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {listings.map((l) => {
-                const themeState =
-                  l.kind === "theme" ? themeStateBySlug.get(l.slug) : undefined;
-                // Row state wins: only `store_themes.is_active` (themeStates)
-                // confers Active; the ledger is fallback for Installed only.
-                const themeBadge =
-                  l.kind === "theme"
-                    ? resolveThemeBadge(l.slug, {
-                        themeStates: data.themeStates ?? [],
-                        installs: data.installs,
-                        listingId: l.id,
-                        builtin: l.builtin,
-                      })
-                    : null;
-                const isInstalled =
-                  (l.kind === "theme" && themeBadge !== null) ||
-                  data.installs.some(
-                    (i) =>
-                      (l.builtin
-                        ? i.listing_slug === l.slug
-                        : i.theme_id === l.id || i.widget_id === l.id) &&
-                      isLiveInstall(i.status),
-                  );
-                const liveInstall =
-                  l.kind === "theme"
-                    ? data.installs.find(
-                        (i) =>
-                          (l.builtin
-                            ? i.listing_slug === l.slug
-                            : i.theme_id === l.id) && isLiveInstall(i.status),
-                      )
-                    : data.installs.find(
-                        (i) =>
-                          (l.builtin
-                            ? i.listing_slug === l.slug
-                            : i.widget_id === l.id) && isLiveInstall(i.status),
-                      );
-
-                if (l.kind === "theme") {
-                  return (
-                    <article
-                      key={l.id}
-                      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card transition-all duration-300 hover:border-primary/40 hover:shadow-xl hover:-translate-y-1.5 motion-reduce:hover:transform-none"
-                    >
-                      {/* Screenshot with overlays */}
-                      <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
-                        <div className="size-full transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:group-hover:transform-none">
-                          <ThemeScreenshot
-                            name={l.name}
-                            seed={l.slug}
-                            url={l.thumbnail_url}
-                            className="size-full border-none rounded-none"
-                          />
-                        </div>
-
-                        {/* Top Badges */}
-                        <div className="absolute left-2.5 top-2.5 flex flex-wrap gap-1.5 z-10 pointer-events-none">
-                          {themeBadge === "active" && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-background/90 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 shadow-xs backdrop-blur-xs dark:text-emerald-400">
-                              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                              Live Storefront
-                            </span>
-                          )}
-                          {themeBadge === "installed" && (
-                            <span className="inline-flex items-center gap-1 rounded-full border border-sky-500/30 bg-background/90 px-2 py-0.5 text-xs font-medium text-sky-600 shadow-xs backdrop-blur-xs dark:text-sky-400">
-                              <Check className="size-3" /> Installed
-                            </span>
-                          )}
-                          {l.builtin && (
-                            <span className="inline-flex items-center gap-1 rounded-full border border-violet-500/30 bg-background/90 px-2 py-0.5 text-xs font-medium text-violet-600 shadow-xs backdrop-blur-xs dark:text-violet-400">
-                              <Sparkles className="size-3" /> Official Preset
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Rating chip top right */}
-                        {l.rating != null && (
-                          <div className="absolute right-2.5 top-2.5 z-10 pointer-events-none rounded-full border border-border/40 bg-background/85 px-2 py-0.5 text-xs font-medium backdrop-blur-xs shadow-xs flex items-center gap-1">
-                            <Star className="size-3 fill-amber-400 text-amber-400" />
-                            <span className="tabular-nums font-semibold">
-                              {l.rating.toFixed(1)}
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Hover Action Overlay */}
-                        <div className="absolute inset-0 z-20 flex items-center justify-center gap-2 bg-black/45 backdrop-blur-[2px] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                          {themeState && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const idx = previewable.findIndex(
-                                  (p) => p.slug === l.slug,
-                                );
-                                if (idx >= 0) void openPreview(idx);
-                              }}
-                              disabled={busy}
-                              className="inline-flex items-center gap-1.5 rounded-fq-md bg-white px-3.5 py-1.5 text-xs font-semibold text-black shadow-md transition-transform active:scale-95 hover:bg-neutral-100 cursor-pointer"
-                            >
-                              <Eye className="size-3.5" /> Live Preview
-                            </button>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => setActive(l)}
-                            className="inline-flex items-center gap-1.5 rounded-fq-md border border-white/40 bg-black/50 px-3.5 py-1.5 text-xs font-semibold text-white shadow-md transition-transform active:scale-95 hover:bg-black/70 backdrop-blur-xs cursor-pointer"
-                          >
-                            <Info className="size-3.5" /> Details
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Content Area */}
-                      <div className="flex flex-1 flex-col p-4">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors text-base tracking-tight truncate">
-                                {l.name}
-                              </h3>
-                              <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground uppercase tracking-wider shrink-0">
-                                {l.category}
-                              </span>
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
-                              <span>by {l.vendor_name || "Framique Core"}</span>
-                              <ShieldCheck className="size-3 text-emerald-500" />
-                            </p>
-                          </div>
-                          <div className="text-right shrink-0">
-                            <span className="tabular-nums font-bold text-sm text-foreground">
-                              {l.price_minor_int === 0
-                                ? "Free"
-                                : fmtMinor(l.price_minor_int, l.currency_code)}
-                            </span>
-                          </div>
-                        </div>
-
-                        <p className="mt-2 text-xs text-muted-foreground line-clamp-2 leading-relaxed flex-1">
-                          {l.description ??
-                            "Clean, high-converting storefront theme with instant page loading and zero layout shift."}
-                        </p>
-
-                        {/* Tags */}
-                        {"tags" in l &&
-                          Array.isArray(l.tags) &&
-                          l.tags.length > 0 && (
-                            <div className="mt-2.5 flex flex-wrap gap-1">
-                              {l.tags.slice(0, 3).map((tag: string) => (
-                                <span
-                                  key={tag}
-                                  className="rounded-full bg-muted/70 px-2 py-0.5 text-[10px] text-muted-foreground"
-                                >
-                                  #{tag}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-
-                        {/* Metadata Footer */}
-                        <div className="mt-3 flex items-center gap-3 border-t border-border/50 pt-2.5 text-[11px] text-muted-foreground">
-                          <span className="font-medium text-foreground/80">
-                            v{l.version}
-                          </span>
-                          <span>·</span>
-                          <span className="inline-flex items-center gap-1">
-                            <Download className="size-3" />
-                            <span className="tabular-nums">
-                              {l.install_count.toLocaleString()} installs
-                            </span>
-                          </span>
-                          {!l.compatible && (
-                            <span className="ml-auto rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-medium text-destructive">
-                              Version mismatch
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Action Bar */}
-                        <div className="mt-3.5 flex items-center gap-2 pt-1">
-                          {themeState?.isActive ? (
-                            <>
-                              <Link
-                                to="/dashboard/builder"
-                                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-fq-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 transition-colors active:scale-[0.98]"
-                              >
-                                <Edit3 className="size-3.5" /> Customize
-                              </Link>
-                              <button
-                                type="button"
-                                onClick={() => setActive(l)}
-                                className="rounded-fq-md border border-border px-3 py-2 text-xs font-medium hover:bg-muted transition-colors active:scale-[0.98] cursor-pointer"
-                              >
-                                Details
-                              </button>
-                            </>
-                          ) : themeState && !themeState.isActive ? (
-                            <>
-                              <button
-                                type="button"
-                                disabled={busy}
-                                onClick={() =>
-                                  activateInstalledTheme(themeState.themeId)
-                                }
-                                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-fq-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 transition-colors active:scale-[0.98] disabled:opacity-60 cursor-pointer"
-                              >
-                                <Check className="size-3.5" /> Activate
-                              </button>
-                              <button
-                                type="button"
-                                disabled={busy}
-                                onClick={() => {
-                                  const idx = previewable.findIndex(
-                                    (p) => p.slug === l.slug,
-                                  );
-                                  if (idx >= 0) void openPreview(idx);
-                                }}
-                                className="inline-flex items-center gap-1 rounded-fq-md border border-border px-2.5 py-2 text-xs font-medium hover:bg-muted transition-colors active:scale-[0.98] cursor-pointer"
-                              >
-                                <Eye className="size-3.5" /> Preview
-                              </button>
-                              {(liveInstall ||
-                                (themeState && !themeState.isActive)) && (
-                                <button
-                                  type="button"
-                                  disabled={busy}
-                                  onClick={() =>
-                                    setPendingDelete({
-                                      installId: liveInstall?.id,
-                                      themeId: themeState?.themeId,
-                                      name: l.name,
-                                      kind: "theme",
-                                    })
-                                  }
-                                  title="Delete installed theme"
-                                  className="rounded-fq-md border border-destructive/30 px-2.5 py-2 text-xs text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-60 cursor-pointer"
-                                >
-                                  <Trash2 className="size-3.5" />
-                                </button>
-                              )}
-                            </>
-                          ) : (
-                            <>
-                              <button
-                                type="button"
-                                disabled={busy || !l.compatible}
-                                onClick={() => requestInstall(l, false)}
-                                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-fq-md bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 transition-colors active:scale-[0.98] disabled:opacity-60 cursor-pointer"
-                              >
-                                <Download className="size-3.5" />
-                                {l.price_minor_int === 0
-                                  ? "Install Free"
-                                  : "Install"}
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => setActive(l)}
-                                className="rounded-fq-md border border-border px-3 py-2 text-xs font-medium hover:bg-muted transition-colors active:scale-[0.98] cursor-pointer"
-                              >
-                                Details
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </article>
-                  );
-                }
+                const isInstalled = data.installs.some(
+                  (i) =>
+                    (l.builtin
+                      ? i.listing_slug === l.slug
+                      : i.widget_id === l.id) && isLiveInstall(i.status),
+                );
 
                 // Plugin Card
                 const IconComp = getPluginIcon(l.category);
@@ -1606,14 +1107,7 @@ function Marketplace() {
                           <span className="font-semibold text-foreground">
                             {i.listing_name}
                           </span>
-                          <span
-                            className={cn(
-                              "rounded-full px-2 py-0.2 text-[10px] font-medium uppercase tracking-wider",
-                              i.kind === "theme"
-                                ? "bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20"
-                                : "bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20",
-                            )}
-                          >
+                          <span className="rounded-full px-2 py-0.2 text-[10px] font-medium uppercase tracking-wider bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
                             {i.kind}
                           </span>
                         </div>
@@ -1631,7 +1125,7 @@ function Marketplace() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      {isLiveInstall(i.status) && (
+                      {isLiveInstall(i.status) && i.kind === "widget" && (
                         <>
                           <button
                             type="button"
@@ -1646,31 +1140,19 @@ function Marketplace() {
                           >
                             {i.status === "paused" ? "Resume" : "Pause"}
                           </button>
-                          {i.kind === "theme" ? (
-                            <button
-                              type="button"
-                              disabled={busy}
-                              onClick={() => setStatus(i.id, "rolled_back")}
-                              className="inline-flex items-center gap-1 rounded-fq-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors disabled:opacity-60 cursor-pointer"
-                            >
-                              <RotateCcw className="size-3" /> Restore Original
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              disabled={busy}
-                              onClick={() =>
-                                setPendingDelete({
-                                  installId: i.id,
-                                  name: i.listing_name,
-                                  kind: "widget",
-                                })
-                              }
-                              className="inline-flex items-center gap-1 rounded-fq-md border border-destructive/30 px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-60 cursor-pointer"
-                            >
-                              <Trash2 className="size-3" /> Delete
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            disabled={busy}
+                            onClick={() =>
+                              setPendingDelete({
+                                installId: i.id,
+                                name: i.listing_name,
+                              })
+                            }
+                            className="inline-flex items-center gap-1 rounded-fq-md border border-destructive/30 px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-60 cursor-pointer"
+                          >
+                            <Trash2 className="size-3" /> Delete
+                          </button>
                         </>
                       )}
                     </div>
@@ -1689,21 +1171,9 @@ function Marketplace() {
             (i) =>
               (active.builtin
                 ? i.listing_slug === active.slug
-                : i.theme_id === active.id || i.widget_id === active.id) &&
-              isLiveInstall(i.status),
+                : i.widget_id === active.id) && isLiveInstall(i.status),
           );
-          const state =
-            active.kind === "theme"
-              ? themeStateBySlug.get(active.slug)
-              : undefined;
-          const isInstalled =
-            active.kind === "theme"
-              ? Boolean(state) || Boolean(live)
-              : Boolean(live);
-          const deletable =
-            active.kind === "theme"
-              ? isInstalled && !state?.isActive
-              : Boolean(live);
+          const isInstalled = Boolean(live);
           return (
             <DetailModal
               listing={active}
@@ -1711,34 +1181,16 @@ function Marketplace() {
               busy={busy}
               onClose={() => setActive(null)}
               onInstall={requestInstall}
-              themeState={state}
               liveInstallId={live?.id ?? null}
-              onActivate={activateInstalledTheme}
               onDelete={
-                deletable
+                isInstalled
                   ? () =>
                       setPendingDelete({
                         installId: live?.id,
-                        themeId: state?.themeId,
                         name: active.name,
-                        kind: active.kind,
                       })
                   : undefined
               }
-              onPreview={
-                state
-                  ? () => {
-                      const idx = previewable.findIndex(
-                        (p) => p.slug === active.slug,
-                      );
-                      if (idx >= 0) {
-                        setActive(null);
-                        void openPreview(idx);
-                      }
-                    }
-                  : undefined
-              }
-              onImportDemo={() => importDemo(active.slug)}
             />
           );
         })()}
@@ -1757,64 +1209,14 @@ function Marketplace() {
         />
       )}
 
-      {/* Split-Screen Live Preview */}
-      {previewIndex !== null &&
-        (() => {
-          const listing = previewable[previewIndex];
-          if (!listing || !previewSrc) return null;
-          const state = themeStateBySlug.get(listing.slug);
-          return (
-            <ThemePreviewSplit
-              subject={{
-                key: listing.slug,
-                name: listing.name,
-                author: listing.vendor_name ?? "",
-                version: listing.version,
-                summary: listing.description ?? "",
-                rating: listing.rating ?? undefined,
-                installed: true,
-                active: state?.isActive ?? false,
-              }}
-              storeSlug={null}
-              previewSrc={previewSrc}
-              busy={busy}
-              onClose={() => {
-                setPreviewIndex(null);
-                setPreviewSrc(null);
-              }}
-              onStep={stepPreview}
-              onPrimary={() => {
-                if (state?.isActive) {
-                  void router.navigate({ to: "/dashboard/builder" as never });
-                } else if (state) {
-                  void activateInstalledTheme(state.themeId).then(() => {
-                    setPreviewIndex(null);
-                    setPreviewSrc(null);
-                  });
-                }
-              }}
-            />
-          );
-        })()}
-
       {/* Delete Confirmation Dialog */}
       <ConfirmDialog
         open={pendingDelete !== null}
-        title={
-          pendingDelete?.kind === "widget" ? "Uninstall Plugin" : "Delete Theme"
-        }
-        description={
-          pendingDelete?.kind === "widget"
-            ? `Are you sure you want to uninstall and remove "${pendingDelete?.name}"? Its background hooks and storefront widgets will be deregistered.`
-            : `Are you sure you want to delete theme "${pendingDelete?.name}"? This theme is inactive and will be completely removed from your store.`
-        }
+        title="Uninstall Plugin"
+        description={`Are you sure you want to uninstall and remove "${pendingDelete?.name}"? Its background hooks and storefront widgets will be deregistered.`}
         confirmLabel="Delete"
         destructive
-        onConfirm={() =>
-          pendingDelete?.kind === "widget"
-            ? deleteInstalledWidget()
-            : deleteInstalledTheme()
-        }
+        onConfirm={() => deleteInstalledWidget()}
         onCancel={() => setPendingDelete(null)}
       />
     </div>
@@ -1827,24 +1229,16 @@ function DetailModal({
   busy,
   onClose,
   onInstall,
-  themeState,
   liveInstallId,
-  onActivate,
   onDelete,
-  onPreview,
-  onImportDemo,
 }: {
   listing: Listing;
   installed?: boolean;
   busy: boolean;
   onClose: () => void;
   onInstall: (l: Listing, trial: boolean) => void;
-  themeState?: { themeId: string; isActive: boolean } | null;
   liveInstallId?: string | null;
-  onActivate?: (themeId: string) => void;
   onDelete?: () => void;
-  onPreview?: () => void;
-  onImportDemo?: () => void;
 }) {
   const history = Array.isArray(listing.version_history)
     ? (listing.version_history as unknown[]).map(String)
@@ -1864,16 +1258,14 @@ function DetailModal({
         {/* Header */}
         <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-4">
           <div className="flex items-start gap-3.5">
-            {listing.kind === "widget" && (
-              <div
-                className={cn(
-                  "grid size-12 shrink-0 place-items-center rounded-xl border",
-                  colorScheme.bg,
-                )}
-              >
-                <IconComp className="size-6" />
-              </div>
-            )}
+            <div
+              className={cn(
+                "grid size-12 shrink-0 place-items-center rounded-xl border",
+                colorScheme.bg,
+              )}
+            >
+              <IconComp className="size-6" />
+            </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-xl font-bold text-foreground">
@@ -1882,11 +1274,6 @@ function DetailModal({
                 {installed && (
                   <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                     <Check className="size-3" /> Installed
-                  </span>
-                )}
-                {themeState?.isActive && (
-                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                    Active Theme
                   </span>
                 )}
               </div>
@@ -1921,18 +1308,6 @@ function DetailModal({
             <X className="size-4" />
           </button>
         </div>
-
-        {/* Visual Hero */}
-        {listing.kind === "theme" ? (
-          <div className="mt-4 overflow-hidden rounded-xl border border-border shadow-xs">
-            <ThemeScreenshot
-              name={listing.name}
-              seed={listing.slug}
-              url={listing.thumbnail_url}
-              className="aspect-[16/10] w-full"
-            />
-          </div>
-        ) : null}
 
         {/* Description & Features */}
         <div className="mt-5 space-y-4">
@@ -2044,48 +1419,19 @@ function DetailModal({
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            {themeState?.isActive ? (
-              <Link
-                to="/dashboard/builder"
-                className="inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 transition-colors"
-              >
-                <Edit3 className="size-4" /> Customize in Page Builder
-              </Link>
-            ) : themeState && !themeState.isActive && onActivate ? (
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => onActivate(themeState.themeId)}
-                className="inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 transition-colors disabled:opacity-60 cursor-pointer"
-              >
-                <Check className="size-4" /> Activate Theme
-              </button>
-            ) : (
-              <button
-                type="button"
-                disabled={busy || !listing.compatible}
-                onClick={() => onInstall(listing, false)}
-                className="inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 transition-colors disabled:opacity-60 cursor-pointer"
-              >
-                <Download className="size-4" />
-                {installed
-                  ? "Reinstall / Update"
-                  : listing.price_minor_int === 0
-                    ? "Install Free"
-                    : "Install"}
-              </button>
-            )}
-
-            {themeState && onPreview && (
-              <button
-                type="button"
-                disabled={busy}
-                onClick={onPreview}
-                className="inline-flex items-center gap-1.5 rounded-fq-md border border-border px-3.5 py-2 text-sm font-medium hover:bg-muted transition-colors disabled:opacity-60 cursor-pointer"
-              >
-                <Eye className="size-4" /> Live Preview
-              </button>
-            )}
+            <button
+              type="button"
+              disabled={busy || !listing.compatible}
+              onClick={() => onInstall(listing, false)}
+              className="inline-flex items-center gap-1.5 rounded-fq-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-xs hover:bg-primary/90 transition-colors disabled:opacity-60 cursor-pointer"
+            >
+              <Download className="size-4" />
+              {installed
+                ? "Reinstall / Update"
+                : listing.price_minor_int === 0
+                  ? "Install Free"
+                  : "Install"}
+            </button>
 
             {listing.trial_allowed &&
               listing.price_minor_int > 0 &&
@@ -2099,17 +1445,6 @@ function DetailModal({
                   14-Day Free Trial
                 </button>
               )}
-
-            {listing.kind === "theme" && onImportDemo && (
-              <button
-                type="button"
-                disabled={busy}
-                onClick={onImportDemo}
-                className="rounded-fq-md border border-border px-3.5 py-2 text-sm font-medium hover:bg-muted transition-colors disabled:opacity-60 cursor-pointer"
-              >
-                Import Demo Data
-              </button>
-            )}
 
             {onDelete && (
               <button

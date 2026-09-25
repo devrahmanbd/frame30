@@ -8,7 +8,7 @@ export async function listConversations(db: Client, merchantId: string) {
   const { data } = await db
     .from("ai_conversations")
     .select(
-      "id, status, rating, phone_hash, order_number, first_message_at, last_message_at",
+      "id, status, rating, phone_hash, order_number, first_message_at, last_message_at, channel",
     )
     .eq("merchant_id", merchantId)
     .order("last_message_at", { ascending: false })
@@ -72,14 +72,12 @@ export async function agentReply(
   conversationId: string,
   body: string,
 ) {
-  const { error } = await db
-    .from("ai_messages")
-    .insert({
-      merchant_id: merchantId,
-      conversation_id: conversationId,
-      role: "agent",
-      body,
-    });
+  const { error } = await db.from("ai_messages").insert({
+    merchant_id: merchantId,
+    conversation_id: conversationId,
+    role: "agent",
+    body,
+  });
   if (error) throw new Error("reply_failed");
   await db
     .from("ai_conversations")

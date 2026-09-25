@@ -14,7 +14,6 @@ import {
   installRegistryTheme,
   registryPackage,
 } from "@/lib/themes.server";
-import { presetByKey } from "@/lib/theme-presets";
 import { catalogMeta } from "./catalog-meta";
 import {
   isNewerVersion,
@@ -59,15 +58,15 @@ const SELECT =
 
 function toInstalled(row: Row, latest: Map<string, string>): InstalledTheme {
   const key = row.source_listing_slug;
-  const preset = key ? presetByKey(key) : undefined;
-  const version = row.source_version ?? preset?.version ?? "1.0.0";
+  // Preset packs removed; DB rows are the source of truth.
+  const version = row.source_version ?? "1.0.0";
   const catalogueVersion = key ? latest.get(key) : undefined;
   return {
     id: row.id,
     key,
     name: row.name,
     author: row.author ?? (key ? catalogMeta(key).author : "Framique"),
-    description: row.description ?? preset?.summaryEn ?? "",
+    description: row.description ?? "",
     version,
     tags: row.tags ?? (key ? catalogMeta(key).tags : []),
     screenshotUrl: row.screenshot_url,
@@ -339,12 +338,22 @@ async function resolvePublishedVersionId(
     .maybeSingle();
   if (latestPublished) return (latestPublished as { id: string }).id;
 
-  // No published version: materialize from the draft (or registry
-  // package) instead of refusing. Refusing stranded merchants: install
-  // flows write draft-only rows and the UI offers Activate with no
-  // Publish action, so "publish first" was an undead end. Activating is
-  // the explicit go-live intent (WordPress parity); the guard below
-  // still refuses when there is nothing to seed from.
+  const { data: anyVersion } = await db
+    .from("theme_versions")
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", row.id)
+    .limit(1)
+    .maybeSingle();
+  if (anyVersion) {
+    throw new ThemeDeskError(
+      "theme.unpublished",
+      "That theme has no published version yet. Publish it before activating.",
+    );
+  }
+
+  // Pre-versioning legacy rows: materialize from the draft (or registry
+  // package) when no versions exist at all.
   return materializeLegacyVersion(db, merchantId, row, actorId);
 }
 
@@ -435,20 +444,15 @@ export async function activateTheme(
     .eq("merchant_id", merchantId)
     .neq("id", themeId);
   if (clearError) throw clearError;
+  // Single statement for the new live row (flag + pointer together), so a
+  // crash between statements can never strand the merchant on an
+  // active-but-empty theme.
   const { error } = await db
     .from("store_themes")
-    .update({ is_active: true })
+    .update({ is_active: true, published_version_id: publishedVersionId })
     .eq("merchant_id", merchantId)
     .eq("id", themeId);
   if (error) throw error;
-
-  if (row.published_version_id !== publishedVersionId) {
-    await db
-      .from("store_themes")
-      .update({ published_version_id: publishedVersionId })
-      .eq("merchant_id", merchantId)
-      .eq("id", themeId);
-  }
 
   await db.from("theme_audit").insert({
     merchant_id: merchantId,

@@ -7,6 +7,7 @@
  * one widget set, four themes.
  */
 import type { SectionType } from "@/lib/builder-ast";
+import { resolveSkin } from "@/lib/builder-ast";
 import { formatDisplayNumber } from "@/lib/money-display";
 import type { WidgetRow } from "@/lib/widget-data";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
@@ -55,18 +56,40 @@ function CardRail({
   rows,
   variant,
   sponsored = false,
+  headingClassName = "text-lg font-semibold",
+  itemClassName,
 }: {
   ctx: WidgetCtx;
   rows: WidgetRow[] | undefined;
   variant: CardVariant;
   sponsored?: boolean;
+  /** Skin presentation fork: heading rhythm only, data and controls shared. */
+  headingClassName?: string;
+  /** Skin presentation fork: card tile widths only, card markup untouched. */
+  itemClassName?: string;
 }) {
-  const { str, bool, data, locale } = ctx;
+  const { str, bool, data, locale, Heading } = ctx;
   const label =
     str("heading") || (locale === "bn" ? "পণ্যের তালিকা" : "Product rail");
+  const headingText = str("heading");
+  // Docked header: arrows share the heading row (startup-grade rhythm)
+  // instead of floating in a separate row beneath the rail.
+  const heading = headingText ? (
+    <Heading className={headingClassName}>{headingText}</Heading>
+  ) : undefined;
+  const prevLabel =
+    locale === "bn" ? "বামে স্ক্রল করুন" : "Scroll products left";
+  const nextLabel =
+    locale === "bn" ? "ডানে স্ক্রল করুন" : "Scroll products right";
   if (data?.pending || rows === undefined) {
     return (
-      <Rail label={label}>
+      <Rail
+        label={label}
+        heading={heading}
+        prevLabel={prevLabel}
+        nextLabel={nextLabel}
+        {...(itemClassName ? { itemClassName } : {})}
+      >
         {Array.from({ length: 6 }, (_, i) => (
           <ProductCardSkeleton key={i} variant={variant} />
         ))}
@@ -75,7 +98,13 @@ function CardRail({
   }
   if (rows.length === 0) return null;
   return (
-    <Rail label={label}>
+    <Rail
+      label={label}
+      heading={heading}
+      prevLabel={prevLabel}
+      nextLabel={nextLabel}
+      {...(itemClassName ? { itemClassName } : {})}
+    >
       {rows.map((row) => (
         <ProductCard
           key={row.id}
@@ -92,18 +121,41 @@ function CardRail({
   );
 }
 
+/**
+ * Widget skins: editorial (default, current rhythm byte-identical), compact
+ * (smaller heading, narrower tiles — more cards per viewport) and minimal
+ * (quiet small-caps heading, narrower tiles). Shared structure — Rail
+ * keyboard/arrows/labels, ProductCard data semantics, skeletons, bn/en copy,
+ * 44px targets, reduced-motion handling — stays common; only presentation
+ * forks.
+ */
 const ProductRail: WidgetComponent = (ctx) => {
-  const rows = ctx.data?.rows?.slice(0, ctx.int("limit", 12, 1, 24));
-  return (
-    <section>
-      <SectionHeading ctx={ctx} />
-      <CardRail
-        ctx={ctx}
-        rows={rows}
-        variant={cardVariantOf(ctx.str("cardVariant"), "compact")}
-      />
-    </section>
+  const skin = resolveSkin("product_rail", ctx.str("skin"));
+  const headingClassName =
+    skin === "compact"
+      ? "text-base font-semibold"
+      : skin === "minimal"
+        ? "text-sm font-semibold fq-caps text-muted-foreground"
+        : undefined;
+  const itemClassName =
+    skin === "editorial"
+      ? undefined
+      : "w-[60vw] max-w-[220px] min-w-[8rem] sm:w-[32vw] sm:max-w-[240px] lg:w-[18%] lg:min-w-0";
+  const rail = (rows: WidgetRow[] | undefined) => (
+    <CardRail
+      ctx={ctx}
+      rows={rows}
+      variant={cardVariantOf(ctx.str("cardVariant"), "compact")}
+      {...(headingClassName ? { headingClassName } : {})}
+      {...(itemClassName ? { itemClassName } : {})}
+    />
   );
+  const rows = ctx.data?.rows?.slice(0, ctx.int("limit", 12, 1, 24));
+  if (ctx.data?.pending || rows === undefined) {
+    return <section>{rail(rows)}</section>;
+  }
+  if (rows.length === 0) return null;
+  return <section>{rail(rows)}</section>;
 };
 
 const DealStrip: WidgetComponent = (ctx) => {
@@ -115,9 +167,20 @@ const DealStrip: WidgetComponent = (ctx) => {
         row.compareAtMinor > (row.priceMinor ?? 0),
     )
     .slice(0, ctx.int("limit", 8, 1, 24));
+  if (ctx.data?.pending || rows === undefined) {
+    return (
+      <section>
+        <CardRail
+          ctx={ctx}
+          rows={rows}
+          variant={cardVariantOf(ctx.str("cardVariant"), "compact")}
+        />
+      </section>
+    );
+  }
+  if (rows.length === 0) return null;
   return (
     <section>
-      <SectionHeading ctx={ctx} />
       <CardRail
         ctx={ctx}
         rows={rows}
@@ -175,7 +238,10 @@ const DealCard: WidgetComponent = ({ str, Heading, locale }) => {
       <div className="min-w-0 flex-1">
         <Heading className="text-base font-semibold">{str("heading")}</Heading>
         {str("badgeLabel") && (
-          <span className="mt-1 inline-block rounded-fq-sm bg-success-soft px-2 py-0.5 text-xs font-semibold">
+          <span
+            data-part="badge"
+            className="mt-1 inline-block rounded-fq-sm bg-success-soft px-2 py-0.5 text-xs font-semibold"
+          >
             {str("badgeLabel")}
           </span>
         )}
@@ -249,15 +315,26 @@ const BrandStrip: WidgetComponent = (ctx) => {
 };
 
 const BrandRail: WidgetComponent = (ctx) => {
+  const { Heading } = ctx;
   const rows = ctx.data?.rows?.slice(0, ctx.int("limit", 16, 1, 32));
   const label =
     ctx.str("heading") || (ctx.locale === "bn" ? "ব্র্যান্ড" : "Brands");
+  const headingText = ctx.str("heading");
+  // Same docked-header rhythm as the product rails: arrows share the
+  // heading row, items keep a peek of the next tile on mobile.
+  const heading = headingText ? (
+    <Heading className="text-lg font-semibold">{headingText}</Heading>
+  ) : undefined;
+  if (!ctx.data?.pending && rows !== undefined && rows.length === 0)
+    return null;
   return (
     <section>
-      <SectionHeading ctx={ctx} />
       <Rail
         label={label}
-        itemClassName="min-w-[40%] sm:min-w-[24%] lg:min-w-[16%]"
+        heading={heading}
+        itemClassName="w-[42vw] max-w-[240px] min-w-[9rem] sm:w-[24vw] sm:max-w-[260px] lg:w-[15%] lg:min-w-0"
+        prevLabel={ctx.locale === "bn" ? "বামে স্ক্রল করুন" : "Scroll brands left"}
+        nextLabel={ctx.locale === "bn" ? "ডানে স্ক্রল করুন" : "Scroll brands right"}
       >
         {ctx.data?.pending || rows === undefined
           ? Array.from({ length: 8 }, (_, i) => (

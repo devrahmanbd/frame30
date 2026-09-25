@@ -17,7 +17,9 @@ function getAllowedOrigin(request: Request): string {
     ) {
       return origin;
     }
-  } catch { /* ignore */ }
+  } catch {
+    /* ignore */
+  }
   return "*";
 }
 

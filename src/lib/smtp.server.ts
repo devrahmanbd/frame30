@@ -519,7 +519,7 @@ export async function getMerchantSmtpConfig(
     hasPassword: Boolean(config.sealedPass),
     fromName: config.fromName,
     fromEmail: config.fromEmail,
-    replyTo: config.replyTo,
+    replyTo: config.replyTo ?? null,
   };
 
   return { config, summary };

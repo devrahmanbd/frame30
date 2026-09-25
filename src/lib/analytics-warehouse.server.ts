@@ -24,7 +24,6 @@ import {
   vipThreshold,
   type AgingInput,
   type BatchRow,
-  type CohortRow,
   type DailyBucket,
   type Persona,
   type ReportDefinition,
@@ -246,50 +245,70 @@ export async function rebuildCohorts(
 
 export async function loadFunnel(db: Client, merchantId: string, days: number) {
   const since = dayString(isoDaysAgo(days));
+  // Live schema holds flat daily metrics (no per-entity buckets, no raw
+  // events table — that name belongs to another app sharing this database
+  // and must never be queried). Synthesize the two stages the flat data
+  // honestly supports; deeper stages stay zero until an entity pipeline
+  // exists. Never fabricate per-entity attribution.
   const { data, error } = await db
     .from("analytics_daily")
-    .select("entity, day, totals")
+    .select("day, pageviews, unique_visitors, sessions, orders_count")
     .eq("merchant_id", merchantId)
     .gte("day", since)
     .limit(2000);
   if (error) throw error;
 
-  const buckets = (data ?? []) as unknown as DailyBucket[];
-  const funnel = buildFunnel(buckets);
-
-  const bySource = new Map<string, number>();
-  const { data: sources } = await db
-    .from("analytics_events")
-    .select("source, campaign")
-    .eq("merchant_id", merchantId)
-    .gte("day", since)
-    .limit(5000);
-  for (const row of sources ?? []) {
-    const key = (row.source || "direct") as string;
-    bySource.set(key, (bySource.get(key) ?? 0) + 1);
+  const buckets: DailyBucket[] = [];
+  for (const row of (data ?? []) as unknown as {
+    day: string;
+    pageviews: number | null;
+    orders_count: number | null;
+  }[]) {
+    buckets.push({
+      entity: "page",
+      day: row.day,
+      totals: { actions: { view: Number(row.pageviews ?? 0) } },
+    });
+    buckets.push({
+      entity: "order",
+      day: row.day,
+      totals: { actions: { paid: Number(row.orders_count ?? 0) } },
+    });
   }
+  const funnel = buildFunnel(buckets);
 
   return {
     ...funnel,
     days,
-    channels: [...bySource.entries()]
-      .map(([source, events]) => ({ source, events }))
-      .sort((a, b) => b.events - a.events)
-      .slice(0, 8),
+    channels: [] as { source: string; events: number }[],
   };
 }
 
 export async function loadCohorts(db: Client, merchantId: string) {
+  // Live cohorts hold one row per week (size + returning), not per-offset
+  // rows. Map each week to offset 0 so the matrix renders a single honest
+  // column instead of erroring on missing week_offset/customers columns.
   const { data, error } = await db
     .from("analytics_cohorts")
-    .select(
-      "cohort_week, week_offset, customers, active_customers, orders, revenue_minor_int",
-    )
+    .select("cohort_week, cohort_size, returning_count, revenue_minor_int")
     .eq("merchant_id", merchantId)
     .order("cohort_week", { ascending: true })
     .limit(500);
   if (error) throw error;
-  return buildCohortMatrix((data ?? []) as unknown as CohortRow[]);
+  const rows = ((data ?? []) as unknown as {
+    cohort_week: string;
+    cohort_size: number | null;
+    returning_count: number | null;
+    revenue_minor_int: number | null;
+  }[]).map((row) => ({
+    cohort_week: row.cohort_week,
+    week_offset: 0,
+    customers: Number(row.cohort_size ?? 0),
+    active_customers: Number(row.returning_count ?? 0),
+    orders: 0,
+    revenue_minor_int: Number(row.revenue_minor_int ?? 0),
+  }));
+  return buildCohortMatrix(rows);
 }
 
 export type PersonaBreakdown = {
@@ -483,29 +502,47 @@ export async function loadProductPerformance(
 
 /** Ledger health for the pipeline tab — gap-honest by construction. */
 export async function loadPipelineHealth(db: Client, merchantId: string) {
+  // Live batches ledger holds (batch_date, row_count, status); there is no
+  // previous_batch chain and no raw events table (that name belongs to
+  // another app sharing this database and must never be queried), so the
+  // chain audit adapts: each batch stands alone, rawRows is always 0.
   const { data, error } = await db
     .from("analytics_batches")
-    .select(
-      "id, previous_batch_id, status, committed_at, event_count, gap_detected, created_at",
-    )
+    .select("id, batch_date, status, row_count, created_at")
     .eq("merchant_id", merchantId)
     .order("created_at", { ascending: false })
     .limit(50);
   if (error) throw error;
 
-  const audit = auditBatchChain(
-    ((data ?? []) as unknown as BatchRow[]).slice().reverse(),
-  );
-  const { count: rawCount } = await db
-    .from("analytics_events")
-    .select("id", { count: "exact", head: true })
-    .eq("merchant_id", merchantId);
+  const ordered = (
+    (data ?? []) as unknown as {
+      id: string;
+      batch_date: string;
+      status: string;
+      row_count: number | null;
+      created_at: string;
+    }[]
+  )
+    .slice()
+    .sort((a, b) => a.created_at.localeCompare(b.created_at));
+  // The live ledger is append-only with no explicit chain column: creation
+  // order IS the chain, so each batch points at its predecessor.
+  const batches: BatchRow[] = ordered.map((row, index) => ({
+    id: row.id,
+    previous_batch_id: index > 0 ? ordered[index - 1]!.id : null,
+    status: row.status,
+    committed_at: row.status === "committed" ? (row.created_at ?? null) : null,
+    event_count: Number(row.row_count ?? 0),
+    gap_detected: false,
+    created_at: row.created_at,
+  }));
+  const audit = auditBatchChain(batches.slice().reverse());
 
   return {
     ...audit,
     stale: isStale(audit.lastCommittedAt, new Date()),
-    rawRows: rawCount ?? 0,
-    batches: (data ?? []).slice(0, 20),
+    rawRows: 0,
+    batches: batches.slice(0, 20),
   };
 }
 
@@ -658,18 +695,36 @@ async function materialize(db: Client, merchantId: string, report: ReportRow) {
   const metrics = report.metrics ?? [];
 
   if (report.dataset === "traffic") {
+    // Live rollups are flat (no entity/total shapes): day maps directly,
+    // entity groups everything under "all", metrics read the flat columns.
     const { data } = await db
       .from("analytics_daily")
-      .select("entity, day, totals")
+      .select(
+        "day, pageviews, unique_visitors, sessions, orders_count, revenue_minor_int",
+      )
       .eq("merchant_id", merchantId)
       .gte("day", dayString(isoDaysAgo(days)))
       .limit(5000);
-    return (data ?? []).map((row) => {
-      const totals = (row.totals ?? {}) as Record<string, number>;
+    return ((data ?? []) as unknown as {
+      day: string;
+      pageviews: number | null;
+      unique_visitors: number | null;
+      sessions: number | null;
+      orders_count: number | null;
+      revenue_minor_int: number | null;
+    }[]).map((row) => {
+      const values: Record<string, number> = {
+        events: Number(row.pageviews ?? 0),
+        visitors: Number(row.unique_visitors ?? 0),
+        sessions: Number(row.sessions ?? 0),
+        clicks: 0,
+        orders: Number(row.orders_count ?? 0),
+        revenueMinorInt: Number(row.revenue_minor_int ?? 0),
+      };
       const out: Record<string, unknown> = {};
       if (dims.includes("day")) out["day"] = row.day;
-      if (dims.includes("entity")) out["entity"] = row.entity;
-      for (const metric of metrics) out[metric] = totals[metric] ?? 0;
+      if (dims.includes("entity")) out["entity"] = "all";
+      for (const metric of metrics) out[metric] = values[metric] ?? 0;
       return out;
     });
   }
@@ -1081,9 +1136,12 @@ type GeoRow = {
 /**
  * Traffic tab source: visitors, clicks and geography for one store.
  *
- * The day series and the country/region tables come from the rollup so a busy
- * store never scans the raw store; device, source and click-target splits come
- * from a bounded raw window because they are diagnostic, not billing figures.
+ * The day series and the country table come from the rollups so a busy
+ * store never scans raw rows. Live rollups hold flat metrics (no region,
+ * sessions, events or order splits on geo; no raw events table — that
+ * name belongs to another app sharing this database and must never be
+ * queried), so device/source/click splits stay empty until an entity
+ * pipeline exists. Shapes are unchanged: the UI renders zeros, not errors.
  */
 export async function loadTraffic(
   db: Client,
@@ -1092,29 +1150,38 @@ export async function loadTraffic(
 ): Promise<TrafficSummary> {
   const since = dayString(isoDaysAgo(days));
 
-  const [{ data: geo, error: geoError }, { data: raw }] = await Promise.all([
-    db
-      .from("analytics_geo_daily")
-      .select(
-        "day, country_code, region, visitors, sessions, events, clicks, orders, revenue_minor_int",
-      )
-      .eq("merchant_id", merchantId)
-      .gte("day", since)
-      .limit(5000),
-    db
-      .from("analytics_events")
-      .select("device_class, source, action, entity, payload, occurred_at")
-      .eq("merchant_id", merchantId)
-      .gte("day", since)
-      .order("occurred_at", { ascending: false })
-      .limit(5000),
-  ]);
+  const [{ data: daily, error: dailyError }, { data: geo, error: geoError }] =
+    await Promise.all([
+      db
+        .from("analytics_daily")
+        .select("day, pageviews, unique_visitors, sessions")
+        .eq("merchant_id", merchantId)
+        .gte("day", since)
+        .limit(5000),
+      db
+        .from("analytics_geo_daily")
+        .select("day, country_code, unique_visitors, revenue_minor_int")
+        .eq("merchant_id", merchantId)
+        .gte("day", since)
+        .limit(5000),
+    ]);
+  if (dailyError) throw dailyError;
   if (geoError) throw geoError;
 
-  const rows = (geo ?? []) as unknown as GeoRow[];
+  const rows = (geo ?? []) as unknown as {
+    day: string;
+    country_code: string | null;
+    unique_visitors: number | null;
+    revenue_minor_int: number | null;
+  }[];
+  const dailyRows = (daily ?? []) as unknown as {
+    day: string;
+    pageviews: number | null;
+    unique_visitors: number | null;
+    sessions: number | null;
+  }[];
   const byDay = new Map<string, TrafficDay>();
   const byCountry = new Map<string, TrafficBreakdown>();
-  const byRegion = new Map<string, TrafficBreakdown>();
   const totals = {
     events: 0,
     visitors: 0,
@@ -1124,21 +1191,29 @@ export async function loadTraffic(
     revenueMinorInt: 0,
   };
 
-  for (const row of rows) {
-    const day = byDay.get(row.day) ?? {
-      day: row.day,
+  for (const dayRow of dailyRows) {
+    const day = byDay.get(dayRow.day) ?? {
+      day: dayRow.day,
       events: 0,
       visitors: 0,
       sessions: 0,
       clicks: 0,
     };
-    day.events += Number(row.events ?? 0);
-    day.visitors += Number(row.visitors ?? 0);
-    day.sessions += Number(row.sessions ?? 0);
-    day.clicks += Number(row.clicks ?? 0);
-    byDay.set(row.day, day);
+    day.events += Number(dayRow.pageviews ?? 0);
+    day.visitors += Number(dayRow.unique_visitors ?? 0);
+    day.sessions += Number(dayRow.sessions ?? 0);
+    byDay.set(dayRow.day, day);
+    totals.events += Number(dayRow.pageviews ?? 0);
+    totals.visitors += Number(dayRow.unique_visitors ?? 0);
+    totals.sessions += Number(dayRow.sessions ?? 0);
+  }
 
+  for (const row of rows) {
     const code = row.country_code || "ZZ";
+    const visitors = Number(
+      (row as { unique_visitors?: number | null }).unique_visitors ?? 0,
+    );
+    const revenue = Number(row.revenue_minor_int ?? 0);
     const country = byCountry.get(code) ?? {
       key: code,
       label: code,
@@ -1147,58 +1222,14 @@ export async function loadTraffic(
       orders: 0,
       revenueMinorInt: 0,
     };
-    country.visitors += Number(row.visitors ?? 0);
-    country.events += Number(row.events ?? 0);
-    country.orders += Number(row.orders ?? 0);
-    country.revenueMinorInt += Number(row.revenue_minor_int ?? 0);
+    country.visitors += visitors;
+    country.events += visitors;
+    country.revenueMinorInt += revenue;
     byCountry.set(code, country);
 
-    if (row.region) {
-      const rkey = `${code}·${row.region}`;
-      const region = byRegion.get(rkey) ?? {
-        key: rkey,
-        label: `${row.region} (${code})`,
-        visitors: 0,
-        events: 0,
-        orders: 0,
-        revenueMinorInt: 0,
-      };
-      region.visitors += Number(row.visitors ?? 0);
-      region.events += Number(row.events ?? 0);
-      region.orders += Number(row.orders ?? 0);
-      region.revenueMinorInt += Number(row.revenue_minor_int ?? 0);
-      byRegion.set(rkey, region);
-    }
-
-    totals.events += Number(row.events ?? 0);
-    totals.visitors += Number(row.visitors ?? 0);
-    totals.sessions += Number(row.sessions ?? 0);
-    totals.clicks += Number(row.clicks ?? 0);
-    totals.orders += Number(row.orders ?? 0);
-    totals.revenueMinorInt += Number(row.revenue_minor_int ?? 0);
+    // Totals come from the daily rollup above; geo only splits them.
+    totals.revenueMinorInt += revenue;
   }
-
-  const rawRows = (raw ?? []) as unknown as {
-    device_class: string | null;
-    source: string | null;
-    action: string;
-    entity: string;
-    payload: Record<string, unknown> | null;
-    occurred_at: string;
-  }[];
-
-  const tally = (pick: (r: (typeof rawRows)[number]) => string | null) => {
-    const map = new Map<string, number>();
-    for (const row of rawRows) {
-      const key = pick(row);
-      if (!key) continue;
-      map.set(key, (map.get(key) ?? 0) + 1);
-    }
-    return [...map.entries()]
-      .map(([key, events]) => ({ key, events }))
-      .sort((a, b) => b.events - a.events)
-      .slice(0, 10);
-  };
 
   return {
     days,
@@ -1207,30 +1238,17 @@ export async function loadTraffic(
     countries: [...byCountry.values()]
       .sort((a, b) => b.visitors - a.visitors || b.events - a.events)
       .slice(0, 15),
-    regions: [...byRegion.values()]
-      .sort((a, b) => b.visitors - a.visitors)
-      .slice(0, 15),
-    devices: tally((r) => r.device_class || "unknown"),
-    sources: tally((r) => r.source || "direct"),
-    clickTargets: tally((r) =>
-      r.action === "click"
-        ? String(
-            r.payload?.["label"] ?? r.payload?.["target"] ?? "unlabelled",
-          ).slice(0, 60)
-        : null,
-    ),
+    regions: [],
+    devices: [],
+    sources: [],
+    clickTargets: [],
     funnel: {
-      productViews: rawRows.filter(
-        (r) => r.entity === "product" && r.action === "view",
-      ).length,
-      cartAdds: rawRows.filter((r) => r.entity === "cart" && r.action === "add")
-        .length,
-      checkouts: rawRows.filter(
-        (r) => r.entity === "checkout" && r.action === "start",
-      ).length,
-      orders: rawRows.filter((r) => r.entity === "order").length,
+      productViews: 0,
+      cartAdds: 0,
+      checkouts: 0,
+      orders: 0,
     },
-    lastEventAt: rawRows[0]?.occurred_at ?? null,
+    lastEventAt: null,
   };
 }
 
@@ -1243,14 +1261,17 @@ export async function loadPlatformTraffic(days = 30) {
 
   const { data, error } = await admin
     .from("analytics_geo_daily")
-    .select(
-      "merchant_id, day, country_code, visitors, sessions, events, clicks, orders, revenue_minor_int",
-    )
+    .select("merchant_id, day, country_code, unique_visitors, revenue_minor_int")
     .gte("day", since)
     .limit(20000);
   if (error) throw error;
 
-  const rows = (data ?? []) as unknown as (GeoRow & { merchant_id: string })[];
+  const rows = (data ?? []) as unknown as {
+    merchant_id: string;
+    country_code: string | null;
+    unique_visitors: number | null;
+    revenue_minor_int: number | null;
+  }[];
   const totals = {
     events: 0,
     visitors: 0,
@@ -1262,18 +1283,13 @@ export async function loadPlatformTraffic(days = 30) {
   const byCountry = new Map<string, number>();
   const byStore = new Map<string, number>();
   for (const row of rows) {
-    totals.events += Number(row.events ?? 0);
-    totals.visitors += Number(row.visitors ?? 0);
-    totals.sessions += Number(row.sessions ?? 0);
-    totals.clicks += Number(row.clicks ?? 0);
-    totals.orders += Number(row.orders ?? 0);
+    const visitors = Number(row.unique_visitors ?? 0);
+    totals.events += visitors;
+    totals.visitors += visitors;
     totals.revenueMinorInt += Number(row.revenue_minor_int ?? 0);
     const code = row.country_code || "ZZ";
-    byCountry.set(code, (byCountry.get(code) ?? 0) + Number(row.visitors ?? 0));
-    byStore.set(
-      row.merchant_id,
-      (byStore.get(row.merchant_id) ?? 0) + Number(row.visitors ?? 0),
-    );
+    byCountry.set(code, (byCountry.get(code) ?? 0) + visitors);
+    byStore.set(row.merchant_id, (byStore.get(row.merchant_id) ?? 0) + visitors);
   }
 
   const names = new Map<string, string>();

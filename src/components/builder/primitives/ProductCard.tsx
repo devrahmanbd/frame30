@@ -72,15 +72,24 @@ export function ProductCard({
   eager?: boolean;
 }) {
   const save = savePercent(row.priceMinor, row.compareAtMinor);
+  // B2-3 data-part hooks: stable theme skin selectors (price/title/promise/
+  // badge). Purely additive attributes — no class, style or markup change, so
+  // every skin renders byte-identical without its sheet.
   return (
-    <article className="relative flex h-full flex-col overflow-hidden rounded-fq-lg border border-border bg-card">
+    <article className="relative flex h-full w-full max-w-full flex-col overflow-hidden rounded-fq-lg border border-border bg-card">
       {typeof rank === "number" && (
-        <span className="absolute left-2 top-2 z-10 rounded-fq-sm bg-primary px-2 py-0.5 text-xs font-semibold tabular-nums text-primary-foreground">
+        <span
+          data-part="badge"
+          className="absolute left-2 top-2 z-10 rounded-fq-sm bg-primary px-2 py-0.5 text-xs font-semibold tabular-nums text-primary-foreground"
+        >
           {formatDisplayNumber(rank, { locale })}
         </span>
       )}
       {sponsored && (
-        <span className="absolute right-2 top-2 z-10 rounded-fq-sm bg-muted px-2 py-0.5 text-[0.65rem] font-medium uppercase tracking-wide text-muted-foreground">
+        <span
+          data-part="badge"
+          className="absolute right-2 top-2 z-10 rounded-fq-sm bg-muted px-2 py-0.5 text-[0.65rem] font-medium uppercase tracking-wide text-muted-foreground"
+        >
           {locale === "bn" ? "স্পনসর্ড" : "Sponsored"}
         </span>
       )}
@@ -93,14 +102,19 @@ export function ProductCard({
         artSeed={row.id}
       />
       <div className={`flex min-w-0 flex-1 flex-col ${PAD[variant]}`}>
-        <p className={`line-clamp-2 ${TITLE[variant]}`}>{row.title}</p>
+        <p data-part="title" className={`line-clamp-2 ${TITLE[variant]}`}>
+          {row.title}
+        </p>
         {row.subtitle && (
           <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
             {row.subtitle}
           </p>
         )}
         {withPrice && typeof row.priceMinor === "number" && (
-          <p className="money mt-1 flex flex-wrap items-baseline gap-2 text-sm font-semibold">
+          <p
+            data-part="price"
+            className="money mt-1 flex flex-wrap items-baseline gap-2 text-sm font-semibold"
+          >
             <span>
               {formatDisplayMoney(row.priceMinor, {
                 locale,
@@ -117,7 +131,10 @@ export function ProductCard({
                 </s>
               )}
             {save !== null && (
-              <span className="rounded-fq-sm bg-success-soft px-1.5 py-0.5 text-[0.65rem] font-semibold tabular-nums">
+              <span
+                data-part="badge"
+                className="rounded-fq-sm bg-success-soft px-1.5 py-0.5 text-[0.65rem] font-semibold tabular-nums"
+              >
                 {badgeLabel ? `${badgeLabel} ` : ""}
                 {formatDisplayNumber(save, { locale })}%
               </span>
@@ -130,7 +147,10 @@ export function ProductCard({
           </p>
         )}
         {promise && (
-          <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
+          <p
+            data-part="promise"
+            className="mt-1 line-clamp-1 text-xs text-muted-foreground"
+          >
             {promise}
           </p>
         )}

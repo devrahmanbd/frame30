@@ -19,6 +19,25 @@ export function slugify(input: string) {
   return base || `item-${Date.now().toString(36)}`;
 }
 
+/**
+ * Onboarding no longer asks for a store address (custom domains are the
+ * identity now), so the slug is derived: name-based candidates with numeric
+ * suffixes, strict server-safe characters only. The caller tries each in
+ * order against create_store and moves on at the first slug.taken.
+ */
+export function candidateStoreSlugs(name: string, max = 10): string[] {
+  const cleaned = slugify(name)
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40)
+    .replace(/-+$/g, "");
+  const root = cleaned.length >= 3 ? cleaned : "store";
+  return Array.from({ length: Math.max(1, max) }, (_, i) =>
+    i === 0 ? root : `${root}-${i + 1}`.slice(0, 60),
+  );
+}
+
 /** Mirror of lib/merchant-scope.server.ts ACTIVE_MERCHANT_COOKIE (keep in sync). */
 export const ACTIVE_MERCHANT_COOKIE = "fq.active_merchant_id";
 export const ACTIVE_MERCHANT_KEY = ACTIVE_MERCHANT_COOKIE;
@@ -127,6 +146,22 @@ export function useMerchant() {
     queryFn: loadMerchant,
     staleTime: 5 * 60 * 1000,
   });
+}
+
+/**
+ * Drops every merchant-scoped read after an identity change (fresh login,
+ * account switch). Without this the dashboard/onboarding keep serving the
+ * previous session's null/merchant until staleTime expires and bounce
+ * completed stores back to the wizard.
+ */
+export async function invalidateMerchantScope(
+  queryClient: Pick<
+    import("@tanstack/react-query").QueryClient,
+    "invalidateQueries"
+  >,
+): Promise<void> {
+  await queryClient.invalidateQueries({ queryKey: ["merchant"] });
+  await queryClient.invalidateQueries({ queryKey: ["merchant-memberships"] });
 }
 
 export function useMerchants() {

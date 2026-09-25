@@ -26,6 +26,8 @@ export type DemoProduct = {
   tags?: string[];
   variants: DemoVariant[];
   image_url?: string;
+  /** Convenience list price in minor units; falls back to first variant. */
+  price?: number;
 };
 
 export type DemoCatalog = {
@@ -673,7 +675,7 @@ const BEAUTY: DemoCatalog = {
 };
 
 /** Aarong-grade heritage apparel, handloom sarees, silk panjabis and living crafts. */
-const HERITAGE_APPAREL: DemoCatalog = {
+const HANDLOOM_APPAREL: DemoCatalog = {
   categories: [
     {
       slug: "womens",
@@ -839,7 +841,15 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Woven on a traditional wooden pit loom in Delduar, Tangail. 100% fine combed cotton with contrast zari border. Includes 80cm unstitched blouse piece. Model is 168cm.",
       category: "womens",
-      collections: ["heritage-handloom", "eid-festive", "bridal-sarees", "festive-sale", "herstory", "wedding", "womens"],
+      collections: [
+        "heritage-handloom",
+        "eid-festive",
+        "bridal-sarees",
+        "festive-sale",
+        "herstory",
+        "wedding",
+        "womens",
+      ],
       tags: ["saree", "handloom", "cotton", "tangail"],
       image_url: "/api/public/ph/womens/tangail-taant-cotton-saree.svg",
       variants: [
@@ -872,9 +882,17 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Authentic Sonargaon Dhakai Jamdani featuring geometric flora motifs. Handcrafted by master weavers using fine mulberry silk and metallic threads. Dry clean only.",
       category: "womens",
-      collections: ["heritage-handloom", "eid-festive", "bridal-sarees", "festive-sale", "herstory", "wedding", "womens"],
+      collections: [
+        "heritage-handloom",
+        "eid-festive",
+        "bridal-sarees",
+        "festive-sale",
+        "herstory",
+        "wedding",
+        "womens",
+      ],
       tags: ["jamdani", "silk", "saree", "heritage"],
-      image_url: "/api/public/ph/womens/dhakai-jamdani-silk-saree.svg",
+      image_url: "/ph/songoskriti/prod-saree.png",
       variants: [
         {
           name: "Emerald Green & Rose Gold",
@@ -898,9 +916,17 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Tailored from pure Rajshahi silk with subtle kantha embroidery along the placket and cuffs. Finished with genuine mother-of-pearl buttons. Model is 182cm wearing size 40.",
       category: "mens",
-      collections: ["eid-festive", "artisan-essentials", "festive-sale", "groom-panjabis", "mens", "taaga-man", "wedding"],
+      collections: [
+        "eid-festive",
+        "artisan-essentials",
+        "festive-sale",
+        "groom-panjabis",
+        "mens",
+        "taaga-man",
+        "wedding",
+      ],
       tags: ["panjabi", "silk", "rajshahi", "mens"],
-      image_url: "/api/public/ph/mens/pure-silk-embroidered-panjabi.svg",
+      image_url: "/ph/songoskriti/prod-panjabi.png",
       variants: [
         {
           name: "Size 38 - Pearl Ivory",
@@ -952,7 +978,13 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Heritage folk embroidery hand-stitched by rural women artisans of Jessore. Over 180 hours of meticulous running-stitch needlework on layered natural cotton.",
       category: "living",
-      collections: ["nakshi-kantha", "heritage-handloom", "festive-sale", "home-decor", "living"],
+      collections: [
+        "nakshi-kantha",
+        "heritage-handloom",
+        "festive-sale",
+        "home-decor",
+        "living",
+      ],
       tags: ["nakshi kantha", "quilt", "living", "handcrafted"],
       image_url: "/api/public/ph/living/handcrafted-nakshi-kantha-quilt.svg",
       variants: [
@@ -978,9 +1010,16 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Traditional artisan metalcraft from Dhamrai. Hand-cut and engraved brass with 22k antique gold plating and freshwater pearl droplets.",
       category: "jewelry",
-      collections: ["eid-festive", "artisan-essentials", "festive-gifting", "festive-sale", "jewelry", "wedding"],
+      collections: [
+        "eid-festive",
+        "artisan-essentials",
+        "festive-gifting",
+        "festive-sale",
+        "jewelry",
+        "wedding",
+      ],
       tags: ["jewelry", "brass", "filigree", "earrings"],
-      image_url: "/api/public/ph/jewelry/brass-filigree-chandbali-earrings.svg",
+      image_url: "/ph/songoskriti/prod-necklace.png",
       variants: [
         {
           name: "Antique Gold & Pearl",
@@ -997,7 +1036,15 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Traditional Mirpur Benarasi Katan silk saree woven with floral zari jaal and ornate pallu. Handcrafted with dyed mulberry silk warp and pure metallic zari weft for grand occasions.",
       category: "womens",
-      collections: ["eid-festive", "heritage-handloom", "bridal-sarees", "festive-sale", "herstory", "wedding", "womens"],
+      collections: [
+        "eid-festive",
+        "heritage-handloom",
+        "bridal-sarees",
+        "festive-sale",
+        "herstory",
+        "wedding",
+        "womens",
+      ],
       tags: ["katan", "silk", "saree", "mirpur", "festive"],
       image_url: "/api/public/ph/womens/mirpur-katan-silk-saree.svg",
       variants: [
@@ -1023,7 +1070,14 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Crafted from authentic hand-spun and hand-woven Comilla Khadi cotton. Natural texture with breathable comfort, styled with wooden coconut-shell buttons. Model is 178cm wearing size 40.",
       category: "mens",
-      collections: ["artisan-essentials", "heritage-handloom", "festive-sale", "groom-panjabis", "mens", "taaga-man"],
+      collections: [
+        "artisan-essentials",
+        "heritage-handloom",
+        "festive-sale",
+        "groom-panjabis",
+        "mens",
+        "taaga-man",
+      ],
       tags: ["khadi", "kurta", "cotton", "mens", "handloom"],
       image_url: "/api/public/ph/mens/comilla-handspun-khadi-kurta.svg",
       variants: [
@@ -1063,7 +1117,14 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Featherlight Bengal muslin embellished with geometric woodblock motifs using organic indigo and madder root dyes. Hand-tasseled borders by artisan craft clusters.",
       category: "womens",
-      collections: ["artisan-essentials", "eid-festive", "festive-sale", "herstory", "wedding", "womens"],
+      collections: [
+        "artisan-essentials",
+        "eid-festive",
+        "festive-sale",
+        "herstory",
+        "wedding",
+        "womens",
+      ],
       tags: ["muslin", "dupatta", "blockprint", "natural-dye", "womens"],
       image_url: "/api/public/ph/womens/artisan-block-print-muslin-dupatta.svg",
       variants: [
@@ -1089,7 +1150,14 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Luxurious three-piece ensemble crafted from pure Rajshahi silk with delicate zari and resham thread embroidery. Accompanied by silk trousers and a printed organza dupatta. Dry clean only.",
       category: "womens",
-      collections: ["eid-festive", "heritage-handloom", "festive-sale", "herstory", "wedding", "womens"],
+      collections: [
+        "eid-festive",
+        "heritage-handloom",
+        "festive-sale",
+        "herstory",
+        "wedding",
+        "womens",
+      ],
       tags: ["silk", "salwar", "kameez", "festive", "womens"],
       image_url: "/api/public/ph/womens/embroidered-silk-salwar-suit.svg",
       variants: [
@@ -1129,7 +1197,14 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Sleeveless festive layering waistcoat tailored from textured wild Tussar silk. Features mandarin collar, welt pockets, and antique metal buttons. Model is 180cm wearing size 40.",
       category: "mens",
-      collections: ["eid-festive", "artisan-essentials", "festive-sale", "mens", "taaga-man", "wedding"],
+      collections: [
+        "eid-festive",
+        "artisan-essentials",
+        "festive-sale",
+        "mens",
+        "taaga-man",
+        "wedding",
+      ],
       tags: ["koti", "waistcoat", "tussar", "silk", "mens"],
       image_url: "/api/public/ph/mens/tussar-silk-festive-koti.svg",
       variants: [
@@ -1169,7 +1244,13 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Artisan clay pottery and tableware wheel-thrown by heritage potters in Rayer Bazar. Glazed with lead-free food-safe finish and kiln-fired for durability. Set of 6 bowls and 1 serving platter.",
       category: "living",
-      collections: ["heritage-handloom", "artisan-essentials", "festive-sale", "home-decor", "living"],
+      collections: [
+        "heritage-handloom",
+        "artisan-essentials",
+        "festive-sale",
+        "home-decor",
+        "living",
+      ],
       tags: ["terracotta", "pottery", "tableware", "living", "handcrafted"],
       image_url: "/api/public/ph/living/handcrafted-terracotta-dining-set.svg",
       variants: [
@@ -1235,7 +1316,16 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Pure Rajshahi mulberry silk draped in artistic floral motifs hand-painted with eco-friendly dyes by women artisans. Features a lustrous drape and coordinated unstitched blouse fabric.",
       category: "womens",
-      collections: ["new-in", "heritage-handloom", "eid-festive", "bridal-sarees", "festive-sale", "herstory", "wedding", "womens"],
+      collections: [
+        "new-in",
+        "heritage-handloom",
+        "eid-festive",
+        "bridal-sarees",
+        "festive-sale",
+        "herstory",
+        "wedding",
+        "womens",
+      ],
       tags: ["silk", "saree", "handpainted", "festive", "womens"],
       image_url: "/api/public/ph/womens/hand-painted-silk-festive-saree.svg",
       variants: [
@@ -1261,7 +1351,13 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Essential companion for festive panjabis. Tailored from 100% breathable poplin cotton with elasticated drawstring waistband and deep side pockets. Cut for crisp drape and ease.",
       category: "mens",
-      collections: ["artisan-essentials", "best-sellers", "festive-sale", "mens", "taaga-man"],
+      collections: [
+        "artisan-essentials",
+        "best-sellers",
+        "festive-sale",
+        "mens",
+        "taaga-man",
+      ],
       tags: ["pajama", "cotton", "mens", "essentials"],
       image_url: "/api/public/ph/mens/fine-poplin-formal-pajama.svg",
       variants: [
@@ -1327,7 +1423,13 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Artisan cast-brass ritual incense burner and decorative candle stand hand-etched by the master coppersmiths of Dhamrai. Antiqued patina with perforated floral lid for fragrant living.",
       category: "living",
-      collections: ["artisan-essentials", "best-sellers", "festive-sale", "home-decor", "living"],
+      collections: [
+        "artisan-essentials",
+        "best-sellers",
+        "festive-sale",
+        "home-decor",
+        "living",
+      ],
       tags: ["brass", "decor", "living", "handcrafted", "incense"],
       image_url: "/api/public/ph/living/hand-carved-brass-incense-burner.svg",
       variants: [
@@ -1346,9 +1448,16 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Effortless youth contemporary style by Taaga. Cut from breathable handspun cotton with geometric kantha yoke embroidery, tassel tie neckline, and relaxed bell sleeves. Pair with denim or cigarette pants.",
       category: "taaga",
-      collections: ["taaga-fusion", "new-in", "festive-gifting", "festive-sale", "taaga"],
+      collections: [
+        "taaga-fusion",
+        "new-in",
+        "festive-gifting",
+        "festive-sale",
+        "taaga",
+      ],
       tags: ["taaga", "kurti", "tunic", "boho", "womens", "cotton"],
-      image_url: "/api/public/ph/taaga/taaga-bohemian-hand-embroidered-kurti.svg",
+      image_url:
+        "/api/public/ph/taaga/taaga-bohemian-hand-embroidered-kurti.svg",
       variants: [
         {
           name: "Size S - Rust Ochre",
@@ -1386,9 +1495,16 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Contemporary urban casual wear for men by Taaga Man. Premium pre-washed breathable linen-cotton blend with wooden button detail, welt chest pocket, and rolled-tab cuffs for tropical ease.",
       category: "taaga",
-      collections: ["taaga-fusion", "artisan-essentials", "festive-gifting", "festive-sale", "taaga"],
+      collections: [
+        "taaga-fusion",
+        "artisan-essentials",
+        "festive-gifting",
+        "festive-sale",
+        "taaga",
+      ],
       tags: ["taaga", "mens", "linen", "shirt", "casual"],
-      image_url: "/api/public/ph/taaga/taaga-man-relaxed-linen-mandarin-shirt.svg",
+      image_url:
+        "/api/public/ph/taaga/taaga-man-relaxed-linen-mandarin-shirt.svg",
       variants: [
         {
           name: "Size M - Natural Sand",
@@ -1426,7 +1542,13 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Authentic herbal bath bar from Aarong Earth. Handcrafted with cold-pressed virgin coconut oil, pure Mysore sandalwood paste, and wild Kasturi turmeric. 100% vegan, SLS and paraben free.",
       category: "beauty",
-      collections: ["aarong-earth", "best-sellers", "beauty", "festive-gifting", "festive-sale"],
+      collections: [
+        "aarong-earth",
+        "best-sellers",
+        "beauty",
+        "festive-gifting",
+        "festive-sale",
+      ],
       tags: [
         "beauty",
         "soap",
@@ -1460,7 +1582,13 @@ const HERITAGE_APPAREL: DemoCatalog = {
       description:
         "Complete traditional bridal skincare ritual by Aarong Earth. Includes pure steam-distilled Kashmiri rose water mist (100ml) and slow-stone-ground herbal ubtan powder (150g) enriched with saffron, sandalwood, and gram flour.",
       category: "beauty",
-      collections: ["aarong-earth", "new-in", "beauty", "festive-gifting", "festive-sale"],
+      collections: [
+        "aarong-earth",
+        "new-in",
+        "beauty",
+        "festive-gifting",
+        "festive-sale",
+      ],
       tags: [
         "beauty",
         "rosewater",
@@ -1469,7 +1597,8 @@ const HERITAGE_APPAREL: DemoCatalog = {
         "aarong-earth",
         "herbal",
       ],
-      image_url: "/api/public/ph/beauty/aarong-earth-wild-rose-ubtan-radiance-kit.svg",
+      image_url:
+        "/api/public/ph/beauty/aarong-earth-wild-rose-ubtan-radiance-kit.svg",
       variants: [
         {
           name: "2-Piece Facial Radiance Ritual",
@@ -1857,7 +1986,7 @@ const GROCERY: DemoCatalog = {
   ],
 };
 
-/** supershop — flagship Daraz-grade multi-category marketplace with electronics, fashion, home, grocery & beauty. */
+/** General store — flagship multi-category marketplace with electronics, fashion, home, grocery & beauty. */
 const SUPERSHOP_CATALOG: DemoCatalog = {
   categories: [
     {
@@ -2386,18 +2515,340 @@ const SUPERSHOP_CATALOG: DemoCatalog = {
   ],
 };
 
+/** songoskriti — heritage storefront demo (product images: Task-3 placeholders; generator swaps in /ph/songoskriti/* when key lands): jamdani, panjabi, khadi, kantha and brass craft. BDT minor units; image refs point at public/ph/songoskriti/* final paths (files land via Task 3 generation; placeholder fallback covers gaps). */
+const SONGOSKRITI: DemoCatalog = {
+  categories: [
+    {
+      slug: "women",
+      name: "Women",
+      description:
+        "Handloom sarees and festive drapes woven in Tangail and Sonargaon.",
+    },
+    {
+      slug: "men",
+      name: "Men",
+      description: "Rajshahi silk panjabis and breathable khadi kurtas.",
+    },
+    {
+      slug: "kids",
+      name: "Kids",
+      description: "Festive silk sets for young celebrations.",
+    },
+    {
+      slug: "living",
+      name: "Home & Living",
+      description: "Nakshi kantha quilts and artisan home textiles.",
+    },
+    {
+      slug: "jewellery",
+      name: "Jewellery",
+      description: "Hand-engraved brass pieces from Dhamrai metalworkers.",
+    },
+    {
+      slug: "new-in",
+      name: "New In",
+      description: "Fresh off the loom for this festive season.",
+    },
+  ],
+  collections: [
+    {
+      slug: "new-in",
+      name: "New Arrivals",
+      description: "This season's festive drop.",
+    },
+    {
+      slug: "bestsellers",
+      name: "Bestsellers",
+      description: "Most loved handloom staples.",
+    },
+    {
+      slug: "festive",
+      name: "Eid & Festive",
+      description: "Celebration dressing in handwoven silk and cotton.",
+    },
+    {
+      slug: "wedding",
+      name: "Wedding",
+      description: "Bridal sarees, groom panjabis and gifting.",
+    },
+    {
+      slug: "gifting",
+      name: "Gifting",
+      description: "Kantha, brass and keepsakes to gift.",
+    },
+  ],
+  products: [
+    {
+      slug: "rajshahi-silk-festive-panjabi",
+      title: "Rajshahi Silk Festive Panjabi",
+      description:
+        "Pure Rajshahi silk panjabi with subtle kantha stitch along the placket and mother-of-pearl buttons. Model is 182cm and wears size 40.",
+      category: "men",
+      collections: ["new-in", "festive", "wedding"],
+      tags: ["panjabi", "silk", "festive", "mens"],
+      image_url: "/ph/songoskriti/prod-panjabi.png",
+      variants: [
+        {
+          name: "Size 40 - Ivory",
+          sku: "SNK-PNJ-40IV",
+          price: 495000,
+          compare_at: 580000,
+          stock: 12,
+        },
+        {
+          name: "Size 42 - Ivory",
+          sku: "SNK-PNJ-42IV",
+          price: 495000,
+          compare_at: 580000,
+          stock: 9,
+        },
+        {
+          name: "Size 40 - Midnight Navy",
+          sku: "SNK-PNJ-40NV",
+          price: 495000,
+          stock: 7,
+        },
+      ],
+    },
+    {
+      slug: "dhakai-jamdani-heritage-saree",
+      title: "Dhakai Jamdani Heritage Saree",
+      description:
+        "Authentic Sonargaon Dhakai Jamdani with floral jall motifs in mulberry silk. Includes 80cm unstitched blouse piece. Model is 170cm.",
+      category: "women",
+      collections: ["new-in", "festive", "wedding"],
+      tags: ["jamdani", "saree", "silk", "handloom"],
+      image_url: "/ph/songoskriti/prod-saree.png",
+      variants: [
+        {
+          name: "Emerald & Rose Gold",
+          sku: "SNK-JAM-EMR",
+          price: 1850000,
+          compare_at: 2200000,
+          stock: 5,
+        },
+        {
+          name: "Crimson & Gold",
+          sku: "SNK-JAM-CRM",
+          price: 1850000,
+          stock: 4,
+        },
+      ],
+    },
+    {
+      slug: "comilla-khadi-casual-kurta",
+      title: "Comilla Handspun Khadi Kurta",
+      description:
+        "Authentic handspun Comilla khadi cotton with coconut-shell buttons. Breathable everyday cut. Model is 178cm and wears size 40.",
+      category: "men",
+      collections: ["bestsellers", "festive"],
+      tags: ["khadi", "kurta", "cotton", "handloom"],
+      image_url: "/ph/songoskriti/cat-men.png",
+      variants: [
+        {
+          name: "Size M - Natural Off-White",
+          sku: "SNK-KHD-MOL",
+          price: 285000,
+          compare_at: 320000,
+          stock: 18,
+        },
+        {
+          name: "Size L - Natural Off-White",
+          sku: "SNK-KHD-LOL",
+          price: 285000,
+          compare_at: 320000,
+          stock: 14,
+        },
+      ],
+    },
+    {
+      slug: "jessore-nakshi-kantha-quilt",
+      title: "Jessore Nakshi Kantha Quilt",
+      description:
+        "Hand-stitched running-stitch kantha on layered natural cotton by Jessore craftswomen. Queen size, 88 x 96 in.",
+      category: "living",
+      collections: ["bestsellers", "gifting", "new-in"],
+      tags: ["kantha", "quilt", "handloom", "living"],
+      image_url: "/ph/songoskriti/cat-living.png",
+      variants: [
+        {
+          name: "Queen - Tree of Life",
+          sku: "SNK-NKS-QTL",
+          price: 850000,
+          compare_at: 980000,
+          stock: 8,
+        },
+      ],
+    },
+    {
+      slug: "dhamrai-brass-heritage-necklace",
+      title: "Dhamrai Brass Heritage Necklace",
+      description:
+        "Hand-cut and engraved brass necklace with 22k antique gold plating by Dhamrai metalworkers.",
+      category: "jewellery",
+      collections: ["festive", "wedding", "gifting"],
+      tags: ["jewellery", "brass", "necklace", "artisan"],
+      image_url: "/ph/songoskriti/prod-necklace.png",
+      variants: [
+        {
+          name: "Antique Gold",
+          sku: "SNK-NKL-GLD",
+          price: 185000,
+          compare_at: 220000,
+          stock: 20,
+        },
+      ],
+    },
+    {
+      slug: "girls-silk-festive-ghagra-choli",
+      title: "Girls Silk Festive Ghagra Choli Set",
+      description:
+        "Three-piece festive set in pure silk with a threadwork choli, flared ghagra skirt and contrast dupatta.",
+      category: "kids",
+      collections: ["new-in", "festive", "gifting"],
+      tags: ["kids", "silk", "festive", "ghagra"],
+      image_url: "/ph/songoskriti/cat-kids.png",
+      variants: [
+        {
+          name: "Age 8-10 Yrs - Coral Rose",
+          sku: "SNK-KID-08CR",
+          price: 450000,
+          compare_at: 520000,
+          stock: 10,
+        },
+      ],
+    },
+    {
+      slug: "tangail-handloom-cotton-saree",
+      title: "Tangail Taant Handloom Cotton Saree",
+      description:
+        "Woven on a traditional wooden pit loom in Delduar, Tangail. 100% fine combed cotton with contrast zari border. Includes 80cm blouse piece.",
+      category: "women",
+      collections: ["bestsellers", "festive"],
+      tags: ["cotton", "handloom", "saree", "tangail"],
+      image_url: "/ph/songoskriti/cat-women.png",
+      variants: [
+        {
+          name: "Indigo & Gold",
+          sku: "SNK-TNG-IND",
+          price: 345000,
+          compare_at: 390000,
+          stock: 15,
+        },
+      ],
+    },
+    {
+      slug: "boys-silk-panjabi-pajama-set",
+      title: "Boys Handloom Silk Panjabi & Pajama",
+      description:
+        "Classic handloom silk festive panjabi with mother-of-pearl buttons and fine cotton pajama set for boys.",
+      category: "kids",
+      collections: ["new-in", "festive"],
+      tags: ["kids", "panjabi", "silk", "festive"],
+      image_url: "/ph/songoskriti/cat-kids.png",
+      variants: [
+        {
+          name: "Age 6-8 Yrs - Golden Beige",
+          sku: "SNK-KID-06GB",
+          price: 320000,
+          compare_at: 360000,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "taaga-contemporary-linen-tunic",
+      title: "Taaga Contemporary Asymmetric Linen Tunic",
+      description:
+        "Modern fusion tunic in breathable handloom linen blend with side slit and contrast wood buttons. Model wears size S.",
+      category: "women",
+      collections: ["new-in", "bestsellers"],
+      tags: ["taaga", "tunic", "contemporary", "linen"],
+      image_url: "/ph/songoskriti/cat-newin.png",
+      variants: [
+        {
+          name: "Size M - Terracotta",
+          sku: "SNK-TGA-MTC",
+          price: 265000,
+          compare_at: 310000,
+          stock: 16,
+        },
+      ],
+    },
+    {
+      slug: "taaga-man-relaxed-khadi-shirt",
+      title: "Taaga Man Relaxed Fit Khadi Shirt",
+      description:
+        "Contemporary everyday cut in 100% handspun Comilla khadi with mandarin collar and roll-up sleeves.",
+      category: "men",
+      collections: ["new-in", "bestsellers"],
+      tags: ["taaga-man", "shirt", "khadi", "mens"],
+      image_url: "/ph/songoskriti/cat-men.png",
+      variants: [
+        {
+          name: "Size L - Slate Olive",
+          sku: "SNK-TGM-LSO",
+          price: 225000,
+          compare_at: 260000,
+          stock: 14,
+        },
+      ],
+    },
+    {
+      slug: "bijoypur-terracotta-tea-set",
+      title: "Bijoypur Terracotta Handcrafted Tea Set",
+      description:
+        "Traditional clay tea kettle with six cups hand-thrown and fired by Bijoypur pottery artisans. Lead-free food grade glaze.",
+      category: "living",
+      collections: ["gifting", "bestsellers"],
+      tags: ["terracotta", "pottery", "living", "artisan"],
+      image_url: "/ph/songoskriti/cat-living.png",
+      variants: [
+        {
+          name: "Set of 6 Cups + Kettle",
+          sku: "SNK-POT-SET",
+          price: 240000,
+          compare_at: 280000,
+          stock: 20,
+        },
+      ],
+    },
+    {
+      slug: "antique-silver-filigree-jhumka",
+      title: "Rongpur Silver Filigree Jhumka Earrings",
+      description:
+        "Intricate floral filigree work handcrafted by master silversmiths with delicate bell drops and pearl accents.",
+      category: "jewellery",
+      collections: ["wedding", "festive", "gifting"],
+      tags: ["jewellery", "silver", "filigree", "earrings"],
+      image_url: "/ph/songoskriti/cat-jewelry.png",
+      variants: [
+        {
+          name: "Oxidized Silver",
+          sku: "SNK-JHM-SLV",
+          price: 380000,
+          compare_at: 440000,
+          stock: 18,
+        },
+      ],
+    },
+  ],
+};
+
 export const DEMO_CATALOGS = {
-  atelier: APPAREL,
-  bazaar: MARKETPLACE,
-  circuit: ELECTRONICS,
-  "clothing-heritage": HERITAGE_APPAREL,
-  rupaboti: BEAUTY,
-  supershop: SUPERSHOP_CATALOG,
+  apparel: APPAREL,
+  marketplace: MARKETPLACE,
+  electronics: ELECTRONICS,
+  handloom: HANDLOOM_APPAREL,
+  beauty: BEAUTY,
+  general: SUPERSHOP_CATALOG,
+  songoskriti: SONGOSKRITI,
+  somvabona: SONGOSKRITI,
 } as const satisfies Record<string, DemoCatalog>;
 
 export type DemoCatalogKey = keyof typeof DEMO_CATALOGS;
 
-/** Falls back to the marketplace spread for any non-blueprint theme key. */
-export function demoCatalogFor(themeKey: string): DemoCatalog {
-  return DEMO_CATALOGS[themeKey as DemoCatalogKey] ?? MARKETPLACE;
+/** Falls back to the marketplace spread for any unknown vertical key. */
+export function demoCatalogFor(verticalKey: string): DemoCatalog {
+  return DEMO_CATALOGS[verticalKey as DemoCatalogKey] ?? MARKETPLACE;
 }

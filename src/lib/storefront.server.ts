@@ -1,5 +1,6 @@
 import { publicClient } from "./pricing.server";
-import { log, observe } from "./observability.server";import {
+import { log, observe } from "./observability.server";
+import {
   templateOf,
   type TemplateKey,
   type ThemeAst,
@@ -31,7 +32,10 @@ export type PublicVariant = {
 
 export function mergePublicVariants<
   P extends { id: string; product_variants?: unknown },
->(products: P[], rows: PublicVariant[]): (P & { product_variants: PublicVariant[] })[] {
+>(
+  products: P[],
+  rows: PublicVariant[],
+): (P & { product_variants: PublicVariant[] })[] {
   const byProduct = new Map<string, PublicVariant[]>();
   for (const row of rows) {
     const list = byProduct.get(row.product_id) ?? [];
@@ -173,6 +177,11 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
     import("./menus/menu.server").then((m) => m.loadStoreMenus(merchant.id)),
   ]);
 
+  // Installed plugins for footer mounts + placed app-blocks (fail-safe
+  // to [] inside the helper, so a plugin read can never break the render).
+  const { listStorefrontPlugins } = await import("./plugins.server");
+  const installedPlugins = await listStorefrontPlugins(merchant.id);
+
   return {
     merchant,
     ast: theme?.ast ?? null,
@@ -181,6 +190,7 @@ export async function loadStoreChrome(slug: string, template: TemplateKey) {
     themeVersionId: theme?.versionId ?? null,
     siteKit,
     menus,
+    installedPlugins,
   };
 }
 
@@ -216,9 +226,7 @@ export async function loadStoreCollection(
     ids.length
       ? db
           .from("products")
-          .select(
-            "id, title, slug, description, image_url, product_variants(id, name, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)",
-          )
+          .select("id, title, slug, description, image_url")
           .eq("merchant_id", merchant.id)
           .eq("status", "active")
           .in("id", ids)
@@ -246,6 +254,7 @@ export async function loadStoreCollection(
   const { storefrontSiteKit } = await import("./search-console.server");
   const siteKit = await storefrontSiteKit(merchant.id);
   const { loadStoreMenus } = await import("./menus/menu.server");
+  const { listStorefrontPlugins } = await import("./plugins.server");
 
   return {
     merchant,
@@ -263,6 +272,7 @@ export async function loadStoreCollection(
     seo,
     siteKit,
     menus: await loadStoreMenus(merchant.id),
+    installedPlugins: await listStorefrontPlugins(merchant.id),
     ast: theme?.ast ?? null,
     tokens: theme?.tokens ?? null,
     themeKey: theme?.themeKey ?? null,
@@ -327,6 +337,35 @@ export async function loadStorefront(
   slug: string,
   preview: StorefrontPreview = null,
 ) {
+  // Perf batch: the homepage costs ~13 DB round trips. Cache the whole
+  // payload under the tenant prefix (purgeStorefront clears it on
+  // publish/install/import). Preview drafts are private — never cached.
+  // The one extra merchant lookup per call replaces thirteen on a hit.
+  if (!preview) {
+    const db = publicClient();
+    const { data: merchant } = await db
+      .from("merchants")
+      .select("id")
+      .eq("slug", slug)
+      .eq("status", "active")
+      .maybeSingle();
+    if (!merchant) return null;
+    const { cached } = await import("./cache.server");
+    const { tenantCachePrefix } = await import("./storefront-cache");
+    return cached(
+      `${tenantCachePrefix(merchant.id)}index`,
+      60,
+      () => loadStorefrontUncached(slug, null),
+      { shared: true, staleSeconds: 300 },
+    );
+  }
+  return loadStorefrontUncached(slug, preview);
+}
+
+async function loadStorefrontUncached(
+  slug: string,
+  preview: StorefrontPreview = null,
+) {
   const db = publicClient();
   const { data: merchant, error } = await db
     .from("merchants")
@@ -353,9 +392,7 @@ export async function loadStorefront(
       .maybeSingle(),
     db
       .from("products")
-      .select(
-        "id, title, slug, description, image_url, category_id, product_variants(id, name, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)",
-      )
+      .select("id, title, slug, description, image_url, category_id")
       .eq("merchant_id", merchant.id)
       .eq("status", "active")
       .order("created_at", { ascending: false })
@@ -407,9 +444,8 @@ export async function loadStorefront(
     (async () => {
       if (widgetBundle.requests.length === 0) return {};
       const { resolveWidgetData } = await import("./widget-data.server");
-      const { currentRequestHost, storeLinkBase } = await import(
-        "./storefront-host.server"
-      );
+      const { currentRequestHost, storeLinkBase } =
+        await import("./storefront-host.server");
       return resolveWidgetData(merchant.id, widgetBundle, undefined, {
         base: storeLinkBase(currentRequestHost(), merchant.slug),
       });
@@ -419,10 +455,17 @@ export async function loadStorefront(
     import("./menus/menu.server").then((m) => m.loadStoreMenus(merchant.id)),
   ]);
 
-  let resolvedProducts = mergePublicVariants(
-    products ?? [],
-    await fetchPublicVariants((products ?? []).map((p) => p.id)),
-  );
+  // Perf batch: variant rows and homepage slug are independent — fetch
+  // together instead of serially.
+  const [variantRows, homepageSlug] = await Promise.all([
+    fetchPublicVariants((products ?? []).map((p) => p.id)),
+    resolveHomepageSlug(
+      db,
+      merchant.id,
+      (settings as { setup_steps?: unknown } | null)?.setup_steps,
+    ),
+  ]);
+  let resolvedProducts = mergePublicVariants(products ?? [], variantRows);
   let resolvedCategories = categories ?? [];
   let resolvedCollections = collections ?? [];
 
@@ -432,7 +475,7 @@ export async function loadStorefront(
     resolvedCollections.length === 0
   ) {
     const { demoCatalogFor } = await import("./demo-catalog");
-    const demo = demoCatalogFor(theme?.themeKey ?? "clothing-heritage");
+    const demo = demoCatalogFor(theme?.themeKey ?? "bazaar");
     if (resolvedProducts.length === 0) {
       resolvedProducts = demo.products.map((dp, idx) => ({
         id: `demo-${dp.slug}`,
@@ -467,14 +510,14 @@ export async function loadStorefront(
     }
   }
 
-  // CMS-designated homepage: a published page the merchant chose in the
-  // Pages list. Anything else (unset, draft, trashed, deleted) falls back
-  // to the theme index template below — never a broken `/`.
-  const homepageSlug = await resolveHomepageSlug(
-    db,
-    merchant.id,
-    (settings as { setup_steps?: unknown } | null)?.setup_steps,
-  );
+  // CMS-designated homepage: resolved alongside variants above. Unset,
+  // draft, trashed or deleted falls back to the theme index template
+  // below — never a broken `/`.
+
+  // Installed plugins for footer mounts + placed app-blocks (fail-safe
+  // to [] inside the helper, so a plugin read can never break the render).
+  const { listStorefrontPlugins } = await import("./plugins.server");
+  const installedPlugins = await listStorefrontPlugins(merchant.id);
 
   return {
     merchant,
@@ -494,6 +537,7 @@ export async function loadStorefront(
     siteKit,
     homepageSlug,
     menus,
+    installedPlugins,
   };
 }
 
@@ -543,9 +587,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
 
   const { data: product } = await db
     .from("products")
-    .select(
-      "id, title, slug, description, image_url, product_variants(id, name, sku, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity)",
-    )
+    .select("id, title, slug, description, image_url")
     .eq("merchant_id", merchant.id)
     .eq("slug", productSlug)
     .eq("status", "active")
@@ -587,6 +629,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
   const { storefrontSiteKit } = await import("./search-console.server");
   const siteKit = await storefrontSiteKit(merchant.id);
   const { loadStoreMenus } = await import("./menus/menu.server");
+  const { listStorefrontPlugins } = await import("./plugins.server");
 
   return {
     merchant,
@@ -595,6 +638,7 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
     settings,
     siteKit,
     menus: await loadStoreMenus(merchant.id),
+    installedPlugins: await listStorefrontPlugins(merchant.id),
     reviews: (reviews ?? []).map((r) => ({
       author: r.author_name ?? "",
       rating: Number(r.rating) || 0,

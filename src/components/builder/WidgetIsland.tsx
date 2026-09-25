@@ -14,9 +14,9 @@ import type { HydrationMode } from "@/lib/widget-hydration";
  *  - `visible`     mounts when it scrolls into view;
  *  - `interaction` mounts on the first pointer/focus/touch.
  *
- * While dormant we render the same wrapper element with an empty
- * `dangerouslySetInnerHTML`, which tells React to keep the server DOM exactly
- * as it is instead of clearing it.
+ * While dormant we render the same wrapper element with the widget's real
+ * children, so client hydration matches the server DOM instead of wiping it.
+ * `suppressHydrationWarning` tolerates text mismatches until the island wakes.
  */
 type Props = {
   mode: HydrationMode;
@@ -87,17 +87,19 @@ export function WidgetIsland({ mode, type, children }: Props) {
     );
   }
 
+  // Dormant: emit the same markup the server did so hydration preserves the
+  // SSR DOM (the previous dangerouslySetInnerHTML="" placeholder made
+  // hydration delete server markup for interaction/visible islands, leaving
+  // newsletter/faq/size-guide empty until first touch). Correctness beats the
+  // broken deferral. data-hydrate + ref keep observability and wake listeners.
   return (
     <div
       ref={ref}
       data-island={type}
       data-hydrate={mode}
       suppressHydrationWarning
-      {...(typeof document === "undefined"
-        ? {}
-        : { dangerouslySetInnerHTML: { __html: "" } })}
     >
-      {typeof document === "undefined" ? children : null}
+      {children}
     </div>
   );
 }

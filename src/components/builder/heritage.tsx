@@ -8,7 +8,7 @@
  * All text supports bilingual EN/বাং labels via the `t()` helper. Deterministic
  * monogram tiles are used for images (no external URLs).
  */
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type {
   PropRow,
   PropValue,
@@ -16,7 +16,9 @@ import type {
   SectionType,
 } from "@/lib/builder-ast";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
+import { resolveSkin } from "@/lib/builder-ast";
 import { placeholderSeed } from "@/lib/placeholder";
+import { useSongoskritiHero } from "./songoskriti-motion";
 
 /* ---------------------------------------------------------------- helpers */
 
@@ -36,6 +38,24 @@ const readNumber = (row: PropRow, key: string, fallback: number) => {
   const v = row[key];
   return typeof v === "number" ? v : Number(v) || fallback;
 };
+
+/**
+ * Carousel-pack shared reduced-motion gate. SSR-safe (effects never run
+ * under renderToStaticMarkup): first paint assumes motion, then corrects
+ * from the OS setting and follows mid-session changes.
+ */
+function useCarouselReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(query.matches);
+    const onChange = () => setReduced(query.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+  return reduced;
+}
 
 /**
  * Hand-built Jamdani buti lattice (Tier-B SVG craft — no stock, no blobs).
@@ -68,17 +88,40 @@ function WeaveMotif({ seed, className }: { seed: string; className?: string }) {
     >
       {Array.from({ length: 7 }, (_, r) =>
         Array.from({ length: 6 }, (_, c) =>
-          diamond(34 + c * 66 + (r % 2 ? 33 : 0), 36 + r * 68, v === 2 ? 24 : 18, "0.55"),
+          diamond(
+            34 + c * 66 + (r % 2 ? 33 : 0),
+            36 + r * 68,
+            v === 2 ? 24 : 18,
+            "0.55",
+          ),
         ),
       )}
       {v % 2 === 0 && (
-        <circle cx="200" cy="250" r="70" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.6" />
+        <circle
+          cx="200"
+          cy="250"
+          r="70"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          opacity="0.6"
+        />
       )}
       {v % 2 === 0 && (
-        <path d="M200 195 L248 250 L200 305 L152 250 Z" fill="currentColor" opacity="0.18" />
+        <path
+          d="M200 195 L248 250 L200 305 L152 250 Z"
+          fill="currentColor"
+          opacity="0.18"
+        />
       )}
       {v === 3 && (
-        <path d="M40 430 Q200 340 360 430" fill="none" stroke="currentColor" strokeWidth="3" opacity="0.5" />
+        <path
+          d="M40 430 Q200 340 360 430"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          opacity="0.5"
+        />
       )}
       {v === 1 && (
         <g fill="currentColor" opacity="0.35">
@@ -91,6 +134,297 @@ function WeaveMotif({ seed, className }: { seed: string; className?: string }) {
 }
 
 /* ------------------------------------------------------ hero_carousel */
+
+type HeroSlide = {
+  image: string;
+  headline: string;
+  headlineBn: string;
+  subhead: string;
+  subheadBn: string;
+  ctaLabel: string;
+  ctaLabelBn: string;
+  ctaUrl: string;
+  caption: string;
+  captionBn: string;
+};
+
+/**
+ * Dots + arrows shared by the non-split hero skins. Class-identical to the
+ * split branch's inline controls (44px targets, bilingual labels, keyboard
+ * arrows on the group) so every skin keeps the same a11y contract.
+ */
+function HeroSlideControls({
+  slides,
+  current,
+  goTo,
+  next,
+  prev,
+  locale,
+  prevLabel,
+  nextLabel,
+}: {
+  slides: HeroSlide[];
+  current: number;
+  goTo: (i: number) => void;
+  next: () => void;
+  prev: () => void;
+  locale: string;
+  prevLabel: string;
+  nextLabel: string;
+}) {
+  if (slides.length <= 1) return null;
+  return (
+    <div className="flex flex-wrap items-center gap-1">
+      <div className="flex items-center gap-1">
+        <button
+          type="button"
+          onClick={prev}
+          aria-label={prevLabel}
+          className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        >
+          <span aria-hidden="true">‹</span>
+        </button>
+        <button
+          type="button"
+          onClick={next}
+          aria-label={nextLabel}
+          className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        >
+          <span aria-hidden="true">›</span>
+        </button>
+      </div>
+      <div
+        className="flex items-center gap-1"
+        role="group"
+        aria-label={t(locale, "Slides", "স্লাইড")}
+        onKeyDown={(event) => {
+          if (event.key === "ArrowRight") {
+            event.preventDefault();
+            next();
+          } else if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            prev();
+          }
+        }}
+      >
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => goTo(i)}
+            aria-current={i === current}
+            className="grid min-h-11 min-w-11 place-items-center rounded-fq-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1} / ${slides.length}`}
+          >
+            <span
+              aria-hidden="true"
+              className={`block h-2 rounded-full transition ${
+                i === current
+                  ? "w-7 bg-primary"
+                  : "w-2 bg-foreground/25 hover:bg-foreground/50"
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * `fullbleed` + `minimal` hero skins. Same slide data, same carousel shell
+ * (region, keyboard, touch, autoplay gate, live position, 44px CTA and
+ * controls, bn/en copy) — only the composition forks. `split` keeps its
+ * inline branch below byte-identical.
+ */
+function HeroSkinSlide({
+  skin,
+  slide,
+  isFirst,
+  locale,
+  Heading,
+  slides,
+  current,
+  count,
+  goTo,
+  next,
+  prev,
+  prevLabel,
+  nextLabel,
+}: {
+  skin: string;
+  slide: HeroSlide;
+  isFirst: boolean;
+  locale: string;
+  Heading: WidgetCtx["Heading"];
+  slides: HeroSlide[];
+  current: number;
+  count: number;
+  goTo: (i: number) => void;
+  next: () => void;
+  prev: () => void;
+  prevLabel: string;
+  nextLabel: string;
+}) {
+  const slideLabel = `${t(locale, "Slide", "স্লাইড")} ${current + 1} / ${count}`;
+  const subhead =
+    locale === "bn" && slide.subheadBn ? slide.subheadBn : slide.subhead;
+  const art =
+    slide.image && !slide.image.startsWith("/api/public/ph/") ? (
+      <img
+        src={slide.image}
+        alt={slide.headline}
+        className="absolute inset-0 h-full w-full object-cover"
+        loading={isFirst ? "eager" : "lazy"}
+        fetchPriority={isFirst ? "high" : "auto"}
+        decoding="async"
+      />
+    ) : (
+      <WeaveMotif
+        seed={slide.headline || "heritage"}
+        className="absolute inset-0 h-full w-full text-primary"
+      />
+    );
+  const controls = (
+    <HeroSlideControls
+      slides={slides}
+      current={current}
+      goTo={goTo}
+      next={next}
+      prev={prev}
+      locale={locale}
+      prevLabel={prevLabel}
+      nextLabel={nextLabel}
+    />
+  );
+  if (skin === "minimal") {
+    return (
+      <div
+        key={current}
+        role="group"
+        aria-roledescription="slide"
+        aria-label={slideLabel}
+        className="fq-enter-fade mx-auto max-w-3xl px-4 py-12 text-center sm:py-16"
+      >
+        {slide.caption && (
+          <p
+            data-hero-eyebrow
+            data-part="caption"
+            className="text-xs font-semibold tracking-widest text-primary fq-caps"
+          >
+            {locale === "bn" && slide.captionBn
+              ? slide.captionBn
+              : slide.caption}
+          </p>
+        )}
+        <Heading
+          data-hero-headline
+          {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
+          className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl"
+        >
+          {locale === "bn" && slide.headlineBn
+            ? slide.headlineBn
+            : slide.headline}
+        </Heading>
+        {slide.subhead && (
+          <p
+            data-hero-sub
+            className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground"
+          >
+            {subhead}
+          </p>
+        )}
+        <div
+          data-hero-cta
+          className="mt-7 flex flex-wrap items-center justify-center gap-3"
+        >
+          {slide.ctaLabel && (
+            <a
+              href={slide.ctaUrl || "#"}
+              className="inline-flex min-h-12 items-center whitespace-nowrap bg-foreground px-8 text-[11px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            >
+              {locale === "bn" && slide.ctaLabelBn
+                ? slide.ctaLabelBn
+                : slide.ctaLabel}
+            </a>
+          )}
+          {controls}
+        </div>
+        <div
+          data-hero-art
+          className="mx-auto mt-8 max-w-2xl overflow-hidden rounded-fq-lg"
+        >
+          <div className="relative aspect-video w-full overflow-hidden bg-transparent">
+            {art}
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div
+      key={current}
+      role="group"
+      aria-roledescription="slide"
+      aria-label={slideLabel}
+      className="fq-enter-fade relative"
+    >
+      <div className="absolute inset-0">{art}</div>
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-foreground/60"
+      />
+      <div className="relative mx-auto max-w-[var(--fq-container,1440px)] px-4 py-16 sm:px-8 sm:py-28">
+        <div className="min-w-0 max-w-2xl">
+          {slide.caption && (
+            <p
+              data-hero-eyebrow
+              data-part="caption"
+              className="text-xs font-semibold tracking-widest text-background/80 fq-caps"
+            >
+              {locale === "bn" && slide.captionBn
+                ? slide.captionBn
+                : slide.caption}
+            </p>
+          )}
+          <Heading
+            data-hero-headline
+            {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
+            className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-background sm:text-4xl lg:text-6xl"
+          >
+            {locale === "bn" && slide.headlineBn
+              ? slide.headlineBn
+              : slide.headline}
+          </Heading>
+          {slide.subhead && (
+            <p
+              data-hero-sub
+              className="mt-4 max-w-xl text-base leading-relaxed text-background/80 sm:text-lg"
+            >
+              {subhead}
+            </p>
+          )}
+          <div
+            data-hero-cta
+            className="mt-7 flex flex-wrap items-center gap-3"
+          >
+            {slide.ctaLabel && (
+              <a
+                href={slide.ctaUrl || "#"}
+                className="inline-flex min-h-12 sm:min-h-14 items-center whitespace-nowrap bg-background px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-foreground transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                {locale === "bn" && slide.ctaLabelBn
+                  ? slide.ctaLabelBn
+                  : slide.ctaLabel}
+              </a>
+            )}
+            {controls}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const HeroCarousel: WidgetComponent = ({
   section,
@@ -107,20 +441,48 @@ const HeroCarousel: WidgetComponent = ({
     subhead: readString(row, "subhead"),
     subheadBn: readString(row, "subhead_bn"),
     ctaLabel: readString(row, "ctaLabel"),
+    ctaLabelBn: readString(row, "ctaLabel_bn"),
     ctaUrl: readString(row, "ctaUrl"),
     caption: readString(row, "caption"),
+    captionBn: readString(row, "caption_bn"),
   }));
   const autoAdvanceMs = int("autoAdvanceMs", 5000, 1000, 15000);
+  const atmosphere = str("atmosphere") || "wash";
+  // Widget skin (spec 2026-09-25): split (default, current asymmetric
+  // editorial grid), fullbleed (art-bleed overlay) and minimal (centred,
+  // quiet). Autoplay gates, keyboard, touch, live region, 44px targets and
+  // bn/en copy stay common — only presentation forks.
+  const skin = resolveSkin("hero_carousel", str("skin"));
+  const reducedMotion = useCarouselReducedMotion();
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+  // Task 5 motion: hero load timeline scoped to this section. SSR-safe
+  // (effects never run under renderToStaticMarkup) and static under
+  // reduced motion — the hook no-ops unless intent is full.
+  const heroScope = useRef<HTMLElement | null>(null);
+  useSongoskritiHero(heroScope, true);
+
+  const count = slides.length;
+  const goTo = useCallback(
+    (i: number) => {
+      if (count <= 0) return;
+      setCurrent(((i % count) + count) % count);
+    },
+    [count],
+  );
+  const next = useCallback(() => goTo(current + 1), [current, goTo]);
+  const prev = useCallback(() => goTo(current - 1), [current, goTo]);
 
   useEffect(() => {
-    if (paused || slides.length <= 1) return;
+    // Autoplay never arms under reduced motion; manual dots/arrows/swipe
+    // keep working so every visitor can still reach every slide.
+    if (paused || reducedMotion || slides.length <= 1) return;
     const id = setInterval(() => {
       setCurrent((i) => (i + 1) % slides.length);
     }, autoAdvanceMs);
     return () => clearInterval(id);
-  }, [paused, slides.length, autoAdvanceMs]);
+  }, [paused, reducedMotion, slides.length, autoAdvanceMs]);
 
   if (slides.length === 0) {
     return editing ? (
@@ -136,73 +498,188 @@ const HeroCarousel: WidgetComponent = ({
 
   const slide = slides[current]!;
   const isFirst = current === 0;
+  const prevLabel = t(locale, "Previous slide", "আগের স্লাইড");
+  const nextLabel = t(locale, "Next slide", "পরের স্লাইড");
   return (
     <section
+      ref={heroScope}
+      data-songoskriti-hero
+      role="region"
+      aria-roledescription="carousel"
       aria-label={t(locale, "Hero carousel", "হিরো ক্যারোজেল")}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className="border-b border-border bg-card"
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      onKeyDown={(event) => {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          next();
+        } else if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          prev();
+        } else if (event.key === "Home") {
+          event.preventDefault();
+          goTo(0);
+        } else if (event.key === "End") {
+          event.preventDefault();
+          goTo(count - 1);
+        }
+      }}
+      onTouchStart={(event) => {
+        touchStartX.current = event.touches[0]?.clientX ?? null;
+      }}
+      onTouchEnd={(event) => {
+        const start = touchStartX.current;
+        touchStartX.current = null;
+        if (start === null) return;
+        const end = event.changedTouches[0]?.clientX ?? start;
+        const delta = end - start;
+        if (Math.abs(delta) < 40) return;
+        if (delta < 0) next();
+        else prev();
+      }}
+      className="relative overflow-hidden bg-background"
     >
-      <div className="mx-auto grid max-w-[var(--fq-container,1280px)] items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-12 lg:gap-12">
-        {/* Copy — asymmetric left, seven columns */}
-        <div className="min-w-0 lg:col-span-7">
+      {atmosphere !== "none" && skin === "split" && (
+        <div
+          aria-hidden="true"
+          className="fq-theme-aurora pointer-events-none absolute inset-0 opacity-40"
+        />
+      )}
+      <p className="sr-only" role="status">
+        {t(locale, "Slide", "স্লাইড")} {current + 1} / {count}
+      </p>
+      {skin !== "split" ? (
+        <HeroSkinSlide
+          skin={skin}
+          slide={slide}
+          isFirst={isFirst}
+          locale={locale}
+          Heading={Heading}
+          slides={slides}
+          current={current}
+          count={count}
+          goTo={goTo}
+          next={next}
+          prev={prev}
+          prevLabel={prevLabel}
+          nextLabel={nextLabel}
+        />
+      ) : (
+      <div
+        key={current}
+        role="group"
+        aria-roledescription="slide"
+        aria-label={`${t(locale, "Slide", "স্লাইড")} ${current + 1} / ${count}`}
+        className="fq-enter-fade mx-auto grid max-w-[var(--fq-container,1440px)] items-center gap-8 px-4 py-12 sm:gap-12 sm:px-8 sm:py-24 lg:grid-cols-12 lg:gap-16"
+      >
+        {/* Copy — asymmetric left, six columns */}
+        <div className="min-w-0 lg:col-span-6 lg:pl-8">
           {slide.caption && (
-            <p className="text-xs font-semibold tracking-widest text-primary fq-caps">
-              {slide.caption}
-            </p>
-          )}
-          {slide.headlineBn && (
             <p
-              lang="bn"
-              className="font-bangla-display mt-3 text-2xl font-bold leading-tight text-foreground sm:text-4xl"
+              data-hero-eyebrow
+              data-part="caption"
+              className="text-xs font-semibold tracking-widest text-primary fq-caps"
             >
-              {slide.headlineBn}
+              {locale === "bn" && slide.captionBn
+                ? slide.captionBn
+                : slide.caption}
             </p>
           )}
-          <Heading className="mt-2 font-bangla-display text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-6xl">
-            {slide.headline}
+          <Heading
+            data-hero-headline
+            {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
+            className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl lg:text-6xl"
+          >
+            {locale === "bn" && slide.headlineBn
+              ? slide.headlineBn
+              : slide.headline}
           </Heading>
           {slide.subhead && (
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p
+              data-hero-sub
+              className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+            >
               {locale === "bn" && slide.subheadBn
                 ? slide.subheadBn
                 : slide.subhead}
             </p>
           )}
-          <div className="mt-7 flex flex-wrap items-center gap-3">
+          <div data-hero-cta className="mt-7 flex flex-wrap items-center gap-3">
             {slide.ctaLabel && (
               <a
                 href={slide.ctaUrl || "#"}
-                className="inline-flex min-h-12 items-center whitespace-nowrap rounded-fq-md bg-primary px-7 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+                className="inline-flex min-h-12 sm:min-h-14 items-center whitespace-nowrap bg-foreground px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
-                {slide.ctaLabel}
+                {locale === "bn" && slide.ctaLabelBn
+                  ? slide.ctaLabelBn
+                  : slide.ctaLabel}
               </a>
             )}
-            {/* Dots live with the copy — never overlapping art or CTA */}
+            {/* Dots + arrows live with the copy — never overlapping art or CTA */}
             {slides.length > 1 && (
-              <div className="flex items-center gap-2" role="tablist" aria-label={t(locale, "Slides", "স্লাইড")}>
-                {slides.map((_, i) => (
+              <div className="flex flex-wrap items-center gap-1">
+                <div className="flex items-center gap-1">
                   <button
-                    key={i}
-                    role="tab"
-                    aria-selected={i === current}
-                    onClick={() => setCurrent(i)}
-                    className={`h-2 rounded-full transition ${
-                      i === current
-                        ? "w-7 bg-primary"
-                        : "w-2 bg-foreground/25 hover:bg-foreground/50"
-                    }`}
-                    aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1}`}
-                  />
-                ))}
+                    type="button"
+                    onClick={prev}
+                    aria-label={prevLabel}
+                    className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  >
+                    <span aria-hidden="true">‹</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={next}
+                    aria-label={nextLabel}
+                    className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  >
+                    <span aria-hidden="true">›</span>
+                  </button>
+                </div>
+                <div
+                  className="flex items-center gap-1"
+                  role="group"
+                  aria-label={t(locale, "Slides", "স্লাইড")}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowRight") {
+                      event.preventDefault();
+                      next();
+                    } else if (event.key === "ArrowLeft") {
+                      event.preventDefault();
+                      prev();
+                    }
+                  }}
+                >
+                  {slides.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => goTo(i)}
+                      aria-current={i === current}
+                      className="grid min-h-11 min-w-11 place-items-center rounded-fq-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                      aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1} / ${slides.length}`}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`block h-2 rounded-full transition ${
+                          i === current
+                            ? "w-7 bg-primary"
+                            : "w-2 bg-foreground/25 hover:bg-foreground/50"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
         </div>
-        {/* Art — five columns, its own zone. Real photographs render;
+        {/* Art — six columns, its own zone. Real photographs render;
             placeholder URLs become hand-built weave lattice instead. */}
-        <div className="min-w-0 lg:col-span-5">
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-fq-lg border border-border bg-[var(--fq-surface,#FAF8F5)] sm:aspect-[16/10] lg:aspect-[4/5]">
+        <div data-hero-art className="min-w-0 lg:col-span-6 lg:-mr-8">
+          <div className="relative aspect-[3/4] w-full overflow-hidden bg-transparent sm:aspect-[4/3] lg:aspect-[3/4]">
             {slide.image && !slide.image.startsWith("/api/public/ph/") ? (
               <img
                 src={slide.image}
@@ -221,6 +698,7 @@ const HeroCarousel: WidgetComponent = ({
           </div>
         </div>
       </div>
+      )}
     </section>
   );
 };
@@ -258,37 +736,31 @@ const DepartmentGrid: WidgetComponent = ({
 
   const gridCols =
     columns <= 2
-      ? "sm:grid-cols-2"
+      ? "grid-cols-2 sm:grid-cols-2"
       : columns <= 3
-        ? "sm:grid-cols-3"
+        ? "grid-cols-2 sm:grid-cols-3"
         : columns <= 4
-          ? "sm:grid-cols-2 lg:grid-cols-4"
-          : "sm:grid-cols-3 lg:grid-cols-5";
+          ? "grid-cols-2 sm:grid-cols-2 lg:grid-cols-4"
+          : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5";
   return (
-    <section>
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-2">
-        <Heading className="font-bangla-display text-2xl font-bold tracking-tight sm:text-3xl">
+    <section className="py-12 sm:py-24 max-w-[var(--fq-container,1440px)] mx-auto px-4 sm:px-8">
+      <div className="mb-8 sm:mb-10 text-center">
+        <Heading className="font-bangla-display text-2xl sm:text-3xl lg:text-4xl font-medium tracking-wide text-foreground">
           {t(locale, "Shop by department", "বিভাগ অনুযায়ী কিনুন")}
         </Heading>
-        <p className="text-xs text-muted-foreground">
+        <p className="mt-3 text-[13.5px] font-medium tracking-wide text-muted-foreground">
           {departments.reduce((n, d) => n + (d.count || 0), 0)}{" "}
           {t(locale, "handcrafted pieces", "হাতে তৈরি পণ্য")}
         </p>
       </div>
-      <div className={`grid gap-4 ${gridCols}`}>
+      <div className={`grid gap-6 sm:gap-8 ${gridCols}`}>
         {departments.map((dept, i) => (
           <a
             key={i}
             href={dept.href || "#"}
-            className={`group relative overflow-hidden rounded-fq-md border border-border bg-card transition hover:shadow-fq-sm ${
-              i === 0 ? "sm:col-span-2 sm:row-span-2" : ""
-            }`}
+            className="group block relative overflow-hidden transition-transform duration-500 ease-out hover:-translate-y-1"
           >
-            <div
-              className={`flex items-center justify-center overflow-hidden bg-card ${
-                i === 0 ? "aspect-[3/4] sm:aspect-auto sm:h-full sm:min-h-[28rem]" : "aspect-[3/4]"
-              }`}
-            >
+            <div className="relative aspect-[3/4] overflow-hidden bg-muted/20">
               {dept.image ? (
                 <img
                   src={dept.image}
@@ -306,11 +778,11 @@ const DepartmentGrid: WidgetComponent = ({
                 />
               )}
             </div>
-            <div className="p-3">
-              <p className={`font-medium ${i === 0 ? "text-base" : "text-sm"}`}>
+            <div className="mt-3 sm:mt-4 text-center">
+              <p className="font-bold text-[11px] sm:text-[13px] fq-caps tracking-widest text-foreground transition-colors group-hover:text-muted-foreground">
                 {locale === "bn" && dept.nameBn ? dept.nameBn : dept.name}
               </p>
-              <p className="text-xs text-muted-foreground tabular-nums">
+              <p className="mt-1 text-[10px] sm:text-[12px] font-medium tracking-wide text-muted-foreground tabular-nums">
                 {dept.count} {t(locale, "items", "পণ্য")}
               </p>
             </div>
@@ -502,13 +974,16 @@ const TextileShowcase: WidgetComponent = ({
               )}
             </div>
             <div className="p-4">
-              <p className="text-sm font-medium">
+              <p data-part="title" className="text-sm font-medium">
                 {locale === "bn" && product.nameBn
                   ? product.nameBn
                   : product.name}
               </p>
               {product.price > 0 && (
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p
+                  data-part="price"
+                  className="mt-1 text-sm text-muted-foreground"
+                >
                   {money(product.price * 100)}
                 </p>
               )}
@@ -546,6 +1021,7 @@ const EditorialBanner: WidgetComponent = ({
   const ctaLabel = str("cta_label") || str("ctaLabel");
   const ctaUrl = str("cta_url") || str("ctaHref");
   const overlay = str("overlay") || "dark";
+  const surface = str("surface") || "card";
 
   if (!headline) {
     return editing ? (
@@ -565,7 +1041,9 @@ const EditorialBanner: WidgetComponent = ({
       : "bg-gradient-to-t from-foreground/70 via-foreground/30 to-transparent text-background";
 
   return (
-    <section className="relative overflow-hidden rounded-fq-sm">
+    <section
+      className={`relative overflow-hidden rounded-fq-sm${surface === "glass" ? " fq-theme-glass" : ""}`}
+    >
       <div className="relative aspect-[3/1] min-h-[200px] w-full">
         <div className="absolute inset-0 bg-gradient-to-br from-amber-900/20 via-rose-900/10 to-amber-800/20">
           <div className="absolute inset-0 flex items-center justify-center">
@@ -640,16 +1118,29 @@ const TestimonialCarousel: WidgetComponent = ({
     image: readString(row, "image"),
   }));
   const autoAdvanceMs = int("autoAdvanceMs", 4000, 1500, 10000);
+  const reducedMotion = useCarouselReducedMotion();
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+
+  const count = testimonials.length;
+  const goTo = useCallback(
+    (i: number) => {
+      if (count <= 0) return;
+      setCurrent(((i % count) + count) % count);
+    },
+    [count],
+  );
+  const next = useCallback(() => goTo(current + 1), [current, goTo]);
+  const prev = useCallback(() => goTo(current - 1), [current, goTo]);
 
   useEffect(() => {
-    if (paused || testimonials.length <= 1) return;
+    if (paused || reducedMotion || testimonials.length <= 1) return;
     const id = setInterval(() => {
       setCurrent((i) => (i + 1) % testimonials.length);
     }, autoAdvanceMs);
     return () => clearInterval(id);
-  }, [paused, testimonials.length, autoAdvanceMs]);
+  }, [paused, reducedMotion, testimonials.length, autoAdvanceMs]);
 
   if (testimonials.length === 0) {
     return editing ? (
@@ -664,14 +1155,57 @@ const TestimonialCarousel: WidgetComponent = ({
   }
 
   const testimonial = testimonials[current]!;
+  const prevLabel = t(locale, "Previous testimonial", "আগের প্রশংসাপত্র");
+  const nextLabel = t(locale, "Next testimonial", "পরের প্রশংসাপত্র");
   return (
     <section
+      role="region"
+      aria-roledescription="carousel"
       className="rounded-fq-sm border border-border bg-card p-6 sm:p-8"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      onKeyDown={(event) => {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          next();
+        } else if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          prev();
+        } else if (event.key === "Home") {
+          event.preventDefault();
+          goTo(0);
+        } else if (event.key === "End") {
+          event.preventDefault();
+          goTo(count - 1);
+        }
+      }}
+      onTouchStart={(event) => {
+        touchStartX.current = event.touches[0]?.clientX ?? null;
+      }}
+      onTouchEnd={(event) => {
+        const start = touchStartX.current;
+        touchStartX.current = null;
+        if (start === null) return;
+        const end = event.changedTouches[0]?.clientX ?? start;
+        const delta = end - start;
+        if (Math.abs(delta) < 40) return;
+        if (delta < 0) next();
+        else prev();
+      }}
       aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
     >
-      <div className="flex flex-col items-center text-center">
+      <p className="sr-only" role="status">
+        {t(locale, "Testimonial", "টেস্টিমোনিয়াল")} {current + 1} / {count}
+      </p>
+      <div
+        key={current}
+        role="group"
+        aria-roledescription="slide"
+        aria-label={`${t(locale, "Testimonial", "টেস্টিমোনিয়াল")} ${current + 1} / ${count}`}
+        className="fq-enter-fade flex flex-col items-center text-center"
+      >
         {testimonial.image && (
           <img
             src={testimonial.image}
@@ -683,22 +1217,63 @@ const TestimonialCarousel: WidgetComponent = ({
         <blockquote className="max-w-xl text-base italic text-foreground/80">
           "{testimonial.quote}"
         </blockquote>
-        <figcaption className="mt-3 text-sm font-medium text-muted-foreground">
+        <figcaption
+          data-part="author"
+          className="mt-3 text-sm font-medium text-muted-foreground"
+        >
           {testimonial.author}
         </figcaption>
       </div>
       {testimonials.length > 1 && (
-        <div className="mt-4 flex justify-center gap-2">
-          {testimonials.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrent(i)}
-              className={`h-2 rounded-full transition ${
-                i === current ? "w-6 bg-primary" : "w-2 bg-border"
-              }`}
-              aria-label={`${t(locale, "Testimonial", "টেস্টিমোনিয়াল")} ${i + 1}`}
-            />
-          ))}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-1">
+          <button
+            type="button"
+            onClick={prev}
+            aria-label={prevLabel}
+            className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
+            <span aria-hidden="true">‹</span>
+          </button>
+          <div
+            className="flex items-center gap-1"
+            role="group"
+            aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
+            onKeyDown={(event) => {
+              if (event.key === "ArrowRight") {
+                event.preventDefault();
+                next();
+              } else if (event.key === "ArrowLeft") {
+                event.preventDefault();
+                prev();
+              }
+            }}
+          >
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-current={i === current}
+                className="grid min-h-11 min-w-11 place-items-center rounded-fq-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                aria-label={`${t(locale, "Testimonial", "টেস্টিমোনিয়াল")} ${i + 1} / ${testimonials.length}`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`block h-2 rounded-full transition ${
+                    i === current ? "w-6 bg-primary" : "w-2 bg-border"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={next}
+            aria-label={nextLabel}
+            className="grid h-11 w-11 place-items-center rounded-fq-md border border-border bg-card text-base leading-none transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          >
+            <span aria-hidden="true">›</span>
+          </button>
         </div>
       )}
     </section>

@@ -12,8 +12,7 @@ export function editHref(
   id: string,
   editor?: "classic" | "builder",
 ): string {
-  const chosen =
-    kind === "page" ? "builder" : (editor ?? "classic");
+  const chosen = kind === "page" ? "builder" : (editor ?? "classic");
   const params = new URLSearchParams({ kind, id, editor: chosen });
   return `/dashboard/content/editor?${params.toString()}`;
 }

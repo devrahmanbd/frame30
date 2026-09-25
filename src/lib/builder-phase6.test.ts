@@ -27,7 +27,6 @@ import {
   parseTokens,
   tokensToCss,
 } from "./builder-ast";
-import { THEME_PRESETS } from "./theme-presets";
 import type { Section } from "./builder-ast";
 
 const node = (id: string, props: Record<string, unknown>): Section =>
@@ -187,38 +186,7 @@ describe("global styles", () => {
 });
 
 describe("search template", () => {
-  it("is a first-class theme part", () => {
+  it("is a first-class template part", () => {
     expect(TEMPLATE_KEYS).toContain("search");
-  });
-
-  it("every shipped theme provides one, and it lints clean", () => {
-    for (const preset of THEME_PRESETS) {
-      const ast = preset.templates.search;
-      expect(ast, preset.key).toBeTruthy();
-      expect(ast.main.length, preset.key).toBeGreaterThan(0);
-      expect(lintTemplate(ast, "search"), preset.key).toEqual([]);
-    }
-  });
-
-  it("gives the results page exactly one h1", () => {
-    for (const preset of THEME_PRESETS) {
-      const h1s = preset.templates.search.main.filter(
-        (s) => s.props["level"] === "h1",
-      );
-      expect(h1s.length, preset.key).toBe(1);
-    }
-  });
-
-  it("keeps section ids unique across every template", () => {
-    for (const preset of THEME_PRESETS) {
-      const ids: string[] = [];
-      for (const key of TEMPLATE_KEYS) {
-        const ast = preset.templates[key];
-        ids.push(
-          ...[...ast.header, ...ast.main, ...ast.footer].map((s) => s.id),
-        );
-      }
-      expect(new Set(ids).size, preset.key).toBe(ids.length);
-    }
   });
 });

@@ -6,7 +6,22 @@ import {
 } from "@tanstack/react-router";
 import { resolvePathFn } from "@/lib/url-resolve.functions";
 import { ArticleView } from "@/components/store/ArticleView";
+import { ProductView } from "@/components/store/ProductView";
+import { CollectionView } from "@/components/store/CollectionView";
+import { PageView } from "@/components/store/PageView";
 import { useLang } from "@/lib/i18n";
+import { buildProductHead, buildPageHead } from "@/lib/theme-seo";
+import { verificationTags } from "@/lib/search-console";
+
+/**
+ * Unknown-safe string field reader for server-fn payloads whose client
+ * types omit passthrough fields (e.g. request origin). Never throws.
+ */
+function stringField(obj: unknown, key: string): string | null {
+  if (typeof obj !== "object" || obj === null) return null;
+  const value: unknown = (obj as Record<string, unknown>)[key];
+  return typeof value === "string" ? value : null;
+}
 
 /**
  * Catch-all permalink resolver.
@@ -27,8 +42,81 @@ export const Route = createFileRoute("/$")({
         statusCode: result.resolution.status === 302 ? 302 : 301,
       });
     }
-    if (result.resolution.type === "gone" || !result.article) throw notFound();
-    return { ...result.article, canonicalPath: path, params };
+    if (result.resolution.type === "gone" || result.resolution.type === "miss")
+      throw notFound();
+
+    if (result.target) {
+      // Custom hosts only: the entity's merchant must own this host, or the
+      // page would serve one tenant's catalogue on another surface (and a
+      // null merchantSlug would 500 in the loaders below instead of 404ing).
+      const { resolveStorefrontHostFn } =
+        await import("@/lib/storefront.functions");
+      let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
+      try {
+        host = await resolveStorefrontHostFn();
+      } catch {
+        host = null;
+      }
+      if (
+        !host ||
+        !result.target.merchantSlug ||
+        host.merchantSlug !== result.target.merchantSlug
+      ) {
+        throw notFound();
+      }
+      if (result.target.kind === "product") {
+        const { getStoreProduct } = await import("@/lib/storefront.functions");
+        const productData = await getStoreProduct({
+          data: {
+            slug: result.target.merchantSlug,
+            productSlug: result.target.slug,
+          },
+        });
+        if (!productData) throw notFound();
+        return {
+          type: "product",
+          data: productData,
+          target: result.target,
+        } as const;
+      }
+      if (result.target.kind === "collection") {
+        const { getStoreCollection } =
+          await import("@/lib/storefront.functions");
+        const collectionData = await getStoreCollection({
+          data: {
+            slug: result.target.merchantSlug,
+            collectionSlug: result.target.slug,
+          },
+        });
+        if (!collectionData) throw notFound();
+        return {
+          type: "collection",
+          data: collectionData,
+          target: result.target,
+        } as const;
+      }
+      if (result.target.kind === "page") {
+        const { getStorePageFn } =
+          await import("@/lib/storefront-search.functions");
+        const pageData = await getStorePageFn({
+          data: {
+            slug: result.target.merchantSlug,
+            pageSlug: result.target.slug,
+          },
+        });
+        if (!pageData) throw notFound();
+        return { type: "page", data: pageData, target: result.target } as const;
+      }
+    }
+
+    if (!result.article) throw notFound();
+    return {
+      type: "article",
+      article: result.article.article,
+      merchant: result.article.merchant,
+      canonicalPath: path,
+      origin: stringField(result, "origin"),
+    } as const;
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -39,9 +127,98 @@ export const Route = createFileRoute("/$")({
         ],
       };
     }
+
+    if (loaderData.type === "product") {
+      const { data } = loaderData;
+      const variants = data.product.product_variants ?? [];
+      const cheapest = variants
+        .map((v) => Number(v.price_amount_minor_int ?? 0))
+        .sort((x, y) => x - y)[0];
+      const base = buildProductHead({
+        origin: data.origin,
+        path: loaderData.target.canonicalPath,
+        storePath: `/`,
+        storeName: data.merchant.name,
+        themeKey: data.themeKey,
+        seo: data.seo,
+        product: {
+          title: data.product.title,
+          slug: data.product.slug,
+          description: data.product.description,
+          image_url: data.product.image_url,
+          sku: variants[0]?.sku ?? null,
+        },
+        currency: data.merchant.currency_code,
+        priceMinor: cheapest ?? 0,
+        inStock: variants.some((v) => Number(v.stock_quantity ?? 0) > 0),
+        reviews: data.reviews ?? [],
+        returnPolicy: { days: 7, fees: "shopper" },
+        shipping: {
+          flatMinor: Number(data.settings?.shipping_flat_minor_int ?? 0),
+          freeThresholdMinor:
+            data.settings?.free_shipping_threshold_minor_int ?? null,
+        },
+      });
+      return {
+        ...base,
+        meta: [
+          ...(base.meta ?? []),
+          ...verificationTags(data.siteKit.verification),
+        ],
+      };
+    }
+
+    if (loaderData.type === "collection") {
+      const { data } = loaderData;
+      const title =
+        data.seo?.metaTitle ||
+        `${data.collection.name} — ${data.merchant.name}`;
+      const description =
+        data.seo?.metaDescription ||
+        data.collection.description ||
+        `Shop ${data.collection.name} at ${data.merchant.name}.`;
+      const canonical = data.origin
+        ? `${data.origin}${loaderData.target.canonicalPath}`
+        : loaderData.target.canonicalPath;
+      return {
+        meta: [
+          { title },
+          { name: "description", content: description },
+          { property: "og:title", content: title },
+          { property: "og:description", content: description },
+          { property: "og:type", content: "website" },
+          { property: "og:url", content: canonical },
+          { name: "twitter:card", content: "summary_large_image" },
+        ],
+        links: [{ rel: "canonical", href: canonical }],
+      };
+    }
+
+    if (loaderData.type === "page") {
+      const { data } = loaderData;
+      const base = buildPageHead({
+        origin: stringField(data, "origin") ?? "",
+        path: loaderData.target.canonicalPath,
+        storePath: `/`,
+        storeName: data.merchant.name,
+        themeKey: data.themeKey,
+        robots: data.page.robots,
+        noindex: (data.page.robots ?? "").startsWith("noindex"),
+        seo: data.seo ?? null,
+        page: data.page,
+      });
+      return {
+        ...base,
+        meta: [
+          ...(base.meta ?? []),
+          ...verificationTags(data.siteKit.verification),
+        ],
+      };
+    }
+
+    // article case
     const { article, merchant } = loaderData;
-    const origin =
-      "origin" in loaderData ? (loaderData.origin as string | null) : null;
+    const origin = loaderData.origin;
     const selfPath = article.canonical || loaderData.canonicalPath;
     const absolute = origin ? `${origin}${selfPath}` : selfPath;
     const title =
@@ -107,6 +284,19 @@ function CatchAllMessage({
 }
 
 function ResolvedPage() {
-  const { article, merchant } = Route.useLoaderData();
-  return <ArticleView article={article} merchant={merchant} />;
+  const loaderData = Route.useLoaderData();
+
+  if (loaderData.type === "product") {
+    return <ProductView data={loaderData.data} />;
+  }
+  if (loaderData.type === "collection") {
+    return <CollectionView data={loaderData.data} />;
+  }
+  if (loaderData.type === "page") {
+    return <PageView data={loaderData.data} />;
+  }
+
+  return (
+    <ArticleView article={loaderData.article} merchant={loaderData.merchant} />
+  );
 }

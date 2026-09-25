@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Globe, Clock, Check, RotateCcw } from "lucide-react";
+import { Globe, Clock, Check, RotateCcw } from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import {
   COMMON_TIMEZONES,

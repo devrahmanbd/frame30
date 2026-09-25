@@ -10,7 +10,7 @@ import {
   Store,
   BarChart3,
   PackageCheck,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import {
   Band,
   BandHeading,
@@ -266,9 +266,9 @@ export function HomePage({ data }: { data: LandingData }) {
                   </h3>
                   <p className="text-base text-muted-foreground leading-relaxed">
                     Customise your layout, typography, and colour accents
-                    without coding. Every template is engineered with
-                    sub-second page loads, instant cart drawers, and
-                    responsive image compression.
+                    without coding. Every template is engineered with sub-second
+                    page loads, instant cart drawers, and responsive image
+                    compression.
                   </p>
                   <ul className="space-y-3 pt-4 text-sm text-foreground font-medium">
                     {[
@@ -351,10 +351,9 @@ export function HomePage({ data }: { data: LandingData }) {
                     Know your true profit after shipping and fees.
                   </h3>
                   <p className="text-base text-muted-foreground leading-relaxed">
-                    Most merchants calculate gross sales while ignoring
-                    returned COD shipping costs and gateway cuts. Framique
-                    gives you true net margin per product, per channel, and
-                    per month.
+                    Most merchants calculate gross sales while ignoring returned
+                    COD shipping costs and gateway cuts. Framique gives you true
+                    net margin per product, per channel, and per month.
                   </p>
                   <ul className="space-y-3 pt-4 text-sm text-foreground font-medium">
                     {[

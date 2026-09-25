@@ -4,7 +4,7 @@
  * Clipped with the same pixel model the score uses, so preview and meters can
  * never disagree. Desktop and mobile widths, favicon + breadcrumb line.
  */
-import { Globe, Monitor, Smartphone } from "lucide-react";
+import { Globe, Monitor, Smartphone } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
 import { SERP_DESKTOP, SERP_MOBILE, type SerpDevice } from "@/lib/seo-pixels";

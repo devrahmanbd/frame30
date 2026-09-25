@@ -160,7 +160,10 @@ describe("PII scrubbing", () => {
   });
 
   it("passes context through the text scrubber before the field filter", () => {
-    expect(reporter).toContain("sanitizeEventFields(scrubPayload(context)");
+    // Whitespace-tolerant: the call spans two lines in observability.server.ts.
+    expect(reporter).toMatch(
+      /sanitizeEventFields\(\s*scrubPayload\(context\)/,
+    );
     expect(reporter).toContain("scrubText(err.stack)");
   });
 

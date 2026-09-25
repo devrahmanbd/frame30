@@ -52,11 +52,7 @@ const DEMO_MEDIA_FILES = Array.from(
 );
 
 export type ImportConflictKind =
-  | "products"
-  | "collections"
-  | "pages"
-  | "posts"
-  | "media";
+  "products" | "collections" | "pages" | "posts" | "media";
 
 export type ImportConflict = { kind: ImportConflictKind; slugs: string[] };
 
@@ -67,9 +63,7 @@ export function matchConflicts(
 ): string[] {
   const norm = (s: string | null | undefined) =>
     (s ?? "").trim().toLowerCase().replace(/^\/+/, "");
-  const existing = new Set(
-    existingSlugs.map(norm).filter((s) => s.length > 0),
-  );
+  const existing = new Set(existingSlugs.map(norm).filter((s) => s.length > 0));
   const out = new Set<string>();
   for (const raw of demoSlugs) {
     const s = norm(raw);
@@ -81,20 +75,21 @@ export function matchConflicts(
 async function existingSlugs(
   db: Client,
   merchantId: string,
-  table:
-    | "products"
-    | "collections"
-    | "storefront_pages"
-    | "articles",
+  table: "products" | "collections" | "storefront_pages" | "articles",
   column: "slug",
 ): Promise<string[]> {
-  const { data } = await (db as unknown as {
-    from: (t: string) => {
-      select: (c: string) => {
-        eq: (k: string, v: string) => Promise<{ data: { slug: string }[] | null }>;
+  const { data } = await (
+    db as unknown as {
+      from: (t: string) => {
+        select: (c: string) => {
+          eq: (
+            k: string,
+            v: string,
+          ) => Promise<{ data: { slug: string }[] | null }>;
+        };
       };
-    };
-  })
+    }
+  )
     .from(table)
     .select(column)
     .eq("merchant_id", merchantId);
@@ -131,13 +126,18 @@ export async function importPreflight(
     existingSlugs(db, merchantId, "storefront_pages", "slug"),
     existingSlugs(db, merchantId, "articles", "slug"),
     (async () => {
-      const { data } = await (db as unknown as {
-        from: (t: string) => {
-          select: (c: string) => {
-            eq: (k: string, v: string) => Promise<{ data: { file_name: string }[] | null }>;
+      const { data } = await (
+        db as unknown as {
+          from: (t: string) => {
+            select: (c: string) => {
+              eq: (
+                k: string,
+                v: string,
+              ) => Promise<{ data: { file_name: string }[] | null }>;
+            };
           };
-        };
-      })
+        }
+      )
         .from("media_assets")
         .select("file_name")
         .eq("merchant_id", merchantId);
@@ -178,15 +178,20 @@ async function deleteWhereSlugIn(
   column = "slug",
 ): Promise<void> {
   if (slugs.length === 0) return;
-  const { error } = await (db as unknown as {
-    from: (t: string) => {
-      delete: () => {
-        eq: (k: string, v: string) => {
-          in: (k: string, v: string[]) => Promise<{ error: unknown }>;
+  const { error } = await (
+    db as unknown as {
+      from: (t: string) => {
+        delete: () => {
+          eq: (
+            k: string,
+            v: string,
+          ) => {
+            in: (k: string, v: string[]) => Promise<{ error: unknown }>;
+          };
         };
       };
-    };
-  })
+    }
+  )
     .from(table)
     .delete()
     .eq("merchant_id", merchantId)
@@ -210,15 +215,23 @@ export async function removeImportConflicts(
     conflicts.find((c) => c.kind === kind)?.slugs ?? [];
   const productSlugs = byKind("products");
   if (productSlugs.length > 0) {
-    const { data: rows } = await (db as unknown as {
-      from: (t: string) => {
-        select: (c: string) => {
-          eq: (k: string, v: string) => {
-            in: (k: string, v: string[]) => Promise<{ data: { id: string }[] | null }>;
+    const { data: rows } = await (
+      db as unknown as {
+        from: (t: string) => {
+          select: (c: string) => {
+            eq: (
+              k: string,
+              v: string,
+            ) => {
+              in: (
+                k: string,
+                v: string[],
+              ) => Promise<{ data: { id: string }[] | null }>;
+            };
           };
         };
-      };
-    })
+      }
+    )
       .from("products")
       .select("id")
       .eq("merchant_id", merchantId)
@@ -228,15 +241,30 @@ export async function removeImportConflicts(
       const raw = db as unknown as {
         from: (t: string) => {
           delete: () => {
-            eq: (k: string, v: string) => {
+            eq: (
+              k: string,
+              v: string,
+            ) => {
               in: (k: string, v: string[]) => Promise<{ error: unknown }>;
             };
           };
         };
       };
-      await raw.from("collection_products").delete().eq("merchant_id", merchantId).in("product_id", ids);
-      await raw.from("product_variants").delete().eq("merchant_id", merchantId).in("product_id", ids);
-      await raw.from("products").delete().eq("merchant_id", merchantId).in("id", ids);
+      await raw
+        .from("collection_products")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .in("product_id", ids);
+      await raw
+        .from("product_variants")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .in("product_id", ids);
+      await raw
+        .from("products")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .in("id", ids);
     }
   }
   await deleteWhereSlugIn(db, merchantId, "collections", byKind("collections"));
@@ -248,15 +276,23 @@ export async function removeImportConflicts(
   const media = byKind("media");
   if (media.length > 0) {
     // Capture storage paths BEFORE deleting the rows that reference them.
-    const { data: assetRows } = await (db as unknown as {
-      from: (t: string) => {
-        select: (c: string) => {
-          eq: (k: string, v: string) => {
-            in: (k: string, v: string[]) => Promise<{ data: { storage_path: string }[] | null }>;
+    const { data: assetRows } = await (
+      db as unknown as {
+        from: (t: string) => {
+          select: (c: string) => {
+            eq: (
+              k: string,
+              v: string,
+            ) => {
+              in: (
+                k: string,
+                v: string[],
+              ) => Promise<{ data: { storage_path: string }[] | null }>;
+            };
           };
         };
-      };
-    })
+      }
+    )
       .from("media_assets")
       .select("storage_path")
       .eq("merchant_id", merchantId)
@@ -264,9 +300,8 @@ export async function removeImportConflicts(
     await deleteWhereSlugIn(db, merchantId, "media_assets", media, "file_name");
     // Storage objects are removed best-effort; a missing object is not fatal.
     try {
-      const { supabaseAdmin } = await import(
-        "@/integrations/supabase/client.server"
-      );
+      const { supabaseAdmin } =
+        await import("@/integrations/supabase/client.server");
       const paths = (assetRows ?? [])
         .map((r) => r.storage_path)
         .filter(Boolean);
@@ -391,7 +426,9 @@ export async function importThemeProducts(
     await removeImportConflicts(
       db,
       merchantId,
-      pre.conflicts.filter((c) => c.kind === "products" || c.kind === "collections"),
+      pre.conflicts.filter(
+        (c) => c.kind === "products" || c.kind === "collections",
+      ),
     );
     if (!alreadyPurged) await purgeExistingDemo(db, merchantId);
   }
@@ -424,7 +461,44 @@ export async function importThemeProducts(
       key: themeKey,
       ...result,
     });
-    if (result.imported) purgeStorefront("import_products", merchantId);
+    if (result.imported) {
+      // Demo collections must be visible: writers leave is_published
+      // false by default, which 404s every /c/* page and drops them
+      // from the sitemap despite advertised links. Publish exactly the
+      // catalog's slugs — merchant-owned collections untouched.
+      const slugs = Array.isArray(
+        (catalog as Record<string, unknown>)["collections"],
+      )
+        ? (
+            (catalog as Record<string, unknown>)["collections"] as Array<
+              Record<string, unknown>
+            >
+          )
+            .map((c) => c["slug"])
+            .filter((s): s is string => typeof s === "string" && s.length > 0)
+        : [];
+      if (slugs.length > 0) {
+        await (
+          db as unknown as {
+            from: (t: string) => {
+              update: (v: Record<string, unknown>) => {
+                eq: (
+                  k: string,
+                  v: unknown,
+                ) => {
+                  in: (k: string, v: unknown[]) => Promise<unknown>;
+                };
+              };
+            };
+          }
+        )
+          .from("collections")
+          .update({ is_published: true })
+          .eq("merchant_id", merchantId)
+          .in("slug", slugs);
+      }
+      purgeStorefront("import_products", merchantId);
+    }
     return result;
   });
 }
@@ -506,7 +580,13 @@ export async function importThemeAll(
 
     if (overwrite) await purgeExistingDemo(db, merchantId);
     const slides = await importThemeSlides(db, merchantId, themeKey);
-    const media = await importThemeMedia(db, merchantId, themeKey, overwrite, true);
+    const media = await importThemeMedia(
+      db,
+      merchantId,
+      themeKey,
+      overwrite,
+      true,
+    );
     const products = await importThemeProducts(
       db,
       merchantId,
@@ -515,7 +595,13 @@ export async function importThemeAll(
       overwrite,
       true,
     );
-    const posts = await importThemePosts(db, merchantId, themeKey, overwrite, true);
+    const posts = await importThemePosts(
+      db,
+      merchantId,
+      themeKey,
+      overwrite,
+      true,
+    );
 
     const totalImported =
       (slides.imported ? 1 : 0) +

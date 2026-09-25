@@ -73,10 +73,18 @@ function usePrefersDark(enabled: boolean): boolean {
 type Props = {
   tokens: ThemeTokens | null;
   className?: string;
+  /**
+   * Lane B2-1: per-page skin CSS, already filtered to the skins the rendered
+   * page uses (the preview host joins per-key sheets via `combineUsedSkinCss`
+   * and passes the result here). Inlined first inside the scope so token
+   * variables and skin rules share one cascade origin. Absent or empty keeps
+   * today's DOM exactly — no style element is rendered.
+   */
+  skinCss?: string | null;
   children: ReactNode;
 };
 
-export function ThemeSurface({ tokens, className, children }: Props) {
+export function ThemeSurface({ tokens, className, skinCss, children }: Props) {
   const dark = usePrefersDark(Boolean(tokens?.dark));
   const style = tokens
     ? (tokensToCss(tokens) as React.CSSProperties)
@@ -94,6 +102,12 @@ export function ThemeSurface({ tokens, className, children }: Props) {
         data-motion={tokens?.motion ?? DEFAULT_TOKENS.motion}
         {...(tokens?.dark && dark ? { "data-theme": "dark" } : {})}
       >
+        {skinCss ? (
+          <style
+            data-fq-skin-css=""
+            dangerouslySetInnerHTML={{ __html: skinCss }}
+          />
+        ) : null}
         {children}
       </div>
     </ThemeLocaleContext.Provider>

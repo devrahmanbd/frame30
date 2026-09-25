@@ -62,43 +62,16 @@ async function setWarmKey(
   }
 }
 
-/** 1. Pre-warm theme presets and blueprints */
+/** 1. Theme presets and blueprints (removed): no-op layer kept for suite shape. */
 export async function warmThemePresets(
-  ttl = DEFAULT_WARMUP_TTL,
+  _ttl = DEFAULT_WARMUP_TTL,
 ): Promise<WarmupItemResult> {
-  const start = Date.now();
-  try {
-    const { THEME_PRESETS } = await import("./theme-presets");
-    const { BLUEPRINT_PRESETS } = await import("./theme-blueprints");
-
-    let count = 0;
-    // Cache all presets aggregate
-    if (await setWarmKey("theme:presets:all", THEME_PRESETS, ttl)) count++;
-    if (await setWarmKey("theme:blueprints:all", BLUEPRINT_PRESETS, ttl))
-      count++;
-
-    // Cache individual theme presets by key
-    for (const [key, preset] of Object.entries(THEME_PRESETS)) {
-      if (await setWarmKey(`theme:preset:${key}`, preset, ttl)) {
-        count++;
-      }
-    }
-
-    return {
-      layer: "Theme Presets & Blueprints",
-      keysWarmed: count,
-      durationMs: Date.now() - start,
-      status: "ok",
-    };
-  } catch (err) {
-    return {
-      layer: "Theme Presets & Blueprints",
-      keysWarmed: 0,
-      durationMs: Date.now() - start,
-      status: "error",
-      error: (err as Error).message,
-    };
-  }
+  return {
+    layer: "Theme Presets & Blueprints (removed)",
+    keysWarmed: 0,
+    durationMs: 0,
+    status: "skipped",
+  };
 }
 
 /** 2. Pre-warm active merchant metadata and domain mappings */

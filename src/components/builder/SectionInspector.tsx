@@ -19,7 +19,7 @@ import { inheritanceOf } from "@/lib/responsive";
 import { altKey, sizesKey } from "@/lib/media";
 import { taxonomyOptions } from "@/lib/taxonomy";
 import { unitLabel } from "@/lib/unit-format";
-import { MenuBuilder } from "./MenuBuilder";
+import { MenuBuilder, EDITOR_RANGE_INPUT, rangeFillPct } from "./MenuBuilder";
 import {
   dataEmptyState,
   missingBindings,
@@ -261,7 +261,9 @@ export function SectionInspector({
   const activePanels = contentOnly
     ? allActivePanels.filter((key) => key === "content")
     : allActivePanels;
-  const current = activePanels.includes(panel) ? panel : (activePanels[0] ?? "content");
+  const current = activePanels.includes(panel)
+    ? panel
+    : (activePanels[0] ?? "content");
 
   const renderField = (field: Field) => {
     const id = `${section.id}-${field.key}-${device}`;
@@ -539,22 +541,64 @@ export function SectionInspector({
             className="h-9 w-full rounded-fq-md border border-border bg-card"
           />
         ) : field.kind === "range" || field.kind === "unit" ? (
-          <div className="flex items-center gap-2">
-            <input
-              id={id}
-              type={field.kind === "range" ? "range" : "number"}
-              disabled={!editable}
-              min={field.min ?? 0}
-              max={typeof field.max === "number" ? field.max : 100}
-              step={field.step ?? 1}
-              value={
-                typeof value === "number" ? value : Number(value ?? 0) || 0
-              }
-              onChange={(e) =>
-                onChange(field.key, Number(e.target.value), device)
-              }
-              className={field.kind === "range" ? "w-full" : shared}
-            />
+          <div className="flex min-h-11 items-center gap-2">
+            {field.kind === "range" ? (
+              /* B2-5 — token-styled single-thumb range; mirrors the
+               * storefront price-slider idiom (muted track, primary fill,
+               * card thumb, 44px touch height). The native input keeps
+               * arrows/Tab/AT behavior; labels are untouched. */
+              <div className="relative flex min-h-11 flex-1 items-center">
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-x-0 top-1/2 h-2 -translate-y-1/2 rounded-full bg-muted"
+                />
+                <div
+                  aria-hidden="true"
+                  className="absolute top-1/2 h-2 -translate-y-1/2 rounded-full bg-[var(--color-primary)]"
+                  style={{
+                    left: 0,
+                    width: `${rangeFillPct(
+                      field.min ?? 0,
+                      typeof field.max === "number" ? field.max : 100,
+                      typeof value === "number"
+                        ? value
+                        : Number(value ?? 0) || 0,
+                    )}%`,
+                  }}
+                />
+                <input
+                  id={id}
+                  type="range"
+                  disabled={!editable}
+                  min={field.min ?? 0}
+                  max={typeof field.max === "number" ? field.max : 100}
+                  step={field.step ?? 1}
+                  value={
+                    typeof value === "number" ? value : Number(value ?? 0) || 0
+                  }
+                  onChange={(e) =>
+                    onChange(field.key, Number(e.target.value), device)
+                  }
+                  className={EDITOR_RANGE_INPUT}
+                />
+              </div>
+            ) : (
+              <input
+                id={id}
+                type="number"
+                disabled={!editable}
+                min={field.min ?? 0}
+                max={typeof field.max === "number" ? field.max : 100}
+                step={field.step ?? 1}
+                value={
+                  typeof value === "number" ? value : Number(value ?? 0) || 0
+                }
+                onChange={(e) =>
+                  onChange(field.key, Number(e.target.value), device)
+                }
+                className={shared}
+              />
+            )}
             <span className="w-16 shrink-0 text-[0.65rem] text-muted-foreground">
               {typeof value === "number" ? value : 0}
               {field.unit ? ` ${unitLabel(field.unit, "en")}` : ""}
@@ -575,7 +619,9 @@ export function SectionInspector({
         ) : field.kind === "menu" ? (
           <MenuBuilder
             value={Array.isArray(value) ? (value as unknown as MenuItem[]) : []}
-            onChange={(items) => onChange(field.key, items as unknown as PropValue, device)}
+            onChange={(items) =>
+              onChange(field.key, items as unknown as PropValue, device)
+            }
           />
         ) : (
           <input

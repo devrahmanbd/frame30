@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 
 /**
  * Merchant store map for answer engines: catalogue links with root-shape
- * paths on the requesting custom host. Best-effort reads — the file renders
+ * paths on the requesting custom host. Every link is an `absolutePermalink`
+ * canonical from the merchant's own permalink settings, so the map advertises
+ * exactly what the storefront serves. Best-effort reads — the file renders
  * the store identity even when catalogue tables are unreachable.
  */
 async function merchantLlmsTxt(
@@ -26,7 +28,10 @@ async function merchantLlmsTxt(
       .maybeSingle();
     if (!merchant) throw new Error("unknown_merchant");
     const m = merchant as { id: string; name: string; slug: string };
-    const [products, collections, pages] = await Promise.all([
+    const settings = await import("@/lib/permalink.server")
+      .then((mod) => mod.permalinkSettingsFor(db as never, m.id))
+      .catch(() => null);
+    const [products, collections, pages, articles] = await Promise.all([
       db
         .from("products")
         .select("slug, title")
@@ -49,31 +54,31 @@ async function merchantLlmsTxt(
         .is("deleted_at", null)
         .limit(50)
         .then((r: any) => r.data ?? []),
+      db
+        .from("articles")
+        .select("slug, title, published_at")
+        .eq("merchant_id", m.id)
+        .eq("status", "published")
+        .lte("published_at", new Date().toISOString())
+        .is("deleted_at", null)
+        .limit(50)
+        .then((r: any) => r.data ?? [])
+        .catch(() => []),
     ]);
-    const lines = [
-      `# ${m.name}`,
-      "",
-      `Storefront: ${origin}/`,
-      "",
-      "## Products",
-      ...(products as { slug: string; title: string }[]).map(
-        (p) => `- [${p.title}](${origin}/p/${p.slug})`,
-      ),
-      "",
-      "## Collections",
-      ...(collections as { slug: string; name: string }[]).map(
-        (c) => `- [${c.name}](${origin}/c/${c.slug})`,
-      ),
-      "",
-      "## Pages",
-      ...(pages as { slug: string; title: string }[]).map(
-        (p) => `- [${p.title}](${origin}/pages/${p.slug})`,
-      ),
-      "",
-      `Sitemap: ${origin}/sitemap.xml`,
-      "",
-    ];
-    return new Response(lines.join("\n"), { headers });
+    const { buildMerchantLlmsTxt } = await import("@/lib/store-sitemap.server");
+    const body = buildMerchantLlmsTxt(origin, {
+      storeName: m.name,
+      products: (products ?? []) as { slug: string; title: string }[],
+      collections: (collections ?? []) as { slug: string; name: string }[],
+      pages: (pages ?? []) as { slug: string; title: string }[],
+      articles: (articles ?? []) as {
+        slug: string;
+        title: string;
+        published_at?: string | null;
+      }[],
+      settings,
+    });
+    return new Response(body, { headers });
   } catch {
     return new Response(`# Store\n\nStorefront: ${origin}/\n`, { headers });
   }
@@ -99,9 +104,8 @@ export const Route = createFileRoute("/llms.txt")({
         const origin = requestOrigin() ?? new URL(request.url).origin;
         // Custom host: this merchant's store map instead of marketing content.
         try {
-          const { resolveStorefrontHost } = await import(
-            "@/lib/storefront-host.server"
-          );
+          const { resolveStorefrontHost } =
+            await import("@/lib/storefront-host.server");
           const host = await resolveStorefrontHost();
           if (host) {
             return merchantLlmsTxt(host.merchantSlug, origin);

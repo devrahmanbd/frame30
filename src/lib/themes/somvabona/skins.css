@@ -1,0 +1,272 @@
+/**
+ * Somvabona widget skins — theme-owned skin sheet (widget-skins spec §3).
+ *
+ * Loaded conditionally: only when a used skin needs it (the spec's
+ * `get_style_depends` equivalent — core lane owns the loader; this file
+ * must be imported by that loader, never globally). Renderers emit
+ * `data-widget` + `data-skin` on the widget root (core lane owns the
+ * attributes); every rule below keys off those two attributes and nothing
+ * else, so shared markup stays untouched.
+ *
+ * Look: value-forward, dense, badge-rich franchise retail — deliberately
+ * distinct from Songoskriti's airy editorial treatment (open rhythm,
+ * single hero quote, story-led rails). Here price, rating and dispatch
+ * promises lead: tighter gaps, compact cards, a maroon dispatch band, and
+ * a badge cluster that always wins visual priority over imagery.
+ *
+ * Tokens: every value reads `var(--theme-*)` (maroon brand, accent,
+ * surface, ink, radius, container) or `color-mix()` over them. Zero hex
+ * literals, zero raw colours — no artwork literal was needed, so none is
+ * declared. If artwork literals are ever added, they must be documented
+ * here per the spec's "literals only for artwork" rule.
+ *
+ * Part hooks (proposal for the core renderer lane): badge-rich styling
+ * snaps in fully once renderers tag stable descendants with
+ * `data-part="price" | "badges" | "promise" | "rating"`. Until then the
+ * generic descendant rules below (headings, prices, links, lists) carry
+ * the look on any markup core emits.
+ */
+
+/* ---------- shared: every Somvabona skin root ---------- */
+[data-widget][data-skin] {
+  --sv-gap: 12px;
+  --sv-card-pad: 12px;
+  --sv-badge-bg: var(--theme-brand);
+  --sv-badge-ink: var(--theme-surface);
+  --sv-promise-bg: var(--theme-brand);
+  --sv-promise-ink: var(--theme-surface);
+  --sv-rule: color-mix(in oklab, var(--theme-ink) 16%, transparent);
+  --sv-wash: color-mix(in oklab, var(--theme-brand) 7%, var(--theme-surface));
+}
+
+/* ---------- product_rail[compact]: dense, badge-first rail ---------- */
+[data-widget="product_rail"][data-skin="compact"] {
+  --sv-gap: 10px;
+  background: var(--sv-wash);
+  border-block: 1px solid var(--sv-rule);
+}
+
+/* tighter rail rhythm than the editorial default */
+[data-widget="product_rail"][data-skin="compact"] ul,
+[data-widget="product_rail"][data-skin="compact"] ol {
+  gap: var(--sv-gap);
+}
+
+/* price leads: first money figure in a card reads brand-bold */
+[data-widget="product_rail"][data-skin="compact"] [data-part="price"] {
+  color: var(--theme-brand);
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
+/* badge cluster: sale / stock hints sit on brand, always legible */
+[data-widget="product_rail"][data-skin="compact"] [data-part="badges"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+[data-widget="product_rail"][data-skin="compact"] [data-part="badges"] > * {
+  background: var(--sv-badge-bg);
+  color: var(--sv-badge-ink);
+  border-radius: calc(var(--theme-radius) * 0.5);
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* rating row stays one line, accent-starred */
+[data-widget="product_rail"][data-skin="compact"] [data-part="rating"] {
+  color: var(--theme-accent);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* ---------- urgency_rail[compact]: rail + maroon dispatch band ---------- */
+[data-widget="urgency_rail"][data-skin="compact"] {
+  --sv-gap: 10px;
+  background: var(--sv-wash);
+  border-block: 1px solid var(--sv-rule);
+}
+
+[data-widget="urgency_rail"][data-skin="compact"] ul,
+[data-widget="urgency_rail"][data-skin="compact"] ol {
+  gap: var(--sv-gap);
+}
+
+[data-widget="urgency_rail"][data-skin="compact"] [data-part="price"] {
+  color: var(--theme-brand);
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
+[data-widget="urgency_rail"][data-skin="compact"] [data-part="badges"] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+[data-widget="urgency_rail"][data-skin="compact"] [data-part="badges"] > * {
+  background: var(--sv-badge-bg);
+  color: var(--sv-badge-ink);
+  border-radius: calc(var(--theme-radius) * 0.5);
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+[data-widget="urgency_rail"][data-skin="compact"] [data-part="rating"] {
+  color: var(--theme-accent);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* dispatch promise: full-bleed maroon band, surface text, dense type */
+[data-widget="urgency_rail"][data-skin="compact"] [data-part="promise"] {
+  display: block;
+  background: var(--sv-promise-bg);
+  color: var(--sv-promise-ink);
+  border-radius: calc(var(--theme-radius) * 0.5);
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- hero_carousel[fullbleed]: edge-to-edge offer merchandising ---------- */
+[data-widget="hero_carousel"][data-skin="fullbleed"] {
+  --sv-gap: 0;
+  background: var(--theme-ink);
+}
+
+/* caption plate: brand-tinted scrim so bilingual CTAs read over imagery */
+[data-widget="hero_carousel"][data-skin="fullbleed"] [data-part="caption"] {
+  background: color-mix(in oklab, var(--theme-brand) 72%, transparent);
+  color: var(--theme-surface);
+  border-radius: var(--theme-radius);
+  padding: 16px 20px;
+  max-width: var(--theme-container);
+}
+
+/* CTA row: surface button on the scrim, 44px targets preserved */
+[data-widget="hero_carousel"][data-skin="fullbleed"] [data-part="caption"] a,
+[data-widget="hero_carousel"][data-skin="fullbleed"] [data-part="caption"] button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  background: var(--theme-surface);
+  color: var(--theme-brand);
+  border-radius: calc(var(--theme-radius) * 0.75);
+  padding: 10px 20px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* dots read as price-ticket ticks: short brand bars, not dots */
+[data-widget="hero_carousel"][data-skin="fullbleed"] [data-part="dots"] > * {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: calc(var(--theme-radius) * 0.5);
+}
+
+/* ---------- testimonials[carousel]: compact proof rotation ---------- */
+[data-widget="testimonials"][data-skin="carousel"] {
+  background: var(--sv-wash);
+  border-block: 1px solid var(--sv-rule);
+}
+
+/* snap-row of compact quote cards instead of the single/wall layout */
+[data-widget="testimonials"][data-skin="carousel"] ul,
+[data-widget="testimonials"][data-skin="carousel"] ol {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(78vw, 340px);
+  gap: var(--sv-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-block: 4px;
+}
+
+[data-widget="testimonials"][data-skin="carousel"] li {
+  scroll-snap-align: start;
+  border: 1px solid var(--sv-rule);
+  border-radius: var(--theme-radius);
+  background: var(--theme-surface);
+  padding: var(--sv-card-pad);
+}
+
+/* district attribution reads as a brand eyebrow */
+[data-widget="testimonials"][data-skin="carousel"] [data-part="author"] {
+  color: var(--theme-brand);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---------- product_grid[rows]: price-comparison ledger ---------- */
+[data-widget="product_grid"][data-skin="rows"] ul,
+[data-widget="product_grid"][data-skin="rows"] ol {
+  display: grid;
+  gap: 0;
+}
+
+[data-widget="product_grid"][data-skin="rows"] li {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: var(--sv-gap);
+  align-items: center;
+  padding-block: 10px;
+  border-block-end: 1px solid var(--sv-rule);
+}
+
+[data-widget="product_grid"][data-skin="rows"] [data-part="price"] {
+  color: var(--theme-brand);
+  font-weight: 700;
+  text-align: end;
+}
+
+[data-widget="product_grid"][data-skin="rows"] [data-part="badges"] > * {
+  background: var(--sv-badge-bg);
+  color: var(--sv-badge-ink);
+  border-radius: calc(var(--theme-radius) * 0.5);
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ---------- interaction + motion guards (all skins) ---------- */
+[data-widget][data-skin] a,
+[data-widget][data-skin] button {
+  min-height: 44px;
+}
+
+[data-widget][data-skin] :focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-widget][data-skin] *,
+  [data-widget][data-skin] *::before,
+  [data-widget][data-skin] *::after {
+    animation: none;
+    transition: none;
+    scroll-behavior: auto;
+  }
+
+  /* carousel skins collapse to a still vertical stack */
+  [data-widget="testimonials"][data-skin="carousel"] ul,
+  [data-widget="testimonials"][data-skin="carousel"] ol {
+    grid-auto-flow: row;
+    grid-auto-columns: unset;
+    overflow-x: visible;
+    scroll-snap-type: none;
+  }
+}

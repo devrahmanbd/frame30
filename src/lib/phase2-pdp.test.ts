@@ -150,3 +150,36 @@ describe("PDP catalogue wiring", () => {
     expect(src).not.toMatch(/toFixed\(2\)/);
   });
 });
+
+describe("sticky buy bar — cart-lane parity", () => {
+  const src = readFileSync("src/components/builder/pdp.tsx", "utf8");
+  const region = src.slice(
+    src.indexOf("const StickyBuyBar"),
+    src.indexOf("export const PDP_WIDGETS"),
+  );
+
+  it("announces the re-quoted price to screen readers in both locales", () => {
+    expect(region).toContain("sr-only");
+    expect(region).toContain('aria-live="polite"');
+    expect(region).toContain('aria-atomic="true"');
+    // Bilingual announcement chrome; the figure itself is render-only money().
+    expect(region).toContain("দাম");
+    expect(region).toContain("Price");
+    expect(region).toContain("money(variant.priceMinor");
+  });
+
+  it("gates press/state motion behind motion-safe with 44px targets", () => {
+    expect(region).toContain("motion-safe:transition");
+    expect(region).toContain("motion-safe:active:scale-");
+    expect(region).toContain("focus-visible:ring-2");
+    // h-11 is exactly 44px; the CTA keeps its full-height target.
+    expect(region).toMatch(/h-11/);
+  });
+
+  it("keeps overlay ownership out and hardcodes no raw colour", () => {
+    expect(region).not.toMatch(/body\.style\.overflow/);
+    expect(region).not.toMatch(/aria-modal/);
+    expect(region.match(/#[0-9a-fA-F]{3,8}\b/g) ?? []).toEqual([]);
+    expect(region).not.toMatch(/theme|preset|bazaar|atelier|circuit|rupaboti/i);
+  });
+});

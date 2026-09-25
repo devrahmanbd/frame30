@@ -72,9 +72,16 @@ describe("status tabs", () => {
   it("parseCounts tolerates unknown keys and strings", () => {
     expect(parseCounts({ published: "3", archived: 2, draft: 1 })).toEqual({
       published: 3,
+      archived: 2,
       draft: 1,
     });
     expect(parseCounts(null)).toEqual({});
+  });
+  it("labels archived and shows it under All", () => {
+    expect(matchesView({ status: "archived" }, "all")).toBe(true);
+    const tabs = statusTabs({ published: 1, archived: 3, trash: 1 });
+    expect(tabs[0]).toEqual({ view: "all", count: 4 });
+    expect(titleSuffixes(row({ status: "archived" }))).toContain("Archived");
   });
 });
 
@@ -130,10 +137,7 @@ describe("row actions", () => {
       homepageActionFor(page, "00000000-0000-0000-0000-000000000001"),
     ).toBe("clear-homepage");
     expect(
-      homepageActionFor(
-        { kind: "page", status: "trash", id: page.id },
-        null,
-      ),
+      homepageActionFor({ kind: "page", status: "trash", id: page.id }, null),
     ).toBeNull();
     expect(
       homepageActionFor({ kind: "post", status: "draft", id: page.id }, null),

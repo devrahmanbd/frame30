@@ -5,7 +5,13 @@
  * so the console gate's tap-target rule holds at 390px, and no data fetching.
  */
 import { useId, useState, type ReactNode } from "react";
-import { ChevronDown, Check, X, AlertTriangle, Minus } from "lucide-react";
+import {
+  ChevronDown,
+  Check,
+  X,
+  AlertTriangle,
+  Minus,
+} from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
 import { useLang } from "@/lib/i18n";
 import type { SeoCheck } from "@/lib/seo-analysis";

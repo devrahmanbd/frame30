@@ -6,7 +6,7 @@
  * to append into the current selection.
  */
 import { useMemo, useState } from "react";
-import { ChevronDown, Lock, Search } from "lucide-react";
+import { ChevronDown, Lock, Search } from "@/components/icons/tabler";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {

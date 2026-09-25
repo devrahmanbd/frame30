@@ -101,6 +101,23 @@ jobs:
               echo "E2E harness not present yet — passing by design (see AGENTS.md)."
             fi
 
+  plugin-storefront-gate:
+    executor: bun-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: Plugin + storefront tripwire (blocking)
+          command: |
+            bun run test -- \
+              src/components/store/PluginLayer.test.tsx \
+              src/components/store/ThemeChrome.plugins.test.tsx \
+              src/components/store/PluginFooterMounts.test.tsx \
+              src/components/store/StudioNodes.plugins.test.tsx \
+              src/lib/builtin-whatsapp.test.ts \
+              src/lib/plugin-acceptance.test.ts \
+              src/lib/phase5-plugins.test.ts
+
 workflows:
   version: 2
   gates:
@@ -110,3 +127,4 @@ workflows:
       - scan
       - build
       - e2e-critical
+      - plugin-storefront-gate

@@ -10,6 +10,7 @@
  * in integer minor units and are printed through `ctx.money`.
  */
 import { useMemo, useState } from "react";
+import { textOf } from "@/lib/bitext";
 import type { SectionType } from "@/lib/builder-ast";
 import type { WidgetRow } from "@/lib/widget-data";
 import { useSectionChannel } from "./useSectionChannel";
@@ -99,7 +100,14 @@ export function resolvedSpecs(rows: WidgetRow[] | undefined): SpecPair[] {
  * returns anything; otherwise the authored rows render, so a spec table
  * authored before Phase 2.7 keeps working untouched.
  */
-const SpecTable: WidgetComponent = ({ str, bool, data, Heading, section }) => {
+const SpecTable: WidgetComponent = ({
+  str,
+  bool,
+  data,
+  Heading,
+  section,
+  locale,
+}) => {
   // Repeater-first (faq/trust_bar precedent): studio `items` rows sit
   // between live resolved rows (which keep top precedence per the module
   // contract) and scalar r1..r6 triples (fallback for theme-authored
@@ -109,14 +117,14 @@ const SpecTable: WidgetComponent = ({ str, bool, data, Heading, section }) => {
     return (section.props.items as Record<string, unknown>[])
       .map((row, index) => ({
         key: `item-${index}`,
-        label: typeof row.label === "string" ? row.label.trim() : "",
-        value: typeof row.value === "string" ? row.value.trim() : "",
-        ...(typeof row.group === "string" && row.group.trim()
-          ? { group: row.group.trim() }
+        label: textOf(row, "label", locale).trim(),
+        value: textOf(row, "value", locale).trim(),
+        ...(textOf(row, "group", locale).trim()
+          ? { group: textOf(row, "group", locale).trim() }
           : {}),
       }))
       .filter((row) => row.label);
-  }, [section.props.items]);
+  }, [section.props.items, locale]);
   const pairs = useMemo(() => {
     const resolved = resolvedSpecs(data?.rows);
     if (resolved.length) return resolved;

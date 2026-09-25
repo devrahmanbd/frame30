@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu as MenuIcon, Search, ShoppingBag, User, X } from "lucide-react";
+import {
+  Menu as MenuIcon,
+  Search,
+  ShoppingBag,
+  User,
+  X,
+} from "@/components/icons/tabler";
 import { useCart } from "@/lib/cart";
 import { useLang } from "@/lib/i18n";
 import { isCustomHostPath } from "@/lib/storefront-url";
@@ -50,27 +56,51 @@ export function StoreHeader({
   const [mobileOpen, setMobileOpen] = useState(false);
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         {custom ? (
-          <Link to="/" className="min-w-0">
-            <span className="font-bangla-display block truncate text-lg font-semibold">
-              {name}
-            </span>
-            {tagline && (
-              <span className="block truncate text-xs text-muted-foreground">
-                {tagline}
-              </span>
+          <Link to="/" className="min-w-0 flex items-center">
+            {slug === "songoskriti" || name?.toLowerCase() === "songoskriti" ? (
+              <img
+                src="/ph/songoskriti/logo-lockup.svg"
+                alt="Songoskriti সংস্কৃতি"
+                className="h-9 w-auto object-contain"
+              />
+            ) : (
+              <>
+                <span className="font-bangla-display block truncate text-lg font-semibold">
+                  {name}
+                </span>
+                {tagline && (
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {tagline}
+                  </span>
+                )}
+              </>
             )}
           </Link>
         ) : (
-          <Link to="/store/$slug" params={{ slug }} className="min-w-0">
-            <span className="font-bangla-display block truncate text-lg font-semibold">
-              {name}
-            </span>
-            {tagline && (
-              <span className="block truncate text-xs text-muted-foreground">
-                {tagline}
-              </span>
+          <Link
+            to="/store/$slug"
+            params={{ slug }}
+            className="min-w-0 flex items-center"
+          >
+            {slug === "songoskriti" || name?.toLowerCase() === "songoskriti" ? (
+              <img
+                src="/ph/songoskriti/logo-lockup.svg"
+                alt="Songoskriti সংস্কৃতি"
+                className="h-9 w-auto object-contain"
+              />
+            ) : (
+              <>
+                <span className="font-bangla-display block truncate text-lg font-semibold">
+                  {name}
+                </span>
+                {tagline && (
+                  <span className="block truncate text-xs text-muted-foreground">
+                    {tagline}
+                  </span>
+                )}
+              </>
             )}
           </Link>
         )}
@@ -99,42 +129,38 @@ export function StoreHeader({
             <Link
               to="/search"
               search={{}}
-              className="inline-flex min-h-11 items-center gap-2 rounded-fq-md border border-border px-3 text-sm"
+              aria-label={t("Search", "খুঁজুন")}
+              className="grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
-              <Search className="size-4" aria-hidden />
-              <span className="sr-only sm:not-sr-only">
-                {t("Search", "খুঁজুন")}
-              </span>
+              <Search className="size-5" aria-hidden />
             </Link>
           ) : (
             <Link
               to="/store/$slug/search"
               params={{ slug }}
               search={{}}
-              className="inline-flex min-h-11 items-center gap-2 rounded-fq-md border border-border px-3 text-sm"
+              aria-label={t("Search", "খুঁজুন")}
+              className="grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
-              <Search className="size-4" aria-hidden />
-              <span className="sr-only sm:not-sr-only">
-                {t("Search", "খুঁজুন")}
-              </span>
+              <Search className="size-5" aria-hidden />
             </Link>
           )}
           {custom ? (
             <Link
               to="/account"
               aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
-              className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-3"
+              className="grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
-              <User className="size-4" aria-hidden />
+              <User className="size-5" aria-hidden />
             </Link>
           ) : (
             <Link
               to="/store/$slug/account"
               params={{ slug }}
               aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
-              className="inline-flex min-h-11 items-center rounded-fq-md border border-border px-3"
+              className="grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
-              <User className="size-4" aria-hidden />
+              <User className="size-5" aria-hidden />
             </Link>
           )}
           <TimezoneToggle
@@ -145,12 +171,12 @@ export function StoreHeader({
           {custom ? (
             <Link
               to="/checkout"
-              className="inline-flex min-h-11 items-center gap-2 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+              aria-label={`${t("Cart", "কার্ট")}, ${hydrated ? count : 0}`}
+              className="relative grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
-              <ShoppingBag className="size-4" aria-hidden />
-              <span>{t("Cart", "কার্ট")}</span>
+              <ShoppingBag className="size-5" aria-hidden />
               <span
-                className="money rounded-full bg-primary-foreground/20 px-2 text-xs"
+                className="absolute right-0 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground"
                 aria-live="polite"
               >
                 {hydrated ? count : 0}
@@ -160,12 +186,12 @@ export function StoreHeader({
             <Link
               to="/store/$slug/checkout"
               params={{ slug }}
-              className="inline-flex min-h-11 items-center gap-2 rounded-fq-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+              aria-label={`${t("Cart", "কার্ট")}, ${hydrated ? count : 0}`}
+              className="relative grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
-              <ShoppingBag className="size-4" aria-hidden />
-              <span>{t("Cart", "কার্ট")}</span>
+              <ShoppingBag className="size-5" aria-hidden />
               <span
-                className="money rounded-full bg-primary-foreground/20 px-2 text-xs"
+                className="absolute right-0 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground"
                 aria-live="polite"
               >
                 {hydrated ? count : 0}

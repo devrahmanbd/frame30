@@ -16,7 +16,7 @@ import {
   Lock,
   Mail,
   MessageSquare,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import { ownerSetFlagFn, ownerSettingsFn } from "@/lib/owner.functions";
 import { OwnerHeader, StatCard, StatGrid } from "@/components/root/OwnerUi";

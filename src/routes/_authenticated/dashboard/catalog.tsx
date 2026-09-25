@@ -9,7 +9,7 @@ import {
   Download,
   FileUp,
   Trash2,
-} from "lucide-react";
+} from "@/components/icons/tabler";
 import { useMerchant } from "@/hooks/use-merchant";
 import { useLang } from "@/lib/i18n";
 import {
