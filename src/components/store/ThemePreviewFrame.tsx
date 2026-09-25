@@ -15,7 +15,7 @@
  * toast — capture-phase interception runs before widget handlers so no
  * contact/newsletter/coupon submission ever fires.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { StoreHeader } from "@/components/store/StoreHeader";
@@ -43,6 +43,7 @@ import {
   collectionDisplayName,
   handlePreviewCanvasClick,
   handlePreviewCanvasSubmit,
+  previewSearchForSwitch,
 } from "@/lib/theme-preview-nav";
 import { demoCatalogFor } from "@/lib/demo-catalog";
 
@@ -90,6 +91,15 @@ export function ThemePreviewFrame({
   // carries no slug. Deep-linkable via ?slug= for merchant-less URLs.
   const [slug, setSlug] = useState<string | null>(initialSlug ?? null);
 
+  // Back/forward re-sync: the route owns the URL, the frame owns the paint.
+  // Route search changes (history pop) re-render this frame with new
+  // initial props, but useState keeps the stale click-time values without
+  // this effect. Manual: /c/festive -> /c/wedding -> back shows festive.
+  useEffect(() => {
+    setTemplate(initialTemplate ?? "index");
+    setSlug(initialSlug ?? null);
+  }, [initialTemplate, initialSlug]);
+
   const switchTo = (
     t: TemplateKey,
     s: string | null,
@@ -99,12 +109,8 @@ export function ThemePreviewFrame({
     setSlug(s);
     navigate({
       to: ".",
-      search: (prev: Record<string, unknown>) => ({
-        ...prev,
-        template: t,
-        ...(s ? { slug: s } : { slug: undefined }),
-        ...(query && t === "search" ? { q: query } : {}),
-      }),
+      search: (prev: Record<string, unknown>) =>
+        previewSearchForSwitch(t, s, query, prev),
       replace: false,
     } as never);
   };

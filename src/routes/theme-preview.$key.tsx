@@ -25,35 +25,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowLeft } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
-import { resolveThemePreview } from "@/lib/theme-preview-nav";
+import {
+  resolveThemePreview,
+  validateThemePreviewSearch,
+} from "@/lib/theme-preview-nav";
 import { ThemePreviewFrame } from "@/components/store/ThemePreviewFrame";
 
 type RouteParams = { key: string };
 
-const VALID_TEMPLATES = [
-  "index",
-  "product",
-  "collection",
-  "account",
-  "page",
-  "blog",
-  "cart",
-  "checkout",
-  "search",
-] as const;
-
 export const Route = createFileRoute("/theme-preview/$key")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    template:
-      typeof search.template === "string" &&
-      (VALID_TEMPLATES as readonly string[]).includes(search.template)
-        ? (search.template as (typeof VALID_TEMPLATES)[number])
-        : undefined,
-    slug:
-      typeof search.slug === "string"
-        ? (search.slug as string).slice(0, 80)
-        : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>) =>
+    validateThemePreviewSearch(search),
   // Demo pages must never index: merchant-less URLs redirect here instead
   // of 404ing, and indexers must not mistake demo for store content.
   head: () => ({

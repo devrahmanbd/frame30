@@ -4,10 +4,13 @@
 import { describe, expect, it } from "vitest";
 import {
   applyDemoFocus,
+  parsePreviewSearchQuery,
+  previewSearchForSwitch,
   previewTargetForHref,
   previewTemplateForHref,
   resolveDemoFocus,
   resolveThemePreview,
+  validateThemePreviewSearch,
 } from "./theme-preview-nav";
 
 describe("previewTemplateForHref", () => {
@@ -48,7 +51,8 @@ describe("previewTemplateForHref", () => {
 });
 
 describe("resolveThemePreview (Task 5: restored preview route)", () => {
-  it("resolves the songoskriti key with brand tokens and homepage AST", () => {    const preset = resolveThemePreview("songoskriti");
+  it("resolves the songoskriti key with brand tokens and homepage AST", () => {
+    const preset = resolveThemePreview("songoskriti");
     expect(preset).not.toBeNull();
     expect(preset!.key).toBe("songoskriti");
     expect(preset!.tokens.brand).toBe("#8A3B1F");
@@ -81,8 +85,12 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     const preset = resolveThemePreview("somvabona")!;
     expect(preset.key).toBe("somvabona");
     expect(preset.tokens.brand).toBe("#7C2A1A");
-    for (const key of Object.keys(preset.templates) as (keyof typeof preset.templates)[]) {
-      expect(preset.templates[key].main.length, `${key} main`).toBeGreaterThan(0);
+    for (const key of Object.keys(
+      preset.templates,
+    ) as (keyof typeof preset.templates)[]) {
+      expect(preset.templates[key].main.length, `${key} main`).toBeGreaterThan(
+        0,
+      );
     }
   });
   it("authors demo content for every template (no empty sub-pages)", () => {
@@ -149,14 +157,14 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
 
 describe("demo focus (slug-aware collection preview)", () => {
   it("resolves known catalog slugs to their rows and names", () => {
-    expect(resolveDemoFocus("songoskriti", "collection", "bestsellers")).toEqual(
-      {
-        template: "collection",
-        slug: "bestsellers",
-        title: "Bestsellers",
-        collection: "bestsellers",
-      },
-    );
+    expect(
+      resolveDemoFocus("songoskriti", "collection", "bestsellers"),
+    ).toEqual({
+      template: "collection",
+      slug: "bestsellers",
+      title: "Bestsellers",
+      collection: "bestsellers",
+    });
   });
 
   it("falls back to new-in rows under a humanized title for unknown slugs", () => {
@@ -267,14 +275,30 @@ describe("resolveThemePreview (somvabona)", () => {
 
 describe("previewTargetForHref slug-aware", () => {
   it("preserves collection slug", () => {
-    expect(previewTargetForHref("/c/women")).toEqual({ template: "collection", slug: "women", query: null });
-    expect(previewTargetForHref("/c/WOMEN")).toEqual({ template: "collection", slug: "women", query: null });
+    expect(previewTargetForHref("/c/women")).toEqual({
+      template: "collection",
+      slug: "women",
+      query: null,
+    });
+    expect(previewTargetForHref("/c/WOMEN")).toEqual({
+      template: "collection",
+      slug: "women",
+      query: null,
+    });
   });
   it("preserves product slug", () => {
-    expect(previewTargetForHref("/p/dhakai-jamdani")).toEqual({ template: "product", slug: "dhakai-jamdani", query: null });
+    expect(previewTargetForHref("/p/dhakai-jamdani")).toEqual({
+      template: "product",
+      slug: "dhakai-jamdani",
+      query: null,
+    });
   });
   it("preserves search query", () => {
-    expect(previewTargetForHref("/search?max=99900")).toEqual({ template: "search", slug: null, query: "max=99900" });
+    expect(previewTargetForHref("/search?max=99900")).toEqual({
+      template: "search",
+      slug: null,
+      query: "max=99900",
+    });
   });
   it("maps account (was null in old lib)", () => {
     expect(previewTargetForHref("/account")?.template).toBe("account");
@@ -287,8 +311,59 @@ describe("previewTargetForHref slug-aware", () => {
 describe("collectionDisplayName", () => {
   it("resolves known slugs, title-cases unknown", async () => {
     const { collectionDisplayName } = await import("./theme-preview-nav");
-    expect(collectionDisplayName("songoskriti", "festive")).toBe("Eid & Festive");
+    expect(collectionDisplayName("songoskriti", "festive")).toBe(
+      "Eid & Festive",
+    );
     expect(collectionDisplayName("songoskriti", "women")).toBe("Women");
     expect(collectionDisplayName("songoskriti", "nope-xyz")).toBe("Nope Xyz");
+  });
+});
+
+describe("preview search query round-trip", () => {
+  it("parses raw in-canvas query into separate keys", () => {
+    expect(parsePreviewSearchQuery("max=99900")).toEqual({ max: "99900" });
+    expect(parsePreviewSearchQuery("q=saree&max=99900")).toEqual({
+      q: "saree",
+      max: "99900",
+    });
+    expect(parsePreviewSearchQuery(null)).toEqual({});
+    expect(parsePreviewSearchQuery("page=2")).toEqual({});
+  });
+
+  it("writes search clicks as separate keys, never raw string as q", () => {
+    const next = previewSearchForSwitch("search", null, "max=99900", {});
+    expect(next).toMatchObject({ template: "search", max: "99900" });
+    expect(next).not.toHaveProperty("q", "max=99900");
+  });
+
+  it("clears q/max when leaving the search template", () => {
+    const prev = { template: "search", max: "99900", q: "saree" };
+    const next = previewSearchForSwitch("collection", "festive", null, prev);
+    expect(next).toMatchObject({ template: "collection", slug: "festive" });
+    // Explicit undefined: TanStack Router strips these keys on navigate.
+    expect(next.q).toBeUndefined();
+    expect(next.max).toBeUndefined();
+  });
+
+  it("validateSearch preserves q/max (≤200) so refresh keeps them", () => {
+    expect(
+      validateThemePreviewSearch({
+        template: "search",
+        max: "99900",
+        q: "saree",
+      }),
+    ).toEqual({
+      template: "search",
+      slug: undefined,
+      q: "saree",
+      max: "99900",
+    });
+    const long = "x".repeat(300);
+    const capped = validateThemePreviewSearch({ q: long, max: long });
+    expect(capped.q).toHaveLength(200);
+    expect(capped.max).toHaveLength(200);
+    expect(
+      validateThemePreviewSearch({ template: "nope" }).template,
+    ).toBeUndefined();
   });
 });

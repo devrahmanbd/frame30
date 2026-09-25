@@ -96,6 +96,85 @@ export function previewTemplateForHref(href: string): TemplateKey | null {
   return previewTargetForHref(href)?.template ?? null;
 }
 
+/* ---------------------------------- preview search query round-trip */
+
+const PREVIEW_SEARCH_QUERY_LIMIT = 200;
+
+/**
+ * Parse the raw in-canvas search query (`/search?max=99900` → `"max=99900"`)
+ * into separate preview search keys. Only `q` and `max` survive (strings
+ * ≤200); everything else is dropped so the preview URL stays refresh-safe.
+ */
+export function parsePreviewSearchQuery(raw: string | null): {
+  q?: string;
+  max?: string;
+} {
+  if (!raw) return {};
+  const params = new URLSearchParams(raw);
+  const out: { q?: string; max?: string } = {};
+  for (const key of ["q", "max"] as const) {
+    const value = params.get(key);
+    if (value !== null && value !== "")
+      out[key] = value.slice(0, PREVIEW_SEARCH_QUERY_LIMIT);
+  }
+  return out;
+}
+
+/**
+ * Search updater for the preview frame's `navigate({ to: ".", search })`:
+ * writes the parsed query as separate keys (never the raw string as `q`),
+ * and clears `q`/`max` when leaving the search template so a previous
+ * `/search?max=…` click does not leak into collection/product URLs.
+ */
+export function previewSearchForSwitch(
+  template: TemplateKey,
+  slug: string | null,
+  query: string | null,
+  prev: Record<string, unknown>,
+): Record<string, unknown> {
+  return {
+    ...prev,
+    template,
+    ...(slug ? { slug } : { slug: undefined }),
+    ...(template === "search"
+      ? { q: undefined, max: undefined, ...parsePreviewSearchQuery(query) }
+      : { q: undefined, max: undefined }),
+  };
+}
+
+/**
+ * Route `validateSearch` for `/theme-preview/$key`: template + slug plus
+ * the preserved search query keys (`q`, `max`, strings ≤200) so refresh
+ * keeps `?template=search&max=99900` instead of dropping it.
+ */
+export function validateThemePreviewSearch(search: Record<string, unknown>): {
+  template: TemplateKey | undefined;
+  slug: string | undefined;
+  q: string | undefined;
+  max: string | undefined;
+} {
+  const template =
+    typeof search.template === "string" &&
+    (TEMPLATE_KEYS as readonly string[]).includes(search.template)
+      ? (search.template as TemplateKey)
+      : undefined;
+  return {
+    template,
+    slug:
+      typeof search.slug === "string"
+        ? (search.slug as string).slice(0, 80)
+        : undefined,
+    q:
+      typeof search.q === "string"
+        ? (search.q as string).slice(0, PREVIEW_SEARCH_QUERY_LIMIT)
+        : undefined,
+    max:
+      typeof search.max === "string"
+        ? (search.max as string).slice(0, PREVIEW_SEARCH_QUERY_LIMIT)
+        : undefined,
+  };
+}
+
 export type PreviewClickAction =
   | { kind: "blocked" }
   | { kind: "switch"; target: PreviewTarget }
