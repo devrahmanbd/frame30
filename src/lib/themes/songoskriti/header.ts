@@ -1,4 +1,5 @@
 import type { Section } from "../../builder-ast";
+import { withSongoskritiDefaults } from "./skins";
 import type { SectionBuilder } from "./types";
 
 /**
@@ -14,6 +15,7 @@ import type { SectionBuilder } from "./types";
  * Browser-verified 2026-09-24: header keeps the menubar only.
  */
 export function buildHeaderMain(s: SectionBuilder): Section[] {
+  s = withSongoskritiDefaults(s);
   return [
     s("mega_menu", {
       label: "Shop",

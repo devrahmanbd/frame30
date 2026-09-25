@@ -3,6 +3,7 @@ import type { Section, SectionBuilder } from "../../builder-ast";
 import { SOMVABONA_TOKENS } from "./tokens";
 import { buildHeaderMain, buildFooterMain } from "./chrome";
 import { buildHomepageMain } from "./homepage";
+import { withSomvabonaWidgetDefaults } from "./skins";
 
 /**
  * Somvabona's preview source — theme-owned demo content for the
@@ -28,13 +29,16 @@ export function somvabonaPreviewSource(): PreviewThemeSource {
     header: adapt(buildHeaderMain),
     footer: adapt(buildFooterMain),
     main: (template, s) => {
+      // Skin defaults merge under authored props here too (skins.ts), so
+      // the collection demo rail carries the Somvabona compact treatment.
+      const t = withSomvabonaWidgetDefaults(s);
       switch (template) {
         case "index":
           return buildHomepageMain(s as never);
         case "collection":
           return [
-            s("heading", { text: "New in", text_bn: "নতুন এসেছে" }),
-            s("product_rail", {
+            t("heading", { text: "New in", text_bn: "নতুন এসেছে" }),
+            t("product_rail", {
               heading: "New arrivals",
               heading_bn: "নতুন এসেছে",
               limit: 8,
@@ -48,17 +52,17 @@ export function somvabonaPreviewSource(): PreviewThemeSource {
           ];
         case "product":
           return [
-            s("heading", {
+            t("heading", {
               text: "Everyday Cotton Panjabi",
               text_bn: "প্রতিদিনের সুতি পাঞ্জাবি",
             }),
-            s("product_media", {
+            t("product_media", {
               image1: "/ph/somvabona/festive-edit.jpg",
               image2: "/ph/somvabona/newin-edit.jpg",
               image3: "/ph/somvabona/gift-craft.jpg",
               ratio: "4/5",
             }),
-            s("rich_text", {
+            t("rich_text", {
               heading: "Details",
               heading_bn: "বিবরণ",
               body: "Demo product page. Prices and stock are sample data — ordering is disabled in preview.",

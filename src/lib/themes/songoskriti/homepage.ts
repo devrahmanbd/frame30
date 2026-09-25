@@ -1,5 +1,6 @@
 import { DEFAULT_PERMALINKS } from "../../permalink";
 import type { Section } from "../../builder-ast";
+import { withSongoskritiDefaults } from "./skins";
 import type { SectionBuilder } from "./types";
 
 /**
@@ -44,6 +45,9 @@ import type { SectionBuilder } from "./types";
  * section, every CTA shops (no about/blog detours above the fold).
  */
 export function buildHomepageMain(s: SectionBuilder): Section[] {
+  // Theme skin defaults (skins.ts) merge under every authored prop, so each
+  // section carries its skin unless the merchant overrides it.
+  s = withSongoskritiDefaults(s);
   const c = DEFAULT_PERMALINKS.collectionBase; // "/c"
   return [
     // 1. Announcement marquee (single on page; bilingual lines; m3 carries

@@ -45,6 +45,7 @@ import type {
   SectionType,
 } from "@/lib/builder-ast";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
+import { resolveSkin } from "@/lib/builder-ast";
 import {
   useSongoskritiCarousel,
   useSongoskritiReveals,
@@ -251,7 +252,13 @@ const CraftStory: WidgetComponent = ({
 
 /* ------------------------------------------------------------ testimonials */
 
-const Testimonials: WidgetComponent = ({ section, int, locale, editing }) => {
+const Testimonials: WidgetComponent = ({
+  section,
+  str,
+  int,
+  locale,
+  editing,
+}) => {
   const testimonials = rowsOf(section, "testimonials")
     .map((row) => ({
       quote: readBn(row, "quote", locale),
@@ -260,10 +267,17 @@ const Testimonials: WidgetComponent = ({ section, int, locale, editing }) => {
       image: readString(row, "image"),
     }))
     .filter((item) => item.quote);
+  // Widget skin (spec 2026-09-25): carousel (default, current snap+buttons
+  // controller byte-identical), wall (all quotes in a responsive grid) and
+  // single (first quote, static). bn twins, quote-card voice, empty-state
+  // contract and reduced-motion behaviour stay common — only the composition
+  // forks.
+  const skin = resolveSkin("testimonials", str("skin"));
   const autoAdvanceMs = int("autoAdvanceMs", 6000, 1500, 15000);
   // Task 5 motion: snap+buttons controller (spec §3). Reduced/off intents
   // stay on the static first slide; buttons and dots keep working for all
-  // visitors. Pause-on-hover maps to pause()/resume().
+  // visitors. Pause-on-hover maps to pause()/resume(). Called unconditionally
+  // so hooks stay stable; wall/single simply ignore the controller.
   const {
     index: current,
     goTo,
@@ -286,6 +300,93 @@ const Testimonials: WidgetComponent = ({ section, int, locale, editing }) => {
     ) : null;
   }
 
+  const quoteCard = (item: (typeof testimonials)[number]) => (
+    <div className="flex flex-col items-center text-center">
+      {item.image ? (
+        <img
+          src={item.image}
+          alt={item.author}
+          className="mb-4 h-12 w-12 rounded-full object-cover"
+          loading="lazy"
+        />
+      ) : (
+        <span
+          aria-hidden="true"
+          className="mb-6 block font-bangla-display text-6xl leading-none text-foreground/20"
+        >
+          &ldquo;
+        </span>
+      )}
+      <blockquote className="max-w-2xl font-bangla-display text-lg leading-relaxed text-foreground sm:text-xl lg:text-3xl text-center">
+        {item.quote}
+      </blockquote>
+      <div className="mt-8 flex items-center justify-center gap-4">
+        <div className="h-px w-8 bg-foreground/30"></div>
+        <p className="text-[10px] sm:text-[12px] font-bold fq-caps tracking-widest text-foreground">
+          {item.author}
+          {item.role && (
+            <span className="text-muted-foreground ml-2 font-medium">
+              — {item.role}
+            </span>
+          )}
+        </p>
+        <div className="h-px w-8 bg-foreground/30"></div>
+      </div>
+    </div>
+  );
+
+  if (skin === "wall") {
+    return (
+      <section
+        ref={scope}
+        data-songoskriti-reveal
+        className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 py-12 sm:py-24"
+        aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
+      >
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {testimonials.map((item) => (
+            <li
+              key={`${item.author}-${item.quote.slice(0, 24)}`}
+              className="rounded-fq-md border border-border bg-card p-5"
+            >
+              <span
+                aria-hidden="true"
+                className="mb-2 block font-bangla-display text-4xl leading-none text-foreground/20"
+              >
+                &ldquo;
+              </span>
+              <blockquote className="font-bangla-display text-base leading-relaxed text-foreground">
+                {item.quote}
+              </blockquote>
+              <p className="mt-4 text-[10px] sm:text-[12px] font-bold fq-caps tracking-widest text-foreground">
+                {item.author}
+                {item.role && (
+                  <span className="text-muted-foreground ml-2 font-medium">
+                    — {item.role}
+                  </span>
+                )}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    );
+  }
+
+  if (skin === "single") {
+    const item = testimonials[0]!;
+    return (
+      <section
+        ref={scope}
+        data-songoskriti-reveal
+        className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 py-12 sm:py-24"
+        aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
+      >
+        <div className="max-w-4xl mx-auto px-4">{quoteCard(item)}</div>
+      </section>
+    );
+  }
+
   const item = testimonials[current]!;
   return (
     <section
@@ -299,38 +400,7 @@ const Testimonials: WidgetComponent = ({ section, int, locale, editing }) => {
         onMouseEnter={() => pause()}
         onMouseLeave={() => resume()}
       >
-        <div className="flex flex-col items-center text-center">
-          {item.image ? (
-            <img
-              src={item.image}
-              alt={item.author}
-              className="mb-4 h-12 w-12 rounded-full object-cover"
-              loading="lazy"
-            />
-          ) : (
-            <span
-              aria-hidden="true"
-              className="mb-6 block font-bangla-display text-6xl leading-none text-foreground/20"
-            >
-              &ldquo;
-            </span>
-          )}
-          <blockquote className="max-w-2xl font-bangla-display text-lg leading-relaxed text-foreground sm:text-xl lg:text-3xl text-center">
-            {item.quote}
-          </blockquote>
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <div className="h-px w-8 bg-foreground/30"></div>
-            <p className="text-[10px] sm:text-[12px] font-bold fq-caps tracking-widest text-foreground">
-              {item.author}
-              {item.role && (
-                <span className="text-muted-foreground ml-2 font-medium">
-                  — {item.role}
-                </span>
-              )}
-            </p>
-            <div className="h-px w-8 bg-foreground/30"></div>
-          </div>
-        </div>
+        {quoteCard(item)}
         {testimonials.length > 1 && (
           <div className="mt-4 flex justify-center gap-1">
             {testimonials.map((_, i) => (
@@ -453,18 +523,31 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
 const SongoskritiProductRail: WidgetComponent = (ctx) => {
   const { str, bool, int, data, locale, Heading } = ctx;
   const variant = cardVariantOf(str("cardVariant"), "compact");
+  // Widget skin (spec 2026-09-25): editorial (default, browser-verified
+  // rhythm byte-identical), compact and minimal (quieter heading, tighter
+  // rhythm). Data semantics, docked arrows, card markup, skeletons and bn/en
+  // copy stay common — only presentation forks.
+  const skin = resolveSkin("product_rail", str("skin"));
   const rows = data?.rows?.slice(0, int("limit", 12, 1, 24));
   const label =
     str("heading") || (locale === "bn" ? "পণ্যের তালিকা" : "Product rail");
+  const headingClassName =
+    skin === "compact"
+      ? "font-bangla-display text-xl sm:text-2xl font-medium tracking-wide text-foreground"
+      : skin === "minimal"
+        ? "text-sm font-bold fq-caps tracking-widest text-muted-foreground"
+        : "font-bangla-display text-2xl sm:text-3xl lg:text-4xl font-medium tracking-wide text-foreground";
   const heading = str("heading") ? (
-    <Heading className="font-bangla-display text-2xl sm:text-3xl lg:text-4xl font-medium tracking-wide text-foreground">
-      {str("heading")}
-    </Heading>
+    <Heading className={headingClassName}>{str("heading")}</Heading>
   ) : null;
+  const sectionClassName =
+    skin === "editorial"
+      ? "mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 py-12 sm:py-24 [&_article]:border-none [&_article]:bg-transparent [&_article]:shadow-none"
+      : "mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 py-8 sm:py-12 [&_article]:border-none [&_article]:bg-transparent [&_article]:shadow-none";
   // An empty rail leaves no hole: null, not a padded empty shell.
   if (rows !== undefined && rows.length === 0 && !data?.pending) return null;
   return (
-    <section className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 py-12 sm:py-24 [&_article]:border-none [&_article]:bg-transparent [&_article]:shadow-none">
+    <section className={sectionClassName}>
       {data?.pending || rows === undefined ? (
         <Rail label={label} heading={heading ?? undefined}>
           {Array.from({ length: 6 }, (_, i) => (
