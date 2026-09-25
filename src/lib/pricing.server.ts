@@ -12,11 +12,29 @@ import {
 } from "./payment-rails";
 
 export function publicClient() {
-  return createClient<Database>(
-    import.meta.env.VITE_SUPABASE_URL as string,
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string,
-    { auth: { persistSession: false, autoRefreshToken: false } },
-  );
+  // Runtime env wins: deploy builds must not depend on VITE_ vars being
+  // present at build time (a build without them baked `createClient(void 0)`,
+  // which throws `supabaseUrl is required` on every pricing call in prod).
+  const SUPABASE_URL =
+    process.env["SUPABASE_URL"] ||
+    process.env["VITE_SUPABASE_URL"] ||
+    import.meta.env.VITE_SUPABASE_URL;
+  const SUPABASE_PUBLISHABLE_KEY =
+    process.env["SUPABASE_PUBLISHABLE_KEY"] ||
+    process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+    const missing = [
+      ...(!SUPABASE_URL ? ["SUPABASE_URL"] : []),
+      ...(!SUPABASE_PUBLISHABLE_KEY ? ["SUPABASE_PUBLISHABLE_KEY"] : []),
+    ];
+    throw new Error(
+      `Missing Supabase environment variable(s): ${missing.join(", ")}. Please set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY.`,
+    );
+  }
+  return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
 }
 
 /** The storefront method set is the Bangladesh rail catalogue, not a literal list. */
