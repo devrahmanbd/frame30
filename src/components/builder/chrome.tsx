@@ -6,14 +6,16 @@
  * module. Navigation and search take their rows from the shared data layer or
  * the server search function — no client ranking, no client money math.
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   ChevronDown,
+  Search,
   Truck,
   RotateCcw,
   ShieldCheck,
   Headset,
   Star,
+  X,
 } from "@/components/icons/tabler";
 import { useRouterState } from "@tanstack/react-router";
 import { PaymentMark } from "@/components/store/PaymentMarks";
@@ -415,19 +417,58 @@ type Suggestion = {
   imageUrl: string | null;
 };
 
-function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
+function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
   const [open, setOpen] = useState(false);
   const { location } = useRouterState();
   const base = storeBase(storeSlug, location.pathname);
   const [term, setTerm] = useState("");
   const [hits, setHits] = useState<Suggestion[] | null>(null);
   const [pending, setPending] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const seq = useRef(0);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const rawId = useId();
+  const listId = `search-${rawId.replace(/[^a-zA-Z0-9]/g, "")}`;
+  const inputId = `${listId}-input`;
   const limit = int("limit", 6, 1, 10);
+  const isBn = locale === "bn";
+
+  const q = term.trim();
+  const placeholder =
+    str("placeholder") || (isBn ? "পণ্য খুঁজুন" : "Search products");
+  const dialogTitle = str("buttonLabel") || (isBn ? "খুঁজুন" : "Search");
+  const searchingText = isBn ? "খোঁজা হচ্ছে…" : "Searching…";
+  const hintText = isBn
+    ? "খুঁজতে কমপক্ষে ২ অক্ষর লিখুন।"
+    : "Type at least 2 characters to search.";
+  const unavailableText = isBn
+    ? "প্রিভিউতে সার্চ অনুপলব্ধ।"
+    : "Search is unavailable in preview.";
+  const clearLabel = isBn ? "সার্চ মুছুন" : "Clear search";
+  const suggestionsLabel = isBn ? "সাজেশন" : "Suggestions";
+  const kbdHint = isBn
+    ? "বন্ধ করতে Esc · ঘুরতে ↑↓"
+    : "Esc to close · ↑↓ to navigate";
+  const tryOther = isBn ? "অন্য শব্দ চেষ্টা করুন।" : "Try another keyword.";
+  const viewAllLabel = isBn ? "সব ফল দেখুন" : "View all results";
+
+  const hasList = hits !== null && hits.length > 0;
+  const safeActive =
+    hasList && activeIndex >= 0 && activeIndex < hits.length
+      ? activeIndex
+      : -1;
+  const activeId =
+    safeActive >= 0 && hits
+      ? `${listId}-opt-${hits[safeActive]!.id}`
+      : undefined;
+  const viewAllHref = `${base}/search?q=${encodeURIComponent(q)}`;
+
+  useEffect(() => {
+    setActiveIndex(-1);
+  }, [term, open]);
 
   useEffect(() => {
     if (!open || !storeSlug) return;
-    const q = term.trim();
     if (q.length < 2) {
       setHits(null);
       return;
@@ -457,71 +498,212 @@ function SearchCommand({ str, int, storeSlug, money }: WidgetCtx) {
         });
     }, 250);
     return () => window.clearTimeout(id);
-  }, [term, open, storeSlug, limit]);
+  }, [term, open, storeSlug, limit, q]);
 
-  void money;
+  const clearTerm = () => {
+    setTerm("");
+    setHits(null);
+    setActiveIndex(-1);
+    inputRef.current?.focus();
+  };
+
+  const goTo = (href: string) => {
+    window.location.assign(href);
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (q.length < 2) return;
+    if (hasList && safeActive >= 0 && hits) {
+      const hit = hits[safeActive]!;
+      goTo(storeSlug ? `${base}/p/${hit.slug}` : "#");
+      return;
+    }
+    goTo(viewAllHref);
+  };
+
+  const handleInputKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.key === "ArrowDown" && hasList && hits) {
+      event.preventDefault();
+      setActiveIndex((prev) => (prev + 1) % hits.length);
+    } else if (event.key === "ArrowUp" && hasList && hits) {
+      event.preventDefault();
+      setActiveIndex((prev) => (prev - 1 + hits.length) % hits.length);
+    } else if (event.key === "Home" && hasList) {
+      event.preventDefault();
+      setActiveIndex(0);
+    } else if (event.key === "End" && hasList && hits) {
+      event.preventDefault();
+      setActiveIndex(hits.length - 1);
+    } else if (
+      event.key === "Enter" &&
+      hasList &&
+      safeActive >= 0 &&
+      hits
+    ) {
+      event.preventDefault();
+      const hit = hits[safeActive]!;
+      goTo(storeSlug ? `${base}/p/${hit.slug}` : "#");
+    } else if (event.key === "Escape" && term.length > 0) {
+      // First Escape clears the query; the host closes on the next one.
+      event.stopPropagation();
+      setTerm("");
+      setHits(null);
+      setActiveIndex(-1);
+    }
+  };
+
   return (
     <>
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex min-h-10 items-center gap-3 rounded-full bg-muted/50 hover:bg-muted/80 px-4 text-sm text-muted-foreground transition-colors w-full sm:w-64"
+        aria-haspopup="dialog"
+        aria-label={placeholder}
+        className="inline-flex min-h-11 w-full items-center gap-2.5 rounded-full border border-border bg-muted px-4 text-sm text-muted-foreground transition-colors motion-safe:transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-72"
       >
-        <span aria-hidden="true" className="text-foreground/60">
-          ⌕
+        <Search className="size-4 shrink-0" aria-hidden />
+        <span className="min-w-0 flex-1 truncate text-left">
+          {placeholder}
         </span>
-        {str("placeholder") || "Search for products..."}
       </button>
       <OverlayHost
         open={open}
         onClose={() => setOpen(false)}
-        title={str("buttonLabel") || "Search"}
+        title={dialogTitle}
         side="center"
       >
-        <div className="space-y-3">
-          <label className="block relative">
-            <span className="sr-only">
-              {str("placeholder") || "Search products"}
-            </span>
+        <form role="search" onSubmit={handleSubmit} className="space-y-3">
+          <div className="relative">
+            <Search
+              aria-hidden
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+            />
+            <label htmlFor={inputId} className="sr-only">
+              {placeholder}
+            </label>
             <input
+              ref={inputRef}
+              id={inputId}
               type="search"
+              role="combobox"
+              aria-expanded={hasList}
+              aria-controls={listId}
+              aria-activedescendant={activeId}
+              aria-autocomplete="list"
               value={term}
               autoComplete="off"
               onChange={(event) => setTerm(event.target.value)}
-              placeholder={str("placeholder") || "Search products..."}
-              className="w-full rounded-none border-0 border-b-2 border-primary/20 focus:border-primary bg-transparent px-0 py-3 text-lg outline-none transition-colors"
+              onKeyDown={handleInputKeyDown}
+              placeholder={placeholder}
+              className="min-h-11 w-full rounded-fq-md border border-border bg-muted/50 py-3 pl-10 pr-11 text-base outline-none transition-colors motion-safe:transition-colors placeholder:text-muted-foreground focus:border-primary focus-visible:ring-2 focus-visible:ring-primary"
             />
-          </label>
-          <div aria-live="polite" className="min-h-24">
-            {pending && (
-              <p className="text-sm text-muted-foreground">Searching…</p>
-            )}
-            {!pending && hits !== null && hits.length === 0 && (
-              <p className="text-sm text-muted-foreground">No matches.</p>
-            )}
-            {!pending && hits && hits.length > 0 && (
-              <ul className="divide-y divide-border">
-                {hits.map((hit) => (
-                  <li key={hit.id}>
-                    <a
-                      href={storeSlug ? `${base}/p/${hit.slug}` : "#"}
-                      className="flex items-center gap-3 py-2 text-sm hover:underline"
-                    >
-                      <MediaFrame
-                        src={hit.imageUrl}
-                        alt={hit.title}
-                        ratio="square"
-                        className="w-10 shrink-0"
-                        artSeed={hit.id}
-                      />
-                      <span className="min-w-0 truncate">{hit.title}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+            {term.length > 0 && (
+              <button
+                type="button"
+                onClick={clearTerm}
+                aria-label={clearLabel}
+                className="absolute right-1 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-fq-md text-muted-foreground transition-colors motion-safe:transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                <X className="size-4" aria-hidden />
+              </button>
             )}
           </div>
-        </div>
+          <p className="text-xs text-muted-foreground">{kbdHint}</p>
+          <div aria-live="polite" className="min-h-24">
+            {pending && (
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  {searchingText}
+                </p>
+                <ul aria-hidden="true" className="space-y-2">
+                  {[0, 1, 2].map((i) => (
+                    <li
+                      key={i}
+                      className="flex min-h-11 items-center gap-3 rounded-fq-md px-3 py-2"
+                    >
+                      <span className="size-10 shrink-0 animate-pulse rounded-fq-md bg-muted motion-reduce:animate-none" />
+                      <span className="h-4 flex-1 animate-pulse rounded-fq-sm bg-muted motion-reduce:animate-none" />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {!pending && hits !== null && hits.length === 0 && (
+              <div
+                role="status"
+                className="rounded-fq-md border border-border bg-muted/40 px-4 py-6 text-center"
+              >
+                <p className="text-sm font-medium">
+                  {isBn
+                    ? `“${q}” এর জন্য কিছু পাওয়া যায়নি।`
+                    : `No matches for “${q}”.`}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {tryOther}
+                </p>
+              </div>
+            )}
+            {!pending && hasList && hits && (
+              <div className="overflow-hidden rounded-fq-md border border-border">
+                <ul
+                  id={listId}
+                  role="listbox"
+                  aria-label={suggestionsLabel}
+                  className="max-h-[min(50vh,20rem)] divide-y divide-border overflow-auto"
+                >
+                  {hits.map((hit, index) => {
+                    const href = storeSlug
+                      ? `${base}/p/${hit.slug}`
+                      : "#";
+                    const selected = index === safeActive;
+                    return (
+                      <li key={hit.id} role="presentation">
+                        <a
+                          href={href}
+                          role="option"
+                          id={`${listId}-opt-${hit.id}`}
+                          aria-selected={selected}
+                          tabIndex={-1}
+                          onMouseEnter={() => setActiveIndex(index)}
+                          onMouseLeave={() => setActiveIndex(-1)}
+                          className={`flex min-h-11 items-center gap-3 px-3 py-2 text-sm transition-colors motion-safe:transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary ${selected ? "bg-muted" : ""}`}
+                        >
+                          <MediaFrame
+                            src={hit.imageUrl}
+                            alt={hit.title}
+                            ratio="square"
+                            className="w-10 shrink-0"
+                            artSeed={hit.id}
+                          />
+                          <span className="min-w-0 flex-1 truncate">
+                            {hit.title}
+                          </span>
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <a
+                  href={viewAllHref}
+                  className="flex min-h-11 items-center justify-center border-t border-border bg-muted/50 px-3 text-sm font-medium transition-colors motion-safe:transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
+                >
+                  {viewAllLabel}
+                  <span className="sr-only">
+                    {q ? ` — ${q}` : ""}
+                  </span>
+                </a>
+              </div>
+            )}
+            {!pending && hits === null && (
+              <p className="text-sm text-muted-foreground">
+                {storeSlug ? hintText : unavailableText}
+              </p>
+            )}
+          </div>
+        </form>
       </OverlayHost>
     </>
   );

@@ -5,13 +5,28 @@
  * the viewport, controls are 44px targets, items are fluid (no fixed pixel
  * widths) so 320px never overflows, and momentum scrolling stays native.
  */
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+function usePrefersReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(query.matches);
+    const onChange = () => setReduced(query.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+  return reduced;
+}
 
 export function Rail({
   label,
   children,
-  itemClassName = "w-[72vw] sm:w-[35vw] lg:w-[22%] max-w-[320px] min-w-[200px]",
+  itemClassName = "w-[72vw] max-w-[300px] min-w-[10rem] sm:w-[38vw] sm:max-w-[320px] lg:w-[22%] lg:min-w-0",
   heading,
+  prevLabel = "Scroll left",
+  nextLabel = "Scroll right",
 }: {
   label: string;
   children: React.ReactNode[];
@@ -23,17 +38,54 @@ export function Rail({
    * controls render exactly as before.
    */
   heading?: React.ReactNode;
+  /** Bilingual arrow labels — merch widgets pass bn/en strings. */
+  prevLabel?: string;
+  nextLabel?: string;
 }) {
   const ref = useRef<HTMLUListElement>(null);
+  const reduced = usePrefersReducedMotion();
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(true);
 
-  const nudge = useCallback((direction: 1 | -1) => {
+  const updateEdges = useCallback(() => {
     const el = ref.current;
     if (!el) return;
-    el.scrollBy({
-      left: direction * Math.max(160, el.clientWidth * 0.8),
-      behavior: "smooth",
-    });
+    // jsdom / SSR have no layout (scrollWidth 0) — keep the optimistic
+    // initial state so controls stay usable in tests and static markup.
+    if (el.scrollWidth === 0) return;
+    const max = el.scrollWidth - el.clientWidth;
+    if (max <= 4) {
+      setCanLeft(false);
+      setCanRight(false);
+      return;
+    }
+    setCanLeft(el.scrollLeft > 4);
+    setCanRight(el.scrollLeft < max - 4);
   }, []);
+
+  useEffect(() => {
+    updateEdges();
+    const el = ref.current;
+    if (!el) return;
+    el.addEventListener("scroll", updateEdges, { passive: true });
+    window.addEventListener("resize", updateEdges);
+    return () => {
+      el.removeEventListener("scroll", updateEdges);
+      window.removeEventListener("resize", updateEdges);
+    };
+  }, [updateEdges, children.length]);
+
+  const nudge = useCallback(
+    (direction: 1 | -1) => {
+      const el = ref.current;
+      if (!el) return;
+      el.scrollBy({
+        left: direction * Math.max(160, el.clientWidth * 0.8),
+        behavior: reduced ? "auto" : "smooth",
+      });
+    },
+    [reduced],
+  );
 
   if (children.length === 0) return null;
 
@@ -42,16 +94,18 @@ export function Rail({
       <button
         type="button"
         onClick={() => nudge(-1)}
-        aria-label="Scroll left"
-        className="h-11 w-11 rounded-fq-md border border-border bg-card text-sm"
+        disabled={!canLeft}
+        aria-label={prevLabel}
+        className="h-11 w-11 rounded-fq-md border border-border bg-card text-sm transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-default disabled:opacity-40"
       >
         ‹
       </button>
       <button
         type="button"
         onClick={() => nudge(1)}
-        aria-label="Scroll right"
-        className="h-11 w-11 rounded-fq-md border border-border bg-card text-sm"
+        disabled={!canRight}
+        aria-label={nextLabel}
+        className="h-11 w-11 rounded-fq-md border border-border bg-card text-sm transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-default disabled:opacity-40"
       >
         ›
       </button>
@@ -77,9 +131,23 @@ export function Rail({
           } else if (event.key === "ArrowLeft") {
             event.preventDefault();
             nudge(-1);
+          } else if (event.key === "Home") {
+            event.preventDefault();
+            ref.current?.scrollTo({
+              left: 0,
+              behavior: reduced ? "auto" : "smooth",
+            });
+          } else if (event.key === "End") {
+            event.preventDefault();
+            ref.current?.scrollTo({
+              left: ref.current.scrollWidth,
+              behavior: reduced ? "auto" : "smooth",
+            });
           }
         }}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        onScroll={updateEdges}
+        style={{ WebkitOverflowScrolling: "touch" }}
+        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 pb-2 motion-safe:scroll-smooth focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
         {children.map((child, index) => (
           <li key={index} className={`shrink-0 snap-start ${itemClassName}`}>

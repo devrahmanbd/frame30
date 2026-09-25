@@ -20,6 +20,7 @@ import {
   clampRating,
 } from "./primitives/Stars";
 import { SwatchDot } from "./primitives/SwatchDot";
+import { onRadioGroupKeyDown } from "./primitives/RovingRadiogroup";
 import { StickyBar, useDockedAfterScroll } from "./primitives/StickyBar";
 import { Disclosure } from "./primitives/Disclosure";
 
@@ -149,10 +150,14 @@ const BuyBox: WidgetComponent = (ctx) => {
       )}
       <div className="mt-4 flex flex-wrap items-center gap-3">
         {bool("showQuantity") && (
-          <span className="inline-flex items-center rounded-fq-md border border-border">
+          <div
+            role="group"
+            aria-label={locale === "bn" ? "পরিমাণ" : "Quantity"}
+            className="inline-flex items-center rounded-fq-md border border-border"
+          >
             <button
               type="button"
-              className="h-11 w-11 text-lg"
+              className="h-11 w-11 rounded-fq-md text-lg transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               aria-label={locale === "bn" ? "কমান" : "Decrease quantity"}
               onClick={() => setQty((n) => Math.max(1, n - 1))}
             >
@@ -163,13 +168,13 @@ const BuyBox: WidgetComponent = (ctx) => {
             </span>
             <button
               type="button"
-              className="h-11 w-11 text-lg"
+              className="h-11 w-11 rounded-fq-md text-lg transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               aria-label={locale === "bn" ? "বাড়ান" : "Increase quantity"}
               onClick={() => setQty((n) => Math.min(99, n + 1))}
             >
               +
             </button>
-          </span>
+          </div>
         )}
         <button
           type="button"
@@ -275,7 +280,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
                           disabled={!match || match.inStock === false}
                           aria-pressed={match?.id === current}
                           onClick={() => match && setSelected(match.id)}
-                          className={`h-9 w-full rounded-fq-md border px-2 text-xs ${
+                          className={`min-h-11 w-full min-w-11 rounded-fq-md border px-2 text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                             match?.id === current
                               ? "border-primary ring-1 ring-primary"
                               : "border-border"
@@ -313,6 +318,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
         <div
           role="radiogroup"
           aria-label={str("heading") || "Shades"}
+          onKeyDown={onRadioGroupKeyDown}
           className="flex flex-wrap gap-2"
         >
           {rows.map((row) => (
@@ -352,6 +358,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
       <div
         role="radiogroup"
         aria-label={str("heading") || "Options"}
+        onKeyDown={onRadioGroupKeyDown}
         className="flex flex-wrap gap-2"
       >
         {rows.map((row) =>
@@ -375,7 +382,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
               aria-checked={row.id === current}
               disabled={row.inStock === false}
               onClick={() => setSelected(row.id)}
-              className={`h-11 rounded-fq-md border px-3 text-sm ${
+              className={`h-11 rounded-fq-md border px-3 text-sm transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                 row.id === current
                   ? "border-primary ring-1 ring-primary"
                   : "border-border"

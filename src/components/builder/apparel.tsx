@@ -22,6 +22,7 @@ import { MediaFrame } from "./primitives/MediaFrame";
 import { OverlayHost } from "./primitives/OverlayHost";
 import { ProductCard, ProductCardSkeleton } from "./primitives/ProductCard";
 import { Rail } from "./primitives/Rail";
+import { onRadioGroupKeyDown } from "./primitives/RovingRadiogroup";
 import { UnitToggle, convertCm, type SizeUnit } from "./primitives/UnitToggle";
 import { useSectionChannel } from "./useSectionChannel";
 import { altKey, sizesAttr, sizesKey } from "@/lib/media";
@@ -519,6 +520,7 @@ const SizeSelector: WidgetComponent = (ctx) => {
       <div
         role="radiogroup"
         aria-label={str("heading") || "Size"}
+        onKeyDown={onRadioGroupKeyDown}
         className="flex flex-wrap gap-2"
       >
         {rows.map((row) => {
@@ -532,7 +534,7 @@ const SizeSelector: WidgetComponent = (ctx) => {
               aria-checked={selected === row.id}
               onClick={() => setSelected(row.id)}
               className={[
-                "min-h-11 min-w-11 rounded-fq-md border px-3 text-sm",
+                "min-h-11 min-w-11 rounded-fq-md border px-3 text-sm transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                 selected === row.id
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border",

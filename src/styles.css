@@ -86,6 +86,38 @@
   --radius-fq-lg: 8px;
 
   --ease-fq-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /*
+   * Phase 11 — storefront micro-interaction tokens (icons-motion lane).
+   *
+   * One scale for every widget hover, press, toggle and entrance, so the
+   * preview storefront feels like one hand. Durations mirror
+   * `MOTION_TOKENS.duration` in `src/lib/motion-policy.ts` (fast 180 /
+   * base 320 / reveal 480 / slow 520); easings extend the repo's fq-out
+   * curve with the matching in-out and entrance curves from the same policy.
+   * Widgets consume these via `var()` — never re-type a millisecond.
+   *
+   * Scale:
+   *   duration  instant 0ms   — reduced-motion / off-intent final state
+   *   duration  fast 180ms    — hovers, toggles, icon-button feedback
+   *   duration  base 320ms    — presses, popovers, small entrances
+   *   duration  reveal 480ms  — section/card entrances (Reveal default)
+   *   duration  slow 520ms    — ceiling; nothing entrance exceeds this
+   *   easing    out           — default for anything that appears/settles
+   *   easing    in-out        — drift loops, marquee cycles, back-and-forth
+   *   easing    entrance      — staged reveals (matches motion policy)
+   *   press     0.98          — `:active` scale for buttons and cards
+   *   rise      12px          — short entrance travel (mobile-safe)
+   */
+  --dur-fq-instant: 0ms;
+  --dur-fq-fast: 180ms;
+  --dur-fq-base: 320ms;
+  --dur-fq-reveal: 480ms;
+  --dur-fq-slow: 520ms;
+  --ease-fq-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-fq-entrance: cubic-bezier(0.16, 1, 0.3, 1);
+  --scale-fq-press: 0.98;
+  --rise-fq: 12px;
 }
 
 /*
