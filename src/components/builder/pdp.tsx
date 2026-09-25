@@ -7,6 +7,7 @@
  * units, and imports no theme module — one PDP widget set, every theme.
  */
 import { useMemo, useState } from "react";
+import { textOf } from "@/lib/bitext";
 import type { WidgetRow } from "@/lib/widget-data";
 import type { SectionType } from "@/lib/builder-ast";
 import { formatDisplayNumber } from "@/lib/money-display";
@@ -581,8 +582,8 @@ const ProductQna: WidgetComponent = (ctx) => {
   const itemRows = Array.isArray(section.props.items)
     ? section.props.items
         .map((row) => ({
-          q: typeof row.question === "string" ? row.question : "",
-          a: typeof row.answer === "string" ? row.answer : "",
+          q: textOf(row, "question", locale),
+          a: textOf(row, "answer", locale),
         }))
         .filter((row) => row.q)
     : [];

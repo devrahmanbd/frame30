@@ -115,7 +115,7 @@ export function previewDemoMap(
         const slug = colParam.trim().toLowerCase();
         const filtered = base.filter((p) => {
           const prod = catalog.products.find((item) => item.slug === p.id);
-          return prod?.collections?.includes(slug);
+          return prod?.collections?.includes(slug) || prod?.category === slug;
         });
         if (filtered.length > 0) {
           rows = filtered;

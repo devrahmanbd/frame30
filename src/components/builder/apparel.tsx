@@ -11,6 +11,7 @@
  * units through `ctx.money`.
  */
 import { useState } from "react";
+import { textOf } from "@/lib/bitext";
 import type { SectionType } from "@/lib/builder-ast";
 import type { WidgetRow } from "@/lib/widget-data";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
@@ -136,7 +137,7 @@ const EditorialHero: WidgetComponent = (ctx) => {
 /* -------------------------------------------------------------- lookbook */
 
 const Lookbook: WidgetComponent = (ctx) => {
-  const { str, bool, Heading, section } = ctx;
+  const { str, bool, Heading, section, locale } = ctx;
   const offset = bool("offset");
   // Repeater-first (faq/trust_bar precedent): studio `items` rows win when
   // present, scalar i1..i4 triples remain as the fallback for
@@ -146,7 +147,7 @@ const Lookbook: WidgetComponent = (ctx) => {
     ? section.props.items
         .map((row) => ({
           image: typeof row.image === "string" ? row.image : "",
-          alt: typeof row.alt === "string" ? row.alt : "",
+          alt: textOf(row, "alt", locale),
           href: typeof row.href === "string" ? row.href : "",
         }))
         .filter((row) => row.image)

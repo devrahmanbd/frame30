@@ -556,6 +556,168 @@ describe("spec_table scalar-to-items migration", () => {
   });
 });
 
+describe("repeater _bn twin carry (footer precedent)", () => {
+  function docOf(el: string, settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "n1", el, settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+  const itemsOf = (parsed: ReturnType<typeof parseStudioBody>) =>
+    (parsed?.root[0]?.settings as Record<string, unknown>).items;
+
+  it("faq carries question_bn/answer_bn twins when seeding items", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        docOf("faq", {
+          q1: "Size?",
+          q1_bn: "সাইজ?",
+          a1: "Runs large.",
+          a1_bn: "বড় সাইজ।",
+        }),
+      ),
+    );
+    expect(itemsOf(parsed)).toEqual([
+      {
+        question: "Size?",
+        question_bn: "সাইজ?",
+        answer: "Runs large.",
+        answer_bn: "বড় সাইজ।",
+      },
+    ]);
+  });
+
+  it("product_qna carries question_bn/answer_bn twins when seeding items", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        docOf("product_qna", {
+          q1: "Wash?",
+          q1_bn: "ধোয়া?",
+          a1: "Cold wash.",
+        }),
+      ),
+    );
+    expect(itemsOf(parsed)).toEqual([
+      { question: "Wash?", question_bn: "ধোয়া?", answer: "Cold wash." },
+    ]);
+  });
+
+  it("trust_bar carries title_bn/body_bn twins when seeding items", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        docOf("trust_bar", {
+          i1Icon: "delivery",
+          i1Title: "Fast delivery",
+          i1Title_bn: "দ্রুত ডেলিভারি",
+          i1Body: "In 48 hours",
+          i1Body_bn: "৪৮ ঘণ্টায়",
+        }),
+      ),
+    );
+    expect(itemsOf(parsed)).toEqual([
+      {
+        icon: "delivery",
+        title: "Fast delivery",
+        title_bn: "দ্রুত ডেলিভারি",
+        body: "In 48 hours",
+        body_bn: "৪৮ ঘণ্টায়",
+      },
+    ]);
+  });
+
+  it("announcement_bar carries text_bn twins when seeding items", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        docOf("announcement_bar", { m1: "Sale!", m1_bn: "ছাড়!" }),
+      ),
+    );
+    expect(itemsOf(parsed)).toEqual([{ text: "Sale!", text_bn: "ছাড়!" }]);
+  });
+
+  it("lookbook carries alt_bn twins when seeding items", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        docOf("lookbook", {
+          i1Image: "/a.jpg",
+          i1Alt: "Look 1",
+          i1Alt_bn: "লুক ১",
+          i1Href: "/c/1",
+        }),
+      ),
+    );
+    expect(itemsOf(parsed)).toEqual([
+      { image: "/a.jpg", alt: "Look 1", alt_bn: "লুক ১", href: "/c/1" },
+    ]);
+  });
+
+  it("hero carries heading/subheading/cta twins when seeding slides", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        docOf("hero", {
+          heading: "Welcome",
+          heading_bn: "স্বাগতম",
+          image: "/hero.jpg",
+          subheading: "Sub",
+          subheading_bn: "সাব",
+          ctaLabel: "Shop",
+          ctaLabel_bn: "কেনাকাটা",
+          ctaHref: "/c",
+          s2Heading: "Slide two",
+          s2Heading_bn: "স্লাইড দুই",
+          s2Image: "/s2.jpg",
+        }),
+      ),
+    );
+    expect(itemsOf(parsed)).toEqual([
+      {
+        heading: "Welcome",
+        heading_bn: "স্বাগতম",
+        image: "/hero.jpg",
+        subheading: "Sub",
+        subheading_bn: "সাব",
+        ctaLabel: "Shop",
+        ctaLabel_bn: "কেনাকাটা",
+        ctaHref: "/c",
+      },
+      {
+        heading: "Slide two",
+        heading_bn: "স্লাইড দুই",
+        image: "/s2.jpg",
+        subheading: "",
+        ctaLabel: "Shop",
+        ctaLabel_bn: "কেনাকাটা",
+        ctaHref: "/c",
+      },
+    ]);
+  });
+
+  it("spec_table carries group/label/value twins when seeding rows", () => {
+    const parsed = parseStudioBody(
+      serializeStudioBody(
+        docOf("spec_table", {
+          r1Group: "Display",
+          r1Group_bn: "ডিসপ্লে",
+          r1Label: "Size",
+          r1Label_bn: "সাইজ",
+          r1Value: "6.1in",
+          r1Value_bn: "৬.১ ইঞ্চি",
+        }),
+      ),
+    );
+    expect(itemsOf(parsed)).toEqual([
+      {
+        group: "Display",
+        group_bn: "ডিসপ্লে",
+        label: "Size",
+        label_bn: "সাইজ",
+        value: "6.1in",
+        value_bn: "৬.১ ইঞ্চি",
+      },
+    ]);
+  });
+});
+
 describe("studio slots (header / main / footer)", () => {
   const node = (id: string, slot?: StudioNode["slot"]): StudioNode => ({
     id,

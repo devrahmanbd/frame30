@@ -22,6 +22,7 @@ import type {
   ThemeTokens,
 } from "./builder-ast";
 import { TEMPLATE_KEYS } from "./builder-ast";
+import { toast } from "sonner";
 import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
 
@@ -104,6 +105,84 @@ export function previewClickAction(
   if (isPreviewBlockedHref(href)) return { kind: "blocked" };
   const target = previewTargetForHref(href);
   return target ? { kind: "switch", target } : { kind: "allow" };
+}
+
+/* ------------------------------ preview canvas interception */
+
+export type PreviewCanvasClickEvent = {
+  // `unknown` keeps the fake-event stubs in the node-env suite assignable;
+  // the handler only reads `closest` through a guarded cast.
+  target: unknown;
+  preventDefault: () => void;
+  stopPropagation: () => void;
+};
+
+/** Toast copy shown whenever a preview action is blocked. */
+export const PREVIEW_DISABLED_MESSAGE = "Disabled in preview";
+
+const SUBMIT_CONTROL_SELECTOR = 'button[type="submit"],input[type="submit"]';
+
+/**
+ * Capture-phase click interception for the preview canvas: submit controls
+ * inside any form and signup / order-tracking links are blocked with a
+ * toast, while product / collection / search / page / blog / cart /
+ * checkout / account / home links report their target through `switchTo`
+ * (template + focus slug + raw search query) so the frame can swap content
+ * and sync the URL. Product/collection links additionally report their slug
+ * through switchTo so the demo renders the clicked collection, not a
+ * static page. Everything else passes through untouched.
+ */
+export function handlePreviewCanvasClick(
+  event: PreviewCanvasClickEvent,
+  switchTo: (
+    template: TemplateKey,
+    focus: string | null,
+    query: string | null,
+  ) => void,
+): void {
+  const el = event.target as HTMLElement | null;
+  const submit = el?.closest?.(SUBMIT_CONTROL_SELECTOR) as HTMLElement | null;
+  if (submit && submit.closest?.("form")) {
+    event.preventDefault();
+    event.stopPropagation();
+    toast.info(PREVIEW_DISABLED_MESSAGE);
+    return;
+  }
+  const anchor = el?.closest?.("a[href]") as HTMLAnchorElement | null;
+  if (!anchor) return;
+  const action = previewClickAction(anchor.getAttribute("href"));
+  if (action.kind === "blocked") {
+    event.preventDefault();
+    event.stopPropagation();
+    toast.info(PREVIEW_DISABLED_MESSAGE);
+  } else if (action.kind === "switch") {
+    event.preventDefault();
+    event.stopPropagation();
+    switchTo(
+      action.target.template,
+      action.target.slug !== null &&
+        (action.target.template === "collection" ||
+          action.target.template === "product")
+        ? action.target.slug
+        : null,
+      action.target.query,
+    );
+  }
+}
+
+/**
+ * Capture-phase submit interception for the preview canvas: newsletter,
+ * contact, coupon and every other form is blocked with a toast. Runs in
+ * capture so widget `onSubmit` handlers (contact API, coupon state) never
+ * fire.
+ */
+export function handlePreviewCanvasSubmit(event: {
+  preventDefault: () => void;
+  stopPropagation: () => void;
+}): void {
+  event.preventDefault();
+  event.stopPropagation();
+  toast.info(PREVIEW_DISABLED_MESSAGE);
 }
 
 /* ---------------------------------- preview search query round-trip */
@@ -309,6 +388,8 @@ export type DemoFocus = {
   title: string;
   /** Collection key backing the data rails. */
   collection: string;
+  /** Catalog art for a known product slug; absent for unknown slugs. */
+  image?: string;
 };
 
 const humanizeSlug = (slug: string): string =>
@@ -334,6 +415,12 @@ export function resolveDemoFocus(
   if (template === "collection") {
     const match = catalog.collections.find((c) => c.slug === slug);
     if (match) return { template, slug, title: match.name, collection: slug };
+    // Category slugs (e.g. /c/women) carry no dedicated collection: reuse
+    // the collection field with the category slug so rails resolve rows by
+    // product.category (see previewDemoMap collection branch).
+    const category = catalog.categories.find((c) => c.slug === slug);
+    if (category)
+      return { template, slug, title: category.name, collection: slug };
     return { template, slug, title: humanizeSlug(slug), collection: "new-in" };
   }
   if (template === "product") {
@@ -343,6 +430,7 @@ export function resolveDemoFocus(
       slug,
       title: match ? match.title : humanizeSlug(slug),
       collection: "new-in",
+      image: match?.image_url,
     };
   }
   return null;
@@ -350,9 +438,12 @@ export function resolveDemoFocus(
 
 /**
  * Render-time override for a focused template: the first heading takes the
- * focus title and the first collection-sourced rail takes the focus rows.
- * Authored AST untouched (ids stable, bundle keys align); remaining rails
- * stay as discovery. bn copy falls back to English by resolveBiText.
+ * focus title, the first collection-sourced rail takes the focus rows, and
+ * (product focus with known catalog art only) the first product_media takes
+ * the catalog image as image1. Authored AST untouched (ids stable, bundle
+ * keys align); remaining rails and media stay as discovery. Unknown product
+ * slugs carry no art, so their static media renders unchanged. bn copy
+ * falls back to English by resolveBiText.
  */
 export function applyDemoFocus(
   sections: Section[],
@@ -361,12 +452,25 @@ export function applyDemoFocus(
   if (!focus) return sections;
   let head = false;
   let rail = false;
+  let media = false;
   return sections.map((section) => {
     if (!head && section.type === "heading") {
       head = true;
       return {
         ...section,
-        props: { ...section.props, text: focus.title, text_bn: "" },
+        props: { ...section.props, text: focus.title },
+      };
+    }
+    if (
+      !media &&
+      focus.template === "product" &&
+      focus.image &&
+      section.type === "product_media"
+    ) {
+      media = true;
+      return {
+        ...section,
+        props: { ...section.props, image1: focus.image },
       };
     }
     if (
@@ -381,7 +485,6 @@ export function applyDemoFocus(
           ...section.props,
           collection: focus.collection,
           heading: focus.title,
-          heading_bn: "",
         },
       };
     }

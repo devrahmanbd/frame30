@@ -454,16 +454,29 @@ function seedFooterSitemapItems(node: StudioNode): void {
 function seedSpecItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { group: string; label: string; value: string }[] = [];
+  const seeded: {
+    group: string;
+    group_bn?: string;
+    label: string;
+    label_bn?: string;
+    value: string;
+    value_bn?: string;
+  }[] = [];
   for (let i = 1; i <= 6; i += 1) {
     const label = s[`r${i}Label`];
     if (typeof label !== "string" || !label.trim()) continue;
     const group = s[`r${i}Group`];
     const value = s[`r${i}Value`];
+    const groupBn = s[`r${i}Group_bn`];
+    const labelBn = s[`r${i}Label_bn`];
+    const valueBn = s[`r${i}Value_bn`];
     seeded.push({
       group: typeof group === "string" ? group : "",
       label,
       value: typeof value === "string" ? value : "",
+      ...(typeof groupBn === "string" && groupBn ? { group_bn: groupBn } : {}),
+      ...(typeof labelBn === "string" && labelBn ? { label_bn: labelBn } : {}),
+      ...(typeof valueBn === "string" && valueBn ? { value_bn: valueBn } : {}),
     });
   }
   if (seeded.length > 0) {
@@ -481,14 +494,23 @@ function seedSpecItems(node: StudioNode): void {
 function seedQaItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { question: string; answer: string }[] = [];
+  const seeded: {
+    question: string;
+    question_bn?: string;
+    answer: string;
+    answer_bn?: string;
+  }[] = [];
   for (let i = 1; i <= 3; i += 1) {
     const q = s[`q${i}`];
     const a = s[`a${i}`];
     if (typeof q === "string" && q) {
+      const qBn = s[`q${i}_bn`];
+      const aBn = s[`a${i}_bn`];
       seeded.push({
         question: q,
         answer: typeof a === "string" ? a : "",
+        ...(typeof qBn === "string" && qBn ? { question_bn: qBn } : {}),
+        ...(typeof aBn === "string" && aBn ? { answer_bn: aBn } : {}),
       });
     }
   }
@@ -505,10 +527,16 @@ function seedQaItems(node: StudioNode): void {
 function seedAnnouncementItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { text: string }[] = [];
+  const seeded: { text: string; text_bn?: string }[] = [];
   for (let i = 1; i <= 3; i += 1) {
     const m = s[`m${i}`];
-    if (typeof m === "string" && m.trim()) seeded.push({ text: m });
+    if (typeof m === "string" && m.trim()) {
+      const mBn = s[`m${i}_bn`];
+      seeded.push({
+        text: m,
+        ...(typeof mBn === "string" && mBn ? { text_bn: mBn } : {}),
+      });
+    }
   }
   if (seeded.length > 0) {
     node.settings = { ...node.settings, items: seeded };
@@ -526,17 +554,30 @@ function seedHeroItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
   const text = (v: unknown): string => (typeof v === "string" ? v : "");
+  const twin = (key: string): Record<string, string> => {
+    const v = s[`${key}_bn`];
+    return typeof v === "string" && v ? { [`${key}_bn`]: v } : {};
+  };
   const slide0 = {
     heading: text(s.heading),
     image: text(s.image),
     subheading: text(s.subheading),
     ctaLabel: text(s.ctaLabel),
     ctaHref: text(s.ctaHref),
+    ...twin("heading"),
+    ...twin("subheading"),
+    ...twin("ctaLabel"),
   };
-  const slideN = (n: 2 | 3): { heading: string; image: string } | null => {
+  const slideN = (n: 2 | 3): Record<string, string> | null => {
     const heading = text(s[`s${n}Heading`]);
     const image = text(s[`s${n}Image`]);
-    return heading || image ? { heading, image } : null;
+    if (!heading && !image) return null;
+    const v = s[`s${n}Heading_bn`];
+    return {
+      heading,
+      image,
+      ...(typeof v === "string" && v ? { heading_bn: v } : {}),
+    };
   };
   const ctaLabel = text(s.ctaLabel);
   const ctaHref = text(s.ctaHref);
@@ -545,8 +586,22 @@ function seedHeroItems(node: StudioNode): void {
   const s3 = slideN(3);
   if (slide0.heading || slide0.image || s2 || s3) {
     seeded.push(slide0);
-    if (s2) seeded.push({ ...s2, subheading: "", ctaLabel, ctaHref });
-    if (s3) seeded.push({ ...s3, subheading: "", ctaLabel, ctaHref });
+    if (s2)
+      seeded.push({
+        ...s2,
+        subheading: "",
+        ctaLabel,
+        ctaHref,
+        ...twin("ctaLabel"),
+      });
+    if (s3)
+      seeded.push({
+        ...s3,
+        subheading: "",
+        ctaLabel,
+        ctaHref,
+        ...twin("ctaLabel"),
+      });
     node.settings = { ...node.settings, items: seeded };
   }
 }
@@ -559,16 +614,23 @@ function seedHeroItems(node: StudioNode): void {
 function seedLookbookItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { image: string; alt: string; href: string }[] = [];
+  const seeded: {
+    image: string;
+    alt: string;
+    alt_bn?: string;
+    href: string;
+  }[] = [];
   for (let i = 1; i <= 4; i += 1) {
     const image = s[`i${i}Image`];
     if (typeof image === "string" && image) {
       const alt = s[`i${i}Alt`];
+      const altBn = s[`i${i}Alt_bn`];
       const href = s[`i${i}Href`];
       seeded.push({
         image,
         alt: typeof alt === "string" ? alt : "",
         href: typeof href === "string" ? href : "",
+        ...(typeof altBn === "string" && altBn ? { alt_bn: altBn } : {}),
       });
     }
   }
@@ -585,16 +647,28 @@ function seedLookbookItems(node: StudioNode): void {
 function seedTrustItems(node: StudioNode): void {
   const s = node.settings as Record<string, unknown>;
   if (Array.isArray(s.items) && s.items.length > 0) return;
-  const seeded: { icon: string; title: string; body: string }[] = [];
+  const seeded: {
+    icon: string;
+    title: string;
+    title_bn?: string;
+    body: string;
+    body_bn?: string;
+  }[] = [];
   for (let i = 1; i <= 4; i += 1) {
     const title = s[`i${i}Title`];
     if (typeof title === "string" && title) {
       const icon = s[`i${i}Icon`];
       const body = s[`i${i}Body`];
+      const titleBn = s[`i${i}Title_bn`];
+      const bodyBn = s[`i${i}Body_bn`];
       seeded.push({
         icon: typeof icon === "string" ? icon : "",
         title,
         body: typeof body === "string" ? body : "",
+        ...(typeof titleBn === "string" && titleBn
+          ? { title_bn: titleBn }
+          : {}),
+        ...(typeof bodyBn === "string" && bodyBn ? { body_bn: bodyBn } : {}),
       });
     }
   }

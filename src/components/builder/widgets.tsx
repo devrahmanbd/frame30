@@ -861,10 +861,10 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale, section }) => {
   const itemRows = Array.isArray(section.props.items)
     ? section.props.items
         .map((row) => ({
-          heading: typeof row.heading === "string" ? row.heading : "",
+          heading: textOf(row, "heading", locale),
           image: typeof row.image === "string" ? row.image : "",
-          subheading: typeof row.subheading === "string" ? row.subheading : "",
-          ctaLabel: typeof row.ctaLabel === "string" ? row.ctaLabel : "",
+          subheading: textOf(row, "subheading", locale),
+          ctaLabel: textOf(row, "ctaLabel", locale),
           ctaHref: typeof row.ctaHref === "string" ? row.ctaHref : "",
         }))
         .filter((row) => row.heading || row.image)
@@ -1378,14 +1378,14 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
 
   // Phase 1.3: one Disclosure primitive, so FAQ, spec groups and size guides
   // all share the same keyboard and ARIA behaviour.
-  faq: ({ str, Heading, section }) => {
+  faq: ({ str, Heading, section, locale }) => {
     // Repeater-first: studio `items` rows win when present, scalar q1/a1…
     // pairs remain as the fallback for theme-authored sections.
     const itemRows = Array.isArray(section.props.items)
       ? section.props.items
           .map((row) => ({
-            q: typeof row.question === "string" ? row.question : "",
-            a: typeof row.answer === "string" ? row.answer : "",
+            q: textOf(row, "question", locale),
+            a: textOf(row, "answer", locale),
           }))
           .filter((row) => row.q)
       : [];

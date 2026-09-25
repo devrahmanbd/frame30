@@ -216,10 +216,45 @@ describe("demo focus (slug-aware collection preview)", () => {
     );
   });
 
+  it("focus keeps authored _bn twins", () => {
+    const sections = [{ id: "h", type: "heading", props: { text: "New in", text_bn: "নতুন এসেছে" } }];
+    const out = applyDemoFocus(sections as never, { template: "collection", slug: "festive", title: "Eid & Festive", collection: "festive" });
+    expect(out[0].props.text).toBe("Eid & Festive");
+    expect(out[0].props.text_bn).toBe("নতুন এসেছে"); // currently blanked
+  });
+
   it("passes sections through without focus", async () => {
     const { newSection } = await import("./builder-ast");
     const sections = [newSection("heading")];
     expect(applyDemoFocus(sections, null)).toBe(sections);
+  });
+
+  it("feeds focused product catalog art into product_media", () => {
+    const preset = resolveThemePreview("songoskriti")!;
+    const focus = resolveDemoFocus(
+      "songoskriti",
+      "product",
+      "rajshahi-silk-festive-panjabi",
+    )!;
+    expect(focus.title).toBe("Rajshahi Silk Festive Panjabi");
+    const out = applyDemoFocus(preset.templates.product.main, focus);
+    const media = out.find((s) => s.type === "product_media")!;
+    expect(media.props["image1"]).toBe("/ph/songoskriti/prod-panjabi.png");
+  });
+
+  it("keeps static product_media for unknown product slugs", () => {
+    const preset = resolveThemePreview("songoskriti")!;
+    const before = preset.templates.product.main.find(
+      (s) => s.type === "product_media",
+    )!;
+    const focus = resolveDemoFocus(
+      "songoskriti",
+      "product",
+      "no-such-product-xyz",
+    )!;
+    const out = applyDemoFocus(preset.templates.product.main, focus);
+    const media = out.find((s) => s.type === "product_media")!;
+    expect(media.props).toMatchObject({ ...before.props });
   });
 });
 
@@ -312,6 +347,31 @@ describe("previewTargetForHref slug-aware", () => {
       slug: "festive",
       query: null,
     });
+  });
+});
+
+describe("click-routing single source", () => {
+  it("maps /products/ list form exactly once", () => {
+    expect(previewTemplateForHref("/products/")).toBe("product");
+    expect(previewTargetForHref("/products/")).toEqual({
+      template: "product",
+      slug: null,
+      query: null,
+    });
+  });
+});
+
+describe("resolveDemoFocus categories", () => {
+  it("resolves a category slug to category-filtered rows", () => {
+    const f = resolveDemoFocus("songoskriti", "collection", "women")!;
+    expect(f.title).toBe("Women");
+    expect(f.slug).toBe("women");
+    // Category signal must survive so rails filter by product.category,
+    // not fall back to new-in rows.
+    expect(f.collection).toBe("women");
+  });
+  it("unknown slugs still fall back to new-in", () => {
+    expect(resolveDemoFocus("songoskriti", "collection", "nope-xyz")?.collection).toBe("new-in");
   });
 });
 
