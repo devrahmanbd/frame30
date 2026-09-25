@@ -71,11 +71,34 @@ for sub in p/x c/y pages/about search cart checkout account sitemap.xml robots.t
 done
 check "https://framique.qubickle.com/" "200"
 if [ -n "$PRIMARY_HOST" ]; then
-  check "https://$PRIMARY_HOST/" "200"
-  check "https://$PRIMARY_HOST/cart" "200"
+  # Edge SNI mapping flaps under load (wrong-cert curl 60s from loopback);
+  # retry transient failures with raw curl (not check(), so set -e can't
+  # kill the script between attempts) before calling it a failure.
+  attempt=0
+  primary_ok=""
+  until [ -n "$primary_ok" ]; do
+    attempt=$((attempt + 1))
+    home=$(curl -s -o /dev/null -w "%{http_code}" "https://$PRIMARY_HOST/" 2>/dev/null) || home="000"
+    cart=$(curl -s -o /dev/null -w "%{http_code}" "https://$PRIMARY_HOST/cart" 2>/dev/null) || cart="000"
+    if [ "$home" = "200" ] && [ "$cart" = "200" ]; then
+      primary_ok="yes"
+      echo "VERIFY OK: https://$PRIMARY_HOST/ + /cart -> 200 (attempt $attempt)"
+    elif [ "$attempt" -ge 3 ]; then
+      echo "VERIFY FAIL: https://$PRIMARY_HOST/ -> $home, /cart -> $cart after $attempt attempts"
+      fail=1
+      break
+    else
+      echo "VERIFY RETRY: $PRIMARY_HOST home=$home cart=$cart ($attempt/3) in 10s"
+      sleep 10
+    fi
+  done
 else
   echo "SKIP custom-host checks: no active primary (merchant mid-rename)"
 fi
+# Unmapped custom hosts must serve nothing (bare 404 — no CMS site, no
+# featured-store fallback). microscrop.shop lost its mapping in the
+# flamelancer.com rename, so it pins this gate.
+check "https://microscrop.shop/" "404"
 check "https://framique.qubickle.com/api/public/ph/x" "200"
 [ "$fail" = 0 ] || { echo "DEPLOY VERIFICATION FAILED"; exit 1; }
 echo "DEPLOY OK: $BRANCH live"

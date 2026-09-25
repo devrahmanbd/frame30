@@ -139,6 +139,26 @@ that is expected until edge automation lands; merchants still serve on the
 platform path. Never point merchants at `edge.framique.*` or `76.76.21.21`
 (Vercel) — those were placeholder values that shipped wrong instructions.
 
+## Live verification contract (deploy gate, Sept 25 2026)
+
+`ops/deploy-from-git.sh` verifies, never assumes:
+
+- **Primary host is merchant data.** Resolved live from `merchant_domains`
+  (`status='active'`, `is_primary`); never hardcoded. No active primary →
+  custom-host checks SKIP (merchant mid-rename), everything else still gates.
+- **Custom-host checks retry.** Edge SNI mapping flaps under load
+  (wrong-cert curl 60s from loopback). The gate retries 3×/10s with raw
+  curl (outside `check()` so `set -e` can't kill the script), then fails
+  honestly. A retry storm in the log means edge, not app — verify with
+  `curl -v` (cert subject) before touching code.
+- **Unmapped custom hosts must 404 bare.** No CMS site, no featured-store
+  fallback, no body (`server.ts` gate; `microscrop.shop/` pins it since the
+  flamelancer.com rename). If this check starts serving 200, a mapping
+  changed — check `merchant_domains` first, code second.
+- **Restart precedes verify.** rsync + `systemctl restart` happen before
+  checks, so a red gate means "new code live, proof incomplete" — read
+  which line failed before deciding rollback vs edge wait.
+
 ## Pending deploy-sensitive items (do NOT ship without these steps)
 
 - **WF-02 `removed` enum**: needs a real migration (`ALTER TYPE market_install_status ADD VALUE 'removed'`) via expand-and-contract (SYSTEM.md §10.3) — new enum value is backward-compatible (additive), old code ignores it. Deploy migration Release 1 before the code that writes it.
