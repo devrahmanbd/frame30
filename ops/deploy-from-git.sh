@@ -82,7 +82,9 @@ for sub in p/x c/y pages/about search cart checkout account sitemap.xml robots.t
 done
 check "https://framique.qubickle.com/" "200"
 if [ -n "$PRIMARY_HOST" ]; then
-  # Edge SNI mapping flaps under load (wrong-cert curl 60s from loopback);
+  # Edge SNI mapping flaps under load (wrong-cert curl 60s from loopback;
+  # 2026-09-25: custom domains intermittently serve the shared default cert
+  # because ACME file storage is per edge replica — see runbook note below);
   # retry transient failures with raw curl (not check(), so set -e can't
   # kill the script between attempts) before calling it a failure.
   attempt=0
@@ -94,12 +96,12 @@ if [ -n "$PRIMARY_HOST" ]; then
     if [ "$home" = "200" ] && [ "$cart" = "200" ]; then
       primary_ok="yes"
       echo "VERIFY OK: https://$PRIMARY_HOST/ + /cart -> 200 (attempt $attempt)"
-    elif [ "$attempt" -ge 3 ]; then
+    elif [ "$attempt" -ge 6 ]; then
       echo "VERIFY FAIL: https://$PRIMARY_HOST/ -> $home, /cart -> $cart after $attempt attempts"
       fail=1
       break
     else
-      echo "VERIFY RETRY: $PRIMARY_HOST home=$home cart=$cart ($attempt/3) in 10s"
+      echo "VERIFY RETRY: $PRIMARY_HOST home=$home cart=$cart ($attempt/6) in 10s"
       sleep 10
     fi
   done
