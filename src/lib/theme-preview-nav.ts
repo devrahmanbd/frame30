@@ -39,12 +39,9 @@ export function isPreviewBlockedHref(href: string): boolean {
   return BLOCKED_HREF_RE.test(path);
 }
 
-function slugOf(rest: string, prefix: RegExp): string | null {
-  const m = rest.match(prefix);
-  return m?.[1]?.toLowerCase() ?? null;
-}
-
 export function previewTargetForHref(href: string): PreviewTarget | null {
+  if (!href) return null;
+  href = href.trim();
   if (!href || href.startsWith("#")) return null;
   if (/^(mailto:|tel:)/i.test(href)) return null;
   if (/^https?:\/\//i.test(href)) {
