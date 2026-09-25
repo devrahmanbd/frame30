@@ -2,13 +2,17 @@
  * Collection rename: validated slug edits with automatic 301s.
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { fakeDb } from "./__fixtures__/fake-db";
+import { fakeDb, type Row } from "./__fixtures__/fake-db";
 import {
   metricRecorder,
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+const rec = vi.hoisted(() => ({
+  holder: null as null | {
+    observability: Record<string, (...args: never[]) => unknown>;
+  },
+}));
 const recorder = metricRecorder();
 rec.holder = recorder;
 
@@ -54,9 +58,9 @@ describe("renameCollection", () => {
         slug: "Bad Slug!!",
       }),
     ).rejects.toThrow();
-    expect(
-      db.rows("collections").find((r: any) => r.id === CID)!.slug,
-    ).toBe("women");
+    expect(db.rows("collections").find((r: Row) => r.id === CID)!.slug).toBe(
+      "women",
+    );
     expect(db.rows("url_redirects")).toHaveLength(0);
   });
 
@@ -69,15 +73,15 @@ describe("renameCollection", () => {
         slug: "men",
       }),
     ).rejects.toThrow();
-    expect(
-      db.rows("collections").find((r: any) => r.id === CID)!.slug,
-    ).toBe("women");
+    expect(db.rows("collections").find((r: Row) => r.id === CID)!.slug).toBe(
+      "women",
+    );
     expect(db.rows("url_redirects")).toHaveLength(0);
   });
 
   it("renames and writes a 301 from the old collection URL", async () => {
     const db = renameDb();
-    const out: any = await renameCollection(db.asClient(), {
+    const out = await renameCollection(db.asClient(), {
       merchantId: MERCHANT,
       collectionId: CID,
       name: "Women Edit",
@@ -85,7 +89,7 @@ describe("renameCollection", () => {
     });
     expect(out.slug).toBe("ladies");
     expect(out.redirect).toBe(true);
-    const row = db.rows("collections").find((r: any) => r.id === CID)!;
+    const row = db.rows("collections").find((r: Row) => r.id === CID)!;
     expect(row.name).toBe("Women Edit");
     expect(row.slug).toBe("ladies");
     const rules = db.rows("url_redirects");
@@ -100,7 +104,7 @@ describe("renameCollection", () => {
 
   it("edits the name alone without redirect noise", async () => {
     const db = renameDb();
-    const out: any = await renameCollection(db.asClient(), {
+    const out = await renameCollection(db.asClient(), {
       merchantId: MERCHANT,
       collectionId: CID,
       name: "Women Edit",
@@ -118,8 +122,8 @@ describe("renameCollection", () => {
         slug: "ladies",
       }),
     ).rejects.toThrow();
-    expect(
-      db.rows("collections").find((r: any) => r.id === CID)!.slug,
-    ).toBe("women");
+    expect(db.rows("collections").find((r: Row) => r.id === CID)!.slug).toBe(
+      "women",
+    );
   });
 });

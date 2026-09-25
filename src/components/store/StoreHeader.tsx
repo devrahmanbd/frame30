@@ -171,7 +171,7 @@ export function StoreHeader({
           {custom ? (
             <Link
               to="/checkout"
-              aria-label={t("Cart", "কার্ট")}
+              aria-label={`${t("Cart", "কার্ট")}, ${hydrated ? count : 0}`}
               className="relative grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
               <ShoppingBag className="size-5" aria-hidden />
@@ -186,7 +186,7 @@ export function StoreHeader({
             <Link
               to="/store/$slug/checkout"
               params={{ slug }}
-              aria-label={t("Cart", "কার্ট")}
+              aria-label={`${t("Cart", "কার্ট")}, ${hydrated ? count : 0}`}
               className="relative grid size-11 shrink-0 place-items-center rounded-full text-foreground/80 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95"
             >
               <ShoppingBag className="size-5" aria-hidden />

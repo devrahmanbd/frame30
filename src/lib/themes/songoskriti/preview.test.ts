@@ -7,6 +7,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { songoskritiPreviewSource } from "./preview";
+import type { SectionBuilder } from "../../builder-ast";
 
 describe("songoskritiPreviewSource", () => {
   it("identifies the theme for the registry", () => {
@@ -18,7 +19,7 @@ describe("songoskritiPreviewSource", () => {
   it("authors the homepage from the theme builders", () => {
     const source = songoskritiPreviewSource();
     let n = 0;
-    const s = (type: any, props: any = {}) => ({
+    const s: SectionBuilder = (type, props = {}) => ({
       id: `${type}-${n++}`,
       type,
       props: { ...props },
@@ -43,7 +44,7 @@ describe("songoskritiPreviewSource", () => {
   it("authors demo bodies with proven renderers", () => {
     const source = songoskritiPreviewSource();
     let n = 0;
-    const s = (type: any, props: any = {}) => ({
+    const s: SectionBuilder = (type, props = {}) => ({
       id: `${type}-${n++}`,
       type,
       props: { ...props },

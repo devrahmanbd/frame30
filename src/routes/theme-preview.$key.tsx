@@ -42,7 +42,15 @@ export const Route = createFileRoute("/theme-preview/$key")({
   // Demo pages must never index: merchant-less URLs redirect here instead
   // of 404ing, and indexers must not mistake demo for store content.
   head: () => ({
-    meta: [{ title: "Theme preview" }, { name: "robots", content: "noindex" }],
+    meta: [
+      { title: "Theme preview" },
+      {
+        name: "description",
+        content:
+          "Live preview of a Framique storefront theme with demo products.",
+      },
+      { name: "robots", content: "noindex" },
+    ],
   }),
   component: ThemePreviewRoute,
   errorComponent: ThemePreviewError,

@@ -7,6 +7,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { somvabonaPreviewSource } from "./preview";
+import type { SectionBuilder } from "../../builder-ast";
 
 describe("somvabonaPreviewSource", () => {
   it("identifies the theme for the registry", () => {
@@ -18,7 +19,7 @@ describe("somvabonaPreviewSource", () => {
   it("authors the homepage from the theme builders", () => {
     const source = somvabonaPreviewSource();
     let n = 0;
-    const s = (type: any, props: any = {}) => ({
+    const s: SectionBuilder = (type, props = {}) => ({
       id: `${type}-${n++}`,
       type,
       props: { ...props },
@@ -33,7 +34,7 @@ describe("somvabonaPreviewSource", () => {
   it("authors collection and product demo bodies", () => {
     const source = somvabonaPreviewSource();
     let n = 0;
-    const s = (type: any, props: any = {}) => ({
+    const s: SectionBuilder = (type, props = {}) => ({
       id: `${type}-${n++}`,
       type,
       props: { ...props },
@@ -49,12 +50,19 @@ describe("somvabonaPreviewSource", () => {
   it("leaves the remaining templates to generic synthesis", () => {
     const source = somvabonaPreviewSource();
     let n = 0;
-    const s = (type: any, props: any = {}) => ({
+    const s: SectionBuilder = (type, props = {}) => ({
       id: `${type}-${n++}`,
       type,
       props: { ...props },
     });
-    for (const t of ["page", "blog", "search", "cart", "checkout", "account"] as const) {
+    for (const t of [
+      "page",
+      "blog",
+      "search",
+      "cart",
+      "checkout",
+      "account",
+    ] as const) {
       expect(source.main(t, s)).toBeNull();
     }
   });

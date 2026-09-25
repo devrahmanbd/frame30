@@ -22,7 +22,7 @@ import {
 
 type Client = SupabaseClient<Database>;
 type Loose = {
-  from: (t: string) => any;
+  from: (t: string) => ReturnType<Client["from"]>;
   rpc: (
     fn: string,
     args: Record<string, unknown>,
@@ -502,7 +502,11 @@ export async function renameCollection(
   if (!name) throw new Error("catalog.name_required");
   const oldSlug = (row as { slug: string }).slug;
   let slug = oldSlug;
-  if (input.slug !== undefined && input.slug !== null && input.slug !== oldSlug) {
+  if (
+    input.slug !== undefined &&
+    input.slug !== null &&
+    input.slug !== oldSlug
+  ) {
     const { checkSlug } = await import("./permalink.server");
     const verdict = await checkSlug(supabase, input.merchantId, {
       kind: "collection",
@@ -527,18 +531,16 @@ export async function renameCollection(
     const base = settings.collectionBase || "/c";
     const from = `${base}/${oldSlug}`;
     const to = `${base}/${slug}`;
-    await db
-      .from("url_redirects")
-      .upsert(
-        {
-          merchant_id: input.merchantId,
-          entity_type: "collection",
-          from_path: from,
-          to_path: to,
-          status_code: 301,
-        },
-        { onConflict: "merchant_id,from_path" },
-      );
+    await db.from("url_redirects").upsert(
+      {
+        merchant_id: input.merchantId,
+        entity_type: "collection",
+        from_path: from,
+        to_path: to,
+        status_code: 301,
+      },
+      { onConflict: "merchant_id,from_path" },
+    );
     await db
       .from("url_redirects")
       .delete()
