@@ -18,6 +18,7 @@ function ctxForLocale(section: Section, locale: Locale): WidgetCtx {
     editing: false,
     locale,
     storeSlug: "test",
+    link: (href: string) => href,
     data: undefined,
     renderChildren: () => null,
   };
@@ -61,7 +62,8 @@ describe("hero_carousel locale gating", () => {
     expect(html).not.toContain(">Festive wear, ready to ship<");
   });
 
-  it("bn falls back to English when headline_bn is missing", () => {    const base = newSection("hero_carousel");
+  it("bn falls back to English when headline_bn is missing", () => {
+    const base = newSection("hero_carousel");
     const section = {
       ...base,
       props: { ...base.props, slides: [{ headline: "Only English" }] },

@@ -63,6 +63,34 @@ describe("footer_sitemap locale parity", () => {
     expect(html).toContain(">New arrivals<");
   });
 
+  it("bn renders items-row _bn twins when menus claim the footer", () => {
+    const base = newSection("footer_sitemap");
+    const section = {
+      ...base,
+      props: {
+        ...base.props,
+        items: [
+          {
+            title: "Shop",
+            title_bn: "কেনাকাটা",
+            links: "New in|/c/new-in",
+            links_bn: "নতুন এসেছে|/c/new-in",
+          },
+        ],
+      },
+    };
+    const Cmp = CHROME_WIDGETS["footer_sitemap"];
+    const html = renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        ctxForLocale(section, "bn"),
+      ),
+    );
+    expect(html).toContain("কেনাকাটা");
+    expect(html).toContain("নতুন এসেছে");
+    expect(html).not.toContain(">New in<");
+  });
+
   it.each([
     ["somvabona", SOMVABONA_COLUMNS],
     ["songoskriti", SONGOSKRITI_COLUMNS],
