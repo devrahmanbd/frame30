@@ -66,6 +66,8 @@ type Props = {
   signedIn?: boolean;
   /** Phase 3.2: segments the visitor belongs to (conditional visibility). */
   segments?: string[];
+  /** Optional base path to prefix root-relative links with (e.g. `/store/foo`) */
+  linkBase?: string;
 };
 
 /**
@@ -100,6 +102,7 @@ export function SectionRenderer({
   onInlineEdit,
   signedIn,
   segments,
+  linkBase,
 }: Props) {
   const { lang } = useLang();
   const dynamic = useDynamicContext(editing);
@@ -264,6 +267,7 @@ export function SectionRenderer({
         locale={locale}
         selectedIds={selectedIds}
         onInlineEdit={onInlineEdit}
+        linkBase={linkBase}
       />
     ));
 
@@ -293,6 +297,11 @@ export function SectionRenderer({
         data={nodeData}
         productSlot={productSlot}
         collectionSlot={collectionSlot}
+        link={(href: string) => {
+          if (!href || href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:") || href === "#") return href;
+          const h = href.startsWith("/") ? href : `/${href}`;
+          return linkBase ? `${linkBase}${h}` : h;
+        }}
 
         renderChildren={renderChildren}
         {...(onInlineEdit

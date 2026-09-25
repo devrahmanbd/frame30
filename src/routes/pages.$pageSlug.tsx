@@ -8,6 +8,7 @@ import { getStorePageFn } from "@/lib/storefront-search.functions";
 import { verificationTags } from "@/lib/search-console";
 import { handleMissingStoreUrl } from "@/lib/missing-url";
 import { resolveStorefrontHostFn } from "@/lib/storefront.functions";
+import { PageView } from "@/components/store/PageView";
 
 /**
  * Custom-host store page (`microscrop.shop/pages/<slug>`).
@@ -76,112 +77,7 @@ export const Route = createFileRoute("/pages/$pageSlug")({
       ],
     };
   },
-  component: StorePageView,
+  component: function RouteComponent() {
+    return <PageView data={Route.useLoaderData()} />;
+  },
 });
-
-function StorePageView() {
-  const { t } = useLang();
-  const {
-    merchant,
-    page,
-    html,
-    nav,
-    ast,
-    tokens,
-    siteKit,
-    customCss,
-    isBuilder,
-    menus,
-    installedPlugins,
-  } = Route.useLoaderData();
-  const slug = merchant.slug;
-
-  const breadcrumb = (
-    <nav
-      aria-label={t("Breadcrumb", "ব্রেডক্রাম্ব")}
-      className="text-xs text-muted-foreground"
-    >
-      <Link to="/" className="underline">
-        {merchant.name}
-      </Link>
-      <span aria-hidden> / </span>
-      <span>{page.title}</span>
-    </nav>
-  );
-
-  const content = (
-    <article>
-      <h1 className="font-bangla-display text-3xl font-bold">{page.title}</h1>
-      {page.excerpt && (
-        <p className="mt-2 text-muted-foreground">{page.excerpt}</p>
-      )}
-      <div
-        className={
-          isBuilder
-            ? "fq-builder-page mt-6"
-            : "fq-prose mt-6 space-y-4 text-sm leading-relaxed"
-        }
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-      <p className="mt-8 text-xs text-muted-foreground">
-        {t("Last updated", "সর্বশেষ হালনাগাদ")}:{" "}
-        <time dateTime={page.updated_at} className="money">
-          {new Date(page.updated_at).toLocaleDateString("en-GB")}
-        </time>
-      </p>
-    </article>
-  );
-
-  const sidebar = nav.length > 0 && (
-    <aside aria-label={t("Store information", "দোকানের তথ্য")}>
-      <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        {t("More information", "আরও তথ্য")}
-      </h2>
-      <ul className="mt-2 space-y-1">
-        {nav.map((item) => (
-          <li key={item.slug}>
-            <Link
-              to="/pages/$pageSlug"
-              params={{ pageSlug: item.slug }}
-              aria-current={item.slug === page.slug ? "page" : undefined}
-              className={`block rounded-fq-md px-3 py-2 text-sm ${
-                item.slug === page.slug
-                  ? "bg-muted font-medium"
-                  : "text-muted-foreground hover:bg-muted"
-              }`}
-            >
-              {item.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </aside>
-  );
-
-  return (
-    <PluginLayer plugins={installedPlugins}>
-      <ThemeChrome
-        template="page"
-        storeSlug={slug}
-        merchantId={merchant.id}
-        ast={ast}
-        tokens={tokens}
-        siteKit={siteKit}
-        customCss={customCss}
-        ownsPrimary
-        chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}
-        contextSlots={{ breadcrumb, page_content: content }}
-        containerClassName="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1fr_15rem]"
-        fallback={
-          <>
-            <div>
-              {breadcrumb}
-              {content}
-            </div>
-            {sidebar}
-          </>
-        }
-      />
-    </PluginLayer>
-  );
-}

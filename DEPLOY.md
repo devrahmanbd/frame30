@@ -118,15 +118,21 @@ DOMAIN_EDGE_HOOK_URL=<edge provisioning hook, if any>
 DOMAIN_EDGE_TOKEN=<hook bearer token>
 ```
 
-Leave `DOMAIN_EDGE_HOOK_URL` **unset** unless a push-hook receiver exists:
-no receiver ships in this repo — the edge (OpenResty + lua-resty-acme
-autossl) issues pull-based on first SNI hit via the `verify-sni` whitelist,
-so there is nothing to point the hook at. Pointing it at a dummy URL would
-POST cert orders into the void (`edge_unreachable`). Without the hook,
-verified domains stay `dns_verified` with `cert.awaiting_edge` (fail closed)
-— that is expected until edge automation lands; merchants still serve on the
-platform path. `DOMAIN_EDGE_TOKEN` is still required: it authenticates the
-edge's `verify-sni` checks and signs `/api/public/domains/callback` HMACs.
+Edge hook v1 (built 2026-09-24, proven live on flamelancer.com): no
+external push receiver is needed. The `:80` challenge path already serves
+`/.well-known/acme-challenge/` (certbot webroot + autossl fallback), and
+the app orders directly:
+`verifyDomain` → `requestCertificate` → `provisionAndApply`
+(`src/lib/edge-provision.server.ts`: fixed-shape argv, per-host
+single-flight + 10-min cooldown, keys never leave the server) →
+`/usr/local/bin/framique-cert-issue.sh` (`ops/edge/`: hostname
+re-validation, certbot webroot, PEM assembly 0600, haproxy reload) →
+`applyCertResult` → `active`. Traffic for unverified hosts triggers one
+coalesced verify chain (`triggerEdgeVerify`); polling and the manual
+button remain as fallback. Enable with `EDGE_LOCAL_PROVISION=1`
+(+ `ACME_STAGING=true` for safe path proofs). `DOMAIN_EDGE_HOOK_URL`
+stays unset (nothing to point it at); `DOMAIN_EDGE_TOKEN` still
+authenticates verify-sni/callbacks.
 
 Without the hook vars, custom domains park in `issuing_cert` (fail closed) —
 that is expected until edge automation lands; merchants still serve on the

@@ -50,6 +50,7 @@ function ctxFor(
     storeSlug: "test",
     data: undefined,
     renderChildren: () => null,
+    link: (href: string) => href,
   };
 }
 

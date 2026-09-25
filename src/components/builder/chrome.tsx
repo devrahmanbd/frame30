@@ -236,7 +236,7 @@ function Notice({ str, bool }: WidgetCtx) {
   );
 }
 
-function MegaMenu({ str, int, data }: WidgetCtx) {
+  function MegaMenu({ str, int, data, link }: WidgetCtx) {
   const [open, setOpen] = useState(false);
   const rows = data?.rows ?? [];
   const label = str("label") || "Shop";
@@ -264,7 +264,7 @@ function MegaMenu({ str, int, data }: WidgetCtx) {
         {inline.map((row) => (
           <a
             key={row.id}
-            href={row.href ?? "#"}
+            href={row.href ? link(row.href) : "#"}
             className="inline-flex min-h-10 shrink-0 items-center whitespace-nowrap px-1 text-[13px] font-semibold tracking-wide fq-caps text-foreground/80 transition-colors hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-primary after:transition-all hover:after:w-full"
           >
             {row.title}
@@ -292,7 +292,7 @@ function MegaMenu({ str, int, data }: WidgetCtx) {
                   {overflow.map((row) => (
                     <li key={row.id}>
                       <a
-                        href={row.href ?? "#"}
+                        href={row.href ? link(row.href) : "#"}
                         className="block rounded-fq-md px-3 py-2 text-sm hover:bg-muted hover:text-primary"
                       >
                         {row.title}
@@ -349,7 +349,7 @@ function DepartmentStrip({ str, int, data, Heading }: WidgetCtx) {
   );
 }
 
-function FooterSitemap({ str, section }: WidgetCtx) {
+function FooterSitemap({ str, section, link }: WidgetCtx) {
   // Repeater-first (faq/trust_bar precedent): studio `items` rows win when
   // present, scalar c1..c4 pairs remain as the fallback for
   // theme-authored sections. parseLinkList reads both the legacy
@@ -383,13 +383,13 @@ function FooterSitemap({ str, section }: WidgetCtx) {
             {col.title}
           </p>
           <ul className="space-y-2.5">
-            {col.links.map((link) => (
-              <li key={`${col.title}-${link.label}`}>
+            {col.links.map((linkItem) => (
+              <li key={`${col.title}-${linkItem.label}`}>
                 <a
-                  href={link.href}
+                  href={link(linkItem.href)}
                   className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {link.label}
+                  {linkItem.label}
                 </a>
               </li>
             ))}

@@ -10,6 +10,7 @@ import {
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
 import { flattenAst } from "@/lib/builder-ast";
+import { CollectionView } from "@/components/store/CollectionView";
 
 /**
  * Custom-host collection page (`microscrop.shop/c/<slug>`).
@@ -92,123 +93,12 @@ export const Route = createFileRoute("/c/$collectionSlug")({
       links: [{ rel: "canonical", href: canonical }],
     };
   },
-  component: CollectionPage,
+  component: function RouteComponent() {
+    return <CollectionView data={Route.useLoaderData()} />;
+  },
   notFoundComponent: () => (
     <main className="mx-auto max-w-xl px-4 py-24 text-center">
       <h1 className="text-2xl font-semibold">Collection not found</h1>
     </main>
   ),
 });
-
-function CollectionPage() {
-  const { t } = useLang();
-  const {
-    merchant,
-    collection,
-    products,
-    settings,
-    ast,
-    tokens,
-    siteKit,
-    menus,
-    installedPlugins,
-  } = Route.useLoaderData();
-  const slug = merchant.slug;
-
-  const grid = (
-    <>
-      <h1 className="font-bangla-display text-2xl font-semibold sm:text-3xl">
-        {collection.name}
-      </h1>
-      {collection.description && (
-        <p className="mt-2 max-w-2xl text-muted-foreground">
-          {collection.description}
-        </p>
-      )}
-      {products.length === 0 ? (
-        <p className="mt-6 text-muted-foreground">
-          {t(
-            "No products in this collection yet.",
-            "এই কালেকশনে এখনো কোনো পণ্য নেই।",
-          )}
-        </p>
-      ) : (
-        <ul className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {products.map((p) => {
-            const variants = p.product_variants ?? [];
-            const min = variants.length
-              ? Math.min(
-                  ...variants.map((v) => Number(v.price_amount_minor_int)),
-                )
-              : 0;
-            const inStock = variants.some((v) => v.stock_quantity > 0);
-            return (
-              <li key={p.id}>
-                <Link
-                  to="/p/$productSlug"
-                  params={{ productSlug: p.slug }}
-                  className="group block overflow-hidden rounded-fq-lg border border-border bg-card transition-transform duration-200 hover:-translate-y-0.5"
-                >
-                  <div className="aspect-square bg-muted">
-                    <StoreImage
-                      image={p.image ?? null}
-                      fallbackSrc={p.image_url}
-                      alt={p.title}
-                      seed={p.id}
-                      sizes="(max-width: 768px) 50vw, 300px"
-                      className="size-full object-cover"
-                    />
-                  </div>
-                  <div className="p-3">
-                    <h2 className="line-clamp-2 text-sm font-medium">
-                      {p.title}
-                    </h2>
-                    <p className="money mt-1 text-sm font-semibold">
-                      {fmtMinor(min, merchant.currency_code)}
-                    </p>
-                    <p
-                      className={`mt-1 text-xs ${inStock ? "text-success-foreground" : "text-danger-foreground"}`}
-                    >
-                      {inStock
-                        ? t("In stock", "স্টকে আছে")
-                        : t("Out of stock", "স্টক নেই")}
-                    </p>
-                  </div>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </>
-  );
-
-  const hasProductGrid = ast
-    ? flattenAst(ast).some((s) => s.type === "product_grid")
-    : false;
-
-  return (
-    <PluginLayer plugins={installedPlugins}>
-      <ThemeChrome
-        template="collection"
-        ast={ast}
-        tokens={tokens}
-        storeSlug={slug}
-        merchantId={merchant.id}
-        siteKit={siteKit}
-        ownsPrimary
-        chrome={
-          <StoreHeader
-            slug={slug}
-            name={merchant.name}
-            tagline={settings?.tagline}
-            menus={menus}
-          />
-        }
-        productSlot={grid}
-        {...(hasProductGrid ? {} : { collectionSlot: grid })}
-        fallback={grid}
-      />
-    </PluginLayer>
-  );
-}
