@@ -25,30 +25,68 @@ import { TEMPLATE_KEYS } from "./builder-ast";
 import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
 
-export function previewTemplateForHref(href: string): TemplateKey | null {
-  const raw = href.trim();
-  if (!raw || raw.startsWith("#")) return null;
-  if (/^(https?:\/\/|mailto:|tel:)/i.test(raw)) return null;
-  // Absolute platform URLs (StoreHeader links) resolve same as root paths.
-  const path = raw.replace(/^https?:\/\/[^/]+/i, "").split("?")[0]!;
-  if (path === "/") return "index";
-  if (path === "/search") return "search";
-  if (path === "/cart") return "cart";
-  if (path === "/checkout") return "checkout";
-  if (path === "/c" || path.startsWith("/c/")) return "collection";
-  if (path === "/p" || path.startsWith("/p/")) return "product";
-  if (path === "/collections" || path.startsWith("/collections/"))
-    return "collection";
-  if (path === "/products" || path.startsWith("/products/")) return "product";
-  if (path === "/blog" || path.startsWith("/blog/")) return "blog";
-  if (
-    path === "/pages" ||
-    path.startsWith("/pages/") ||
-    path === "/page" ||
-    path.startsWith("/page/")
-  )
-    return "page";
+export type PreviewTarget = { template: TemplateKey; slug: string | null; query: string | null };
+
+const BLOCKED_HREF_RE = /(^|\/)(order|track|sign-?in|sign-?up|login|register)([\/?#]|$)/i;
+
+export function isPreviewBlockedHref(href: string): boolean {
+  const path = href.split(/[?#]/, 1)[0] ?? "";
+  return BLOCKED_HREF_RE.test(path);
+}
+
+function slugOf(rest: string, prefix: RegExp): string | null {
+  const m = rest.match(prefix);
+  return m?.[1]?.toLowerCase() ?? null;
+}
+
+export function previewTargetForHref(href: string): PreviewTarget | null {
+  if (!href || href.startsWith("#")) return null;
+  if (/^(mailto:|tel:)/i.test(href)) return null;
+  if (/^https?:\/\//i.test(href)) {
+    try {
+      const u = new URL(href);
+      if (typeof window === "undefined" || u.origin !== window.location.origin) return null;
+      href = u.pathname + u.search + u.hash;
+    } catch { return null; }
+  }
+  if (!href.startsWith("/")) return null;
+  if (isPreviewBlockedHref(href)) return null;
+  const [pathRaw, queryRaw] = href.split("?", 2);
+  const path = (pathRaw ?? "").toLowerCase();
+  const rest = path.replace(/^\/store\/[^/]+/, "") || "/";
+  const query = queryRaw?.split("#", 1)[0] ?? null;
+  let m: RegExpMatchArray | null;
+  if ((m = rest.match(/^\/p\/([^/?#]+)/))) return { template: "product", slug: m[1]!, query };
+  if ((m = rest.match(/^\/products?(?:\/([^/?#]+))?/))) return { template: "product", slug: m[1] ?? null, query };
+  if ((m = rest.match(/^\/c\/([^/?#]+)/))) return { template: "collection", slug: m[1]!, query };
+  if ((m = rest.match(/^\/collections?(?:\/([^/?#]+))?/))) return { template: "collection", slug: m[1] ?? null, query };
+  if (rest === "/search" || rest === "/search/") return { template: "search", slug: null, query };
+  if (rest === "/cart" || rest === "/cart/") return { template: "cart", slug: null, query };
+  if (rest === "/checkout" || rest === "/checkout/") return { template: "checkout", slug: null, query };
+  if (rest === "/account" || rest.startsWith("/account/")) return { template: "account", slug: null, query };
+  if ((m = rest.match(/^\/pages?\/([^/?#]+)/))) return { template: "page", slug: m[1]!, query };
+  if (rest === "/blog" || rest.startsWith("/blog/")) {
+    const sm = rest.match(/^\/blog\/([^/?#]+)/);
+    return { template: "blog", slug: sm?.[1] ?? null, query };
+  }
+  if (rest === "/" || rest === "/index" || rest === "/home") return { template: "index", slug: null, query };
   return null;
+}
+
+export function previewTemplateForHref(href: string): TemplateKey | null {
+  return previewTargetForHref(href)?.template ?? null;
+}
+
+export type PreviewClickAction =
+  | { kind: "blocked" }
+  | { kind: "switch"; target: PreviewTarget }
+  | { kind: "allow" };
+
+export function previewClickAction(href: string | null | undefined): PreviewClickAction {
+  if (!href || href.startsWith("#")) return { kind: "allow" };
+  if (isPreviewBlockedHref(href)) return { kind: "blocked" };
+  const target = previewTargetForHref(href);
+  return target ? { kind: "switch", target } : { kind: "allow" };
 }
 
 /* ------------------------------------------------- preview key resolver */
