@@ -30,8 +30,10 @@ const SLIDE = {
   subhead: "Cotton sarees.",
   subhead_bn: "সুতি শাড়ি।",
   ctaLabel: "Shop festive",
+  ctaLabel_bn: "উৎসবের কেনাকাটা",
   ctaUrl: "/c/festive",
   caption: "Festive drop",
+  caption_bn: "উৎসবের ড্রপ",
 };
 
 function heroHtml(locale: Locale): string {
@@ -59,8 +61,7 @@ describe("hero_carousel locale gating", () => {
     expect(html).not.toContain(">Festive wear, ready to ship<");
   });
 
-  it("bn falls back to English when headline_bn is missing", () => {
-    const base = newSection("hero_carousel");
+  it("bn falls back to English when headline_bn is missing", () => {    const base = newSection("hero_carousel");
     const section = {
       ...base,
       props: { ...base.props, slides: [{ headline: "Only English" }] },
@@ -73,5 +74,19 @@ describe("hero_carousel locale gating", () => {
       ),
     );
     expect(html).toContain("Only English");
+  });
+
+  it("bn renders Bangla caption and CTA", () => {
+    const html = heroHtml("bn");
+    expect(html).toContain("উৎসবের কেনাকাটা");
+    expect(html).not.toContain(">Shop festive<");
+    expect(html).toContain("উৎসবের ড্রপ");
+    expect(html).not.toContain(">Festive drop<");
+  });
+
+  it("en renders English caption and CTA", () => {
+    const html = heroHtml("en");
+    expect(html).toContain(">Shop festive<");
+    expect(html).toContain(">Festive drop<");
   });
 });
