@@ -228,6 +228,34 @@ describe("demo focus (slug-aware collection preview)", () => {
     const sections = [newSection("heading")];
     expect(applyDemoFocus(sections, null)).toBe(sections);
   });
+
+  it("feeds focused product catalog art into product_media", () => {
+    const preset = resolveThemePreview("songoskriti")!;
+    const focus = resolveDemoFocus(
+      "songoskriti",
+      "product",
+      "rajshahi-silk-festive-panjabi",
+    )!;
+    expect(focus.title).toBe("Rajshahi Silk Festive Panjabi");
+    const out = applyDemoFocus(preset.templates.product.main, focus);
+    const media = out.find((s) => s.type === "product_media")!;
+    expect(media.props["image1"]).toBe("/ph/songoskriti/prod-panjabi.png");
+  });
+
+  it("keeps static product_media for unknown product slugs", () => {
+    const preset = resolveThemePreview("songoskriti")!;
+    const before = preset.templates.product.main.find(
+      (s) => s.type === "product_media",
+    )!;
+    const focus = resolveDemoFocus(
+      "songoskriti",
+      "product",
+      "no-such-product-xyz",
+    )!;
+    const out = applyDemoFocus(preset.templates.product.main, focus);
+    const media = out.find((s) => s.type === "product_media")!;
+    expect(media.props).toMatchObject({ ...before.props });
+  });
 });
 
 describe("resolveThemePreview (somvabona)", () => {

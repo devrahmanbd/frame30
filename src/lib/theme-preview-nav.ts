@@ -388,6 +388,8 @@ export type DemoFocus = {
   title: string;
   /** Collection key backing the data rails. */
   collection: string;
+  /** Catalog art for a known product slug; absent for unknown slugs. */
+  image?: string;
 };
 
 const humanizeSlug = (slug: string): string =>
@@ -428,6 +430,7 @@ export function resolveDemoFocus(
       slug,
       title: match ? match.title : humanizeSlug(slug),
       collection: "new-in",
+      image: match?.image_url,
     };
   }
   return null;
@@ -435,9 +438,12 @@ export function resolveDemoFocus(
 
 /**
  * Render-time override for a focused template: the first heading takes the
- * focus title and the first collection-sourced rail takes the focus rows.
- * Authored AST untouched (ids stable, bundle keys align); remaining rails
- * stay as discovery. bn copy falls back to English by resolveBiText.
+ * focus title, the first collection-sourced rail takes the focus rows, and
+ * (product focus with known catalog art only) the first product_media takes
+ * the catalog image as image1. Authored AST untouched (ids stable, bundle
+ * keys align); remaining rails and media stay as discovery. Unknown product
+ * slugs carry no art, so their static media renders unchanged. bn copy
+ * falls back to English by resolveBiText.
  */
 export function applyDemoFocus(
   sections: Section[],
@@ -446,12 +452,25 @@ export function applyDemoFocus(
   if (!focus) return sections;
   let head = false;
   let rail = false;
+  let media = false;
   return sections.map((section) => {
     if (!head && section.type === "heading") {
       head = true;
       return {
         ...section,
         props: { ...section.props, text: focus.title },
+      };
+    }
+    if (
+      !media &&
+      focus.template === "product" &&
+      focus.image &&
+      section.type === "product_media"
+    ) {
+      media = true;
+      return {
+        ...section,
+        props: { ...section.props, image1: focus.image },
       };
     }
     if (
