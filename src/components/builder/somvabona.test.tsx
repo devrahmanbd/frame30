@@ -108,11 +108,10 @@ describe("somvabona pack wiring", () => {
     });
   }
 
-  // Studio-twin parity (WIDGET_BY_KEY defs + controls ⊆ defaults) lands
+  // Studio-twin parity (WIDGET_BY_KEY defs + controls ⊆ defaults) landed
   // with the Batch 3 studio catalog/controls entries and is pinned by the
-  // shared `ported theme widgets` suite in studio/catalog.test.ts. RED by
-  // design until that batch — flip to `it` when the defs land.
-  it.fails("studio defs resolve for the pack (Batch 3)", () => {
+  // shared `ported theme widgets` suite in studio/catalog.test.ts.
+  it("studio defs resolve for the pack", () => {
     for (const type of PACK) {
       expect(WIDGET_BY_KEY[type]).toBeDefined();
     }
