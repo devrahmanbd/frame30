@@ -6,7 +6,7 @@ import type {
   SectionType,
   TemplateKey,
 } from "@/lib/builder-ast";
-import { resolveProps, safeEmbedUrl } from "@/lib/builder-ast";
+import { resolveProps, resolveSkin, safeEmbedUrl } from "@/lib/builder-ast";
 import { bnKey, textOf, type Locale } from "@/lib/bitext";
 import { formatDisplayMoney, formatDisplayNumber } from "@/lib/money-display";
 import type { WidgetRow } from "@/lib/widget-data";
@@ -1308,27 +1308,67 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
 
   product_grid: ({ str, int, bool, Heading, productSlot, data, locale }) => {
     const cols = int("columns", 4, 2, 4);
+    // Widget skin (spec 2026-09-25): cards (default, current DataGrid grid
+    // byte-identical) and rows (stacked full-width list). Heading, host slot
+    // override, skeleton parity, empty state, bn/en copy and a11y stay
+    // common — only the list composition forks.
+    const skin = resolveSkin("product_grid", str("skin"));
+    const heading = str("heading") ? (
+      <Heading className="mb-3 text-lg font-semibold">
+        {str("heading")}
+      </Heading>
+    ) : null;
+    const pending = data?.pending ?? false;
+    const rowsList = data?.rows ?? [];
+    const rowsBody =
+      pending || data?.rows === undefined ? (
+        <ul className="space-y-3" aria-hidden="true">
+          {Array.from({ length: 4 }, (_, i) => (
+            <li key={i}>
+              <ProductCardSkeleton variant="wide" withPrice />
+            </li>
+          ))}
+        </ul>
+      ) : rowsList.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          Nothing to show here yet.
+        </p>
+      ) : (
+        <ul className="space-y-3">
+          {rowsList.map((row) => (
+            <li key={row.id}>
+              <ProductCard
+                row={row}
+                locale={locale}
+                variant="wide"
+                withPrice
+                promise={str("promise") || undefined}
+                showRating={bool("showRating")}
+              />
+            </li>
+          ))}
+        </ul>
+      );
     return (
       <section>
-        {str("heading") && (
-          <Heading className="mb-3 text-lg font-semibold">
-            {str("heading")}
-          </Heading>
-        )}
-        {productSlot ?? (
-          <DataGrid
-            rows={data?.rows}
-            pending={data?.pending ?? false}
-            cols={cols}
-            ratio="square"
-            locale={locale}
-            withPrice
-            variant={cardVariantOf(str("cardVariant"))}
-            density={str("density") === "compact" ? "compact" : "comfortable"}
-            promise={str("promise") || undefined}
-            showRating={bool("showRating")}
-          />
-        )}
+        {heading}
+        {productSlot ??
+          (skin === "rows" ? (
+            rowsBody
+          ) : (
+            <DataGrid
+              rows={data?.rows}
+              pending={pending}
+              cols={cols}
+              ratio="square"
+              locale={locale}
+              withPrice
+              variant={cardVariantOf(str("cardVariant"))}
+              density={str("density") === "compact" ? "compact" : "comfortable"}
+              promise={str("promise") || undefined}
+              showRating={bool("showRating")}
+            />
+          ))}
       </section>
     );
   },

@@ -576,6 +576,159 @@ const CARD_VARIANT: Field = {
   ],
 };
 
+/**
+ * Widget skins (spec 2026-09-25, Core lane). Closed per-widget vocabularies
+ * generalising the `cardVariant` precedent into a system: each skinnable
+ * widget gains a `skin` select field (style panel) whose first option is the
+ * documented default. Unknown or empty values resolve to the widget default —
+ * never a crash, never empty.
+ */
+export const WIDGET_SKINS = {
+  product_rail: ["editorial", "compact", "minimal"],
+  hero_carousel: ["split", "fullbleed", "minimal"],
+  // NB: carousel first — the first option is the documented default
+  // (ATMOSPHERE precedent) and carousel preserves current behaviour.
+  testimonials: ["carousel", "wall", "single"],
+  product_grid: ["cards", "rows"],
+} as const;
+export type SkinnableWidgetType = keyof typeof WIDGET_SKINS;
+export type WidgetSkin<T extends SkinnableWidgetType> =
+  (typeof WIDGET_SKINS)[T][number];
+
+/** Documented default per skinnable widget; matches each catalog default. */
+export const DEFAULT_WIDGET_SKIN: Record<SkinnableWidgetType, string> = {
+  product_rail: "editorial",
+  hero_carousel: "split",
+  testimonials: "carousel",
+  product_grid: "cards",
+};
+
+export function isSkinnableType(
+  type: SectionType,
+): type is SkinnableWidgetType {
+  return Object.hasOwn(WIDGET_SKINS, type);
+}
+
+/**
+ * Resolve a raw `skin` prop to its closed vocabulary. Unknown, empty or
+ * non-string values fall back to the widget default. Non-skinnable types
+ * resolve to "" (no attribute emitted).
+ */
+export function resolveSkin(type: SectionType, raw: unknown): string {
+  if (!isSkinnableType(type)) return "";
+  const fallback = DEFAULT_WIDGET_SKIN[type];
+  return typeof raw === "string" &&
+    (WIDGET_SKINS[type] as readonly string[]).includes(raw)
+    ? raw
+    : fallback;
+}
+
+/** `skin` select field for one skinnable widget (style panel, zero custom UI). */
+const SKIN_FIELD = (type: SkinnableWidgetType): Field => ({
+  key: "skin",
+  label: "Skin",
+  kind: "select",
+  panel: "style",
+  options: WIDGET_SKINS[type].map((value) => ({
+    value,
+    label: value.charAt(0).toUpperCase() + value.slice(1),
+  })),
+});
+
+export type UsedWidgetSkin = {
+  type: SkinnableWidgetType;
+  skin: string;
+  /** `"<type>:<skin>"` — the key theme skin sheets register under. */
+  key: string;
+};
+
+export function skinSheetKeyFor(
+  type: SkinnableWidgetType,
+  skin: string,
+): string {
+  return `${type}:${skin}`;
+}
+
+/**
+ * Collect the skins a page actually uses (base props; per-breakpoint `skin`
+ * overrides stay presentation-only and never pull a new sheet). Walks the
+ * whole subtree, so container children count. This is the `get_style_depends`
+ * input: a theme skin sheet is included only when its key is in this list.
+ */
+export function usedWidgetSkins(
+  sections: Section[] | ThemeAst,
+): UsedWidgetSkin[] {
+  const roots: Section[] = Array.isArray(sections)
+    ? sections
+    : [...sections.header, ...sections.main, ...sections.footer];
+  const seen = new Set<string>();
+  const out: UsedWidgetSkin[] = [];
+  const visit = (nodes: Section[]): void => {
+    for (const node of nodes) {
+      if (isSkinnableType(node.type)) {
+        const skin = resolveSkin(node.type, node.props["skin"]);
+        const key = skinSheetKeyFor(node.type, skin);
+        if (!seen.has(key)) {
+          seen.add(key);
+          out.push({ type: node.type, skin, key });
+        }
+      }
+      if (node.children?.length) visit(node.children);
+    }
+  };
+  visit(roots);
+  return out;
+}
+
+/**
+ * Skin-stylesheet loading contract (spec §3, Core lane seam).
+ *
+ * Theme skin sheets are CSS scoped to the attributes the renderer emits:
+ * `[data-widget="<type>"][data-skin="<skin>"] { … }`. Sheets live with the
+ * theme (merchant `css` theme-assets named `skin-<type>-<skin>.css`, or theme
+ * package sheets in later lanes) and may use `var(--theme-*)` plus literals
+ * for artwork only. A host inlines a sheet only when its key appears in
+ * `usedWidgetSkins(page)` — our `get_style_depends`.
+ *
+ * Today's storefront combines every enabled merchant asset per tenant
+ * (`storefrontThemeCss`, tenant cache — not per page), so per-skin filtering
+ * wires in when theme sheets land (lanes 2–4). This join is the seam they use.
+ */
+export function combineUsedSkinCss(
+  sheets: Partial<Record<string, string>>,
+  usedKeys: string[],
+): string {
+  return usedKeys
+    .map((key) => sheets[key])
+    .filter((css): css is string => typeof css === "string" && css !== "")
+    .join("\n");
+}
+
+/**
+ * Theme preset defaults (spec §4, Core lane seam). Merges a theme package's
+ * default widget props *under* authored props: the merchant's inspector
+ * values always win, and only catalog-known keys are accepted so a theme
+ * can never smuggle unknown props onto a node.
+ */
+export function withThemeWidgetDefaults(
+  type: SectionType,
+  authored: Record<string, PropValue>,
+  themeDefaults?: Partial<Record<SectionType, Record<string, PropValue>>>,
+): Record<string, PropValue> {
+  const base = themeDefaults?.[type];
+  if (!base) return { ...authored };
+  const entry = catalogEntry(type);
+  const known = new Set([
+    ...Object.keys(entry?.defaults ?? {}),
+    ...(entry?.fields ?? []).map((f) => f.key),
+  ]);
+  const out: Record<string, PropValue> = { ...authored };
+  for (const [key, value] of Object.entries(base)) {
+    if (known.has(key) && !(key in out)) out[key] = value;
+  }
+  return out;
+}
+
 const ALIGN: Field = {
   key: "align",
   label: "Alignment",
@@ -836,6 +989,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       density: "comfortable",
       showRating: false,
       promise: "",
+      skin: "cards",
     },
     fields: [
       text("heading", "Heading"),
@@ -845,6 +999,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       bool("showRating", "Show rating"),
       CARD_VARIANT,
       DENSITY,
+      SKIN_FIELD("product_grid"),
     ],
   },
   {
@@ -1683,6 +1838,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       cardVariant: "compact",
       showRating: false,
       promise: "",
+      skin: "editorial",
     },
     fields: [
       text("heading", "Heading"),
@@ -1700,6 +1856,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("promise", "Delivery promise", 60),
       bool("showRating", "Show rating"),
       CARD_VARIANT,
+      SKIN_FIELD("product_rail"),
     ],
   },
   {
@@ -4220,6 +4377,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       slides: [],
       autoAdvanceMs: 6000,
       atmosphere: "wash",
+      skin: "split",
     },
     fields: [
       {
@@ -4251,6 +4409,7 @@ const BASE_CATALOG: CatalogEntry[] = [
           { value: "none", label: "None" },
         ],
       },
+      SKIN_FIELD("hero_carousel"),
     ],
   },
   {
@@ -4325,6 +4484,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: {
       testimonials: [],
       autoAdvanceMs: 6000,
+      skin: "carousel",
     },
     fields: [
       {
@@ -4345,6 +4505,7 @@ const BASE_CATALOG: CatalogEntry[] = [
         ],
       },
       num("autoAdvanceMs", "Auto-advance (ms)"),
+      SKIN_FIELD("testimonials"),
     ],
   },
   {
