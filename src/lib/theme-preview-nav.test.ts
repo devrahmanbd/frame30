@@ -306,6 +306,13 @@ describe("previewTargetForHref slug-aware", () => {
   it("does not block hyphenated track-order", () => {
     expect(previewTargetForHref("/pages/track-order")?.template).toBe("page");
   });
+  it("trims surrounding whitespace", () => {
+    expect(previewTargetForHref("  /c/festive  ")).toEqual({
+      template: "collection",
+      slug: "festive",
+      query: null,
+    });
+  });
 });
 
 describe("preview search query round-trip", () => {
