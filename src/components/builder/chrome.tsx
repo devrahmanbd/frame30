@@ -18,6 +18,7 @@ import {
   X,
 } from "@/components/icons/tabler";
 import { useRouterState } from "@tanstack/react-router";
+import { textOf } from "@/lib/bitext";
 import { PaymentMark } from "@/components/store/PaymentMarks";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import type { SectionType } from "@/lib/builder-ast";
@@ -62,13 +63,13 @@ const TRUST_ICON = {
   quality: Star,
 } as const;
 
-function AnnouncementBar({ str, bool, int, section }: WidgetCtx) {
+function AnnouncementBar({ str, bool, int, section, locale }: WidgetCtx) {
   // Repeater-first (faq/trust_bar precedent): studio `items` text rows win
   // when present, scalar m1/m2/m3 remain as the fallback for
   // theme-authored sections. Rotation/dismiss below apply to both.
   const itemRows = Array.isArray(section.props.items)
     ? section.props.items
-        .map((row) => (typeof row.text === "string" ? row.text.trim() : ""))
+        .map((row) => textOf(row, "text", locale).trim())
         .filter(Boolean)
     : [];
   const messages =
@@ -141,7 +142,7 @@ function UtilityBar({ str, bool }: WidgetCtx) {
   );
 }
 
-function TrustBar({ str, section }: WidgetCtx) {
+function TrustBar({ str, section, locale }: WidgetCtx) {
   // Repeater-first (faq precedent in widgets.tsx): studio `items` rows win
   // when present, scalar i1/i2/i3/i4 triples remain as the fallback for
   // theme-authored sections.
@@ -149,8 +150,8 @@ function TrustBar({ str, section }: WidgetCtx) {
     ? section.props.items
         .map((row) => ({
           icon: typeof row.icon === "string" ? row.icon : "",
-          title: typeof row.title === "string" ? row.title : "",
-          body: typeof row.body === "string" ? row.body : "",
+          title: textOf(row, "title", locale),
+          body: textOf(row, "body", locale),
         }))
         .filter((row) => row.title)
     : [];
