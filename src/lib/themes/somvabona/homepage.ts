@@ -37,7 +37,7 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
     s("hero_carousel", {
       slides: [
         {
-          image: "",
+          image: "/ph/somvabona/hero-festive.jpg",
           headline: "Festive wear, ready to ship",
           headline_bn: "উৎসবের পোশাক, এখনই ডেলিভারি",
           subhead: "Cotton sarees and panjabis at honest prices.",
