@@ -404,7 +404,8 @@ const loadQnaSource: SourceLoader = async (_merchantId, requests) =>
  * `subtitle` carries the facet group (`category` / `kind` / `stock`), which
  * keeps the row shape theme-neutral: no widget reads a source-specific column.
  */
-const loadFacetsSource: SourceLoader = async (merchantId, requests) => {
+const loadFacetsSource: SourceLoader = async (merchantId, requests, ctx) => {
+  const base = ctx?.base ?? "";
   const db = publicClient();
   const [{ data: products }, { data: categories }] = await Promise.all([
     db

@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   buildHandoffPayload,
   enforceGroundedReply,
@@ -105,22 +105,31 @@ describe("handoff completeness (Chatwoot parity)", () => {
   });
 
   it("replay: same transcript yields same handoff payload", () => {
-    const a = buildHandoffPayload({
-      conversationId: "conv-1",
-      transcript,
-      confidence: "unsure",
-      provenance: null,
-      attemptedSources: ["kb"],
-      reason: "zero_kb_hits",
-    });
-    const b = buildHandoffPayload({
-      conversationId: "conv-1",
-      transcript,
-      confidence: "unsure",
-      provenance: null,
-      attemptedSources: ["kb"],
-      reason: "zero_kb_hits",
-    });
-    expect(a).toEqual(b);
+    // createdAt is wall-clock by design (a handoff records when it was
+    // built); freeze time so the determinism assertion isn't millisecond-
+    // flaky across the two builds.
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-09-25T15:03:20.000Z"));
+    try {
+      const a = buildHandoffPayload({
+        conversationId: "conv-1",
+        transcript,
+        confidence: "unsure",
+        provenance: null,
+        attemptedSources: ["kb"],
+        reason: "zero_kb_hits",
+      });
+      const b = buildHandoffPayload({
+        conversationId: "conv-1",
+        transcript,
+        confidence: "unsure",
+        provenance: null,
+        attemptedSources: ["kb"],
+        reason: "zero_kb_hits",
+      });
+      expect(a).toEqual(b);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

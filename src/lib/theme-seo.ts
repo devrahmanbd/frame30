@@ -109,7 +109,7 @@ const GENERIC_SEO_TEMPLATES: PresetSeoTemplate[] = [
   },
 ];
 
-export function presetSeoTemplates(): PresetSeoTemplate[] {
+export function presetSeoTemplates(_themeKey?: string): PresetSeoTemplate[] {
   return GENERIC_SEO_TEMPLATES.map((row) => ({ ...row }));
 }
 

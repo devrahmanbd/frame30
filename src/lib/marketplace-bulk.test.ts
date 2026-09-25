@@ -196,7 +196,7 @@ describe("bulkInstallStatus", () => {
     );
     expect(
       db.rows("plugin_state").find((r: any) => r.plugin_id === "whatsapp-chat")
-        .auto_updates,
+        ?.auto_updates,
     ).toBe(true);
   });
 

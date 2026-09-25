@@ -28,6 +28,18 @@ export function isCompatible(compatible: unknown) {
   return list.includes(APP_MAJOR) || list.includes(APP_VERSION);
 }
 
+/** Retired theme listing shape (Sept 2026 purge): kept so historical
+ * callers and tests keep their field access while the list stays empty. */
+export type RetiredThemeListing = {
+  slug: string;
+  builtin: boolean;
+  kind: string;
+  status: string;
+  price_minor_int: number;
+  compatible: boolean;
+  mine: boolean;
+};
+
 export async function listCatalog(db: Client, merchantId: string) {
   const [widgets, installs] = await Promise.all([
     db
@@ -60,7 +72,7 @@ export async function listCatalog(db: Client, merchantId: string) {
   return {
     // Theme offer retired (Sept 2026 purge): the marketplace is plugins only.
     // The key stays as an empty list so historical callers keep their shape.
-    themes: [] as never[],
+    themes: [] as RetiredThemeListing[],
     widgets: [
       ...builtinWidgets(),
       ...decorate(widgets.data, "widget").filter(

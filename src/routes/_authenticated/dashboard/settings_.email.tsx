@@ -204,17 +204,16 @@ function EmailSettingsPage() {
           carries provider/state, so no overview cards. */}
       <SectionCard
         title={t("SMTP Server Configuration", "এসএমটিপি সার্ভার কনফিগারেশন")}
-        subtitle={t(
+        hint={t(
           "Enter your outbound host and credential details",
           "আপনার আউটবাউন্ড হোস্ট ও অ্যাকাউন্টের বিবরণ দিন",
         )}
       >
         <form onSubmit={handleSave} className="space-y-4 pt-2">
           {saveStatus && (
-            <InlineAlert
-              tone={saveStatus.ok ? "success" : "danger"}
-              message={saveStatus.message}
-            />
+            <InlineAlert tone={saveStatus.ok ? "success" : "danger"}>
+              {saveStatus.message}
+            </InlineAlert>
           )}
 
           <div className="flex items-center justify-between p-3 rounded-fq-md border border-border bg-muted/30">
@@ -405,17 +404,16 @@ function EmailSettingsPage() {
       {/* Test Connection Card */}
       <SectionCard
         title={t("Test Connection", "সংযোগ পরীক্ষা")}
-        subtitle={t(
+        hint={t(
           "Verify credentials and send a test message",
           "সার্ভার যাচাই করে টেস্ট ইমেইল পাঠান",
         )}
       >
         <form onSubmit={handleTest} className="space-y-4 pt-2">
           {testStatus && (
-            <InlineAlert
-              tone={testStatus.ok ? "success" : "danger"}
-              message={testStatus.message}
-            />
+            <InlineAlert tone={testStatus.ok ? "success" : "danger"}>
+              {testStatus.message}
+            </InlineAlert>
           )}
 
           <Field

@@ -26,6 +26,7 @@ export function communityPlugin(provider: string): {
   provider: string;
   unofficial: boolean;
   notice: string;
+  requiresBaseUrl?: boolean;
 } {
   return {
     provider,

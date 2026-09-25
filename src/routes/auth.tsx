@@ -137,7 +137,7 @@ function AuthPage() {
 
 function AuthPageInner() {
   const { t } = useLang();
-  const navigate = useNavigate();
+  const navigate = useNavigate({ from: Route.id });
   const search = Route.useSearch();
   const queryClient = useQueryClient();
 

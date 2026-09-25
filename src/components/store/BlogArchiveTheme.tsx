@@ -25,6 +25,8 @@ export function BlogArchiveTheme({
     <BlogFeedProvider value={feed}>
       <ThemeChrome
         template="blog"
+        ast={null}
+        tokens={null}
         chrome={<div className="mx-auto max-w-6xl px-4 pt-12">{header}</div>}
         ownsPrimary
         containerClassName="mx-auto max-w-6xl px-4 py-8"

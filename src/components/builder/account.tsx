@@ -24,20 +24,22 @@ function t(locale: string, en: string, bn: string) {
 /** Signed-out state: prompt + link to the platform sign-in page. */
 function SignInPrompt({ ctx, body }: { ctx: WidgetCtx; body: string }) {
   const { str, Heading, locale } = ctx;
-  <section className="py-12 text-center">
-    <Heading className="text-[11px] font-bold fq-caps tracking-widest text-foreground">
-      {str("heading") || body}
-    </Heading>
-    <p className="mt-3 text-[13.5px] text-muted-foreground leading-relaxed">
-      {t(locale, "Sign in to continue.", "এগিয়ে যেতে সাইন ইন করুন।")}
-    </p>
-    <a
-      href="/account"
-      className="mt-6 inline-flex min-h-12 items-center justify-center border border-border px-8 text-[11px] font-bold fq-caps tracking-widest text-foreground hover:bg-muted/50 transition-colors"
-    >
-      {t(locale, "Sign In", "সাইন ইন")}
-    </a>
-  </section>;
+  return (
+    <section className="py-12 text-center">
+      <Heading className="text-[11px] font-bold fq-caps tracking-widest text-foreground">
+        {str("heading") || body}
+      </Heading>
+      <p className="mt-3 text-[13.5px] text-muted-foreground leading-relaxed">
+        {t(locale, "Sign in to continue.", "এগিয়ে যেতে সাইন ইন করুন।")}
+      </p>
+      <a
+        href="/account"
+        className="mt-6 inline-flex min-h-12 items-center justify-center border border-border px-8 text-[11px] font-bold fq-caps tracking-widest text-foreground hover:bg-muted/50 transition-colors"
+      >
+        {t(locale, "Sign In", "সাইন ইন")}
+      </a>
+    </section>
+  );
 }
 
 function ListSkeleton() {
@@ -79,15 +81,17 @@ export const OrdersList: WidgetComponent = (ctx) => {
   }
   const heading = str("heading") || t(locale, "Your orders", "আপনার অর্ডার");
   if (rows.length === 0) {
-    <section className="py-8 text-center border-t border-border/60 mt-4">
-      <Heading className="text-[11px] font-bold fq-caps tracking-widest text-foreground mb-4">
-        {heading}
-      </Heading>
-      <p className="mt-2 text-[13.5px] text-muted-foreground">
-        {str("emptyText") ||
-          t(locale, "No orders yet.", "এখনও কোনো অর্ডার নেই।")}
-      </p>
-    </section>;
+    return (
+      <section className="py-8 text-center border-t border-border/60 mt-4">
+        <Heading className="text-[11px] font-bold fq-caps tracking-widest text-foreground mb-4">
+          {heading}
+        </Heading>
+        <p className="mt-2 text-[13.5px] text-muted-foreground">
+          {str("emptyText") ||
+            t(locale, "No orders yet.", "এখনও কোনো অর্ডার নেই।")}
+        </p>
+      </section>
+    );
   }
   return (
     <section>

@@ -205,9 +205,12 @@ describe("Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Rec
 
     const k8sContent = readFileSync(k8sPath, "utf8");
     expect(k8sContent).toContain("name: time-machine-archiver");
-    expect(k8sContent).toContain(
-      'command: ["/bin/bash", "/scripts/time-machine-daemon.sh", "run-daemon"]',
-    );
+    // Format-tolerant: the manifest expresses the argv as a multi-line YAML
+    // list, which is semantically identical to the single-line flow form.
+    expect(k8sContent).toContain("command:");
+    expect(k8sContent).toContain('"/bin/bash"');
+    expect(k8sContent).toContain('"/scripts/time-machine-daemon.sh"');
+    expect(k8sContent).toContain('"run-daemon"');
     expect(k8sContent).toContain("name: WAL_SYNC_INTERVAL_SEC");
   });
 });

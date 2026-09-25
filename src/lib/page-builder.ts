@@ -17,20 +17,34 @@ export type WidgetType =
 
 export type Device = "desktop" | "tablet" | "mobile";
 
+export type WidgetSettings = Record<string, any>;
+
 export interface Widget {
-  kind: WidgetType;
+  id: string;
+  type: string;
+  kind?: WidgetType;
+  settings: WidgetSettings;
   [k: string]: unknown;
 }
 
 export interface Column {
   id: string;
-  width: number;
+  span: number;
+  width?: number;
+  padding?: number;
+  background?: string;
   widgets: Widget[];
 }
 
 export interface Section {
   id: string;
   columns: Column[];
+  background?: string;
+  paddingY?: number;
+  paddingX?: number;
+  gap?: number;
+  width?: string;
+  align?: string;
 }
 
 export interface BuilderDoc {
@@ -38,18 +52,19 @@ export interface BuilderDoc {
 }
 
 export interface ProductCard {
-  productId: string;
+  productId?: string;
+  id?: string;
   title?: string;
-  price?: number;
+  slug?: string;
   image?: string;
+  imageUrl?: string | null;
+  price?: number;
+  priceMinor?: number | null;
+  currency?: string;
+  href?: string;
 }
 
-export interface ProductData {
-  id: string;
-  title: string;
-  price: number;
-  image?: string;
-}
+export type ProductData = Record<string, ProductCard[]>;
 
 // ── helpers ──────────────────────────────────────────────────────────
 
@@ -57,33 +72,58 @@ export function uid(): string {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 }
 
-export function newColumn(width = 1): Column {
-  return { id: uid(), width, widgets: [] };
+export function newColumn(span = 12): Column {
+  return { id: uid(), span, width: span, widgets: [] };
 }
 
-export function newSection(): Section {
-  return { id: uid(), columns: [newColumn()] };
+export function newSection(spans?: number[]): Section {
+  const list = spans && spans.length > 0 ? spans : [12];
+  return { id: uid(), columns: list.map((span) => newColumn(span)) };
+}
+
+function widgetDefaults(kind: WidgetType): WidgetSettings {
+  switch (kind) {
+    case "heading":
+      return { text: "Heading" };
+    case "image":
+      return { src: "", alt: "" };
+    case "button":
+      return { label: "Button", href: "#" };
+    case "divider":
+      return {};
+    case "spacer":
+      return { height: 24 };
+    case "html":
+      return { code: "" };
+    case "product_card":
+      return { productId: "" };
+    default:
+      return {};
+  }
 }
 
 export function newWidget(kind: WidgetType = "text"): Widget {
-  switch (kind) {
-    case "heading":
-      return { kind: "heading", text: "Heading" };
-    case "image":
-      return { kind: "image", src: "", alt: "" };
-    case "button":
-      return { kind: "button", label: "Button", href: "#" };
-    case "divider":
-      return { kind: "divider" };
-    case "spacer":
-      return { kind: "spacer", height: 24 };
-    case "html":
-      return { kind: "html", code: "" };
-    case "product_card":
-      return { kind: "product_card", productId: "" };
-    default:
-      return { kind: "text", html: "" };
-  }
+  return {
+    id: uid(),
+    type: kind,
+    kind,
+    settings: widgetDefaults(kind),
+    ...(kind === "heading"
+      ? { text: "Heading" }
+      : kind === "image"
+        ? { src: "", alt: "" }
+        : kind === "button"
+          ? { label: "Button", href: "#" }
+          : kind === "divider"
+            ? {}
+            : kind === "spacer"
+              ? { height: 24 }
+              : kind === "html"
+                ? { code: "" }
+                : kind === "product_card"
+                  ? { productId: "" }
+                  : { html: "" }),
+  };
 }
 
 // ── constants ────────────────────────────────────────────────────────
@@ -120,14 +160,26 @@ export const starterDoc: any = (title?: string) => ({
   ],
 });
 Object.assign(starterDoc, { sections: [] });
-export const emptyDoc: BuilderDoc = { sections: [] };
 
-export const COLUMN_PRESETS: { label: string; widths: number[] }[] = [
-  { label: "Full", widths: [1] },
-  { label: "Half", widths: [1, 1] },
-  { label: "Thirds", widths: [1, 1, 1] },
-  { label: "Sidebar", widths: [1, 2] },
-  { label: "Sidebar R", widths: [2, 1] },
+function _emptyDoc(): BuilderDoc {
+  return { sections: [] };
+}
+export const emptyDoc: BuilderDoc & (() => BuilderDoc) = Object.assign(
+  _emptyDoc,
+  { sections: [] as BuilderDoc["sections"] },
+);
+
+export const COLUMN_PRESETS: {
+  key: string;
+  label: string;
+  spans: number[];
+  widths: number[];
+}[] = [
+  { key: "full", label: "Full", spans: [12], widths: [1] },
+  { key: "half", label: "Half", spans: [6, 6], widths: [1, 1] },
+  { key: "thirds", label: "Thirds", spans: [4, 4, 4], widths: [1, 1, 1] },
+  { key: "sidebar", label: "Sidebar", spans: [4, 8], widths: [1, 2] },
+  { key: "sidebar-r", label: "Sidebar R", spans: [8, 4], widths: [2, 1] },
 ];
 
 export const DEVICE_WIDTH: Record<Device, number> = {
@@ -136,22 +188,39 @@ export const DEVICE_WIDTH: Record<Device, number> = {
   mobile: 375,
 };
 
-export const WIDGET_LABEL: Record<string, string> = {
-  heading: "Heading",
-  text: "Text",
-  image: "Image",
-  button: "Button",
-  list: "List",
-  quote: "Quote",
-  divider: "Divider",
-  spacer: "Spacer",
-  html: "HTML",
-  product_card: "Product Card",
+export const WIDGET_LABEL: Record<string, { en: string; bn: string }> = {
+  heading: { en: "Heading", bn: "শিরোনাম" },
+  text: { en: "Text", bn: "টেক্সট" },
+  image: { en: "Image", bn: "ছবি" },
+  button: { en: "Button", bn: "বাটন" },
+  list: { en: "List", bn: "তালিকা" },
+  quote: { en: "Quote", bn: "উদ্ধৃতি" },
+  divider: { en: "Divider", bn: "বিভাজক" },
+  spacer: { en: "Spacer", bn: "ফাঁক" },
+  html: { en: "HTML", bn: "এইচটিএমএল" },
+  video: { en: "Video", bn: "ভিডিও" },
+  products: { en: "Products", bn: "প্রোডাক্ট" },
+  product_card: { en: "Product Card", bn: "প্রোডাক্ট কার্ড" },
 };
 
 // ── product widgets ──────────────────────────────────────────────────
 
-export const productWidgets: Record<string, ProductCard> = {};
+function _productWidgets(doc: BuilderDoc): Widget[] {
+  const out: Widget[] = [];
+  for (const section of doc.sections ?? []) {
+    for (const column of section.columns ?? []) {
+      for (const widget of column.widgets ?? []) {
+        const t = widget.type ?? widget.kind;
+        if (t === "products" || t === "product_card") out.push(widget);
+      }
+    }
+  }
+  return out;
+}
+
+export function productWidgets(doc: BuilderDoc): Widget[] {
+  return _productWidgets(doc);
+}
 
 // ── type guards & parsers ───────────────────────────────────────────
 
@@ -213,7 +282,10 @@ function renderWidget(w: Widget): string {
   }
 }
 
-export function renderBuilderHtml(doc: BuilderDoc): string {
+export function renderBuilderHtml(
+  doc: BuilderDoc,
+  _products?: Record<string, ProductCard[]>,
+): string {
   if (!doc?.sections?.length) return "";
   return doc.sections
     .map(
@@ -221,7 +293,7 @@ export function renderBuilderHtml(doc: BuilderDoc): string {
         `<section data-id="${sec.id}" class="pb-section">${sec.columns
           .map(
             (col) =>
-              `<div class="pb-col" style="flex:${col.width}">${col.widgets.map(renderWidget).join("")}</div>`,
+              `<div class="pb-col" style="flex:${col.width ?? col.span}">${col.widgets.map(renderWidget).join("")}</div>`,
           )
           .join("")}</section>`,
     )

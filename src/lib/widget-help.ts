@@ -638,6 +638,10 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
     en: "Display-only stars from real review aggregates. Renders nothing with no data.",
     bn: "আসল রিভিউ গড়ের শুধু-দেখার তারা। তথ্য না থাকলে কিছু দেখায় না।",
   },
+  whatsapp_button: {
+    en: "A WhatsApp chat button that opens a conversation with a prefilled greeting.",
+    bn: "হোয়াটসঅ্যাপ চ্যাট বাটন — আগে থেকে লেখা অভিবাদনসহ কথোপকথন খোলে।",
+  },
 };
 
 /** Exact prop-key hints. Keys are catalog `Field.key`s. */
@@ -1046,6 +1050,34 @@ export const PROP_HINTS: Record<string, BiText> = {
   testimonials: {
     en: "Repeatable testimonial entries, each with a quote and author.",
     bn: "পুনরাবৃত্তযোগ্য প্রশংসাপত্র — প্রতিটিতে উদ্ধৃতি ও লেখক।",
+  },
+  skin: {
+    en: "Visual skin for this widget's cards, from a closed vocabulary. First option is the default.",
+    bn: "উইজেটের কার্ডের ভিজ্যুয়াল স্কিন — নির্দিষ্ট তালিকা থেকে, প্রথমটিই ডিফল্ট।",
+  },
+  buckets: {
+    en: "Repeatable budget tiles, each with a label, an upper price bound and a link.",
+    bn: "পুনরাবৃত্তযোগ্য বাজেট টাইল — প্রতিটিতে লেবেল, সর্বোচ্চ দাম ও লিংক।",
+  },
+  occasions: {
+    en: "Repeatable occasion links shown in the matrix, each with a label and a link.",
+    bn: "ম্যাট্রিক্সে দেখানো উপলক্ষের লিংক — প্রতিটিতে লেবেল ও লিংক।",
+  },
+  collections: {
+    en: "Repeatable collection tiles shown in the matrix, each with a title, link and image.",
+    bn: "ম্যাট্রিক্সে দেখানো কালেকশন টাইল — প্রতিটিতে শিরোনাম, লিংক ও ইমেজ।",
+  },
+  showDiscount: {
+    en: "Shows the computed sale badge, calculated from real prices — never a typed discount.",
+    bn: "আসল দাম থেকে হিসাব করা ছাড়ের ব্যাজ দেখায় — নিজে লেখা ছাড় নয়।",
+  },
+  showStockHint: {
+    en: "Shows a stock hint only when real stock data flags low stock; otherwise nothing.",
+    bn: "আসল স্টক ডেটা কম থাকলেই স্টকের হিন্ট দেখায় — নইলে কিছু নয়।",
+  },
+  reviewCount: {
+    en: "How many reviews the aggregate is based on. 0 renders nothing — never a fake average.",
+    bn: "গড় কতটি রিভিউয়ের উপর ভিত্তি করে। 0 হলে কিছু দেখায় না — ভুয়া গড় নয়।",
   },
 };
 

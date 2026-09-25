@@ -22,7 +22,7 @@ import { getSiteContext } from "@/lib/site-seo.functions";
 export const Route = createFileRoute("/docs/")({
   loader: async () => {
     const site = await getSiteContext().catch(() => null);
-    return { origin: site.origin };
+    return { origin: site?.origin ?? null };
   },
   head: ({ loaderData }) => {
     const origin = loaderData?.origin ?? null;

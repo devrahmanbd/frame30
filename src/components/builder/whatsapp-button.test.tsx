@@ -5,7 +5,7 @@
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { newSection, type Section } from "@/lib/builder-ast";
+import { newSection, type PropValue, type Section } from "@/lib/builder-ast";
 import { WIDGET_COMPONENTS, widgetReader, type WidgetCtx } from "./widgets";
 
 function ctxFor(section: Section): WidgetCtx {
@@ -18,11 +18,12 @@ function ctxFor(section: Section): WidgetCtx {
     locale: "en",
     storeSlug: "test",
     data: undefined,
+    link: (href: string) => href,
     renderChildren: () => null,
   };
 }
 
-function render(props: Record<string, unknown>): string {
+function render(props: Record<string, PropValue>): string {
   const section = { ...newSection("whatsapp_button"), props };
   const Cmp = WIDGET_COMPONENTS.whatsapp_button;
   return renderToStaticMarkup(createElement(Cmp, ctxFor(section)));

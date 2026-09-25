@@ -19,7 +19,8 @@ function ctxFor(section: Section, locale: "en" | "bn"): WidgetCtx {
     editing: false,
     locale,
     storeSlug: "test-store",
-    data: { rows: [], pending: false } as unknown as WidgetRow[] | undefined,
+    data: { rows: [], pending: false },
+    link: (href: string) => href,
     renderChildren: () => null,
   };
 }

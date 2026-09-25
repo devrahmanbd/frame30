@@ -18,9 +18,14 @@ describe("P0 / P1 CMS Security & Pre-emptive Hardening Contract", () => {
 
   it("enforces requirePermission on all authenticated themes.functions.ts RPCs", () => {
     const src = read("src/lib/themes.functions.ts");
-    // All functions except public builderRegistryVersionFn must enforce requirePermission
+    // Every function except the single public builderRegistryVersionFn must
+    // enforce requirePermission (structural, not a hardcoded count: new
+    // guarded RPCs such as the Phase 15 granular importers must not break it).
+    const declarations = src.match(/createServerFn\(/g) ?? [];
     const guards = src.match(/requirePermission\(/g) ?? [];
-    expect(guards.length).toBe(14);
+    expect(declarations.length).toBeGreaterThan(0);
+    expect(guards.length).toBe(declarations.length - 1);
+    expect(src).toContain("builderRegistryVersionFn");
     expect(src).not.toContain("requireSupabaseAuth");
   });
 
@@ -83,8 +88,10 @@ describe("P0 / P1 CMS Security & Pre-emptive Hardening Contract", () => {
 
   it("includes issuing_cert in sweepDomains background polling in domains.server.ts", () => {
     const src = read("src/lib/domains.server.ts");
-    expect(src).toContain(
-      '.in("status", ["pending_dns", "verifying", "dns_verified", "issuing_cert"])',
+    // Whitespace-tolerant: the status list is formatted across lines. All
+    // four pre-active states must be polled so issuing_cert rows cannot stall.
+    expect(src).toMatch(
+      /\.in\(\s*"status"\s*,\s*\[[^\]]*"pending_dns"[^\]]*"verifying"[^\]]*"dns_verified"[^\]]*"issuing_cert"[^\]]*\]\)/s,
     );
   });
 });

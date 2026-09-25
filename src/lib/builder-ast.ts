@@ -277,7 +277,19 @@ export type SectionType =
   | "rating_stars"
   // Storefront contact channel as a placeable block (mirrors the
   // whatsapp-chat plugin bubble; renderers live in the studio twins).
-  | "whatsapp_button";
+  | "whatsapp_button"
+  // Heritage / apparel packs (renderers in heritage.tsx / apparel.tsx,
+  // studio twins in studio/renderers.tsx, controls in studio/controls.ts).
+  | "department_grid"
+  | "heritage_story"
+  | "textile_showcase"
+  | "editorial_banner"
+  | "testimonial_carousel"
+  | "marquee_strip"
+  | "story_trunk"
+  | "rewards_club"
+  | "wedding_shop"
+  | "gift_finder";
 
 export type PropScalar = string | number | boolean;
 /** A repeatable row (Phase 3.2 `array` fields). Always JSON-safe. */
@@ -4421,6 +4433,313 @@ const BASE_CATALOG: CatalogEntry[] = [
     ],
   },
   {
+    // Renderer: heritage.tsx HeritageStory. Dual-read: `headline` is the
+    // studio key, `heading` the blueprint alias; same for `ctaHref`. Both
+    // spellings are declared so parseAst preserves either.
+    type: "heritage_story",
+    label: "Heritage story",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      image: "",
+      headline: "",
+      heading: "",
+      body: "",
+      ctaLabel: "",
+      ctaHref: "",
+      layout: "image-left",
+    },
+    fields: [
+      url("image", "Image"),
+      text("headline", "Headline", 120),
+      text("heading", "Heading (alias)", 120),
+      area("body", "Body", 1200),
+      text("ctaLabel", "CTA label", 40),
+      url("ctaHref", "CTA link"),
+      {
+        key: "layout",
+        label: "Layout",
+        kind: "select",
+        panel: "layout",
+        options: [
+          { value: "image-left", label: "Image left" },
+          { value: "image-right", label: "Image right" },
+          { value: "full-width", label: "Full width" },
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: heritage.tsx TextileShowcase. Repeater-first: studio `items`
+    // rows win, `products` rows stay readable by the renderer for
+    // theme-authored sections.
+    type: "textile_showcase",
+    label: "Textile showcase",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: { headline: "", items: [] },
+    fields: [
+      text("headline", "Headline", 120),
+      {
+        key: "items",
+        label: "Items",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 8,
+        fields: [
+          url("image", "Image"),
+          text("title", "Title", 120),
+          text("subtitle", "Subtitle", 120),
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: heritage.tsx EditorialBanner. Dual-read like heritage_story
+    // (`headline`/`heading`, `subhead`/`body`); SURFACE is the banner-only
+    // style toggle (ATMOSPHERE rationale) defaulting to `card`.
+    type: "editorial_banner",
+    label: "Editorial banner",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      image: "",
+      headline: "",
+      heading: "",
+      subhead: "",
+      body: "",
+      ctaLabel: "",
+      ctaHref: "",
+      surface: "card",
+    },
+    fields: [
+      url("image", "Image"),
+      text("headline", "Headline", 120),
+      text("heading", "Heading (alias)", 120),
+      text("subhead", "Subhead", 300),
+      area("body", "Body (alias)", 600),
+      text("ctaLabel", "CTA label", 40),
+      url("ctaHref", "CTA link"),
+      SURFACE,
+    ],
+  },
+  {
+    // Renderer: heritage.tsx MarqueeStrip. Repeater-first like trust_bar:
+    // studio `items` rows win, the scalar `label` (split on ·/,/newline)
+    // stays as the fallback for theme-authored sections.
+    type: "marquee_strip",
+    label: "Marquee strip",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: { label: "", items: [], speed: "normal" },
+    fields: [
+      text("label", "Label (fallback)", 200),
+      {
+        key: "items",
+        label: "Items",
+        kind: "array",
+        panel: "content",
+        itemLabel: "text",
+        maxRows: 8,
+        fields: [
+          text("text", "Text", 80),
+          text("icon", "Icon key", 20),
+        ],
+      },
+      {
+        key: "speed",
+        label: "Speed",
+        kind: "select",
+        panel: "style",
+        options: [
+          { value: "slow", label: "Slow" },
+          { value: "normal", label: "Normal" },
+          { value: "fast", label: "Fast" },
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: heritage.tsx DepartmentGrid.
+    type: "department_grid",
+    label: "Department grid",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: { columns: 4, departments: [] },
+    fields: [
+      {
+        key: "departments",
+        label: "Departments",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 8,
+        fields: [
+          text("image", "Image URL", 200),
+          text("title", "Title", 80),
+          text("href", "Link URL", 200),
+        ],
+      },
+      num("columns", "Columns"),
+    ],
+  },
+  {
+    // Renderer: heritage.tsx TestimonialCarousel.
+    type: "testimonial_carousel",
+    label: "Testimonial carousel",
+    group: "content",
+    slots: ["main"],
+    heading: false,
+    defaults: { autoAdvanceMs: 6000, testimonials: [] },
+    fields: [
+      {
+        key: "testimonials",
+        label: "Testimonials",
+        kind: "array",
+        panel: "content",
+        itemLabel: "author",
+        maxRows: 6,
+        fields: [
+          area("quote", "Quote", 280),
+          text("author", "Name", 80),
+          text("role", "Role", 80),
+          text("avatar", "Avatar URL", 200),
+        ],
+      },
+      num("autoAdvanceMs", "Auto-advance (ms)"),
+    ],
+  },
+  {
+    // Renderer: heritage.tsx StoryTrunk.
+    type: "story_trunk",
+    label: "Story trunk",
+    group: "content",
+    slots: ["main"],
+    heading: true,
+    defaults: { headline: "", items: [] },
+    fields: [
+      text("headline", "Headline", 120),
+      {
+        key: "items",
+        label: "Items",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 8,
+        fields: [
+          text("image", "Image URL", 200),
+          text("title", "Title", 80),
+          area("body", "Body", 400),
+          text("year", "Year", 20),
+        ],
+      },
+    ],
+  },
+  {
+    // Renderer: apparel.tsx RewardsClub. Defaults mirror the studio twin 1:1.
+    type: "rewards_club",
+    label: "Rewards club",
+    group: "commerce",
+    slots: ["main", "footer"],
+    heading: false,
+    defaults: {
+      heading: "My Rewards",
+      body: "Earn points on every purchase and unlock member prices.",
+      tier1Name: "Silver",
+      tier1Points: "0+ points",
+      tier2Name: "Gold",
+      tier2Points: "5,000+ points",
+      tier3Name: "Platinum",
+      tier3Points: "15,000+ points",
+      buttonLabel: "Join free",
+      buttonHref: "/pages/rewards",
+    },
+    fields: [
+      text("heading", "Heading", 60),
+      area("body", "Body", 300),
+      text("tier1Name", "Tier 1 name", 40),
+      text("tier1Points", "Tier 1 threshold", 40),
+      text("tier2Name", "Tier 2 name", 40),
+      text("tier2Points", "Tier 2 threshold", 40),
+      text("tier3Name", "Tier 3 name", 40),
+      text("tier3Points", "Tier 3 threshold", 40),
+      text("buttonLabel", "Button label", 40),
+      url("buttonHref", "Button link"),
+    ],
+  },
+  {
+    // Renderer: apparel.tsx WeddingShop. Defaults mirror the studio twin 1:1.
+    type: "wedding_shop",
+    label: "Wedding shop",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "The Wedding Shop",
+      body: "Bridal sarees, groom panjabis and festive gifting — curated for the big day.",
+      c1Name: "Bridal Sarees",
+      c1Href: "/c/bridal",
+      c2Name: "Groom Panjabis",
+      c2Href: "/c/groom",
+      c3Name: "Festive Gifting",
+      c3Href: "/c/gifting",
+      buttonLabel: "Shop all wedding",
+      buttonHref: "/c/wedding",
+    },
+    fields: [
+      text("heading", "Heading", 60),
+      area("body", "Body", 300),
+      text("c1Name", "Collection 1 name", 40),
+      url("c1Href", "Collection 1 link"),
+      text("c2Name", "Collection 2 name", 40),
+      url("c2Href", "Collection 2 link"),
+      text("c3Name", "Collection 3 name", 40),
+      url("c3Href", "Collection 3 link"),
+      text("buttonLabel", "Button label", 40),
+      url("buttonHref", "Button link"),
+    ],
+  },
+  {
+    // Renderer: apparel.tsx GiftFinder. Occasion queries are free text
+    // (`text`, never `url` — "home decor" must survive the sanitiser).
+    // Defaults mirror the studio twin 1:1.
+    type: "gift_finder",
+    label: "Gift finder",
+    group: "commerce",
+    slots: ["main"],
+    heading: false,
+    defaults: {
+      heading: "Find the perfect gift",
+      body: "Pick an occasion — we take you straight to matching gifts.",
+      o1Label: "For Her",
+      o1Query: "saree",
+      o2Label: "For Him",
+      o2Query: "panjabi",
+      o3Label: "For Home",
+      o3Query: "home decor",
+      buttonLabel: "Browse all gifts",
+      buttonHref: "/search",
+    },
+    fields: [
+      text("heading", "Heading", 60),
+      area("body", "Body", 300),
+      text("o1Label", "Occasion 1 label", 40),
+      text("o1Query", "Occasion 1 search", 60),
+      text("o2Label", "Occasion 2 label", 40),
+      text("o2Query", "Occasion 2 search", 60),
+      text("o3Label", "Occasion 3 label", 40),
+      text("o3Query", "Occasion 3 search", 60),
+      text("buttonLabel", "Button label", 40),
+      url("buttonHref", "Button link"),
+    ],
+  },
+  {
     // Renderer: songoskriti.tsx FinderRow. Occasion chips link straight to
     // collections (spec §2 item 5: Eid/festive, wedding, gifting).
     type: "finder_row",
@@ -5356,6 +5675,40 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
     "o1Label",
     "o2Label",
     "o3Label",
+    "buttonLabel",
+  ],
+  // Heritage / apparel restoration pack. Row-level twins (items,
+  // departments, testimonials) are read directly by their renderers, so
+  // only scalar theme-authored copy is listed here.
+  heritage_story: ["headline", "heading", "body", "ctaLabel"],
+  textile_showcase: ["headline"],
+  editorial_banner: ["headline", "heading", "subhead", "body", "ctaLabel"],
+  marquee_strip: ["label"],
+  wedding_shop: [
+    "heading",
+    "body",
+    "c1Name",
+    "c2Name",
+    "c3Name",
+    "buttonLabel",
+  ],
+  gift_finder: [
+    "heading",
+    "body",
+    "o1Label",
+    "o2Label",
+    "o3Label",
+    "buttonLabel",
+  ],
+  rewards_club: [
+    "heading",
+    "body",
+    "tier1Name",
+    "tier1Points",
+    "tier2Name",
+    "tier2Points",
+    "tier3Name",
+    "tier3Points",
     "buttonLabel",
   ],
   craft_story: ["eyebrow", "heading", "body", "ctaLabel"],

@@ -6,6 +6,7 @@
  * and keeps a plain grid as the fallback when nothing is published.
  */
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useLang } from "@/lib/i18n";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { StoreHeader } from "@/components/store/StoreHeader";

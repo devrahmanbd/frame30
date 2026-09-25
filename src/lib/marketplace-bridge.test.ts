@@ -112,7 +112,7 @@ describe("marketplace preset bridge", () => {
 });
 
 describe("curated offer seller visibility", () => {
-  it("keeps the seller's own listing even outside allowlisted slugs", async () => {
+  it("retires theme offers (purge): themes list stays empty by design", async () => {
     const { listCatalog } = await import("./marketplace.server");
     const row = {
       id: "22222222-2222-4222-8222-222222222222",
@@ -136,7 +136,6 @@ describe("curated offer seller visibility", () => {
       rating_count: 0,
       created_at: new Date().toISOString(),
     };
-    let n = 0;
     const empty = {
       select: () => ({
         order: () => Promise.resolve({ data: [], error: null }),
@@ -147,6 +146,10 @@ describe("curated offer seller visibility", () => {
         }),
       }),
     };
+    // First query (marketplace_themes table) returns the legacy row, but
+    // the Sept 2026 purge retires theme offers: listCatalog always
+    // surfaces themes: [] regardless of table contents.
+    let n = 0;
     const db = {
       from: vi.fn(() => {
         n += 1;
@@ -163,8 +166,6 @@ describe("curated offer seller visibility", () => {
       db,
       "00000000-0000-4000-a000-000000000001",
     );
-    const kept = catalog.themes.find((t) => t.slug === "my-theme");
-    expect(kept).toBeDefined();
-    expect(kept!.mine).toBe(true);
+    expect(catalog.themes).toEqual([]);
   });
 });

@@ -2427,26 +2427,35 @@ html.dark,
   &::after {
     content: "";
     position: absolute;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--fq-signal);
-    box-shadow: 0 0 8px 1px var(--fq-signal);
-    top: 0;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent calc(50% - 1px),
+      var(--fq-signal) calc(50% - 1px),
+      var(--fq-signal) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    );
+    filter: drop-shadow(0 0 8px var(--fq-signal));
+    /* Transform-only travel: animating `top` re-layouts the frame on every
+       tick and violates the opacity/transform-only motion contract. The layer
+       covers the container and carries a 2px band at its middle, so
+       translateY(±40%) reproduces the original 10% → 90% sweep on the
+       compositor. Parked under prefers-reduced-motion below. */
     animation: fx-scanner-line 2.5s ease-in-out infinite alternate;
+    will-change: transform;
   }
 }
 
 @keyframes fx-scanner-line {
   0% {
-    top: 10%;
+    transform: translateY(-40%);
     opacity: 0.25;
   }
   50% {
     opacity: 0.9;
   }
   100% {
-    top: 90%;
+    transform: translateY(40%);
     opacity: 0.25;
   }
 }

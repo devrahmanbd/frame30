@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
   ShieldAlert,
+  AlertOctagon,
   Bot,
   CreditCard,
   Building2,
@@ -461,6 +462,7 @@ function RootCommandCenter() {
 
             <Link
               to="/root/tenants"
+              search={{ q: "" }}
               className="group relative overflow-hidden rounded-2xl border border-slate-800/60 bg-slate-900/40 p-5 backdrop-blur-md transition-all hover:border-primary/50 hover:bg-slate-900/60 hover:shadow-[0_0_30px_rgba(var(--primary),0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <div className="flex flex-col gap-1">

@@ -22,6 +22,7 @@ import {
   type EmailTemplateKind,
   type EmailTemplateConfig,
   DEFAULT_TEMPLATES,
+  escapeHtml,
   formatMoneyMinor,
   interpolate,
   renderEmailHtml,

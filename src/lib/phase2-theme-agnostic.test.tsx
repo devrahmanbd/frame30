@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
@@ -13,6 +13,19 @@ import {
 } from "./builder-ast";
 import { WIDGET_COMPONENTS } from "@/components/builder/widgets";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
+
+// Chrome/cart widgets read the store base off the TanStack router (the
+// storefront always renders inside a RouterProvider). The bare
+// renderToStaticMarkup path used here has none, so stub the single hook they
+// use — the same pattern as src/components/builder/cart.test.tsx.
+vi.mock("@tanstack/react-router", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@tanstack/react-router")>();
+  return {
+    ...actual,
+    useRouterState: () => ({ location: { pathname: "/store/demo" } }),
+  };
+});
 
 const TYPES = SECTION_CATALOG.map((e) => e.type);
 const STYLES = readFileSync("src/styles.css", "utf8");
@@ -44,7 +57,14 @@ describe("Phase 1 + 2 widgets — usable by any theme", () => {
   it("registers a component for every catalogue widget", () => {
     for (const type of TYPES)
       expect(typeof WIDGET_COMPONENTS[type], type).toBe("function");
-    expect(Object.keys(WIDGET_COMPONENTS).sort()).toEqual(TYPES.slice().sort());
+    // Renderer-only extras used to be pinned here (heritage/songoskriti
+    // pack widgets with no catalogue entry). The gap is closed: every
+    // renderer now has a catalogue entry, so this list must stay empty —
+    // a newly orphaned renderer fails here.
+    const extraKeys = Object.keys(WIDGET_COMPONENTS)
+      .filter((k) => !TYPES.includes(k as (typeof TYPES)[number]))
+      .sort();
+    expect(extraKeys).toEqual([]);
   });
 
   for (const type of TYPES) {
@@ -100,14 +120,22 @@ describe("theme scope — semantic tokens are remapped once, with fallbacks", ()
     "--font-sans",
   ]) {
     it(`maps ${token} from the theme`, () => {
-      const line = block
-        .split("\n")
-        .find((l) => l.trim().startsWith(`${token}:`));
-      expect(line, token).toBeTruthy();
+      const start = block.indexOf(`${token}:`);
+      expect(start, token).toBeGreaterThanOrEqual(0);
+      // The declaration may wrap across lines (e.g. --font-sans lists its
+      // fallback stack on following lines), so consume to the terminating
+      // semicolon at paren-depth zero before asserting the platform fallback.
+      let depth = 0;
+      let end = start;
+      for (; end < block.length; end += 1) {
+        const ch = block[end];
+        if (ch === "(") depth += 1;
+        else if (ch === ")") depth -= 1;
+        else if (ch === ";" && depth === 0) break;
+      }
+      const declaration = block.slice(start, end);
       // every mapping must carry a platform fallback so a bare custom theme works
-      expect(line!.replace(/^[^:]+:/, "")).toMatch(
-        /var\(--theme-[a-z-]+,\s*.+\)/,
-      );
+      expect(declaration).toMatch(/var\(\s*--theme-[a-z-]+,[\s\S]+\)/);
     });
   }
 });

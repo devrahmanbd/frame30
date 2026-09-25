@@ -44,7 +44,9 @@ export const Route = createFileRoute("/p/$productSlug")({
         params: { key: defaultPreviewKey() },
         search: {
           template: "product",
-          slug: params.productSlug.toLowerCase().slice(0, 64),
+          focus: params.productSlug.toLowerCase().slice(0, 64),
+          q: undefined,
+          max: undefined,
         },
         replace: true,
       });

@@ -371,17 +371,16 @@ function EmailTemplatesPage() {
               KIND_META[activeKind].labelEn,
               KIND_META[activeKind].labelBn,
             )}
-            subtitle={t(
+            hint={t(
               KIND_META[activeKind].descriptionEn,
               KIND_META[activeKind].descriptionBn,
             )}
           >
             <form onSubmit={handleSave} className="space-y-4 pt-2">
               {saveStatus && (
-                <InlineAlert
-                  tone={saveStatus.ok ? "success" : "danger"}
-                  message={saveStatus.message}
-                />
+                <InlineAlert tone={saveStatus.ok ? "success" : "danger"}>
+                  {saveStatus.message}
+                </InlineAlert>
               )}
 
               {/* Brand Accent Color */}
@@ -555,17 +554,16 @@ function EmailTemplatesPage() {
           {/* Test Dispatch Form */}
           <SectionCard
             title={t("Send Sample Preview", "নমুনা টেস্ট পাঠান")}
-            subtitle={t(
+            hint={t(
               "Deliver a real test email with current customizations",
               "বর্তমান পরিবর্তনের নমুনা আপনার ইমেইলে পাঠান",
             )}
           >
             <form onSubmit={handleSendTest} className="space-y-3 pt-2">
               {testStatus && (
-                <InlineAlert
-                  tone={testStatus.ok ? "success" : "danger"}
-                  message={testStatus.message}
-                />
+                <InlineAlert tone={testStatus.ok ? "success" : "danger"}>
+                  {testStatus.message}
+                </InlineAlert>
               )}
               <div className="flex gap-2">
                 <input

@@ -11,6 +11,9 @@ export function parseAuthMode(value: unknown): AuthMode | undefined {
     : undefined;
 }
 
-export function nextAuthSearch(search: AuthSearch, mode: AuthMode): AuthSearch {
+export function nextAuthSearch<S extends AuthSearch>(
+  search: S,
+  mode: AuthMode,
+): S & AuthSearch {
   return { ...search, mode };
 }

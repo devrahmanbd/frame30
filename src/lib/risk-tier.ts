@@ -35,10 +35,12 @@ export type CspPolicy = {
   frameSrc: string[];
 };
 
+import type { HTMLAttributeReferrerPolicy } from "react";
+
 export type IframePolicy = {
   sandbox: string;
   allowSameOrigin: boolean;
-  referrerPolicy: string;
+  referrerPolicy: HTMLAttributeReferrerPolicy;
   maxHeight: number;
 };
 

@@ -64,6 +64,12 @@ export const TEMPLATE_META: Record<
     },
     icon: "file-text",
   },
+  account: {
+    en: "Account",
+    bn: "অ্যাকাউন্ট",
+    desc: { en: "Shopper orders & profile", bn: "ক্রেতার অর্ডার ও প্রোফাইল" },
+    icon: "file-text",
+  },
 };
 
 export type BuilderTopBarProps = {

@@ -26,6 +26,8 @@ export type DemoProduct = {
   tags?: string[];
   variants: DemoVariant[];
   image_url?: string;
+  /** Convenience list price in minor units; falls back to first variant. */
+  price?: number;
 };
 
 export type DemoCatalog = {

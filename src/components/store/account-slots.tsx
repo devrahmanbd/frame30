@@ -74,6 +74,7 @@ export function accountSlotCtx(
         ...(currency ? { currency } : {}),
       }),
     data: { rows: args.rows, pending: args.pending },
+    link: (href: string) => href,
     renderChildren: () => null,
   };
 }

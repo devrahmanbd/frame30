@@ -8,7 +8,7 @@ export async function listConversations(db: Client, merchantId: string) {
   const { data } = await db
     .from("ai_conversations")
     .select(
-      "id, status, rating, phone_hash, order_number, first_message_at, last_message_at",
+      "id, status, rating, phone_hash, order_number, first_message_at, last_message_at, channel",
     )
     .eq("merchant_id", merchantId)
     .order("last_message_at", { ascending: false })

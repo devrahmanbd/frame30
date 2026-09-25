@@ -184,6 +184,14 @@ export function widgetReader(
     money(minor: number | string | null | undefined, currency = "BDT") {
       return formatDisplayMoney(minor, { locale, currency });
     },
+    /**
+     * Test-context link stub (identity): rebasing root-relative store URLs
+     * for the host environment is SectionRenderer's job (linkBase), so unit
+     * contexts resolve links unchanged.
+     */
+    link(href: string) {
+      return href;
+    },
   };
 }
 

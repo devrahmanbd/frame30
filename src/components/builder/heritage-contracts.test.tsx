@@ -18,6 +18,7 @@ function ctxFor(section: Section): WidgetCtx {
     locale: "en",
     storeSlug: "test",
     data: undefined,
+    link: (href: string) => href,
     renderChildren: () => null,
   };
 }

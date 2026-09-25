@@ -1,6 +1,14 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeEach } from "vitest";
 import { buildMimeMessage, type SmtpConfig } from "./smtp.server";
 import { sealSecret, unsealSecret } from "./webhook-secret.server";
+
+// Hermetic sealing key for tests only (never a production credential — the
+// module hashes whatever material it is given; other suites such as
+// dynamic-config.test.ts use the same pattern).
+beforeEach(() => {
+  process.env["WEBHOOK_SIGNING_KEY"] =
+    "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+});
 
 describe("SMTP Configuration & Sealing", () => {
   it("seals and unseals SMTP passwords with AES-GCM", async () => {

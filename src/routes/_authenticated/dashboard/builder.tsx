@@ -161,6 +161,7 @@ const TEMPLATE_LABEL: Record<TemplateKey, { en: string; bn: string }> = {
   checkout: { en: "Checkout", bn: "চেকআউট" },
   blog: { en: "Blog", bn: "ব্লগ" },
   page: { en: "Page", bn: "পেজ" },
+  account: { en: "Account", bn: "অ্যাকাউন্ট" },
 };
 
 const SLOT_LABEL: Record<Slot, { en: string; bn: string }> = {
@@ -1181,7 +1182,7 @@ function BuilderStudio() {
           onOpenTranslation={() => setTranslationDrawerOpen(true)}
           onOpenLint={() => setLintDrawerOpen(true)}
           errorCount={issues.filter((i) => i.level === "error").length}
-          warningCount={issues.filter((i) => i.level === "warning").length}
+          warningCount={issues.filter((i) => i.level === "warn").length}
         />
 
         <PublishModal
@@ -1255,7 +1256,7 @@ function BuilderStudio() {
                     <p className="text-[10px] text-muted-foreground">
                       {issues.filter((i) => i.level === "error").length}{" "}
                       {t("blocking", "ব্লকিং")},{" "}
-                      {issues.filter((i) => i.level === "warning").length}{" "}
+                      {issues.filter((i) => i.level === "warn").length}{" "}
                       {t("advisory", "পরামর্শ")}
                     </p>
                   </div>

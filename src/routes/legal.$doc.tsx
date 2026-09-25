@@ -22,7 +22,7 @@ export const Route = createFileRoute("/legal/$doc")({
     // hard 404 shell: a stale bookmark to /legal/tos should still land the
     // reader on the list of current documents.
     const site = await getSiteContext().catch(() => null);
-    return { origin: site.origin, slug: params.doc, found: Boolean(doc) };
+    return { origin: site?.origin ?? null, slug: params.doc, found: Boolean(doc) };
   },
   head: ({ params, loaderData }) => {
     const origin = loaderData?.origin ?? null;

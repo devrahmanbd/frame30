@@ -45,6 +45,7 @@ function ctxFor(
     locale,
     storeSlug: "test-store",
     data,
+    link: (href: string) => href,
     renderChildren: () => null,
   };
 }

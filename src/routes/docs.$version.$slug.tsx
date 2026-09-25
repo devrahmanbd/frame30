@@ -43,7 +43,7 @@ export const Route = createFileRoute("/docs/$version/$slug")({
     const site = await getSiteContext().catch(() => null);
     const version = isDocVersion(params.version) ? params.version : null;
     return {
-      origin: site.origin,
+      origin: site?.origin ?? null,
 
       version,
       slug: params.slug,

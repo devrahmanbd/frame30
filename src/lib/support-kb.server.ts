@@ -247,7 +247,7 @@ export async function searchStoreProducts(
  * Hybrid Semantic Search combining dense vector embeddings and full-text search with RRF.
  */
 export async function searchKbHybrid(
-  merchantId: string,
+  merchantId: string | null,
   query: string,
   limit = 5,
   rrfK = 60,
@@ -702,7 +702,7 @@ const STOP_WORDS = new Set([
  * In-memory Reciprocal Rank Fusion search over IN_MEMORY_KB_CHUNKS.
  */
 export function searchInMemoryKb(
-  merchantId: string,
+  merchantId: string | null,
   query: string,
   queryEmbedding?: number[],
   limit = 5,
