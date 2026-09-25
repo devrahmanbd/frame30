@@ -313,20 +313,14 @@ function HeroSkinSlide({
             {slide.caption}
           </p>
         )}
-        {slide.headlineBn && (
-          <p
-            data-hero-headline
-            lang="bn"
-            className="font-bangla-display mt-3 text-2xl font-bold leading-tight text-foreground"
-          >
-            {slide.headlineBn}
-          </p>
-        )}
         <Heading
           data-hero-headline
+          {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
           className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl"
         >
-          {slide.headline}
+          {locale === "bn" && slide.headlineBn
+            ? slide.headlineBn
+            : slide.headline}
         </Heading>
         {slide.subhead && (
           <p
@@ -385,20 +379,14 @@ function HeroSkinSlide({
               {slide.caption}
             </p>
           )}
-          {slide.headlineBn && (
-            <p
-              data-hero-headline
-              lang="bn"
-              className="font-bangla-display mt-3 text-2xl font-bold leading-tight text-background"
-            >
-              {slide.headlineBn}
-            </p>
-          )}
           <Heading
             data-hero-headline
+            {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
             className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-background sm:text-4xl lg:text-6xl"
           >
-            {slide.headline}
+            {locale === "bn" && slide.headlineBn
+              ? slide.headlineBn
+              : slide.headline}
           </Heading>
           {slide.subhead && (
             <p
@@ -585,20 +573,14 @@ const HeroCarousel: WidgetComponent = ({
               {slide.caption}
             </p>
           )}
-          {slide.headlineBn && (
-            <p
-              data-hero-headline
-              lang="bn"
-              className="font-bangla-display mt-3 text-2xl font-bold leading-tight text-foreground sm:text-4xl"
-            >
-              {slide.headlineBn}
-            </p>
-          )}
           <Heading
             data-hero-headline
+            {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
             className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl lg:text-6xl"
           >
-            {slide.headline}
+            {locale === "bn" && slide.headlineBn
+              ? slide.headlineBn
+              : slide.headline}
           </Heading>
           {slide.subhead && (
             <p
