@@ -12,6 +12,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 
 vi.mock("sonner", () => ({ toast: { info: vi.fn() } }));
 
+// ThemePreviewFrame now syncs the URL on every switch via useNavigate; this
+// suite renders without a router, so the hook is stubbed to a no-op.
+const { mockNavigate } = vi.hoisted(() => ({ mockNavigate: vi.fn() }));
+vi.mock("@tanstack/react-router", () => ({
+  useNavigate: () => mockNavigate,
+}));
+
 // `StoreHeader` needs a live router (useRouterState/Link); this suite is
 // about the preview frame's chrome and interception, so the header is
 // stubbed down to the shape that matters: account/checkout links and a
@@ -164,31 +171,31 @@ describe("preview click blocking", () => {
 
   it("switches to the checkout demo template instead of acting", () => {
     const event = clickOn(anchorNode("/store/demo/checkout"));
-    const setTemplate = vi.fn();
-    handlePreviewCanvasClick(event, setTemplate);
+    const switchTo = vi.fn();
+    handlePreviewCanvasClick(event, switchTo);
     expect(event.preventDefault).toHaveBeenCalled();
     expect(event.stopPropagation).toHaveBeenCalled();
-    expect(setTemplate).toHaveBeenCalledWith("checkout");
+    expect(switchTo).toHaveBeenCalledWith("checkout", null, null);
     expect(toastInfo()).not.toHaveBeenCalled();
   });
 
   it("switches to the account demo template instead of acting", () => {
     const event = clickOn(anchorNode("/account"));
-    const setTemplate = vi.fn();
-    handlePreviewCanvasClick(event, setTemplate);
+    const switchTo = vi.fn();
+    handlePreviewCanvasClick(event, switchTo);
     expect(event.preventDefault).toHaveBeenCalled();
-    expect(setTemplate).toHaveBeenCalledWith("account");
+    expect(switchTo).toHaveBeenCalledWith("account", null, null);
     expect(toastInfo()).not.toHaveBeenCalled();
   });
 
   it("prevents a submit-button click inside a newsletter form", () => {
     const event = clickOn(submitButtonNode({}));
-    const setTemplate = vi.fn();
-    handlePreviewCanvasClick(event, setTemplate);
+    const switchTo = vi.fn();
+    handlePreviewCanvasClick(event, switchTo);
     expect(event.preventDefault).toHaveBeenCalled();
     expect(event.stopPropagation).toHaveBeenCalled();
     expect(toastInfo()).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
-    expect(setTemplate).not.toHaveBeenCalled();
+    expect(switchTo).not.toHaveBeenCalled();
   });
 
   it("blocks every form submit with a toast", () => {
@@ -222,8 +229,8 @@ describe("preview in-canvas template navigation", () => {
     expect(previewTemplateForHref(href)).toBe(template);
     expect(previewClickAction(href)).toEqual(
       slug === undefined
-        ? { kind: "switch", template }
-        : { kind: "switch", template, slug },
+        ? { kind: "switch", template, query: null }
+        : { kind: "switch", template, slug, query: null },
     );
   });
 
@@ -235,38 +242,40 @@ describe("preview in-canvas template navigation", () => {
 
   it("switches template on a product click without a toast", () => {
     const event = clickOn(anchorNode("/p/jamdani-saree"));
-    const setTemplate = vi.fn();
-    handlePreviewCanvasClick(event, setTemplate);
+    const switchTo = vi.fn();
+    handlePreviewCanvasClick(event, switchTo);
     expect(event.preventDefault).toHaveBeenCalled();
-    expect(setTemplate).toHaveBeenCalledWith("product");
+    expect(switchTo).toHaveBeenCalledWith("product", "jamdani-saree", null);
     expect(toastInfo()).not.toHaveBeenCalled();
   });
 
-  it("reports the clicked collection slug through onFocus", () => {
+  it("reports the clicked collection slug through switchTo", () => {
     const event = clickOn(anchorNode("/c/contemporary"));
-    const setTemplate = vi.fn();
-    const onFocus = vi.fn();
-    handlePreviewCanvasClick(event, setTemplate, onFocus);
-    expect(setTemplate).toHaveBeenCalledWith("collection");
-    expect(onFocus).toHaveBeenCalledWith({
-      template: "collection",
-      slug: "contemporary",
-    });
+    const switchTo = vi.fn();
+    handlePreviewCanvasClick(event, switchTo);
+    expect(switchTo).toHaveBeenCalledWith("collection", "contemporary", null);
     expect(toastInfo()).not.toHaveBeenCalled();
   });
 
   it("clears focus on switches that carry no slug", () => {
     const event = clickOn(anchorNode("/search"));
-    const onFocus = vi.fn();
-    handlePreviewCanvasClick(event, vi.fn(), onFocus);
-    expect(onFocus).toHaveBeenCalledWith(null);
+    const switchTo = vi.fn();
+    handlePreviewCanvasClick(event, switchTo);
+    expect(switchTo).toHaveBeenCalledWith("search", null, null);
   });
 
-  it("does not touch focus on blocked links", () => {
+  it("passes the raw search query through switchTo for URL sync", () => {
+    const event = clickOn(anchorNode("/search?q=saree&max=99900"));
+    const switchTo = vi.fn();
+    handlePreviewCanvasClick(event, switchTo);
+    expect(switchTo).toHaveBeenCalledWith("search", null, "q=saree&max=99900");
+  });
+
+  it("does not switch on blocked links", () => {
     const event = clickOn(anchorNode("/order/abc"));
-    const onFocus = vi.fn();
-    handlePreviewCanvasClick(event, vi.fn(), onFocus);
-    expect(onFocus).not.toHaveBeenCalled();
+    const switchTo = vi.fn();
+    handlePreviewCanvasClick(event, switchTo);
+    expect(switchTo).not.toHaveBeenCalled();
     expect(toastInfo()).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
   });
 
@@ -290,6 +299,30 @@ describe("preview in-canvas template navigation", () => {
     expect(html).toContain("<h1");
   });
 });
+
+describe("preview frame search round-trip", () => {
+  it("search click writes separate keys so refresh preserves them", async () => {
+    const { previewSearchForSwitch } = await import("@/lib/theme-preview-nav");
+    // Same updater ThemePreviewFrame.switchTo passes to navigate: raw
+    // in-canvas query must never land as a single q value.
+    const next = previewSearchForSwitch("search", null, "max=99900", {
+      template: "search",
+    });
+    expect(next).toMatchObject({ template: "search", max: "99900" });
+    expect(next).not.toHaveProperty("q", "max=99900");
+  });
+
+  it("collection click keeps focus under the ?focus= contract", async () => {
+    const { previewSearchForSwitch } = await import("@/lib/theme-preview-nav");
+    const next = previewSearchForSwitch("collection", "festive", null, {});
+    expect(next).toMatchObject({ template: "collection", focus: "festive" });
+    expect(next).not.toHaveProperty("slug");
+  });
+});
+
+// Back-button sync (ThemePreviewFrame useEffect on
+// initialTemplate/initialFocus): node env has no router/DOM history, so
+// verify manually — /c/festive -> /c/wedding -> back shows festive.
 
 describe("preview skin sheets (lane B2-1)", () => {
   const SHEETS = {
@@ -340,9 +373,7 @@ describe("preview skin sheets (lane B2-1)", () => {
     templates.index = {
       header: [],
       main: [],
-      footer: [
-        { ...newSection("product_rail"), props: { skin: "minimal" } },
-      ],
+      footer: [{ ...newSection("product_rail"), props: { skin: "minimal" } }],
     };
     const html = renderToStaticMarkup(
       <ThemePreviewFrame

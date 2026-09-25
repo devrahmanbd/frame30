@@ -44,7 +44,7 @@ export const Route = createFileRoute("/p/$productSlug")({
         params: { key: defaultPreviewKey() },
         search: {
           template: "product",
-          focus: params.productSlug.toLowerCase().slice(0, 64),
+          slug: params.productSlug.toLowerCase().slice(0, 64),
         },
         replace: true,
       });
@@ -59,9 +59,7 @@ export const Route = createFileRoute("/p/$productSlug")({
       );
     // Custom bases: the old prefixed URL still matches this static route,
     // so canonicalize it here instead of serving duplicates.
-    const { canonicalRedirectFn } = await import(
-      "@/lib/permalink.functions"
-    );
+    const { canonicalRedirectFn } = await import("@/lib/permalink.functions");
     const { to } = await canonicalRedirectFn({
       data: {
         merchantId: data.merchant.id,
@@ -124,4 +122,3 @@ export const Route = createFileRoute("/p/$productSlug")({
   },
   notFoundComponent: ProductNotFound,
 });
-

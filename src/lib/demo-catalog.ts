@@ -2841,6 +2841,7 @@ export const DEMO_CATALOGS = {
   beauty: BEAUTY,
   general: SUPERSHOP_CATALOG,
   songoskriti: SONGOSKRITI,
+  somvabona: SONGOSKRITI,
 } as const satisfies Record<string, DemoCatalog>;
 
 export type DemoCatalogKey = keyof typeof DEMO_CATALOGS;
