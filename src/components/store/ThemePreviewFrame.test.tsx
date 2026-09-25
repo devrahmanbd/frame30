@@ -10,8 +10,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 
-vi.mock("sonner", () => ({ toast: { info: vi.fn() } }));
-
 // ThemePreviewFrame now syncs the URL on every switch via useNavigate; this
 // suite renders without a router, so the hook is stubbed to a no-op.
 const { mockNavigate } = vi.hoisted(() => ({ mockNavigate: vi.fn() }));
@@ -49,11 +47,8 @@ const {
   previewClickAction,
   previewTemplateForHref,
 } = await import("@/lib/theme-preview-nav");
-const { toast } = await import("sonner");
 const { DEFAULT_TOKENS, newSection } = await import("@/lib/builder-ast");
 import type { TemplateKey, ThemeAst } from "@/lib/builder-ast";
-
-const toastInfo = () => vi.mocked(toast.info);
 
 function buildTemplates(): Record<TemplateKey, ThemeAst> {
   const empty = (): ThemeAst => ({ header: [], main: [], footer: [] });
@@ -175,38 +170,42 @@ describe("preview click blocking", () => {
   it("switches to the checkout demo template instead of acting", () => {
     const event = clickOn(anchorNode("/store/demo/checkout"));
     const switchTo = vi.fn();
-    handlePreviewCanvasClick(event, switchTo);
+    const notify = vi.fn();
+    handlePreviewCanvasClick(event, switchTo, notify);
     expect(event.preventDefault).toHaveBeenCalled();
     expect(event.stopPropagation).toHaveBeenCalled();
     expect(switchTo).toHaveBeenCalledWith("checkout", null, null);
-    expect(toastInfo()).not.toHaveBeenCalled();
+    expect(notify).not.toHaveBeenCalled();
   });
 
   it("switches to the account demo template instead of acting", () => {
     const event = clickOn(anchorNode("/account"));
     const switchTo = vi.fn();
-    handlePreviewCanvasClick(event, switchTo);
+    const notify = vi.fn();
+    handlePreviewCanvasClick(event, switchTo, notify);
     expect(event.preventDefault).toHaveBeenCalled();
     expect(switchTo).toHaveBeenCalledWith("account", null, null);
-    expect(toastInfo()).not.toHaveBeenCalled();
+    expect(notify).not.toHaveBeenCalled();
   });
 
   it("prevents a submit-button click inside a newsletter form", () => {
     const event = clickOn(submitButtonNode({}));
     const switchTo = vi.fn();
-    handlePreviewCanvasClick(event, switchTo);
+    const notify = vi.fn();
+    handlePreviewCanvasClick(event, switchTo, notify);
     expect(event.preventDefault).toHaveBeenCalled();
     expect(event.stopPropagation).toHaveBeenCalled();
-    expect(toastInfo()).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
+    expect(notify).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
     expect(switchTo).not.toHaveBeenCalled();
   });
 
   it("blocks every form submit with a toast", () => {
     const event = { preventDefault: vi.fn(), stopPropagation: vi.fn() };
-    handlePreviewCanvasSubmit(event);
+    const notify = vi.fn();
+    handlePreviewCanvasSubmit(event, notify);
     expect(event.preventDefault).toHaveBeenCalled();
     expect(event.stopPropagation).toHaveBeenCalled();
-    expect(toastInfo()).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
+    expect(notify).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
   });
 });
 
@@ -252,40 +251,45 @@ describe("preview in-canvas template navigation", () => {
   it("switches template on a product click without a toast", () => {
     const event = clickOn(anchorNode("/p/jamdani-saree"));
     const switchTo = vi.fn();
-    handlePreviewCanvasClick(event, switchTo);
+    const notify = vi.fn();
+    handlePreviewCanvasClick(event, switchTo, notify);
     expect(event.preventDefault).toHaveBeenCalled();
     expect(switchTo).toHaveBeenCalledWith("product", "jamdani-saree", null);
-    expect(toastInfo()).not.toHaveBeenCalled();
+    expect(notify).not.toHaveBeenCalled();
   });
 
   it("reports the clicked collection slug through switchTo", () => {
     const event = clickOn(anchorNode("/c/contemporary"));
     const switchTo = vi.fn();
-    handlePreviewCanvasClick(event, switchTo);
+    const notify = vi.fn();
+    handlePreviewCanvasClick(event, switchTo, notify);
     expect(switchTo).toHaveBeenCalledWith("collection", "contemporary", null);
-    expect(toastInfo()).not.toHaveBeenCalled();
+    expect(notify).not.toHaveBeenCalled();
   });
 
   it("clears focus on switches that carry no slug", () => {
     const event = clickOn(anchorNode("/search"));
     const switchTo = vi.fn();
-    handlePreviewCanvasClick(event, switchTo);
+    const notify = vi.fn();
+    handlePreviewCanvasClick(event, switchTo, notify);
     expect(switchTo).toHaveBeenCalledWith("search", null, null);
   });
 
   it("passes the raw search query through switchTo for URL sync", () => {
     const event = clickOn(anchorNode("/search?q=saree&max=99900"));
     const switchTo = vi.fn();
-    handlePreviewCanvasClick(event, switchTo);
+    const notify = vi.fn();
+    handlePreviewCanvasClick(event, switchTo, notify);
     expect(switchTo).toHaveBeenCalledWith("search", null, "q=saree&max=99900");
   });
 
   it("does not switch on blocked links", () => {
     const event = clickOn(anchorNode("/order/abc"));
     const switchTo = vi.fn();
-    handlePreviewCanvasClick(event, switchTo);
+    const notify = vi.fn();
+    handlePreviewCanvasClick(event, switchTo, notify);
     expect(switchTo).not.toHaveBeenCalled();
-    expect(toastInfo()).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
+    expect(notify).toHaveBeenCalledWith(PREVIEW_DISABLED_MESSAGE);
   });
 
   it("honours a ?focus= deep link on first paint", () => {

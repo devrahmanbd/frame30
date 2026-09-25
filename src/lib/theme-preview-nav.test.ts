@@ -223,6 +223,27 @@ describe("demo focus (slug-aware collection preview)", () => {
     expect(out[0].props.text_bn).toBe("নতুন এসেছে"); // currently blanked
   });
 
+  it("focus keeps the rail authored heading_bn twin", async () => {
+    const { newSection } = await import("./builder-ast");
+    const rail = {
+      ...newSection("product_rail"),
+      props: {
+        source: "collection",
+        collection: "new-in",
+        heading: "New",
+        heading_bn: "নতুন",
+      },
+    };
+    const out = applyDemoFocus([rail], {
+      template: "collection",
+      slug: "festive",
+      title: "Eid & Festive",
+      collection: "festive",
+    });
+    expect(out[0]!.props["heading"]).toBe("Eid & Festive");
+    expect(out[0]!.props["heading_bn"]).toBe("নতুন");
+  });
+
   it("passes sections through without focus", async () => {
     const { newSection } = await import("./builder-ast");
     const sections = [newSection("heading")];

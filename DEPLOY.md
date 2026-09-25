@@ -147,10 +147,10 @@ platform path. Never point merchants at `edge.framique.*` or `76.76.21.21`
   (`status='active'`, `is_primary`); never hardcoded. No active primary →
   custom-host checks SKIP (merchant mid-rename), everything else still gates.
 - **Custom-host checks retry.** Edge SNI mapping flaps under load
-  (wrong-cert curl 60s from loopback). The gate retries 3×/10s with raw
+  (wrong-cert curl 60s from loopback). The gate retries 6×/10s with raw
   curl (outside `check()` so `set -e` can't kill the script), then fails
   honestly. A retry storm in the log means edge, not app — verify with
-  `curl -v` (cert subject) before touching code.
+  `curl -v` (cert subject) before touching code (see runbook below).
 - **Unmapped custom hosts must 404 bare.** No CMS site, no featured-store
   fallback, no body (`server.ts` gate; `microscrop.shop/` pins it since the
   flamelancer.com rename). If this check starts serving 200, a mapping
@@ -158,6 +158,38 @@ platform path. Never point merchants at `edge.framique.*` or `76.76.21.21`
 - **Restart precedes verify.** rsync + `systemctl restart` happen before
   checks, so a red gate means "new code live, proof incomplete" — read
   which line failed before deciding rollback vs edge wait.
+
+## Edge custom-cert flapping runbook (diagnosed 2026-09-25)
+
+Symptom: a custom domain (e.g. `flamelancer.com`) alternates between its
+own cert (200) and the shared default cert (`bitcart.ghostmaster.shop`,
+curl exit 60) across consecutive connections, while `framique.qubickle.com`
+stays stable. Root cause class: the domain's cert exists on SOME TLS
+terminators but not all — ACME/cert storage is per-replica
+(`openresty-acme` file dir; haproxy `/etc/haproxy/certs` per box), so a cert
+issued on first-hit replica A never reaches replica B, and B serves default.
+
+Diagnose (no edge access needed):
+
+```bash
+for i in $(seq 1 8); do
+  echo | openssl s_client -connect 88.99.250.99:443 -servername <domain> 2>/dev/null \
+    | openssl x509 -noout -subject;
+done
+# all-same subject = healthy; mixed subjects = replica skew
+```
+
+Remediate (needs edge SSH — not available from app hosts):
+
+```bash
+# on EACH edge terminator:
+ls -l /etc/haproxy/certs/ | grep <domain>   # cert present everywhere?
+# re-run issuance for the domain (verify-sni must 200 via merchant_domains),
+# then confirm all terminators serve it before closing the incident
+```
+
+Do NOT "fix" this from app code — serving the wrong cert is an edge-store
+problem. The deploy gate's retries exist precisely to ride out this flake.
 
 ## Pending deploy-sensitive items (do NOT ship without these steps)
 

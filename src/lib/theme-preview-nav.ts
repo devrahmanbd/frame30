@@ -22,7 +22,6 @@ import type {
   ThemeTokens,
 } from "./builder-ast";
 import { TEMPLATE_KEYS } from "./builder-ast";
-import { toast } from "sonner";
 import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
 
@@ -139,13 +138,14 @@ export function handlePreviewCanvasClick(
     focus: string | null,
     query: string | null,
   ) => void,
+  notify: (message: string) => void,
 ): void {
   const el = event.target as HTMLElement | null;
   const submit = el?.closest?.(SUBMIT_CONTROL_SELECTOR) as HTMLElement | null;
   if (submit && submit.closest?.("form")) {
     event.preventDefault();
     event.stopPropagation();
-    toast.info(PREVIEW_DISABLED_MESSAGE);
+    notify(PREVIEW_DISABLED_MESSAGE);
     return;
   }
   const anchor = el?.closest?.("a[href]") as HTMLAnchorElement | null;
@@ -154,7 +154,7 @@ export function handlePreviewCanvasClick(
   if (action.kind === "blocked") {
     event.preventDefault();
     event.stopPropagation();
-    toast.info(PREVIEW_DISABLED_MESSAGE);
+    notify(PREVIEW_DISABLED_MESSAGE);
   } else if (action.kind === "switch") {
     event.preventDefault();
     event.stopPropagation();
@@ -176,13 +176,16 @@ export function handlePreviewCanvasClick(
  * capture so widget `onSubmit` handlers (contact API, coupon state) never
  * fire.
  */
-export function handlePreviewCanvasSubmit(event: {
-  preventDefault: () => void;
-  stopPropagation: () => void;
-}): void {
+export function handlePreviewCanvasSubmit(
+  event: {
+    preventDefault: () => void;
+    stopPropagation: () => void;
+  },
+  notify: (message: string) => void,
+): void {
   event.preventDefault();
   event.stopPropagation();
-  toast.info(PREVIEW_DISABLED_MESSAGE);
+  notify(PREVIEW_DISABLED_MESSAGE);
 }
 
 /* ---------------------------------- preview search query round-trip */

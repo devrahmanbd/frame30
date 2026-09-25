@@ -17,6 +17,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
@@ -244,8 +245,14 @@ export function ThemePreviewFrame({
           templates in place; actions and submits are blocked. ---- */}
       <div
         className="flex-1 overflow-auto bg-background"
-        onClickCapture={(event) => handlePreviewCanvasClick(event, switchTo)}
-        onSubmitCapture={handlePreviewCanvasSubmit}
+        onClickCapture={(event) =>
+          handlePreviewCanvasClick(event, switchTo, (message) =>
+            toast.info(message),
+          )
+        }
+        onSubmitCapture={(event) =>
+          handlePreviewCanvasSubmit(event, (message) => toast.info(message))
+        }
       >
         <div className="mx-auto" style={{ maxWidth: "100%" }}>
           <ThemeSurface tokens={tokens} skinCss={skinCss}>
