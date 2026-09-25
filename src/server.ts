@@ -426,9 +426,8 @@ export default {
         // fail OPEN (a DB blip must never take down every custom store);
         // a definitive no-row blocks.
         try {
-          const { isPlatformHost, resolveStorefrontHostFor } = await import(
-            "./lib/storefront-host.server"
-          );
+          const { isPlatformHost, resolveStorefrontHostFor } =
+            await import("./lib/storefront-host.server");
           const host = normalizedHost ?? "";
           const previewDeploy =
             host.startsWith("preview.") || host.startsWith("id-preview--");
@@ -452,7 +451,8 @@ export default {
         }
         if (
           isBlockedPathStorefront(normalizedHost, url.pathname, validPreview)
-        ) {          // DEV-2 deep-path permalink: /store/<slug>/* → https://<primary>/*.
+        ) {
+          // DEV-2 deep-path permalink: /store/<slug>/* → https://<primary>/*.
           // Centralized here (not per-route beforeLoad) because this gate 404s
           // before SSR — a per-route beforeLoad would never run on platform
           // hosts. One lookup covers the index + every deep route (p/c/pages/
