@@ -326,6 +326,20 @@ describe("click-routing single source", () => {
   });
 });
 
+describe("resolveDemoFocus categories", () => {
+  it("resolves a category slug to category-filtered rows", () => {
+    const f = resolveDemoFocus("songoskriti", "collection", "women")!;
+    expect(f.title).toBe("Women");
+    expect(f.slug).toBe("women");
+    // Category signal must survive so rails filter by product.category,
+    // not fall back to new-in rows.
+    expect(f.collection).toBe("women");
+  });
+  it("unknown slugs still fall back to new-in", () => {
+    expect(resolveDemoFocus("songoskriti", "collection", "nope-xyz")?.collection).toBe("new-in");
+  });
+});
+
 describe("preview search query round-trip", () => {
   it("parses raw in-canvas query into separate keys", () => {
     expect(parsePreviewSearchQuery("max=99900")).toEqual({ max: "99900" });

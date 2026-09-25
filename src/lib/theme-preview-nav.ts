@@ -413,6 +413,12 @@ export function resolveDemoFocus(
   if (template === "collection") {
     const match = catalog.collections.find((c) => c.slug === slug);
     if (match) return { template, slug, title: match.name, collection: slug };
+    // Category slugs (e.g. /c/women) carry no dedicated collection: reuse
+    // the collection field with the category slug so rails resolve rows by
+    // product.category (see previewDemoMap collection branch).
+    const category = catalog.categories.find((c) => c.slug === slug);
+    if (category)
+      return { template, slug, title: category.name, collection: slug };
     return { template, slug, title: humanizeSlug(slug), collection: "new-in" };
   }
   if (template === "product") {
