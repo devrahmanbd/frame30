@@ -1,12 +1,13 @@
 /**
- * Sliders lane contracts — price/size selectors, quantity steppers and the
- * product image slider.
+ * Sliders lane contracts — price/size selectors, quantity steppers, the
+ * product image slider and the hero carousel shell.
  *
  * Static-markup assertions: native range inputs with bilingual labels,
- * radiogroup semantics with 44px targets, stepper group labelling, and gallery
- * prev/next controls with a polite position announcement. Behaviour (URL math,
- * arrow-key roving) is covered by asserting the wiring exists in the markup
- * plus unit tests of the pure helpers.
+ * radiogroup semantics with 44px targets, stepper group labelling, gallery
+ * prev/next controls with a polite position announcement, and the hero
+ * region/carousel semantics with its own bilingual steppers and live status.
+ * Behaviour (URL math, arrow-key roving) is covered by asserting the wiring
+ * exists in the markup plus unit tests of the pure helpers.
  */
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
@@ -173,5 +174,120 @@ describe("product gallery slider", () => {
     const html = render(WIDGET_COMPONENTS.product_media, mediaSection(), "en");
     expect(html).not.toContain("object-cover scale-150");
     expect(html).toContain("motion-safe:transition-transform");
+  });
+});
+
+describe("hero carousel shell", () => {
+  function heroSection(): Section {
+    const section = newSection("hero");
+    section.props = {
+      ...section.props,
+      heading: "Everyday essentials",
+      image: "https://example.com/hero-1.jpg",
+      subheading: "Trusted local shopping.",
+      ctaLabel: "Shop now",
+      ctaHref: "#products",
+      s2Heading: "New season drop",
+      s2Image: "https://example.com/hero-2.jpg",
+    };
+    return section;
+  }
+
+  function heroItemsSection(): Section {
+    const section = newSection("hero");
+    section.props = {
+      ...section.props,
+      items: [
+        { heading: "Slide one", image: "https://example.com/1.jpg" },
+        { heading: "Slide two", image: "https://example.com/2.jpg" },
+        { heading: "Slide three", image: "" },
+      ],
+    };
+    return section;
+  }
+
+  it("renders a labelled carousel region with 44px prev/next steppers", () => {
+    const html = render(WIDGET_COMPONENTS.hero, heroSection(), "en");
+    expect(html).toContain('role="region"');
+    expect(html).toContain('aria-roledescription="carousel"');
+    expect(html).toContain('aria-label="Hero carousel"');
+    expect(html).toContain('aria-roledescription="slide"');
+    expect(html).toContain('aria-label="Previous slide"');
+    expect(html).toContain('aria-label="Next slide"');
+    expect(html).toContain("h-11 w-11");
+    expect(html).toContain("focus-visible:ring-2");
+  });
+
+  it("announces a numbered position through a live status", () => {
+    const html = render(WIDGET_COMPONENTS.hero, heroSection(), "en");
+    expect(html).toContain('role="status"');
+    expect(html).toContain("Slide 1 / 2");
+    expect(html).toContain('aria-label="Slide 1 / 2"');
+    expect(html).toContain('aria-label="Slide 2 / 2"');
+  });
+
+  it("keeps bilingual labels and Bengali numerals", () => {
+    const html = render(WIDGET_COMPONENTS.hero, heroSection(), "bn");
+    expect(html).toContain('aria-label="হিরো ক্যারোজেল"');
+    expect(html).toContain('aria-label="আগের স্লাইড"');
+    expect(html).toContain('aria-label="পরের স্লাইড"');
+    expect(html).toContain("স্লাইড ১ / ২");
+  });
+
+  it("reads repeater items rows when present", () => {
+    const html = render(WIDGET_COMPONENTS.hero, heroItemsSection(), "en");
+    expect(html).toContain("Slide one");
+    expect(html).toContain("Slide 1 / 3");
+  });
+
+  it("keeps the first slide eager for LCP", () => {
+    const html = render(WIDGET_COMPONENTS.hero, heroSection(), "en");
+    expect(html).toContain('fetchPriority="high"');
+    expect(html).toContain('loading="eager"');
+  });
+
+  it("renders a single slide static with no carousel chrome", () => {
+    const section = newSection("hero");
+    section.props = {
+      ...section.props,
+      heading: "Solo hero",
+      image: "https://example.com/solo.jpg",
+    };
+    const html = render(WIDGET_COMPONENTS.hero, section, "en");
+    expect(html).toContain("Solo hero");
+    expect(html).not.toContain('aria-roledescription="carousel"');
+    expect(html).not.toContain('aria-label="Previous slide"');
+    expect(html).not.toContain('role="status"');
+    expect(html).toContain('fetchPriority="high"');
+  });
+
+  it("wires keyboard, swipe and reduced-motion-gated pointer-drag", async () => {
+    // Handlers never serialize into static markup, so assert the wiring
+    // inside the HeroWidget block itself (sliced to the renderer, so other
+    // carousels cannot satisfy it).
+    const { readFileSync } = await import("node:fs");
+    const src = readFileSync(
+      "src/components/builder/widgets.tsx",
+      "utf8",
+    );
+    const start = src.indexOf("const HeroWidget");
+    const end = src.indexOf("\n};", start);
+    const block = src.slice(start, end);
+    expect(block).toContain("ArrowRight");
+    expect(block).toContain("ArrowLeft");
+    expect(block).toContain('"Home"');
+    expect(block).toContain('"End"');
+    expect(block).toContain("onTouchStart");
+    expect(block).toContain("onTouchEnd");
+    expect(block).toContain("onPointerDown");
+    expect(block).toContain("onPointerUp");
+    expect(block).toContain("onPointerCancel");
+    expect(block).toContain("setPointerCapture");
+    expect(block).toContain('pointerType !== "mouse"');
+    expect(block).toContain("prefers-reduced-motion: reduce");
+    expect(block).toContain("Math.abs(delta) < 40");
+    // No autoplay invented: the block arms no timer.
+    expect(block).not.toContain("setInterval");
+    expect(block).not.toContain("setTimeout");
   });
 });

@@ -238,7 +238,10 @@ const DealCard: WidgetComponent = ({ str, Heading, locale }) => {
       <div className="min-w-0 flex-1">
         <Heading className="text-base font-semibold">{str("heading")}</Heading>
         {str("badgeLabel") && (
-          <span className="mt-1 inline-block rounded-fq-sm bg-success-soft px-2 py-0.5 text-xs font-semibold">
+          <span
+            data-part="badge"
+            className="mt-1 inline-block rounded-fq-sm bg-success-soft px-2 py-0.5 text-xs font-semibold"
+          >
             {str("badgeLabel")}
           </span>
         )}

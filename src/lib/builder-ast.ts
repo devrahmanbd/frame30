@@ -590,6 +590,11 @@ export const WIDGET_SKINS = {
   // (ATMOSPHERE precedent) and carousel preserves current behaviour.
   testimonials: ["carousel", "wall", "single"],
   product_grid: ["cards", "rows"],
+  // B2-3: urgency_rail reuses the product_rail skin vocabulary by design —
+  // it shares the product_rail data shape (collection source + limit +
+  // ProductCard cards) and differs only in computed sale/stock adornments,
+  // so a separate vocabulary would fork styling for identical markup.
+  urgency_rail: ["editorial", "compact", "minimal"],
 } as const;
 export type SkinnableWidgetType = keyof typeof WIDGET_SKINS;
 export type WidgetSkin<T extends SkinnableWidgetType> =
@@ -601,6 +606,9 @@ export const DEFAULT_WIDGET_SKIN: Record<SkinnableWidgetType, string> = {
   hero_carousel: "split",
   testimonials: "carousel",
   product_grid: "cards",
+  // B2-3: core default mirrors product_rail (editorial preserves current
+  // urgency_rail markup); Somvabona overrides to compact via theme defaults.
+  urgency_rail: "editorial",
 };
 
 export function isSkinnableType(
@@ -4695,6 +4703,8 @@ const BASE_CATALOG: CatalogEntry[] = [
     // computed sale badges (% off from real minor units), real stock hints
     // (row.count against lowStockAt — absent counts show no hint) and the
     // ratings row. Never typed discounts, never "only few left" without a flag.
+    // B2-3 skin: reuses the product_rail skin vocabulary (same cards, same
+    // rail) with an editorial core default; Somvabona overrides to compact.
     type: "urgency_rail",
     label: "Urgency rail",
     group: "commerce",
@@ -4711,6 +4721,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       showStockHint: true,
       lowStockAt: 5,
       promise: "",
+      skin: "editorial",
     },
     fields: [
       text("heading", "Heading"),
@@ -4733,6 +4744,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       num("lowStockAt", "Low-stock threshold"),
       text("promise", "Delivery promise", 60),
       CARD_VARIANT,
+      SKIN_FIELD("urgency_rail"),
     ],
   },
   {

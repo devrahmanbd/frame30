@@ -7,6 +7,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import type { ThemeAst } from "@/lib/builder-ast";
 import { cached, invalidate } from "@/lib/cache.server";
 import { assertTenantId } from "@/lib/tenant-scope";
 import {
@@ -183,10 +184,20 @@ export async function toggleThemeAsset(
 /**
  * Storefront read: the one stylesheet to inject for `themeId`, already
  * sanitised and cached per tenant. Returns "" when the store has no assets.
+ *
+ * `usedSkinKeys` is the per-page filter (lane B2-1): merchant skin assets
+ * (`skin-<type>-<skin>.css`) combine only when their key appears in the
+ * list. Omitted or null keeps today's behavior — every scoped asset. The
+ * tenant cache still holds the RAW asset rows under the existing
+ * `theme-assets|<merchant>` key (same namespace, same `invalidate` calls in
+ * the write paths above), and filtering applies per request after the fetch,
+ * so two pages with different skins can never poison each other's output.
+ * RLS/tenant scoping is unchanged: same query, same `assertTenantId`.
  */
 export async function storefrontThemeCss(
   merchantId: string,
   themeId: string | null,
+  usedSkinKeys?: readonly string[] | null,
 ): Promise<string> {
   assertTenantId(merchantId, "storefrontThemeCss");
   const { publicClient } = await import("@/lib/pricing.server");
@@ -199,5 +210,28 @@ export async function storefrontThemeCss(
       .limit(200);
     return ((data ?? []) as Row[]).map(toAsset);
   });
-  return combineThemeCss(assets, themeId);
+  return combineThemeCss(assets, themeId, usedSkinKeys ?? undefined);
+}
+
+/**
+ * Per-page variant: derives the used skin keys from the rendering page
+ * (header + main + footer) via `usedWidgetSkins` and combines only matching
+ * skin assets. Fail-open — any failure (including a malformed AST) falls
+ * back to today's behavior: all scoped assets.
+ */
+export async function storefrontThemeCssForPage(
+  merchantId: string,
+  themeId: string | null,
+  ast: ThemeAst | null | undefined,
+): Promise<string> {
+  let used: string[] | undefined;
+  try {
+    if (ast) {
+      const { usedWidgetSkins } = await import("@/lib/builder-ast");
+      used = usedWidgetSkins(ast).map((skin) => skin.key);
+    }
+  } catch {
+    used = undefined;
+  }
+  return storefrontThemeCss(merchantId, themeId, used);
 }

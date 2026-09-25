@@ -6,10 +6,12 @@ import {
   cleanAssetName,
   combineThemeCss,
   cssStats,
+  filterSkinCss,
   formatAssetBytes,
   isCssSafe,
   parseTokenOverrides,
   sanitiseThemeCss,
+  skinKeyForAssetName,
   sortAssets,
   tokensToCss,
   validateCss,
@@ -177,5 +179,227 @@ describe("listing helpers", () => {
     expect(
       assetSummary(asset({ bytes: 1024, themeId: "t1", enabled: false })),
     ).toBe("This theme · 1.0 KB · off");
+  });
+});
+
+describe("skin asset names (lane B2-1)", () => {
+  it("keys skin-<type>-<skin>.css to type:skin", () => {
+    expect(skinKeyForAssetName("skin-product_rail-minimal.css")).toBe(
+      "product_rail:minimal",
+    );
+    expect(skinKeyForAssetName("skin-hero_carousel-split.css")).toBe(
+      "hero_carousel:split",
+    );
+    expect(skinKeyForAssetName("  skin-testimonials-wall.css  ")).toBe(
+      "testimonials:wall",
+    );
+  });
+
+  it("fails open: non-skin names return null and combine like ordinary css", () => {
+    for (const name of [
+      "custom.css",
+      "skin.css",
+      "skin-minimal.css",
+      "skin-a-b.css.map",
+      "skin-.css",
+      "",
+      "   ",
+      "skin-a/b.css",
+    ])
+      expect(skinKeyForAssetName(name), name).toBeNull();
+    expect(skinKeyForAssetName(null)).toBeNull();
+    expect(skinKeyForAssetName(undefined)).toBeNull();
+  });
+});
+
+describe("combineThemeCss with used skins (lane B2-1)", () => {
+  const skin = (name: string, content: string, id = name) =>
+    asset({ id, kind: "css", name, content });
+  const list = () => [
+    skin("skin-product_rail-minimal.css", ".minimal{color:red}", "skin"),
+    skin("skin-hero_carousel-split.css", ".split{color:blue}", "skin2"),
+    asset({ id: "base", kind: "css", name: "custom.css", content: ".base{}" }),
+    asset({
+      id: "tokens",
+      kind: "tokens",
+      name: "tokens.json",
+      content: JSON.stringify({ "color-primary": "#111" }),
+    }),
+  ];
+
+  it("omitted list keeps today's behavior: every scoped asset combines", () => {
+    for (const used of [undefined, null] as const) {
+      const css = combineThemeCss(list(), null, used);
+      expect(css).toContain(".minimal{color:red}");
+      expect(css).toContain(".split{color:blue}");
+      expect(css).toContain(".base{}");
+      expect(css).toContain("--color-primary");
+    }
+  });
+
+  it("includes only the skin assets the page uses", () => {
+    const css = combineThemeCss(list(), null, ["product_rail:minimal"]);
+    expect(css).toContain(".minimal{color:red}");
+    expect(css).not.toContain(".split{color:blue}");
+    expect(css).toContain(".base{}");
+    expect(css).toContain("--color-primary");
+  });
+
+  it("an empty used list drops skin assets but keeps everything else", () => {
+    const css = combineThemeCss(list(), null, []);
+    expect(css).not.toContain(".minimal{color:red}");
+    expect(css).not.toContain(".split{color:blue}");
+    expect(css).toContain(".base{}");
+    expect(css).toContain("--color-primary");
+  });
+
+  it("still honours theme scope and enabled flags", () => {
+    const css = combineThemeCss(
+      [
+        skin("skin-product_rail-minimal.css", ".minimal{}", "s1"),
+        asset({
+          id: "s2",
+          kind: "css",
+          name: "skin-product_rail-minimal.css",
+          content: ".other-theme{}",
+          themeId: "other",
+        }),
+        asset({
+          id: "s3",
+          kind: "css",
+          name: "skin-product_rail-minimal.css",
+          content: ".disabled{}",
+          enabled: false,
+        }),
+      ],
+      "mine",
+      ["product_rail:minimal"],
+    );
+    expect(css).toContain(".minimal{}");
+    expect(css).not.toContain(".other-theme{}");
+    expect(css).not.toContain(".disabled{}");
+  });
+
+  it("non-css assets named like skins are never filtered", () => {
+    const css = combineThemeCss(
+      [
+        asset({
+          id: "t",
+          kind: "tokens",
+          name: "skin-product_rail-minimal.json",
+          content: JSON.stringify({ "color-primary": "#222" }),
+        }),
+      ],
+      null,
+      [],
+    );
+    expect(css).toContain("--color-primary");
+  });
+});
+
+describe("filterSkinCss (lane B2-1)", () => {
+  const SHEET = [
+    ".base{color:black}",
+    '[data-widget="product_rail"][data-skin="minimal"]{color:red}',
+    '[data-widget="product_rail"][data-skin="editorial"]{color:green}',
+    '[data-widget="hero_carousel"][data-skin="split"] h2{color:blue}',
+  ].join("\n");
+
+  it("returns css without skin selectors byte-identical", () => {
+    const css = ".a{color:red}\n:root{--x:1}";
+    expect(filterSkinCss(css, [])).toBe(css);
+    expect(filterSkinCss(css, ["product_rail:minimal"])).toBe(css);
+  });
+
+  it("keeps used skins plus ordinary rules, drops unused skins", () => {
+    const css = filterSkinCss(SHEET, ["product_rail:minimal"]);
+    expect(css).toContain(".base{color:black}");
+    expect(css).toContain('[data-skin="minimal"]');
+    expect(css).not.toContain('[data-skin="editorial"]');
+    expect(css).not.toContain('[data-skin="split"]');
+  });
+
+  it("an empty used list drops every skin rule and keeps the rest", () => {
+    const css = filterSkinCss(SHEET, []);
+    expect(css).toContain(".base{color:black}");
+    expect(css).not.toContain("data-skin=");
+  });
+
+  it("an undefined used list fails open to the input unchanged", () => {
+    expect(filterSkinCss(SHEET, undefined)).toBe(SHEET);
+    expect(filterSkinCss(SHEET, null)).toBe(SHEET);
+  });
+
+  it("empty input stays empty", () => {
+    expect(filterSkinCss("", [])).toBe("");
+    expect(filterSkinCss(null, [])).toBe("");
+    expect(filterSkinCss(undefined, [])).toBe("");
+  });
+
+  it("recurses into @media: keeps wrappers with used inners, drops emptied ones", () => {
+    const css = [
+      "@media (max-width:767px){",
+      '[data-widget="product_rail"][data-skin="minimal"] ul{grid:none}',
+      '[data-widget="product_rail"][data-skin="editorial"] ul{grid:none}',
+      "}",
+      "@media (prefers-reduced-motion: reduce){",
+      '[data-widget="product_rail"][data-skin="editorial"] *{animation:none}',
+      "}",
+      ".keep{color:black}",
+    ].join("\n");
+    const out = filterSkinCss(css, ["product_rail:minimal"]);
+    expect(out).toContain("max-width:767px");
+    expect(out).toContain('[data-skin="minimal"]');
+    expect(out).not.toContain('[data-skin="editorial"]');
+    expect(out).not.toContain("prefers-reduced-motion");
+    expect(out).toContain(".keep{color:black}");
+  });
+
+  it("keeps generic [data-widget][data-skin] rules while any skin is used", () => {
+    const css = [
+      "[data-widget][data-skin]{--gap:12px}",
+      '[data-widget="product_rail"][data-skin="minimal"]{color:red}',
+    ].join("\n");
+    expect(filterSkinCss(css, ["product_rail:minimal"])).toContain("--gap");
+    const dropped = filterSkinCss(css, []);
+    expect(dropped).not.toContain("--gap");
+    expect(dropped).not.toContain("data-skin=");
+  });
+
+  it("keeps mixed selector lists that mention any neutral selector", () => {
+    const css = [
+      '[data-widget="product_rail"][data-skin="editorial"], .promo{color:red}',
+      "[data-widget=\"testimonials\"][data-skin='wall']{color:blue}",
+    ].join("\n");
+    const out = filterSkinCss(css, ["product_rail:minimal"]);
+    expect(out).toContain(".promo");
+    expect(out).not.toContain("[data-skin='wall']");
+  });
+
+  it("keeps @font-face and other at-rule blocks whole", () => {
+    const css = [
+      '@font-face{font-family:"X";src:url("/x.woff2")}',
+      '[data-widget="product_rail"][data-skin="editorial"]{color:green}',
+    ].join("\n");
+    const out = filterSkinCss(css, []);
+    expect(out).toContain("@font-face");
+    expect(out).not.toContain('[data-skin="editorial"]');
+  });
+
+  it("fails open on unbalanced or stray input", () => {
+    const broken = ".a{color:red";
+    expect(filterSkinCss(broken, [])).toBe(broken);
+    const stray = ".a{color:red}}";
+    expect(filterSkinCss(stray, [])).toBe(stray);
+    const braceInString = '.a{content:"{"}';
+    expect(filterSkinCss(braceInString, [])).toBe(braceInString);
+  });
+
+  it("ignores skin-looking text inside comments", () => {
+    const css = [
+      '/* [data-widget="product_rail"][data-skin="editorial"] note */',
+      ".real{color:black}",
+    ].join("\n");
+    expect(filterSkinCss(css, [])).toBe(css);
   });
 });

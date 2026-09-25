@@ -8,4336 +8,4336 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as SplatRouteImport } from "./routes/$";
-import { Route as AuthenticatedRouteRouteImport } from "./routes/_authenticated/route";
-import { Route as AboutRouteImport } from "./routes/about";
-import { Route as AccountRouteImport } from "./routes/account";
-import { Route as AuthRouteImport } from "./routes/auth";
-import { Route as BlogDotatomRouteImport } from "./routes/blog[.]atom";
-import { Route as BlogDotjsonRouteImport } from "./routes/blog[.]json";
-import { Route as BlogDotxmlRouteImport } from "./routes/blog[.]xml";
-import { Route as CartRouteImport } from "./routes/cart";
-import { Route as CheckoutRouteImport } from "./routes/checkout";
-import { Route as ContactRouteImport } from "./routes/contact";
-import { Route as CustomersRouteImport } from "./routes/customers";
-import { Route as FaqRouteImport } from "./routes/faq";
-import { Route as FeaturesRouteImport } from "./routes/features";
-import { Route as FulfilmentRouteImport } from "./routes/fulfilment";
-import { Route as LlmsDottxtRouteImport } from "./routes/llms[.]txt";
-import { Route as PaymentsRouteImport } from "./routes/payments";
-import { Route as PricingRouteImport } from "./routes/pricing";
-import { Route as ResetPasswordRouteImport } from "./routes/reset-password";
-import { Route as RobotsDottxtRouteImport } from "./routes/robots[.]txt";
-import { Route as RootRouteImport } from "./routes/root";
-import { Route as SearchRouteImport } from "./routes/search";
-import { Route as SecurityRouteImport } from "./routes/security";
-import { Route as SitemapDotxmlRouteImport } from "./routes/sitemap[.]xml";
-import { Route as StatusRouteImport } from "./routes/status";
-import { Route as TrackRouteImport } from "./routes/track";
-import { Route as UnsubscribeRouteImport } from "./routes/unsubscribe";
-import { Route as AuthenticatedDashboardRouteImport } from "./routes/_authenticated/dashboard";
-import { Route as AuthenticatedOnboardingRouteImport } from "./routes/_authenticated/onboarding";
-import { Route as BlogIndexRouteImport } from "./routes/blog.index";
-import { Route as BlogSlugRouteImport } from "./routes/blog.$slug";
-import { Route as CCollectionSlugRouteImport } from "./routes/c.$collectionSlug";
-import { Route as DevBandsRouteImport } from "./routes/dev.bands";
-import { Route as DocsIndexRouteImport } from "./routes/docs.index";
-import { Route as DocsSitemapDotxmlRouteImport } from "./routes/docs.sitemap[.]xml";
-import { Route as InvoiceTokenRouteImport } from "./routes/invoice.$token";
-import { Route as LegalIndexRouteImport } from "./routes/legal.index";
-import { Route as LegalDocRouteImport } from "./routes/legal.$doc";
-import { Route as NewsletterVerifyRouteImport } from "./routes/newsletter.verify";
-import { Route as OrderOrderIdRouteImport } from "./routes/order.$orderId";
-import { Route as PProductSlugRouteImport } from "./routes/p.$productSlug";
-import { Route as PagesPageSlugRouteImport } from "./routes/pages.$pageSlug";
-import { Route as ProductsProductIdRouteImport } from "./routes/products.$productId";
-import { Route as RootIndexRouteImport } from "./routes/root/index";
-import { Route as RootAccessRouteImport } from "./routes/root/access";
-import { Route as RootAiRouteImport } from "./routes/root/ai";
-import { Route as RootAuditRouteImport } from "./routes/root/audit";
-import { Route as RootAuthRouteImport } from "./routes/root/auth";
-import { Route as RootCouponsRouteImport } from "./routes/root/coupons";
-import { Route as RootFraudRouteImport } from "./routes/root/fraud";
-import { Route as RootGatewayRouteImport } from "./routes/root/gateway";
-import { Route as RootLoginRouteImport } from "./routes/root/login";
-import { Route as RootMarketingRouteImport } from "./routes/root/marketing";
-import { Route as RootMoneyRouteImport } from "./routes/root/money";
-import { Route as RootObservabilityRouteImport } from "./routes/root/observability";
-import { Route as RootOpsRouteImport } from "./routes/root/ops";
-import { Route as RootPayoutsRouteImport } from "./routes/root/payouts";
-import { Route as RootPlansRouteImport } from "./routes/root/plans";
-import { Route as RootRevenueRouteImport } from "./routes/root/revenue";
-import { Route as RootSettingsRouteImport } from "./routes/root/settings";
-import { Route as RootSnapshotsRouteImport } from "./routes/root/snapshots";
-import { Route as RootStatusRouteImport } from "./routes/root/status";
-import { Route as RootTenancyRouteImport } from "./routes/root/tenancy";
-import { Route as RootTenantsRouteImport } from "./routes/root/tenants";
-import { Route as RootTrialRouteImport } from "./routes/root/trial";
-import { Route as RootUsersRouteImport } from "./routes/root/users";
-import { Route as SitemapsKindRouteImport } from "./routes/sitemaps.$kind";
-import { Route as ThemePreviewKeyRouteImport } from "./routes/theme-preview.$key";
-import { Route as DotwellKnownAcmeChallengeTokenRouteImport } from "./routes/[.]well-known.acme-challenge.$token";
-import { Route as AuthenticatedDashboardIndexRouteImport } from "./routes/_authenticated/dashboard/index";
-import { Route as AuthenticatedDashboardActivityRouteImport } from "./routes/_authenticated/dashboard/activity";
-import { Route as AuthenticatedDashboardAnalyticsRouteImport } from "./routes/_authenticated/dashboard/analytics";
-import { Route as AuthenticatedDashboardApprovalsRouteImport } from "./routes/_authenticated/dashboard/approvals";
-import { Route as AuthenticatedDashboardBrandsRouteImport } from "./routes/_authenticated/dashboard/brands";
-import { Route as AuthenticatedDashboardBuilderRouteImport } from "./routes/_authenticated/dashboard/builder";
-import { Route as AuthenticatedDashboardBulkEditorRouteImport } from "./routes/_authenticated/dashboard/bulk-editor";
-import { Route as AuthenticatedDashboardBundlesRouteImport } from "./routes/_authenticated/dashboard/bundles";
-import { Route as AuthenticatedDashboardCartsRouteImport } from "./routes/_authenticated/dashboard/carts";
-import { Route as AuthenticatedDashboardCatalogRouteImport } from "./routes/_authenticated/dashboard/catalog";
-import { Route as AuthenticatedDashboardCategoriesRouteImport } from "./routes/_authenticated/dashboard/categories";
-import { Route as AuthenticatedDashboardCollectionsRouteImport } from "./routes/_authenticated/dashboard/collections";
-import { Route as AuthenticatedDashboardCustomersRouteImport } from "./routes/_authenticated/dashboard/customers";
-import { Route as AuthenticatedDashboardDevelopersRouteImport } from "./routes/_authenticated/dashboard/developers";
-import { Route as AuthenticatedDashboardDraftOrdersRouteImport } from "./routes/_authenticated/dashboard/draft-orders";
-import { Route as AuthenticatedDashboardExperimentsRouteImport } from "./routes/_authenticated/dashboard/experiments";
-import { Route as AuthenticatedDashboardExportsRouteImport } from "./routes/_authenticated/dashboard/exports";
-import { Route as AuthenticatedDashboardGiftCardsRouteImport } from "./routes/_authenticated/dashboard/gift-cards";
-import { Route as AuthenticatedDashboardInventoryRouteImport } from "./routes/_authenticated/dashboard/inventory";
-import { Route as AuthenticatedDashboardPagesRouteImport } from "./routes/_authenticated/dashboard/pages";
-import { Route as AuthenticatedDashboardPaymentsRouteImport } from "./routes/_authenticated/dashboard/payments";
-import { Route as AuthenticatedDashboardPlansRouteImport } from "./routes/_authenticated/dashboard/plans";
-import { Route as AuthenticatedDashboardPosRouteImport } from "./routes/_authenticated/dashboard/pos";
-import { Route as AuthenticatedDashboardPricingRouteImport } from "./routes/_authenticated/dashboard/pricing";
-import { Route as AuthenticatedDashboardPurchasingRouteImport } from "./routes/_authenticated/dashboard/purchasing";
-import { Route as AuthenticatedDashboardReturnsRouteImport } from "./routes/_authenticated/dashboard/returns";
-import { Route as AuthenticatedDashboardReviewsRouteImport } from "./routes/_authenticated/dashboard/reviews";
-import { Route as AuthenticatedDashboardSettingsRouteImport } from "./routes/_authenticated/dashboard/settings";
-import { Route as AuthenticatedDashboardShippingRouteImport } from "./routes/_authenticated/dashboard/shipping";
-import { Route as AuthenticatedDashboardStaffRouteImport } from "./routes/_authenticated/dashboard/staff";
-import { Route as AuthenticatedDashboardSubscriptionsRouteImport } from "./routes/_authenticated/dashboard/subscriptions";
-import { Route as AuthenticatedDashboardSupportRouteImport } from "./routes/_authenticated/dashboard/support";
-import { Route as AuthenticatedOauthAuthorizeRouteImport } from "./routes/_authenticated/oauth/authorize";
-import { Route as ApiPublicErrorAlertRouteImport } from "./routes/api/public/error-alert";
-import { Route as ApiPublicErrorsRouteImport } from "./routes/api/public/errors";
-import { Route as ApiPublicMetricsRouteImport } from "./routes/api/public/metrics";
-import { Route as ApiPublicVitalsRouteImport } from "./routes/api/public/vitals";
-import { Route as BlogAuthorSlugRouteImport } from "./routes/blog.author.$slug";
-import { Route as BlogCategorySlugRouteImport } from "./routes/blog.category.$slug";
-import { Route as BlogTagSlugRouteImport } from "./routes/blog.tag.$slug";
-import { Route as DocsVersionSlugRouteImport } from "./routes/docs.$version.$slug";
-import { Route as OrderOrderIdConfirmationRouteImport } from "./routes/order.$orderId.confirmation";
-import { Route as StoreSlugIndexRouteImport } from "./routes/store.$slug.index";
-import { Route as StoreSlugAccountRouteImport } from "./routes/store.$slug.account";
-import { Route as StoreSlugCartRouteImport } from "./routes/store.$slug.cart";
-import { Route as StoreSlugCheckoutRouteImport } from "./routes/store.$slug.checkout";
-import { Route as StoreSlugLlmsDottxtRouteImport } from "./routes/store.$slug.llms[.]txt";
-import { Route as StoreSlugRobotsDottxtRouteImport } from "./routes/store.$slug.robots[.]txt";
-import { Route as StoreSlugSearchRouteImport } from "./routes/store.$slug.search";
-import { Route as StoreSlugSitemapDotxmlRouteImport } from "./routes/store.$slug.sitemap[.]xml";
-import { Route as StoreSlugTrackRouteImport } from "./routes/store.$slug.track";
-import { Route as AuthenticatedDashboardAiAssistantRouteImport } from "./routes/_authenticated/dashboard/ai/assistant";
-import { Route as AuthenticatedDashboardAiSettingsRouteImport } from "./routes/_authenticated/dashboard/ai/settings";
-import { Route as AuthenticatedDashboardAnalyticsInsightsRouteImport } from "./routes/_authenticated/dashboard/analytics_.insights";
-import { Route as AuthenticatedDashboardAnalyticsReportsRouteImport } from "./routes/_authenticated/dashboard/analytics_.reports";
-import { Route as AuthenticatedDashboardBillingIndexRouteImport } from "./routes/_authenticated/dashboard/billing/index";
-import { Route as AuthenticatedDashboardBillingInvoicesRouteImport } from "./routes/_authenticated/dashboard/billing/invoices";
-import { Route as AuthenticatedDashboardContentIndexRouteImport } from "./routes/_authenticated/dashboard/content/index";
-import { Route as AuthenticatedDashboardContentCustomCodeRouteImport } from "./routes/_authenticated/dashboard/content/custom-code";
-import { Route as AuthenticatedDashboardContentEditorRouteImport } from "./routes/_authenticated/dashboard/content/editor";
-import { Route as AuthenticatedDashboardContentMediaRouteImport } from "./routes/_authenticated/dashboard/content/media";
-import { Route as AuthenticatedDashboardContentMenusRouteImport } from "./routes/_authenticated/dashboard/content/menus";
-import { Route as AuthenticatedDashboardContentPagesRouteImport } from "./routes/_authenticated/dashboard/content/pages";
-import { Route as AuthenticatedDashboardContentPostsRouteImport } from "./routes/_authenticated/dashboard/content/posts";
-import { Route as AuthenticatedDashboardContentThemesRouteImport } from "./routes/_authenticated/dashboard/content/themes";
-import { Route as AuthenticatedDashboardFraudIndexRouteImport } from "./routes/_authenticated/dashboard/fraud/index";
-import { Route as AuthenticatedDashboardFraudAdDefenseRouteImport } from "./routes/_authenticated/dashboard/fraud/ad-defense";
-import { Route as AuthenticatedDashboardFraudAuditRouteImport } from "./routes/_authenticated/dashboard/fraud/audit";
-import { Route as AuthenticatedDashboardMarketingIndexRouteImport } from "./routes/_authenticated/dashboard/marketing/index";
-import { Route as AuthenticatedDashboardMarketingArticlesRouteImport } from "./routes/_authenticated/dashboard/marketing/articles";
-import { Route as AuthenticatedDashboardMarketingCampaignsRouteImport } from "./routes/_authenticated/dashboard/marketing/campaigns";
-import { Route as AuthenticatedDashboardMarketingCodesRouteImport } from "./routes/_authenticated/dashboard/marketing/codes";
-import { Route as AuthenticatedDashboardMarketingCouponsRouteImport } from "./routes/_authenticated/dashboard/marketing/coupons";
-import { Route as AuthenticatedDashboardMarketingFormsRouteImport } from "./routes/_authenticated/dashboard/marketing/forms";
-import { Route as AuthenticatedDashboardMarketingMediaRouteImport } from "./routes/_authenticated/dashboard/marketing/media";
-import { Route as AuthenticatedDashboardMarketingSeoRouteImport } from "./routes/_authenticated/dashboard/marketing/seo";
-import { Route as AuthenticatedDashboardMarketingSequencesRouteImport } from "./routes/_authenticated/dashboard/marketing/sequences";
-import { Route as AuthenticatedDashboardMarketingSubscribersRouteImport } from "./routes/_authenticated/dashboard/marketing/subscribers";
-import { Route as AuthenticatedDashboardMarketingTemplatesRouteImport } from "./routes/_authenticated/dashboard/marketing/templates";
-import { Route as AuthenticatedDashboardMarketplaceIndexRouteImport } from "./routes/_authenticated/dashboard/marketplace/index";
-import { Route as AuthenticatedDashboardMarketplaceCreatorRouteImport } from "./routes/_authenticated/dashboard/marketplace/creator";
-import { Route as AuthenticatedDashboardMarketplaceModerationRouteImport } from "./routes/_authenticated/dashboard/marketplace/moderation";
-import { Route as AuthenticatedDashboardMarketplaceVersionsRouteImport } from "./routes/_authenticated/dashboard/marketplace/versions";
-import { Route as AuthenticatedDashboardMoneyPaymentsRouteImport } from "./routes/_authenticated/dashboard/money/payments";
-import { Route as AuthenticatedDashboardOrdersIndexRouteImport } from "./routes/_authenticated/dashboard/orders/index";
-import { Route as AuthenticatedDashboardOrdersOrderIdRouteImport } from "./routes/_authenticated/dashboard/orders/$orderId";
-import { Route as AuthenticatedDashboardPluginsIndexRouteImport } from "./routes/_authenticated/dashboard/plugins/index";
-import { Route as AuthenticatedDashboardPluginsNewRouteImport } from "./routes/_authenticated/dashboard/plugins/new";
-import { Route as AuthenticatedDashboardProductsIndexRouteImport } from "./routes/_authenticated/dashboard/products/index";
-import { Route as AuthenticatedDashboardProductsProductIdRouteImport } from "./routes/_authenticated/dashboard/products/$productId";
-import { Route as AuthenticatedDashboardProductsNewRouteImport } from "./routes/_authenticated/dashboard/products/new";
-import { Route as AuthenticatedDashboardSettingsApiRouteImport } from "./routes/_authenticated/dashboard/settings_.api";
-import { Route as AuthenticatedDashboardSettingsDomainsRouteImport } from "./routes/_authenticated/dashboard/settings_.domains";
-import { Route as AuthenticatedDashboardSettingsEmailRouteImport } from "./routes/_authenticated/dashboard/settings_.email";
-import { Route as AuthenticatedDashboardSettingsInfrastructureRouteImport } from "./routes/_authenticated/dashboard/settings_.infrastructure";
-import { Route as AuthenticatedDashboardSettingsProvidersRouteImport } from "./routes/_authenticated/dashboard/settings_.providers";
-import { Route as AuthenticatedDashboardSettingsSecurityRouteImport } from "./routes/_authenticated/dashboard/settings_.security";
-import { Route as AuthenticatedDashboardSettingsSeoRouteImport } from "./routes/_authenticated/dashboard/settings_.seo";
-import { Route as ApiPublicAdsClickRouteImport } from "./routes/api/public/ads/click";
-import { Route as ApiPublicAnalyticsBeaconRouteImport } from "./routes/api/public/analytics/beacon";
-import { Route as ApiPublicChannelsChannelRouteImport } from "./routes/api/public/channels/$channel";
-import { Route as ApiPublicCouriersCarrierRouteImport } from "./routes/api/public/couriers/$carrier";
-import { Route as ApiPublicCronAdFraudRouteImport } from "./routes/api/public/cron/ad-fraud";
-import { Route as ApiPublicCronAnalyticsRouteImport } from "./routes/api/public/cron/analytics";
-import { Route as ApiPublicCronBillingRouteImport } from "./routes/api/public/cron/billing";
-import { Route as ApiPublicCronContentHealthRouteImport } from "./routes/api/public/cron/content-health";
-import { Route as ApiPublicCronCouriersRouteImport } from "./routes/api/public/cron/couriers";
-import { Route as ApiPublicCronDomainsRouteImport } from "./routes/api/public/cron/domains";
-import { Route as ApiPublicCronGrowthRouteImport } from "./routes/api/public/cron/growth";
-import { Route as ApiPublicCronJobsRouteImport } from "./routes/api/public/cron/jobs";
-import { Route as ApiPublicCronNotificationsRouteImport } from "./routes/api/public/cron/notifications";
-import { Route as ApiPublicCronOpsRouteImport } from "./routes/api/public/cron/ops";
-import { Route as ApiPublicCronPayoutsRouteImport } from "./routes/api/public/cron/payouts";
-import { Route as ApiPublicCronPurgeRouteImport } from "./routes/api/public/cron/purge";
-import { Route as ApiPublicCronSearchConsoleRouteImport } from "./routes/api/public/cron/search-console";
-import { Route as ApiPublicCronSupportRouteImport } from "./routes/api/public/cron/support";
-import { Route as ApiPublicCronThemesRouteImport } from "./routes/api/public/cron/themes";
-import { Route as ApiPublicCronWebhooksRouteImport } from "./routes/api/public/cron/webhooks";
-import { Route as ApiPublicDomainsCallbackRouteImport } from "./routes/api/public/domains/callback";
-import { Route as ApiPublicDomainsVerifySniRouteImport } from "./routes/api/public/domains/verify-sni";
-import { Route as ApiPublicFontSplatRouteImport } from "./routes/api/public/font/$";
-import { Route as ApiPublicImgSplatRouteImport } from "./routes/api/public/img/$";
-import { Route as ApiPublicMediaSplatRouteImport } from "./routes/api/public/media/$";
-import { Route as ApiPublicNewsletterFeedbackRouteImport } from "./routes/api/public/newsletter/feedback";
-import { Route as ApiPublicOauthRevokeRouteImport } from "./routes/api/public/oauth/revoke";
-import { Route as ApiPublicOauthTokenRouteImport } from "./routes/api/public/oauth/token";
-import { Route as ApiPublicPaymentsProviderRouteImport } from "./routes/api/public/payments/$provider";
-import { Route as ApiPublicPaymentsReturnRouteImport } from "./routes/api/public/payments/return";
-import { Route as ApiPublicPhSplatRouteImport } from "./routes/api/public/ph.$";
-import { Route as ApiPublicV1SplatRouteImport } from "./routes/api/public/v1/$";
-import { Route as StoreSlugBlogIndexRouteImport } from "./routes/store.$slug.blog.index";
-import { Route as StoreSlugBlogSlugRouteImport } from "./routes/store.$slug.blog.$slug";
-import { Route as StoreSlugCCollectionSlugRouteImport } from "./routes/store.$slug.c.$collectionSlug";
-import { Route as StoreSlugOrderOrderIdRouteImport } from "./routes/store.$slug.order.$orderId";
-import { Route as StoreSlugPProductSlugRouteImport } from "./routes/store.$slug.p.$productSlug";
-import { Route as StoreSlugPagesPageSlugRouteImport } from "./routes/store.$slug.pages.$pageSlug";
-import { Route as StoreSlugSitemapsKindRouteImport } from "./routes/store.$slug.sitemaps.$kind";
-import { Route as AuthenticatedDashboardOrdersOrderIdInvoiceRouteImport } from "./routes/_authenticated/dashboard/orders/$orderId_.invoice";
-import { Route as ApiPublicPaymentsLiveProviderRouteImport } from "./routes/api/public/payments/live/$provider";
-import { Route as ApiPublicPaymentsMockProviderRouteImport } from "./routes/api/public/payments/mock/$provider";
-import { Route as ApiPublicPaymentsPlatformProviderRouteImport } from "./routes/api/public/payments/platform/$provider";
-import { Route as ApiPublicPaymentsPlatformReturnRouteImport } from "./routes/api/public/payments/platform/return";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as SplatRouteImport } from './routes/$'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccountRouteImport } from './routes/account'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BlogDotatomRouteImport } from './routes/blog[.]atom'
+import { Route as BlogDotjsonRouteImport } from './routes/blog[.]json'
+import { Route as BlogDotxmlRouteImport } from './routes/blog[.]xml'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CustomersRouteImport } from './routes/customers'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as FulfilmentRouteImport } from './routes/fulfilment'
+import { Route as LlmsDottxtRouteImport } from './routes/llms[.]txt'
+import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as RootRouteImport } from './routes/root'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as SecurityRouteImport } from './routes/security'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as StatusRouteImport } from './routes/status'
+import { Route as TrackRouteImport } from './routes/track'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as CCollectionSlugRouteImport } from './routes/c.$collectionSlug'
+import { Route as DevBandsRouteImport } from './routes/dev.bands'
+import { Route as DocsIndexRouteImport } from './routes/docs.index'
+import { Route as DocsSitemapDotxmlRouteImport } from './routes/docs.sitemap[.]xml'
+import { Route as InvoiceTokenRouteImport } from './routes/invoice.$token'
+import { Route as LegalIndexRouteImport } from './routes/legal.index'
+import { Route as LegalDocRouteImport } from './routes/legal.$doc'
+import { Route as NewsletterVerifyRouteImport } from './routes/newsletter.verify'
+import { Route as OrderOrderIdRouteImport } from './routes/order.$orderId'
+import { Route as PProductSlugRouteImport } from './routes/p.$productSlug'
+import { Route as PagesPageSlugRouteImport } from './routes/pages.$pageSlug'
+import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
+import { Route as RootIndexRouteImport } from './routes/root/index'
+import { Route as RootAccessRouteImport } from './routes/root/access'
+import { Route as RootAiRouteImport } from './routes/root/ai'
+import { Route as RootAuditRouteImport } from './routes/root/audit'
+import { Route as RootAuthRouteImport } from './routes/root/auth'
+import { Route as RootCouponsRouteImport } from './routes/root/coupons'
+import { Route as RootFraudRouteImport } from './routes/root/fraud'
+import { Route as RootGatewayRouteImport } from './routes/root/gateway'
+import { Route as RootLoginRouteImport } from './routes/root/login'
+import { Route as RootMarketingRouteImport } from './routes/root/marketing'
+import { Route as RootMoneyRouteImport } from './routes/root/money'
+import { Route as RootObservabilityRouteImport } from './routes/root/observability'
+import { Route as RootOpsRouteImport } from './routes/root/ops'
+import { Route as RootPayoutsRouteImport } from './routes/root/payouts'
+import { Route as RootPlansRouteImport } from './routes/root/plans'
+import { Route as RootRevenueRouteImport } from './routes/root/revenue'
+import { Route as RootSettingsRouteImport } from './routes/root/settings'
+import { Route as RootSnapshotsRouteImport } from './routes/root/snapshots'
+import { Route as RootStatusRouteImport } from './routes/root/status'
+import { Route as RootTenancyRouteImport } from './routes/root/tenancy'
+import { Route as RootTenantsRouteImport } from './routes/root/tenants'
+import { Route as RootTrialRouteImport } from './routes/root/trial'
+import { Route as RootUsersRouteImport } from './routes/root/users'
+import { Route as SitemapsKindRouteImport } from './routes/sitemaps.$kind'
+import { Route as ThemePreviewKeyRouteImport } from './routes/theme-preview.$key'
+import { Route as DotwellKnownAcmeChallengeTokenRouteImport } from './routes/[.]well-known.acme-challenge.$token'
+import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
+import { Route as AuthenticatedDashboardActivityRouteImport } from './routes/_authenticated/dashboard/activity'
+import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_authenticated/dashboard/analytics'
+import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_authenticated/dashboard/approvals'
+import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_authenticated/dashboard/brands'
+import { Route as AuthenticatedDashboardBuilderRouteImport } from './routes/_authenticated/dashboard/builder'
+import { Route as AuthenticatedDashboardBulkEditorRouteImport } from './routes/_authenticated/dashboard/bulk-editor'
+import { Route as AuthenticatedDashboardBundlesRouteImport } from './routes/_authenticated/dashboard/bundles'
+import { Route as AuthenticatedDashboardCartsRouteImport } from './routes/_authenticated/dashboard/carts'
+import { Route as AuthenticatedDashboardCatalogRouteImport } from './routes/_authenticated/dashboard/catalog'
+import { Route as AuthenticatedDashboardCategoriesRouteImport } from './routes/_authenticated/dashboard/categories'
+import { Route as AuthenticatedDashboardCollectionsRouteImport } from './routes/_authenticated/dashboard/collections'
+import { Route as AuthenticatedDashboardCustomersRouteImport } from './routes/_authenticated/dashboard/customers'
+import { Route as AuthenticatedDashboardDevelopersRouteImport } from './routes/_authenticated/dashboard/developers'
+import { Route as AuthenticatedDashboardDraftOrdersRouteImport } from './routes/_authenticated/dashboard/draft-orders'
+import { Route as AuthenticatedDashboardExperimentsRouteImport } from './routes/_authenticated/dashboard/experiments'
+import { Route as AuthenticatedDashboardExportsRouteImport } from './routes/_authenticated/dashboard/exports'
+import { Route as AuthenticatedDashboardGiftCardsRouteImport } from './routes/_authenticated/dashboard/gift-cards'
+import { Route as AuthenticatedDashboardInventoryRouteImport } from './routes/_authenticated/dashboard/inventory'
+import { Route as AuthenticatedDashboardPagesRouteImport } from './routes/_authenticated/dashboard/pages'
+import { Route as AuthenticatedDashboardPaymentsRouteImport } from './routes/_authenticated/dashboard/payments'
+import { Route as AuthenticatedDashboardPlansRouteImport } from './routes/_authenticated/dashboard/plans'
+import { Route as AuthenticatedDashboardPosRouteImport } from './routes/_authenticated/dashboard/pos'
+import { Route as AuthenticatedDashboardPricingRouteImport } from './routes/_authenticated/dashboard/pricing'
+import { Route as AuthenticatedDashboardPurchasingRouteImport } from './routes/_authenticated/dashboard/purchasing'
+import { Route as AuthenticatedDashboardReturnsRouteImport } from './routes/_authenticated/dashboard/returns'
+import { Route as AuthenticatedDashboardReviewsRouteImport } from './routes/_authenticated/dashboard/reviews'
+import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard/settings'
+import { Route as AuthenticatedDashboardShippingRouteImport } from './routes/_authenticated/dashboard/shipping'
+import { Route as AuthenticatedDashboardStaffRouteImport } from './routes/_authenticated/dashboard/staff'
+import { Route as AuthenticatedDashboardSubscriptionsRouteImport } from './routes/_authenticated/dashboard/subscriptions'
+import { Route as AuthenticatedDashboardSupportRouteImport } from './routes/_authenticated/dashboard/support'
+import { Route as AuthenticatedOauthAuthorizeRouteImport } from './routes/_authenticated/oauth/authorize'
+import { Route as ApiPublicErrorAlertRouteImport } from './routes/api/public/error-alert'
+import { Route as ApiPublicErrorsRouteImport } from './routes/api/public/errors'
+import { Route as ApiPublicMetricsRouteImport } from './routes/api/public/metrics'
+import { Route as ApiPublicVitalsRouteImport } from './routes/api/public/vitals'
+import { Route as BlogAuthorSlugRouteImport } from './routes/blog.author.$slug'
+import { Route as BlogCategorySlugRouteImport } from './routes/blog.category.$slug'
+import { Route as BlogTagSlugRouteImport } from './routes/blog.tag.$slug'
+import { Route as DocsVersionSlugRouteImport } from './routes/docs.$version.$slug'
+import { Route as OrderOrderIdConfirmationRouteImport } from './routes/order.$orderId.confirmation'
+import { Route as StoreSlugIndexRouteImport } from './routes/store.$slug.index'
+import { Route as StoreSlugAccountRouteImport } from './routes/store.$slug.account'
+import { Route as StoreSlugCartRouteImport } from './routes/store.$slug.cart'
+import { Route as StoreSlugCheckoutRouteImport } from './routes/store.$slug.checkout'
+import { Route as StoreSlugLlmsDottxtRouteImport } from './routes/store.$slug.llms[.]txt'
+import { Route as StoreSlugRobotsDottxtRouteImport } from './routes/store.$slug.robots[.]txt'
+import { Route as StoreSlugSearchRouteImport } from './routes/store.$slug.search'
+import { Route as StoreSlugSitemapDotxmlRouteImport } from './routes/store.$slug.sitemap[.]xml'
+import { Route as StoreSlugTrackRouteImport } from './routes/store.$slug.track'
+import { Route as AuthenticatedDashboardAiAssistantRouteImport } from './routes/_authenticated/dashboard/ai/assistant'
+import { Route as AuthenticatedDashboardAiSettingsRouteImport } from './routes/_authenticated/dashboard/ai/settings'
+import { Route as AuthenticatedDashboardAnalyticsInsightsRouteImport } from './routes/_authenticated/dashboard/analytics_.insights'
+import { Route as AuthenticatedDashboardAnalyticsReportsRouteImport } from './routes/_authenticated/dashboard/analytics_.reports'
+import { Route as AuthenticatedDashboardBillingIndexRouteImport } from './routes/_authenticated/dashboard/billing/index'
+import { Route as AuthenticatedDashboardBillingInvoicesRouteImport } from './routes/_authenticated/dashboard/billing/invoices'
+import { Route as AuthenticatedDashboardContentIndexRouteImport } from './routes/_authenticated/dashboard/content/index'
+import { Route as AuthenticatedDashboardContentCustomCodeRouteImport } from './routes/_authenticated/dashboard/content/custom-code'
+import { Route as AuthenticatedDashboardContentEditorRouteImport } from './routes/_authenticated/dashboard/content/editor'
+import { Route as AuthenticatedDashboardContentMediaRouteImport } from './routes/_authenticated/dashboard/content/media'
+import { Route as AuthenticatedDashboardContentMenusRouteImport } from './routes/_authenticated/dashboard/content/menus'
+import { Route as AuthenticatedDashboardContentPagesRouteImport } from './routes/_authenticated/dashboard/content/pages'
+import { Route as AuthenticatedDashboardContentPostsRouteImport } from './routes/_authenticated/dashboard/content/posts'
+import { Route as AuthenticatedDashboardContentThemesRouteImport } from './routes/_authenticated/dashboard/content/themes'
+import { Route as AuthenticatedDashboardFraudIndexRouteImport } from './routes/_authenticated/dashboard/fraud/index'
+import { Route as AuthenticatedDashboardFraudAdDefenseRouteImport } from './routes/_authenticated/dashboard/fraud/ad-defense'
+import { Route as AuthenticatedDashboardFraudAuditRouteImport } from './routes/_authenticated/dashboard/fraud/audit'
+import { Route as AuthenticatedDashboardMarketingIndexRouteImport } from './routes/_authenticated/dashboard/marketing/index'
+import { Route as AuthenticatedDashboardMarketingArticlesRouteImport } from './routes/_authenticated/dashboard/marketing/articles'
+import { Route as AuthenticatedDashboardMarketingCampaignsRouteImport } from './routes/_authenticated/dashboard/marketing/campaigns'
+import { Route as AuthenticatedDashboardMarketingCodesRouteImport } from './routes/_authenticated/dashboard/marketing/codes'
+import { Route as AuthenticatedDashboardMarketingCouponsRouteImport } from './routes/_authenticated/dashboard/marketing/coupons'
+import { Route as AuthenticatedDashboardMarketingFormsRouteImport } from './routes/_authenticated/dashboard/marketing/forms'
+import { Route as AuthenticatedDashboardMarketingMediaRouteImport } from './routes/_authenticated/dashboard/marketing/media'
+import { Route as AuthenticatedDashboardMarketingSeoRouteImport } from './routes/_authenticated/dashboard/marketing/seo'
+import { Route as AuthenticatedDashboardMarketingSequencesRouteImport } from './routes/_authenticated/dashboard/marketing/sequences'
+import { Route as AuthenticatedDashboardMarketingSubscribersRouteImport } from './routes/_authenticated/dashboard/marketing/subscribers'
+import { Route as AuthenticatedDashboardMarketingTemplatesRouteImport } from './routes/_authenticated/dashboard/marketing/templates'
+import { Route as AuthenticatedDashboardMarketplaceIndexRouteImport } from './routes/_authenticated/dashboard/marketplace/index'
+import { Route as AuthenticatedDashboardMarketplaceCreatorRouteImport } from './routes/_authenticated/dashboard/marketplace/creator'
+import { Route as AuthenticatedDashboardMarketplaceModerationRouteImport } from './routes/_authenticated/dashboard/marketplace/moderation'
+import { Route as AuthenticatedDashboardMarketplaceVersionsRouteImport } from './routes/_authenticated/dashboard/marketplace/versions'
+import { Route as AuthenticatedDashboardMoneyPaymentsRouteImport } from './routes/_authenticated/dashboard/money/payments'
+import { Route as AuthenticatedDashboardOrdersIndexRouteImport } from './routes/_authenticated/dashboard/orders/index'
+import { Route as AuthenticatedDashboardOrdersOrderIdRouteImport } from './routes/_authenticated/dashboard/orders/$orderId'
+import { Route as AuthenticatedDashboardPluginsIndexRouteImport } from './routes/_authenticated/dashboard/plugins/index'
+import { Route as AuthenticatedDashboardPluginsNewRouteImport } from './routes/_authenticated/dashboard/plugins/new'
+import { Route as AuthenticatedDashboardProductsIndexRouteImport } from './routes/_authenticated/dashboard/products/index'
+import { Route as AuthenticatedDashboardProductsProductIdRouteImport } from './routes/_authenticated/dashboard/products/$productId'
+import { Route as AuthenticatedDashboardProductsNewRouteImport } from './routes/_authenticated/dashboard/products/new'
+import { Route as AuthenticatedDashboardSettingsApiRouteImport } from './routes/_authenticated/dashboard/settings_.api'
+import { Route as AuthenticatedDashboardSettingsDomainsRouteImport } from './routes/_authenticated/dashboard/settings_.domains'
+import { Route as AuthenticatedDashboardSettingsEmailRouteImport } from './routes/_authenticated/dashboard/settings_.email'
+import { Route as AuthenticatedDashboardSettingsInfrastructureRouteImport } from './routes/_authenticated/dashboard/settings_.infrastructure'
+import { Route as AuthenticatedDashboardSettingsProvidersRouteImport } from './routes/_authenticated/dashboard/settings_.providers'
+import { Route as AuthenticatedDashboardSettingsSecurityRouteImport } from './routes/_authenticated/dashboard/settings_.security'
+import { Route as AuthenticatedDashboardSettingsSeoRouteImport } from './routes/_authenticated/dashboard/settings_.seo'
+import { Route as ApiPublicAdsClickRouteImport } from './routes/api/public/ads/click'
+import { Route as ApiPublicAnalyticsBeaconRouteImport } from './routes/api/public/analytics/beacon'
+import { Route as ApiPublicChannelsChannelRouteImport } from './routes/api/public/channels/$channel'
+import { Route as ApiPublicCouriersCarrierRouteImport } from './routes/api/public/couriers/$carrier'
+import { Route as ApiPublicCronAdFraudRouteImport } from './routes/api/public/cron/ad-fraud'
+import { Route as ApiPublicCronAnalyticsRouteImport } from './routes/api/public/cron/analytics'
+import { Route as ApiPublicCronBillingRouteImport } from './routes/api/public/cron/billing'
+import { Route as ApiPublicCronContentHealthRouteImport } from './routes/api/public/cron/content-health'
+import { Route as ApiPublicCronCouriersRouteImport } from './routes/api/public/cron/couriers'
+import { Route as ApiPublicCronDomainsRouteImport } from './routes/api/public/cron/domains'
+import { Route as ApiPublicCronGrowthRouteImport } from './routes/api/public/cron/growth'
+import { Route as ApiPublicCronJobsRouteImport } from './routes/api/public/cron/jobs'
+import { Route as ApiPublicCronNotificationsRouteImport } from './routes/api/public/cron/notifications'
+import { Route as ApiPublicCronOpsRouteImport } from './routes/api/public/cron/ops'
+import { Route as ApiPublicCronPayoutsRouteImport } from './routes/api/public/cron/payouts'
+import { Route as ApiPublicCronPurgeRouteImport } from './routes/api/public/cron/purge'
+import { Route as ApiPublicCronSearchConsoleRouteImport } from './routes/api/public/cron/search-console'
+import { Route as ApiPublicCronSupportRouteImport } from './routes/api/public/cron/support'
+import { Route as ApiPublicCronThemesRouteImport } from './routes/api/public/cron/themes'
+import { Route as ApiPublicCronWebhooksRouteImport } from './routes/api/public/cron/webhooks'
+import { Route as ApiPublicDomainsCallbackRouteImport } from './routes/api/public/domains/callback'
+import { Route as ApiPublicDomainsVerifySniRouteImport } from './routes/api/public/domains/verify-sni'
+import { Route as ApiPublicFontSplatRouteImport } from './routes/api/public/font/$'
+import { Route as ApiPublicImgSplatRouteImport } from './routes/api/public/img/$'
+import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media/$'
+import { Route as ApiPublicNewsletterFeedbackRouteImport } from './routes/api/public/newsletter/feedback'
+import { Route as ApiPublicOauthRevokeRouteImport } from './routes/api/public/oauth/revoke'
+import { Route as ApiPublicOauthTokenRouteImport } from './routes/api/public/oauth/token'
+import { Route as ApiPublicPaymentsProviderRouteImport } from './routes/api/public/payments/$provider'
+import { Route as ApiPublicPaymentsReturnRouteImport } from './routes/api/public/payments/return'
+import { Route as ApiPublicPhSplatRouteImport } from './routes/api/public/ph.$'
+import { Route as ApiPublicV1SplatRouteImport } from './routes/api/public/v1/$'
+import { Route as StoreSlugBlogIndexRouteImport } from './routes/store.$slug.blog.index'
+import { Route as StoreSlugBlogSlugRouteImport } from './routes/store.$slug.blog.$slug'
+import { Route as StoreSlugCCollectionSlugRouteImport } from './routes/store.$slug.c.$collectionSlug'
+import { Route as StoreSlugOrderOrderIdRouteImport } from './routes/store.$slug.order.$orderId'
+import { Route as StoreSlugPProductSlugRouteImport } from './routes/store.$slug.p.$productSlug'
+import { Route as StoreSlugPagesPageSlugRouteImport } from './routes/store.$slug.pages.$pageSlug'
+import { Route as StoreSlugSitemapsKindRouteImport } from './routes/store.$slug.sitemaps.$kind'
+import { Route as AuthenticatedDashboardOrdersOrderIdInvoiceRouteImport } from './routes/_authenticated/dashboard/orders/$orderId_.invoice'
+import { Route as ApiPublicPaymentsLiveProviderRouteImport } from './routes/api/public/payments/live/$provider'
+import { Route as ApiPublicPaymentsMockProviderRouteImport } from './routes/api/public/payments/mock/$provider'
+import { Route as ApiPublicPaymentsPlatformProviderRouteImport } from './routes/api/public/payments/platform/$provider'
+import { Route as ApiPublicPaymentsPlatformReturnRouteImport } from './routes/api/public/payments/platform/return'
 
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SplatRoute = SplatRouteImport.update({
-  id: "/$",
-  path: "/$",
+  id: '/$',
+  path: '/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: "/_authenticated",
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AboutRoute = AboutRouteImport.update({
-  id: "/about",
-  path: "/about",
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AccountRoute = AccountRouteImport.update({
-  id: "/account",
-  path: "/account",
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthRoute = AuthRouteImport.update({
-  id: "/auth",
-  path: "/auth",
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const BlogDotatomRoute = BlogDotatomRouteImport.update({
-  id: "/blog.atom",
-  path: "/blog.atom",
+  id: '/blog.atom',
+  path: '/blog.atom',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const BlogDotjsonRoute = BlogDotjsonRouteImport.update({
-  id: "/blog.json",
-  path: "/blog.json",
+  id: '/blog.json',
+  path: '/blog.json',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const BlogDotxmlRoute = BlogDotxmlRouteImport.update({
-  id: "/blog.xml",
-  path: "/blog.xml",
+  id: '/blog.xml',
+  path: '/blog.xml',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const CartRoute = CartRouteImport.update({
-  id: "/cart",
-  path: "/cart",
+  id: '/cart',
+  path: '/cart',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const CheckoutRoute = CheckoutRouteImport.update({
-  id: "/checkout",
-  path: "/checkout",
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ContactRoute = ContactRouteImport.update({
-  id: "/contact",
-  path: "/contact",
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const CustomersRoute = CustomersRouteImport.update({
-  id: "/customers",
-  path: "/customers",
+  id: '/customers',
+  path: '/customers',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const FaqRoute = FaqRouteImport.update({
-  id: "/faq",
-  path: "/faq",
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const FeaturesRoute = FeaturesRouteImport.update({
-  id: "/features",
-  path: "/features",
+  id: '/features',
+  path: '/features',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const FulfilmentRoute = FulfilmentRouteImport.update({
-  id: "/fulfilment",
-  path: "/fulfilment",
+  id: '/fulfilment',
+  path: '/fulfilment',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const LlmsDottxtRoute = LlmsDottxtRouteImport.update({
-  id: "/llms.txt",
-  path: "/llms.txt",
+  id: '/llms.txt',
+  path: '/llms.txt',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const PaymentsRoute = PaymentsRouteImport.update({
-  id: "/payments",
-  path: "/payments",
+  id: '/payments',
+  path: '/payments',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const PricingRoute = PricingRouteImport.update({
-  id: "/pricing",
-  path: "/pricing",
+  id: '/pricing',
+  path: '/pricing',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: "/reset-password",
-  path: "/reset-password",
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
-  id: "/robots.txt",
-  path: "/robots.txt",
+  id: '/robots.txt',
+  path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const RootRoute = RootRouteImport.update({
-  id: "/root",
-  path: "/root",
+  id: '/root',
+  path: '/root',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SearchRoute = SearchRouteImport.update({
-  id: "/search",
-  path: "/search",
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SecurityRoute = SecurityRouteImport.update({
-  id: "/security",
-  path: "/security",
+  id: '/security',
+  path: '/security',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: "/sitemap.xml",
-  path: "/sitemap.xml",
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StatusRoute = StatusRouteImport.update({
-  id: "/status",
-  path: "/status",
+  id: '/status',
+  path: '/status',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const TrackRoute = TrackRouteImport.update({
-  id: "/track",
-  path: "/track",
+  id: '/track',
+  path: '/track',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
-  id: "/unsubscribe",
-  path: "/unsubscribe",
+  id: '/unsubscribe',
+  path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: "/dashboard",
-  path: "/dashboard",
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any);
+} as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
-  id: "/onboarding",
-  path: "/onboarding",
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
-} as any);
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
-  id: "/blog/",
-  path: "/blog/",
+  id: '/blog/',
+  path: '/blog/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: "/blog/$slug",
-  path: "/blog/$slug",
+  id: '/blog/$slug',
+  path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const CCollectionSlugRoute = CCollectionSlugRouteImport.update({
-  id: "/c/$collectionSlug",
-  path: "/c/$collectionSlug",
+  id: '/c/$collectionSlug',
+  path: '/c/$collectionSlug',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DevBandsRoute = DevBandsRouteImport.update({
-  id: "/dev/bands",
-  path: "/dev/bands",
+  id: '/dev/bands',
+  path: '/dev/bands',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DocsIndexRoute = DocsIndexRouteImport.update({
-  id: "/docs/",
-  path: "/docs/",
+  id: '/docs/',
+  path: '/docs/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DocsSitemapDotxmlRoute = DocsSitemapDotxmlRouteImport.update({
-  id: "/docs/sitemap.xml",
-  path: "/docs/sitemap.xml",
+  id: '/docs/sitemap.xml',
+  path: '/docs/sitemap.xml',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const InvoiceTokenRoute = InvoiceTokenRouteImport.update({
-  id: "/invoice/$token",
-  path: "/invoice/$token",
+  id: '/invoice/$token',
+  path: '/invoice/$token',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const LegalIndexRoute = LegalIndexRouteImport.update({
-  id: "/legal/",
-  path: "/legal/",
+  id: '/legal/',
+  path: '/legal/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const LegalDocRoute = LegalDocRouteImport.update({
-  id: "/legal/$doc",
-  path: "/legal/$doc",
+  id: '/legal/$doc',
+  path: '/legal/$doc',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const NewsletterVerifyRoute = NewsletterVerifyRouteImport.update({
-  id: "/newsletter/verify",
-  path: "/newsletter/verify",
+  id: '/newsletter/verify',
+  path: '/newsletter/verify',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const OrderOrderIdRoute = OrderOrderIdRouteImport.update({
-  id: "/order/$orderId",
-  path: "/order/$orderId",
+  id: '/order/$orderId',
+  path: '/order/$orderId',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const PProductSlugRoute = PProductSlugRouteImport.update({
-  id: "/p/$productSlug",
-  path: "/p/$productSlug",
+  id: '/p/$productSlug',
+  path: '/p/$productSlug',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const PagesPageSlugRoute = PagesPageSlugRouteImport.update({
-  id: "/pages/$pageSlug",
-  path: "/pages/$pageSlug",
+  id: '/pages/$pageSlug',
+  path: '/pages/$pageSlug',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
-  id: "/products/$productId",
-  path: "/products/$productId",
+  id: '/products/$productId',
+  path: '/products/$productId',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const RootIndexRoute = RootIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootAccessRoute = RootAccessRouteImport.update({
-  id: "/access",
-  path: "/access",
+  id: '/access',
+  path: '/access',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootAiRoute = RootAiRouteImport.update({
-  id: "/ai",
-  path: "/ai",
+  id: '/ai',
+  path: '/ai',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootAuditRoute = RootAuditRouteImport.update({
-  id: "/audit",
-  path: "/audit",
+  id: '/audit',
+  path: '/audit',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootAuthRoute = RootAuthRouteImport.update({
-  id: "/auth",
-  path: "/auth",
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootCouponsRoute = RootCouponsRouteImport.update({
-  id: "/coupons",
-  path: "/coupons",
+  id: '/coupons',
+  path: '/coupons',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootFraudRoute = RootFraudRouteImport.update({
-  id: "/fraud",
-  path: "/fraud",
+  id: '/fraud',
+  path: '/fraud',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootGatewayRoute = RootGatewayRouteImport.update({
-  id: "/gateway",
-  path: "/gateway",
+  id: '/gateway',
+  path: '/gateway',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootLoginRoute = RootLoginRouteImport.update({
-  id: "/login",
-  path: "/login",
+  id: '/login',
+  path: '/login',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootMarketingRoute = RootMarketingRouteImport.update({
-  id: "/marketing",
-  path: "/marketing",
+  id: '/marketing',
+  path: '/marketing',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootMoneyRoute = RootMoneyRouteImport.update({
-  id: "/money",
-  path: "/money",
+  id: '/money',
+  path: '/money',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootObservabilityRoute = RootObservabilityRouteImport.update({
-  id: "/observability",
-  path: "/observability",
+  id: '/observability',
+  path: '/observability',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootOpsRoute = RootOpsRouteImport.update({
-  id: "/ops",
-  path: "/ops",
+  id: '/ops',
+  path: '/ops',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootPayoutsRoute = RootPayoutsRouteImport.update({
-  id: "/payouts",
-  path: "/payouts",
+  id: '/payouts',
+  path: '/payouts',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootPlansRoute = RootPlansRouteImport.update({
-  id: "/plans",
-  path: "/plans",
+  id: '/plans',
+  path: '/plans',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootRevenueRoute = RootRevenueRouteImport.update({
-  id: "/revenue",
-  path: "/revenue",
+  id: '/revenue',
+  path: '/revenue',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootSettingsRoute = RootSettingsRouteImport.update({
-  id: "/settings",
-  path: "/settings",
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootSnapshotsRoute = RootSnapshotsRouteImport.update({
-  id: "/snapshots",
-  path: "/snapshots",
+  id: '/snapshots',
+  path: '/snapshots',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootStatusRoute = RootStatusRouteImport.update({
-  id: "/status",
-  path: "/status",
+  id: '/status',
+  path: '/status',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootTenancyRoute = RootTenancyRouteImport.update({
-  id: "/tenancy",
-  path: "/tenancy",
+  id: '/tenancy',
+  path: '/tenancy',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootTenantsRoute = RootTenantsRouteImport.update({
-  id: "/tenants",
-  path: "/tenants",
+  id: '/tenants',
+  path: '/tenants',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootTrialRoute = RootTrialRouteImport.update({
-  id: "/trial",
-  path: "/trial",
+  id: '/trial',
+  path: '/trial',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const RootUsersRoute = RootUsersRouteImport.update({
-  id: "/users",
-  path: "/users",
+  id: '/users',
+  path: '/users',
   getParentRoute: () => RootRoute,
-} as any);
+} as any)
 const SitemapsKindRoute = SitemapsKindRouteImport.update({
-  id: "/sitemaps/$kind",
-  path: "/sitemaps/$kind",
+  id: '/sitemaps/$kind',
+  path: '/sitemaps/$kind',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ThemePreviewKeyRoute = ThemePreviewKeyRouteImport.update({
-  id: "/theme-preview/$key",
-  path: "/theme-preview/$key",
+  id: '/theme-preview/$key',
+  path: '/theme-preview/$key',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DotwellKnownAcmeChallengeTokenRoute =
   DotwellKnownAcmeChallengeTokenRouteImport.update({
-    id: "/.well-known/acme-challenge/$token",
-    path: "/.well-known/acme-challenge/$token",
+    id: '/.well-known/acme-challenge/$token',
+    path: '/.well-known/acme-challenge/$token',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
-    id: "/",
-    path: "/",
+    id: '/',
+    path: '/',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardActivityRoute =
   AuthenticatedDashboardActivityRouteImport.update({
-    id: "/activity",
-    path: "/activity",
+    id: '/activity',
+    path: '/activity',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardAnalyticsRoute =
   AuthenticatedDashboardAnalyticsRouteImport.update({
-    id: "/analytics",
-    path: "/analytics",
+    id: '/analytics',
+    path: '/analytics',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardApprovalsRoute =
   AuthenticatedDashboardApprovalsRouteImport.update({
-    id: "/approvals",
-    path: "/approvals",
+    id: '/approvals',
+    path: '/approvals',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardBrandsRoute =
   AuthenticatedDashboardBrandsRouteImport.update({
-    id: "/brands",
-    path: "/brands",
+    id: '/brands',
+    path: '/brands',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardBuilderRoute =
   AuthenticatedDashboardBuilderRouteImport.update({
-    id: "/builder",
-    path: "/builder",
+    id: '/builder',
+    path: '/builder',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardBulkEditorRoute =
   AuthenticatedDashboardBulkEditorRouteImport.update({
-    id: "/bulk-editor",
-    path: "/bulk-editor",
+    id: '/bulk-editor',
+    path: '/bulk-editor',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardBundlesRoute =
   AuthenticatedDashboardBundlesRouteImport.update({
-    id: "/bundles",
-    path: "/bundles",
+    id: '/bundles',
+    path: '/bundles',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardCartsRoute =
   AuthenticatedDashboardCartsRouteImport.update({
-    id: "/carts",
-    path: "/carts",
+    id: '/carts',
+    path: '/carts',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardCatalogRoute =
   AuthenticatedDashboardCatalogRouteImport.update({
-    id: "/catalog",
-    path: "/catalog",
+    id: '/catalog',
+    path: '/catalog',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardCategoriesRoute =
   AuthenticatedDashboardCategoriesRouteImport.update({
-    id: "/categories",
-    path: "/categories",
+    id: '/categories',
+    path: '/categories',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardCollectionsRoute =
   AuthenticatedDashboardCollectionsRouteImport.update({
-    id: "/collections",
-    path: "/collections",
+    id: '/collections',
+    path: '/collections',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardCustomersRoute =
   AuthenticatedDashboardCustomersRouteImport.update({
-    id: "/customers",
-    path: "/customers",
+    id: '/customers',
+    path: '/customers',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardDevelopersRoute =
   AuthenticatedDashboardDevelopersRouteImport.update({
-    id: "/developers",
-    path: "/developers",
+    id: '/developers',
+    path: '/developers',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardDraftOrdersRoute =
   AuthenticatedDashboardDraftOrdersRouteImport.update({
-    id: "/draft-orders",
-    path: "/draft-orders",
+    id: '/draft-orders',
+    path: '/draft-orders',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardExperimentsRoute =
   AuthenticatedDashboardExperimentsRouteImport.update({
-    id: "/experiments",
-    path: "/experiments",
+    id: '/experiments',
+    path: '/experiments',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardExportsRoute =
   AuthenticatedDashboardExportsRouteImport.update({
-    id: "/exports",
-    path: "/exports",
+    id: '/exports',
+    path: '/exports',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardGiftCardsRoute =
   AuthenticatedDashboardGiftCardsRouteImport.update({
-    id: "/gift-cards",
-    path: "/gift-cards",
+    id: '/gift-cards',
+    path: '/gift-cards',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardInventoryRoute =
   AuthenticatedDashboardInventoryRouteImport.update({
-    id: "/inventory",
-    path: "/inventory",
+    id: '/inventory',
+    path: '/inventory',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardPagesRoute =
   AuthenticatedDashboardPagesRouteImport.update({
-    id: "/pages",
-    path: "/pages",
+    id: '/pages',
+    path: '/pages',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardPaymentsRoute =
   AuthenticatedDashboardPaymentsRouteImport.update({
-    id: "/payments",
-    path: "/payments",
+    id: '/payments',
+    path: '/payments',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardPlansRoute =
   AuthenticatedDashboardPlansRouteImport.update({
-    id: "/plans",
-    path: "/plans",
+    id: '/plans',
+    path: '/plans',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardPosRoute =
   AuthenticatedDashboardPosRouteImport.update({
-    id: "/pos",
-    path: "/pos",
+    id: '/pos',
+    path: '/pos',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardPricingRoute =
   AuthenticatedDashboardPricingRouteImport.update({
-    id: "/pricing",
-    path: "/pricing",
+    id: '/pricing',
+    path: '/pricing',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardPurchasingRoute =
   AuthenticatedDashboardPurchasingRouteImport.update({
-    id: "/purchasing",
-    path: "/purchasing",
+    id: '/purchasing',
+    path: '/purchasing',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardReturnsRoute =
   AuthenticatedDashboardReturnsRouteImport.update({
-    id: "/returns",
-    path: "/returns",
+    id: '/returns',
+    path: '/returns',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardReviewsRoute =
   AuthenticatedDashboardReviewsRouteImport.update({
-    id: "/reviews",
-    path: "/reviews",
+    id: '/reviews',
+    path: '/reviews',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardSettingsRoute =
   AuthenticatedDashboardSettingsRouteImport.update({
-    id: "/settings",
-    path: "/settings",
+    id: '/settings',
+    path: '/settings',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardShippingRoute =
   AuthenticatedDashboardShippingRouteImport.update({
-    id: "/shipping",
-    path: "/shipping",
+    id: '/shipping',
+    path: '/shipping',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardStaffRoute =
   AuthenticatedDashboardStaffRouteImport.update({
-    id: "/staff",
-    path: "/staff",
+    id: '/staff',
+    path: '/staff',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardSubscriptionsRoute =
   AuthenticatedDashboardSubscriptionsRouteImport.update({
-    id: "/subscriptions",
-    path: "/subscriptions",
+    id: '/subscriptions',
+    path: '/subscriptions',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardSupportRoute =
   AuthenticatedDashboardSupportRouteImport.update({
-    id: "/support",
-    path: "/support",
+    id: '/support',
+    path: '/support',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedOauthAuthorizeRoute =
   AuthenticatedOauthAuthorizeRouteImport.update({
-    id: "/oauth/authorize",
-    path: "/oauth/authorize",
+    id: '/oauth/authorize',
+    path: '/oauth/authorize',
     getParentRoute: () => AuthenticatedRouteRoute,
-  } as any);
+  } as any)
 const ApiPublicErrorAlertRoute = ApiPublicErrorAlertRouteImport.update({
-  id: "/api/public/error-alert",
-  path: "/api/public/error-alert",
+  id: '/api/public/error-alert',
+  path: '/api/public/error-alert',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicErrorsRoute = ApiPublicErrorsRouteImport.update({
-  id: "/api/public/errors",
-  path: "/api/public/errors",
+  id: '/api/public/errors',
+  path: '/api/public/errors',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicMetricsRoute = ApiPublicMetricsRouteImport.update({
-  id: "/api/public/metrics",
-  path: "/api/public/metrics",
+  id: '/api/public/metrics',
+  path: '/api/public/metrics',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicVitalsRoute = ApiPublicVitalsRouteImport.update({
-  id: "/api/public/vitals",
-  path: "/api/public/vitals",
+  id: '/api/public/vitals',
+  path: '/api/public/vitals',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const BlogAuthorSlugRoute = BlogAuthorSlugRouteImport.update({
-  id: "/blog/author/$slug",
-  path: "/blog/author/$slug",
+  id: '/blog/author/$slug',
+  path: '/blog/author/$slug',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const BlogCategorySlugRoute = BlogCategorySlugRouteImport.update({
-  id: "/blog/category/$slug",
-  path: "/blog/category/$slug",
+  id: '/blog/category/$slug',
+  path: '/blog/category/$slug',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const BlogTagSlugRoute = BlogTagSlugRouteImport.update({
-  id: "/blog/tag/$slug",
-  path: "/blog/tag/$slug",
+  id: '/blog/tag/$slug',
+  path: '/blog/tag/$slug',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const DocsVersionSlugRoute = DocsVersionSlugRouteImport.update({
-  id: "/docs/$version/$slug",
-  path: "/docs/$version/$slug",
+  id: '/docs/$version/$slug',
+  path: '/docs/$version/$slug',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const OrderOrderIdConfirmationRoute =
   OrderOrderIdConfirmationRouteImport.update({
-    id: "/confirmation",
-    path: "/confirmation",
+    id: '/confirmation',
+    path: '/confirmation',
     getParentRoute: () => OrderOrderIdRoute,
-  } as any);
+  } as any)
 const StoreSlugIndexRoute = StoreSlugIndexRouteImport.update({
-  id: "/store/$slug/",
-  path: "/store/$slug/",
+  id: '/store/$slug/',
+  path: '/store/$slug/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugAccountRoute = StoreSlugAccountRouteImport.update({
-  id: "/store/$slug/account",
-  path: "/store/$slug/account",
+  id: '/store/$slug/account',
+  path: '/store/$slug/account',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugCartRoute = StoreSlugCartRouteImport.update({
-  id: "/store/$slug/cart",
-  path: "/store/$slug/cart",
+  id: '/store/$slug/cart',
+  path: '/store/$slug/cart',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugCheckoutRoute = StoreSlugCheckoutRouteImport.update({
-  id: "/store/$slug/checkout",
-  path: "/store/$slug/checkout",
+  id: '/store/$slug/checkout',
+  path: '/store/$slug/checkout',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugLlmsDottxtRoute = StoreSlugLlmsDottxtRouteImport.update({
-  id: "/store/$slug/llms.txt",
-  path: "/store/$slug/llms.txt",
+  id: '/store/$slug/llms.txt',
+  path: '/store/$slug/llms.txt',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugRobotsDottxtRoute = StoreSlugRobotsDottxtRouteImport.update({
-  id: "/store/$slug/robots.txt",
-  path: "/store/$slug/robots.txt",
+  id: '/store/$slug/robots.txt',
+  path: '/store/$slug/robots.txt',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugSearchRoute = StoreSlugSearchRouteImport.update({
-  id: "/store/$slug/search",
-  path: "/store/$slug/search",
+  id: '/store/$slug/search',
+  path: '/store/$slug/search',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugSitemapDotxmlRoute = StoreSlugSitemapDotxmlRouteImport.update({
-  id: "/store/$slug/sitemap.xml",
-  path: "/store/$slug/sitemap.xml",
+  id: '/store/$slug/sitemap.xml',
+  path: '/store/$slug/sitemap.xml',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugTrackRoute = StoreSlugTrackRouteImport.update({
-  id: "/store/$slug/track",
-  path: "/store/$slug/track",
+  id: '/store/$slug/track',
+  path: '/store/$slug/track',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthenticatedDashboardAiAssistantRoute =
   AuthenticatedDashboardAiAssistantRouteImport.update({
-    id: "/ai/assistant",
-    path: "/ai/assistant",
+    id: '/ai/assistant',
+    path: '/ai/assistant',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardAiSettingsRoute =
   AuthenticatedDashboardAiSettingsRouteImport.update({
-    id: "/ai/settings",
-    path: "/ai/settings",
+    id: '/ai/settings',
+    path: '/ai/settings',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardAnalyticsInsightsRoute =
   AuthenticatedDashboardAnalyticsInsightsRouteImport.update({
-    id: "/analytics_/insights",
-    path: "/analytics/insights",
+    id: '/analytics_/insights',
+    path: '/analytics/insights',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardAnalyticsReportsRoute =
   AuthenticatedDashboardAnalyticsReportsRouteImport.update({
-    id: "/analytics_/reports",
-    path: "/analytics/reports",
+    id: '/analytics_/reports',
+    path: '/analytics/reports',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardBillingIndexRoute =
   AuthenticatedDashboardBillingIndexRouteImport.update({
-    id: "/billing/",
-    path: "/billing/",
+    id: '/billing/',
+    path: '/billing/',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardBillingInvoicesRoute =
   AuthenticatedDashboardBillingInvoicesRouteImport.update({
-    id: "/billing/invoices",
-    path: "/billing/invoices",
+    id: '/billing/invoices',
+    path: '/billing/invoices',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardContentIndexRoute =
   AuthenticatedDashboardContentIndexRouteImport.update({
-    id: "/content/",
-    path: "/content/",
+    id: '/content/',
+    path: '/content/',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardContentCustomCodeRoute =
   AuthenticatedDashboardContentCustomCodeRouteImport.update({
-    id: "/content/custom-code",
-    path: "/content/custom-code",
+    id: '/content/custom-code',
+    path: '/content/custom-code',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardContentEditorRoute =
   AuthenticatedDashboardContentEditorRouteImport.update({
-    id: "/content/editor",
-    path: "/content/editor",
+    id: '/content/editor',
+    path: '/content/editor',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardContentMediaRoute =
   AuthenticatedDashboardContentMediaRouteImport.update({
-    id: "/content/media",
-    path: "/content/media",
+    id: '/content/media',
+    path: '/content/media',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardContentMenusRoute =
   AuthenticatedDashboardContentMenusRouteImport.update({
-    id: "/content/menus",
-    path: "/content/menus",
+    id: '/content/menus',
+    path: '/content/menus',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardContentPagesRoute =
   AuthenticatedDashboardContentPagesRouteImport.update({
-    id: "/content/pages",
-    path: "/content/pages",
+    id: '/content/pages',
+    path: '/content/pages',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardContentPostsRoute =
   AuthenticatedDashboardContentPostsRouteImport.update({
-    id: "/content/posts",
-    path: "/content/posts",
+    id: '/content/posts',
+    path: '/content/posts',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardContentThemesRoute =
   AuthenticatedDashboardContentThemesRouteImport.update({
-    id: "/content/themes",
-    path: "/content/themes",
+    id: '/content/themes',
+    path: '/content/themes',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardFraudIndexRoute =
   AuthenticatedDashboardFraudIndexRouteImport.update({
-    id: "/fraud/",
-    path: "/fraud/",
+    id: '/fraud/',
+    path: '/fraud/',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardFraudAdDefenseRoute =
   AuthenticatedDashboardFraudAdDefenseRouteImport.update({
-    id: "/fraud/ad-defense",
-    path: "/fraud/ad-defense",
+    id: '/fraud/ad-defense',
+    path: '/fraud/ad-defense',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardFraudAuditRoute =
   AuthenticatedDashboardFraudAuditRouteImport.update({
-    id: "/fraud/audit",
-    path: "/fraud/audit",
+    id: '/fraud/audit',
+    path: '/fraud/audit',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketingIndexRoute =
   AuthenticatedDashboardMarketingIndexRouteImport.update({
-    id: "/marketing/",
-    path: "/marketing/",
+    id: '/marketing/',
+    path: '/marketing/',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketingArticlesRoute =
   AuthenticatedDashboardMarketingArticlesRouteImport.update({
-    id: "/marketing/articles",
-    path: "/marketing/articles",
+    id: '/marketing/articles',
+    path: '/marketing/articles',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketingCampaignsRoute =
   AuthenticatedDashboardMarketingCampaignsRouteImport.update({
-    id: "/marketing/campaigns",
-    path: "/marketing/campaigns",
+    id: '/marketing/campaigns',
+    path: '/marketing/campaigns',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketingCodesRoute =
   AuthenticatedDashboardMarketingCodesRouteImport.update({
-    id: "/marketing/codes",
-    path: "/marketing/codes",
+    id: '/marketing/codes',
+    path: '/marketing/codes',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketingCouponsRoute =
   AuthenticatedDashboardMarketingCouponsRouteImport.update({
-    id: "/marketing/coupons",
-    path: "/marketing/coupons",
+    id: '/marketing/coupons',
+    path: '/marketing/coupons',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketingFormsRoute =
   AuthenticatedDashboardMarketingFormsRouteImport.update({
-    id: "/marketing/forms",
-    path: "/marketing/forms",
+    id: '/marketing/forms',
+    path: '/marketing/forms',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketingMediaRoute =
   AuthenticatedDashboardMarketingMediaRouteImport.update({
-    id: "/marketing/media",
-    path: "/marketing/media",
+    id: '/marketing/media',
+    path: '/marketing/media',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketingSeoRoute =
   AuthenticatedDashboardMarketingSeoRouteImport.update({
-    id: "/marketing/seo",
-    path: "/marketing/seo",
+    id: '/marketing/seo',
+    path: '/marketing/seo',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketingSequencesRoute =
   AuthenticatedDashboardMarketingSequencesRouteImport.update({
-    id: "/marketing/sequences",
-    path: "/marketing/sequences",
+    id: '/marketing/sequences',
+    path: '/marketing/sequences',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketingSubscribersRoute =
   AuthenticatedDashboardMarketingSubscribersRouteImport.update({
-    id: "/marketing/subscribers",
-    path: "/marketing/subscribers",
+    id: '/marketing/subscribers',
+    path: '/marketing/subscribers',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketingTemplatesRoute =
   AuthenticatedDashboardMarketingTemplatesRouteImport.update({
-    id: "/marketing/templates",
-    path: "/marketing/templates",
+    id: '/marketing/templates',
+    path: '/marketing/templates',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketplaceIndexRoute =
   AuthenticatedDashboardMarketplaceIndexRouteImport.update({
-    id: "/marketplace/",
-    path: "/marketplace/",
+    id: '/marketplace/',
+    path: '/marketplace/',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketplaceCreatorRoute =
   AuthenticatedDashboardMarketplaceCreatorRouteImport.update({
-    id: "/marketplace/creator",
-    path: "/marketplace/creator",
+    id: '/marketplace/creator',
+    path: '/marketplace/creator',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketplaceModerationRoute =
   AuthenticatedDashboardMarketplaceModerationRouteImport.update({
-    id: "/marketplace/moderation",
-    path: "/marketplace/moderation",
+    id: '/marketplace/moderation',
+    path: '/marketplace/moderation',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMarketplaceVersionsRoute =
   AuthenticatedDashboardMarketplaceVersionsRouteImport.update({
-    id: "/marketplace/versions",
-    path: "/marketplace/versions",
+    id: '/marketplace/versions',
+    path: '/marketplace/versions',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardMoneyPaymentsRoute =
   AuthenticatedDashboardMoneyPaymentsRouteImport.update({
-    id: "/money/payments",
-    path: "/money/payments",
+    id: '/money/payments',
+    path: '/money/payments',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardOrdersIndexRoute =
   AuthenticatedDashboardOrdersIndexRouteImport.update({
-    id: "/orders/",
-    path: "/orders/",
+    id: '/orders/',
+    path: '/orders/',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardOrdersOrderIdRoute =
   AuthenticatedDashboardOrdersOrderIdRouteImport.update({
-    id: "/orders/$orderId",
-    path: "/orders/$orderId",
+    id: '/orders/$orderId',
+    path: '/orders/$orderId',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardPluginsIndexRoute =
   AuthenticatedDashboardPluginsIndexRouteImport.update({
-    id: "/plugins/",
-    path: "/plugins/",
+    id: '/plugins/',
+    path: '/plugins/',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardPluginsNewRoute =
   AuthenticatedDashboardPluginsNewRouteImport.update({
-    id: "/plugins/new",
-    path: "/plugins/new",
+    id: '/plugins/new',
+    path: '/plugins/new',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardProductsIndexRoute =
   AuthenticatedDashboardProductsIndexRouteImport.update({
-    id: "/products/",
-    path: "/products/",
+    id: '/products/',
+    path: '/products/',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardProductsProductIdRoute =
   AuthenticatedDashboardProductsProductIdRouteImport.update({
-    id: "/products/$productId",
-    path: "/products/$productId",
+    id: '/products/$productId',
+    path: '/products/$productId',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardProductsNewRoute =
   AuthenticatedDashboardProductsNewRouteImport.update({
-    id: "/products/new",
-    path: "/products/new",
+    id: '/products/new',
+    path: '/products/new',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardSettingsApiRoute =
   AuthenticatedDashboardSettingsApiRouteImport.update({
-    id: "/settings_/api",
-    path: "/settings/api",
+    id: '/settings_/api',
+    path: '/settings/api',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardSettingsDomainsRoute =
   AuthenticatedDashboardSettingsDomainsRouteImport.update({
-    id: "/settings_/domains",
-    path: "/settings/domains",
+    id: '/settings_/domains',
+    path: '/settings/domains',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardSettingsEmailRoute =
   AuthenticatedDashboardSettingsEmailRouteImport.update({
-    id: "/settings_/email",
-    path: "/settings/email",
+    id: '/settings_/email',
+    path: '/settings/email',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardSettingsInfrastructureRoute =
   AuthenticatedDashboardSettingsInfrastructureRouteImport.update({
-    id: "/settings_/infrastructure",
-    path: "/settings/infrastructure",
+    id: '/settings_/infrastructure',
+    path: '/settings/infrastructure',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardSettingsProvidersRoute =
   AuthenticatedDashboardSettingsProvidersRouteImport.update({
-    id: "/settings_/providers",
-    path: "/settings/providers",
+    id: '/settings_/providers',
+    path: '/settings/providers',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardSettingsSecurityRoute =
   AuthenticatedDashboardSettingsSecurityRouteImport.update({
-    id: "/settings_/security",
-    path: "/settings/security",
+    id: '/settings_/security',
+    path: '/settings/security',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const AuthenticatedDashboardSettingsSeoRoute =
   AuthenticatedDashboardSettingsSeoRouteImport.update({
-    id: "/settings_/seo",
-    path: "/settings/seo",
+    id: '/settings_/seo',
+    path: '/settings/seo',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const ApiPublicAdsClickRoute = ApiPublicAdsClickRouteImport.update({
-  id: "/api/public/ads/click",
-  path: "/api/public/ads/click",
+  id: '/api/public/ads/click',
+  path: '/api/public/ads/click',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicAnalyticsBeaconRoute =
   ApiPublicAnalyticsBeaconRouteImport.update({
-    id: "/api/public/analytics/beacon",
-    path: "/api/public/analytics/beacon",
+    id: '/api/public/analytics/beacon',
+    path: '/api/public/analytics/beacon',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicChannelsChannelRoute =
   ApiPublicChannelsChannelRouteImport.update({
-    id: "/api/public/channels/$channel",
-    path: "/api/public/channels/$channel",
+    id: '/api/public/channels/$channel',
+    path: '/api/public/channels/$channel',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicCouriersCarrierRoute =
   ApiPublicCouriersCarrierRouteImport.update({
-    id: "/api/public/couriers/$carrier",
-    path: "/api/public/couriers/$carrier",
+    id: '/api/public/couriers/$carrier',
+    path: '/api/public/couriers/$carrier',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicCronAdFraudRoute = ApiPublicCronAdFraudRouteImport.update({
-  id: "/api/public/cron/ad-fraud",
-  path: "/api/public/cron/ad-fraud",
+  id: '/api/public/cron/ad-fraud',
+  path: '/api/public/cron/ad-fraud',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronAnalyticsRoute = ApiPublicCronAnalyticsRouteImport.update({
-  id: "/api/public/cron/analytics",
-  path: "/api/public/cron/analytics",
+  id: '/api/public/cron/analytics',
+  path: '/api/public/cron/analytics',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronBillingRoute = ApiPublicCronBillingRouteImport.update({
-  id: "/api/public/cron/billing",
-  path: "/api/public/cron/billing",
+  id: '/api/public/cron/billing',
+  path: '/api/public/cron/billing',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronContentHealthRoute =
   ApiPublicCronContentHealthRouteImport.update({
-    id: "/api/public/cron/content-health",
-    path: "/api/public/cron/content-health",
+    id: '/api/public/cron/content-health',
+    path: '/api/public/cron/content-health',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicCronCouriersRoute = ApiPublicCronCouriersRouteImport.update({
-  id: "/api/public/cron/couriers",
-  path: "/api/public/cron/couriers",
+  id: '/api/public/cron/couriers',
+  path: '/api/public/cron/couriers',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronDomainsRoute = ApiPublicCronDomainsRouteImport.update({
-  id: "/api/public/cron/domains",
-  path: "/api/public/cron/domains",
+  id: '/api/public/cron/domains',
+  path: '/api/public/cron/domains',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronGrowthRoute = ApiPublicCronGrowthRouteImport.update({
-  id: "/api/public/cron/growth",
-  path: "/api/public/cron/growth",
+  id: '/api/public/cron/growth',
+  path: '/api/public/cron/growth',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronJobsRoute = ApiPublicCronJobsRouteImport.update({
-  id: "/api/public/cron/jobs",
-  path: "/api/public/cron/jobs",
+  id: '/api/public/cron/jobs',
+  path: '/api/public/cron/jobs',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronNotificationsRoute =
   ApiPublicCronNotificationsRouteImport.update({
-    id: "/api/public/cron/notifications",
-    path: "/api/public/cron/notifications",
+    id: '/api/public/cron/notifications',
+    path: '/api/public/cron/notifications',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicCronOpsRoute = ApiPublicCronOpsRouteImport.update({
-  id: "/api/public/cron/ops",
-  path: "/api/public/cron/ops",
+  id: '/api/public/cron/ops',
+  path: '/api/public/cron/ops',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronPayoutsRoute = ApiPublicCronPayoutsRouteImport.update({
-  id: "/api/public/cron/payouts",
-  path: "/api/public/cron/payouts",
+  id: '/api/public/cron/payouts',
+  path: '/api/public/cron/payouts',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronPurgeRoute = ApiPublicCronPurgeRouteImport.update({
-  id: "/api/public/cron/purge",
-  path: "/api/public/cron/purge",
+  id: '/api/public/cron/purge',
+  path: '/api/public/cron/purge',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronSearchConsoleRoute =
   ApiPublicCronSearchConsoleRouteImport.update({
-    id: "/api/public/cron/search-console",
-    path: "/api/public/cron/search-console",
+    id: '/api/public/cron/search-console',
+    path: '/api/public/cron/search-console',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicCronSupportRoute = ApiPublicCronSupportRouteImport.update({
-  id: "/api/public/cron/support",
-  path: "/api/public/cron/support",
+  id: '/api/public/cron/support',
+  path: '/api/public/cron/support',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronThemesRoute = ApiPublicCronThemesRouteImport.update({
-  id: "/api/public/cron/themes",
-  path: "/api/public/cron/themes",
+  id: '/api/public/cron/themes',
+  path: '/api/public/cron/themes',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicCronWebhooksRoute = ApiPublicCronWebhooksRouteImport.update({
-  id: "/api/public/cron/webhooks",
-  path: "/api/public/cron/webhooks",
+  id: '/api/public/cron/webhooks',
+  path: '/api/public/cron/webhooks',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicDomainsCallbackRoute =
   ApiPublicDomainsCallbackRouteImport.update({
-    id: "/api/public/domains/callback",
-    path: "/api/public/domains/callback",
+    id: '/api/public/domains/callback',
+    path: '/api/public/domains/callback',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicDomainsVerifySniRoute =
   ApiPublicDomainsVerifySniRouteImport.update({
-    id: "/api/public/domains/verify-sni",
-    path: "/api/public/domains/verify-sni",
+    id: '/api/public/domains/verify-sni',
+    path: '/api/public/domains/verify-sni',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicFontSplatRoute = ApiPublicFontSplatRouteImport.update({
-  id: "/api/public/font/$",
-  path: "/api/public/font/$",
+  id: '/api/public/font/$',
+  path: '/api/public/font/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicImgSplatRoute = ApiPublicImgSplatRouteImport.update({
-  id: "/api/public/img/$",
-  path: "/api/public/img/$",
+  id: '/api/public/img/$',
+  path: '/api/public/img/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
-  id: "/api/public/media/$",
-  path: "/api/public/media/$",
+  id: '/api/public/media/$',
+  path: '/api/public/media/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicNewsletterFeedbackRoute =
   ApiPublicNewsletterFeedbackRouteImport.update({
-    id: "/api/public/newsletter/feedback",
-    path: "/api/public/newsletter/feedback",
+    id: '/api/public/newsletter/feedback',
+    path: '/api/public/newsletter/feedback',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicOauthRevokeRoute = ApiPublicOauthRevokeRouteImport.update({
-  id: "/api/public/oauth/revoke",
-  path: "/api/public/oauth/revoke",
+  id: '/api/public/oauth/revoke',
+  path: '/api/public/oauth/revoke',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicOauthTokenRoute = ApiPublicOauthTokenRouteImport.update({
-  id: "/api/public/oauth/token",
-  path: "/api/public/oauth/token",
+  id: '/api/public/oauth/token',
+  path: '/api/public/oauth/token',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicPaymentsProviderRoute =
   ApiPublicPaymentsProviderRouteImport.update({
-    id: "/api/public/payments/$provider",
-    path: "/api/public/payments/$provider",
+    id: '/api/public/payments/$provider',
+    path: '/api/public/payments/$provider',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicPaymentsReturnRoute = ApiPublicPaymentsReturnRouteImport.update({
-  id: "/api/public/payments/return",
-  path: "/api/public/payments/return",
+  id: '/api/public/payments/return',
+  path: '/api/public/payments/return',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicPhSplatRoute = ApiPublicPhSplatRouteImport.update({
-  id: "/api/public/ph/$",
-  path: "/api/public/ph/$",
+  id: '/api/public/ph/$',
+  path: '/api/public/ph/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiPublicV1SplatRoute = ApiPublicV1SplatRouteImport.update({
-  id: "/api/public/v1/$",
-  path: "/api/public/v1/$",
+  id: '/api/public/v1/$',
+  path: '/api/public/v1/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugBlogIndexRoute = StoreSlugBlogIndexRouteImport.update({
-  id: "/store/$slug/blog/",
-  path: "/store/$slug/blog/",
+  id: '/store/$slug/blog/',
+  path: '/store/$slug/blog/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugBlogSlugRoute = StoreSlugBlogSlugRouteImport.update({
-  id: "/store/$slug/blog/$slug",
-  path: "/store/$slug/blog/$slug",
+  id: '/store/$slug/blog/$slug',
+  path: '/store/$slug/blog/$slug',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugCCollectionSlugRoute =
   StoreSlugCCollectionSlugRouteImport.update({
-    id: "/store/$slug/c/$collectionSlug",
-    path: "/store/$slug/c/$collectionSlug",
+    id: '/store/$slug/c/$collectionSlug',
+    path: '/store/$slug/c/$collectionSlug',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const StoreSlugOrderOrderIdRoute = StoreSlugOrderOrderIdRouteImport.update({
-  id: "/store/$slug/order/$orderId",
-  path: "/store/$slug/order/$orderId",
+  id: '/store/$slug/order/$orderId',
+  path: '/store/$slug/order/$orderId',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugPProductSlugRoute = StoreSlugPProductSlugRouteImport.update({
-  id: "/store/$slug/p/$productSlug",
-  path: "/store/$slug/p/$productSlug",
+  id: '/store/$slug/p/$productSlug',
+  path: '/store/$slug/p/$productSlug',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugPagesPageSlugRoute = StoreSlugPagesPageSlugRouteImport.update({
-  id: "/store/$slug/pages/$pageSlug",
-  path: "/store/$slug/pages/$pageSlug",
+  id: '/store/$slug/pages/$pageSlug',
+  path: '/store/$slug/pages/$pageSlug',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const StoreSlugSitemapsKindRoute = StoreSlugSitemapsKindRouteImport.update({
-  id: "/store/$slug/sitemaps/$kind",
-  path: "/store/$slug/sitemaps/$kind",
+  id: '/store/$slug/sitemaps/$kind',
+  path: '/store/$slug/sitemaps/$kind',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthenticatedDashboardOrdersOrderIdInvoiceRoute =
   AuthenticatedDashboardOrdersOrderIdInvoiceRouteImport.update({
-    id: "/orders/$orderId_/invoice",
-    path: "/orders/$orderId/invoice",
+    id: '/orders/$orderId_/invoice',
+    path: '/orders/$orderId/invoice',
     getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any);
+  } as any)
 const ApiPublicPaymentsLiveProviderRoute =
   ApiPublicPaymentsLiveProviderRouteImport.update({
-    id: "/api/public/payments/live/$provider",
-    path: "/api/public/payments/live/$provider",
+    id: '/api/public/payments/live/$provider',
+    path: '/api/public/payments/live/$provider',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicPaymentsMockProviderRoute =
   ApiPublicPaymentsMockProviderRouteImport.update({
-    id: "/api/public/payments/mock/$provider",
-    path: "/api/public/payments/mock/$provider",
+    id: '/api/public/payments/mock/$provider',
+    path: '/api/public/payments/mock/$provider',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicPaymentsPlatformProviderRoute =
   ApiPublicPaymentsPlatformProviderRouteImport.update({
-    id: "/api/public/payments/platform/$provider",
-    path: "/api/public/payments/platform/$provider",
+    id: '/api/public/payments/platform/$provider',
+    path: '/api/public/payments/platform/$provider',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 const ApiPublicPaymentsPlatformReturnRoute =
   ApiPublicPaymentsPlatformReturnRouteImport.update({
-    id: "/api/public/payments/platform/return",
-    path: "/api/public/payments/platform/return",
+    id: '/api/public/payments/platform/return',
+    path: '/api/public/payments/platform/return',
     getParentRoute: () => rootRouteImport,
-  } as any);
+  } as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/$": typeof SplatRoute;
-  "/about": typeof AboutRoute;
-  "/account": typeof AccountRoute;
-  "/auth": typeof AuthRoute;
-  "/blog.atom": typeof BlogDotatomRoute;
-  "/blog.json": typeof BlogDotjsonRoute;
-  "/blog.xml": typeof BlogDotxmlRoute;
-  "/cart": typeof CartRoute;
-  "/checkout": typeof CheckoutRoute;
-  "/contact": typeof ContactRoute;
-  "/customers": typeof CustomersRoute;
-  "/faq": typeof FaqRoute;
-  "/features": typeof FeaturesRoute;
-  "/fulfilment": typeof FulfilmentRoute;
-  "/llms.txt": typeof LlmsDottxtRoute;
-  "/payments": typeof PaymentsRoute;
-  "/pricing": typeof PricingRoute;
-  "/reset-password": typeof ResetPasswordRoute;
-  "/robots.txt": typeof RobotsDottxtRoute;
-  "/root": typeof RootRouteWithChildren;
-  "/search": typeof SearchRoute;
-  "/security": typeof SecurityRoute;
-  "/sitemap.xml": typeof SitemapDotxmlRoute;
-  "/status": typeof StatusRoute;
-  "/track": typeof TrackRoute;
-  "/unsubscribe": typeof UnsubscribeRoute;
-  "/dashboard": typeof AuthenticatedDashboardRouteWithChildren;
-  "/onboarding": typeof AuthenticatedOnboardingRoute;
-  "/blog/$slug": typeof BlogSlugRoute;
-  "/c/$collectionSlug": typeof CCollectionSlugRoute;
-  "/dev/bands": typeof DevBandsRoute;
-  "/docs/sitemap.xml": typeof DocsSitemapDotxmlRoute;
-  "/invoice/$token": typeof InvoiceTokenRoute;
-  "/legal/$doc": typeof LegalDocRoute;
-  "/newsletter/verify": typeof NewsletterVerifyRoute;
-  "/order/$orderId": typeof OrderOrderIdRouteWithChildren;
-  "/p/$productSlug": typeof PProductSlugRoute;
-  "/pages/$pageSlug": typeof PagesPageSlugRoute;
-  "/products/$productId": typeof ProductsProductIdRoute;
-  "/root/access": typeof RootAccessRoute;
-  "/root/ai": typeof RootAiRoute;
-  "/root/audit": typeof RootAuditRoute;
-  "/root/auth": typeof RootAuthRoute;
-  "/root/coupons": typeof RootCouponsRoute;
-  "/root/fraud": typeof RootFraudRoute;
-  "/root/gateway": typeof RootGatewayRoute;
-  "/root/login": typeof RootLoginRoute;
-  "/root/marketing": typeof RootMarketingRoute;
-  "/root/money": typeof RootMoneyRoute;
-  "/root/observability": typeof RootObservabilityRoute;
-  "/root/ops": typeof RootOpsRoute;
-  "/root/payouts": typeof RootPayoutsRoute;
-  "/root/plans": typeof RootPlansRoute;
-  "/root/revenue": typeof RootRevenueRoute;
-  "/root/settings": typeof RootSettingsRoute;
-  "/root/snapshots": typeof RootSnapshotsRoute;
-  "/root/status": typeof RootStatusRoute;
-  "/root/tenancy": typeof RootTenancyRoute;
-  "/root/tenants": typeof RootTenantsRoute;
-  "/root/trial": typeof RootTrialRoute;
-  "/root/users": typeof RootUsersRoute;
-  "/sitemaps/$kind": typeof SitemapsKindRoute;
-  "/theme-preview/$key": typeof ThemePreviewKeyRoute;
-  "/blog/": typeof BlogIndexRoute;
-  "/docs/": typeof DocsIndexRoute;
-  "/legal/": typeof LegalIndexRoute;
-  "/root/": typeof RootIndexRoute;
-  "/.well-known/acme-challenge/$token": typeof DotwellKnownAcmeChallengeTokenRoute;
-  "/dashboard/activity": typeof AuthenticatedDashboardActivityRoute;
-  "/dashboard/analytics": typeof AuthenticatedDashboardAnalyticsRoute;
-  "/dashboard/approvals": typeof AuthenticatedDashboardApprovalsRoute;
-  "/dashboard/brands": typeof AuthenticatedDashboardBrandsRoute;
-  "/dashboard/builder": typeof AuthenticatedDashboardBuilderRoute;
-  "/dashboard/bulk-editor": typeof AuthenticatedDashboardBulkEditorRoute;
-  "/dashboard/bundles": typeof AuthenticatedDashboardBundlesRoute;
-  "/dashboard/carts": typeof AuthenticatedDashboardCartsRoute;
-  "/dashboard/catalog": typeof AuthenticatedDashboardCatalogRoute;
-  "/dashboard/categories": typeof AuthenticatedDashboardCategoriesRoute;
-  "/dashboard/collections": typeof AuthenticatedDashboardCollectionsRoute;
-  "/dashboard/customers": typeof AuthenticatedDashboardCustomersRoute;
-  "/dashboard/developers": typeof AuthenticatedDashboardDevelopersRoute;
-  "/dashboard/draft-orders": typeof AuthenticatedDashboardDraftOrdersRoute;
-  "/dashboard/experiments": typeof AuthenticatedDashboardExperimentsRoute;
-  "/dashboard/exports": typeof AuthenticatedDashboardExportsRoute;
-  "/dashboard/gift-cards": typeof AuthenticatedDashboardGiftCardsRoute;
-  "/dashboard/inventory": typeof AuthenticatedDashboardInventoryRoute;
-  "/dashboard/pages": typeof AuthenticatedDashboardPagesRoute;
-  "/dashboard/payments": typeof AuthenticatedDashboardPaymentsRoute;
-  "/dashboard/plans": typeof AuthenticatedDashboardPlansRoute;
-  "/dashboard/pos": typeof AuthenticatedDashboardPosRoute;
-  "/dashboard/pricing": typeof AuthenticatedDashboardPricingRoute;
-  "/dashboard/purchasing": typeof AuthenticatedDashboardPurchasingRoute;
-  "/dashboard/returns": typeof AuthenticatedDashboardReturnsRoute;
-  "/dashboard/reviews": typeof AuthenticatedDashboardReviewsRoute;
-  "/dashboard/settings": typeof AuthenticatedDashboardSettingsRoute;
-  "/dashboard/shipping": typeof AuthenticatedDashboardShippingRoute;
-  "/dashboard/staff": typeof AuthenticatedDashboardStaffRoute;
-  "/dashboard/subscriptions": typeof AuthenticatedDashboardSubscriptionsRoute;
-  "/dashboard/support": typeof AuthenticatedDashboardSupportRoute;
-  "/oauth/authorize": typeof AuthenticatedOauthAuthorizeRoute;
-  "/api/public/error-alert": typeof ApiPublicErrorAlertRoute;
-  "/api/public/errors": typeof ApiPublicErrorsRoute;
-  "/api/public/metrics": typeof ApiPublicMetricsRoute;
-  "/api/public/vitals": typeof ApiPublicVitalsRoute;
-  "/blog/author/$slug": typeof BlogAuthorSlugRoute;
-  "/blog/category/$slug": typeof BlogCategorySlugRoute;
-  "/blog/tag/$slug": typeof BlogTagSlugRoute;
-  "/docs/$version/$slug": typeof DocsVersionSlugRoute;
-  "/order/$orderId/confirmation": typeof OrderOrderIdConfirmationRoute;
-  "/store/$slug/account": typeof StoreSlugAccountRoute;
-  "/store/$slug/cart": typeof StoreSlugCartRoute;
-  "/store/$slug/checkout": typeof StoreSlugCheckoutRoute;
-  "/store/$slug/llms.txt": typeof StoreSlugLlmsDottxtRoute;
-  "/store/$slug/robots.txt": typeof StoreSlugRobotsDottxtRoute;
-  "/store/$slug/search": typeof StoreSlugSearchRoute;
-  "/store/$slug/sitemap.xml": typeof StoreSlugSitemapDotxmlRoute;
-  "/store/$slug/track": typeof StoreSlugTrackRoute;
-  "/dashboard/": typeof AuthenticatedDashboardIndexRoute;
-  "/store/$slug/": typeof StoreSlugIndexRoute;
-  "/dashboard/ai/assistant": typeof AuthenticatedDashboardAiAssistantRoute;
-  "/dashboard/ai/settings": typeof AuthenticatedDashboardAiSettingsRoute;
-  "/dashboard/analytics/insights": typeof AuthenticatedDashboardAnalyticsInsightsRoute;
-  "/dashboard/analytics/reports": typeof AuthenticatedDashboardAnalyticsReportsRoute;
-  "/dashboard/billing/invoices": typeof AuthenticatedDashboardBillingInvoicesRoute;
-  "/dashboard/content/custom-code": typeof AuthenticatedDashboardContentCustomCodeRoute;
-  "/dashboard/content/editor": typeof AuthenticatedDashboardContentEditorRoute;
-  "/dashboard/content/media": typeof AuthenticatedDashboardContentMediaRoute;
-  "/dashboard/content/menus": typeof AuthenticatedDashboardContentMenusRoute;
-  "/dashboard/content/pages": typeof AuthenticatedDashboardContentPagesRoute;
-  "/dashboard/content/posts": typeof AuthenticatedDashboardContentPostsRoute;
-  "/dashboard/content/themes": typeof AuthenticatedDashboardContentThemesRoute;
-  "/dashboard/fraud/ad-defense": typeof AuthenticatedDashboardFraudAdDefenseRoute;
-  "/dashboard/fraud/audit": typeof AuthenticatedDashboardFraudAuditRoute;
-  "/dashboard/marketing/articles": typeof AuthenticatedDashboardMarketingArticlesRoute;
-  "/dashboard/marketing/campaigns": typeof AuthenticatedDashboardMarketingCampaignsRoute;
-  "/dashboard/marketing/codes": typeof AuthenticatedDashboardMarketingCodesRoute;
-  "/dashboard/marketing/coupons": typeof AuthenticatedDashboardMarketingCouponsRoute;
-  "/dashboard/marketing/forms": typeof AuthenticatedDashboardMarketingFormsRoute;
-  "/dashboard/marketing/media": typeof AuthenticatedDashboardMarketingMediaRoute;
-  "/dashboard/marketing/seo": typeof AuthenticatedDashboardMarketingSeoRoute;
-  "/dashboard/marketing/sequences": typeof AuthenticatedDashboardMarketingSequencesRoute;
-  "/dashboard/marketing/subscribers": typeof AuthenticatedDashboardMarketingSubscribersRoute;
-  "/dashboard/marketing/templates": typeof AuthenticatedDashboardMarketingTemplatesRoute;
-  "/dashboard/marketplace/creator": typeof AuthenticatedDashboardMarketplaceCreatorRoute;
-  "/dashboard/marketplace/moderation": typeof AuthenticatedDashboardMarketplaceModerationRoute;
-  "/dashboard/marketplace/versions": typeof AuthenticatedDashboardMarketplaceVersionsRoute;
-  "/dashboard/money/payments": typeof AuthenticatedDashboardMoneyPaymentsRoute;
-  "/dashboard/orders/$orderId": typeof AuthenticatedDashboardOrdersOrderIdRoute;
-  "/dashboard/plugins/new": typeof AuthenticatedDashboardPluginsNewRoute;
-  "/dashboard/products/$productId": typeof AuthenticatedDashboardProductsProductIdRoute;
-  "/dashboard/products/new": typeof AuthenticatedDashboardProductsNewRoute;
-  "/dashboard/settings/api": typeof AuthenticatedDashboardSettingsApiRoute;
-  "/dashboard/settings/domains": typeof AuthenticatedDashboardSettingsDomainsRoute;
-  "/dashboard/settings/email": typeof AuthenticatedDashboardSettingsEmailRoute;
-  "/dashboard/settings/infrastructure": typeof AuthenticatedDashboardSettingsInfrastructureRoute;
-  "/dashboard/settings/providers": typeof AuthenticatedDashboardSettingsProvidersRoute;
-  "/dashboard/settings/security": typeof AuthenticatedDashboardSettingsSecurityRoute;
-  "/dashboard/settings/seo": typeof AuthenticatedDashboardSettingsSeoRoute;
-  "/api/public/ads/click": typeof ApiPublicAdsClickRoute;
-  "/api/public/analytics/beacon": typeof ApiPublicAnalyticsBeaconRoute;
-  "/api/public/channels/$channel": typeof ApiPublicChannelsChannelRoute;
-  "/api/public/couriers/$carrier": typeof ApiPublicCouriersCarrierRoute;
-  "/api/public/cron/ad-fraud": typeof ApiPublicCronAdFraudRoute;
-  "/api/public/cron/analytics": typeof ApiPublicCronAnalyticsRoute;
-  "/api/public/cron/billing": typeof ApiPublicCronBillingRoute;
-  "/api/public/cron/content-health": typeof ApiPublicCronContentHealthRoute;
-  "/api/public/cron/couriers": typeof ApiPublicCronCouriersRoute;
-  "/api/public/cron/domains": typeof ApiPublicCronDomainsRoute;
-  "/api/public/cron/growth": typeof ApiPublicCronGrowthRoute;
-  "/api/public/cron/jobs": typeof ApiPublicCronJobsRoute;
-  "/api/public/cron/notifications": typeof ApiPublicCronNotificationsRoute;
-  "/api/public/cron/ops": typeof ApiPublicCronOpsRoute;
-  "/api/public/cron/payouts": typeof ApiPublicCronPayoutsRoute;
-  "/api/public/cron/purge": typeof ApiPublicCronPurgeRoute;
-  "/api/public/cron/search-console": typeof ApiPublicCronSearchConsoleRoute;
-  "/api/public/cron/support": typeof ApiPublicCronSupportRoute;
-  "/api/public/cron/themes": typeof ApiPublicCronThemesRoute;
-  "/api/public/cron/webhooks": typeof ApiPublicCronWebhooksRoute;
-  "/api/public/domains/callback": typeof ApiPublicDomainsCallbackRoute;
-  "/api/public/domains/verify-sni": typeof ApiPublicDomainsVerifySniRoute;
-  "/api/public/font/$": typeof ApiPublicFontSplatRoute;
-  "/api/public/img/$": typeof ApiPublicImgSplatRoute;
-  "/api/public/media/$": typeof ApiPublicMediaSplatRoute;
-  "/api/public/newsletter/feedback": typeof ApiPublicNewsletterFeedbackRoute;
-  "/api/public/oauth/revoke": typeof ApiPublicOauthRevokeRoute;
-  "/api/public/oauth/token": typeof ApiPublicOauthTokenRoute;
-  "/api/public/payments/$provider": typeof ApiPublicPaymentsProviderRoute;
-  "/api/public/payments/return": typeof ApiPublicPaymentsReturnRoute;
-  "/api/public/ph/$": typeof ApiPublicPhSplatRoute;
-  "/api/public/v1/$": typeof ApiPublicV1SplatRoute;
-  "/store/$slug/blog/$slug": typeof StoreSlugBlogSlugRoute;
-  "/store/$slug/c/$collectionSlug": typeof StoreSlugCCollectionSlugRoute;
-  "/store/$slug/order/$orderId": typeof StoreSlugOrderOrderIdRoute;
-  "/store/$slug/p/$productSlug": typeof StoreSlugPProductSlugRoute;
-  "/store/$slug/pages/$pageSlug": typeof StoreSlugPagesPageSlugRoute;
-  "/store/$slug/sitemaps/$kind": typeof StoreSlugSitemapsKindRoute;
-  "/dashboard/billing/": typeof AuthenticatedDashboardBillingIndexRoute;
-  "/dashboard/content/": typeof AuthenticatedDashboardContentIndexRoute;
-  "/dashboard/fraud/": typeof AuthenticatedDashboardFraudIndexRoute;
-  "/dashboard/marketing/": typeof AuthenticatedDashboardMarketingIndexRoute;
-  "/dashboard/marketplace/": typeof AuthenticatedDashboardMarketplaceIndexRoute;
-  "/dashboard/orders/": typeof AuthenticatedDashboardOrdersIndexRoute;
-  "/dashboard/plugins/": typeof AuthenticatedDashboardPluginsIndexRoute;
-  "/dashboard/products/": typeof AuthenticatedDashboardProductsIndexRoute;
-  "/store/$slug/blog/": typeof StoreSlugBlogIndexRoute;
-  "/dashboard/orders/$orderId/invoice": typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute;
-  "/api/public/payments/live/$provider": typeof ApiPublicPaymentsLiveProviderRoute;
-  "/api/public/payments/mock/$provider": typeof ApiPublicPaymentsMockProviderRoute;
-  "/api/public/payments/platform/$provider": typeof ApiPublicPaymentsPlatformProviderRoute;
-  "/api/public/payments/platform/return": typeof ApiPublicPaymentsPlatformReturnRoute;
+  '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/auth': typeof AuthRoute
+  '/blog.atom': typeof BlogDotatomRoute
+  '/blog.json': typeof BlogDotjsonRoute
+  '/blog.xml': typeof BlogDotxmlRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/customers': typeof CustomersRoute
+  '/faq': typeof FaqRoute
+  '/features': typeof FeaturesRoute
+  '/fulfilment': typeof FulfilmentRoute
+  '/llms.txt': typeof LlmsDottxtRoute
+  '/payments': typeof PaymentsRoute
+  '/pricing': typeof PricingRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/root': typeof RootRouteWithChildren
+  '/search': typeof SearchRoute
+  '/security': typeof SecurityRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/status': typeof StatusRoute
+  '/track': typeof TrackRoute
+  '/unsubscribe': typeof UnsubscribeRoute
+  '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/c/$collectionSlug': typeof CCollectionSlugRoute
+  '/dev/bands': typeof DevBandsRoute
+  '/docs/sitemap.xml': typeof DocsSitemapDotxmlRoute
+  '/invoice/$token': typeof InvoiceTokenRoute
+  '/legal/$doc': typeof LegalDocRoute
+  '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/order/$orderId': typeof OrderOrderIdRouteWithChildren
+  '/p/$productSlug': typeof PProductSlugRoute
+  '/pages/$pageSlug': typeof PagesPageSlugRoute
+  '/products/$productId': typeof ProductsProductIdRoute
+  '/root/access': typeof RootAccessRoute
+  '/root/ai': typeof RootAiRoute
+  '/root/audit': typeof RootAuditRoute
+  '/root/auth': typeof RootAuthRoute
+  '/root/coupons': typeof RootCouponsRoute
+  '/root/fraud': typeof RootFraudRoute
+  '/root/gateway': typeof RootGatewayRoute
+  '/root/login': typeof RootLoginRoute
+  '/root/marketing': typeof RootMarketingRoute
+  '/root/money': typeof RootMoneyRoute
+  '/root/observability': typeof RootObservabilityRoute
+  '/root/ops': typeof RootOpsRoute
+  '/root/payouts': typeof RootPayoutsRoute
+  '/root/plans': typeof RootPlansRoute
+  '/root/revenue': typeof RootRevenueRoute
+  '/root/settings': typeof RootSettingsRoute
+  '/root/snapshots': typeof RootSnapshotsRoute
+  '/root/status': typeof RootStatusRoute
+  '/root/tenancy': typeof RootTenancyRoute
+  '/root/tenants': typeof RootTenantsRoute
+  '/root/trial': typeof RootTrialRoute
+  '/root/users': typeof RootUsersRoute
+  '/sitemaps/$kind': typeof SitemapsKindRoute
+  '/theme-preview/$key': typeof ThemePreviewKeyRoute
+  '/blog/': typeof BlogIndexRoute
+  '/docs/': typeof DocsIndexRoute
+  '/legal/': typeof LegalIndexRoute
+  '/root/': typeof RootIndexRoute
+  '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
+  '/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
+  '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
+  '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
+  '/dashboard/builder': typeof AuthenticatedDashboardBuilderRoute
+  '/dashboard/bulk-editor': typeof AuthenticatedDashboardBulkEditorRoute
+  '/dashboard/bundles': typeof AuthenticatedDashboardBundlesRoute
+  '/dashboard/carts': typeof AuthenticatedDashboardCartsRoute
+  '/dashboard/catalog': typeof AuthenticatedDashboardCatalogRoute
+  '/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
+  '/dashboard/collections': typeof AuthenticatedDashboardCollectionsRoute
+  '/dashboard/customers': typeof AuthenticatedDashboardCustomersRoute
+  '/dashboard/developers': typeof AuthenticatedDashboardDevelopersRoute
+  '/dashboard/draft-orders': typeof AuthenticatedDashboardDraftOrdersRoute
+  '/dashboard/experiments': typeof AuthenticatedDashboardExperimentsRoute
+  '/dashboard/exports': typeof AuthenticatedDashboardExportsRoute
+  '/dashboard/gift-cards': typeof AuthenticatedDashboardGiftCardsRoute
+  '/dashboard/inventory': typeof AuthenticatedDashboardInventoryRoute
+  '/dashboard/pages': typeof AuthenticatedDashboardPagesRoute
+  '/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
+  '/dashboard/plans': typeof AuthenticatedDashboardPlansRoute
+  '/dashboard/pos': typeof AuthenticatedDashboardPosRoute
+  '/dashboard/pricing': typeof AuthenticatedDashboardPricingRoute
+  '/dashboard/purchasing': typeof AuthenticatedDashboardPurchasingRoute
+  '/dashboard/returns': typeof AuthenticatedDashboardReturnsRoute
+  '/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
+  '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/dashboard/shipping': typeof AuthenticatedDashboardShippingRoute
+  '/dashboard/staff': typeof AuthenticatedDashboardStaffRoute
+  '/dashboard/subscriptions': typeof AuthenticatedDashboardSubscriptionsRoute
+  '/dashboard/support': typeof AuthenticatedDashboardSupportRoute
+  '/oauth/authorize': typeof AuthenticatedOauthAuthorizeRoute
+  '/api/public/error-alert': typeof ApiPublicErrorAlertRoute
+  '/api/public/errors': typeof ApiPublicErrorsRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
+  '/api/public/vitals': typeof ApiPublicVitalsRoute
+  '/blog/author/$slug': typeof BlogAuthorSlugRoute
+  '/blog/category/$slug': typeof BlogCategorySlugRoute
+  '/blog/tag/$slug': typeof BlogTagSlugRoute
+  '/docs/$version/$slug': typeof DocsVersionSlugRoute
+  '/order/$orderId/confirmation': typeof OrderOrderIdConfirmationRoute
+  '/store/$slug/account': typeof StoreSlugAccountRoute
+  '/store/$slug/cart': typeof StoreSlugCartRoute
+  '/store/$slug/checkout': typeof StoreSlugCheckoutRoute
+  '/store/$slug/llms.txt': typeof StoreSlugLlmsDottxtRoute
+  '/store/$slug/robots.txt': typeof StoreSlugRobotsDottxtRoute
+  '/store/$slug/search': typeof StoreSlugSearchRoute
+  '/store/$slug/sitemap.xml': typeof StoreSlugSitemapDotxmlRoute
+  '/store/$slug/track': typeof StoreSlugTrackRoute
+  '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/store/$slug/': typeof StoreSlugIndexRoute
+  '/dashboard/ai/assistant': typeof AuthenticatedDashboardAiAssistantRoute
+  '/dashboard/ai/settings': typeof AuthenticatedDashboardAiSettingsRoute
+  '/dashboard/analytics/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
+  '/dashboard/analytics/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
+  '/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
+  '/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
+  '/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
+  '/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
+  '/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
+  '/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
+  '/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
+  '/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
+  '/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
+  '/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
+  '/dashboard/marketing/campaigns': typeof AuthenticatedDashboardMarketingCampaignsRoute
+  '/dashboard/marketing/codes': typeof AuthenticatedDashboardMarketingCodesRoute
+  '/dashboard/marketing/coupons': typeof AuthenticatedDashboardMarketingCouponsRoute
+  '/dashboard/marketing/forms': typeof AuthenticatedDashboardMarketingFormsRoute
+  '/dashboard/marketing/media': typeof AuthenticatedDashboardMarketingMediaRoute
+  '/dashboard/marketing/seo': typeof AuthenticatedDashboardMarketingSeoRoute
+  '/dashboard/marketing/sequences': typeof AuthenticatedDashboardMarketingSequencesRoute
+  '/dashboard/marketing/subscribers': typeof AuthenticatedDashboardMarketingSubscribersRoute
+  '/dashboard/marketing/templates': typeof AuthenticatedDashboardMarketingTemplatesRoute
+  '/dashboard/marketplace/creator': typeof AuthenticatedDashboardMarketplaceCreatorRoute
+  '/dashboard/marketplace/moderation': typeof AuthenticatedDashboardMarketplaceModerationRoute
+  '/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
+  '/dashboard/money/payments': typeof AuthenticatedDashboardMoneyPaymentsRoute
+  '/dashboard/orders/$orderId': typeof AuthenticatedDashboardOrdersOrderIdRoute
+  '/dashboard/plugins/new': typeof AuthenticatedDashboardPluginsNewRoute
+  '/dashboard/products/$productId': typeof AuthenticatedDashboardProductsProductIdRoute
+  '/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
+  '/dashboard/settings/api': typeof AuthenticatedDashboardSettingsApiRoute
+  '/dashboard/settings/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
+  '/dashboard/settings/email': typeof AuthenticatedDashboardSettingsEmailRoute
+  '/dashboard/settings/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  '/dashboard/settings/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
+  '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
+  '/dashboard/settings/seo': typeof AuthenticatedDashboardSettingsSeoRoute
+  '/api/public/ads/click': typeof ApiPublicAdsClickRoute
+  '/api/public/analytics/beacon': typeof ApiPublicAnalyticsBeaconRoute
+  '/api/public/channels/$channel': typeof ApiPublicChannelsChannelRoute
+  '/api/public/couriers/$carrier': typeof ApiPublicCouriersCarrierRoute
+  '/api/public/cron/ad-fraud': typeof ApiPublicCronAdFraudRoute
+  '/api/public/cron/analytics': typeof ApiPublicCronAnalyticsRoute
+  '/api/public/cron/billing': typeof ApiPublicCronBillingRoute
+  '/api/public/cron/content-health': typeof ApiPublicCronContentHealthRoute
+  '/api/public/cron/couriers': typeof ApiPublicCronCouriersRoute
+  '/api/public/cron/domains': typeof ApiPublicCronDomainsRoute
+  '/api/public/cron/growth': typeof ApiPublicCronGrowthRoute
+  '/api/public/cron/jobs': typeof ApiPublicCronJobsRoute
+  '/api/public/cron/notifications': typeof ApiPublicCronNotificationsRoute
+  '/api/public/cron/ops': typeof ApiPublicCronOpsRoute
+  '/api/public/cron/payouts': typeof ApiPublicCronPayoutsRoute
+  '/api/public/cron/purge': typeof ApiPublicCronPurgeRoute
+  '/api/public/cron/search-console': typeof ApiPublicCronSearchConsoleRoute
+  '/api/public/cron/support': typeof ApiPublicCronSupportRoute
+  '/api/public/cron/themes': typeof ApiPublicCronThemesRoute
+  '/api/public/cron/webhooks': typeof ApiPublicCronWebhooksRoute
+  '/api/public/domains/callback': typeof ApiPublicDomainsCallbackRoute
+  '/api/public/domains/verify-sni': typeof ApiPublicDomainsVerifySniRoute
+  '/api/public/font/$': typeof ApiPublicFontSplatRoute
+  '/api/public/img/$': typeof ApiPublicImgSplatRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
+  '/api/public/newsletter/feedback': typeof ApiPublicNewsletterFeedbackRoute
+  '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
+  '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
+  '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
+  '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
+  '/api/public/ph/$': typeof ApiPublicPhSplatRoute
+  '/api/public/v1/$': typeof ApiPublicV1SplatRoute
+  '/store/$slug/blog/$slug': typeof StoreSlugBlogSlugRoute
+  '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
+  '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
+  '/store/$slug/p/$productSlug': typeof StoreSlugPProductSlugRoute
+  '/store/$slug/pages/$pageSlug': typeof StoreSlugPagesPageSlugRoute
+  '/store/$slug/sitemaps/$kind': typeof StoreSlugSitemapsKindRoute
+  '/dashboard/billing/': typeof AuthenticatedDashboardBillingIndexRoute
+  '/dashboard/content/': typeof AuthenticatedDashboardContentIndexRoute
+  '/dashboard/fraud/': typeof AuthenticatedDashboardFraudIndexRoute
+  '/dashboard/marketing/': typeof AuthenticatedDashboardMarketingIndexRoute
+  '/dashboard/marketplace/': typeof AuthenticatedDashboardMarketplaceIndexRoute
+  '/dashboard/orders/': typeof AuthenticatedDashboardOrdersIndexRoute
+  '/dashboard/plugins/': typeof AuthenticatedDashboardPluginsIndexRoute
+  '/dashboard/products/': typeof AuthenticatedDashboardProductsIndexRoute
+  '/store/$slug/blog/': typeof StoreSlugBlogIndexRoute
+  '/dashboard/orders/$orderId/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
+  '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
+  '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
+  '/api/public/payments/platform/$provider': typeof ApiPublicPaymentsPlatformProviderRoute
+  '/api/public/payments/platform/return': typeof ApiPublicPaymentsPlatformReturnRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/$": typeof SplatRoute;
-  "/about": typeof AboutRoute;
-  "/account": typeof AccountRoute;
-  "/auth": typeof AuthRoute;
-  "/blog.atom": typeof BlogDotatomRoute;
-  "/blog.json": typeof BlogDotjsonRoute;
-  "/blog.xml": typeof BlogDotxmlRoute;
-  "/cart": typeof CartRoute;
-  "/checkout": typeof CheckoutRoute;
-  "/contact": typeof ContactRoute;
-  "/customers": typeof CustomersRoute;
-  "/faq": typeof FaqRoute;
-  "/features": typeof FeaturesRoute;
-  "/fulfilment": typeof FulfilmentRoute;
-  "/llms.txt": typeof LlmsDottxtRoute;
-  "/payments": typeof PaymentsRoute;
-  "/pricing": typeof PricingRoute;
-  "/reset-password": typeof ResetPasswordRoute;
-  "/robots.txt": typeof RobotsDottxtRoute;
-  "/search": typeof SearchRoute;
-  "/security": typeof SecurityRoute;
-  "/sitemap.xml": typeof SitemapDotxmlRoute;
-  "/status": typeof StatusRoute;
-  "/track": typeof TrackRoute;
-  "/unsubscribe": typeof UnsubscribeRoute;
-  "/onboarding": typeof AuthenticatedOnboardingRoute;
-  "/blog/$slug": typeof BlogSlugRoute;
-  "/c/$collectionSlug": typeof CCollectionSlugRoute;
-  "/dev/bands": typeof DevBandsRoute;
-  "/docs/sitemap.xml": typeof DocsSitemapDotxmlRoute;
-  "/invoice/$token": typeof InvoiceTokenRoute;
-  "/legal/$doc": typeof LegalDocRoute;
-  "/newsletter/verify": typeof NewsletterVerifyRoute;
-  "/order/$orderId": typeof OrderOrderIdRouteWithChildren;
-  "/p/$productSlug": typeof PProductSlugRoute;
-  "/pages/$pageSlug": typeof PagesPageSlugRoute;
-  "/products/$productId": typeof ProductsProductIdRoute;
-  "/root/access": typeof RootAccessRoute;
-  "/root/ai": typeof RootAiRoute;
-  "/root/audit": typeof RootAuditRoute;
-  "/root/auth": typeof RootAuthRoute;
-  "/root/coupons": typeof RootCouponsRoute;
-  "/root/fraud": typeof RootFraudRoute;
-  "/root/gateway": typeof RootGatewayRoute;
-  "/root/login": typeof RootLoginRoute;
-  "/root/marketing": typeof RootMarketingRoute;
-  "/root/money": typeof RootMoneyRoute;
-  "/root/observability": typeof RootObservabilityRoute;
-  "/root/ops": typeof RootOpsRoute;
-  "/root/payouts": typeof RootPayoutsRoute;
-  "/root/plans": typeof RootPlansRoute;
-  "/root/revenue": typeof RootRevenueRoute;
-  "/root/settings": typeof RootSettingsRoute;
-  "/root/snapshots": typeof RootSnapshotsRoute;
-  "/root/status": typeof RootStatusRoute;
-  "/root/tenancy": typeof RootTenancyRoute;
-  "/root/tenants": typeof RootTenantsRoute;
-  "/root/trial": typeof RootTrialRoute;
-  "/root/users": typeof RootUsersRoute;
-  "/sitemaps/$kind": typeof SitemapsKindRoute;
-  "/theme-preview/$key": typeof ThemePreviewKeyRoute;
-  "/blog": typeof BlogIndexRoute;
-  "/docs": typeof DocsIndexRoute;
-  "/legal": typeof LegalIndexRoute;
-  "/root": typeof RootIndexRoute;
-  "/.well-known/acme-challenge/$token": typeof DotwellKnownAcmeChallengeTokenRoute;
-  "/dashboard/activity": typeof AuthenticatedDashboardActivityRoute;
-  "/dashboard/analytics": typeof AuthenticatedDashboardAnalyticsRoute;
-  "/dashboard/approvals": typeof AuthenticatedDashboardApprovalsRoute;
-  "/dashboard/brands": typeof AuthenticatedDashboardBrandsRoute;
-  "/dashboard/builder": typeof AuthenticatedDashboardBuilderRoute;
-  "/dashboard/bulk-editor": typeof AuthenticatedDashboardBulkEditorRoute;
-  "/dashboard/bundles": typeof AuthenticatedDashboardBundlesRoute;
-  "/dashboard/carts": typeof AuthenticatedDashboardCartsRoute;
-  "/dashboard/catalog": typeof AuthenticatedDashboardCatalogRoute;
-  "/dashboard/categories": typeof AuthenticatedDashboardCategoriesRoute;
-  "/dashboard/collections": typeof AuthenticatedDashboardCollectionsRoute;
-  "/dashboard/customers": typeof AuthenticatedDashboardCustomersRoute;
-  "/dashboard/developers": typeof AuthenticatedDashboardDevelopersRoute;
-  "/dashboard/draft-orders": typeof AuthenticatedDashboardDraftOrdersRoute;
-  "/dashboard/experiments": typeof AuthenticatedDashboardExperimentsRoute;
-  "/dashboard/exports": typeof AuthenticatedDashboardExportsRoute;
-  "/dashboard/gift-cards": typeof AuthenticatedDashboardGiftCardsRoute;
-  "/dashboard/inventory": typeof AuthenticatedDashboardInventoryRoute;
-  "/dashboard/pages": typeof AuthenticatedDashboardPagesRoute;
-  "/dashboard/payments": typeof AuthenticatedDashboardPaymentsRoute;
-  "/dashboard/plans": typeof AuthenticatedDashboardPlansRoute;
-  "/dashboard/pos": typeof AuthenticatedDashboardPosRoute;
-  "/dashboard/pricing": typeof AuthenticatedDashboardPricingRoute;
-  "/dashboard/purchasing": typeof AuthenticatedDashboardPurchasingRoute;
-  "/dashboard/returns": typeof AuthenticatedDashboardReturnsRoute;
-  "/dashboard/reviews": typeof AuthenticatedDashboardReviewsRoute;
-  "/dashboard/settings": typeof AuthenticatedDashboardSettingsRoute;
-  "/dashboard/shipping": typeof AuthenticatedDashboardShippingRoute;
-  "/dashboard/staff": typeof AuthenticatedDashboardStaffRoute;
-  "/dashboard/subscriptions": typeof AuthenticatedDashboardSubscriptionsRoute;
-  "/dashboard/support": typeof AuthenticatedDashboardSupportRoute;
-  "/oauth/authorize": typeof AuthenticatedOauthAuthorizeRoute;
-  "/api/public/error-alert": typeof ApiPublicErrorAlertRoute;
-  "/api/public/errors": typeof ApiPublicErrorsRoute;
-  "/api/public/metrics": typeof ApiPublicMetricsRoute;
-  "/api/public/vitals": typeof ApiPublicVitalsRoute;
-  "/blog/author/$slug": typeof BlogAuthorSlugRoute;
-  "/blog/category/$slug": typeof BlogCategorySlugRoute;
-  "/blog/tag/$slug": typeof BlogTagSlugRoute;
-  "/docs/$version/$slug": typeof DocsVersionSlugRoute;
-  "/order/$orderId/confirmation": typeof OrderOrderIdConfirmationRoute;
-  "/store/$slug/account": typeof StoreSlugAccountRoute;
-  "/store/$slug/cart": typeof StoreSlugCartRoute;
-  "/store/$slug/checkout": typeof StoreSlugCheckoutRoute;
-  "/store/$slug/llms.txt": typeof StoreSlugLlmsDottxtRoute;
-  "/store/$slug/robots.txt": typeof StoreSlugRobotsDottxtRoute;
-  "/store/$slug/search": typeof StoreSlugSearchRoute;
-  "/store/$slug/sitemap.xml": typeof StoreSlugSitemapDotxmlRoute;
-  "/store/$slug/track": typeof StoreSlugTrackRoute;
-  "/dashboard": typeof AuthenticatedDashboardIndexRoute;
-  "/store/$slug": typeof StoreSlugIndexRoute;
-  "/dashboard/ai/assistant": typeof AuthenticatedDashboardAiAssistantRoute;
-  "/dashboard/ai/settings": typeof AuthenticatedDashboardAiSettingsRoute;
-  "/dashboard/analytics/insights": typeof AuthenticatedDashboardAnalyticsInsightsRoute;
-  "/dashboard/analytics/reports": typeof AuthenticatedDashboardAnalyticsReportsRoute;
-  "/dashboard/billing/invoices": typeof AuthenticatedDashboardBillingInvoicesRoute;
-  "/dashboard/content/custom-code": typeof AuthenticatedDashboardContentCustomCodeRoute;
-  "/dashboard/content/editor": typeof AuthenticatedDashboardContentEditorRoute;
-  "/dashboard/content/media": typeof AuthenticatedDashboardContentMediaRoute;
-  "/dashboard/content/menus": typeof AuthenticatedDashboardContentMenusRoute;
-  "/dashboard/content/pages": typeof AuthenticatedDashboardContentPagesRoute;
-  "/dashboard/content/posts": typeof AuthenticatedDashboardContentPostsRoute;
-  "/dashboard/content/themes": typeof AuthenticatedDashboardContentThemesRoute;
-  "/dashboard/fraud/ad-defense": typeof AuthenticatedDashboardFraudAdDefenseRoute;
-  "/dashboard/fraud/audit": typeof AuthenticatedDashboardFraudAuditRoute;
-  "/dashboard/marketing/articles": typeof AuthenticatedDashboardMarketingArticlesRoute;
-  "/dashboard/marketing/campaigns": typeof AuthenticatedDashboardMarketingCampaignsRoute;
-  "/dashboard/marketing/codes": typeof AuthenticatedDashboardMarketingCodesRoute;
-  "/dashboard/marketing/coupons": typeof AuthenticatedDashboardMarketingCouponsRoute;
-  "/dashboard/marketing/forms": typeof AuthenticatedDashboardMarketingFormsRoute;
-  "/dashboard/marketing/media": typeof AuthenticatedDashboardMarketingMediaRoute;
-  "/dashboard/marketing/seo": typeof AuthenticatedDashboardMarketingSeoRoute;
-  "/dashboard/marketing/sequences": typeof AuthenticatedDashboardMarketingSequencesRoute;
-  "/dashboard/marketing/subscribers": typeof AuthenticatedDashboardMarketingSubscribersRoute;
-  "/dashboard/marketing/templates": typeof AuthenticatedDashboardMarketingTemplatesRoute;
-  "/dashboard/marketplace/creator": typeof AuthenticatedDashboardMarketplaceCreatorRoute;
-  "/dashboard/marketplace/moderation": typeof AuthenticatedDashboardMarketplaceModerationRoute;
-  "/dashboard/marketplace/versions": typeof AuthenticatedDashboardMarketplaceVersionsRoute;
-  "/dashboard/money/payments": typeof AuthenticatedDashboardMoneyPaymentsRoute;
-  "/dashboard/orders/$orderId": typeof AuthenticatedDashboardOrdersOrderIdRoute;
-  "/dashboard/plugins/new": typeof AuthenticatedDashboardPluginsNewRoute;
-  "/dashboard/products/$productId": typeof AuthenticatedDashboardProductsProductIdRoute;
-  "/dashboard/products/new": typeof AuthenticatedDashboardProductsNewRoute;
-  "/dashboard/settings/api": typeof AuthenticatedDashboardSettingsApiRoute;
-  "/dashboard/settings/domains": typeof AuthenticatedDashboardSettingsDomainsRoute;
-  "/dashboard/settings/email": typeof AuthenticatedDashboardSettingsEmailRoute;
-  "/dashboard/settings/infrastructure": typeof AuthenticatedDashboardSettingsInfrastructureRoute;
-  "/dashboard/settings/providers": typeof AuthenticatedDashboardSettingsProvidersRoute;
-  "/dashboard/settings/security": typeof AuthenticatedDashboardSettingsSecurityRoute;
-  "/dashboard/settings/seo": typeof AuthenticatedDashboardSettingsSeoRoute;
-  "/api/public/ads/click": typeof ApiPublicAdsClickRoute;
-  "/api/public/analytics/beacon": typeof ApiPublicAnalyticsBeaconRoute;
-  "/api/public/channels/$channel": typeof ApiPublicChannelsChannelRoute;
-  "/api/public/couriers/$carrier": typeof ApiPublicCouriersCarrierRoute;
-  "/api/public/cron/ad-fraud": typeof ApiPublicCronAdFraudRoute;
-  "/api/public/cron/analytics": typeof ApiPublicCronAnalyticsRoute;
-  "/api/public/cron/billing": typeof ApiPublicCronBillingRoute;
-  "/api/public/cron/content-health": typeof ApiPublicCronContentHealthRoute;
-  "/api/public/cron/couriers": typeof ApiPublicCronCouriersRoute;
-  "/api/public/cron/domains": typeof ApiPublicCronDomainsRoute;
-  "/api/public/cron/growth": typeof ApiPublicCronGrowthRoute;
-  "/api/public/cron/jobs": typeof ApiPublicCronJobsRoute;
-  "/api/public/cron/notifications": typeof ApiPublicCronNotificationsRoute;
-  "/api/public/cron/ops": typeof ApiPublicCronOpsRoute;
-  "/api/public/cron/payouts": typeof ApiPublicCronPayoutsRoute;
-  "/api/public/cron/purge": typeof ApiPublicCronPurgeRoute;
-  "/api/public/cron/search-console": typeof ApiPublicCronSearchConsoleRoute;
-  "/api/public/cron/support": typeof ApiPublicCronSupportRoute;
-  "/api/public/cron/themes": typeof ApiPublicCronThemesRoute;
-  "/api/public/cron/webhooks": typeof ApiPublicCronWebhooksRoute;
-  "/api/public/domains/callback": typeof ApiPublicDomainsCallbackRoute;
-  "/api/public/domains/verify-sni": typeof ApiPublicDomainsVerifySniRoute;
-  "/api/public/font/$": typeof ApiPublicFontSplatRoute;
-  "/api/public/img/$": typeof ApiPublicImgSplatRoute;
-  "/api/public/media/$": typeof ApiPublicMediaSplatRoute;
-  "/api/public/newsletter/feedback": typeof ApiPublicNewsletterFeedbackRoute;
-  "/api/public/oauth/revoke": typeof ApiPublicOauthRevokeRoute;
-  "/api/public/oauth/token": typeof ApiPublicOauthTokenRoute;
-  "/api/public/payments/$provider": typeof ApiPublicPaymentsProviderRoute;
-  "/api/public/payments/return": typeof ApiPublicPaymentsReturnRoute;
-  "/api/public/ph/$": typeof ApiPublicPhSplatRoute;
-  "/api/public/v1/$": typeof ApiPublicV1SplatRoute;
-  "/store/$slug/blog/$slug": typeof StoreSlugBlogSlugRoute;
-  "/store/$slug/c/$collectionSlug": typeof StoreSlugCCollectionSlugRoute;
-  "/store/$slug/order/$orderId": typeof StoreSlugOrderOrderIdRoute;
-  "/store/$slug/p/$productSlug": typeof StoreSlugPProductSlugRoute;
-  "/store/$slug/pages/$pageSlug": typeof StoreSlugPagesPageSlugRoute;
-  "/store/$slug/sitemaps/$kind": typeof StoreSlugSitemapsKindRoute;
-  "/dashboard/billing": typeof AuthenticatedDashboardBillingIndexRoute;
-  "/dashboard/content": typeof AuthenticatedDashboardContentIndexRoute;
-  "/dashboard/fraud": typeof AuthenticatedDashboardFraudIndexRoute;
-  "/dashboard/marketing": typeof AuthenticatedDashboardMarketingIndexRoute;
-  "/dashboard/marketplace": typeof AuthenticatedDashboardMarketplaceIndexRoute;
-  "/dashboard/orders": typeof AuthenticatedDashboardOrdersIndexRoute;
-  "/dashboard/plugins": typeof AuthenticatedDashboardPluginsIndexRoute;
-  "/dashboard/products": typeof AuthenticatedDashboardProductsIndexRoute;
-  "/store/$slug/blog": typeof StoreSlugBlogIndexRoute;
-  "/dashboard/orders/$orderId/invoice": typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute;
-  "/api/public/payments/live/$provider": typeof ApiPublicPaymentsLiveProviderRoute;
-  "/api/public/payments/mock/$provider": typeof ApiPublicPaymentsMockProviderRoute;
-  "/api/public/payments/platform/$provider": typeof ApiPublicPaymentsPlatformProviderRoute;
-  "/api/public/payments/platform/return": typeof ApiPublicPaymentsPlatformReturnRoute;
+  '/': typeof IndexRoute
+  '/$': typeof SplatRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/auth': typeof AuthRoute
+  '/blog.atom': typeof BlogDotatomRoute
+  '/blog.json': typeof BlogDotjsonRoute
+  '/blog.xml': typeof BlogDotxmlRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/customers': typeof CustomersRoute
+  '/faq': typeof FaqRoute
+  '/features': typeof FeaturesRoute
+  '/fulfilment': typeof FulfilmentRoute
+  '/llms.txt': typeof LlmsDottxtRoute
+  '/payments': typeof PaymentsRoute
+  '/pricing': typeof PricingRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/search': typeof SearchRoute
+  '/security': typeof SecurityRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/status': typeof StatusRoute
+  '/track': typeof TrackRoute
+  '/unsubscribe': typeof UnsubscribeRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/c/$collectionSlug': typeof CCollectionSlugRoute
+  '/dev/bands': typeof DevBandsRoute
+  '/docs/sitemap.xml': typeof DocsSitemapDotxmlRoute
+  '/invoice/$token': typeof InvoiceTokenRoute
+  '/legal/$doc': typeof LegalDocRoute
+  '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/order/$orderId': typeof OrderOrderIdRouteWithChildren
+  '/p/$productSlug': typeof PProductSlugRoute
+  '/pages/$pageSlug': typeof PagesPageSlugRoute
+  '/products/$productId': typeof ProductsProductIdRoute
+  '/root/access': typeof RootAccessRoute
+  '/root/ai': typeof RootAiRoute
+  '/root/audit': typeof RootAuditRoute
+  '/root/auth': typeof RootAuthRoute
+  '/root/coupons': typeof RootCouponsRoute
+  '/root/fraud': typeof RootFraudRoute
+  '/root/gateway': typeof RootGatewayRoute
+  '/root/login': typeof RootLoginRoute
+  '/root/marketing': typeof RootMarketingRoute
+  '/root/money': typeof RootMoneyRoute
+  '/root/observability': typeof RootObservabilityRoute
+  '/root/ops': typeof RootOpsRoute
+  '/root/payouts': typeof RootPayoutsRoute
+  '/root/plans': typeof RootPlansRoute
+  '/root/revenue': typeof RootRevenueRoute
+  '/root/settings': typeof RootSettingsRoute
+  '/root/snapshots': typeof RootSnapshotsRoute
+  '/root/status': typeof RootStatusRoute
+  '/root/tenancy': typeof RootTenancyRoute
+  '/root/tenants': typeof RootTenantsRoute
+  '/root/trial': typeof RootTrialRoute
+  '/root/users': typeof RootUsersRoute
+  '/sitemaps/$kind': typeof SitemapsKindRoute
+  '/theme-preview/$key': typeof ThemePreviewKeyRoute
+  '/blog': typeof BlogIndexRoute
+  '/docs': typeof DocsIndexRoute
+  '/legal': typeof LegalIndexRoute
+  '/root': typeof RootIndexRoute
+  '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
+  '/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
+  '/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
+  '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
+  '/dashboard/builder': typeof AuthenticatedDashboardBuilderRoute
+  '/dashboard/bulk-editor': typeof AuthenticatedDashboardBulkEditorRoute
+  '/dashboard/bundles': typeof AuthenticatedDashboardBundlesRoute
+  '/dashboard/carts': typeof AuthenticatedDashboardCartsRoute
+  '/dashboard/catalog': typeof AuthenticatedDashboardCatalogRoute
+  '/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
+  '/dashboard/collections': typeof AuthenticatedDashboardCollectionsRoute
+  '/dashboard/customers': typeof AuthenticatedDashboardCustomersRoute
+  '/dashboard/developers': typeof AuthenticatedDashboardDevelopersRoute
+  '/dashboard/draft-orders': typeof AuthenticatedDashboardDraftOrdersRoute
+  '/dashboard/experiments': typeof AuthenticatedDashboardExperimentsRoute
+  '/dashboard/exports': typeof AuthenticatedDashboardExportsRoute
+  '/dashboard/gift-cards': typeof AuthenticatedDashboardGiftCardsRoute
+  '/dashboard/inventory': typeof AuthenticatedDashboardInventoryRoute
+  '/dashboard/pages': typeof AuthenticatedDashboardPagesRoute
+  '/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
+  '/dashboard/plans': typeof AuthenticatedDashboardPlansRoute
+  '/dashboard/pos': typeof AuthenticatedDashboardPosRoute
+  '/dashboard/pricing': typeof AuthenticatedDashboardPricingRoute
+  '/dashboard/purchasing': typeof AuthenticatedDashboardPurchasingRoute
+  '/dashboard/returns': typeof AuthenticatedDashboardReturnsRoute
+  '/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
+  '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/dashboard/shipping': typeof AuthenticatedDashboardShippingRoute
+  '/dashboard/staff': typeof AuthenticatedDashboardStaffRoute
+  '/dashboard/subscriptions': typeof AuthenticatedDashboardSubscriptionsRoute
+  '/dashboard/support': typeof AuthenticatedDashboardSupportRoute
+  '/oauth/authorize': typeof AuthenticatedOauthAuthorizeRoute
+  '/api/public/error-alert': typeof ApiPublicErrorAlertRoute
+  '/api/public/errors': typeof ApiPublicErrorsRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
+  '/api/public/vitals': typeof ApiPublicVitalsRoute
+  '/blog/author/$slug': typeof BlogAuthorSlugRoute
+  '/blog/category/$slug': typeof BlogCategorySlugRoute
+  '/blog/tag/$slug': typeof BlogTagSlugRoute
+  '/docs/$version/$slug': typeof DocsVersionSlugRoute
+  '/order/$orderId/confirmation': typeof OrderOrderIdConfirmationRoute
+  '/store/$slug/account': typeof StoreSlugAccountRoute
+  '/store/$slug/cart': typeof StoreSlugCartRoute
+  '/store/$slug/checkout': typeof StoreSlugCheckoutRoute
+  '/store/$slug/llms.txt': typeof StoreSlugLlmsDottxtRoute
+  '/store/$slug/robots.txt': typeof StoreSlugRobotsDottxtRoute
+  '/store/$slug/search': typeof StoreSlugSearchRoute
+  '/store/$slug/sitemap.xml': typeof StoreSlugSitemapDotxmlRoute
+  '/store/$slug/track': typeof StoreSlugTrackRoute
+  '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/store/$slug': typeof StoreSlugIndexRoute
+  '/dashboard/ai/assistant': typeof AuthenticatedDashboardAiAssistantRoute
+  '/dashboard/ai/settings': typeof AuthenticatedDashboardAiSettingsRoute
+  '/dashboard/analytics/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
+  '/dashboard/analytics/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
+  '/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
+  '/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
+  '/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
+  '/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
+  '/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
+  '/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
+  '/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
+  '/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
+  '/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
+  '/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
+  '/dashboard/marketing/campaigns': typeof AuthenticatedDashboardMarketingCampaignsRoute
+  '/dashboard/marketing/codes': typeof AuthenticatedDashboardMarketingCodesRoute
+  '/dashboard/marketing/coupons': typeof AuthenticatedDashboardMarketingCouponsRoute
+  '/dashboard/marketing/forms': typeof AuthenticatedDashboardMarketingFormsRoute
+  '/dashboard/marketing/media': typeof AuthenticatedDashboardMarketingMediaRoute
+  '/dashboard/marketing/seo': typeof AuthenticatedDashboardMarketingSeoRoute
+  '/dashboard/marketing/sequences': typeof AuthenticatedDashboardMarketingSequencesRoute
+  '/dashboard/marketing/subscribers': typeof AuthenticatedDashboardMarketingSubscribersRoute
+  '/dashboard/marketing/templates': typeof AuthenticatedDashboardMarketingTemplatesRoute
+  '/dashboard/marketplace/creator': typeof AuthenticatedDashboardMarketplaceCreatorRoute
+  '/dashboard/marketplace/moderation': typeof AuthenticatedDashboardMarketplaceModerationRoute
+  '/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
+  '/dashboard/money/payments': typeof AuthenticatedDashboardMoneyPaymentsRoute
+  '/dashboard/orders/$orderId': typeof AuthenticatedDashboardOrdersOrderIdRoute
+  '/dashboard/plugins/new': typeof AuthenticatedDashboardPluginsNewRoute
+  '/dashboard/products/$productId': typeof AuthenticatedDashboardProductsProductIdRoute
+  '/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
+  '/dashboard/settings/api': typeof AuthenticatedDashboardSettingsApiRoute
+  '/dashboard/settings/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
+  '/dashboard/settings/email': typeof AuthenticatedDashboardSettingsEmailRoute
+  '/dashboard/settings/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  '/dashboard/settings/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
+  '/dashboard/settings/security': typeof AuthenticatedDashboardSettingsSecurityRoute
+  '/dashboard/settings/seo': typeof AuthenticatedDashboardSettingsSeoRoute
+  '/api/public/ads/click': typeof ApiPublicAdsClickRoute
+  '/api/public/analytics/beacon': typeof ApiPublicAnalyticsBeaconRoute
+  '/api/public/channels/$channel': typeof ApiPublicChannelsChannelRoute
+  '/api/public/couriers/$carrier': typeof ApiPublicCouriersCarrierRoute
+  '/api/public/cron/ad-fraud': typeof ApiPublicCronAdFraudRoute
+  '/api/public/cron/analytics': typeof ApiPublicCronAnalyticsRoute
+  '/api/public/cron/billing': typeof ApiPublicCronBillingRoute
+  '/api/public/cron/content-health': typeof ApiPublicCronContentHealthRoute
+  '/api/public/cron/couriers': typeof ApiPublicCronCouriersRoute
+  '/api/public/cron/domains': typeof ApiPublicCronDomainsRoute
+  '/api/public/cron/growth': typeof ApiPublicCronGrowthRoute
+  '/api/public/cron/jobs': typeof ApiPublicCronJobsRoute
+  '/api/public/cron/notifications': typeof ApiPublicCronNotificationsRoute
+  '/api/public/cron/ops': typeof ApiPublicCronOpsRoute
+  '/api/public/cron/payouts': typeof ApiPublicCronPayoutsRoute
+  '/api/public/cron/purge': typeof ApiPublicCronPurgeRoute
+  '/api/public/cron/search-console': typeof ApiPublicCronSearchConsoleRoute
+  '/api/public/cron/support': typeof ApiPublicCronSupportRoute
+  '/api/public/cron/themes': typeof ApiPublicCronThemesRoute
+  '/api/public/cron/webhooks': typeof ApiPublicCronWebhooksRoute
+  '/api/public/domains/callback': typeof ApiPublicDomainsCallbackRoute
+  '/api/public/domains/verify-sni': typeof ApiPublicDomainsVerifySniRoute
+  '/api/public/font/$': typeof ApiPublicFontSplatRoute
+  '/api/public/img/$': typeof ApiPublicImgSplatRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
+  '/api/public/newsletter/feedback': typeof ApiPublicNewsletterFeedbackRoute
+  '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
+  '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
+  '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
+  '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
+  '/api/public/ph/$': typeof ApiPublicPhSplatRoute
+  '/api/public/v1/$': typeof ApiPublicV1SplatRoute
+  '/store/$slug/blog/$slug': typeof StoreSlugBlogSlugRoute
+  '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
+  '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
+  '/store/$slug/p/$productSlug': typeof StoreSlugPProductSlugRoute
+  '/store/$slug/pages/$pageSlug': typeof StoreSlugPagesPageSlugRoute
+  '/store/$slug/sitemaps/$kind': typeof StoreSlugSitemapsKindRoute
+  '/dashboard/billing': typeof AuthenticatedDashboardBillingIndexRoute
+  '/dashboard/content': typeof AuthenticatedDashboardContentIndexRoute
+  '/dashboard/fraud': typeof AuthenticatedDashboardFraudIndexRoute
+  '/dashboard/marketing': typeof AuthenticatedDashboardMarketingIndexRoute
+  '/dashboard/marketplace': typeof AuthenticatedDashboardMarketplaceIndexRoute
+  '/dashboard/orders': typeof AuthenticatedDashboardOrdersIndexRoute
+  '/dashboard/plugins': typeof AuthenticatedDashboardPluginsIndexRoute
+  '/dashboard/products': typeof AuthenticatedDashboardProductsIndexRoute
+  '/store/$slug/blog': typeof StoreSlugBlogIndexRoute
+  '/dashboard/orders/$orderId/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
+  '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
+  '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
+  '/api/public/payments/platform/$provider': typeof ApiPublicPaymentsPlatformProviderRoute
+  '/api/public/payments/platform/return': typeof ApiPublicPaymentsPlatformReturnRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/_authenticated": typeof AuthenticatedRouteRouteWithChildren;
-  "/$": typeof SplatRoute;
-  "/about": typeof AboutRoute;
-  "/account": typeof AccountRoute;
-  "/auth": typeof AuthRoute;
-  "/blog.atom": typeof BlogDotatomRoute;
-  "/blog.json": typeof BlogDotjsonRoute;
-  "/blog.xml": typeof BlogDotxmlRoute;
-  "/cart": typeof CartRoute;
-  "/checkout": typeof CheckoutRoute;
-  "/contact": typeof ContactRoute;
-  "/customers": typeof CustomersRoute;
-  "/faq": typeof FaqRoute;
-  "/features": typeof FeaturesRoute;
-  "/fulfilment": typeof FulfilmentRoute;
-  "/llms.txt": typeof LlmsDottxtRoute;
-  "/payments": typeof PaymentsRoute;
-  "/pricing": typeof PricingRoute;
-  "/reset-password": typeof ResetPasswordRoute;
-  "/robots.txt": typeof RobotsDottxtRoute;
-  "/root": typeof RootRouteWithChildren;
-  "/search": typeof SearchRoute;
-  "/security": typeof SecurityRoute;
-  "/sitemap.xml": typeof SitemapDotxmlRoute;
-  "/status": typeof StatusRoute;
-  "/track": typeof TrackRoute;
-  "/unsubscribe": typeof UnsubscribeRoute;
-  "/_authenticated/dashboard": typeof AuthenticatedDashboardRouteWithChildren;
-  "/_authenticated/onboarding": typeof AuthenticatedOnboardingRoute;
-  "/blog/$slug": typeof BlogSlugRoute;
-  "/c/$collectionSlug": typeof CCollectionSlugRoute;
-  "/dev/bands": typeof DevBandsRoute;
-  "/docs/sitemap.xml": typeof DocsSitemapDotxmlRoute;
-  "/invoice/$token": typeof InvoiceTokenRoute;
-  "/legal/$doc": typeof LegalDocRoute;
-  "/newsletter/verify": typeof NewsletterVerifyRoute;
-  "/order/$orderId": typeof OrderOrderIdRouteWithChildren;
-  "/p/$productSlug": typeof PProductSlugRoute;
-  "/pages/$pageSlug": typeof PagesPageSlugRoute;
-  "/products/$productId": typeof ProductsProductIdRoute;
-  "/root/access": typeof RootAccessRoute;
-  "/root/ai": typeof RootAiRoute;
-  "/root/audit": typeof RootAuditRoute;
-  "/root/auth": typeof RootAuthRoute;
-  "/root/coupons": typeof RootCouponsRoute;
-  "/root/fraud": typeof RootFraudRoute;
-  "/root/gateway": typeof RootGatewayRoute;
-  "/root/login": typeof RootLoginRoute;
-  "/root/marketing": typeof RootMarketingRoute;
-  "/root/money": typeof RootMoneyRoute;
-  "/root/observability": typeof RootObservabilityRoute;
-  "/root/ops": typeof RootOpsRoute;
-  "/root/payouts": typeof RootPayoutsRoute;
-  "/root/plans": typeof RootPlansRoute;
-  "/root/revenue": typeof RootRevenueRoute;
-  "/root/settings": typeof RootSettingsRoute;
-  "/root/snapshots": typeof RootSnapshotsRoute;
-  "/root/status": typeof RootStatusRoute;
-  "/root/tenancy": typeof RootTenancyRoute;
-  "/root/tenants": typeof RootTenantsRoute;
-  "/root/trial": typeof RootTrialRoute;
-  "/root/users": typeof RootUsersRoute;
-  "/sitemaps/$kind": typeof SitemapsKindRoute;
-  "/theme-preview/$key": typeof ThemePreviewKeyRoute;
-  "/blog/": typeof BlogIndexRoute;
-  "/docs/": typeof DocsIndexRoute;
-  "/legal/": typeof LegalIndexRoute;
-  "/root/": typeof RootIndexRoute;
-  "/.well-known/acme-challenge/$token": typeof DotwellKnownAcmeChallengeTokenRoute;
-  "/_authenticated/dashboard/activity": typeof AuthenticatedDashboardActivityRoute;
-  "/_authenticated/dashboard/analytics": typeof AuthenticatedDashboardAnalyticsRoute;
-  "/_authenticated/dashboard/approvals": typeof AuthenticatedDashboardApprovalsRoute;
-  "/_authenticated/dashboard/brands": typeof AuthenticatedDashboardBrandsRoute;
-  "/_authenticated/dashboard/builder": typeof AuthenticatedDashboardBuilderRoute;
-  "/_authenticated/dashboard/bulk-editor": typeof AuthenticatedDashboardBulkEditorRoute;
-  "/_authenticated/dashboard/bundles": typeof AuthenticatedDashboardBundlesRoute;
-  "/_authenticated/dashboard/carts": typeof AuthenticatedDashboardCartsRoute;
-  "/_authenticated/dashboard/catalog": typeof AuthenticatedDashboardCatalogRoute;
-  "/_authenticated/dashboard/categories": typeof AuthenticatedDashboardCategoriesRoute;
-  "/_authenticated/dashboard/collections": typeof AuthenticatedDashboardCollectionsRoute;
-  "/_authenticated/dashboard/customers": typeof AuthenticatedDashboardCustomersRoute;
-  "/_authenticated/dashboard/developers": typeof AuthenticatedDashboardDevelopersRoute;
-  "/_authenticated/dashboard/draft-orders": typeof AuthenticatedDashboardDraftOrdersRoute;
-  "/_authenticated/dashboard/experiments": typeof AuthenticatedDashboardExperimentsRoute;
-  "/_authenticated/dashboard/exports": typeof AuthenticatedDashboardExportsRoute;
-  "/_authenticated/dashboard/gift-cards": typeof AuthenticatedDashboardGiftCardsRoute;
-  "/_authenticated/dashboard/inventory": typeof AuthenticatedDashboardInventoryRoute;
-  "/_authenticated/dashboard/pages": typeof AuthenticatedDashboardPagesRoute;
-  "/_authenticated/dashboard/payments": typeof AuthenticatedDashboardPaymentsRoute;
-  "/_authenticated/dashboard/plans": typeof AuthenticatedDashboardPlansRoute;
-  "/_authenticated/dashboard/pos": typeof AuthenticatedDashboardPosRoute;
-  "/_authenticated/dashboard/pricing": typeof AuthenticatedDashboardPricingRoute;
-  "/_authenticated/dashboard/purchasing": typeof AuthenticatedDashboardPurchasingRoute;
-  "/_authenticated/dashboard/returns": typeof AuthenticatedDashboardReturnsRoute;
-  "/_authenticated/dashboard/reviews": typeof AuthenticatedDashboardReviewsRoute;
-  "/_authenticated/dashboard/settings": typeof AuthenticatedDashboardSettingsRoute;
-  "/_authenticated/dashboard/shipping": typeof AuthenticatedDashboardShippingRoute;
-  "/_authenticated/dashboard/staff": typeof AuthenticatedDashboardStaffRoute;
-  "/_authenticated/dashboard/subscriptions": typeof AuthenticatedDashboardSubscriptionsRoute;
-  "/_authenticated/dashboard/support": typeof AuthenticatedDashboardSupportRoute;
-  "/_authenticated/oauth/authorize": typeof AuthenticatedOauthAuthorizeRoute;
-  "/api/public/error-alert": typeof ApiPublicErrorAlertRoute;
-  "/api/public/errors": typeof ApiPublicErrorsRoute;
-  "/api/public/metrics": typeof ApiPublicMetricsRoute;
-  "/api/public/vitals": typeof ApiPublicVitalsRoute;
-  "/blog/author/$slug": typeof BlogAuthorSlugRoute;
-  "/blog/category/$slug": typeof BlogCategorySlugRoute;
-  "/blog/tag/$slug": typeof BlogTagSlugRoute;
-  "/docs/$version/$slug": typeof DocsVersionSlugRoute;
-  "/order/$orderId/confirmation": typeof OrderOrderIdConfirmationRoute;
-  "/store/$slug/account": typeof StoreSlugAccountRoute;
-  "/store/$slug/cart": typeof StoreSlugCartRoute;
-  "/store/$slug/checkout": typeof StoreSlugCheckoutRoute;
-  "/store/$slug/llms.txt": typeof StoreSlugLlmsDottxtRoute;
-  "/store/$slug/robots.txt": typeof StoreSlugRobotsDottxtRoute;
-  "/store/$slug/search": typeof StoreSlugSearchRoute;
-  "/store/$slug/sitemap.xml": typeof StoreSlugSitemapDotxmlRoute;
-  "/store/$slug/track": typeof StoreSlugTrackRoute;
-  "/_authenticated/dashboard/": typeof AuthenticatedDashboardIndexRoute;
-  "/store/$slug/": typeof StoreSlugIndexRoute;
-  "/_authenticated/dashboard/ai/assistant": typeof AuthenticatedDashboardAiAssistantRoute;
-  "/_authenticated/dashboard/ai/settings": typeof AuthenticatedDashboardAiSettingsRoute;
-  "/_authenticated/dashboard/analytics_/insights": typeof AuthenticatedDashboardAnalyticsInsightsRoute;
-  "/_authenticated/dashboard/analytics_/reports": typeof AuthenticatedDashboardAnalyticsReportsRoute;
-  "/_authenticated/dashboard/billing/invoices": typeof AuthenticatedDashboardBillingInvoicesRoute;
-  "/_authenticated/dashboard/content/custom-code": typeof AuthenticatedDashboardContentCustomCodeRoute;
-  "/_authenticated/dashboard/content/editor": typeof AuthenticatedDashboardContentEditorRoute;
-  "/_authenticated/dashboard/content/media": typeof AuthenticatedDashboardContentMediaRoute;
-  "/_authenticated/dashboard/content/menus": typeof AuthenticatedDashboardContentMenusRoute;
-  "/_authenticated/dashboard/content/pages": typeof AuthenticatedDashboardContentPagesRoute;
-  "/_authenticated/dashboard/content/posts": typeof AuthenticatedDashboardContentPostsRoute;
-  "/_authenticated/dashboard/content/themes": typeof AuthenticatedDashboardContentThemesRoute;
-  "/_authenticated/dashboard/fraud/ad-defense": typeof AuthenticatedDashboardFraudAdDefenseRoute;
-  "/_authenticated/dashboard/fraud/audit": typeof AuthenticatedDashboardFraudAuditRoute;
-  "/_authenticated/dashboard/marketing/articles": typeof AuthenticatedDashboardMarketingArticlesRoute;
-  "/_authenticated/dashboard/marketing/campaigns": typeof AuthenticatedDashboardMarketingCampaignsRoute;
-  "/_authenticated/dashboard/marketing/codes": typeof AuthenticatedDashboardMarketingCodesRoute;
-  "/_authenticated/dashboard/marketing/coupons": typeof AuthenticatedDashboardMarketingCouponsRoute;
-  "/_authenticated/dashboard/marketing/forms": typeof AuthenticatedDashboardMarketingFormsRoute;
-  "/_authenticated/dashboard/marketing/media": typeof AuthenticatedDashboardMarketingMediaRoute;
-  "/_authenticated/dashboard/marketing/seo": typeof AuthenticatedDashboardMarketingSeoRoute;
-  "/_authenticated/dashboard/marketing/sequences": typeof AuthenticatedDashboardMarketingSequencesRoute;
-  "/_authenticated/dashboard/marketing/subscribers": typeof AuthenticatedDashboardMarketingSubscribersRoute;
-  "/_authenticated/dashboard/marketing/templates": typeof AuthenticatedDashboardMarketingTemplatesRoute;
-  "/_authenticated/dashboard/marketplace/creator": typeof AuthenticatedDashboardMarketplaceCreatorRoute;
-  "/_authenticated/dashboard/marketplace/moderation": typeof AuthenticatedDashboardMarketplaceModerationRoute;
-  "/_authenticated/dashboard/marketplace/versions": typeof AuthenticatedDashboardMarketplaceVersionsRoute;
-  "/_authenticated/dashboard/money/payments": typeof AuthenticatedDashboardMoneyPaymentsRoute;
-  "/_authenticated/dashboard/orders/$orderId": typeof AuthenticatedDashboardOrdersOrderIdRoute;
-  "/_authenticated/dashboard/plugins/new": typeof AuthenticatedDashboardPluginsNewRoute;
-  "/_authenticated/dashboard/products/$productId": typeof AuthenticatedDashboardProductsProductIdRoute;
-  "/_authenticated/dashboard/products/new": typeof AuthenticatedDashboardProductsNewRoute;
-  "/_authenticated/dashboard/settings_/api": typeof AuthenticatedDashboardSettingsApiRoute;
-  "/_authenticated/dashboard/settings_/domains": typeof AuthenticatedDashboardSettingsDomainsRoute;
-  "/_authenticated/dashboard/settings_/email": typeof AuthenticatedDashboardSettingsEmailRoute;
-  "/_authenticated/dashboard/settings_/infrastructure": typeof AuthenticatedDashboardSettingsInfrastructureRoute;
-  "/_authenticated/dashboard/settings_/providers": typeof AuthenticatedDashboardSettingsProvidersRoute;
-  "/_authenticated/dashboard/settings_/security": typeof AuthenticatedDashboardSettingsSecurityRoute;
-  "/_authenticated/dashboard/settings_/seo": typeof AuthenticatedDashboardSettingsSeoRoute;
-  "/api/public/ads/click": typeof ApiPublicAdsClickRoute;
-  "/api/public/analytics/beacon": typeof ApiPublicAnalyticsBeaconRoute;
-  "/api/public/channels/$channel": typeof ApiPublicChannelsChannelRoute;
-  "/api/public/couriers/$carrier": typeof ApiPublicCouriersCarrierRoute;
-  "/api/public/cron/ad-fraud": typeof ApiPublicCronAdFraudRoute;
-  "/api/public/cron/analytics": typeof ApiPublicCronAnalyticsRoute;
-  "/api/public/cron/billing": typeof ApiPublicCronBillingRoute;
-  "/api/public/cron/content-health": typeof ApiPublicCronContentHealthRoute;
-  "/api/public/cron/couriers": typeof ApiPublicCronCouriersRoute;
-  "/api/public/cron/domains": typeof ApiPublicCronDomainsRoute;
-  "/api/public/cron/growth": typeof ApiPublicCronGrowthRoute;
-  "/api/public/cron/jobs": typeof ApiPublicCronJobsRoute;
-  "/api/public/cron/notifications": typeof ApiPublicCronNotificationsRoute;
-  "/api/public/cron/ops": typeof ApiPublicCronOpsRoute;
-  "/api/public/cron/payouts": typeof ApiPublicCronPayoutsRoute;
-  "/api/public/cron/purge": typeof ApiPublicCronPurgeRoute;
-  "/api/public/cron/search-console": typeof ApiPublicCronSearchConsoleRoute;
-  "/api/public/cron/support": typeof ApiPublicCronSupportRoute;
-  "/api/public/cron/themes": typeof ApiPublicCronThemesRoute;
-  "/api/public/cron/webhooks": typeof ApiPublicCronWebhooksRoute;
-  "/api/public/domains/callback": typeof ApiPublicDomainsCallbackRoute;
-  "/api/public/domains/verify-sni": typeof ApiPublicDomainsVerifySniRoute;
-  "/api/public/font/$": typeof ApiPublicFontSplatRoute;
-  "/api/public/img/$": typeof ApiPublicImgSplatRoute;
-  "/api/public/media/$": typeof ApiPublicMediaSplatRoute;
-  "/api/public/newsletter/feedback": typeof ApiPublicNewsletterFeedbackRoute;
-  "/api/public/oauth/revoke": typeof ApiPublicOauthRevokeRoute;
-  "/api/public/oauth/token": typeof ApiPublicOauthTokenRoute;
-  "/api/public/payments/$provider": typeof ApiPublicPaymentsProviderRoute;
-  "/api/public/payments/return": typeof ApiPublicPaymentsReturnRoute;
-  "/api/public/ph/$": typeof ApiPublicPhSplatRoute;
-  "/api/public/v1/$": typeof ApiPublicV1SplatRoute;
-  "/store/$slug/blog/$slug": typeof StoreSlugBlogSlugRoute;
-  "/store/$slug/c/$collectionSlug": typeof StoreSlugCCollectionSlugRoute;
-  "/store/$slug/order/$orderId": typeof StoreSlugOrderOrderIdRoute;
-  "/store/$slug/p/$productSlug": typeof StoreSlugPProductSlugRoute;
-  "/store/$slug/pages/$pageSlug": typeof StoreSlugPagesPageSlugRoute;
-  "/store/$slug/sitemaps/$kind": typeof StoreSlugSitemapsKindRoute;
-  "/_authenticated/dashboard/billing/": typeof AuthenticatedDashboardBillingIndexRoute;
-  "/_authenticated/dashboard/content/": typeof AuthenticatedDashboardContentIndexRoute;
-  "/_authenticated/dashboard/fraud/": typeof AuthenticatedDashboardFraudIndexRoute;
-  "/_authenticated/dashboard/marketing/": typeof AuthenticatedDashboardMarketingIndexRoute;
-  "/_authenticated/dashboard/marketplace/": typeof AuthenticatedDashboardMarketplaceIndexRoute;
-  "/_authenticated/dashboard/orders/": typeof AuthenticatedDashboardOrdersIndexRoute;
-  "/_authenticated/dashboard/plugins/": typeof AuthenticatedDashboardPluginsIndexRoute;
-  "/_authenticated/dashboard/products/": typeof AuthenticatedDashboardProductsIndexRoute;
-  "/store/$slug/blog/": typeof StoreSlugBlogIndexRoute;
-  "/_authenticated/dashboard/orders/$orderId_/invoice": typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute;
-  "/api/public/payments/live/$provider": typeof ApiPublicPaymentsLiveProviderRoute;
-  "/api/public/payments/mock/$provider": typeof ApiPublicPaymentsMockProviderRoute;
-  "/api/public/payments/platform/$provider": typeof ApiPublicPaymentsPlatformProviderRoute;
-  "/api/public/payments/platform/return": typeof ApiPublicPaymentsPlatformReturnRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/$': typeof SplatRoute
+  '/about': typeof AboutRoute
+  '/account': typeof AccountRoute
+  '/auth': typeof AuthRoute
+  '/blog.atom': typeof BlogDotatomRoute
+  '/blog.json': typeof BlogDotjsonRoute
+  '/blog.xml': typeof BlogDotxmlRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/customers': typeof CustomersRoute
+  '/faq': typeof FaqRoute
+  '/features': typeof FeaturesRoute
+  '/fulfilment': typeof FulfilmentRoute
+  '/llms.txt': typeof LlmsDottxtRoute
+  '/payments': typeof PaymentsRoute
+  '/pricing': typeof PricingRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/root': typeof RootRouteWithChildren
+  '/search': typeof SearchRoute
+  '/security': typeof SecurityRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/status': typeof StatusRoute
+  '/track': typeof TrackRoute
+  '/unsubscribe': typeof UnsubscribeRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/c/$collectionSlug': typeof CCollectionSlugRoute
+  '/dev/bands': typeof DevBandsRoute
+  '/docs/sitemap.xml': typeof DocsSitemapDotxmlRoute
+  '/invoice/$token': typeof InvoiceTokenRoute
+  '/legal/$doc': typeof LegalDocRoute
+  '/newsletter/verify': typeof NewsletterVerifyRoute
+  '/order/$orderId': typeof OrderOrderIdRouteWithChildren
+  '/p/$productSlug': typeof PProductSlugRoute
+  '/pages/$pageSlug': typeof PagesPageSlugRoute
+  '/products/$productId': typeof ProductsProductIdRoute
+  '/root/access': typeof RootAccessRoute
+  '/root/ai': typeof RootAiRoute
+  '/root/audit': typeof RootAuditRoute
+  '/root/auth': typeof RootAuthRoute
+  '/root/coupons': typeof RootCouponsRoute
+  '/root/fraud': typeof RootFraudRoute
+  '/root/gateway': typeof RootGatewayRoute
+  '/root/login': typeof RootLoginRoute
+  '/root/marketing': typeof RootMarketingRoute
+  '/root/money': typeof RootMoneyRoute
+  '/root/observability': typeof RootObservabilityRoute
+  '/root/ops': typeof RootOpsRoute
+  '/root/payouts': typeof RootPayoutsRoute
+  '/root/plans': typeof RootPlansRoute
+  '/root/revenue': typeof RootRevenueRoute
+  '/root/settings': typeof RootSettingsRoute
+  '/root/snapshots': typeof RootSnapshotsRoute
+  '/root/status': typeof RootStatusRoute
+  '/root/tenancy': typeof RootTenancyRoute
+  '/root/tenants': typeof RootTenantsRoute
+  '/root/trial': typeof RootTrialRoute
+  '/root/users': typeof RootUsersRoute
+  '/sitemaps/$kind': typeof SitemapsKindRoute
+  '/theme-preview/$key': typeof ThemePreviewKeyRoute
+  '/blog/': typeof BlogIndexRoute
+  '/docs/': typeof DocsIndexRoute
+  '/legal/': typeof LegalIndexRoute
+  '/root/': typeof RootIndexRoute
+  '/.well-known/acme-challenge/$token': typeof DotwellKnownAcmeChallengeTokenRoute
+  '/_authenticated/dashboard/activity': typeof AuthenticatedDashboardActivityRoute
+  '/_authenticated/dashboard/analytics': typeof AuthenticatedDashboardAnalyticsRoute
+  '/_authenticated/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
+  '/_authenticated/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
+  '/_authenticated/dashboard/builder': typeof AuthenticatedDashboardBuilderRoute
+  '/_authenticated/dashboard/bulk-editor': typeof AuthenticatedDashboardBulkEditorRoute
+  '/_authenticated/dashboard/bundles': typeof AuthenticatedDashboardBundlesRoute
+  '/_authenticated/dashboard/carts': typeof AuthenticatedDashboardCartsRoute
+  '/_authenticated/dashboard/catalog': typeof AuthenticatedDashboardCatalogRoute
+  '/_authenticated/dashboard/categories': typeof AuthenticatedDashboardCategoriesRoute
+  '/_authenticated/dashboard/collections': typeof AuthenticatedDashboardCollectionsRoute
+  '/_authenticated/dashboard/customers': typeof AuthenticatedDashboardCustomersRoute
+  '/_authenticated/dashboard/developers': typeof AuthenticatedDashboardDevelopersRoute
+  '/_authenticated/dashboard/draft-orders': typeof AuthenticatedDashboardDraftOrdersRoute
+  '/_authenticated/dashboard/experiments': typeof AuthenticatedDashboardExperimentsRoute
+  '/_authenticated/dashboard/exports': typeof AuthenticatedDashboardExportsRoute
+  '/_authenticated/dashboard/gift-cards': typeof AuthenticatedDashboardGiftCardsRoute
+  '/_authenticated/dashboard/inventory': typeof AuthenticatedDashboardInventoryRoute
+  '/_authenticated/dashboard/pages': typeof AuthenticatedDashboardPagesRoute
+  '/_authenticated/dashboard/payments': typeof AuthenticatedDashboardPaymentsRoute
+  '/_authenticated/dashboard/plans': typeof AuthenticatedDashboardPlansRoute
+  '/_authenticated/dashboard/pos': typeof AuthenticatedDashboardPosRoute
+  '/_authenticated/dashboard/pricing': typeof AuthenticatedDashboardPricingRoute
+  '/_authenticated/dashboard/purchasing': typeof AuthenticatedDashboardPurchasingRoute
+  '/_authenticated/dashboard/returns': typeof AuthenticatedDashboardReturnsRoute
+  '/_authenticated/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
+  '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
+  '/_authenticated/dashboard/shipping': typeof AuthenticatedDashboardShippingRoute
+  '/_authenticated/dashboard/staff': typeof AuthenticatedDashboardStaffRoute
+  '/_authenticated/dashboard/subscriptions': typeof AuthenticatedDashboardSubscriptionsRoute
+  '/_authenticated/dashboard/support': typeof AuthenticatedDashboardSupportRoute
+  '/_authenticated/oauth/authorize': typeof AuthenticatedOauthAuthorizeRoute
+  '/api/public/error-alert': typeof ApiPublicErrorAlertRoute
+  '/api/public/errors': typeof ApiPublicErrorsRoute
+  '/api/public/metrics': typeof ApiPublicMetricsRoute
+  '/api/public/vitals': typeof ApiPublicVitalsRoute
+  '/blog/author/$slug': typeof BlogAuthorSlugRoute
+  '/blog/category/$slug': typeof BlogCategorySlugRoute
+  '/blog/tag/$slug': typeof BlogTagSlugRoute
+  '/docs/$version/$slug': typeof DocsVersionSlugRoute
+  '/order/$orderId/confirmation': typeof OrderOrderIdConfirmationRoute
+  '/store/$slug/account': typeof StoreSlugAccountRoute
+  '/store/$slug/cart': typeof StoreSlugCartRoute
+  '/store/$slug/checkout': typeof StoreSlugCheckoutRoute
+  '/store/$slug/llms.txt': typeof StoreSlugLlmsDottxtRoute
+  '/store/$slug/robots.txt': typeof StoreSlugRobotsDottxtRoute
+  '/store/$slug/search': typeof StoreSlugSearchRoute
+  '/store/$slug/sitemap.xml': typeof StoreSlugSitemapDotxmlRoute
+  '/store/$slug/track': typeof StoreSlugTrackRoute
+  '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/store/$slug/': typeof StoreSlugIndexRoute
+  '/_authenticated/dashboard/ai/assistant': typeof AuthenticatedDashboardAiAssistantRoute
+  '/_authenticated/dashboard/ai/settings': typeof AuthenticatedDashboardAiSettingsRoute
+  '/_authenticated/dashboard/analytics_/insights': typeof AuthenticatedDashboardAnalyticsInsightsRoute
+  '/_authenticated/dashboard/analytics_/reports': typeof AuthenticatedDashboardAnalyticsReportsRoute
+  '/_authenticated/dashboard/billing/invoices': typeof AuthenticatedDashboardBillingInvoicesRoute
+  '/_authenticated/dashboard/content/custom-code': typeof AuthenticatedDashboardContentCustomCodeRoute
+  '/_authenticated/dashboard/content/editor': typeof AuthenticatedDashboardContentEditorRoute
+  '/_authenticated/dashboard/content/media': typeof AuthenticatedDashboardContentMediaRoute
+  '/_authenticated/dashboard/content/menus': typeof AuthenticatedDashboardContentMenusRoute
+  '/_authenticated/dashboard/content/pages': typeof AuthenticatedDashboardContentPagesRoute
+  '/_authenticated/dashboard/content/posts': typeof AuthenticatedDashboardContentPostsRoute
+  '/_authenticated/dashboard/content/themes': typeof AuthenticatedDashboardContentThemesRoute
+  '/_authenticated/dashboard/fraud/ad-defense': typeof AuthenticatedDashboardFraudAdDefenseRoute
+  '/_authenticated/dashboard/fraud/audit': typeof AuthenticatedDashboardFraudAuditRoute
+  '/_authenticated/dashboard/marketing/articles': typeof AuthenticatedDashboardMarketingArticlesRoute
+  '/_authenticated/dashboard/marketing/campaigns': typeof AuthenticatedDashboardMarketingCampaignsRoute
+  '/_authenticated/dashboard/marketing/codes': typeof AuthenticatedDashboardMarketingCodesRoute
+  '/_authenticated/dashboard/marketing/coupons': typeof AuthenticatedDashboardMarketingCouponsRoute
+  '/_authenticated/dashboard/marketing/forms': typeof AuthenticatedDashboardMarketingFormsRoute
+  '/_authenticated/dashboard/marketing/media': typeof AuthenticatedDashboardMarketingMediaRoute
+  '/_authenticated/dashboard/marketing/seo': typeof AuthenticatedDashboardMarketingSeoRoute
+  '/_authenticated/dashboard/marketing/sequences': typeof AuthenticatedDashboardMarketingSequencesRoute
+  '/_authenticated/dashboard/marketing/subscribers': typeof AuthenticatedDashboardMarketingSubscribersRoute
+  '/_authenticated/dashboard/marketing/templates': typeof AuthenticatedDashboardMarketingTemplatesRoute
+  '/_authenticated/dashboard/marketplace/creator': typeof AuthenticatedDashboardMarketplaceCreatorRoute
+  '/_authenticated/dashboard/marketplace/moderation': typeof AuthenticatedDashboardMarketplaceModerationRoute
+  '/_authenticated/dashboard/marketplace/versions': typeof AuthenticatedDashboardMarketplaceVersionsRoute
+  '/_authenticated/dashboard/money/payments': typeof AuthenticatedDashboardMoneyPaymentsRoute
+  '/_authenticated/dashboard/orders/$orderId': typeof AuthenticatedDashboardOrdersOrderIdRoute
+  '/_authenticated/dashboard/plugins/new': typeof AuthenticatedDashboardPluginsNewRoute
+  '/_authenticated/dashboard/products/$productId': typeof AuthenticatedDashboardProductsProductIdRoute
+  '/_authenticated/dashboard/products/new': typeof AuthenticatedDashboardProductsNewRoute
+  '/_authenticated/dashboard/settings_/api': typeof AuthenticatedDashboardSettingsApiRoute
+  '/_authenticated/dashboard/settings_/domains': typeof AuthenticatedDashboardSettingsDomainsRoute
+  '/_authenticated/dashboard/settings_/email': typeof AuthenticatedDashboardSettingsEmailRoute
+  '/_authenticated/dashboard/settings_/infrastructure': typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  '/_authenticated/dashboard/settings_/providers': typeof AuthenticatedDashboardSettingsProvidersRoute
+  '/_authenticated/dashboard/settings_/security': typeof AuthenticatedDashboardSettingsSecurityRoute
+  '/_authenticated/dashboard/settings_/seo': typeof AuthenticatedDashboardSettingsSeoRoute
+  '/api/public/ads/click': typeof ApiPublicAdsClickRoute
+  '/api/public/analytics/beacon': typeof ApiPublicAnalyticsBeaconRoute
+  '/api/public/channels/$channel': typeof ApiPublicChannelsChannelRoute
+  '/api/public/couriers/$carrier': typeof ApiPublicCouriersCarrierRoute
+  '/api/public/cron/ad-fraud': typeof ApiPublicCronAdFraudRoute
+  '/api/public/cron/analytics': typeof ApiPublicCronAnalyticsRoute
+  '/api/public/cron/billing': typeof ApiPublicCronBillingRoute
+  '/api/public/cron/content-health': typeof ApiPublicCronContentHealthRoute
+  '/api/public/cron/couriers': typeof ApiPublicCronCouriersRoute
+  '/api/public/cron/domains': typeof ApiPublicCronDomainsRoute
+  '/api/public/cron/growth': typeof ApiPublicCronGrowthRoute
+  '/api/public/cron/jobs': typeof ApiPublicCronJobsRoute
+  '/api/public/cron/notifications': typeof ApiPublicCronNotificationsRoute
+  '/api/public/cron/ops': typeof ApiPublicCronOpsRoute
+  '/api/public/cron/payouts': typeof ApiPublicCronPayoutsRoute
+  '/api/public/cron/purge': typeof ApiPublicCronPurgeRoute
+  '/api/public/cron/search-console': typeof ApiPublicCronSearchConsoleRoute
+  '/api/public/cron/support': typeof ApiPublicCronSupportRoute
+  '/api/public/cron/themes': typeof ApiPublicCronThemesRoute
+  '/api/public/cron/webhooks': typeof ApiPublicCronWebhooksRoute
+  '/api/public/domains/callback': typeof ApiPublicDomainsCallbackRoute
+  '/api/public/domains/verify-sni': typeof ApiPublicDomainsVerifySniRoute
+  '/api/public/font/$': typeof ApiPublicFontSplatRoute
+  '/api/public/img/$': typeof ApiPublicImgSplatRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
+  '/api/public/newsletter/feedback': typeof ApiPublicNewsletterFeedbackRoute
+  '/api/public/oauth/revoke': typeof ApiPublicOauthRevokeRoute
+  '/api/public/oauth/token': typeof ApiPublicOauthTokenRoute
+  '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
+  '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
+  '/api/public/ph/$': typeof ApiPublicPhSplatRoute
+  '/api/public/v1/$': typeof ApiPublicV1SplatRoute
+  '/store/$slug/blog/$slug': typeof StoreSlugBlogSlugRoute
+  '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
+  '/store/$slug/order/$orderId': typeof StoreSlugOrderOrderIdRoute
+  '/store/$slug/p/$productSlug': typeof StoreSlugPProductSlugRoute
+  '/store/$slug/pages/$pageSlug': typeof StoreSlugPagesPageSlugRoute
+  '/store/$slug/sitemaps/$kind': typeof StoreSlugSitemapsKindRoute
+  '/_authenticated/dashboard/billing/': typeof AuthenticatedDashboardBillingIndexRoute
+  '/_authenticated/dashboard/content/': typeof AuthenticatedDashboardContentIndexRoute
+  '/_authenticated/dashboard/fraud/': typeof AuthenticatedDashboardFraudIndexRoute
+  '/_authenticated/dashboard/marketing/': typeof AuthenticatedDashboardMarketingIndexRoute
+  '/_authenticated/dashboard/marketplace/': typeof AuthenticatedDashboardMarketplaceIndexRoute
+  '/_authenticated/dashboard/orders/': typeof AuthenticatedDashboardOrdersIndexRoute
+  '/_authenticated/dashboard/plugins/': typeof AuthenticatedDashboardPluginsIndexRoute
+  '/_authenticated/dashboard/products/': typeof AuthenticatedDashboardProductsIndexRoute
+  '/store/$slug/blog/': typeof StoreSlugBlogIndexRoute
+  '/_authenticated/dashboard/orders/$orderId_/invoice': typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
+  '/api/public/payments/live/$provider': typeof ApiPublicPaymentsLiveProviderRoute
+  '/api/public/payments/mock/$provider': typeof ApiPublicPaymentsMockProviderRoute
+  '/api/public/payments/platform/$provider': typeof ApiPublicPaymentsPlatformProviderRoute
+  '/api/public/payments/platform/return': typeof ApiPublicPaymentsPlatformReturnRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/"
-    | "/$"
-    | "/about"
-    | "/account"
-    | "/auth"
-    | "/blog.atom"
-    | "/blog.json"
-    | "/blog.xml"
-    | "/cart"
-    | "/checkout"
-    | "/contact"
-    | "/customers"
-    | "/faq"
-    | "/features"
-    | "/fulfilment"
-    | "/llms.txt"
-    | "/payments"
-    | "/pricing"
-    | "/reset-password"
-    | "/robots.txt"
-    | "/root"
-    | "/search"
-    | "/security"
-    | "/sitemap.xml"
-    | "/status"
-    | "/track"
-    | "/unsubscribe"
-    | "/dashboard"
-    | "/onboarding"
-    | "/blog/$slug"
-    | "/c/$collectionSlug"
-    | "/dev/bands"
-    | "/docs/sitemap.xml"
-    | "/invoice/$token"
-    | "/legal/$doc"
-    | "/newsletter/verify"
-    | "/order/$orderId"
-    | "/p/$productSlug"
-    | "/pages/$pageSlug"
-    | "/products/$productId"
-    | "/root/access"
-    | "/root/ai"
-    | "/root/audit"
-    | "/root/auth"
-    | "/root/coupons"
-    | "/root/fraud"
-    | "/root/gateway"
-    | "/root/login"
-    | "/root/marketing"
-    | "/root/money"
-    | "/root/observability"
-    | "/root/ops"
-    | "/root/payouts"
-    | "/root/plans"
-    | "/root/revenue"
-    | "/root/settings"
-    | "/root/snapshots"
-    | "/root/status"
-    | "/root/tenancy"
-    | "/root/tenants"
-    | "/root/trial"
-    | "/root/users"
-    | "/sitemaps/$kind"
-    | "/theme-preview/$key"
-    | "/blog/"
-    | "/docs/"
-    | "/legal/"
-    | "/root/"
-    | "/.well-known/acme-challenge/$token"
-    | "/dashboard/activity"
-    | "/dashboard/analytics"
-    | "/dashboard/approvals"
-    | "/dashboard/brands"
-    | "/dashboard/builder"
-    | "/dashboard/bulk-editor"
-    | "/dashboard/bundles"
-    | "/dashboard/carts"
-    | "/dashboard/catalog"
-    | "/dashboard/categories"
-    | "/dashboard/collections"
-    | "/dashboard/customers"
-    | "/dashboard/developers"
-    | "/dashboard/draft-orders"
-    | "/dashboard/experiments"
-    | "/dashboard/exports"
-    | "/dashboard/gift-cards"
-    | "/dashboard/inventory"
-    | "/dashboard/pages"
-    | "/dashboard/payments"
-    | "/dashboard/plans"
-    | "/dashboard/pos"
-    | "/dashboard/pricing"
-    | "/dashboard/purchasing"
-    | "/dashboard/returns"
-    | "/dashboard/reviews"
-    | "/dashboard/settings"
-    | "/dashboard/shipping"
-    | "/dashboard/staff"
-    | "/dashboard/subscriptions"
-    | "/dashboard/support"
-    | "/oauth/authorize"
-    | "/api/public/error-alert"
-    | "/api/public/errors"
-    | "/api/public/metrics"
-    | "/api/public/vitals"
-    | "/blog/author/$slug"
-    | "/blog/category/$slug"
-    | "/blog/tag/$slug"
-    | "/docs/$version/$slug"
-    | "/order/$orderId/confirmation"
-    | "/store/$slug/account"
-    | "/store/$slug/cart"
-    | "/store/$slug/checkout"
-    | "/store/$slug/llms.txt"
-    | "/store/$slug/robots.txt"
-    | "/store/$slug/search"
-    | "/store/$slug/sitemap.xml"
-    | "/store/$slug/track"
-    | "/dashboard/"
-    | "/store/$slug/"
-    | "/dashboard/ai/assistant"
-    | "/dashboard/ai/settings"
-    | "/dashboard/analytics/insights"
-    | "/dashboard/analytics/reports"
-    | "/dashboard/billing/invoices"
-    | "/dashboard/content/custom-code"
-    | "/dashboard/content/editor"
-    | "/dashboard/content/media"
-    | "/dashboard/content/menus"
-    | "/dashboard/content/pages"
-    | "/dashboard/content/posts"
-    | "/dashboard/content/themes"
-    | "/dashboard/fraud/ad-defense"
-    | "/dashboard/fraud/audit"
-    | "/dashboard/marketing/articles"
-    | "/dashboard/marketing/campaigns"
-    | "/dashboard/marketing/codes"
-    | "/dashboard/marketing/coupons"
-    | "/dashboard/marketing/forms"
-    | "/dashboard/marketing/media"
-    | "/dashboard/marketing/seo"
-    | "/dashboard/marketing/sequences"
-    | "/dashboard/marketing/subscribers"
-    | "/dashboard/marketing/templates"
-    | "/dashboard/marketplace/creator"
-    | "/dashboard/marketplace/moderation"
-    | "/dashboard/marketplace/versions"
-    | "/dashboard/money/payments"
-    | "/dashboard/orders/$orderId"
-    | "/dashboard/plugins/new"
-    | "/dashboard/products/$productId"
-    | "/dashboard/products/new"
-    | "/dashboard/settings/api"
-    | "/dashboard/settings/domains"
-    | "/dashboard/settings/email"
-    | "/dashboard/settings/infrastructure"
-    | "/dashboard/settings/providers"
-    | "/dashboard/settings/security"
-    | "/dashboard/settings/seo"
-    | "/api/public/ads/click"
-    | "/api/public/analytics/beacon"
-    | "/api/public/channels/$channel"
-    | "/api/public/couriers/$carrier"
-    | "/api/public/cron/ad-fraud"
-    | "/api/public/cron/analytics"
-    | "/api/public/cron/billing"
-    | "/api/public/cron/content-health"
-    | "/api/public/cron/couriers"
-    | "/api/public/cron/domains"
-    | "/api/public/cron/growth"
-    | "/api/public/cron/jobs"
-    | "/api/public/cron/notifications"
-    | "/api/public/cron/ops"
-    | "/api/public/cron/payouts"
-    | "/api/public/cron/purge"
-    | "/api/public/cron/search-console"
-    | "/api/public/cron/support"
-    | "/api/public/cron/themes"
-    | "/api/public/cron/webhooks"
-    | "/api/public/domains/callback"
-    | "/api/public/domains/verify-sni"
-    | "/api/public/font/$"
-    | "/api/public/img/$"
-    | "/api/public/media/$"
-    | "/api/public/newsletter/feedback"
-    | "/api/public/oauth/revoke"
-    | "/api/public/oauth/token"
-    | "/api/public/payments/$provider"
-    | "/api/public/payments/return"
-    | "/api/public/ph/$"
-    | "/api/public/v1/$"
-    | "/store/$slug/blog/$slug"
-    | "/store/$slug/c/$collectionSlug"
-    | "/store/$slug/order/$orderId"
-    | "/store/$slug/p/$productSlug"
-    | "/store/$slug/pages/$pageSlug"
-    | "/store/$slug/sitemaps/$kind"
-    | "/dashboard/billing/"
-    | "/dashboard/content/"
-    | "/dashboard/fraud/"
-    | "/dashboard/marketing/"
-    | "/dashboard/marketplace/"
-    | "/dashboard/orders/"
-    | "/dashboard/plugins/"
-    | "/dashboard/products/"
-    | "/store/$slug/blog/"
-    | "/dashboard/orders/$orderId/invoice"
-    | "/api/public/payments/live/$provider"
-    | "/api/public/payments/mock/$provider"
-    | "/api/public/payments/platform/$provider"
-    | "/api/public/payments/platform/return";
-  fileRoutesByTo: FileRoutesByTo;
+    | '/'
+    | '/$'
+    | '/about'
+    | '/account'
+    | '/auth'
+    | '/blog.atom'
+    | '/blog.json'
+    | '/blog.xml'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/customers'
+    | '/faq'
+    | '/features'
+    | '/fulfilment'
+    | '/llms.txt'
+    | '/payments'
+    | '/pricing'
+    | '/reset-password'
+    | '/robots.txt'
+    | '/root'
+    | '/search'
+    | '/security'
+    | '/sitemap.xml'
+    | '/status'
+    | '/track'
+    | '/unsubscribe'
+    | '/dashboard'
+    | '/onboarding'
+    | '/blog/$slug'
+    | '/c/$collectionSlug'
+    | '/dev/bands'
+    | '/docs/sitemap.xml'
+    | '/invoice/$token'
+    | '/legal/$doc'
+    | '/newsletter/verify'
+    | '/order/$orderId'
+    | '/p/$productSlug'
+    | '/pages/$pageSlug'
+    | '/products/$productId'
+    | '/root/access'
+    | '/root/ai'
+    | '/root/audit'
+    | '/root/auth'
+    | '/root/coupons'
+    | '/root/fraud'
+    | '/root/gateway'
+    | '/root/login'
+    | '/root/marketing'
+    | '/root/money'
+    | '/root/observability'
+    | '/root/ops'
+    | '/root/payouts'
+    | '/root/plans'
+    | '/root/revenue'
+    | '/root/settings'
+    | '/root/snapshots'
+    | '/root/status'
+    | '/root/tenancy'
+    | '/root/tenants'
+    | '/root/trial'
+    | '/root/users'
+    | '/sitemaps/$kind'
+    | '/theme-preview/$key'
+    | '/blog/'
+    | '/docs/'
+    | '/legal/'
+    | '/root/'
+    | '/.well-known/acme-challenge/$token'
+    | '/dashboard/activity'
+    | '/dashboard/analytics'
+    | '/dashboard/approvals'
+    | '/dashboard/brands'
+    | '/dashboard/builder'
+    | '/dashboard/bulk-editor'
+    | '/dashboard/bundles'
+    | '/dashboard/carts'
+    | '/dashboard/catalog'
+    | '/dashboard/categories'
+    | '/dashboard/collections'
+    | '/dashboard/customers'
+    | '/dashboard/developers'
+    | '/dashboard/draft-orders'
+    | '/dashboard/experiments'
+    | '/dashboard/exports'
+    | '/dashboard/gift-cards'
+    | '/dashboard/inventory'
+    | '/dashboard/pages'
+    | '/dashboard/payments'
+    | '/dashboard/plans'
+    | '/dashboard/pos'
+    | '/dashboard/pricing'
+    | '/dashboard/purchasing'
+    | '/dashboard/returns'
+    | '/dashboard/reviews'
+    | '/dashboard/settings'
+    | '/dashboard/shipping'
+    | '/dashboard/staff'
+    | '/dashboard/subscriptions'
+    | '/dashboard/support'
+    | '/oauth/authorize'
+    | '/api/public/error-alert'
+    | '/api/public/errors'
+    | '/api/public/metrics'
+    | '/api/public/vitals'
+    | '/blog/author/$slug'
+    | '/blog/category/$slug'
+    | '/blog/tag/$slug'
+    | '/docs/$version/$slug'
+    | '/order/$orderId/confirmation'
+    | '/store/$slug/account'
+    | '/store/$slug/cart'
+    | '/store/$slug/checkout'
+    | '/store/$slug/llms.txt'
+    | '/store/$slug/robots.txt'
+    | '/store/$slug/search'
+    | '/store/$slug/sitemap.xml'
+    | '/store/$slug/track'
+    | '/dashboard/'
+    | '/store/$slug/'
+    | '/dashboard/ai/assistant'
+    | '/dashboard/ai/settings'
+    | '/dashboard/analytics/insights'
+    | '/dashboard/analytics/reports'
+    | '/dashboard/billing/invoices'
+    | '/dashboard/content/custom-code'
+    | '/dashboard/content/editor'
+    | '/dashboard/content/media'
+    | '/dashboard/content/menus'
+    | '/dashboard/content/pages'
+    | '/dashboard/content/posts'
+    | '/dashboard/content/themes'
+    | '/dashboard/fraud/ad-defense'
+    | '/dashboard/fraud/audit'
+    | '/dashboard/marketing/articles'
+    | '/dashboard/marketing/campaigns'
+    | '/dashboard/marketing/codes'
+    | '/dashboard/marketing/coupons'
+    | '/dashboard/marketing/forms'
+    | '/dashboard/marketing/media'
+    | '/dashboard/marketing/seo'
+    | '/dashboard/marketing/sequences'
+    | '/dashboard/marketing/subscribers'
+    | '/dashboard/marketing/templates'
+    | '/dashboard/marketplace/creator'
+    | '/dashboard/marketplace/moderation'
+    | '/dashboard/marketplace/versions'
+    | '/dashboard/money/payments'
+    | '/dashboard/orders/$orderId'
+    | '/dashboard/plugins/new'
+    | '/dashboard/products/$productId'
+    | '/dashboard/products/new'
+    | '/dashboard/settings/api'
+    | '/dashboard/settings/domains'
+    | '/dashboard/settings/email'
+    | '/dashboard/settings/infrastructure'
+    | '/dashboard/settings/providers'
+    | '/dashboard/settings/security'
+    | '/dashboard/settings/seo'
+    | '/api/public/ads/click'
+    | '/api/public/analytics/beacon'
+    | '/api/public/channels/$channel'
+    | '/api/public/couriers/$carrier'
+    | '/api/public/cron/ad-fraud'
+    | '/api/public/cron/analytics'
+    | '/api/public/cron/billing'
+    | '/api/public/cron/content-health'
+    | '/api/public/cron/couriers'
+    | '/api/public/cron/domains'
+    | '/api/public/cron/growth'
+    | '/api/public/cron/jobs'
+    | '/api/public/cron/notifications'
+    | '/api/public/cron/ops'
+    | '/api/public/cron/payouts'
+    | '/api/public/cron/purge'
+    | '/api/public/cron/search-console'
+    | '/api/public/cron/support'
+    | '/api/public/cron/themes'
+    | '/api/public/cron/webhooks'
+    | '/api/public/domains/callback'
+    | '/api/public/domains/verify-sni'
+    | '/api/public/font/$'
+    | '/api/public/img/$'
+    | '/api/public/media/$'
+    | '/api/public/newsletter/feedback'
+    | '/api/public/oauth/revoke'
+    | '/api/public/oauth/token'
+    | '/api/public/payments/$provider'
+    | '/api/public/payments/return'
+    | '/api/public/ph/$'
+    | '/api/public/v1/$'
+    | '/store/$slug/blog/$slug'
+    | '/store/$slug/c/$collectionSlug'
+    | '/store/$slug/order/$orderId'
+    | '/store/$slug/p/$productSlug'
+    | '/store/$slug/pages/$pageSlug'
+    | '/store/$slug/sitemaps/$kind'
+    | '/dashboard/billing/'
+    | '/dashboard/content/'
+    | '/dashboard/fraud/'
+    | '/dashboard/marketing/'
+    | '/dashboard/marketplace/'
+    | '/dashboard/orders/'
+    | '/dashboard/plugins/'
+    | '/dashboard/products/'
+    | '/store/$slug/blog/'
+    | '/dashboard/orders/$orderId/invoice'
+    | '/api/public/payments/live/$provider'
+    | '/api/public/payments/mock/$provider'
+    | '/api/public/payments/platform/$provider'
+    | '/api/public/payments/platform/return'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | "/"
-    | "/$"
-    | "/about"
-    | "/account"
-    | "/auth"
-    | "/blog.atom"
-    | "/blog.json"
-    | "/blog.xml"
-    | "/cart"
-    | "/checkout"
-    | "/contact"
-    | "/customers"
-    | "/faq"
-    | "/features"
-    | "/fulfilment"
-    | "/llms.txt"
-    | "/payments"
-    | "/pricing"
-    | "/reset-password"
-    | "/robots.txt"
-    | "/search"
-    | "/security"
-    | "/sitemap.xml"
-    | "/status"
-    | "/track"
-    | "/unsubscribe"
-    | "/onboarding"
-    | "/blog/$slug"
-    | "/c/$collectionSlug"
-    | "/dev/bands"
-    | "/docs/sitemap.xml"
-    | "/invoice/$token"
-    | "/legal/$doc"
-    | "/newsletter/verify"
-    | "/order/$orderId"
-    | "/p/$productSlug"
-    | "/pages/$pageSlug"
-    | "/products/$productId"
-    | "/root/access"
-    | "/root/ai"
-    | "/root/audit"
-    | "/root/auth"
-    | "/root/coupons"
-    | "/root/fraud"
-    | "/root/gateway"
-    | "/root/login"
-    | "/root/marketing"
-    | "/root/money"
-    | "/root/observability"
-    | "/root/ops"
-    | "/root/payouts"
-    | "/root/plans"
-    | "/root/revenue"
-    | "/root/settings"
-    | "/root/snapshots"
-    | "/root/status"
-    | "/root/tenancy"
-    | "/root/tenants"
-    | "/root/trial"
-    | "/root/users"
-    | "/sitemaps/$kind"
-    | "/theme-preview/$key"
-    | "/blog"
-    | "/docs"
-    | "/legal"
-    | "/root"
-    | "/.well-known/acme-challenge/$token"
-    | "/dashboard/activity"
-    | "/dashboard/analytics"
-    | "/dashboard/approvals"
-    | "/dashboard/brands"
-    | "/dashboard/builder"
-    | "/dashboard/bulk-editor"
-    | "/dashboard/bundles"
-    | "/dashboard/carts"
-    | "/dashboard/catalog"
-    | "/dashboard/categories"
-    | "/dashboard/collections"
-    | "/dashboard/customers"
-    | "/dashboard/developers"
-    | "/dashboard/draft-orders"
-    | "/dashboard/experiments"
-    | "/dashboard/exports"
-    | "/dashboard/gift-cards"
-    | "/dashboard/inventory"
-    | "/dashboard/pages"
-    | "/dashboard/payments"
-    | "/dashboard/plans"
-    | "/dashboard/pos"
-    | "/dashboard/pricing"
-    | "/dashboard/purchasing"
-    | "/dashboard/returns"
-    | "/dashboard/reviews"
-    | "/dashboard/settings"
-    | "/dashboard/shipping"
-    | "/dashboard/staff"
-    | "/dashboard/subscriptions"
-    | "/dashboard/support"
-    | "/oauth/authorize"
-    | "/api/public/error-alert"
-    | "/api/public/errors"
-    | "/api/public/metrics"
-    | "/api/public/vitals"
-    | "/blog/author/$slug"
-    | "/blog/category/$slug"
-    | "/blog/tag/$slug"
-    | "/docs/$version/$slug"
-    | "/order/$orderId/confirmation"
-    | "/store/$slug/account"
-    | "/store/$slug/cart"
-    | "/store/$slug/checkout"
-    | "/store/$slug/llms.txt"
-    | "/store/$slug/robots.txt"
-    | "/store/$slug/search"
-    | "/store/$slug/sitemap.xml"
-    | "/store/$slug/track"
-    | "/dashboard"
-    | "/store/$slug"
-    | "/dashboard/ai/assistant"
-    | "/dashboard/ai/settings"
-    | "/dashboard/analytics/insights"
-    | "/dashboard/analytics/reports"
-    | "/dashboard/billing/invoices"
-    | "/dashboard/content/custom-code"
-    | "/dashboard/content/editor"
-    | "/dashboard/content/media"
-    | "/dashboard/content/menus"
-    | "/dashboard/content/pages"
-    | "/dashboard/content/posts"
-    | "/dashboard/content/themes"
-    | "/dashboard/fraud/ad-defense"
-    | "/dashboard/fraud/audit"
-    | "/dashboard/marketing/articles"
-    | "/dashboard/marketing/campaigns"
-    | "/dashboard/marketing/codes"
-    | "/dashboard/marketing/coupons"
-    | "/dashboard/marketing/forms"
-    | "/dashboard/marketing/media"
-    | "/dashboard/marketing/seo"
-    | "/dashboard/marketing/sequences"
-    | "/dashboard/marketing/subscribers"
-    | "/dashboard/marketing/templates"
-    | "/dashboard/marketplace/creator"
-    | "/dashboard/marketplace/moderation"
-    | "/dashboard/marketplace/versions"
-    | "/dashboard/money/payments"
-    | "/dashboard/orders/$orderId"
-    | "/dashboard/plugins/new"
-    | "/dashboard/products/$productId"
-    | "/dashboard/products/new"
-    | "/dashboard/settings/api"
-    | "/dashboard/settings/domains"
-    | "/dashboard/settings/email"
-    | "/dashboard/settings/infrastructure"
-    | "/dashboard/settings/providers"
-    | "/dashboard/settings/security"
-    | "/dashboard/settings/seo"
-    | "/api/public/ads/click"
-    | "/api/public/analytics/beacon"
-    | "/api/public/channels/$channel"
-    | "/api/public/couriers/$carrier"
-    | "/api/public/cron/ad-fraud"
-    | "/api/public/cron/analytics"
-    | "/api/public/cron/billing"
-    | "/api/public/cron/content-health"
-    | "/api/public/cron/couriers"
-    | "/api/public/cron/domains"
-    | "/api/public/cron/growth"
-    | "/api/public/cron/jobs"
-    | "/api/public/cron/notifications"
-    | "/api/public/cron/ops"
-    | "/api/public/cron/payouts"
-    | "/api/public/cron/purge"
-    | "/api/public/cron/search-console"
-    | "/api/public/cron/support"
-    | "/api/public/cron/themes"
-    | "/api/public/cron/webhooks"
-    | "/api/public/domains/callback"
-    | "/api/public/domains/verify-sni"
-    | "/api/public/font/$"
-    | "/api/public/img/$"
-    | "/api/public/media/$"
-    | "/api/public/newsletter/feedback"
-    | "/api/public/oauth/revoke"
-    | "/api/public/oauth/token"
-    | "/api/public/payments/$provider"
-    | "/api/public/payments/return"
-    | "/api/public/ph/$"
-    | "/api/public/v1/$"
-    | "/store/$slug/blog/$slug"
-    | "/store/$slug/c/$collectionSlug"
-    | "/store/$slug/order/$orderId"
-    | "/store/$slug/p/$productSlug"
-    | "/store/$slug/pages/$pageSlug"
-    | "/store/$slug/sitemaps/$kind"
-    | "/dashboard/billing"
-    | "/dashboard/content"
-    | "/dashboard/fraud"
-    | "/dashboard/marketing"
-    | "/dashboard/marketplace"
-    | "/dashboard/orders"
-    | "/dashboard/plugins"
-    | "/dashboard/products"
-    | "/store/$slug/blog"
-    | "/dashboard/orders/$orderId/invoice"
-    | "/api/public/payments/live/$provider"
-    | "/api/public/payments/mock/$provider"
-    | "/api/public/payments/platform/$provider"
-    | "/api/public/payments/platform/return";
+    | '/'
+    | '/$'
+    | '/about'
+    | '/account'
+    | '/auth'
+    | '/blog.atom'
+    | '/blog.json'
+    | '/blog.xml'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/customers'
+    | '/faq'
+    | '/features'
+    | '/fulfilment'
+    | '/llms.txt'
+    | '/payments'
+    | '/pricing'
+    | '/reset-password'
+    | '/robots.txt'
+    | '/search'
+    | '/security'
+    | '/sitemap.xml'
+    | '/status'
+    | '/track'
+    | '/unsubscribe'
+    | '/onboarding'
+    | '/blog/$slug'
+    | '/c/$collectionSlug'
+    | '/dev/bands'
+    | '/docs/sitemap.xml'
+    | '/invoice/$token'
+    | '/legal/$doc'
+    | '/newsletter/verify'
+    | '/order/$orderId'
+    | '/p/$productSlug'
+    | '/pages/$pageSlug'
+    | '/products/$productId'
+    | '/root/access'
+    | '/root/ai'
+    | '/root/audit'
+    | '/root/auth'
+    | '/root/coupons'
+    | '/root/fraud'
+    | '/root/gateway'
+    | '/root/login'
+    | '/root/marketing'
+    | '/root/money'
+    | '/root/observability'
+    | '/root/ops'
+    | '/root/payouts'
+    | '/root/plans'
+    | '/root/revenue'
+    | '/root/settings'
+    | '/root/snapshots'
+    | '/root/status'
+    | '/root/tenancy'
+    | '/root/tenants'
+    | '/root/trial'
+    | '/root/users'
+    | '/sitemaps/$kind'
+    | '/theme-preview/$key'
+    | '/blog'
+    | '/docs'
+    | '/legal'
+    | '/root'
+    | '/.well-known/acme-challenge/$token'
+    | '/dashboard/activity'
+    | '/dashboard/analytics'
+    | '/dashboard/approvals'
+    | '/dashboard/brands'
+    | '/dashboard/builder'
+    | '/dashboard/bulk-editor'
+    | '/dashboard/bundles'
+    | '/dashboard/carts'
+    | '/dashboard/catalog'
+    | '/dashboard/categories'
+    | '/dashboard/collections'
+    | '/dashboard/customers'
+    | '/dashboard/developers'
+    | '/dashboard/draft-orders'
+    | '/dashboard/experiments'
+    | '/dashboard/exports'
+    | '/dashboard/gift-cards'
+    | '/dashboard/inventory'
+    | '/dashboard/pages'
+    | '/dashboard/payments'
+    | '/dashboard/plans'
+    | '/dashboard/pos'
+    | '/dashboard/pricing'
+    | '/dashboard/purchasing'
+    | '/dashboard/returns'
+    | '/dashboard/reviews'
+    | '/dashboard/settings'
+    | '/dashboard/shipping'
+    | '/dashboard/staff'
+    | '/dashboard/subscriptions'
+    | '/dashboard/support'
+    | '/oauth/authorize'
+    | '/api/public/error-alert'
+    | '/api/public/errors'
+    | '/api/public/metrics'
+    | '/api/public/vitals'
+    | '/blog/author/$slug'
+    | '/blog/category/$slug'
+    | '/blog/tag/$slug'
+    | '/docs/$version/$slug'
+    | '/order/$orderId/confirmation'
+    | '/store/$slug/account'
+    | '/store/$slug/cart'
+    | '/store/$slug/checkout'
+    | '/store/$slug/llms.txt'
+    | '/store/$slug/robots.txt'
+    | '/store/$slug/search'
+    | '/store/$slug/sitemap.xml'
+    | '/store/$slug/track'
+    | '/dashboard'
+    | '/store/$slug'
+    | '/dashboard/ai/assistant'
+    | '/dashboard/ai/settings'
+    | '/dashboard/analytics/insights'
+    | '/dashboard/analytics/reports'
+    | '/dashboard/billing/invoices'
+    | '/dashboard/content/custom-code'
+    | '/dashboard/content/editor'
+    | '/dashboard/content/media'
+    | '/dashboard/content/menus'
+    | '/dashboard/content/pages'
+    | '/dashboard/content/posts'
+    | '/dashboard/content/themes'
+    | '/dashboard/fraud/ad-defense'
+    | '/dashboard/fraud/audit'
+    | '/dashboard/marketing/articles'
+    | '/dashboard/marketing/campaigns'
+    | '/dashboard/marketing/codes'
+    | '/dashboard/marketing/coupons'
+    | '/dashboard/marketing/forms'
+    | '/dashboard/marketing/media'
+    | '/dashboard/marketing/seo'
+    | '/dashboard/marketing/sequences'
+    | '/dashboard/marketing/subscribers'
+    | '/dashboard/marketing/templates'
+    | '/dashboard/marketplace/creator'
+    | '/dashboard/marketplace/moderation'
+    | '/dashboard/marketplace/versions'
+    | '/dashboard/money/payments'
+    | '/dashboard/orders/$orderId'
+    | '/dashboard/plugins/new'
+    | '/dashboard/products/$productId'
+    | '/dashboard/products/new'
+    | '/dashboard/settings/api'
+    | '/dashboard/settings/domains'
+    | '/dashboard/settings/email'
+    | '/dashboard/settings/infrastructure'
+    | '/dashboard/settings/providers'
+    | '/dashboard/settings/security'
+    | '/dashboard/settings/seo'
+    | '/api/public/ads/click'
+    | '/api/public/analytics/beacon'
+    | '/api/public/channels/$channel'
+    | '/api/public/couriers/$carrier'
+    | '/api/public/cron/ad-fraud'
+    | '/api/public/cron/analytics'
+    | '/api/public/cron/billing'
+    | '/api/public/cron/content-health'
+    | '/api/public/cron/couriers'
+    | '/api/public/cron/domains'
+    | '/api/public/cron/growth'
+    | '/api/public/cron/jobs'
+    | '/api/public/cron/notifications'
+    | '/api/public/cron/ops'
+    | '/api/public/cron/payouts'
+    | '/api/public/cron/purge'
+    | '/api/public/cron/search-console'
+    | '/api/public/cron/support'
+    | '/api/public/cron/themes'
+    | '/api/public/cron/webhooks'
+    | '/api/public/domains/callback'
+    | '/api/public/domains/verify-sni'
+    | '/api/public/font/$'
+    | '/api/public/img/$'
+    | '/api/public/media/$'
+    | '/api/public/newsletter/feedback'
+    | '/api/public/oauth/revoke'
+    | '/api/public/oauth/token'
+    | '/api/public/payments/$provider'
+    | '/api/public/payments/return'
+    | '/api/public/ph/$'
+    | '/api/public/v1/$'
+    | '/store/$slug/blog/$slug'
+    | '/store/$slug/c/$collectionSlug'
+    | '/store/$slug/order/$orderId'
+    | '/store/$slug/p/$productSlug'
+    | '/store/$slug/pages/$pageSlug'
+    | '/store/$slug/sitemaps/$kind'
+    | '/dashboard/billing'
+    | '/dashboard/content'
+    | '/dashboard/fraud'
+    | '/dashboard/marketing'
+    | '/dashboard/marketplace'
+    | '/dashboard/orders'
+    | '/dashboard/plugins'
+    | '/dashboard/products'
+    | '/store/$slug/blog'
+    | '/dashboard/orders/$orderId/invoice'
+    | '/api/public/payments/live/$provider'
+    | '/api/public/payments/mock/$provider'
+    | '/api/public/payments/platform/$provider'
+    | '/api/public/payments/platform/return'
   id:
-    | "__root__"
-    | "/"
-    | "/_authenticated"
-    | "/$"
-    | "/about"
-    | "/account"
-    | "/auth"
-    | "/blog.atom"
-    | "/blog.json"
-    | "/blog.xml"
-    | "/cart"
-    | "/checkout"
-    | "/contact"
-    | "/customers"
-    | "/faq"
-    | "/features"
-    | "/fulfilment"
-    | "/llms.txt"
-    | "/payments"
-    | "/pricing"
-    | "/reset-password"
-    | "/robots.txt"
-    | "/root"
-    | "/search"
-    | "/security"
-    | "/sitemap.xml"
-    | "/status"
-    | "/track"
-    | "/unsubscribe"
-    | "/_authenticated/dashboard"
-    | "/_authenticated/onboarding"
-    | "/blog/$slug"
-    | "/c/$collectionSlug"
-    | "/dev/bands"
-    | "/docs/sitemap.xml"
-    | "/invoice/$token"
-    | "/legal/$doc"
-    | "/newsletter/verify"
-    | "/order/$orderId"
-    | "/p/$productSlug"
-    | "/pages/$pageSlug"
-    | "/products/$productId"
-    | "/root/access"
-    | "/root/ai"
-    | "/root/audit"
-    | "/root/auth"
-    | "/root/coupons"
-    | "/root/fraud"
-    | "/root/gateway"
-    | "/root/login"
-    | "/root/marketing"
-    | "/root/money"
-    | "/root/observability"
-    | "/root/ops"
-    | "/root/payouts"
-    | "/root/plans"
-    | "/root/revenue"
-    | "/root/settings"
-    | "/root/snapshots"
-    | "/root/status"
-    | "/root/tenancy"
-    | "/root/tenants"
-    | "/root/trial"
-    | "/root/users"
-    | "/sitemaps/$kind"
-    | "/theme-preview/$key"
-    | "/blog/"
-    | "/docs/"
-    | "/legal/"
-    | "/root/"
-    | "/.well-known/acme-challenge/$token"
-    | "/_authenticated/dashboard/activity"
-    | "/_authenticated/dashboard/analytics"
-    | "/_authenticated/dashboard/approvals"
-    | "/_authenticated/dashboard/brands"
-    | "/_authenticated/dashboard/builder"
-    | "/_authenticated/dashboard/bulk-editor"
-    | "/_authenticated/dashboard/bundles"
-    | "/_authenticated/dashboard/carts"
-    | "/_authenticated/dashboard/catalog"
-    | "/_authenticated/dashboard/categories"
-    | "/_authenticated/dashboard/collections"
-    | "/_authenticated/dashboard/customers"
-    | "/_authenticated/dashboard/developers"
-    | "/_authenticated/dashboard/draft-orders"
-    | "/_authenticated/dashboard/experiments"
-    | "/_authenticated/dashboard/exports"
-    | "/_authenticated/dashboard/gift-cards"
-    | "/_authenticated/dashboard/inventory"
-    | "/_authenticated/dashboard/pages"
-    | "/_authenticated/dashboard/payments"
-    | "/_authenticated/dashboard/plans"
-    | "/_authenticated/dashboard/pos"
-    | "/_authenticated/dashboard/pricing"
-    | "/_authenticated/dashboard/purchasing"
-    | "/_authenticated/dashboard/returns"
-    | "/_authenticated/dashboard/reviews"
-    | "/_authenticated/dashboard/settings"
-    | "/_authenticated/dashboard/shipping"
-    | "/_authenticated/dashboard/staff"
-    | "/_authenticated/dashboard/subscriptions"
-    | "/_authenticated/dashboard/support"
-    | "/_authenticated/oauth/authorize"
-    | "/api/public/error-alert"
-    | "/api/public/errors"
-    | "/api/public/metrics"
-    | "/api/public/vitals"
-    | "/blog/author/$slug"
-    | "/blog/category/$slug"
-    | "/blog/tag/$slug"
-    | "/docs/$version/$slug"
-    | "/order/$orderId/confirmation"
-    | "/store/$slug/account"
-    | "/store/$slug/cart"
-    | "/store/$slug/checkout"
-    | "/store/$slug/llms.txt"
-    | "/store/$slug/robots.txt"
-    | "/store/$slug/search"
-    | "/store/$slug/sitemap.xml"
-    | "/store/$slug/track"
-    | "/_authenticated/dashboard/"
-    | "/store/$slug/"
-    | "/_authenticated/dashboard/ai/assistant"
-    | "/_authenticated/dashboard/ai/settings"
-    | "/_authenticated/dashboard/analytics_/insights"
-    | "/_authenticated/dashboard/analytics_/reports"
-    | "/_authenticated/dashboard/billing/invoices"
-    | "/_authenticated/dashboard/content/custom-code"
-    | "/_authenticated/dashboard/content/editor"
-    | "/_authenticated/dashboard/content/media"
-    | "/_authenticated/dashboard/content/menus"
-    | "/_authenticated/dashboard/content/pages"
-    | "/_authenticated/dashboard/content/posts"
-    | "/_authenticated/dashboard/content/themes"
-    | "/_authenticated/dashboard/fraud/ad-defense"
-    | "/_authenticated/dashboard/fraud/audit"
-    | "/_authenticated/dashboard/marketing/articles"
-    | "/_authenticated/dashboard/marketing/campaigns"
-    | "/_authenticated/dashboard/marketing/codes"
-    | "/_authenticated/dashboard/marketing/coupons"
-    | "/_authenticated/dashboard/marketing/forms"
-    | "/_authenticated/dashboard/marketing/media"
-    | "/_authenticated/dashboard/marketing/seo"
-    | "/_authenticated/dashboard/marketing/sequences"
-    | "/_authenticated/dashboard/marketing/subscribers"
-    | "/_authenticated/dashboard/marketing/templates"
-    | "/_authenticated/dashboard/marketplace/creator"
-    | "/_authenticated/dashboard/marketplace/moderation"
-    | "/_authenticated/dashboard/marketplace/versions"
-    | "/_authenticated/dashboard/money/payments"
-    | "/_authenticated/dashboard/orders/$orderId"
-    | "/_authenticated/dashboard/plugins/new"
-    | "/_authenticated/dashboard/products/$productId"
-    | "/_authenticated/dashboard/products/new"
-    | "/_authenticated/dashboard/settings_/api"
-    | "/_authenticated/dashboard/settings_/domains"
-    | "/_authenticated/dashboard/settings_/email"
-    | "/_authenticated/dashboard/settings_/infrastructure"
-    | "/_authenticated/dashboard/settings_/providers"
-    | "/_authenticated/dashboard/settings_/security"
-    | "/_authenticated/dashboard/settings_/seo"
-    | "/api/public/ads/click"
-    | "/api/public/analytics/beacon"
-    | "/api/public/channels/$channel"
-    | "/api/public/couriers/$carrier"
-    | "/api/public/cron/ad-fraud"
-    | "/api/public/cron/analytics"
-    | "/api/public/cron/billing"
-    | "/api/public/cron/content-health"
-    | "/api/public/cron/couriers"
-    | "/api/public/cron/domains"
-    | "/api/public/cron/growth"
-    | "/api/public/cron/jobs"
-    | "/api/public/cron/notifications"
-    | "/api/public/cron/ops"
-    | "/api/public/cron/payouts"
-    | "/api/public/cron/purge"
-    | "/api/public/cron/search-console"
-    | "/api/public/cron/support"
-    | "/api/public/cron/themes"
-    | "/api/public/cron/webhooks"
-    | "/api/public/domains/callback"
-    | "/api/public/domains/verify-sni"
-    | "/api/public/font/$"
-    | "/api/public/img/$"
-    | "/api/public/media/$"
-    | "/api/public/newsletter/feedback"
-    | "/api/public/oauth/revoke"
-    | "/api/public/oauth/token"
-    | "/api/public/payments/$provider"
-    | "/api/public/payments/return"
-    | "/api/public/ph/$"
-    | "/api/public/v1/$"
-    | "/store/$slug/blog/$slug"
-    | "/store/$slug/c/$collectionSlug"
-    | "/store/$slug/order/$orderId"
-    | "/store/$slug/p/$productSlug"
-    | "/store/$slug/pages/$pageSlug"
-    | "/store/$slug/sitemaps/$kind"
-    | "/_authenticated/dashboard/billing/"
-    | "/_authenticated/dashboard/content/"
-    | "/_authenticated/dashboard/fraud/"
-    | "/_authenticated/dashboard/marketing/"
-    | "/_authenticated/dashboard/marketplace/"
-    | "/_authenticated/dashboard/orders/"
-    | "/_authenticated/dashboard/plugins/"
-    | "/_authenticated/dashboard/products/"
-    | "/store/$slug/blog/"
-    | "/_authenticated/dashboard/orders/$orderId_/invoice"
-    | "/api/public/payments/live/$provider"
-    | "/api/public/payments/mock/$provider"
-    | "/api/public/payments/platform/$provider"
-    | "/api/public/payments/platform/return";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/$'
+    | '/about'
+    | '/account'
+    | '/auth'
+    | '/blog.atom'
+    | '/blog.json'
+    | '/blog.xml'
+    | '/cart'
+    | '/checkout'
+    | '/contact'
+    | '/customers'
+    | '/faq'
+    | '/features'
+    | '/fulfilment'
+    | '/llms.txt'
+    | '/payments'
+    | '/pricing'
+    | '/reset-password'
+    | '/robots.txt'
+    | '/root'
+    | '/search'
+    | '/security'
+    | '/sitemap.xml'
+    | '/status'
+    | '/track'
+    | '/unsubscribe'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/onboarding'
+    | '/blog/$slug'
+    | '/c/$collectionSlug'
+    | '/dev/bands'
+    | '/docs/sitemap.xml'
+    | '/invoice/$token'
+    | '/legal/$doc'
+    | '/newsletter/verify'
+    | '/order/$orderId'
+    | '/p/$productSlug'
+    | '/pages/$pageSlug'
+    | '/products/$productId'
+    | '/root/access'
+    | '/root/ai'
+    | '/root/audit'
+    | '/root/auth'
+    | '/root/coupons'
+    | '/root/fraud'
+    | '/root/gateway'
+    | '/root/login'
+    | '/root/marketing'
+    | '/root/money'
+    | '/root/observability'
+    | '/root/ops'
+    | '/root/payouts'
+    | '/root/plans'
+    | '/root/revenue'
+    | '/root/settings'
+    | '/root/snapshots'
+    | '/root/status'
+    | '/root/tenancy'
+    | '/root/tenants'
+    | '/root/trial'
+    | '/root/users'
+    | '/sitemaps/$kind'
+    | '/theme-preview/$key'
+    | '/blog/'
+    | '/docs/'
+    | '/legal/'
+    | '/root/'
+    | '/.well-known/acme-challenge/$token'
+    | '/_authenticated/dashboard/activity'
+    | '/_authenticated/dashboard/analytics'
+    | '/_authenticated/dashboard/approvals'
+    | '/_authenticated/dashboard/brands'
+    | '/_authenticated/dashboard/builder'
+    | '/_authenticated/dashboard/bulk-editor'
+    | '/_authenticated/dashboard/bundles'
+    | '/_authenticated/dashboard/carts'
+    | '/_authenticated/dashboard/catalog'
+    | '/_authenticated/dashboard/categories'
+    | '/_authenticated/dashboard/collections'
+    | '/_authenticated/dashboard/customers'
+    | '/_authenticated/dashboard/developers'
+    | '/_authenticated/dashboard/draft-orders'
+    | '/_authenticated/dashboard/experiments'
+    | '/_authenticated/dashboard/exports'
+    | '/_authenticated/dashboard/gift-cards'
+    | '/_authenticated/dashboard/inventory'
+    | '/_authenticated/dashboard/pages'
+    | '/_authenticated/dashboard/payments'
+    | '/_authenticated/dashboard/plans'
+    | '/_authenticated/dashboard/pos'
+    | '/_authenticated/dashboard/pricing'
+    | '/_authenticated/dashboard/purchasing'
+    | '/_authenticated/dashboard/returns'
+    | '/_authenticated/dashboard/reviews'
+    | '/_authenticated/dashboard/settings'
+    | '/_authenticated/dashboard/shipping'
+    | '/_authenticated/dashboard/staff'
+    | '/_authenticated/dashboard/subscriptions'
+    | '/_authenticated/dashboard/support'
+    | '/_authenticated/oauth/authorize'
+    | '/api/public/error-alert'
+    | '/api/public/errors'
+    | '/api/public/metrics'
+    | '/api/public/vitals'
+    | '/blog/author/$slug'
+    | '/blog/category/$slug'
+    | '/blog/tag/$slug'
+    | '/docs/$version/$slug'
+    | '/order/$orderId/confirmation'
+    | '/store/$slug/account'
+    | '/store/$slug/cart'
+    | '/store/$slug/checkout'
+    | '/store/$slug/llms.txt'
+    | '/store/$slug/robots.txt'
+    | '/store/$slug/search'
+    | '/store/$slug/sitemap.xml'
+    | '/store/$slug/track'
+    | '/_authenticated/dashboard/'
+    | '/store/$slug/'
+    | '/_authenticated/dashboard/ai/assistant'
+    | '/_authenticated/dashboard/ai/settings'
+    | '/_authenticated/dashboard/analytics_/insights'
+    | '/_authenticated/dashboard/analytics_/reports'
+    | '/_authenticated/dashboard/billing/invoices'
+    | '/_authenticated/dashboard/content/custom-code'
+    | '/_authenticated/dashboard/content/editor'
+    | '/_authenticated/dashboard/content/media'
+    | '/_authenticated/dashboard/content/menus'
+    | '/_authenticated/dashboard/content/pages'
+    | '/_authenticated/dashboard/content/posts'
+    | '/_authenticated/dashboard/content/themes'
+    | '/_authenticated/dashboard/fraud/ad-defense'
+    | '/_authenticated/dashboard/fraud/audit'
+    | '/_authenticated/dashboard/marketing/articles'
+    | '/_authenticated/dashboard/marketing/campaigns'
+    | '/_authenticated/dashboard/marketing/codes'
+    | '/_authenticated/dashboard/marketing/coupons'
+    | '/_authenticated/dashboard/marketing/forms'
+    | '/_authenticated/dashboard/marketing/media'
+    | '/_authenticated/dashboard/marketing/seo'
+    | '/_authenticated/dashboard/marketing/sequences'
+    | '/_authenticated/dashboard/marketing/subscribers'
+    | '/_authenticated/dashboard/marketing/templates'
+    | '/_authenticated/dashboard/marketplace/creator'
+    | '/_authenticated/dashboard/marketplace/moderation'
+    | '/_authenticated/dashboard/marketplace/versions'
+    | '/_authenticated/dashboard/money/payments'
+    | '/_authenticated/dashboard/orders/$orderId'
+    | '/_authenticated/dashboard/plugins/new'
+    | '/_authenticated/dashboard/products/$productId'
+    | '/_authenticated/dashboard/products/new'
+    | '/_authenticated/dashboard/settings_/api'
+    | '/_authenticated/dashboard/settings_/domains'
+    | '/_authenticated/dashboard/settings_/email'
+    | '/_authenticated/dashboard/settings_/infrastructure'
+    | '/_authenticated/dashboard/settings_/providers'
+    | '/_authenticated/dashboard/settings_/security'
+    | '/_authenticated/dashboard/settings_/seo'
+    | '/api/public/ads/click'
+    | '/api/public/analytics/beacon'
+    | '/api/public/channels/$channel'
+    | '/api/public/couriers/$carrier'
+    | '/api/public/cron/ad-fraud'
+    | '/api/public/cron/analytics'
+    | '/api/public/cron/billing'
+    | '/api/public/cron/content-health'
+    | '/api/public/cron/couriers'
+    | '/api/public/cron/domains'
+    | '/api/public/cron/growth'
+    | '/api/public/cron/jobs'
+    | '/api/public/cron/notifications'
+    | '/api/public/cron/ops'
+    | '/api/public/cron/payouts'
+    | '/api/public/cron/purge'
+    | '/api/public/cron/search-console'
+    | '/api/public/cron/support'
+    | '/api/public/cron/themes'
+    | '/api/public/cron/webhooks'
+    | '/api/public/domains/callback'
+    | '/api/public/domains/verify-sni'
+    | '/api/public/font/$'
+    | '/api/public/img/$'
+    | '/api/public/media/$'
+    | '/api/public/newsletter/feedback'
+    | '/api/public/oauth/revoke'
+    | '/api/public/oauth/token'
+    | '/api/public/payments/$provider'
+    | '/api/public/payments/return'
+    | '/api/public/ph/$'
+    | '/api/public/v1/$'
+    | '/store/$slug/blog/$slug'
+    | '/store/$slug/c/$collectionSlug'
+    | '/store/$slug/order/$orderId'
+    | '/store/$slug/p/$productSlug'
+    | '/store/$slug/pages/$pageSlug'
+    | '/store/$slug/sitemaps/$kind'
+    | '/_authenticated/dashboard/billing/'
+    | '/_authenticated/dashboard/content/'
+    | '/_authenticated/dashboard/fraud/'
+    | '/_authenticated/dashboard/marketing/'
+    | '/_authenticated/dashboard/marketplace/'
+    | '/_authenticated/dashboard/orders/'
+    | '/_authenticated/dashboard/plugins/'
+    | '/_authenticated/dashboard/products/'
+    | '/store/$slug/blog/'
+    | '/_authenticated/dashboard/orders/$orderId_/invoice'
+    | '/api/public/payments/live/$provider'
+    | '/api/public/payments/mock/$provider'
+    | '/api/public/payments/platform/$provider'
+    | '/api/public/payments/platform/return'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren;
-  SplatRoute: typeof SplatRoute;
-  AboutRoute: typeof AboutRoute;
-  AccountRoute: typeof AccountRoute;
-  AuthRoute: typeof AuthRoute;
-  BlogDotatomRoute: typeof BlogDotatomRoute;
-  BlogDotjsonRoute: typeof BlogDotjsonRoute;
-  BlogDotxmlRoute: typeof BlogDotxmlRoute;
-  CartRoute: typeof CartRoute;
-  CheckoutRoute: typeof CheckoutRoute;
-  ContactRoute: typeof ContactRoute;
-  CustomersRoute: typeof CustomersRoute;
-  FaqRoute: typeof FaqRoute;
-  FeaturesRoute: typeof FeaturesRoute;
-  FulfilmentRoute: typeof FulfilmentRoute;
-  LlmsDottxtRoute: typeof LlmsDottxtRoute;
-  PaymentsRoute: typeof PaymentsRoute;
-  PricingRoute: typeof PricingRoute;
-  ResetPasswordRoute: typeof ResetPasswordRoute;
-  RobotsDottxtRoute: typeof RobotsDottxtRoute;
-  RootRoute: typeof RootRouteWithChildren;
-  SearchRoute: typeof SearchRoute;
-  SecurityRoute: typeof SecurityRoute;
-  SitemapDotxmlRoute: typeof SitemapDotxmlRoute;
-  StatusRoute: typeof StatusRoute;
-  TrackRoute: typeof TrackRoute;
-  UnsubscribeRoute: typeof UnsubscribeRoute;
-  BlogSlugRoute: typeof BlogSlugRoute;
-  CCollectionSlugRoute: typeof CCollectionSlugRoute;
-  DevBandsRoute: typeof DevBandsRoute;
-  DocsSitemapDotxmlRoute: typeof DocsSitemapDotxmlRoute;
-  InvoiceTokenRoute: typeof InvoiceTokenRoute;
-  LegalDocRoute: typeof LegalDocRoute;
-  NewsletterVerifyRoute: typeof NewsletterVerifyRoute;
-  OrderOrderIdRoute: typeof OrderOrderIdRouteWithChildren;
-  PProductSlugRoute: typeof PProductSlugRoute;
-  PagesPageSlugRoute: typeof PagesPageSlugRoute;
-  ProductsProductIdRoute: typeof ProductsProductIdRoute;
-  SitemapsKindRoute: typeof SitemapsKindRoute;
-  ThemePreviewKeyRoute: typeof ThemePreviewKeyRoute;
-  BlogIndexRoute: typeof BlogIndexRoute;
-  DocsIndexRoute: typeof DocsIndexRoute;
-  LegalIndexRoute: typeof LegalIndexRoute;
-  DotwellKnownAcmeChallengeTokenRoute: typeof DotwellKnownAcmeChallengeTokenRoute;
-  ApiPublicErrorAlertRoute: typeof ApiPublicErrorAlertRoute;
-  ApiPublicErrorsRoute: typeof ApiPublicErrorsRoute;
-  ApiPublicMetricsRoute: typeof ApiPublicMetricsRoute;
-  ApiPublicVitalsRoute: typeof ApiPublicVitalsRoute;
-  BlogAuthorSlugRoute: typeof BlogAuthorSlugRoute;
-  BlogCategorySlugRoute: typeof BlogCategorySlugRoute;
-  BlogTagSlugRoute: typeof BlogTagSlugRoute;
-  DocsVersionSlugRoute: typeof DocsVersionSlugRoute;
-  StoreSlugAccountRoute: typeof StoreSlugAccountRoute;
-  StoreSlugCartRoute: typeof StoreSlugCartRoute;
-  StoreSlugCheckoutRoute: typeof StoreSlugCheckoutRoute;
-  StoreSlugLlmsDottxtRoute: typeof StoreSlugLlmsDottxtRoute;
-  StoreSlugRobotsDottxtRoute: typeof StoreSlugRobotsDottxtRoute;
-  StoreSlugSearchRoute: typeof StoreSlugSearchRoute;
-  StoreSlugSitemapDotxmlRoute: typeof StoreSlugSitemapDotxmlRoute;
-  StoreSlugTrackRoute: typeof StoreSlugTrackRoute;
-  StoreSlugIndexRoute: typeof StoreSlugIndexRoute;
-  ApiPublicAdsClickRoute: typeof ApiPublicAdsClickRoute;
-  ApiPublicAnalyticsBeaconRoute: typeof ApiPublicAnalyticsBeaconRoute;
-  ApiPublicChannelsChannelRoute: typeof ApiPublicChannelsChannelRoute;
-  ApiPublicCouriersCarrierRoute: typeof ApiPublicCouriersCarrierRoute;
-  ApiPublicCronAdFraudRoute: typeof ApiPublicCronAdFraudRoute;
-  ApiPublicCronAnalyticsRoute: typeof ApiPublicCronAnalyticsRoute;
-  ApiPublicCronBillingRoute: typeof ApiPublicCronBillingRoute;
-  ApiPublicCronContentHealthRoute: typeof ApiPublicCronContentHealthRoute;
-  ApiPublicCronCouriersRoute: typeof ApiPublicCronCouriersRoute;
-  ApiPublicCronDomainsRoute: typeof ApiPublicCronDomainsRoute;
-  ApiPublicCronGrowthRoute: typeof ApiPublicCronGrowthRoute;
-  ApiPublicCronJobsRoute: typeof ApiPublicCronJobsRoute;
-  ApiPublicCronNotificationsRoute: typeof ApiPublicCronNotificationsRoute;
-  ApiPublicCronOpsRoute: typeof ApiPublicCronOpsRoute;
-  ApiPublicCronPayoutsRoute: typeof ApiPublicCronPayoutsRoute;
-  ApiPublicCronPurgeRoute: typeof ApiPublicCronPurgeRoute;
-  ApiPublicCronSearchConsoleRoute: typeof ApiPublicCronSearchConsoleRoute;
-  ApiPublicCronSupportRoute: typeof ApiPublicCronSupportRoute;
-  ApiPublicCronThemesRoute: typeof ApiPublicCronThemesRoute;
-  ApiPublicCronWebhooksRoute: typeof ApiPublicCronWebhooksRoute;
-  ApiPublicDomainsCallbackRoute: typeof ApiPublicDomainsCallbackRoute;
-  ApiPublicDomainsVerifySniRoute: typeof ApiPublicDomainsVerifySniRoute;
-  ApiPublicFontSplatRoute: typeof ApiPublicFontSplatRoute;
-  ApiPublicImgSplatRoute: typeof ApiPublicImgSplatRoute;
-  ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute;
-  ApiPublicNewsletterFeedbackRoute: typeof ApiPublicNewsletterFeedbackRoute;
-  ApiPublicOauthRevokeRoute: typeof ApiPublicOauthRevokeRoute;
-  ApiPublicOauthTokenRoute: typeof ApiPublicOauthTokenRoute;
-  ApiPublicPaymentsProviderRoute: typeof ApiPublicPaymentsProviderRoute;
-  ApiPublicPaymentsReturnRoute: typeof ApiPublicPaymentsReturnRoute;
-  ApiPublicPhSplatRoute: typeof ApiPublicPhSplatRoute;
-  ApiPublicV1SplatRoute: typeof ApiPublicV1SplatRoute;
-  StoreSlugBlogSlugRoute: typeof StoreSlugBlogSlugRoute;
-  StoreSlugCCollectionSlugRoute: typeof StoreSlugCCollectionSlugRoute;
-  StoreSlugOrderOrderIdRoute: typeof StoreSlugOrderOrderIdRoute;
-  StoreSlugPProductSlugRoute: typeof StoreSlugPProductSlugRoute;
-  StoreSlugPagesPageSlugRoute: typeof StoreSlugPagesPageSlugRoute;
-  StoreSlugSitemapsKindRoute: typeof StoreSlugSitemapsKindRoute;
-  StoreSlugBlogIndexRoute: typeof StoreSlugBlogIndexRoute;
-  ApiPublicPaymentsLiveProviderRoute: typeof ApiPublicPaymentsLiveProviderRoute;
-  ApiPublicPaymentsMockProviderRoute: typeof ApiPublicPaymentsMockProviderRoute;
-  ApiPublicPaymentsPlatformProviderRoute: typeof ApiPublicPaymentsPlatformProviderRoute;
-  ApiPublicPaymentsPlatformReturnRoute: typeof ApiPublicPaymentsPlatformReturnRoute;
+  IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  SplatRoute: typeof SplatRoute
+  AboutRoute: typeof AboutRoute
+  AccountRoute: typeof AccountRoute
+  AuthRoute: typeof AuthRoute
+  BlogDotatomRoute: typeof BlogDotatomRoute
+  BlogDotjsonRoute: typeof BlogDotjsonRoute
+  BlogDotxmlRoute: typeof BlogDotxmlRoute
+  CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
+  ContactRoute: typeof ContactRoute
+  CustomersRoute: typeof CustomersRoute
+  FaqRoute: typeof FaqRoute
+  FeaturesRoute: typeof FeaturesRoute
+  FulfilmentRoute: typeof FulfilmentRoute
+  LlmsDottxtRoute: typeof LlmsDottxtRoute
+  PaymentsRoute: typeof PaymentsRoute
+  PricingRoute: typeof PricingRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  RootRoute: typeof RootRouteWithChildren
+  SearchRoute: typeof SearchRoute
+  SecurityRoute: typeof SecurityRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StatusRoute: typeof StatusRoute
+  TrackRoute: typeof TrackRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
+  BlogSlugRoute: typeof BlogSlugRoute
+  CCollectionSlugRoute: typeof CCollectionSlugRoute
+  DevBandsRoute: typeof DevBandsRoute
+  DocsSitemapDotxmlRoute: typeof DocsSitemapDotxmlRoute
+  InvoiceTokenRoute: typeof InvoiceTokenRoute
+  LegalDocRoute: typeof LegalDocRoute
+  NewsletterVerifyRoute: typeof NewsletterVerifyRoute
+  OrderOrderIdRoute: typeof OrderOrderIdRouteWithChildren
+  PProductSlugRoute: typeof PProductSlugRoute
+  PagesPageSlugRoute: typeof PagesPageSlugRoute
+  ProductsProductIdRoute: typeof ProductsProductIdRoute
+  SitemapsKindRoute: typeof SitemapsKindRoute
+  ThemePreviewKeyRoute: typeof ThemePreviewKeyRoute
+  BlogIndexRoute: typeof BlogIndexRoute
+  DocsIndexRoute: typeof DocsIndexRoute
+  LegalIndexRoute: typeof LegalIndexRoute
+  DotwellKnownAcmeChallengeTokenRoute: typeof DotwellKnownAcmeChallengeTokenRoute
+  ApiPublicErrorAlertRoute: typeof ApiPublicErrorAlertRoute
+  ApiPublicErrorsRoute: typeof ApiPublicErrorsRoute
+  ApiPublicMetricsRoute: typeof ApiPublicMetricsRoute
+  ApiPublicVitalsRoute: typeof ApiPublicVitalsRoute
+  BlogAuthorSlugRoute: typeof BlogAuthorSlugRoute
+  BlogCategorySlugRoute: typeof BlogCategorySlugRoute
+  BlogTagSlugRoute: typeof BlogTagSlugRoute
+  DocsVersionSlugRoute: typeof DocsVersionSlugRoute
+  StoreSlugAccountRoute: typeof StoreSlugAccountRoute
+  StoreSlugCartRoute: typeof StoreSlugCartRoute
+  StoreSlugCheckoutRoute: typeof StoreSlugCheckoutRoute
+  StoreSlugLlmsDottxtRoute: typeof StoreSlugLlmsDottxtRoute
+  StoreSlugRobotsDottxtRoute: typeof StoreSlugRobotsDottxtRoute
+  StoreSlugSearchRoute: typeof StoreSlugSearchRoute
+  StoreSlugSitemapDotxmlRoute: typeof StoreSlugSitemapDotxmlRoute
+  StoreSlugTrackRoute: typeof StoreSlugTrackRoute
+  StoreSlugIndexRoute: typeof StoreSlugIndexRoute
+  ApiPublicAdsClickRoute: typeof ApiPublicAdsClickRoute
+  ApiPublicAnalyticsBeaconRoute: typeof ApiPublicAnalyticsBeaconRoute
+  ApiPublicChannelsChannelRoute: typeof ApiPublicChannelsChannelRoute
+  ApiPublicCouriersCarrierRoute: typeof ApiPublicCouriersCarrierRoute
+  ApiPublicCronAdFraudRoute: typeof ApiPublicCronAdFraudRoute
+  ApiPublicCronAnalyticsRoute: typeof ApiPublicCronAnalyticsRoute
+  ApiPublicCronBillingRoute: typeof ApiPublicCronBillingRoute
+  ApiPublicCronContentHealthRoute: typeof ApiPublicCronContentHealthRoute
+  ApiPublicCronCouriersRoute: typeof ApiPublicCronCouriersRoute
+  ApiPublicCronDomainsRoute: typeof ApiPublicCronDomainsRoute
+  ApiPublicCronGrowthRoute: typeof ApiPublicCronGrowthRoute
+  ApiPublicCronJobsRoute: typeof ApiPublicCronJobsRoute
+  ApiPublicCronNotificationsRoute: typeof ApiPublicCronNotificationsRoute
+  ApiPublicCronOpsRoute: typeof ApiPublicCronOpsRoute
+  ApiPublicCronPayoutsRoute: typeof ApiPublicCronPayoutsRoute
+  ApiPublicCronPurgeRoute: typeof ApiPublicCronPurgeRoute
+  ApiPublicCronSearchConsoleRoute: typeof ApiPublicCronSearchConsoleRoute
+  ApiPublicCronSupportRoute: typeof ApiPublicCronSupportRoute
+  ApiPublicCronThemesRoute: typeof ApiPublicCronThemesRoute
+  ApiPublicCronWebhooksRoute: typeof ApiPublicCronWebhooksRoute
+  ApiPublicDomainsCallbackRoute: typeof ApiPublicDomainsCallbackRoute
+  ApiPublicDomainsVerifySniRoute: typeof ApiPublicDomainsVerifySniRoute
+  ApiPublicFontSplatRoute: typeof ApiPublicFontSplatRoute
+  ApiPublicImgSplatRoute: typeof ApiPublicImgSplatRoute
+  ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
+  ApiPublicNewsletterFeedbackRoute: typeof ApiPublicNewsletterFeedbackRoute
+  ApiPublicOauthRevokeRoute: typeof ApiPublicOauthRevokeRoute
+  ApiPublicOauthTokenRoute: typeof ApiPublicOauthTokenRoute
+  ApiPublicPaymentsProviderRoute: typeof ApiPublicPaymentsProviderRoute
+  ApiPublicPaymentsReturnRoute: typeof ApiPublicPaymentsReturnRoute
+  ApiPublicPhSplatRoute: typeof ApiPublicPhSplatRoute
+  ApiPublicV1SplatRoute: typeof ApiPublicV1SplatRoute
+  StoreSlugBlogSlugRoute: typeof StoreSlugBlogSlugRoute
+  StoreSlugCCollectionSlugRoute: typeof StoreSlugCCollectionSlugRoute
+  StoreSlugOrderOrderIdRoute: typeof StoreSlugOrderOrderIdRoute
+  StoreSlugPProductSlugRoute: typeof StoreSlugPProductSlugRoute
+  StoreSlugPagesPageSlugRoute: typeof StoreSlugPagesPageSlugRoute
+  StoreSlugSitemapsKindRoute: typeof StoreSlugSitemapsKindRoute
+  StoreSlugBlogIndexRoute: typeof StoreSlugBlogIndexRoute
+  ApiPublicPaymentsLiveProviderRoute: typeof ApiPublicPaymentsLiveProviderRoute
+  ApiPublicPaymentsMockProviderRoute: typeof ApiPublicPaymentsMockProviderRoute
+  ApiPublicPaymentsPlatformProviderRoute: typeof ApiPublicPaymentsPlatformProviderRoute
+  ApiPublicPaymentsPlatformReturnRoute: typeof ApiPublicPaymentsPlatformReturnRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/$": {
-      id: "/$";
-      path: "/$";
-      fullPath: "/$";
-      preLoaderRoute: typeof SplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/_authenticated": {
-      id: "/_authenticated";
-      path: "";
-      fullPath: "/";
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/about": {
-      id: "/about";
-      path: "/about";
-      fullPath: "/about";
-      preLoaderRoute: typeof AboutRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/account": {
-      id: "/account";
-      path: "/account";
-      fullPath: "/account";
-      preLoaderRoute: typeof AccountRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/auth": {
-      id: "/auth";
-      path: "/auth";
-      fullPath: "/auth";
-      preLoaderRoute: typeof AuthRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/blog.atom": {
-      id: "/blog.atom";
-      path: "/blog.atom";
-      fullPath: "/blog.atom";
-      preLoaderRoute: typeof BlogDotatomRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/blog.json": {
-      id: "/blog.json";
-      path: "/blog.json";
-      fullPath: "/blog.json";
-      preLoaderRoute: typeof BlogDotjsonRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/blog.xml": {
-      id: "/blog.xml";
-      path: "/blog.xml";
-      fullPath: "/blog.xml";
-      preLoaderRoute: typeof BlogDotxmlRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/cart": {
-      id: "/cart";
-      path: "/cart";
-      fullPath: "/cart";
-      preLoaderRoute: typeof CartRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/checkout": {
-      id: "/checkout";
-      path: "/checkout";
-      fullPath: "/checkout";
-      preLoaderRoute: typeof CheckoutRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/contact": {
-      id: "/contact";
-      path: "/contact";
-      fullPath: "/contact";
-      preLoaderRoute: typeof ContactRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/customers": {
-      id: "/customers";
-      path: "/customers";
-      fullPath: "/customers";
-      preLoaderRoute: typeof CustomersRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/faq": {
-      id: "/faq";
-      path: "/faq";
-      fullPath: "/faq";
-      preLoaderRoute: typeof FaqRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/features": {
-      id: "/features";
-      path: "/features";
-      fullPath: "/features";
-      preLoaderRoute: typeof FeaturesRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/fulfilment": {
-      id: "/fulfilment";
-      path: "/fulfilment";
-      fullPath: "/fulfilment";
-      preLoaderRoute: typeof FulfilmentRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/llms.txt": {
-      id: "/llms.txt";
-      path: "/llms.txt";
-      fullPath: "/llms.txt";
-      preLoaderRoute: typeof LlmsDottxtRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/payments": {
-      id: "/payments";
-      path: "/payments";
-      fullPath: "/payments";
-      preLoaderRoute: typeof PaymentsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/pricing": {
-      id: "/pricing";
-      path: "/pricing";
-      fullPath: "/pricing";
-      preLoaderRoute: typeof PricingRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/reset-password": {
-      id: "/reset-password";
-      path: "/reset-password";
-      fullPath: "/reset-password";
-      preLoaderRoute: typeof ResetPasswordRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/robots.txt": {
-      id: "/robots.txt";
-      path: "/robots.txt";
-      fullPath: "/robots.txt";
-      preLoaderRoute: typeof RobotsDottxtRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/root": {
-      id: "/root";
-      path: "/root";
-      fullPath: "/root";
-      preLoaderRoute: typeof RootRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/search": {
-      id: "/search";
-      path: "/search";
-      fullPath: "/search";
-      preLoaderRoute: typeof SearchRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/security": {
-      id: "/security";
-      path: "/security";
-      fullPath: "/security";
-      preLoaderRoute: typeof SecurityRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/sitemap.xml": {
-      id: "/sitemap.xml";
-      path: "/sitemap.xml";
-      fullPath: "/sitemap.xml";
-      preLoaderRoute: typeof SitemapDotxmlRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/status": {
-      id: "/status";
-      path: "/status";
-      fullPath: "/status";
-      preLoaderRoute: typeof StatusRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/track": {
-      id: "/track";
-      path: "/track";
-      fullPath: "/track";
-      preLoaderRoute: typeof TrackRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/unsubscribe": {
-      id: "/unsubscribe";
-      path: "/unsubscribe";
-      fullPath: "/unsubscribe";
-      preLoaderRoute: typeof UnsubscribeRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/_authenticated/dashboard": {
-      id: "/_authenticated/dashboard";
-      path: "/dashboard";
-      fullPath: "/dashboard";
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport;
-      parentRoute: typeof AuthenticatedRouteRoute;
-    };
-    "/_authenticated/onboarding": {
-      id: "/_authenticated/onboarding";
-      path: "/onboarding";
-      fullPath: "/onboarding";
-      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport;
-      parentRoute: typeof AuthenticatedRouteRoute;
-    };
-    "/blog/": {
-      id: "/blog/";
-      path: "/blog";
-      fullPath: "/blog/";
-      preLoaderRoute: typeof BlogIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/blog/$slug": {
-      id: "/blog/$slug";
-      path: "/blog/$slug";
-      fullPath: "/blog/$slug";
-      preLoaderRoute: typeof BlogSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/c/$collectionSlug": {
-      id: "/c/$collectionSlug";
-      path: "/c/$collectionSlug";
-      fullPath: "/c/$collectionSlug";
-      preLoaderRoute: typeof CCollectionSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/dev/bands": {
-      id: "/dev/bands";
-      path: "/dev/bands";
-      fullPath: "/dev/bands";
-      preLoaderRoute: typeof DevBandsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/docs/": {
-      id: "/docs/";
-      path: "/docs";
-      fullPath: "/docs/";
-      preLoaderRoute: typeof DocsIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/docs/sitemap.xml": {
-      id: "/docs/sitemap.xml";
-      path: "/docs/sitemap.xml";
-      fullPath: "/docs/sitemap.xml";
-      preLoaderRoute: typeof DocsSitemapDotxmlRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/invoice/$token": {
-      id: "/invoice/$token";
-      path: "/invoice/$token";
-      fullPath: "/invoice/$token";
-      preLoaderRoute: typeof InvoiceTokenRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/legal/": {
-      id: "/legal/";
-      path: "/legal";
-      fullPath: "/legal/";
-      preLoaderRoute: typeof LegalIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/legal/$doc": {
-      id: "/legal/$doc";
-      path: "/legal/$doc";
-      fullPath: "/legal/$doc";
-      preLoaderRoute: typeof LegalDocRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/newsletter/verify": {
-      id: "/newsletter/verify";
-      path: "/newsletter/verify";
-      fullPath: "/newsletter/verify";
-      preLoaderRoute: typeof NewsletterVerifyRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/order/$orderId": {
-      id: "/order/$orderId";
-      path: "/order/$orderId";
-      fullPath: "/order/$orderId";
-      preLoaderRoute: typeof OrderOrderIdRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/p/$productSlug": {
-      id: "/p/$productSlug";
-      path: "/p/$productSlug";
-      fullPath: "/p/$productSlug";
-      preLoaderRoute: typeof PProductSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/pages/$pageSlug": {
-      id: "/pages/$pageSlug";
-      path: "/pages/$pageSlug";
-      fullPath: "/pages/$pageSlug";
-      preLoaderRoute: typeof PagesPageSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/products/$productId": {
-      id: "/products/$productId";
-      path: "/products/$productId";
-      fullPath: "/products/$productId";
-      preLoaderRoute: typeof ProductsProductIdRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/root/": {
-      id: "/root/";
-      path: "/";
-      fullPath: "/root/";
-      preLoaderRoute: typeof RootIndexRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/access": {
-      id: "/root/access";
-      path: "/access";
-      fullPath: "/root/access";
-      preLoaderRoute: typeof RootAccessRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/ai": {
-      id: "/root/ai";
-      path: "/ai";
-      fullPath: "/root/ai";
-      preLoaderRoute: typeof RootAiRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/audit": {
-      id: "/root/audit";
-      path: "/audit";
-      fullPath: "/root/audit";
-      preLoaderRoute: typeof RootAuditRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/auth": {
-      id: "/root/auth";
-      path: "/auth";
-      fullPath: "/root/auth";
-      preLoaderRoute: typeof RootAuthRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/coupons": {
-      id: "/root/coupons";
-      path: "/coupons";
-      fullPath: "/root/coupons";
-      preLoaderRoute: typeof RootCouponsRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/fraud": {
-      id: "/root/fraud";
-      path: "/fraud";
-      fullPath: "/root/fraud";
-      preLoaderRoute: typeof RootFraudRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/gateway": {
-      id: "/root/gateway";
-      path: "/gateway";
-      fullPath: "/root/gateway";
-      preLoaderRoute: typeof RootGatewayRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/login": {
-      id: "/root/login";
-      path: "/login";
-      fullPath: "/root/login";
-      preLoaderRoute: typeof RootLoginRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/marketing": {
-      id: "/root/marketing";
-      path: "/marketing";
-      fullPath: "/root/marketing";
-      preLoaderRoute: typeof RootMarketingRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/money": {
-      id: "/root/money";
-      path: "/money";
-      fullPath: "/root/money";
-      preLoaderRoute: typeof RootMoneyRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/observability": {
-      id: "/root/observability";
-      path: "/observability";
-      fullPath: "/root/observability";
-      preLoaderRoute: typeof RootObservabilityRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/ops": {
-      id: "/root/ops";
-      path: "/ops";
-      fullPath: "/root/ops";
-      preLoaderRoute: typeof RootOpsRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/payouts": {
-      id: "/root/payouts";
-      path: "/payouts";
-      fullPath: "/root/payouts";
-      preLoaderRoute: typeof RootPayoutsRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/plans": {
-      id: "/root/plans";
-      path: "/plans";
-      fullPath: "/root/plans";
-      preLoaderRoute: typeof RootPlansRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/revenue": {
-      id: "/root/revenue";
-      path: "/revenue";
-      fullPath: "/root/revenue";
-      preLoaderRoute: typeof RootRevenueRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/settings": {
-      id: "/root/settings";
-      path: "/settings";
-      fullPath: "/root/settings";
-      preLoaderRoute: typeof RootSettingsRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/snapshots": {
-      id: "/root/snapshots";
-      path: "/snapshots";
-      fullPath: "/root/snapshots";
-      preLoaderRoute: typeof RootSnapshotsRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/status": {
-      id: "/root/status";
-      path: "/status";
-      fullPath: "/root/status";
-      preLoaderRoute: typeof RootStatusRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/tenancy": {
-      id: "/root/tenancy";
-      path: "/tenancy";
-      fullPath: "/root/tenancy";
-      preLoaderRoute: typeof RootTenancyRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/tenants": {
-      id: "/root/tenants";
-      path: "/tenants";
-      fullPath: "/root/tenants";
-      preLoaderRoute: typeof RootTenantsRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/trial": {
-      id: "/root/trial";
-      path: "/trial";
-      fullPath: "/root/trial";
-      preLoaderRoute: typeof RootTrialRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/root/users": {
-      id: "/root/users";
-      path: "/users";
-      fullPath: "/root/users";
-      preLoaderRoute: typeof RootUsersRouteImport;
-      parentRoute: typeof RootRoute;
-    };
-    "/sitemaps/$kind": {
-      id: "/sitemaps/$kind";
-      path: "/sitemaps/$kind";
-      fullPath: "/sitemaps/$kind";
-      preLoaderRoute: typeof SitemapsKindRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/theme-preview/$key": {
-      id: "/theme-preview/$key";
-      path: "/theme-preview/$key";
-      fullPath: "/theme-preview/$key";
-      preLoaderRoute: typeof ThemePreviewKeyRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/.well-known/acme-challenge/$token": {
-      id: "/.well-known/acme-challenge/$token";
-      path: "/.well-known/acme-challenge/$token";
-      fullPath: "/.well-known/acme-challenge/$token";
-      preLoaderRoute: typeof DotwellKnownAcmeChallengeTokenRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/_authenticated/dashboard/": {
-      id: "/_authenticated/dashboard/";
-      path: "/";
-      fullPath: "/dashboard/";
-      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/activity": {
-      id: "/_authenticated/dashboard/activity";
-      path: "/activity";
-      fullPath: "/dashboard/activity";
-      preLoaderRoute: typeof AuthenticatedDashboardActivityRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/analytics": {
-      id: "/_authenticated/dashboard/analytics";
-      path: "/analytics";
-      fullPath: "/dashboard/analytics";
-      preLoaderRoute: typeof AuthenticatedDashboardAnalyticsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/approvals": {
-      id: "/_authenticated/dashboard/approvals";
-      path: "/approvals";
-      fullPath: "/dashboard/approvals";
-      preLoaderRoute: typeof AuthenticatedDashboardApprovalsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/brands": {
-      id: "/_authenticated/dashboard/brands";
-      path: "/brands";
-      fullPath: "/dashboard/brands";
-      preLoaderRoute: typeof AuthenticatedDashboardBrandsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/builder": {
-      id: "/_authenticated/dashboard/builder";
-      path: "/builder";
-      fullPath: "/dashboard/builder";
-      preLoaderRoute: typeof AuthenticatedDashboardBuilderRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/bulk-editor": {
-      id: "/_authenticated/dashboard/bulk-editor";
-      path: "/bulk-editor";
-      fullPath: "/dashboard/bulk-editor";
-      preLoaderRoute: typeof AuthenticatedDashboardBulkEditorRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/bundles": {
-      id: "/_authenticated/dashboard/bundles";
-      path: "/bundles";
-      fullPath: "/dashboard/bundles";
-      preLoaderRoute: typeof AuthenticatedDashboardBundlesRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/carts": {
-      id: "/_authenticated/dashboard/carts";
-      path: "/carts";
-      fullPath: "/dashboard/carts";
-      preLoaderRoute: typeof AuthenticatedDashboardCartsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/catalog": {
-      id: "/_authenticated/dashboard/catalog";
-      path: "/catalog";
-      fullPath: "/dashboard/catalog";
-      preLoaderRoute: typeof AuthenticatedDashboardCatalogRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/categories": {
-      id: "/_authenticated/dashboard/categories";
-      path: "/categories";
-      fullPath: "/dashboard/categories";
-      preLoaderRoute: typeof AuthenticatedDashboardCategoriesRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/collections": {
-      id: "/_authenticated/dashboard/collections";
-      path: "/collections";
-      fullPath: "/dashboard/collections";
-      preLoaderRoute: typeof AuthenticatedDashboardCollectionsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/customers": {
-      id: "/_authenticated/dashboard/customers";
-      path: "/customers";
-      fullPath: "/dashboard/customers";
-      preLoaderRoute: typeof AuthenticatedDashboardCustomersRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/developers": {
-      id: "/_authenticated/dashboard/developers";
-      path: "/developers";
-      fullPath: "/dashboard/developers";
-      preLoaderRoute: typeof AuthenticatedDashboardDevelopersRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/draft-orders": {
-      id: "/_authenticated/dashboard/draft-orders";
-      path: "/draft-orders";
-      fullPath: "/dashboard/draft-orders";
-      preLoaderRoute: typeof AuthenticatedDashboardDraftOrdersRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/experiments": {
-      id: "/_authenticated/dashboard/experiments";
-      path: "/experiments";
-      fullPath: "/dashboard/experiments";
-      preLoaderRoute: typeof AuthenticatedDashboardExperimentsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/exports": {
-      id: "/_authenticated/dashboard/exports";
-      path: "/exports";
-      fullPath: "/dashboard/exports";
-      preLoaderRoute: typeof AuthenticatedDashboardExportsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/gift-cards": {
-      id: "/_authenticated/dashboard/gift-cards";
-      path: "/gift-cards";
-      fullPath: "/dashboard/gift-cards";
-      preLoaderRoute: typeof AuthenticatedDashboardGiftCardsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/inventory": {
-      id: "/_authenticated/dashboard/inventory";
-      path: "/inventory";
-      fullPath: "/dashboard/inventory";
-      preLoaderRoute: typeof AuthenticatedDashboardInventoryRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/pages": {
-      id: "/_authenticated/dashboard/pages";
-      path: "/pages";
-      fullPath: "/dashboard/pages";
-      preLoaderRoute: typeof AuthenticatedDashboardPagesRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/payments": {
-      id: "/_authenticated/dashboard/payments";
-      path: "/payments";
-      fullPath: "/dashboard/payments";
-      preLoaderRoute: typeof AuthenticatedDashboardPaymentsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/plans": {
-      id: "/_authenticated/dashboard/plans";
-      path: "/plans";
-      fullPath: "/dashboard/plans";
-      preLoaderRoute: typeof AuthenticatedDashboardPlansRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/pos": {
-      id: "/_authenticated/dashboard/pos";
-      path: "/pos";
-      fullPath: "/dashboard/pos";
-      preLoaderRoute: typeof AuthenticatedDashboardPosRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/pricing": {
-      id: "/_authenticated/dashboard/pricing";
-      path: "/pricing";
-      fullPath: "/dashboard/pricing";
-      preLoaderRoute: typeof AuthenticatedDashboardPricingRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/purchasing": {
-      id: "/_authenticated/dashboard/purchasing";
-      path: "/purchasing";
-      fullPath: "/dashboard/purchasing";
-      preLoaderRoute: typeof AuthenticatedDashboardPurchasingRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/returns": {
-      id: "/_authenticated/dashboard/returns";
-      path: "/returns";
-      fullPath: "/dashboard/returns";
-      preLoaderRoute: typeof AuthenticatedDashboardReturnsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/reviews": {
-      id: "/_authenticated/dashboard/reviews";
-      path: "/reviews";
-      fullPath: "/dashboard/reviews";
-      preLoaderRoute: typeof AuthenticatedDashboardReviewsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/settings": {
-      id: "/_authenticated/dashboard/settings";
-      path: "/settings";
-      fullPath: "/dashboard/settings";
-      preLoaderRoute: typeof AuthenticatedDashboardSettingsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/shipping": {
-      id: "/_authenticated/dashboard/shipping";
-      path: "/shipping";
-      fullPath: "/dashboard/shipping";
-      preLoaderRoute: typeof AuthenticatedDashboardShippingRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/staff": {
-      id: "/_authenticated/dashboard/staff";
-      path: "/staff";
-      fullPath: "/dashboard/staff";
-      preLoaderRoute: typeof AuthenticatedDashboardStaffRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/subscriptions": {
-      id: "/_authenticated/dashboard/subscriptions";
-      path: "/subscriptions";
-      fullPath: "/dashboard/subscriptions";
-      preLoaderRoute: typeof AuthenticatedDashboardSubscriptionsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/support": {
-      id: "/_authenticated/dashboard/support";
-      path: "/support";
-      fullPath: "/dashboard/support";
-      preLoaderRoute: typeof AuthenticatedDashboardSupportRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/oauth/authorize": {
-      id: "/_authenticated/oauth/authorize";
-      path: "/oauth/authorize";
-      fullPath: "/oauth/authorize";
-      preLoaderRoute: typeof AuthenticatedOauthAuthorizeRouteImport;
-      parentRoute: typeof AuthenticatedRouteRoute;
-    };
-    "/api/public/error-alert": {
-      id: "/api/public/error-alert";
-      path: "/api/public/error-alert";
-      fullPath: "/api/public/error-alert";
-      preLoaderRoute: typeof ApiPublicErrorAlertRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/errors": {
-      id: "/api/public/errors";
-      path: "/api/public/errors";
-      fullPath: "/api/public/errors";
-      preLoaderRoute: typeof ApiPublicErrorsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/metrics": {
-      id: "/api/public/metrics";
-      path: "/api/public/metrics";
-      fullPath: "/api/public/metrics";
-      preLoaderRoute: typeof ApiPublicMetricsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/vitals": {
-      id: "/api/public/vitals";
-      path: "/api/public/vitals";
-      fullPath: "/api/public/vitals";
-      preLoaderRoute: typeof ApiPublicVitalsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/blog/author/$slug": {
-      id: "/blog/author/$slug";
-      path: "/blog/author/$slug";
-      fullPath: "/blog/author/$slug";
-      preLoaderRoute: typeof BlogAuthorSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/blog/category/$slug": {
-      id: "/blog/category/$slug";
-      path: "/blog/category/$slug";
-      fullPath: "/blog/category/$slug";
-      preLoaderRoute: typeof BlogCategorySlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/blog/tag/$slug": {
-      id: "/blog/tag/$slug";
-      path: "/blog/tag/$slug";
-      fullPath: "/blog/tag/$slug";
-      preLoaderRoute: typeof BlogTagSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/docs/$version/$slug": {
-      id: "/docs/$version/$slug";
-      path: "/docs/$version/$slug";
-      fullPath: "/docs/$version/$slug";
-      preLoaderRoute: typeof DocsVersionSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/order/$orderId/confirmation": {
-      id: "/order/$orderId/confirmation";
-      path: "/confirmation";
-      fullPath: "/order/$orderId/confirmation";
-      preLoaderRoute: typeof OrderOrderIdConfirmationRouteImport;
-      parentRoute: typeof OrderOrderIdRoute;
-    };
-    "/store/$slug/": {
-      id: "/store/$slug/";
-      path: "/store/$slug";
-      fullPath: "/store/$slug/";
-      preLoaderRoute: typeof StoreSlugIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/account": {
-      id: "/store/$slug/account";
-      path: "/store/$slug/account";
-      fullPath: "/store/$slug/account";
-      preLoaderRoute: typeof StoreSlugAccountRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/cart": {
-      id: "/store/$slug/cart";
-      path: "/store/$slug/cart";
-      fullPath: "/store/$slug/cart";
-      preLoaderRoute: typeof StoreSlugCartRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/checkout": {
-      id: "/store/$slug/checkout";
-      path: "/store/$slug/checkout";
-      fullPath: "/store/$slug/checkout";
-      preLoaderRoute: typeof StoreSlugCheckoutRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/llms.txt": {
-      id: "/store/$slug/llms.txt";
-      path: "/store/$slug/llms.txt";
-      fullPath: "/store/$slug/llms.txt";
-      preLoaderRoute: typeof StoreSlugLlmsDottxtRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/robots.txt": {
-      id: "/store/$slug/robots.txt";
-      path: "/store/$slug/robots.txt";
-      fullPath: "/store/$slug/robots.txt";
-      preLoaderRoute: typeof StoreSlugRobotsDottxtRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/search": {
-      id: "/store/$slug/search";
-      path: "/store/$slug/search";
-      fullPath: "/store/$slug/search";
-      preLoaderRoute: typeof StoreSlugSearchRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/sitemap.xml": {
-      id: "/store/$slug/sitemap.xml";
-      path: "/store/$slug/sitemap.xml";
-      fullPath: "/store/$slug/sitemap.xml";
-      preLoaderRoute: typeof StoreSlugSitemapDotxmlRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/track": {
-      id: "/store/$slug/track";
-      path: "/store/$slug/track";
-      fullPath: "/store/$slug/track";
-      preLoaderRoute: typeof StoreSlugTrackRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/_authenticated/dashboard/ai/assistant": {
-      id: "/_authenticated/dashboard/ai/assistant";
-      path: "/ai/assistant";
-      fullPath: "/dashboard/ai/assistant";
-      preLoaderRoute: typeof AuthenticatedDashboardAiAssistantRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/ai/settings": {
-      id: "/_authenticated/dashboard/ai/settings";
-      path: "/ai/settings";
-      fullPath: "/dashboard/ai/settings";
-      preLoaderRoute: typeof AuthenticatedDashboardAiSettingsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/analytics_/insights": {
-      id: "/_authenticated/dashboard/analytics_/insights";
-      path: "/analytics/insights";
-      fullPath: "/dashboard/analytics/insights";
-      preLoaderRoute: typeof AuthenticatedDashboardAnalyticsInsightsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/analytics_/reports": {
-      id: "/_authenticated/dashboard/analytics_/reports";
-      path: "/analytics/reports";
-      fullPath: "/dashboard/analytics/reports";
-      preLoaderRoute: typeof AuthenticatedDashboardAnalyticsReportsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/billing/": {
-      id: "/_authenticated/dashboard/billing/";
-      path: "/billing";
-      fullPath: "/dashboard/billing/";
-      preLoaderRoute: typeof AuthenticatedDashboardBillingIndexRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/billing/invoices": {
-      id: "/_authenticated/dashboard/billing/invoices";
-      path: "/billing/invoices";
-      fullPath: "/dashboard/billing/invoices";
-      preLoaderRoute: typeof AuthenticatedDashboardBillingInvoicesRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/content/": {
-      id: "/_authenticated/dashboard/content/";
-      path: "/content";
-      fullPath: "/dashboard/content/";
-      preLoaderRoute: typeof AuthenticatedDashboardContentIndexRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/content/custom-code": {
-      id: "/_authenticated/dashboard/content/custom-code";
-      path: "/content/custom-code";
-      fullPath: "/dashboard/content/custom-code";
-      preLoaderRoute: typeof AuthenticatedDashboardContentCustomCodeRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/content/editor": {
-      id: "/_authenticated/dashboard/content/editor";
-      path: "/content/editor";
-      fullPath: "/dashboard/content/editor";
-      preLoaderRoute: typeof AuthenticatedDashboardContentEditorRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/content/media": {
-      id: "/_authenticated/dashboard/content/media";
-      path: "/content/media";
-      fullPath: "/dashboard/content/media";
-      preLoaderRoute: typeof AuthenticatedDashboardContentMediaRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/content/menus": {
-      id: "/_authenticated/dashboard/content/menus";
-      path: "/content/menus";
-      fullPath: "/dashboard/content/menus";
-      preLoaderRoute: typeof AuthenticatedDashboardContentMenusRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/content/pages": {
-      id: "/_authenticated/dashboard/content/pages";
-      path: "/content/pages";
-      fullPath: "/dashboard/content/pages";
-      preLoaderRoute: typeof AuthenticatedDashboardContentPagesRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/content/posts": {
-      id: "/_authenticated/dashboard/content/posts";
-      path: "/content/posts";
-      fullPath: "/dashboard/content/posts";
-      preLoaderRoute: typeof AuthenticatedDashboardContentPostsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/content/themes": {
-      id: "/_authenticated/dashboard/content/themes";
-      path: "/content/themes";
-      fullPath: "/dashboard/content/themes";
-      preLoaderRoute: typeof AuthenticatedDashboardContentThemesRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/fraud/": {
-      id: "/_authenticated/dashboard/fraud/";
-      path: "/fraud";
-      fullPath: "/dashboard/fraud/";
-      preLoaderRoute: typeof AuthenticatedDashboardFraudIndexRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/fraud/ad-defense": {
-      id: "/_authenticated/dashboard/fraud/ad-defense";
-      path: "/fraud/ad-defense";
-      fullPath: "/dashboard/fraud/ad-defense";
-      preLoaderRoute: typeof AuthenticatedDashboardFraudAdDefenseRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/fraud/audit": {
-      id: "/_authenticated/dashboard/fraud/audit";
-      path: "/fraud/audit";
-      fullPath: "/dashboard/fraud/audit";
-      preLoaderRoute: typeof AuthenticatedDashboardFraudAuditRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketing/": {
-      id: "/_authenticated/dashboard/marketing/";
-      path: "/marketing";
-      fullPath: "/dashboard/marketing/";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketingIndexRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketing/articles": {
-      id: "/_authenticated/dashboard/marketing/articles";
-      path: "/marketing/articles";
-      fullPath: "/dashboard/marketing/articles";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketingArticlesRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketing/campaigns": {
-      id: "/_authenticated/dashboard/marketing/campaigns";
-      path: "/marketing/campaigns";
-      fullPath: "/dashboard/marketing/campaigns";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketingCampaignsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketing/codes": {
-      id: "/_authenticated/dashboard/marketing/codes";
-      path: "/marketing/codes";
-      fullPath: "/dashboard/marketing/codes";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketingCodesRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketing/coupons": {
-      id: "/_authenticated/dashboard/marketing/coupons";
-      path: "/marketing/coupons";
-      fullPath: "/dashboard/marketing/coupons";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketingCouponsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketing/forms": {
-      id: "/_authenticated/dashboard/marketing/forms";
-      path: "/marketing/forms";
-      fullPath: "/dashboard/marketing/forms";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketingFormsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketing/media": {
-      id: "/_authenticated/dashboard/marketing/media";
-      path: "/marketing/media";
-      fullPath: "/dashboard/marketing/media";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketingMediaRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketing/seo": {
-      id: "/_authenticated/dashboard/marketing/seo";
-      path: "/marketing/seo";
-      fullPath: "/dashboard/marketing/seo";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketingSeoRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketing/sequences": {
-      id: "/_authenticated/dashboard/marketing/sequences";
-      path: "/marketing/sequences";
-      fullPath: "/dashboard/marketing/sequences";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketingSequencesRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketing/subscribers": {
-      id: "/_authenticated/dashboard/marketing/subscribers";
-      path: "/marketing/subscribers";
-      fullPath: "/dashboard/marketing/subscribers";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketingSubscribersRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketing/templates": {
-      id: "/_authenticated/dashboard/marketing/templates";
-      path: "/marketing/templates";
-      fullPath: "/dashboard/marketing/templates";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketingTemplatesRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketplace/": {
-      id: "/_authenticated/dashboard/marketplace/";
-      path: "/marketplace";
-      fullPath: "/dashboard/marketplace/";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceIndexRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketplace/creator": {
-      id: "/_authenticated/dashboard/marketplace/creator";
-      path: "/marketplace/creator";
-      fullPath: "/dashboard/marketplace/creator";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceCreatorRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketplace/moderation": {
-      id: "/_authenticated/dashboard/marketplace/moderation";
-      path: "/marketplace/moderation";
-      fullPath: "/dashboard/marketplace/moderation";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceModerationRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/marketplace/versions": {
-      id: "/_authenticated/dashboard/marketplace/versions";
-      path: "/marketplace/versions";
-      fullPath: "/dashboard/marketplace/versions";
-      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceVersionsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/money/payments": {
-      id: "/_authenticated/dashboard/money/payments";
-      path: "/money/payments";
-      fullPath: "/dashboard/money/payments";
-      preLoaderRoute: typeof AuthenticatedDashboardMoneyPaymentsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/orders/": {
-      id: "/_authenticated/dashboard/orders/";
-      path: "/orders";
-      fullPath: "/dashboard/orders/";
-      preLoaderRoute: typeof AuthenticatedDashboardOrdersIndexRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/orders/$orderId": {
-      id: "/_authenticated/dashboard/orders/$orderId";
-      path: "/orders/$orderId";
-      fullPath: "/dashboard/orders/$orderId";
-      preLoaderRoute: typeof AuthenticatedDashboardOrdersOrderIdRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/plugins/": {
-      id: "/_authenticated/dashboard/plugins/";
-      path: "/plugins";
-      fullPath: "/dashboard/plugins/";
-      preLoaderRoute: typeof AuthenticatedDashboardPluginsIndexRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/plugins/new": {
-      id: "/_authenticated/dashboard/plugins/new";
-      path: "/plugins/new";
-      fullPath: "/dashboard/plugins/new";
-      preLoaderRoute: typeof AuthenticatedDashboardPluginsNewRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/products/": {
-      id: "/_authenticated/dashboard/products/";
-      path: "/products";
-      fullPath: "/dashboard/products/";
-      preLoaderRoute: typeof AuthenticatedDashboardProductsIndexRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/products/$productId": {
-      id: "/_authenticated/dashboard/products/$productId";
-      path: "/products/$productId";
-      fullPath: "/dashboard/products/$productId";
-      preLoaderRoute: typeof AuthenticatedDashboardProductsProductIdRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/products/new": {
-      id: "/_authenticated/dashboard/products/new";
-      path: "/products/new";
-      fullPath: "/dashboard/products/new";
-      preLoaderRoute: typeof AuthenticatedDashboardProductsNewRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/settings_/api": {
-      id: "/_authenticated/dashboard/settings_/api";
-      path: "/settings/api";
-      fullPath: "/dashboard/settings/api";
-      preLoaderRoute: typeof AuthenticatedDashboardSettingsApiRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/settings_/domains": {
-      id: "/_authenticated/dashboard/settings_/domains";
-      path: "/settings/domains";
-      fullPath: "/dashboard/settings/domains";
-      preLoaderRoute: typeof AuthenticatedDashboardSettingsDomainsRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/settings_/email": {
-      id: "/_authenticated/dashboard/settings_/email";
-      path: "/settings/email";
-      fullPath: "/dashboard/settings/email";
-      preLoaderRoute: typeof AuthenticatedDashboardSettingsEmailRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/settings_/infrastructure": {
-      id: "/_authenticated/dashboard/settings_/infrastructure";
-      path: "/settings/infrastructure";
-      fullPath: "/dashboard/settings/infrastructure";
-      preLoaderRoute: typeof AuthenticatedDashboardSettingsInfrastructureRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/settings_/providers": {
-      id: "/_authenticated/dashboard/settings_/providers";
-      path: "/settings/providers";
-      fullPath: "/dashboard/settings/providers";
-      preLoaderRoute: typeof AuthenticatedDashboardSettingsProvidersRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/settings_/security": {
-      id: "/_authenticated/dashboard/settings_/security";
-      path: "/settings/security";
-      fullPath: "/dashboard/settings/security";
-      preLoaderRoute: typeof AuthenticatedDashboardSettingsSecurityRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/_authenticated/dashboard/settings_/seo": {
-      id: "/_authenticated/dashboard/settings_/seo";
-      path: "/settings/seo";
-      fullPath: "/dashboard/settings/seo";
-      preLoaderRoute: typeof AuthenticatedDashboardSettingsSeoRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/api/public/ads/click": {
-      id: "/api/public/ads/click";
-      path: "/api/public/ads/click";
-      fullPath: "/api/public/ads/click";
-      preLoaderRoute: typeof ApiPublicAdsClickRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/analytics/beacon": {
-      id: "/api/public/analytics/beacon";
-      path: "/api/public/analytics/beacon";
-      fullPath: "/api/public/analytics/beacon";
-      preLoaderRoute: typeof ApiPublicAnalyticsBeaconRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/channels/$channel": {
-      id: "/api/public/channels/$channel";
-      path: "/api/public/channels/$channel";
-      fullPath: "/api/public/channels/$channel";
-      preLoaderRoute: typeof ApiPublicChannelsChannelRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/couriers/$carrier": {
-      id: "/api/public/couriers/$carrier";
-      path: "/api/public/couriers/$carrier";
-      fullPath: "/api/public/couriers/$carrier";
-      preLoaderRoute: typeof ApiPublicCouriersCarrierRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/ad-fraud": {
-      id: "/api/public/cron/ad-fraud";
-      path: "/api/public/cron/ad-fraud";
-      fullPath: "/api/public/cron/ad-fraud";
-      preLoaderRoute: typeof ApiPublicCronAdFraudRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/analytics": {
-      id: "/api/public/cron/analytics";
-      path: "/api/public/cron/analytics";
-      fullPath: "/api/public/cron/analytics";
-      preLoaderRoute: typeof ApiPublicCronAnalyticsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/billing": {
-      id: "/api/public/cron/billing";
-      path: "/api/public/cron/billing";
-      fullPath: "/api/public/cron/billing";
-      preLoaderRoute: typeof ApiPublicCronBillingRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/content-health": {
-      id: "/api/public/cron/content-health";
-      path: "/api/public/cron/content-health";
-      fullPath: "/api/public/cron/content-health";
-      preLoaderRoute: typeof ApiPublicCronContentHealthRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/couriers": {
-      id: "/api/public/cron/couriers";
-      path: "/api/public/cron/couriers";
-      fullPath: "/api/public/cron/couriers";
-      preLoaderRoute: typeof ApiPublicCronCouriersRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/domains": {
-      id: "/api/public/cron/domains";
-      path: "/api/public/cron/domains";
-      fullPath: "/api/public/cron/domains";
-      preLoaderRoute: typeof ApiPublicCronDomainsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/growth": {
-      id: "/api/public/cron/growth";
-      path: "/api/public/cron/growth";
-      fullPath: "/api/public/cron/growth";
-      preLoaderRoute: typeof ApiPublicCronGrowthRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/jobs": {
-      id: "/api/public/cron/jobs";
-      path: "/api/public/cron/jobs";
-      fullPath: "/api/public/cron/jobs";
-      preLoaderRoute: typeof ApiPublicCronJobsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/notifications": {
-      id: "/api/public/cron/notifications";
-      path: "/api/public/cron/notifications";
-      fullPath: "/api/public/cron/notifications";
-      preLoaderRoute: typeof ApiPublicCronNotificationsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/ops": {
-      id: "/api/public/cron/ops";
-      path: "/api/public/cron/ops";
-      fullPath: "/api/public/cron/ops";
-      preLoaderRoute: typeof ApiPublicCronOpsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/payouts": {
-      id: "/api/public/cron/payouts";
-      path: "/api/public/cron/payouts";
-      fullPath: "/api/public/cron/payouts";
-      preLoaderRoute: typeof ApiPublicCronPayoutsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/purge": {
-      id: "/api/public/cron/purge";
-      path: "/api/public/cron/purge";
-      fullPath: "/api/public/cron/purge";
-      preLoaderRoute: typeof ApiPublicCronPurgeRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/search-console": {
-      id: "/api/public/cron/search-console";
-      path: "/api/public/cron/search-console";
-      fullPath: "/api/public/cron/search-console";
-      preLoaderRoute: typeof ApiPublicCronSearchConsoleRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/support": {
-      id: "/api/public/cron/support";
-      path: "/api/public/cron/support";
-      fullPath: "/api/public/cron/support";
-      preLoaderRoute: typeof ApiPublicCronSupportRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/themes": {
-      id: "/api/public/cron/themes";
-      path: "/api/public/cron/themes";
-      fullPath: "/api/public/cron/themes";
-      preLoaderRoute: typeof ApiPublicCronThemesRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/cron/webhooks": {
-      id: "/api/public/cron/webhooks";
-      path: "/api/public/cron/webhooks";
-      fullPath: "/api/public/cron/webhooks";
-      preLoaderRoute: typeof ApiPublicCronWebhooksRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/domains/callback": {
-      id: "/api/public/domains/callback";
-      path: "/api/public/domains/callback";
-      fullPath: "/api/public/domains/callback";
-      preLoaderRoute: typeof ApiPublicDomainsCallbackRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/domains/verify-sni": {
-      id: "/api/public/domains/verify-sni";
-      path: "/api/public/domains/verify-sni";
-      fullPath: "/api/public/domains/verify-sni";
-      preLoaderRoute: typeof ApiPublicDomainsVerifySniRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/font/$": {
-      id: "/api/public/font/$";
-      path: "/api/public/font/$";
-      fullPath: "/api/public/font/$";
-      preLoaderRoute: typeof ApiPublicFontSplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/img/$": {
-      id: "/api/public/img/$";
-      path: "/api/public/img/$";
-      fullPath: "/api/public/img/$";
-      preLoaderRoute: typeof ApiPublicImgSplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/media/$": {
-      id: "/api/public/media/$";
-      path: "/api/public/media/$";
-      fullPath: "/api/public/media/$";
-      preLoaderRoute: typeof ApiPublicMediaSplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/newsletter/feedback": {
-      id: "/api/public/newsletter/feedback";
-      path: "/api/public/newsletter/feedback";
-      fullPath: "/api/public/newsletter/feedback";
-      preLoaderRoute: typeof ApiPublicNewsletterFeedbackRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/oauth/revoke": {
-      id: "/api/public/oauth/revoke";
-      path: "/api/public/oauth/revoke";
-      fullPath: "/api/public/oauth/revoke";
-      preLoaderRoute: typeof ApiPublicOauthRevokeRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/oauth/token": {
-      id: "/api/public/oauth/token";
-      path: "/api/public/oauth/token";
-      fullPath: "/api/public/oauth/token";
-      preLoaderRoute: typeof ApiPublicOauthTokenRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/payments/$provider": {
-      id: "/api/public/payments/$provider";
-      path: "/api/public/payments/$provider";
-      fullPath: "/api/public/payments/$provider";
-      preLoaderRoute: typeof ApiPublicPaymentsProviderRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/payments/return": {
-      id: "/api/public/payments/return";
-      path: "/api/public/payments/return";
-      fullPath: "/api/public/payments/return";
-      preLoaderRoute: typeof ApiPublicPaymentsReturnRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/ph/$": {
-      id: "/api/public/ph/$";
-      path: "/api/public/ph/$";
-      fullPath: "/api/public/ph/$";
-      preLoaderRoute: typeof ApiPublicPhSplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/v1/$": {
-      id: "/api/public/v1/$";
-      path: "/api/public/v1/$";
-      fullPath: "/api/public/v1/$";
-      preLoaderRoute: typeof ApiPublicV1SplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/blog/": {
-      id: "/store/$slug/blog/";
-      path: "/store/$slug/blog";
-      fullPath: "/store/$slug/blog/";
-      preLoaderRoute: typeof StoreSlugBlogIndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/blog/$slug": {
-      id: "/store/$slug/blog/$slug";
-      path: "/store/$slug/blog/$slug";
-      fullPath: "/store/$slug/blog/$slug";
-      preLoaderRoute: typeof StoreSlugBlogSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/c/$collectionSlug": {
-      id: "/store/$slug/c/$collectionSlug";
-      path: "/store/$slug/c/$collectionSlug";
-      fullPath: "/store/$slug/c/$collectionSlug";
-      preLoaderRoute: typeof StoreSlugCCollectionSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/order/$orderId": {
-      id: "/store/$slug/order/$orderId";
-      path: "/store/$slug/order/$orderId";
-      fullPath: "/store/$slug/order/$orderId";
-      preLoaderRoute: typeof StoreSlugOrderOrderIdRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/p/$productSlug": {
-      id: "/store/$slug/p/$productSlug";
-      path: "/store/$slug/p/$productSlug";
-      fullPath: "/store/$slug/p/$productSlug";
-      preLoaderRoute: typeof StoreSlugPProductSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/pages/$pageSlug": {
-      id: "/store/$slug/pages/$pageSlug";
-      path: "/store/$slug/pages/$pageSlug";
-      fullPath: "/store/$slug/pages/$pageSlug";
-      preLoaderRoute: typeof StoreSlugPagesPageSlugRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/store/$slug/sitemaps/$kind": {
-      id: "/store/$slug/sitemaps/$kind";
-      path: "/store/$slug/sitemaps/$kind";
-      fullPath: "/store/$slug/sitemaps/$kind";
-      preLoaderRoute: typeof StoreSlugSitemapsKindRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/_authenticated/dashboard/orders/$orderId_/invoice": {
-      id: "/_authenticated/dashboard/orders/$orderId_/invoice";
-      path: "/orders/$orderId/invoice";
-      fullPath: "/dashboard/orders/$orderId/invoice";
-      preLoaderRoute: typeof AuthenticatedDashboardOrdersOrderIdInvoiceRouteImport;
-      parentRoute: typeof AuthenticatedDashboardRoute;
-    };
-    "/api/public/payments/live/$provider": {
-      id: "/api/public/payments/live/$provider";
-      path: "/api/public/payments/live/$provider";
-      fullPath: "/api/public/payments/live/$provider";
-      preLoaderRoute: typeof ApiPublicPaymentsLiveProviderRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/payments/mock/$provider": {
-      id: "/api/public/payments/mock/$provider";
-      path: "/api/public/payments/mock/$provider";
-      fullPath: "/api/public/payments/mock/$provider";
-      preLoaderRoute: typeof ApiPublicPaymentsMockProviderRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/payments/platform/$provider": {
-      id: "/api/public/payments/platform/$provider";
-      path: "/api/public/payments/platform/$provider";
-      fullPath: "/api/public/payments/platform/$provider";
-      preLoaderRoute: typeof ApiPublicPaymentsPlatformProviderRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/public/payments/platform/return": {
-      id: "/api/public/payments/platform/return";
-      path: "/api/public/payments/platform/return";
-      fullPath: "/api/public/payments/platform/return";
-      preLoaderRoute: typeof ApiPublicPaymentsPlatformReturnRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog.atom': {
+      id: '/blog.atom'
+      path: '/blog.atom'
+      fullPath: '/blog.atom'
+      preLoaderRoute: typeof BlogDotatomRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog.json': {
+      id: '/blog.json'
+      path: '/blog.json'
+      fullPath: '/blog.json'
+      preLoaderRoute: typeof BlogDotjsonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog.xml': {
+      id: '/blog.xml'
+      path: '/blog.xml'
+      fullPath: '/blog.xml'
+      preLoaderRoute: typeof BlogDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/customers': {
+      id: '/customers'
+      path: '/customers'
+      fullPath: '/customers'
+      preLoaderRoute: typeof CustomersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/features': {
+      id: '/features'
+      path: '/features'
+      fullPath: '/features'
+      preLoaderRoute: typeof FeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/fulfilment': {
+      id: '/fulfilment'
+      path: '/fulfilment'
+      fullPath: '/fulfilment'
+      preLoaderRoute: typeof FulfilmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llms.txt': {
+      id: '/llms.txt'
+      path: '/llms.txt'
+      fullPath: '/llms.txt'
+      preLoaderRoute: typeof LlmsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payments': {
+      id: '/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/root': {
+      id: '/root'
+      path: '/root'
+      fullPath: '/root'
+      preLoaderRoute: typeof RootRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/status': {
+      id: '/status'
+      path: '/status'
+      fullPath: '/status'
+      preLoaderRoute: typeof StatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/onboarding': {
+      id: '/_authenticated/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/c/$collectionSlug': {
+      id: '/c/$collectionSlug'
+      path: '/c/$collectionSlug'
+      fullPath: '/c/$collectionSlug'
+      preLoaderRoute: typeof CCollectionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev/bands': {
+      id: '/dev/bands'
+      path: '/dev/bands'
+      fullPath: '/dev/bands'
+      preLoaderRoute: typeof DevBandsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/': {
+      id: '/docs/'
+      path: '/docs'
+      fullPath: '/docs/'
+      preLoaderRoute: typeof DocsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/sitemap.xml': {
+      id: '/docs/sitemap.xml'
+      path: '/docs/sitemap.xml'
+      fullPath: '/docs/sitemap.xml'
+      preLoaderRoute: typeof DocsSitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invoice/$token': {
+      id: '/invoice/$token'
+      path: '/invoice/$token'
+      fullPath: '/invoice/$token'
+      preLoaderRoute: typeof InvoiceTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/': {
+      id: '/legal/'
+      path: '/legal'
+      fullPath: '/legal/'
+      preLoaderRoute: typeof LegalIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal/$doc': {
+      id: '/legal/$doc'
+      path: '/legal/$doc'
+      fullPath: '/legal/$doc'
+      preLoaderRoute: typeof LegalDocRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/newsletter/verify': {
+      id: '/newsletter/verify'
+      path: '/newsletter/verify'
+      fullPath: '/newsletter/verify'
+      preLoaderRoute: typeof NewsletterVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order/$orderId': {
+      id: '/order/$orderId'
+      path: '/order/$orderId'
+      fullPath: '/order/$orderId'
+      preLoaderRoute: typeof OrderOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/p/$productSlug': {
+      id: '/p/$productSlug'
+      path: '/p/$productSlug'
+      fullPath: '/p/$productSlug'
+      preLoaderRoute: typeof PProductSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pages/$pageSlug': {
+      id: '/pages/$pageSlug'
+      path: '/pages/$pageSlug'
+      fullPath: '/pages/$pageSlug'
+      preLoaderRoute: typeof PagesPageSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products/$productId': {
+      id: '/products/$productId'
+      path: '/products/$productId'
+      fullPath: '/products/$productId'
+      preLoaderRoute: typeof ProductsProductIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/root/': {
+      id: '/root/'
+      path: '/'
+      fullPath: '/root/'
+      preLoaderRoute: typeof RootIndexRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/access': {
+      id: '/root/access'
+      path: '/access'
+      fullPath: '/root/access'
+      preLoaderRoute: typeof RootAccessRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/ai': {
+      id: '/root/ai'
+      path: '/ai'
+      fullPath: '/root/ai'
+      preLoaderRoute: typeof RootAiRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/audit': {
+      id: '/root/audit'
+      path: '/audit'
+      fullPath: '/root/audit'
+      preLoaderRoute: typeof RootAuditRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/auth': {
+      id: '/root/auth'
+      path: '/auth'
+      fullPath: '/root/auth'
+      preLoaderRoute: typeof RootAuthRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/coupons': {
+      id: '/root/coupons'
+      path: '/coupons'
+      fullPath: '/root/coupons'
+      preLoaderRoute: typeof RootCouponsRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/fraud': {
+      id: '/root/fraud'
+      path: '/fraud'
+      fullPath: '/root/fraud'
+      preLoaderRoute: typeof RootFraudRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/gateway': {
+      id: '/root/gateway'
+      path: '/gateway'
+      fullPath: '/root/gateway'
+      preLoaderRoute: typeof RootGatewayRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/login': {
+      id: '/root/login'
+      path: '/login'
+      fullPath: '/root/login'
+      preLoaderRoute: typeof RootLoginRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/marketing': {
+      id: '/root/marketing'
+      path: '/marketing'
+      fullPath: '/root/marketing'
+      preLoaderRoute: typeof RootMarketingRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/money': {
+      id: '/root/money'
+      path: '/money'
+      fullPath: '/root/money'
+      preLoaderRoute: typeof RootMoneyRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/observability': {
+      id: '/root/observability'
+      path: '/observability'
+      fullPath: '/root/observability'
+      preLoaderRoute: typeof RootObservabilityRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/ops': {
+      id: '/root/ops'
+      path: '/ops'
+      fullPath: '/root/ops'
+      preLoaderRoute: typeof RootOpsRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/payouts': {
+      id: '/root/payouts'
+      path: '/payouts'
+      fullPath: '/root/payouts'
+      preLoaderRoute: typeof RootPayoutsRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/plans': {
+      id: '/root/plans'
+      path: '/plans'
+      fullPath: '/root/plans'
+      preLoaderRoute: typeof RootPlansRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/revenue': {
+      id: '/root/revenue'
+      path: '/revenue'
+      fullPath: '/root/revenue'
+      preLoaderRoute: typeof RootRevenueRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/settings': {
+      id: '/root/settings'
+      path: '/settings'
+      fullPath: '/root/settings'
+      preLoaderRoute: typeof RootSettingsRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/snapshots': {
+      id: '/root/snapshots'
+      path: '/snapshots'
+      fullPath: '/root/snapshots'
+      preLoaderRoute: typeof RootSnapshotsRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/status': {
+      id: '/root/status'
+      path: '/status'
+      fullPath: '/root/status'
+      preLoaderRoute: typeof RootStatusRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/tenancy': {
+      id: '/root/tenancy'
+      path: '/tenancy'
+      fullPath: '/root/tenancy'
+      preLoaderRoute: typeof RootTenancyRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/tenants': {
+      id: '/root/tenants'
+      path: '/tenants'
+      fullPath: '/root/tenants'
+      preLoaderRoute: typeof RootTenantsRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/trial': {
+      id: '/root/trial'
+      path: '/trial'
+      fullPath: '/root/trial'
+      preLoaderRoute: typeof RootTrialRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/root/users': {
+      id: '/root/users'
+      path: '/users'
+      fullPath: '/root/users'
+      preLoaderRoute: typeof RootUsersRouteImport
+      parentRoute: typeof RootRoute
+    }
+    '/sitemaps/$kind': {
+      id: '/sitemaps/$kind'
+      path: '/sitemaps/$kind'
+      fullPath: '/sitemaps/$kind'
+      preLoaderRoute: typeof SitemapsKindRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/theme-preview/$key': {
+      id: '/theme-preview/$key'
+      path: '/theme-preview/$key'
+      fullPath: '/theme-preview/$key'
+      preLoaderRoute: typeof ThemePreviewKeyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/acme-challenge/$token': {
+      id: '/.well-known/acme-challenge/$token'
+      path: '/.well-known/acme-challenge/$token'
+      fullPath: '/.well-known/acme-challenge/$token'
+      preLoaderRoute: typeof DotwellKnownAcmeChallengeTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard/': {
+      id: '/_authenticated/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/activity': {
+      id: '/_authenticated/dashboard/activity'
+      path: '/activity'
+      fullPath: '/dashboard/activity'
+      preLoaderRoute: typeof AuthenticatedDashboardActivityRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/analytics': {
+      id: '/_authenticated/dashboard/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof AuthenticatedDashboardAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/approvals': {
+      id: '/_authenticated/dashboard/approvals'
+      path: '/approvals'
+      fullPath: '/dashboard/approvals'
+      preLoaderRoute: typeof AuthenticatedDashboardApprovalsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/brands': {
+      id: '/_authenticated/dashboard/brands'
+      path: '/brands'
+      fullPath: '/dashboard/brands'
+      preLoaderRoute: typeof AuthenticatedDashboardBrandsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/builder': {
+      id: '/_authenticated/dashboard/builder'
+      path: '/builder'
+      fullPath: '/dashboard/builder'
+      preLoaderRoute: typeof AuthenticatedDashboardBuilderRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/bulk-editor': {
+      id: '/_authenticated/dashboard/bulk-editor'
+      path: '/bulk-editor'
+      fullPath: '/dashboard/bulk-editor'
+      preLoaderRoute: typeof AuthenticatedDashboardBulkEditorRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/bundles': {
+      id: '/_authenticated/dashboard/bundles'
+      path: '/bundles'
+      fullPath: '/dashboard/bundles'
+      preLoaderRoute: typeof AuthenticatedDashboardBundlesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/carts': {
+      id: '/_authenticated/dashboard/carts'
+      path: '/carts'
+      fullPath: '/dashboard/carts'
+      preLoaderRoute: typeof AuthenticatedDashboardCartsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/catalog': {
+      id: '/_authenticated/dashboard/catalog'
+      path: '/catalog'
+      fullPath: '/dashboard/catalog'
+      preLoaderRoute: typeof AuthenticatedDashboardCatalogRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/categories': {
+      id: '/_authenticated/dashboard/categories'
+      path: '/categories'
+      fullPath: '/dashboard/categories'
+      preLoaderRoute: typeof AuthenticatedDashboardCategoriesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/collections': {
+      id: '/_authenticated/dashboard/collections'
+      path: '/collections'
+      fullPath: '/dashboard/collections'
+      preLoaderRoute: typeof AuthenticatedDashboardCollectionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/customers': {
+      id: '/_authenticated/dashboard/customers'
+      path: '/customers'
+      fullPath: '/dashboard/customers'
+      preLoaderRoute: typeof AuthenticatedDashboardCustomersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/developers': {
+      id: '/_authenticated/dashboard/developers'
+      path: '/developers'
+      fullPath: '/dashboard/developers'
+      preLoaderRoute: typeof AuthenticatedDashboardDevelopersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/draft-orders': {
+      id: '/_authenticated/dashboard/draft-orders'
+      path: '/draft-orders'
+      fullPath: '/dashboard/draft-orders'
+      preLoaderRoute: typeof AuthenticatedDashboardDraftOrdersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/experiments': {
+      id: '/_authenticated/dashboard/experiments'
+      path: '/experiments'
+      fullPath: '/dashboard/experiments'
+      preLoaderRoute: typeof AuthenticatedDashboardExperimentsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/exports': {
+      id: '/_authenticated/dashboard/exports'
+      path: '/exports'
+      fullPath: '/dashboard/exports'
+      preLoaderRoute: typeof AuthenticatedDashboardExportsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/gift-cards': {
+      id: '/_authenticated/dashboard/gift-cards'
+      path: '/gift-cards'
+      fullPath: '/dashboard/gift-cards'
+      preLoaderRoute: typeof AuthenticatedDashboardGiftCardsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/inventory': {
+      id: '/_authenticated/dashboard/inventory'
+      path: '/inventory'
+      fullPath: '/dashboard/inventory'
+      preLoaderRoute: typeof AuthenticatedDashboardInventoryRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/pages': {
+      id: '/_authenticated/dashboard/pages'
+      path: '/pages'
+      fullPath: '/dashboard/pages'
+      preLoaderRoute: typeof AuthenticatedDashboardPagesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/payments': {
+      id: '/_authenticated/dashboard/payments'
+      path: '/payments'
+      fullPath: '/dashboard/payments'
+      preLoaderRoute: typeof AuthenticatedDashboardPaymentsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/plans': {
+      id: '/_authenticated/dashboard/plans'
+      path: '/plans'
+      fullPath: '/dashboard/plans'
+      preLoaderRoute: typeof AuthenticatedDashboardPlansRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/pos': {
+      id: '/_authenticated/dashboard/pos'
+      path: '/pos'
+      fullPath: '/dashboard/pos'
+      preLoaderRoute: typeof AuthenticatedDashboardPosRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/pricing': {
+      id: '/_authenticated/dashboard/pricing'
+      path: '/pricing'
+      fullPath: '/dashboard/pricing'
+      preLoaderRoute: typeof AuthenticatedDashboardPricingRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/purchasing': {
+      id: '/_authenticated/dashboard/purchasing'
+      path: '/purchasing'
+      fullPath: '/dashboard/purchasing'
+      preLoaderRoute: typeof AuthenticatedDashboardPurchasingRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/returns': {
+      id: '/_authenticated/dashboard/returns'
+      path: '/returns'
+      fullPath: '/dashboard/returns'
+      preLoaderRoute: typeof AuthenticatedDashboardReturnsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/reviews': {
+      id: '/_authenticated/dashboard/reviews'
+      path: '/reviews'
+      fullPath: '/dashboard/reviews'
+      preLoaderRoute: typeof AuthenticatedDashboardReviewsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings': {
+      id: '/_authenticated/dashboard/settings'
+      path: '/settings'
+      fullPath: '/dashboard/settings'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/shipping': {
+      id: '/_authenticated/dashboard/shipping'
+      path: '/shipping'
+      fullPath: '/dashboard/shipping'
+      preLoaderRoute: typeof AuthenticatedDashboardShippingRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/staff': {
+      id: '/_authenticated/dashboard/staff'
+      path: '/staff'
+      fullPath: '/dashboard/staff'
+      preLoaderRoute: typeof AuthenticatedDashboardStaffRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/subscriptions': {
+      id: '/_authenticated/dashboard/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/dashboard/subscriptions'
+      preLoaderRoute: typeof AuthenticatedDashboardSubscriptionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/support': {
+      id: '/_authenticated/dashboard/support'
+      path: '/support'
+      fullPath: '/dashboard/support'
+      preLoaderRoute: typeof AuthenticatedDashboardSupportRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/oauth/authorize': {
+      id: '/_authenticated/oauth/authorize'
+      path: '/oauth/authorize'
+      fullPath: '/oauth/authorize'
+      preLoaderRoute: typeof AuthenticatedOauthAuthorizeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/error-alert': {
+      id: '/api/public/error-alert'
+      path: '/api/public/error-alert'
+      fullPath: '/api/public/error-alert'
+      preLoaderRoute: typeof ApiPublicErrorAlertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/errors': {
+      id: '/api/public/errors'
+      path: '/api/public/errors'
+      fullPath: '/api/public/errors'
+      preLoaderRoute: typeof ApiPublicErrorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/metrics': {
+      id: '/api/public/metrics'
+      path: '/api/public/metrics'
+      fullPath: '/api/public/metrics'
+      preLoaderRoute: typeof ApiPublicMetricsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/vitals': {
+      id: '/api/public/vitals'
+      path: '/api/public/vitals'
+      fullPath: '/api/public/vitals'
+      preLoaderRoute: typeof ApiPublicVitalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/author/$slug': {
+      id: '/blog/author/$slug'
+      path: '/blog/author/$slug'
+      fullPath: '/blog/author/$slug'
+      preLoaderRoute: typeof BlogAuthorSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/category/$slug': {
+      id: '/blog/category/$slug'
+      path: '/blog/category/$slug'
+      fullPath: '/blog/category/$slug'
+      preLoaderRoute: typeof BlogCategorySlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/tag/$slug': {
+      id: '/blog/tag/$slug'
+      path: '/blog/tag/$slug'
+      fullPath: '/blog/tag/$slug'
+      preLoaderRoute: typeof BlogTagSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/$version/$slug': {
+      id: '/docs/$version/$slug'
+      path: '/docs/$version/$slug'
+      fullPath: '/docs/$version/$slug'
+      preLoaderRoute: typeof DocsVersionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/order/$orderId/confirmation': {
+      id: '/order/$orderId/confirmation'
+      path: '/confirmation'
+      fullPath: '/order/$orderId/confirmation'
+      preLoaderRoute: typeof OrderOrderIdConfirmationRouteImport
+      parentRoute: typeof OrderOrderIdRoute
+    }
+    '/store/$slug/': {
+      id: '/store/$slug/'
+      path: '/store/$slug'
+      fullPath: '/store/$slug/'
+      preLoaderRoute: typeof StoreSlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/account': {
+      id: '/store/$slug/account'
+      path: '/store/$slug/account'
+      fullPath: '/store/$slug/account'
+      preLoaderRoute: typeof StoreSlugAccountRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/cart': {
+      id: '/store/$slug/cart'
+      path: '/store/$slug/cart'
+      fullPath: '/store/$slug/cart'
+      preLoaderRoute: typeof StoreSlugCartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/checkout': {
+      id: '/store/$slug/checkout'
+      path: '/store/$slug/checkout'
+      fullPath: '/store/$slug/checkout'
+      preLoaderRoute: typeof StoreSlugCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/llms.txt': {
+      id: '/store/$slug/llms.txt'
+      path: '/store/$slug/llms.txt'
+      fullPath: '/store/$slug/llms.txt'
+      preLoaderRoute: typeof StoreSlugLlmsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/robots.txt': {
+      id: '/store/$slug/robots.txt'
+      path: '/store/$slug/robots.txt'
+      fullPath: '/store/$slug/robots.txt'
+      preLoaderRoute: typeof StoreSlugRobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/search': {
+      id: '/store/$slug/search'
+      path: '/store/$slug/search'
+      fullPath: '/store/$slug/search'
+      preLoaderRoute: typeof StoreSlugSearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/sitemap.xml': {
+      id: '/store/$slug/sitemap.xml'
+      path: '/store/$slug/sitemap.xml'
+      fullPath: '/store/$slug/sitemap.xml'
+      preLoaderRoute: typeof StoreSlugSitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/track': {
+      id: '/store/$slug/track'
+      path: '/store/$slug/track'
+      fullPath: '/store/$slug/track'
+      preLoaderRoute: typeof StoreSlugTrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard/ai/assistant': {
+      id: '/_authenticated/dashboard/ai/assistant'
+      path: '/ai/assistant'
+      fullPath: '/dashboard/ai/assistant'
+      preLoaderRoute: typeof AuthenticatedDashboardAiAssistantRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/ai/settings': {
+      id: '/_authenticated/dashboard/ai/settings'
+      path: '/ai/settings'
+      fullPath: '/dashboard/ai/settings'
+      preLoaderRoute: typeof AuthenticatedDashboardAiSettingsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/analytics_/insights': {
+      id: '/_authenticated/dashboard/analytics_/insights'
+      path: '/analytics/insights'
+      fullPath: '/dashboard/analytics/insights'
+      preLoaderRoute: typeof AuthenticatedDashboardAnalyticsInsightsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/analytics_/reports': {
+      id: '/_authenticated/dashboard/analytics_/reports'
+      path: '/analytics/reports'
+      fullPath: '/dashboard/analytics/reports'
+      preLoaderRoute: typeof AuthenticatedDashboardAnalyticsReportsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/billing/': {
+      id: '/_authenticated/dashboard/billing/'
+      path: '/billing'
+      fullPath: '/dashboard/billing/'
+      preLoaderRoute: typeof AuthenticatedDashboardBillingIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/billing/invoices': {
+      id: '/_authenticated/dashboard/billing/invoices'
+      path: '/billing/invoices'
+      fullPath: '/dashboard/billing/invoices'
+      preLoaderRoute: typeof AuthenticatedDashboardBillingInvoicesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/content/': {
+      id: '/_authenticated/dashboard/content/'
+      path: '/content'
+      fullPath: '/dashboard/content/'
+      preLoaderRoute: typeof AuthenticatedDashboardContentIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/content/custom-code': {
+      id: '/_authenticated/dashboard/content/custom-code'
+      path: '/content/custom-code'
+      fullPath: '/dashboard/content/custom-code'
+      preLoaderRoute: typeof AuthenticatedDashboardContentCustomCodeRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/content/editor': {
+      id: '/_authenticated/dashboard/content/editor'
+      path: '/content/editor'
+      fullPath: '/dashboard/content/editor'
+      preLoaderRoute: typeof AuthenticatedDashboardContentEditorRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/content/media': {
+      id: '/_authenticated/dashboard/content/media'
+      path: '/content/media'
+      fullPath: '/dashboard/content/media'
+      preLoaderRoute: typeof AuthenticatedDashboardContentMediaRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/content/menus': {
+      id: '/_authenticated/dashboard/content/menus'
+      path: '/content/menus'
+      fullPath: '/dashboard/content/menus'
+      preLoaderRoute: typeof AuthenticatedDashboardContentMenusRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/content/pages': {
+      id: '/_authenticated/dashboard/content/pages'
+      path: '/content/pages'
+      fullPath: '/dashboard/content/pages'
+      preLoaderRoute: typeof AuthenticatedDashboardContentPagesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/content/posts': {
+      id: '/_authenticated/dashboard/content/posts'
+      path: '/content/posts'
+      fullPath: '/dashboard/content/posts'
+      preLoaderRoute: typeof AuthenticatedDashboardContentPostsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/content/themes': {
+      id: '/_authenticated/dashboard/content/themes'
+      path: '/content/themes'
+      fullPath: '/dashboard/content/themes'
+      preLoaderRoute: typeof AuthenticatedDashboardContentThemesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/fraud/': {
+      id: '/_authenticated/dashboard/fraud/'
+      path: '/fraud'
+      fullPath: '/dashboard/fraud/'
+      preLoaderRoute: typeof AuthenticatedDashboardFraudIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/fraud/ad-defense': {
+      id: '/_authenticated/dashboard/fraud/ad-defense'
+      path: '/fraud/ad-defense'
+      fullPath: '/dashboard/fraud/ad-defense'
+      preLoaderRoute: typeof AuthenticatedDashboardFraudAdDefenseRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/fraud/audit': {
+      id: '/_authenticated/dashboard/fraud/audit'
+      path: '/fraud/audit'
+      fullPath: '/dashboard/fraud/audit'
+      preLoaderRoute: typeof AuthenticatedDashboardFraudAuditRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/': {
+      id: '/_authenticated/dashboard/marketing/'
+      path: '/marketing'
+      fullPath: '/dashboard/marketing/'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/articles': {
+      id: '/_authenticated/dashboard/marketing/articles'
+      path: '/marketing/articles'
+      fullPath: '/dashboard/marketing/articles'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingArticlesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/campaigns': {
+      id: '/_authenticated/dashboard/marketing/campaigns'
+      path: '/marketing/campaigns'
+      fullPath: '/dashboard/marketing/campaigns'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingCampaignsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/codes': {
+      id: '/_authenticated/dashboard/marketing/codes'
+      path: '/marketing/codes'
+      fullPath: '/dashboard/marketing/codes'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingCodesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/coupons': {
+      id: '/_authenticated/dashboard/marketing/coupons'
+      path: '/marketing/coupons'
+      fullPath: '/dashboard/marketing/coupons'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingCouponsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/forms': {
+      id: '/_authenticated/dashboard/marketing/forms'
+      path: '/marketing/forms'
+      fullPath: '/dashboard/marketing/forms'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingFormsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/media': {
+      id: '/_authenticated/dashboard/marketing/media'
+      path: '/marketing/media'
+      fullPath: '/dashboard/marketing/media'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingMediaRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/seo': {
+      id: '/_authenticated/dashboard/marketing/seo'
+      path: '/marketing/seo'
+      fullPath: '/dashboard/marketing/seo'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingSeoRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/sequences': {
+      id: '/_authenticated/dashboard/marketing/sequences'
+      path: '/marketing/sequences'
+      fullPath: '/dashboard/marketing/sequences'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingSequencesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/subscribers': {
+      id: '/_authenticated/dashboard/marketing/subscribers'
+      path: '/marketing/subscribers'
+      fullPath: '/dashboard/marketing/subscribers'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingSubscribersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketing/templates': {
+      id: '/_authenticated/dashboard/marketing/templates'
+      path: '/marketing/templates'
+      fullPath: '/dashboard/marketing/templates'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketingTemplatesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketplace/': {
+      id: '/_authenticated/dashboard/marketplace/'
+      path: '/marketplace'
+      fullPath: '/dashboard/marketplace/'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketplace/creator': {
+      id: '/_authenticated/dashboard/marketplace/creator'
+      path: '/marketplace/creator'
+      fullPath: '/dashboard/marketplace/creator'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceCreatorRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketplace/moderation': {
+      id: '/_authenticated/dashboard/marketplace/moderation'
+      path: '/marketplace/moderation'
+      fullPath: '/dashboard/marketplace/moderation'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceModerationRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/marketplace/versions': {
+      id: '/_authenticated/dashboard/marketplace/versions'
+      path: '/marketplace/versions'
+      fullPath: '/dashboard/marketplace/versions'
+      preLoaderRoute: typeof AuthenticatedDashboardMarketplaceVersionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/money/payments': {
+      id: '/_authenticated/dashboard/money/payments'
+      path: '/money/payments'
+      fullPath: '/dashboard/money/payments'
+      preLoaderRoute: typeof AuthenticatedDashboardMoneyPaymentsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/orders/': {
+      id: '/_authenticated/dashboard/orders/'
+      path: '/orders'
+      fullPath: '/dashboard/orders/'
+      preLoaderRoute: typeof AuthenticatedDashboardOrdersIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/orders/$orderId': {
+      id: '/_authenticated/dashboard/orders/$orderId'
+      path: '/orders/$orderId'
+      fullPath: '/dashboard/orders/$orderId'
+      preLoaderRoute: typeof AuthenticatedDashboardOrdersOrderIdRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/plugins/': {
+      id: '/_authenticated/dashboard/plugins/'
+      path: '/plugins'
+      fullPath: '/dashboard/plugins/'
+      preLoaderRoute: typeof AuthenticatedDashboardPluginsIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/plugins/new': {
+      id: '/_authenticated/dashboard/plugins/new'
+      path: '/plugins/new'
+      fullPath: '/dashboard/plugins/new'
+      preLoaderRoute: typeof AuthenticatedDashboardPluginsNewRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/products/': {
+      id: '/_authenticated/dashboard/products/'
+      path: '/products'
+      fullPath: '/dashboard/products/'
+      preLoaderRoute: typeof AuthenticatedDashboardProductsIndexRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/products/$productId': {
+      id: '/_authenticated/dashboard/products/$productId'
+      path: '/products/$productId'
+      fullPath: '/dashboard/products/$productId'
+      preLoaderRoute: typeof AuthenticatedDashboardProductsProductIdRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/products/new': {
+      id: '/_authenticated/dashboard/products/new'
+      path: '/products/new'
+      fullPath: '/dashboard/products/new'
+      preLoaderRoute: typeof AuthenticatedDashboardProductsNewRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings_/api': {
+      id: '/_authenticated/dashboard/settings_/api'
+      path: '/settings/api'
+      fullPath: '/dashboard/settings/api'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsApiRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings_/domains': {
+      id: '/_authenticated/dashboard/settings_/domains'
+      path: '/settings/domains'
+      fullPath: '/dashboard/settings/domains'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsDomainsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings_/email': {
+      id: '/_authenticated/dashboard/settings_/email'
+      path: '/settings/email'
+      fullPath: '/dashboard/settings/email'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsEmailRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings_/infrastructure': {
+      id: '/_authenticated/dashboard/settings_/infrastructure'
+      path: '/settings/infrastructure'
+      fullPath: '/dashboard/settings/infrastructure'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsInfrastructureRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings_/providers': {
+      id: '/_authenticated/dashboard/settings_/providers'
+      path: '/settings/providers'
+      fullPath: '/dashboard/settings/providers'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsProvidersRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings_/security': {
+      id: '/_authenticated/dashboard/settings_/security'
+      path: '/settings/security'
+      fullPath: '/dashboard/settings/security'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsSecurityRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/settings_/seo': {
+      id: '/_authenticated/dashboard/settings_/seo'
+      path: '/settings/seo'
+      fullPath: '/dashboard/settings/seo'
+      preLoaderRoute: typeof AuthenticatedDashboardSettingsSeoRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/api/public/ads/click': {
+      id: '/api/public/ads/click'
+      path: '/api/public/ads/click'
+      fullPath: '/api/public/ads/click'
+      preLoaderRoute: typeof ApiPublicAdsClickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/analytics/beacon': {
+      id: '/api/public/analytics/beacon'
+      path: '/api/public/analytics/beacon'
+      fullPath: '/api/public/analytics/beacon'
+      preLoaderRoute: typeof ApiPublicAnalyticsBeaconRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/channels/$channel': {
+      id: '/api/public/channels/$channel'
+      path: '/api/public/channels/$channel'
+      fullPath: '/api/public/channels/$channel'
+      preLoaderRoute: typeof ApiPublicChannelsChannelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/couriers/$carrier': {
+      id: '/api/public/couriers/$carrier'
+      path: '/api/public/couriers/$carrier'
+      fullPath: '/api/public/couriers/$carrier'
+      preLoaderRoute: typeof ApiPublicCouriersCarrierRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/ad-fraud': {
+      id: '/api/public/cron/ad-fraud'
+      path: '/api/public/cron/ad-fraud'
+      fullPath: '/api/public/cron/ad-fraud'
+      preLoaderRoute: typeof ApiPublicCronAdFraudRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/analytics': {
+      id: '/api/public/cron/analytics'
+      path: '/api/public/cron/analytics'
+      fullPath: '/api/public/cron/analytics'
+      preLoaderRoute: typeof ApiPublicCronAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/billing': {
+      id: '/api/public/cron/billing'
+      path: '/api/public/cron/billing'
+      fullPath: '/api/public/cron/billing'
+      preLoaderRoute: typeof ApiPublicCronBillingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/content-health': {
+      id: '/api/public/cron/content-health'
+      path: '/api/public/cron/content-health'
+      fullPath: '/api/public/cron/content-health'
+      preLoaderRoute: typeof ApiPublicCronContentHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/couriers': {
+      id: '/api/public/cron/couriers'
+      path: '/api/public/cron/couriers'
+      fullPath: '/api/public/cron/couriers'
+      preLoaderRoute: typeof ApiPublicCronCouriersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/domains': {
+      id: '/api/public/cron/domains'
+      path: '/api/public/cron/domains'
+      fullPath: '/api/public/cron/domains'
+      preLoaderRoute: typeof ApiPublicCronDomainsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/growth': {
+      id: '/api/public/cron/growth'
+      path: '/api/public/cron/growth'
+      fullPath: '/api/public/cron/growth'
+      preLoaderRoute: typeof ApiPublicCronGrowthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/jobs': {
+      id: '/api/public/cron/jobs'
+      path: '/api/public/cron/jobs'
+      fullPath: '/api/public/cron/jobs'
+      preLoaderRoute: typeof ApiPublicCronJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/notifications': {
+      id: '/api/public/cron/notifications'
+      path: '/api/public/cron/notifications'
+      fullPath: '/api/public/cron/notifications'
+      preLoaderRoute: typeof ApiPublicCronNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/ops': {
+      id: '/api/public/cron/ops'
+      path: '/api/public/cron/ops'
+      fullPath: '/api/public/cron/ops'
+      preLoaderRoute: typeof ApiPublicCronOpsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/payouts': {
+      id: '/api/public/cron/payouts'
+      path: '/api/public/cron/payouts'
+      fullPath: '/api/public/cron/payouts'
+      preLoaderRoute: typeof ApiPublicCronPayoutsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/purge': {
+      id: '/api/public/cron/purge'
+      path: '/api/public/cron/purge'
+      fullPath: '/api/public/cron/purge'
+      preLoaderRoute: typeof ApiPublicCronPurgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/search-console': {
+      id: '/api/public/cron/search-console'
+      path: '/api/public/cron/search-console'
+      fullPath: '/api/public/cron/search-console'
+      preLoaderRoute: typeof ApiPublicCronSearchConsoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/support': {
+      id: '/api/public/cron/support'
+      path: '/api/public/cron/support'
+      fullPath: '/api/public/cron/support'
+      preLoaderRoute: typeof ApiPublicCronSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/themes': {
+      id: '/api/public/cron/themes'
+      path: '/api/public/cron/themes'
+      fullPath: '/api/public/cron/themes'
+      preLoaderRoute: typeof ApiPublicCronThemesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/webhooks': {
+      id: '/api/public/cron/webhooks'
+      path: '/api/public/cron/webhooks'
+      fullPath: '/api/public/cron/webhooks'
+      preLoaderRoute: typeof ApiPublicCronWebhooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/domains/callback': {
+      id: '/api/public/domains/callback'
+      path: '/api/public/domains/callback'
+      fullPath: '/api/public/domains/callback'
+      preLoaderRoute: typeof ApiPublicDomainsCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/domains/verify-sni': {
+      id: '/api/public/domains/verify-sni'
+      path: '/api/public/domains/verify-sni'
+      fullPath: '/api/public/domains/verify-sni'
+      preLoaderRoute: typeof ApiPublicDomainsVerifySniRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/font/$': {
+      id: '/api/public/font/$'
+      path: '/api/public/font/$'
+      fullPath: '/api/public/font/$'
+      preLoaderRoute: typeof ApiPublicFontSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/img/$': {
+      id: '/api/public/img/$'
+      path: '/api/public/img/$'
+      fullPath: '/api/public/img/$'
+      preLoaderRoute: typeof ApiPublicImgSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/media/$': {
+      id: '/api/public/media/$'
+      path: '/api/public/media/$'
+      fullPath: '/api/public/media/$'
+      preLoaderRoute: typeof ApiPublicMediaSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/newsletter/feedback': {
+      id: '/api/public/newsletter/feedback'
+      path: '/api/public/newsletter/feedback'
+      fullPath: '/api/public/newsletter/feedback'
+      preLoaderRoute: typeof ApiPublicNewsletterFeedbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/oauth/revoke': {
+      id: '/api/public/oauth/revoke'
+      path: '/api/public/oauth/revoke'
+      fullPath: '/api/public/oauth/revoke'
+      preLoaderRoute: typeof ApiPublicOauthRevokeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/oauth/token': {
+      id: '/api/public/oauth/token'
+      path: '/api/public/oauth/token'
+      fullPath: '/api/public/oauth/token'
+      preLoaderRoute: typeof ApiPublicOauthTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/$provider': {
+      id: '/api/public/payments/$provider'
+      path: '/api/public/payments/$provider'
+      fullPath: '/api/public/payments/$provider'
+      preLoaderRoute: typeof ApiPublicPaymentsProviderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/return': {
+      id: '/api/public/payments/return'
+      path: '/api/public/payments/return'
+      fullPath: '/api/public/payments/return'
+      preLoaderRoute: typeof ApiPublicPaymentsReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/ph/$': {
+      id: '/api/public/ph/$'
+      path: '/api/public/ph/$'
+      fullPath: '/api/public/ph/$'
+      preLoaderRoute: typeof ApiPublicPhSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/v1/$': {
+      id: '/api/public/v1/$'
+      path: '/api/public/v1/$'
+      fullPath: '/api/public/v1/$'
+      preLoaderRoute: typeof ApiPublicV1SplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/blog/': {
+      id: '/store/$slug/blog/'
+      path: '/store/$slug/blog'
+      fullPath: '/store/$slug/blog/'
+      preLoaderRoute: typeof StoreSlugBlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/blog/$slug': {
+      id: '/store/$slug/blog/$slug'
+      path: '/store/$slug/blog/$slug'
+      fullPath: '/store/$slug/blog/$slug'
+      preLoaderRoute: typeof StoreSlugBlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/c/$collectionSlug': {
+      id: '/store/$slug/c/$collectionSlug'
+      path: '/store/$slug/c/$collectionSlug'
+      fullPath: '/store/$slug/c/$collectionSlug'
+      preLoaderRoute: typeof StoreSlugCCollectionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/order/$orderId': {
+      id: '/store/$slug/order/$orderId'
+      path: '/store/$slug/order/$orderId'
+      fullPath: '/store/$slug/order/$orderId'
+      preLoaderRoute: typeof StoreSlugOrderOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/p/$productSlug': {
+      id: '/store/$slug/p/$productSlug'
+      path: '/store/$slug/p/$productSlug'
+      fullPath: '/store/$slug/p/$productSlug'
+      preLoaderRoute: typeof StoreSlugPProductSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/pages/$pageSlug': {
+      id: '/store/$slug/pages/$pageSlug'
+      path: '/store/$slug/pages/$pageSlug'
+      fullPath: '/store/$slug/pages/$pageSlug'
+      preLoaderRoute: typeof StoreSlugPagesPageSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/store/$slug/sitemaps/$kind': {
+      id: '/store/$slug/sitemaps/$kind'
+      path: '/store/$slug/sitemaps/$kind'
+      fullPath: '/store/$slug/sitemaps/$kind'
+      preLoaderRoute: typeof StoreSlugSitemapsKindRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard/orders/$orderId_/invoice': {
+      id: '/_authenticated/dashboard/orders/$orderId_/invoice'
+      path: '/orders/$orderId/invoice'
+      fullPath: '/dashboard/orders/$orderId/invoice'
+      preLoaderRoute: typeof AuthenticatedDashboardOrdersOrderIdInvoiceRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/api/public/payments/live/$provider': {
+      id: '/api/public/payments/live/$provider'
+      path: '/api/public/payments/live/$provider'
+      fullPath: '/api/public/payments/live/$provider'
+      preLoaderRoute: typeof ApiPublicPaymentsLiveProviderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/mock/$provider': {
+      id: '/api/public/payments/mock/$provider'
+      path: '/api/public/payments/mock/$provider'
+      fullPath: '/api/public/payments/mock/$provider'
+      preLoaderRoute: typeof ApiPublicPaymentsMockProviderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/platform/$provider': {
+      id: '/api/public/payments/platform/$provider'
+      path: '/api/public/payments/platform/$provider'
+      fullPath: '/api/public/payments/platform/$provider'
+      preLoaderRoute: typeof ApiPublicPaymentsPlatformProviderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/platform/return': {
+      id: '/api/public/payments/platform/return'
+      path: '/api/public/payments/platform/return'
+      fullPath: '/api/public/payments/platform/return'
+      preLoaderRoute: typeof ApiPublicPaymentsPlatformReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedDashboardRouteChildren {
-  AuthenticatedDashboardActivityRoute: typeof AuthenticatedDashboardActivityRoute;
-  AuthenticatedDashboardAnalyticsRoute: typeof AuthenticatedDashboardAnalyticsRoute;
-  AuthenticatedDashboardApprovalsRoute: typeof AuthenticatedDashboardApprovalsRoute;
-  AuthenticatedDashboardBrandsRoute: typeof AuthenticatedDashboardBrandsRoute;
-  AuthenticatedDashboardBuilderRoute: typeof AuthenticatedDashboardBuilderRoute;
-  AuthenticatedDashboardBulkEditorRoute: typeof AuthenticatedDashboardBulkEditorRoute;
-  AuthenticatedDashboardBundlesRoute: typeof AuthenticatedDashboardBundlesRoute;
-  AuthenticatedDashboardCartsRoute: typeof AuthenticatedDashboardCartsRoute;
-  AuthenticatedDashboardCatalogRoute: typeof AuthenticatedDashboardCatalogRoute;
-  AuthenticatedDashboardCategoriesRoute: typeof AuthenticatedDashboardCategoriesRoute;
-  AuthenticatedDashboardCollectionsRoute: typeof AuthenticatedDashboardCollectionsRoute;
-  AuthenticatedDashboardCustomersRoute: typeof AuthenticatedDashboardCustomersRoute;
-  AuthenticatedDashboardDevelopersRoute: typeof AuthenticatedDashboardDevelopersRoute;
-  AuthenticatedDashboardDraftOrdersRoute: typeof AuthenticatedDashboardDraftOrdersRoute;
-  AuthenticatedDashboardExperimentsRoute: typeof AuthenticatedDashboardExperimentsRoute;
-  AuthenticatedDashboardExportsRoute: typeof AuthenticatedDashboardExportsRoute;
-  AuthenticatedDashboardGiftCardsRoute: typeof AuthenticatedDashboardGiftCardsRoute;
-  AuthenticatedDashboardInventoryRoute: typeof AuthenticatedDashboardInventoryRoute;
-  AuthenticatedDashboardPagesRoute: typeof AuthenticatedDashboardPagesRoute;
-  AuthenticatedDashboardPaymentsRoute: typeof AuthenticatedDashboardPaymentsRoute;
-  AuthenticatedDashboardPlansRoute: typeof AuthenticatedDashboardPlansRoute;
-  AuthenticatedDashboardPosRoute: typeof AuthenticatedDashboardPosRoute;
-  AuthenticatedDashboardPricingRoute: typeof AuthenticatedDashboardPricingRoute;
-  AuthenticatedDashboardPurchasingRoute: typeof AuthenticatedDashboardPurchasingRoute;
-  AuthenticatedDashboardReturnsRoute: typeof AuthenticatedDashboardReturnsRoute;
-  AuthenticatedDashboardReviewsRoute: typeof AuthenticatedDashboardReviewsRoute;
-  AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute;
-  AuthenticatedDashboardShippingRoute: typeof AuthenticatedDashboardShippingRoute;
-  AuthenticatedDashboardStaffRoute: typeof AuthenticatedDashboardStaffRoute;
-  AuthenticatedDashboardSubscriptionsRoute: typeof AuthenticatedDashboardSubscriptionsRoute;
-  AuthenticatedDashboardSupportRoute: typeof AuthenticatedDashboardSupportRoute;
-  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute;
-  AuthenticatedDashboardAiAssistantRoute: typeof AuthenticatedDashboardAiAssistantRoute;
-  AuthenticatedDashboardAiSettingsRoute: typeof AuthenticatedDashboardAiSettingsRoute;
-  AuthenticatedDashboardAnalyticsInsightsRoute: typeof AuthenticatedDashboardAnalyticsInsightsRoute;
-  AuthenticatedDashboardAnalyticsReportsRoute: typeof AuthenticatedDashboardAnalyticsReportsRoute;
-  AuthenticatedDashboardBillingInvoicesRoute: typeof AuthenticatedDashboardBillingInvoicesRoute;
-  AuthenticatedDashboardContentCustomCodeRoute: typeof AuthenticatedDashboardContentCustomCodeRoute;
-  AuthenticatedDashboardContentEditorRoute: typeof AuthenticatedDashboardContentEditorRoute;
-  AuthenticatedDashboardContentMediaRoute: typeof AuthenticatedDashboardContentMediaRoute;
-  AuthenticatedDashboardContentMenusRoute: typeof AuthenticatedDashboardContentMenusRoute;
-  AuthenticatedDashboardContentPagesRoute: typeof AuthenticatedDashboardContentPagesRoute;
-  AuthenticatedDashboardContentPostsRoute: typeof AuthenticatedDashboardContentPostsRoute;
-  AuthenticatedDashboardContentThemesRoute: typeof AuthenticatedDashboardContentThemesRoute;
-  AuthenticatedDashboardFraudAdDefenseRoute: typeof AuthenticatedDashboardFraudAdDefenseRoute;
-  AuthenticatedDashboardFraudAuditRoute: typeof AuthenticatedDashboardFraudAuditRoute;
-  AuthenticatedDashboardMarketingArticlesRoute: typeof AuthenticatedDashboardMarketingArticlesRoute;
-  AuthenticatedDashboardMarketingCampaignsRoute: typeof AuthenticatedDashboardMarketingCampaignsRoute;
-  AuthenticatedDashboardMarketingCodesRoute: typeof AuthenticatedDashboardMarketingCodesRoute;
-  AuthenticatedDashboardMarketingCouponsRoute: typeof AuthenticatedDashboardMarketingCouponsRoute;
-  AuthenticatedDashboardMarketingFormsRoute: typeof AuthenticatedDashboardMarketingFormsRoute;
-  AuthenticatedDashboardMarketingMediaRoute: typeof AuthenticatedDashboardMarketingMediaRoute;
-  AuthenticatedDashboardMarketingSeoRoute: typeof AuthenticatedDashboardMarketingSeoRoute;
-  AuthenticatedDashboardMarketingSequencesRoute: typeof AuthenticatedDashboardMarketingSequencesRoute;
-  AuthenticatedDashboardMarketingSubscribersRoute: typeof AuthenticatedDashboardMarketingSubscribersRoute;
-  AuthenticatedDashboardMarketingTemplatesRoute: typeof AuthenticatedDashboardMarketingTemplatesRoute;
-  AuthenticatedDashboardMarketplaceCreatorRoute: typeof AuthenticatedDashboardMarketplaceCreatorRoute;
-  AuthenticatedDashboardMarketplaceModerationRoute: typeof AuthenticatedDashboardMarketplaceModerationRoute;
-  AuthenticatedDashboardMarketplaceVersionsRoute: typeof AuthenticatedDashboardMarketplaceVersionsRoute;
-  AuthenticatedDashboardMoneyPaymentsRoute: typeof AuthenticatedDashboardMoneyPaymentsRoute;
-  AuthenticatedDashboardOrdersOrderIdRoute: typeof AuthenticatedDashboardOrdersOrderIdRoute;
-  AuthenticatedDashboardPluginsNewRoute: typeof AuthenticatedDashboardPluginsNewRoute;
-  AuthenticatedDashboardProductsProductIdRoute: typeof AuthenticatedDashboardProductsProductIdRoute;
-  AuthenticatedDashboardProductsNewRoute: typeof AuthenticatedDashboardProductsNewRoute;
-  AuthenticatedDashboardSettingsApiRoute: typeof AuthenticatedDashboardSettingsApiRoute;
-  AuthenticatedDashboardSettingsDomainsRoute: typeof AuthenticatedDashboardSettingsDomainsRoute;
-  AuthenticatedDashboardSettingsEmailRoute: typeof AuthenticatedDashboardSettingsEmailRoute;
-  AuthenticatedDashboardSettingsInfrastructureRoute: typeof AuthenticatedDashboardSettingsInfrastructureRoute;
-  AuthenticatedDashboardSettingsProvidersRoute: typeof AuthenticatedDashboardSettingsProvidersRoute;
-  AuthenticatedDashboardSettingsSecurityRoute: typeof AuthenticatedDashboardSettingsSecurityRoute;
-  AuthenticatedDashboardSettingsSeoRoute: typeof AuthenticatedDashboardSettingsSeoRoute;
-  AuthenticatedDashboardBillingIndexRoute: typeof AuthenticatedDashboardBillingIndexRoute;
-  AuthenticatedDashboardContentIndexRoute: typeof AuthenticatedDashboardContentIndexRoute;
-  AuthenticatedDashboardFraudIndexRoute: typeof AuthenticatedDashboardFraudIndexRoute;
-  AuthenticatedDashboardMarketingIndexRoute: typeof AuthenticatedDashboardMarketingIndexRoute;
-  AuthenticatedDashboardMarketplaceIndexRoute: typeof AuthenticatedDashboardMarketplaceIndexRoute;
-  AuthenticatedDashboardOrdersIndexRoute: typeof AuthenticatedDashboardOrdersIndexRoute;
-  AuthenticatedDashboardPluginsIndexRoute: typeof AuthenticatedDashboardPluginsIndexRoute;
-  AuthenticatedDashboardProductsIndexRoute: typeof AuthenticatedDashboardProductsIndexRoute;
-  AuthenticatedDashboardOrdersOrderIdInvoiceRoute: typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute;
+  AuthenticatedDashboardActivityRoute: typeof AuthenticatedDashboardActivityRoute
+  AuthenticatedDashboardAnalyticsRoute: typeof AuthenticatedDashboardAnalyticsRoute
+  AuthenticatedDashboardApprovalsRoute: typeof AuthenticatedDashboardApprovalsRoute
+  AuthenticatedDashboardBrandsRoute: typeof AuthenticatedDashboardBrandsRoute
+  AuthenticatedDashboardBuilderRoute: typeof AuthenticatedDashboardBuilderRoute
+  AuthenticatedDashboardBulkEditorRoute: typeof AuthenticatedDashboardBulkEditorRoute
+  AuthenticatedDashboardBundlesRoute: typeof AuthenticatedDashboardBundlesRoute
+  AuthenticatedDashboardCartsRoute: typeof AuthenticatedDashboardCartsRoute
+  AuthenticatedDashboardCatalogRoute: typeof AuthenticatedDashboardCatalogRoute
+  AuthenticatedDashboardCategoriesRoute: typeof AuthenticatedDashboardCategoriesRoute
+  AuthenticatedDashboardCollectionsRoute: typeof AuthenticatedDashboardCollectionsRoute
+  AuthenticatedDashboardCustomersRoute: typeof AuthenticatedDashboardCustomersRoute
+  AuthenticatedDashboardDevelopersRoute: typeof AuthenticatedDashboardDevelopersRoute
+  AuthenticatedDashboardDraftOrdersRoute: typeof AuthenticatedDashboardDraftOrdersRoute
+  AuthenticatedDashboardExperimentsRoute: typeof AuthenticatedDashboardExperimentsRoute
+  AuthenticatedDashboardExportsRoute: typeof AuthenticatedDashboardExportsRoute
+  AuthenticatedDashboardGiftCardsRoute: typeof AuthenticatedDashboardGiftCardsRoute
+  AuthenticatedDashboardInventoryRoute: typeof AuthenticatedDashboardInventoryRoute
+  AuthenticatedDashboardPagesRoute: typeof AuthenticatedDashboardPagesRoute
+  AuthenticatedDashboardPaymentsRoute: typeof AuthenticatedDashboardPaymentsRoute
+  AuthenticatedDashboardPlansRoute: typeof AuthenticatedDashboardPlansRoute
+  AuthenticatedDashboardPosRoute: typeof AuthenticatedDashboardPosRoute
+  AuthenticatedDashboardPricingRoute: typeof AuthenticatedDashboardPricingRoute
+  AuthenticatedDashboardPurchasingRoute: typeof AuthenticatedDashboardPurchasingRoute
+  AuthenticatedDashboardReturnsRoute: typeof AuthenticatedDashboardReturnsRoute
+  AuthenticatedDashboardReviewsRoute: typeof AuthenticatedDashboardReviewsRoute
+  AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
+  AuthenticatedDashboardShippingRoute: typeof AuthenticatedDashboardShippingRoute
+  AuthenticatedDashboardStaffRoute: typeof AuthenticatedDashboardStaffRoute
+  AuthenticatedDashboardSubscriptionsRoute: typeof AuthenticatedDashboardSubscriptionsRoute
+  AuthenticatedDashboardSupportRoute: typeof AuthenticatedDashboardSupportRoute
+  AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
+  AuthenticatedDashboardAiAssistantRoute: typeof AuthenticatedDashboardAiAssistantRoute
+  AuthenticatedDashboardAiSettingsRoute: typeof AuthenticatedDashboardAiSettingsRoute
+  AuthenticatedDashboardAnalyticsInsightsRoute: typeof AuthenticatedDashboardAnalyticsInsightsRoute
+  AuthenticatedDashboardAnalyticsReportsRoute: typeof AuthenticatedDashboardAnalyticsReportsRoute
+  AuthenticatedDashboardBillingInvoicesRoute: typeof AuthenticatedDashboardBillingInvoicesRoute
+  AuthenticatedDashboardContentCustomCodeRoute: typeof AuthenticatedDashboardContentCustomCodeRoute
+  AuthenticatedDashboardContentEditorRoute: typeof AuthenticatedDashboardContentEditorRoute
+  AuthenticatedDashboardContentMediaRoute: typeof AuthenticatedDashboardContentMediaRoute
+  AuthenticatedDashboardContentMenusRoute: typeof AuthenticatedDashboardContentMenusRoute
+  AuthenticatedDashboardContentPagesRoute: typeof AuthenticatedDashboardContentPagesRoute
+  AuthenticatedDashboardContentPostsRoute: typeof AuthenticatedDashboardContentPostsRoute
+  AuthenticatedDashboardContentThemesRoute: typeof AuthenticatedDashboardContentThemesRoute
+  AuthenticatedDashboardFraudAdDefenseRoute: typeof AuthenticatedDashboardFraudAdDefenseRoute
+  AuthenticatedDashboardFraudAuditRoute: typeof AuthenticatedDashboardFraudAuditRoute
+  AuthenticatedDashboardMarketingArticlesRoute: typeof AuthenticatedDashboardMarketingArticlesRoute
+  AuthenticatedDashboardMarketingCampaignsRoute: typeof AuthenticatedDashboardMarketingCampaignsRoute
+  AuthenticatedDashboardMarketingCodesRoute: typeof AuthenticatedDashboardMarketingCodesRoute
+  AuthenticatedDashboardMarketingCouponsRoute: typeof AuthenticatedDashboardMarketingCouponsRoute
+  AuthenticatedDashboardMarketingFormsRoute: typeof AuthenticatedDashboardMarketingFormsRoute
+  AuthenticatedDashboardMarketingMediaRoute: typeof AuthenticatedDashboardMarketingMediaRoute
+  AuthenticatedDashboardMarketingSeoRoute: typeof AuthenticatedDashboardMarketingSeoRoute
+  AuthenticatedDashboardMarketingSequencesRoute: typeof AuthenticatedDashboardMarketingSequencesRoute
+  AuthenticatedDashboardMarketingSubscribersRoute: typeof AuthenticatedDashboardMarketingSubscribersRoute
+  AuthenticatedDashboardMarketingTemplatesRoute: typeof AuthenticatedDashboardMarketingTemplatesRoute
+  AuthenticatedDashboardMarketplaceCreatorRoute: typeof AuthenticatedDashboardMarketplaceCreatorRoute
+  AuthenticatedDashboardMarketplaceModerationRoute: typeof AuthenticatedDashboardMarketplaceModerationRoute
+  AuthenticatedDashboardMarketplaceVersionsRoute: typeof AuthenticatedDashboardMarketplaceVersionsRoute
+  AuthenticatedDashboardMoneyPaymentsRoute: typeof AuthenticatedDashboardMoneyPaymentsRoute
+  AuthenticatedDashboardOrdersOrderIdRoute: typeof AuthenticatedDashboardOrdersOrderIdRoute
+  AuthenticatedDashboardPluginsNewRoute: typeof AuthenticatedDashboardPluginsNewRoute
+  AuthenticatedDashboardProductsProductIdRoute: typeof AuthenticatedDashboardProductsProductIdRoute
+  AuthenticatedDashboardProductsNewRoute: typeof AuthenticatedDashboardProductsNewRoute
+  AuthenticatedDashboardSettingsApiRoute: typeof AuthenticatedDashboardSettingsApiRoute
+  AuthenticatedDashboardSettingsDomainsRoute: typeof AuthenticatedDashboardSettingsDomainsRoute
+  AuthenticatedDashboardSettingsEmailRoute: typeof AuthenticatedDashboardSettingsEmailRoute
+  AuthenticatedDashboardSettingsInfrastructureRoute: typeof AuthenticatedDashboardSettingsInfrastructureRoute
+  AuthenticatedDashboardSettingsProvidersRoute: typeof AuthenticatedDashboardSettingsProvidersRoute
+  AuthenticatedDashboardSettingsSecurityRoute: typeof AuthenticatedDashboardSettingsSecurityRoute
+  AuthenticatedDashboardSettingsSeoRoute: typeof AuthenticatedDashboardSettingsSeoRoute
+  AuthenticatedDashboardBillingIndexRoute: typeof AuthenticatedDashboardBillingIndexRoute
+  AuthenticatedDashboardContentIndexRoute: typeof AuthenticatedDashboardContentIndexRoute
+  AuthenticatedDashboardFraudIndexRoute: typeof AuthenticatedDashboardFraudIndexRoute
+  AuthenticatedDashboardMarketingIndexRoute: typeof AuthenticatedDashboardMarketingIndexRoute
+  AuthenticatedDashboardMarketplaceIndexRoute: typeof AuthenticatedDashboardMarketplaceIndexRoute
+  AuthenticatedDashboardOrdersIndexRoute: typeof AuthenticatedDashboardOrdersIndexRoute
+  AuthenticatedDashboardPluginsIndexRoute: typeof AuthenticatedDashboardPluginsIndexRoute
+  AuthenticatedDashboardProductsIndexRoute: typeof AuthenticatedDashboardProductsIndexRoute
+  AuthenticatedDashboardOrdersOrderIdInvoiceRoute: typeof AuthenticatedDashboardOrdersOrderIdInvoiceRoute
 }
 
 const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
@@ -4478,52 +4478,52 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardProductsIndexRoute,
     AuthenticatedDashboardOrdersOrderIdInvoiceRoute:
       AuthenticatedDashboardOrdersOrderIdInvoiceRoute,
-  };
+  }
 
 const AuthenticatedDashboardRouteWithChildren =
   AuthenticatedDashboardRoute._addFileChildren(
     AuthenticatedDashboardRouteChildren,
-  );
+  )
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren;
-  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute;
-  AuthenticatedOauthAuthorizeRoute: typeof AuthenticatedOauthAuthorizeRoute;
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRouteWithChildren
+  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedOauthAuthorizeRoute: typeof AuthenticatedOauthAuthorizeRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRouteWithChildren,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedOauthAuthorizeRoute: AuthenticatedOauthAuthorizeRoute,
-};
+}
 
 const AuthenticatedRouteRouteWithChildren =
-  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren);
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface RootRouteChildren {
-  RootAccessRoute: typeof RootAccessRoute;
-  RootAiRoute: typeof RootAiRoute;
-  RootAuditRoute: typeof RootAuditRoute;
-  RootAuthRoute: typeof RootAuthRoute;
-  RootCouponsRoute: typeof RootCouponsRoute;
-  RootFraudRoute: typeof RootFraudRoute;
-  RootGatewayRoute: typeof RootGatewayRoute;
-  RootLoginRoute: typeof RootLoginRoute;
-  RootMarketingRoute: typeof RootMarketingRoute;
-  RootMoneyRoute: typeof RootMoneyRoute;
-  RootObservabilityRoute: typeof RootObservabilityRoute;
-  RootOpsRoute: typeof RootOpsRoute;
-  RootPayoutsRoute: typeof RootPayoutsRoute;
-  RootPlansRoute: typeof RootPlansRoute;
-  RootRevenueRoute: typeof RootRevenueRoute;
-  RootSettingsRoute: typeof RootSettingsRoute;
-  RootSnapshotsRoute: typeof RootSnapshotsRoute;
-  RootStatusRoute: typeof RootStatusRoute;
-  RootTenancyRoute: typeof RootTenancyRoute;
-  RootTenantsRoute: typeof RootTenantsRoute;
-  RootTrialRoute: typeof RootTrialRoute;
-  RootUsersRoute: typeof RootUsersRoute;
-  RootIndexRoute: typeof RootIndexRoute;
+  RootAccessRoute: typeof RootAccessRoute
+  RootAiRoute: typeof RootAiRoute
+  RootAuditRoute: typeof RootAuditRoute
+  RootAuthRoute: typeof RootAuthRoute
+  RootCouponsRoute: typeof RootCouponsRoute
+  RootFraudRoute: typeof RootFraudRoute
+  RootGatewayRoute: typeof RootGatewayRoute
+  RootLoginRoute: typeof RootLoginRoute
+  RootMarketingRoute: typeof RootMarketingRoute
+  RootMoneyRoute: typeof RootMoneyRoute
+  RootObservabilityRoute: typeof RootObservabilityRoute
+  RootOpsRoute: typeof RootOpsRoute
+  RootPayoutsRoute: typeof RootPayoutsRoute
+  RootPlansRoute: typeof RootPlansRoute
+  RootRevenueRoute: typeof RootRevenueRoute
+  RootSettingsRoute: typeof RootSettingsRoute
+  RootSnapshotsRoute: typeof RootSnapshotsRoute
+  RootStatusRoute: typeof RootStatusRoute
+  RootTenancyRoute: typeof RootTenancyRoute
+  RootTenantsRoute: typeof RootTenantsRoute
+  RootTrialRoute: typeof RootTrialRoute
+  RootUsersRoute: typeof RootUsersRoute
+  RootIndexRoute: typeof RootIndexRoute
 }
 
 const RootRouteChildren: RootRouteChildren = {
@@ -4550,21 +4550,21 @@ const RootRouteChildren: RootRouteChildren = {
   RootTrialRoute: RootTrialRoute,
   RootUsersRoute: RootUsersRoute,
   RootIndexRoute: RootIndexRoute,
-};
+}
 
-const RootRouteWithChildren = RootRoute._addFileChildren(RootRouteChildren);
+const RootRouteWithChildren = RootRoute._addFileChildren(RootRouteChildren)
 
 interface OrderOrderIdRouteChildren {
-  OrderOrderIdConfirmationRoute: typeof OrderOrderIdConfirmationRoute;
+  OrderOrderIdConfirmationRoute: typeof OrderOrderIdConfirmationRoute
 }
 
 const OrderOrderIdRouteChildren: OrderOrderIdRouteChildren = {
   OrderOrderIdConfirmationRoute: OrderOrderIdConfirmationRoute,
-};
+}
 
 const OrderOrderIdRouteWithChildren = OrderOrderIdRoute._addFileChildren(
   OrderOrderIdRouteChildren,
-);
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -4673,17 +4673,17 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicPaymentsPlatformProviderRoute:
     ApiPublicPaymentsPlatformProviderRoute,
   ApiPublicPaymentsPlatformReturnRoute: ApiPublicPaymentsPlatformReturnRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from "./router.tsx";
-import type { startInstance } from "./start.ts";
-declare module "@tanstack/react-start" {
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
   interface Register {
-    ssr: true;
-    router: Awaited<ReturnType<typeof getRouter>>;
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>;
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }

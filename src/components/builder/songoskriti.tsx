@@ -322,7 +322,10 @@ const Testimonials: WidgetComponent = ({
       </blockquote>
       <div className="mt-8 flex items-center justify-center gap-4">
         <div className="h-px w-8 bg-foreground/30"></div>
-        <p className="text-[10px] sm:text-[12px] font-bold fq-caps tracking-widest text-foreground">
+        <p
+          data-part="author"
+          className="text-[10px] sm:text-[12px] font-bold fq-caps tracking-widest text-foreground"
+        >
           {item.author}
           {item.role && (
             <span className="text-muted-foreground ml-2 font-medium">
@@ -358,7 +361,10 @@ const Testimonials: WidgetComponent = ({
               <blockquote className="font-bangla-display text-base leading-relaxed text-foreground">
                 {item.quote}
               </blockquote>
-              <p className="mt-4 text-[10px] sm:text-[12px] font-bold fq-caps tracking-widest text-foreground">
+              <p
+                data-part="author"
+                className="mt-4 text-[10px] sm:text-[12px] font-bold fq-caps tracking-widest text-foreground"
+              >
                 {item.author}
                 {item.role && (
                   <span className="text-muted-foreground ml-2 font-medium">

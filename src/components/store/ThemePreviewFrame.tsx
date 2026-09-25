@@ -38,7 +38,7 @@ import {
   type ThemeAst,
   type ThemeTokens,
 } from "@/lib/builder-ast";
-import { primarySectionId } from "@/lib/builder-ast";
+import { primarySectionId, combineUsedSkinCss, usedWidgetSkins } from "@/lib/builder-ast";
 import {
   applyDemoFocus,
   resolveDemoFocus,
@@ -213,6 +213,14 @@ export type ThemePreviewFrameProps = {
       collection/product on first paint. In-canvas clicks replace it. */
   initialFocus?: string | null;
   /**
+   * Lane B2-1: per-key theme skin sheets (`"<type>:<skin>"` → CSS, the
+   * `combineUsedSkinCss` contract). Only the sheets for skins the rendered
+   * template actually uses are inlined, inside ThemeSurface. Absent keeps
+   * today's behavior — no skin stylesheet is inlined. The supplying lane
+   * (theme/route) owns splitting full theme sheets per key.
+   */
+  skinSheets?: Partial<Record<string, string>> | null;
+  /**
    * Retained for route compatibility. The preview renders no chrome, so the
    * close control is gone and this is intentionally unwired.
    */
@@ -226,6 +234,7 @@ export function ThemePreviewFrame({
   templates,
   initialTemplate,
   initialFocus,
+  skinSheets,
 }: ThemePreviewFrameProps) {
   const startTemplate = initialTemplate ?? "index";
   const [template, setTemplate] = useState<TemplateKey>(startTemplate);
@@ -256,6 +265,24 @@ export function ThemePreviewFrame({
   // The preview has no route to supply the h1, so the elected primary
   // section owns it — same election the storefront host runs.
   const primaryId = primarySectionId({ ...ast, main: focusedMain });
+  // Lane B2-1: per-page skin sheets. Keys come from the RENDERED page
+  // (header + focused main + footer, so a clicked collection's rails count);
+  // only matching sheets inline, inside ThemeSurface. Fail-open: any failure
+  // inlines nothing, today's behavior.
+  let skinCss: string | null = null;
+  try {
+    if (skinSheets) {
+      const used = usedWidgetSkins({
+        header: ast.header,
+        main: focusedMain,
+        footer: ast.footer,
+      }).map((skin) => skin.key);
+      const combined = combineUsedSkinCss(skinSheets, used);
+      skinCss = combined === "" ? null : combined;
+    }
+  } catch {
+    skinCss = null;
+  }
   const allSections: Section[] = [...ast.header, ...ast.main, ...ast.footer];
   // CompiledResponsive object — the stylesheet is `.css`. The storefront
   // host (ThemeChrome) inlines it verbatim inside ThemeSurface; preview
@@ -326,7 +353,7 @@ export function ThemePreviewFrame({
         onSubmitCapture={handlePreviewCanvasSubmit}
       >
         <div className="mx-auto" style={{ maxWidth: "100%" }}>
-          <ThemeSurface tokens={tokens}>
+          <ThemeSurface tokens={tokens} skinCss={skinCss}>
             {/* Per-device overrides, same contract as ThemeChrome:
                 verbatim stylesheet, inside the theme scope. */}
             {responsive.css ? (

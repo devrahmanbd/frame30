@@ -290,3 +290,75 @@ describe("preview in-canvas template navigation", () => {
     expect(html).toContain("<h1");
   });
 });
+
+describe("preview skin sheets (lane B2-1)", () => {
+  const SHEETS = {
+    "product_rail:editorial": ".used-editorial{color:red}",
+    "product_rail:minimal": ".unused-minimal{color:blue}",
+    "hero_carousel:split": ".unused-split{color:green}",
+  };
+
+  function skinnedTemplates(): Record<TemplateKey, ThemeAst> {
+    const empty = (): ThemeAst => ({ header: [], main: [], footer: [] });
+    return {
+      // product_rail defaults to the editorial skin (catalog default).
+      index: { header: [], main: [newSection("product_rail")], footer: [] },
+      product: empty(),
+      collection: empty(),
+      account: empty(),
+      page: empty(),
+      blog: empty(),
+      cart: empty(),
+      checkout: empty(),
+      search: empty(),
+    };
+  }
+
+  it("inlines nothing without skin sheets (today's DOM)", () => {
+    const html = renderToStaticMarkup(
+      <ThemePreviewFrame {...frameProps()} templates={skinnedTemplates()} />,
+    );
+    expect(html).not.toContain("data-fq-skin-css");
+  });
+
+  it("inlines only the sheets the rendered template uses", () => {
+    const html = renderToStaticMarkup(
+      <ThemePreviewFrame
+        {...frameProps()}
+        templates={skinnedTemplates()}
+        skinSheets={SHEETS}
+      />,
+    );
+    expect(html).toContain('data-fq-skin-css=""');
+    expect(html).toContain(".used-editorial{color:red}");
+    expect(html).not.toContain(".unused-minimal");
+    expect(html).not.toContain(".unused-split");
+  });
+
+  it("counts header and footer sections, not just main", () => {
+    const templates = skinnedTemplates();
+    templates.index = {
+      header: [],
+      main: [],
+      footer: [
+        { ...newSection("product_rail"), props: { skin: "minimal" } },
+      ],
+    };
+    const html = renderToStaticMarkup(
+      <ThemePreviewFrame
+        {...frameProps()}
+        templates={templates}
+        skinSheets={SHEETS}
+      />,
+    );
+    expect(html).toContain(".unused-minimal{color:blue}");
+    expect(html).not.toContain(".used-editorial");
+  });
+
+  it("inlines nothing when no skinned widgets render", () => {
+    const html = renderToStaticMarkup(
+      <ThemePreviewFrame {...frameProps()} skinSheets={SHEETS} />,
+    );
+    expect(html).not.toContain("data-fq-skin-css");
+  });
+});

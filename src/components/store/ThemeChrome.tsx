@@ -29,7 +29,8 @@ import {
   type ThemeAst,
   type ThemeTokens,
 } from "@/lib/builder-ast";
-import { primarySectionId } from "@/lib/builder-ast";
+import { primarySectionId, usedWidgetSkins } from "@/lib/builder-ast";
+import { filterSkinCss } from "@/lib/themes/assets";
 
 type Props = {
   template: TemplateKey;
@@ -147,6 +148,22 @@ export function ThemeChrome({
   // the critical path — a request for it would cost more than the bytes.
   const responsive = compileResponsiveCss(themed);
   const fontUrl = tokens ? fontStylesheetUrl(tokens) : null;
+  // Lane B2-1: per-page skin filtering. The server combines every enabled
+  // merchant asset per tenant (`storefrontThemeCss`); skin-scoped rules
+  // (`[data-widget][data-skin]`) for skins this page does not render are
+  // dropped here, where the rendered sections are known. Fail-open: any
+  // failure inlines the full stylesheet, today's behavior.
+  let pageCss = customCss;
+  try {
+    const used = usedWidgetSkins({
+      header: chromeAst?.header ?? [],
+      main: themed?.main ?? [],
+      footer: chromeAst?.footer ?? [],
+    }).map((skin) => skin.key);
+    pageCss = filterSkinCss(customCss, used);
+  } catch {
+    pageCss = customCss;
+  }
 
   const body = (
     <ThemeSurface tokens={tokens}>
@@ -159,10 +176,10 @@ export function ThemeChrome({
           dangerouslySetInnerHTML={{ __html: responsive.css }}
         />
       ) : null}
-      {customCss ? (
+      {pageCss ? (
         <style
           data-fq-theme-assets=""
-          dangerouslySetInnerHTML={{ __html: customCss }}
+          dangerouslySetInnerHTML={{ __html: pageCss }}
         />
       ) : null}
       <VitalsReporter

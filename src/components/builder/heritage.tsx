@@ -307,6 +307,7 @@ function HeroSkinSlide({
         {slide.caption && (
           <p
             data-hero-eyebrow
+            data-part="caption"
             className="text-xs font-semibold tracking-widest text-primary fq-caps"
           >
             {slide.caption}
@@ -378,6 +379,7 @@ function HeroSkinSlide({
           {slide.caption && (
             <p
               data-hero-eyebrow
+              data-part="caption"
               className="text-xs font-semibold tracking-widest text-background/80 fq-caps"
             >
               {slide.caption}
@@ -577,6 +579,7 @@ const HeroCarousel: WidgetComponent = ({
           {slide.caption && (
             <p
               data-hero-eyebrow
+              data-part="caption"
               className="text-xs font-semibold tracking-widest text-primary fq-caps"
             >
               {slide.caption}
@@ -973,13 +976,16 @@ const TextileShowcase: WidgetComponent = ({
               )}
             </div>
             <div className="p-4">
-              <p className="text-sm font-medium">
+              <p data-part="title" className="text-sm font-medium">
                 {locale === "bn" && product.nameBn
                   ? product.nameBn
                   : product.name}
               </p>
               {product.price > 0 && (
-                <p className="mt-1 text-sm text-muted-foreground">
+                <p
+                  data-part="price"
+                  className="mt-1 text-sm text-muted-foreground"
+                >
                   {money(product.price * 100)}
                 </p>
               )}
@@ -1213,7 +1219,10 @@ const TestimonialCarousel: WidgetComponent = ({
         <blockquote className="max-w-xl text-base italic text-foreground/80">
           "{testimonial.quote}"
         </blockquote>
-        <figcaption className="mt-3 text-sm font-medium text-muted-foreground">
+        <figcaption
+          data-part="author"
+          className="mt-3 text-sm font-medium text-muted-foreground"
+        >
           {testimonial.author}
         </figcaption>
       </div>

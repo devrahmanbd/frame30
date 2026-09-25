@@ -222,4 +222,31 @@ describe("OverlayHost — cart-adjacent primitive fixes", () => {
     expect(OVERLAY_SRC).toContain("rounded-none");
     expect(OVERLAY_SRC).toContain("sm:rounded-fq-lg");
   });
+
+  it("slides transform-only behind motion-safe (instant when reduced)", () => {
+    // Right drawers travel on translate-x; every side gates behind motion-safe
+    // so prefers-reduced-motion collapses to an instant appearance.
+    expect(OVERLAY_SRC).toContain("motion-safe:animate-in");
+    expect(OVERLAY_SRC).toContain("motion-safe:slide-in-from-right");
+    expect(OVERLAY_SRC).toContain("motion-safe:slide-in-from-bottom");
+    expect(OVERLAY_SRC).toContain("motion-safe:duration-200");
+    // Transform-only: no opacity fade on the drawer panel.
+    expect(OVERLAY_SRC).not.toContain("fade-in");
+    expect(OVERLAY_SRC).not.toContain("fade-out");
+    expect(OVERLAY_SRC).not.toContain("zoom-in");
+    // No unguarded enter animation: every animate-in is motion-safe prefixed.
+    const bare = OVERLAY_SRC.split("motion-safe:animate-in")
+      .join("")
+      .includes("animate-in");
+    expect(bare).toBe(false);
+  });
+
+  it("keeps focus/Escape/scroll behaviour byte-identical", () => {
+    expect(OVERLAY_SRC).toContain("restoreRef.current = (document.activeElement");
+    expect(OVERLAY_SRC).toContain(
+      'document.body.style.overflow = "hidden"',
+    );
+    expect(OVERLAY_SRC).toContain("event.stopPropagation()");
+    expect(OVERLAY_SRC).toContain("if (!open) return null;");
+  });
 });
