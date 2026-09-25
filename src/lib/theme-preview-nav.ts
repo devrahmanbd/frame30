@@ -25,9 +25,14 @@ import { TEMPLATE_KEYS } from "./builder-ast";
 import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
 
-export type PreviewTarget = { template: TemplateKey; slug: string | null; query: string | null };
+export type PreviewTarget = {
+  template: TemplateKey;
+  slug: string | null;
+  query: string | null;
+};
 
-const BLOCKED_HREF_RE = /(^|\/)(order|track|sign-?in|sign-?up|login|register)([\/?#]|$)/i;
+const BLOCKED_HREF_RE =
+  /(^|\/)(order|track|sign-?in|sign-?up|login|register)([/?#]|$)/i;
 
 export function isPreviewBlockedHref(href: string): boolean {
   const path = href.split(/[?#]/, 1)[0] ?? "";
@@ -45,9 +50,12 @@ export function previewTargetForHref(href: string): PreviewTarget | null {
   if (/^https?:\/\//i.test(href)) {
     try {
       const u = new URL(href);
-      if (typeof window === "undefined" || u.origin !== window.location.origin) return null;
+      if (typeof window === "undefined" || u.origin !== window.location.origin)
+        return null;
       href = u.pathname + u.search + u.hash;
-    } catch { return null; }
+    } catch {
+      return null;
+    }
   }
   if (!href.startsWith("/")) return null;
   if (isPreviewBlockedHref(href)) return null;
@@ -56,20 +64,30 @@ export function previewTargetForHref(href: string): PreviewTarget | null {
   const rest = path.replace(/^\/store\/[^/]+/, "") || "/";
   const query = queryRaw?.split("#", 1)[0] ?? null;
   let m: RegExpMatchArray | null;
-  if ((m = rest.match(/^\/p\/([^/?#]+)/))) return { template: "product", slug: m[1]!, query };
-  if ((m = rest.match(/^\/products?(?:\/([^/?#]+))?/))) return { template: "product", slug: m[1] ?? null, query };
-  if ((m = rest.match(/^\/c\/([^/?#]+)/))) return { template: "collection", slug: m[1]!, query };
-  if ((m = rest.match(/^\/collections?(?:\/([^/?#]+))?/))) return { template: "collection", slug: m[1] ?? null, query };
-  if (rest === "/search" || rest === "/search/") return { template: "search", slug: null, query };
-  if (rest === "/cart" || rest === "/cart/") return { template: "cart", slug: null, query };
-  if (rest === "/checkout" || rest === "/checkout/") return { template: "checkout", slug: null, query };
-  if (rest === "/account" || rest.startsWith("/account/")) return { template: "account", slug: null, query };
-  if ((m = rest.match(/^\/pages?\/([^/?#]+)/))) return { template: "page", slug: m[1]!, query };
+  if ((m = rest.match(/^\/p\/([^/?#]+)/)))
+    return { template: "product", slug: m[1]!, query };
+  if ((m = rest.match(/^\/products?(?:\/([^/?#]+))?/)))
+    return { template: "product", slug: m[1] ?? null, query };
+  if ((m = rest.match(/^\/c\/([^/?#]+)/)))
+    return { template: "collection", slug: m[1]!, query };
+  if ((m = rest.match(/^\/collections?(?:\/([^/?#]+))?/)))
+    return { template: "collection", slug: m[1] ?? null, query };
+  if (rest === "/search" || rest === "/search/")
+    return { template: "search", slug: null, query };
+  if (rest === "/cart" || rest === "/cart/")
+    return { template: "cart", slug: null, query };
+  if (rest === "/checkout" || rest === "/checkout/")
+    return { template: "checkout", slug: null, query };
+  if (rest === "/account" || rest.startsWith("/account/"))
+    return { template: "account", slug: null, query };
+  if ((m = rest.match(/^\/pages?\/([^/?#]+)/)))
+    return { template: "page", slug: m[1]!, query };
   if (rest === "/blog" || rest.startsWith("/blog/")) {
     const sm = rest.match(/^\/blog\/([^/?#]+)/);
     return { template: "blog", slug: sm?.[1] ?? null, query };
   }
-  if (rest === "/" || rest === "/index" || rest === "/home") return { template: "index", slug: null, query };
+  if (rest === "/" || rest === "/index" || rest === "/home")
+    return { template: "index", slug: null, query };
   return null;
 }
 
@@ -82,11 +100,98 @@ export type PreviewClickAction =
   | { kind: "switch"; target: PreviewTarget }
   | { kind: "allow" };
 
-export function previewClickAction(href: string | null | undefined): PreviewClickAction {
+export function previewClickAction(
+  href: string | null | undefined,
+): PreviewClickAction {
   if (!href || href.startsWith("#")) return { kind: "allow" };
   if (isPreviewBlockedHref(href)) return { kind: "blocked" };
   const target = previewTargetForHref(href);
   return target ? { kind: "switch", target } : { kind: "allow" };
+}
+
+/* ---------------------------------- preview search query round-trip */
+
+const PREVIEW_SEARCH_QUERY_LIMIT = 200;
+
+const PREVIEW_FOCUS_RE = /^[a-z0-9]+(?:-[a-z0-9]+){0,7}$/;
+
+/**
+ * Parse the raw in-canvas search query (`/search?max=99900` → `"max=99900"`)
+ * into separate preview search keys. Only `q` and `max` survive (strings
+ * ≤200); everything else is dropped so the preview URL stays refresh-safe.
+ */
+export function parsePreviewSearchQuery(raw: string | null): {
+  q?: string;
+  max?: string;
+} {
+  if (!raw) return {};
+  const params = new URLSearchParams(raw);
+  const out: { q?: string; max?: string } = {};
+  for (const key of ["q", "max"] as const) {
+    const value = params.get(key);
+    if (value !== null && value !== "")
+      out[key] = value.slice(0, PREVIEW_SEARCH_QUERY_LIMIT);
+  }
+  return out;
+}
+
+/**
+ * Search updater for the preview frame's `navigate({ to: ".", search })`:
+ * writes the focused slug under the `?focus=` contract (never `?slug=` —
+ * merchant-less redirects use `focus`), writes the parsed query as
+ * separate keys (never the raw string as `q`), and clears `q`/`max` when
+ * leaving the search template so a previous `/search?max=…` click does not
+ * leak into collection/product URLs.
+ */
+export function previewSearchForSwitch(
+  template: TemplateKey,
+  focus: string | null,
+  query: string | null,
+  prev: Record<string, unknown>,
+): Record<string, unknown> {
+  return {
+    ...prev,
+    template,
+    ...(focus ? { focus } : { focus: undefined }),
+    ...(template === "search"
+      ? { q: undefined, max: undefined, ...parsePreviewSearchQuery(query) }
+      : { q: undefined, max: undefined }),
+  };
+}
+
+/**
+ * Route `validateSearch` for `/theme-preview/$key`: template + focus plus
+ * the preserved search query keys (`q`, `max`, strings ≤200) so refresh
+ * keeps `?template=search&max=99900` instead of dropping it.
+ */
+export function validateThemePreviewSearch(search: Record<string, unknown>): {
+  template: TemplateKey | undefined;
+  focus: string | undefined;
+  q: string | undefined;
+  max: string | undefined;
+} {
+  const template =
+    typeof search.template === "string" &&
+    (TEMPLATE_KEYS as readonly string[]).includes(search.template)
+      ? (search.template as TemplateKey)
+      : undefined;
+  return {
+    template,
+    focus:
+      typeof search.focus === "string" &&
+      search.focus.length <= 64 &&
+      PREVIEW_FOCUS_RE.test(search.focus)
+        ? search.focus
+        : undefined,
+    q:
+      typeof search.q === "string"
+        ? (search.q as string).slice(0, PREVIEW_SEARCH_QUERY_LIMIT)
+        : undefined,
+    max:
+      typeof search.max === "string"
+        ? (search.max as string).slice(0, PREVIEW_SEARCH_QUERY_LIMIT)
+        : undefined,
+  };
 }
 
 /* ------------------------------------------------- preview key resolver */

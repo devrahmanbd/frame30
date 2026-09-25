@@ -25,48 +25,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ArrowLeft } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
-import { resolveThemePreview } from "@/lib/theme-preview-nav";
+import {
+  resolveThemePreview,
+  validateThemePreviewSearch,
+} from "@/lib/theme-preview-nav";
 import { ThemePreviewFrame } from "@/components/store/ThemePreviewFrame";
 
 type RouteParams = { key: string };
 
-const VALID_TEMPLATES = [
-  "index",
-  "product",
-  "collection",
-  "account",
-  "page",
-  "blog",
-  "cart",
-  "checkout",
-  "search",
-] as const;
-
-const FOCUS_RE = /^[a-z0-9]+(?:-[a-z0-9]+){0,7}$/;
-
 export const Route = createFileRoute("/theme-preview/$key")({
-  validateSearch: (search: Record<string, unknown>) => ({
-    template:
-      typeof search.template === "string" &&
-      (VALID_TEMPLATES as readonly string[]).includes(search.template)
-        ? (search.template as (typeof VALID_TEMPLATES)[number])
-        : undefined,
-    // Deep-link a demo focus (?template=collection&focus=bestsellers):
-    // merchant-less permalinks redirect here. Slug-shaped only.
-    focus:
-      typeof search.focus === "string" &&
-      search.focus.length <= 64 &&
-      FOCUS_RE.test(search.focus)
-        ? search.focus
-        : undefined,
-  }),
+  // Template + focus (?focus= is the contract merchant-less redirects use)
+  // plus preserved search query keys (`q`, `max`) so refresh keeps
+  // `?template=search&max=99900` instead of dropping it.
+  validateSearch: (search: Record<string, unknown>) =>
+    validateThemePreviewSearch(search),
   // Demo pages must never index: merchant-less URLs redirect here instead
   // of 404ing, and indexers must not mistake demo for store content.
   head: () => ({
-    meta: [
-      { title: "Theme preview" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Theme preview" }, { name: "robots", content: "noindex" }],
   }),
   component: ThemePreviewRoute,
   errorComponent: ThemePreviewError,
