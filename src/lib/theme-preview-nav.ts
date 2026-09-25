@@ -451,7 +451,7 @@ export function applyDemoFocus(
       head = true;
       return {
         ...section,
-        props: { ...section.props, text: focus.title, text_bn: "" },
+        props: { ...section.props, text: focus.title },
       };
     }
     if (
@@ -466,7 +466,6 @@ export function applyDemoFocus(
           ...section.props,
           collection: focus.collection,
           heading: focus.title,
-          heading_bn: "",
         },
       };
     }

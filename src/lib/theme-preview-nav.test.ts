@@ -216,6 +216,13 @@ describe("demo focus (slug-aware collection preview)", () => {
     );
   });
 
+  it("focus keeps authored _bn twins", () => {
+    const sections = [{ id: "h", type: "heading", props: { text: "New in", text_bn: "নতুন এসেছে" } }];
+    const out = applyDemoFocus(sections as never, { template: "collection", slug: "festive", title: "Eid & Festive", collection: "festive" });
+    expect(out[0].props.text).toBe("Eid & Festive");
+    expect(out[0].props.text_bn).toBe("নতুন এসেছে"); // currently blanked
+  });
+
   it("passes sections through without focus", async () => {
     const { newSection } = await import("./builder-ast");
     const sections = [newSection("heading")];
