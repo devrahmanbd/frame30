@@ -12,9 +12,9 @@ import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreImage } from "@/components/store/StoreImage";
 import { getStoreCollection } from "@/lib/storefront.functions";
 import { fmtMinor } from "@/lib/money";
-import { useLang } from "@/lib/i18n";
 import { flattenAst } from "@/lib/builder-ast";
 import { rebaseMenuHref } from "@/lib/menus/menu";
+import { CollectionView } from "@/components/store/CollectionView";
 
 export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
   loader: async ({ params }) => {
@@ -51,7 +51,9 @@ export const Route = createFileRoute("/store/$slug/c/$collectionSlug")({
       ],
     };
   },
-  component: CollectionPage,
+  component: function RouteComponent() {
+    return <CollectionView data={Route.useLoaderData()} />;
+  },
   notFoundComponent: () => (
     <main className="mx-auto max-w-xl px-4 py-24 text-center">
       <h1 className="text-2xl font-semibold">Collection not found</h1>
