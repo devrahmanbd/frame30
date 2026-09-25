@@ -18,14 +18,26 @@ describe("P0 / P1 CMS Security & Pre-emptive Hardening Contract", () => {
 
   it("enforces requirePermission on all authenticated themes.functions.ts RPCs", () => {
     const src = read("src/lib/themes.functions.ts");
-    // Every function except the single public builderRegistryVersionFn must
-    // enforce requirePermission (structural, not a hardcoded count: new
-    // guarded RPCs such as the Phase 15 granular importers must not break it).
-    const declarations = src.match(/createServerFn\(/g) ?? [];
-    const guards = src.match(/requirePermission\(/g) ?? [];
-    expect(declarations.length).toBeGreaterThan(0);
-    expect(guards.length).toBe(declarations.length - 1);
-    expect(src).toContain("builderRegistryVersionFn");
+    const declarations = src.match(/export const .* = createServerFn/g) ?? [];
+    expect(declarations.length).toBeGreaterThan(1);
+
+    // Every declaration is guarded except the single public endpoint
+    // (builderRegistryVersionFn — registry descriptor, no session data).
+    const segments = src
+      .split(/(?=export const \w+ = createServerFn)/)
+      .slice(1);
+    expect(segments).toHaveLength(declarations.length);
+    const unguarded = segments.filter(
+      (block) => !block.includes("requirePermission("),
+    );
+    expect(unguarded).toHaveLength(1);
+    expect(unguarded[0]).toMatch(
+      /^export const builderRegistryVersionFn = createServerFn/,
+    );
+    // No `.middleware(...)` between its createServerFn({...}) and .handler.
+    expect(unguarded[0]).toMatch(
+      /builderRegistryVersionFn = createServerFn\(\{[^}]*\}\)\.handler/,
+    );
     expect(src).not.toContain("requireSupabaseAuth");
   });
 
@@ -88,10 +100,9 @@ describe("P0 / P1 CMS Security & Pre-emptive Hardening Contract", () => {
 
   it("includes issuing_cert in sweepDomains background polling in domains.server.ts", () => {
     const src = read("src/lib/domains.server.ts");
-    // Whitespace-tolerant: the status list is formatted across lines. All
-    // four pre-active states must be polled so issuing_cert rows cannot stall.
+    // Whitespace-flexible: prettier wraps the status array across lines.
     expect(src).toMatch(
-      /\.in\(\s*"status"\s*,\s*\[[^\]]*"pending_dns"[^\]]*"verifying"[^\]]*"dns_verified"[^\]]*"issuing_cert"[^\]]*\]\)/s,
+      /\.in\(\s*"status",\s*\[\s*"pending_dns",\s*"verifying",\s*"dns_verified",\s*"issuing_cert",?\s*\]\s*\)/,
     );
   });
 });

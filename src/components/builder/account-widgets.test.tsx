@@ -39,13 +39,13 @@ function ctxFor(
   return {
     section,
     ...widgetReader(section, undefined, locale),
+    link: (href: string) => href,
     Heading: "h2",
     primary: false,
     editing: false,
     locale,
     storeSlug: "test-store",
     data,
-    link: (href: string) => href,
     renderChildren: () => null,
   };
 }
@@ -91,6 +91,15 @@ describe("orders_list", () => {
     );
     expect(html).toContain("সাইন ইন");
     expect(html).toContain('href="/account"');
+  });
+
+  it("renders the empty state when signed in with no orders", () => {
+    const html = renderToStaticMarkup(
+      <>
+        {OrdersList(ctxFor("orders_list", "en", { rows: [], pending: false }))}
+      </>,
+    );
+    expect(html).toContain("No orders yet.");
   });
 
   it("renders order rows when data is supplied", () => {

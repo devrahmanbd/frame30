@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { StoreImage } from "@/components/store/StoreImage";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
-import { SupportWidget } from "@/components/store/SupportWidget";
 import { fmtMinor } from "@/lib/money";
 import { useCart } from "@/lib/cart";
 import { trackEvent } from "@/lib/traffic-client";
 import { useSectionChannel } from "@/components/builder/useSectionChannel";
 import { useLang } from "@/lib/i18n";
+import { isCustomHostPath } from "@/lib/storefront-url";
 import {
   ProductConversion,
   ScarcityBadge,
 } from "@/components/store/ConversionSurfaces";
 import type { getStoreProduct } from "@/lib/storefront.functions";
 
-export type ProductPayload = Exclude<Awaited<ReturnType<typeof getStoreProduct>>, null>;
+export type ProductPayload = Exclude<
+  Awaited<ReturnType<typeof getStoreProduct>>,
+  null
+>;
 
 export function ProductNotFound() {
   const { t } = useLang();
@@ -30,6 +34,8 @@ export function ProductNotFound() {
 
 export function ProductView({ data }: { data: ProductPayload }) {
   const { t } = useLang();
+  const { location } = useRouterState();
+  const custom = isCustomHostPath(location.pathname);
   const {
     merchant,
     product,
@@ -66,132 +72,215 @@ export function ProductView({ data }: { data: ProductPayload }) {
   const hasPriceBlock = sections.some((s) => s.type === "price_block");
 
   const media = (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-      <div className="overflow-hidden rounded-fq-lg bg-muted">
-        <StoreImage
-          image={product.image ?? null}
-          fallbackSrc={product.image_url}
-          alt={product.title}
-          seed={product.id}
-          sizes="(max-width: 1024px) 50vw, 500px"
-          className="aspect-square size-full object-cover"
-          priority
-        />
-      </div>
-      {variants.length > 1 && (
-        <div className="grid grid-cols-4 gap-2">
-          {variants.slice(0, 4).map((v) => (
-            <button
-              key={v.id}
-              onClick={() => setVariantId(v.id)}
-              type="button"
-              className={`aspect-square overflow-hidden rounded-fq-md border-2 ${variantId === v.id ? "border-primary" : "border-transparent"}`}
-            >
-              <StoreImage
-                image={v.image ?? null}
-                fallbackSrc={v.image_url ?? product.image_url}
-                alt={v.sku ?? product.title}
-                seed={v.id}
-                sizes="100px"
-                className="size-full object-cover"
-              />
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-
-  const priceMinor = Number(variant?.price_amount_minor_int ?? 0);
-  const retailMinor = variant?.retail_price_minor_int
-    ? Number(variant.retail_price_minor_int)
-    : null;
-  const inStock = Number(variant?.stock_quantity ?? 0) > 0;
-
-  const titleLockup = (
-    <div className="space-y-4">
-      <div className="space-y-1">
-        <h1 className="font-bangla-display text-2xl font-semibold sm:text-3xl">
-          {product.title}
-        </h1>
-        {variant?.sku && (
-          <p className="font-mono text-sm text-muted-foreground">
-            {variant.sku}
-          </p>
-        )}
-      </div>
-      <div className="flex items-baseline gap-3">
-        <p className="money text-2xl font-bold">
-          {fmtMinor(priceMinor, merchant.currency_code)}
-        </p>
-        {retailMinor && retailMinor > priceMinor && (
-          <p className="money text-lg text-muted-foreground line-through">
-            {fmtMinor(retailMinor, merchant.currency_code)}
-          </p>
-        )}
-      </div>
-      <ScarcityBadge stock={Number(variant?.stock_quantity ?? 0)} />
-      {product.description && (
-        <div className="prose prose-sm dark:prose-invert">
-          {product.description}
-        </div>
-      )}
-    </div>
-  );
-
-  const buyLockup = (
-    <div className="space-y-4">
-      <ProductConversion
-        product={product}
-        variant={variant}
-        merchant={merchant}
-        priceMinor={priceMinor}
-        retailMinor={retailMinor}
-        onAdd={() => {
-          if (variant) {
-            add({ variantId: variant.id, quantity: 1 });
-            setAdded(true);
-            setTimeout(() => setAdded(false), 2000);
-          }
-        }}
-        added={added}
+    <div className="aspect-square overflow-hidden rounded-fq-lg border border-border bg-muted">
+      <StoreImage
+        image={product.image ?? null}
+        fallbackSrc={product.image_url}
+        alt={product.title}
+        seed={product.id}
+        priority
+        sizes="(max-width: 768px) 100vw, 600px"
+        className="size-full object-cover"
       />
     </div>
   );
 
-  const inner = (
-    <main className="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-8 sm:px-6 lg:py-12">
-      <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16">
-        {media}
-        <div className="mt-8 lg:mt-0">
-          <div className="sticky top-24 space-y-8">
-            {titleLockup}
-            {buyLockup}
+  const priceBlock = (
+    <div>
+      <h1 className="font-bangla-display text-2xl font-bold sm:text-3xl">
+        {product.title}
+      </h1>
+      <p className="money mt-3 text-2xl font-semibold">
+        {fmtMinor(
+          Number(variant?.price_amount_minor_int ?? 0),
+          merchant.currency_code,
+        )}
+      </p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        {t("VAT shown at checkout", "চেকআউটে ভ্যাট দেখানো হবে")}
+      </p>
+      <ScarcityBadge stock={Number(variant?.stock_quantity ?? 0)} />
+    </div>
+  );
+
+  const addToCart = (
+    <div>
+      {variants.length > 1 && (
+        <fieldset className="mt-5">
+          <legend className="text-sm font-medium">
+            {t("Variant", "ভ্যারিয়েন্ট")}
+          </legend>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {variants.map((v) => (
+              <button
+                key={v.id}
+                type="button"
+                onClick={() => setVariantId(v.id)}
+                aria-pressed={v.id === variant?.id}
+                className={`min-h-11 rounded-fq-md border px-3 text-sm ${
+                  v.id === variant?.id
+                    ? "border-primary bg-info-soft text-info-foreground"
+                    : "border-border bg-card text-muted-foreground"
+                }`}
+              >
+                {v.name}
+              </button>
+            ))}
           </div>
+        </fieldset>
+      )}
+
+      <p
+        className={`mt-4 text-sm ${
+          (variant?.stock_quantity ?? 0) > 0
+            ? "text-success-foreground"
+            : "text-danger-foreground"
+        }`}
+      >
+        {(variant?.stock_quantity ?? 0) > 0
+          ? t(
+              `${variant?.stock_quantity} in stock`,
+              `স্টকে ${variant?.stock_quantity} টি`,
+            )
+          : t("Out of stock", "স্টক নেই")}
+      </p>
+
+      <div className="mt-6 flex flex-wrap gap-3">
+        <button
+          type="button"
+          disabled={!variant || variant.stock_quantity <= 0}
+          onClick={() => {
+            if (!variant) return;
+            add(variant.id, 1);
+            setAdded(true);
+          }}
+          className="min-h-12 rounded-fq-md bg-primary px-6 text-sm font-medium text-primary-foreground disabled:opacity-50"
+        >
+          {t("Add to cart", "কার্টে যোগ করুন")}
+        </button>
+        {custom ? (
+          <Link
+            to="/checkout"
+            className="min-h-12 rounded-fq-md border border-border px-6 text-sm font-medium leading-[3rem]"
+          >
+            {t("Checkout", "চেকআউট")}
+          </Link>
+        ) : (
+          <Link
+            to="/store/$slug/checkout"
+            params={{ slug: merchant.slug }}
+            className="min-h-12 rounded-fq-md border border-border px-6 text-sm font-medium leading-[3rem]"
+          >
+            {t("Checkout", "চেকআউট")}
+          </Link>
+        )}
+      </div>
+      <p
+        aria-live="polite"
+        className="mt-2 h-5 text-sm text-success-foreground"
+      >
+        {added ? t("Added to cart", "কার্টে যোগ হয়েছে") : ""}
+      </p>
+
+      <ul className="mt-6 flex flex-wrap gap-2 text-xs">
+        {(settings?.cod_enabled ?? true) && (
+          <li className="rounded-full bg-warning-soft px-3 py-1 text-warning-foreground">
+            COD
+          </li>
+        )}
+        {(settings?.mfs_enabled ?? true) && (
+          <li className="rounded-full bg-success-soft px-3 py-1 text-success-foreground">
+            bKash / Nagad
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+
+  const meta = product.description ? (
+    <div className="mt-8 border-t border-border pt-6">
+      <h2 className="text-sm font-semibold">{t("Description", "বিবরণ")}</h2>
+      <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
+        {product.description}
+      </p>
+    </div>
+  ) : null;
+
+  const breadcrumb = (
+    <nav
+      aria-label={t("Breadcrumb", "ব্রেডক্রাম্ব")}
+      className="text-xs text-muted-foreground"
+    >
+      {custom ? (
+        <Link to="/" className="underline">
+          {merchant.name}
+        </Link>
+      ) : (
+        <Link
+          to="/store/$slug"
+          search={{ preview_token: undefined }}
+          params={{ slug: merchant.slug }}
+          className="underline"
+        >
+          {merchant.name}
+        </Link>
+      )}
+      <span aria-hidden> / </span>
+      <span>{product.title}</span>
+    </nav>
+  );
+
+  const conversion = (
+    <ProductConversion
+      slug={merchant.slug}
+      productId={product.id}
+      currency={merchant.currency_code}
+    />
+  );
+
+  const fallback = (
+    <div className="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mb-6">{breadcrumb}</div>
+      <div className="grid gap-8 md:grid-cols-2">
+        {media}
+        <div>
+          {priceBlock}
+          {addToCart}
+          {meta}
         </div>
       </div>
-    </main>
+    </div>
   );
 
   return (
-    <ThemeChrome
-      merchant={merchant}
-      settings={settings}
-      ast={ast}
-      tokens={tokens}
-      menus={menus}
-      siteKit={siteKit}
-      productLockups={
-        hasPriceBlock ? undefined : { title: titleLockup, buy: buyLockup }
-      }
-    >
-      <StoreHeader />
-      {inner}
-      <PluginLayer
-        plugins={installedPlugins}
-        context={{ kind: "product", id: product.id }}
-      />
-      <SupportWidget merchant={merchant} settings={settings} />
-    </ThemeChrome>
+    <>
+      <PluginLayer plugins={installedPlugins}>
+        <ThemeChrome
+          template="product"
+          storeSlug={merchant.slug}
+          merchantId={merchant.id}
+          ast={ast}
+          tokens={tokens}
+          siteKit={siteKit}
+          ownsPrimary={hasPriceBlock}
+          chrome={
+            <StoreHeader
+              slug={merchant.slug}
+              name={merchant.name}
+              menus={menus}
+            />
+          }
+          contextSlots={{
+            breadcrumb,
+            product_media: media,
+            price_block: priceBlock,
+            add_to_cart: addToCart,
+            product_meta: meta,
+          }}
+          fallback={fallback}
+        />
+      </PluginLayer>
+      <div className="mx-auto max-w-6xl px-4 pb-16">{conversion}</div>
+    </>
   );
 }

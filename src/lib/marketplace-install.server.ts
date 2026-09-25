@@ -53,9 +53,6 @@ export async function installListing(
   merchantId: string,
   input: InstallInput,
 ) {
-  // Theme installs retired (Sept 2026 purge): the marketplace is plugins only.
-  if (input.kind === "theme") throw new Error("market_theme_removed");
-
   const { data: existingKey } = await db
     .from("marketplace_installs")
     .select("id, status")
@@ -126,7 +123,7 @@ export async function installListing(
     .insert({
       merchant_id: merchantId,
       kind: input.kind,
-      theme_id: null,
+      theme_id: input.kind === "theme" ? listing.id : null,
       widget_id: input.kind === "widget" ? listing.id : null,
       listing_slug: listing.slug,
       listing_name: listing.name,
@@ -154,7 +151,10 @@ export async function installListing(
       await postLedgerEntry(db, {
         merchantId,
         counterpartyMerchantId: listing.seller_merchant_id,
-        source: "market.widget.installed",
+        source:
+          input.kind === "theme"
+            ? "market.theme.installed"
+            : "market.widget.installed",
         referenceId: install.id,
         direction: "debit",
         gross: money(seller + platform, listing.currency_code),
@@ -173,6 +173,16 @@ export async function installListing(
     .update({ install_count: listing.install_count + 1 })
     .eq("id", listing.id);
 
+  // Third-party themes materialize their own inactive theme row (same shape
+  // as builtin installs) so Activate/Delete/badges work uniformly. Listings
+  // whose manifest carries no usable AST stay ledger-only, as before. The
+  // theme is never applied here — install is inert until Activate flips it.
+  if (input.kind === "theme") {
+    await materializeListingTheme(db, merchantId, install.id, listing).catch(
+      () => null,
+    );
+  }
+
   return {
     installId: install.id,
     replayed: false,
@@ -181,6 +191,80 @@ export async function installListing(
     themeApplied: null,
     themeNoticeKey: null,
   };
+}
+
+/**
+ * Best-effort theme row for a third-party install. Returns null (leaving the
+ * install ledger-only) when the manifest has no usable templates — never throws.
+ */
+async function materializeListingTheme(
+  db: Client,
+  merchantId: string,
+  installId: string,
+  listing: { id: string; slug: string; name: string; manifest: unknown },
+): Promise<string | null> {
+  try {
+    const manifest = (listing.manifest ?? {}) as {
+      templates?: unknown;
+      tokens?: unknown;
+    };
+    if (!manifest.templates || typeof manifest.templates !== "object")
+      return null;
+    const { parseTemplates, parseTokens } = await import("./builder-ast");
+    const templates = parseTemplates(manifest.templates);
+    if (!Object.values(templates).some((t) => t && typeof t === "object"))
+      return null;
+    const tokens = parseTokens(manifest.tokens ?? {});
+    const { data: theme, error: themeError } = await db
+      .from("store_themes")
+      // No DB default on installed_at; NULL breaks the installed-list sort.
+      .insert({
+        merchant_id: merchantId,
+        name: listing.name,
+        is_active: false,
+        installed_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single();
+    if (themeError || !theme) return null;
+    const themeId = (theme as { id: string }).id;
+    const { data: version, error: versionError } = await db
+      .from("theme_versions")
+      .insert({
+        merchant_id: merchantId,
+        theme_id: themeId,
+        version: 1,
+        status: "draft",
+        label: listing.slug,
+        templates: templates as never,
+        tokens: tokens as never,
+        created_by: null,
+      })
+      .select("id")
+      .single();
+    if (versionError || !version) {
+      await db.from("store_themes").delete().eq("id", themeId);
+      return null;
+    }
+    await db.from("theme_drafts").insert({
+      merchant_id: merchantId,
+      theme_id: themeId,
+      revision: 1,
+      templates: templates as never,
+      tokens: tokens as never,
+    });
+    await db
+      .from("store_themes")
+      .update({
+        source_install_id: installId,
+        source_listing_slug: listing.slug,
+      })
+      .eq("merchant_id", merchantId)
+      .eq("id", themeId);
+    return themeId;
+  } catch {
+    return null;
+  }
 }
 
 async function snapshotCurrent(db: Client, merchantId: string, kind: Kind) {
@@ -212,10 +296,23 @@ export async function setInstallStatus(
   if (!row) throw new Error("market_install_not_found");
   if (row.status === "rolled_back")
     throw new Error("market_install_rolled_back");
-  // Theme lifecycle retired (Sept 2026 purge).
-  if (row.kind === "theme") throw new Error("market_theme_removed");
 
   const next = status === "installed" && row.is_trial ? "trial" : status;
+
+  // Theme ledger rows drive the storefront theme, never plugin_state.
+  // Pausing the live theme would strand the storefront with no active theme,
+  // so it is refused exactly like deleting the active theme (WordPress
+  // parity: activate another theme first).
+  if (row.kind === "theme" && next === "paused") {
+    const { data: linked } = await db
+      .from("store_themes")
+      .select("id, is_active")
+      .eq("merchant_id", merchantId)
+      .eq("source_install_id", installId)
+      .maybeSingle();
+    if (linked?.is_active) throw new Error("market_theme_active");
+  }
+
   const { error } = await db
     .from("marketplace_installs")
     .update({ status: next })
@@ -235,6 +332,8 @@ export async function setInstallStatus(
     installId,
   );
 
+  if (row.kind === "theme")
+    return { ok: true, status: next, themeNoticeKey: null };
   await db
     .from("plugin_state")
     .update({
@@ -436,10 +535,64 @@ export type BulkAction = "enable" | "pause" | "delete";
 export type BulkResult = { installId: string; ok: boolean; error?: string };
 
 /**
+ * Delete a theme install: cascade-delete the linked store_themes row
+ * (versions + drafts, refused while it is the active theme) and put the
+ * ledger row on a terminal status. Install rows that never materialized a
+ * theme (manifest with no usable AST) only need the ledger row retired.
+ */
+export async function uninstallThemeInstall(
+  db: Client,
+  merchantId: string,
+  installId: string,
+  actorId?: string | null,
+) {
+  const { data: row } = await db
+    .from("marketplace_installs")
+    .select("id, kind, listing_slug, status")
+    .eq("merchant_id", merchantId)
+    .eq("id", installId)
+    .maybeSingle();
+  if (!row || row.kind !== "theme") throw new Error("market_install_not_found");
+  if (row.status === "removed")
+    return { ok: true, removedTheme: null, reason: "already_removed" };
+
+  const { data: theme } = await db
+    .from("store_themes")
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("source_install_id", installId)
+    .maybeSingle();
+  if (theme) {
+    const { deleteTheme } = await import("./themes/appearance.server");
+    await deleteTheme(db, merchantId, theme.id, actorId);
+    return { ok: true, removedTheme: theme.id };
+  }
+
+  const { error } = await db
+    .from("marketplace_installs")
+    .update({ status: "removed" as never })
+    .eq("merchant_id", merchantId)
+    .eq("id", installId);
+  if (error) throw new Error("market_install_update_failed");
+  const { auditAction } = await import("./hardening.server");
+  await auditAction(
+    db,
+    merchantId,
+    actorId ?? null,
+    "market.removed",
+    "theme",
+    { slug: row.listing_slug },
+    installId,
+  );
+  return { ok: true, removedTheme: null };
+}
+
+/**
  * Apply one action across many installs, isolating failures per row.
- * Theme rows are refused (lifecycle retired); widget rows reuse the
- * single-install gates so trials, consent and plugin toggles behave
- * identically to one-at-a-time clicks.
+ * Delete routes by kind (themes cascade their linked store_themes row,
+ * widgets their plugin row); enable/pause reuse the single-install gate so
+ * trials, consent and the live-theme refusal behave identically to
+ * one-at-a-time clicks.
  */
 export async function bulkInstallStatus(
   db: Client,
@@ -459,8 +612,11 @@ export async function bulkInstallStatus(
           .eq("id", installId)
           .maybeSingle();
         if (!row) throw new Error("market_install_not_found");
-        if (row.kind === "theme") throw new Error("market_theme_removed");
-        await uninstallWidgetInstall(db, merchantId, installId, actorId);
+        if (row.kind === "theme") {
+          await uninstallThemeInstall(db, merchantId, installId, actorId);
+        } else {
+          await uninstallWidgetInstall(db, merchantId, installId, actorId);
+        }
       } else {
         await setInstallStatus(
           db,

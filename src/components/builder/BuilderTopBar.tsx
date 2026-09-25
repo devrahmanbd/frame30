@@ -28,6 +28,15 @@ export const TEMPLATE_META: Record<
     },
     icon: "grid",
   },
+  account: {
+    en: "Account",
+    bn: "অ্যাকাউন্ট",
+    desc: {
+      en: "Orders, addresses & profile",
+      bn: "অর্ডার, ঠিকানা ও প্রোফাইল",
+    },
+    icon: "user",
+  },
   search: {
     en: "Search results",
     bn: "সার্চ ফলাফল",
@@ -62,12 +71,6 @@ export const TEMPLATE_META: Record<
       en: "About, Terms & custom pages",
       bn: "সম্পর্কে, শর্তাবলী ও কাস্টম পেজ",
     },
-    icon: "file-text",
-  },
-  account: {
-    en: "Account",
-    bn: "অ্যাকাউন্ট",
-    desc: { en: "Shopper orders & profile", bn: "ক্রেতার অর্ডার ও প্রোফাইল" },
     icon: "file-text",
   },
 };
@@ -201,6 +204,19 @@ function TemplateIcon({ icon }: { icon: string }) {
         >
           <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
           <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+        </svg>
+      );
+    case "user":
+      return (
+        <svg
+          className="size-3.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
         </svg>
       );
     default:

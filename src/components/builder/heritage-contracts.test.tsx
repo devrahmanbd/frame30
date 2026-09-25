@@ -12,13 +12,13 @@ function ctxFor(section: Section): WidgetCtx {
   return {
     section,
     ...widgetReader(section, undefined, "en"),
+    link: (href: string) => href,
     Heading: "h2",
     primary: false,
     editing: false,
     locale: "en",
     storeSlug: "test",
     data: undefined,
-    link: (href: string) => href,
     renderChildren: () => null,
   };
 }

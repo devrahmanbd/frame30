@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, type UserConfig } from "vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -6,7 +6,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import browserslistToEsbuild from "browserslist-to-esbuild";
 import { fileURLToPath } from "node:url";
 
-export default defineConfig(async ({ command }) => {
+export default defineConfig(async ({ command }): Promise<UserConfig> => {
   const plugins: any[] = [
     tanstackStart({
       server: { entry: "server" },
@@ -17,8 +17,10 @@ export default defineConfig(async ({ command }) => {
       // loaders are split too so route data-fetching graphs (server-fn
       // stubs, validators, schemas) also load on navigation, not upfront.
       // `head` cannot split (needed synchronously) — keep those imports lean.
+      // The Start plugin always registers the code splitter; only
+      // `codeSplittingOptions` is configurable here (no `autoCodeSplitting`
+      // key in this plugin version — it is stripped from the options).
       router: {
-        autoCodeSplitting: true,
         codeSplittingOptions: {
           defaultBehavior: [
             ["component"],

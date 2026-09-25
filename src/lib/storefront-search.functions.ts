@@ -6,6 +6,7 @@ import {
   PRODUCT_KINDS_FILTER,
   SORTS,
 } from "./storefront-search";
+import type { ProductData } from "./page-builder";
 
 const paramsSchema = z.object({
   slug: z.string().min(1).max(80),
@@ -89,7 +90,7 @@ export const getStorePageFn = createServerFn({ method: "GET" })
       : null;
     // Product blocks are data-backed: resolve them against the live catalogue
     // instead of the snapshot that was saved with the page.
-    let builderProducts = {};
+    let builderProducts: ProductData = {};
     if (builderDoc) {
       const { resolveBuilderProducts } =
         await import("./builder-products.server");

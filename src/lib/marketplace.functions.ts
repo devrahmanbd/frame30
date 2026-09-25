@@ -51,8 +51,9 @@ export const marketInstallFn = createServerFn({ method: "POST" })
     const builtinSlug = data.listingId.startsWith(BUILTIN_PREFIX)
       ? data.listingId.slice(BUILTIN_PREFIX.length)
       : null;
-    // Theme installs retired (Sept 2026 purge): the marketplace is plugins only.
-    if (data.kind === "theme") throw new Error("market_theme_removed");
+    // Theme installs are first-class again (WordPress-parity lifecycle):
+    // install creates an inactive store_themes row + ledger row, and the
+    // Themes screen drives Activate / Live Preview / Delete.
     if (builtinSlug) {
       if (data.trial) throw new Error("market_trial_not_allowed");
       // Re-clicks and retries replay the original install instead of

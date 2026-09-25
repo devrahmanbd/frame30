@@ -6,7 +6,6 @@ import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { newSection, type Section } from "@/lib/builder-ast";
-import type { WidgetRow } from "@/lib/widget-data";
 import { APPAREL_WIDGETS } from "./apparel";
 import { widgetReader, type WidgetCtx } from "./widgets";
 
@@ -14,13 +13,13 @@ function ctxFor(section: Section, locale: "en" | "bn"): WidgetCtx {
   return {
     section,
     ...widgetReader(section, undefined, locale),
+    link: (href: string) => href,
     Heading: "h2",
     primary: false,
     editing: false,
     locale,
     storeSlug: "test-store",
     data: { rows: [], pending: false },
-    link: (href: string) => href,
     renderChildren: () => null,
   };
 }

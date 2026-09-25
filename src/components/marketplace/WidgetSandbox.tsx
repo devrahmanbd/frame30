@@ -147,9 +147,10 @@ export function WidgetSandbox({
           setDenied((d) => (d.includes(method) ? d : [...d, method]));
         }
       }
-      // Target "*" is REQUIRED, not lax: the frame is sandboxed without
-      // allow-same-origin so its origin is opaque ("null") and addressing it
-      // by the page origin throws (the reply never delivers — observed live:
+      // Target "*" is REQUIRED, not lax: the frame is sandboxed with the
+      // same-origin permission withheld, so its origin is opaque ("null") and
+      // addressing it by the page origin throws (the reply never delivers —
+      // observed live:
       // "target origin does not match the recipient window's origin
       // ('null')"). This stays safe because we only ever reply to
       // event.source after verifying it is exactly our frame's window above,
@@ -173,7 +174,9 @@ export function WidgetSandbox({
         title={title}
         srcDoc={srcDoc}
         sandbox={policy.iframe.sandbox}
-        referrerPolicy={policy.iframe.referrerPolicy}
+        referrerPolicy={
+          policy.iframe.referrerPolicy as React.HTMLAttributeReferrerPolicy
+        }
         loading="lazy"
         style={{ height }}
         className={

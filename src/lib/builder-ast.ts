@@ -337,7 +337,8 @@ export type SectionBuilder = (
   props?: Record<string, PropValue>,
 ) => Section;
 
-export type ThemeAst = {  header: Section[];
+export type ThemeAst = {
+  header: Section[];
   main: Section[];
   footer: Section[];
 };
@@ -4546,10 +4547,7 @@ const BASE_CATALOG: CatalogEntry[] = [
         panel: "content",
         itemLabel: "text",
         maxRows: 8,
-        fields: [
-          text("text", "Text", 80),
-          text("icon", "Icon key", 20),
-        ],
+        fields: [text("text", "Text", 80), text("icon", "Icon key", 20)],
       },
       {
         key: "speed",

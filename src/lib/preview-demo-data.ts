@@ -57,7 +57,7 @@ export function previewDemoMap(
     imageUrl:
       p.image_url ||
       `/api/public/ph/${placeholderSeed(p.category)}/${p.slug}.svg`,
-    priceMinor: p.price ?? p.variants[0]?.price ?? 0,
+    priceMinor: p.variants[0]?.price ?? 0,
     compareAtMinor:
       p.variants[0] &&
       typeof (p.variants[0] as { compare_at?: unknown }).compare_at === "number"

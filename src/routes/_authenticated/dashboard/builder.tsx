@@ -156,12 +156,12 @@ const TEMPLATE_LABEL: Record<TemplateKey, { en: string; bn: string }> = {
   index: { en: "Home", bn: "হোম" },
   product: { en: "Product", bn: "প্রোডাক্ট" },
   collection: { en: "Collection", bn: "কালেকশন" },
+  account: { en: "Account", bn: "অ্যাকাউন্ট" },
   search: { en: "Search results", bn: "সার্চ ফলাফল" },
   cart: { en: "Cart", bn: "কার্ট" },
   checkout: { en: "Checkout", bn: "চেকআউট" },
   blog: { en: "Blog", bn: "ব্লগ" },
   page: { en: "Page", bn: "পেজ" },
-  account: { en: "Account", bn: "অ্যাকাউন্ট" },
 };
 
 const SLOT_LABEL: Record<Slot, { en: string; bn: string }> = {

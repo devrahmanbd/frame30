@@ -63,6 +63,17 @@ export function accountSlotCtx(
   return {
     section,
     ...widgetReader(section, undefined, args.locale),
+    link: (href: string) => {
+      if (
+        !href ||
+        href.startsWith("http") ||
+        href.startsWith("mailto:") ||
+        href.startsWith("tel:") ||
+        href === "#"
+      )
+        return href;
+      return href.startsWith("/") ? href : `/${href}`;
+    },
     Heading: "h2",
     primary: false,
     editing: false,
@@ -74,7 +85,6 @@ export function accountSlotCtx(
         ...(currency ? { currency } : {}),
       }),
     data: { rows: args.rows, pending: args.pending },
-    link: (href: string) => href,
     renderChildren: () => null,
   };
 }

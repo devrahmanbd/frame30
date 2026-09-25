@@ -21,13 +21,13 @@ function ctxFor(
   return {
     section,
     ...widgetReader(section, undefined, locale),
+    link: (href: string) => href,
     Heading: "h2",
     primary: false,
     editing: false,
     locale,
     storeSlug: "rupaboti-beauty",
     data,
-    link: (href: string) => href,
     renderChildren: () => null,
   };
 }

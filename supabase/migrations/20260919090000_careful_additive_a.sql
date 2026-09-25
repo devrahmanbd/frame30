@@ -1,4 +1,13 @@
 -- Careful additive migration, batch A (audit 2026-09-19).
+-- @framique-drift-repair: true
+-- @rationale: support_tickets drifted from what the merchant desk writes —
+--   priority was smallint and status was an enum, while the code writes text.
+--   The two ALTER COLUMN TYPE statements (lines ~141/~144) are idempotent
+--   (empty table, lossless text::text re-cast) and are drift-repair type
+--   corrections: no expand-contract path exists for a same-name type swap
+--   (TYPE, DROP COLUMN and RENAME are all banned outside a contract stage,
+--   and RENAME is banned everywhere). Verified lossless on the empty table
+--   at audit time (2026-09-19).
 -- Rules: ADD COLUMN only (IF NOT EXISTS), backfill with COALESCE (no-op on
 -- empty tables), keep every legacy column, no renames, no drops, no new
 -- NOT NULL enforcement. Payout enums verified to exist live.

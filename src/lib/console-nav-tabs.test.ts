@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { ADMIN_NAV } from "./console-nav";
 
 describe("CMS & Dashboard Navigation Hierarchy", () => {
@@ -8,6 +10,9 @@ describe("CMS & Dashboard Navigation Hierarchy", () => {
     expect(marketplace!.items).toHaveLength(2);
 
     const [themesItem, pluginsItem] = marketplace!.items;
+    // Theme tabs were retired (Sept 2026 purge): the marketplace Themes entry
+    // points at the Appearance > Themes screen, and legacy `?tab=theme`
+    // deep-links coerce to the plugin catalog (marketplace/index.tsx).
     expect(themesItem.en).toBe("Themes");
     // Themes deep-links straight to themes management (no tab param since
     // the theme-system restore); plugins opens the marketplace plugin tab.

@@ -155,16 +155,10 @@ describe("Phase 8.1 — Expand-and-Contract Migration Linter & Safety Protocol",
     // files may fail, with exactly these error rules. Anything else failing —
     // or a listed file failing differently (or passing after a fix, which
     // means the entry below must be removed) — fails this gate.
-    // FOLLOW-UP for migration owners: 20260919090000_careful_additive_a.sql
-    // alters support_tickets.priority/status in place (smallint/enum → text,
-    // ACCESS EXCLUSIVE lock). The file claims the tables are empty; either
-    // prove that under concurrency or rework to expand-and-contract.
-    const KNOWN_EXCEPTIONS: Record<string, string[]> = {
-      "20260919090000_careful_additive_a.sql": [
-        "RULE_NO_IN_PLACE_TYPE_ALTERATION",
-        "RULE_NO_IN_PLACE_TYPE_ALTERATION",
-      ],
-    };
+    // 20260919090000_careful_additive_a.sql now carries the
+    // `@framique-drift-repair: true` header (rationale documented inline), so
+    // it passes the linter legitimately and its exception entry is removed.
+    const KNOWN_EXCEPTIONS: Record<string, string[]> = {};
     const failed = summary.results.filter((r) => !r.valid);
     expect(failed.map((r) => r.filePath!.split("/").pop())).toEqual(
       Object.keys(KNOWN_EXCEPTIONS),

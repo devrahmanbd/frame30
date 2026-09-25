@@ -639,8 +639,8 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
     bn: "আসল রিভিউ গড়ের শুধু-দেখার তারা। তথ্য না থাকলে কিছু দেখায় না।",
   },
   whatsapp_button: {
-    en: "A WhatsApp chat button that opens a conversation with a prefilled greeting.",
-    bn: "হোয়াটসঅ্যাপ চ্যাট বাটন — আগে থেকে লেখা অভিবাদনসহ কথোপকথন খোলে।",
+    en: "Floating WhatsApp chat button that opens a prefilled message to the store's support number.",
+    bn: "হোয়াটসঅ্যাপ চ্যাট বাটন — স্টোর সাপোর্ট নম্বরে আগে থেকে লেখা বার্তা নিয়ে চ্যাট খোলে।",
   },
 };
 
@@ -1049,35 +1049,47 @@ export const PROP_HINTS: Record<string, BiText> = {
   },
   testimonials: {
     en: "Repeatable testimonial entries, each with a quote and author.",
-    bn: "পুনরাবৃত্তযোগ্য প্রশংসাপত্র — প্রতিটিতে উদ্ধৃতি ও লেখক।",
+    bn: "পুনরাবৃত্ত প্রশংসাপত্র — প্রতিটিতে উদ্ধৃতি ও লেখক।",
   },
   skin: {
-    en: "Visual skin for this widget's cards, from a closed vocabulary. First option is the default.",
-    bn: "উইজেটের কার্ডের ভিজ্যুয়াল স্কিন — নির্দিষ্ট তালিকা থেকে, প্রথমটিই ডিফল্ট।",
+    en: "Which visual variant this widget uses — switch it to change the look without losing content.",
+    bn: "উইজেটটি কোন ভিজ্যুয়াল ভার্সনে দেখাবে — কনটেন্ট না কাটাই লেআউটের চেহারা বদলায়।",
   },
   buckets: {
-    en: "Repeatable budget tiles, each with a label, an upper price bound and a link.",
-    bn: "পুনরাবৃত্তযোগ্য বাজেট টাইল — প্রতিটিতে লেবেল, সর্বোচ্চ দাম ও লিংক।",
+    en: "Repeatable price-range rows for the filter — each bucket is a label and a link.",
+    bn: "ফিল্টারের পুনরাবৃত্ত মূল্য-সীমার সারি — প্রতিটি বাকেটে লেবেল ও লিংক।",
   },
   occasions: {
-    en: "Repeatable occasion links shown in the matrix, each with a label and a link.",
-    bn: "ম্যাট্রিক্সে দেখানো উপলক্ষের লিংক — প্রতিটিতে লেবেল ও লিংক।",
+    en: "Repeatable occasion links, each with a label and a destination.",
+    bn: "পুনরাবৃত্ত উৎসবের লিংক — প্রতিটিতে লেবেল ও গন্তব্য।",
   },
   collections: {
-    en: "Repeatable collection tiles shown in the matrix, each with a title, link and image.",
-    bn: "ম্যাট্রিক্সে দেখানো কালেকশন টাইল — প্রতিটিতে শিরোনাম, লিংক ও ইমেজ।",
+    en: "Repeatable collection cards linking to curated product lists.",
+    bn: "পুনরাবৃত্ত কালেকশন কার্ড — নির্বাচিত পণ্যতালিকায় নিয়ে যায়।",
   },
   showDiscount: {
-    en: "Shows the computed sale badge, calculated from real prices — never a typed discount.",
-    bn: "আসল দাম থেকে হিসাব করা ছাড়ের ব্যাজ দেখায় — নিজে লেখা ছাড় নয়।",
+    en: "Show the sale badge on discounted products; off hides the badge everywhere.",
+    bn: "ছাড়ের পণ্যে সেল ব্যাজ দেখান; বন্ধ করলে সব জায়গায় লুকিয়ে যাবে।",
   },
   showStockHint: {
-    en: "Shows a stock hint only when real stock data flags low stock; otherwise nothing.",
-    bn: "আসল স্টক ডেটা কম থাকলেই স্টকের হিন্ট দেখায় — নইলে কিছু নয়।",
+    en: "Show the low-stock line so shoppers see running-out items; off keeps the rail quiet.",
+    bn: "স্টক শেষ হওয়ার কাছাকাছি আইটেম দেখান; বন্ধ করলে রেল শান্ত থাকবে।",
   },
   reviewCount: {
-    en: "How many reviews the aggregate is based on. 0 renders nothing — never a fake average.",
-    bn: "গড় কতটি রিভিউয়ের উপর ভিত্তি করে। 0 হলে কিছু দেখায় না — ভুয়া গড় নয়।",
+    en: "How many reviews sit behind the stars — 0 hides the count instead of inventing one.",
+    bn: "তারার পেছনে কতটি রিভিউ — ০ দিলে সংখ্যা লুকাবে, বানানো হবে না।",
+  },
+  overlay: {
+    en: "Shade laid over the banner image so text stays readable at any contrast.",
+    bn: "ব্যানার ছবির উপর ছায়া — লেখা যেকোনো কনট্রাস্টে পড়া যায়।",
+  },
+  direction: {
+    en: "Which way the strip travels — left to right or the reverse; motion pauses for reduced-motion users.",
+    bn: "স্ট্রিপ কোন দিকে চলে — বাঁ থেকে ডান বা উল্টো; reduced-motion ব্যবহারকারীর কাছে থেমে থাকে।",
+  },
+  allowMultiple: {
+    en: "Let shoppers keep more than one FAQ row open at once.",
+    bn: "একসাথে একাধিক প্রশ্নোত্তর সারি খোলা রাখতে দেয়।",
   },
 };
 

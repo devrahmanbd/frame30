@@ -22,16 +22,9 @@ describe("marketplace preset bridge", () => {
       db,
       "00000000-0000-4000-a000-000000000001",
     );
-    const slugs = catalog.themes.map((t) => t.slug).sort();
-    expect(slugs).toEqual([]);
-    for (const entry of catalog.themes) {
-      expect(entry.builtin).toBe(true);
-      expect(entry.kind).toBe("theme");
-      expect(entry.status).toBe("active");
-      expect(entry.price_minor_int).toBe(0);
-      expect(entry.compatible).toBe(true);
-      expect(entry.mine).toBe(false);
-    }
+    // Theme offer retired (Sept 2026 purge): themes is always the empty
+    // placeholder list, so there are no curated keys and no rows to iterate.
+    expect(catalog.themes).toEqual([]);
   });
 
   it("hides third-party rows outside the curated offer", async () => {
@@ -68,7 +61,9 @@ describe("marketplace preset bridge", () => {
       db,
       "00000000-0000-4000-a000-000000000001",
     );
-    expect(catalog.themes.map((t) => t.slug)).not.toContain("seller-theme");
+    // Theme offer retired (Sept 2026 purge): third-party theme rows never
+    // surface in the catalog, regardless of the allowlist.
+    expect(catalog.themes).toEqual([]);
   });
 
   it("prepends synthetic entries for official widgets", async () => {

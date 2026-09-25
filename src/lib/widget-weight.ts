@@ -206,12 +206,12 @@ export const TEMPLATE_JS_BUDGET: Record<TemplateKey, number> = {
   index: widgetBudget(1),
   product: widgetBudget(1),
   collection: widgetBudget(0.9),
+  account: widgetBudget(0.7),
   search: widgetBudget(0.9),
   page: widgetBudget(0.7),
   blog: widgetBudget(0.7),
   cart: widgetBudget(0.8),
   checkout: widgetBudget(0.7),
-  account: widgetBudget(0.7),
 };
 
 export function templateBudget(
