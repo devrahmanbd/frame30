@@ -32,12 +32,23 @@ git -C "$REPO" fetch origin "$BRANCH" >/dev/null 2>&1 || true
 git -C "$REPO" worktree remove --force "$WORK" >/dev/null 2>&1 || true
 git -C "$REPO" worktree add --detach "$WORK" "origin/$BRANCH"
 ln -sfn "$REPO/node_modules" "$WORK/node_modules"
+# Vite bakes VITE_* vars from the project root at build time, and .env is
+# intentionally untracked — so the ephemeral tree must borrow the live one.
+# Without this, publicClient() compiles to createClient(void 0, void 0)
+# and every public query 500s with "supabaseUrl is required."
+if [ -f "$REPO/.env" ]; then cp "$REPO/.env" "$WORK/.env"; fi
 
 cd "$WORK"
 # Never trust the shared module cache: a stale chunk once shipped old code
 # past a successful build (beacon 500 survived its own fix).
 rm -rf "$REPO/node_modules/.vite" "$WORK/.nitro"
 bun run build
+# Env guard: VITE_* must be baked (see .env copy above). An env-less build
+# compiles publicClient() to createClient(void 0, void 0) and 500s live.
+if grep -rq "createClient(void 0" "$WORK/.output/server/" 2>/dev/null; then
+  echo "BUILD REJECTED: VITE_* not baked (missing .env at build time)"
+  exit 1
+fi
 rsync -a --delete "$WORK/.output/" "$REPO/.output/"
 systemctl restart framique.service
 sleep 8
