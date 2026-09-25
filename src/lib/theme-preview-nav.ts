@@ -185,6 +185,19 @@ export function assemblePreviewTemplates(
   return templates;
 }
 
+export function titleCaseSlug(slug: string): string {
+  return slug.split("-").map((w) => (w ? w[0]!.toUpperCase() + w.slice(1) : w)).join(" ");
+}
+
+export function collectionDisplayName(themeKey: string, slug: string | null): string {
+  if (!slug) return "New in";
+  const catalog = demoCatalogFor(themeKey);
+  const found =
+    catalog.collections.find((c) => c.slug === slug) ??
+    catalog.categories.find((c) => c.slug === slug);
+  return found?.name ?? titleCaseSlug(slug);
+}
+
 export function resolveThemePreview(key: string): ThemePreviewPreset | null {
   const source = previewSourceFor(key);
   if (!source) return null;

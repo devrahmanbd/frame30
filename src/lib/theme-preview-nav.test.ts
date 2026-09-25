@@ -283,3 +283,12 @@ describe("previewTargetForHref slug-aware", () => {
     expect(previewTargetForHref("/pages/track-order")?.template).toBe("page");
   });
 });
+
+describe("collectionDisplayName", () => {
+  it("resolves known slugs, title-cases unknown", async () => {
+    const { collectionDisplayName } = await import("./theme-preview-nav");
+    expect(collectionDisplayName("songoskriti", "festive")).toBe("Eid & Festive");
+    expect(collectionDisplayName("songoskriti", "women")).toBe("Women");
+    expect(collectionDisplayName("songoskriti", "nope-xyz")).toBe("Nope Xyz");
+  });
+});
