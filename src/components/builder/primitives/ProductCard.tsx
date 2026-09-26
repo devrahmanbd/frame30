@@ -74,7 +74,7 @@ const LAYER_DELAYS = ["delay-[250ms]", "delay-[500ms]", "delay-[750ms]"];
 const LOW_STOCK_AT = 5;
 
 /** Quick View dialog body — product data loads only while the dialog is open. */
-function QuickViewBody({
+export function QuickViewBody({
   storeSlug,
   handle,
   locale,
@@ -377,7 +377,8 @@ export function ProductCard({
             {formatDisplayNumber(rank, { locale })}
           </span>
         ) : (
-          badgeLabel && (
+          badgeLabel &&
+          save === null && (
             <span
               data-part="badge"
               className={`absolute z-10 bg-[#1a1a1a] px-2 py-1 text-[9px] font-semibold tracking-wider uppercase text-white ${badgeSlot}`}
@@ -441,7 +442,7 @@ export function ProductCard({
       >
         <p
           data-part="title"
-          className="line-clamp-2 font-sans text-[13px] font-medium leading-snug text-[#1a1a1a] group-hover:text-[#1a1a1a]/70 transition-colors duration-300"
+          className="line-clamp-2 font-sans text-[13px] font-medium leading-snug text-[#1a1a1a] group-hover:text-[#1a1a1a]/70 transition-colors duration-300 motion-reduce:transition-none"
         >
           {row.title}
         </p>

@@ -54,6 +54,7 @@ const WISHLIST_CARD_SRC = existsSync(WISHLIST_CARD_PATH)
 
 const ROW_ID = "e0ba0000-0000-4000-8000-000000000401";
 const VARIANT_A = "e0ba0000-0000-4000-8000-0000000004aa";
+const VARIANT_B = "e0ba0000-0000-4000-8000-0000000004bb";
 
 const BASE_ROW = {
   id: ROW_ID,
@@ -98,6 +99,44 @@ function renderCard(
     );
   return renderToStaticMarkup(
     <QueryClientProvider client={client}>{body}</QueryClientProvider>,
+  );
+}
+
+function renderBody(
+  Body: (props: {
+    storeSlug: string;
+    handle: string;
+    locale: Locale;
+  }) => ReactElement,
+  locale: Locale = "en",
+) {
+  const client = new QueryClient();
+  client.setQueryData(["store", "product", "demo", "jamdani"], {
+    merchant: { currency_code: "BDT" },
+    product: {
+      title: "Jamdani Handloom Saree",
+      slug: "jamdani",
+      image_url: "https://cdn.example.com/img-1.jpg",
+      product_variants: [
+        {
+          id: VARIANT_A,
+          name: "Small",
+          price_amount_minor_int: 249900,
+          stock_quantity: 4,
+        },
+        {
+          id: VARIANT_B,
+          name: "Large",
+          price_amount_minor_int: 269900,
+          stock_quantity: 4,
+        },
+      ],
+    },
+  });
+  return renderToStaticMarkup(
+    <QueryClientProvider client={client}>
+      <Body storeSlug="demo" handle="jamdani" locale={locale} />
+    </QueryClientProvider>,
   );
 }
 
@@ -186,6 +225,25 @@ describe("ProductCard quick view", () => {
     expect(html).not.toContain("aria-modal");
     expect(CARD_SRC).not.toContain("aria-modal");
     expect(CARD_SRC).toContain("OverlayHost");
+  });
+
+  it("wires the dialog body to the product fetch, the cart and the stepper", () => {
+    expect(CARD_SRC).toContain("getStoreProduct");
+    expect(CARD_SRC).toContain("QtyStepper");
+    expect(CARD_SRC).toContain("useCart(storeSlug)");
+    expect(CARD_SRC).toContain("add(variant.id, qty)");
+  });
+
+  it("renders the opened dialog body with pressed size buttons, the stepper and add-to-cart", async () => {
+    const mod = await import("./ProductCard");
+    expect(typeof mod.QuickViewBody).toBe("function");
+    const html = renderBody(mod.QuickViewBody);
+    expect(html).toMatch(/aria-pressed="true"[^>]*>Small</);
+    expect(html).toMatch(/aria-pressed="false"[^>]*>Large</);
+    expect(html).toContain('aria-label="Quantity"');
+    expect(html).toContain('aria-label="Decrease quantity"');
+    expect(html).toContain('aria-label="Increase quantity"');
+    expect(html).toContain("Add to cart");
   });
 });
 
@@ -326,6 +384,14 @@ describe("ProductCard merch badges", () => {
     expect(CARD_SRC).toContain("row.stockCount");
     expect(CARD_SRC).not.toMatch(/row\.count\b/);
   });
+
+  it("renders badgeLabel exactly once when a sale ribbon is present", () => {
+    const html = renderCard(
+      <ProductCard row={BASE_ROW} locale="en" badgeLabel="New Season" />,
+    );
+    expect(html.split("New Season").length - 1).toBe(1);
+    expect(html).toMatch(/left-3 top-3[^>]*>[^<]*New Season −20%/);
+  });
 });
 
 describe("ProductCard data plumbing", () => {
@@ -400,5 +466,11 @@ describe("ProductCard preserved contracts", () => {
     expect(savePercent(200, 250)).toBe(20);
     expect(savePercent(250, 200)).toBeNull();
     expect(savePercent(undefined, 100)).toBeNull();
+  });
+
+  it("gates the title color transition behind motion-reduce", () => {
+    expect(CARD_SRC).toContain(
+      "transition-colors duration-300 motion-reduce:transition-none",
+    );
   });
 });
