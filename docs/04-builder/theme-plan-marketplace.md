@@ -1,3 +1,7 @@
+> **Superseded (2026-09-26):** authoritative guides are
+> [Builder README](../04-builder/README.md) and
+> [Theme authoring](../themes/creation.md). Kept as history; do not edit.
+
 # Theme Plan A — "Bazaar" (Amazon-class marketplace)
 
 Status: Planning · Target: `theme-presets.ts` preset + builder capability upgrade
