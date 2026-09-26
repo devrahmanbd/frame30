@@ -21,16 +21,7 @@ export type WishlistCache = {
   items?: Array<{ id?: string; variantId: string }>;
 };
 
-export function useWishlistCard({
-  slug,
-  variantId,
-}: {
-  slug: string;
-  variantId: string;
-}) {
-  const queryClient = useQueryClient();
-  const readWishlist = useServerFn(customerWishlistFn);
-  const toggleWishlist = useServerFn(accountToggleWishlistFn);
+function useSignedInSession() {
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -47,6 +38,35 @@ export function useWishlistCard({
       active = false;
     };
   }, []);
+
+  return signedIn;
+}
+
+/** Header badge: live count from the shared cache. Guests never fetch. */
+export function useWishlistHeader() {
+  const signedIn = useSignedInSession();
+  const readWishlist = useServerFn(customerWishlistFn);
+
+  const wishlist = useQuery<WishlistCache>({
+    queryKey: WISHLIST_KEY,
+    queryFn: () => readWishlist() as Promise<WishlistCache>,
+    enabled: signedIn === true,
+  });
+
+  return { count: wishlist.data?.items?.length ?? 0 };
+}
+
+export function useWishlistCard({
+  slug,
+  variantId,
+}: {
+  slug: string;
+  variantId: string;
+}) {
+  const queryClient = useQueryClient();
+  const readWishlist = useServerFn(customerWishlistFn);
+  const toggleWishlist = useServerFn(accountToggleWishlistFn);
+  const signedIn = useSignedInSession();
 
   const wishlist = useQuery<WishlistCache>({
     queryKey: WISHLIST_KEY,

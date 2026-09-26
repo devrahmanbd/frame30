@@ -41,8 +41,17 @@ import {
   accountToggleWishlistFn,
   accountUpsertSelfFn,
 } from "@/lib/accounts.functions";
+import {
+  ACCOUNT_TABS as TABS,
+  initialAccountTab,
+  isAccountTab,
+  type AccountTab,
+} from "@/lib/account-tab";
 
 export const Route = createFileRoute("/account")({
+  validateSearch: (s: Record<string, unknown>): { tab?: AccountTab } => ({
+    tab: isAccountTab(s.tab) ? s.tab : undefined,
+  }),
   loader: async () => {
     let host: Awaited<ReturnType<typeof resolveStorefrontHostFn>> = null;
     try {
@@ -80,8 +89,7 @@ export const Route = createFileRoute("/account")({
   component: AccountPage,
 });
 
-const TABS = ["orders", "addresses", "wishlist", "profile", "privacy"] as const;
-type Tab = (typeof TABS)[number];
+type Tab = AccountTab;
 
 const CONSENTS = [
   { channel: "email", purpose: "marketing" },
@@ -93,7 +101,8 @@ const CONSENTS = [
 function AccountPage() {
   const { t } = useLang();
   const { slug, chrome } = Route.useLoaderData();
-  const [tab, setTab] = useState<Tab>("orders");
+  const search = Route.useSearch();
+  const [tab, setTab] = useState<Tab>(initialAccountTab(search.tab));
   const qc = useQueryClient();
   const overviewFn = useServerFn(accountOverviewFn);
 

@@ -9,6 +9,7 @@ import {
   Heart
 } from "@/components/icons/tabler";
 import { useCart } from "@/lib/cart";
+import { useWishlistHeader } from "@/lib/wishlist-card";
 import { useLang } from "@/lib/i18n";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import {
@@ -140,6 +141,7 @@ export function StoreHeader({
   menus?: Pick<StoreMenus, "header" | "mobile"> | null;
 }) {
   const { count, hydrated } = useCart(slug);
+  const { count: wishlistCount } = useWishlistHeader();
   const { t } = useLang();
   const { location } = useRouterState();
   const custom = isCustomHostPath(location.pathname);
@@ -345,9 +347,25 @@ export function StoreHeader({
             </Link>
           )}
           
-          <button className={`${iconLinkCls} hidden sm:grid`} aria-label={t("Wishlist", "উইশলিস্ট")}>
-            <Heart className="size-[20px]" strokeWidth={1} aria-hidden />
-          </button>
+          {custom ? (
+            <Link to="/account" search={{ tab: "wishlist" }} aria-label={`${t("Wishlist","উইশলিস্ট")}, ${wishlistCount}`} className={`${iconLinkCls} relative hidden sm:grid`}>
+              <Heart className="size-[20px]" strokeWidth={1} aria-hidden />
+              {wishlistCount>0 && (
+                <span key={wishlistCount} className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+          ) : (
+            <Link to="/store/$slug/account" params={{ slug }} search={{ tab: "wishlist" }} aria-label={`${t("Wishlist","উইশলিস্ট")}, ${wishlistCount}`} className={`${iconLinkCls} relative hidden sm:grid`}>
+              <Heart className="size-[20px]" strokeWidth={1} aria-hidden />
+              {wishlistCount>0 && (
+                <span key={wishlistCount} className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+          )}
 
           {!isSongoskriti && <LanguageToggle />}
 

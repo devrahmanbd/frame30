@@ -355,6 +355,23 @@ body {
   }
 }
 
+/* Header count-badge pop (wishlist/cart). Transform/opacity only; callers
+   gate with motion-safe: so prefers-reduced-motion renders it statically. */
+@keyframes fq-badge-pop {
+  from {
+    transform: scale(0.72);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* Published theme tokens are injected as CSS variables on the storefront root
    so merchant branding never leaks into admin chrome.
 

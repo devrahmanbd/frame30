@@ -33,8 +33,17 @@ import {
   accountUpsertSelfFn,
 } from "@/lib/accounts.functions";
 import { getStoreChrome } from "@/lib/storefront.functions";
+import {
+  ACCOUNT_TABS as TABS,
+  initialAccountTab,
+  isAccountTab,
+  type AccountTab,
+} from "@/lib/account-tab";
 
 export const Route = createFileRoute("/store/$slug/account")({
+  validateSearch: (s: Record<string, unknown>): { tab?: AccountTab } => ({
+    tab: isAccountTab(s.tab) ? s.tab : undefined,
+  }),
   loader: async ({ params }) => {
     // The published `account` template, when the merchant has one. Rejected
     // by the storefront validator until the template-key track extends it —
@@ -64,8 +73,7 @@ export const Route = createFileRoute("/store/$slug/account")({
   component: AccountPage,
 });
 
-const TABS = ["orders", "addresses", "wishlist", "profile", "privacy"] as const;
-type Tab = (typeof TABS)[number];
+type Tab = AccountTab;
 
 const CONSENTS = [
   { channel: "email", purpose: "marketing" },
@@ -78,7 +86,8 @@ function AccountPage() {
   const { t } = useLang();
   const { slug } = Route.useParams();
   const { chrome } = Route.useLoaderData();
-  const [tab, setTab] = useState<Tab>("orders");
+  const search = Route.useSearch();
+  const [tab, setTab] = useState<Tab>(initialAccountTab(search.tab));
   const qc = useQueryClient();
   const overviewFn = useServerFn(accountOverviewFn);
 
