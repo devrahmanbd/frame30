@@ -37,7 +37,7 @@
  * Empty `testimonials`/`items` arrays render an editing placeholder and
  * null on the storefront — never a throw, never a blank crash.
  */
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, type KeyboardEvent } from "react";
 import type {
   PropRow,
   PropValue,
@@ -51,7 +51,6 @@ import {
   useSongoskritiReveals,
 } from "./songoskriti-motion";
 import { MediaFrame } from "./primitives/MediaFrame";
-import { Rail } from "./primitives/Rail";
 import { ProductCard, ProductCardSkeleton } from "./primitives/ProductCard";
 import { cardVariantOf } from "./merch";
 import { altKey, sizesAttr, sizesKey } from "@/lib/media";
@@ -113,7 +112,7 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale, link }) => 
     <section
       ref={scope}
       data-songoskriti-reveal
-      className="w-full py-16 sm:py-24 border-t border-[#eaeaea] bg-[#faf9f7]"
+      className="w-full py-16 sm:py-24 border-t border-[var(--theme-border)] bg-[var(--theme-surface)]"
     >
       <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
@@ -144,10 +143,10 @@ const FinderRow: WidgetComponent = ({ str, Heading, editing, locale, link }) => 
                 className="m-0 grid grid-cols-1 sm:grid-cols-2 gap-0 p-0 list-none"
               >
                 {occasions.map((o) => (
-                  <li key={o.label} className="border-b border-[#eaeaea] last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0">
+                  <li key={o.label} className="border-b border-[var(--theme-border)] last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0">
                     <a
                       href={link(o.href || "#")}
-                      className="group flex min-h-[60px] items-center justify-between bg-transparent px-4 sm:px-6 text-[11px] sm:text-[12px] font-semibold tracking-[0.18em] uppercase transition-all hover:bg-white"
+                      className="group flex min-h-[60px] items-center justify-between bg-transparent px-4 sm:px-6 text-[11px] sm:text-[12px] font-semibold tracking-[0.18em] uppercase transition-all hover:bg-[var(--theme-surface)]"
                     >
                       <span className="text-foreground transition-colors group-hover:text-foreground/60">
                         {o.label}
@@ -213,28 +212,28 @@ const CraftStory: WidgetComponent = ({
       {bool("scrim") && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-black/60"
+          className="pointer-events-none absolute inset-0 z-0 bg-[var(--theme-ink)]/60"
         />
       )}
       
       <div className="relative z-10 mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 flex flex-col items-center text-center">
         {eyebrow && (
-          <p className="mb-6 text-[10px] font-medium uppercase tracking-[0.35em] text-white/70">
+          <p className="mb-6 text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--theme-surface)]/70">
             {eyebrow}
           </p>
         )}
-        <Heading className="font-serif text-3xl sm:text-5xl lg:text-[4rem] font-light tracking-wide leading-tight text-white max-w-4xl">
+        <Heading className="font-serif text-3xl sm:text-5xl lg:text-[4rem] font-light tracking-wide leading-tight text-[var(--theme-surface)] max-w-4xl">
           {headline}
         </Heading>
         {body && (
-          <p className="mt-6 max-w-2xl text-[14px] sm:text-[16px] font-light leading-relaxed text-white/80">
+          <p className="mt-6 max-w-2xl text-[14px] sm:text-[16px] font-light leading-relaxed text-[var(--theme-surface)]/80">
             {body}
           </p>
         )}
         {ctaLabel && (
           <a
             href={link(ctaHref || "#")}
-            className="mt-10 inline-flex items-center min-h-[46px] border-b-2 border-white/40 pb-1 text-[11px] font-medium tracking-[0.25em] uppercase text-white hover:border-white transition-all duration-300"
+            className="mt-10 inline-flex items-center min-h-[46px] border-b-2 border-[var(--theme-surface)]/40 pb-1 text-[11px] font-medium tracking-[0.25em] uppercase text-[var(--theme-surface)] hover:border-[var(--theme-surface)] transition-all duration-300"
           >
             {ctaLabel}
           </a>
@@ -358,7 +357,7 @@ const Testimonials: WidgetComponent = ({
     <section
       ref={scope}
       data-songoskriti-reveal
-      className="w-full bg-[#faf9f7] py-16 sm:py-20"
+      className="w-full bg-[var(--theme-surface)] py-16 sm:py-20"
       aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
       onMouseEnter={() => pause()}
       onMouseLeave={() => resume()}
@@ -477,9 +476,9 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
     <div
       ref={scope}
       data-songoskriti-reveal
-      className="w-full border-t border-[#eaeaea]"
+      className="w-full border-t border-[var(--theme-border)]"
     >
-      <ul className="mx-auto grid max-w-[var(--fq-container,1440px)] grid-cols-2 lg:grid-cols-4 divide-x divide-[#eaeaea] px-0">
+      <ul className="mx-auto grid max-w-[var(--fq-container,1440px)] grid-cols-2 lg:grid-cols-4 divide-x divide-[var(--theme-border)] px-0">
         {items.map((item, idx) => (
           <li
             key={item.title}
@@ -508,109 +507,216 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
 
 /* ------------------------------------------------------------ product_rail */
 
-const getLuxuryImage = (seed: string) => {
-  const images = ["/ph/songoskriti/hero-festive.png", "/ph/songoskriti/hero-weaves.png", "/ph/songoskriti/hero-artisans.png"];
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) hash = hash * 31 + seed.charCodeAt(i);
-  return images[Math.abs(hash) % images.length]!;
-};
+/**
+ * Songoskriti product rail — luxury editorial skin over the shared
+ * merchandising primitives.
+ *
+ * Browser-verified rhythm (2026-09-24, pinned by songoskriti.test.tsx):
+ * heading + arrows share one docked header row (`justify-between`) ahead
+ * of the card list — never a floating control row beneath it. The shared
+ * `Rail` primitive went button-less (snap-scroll redesign), so this rail
+ * owns its docked header + scroll list here: same keyboard contract
+ * (ArrowLeft/Right/Home/End on a labelled list), the same shared
+ * `ProductCard` data semantics as the merch rail (prices, badges, stars —
+ * byte-identical cards), 44px arrow targets, bn/en labels, and
+ * reduced-motion gating. Colours ride `var(--theme-*)` tokens only.
+ */
+const SongoskritiProductRail: WidgetComponent = (ctx) => {
+  const { str, bool, int, data, locale, Heading } = ctx;
+  const rows = data?.rows?.slice(0, int("limit", 12, 1, 24));
+  const label =
+    str("heading") || (locale === "bn" ? "পণ্যের তালিকা" : "Product rail");
+  const subhead = str("subhead");
+  const variant = cardVariantOf(str("cardVariant"), "compact");
+  const prevLabel = locale === "bn" ? "বামে স্ক্রল করুন" : "Scroll left";
+  const nextLabel = locale === "bn" ? "ডানে স্ক্রল করুন" : "Scroll right";
 
-const SongoskritiProductCard = ({ row, promise, badge }: any) => {
-  const image = row.imageUrl?.endsWith(".svg") ? getLuxuryImage(row.id) : row.imageUrl || getLuxuryImage(row.id);
-  const hoverImage = getLuxuryImage(row.id + "hover");
-  
-  return (
-    <article className="group relative flex flex-col">
-      <a href={row.href ?? "#"} className="relative w-full aspect-[3/4] block overflow-hidden bg-[#f5f3f0]">
-        <img
-          src={image}
-          alt={row.title}
-          className="absolute inset-0 w-full h-full object-cover transition-all duration-[1200ms] ease-[cubic-bezier(0.23,1,0.32,1)] opacity-100 group-hover:opacity-0 group-hover:scale-105"
-          loading="lazy"
-        />
-        <img
-          src={hoverImage}
-          alt={row.title}
-          className="absolute inset-0 w-full h-full object-cover transition-all duration-[1200ms] ease-[cubic-bezier(0.23,1,0.32,1)] scale-[1.04] opacity-0 group-hover:scale-100 group-hover:opacity-100"
-          loading="lazy"
-        />
-        {badge && (
-          <span className="absolute top-3 left-3 text-[9px] font-semibold tracking-[0.2em] uppercase bg-white/90 text-foreground px-2 py-0.5">
-            {badge}
-          </span>
+  const listRef = useRef<HTMLUListElement>(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(true);
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return;
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(query.matches);
+    const onChange = () => setReduced(query.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+  const updateEdges = () => {
+    const el = listRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    if (max <= 4) {
+      setCanLeft(false);
+      setCanRight(false);
+      return;
+    }
+    setCanLeft(el.scrollLeft > 4);
+    setCanRight(el.scrollLeft < max - 4);
+  };
+  const rowCount = rows?.length ?? -1;
+  useEffect(() => {
+    const el = listRef.current;
+    if (!el) return;
+    updateEdges();
+    el.addEventListener("scroll", updateEdges, { passive: true });
+    window.addEventListener("resize", updateEdges);
+    return () => {
+      el.removeEventListener("scroll", updateEdges);
+      window.removeEventListener("resize", updateEdges);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rowCount]);
+
+  const nudge = (direction: 1 | -1) => {
+    const el = listRef.current;
+    if (!el) return;
+    el.scrollBy({
+      left: direction * Math.max(160, el.clientWidth * 0.8),
+      behavior: reduced ? "auto" : "smooth",
+    });
+  };
+
+  const onListKeyDown = (event: KeyboardEvent<HTMLUListElement>) => {
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      nudge(1);
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      nudge(-1);
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      listRef.current?.scrollTo({
+        left: 0,
+        behavior: reduced ? "auto" : "smooth",
+      });
+    } else if (event.key === "End") {
+      event.preventDefault();
+      const el = listRef.current;
+      el?.scrollTo({
+        left: el.scrollWidth,
+        behavior: reduced ? "auto" : "smooth",
+      });
+    }
+  };
+
+  const arrowClassName =
+    "flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-[var(--theme-border)] text-foreground motion-safe:transition-colors hover:bg-[var(--theme-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary motion-reduce:transition-none";
+
+  // Docked header: heading + both arrows share one row ahead of the list.
+  const header = (
+    <div className="mb-8 flex items-center justify-between gap-3">
+      <div className="min-w-0">
+        {str("heading") ? (
+          <Heading className="font-serif text-[28px] sm:text-[36px] lg:text-[44px] font-light tracking-[0.01em] text-foreground">
+            {str("heading")}
+          </Heading>
+        ) : (
+          <span className="sr-only">{label}</span>
         )}
-        {/* Wishlist button */}
-        <button
-          type="button"
-          aria-label="Add to wishlist"
-          className="absolute right-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-[#1a1a1a] shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-[#1a1a1a] hover:text-white opacity-0 group-hover:opacity-100"
-          onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-          </svg>
-        </button>
-      </a>
-      <a href={row.href ?? "#"} className="flex flex-col items-start text-left mt-3 gap-0.5 w-full">
-        <h3 className="font-sans text-[13px] font-medium text-[#1a1a1a] group-hover:text-[#1a1a1a]/70 transition-colors line-clamp-2 leading-snug">
-          {row.title}
-        </h3>
-        <div className="font-sans text-[13px] font-normal text-[#1a1a1a] mt-0.5">
-          {row.priceMinor ? `BDT ${(row.priceMinor / 100).toLocaleString()}` : ""}
-        </div>
-        {promise && (
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-[#1a1a1a]/50 mt-1">
-            {promise}
+        {subhead && (
+          <p className="mt-3 font-serif text-[14px] sm:text-[16px] font-light text-foreground/50 italic">
+            {subhead}
           </p>
         )}
-      </a>
-    </article>
-  );
-};
-
-const SongoskritiProductRail: WidgetComponent = (ctx) => {
-  const { str, int, data, locale, Heading } = ctx;
-  const rows = data?.rows?.slice(0, int("limit", 12, 1, 24));
-  const label = str("heading") || (locale === "bn" ? "পণ্যের তালিকা" : "Product rail");
-  const subhead = str("subhead");
-  const badgeLabel = str("badgeLabel");
-  
-  const headingEl = str("heading") ? (
-    <div className="text-center mb-2 w-full">
-      <Heading className="font-serif text-[28px] sm:text-[36px] lg:text-[44px] font-light tracking-[0.01em] text-foreground">
-        {str("heading")}
-      </Heading>
-      {subhead && (
-        <p className="mt-3 font-serif text-[14px] sm:text-[16px] font-light text-foreground/50 italic">
-          {subhead}
-        </p>
-      )}
+      </div>
+      <div className="flex shrink-0 items-center gap-2">
+        <button
+          type="button"
+          aria-label={prevLabel}
+          aria-disabled={!canLeft}
+          onClick={() => nudge(-1)}
+          className={arrowClassName}
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            aria-hidden="true"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          aria-label={nextLabel}
+          aria-disabled={!canRight}
+          onClick={() => nudge(1)}
+          className={arrowClassName}
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            aria-hidden="true"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
+      </div>
     </div>
-  ) : null;
-  
-  const sectionClassName = "w-full bg-white py-16 sm:py-24 border-t border-[#eaeaea]";
-  
+  );
+
+  const sectionClassName =
+    "w-full bg-[var(--theme-surface)] py-16 sm:py-24 border-t border-[var(--theme-border)]";
+
   if (rows !== undefined && rows.length === 0 && !data?.pending) return null;
   return (
     <section className={sectionClassName}>
       <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         {data?.pending || rows === undefined ? (
-          <Rail label={label} heading={headingEl ?? undefined}>
-            {Array.from({ length: 4 }, (_, i) => (
-              <ProductCardSkeleton key={i} variant="standard" />
-            ))}
-          </Rail>
-        ) : rows.length === 0 ? null : (
-          <Rail label={label} heading={headingEl ?? undefined}>
-            {rows.map((row) => (
-              <SongoskritiProductCard
-                key={row.id}
-                row={row}
-                promise={str("promise") || undefined}
-                badge={badgeLabel || undefined}
-              />
-            ))}
-          </Rail>
+          <>
+            {header}
+            <div
+              className="flex gap-6 overflow-hidden sm:gap-8"
+              aria-hidden="true"
+            >
+              {Array.from({ length: 4 }, (_, i) => (
+                <div
+                  key={i}
+                  className="w-[72vw] max-w-[300px] shrink-0 sm:w-[38vw] sm:max-w-[320px] lg:w-[22%]"
+                >
+                  <ProductCardSkeleton variant={variant} />
+                </div>
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            {header}
+            <ul
+              ref={listRef}
+              aria-label={label}
+              tabIndex={0}
+              onKeyDown={onListKeyDown}
+              onScroll={updateEdges}
+              style={{ WebkitOverflowScrolling: "touch" }}
+              className="flex snap-x snap-mandatory gap-6 sm:gap-8 overflow-x-auto scroll-px-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            >
+              {rows.map((row) => (
+                <li
+                  key={row.id}
+                  className="shrink-0 snap-start w-[72vw] max-w-[300px] min-w-[10rem] sm:w-[38vw] sm:max-w-[320px] lg:w-[22%] lg:min-w-0"
+                >
+                  <ProductCard
+                    row={row}
+                    locale={locale}
+                    variant={variant}
+                    badgeLabel={str("badgeLabel") || undefined}
+                    promise={str("promise") || undefined}
+                    showRating={bool("showRating")}
+                  />
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </div>
     </section>
@@ -620,7 +726,7 @@ const SongoskritiProductRail: WidgetComponent = (ctx) => {
 /* -------------------------------------------------------- luxury footer */
 
 const SongoskritiNewsletter: WidgetComponent = ({ str, section, locale }) => (
-  <section className="border-t border-[#eaeaea] py-16 sm:py-24 text-center px-4">
+  <section className="border-t border-[var(--theme-border)] py-16 sm:py-24 text-center px-4">
     <div className="mx-auto max-w-xl">
       <h3 className="font-serif text-[24px] sm:text-[32px] font-light tracking-[0.02em] text-foreground mb-4">
         {str("heading")}
@@ -642,7 +748,7 @@ const SongoskritiNewsletter: WidgetComponent = ({ str, section, locale }) => (
           type="email"
           autoComplete="email"
           required
-          className="h-12 w-full flex-1 rounded-none border-b border-[#dcdcdc] bg-transparent px-2 py-2 text-[13px] outline-none transition-colors placeholder:text-foreground/30 focus:border-foreground"
+          className="h-12 w-full flex-1 rounded-none border-b border-[var(--theme-border)] bg-transparent px-2 py-2 text-[13px] outline-none transition-colors placeholder:text-foreground/30 focus:border-foreground"
           placeholder={locale === "bn" ? "ইমেইল লিখুন" : "Enter your email"}
         />
         <button
@@ -666,7 +772,7 @@ const SongoskritiRichText: WidgetComponent = ({ str }) => {
   if (!heading && body) {
     // Colophon variant (bottom of footer)
     return (
-      <section className="py-6 border-t border-[#eaeaea] text-center">
+      <section className="py-6 border-t border-[var(--theme-border)] text-center">
         <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-foreground/50">
           {body}
         </p>
@@ -676,7 +782,7 @@ const SongoskritiRichText: WidgetComponent = ({ str }) => {
 
   // Statement variant
   return (
-    <section className="py-16 sm:py-24 text-center px-4 border-t border-[#eaeaea]">
+    <section className="py-16 sm:py-24 text-center px-4 border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-2xl">
         {heading && (
           <h2 className="font-serif text-[28px] sm:text-[40px] font-light leading-tight tracking-[0.01em] text-foreground mb-6">
@@ -720,7 +826,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({ str, section, link, locale 
           .filter((col) => col.title || col.links.length > 0);
   if (columns.length === 0) return null;
   return (
-    <nav aria-label="Footer" className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4 lg:gap-12 py-16 sm:py-20 border-t border-[#eaeaea]">
+    <nav aria-label="Footer" className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4 lg:gap-12 py-16 sm:py-20 border-t border-[var(--theme-border)]">
       {columns.map((col) => (
         <div key={col.title}>
           <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-foreground mb-8">
@@ -752,7 +858,7 @@ const SongoskritiPaymentIcons: WidgetComponent = ({ str }) => {
     .slice(0, 12);
   if (marks.length === 0) return null;
   return (
-    <section className="py-12 border-t border-[#eaeaea] text-center">
+    <section className="py-12 border-t border-[var(--theme-border)] text-center">
       {str("heading") && (
         <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-foreground/50 mb-6">
           {str("heading")}
@@ -792,7 +898,7 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({ str, section, link, locale
   const grid = departments.slice(2);
 
   return (
-    <section ref={scope} data-songoskriti-reveal className="py-16 sm:py-20 bg-[#faf9f7] border-t border-[#eaeaea]">
+    <section ref={scope} data-songoskriti-reveal className="py-16 sm:py-20 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="flex items-center justify-between mb-10">
           <h2 className="font-serif text-[22px] sm:text-[28px] font-light tracking-[0.04em] text-foreground uppercase">
@@ -813,7 +919,7 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({ str, section, link, locale
                 i < 2 ? "lg:row-span-1" : ""
               }`}
             >
-              <div className={`relative w-full overflow-hidden bg-[#ede9e4] ${
+              <div className={`relative w-full overflow-hidden bg-[var(--theme-muted)] ${
                 i < 2 ? "aspect-[2/3]" : "aspect-[3/4]"
               }`}>
                 {dept.image ? (
@@ -828,12 +934,12 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({ str, section, link, locale
                     {dept.title.slice(0, 2).toUpperCase()}
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent transition-opacity duration-500 group-hover:from-black/80" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/70 via-black/10 to-transparent transition-opacity duration-500 group-hover:from-black/80" />
                 <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-                  <h3 className="font-serif text-[14px] sm:text-[16px] font-light text-white tracking-[0.05em] uppercase leading-tight">
+                  <h3 className="font-serif text-[14px] sm:text-[16px] font-light text-[var(--theme-surface)] tracking-[0.05em] uppercase leading-tight">
                     {dept.title}
                   </h3>
-                  <span className="mt-1.5 block text-[9px] font-semibold uppercase tracking-[0.2em] text-white/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="mt-1.5 block text-[9px] font-semibold uppercase tracking-[0.2em] text-[var(--theme-surface)]/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     {locale === "bn" ? "দেখুন →" : "SHOP →"}
                   </span>
                 </div>
@@ -848,7 +954,125 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({ str, section, link, locale
 
 /* ------------------------------------------------------ luxury mega menu */
 
-// Mega menu subcategory definitions (spec §3)
+/**
+ * Songoskriti mega menu — live-data tiers with a hardcoded safety net.
+ *
+ * (a) Host slot wins when present. `slot` is the existing WidgetCtx prop
+ *     SectionRenderer fills from `contextSlots` — but only for
+ *     template-context widgets (SectionRenderer.tsx:244-256), and mega_menu
+ *     declares no `templates`, so no host supplies it today. The check costs
+ *     nothing, reuses the existing pipe (no new plumbing), and lets a future
+ *     host override win. Dashboard StoreMenus do NOT flow through this pipe;
+ *     they reach songoskriti shoppers through `StoreHeader`, which owns that
+ *     data. Do not wire a menu fetch here.
+ * (b) Else live taxonomy rows (the registry's `taxonomy` source, honoring the
+ *     `limit` param) render the top-level menubar — the same rows the generic
+ *     chrome MegaMenu consumes. Flat taxonomy rows carry no children, so they
+ *     render as plain top-level links with no dropdown panel (nothing
+ *     invented, no fake hierarchy).
+ * (c) Else the hardcoded bilingual tree below (demo/preview safety — the
+ *     storefront never renders a bare bar).
+ *
+ * `label`/`label_bn` (bitext: BITEXT_FIELDS + withBiText already promote and
+ * seed the sibling, and the songoskriti header preset emits both) names the
+ * nav landmark. `limit` caps top-level entries. `columns` (1–4, closed
+ * Tailwind set) sizes the dropdown panel grid wherever panels exist.
+ */
+
+// বাংলা twins for every hardcoded fallback string, keyed by the English
+// copy. A missing key falls back to English (flagged, never blank).
+export const MEGA_MENU_FALLBACK_BN: Record<string, string> = {
+  Women: "মহিলা",
+  Men: "পুরুষ",
+  Kids: "শিশু",
+  Sarees: "শাড়ি",
+  Panjabi: "পাঞ্জাবি",
+  Festive: "উৎসব",
+  Wedding: "বিয়ে",
+  Jewellery: "গহনা",
+  Heritage: "ঐতিহ্য",
+  "New Arrivals": "নতুন সংগ্রহ",
+  "BY TYPE": "ধরন অনুযায়ী",
+  "BY WEAVE": "বুনন অনুযায়ী",
+  "BY OCCASION": "উপলক্ষ অনুযায়ী",
+  "BY GENDER": "ক্রেতা অনুযায়ী",
+  "BY CRAFT": "কারুকাজ অনুযায়ী",
+  "BY STYLE": "স্টাইল অনুযায়ী",
+  STORIES: "গল্প",
+  "Salwar Kameez": "সালোয়ার কামিজ",
+  Kurta: "কুর্তা",
+  Blouses: "ব্লাউজ",
+  Dupatta: "দুপাট্টা",
+  Jamdani: "জামদানি",
+  Tangail: "টাঙ্গাইল",
+  "Rajshahi Silk": "রাজশাহী সিল্ক",
+  "Nakshi Kantha": "নকশি কাঁথা",
+  Khadi: "খাদি",
+  Everyday: "প্রতিদিনের",
+  Pajama: "পাজামা",
+  Shirts: "শার্ট",
+  Handloom: "হ্যান্ডলুম",
+  Girls: "মেয়েরা",
+  Boys: "ছেলেরা",
+  Unisex: "ইউনিসেক্স",
+  School: "স্কুল",
+  "Family Matching": "পরিবারের মিল",
+  "Tangail Taant": "টাঙ্গাইল তাঁত",
+  Cotton: "সুতি",
+  Muslin: "মসলিন",
+  Bridal: "বিয়ের",
+  Party: "পার্টি",
+  Earrings: "কানের দুল",
+  Necklace: "হার",
+  Jhumka: "ঝুমকা",
+  Bangles: "চুড়ি",
+  Rings: "আংটি",
+  Contemporary: "আধুনিক",
+  Eid: "ঈদ",
+  Puja: "পূজা",
+  Weddings: "বিয়ে",
+  Mehendi: "মেহেদি",
+  Sangeet: "সংগীত",
+  Gifting: "উপহার",
+  "For Women": "নারীদের জন্য",
+  "For Men": "পুরুষদের জন্য",
+  "For Kids": "শিশুদের জন্য",
+  "Artisan Stories": "কারিগরের গল্প",
+  "Weave Guides": "বুনন নির্দেশিকা",
+  "Care Guide": "যত্ন নির্দেশিকা",
+  Featured: "বিশেষ",
+  Shop: "কেনাকাটা",
+  "Main navigation": "প্রধান নেভিগেশন",
+};
+
+function megaFallbackLabel(en: string, locale: string): string {
+  if (locale !== "bn") return en;
+  return MEGA_MENU_FALLBACK_BN[en] ?? en;
+}
+
+/** Panel grid columns stay a closed Tailwind set so the classes survive. */
+export const MEGA_PANEL_COLS: Record<number, string> = {
+  1: "grid-cols-1",
+  2: "grid-cols-2",
+  3: "grid-cols-3",
+  4: "grid-cols-4",
+};
+
+export type SongoskritiMegaPanelLink = { label: string; href: string };
+export type SongoskritiMegaPanelSection = {
+  title: string;
+  links: SongoskritiMegaPanelLink[];
+};
+export type SongoskritiMegaEntry = {
+  id: string;
+  label: string;
+  href: string;
+  sections: SongoskritiMegaPanelSection[];
+  featuredImage?: string;
+  shopAllHref: string;
+};
+
+const megaSlug = (s: string) => `/c/${s.toLowerCase().replace(/\s+/g, "-")}`;
 const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: string[] }>; featuredImage?: string; shopAllHref: string }> = {
   Women: {
     sections: [
@@ -909,11 +1133,71 @@ const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: s
   },
 };
 
-const SongoskritiMegaMenu: WidgetComponent = ({ str, int, data, link }) => {
+/**
+ * Hardcoded fallback tree (tier c). English source of truth; বাংলা resolves
+ * through MEGA_MENU_FALLBACK_BN at render so both locales stay covered.
+ * Top-level order matches the spec §2 center nav.
+ */
+export function buildSongoskritiFallbackEntries(
+  locale: string,
+): SongoskritiMegaEntry[] {
+  const L = (en: string) => megaFallbackLabel(en, locale);
+  const withDef = (
+    id: string,
+    en: string,
+    href: string,
+    defKey: string,
+  ): SongoskritiMegaEntry => {
+    const def = MEGA_MENU_DEFS[defKey];
+    return {
+      id,
+      label: L(en),
+      href,
+      sections: (def?.sections ?? []).map((section) => ({
+        title: L(section.title),
+        links: section.links.map((linkText) => ({
+          label: L(linkText),
+          href: megaSlug(linkText),
+        })),
+      })),
+      featuredImage: def?.featuredImage,
+      shopAllHref: def?.shopAllHref ?? href,
+    };
+  };
+  const plain = (
+    id: string,
+    en: string,
+    href: string,
+  ): SongoskritiMegaEntry => ({
+    id,
+    label: L(en),
+    href,
+    sections: [],
+    shopAllHref: href,
+  });
+  return [
+    withDef("women", "Women", "/c/women", "Women"),
+    withDef("men", "Men", "/c/men", "Men"),
+    withDef("kids", "Kids", "/c/kids", "Kids"),
+    withDef("sarees", "Sarees", "/c/sarees", "Sarees"),
+    plain("panjabi", "Panjabi", "/c/panjabi"),
+    withDef("festive", "Festive", "/c/festive", "Festive"),
+    plain("wedding", "Wedding", "/c/wedding"),
+    withDef("jewellery", "Jewellery", "/c/jewellery", "Jewellery"),
+    withDef("heritage", "Heritage", "/c/heritage", "Heritage"),
+    plain("new-in", "New Arrivals", "/c/new-in"),
+  ];
+}
+
+const SongoskritiMegaMenu: WidgetComponent = ({
+  str,
+  int,
+  data,
+  link,
+  locale,
+  slot,
+}) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const rows = data?.rows ?? [];
-  const label = str("label") || "Shop";
-  const visible = rows.slice(0, int("limit", 12, 1, 24));
 
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
@@ -923,42 +1207,96 @@ const SongoskritiMegaMenu: WidgetComponent = ({ str, int, data, link }) => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Static nav items (spec §2 center nav)
-  const NAV_ITEMS = ["Women", "Men", "Kids", "Sarees", "Panjabi", "Festive", "Wedding", "Jewellery", "Heritage", "New Arrivals"];
+  // Tier (a): host override through the existing WidgetCtx.slot prop.
+  // Unset for mega_menu today (no `templates` entry), so this is a no-op
+  // until a host provides one — never a fetch, never a new pipe.
+  if (slot != null) return <>{slot}</>;
 
-  const textColor = scrolled ? "text-foreground" : "text-white";
-  const activeDef = activeMenu ? MEGA_MENU_DEFS[activeMenu] : null;
+  // The batch flight shows a box-model skeleton, never a bare bar.
+  if (data?.pending) {
+    return (
+      <div
+        className="w-full border-b border-[var(--theme-border)]"
+        aria-hidden="true"
+      >
+        <div className="mx-auto flex h-12 max-w-[var(--fq-container,1440px)] items-center justify-center gap-6 px-4">
+          {Array.from({ length: 6 }, (_, i) => (
+            <span
+              key={i}
+              className="h-3 w-16 animate-pulse bg-foreground/10 motion-reduce:animate-none"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Locale-aware trigger label (label_bn resolves through str); it names the
+  // landmark, matching the generic chrome MegaMenu precedent.
+  const label = str("label") || megaFallbackLabel("Shop", locale);
+  const limit = int("limit", 8, 1, 24);
+  const columns = int("columns", 4, 1, 4);
+
+  // Tier (b): live taxonomy rows win when the batch resolved any.
+  const rows = data?.rows ?? [];
+  const entries: SongoskritiMegaEntry[] =
+    rows.length > 0
+      ? rows.slice(0, limit).map((row) => ({
+          id: row.id,
+          label: row.title,
+          href: row.href ?? "#",
+          sections: [],
+          shopAllHref: row.href ?? "#",
+        }))
+      : buildSongoskritiFallbackEntries(locale).slice(0, limit);
+
+  const textColor = scrolled ? "text-foreground" : "text-[var(--theme-surface)]";
+  const activeEntry = activeMenu
+    ? (entries.find((entry) => entry.id === activeMenu) ?? null)
+    : null;
+  const showPanel = activeEntry && activeEntry.sections.length > 0;
 
   return (
     <div
-      className={`relative w-full transition-all duration-500 ease-out border-b ${
+      className={`relative w-full border-b motion-safe:transition-all motion-safe:duration-500 motion-safe:ease-out ${
         scrolled
-          ? "bg-white/95 backdrop-blur-xl border-[#eaeaea]"
+          ? "bg-[var(--theme-surface)]/95 backdrop-blur-xl border-[var(--theme-border)]"
           : "bg-transparent border-transparent"
       }`}
       onMouseLeave={() => setActiveMenu(null)}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") setActiveMenu(null);
+      }}
     >
-      <nav aria-label="Main navigation" className="mx-auto flex h-12 max-w-[var(--fq-container,1440px)] items-center justify-center gap-6 px-4">
-        {NAV_ITEMS.map((item) => {
-          const href = item === "New Arrivals" ? "/c/new-in" : item === "Panjabi" ? "/c/panjabi" : item === "Wedding" ? "/c/wedding" : `/c/${item.toLowerCase()}`;
-          const hasMega = !!MEGA_MENU_DEFS[item];
+      <nav
+        aria-label={label}
+        className="mx-auto flex h-12 max-w-[var(--fq-container,1440px)] items-center justify-center gap-6 overflow-x-auto px-4"
+      >
+        {entries.map((item) => {
+          const hasMega = item.sections.length > 0;
           return (
             <div
-              key={item}
-              className="relative flex h-full items-center"
-              onMouseEnter={() => hasMega ? setActiveMenu(item) : setActiveMenu(null)}
+              key={item.id}
+              className="relative flex h-full shrink-0 items-center"
+              onMouseEnter={() =>
+                hasMega ? setActiveMenu(item.id) : setActiveMenu(null)
+              }
+              onFocus={() =>
+                hasMega ? setActiveMenu(item.id) : setActiveMenu(null)
+              }
             >
               <a
-                href={link(href)}
-                className={`inline-flex h-full items-center gap-1 whitespace-nowrap px-0.5 font-sans text-[11px] font-semibold tracking-[0.14em] uppercase transition-all duration-200 hover:opacity-60 ${
-                  activeMenu === item ? "opacity-60" : ""
+                href={link(item.href)}
+                aria-haspopup={hasMega ? "true" : undefined}
+                className={`inline-flex h-full min-h-[44px] items-center gap-1 whitespace-nowrap px-0.5 font-sans text-[11px] font-semibold tracking-[0.14em] uppercase motion-safe:transition-all motion-safe:duration-200 hover:opacity-60 ${
+                  activeMenu === item.id ? "opacity-60" : ""
                 } ${textColor}`}
               >
-                {item}
+                {item.label}
                 {hasMega && (
                   <ChevronDown
                     size={9}
-                    className={`shrink-0 transition-transform duration-200 ${activeMenu === item ? "rotate-180" : ""}`}
+                    className={`shrink-0 motion-safe:transition-transform motion-safe:duration-200 ${activeMenu === item.id ? "rotate-180" : ""}`}
                   />
                 )}
               </a>
@@ -968,54 +1306,60 @@ const SongoskritiMegaMenu: WidgetComponent = ({ str, int, data, link }) => {
       </nav>
 
       {/* Mega menu panel */}
-      {activeMenu && activeDef && (
+      {showPanel && (
         <div
-          className="absolute left-0 top-full z-50 w-full bg-white/98 backdrop-blur-2xl shadow-2xl border-t border-[#eaeaea]"
-          onMouseEnter={() => setActiveMenu(activeMenu)}
+          className="absolute left-0 top-full z-50 w-full bg-[var(--theme-surface)]/98 backdrop-blur-2xl shadow-2xl border-t border-[var(--theme-border)]"
+          onMouseEnter={() =>
+            activeEntry && setActiveMenu(activeEntry.id)
+          }
         >
           <div className="mx-auto max-w-[var(--fq-container,1440px)] px-8 py-10 grid grid-cols-12 gap-8">
             {/* Left: subcategory columns */}
-            <div className="col-span-8 grid grid-cols-3 gap-8">
-              {activeDef.sections.map((section) => (
+            <div
+              className={`${activeEntry.featuredImage ? "col-span-8" : "col-span-12"} grid gap-8 ${MEGA_PANEL_COLS[columns] ?? MEGA_PANEL_COLS[4]!}`}
+            >
+              {activeEntry.sections.map((section) => (
                 <div key={section.title}>
                   <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-foreground/40 mb-4">{section.title}</p>
                   <ul className="space-y-2.5">
-                    {section.links.map((linkText) => (
-                      <li key={linkText}>
+                    {section.links.map((linkItem) => (
+                      <li key={linkItem.label}>
                         <a
-                          href={link(`/c/${linkText.toLowerCase().replace(/\s+/g, "-")}`)}
-                          className="block font-serif text-[14px] font-light text-foreground/75 hover:text-foreground transition-colors leading-snug"
+                          href={link(linkItem.href)}
+                          className="flex min-h-[44px] items-center font-serif text-[14px] font-light text-foreground/75 motion-safe:transition-colors hover:text-foreground leading-snug"
                         >
-                          {linkText}
+                          {linkItem.label}
                         </a>
                       </li>
                     ))}
                   </ul>
-                  {section.title === activeDef.sections[0]?.title && (
+                  {section.title === activeEntry.sections[0]?.title && (
                     <a
-                      href={link(activeDef.shopAllHref)}
-                      className="mt-6 inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground border-b border-foreground pb-0.5 hover:opacity-60 transition-opacity"
+                      href={link(activeEntry.shopAllHref)}
+                      className="mt-6 inline-flex min-h-[44px] items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground border-b border-foreground pb-0.5 motion-safe:transition-opacity hover:opacity-60"
                     >
-                      SHOP ALL {activeMenu} →
+                      {locale === "bn"
+                        ? `${activeEntry.label} সব দেখুন →`
+                        : `SHOP ALL ${activeEntry.label} →`}
                     </a>
                   )}
                 </div>
               ))}
             </div>
             {/* Right: featured image */}
-            {activeDef.featuredImage && (
+            {activeEntry.featuredImage && (
               <div className="col-span-4">
-                <a href={link(activeDef.shopAllHref)} className="group block relative aspect-[3/4] overflow-hidden bg-[#f5f3f0]">
+                <a href={link(activeEntry.shopAllHref)} className="group block relative aspect-[3/4] overflow-hidden bg-[var(--theme-muted)]">
                   <img
-                    src={activeDef.featuredImage}
-                    alt={activeMenu}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
+                    src={activeEntry.featuredImage}
+                    alt={activeEntry.label}
+                    className="absolute inset-0 w-full h-full object-cover motion-safe:transition-transform motion-safe:duration-[1200ms] motion-safe:ease-out group-hover:scale-[1.04]"
                     loading="eager"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/60 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-6">
-                    <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/70 mb-1">Featured</p>
-                    <p className="font-serif text-[18px] font-light text-white">{activeMenu}</p>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--theme-surface)]/70 mb-1">{megaFallbackLabel("Featured", locale)}</p>
+                    <p className="font-serif text-[18px] font-light text-[var(--theme-surface)]">{activeEntry.label}</p>
                   </div>
                 </a>
               </div>
@@ -1035,14 +1379,14 @@ const SongoskritiSplitFeature: WidgetComponent = ({ str, locale, link }) => {
   const secondaryImage = str("secondaryImage");
   
   return (
-    <section className="bg-white py-16 sm:py-24">
+    <section className="bg-[var(--theme-surface)] py-16 sm:py-24">
       <div className={`mx-auto flex flex-col md:flex-row max-w-[var(--fq-container,1440px)] gap-8 lg:gap-16 px-4 sm:px-8 items-center ${layout === "image_right" ? "md:flex-row-reverse" : ""}`}>
         <div className="w-full md:w-1/2 flex gap-4">
-          <div className="w-2/3 aspect-[3/4] overflow-hidden bg-[#f9f8f6]">
+          <div className="w-2/3 aspect-[3/4] overflow-hidden bg-[var(--theme-muted)]">
             {primaryImage && <img src={primaryImage} className="w-full h-full object-cover" loading="lazy" alt="" />}
           </div>
           <div className="w-1/3 flex items-end">
-            <div className="w-full aspect-[2/3] overflow-hidden bg-[#f9f8f6]">
+            <div className="w-full aspect-[2/3] overflow-hidden bg-[var(--theme-muted)]">
               {secondaryImage && <img src={secondaryImage} className="w-full h-full object-cover" loading="lazy" alt="" />}
             </div>
           </div>
@@ -1081,7 +1425,7 @@ const SongoskritiCollectionStory: WidgetComponent = ({ str, section, locale, lin
     .filter(c => c.title);
 
   return (
-    <section className="bg-[#f9f8f6] py-20 sm:py-32">
+    <section className="bg-[var(--theme-muted)] py-20 sm:py-32">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="text-center mb-16">
           {heading && <h2 className="font-serif text-[32px] sm:text-[48px] font-light text-foreground mb-4">{heading}</h2>}
@@ -1090,7 +1434,7 @@ const SongoskritiCollectionStory: WidgetComponent = ({ str, section, locale, lin
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {collections.map((c, i) => (
             <a key={i} href={link(c.href || "#")} className="group block text-center">
-              <div className="w-full aspect-[4/5] overflow-hidden bg-white mb-6">
+              <div className="w-full aspect-[4/5] overflow-hidden bg-[var(--theme-surface)] mb-6">
                 {c.image && (
                   <img src={c.image} alt={c.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" loading="lazy" />
                 )}
@@ -1115,7 +1459,7 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
   useSongoskritiReveals(scope, true);
 
   return (
-    <section ref={scope} data-songoskriti-reveal className="py-16 sm:py-24 bg-[#faf9f7] border-t border-[#eaeaea]">
+    <section ref={scope} data-songoskriti-reveal className="py-16 sm:py-24 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-10 gap-4">
           <div>
@@ -1134,12 +1478,12 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
         {/* Masonry-style grid: first image tall, rest normal */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           {displayImages.slice(0, 1).map((img, i) => (
-            <div key={`ugc-main-${i}`} className="col-span-2 row-span-2 sm:row-span-1 aspect-square sm:aspect-[4/5] overflow-hidden bg-[#ede9e4] group sm:col-span-2">
+            <div key={`ugc-main-${i}`} className="col-span-2 row-span-2 sm:row-span-1 aspect-square sm:aspect-[4/5] overflow-hidden bg-[var(--theme-muted)] group sm:col-span-2">
               <img src={img} alt="" className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]" loading="lazy" />
             </div>
           ))}
           {displayImages.slice(1, 4).map((img, i) => (
-            <div key={`ugc-${i}`} className="aspect-[4/5] overflow-hidden bg-[#ede9e4] group">
+            <div key={`ugc-${i}`} className="aspect-[4/5] overflow-hidden bg-[var(--theme-muted)] group">
               <img src={img} alt="" className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]" loading="lazy" />
             </div>
           ))}
@@ -1170,7 +1514,7 @@ const SongoskritiStoreLocator: WidgetComponent = ({ str, locale }) => {
   ];
 
   return (
-    <section ref={scope} data-songoskriti-reveal className="py-16 sm:py-24 bg-white border-t border-[#eaeaea]">
+    <section ref={scope} data-songoskriti-reveal className="py-16 sm:py-24 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="text-center mb-14">
           <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-foreground/40 mb-3">OUR STORES</p>
@@ -1179,7 +1523,7 @@ const SongoskritiStoreLocator: WidgetComponent = ({ str, locale }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           {stores.map((store, i) => (
             <div key={i} className="group flex flex-col">
-              <div className="aspect-[4/3] overflow-hidden bg-[#f5f3f0] mb-6">
+              <div className="aspect-[4/3] overflow-hidden bg-[var(--theme-muted)] mb-6">
                 <img
                   src={STORE_IMAGES[i % STORE_IMAGES.length]}
                   alt={store.name}

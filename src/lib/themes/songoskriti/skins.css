@@ -383,28 +383,30 @@
 }
 
 /* ------------------------------------------------- footer_sitemap & footer */
-/* Force the theme footer wrapping and inner components to the charcoal scheme */
+/* Inverted charcoal footer, token-driven like every rule above: the ink
+   background and surface text arrive through the ThemeSurface bridge, so a
+   merchant re-tint re-skins the footer automatically. No hex literals. */
 footer {
-  background-color: #1a1a1a !important;
-  color: #fdfbf7 !important;
+  background-color: var(--theme-ink) !important;
+  color: var(--theme-surface) !important;
 }
 
 footer * {
-  border-color: rgba(253, 251, 247, 0.1) !important;
+  border-color: color-mix(in srgb, var(--theme-surface) 10%, transparent) !important;
 }
 
 footer p, footer h1, footer h2, footer h3, footer span {
-  color: #fdfbf7 !important;
+  color: var(--theme-surface) !important;
 }
 
 footer a {
-  color: rgba(253, 251, 247, 0.7) !important;
+  color: color-mix(in srgb, var(--theme-surface) 70%, transparent) !important;
 }
 footer a:hover {
-  color: #fdfbf7 !important;
+  color: var(--theme-surface) !important;
 }
 
 footer button[type="submit"] {
-  background-color: #fdfbf7 !important;
-  color: #1a1a1a !important;
+  background-color: var(--theme-surface) !important;
+  color: var(--theme-ink) !important;
 }

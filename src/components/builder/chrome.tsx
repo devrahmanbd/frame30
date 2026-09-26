@@ -394,7 +394,7 @@ function FooterSitemap({ str, section, link, locale }: WidgetCtx) {
     >
       {columns.map((col) => (
         <div key={col.title}>
-          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-foreground mb-6">
+          <p className="text-[11px] font-medium tracking-[0.2em] text-foreground mb-6 fq-caps">
             {col.title}
           </p>
           <ul className="space-y-4">

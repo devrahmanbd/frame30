@@ -319,7 +319,7 @@ function HeroSkinSlide({
       {/* Gradient overlay — darkens toward bottom for text legibility */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/65 via-[var(--theme-ink)]/20 to-transparent"
       />
       {/* Copy — pinned to bottom center, Nakhrali style */}
       <div className="relative z-10 w-full flex flex-col items-center text-center px-4 pb-16 sm:pb-24">
@@ -327,7 +327,7 @@ function HeroSkinSlide({
           <p
             data-hero-eyebrow
             data-part="caption"
-            className="mb-5 text-[10px] font-medium tracking-[0.35em] text-white/70 uppercase"
+            className="mb-5 text-[10px] font-medium tracking-[0.35em] text-[var(--theme-surface)]/70 uppercase"
           >
             {locale === "bn" && slide.captionBn
               ? slide.captionBn
@@ -337,7 +337,7 @@ function HeroSkinSlide({
         <Heading
           data-hero-headline
           {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
-          className="font-serif text-4xl sm:text-6xl lg:text-[5.5rem] font-light text-white leading-[1.05] tracking-[-0.01em] max-w-4xl"
+          className="font-serif text-4xl sm:text-6xl lg:text-[5.5rem] font-light text-[var(--theme-surface)] leading-[1.05] tracking-[-0.01em] max-w-4xl"
         >
           {locale === "bn" && slide.headlineBn
             ? slide.headlineBn
@@ -346,7 +346,7 @@ function HeroSkinSlide({
         {slide.subhead && (
           <p
             data-hero-sub
-            className="mt-5 max-w-xl font-serif text-base sm:text-[18px] font-light leading-relaxed text-white/75"
+            className="mt-5 max-w-xl font-serif text-base sm:text-[18px] font-light leading-relaxed text-[var(--theme-surface)]/75"
           >
             {subhead}
           </p>
@@ -355,7 +355,7 @@ function HeroSkinSlide({
           {slide.ctaLabel && (
             <a
               href={slide.ctaUrl || "#"}
-              className="inline-flex items-center min-h-[46px] bg-white/10 border border-white/40 backdrop-blur-sm px-8 text-[11px] font-medium tracking-[0.25em] uppercase text-white hover:bg-white hover:text-foreground transition-all duration-300"
+              className="inline-flex items-center min-h-[46px] bg-[var(--theme-surface)]/10 border border-[var(--theme-surface)]/40 backdrop-blur-sm px-8 text-[11px] font-medium tracking-[0.25em] uppercase text-[var(--theme-surface)] hover:bg-[var(--theme-surface)] hover:text-foreground transition-all duration-300"
             >
               {locale === "bn" && slide.ctaLabelBn
                 ? slide.ctaLabelBn
