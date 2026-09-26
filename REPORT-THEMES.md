@@ -56,3 +56,7 @@ No per-theme blog templates or article skins; shared `ArticleView`, full SEO (JS
 4. **Blog empty-text bilingual + per-theme article skin hook** (cheap, visible).
 5. **Plugin subscription engine** (recurring columns + renewal + proration wired to installs) — only if monetization strategy demands it.
 6. **Menu replacement API** (new slot/hook/scope) — only if "better menu" becomes a product bet.
+
+---
+**Living guides (2026-09-26):** [Builder README](docs/04-builder/README.md),
+[Theme authoring](docs/themes/creation.md). This report stays a dated audit.
