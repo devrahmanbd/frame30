@@ -59,13 +59,18 @@ export const marketInstallFn = createServerFn({ method: "POST" })
       // Re-clicks and retries replay the original install instead of
       // stacking duplicate ledger rows (third-party installs get this
       // from the idempotency_key check inside installListing).
+      //
+      // B2: "paused" is a live install state (WP parity: deactivated but
+      // present — see marketplace-badges.ts), so it replays here too. An
+      // earlier revision only replayed installed/trial and stacked a
+      // duplicate row when a merchant re-clicked a paused builtin.
       const { data: existing } = await context.supabase
         .from("marketplace_installs")
         .select("id")
         .eq("merchant_id", merchantId)
         .eq("kind", data.kind)
         .eq("listing_slug", builtinSlug)
-        .in("status", ["installed", "trial"])
+        .in("status", ["installed", "trial", "paused"])
         .maybeSingle();
       if (existing) {
         return {
@@ -127,6 +132,49 @@ export const marketInstallFn = createServerFn({ method: "POST" })
       ...data,
       consentedBy: context.userId,
     });
+  });
+
+/**
+ * B2 — Upload Theme server path (M-04 / WF-23).
+ *
+ * The `Upload theme` drop-zone validated `.zip` files client-side only.
+ * This is the working server path: authoritative archive checks + a new
+ * inactive `store_themes` row (see installUploadedTheme), so every upload
+ * lands where Activate / Live Preview / Delete already work.
+ *
+ * Placement note: this fn thematically belongs next to themeInstallFn in
+ * `themes/appearance.functions.ts`, but that module is outside the B2 file
+ * boundary — it lives here until a follow-up moves it next to the other
+ * theme fns. The client drop-zone wiring (AddThemeScreen/ThemesScreen) is
+ * likewise follow-up; the server path ships first so no button stays dead.
+ *
+ * Idempotency: the client mints ONE key per file-pick (crypto.randomUUID,
+ * held across retries/double-clicks). Replays return the original row.
+ */
+export const themeUploadFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("themes.update")])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        fileName: z.string().trim().min(1).max(100),
+        // Base64 of a zip bounded by MAX_THEME_UPLOAD_BYTES server-side;
+        // the transport cap here only stops absurd payloads early.
+        fileBase64: z.string().min(1).max(30_000_000),
+        idempotencyKey: z.string().min(8).max(80),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { rateLimit } = await import("./rate-limit.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    await rateLimit("market.install", merchantId);
+    const { installUploadedTheme } = await import("./themes/appearance.server");
+    return installUploadedTheme(
+      context.supabase,
+      merchantId,
+      data,
+      context.userId,
+    );
   });
 
 export const marketInstallStatusFn = createServerFn({ method: "POST" })

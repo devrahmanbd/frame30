@@ -17,6 +17,7 @@ import {
 import { catalogMeta } from "./catalog-meta";
 import {
   isNewerVersion,
+  MAX_THEME_UPLOAD_BYTES,
   orderInstalled,
   type CatalogTheme,
   type InstalledTheme,
@@ -291,6 +292,222 @@ export async function installCatalogTheme(
     action: "theme.installed",
     before: null,
     after: { key, version_id: (version as { id: string }).id, via: "catalog" },
+  });
+  return { id: themeId, alreadyInstalled: false };
+}
+
+/**
+ * B2 — Upload Theme server path (M-04 / WF-23).
+ *
+ * The `Upload theme` drop-zone validated `.zip` files client-side only, with
+ * zero server path — a dead button by the WP-parity rule. This is the server
+ * half: authoritative archive checks (extension, decoded size, zip magic),
+ * then a new INACTIVE `store_themes` row in the exact shape of catalog
+ * installs (row + published v1 + draft + ledger link + audit), so Activate /
+ * Live Preview / Delete work uniformly from the first byte.
+ *
+ * Source-divergence note (see marketplace-badges.ts): uploads have no
+ * catalog entry, so `source_listing_slug` stays NULL and the ledger row is
+ * linked by `source_install_id` only — the same key the delete cascade
+ * (`uninstallThemeInstall`) resolves. Full manifest extraction from the zip
+ * (templates/tokens parsed out of the archive instead of the default shell)
+ * is follow-up work paired with the media-library packaging lane; the row
+ * installed here is intentionally inert until Activate flips it.
+ *
+ * Idempotency: the client mints ONE key per file-pick (crypto.randomUUID,
+ * held for the retry/double-click lifetime) and reuses it. A replayed key
+ * returns the original row — double-clicks never stack duplicate installs.
+ * Validation runs BEFORE the replay lookup so a reused key cannot smuggle
+ * different (or invalid) bytes past the archive checks.
+ */
+export type ThemeUploadInput = {
+  fileName: string;
+  fileBase64: string;
+  idempotencyKey: string;
+};
+
+function slugifyUploadName(name: string): string {
+  const slug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60);
+  return slug || "theme";
+}
+
+function decodeUploadBytes(fileBase64: string): Buffer {
+  // Strict base64: a string that decodes to nothing (or is not base64 at
+  // all) is an empty upload, not a theme.
+  const bytes = Buffer.from(fileBase64, "base64");
+  const roundTrip = bytes.length > 0;
+  if (!roundTrip || !fileBase64.trim()) {
+    throw new ThemeDeskError("theme.upload_empty", "That file is empty.");
+  }
+  return bytes;
+}
+
+export async function installUploadedTheme(
+  db: Client,
+  merchantId: string,
+  input: ThemeUploadInput,
+  actorId?: string | null,
+) {
+  const rawName = (input.fileName ?? "").trim();
+  if (!/\.zip$/iu.test(rawName)) {
+    throw new ThemeDeskError(
+      "theme.upload_name",
+      "Theme packages must be a .zip file.",
+    );
+  }
+  const bytes = decodeUploadBytes(input.fileBase64 ?? "");
+  if (bytes.length > MAX_THEME_UPLOAD_BYTES) {
+    throw new ThemeDeskError(
+      "theme.upload_too_large",
+      `Theme packages must stay under ${MAX_THEME_UPLOAD_BYTES / (1024 * 1024)} MB.`,
+    );
+  }
+  const isZip =
+    bytes.length >= 4 &&
+    bytes[0] === 0x50 &&
+    bytes[1] === 0x4b &&
+    ((bytes[2] === 0x03 && bytes[3] === 0x04) ||
+      (bytes[2] === 0x05 && bytes[3] === 0x06));
+  if (!isZip) {
+    throw new ThemeDeskError(
+      "theme.upload_magic",
+      "That file is not a valid zip archive.",
+    );
+  }
+
+  const { data: replayed } = await db
+    .from("marketplace_installs")
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("idempotency_key", input.idempotencyKey)
+    .maybeSingle();
+  if (replayed) {
+    const hit = replayed as { id: string };
+    const { data: theme } = await db
+      .from("store_themes")
+      .select("id")
+      .eq("merchant_id", merchantId)
+      .eq("source_install_id", hit.id)
+      .maybeSingle();
+    return {
+      id: (theme as { id: string } | null)?.id ?? hit.id,
+      alreadyInstalled: true,
+    };
+  }
+
+  const base = rawName
+    .replace(/\.zip$/iu, "")
+    .trim()
+    .slice(0, 80);
+  const name = base || "Uploaded theme";
+  const listingSlug = `upload:${slugifyUploadName(base || "theme")}`;
+  // Default shell until the packaging lane extracts the archive's own
+  // manifest: an inert, valid theme the merchant customizes after install.
+  const pkg = registryPackage("__upload__");
+  const { data, error } = await db
+    .from("store_themes")
+    .insert({
+      merchant_id: merchantId,
+      name,
+      source_listing_slug: null,
+      source_version: "1.0.0",
+      is_active: false,
+      installed_at: new Date().toISOString(),
+    })
+    .select("id")
+    .single();
+  if (error || !data)
+    throw (
+      error ?? new ThemeDeskError("theme.install_failed", "Install failed.")
+    );
+  const themeId = (data as { id: string }).id;
+
+  const { data: version, error: versionError } = await db
+    .from("theme_versions")
+    .insert({
+      merchant_id: merchantId,
+      theme_id: themeId,
+      version: 1,
+      status: "published",
+      published_at: new Date().toISOString(),
+      label: listingSlug,
+      templates: pkg.templates as never,
+      tokens: pkg.tokens as never,
+      created_by: actorId ?? null,
+    })
+    .select("id")
+    .single();
+  if (versionError || !version) {
+    await db.from("store_themes").delete().eq("id", themeId);
+    throw (
+      versionError ??
+      new ThemeDeskError("theme.install_failed", "Install failed.")
+    );
+  }
+
+  const { error: draftError } = await db.from("theme_drafts").insert({
+    merchant_id: merchantId,
+    theme_id: themeId,
+    revision: 1,
+    templates: pkg.templates as never,
+    tokens: pkg.tokens as never,
+    updated_by: actorId ?? null,
+  });
+  if (draftError) {
+    await db.from("store_themes").delete().eq("id", themeId);
+    throw draftError;
+  }
+
+  const { data: ledger, error: ledgerError } = await db
+    .from("marketplace_installs")
+    .insert({
+      merchant_id: merchantId,
+      kind: "theme",
+      theme_id: null,
+      widget_id: null,
+      listing_slug: listingSlug,
+      listing_name: name,
+      version: "1.0.0",
+      price_minor_int: 0,
+      currency_code: "BDT",
+      is_trial: false,
+      status: "installed",
+      idempotency_key: input.idempotencyKey,
+    })
+    .select("id")
+    .single();
+  if (ledgerError || !ledger) {
+    await db.from("store_themes").delete().eq("id", themeId);
+    throw (
+      ledgerError ??
+      new ThemeDeskError("theme.install_failed", "Install failed.")
+    );
+  }
+
+  await db
+    .from("store_themes")
+    .update({
+      source_install_id: (ledger as { id: string }).id,
+      published_version_id: (version as { id: string }).id,
+    })
+    .eq("id", themeId);
+  await db.from("theme_audit").insert({
+    merchant_id: merchantId,
+    theme_id: themeId,
+    actor: actorId ?? null,
+    action: "theme.installed",
+    before: null,
+    after: {
+      name,
+      listing_slug: listingSlug,
+      version_id: (version as { id: string }).id,
+      via: "upload",
+      bytes: bytes.length,
+    },
   });
   return { id: themeId, alreadyInstalled: false };
 }
