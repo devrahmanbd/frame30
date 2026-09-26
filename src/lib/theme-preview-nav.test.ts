@@ -55,22 +55,32 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     const preset = resolveThemePreview("songoskriti");
     expect(preset).not.toBeNull();
     expect(preset!.key).toBe("songoskriti");
-    expect(preset!.tokens.brand).toBe("#8A3B1F");
+    expect(preset!.tokens.brand).toBe("#1a1a1a");
     // The SECTION-track blueprint intentionally doubles the rail (new
     // arrivals + festive bestsellers); franchise updates reorder sections
     // and add flagship outlets — this pins the authored order, whatever
     // the theme builders produce.
     expect(preset!.templates.index.main.map((s) => s.type)).toEqual([
-      "announcement_bar",
       "hero_carousel",
-      "circle_categories",
-      "trust_footer",
+      "department_grid",
       "product_rail",
+      "craft_story",
+      "product_rail",
+      "split_feature",
       "product_rail",
       "finder_row",
-      "store_locator",
+      "split_feature",
+      "product_rail",
+      "product_rail",
+      "split_feature",
+      "collection_story",
+      "product_rail",
       "craft_story",
+      "ugc_gallery",
       "testimonials",
+      "split_feature",
+      "trust_footer",
+      "store_locator",
     ]);
     expect(preset!.templates.index.header.length).toBeGreaterThan(0);
     expect(preset!.templates.index.footer.length).toBeGreaterThan(0);
@@ -110,10 +120,10 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       expect(ast.header.length, `${key} header`).toBeGreaterThan(0);
       expect(ast.main.length, `${key} main`).toBeGreaterThan(0);
       expect(ast.footer.length, `${key} footer`).toBeGreaterThan(0);
-      // Main opens with a heading (index opens with its announcement
-      // marquee) so every preview sub-page owns the page h1.
+      // Main opens with a heading (index opens with its hero, which owns
+      // the page h1) so every preview sub-page owns the page h1.
       expect(ast.main[0]!.type, `${key} first section`).toBe(
-        key === "index" ? "announcement_bar" : "heading",
+        key === "index" ? "hero_carousel" : "heading",
       );
     }
     // Spot-check demo bodies use proven renderers.
