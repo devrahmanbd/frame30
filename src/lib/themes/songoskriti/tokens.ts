@@ -7,11 +7,11 @@ import { DEFAULT_GLOBALS } from "../../theme-globals";
  * fall back to the Bangla stack declared in styles.css.
  */
 export const SONGOSKRITI_TOKENS: ThemeTokens = {
-  brand: "#8A3B1F",
-  accent: "#C45D3E",
-  surface: "#FAF8F5",
-  ink: "#2D2A26",
-  radius: "4px",
+  brand: "#1a1a1a",
+  accent: "#8B4513", // Subtle heritage terracotta/brown
+  surface: "#faf9f7", // Editorial ivory
+  ink: "#1a1a1a",
+  radius: "0px", // Sharp, fashion-editorial edges
   fontDisplay: "Playfair Display",
   fontBody: "Inter",
   container: "1320px",

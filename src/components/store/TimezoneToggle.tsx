@@ -84,10 +84,10 @@ export function TimezoneToggle({
         aria-haspopup="true"
         aria-label={t("Select timezone", "টাইমজোন পরিবর্তন")}
         title={`${t("Active timezone:", "সক্রিয় টাইমজোন:")} ${effectiveTimezone}`}
-        className="inline-flex min-h-11 items-center gap-1.5 rounded-fq-md border border-border bg-card px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-muted/50 transition-colors focus-visible:ring-2 focus-visible:ring-primary outline-none"
+        className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-medium text-foreground/80 hover:bg-muted hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-primary outline-none"
       >
-        <Globe className="size-3.5 text-primary shrink-0" aria-hidden />
-        <span className="tabular-nums font-mono">{displayLabel}</span>
+        <Globe className="size-4 shrink-0" strokeWidth={1.25} aria-hidden />
+        <span className="font-sans uppercase tracking-wider">{displayLabel}</span>
       </button>
 
       {open && (

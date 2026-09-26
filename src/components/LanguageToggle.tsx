@@ -7,9 +7,7 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
     <div
       role="group"
       aria-label="Language / ভাষা"
-      // `shrink-0`: the buttons carry it already, but a shrinking *group* still
-      // squeezed them to 15px wide inside the 320px header flex row.
-      className={`inline-flex shrink-0 items-center rounded-fq-md border border-border bg-card p-0.5 text-xs ${className}`}
+      className={`inline-flex shrink-0 items-center rounded-full p-1 text-xs ${className}`}
     >
       {(["en", "bn"] as const).map((code) => (
         <button
@@ -17,10 +15,10 @@ export function LanguageToggle({ className = "" }: { className?: string }) {
           type="button"
           onClick={() => setLang(code)}
           aria-pressed={lang === code}
-          className={`min-h-11 w-11 min-w-11 shrink-0 rounded-fq-sm text-center font-medium transition-colors ${
+          className={`min-h-10 w-10 min-w-10 shrink-0 rounded-full text-center font-medium transition-colors ${
             lang === code
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:text-foreground"
+              ? "bg-foreground/10 text-foreground"
+              : "text-foreground/60 hover:text-foreground"
           }`}
         >
           {code === "en" ? "EN" : "বাং"}

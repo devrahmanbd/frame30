@@ -58,67 +58,95 @@ export type FallbackColumn = {
 /** Manual fallback when no dashboard menu claims the footer location. */
 export const FALLBACK_COLUMNS: FallbackColumn[] = [
   {
-    title: "Collections",
-    title_bn: "সংগ্রহ",
+    title: "Shop",
+    title_bn: "কেনাকাটা",
     links: [
-      "Heritage Handloom|/c/heritage-handloom",
-      "Festive & Eid|/c/eid-festive",
-      "Nakshi Kantha|/c/nakshi-kantha",
-      "New arrivals|/c/new-in",
+      "New Arrivals|/c/new-in",
+      "Women|/c/women",
+      "Men|/c/men",
+      "Kids|/c/kids",
+      "Sarees|/c/sarees",
+      "Panjabi|/c/panjabi",
+      "Festive|/c/festive",
+      "Wedding|/c/wedding",
+      "Jewellery|/c/jewellery"
     ].join("\n"),
     links_bn: [
-      "ঐতিহ্যবাহী হাতে বোনা|/c/heritage-handloom",
-      "উৎসব ও ঈদ|/c/eid-festive",
-      "নকশি কাঁথা|/c/nakshi-kantha",
       "নতুন এসেছে|/c/new-in",
+      "নারী|/c/women",
+      "পুরুষ|/c/men",
+      "শিশু|/c/kids",
+      "শাড়ি|/c/sarees",
+      "পাঞ্জাবি|/c/panjabi",
+      "উৎসব|/c/festive",
+      "বিয়ে|/c/wedding",
+      "গহনা|/c/jewellery"
     ].join("\n"),
   },
   {
     title: "Customer Care",
     title_bn: "ক্রেতা সেবা",
     links: [
-      "Size guide|/pages/size-guide",
-      "Order tracking|/pages/track-order",
-      "Returns & exchanges|/pages/returns",
-      "Store locations|/pages/stores",
-      "Contact us|/pages/contact",
+      "Size Guide|/pages/size-guide",
+      "Order Tracking|/pages/track-order",
+      "Shipping|/pages/shipping",
+      "Returns & Exchanges|/pages/returns",
+      "Cancellation|/pages/cancellation",
+      "FAQ|/pages/faq",
+      "Contact|/pages/contact"
     ].join("\n"),
     links_bn: [
       "সাইজ গাইড|/pages/size-guide",
       "অর্ডার ট্র্যাকিং|/pages/track-order",
+      "ডেলিভারি|/pages/shipping",
       "রিটার্ন ও বদল|/pages/returns",
-      "স্টোরের ঠিকানা|/pages/stores",
-      "যোগাযোগ করুন|/pages/contact",
+      "বাতিলকরণ|/pages/cancellation",
+      "সাধারণ জিজ্ঞাসা|/pages/faq",
+      "যোগাযোগ|/pages/contact"
     ].join("\n"),
   },
   {
     title: "Our Heritage",
     title_bn: "আমাদের ঐতিহ্য",
     links: [
-      "Master weavers|/blog/master-weavers",
-      "Handloom heritage|/blog/handloom-heritage",
-      "Fair trade|/pages/fair-trade",
-      "Rewards|/pages/rewards",
+      "Our Story|/pages/about",
+      "Master Weavers|/pages/master-weavers",
+      "Handloom Heritage|/blog/handloom",
+      "Artisan Partnerships|/pages/artisans",
+      "Journal|/blog",
+      "Stores|/pages/stores"
     ].join("\n"),
     links_bn: [
-      "মাস্টার তাঁতিরা|/blog/master-weavers",
-      "হাতে বোনা ঐতিহ্য|/blog/handloom-heritage",
-      "ন্যায্য বাণিজ্য|/pages/fair-trade",
-      "রিওয়ার্ডস|/pages/rewards",
+      "আমাদের গল্প|/pages/about",
+      "মাস্টার তাঁতি|/pages/master-weavers",
+      "হাতে বোনা ঐতিহ্য|/blog/handloom",
+      "তাঁতি অংশীদারিত্ব|/pages/artisans",
+      "জার্নাল|/blog",
+      "স্টোরসমূহ|/pages/stores"
     ].join("\n"),
   },
   {
-    title: "About",
-    title_bn: "আমাদের কথা",
-    // Browser-verified 2026-09-24: "Contact us" appeared twice in the
-    // footer (Customer Care + About). It lives in Customer Care only now.
-    links: ["Our story|/pages/about", "Rewards club|/pages/rewards"].join("\n"),
+    title: "Contact",
+    title_bn: "যোগাযোগ",
+    links: [
+      "Phone: +880 96 1234 5678|/pages/contact",
+      "Email: care@songoskriti.com|mailto:care@songoskriti.com",
+      "Uttara Flagship|/pages/stores#uttara",
+      "Gulshan Flagship|/pages/stores#gulshan",
+      "Chattogram Flagship|/pages/stores#chattogram",
+      "Support: 10AM - 9PM|/pages/contact"
+    ].join("\n"),
     links_bn: [
-      "আমাদের গল্প|/pages/about",
-      "রিওয়ার্ডস ক্লাব|/pages/rewards",
+      "ফোন: +৮৮০ ৯৬ ১২৩৪ ৫৬৭৮|/pages/contact",
+      "ইমেইল: care@songoskriti.com|mailto:care@songoskriti.com",
+      "উত্তরা ফ্ল্যাগশিপ|/pages/stores#uttara",
+      "গুলশান ফ্ল্যাগশিপ|/pages/stores#gulshan",
+      "চট্টগ্রাম ফ্ল্যাগশিপ|/pages/stores#chattogram",
+      "সাপোর্ট: সকাল ১০টা - রাত ৯টা|/pages/contact"
     ].join("\n"),
   },
 ];
+
 
 export const PAYMENTS_HEADING = "Payment methods";
 export const PAYMENTS_HEADING_BN = "পেমেন্ট মাধ্যম";
@@ -145,11 +173,13 @@ export const COLOPHON = {
  */
 export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
   return [
-    s("rich_text", {
+    s("split_feature", {
       heading: STATEMENT.heading,
       heading_bn: STATEMENT.heading_bn,
       body: STATEMENT.body,
       body_bn: STATEMENT.body_bn,
+      primaryImage: "/ph/songoskriti/songoskriti_artisan.jpg",
+      layout: "image_right",
     }),
     s("newsletter", {
       heading: NEWSLETTER.heading,

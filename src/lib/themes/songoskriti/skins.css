@@ -21,8 +21,7 @@
 
 [data-widget="product_rail"][data-skin="editorial"] {
   background: var(--theme-surface);
-  border-block-start: 1px solid var(--theme-border);
-  padding-block: var(--theme-space);
+  padding-block: calc(var(--theme-space) * 2);
 }
 
 /* Editorial serif moment: the rail heading sets in the display face with a
@@ -30,11 +29,11 @@
 [data-widget="product_rail"][data-skin="editorial"] h1,
 [data-widget="product_rail"][data-skin="editorial"] h2 {
   font-family: var(--theme-font-display);
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-weight: 400;
+  font-size: 2rem;
+  letter-spacing: 0.05em;
   color: var(--theme-ink);
   padding-block-start: calc(var(--theme-space) * 0.5);
-  border-block-start: 2px solid var(--theme-brand);
   display: inline-block;
 }
 
@@ -72,7 +71,8 @@
 
 [data-widget="hero_carousel"][data-skin="split"] {
   background: var(--theme-surface);
-  border-block: 1px solid var(--theme-border);
+  border: none;
+  padding-block: calc(var(--theme-space) * 2);
 }
 
 [data-widget="hero_carousel"][data-skin="split"] h1,
@@ -85,13 +85,16 @@
   text-wrap: balance;
 }
 
-/* Eyebrow caption: small caps, letterspaced, terracotta. */
 [data-widget="hero_carousel"][data-skin="split"] [data-caption] {
   color: var(--theme-brand);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
+  font-family: 'Sacramento', cursive;
+  font-size: 3.5rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  margin-bottom: -0.5rem;
+  display: block;
 }
 
 [data-widget="hero_carousel"][data-skin="split"] p {
@@ -105,15 +108,22 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  padding-inline: calc(var(--theme-space) * 1.5);
-  background: var(--theme-brand);
-  color: var(--theme-brand-ink);
-  border-radius: var(--theme-radius);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  min-height: 48px;
+  padding-inline: calc(var(--theme-space) * 2.5);
+  background: transparent;
+  color: var(--theme-brand);
+  border: 1px solid var(--theme-brand);
+  border-radius: 0;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   font-size: 0.75rem;
+  transition: all 0.3s ease;
+}
+[data-widget="hero_carousel"][data-skin="split"] a[data-cta]:hover,
+[data-widget="hero_carousel"][data-skin="split"] a[class*="cta"]:hover {
+  background: var(--theme-brand);
+  color: var(--theme-surface);
 }
 
 /* Carousel dots: terracotta current, hairline rest. */
@@ -185,7 +195,7 @@
    self-contained card instead of a ledger line. */
 
 [data-widget="product_grid"][data-skin="cards"] {
-  background: var(--theme-surface);
+  background: transparent;
 }
 
 [data-widget="product_grid"][data-skin="cards"] h1,
@@ -198,25 +208,34 @@
 
 [data-widget="product_grid"][data-skin="cards"] ul,
 [data-widget="product_grid"][data-skin="cards"] ol {
-  gap: var(--theme-gap);
+  gap: calc(var(--theme-gap) * 1.5);
 }
 
 [data-widget="product_grid"][data-skin="cards"] article {
-  background: var(--theme-surface);
-  border: 1px solid var(--theme-border);
-  border-radius: var(--theme-radius);
-  box-shadow: var(--theme-shadow-md);
-  overflow: hidden;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+[data-widget="product_grid"][data-skin="cards"] article > div {
+  align-items: center;
+  text-align: center;
 }
 
 [data-widget="product_grid"][data-skin="cards"] article [data-title] {
   font-family: var(--theme-font-display);
   color: var(--theme-ink);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
 }
 
 [data-widget="product_grid"][data-skin="cards"] article [data-price] {
-  color: var(--theme-brand);
-  font-weight: 700;
+  color: var(--theme-ink);
+  font-family: var(--theme-font-display);
+  font-weight: 500;
+  font-size: 0.85rem;
 }
 
 [data-widget="product_grid"][data-skin="cards"] button,
@@ -361,4 +380,31 @@
   [data-widget="testimonials"][data-skin="single"] blockquote {
     overflow-wrap: break-word;
   }
+}
+
+/* ------------------------------------------------- footer_sitemap & footer */
+/* Force the theme footer wrapping and inner components to the charcoal scheme */
+footer {
+  background-color: #1a1a1a !important;
+  color: #fdfbf7 !important;
+}
+
+footer * {
+  border-color: rgba(253, 251, 247, 0.1) !important;
+}
+
+footer p, footer h1, footer h2, footer h3, footer span {
+  color: #fdfbf7 !important;
+}
+
+footer a {
+  color: rgba(253, 251, 247, 0.7) !important;
+}
+footer a:hover {
+  color: #fdfbf7 !important;
+}
+
+footer button[type="submit"] {
+  background-color: #fdfbf7 !important;
+  color: #1a1a1a !important;
 }

@@ -433,40 +433,47 @@ const StoreLocator: WidgetComponent = (ctx) => {
     .filter((store) => store.name);
   if (stores.length === 0) return null;
   return (
-    <section aria-label={str("heading") || t(locale, "Stores", "দোকান")}>
-      {str("heading") && (
-        <Heading className="mb-3 text-lg font-semibold">
-          {str("heading")}
-        </Heading>
-      )}
-      <ul className="m-0 grid list-none gap-3 p-0 sm:grid-cols-2 lg:grid-cols-3">
-        {stores.map((store) => (
-          <li
-            key={store.name}
-            className="rounded-fq-md border border-border bg-card p-4"
-          >
-            <p className="text-sm font-semibold">{store.name}</p>
-            {store.address && (
-              <p className="mt-1 whitespace-pre-line text-sm text-muted-foreground">
-                {store.address}
+    <section
+      className="w-full border-t border-[#eaeaea] py-16 sm:py-20"
+      aria-label={str("heading") || t(locale, "Stores", "দোকান")}
+    >
+      <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
+        {str("heading") && (
+          <Heading className="mb-12 text-center text-[11px] font-medium uppercase tracking-[0.25em] text-foreground">
+            {str("heading")}
+          </Heading>
+        )}
+        <ul className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#eaeaea]">
+          {stores.map((store) => (
+            <li
+              key={store.name}
+              className="flex flex-col items-center text-center py-8 sm:py-0 px-6 sm:px-8 lg:px-12"
+            >
+              <p className="font-serif text-[18px] font-light text-foreground tracking-wide">
+                {store.name}
               </p>
-            )}
-            {store.hours && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                {store.hours}
-              </p>
-            )}
-            {store.phone && (
-              <a
-                href={`tel:${store.phone}`}
-                className="mt-2 inline-flex min-h-11 items-center text-sm underline"
-              >
-                {store.phone}
-              </a>
-            )}
-          </li>
-        ))}
-      </ul>
+              {store.address && (
+                <p className="mt-3 font-serif text-[13px] font-light text-foreground/55 whitespace-pre-line leading-relaxed">
+                  {store.address}
+                </p>
+              )}
+              {store.hours && (
+                <p className="mt-3 text-[10px] font-medium uppercase tracking-[0.2em] text-foreground/50">
+                  {store.hours}
+                </p>
+              )}
+              {store.phone && (
+                <a
+                  href={`tel:${store.phone}`}
+                  className="mt-4 font-serif text-[13px] font-light text-foreground/70 hover:text-foreground transition-colors underline underline-offset-4 decoration-foreground/20"
+                >
+                  {store.phone}
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 };

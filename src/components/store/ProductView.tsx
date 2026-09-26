@@ -72,7 +72,7 @@ export function ProductView({ data }: { data: ProductPayload }) {
   const hasPriceBlock = sections.some((s) => s.type === "price_block");
 
   const media = (
-    <div className="aspect-square overflow-hidden rounded-fq-lg border border-border bg-muted">
+    <div className="aspect-[3/4] overflow-hidden rounded-[var(--theme-radius,8px)] bg-[var(--theme-surface,#f5f3f0)]">
       <StoreImage
         image={product.image ?? null}
         fallbackSrc={product.image_url}
@@ -87,16 +87,16 @@ export function ProductView({ data }: { data: ProductPayload }) {
 
   const priceBlock = (
     <div>
-      <h1 className="font-bangla-display text-2xl font-bold sm:text-3xl">
+      <h1 className="font-sans text-[28px] sm:text-[32px] font-medium tracking-tight text-foreground">
         {product.title}
       </h1>
-      <p className="money mt-3 text-2xl font-semibold">
+      <p className="font-sans mt-3 text-xl font-normal text-foreground">
         {fmtMinor(
           Number(variant?.price_amount_minor_int ?? 0),
           merchant.currency_code,
         )}
       </p>
-      <p className="mt-1 text-xs text-muted-foreground">
+      <p className="mt-1 text-xs text-foreground/50">
         {t("VAT shown at checkout", "চেকআউটে ভ্যাট দেখানো হবে")}
       </p>
       <ScarcityBadge stock={Number(variant?.stock_quantity ?? 0)} />
@@ -117,10 +117,10 @@ export function ProductView({ data }: { data: ProductPayload }) {
                 type="button"
                 onClick={() => setVariantId(v.id)}
                 aria-pressed={v.id === variant?.id}
-                className={`min-h-11 rounded-fq-md border px-3 text-sm ${
+                className={`min-h-11 rounded-[var(--theme-radius,6px)] border px-3 text-sm transition-colors ${
                   v.id === variant?.id
-                    ? "border-primary bg-info-soft text-info-foreground"
-                    : "border-border bg-card text-muted-foreground"
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border bg-transparent text-foreground hover:border-foreground/30"
                 }`}
               >
                 {v.name}
@@ -154,14 +154,14 @@ export function ProductView({ data }: { data: ProductPayload }) {
             add(variant.id, 1);
             setAdded(true);
           }}
-          className="min-h-12 rounded-fq-md bg-primary px-6 text-sm font-medium text-primary-foreground disabled:opacity-50"
+          className="min-h-12 rounded-[var(--theme-radius,6px)] bg-foreground px-8 text-sm font-medium tracking-wide uppercase text-background disabled:opacity-50 hover:opacity-90 transition-opacity"
         >
           {t("Add to cart", "কার্টে যোগ করুন")}
         </button>
         {custom ? (
           <Link
             to="/checkout"
-            className="min-h-12 rounded-fq-md border border-border px-6 text-sm font-medium leading-[3rem]"
+            className="min-h-12 rounded-[var(--theme-radius,6px)] border border-foreground/20 px-8 text-sm font-medium tracking-wide uppercase leading-[3rem] hover:border-foreground transition-colors"
           >
             {t("Checkout", "চেকআউট")}
           </Link>
@@ -169,7 +169,7 @@ export function ProductView({ data }: { data: ProductPayload }) {
           <Link
             to="/store/$slug/checkout"
             params={{ slug: merchant.slug }}
-            className="min-h-12 rounded-fq-md border border-border px-6 text-sm font-medium leading-[3rem]"
+            className="min-h-12 rounded-[var(--theme-radius,6px)] border border-foreground/20 px-8 text-sm font-medium tracking-wide uppercase leading-[3rem] hover:border-foreground transition-colors"
           >
             {t("Checkout", "চেকআউট")}
           </Link>

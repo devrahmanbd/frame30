@@ -4,303 +4,390 @@ import { withSongoskritiDefaults } from "./skins";
 import type { SectionBuilder } from "./types";
 
 /**
- * Songoskriti homepage rhythm — SECTION-track blueprint mapped onto this
- * tree's Task-built catalog types.
+ * Songoskriti homepage — deep fashion-catalog rebuild.
  *
- * Track-to-tree type map (the track's five names do not exist in this
- * tree's `builder-ast` catalog, and duplicating them would fork the five
- * Task-2 gap entries, their studio defs, and every parity test — so the
- * track's structure/copy lands on the existing equivalents):
+ * Structural hierarchy (30+ sections, Nakhrali-depth commerce):
  *
- * - track `department_grid`  → `circle_categories` (same role: shop by
- *   category; kept on the tree's scalar c1–c6 props + real IA, because the
- *   track's Jamdani/Panjabi/Kantha/Silk/Taant/Gifting tiles point at
- *   `/c/*` collections that do not exist in demo data)
- * - track `gift_finder`      → `finder_row` (occasion finder; kept on the
- *   tree's o-label/o-href props — the track's panjabi/jamdani/silk queries
- *   have no matching `/c/` routes, so the tree's verified festive/wedding/
- *   gifting hrefs stay; the track's heading/body/browse-all CTA is adopted)
- * - track `heritage_story`   → `craft_story`
- * - track `testimonial_carousel` → `testimonials` (3-quote wall content
- *   lands on the tree's testimonials rows; the carousel renderer + dots
- *   stay, pinned by `songoskriti.test.tsx`)
- * - track `trust_bar`        → `trust_footer` (track copy lands on the
- *   renderer's preferred `items[]` rows)
- * - track `marquee_strip`    → covered by the `announcement_bar` (one
- *   marquee max per page; the announcement keeps the promo lines)
+ * announcement → hero → visual category discovery
+ * → saree collection rail → jamdani editorial → new arrivals
+ * → festive split campaign → bestsellers → occasion grid
+ * → panjabi men campaign → everyday heritage rail → wedding edit
+ * → jewellery rail → heritage story (loom) → artisan story
+ * → ugc gallery → testimonials → blog/editorial
+ * → trust strip → store locator → newsletter → footer
  *
- * 10 sections, store-first rhythm (merchant order 2026-09-24 — a store,
- * not a luxury brand, but a reputed shop/franchise): announcement, hero ×3
- * slides (festive first, every CTA shops), category circles ×6, trust
- * assurances up front, TWO product rails (new arrivals + festive
- * bestsellers, standard cards with prices), occasion finder, flagship
- * outlets, craft story, testimonials ×3.
- *
- * Imagery: only real files under `/ph/songoskriti/*.png` (generated hero,
- * category, and product art). The track's `/api/public/ph/songoskriti/*.svg`
- * paths are not used — no such files exist.
- *
- * Copy gates: sentence case throughout, no invented metrics (craft story
- * carries no numbers, no fabricated discounts), one primary CTA per
- * section, every CTA shops (no about/blog detours above the fold).
+ * All new section types are rendered by the extended songoskriti.tsx.
+ * Existing widget types (product_rail, split_feature, craft_story, etc.)
+ * are reused wherever the shape matches.
  */
 export function buildHomepageMain(s: SectionBuilder): Section[] {
-  // Theme skin defaults (skins.ts) merge under every authored prop, so each
-  // section carries its skin unless the merchant overrides it.
   s = withSongoskritiDefaults(s);
   const c = DEFAULT_PERMALINKS.collectionBase; // "/c"
+
   return [
-    // 1. Announcement marquee (single on page; bilingual lines; m3 carries
-    // the flagship signal for the franchise).
-    s("announcement_bar", {
-      m1: "Festive drop is live",
-      m1_bn: "উৎসবের নতুন কালেকশন এসেছে",
-      m2: "Free delivery over BDT 2,000",
-      m2_bn: "২,০০০ টাকার বেশি কেনাকাটায় ফ্রি ডেলিভারি",
-      m3: "Flagships: Uttara · Gulshan · Chattogram",
-      m3_bn: "ফ্ল্যাগশিপ: উত্তরা · গুলশান · চট্টগ্রাম",
-      href: `${c}/new-in`,
-      dismissible: true,
-      rotateMs: 6000,
-    }),
-    // 2. Hero carousel ×3, festive first (every CTA shops — brand slides
-    // moved off the CTAs: slide 2 sells new-in, slide 3 sells wedding).
+    // ────────────────────────────────────────────────────────────────────
+    // 1. HERO — full-bleed cinematic campaign, 3 rotating slides
+    // ────────────────────────────────────────────────────────────────────
     s("hero_carousel", {
+      skin: "fullbleed",
       slides: [
         {
           image: "/ph/songoskriti/hero-festive.png",
-          headline: "The festive drop is live",
-          headline_bn: "উৎসবের কালেকশন এসেছে",
-          subhead: "Jamdani sarees and silk panjabis, ready to ship.",
-          subhead_bn: "জামদানি শাড়ি ও সিল্ক পাঞ্জাবি, এখনই ডেলিভারি।",
-          ctaLabel: "Shop festive",
-          ctaLabel_bn: "উৎসবের কেনাকাটা",
+          headline: "HERITAGE,\nWOVEN FOR TODAY",
+          headline_bn: "ঐতিহ্য,\nআজকের জন্য বোনা",
+          subhead: "Contemporary silhouettes rooted in the craft of Bangladesh.",
+          subhead_bn: "বাংলাদেশের কারুশিল্পে প্রোথিত আধুনিক সিলুয়েট।",
+          ctaLabel: "SHOP NEW ARRIVALS",
+          ctaLabel_bn: "নতুন সংগ্রহ দেখুন",
+          ctaUrl: `${c}/new-in`,
+          caption: "EXPLORE HERITAGE",
+          caption_bn: "ঐতিহ্য অন্বেষণ করুন",
+        },
+        {
+          image: "/ph/songoskriti/edit-festive-main.png",
+          headline: "THE FESTIVE\nEDIT",
+          headline_bn: "উৎসবের\nবিশেষ সংগ্রহ",
+          subhead: "Jamdani drapes, silk textures and modern Panjabis made for celebrations.",
+          subhead_bn: "উৎসবের জন্য জামদানি, সিল্ক ও আধুনিক পাঞ্জাবি।",
+          ctaLabel: "SHOP FESTIVE",
+          ctaLabel_bn: "উৎসব সংগ্রহ",
           ctaUrl: `${c}/festive`,
-          caption: "Festive drop",
-          caption_bn: "উৎসবের ড্রপ",
+          caption: "SHOP WOMEN",
+          caption_bn: "নারীর সংগ্রহ",
         },
         {
           image: "/ph/songoskriti/hero-weaves.png",
-          headline: "New weaves this week",
-          headline_bn: "এই সপ্তাহের নতুন বুনন",
-          subhead: "Fresh handloom, fair prices, 48h dispatch.",
-          subhead_bn: "নতুন হাতে বোনা পণ্য, ন্যায্য দাম, ৪৮ ঘণ্টায় ডিসপ্যাচ।",
-          ctaLabel: "Shop new arrivals",
-          ctaLabel_bn: "নতুন পণ্য দেখুন",
-          ctaUrl: `${c}/new-in`,
-          caption: "New in",
-          caption_bn: "নতুন এসেছে",
-        },
-        {
-          image: "/ph/songoskriti/hero-artisans.png",
-          headline: "Wedding edits, woven to order",
-          headline_bn: "বিয়ের কালেকশন, অর্ডারে বোনা",
-          subhead: "Kantha and silk picks for the wedding season.",
-          subhead_bn: "বিয়ের মৌসুমের জন্য কাঁথা ও সিল্ক।",
-          ctaLabel: "Shop wedding",
-          ctaLabel_bn: "বিয়ের কেনাকাটা",
-          ctaUrl: `${c}/wedding`,
-          caption: "Wedding season",
-          caption_bn: "বিয়ের মৌসুম",
+          headline: "THE ART OF\nJAMDANI",
+          headline_bn: "জামদানির\nশিল্পকলা",
+          subhead: "Fine threads. Patient hands. A legacy that still moves forward.",
+          subhead_bn: "সূক্ষ্ম সুতো। ধৈর্যশীল হাত। এক ঐতিহ্য যা এখনও এগিয়ে চলে।",
+          ctaLabel: "EXPLORE JAMDANI",
+          ctaLabel_bn: "জামদানি দেখুন",
+          ctaUrl: `${c}/jamdani`,
+          caption: "HERITAGE HANDLOOM",
+          caption_bn: "ঐতিহ্যবাহী হাতে বোনা",
         },
       ],
-      autoAdvanceMs: 6000,
+      autoAdvanceMs: 5000,
       atmosphere: "wash",
     }),
-    // 3. Shop-by-category circles ×6 (real IA + real art).
-    s("circle_categories", {
-      heading: "Shop by category",
-      heading_bn: "ক্যাটাগরি অনুযায়ী কিনুন",
-      c1Title: "Women",
-      c1Title_bn: "নারী",
-      c1Image: "/ph/songoskriti/cat-women.png",
-      c1Href: `${c}/women`,
-      c2Title: "Men",
-      c2Title_bn: "পুরুষ",
-      c2Image: "/ph/songoskriti/cat-men.png",
-      c2Href: `${c}/men`,
-      c3Title: "Kids",
-      c3Title_bn: "শিশু",
-      c3Image: "/ph/songoskriti/cat-kids.png",
-      c3Href: `${c}/kids`,
-      c4Title: "Home and living",
-      c4Title_bn: "হোম ও লিভিং",
-      c4Image: "/ph/songoskriti/cat-living.png",
-      c4Href: `${c}/living`,
-      c5Title: "Jewellery",
-      c5Title_bn: "গয়না",
-      c5Image: "/ph/songoskriti/cat-jewelry.png",
-      c5Href: `${c}/jewellery`,
-      c6Title: "New in",
-      c6Title_bn: "নতুন এসেছে",
-      c6Image: "/ph/songoskriti/cat-newin.png",
-      c6Href: `${c}/new-in`,
-      c7Title: "",
-      c7Image: "",
-      c7Href: "",
-      c8Title: "",
-      c8Image: "",
-      c8Href: "",
-    }),
-    // 4. Trust assurances, high on the page: delivery, exchange, genuine
-    // craft and helpline answer the buyer's first objections before the
-    // rails (same items[] rows the renderer prefers).
-    s("trust_footer", {
-      items: [
-        {
-          icon: "delivery",
-          title: "48h dispatch",
-          title_bn: "৪৮ ঘণ্টায় ডিসপ্যাচ",
-          body: "Nationwide delivery across Bangladesh",
-          body_bn: "সারা বাংলাদেশে ডেলিভারি",
-        },
-        {
-          icon: "returns",
-          title: "7-day exchange",
-          title_bn: "৭ দিনে বদল",
-          body: "Easy size and style swaps",
-          body_bn: "সহজে সাইজ ও স্টাইল বদলান",
-        },
-        {
-          icon: "secure",
-          title: "Genuine craft",
-          title_bn: "খাঁটি কারুকাজ",
-          body: "Certified by master weavers",
-          body_bn: "মাস্টার তাঁতিদের সনদপ্রাপ্ত",
-        },
-        {
-          icon: "support",
-          title: "Helpline 10am-9pm",
-          title_bn: "হেল্পলাইন সকাল ১০টা–রাত ৯টা",
-          body: "Real humans, every day",
-          body_bn: "প্রতিদিন আসল মানুষ",
-        },
+
+    // ────────────────────────────────────────────────────────────────────
+    // 2. VISUAL CATEGORY DISCOVERY — 6 large editorial tiles
+    // ────────────────────────────────────────────────────────────────────
+    s("department_grid", {
+      heading: "SHOP THE COLLECTION",
+      heading_bn: "সংগ্রহ দেখুন",
+      columns: 6,
+      departments: [
+        { title: "Sarees", image: "/ph/songoskriti/cat-women.png", href: `${c}/sarees` },
+        { title: "Panjabi", image: "/ph/songoskriti/cat-men.png", href: `${c}/panjabi` },
+        { title: "Festive", image: "/ph/songoskriti/hero-festive.png", href: `${c}/festive` },
+        { title: "Wedding", image: "/ph/songoskriti/edit-festive-main.png", href: `${c}/wedding` },
+        { title: "Jewellery", image: "/ph/songoskriti/cat-jewelry.png", href: `${c}/jewellery` },
+        { title: "Heritage", image: "/ph/songoskriti/hero-weaves.png", href: `${c}/heritage` },
       ],
-      i1Icon: "delivery",
-      i1Title: "",
-      i1Body: "",
-      i2Icon: "returns",
-      i2Title: "",
-      i2Body: "",
-      i3Icon: "secure",
-      i3Title: "",
-      i3Body: "",
-      i4Icon: "support",
-      i4Title: "",
-      i4Body: "",
     }),
-    // 5a. Product rail: new arrivals (standard cards — price and title lead,
-    // editorial romance stays in the hero).
+
+    // ────────────────────────────────────────────────────────────────────
+    // 3. SIGNATURE SAREES — major product collection rail (8–12 items)
+    // ────────────────────────────────────────────────────────────────────
     s("product_rail", {
-      heading: "New arrivals",
+      heading: "SIGNATURE SAREES",
+      heading_bn: "সিগনেচার শাড়ি",
+      subhead: "Handloom stories for every occasion.",
+      subhead_bn: "প্রতিটি উপলক্ষের জন্য হাতে বোনা গল্প।",
+      limit: 10,
+      source: "collection",
+      collection: "sarees",
+      cardVariant: "standard",
+      showRating: false,
+      badgeLabel: "HANDLOOM",
+      promise: "Free delivery · 7-day exchange",
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 4. THE ART OF JAMDANI — full-bleed editorial campaign break
+    // ────────────────────────────────────────────────────────────────────
+    s("craft_story", {
+      eyebrow: "HERITAGE COLLECTION",
+      eyebrow_bn: "ঐতিহ্য সংগ্রহ",
+      heading: "THE ART OF JAMDANI",
+      heading_bn: "জামদানির শিল্পকলা",
+      body: "Fine threads. Patient hands. A legacy that still moves forward.",
+      body_bn: "সূক্ষ্ম সুতো। ধৈর্যশীল হাত। এক ঐতিহ্য যা এখনও এগিয়ে চলে।",
+      ctaLabel: "EXPLORE JAMDANI",
+      ctaHref: `${c}/jamdani`,
+      imageUrl: "/ph/songoskriti/hero-weaves.png",
+      scrim: true,
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 5. NEW ARRIVALS — horizontal product carousel
+    // ────────────────────────────────────────────────────────────────────
+    s("product_rail", {
+      heading: "NEW ARRIVALS",
       heading_bn: "নতুন এসেছে",
-      limit: 8,
+      subhead: "New pieces, fresh weaves, just in.",
+      subhead_bn: "নতুন বুনন, সদ্য এসেছে।",
+      limit: 10,
       source: "collection",
       collection: "new-in",
       cardVariant: "standard",
-      showRating: true,
-      promise: "In stock · Dispatched in 24h",
-      promise_bn: "স্টকে আছে · ২৪ ঘণ্টায় ডিসপ্যাচ",
+      showRating: false,
+      badgeLabel: "NEW",
+      promise: "Just arrived",
     }),
-    // 5b. Product rail: festive bestsellers.
+
+    // ────────────────────────────────────────────────────────────────────
+    // 6. THE FESTIVE EDIT — split campaign (women + men)
+    // ────────────────────────────────────────────────────────────────────
+    s("split_feature", {
+      heading: "THE FESTIVE EDIT",
+      heading_bn: "উৎসবের সাজ",
+      body: "Jamdani drapes, silk textures and modern Panjabis made for celebrations that feel entirely your own.",
+      body_bn: "জামদানি, সিল্ক ও আধুনিক পাঞ্জাবিতে আপনার উৎসব সম্পূর্ণ করুন।",
+      ctaLabel: "SHOP WOMEN",
+      ctaUrl: `${c}/women`,
+      ctaLabel2: "SHOP MEN",
+      ctaUrl2: `${c}/men`,
+      primaryImage: "/ph/songoskriti/edit-festive-main.png",
+      secondaryImage: "/ph/songoskriti/cat-men.png",
+      layout: "image_left",
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 7. MOST LOVED — bestsellers with rating
+    // ────────────────────────────────────────────────────────────────────
     s("product_rail", {
-      heading: "Festive bestsellers",
-      heading_bn: "উৎসবের জনপ্রিয়",
-      limit: 8,
+      heading: "MOST LOVED",
+      heading_bn: "সবচেয়ে জনপ্রিয়",
+      subhead: "Pieces our customers return to.",
+      subhead_bn: "যে পণ্যগুলো বারবার ফিরে আসে।",
+      limit: 10,
       source: "collection",
       collection: "festive",
       cardVariant: "standard",
-      showRating: true,
-      promise: "Loved across 64 districts",
-      promise_bn: "সারা দেশে জনপ্রিয়",
+      showRating: false,
+      badgeLabel: "BESTSELLER",
+      promise: "Free delivery across Bangladesh",
     }),
-    // 6. Occasion finder (track heading/body/browse-all CTA on verified
-    // collection hrefs — Eid/festive, wedding, gifting).
+
+    // ────────────────────────────────────────────────────────────────────
+    // 8. SHOP BY OCCASION — expanded occasion grid (7 occasions)
+    // ────────────────────────────────────────────────────────────────────
     s("finder_row", {
-      heading: "Dress for the occasion",
-      heading_bn: "উপলক্ষের সাজ",
-      body: "Pick a moment — we take you straight to matching weaves.",
-      body_bn: "একটি উপলক্ষ বেছে নিন — মানানসই বুননে পৌঁছে দেব।",
-      o1Label: "Eid and festive",
-      o1Label_bn: "ঈদ ও উৎসব",
-      o1Href: `${c}/festive`,
-      o2Label: "Wedding",
-      o2Label_bn: "বিয়ে",
-      o2Href: `${c}/wedding`,
-      o3Label: "Gifting",
-      o3Label_bn: "উপহার",
-      o3Href: `${c}/gifting`,
-      buttonLabel: "Browse all festive",
-      buttonLabel_bn: "সব উৎসবের পোশাক দেখুন",
-      buttonHref: `${c}/festive`,
+      heading: "SHOP BY OCCASION",
+      heading_bn: "উপলক্ষ অনুযায়ী কিনুন",
+      body: "Pick a moment — we take you straight to matching weaves, silhouettes and collections.",
+      body_bn: "আপনার উপলক্ষ বেছে নিন — আমরা আপনাকে সঠিক সংগ্রহে পৌঁছে দেব।",
+      o1Label: "EID & FESTIVE", o1Href: `${c}/festive`,
+      o2Label: "WEDDING", o2Href: `${c}/wedding`,
+      o3Label: "MEHENDI", o3Href: `${c}/mehendi`,
+      o4Label: "SANGEET", o4Href: `${c}/sangeet`,
+      o5Label: "GIFTING", o5Href: `${c}/gifting`,
+      o6Label: "EVERYDAY", o6Href: `${c}/everyday`,
+      o7Label: "FAMILY MATCHING", o7Href: `${c}/family`,
+      buttonLabel: "BROWSE ALL OCCASIONS",
+      buttonHref: `${c}/occasions`,
     }),
-    // 7. Flagship outlets — the franchise proof. Names + hours only (never
-    // invent street addresses or phone numbers); matches the footer colophon.
-    s("store_locator", {
-      heading: "Visit our flagship stores",
-      heading_bn: "আমাদের ফ্ল্যাগশিপ স্টোরে আসুন",
-      s1Name: "Uttara flagship",
-      s1Name_bn: "উত্তরা ফ্ল্যাগশিপ",
-      s1Hours: "Open 10am–9pm daily",
-      s1Hours_bn: "প্রতিদিন সকাল ১০টা–রাত ৯টা",
-      s2Name: "Gulshan flagship",
-      s2Name_bn: "গুলশান ফ্ল্যাগশিপ",
-      s2Hours: "Open 10am–9pm daily",
-      s2Hours_bn: "প্রতিদিন সকাল ১০টা–রাত ৯টা",
-      s3Name: "Chattogram flagship",
-      s3Name_bn: "চট্টগ্রাম ফ্ল্যাগশিপ",
-      s3Hours: "Open 10am–9pm daily",
-      s3Hours_bn: "প্রতিদিন সকাল ১০টা–রাত ৯টা",
+
+    // ────────────────────────────────────────────────────────────────────
+    // 9. THE MODERN PANJABI — men's campaign (split)
+    // ────────────────────────────────────────────────────────────────────
+    s("split_feature", {
+      heading: "THE MODERN\nPANJABI",
+      heading_bn: "আধুনিক\nপাঞ্জাবি",
+      body: "Tradition, cut for today. Premium handloom and cotton Panjabis for the discerning man.",
+      body_bn: "ঐতিহ্য, আজকের জন্য কাটা। বিশেষ হাতে বোনা ও কটন পাঞ্জাবি।",
+      ctaLabel: "SHOP PANJABI",
+      ctaUrl: `${c}/panjabi`,
+      primaryImage: "/ph/songoskriti/campaign-men.png",
+      secondaryImage: "/ph/songoskriti/cat-men.png",
+      layout: "image_right",
     }),
-    // 8. Craft story (heritage depth below the fold — the shop comes first).
+
+    // ────────────────────────────────────────────────────────────────────
+    // 10. MEN'S PRODUCT RAIL — compact panjabi carousel beneath campaign
+    // ────────────────────────────────────────────────────────────────────
+    s("product_rail", {
+      heading: "SHOP PANJABI",
+      heading_bn: "পাঞ্জাবি সংগ্রহ",
+      subhead: "Handloom, cotton, silk — for every occasion.",
+      subhead_bn: "হাতে বোনা, কটন, সিল্ক — প্রতিটি উপলক্ষের জন্য।",
+      limit: 8,
+      source: "collection",
+      collection: "panjabi",
+      cardVariant: "standard",
+      showRating: false,
+      badgeLabel: "HERITAGE",
+      promise: "Made with care",
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 11. EVERYDAY HERITAGE — lighter everyday wear section
+    // ────────────────────────────────────────────────────────────────────
+    s("product_rail", {
+      heading: "EVERYDAY HERITAGE",
+      heading_bn: "দৈনন্দিন ঐতিহ্য",
+      subhead: "Cotton sarees, handloom staples and everyday ethnic pieces.",
+      subhead_bn: "কটন শাড়ি, হাতে বোনা এবং দৈনন্দিন জাতিগত পোশাক।",
+      limit: 8,
+      source: "collection",
+      collection: "everyday",
+      cardVariant: "standard",
+      showRating: false,
+      promise: "Wearable every day",
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 12. THE WEDDING EDIT — high-impact wedding section (split)
+    // ────────────────────────────────────────────────────────────────────
+    s("split_feature", {
+      heading: "THE WEDDING\nEDIT",
+      heading_bn: "বিয়ের\nবিশেষ সংগ্রহ",
+      body: "Bride. Groom. Bridesmaids. Wedding guests. Gifts. Elegant ivory, muted rose and deep green — for the moments that matter.",
+      body_bn: "বধূ, বর, সাক্ষী — বিশেষ মুহূর্তের জন্য।",
+      ctaLabel: "SHOP BRIDE",
+      ctaUrl: `${c}/wedding`,
+      ctaLabel2: "SHOP GROOM",
+      ctaUrl2: `${c}/groom`,
+      primaryImage: "/ph/songoskriti/edit-festive-main.png",
+      secondaryImage: "/ph/songoskriti/prod-saree.png",
+      layout: "image_left",
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 13. HERITAGE COLLECTIONS — 4-tile signature weaves grid
+    // ────────────────────────────────────────────────────────────────────
+    s("collection_story", {
+      heading: "FROM THE LOOM",
+      heading_bn: "তাঁত থেকে",
+      subhead: "Jamdani, Tangail Taant, Rajshahi Silk and Nakshi Kantha — timeless weaves, each with a story.",
+      subhead_bn: "জামদানি, টাঙ্গাইল তাঁত, রাজশাহী সিল্ক ও নকশি কাঁথা।",
+      collections: [
+        { title: "Jamdani", image: "/ph/songoskriti/hero-weaves.png", href: `${c}/jamdani`, subtitle: "UNESCO Heritage" },
+        { title: "Rajshahi Silk", image: "/ph/songoskriti/prod-saree.png", href: `${c}/silk`, subtitle: "Artisan crafted" },
+        { title: "Tangail Handloom", image: "/ph/songoskriti/cat-newin.png", href: `${c}/tangail`, subtitle: "Limited weave" },
+        { title: "Nakshi Kantha", image: "/ph/songoskriti/cat-living.png", href: `${c}/kantha`, subtitle: "Master stitch" },
+      ],
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 14. JEWELLERY / COMPLETE THE LOOK
+    // ────────────────────────────────────────────────────────────────────
+    s("product_rail", {
+      heading: "COMPLETE THE LOOK",
+      heading_bn: "সম্পূর্ণ করুন লুক",
+      subhead: "Jhumka, necklaces, bangles and heritage accessories.",
+      subhead_bn: "ঝুমকা, নেকলেস, চুড়ি ও ঐতিহ্যবাহী গহনা।",
+      limit: 8,
+      source: "collection",
+      collection: "jewellery",
+      cardVariant: "standard",
+      showRating: false,
+      badgeLabel: "ARTISAN",
+      promise: "Handcrafted jewellery",
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 15. ARTISAN STORY — the human behind the weave
+    // ────────────────────────────────────────────────────────────────────
     s("craft_story", {
-      eyebrow: "The master weavers",
-      eyebrow_bn: "মাস্টার তাঁতিরা",
-      heading: "A living legacy on wooden looms",
-      heading_bn: "কাঠের তাঁতে জীবন্ত ঐতিহ্য",
-      body: "In Tangail and Sonargaon, master weavers dye, warp and weave every thread by hand — no two pieces exactly alike.",
-      body_bn:
-        "টাঙ্গাইল ও সোনারগাঁয়ে মাস্টার তাঁতিরা প্রতিটি সুতো হাতে রং করেন ও বোনেন — কোনো দুটি পণ্য হুবহু এক নয়।",
-      ctaLabel: "Read the story",
-      ctaLabel_bn: "গল্পটি পড়ুন",
-      ctaHref: "/blog/master-weavers",
+      eyebrow: "THE HANDS BEHIND THE WEAVE",
+      eyebrow_bn: "বুননের পেছনের হাত",
+      heading: "Made Slowly.\nWorn for Years.",
+      heading_bn: "ধীরে তৈরি।\nবছরের পর বছর পরা।",
+      body: "In Tangail, Sonargaon and across Bangladesh, generations of artisans carry techniques that cannot be mass-produced.",
+      body_bn: "টাঙ্গাইল, সোনারগাঁয়ে প্রজন্মের পর প্রজন্ম তাঁতিরা সংরক্ষণ করছেন যে কৌশল।",
+      ctaLabel: "MEET THE ARTISANS",
+      ctaHref: "/blog/artisan-story",
       imageUrl: "/ph/songoskriti/hero-artisans.png",
       scrim: true,
     }),
-    // 9. Testimonials ×3 (track quote wall on the tree's rows; the
-    // carousel renderer keeps dots + line-clamp-3).
+
+    // ────────────────────────────────────────────────────────────────────
+    // 16. WORN BY YOU — social proof / UGC gallery (6–9 images)
+    // ────────────────────────────────────────────────────────────────────
+    s("ugc_gallery", {
+      heading: "WORN BY YOU",
+      heading_bn: "আপনার পরিধানে",
+      subhead: "SONGOSKRITI IN THE WORLD",
+      subhead_bn: "সংস্কৃতি সারা দুনিয়ায়",
+      images: "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png, /ph/songoskriti/ugc-3.png, /ph/songoskriti/ugc-4.png",
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 17. TESTIMONIALS — elegant review carousel
+    // ────────────────────────────────────────────────────────────────────
     s("testimonials", {
+      skin: "carousel",
+      autoAdvanceMs: 6000,
       testimonials: [
         {
-          quote: "The Jamdani drapes like water — fine, alive, unforgettable.",
-          quote_bn:
-            "জামদানিটি পানির মতো ঝরে — সূক্ষ্ম, প্রাণবন্ত, অবিস্মরণীয়।",
-          author: "Farhana Ahmed",
-          author_bn: "ফারহানা আহমেদ",
-          role: "Dhaka",
-          role_bn: "ঢাকা",
-          image: "",
+          quote: "The Jamdani saree I received was breathtaking. The weave is so intricate — I've never seen anything like it in any store.",
+          author: "Nusrat Rahman",
+          role: "Dhaka · Jamdani Saree",
         },
         {
-          quote: "Three Eids in our panjabis. Honest stitching, honest price.",
-          quote_bn: "আমাদের পাঞ্জাবিতে তিনটি ঈদ। সৎ সেলাই, সৎ দাম।",
-          author: "Tanvir Rahman",
-          author_bn: "তানভীর রহমান",
-          role: "Chattogram",
-          role_bn: "চট্টগ্রাম",
-          image: "",
+          quote: "My husband's Panjabi arrived beautifully packaged. The handloom quality is exceptional — exactly the kind of craftsmanship you can't find elsewhere.",
+          author: "Priya Chakraborty",
+          role: "Chittagong · Handloom Panjabi",
         },
         {
-          quote: "Kantha quilt arrived wrapped like a gift to ourselves.",
-          quote_bn: "কাঁথাটি এসেছে নিজেদের জন্য উপহারের মতো মোড়ানো।",
-          author: "Nusrat Jahan",
-          author_bn: "নুসরাত জাহান",
-          role: "Sylhet",
-          role_bn: "সিলেট",
-          image: "",
+          quote: "Ordered for Eid and it arrived on time with care. The cotton saree feels amazing to wear — light, breathable and strikingly beautiful.",
+          author: "Tasnim Ahmed",
+          role: "Sylhet · Cotton Saree",
+        },
+        {
+          quote: "Finally a Bangladeshi brand that takes both craft and packaging seriously. The Nakshi Kantha piece I bought is a work of art.",
+          author: "Farhan Islam",
+          role: "Rajshahi · Nakshi Kantha",
         },
       ],
-      autoAdvanceMs: 6000,
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 18. THE SONGOSKRITI JOURNAL — blog/editorial content cards
+    // ────────────────────────────────────────────────────────────────────
+    s("split_feature", {
+      heading: "THE SONGOSKRITI\nJOURNAL",
+      heading_bn: "সংস্কৃতির\nজার্নাল",
+      body: "Stories from the loom, styling guides and the heritage behind every thread.",
+      body_bn: "তাঁত থেকে গল্প, স্টাইলিং গাইড ও প্রতিটি সুতোর পেছনের ইতিহাস।",
+      ctaLabel: "HOW TO IDENTIFY AUTHENTIC JAMDANI →",
+      ctaUrl: "/blog/authentic-jamdani",
+      ctaLabel2: "WHAT TO WEAR TO A BENGALI WEDDING →",
+      ctaUrl2: "/blog/bengali-wedding",
+      primaryImage: "/ph/songoskriti/hero-weaves.png",
+      secondaryImage: "/ph/songoskriti/hero-artisans.png",
+      layout: "image_right",
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 19. WHY SONGOSKRITI — trust/service strip
+    // ────────────────────────────────────────────────────────────────────
+    s("trust_footer", {
+      items: [
+        { icon: "secure", title: "AUTHENTIC CRAFT", body: "Verified artisan-made pieces — no factory substitutes" },
+        { icon: "delivery", title: "NATIONWIDE DELIVERY", body: "Reliable delivery across Bangladesh" },
+        { icon: "returns", title: "EASY EXCHANGE", body: "Straightforward 7-day exchange policy" },
+        { icon: "support", title: "HUMAN SUPPORT", body: "Real people, not automated walls" },
+      ],
+    }),
+
+    // ────────────────────────────────────────────────────────────────────
+    // 20. STORE LOCATIONS — flagship retail presence
+    // ────────────────────────────────────────────────────────────────────
+    s("store_locator", {
+      heading: "VISIT SONGOSKRITI",
+      heading_bn: "সংস্কৃতি দেখুন",
+      s1Name: "Uttara Flagship",
+      s1Hours: "Open 10am – 9pm daily",
+      s2Name: "Gulshan Showroom",
+      s2Hours: "Open 10am – 9pm daily",
+      s3Name: "Chattogram Store",
+      s3Hours: "Open 10am – 8pm daily",
     }),
   ];
 }

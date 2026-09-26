@@ -300,7 +300,7 @@ export function ThemePreviewFrame({
 
               {/* main slot */}
               {focusedMain.length > 0 ? (
-                <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='hero_carousel']]:!mt-0 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
+                <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
                   {focusedMain.map((section) => (
                     <SectionRenderer
                       key={section.id}

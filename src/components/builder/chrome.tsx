@@ -394,15 +394,15 @@ function FooterSitemap({ str, section, link, locale }: WidgetCtx) {
     >
       {columns.map((col) => (
         <div key={col.title}>
-          <p className="text-[11px] font-bold fq-caps tracking-widest text-foreground mb-4">
+          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-foreground mb-6">
             {col.title}
           </p>
-          <ul className="space-y-2.5">
+          <ul className="space-y-4">
             {col.links.map((linkItem) => (
               <li key={`${col.title}-${linkItem.label}`}>
                 <a
                   href={link(linkItem.href)}
-                  className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
+                  className="font-serif text-[15px] font-light text-foreground/70 hover:text-foreground transition-colors"
                 >
                   {linkItem.label}
                 </a>

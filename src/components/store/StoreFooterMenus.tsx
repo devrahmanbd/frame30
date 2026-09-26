@@ -29,9 +29,9 @@ export function StoreFooterMenus({
   return (
     <nav
       aria-label={t("Footer menu", "ফুটার মেনু")}
-      className="border-t border-border bg-muted/40"
+      className="border-t border-[#eaeaea] bg-transparent"
     >
-      <ul className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:grid-cols-2 lg:grid-cols-4">
         {nodes.slice(0, 12).map((node) => (
           <li key={node.id} className="min-w-0">
             {node.url && node.url !== "#" ? (
@@ -41,15 +41,15 @@ export function StoreFooterMenus({
                 {...(node.newTab
                   ? { target: "_blank", rel: "noreferrer" }
                   : {})}
-                className="text-sm font-semibold hover:text-primary hover:underline"
+                className="text-[11px] font-medium uppercase tracking-[0.2em] text-foreground hover:text-foreground/70 transition-colors block mb-6"
               >
                 {node.label}
               </a>
             ) : (
-              <p className="text-sm font-semibold">{node.label}</p>
+              <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-foreground mb-6">{node.label}</p>
             )}
             {node.children.length > 0 && (
-              <ul className="mt-2 space-y-1.5">
+              <ul className="space-y-4">
                 {node.children.slice(0, 24).map((child) => (
                   <li key={child.id}>
                     <a
@@ -58,7 +58,7 @@ export function StoreFooterMenus({
                       {...(child.newTab
                         ? { target: "_blank", rel: "noreferrer" }
                         : {})}
-                      className="text-sm text-muted-foreground hover:text-primary hover:underline"
+                      className="font-serif text-[15px] font-light text-foreground/70 hover:text-foreground transition-colors"
                     >
                       {child.label}
                     </a>

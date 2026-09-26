@@ -1,9 +1,14 @@
 /**
- * Phase 2.2 — the one snap-scroll rail.
+ * Nakhrali-grade snap-scroll product rail (redesign 2026-09-26).
  *
- * Used by `product_rail`, `deal_strip` and `brand_rail`. Keyboard arrows move
- * the viewport, controls are 44px targets, items are fluid (no fixed pixel
- * widths) so 320px never overflows, and momentum scrolling stays native.
+ * Visual model: nakhrali.com — no prev/next buttons, no visible scrollbar,
+ * native CSS scroll-snap on touch and desktop, keyboard arrow support,
+ * auto-scroll every 4s on desktop (paused on hover / reduced-motion / touch).
+ *
+ * Contract preserved:
+ * - Same props as the old Rail — heading slot, label, children, itemClassName.
+ * - Scrollbar hidden via scrollbar-width:none + webkit-scrollbar:hidden (was already done).
+ * - Keyboard: ArrowLeft/Right/Home/End still work for a11y.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -31,27 +36,26 @@ export function Rail({
   label: string;
   children: React.ReactNode[];
   itemClassName?: string;
-  /**
-   * Optional header node (typically the section H2). When provided the
-   * prev/next arrows dock into the same header row instead of floating in
-   * a separate row beneath the rail; when absent the legacy bottom-row
-   * controls render exactly as before.
-   */
   heading?: React.ReactNode;
-  /** Bilingual arrow labels — merch widgets pass bn/en strings. */
   prevLabel?: string;
   nextLabel?: string;
 }) {
   const ref = useRef<HTMLUListElement>(null);
   const reduced = usePrefersReducedMotion();
+  const hovered = useRef(false);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(true);
+  // Touch detection — disable auto-scroll on touch devices
+  const [isTouch, setIsTouch] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setIsTouch(window.matchMedia("(pointer: coarse)").matches);
+  }, []);
 
   const updateEdges = useCallback(() => {
     const el = ref.current;
     if (!el) return;
-    // jsdom / SSR have no layout (scrollWidth 0) — keep the optimistic
-    // initial state so controls stay usable in tests and static markup.
     if (el.scrollWidth === 0) return;
     const max = el.scrollWidth - el.clientWidth;
     if (max <= 4) {
@@ -75,6 +79,26 @@ export function Rail({
     };
   }, [updateEdges, children.length]);
 
+  // Auto-scroll every 4s on desktop, paused on hover/reduced-motion/touch
+  useEffect(() => {
+    if (reduced || isTouch) return;
+    const tick = setInterval(() => {
+      if (hovered.current) return;
+      const el = ref.current;
+      if (!el) return;
+      const max = el.scrollWidth - el.clientWidth;
+      if (max <= 4) return;
+      // Wrap around to start when we reach the end
+      if (el.scrollLeft >= max - 8) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        const itemWidth = el.querySelector("li")?.offsetWidth ?? 300;
+        el.scrollBy({ left: itemWidth, behavior: "smooth" });
+      }
+    }, 4000);
+    return () => clearInterval(tick);
+  }, [reduced, isTouch]);
+
   const nudge = useCallback(
     (direction: 1 | -1) => {
       const el = ref.current;
@@ -89,35 +113,15 @@ export function Rail({
 
   if (children.length === 0) return null;
 
-  const controls = (
-    <>
-      <button
-        type="button"
-        onClick={() => nudge(-1)}
-        disabled={!canLeft}
-        aria-label={prevLabel}
-        className="h-11 w-11 rounded-fq-md border border-border bg-card text-sm transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-default disabled:opacity-40"
-      >
-        ‹
-      </button>
-      <button
-        type="button"
-        onClick={() => nudge(1)}
-        disabled={!canRight}
-        aria-label={nextLabel}
-        className="h-11 w-11 rounded-fq-md border border-border bg-card text-sm transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-default disabled:opacity-40"
-      >
-        ›
-      </button>
-    </>
-  );
-
   return (
-    <div className="relative">
+    <div
+      className="relative"
+      onMouseEnter={() => { hovered.current = true; }}
+      onMouseLeave={() => { hovered.current = false; }}
+    >
       {heading !== undefined && (
-        <div className="mb-3 flex items-end justify-between gap-3">
-          <div className="min-w-0 flex-1">{heading}</div>
-          <div className="flex shrink-0 gap-2">{controls}</div>
+        <div className="mb-8 sm:mb-10 text-center">
+          {heading}
         </div>
       )}
       <ul
@@ -133,30 +137,38 @@ export function Rail({
             nudge(-1);
           } else if (event.key === "Home") {
             event.preventDefault();
-            ref.current?.scrollTo({
-              left: 0,
-              behavior: reduced ? "auto" : "smooth",
-            });
+            ref.current?.scrollTo({ left: 0, behavior: reduced ? "auto" : "smooth" });
           } else if (event.key === "End") {
             event.preventDefault();
-            ref.current?.scrollTo({
-              left: ref.current.scrollWidth,
-              behavior: reduced ? "auto" : "smooth",
-            });
+            ref.current?.scrollTo({ left: ref.current.scrollWidth, behavior: reduced ? "auto" : "smooth" });
           }
         }}
         onScroll={updateEdges}
         style={{ WebkitOverflowScrolling: "touch" }}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 pb-2 motion-safe:scroll-smooth focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        className="flex snap-x snap-mandatory gap-6 sm:gap-8 overflow-x-auto scroll-px-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
-        {children.map((child, index) => (
-          <li key={index} className={`shrink-0 snap-start ${itemClassName}`}>
+        {children.map((child, i) => (
+          <li
+            key={i}
+            className={`shrink-0 snap-start ${itemClassName}`}
+          >
             {child}
           </li>
         ))}
       </ul>
-      {heading === undefined && (
-        <div className="mt-2 flex justify-end gap-2">{controls}</div>
+
+      {/* Subtle fade edges — visual cue that there's more to scroll, no buttons */}
+      {canLeft && (
+        <div
+          className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-background/80 to-transparent"
+          aria-hidden="true"
+        />
+      )}
+      {canRight && (
+        <div
+          className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-background/80 to-transparent"
+          aria-hidden="true"
+        />
       )}
     </div>
   );

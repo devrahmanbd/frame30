@@ -244,17 +244,19 @@ export function ThemeChrome({
         )}
       </main>
       {chromeAst && chromeAst.footer.length > 0 && (
-        <footer className="mx-auto max-w-7xl space-y-2 px-4 sm:px-6 lg:px-8 pb-10">
-          {chromeAst.footer.map((section) => (
-            <SectionRenderer
-              key={section.id}
-              section={section}
-              template={template}
-              storeSlug={storeSlug}
-              contextSlots={contextSlots}
-              linkBase={base}
-            />
-          ))}
+        <footer className="w-full mt-16 pt-16">
+          <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8 pb-16">
+            {chromeAst.footer.map((section) => (
+              <SectionRenderer
+                key={section.id}
+                section={section}
+                template={template}
+                storeSlug={storeSlug}
+                contextSlots={contextSlots}
+                linkBase={base}
+              />
+            ))}
+          </div>
         </footer>
       )}
     </ThemeSurface>
