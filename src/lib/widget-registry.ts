@@ -223,6 +223,33 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     skeleton: true,
     seo: { jsonLd: "ItemList", heading: false },
   },
+  urgency_rail: {
+    // Somvabona's urgency rails are product rails under the hood (same
+    // ProductCard/Rail primitives, same collection batch). Without this
+    // entry requestForSection returned null, the preview/provider never
+    // collected rows, and UrgencyRail skeleton-spun forever — Phase 1
+    // cards could never render on the storefront or /theme-preview.
+    data: {
+      source: "collection",
+      params: [
+        {
+          key: "limit",
+          label: "Max products",
+          kind: "number",
+          panel: "content",
+        },
+        {
+          key: "collection",
+          label: "Collection handle",
+          kind: "text",
+          panel: "content",
+        },
+        { key: "source", label: "Source", kind: "text", panel: "content" },
+      ],
+    },
+    skeleton: true,
+    seo: { jsonLd: "ItemList", heading: false },
+  },
   deal_strip: {
     data: {
       source: "collection",

@@ -34,6 +34,24 @@ describe("widget data collection", () => {
     );
   });
 
+  it("wires the somvabona urgency rail to the collection batch", () => {
+    // Regression: urgency_rail rendered skeletons forever in preview AND on
+    // storefronts because it never declared `data` in the registry override.
+    const request = requestForSection({
+      ...newSection("urgency_rail"),
+      props: {
+        ...newSection("urgency_rail").props,
+        source: "collection",
+        collection: "new-in",
+        limit: 8,
+      } as Section["props"],
+    });
+    expect(request?.source).toBe("collection");
+    expect(request?.params["collection"]).toBe("new-in");
+    expect(request?.params["limit"]).toBe(8);
+    expect(request?.params["source"]).toBe("collection");
+  });
+
   it("identical widgets collapse to one request", () => {
     const bundle = collectWidgetRequests(
       ast([grid({ limit: 8 }), grid({ limit: 8 }), grid({ limit: 8 })]),

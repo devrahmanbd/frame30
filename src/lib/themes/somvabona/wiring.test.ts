@@ -135,4 +135,21 @@ describe("somvabona scaffold", () => {
       ).toBeDefined();
     }
   });
+
+  it("collects a data request for every homepage urgency rail", async () => {
+    // Regression: urgency_rail never declared `data` in WIDGET_REGISTRY, so
+    // the preview and storefront batchers skipped both rails and
+    // UrgencyRail skeleton-spun forever — Phase 1 cards never rendered.
+    const { collectWidgetRequests } = await import("../../widget-data");
+    const s = (type: string, props = {}) =>
+      ({ id: type, type, props }) as never;
+    const sections = buildHomepageMain(s as never);
+    const bundle = collectWidgetRequests(sections as never);
+    const collections = bundle.requests
+      .filter((r) => r.source === "collection")
+      .map((r) => r.params["collection"])
+      .filter((c) => c === "new-in" || c === "festive");
+    expect(collections).toHaveLength(2);
+    expect(new Set(collections)).toEqual(new Set(["new-in", "festive"]));
+  });
 });
