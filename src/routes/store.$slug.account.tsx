@@ -98,8 +98,9 @@ function AccountPage() {
     setTab(initialAccountTab(search.tab));
   }, [search.tab]);
   // Click → URL write: tab buttons replace `?tab=` (replace, not push, so
-  // tab-hopping never spams history) while preserving other search params
-  // via the shared helper. The effect above re-syncs on pop/navigate.
+  // tab-hopping never spams history) — drops other search params
+  // (validators are tab-only) via the shared helper. The effect above
+  // re-syncs on pop/navigate.
   const selectTab = (key: Tab) => {
     setTab(key);
     void navigate({

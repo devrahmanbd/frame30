@@ -25,9 +25,6 @@ import {
   type HeaderChromeConfig,
 } from "./theme-chrome";
 
-/** Re-exported for existing callers (CollectionView subnav lookup). */
-export { SONGOSKRITI_MEGA_MENU } from "./theme-chrome";
-
 /**
  * Count badge for header utility icons (wishlist/cart). Single component,
  * semantic token classes only: bg-foreground/text-background is the token
