@@ -37,6 +37,7 @@ import {
   ACCOUNT_TABS as TABS,
   initialAccountTab,
   isAccountTab,
+  nextAccountTabSearch,
   type AccountTab,
 } from "@/lib/account-tab";
 
@@ -87,7 +88,19 @@ function AccountPage() {
   const { slug } = Route.useParams();
   const { chrome } = Route.useLoaderData();
   const search = Route.useSearch();
-  const [tab, setTab] = useState<Tab>(initialAccountTab(search.tab));
+  const navigate = useNavigate({ from: Route.id });
+  // URL is the source of truth (same pattern as auth.tsx search.mode):
+  // popstate and direct ?tab= URLs re-sync with no effect and cannot bounce.
+  // Distinct-tab clicks push (see push-vs-replace rationale in
+  // src/lib/account-tab.ts) so Back restores the prior tab.
+  const tab: Tab = initialAccountTab(search.tab);
+  const selectTab = (key: Tab) => {
+    if (key === tab) return;
+    void navigate({
+      to: ".",
+      search: (prev) => nextAccountTabSearch(prev, key),
+    });
+  };
   const qc = useQueryClient();
   const overviewFn = useServerFn(accountOverviewFn);
 
@@ -186,7 +199,7 @@ function AccountPage() {
             role="tab"
             type="button"
             aria-selected={tab === key}
-            onClick={() => setTab(key)}
+            onClick={() => selectTab(key)}
             className={`flex h-12 items-center gap-2 border-b-2 px-1 text-[13px] font-bold fq-caps tracking-widest transition-colors ${
               tab === key
                 ? "border-foreground text-foreground"
