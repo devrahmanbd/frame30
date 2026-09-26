@@ -216,7 +216,7 @@ always win):
   `product_rail`, `product_rail`, `split_feature`, `collection_story`,
   `product_rail`, `craft_story`, `ugc_gallery`, `testimonials`,
   `split_feature`, `trust_footer`, `store_locator`.
-- Somvabona: `buildHomepageMain()` (`src/lib/themes/somvabona/homepage.ts:29`)
+- Somvabona: `buildHomepageMain()` (`src/lib/themes/somvabona/homepage.ts:22`)
   wrapped in `withSomvabonaWidgetDefaults()` (`src/lib/themes/somvabona/skins.ts:111`).
   Ships an 11-section homepage on 10 distinct types (the urgency rail
   doubles): `announcement_bar`, `hero_carousel`, `trust_marquee`,
