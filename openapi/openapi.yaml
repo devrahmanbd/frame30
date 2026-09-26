@@ -1,0 +1,2737 @@
+openapi: 3.1.0
+info:
+  title: Framique Public & Scheduled HTTP API
+  version: 2026-01-01
+  description: >-
+    Machine-readable inventory of every reachable endpoint under
+    src/routes/api (public storefront/telemetry/webhook surface, the
+    versioned v1 REST gateway, bearer-guarded scheduled cron endpoints, and
+    the admin server-function module). Reverse-engineered from the TanStack
+    Start route handlers; anything not verifiable in code is flagged with
+    x-undocumented: true instead of invented. See openapi/AUDIT.md for the
+    conformance verdict and gap analysis.
+  contact:
+    name: Platform
+  license:
+    name: Proprietary
+servers:
+  - url: https://framique.store
+    description: "Production storefront origin"
+  - url: http://localhost:5173
+    description: "Local development"
+tags:
+  - name: oauth
+    description: "OAuth 2.1 token issuance and revocation (RFC 6749 / RFC 7009)."
+  - name: v1
+    description: "Versioned merchant REST gateway (API key or OAuth bearer + scopes)."
+  - name: cron
+    description: "Bearer-guarded scheduled jobs (BILLING_CRON_SECRET or registered scheduler token)."
+  - name: telemetry
+    description: "Anonymous storefront telemetry collectors (rate limited, hostile-input hardened)."
+  - name: webhooks
+    description: "Inbound provider/carrier/edge webhooks (HMAC verified)."
+  - name: edge
+    description: "Edge delivery endpoints (media, fonts, images, placeholders, TLS)."
+  - name: payments
+    description: "Shopper-facing payment rails, returns and sandbox pages."
+  - name: admin
+    description: "Admin server functions (no stable REST transport — see x-undocumented)."
+paths:
+  /api/public/oauth/token:
+    x-source-file: src/routes/api/public/oauth/token.ts
+    options:
+      operationId: oauthTokenCors
+      summary: "CORS preflight for the token endpoint"
+      tags:
+        - oauth
+      responses:
+        "204":
+          description: "Preflight accepted, no body."
+    post:
+      operationId: oauthIssueToken
+      summary: "Issue or refresh an OAuth 2.1 token pair (PKCE required for authorization_code)"
+      tags:
+        - oauth
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/OAuthTokenRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OAuthTokenRequest"
+      responses:
+        "200":
+          description: "Token pair issued."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenPair"
+        "400":
+          description: "unsupported_grant_type or other OAuth request error."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+        "401":
+          description: "invalid_client (missing or unknown credentials; never reveals which)."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+        "500":
+          description: "server_error, no internals leaked."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+  /api/public/oauth/revoke:
+    x-source-file: src/routes/api/public/oauth/revoke.ts
+    options:
+      operationId: oauthRevokeCors
+      summary: "CORS preflight for the revocation endpoint"
+      tags:
+        - oauth
+      responses:
+        "204":
+          description: "Preflight accepted, no body."
+    post:
+      operationId: oauthRevokeToken
+      summary: "Revoke a token (RFC 7009; always 200 so tokens cannot be probed)"
+      tags:
+        - oauth
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required:
+                - token
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required:
+                - token
+      responses:
+        "200":
+          description: "Accepted (also for unknown or missing tokens)."
+  /api/public/v1/me:
+    x-source-file: src/routes/api/public/v1/$.ts
+    get:
+      operationId: v1GetMe
+      summary: "Identity of the calling credential"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      responses:
+        "200":
+          description: "Credential identity, scopes and merchant."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/V1Me"
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/orders:
+    x-source-file: src/routes/api/public/v1/$.ts
+    get:
+      operationId: v1ListOrders
+      summary: "List orders (cursor paginated)"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      parameters:
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/CursorParam"
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+          description: "Optional order status filter, passed through to the store query."
+      responses:
+        "200":
+          description: "Order page with next_cursor."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/V1OrderPage"
+        "400":
+          $ref: "#/components/responses/V1Problem"
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/orders/{id}:
+    x-source-file: src/routes/api/public/v1/$.ts
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: v1GetOrder
+      summary: "Fetch one order"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      responses:
+        "200":
+          description: "The order."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "404":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/orders/{id}/notes:
+    x-source-file: src/routes/api/public/v1/$.ts
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      operationId: v1AppendOrderNote
+      summary: "Append an order note"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: "Note appended."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          $ref: "#/components/responses/V1Problem"
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "404":
+          $ref: "#/components/responses/V1Problem"
+        "409":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/products:
+    x-source-file: src/routes/api/public/v1/$.ts
+    get:
+      operationId: v1ListProducts
+      summary: "List products (cursor paginated)"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      parameters:
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/CursorParam"
+      responses:
+        "200":
+          description: "Product page with next_cursor."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          $ref: "#/components/responses/V1Problem"
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+    post:
+      operationId: v1CreateProduct
+      summary: "Create a draft product"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: "Draft product created."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          $ref: "#/components/responses/V1Problem"
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "409":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/products/{id}:
+    x-source-file: src/routes/api/public/v1/$.ts
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: v1GetProduct
+      summary: "Fetch one product"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      responses:
+        "200":
+          description: "The product."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "404":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/customers:
+    x-source-file: src/routes/api/public/v1/$.ts
+    get:
+      operationId: v1ListCustomers
+      summary: "List customers (cursor paginated)"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      parameters:
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/CursorParam"
+      responses:
+        "200":
+          description: "Customer page with next_cursor."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          $ref: "#/components/responses/V1Problem"
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/exports:
+    x-source-file: src/routes/api/public/v1/$.ts
+    get:
+      operationId: v1ListExports
+      summary: "List export jobs"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      parameters:
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/CursorParam"
+      responses:
+        "200":
+          description: "Export job page."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+    post:
+      operationId: v1StartExport
+      summary: "Start an export job"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: "Export job started."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          $ref: "#/components/responses/V1Problem"
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "409":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/exports/{id}:
+    x-source-file: src/routes/api/public/v1/$.ts
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: v1GetExport
+      summary: "Export job detail + signed URL"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      responses:
+        "200":
+          description: "Export job detail."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "404":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/webhooks:
+    x-source-file: src/routes/api/public/v1/$.ts
+    get:
+      operationId: v1ListWebhooks
+      summary: "List webhook endpoints"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      responses:
+        "200":
+          description: "Webhook endpoint list."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+    post:
+      operationId: v1RegisterWebhook
+      summary: "Register a webhook endpoint"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: "Webhook endpoint registered."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          $ref: "#/components/responses/V1Problem"
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "409":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/webhooks/{id}:
+    x-source-file: src/routes/api/public/v1/$.ts
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    delete:
+      operationId: v1DeleteWebhook
+      summary: "Delete a webhook endpoint"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: "Webhook endpoint deleted."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "404":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/themes:
+    x-source-file: src/routes/api/public/v1/$.ts
+    get:
+      operationId: v1ListThemes
+      summary: "List installed themes"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      responses:
+        "200":
+          description: "Installed theme list."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/themes/{id}:
+    x-source-file: src/routes/api/public/v1/$.ts
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: v1GetTheme
+      summary: "Fetch one installed theme"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      responses:
+        "200":
+          description: "The theme."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "404":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/themes/{id}/assets:
+    x-source-file: src/routes/api/public/v1/$.ts
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      operationId: v1ListThemeAssets
+      summary: "List a theme's CSS, font and image assets"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      responses:
+        "200":
+          description: "Theme asset list."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "404":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/themes/{id}/activate:
+    x-source-file: src/routes/api/public/v1/$.ts
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      operationId: v1ActivateTheme
+      summary: "Activate a theme on the storefront"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "200":
+          description: "Theme activated."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          $ref: "#/components/responses/V1Problem"
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "404":
+          $ref: "#/components/responses/V1Problem"
+        "409":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/v1/marketplace/themes:
+    x-source-file: src/routes/api/public/v1/$.ts
+    get:
+      operationId: v1ListMarketplaceThemes
+      summary: "List published marketplace themes"
+      tags:
+        - v1
+      security:
+        - V1Bearer: []
+      parameters:
+        - $ref: "#/components/parameters/LimitParam"
+        - $ref: "#/components/parameters/CursorParam"
+      responses:
+        "200":
+          description: "Published marketplace theme list."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "401":
+          $ref: "#/components/responses/V1Problem"
+        "403":
+          $ref: "#/components/responses/V1Problem"
+        "429":
+          $ref: "#/components/responses/V1Problem"
+  /api/public/cron/ad-fraud:
+    x-source-file: src/routes/api/public/cron/ad-fraud.ts
+    get:
+      operationId: cronAdFraudGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronAdFraud
+      summary: "Scheduled ad-fraud sweep (attribution rollups, block expiry, replay-key prune)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronLimit"
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/analytics:
+    x-source-file: src/routes/api/public/cron/analytics.ts
+    get:
+      operationId: cronAnalyticsGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronAnalytics
+      summary: "Scheduled analytics sweep (rollups, cohorts, conversion outbox, reports)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronLimit"
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/billing:
+    x-source-file: src/routes/api/public/cron/billing.ts
+    get:
+      operationId: cronBillingGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronBilling
+      summary: "Scheduled billing sweep (invoicing, dunning, suspension)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/content-health:
+    x-source-file: src/routes/api/public/cron/content-health.ts
+    get:
+      operationId: cronContentHealthGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronContentHealth
+      summary: "Scheduled content-health sweep (link verification across tenants)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronLimit"
+        - $ref: "#/components/parameters/CronTrigger"
+        - name: external
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - "0"
+              - "1"
+          description: "Set to '0' for a cheap structural-only pass without outbound checks."
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/couriers:
+    x-source-file: src/routes/api/public/cron/couriers.ts
+    get:
+      operationId: cronCouriersGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronCouriers
+      summary: "Courier DLQ replay + stalled-parcel sweep"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/domains:
+    x-source-file: src/routes/api/public/cron/domains.ts
+    get:
+      operationId: cronDomainsGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronDomains
+      summary: "Custom-domain sweep (DNS re-checks, cert renewals, ACME cleanup)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/growth:
+    x-source-file: src/routes/api/public/cron/growth.ts
+    get:
+      operationId: cronGrowthGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronGrowth
+      summary: "Growth automations (loyalty maturation, cart recovery, virtual delivery)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/jobs:
+    x-source-file: src/routes/api/public/cron/jobs.ts
+    get:
+      operationId: cronJobsGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronJobs
+      summary: "Queue worker tick (fires due schedules, reclaims stalled jobs, drains queues)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/notifications:
+    x-source-file: src/routes/api/public/cron/notifications.ts
+    get:
+      operationId: cronNotificationsGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronNotifications
+      summary: "Notification fan-out (queued merchant notifications and digest rollups)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/ops:
+    x-source-file: src/routes/api/public/cron/ops.ts
+    get:
+      operationId: cronOpsGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronOps
+      summary: "Nightly reliability sweep (registry sync, lease reap, retention, backup drill, probes)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronTrigger"
+        - name: drill
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - "0"
+              - "1"
+          description: "Set to '1' to force the backup drill even inside the freshness window."
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed (including a failed backup drill) or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/payouts:
+    x-source-file: src/routes/api/public/cron/payouts.ts
+    get:
+      operationId: cronPayoutsGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronPayouts
+      summary: "Payout worker (advances batches, applies holds, reconciles settlements)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronLimit"
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/purge:
+    x-source-file: src/routes/api/public/cron/purge.ts
+    get:
+      operationId: cronPurgeGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronPurge
+      summary: "Data purge (honoured erasure requests, expiry of soft-deleted rows)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronLimit"
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/search-console:
+    x-source-file: src/routes/api/public/cron/search-console.ts
+    get:
+      operationId: cronSearchConsoleGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronSearchConsole
+      summary: "Scheduled Search Console performance-data refresh"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronLimit"
+        - $ref: "#/components/parameters/CronTrigger"
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 90
+          description: "Lookback window in days (default 28, clamped to 90)."
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/support:
+    x-source-file: src/routes/api/public/cron/support.ts
+    get:
+      operationId: cronSupportGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronSupport
+      summary: "Support SLA sweep (escalations, auto-close of resolved conversations)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/themes:
+    x-source-file: src/routes/api/public/cron/themes.ts
+    get:
+      operationId: cronThemesGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronThemes
+      summary: "Marketplace sweep (install reconciliation, bad-version rollback, payout settlement)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/cron/webhooks:
+    x-source-file: src/routes/api/public/cron/webhooks.ts
+    get:
+      operationId: cronWebhooksGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronWebhooks
+      summary: "Outbound webhook dispatch (retries pending deliveries, ages out dead letters)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronLimit"
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
+  /api/public/ads/click:
+    x-source-file: src/routes/api/public/ads/click.ts
+    get:
+      operationId: adsClickMethodNotAllowed
+      summary: "Rejected — this collector is POST-only"
+      tags:
+        - telemetry
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: adsClickIngest
+      summary: "Ingest a signed storefront ad click (HMAC verified when the merchant configured a beacon secret)"
+      tags:
+        - telemetry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdClick"
+      responses:
+        "200":
+          description: "Click accepted (duplicate flag when replayed via idempotency)."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  duplicate:
+                    type: boolean
+        "400":
+          description: "invalid_payload, invalid_nonce, stale/future timestamp, or other schema rejection."
+        "403":
+          description: "invalid_signature or origin_not_allowed."
+        "404":
+          description: "unknown_merchant."
+        "409":
+          description: "idempotency_conflict (key reused with a different body)."
+        "413":
+          description: "payload_too_large."
+        "415":
+          description: "unsupported_media_type (JSON required)."
+        "429":
+          description: "rate_limited (per IP and per merchant buckets)."
+        "500":
+          description: "ingest_failed."
+        "503":
+          description: "temporarily_unavailable (idempotency store unreachable)."
+  /api/public/analytics/beacon:
+    x-source-file: src/routes/api/public/analytics/beacon.ts
+    get:
+      operationId: beaconMethodNotAllowed
+      summary: "Rejected — this collector is POST-only"
+      tags:
+        - telemetry
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: beaconIngest
+      summary: "Ingest up to 50 pseudonymised storefront analytics events"
+      tags:
+        - telemetry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BeaconBatch"
+      responses:
+        "200":
+          description: "Events accepted; body is the warehouse ingest summary."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "202":
+          description: "Accepted in degraded mode (warehouse schema not yet migrated)."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accepted:
+                    type: integer
+                  degraded:
+                    type: boolean
+        "400":
+          description: "invalid_payload."
+        "429":
+          description: "rate_limited (per merchant bucket)."
+        "500":
+          description: "ingest_failed."
+  /api/public/vitals:
+    x-source-file: src/routes/api/public/vitals.ts
+    get:
+      operationId: vitalsMethodNotAllowed
+      summary: "Rejected — this collector is POST-only"
+      tags:
+        - telemetry
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: vitalsIngest
+      summary: "Ingest real-user web-vitals samples (max 12 per batch, 8 KiB body cap)"
+      tags:
+        - telemetry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/VitalsBatch"
+      responses:
+        "202":
+          description: "Accepted for best-effort ingest (also used for the degraded path)."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          description: "invalid_payload or unreadable_body."
+        "413":
+          description: "payload_too_large."
+        "429":
+          description: "rate_limited (per store and per IP buckets)."
+  /api/public/errors:
+    x-source-file: src/routes/api/public/errors.ts
+    get:
+      operationId: errorsMethodNotAllowed
+      summary: "Rejected — this collector is POST-only"
+      tags:
+        - telemetry
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: errorsIngest
+      summary: "Report a browser error (always 202 with an empty body; DSNs stay server-side)"
+      tags:
+        - telemetry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BrowserError"
+      responses:
+        "202":
+          description: "Accepted, empty body."
+        "400":
+          description: "Invalid report body."
+        "413":
+          description: "Body over the 16 KiB ceiling."
+        "429":
+          description: "rate_limited (per IP bucket)."
+  /api/public/error-alert:
+    x-source-file: src/routes/api/public/error-alert.ts
+    post:
+      operationId: errorAlertBridge
+      summary: "GlitchTip/Sentry webhook to Alertmanager bridge (shared-secret guarded)"
+      tags:
+        - webhooks
+      security:
+        - ErrorAlertSecret: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ErrorAlertPayload"
+      responses:
+        "202":
+          description: "Accepted for bridging (nothing from the payload is echoed)."
+        "400":
+          description: "Bad request (schema validation failed)."
+        "401":
+          description: "Missing or invalid shared secret."
+        "404":
+          description: "No ERROR_ALERT_SECRET configured — endpoint exposes nothing."
+  /api/public/channels/{channel}:
+    x-source-file: src/routes/api/public/channels/$channel.ts
+    parameters:
+      - name: channel
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+            - whatsapp
+            - messenger
+    get:
+      operationId: channelsVerify
+      summary: "Meta subscription verification handshake"
+      tags:
+        - webhooks
+      parameters:
+        - name: hub.mode
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: hub.verify_token
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: hub.challenge
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Challenge echoed as plain text when the verify token matches."
+          content:
+            text/plain:
+              schema:
+                type: string
+        "403":
+          description: "Verify token mismatch."
+        "404":
+          description: "Unknown channel or no verify token configured."
+    post:
+      operationId: channelsInbound
+      summary: "Inbound WhatsApp/Messenger message webhook (HMAC verified, idempotent intake)"
+      tags:
+        - webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              description: "Raw Meta provider envelope (whatsapp or messenger shape)."
+      responses:
+        "200":
+          description: "'{ outcome }' — recognised events and ignored callbacks alike answer 200 to stop retries."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  outcome:
+                    type: string
+        "400":
+          description: "Body is not JSON."
+        "404":
+          description: "Unknown channel."
+        "413":
+          description: "Payload over 100 KiB."
+        "429":
+          description: "rate_limited."
+        "500":
+          description: "intake_failed."
+  /api/public/couriers/{carrier}:
+    x-source-file: src/routes/api/public/couriers/$carrier.ts
+    parameters:
+      - name: carrier
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: "^[a-z0-9_-]{2,40}$"
+        description: "Lowercase carrier code; anything outside the pattern is a 404."
+    get:
+      operationId: courierWebhookMethodNotAllowed
+      summary: "Rejected — carrier intake is POST-only"
+      tags:
+        - webhooks
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: courierWebhookIngest
+      summary: "Carrier tracking webhook intake (HMAC verified against the merchant's carrier secret)"
+      tags:
+        - webhooks
+      security:
+        - CourierSignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+              description: "Opaque carrier envelope; verified then normalised server-side."
+      responses:
+        "200":
+          description: "'{ accepted, reason }' (the status may also reflect the ingest verdict)."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourierIngestResult"
+        "404":
+          description: "unknown_carrier."
+        "413":
+          description: "payload_too_large (over 64 KiB)."
+        "500":
+          description: "ingest_failed."
+  /api/public/payments/{provider}:
+    x-source-file: src/routes/api/public/payments/$provider.ts
+    x-undocumented: true
+    post:
+      operationId: paymentsGatewayWebhook
+      summary: "Payment gateway server-to-server webhook (signature verified in the gateway layer)"
+      tags:
+        - payments
+      description: >-
+        x-undocumented: the success status code is dynamic (outcome.http from
+        @/lib/gateway.server, which was not read) and the accepted provider
+        set is resolved server-side, so neither is enumerated here.
+      parameters:
+        - name: provider
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - GatewaySignature: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: "'{ status, reason }' — actual status is the gateway verdict (outcome.http)."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GatewayWebhookResult"
+        "429":
+          description: "rate_limited (per provider + IP bucket)."
+        default:
+          description: "Gateway-verdict status passthrough (see description)."
+  /api/public/payments/return:
+    x-source-file: src/routes/api/public/payments/return.ts
+    get:
+      operationId: paymentsSignedReturn
+      summary: "Provider return URL (status believed only with a valid merchant-secret HMAC)"
+      tags:
+        - payments
+      parameters:
+        - name: intent
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: sig
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "HMAC over intent.status.nonce with the merchant gateway secret."
+      responses:
+        "303":
+          description: "Redirect to the order confirmation page (with access token / pay state in query)."
+        "400":
+          description: "Return failed for a non-signature reason."
+        "401":
+          description: "payment.signature_invalid."
+  /api/public/payments/live/{provider}:
+    x-source-file: src/routes/api/public/payments/live/$provider.ts
+    parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+        description: "Live rail code (known rails include sslcommerz, aamarpay and bkash; the full set is resolved server-side)."
+    get:
+      operationId: paymentsLiveCallbackGet
+      summary: "Live rail shopper return (always redirects; never trusts the body)"
+      tags:
+        - payments
+      responses:
+        "303":
+          description: "Redirect to the order page (or / on failure)."
+        "429":
+          description: "rate_limited (per live provider + IP bucket)."
+    post:
+      operationId: paymentsLiveCallbackPost
+      summary: "Live rail server callback (re-validated with the provider, amount matched before settlement)"
+      tags:
+        - payments
+      parameters:
+        - name: redirect
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - "0"
+              - "1"
+          description: "Set to '1' for the browser flow (303 redirect instead of JSON)."
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          description: "'{ status }' JSON verdict (or permanent-rejection acknowledgement for unknown intents/providers)."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  reason:
+                    type: string
+        "303":
+          description: "Browser flow redirect to the order page."
+        "429":
+          description: "rate_limited (per live provider + IP bucket)."
+        "502":
+          description: "Transient provider failure (non-2xx so the provider retries)."
+  /api/public/payments/mock/{provider}:
+    x-source-file: src/routes/api/public/payments/mock/$provider.ts
+    parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+        description: "Mock rail standing in for bKash, Nagad or Rocket hosted pages."
+    get:
+      operationId: paymentsMockPage
+      summary: "Mock MFS sandbox hosted page (no real money moves)"
+      tags:
+        - payments
+      parameters:
+        - name: intent
+          in: query
+          required: true
+          schema:
+            type: string
+            pattern: "^[0-9a-f-]{36}$"
+          description: "Payment intent UUID."
+      responses:
+        "200":
+          description: "Server-rendered sandbox page (approve / decline / cancel)."
+          content:
+            text/html:
+              schema:
+                type: string
+        "400":
+          description: "Bad intent (not a UUID)."
+    post:
+      operationId: paymentsMockOutcome
+      summary: "Submit the mock sandbox outcome (returns an HMAC-signed conclusion)"
+      tags:
+        - payments
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                intent:
+                  type: string
+                outcome:
+                  type: string
+                  enum:
+                    - success
+                    - fail
+                    - cancel
+              required:
+                - intent
+                - outcome
+      responses:
+        "303":
+          description: "Redirect to the signed conclusion URL."
+        "400":
+          description: "Bad outcome or unknown intent."
+        "429":
+          description: "Too many attempts (per intent bucket)."
+  /api/public/payments/platform/{provider}:
+    x-source-file: src/routes/api/public/payments/platform/$provider.ts
+    parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+            - bkash
+            - nagad
+            - rocket
+            - card
+            - sslcommerz
+            - bank_transfer
+        description: "Platform collection rail for our own invoices."
+    get:
+      operationId: platformHostedPage
+      summary: "Hosted authorisation page for a platform invoice charge"
+      tags:
+        - payments
+      parameters:
+        - name: charge
+          in: query
+          required: false
+          schema:
+            type: string
+          description: "Platform charge id."
+      responses:
+        "200":
+          description: "Server-rendered authorisation page (no client bundle, noindex)."
+          content:
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: "unsupported_provider or payment not found."
+        "410":
+          description: "Payment window closed (expired or no longer pending)."
+    post:
+      operationId: platformHostedOutcome
+      summary: "Submit the hosted-page outcome (produces a signed return URL; settles nothing)"
+      tags:
+        - payments
+      parameters:
+        - name: charge
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                outcome:
+                  type: string
+                  enum:
+                    - success
+                    - fail
+                    - cancel
+              required:
+                - outcome
+      responses:
+        "303":
+          description: "Redirect to the signed platform return URL."
+        "400":
+          description: "bad_request or platform billing error code."
+        "404":
+          description: "unsupported_provider."
+  /api/public/payments/platform/return:
+    x-source-file: src/routes/api/public/payments/platform/return.ts
+    get:
+      operationId: platformReturnGet
+      summary: "Platform invoice return URL (HMAC over charge.status.nonce required)"
+      tags:
+        - payments
+      parameters:
+        - $ref: "#/components/parameters/PlatformReturnQuery"
+      responses:
+        "200":
+          description: "JSON verdict (only with Accept: application/json)."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "303":
+          description: "Browser redirect to the invoices screen with the outcome in query."
+        "400":
+          description: "Charge or status invalid (JSON or invoices-screen redirect on failure)."
+        "401":
+          description: "platform.signature_invalid."
+        "404":
+          description: "platform.charge_not_found."
+    post:
+      operationId: platformReturnPost
+      summary: "Platform invoice provider callback (same HMAC contract as the browser return)"
+      tags:
+        - payments
+      parameters:
+        - $ref: "#/components/parameters/PlatformReturnQuery"
+      responses:
+        "200":
+          description: "JSON verdict (only with Accept: application/json)."
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "303":
+          description: "Browser redirect to the invoices screen with the outcome in query."
+        "400":
+          description: "Charge or status invalid."
+        "401":
+          description: "platform.signature_invalid."
+        "404":
+          description: "platform.charge_not_found."
+  /api/public/newsletter/feedback:
+    x-source-file: src/routes/api/public/newsletter/feedback.ts
+    post:
+      operationId: newsletterFeedback
+      summary: "Mail-provider bounce/complaint intake (HMAC + 5-minute replay window)"
+      tags:
+        - webhooks
+      security:
+        - NewsletterSignature: []
+      parameters:
+        - name: x-framique-timestamp
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "Unix timestamp (seconds); must be within 300 s of now."
+        - name: x-framique-signature
+          in: header
+          required: true
+          schema:
+            type: string
+          description: "Lowercase HMAC-SHA256 hex of '<timestamp>.<raw-body>' under NEWSLETTER_WEBHOOK_SECRET."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewsletterFeedback"
+      responses:
+        "202":
+          description: "'{ ok: true }' — constant body that never reveals list membership."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+        "400":
+          description: "Schema validation failed."
+        "401":
+          description: "Stale timestamp or bad signature."
+        "413":
+          description: "Body over 16 KiB."
+        "503":
+          description: "NEWSLETTER_WEBHOOK_SECRET not configured — nothing is processed."
+  /api/public/domains/verify-sni:
+    x-source-file: src/routes/api/public/domains/verify-sni.ts
+    get:
+      operationId: domainsVerifySni
+      summary: "Edge SNI whitelist check for the ACME certificate worker"
+      tags:
+        - edge
+      parameters:
+        - name: host
+          in: query
+          required: true
+          schema:
+            type: string
+          description: "Hostname the edge wants a certificate for."
+      responses:
+        "200":
+          description: "'{ allowed: true, ... }' for platform or verified custom domains."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SniVerdict"
+        "400":
+          description: "missing_host or invalid_hostname."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SniVerdict"
+        "403":
+          description: "Domain registered but not in an allowed state."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SniVerdict"
+        "404":
+          description: "domain_not_registered."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SniVerdict"
+        "429":
+          description: "rate_limit_exceeded (per client IP bucket)."
+        "500":
+          description: "internal_error."
+  /api/public/domains/callback:
+    x-source-file: src/routes/api/public/domains/callback.ts
+    post:
+      operationId: domainsEdgeCallback
+      summary: "TLS edge callback (ACME challenge registration and certificate order results)"
+      tags:
+        - edge
+      security:
+        - EdgeSignature: []
+      parameters:
+        - name: framique-edge-signature
+          in: header
+          required: true
+          schema:
+            type: string
+          description: 't=<unix-seconds>,v1=<hmac-sha256 hex of "<t>.<raw-body>" under DOMAIN_EDGE_TOKEN>, 300 s skew window.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DomainCallback"
+      responses:
+        "200":
+          description: "'{ ok: true }'."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+        "400":
+          description: "invalid_payload."
+        "401":
+          description: "Missing, stale or invalid edge signature."
+        "404":
+          description: "DOMAIN_EDGE_TOKEN not configured, or unknown domain on store."
+        "500":
+          description: "callback_failed."
+  /api/public/media/{splat}:
+    x-source-file: src/routes/api/public/media/$.ts
+    parameters:
+      - name: splat
+        in: path
+        required: true
+        schema:
+          type: string
+        description: "Media object path '<merchant-uuid>/<file>'; anything else is a 404."
+    get:
+      operationId: mediaDeliver
+      summary: "Read-only private-bucket media delivery (long immutable cache)"
+      tags:
+        - edge
+      responses:
+        "200":
+          description: "The stored bytes (content-type sniffed from extension; SVG forced to attachment)."
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: "Bad path or missing object."
+  /api/public/font/{splat}:
+    x-source-file: src/routes/api/public/font/$.ts
+    parameters:
+      - name: splat
+        in: path
+        required: true
+        schema:
+          type: string
+        description: "Font object path validated server-side; misses 404 quietly."
+    get:
+      operationId: fontDeliver
+      summary: "Read-only custom font delivery (same-origin @font-face, immutable cache)"
+      tags:
+        - edge
+      responses:
+        "200":
+          description: "The woff2 bytes with permissive CORS for @font-face use."
+          content:
+            font/woff2:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: "Bad path or missing face (counted as a fallback metric)."
+  /api/public/img/{sig}/{spec}/{source}:
+    x-source-file: src/routes/api/public/img/$.ts
+    parameters:
+      - name: sig
+        in: path
+        required: true
+        schema:
+          type: string
+        description: "First 32 hex chars of the HMAC-SHA256 over spec+source — the signature IS the authorization."
+      - name: spec
+        in: path
+        required: true
+        schema:
+          type: string
+        description: "Encoded transform spec (dimensions/format), decoded server-side."
+      - name: source
+        in: path
+        required: true
+        schema:
+          type: string
+        description: "Encoded source reference, allowlisted against configured hosts."
+    get:
+      operationId: imgTransform
+      summary: "Signed edge image transform (per-IP rate limited; unsigned requests are not proxied)"
+      tags:
+        - edge
+      responses:
+        "200":
+          description: "Transformed image bytes (format negotiated from the Accept header)."
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: "bad_path, bad_spec or bad_source."
+        "403":
+          description: "bad_signature."
+        "429":
+          description: "rate_limited (generous per-IP bucket)."
+        "503":
+          description: "signing_unconfigured."
+  /api/public/ph/{splat}:
+    x-source-file: src/routes/api/public/ph.$.ts
+    parameters:
+      - name: splat
+        in: path
+        required: true
+        schema:
+          type: string
+        description: "Optional '<dept>/<seed>' segments; output is deterministic per seed."
+    get:
+      operationId: placeholderSvg
+      summary: "Local deterministic SVG product placeholder (pure compute, no DB)"
+      tags:
+        - edge
+      responses:
+        "200":
+          description: "Static script-free SVG with a one-year immutable cache."
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+  /api/public/metrics:
+    x-source-file: src/routes/api/public/metrics.ts
+    get:
+      operationId: prometheusScrape
+      summary: "Prometheus scrape target (closed with 404 unless METRICS_TOKEN is set)"
+      tags:
+        - edge
+      security:
+        - MetricsBearer: []
+      responses:
+        "200":
+          description: "Prometheus exposition text."
+          content:
+            text/plain:
+              schema:
+                type: string
+        "401":
+          description: "Missing or wrong bearer token."
+        "404":
+          description: "No METRICS_TOKEN configured — endpoint exposes nothing."
+  /api/admin/merchant/{id}/risk-tier:
+    x-source-file: src/routes/api/admin/merchant.$id/risk-tier.ts
+    x-undocumented: true
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    get:
+      operationId: adminGetMerchantRiskTier
+      summary: "Read a merchant's risk tier (admin server function)"
+      tags:
+        - admin
+      description: >-
+        x-undocumented: this module exports TanStack Start server functions
+        (createServerFn GET/POST validators), not file-route HTTP handlers, so
+        there is no stable REST path or status-code contract to specify — the
+        transport is framework-generated RPC. Shape below mirrors the zod
+        validators only.
+      responses:
+        "200":
+          description: "'{ tier }'."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tier:
+                    type: string
+    post:
+      operationId: adminSetMerchantRiskTier
+      summary: "Set a merchant's risk tier with a reason (admin server function)"
+      tags:
+        - admin
+      description: >-
+        x-undocumented: same transport caveat as the GET operation; the reason
+        is mandatory (1-500 chars) and the actor is recorded as 'admin'.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tier:
+                  type: string
+                reason:
+                  type: string
+                  minLength: 1
+                  maxLength: 500
+              required:
+                - tier
+                - reason
+      responses:
+        "200":
+          description: "'{ ok: true }'."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+components:
+  securitySchemes:
+    V1Bearer:
+      type: http
+      scheme: bearer
+      description: >-
+        Merchant API key (raw bearer) or OAuth access token (frmat_ prefix).
+        One header serves both families; the credential decides merchant_id
+        and scopes server-side. Current API version 2026-01-01.
+    CronBearer:
+      type: http
+      scheme: bearer
+      description: >-
+        Scheduler credential: BILLING_CRON_SECRET (constant-time compare,
+        preferred) or a token registered in ops_cron_secrets. Required on
+        every POST to /api/public/cron/*.
+    MetricsBearer:
+      type: http
+      scheme: bearer
+      description: "METRICS_TOKEN deployment secret for the Prometheus scrape target."
+    ErrorAlertSecret:
+      type: apiKey
+      in: header
+      name: x-error-alert-secret
+      description: >-
+        ERROR_ALERT_SECRET shared secret; also accepted as an Authorization
+        Bearer value. Absent secret ⇒ endpoint 404s.
+    EdgeSignature:
+      type: apiKey
+      in: header
+      name: framique-edge-signature
+      description: >-
+        HMAC-SHA256 over '<unix-seconds>.<raw-body>' under DOMAIN_EDGE_TOKEN
+        (t=<ts>,v1=<hex>, 300 s skew window).
+    NewsletterSignature:
+      type: apiKey
+      in: header
+      name: x-framique-signature
+      description: >-
+        Lowercase HMAC-SHA256 hex of '<timestamp>.<raw-body>' under
+        NEWSLETTER_WEBHOOK_SECRET, paired with the x-framique-timestamp
+        header (300 s replay window).
+    GatewaySignature:
+      type: apiKey
+      in: header
+      name: x-webhook-signature
+      description: "Provider signature verified by the payment gateway layer before any write."
+    CourierSignature:
+      type: apiKey
+      in: header
+      name: x-framique-signature
+      description: >-
+        HMAC verified against the merchant's stored carrier secret; also
+        accepted via x-courier-signature or x-hub-signature-256.
+  parameters:
+    LimitParam:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: "Page size (clamped server-side)."
+    CursorParam:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+      description: "Opaque keyset cursor over (created_at, id)."
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+      description: "Required on every non-GET v1 call; same key + different body ⇒ 409."
+    CronLimit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+      description: "Batch size for this tick (each job applies its own default and clamp)."
+    CronTrigger:
+      name: trigger
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - manual
+          - schedule
+      description: "Ledger trigger label; anything but 'manual' is recorded as 'schedule'."
+    PlatformReturnQuery:
+      name: charge
+      in: query
+      required: true
+      schema:
+        type: string
+      description: "Platform charge id (companions status, sig, failure ride in the same query string)."
+  responses:
+    V1Problem:
+      description: "RFC 9457-style problem response (application/problem+json)."
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+    CronRun:
+      description: "'{ ok: true, job, durationMs, slow, result }' on success, or '{ skipped: true, reason }' for deliberate no-ops."
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CronRunResult"
+  schemas:
+    Problem:
+      type: object
+      properties:
+        type:
+          type: string
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+    OAuthTokenRequest:
+      type: object
+      properties:
+        grant_type:
+          type: string
+          enum:
+            - authorization_code
+            - refresh_token
+        client_id:
+          type: string
+        client_secret:
+          type: string
+        code:
+          type: string
+        redirect_uri:
+          type: string
+        code_verifier:
+          type: string
+        refresh_token:
+          type: string
+      required:
+        - grant_type
+        - client_id
+    TokenPair:
+      type: object
+      description: "OAuth access + rotating refresh pair (exact fields owned by @/lib/oauth.server)."
+      additionalProperties: true
+    OAuthError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+        error_description:
+          type: string
+    AdClick:
+      type: object
+      required:
+        - merchantId
+        - network
+        - visitorId
+        - nonce
+        - sentAt
+      properties:
+        merchantId:
+          type: string
+          format: uuid
+        network:
+          type: string
+          maxLength: 20
+        campaign:
+          type: string
+        adset:
+          type: string
+        creative:
+          type: string
+        clickId:
+          type: string
+        landingPath:
+          type: string
+        referrerHost:
+          type: string
+        javascriptRan:
+          type: boolean
+          default: true
+        automationHints:
+          type: integer
+        dwellMs:
+          type: integer
+        interactions:
+          type: integer
+        timezoneOffsetMinutes:
+          type: integer
+        visitorId:
+          type: string
+        nonce:
+          type: string
+          minLength: 16
+          maxLength: 64
+        sentAt:
+          type: integer
+        signature:
+          type: string
+          pattern: "^[0-9a-f]{64}$"
+          description: "Optional HMAC-SHA256 hex; mandatory when the merchant configured a beacon secret."
+    BeaconBatch:
+      type: object
+      required:
+        - merchantId
+        - events
+      properties:
+        merchantId:
+          type: string
+          format: uuid
+        visitorId:
+          type: string
+        sessionId:
+          type: string
+        events:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: object
+            required:
+              - entity
+              - action
+            properties:
+              entity:
+                type: string
+                enum:
+                  - page
+                  - product
+                  - cart
+                  - checkout
+                  - order
+                  - search
+              action:
+                type: string
+                maxLength: 40
+              occurredAt:
+                type: string
+                format: date-time
+              source:
+                type: string
+              campaign:
+                type: string
+              valueMinorInt:
+                type: integer
+              currencyCode:
+                type: string
+              payload:
+                type: object
+                additionalProperties: true
+              dedupeKey:
+                type: string
+    VitalsBatch:
+      type: object
+      required:
+        - merchantId
+        - samples
+      properties:
+        merchantId:
+          type: string
+          format: uuid
+        samples:
+          type: array
+          minItems: 1
+          maxItems: 12
+          items:
+            type: object
+            required:
+              - metric
+              - value
+            properties:
+              metric:
+                type: string
+                enum:
+                  - lcp
+                  - inp
+                  - cls
+                  - ttfb
+                  - fcp
+              value:
+                type: number
+                minimum: 0
+              template:
+                type: string
+              path:
+                type: string
+              locale:
+                type: string
+                enum:
+                  - en
+                  - bn
+              device:
+                type: string
+                enum:
+                  - mobile
+                  - tablet
+                  - desktop
+                  - unknown
+              connection:
+                type: string
+              ts:
+                type: number
+    BrowserError:
+      type: object
+      required:
+        - message
+        - mechanism
+      properties:
+        message:
+          type: string
+          maxLength: 500
+        stack:
+          type: string
+        mechanism:
+          type: string
+          enum:
+            - onerror
+            - unhandledrejection
+            - react_error_boundary
+            - manual
+        route:
+          type: string
+        release:
+          type: string
+        commit:
+          type: string
+    ErrorAlertPayload:
+      type: object
+      properties:
+        title:
+          type: string
+        message:
+          type: string
+        culprit:
+          type: string
+        level:
+          type: string
+        project:
+          type: string
+        url:
+          type: string
+          format: uri
+        web_url:
+          type: string
+          format: uri
+        source:
+          type: string
+          enum:
+            - glitchtip
+            - sentry
+    NewsletterFeedback:
+      type: object
+      required:
+        - type
+        - email
+      properties:
+        type:
+          type: string
+          enum:
+            - hard_bounce
+            - soft_bounce
+            - complaint
+        email:
+          type: string
+          format: email
+        detail:
+          type: string
+          maxLength: 500
+    DomainCallback:
+      type: object
+      required:
+        - action
+        - hostname
+      properties:
+        action:
+          type: string
+          enum:
+            - challenge
+            - cert
+        hostname:
+          type: string
+        token:
+          type: string
+          description: "Required when action is 'challenge' (ACME http-01 token)."
+        keyAuthorization:
+          type: string
+          description: "Required when action is 'challenge'."
+        ok:
+          type: boolean
+          description: "Required when action is 'cert'."
+        expiresAt:
+          type: string
+          format: date-time
+        error:
+          type: string
+    SniVerdict:
+      type: object
+      required:
+        - allowed
+      properties:
+        allowed:
+          type: boolean
+        hostname:
+          type: string
+        isPlatform:
+          type: boolean
+        domainId:
+          type: string
+        status:
+          type: string
+        error:
+          type: string
+    CourierIngestResult:
+      type: object
+      properties:
+        accepted:
+          type: boolean
+        reason:
+          type: string
+    GatewayWebhookResult:
+      type: object
+      properties:
+        status:
+          type: string
+        reason:
+          type: string
+    V1Me:
+      type: object
+      properties:
+        credential:
+          type: string
+          enum:
+            - api_key
+            - oauth
+        scopes:
+          type: array
+          items:
+            type: string
+        merchant:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            slug:
+              type: string
+        api_version:
+          type: string
+    V1OrderPage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        next_cursor:
+          type: string
+          nullable: true
+    CronRunResult:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        skipped:
+          type: boolean
+        reason:
+          type: string
+        job:
+          type: string
+        durationMs:
+          type: number
+        slow:
+          type: boolean
+        result:
+          additionalProperties: true

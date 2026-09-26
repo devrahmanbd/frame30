@@ -1,0 +1,32 @@
+{
+  "id": "starter-hello",
+  "name": "Starter Hello",
+  "version": "1.0.0",
+  "description": "Minimal third-party plugin: one greeting widget plus one signed server hook.",
+  "api": "^3.0.0",
+  "permissions": ["read_shop", "read_orders", "render_storefront"],
+  "widgets": [
+    {
+      "key": "greeting",
+      "label": "Hello greeting",
+      "slots": ["main"],
+      "entry": "var box=document.createElement(\"div\");box.textContent=\"Hello from the starter plugin.\";framique.mount(box);",
+      "height": 160
+    }
+  ],
+  "hooks": ["order.created"],
+  "hooksUrl": "https://example.com/framique-hooks",
+  "settings": [
+    {
+      "key": "greeting",
+      "label": "Greeting",
+      "kind": "text",
+      "default": "Hello"
+    }
+  ],
+  "i18n": {
+    "en": { "greeting": "Greeting" },
+    "bn": { "greeting": "শুভেচ্ছা" }
+  },
+  "budget": { "jsKb": 40, "mainThreadMs": 15 }
+}
