@@ -515,7 +515,7 @@ const getLuxuryImage = (seed: string) => {
   return images[Math.abs(hash) % images.length]!;
 };
 
-const SongoskritiProductCard = ({ row, promise, badge }: any) => {
+const SongoskritiProductCard = ({ row, promise, badge, locale }: any) => {
   const image = row.imageUrl?.endsWith(".svg") ? getLuxuryImage(row.id) : row.imageUrl || getLuxuryImage(row.id);
   const hoverImage = getLuxuryImage(row.id + "hover");
   
@@ -542,7 +542,11 @@ const SongoskritiProductCard = ({ row, promise, badge }: any) => {
         {/* Wishlist button */}
         <button
           type="button"
-          aria-label="Add to wishlist"
+          aria-label={t(
+            locale ?? "en",
+            "Add to wishlist",
+            "উইশলিস্টে যোগ করুন",
+          )}
           className="absolute right-3 top-3 z-20 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-[#1a1a1a] shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-[#1a1a1a] hover:text-white opacity-0 group-hover:opacity-100"
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
         >
@@ -608,6 +612,7 @@ const SongoskritiProductRail: WidgetComponent = (ctx) => {
                 row={row}
                 promise={str("promise") || undefined}
                 badge={badgeLabel || undefined}
+                locale={locale}
               />
             ))}
           </Rail>
@@ -909,7 +914,75 @@ const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: s
   },
 };
 
-const SongoskritiMegaMenu: WidgetComponent = ({ str, int, data, link }) => {
+/* Bilingual twins for mega-menu chrome labels (theme-independence 3b).
+   The defs above stay EN-keyed; `menuLabel` picks the বাংলা twin under the
+   bn locale with EN fallback, so an untranslated label never renders blank. */
+const MEGA_MENU_BN: Record<string, string> = {
+  Women: "নারী",
+  Men: "পুরুষ",
+  Kids: "শিশু",
+  Sarees: "শাড়ি",
+  Panjabi: "পাঞ্জাবি",
+  Festive: "উৎসব",
+  Wedding: "বিয়ে",
+  Weddings: "বিয়ে",
+  Jewellery: "গহনা",
+  Heritage: "ঐতিহ্য",
+  "New Arrivals": "নতুন সংগ্রহ",
+  "BY TYPE": "ধরন অনুযায়ী",
+  "BY WEAVE": "বুনন অনুযায়ী",
+  "BY OCCASION": "উপলক্ষ অনুযায়ী",
+  "BY GENDER": "লিঙ্গ অনুযায়ী",
+  "BY STYLE": "স্টাইল অনুযায়ী",
+  "BY CRAFT": "কারুকাজ অনুযায়ী",
+  STORIES: "গল্প",
+  "Salwar Kameez": "সালোয়ার কামিজ",
+  Kurta: "কুর্তা",
+  Blouses: "ব্লাউজ",
+  Dupatta: "দোপাট্টা",
+  Jamdani: "জামদানি",
+  Tangail: "টাঙ্গাইল",
+  "Tangail Taant": "টাঙ্গাইল তাঁত",
+  "Rajshahi Silk": "রাজশাহী সিল্ক",
+  "Nakshi Kantha": "নকশি কাঁথা",
+  Khadi: "খাদি",
+  Everyday: "প্রতিদিনের",
+  Pajama: "পায়জামা",
+  Shirts: "শার্ট",
+  Handloom: "হাতে বোনা",
+  Girls: "মেয়েদের",
+  Boys: "ছেলেদের",
+  Unisex: "ইউনিসেক্স",
+  School: "স্কুল",
+  "Family Matching": "ফ্যামিলি ম্যাচিং",
+  Cotton: "সুতি",
+  Muslin: "মসলিন",
+  Bridal: "কনের",
+  Party: "পার্টি",
+  Earrings: "কানের দুল",
+  Necklace: "হার",
+  Jhumka: "ঝুমকা",
+  Bangles: "চুড়ি",
+  Rings: "আংটি",
+  Contemporary: "আধুনিক",
+  Eid: "ঈদ",
+  Puja: "পূজা",
+  Mehendi: "মেহেদি",
+  Sangeet: "সংগীত",
+  Gifting: "উপহার",
+  "For Women": "নারীদের জন্য",
+  "For Men": "পুরুষদের জন্য",
+  "For Kids": "শিশুদের জন্য",
+  "Artisan Stories": "কারিগরের গল্প",
+  "Weave Guides": "বুনন নির্দেশিকা",
+  "Care Guide": "যত্ন নির্দেশিকা",
+};
+
+function menuLabel(en: string, locale: string) {
+  return locale === "bn" ? (MEGA_MENU_BN[en] ?? en) : en;
+}
+
+const SongoskritiMegaMenu: WidgetComponent = ({ str, int, data, link, locale }) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const rows = data?.rows ?? [];
   const label = str("label") || "Shop";
@@ -954,7 +1027,7 @@ const SongoskritiMegaMenu: WidgetComponent = ({ str, int, data, link }) => {
                   activeMenu === item ? "opacity-60" : ""
                 } ${textColor}`}
               >
-                {item}
+                {menuLabel(item, locale)}
                 {hasMega && (
                   <ChevronDown
                     size={9}
@@ -978,7 +1051,9 @@ const SongoskritiMegaMenu: WidgetComponent = ({ str, int, data, link }) => {
             <div className="col-span-8 grid grid-cols-3 gap-8">
               {activeDef.sections.map((section) => (
                 <div key={section.title}>
-                  <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-foreground/40 mb-4">{section.title}</p>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-foreground/40 mb-4">
+                    {menuLabel(section.title, locale)}
+                  </p>
                   <ul className="space-y-2.5">
                     {section.links.map((linkText) => (
                       <li key={linkText}>
@@ -986,7 +1061,7 @@ const SongoskritiMegaMenu: WidgetComponent = ({ str, int, data, link }) => {
                           href={link(`/c/${linkText.toLowerCase().replace(/\s+/g, "-")}`)}
                           className="block font-serif text-[14px] font-light text-foreground/75 hover:text-foreground transition-colors leading-snug"
                         >
-                          {linkText}
+                          {menuLabel(linkText, locale)}
                         </a>
                       </li>
                     ))}
@@ -996,7 +1071,7 @@ const SongoskritiMegaMenu: WidgetComponent = ({ str, int, data, link }) => {
                       href={link(activeDef.shopAllHref)}
                       className="mt-6 inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-foreground border-b border-foreground pb-0.5 hover:opacity-60 transition-opacity"
                     >
-                      SHOP ALL {activeMenu} →
+                      {t(locale, "SHOP ALL", "সব দেখুন")} {menuLabel(activeMenu, locale)} →
                     </a>
                   )}
                 </div>
@@ -1008,14 +1083,18 @@ const SongoskritiMegaMenu: WidgetComponent = ({ str, int, data, link }) => {
                 <a href={link(activeDef.shopAllHref)} className="group block relative aspect-[3/4] overflow-hidden bg-[#f5f3f0]">
                   <img
                     src={activeDef.featuredImage}
-                    alt={activeMenu}
+                    alt={menuLabel(activeMenu, locale)}
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04]"
                     loading="eager"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-6">
-                    <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/70 mb-1">Featured</p>
-                    <p className="font-serif text-[18px] font-light text-white">{activeMenu}</p>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-white/70 mb-1">
+                      {t(locale, "Featured", "বিশেষ")}
+                    </p>
+                    <p className="font-serif text-[18px] font-light text-white">
+                      {menuLabel(activeMenu, locale)}
+                    </p>
                   </div>
                 </a>
               </div>
@@ -1073,10 +1152,10 @@ const SongoskritiCollectionStory: WidgetComponent = ({ str, section, locale, lin
   const subhead = str("subhead");
   const collections = rowsOf(section, "collections")
     .map(row => ({
-      title: readString(row, "title"),
+      title: readBn(row, "title", locale),
       image: readString(row, "image"),
       href: readString(row, "href"),
-      subtitle: readString(row, "subtitle")
+      subtitle: readBn(row, "subtitle", locale)
     }))
     .filter(c => c.title);
 
@@ -1151,6 +1230,7 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
 
 const SongoskritiStoreLocator: WidgetComponent = ({ str, locale }) => {
   const heading = str("heading") || (locale === "bn" ? "আমাদের স্টোরসমূহ" : "VISIT SONGOSKRITI");
+  const eyebrow = str("eyebrow") || t(locale, "OUR STORES", "আমাদের স্টোরসমূহ");
   const stores = [1, 2, 3]
     .map((n) => ({
       name: str(`s${n}Name`),
@@ -1173,7 +1253,9 @@ const SongoskritiStoreLocator: WidgetComponent = ({ str, locale }) => {
     <section ref={scope} data-songoskriti-reveal className="py-16 sm:py-24 bg-white border-t border-[#eaeaea]">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="text-center mb-14">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-foreground/40 mb-3">OUR STORES</p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-foreground/40 mb-3">
+            {eyebrow}
+          </p>
           <h2 className="font-serif text-[28px] sm:text-[40px] font-light text-foreground">{heading}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">

@@ -456,3 +456,65 @@ describe("songoskriti categories rhythm (browser-verified 2026-09-24)", () => {
     expect(html).not.toContain("font-serif");
   });
 });
+
+describe("songoskriti renderer i18n switch (theme-independence 3b)", () => {
+  const menuSection = () => ({
+    ...newSection("mega_menu"),
+    props: { ...newSection("mega_menu").props, label: "Shop", limit: 8 },
+  });
+
+  it("bn renders _bn nav labels with EN fallback", () => {
+    const bn = render(SONGOSKRITI_WIDGETS["mega_menu"], menuSection(), "bn");
+    expect(bn).toContain("নারী");
+    expect(bn).toContain("নতুন সংগ্রহ");
+    expect(bn).not.toContain(">Women<");
+    expect(bn).not.toContain(">New Arrivals<");
+    // EN locale keeps the EN labels byte-identical.
+    const en = render(SONGOSKRITI_WIDGETS["mega_menu"], menuSection(), "en");
+    expect(en).toContain(">Women<");
+    expect(en).not.toContain("নারী");
+  });
+
+  it("bn mega menu picks BN twins for unknown labels via EN fallback, never blank", () => {
+    const bn = render(SONGOSKRITI_WIDGETS["mega_menu"], menuSection(), "bn");
+    // Every nav item renders a non-empty label in bn.
+    for (const twin of ["পুরুষ", "শিশু", "শাড়ি", "উৎসব", "ঐতিহ্য"]) {
+      expect(bn, `bn must render ${twin}`).toContain(twin);
+    }
+  });
+
+  it("wishlist aria-label follows locale", () => {
+    const section = {
+      ...newSection("product_rail"),
+      props: { ...newSection("product_rail").props, heading: "New", limit: 8 },
+    };
+    const rows: WidgetRow[] = [
+      {
+        id: "p1",
+        title: "Test saree",
+        priceMinor: 100000,
+        currency: "BDT",
+        imageUrl: "/ph/songoskriti/prod-saree.png",
+        inStock: true,
+      },
+    ];
+    const data = { rows, pending: false };
+    const railCtx = (locale: "en" | "bn"): WidgetCtx => ({
+      ...ctxFor(section, locale),
+      data,
+    });
+    const renderRailLocale = (locale: "en" | "bn") =>
+      renderToStaticMarkup(
+        createElement(
+          SONGOSKRITI_WIDGETS["product_rail"] as (
+            p: WidgetCtx,
+          ) => React.ReactElement,
+          railCtx(locale),
+        ),
+      );
+    expect(renderRailLocale("en")).toContain('aria-label="Add to wishlist"');
+    const bn = renderRailLocale("bn");
+    expect(bn).toContain('aria-label="উইশলিস্টে যোগ করুন"');
+    expect(bn).not.toContain('aria-label="Add to wishlist"');
+  });
+});

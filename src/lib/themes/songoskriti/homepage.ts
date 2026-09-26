@@ -520,6 +520,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 20. STORE LOCATIONS — flagship retail presence
     // ────────────────────────────────────────────────────────────────────
     s("store_locator", {
+      eyebrow: "OUR STORES",
+      eyebrow_bn: "আমাদের স্টোরসমূহ",
       heading: "VISIT SONGOSKRITI",
       heading_bn: "সংস্কৃতি দেখুন",
       s1Name: "Uttara Flagship",

@@ -183,6 +183,55 @@ describe("songoskriti bn render proof", () => {
     }
   });
 
+  it("bn renders collection_story twins with no EN leak", () => {
+    const story = emittedSection("collection_story");
+    const bnHtml = htmlFor("collection_story", story, "bn");
+    for (const twin of [
+      "তাঁত থেকে",
+      "জামদানি, টাঙ্গাইল তাঁত",
+      "জামদানি",
+      "রাজশাহী সিল্ক",
+      "ইউনেস্কো ঐতিহ্য",
+      "কারিগরের হাতে তৈরি",
+    ]) {
+      expect(bnHtml, `bn must render ${twin}`).toContain(twin);
+    }
+    for (const en of [
+      "FROM THE LOOM",
+      "UNESCO Heritage",
+      "Artisan crafted",
+      "Limited weave",
+      "Master stitch",
+      "Tangail Handloom",
+    ]) {
+      expect(bnHtml, `bn must not leak ${en}`).not.toContain(en);
+    }
+  });
+
+  it("bn renders store_locator twins incl. eyebrow with no EN leak", () => {
+    const locator = emittedSection("store_locator");
+    const bnHtml = htmlFor("store_locator", locator, "bn");
+    for (const twin of [
+      "আমাদের স্টোরসমূহ",
+      "সংস্কৃতি দেখুন",
+      "উত্তরা ফ্ল্যাগশিপ",
+      "গুলশান শোরুম",
+      "প্রতিদিন সকাল ১০টা",
+    ]) {
+      expect(bnHtml, `bn must render ${twin}`).toContain(twin);
+    }
+    for (const en of [
+      "OUR STORES",
+      "VISIT SONGOSKRITI",
+      "Uttara Flagship",
+      "Gulshan Showroom",
+      "Open 10am",
+      "GET DIRECTIONS",
+    ]) {
+      expect(bnHtml, `bn must not leak ${en}`).not.toContain(en);
+    }
+  });
+
   it("bn renders the product rail promise twin once rows resolve", () => {
     const rail = emittedSection("product_rail");
     const withRows: Section = {
