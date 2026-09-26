@@ -45,6 +45,12 @@ jobs:
       - run:
           name: Typecheck (tsgo --noEmit)
           command: bun run typecheck
+      - run:
+          name: Ops shell scripts (bash -n)
+          command: |
+            shopt -s nullglob
+            for f in ops/backup/*.sh; do bash -n "$f"; done
+            echo "syntax OK"
 
   unit-contract:
     executor: bun-executor

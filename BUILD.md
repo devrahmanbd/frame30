@@ -327,6 +327,7 @@ Modeled directly on live WordPress 6.8+ admin (`http://maxwilliam.shop/wp-admin/
 ### 2.9 Operations
 
 - [x] `[A]` Automated backup + verified restore drill — nightly via `/api/public/cron/ops`, ledgered, deny+replay+audit tests
+- [x] `[A]` Continuous WAL archiving hardened (2026-09-26 incident) — `ops/backup/archive-wal.sh`: atomic tmp+mv publish + pre-anchor cutoff acknowledge; root cause was a 0-byte `cp` blocker that stalled the archiver 5 days → 97G `pg_wal` disk-full; PITR anchor base `20260926T043836Z` (START `28/26000058`), pre-incident bases degrade at segment `…0F000000E4` (2026-09-21 20:31)
 - [x] `[A]` Dead-letter queue console with replay across all providers — `src/routes/root/ops.tsx` unifies `webhook_events` (payments) and `courier_webhook_events` (courier) with `source` filter (`all | payments | courier`), severity triage, and per-item replay action (`opsReplayFn`)
 - [~] Prometheus metrics + Grafana dashboards — 7 dashboards (platform, infrastructure, ad-fraud, commerce, marketing, developer platform, ecosystem/AI) + 54 alert rules; `observability-coverage.test.ts` pins the money/security metrics, long-tail counters still uncharted
 - [~] Sentry / GlitchTip error tracking with PII scrubbing — dual backends supported (GlitchTip + Sentry), PII sanitization and deterministic sampling verified via `scripts/error-tracking-verify.mjs`
