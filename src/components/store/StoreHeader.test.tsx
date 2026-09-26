@@ -49,16 +49,38 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 });
 
 import { StoreHeader } from "./StoreHeader";
+import type { MenuNode } from "@/lib/menus/menu";
 
 const HEADER_SRC = () =>
   readFileSync("src/components/store/StoreHeader.tsx", "utf8");
 
+const testNode = (
+  id: string,
+  label: string,
+  url: string,
+  children: MenuNode[] = [],
+): MenuNode =>
+  ({ id, label, url, titleAttr: "", newTab: false, children }) as MenuNode;
+
+const GENERIC_MENUS = {
+  header: [
+    testNode("sale", "Sale", "/c/sale", [
+      testNode("clearance", "Clearance", "/c/clearance"),
+    ]),
+  ],
+  mobile: [],
+};
+
 function renderHeader({
   slug = "demo",
+  name = "Demo",
+  menus,
   wishlistItems,
   pathname = "/store/demo",
 }: {
   slug?: string;
+  name?: string;
+  menus?: { header: MenuNode[]; mobile: MenuNode[] } | null;
   wishlistItems?: Array<{ variantId: string }>;
   pathname?: string;
 } = {}) {
@@ -75,11 +97,14 @@ function renderHeader({
   }
   const ui: ReactElement = (
     <QueryClientProvider client={client}>
-      <StoreHeader slug={slug} name="Demo" />
+      <StoreHeader slug={slug} name={name} menus={menus} />
     </QueryClientProvider>
   );
   return renderToStaticMarkup(ui);
 }
+
+const countOccurrences = (html: string, needle: string) =>
+  html.split(needle).length - 1;
 
 describe("StoreHeader wishlist link", () => {
   it("guest (no seed) links to the store account wishlist tab with zero count and no badge", () => {
@@ -129,5 +154,71 @@ describe("StoreHeader wishlist link", () => {
     expect(cardSrc).toMatch(/enabled:\s*signedIn\s*===\s*true/);
     const css = readFileSync("src/styles.css", "utf8");
     expect(css).toContain("@keyframes fq-badge-pop");
+  });
+});
+
+describe("StoreHeader theme-chrome output pins (Task 3 parity gate)", () => {
+  it("generic path: prop menus, visible text logo, utility toggle, no announcement, dropdown children", () => {
+    const html = renderHeader({
+      slug: "demo",
+      name: "Demo",
+      menus: GENERIC_MENUS,
+    });
+    // Menu labels come from the menus prop.
+    expect(html).toContain("Sale");
+    expect(html).toContain("Clearance");
+    // No image lockup on the generic path.
+    expect(html).not.toContain("logo-lockup.svg");
+    // Text logo visible with the store name.
+    expect(html).toContain(">Demo</span>");
+    expect(html).not.toContain("tracking-tight hidden");
+    // No songoskriti mega-menu labels or promo panel.
+    expect(html).not.toContain("Heritage");
+    expect(html).not.toContain("max-w-[1440px] px-10 py-12");
+    // Generic path has no announcement bar; toggle sits in the utility row.
+    expect(html).not.toContain("EASY 7-DAY EXCHANGE");
+    expect(countOccurrences(html, "Language / ভাষা")).toBe(1);
+  });
+
+  it("songoskriti path: lockup logo, hidden text logo, mega menus, announcement toggle", () => {
+    const html = renderHeader({ slug: "songoskriti", name: "Songoskriti" });
+    // Image lockup replaces the text logo.
+    expect(html).toContain("/ph/songoskriti/logo-lockup.svg");
+    expect(html).toContain('alt="Songoskriti"');
+    expect(html).toContain("tracking-tight hidden");
+    // Mega-menu top-level labels + a grandchild prove the 3-level panel.
+    expect(html).toContain("Women");
+    expect(html).toContain("Heritage");
+    expect(html).toContain("New Arrivals");
+    expect(html).toContain("Jamdani");
+    expect(html).toContain("Shop Women");
+    // Announcement bar carries the toggle on this path.
+    expect(html).toContain("EASY 7-DAY EXCHANGE");
+    expect(countOccurrences(html, "Language / ভাষা")).toBe(1);
+  });
+
+  it("name-fallback: store named Songoskriti resolves the same chrome without the slug", () => {
+    const html = renderHeader({ slug: "other", name: "Songoskriti" });
+    expect(html).toContain("/ph/songoskriti/logo-lockup.svg");
+    expect(html).toContain("EASY 7-DAY EXCHANGE");
+  });
+});
+
+describe("StoreHeader badge tokens (single component, no raw hex)", () => {
+  it("source has one badge component with semantic token classes only", () => {
+    const src = HEADER_SRC();
+    expect(src).toContain("CountBadge");
+    expect(src).not.toContain("bg-[#1a1a1a]");
+    expect(src).not.toContain("text-white");
+  });
+
+  it("rendered wishlist badge uses bg-foreground/text-background tokens", () => {
+    const html = renderHeader({
+      wishlistItems: [{ variantId: "v1" }, { variantId: "v2" }],
+    });
+    expect(html).toContain("rounded-full bg-foreground");
+    expect(html).toContain("font-bold text-background");
+    expect(html).not.toContain("bg-[#1a1a1a]");
+    expect(html).not.toContain("text-white");
   });
 });
