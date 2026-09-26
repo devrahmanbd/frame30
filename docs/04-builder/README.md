@@ -300,10 +300,10 @@ every rule automatically. Motion collapses under `prefers-reduced-motion`.
 Enforced per theme by test:
 
 - Songoskriti: `stays token-driven: theme vars only, no hex literals` in
-  `src/lib/themes/songoskriti/skins.test.ts:168` (every default skin keyed off
+  `src/lib/themes/songoskriti/skins.test.ts:182` (every default skin keyed off
   `[data-widget]` + `[data-skin]`, reduced-motion asserted alongside).
 - Somvabona: `is token-driven: no hex literals or raw colour utilities` in
-  `src/lib/themes/somvabona/skins.test.ts:146` (asserts `var(--theme-brand)`,
+  `src/lib/themes/somvabona/skins.test.ts:167` (asserts `var(--theme-brand)`,
   `var(--theme-surface)`, `var(--theme-ink)`, `var(--theme-accent)`).
 
 ### History map — where each superseded doc went
