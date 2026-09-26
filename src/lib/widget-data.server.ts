@@ -29,6 +29,8 @@ export type SourceLoader = (
 export type SourceLoaders = Partial<Record<WidgetDataSource, SourceLoader>>;
 
 type VariantRow = {
+  /** Present on DB rows; demo catalogue constructs variants without it. */
+  id?: string;
   price_amount_minor_int: number | string;
   compare_at_amount_minor_int: number | string | null;
   stock_quantity: number;
@@ -42,6 +44,10 @@ type ProductRow = {
   created_at: string;
   product_variants: VariantRow[] | null;
   collection_products?: { collection_id: string }[] | null;
+  /** Merch tags (`online-exclusive` drives the card's exclusive chip). */
+  tags?: string[] | null;
+  /** Demo-catalogue rows have no real handle/variant to favourite. */
+  demo?: boolean;
 };
 
 function minPrice(variants: VariantRow[]): number {
@@ -92,7 +98,7 @@ const loadCollectionSource: SourceLoader = async (
     db
       .from("products")
       .select(
-        "id, title, slug, image_url, created_at, product_variants(price_amount_minor_int, compare_at_amount_minor_int, stock_quantity), collection_products(collection_id)",
+        "id, title, slug, image_url, created_at, tags, product_variants(id, price_amount_minor_int, compare_at_amount_minor_int, stock_quantity), collection_products(collection_id)",
       )
       .eq("merchant_id", merchantId)
       .eq("status", "active")
@@ -120,6 +126,8 @@ const loadCollectionSource: SourceLoader = async (
       slug: dp.slug,
       image_url: dp.image_url ?? null,
       created_at: new Date().toISOString(),
+      tags: dp.tags ?? [],
+      demo: true,
       product_variants: dp.variants.map((v) => ({
         price_amount_minor_int: v.price,
         compare_at_amount_minor_int: v.compare_at ?? null,
@@ -159,6 +167,7 @@ const loadCollectionSource: SourceLoader = async (
         const compare = variants
           .map((v) => Number(v.compare_at_amount_minor_int) || 0)
           .filter((n) => n > 0);
+        const firstInStock = variants.find((v) => v.stock_quantity > 0);
         return {
           id: p.id,
           title: p.title,
@@ -167,6 +176,17 @@ const loadCollectionSource: SourceLoader = async (
           priceMinor: minPrice(variants),
           ...(compare.length ? { compareAtMinor: Math.max(...compare) } : {}),
           inStock: variants.some((v) => v.stock_quantity > 0),
+          // Phase1-T1: total stock powers the low-stock chip; tags power the
+          // online-exclusive chip. Demo rows get no handle/variantId so their
+          // cards render without the wishlist heart or Quick View trigger.
+          stockCount: variants.reduce(
+            (sum, v) => sum + Math.max(0, v.stock_quantity),
+            0,
+          ),
+          tags: p.tags ?? [],
+          ...(p.demo
+            ? { variantId: undefined }
+            : { handle: p.slug, variantId: firstInStock?.id }),
         } satisfies WidgetRow;
       });
   }

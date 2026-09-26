@@ -29,6 +29,7 @@ import { WidgetBoundary } from "./WidgetBoundary";
 import { WidgetIsland } from "./WidgetIsland";
 import { hydrationMode } from "@/lib/widget-hydration";
 import { responsiveClassOf } from "@/lib/responsive-css";
+import { StoreSlugContext } from "@/lib/store-slug-context";
 
 type Props = {
   section: Section;
@@ -325,13 +326,19 @@ export function SectionRenderer({
     </WidgetBoundary>
   );
 
-  return wrap(
-    island === "eager" ? (
-      widget
-    ) : (
-      <WidgetIsland mode={island} type={section.type}>
-        {widget}
-      </WidgetIsland>
-    ),
+  return (
+    // Phase1-T1: the tenant slug rides React context so deep card trees
+    // (wishlist heart, Quick View) can read it without prop drilling.
+    <StoreSlugContext.Provider value={storeSlug ?? null}>
+      {wrap(
+        island === "eager" ? (
+          widget
+        ) : (
+          <WidgetIsland mode={island} type={section.type}>
+            {widget}
+          </WidgetIsland>
+        ),
+      )}
+    </StoreSlugContext.Provider>
   );
 }

@@ -66,6 +66,23 @@ export type WidgetRow = {
   valueText?: string;
   /** Phase 2.7: price-history series in minor units, oldest first. */
   points?: number[];
+  /**
+   * Phase1-T1: product handle (slug) for the storefront detail link and the
+   * Quick View dialog. Server rows carry it for real products; demo catalogue
+   * rows leave it unset so demo cards render as plain anchors.
+   */
+  handle?: string;
+  /**
+   * Phase1-T1: first in-stock variant id — the unit the wishlist heart
+   * toggles. Unset on demo rows (no real variant to favourite).
+   */
+  variantId?: string;
+  /** Phase1-T1: merch tags (`online-exclusive` drives the exclusive chip). */
+  tags?: string[];
+  /** Phase1-T1: total stock across variants — powers the low-stock chip. */
+  stockCount?: number;
+  /** Phase1-T1: ordered secondary image URLs for the crossfade stack. */
+  imageUrls?: string[];
 };
 
 /** Resolved rows addressed by request key. */
