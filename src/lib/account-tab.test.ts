@@ -92,13 +92,13 @@ describe("nextAccountTabSearch (click → URL write, runtime)", () => {
     expect(nextAccountTabSearch({}, "profile")).toEqual({ tab: "profile" });
   });
 
-  it("preserves every other search param", () => {
+  it("drops every other search param (validators keep tab-only)", () => {
     expect(
       nextAccountTabSearch(
         { tab: "orders", preview_token: "abc", focus: "hero" },
         "wishlist",
       ),
-    ).toEqual({ tab: "wishlist", preview_token: "abc", focus: "hero" });
+    ).toEqual({ tab: "wishlist" });
   });
 
   it("does not mutate the previous search object", () => {

@@ -29,14 +29,16 @@ export function initialAccountTab(tab: unknown): AccountTab {
 /**
  * Click → URL write (shared, single source of truth). Tab buttons replace
  * `?tab=` via `navigate({ search: (prev) => nextAccountTabSearch(prev, key),
- * replace: true })` — replace, not push, so tab-hopping never spams history
- * — while preserving every other search param. Mirrors `nextAuthSearch` in
- * `@/lib/auth-mode`. Both account routes must call this; neither may
- * re-implement the spread/validation inline.
+ * replace: true })` — replace, not push, so tab-hopping never spams history.
+ * Returns EXACTLY `{ tab }` and drops every other search key on purpose:
+ * both account routes' `validateSearch` return only `{ tab }`, so any extra
+ * key spread here would be stripped on navigation — claiming to preserve
+ * params the router drops. Callers pass `prev` only to satisfy the TanStack
+ * search-updater shape; it is intentionally ignored.
  */
-export function nextAccountTabSearch<S extends Record<string, unknown>>(
-  search: S,
+export function nextAccountTabSearch(
+  _search: unknown,
   tab: AccountTab,
-): S & { tab: AccountTab } {
-  return { ...search, tab };
+): { tab: AccountTab } {
+  return { tab };
 }
