@@ -8,7 +8,7 @@ import {
   notFound,
   useNavigate,
 } from "@tanstack/react-router";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import {
@@ -103,6 +103,13 @@ function AccountPage() {
   const { slug, chrome } = Route.useLoaderData();
   const search = Route.useSearch();
   const [tab, setTab] = useState<Tab>(initialAccountTab(search.tab));
+  // Back/forward re-sync: the route owns the URL, the component owns the
+  // paint. Route search changes (history pop, in-app navigation) re-render
+  // with a new search.tab, but useState keeps the stale value without this
+  // effect — same pattern as the preview frame's template sync.
+  useEffect(() => {
+    setTab(initialAccountTab(search.tab));
+  }, [search.tab]);
   const qc = useQueryClient();
   const overviewFn = useServerFn(accountOverviewFn);
 

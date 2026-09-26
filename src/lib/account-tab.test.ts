@@ -57,4 +57,18 @@ describe("account-tab helper", () => {
       expect(src).toContain("@/lib/account-tab");
     }
   });
+
+  it("re-syncs tab state from search.tab on back/forward (both routes)", () => {
+    for (const path of [
+      "src/routes/account.tsx",
+      "src/routes/store.$slug.account.tsx",
+    ]) {
+      const src = readFileSync(path, "utf8");
+      expect(src).toContain("setTab(initialAccountTab(search.tab))");
+      expect(src).toMatch(
+        /useEffect\(\(\) => \{\s*\n?\s*setTab\(initialAccountTab\(search\.tab\)\)/,
+      );
+      expect(src).toMatch(/\[search\.tab\]/);
+    }
+  });
 });
