@@ -85,6 +85,12 @@ import { Route as AuthenticatedDashboardAnalyticsRouteImport } from './routes/_a
 import { Route as AuthenticatedDashboardApprovalsRouteImport } from './routes/_authenticated/dashboard/approvals'
 import { Route as AuthenticatedDashboardBrandsRouteImport } from './routes/_authenticated/dashboard/brands'
 import { Route as AuthenticatedDashboardBuilderRouteImport } from './routes/_authenticated/dashboard/builder'
+import { Route as AuthenticatedDashboardBuilderRoleManagerRouteImport } from './routes/_authenticated/dashboard/builder-role-manager'
+import { Route as AuthenticatedDashboardBuilderSavedRouteImport } from './routes/_authenticated/dashboard/builder-saved'
+import { Route as AuthenticatedDashboardBuilderSubmissionsRouteImport } from './routes/_authenticated/dashboard/builder-submissions'
+import { Route as AuthenticatedDashboardBuilderTemplatesRouteImport } from './routes/_authenticated/dashboard/builder-templates'
+import { Route as AuthenticatedDashboardBuilderThemeBuilderRouteImport } from './routes/_authenticated/dashboard/builder-theme-builder'
+import { Route as AuthenticatedDashboardBuilderToolsRouteImport } from './routes/_authenticated/dashboard/builder-tools'
 import { Route as AuthenticatedDashboardBulkEditorRouteImport } from './routes/_authenticated/dashboard/bulk-editor'
 import { Route as AuthenticatedDashboardBundlesRouteImport } from './routes/_authenticated/dashboard/bundles'
 import { Route as AuthenticatedDashboardCartsRouteImport } from './routes/_authenticated/dashboard/carts'
@@ -606,6 +612,42 @@ const AuthenticatedDashboardBuilderRoute =
   AuthenticatedDashboardBuilderRouteImport.update({
     id: '/builder',
     path: '/builder',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBuilderRoleManagerRoute =
+  AuthenticatedDashboardBuilderRoleManagerRouteImport.update({
+    id: '/builder-role-manager',
+    path: '/builder-role-manager',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBuilderSavedRoute =
+  AuthenticatedDashboardBuilderSavedRouteImport.update({
+    id: '/builder-saved',
+    path: '/builder-saved',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBuilderSubmissionsRoute =
+  AuthenticatedDashboardBuilderSubmissionsRouteImport.update({
+    id: '/builder-submissions',
+    path: '/builder-submissions',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBuilderTemplatesRoute =
+  AuthenticatedDashboardBuilderTemplatesRouteImport.update({
+    id: '/builder-templates',
+    path: '/builder-templates',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBuilderThemeBuilderRoute =
+  AuthenticatedDashboardBuilderThemeBuilderRouteImport.update({
+    id: '/builder-theme-builder',
+    path: '/builder-theme-builder',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardBuilderToolsRoute =
+  AuthenticatedDashboardBuilderToolsRouteImport.update({
+    id: '/builder-tools',
+    path: '/builder-tools',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardBulkEditorRoute =
@@ -1455,6 +1497,12 @@ export interface FileRoutesByFullPath {
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/dashboard/builder': typeof AuthenticatedDashboardBuilderRoute
+  '/dashboard/builder-role-manager': typeof AuthenticatedDashboardBuilderRoleManagerRoute
+  '/dashboard/builder-saved': typeof AuthenticatedDashboardBuilderSavedRoute
+  '/dashboard/builder-submissions': typeof AuthenticatedDashboardBuilderSubmissionsRoute
+  '/dashboard/builder-templates': typeof AuthenticatedDashboardBuilderTemplatesRoute
+  '/dashboard/builder-theme-builder': typeof AuthenticatedDashboardBuilderThemeBuilderRoute
+  '/dashboard/builder-tools': typeof AuthenticatedDashboardBuilderToolsRoute
   '/dashboard/bulk-editor': typeof AuthenticatedDashboardBulkEditorRoute
   '/dashboard/bundles': typeof AuthenticatedDashboardBundlesRoute
   '/dashboard/carts': typeof AuthenticatedDashboardCartsRoute
@@ -1666,6 +1714,12 @@ export interface FileRoutesByTo {
   '/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/dashboard/builder': typeof AuthenticatedDashboardBuilderRoute
+  '/dashboard/builder-role-manager': typeof AuthenticatedDashboardBuilderRoleManagerRoute
+  '/dashboard/builder-saved': typeof AuthenticatedDashboardBuilderSavedRoute
+  '/dashboard/builder-submissions': typeof AuthenticatedDashboardBuilderSubmissionsRoute
+  '/dashboard/builder-templates': typeof AuthenticatedDashboardBuilderTemplatesRoute
+  '/dashboard/builder-theme-builder': typeof AuthenticatedDashboardBuilderThemeBuilderRoute
+  '/dashboard/builder-tools': typeof AuthenticatedDashboardBuilderToolsRoute
   '/dashboard/bulk-editor': typeof AuthenticatedDashboardBulkEditorRoute
   '/dashboard/bundles': typeof AuthenticatedDashboardBundlesRoute
   '/dashboard/carts': typeof AuthenticatedDashboardCartsRoute
@@ -1881,6 +1935,12 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/approvals': typeof AuthenticatedDashboardApprovalsRoute
   '/_authenticated/dashboard/brands': typeof AuthenticatedDashboardBrandsRoute
   '/_authenticated/dashboard/builder': typeof AuthenticatedDashboardBuilderRoute
+  '/_authenticated/dashboard/builder-role-manager': typeof AuthenticatedDashboardBuilderRoleManagerRoute
+  '/_authenticated/dashboard/builder-saved': typeof AuthenticatedDashboardBuilderSavedRoute
+  '/_authenticated/dashboard/builder-submissions': typeof AuthenticatedDashboardBuilderSubmissionsRoute
+  '/_authenticated/dashboard/builder-templates': typeof AuthenticatedDashboardBuilderTemplatesRoute
+  '/_authenticated/dashboard/builder-theme-builder': typeof AuthenticatedDashboardBuilderThemeBuilderRoute
+  '/_authenticated/dashboard/builder-tools': typeof AuthenticatedDashboardBuilderToolsRoute
   '/_authenticated/dashboard/bulk-editor': typeof AuthenticatedDashboardBulkEditorRoute
   '/_authenticated/dashboard/bundles': typeof AuthenticatedDashboardBundlesRoute
   '/_authenticated/dashboard/carts': typeof AuthenticatedDashboardCartsRoute
@@ -2096,6 +2156,12 @@ export interface FileRouteTypes {
     | '/dashboard/approvals'
     | '/dashboard/brands'
     | '/dashboard/builder'
+    | '/dashboard/builder-role-manager'
+    | '/dashboard/builder-saved'
+    | '/dashboard/builder-submissions'
+    | '/dashboard/builder-templates'
+    | '/dashboard/builder-theme-builder'
+    | '/dashboard/builder-tools'
     | '/dashboard/bulk-editor'
     | '/dashboard/bundles'
     | '/dashboard/carts'
@@ -2307,6 +2373,12 @@ export interface FileRouteTypes {
     | '/dashboard/approvals'
     | '/dashboard/brands'
     | '/dashboard/builder'
+    | '/dashboard/builder-role-manager'
+    | '/dashboard/builder-saved'
+    | '/dashboard/builder-submissions'
+    | '/dashboard/builder-templates'
+    | '/dashboard/builder-theme-builder'
+    | '/dashboard/builder-tools'
     | '/dashboard/bulk-editor'
     | '/dashboard/bundles'
     | '/dashboard/carts'
@@ -2521,6 +2593,12 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/approvals'
     | '/_authenticated/dashboard/brands'
     | '/_authenticated/dashboard/builder'
+    | '/_authenticated/dashboard/builder-role-manager'
+    | '/_authenticated/dashboard/builder-saved'
+    | '/_authenticated/dashboard/builder-submissions'
+    | '/_authenticated/dashboard/builder-templates'
+    | '/_authenticated/dashboard/builder-theme-builder'
+    | '/_authenticated/dashboard/builder-tools'
     | '/_authenticated/dashboard/bulk-editor'
     | '/_authenticated/dashboard/bundles'
     | '/_authenticated/dashboard/carts'
@@ -3300,6 +3378,48 @@ declare module '@tanstack/react-router' {
       path: '/builder'
       fullPath: '/dashboard/builder'
       preLoaderRoute: typeof AuthenticatedDashboardBuilderRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/builder-role-manager': {
+      id: '/_authenticated/dashboard/builder-role-manager'
+      path: '/builder-role-manager'
+      fullPath: '/dashboard/builder-role-manager'
+      preLoaderRoute: typeof AuthenticatedDashboardBuilderRoleManagerRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/builder-saved': {
+      id: '/_authenticated/dashboard/builder-saved'
+      path: '/builder-saved'
+      fullPath: '/dashboard/builder-saved'
+      preLoaderRoute: typeof AuthenticatedDashboardBuilderSavedRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/builder-submissions': {
+      id: '/_authenticated/dashboard/builder-submissions'
+      path: '/builder-submissions'
+      fullPath: '/dashboard/builder-submissions'
+      preLoaderRoute: typeof AuthenticatedDashboardBuilderSubmissionsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/builder-templates': {
+      id: '/_authenticated/dashboard/builder-templates'
+      path: '/builder-templates'
+      fullPath: '/dashboard/builder-templates'
+      preLoaderRoute: typeof AuthenticatedDashboardBuilderTemplatesRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/builder-theme-builder': {
+      id: '/_authenticated/dashboard/builder-theme-builder'
+      path: '/builder-theme-builder'
+      fullPath: '/dashboard/builder-theme-builder'
+      preLoaderRoute: typeof AuthenticatedDashboardBuilderThemeBuilderRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/builder-tools': {
+      id: '/_authenticated/dashboard/builder-tools'
+      path: '/builder-tools'
+      fullPath: '/dashboard/builder-tools'
+      preLoaderRoute: typeof AuthenticatedDashboardBuilderToolsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/bulk-editor': {
@@ -4263,6 +4383,12 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardApprovalsRoute: typeof AuthenticatedDashboardApprovalsRoute
   AuthenticatedDashboardBrandsRoute: typeof AuthenticatedDashboardBrandsRoute
   AuthenticatedDashboardBuilderRoute: typeof AuthenticatedDashboardBuilderRoute
+  AuthenticatedDashboardBuilderRoleManagerRoute: typeof AuthenticatedDashboardBuilderRoleManagerRoute
+  AuthenticatedDashboardBuilderSavedRoute: typeof AuthenticatedDashboardBuilderSavedRoute
+  AuthenticatedDashboardBuilderSubmissionsRoute: typeof AuthenticatedDashboardBuilderSubmissionsRoute
+  AuthenticatedDashboardBuilderTemplatesRoute: typeof AuthenticatedDashboardBuilderTemplatesRoute
+  AuthenticatedDashboardBuilderThemeBuilderRoute: typeof AuthenticatedDashboardBuilderThemeBuilderRoute
+  AuthenticatedDashboardBuilderToolsRoute: typeof AuthenticatedDashboardBuilderToolsRoute
   AuthenticatedDashboardBulkEditorRoute: typeof AuthenticatedDashboardBulkEditorRoute
   AuthenticatedDashboardBundlesRoute: typeof AuthenticatedDashboardBundlesRoute
   AuthenticatedDashboardCartsRoute: typeof AuthenticatedDashboardCartsRoute
@@ -4347,6 +4473,18 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardApprovalsRoute: AuthenticatedDashboardApprovalsRoute,
     AuthenticatedDashboardBrandsRoute: AuthenticatedDashboardBrandsRoute,
     AuthenticatedDashboardBuilderRoute: AuthenticatedDashboardBuilderRoute,
+    AuthenticatedDashboardBuilderRoleManagerRoute:
+      AuthenticatedDashboardBuilderRoleManagerRoute,
+    AuthenticatedDashboardBuilderSavedRoute:
+      AuthenticatedDashboardBuilderSavedRoute,
+    AuthenticatedDashboardBuilderSubmissionsRoute:
+      AuthenticatedDashboardBuilderSubmissionsRoute,
+    AuthenticatedDashboardBuilderTemplatesRoute:
+      AuthenticatedDashboardBuilderTemplatesRoute,
+    AuthenticatedDashboardBuilderThemeBuilderRoute:
+      AuthenticatedDashboardBuilderThemeBuilderRoute,
+    AuthenticatedDashboardBuilderToolsRoute:
+      AuthenticatedDashboardBuilderToolsRoute,
     AuthenticatedDashboardBulkEditorRoute:
       AuthenticatedDashboardBulkEditorRoute,
     AuthenticatedDashboardBundlesRoute: AuthenticatedDashboardBundlesRoute,

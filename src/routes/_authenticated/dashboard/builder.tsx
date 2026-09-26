@@ -7,6 +7,7 @@ import {
   Fragment,
 } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -118,6 +119,32 @@ import {
 } from "@/lib/builder-workspace.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/builder")({
+  validateSearch: (search) =>
+    z
+      .object({
+        // B1 (M-05): submenu homes redirect here with one of these keys;
+        // aliases resolve to the closest real studio panel below.
+        panel: z
+          .enum([
+            "inspect",
+            "seo",
+            "brand",
+            "history",
+            "templates",
+            "saved",
+            "theme-builder",
+            "tools",
+            "submissions",
+            "role-manager",
+            "maintenance",
+            "forms",
+            "popups",
+            "code",
+          ])
+          .optional()
+          .catch(undefined),
+      })
+      .parse(search),
   head: () => ({
     meta: [
       { title: "Builder studio — Framique admin" },
@@ -169,6 +196,46 @@ const SLOT_LABEL: Record<Slot, { en: string; bn: string }> = {
   main: { en: "Main", bn: "মেইন" },
   footer: { en: "Footer", bn: "ফুটার" },
 };
+
+// B1 (M-05): right-rail panels the studio can actually render. Submenu
+// homes that have no dedicated surface yet (saved, theme-builder, tools,
+// submissions, role-manager) alias to the closest real panel so every nav
+// entry lands on a working surface — never a dead button.
+type StudioPanel =
+  | "inspect"
+  | "seo"
+  | "brand"
+  | "history"
+  | "templates"
+  | "maintenance"
+  | "forms"
+  | "popups"
+  | "code";
+
+const SUBMENU_PANEL_ALIAS: Record<string, StudioPanel> = {
+  saved: "templates",
+  "theme-builder": "templates",
+  tools: "maintenance",
+  submissions: "forms",
+  "role-manager": "inspect",
+};
+
+function resolveStudioPanel(key: string | undefined): StudioPanel | null {
+  if (!key) return null;
+  const panels: readonly string[] = [
+    "inspect",
+    "seo",
+    "brand",
+    "history",
+    "templates",
+    "maintenance",
+    "forms",
+    "popups",
+    "code",
+  ];
+  if ((panels as readonly string[]).includes(key)) return key as StudioPanel;
+  return SUBMENU_PANEL_ALIAS[key] ?? null;
+}
 
 // Device frames come from the platform responsive contract, so studio frames
 // and production media queries can never drift.
@@ -252,18 +319,18 @@ function BuilderStudio() {
   const [addParent, setAddParent] = useState<string | null>(null);
   const [blocks, setBlocks] = useState<SavedBlock[]>([]);
   const [blockName, setBlockName] = useState("");
-  const [panel, setPanel] = useState<
-    | "inspect"
-    | "seo"
-    | "brand"
-    | "history"
-    | "templates"
-    | "maintenance"
-    | "forms"
-    | "popups"
-    | "code"
-  >("inspect");
+  const search = Route.useSearch();
+  const [panel, setPanel] = useState<StudioPanel>(
+    () => resolveStudioPanel(search.panel) ?? "inspect",
+  );
+  // B1 (M-05): submenu homes redirect here with ?panel=<key>; follow it so
+  // each home opens the right surface.
+  useEffect(() => {
+    const next = resolveStudioPanel(search.panel);
+    if (next) setPanel(next);
+  }, [search.panel]);
   const [runAt, setRunAt] = useState("");
+  const [scheduledVersionId, setScheduledVersionId] = useState("");
   // Phase 1 authoring UX state.
   const clipboardRef = useRef<ClipboardStore | null>(null);
   const [clip, setClip] = useState<ClipboardPayload | null>(null);
@@ -1038,10 +1105,17 @@ function BuilderStudio() {
     onError: (error) => toast.error(errorMessage(error)),
   });
 
+  // B1 (WF-20): the release is scheduled for the picked version, not a
+  // hardcoded versions[0]. Falls back to the latest row when nothing is
+  // picked yet, preserving the old single-version behavior.
+  const versions = workspace.data?.versions ?? [];
+  const scheduledVersion =
+    versions.find((v) => v.id === scheduledVersionId) ?? versions[0] ?? null;
+
   const scheduleRelease = useMutation({
     mutationFn: async () => {
       if (!themeId) throw new Error("Workspace not ready");
-      const version = workspace.data?.versions[0];
+      const version = scheduledVersion;
       if (!version)
         throw new Error(t("Save a version first", "আগে একটি ভার্সন সেভ করুন"));
       return schedule({
@@ -2250,6 +2324,32 @@ function BuilderStudio() {
                   }}
                 >
                   <label
+                    htmlFor="schedule-version"
+                    className="block text-xs font-medium"
+                  >
+                    {t("Version to release", "রিলিজের ভার্সন")}
+                  </label>
+                  <select
+                    id="schedule-version"
+                    aria-label={t("Version to release", "রিলিজের ভার্সন")}
+                    value={scheduledVersion?.id ?? ""}
+                    onChange={(e) => setScheduledVersionId(e.target.value)}
+                    disabled={versions.length === 0}
+                    className="w-full rounded-fq-md border border-border bg-card px-3 py-2 text-sm disabled:opacity-50"
+                  >
+                    {versions.length === 0 && (
+                      <option value="">
+                        {t("Save a version first", "আগে একটি ভার্সন সেভ করুন")}
+                      </option>
+                    )}
+                    {versions.map((v) => (
+                      <option key={v.id} value={v.id}>
+                        v{v.version} — {v.status} —{" "}
+                        {new Date(v.createdAt).toLocaleDateString()}
+                      </option>
+                    ))}
+                  </select>
+                  <label
                     htmlFor="schedule-at"
                     className="block text-xs font-medium"
                   >
@@ -2265,7 +2365,9 @@ function BuilderStudio() {
                   />
                   <button
                     type="submit"
-                    disabled={scheduleRelease.isPending || !runAt}
+                    disabled={
+                      scheduleRelease.isPending || !runAt || !scheduledVersion
+                    }
                     className="rounded-fq-md border border-border px-3 py-2 text-sm disabled:opacity-50"
                   >
                     {t("Schedule", "শিডিউল")}

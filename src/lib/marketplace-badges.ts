@@ -5,6 +5,20 @@
  * The `marketplace_installs` ledger is a fallback for the Installed badge —
  * it must never confer Active on its own. A live ledger row with an inactive
  * (or missing) theme row means "installed, not live".
+ *
+ * B2 decisions (Sept 2026, WordPress-parity tails):
+ * - "paused counts as Installed" is INTENTIONAL, not a bug: pausing is
+ *   WordPress's "deactivate but keep files" — the package is still present,
+ *   so the card shows Installed (never Active; Active needs the row flag).
+ *   Terminal states (`removed`, `rolled_back`, `uninstalling`, `purged`)
+ *   are the only ones that clear the badge.
+ * - Source coherence: `store_themes` carries TWO pointers that answer
+ *   different questions. `source_listing_slug` is catalog identity ("which
+ *   registry entry seeded this row"); `source_install_id` is ledger linkage
+ *   ("which purchase/install event owns this row", the delete-cascade key).
+ *   Catalog installs write `theme_id: NULL` on the ledger row, so matching
+ *   ledger rows by `theme_id` alone misses every catalog install — the slug
+ *   fallback below is the coherent read path, not a second source of truth.
  */
 
 export type ThemeStateRef = {
@@ -34,7 +48,10 @@ function hasLiveLedger(
   return installs.some((i) => {
     if (!isLiveInstallStatus(i.status)) return false;
     if (builtin) return i.listing_slug === slug;
-    if (listingId) return i.theme_id === listingId;
+    // Third-party installs carry theme_id = the listing id, but catalog
+    // installs write theme_id NULL (identity lives in listing_slug). Match
+    // either — a slug-matching live row is the same install event.
+    if (listingId) return i.theme_id === listingId || i.listing_slug === slug;
     return i.listing_slug === slug;
   });
 }
