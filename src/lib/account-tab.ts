@@ -25,3 +25,18 @@ export function isAccountTab(value: unknown): value is AccountTab {
 export function initialAccountTab(tab: unknown): AccountTab {
   return isAccountTab(tab) ? tab : "orders";
 }
+
+/**
+ * Click → URL write (shared, single source of truth). Tab buttons replace
+ * `?tab=` via `navigate({ search: (prev) => nextAccountTabSearch(prev, key),
+ * replace: true })` — replace, not push, so tab-hopping never spams history
+ * — while preserving every other search param. Mirrors `nextAuthSearch` in
+ * `@/lib/auth-mode`. Both account routes must call this; neither may
+ * re-implement the spread/validation inline.
+ */
+export function nextAccountTabSearch<S extends Record<string, unknown>>(
+  search: S,
+  tab: AccountTab,
+): S & { tab: AccountTab } {
+  return { ...search, tab };
+}

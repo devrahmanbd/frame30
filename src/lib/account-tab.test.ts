@@ -1,10 +1,20 @@
 /**
  * Phase 1b — account tab helper contract.
  *
- * Pure tests for isAccountTab / initialAccountTab + source asserts that
- * BOTH account routes wire validateSearch + initialAccountTab(search.tab).
+ * Pure tests for isAccountTab / initialAccountTab / nextAccountTabSearch +
+ * source asserts that BOTH account routes wire validateSearch,
+ * initialAccountTab(search.tab), the pop/state-sync effect, AND the
+ * click → URL write (navigate + shared helper + replace:true).
  *
- * No jsdom — pure asserts + source asserts (node env).
+ * No jsdom — pure asserts + source asserts (node env). A full
+ * route-component render (memory history: ?tab=wishlist paints wishlist,
+ * click writes ?tab=, back restores) is impractical here: both AccountPage
+ * components require TanStack router context + supabase session + server-fn
+ * data, and the repo forbids new deps (no testing-library/jsdom/
+ * test-renderer). The maximal runtime slice is below: the deep-link →
+ * click → back scenario is executed through the REAL prod functions
+ * (initialAccountTab + nextAccountTabSearch) composed exactly as the
+ * routes compose them, and source asserts pin that both routes call them.
  */
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
@@ -12,6 +22,7 @@ import {
   ACCOUNT_TABS,
   initialAccountTab,
   isAccountTab,
+  nextAccountTabSearch,
 } from "@/lib/account-tab";
 
 describe("account-tab helper", () => {
@@ -71,4 +82,69 @@ describe("account-tab helper", () => {
       expect(src).toMatch(/\[search\.tab\]/);
     }
   });
+});
+
+describe("nextAccountTabSearch (click → URL write, runtime)", () => {
+  it("sets the clicked tab", () => {
+    expect(nextAccountTabSearch({ tab: "orders" }, "wishlist")).toEqual({
+      tab: "wishlist",
+    });
+    expect(nextAccountTabSearch({}, "profile")).toEqual({ tab: "profile" });
+  });
+
+  it("preserves every other search param", () => {
+    expect(
+      nextAccountTabSearch(
+        { tab: "orders", preview_token: "abc", focus: "hero" },
+        "wishlist",
+      ),
+    ).toEqual({ tab: "wishlist", preview_token: "abc", focus: "hero" });
+  });
+
+  it("does not mutate the previous search object", () => {
+    const prev = { tab: "orders" as const, preview_token: "abc" };
+    nextAccountTabSearch(prev, "privacy");
+    expect(prev).toEqual({ tab: "orders", preview_token: "abc" });
+  });
+});
+
+describe("account tab URL sync scenario (runtime slice)", () => {
+  it("deep-link → click → back, through the real prod functions", () => {
+    // 1. Deep link ?tab=wishlist: useState init paints the wishlist panel.
+    let search: Record<string, unknown> = { tab: "wishlist" };
+    let tab = initialAccountTab(search.tab);
+    expect(tab).toBe("wishlist");
+
+    // 2. Tab click: setTab(key) + URL write via the shared search updater.
+    tab = "orders";
+    search = nextAccountTabSearch(search, "orders");
+    expect(tab).toBe("orders");
+    expect(search).toEqual({ tab: "orders" }); // URL gains ?tab=orders
+
+    // 3. History back to ?tab=wishlist: pop/state-sync effect restores paint.
+    search = { tab: "wishlist" };
+    tab = initialAccountTab(search.tab);
+    expect(tab).toBe("wishlist");
+  });
+});
+
+describe("account tab click writes the URL (both routes)", () => {
+  for (const path of [
+    "src/routes/account.tsx",
+    "src/routes/store.$slug.account.tsx",
+  ]) {
+    it(`${path} navigates with the shared helper + replace:true`, () => {
+      const src = readFileSync(path, "utf8");
+      expect(src).toContain("Route.useNavigate()");
+      expect(src).toContain("nextAccountTabSearch(prev, key)");
+      expect(src).toContain("replace: true");
+      expect(src).toContain("nextAccountTabSearch");
+    });
+
+    it(`${path} has no bare local-only tab click left`, () => {
+      const src = readFileSync(path, "utf8");
+      expect(src).not.toContain("onClick={() => setTab(key)}");
+      expect(src).toContain("onClick={() => selectTab(key)}");
+    });
+  }
 });

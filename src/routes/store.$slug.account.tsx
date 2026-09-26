@@ -37,6 +37,7 @@ import {
   ACCOUNT_TABS as TABS,
   initialAccountTab,
   isAccountTab,
+  nextAccountTabSearch,
   type AccountTab,
 } from "@/lib/account-tab";
 
@@ -87,6 +88,7 @@ function AccountPage() {
   const { slug } = Route.useParams();
   const { chrome } = Route.useLoaderData();
   const search = Route.useSearch();
+  const navigate = Route.useNavigate();
   const [tab, setTab] = useState<Tab>(initialAccountTab(search.tab));
   // Back/forward re-sync: the route owns the URL, the component owns the
   // paint. Route search changes (history pop, in-app navigation) re-render
@@ -95,6 +97,16 @@ function AccountPage() {
   useEffect(() => {
     setTab(initialAccountTab(search.tab));
   }, [search.tab]);
+  // Click → URL write: tab buttons replace `?tab=` (replace, not push, so
+  // tab-hopping never spams history) while preserving other search params
+  // via the shared helper. The effect above re-syncs on pop/navigate.
+  const selectTab = (key: Tab) => {
+    setTab(key);
+    void navigate({
+      search: (prev) => nextAccountTabSearch(prev, key),
+      replace: true,
+    });
+  };
   const qc = useQueryClient();
   const overviewFn = useServerFn(accountOverviewFn);
 
@@ -193,7 +205,7 @@ function AccountPage() {
             role="tab"
             type="button"
             aria-selected={tab === key}
-            onClick={() => setTab(key)}
+            onClick={() => selectTab(key)}
             className={`flex h-12 items-center gap-2 border-b-2 px-1 text-[13px] font-bold fq-caps tracking-widest transition-colors ${
               tab === key
                 ? "border-foreground text-foreground"
