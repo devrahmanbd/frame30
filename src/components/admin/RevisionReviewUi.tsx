@@ -10,11 +10,11 @@ import {
   approveRevisionFn,
   listRevisionReviewsFn,
   rejectRevisionFn,
-} from "@/lib/support-revision-fns.server";
+} from "@/lib/support-revision.functions";
 import type {
   DisplayReview,
   ReviewStatus,
-} from "@/lib/support-revision-review.server";
+} from "@/lib/support-revision.functions";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Pure helpers (unit-tested in RevisionReviewUi.test.tsx)
