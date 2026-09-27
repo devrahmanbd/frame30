@@ -168,3 +168,53 @@ export async function getMerchantSupportAvailability(
 export function clearOperatorHeartbeatsForTest(): void {
   OPERATOR_HEARTBEATS.clear();
 }
+
+// ---------------------------------------------------------------------------
+// TODO-5 — Presence-gated routing hints for the HITL approval queue.
+//
+// The human desk asks where a `pending_approval` ticket should go next:
+// an online operator confirms it live in the desk queue; otherwise the
+// ticket is held as an async task and the customer is offered a callback.
+// This is a read-only hint over `isOperatorOnline` — it never changes
+// heartbeat, takeover, or availability behavior.
+// ---------------------------------------------------------------------------
+
+export type ApprovalRoutingChannel = "live_queue" | "async_task";
+
+export type ApprovalRoutingHint = {
+  isOnline: boolean;
+  reason: "heartbeat" | "active_takeover" | "recent_operator_reply" | "offline";
+  channel: ApprovalRoutingChannel;
+  lastSeenAt: string | null;
+  hintEn: string;
+  hintBn: string;
+};
+
+export async function getApprovalRoutingHint(
+  merchantId: string,
+  conversationId?: string | null,
+): Promise<ApprovalRoutingHint> {
+  const presence = await isOperatorOnline(merchantId, conversationId);
+  if (presence.isOnline) {
+    return {
+      isOnline: true,
+      reason: presence.reason,
+      channel: "live_queue",
+      lastSeenAt: presence.lastSeenAt,
+      hintEn:
+        "Operator online — route pending approvals to the live desk queue for immediate confirm.",
+      hintBn:
+        "অপারেটর অনলাইনে — মুলতুবি অনুমোদনগুলো দ্রুত নিশ্চিত করতে লাইভ ডেস্ক সারিতে পাঠান।",
+    };
+  }
+  return {
+    isOnline: false,
+    reason: presence.reason,
+    channel: "async_task",
+    lastSeenAt: presence.lastSeenAt,
+    hintEn:
+      "No operator online — hold approvals as async tasks and offer the customer a callback.",
+    hintBn:
+      "কোনো অপারেটর অনলাইনে নেই — অনুমোদনগুলো অ্যাসিঙ্ক টাস্ক হিসেবে রাখুন এবং গ্রাহককে কলব্যাক দিন।",
+  };
+}

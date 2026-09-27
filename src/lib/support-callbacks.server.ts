@@ -112,6 +112,9 @@ export function validateBdPhone(phone: string): {
  */
 const IN_MEMORY_CALLBACKS: (CallbackRecord & { merchant_id: string })[] = [];
 
+/** Duplicate window: identical pending callbacks collapse instead of doubling. */
+export const CALLBACK_DUPLICATE_WINDOW_MS = 30 * 60_000;
+
 export function clearInMemoryCallbacks() {
   IN_MEMORY_CALLBACKS.length = 0;
 }
@@ -122,6 +125,10 @@ export function getInMemoryCallbacks(merchantId: string): CallbackRecord[] {
 
 /**
  * Create a callback request. Tenant-isolated, rate-limited, phone-validated.
+ *
+ * Idempotent within {@link CALLBACK_DUPLICATE_WINDOW_MS}: a repeat request
+ * for the same merchant + phone while an earlier one is still pending returns
+ * the original acknowledgement instead of queueing a second call.
  */
 export async function createCallback(input: CreateCallbackInput): Promise<{
   id: string;
@@ -131,6 +138,8 @@ export async function createCallback(input: CreateCallbackInput): Promise<{
   windowDescription: string;
   agentMessage: string;
   agentMessageBn: string;
+  /** True when this call collapsed onto an already-pending request. */
+  duplicate: boolean;
 }> {
   return withSpan("support.callback_create", async () => {
     // Rate-limit by phone hash to prevent spam
@@ -156,7 +165,25 @@ export async function createCallback(input: CreateCallbackInput): Promise<{
     const sanitizedName = (input.customerName ?? "").trim().slice(0, 100);
     const sanitizedNote = (input.note ?? "").trim().slice(0, 500);
 
+    // Best-effort DB dedupe first: never let a lookup outage break the flow.
+    const existing = await findPendingDuplicate(
+      input.merchantId,
+      phoneE164,
+    ).catch(() => null);
+    if (existing) {
+      incr("framique_support_callback_total", {
+        window: existing.preferred_window,
+        status: "duplicate_collapsed",
+      });
+      log("info", "support.callback_duplicate_collapsed", {
+        merchant_id: input.merchantId,
+        callback_id: existing.id,
+      });
+      return acknowledgement(existing, existing.customer_name, true);
+    }
+
     let record: CallbackRecord;
+    let duplicate = false;
 
     try {
       const { supabaseAdmin } =
@@ -182,6 +209,22 @@ export async function createCallback(input: CreateCallbackInput): Promise<{
       if (error || !data) throw new CallbackError("callback_create_failed");
       record = data as unknown as CallbackRecord;
     } catch {
+      // In-memory fallback for offline dev / tests, with the same collapse rule.
+      const cutoff = Date.now() - CALLBACK_DUPLICATE_WINDOW_MS;
+      const dupe = IN_MEMORY_CALLBACKS.find(
+        (c) =>
+          c.merchant_id === input.merchantId &&
+          c.phone_e164 === phoneE164 &&
+          c.status === "pending" &&
+          new Date(c.created_at).getTime() >= cutoff,
+      );
+      if (dupe) {
+        incr("framique_support_callback_total", {
+          window: dupe.preferred_window,
+          status: "duplicate_collapsed",
+        });
+        return acknowledgement(dupe, dupe.customer_name, true);
+      }
       // In-memory fallback for offline dev / tests
       record = {
         id: `cb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
@@ -197,8 +240,7 @@ export async function createCallback(input: CreateCallbackInput): Promise<{
       IN_MEMORY_CALLBACKS.push({ ...record, merchant_id: input.merchantId });
     }
 
-    const agentMessage = `Thank you, ${sanitizedName}! I've scheduled a callback for you during the **${windowInfo.label}** window (${windowInfo.description}). A Framique support specialist will call you at the number provided. Callback reference: \`#CB-${record.id.slice(-6).toUpperCase()}\`.`;
-    const agentMessageBn = `ধন্যবাদ, ${sanitizedName}! আপনার জন্য **${windowInfo.labelBn}** (${windowInfo.description}) সময়ে কলব্যাক নির্ধারণ করা হয়েছে। একজন Framique সহায়তা বিশেষজ্ঞ আপনার সাথে যোগাযোগ করবেন। রেফারেন্স: \`#CB-${record.id.slice(-6).toUpperCase()}\`.`;
+    const out = acknowledgement(record, sanitizedName, duplicate);
 
     incr("framique_support_callback_total", {
       window: input.preferredWindow,
@@ -210,16 +252,59 @@ export async function createCallback(input: CreateCallbackInput): Promise<{
       preferred_window: input.preferredWindow,
     });
 
-    return {
-      id: record.id,
-      customerName: sanitizedName,
-      phoneE164,
-      window: input.preferredWindow,
-      windowDescription: windowInfo.description,
-      agentMessage,
-      agentMessageBn,
-    };
+    return out;
   });
+}
+
+/**
+ * Best-effort lookup for a still-pending callback for the same merchant +
+ * phone inside the duplicate window. Resolves null offline (no Supabase) and
+ * on any lookup failure — dedupe must never break creation.
+ */
+async function findPendingDuplicate(
+  merchantId: string,
+  phoneE164: string,
+): Promise<CallbackRecord | null> {
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  const cutoff = new Date(Date.now() - CALLBACK_DUPLICATE_WINDOW_MS).toISOString();
+  const { data, error } = await supabaseAdmin
+    .from("support_callbacks")
+    .select(
+      "id, merchant_id, conversation_id, customer_name, phone_e164, preferred_window, note, status, created_at",
+    )
+    .eq("merchant_id", merchantId)
+    .eq("phone_e164", phoneE164)
+    .eq("status", "pending")
+    .gte("created_at", cutoff)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error || !data) return null;
+  return data as unknown as CallbackRecord;
+}
+
+function acknowledgement(
+  record: CallbackRecord,
+  customerName: string,
+  duplicate: boolean,
+) {
+  const windowInfo = CALLBACK_WINDOWS[record.preferred_window as CallbackTimeWindow];
+  const description = windowInfo?.description ?? record.preferred_window;
+  const label = windowInfo?.label ?? record.preferred_window;
+  const labelBn = windowInfo?.labelBn ?? record.preferred_window;
+  const agentMessage = `Thank you, ${customerName}! I've scheduled a callback for you during the **${label}** window (${description}). A Framique support specialist will call you at the number provided. Callback reference: \`#CB-${record.id.slice(-6).toUpperCase()}\`.`;
+  const agentMessageBn = `ধন্যবাদ, ${customerName}! আপনার জন্য **${labelBn}** (${description}) সময়ে কলব্যাক নির্ধারণ করা হয়েছে। একজন Framique সহায়তা বিশেষজ্ঞ আপনার সাথে যোগাযোগ করবেন। রেফারেন্স: \`#CB-${record.id.slice(-6).toUpperCase()}\`.`;
+  return {
+    id: record.id,
+    customerName,
+    phoneE164: record.phone_e164,
+    window: record.preferred_window,
+    windowDescription: description,
+    agentMessage,
+    agentMessageBn,
+    duplicate,
+  };
 }
 
 /**

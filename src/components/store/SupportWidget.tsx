@@ -28,7 +28,21 @@ import {
   requestCallbackFn,
   checkOperatorPresenceFn,
 } from "@/lib/support.functions";
+import {
+  clearSupportChatSession,
+  loadSupportChatSession,
+  saveSupportChatSession,
+} from "@/lib/support-session";
 import { useLang } from "@/lib/i18n";
+
+// Re-exported so widget-adjacent suites keep a single import surface; the
+// versioned implementation (TTL + 50-msg cap + upgrade migration) lives in
+// `@/lib/support-session`.
+export {
+  clearSupportChatSession,
+  loadSupportChatSession,
+  saveSupportChatSession,
+};
 
 type Source = { label: string; table: string; title?: string };
 type Confidence = "pinned" | "grounded" | "unsure";
@@ -63,6 +77,14 @@ type Msg = {
   ticketId?: string | null;
   ticketCard?: TicketCard | null;
   callbackCard?: CallbackCard | null;
+  /**
+   * TODO-6 streaming: true while SSE deltas are still arriving. Partial
+   * bodies are NEVER persisted (stripped in the save effect) and are never
+   * rendered as trusted final content until the screened final replaces them.
+   */
+  streaming?: boolean;
+  /** true when the stream degraded and the reply was completed via fallback. */
+  downgraded?: boolean;
 };
 
 /** Mini step-form state machine for the in-chat forms */
@@ -627,106 +649,233 @@ export function getInitialGreeting(
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
 
-// ─── Chat session persistence (sessionStorage + localStorage, shop+mode scoped)
+// ─── Streaming consumption (TODO-6) ──────────────────────────────────────────
+//
+// Streaming contract (from the TODO-2 lane, support-llm.server.ts /
+// support-grounding.server.ts):
+//   - Deltas are reasoning-stripped but NOT outbound-screened; secrets and
+//     authority claims can split across chunk boundaries, so per-delta content
+//     must never be persisted as an answer and the ASSEMBLED reply must pass
+//     enforceGroundedReply + screenOutbound server-side before render/persist.
+//   - preflightStreamGate runs server-side BEFORE the first byte (empty
+//     context → unsure+handoff fallback, never the LLM).
+//
+// Server route status: NO SSE endpoint exists in the readable tree yet. The
+// client below probes the conventional public route
+//   POST /api/public/support/stream  (JSON body, `Accept: text/event-stream`)
+// and treats ANY unavailability (404, non-SSE content-type, network error,
+// pre-first-byte timeout) as "streaming unavailable": it silently falls back
+// to the non-streaming askSupportFn, which returns the fully screened final
+// reply. A mid-stream failure keeps the partial text, marks the bubble
+// downgraded with a notice, then replaces it with the askSupportFn final.
+// A server route, when added (OUTSIDE the owned files of this lane —
+// reported as a follow-up, not implemented here), MUST screen the assembled
+// reply and SHOULD close the stream with a `{"final": {...}}` frame carrying
+// the askSupport-shaped payload so the client can render it without a second
+// call. Without that frame the client re-verifies via askSupportFn.
 
-export type SupportChatSnapshot = {
-  msgs: Msg[];
-  conversationId: string | null;
-  customerName: string;
-  customerEmail: string;
-  open: boolean;
-  phone: string;
-  orderNumber: string;
-  staffActive: boolean;
-};
+/** Conventional SSE endpoint probed by the widget. Not yet implemented. */
+export const SUPPORT_STREAM_ENDPOINT = "/api/public/support/stream";
 
-function supportChatKey(slug: string, mode: string): string {
-  return `fq-support-chat:${slug}:${mode}`;
-}
+export const SUPPORT_STREAM_FIRST_BYTE_TIMEOUT_MS = 8000;
+export const SUPPORT_STREAM_TOTAL_TIMEOUT_MS = 30000;
 
-function storageAreas(): Array<{
-  getItem(k: string): string | null;
-  setItem(k: string, v: string): void;
-  removeItem(k: string): void;
-}> {
-  const areas: Array<{
-    getItem(k: string): string | null;
-    setItem(k: string, v: string): void;
-    removeItem(k: string): void;
-  }> = [];
-  for (const name of ["sessionStorage", "localStorage"] as const) {
-    const store = (globalThis as Record<string, unknown>)[name] as
-      | {
-          getItem(k: string): string | null;
-          setItem(k: string, v: string): void;
-          removeItem(k: string): void;
-        }
-      | undefined;
-    if (store) areas.push(store);
-  }
-  return areas;
-}
+export type SupportSseFrame =
+  | { kind: "delta"; text: string }
+  | { kind: "final"; payload: unknown }
+  | { kind: "done" }
+  | { kind: "error"; message: string }
+  | { kind: "ignore" };
 
-export function loadSupportChatSession(
-  slug: string,
-  mode: string,
-): SupportChatSnapshot | null {
-  for (const store of storageAreas()) {
-    try {
-      const raw = store.getItem(supportChatKey(slug, mode));
-      if (!raw) continue;
-      const parsed = JSON.parse(raw) as Partial<SupportChatSnapshot>;
-      if (!Array.isArray(parsed.msgs)) continue;
-      return {
-        msgs: parsed.msgs,
-        conversationId:
-          typeof parsed.conversationId === "string"
-            ? parsed.conversationId
-            : null,
-        customerName:
-          typeof parsed.customerName === "string" ? parsed.customerName : "",
-        customerEmail:
-          typeof parsed.customerEmail === "string" ? parsed.customerEmail : "",
-        open: parsed.open === true,
-        phone: typeof parsed.phone === "string" ? parsed.phone : "",
-        orderNumber:
-          typeof parsed.orderNumber === "string" ? parsed.orderNumber : "",
-        staffActive: parsed.staffActive === true,
-      };
-    } catch {
-      continue;
-    }
-  }
-  return null;
-}
-
-export function saveSupportChatSession(
-  snapshot: { slug: string; mode: string } & SupportChatSnapshot,
-): void {
-  const { slug, mode, ...rest } = snapshot;
-  let body = "";
+/**
+ * Parse one SSE `data:` payload (the `data:` prefix itself is optional).
+ * Accepted shapes:
+ *   `[DONE]`                              → done
+ *   `{"delta"|"content"|"text": "..."}`   → delta text
+ *   `{"final": {...}}`                     → screened final (askSupport-shaped)
+ *   `{"error": "..."}`                     → server-side failure
+ * Anything else (keep-alives, usage frames, malformed JSON) → ignore.
+ */
+export function parseSupportSseData(raw: string): SupportSseFrame {
+  const data = raw.startsWith("data:") ? raw.slice(5).trim() : raw.trim();
+  if (!data) return { kind: "ignore" };
+  if (data === "[DONE]") return { kind: "done" };
+  let json: Record<string, unknown>;
   try {
-    body = JSON.stringify(rest);
+    json = JSON.parse(data) as Record<string, unknown>;
   } catch {
-    return;
+    return { kind: "ignore" };
   }
-  for (const store of storageAreas()) {
-    try {
-      store.setItem(supportChatKey(slug, mode), body);
-    } catch {
-      /* best effort */
+  if (json && typeof json === "object") {
+    if ("final" in json && json.final !== undefined) {
+      return { kind: "final", payload: json.final };
+    }
+    if (typeof json.error === "string" && json.error) {
+      return { kind: "error", message: json.error };
+    }
+    for (const key of ["delta", "content", "text"] as const) {
+      if (typeof json[key] === "string" && (json[key] as string)) {
+        return { kind: "delta", text: json[key] as string };
+      }
     }
   }
+  return { kind: "ignore" };
 }
 
-export function clearSupportChatSession(slug: string, mode: string): void {
-  for (const store of storageAreas()) {
-    try {
-      store.removeItem(supportChatKey(slug, mode));
-    } catch {
-      /* best effort */
+export type SupportStreamOutcome =
+  | { ok: true; partial: string; final: unknown | null }
+  | {
+      ok: false;
+      partial: string;
+      reason: "unavailable" | "failed";
+      message?: string;
+    };
+
+/**
+ * Consume the SSE stream, invoking onDelta with the running partial.
+ * `unavailable` = failed before the first byte (no endpoint, non-SSE
+ * response, pre-first-byte timeout) → caller falls back silently.
+ * `failed` = broke mid-stream → caller keeps the partial, shows a downgrade
+ * notice, and completes via the non-streaming fallback.
+ */
+export async function consumeSupportStream(opts: {
+  body: unknown;
+  signal?: AbortSignal;
+  onDelta?: (partial: string) => void;
+  endpoint?: string;
+}): Promise<SupportStreamOutcome> {
+  const endpoint = opts.endpoint ?? SUPPORT_STREAM_ENDPOINT;
+  const linkController = new AbortController();
+  const onAbort = () => linkController.abort();
+  opts.signal?.addEventListener("abort", onAbort, { once: true });
+  const firstByteTimer = setTimeout(
+    () => linkController.abort(),
+    SUPPORT_STREAM_FIRST_BYTE_TIMEOUT_MS,
+  );
+  let res: Response;
+  try {
+    res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        accept: "text/event-stream",
+      },
+      body: JSON.stringify(opts.body),
+      signal: linkController.signal,
+    });
+  } catch (err) {
+    clearTimeout(firstByteTimer);
+    opts.signal?.removeEventListener("abort", onAbort);
+    if ((err as Error)?.name === "AbortError" && !opts.signal?.aborted) {
+      return { ok: false, partial: "", reason: "unavailable" };
     }
+    // AbortError from our own unmount-abort surfaces as unavailable too when
+    // nothing was received; the caller drops the placeholder silently.
+    return { ok: false, partial: "", reason: "unavailable" };
   }
+  const contentType = res.headers.get("content-type") ?? "";
+  if (!res.ok || !contentType.includes("text/event-stream") || !res.body) {
+    clearTimeout(firstByteTimer);
+    opts.signal?.removeEventListener("abort", onAbort);
+    try {
+      await res.body?.cancel();
+    } catch {
+      /* best effort: drop the unused body */
+    }
+    return { ok: false, partial: "", reason: "unavailable" };
+  }
+
+  // First byte received: switch the first-byte timer to a total watchdog.
+  clearTimeout(firstByteTimer);
+  const totalTimer = setTimeout(
+    () => linkController.abort(),
+    SUPPORT_STREAM_TOTAL_TIMEOUT_MS,
+  );
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = "";
+  let partial = "";
+  let final: unknown | null = null;
+  let done = false;
+  let failedMessage: string | undefined;
+  try {
+    for (;;) {
+      const { done: streamDone, value } = await reader.read();
+      if (streamDone) break;
+      buf += decoder.decode(value, { stream: true });
+      let idx: number;
+      while ((idx = buf.indexOf("\n\n")) >= 0) {
+        const frame = buf.slice(0, idx);
+        buf = buf.slice(idx + 2);
+        for (const line of frame.split("\n")) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith("data:")) continue;
+          const parsed = parseSupportSseData(trimmed);
+          if (parsed.kind === "delta") {
+            partial += parsed.text;
+            opts.onDelta?.(partial);
+          } else if (parsed.kind === "final") {
+            final = parsed.payload;
+          } else if (parsed.kind === "done") {
+            done = true;
+          } else if (parsed.kind === "error") {
+            failedMessage = parsed.message;
+            done = true;
+          }
+        }
+        if (done) break;
+      }
+      if (done) break;
+    }
+    const tail = buf.trim();
+    if (tail && !done) {
+      for (const line of tail.split("\n")) {
+        if (!line.trim().startsWith("data:")) continue;
+        const parsed = parseSupportSseData(line);
+        if (parsed.kind === "delta") {
+          partial += parsed.text;
+          opts.onDelta?.(partial);
+        } else if (parsed.kind === "final") {
+          final = parsed.payload;
+        }
+      }
+    }
+  } catch {
+    // Read aborted/failed mid-stream: report what we have as failed so the
+    // caller keeps the partial and completes via fallback.
+    clearTimeout(totalTimer);
+    opts.signal?.removeEventListener("abort", onAbort);
+    try {
+      reader.releaseLock();
+    } catch {
+      /* ignore */
+    }
+    return { ok: false, partial, reason: "failed" };
+  }
+  clearTimeout(totalTimer);
+  opts.signal?.removeEventListener("abort", onAbort);
+  try {
+    reader.releaseLock();
+  } catch {
+    /* ignore */
+  }
+  if (failedMessage !== undefined && final === null) {
+    return { ok: false, partial, reason: "failed", message: failedMessage };
+  }
+  return { ok: true, partial, final };
+}
+
+// Probe cache: null = unknown (probe on next send), false = endpoint missing
+// (skip streaming, go straight to askSupportFn), true = endpoint live. Cached
+// at module scope so one 404 probe covers all remounts in the session.
+let streamAvailability: boolean | null = null;
+
+export function getSupportStreamAvailability(): boolean | null {
+  return streamAvailability;
+}
+
+export function setSupportStreamAvailability(value: boolean | null): void {
+  streamAvailability = value;
 }
 
 function PreChatForm({
@@ -997,13 +1146,24 @@ export function SupportWidget({
     }
   }, [open, slug, conversationId]);
 
-  // Persist session to sessionStorage + localStorage on any conversational change
+  // Persist session to sessionStorage + localStorage on any conversational change.
+  // Streaming partials (streaming: true) are NEVER persisted as answers per
+  // the streaming contract — only screened finals reach the store.
   useEffect(() => {
     if (!isRestored) return;
 
+    const persistable: Msg[] = [];
+    for (const m of msgs) {
+      if (m.streaming) continue;
+      const copy = { ...m };
+      delete copy.streaming;
+      delete copy.downgraded;
+      persistable.push(copy);
+    }
+
     const hasInteracted =
-      msgs.some((m) => m.role === "customer") ||
-      msgs.length > 1 ||
+      persistable.some((m) => m.role === "customer") ||
+      persistable.length > 1 ||
       Boolean(conversationId) ||
       Boolean(customerName.trim()) ||
       Boolean(customerEmail.trim()) ||
@@ -1025,7 +1185,7 @@ export function SupportWidget({
       phone,
       orderNumber,
       staffActive,
-      msgs,
+      msgs: persistable,
     });
   }, [
     isRestored,
@@ -1085,51 +1245,188 @@ export function SupportWidget({
     return () => clearTimeout(id);
   }, [cooldown]);
 
-  const quickAsks = useMemo(() => {
+  // Quick-asks mirror the model intent set
+  // (billing / technical / complaint / lead / order / callback) so the
+  // suggested prompts exercise the same routing the agent classifies.
+  // `callback` opens the in-chat form instead of sending a turn.
+  type QuickAskIntent =
+    "billing" | "technical" | "complaint" | "lead" | "order" | "callback";
+  type QuickAsk = { label: string; intent: QuickAskIntent };
+
+  const quickAsks = useMemo<QuickAsk[]>(() => {
     if (effectiveMode === "platform") {
       return [
-        t("How do I start a store?", "অনলাইন স্টোর কীভাবে শুরু করব?"),
-        t("What are the pricing plans?", "প্রাইসিং ও ফ্রি ট্রায়াল কি কি?"),
-        t("How do bKash & couriers work?", "বিকাশ ও কুরিয়ার কীভাবে কাজ করে?"),
-        t("Book a demo / Talk to sales", "সেলস টিমের সাথে কথা বলুন"),
+        {
+          label: t("How do I start a store?", "অনলাইন স্টোর কীভাবে শুরু করব?"),
+          intent: "lead",
+        },
+        {
+          label: t(
+            "What are the pricing plans?",
+            "প্রাইসিং ও ফ্রি ট্রায়াল কি কি?",
+          ),
+          intent: "billing",
+        },
+        {
+          label: t(
+            "How do bKash & couriers work?",
+            "বিকাশ ও কুরিয়ার কীভাবে কাজ করে?",
+          ),
+          intent: "technical",
+        },
+        {
+          label: t("Book a demo / Talk to sales", "সেলস টিমের সাথে কথা বলুন"),
+          intent: "callback",
+        },
       ];
     }
     if (effectiveMode === "dashboard") {
       return [
-        t("How to configure SteadFast?", "স্টিডফাস্ট কীভাবে যুক্ত করব?"),
-        t("How to set up bKash?", "বিকাশ কীভাবে চালু করব?"),
-        t("How to connect custom domain?", "কাস্টম ডোমেন সংযোগ কীভাবে করব?"),
-        t("Open a support ticket", "সাপোর্ট টিকিট তৈরি করুন"),
+        {
+          label: t(
+            "How to configure SteadFast?",
+            "স্টিডফাস্ট কীভাবে যুক্ত করব?",
+          ),
+          intent: "technical",
+        },
+        {
+          label: t("Where can I see my invoices?", "আমার ইনভয়েস কোথায় দেখব?"),
+          intent: "billing",
+        },
+        {
+          label: t("Report a problem", "একটি সমস্যা জানান"),
+          intent: "complaint",
+        },
+        {
+          label: t("Request a callback", "কলব্যাক অনুরোধ করুন"),
+          intent: "callback",
+        },
       ];
     }
     return [
-      t("Where is my order?", "আমার অর্ডার কোথায়?"),
-      t("How do refunds work?", "রিফান্ড কীভাবে হয়?"),
-      t("What is the delivery charge?", "ডেলিভারি চার্জ কত?"),
+      {
+        label: t("Where is my order?", "আমার অর্ডার কোথায়?"),
+        intent: "order",
+      },
+      {
+        label: t("My payment failed", "আমার পেমেন্ট ব্যর্থ হয়েছে"),
+        intent: "billing",
+      },
+      {
+        label: t("I want to file a complaint", "আমি একটি অভিযোগ জানাতে চাই"),
+        intent: "complaint",
+      },
+      {
+        label: t("Request a callback", "কলব্যাক অনুরোধ করুন"),
+        intent: "callback",
+      },
     ];
   }, [t, effectiveMode]);
 
-  function handleQuickAsk(q: string) {
-    if (
-      q.includes("Book a demo") ||
-      q.includes("Talk to sales") ||
-      q.includes("সেলস টিমের") ||
-      q.includes("ডেমো")
-    ) {
+  function handleQuickAsk(q: QuickAsk) {
+    if (q.intent === "callback") {
       setActiveForm("callback");
       return;
     }
-    if (
-      q.includes("Open a support ticket") ||
-      q.includes("সাপোর্ট টিকিট তৈরি")
-    ) {
-      setActiveForm("ticket");
-      return;
-    }
-    void send(q);
+    void send(q.label);
   }
 
   const disabled = busy || cooldown > 0;
+
+  // Abort controller for the in-flight SSE stream; aborted on unmount so
+  // deltas can never land after the widget is gone.
+  const streamCtl = useRef<AbortController | null>(null);
+  useEffect(() => {
+    return () => {
+      streamCtl.current?.abort();
+    };
+  }, []);
+
+  type AskSupportResult = Awaited<ReturnType<typeof askSupportFn>>;
+
+  /** A `{"final": ...}` SSE frame is only trusted when askSupport-shaped. */
+  function isScreenedFinalPayload(v: unknown): v is AskSupportResult {
+    return (
+      Boolean(v) &&
+      typeof v === "object" &&
+      typeof (v as { reply?: unknown }).reply === "string"
+    );
+  }
+
+  /** Apply a screened reply: replace the streaming placeholder or append. */
+  function applyAskResult(res: AskSupportResult, replaceId: string | null) {
+    if (res.conversationId) setConversationId(res.conversationId);
+    if (res.adminOnline !== undefined) setAdminOnline(res.adminOnline);
+    if (res.staffActive || res.humanTakeover) {
+      setStaffActive(true);
+    }
+    if (res.retryAfter) {
+      const seconds = Math.max(
+        0,
+        Math.ceil((new Date(res.retryAfter).getTime() - Date.now()) / 1000),
+      );
+      setCooldown(Math.min(seconds, 300));
+    }
+    if (res.cta === "callback" && !res.callbackAction) {
+      setActiveForm("callback");
+    }
+    const botMsg: Msg = {
+      id: uid(),
+      role: "bot",
+      body: res.reply,
+      sources: res.sources ?? [],
+      confidence: res.confidence,
+      // Phase 9.3: ticket card from agent auto-creation
+      ticketCard: res.ticketAction
+        ? {
+            ticketId: res.ticketAction.ticketId,
+            ticketRef: `#TKT-${res.ticketAction.ticketId.slice(-8).toUpperCase()}`,
+            subject: res.ticketAction.subject,
+            priority: res.ticketAction.priority,
+            status: res.ticketAction.status,
+            firstResponseDueAt: res.ticketAction.firstResponseDueAt,
+            agentMessage: res.reply,
+          }
+        : null,
+      // Phase 9.4: callback card from agent auto-creation
+      callbackCard: res.callbackAction
+        ? {
+            callbackId: res.callbackAction.callbackId,
+            callbackRef: `#CB-${res.callbackAction.callbackId.slice(-6).toUpperCase()}`,
+            customerName: res.callbackAction.customerName,
+            window: res.callbackAction.window,
+            windowDescription: res.callbackAction.windowDescription,
+            agentMessage: res.callbackAction.agentMessage,
+          }
+        : null,
+      // Legacy CTA: show manual create ticket/callback buttons when needsAgent=true
+      cta: res.cta !== "none" && !res.ticketAction && !res.callbackAction,
+      ticketId: res.ticketId ?? null,
+    };
+    setMsgs((m) =>
+      replaceId
+        ? m.map((x) => (x.id === replaceId ? { ...botMsg, id: replaceId } : x))
+        : [...m, botMsg],
+    );
+  }
+
+  function applyErrorReply(replaceId: string | null) {
+    const err: Msg = {
+      id: uid(),
+      role: "bot",
+      body: t(
+        "I could not reach our systems just now. Please try again in a moment or contact customer care.",
+        "এই মুহূর্তে সিস্টেমে পৌঁছানো যায়নি। একটু পরে আবার চেষ্টা করুন বা কাস্টমার কেয়ারে যোগাযোগ করুন।",
+      ),
+      confidence: "unsure",
+      cta: true,
+    };
+    setMsgs((m) =>
+      replaceId
+        ? m.map((x) => (x.id === replaceId ? { ...err, id: replaceId } : x))
+        : [...m, err],
+    );
+  }
 
   async function send(raw?: string) {
     const message = (raw ?? text).trim();
@@ -1146,84 +1443,84 @@ export function SupportWidget({
     setActiveForm("none");
     setMsgs((m) => [...m, { id: uid(), role: "customer", body: message }]);
     setBusy(true);
-    try {
-      const res = await askSupportFn({
-        data: {
-          slug,
-          message,
-          customerName: customerName.trim() || undefined,
-          customerEmail: customerEmail.trim() || undefined,
-          conversationId,
-          orderNumber: orderNumber.trim() || null,
-          phone: phone.trim() || null,
-          locale: lang === "bn" ? "bn" : "en",
-        },
-      });
-      if (res.conversationId) setConversationId(res.conversationId);
-      if (res.adminOnline !== undefined) setAdminOnline(res.adminOnline);
-      if (res.staffActive || res.humanTakeover) {
-        setStaffActive(true);
-      }
-      if (res.retryAfter) {
-        const seconds = Math.max(
-          0,
-          Math.ceil((new Date(res.retryAfter).getTime() - Date.now()) / 1000),
-        );
-        setCooldown(Math.min(seconds, 300));
-      }
-      if (res.cta === "callback" && !res.callbackAction) {
-        setActiveForm("callback");
-      }
+    const payload = {
+      slug,
+      message,
+      customerName: customerName.trim() || undefined,
+      customerEmail: customerEmail.trim() || undefined,
+      conversationId,
+      orderNumber: orderNumber.trim() || null,
+      phone: phone.trim() || null,
+      locale: lang === "bn" ? ("bn" as const) : ("en" as const),
+    };
+
+    // 1. Streaming attempt — skipped once a probe has shown no endpoint.
+    let placeholderId: string | null = null;
+    let streamedFinal = false;
+    if (getSupportStreamAvailability() !== false) {
+      const ctl = new AbortController();
+      streamCtl.current = ctl;
+      placeholderId = uid();
+      const pid = placeholderId;
       setMsgs((m) => [
         ...m,
-        {
-          id: uid(),
-          role: "bot",
-          body: res.reply,
-          sources: res.sources ?? [],
-          confidence: res.confidence,
-          // Phase 9.3: ticket card from agent auto-creation
-          ticketCard: res.ticketAction
-            ? {
-                ticketId: res.ticketAction.ticketId,
-                ticketRef: `#TKT-${res.ticketAction.ticketId.slice(-8).toUpperCase()}`,
-                subject: res.ticketAction.subject,
-                priority: res.ticketAction.priority,
-                status: res.ticketAction.status,
-                firstResponseDueAt: res.ticketAction.firstResponseDueAt,
-                agentMessage: res.reply,
-              }
-            : null,
-          // Phase 9.4: callback card from agent auto-creation
-          callbackCard: res.callbackAction
-            ? {
-                callbackId: res.callbackAction.callbackId,
-                callbackRef: `#CB-${res.callbackAction.callbackId.slice(-6).toUpperCase()}`,
-                customerName: res.callbackAction.customerName,
-                window: res.callbackAction.window,
-                windowDescription: res.callbackAction.windowDescription,
-                agentMessage: res.callbackAction.agentMessage,
-              }
-            : null,
-          // Legacy CTA: show manual create ticket/callback buttons when needsAgent=true
-          cta: res.cta !== "none" && !res.ticketAction && !res.callbackAction,
-          ticketId: res.ticketId ?? null,
-        },
+        { id: pid, role: "bot", body: "", streaming: true },
       ]);
-    } catch {
-      setMsgs((m) => [
-        ...m,
-        {
-          id: uid(),
-          role: "bot",
-          body: t(
-            "I could not reach our systems just now. Please try again in a moment or contact customer care.",
-            "এই মুহূর্তে সিস্টেমে পৌঁছানো যায়নি। একটু পরে আবার চেষ্টা করুন বা কাস্টমার কেয়ারে যোগাযোগ করুন।",
+      try {
+        const outcome = await consumeSupportStream({
+          body: { ...payload, conversationId },
+          signal: ctl.signal,
+          onDelta: (partial) => {
+            setMsgs((m) =>
+              m.map((x) => (x.id === pid ? { ...x, body: partial } : x)),
+            );
+          },
+        });
+        if (outcome.ok && isScreenedFinalPayload(outcome.final)) {
+          // Server-screened final arrived in-band: render directly.
+          setSupportStreamAvailability(true);
+          applyAskResult(outcome.final, pid);
+          streamedFinal = true;
+        } else if (outcome.ok || outcome.reason === "failed") {
+          // Stream ended without a screened final, or broke mid-stream:
+          // keep the partial with a downgrade notice; the non-streaming
+          // fallback below replaces it with the screened final.
+          setSupportStreamAvailability(true);
+          setMsgs((m) =>
+            m.map((x) =>
+              x.id === pid ? { ...x, streaming: false, downgraded: true } : x,
+            ),
+          );
+        } else {
+          // Unavailable before the first byte (no route yet, non-SSE
+          // response, or abort): drop the empty placeholder silently.
+          setSupportStreamAvailability(false);
+          setMsgs((m) => m.filter((x) => x.id !== pid));
+          placeholderId = null;
+        }
+      } catch {
+        setMsgs((m) =>
+          m.map((x) =>
+            x.id === pid ? { ...x, streaming: false, downgraded: true } : x,
           ),
-          confidence: "unsure",
-          cta: true,
-        },
-      ]);
+        );
+      } finally {
+        if (streamCtl.current === ctl) streamCtl.current = null;
+      }
+    }
+
+    if (streamedFinal) {
+      setBusy(false);
+      return;
+    }
+
+    // 2. Non-streaming fallback — the screened source of truth. Never throws
+    // past this point: an outage degrades to a human hand-off bubble.
+    try {
+      const res = await askSupportFn({ data: payload });
+      applyAskResult(res, placeholderId);
+    } catch {
+      applyErrorReply(placeholderId);
     } finally {
       setBusy(false);
     }
@@ -1531,8 +1828,34 @@ export function SupportWidget({
                       : "bg-muted text-foreground"
                   }`}
                 >
-                  {m.body}
+                  {m.streaming && !m.body ? (
+                    <span
+                      className="inline-flex items-center gap-1"
+                      aria-label={t("Streaming reply", "উত্তর আসছে")}
+                    >
+                      <span className="inline-block size-1.5 animate-pulse rounded-full bg-current" />
+                      <span
+                        className="inline-block size-1.5 animate-pulse rounded-full bg-current"
+                        style={{ animationDelay: "150ms" }}
+                      />
+                      <span
+                        className="inline-block size-1.5 animate-pulse rounded-full bg-current"
+                        style={{ animationDelay: "300ms" }}
+                      />
+                    </span>
+                  ) : (
+                    m.body
+                  )}
                 </p>
+
+                {m.downgraded ? (
+                  <p className="mt-1 text-[10px] italic text-muted-foreground">
+                    {t(
+                      "Live reply interrupted — showing the complete verified reply instead.",
+                      "লাইভ উত্তর বাধাগ্রস্ত হয়েছে — পরিবর্তে সম্পূর্ণ যাচাইকৃত উত্তর দেখানো হচ্ছে।",
+                    )}
+                  </p>
+                ) : null}
 
                 {m.confidence ? (
                   <div>
@@ -1615,7 +1938,9 @@ export function SupportWidget({
 
             {busy ? (
               <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                {staffActive ? (
+                {msgs.some((m) => m.streaming) ? (
+                  t("Streaming reply…", "উত্তর আসছে…")
+                ) : staffActive ? (
                   <>
                     <span className="inline-block size-1.5 rounded-full bg-emerald-500 animate-ping" />
                     {t(
@@ -1740,12 +2065,12 @@ export function SupportWidget({
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {quickAsks.map((q) => (
                   <button
-                    key={q}
+                    key={q.label}
                     type="button"
                     onClick={() => void handleQuickAsk(q)}
                     className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    {q}
+                    {q.label}
                   </button>
                 ))}
               </div>

@@ -43,19 +43,25 @@ function AiSettingsPage() {
 
   const [activeSlot, setActiveSlot] = useState(initial.activeSlot);
   const [maskedKey, setMaskedKey] = useState(initial.maskedKey);
-  const [apiKeyInput, setApiKeyInput] = useState("");
   const [chatModel, setChatModel] = useState(initial.chatModel);
   const [fallbackChatModel, setFallbackChatModel] = useState(
     initial.fallbackChatModel,
   );
   const [embeddingModel, setEmbeddingModel] = useState(initial.embeddingModel);
   const [gatewayUrl, setGatewayUrl] = useState(initial.gatewayUrl);
+  const keySource =
+    (initial as { keySource?: string }).keySource ??
+    "env:OPENROUTER_API_KEY";
+  const envConfigured =
+    (initial as { envConfigured?: boolean }).envConfigured ?? true;
 
   const [probing, setProbing] = useState(false);
   const [probeResult, setProbeResult] = useState<{
     ok: boolean;
     latencyMs?: number;
     error?: string;
+    chat?: { ok: boolean; latencyMs?: number; model?: string; error?: string };
+    embed?: { ok: boolean; latencyMs?: number; model?: string; error?: string };
   } | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
@@ -64,15 +70,16 @@ function AiSettingsPage() {
   const updateConfig = useServerFn(updateAiGatewayConfigFn);
 
   async function handleTestProbe() {
-    const keyToTest = apiKeyInput.trim() || initial.maskedKey;
+    // Env-only probe: the server resolves OPENROUTER_API_KEY from the
+    // environment. The client only selects which chat + embed models to test.
     setProbing(true);
     setProbeResult(null);
     try {
       const res = await testProbe({
         data: {
-          apiKey: keyToTest,
           chatModel,
           embeddingModel,
+          gatewayUrl,
         },
       });
       setProbeResult(res);
@@ -84,39 +91,29 @@ function AiSettingsPage() {
   }
 
   async function handleSaveConfig() {
-    if (!apiKeyInput.trim()) {
-      setSaveMessage(
-        t(
-          "Please enter a new API key to rotate or update.",
-          "নতুন এপিআই কি দিন।",
-        ),
-      );
-      return;
-    }
-
+    // Env-only convergence: no raw keys are written to DB. Only non-secret
+    // routing (models + gateway URL) is hot-swapped; the secret stays in
+    // OPENROUTER_API_KEY and is referenced by pointer.
     setSaving(true);
     setSaveMessage(null);
     try {
       const res = await updateConfig({
         data: {
-          apiKey: apiKeyInput.trim(),
           chatModel,
           fallbackChatModel,
           embeddingModel,
           gatewayUrl,
+          keyRef: "env:OPENROUTER_API_KEY",
         },
       });
 
       if (res.ok) {
         setActiveSlot(res.activeSlot || "red");
-        setMaskedKey(
-          `${apiKeyInput.trim().slice(0, 8)}...${apiKeyInput.trim().slice(-4)}`,
-        );
-        setApiKeyInput("");
+        setMaskedKey(initial.maskedKey);
         setSaveMessage(
           t(
-            "Successfully hot-swapped and promoted dynamic slot!",
-            "সফলভাবে হট-সোয়াপ ও প্রমোট সম্পন্ন হয়েছে!",
+            "Successfully hot-swapped non-secret gateway routing (key stays env-only)!",
+            "সফলভাবে হট-সোয়াপ সম্পন্ন হয়েছে (কি env-এই আছে)!",
           ),
         );
       } else {
@@ -151,8 +148,8 @@ function AiSettingsPage() {
         </div>
         <p className="text-sm text-gray-500">
           {t(
-            "Zero-downtime hot-swappable OpenRouter key management and model fallback routing via dynamic configuration vault.",
-            "ডাইনামিক কনফিগ ভল্টের মাধ্যমে ওপেনরাউটার কি এবং নেমোট্রন মডেল কনফিগার করুন।",
+            "Zero-downtime hot-swappable model routing via dynamic configuration. The OpenRouter secret stays env-only (OPENROUTER_API_KEY) and is never written to the DB.",
+            "ডাইনামিক কনফিগের মাধ্যমে মডেল রাউটিং হট-সোয়াপ করুন। কি env-এ থাকে।",
           )}
         </p>
       </div>
@@ -163,14 +160,25 @@ function AiSettingsPage() {
           <h2 className="text-base font-semibold text-gray-900 mb-4">
             {t("Active AI Credentials Vault", "সক্রিয় এআই ভল্ট অবস্থা")}
           </h2>
+          {!envConfigured && (
+            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
+              {t(
+                "OPENROUTER_API_KEY is not set in the server environment. Chat + embed probes will fail until the env secret is configured.",
+                "সার্ভার env-এ OPENROUTER_API_KEY সেট নেই।",
+              )}
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
               <span className="text-gray-500 block text-xs font-medium uppercase mb-1">
-                {t("Masked Active Key", "সক্রিয় কি")}
+                {t("Masked Active Key (env-only)", "সক্রিয় কি (env)")}
               </span>
               <code className="text-gray-800 font-mono text-xs">
                 {maskedKey}
               </code>
+              <span className="text-gray-400 block text-[11px] font-mono mt-1">
+                source: {keySource} · managed by env
+              </span>
             </div>
             <div className="p-3 bg-gray-50 rounded-lg border border-gray-100">
               <span className="text-gray-500 block text-xs font-medium uppercase mb-1">
@@ -234,40 +242,60 @@ function AiSettingsPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
             <span className="text-xs text-gray-400 mt-1 block">
-              Default: nvidia/llama-nemotron-embed-vl-1b-v2:free
+              Default: nvidia/nemotron-3-embed-1b:free
             </span>
           </div>
 
           <div>
             <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-1">
-              {t("New OpenRouter API Key (to Rotate)", "নতুন ওপেনরাউটার কি")}
+              {t("API Key Source (env-only, never stored in DB)", "কি উৎস")}
             </label>
             <input
-              type="password"
-              placeholder="sk-or-v1-..."
-              value={apiKeyInput}
-              onChange={(e) => setApiKeyInput(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              type="text"
+              value="env:OPENROUTER_API_KEY"
+              readOnly
+              disabled
+              className="w-full px-3 py-2 border border-gray-200 bg-gray-50 rounded-lg text-sm font-mono text-gray-500"
             />
             <span className="text-xs text-gray-400 mt-1 block">
-              Keys are never leaked in client bundles or public logs.
+              Raw keys are never written to platform_dynamic_config. Rotate the
+              secret in the server environment; this page hot-swaps only
+              non-secret model routing.
             </span>
           </div>
 
-          {/* Probe Feedback Badge */}
+          {/* Probe Feedback Badge (chat + embed) */}
           {probeResult && (
             <div
-              className={`p-3 rounded-lg text-xs font-medium border flex items-center justify-between ${
+              className={`p-3 rounded-lg text-xs font-medium border space-y-1 ${
                 probeResult.ok
                   ? "bg-green-50 border-green-200 text-green-800"
                   : "bg-red-50 border-red-200 text-red-800"
               }`}
             >
-              <span>
-                {probeResult.ok
-                  ? `Health Probe PASSED (${probeResult.latencyMs}ms) — Provider is healthy.`
-                  : `Health Probe FAILED: ${probeResult.error}`}
-              </span>
+              <div className="flex items-center justify-between">
+                <span>
+                  {probeResult.ok
+                    ? `Health Probe PASSED (${probeResult.latencyMs}ms) — chat + embed healthy.`
+                    : `Health Probe FAILED: ${probeResult.error}`}
+                </span>
+              </div>
+              {(probeResult.chat || probeResult.embed) && (
+                <div className="font-mono text-[11px] opacity-90">
+                  <div>
+                    chat [{probeResult.chat?.model}]:{" "}
+                    {probeResult.chat?.ok
+                      ? `ok (${probeResult.chat?.latencyMs}ms)`
+                      : `fail — ${probeResult.chat?.error}`}
+                  </div>
+                  <div>
+                    embed [{probeResult.embed?.model}]:{" "}
+                    {probeResult.embed?.ok
+                      ? `ok (${probeResult.embed?.latencyMs}ms)`
+                      : `fail — ${probeResult.embed?.error}`}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

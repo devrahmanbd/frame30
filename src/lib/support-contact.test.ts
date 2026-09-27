@@ -38,4 +38,16 @@ describe("support-contact truth", () => {
     const b = getVerifiedContact({ supportPhone: "01712345678" });
     expect(a).toEqual(b);
   });
+
+  it("log-safety: verified contact phone/email are scrubbed by redactPii", async () => {
+    const { redactPii } = await import("./support-guardrails");
+    const c = getVerifiedContact({
+      supportPhone: "01712345678",
+      supportEmail: "owner@teststore.com",
+    });
+    const logged = redactPii(`contact ${c.phone} ${c.email}`);
+    expect(logged.text).not.toContain("01712345678");
+    expect(logged.text).not.toContain("owner@teststore.com");
+    expect(logged.hits).toEqual(expect.arrayContaining(["phone", "email"]));
+  });
 });

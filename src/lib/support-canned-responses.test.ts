@@ -74,3 +74,52 @@ describe("Support Canned Responses & Macro Engine", () => {
     expect(banglaSearch.some((m) => m.shortcut === "/greeting")).toBe(true);
   });
 });
+
+describe("TODO-5 — advisory-only /refund macro (HITL approvals UI)", () => {
+  it("uses the shared guardrail advisory templates for EN+BN bodies", async () => {
+    const {
+      ADVISORY_REFUND_TEMPLATE_EN,
+      ADVISORY_REFUND_TEMPLATE_BN,
+    } = await import("./support-guardrails");
+    const macro = findMacroByShortcut("/refund")!;
+    expect(macro.templateEn).toBe(ADVISORY_REFUND_TEMPLATE_EN);
+    expect(macro.templateBn).toBe(ADVISORY_REFUND_TEMPLATE_BN);
+    expect(macro.body).toBe(ADVISORY_REFUND_TEMPLATE_EN);
+    expect(macro.bodyBn).toBe(ADVISORY_REFUND_TEMPLATE_BN);
+    expect(macro.variables).toContain("ticketId");
+    expect(macro.variables).toContain("orderNumber");
+  });
+
+  it("interpolates ticket + order references with no initiated-claim", async () => {
+    const { checkRefundCopy, screenOutbound } = await import(
+      "./support-guardrails"
+    );
+    const macro = findMacroByShortcut("/refund")!;
+    const en = interpolateMacro(macro.templateEn, {
+      ticketId: "#TKT-ABCD1234",
+      orderNumber: "1002",
+    });
+    expect(en).toContain("#TKT-ABCD1234");
+    expect(en).toContain("#1002");
+    expect(en).not.toMatch(/initiated a refund|has been initiated/i);
+    expect(checkRefundCopy(en)).toMatchObject({ truthful: true });
+    expect(screenOutbound(en, { pinned: true }).allowed).toBe(true);
+
+    const bn = interpolateMacro(macro.templateBn, {
+      ticketId: "#TKT-ABCD1234",
+      orderNumber: "1002",
+    });
+    expect(bn).toContain("#TKT-ABCD1234");
+    expect(checkRefundCopy(bn)).toMatchObject({ truthful: true });
+    expect(screenOutbound(bn, { pinned: true }).allowed).toBe(true);
+  });
+
+  it("falls back to a ticket placeholder that keeps the ticket reference", async () => {
+    const { checkRefundCopy } = await import("./support-guardrails");
+    const macro = findMacroByShortcut("/refund")!;
+    // Operator consoles (e.g. /root/ai) interpolate without a ticketId.
+    const en = interpolateMacro(macro.templateEn, { orderNumber: "1002" });
+    expect(en).toMatch(/ticket/i);
+    expect(checkRefundCopy(en)).toMatchObject({ truthful: true });
+  });
+});
