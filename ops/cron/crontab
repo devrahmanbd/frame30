@@ -43,6 +43,9 @@ SHELL=/bin/sh
 # Support SLA sweep
 */20 * * * * curl -sS -X POST -m 50 --retry 1 --retry-delay 5 -H "authorization: Bearer $BILLING_CRON_SECRET" -H "x-cron-trigger: supercronic" -o /dev/null -w 'cron support status=%{http_code} t=%{time_total}s\n' "$APP_INTERNAL_URL/api/public/cron/support"
 
+# Support answer revision
+30 3 * * * curl -sS -X POST -m 60 --retry 1 --retry-delay 5 -H "authorization: Bearer $BILLING_CRON_SECRET" -H "x-cron-trigger: supercronic" -o /dev/null -w 'cron support-revision status=%{http_code} t=%{time_total}s\n' "$APP_INTERNAL_URL/api/public/cron/support-revision"
+
 # Custom domain sweep
 */20 * * * * curl -sS -X POST -m 60 --retry 1 --retry-delay 5 -H "authorization: Bearer $BILLING_CRON_SECRET" -H "x-cron-trigger: supercronic" -o /dev/null -w 'cron domains status=%{http_code} t=%{time_total}s\n' "$APP_INTERNAL_URL/api/public/cron/domains"
 
