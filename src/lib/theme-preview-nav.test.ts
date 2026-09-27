@@ -2,6 +2,7 @@
  * In-preview navigation — TDD: demo links stay inside the preview frame.
  */
 import { describe, expect, it } from "vitest";
+import { flattenSections } from "./builder-ast";
 import {
   applyDemoFocus,
   parsePreviewSearchQuery,
@@ -119,7 +120,12 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       const ast = preset.templates[key];
       expect(ast.header.length, `${key} header`).toBeGreaterThanOrEqual(0);
       expect(ast.main.length, `${key} main`).toBeGreaterThan(0);
-      expect(ast.footer.length, `${key} footer`).toBeGreaterThan(0);
+      // Distraction-free checkout by design: the checkout template renders
+      // chromeless (preview.ts returns [] header/footer) so shoppers focus
+      // on payment — exempt it from the non-empty footer gate.
+      if (key !== "checkout") {
+        expect(ast.footer.length, `${key} footer`).toBeGreaterThan(0);
+      }
       // Main opens with a heading — except the index (hero carousel) and
       // the collection (category_header breadcrumb/title/subnav) templates,
       // which own the page h1 through their dedicated openers.
@@ -135,9 +141,12 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     expect(preset.templates.collection.main.map((s) => s.type)).toContain(
       "product_rail",
     );
-    expect(preset.templates.product.main.map((s) => s.type)).toContain(
-      "product_media",
-    );
+    // product_media nests under columns > container (2-col product
+    // layout), so assert presence with the recursive helper rather than
+    // the top-level type list (same precedent as preview.test.ts).
+    expect(
+      flattenSections(preset.templates.product.main).map((s) => s.type),
+    ).toContain("product_media");
     expect(preset.templates.account.main.map((s) => s.type)).toEqual([
       "heading",
       "profile_card",
@@ -276,7 +285,7 @@ describe("demo focus (slug-aware collection preview)", () => {
     expect(applyDemoFocus(sections, null)).toBe(sections);
   });
 
-  it("feeds focused product catalog art into product_media", () => {
+  it("leaves focused product art to the frame gallery (no prop injection)", () => {
     const preset = resolveThemePreview("songoskriti")!;
     const focus = resolveDemoFocus(
       "songoskriti",
@@ -284,14 +293,25 @@ describe("demo focus (slug-aware collection preview)", () => {
       "rajshahi-silk-festive-panjabi",
     )!;
     expect(focus.title).toBe("Rajshahi Silk Festive Panjabi");
+    // Focused art travels on the focus payload for the frame-level
+    // DemoProductMediaGallery (ThemePreviewFrame.tsx:108), not as an
+    // injected product_media prop (no-inject design).
+    expect(focus.image).toBe("/ph/songoskriti/prod-panjabi.png");
+    const before = flattenSections(preset.templates.product.main).find(
+      (s) => s.type === "product_media",
+    )!;
     const out = applyDemoFocus(preset.templates.product.main, focus);
-    const media = out.find((s) => s.type === "product_media")!;
-    expect(media.props["image1"]).toBe("/ph/songoskriti/prod-panjabi.png");
+    const media = flattenSections(out).find(
+      (s) => s.type === "product_media",
+    )!;
+    // Static media stays untouched so the frame gallery owns focused art.
+    expect(media.props).toMatchObject({ ...before.props });
+    expect(media.props).not.toHaveProperty("image1");
   });
 
   it("keeps static product_media for unknown product slugs", () => {
     const preset = resolveThemePreview("songoskriti")!;
-    const before = preset.templates.product.main.find(
+    const before = flattenSections(preset.templates.product.main).find(
       (s) => s.type === "product_media",
     )!;
     const focus = resolveDemoFocus(
@@ -300,7 +320,9 @@ describe("demo focus (slug-aware collection preview)", () => {
       "no-such-product-xyz",
     )!;
     const out = applyDemoFocus(preset.templates.product.main, focus);
-    const media = out.find((s) => s.type === "product_media")!;
+    const media = flattenSections(out).find(
+      (s) => s.type === "product_media",
+    )!;
     expect(media.props).toMatchObject({ ...before.props });
   });
 });

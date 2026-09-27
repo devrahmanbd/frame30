@@ -466,6 +466,10 @@ export function applyDemoFocus(
   let media = false;
 
   function walk(nodes: Section[]): Section[] {
+    // Finder descends into container/columns children: product detail
+    // bodies nest product_media (and friends) under columns > container,
+    // so a top-level find would miss them. First-match flags stay
+    // document-order across the whole subtree.
     let dirty = false;
     const out = nodes.map((section) => {
       // Preserve reference identity for untouched sections (tests pin

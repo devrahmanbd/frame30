@@ -7,7 +7,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { songoskritiPreviewSource } from "./preview";
-import type { SectionBuilder } from "../../builder-ast";
+import { flattenSections, type SectionBuilder } from "../../builder-ast";
 
 describe("songoskritiPreviewSource", () => {
   it("identifies the theme for the registry", () => {
@@ -70,7 +70,12 @@ describe("songoskritiPreviewSource", () => {
     // title + subnav) and result_toolbar (filter/sort bar), not a bare heading.
     expect(types("collection")).toContain("category_header");
     expect(types("collection")).toContain("result_toolbar");
-    expect(types("product")).toContain("product_media");
+    // product_media nests under columns > container (2-col product
+    // layout), so assert presence with the engine's recursive helper
+    // rather than the top-level type list.
+    expect(
+      flattenSections(source.main("product", s)!).map((x) => x.type),
+    ).toContain("product_media");
     expect(types("account")).toEqual([
       "heading",
       "profile_card",

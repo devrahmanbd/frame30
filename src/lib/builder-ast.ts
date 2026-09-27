@@ -1259,6 +1259,12 @@ const BASE_CATALOG: CatalogEntry[] = [
           { value: "1/1", label: "Square" },
           { value: "4/3", label: "4:3" },
           { value: "16/9", label: "16:9" },
+          // Portrait media the songoskriti product template authors
+          // (ratio "4/5"): the renderer applies the raw string as
+          // `aspect-ratio`, so these options only let the emitted value
+          // survive parseAst select coercion — rendering is unchanged.
+          { value: "4/5", label: "4:5" },
+          { value: "3/4", label: "3:4" },
         ],
       },
       bool("showThumbnails", "Show thumbnails"),
