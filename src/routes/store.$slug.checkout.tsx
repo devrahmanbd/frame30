@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, notFound, useNavigate, Link } from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { getStoreChrome } from "@/lib/storefront.functions";
 import { useMutation } from "@tanstack/react-query";
-import { StoreHeader } from "@/components/store/StoreHeader";
+import { StoreHeader, MinimalCheckoutHeader } from "@/components/store/StoreHeader";
 import {
   placeOrder,
   quoteCart,
@@ -58,8 +58,6 @@ export const Route = createFileRoute("/store/$slug/checkout")({
         content: "Server-validated totals with VAT and delivery included.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "robots", content: "noindex" },
     ],
   }),
   component: CheckoutPage,
@@ -234,111 +232,77 @@ function CheckoutPage() {
         storeSlug={slug}
         merchantId={merchant.id}
         // The checkout form is hand-built (server-quoted totals, live rails), so
-        // the theme contributes the header, footer and tokens only.
-        ast={ast ? { header: ast.header, main: [], footer: ast.footer } : null}
+        // the theme contributes the tokens only. We drop the normal header and footer.
+        ast={null}
         tokens={tokens}
         siteKit={siteKit}
         ownsPrimary
-        chrome={<StoreHeader slug={slug} name={merchant.name} />}
-        containerClassName=""
+        chrome={<MinimalCheckoutHeader slug={slug} name={merchant.name} />}
+        containerClassName="bg-muted/10 min-h-screen pb-24"
         fallback={
-          <div className="mx-auto grid max-w-[var(--fq-container,1280px)] gap-12 px-4 py-12 lg:grid-cols-[1.5fr_1fr] lg:gap-16 sm:px-6 lg:px-8">
-            <section className="order-2 lg:order-1">
-              <h1 className="font-bangla-display text-3xl font-medium tracking-wide text-foreground/90">
-                {t("Checkout", "চেকআউট")}
-              </h1>
-
-              <h2 className="mt-10 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground border-b border-border/60 pb-3">
-                {t("Your Cart", "আপনার কার্ট")}
-              </h2>
-              {!hydrated ? null : lines.length === 0 ? (
-                <p className="mt-4 text-[13.5px] text-muted-foreground">
-                  Your cart is empty.
-                </p>
-              ) : (
-                <ul className="mt-2 divide-y divide-border/60">
-                  {(totals?.lines ?? []).map((l) => (
-                    <li
-                      key={l.variantId}
-                      className="flex items-center gap-4 py-4"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-[13.5px] font-medium leading-relaxed">
-                          {l.productTitle}
-                        </p>
-                        <p className="text-[12px] font-medium tracking-wide text-muted-foreground mt-0.5">
-                          {l.variantName}
-                        </p>
-                      </div>
-                      <label className="sr-only" htmlFor={`qty-${l.variantId}`}>
-                        Quantity for {l.productTitle}
-                      </label>
-                      <input
-                        id={`qty-${l.variantId}`}
-                        type="number"
-                        min={0}
-                        max={l.stock}
-                        value={l.quantity}
-                        onChange={(e) =>
-                          setQuantity(l.variantId, Number(e.target.value))
-                        }
-                        className="h-10 w-16 bg-transparent border-b border-border/60 text-center text-[13px] font-medium focus:outline-none focus:border-foreground transition-colors"
-                      />
-                      <span className="money w-24 text-right text-[13.5px] font-semibold tracking-wide">
-                        {fmtMinor(l.lineTotalMinor, totals?.currency)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {quoteError && (
-                <p
-                  role="alert"
-                  className="mt-3 rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
-                >
-                  {quoteError}
-                </p>
-              )}
+          <div className="mx-auto grid max-w-[var(--fq-container,1280px)] gap-12 px-4 py-8 lg:grid-cols-[1.5fr_1fr] lg:gap-16 sm:px-6 lg:px-8">
+            <section className="order-2 lg:order-1 pt-4">
+              <nav className="mb-10 flex items-center gap-3 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
+                <Link to="/store/$slug/cart" params={{ slug }} className="hover:text-foreground transition-colors">
+                  {t("Cart", "কার্ট")}
+                </Link>
+                <span className="text-border">/</span>
+                <span className="text-foreground">{t("Details", "বিবরণ")}</span>
+                <span className="text-border">/</span>
+                <span>{t("Payment", "পেমেন্ট")}</span>
+              </nav>
 
               <form
-                className="mt-12 grid gap-6"
+                className="grid gap-10"
                 onSubmit={(e) => {
                   e.preventDefault();
                   mutation.mutate(new FormData(e.currentTarget));
                 }}
               >
-                <h2 className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground border-b border-border/60 pb-3">
-                  {t("Delivery Information", "ডেলিভারি তথ্য")}
-                </h2>
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <Field
-                    name="name"
-                    label={t("Full name", "নাম / Full name")}
-                    required
-                  />
-                  <Field
-                    name="phone"
-                    label={t("Phone", "মোবাইল / Phone")}
-                    required
-                    inputMode="tel"
-                  />
-                  <Field
-                    name="email"
-                    label={t("Email (optional)", "ইমেইল / Email (optional)")}
-                    type="email"
-                  />
-                  <Field name="city" label={t("City", "শহর / City")} required />
-                  <Field
-                    name="postcode"
-                    label={t("Postcode", "পোস্টকোড / Postcode")}
-                  />
+                <div>
+                  <h2 className="text-[16px] font-semibold tracking-tight text-foreground mb-6">
+                    {t("Contact Information", "যোগাযোগের তথ্য")}
+                  </h2>
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <Field
+                      name="email"
+                      label={t("Email (optional)", "ইমেইল / Email (optional)")}
+                      type="email"
+                    />
+                    <Field
+                      name="phone"
+                      label={t("Phone", "মোবাইল / Phone")}
+                      required
+                      inputMode="tel"
+                    />
+                  </div>
                 </div>
-                <Field
-                  name="address"
-                  label={t("Address", "ঠিকানা / Address")}
-                  required
-                />
-                <Field name="note" label={t("Note", "নোট / Note")} />
+
+                <div>
+                  <h2 className="text-[16px] font-semibold tracking-tight text-foreground mb-6 pt-8 border-t border-border/40">
+                    {t("Delivery Address", "ডেলিভারি ঠিকানা")}
+                  </h2>
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <Field
+                      name="name"
+                      label={t("Full name", "নাম / Full name")}
+                      required
+                      className="sm:col-span-2"
+                    />
+                    <Field
+                      name="address"
+                      label={t("Address", "ঠিকানা / Address")}
+                      required
+                      className="sm:col-span-2"
+                    />
+                    <Field name="city" label={t("City", "শহর / City")} required />
+                    <Field
+                      name="postcode"
+                      label={t("Postcode", "পোস্টকোড / Postcode")}
+                    />
+                    <Field name="note" label={t("Note", "নোট / Note")} className="sm:col-span-2" />
+                  </div>
+                </div>
 
                 {/* Honeypot: hidden from people and assistive tech, filled only by bots. */}
                 <div
@@ -354,8 +318,8 @@ function CheckoutPage() {
                   />
                 </div>
 
-                <fieldset className="mt-6">
-                  <legend className="text-[11px] font-bold fq-caps tracking-widest text-muted-foreground border-b border-border/60 pb-3 mb-4 w-full">
+                <fieldset>
+                  <legend className="text-[16px] font-semibold tracking-tight text-foreground mb-6 pt-8 border-t border-border/40 w-full">
                     {t("Payment Method", "পেমেন্ট মেথড")}
                   </legend>
                   {methodGroups.length === 0 ? (
@@ -366,43 +330,46 @@ function CheckoutPage() {
                       )}
                     </p>
                   ) : (
-                    methodGroups.map((group) => (
-                      <div key={group.layer} className="mt-3">
-                        <p className="text-xs font-medium text-muted-foreground">
-                          {t(
-                            GROUP_LABELS[group.layer].en,
-                            GROUP_LABELS[group.layer].bn,
-                          )}
-                        </p>
-                        <div className="mt-2 grid gap-2 sm:grid-cols-3">
-                          {group.methods.map((m) => (
-                            <label
-                              key={m}
-                              className={`flex min-h-12 cursor-pointer items-center gap-2 rounded-fq-md border px-3 text-sm ${
-                                method === m
-                                  ? "border-primary bg-info-soft"
-                                  : "border-border bg-card"
-                              }`}
-                            >
-                              <input
-                                type="radio"
-                                name="method"
-                                value={m}
-                                checked={method === m}
-                                onChange={() => setMethod(m)}
-                              />
-                              <span>
-                                {methodLabel(m, lang === "bn" ? "bn" : "en")}
-                              </span>
-                            </label>
-                          ))}
+                    <div className="grid gap-6">
+                      {methodGroups.map((group) => (
+                        <div key={group.layer}>
+                          <p className="text-xs font-medium text-muted-foreground mb-3">
+                            {t(
+                              GROUP_LABELS[group.layer].en,
+                              GROUP_LABELS[group.layer].bn,
+                            )}
+                          </p>
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            {group.methods.map((m) => (
+                              <label
+                                key={m}
+                                className={`flex min-h-[52px] cursor-pointer items-center gap-3 rounded-fq-md border px-4 text-[13.5px] font-medium transition-colors ${
+                                  method === m
+                                    ? "border-primary bg-primary/[0.03]"
+                                    : "border-border bg-background hover:border-border/80"
+                                }`}
+                              >
+                                <input
+                                  type="radio"
+                                  name="method"
+                                  value={m}
+                                  checked={method === m}
+                                  onChange={() => setMethod(m)}
+                                  className="h-4 w-4 text-primary focus:ring-primary border-border"
+                                />
+                                <span>
+                                  {methodLabel(m, lang === "bn" ? "bn" : "en")}
+                                </span>
+                              </label>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))
+                      ))}
+                    </div>
                   )}
                   {/* Aggregators bounce the shopper out, so say so before they commit. */}
                   {PAYMENT_METHOD_CATALOG[method].layer === "aggregator" && (
-                    <p className="mt-3 text-xs text-muted-foreground">
+                    <p className="mt-4 text-[13px] text-muted-foreground">
                       {t(
                         `You will finish this payment on the ${PAYMENT_METHOD_CATALOG[method].label} page, where you can pay by card, internet banking or any mobile wallet.`,
                         `${PAYMENT_METHOD_CATALOG[method].labelBn} পেজে গিয়ে পেমেন্ট সম্পন্ন করবেন — কার্ড, ইন্টারনেট ব্যাংকিং বা যেকোনো মোবাইল ওয়ালেট দিয়ে।`,
@@ -411,10 +378,19 @@ function CheckoutPage() {
                   )}
                 </fieldset>
 
+                {quoteError && (
+                  <p
+                    role="alert"
+                    className="rounded-fq-md bg-danger-soft p-4 text-[13.5px] text-danger-foreground font-medium"
+                  >
+                    {quoteError}
+                  </p>
+                )}
+
                 {mutation.isError && (
                   <p
                     role="alert"
-                    className="rounded-fq-md bg-danger-soft p-3 text-sm text-danger-foreground"
+                    className="rounded-fq-md bg-danger-soft p-4 text-[13.5px] text-danger-foreground font-medium"
                   >
                     {(mutation.error as Error).message === "order_blocked_risk"
                       ? t(
@@ -428,7 +404,7 @@ function CheckoutPage() {
                 {chargeFailed && (
                   <p
                     role="alert"
-                    className="rounded-fq-md bg-warning-soft p-3 text-sm text-warning-foreground"
+                    className="rounded-fq-md bg-warning-soft p-4 text-[13.5px] text-warning-foreground font-medium"
                   >
                     {t(
                       "Order placed, but the payment rail could not be reached. Pay again from the order page.",
@@ -437,68 +413,116 @@ function CheckoutPage() {
                   </p>
                 )}
 
-                <button
-                  type="submit"
-                  disabled={!totals || mutation.isPending}
-                  className="min-h-14 mt-4 w-full bg-foreground px-8 text-[13px] font-bold fq-caps tracking-widest text-background transition-transform active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
-                >
-                  {mutation.isPending
-                    ? t("Processing…", "প্রসেসিং…")
-                    : t("Confirm Order", "অর্ডার নিশ্চিত করুন")}
-                </button>
+                <div className="pt-8 border-t border-border/40">
+                  <button
+                    type="submit"
+                    disabled={!totals || mutation.isPending}
+                    className="min-h-14 w-full rounded-fq-md bg-foreground px-8 text-[13.5px] font-bold fq-caps tracking-widest text-background shadow-sm transition-transform active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100"
+                  >
+                    {mutation.isPending
+                      ? t("Processing…", "প্রসেসিং…")
+                      : t("Place Order", "অর্ডার কনফার্ম করুন")}
+                  </button>
+                </div>
               </form>
             </section>
 
-            <aside className="h-fit bg-muted/20 p-6 lg:p-8 lg:sticky lg:top-24 order-1 lg:order-2">
-              <h2 className="text-[11px] font-bold fq-caps tracking-widest text-foreground border-b border-border/60 pb-4">
-                {t("Order Summary", "সারসংক্ষেপ")}
-              </h2>
-              <dl className="mt-6 space-y-4 text-sm">
-                <Row
-                  label="Subtotal"
-                  value={fmtMinor(totals?.subtotalMinor ?? 0, totals?.currency)}
-                />
-                <Row
-                  label="Delivery"
-                  value={fmtMinor(totals?.shippingMinor ?? 0, totals?.currency)}
-                />
-                {(totals?.codSurchargeMinor ?? 0) > 0 && (
-                  <Row
-                    label="COD surcharge"
-                    value={fmtMinor(
-                      totals!.codSurchargeMinor,
-                      totals?.currency,
-                    )}
-                  />
+            <aside className="order-1 lg:order-2">
+              <div className="bg-background border border-border/40 rounded-fq-lg p-6 lg:p-8 shadow-sm lg:sticky lg:top-24">
+                <h2 className="text-[16px] font-semibold tracking-tight text-foreground mb-6">
+                  {t("Order Summary", "সারসংক্ষেপ")}
+                </h2>
+                
+                {!hydrated ? null : lines.length === 0 ? (
+                  <p className="mt-4 text-[13.5px] text-muted-foreground">
+                    Your cart is empty.
+                  </p>
+                ) : (
+                  <ul className="mb-6 divide-y divide-border/40 border-b border-border/40 pb-6">
+                    {(totals?.lines ?? []).map((l) => (
+                      <li
+                        key={l.variantId}
+                        className="flex items-start gap-4 py-4 first:pt-0"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-[13.5px] font-medium leading-relaxed text-foreground">
+                            {l.productTitle}
+                          </p>
+                          <p className="text-[12px] font-medium tracking-wide text-muted-foreground mt-1">
+                            {l.variantName}
+                          </p>
+                          <div className="mt-2 flex items-center gap-2">
+                            <label className="sr-only" htmlFor={`qty-${l.variantId}`}>
+                              Quantity
+                            </label>
+                            <input
+                              id={`qty-${l.variantId}`}
+                              type="number"
+                              min={0}
+                              max={l.stock}
+                              value={l.quantity}
+                              onChange={(e) =>
+                                setQuantity(l.variantId, Number(e.target.value))
+                              }
+                              className="h-8 w-14 rounded border border-border/60 bg-transparent text-center text-[13px] font-medium focus:border-foreground focus:outline-none transition-colors"
+                            />
+                            <span className="text-[12px] text-muted-foreground">×</span>
+                            <span className="money text-[13px] font-medium text-foreground">
+                               {fmtMinor(Math.round(l.lineTotalMinor / l.quantity), totals?.currency)}
+                            </span>
+                          </div>
+                        </div>
+                        <span className="money text-right text-[14px] font-semibold tracking-wide text-foreground mt-1">
+                          {fmtMinor(l.lineTotalMinor, totals?.currency)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
                 )}
-                <Row
-                  label={`VAT (${((totals?.vatRateBasisPoints ?? 0) / 100).toFixed(1)}%)${
-                    totals?.vatMode === "inclusive"
-                      ? " · included in prices"
-                      : ""
-                  }`}
-                  value={fmtMinor(totals?.vatMinor ?? 0, totals?.currency)}
-                />
-                <Row
-                  label="Total (incl. VAT)"
-                  value={fmtMinor(totals?.totalMinor ?? 0, totals?.currency)}
-                  strong
-                  className="border-t border-border pt-2"
-                />
-              </dl>
-              {holdExpiresAt && (
-                <p className="mt-3 rounded-fq-md bg-warning-soft p-2 text-xs text-warning-foreground">
-                  {t("Items reserved until", "আইটেম রিজার্ভ আছে")}{" "}
-                  {new Date(holdExpiresAt).toLocaleTimeString("en-BD", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-              )}
-              <p className="mt-3 text-xs text-muted-foreground">
-                Totals are calculated on the server from live prices and the
-                legal VAT table.
-              </p>
+
+                <dl className="space-y-3.5 text-sm">
+                  <Row
+                    label="Subtotal"
+                    value={fmtMinor(totals?.subtotalMinor ?? 0, totals?.currency)}
+                  />
+                  <Row
+                    label="Delivery"
+                    value={fmtMinor(totals?.shippingMinor ?? 0, totals?.currency)}
+                  />
+                  {(totals?.codSurchargeMinor ?? 0) > 0 && (
+                    <Row
+                      label="COD surcharge"
+                      value={fmtMinor(
+                        totals!.codSurchargeMinor,
+                        totals?.currency,
+                      )}
+                    />
+                  )}
+                  <Row
+                    label={`VAT (${((totals?.vatRateBasisPoints ?? 0) / 100).toFixed(1)}%)${
+                      totals?.vatMode === "inclusive"
+                        ? " · included in prices"
+                        : ""
+                    }`}
+                    value={fmtMinor(totals?.vatMinor ?? 0, totals?.currency)}
+                  />
+                  <Row
+                    label="Total"
+                    value={fmtMinor(totals?.totalMinor ?? 0, totals?.currency)}
+                    strong
+                    className="border-t border-border/40 pt-4 mt-2"
+                  />
+                </dl>
+                {holdExpiresAt && (
+                  <p className="mt-6 rounded bg-warning-soft p-3 text-[12.5px] font-medium text-warning-foreground text-center">
+                    {t("Items reserved until", "আইটেম রিজার্ভ আছে")}{" "}
+                    {new Date(holdExpiresAt).toLocaleTimeString("en-BD", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                )}
+              </div>
             </aside>
           </div>
         }
@@ -544,15 +568,17 @@ function Field({
   required,
   type = "text",
   inputMode,
+  className = "",
 }: {
   name: string;
   label: string;
   required?: boolean;
   type?: string;
   inputMode?: "tel" | "text";
+  className?: string;
 }) {
   return (
-    <label className="block">
+    <label className={`block ${className}`}>
       <span className="mb-2 block text-[11.5px] font-bold fq-caps tracking-widest text-muted-foreground">
         {label}
       </span>
@@ -561,7 +587,7 @@ function Field({
         type={type}
         required={required}
         inputMode={inputMode}
-        className="h-12 w-full border-b border-border/60 bg-transparent px-0 text-[13.5px] font-medium text-foreground focus:border-foreground focus:outline-none transition-colors placeholder:text-muted-foreground/30"
+        className="h-[46px] w-full rounded-fq-md border border-border/60 bg-transparent px-3 text-[14px] font-medium text-foreground focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground transition-all placeholder:text-muted-foreground/30"
       />
     </label>
   );

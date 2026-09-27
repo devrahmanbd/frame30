@@ -1,0 +1,14 @@
+# Order Confirmation Redesign
+- Wrap in a layout with `MinimalCheckoutHeader` (import from `StoreHeader.tsx`).
+- Background: `bg-muted/10 min-h-screen pb-24`.
+- Main container: max-w-2xl, centered.
+- **Status Header**:
+  - `status === 'confirmed'` -> Green Check icon, "Order Confirmed", "Thank you, your order has been received."
+  - `status === 'pending' || status === 'payment_pending'` -> Orange Clock icon, "Awaiting Payment" or "Payment Pending", "Your order is held. Complete payment to move it into fulfilment."
+  - `status === 'failed' || status === 'cancelled'` -> Red X icon, "Payment Failed", "Please try again to complete your order."
+- **Items & Summary Card**:
+  - Use `bg-background` with rounded borders, similar to the checkout summary.
+- **Delivery Card**:
+  - `bg-background` with rounded borders.
+- **Timeline Card**:
+  - `bg-background` with rounded borders.

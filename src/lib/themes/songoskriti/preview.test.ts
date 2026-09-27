@@ -24,8 +24,8 @@ describe("songoskritiPreviewSource", () => {
       type,
       props: { ...props },
     });
-    expect(source.header(s).length).toEqual(0);
-    expect(source.footer(s).length).toBeGreaterThan(0);
+    expect(source.header("index", s).length).toEqual(0);
+    expect(source.footer("index", s).length).toBeGreaterThan(0);
     const index = source.main("index", s)!;
     // Fashion-catalog rebuild: 20 sections, hero_carousel first (no
     // announcement bar). Full order pinned in wiring.test.ts; here we pin

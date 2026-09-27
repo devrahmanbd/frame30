@@ -248,6 +248,7 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
   focus: string | undefined;
   q: string | undefined;
   max: string | undefined;
+  mock_order?: "success" | "pending" | "failed";
 } {
   const template =
     typeof search.template === "string" &&
@@ -270,6 +271,10 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
       typeof search.max === "string"
         ? (search.max as string).slice(0, PREVIEW_SEARCH_QUERY_LIMIT)
         : undefined,
+    mock_order: 
+      search.mock_order === "success" || search.mock_order === "pending" || search.mock_order === "failed"
+        ? search.mock_order
+        : undefined,
   };
 }
 
@@ -285,8 +290,8 @@ export type PreviewThemeSource = {
   themeName: string;
   author: string;
   tokens: ThemeTokens;
-  header: (s: SectionBuilder) => Section[];
-  footer: (s: SectionBuilder) => Section[];
+  header: (template: TemplateKey, s: SectionBuilder) => Section[];
+  footer: (template: TemplateKey, s: SectionBuilder) => Section[];
   /**
    * Authored demo body per template. Return null for templates the theme
    * does not author — the engine synthesizes a generic demo body.
@@ -354,12 +359,12 @@ export function assemblePreviewTemplates(
     };
     return section;
   };
-  const headerBase = source.header(s);
-  const footerBase = source.footer(s);
   const reid = (sections: Section[], scope: string): Section[] =>
     sections.map((section) => ({ ...section, id: `${section.id}-${scope}` }));
   const templates = {} as Record<TemplateKey, ThemeAst>;
   for (const templateKey of TEMPLATE_KEYS) {
+    const headerBase = source.header(templateKey, s);
+    const footerBase = source.footer(templateKey, s);
     templates[templateKey] = {
       header: reid(headerBase, templateKey),
       main: source.main(templateKey, s) ?? genericDemoMain(templateKey, s),

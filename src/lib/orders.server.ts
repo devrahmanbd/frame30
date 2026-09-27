@@ -424,7 +424,7 @@ type Row<T extends "orders" | "order_items"> =
 
 export type PublicOrderView = {
   order: Omit<Row<"orders">, "access_token" | "idempotency_key">;
-  items: Row<"order_items">[];
+  items: (Row<"order_items"> & { image_url?: string | null })[];
   events: { event_type: string; note: string | null; created_at: string }[];
   merchant: { name: string; slug: string } | null;
 };
@@ -476,7 +476,7 @@ export async function loadOrder(
     await Promise.all([
       supabaseAdmin
         .from("order_items")
-        .select("*")
+        .select("*, product_variants(products(image_url))")
         .eq("order_id", orderId)
         .order("created_at", { ascending: true }),
       supabaseAdmin
@@ -494,7 +494,11 @@ export async function loadOrder(
   const { access_token: _t, idempotency_key: _k, ...publicOrder } = row;
   return {
     order: publicOrder,
-    items: (items ?? []) as Row<"order_items">[],
+    items: (items ?? []).map((i: any) => {
+      const img = i.product_variants?.products?.image_url;
+      delete i.product_variants;
+      return { ...i, image_url: img ?? null };
+    }) as (Row<"order_items"> & { image_url?: string | null })[],
     events: (events ?? []) as {
       event_type: string;
       note: string | null;

@@ -43,8 +43,8 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
     themeName: "Songoskriti",
     author: "Framique",
     tokens: SONGOSKRITI_TOKENS,
-    header: (s) => buildHeaderMain(s),
-    footer: (s) => buildFooterMain(s),
+    header: (template, s) => template === "checkout" ? [] : buildHeaderMain(s),
+    footer: (template, s) => template === "checkout" ? [] : buildFooterMain(s),
     main: (template, s) => {
       // Non-homepage templates author sections directly (not through the
       // homepage builder), so they get the same skin-default wrap here.
@@ -215,13 +215,27 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
         case "cart":
           return [
             s("heading", { text: "Your bag", text_bn: "আপনার ব্যাগ" }),
-            s("rich_text", {
-              heading: "Demo bag",
-              heading_bn: "ডেমো ব্যাগ",
-              body: "2 items · sample totals. Checkout is disabled in preview — your bag is safe.",
-              body_bn:
-                "২টি পণ্য · নমুনা মোট। প্রিভিউতে চেকআউট বন্ধ আছে — আপনার ব্যাগ নিরাপদ।",
-            }),
+            {
+              ...s("columns", {
+                columns: 2,
+                asymmetrical: true,
+                gap: 64,
+              }),
+              children: [
+                {
+                  ...s("container", {}),
+                  children: [
+                    s("cart_lines", {}),
+                  ],
+                },
+                {
+                  ...s("container", {}),
+                  children: [
+                    s("cart_summary", {}),
+                  ],
+                },
+              ],
+            },
             rail(
               s,
               "You may also like",
@@ -235,17 +249,37 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
         case "checkout":
           return [
             s("heading", { text: "Checkout", text_bn: "চেকআউট" }),
-            s("rich_text", {
-              heading: "Demo checkout",
-              heading_bn: "ডেমো চেকআউট",
-              body: "Address, delivery and payment steps render here on the storefront. Placing orders is disabled in preview.",
-              body_bn:
-                "দোকানে এখানে ঠিকানা, ডেলিভারি ও পেমেন্টের ধাপ দেখা যায়। প্রিভিউতে অর্ডার করা বন্ধ আছে।",
-            }),
-            s("payment_icons", {
-              heading: "We accept",
-              marks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
-            }),
+            {
+              ...s("columns", {
+                columns: 2,
+                asymmetrical: true,
+                gap: 64,
+              }),
+              children: [
+                {
+                  ...s("container", {}),
+                  children: [
+                    s("rich_text", {
+                      heading: "Contact & Shipping",
+                      heading_bn: "যোগাযোগ ও শিপিং",
+                      body: "Provide your delivery address and contact details.",
+                      body_bn: "আপনার ডেলিভারি ঠিকানা এবং যোগাযোগের তথ্য প্রদান করুন।",
+                    }),
+                    s("payment_icons", {
+                      heading: "Payment Method",
+                      heading_bn: "পেমেন্ট পদ্ধতি",
+                      marks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
+                    }),
+                  ],
+                },
+                {
+                  ...s("container", {}),
+                  children: [
+                    s("cart_summary", {}),
+                  ],
+                }
+              ]
+            }
           ];
         case "account":
           return [

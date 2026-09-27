@@ -29,7 +29,9 @@ import {
 
 import { DEMO_CATALOGS } from "@/lib/demo-catalog";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
-import { StoreHeader } from "@/components/store/StoreHeader";
+import { CheckoutMock } from "@/components/store/CheckoutMock";
+import { OrderConfirmationMock } from "@/components/store/OrderConfirmationMock";
+import { StoreHeader, MinimalCheckoutHeader } from "@/components/store/StoreHeader";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
 import {
@@ -91,6 +93,7 @@ export type ThemePreviewFrameProps = {
    * (theme/route) owns splitting full theme sheets per key.
    */
   skinSheets?: Partial<Record<string, string>> | null;
+  initialMockOrder?: "success" | "pending" | "failed";
   /**
    * Retained for route compatibility. The preview renders no chrome, so the
    * close control is gone and this is intentionally unwired.
@@ -347,6 +350,7 @@ export function ThemePreviewFrame({
   templates,
   initialTemplate,
   initialFocus,
+  initialMockOrder,
   skinSheets,
 }: ThemePreviewFrameProps) {
   const startTemplate = initialTemplate ?? "index";
@@ -364,6 +368,7 @@ export function ThemePreviewFrame({
       ? { template: startTemplate, slug: initialFocus }
       : null,
   );
+  const [mockOrder, setMockOrder] = useState(initialMockOrder);
 
   // Back/forward re-sync: the route owns the URL, the frame owns the paint.
   // Route search changes (history pop) re-render this frame with new
@@ -371,6 +376,7 @@ export function ThemePreviewFrame({
   // this effect, so the back button would desync from the URL.
   useEffect(() => {
     setTemplate(initialTemplate ?? "index");
+    setMockOrder(initialMockOrder);
     setFocus(
       initialFocus &&
         (initialTemplate === "collection" || initialTemplate === "product")
@@ -480,6 +486,14 @@ export function ThemePreviewFrame({
     };
   }, [template, ast, previewData, lang, blueprintKey]);
 
+  const cartSlots = template === "cart" ? {
+    cart_lines: null,
+    cart_summary: null,
+    cart_drawer: null,
+    checkout_steps: null,
+    payment_methods: null,
+  } : undefined;
+
   return (
     <div
       role="dialog"
@@ -536,63 +550,71 @@ export function ThemePreviewFrame({
 
             {/* Wordmark row, as on a live storefront — the blueprint's
                 navigation sections render beneath it. */}
-            <StoreHeader slug={blueprintKey} name={themeName} menus={null} />
-            <WidgetDataProvider
-              bundle={previewData.bundle}
-              map={previewData.map}
-            >
-              {/* Header sections below the masthead (e.g. mega_menu) */}
-              {ast.header
-                .filter((section) => section.type !== "subbrand_bar")
-                .map((section) => (
-                  <SectionRenderer
-                    key={section.id}
-                    section={section}
-                    template={template}
-                    editing={false}
-                    storeSlug={blueprintKey}
-                    contextSlots={accountSlots || productSlots || undefined}
-                  />
-                ))}
-
-              {/* main slot */}
-              {focusedMain.length > 0 ? (
-                <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
-                  {focusedMain.map((section) => (
-                    <SectionRenderer
-                      key={section.id}
-                      section={section}
-                      template={template}
-                      editing={false}
-                      storeSlug={blueprintKey}
-                      contextSlots={accountSlots || productSlots || undefined}
-                      primary={section.id === primaryId}
-                    />
-                  ))}
-                </main>
-              ) : (
-                <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
-                  No sections authored for this template.
-                </div>
-              )}
-
-              {/* footer slot — landmark parity with ThemeChrome */}
-              {ast.footer.length > 0 && (
-                <footer className="border-t border-border bg-card/40 mt-16 pt-12 pb-16">
-                  <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
-                    {ast.footer.map((section) => (
+            {template === "checkout" ? (
+              <CheckoutMock slug={blueprintKey} themeName={themeName} />
+            ) : (
+              <>
+                <StoreHeader slug={blueprintKey} name={themeName} menus={null} />
+                <WidgetDataProvider
+                  bundle={previewData.bundle}
+                  map={previewData.map}
+                >
+                  {/* Header sections below the masthead (e.g. mega_menu) */}
+                  {ast.header
+                    .filter((section) => section.type !== "subbrand_bar")
+                    .map((section) => (
                       <SectionRenderer
                         key={section.id}
                         section={section}
                         template={template}
                         editing={false}
-                        contextSlots={accountSlots || productSlots || undefined}
+                        storeSlug={blueprintKey}
+                        contextSlots={{ ...accountSlots, ...productSlots, ...cartSlots }}
                       />
                     ))}
-                  </div>
-                </footer>
-              )}
-            </WidgetDataProvider>
+
+                  {/* main slot */}
+                  {mockOrder ? (
+                    <OrderConfirmationMock slug={blueprintKey} themeName={themeName} status={mockOrder} />
+                  ) : focusedMain.length > 0 ? (
+                    <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
+                      {focusedMain.map((section) => (
+                        <SectionRenderer
+                          key={section.id}
+                          section={section}
+                          template={template}
+                          editing={false}
+                          storeSlug={blueprintKey}
+                          contextSlots={{ ...accountSlots, ...productSlots, ...cartSlots }}
+                          primary={section.id === primaryId}
+                        />
+                      ))}
+                    </main>
+                  ) : (
+                    <div className="grid min-h-[40vh] place-items-center p-8 text-sm text-muted-foreground">
+                      No sections authored for this template.
+                    </div>
+                  )}
+
+                  {/* footer slot — landmark parity with ThemeChrome */}
+                  {ast.footer.length > 0 && (
+                    <footer className="border-t border-border bg-card/40 mt-16 pt-12 pb-16">
+                      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
+                        {ast.footer.map((section) => (
+                          <SectionRenderer
+                            key={section.id}
+                            section={section}
+                            template={template}
+                            editing={false}
+                            contextSlots={{ ...accountSlots, ...productSlots, ...cartSlots }}
+                          />
+                        ))}
+                      </div>
+                    </footer>
+                  )}
+                </WidgetDataProvider>
+              </>
+            )}
           </ThemeSurface>
         </div>
       </div>

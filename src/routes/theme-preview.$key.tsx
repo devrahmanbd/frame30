@@ -59,7 +59,7 @@ export const Route = createFileRoute("/theme-preview/$key")({
 
 function ThemePreviewRoute() {
   const { key } = Route.useParams() as RouteParams;
-  const { template: initialTemplate, focus: initialFocus } = Route.useSearch();
+  const { template: initialTemplate, focus: initialFocus, mock_order: initialMockOrder } = Route.useSearch();
   const preset = resolveThemePreview(key);
 
   if (!preset) {
@@ -75,6 +75,7 @@ function ThemePreviewRoute() {
       templates={preset.templates}
       initialTemplate={initialTemplate}
       initialFocus={initialFocus}
+      initialMockOrder={initialMockOrder}
       onClose={() => window.history.back()}
     />
   );

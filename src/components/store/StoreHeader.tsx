@@ -240,6 +240,27 @@ export function songoskritiMenuLabel(
   return t(label, SONGOSKRITI_MENU_BN[label]);
 }
 
+export function MinimalCheckoutHeader({ slug, name }: { slug: string; name: string }) {
+  const { t } = useLang();
+  const isSongoskriti = slug === "songoskriti" || name.toLowerCase().includes("songoskriti");
+  return (
+    <header className="w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-5 sticky top-0 z-40">
+      <div className="mx-auto flex max-w-[var(--fq-container,1280px)] items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Link to="/store/$slug" params={{ slug }} className="flex items-center transition-opacity hover:opacity-80">
+          {isSongoskriti ? (
+            <img src="/ph/songoskriti/logo-lockup.svg" alt="Songoskriti" className="h-[28px] w-auto object-contain" />
+          ) : (
+            <span className="font-bangla-display text-xl font-semibold tracking-tight text-foreground">{name}</span>
+          )}
+        </Link>
+        <Link to="/store/$slug/cart" params={{ slug }} className="text-[13px] font-medium text-muted-foreground transition-colors hover:text-foreground flex items-center gap-2">
+          {t("Return to cart", "কার্টে ফিরে যান")}
+        </Link>
+      </div>
+    </header>
+  );
+}
+
 export function StoreHeader({
   slug,
   name,
@@ -564,7 +585,7 @@ export function StoreHeader({
 
           {custom ? (
             <Link
-              to="/checkout"
+              to="/cart"
               aria-label={`${t("Cart", "কার্ট")}, ${hydrated ? count : 0}`}
               className={`${iconLinkCls} relative`}
             >
@@ -581,7 +602,7 @@ export function StoreHeader({
             </Link>
           ) : (
             <Link
-              to="/store/$slug/checkout"
+              to="/store/$slug/cart"
               params={{ slug }}
               aria-label={`${t("Cart", "কার্ট")}, ${hydrated ? count : 0}`}
               className={`${iconLinkCls} relative`}

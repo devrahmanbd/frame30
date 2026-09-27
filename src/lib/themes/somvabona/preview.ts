@@ -25,8 +25,8 @@ export function somvabonaPreviewSource(): PreviewThemeSource {
     themeName: "Somvabona",
     author: "Framique",
     tokens: SOMVABONA_TOKENS,
-    header: adapt(buildHeaderMain),
-    footer: adapt(buildFooterMain),
+    header: (template, s) => adapt(buildHeaderMain)(s),
+    footer: (template, s) => adapt(buildFooterMain)(s),
     main: (template, s) => {
       // Skin defaults merge under authored props here too (skins.ts), so
       // the collection demo rail carries the Somvabona compact treatment.

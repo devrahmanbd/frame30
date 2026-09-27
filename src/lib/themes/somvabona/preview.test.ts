@@ -24,8 +24,8 @@ describe("somvabonaPreviewSource", () => {
       type,
       props: { ...props },
     });
-    expect(source.header(s).length).toBeGreaterThan(0);
-    expect(source.footer(s).length).toBeGreaterThan(0);
+    expect(source.header("index", s).length).toBeGreaterThan(0);
+    expect(source.footer("index", s).length).toBeGreaterThan(0);
     const index = source.main("index", s)!;
     expect(index.map((x) => x.type)[0]).toBe("announcement_bar");
     expect(index.length).toBeGreaterThan(5);
