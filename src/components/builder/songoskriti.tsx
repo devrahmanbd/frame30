@@ -63,7 +63,7 @@ import {
   NEWSLETTER,
   PAYMENT_MARKS,
   COLOPHON,
-} from "@/lib/themes/songoskriti/footer";
+} from "@/lib/footer-copy";
 import { PaymentMark } from "@/components/store/PaymentMarks";
 import {
   ChevronDown,
