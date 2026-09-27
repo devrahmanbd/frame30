@@ -21,7 +21,14 @@
  *
  * Source of record: `ai_training_conversations` — the materialized Q&A-turn
  * store written by `captureTrainingTurn` from the upstream `ai_messages` /
- * `ai_conversations` flow. No new tables are introduced.
+ * `ai_conversations` flow.
+ *
+ * Poor / severe revisions are ALSO persisted (best-effort) to the
+ * `support_revision_reviews` store
+ * (supabase/pending/support_revision_reviews.sql — UNAPPLIED) for human
+ * approval via src/lib/support-revision-review.server.ts. Until that
+ * migration lands the persist path feature-detects the missing table, logs,
+ * and keeps the job-result-only behaviour — the job never throws for it.
  */
 
 import { digest, redactPii } from "./support-guardrails";
@@ -56,10 +63,35 @@ export const REVISION_SYSTEM_ACTOR = "system:support-revision";
 
 export type RevisionSeverity = "none" | "low" | "severe";
 
+/**
+ * Rubric pin for the properness dimensions below. Rows written to the
+ * `support_revision_reviews` store are stamped with this version
+ * (see REVIEW_RUBRIC_VERSION in support-revision-review.server.ts).
+ */
+export const REVISION_RUBRIC_VERSION = "proper-v1";
+
+/** Any properness dimension below this flags the turn for revision. */
+export const PROPERNESS_THRESHOLD = 0.5;
+
+/**
+ * Properness sub-scores (proper-v1 rubric) — the "proper + appropriate"
+ * style goal: clear, courteous, BN-fluent, humble when unsure, never
+ * overclaiming (AUTHORITY_RULES semantics in support-guardrails.ts).
+ */
+export type PropernessScores = {
+  clarity: number;
+  courtesy: number;
+  bnFluency: number;
+  humility: number;
+  noOverclaim: number;
+};
+
 export type RevisionScore = {
   groundedness: number;
   tone: number;
   policy: number;
+  /** Properness sub-scores; null when the model omitted them (legacy shape). */
+  properness: PropernessScores | null;
   isHallucination: boolean;
   revisedAnswer: string | null;
   unanswered: boolean;
@@ -90,6 +122,8 @@ export type RevisionJobResult = {
   kbCandidates: number;
   csatTouched: number;
   errors: number;
+  /** Poor/severe turns queued into the review store (best-effort). */
+  persistedReviews: number;
   reason?: string;
   error?: string;
 };
@@ -98,6 +132,32 @@ function clamp01(value: unknown, fallback: number): number {
   const n = typeof value === "string" ? Number(value) : (value as number);
   if (typeof n !== "number" || !Number.isFinite(n)) return fallback;
   return Math.min(1, Math.max(0, n));
+}
+
+/**
+ * Properness sub-object parser. Accepts the nested `properness` object
+ * (`{clarity, courtesy, bn_fluency, humility, no_overclaim}`) or the same
+ * keys flat on the verdict object. Returns null when the model omitted them
+ * entirely so legacy shapes keep working.
+ */
+function parseProperness(
+  obj: Record<string, unknown>,
+): PropernessScores | null {
+  const nested = obj["properness"];
+  const src: Record<string, unknown> =
+    nested && typeof nested === "object"
+      ? (nested as Record<string, unknown>)
+      : obj;
+  const keys = ["clarity", "courtesy", "bn_fluency", "humility", "no_overclaim"];
+  const hasNested = nested && typeof nested === "object";
+  if (!hasNested && !keys.some((k) => k in src)) return null;
+  return {
+    clarity: clamp01(src["clarity"], 0.5),
+    courtesy: clamp01(src["courtesy"], 0.5),
+    bnFluency: clamp01(src["bn_fluency"], 0.5),
+    humility: clamp01(src["humility"], 0.5),
+    noOverclaim: clamp01(src["no_overclaim"], 0.5),
+  };
 }
 
 /**
@@ -141,6 +201,7 @@ export function parseRevisionScore(raw: unknown): RevisionScore | null {
       groundedness: clamp01(obj["groundedness"], 0.5),
       tone: clamp01(obj["tone"], 0.5),
       policy: clamp01(obj["policy"], 0.5),
+      properness: parseProperness(obj),
       isHallucination: obj["is_hallucination"] === true,
       revisedAnswer:
         typeof revised === "string" && revised.trim()
@@ -160,9 +221,20 @@ export function parseRevisionScore(raw: unknown): RevisionScore | null {
 
 /** True when the answer is poor enough to deserve a revised draft. */
 export function needsRevision(score: RevisionScore): boolean {
-  return (
+  if (
     score.groundedness < POOR_GROUNDEDNESS_THRESHOLD ||
     score.tone < POOR_TONE_THRESHOLD
+  ) {
+    return true;
+  }
+  const p = score.properness;
+  if (!p) return false;
+  return (
+    p.clarity < PROPERNESS_THRESHOLD ||
+    p.courtesy < PROPERNESS_THRESHOLD ||
+    p.bnFluency < PROPERNESS_THRESHOLD ||
+    p.humility < PROPERNESS_THRESHOLD ||
+    p.noOverclaim < PROPERNESS_THRESHOLD
   );
 }
 
@@ -216,10 +288,16 @@ export function buildRevisionPrompt(question: string, answer: string): string {
     "- groundedness: is every factual claim (prices, timelines, policies, endpoints) supported and non-fabricated?",
     "- tone: is it polite, concise and in the right language?",
     "- policy: does it avoid refund promises, PII leaks, authority claims and unsafe content?",
+    "Also score properness from 0.0 to 1.0 on five style dimensions:",
+    "- clarity: is the answer clear, direct and easy to follow?",
+    "- courtesy: is it courteous and respectful in tone?",
+    "- bn_fluency: for Bangla (or mixed) replies, is the Bangla fluent and natural?",
+    "- humility: when unsure, is the answer humbly calibrated instead of overconfident?",
+    "- no_overclaim: does it avoid overclaiming — no refund/price/stock/order-state promises beyond the evidence (authority-claim semantics)?",
     "Also decide: is_hallucination (fabricated fact/policy/price), unanswered (the question was dodged or met with an empty fallback), severity (none|low|severe).",
     "When the answer is poor, provide a short corrected revised_answer; otherwise null.",
     "Reply with JSON ONLY, no prose, exactly this shape:",
-    '{"groundedness":0.0,"tone":0.0,"policy":0.0,"is_hallucination":false,"revised_answer":null,"unanswered":false,"severity":"none","rationale":"..."}',
+    `{"groundedness":0.0,"tone":0.0,"policy":0.0,"properness":{"clarity":0.0,"courtesy":0.0,"bn_fluency":0.0,"humility":0.0,"no_overclaim":0.0},"is_hallucination":false,"revised_answer":null,"unanswered":false,"severity":"none","rationale":"...","rubric_version":"${REVISION_RUBRIC_VERSION}"}`,
     `Customer question: ${q}`,
     `Assistant answer: ${a}`,
   ].join("\n");
@@ -432,6 +510,28 @@ async function defaultTouchCsat(turn: QaTurn): Promise<void> {
   await updateTurnCsat(turn.conversationId, turn.csatRating);
 }
 
+/**
+ * Best-effort persist of a poor/severe revision into the human-review store.
+ * The store feature-detects its (pending) table and never throws, so a
+ * missing migration keeps the job on job-result-only logging.
+ */
+async function defaultPersistReview(
+  turn: QaTurn,
+  score: RevisionScore,
+): Promise<void> {
+  const { persistRevisionReview } = await import(
+    "./support-revision-review.server"
+  );
+  await persistRevisionReview({
+    merchantId: turn.merchantId,
+    conversationId: turn.conversationId,
+    turnRef: turn.id,
+    originalReply: turn.answer,
+    revisedReply: score.revisedAnswer ?? "",
+    score,
+  });
+}
+
 export type RevisionDeps = {
   limit?: number;
   /** Overrides env lookup; null/empty forces the no-key skip path (tests). */
@@ -442,6 +542,12 @@ export type RevisionDeps = {
   createTicketFn?: (turn: QaTurn, score: RevisionScore) => Promise<void>;
   recordGuardrailFn?: (turn: QaTurn, score: RevisionScore) => Promise<void>;
   touchCsatFn?: (turn: QaTurn) => Promise<void>;
+  /**
+   * Persists a poor/severe revision to the review store. Defaults to the
+   * best-effort `persistRevisionReview` path (never throws on a missing
+   * table). Inject a recorder in tests to assert the job queued the turn.
+   */
+  persistReviewFn?: (turn: QaTurn, score: RevisionScore) => Promise<unknown>;
 };
 
 /**
@@ -469,6 +575,7 @@ export async function runRevisionJob(
       kbCandidates: 0,
       csatTouched: 0,
       errors: 0,
+      persistedReviews: 0,
       reason: "no_api_key",
     };
   }
@@ -483,6 +590,7 @@ export async function runRevisionJob(
   const createTicketFn = deps.createTicketFn ?? defaultCreateTicket;
   const recordGuardrailFn = deps.recordGuardrailFn ?? defaultRecordGuardrail;
   const touchCsatFn = deps.touchCsatFn ?? defaultTouchCsat;
+  const persistReviewFn = deps.persistReviewFn ?? defaultPersistReview;
 
   try {
     const turns = await fetchTurns(limit);
@@ -503,6 +611,7 @@ export async function runRevisionJob(
       kbCandidates: 0,
       csatTouched: 0,
       errors: 0,
+      persistedReviews: 0,
     };
 
     for (const turn of turns) {
@@ -529,6 +638,29 @@ export async function runRevisionJob(
           groundedness: score.groundedness,
           tone: score.tone,
         });
+      }
+
+      // Queue poor / severe revisions for human review (best-effort). A
+      // missing review table degrades to job-result-only logging above —
+      // persist failures never count as turn errors and never throw.
+      if (
+        (needsRevision(score) && score.revisedAnswer) ||
+        shouldEscalateTicket(score)
+      ) {
+        try {
+          const persisted = await persistReviewFn(turn, score);
+          if (
+            !persisted ||
+            (persisted as { ok?: unknown }).ok !== false
+          ) {
+            result.persistedReviews += 1;
+          }
+        } catch (err) {
+          log("warn", "support.revision_review_persist_skipped", {
+            turn_id: turn.id,
+            message: err instanceof Error ? err.message : "unknown",
+          });
+        }
       }
 
       if (score.isHallucination) result.hallucinations += 1;
@@ -585,6 +717,7 @@ export async function runRevisionJob(
       hallucinations: result.hallucinations,
       escalatedTickets: result.escalatedTickets,
       kbCandidates: result.kbCandidates,
+      persistedReviews: result.persistedReviews,
     });
     return result;
   } catch (err) {

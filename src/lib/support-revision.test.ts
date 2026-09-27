@@ -8,8 +8,10 @@ import { readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   KB_CANDIDATE_STATUS,
+  PROPERNESS_THRESHOLD,
   RECURRING_UNANSWERED_THRESHOLD,
   REVISION_MODEL,
+  REVISION_RUBRIC_VERSION,
   buildRevisionPrompt,
   needsRevision,
   normalizeQuestion,
@@ -58,6 +60,7 @@ function score(over: Partial<RevisionScore> = {}): RevisionScore {
     groundedness: 0.9,
     tone: 0.9,
     policy: 0.9,
+    properness: null,
     isHallucination: false,
     revisedAnswer: null,
     unanswered: false,
@@ -361,5 +364,179 @@ describe("support-revision registry entry", () => {
     expect(src).toContain("cronPost");
     expect(src).toContain("cronGet");
     expect(src.includes("authorizeCron")).toBe(false);
+  });
+});
+
+describe("parseRevisionScore — properness rubric (proper-v1)", () => {
+  it("parses the nested properness object", () => {
+    const s = parseRevisionScore({
+      groundedness: 0.8,
+      tone: 0.8,
+      policy: 0.9,
+      properness: {
+        clarity: 0.7,
+        courtesy: 0.6,
+        bn_fluency: 0.9,
+        humility: 0.5,
+        no_overclaim: 1,
+      },
+      severity: "none",
+    });
+    expect(s!.properness).toMatchObject({
+      clarity: 0.7,
+      courtesy: 0.6,
+      bnFluency: 0.9,
+      humility: 0.5,
+      noOverclaim: 1,
+    });
+  });
+
+  it("parses flat properness keys and clamps them", () => {
+    const s = parseRevisionScore({
+      groundedness: 0.8,
+      clarity: 4,
+      courtesy: -1,
+      bn_fluency: "x",
+    });
+    expect(s!.properness).toMatchObject({
+      clarity: 1,
+      courtesy: 0,
+      bnFluency: 0.5,
+      humility: 0.5,
+      noOverclaim: 0.5,
+    });
+  });
+
+  it("leaves properness null for the legacy shape", () => {
+    const s = parseRevisionScore({ groundedness: 0.8, tone: 0.7 });
+    expect(s!.properness).toBeNull();
+  });
+
+  it("parses properness from fenced model JSON", () => {
+    const s = parseRevisionScore(
+      '```json\n{"groundedness":0.9,"tone":0.9,"policy":0.9,"properness":{"clarity":0.3,"courtesy":0.9,"bn_fluency":0.9,"humility":0.9,"no_overclaim":0.9},"is_hallucination":false,"revised_answer":"clearer","unanswered":false,"severity":"low","rationale":"unclear phrasing"}\n```',
+    );
+    expect(s!.properness!.clarity).toBe(0.3);
+    expect(s!.revisedAnswer).toBe("clearer");
+  });
+});
+
+describe("needsRevision — properness gating", () => {
+  it("flags low properness dimensions even when the big three pass", () => {
+    expect(PROPERNESS_THRESHOLD).toBe(0.5);
+    expect(
+      needsRevision(
+        score({ properness: { clarity: 0.2, courtesy: 0.9, bnFluency: 0.9, humility: 0.9, noOverclaim: 0.9 } }),
+      ),
+    ).toBe(true);
+    expect(
+      needsRevision(
+        score({ properness: { clarity: 0.9, courtesy: 0.9, bnFluency: 0.9, humility: 0.9, noOverclaim: 0.1 } }),
+      ),
+    ).toBe(true);
+  });
+
+  it("passes clean properness and keeps the legacy null path quiet", () => {
+    expect(
+      needsRevision(
+        score({ properness: { clarity: 0.9, courtesy: 0.9, bnFluency: 0.9, humility: 0.9, noOverclaim: 0.9 } }),
+      ),
+    ).toBe(false);
+    expect(needsRevision(score())).toBe(false);
+  });
+});
+
+describe("buildRevisionPrompt — properness rubric", () => {
+  it("asks for all five properness dimensions with the rubric pin", () => {
+    const prompt = buildRevisionPrompt("q?", "a.");
+    for (const axis of ["clarity", "courtesy", "bn_fluency", "humility", "no_overclaim"]) {
+      expect(prompt).toContain(axis);
+    }
+    expect(prompt).toContain(REVISION_RUBRIC_VERSION);
+    expect(REVISION_RUBRIC_VERSION).toBe("proper-v1");
+  });
+});
+
+describe("runRevisionJob — review-store persist path", () => {
+  it("queues poor revisions via the injected persist fn", async () => {
+    const queued: Array<{ turn: QaTurn; score: RevisionScore }> = [];
+    const res = await runRevisionJob("2026-09-27", {
+      apiKey: "test-key",
+      fetchTurns: async () => [turn({ id: "t-poor" })],
+      scorer: async () =>
+        score({ groundedness: 0.2, revisedAnswer: "fixed draft" }),
+      persistReviewFn: async (t, s) => {
+        queued.push({ turn: t, score: s });
+      },
+    });
+    expect(res.revised).toBe(1);
+    expect(queued).toHaveLength(1);
+    expect(queued[0].turn.id).toBe("t-poor");
+    expect(res.persistedReviews).toBe(1);
+  });
+
+  it("queues severe turns even without a revised draft", async () => {
+    let calls = 0;
+    const res = await runRevisionJob("2026-09-27", {
+      apiKey: "test-key",
+      fetchTurns: async () => [turn({ id: "t-severe" })],
+      scorer: async () =>
+        score({ severity: "severe", isHallucination: true, revisedAnswer: null }),
+      persistReviewFn: async () => {
+        calls += 1;
+      },
+    });
+    expect(res.escalatedTickets).toBe(1);
+    expect(calls).toBe(1);
+    expect(res.persistedReviews).toBe(1);
+  });
+
+  it("skips the store for clean turns", async () => {
+    let calls = 0;
+    const res = await runRevisionJob("2026-09-27", {
+      apiKey: "test-key",
+      fetchTurns: async () => [turn({ id: "t-clean" })],
+      scorer: async () => score(),
+      persistReviewFn: async () => {
+        calls += 1;
+      },
+    });
+    expect(calls).toBe(0);
+    expect(res.persistedReviews).toBe(0);
+  });
+
+  it("keeps job-result behaviour when the persist fn throws", async () => {
+    const res = await runRevisionJob("2026-09-27", {
+      apiKey: "test-key",
+      fetchTurns: async () => [turn({ id: "t-poor" })],
+      scorer: async () =>
+        score({ groundedness: 0.1, revisedAnswer: "fixed draft" }),
+      persistReviewFn: async () => {
+        throw new Error("store down");
+      },
+    });
+    expect(res.ok).toBe(true);
+    expect(res.revised).toBe(1);
+    expect(res.errors).toBe(0);
+    expect(res.persistedReviews).toBe(0);
+  });
+
+  it("persists to the review store by default (memory fallback offline)", async () => {
+    const { clearInMemoryReviews, listRevisionReviews } = await import(
+      "./support-revision-review.server"
+    );
+    clearInMemoryReviews();
+    const res = await runRevisionJob("2026-09-27", {
+      apiKey: "test-key",
+      fetchTurns: async () => [
+        turn({ id: "t-default", merchantId: "merchant-1" }),
+      ],
+      scorer: async () =>
+        score({ groundedness: 0.1, revisedAnswer: "fixed draft" }),
+    });
+    expect(res.persistedReviews).toBe(1);
+    const rows = await listRevisionReviews("merchant-1");
+    expect(rows.map((r) => r.turn_ref)).toContain("t-default");
+    clearInMemoryReviews();
   });
 });
