@@ -33,12 +33,20 @@ export type ThemeHeaderChrome = {
  * Theme chrome for a storefront identity, or null for the generic header.
  * Dashboard-designed menus always win downstream; this only supplies the
  * theme fallback + luxury presentation.
+ *
+ * Identity rule (pinned in StoreHeader.test.tsx → "identity edge"):
+ * slug-based, with an exact-name fallback for a renamed slug pointing at
+ * the same theme-shaped store. The name comparison is deliberately strict
+ * `===` (case-insensitive, trimmed) — NOT `includes()`: substring matching
+ * would dress lookalike generic stores ("Songoskriti Demo", "My
+ * Songoskriti Shop") in the theme logo + announcement bar. Only the bare
+ * theme name earns the lockup.
  */
 export function themeHeaderFor(
   slug: string,
   name?: string | null,
 ): ThemeHeaderChrome | null {
-  if (slug === "songoskriti" || name?.toLowerCase() === "songoskriti") {
+  if (slug === "songoskriti" || name?.trim().toLowerCase() === "songoskriti") {
     return {
       // The fallback tree is authoring-shaped, not MenuNode-shaped (no
       // dashboard metadata); render sites already treat fallback nodes

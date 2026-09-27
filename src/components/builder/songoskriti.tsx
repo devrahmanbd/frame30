@@ -559,16 +559,11 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
 
 /* ------------------------------------------------------------ product_rail */
 
-const getLuxuryImage = (seed: string) => {
-  const images = [
-    "/ph/songoskriti/hero-festive.png",
-    "/ph/songoskriti/hero-weaves.png",
-    "/ph/songoskriti/hero-artisans.png",
-  ];
-  let hash = 0;
-  for (let i = 0; i < seed.length; i++) hash = hash * 31 + seed.charCodeAt(i);
-  return images[Math.abs(hash) % images.length]!;
-};
+/* Neutral imageless fallback: a deterministic placeholder tile per seed —
+   never brand art. Theme-authored `imageUrl` props always win at the call
+   site; this only covers imageless rows in shared preview/demo renders. */
+const getLuxuryImage = (seed: string) =>
+  `/api/public/ph/${placeholderSeed(seed)}`;
 
 const SongoskritiProductCard = ({ row, promise, badge }: any) => {
   const image = row.imageUrl?.endsWith(".svg")
@@ -1435,6 +1430,9 @@ export type SongoskritiMegaEntry = {
 };
 
 const megaSlug = (s: string) => `/c/${s.toLowerCase().replace(/\s+/g, "-")}`;
+// Tier-(c) fallback panels keep their image-panel design, but the art is a
+// neutral placeholder tile — never brand art. Taxonomy labels stay generic
+// fashion terms (owned by the fallback, localized via MEGA_MENU_FALLBACK_BN).
 const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: string[] }>; featuredImage?: string; shopAllHref: string }> = {
   Women: {
     sections: [
@@ -1457,7 +1455,7 @@ const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: s
         links: ["Festive", "Wedding", "Everyday", "New Arrivals"],
       },
     ],
-    featuredImage: "/ph/songoskriti/cat-women.png",
+    featuredImage: `/api/public/ph/${placeholderSeed("mega-women")}`,
     shopAllHref: "/c/women",
   },
   Men: {
@@ -1468,7 +1466,7 @@ const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: s
         links: ["Festive", "Wedding", "Everyday", "Handloom"],
       },
     ],
-    featuredImage: "/ph/songoskriti/cat-men.png",
+    featuredImage: `/api/public/ph/${placeholderSeed("mega-men")}`,
     shopAllHref: "/c/men",
   },
   Kids: {
@@ -1476,7 +1474,7 @@ const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: s
       { title: "BY GENDER", links: ["Girls", "Boys", "Unisex"] },
       { title: "BY OCCASION", links: ["Festive", "School", "Family Matching"] },
     ],
-    featuredImage: "/ph/songoskriti/cat-kids.png",
+    featuredImage: `/api/public/ph/${placeholderSeed("mega-kids")}`,
     shopAllHref: "/c/kids",
   },
   Sarees: {
@@ -1496,7 +1494,7 @@ const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: s
         links: ["Bridal", "Festive", "Everyday", "Party"],
       },
     ],
-    featuredImage: "/ph/songoskriti/prod-saree.png",
+    featuredImage: `/api/public/ph/${placeholderSeed("mega-sarees")}`,
     shopAllHref: "/c/sarees",
   },
   Jewellery: {
@@ -1510,7 +1508,7 @@ const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: s
         links: ["Heritage", "Contemporary", "Bridal", "Everyday"],
       },
     ],
-    featuredImage: "/ph/songoskriti/cat-jewelry.png",
+    featuredImage: `/api/public/ph/${placeholderSeed("mega-jewellery")}`,
     shopAllHref: "/c/jewellery",
   },
   Festive: {
@@ -1524,7 +1522,7 @@ const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: s
         links: ["For Women", "For Men", "For Kids", "Family Matching"],
       },
     ],
-    featuredImage: "/ph/songoskriti/hero-festive.png",
+    featuredImage: `/api/public/ph/${placeholderSeed("mega-festive")}`,
     shopAllHref: "/c/festive",
   },
   Heritage: {
@@ -1545,7 +1543,7 @@ const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: s
         links: ["Artisan Stories", "Weave Guides", "Care Guide"],
       },
     ],
-    featuredImage: "/ph/songoskriti/hero-weaves.png",
+    featuredImage: `/api/public/ph/${placeholderSeed("mega-heritage")}`,
     shopAllHref: "/c/heritage",
   },
 };

@@ -48,7 +48,8 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
   };
 });
 
-import { StoreHeader } from "./StoreHeader";
+import { MinimalCheckoutHeader, StoreHeader } from "./StoreHeader";
+import { themeHeaderFor } from "./theme-header";
 import { songoskritiMenuLabel } from "@/lib/themes/songoskriti/header-fallback";
 import type { MenuNode, StoreMenus } from "@/lib/menus/menu";
 import { LanguageProvider } from "@/lib/i18n";
@@ -266,5 +267,104 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
       initialLang: "bn",
     });
     expect(bnHtml).toContain("কেনাকাটা");
+  });
+});
+
+function renderMinimal({
+  slug = "demo",
+  name = "Demo",
+  pathname = "/store/demo",
+  initialLang = "en",
+}: {
+  slug?: string;
+  name?: string;
+  pathname?: string;
+  initialLang?: "en" | "bn";
+} = {}) {
+  mockPathname.current = pathname;
+  const client = new QueryClient();
+  const ui: ReactElement = (
+    <QueryClientProvider client={client}>
+      <LanguageProvider initialLang={initialLang}>
+        <MinimalCheckoutHeader slug={slug} name={name} />
+      </LanguageProvider>
+    </QueryClientProvider>
+  );
+  return renderToStaticMarkup(ui);
+}
+
+describe("StoreHeader songoskriti chrome resolves through themeHeaderFor", () => {
+  it("themeHeaderFor returns the theme-owned logo + announcement for the songoskriti slug", () => {
+    const chrome = themeHeaderFor("songoskriti", "Songoskriti");
+    expect(chrome).not.toBeNull();
+    expect(chrome!.logo).toEqual({
+      src: "/ph/songoskriti/logo-lockup.svg",
+      alt: "Songoskriti",
+    });
+    expect(chrome!.announcement).toEqual({
+      left: "EASY 7-DAY EXCHANGE",
+      center: "Free delivery across Bangladesh on orders over BDT 5000",
+      center_bn: "৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি",
+    });
+    expect(chrome!.fallbackMenu.length).toBeGreaterThan(0);
+  });
+
+  it("renders the announcement copy + logo lockup from themeHeaderFor (not hardcoded)", () => {
+    const chrome = themeHeaderFor("songoskriti", "Songoskriti")!;
+    const html = renderHeader({ slug: "songoskriti", name: "Songoskriti" });
+    // Values flow through the key-driven lookup: assert the resolved
+    // values, so a theme copy change fails here instead of silently
+    // passing against stale literals.
+    expect(html).toContain(chrome.logo.src);
+    expect(html).toContain(`alt="${chrome.logo.alt}"`);
+    expect(html).toContain(chrome.announcement.left);
+    expect(html).toContain(chrome.announcement.center);
+    const bnHtml = renderHeader({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      initialLang: "bn",
+    });
+    expect(bnHtml).toContain(chrome.logo.src);
+    expect(bnHtml).toContain(chrome.announcement.center_bn);
+  });
+
+  it("generic slugs get null chrome and render the text wordmark", () => {
+    expect(themeHeaderFor("demo", "Demo")).toBeNull();
+    const html = renderHeader({ slug: "demo", name: "Demo" });
+    expect(html).toContain("Demo");
+    expect(html).not.toContain("logo-lockup");
+    expect(html).not.toContain("EASY 7-DAY EXCHANGE");
+  });
+});
+
+describe("themeHeaderFor identity edge — slug-based, exact-name fallback", () => {
+  it("slug match wins regardless of display name", () => {
+    expect(themeHeaderFor("songoskriti", "Anything Else")).not.toBeNull();
+  });
+
+  it("exact name match (case-insensitive, trimmed) covers a renamed slug", () => {
+    expect(themeHeaderFor("songoskriti-2", "Songoskriti")).not.toBeNull();
+    expect(themeHeaderFor("songoskriti-2", "  SONGOSKRITI  ")).not.toBeNull();
+  });
+
+  it("lookalike names stay generic — substring must NOT match", () => {
+    // includes() would dress "Songoskriti Demo" / "My Songoskriti Shop"
+    // in the theme logo + announcement; strict === keeps them generic.
+    expect(themeHeaderFor("demo", "Songoskriti Demo")).toBeNull();
+    expect(themeHeaderFor("demo", "My Songoskriti Shop")).toBeNull();
+    expect(themeHeaderFor("demo", undefined)).toBeNull();
+    expect(themeHeaderFor("demo", "")).toBeNull();
+  });
+
+  it("MinimalCheckoutHeader renders the lockup only for theme-shaped stores", () => {
+    const themed = renderMinimal({ slug: "songoskriti", name: "Songoskriti" });
+    expect(themed).toContain("/ph/songoskriti/logo-lockup.svg");
+    expect(themed).toContain("Return to cart");
+    const lookalike = renderMinimal({
+      slug: "demo",
+      name: "Songoskriti Demo",
+    });
+    expect(lookalike).not.toContain("logo-lockup");
+    expect(lookalike).toContain("Songoskriti Demo");
   });
 });
