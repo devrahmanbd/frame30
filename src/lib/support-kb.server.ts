@@ -196,8 +196,13 @@ export async function searchKb(
         mode: "text",
       });
       return hits;
-    } catch {
-      // In-memory fallback
+    } catch (err) {
+      log("warn", "support.kb_search_rpc_failed", {
+        tenant_id: merchantId,
+        merchant_id: merchantId,
+        error: String((err as Error)?.message ?? err),
+      });
+      // In-memory fallback (observable via the warn above)
       return searchInMemoryKb(merchantId, query, undefined, limit);
     }
   });
@@ -278,10 +283,11 @@ export async function searchKbHybrid(
 
   const key = `kb_hybrid:${merchantId}:${trimmed.toLowerCase().slice(0, 120)}:${limit}`;
   return cached(key, 30, async () => {
-    // 1. Generate query embedding
+    // 1. Generate query embedding (WithMeta variant so the producing model is recorded).
     let queryEmbedding: number[] | null = null;
     try {
-      queryEmbedding = await generateEmbedding(trimmed);
+      const meta = await generateEmbeddingWithMeta(trimmed);
+      queryEmbedding = meta.embedding;
     } catch {
       queryEmbedding = generateDeterministicEmbedding(trimmed, 1024);
     }
@@ -306,6 +312,13 @@ export async function searchKbHybrid(
         _rrf_k: rrfK,
       });
 
+      if (error) {
+        log("warn", "support.kb_search_rpc_failed", {
+          tenant_id: merchantId,
+          merchant_id: merchantId,
+          error: String((error as { message?: string })?.message ?? error),
+        });
+      }
       if (!error && Array.isArray(data) && data.length > 0) {
         hits = (
           data as Array<{
@@ -330,8 +343,12 @@ export async function searchKbHybrid(
           embedding_model: h.embedding_model ?? null,
         }));
       }
-    } catch {
-      // ignore
+    } catch (err) {
+      log("warn", "support.kb_search_rpc_failed", {
+        tenant_id: merchantId,
+        merchant_id: merchantId,
+        error: String((err as Error)?.message ?? err),
+      });
     }
 
     // 3. Resilient in-memory fallback for store FAQs & platform docs
@@ -757,13 +774,13 @@ export function searchInMemoryKb(
     (t) => !STOP_WORDS.has(t) && t.length > 1,
   );
   const qTokens = contentTokens.length > 0 ? contentTokens : rawTokens;
+  // Rule 15: no "seed" wildcard pool. A merchant sees ONLY its own docs
+  // plus the explicitly shared canonical + platform (framique) pools.
   const pool = IN_MEMORY_KB_CHUNKS.filter(
     (c) =>
       c.merchant_id === merchantId ||
       c.merchant_id === "canonical" ||
-      c.merchant_id === "seed" ||
-      c.merchant_id === "framique" ||
-      merchantId === "seed",
+      c.merchant_id === "framique",
   );
 
   if (!pool.length) return [];
@@ -941,75 +958,71 @@ export async function saveDoc(
       updated_at: new Date().toISOString(),
     };
 
-    let docId = input.id;
-    try {
-      const { data, error } = input.id
-        ? await db
-            .from("support_kb_docs")
-            .update(row)
-            .eq("merchant_id", merchantId)
-            .eq("id", input.id)
-            .select("id")
-            .single()
-        : await db.from("support_kb_docs").insert(row).select("id").single();
+    // Rule 4: never report ok on DB failure. Any DB error throws KbError;
+    // the in-memory index is test-only and never a silent success path.
+    const { data, error } = input.id
+      ? await db
+          .from("support_kb_docs")
+          .update(row)
+          .eq("merchant_id", merchantId)
+          .eq("id", input.id)
+          .select("id")
+          .single()
+      : await db.from("support_kb_docs").insert(row).select("id").single();
 
-      if (error || !data) throw new KbError("kb_save_failed");
-      docId = data.id;
+    if (error || !data) {
+      log("warn", "support.kb_save_failed", {
+        tenant_id: merchantId,
+        merchant_id: merchantId,
+      });
+      throw new KbError("kb_save_failed");
+    }
+    const docId = data.id;
 
-      const chunks = chunkDocument(row.body);
-      await db
-        .from("support_kb_chunks")
-        .delete()
-        .eq("merchant_id", merchantId)
-        .eq("doc_id", docId);
+    const chunks = chunkDocument(row.body);
+    const { error: delError } = await db
+      .from("support_kb_chunks")
+      .delete()
+      .eq("merchant_id", merchantId)
+      .eq("doc_id", docId);
+    if (delError) {
+      log("warn", "support.kb_save_failed", {
+        tenant_id: merchantId,
+        merchant_id: merchantId,
+        error: String(delError.message ?? delError),
+      });
+      throw new KbError("kb_save_failed");
+    }
 
-      if (chunks.length) {
-        // Generate vector embeddings for chunks, recording the producing
-        // model id per embedding so the RAG backfill can refresh stale rows.
-        const metas = await Promise.all(
-          chunks.map((c): Promise<EmbeddingResult> => {
-            const text = `${row.title}\n${c.body}`;
-            return generateEmbeddingWithMeta(text).catch(() => ({
-              embedding: generateDeterministicEmbedding(
-                text,
-                DETERMINISTIC_FALLBACK_DIM,
-              ),
-              model: deterministicChunkModel(),
-              dim: DETERMINISTIC_FALLBACK_DIM,
-              fallback: true,
-            }));
-          }),
-        );
-
-        await insertKbChunksFeatureDetected(
-          db,
-          merchantId,
-          docId!,
-          chunks.map((c, i) => ({
-            ordinal: c.ordinal,
-            body: c.body,
-            embedding: metas[i].embedding,
-            embedding_model: metas[i].model,
-            embedding_dim: metas[i].dim,
-          })),
-        );
-      }
-    } catch {
-      // Fallback: register in in-memory index
-      if (!docId) docId = `inmem-doc-${Date.now()}`;
-      const emb = generateDeterministicEmbedding(
-        `${row.title}\n${row.body}`,
-        1024,
+    if (chunks.length) {
+      // Generate vector embeddings for chunks, recording the producing
+      // model id per embedding so the RAG backfill can refresh stale rows.
+      const metas = await Promise.all(
+        chunks.map((c): Promise<EmbeddingResult> => {
+          const text = `${row.title}\n${c.body}`;
+          return generateEmbeddingWithMeta(text).catch(() => ({
+            embedding: generateDeterministicEmbedding(
+              text,
+              DETERMINISTIC_FALLBACK_DIM,
+            ),
+            model: deterministicChunkModel(),
+            dim: DETERMINISTIC_FALLBACK_DIM,
+            fallback: true,
+          }));
+        }),
       );
-      registerInMemoryDoc(
+
+      await insertKbChunksFeatureDetected(
+        db,
         merchantId,
-        {
-          id: docId,
-          title: row.title,
-          body: row.body,
-          sourceUrl: row.source_url,
-        },
-        emb,
+        docId!,
+        chunks.map((c, i) => ({
+          ordinal: c.ordinal,
+          body: c.body,
+          embedding: metas[i].embedding,
+          embedding_model: metas[i].model,
+          embedding_dim: metas[i].dim,
+        })),
       );
     }
 
@@ -1018,7 +1031,11 @@ export async function saveDoc(
     incr("framique_ai_kb_doc_total", {
       action: input.id ? "updated" : "created",
     });
-    log("info", "support.kb_saved", { merchant_id: merchantId, doc_id: docId });
+    log("info", "support.kb_saved", {
+      tenant_id: merchantId,
+      merchant_id: merchantId,
+      doc_id: docId,
+    });
     return { id: docId, ok: true };
   });
 }
@@ -1031,26 +1048,40 @@ export async function deleteDoc(
   docId: string,
 ) {
   await enforceRateLimit("support.kb_write", `${merchantId}:${userId}`);
-  try {
-    await db
-      .from("support_kb_chunks")
-      .delete()
-      .eq("merchant_id", merchantId)
-      .eq("doc_id", docId);
-    await db
-      .from("support_kb_docs")
-      .update({ deleted_at: new Date().toISOString(), status: "draft" })
-      .eq("merchant_id", merchantId)
-      .eq("id", docId);
-  } catch {
-    // In-memory index removal
-    const idx = IN_MEMORY_KB_CHUNKS.findIndex((c) => c.doc_id === docId);
-    if (idx !== -1) IN_MEMORY_KB_CHUNKS.splice(idx, 1);
+  // Rule 4 fail-closed delete: DB errors propagate, never fake-success.
+  const { error: chunkError } = await db
+    .from("support_kb_chunks")
+    .delete()
+    .eq("merchant_id", merchantId)
+    .eq("doc_id", docId);
+  if (chunkError) {
+    log("warn", "support.kb_delete_failed", {
+      tenant_id: merchantId,
+      merchant_id: merchantId,
+    });
+    throw new KbError("kb_delete_failed");
+  }
+  const { error: docError } = await db
+    .from("support_kb_docs")
+    .update({ deleted_at: new Date().toISOString(), status: "draft" })
+    .eq("merchant_id", merchantId)
+    .eq("id", docId);
+  if (docError) {
+    log("warn", "support.kb_delete_failed", {
+      tenant_id: merchantId,
+      merchant_id: merchantId,
+    });
+    throw new KbError("kb_delete_failed");
   }
 
   invalidate(`kb:${merchantId}:`);
   invalidate(`kb_hybrid:${merchantId}:`);
   incr("framique_ai_kb_doc_total", { action: "deleted" });
+  log("info", "support.kb_deleted", {
+    tenant_id: merchantId,
+    merchant_id: merchantId,
+    doc_id: docId,
+  });
   return { ok: true as const };
 }
 
@@ -1096,15 +1127,13 @@ export async function insertKbChunksFeatureDetected(
     embedding: r.embedding,
   }));
   try {
-    await db
-      .from("support_kb_chunks")
-      .insert(
-        rows.map((r, i) => ({
-          ...base[i],
-          embedding_model: r.embedding_model,
-          embedding_dim: r.embedding_dim,
-        })),
-      );
+    await db.from("support_kb_chunks").insert(
+      rows.map((r, i) => ({
+        ...base[i],
+        embedding_model: r.embedding_model,
+        embedding_dim: r.embedding_dim,
+      })),
+    );
     return { versioned: true };
   } catch (err) {
     if (!isMissingEmbeddingVersionColumnError(err)) throw err;
@@ -1151,8 +1180,7 @@ type BackfillRow = {
 
 function rowEmbeddingEmpty(embedding: unknown): boolean {
   return (
-    embedding == null ||
-    (Array.isArray(embedding) && embedding.length === 0)
+    embedding == null || (Array.isArray(embedding) && embedding.length === 0)
   );
 }
 
@@ -1216,7 +1244,8 @@ export async function backfillKbEmbeddings(
   const dryRun = options?.dryRun ?? false;
   const embed =
     options?.embed ??
-    ((text: string, m: string) => generateEmbeddingWithMeta(text, { model: m }));
+    ((text: string, m: string) =>
+      generateEmbeddingWithMeta(text, { model: m }));
   const summary: KbBackfillSummary = {
     model,
     versioned: true,

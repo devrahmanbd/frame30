@@ -51,6 +51,7 @@ import { getVerifiedContact } from "./support-contact.server";
 import {
   buildHandoffPayload,
   degradedBanner,
+  enforceGroundedReply,
   isDegradedEnvironment,
 } from "./support-grounding.server";
 
@@ -152,16 +153,18 @@ function createTestDbProxy(): unknown {
 
 async function admin(): Promise<Client> {
   if (mockAdminClient) return mockAdminClient as Client;
+  // Rule 4/5 FAIL-CLOSED: a missing service-role key must never yield a fake
+  // merchant. The in-memory proxy exists ONLY for explicit opt-in tests via
+  // FRAMIQUE_ALLOW_TEST_DB_PROXY=1 (never in production).
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    return createTestDbProxy() as unknown as Client;
+    if (process.env.FRAMIQUE_ALLOW_TEST_DB_PROXY === "1") {
+      return createTestDbProxy() as unknown as Client;
+    }
+    throw new SupportError("missing_service_key", "support.chat_failed");
   }
-  try {
-    const { supabaseAdmin } =
-      await import("@/integrations/supabase/client.server");
-    return supabaseAdmin as unknown as Client;
-  } catch {
-    return createTestDbProxy() as unknown as Client;
-  }
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  return supabaseAdmin as unknown as Client;
 }
 
 export type Source = { label: string; table: string; title?: string };
@@ -178,7 +181,83 @@ export type AskInput = {
   channel?: "widget" | "whatsapp" | "messenger";
   takeoverMode?: "ai" | "human_takeover" | null;
   engine?: "kb" | "deepwiki" | "auto";
+  /** Per-client fingerprint (IP/origin/UA hash) for anonymous write throttling. */
+  clientFingerprint?: string | null;
+  /** Origin header echoed by the widget for storefront binding. */
+  origin?: string | null;
+  /** Correlation/request id propagated to lane logs. */
+  correlationId?: string | null;
+  requestId?: string | null;
 };
+
+/**
+ * ANONYMOUS_PUBLIC_THREAT_MODEL (Rule 1/2):
+ * The storefront widget is intentionally unauthenticated: any visitor may READ
+ * (ask questions, grep the merchant's published KB) without a credential.
+ * Reads stay open by design — KB docs served here are published help content.
+ * WRITES (conversations, tickets, callbacks, ratings) are anonymous-public and
+ * therefore abuse-prone: the server binds each write to (a) the resolved
+ * merchant id (never a client-supplied tenant_id), (b) a per-client-fingerprint
+ * rate-limit bucket, and (c) merchant-scoped ownership checks on every
+ * conversation id. Cross-slug writes (conversation UUID from merchant A
+ * presented under slug B) are rejected. No JWT is required, but no write is
+ * trusted without these bindings.
+ */
+export const ANONYMOUS_PUBLIC_THREAT_MODEL =
+  "anonymous-public-reads-open-writes-bound" as const;
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function isValidUuid(v: string): boolean {
+  return UUID_RE.test(v);
+}
+
+export async function assertTenantContext(
+  tenantId: string | null | undefined,
+): Promise<string> {
+  if (!tenantId || typeof tenantId !== "string" || !tenantId.trim()) {
+    throw new SupportError("missing_tenant", "support.chat_failed");
+  }
+  return tenantId;
+}
+
+/** Reject a conversation UUID presented under the wrong merchant (Rule 22). */
+export async function assertConversationOwnership(
+  presentingMerchantId: string,
+  owningMerchantId: string,
+  _conversationId: string,
+): Promise<void> {
+  await assertTenantContext(presentingMerchantId);
+  await assertTenantContext(owningMerchantId);
+  if (presentingMerchantId !== owningMerchantId) {
+    log("warn", "support.cross_tenant_conversation_rejected", {
+      tenant_id: presentingMerchantId,
+      merchant_id: presentingMerchantId,
+    });
+    throw new SupportError("cross_tenant", "support.chat_failed");
+  }
+}
+
+/** Ticket subjects carry customer text — redact PII exactly like the body. */
+export function buildTicketSubject(raw: string): string {
+  return redactPii(raw).text.slice(0, 120) || "Support request";
+}
+
+/** Stable per-client write key: merchant + fingerprint (never bare anon). */
+export function writeSubjectKey(
+  merchantId: string,
+  opts: {
+    phoneHash?: string | null;
+    conversationId?: string | null;
+    fingerprint?: string | null;
+  },
+): string {
+  if (opts.phoneHash) return `${merchantId}:${opts.phoneHash}`;
+  if (opts.conversationId) return `${merchantId}:${opts.conversationId}`;
+  const fp = (opts.fingerprint ?? "nofp").slice(0, 64);
+  return `${merchantId}:anon:${fp}`;
+}
 
 export type TicketAction = {
   ticketId: string;
@@ -259,19 +338,29 @@ export type AskResult = {
 export async function getConversationTakeoverState(
   merchantId: string,
   conversationId: string | null | undefined,
+  opts?: { correlationId?: string | null },
 ): Promise<{ takeoverMode: "ai" | "human_takeover"; status: string } | null> {
   if (!conversationId) return null;
   try {
     const { getMockConversation } = await import("./support-moderation.server");
     const mock = getMockConversation(conversationId);
     if (mock) {
+      if (mock.merchantId && mock.merchantId !== merchantId) {
+        log("warn", "support.cross_tenant_conversation_rejected", {
+          tenant_id: merchantId,
+          merchant_id: merchantId,
+          correlation_id: opts?.correlationId ?? null,
+        });
+        throw new SupportError("cross_tenant", "support.chat_failed");
+      }
       return {
         takeoverMode: (mock.takeoverMode as "ai" | "human_takeover") ?? "ai",
         status: mock.status ?? "open",
       };
     }
-  } catch {
-    // ignore
+  } catch (err) {
+    if (err instanceof SupportError) throw err;
+    // ignore mock-store errors
   }
   try {
     const db = await admin();
@@ -287,8 +376,16 @@ export async function getConversationTakeoverState(
         status: data.status ?? "open",
       };
     }
-  } catch {
-    // ignore
+  } catch (err) {
+    // Rule 5 FAIL-CLOSED: a takeover-state lookup failure must suppress the
+    // bot (degrade), never let the AI speak into a possibly human-owned thread.
+    log("warn", "support.takeover_lookup_failed", {
+      tenant_id: merchantId,
+      merchant_id: merchantId,
+      correlation_id: opts?.correlationId ?? null,
+      error: String((err as Error)?.message ?? err),
+    });
+    return { takeoverMode: "human_takeover", status: "unknown" };
   }
   return null;
 }
@@ -304,13 +401,8 @@ async function merchantBySlugCached(slug: string) {
       .eq("slug", querySlug)
       .maybeSingle();
     if (!data) {
-      if (slug === "framique" || slug === "platform") {
-        return {
-          id: "00000000-0000-4000-8000-000000000001",
-          name: "Framique",
-          slug: "framique",
-        };
-      }
+      // No magic platform id: the platform merchant must be a real
+      // merchants row (slug framique). Missing tenant fails closed.
       throw new SupportError("no_merchant", "support.store_not_found");
     }
     return data;
@@ -334,7 +426,12 @@ async function recordGuardrail(
     sample_digest: await digest(sample),
   });
   incr("framique_ai_guardrail_total", { kind, rule });
-  log("warn", "ai.guardrail_blocked", { merchant_id: merchantId, kind, rule });
+  log("warn", "ai.guardrail_blocked", {
+    tenant_id: merchantId,
+    merchant_id: merchantId,
+    kind,
+    rule,
+  });
 }
 
 /**
@@ -382,9 +479,15 @@ async function ensureConversation(
       const { getMockConversation } =
         await import("./support-moderation.server");
       const mock = getMockConversation(conversationId);
-      if (mock) return mock.id;
-    } catch {
-      // ignore
+      if (mock) {
+        if (mock.merchantId && mock.merchantId !== merchantId) {
+          throw new SupportError("cross_tenant", "support.chat_failed");
+        }
+        return mock.id;
+      }
+    } catch (err) {
+      if (err instanceof SupportError) throw err;
+      // ignore mock-store errors
     }
     const db = await admin();
     const { data } = await db
@@ -451,10 +554,20 @@ export function clearConversationMemory() {
   CONVERSATION_MEMORIES.clear();
 }
 
+/** Rule 21: every shared-state key carries the tenant namespace. */
+export function memoryKey(merchantId: string, conversationId: string): string {
+  return `${merchantId}:${conversationId}`;
+}
+
 export function getConversationMemory(
-  conversationId: string,
+  merchantOrConversationId: string,
+  conversationId?: string,
 ): ConversationMemory | null {
-  return CONVERSATION_MEMORIES.get(conversationId) ?? null;
+  const key =
+    conversationId !== undefined
+      ? memoryKey(merchantOrConversationId, conversationId)
+      : memoryKey("legacy", merchantOrConversationId);
+  return CONVERSATION_MEMORIES.get(key) ?? null;
 }
 
 function truncateSnippet(text: string, max = 140): string {
@@ -469,15 +582,37 @@ function truncateSnippet(text: string, max = 140): string {
  * summary via the draft question preamble.
  */
 export function updateConversationMemory(
-  conversationId: string,
-  turn: {
+  merchantOrConversationId: string,
+  conversationOrTurn:
+    | string
+    | {
+        role: "customer" | "bot";
+        message: string;
+        intent?: Intent | null;
+        sentiment?: SentimentVerdict["sentiment"] | null;
+      },
+  maybeTurn?: {
     role: "customer" | "bot";
     message: string;
     intent?: Intent | null;
     sentiment?: SentimentVerdict["sentiment"] | null;
   },
 ): ConversationMemory {
-  const prev = CONVERSATION_MEMORIES.get(conversationId);
+  const isScoped = typeof conversationOrTurn === "string";
+  const key = isScoped
+    ? memoryKey(merchantOrConversationId, conversationOrTurn as string)
+    : memoryKey("legacy", merchantOrConversationId);
+  const turn = (
+    isScoped
+      ? maybeTurn
+      : (conversationOrTurn as {
+          role: "customer" | "bot";
+          message: string;
+          intent?: Intent | null;
+          sentiment?: SentimentVerdict["sentiment"] | null;
+        })
+  )!;
+  const prev = CONVERSATION_MEMORIES.get(key);
   const safe = redactPii(turn.message).text;
   const snippet = truncateSnippet(safe);
   const label =
@@ -509,13 +644,20 @@ export function updateConversationMemory(
     lastSentiment: turn.sentiment ?? prev?.lastSentiment ?? null,
     updatedAt: new Date().toISOString(),
   };
-  CONVERSATION_MEMORIES.set(conversationId, next);
+  CONVERSATION_MEMORIES.set(key, next);
   return next;
 }
 
 /** Bounded memory preamble for the draft question (KB sources untouched). */
-export function buildMemoryContext(conversationId: string): string {
-  const mem = CONVERSATION_MEMORIES.get(conversationId);
+export function buildMemoryContext(
+  merchantOrConversationId: string,
+  conversationId?: string,
+): string {
+  const key =
+    conversationId !== undefined
+      ? memoryKey(merchantOrConversationId, conversationId)
+      : memoryKey("legacy", merchantOrConversationId);
+  const mem = CONVERSATION_MEMORIES.get(key);
   if (!mem?.summary) return "";
   const trimmed =
     mem.summary.length > MEMORY_CONTEXT_BUDGET
@@ -532,8 +674,9 @@ export async function hydrateMemoryFromHistory(
   merchantId: string,
   conversationId: string,
 ): Promise<ConversationMemory | null> {
-  if (CONVERSATION_MEMORIES.has(conversationId)) {
-    return CONVERSATION_MEMORIES.get(conversationId)!;
+  const key = memoryKey(merchantId, conversationId);
+  if (CONVERSATION_MEMORIES.has(key)) {
+    return CONVERSATION_MEMORIES.get(key)!;
   }
   try {
     const db = await admin();
@@ -547,12 +690,12 @@ export async function hydrateMemoryFromHistory(
     const rows = (data ?? []) as Array<{ role: string; body: string }>;
     if (!rows.length) return null;
     for (const row of rows.reverse()) {
-      updateConversationMemory(conversationId, {
+      updateConversationMemory(merchantId, conversationId, {
         role: row.role === "customer" ? "customer" : "bot",
         message: String(row.body ?? "").slice(0, 500),
       });
     }
-    return CONVERSATION_MEMORIES.get(conversationId) ?? null;
+    return CONVERSATION_MEMORIES.get(key) ?? null;
   } catch {
     return null;
   }
@@ -648,6 +791,28 @@ export async function getTicketHistoryContext(
   }
 }
 
+/** Rule 21: recent-turns hot cache is tenant-namespaced + ownership-checked. */
+export function pushConversationRecentTurn(
+  merchantId: string,
+  conversationId: string,
+  turn: TrajectoryTurn,
+): void {
+  const key = memoryKey(merchantId, conversationId);
+  const recent = CONVERSATION_RECENT_TURNS.get(key) ?? [];
+  recent.push(turn);
+  if (recent.length > 12) recent.shift();
+  CONVERSATION_RECENT_TURNS.set(key, recent);
+}
+
+export function getConversationRecentTurns(
+  merchantId: string,
+  conversationId: string,
+): TrajectoryTurn[] {
+  return (
+    CONVERSATION_RECENT_TURNS.get(memoryKey(merchantId, conversationId)) ?? []
+  );
+}
+
 async function appendMessage(
   merchantId: string,
   conversationId: string,
@@ -659,13 +824,10 @@ async function appendMessage(
   const safe = redactPii(body).text.slice(0, 2000);
 
   // Maintain recent in-memory trajectory turns for fast loop detection
-  const recent = CONVERSATION_RECENT_TURNS.get(conversationId) ?? [];
-  recent.push({
+  pushConversationRecentTurn(merchantId, conversationId, {
     role: role === "customer" ? "customer" : "bot",
     message: safe,
   });
-  if (recent.length > 12) recent.shift();
-  CONVERSATION_RECENT_TURNS.set(conversationId, recent);
 
   await db.from("ai_messages").insert({
     merchant_id: merchantId,
@@ -1257,12 +1419,31 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     const merchant = await merchantBySlugCached(input.slug);
     const channel = input.channel ?? "widget";
     const locale = input.locale ?? "en";
+    const correlationId = input.correlationId ?? input.requestId ?? null;
     const subjectHash = input.phone ? await hashPhone(input.phone) : null;
-    const subject = subjectHash ?? input.conversationId ?? "anon";
+    // Rule 1/2 write binding: phone → conversation → per-fingerprint anon bucket.
+    // Never a bare `anon` shared across all visitors of a storefront.
+    const subject = writeSubjectKey(merchant.id, {
+      phoneHash: subjectHash,
+      conversationId: input.conversationId,
+      fingerprint: input.clientFingerprint ?? input.origin ?? null,
+    });
+    log("info", "support.ask_start", {
+      tenant_id: merchant.id,
+      merchant_id: merchant.id,
+      correlation_id: correlationId,
+      channel,
+    });
 
-    // 1. Rate limit before any model or database work.
+    // 1. Rate limit before any model or database work (primary + fingerprint bucket).
     const verdict = await rateLimit("support.ask", `${merchant.id}:${subject}`);
-    if (!verdict.allowed) {
+    const fpBucket = await rateLimit(
+      "support.ask",
+      `${merchant.id}:fp:${(input.clientFingerprint ?? input.origin ?? "nofp").slice(0, 64)}`,
+    );
+    const blocked = !verdict.allowed || !fpBucket.allowed;
+    const effectiveVerdict = !verdict.allowed ? verdict : fpBucket;
+    if (blocked) {
       await recordGuardrail(
         merchant.id,
         input.conversationId ?? null,
@@ -1270,6 +1451,11 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         "support.ask",
         subject,
       );
+      log("warn", "support.rate_limited", {
+        tenant_id: merchant.id,
+        merchant_id: merchant.id,
+        correlation_id: correlationId,
+      });
       return {
         conversationId: input.conversationId ?? null,
         reply: en("support.rate_limited"),
@@ -1278,13 +1464,51 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         confidence: "unsure",
         needsAgent: false,
         cta: "ticket",
-        retryAfter: verdict.reset_at,
+        retryAfter: effectiveVerdict.reset_at,
       };
     }
 
     // 2. Inbound guardrail runs before retrieval, so a hostile turn never
     //    reaches the knowledge base or an order lookup.
     const inbound = screenInbound(input.message);
+    // Rule 22: cross-slug conversation-UUID swap is rejected. If the caller
+    // presents a conversation id owned by another merchant, fail closed.
+    if (input.conversationId) {
+      try {
+        const { getMockConversation } =
+          await import("./support-moderation.server");
+        const mockOwner = getMockConversation(input.conversationId);
+        if (mockOwner?.merchantId && mockOwner.merchantId !== merchant.id) {
+          await assertConversationOwnership(
+            merchant.id,
+            mockOwner.merchantId,
+            input.conversationId,
+          );
+        }
+      } catch (err) {
+        if (err instanceof SupportError) throw err;
+      }
+      try {
+        const db = await admin();
+        const { data: owner } = await db
+          .from("ai_conversations")
+          .select("merchant_id")
+          .eq("id", input.conversationId)
+          .maybeSingle();
+        const ownerMerchant = (owner as { merchant_id?: string } | null)
+          ?.merchant_id;
+        if (ownerMerchant && ownerMerchant !== merchant.id) {
+          await assertConversationOwnership(
+            merchant.id,
+            ownerMerchant,
+            input.conversationId,
+          );
+        }
+      } catch (err) {
+        if (err instanceof SupportError) throw err;
+        // Lookup unavailable → proceed with scoped ensureConversation below.
+      }
+    }
     const conversationId = await ensureConversation(
       merchant.id,
       input.conversationId,
@@ -1335,6 +1559,7 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     const convState = await getConversationTakeoverState(
       merchant.id,
       conversationId,
+      { correlationId },
     );
     const isHumanTakeover =
       input.takeoverMode === "human_takeover" ||
@@ -1366,9 +1591,12 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
 
       // 2. Real-time alert dispatched to the platform owner on /root/ai
       log("info", "support.human_takeover_customer_message", {
+        tenant_id: merchant.id,
+        merchant_id: merchant.id,
         merchantId: merchant.id,
         conversationId,
         channel,
+        correlation_id: correlationId,
       });
       incr("framique_ai_human_takeover_customer_msg_total", {
         merchantId: merchant.id,
@@ -1423,25 +1651,38 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     // 2a2. Greeting / small-talk FIRST — before retrieval, confidence
     // gating, or degraded handling. Deterministic, never refused, never
     // bannered, never escalated (works in degraded mode too).
+    // Pinned exemption (Rule MED): deterministic small-talk, verified by
+    // `screenOutbound` below + `support-qubickle-fix.test.ts`.
     if (isGreetingMessage(input.message)) {
       const greeting = buildGreetingReply(merchant.name, locale);
-      await appendMessage(merchant.id, conversationId, "bot", greeting, false);
-      updateConversationMemory(conversationId, {
+      // Every final passes screenOutbound — greeting must never leak PII/authority.
+      const greetingScreen = screenOutbound(greeting, { pinned: false });
+      const safeGreeting = greetingScreen.allowed
+        ? greeting
+        : buildHighStakesReply(locale, getVerifiedContact());
+      await appendMessage(
+        merchant.id,
+        conversationId,
+        "bot",
+        safeGreeting,
+        false,
+      );
+      updateConversationMemory(merchant.id, conversationId, {
         role: "bot",
-        message: greeting,
+        message: safeGreeting,
       });
       incr("framique_ai_ask_total", { outcome: "greeting", channel });
       await captureTrainingTurn({
         merchantId: merchant.id,
         conversationId,
         userMessage: input.message,
-        agentReply: greeting,
+        agentReply: safeGreeting,
         grounded: true,
         actionCompleted: "answered",
       }).catch(() => null);
       return {
         conversationId,
-        reply: greeting,
+        reply: safeGreeting,
         provenance: null,
         sources: [],
         confidence: "grounded",
@@ -1452,7 +1693,7 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     }
 
     // 2b. Conversational Looping Detection & Circuit Breaker
-    const recentTurns = CONVERSATION_RECENT_TURNS.get(conversationId) ?? [];
+    const recentTurns = getConversationRecentTurns(merchant.id, conversationId);
     // Prior turns before current user message
     const priorTurns = recentTurns.slice(0, -1);
     const loopVerdict = detectTrajectoryLoop(
@@ -1467,17 +1708,28 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
           ? loopVerdict.interventionReplyBn || loopVerdict.interventionReply!
           : loopVerdict.interventionReply!;
 
-      const loopTicket = await createTicket({
-        merchantId: merchant.id,
-        subject: `Loop Circuit Breaker: ${input.message.slice(0, 80)}`,
-        body: `Conversational loop broken (${loopVerdict.loopType}, repetitions: ${loopVerdict.repetitionCount}):\n\n${redactPii(input.message).text}`,
-        priority: "high",
-        channel,
-        conversationId,
-        orderNumber: input.orderNumber ?? null,
-        requesterHash: subjectHash,
-        reason: "support.loop_circuit_broken",
-      }).catch(() => null);
+      let loopTicket: Awaited<ReturnType<typeof createTicket>> | null = null;
+      try {
+        loopTicket = await createTicket({
+          merchantId: merchant.id,
+          subject: buildTicketSubject(`Loop Circuit Breaker: ${input.message}`),
+          body: `Conversational loop broken (${loopVerdict.loopType}, repetitions: ${loopVerdict.repetitionCount}):\n\n${redactPii(input.message).text}`,
+          priority: "high",
+          channel,
+          conversationId,
+          orderNumber: input.orderNumber ?? null,
+          requesterHash: subjectHash,
+          reason: "support.loop_circuit_broken",
+        });
+      } catch (err) {
+        log("warn", "support.ticket_create_failed", {
+          tenant_id: merchant.id,
+          merchant_id: merchant.id,
+          correlation_id: input.correlationId ?? input.requestId ?? null,
+          error: String((err as Error)?.message ?? err),
+        });
+        loopTicket = null;
+      }
 
       const loopTicketId = loopTicket?.id ?? null;
       const loopTicketAction: TicketAction | null = loopTicketId
@@ -1572,13 +1824,13 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     await hydrateMemoryFromHistory(merchant.id, conversationId).catch(
       () => null,
     );
-    updateConversationMemory(conversationId, {
+    updateConversationMemory(merchant.id, conversationId, {
       role: "customer",
       message: input.message,
       intent,
       sentiment: sentiment.sentiment,
     });
-    const memoryPreamble = buildMemoryContext(conversationId);
+    const memoryPreamble = buildMemoryContext(merchant.id, conversationId);
     const consented = await hasConsentedCrossSession(
       merchant.id,
       subjectHash,
@@ -1719,9 +1971,16 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       hits.length === 0 &&
       isHighStakesQuery(input.message);
     if (highStakesNoCoverage) {
-      const hsReply = buildHighStakesReply(locale, contactInfo);
+      // Pinned exemption (Rule MED): warm redirect, outbound-screened.
+      const hsCandidate = buildHighStakesReply(locale, contactInfo);
+      const hsScreen = screenOutbound(hsCandidate, { pinned: false });
+      const hsReply = hsScreen.allowed
+        ? hsCandidate
+        : buildTieredFallbackReply(locale, contactInfo, {
+            query: input.message,
+          });
       await appendMessage(merchant.id, conversationId, "bot", hsReply, true);
-      updateConversationMemory(conversationId, {
+      updateConversationMemory(merchant.id, conversationId, {
         role: "bot",
         message: hsReply,
       });
@@ -1780,13 +2039,20 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         ? generalGuidanceKind(input.message)
         : null;
     if (guidanceKind) {
-      const gReply = buildGeneralGuidanceReply(
+      // Pinned exemption (Rule MED): labeled general guidance, outbound-screened.
+      const gCandidate = buildGeneralGuidanceReply(
         guidanceKind,
         locale,
         contactInfo,
       );
+      const gScreen = screenOutbound(gCandidate, { pinned: false });
+      const gReply = gScreen.allowed
+        ? gCandidate
+        : buildTieredFallbackReply(locale, contactInfo, {
+            query: input.message,
+          });
       await appendMessage(merchant.id, conversationId, "bot", gReply, false);
-      updateConversationMemory(conversationId, {
+      updateConversationMemory(merchant.id, conversationId, {
         role: "bot",
         message: gReply,
       });
@@ -1845,7 +2111,12 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
           deepWikiResult = dw;
         }
       } catch (err) {
-        log("warn", "deepwiki.query_failed", { error: String(err) });
+        log("warn", "deepwiki.query_failed", {
+          tenant_id: merchant.id,
+          merchant_id: merchant.id,
+          correlation_id: correlationId,
+          error: String(err),
+        });
       }
     }
 
@@ -1863,12 +2134,37 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     if (triggerEpistemicHumility) {
       // Tiered compact fallback names the detected-vs-asked gap when the
       // coverage gate filtered a near-miss (ERP asked, logistics detected).
-      const humilityReply = buildTieredFallbackReply(locale, contactInfo, {
+      // Every final passes screenOutbound (Rule MED). The candidate carries
+      // both the customer email and the support footer (2 emails), which the
+      // bulk_email_leak rule blocks — the blocked fallback below keeps the
+      // presence signal (Live Support Away + customer email, 1 email) so the
+      // handoff stays actionable without leaking a second address.
+      const humilityCandidate = buildTieredFallbackReply(locale, contactInfo, {
         query: input.message,
         detectedTopic: detectedCategoryForClarify(rawTopHit),
         adminOnline,
         customerEmail: input.customerEmail ?? undefined,
       });
+      const humilityScreen = screenOutbound(humilityCandidate, {
+        pinned: false,
+      });
+      let humilityReply = humilityCandidate;
+      if (!humilityScreen.allowed) {
+        const presence =
+          adminOnline === true
+            ? locale === "bn"
+              ? ` 🟢 সাপোর্ট স্পেশালিস্ট অনলাইন আছেন।`
+              : ` 🟢 Support Specialist Online.`
+            : adminOnline === false
+              ? locale === "bn"
+                ? ` ⚪ লাইভ সাপোর্ট অফলাইন — আমাদের টিম আপনার ইমেইলে${input.customerEmail ? ` (${input.customerEmail})` : ""} উত্তর জানিয়ে দেবে।`
+                : ` ⚪ Live Support Away — our team will follow up via email${input.customerEmail ? ` at ${input.customerEmail}` : ""}.`
+              : ``;
+        humilityReply =
+          locale === "bn"
+            ? `${EPISTEMIC_ADMISSION_BN}${presence}`
+            : `${EPISTEMIC_ADMISSION_EN}${presence}`;
+      }
 
       // Auto-escalate conversation to needs_agent so human operators on /root/ai are notified
       try {
@@ -2026,7 +2322,33 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       effectiveConfidence = "unsure";
     }
 
-    // 5. Outbound guardrail: no authority claims, no unpinned figures.
+    // 5. Grounded kernel + outbound guardrail on EVERY final (Rule MED).
+    // Pinned order rows and greetings are the only exemptions, pinned by tests.
+    if (
+      !pinned &&
+      !isGreeting &&
+      reply &&
+      (hits.length > 0 || deepWikiResult)
+    ) {
+      const enforced = enforceGroundedReply({
+        reply,
+        confidence:
+          effectiveConfidence === "pinned"
+            ? "pinned"
+            : effectiveConfidence === "grounded"
+              ? "grounded"
+              : "unsure",
+        sources,
+        pinned: Boolean(pinned),
+        deepwiki: Boolean(deepWikiResult),
+        locale,
+        degraded,
+      });
+      reply = enforced.reply;
+      sources = enforced.sources;
+      if (enforced.confidence === "unsure") effectiveConfidence = "unsure";
+    }
+    // Outbound guardrail: no authority claims, no unpinned figures.
     // Safety lines stay: blocked replies become a warm single-step redirect
     // (one paragraph + single next step, never a wall), not a cold wall.
     const outbound = screenOutbound(reply, { pinned: Boolean(pinned) });
@@ -2038,7 +2360,9 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         outbound.rule ?? "unknown",
         reply,
       );
-      reply = buildHighStakesReply(locale, contactInfo);
+      const fallback = buildHighStakesReply(locale, contactInfo);
+      // The fallback itself is already screened (pinned exemption).
+      reply = fallback;
     }
 
     const flagged =
@@ -2048,7 +2372,10 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         !hits.length) ||
       !outbound.allowed;
     await appendMessage(merchant.id, conversationId, "bot", reply, flagged);
-    updateConversationMemory(conversationId, { role: "bot", message: reply });
+    updateConversationMemory(merchant.id, conversationId, {
+      role: "bot",
+      message: reply,
+    });
 
     // 6. Action tools: ticket creation and callback request.
     //
@@ -2152,31 +2479,50 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
 
       const toolStart = Date.now();
       // Chatwoot parity: ticket prefilled from full transcript, not just the last turn.
-      const recentForTicket =
-        CONVERSATION_RECENT_TURNS.get(conversationId) ?? [];
+      const recentForTicket = getConversationRecentTurns(
+        merchant.id,
+        conversationId,
+      );
       const transcriptText = recentForTicket
         .map((t) => `${t.role}: ${t.message}`)
         .join("\n")
         .slice(0, 3500);
       // Pending-approval screen: refunds / sensitive-PII bodies must not fire
       // autonomously — they land in `pending_approval` for an operator.
-      const ticketSubject = input.message.slice(0, 120) || "Support request";
+      // Subject is PII-redacted exactly like the body (Rule MED).
+      const ticketSubject = buildTicketSubject(input.message);
       const approvalScreen = needsApprovalReview({
         subject: ticketSubject,
         body: transcriptText || redactPii(input.message).text,
       });
-      const ticket = await createTicket({
-        merchantId: merchant.id,
-        subject: ticketSubject,
-        body: transcriptText || redactPii(input.message).text,
-        priority,
-        channel,
-        conversationId,
-        orderNumber: input.orderNumber ?? null,
-        requesterHash: subjectHash,
-        reason,
-        requiresApproval: approvalScreen.required,
-      }).catch(() => null);
+      let ticket: Awaited<ReturnType<typeof createTicket>> | null = null;
+      let ticketError: string | null = null;
+      try {
+        ticket = await createTicket({
+          merchantId: merchant.id,
+          subject: ticketSubject,
+          body: transcriptText || redactPii(input.message).text,
+          priority,
+          channel,
+          conversationId,
+          orderNumber: input.orderNumber ?? null,
+          requesterHash: subjectHash,
+          reason,
+          requiresApproval: approvalScreen.required,
+        });
+      } catch (err) {
+        // Distinct failure signal: never report cta:ticket with a null id as
+        // success. The tool call below records ok:false + ticket_create_failed.
+        ticketError =
+          err instanceof Error ? err.message : "ticket_create_failed";
+        log("warn", "support.ticket_create_failed", {
+          tenant_id: merchant.id,
+          merchant_id: merchant.id,
+          correlation_id: input.correlationId ?? input.requestId ?? null,
+          error: ticketError,
+        });
+        ticket = null;
+      }
 
       const toolLatency = Date.now() - toolStart;
       ticketId = ticket?.id ?? null;
@@ -2215,7 +2561,16 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
               : `${reply}\n\nWe're sorry for the trouble — a support specialist will follow up with you shortly.`;
         }
       } else {
+        // Distinct failure signal: cta ticket with null id is NOT success —
+        // ticketError is set, the tool call below is ok:false, and the reply
+        // carries an honest held-for-review note instead of a ticket number.
         cta = "ticket";
+        if (ticketError && reply && !/held|review|specialist/i.test(reply)) {
+          reply =
+            locale === "bn"
+              ? `${reply}\n\nআপনার অনুরোধটি গৃহীত হয়েছে এবং পর্যালোচনাধীন রয়েছে — টিকিট নম্বর প্রস্তুত হলে জানিয়ে দেব।`
+              : `${reply}\n\nYour request has been received and is held for review — we'll share the ticket reference as soon as it's created.`;
+        }
       }
 
       await recordToolCall({
@@ -2391,6 +2746,9 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
               : "chat_turn",
       }).catch((err) => {
         log("warn", "support.notifications_dispatch_failed", {
+          tenant_id: merchant.id,
+          merchant_id: merchant.id,
+          correlation_id: correlationId,
           error: String((err as Error)?.message ?? err),
           conversationId,
         });
@@ -2412,7 +2770,7 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     // for the existing triage queue while humans take over via human_takeover.
     let handoffPayload: HandoffPayload | null = null;
     if (needsAgent || finalConfidence === "unsure") {
-      const recent = CONVERSATION_RECENT_TURNS.get(conversationId) ?? [];
+      const recent = getConversationRecentTurns(merchant.id, conversationId);
       const transcript = recent.map((t) => ({
         role: t.role === "customer" ? ("customer" as const) : ("bot" as const),
         body: t.message.slice(0, 2000),
@@ -2497,8 +2855,53 @@ export async function rateConversation(
   conversationId: string,
   rating: number,
   review?: string,
-  isResolved?: boolean,
+  isResolvedOrOpts?:
+    | boolean
+    | {
+        merchantId?: string | null;
+        expectedMerchantId?: string | null;
+        correlationId?: string | null;
+      },
+  maybeOpts?: {
+    merchantId?: string | null;
+    expectedMerchantId?: string | null;
+    correlationId?: string | null;
+  },
 ) {
+  const opts =
+    typeof isResolvedOrOpts === "object" && isResolvedOrOpts !== null
+      ? isResolvedOrOpts
+      : (maybeOpts ?? undefined);
+  const isResolved =
+    typeof isResolvedOrOpts === "boolean" ? isResolvedOrOpts : undefined;
+  // Rule 14/15/4: UUID-validate, screen inbound review, merchant-scope, propagate errors.
+  if (!isValidUuid(conversationId)) {
+    throw new SupportError("invalid_conversation", "support.chat_failed");
+  }
+  if (review) {
+    const inbound = screenInbound(review);
+    if (!inbound.allowed) {
+      log("warn", "support.rating_blocked", {
+        tenant_id: opts?.merchantId ?? null,
+        merchant_id: opts?.merchantId ?? null,
+        correlation_id: opts?.correlationId ?? null,
+        rule: inbound.rule,
+      });
+      throw new SupportError("rating_blocked", "support.chat_failed");
+    }
+  }
+  if (
+    opts?.merchantId &&
+    opts?.expectedMerchantId &&
+    opts.merchantId !== opts.expectedMerchantId
+  ) {
+    log("warn", "support.cross_tenant_conversation_rejected", {
+      tenant_id: opts.merchantId,
+      merchant_id: opts.merchantId,
+      correlation_id: opts?.correlationId ?? null,
+    });
+    throw new SupportError("cross_tenant", "support.chat_failed");
+  }
   const value = Math.min(5, Math.max(1, Math.round(rating)));
   const safeReview = review ? redactPii(review).text.slice(0, 1000) : null;
   const resolved = isResolved !== undefined ? isResolved : value >= 4;
@@ -2554,57 +2957,88 @@ export async function rateConversation(
       if (stepReward.label === "high_quality") {
         const { captureTrainingTurn } =
           await import("./ai-training-data.server");
-        await captureTrainingTurn({
-          merchantId: "00000000-0000-4000-8000-000000000001",
-          conversationId,
-          userMessage: safeReview || "Customer feedback",
-          agentReply: "Feedback recorded",
-          csatRating: value,
-          csatReview: safeReview,
-          grounded: resolved,
-          actionCompleted: "answered",
-        }).catch(() => null);
+        // No magic platform id: only capture when the owning merchant is known.
+        const ownerForTraining = opts?.merchantId ?? null;
+        if (ownerForTraining) {
+          await captureTrainingTurn({
+            merchantId: ownerForTraining,
+            conversationId,
+            userMessage: safeReview || "Customer feedback",
+            agentReply: "Feedback recorded",
+            csatRating: value,
+            csatReview: safeReview,
+            grounded: resolved,
+            actionCompleted: "answered",
+          }).catch(() => null);
+        }
       }
     } catch {
       // Non-blocking
     }
   }
 
-  // 2. Persist to Supabase
-  try {
-    const db = await admin();
-    const { data: conv } = await db
-      .from("ai_conversations")
-      .select("merchant_id")
-      .eq("id", conversationId)
-      .maybeSingle();
-
-    await db
+  // 2. Persist to Supabase — merchant-scoped, errors propagate (no fake-success).
+  const db = await admin();
+  const { data: conv } = await db
+    .from("ai_conversations")
+    .select("merchant_id")
+    .eq("id", conversationId)
+    .maybeSingle();
+  const ownerMerchant =
+    (conv as { merchant_id?: string } | null)?.merchant_id ?? null;
+  if (opts?.merchantId && ownerMerchant && ownerMerchant !== opts.merchantId) {
+    log("warn", "support.cross_tenant_conversation_rejected", {
+      tenant_id: opts.merchantId,
+      merchant_id: opts.merchantId,
+      correlation_id: opts?.correlationId ?? null,
+    });
+    throw new SupportError("cross_tenant", "support.chat_failed");
+  }
+  const scopedMerchant = opts?.merchantId ?? ownerMerchant;
+  const testProxyMode =
+    process.env.FRAMIQUE_ALLOW_TEST_DB_PROXY === "1" ||
+    mockAdminClient !== null;
+  if (!scopedMerchant) {
+    // Production fails closed; explicit test-proxy mode keeps the legacy
+    // offline path for the pre-existing widget suites.
+    if (!testProxyMode) {
+      throw new SupportError("missing_tenant", "support.chat_failed");
+    }
+    const { error: legacyError } = await db
       .from("ai_conversations")
       .update({ rating: value, review: safeReview })
       .eq("id", conversationId);
-
-    if (conv?.merchant_id) {
-      await db.from("ai_conversation_feedback").upsert(
-        {
-          conversation_id: conversationId,
-          merchant_id: conv.merchant_id,
-          rating: value,
-          review: safeReview,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "conversation_id" },
-      );
-    }
+    if (legacyError)
+      throw new SupportError("rating_failed", "support.chat_failed");
     incr("framique_ai_rating_total", { outcome: "ok", rating: String(value) });
     return { ok: true, rating: value, review: safeReview } as const;
-  } catch {
-    incr("framique_ai_rating_total", {
-      outcome: "fallback",
-      rating: String(value),
-    });
-    return { ok: true, rating: value, review: safeReview } as const;
   }
+  // Merchant-scope the update: never `eq(id)` alone.
+  const { error: updateError } = await db
+    .from("ai_conversations")
+    .update({ rating: value, review: safeReview })
+    .eq("merchant_id", scopedMerchant)
+    .eq("id", conversationId);
+  if (updateError)
+    throw new SupportError("rating_failed", "support.chat_failed");
+
+  await db.from("ai_conversation_feedback").upsert(
+    {
+      conversation_id: conversationId,
+      merchant_id: scopedMerchant,
+      rating: value,
+      review: safeReview,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "conversation_id" },
+  );
+  incr("framique_ai_rating_total", { outcome: "ok", rating: String(value) });
+  log("info", "support.rating_recorded", {
+    tenant_id: scopedMerchant,
+    merchant_id: scopedMerchant,
+    correlation_id: opts?.correlationId ?? null,
+  });
+  return { ok: true, rating: value, review: safeReview } as const;
 }
 
 /** Uniform degradation: an outage answers honestly and offers a human. */
