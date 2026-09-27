@@ -79,9 +79,23 @@ export function verifyPreviewToken(
 
 /** Which secret signs preview tokens. Never leaves the server boundary. */
 export function previewSecret(): string {
-  return (
-    process.env["PREVIEW_TOKEN_SECRET"] ??
-    process.env["AUTH_HASH_SALT"] ??
-    "framique-preview-dev"
-  );
+  const configured =
+    process.env["PREVIEW_TOKEN_SECRET"] ?? process.env["AUTH_HASH_SALT"];
+  if (configured) return configured;
+  // Rule 28 fail closed: a shared hardcoded key would let any holder forge
+  // cross-merchant preview tokens. Allow the dev fallback ONLY on local dev /
+  // test; every other environment (production, preview deploys without env)
+  // throws instead of minting forgeable tokens.
+  const nodeEnv = process.env["NODE_ENV"];
+  const isProd =
+    nodeEnv === "production" ||
+    process.env["FRAMIQUE_ENV"] === "production" ||
+    process.env["VERCEL_ENV"] === "production";
+  if (
+    !isProd &&
+    (nodeEnv === "development" || nodeEnv === "test" || !nodeEnv)
+  ) {
+    return "framique-preview-dev";
+  }
+  throw new Error("PREVIEW_TOKEN_SECRET must be set in production");
 }

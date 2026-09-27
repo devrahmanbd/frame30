@@ -30,9 +30,25 @@ export const getStorefront = createServerFn({ method: "GET" })
         const { verifyPreviewToken, previewSecret } =
           await import("./theme-preview.server");
         preview = verifyPreviewToken(previewSecret(), data.previewToken);
+        if (!preview) {
+          // Rule 17: unverifiable tokens are observable (counter), but still
+          // fail closed to the published theme below.
+          const { incr } = await import("./observability.server");
+          incr("framique_preview_token_verify_failed_total", {
+            reason: "invalid",
+          });
+        }
       } catch {
-        // Unverifiable token: fall through to the published theme below.
+        // Unverifiable token: fail closed to published + count.
         preview = null;
+        try {
+          const { incr } = await import("./observability.server");
+          incr("framique_preview_token_verify_failed_total", {
+            reason: "error",
+          });
+        } catch {
+          // Observability must never break the storefront.
+        }
       }
     }
     const found = await loadStorefront(data.slug, preview);
@@ -303,9 +319,11 @@ export const resolveStorefrontHostFn = createServerFn({
 export const themePreviewHostGateFn = createServerFn({
   method: "GET",
 }).handler(async () => {
-  const { currentRequestHost, isThemePreviewHostAllowed } =
+  // Rule 28 shared path: loopback-aware preview host (not the strict
+  // custom-domain normalizer), with trusted XFH handling. Fail closed.
+  const { currentPreviewHost, isThemePreviewHostAllowed } =
     await import("./storefront-host.server");
-  return { allowed: isThemePreviewHostAllowed(currentRequestHost()) };
+  return { allowed: isThemePreviewHostAllowed(currentPreviewHost()) };
 });
 
 /**

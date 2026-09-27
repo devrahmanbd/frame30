@@ -108,10 +108,90 @@ export function currentRequestHost(): string | null {
   try {
     const req = getRequest();
     if (!req) return null;
-    const raw =
-      req.headers.get("x-forwarded-host")?.split(",")[0]?.trim() ??
-      req.headers.get("host");
-    return normalizeRequestHost(raw);
+    // Rule 2: XFH is attacker-controlled unless it agrees with Host.
+    // resolveEffectiveHost prefers Host on disagreement (spoof rejection).
+    const effective = resolveEffectiveHost({
+      host: req.headers.get("host"),
+      xForwardedHost: req.headers.get("x-forwarded-host"),
+      urlHost: null,
+    });
+    return normalizeRequestHost(effective);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Rule 2 — trusted effective host (pure, unit tested).
+ *
+ * `x-forwarded-host` is honored ONLY when it agrees with `host` (normalized
+ * equality, case/port/trailing-dot insensitive). On disagreement the Host
+ * header wins and XFH is ignored (spoof rejection, following the
+ * `x-framique-*` strip precedent in `server.ts`: client-supplied forwarding
+ * identity must never override the direct Host).
+ *
+ * All inputs are raw header values (may contain proxy chains, ports, case
+ * variance). Returns the light-normalized hostname or null.
+ */
+export function normalizeTrustedHostValue(
+  raw: string | null | undefined,
+): string | null {
+  if (!raw) return null;
+  let value = raw.split(",")[0]?.trim().toLowerCase() ?? "";
+  if (!value) return null;
+  if (value.includes("://")) return null;
+  value = value.replace(/\.$/, "");
+  if (value.includes(":")) {
+    const parts = value.split(":");
+    if (parts.length !== 2 || !parts[0] || !/^\d{1,5}$/.test(parts[1] ?? ""))
+      return null;
+    value = parts[0] ?? "";
+  }
+  if (value.startsWith("[") || value.endsWith("]")) return null;
+  if (!value || value.length > 253) return null;
+  // eslint-disable-next-line no-control-regex
+  if (/[\s\x00-\x1f\x7f/\\?#@]/.test(value)) return null;
+  if (!/^[a-z0-9._-]+$/.test(value)) return null;
+  return value || null;
+}
+
+export function resolveEffectiveHost(input: {
+  host: string | null | undefined;
+  xForwardedHost: string | null | undefined;
+  urlHost?: string | null | undefined;
+}): string | null {
+  const h = normalizeTrustedHostValue(input.host);
+  const xfh = normalizeTrustedHostValue(input.xForwardedHost);
+  const url = normalizeTrustedHostValue(input.urlHost ?? null);
+  if (h && xfh && h !== xfh) return h;
+  return xfh ?? h ?? url ?? null;
+}
+
+/**
+ * Rule 28 — preview-aware host normalization (shared edge + loader path).
+ *
+ * Unlike `normalizeRequestHost` (which rejects single-label names because
+ * custom domains always contain a dot), preview must accept genuine
+ * loopback (`localhost`, `127.0.0.1`) with optional `:port`, any case and a
+ * trailing FQDN dot. Injection / scheme / whitespace still reject to null.
+ */
+export function normalizePreviewHost(
+  raw: string | null | undefined,
+): string | null {
+  return normalizeTrustedHostValue(raw);
+}
+
+/** Request preview host (permissive loopback-aware, trusted XFH). Null outside a request. */
+export function currentPreviewHost(): string | null {
+  try {
+    const req = getRequest();
+    if (!req) return null;
+    const effective = resolveEffectiveHost({
+      host: req.headers.get("host"),
+      xForwardedHost: req.headers.get("x-forwarded-host"),
+      urlHost: null,
+    });
+    return normalizePreviewHost(effective);
   } catch {
     return null;
   }
@@ -216,16 +296,51 @@ export async function resolveStorefrontHostFor(
 ): Promise<StorefrontHostResolution | null> {
   if (!hostname) return null;
   if (isPlatformHost(hostname)) return null;
-  const row = await lookupDomainRow(hostname);
+  let row: Awaited<ReturnType<typeof lookupDomainRow>>;
+  try {
+    row = await lookupDomainRow(hostname);
+  } catch (err) {
+    // Rule 5/17: lookup failures are observable. Narrow fail-open applies
+    // only to timeouts (transient DB/Redis blip must not 404 every store);
+    // every other exception fails closed via the caller's unmapped-host gate.
+    // The distinction lives in server.ts (which sees the throw); here we
+    // count + log and rethrow so the gate can decide.
+    try {
+      const { incr, log } = await import("./observability.server");
+      incr("framique_storefront_host_lookup_error_total", {
+        host: hostname.slice(0, 40),
+      });
+      log("warn", "storefront.host_lookup_failed", {
+        host: hostname.slice(0, 80),
+        message: String((err as Error)?.message ?? err).slice(0, 160),
+      });
+    } catch {
+      // Observability must never break routing.
+    }
+    throw err;
+  }
   if (!row) {
     // Real-time completion path: traffic for an unverified hostname is the
     // merchant (or their first visitor) testing freshly pasted DNS. Kick one
     // coalesced verify→provision chain instead of waiting for a poll or a
     // button. Fire-and-forget — resolution itself never waits or fails.
+    // Coalescing lives in triggerEdgeVerify (per-host cooldown); failures
+    // are counted + logged (Rule 17) instead of swallowed.
     void import("./domains.server")
       .then((m) => m.triggerEdgeVerify(hostname))
-      .catch(() => {
+      .catch((err: unknown) => {
         // Serve first, verify later — a trigger must never break a request.
+        void import("./observability.server")
+          .then(({ incr, log }) => {
+            incr("framique_edge_verify_trigger_failed_total", {});
+            log("warn", "edge.verify_trigger_failed", {
+              host: hostname.slice(0, 80),
+              message: String((err as Error)?.message ?? err).slice(0, 160),
+            });
+          })
+          .catch(() => {
+            // Observability must never break routing.
+          });
       });
     return null;
   }
@@ -359,7 +474,9 @@ export async function isBlockedForeignStorePath(
 ): Promise<boolean> {
   const match = /^\/store\/([^/?#]+)/.exec(pathname);
   if (!match) return false;
-  const host = (hostname ?? "").toLowerCase();
+  // Reuse the shared strict normalization (Rule 28): port/case/trailing-dot
+  // and injection handling identical to the custom-host resolution path.
+  const host = normalizeRequestHost(hostname);
   if (
     !host ||
     isPlatformHost(host) ||
@@ -390,16 +507,10 @@ export async function isBlockedForeignStorePath(
 export function isThemePreviewHostAllowed(
   hostname: string | null | undefined,
 ): boolean {
-  if (!hostname) return false;
-  let host = hostname.trim().toLowerCase().replace(/\.$/, "");
-  // Strip a `:port` suffix (local dev servers); anything else with a colon
-  // (unbracketed IPv6 / garbage) is rejected.
-  if (host.includes(":")) {
-    const parts = host.split(":");
-    if (parts.length !== 2 || !parts[0] || !/^\d{1,5}$/.test(parts[1] ?? ""))
-      return false;
-    host = parts[0] ?? "";
-  }
+  // Single shared normalize-then-decide path (Rule 28): preview normalization
+  // is loopback-aware, so `localhost:3000`, `LOCALHOST`, `127.0.0.1` all
+  // resolve identically at the edge and in the loader gate.
+  const host = normalizePreviewHost(hostname);
   if (!host) return false;
   return isPlatformHost(host) || isLocalHostname(host);
 }
@@ -411,18 +522,19 @@ export function isThemePreviewHostAllowed(
  *
  * - Non-preview paths → false (signed `preview_token` split-preview flows,
  *   storefront, dashboard builder `?preview_theme_id=` all untouched).
- * - Null/empty host → false (fail open at the edge; the route loader gate
- *   fails closed separately, and the entry always has a host in practice).
+ * - Null/empty host → true (Rule 5 fail closed: an unestablished host must
+ *   never serve public blueprints; the loader gate also fails closed).
  */
 export function isBlockedThemePreview(
   hostname: string | null | undefined,
   pathname: string,
 ): boolean {
-  if (!hostname) return false;
   const path = pathname.split(/[?#]/, 1)[0] ?? "";
   if (path !== "/theme-preview" && !path.startsWith("/theme-preview/"))
     return false;
-  return !isThemePreviewHostAllowed(hostname);
+  const host = normalizePreviewHost(hostname);
+  if (!host) return true;
+  return !isThemePreviewHostAllowed(host);
 }
 
 /**

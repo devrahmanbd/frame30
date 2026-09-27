@@ -8,6 +8,7 @@ import {
 } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { consoleRoute } from "@/lib/console-routes";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -119,11 +120,17 @@ import {
 } from "@/lib/builder-workspace.functions";
 
 export const Route = createFileRoute("/_authenticated/dashboard/builder")({
+  // Route gate aligns with the Builder nav tabs (all themes.read): viewing
+  // the studio requires read; mutations enforce update/publish server-side.
+  staticData: consoleRoute({ permission: "themes.read" }),
   validateSearch: (search) =>
     z
       .object({
         // B1 (M-05): submenu homes redirect here with one of these keys;
         // aliases resolve to the closest real studio panel below.
+        // UI-only: invalid values fall back to "inspect" explicitly (never a
+        // dead panel, never a security decision — permissions ride staticData
+        // + server functions, not the panel key).
         panel: z
           .enum([
             "inspect",
@@ -142,7 +149,7 @@ export const Route = createFileRoute("/_authenticated/dashboard/builder")({
             "code",
           ])
           .optional()
-          .catch(undefined),
+          .catch("inspect"),
       })
       .parse(search),
   head: () => ({

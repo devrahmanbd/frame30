@@ -92,8 +92,12 @@ describe("isBlockedThemePreview", () => {
     ).toBe(false);
   });
 
-  it("leaves null hosts to downstream gates (never crashes)", () => {
-    expect(isBlockedThemePreview(null, "/theme-preview/x")).toBe(false);
+  it("blocks null hosts at the edge (Rule 5 fail closed — never serves blueprints without a host)", () => {
+    expect(isBlockedThemePreview(null, "/theme-preview/x")).toBe(true);
+    expect(isBlockedThemePreview(undefined, "/theme-preview/x")).toBe(true);
+    expect(isBlockedThemePreview("", "/theme-preview/x")).toBe(true);
+    // Non-preview paths still pass through (no host-gating outside previews).
+    expect(isBlockedThemePreview(null, "/store/x")).toBe(false);
   });
 });
 

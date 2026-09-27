@@ -8,12 +8,14 @@ import {
   personalizedNoStoreHeaders,
   storefrontCacheHeaders,
 } from "./lib/storefront-cache";
-import { isLocalHostname } from "./lib/edge-hosts";
+import { isLocalHostname, isPreviewDeployHost } from "./lib/edge-hosts";
 import {
   decideStoreRedirectForPath,
   isBlockedPathStorefront,
   isBlockedThemePreview,
+  normalizePreviewHost,
   normalizeRequestHost,
+  resolveEffectiveHost,
 } from "./lib/storefront-host.server";
 import { consoleSecurityHeaders, isConsolePath } from "./lib/console-headers";
 import {
@@ -90,16 +92,17 @@ function isH3SwallowedErrorBody(body: string): boolean {
 /**
  * Local development and preview hosts allow framing for design tools and dev preview;
  * production hosts enforce the strict framing denial policy.
+ *
+ * Rule 5: preview prefixes are platform-suffix-anchored (isPreviewDeployHost),
+ * so `preview.evil.com` does NOT relax framing — only genuine platform
+ * previews + loopback do.
  */
 function isEditorPreviewHost(request: Request): boolean {
   try {
     const { hostname } = new URL(request.url);
-    return (
-      hostname === "localhost" ||
-      hostname === "127.0.0.1" ||
-      hostname.startsWith("preview.") ||
-      hostname.startsWith("id-preview--")
-    );
+    const host = hostname.toLowerCase();
+    if (host === "localhost" || host === "127.0.0.1") return true;
+    return isPreviewDeployHost(host);
   } catch {
     return false;
   }
@@ -107,13 +110,14 @@ function isEditorPreviewHost(request: Request): boolean {
 
 /**
  * Resolve the risk tier for a request by looking up the merchant's stored
- * tier, theme/plugin provenance, and abuse signals. Returns 'low' when
- * no merchant is identified or on any failure (fail-open).
+ * tier, theme/plugin provenance, and abuse signals. Returns 'medium' when
+ * no merchant is identified or on any failure (Rule 5 restrictive fail
+ * closed — an unestablished tier must not grant low-tier privileges).
  */
 async function resolveRequestTier(
   merchantId?: string,
 ): Promise<{ tier: RiskTier; reasons: string[] }> {
-  if (!merchantId) return { tier: "low", reasons: [] };
+  if (!merchantId) return { tier: "medium", reasons: [] };
 
   try {
     const ctx = await getMerchantRiskContext(merchantId);
@@ -125,7 +129,7 @@ async function resolveRequestTier(
     });
     return { tier, reasons };
   } catch {
-    return { tier: "low", reasons: [] };
+    return { tier: "medium", reasons: [] };
   }
 }
 
@@ -161,7 +165,7 @@ function cspConnectOrigins(): string[] {
 export function withSecurityHeaders(
   request: Request,
   response: Response,
-  riskTier: RiskTier = "low",
+  riskTier: RiskTier = "medium",
 ): Response {
   const type = response.headers.get("content-type") ?? "";
   if (!type.includes("text/html")) return response;
@@ -387,11 +391,18 @@ export default {
       // order flows, and loopback dev — decided pure in
       // `isBlockedPathStorefront` so contract tests pin the matrix.
       try {
+        // Rule 2: XFH honored only on host+XFH agreement (spoof rejection).
+        // resolveEffectiveHost ignores a disagreeing XFH and uses Host.
+        const effectiveRawHost = resolveEffectiveHost({
+          host: request.headers.get("host"),
+          xForwardedHost: request.headers.get("x-forwarded-host"),
+          urlHost: url.host,
+        });
         const rawHost =
           request.headers.get("x-forwarded-host") ??
           request.headers.get("host") ??
           url.host;
-        const normalizedHost = normalizeRequestHost(rawHost);
+        const normalizedHost = normalizeRequestHost(effectiveRawHost);
         // Preview exemption is token-VERIFIED and merchant-bound (Sept
         // 2026): any ?preview_token= value used to lift both path gates.
         // A token minted for merchant A never exempts merchant B's paths.
@@ -414,50 +425,114 @@ export default {
                 );
                 validPreview = owner !== null && owner === payload.merchantId;
               }
+            } else {
+              try {
+                const { incr } = await import("./lib/observability.server");
+                incr("framique_preview_token_verify_failed_total", {
+                  reason: "invalid",
+                });
+              } catch {
+                // Observability must never break routing.
+              }
             }
           } catch {
             validPreview = false;
+            try {
+              const { incr } = await import("./lib/observability.server");
+              incr("framique_preview_token_verify_failed_total", {
+                reason: "error",
+              });
+            } catch {
+              // Observability must never break routing.
+            }
           }
         }
         // System-domain-only theme preview (Sept 2026 security fix):
         // `/theme-preview/*` renders blueprints with no session, so merchant
         // and unknown hosts get a bare 404 (no body, no leak — never a login
         // redirect from storefront paths). Local dev + platform hosts pass.
-        if (isBlockedThemePreview(normalizedHost, url.pathname)) {
+        // Rule 28: pass the RAW host — isBlockedThemePreview normalizes via
+        // the shared preview-aware path (loopback with port survives).
+        if (isBlockedThemePreview(effectiveRawHost ?? rawHost, url.pathname)) {
           const { incr } = await import("./lib/observability.server");
           incr("framique_theme_preview_blocked_total", {});
           return new Response(null, { status: 404 });
         }
         // Unmapped custom hosts serve nothing at all: not the CMS marketing
         // site, not a featured store, not an error page with a body. A bare
-        // 404 reveals nothing. Platform hosts, loopback dev, ephemeral
-        // preview deployments (same prefixes the HTTPS gate trusts) and
-        // mapped merchant hosts pass through untouched. Lookup failures
-        // fail OPEN (a DB blip must never take down every custom store);
-        // a definitive no-row blocks.
+        // 404 reveals nothing. Platform hosts, loopback dev, anchored
+        // preview deployments (platform-suffix-anchored, Rule 5) and mapped
+        // merchant hosts pass through untouched. Lookup timeouts fail OPEN
+        // (a DB blip must never take down every custom store); every other
+        // exception fails CLOSED (Rule 5) and is counted + logged (Rule 17).
         try {
           const { isPlatformHost, resolveStorefrontHostFor } =
             await import("./lib/storefront-host.server");
           const host = normalizedHost ?? "";
-          const previewDeploy =
-            host.startsWith("preview.") || host.startsWith("id-preview--");
+          const previewDeploy = host ? isPreviewDeployHost(host) : false;
           if (
             host &&
             !isPlatformHost(host) &&
             !isLocalHostname(host) &&
             !previewDeploy
           ) {
-            const mapped = await resolveStorefrontHostFor(host).catch(
-              () => "lookup-failed" as const,
-            );
+            let mapped:
+              | Awaited<ReturnType<typeof resolveStorefrontHostFor>>
+              | "lookup-failed"
+              | "lookup-timeout";
+            try {
+              mapped = await resolveStorefrontHostFor(host);
+            } catch (err) {
+              const msg = String((err as Error)?.message ?? err).toLowerCase();
+              const isTimeout =
+                msg.includes("timeout") ||
+                msg.includes("timed out") ||
+                msg.includes("etimedout") ||
+                msg.includes("57014") ||
+                msg.includes("fetch failed");
+              try {
+                const { incr, log } =
+                  await import("./lib/observability.server");
+                incr("framique_unmapped_host_lookup_error_total", {
+                  outcome: isTimeout ? "timeout_open" : "error_closed",
+                });
+                log("warn", "edge.unmapped_lookup_failed", {
+                  host: host.slice(0, 80),
+                  timeout: isTimeout,
+                  message: String((err as Error)?.message ?? err).slice(0, 160),
+                });
+              } catch {
+                // Observability must never break routing.
+              }
+              mapped = isTimeout ? "lookup-timeout" : "lookup-failed";
+            }
             if (mapped === null) {
               const { incr } = await import("./lib/observability.server");
               incr("framique_unmapped_host_blocked_total", {});
               return new Response(null, { status: 404 });
             }
+            if (mapped === "lookup-failed") {
+              // Fail closed on non-timeout exceptions (Rule 5).
+              const { incr } = await import("./lib/observability.server");
+              incr("framique_unmapped_host_blocked_total", {});
+              return new Response(null, { status: 404 });
+            }
+            // "lookup-timeout" falls through (narrow fail-open).
           }
-        } catch {
-          // Fail open: fall through to normal routing.
+        } catch (err) {
+          // Outer gate exception: fail closed is unsafe here (would 404 all
+          // traffic on a coding bug), so fall through — but count + log
+          // (Rule 17) instead of swallowing silently.
+          try {
+            const { incr, log } = await import("./lib/observability.server");
+            incr("framique_edge_gate_error_total", {});
+            log("error", "edge.gate_failed_open", {
+              path: url.pathname.slice(0, 80),
+              message: String((err as Error)?.message ?? err).slice(0, 160),
+            });
+          } catch {
+            // Observability must never break routing.
+          }
         }
         if (
           isBlockedPathStorefront(normalizedHost, url.pathname, validPreview)
@@ -514,7 +589,7 @@ export default {
             await import("./lib/storefront-host.server");
           if (
             await isBlockedForeignStorePath(
-              normalizeRequestHost(rawHost),
+              effectiveRawHost ?? rawHost,
               url.pathname,
             )
           ) {
@@ -525,8 +600,18 @@ export default {
             return new Response(null, { status: 404 });
           }
         }
-      } catch {
-        // A gate failure must never break routing — fall through to SSR.
+      } catch (err) {
+        // A gate failure must never break routing — fall through to SSR —
+        // but count + log (Rule 17) instead of swallowing silently.
+        try {
+          const { incr, log } = await import("./lib/observability.server");
+          incr("framique_edge_gate_error_total", {});
+          log("error", "edge.gate_failed_open", {
+            message: String((err as Error)?.message ?? err).slice(0, 160),
+          });
+        } catch {
+          // Observability must never break routing.
+        }
       }
 
       // NOTE (custom-domain cutover, completed): every custom-shape path now
@@ -544,14 +629,14 @@ export default {
         url.protocol.replace(":", "");
       // Exact-match local check only (REPORT WF-10): a substring test would
       // treat attacker hosts like `localhost.evil.com` as local and disable
-      // HTTPS + CSRF protection for them.
+      // HTTPS + CSRF protection for them. Preview bypass is
+      // platform-suffix-anchored (Rule 5): `preview.evil.com` stays HTTPS.
       const isLocalhost = isLocalHostname(url.hostname);
 
       if (
         proto === "http" &&
         !isLocalhost &&
-        !url.hostname.startsWith("preview.") &&
-        !url.hostname.startsWith("id-preview--")
+        !isPreviewDeployHost(url.hostname)
       ) {
         return Response.redirect(
           `https://${url.host}${url.pathname}${url.search}`,
@@ -571,15 +656,23 @@ export default {
           !url.pathname.startsWith("/api/canary-alert")
         ) {
           const origin = request.headers.get("origin");
+          // Rule 2: CSRF host uses the trusted effective host (XFH only on
+          // host+XFH agreement; spoofed XFH is ignored).
           const host =
-            request.headers.get("x-forwarded-host") ||
-            request.headers.get("host") ||
-            url.host;
+            resolveEffectiveHost({
+              host: request.headers.get("host"),
+              xForwardedHost: request.headers.get("x-forwarded-host"),
+              urlHost: url.host,
+            }) ?? url.host;
 
           if (origin) {
             let originHost: string;
             try {
-              originHost = new URL(origin).host;
+              // Normalize port/case like the request host so same-origin
+              // with explicit :443/:3000 still matches (Rule 28 shared path).
+              const rawOrigin = new URL(origin).host;
+              originHost =
+                normalizePreviewHost(rawOrigin) ?? rawOrigin.toLowerCase();
             } catch {
               return new Response("CSRF check failed (invalid origin)", {
                 status: 403,
@@ -590,7 +683,7 @@ export default {
               const { isTrustedCsrfOrigin, lookupActiveMerchantDomain } =
                 await import("./lib/csrf.server");
               const trusted = await isTrustedCsrfOrigin({
-                requestHost: host,
+                requestHost: normalizePreviewHost(host) ?? host.toLowerCase(),
                 originHost,
                 pathname: url.pathname,
                 lookupCustomDomain: lookupActiveMerchantDomain,
@@ -605,8 +698,12 @@ export default {
             const referer = request.headers.get("referer");
             if (referer) {
               try {
-                const refererHost = new URL(referer).host;
-                if (refererHost !== host && !isLocalhost) {
+                const rawReferer = new URL(referer).host;
+                const refererHost =
+                  normalizePreviewHost(rawReferer) ?? rawReferer.toLowerCase();
+                const normHost =
+                  normalizePreviewHost(host) ?? host.toLowerCase();
+                if (refererHost !== normHost && !isLocalhost) {
                   return new Response("CSRF check failed (referer mismatch)", {
                     status: 403,
                   });

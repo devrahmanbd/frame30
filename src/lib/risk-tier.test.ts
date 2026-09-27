@@ -127,9 +127,10 @@ describe("risk-tier", () => {
       expect(result.tier).toBe("medium");
     });
 
-    it("falls back to low when no signals and no stored tier", () => {
+    it("falls back to medium (restrictive) when no signals and no stored tier", () => {
+      // Rule 5: an unestablished tier must not grant low-tier privileges.
       const result = resolveTierFromSignals({});
-      expect(result.tier).toBe("low");
+      expect(result.tier).toBe("medium");
     });
   });
 
