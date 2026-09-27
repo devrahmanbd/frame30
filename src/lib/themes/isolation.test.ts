@@ -12,13 +12,11 @@
  *     `src/components/store/StoreHeader.tsx` nor
  *     `src/components/builder/chrome.tsx` may mention `songoskriti` /
  *     `somvabona` in any casing. The key-driven registration inside
- *     `src/components/store/theme-chrome.ts` is config, not theme code,
- *     so that file is deliberately NOT scanned.
- *     NOTE (base moved vs the reference branch): on current main
- *     StoreHeader.tsx still carries songoskriti-branched rendering — that
- *     de-branding is Task 2 of this plan, so this guard pins chrome.tsx
- *     clean now and StoreHeader.tsx coverage lands with Task 2. The
- *     assertion below documents the split instead of failing the suite.
+ *     `src/components/store/theme-chrome.ts` (and the Task 2 lookup in
+ *     `src/components/store/theme-header.ts`) is config, not theme code,
+ *     so those files are deliberately NOT scanned. Theme-owned fallback
+ *     data lives under `src/lib/themes/<theme>/` and reaches shared
+ *     chrome only through that config.
  * (d) The `?focus=` contract + generic fallback are pinned by the existing
  *     ThemePreviewFrame / theme-preview-nav suites — run, not duplicated.
  */
@@ -123,7 +121,10 @@ describe("theme isolation", () => {
   });
 
   it("shared chrome holds zero per-theme literals", () => {
-    const chromeFiles = ["src/components/builder/chrome.tsx"];
+    const chromeFiles = [
+      "src/components/builder/chrome.tsx",
+      "src/components/store/StoreHeader.tsx",
+    ];
     const offenders: string[] = [];
     for (const rel of chromeFiles) {
       const src = readFileSync(join(ROOT, rel), "utf8");
@@ -131,13 +132,5 @@ describe("theme isolation", () => {
       if (hits.length > 0) offenders.push(`${rel}: ${hits.length} hit(s)`);
     }
     expect(offenders).toEqual([]);
-    // StoreHeader.tsx still branches on songoskriti on current main; its
-    // zero-literal assertion lands with the Task 2 de-branding. Pinned here
-    // as documentation so the gap is visible, not silent.
-    const headerSrc = readFileSync(
-      join(ROOT, "src/components/store/StoreHeader.tsx"),
-      "utf8",
-    );
-    expect(headerSrc).toContain("songoskriti");
   });
 });

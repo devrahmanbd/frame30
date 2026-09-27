@@ -9,7 +9,7 @@ import { useLang } from "@/lib/i18n";
 import { flattenAst } from "@/lib/builder-ast";
 import { rebaseMenuHref } from "@/lib/menus/menu";
 import { isCustomHostPath } from "@/lib/storefront-url";
-import { SONGOSKRITI_MEGA_MENU } from "@/components/store/StoreHeader";
+import { SONGOSKRITI_MEGA_MENU } from "@/lib/themes/songoskriti/header-fallback";
 import { SlidersHorizontal, ChevronDown, X } from "lucide-react";
 import { buildCollectionArchetype } from "@/lib/themes/songoskriti/archetypes";
 import type { getStoreCollection } from "@/lib/storefront.functions";

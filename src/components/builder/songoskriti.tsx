@@ -58,12 +58,6 @@ import { placeholderSeed } from "@/lib/placeholder";
 import { parseLinkList } from "./chrome";
 import { formatDisplayMoney } from "@/lib/money-display";
 import { Instagram, Facebook, Twitter } from "lucide-react";
-import {
-  STATEMENT,
-  NEWSLETTER,
-  PAYMENT_MARKS,
-  COLOPHON,
-} from "@/lib/footer-copy";
 import { PaymentMark } from "@/components/store/PaymentMarks";
 import {
   ChevronDown,
@@ -1028,75 +1022,123 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
             links: parseLinkList(str(`c${n}Links`)),
           }))
           .filter((col) => col.title || col.links.length > 0);
-  const statementHeading = locale === "bn" ? STATEMENT.heading_bn : STATEMENT.heading;
-  const statementBody = locale === "bn" ? STATEMENT.body_bn : STATEMENT.body;
-  const nlHeading = locale === "bn" ? NEWSLETTER.heading_bn : NEWSLETTER.heading;
-  const nlButton = locale === "bn" ? NEWSLETTER.buttonLabel_bn : NEWSLETTER.buttonLabel;
-  const nlConsent = locale === "bn" ? NEWSLETTER.consentText_bn : NEWSLETTER.consentText;
-  const paymentHeading = locale === "bn" ? "পেমেন্ট মাধ্যম" : "Payment methods";
-  const brandName = locale === "bn" ? "সংস্কৃতি" : "Songoskriti";
+  // Brand zones are theme-authored props (with `_bn` twins resolved through
+  // `str`), never hardcoded imports: a bare section renders generic chrome
+  // only. Each zone renders only when its heading prop is authored.
+  const statementHeading = str("statementHeading");
+  const statementBody = str("statementBody");
+  const storyHref = str("storyHref") || "/pages/about";
+  const storyLabel =
+    str("storyLabel") || t(locale, "OUR STORY →", "আমাদের গল্প →");
+  const newsletterHeading = str("newsletterHeading");
+  const newsletterButton = str("newsletterButton") || "Subscribe";
+  const newsletterConsent = str("newsletterConsent");
+  const brandName = str("brandName");
+  const paymentMarks = str("paymentsMarks")
+    .split(/[,\n]+/)
+    .map((m) => m.trim())
+    .filter(Boolean)
+    .slice(0, 12);
+  const paymentHeading =
+    str("paymentsHeading") || t(locale, "Payment methods", "পেমেন্ট মাধ্যম");
 
   return (
     <section className="w-full flex flex-col pt-10 sm:pt-20">
-      {/* ZONE 1: Brand closing statement */}
-      <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-16 sm:mb-24 flex flex-col md:flex-row items-start justify-between gap-8">
-        <h2 className="font-serif text-[40px] sm:text-[56px] lg:text-[72px] font-light leading-[1.1] tracking-[0.01em] text-[var(--theme-ink)] max-w-3xl">
-          {statementHeading}
-        </h2>
-        <div className="flex flex-col md:items-end text-left md:text-right max-w-xs mt-2 md:mt-4">
-          <p className="font-serif text-[15px] sm:text-[18px] font-light leading-relaxed text-[var(--theme-ink)]/70 mb-4">
-            {statementBody}
-          </p>
-          <a href={link("/pages/about")} className="text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)] hover:opacity-70 transition-opacity">
-            {locale === "bn" ? "আমাদের গল্প →" : "OUR STORY →"}
-          </a>
+      {/* ZONE 1: Brand closing statement (theme-authored, skipped when empty) */}
+      {statementHeading && (
+        <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-16 sm:mb-24 flex flex-col md:flex-row items-start justify-between gap-8">
+          <h2 className="font-serif text-[40px] sm:text-[56px] lg:text-[72px] font-light leading-[1.1] tracking-[0.01em] text-[var(--theme-ink)] max-w-3xl">
+            {statementHeading}
+          </h2>
+          <div className="flex flex-col md:items-end text-left md:text-right max-w-xs mt-2 md:mt-4">
+            {statementBody && (
+              <p className="font-serif text-[15px] sm:text-[18px] font-light leading-relaxed text-[var(--theme-ink)]/70 mb-4">
+                {statementBody}
+              </p>
+            )}
+            <a
+              href={link(storyHref)}
+              className="text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)] hover:opacity-70 transition-opacity"
+            >
+              {storyLabel}
+            </a>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* ZONE 2: Newsletter */}
-      <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-20 sm:mb-32">
-        <div className="border-t border-b border-[var(--theme-border)] py-10 sm:py-16 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-16">
-          <div className="w-full lg:w-1/2">
-            <h3 className="font-serif text-[24px] sm:text-[32px] font-light tracking-[0.02em] text-[var(--theme-ink)] uppercase">
-              {nlHeading}
-            </h3>
-          </div>
-          <div className="w-full lg:w-1/2 max-w-lg">
-            <form className="flex flex-col sm:flex-row items-center gap-3 w-full" method="post" action="#newsletter">
-              <input
-                name="email" type="email" required
-                className="h-12 w-full flex-1 rounded-none border-b border-[var(--theme-border)] bg-transparent px-2 py-2 text-[13px] outline-none transition-colors placeholder:text-[var(--theme-ink)]/30 focus:border-[var(--theme-ink)]"
-                placeholder={locale === "bn" ? "ইমেইল লিখুন" : "Enter your email"}
-              />
-              <button
-                type="submit"
-                className="h-12 w-full sm:w-auto px-8 bg-[var(--theme-ink)] text-[var(--theme-surface)] text-[11px] font-medium uppercase tracking-[0.2em] hover:bg-[var(--theme-ink)]/90 transition-colors flex-shrink-0"
+      {/* ZONE 2: Newsletter (theme-authored, skipped when empty) */}
+      {newsletterHeading && (
+        <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-20 sm:mb-32">
+          <div className="border-t border-b border-[var(--theme-border)] py-10 sm:py-16 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-16">
+            <div className="w-full lg:w-1/2">
+              <h3 className="font-serif text-[24px] sm:text-[32px] font-light tracking-[0.02em] text-[var(--theme-ink)] uppercase">
+                {newsletterHeading}
+              </h3>
+            </div>
+            <div className="w-full lg:w-1/2 max-w-lg">
+              <form
+                className="flex flex-col sm:flex-row items-center gap-3 w-full"
+                method="post"
+                action="#newsletter"
               >
-                {nlButton}
-              </button>
-            </form>
-            <p className="mt-4 text-[10px] text-[var(--theme-ink)]/40 uppercase tracking-widest text-left">
-              {nlConsent}
-            </p>
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  className="h-12 w-full flex-1 rounded-none border-b border-[var(--theme-border)] bg-transparent px-2 py-2 text-[13px] outline-none transition-colors placeholder:text-[var(--theme-ink)]/30 focus:border-[var(--theme-ink)]"
+                  placeholder={
+                    locale === "bn" ? "ইমেইল লিখুন" : "Enter your email"
+                  }
+                />
+                <button
+                  type="submit"
+                  className="h-12 w-full sm:w-auto px-8 bg-[var(--theme-ink)] text-[var(--theme-surface)] text-[11px] font-medium uppercase tracking-[0.2em] hover:bg-[var(--theme-ink)]/90 transition-colors flex-shrink-0"
+                >
+                  {newsletterButton}
+                </button>
+              </form>
+              {newsletterConsent && (
+                <p className="mt-4 text-[10px] text-[var(--theme-ink)]/40 uppercase tracking-widest text-left">
+                  {newsletterConsent}
+                </p>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* ZONE 3: Utility navigation/contact matrix */}
       <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-20 sm:mb-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-          {/* LEFT: Brand identity & social */}
-          <div className="lg:col-span-4 flex flex-col pb-8 lg:pb-0 border-b border-[var(--theme-border)] lg:border-none">
-            <span className="font-serif text-[28px] sm:text-[36px] text-[var(--theme-ink)] tracking-wider mb-6">
-              {brandName}
-            </span>
-            <div className="flex items-center gap-4 text-[var(--theme-ink)]/60">
-              <a href="#" className="hover:text-[var(--theme-ink)] transition-colors"><Instagram size={18} /></a>
-              <a href="#" className="hover:text-[var(--theme-ink)] transition-colors"><Facebook size={18} /></a>
-              <a href="#" className="hover:text-[var(--theme-ink)] transition-colors"><Twitter size={18} /></a>
+          {/* LEFT: Brand identity & social (theme-authored, skipped when empty) */}
+          {brandName && (
+            <div className="lg:col-span-4 flex flex-col pb-8 lg:pb-0 border-b border-[var(--theme-border)] lg:border-none">
+              <span className="font-serif text-[28px] sm:text-[36px] text-[var(--theme-ink)] tracking-wider mb-6">
+                {brandName}
+              </span>
+              <div className="flex items-center gap-4 text-[var(--theme-ink)]/60">
+                <a
+                  href="#"
+                  className="hover:text-[var(--theme-ink)] transition-colors"
+                >
+                  <Instagram size={18} />
+                </a>
+                <a
+                  href="#"
+                  className="hover:text-[var(--theme-ink)] transition-colors"
+                >
+                  <Facebook size={18} />
+                </a>
+                <a
+                  href="#"
+                  className="hover:text-[var(--theme-ink)] transition-colors"
+                >
+                  <Twitter size={18} />
+                </a>
+              </div>
             </div>
-          </div>
-          
+          )}
+
           {/* CENTER & RIGHT: Navigation columns */}
           <div className="lg:col-span-8 grid grid-cols-1 min-[400px]:grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-4 lg:gap-12">
             {columns.map((col) => (
@@ -1125,22 +1167,34 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
       {/* ZONE 4: Payments & Legal */}
       <div className="border-t border-[var(--theme-border)]">
         <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 py-6 sm:py-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
-            <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
-              {paymentHeading}
-            </span>
-            <ul className="flex flex-wrap items-center justify-center gap-2">
-              {PAYMENT_MARKS.split(/[,\n]+/).map(m => m.trim()).filter(Boolean).slice(0,12).map((mark) => (
-                <li key={mark}>
-                  <PaymentMark mark={mark} />
-                </li>
-              ))}
-            </ul>
-          </div>
+          {paymentMarks.length > 0 && (
+            <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
+                {paymentHeading}
+              </span>
+              <ul className="flex flex-wrap items-center justify-center gap-2">
+                {paymentMarks.map((mark) => (
+                  <li key={mark}>
+                    <PaymentMark mark={mark} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="flex flex-wrap items-center gap-4 sm:gap-8 text-[11px] font-medium uppercase tracking-[0.1em] text-[var(--theme-ink)]/50 w-full md:w-auto justify-center md:justify-end">
-            <span>© 2026 {brandName}</span>
-            <a href={link("/pages/terms")} className="hover:text-[var(--theme-ink)] transition-colors">Terms</a>
-            <a href={link("/pages/privacy")} className="hover:text-[var(--theme-ink)] transition-colors">Privacy</a>
+            <span>© 2026{brandName ? ` ${brandName}` : ""}</span>
+            <a
+              href={link("/pages/terms")}
+              className="hover:text-[var(--theme-ink)] transition-colors"
+            >
+              Terms
+            </a>
+            <a
+              href={link("/pages/privacy")}
+              className="hover:text-[var(--theme-ink)] transition-colors"
+            >
+              Privacy
+            </a>
           </div>
         </div>
       </div>
@@ -1867,22 +1921,28 @@ const SongoskritiCollectionStory: WidgetComponent = ({
 const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
   const heading = str("heading");
   const subhead = str("subhead");
+  // Social handle is theme-authored (songoskriti homepage owns the brand
+  // handle); the generic fallback names no brand and links nowhere.
+  const handleLabel =
+    str("handleLabel") || t(locale, "Follow us", "অনুসরণ করুন");
+  const handleHref = str("handleHref") || "https://instagram.com";
   const rawImages = (str("images") || "")
     .split(",")
     .map((i) => i.trim())
     .filter(Boolean);
-    
-  const displayImages = rawImages.length >= 6 
-    ? rawImages 
-    : [
-        ...rawImages,
-        "/ph/songoskriti/ugc-1.png",
-        "/ph/songoskriti/ugc-2.png",
-        "/ph/songoskriti/ugc-3.png",
-        "/ph/songoskriti/ugc-4.png",
-        "/ph/songoskriti/ugc-1.png",
-        "/ph/songoskriti/ugc-2.png"
-      ].slice(0, 6);
+
+  // Imageless fallback is a neutral placeholder tile, never brand art.
+  const displayImages =
+    rawImages.length >= 6
+      ? rawImages
+      : [
+          ...rawImages,
+          ...Array.from(
+            { length: 6 - rawImages.length },
+            (_, i) =>
+              `/api/public/ph/${placeholderSeed(`ugc-${rawImages.length + i}`)}`,
+          ),
+        ];
 
   const scope = useRef<HTMLElement | null>(null);
   useSongoskritiReveals(scope, true);
@@ -1901,12 +1961,12 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
           </h2>
         )}
         <a
-          href="https://instagram.com"
+          href={handleHref}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 text-[11px] sm:text-[13px] font-medium uppercase tracking-[0.15em] text-[var(--theme-ink)] border-b border-[var(--theme-ink)]/30 pb-1 hover:border-[var(--theme-ink)] transition-colors"
         >
-          Follow @SONGOSKRITI
+          {handleLabel}
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
           </svg>
@@ -1929,7 +1989,11 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
               />
               <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-500 flex items-center justify-center opacity-0 hover:opacity-100">
                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30 transform translate-y-4 hover:translate-y-0 transition-all duration-500">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                       <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                     </svg>
                  </div>
@@ -1943,33 +2007,42 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
 };
 
 const SongoskritiStoreLocator: WidgetComponent = ({ str, locale }) => {
+  // Heading/eyebrow fall back to generic chrome, never a brand name; the
+  // songoskriti homepage authors its own heading. Store images resolve
+  // per-store (`sNImage`), then the authored `images` list, then a neutral
+  // placeholder tile — never brand art.
   const heading =
-    str("heading") ||
-    (locale === "bn" ? "আমাদের স্টোরসমূহ" : "VISIT SONGOSKRITI");
+    str("heading") || t(locale, "Visit our stores", "আমাদের স্টোরসমূহ");
+  const eyebrow = str("eyebrow") || t(locale, "OUR STORES", "আমাদের শাখাসমূহ");
+  const listImages = (str("images") || "")
+    .split(",")
+    .map((i) => i.trim())
+    .filter(Boolean);
+  const imageFor = (n: number, name: string) =>
+    str(`s${n}Image`) ||
+    listImages[n - 1] ||
+    `/api/public/ph/${placeholderSeed(`store-${name || n}`)}`;
   const stores = [1, 2, 3]
     .map((n) => ({
       name: str(`s${n}Name`),
       hours: str(`s${n}Hours`),
+      image: "",
+      n,
     }))
-    .filter((s) => s.name);
+    .filter((s) => s.name)
+    .map((s) => ({ ...s, image: imageFor(s.n, s.name) }));
 
   const scope = useRef<HTMLElement | null>(null);
   useSongoskritiReveals(scope, true);
 
   if (stores.length === 0) return null;
 
-  const STORE_IMAGES = [
-    "/ph/songoskriti/cat-women.png",
-    "/ph/songoskriti/cat-men.png",
-    "/ph/songoskriti/hero-festive.png",
-  ];
-
   return (
     <section ref={scope} data-songoskriti-reveal className="py-16 sm:py-24 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="text-center mb-14">
           <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--theme-ink)]/40 mb-3">
-            {locale === "bn" ? "আমাদের শাখাসমূহ" : "OUR STORES"}
+            {eyebrow}
           </p>
           <h2 className="font-serif text-[28px] sm:text-[40px] font-light text-[var(--theme-ink)]">
             {heading}
@@ -1980,7 +2053,7 @@ const SongoskritiStoreLocator: WidgetComponent = ({ str, locale }) => {
             <div key={i} className="group flex flex-col">
               <div className="aspect-[4/3] overflow-hidden bg-[var(--theme-muted)] mb-6">
                 <img
-                  src={STORE_IMAGES[i % STORE_IMAGES.length]}
+                  src={store.image}
                   alt={store.name}
                   className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.04]"
                   loading="lazy"

@@ -48,7 +48,8 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
   };
 });
 
-import { StoreHeader, songoskritiMenuLabel } from "./StoreHeader";
+import { StoreHeader } from "./StoreHeader";
+import { songoskritiMenuLabel } from "@/lib/themes/songoskriti/header-fallback";
 import type { MenuNode, StoreMenus } from "@/lib/menus/menu";
 import { LanguageProvider } from "@/lib/i18n";
 
@@ -147,7 +148,7 @@ describe("StoreHeader wishlist link", () => {
     expect(src).toContain('to="/account"');
     expect(src).toContain('to="/store/$slug/account"');
     expect(src).toContain('search={{ tab: "wishlist" }}');
-    expect(src).toContain('t("Wishlist","উইশলিস্ট")');
+    expect(src).toContain('t("Wishlist", "উইশলিস্ট")');
   });
 
   it("wishlist-card exposes a header hook gated on sign-in; styles define the pop keyframes", () => {
@@ -242,9 +243,15 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
     ).toBe("Unmapped Label");
   });
 
-  it("keeps the songoskriti chrome: announcement bar, image panel, mobile accordion, 44px targets", () => {
+  it("keeps the luxury chrome: announcement bar, image panel, mobile accordion, 44px targets", () => {
+    // Brand copy lives in the theme-owned header-fallback module; the
+    // shared header resolves it through key-driven config.
+    const fallbackSrc = readFileSync(
+      "src/lib/themes/songoskriti/header-fallback.ts",
+      "utf8",
+    );
+    expect(fallbackSrc).toContain("EASY 7-DAY EXCHANGE");
     const src = HEADER_SRC();
-    expect(src).toContain("EASY 7-DAY EXCHANGE");
     expect(src).toContain("expandedMobileMenu");
     expect(src).toContain("min-h-[44px]");
     expect(src).toContain("motion-safe:");
