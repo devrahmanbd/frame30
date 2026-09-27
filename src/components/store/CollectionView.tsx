@@ -68,17 +68,25 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   } else if (["women", "men", "kids"].includes(collection.slug)) {
     collectionType = "department";
     hasSubnav = true;
-    showHero = true;
-    if (collection.slug === "women")
-      heroImage = "/ph/songoskriti/songoskriti-hero.jpg";
-    if (collection.slug === "men") heroImage = "/ph/songoskriti/cat-men.png";
+    // Fix round: the songoskriti brand heroes follow the installed theme
+    // key — a foreign theme on these slugs gets the generic grid, never
+    // theme art. (kids sets no image either way; showHero stays false.)
+    if (isSongoskriti) {
+      showHero = true;
+      if (collection.slug === "women")
+        heroImage = "/ph/songoskriti/songoskriti-hero.jpg";
+      if (collection.slug === "men") heroImage = "/ph/songoskriti/cat-men.png";
+    }
   } else if (
     ["festive", "wedding", "eid", "heritage"].includes(collection.slug)
   ) {
     collectionType = "campaign";
     hasSubnav = true;
-    showHero = true;
-    heroImage = "/ph/songoskriti/hero-festive.png";
+    // Fix round: same key gate as above — campaign art is theme-owned.
+    if (isSongoskriti) {
+      showHero = true;
+      heroImage = "/ph/songoskriti/hero-festive.png";
+    }
   } else {
     // normal category like sarees, panjabi
     hasSubnav = true; // might have sibling/children
