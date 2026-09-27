@@ -49,7 +49,7 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 });
 
 import { MinimalCheckoutHeader, StoreHeader } from "./StoreHeader";
-import { themeHeaderFor } from "./theme-header";
+import { themeChromeFor } from "./theme-chrome";
 import { songoskritiMenuLabel } from "@/lib/themes/songoskriti/header-fallback";
 import type { MenuNode, StoreMenus } from "@/lib/menus/menu";
 import { LanguageProvider } from "@/lib/i18n";
@@ -77,6 +77,7 @@ function dbNode(
 function renderHeader({
   slug = "demo",
   name = "Demo",
+  themeKey,
   wishlistItems,
   pathname = "/store/demo",
   menus,
@@ -84,6 +85,7 @@ function renderHeader({
 }: {
   slug?: string;
   name?: string;
+  themeKey?: string | null;
   wishlistItems?: Array<{ variantId: string }>;
   pathname?: string;
   menus?: Pick<StoreMenus, "header" | "mobile">;
@@ -103,7 +105,12 @@ function renderHeader({
   const ui: ReactElement = (
     <QueryClientProvider client={client}>
       <LanguageProvider initialLang={initialLang}>
-        <StoreHeader slug={slug} name={name} menus={menus} />
+        <StoreHeader
+          slug={slug}
+          name={name}
+          menus={menus}
+          themeKey={themeKey}
+        />
       </LanguageProvider>
     </QueryClientProvider>
   );
@@ -163,7 +170,11 @@ describe("StoreHeader wishlist link", () => {
 
 describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", () => {
   it("falls back to the hardcoded tree for songoskriti-shaped stores with no dashboard menu", () => {
-    const html = renderHeader({ slug: "songoskriti", name: "Songoskriti" });
+    const html = renderHeader({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      themeKey: "songoskriti",
+    });
     expect(html).toContain("Women");
     expect(html).toContain("/store/songoskriti/c/women");
     expect(html).toContain("New Arrivals");
@@ -171,12 +182,15 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
 
   it("dashboard header menus win over the fallback on songoskriti stores", () => {
     const menus = {
-      header: [dbNode({ id: "db-1", label: "Dashboard Custom", url: "/c/custom" })],
+      header: [
+        dbNode({ id: "db-1", label: "Dashboard Custom", url: "/c/custom" }),
+      ],
       mobile: [],
     };
     const html = renderHeader({
       slug: "songoskriti",
       name: "Songoskriti",
+      themeKey: "songoskriti",
       menus,
     });
     expect(html).toContain("Dashboard Custom");
@@ -216,6 +230,7 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
     const html = renderHeader({
       slug: "songoskriti",
       name: "Songoskriti",
+      themeKey: "songoskriti",
       menus,
       initialLang: "bn",
     });
@@ -227,6 +242,7 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
     const html = renderHeader({
       slug: "songoskriti",
       name: "Songoskriti",
+      themeKey: "songoskriti",
       initialLang: "bn",
     });
     expect(html).toContain("মহিলা");
@@ -257,13 +273,18 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
     expect(src).toContain("min-h-[44px]");
     expect(src).toContain("motion-safe:");
     expect(src).toContain("motion-reduce:transition-none");
-    const html = renderHeader({ slug: "songoskriti", name: "Songoskriti" });
+    const html = renderHeader({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      themeKey: "songoskriti",
+    });
     expect(html).toContain("EASY 7-DAY EXCHANGE");
     // Header fallback renders the mega panel affordance for entries with children.
     expect(html).toContain("Shop Women");
     const bnHtml = renderHeader({
       slug: "songoskriti",
       name: "Songoskriti",
+      themeKey: "songoskriti",
       initialLang: "bn",
     });
     expect(bnHtml).toContain("কেনাকাটা");
@@ -273,11 +294,13 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
 function renderMinimal({
   slug = "demo",
   name = "Demo",
+  themeKey,
   pathname = "/store/demo",
   initialLang = "en",
 }: {
   slug?: string;
   name?: string;
+  themeKey?: string | null;
   pathname?: string;
   initialLang?: "en" | "bn";
 } = {}) {
@@ -286,16 +309,16 @@ function renderMinimal({
   const ui: ReactElement = (
     <QueryClientProvider client={client}>
       <LanguageProvider initialLang={initialLang}>
-        <MinimalCheckoutHeader slug={slug} name={name} />
+        <MinimalCheckoutHeader slug={slug} name={name} themeKey={themeKey} />
       </LanguageProvider>
     </QueryClientProvider>
   );
   return renderToStaticMarkup(ui);
 }
 
-describe("StoreHeader songoskriti chrome resolves through themeHeaderFor", () => {
-  it("themeHeaderFor returns the theme-owned logo + announcement for the songoskriti slug", () => {
-    const chrome = themeHeaderFor("songoskriti", "Songoskriti");
+describe("StoreHeader songoskriti chrome resolves through themeChromeFor", () => {
+  it("themeChromeFor returns the theme-owned logo + announcement for the songoskriti key", () => {
+    const chrome = themeChromeFor("songoskriti");
     expect(chrome).not.toBeNull();
     expect(chrome!.logo).toEqual({
       src: "/ph/songoskriti/logo-lockup.svg",
@@ -309,9 +332,13 @@ describe("StoreHeader songoskriti chrome resolves through themeHeaderFor", () =>
     expect(chrome!.fallbackMenu.length).toBeGreaterThan(0);
   });
 
-  it("renders the announcement copy + logo lockup from themeHeaderFor (not hardcoded)", () => {
-    const chrome = themeHeaderFor("songoskriti", "Songoskriti")!;
-    const html = renderHeader({ slug: "songoskriti", name: "Songoskriti" });
+  it("renders the announcement copy + logo lockup from themeChromeFor (not hardcoded)", () => {
+    const chrome = themeChromeFor("songoskriti")!;
+    const html = renderHeader({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      themeKey: "songoskriti",
+    });
     // Values flow through the key-driven lookup: assert the resolved
     // values, so a theme copy change fails here instead of silently
     // passing against stale literals.
@@ -322,6 +349,7 @@ describe("StoreHeader songoskriti chrome resolves through themeHeaderFor", () =>
     const bnHtml = renderHeader({
       slug: "songoskriti",
       name: "Songoskriti",
+      themeKey: "songoskriti",
       initialLang: "bn",
     });
     expect(bnHtml).toContain(chrome.logo.src);
@@ -329,7 +357,7 @@ describe("StoreHeader songoskriti chrome resolves through themeHeaderFor", () =>
   });
 
   it("generic slugs get null chrome and render the text wordmark", () => {
-    expect(themeHeaderFor("demo", "Demo")).toBeNull();
+    expect(themeChromeFor("demo")).toBeNull();
     const html = renderHeader({ slug: "demo", name: "Demo" });
     expect(html).toContain("Demo");
     expect(html).not.toContain("logo-lockup");
@@ -337,34 +365,53 @@ describe("StoreHeader songoskriti chrome resolves through themeHeaderFor", () =>
   });
 });
 
-describe("themeHeaderFor identity edge — slug-based, exact-name fallback", () => {
-  it("slug match wins regardless of display name", () => {
-    expect(themeHeaderFor("songoskriti", "Anything Else")).not.toBeNull();
+describe("themeChromeFor identity edge — key-driven, never slug or name", () => {
+  it("key match wins regardless of slug or display name", () => {
+    expect(themeChromeFor("songoskriti")).not.toBeNull();
+    const html = renderHeader({
+      slug: "renamed-slug",
+      name: "Anything Else",
+      themeKey: "songoskriti",
+    });
+    expect(html).toContain("/ph/songoskriti/logo-lockup.svg");
   });
 
-  it("exact name match (case-insensitive, trimmed) covers a renamed slug", () => {
-    expect(themeHeaderFor("songoskriti-2", "Songoskriti")).not.toBeNull();
-    expect(themeHeaderFor("songoskriti-2", "  SONGOSKRITI  ")).not.toBeNull();
+  it("a theme-named slug with a foreign key stays generic", () => {
+    // The old slug-sniff dressed any "songoskriti"-slugged store in theme
+    // chrome even with a foreign theme installed. Key-driven resolution
+    // ends that: brand follows the installed theme key, not the slug.
+    expect(themeChromeFor("bazaar")).toBeNull();
+    const html = renderHeader({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      themeKey: "bazaar",
+    });
+    expect(html).not.toContain("logo-lockup");
+    expect(html).toContain("Songoskriti");
   });
 
-  it("lookalike names stay generic — substring must NOT match", () => {
-    // includes() would dress "Songoskriti Demo" / "My Songoskriti Shop"
-    // in the theme logo + announcement; strict === keeps them generic.
-    expect(themeHeaderFor("demo", "Songoskriti Demo")).toBeNull();
-    expect(themeHeaderFor("demo", "My Songoskriti Shop")).toBeNull();
-    expect(themeHeaderFor("demo", undefined)).toBeNull();
-    expect(themeHeaderFor("demo", "")).toBeNull();
+  it("lookalike keys and missing keys stay generic", () => {
+    expect(themeChromeFor("songoskriti-2")).toBeNull();
+    expect(themeChromeFor("Songoskriti")).toBeNull();
+    expect(themeChromeFor("demo")).toBeNull();
+    expect(themeChromeFor(null)).toBeNull();
+    expect(themeChromeFor(undefined)).toBeNull();
   });
 
-  it("MinimalCheckoutHeader renders the lockup only for theme-shaped stores", () => {
-    const themed = renderMinimal({ slug: "songoskriti", name: "Songoskriti" });
+  it("MinimalCheckoutHeader renders the lockup only for the theme key", () => {
+    const themed = renderMinimal({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      themeKey: "songoskriti",
+    });
     expect(themed).toContain("/ph/songoskriti/logo-lockup.svg");
     expect(themed).toContain("Return to cart");
     const lookalike = renderMinimal({
-      slug: "demo",
-      name: "Songoskriti Demo",
+      slug: "songoskriti",
+      name: "Songoskriti",
+      themeKey: "demo",
     });
     expect(lookalike).not.toContain("logo-lockup");
-    expect(lookalike).toContain("Songoskriti Demo");
+    expect(lookalike).toContain("Songoskriti");
   });
 });

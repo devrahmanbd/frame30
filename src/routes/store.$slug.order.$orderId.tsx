@@ -118,6 +118,7 @@ function OrderConfirmation() {
         ast={chrome?.ast ?? null}
         tokens={chrome?.tokens ?? null}
         storeSlug={slug}
+        themeKey={chrome?.themeKey ?? null}
         merchantId={chrome?.merchant.id ?? null}
         siteKit={chrome?.siteKit ?? null}
         ownsPrimary
@@ -126,6 +127,7 @@ function OrderConfirmation() {
             slug={slug}
             name={chrome?.merchant.name ?? merchant?.name ?? slug}
             menus={chrome?.menus ?? null}
+            themeKey={chrome?.themeKey ?? null}
           />
         }
         fallback={

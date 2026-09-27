@@ -370,7 +370,11 @@ const Container: WidgetComponent = ({
       style={{ paddingTop: padY, paddingBottom: padY }}
     >
       <div
-        className={bool("asymmetrical") && columns === 2 ? "grid grid-cols-1 lg:grid-cols-[60%_1fr]" : COLUMN_CLASS[columns]}
+        className={
+          bool("asymmetrical") && columns === 2
+            ? "grid grid-cols-1 lg:grid-cols-[60%_1fr]"
+            : COLUMN_CLASS[columns]
+        }
         style={{ gap: int("gap", 24, 0, 64) }}
       >
         {renderChildren()}
@@ -413,13 +417,19 @@ const ProductMedia: WidgetComponent = (ctx) => {
     .filter(Boolean);
   const [index, setIndex] = useState(0);
   const [zoomed, setZoomed] = useState(false);
-  
+
   // Phase 7.3: Bind variant selection to authored media gallery.
   const variantChannel = useSectionChannel(storeSlug ?? "demo", "variant");
-  const selectedVariantIndex = variantChannel.ids[0] ? parseInt(variantChannel.ids[0], 10) : 0;
-  
+  const selectedVariantIndex = variantChannel.ids[0]
+    ? parseInt(variantChannel.ids[0], 10)
+    : 0;
+
   useEffect(() => {
-    if (!isNaN(selectedVariantIndex) && selectedVariantIndex >= 0 && selectedVariantIndex < images.length) {
+    if (
+      !isNaN(selectedVariantIndex) &&
+      selectedVariantIndex >= 0 &&
+      selectedVariantIndex < images.length
+    ) {
       setIndex(selectedVariantIndex);
       setZoomed(false);
     }
@@ -1662,15 +1672,32 @@ const BASE_WIDGETS: Record<string, WidgetComponent> = {
   add_to_cart: ContextSlot,
   product_meta: ContextSlot,
   page_content: ContextSlot,
-
 };
 
-export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
+/**
+ * Theme-remediation Task 3 — generic fallback map. Every entry here is a
+ * theme-agnostic renderer: zero per-theme overrides. Theme-specific
+ * renderers live behind the theme-keyed registry in `./theme-widgets` and
+ * reach a page only through `resolveWidgetComponent(themeKey, type)`; the
+ * historical last-spread-wins global override is gone as a resolution
+ * path (the legacy `WIDGET_COMPONENTS` closed map below keeps the
+ * songoskriti-default composition for the unkeyed studio/test path only).
+ *
+ * Partial by design: keys only a theme provides (finder_row, craft_story,
+ * testimonials, trust_footer) have no generic renderer, so other themes
+ * resolve them to undefined and render the unavailable placeholder
+ * instead of leaking brand.
+ */
+export const GENERIC_WIDGETS: Partial<Record<SectionType, WidgetComponent>> = {
   ...(BASE_WIDGETS as any),
   ...BASIC_WIDGETS,
   ...BLOG_WIDGETS,
   ...CIRCUIT_WIDGETS,
   ...BEAUTY_WIDGETS,
   ...BEAUTY_HOME_WIDGETS,
+};
+
+export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
+  ...(GENERIC_WIDGETS as Record<SectionType, WidgetComponent>),
   ...SONGOSKRITI_WIDGETS,
 };

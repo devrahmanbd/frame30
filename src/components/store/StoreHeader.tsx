@@ -20,19 +20,26 @@ import {
 } from "@/lib/menus/menu";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { TimezoneToggle } from "./TimezoneToggle";
-import { themeHeaderFor } from "./theme-header";
+import { themeChromeFor } from "./theme-chrome";
 
 export function MinimalCheckoutHeader({
   slug,
   name,
+  themeKey,
 }: {
   slug: string;
   name: string;
+  /**
+   * Theme-remediation Task 3: explicit merchant theme key driving header
+   * chrome. Null/undefined renders the generic text wordmark — chrome
+   * never sniffs the slug or display name.
+   */
+  themeKey?: string | null;
 }) {
   const { t } = useLang();
   // Theme-owned logo lockup resolves through key-driven config — the
   // shared header names no brand. Generic stores keep the text wordmark.
-  const chrome = themeHeaderFor(slug, name);
+  const chrome = themeChromeFor(themeKey);
   return (
     <header className="w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 py-5 sticky top-0 z-40">
       <div className="mx-auto flex max-w-[var(--fq-container,1280px)] items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -72,6 +79,7 @@ export function StoreHeader({
   storeTimezone,
   allowCustomerTimezone,
   menus,
+  themeKey,
 }: {
   slug: string;
   name: string;
@@ -79,6 +87,12 @@ export function StoreHeader({
   storeTimezone?: string;
   allowCustomerTimezone?: boolean;
   menus?: Pick<StoreMenus, "header" | "mobile"> | null;
+  /**
+   * Theme-remediation Task 3: explicit merchant theme key driving header
+   * chrome. Null/undefined renders the generic header — chrome never
+   * sniffs the slug or display name.
+   */
+  themeKey?: string | null;
 }) {
   const { count, hydrated } = useCart(slug);
   const { count: wishlistCount } = useWishlistHeader();
@@ -90,7 +104,7 @@ export function StoreHeader({
   // resolves through key-driven config — no brand branch lives here.
   // Generic stores (null) keep today's behavior exactly: empty when no
   // menu claims the location.
-  const headerChrome = themeHeaderFor(slug, name);
+  const headerChrome = themeChromeFor(themeKey);
   const isLuxury = headerChrome !== null;
 
   // Data-driven selection: dashboard-designed menus win whenever a location

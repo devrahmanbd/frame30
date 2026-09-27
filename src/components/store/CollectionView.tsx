@@ -31,6 +31,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     siteKit,
     menus,
     installedPlugins,
+    themeKey,
   } = data;
   const slug = merchant.slug;
   const categories = menus?.header?.slice(0, 10) ?? [];
@@ -50,8 +51,10 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     };
   }, [filterOpen]);
 
-  const isSongoskriti =
-    slug === "songoskriti" || merchant.name?.toLowerCase() === "songoskriti";
+  // Theme-remediation Task 3: brand follows the installed theme key,
+  // never the store slug or display name. A foreign theme on a
+  // theme-named slug gets generic category navigation, not theme chrome.
+  const isSongoskriti = themeKey === "songoskriti";
 
   // 1. Configuration based on collection
   let collectionType: "curated" | "department" | "category" | "campaign" =
@@ -407,6 +410,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
         ast={dynamicAst}
         tokens={tokens}
         storeSlug={slug}
+        themeKey={themeKey ?? null}
         merchantId={merchant.id}
         siteKit={siteKit}
         ownsPrimary={custom}
@@ -417,6 +421,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
               name={merchant.name}
               tagline={settings?.tagline}
               menus={menus}
+              themeKey={themeKey ?? null}
             />
             {subnavItems.length > 0 && (
               <div className="bg-background border-b border-border/40 sticky top-[64px] z-30">
