@@ -340,8 +340,10 @@ export function ProductDetails({
 
 export function ProductCraftStory({
   description,
+  themeKey = null,
 }: {
   description: string | null;
+  themeKey?: string | null;
 }) {
   const { t } = useLang();
 
@@ -353,6 +355,12 @@ export function ProductCraftStory({
     descLower.includes(word),
   );
   if (!hasCraft) return null;
+
+  // Theme-remediation Task 4: the artisan brand art is songoskriti-owned —
+  // it follows the installed theme key, never renders for foreign themes
+  // (same brand-art class as the CollectionView hero gate). Generic keys
+  // keep the section copy with a neutral placeholder block.
+  const isSongoskriti = themeKey === "songoskriti";
 
   return (
     <section className="mt-24 mb-12 border-t border-border pt-16">
@@ -370,15 +378,22 @@ export function ProductCraftStory({
         </div>
         <div className="order-1 md:order-2">
           <div className="aspect-[4/5] bg-[var(--theme-surface)] overflow-hidden">
-            <img
-              src="/ph/songoskriti/hero_artisans_1790373071919.jpg"
-              alt="Artisan weaving jamdani"
-              className="w-full h-full object-cover grayscale opacity-90 mix-blend-multiply"
-              onError={(e) => {
-                // Fallback if image not found in public dir
-                e.currentTarget.style.display = "none";
-              }}
-            />
+            {isSongoskriti ? (
+              <img
+                src="/ph/songoskriti/hero_artisans_1790373071919.jpg"
+                alt="Artisan weaving jamdani"
+                className="w-full h-full object-cover grayscale opacity-90 mix-blend-multiply"
+                onError={(e) => {
+                  // Fallback if image not found in public dir
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+            ) : (
+              <div
+                aria-hidden="true"
+                className="h-full w-full bg-[var(--theme-surface)]"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -537,7 +552,10 @@ export function ProductView({ data }: { data: ProductPayload }) {
           {pageContent}
         </div>
       </div>
-      <ProductCraftStory description={product.description} />
+      <ProductCraftStory
+        description={product.description}
+        themeKey={themeKey ?? null}
+      />
     </div>
   );
 

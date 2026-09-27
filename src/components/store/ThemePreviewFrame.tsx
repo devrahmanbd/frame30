@@ -350,7 +350,10 @@ function useMockProductSlots(
   const pageContent = (
     <>
       <ProductDetails product={productPayload as any} />
-      <ProductCraftStory description={demoProduct.description} />
+      <ProductCraftStory
+        description={demoProduct.description}
+        themeKey={blueprintKey}
+      />
     </>
   );
 

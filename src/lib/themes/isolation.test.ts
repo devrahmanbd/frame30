@@ -19,6 +19,15 @@
  *     chrome only through that config.
  * (d) The `?focus=` contract + generic fallback are pinned by the existing
  *     ThemePreviewFrame / theme-preview-nav suites — run, not duplicated.
+ * (e) No shared renderer/store file may carry an UNGATED brand-asset
+ *     literal: every prod file under `src/components/store/` or
+ *     `src/components/builder/` that mentions `/ph/songoskriti` or
+ *     `/ph/somvabona` must also contain a theme-key gate marker
+ *     (`isSongoskriti` / `isSomvabona` / `themeKey ===`), so the
+ *     CollectionView-hero / ProductView-craft-story class (brand art
+ *     rendered for foreign themes) trips this guard before it ships.
+ *     Theme-owned data (`src/lib/themes/<theme>/`, demo catalogs) is
+ *     out of scope — themes own their own asset paths.
  */
 import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync, statSync } from "node:fs";
@@ -130,6 +139,27 @@ describe("theme isolation", () => {
       const src = readFileSync(join(ROOT, rel), "utf8");
       const hits = src.match(/songoskriti|somvabona/gi) ?? [];
       if (hits.length > 0) offenders.push(`${rel}: ${hits.length} hit(s)`);
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("shared renderers hold no ungated brand-asset literals", () => {
+    const sharedDirs = ["src/components/store", "src/components/builder"];
+    const assetRe = /\/ph\/(songoskriti|somvabona)/;
+    const gateRe = /isSongoskriti|isSomvabona|themeKey ===/;
+    const offenders: string[] = [];
+    for (const dir of sharedDirs) {
+      const files = walk(join(ROOT, dir)).filter(
+        (f) => !/\.test\.[jt]sx?$/.test(f),
+      );
+      for (const file of files) {
+        const src = readFileSync(file, "utf8");
+        if (assetRe.test(src) && !gateRe.test(src)) {
+          offenders.push(
+            `${file.replace(ROOT + "/", "")}: brand-asset literal without theme-key gate`,
+          );
+        }
+      }
     }
     expect(offenders).toEqual([]);
   });
