@@ -176,7 +176,10 @@ export const Route = createFileRoute("/api/public/support/stream")({
                 supabaseAdmin as unknown as {
                   from: (table: string) => {
                     select: (cols: string) => {
-                      eq: (col: string, val: string) => {
+                      eq: (
+                        col: string,
+                        val: string,
+                      ) => {
                         maybeSingle: () => Promise<{
                           data: {
                             id: string;
@@ -232,7 +235,10 @@ export const Route = createFileRoute("/api/public/support/stream")({
         } catch {
           subject = conversationId ?? "anon";
         }
-        const verdict = await rateLimit("support.ask", `${merch.id}:${subject}`);
+        const verdict = await rateLimit(
+          "support.ask",
+          `${merch.id}:${subject}`,
+        );
         const rlHeaders = { ...rateLimitHeaders(verdict), ...NO_STORE };
         if (!verdict.allowed) {
           const { en } = await import("@/lib/i18n-dict");
@@ -301,9 +307,8 @@ export const Route = createFileRoute("/api/public/support/stream")({
               }
               if (conversationId) {
                 try {
-                  const { getConversationTakeoverState } = await import(
-                    "@/lib/support-agent.server"
-                  );
+                  const { getConversationTakeoverState } =
+                    await import("@/lib/support-agent.server");
                   const state = await getConversationTakeoverState(
                     merch.id,
                     conversationId,
@@ -315,6 +320,31 @@ export const Route = createFileRoute("/api/public/support/stream")({
                 } catch {
                   // Best effort only; the fallback path still suppresses.
                 }
+              }
+
+              // 2c. Greeting FIRST — before retrieval, preflight, or degraded
+              // handling. Deterministic, never refused, never bannered.
+              try {
+                const { isGreetingMessage, buildGreetingReply } =
+                  await import("@/lib/support-agent.server");
+                if (isGreetingMessage(body.message)) {
+                  const greeting = buildGreetingReply(merch.name, locale);
+                  sendFinal({
+                    conversationId,
+                    reply: greeting,
+                    provenance: null,
+                    sources: [],
+                    confidence: "grounded",
+                    needsAgent: false,
+                    cta: "none",
+                    degraded: false,
+                  });
+                  controller.close();
+                  return;
+                }
+              } catch {
+                // If the greeting helper is unavailable, fall through to
+                // retrieval — never fail a greeting on an import error.
               }
 
               // 3. Retrieval: same hybrid search + coverage gate as
@@ -340,9 +370,8 @@ export const Route = createFileRoute("/api/public/support/stream")({
 
               let degraded = false;
               try {
-                const { isDegradedEnvironment } = await import(
-                  "@/lib/support-grounding.server"
-                );
+                const { isDegradedEnvironment } =
+                  await import("@/lib/support-grounding.server");
                 degraded = isDegradedEnvironment();
               } catch {
                 degraded = false;
@@ -397,9 +426,8 @@ export const Route = createFileRoute("/api/public/support/stream")({
               // 5. Stream cleaned deltas. Deltas are reasoning-stripped but
               // NOT outbound-screened: they are never persisted and never
               // trusted as final content.
-              const { streamDraft, collectStreamedDraft } = await import(
-                "@/lib/support-llm.server"
-              );
+              const { streamDraft, collectStreamedDraft } =
+                await import("@/lib/support-llm.server");
               const deltas: string[] = [];
               try {
                 for await (const chunk of streamDraft(
@@ -440,9 +468,8 @@ export const Route = createFileRoute("/api/public/support/stream")({
                 locale,
                 degraded,
               });
-              const { screenOutbound, redactPii } = await import(
-                "@/lib/support-guardrails"
-              );
+              const { screenOutbound, redactPii } =
+                await import("@/lib/support-guardrails");
               const outbound = screenOutbound(enforced.reply, {
                 pinned: false,
               });
@@ -450,16 +477,12 @@ export const Route = createFileRoute("/api/public/support/stream")({
               if (enforced.needsAgent || !outbound.allowed) {
                 // Downgraded/blocked: safe fallback final + escalate via
                 // the existing ticket flow (reused, never reimplemented).
-                const { DICT, interpolate } =
-                  await import("@/lib/i18n-dict");
+                const { DICT, interpolate } = await import("@/lib/i18n-dict");
                 const entry = (
                   DICT as Record<string, { en: string; bn: string }>
                 )["support.needs_human"];
                 const safeReply = !outbound.allowed
-                  ? interpolate(
-                      locale === "bn" ? entry.bn : entry.en,
-                      {},
-                    )
+                  ? interpolate(locale === "bn" ? entry.bn : entry.en, {})
                   : enforced.reply;
                 try {
                   const {
@@ -470,9 +493,8 @@ export const Route = createFileRoute("/api/public/support/stream")({
                   let requesterHash: string | null = null;
                   try {
                     if (body.phone?.trim()) {
-                      const { hashPhone } = await import(
-                        "@/lib/ai-support.server"
-                      );
+                      const { hashPhone } =
+                        await import("@/lib/ai-support.server");
                       requesterHash = await hashPhone(body.phone.trim());
                     }
                   } catch {

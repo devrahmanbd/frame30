@@ -488,7 +488,11 @@ export function updateConversationMemory(
   const turns = prev ? prev.summary.split(" ‖ ").slice(1) : [];
   // First customer turn becomes the anchor and is never evicted.
   const base = anchor ?? (turn.role === "customer" ? label : null);
-  const rest = anchor ? [...turns, label] : turn.role === "customer" ? [] : [label];
+  const rest = anchor
+    ? [...turns, label]
+    : turn.role === "customer"
+      ? []
+      : [label];
   let summary = [base, ...rest].filter(Boolean).join(" ‖ ");
   // Evict oldest non-anchor turns until inside budget.
   while (summary.length > MEMORY_CONTEXT_BUDGET && rest.length > 1) {
@@ -603,11 +607,13 @@ export async function getTicketHistoryContext(
       .eq("conversation_id", opts.conversationId)
       .order("created_at", { ascending: false })
       .limit(limit);
-    const lines: string[] = ((data ?? []) as Array<{
-      subject: string;
-      status: string;
-      priority: string;
-    }>).map(
+    const lines: string[] = (
+      (data ?? []) as Array<{
+        subject: string;
+        status: string;
+        priority: string;
+      }>
+    ).map(
       (t) =>
         `• [${t.status}/${t.priority}] ${truncateSnippet(String(t.subject ?? ""), 80)}`,
     );
@@ -620,11 +626,13 @@ export async function getTicketHistoryContext(
         .eq("requester_hash", opts.requesterHash)
         .order("created_at", { ascending: false })
         .limit(limit);
-      for (const t of ((cross ?? []) as Array<{
-        subject: string;
-        status: string;
-        priority: string;
-      }>).slice(0, limit)) {
+      for (const t of (
+        (cross ?? []) as Array<{
+          subject: string;
+          status: string;
+          priority: string;
+        }>
+      ).slice(0, limit)) {
         const line = `• [${t.status}/${t.priority}] ${truncateSnippet(String(t.subject ?? ""), 80)} (prior session)`;
         if (!lines.includes(line)) lines.push(line);
         if (lines.length >= limit) break;
@@ -801,62 +809,146 @@ export const EPISTEMIC_ACTION_PATHS: EpistemicActionPath[] = [
   },
 ];
 
+/**
+ * Greeting / small-talk intent — checked FIRST in the pipeline, before any
+ * confidence gating or KB retrieval, and honoured in degraded mode too.
+ * A greeting is never a refusal.
+ */
+export function isGreetingMessage(message: string): boolean {
+  const text = message.trim();
+  return (
+    /^(hi|hello|hey|salam|assalamu\s*alaikum|greetings|help|howdy|good\s*(morning|afternoon|evening))\b/i.test(
+      text,
+    ) ||
+    /^(নমস্কার|সালাম|আসসালামু\s*আলাইকুম|হ্যালো|হাই|কেমন আছেন|সাহায্য)/i.test(
+      text,
+    )
+  );
+}
+
+/**
+ * Short greeting + topic suggestions. Deterministic (no KB/LLM), so it is
+ * safe in degraded mode and never carries the degraded banner.
+ */
+export function buildGreetingReply(
+  merchantName: string,
+  locale: "bn" | "en" = "en",
+): string {
+  if (locale === "bn") {
+    return (
+      `${merchantName}-এ স্বাগতম! আমি কীভাবে সাহায্য করতে পারি?\n` +
+      `দাম (pricing), অনলাইন স্টোর সেটআপ, অথবা বিকাশ ও কুরিয়ার সম্পর্কে জিজ্ঞাসা করুন।`
+    );
+  }
+  return (
+    `Welcome to ${merchantName}! How can I help you today?\n` +
+    `Ask me about pricing, online store setup, or bKash & couriers.`
+  );
+}
+
+export type TieredFallbackOptions = {
+  query?: string | null;
+  /** Top raw hit title before the coverage gate filtered it (naming the gap). */
+  detectedTopic?: string | null;
+  adminOnline?: boolean;
+  customerEmail?: string;
+};
+
+/**
+ * Generic detected-category for the clarify step. Names the gap
+ * ("courier & shipping" found, ERP asked) without quoting a wrong-topic
+ * article verbatim — quoting the title would re-present the mismatch
+ * (brands, "Manifests") inside the refusal.
+ */
+export function detectedCategoryForClarify(
+  hit: { title: string; body: string } | null | undefined,
+): string | null {
+  if (!hit) return null;
+  const text = `${hit.title} ${hit.body}`;
+  if (
+    /courier|shipping|logistics|pathao|redx|steadfast|delivery|parcel/i.test(
+      text,
+    )
+  )
+    return "courier & shipping";
+  if (/bkash|nagad|payment|sslcommerz|shurjopay|\bcod\b/i.test(text))
+    return "payments";
+  if (/builder|theme|\bast\b|template|custom css/i.test(text))
+    return "storefront builder & themes";
+  if (/tenant|rbac|domain|isolation/i.test(text))
+    return "store settings & domains";
+  if (/pricing|plan|trial/i.test(text)) return "pricing & plans";
+  return hit.title.slice(0, 60) || null;
+}
+
+/**
+ * Tiered compact fallback: clarify → suggest → single handoff.
+ * One compact step, not a four-option wall. Honest refusal is kept
+ * (EPISTEMIC_ADMISSION_*), suggestions mirror the greeting topics
+ * (pricing / store setup / bKash & couriers).
+ */
+export function buildTieredFallbackReply(
+  locale: "bn" | "en",
+  contactInfo: ContactInfoCard = DEFAULT_CONTACT_INFO,
+  options?: TieredFallbackOptions,
+): string {
+  const querySnippet = (options?.query ?? "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 80);
+  const detected = (options?.detectedTopic ?? "").trim().slice(0, 80);
+  if (locale === "bn") {
+    const clarify =
+      querySnippet && detected
+        ? `আমি "${detected}"-এর তথ্য পেয়েছি, কিন্তু "${querySnippet}" নিয়ে যাচাইকৃত তথ্য নেই। আরেকটু বিস্তারিত বলবেন?`
+        : querySnippet
+          ? `"${querySnippet}" নিয়ে যাচাইকৃত তথ্য নেই। আরেকটু বিস্তারিত বলবেন?`
+          : `আরেকটু বিস্তারিত বলবেন?`;
+    // Compact presence signal (single sentence, not a wall).
+    const presence =
+      options?.adminOnline === true
+        ? ` 🟢 সাপোর্ট স্পেশালিস্ট অনলাইন আছেন — "এজেন্টের সাথে কথা বলুন" লিখলে আমি আপনাকে ট্রান্সফার করে দেব।`
+        : options?.adminOnline === false
+          ? ` ⚪ লাইভ সাপোর্ট অফলাইন — আমাদের টিম আপনার ইমেইলে${options?.customerEmail ? ` (${options.customerEmail})` : ""} উত্তর জানিয়ে দেবে।`
+          : ``;
+    return (
+      `${EPISTEMIC_ADMISSION_BN} ${clarify}${presence}\n` +
+      `দাম, অনলাইন স্টোর সেটআপ, অথবা বিকাশ ও কুরিয়ার সম্পর্কে জিজ্ঞাসা করতে পারেন।\n` +
+      `মানুষের সাহায্য চাইলে "এজেন্টের সাথে কথা বলুন" লিখুন। ✉️ ${contactInfo.email} · ⏰ ${contactInfo.hoursBn}`
+    );
+  }
+  const clarify =
+    querySnippet && detected
+      ? `I found help on "${detected}" but nothing verified on "${querySnippet}" — could you tell me a bit more about what you need?`
+      : querySnippet
+        ? `On "${querySnippet}" — could you tell me a bit more about what you need?`
+        : `Could you tell me a bit more about what you need?`;
+  // Compact presence signal (single sentence, not a wall).
+  const presence =
+    options?.adminOnline === true
+      ? ` 🟢 Support Specialist Online — reply "talk to human" and I'll transfer you to a specialist.`
+      : options?.adminOnline === false
+        ? ` ⚪ Live Support Away — our team will follow up via email${options?.customerEmail ? ` at ${options.customerEmail}` : ""}.`
+        : ``;
+  return (
+    `${EPISTEMIC_ADMISSION_EN} ${clarify}${presence}\n` +
+    `Meanwhile you can ask about pricing, online store setup, or bKash & couriers.\n` +
+    `If you'd like a human to follow up, reply "talk to human". ✉️ ${contactInfo.email} · ⏰ ${contactInfo.hours}`
+  );
+}
+
 export function buildEpistemicHumilityReply(
   locale: "bn" | "en",
   contactInfo: ContactInfoCard = DEFAULT_CONTACT_INFO,
   options?: { adminOnline?: boolean; customerEmail?: string },
 ): string {
-  const adminNoticeBn =
-    options?.adminOnline === true
-      ? "\n\n🟢 **সাপোর্ট স্পেশালিস্ট অনলাইন আছেন**: আমাদের সাপোর্ট স্পেশালিস্ট বর্তমানে অনলাইনে আছেন। অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন অথবা নিচের মাধ্যম থেকে বেছে নিন।"
-      : options?.adminOnline === false
-        ? `\n\n⚪ **লাইভ সাপোর্ট অফলাইন**: আমাদের লাইভ সাপোর্ট টিম এই মুহূর্তে অফলাইনে আছেন। আপনি সুবিধাজনক সময়ে কলব্যাকের অনুরোধ করতে পারেন অথবা আমাদের টিম আপনার ইমেইলে${options?.customerEmail ? ` (${options.customerEmail})` : ""} উত্তর জানিয়ে দেবে।`
-        : "";
-
-  const adminNoticeEn =
-    options?.adminOnline === true
-      ? "\n\n🟢 **Support Specialist Online**: A human support specialist is currently online. Please wait a moment while I transfer you, or select a callback below if you prefer."
-      : options?.adminOnline === false
-        ? `\n\n⚪ **Live Support Away**: Our live support team is currently away. You can schedule a callback below, or our team will follow up via email${options?.customerEmail ? ` at ${options.customerEmail}` : ""}.`
-        : "";
-
-  // Contact truth: unverified phones are hidden, never rendered.
-  const phoneLine = (label: string, v: string | null) =>
-    v ? `    • ${label}: ${v}` : null;
-
-  if (locale === "bn") {
-    const lines = [
-      `${EPISTEMIC_ADMISSION_BN}${adminNoticeBn}`,
-      "",
-      "সঠিক তথ্যের জন্য অনুগ্রহ করে নিচের যেকোনো একটি মাধ্যম বেছে নিন:",
-      "",
-      "1. 👤 **মানুষের সাথে কথা বলুন (Transfer to Human Agent)** — সরাসরি কাস্টমার সাপোর্ট প্রতিনিধির সাথে যুক্ত হতে 'এজেন্টের সাথে কথা বলুন' লিখুন।",
-      "2. 📞 **কলব্যাক অনুরোধ (Request Callback)** — আমাদের টিম আপনাকে কল করবে, অনুরোধ জানাতে 'কলব্যাক' লিখুন।",
-      "3. 🎫 **সাপোর্ট টিকিট খুলুন (Open Support Ticket)** — ট্র্যাকিং এবং দ্রুত সমাধানের জন্য 'টিকিট তৈরি করুন' লিখুন।",
-      "4. 📋 **সরাসরি যোগাযোগ (Direct Contact)**:",
-      phoneLine("📞 হটলাইন", contactInfo.phone),
-      phoneLine("💬 WhatsApp", contactInfo.whatsapp),
-      `    • ✉️ ইমেইল: ${contactInfo.email}`,
-      `    • ⏰ সময়: ${contactInfo.hoursBn}`,
-    ].filter(Boolean);
-    return lines.join("\n");
-  }
-
-  const linesEn = [
-    `${EPISTEMIC_ADMISSION_EN}${adminNoticeEn}`,
-    "",
-    "To ensure you receive accurate and verified assistance, please select one of the options below:",
-    "",
-    '1. 👤 **Transfer to Human Agent** — reply "talk to human agent" to connect with a customer specialist.',
-    '2. 📞 **Request Callback** — reply "call me back" and our team will call your phone.',
-    '3. 🎫 **Open Support Ticket** — reply "open ticket" to submit an issue with SLA tracking.',
-    "4. 📋 **Direct Contact Info**:",
-    phoneLine("📞 Phone", contactInfo.phone),
-    phoneLine("💬 WhatsApp", contactInfo.whatsapp),
-    `    • ✉️ Email: ${contactInfo.email}`,
-    `    • ⏰ Hours: ${contactInfo.hours}`,
-  ].filter(Boolean);
-  return linesEn.join("\n");
+  // Tiered compact fallback (clarify → suggest → single handoff).
+  // The old 4-option wall is retired; widget action buttons
+  // (EPISTEMIC_ACTION_PATHS) still offer the four paths as UI.
+  return buildTieredFallbackReply(locale, contactInfo, {
+    adminOnline: options?.adminOnline,
+    customerEmail: options?.customerEmail,
+  });
 }
 
 export function translate(
@@ -1074,6 +1166,37 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       };
     }
 
+    // 2a2. Greeting / small-talk FIRST — before retrieval, confidence
+    // gating, or degraded handling. Deterministic, never refused, never
+    // bannered, never escalated (works in degraded mode too).
+    if (isGreetingMessage(input.message)) {
+      const greeting = buildGreetingReply(merchant.name, locale);
+      await appendMessage(merchant.id, conversationId, "bot", greeting, false);
+      updateConversationMemory(conversationId, {
+        role: "bot",
+        message: greeting,
+      });
+      incr("framique_ai_ask_total", { outcome: "greeting", channel });
+      await captureTrainingTurn({
+        merchantId: merchant.id,
+        conversationId,
+        userMessage: input.message,
+        agentReply: greeting,
+        grounded: true,
+        actionCompleted: "answered",
+      }).catch(() => null);
+      return {
+        conversationId,
+        reply: greeting,
+        provenance: null,
+        sources: [],
+        confidence: "grounded",
+        needsAgent: false,
+        cta: "none",
+        degraded: false,
+      };
+    }
+
     // 2b. Conversational Looping Detection & Circuit Breaker
     const recentTurns = CONVERSATION_RECENT_TURNS.get(conversationId) ?? [];
     // Prior turns before current user message
@@ -1259,18 +1382,22 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
 
     // 4. Retrieval — grounded answers only ever quote the merchant's own docs.
     let hits: KbHit[] = [];
+    // Raw top hit (pre-coverage) names the detected-vs-asked gap in the
+    // tiered clarify step — e.g. ERP asked, logistics detected.
+    let rawTopHit: KbHit | null = null;
     if (!pinned) {
-      hits = await searchKbHybrid(merchant.id, input.message);
-      steps.push({ step: "retrieve", hits: hits.length });
+      const raw = await searchKbHybrid(merchant.id, input.message);
+      rawTopHit = raw[0] ?? null;
+      steps.push({ step: "retrieve", hits: raw.length });
       // Coverage gate: a hit is citable only when it accounts for EVERY
       // distinctive query word. Single-stem matches ("integrat*" without
       // "ERP") are disqualified here so the humility circuit below sees
       // zero usable hits instead of a confident-looking false positive.
-      const qualified = hits.filter(
+      const qualified = raw.filter(
         (h) =>
           queryCoverage(input.message, h.title, h.body) >= MIN_QUERY_COVERAGE,
       );
-      steps.push({ step: "coverage", kept: qualified.length, of: hits.length });
+      steps.push({ step: "coverage", kept: qualified.length, of: raw.length });
       hits = qualified;
     }
 
@@ -1301,13 +1428,9 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       intent === "technical" ||
       intent === "lead";
 
-    const isGreeting =
-      /^(hi|hello|hey|salam|assalamu\s*alaikum|greetings|help|howdy|good\s*(morning|afternoon|evening))\b/i.test(
-        input.message.trim(),
-      ) ||
-      /^(নমস্কার|সালাম|আসসালামু\s*আলাইকুম|হ্যালো|হাই|কেমন আছেন|সাহায্য)/i.test(
-        input.message.trim(),
-      );
+    // Greeting was already answered early (2a2); kept here so the
+    // humility / kernel guards below can never re-trigger on small-talk.
+    const isGreeting = isGreetingMessage(input.message);
 
     const isSpeculative = detectUngroundedOrSpeculative(input.message);
     const topHit = hits[0];
@@ -1367,7 +1490,11 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       (isSpeculative || noKbHits || lowVectorSim);
 
     if (triggerEpistemicHumility) {
-      const humilityReply = buildEpistemicHumilityReply(locale, contactInfo, {
+      // Tiered compact fallback names the detected-vs-asked gap when the
+      // coverage gate filtered a near-miss (ERP asked, logistics detected).
+      const humilityReply = buildTieredFallbackReply(locale, contactInfo, {
+        query: input.message,
+        detectedTopic: detectedCategoryForClarify(rawTopHit),
         adminOnline,
         customerEmail: input.customerEmail ?? undefined,
       });
@@ -1483,16 +1610,15 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     }
 
     if (!reply && isGreeting) {
-      reply =
-        locale === "bn"
-          ? `${merchant.name}-এ আপনাকে স্বাগতম! আমি কীভাবে সাহায্য করতে পারি? আমাদের পণ্য, অর্ডার ট্র্যাক করা, ডেলিভারি চার্জ বা রিটার্ন পলিসি সম্পর্কে যে কোনো তথ্য জানতে পারেন।`
-          : `Welcome to ${merchant.name}! How can I help you today? Feel free to ask about our products, order status, shipping details, or return policy.`;
+      reply = buildGreetingReply(merchant.name, locale);
     }
 
     // Grounded-answer kernel: no provenance → no factual claims.
     // Null-context falls back to explicit unsure+handoff, never a bare FAQ.
     if (!reply && !isGreeting) {
-      reply = buildEpistemicHumilityReply(locale, contactInfo, {
+      reply = buildTieredFallbackReply(locale, contactInfo, {
+        query: input.message,
+        detectedTopic: detectedCategoryForClarify(rawTopHit),
         adminOnline,
         customerEmail: input.customerEmail ?? undefined,
       });
@@ -1520,7 +1646,9 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       !isGreeting &&
       effectiveConfidence !== "unsure"
     ) {
-      reply = buildEpistemicHumilityReply(locale, contactInfo, {
+      reply = buildTieredFallbackReply(locale, contactInfo, {
+        query: input.message,
+        detectedTopic: detectedCategoryForClarify(rawTopHit),
         adminOnline,
         customerEmail: input.customerEmail ?? undefined,
       });
@@ -1614,7 +1742,8 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
             status: "needs_agent",
             order_number: input.orderNumber ?? null,
             // Angry fast-lane buys queue position (priority only, never a promise).
-            ...((angryFastLane || urgentComplaint) && rank(sentiment.priority) > rank("normal")
+            ...((angryFastLane || urgentComplaint) &&
+            rank(sentiment.priority) > rank("normal")
               ? { priority: sentiment.priority }
               : {}),
           } as never)

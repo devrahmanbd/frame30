@@ -698,33 +698,35 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
       );
     });
 
-    it("renders all 4 proactive action paths in both English and Bangla", () => {
+    it("tiered compact fallback: clarify → suggest → single handoff (both locales)", () => {
       const replyEn = buildEpistemicHumilityReply("en");
       const replyBn = buildEpistemicHumilityReply("bn");
 
-      // 1. Transfer to human
-      expect(replyEn).toContain("Transfer to Human Agent");
-      expect(replyBn).toContain("মানুষের সাথে কথা বলুন");
+      // Honest refusal kept:
+      expect(replyEn).toContain(EPISTEMIC_ADMISSION_EN);
+      expect(replyBn).toContain(EPISTEMIC_ADMISSION_BN);
 
-      // 2. Request callback
-      expect(replyEn).toContain("Request Callback");
-      expect(replyBn).toContain("কলব্যাক অনুরোধ");
+      // Tiered suggestions mirror the greeting topics:
+      expect(replyEn).toMatch(/pricing/i);
+      expect(replyEn).toMatch(/store setup/i);
+      expect(replyEn).toMatch(/bKash/i);
+      expect(replyBn).toMatch(/দাম/);
+      expect(replyBn).toMatch(/বিকাশ/);
 
-      // 3. Open ticket
-      expect(replyEn).toContain("Open Support Ticket");
-      expect(replyBn).toContain("সাপোর্ট টিকিট খুলুন");
+      // Single compact handoff — not the old 4-option wall:
+      expect(replyEn).toContain("talk to human");
+      expect(replyEn).not.toContain("Transfer to Human Agent");
+      expect(replyEn).not.toContain("Open Support Ticket");
+      expect(replyEn.length).toBeLessThan(600);
 
-      // 4. Direct contact info (verified truth: no fake phones)
-      expect(replyEn).toContain("Direct Contact Info");
+      // Contact truth: verified email/hours single line, no fake phones:
       expect(replyEn).not.toContain("+880 9612-345678");
       expect(replyEn).not.toContain("+880 1700-000000");
-      expect(replyEn).toContain("Email:");
-      expect(replyEn).toContain("Hours:");
+      expect(replyEn).toContain("support@framique.com");
 
-      expect(replyBn).toContain("সরাসরি যোগাযোগ");
       expect(replyBn).not.toContain("+880 9612-345678");
       expect(replyBn).not.toContain("+880 1700-000000");
-      expect(replyBn).toContain("সময়: সকাল ৯:০০ – রাত ১০:০০ BST");
+      expect(replyBn).toContain("সকাল ৯:০০ – রাত ১০:০০ BST");
     });
   });
 
@@ -887,7 +889,9 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
       // Regression: "How to integrate ERP?" was answered from the
       // Pathao/RedX article on the strength of "integrat*" alone while
       // "ERP" matched nothing. A citation must cover every distinctive
-      // query word or the humility circuit engages.
+      // query word or the humility circuit engages. The tiered fallback
+      // may NAME the gap (clarify) but must never present the wrong-topic
+      // article as a how-to answer.
       const res = await runSupportAgentTurn({
         slug: "demo",
         message: "How to integrate ERP?",
@@ -899,7 +903,11 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
       expect(res.needsAgent).toBe(true);
       expect(res.sources ?? []).toHaveLength(0);
       expect(res.reply).toContain(EPISTEMIC_ADMISSION_EN);
+      expect(res.reply).toMatch(/ERP/i);
       expect(res.reply).not.toMatch(/pathao|redx/i);
+      expect(res.reply).not.toMatch(
+        /manifest|dispatch|parcel booking|tracking console|consignment|AWB/i,
+      );
     });
   });
 
@@ -1236,9 +1244,9 @@ describe("TODO-3 — Model-backed intent classification (fast path)", () => {
   });
 
   it("classifies technical bug reports incl. code-mixed", () => {
-    expect(
-      classifyIntent("website login hocche na error dicche").primary,
-    ).toBe("technical");
+    expect(classifyIntent("website login hocche na error dicche").primary).toBe(
+      "technical",
+    );
     expect(classifyIntent("checkout shows an error 500").primary).toBe(
       "technical",
     );
@@ -1278,7 +1286,9 @@ describe("TODO-3 — Model-backed intent classification (fast path)", () => {
 
 describe("TODO-3 — Sentiment/urgency scoring → priority fast-lane", () => {
   it("fast-lanes furious threats: angry + urgent + needsAgent, never a promise", () => {
-    const v = analyzeSentiment("This is a SCAM! You cheaters! I will SUE you!!!");
+    const v = analyzeSentiment(
+      "This is a SCAM! You cheaters! I will SUE you!!!",
+    );
     expect(v.sentiment).toBe("angry");
     expect(v.urgency).toBe("urgent");
     expect(v.priority).toBe("urgent");
