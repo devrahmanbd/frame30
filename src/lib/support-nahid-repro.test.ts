@@ -107,16 +107,20 @@ describe("Nahid repro — relevance floor (ERP vs logistics)", () => {
   });
 
   it("askSupport never presents the wrong-topic logistics answer for ERP", async () => {
+    // CONTRACT CHANGE (helpful-first policy, Sept 2026): ERP no longer refuses
+    // with EPISTEMIC_ADMISSION_EN. It returns labeled general guidance that
+    // names the gap honestly WITHOUT presenting logistics as ERP. Relevance
+    // floor kept (no pathao/redx/manifest), refusal replaced by help.
     const res = await runSupportAgentTurn({
       slug: "demo",
       message: "How to integrate ERP?",
       locale: "en",
     });
     expect(res.confidence).toBe("unsure");
-    expect(res.epistemicTriggered).toBe(true);
+    expect(res.epistemicTriggered).toBeFalsy();
+    expect(res.needsAgent).toBe(false);
     expect(res.sources ?? []).toHaveLength(0);
-    // Honest + names the gap (clarify), never a confident wrong-topic how-to:
-    expect(res.reply).toContain(EPISTEMIC_ADMISSION_EN);
+    expect(res.reply).toMatch(/General guidance \(not from our help docs\)/i);
     expect(res.reply).toMatch(/ERP/i);
     expect(res.reply).not.toMatch(/pathao|redx/i);
     expect(res.reply).not.toMatch(
@@ -143,15 +147,21 @@ describe("Nahid repro — tiered compact fallback", () => {
   });
 
   it("POS gap refusal is tiered/compact with suggestions", async () => {
+    // CONTRACT CHANGE (helpful-first policy, Sept 2026): POS no longer refuses.
+    // Returns labeled general guidance (POS concepts + verify note) with human
+    // OPTION, never a refusal wall. Builder test above still pins the tiered
+    // fallback for true unknowns (Martian, weather, etc).
     const res = await runSupportAgentTurn({
       slug: "demo",
       message: "can i add my own pos?",
       locale: "en",
     });
-    expect(res.reply).toContain(EPISTEMIC_ADMISSION_EN);
-    expect(res.reply).toMatch(/pricing/i);
-    expect(res.reply).toMatch(/bKash/i);
+    expect(res.reply).toMatch(/General guidance \(not from our help docs\)/i);
+    expect(res.reply).toMatch(/pos|point.of.sale/i);
+    expect(res.reply).toMatch(/verify|talk to human|specialist/i);
     expect(res.reply).not.toContain("Transfer to Human Agent");
-    expect(res.reply.length).toBeLessThan(900);
+    expect(res.reply).not.toContain(EPISTEMIC_ADMISSION_EN);
+    expect(res.needsAgent).toBe(false);
+    expect(res.reply.length).toBeLessThan(1200);
   });
 });

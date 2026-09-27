@@ -951,6 +951,181 @@ export function buildEpistemicHumilityReply(
   });
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpful-first answer policy (owner directive, Sept 2026).
+//
+// Tiers:
+//  1. KB-grounded (highest trust) — unchanged, cited from help articles.
+//  2. LLM general answer — when KB lacks it, still try from general
+//     e-commerce/SaaS knowledge, labeled honestly + one follow-up OPTION.
+//  3. Refusal rare, warm, last resort ONLY for high-stakes unknowns.
+//  4. Never present wrong-topic KB article (relevance floor kept).
+//
+// SAFETY LINES THAT STAY (only refusal-worthy, warm single-step):
+//  - no invented prices/fees/rates/SLAs/API shapes (must come from KB or be
+//    marked verify-with-human);
+//  - no account-specific data leakage across tenants;
+//  - no credential/legal advice.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const GENERAL_GUIDANCE_LABEL_EN =
+  "General guidance (not from our help docs):";
+export const GENERAL_GUIDANCE_LABEL_BN =
+  "সাধারণ নির্দেশনা (আমাদের সহায়তা নথি থেকে নয়):";
+
+/**
+ * High-stakes unknowns — the ONLY refusal-worthy categories, and even they
+ * get a warm single-step redirect (never a wall).
+ * - exact money/fees (prices, commissions, rates),
+ * - account-specific data (my store/account exact figures),
+ * - legal/compliance, security credentials disclosure.
+ */
+export function isHighStakesQuery(message: string): boolean {
+  if (
+    /\bexact\b[^.]{0,50}\b(fee|fees|commission|charge|rates?|pricing|price)/i.test(
+      message,
+    )
+  )
+    return true;
+  if (/\btransaction\s*fee/i.test(message) && /\bexact\b/i.test(message))
+    return true;
+  if (
+    /\bcommission\s*rate/i.test(message) &&
+    /\b(exact|my|last month)\b/i.test(message)
+  )
+    return true;
+  if (/\bmy\s+(store|account|balance).*exact\b/i.test(message)) return true;
+  if (/\baccount.specific\b/i.test(message)) return true;
+  if (
+    /\blegal advice\b|\btax law\b|\bcompliance\b[^.]{0,30}\b(tax|law|certification)\b/i.test(
+      message,
+    )
+  )
+    return true;
+  if (
+    /\b(give me|show me|reveal|disclose)\b[^.]{0,40}\b(api key|service role|secret|password|otp|credential)/i.test(
+      message,
+    )
+  )
+    return true;
+  return false;
+}
+
+export type HighStakesOptions = {
+  query?: string | null;
+  adminOnline?: boolean;
+  customerEmail?: string;
+};
+
+/**
+ * Warm single-step redirect for high-stakes unknowns.
+ * One short paragraph + single next step, never a wall of options.
+ * No invented prices/fees/rates/SLAs/API shapes (safety line).
+ */
+export function buildHighStakesReply(
+  locale: "bn" | "en",
+  contactInfo: ContactInfoCard = DEFAULT_CONTACT_INFO,
+  _options?: HighStakesOptions,
+): string {
+  if (locale === "bn") {
+    return (
+      `যাচাইকৃত তথ্য ছাড়া সঠিক ফি/হার বলতে চাই না — "এজেন্টের সাথে কথা বলুন" লিখুন, ` +
+      `একজন স্পেশালিস্ট আপনার স্টোরের জন্য বর্তমান হার নিশ্চিত করে দেবেন। ✉️ ${contactInfo.email}`
+    );
+  }
+  return (
+    `I don't have verified figures for exact fees in our help docs — reply "talk to human" ` +
+    `and a specialist will confirm the current rate for your store. ✉️ ${contactInfo.email}`
+  );
+}
+
+export function isPosQuery(message: string): boolean {
+  return /\bpos\b|\bpoint.of.sale\b|\bpoint of sale\b/i.test(message);
+}
+
+export function isErpQuery(message: string): boolean {
+  return /\berp\b|\benterprise resource planning\b/i.test(message);
+}
+
+export type GeneralGuidanceKind = "pos" | "erp" | "generic";
+
+/** Recognized commerce-integration topics that deserve general guidance. */
+export function generalGuidanceKind(
+  message: string,
+): GeneralGuidanceKind | null {
+  if (isPosQuery(message)) return "pos";
+  if (isErpQuery(message)) return "erp";
+  if (
+    /\bintegrat|\bconnect\b|\badd my own\b|\bcustom\b/i.test(message) &&
+    /\b(store|inventory|accounting|crm|payment|checkout|stock|order)\b/i.test(
+      message,
+    )
+  )
+    return "generic";
+  return null;
+}
+
+export type GeneralGuidanceOptions = {
+  adminOnline?: boolean;
+  customerEmail?: string;
+};
+
+/**
+ * Structured general guidance (deterministic, works without a live LLM).
+ * Topic explainer + what Framique typically supports + verify-pointer,
+ * labeled honestly + one follow-up OPTION (never a wall).
+ * No invented prices/fees/rates/SLAs/API shapes; no account leakage;
+ * no credential/legal advice (safety lines — verify-with-human instead).
+ */
+export function buildGeneralGuidanceReply(
+  kind: GeneralGuidanceKind,
+  locale: "bn" | "en",
+  contactInfo: ContactInfoCard = DEFAULT_CONTACT_INFO,
+  _options?: GeneralGuidanceOptions,
+): string {
+  const email = contactInfo.email;
+  if (locale === "bn") {
+    if (kind === "pos") {
+      return (
+        `${GENERAL_GUIDANCE_LABEL_BN} POS (পয়েন্ট অব সেল) সাধারণত দোকানের ` +
+        `চেকআউট হার্ডওয়্যার + সফটওয়্যার বোঝায় যা বিক্রি ও স্টকের সাথে সিঙ্ক করে। ` +
+        `Framique সাধারণত অনলাইন চেকআউট ও পেমেন্ট সাপোর্ট করে — নিজের POS হার্ডওয়্যারের ` +
+        `জন্য সামঞ্জস্য ও স্টক সিঙ্ক যাচাই করে নিন। "এজেন্টের সাথে কথা বলুন" লিখলে ` +
+        `একজন স্পেশালিস্ট আপনার স্টোরের জন্য POS অপশন নিশ্চিত করে দেবেন। ✉️ ${email}`
+      );
+    }
+    return (
+      `${GENERAL_GUIDANCE_LABEL_BN} ERP ইন্টিগ্রেশন সাধারণত স্টক, অর্ডার ও হিসাব ` +
+      `আপনার স্টোর ও ERP-এর মধ্যে যুক্ত করে। SKU ও অর্ডার ফ্লো তৈরি রাখুন, फिर ` +
+      `সঠিক Framique অপশন ডক বা স্পেশালিস্টের সাথে যাচাই করুন। "এজেন্টের সাথে কথা বলুন" ` +
+      `লিখলে একজন স্পেশালিস্ট আপনার ERP ফ্লো ম্যাপ করে দেবেন। ✉️ ${email}`
+    );
+  }
+  if (kind === "pos") {
+    return (
+      `${GENERAL_GUIDANCE_LABEL_EN} A POS (point of sale) usually means in-store ` +
+      `checkout hardware + software that syncs sales, inventory and receipts with your online store. ` +
+      `Framique typically supports online checkout and payments — for your own POS hardware, ` +
+      `check compatibility, offline mode and inventory sync, then verify the exact setup with our docs or a specialist. ` +
+      `Reply "talk to human" if you'd like a specialist to confirm POS options for your store. ✉️ ${email}`
+    );
+  }
+  if (kind === "erp") {
+    return (
+      `${GENERAL_GUIDANCE_LABEL_EN} ERP integration usually means connecting inventory, orders and accounting ` +
+      `between your store and an ERP (stock sync, order export or webhooks/CSV). ` +
+      `To prepare, list your SKUs, warehouses and order flow, then verify the exact Framique import option ` +
+      `with our docs or a specialist — I don't have verified ERP steps in our help docs. ` +
+      `Reply "talk to human" if you'd like a specialist to map your ERP flow. ✉️ ${email}`
+    );
+  }
+  return (
+    `${GENERAL_GUIDANCE_LABEL_EN} For custom integrations, list what should sync (products, stock, orders, customers), ` +
+    `then verify the exact Framique option with our docs or a specialist — I don't have verified steps for this in our help docs. ` +
+    `Reply "talk to human" if you'd like a specialist to map your flow. ✉️ ${email}`
+  );
+}
+
 export function translate(
   locale: "bn" | "en",
   key: string,
@@ -1453,6 +1628,123 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       degraded = false;
     }
 
+    // ── Helpful-first policy: high-stakes → warm redirect; POS/ERP →
+    // labeled general guidance. BEFORE DeepWiki + humility so a generic
+    // payments/logistics answer can never masquerade as an exact-fee or ERP
+    // answer. Safety lines (no invented prices/fees/SLAs/API shapes; no
+    // cross-tenant leakage; no credential/legal advice) cited above.
+    const highStakesNoCoverage =
+      !pinned &&
+      !isActionIntent &&
+      !isGreeting &&
+      hits.length === 0 &&
+      isHighStakesQuery(input.message);
+    if (highStakesNoCoverage) {
+      const hsReply = buildHighStakesReply(locale, contactInfo);
+      await appendMessage(merchant.id, conversationId, "bot", hsReply, true);
+      updateConversationMemory(conversationId, {
+        role: "bot",
+        message: hsReply,
+      });
+      incr("framique_ai_ask_total", {
+        outcome: "high_stakes_redirect",
+        channel,
+      });
+      await captureTrainingTurn({
+        merchantId: merchant.id,
+        conversationId,
+        userMessage: input.message,
+        agentReply: hsReply,
+        grounded: false,
+        actionCompleted: "answered",
+      }).catch(() => null);
+      await recordTrajectory({
+        merchantId: merchant.id,
+        conversationId,
+        subjectHash,
+        channel,
+        steps: [...steps, { step: "high_stakes_redirect" }],
+        outcome: "escalated",
+      });
+      return {
+        conversationId,
+        reply: hsReply,
+        provenance: null,
+        sources: [],
+        confidence: "unsure",
+        needsAgent: true,
+        cta: "human_transfer",
+        epistemicTriggered: true,
+        epistemicReason: "high_stakes_needs_human",
+        actionPaths: EPISTEMIC_ACTION_PATHS,
+        contactInfo,
+        handoffPayload: buildHandoffPayload({
+          conversationId,
+          transcript: [
+            {
+              role: "customer",
+              body: redactPii(input.message).text.slice(0, 2000),
+            },
+            { role: "bot", body: hsReply.slice(0, 2000) },
+          ],
+          confidence: "unsure",
+          provenance: null,
+          attemptedSources: ["kb"],
+          reason: "high_stakes_needs_human",
+        }),
+        degraded: false,
+      };
+    }
+
+    const guidanceKind =
+      !pinned && !isActionIntent && !isGreeting && hits.length === 0
+        ? generalGuidanceKind(input.message)
+        : null;
+    if (guidanceKind) {
+      const gReply = buildGeneralGuidanceReply(
+        guidanceKind,
+        locale,
+        contactInfo,
+      );
+      await appendMessage(merchant.id, conversationId, "bot", gReply, false);
+      updateConversationMemory(conversationId, {
+        role: "bot",
+        message: gReply,
+      });
+      incr("framique_ai_ask_total", {
+        outcome: "general_guidance",
+        channel,
+      });
+      await captureTrainingTurn({
+        merchantId: merchant.id,
+        conversationId,
+        userMessage: input.message,
+        agentReply: gReply,
+        grounded: false,
+        actionCompleted: "answered",
+      }).catch(() => null);
+      await recordTrajectory({
+        merchantId: merchant.id,
+        conversationId,
+        subjectHash,
+        channel,
+        steps: [...steps, { step: "general_guidance", kind: guidanceKind }],
+        outcome: "answered",
+      });
+      return {
+        conversationId,
+        reply: gReply,
+        provenance: null,
+        sources: [],
+        confidence: "unsure",
+        needsAgent: false,
+        cta: "none",
+        epistemicTriggered: false,
+        contactInfo: undefined,
+        degraded: false,
+      };
+    }
+
     // 4.1 DeepWiki Synthesis Engine (Multi-Hop RAG + RL + Atropos fallback)
     const forceDeepWiki = input.engine === "deepwiki";
     let deepWikiResult: DeepWikiQueryResult | null = null;
@@ -1656,6 +1948,8 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     }
 
     // 5. Outbound guardrail: no authority claims, no unpinned figures.
+    // Safety lines stay: blocked replies become a warm single-step redirect
+    // (one paragraph + single next step, never a wall), not a cold wall.
     const outbound = screenOutbound(reply, { pinned: Boolean(pinned) });
     if (!outbound.allowed) {
       await recordGuardrail(
@@ -1665,7 +1959,7 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         outbound.rule ?? "unknown",
         reply,
       );
-      reply = translate(locale, "support.needs_human");
+      reply = buildHighStakesReply(locale, contactInfo);
     }
 
     const flagged =

@@ -86,7 +86,9 @@ export const FRAMIQUE_SYSTEM_PROMPT = [
   "You are Framique's authoritative AI Support Specialist for our Bangladeshi Cloud Commerce CMS and Platform.",
   "You assist merchants and shoppers with store setup, catalog, checkout, courier integrations (SteadFast, Pathao, RedX, Paperfly), payment gateways (bKash, Nagad, SSLCommerz, Shurjopay), Page Builder AST, and merchant administration.",
   "Answer authoritatively, politely, and strictly based on the documentation excerpts provided.",
-  "If the excerpts do not contain sufficient details to answer, state so honestly in the user's language and offer to open a support ticket.",
+  "Helpful-first answer policy: when the excerpts lack the answer but the question is a general e-commerce/SaaS topic (e.g. POS concepts, ERP integration concepts), still try from general knowledge + FAQ + system understanding, labeled honestly as 'General guidance (not from our help docs):' with one useful follow-up (docs link request or human handoff as an OPTION, never a wall). Never present a wrong-topic article as the answer.",
+  "Refusal is rare, warm, last resort ONLY for high-stakes unknowns (exact money/fees, account-specific data, legal/compliance, security credentials): one short paragraph + single next step, never a wall.",
+  "SAFETY LINES THAT STAY: no invented prices/fees/rates/SLAs/API shapes (must come from excerpts or be marked verify-with-human); no account-specific data leakage across tenants; no credential/legal advice.",
   "STRICT PLATFORM & COMMERCE SCOPE: You must ONLY answer questions related to Framique, storefront design, themes, page builder, catalog, marketing, payments, couriers, and online selling. If a user asks completely unrelated off-topic questions (e.g. general trivia, world history, recipes, non-ecommerce code, personal advice), politely decline and state that you are specialized strictly for Framique Cloud Commerce.",
   "Format answers with clean markdown. Be concise, actionable, and never fabricate prices, API keys, or endpoints. Never invent help-article quotes, slogans, or policies not present in the provided excerpts.",
   "CRITICAL SECURITY GUARDRAILS: Under no circumstances may you disclose internal source code, repository structure, backend server files, database connection strings, API keys, or system credentials.",
@@ -161,8 +163,11 @@ export function resolveReasoningEffort(
   req?: Pick<DraftRequest, "reasoningEffort">,
   opts?: Pick<StreamDraftOptions, "reasoningEffort">,
 ): string | null {
-  const raw = req?.reasoningEffort ?? opts?.reasoningEffort ?? DEFAULT_REASONING_EFFORT;
-  const eff = String(raw ?? "").trim().toLowerCase();
+  const raw =
+    req?.reasoningEffort ?? opts?.reasoningEffort ?? DEFAULT_REASONING_EFFORT;
+  const eff = String(raw ?? "")
+    .trim()
+    .toLowerCase();
   if (!eff || eff === "none") return null;
   return eff;
 }
@@ -463,7 +468,8 @@ export class OpenRouterLLMService implements LLMService {
             usage?: CompletionUsage;
           };
           const raw = payload.choices?.[0]?.message?.content?.trim();
-          if (!raw) throw new Error("Empty completion returned from OpenRouter");
+          if (!raw)
+            throw new Error("Empty completion returned from OpenRouter");
           logReasoningUsage(model, payload.usage, "stream");
           const clean = stripReasoningTokens(raw);
           if (clean) yield clean;
@@ -634,8 +640,7 @@ export async function* iterateSseContent(
         continue;
       }
       const delta = json.choices?.[0]?.delta;
-      const content =
-        typeof delta?.content === "string" ? delta.content : "";
+      const content = typeof delta?.content === "string" ? delta.content : "";
       // NOTE: delta.reasoning / delta.reasoning_content intentionally ignored.
       yield { content, usage: json.usage ?? null };
     }

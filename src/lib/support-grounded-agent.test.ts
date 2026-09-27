@@ -53,9 +53,13 @@ describe("grounded super-agent", () => {
   });
 
   it("handoff payload is complete (transcript + provenance + sources)", async () => {
+    // CONTRACT CHANGE (helpful-first policy, Sept 2026): ERP now returns
+    // labeled general guidance with needsAgent=false (OPTION handoff, no
+    // auto-escalation). Handoff coverage moves to a true unknown (Martian)
+    // which still triggers humility + needsAgent + payload.
     const res = await runSupportAgentTurn({
       slug: "demo",
-      message: "How to integrate ERP?",
+      message: "What is the Martian credit refund policy for Olympus Mons?",
       locale: "en",
     });
     expect(res.needsAgent).toBe(true);
@@ -79,7 +83,9 @@ describe("grounded super-agent", () => {
   });
 
   it("replay: same transcript → same handoff prefill", async () => {
-    const msg = "How to integrate ERP?";
+    // CONTRACT CHANGE (helpful-first): replay uses Martian unknown (still
+    // handoff) instead of ERP (now general guidance, no handoff).
+    const msg = "What is the Martian credit refund policy for Olympus Mons?";
     const a = await runSupportAgentTurn({
       slug: "demo",
       message: msg,

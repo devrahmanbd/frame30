@@ -886,23 +886,23 @@ describe("Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Break
     });
 
     it("refuses to answer from a single-stem match when the decisive word is uncovered (ERP)", async () => {
-      // Regression: "How to integrate ERP?" was answered from the
-      // Pathao/RedX article on the strength of "integrat*" alone while
-      // "ERP" matched nothing. A citation must cover every distinctive
-      // query word or the humility circuit engages. The tiered fallback
-      // may NAME the gap (clarify) but must never present the wrong-topic
-      // article as a how-to answer.
+      // CONTRACT CHANGE (helpful-first policy, Sept 2026): single-stem
+      // Pathao/RedX match is still disqualified by the coverage gate
+      // (relevance floor kept — never a confident wrong-topic how-to), but
+      // the response is now labeled general guidance (helpful, OPTION handoff)
+      // instead of EPISTEMIC_ADMISSION refusal. Humility still guards true
+      // unknowns (Martian, weather); see grounded-agent deny tests.
       const res = await runSupportAgentTurn({
         slug: "demo",
         message: "How to integrate ERP?",
         locale: "en",
       });
 
-      expect(res.epistemicTriggered).toBe(true);
+      expect(res.epistemicTriggered).toBeFalsy();
       expect(res.confidence).toBe("unsure");
-      expect(res.needsAgent).toBe(true);
+      expect(res.needsAgent).toBe(false);
       expect(res.sources ?? []).toHaveLength(0);
-      expect(res.reply).toContain(EPISTEMIC_ADMISSION_EN);
+      expect(res.reply).toMatch(/General guidance \(not from our help docs\)/i);
       expect(res.reply).toMatch(/ERP/i);
       expect(res.reply).not.toMatch(/pathao|redx/i);
       expect(res.reply).not.toMatch(
