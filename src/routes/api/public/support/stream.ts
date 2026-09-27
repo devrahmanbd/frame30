@@ -380,12 +380,80 @@ export const Route = createFileRoute("/api/public/support/stream")({
               // 4. Preflight BEFORE the first byte: empty context yields the
               // unsure+handoff fallback verbatim — streamDraft is never
               // reached on this path, so no LLM call happens.
+              // Helpful-first cold path (mirrors askSupport, 1bb8c3b) runs
+              // BEFORE the preflight refusal: high-stakes warm single-step
+              // redirect, then POS/ERP general guidance — never a wall.
               const {
                 preflightStreamGate,
                 groundedSourcesFromContext,
                 enforceGroundedReply,
                 buildHandoffPayload,
               } = await import("@/lib/support-grounding.server");
+              try {
+                const { resolveStreamColdReply } =
+                  await import("@/lib/support-agent.server");
+                const { getVerifiedContact } =
+                  await import("@/lib/support-contact.server");
+                let coldContact;
+                try {
+                  coldContact = getVerifiedContact();
+                } catch {
+                  coldContact = undefined;
+                }
+                const cold = resolveStreamColdReply({
+                  message: body.message,
+                  locale,
+                  merchantName: merch.name,
+                  contextLength: context.length,
+                  ...(coldContact ? { contactInfo: coldContact } : {}),
+                });
+                if (cold && cold.kind === "high_stakes") {
+                  sendFinal({
+                    conversationId,
+                    reply: cold.reply,
+                    provenance: null,
+                    sources: [],
+                    confidence: "unsure",
+                    needsAgent: true,
+                    cta: "human_transfer",
+                    degraded: false,
+                    handoffPayload: buildHandoffPayload({
+                      conversationId,
+                      transcript: [
+                        {
+                          role: "customer",
+                          body: body.message.slice(0, 2000),
+                        },
+                        { role: "bot", body: cold.reply.slice(0, 2000) },
+                      ],
+                      confidence: "unsure",
+                      provenance: null,
+                      attemptedSources: ["kb"],
+                      reason: "stream_high_stakes_redirect",
+                    }),
+                  });
+                  controller.close();
+                  return;
+                }
+                if (cold && cold.kind === "general_guidance") {
+                  sendFinal({
+                    conversationId,
+                    reply: cold.reply,
+                    provenance: null,
+                    sources: [],
+                    confidence: "unsure",
+                    needsAgent: false,
+                    cta: "none",
+                    degraded: false,
+                  });
+                  controller.close();
+                  return;
+                }
+                // Greeting already answered pre-retrieval (2c); any other
+                // null falls through to the preflight refusal below.
+              } catch {
+                // Resolver unavailable — fall through to preflight refusal.
+              }
               const preflight = preflightStreamGate({
                 contextLength: context.length,
                 locale,

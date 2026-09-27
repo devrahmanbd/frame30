@@ -1126,6 +1126,85 @@ export function buildGeneralGuidanceReply(
   );
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Stream cold-path resolver (SSE lane single source of truth).
+//
+// `src/routes/api/public/support/stream.ts` refuses on empty KB context via
+// `preflightStreamGate`. That refusal must mirror askSupport's helpful-first
+// policy (1bb8c3b): greeting-first (no KB/LLM), then high-stakes warm
+// single-step redirect, then general-guidance tier — never a wall, never a
+// wrong-topic article. Returns null when the lane should proceed (warm
+// context → LLM stream; cold unknown → preflight refusal).
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type StreamColdKind = "greeting" | "general_guidance" | "high_stakes";
+
+export type StreamColdReply = {
+  kind: StreamColdKind;
+  reply: string;
+  needsAgent: boolean;
+  cta: "none" | "ticket" | "callback" | "human_transfer";
+  guidanceKind: GeneralGuidanceKind | null;
+};
+
+export type StreamColdInput = {
+  message: string;
+  locale: "bn" | "en";
+  merchantName: string;
+  contextLength: number;
+  contactInfo?: ContactInfoCard;
+};
+
+/**
+ * Resolve the SSE lane's cold (empty-context) reply, mirroring askSupport.
+ * Greeting wins regardless of context (early bypass); high-stakes beats
+ * general guidance (exact-fee safety before helpful concepts); anything else
+ * cold returns null so the caller falls through to `preflightStreamGate`.
+ */
+export function resolveStreamColdReply(
+  input: StreamColdInput,
+): StreamColdReply | null {
+  const locale = input.locale ?? "en";
+  let contact = input.contactInfo;
+  if (!contact) {
+    try {
+      contact = getVerifiedContact();
+    } catch {
+      contact = DEFAULT_CONTACT_INFO;
+    }
+  }
+  if (isGreetingMessage(input.message)) {
+    return {
+      kind: "greeting",
+      reply: buildGreetingReply(input.merchantName, locale),
+      needsAgent: false,
+      cta: "none",
+      guidanceKind: null,
+    };
+  }
+  if (input.contextLength > 0) return null;
+  if (isHighStakesQuery(input.message)) {
+    return {
+      kind: "high_stakes",
+      reply: buildHighStakesReply(locale, contact),
+      needsAgent: true,
+      cta: "human_transfer",
+      guidanceKind: null,
+    };
+  }
+  const guidanceKind = generalGuidanceKind(input.message);
+  if (guidanceKind) {
+    return {
+      kind: "general_guidance",
+      reply: buildGeneralGuidanceReply(guidanceKind, locale, contact),
+      needsAgent: false,
+      cta: "none",
+      guidanceKind,
+    };
+  }
+  return null;
+}
+
 export function translate(
   locale: "bn" | "en",
   key: string,
