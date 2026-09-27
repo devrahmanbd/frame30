@@ -459,22 +459,46 @@ export function applyDemoFocus(
   let head = false;
   let rail = false;
   let media = false;
-  
+
   function walk(nodes: Section[]): Section[] {
-    return nodes.map((section) => {
-      let next = { ...section };
-      
-      if (!head && (next.type === "heading" || next.type === "category_header")) {
+    let dirty = false;
+    const out = nodes.map((section) => {
+      // Preserve reference identity for untouched sections (tests pin
+      // `toBe` on the tail): only clone when this node actually changes.
+      let next: Section = section;
+
+      if (
+        !head &&
+        (section.type === "heading" || section.type === "category_header")
+      ) {
         head = true;
-        next = { ...next, props: { ...next.props, text: focus!.title } };
+        next = { ...section, props: { ...section.props, text: focus!.title } };
       }
-      
-      if (!media && focus!.template === "product" && next.type === "product_media") {
-        media = true;
-        // Do not inject static image props so that it falls back to the dynamic DemoProductMediaGallery via ContextSlot
+
+      if (
+        !media &&
+        focus!.template === "product" &&
+        next.type === "product_media"
+      ) {
+        const gallery = (focus!.images ?? []).filter(Boolean);
+        const primary = gallery[0] ?? focus!.image;
+        if (primary) {
+          media = true;
+          const patch: Record<string, Section["props"][string]> = {
+            image1: primary,
+          };
+          if (gallery[1]) patch["image2"] = gallery[1]!;
+          if (gallery[2]) patch["image3"] = gallery[2]!;
+          if (gallery[3]) patch["image4"] = gallery[3]!;
+          next = { ...next, props: { ...next.props, ...patch } };
+        }
+        // Unknown slugs carry no art: leave static media untouched so the
+        // authored fallback renders unchanged.
       }
-      
-      const isCollectionBound = next.type === "product_grid" || (next.type === "product_rail" && next.props["source"] === "collection");
+
+      const isCollectionBound =
+        next.type === "product_grid" ||
+        (next.type === "product_rail" && next.props["source"] === "collection");
       if (!rail && isCollectionBound) {
         rail = true;
         next = {
@@ -486,14 +510,20 @@ export function applyDemoFocus(
           },
         };
       }
-      
-      if (next.children) {
-        next = { ...next, children: walk(next.children) };
+
+      const kids = next.children;
+      if (kids) {
+        const walked = walk(kids);
+        if (walked !== kids) {
+          next = { ...next, children: walked };
+        }
       }
-      
+
+      if (next !== section) dirty = true;
       return next;
     });
+    return dirty ? out : nodes;
   }
-  
+
   return walk(sections);
 }

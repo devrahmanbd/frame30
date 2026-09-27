@@ -109,24 +109,36 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
           ];
         }
         case "product": {
-          const layout = s("columns", { columns: 2, asymmetrical: true, gap: 48, padY: 48 });
-          const rightCol = s("columns", { columns: 1, gap: 24 });
-          rightCol.children = [
+          // Preview owns its h1 (no route), so open with a heading; keep a
+          // top-level product_media with static art so the demo renders
+          // without live data and applyDemoFocus can inject focused catalog
+          // art. Lane widgets (breadcrumb/meta/price/cart) stay flat so
+          // every section resolves its ContextSlot on the product template
+          // (page_content is page/blog-only and would mismatch here, so
+          // details stay a rich_text like before the columns rebuild).
+          return [
+            s("heading", {
+              text: "Dhakai Jamdani Heritage Saree",
+              text_bn: "ঢাকাই জামদানি হেরিটেজ শাড়ি",
+            }),
+            s("product_media", {
+              image1: "/ph/songoskriti/prod-saree.png",
+              image2: "/ph/songoskriti/prod-panjabi.png",
+              image3: "/ph/songoskriti/prod-necklace.png",
+              image4: "/ph/songoskriti/cat-women.png",
+              ratio: "4/5",
+            }),
             s("breadcrumb", { homeLabel: "Home" }),
             s("product_meta", {}),
             s("price_block", {}),
             s("add_to_cart", {}),
-            s("page_content", { heading: "Details" })
-          ];
-          layout.children = [
-            s("product_media", {
-              ratio: "3/4",
+            s("rich_text", {
+              heading: "Details",
+              heading_bn: "বিবরণ",
+              body: "Demo product page. Prices and stock are sample data — ordering is disabled in preview.",
+              body_bn:
+                "ডেমো পণ্যের পাতা। দাম ও স্টক নমুনা তথ্য — প্রিভিউতে অর্ডার বন্ধ আছে।",
             }),
-            rightCol
-          ];
-          
-          return [
-            layout,
             rail(
               s,
               "Complete the look",
