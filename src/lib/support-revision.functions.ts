@@ -1,9 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * Revision-review RPC boundary (TanStack Start convention).
+ *
+ * The `createServerFn` handles live here — never in a `*.server.ts` module
+ * imported by client code (the build's import-protection plugin denies it).
+ * Handlers use dynamic `await import()` for server implementations, so the
+ * client bundle only ever sees RPC stubs. No logic beyond validation and
+ * delegation lives here.
+ */
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { DisplayReview } from "./support-revision-review.server";
 import type { RevisionScore } from "./support-revision.server";
+
+export type {
+  DisplayReview,
+  ReviewStatus,
+} from "./support-revision-review.server";
 
 const reviewStatus = z.enum(["pending", "approved", "rejected", "applied"]);
 
@@ -20,9 +33,7 @@ export type RevisionReviewDto = Omit<DisplayReview, "score_json"> & {
 function toDto(row: DisplayReview): RevisionReviewDto {
   return {
     ...row,
-    score_json: JSON.parse(
-      JSON.stringify(row.score_json),
-    ) as RevisionScore,
+    score_json: JSON.parse(JSON.stringify(row.score_json)) as RevisionScore,
   };
 }
 
@@ -36,17 +47,13 @@ export const listRevisionReviewsFn = createServerFn({ method: "GET" })
   )
   .handler(async ({ data, context }): Promise<RevisionReviewDto[]> => {
     const merchantId = await merchantOf(context);
-    const { listRevisionReviews } = await import(
-      "./support-revision-review.server"
-    );
+    const { listRevisionReviews } =
+      await import("./support-revision-review.server");
     const rows = await listRevisionReviews(
       merchantId,
       (data.status ?? "all") as
-        | "pending"
-        | "approved"
-        | "rejected"
-        | "applied"
-        | "all",
+        "pending" | "approved" | "rejected" | "applied" | "all",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       context.supabase as any,
     );
     return rows.map(toDto);
@@ -65,11 +72,11 @@ export const approveRevisionFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const merchantId = await merchantOf(context);
-    const { approveRevision } = await import(
-      "./support-revision-review.server"
-    );
+    const { approveRevision } =
+      await import("./support-revision-review.server");
     return approveRevision(data.id, context.userId, data.editedReply ?? null, {
       merchantId,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       db: context.supabase as any,
     });
   });
@@ -87,11 +94,10 @@ export const rejectRevisionFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const merchantId = await merchantOf(context);
-    const { rejectRevision } = await import(
-      "./support-revision-review.server"
-    );
+    const { rejectRevision } = await import("./support-revision-review.server");
     return rejectRevision(data.id, context.userId, data.reason ?? null, {
       merchantId,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       db: context.supabase as any,
     });
   });
@@ -107,11 +113,10 @@ export const applyRevisionFn = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const merchantId = await merchantOf(context);
-    const { applyApproved } = await import(
-      "./support-revision-review.server"
-    );
+    const { applyApproved } = await import("./support-revision-review.server");
     return applyApproved(data.id, {
       merchantId,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       db: context.supabase as any,
     });
   });
