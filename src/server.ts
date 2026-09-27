@@ -12,6 +12,7 @@ import { isLocalHostname } from "./lib/edge-hosts";
 import {
   decideStoreRedirectForPath,
   isBlockedPathStorefront,
+  isBlockedThemePreview,
   normalizeRequestHost,
 } from "./lib/storefront-host.server";
 import { consoleSecurityHeaders, isConsolePath } from "./lib/console-headers";
@@ -417,6 +418,15 @@ export default {
           } catch {
             validPreview = false;
           }
+        }
+        // System-domain-only theme preview (Sept 2026 security fix):
+        // `/theme-preview/*` renders blueprints with no session, so merchant
+        // and unknown hosts get a bare 404 (no body, no leak — never a login
+        // redirect from storefront paths). Local dev + platform hosts pass.
+        if (isBlockedThemePreview(normalizedHost, url.pathname)) {
+          const { incr } = await import("./lib/observability.server");
+          incr("framique_theme_preview_blocked_total", {});
+          return new Response(null, { status: 404 });
         }
         // Unmapped custom hosts serve nothing at all: not the CMS marketing
         // site, not a featured store, not an error page with a body. A bare

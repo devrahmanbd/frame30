@@ -22,9 +22,10 @@
  *
  * Usage: /theme-preview/songoskriti
  */
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
+import { themePreviewHostGateFn } from "@/lib/storefront.functions";
 import {
   resolveThemePreview,
   validateThemePreviewSearch,
@@ -52,6 +53,22 @@ export const Route = createFileRoute("/theme-preview/$key")({
       { name: "robots", content: "noindex" },
     ],
   }),
+  // System-domain-only preview (Sept 2026 security fix): merchant/custom
+  // hosts get a 404 with zero preview markup — never a login redirect from
+  // a storefront path (account.tsx loader notFound() precedent). Direct hits
+  // are already 404d by the `server.ts` edge gate before SSR; this loader
+  // covers client-side SPA navigation, where no fresh document request runs.
+  // Fail closed: any gate failure denies.
+  loader: async () => {
+    let allowed = false;
+    try {
+      allowed = (await themePreviewHostGateFn()).allowed;
+    } catch {
+      allowed = false;
+    }
+    if (!allowed) throw notFound();
+    return null;
+  },
   component: ThemePreviewRoute,
   errorComponent: ThemePreviewError,
   notFoundComponent: ThemePreviewNotFound,
@@ -59,7 +76,11 @@ export const Route = createFileRoute("/theme-preview/$key")({
 
 function ThemePreviewRoute() {
   const { key } = Route.useParams() as RouteParams;
-  const { template: initialTemplate, focus: initialFocus, mock_order: initialMockOrder } = Route.useSearch();
+  const {
+    template: initialTemplate,
+    focus: initialFocus,
+    mock_order: initialMockOrder,
+  } = Route.useSearch();
   const preset = resolveThemePreview(key);
 
   if (!preset) {

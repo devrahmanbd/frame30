@@ -22,6 +22,7 @@
  */
 import { getRequest } from "@tanstack/react-start/server";
 import { cached } from "./cache.server";
+import { isLocalHostname } from "./edge-hosts";
 
 export type StorefrontHostResolution = {
   merchantId: string;
@@ -372,6 +373,56 @@ export async function isBlockedForeignStorePath(
   if (slug === res.merchantSlug.toLowerCase()) return false;
   const other = await merchantIdForSlug(slug).catch(() => null);
   return isForeignStorePath(res.merchantId, true, other);
+}
+
+/**
+ * System-domain-only theme preview gate (Sept 2026 security fix).
+ *
+ * `/theme-preview/<key>` renders theme blueprints publicly with no session,
+ * so it must never serve on a merchant/custom host — only the named
+ * platform/system allowlist (`PLATFORM_EXACT` / `PLATFORM_SUFFIXES` above,
+ * which include the live system domain `framique.qubickle.com`) plus genuine
+ * local-dev hostnames. Every other host — merchant custom domains, unknown
+ * hosts, empty — is denied. Fail closed: null/empty/garbage → false.
+ *
+ * Callers never hardcode a bare hostname string; they call this.
+ */
+export function isThemePreviewHostAllowed(
+  hostname: string | null | undefined,
+): boolean {
+  if (!hostname) return false;
+  let host = hostname.trim().toLowerCase().replace(/\.$/, "");
+  // Strip a `:port` suffix (local dev servers); anything else with a colon
+  // (unbracketed IPv6 / garbage) is rejected.
+  if (host.includes(":")) {
+    const parts = host.split(":");
+    if (parts.length !== 2 || !parts[0] || !/^\d{1,5}$/.test(parts[1] ?? ""))
+      return false;
+    host = parts[0] ?? "";
+  }
+  if (!host) return false;
+  return isPlatformHost(host) || isLocalHostname(host);
+}
+
+/**
+ * Edge decision for `/theme-preview/*`: block (caller answers bare 404)
+ * when the path is a theme preview AND the host is not preview-allowed.
+ * Pure — pinned by unit tests.
+ *
+ * - Non-preview paths → false (signed `preview_token` split-preview flows,
+ *   storefront, dashboard builder `?preview_theme_id=` all untouched).
+ * - Null/empty host → false (fail open at the edge; the route loader gate
+ *   fails closed separately, and the entry always has a host in practice).
+ */
+export function isBlockedThemePreview(
+  hostname: string | null | undefined,
+  pathname: string,
+): boolean {
+  if (!hostname) return false;
+  const path = pathname.split(/[?#]/, 1)[0] ?? "";
+  if (path !== "/theme-preview" && !path.startsWith("/theme-preview/"))
+    return false;
+  return !isThemePreviewHostAllowed(hostname);
 }
 
 /**

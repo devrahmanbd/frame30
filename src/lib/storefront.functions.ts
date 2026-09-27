@@ -292,6 +292,23 @@ export const resolveStorefrontHostFn = createServerFn({
 });
 
 /**
+ * System-domain-only theme preview gate (Sept 2026 security fix).
+ *
+ * The `/theme-preview/$key` route loader calls this and throws notFound()
+ * when denied. Reads the live request host server-side, so client-side SPA
+ * navigation on a merchant host is denied exactly like direct hits (which
+ * the `server.ts` edge gate already 404s before SSR). Fail closed: any
+ * resolution failure denies.
+ */
+export const themePreviewHostGateFn = createServerFn({
+  method: "GET",
+}).handler(async () => {
+  const { currentRequestHost, isThemePreviewHostAllowed } =
+    await import("./storefront-host.server");
+  return { allowed: isThemePreviewHostAllowed(currentRequestHost()) };
+});
+
+/**
  * Primary custom-domain hostname for the signed-in merchant's active store.
  *
  * Powers the dashboard "View store" anchor: custom-domain-only storefront
