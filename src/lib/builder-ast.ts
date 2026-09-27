@@ -866,6 +866,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       maxW: "container",
       align: "left",
       bg: "none",
+      asymmetrical: false,
     },
     fields: [
       cols("columns", "Columns (1-4)"),
@@ -881,6 +882,13 @@ const BASE_CATALOG: CatalogEntry[] = [
         label: "Vertical padding in px (0-160)",
         kind: "number",
         panel: "style",
+        responsive: true,
+      },
+      {
+        key: "asymmetrical",
+        label: "60/40 Split (Desktop only, 2 cols)",
+        kind: "boolean",
+        panel: "layout",
         responsive: true,
       },
       ALIGN,

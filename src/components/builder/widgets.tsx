@@ -340,6 +340,7 @@ const Container: WidgetComponent = ({
   section,
   str,
   int,
+  bool,
   editing,
   renderChildren,
 }) => {
@@ -369,7 +370,7 @@ const Container: WidgetComponent = ({
       style={{ paddingTop: padY, paddingBottom: padY }}
     >
       <div
-        className={COLUMN_CLASS[columns]}
+        className={bool("asymmetrical") && columns === 2 ? "grid grid-cols-1 lg:grid-cols-[60%_1fr]" : COLUMN_CLASS[columns]}
         style={{ gap: int("gap", 24, 0, 64) }}
       >
         {renderChildren()}
@@ -406,12 +407,24 @@ const ContextSlot: WidgetComponent = ({ str, Heading, slot }) =>
  * users get an instant, non-animated toggle.
  */
 const ProductMedia: WidgetComponent = (ctx) => {
-  const { str, bool, locale, slot } = ctx;
+  const { str, bool, locale, slot, storeSlug } = ctx;
   const images = ["image1", "image2", "image3", "image4"]
     .map((k) => str(k))
     .filter(Boolean);
   const [index, setIndex] = useState(0);
   const [zoomed, setZoomed] = useState(false);
+  
+  // Phase 7.3: Bind variant selection to authored media gallery.
+  const variantChannel = useSectionChannel(storeSlug ?? "demo", "variant");
+  const selectedVariantIndex = variantChannel.ids[0] ? parseInt(variantChannel.ids[0], 10) : 0;
+  
+  useEffect(() => {
+    if (!isNaN(selectedVariantIndex) && selectedVariantIndex >= 0 && selectedVariantIndex < images.length) {
+      setIndex(selectedVariantIndex);
+      setZoomed(false);
+    }
+  }, [selectedVariantIndex, images.length]);
+
   if (images.length === 0) return <ContextSlot {...ctx} />;
   const ratio = str("ratio") || "1/1";
   const active = Math.min(index, images.length - 1);
@@ -915,8 +928,7 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale, section }) => {
   const count = slides.length;
   const current = Math.min(index, count - 1);
   const active = slides[current]!;
-  const step = (delta: number) =>
-    setIndex((i) => (i + delta + count) % count);
+  const step = (delta: number) => setIndex((i) => (i + delta + count) % count);
   const goTo = (i: number) => setIndex(((i % count) + count) % count);
   const prevLabel = locale === "bn" ? "আগের স্লাইড" : "Previous slide";
   const nextLabel = locale === "bn" ? "পরের স্লাইড" : "Next slide";
@@ -963,7 +975,9 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale, section }) => {
     if (reducedMotion) return;
     if (event.pointerType !== "mouse" || event.button !== 0) return;
     const target = event.target as HTMLElement | null;
-    if (target?.closest?.("button, a, input, select, textarea, [role='button']"))
+    if (
+      target?.closest?.("button, a, input, select, textarea, [role='button']")
+    )
       return;
     pointerStartX.current = event.clientX;
     try {
@@ -1042,11 +1056,7 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale, section }) => {
       <p className="sr-only" role="status">
         {statusText}
       </p>
-      <div
-        role="group"
-        aria-roledescription="slide"
-        aria-label={statusText}
-      >
+      <div role="group" aria-roledescription="slide" aria-label={statusText}>
         {active.image && (
           <MediaFrame
             src={active.image}
@@ -1124,7 +1134,7 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale, section }) => {
  * The closed renderer map. `Record<SectionType, WidgetComponent>` means a new
  * widget type cannot compile until its renderer exists.
  */
-export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
+const BASE_WIDGETS: Record<string, WidgetComponent> = {
   // Phase 2.1 — bars, navigation, search and account/cart.
   ...CHROME_WIDGETS,
   // Phase 2.2 — merchandising.
@@ -1141,8 +1151,6 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   ...APPAREL_WIDGETS,
   // Phase 9 — Heritage (clothing).
   ...HERITAGE_WIDGETS,
-  // Songoskriti heritage gap pack.
-  ...SONGOSKRITI_WIDGETS,
   // Somvabona everyday-ethnic pack (spec 2026-09-25 §3).
   ...SOMVABONA_WIDGETS,
 
@@ -1491,9 +1499,7 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
     // common — only the list composition forks.
     const skin = resolveSkin("product_grid", str("skin"));
     const heading = str("heading") ? (
-      <Heading className="mb-3 text-lg font-semibold">
-        {str("heading")}
-      </Heading>
+      <Heading className="mb-3 text-lg font-semibold">{str("heading")}</Heading>
     ) : null;
     const pending = data?.pending ?? false;
     const rowsList = data?.rows ?? [];
@@ -1657,13 +1663,14 @@ export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
   product_meta: ContextSlot,
   page_content: ContextSlot,
 
-  // Phase 7 — Elementor-grade layout primitives (button, icon, form, menu, logo, carousel).
+};
+
+export const WIDGET_COMPONENTS: Record<SectionType, WidgetComponent> = {
+  ...(BASE_WIDGETS as any),
   ...BASIC_WIDGETS,
   ...BLOG_WIDGETS,
-
-  // Phase 2.7 — Circuit (electronics), including the upgraded spec table.
   ...CIRCUIT_WIDGETS,
   ...BEAUTY_WIDGETS,
-  // Rupaboti homepage gap set: badges, packs and taxonomy rails.
   ...BEAUTY_HOME_WIDGETS,
+  ...SONGOSKRITI_WIDGETS,
 };

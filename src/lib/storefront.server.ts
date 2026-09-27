@@ -587,11 +587,12 @@ export async function loadStoreProduct(slug: string, productSlug: string) {
 
   const { data: product } = await db
     .from("products")
-    .select("id, title, slug, description, image_url")
+    .select("id, title, slug, description, image_url, tags, category_id")
     .eq("merchant_id", merchant.id)
     .eq("slug", productSlug)
     .eq("status", "active")
     .maybeSingle();
+
   if (!product) return null;
   const [productResolved] = mergePublicVariants(
     [product],

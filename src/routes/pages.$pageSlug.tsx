@@ -1,4 +1,9 @@
-import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  notFound,
+  redirect,
+} from "@tanstack/react-router";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
@@ -35,9 +40,7 @@ export const Route = createFileRoute("/pages/$pageSlug")({
       );
     // Custom bases: the old prefixed URL still matches this static route,
     // so canonicalize it here instead of serving duplicates.
-    const { canonicalRedirectFn } = await import(
-      "@/lib/permalink.functions"
-    );
+    const { canonicalRedirectFn } = await import("@/lib/permalink.functions");
     const { to } = await canonicalRedirectFn({
       data: {
         merchantId: found.merchant.id,

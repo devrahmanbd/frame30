@@ -47,7 +47,9 @@ function render(
   locale: "en" | "bn" = "en",
   rows?: WidgetRow[],
 ): string {
-  return renderToStaticMarkup(createElement(Cmp, ctxFor(section, locale, rows)));
+  return renderToStaticMarkup(
+    createElement(Cmp, ctxFor(section, locale, rows)),
+  );
 }
 
 function row(
@@ -60,17 +62,29 @@ function row(
 
 describe("price facet dual range", () => {
   it("renders two native range inputs with bilingual labels", () => {
-    const en = render(WIDGET_COMPONENTS.facet_sidebar, newSection("facet_sidebar"), "en");
+    const en = render(
+      WIDGET_COMPONENTS.facet_sidebar,
+      newSection("facet_sidebar"),
+      "en",
+    );
     expect(en).toContain('type="range"');
     expect(en).toContain('aria-label="Minimum price"');
     expect(en).toContain('aria-label="Maximum price"');
-    const bn = render(WIDGET_COMPONENTS.facet_sidebar, newSection("facet_sidebar"), "bn");
+    const bn = render(
+      WIDGET_COMPONENTS.facet_sidebar,
+      newSection("facet_sidebar"),
+      "bn",
+    );
     expect(bn).toContain('aria-label="সর্বনিম্ন দাম"');
     expect(bn).toContain('aria-label="সর্বোচ্চ দাম"');
   });
 
   it("announces localized money values and keeps the numeric fields", () => {
-    const html = render(WIDGET_COMPONENTS.facet_sidebar, newSection("facet_sidebar"), "en");
+    const html = render(
+      WIDGET_COMPONENTS.facet_sidebar,
+      newSection("facet_sidebar"),
+      "en",
+    );
     expect(html).toContain("aria-valuetext");
     expect(html).toContain('id="fq-facet-min"');
     expect(html).toContain('id="fq-facet-max"');
@@ -78,10 +92,19 @@ describe("price facet dual range", () => {
 });
 
 describe("size selector", () => {
-  const rows = [row("s", "S"), row("m", "M"), row("l", "L", { inStock: false })];
+  const rows = [
+    row("s", "S"),
+    row("m", "M"),
+    row("l", "L", { inStock: false }),
+  ];
 
   it("renders a radiogroup with 44px radio options", () => {
-    const html = render(WIDGET_COMPONENTS.size_selector, newSection("size_selector"), "en", rows);
+    const html = render(
+      WIDGET_COMPONENTS.size_selector,
+      newSection("size_selector"),
+      "en",
+      rows,
+    );
     expect(html).toContain('role="radiogroup"');
     expect(html).toContain('role="radio"');
     expect(html).toContain("min-h-11");
@@ -89,7 +112,12 @@ describe("size selector", () => {
   });
 
   it("marks out-of-stock sizes for screen readers, bilingually", () => {
-    const en = render(WIDGET_COMPONENTS.size_selector, newSection("size_selector"), "en", rows);
+    const en = render(
+      WIDGET_COMPONENTS.size_selector,
+      newSection("size_selector"),
+      "en",
+      rows,
+    );
     expect(en).toContain("out of stock");
     // Authored headings win over locale twins by design; clear it to
     // exercise the Bengali fallback.
@@ -104,7 +132,12 @@ describe("variant picker", () => {
   const rows = [row("red-m", "Red / M"), row("blue-m", "Blue / M")];
 
   it("chip mode renders keyboard-navigable radios", () => {
-    const html = render(WIDGET_COMPONENTS.variant_picker, newSection("variant_picker"), "en", rows);
+    const html = render(
+      WIDGET_COMPONENTS.variant_picker,
+      newSection("variant_picker"),
+      "en",
+      rows,
+    );
     expect(html).toContain('role="radiogroup"');
     expect(html).toContain('role="radio"');
     expect(html).toContain("aria-checked");
@@ -131,10 +164,20 @@ describe("quantity steppers", () => {
 
   it("buy box stepper is a labelled group with bilingual buttons", () => {
     const rows = [row("v1", "Default", { priceMinor: 99000, inStock: true })];
-    const en = render(WIDGET_COMPONENTS.buy_box, newSection("buy_box"), "en", rows);
+    const en = render(
+      WIDGET_COMPONENTS.buy_box,
+      newSection("buy_box"),
+      "en",
+      rows,
+    );
     expect(en).toContain('aria-label="Quantity"');
     expect(en).toContain('aria-label="Decrease quantity"');
-    const bn = render(WIDGET_COMPONENTS.buy_box, newSection("buy_box"), "bn", rows);
+    const bn = render(
+      WIDGET_COMPONENTS.buy_box,
+      newSection("buy_box"),
+      "bn",
+      rows,
+    );
     expect(bn).toContain('aria-label="পরিমাণ"');
     expect(bn).toContain('aria-label="কমান"');
   });
@@ -266,10 +309,7 @@ describe("hero carousel shell", () => {
     // inside the HeroWidget block itself (sliced to the renderer, so other
     // carousels cannot satisfy it).
     const { readFileSync } = await import("node:fs");
-    const src = readFileSync(
-      "src/components/builder/widgets.tsx",
-      "utf8",
-    );
+    const src = readFileSync("src/components/builder/widgets.tsx", "utf8");
     const start = src.indexOf("const HeroWidget");
     const end = src.indexOf("\n};", start);
     const block = src.slice(start, end);

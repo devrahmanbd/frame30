@@ -108,7 +108,9 @@ describe("builder application", () => {
   });
 
   it("unknown widget types pass through untouched", () => {
-    expect(applySomvabonaWidgetDefaults("mega_menu", { label: "Shop" })).toEqual({
+    expect(
+      applySomvabonaWidgetDefaults("mega_menu", { label: "Shop" }),
+    ).toEqual({
       label: "Shop",
     });
   });
@@ -144,10 +146,7 @@ describe("resolveSomvabonaSkin (unknown → default)", () => {
 });
 
 describe("skins.css", () => {
-  const css = readFileSync(
-    new URL("./skins.css", import.meta.url),
-    "utf8",
-  );
+  const css = readFileSync(new URL("./skins.css", import.meta.url), "utf8");
 
   it("keys every rule off [data-widget][data-skin]", () => {
     for (const [widget, skin] of [

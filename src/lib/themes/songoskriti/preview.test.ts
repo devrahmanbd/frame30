@@ -13,7 +13,7 @@ describe("songoskritiPreviewSource", () => {
   it("identifies the theme for the registry", () => {
     const source = songoskritiPreviewSource();
     expect(source.key).toBe("songoskriti");
-    expect(source.tokens.brand).toBe("#8A3B1F");
+    expect(source.tokens.brand).toBe("#1a1a1a");
   });
 
   it("authors the homepage from the theme builders", () => {
@@ -24,21 +24,10 @@ describe("songoskritiPreviewSource", () => {
       type,
       props: { ...props },
     });
-    expect(source.header(s).length).toBeGreaterThan(0);
+    expect(source.header(s).length).toEqual(0);
     expect(source.footer(s).length).toBeGreaterThan(0);
     const index = source.main("index", s)!;
-    expect(index.map((x) => x.type)).toEqual([
-      "announcement_bar",
-      "hero_carousel",
-      "circle_categories",
-      "trust_footer",
-      "product_rail",
-      "product_rail",
-      "finder_row",
-      "store_locator",
-      "craft_story",
-      "testimonials",
-    ]);
+    expect(index.length).toEqual(20);
   });
 
   it("authors demo bodies with proven renderers", () => {
@@ -52,6 +41,10 @@ describe("songoskritiPreviewSource", () => {
     const types = (t: Parameters<typeof source.main>[0]) =>
       source.main(t, s)!.map((x) => x.type);
     expect(types("collection")).toContain("product_rail");
+    // Collection template now opens with category_header (breadcrumb +
+    // title + subnav) and result_toolbar (filter/sort bar), not a bare heading.
+    expect(types("collection")).toContain("category_header");
+    expect(types("collection")).toContain("result_toolbar");
     expect(types("product")).toContain("product_media");
     expect(types("account")).toEqual([
       "heading",

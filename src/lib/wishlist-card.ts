@@ -61,7 +61,7 @@ export function useWishlistCard({
   variantId,
 }: {
   slug: string;
-  variantId: string;
+  variantId?: string;
 }) {
   const queryClient = useQueryClient();
   const readWishlist = useServerFn(customerWishlistFn);
@@ -80,16 +80,19 @@ export function useWishlistCard({
 
   const mutation = useMutation({
     mutationFn: () =>
-      toggleWishlist({ data: { slug, variantId, stockAlert: false } }),
+      toggleWishlist({ data: { slug, variantId: variantId!, stockAlert: false } }),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: WISHLIST_KEY });
       const previous = queryClient.getQueryData<WishlistCache>(WISHLIST_KEY);
-      queryClient.setQueryData<WishlistCache>(WISHLIST_KEY, (old) => ({
-        ...old,
-        items: saved
-          ? (old?.items ?? []).filter((item) => item.variantId !== variantId)
-          : [...(old?.items ?? []), { variantId }],
-      }));
+      queryClient.setQueryData<WishlistCache>(WISHLIST_KEY, (old) => {
+        if (!variantId) return old;
+        return {
+          ...old,
+          items: saved
+            ? (old?.items ?? []).filter((item) => item.variantId !== variantId)
+            : [...(old?.items ?? []), { variantId }],
+        };
+      });
       return { previous };
     },
     onError: (_error, _variables, context) => {
@@ -102,7 +105,12 @@ export function useWishlistCard({
     },
   });
 
-  const onClick = () => {
+  const onClick = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!variantId) return;
     if (signedIn === null) return;
     if (signedIn === false) {
       const redirect = `${window.location.pathname}${window.location.search}`;

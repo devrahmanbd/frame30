@@ -35,7 +35,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           image: "/ph/songoskriti/hero-festive.png",
           headline: "HERITAGE,\nWOVEN FOR TODAY",
           headline_bn: "ঐতিহ্য,\nআজকের জন্য বোনা",
-          subhead: "Contemporary silhouettes rooted in the craft of Bangladesh.",
+          subhead:
+            "Contemporary silhouettes rooted in the craft of Bangladesh.",
           subhead_bn: "বাংলাদেশের কারুশিল্পে প্রোথিত আধুনিক সিলুয়েট।",
           ctaLabel: "SHOP NEW ARRIVALS",
           ctaLabel_bn: "নতুন সংগ্রহ দেখুন",
@@ -47,7 +48,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           image: "/ph/songoskriti/edit-festive-main.png",
           headline: "THE FESTIVE\nEDIT",
           headline_bn: "উৎসবের\nবিশেষ সংগ্রহ",
-          subhead: "Jamdani drapes, silk textures and modern Panjabis made for celebrations.",
+          subhead:
+            "Jamdani drapes, silk textures and modern Panjabis made for celebrations.",
           subhead_bn: "উৎসবের জন্য জামদানি, সিল্ক ও আধুনিক পাঞ্জাবি।",
           ctaLabel: "SHOP FESTIVE",
           ctaLabel_bn: "উৎসব সংগ্রহ",
@@ -59,8 +61,10 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           image: "/ph/songoskriti/hero-weaves.png",
           headline: "THE ART OF\nJAMDANI",
           headline_bn: "জামদানির\nশিল্পকলা",
-          subhead: "Fine threads. Patient hands. A legacy that still moves forward.",
-          subhead_bn: "সূক্ষ্ম সুতো। ধৈর্যশীল হাত। এক ঐতিহ্য যা এখনও এগিয়ে চলে।",
+          subhead:
+            "Fine threads. Patient hands. A legacy that still moves forward.",
+          subhead_bn:
+            "সূক্ষ্ম সুতো। ধৈর্যশীল হাত। এক ঐতিহ্য যা এখনও এগিয়ে চলে।",
           ctaLabel: "EXPLORE JAMDANI",
           ctaLabel_bn: "জামদানি দেখুন",
           ctaUrl: `${c}/jamdani`,
@@ -80,12 +84,36 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       heading_bn: "সংগ্রহ দেখুন",
       columns: 6,
       departments: [
-        { title: "Sarees", image: "/ph/songoskriti/cat-women.png", href: `${c}/sarees` },
-        { title: "Panjabi", image: "/ph/songoskriti/cat-men.png", href: `${c}/panjabi` },
-        { title: "Festive", image: "/ph/songoskriti/hero-festive.png", href: `${c}/festive` },
-        { title: "Wedding", image: "/ph/songoskriti/edit-festive-main.png", href: `${c}/wedding` },
-        { title: "Jewellery", image: "/ph/songoskriti/cat-jewelry.png", href: `${c}/jewellery` },
-        { title: "Heritage", image: "/ph/songoskriti/hero-weaves.png", href: `${c}/heritage` },
+        {
+          title: "Sarees",
+          image: "/ph/songoskriti/cat-women.png",
+          href: `${c}/sarees`,
+        },
+        {
+          title: "Panjabi",
+          image: "/ph/songoskriti/cat-men.png",
+          href: `${c}/panjabi`,
+        },
+        {
+          title: "Festive",
+          image: "/ph/songoskriti/hero-festive.png",
+          href: `${c}/festive`,
+        },
+        {
+          title: "Wedding",
+          image: "/ph/songoskriti/edit-festive-main.png",
+          href: `${c}/wedding`,
+        },
+        {
+          title: "Jewellery",
+          image: "/ph/songoskriti/cat-jewelry.png",
+          href: `${c}/jewellery`,
+        },
+        {
+          title: "Heritage",
+          image: "/ph/songoskriti/hero-weaves.png",
+          href: `${c}/heritage`,
+        },
       ],
     }),
 
@@ -181,13 +209,20 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       heading_bn: "উপলক্ষ অনুযায়ী কিনুন",
       body: "Pick a moment — we take you straight to matching weaves, silhouettes and collections.",
       body_bn: "আপনার উপলক্ষ বেছে নিন — আমরা আপনাকে সঠিক সংগ্রহে পৌঁছে দেব।",
-      o1Label: "EID & FESTIVE", o1Href: `${c}/festive`,
-      o2Label: "WEDDING", o2Href: `${c}/wedding`,
-      o3Label: "MEHENDI", o3Href: `${c}/mehendi`,
-      o4Label: "SANGEET", o4Href: `${c}/sangeet`,
-      o5Label: "GIFTING", o5Href: `${c}/gifting`,
-      o6Label: "EVERYDAY", o6Href: `${c}/everyday`,
-      o7Label: "FAMILY MATCHING", o7Href: `${c}/family`,
+      o1Label: "EID & FESTIVE",
+      o1Href: `${c}/festive`,
+      o2Label: "WEDDING",
+      o2Href: `${c}/wedding`,
+      o3Label: "MEHENDI",
+      o3Href: `${c}/mehendi`,
+      o4Label: "SANGEET",
+      o4Href: `${c}/sangeet`,
+      o5Label: "GIFTING",
+      o5Href: `${c}/gifting`,
+      o6Label: "EVERYDAY",
+      o6Href: `${c}/everyday`,
+      o7Label: "FAMILY MATCHING",
+      o7Href: `${c}/family`,
       buttonLabel: "BROWSE ALL OCCASIONS",
       buttonHref: `${c}/occasions`,
     }),
@@ -263,13 +298,34 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("collection_story", {
       heading: "FROM THE LOOM",
       heading_bn: "তাঁত থেকে",
-      subhead: "Jamdani, Tangail Taant, Rajshahi Silk and Nakshi Kantha — timeless weaves, each with a story.",
+      subhead:
+        "Jamdani, Tangail Taant, Rajshahi Silk and Nakshi Kantha — timeless weaves, each with a story.",
       subhead_bn: "জামদানি, টাঙ্গাইল তাঁত, রাজশাহী সিল্ক ও নকশি কাঁথা।",
       collections: [
-        { title: "Jamdani", image: "/ph/songoskriti/hero-weaves.png", href: `${c}/jamdani`, subtitle: "UNESCO Heritage" },
-        { title: "Rajshahi Silk", image: "/ph/songoskriti/prod-saree.png", href: `${c}/silk`, subtitle: "Artisan crafted" },
-        { title: "Tangail Handloom", image: "/ph/songoskriti/cat-newin.png", href: `${c}/tangail`, subtitle: "Limited weave" },
-        { title: "Nakshi Kantha", image: "/ph/songoskriti/cat-living.png", href: `${c}/kantha`, subtitle: "Master stitch" },
+        {
+          title: "Jamdani",
+          image: "/ph/songoskriti/hero-weaves.png",
+          href: `${c}/jamdani`,
+          subtitle: "UNESCO Heritage",
+        },
+        {
+          title: "Rajshahi Silk",
+          image: "/ph/songoskriti/prod-saree.png",
+          href: `${c}/silk`,
+          subtitle: "Artisan crafted",
+        },
+        {
+          title: "Tangail Handloom",
+          image: "/ph/songoskriti/cat-newin.png",
+          href: `${c}/tangail`,
+          subtitle: "Limited weave",
+        },
+        {
+          title: "Nakshi Kantha",
+          image: "/ph/songoskriti/cat-living.png",
+          href: `${c}/kantha`,
+          subtitle: "Master stitch",
+        },
       ],
     }),
 
@@ -299,7 +355,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       heading: "Made Slowly.\nWorn for Years.",
       heading_bn: "ধীরে তৈরি।\nবছরের পর বছর পরা।",
       body: "In Tangail, Sonargaon and across Bangladesh, generations of artisans carry techniques that cannot be mass-produced.",
-      body_bn: "টাঙ্গাইল, সোনারগাঁয়ে প্রজন্মের পর প্রজন্ম তাঁতিরা সংরক্ষণ করছেন যে কৌশল।",
+      body_bn:
+        "টাঙ্গাইল, সোনারগাঁয়ে প্রজন্মের পর প্রজন্ম তাঁতিরা সংরক্ষণ করছেন যে কৌশল।",
       ctaLabel: "MEET THE ARTISANS",
       ctaHref: "/blog/artisan-story",
       imageUrl: "/ph/songoskriti/hero-artisans.png",
@@ -314,7 +371,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       heading_bn: "আপনার পরিধানে",
       subhead: "SONGOSKRITI IN THE WORLD",
       subhead_bn: "সংস্কৃতি সারা দুনিয়ায়",
-      images: "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png, /ph/songoskriti/ugc-3.png, /ph/songoskriti/ugc-4.png",
+      images:
+        "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png, /ph/songoskriti/ugc-3.png, /ph/songoskriti/ugc-4.png",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -325,22 +383,26 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       autoAdvanceMs: 6000,
       testimonials: [
         {
-          quote: "The Jamdani saree I received was breathtaking. The weave is so intricate — I've never seen anything like it in any store.",
+          quote:
+            "The Jamdani saree I received was breathtaking. The weave is so intricate — I've never seen anything like it in any store.",
           author: "Nusrat Rahman",
           role: "Dhaka · Jamdani Saree",
         },
         {
-          quote: "My husband's Panjabi arrived beautifully packaged. The handloom quality is exceptional — exactly the kind of craftsmanship you can't find elsewhere.",
+          quote:
+            "My husband's Panjabi arrived beautifully packaged. The handloom quality is exceptional — exactly the kind of craftsmanship you can't find elsewhere.",
           author: "Priya Chakraborty",
           role: "Chittagong · Handloom Panjabi",
         },
         {
-          quote: "Ordered for Eid and it arrived on time with care. The cotton saree feels amazing to wear — light, breathable and strikingly beautiful.",
+          quote:
+            "Ordered for Eid and it arrived on time with care. The cotton saree feels amazing to wear — light, breathable and strikingly beautiful.",
           author: "Tasnim Ahmed",
           role: "Sylhet · Cotton Saree",
         },
         {
-          quote: "Finally a Bangladeshi brand that takes both craft and packaging seriously. The Nakshi Kantha piece I bought is a work of art.",
+          quote:
+            "Finally a Bangladeshi brand that takes both craft and packaging seriously. The Nakshi Kantha piece I bought is a work of art.",
           author: "Farhan Islam",
           role: "Rajshahi · Nakshi Kantha",
         },
@@ -369,10 +431,26 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // ────────────────────────────────────────────────────────────────────
     s("trust_footer", {
       items: [
-        { icon: "secure", title: "AUTHENTIC CRAFT", body: "Verified artisan-made pieces — no factory substitutes" },
-        { icon: "delivery", title: "NATIONWIDE DELIVERY", body: "Reliable delivery across Bangladesh" },
-        { icon: "returns", title: "EASY EXCHANGE", body: "Straightforward 7-day exchange policy" },
-        { icon: "support", title: "HUMAN SUPPORT", body: "Real people, not automated walls" },
+        {
+          icon: "secure",
+          title: "AUTHENTIC CRAFT",
+          body: "Verified artisan-made pieces — no factory substitutes",
+        },
+        {
+          icon: "delivery",
+          title: "NATIONWIDE DELIVERY",
+          body: "Reliable delivery across Bangladesh",
+        },
+        {
+          icon: "returns",
+          title: "EASY EXCHANGE",
+          body: "Straightforward 7-day exchange policy",
+        },
+        {
+          icon: "support",
+          title: "HUMAN SUPPORT",
+          body: "Real people, not automated walls",
+        },
       ],
     }),
 

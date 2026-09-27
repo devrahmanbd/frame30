@@ -295,12 +295,14 @@ export async function loadCohorts(db: Client, merchantId: string) {
     .order("cohort_week", { ascending: true })
     .limit(500);
   if (error) throw error;
-  const rows = ((data ?? []) as unknown as {
-    cohort_week: string;
-    cohort_size: number | null;
-    returning_count: number | null;
-    revenue_minor_int: number | null;
-  }[]).map((row) => ({
+  const rows = (
+    (data ?? []) as unknown as {
+      cohort_week: string;
+      cohort_size: number | null;
+      returning_count: number | null;
+      revenue_minor_int: number | null;
+    }[]
+  ).map((row) => ({
     cohort_week: row.cohort_week,
     week_offset: 0,
     customers: Number(row.cohort_size ?? 0),
@@ -705,14 +707,16 @@ async function materialize(db: Client, merchantId: string, report: ReportRow) {
       .eq("merchant_id", merchantId)
       .gte("day", dayString(isoDaysAgo(days)))
       .limit(5000);
-    return ((data ?? []) as unknown as {
-      day: string;
-      pageviews: number | null;
-      unique_visitors: number | null;
-      sessions: number | null;
-      orders_count: number | null;
-      revenue_minor_int: number | null;
-    }[]).map((row) => {
+    return (
+      (data ?? []) as unknown as {
+        day: string;
+        pageviews: number | null;
+        unique_visitors: number | null;
+        sessions: number | null;
+        orders_count: number | null;
+        revenue_minor_int: number | null;
+      }[]
+    ).map((row) => {
       const values: Record<string, number> = {
         events: Number(row.pageviews ?? 0),
         visitors: Number(row.unique_visitors ?? 0),
@@ -1261,7 +1265,9 @@ export async function loadPlatformTraffic(days = 30) {
 
   const { data, error } = await admin
     .from("analytics_geo_daily")
-    .select("merchant_id, day, country_code, unique_visitors, revenue_minor_int")
+    .select(
+      "merchant_id, day, country_code, unique_visitors, revenue_minor_int",
+    )
     .gte("day", since)
     .limit(20000);
   if (error) throw error;
@@ -1289,7 +1295,10 @@ export async function loadPlatformTraffic(days = 30) {
     totals.revenueMinorInt += Number(row.revenue_minor_int ?? 0);
     const code = row.country_code || "ZZ";
     byCountry.set(code, (byCountry.get(code) ?? 0) + visitors);
-    byStore.set(row.merchant_id, (byStore.get(row.merchant_id) ?? 0) + visitors);
+    byStore.set(
+      row.merchant_id,
+      (byStore.get(row.merchant_id) ?? 0) + visitors,
+    );
   }
 
   const names = new Map<string, string>();

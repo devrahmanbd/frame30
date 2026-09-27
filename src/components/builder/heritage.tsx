@@ -327,7 +327,7 @@ function HeroSkinSlide({
           <p
             data-hero-eyebrow
             data-part="caption"
-            className="mb-5 text-[10px] font-medium tracking-[0.35em] text-white/70 uppercase"
+            className="mb-5 text-[10px] font-medium tracking-[0.35em] text-[var(--theme-surface)]/70 uppercase"
           >
             {locale === "bn" && slide.captionBn
               ? slide.captionBn
@@ -337,7 +337,7 @@ function HeroSkinSlide({
         <Heading
           data-hero-headline
           {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
-          className="font-serif text-4xl sm:text-6xl lg:text-[5.5rem] font-light text-white leading-[1.05] tracking-[-0.01em] max-w-4xl"
+          className="font-serif text-4xl sm:text-6xl lg:text-[5.5rem] font-light text-[var(--theme-surface)] leading-[1.05] tracking-[-0.01em] max-w-4xl"
         >
           {locale === "bn" && slide.headlineBn
             ? slide.headlineBn
@@ -346,16 +346,19 @@ function HeroSkinSlide({
         {slide.subhead && (
           <p
             data-hero-sub
-            className="mt-5 max-w-xl font-serif text-base sm:text-[18px] font-light leading-relaxed text-white/75"
+            className="mt-5 max-w-xl font-serif text-base sm:text-[18px] font-light leading-relaxed text-[var(--theme-surface)]/75"
           >
             {subhead}
           </p>
         )}
-        <div data-hero-cta className="mt-8 flex items-center justify-center gap-6">
+        <div
+          data-hero-cta
+          className="mt-8 flex items-center justify-center gap-6"
+        >
           {slide.ctaLabel && (
             <a
               href={slide.ctaUrl || "#"}
-              className="inline-flex items-center min-h-[46px] bg-white/10 border border-white/40 backdrop-blur-sm px-8 text-[11px] font-medium tracking-[0.25em] uppercase text-white hover:bg-white hover:text-foreground transition-all duration-300"
+              className="inline-flex items-center min-h-11 bg-[var(--theme-surface)]/10 border border-[var(--theme-surface)]/40 backdrop-blur-sm px-8 text-[11px] font-medium tracking-[0.25em] uppercase text-[var(--theme-surface)] hover:bg-[var(--theme-surface)] hover:text-foreground transition-all duration-300"
             >
               {locale === "bn" && slide.ctaLabelBn
                 ? slide.ctaLabelBn
@@ -509,119 +512,121 @@ const HeroCarousel: WidgetComponent = ({
           nextLabel={nextLabel}
         />
       ) : (
-      <div
-        key={current}
-        role="group"
-        aria-roledescription="slide"
-        aria-label={`${t(locale, "Slide", "স্লাইড")} ${current + 1} / ${count}`}
-        className="fq-enter-fade mx-auto grid max-w-[var(--fq-container,1440px)] items-center gap-8 px-4 py-12 sm:gap-12 sm:px-8 sm:py-24 lg:grid-cols-12 lg:gap-16"
-      >
-        {/* Copy — asymmetric left, six columns */}
-        <div className="min-w-0 lg:col-span-6 lg:pl-8">
-          {slide.caption && (
-            <p
-              data-hero-eyebrow
-              data-part="caption"
-              className="text-xs font-semibold tracking-widest text-primary fq-caps"
-            >
-              {locale === "bn" && slide.captionBn
-                ? slide.captionBn
-                : slide.caption}
-            </p>
-          )}
-          <Heading
-            data-hero-headline
-            {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
-            className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl lg:text-6xl"
-          >
-            {locale === "bn" && slide.headlineBn
-              ? slide.headlineBn
-              : slide.headline}
-          </Heading>
-          {slide.subhead && (
-            <p
-              data-hero-sub
-              className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
-            >
-              {locale === "bn" && slide.subheadBn
-                ? slide.subheadBn
-                : slide.subhead}
-            </p>
-          )}
-          <div data-hero-cta className="mt-7 flex flex-wrap items-center gap-3">
-            {slide.ctaLabel && (
-              <a
-                href={slide.ctaUrl || "#"}
-                className="inline-flex min-h-12 sm:min-h-14 items-center whitespace-nowrap bg-foreground px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        <div
+          key={current}
+          role="group"
+          aria-roledescription="slide"
+          aria-label={`${t(locale, "Slide", "স্লাইড")} ${current + 1} / ${count}`}
+          className="fq-enter-fade mx-auto grid max-w-[var(--fq-container,1440px)] items-center gap-8 px-4 py-12 sm:gap-12 sm:px-8 sm:py-24 lg:grid-cols-12 lg:gap-16"
+        >
+          {/* Copy — asymmetric left, six columns */}
+          <div className="min-w-0 lg:col-span-6 lg:pl-8">
+            {slide.caption && (
+              <p
+                data-hero-eyebrow
+                data-part="caption"
+                className="text-xs font-semibold tracking-widest text-primary fq-caps"
               >
-                {locale === "bn" && slide.ctaLabelBn
-                  ? slide.ctaLabelBn
-                  : slide.ctaLabel}
-              </a>
+                {locale === "bn" && slide.captionBn
+                  ? slide.captionBn
+                  : slide.caption}
+              </p>
             )}
-            {/* Nakhrali-style thin progress bar indicators — no arrow buttons */}
-            {slides.length > 1 && (
-              <div
-                className="mt-8 flex items-center gap-3"
-                role="tablist"
-                aria-label={t(locale, "Slides", "স্লাইড")}
-                onKeyDown={(event) => {
-                  if (event.key === "ArrowRight") {
-                    event.preventDefault();
-                    next();
-                  } else if (event.key === "ArrowLeft") {
-                    event.preventDefault();
-                    prev();
-                  }
-                }}
+            <Heading
+              data-hero-headline
+              {...(locale === "bn" && slide.headlineBn ? { lang: "bn" } : {})}
+              className="mt-2 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl lg:text-6xl"
+            >
+              {locale === "bn" && slide.headlineBn
+                ? slide.headlineBn
+                : slide.headline}
+            </Heading>
+            {slide.subhead && (
+              <p
+                data-hero-sub
+                className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
               >
-                {slides.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    role="tab"
-                    onClick={() => goTo(i)}
-                    aria-selected={i === current}
-                    className="group flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-2"
-                    style={{ minHeight: 44, minWidth: 44 }}
-                    aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1} / ${slides.length}`}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={`block h-[2px] rounded-full transition-all duration-500 ease-out ${
-                        i === current
-                          ? "w-10 bg-current"
-                          : "w-5 bg-current/30 group-hover:bg-current/60"
-                      }`}
-                    />
-                  </button>
-                ))}
-              </div>
+                {locale === "bn" && slide.subheadBn
+                  ? slide.subheadBn
+                  : slide.subhead}
+              </p>
             )}
+            <div
+              data-hero-cta
+              className="mt-7 flex flex-wrap items-center gap-3"
+            >
+              {slide.ctaLabel && (
+                <a
+                  href={slide.ctaUrl || "#"}
+                  className="inline-flex min-h-12 sm:min-h-14 items-center whitespace-nowrap bg-foreground px-8 sm:px-10 text-[11px] sm:text-[13px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                >
+                  {locale === "bn" && slide.ctaLabelBn
+                    ? slide.ctaLabelBn
+                    : slide.ctaLabel}
+                </a>
+              )}
+              {/* Nakhrali-style thin progress bar indicators — no arrow buttons */}
+              {slides.length > 1 && (
+                <div
+                  className="mt-8 flex items-center gap-3"
+                  role="tablist"
+                  aria-label={t(locale, "Slides", "স্লাইড")}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowRight") {
+                      event.preventDefault();
+                      next();
+                    } else if (event.key === "ArrowLeft") {
+                      event.preventDefault();
+                      prev();
+                    }
+                  }}
+                >
+                  {slides.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      role="tab"
+                      onClick={() => goTo(i)}
+                      aria-selected={i === current}
+                      className="group flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-2 min-h-11 min-w-11"
+                      aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1} / ${slides.length}`}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={`block h-[2px] rounded-full transition-all duration-500 ease-out ${
+                          i === current
+                            ? "w-10 bg-current"
+                            : "w-5 bg-current/30 group-hover:bg-current/60"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        {/* Art — six columns, its own zone. Real photographs render;
+          {/* Art — six columns, its own zone. Real photographs render;
             placeholder URLs become hand-built weave lattice instead. */}
-        <div data-hero-art className="min-w-0 lg:col-span-6 lg:-mr-8">
-          <div className="relative aspect-[3/4] w-full overflow-hidden bg-transparent sm:aspect-[4/3] lg:aspect-[3/4]">
-            {slide.image && !slide.image.startsWith("/api/public/ph/") ? (
-              <img
-                src={slide.image}
-                alt={slide.headline}
-                className="absolute inset-0 h-full w-full object-cover"
-                loading={isFirst ? "eager" : "lazy"}
-                fetchPriority={isFirst ? "high" : "auto"}
-                decoding="async"
-              />
-            ) : (
-              <WeaveMotif
-                seed={slide.headline || "heritage"}
-                className="absolute inset-0 h-full w-full text-primary"
-              />
-            )}
+          <div data-hero-art className="min-w-0 lg:col-span-6 lg:-mr-8">
+            <div className="relative aspect-[3/4] w-full overflow-hidden bg-transparent sm:aspect-[4/3] lg:aspect-[3/4]">
+              {slide.image && !slide.image.startsWith("/api/public/ph/") ? (
+                <img
+                  src={slide.image}
+                  alt={slide.headline}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  loading={isFirst ? "eager" : "lazy"}
+                  fetchPriority={isFirst ? "high" : "auto"}
+                  decoding="async"
+                />
+              ) : (
+                <WeaveMotif
+                  seed={slide.headline || "heritage"}
+                  className="absolute inset-0 h-full w-full text-primary"
+                />
+              )}
+            </div>
           </div>
         </div>
-      </div>
       )}
     </section>
   );
@@ -677,7 +682,9 @@ const DepartmentGrid: WidgetComponent = ({
           {t(locale, "handcrafted pieces", "হাতে তৈরি পণ্য")}
         </p>
       </div>
-      <div className={`grid gap-x-4 gap-y-10 sm:gap-x-12 sm:gap-y-12 ${gridCols}`}>
+      <div
+        className={`grid gap-x-4 gap-y-10 sm:gap-x-12 sm:gap-y-12 ${gridCols}`}
+      >
         {departments.map((dept, i) => (
           <a
             key={i}
@@ -706,15 +713,17 @@ const DepartmentGrid: WidgetComponent = ({
                 {/* Secondary Image (Hover) */}
                 {dept.image ? (
                   <img
-                    src={dept.image.replace('.png', '-hover.png')}
+                    src={dept.image.replace(".png", "-hover.png")}
                     alt=""
                     aria-hidden="true"
                     className="absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100"
                     loading="lazy"
                     onError={(e) => {
                       // Fallback to primary if no hover image exists
-                      e.currentTarget.style.display = 'none';
-                      e.currentTarget.previousElementSibling?.classList.remove('group-hover:opacity-0');
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.previousElementSibling?.classList.remove(
+                        "group-hover:opacity-0",
+                      );
                     }}
                   />
                 ) : (
@@ -919,7 +928,10 @@ const TextileShowcase: WidgetComponent = ({
               )}
             </div>
             <div className="px-4">
-              <p data-part="title" className="font-serif text-[15px] font-light tracking-wide text-foreground group-hover:text-primary transition-colors">
+              <p
+                data-part="title"
+                className="font-serif text-[15px] font-light tracking-wide text-foreground group-hover:text-primary transition-colors"
+              >
                 {locale === "bn" && product.nameBn
                   ? product.nameBn
                   : product.name}

@@ -3,7 +3,11 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
-import { useMerchant, candidateStoreSlugs, loadMemberships } from "@/hooks/use-merchant";
+import {
+  useMerchant,
+  candidateStoreSlugs,
+  loadMemberships,
+} from "@/hooks/use-merchant";
 import { canCreateAdditionalStore } from "@/lib/store-limits";
 import { useLang } from "@/lib/i18n";
 import { fmtMinor } from "@/lib/money";

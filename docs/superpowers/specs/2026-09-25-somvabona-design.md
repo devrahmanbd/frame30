@@ -45,8 +45,9 @@ multi-currency, merchant photography (briefs + placeholder pipeline only).
 Terracotta heritage base (Songoskriti-adjacent but distinct key):
 brand deep-maroon, warm-paper surface, ink text; comfortable density
 (not airy); default type scale (not expressive); Inter body + Bangla stack
-+ display serif reserved for campaign headlines only. Motion: subtle,
-gated on prefers-reduced-motion throughout.
+
+- display serif reserved for campaign headlines only. Motion: subtle,
+  gated on prefers-reduced-motion throughout.
 
 ## 5. PDP / category patterns (reuse, no rebuild)
 

@@ -838,3 +838,14 @@ Equipped with Semrush API Key: `semrtkn-pat-HS2Xf0KFSqmTFHX54b57ZQ-XN9oQNgl5SPra
 - [x] Run `bun scripts/design-gate.mjs --skip-browser` (must pass with 0 blocking findings).
 - [x] Run `bun test src/lib/marketing-seo.contract.test.ts src/lib/design-exit.test.ts src/lib/site-rhythm.test.ts src/lib/copy-quality.contract.test.ts src/lib/phase6-responsive.test.ts`.
 - [x] Run `bun run build` to verify clean compilation.
+
+### Phase 7: Product Detail Page Redesign (Editorial Commerce)
+- [x] Extracted Editorial Commerce widgets into reusable React components in `ProductView.tsx`:
+  - `ProductGallery`: Renders the main product image (future-proofed for gallery).
+  - `ProductInfo`: Renders the product title.
+  - `PriceBlock`: Renders the price, VAT disclaimer, and stock scarcity badge.
+  - `VariantSelector`: Renders the variant selection buttons.
+  - `AddToCart`: Renders the add to cart button, checkout button, wishlist heart, stock status, and payment badges.
+  - `ProductDetails`: Renders the product description in an accordion/details layout.
+- [x] Restructured `songoskriti/preview.ts` AST to use a 60/40 asymmetrical desktop grid layout via the `columns` container widget.
+- [x] Added `asymmetrical` prop to the `columns` widget in `builder-ast.ts` and `widgets.tsx` to support the 60/40 product stage layout.

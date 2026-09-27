@@ -115,7 +115,7 @@ export function QuickViewBody({
   const outOfStock = (variant?.stock_quantity ?? 0) <= 0;
 
   return (
-    <div className="grid gap-4 bg-[#f5f3f0] sm:grid-cols-2">
+    <div className="grid gap-4 bg-[var(--theme-muted)] sm:grid-cols-2">
       <img
         src={data.product.image_url ?? undefined}
         alt={data.product.title}
@@ -213,14 +213,16 @@ function QuickViewControl({
 }
 
 /** Wishlist heart with optimistic count badge. Rendered only with store + variant. */
-function WishlistHeart({
+export function WishlistHeart({
   storeSlug,
   variantId,
   locale,
+  className,
 }: {
   storeSlug: string;
-  variantId: string;
+  variantId?: string;
   locale: Locale;
+  className?: string;
 }) {
   const { saved, count, onClick } = useWishlistCard({
     slug: storeSlug,
@@ -241,17 +243,20 @@ function WishlistHeart({
       aria-pressed={saved ? "true" : "false"}
       aria-label={label}
       onClick={onClick}
-      className={`relative inline-flex h-11 w-11 items-center justify-center rounded-full bg-background/85 backdrop-blur-sm text-foreground shadow-sm transition-opacity duration-[250ms] ${REVEAL}`}
+      className={
+        className ||
+        `relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--theme-surface)]/90 text-[var(--theme-ink)] shadow-sm backdrop-blur-sm transition-all duration-300 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 group/btn`
+      }
     >
       <Heart
-        className="size-4"
+        className="size-3.5 transition-all duration-300 group-hover/btn:scale-110"
         strokeWidth={1.5}
-        fill={saved ? "currentColor" : "none"}
+        fill="currentColor"
       />
       {count > 0 && (
         <span
           data-part="wishlist-count"
-          className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-foreground px-1 text-[10px] font-semibold leading-none tabular-nums text-background"
+          className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--theme-ink)] px-1 text-[10px] font-semibold leading-none tabular-nums text-[var(--theme-surface)]"
         >
           {formatDisplayNumber(count, { locale })}
         </span>
@@ -302,7 +307,7 @@ export function ProductCard({
     <article className="group relative flex h-full w-full max-w-full flex-col bg-transparent border-none shadow-none overflow-visible">
       {/* ── Image frame ── */}
       <div
-        className="relative block w-full overflow-hidden bg-[#f5f3f0]"
+        className="relative block w-full overflow-hidden bg-[var(--theme-muted)]"
         style={{ aspectRatio: variant === "wide" ? "4/3" : "3/4" }}
       >
         <a
@@ -351,7 +356,7 @@ export function ProductCard({
             className="absolute inset-x-0 bottom-0 flex justify-center pb-5 opacity-0 translate-y-3 transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none"
             aria-hidden="true"
           >
-            <span className="bg-white/90 backdrop-blur-sm px-6 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-foreground shadow-sm">
+            <span className="bg-background/90 backdrop-blur-sm px-6 py-2.5 text-[11px] font-medium uppercase tracking-[0.22em] text-foreground shadow-sm">
               {locale === "bn" ? "কিনুন" : "Shop Now"}
             </span>
           </div>
@@ -372,7 +377,7 @@ export function ProductCard({
         {typeof rank === "number" ? (
           <span
             data-part="badge"
-            className={`absolute z-10 bg-[#1a1a1a] px-2 py-0.5 text-[9px] font-semibold tracking-wider uppercase tabular-nums text-white ${badgeSlot}`}
+            className={`absolute z-10 bg-foreground px-2 py-0.5 text-[9px] font-semibold tracking-wider uppercase tabular-nums text-background ${badgeSlot}`}
           >
             {formatDisplayNumber(rank, { locale })}
           </span>
@@ -381,7 +386,7 @@ export function ProductCard({
           save === null && (
             <span
               data-part="badge"
-              className={`absolute z-10 bg-[#1a1a1a] px-2 py-1 text-[9px] font-semibold tracking-wider uppercase text-white ${badgeSlot}`}
+              className={`absolute z-10 bg-foreground px-2 py-1 text-[9px] font-semibold tracking-wider uppercase text-background ${badgeSlot}`}
             >
               {badgeLabel}
             </span>
@@ -442,7 +447,7 @@ export function ProductCard({
       >
         <p
           data-part="title"
-          className="line-clamp-2 font-sans text-[13px] font-medium leading-snug text-[#1a1a1a] group-hover:text-[#1a1a1a]/70 transition-colors duration-300 motion-reduce:transition-none"
+          className="line-clamp-2 font-sans text-[13px] font-medium leading-snug text-foreground group-hover:text-foreground/70 transition-colors duration-300 motion-reduce:transition-none"
         >
           {row.title}
         </p>
@@ -450,7 +455,7 @@ export function ProductCard({
         {withPrice && typeof row.priceMinor === "number" && (
           <p
             data-part="price"
-            className="money flex flex-wrap items-baseline justify-start gap-2 text-[13px] font-normal text-[#1a1a1a] mt-0.5"
+            className="money flex flex-wrap items-baseline justify-start gap-2 text-[13px] font-normal text-foreground mt-0.5"
           >
             <span>
               {formatDisplayMoney(row.priceMinor, {
@@ -460,7 +465,7 @@ export function ProductCard({
             </span>
             {typeof row.compareAtMinor === "number" &&
               row.compareAtMinor > (row.priceMinor ?? 0) && (
-                <s className="text-[12px] text-[#1a1a1a]/40">
+                <s className="text-[12px] text-foreground/40">
                   {formatDisplayMoney(row.compareAtMinor, {
                     locale,
                     currency: row.currency ?? "BDT",
@@ -479,7 +484,7 @@ export function ProductCard({
         {promise && (
           <p
             data-part="promise"
-            className="line-clamp-1 text-[10px] font-semibold uppercase tracking-wider text-[#1a1a1a]/50 mt-1"
+            className="line-clamp-1 text-[10px] font-semibold uppercase tracking-wider text-foreground/50 mt-1"
           >
             {promise}
           </p>
@@ -506,13 +511,13 @@ export function ProductCardSkeleton({
   return (
     <div className="flex flex-col items-center" aria-hidden="true">
       <div
-        className={`w-full ${ASPECT[variant]} animate-pulse bg-muted/60`}
+        className={`w-full ${ASPECT[variant]} animate-pulse bg-[var(--theme-muted)]/60`}
         style={{ aspectRatio: variant === "wide" ? "4/3" : "3/4" }}
       />
       <div className="mt-4 flex flex-col items-center gap-2 w-full px-2">
-        <div className="h-3.5 w-3/4 animate-pulse rounded-sm bg-muted/60" />
+        <div className="h-3.5 w-3/4 animate-pulse rounded-sm bg-[var(--theme-muted)]/60" />
         {withPrice && (
-          <div className="h-3 w-1/3 animate-pulse rounded-sm bg-muted/60" />
+          <div className="h-3 w-1/3 animate-pulse rounded-sm bg-[var(--theme-muted)]/60" />
         )}
       </div>
     </div>

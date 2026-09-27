@@ -391,8 +391,10 @@ export type DemoFocus = {
   title: string;
   /** Collection key backing the data rails. */
   collection: string;
-  /** Catalog art for a known product slug; absent for unknown slugs. */
+  /** Primary catalog art for a known product slug; absent for unknown slugs. */
   image?: string;
+  /** Ordered gallery images (image1–image4) for product_media widget injection. */
+  images?: string[];
 };
 
 const humanizeSlug = (slug: string): string =>
@@ -434,6 +436,7 @@ export function resolveDemoFocus(
       title: match ? match.title : humanizeSlug(slug),
       collection: "new-in",
       image: match?.image_url,
+      images: match?.images,
     };
   }
   return null;
@@ -456,41 +459,41 @@ export function applyDemoFocus(
   let head = false;
   let rail = false;
   let media = false;
-  return sections.map((section) => {
-    if (!head && section.type === "heading") {
-      head = true;
-      return {
-        ...section,
-        props: { ...section.props, text: focus.title },
-      };
-    }
-    if (
-      !media &&
-      focus.template === "product" &&
-      focus.image &&
-      section.type === "product_media"
-    ) {
-      media = true;
-      return {
-        ...section,
-        props: { ...section.props, image1: focus.image },
-      };
-    }
-    if (
-      !rail &&
-      section.type === "product_rail" &&
-      section.props["source"] === "collection"
-    ) {
-      rail = true;
-      return {
-        ...section,
-        props: {
-          ...section.props,
-          collection: focus.collection,
-          heading: focus.title,
-        },
-      };
-    }
-    return section;
-  });
+  
+  function walk(nodes: Section[]): Section[] {
+    return nodes.map((section) => {
+      let next = { ...section };
+      
+      if (!head && (next.type === "heading" || next.type === "category_header")) {
+        head = true;
+        next = { ...next, props: { ...next.props, text: focus!.title } };
+      }
+      
+      if (!media && focus!.template === "product" && next.type === "product_media") {
+        media = true;
+        // Do not inject static image props so that it falls back to the dynamic DemoProductMediaGallery via ContextSlot
+      }
+      
+      const isCollectionBound = next.type === "product_grid" || (next.type === "product_rail" && next.props["source"] === "collection");
+      if (!rail && isCollectionBound) {
+        rail = true;
+        next = {
+          ...next,
+          props: {
+            ...next.props,
+            collection: focus!.collection,
+            heading: focus!.title,
+          },
+        };
+      }
+      
+      if (next.children) {
+        next = { ...next, children: walk(next.children) };
+      }
+      
+      return next;
+    });
+  }
+  
+  return walk(sections);
 }

@@ -87,7 +87,9 @@ export function TimezoneToggle({
         className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-2 py-1.5 text-xs font-medium text-foreground/80 hover:bg-muted hover:text-foreground transition-colors focus-visible:ring-2 focus-visible:ring-primary outline-none"
       >
         <Globe className="size-4 shrink-0" strokeWidth={1.25} aria-hidden />
-        <span className="font-sans uppercase tracking-wider">{displayLabel}</span>
+        <span className="font-sans uppercase tracking-wider">
+          {displayLabel}
+        </span>
       </button>
 
       {open && (

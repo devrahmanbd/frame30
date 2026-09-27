@@ -46,7 +46,9 @@ export function StoreFooterMenus({
                 {node.label}
               </a>
             ) : (
-              <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-foreground mb-6">{node.label}</p>
+              <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-foreground mb-6">
+                {node.label}
+              </p>
             )}
             {node.children.length > 0 && (
               <ul className="space-y-4">

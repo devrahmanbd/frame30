@@ -7,13 +7,16 @@ import { useLang } from "@/lib/i18n";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import type { getStorePageFn } from "@/lib/storefront-search.functions";
 
-export type PagePayload = Exclude<Awaited<ReturnType<typeof getStorePageFn>>, null>;
+export type PagePayload = Exclude<
+  Awaited<ReturnType<typeof getStorePageFn>>,
+  null
+>;
 
 export function PageView({ data }: { data: PagePayload }) {
   const { t } = useLang();
   const { location } = useRouterState();
   const custom = isCustomHostPath(location.pathname);
-  
+
   const {
     merchant,
     page,

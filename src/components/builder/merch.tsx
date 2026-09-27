@@ -333,8 +333,12 @@ const BrandRail: WidgetComponent = (ctx) => {
         label={label}
         heading={heading}
         itemClassName="w-[42vw] max-w-[240px] min-w-[9rem] sm:w-[24vw] sm:max-w-[260px] lg:w-[15%] lg:min-w-0"
-        prevLabel={ctx.locale === "bn" ? "বামে স্ক্রল করুন" : "Scroll brands left"}
-        nextLabel={ctx.locale === "bn" ? "ডানে স্ক্রল করুন" : "Scroll brands right"}
+        prevLabel={
+          ctx.locale === "bn" ? "বামে স্ক্রল করুন" : "Scroll brands left"
+        }
+        nextLabel={
+          ctx.locale === "bn" ? "ডানে স্ক্রল করুন" : "Scroll brands right"
+        }
       >
         {ctx.data?.pending || rows === undefined
           ? Array.from({ length: 8 }, (_, i) => (

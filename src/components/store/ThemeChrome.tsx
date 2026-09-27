@@ -134,7 +134,11 @@ export function ThemeChrome({
       />
     );
   }
-  const base = isCustomHostPath(pathname) ? "" : storeSlug ? `/store/${storeSlug}` : "";
+  const base = isCustomHostPath(pathname)
+    ? ""
+    : storeSlug
+      ? `/store/${storeSlug}`
+      : "";
   const themed = ast && ast.main.length > 0 ? ast : null;
   // Header and footer are site chrome: they must survive a template whose body
   // the route renders itself (cart, checkout, search). Dropping them with the
@@ -244,7 +248,7 @@ export function ThemeChrome({
         )}
       </main>
       {chromeAst && chromeAst.footer.length > 0 && (
-        <footer className="w-full mt-16 pt-16">
+        <footer className="w-full pt-16 bg-[var(--theme-muted)] text-[var(--theme-ink)] border-t border-[var(--theme-border)]">
           <div className="mx-auto max-w-7xl space-y-8 px-4 sm:px-6 lg:px-8 pb-16">
             {chromeAst.footer.map((section) => (
               <SectionRenderer

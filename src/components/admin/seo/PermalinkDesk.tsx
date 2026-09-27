@@ -357,7 +357,10 @@ export function PermalinkDesk() {
                 settings.collectionBase !== "/c" &&
                 settings.collectionBase !== "",
               onSelect: () =>
-                set("collectionBase", settings.collectionBase || "/collections"),
+                set(
+                  "collectionBase",
+                  settings.collectionBase || "/collections",
+                ),
             },
           ]}
         />

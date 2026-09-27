@@ -8,28 +8,28 @@
 
 **Products** (your money URLs)
 
-| Structure | Example |
-|---|---|
-| Default | `/p/jamdani-saree` |
-| Post name | `/jamdani-saree` |
+| Structure   | Example               |
+| ----------- | --------------------- |
+| Default     | `/p/jamdani-saree`    |
+| Post name   | `/jamdani-saree`      |
 | Custom base | `/shop/jamdani-saree` |
 
 **Collections**
 
-| Structure | Example |
-|---|---|
-| Default | `/c/women` |
-| Post name | `/women` |
+| Structure   | Example              |
+| ----------- | -------------------- |
+| Default     | `/c/women`           |
+| Post name   | `/women`             |
 | Custom base | `/collections/women` |
 
 **Blog articles**
 
-| Structure | Example |
-|---|---|
-| Post name | `/blog/hello-world` |
-| Month and name | `/blog/2026/09/hello-world` |
-| Day and name | `/blog/2026/09/24/hello-world` |
-| Custom pattern | pick from the pattern list |
+| Structure      | Example                        |
+| -------------- | ------------------------------ |
+| Post name      | `/blog/hello-world`            |
+| Month and name | `/blog/2026/09/hello-world`    |
+| Day and name   | `/blog/2026/09/24/hello-world` |
+| Custom pattern | pick from the pattern list     |
 
 **Pages** use a base only (`/pages` by default).
 

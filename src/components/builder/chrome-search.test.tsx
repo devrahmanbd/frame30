@@ -24,10 +24,7 @@ vi.mock("@tanstack/react-router", () => ({
 
 const SRC = readFileSync("src/components/builder/chrome.tsx", "utf8");
 
-function ctxFor(
-  section: Section,
-  locale: "en" | "bn" = "en",
-): WidgetCtx {
+function ctxFor(section: Section, locale: "en" | "bn" = "en"): WidgetCtx {
   return {
     section,
     ...widgetReader(section, undefined, locale),
@@ -45,7 +42,10 @@ function ctxFor(
 function render(section: Section, locale: "en" | "bn" = "en") {
   const Cmp = WIDGET_COMPONENTS.search_command as WidgetComponent;
   return renderToStaticMarkup(
-    createElement(Cmp as (p: WidgetCtx) => React.ReactElement, ctxFor(section, locale)),
+    createElement(
+      Cmp as (p: WidgetCtx) => React.ReactElement,
+      ctxFor(section, locale),
+    ),
   );
 }
 
@@ -59,9 +59,11 @@ describe("search_command catalog", () => {
   });
 
   it("adds no new configurable props beyond the closed set", () => {
-    expect(Object.keys(WIDGET_BY_KEY.search_command.defaults).sort()).toEqual(
-      ["buttonLabel", "limit", "placeholder"],
-    );
+    expect(Object.keys(WIDGET_BY_KEY.search_command.defaults).sort()).toEqual([
+      "buttonLabel",
+      "limit",
+      "placeholder",
+    ]);
   });
 });
 
@@ -80,7 +82,10 @@ describe("search_command trigger (SSR)", () => {
     const bn = render(
       {
         ...newSection("search_command"),
-        props: { placeholder: "Search products", placeholder_bn: "পণ্য খুঁজুন" },
+        props: {
+          placeholder: "Search products",
+          placeholder_bn: "পণ্য খুঁজুন",
+        },
       },
       "bn",
     );

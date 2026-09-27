@@ -44,11 +44,14 @@ const CSS = [
   '[data-widget="product_rail"][data-skin="minimal"]{color:blue}',
 ].join("\n");
 
-function chrome(ast: {
-  header: ReturnType<typeof newSection>[];
-  main: ReturnType<typeof newSection>[];
-  footer: ReturnType<typeof newSection>[];
-}, customCss: string | null = CSS) {
+function chrome(
+  ast: {
+    header: ReturnType<typeof newSection>[];
+    main: ReturnType<typeof newSection>[];
+    footer: ReturnType<typeof newSection>[];
+  },
+  customCss: string | null = CSS,
+) {
   return renderToStaticMarkup(
     createElement(ThemeChrome, {
       template: "index",

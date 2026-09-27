@@ -192,27 +192,29 @@ export type BilingualLabel = { en: string; bn: string };
  * text render the mark decorative; icon-only controls (cart button, dialog
  * close, quantity steppers) resolve their `aria-label` here.
  */
-export const STOREFRONT_ICON_LABELS: Record<StorefrontIconName, BilingualLabel> =
-  {
-    cart: { en: "Cart", bn: "কার্ট" },
-    search: { en: "Search", bn: "খুঁজুন" },
-    close: { en: "Close", bn: "বন্ধ করুন" },
-    "chevron-down": { en: "Expand", bn: "প্রসারিত করুন" },
-    "chevron-up": { en: "Collapse", bn: "সংকুচিত করুন" },
-    "chevron-left": { en: "Previous", bn: "আগেরটি" },
-    "chevron-right": { en: "Next", bn: "পরেরটি" },
-    "arrow-left": { en: "Back", bn: "পেছনে" },
-    "arrow-right": { en: "Continue", bn: "এগিয়ে যান" },
-    "arrow-up-right": { en: "Open", bn: "খুলুন" },
-    plus: { en: "Increase quantity", bn: "পরিমাণ বাড়ান" },
-    minus: { en: "Decrease quantity", bn: "পরিমাণ কমান" },
-    check: { en: "Selected", bn: "নির্বাচিত" },
-    star: { en: "Rating", bn: "রেটিং" },
-    truck: { en: "Delivery", bn: "ডেলিভারি" },
-    shield: { en: "Secure", bn: "নিরাপদ" },
-    "shield-check": { en: "Verified secure", bn: "যাচাইকৃত নিরাপদ" },
-    refresh: { en: "Try again", bn: "আবার চেষ্টা করুন" },
-  };
+export const STOREFRONT_ICON_LABELS: Record<
+  StorefrontIconName,
+  BilingualLabel
+> = {
+  cart: { en: "Cart", bn: "কার্ট" },
+  search: { en: "Search", bn: "খুঁজুন" },
+  close: { en: "Close", bn: "বন্ধ করুন" },
+  "chevron-down": { en: "Expand", bn: "প্রসারিত করুন" },
+  "chevron-up": { en: "Collapse", bn: "সংকুচিত করুন" },
+  "chevron-left": { en: "Previous", bn: "আগেরটি" },
+  "chevron-right": { en: "Next", bn: "পরেরটি" },
+  "arrow-left": { en: "Back", bn: "পেছনে" },
+  "arrow-right": { en: "Continue", bn: "এগিয়ে যান" },
+  "arrow-up-right": { en: "Open", bn: "খুলুন" },
+  plus: { en: "Increase quantity", bn: "পরিমাণ বাড়ান" },
+  minus: { en: "Decrease quantity", bn: "পরিমাণ কমান" },
+  check: { en: "Selected", bn: "নির্বাচিত" },
+  star: { en: "Rating", bn: "রেটিং" },
+  truck: { en: "Delivery", bn: "ডেলিভারি" },
+  shield: { en: "Secure", bn: "নিরাপদ" },
+  "shield-check": { en: "Verified secure", bn: "যাচাইকৃত নিরাপদ" },
+  refresh: { en: "Try again", bn: "আবার চেষ্টা করুন" },
+};
 
 export function storefrontIconLabel(
   name: StorefrontIconName,
@@ -232,7 +234,9 @@ export type StorefrontIconWrapperProps = StorefrontIconProps & {
  * button) so it renders `role="img"` with the bilingual label, or
  * `decorative` for a mark beside visible text so it renders `aria-hidden`.
  */
-export function StorefrontIcon(props: StorefrontIconWrapperProps): ReactElement {
+export function StorefrontIcon(
+  props: StorefrontIconWrapperProps,
+): ReactElement {
   const { name, lang = "en", size, strokeWidth, ...rest } = props;
   const labelled = "label" in rest && rest.label === true;
   const Component = STOREFRONT_ICONS[name];
@@ -250,5 +254,13 @@ export function StorefrontIcon(props: StorefrontIconWrapperProps): ReactElement 
       />
     );
   }
-  return <Component size={size} strokeWidth={strokeWidth} aria-hidden="true" focusable="false" {...rest} />;
+  return (
+    <Component
+      size={size}
+      strokeWidth={strokeWidth}
+      aria-hidden="true"
+      focusable="false"
+      {...rest}
+    />
+  );
 }

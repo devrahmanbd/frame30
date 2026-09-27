@@ -123,19 +123,19 @@ describe("factory output carries theme defaults", () => {
   it("homepage product rails, hero and testimonials ship their skins", () => {
     const sections = buildHomepageMain(stub);
     const rails = sections.filter((s) => s.type === "product_rail");
-    expect(rails).toHaveLength(2);
+    expect(rails).toHaveLength(6);
     for (const rail of rails) expect(rail.props.skin).toBe("editorial");
     const hero = sections.find((s) => s.type === "hero_carousel")!;
-    expect(hero.props.skin).toBe("split");
+    expect(hero.props.skin).toBe("fullbleed");
     const quotes = sections.find((s) => s.type === "testimonials")!;
-    expect(quotes.props.skin).toBe("wall");
+    expect(quotes.props.skin).toBe("carousel");
   });
 
   it("defaults merge under authored props — copy and card choices survive", () => {
     const sections = buildHomepageMain(stub);
     const [first] = sections.filter((s) => s.type === "product_rail");
-    expect(first!.props.heading).toBe("New arrivals");
-    expect(first!.props.heading_bn).toBe("নতুন এসেছে");
+    expect(first!.props.heading).toBe("SIGNATURE SAREES");
+    expect(first!.props.heading_bn).toBe("সিগনেচার শাড়ি");
     expect(first!.props.cardVariant).toBe("standard");
     expect(first!.props.skin).toBe("editorial");
   });

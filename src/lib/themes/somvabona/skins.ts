@@ -97,7 +97,9 @@ export function applySomvabonaWidgetDefaults(
   type: string,
   props: Record<string, PropValue> = {},
 ): Record<string, PropValue> {
-  const defaults = (SOMVABONA_WIDGET_DEFAULTS as Record<string, Record<string, PropValue>>)[type];
+  const defaults = (
+    SOMVABONA_WIDGET_DEFAULTS as Record<string, Record<string, PropValue>>
+  )[type];
   if (!defaults) return props;
   return { ...defaults, ...props };
 }
@@ -111,7 +113,10 @@ export function applySomvabonaWidgetDefaults(
 export function withSomvabonaWidgetDefaults<
   S extends (type: any, props?: any) => Section,
 >(s: S): S {
-  const wrapped = (type: string, props: Record<string, PropValue> = {}): Section =>
+  const wrapped = (
+    type: string,
+    props: Record<string, PropValue> = {},
+  ): Section =>
     (s as unknown as (t: string, p?: Record<string, PropValue>) => Section)(
       type,
       applySomvabonaWidgetDefaults(type, props),

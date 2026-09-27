@@ -52,17 +52,52 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
       switch (template) {
         case "index":
           return buildHomepageMain(s);
-        case "collection":
+        case "collection": {
+          // The applyDemoFocus system rewrites the `category_header`'s title
+          // and the product_rail's collection when a focus slug is clicked.
+          // We author a generic "New Arrivals" default; the engine overrides
+          // the heading text and rail collection automatically via focus.
+          //
+          // Subnav per collection type — the focus slug drives which subnav
+          // is shown. Since the preview template is static and focus is
+          // applied at render time, we author the richest subnav (bridal) as
+          // default. The category_header gracefully shows nothing if subnav
+          // is empty string.
+          //
+          // Collection types:
+          //   curated   — new-in, bestsellers: no subnav, product-forward
+          //   department — women, men, kids: rich subnav
+          //   occasion  — bridal, festive, wedding: editorial intro + subnav
           return [
-            s("heading", { text: "New in", text_bn: "নতুন এসেছে" }),
-            rail(
-              s,
-              "New arrivals",
-              "নতুন এসেছে",
-              "new-in",
-              "In stock · Dispatched in 24h",
-              "স্টকে আছে · ২৪ ঘণ্টায় ডিসপ্যাচ",
-            ),
+            s("category_header", {
+              text: "New Arrivals",
+              text_bn: "নতুন এসেছে",
+              description:
+                "Fresh off the loom. The latest handloom pieces from Songoskriti's artisan partners.",
+              description_bn:
+                "তাঁত থেকে সবে নামানো। সংস্কৃতির কারিগর অংশীদারদের সর্বশেষ হ্যান্ডলুম পিস।",
+              collectionType: "curated",
+              // Subnav items: "Label:/c/slug" comma-separated
+              // These match the MEGA_MENU_DEFS taxonomy exactly.
+              subnav: [
+                "All New Arrivals:/c/new-in",
+                "Sarees:/c/sarees",
+                "Panjabi:/c/panjabi",
+                "Jewellery:/c/jewellery",
+                "Festive:/c/festive",
+              ].join(","),
+            }),
+            s("result_toolbar", {
+              sortDefault: "Featured",
+            }),
+            s("product_grid", {
+              heading: "New Arrivals",
+              heading_bn: "নতুন এসেছে",
+              source: "collection",
+              collection: "new-in",
+              promise: "In stock · Dispatched in 24h",
+              promise_bn: "স্টকে আছে · ২৪ ঘণ্টায় ডিসপ্যাচ",
+            }),
             rail(
               s,
               "More to explore",
@@ -72,26 +107,26 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
               "সারা দেশে জনপ্রিয়",
             ),
           ];
-        case "product":
-          return [
-            s("heading", {
-              text: "Dhakai Jamdani Heritage Saree",
-              text_bn: "ঢাকাই জামদানি হেরিটেজ শাড়ি",
-            }),
+        }
+        case "product": {
+          const layout = s("columns", { columns: 2, asymmetrical: true, gap: 48, padY: 48 });
+          const rightCol = s("columns", { columns: 1, gap: 24 });
+          rightCol.children = [
+            s("breadcrumb", { homeLabel: "Home" }),
+            s("product_meta", {}),
+            s("price_block", {}),
+            s("add_to_cart", {}),
+            s("page_content", { heading: "Details" })
+          ];
+          layout.children = [
             s("product_media", {
-              image1: "/ph/songoskriti/prod-saree.png",
-              image2: "/ph/songoskriti/prod-panjabi.png",
-              image3: "/ph/songoskriti/prod-necklace.png",
-              image4: "/ph/songoskriti/cat-women.png",
-              ratio: "4/5",
+              ratio: "3/4",
             }),
-            s("rich_text", {
-              heading: "Details",
-              heading_bn: "বিবরণ",
-              body: "Demo product page. Prices and stock are sample data — ordering is disabled in preview.",
-              body_bn:
-                "ডেমো পণ্যের পাতা। দাম ও স্টক নমুনা তথ্য — প্রিভিউতে অর্ডার বন্ধ আছে।",
-            }),
+            rightCol
+          ];
+          
+          return [
+            layout,
             rail(
               s,
               "Complete the look",
@@ -102,6 +137,7 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
               4,
             ),
           ];
+        }
         case "page":
           return [
             s("heading", { text: "Size guide", text_bn: "সাইজ গাইড" }),

@@ -53,7 +53,10 @@ function SummarySkeleton() {
   return (
     <div className="space-y-2" aria-hidden="true">
       {[0, 1, 2, 3].map((i) => (
-        <div key={i} className="h-3 w-full motion-safe:animate-pulse bg-muted/50" />
+        <div
+          key={i}
+          className="h-3 w-full motion-safe:animate-pulse bg-muted/50"
+        />
       ))}
     </div>
   );
@@ -134,7 +137,11 @@ function LineList({
   return (
     <>
       {updating && (
-        <p role="status" aria-live="polite" className="text-xs text-muted-foreground">
+        <p
+          role="status"
+          aria-live="polite"
+          className="text-xs text-muted-foreground"
+        >
           {t(locale, "Updating your cart…", "কার্ট আপডেট হচ্ছে…")}
         </p>
       )}

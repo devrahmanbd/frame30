@@ -18,6 +18,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
+import {
+  PriceBlock,
+  ProductInfo,
+  VariantSelector,
+  AddToCart,
+  ProductDetails,
+  ProductCraftStory,
+} from "@/components/store/ProductView";
+
+import { DEMO_CATALOGS } from "@/lib/demo-catalog";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { StoreHeader } from "@/components/store/StoreHeader";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
@@ -51,6 +61,8 @@ import {
   previewSearchForSwitch,
   resolveDemoFocus,
 } from "@/lib/theme-preview-nav";
+import { useSectionChannel } from "@/components/builder/useSectionChannel";
+
 
 /* Click routing (block checks, href parsing, click/submit interception) lives in
    @/lib/theme-preview-nav — the single source. This frame only imports it. */
@@ -85,6 +97,248 @@ export type ThemePreviewFrameProps = {
    */
   onClose: () => void;
 };
+
+/**
+ * Multi-image carousel for theme preview product pages.
+ * Reacts to the variant channel so clicking M/L swaps the gallery image.
+ */
+function DemoProductMediaGallery({
+  images,
+  blueprintKey,
+  variants = [],
+}: {
+  images: string[];
+  blueprintKey: string;
+  variants?: any[];
+}) {
+  const variantChannel = useSectionChannel(blueprintKey, "variant");
+  const selectedVariantIndex = !isNaN(parseInt(variantChannel.ids[0] || "", 10)) ? parseInt(variantChannel.ids[0] as string, 10) : 0;
+
+  const selectedVariant = variants[selectedVariantIndex];
+  const validImages = (selectedVariant?.images?.length > 0 ? selectedVariant.images : images).filter(Boolean);
+  console.log("DemoProductMediaGallery validImages:", validImages, "variants:", variants, "selectedVariantIndex:", selectedVariantIndex);
+  
+  const [index, setIndex] = useState(0);
+
+  // Reset index to 0 when the image set changes due to variant change
+  useEffect(() => {
+    setIndex(0);
+  }, [selectedVariantIndex]);
+
+  if (validImages.length === 0) {
+    return <div className="relative w-full aspect-[4/5] bg-muted rounded-lg max-h-[70vh]" />;
+  }
+
+  const active = Math.min(index, validImages.length - 1);
+  const step = (delta: number) => setIndex((i) => (i + delta + validImages.length) % validImages.length);
+
+  return (
+    <section
+      aria-roledescription="carousel"
+      aria-label="Product image"
+      className="relative w-full flex flex-col items-center"
+      data-debug={validImages.length}
+      data-variants={variants?.length}
+      data-index={selectedVariantIndex}
+    >
+      <div
+        role="group"
+        aria-roledescription="slide"
+        aria-label={`Product image ${active + 1} / ${validImages.length}`}
+        className="relative overflow-hidden rounded-lg border border-border bg-muted w-full max-w-2xl max-h-[70vh]"
+        style={{ aspectRatio: "4/5" }}
+      >
+        <img
+          src={validImages[active]}
+          alt={`Product image ${active + 1}`}
+          loading={active === 0 ? "eager" : "lazy"}
+          fetchPriority={active === 0 ? "high" : "auto"}
+
+          decoding="async"
+          className="h-full w-full object-cover motion-safe:transition-all motion-safe:duration-500"
+        />
+        {validImages.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={() => step(-1)}
+              aria-label="Previous image"
+              className="absolute left-2 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card/95 text-lg shadow transition hover:bg-muted"
+            >
+              <span aria-hidden>‹</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => step(1)}
+              aria-label="Next image"
+              className="absolute right-2 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card/95 text-lg shadow transition hover:bg-muted"
+            >
+              <span aria-hidden>›</span>
+            </button>
+            <p
+              aria-hidden
+              className="absolute bottom-2 right-2 rounded-full bg-foreground/70 px-2 py-1 text-xs tabular-nums text-background"
+            >
+              {active + 1} / {validImages.length}
+            </p>
+          </>
+        )}
+      </div>
+      {validImages.length > 1 && (
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+          {validImages.map((src, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setIndex(i)}
+              aria-label={`View image ${i + 1}`}
+              aria-pressed={i === active}
+              className={`relative h-16 w-14 flex-none overflow-hidden rounded border-2 transition-all ${i === active ? "border-foreground" : "border-border opacity-60 hover:opacity-100"}`}
+            >
+              <img src={src} alt="" className="h-full w-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function useMockProductSlots(
+
+  template: TemplateKey,
+  demoFocus: any,
+  themeName: string,
+  blueprintKey: string
+) {
+  const [variantId, setVariantId] = useState<string>("");
+  const [added, setAdded] = useState(false);
+
+  // If not product template or no demo product, return undefined so it falls back
+  const demoProduct = template === "product" && demoFocus 
+    ? DEMO_CATALOGS[blueprintKey as keyof typeof DEMO_CATALOGS]?.products.find((p: any) => p.slug === demoFocus.slug) 
+    : null;
+
+  const mappedVariants = demoProduct
+    ? demoProduct.variants.map((v: any) => ({
+        id: v.id ?? v.name,
+        name: v.name,
+        sku: v.sku,
+        price_amount_minor_int: v.price,
+        compare_at_amount_minor_int: v.compare_at,
+        stock_quantity: v.stock ?? 10
+      }))
+    : [];
+
+  // Initialize variant on product change
+  useEffect(() => {
+    if (demoProduct) {
+      setVariantId((demoProduct.variants[0] as any)?.id ?? demoProduct.variants[0]?.name ?? "");
+
+    }
+  }, [demoProduct?.slug]);
+
+  // Push variant index to the section channel so the AST product_media widget reacts
+  const variantChannel = useSectionChannel(blueprintKey, "variant");
+  useEffect(() => {
+    if (!demoProduct || mappedVariants.length === 0) return;
+    const idx = mappedVariants.findIndex((v: any) => v.id === variantId);
+    variantChannel.clear();
+    if (idx >= 0) {
+      variantChannel.push(idx.toString());
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [variantId, blueprintKey]);
+
+  if (!demoProduct) return undefined;
+
+  const productPayload = {
+    id: demoProduct.slug,
+    title: demoProduct.title,
+    description: demoProduct.description,
+    image_url: demoProduct.image_url,
+    image: null,
+    tags: demoProduct.tags ?? [],
+    category_id: demoProduct.category ?? null,
+  };
+  
+  const merchantPayload = {
+    id: "demo",
+    name: themeName,
+    slug: blueprintKey,
+    currency_code: "BDT"
+  };
+  
+  const settingsPayload = {
+    shipping_flat_minor_int: 6000,
+    cod_enabled: true,
+    mfs_enabled: true,
+    free_shipping_threshold_minor_int: null
+  };
+  
+  const mappedVariant = mappedVariants.find((v: any) => v.id === variantId) ?? mappedVariants[0] ?? null;
+
+  const breadcrumb = (
+    <nav className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-6">
+      <span className="hover:text-foreground transition-colors cursor-pointer">{themeName}</span>
+      <span aria-hidden className="mx-2"> / </span>
+      <span className="text-foreground">{demoProduct.title}</span>
+    </nav>
+  );
+
+  // NOTE: product_media is intentionally NOT in the return — the AST widget handles
+  // the gallery using the images injected by applyDemoFocus, and the channel push above
+  // drives variant→gallery binding reactively.
+  const meta = <ProductInfo product={productPayload as any} />;
+  const priceBlock = mappedVariant ? <PriceBlock variant={mappedVariant as any} currencyCode="BDT" /> : null;
+
+  
+  const addToCart = mappedVariant ? (
+    <div>
+      <VariantSelector variants={mappedVariants as any} variantId={variantId} setVariantId={setVariantId} />
+      <AddToCart
+        variant={mappedVariant as any}
+        merchant={merchantPayload as any}
+        custom={false}
+        add={(id, qty) => { console.log("Mock add to cart", id, qty); }}
+        added={added}
+        setAdded={setAdded}
+        settings={settingsPayload as any}
+      />
+    </div>
+  ) : null;
+
+  
+  const pageContent = (
+    <>
+      <ProductDetails product={productPayload as any} />
+      <ProductCraftStory description={demoProduct.description} />
+    </>
+  );
+
+  const productImages = demoFocus?.images ?? demoProduct?.images ?? (demoProduct?.image_url ? [demoProduct.image_url] : []);
+  if (typeof window !== "undefined") {
+    (window as any).__DEBUG_PRODUCT = demoProduct;
+    (window as any).__DEBUG_FOCUS = demoFocus;
+  }
+  const media = (
+    <DemoProductMediaGallery
+      images={productImages}
+      blueprintKey={blueprintKey}
+      variants={demoProduct.variants}
+    />
+  );
+
+  return {
+    breadcrumb,
+    product_media: media,
+    product_meta: meta,
+    price_block: priceBlock,
+    add_to_cart: addToCart,
+    page_content: pageContent
+  };
+}
+
 
 export function ThemePreviewFrame({
   themeName,
@@ -199,6 +453,7 @@ export function ThemePreviewFrame({
   const { lang } = useLang();
   // Account center is context-gated: feed the merchant sections demo rows
   // so the account tab renders instead of parking on skeletons.
+  const productSlots = useMockProductSlots(template, demoFocus, themeName, blueprintKey);
   const accountSlots = useMemo(() => {
     if (template !== "account") return undefined;
     const sections = [...ast.header, ...ast.main, ...ast.footer];
@@ -274,7 +529,8 @@ export function ThemePreviewFrame({
                   section={section}
                   template={template}
                   editing={false}
-                  contextSlots={accountSlots}
+                  storeSlug={blueprintKey}
+                  contextSlots={accountSlots || productSlots || undefined}
                 />
               ))}
 
@@ -294,7 +550,8 @@ export function ThemePreviewFrame({
                     section={section}
                     template={template}
                     editing={false}
-                    contextSlots={accountSlots}
+                    storeSlug={blueprintKey}
+                    contextSlots={accountSlots || productSlots || undefined}
                   />
                 ))}
 
@@ -307,7 +564,8 @@ export function ThemePreviewFrame({
                       section={section}
                       template={template}
                       editing={false}
-                      contextSlots={accountSlots}
+                      storeSlug={blueprintKey}
+                      contextSlots={accountSlots || productSlots || undefined}
                       primary={section.id === primaryId}
                     />
                   ))}
@@ -328,7 +586,7 @@ export function ThemePreviewFrame({
                         section={section}
                         template={template}
                         editing={false}
-                        contextSlots={accountSlots}
+                        contextSlots={accountSlots || productSlots || undefined}
                       />
                     ))}
                   </div>
