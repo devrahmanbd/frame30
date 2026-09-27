@@ -13,6 +13,7 @@ import {
   Timer,
   PhoneCall,
   Star,
+  History,
 } from "@/components/icons/tabler";
 import { useLang } from "@/lib/i18n";
 import {
@@ -42,6 +43,7 @@ import {
   minutes,
   ticketSla,
 } from "@/components/admin/SupportDeskUi";
+import { RevisionReviewPanel } from "@/components/admin/RevisionReviewUi";
 
 export const Route = createFileRoute("/_authenticated/dashboard/support")({
   head: () => ({
@@ -66,7 +68,14 @@ export const Route = createFileRoute("/_authenticated/dashboard/support")({
   component: SupportDesk,
 });
 
-type Tab = "tickets" | "callbacks" | "kb" | "channels" | "sla" | "trust";
+type Tab =
+  | "tickets"
+  | "callbacks"
+  | "kb"
+  | "channels"
+  | "sla"
+  | "trust"
+  | "revisions";
 type TicketPatch = {
   ticketId: string;
   status?: (typeof STATUSES)[number];
@@ -178,6 +187,11 @@ function SupportDesk() {
       label: t("Trust & audit", "ট্রাস্ট ও অডিট"),
       Icon: ShieldCheck,
     },
+    {
+      key: "revisions",
+      label: t("Revisions", "রিভিশন"),
+      Icon: History,
+    },
   ];
 
   return (
@@ -278,6 +292,7 @@ function SupportDesk() {
               onDone={refresh}
             />
           ) : null}
+          {tab === "revisions" ? <RevisionReviewPanel /> : null}
         </>
       )}
     </div>
