@@ -121,17 +121,33 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
               text: "Dhakai Jamdani Heritage Saree",
               text_bn: "ঢাকাই জামদানি হেরিটেজ শাড়ি",
             }),
-            s("product_media", {
-              image1: "/ph/songoskriti/prod-saree.png",
-              image2: "/ph/songoskriti/prod-panjabi.png",
-              image3: "/ph/songoskriti/prod-necklace.png",
-              image4: "/ph/songoskriti/cat-women.png",
-              ratio: "4/5",
-            }),
-            s("breadcrumb", { homeLabel: "Home" }),
-            s("product_meta", {}),
-            s("price_block", {}),
-            s("add_to_cart", {}),
+            {
+              ...s("columns", {
+                columns: 2,
+                asymmetrical: true,
+                gap: 64,
+                padY: 16,
+              }),
+              children: [
+                {
+                  ...s("container", {}),
+                  children: [
+                    s("product_media", {
+                      ratio: "4/5",
+                    }),
+                  ],
+                },
+                {
+                  ...s("container", {}),
+                  children: [
+                    s("breadcrumb", { homeLabel: "Home" }),
+                    s("product_meta", {}),
+                    s("price_block", {}),
+                    s("add_to_cart", {}),
+                  ],
+                },
+              ],
+            },
             s("rich_text", {
               heading: "Details",
               heading_bn: "বিবরণ",

@@ -161,3 +161,10 @@ gantt
 | **CMS**       | Navigator Layer Tree & Revision Split            | **P1**   | Med        | Med      |
 | **Infra**     | Immutable `TenantContext` AsyncLocalStorage      | **P2**   | High       | Critical |
 | **Security**  | RLS Tier-2 Member Write-Side Policies            | **P2**   | Med        | High     |
+| **API**       | OpenAPI spec: map support-revision/support-stream| **P2**   | Low        | Med      |
+
+---
+
+## ⏸️ Deferred Items
+
+- **OpenAPI spec coverage for new support routes** (deferred 2026-09-27): `src/routes/api/public/cron/support-revision.ts` and `src/routes/api/public/support/stream.ts` are live but unmapped in `openapi/` spec — `openapi/openapi.spec.test.ts > every route file maps to >= 1 spec path` fails until mapped. No code changes needed, spec-only work.

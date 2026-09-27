@@ -480,20 +480,8 @@ export function applyDemoFocus(
         focus!.template === "product" &&
         next.type === "product_media"
       ) {
-        const gallery = (focus!.images ?? []).filter(Boolean);
-        const primary = gallery[0] ?? focus!.image;
-        if (primary) {
-          media = true;
-          const patch: Record<string, Section["props"][string]> = {
-            image1: primary,
-          };
-          if (gallery[1]) patch["image2"] = gallery[1]!;
-          if (gallery[2]) patch["image3"] = gallery[2]!;
-          if (gallery[3]) patch["image4"] = gallery[3]!;
-          next = { ...next, props: { ...next.props, ...patch } };
-        }
-        // Unknown slugs carry no art: leave static media untouched so the
-        // authored fallback renders unchanged.
+        media = true;
+        // Do not inject static image props so that it falls back to the dynamic DemoProductMediaGallery via ContextSlot
       }
 
       const isCollectionBound =
