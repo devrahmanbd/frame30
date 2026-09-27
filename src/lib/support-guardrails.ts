@@ -71,6 +71,37 @@ const INBOUND_RULES: InboundRule[] = [
     kind: "injection",
     pattern: /\b(base64|rot13|hex)\s*(decode|decoded|payload|eval)\b/i,
   },
+  {
+    rule: "roleplay_bypass",
+    kind: "injection",
+    pattern:
+      /\b(grandmother|grandma|granny|grandpa|grandfather)\b[^.]{0,80}\b(bedtime|story|lullaby|recite|read me|tell me|used to)\b|\b(my\s+)?(dead|deceased|late)\b[^.]{0,20}\b(grandmother|grandma|granny|grandpa|grandfather|mother|father|relative)\b/i,
+  },
+  {
+    rule: "jailbreak_persona",
+    kind: "injection",
+    pattern:
+      /\b(you are|act as|become|enable|activate|stay in|pretend to be|from now on)\b[^.]{0,24}\b(dan|stan|dude|betterdan|unfiltered|unrestricted)\b|\b(stan|betterdan)\b/i,
+  },
+  {
+    rule: "prompt_extraction",
+    kind: "injection",
+    pattern:
+      /\b(repeat|reveal|recite|output|print|show|display|disclose|leak|dump|quote|tell me|give me)\b[^.]{0,50}\b(system|developer|initial|original|hidden|secret|internal|core)\b[^.]{0,24}\b(prompt|message|instructions?|guidelines|rules?)\b/i,
+  },
+  {
+    rule: "authority_override",
+    kind: "injection",
+    pattern:
+      /\b(override|overrule|disregard|suspend|disable|bypass|ignore|drop)\b[^.]{0,30}\b(safety|content|policy|policies|guidelines?|restrictions?|limitations?|filters?|guardrails?|ethics)\b|\b(you have|there are)\s+no\s+(rules|restrictions|limitations|filters|policies)\b|\b(as\s+(an?\s+)?(authority|admin|owner|developer|official|officer|policeman|government)|under\s+(penalty|authority))\b[^.]{0,40}\b(demand|order|require|insist|command)\b/i,
+  },
+  {
+    // Bengali instruction-override attempts (no \b: non-Latin script).
+    rule: "multilingual_override",
+    kind: "injection",
+    pattern:
+      /(উপেক্ষা কর|ভুলে যাও|আগের নির্দেশ|পূর্বের নির্দেশ|নির্দেশনা (ভুলে|উপেক্ষা)|সিস্টেম প্রম্পট|সিস্টেম নির্দেশ|জেলব্রেক|ড্যান মোড)/,
+  },
 
   // 2. Source Code & Architecture Exfiltration
   {
@@ -176,6 +207,17 @@ const AUTHORITY_RULES: Array<[string, RegExp]> = [
     "guarantee_stock",
     /\b(guarantee|promise)\b[^.]{0,25}\b(stock|in stock|delivery date)\b/i,
   ],
+  [
+    // Passive-voice refund claims ("refund has been initiated") evade the
+    // active-voice grant_refund rule above; block them the same way.
+    "refund_initiated_claim",
+    /\b(initiated|processed|issued|completed|dispatched|sent)\b[^.]{0,30}\b(refund|reimbursement)\b|\brefund\b[^.]{0,30}\b(initiated|processed|issued|completed|has been sent|is on (its|the) way)\b/i,
+  ],
+  [
+    // Bengali passive refund claims (e.g. the /refund macro bodyBn).
+    "refund_initiated_claim_bn",
+    /রিফান্ড[^.।]{0,40}(শুরু করা হ\u09DFেছে|শুরু হ\u09DFেছে|পাঠানো হ\u09DFেছে|সম্পন্ন|দেও\u09DFা হ\u09DFেছে)/,
+  ],
 ];
 
 /** Digits that look like BD money/quantity claims made without a pinned tool result. */
@@ -250,7 +292,23 @@ const VULNERABILITY_LEAK_RULES: Array<[string, RegExp]> = [
 const PII_PATTERNS: Array<[string, RegExp]> = [
   ["email", /[\w.+-]+@[\w-]+\.[\w.]{2,}/g],
   ["phone", /(?:\+?88)?01[3-9]\d{8}/g],
+  // Bangladesh NID: 10 / 13 / 17 contiguous digits. Must run BEFORE `card`
+  // so 13/17-digit NIDs are labelled nid, not card (16-digit cards never
+  // collide with these lengths thanks to the word boundaries).
+  ["nid", /\b(?:\d{10}|\d{13}|\d{17})\b/g],
+  // Bangladesh passport: 2 letters + 7 digits (e.g. AB1234567).
+  ["passport", /\b[A-Z]{2}\d{7}\b/gi],
+  // Mobile-banking PIN / OTP anchored to a brand, plus standalone OTP codes.
+  [
+    "pin_otp",
+    /\b(?:bKash|Nagad|Upay|Rocket|Bank|DBBL|BRAC|City)\s*(?:PIN|OTP|secret|verification\s*code|code)\s*(?:is\s+)?[:=\-#]?\s*\d{3,8}\b|\bOTP\s*(?:is\s+)?[:=\-#]?\s*\d{4,8}\b/gi,
+  ],
   ["card", /\b(?:\d[ -]?){13,19}\b/g],
+  // BD street address cues anchored to a city, plus city + 4-digit postcode.
+  [
+    "address",
+    /(?:\b(?:house|holding|flat|apartment|apt|floor|road|rd|street|lane|block|plot|sector|village|thana|upazila|union|ward)\b[^.\n]{0,60}?\b(?:dhaka|chattogram|chittagong|khulna|sylhet|rajshahi|barishal|rangpur|mymensingh|comilla)\b[^.\n]{0,24}|\b(?:dhaka|chattogram|chittagong|khulna|sylhet|rajshahi|barishal|rangpur|mymensingh|comilla)\s*-?\s*\d{4}\b)/gi,
+  ],
   [
     "uuid",
     /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi,
@@ -258,14 +316,160 @@ const PII_PATTERNS: Array<[string, RegExp]> = [
 ];
 
 /** Inbound scan. Runs on every user turn before retrieval or any tool call. */
-export function screenInbound(text: string): GuardVerdict {
-  const value = text.slice(0, 2000);
-  for (const item of INBOUND_RULES) {
-    if (item.pattern.test(value)) {
-      return { allowed: false, kind: item.kind, rule: item.rule };
+const B64_ALPHABET =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+function tryUrlDecodeOnce(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+/** Decode one level (twice, to catch double-encoding) of URL-encoding. */
+function tryUrlDecode(value: string): string {
+  let prev = value;
+  for (let i = 0; i < 2; i++) {
+    const next = tryUrlDecodeOnce(prev);
+    if (next === prev) break;
+    prev = next;
+  }
+  return prev;
+}
+
+/**
+ * Bengali nukta folding: য + nukta (U+09AF U+09BC) and the precomposed য়
+ * (U+09DF) look identical but are different code points — and Unicode NFC
+ * does NOT unify them. Fold decomposed forms to precomposed (also ড+়→ড়,
+ * ঢ+়→ঢ়) so one pattern matches both spellings.
+ */
+const NUKTA_FOLD_MAP: Record<string, string> = {
+  "\u09A1": "\u09DC",
+  "\u09A2": "\u09DD",
+  "\u09AF": "\u09DF",
+};
+
+function foldBengaliNukta(value: string): string {
+  return value.replace(
+    /([\u09A1\u09A2\u09AF])\u09BC/g,
+    (m, base: string) => NUKTA_FOLD_MAP[base] ?? m,
+  );
+};
+
+/** NFC + nukta folding for all Bengali-aware matching. */
+function canonicalBn(value: string): string {
+  return foldBengaliNukta(value.normalize("NFC"));
+}
+
+function b64ToBytes(clean: string): Uint8Array | null {
+  const core = clean.replace(/=+$/, "");
+  const out: number[] = [];
+  let acc = 0;
+  let bits = 0;
+  for (const ch of core) {
+    const v = B64_ALPHABET.indexOf(ch);
+    if (v < 0) return null;
+    acc = (acc << 6) | v;
+    bits += 6;
+    if (bits >= 8) {
+      bits -= 8;
+      out.push((acc >> bits) & 0xff);
     }
   }
-  if (value.replace(/\s+/g, "").length === 0) {
+  return Uint8Array.from(out);
+}
+
+/** Keep only decodings that look like human-readable smuggled text. */
+function decodedIfReadable(bytes: Uint8Array): string | null {
+  if (bytes.length < 8) return null;
+  let text: string;
+  try {
+    text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    return null;
+  }
+  if (text.length < 8) return null;
+  const readable = (text.match(/[\x20-\x7E\u0980-\u09FF]/g) ?? []).length;
+  if (readable / text.length < 0.7) return null;
+  return text;
+}
+
+function decodeHexRuns(text: string, into: Set<string>): void {
+  const runs = text.match(/(?:[0-9a-fA-F]{2}\s*){8,}/g) ?? [];
+  for (const run of runs) {
+    let compact = run.replace(/\s+/g, "");
+    // Resync: a run can absorb preceding hex-letter pairs from adjacent
+    // English words (e.g. the "ad " in "payload"), shifting alignment and
+    // producing invalid UTF-8. Retry minus one byte up to twice.
+    for (let attempt = 0; attempt < 3 && compact.length >= 16; attempt++) {
+      if (compact.length % 2 === 0 && !/[^0-9a-fA-F]/.test(compact)) {
+        const bytes = new Uint8Array(compact.length / 2);
+        for (let i = 0; i < bytes.length; i++) {
+          bytes[i] = parseInt(compact.slice(i * 2, i * 2 + 2), 16);
+        }
+        const decoded = decodedIfReadable(bytes);
+        if (decoded) {
+          into.add(decoded);
+          if (into.size >= 6) return;
+          break;
+        }
+      }
+      compact = compact.slice(2);
+    }
+  }
+}
+
+function decodeBase64Runs(text: string, into: Set<string>): void {
+  const runs = text.match(/[A-Za-z0-9+/\-_]{20,}={0,2}/g) ?? [];
+  for (const run of runs) {
+    let clean = run
+      .replace(/\s+/g, "")
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+    if (!/^[A-Za-z0-9+/]+={0,2}$/.test(clean)) continue;
+    if (clean.length < 20 || clean.length % 4 === 1) continue;
+    while (clean.length % 4 !== 0) clean += "=";
+    const bytes = b64ToBytes(clean);
+    if (!bytes) continue;
+    const decoded = decodedIfReadable(bytes);
+    if (decoded) {
+      into.add(decoded);
+      if (into.size >= 6) return;
+    }
+  }
+}
+
+/**
+ * Normalize-then-screen corpus: the raw turn plus any base64 / hex /
+ * URL-encoded payloads decoded back to readable text, so obfuscated
+ * instruction overrides cannot slip past the regex rules below.
+ */
+export function expandScreeningCorpus(text: string): string[] {
+  // NFC + nukta folding first: visually identical Bengali spellings
+  // (য় vs য + nukta) must match the same rules regardless of the form
+  // the client sent (Unicode NFC does not unify them).
+  const src = canonicalBn(text);
+  const corpus = new Set<string>([src]);
+  const urlDecoded = tryUrlDecode(src);
+  if (urlDecoded !== src) corpus.add(urlDecoded);
+  decodeHexRuns(src, corpus);
+  decodeHexRuns(urlDecoded, corpus);
+  decodeBase64Runs(src, corpus);
+  decodeBase64Runs(urlDecoded, corpus);
+  return [...corpus].slice(0, 7);
+}
+
+export function screenInbound(text: string): GuardVerdict {
+  for (const candidate of expandScreeningCorpus(text)) {
+    const value = candidate.slice(0, 2000);
+    for (const item of INBOUND_RULES) {
+      if (item.pattern.test(value)) {
+        return { allowed: false, kind: item.kind, rule: item.rule };
+      }
+    }
+  }
+  if (text.replace(/\s+/g, "").length === 0) {
     return { allowed: false, kind: "unsafe", rule: "empty" };
   }
   return { allowed: true, kind: null, rule: null };
@@ -279,6 +483,8 @@ export function screenOutbound(
   text: string,
   opts: { pinned: boolean; allowNumericClaims?: boolean },
 ): GuardVerdict {
+  // NFC + nukta folding so Bengali spellings (য় vs য + nukta) match uniformly.
+  text = canonicalBn(text);
   // 1. Secrets leak check (highest severity)
   for (const [rule, re] of SECRET_LEAK_RULES) {
     if (re.test(text)) return { allowed: false, kind: "secret_leak", rule };
@@ -316,14 +522,87 @@ export function screenOutbound(
     return { allowed: false, kind: "pii", rule: "bulk_phone_leak" };
   }
 
-  // 5. Authority claims and unpinned figures
+  // 5. Authority claims and unpinned figures. Explicit negations
+  // ("no refund has been issued yet") are disclosures, not claims.
+  const authorityText = text.replace(
+    /\bno\s+refund\s+has\s+been\s+(initiated|processed|issued|completed|sent)\b[^.]{0,24}/gi,
+    "",
+  );
   for (const [rule, re] of AUTHORITY_RULES) {
-    if (re.test(text)) return { allowed: false, kind: "authority", rule };
+    if (re.test(authorityText))
+      return { allowed: false, kind: "authority", rule };
   }
   if (!opts.pinned && !opts.allowNumericClaims && NUMERIC_CLAIM.test(text)) {
     return { allowed: false, kind: "authority", rule: "unpinned_figure" };
   }
   return { allowed: true, kind: null, rule: null };
+}
+
+/** Advisory-only replacement copy for the /refund macro (owning lane: paste into support-canned-responses.ts). */
+export const ADVISORY_REFUND_TEMPLATE_EN =
+  "Thanks for your patience. I have created support ticket {{ticketId}} for order #{{orderNumber}}. " +
+  "Refunds are subject to inspection and finance review once we receive the item; approved refunds typically " +
+  "reach your original payment method (bKash/Nagad/Card) within 3–5 business days. " +
+  "I will update you on this ticket as soon as the review is complete — no refund has been issued yet.";
+
+export const ADVISORY_REFUND_TEMPLATE_BN =
+  "ধন্যবাদ। অর্ডার #{{orderNumber}} এর জন্য সাপোর্ট টিকিট {{ticketId}} তৈরি করা হয়েছে। " +
+  "পণ্য হাতে পেয়ে যাচাই ও ফিন্যান্স পর্যালোচনা সাপেক্ষে রিফান্ড অনুমোদিত হয়; অনুমোদিত রিফান্ড সাধারণত " +
+  "৩–৫ কার্যদিবসের মধ্যে আপনার মূল পেমেন্ট মাধ্যমে (বিকাশ/নগদ/কার্ড) পৌঁছে যায়। " +
+  "পর্যালোচনা শেষ হলেই এই টিকিটে জানিয়ে দেব — এখনো কোনো রিফান্ড ইস্যু করা হয়নি।";
+
+export type RefundCopyVerdict = {
+  truthful: boolean;
+  rule: string | null;
+};
+
+const REFUND_INITIATED_EN =
+  /\b(we|i)\s+(have|has)\s+(initiated|processed|issued|completed|sent)\b[^.]{0,40}\b(refund|reimburse)/i;
+const REFUND_INITIATED_PASSIVE_EN =
+  /\brefund\b[^.]{0,30}\b(initiated|processed|issued|completed|has been sent|is on (its|the) way)\b/i;
+const REFUND_INITIATED_BN =
+  /রিফান্ড[^.।]{0,40}(শুরু করা হ\u09DFেছে|শুরু হ\u09DFেছে|পাঠানো হ\u09DFেছে|সম্পন্ন|দেও\u09DFা হ\u09DFেছে)/;
+// Explicit negations ("no refund has been issued yet") are not claims.
+const REFUND_NEGATION_EN =
+  /\bno\s+refund\s+has\s+been\s+(initiated|processed|issued|completed|sent)\b[^.]{0,20}/gi;
+const REFUND_TICKET_REF = /\b(ticket|reference|support desk|escalat)/i;
+const REFUND_TICKET_REF_BN = /(টিকিট|রেফারেন্স)/;
+const REFUND_ADVISORY_EN =
+  /\b(subject to|once|after|typically|usually|estimated|expected|review|verif|inspect|timeline|business days)\b/i;
+const REFUND_ADVISORY_BN = /(যাচাই|পর্যালোচনা|সাপেক্ষে|সাধারণত)/;
+
+/**
+ * Truthfulness gate for refund macro copy (filter layer).
+ * - Any initiated/processed/issued claim without `verifiedRefund` fails.
+ * - Refund copy must point at a ticket/reference and carry an advisory
+ *   hedge (subject-to-review + estimate wording), never a completion claim.
+ */
+export function checkRefundCopy(
+  text: string,
+  opts?: { verifiedRefund?: boolean },
+): RefundCopyVerdict {
+  text = canonicalBn(text);
+  const mentionsRefund = /\brefund\b/i.test(text) || /রিফান্ড/.test(text);
+  if (!mentionsRefund) return { truthful: true, rule: null };
+  const scrubbed = text.replace(REFUND_NEGATION_EN, "");
+  const initiated =
+    REFUND_INITIATED_EN.test(scrubbed) ||
+    REFUND_INITIATED_PASSIVE_EN.test(scrubbed) ||
+    REFUND_INITIATED_BN.test(scrubbed);
+  if (initiated && !opts?.verifiedRefund) {
+    return { truthful: false, rule: "unverified_refund_claim" };
+  }
+  const hasTicket =
+    REFUND_TICKET_REF.test(text) || REFUND_TICKET_REF_BN.test(text);
+  if (!hasTicket) {
+    return { truthful: false, rule: "missing_ticket_reference" };
+  }
+  const advisory =
+    REFUND_ADVISORY_EN.test(text) || REFUND_ADVISORY_BN.test(text);
+  if (!advisory) {
+    return { truthful: false, rule: "missing_advisory_hedge" };
+  }
+  return { truthful: true, rule: null };
 }
 
 /** Replaces PII with stable placeholders. Applied to every stored message. */

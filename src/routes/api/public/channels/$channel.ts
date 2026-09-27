@@ -50,10 +50,18 @@ function normalise(channel: Channel, payload: unknown): Normalised {
     ];
     if (!message || typeof text !== "string") return null;
     return {
-      eventId: String(message["id"] ?? ""),
-      externalId: String(meta?.["phone_number_id"] ?? entry["id"] ?? ""),
+      // Cap lengths before the DB: provider-controlled strings must never
+      // become unbounded index keys.
+      eventId: String(message["id"] ?? "").slice(0, 200),
+      externalId: String(meta?.["phone_number_id"] ?? entry["id"] ?? "").slice(
+        0,
+        200,
+      ),
       text,
-      from: typeof message["from"] === "string" ? message["from"] : null,
+      from:
+        typeof message["from"] === "string"
+          ? message["from"].slice(0, 120)
+          : null,
     };
   }
 
@@ -65,14 +73,15 @@ function normalise(channel: Channel, payload: unknown): Normalised {
   if (!event || typeof message?.["text"] !== "string") return null;
   const sender = event["sender"] as Record<string, unknown> | undefined;
   return {
-    eventId: String(message["mid"] ?? event["timestamp"] ?? ""),
+    eventId: String(message["mid"] ?? event["timestamp"] ?? "").slice(0, 200),
     externalId: String(
       (event["recipient"] as Record<string, unknown> | undefined)?.["id"] ??
         entry["id"] ??
         "",
-    ),
+    ).slice(0, 200),
     text: message["text"],
-    from: typeof sender?.["id"] === "string" ? sender["id"] : null,
+    from:
+      typeof sender?.["id"] === "string" ? sender["id"].slice(0, 120) : null,
   };
 }
 

@@ -82,3 +82,41 @@ describe("Support Presence & Operator Online Tracking", () => {
     expect(presence2.isOnline).toBe(false);
   });
 });
+
+describe("TODO-5 — presence-gated approval routing hints", () => {
+  beforeEach(() => {
+    clearOperatorHeartbeatsForTest();
+  });
+
+  it("routes approvals to the live queue when an operator heartbeat is active", async () => {
+    const { getApprovalRoutingHint } = await import(
+      "./support-presence.server"
+    );
+    const merchantId = "00000000-0000-4000-8000-000000000001";
+    recordOperatorHeartbeat(merchantId, "op-1");
+
+    const hint = await getApprovalRoutingHint(merchantId);
+
+    expect(hint.isOnline).toBe(true);
+    expect(hint.reason).toBe("heartbeat");
+    expect(hint.channel).toBe("live_queue");
+    expect(hint.hintEn).toContain("live");
+    expect(hint.hintBn.length).toBeGreaterThan(0);
+    expect(hint.lastSeenAt).toBeDefined();
+  });
+
+  it("holds approvals as async tasks when no operator is online", async () => {
+    const { getApprovalRoutingHint } = await import(
+      "./support-presence.server"
+    );
+    const merchantId = "00000000-0000-4000-8000-000000000001";
+
+    const hint = await getApprovalRoutingHint(merchantId);
+
+    expect(hint.isOnline).toBe(false);
+    expect(hint.reason).toBe("offline");
+    expect(hint.channel).toBe("async_task");
+    expect(hint.hintEn).toContain("callback");
+    expect(hint.hintBn.length).toBeGreaterThan(0);
+  });
+});

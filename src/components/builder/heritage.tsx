@@ -319,7 +319,7 @@ function HeroSkinSlide({
       {/* Gradient overlay — darkens toward bottom for text legibility */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent"
+        className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/65 via-[var(--theme-ink)]/20 to-transparent"
       />
       {/* Copy — pinned to bottom center, Nakhrali style */}
       <div className="relative z-10 w-full flex flex-col items-center text-center px-4 pb-16 sm:pb-24">

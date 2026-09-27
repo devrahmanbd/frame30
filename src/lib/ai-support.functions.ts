@@ -130,17 +130,43 @@ export const supportStatusFn = createServerFn({ method: "POST" })
     );
   });
 
+export const ENV_OPENROUTER_KEY_REF = "env:OPENROUTER_API_KEY" as const;
+export const GATEWAY_DEFAULT_CHAT_MODEL =
+  "nvidia/nemotron-3-ultra-550b-a55b:free";
+export const GATEWAY_DEFAULT_EMBED_MODEL = "nvidia/nemotron-3-embed-1b:free";
+export const GATEWAY_DEFAULT_URL = "https://openrouter.ai/api/v1";
+
+function isVaultPointer(value: unknown): boolean {
+  return (
+    typeof value === "string" && /^vault:[A-Za-z0-9_\-./]+$/.test(value.trim())
+  );
+}
+
+function looksLikeRawApiKey(value: string): boolean {
+  const v = value.trim();
+  if (!v) return false;
+  if (v === ENV_OPENROUTER_KEY_REF) return false;
+  if (isVaultPointer(v)) return false;
+  return (
+    v.includes("sk-or-v1-") ||
+    v.includes("sk-or-") ||
+    /^sk-[A-Za-z0-9_\-]{10,}$/.test(v) ||
+    /^[A-Za-z0-9_\-]{32,}$/.test(v.replace(/\s+/g, ""))
+  );
+}
+
 export const getAiGatewayConfigFn = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth, requireMerchantAi])
   .handler(async () => {
-    const { getAiGatewayConfig, maskApiKey } =
+    const { getAiGatewayConfig, maskApiKey, isPlaceholderApiKey } =
       await import("./support-embed.server");
     const { getDynamicConfigMetadata } =
       await import("./dynamic-config.server");
 
-    // Retrieve dynamic config state
+    // Retrieve dynamic config state (non-secret slots only; key is env-only).
     const cfg = await getAiGatewayConfig();
     const meta = await getDynamicConfigMetadata("ai.gateway");
+    const envKey = process.env["OPENROUTER_API_KEY"] ?? "";
     return {
       activeSlot: meta.activeSlot,
       version: meta.version,
@@ -148,81 +174,213 @@ export const getAiGatewayConfigFn = createServerFn({ method: "GET" })
       chatModel: cfg.chatModel,
       fallbackChatModel: cfg.fallbackChatModel,
       embeddingModel: cfg.embeddingModel,
-      gatewayUrl: cfg.gatewayUrl || "https://openrouter.ai/api/v1",
+      gatewayUrl: cfg.gatewayUrl || GATEWAY_DEFAULT_URL,
+      // Env-only convergence: the DB slot no longer owns the secret.
+      keySource: ENV_OPENROUTER_KEY_REF,
+      keyManagedBy: "env" as const,
+      envConfigured: !isPlaceholderApiKey(envKey),
     };
   });
 
 const probeSchema = z.object({
-  apiKey: z.string().trim().min(1),
-  chatModel: z.string().trim().min(1),
-  embeddingModel: z.string().trim().min(1),
+  chatModel: z.string().trim().min(1).max(200),
+  embeddingModel: z.string().trim().min(1).max(200),
+  gatewayUrl: z.string().trim().url().optional(),
+  // Legacy raw-key field: accepted only to reject it with a clear env-only
+  // error. Never used for auth — the probe always uses the server-resolved
+  // OPENROUTER_API_KEY env key.
+  apiKey: z.string().trim().optional(),
+  keyRef: z.string().trim().optional(),
 });
+
+type ProbeSingleResult = {
+  ok: boolean;
+  latencyMs: number;
+  model: string;
+  error?: string;
+};
 
 export const testAiGatewayProbeFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requireMerchantAi])
   .inputValidator((d: unknown) => probeSchema.parse(d))
   .handler(async ({ data }) => {
     const started = Date.now();
-    try {
-      // Direct minimal completion probe to verify credentials
-      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${data.apiKey}`,
-          "HTTP-Referer": "https://framique.com",
-          "X-Title": "Framique Probe",
-        },
-        body: JSON.stringify({
-          model: data.chatModel,
-          messages: [{ role: "user", content: "ping" }],
-          max_tokens: 5,
-        }),
-      });
-
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        return {
-          ok: false,
-          latencyMs: Date.now() - started,
-          error: `HTTP ${res.status}: ${txt.slice(0, 120)}`,
-        };
-      }
-
-      return { ok: true, latencyMs: Date.now() - started };
-    } catch (err) {
+    if (data.apiKey && looksLikeRawApiKey(data.apiKey)) {
       return {
         ok: false,
         latencyMs: Date.now() - started,
-        error: (err as Error).message,
+        error:
+          "raw_api_keys_not_accepted: probe uses OPENROUTER_API_KEY from the server environment (env-only).",
+        chat: {
+          ok: false,
+          latencyMs: 0,
+          model: data.chatModel,
+          error: "raw_api_keys_not_accepted",
+        } as ProbeSingleResult,
+        embed: {
+          ok: false,
+          latencyMs: 0,
+          model: data.embeddingModel,
+          error: "raw_api_keys_not_accepted",
+        } as ProbeSingleResult,
       };
     }
+
+    const { getAiGatewayConfig, isPlaceholderApiKey } =
+      await import("./support-embed.server");
+    const cfg = await getAiGatewayConfig();
+    const apiKey = cfg.apiKey;
+    if (!apiKey || isPlaceholderApiKey(apiKey)) {
+      const msg =
+        "OPENROUTER_API_KEY not configured in the server environment (env-only gateway).";
+      return {
+        ok: false,
+        latencyMs: Date.now() - started,
+        error: msg,
+        chat: {
+          ok: false,
+          latencyMs: 0,
+          model: data.chatModel,
+          error: msg,
+        } as ProbeSingleResult,
+        embed: {
+          ok: false,
+          latencyMs: 0,
+          model: data.embeddingModel,
+          error: msg,
+        } as ProbeSingleResult,
+      };
+    }
+
+    const baseUrl = (
+      data.gatewayUrl ||
+      cfg.gatewayUrl ||
+      GATEWAY_DEFAULT_URL
+    ).replace(/\/+$/, "");
+    const chatModel = data.chatModel || cfg.chatModel;
+    const embeddingModel = data.embeddingModel || cfg.embeddingModel;
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+      "HTTP-Referer": "https://framique.com",
+      "X-Title": "Framique Probe",
+    };
+
+    async function probeChat(): Promise<ProbeSingleResult> {
+      const t0 = Date.now();
+      try {
+        const res = await fetch(`${baseUrl}/chat/completions`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            model: chatModel,
+            messages: [{ role: "user", content: "ping" }],
+            max_tokens: 5,
+          }),
+        });
+        if (!res.ok) {
+          const txt = await res.text().catch(() => "");
+          return {
+            ok: false,
+            latencyMs: Date.now() - t0,
+            model: chatModel,
+            error: `chat HTTP ${res.status}: ${txt.slice(0, 120)}`,
+          };
+        }
+        return { ok: true, latencyMs: Date.now() - t0, model: chatModel };
+      } catch (err) {
+        return {
+          ok: false,
+          latencyMs: Date.now() - t0,
+          model: chatModel,
+          error: (err as Error).message,
+        };
+      }
+    }
+
+    async function probeEmbed(): Promise<ProbeSingleResult> {
+      const t0 = Date.now();
+      try {
+        const res = await fetch(`${baseUrl}/embeddings`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({ model: embeddingModel, input: "probe" }),
+        });
+        if (!res.ok) {
+          const txt = await res.text().catch(() => "");
+          return {
+            ok: false,
+            latencyMs: Date.now() - t0,
+            model: embeddingModel,
+            error: `embed HTTP ${res.status}: ${txt.slice(0, 120)}`,
+          };
+        }
+        return { ok: true, latencyMs: Date.now() - t0, model: embeddingModel };
+      } catch (err) {
+        return {
+          ok: false,
+          latencyMs: Date.now() - t0,
+          model: embeddingModel,
+          error: (err as Error).message,
+        };
+      }
+    }
+
+    const [chat, embed] = await Promise.all([probeChat(), probeEmbed()]);
+    const ok = chat.ok && embed.ok;
+    return {
+      ok,
+      latencyMs: Date.now() - started,
+      chat,
+      embed,
+      error: ok
+        ? undefined
+        : [chat.error, embed.error].filter(Boolean).join(" | "),
+    };
   });
 
 const updateConfigSchema = z.object({
-  apiKey: z.string().trim().min(1),
-  chatModel: z.string().trim().min(1),
-  fallbackChatModel: z.string().trim().min(1),
-  embeddingModel: z.string().trim().min(1),
+  chatModel: z.string().trim().min(1).max(200),
+  fallbackChatModel: z.string().trim().min(1).max(200),
+  embeddingModel: z.string().trim().min(1).max(200),
   gatewayUrl: z.string().trim().url().optional(),
+  // Env-only: only an env-reference or vault-pointer is stored. Raw secrets
+  // are rejected in the handler below.
+  keyRef: z.string().trim().optional(),
+  apiKey: z.string().trim().optional(),
 });
 
 export const updateAiGatewayConfigFn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth, requireMerchantAi])
   .inputValidator((d: unknown) => updateConfigSchema.parse(d))
   .handler(async ({ data }) => {
+    if (data.apiKey && looksLikeRawApiKey(data.apiKey)) {
+      throw new Error(
+        "raw_api_keys_not_accepted: AI gateway key is env-only (OPENROUTER_API_KEY). Configure the secret in the server environment; this endpoint hot-swaps non-secret model routing only.",
+      );
+    }
+    const keyRef = (data.keyRef ?? ENV_OPENROUTER_KEY_REF).trim();
+    if (keyRef !== ENV_OPENROUTER_KEY_REF && !isVaultPointer(keyRef)) {
+      throw new Error(
+        "invalid_key_ref: expected env:OPENROUTER_API_KEY or vault:<pointer>.",
+      );
+    }
     const { stageAndPromoteConfig } = await import("./dynamic-config.server");
+    // Env-only convergence: never persist a raw secret. An empty apiKey
+    // falls through to process.env.OPENROUTER_API_KEY in getAiGatewayConfig;
+    // apiKeyRef records the pointer for audit.
     return stageAndPromoteConfig(
       "ai.gateway",
       {
-        apiKey: data.apiKey,
+        apiKey: "",
+        apiKeyRef: keyRef,
         chatModel: data.chatModel,
         fallbackChatModel: data.fallbackChatModel,
         embeddingModel: data.embeddingModel,
-        gatewayUrl: data.gatewayUrl || "https://openrouter.ai/api/v1",
+        gatewayUrl: data.gatewayUrl || GATEWAY_DEFAULT_URL,
       },
       undefined,
-      "admin_ui_key_rotation",
+      "admin_ui_env_only_hot_swap",
     );
   });
 

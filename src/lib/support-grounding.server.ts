@@ -64,8 +64,7 @@ export type EnforceOutput = {
  * - DeepWiki sources pass through ONLY when labeled source:deepwiki (table === "deepwiki").
  * - Anything else claiming grounded is downgraded to explicit unsure+handoff.
  * - Degraded mode forces banner + lowered confidence (never confident).
- */
-export function enforceGroundedReply(input: EnforceInput): EnforceOutput {
+ */export function enforceGroundedReply(input: EnforceInput): EnforceOutput {
   const locale = input.locale ?? "en";
   const degraded = input.degraded ?? false;
   const hasKb = input.sources.some((s) => s.table === "support_kb_docs");
@@ -107,6 +106,91 @@ export function enforceGroundedReply(input: EnforceInput): EnforceOutput {
     cta: "human_transfer",
     degraded,
   };
+}
+
+/* ------------------------------------------------------------------ */
+/* Streaming safety lane (TODO-2): preflight grounding BEFORE first    */
+/* byte. The streaming draft itself cannot be kernel-checked mid-flow, */
+/* so the widget lane MUST:                                            */
+/*   1. Call preflightStreamGate() BEFORE opening the SSE stream.      */
+/*      ok === false → yield fallbackReply verbatim, never the LLM.    */
+/*   2. Stream cleaned deltas only (reasoning stripped in llm lane).   */
+/*   3. Apply enforceGroundedReply() + screenOutbound() POST-HOC to    */
+/*      the ASSEMBLED reply before render/persist. Per-delta screening */
+/*      is advisory only: secrets/authority/figures can split across   */
+/*      chunk boundaries and are only reliably caught whole.           */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Streaming safety contract for the widget lane. Imported by the SSE
+ * endpoint so the obligations live next to the kernel, not in a wiki.
+ */
+export const STREAMING_SAFETY_NOTE = [
+  "STREAMING SAFETY (TODO-2):",
+  "1. preflightStreamGate() BEFORE first byte — empty context yields the",
+  "   unsure+handoff fallback verbatim, never calls the LLM.",
+  "2. deltas are reasoning-stripped but NOT screened — do not render deltas",
+  "   as trusted final content and do not persist partials as answers.",
+  "3. post-hoc: run enforceGroundedReply() on the ASSEMBLED reply, then",
+  "   screenOutbound() (pinned=false unless order-tool data). If either",
+  "   downgrades/blocks, replace the rendered reply with the safe fallback",
+  "   and escalate (needsAgent + handoff payload).",
+].join("\n");
+
+/**
+ * Map retrieved [Doc] context to kernel sources so the streaming lane can
+ * prove provenance BEFORE the first byte (mirrors the non-streaming caller
+ * in support-agent.server.ts: first 3 hits → support_kb_docs).
+ */
+export function groundedSourcesFromContext(
+  context: Array<{ title: string; body: string }>,
+  opts?: { label?: string; limit?: number },
+): GroundedSource[] {
+  const limit = opts?.limit ?? 3;
+  const label = opts?.label ?? "kb";
+  return context.slice(0, limit).map((h) => ({
+    label,
+    table: "support_kb_docs",
+    title: h.title,
+  }));
+}
+
+export type StreamPreflight =
+  | { ok: true; fallbackReply: null }
+  | { ok: false; fallbackReply: string };
+
+/**
+ * Grounding preflight for the SSE lane. Returns ok:true when the lane may
+ * open the LLM stream; ok:false with the exact fallback string to yield
+ * verbatim (unsure+handoff, degraded banner when applicable).
+ */
+export function preflightStreamGate(opts: {
+  contextLength: number;
+  locale?: "bn" | "en";
+  degraded?: boolean;
+}): StreamPreflight {
+  if (opts.contextLength > 0) return { ok: true, fallbackReply: null };
+  const locale = opts.locale ?? "en";
+  const degraded = opts.degraded ?? false;
+  const out = enforceGroundedReply({
+    reply: "",
+    confidence: "unsure",
+    sources: [],
+    pinned: false,
+    deepwiki: false,
+    locale,
+    degraded,
+  });
+  return { ok: false, fallbackReply: out.reply };
+}
+
+/** Join streamed deltas into the assembled reply for post-hoc screening. */
+export async function joinStreamChunks(
+  chunks: AsyncIterable<string> | Iterable<string>,
+): Promise<string> {
+  let acc = "";
+  for await (const c of chunks) acc += c;
+  return acc;
 }
 
 export type HandoffTranscriptTurn = {

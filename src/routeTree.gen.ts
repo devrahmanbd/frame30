@@ -201,6 +201,7 @@ import { Route as ApiPublicCronPayoutsRouteImport } from './routes/api/public/cr
 import { Route as ApiPublicCronPurgeRouteImport } from './routes/api/public/cron/purge'
 import { Route as ApiPublicCronSearchConsoleRouteImport } from './routes/api/public/cron/search-console'
 import { Route as ApiPublicCronSupportRouteImport } from './routes/api/public/cron/support'
+import { Route as ApiPublicCronSupportRevisionRouteImport } from './routes/api/public/cron/support-revision'
 import { Route as ApiPublicCronThemesRouteImport } from './routes/api/public/cron/themes'
 import { Route as ApiPublicCronWebhooksRouteImport } from './routes/api/public/cron/webhooks'
 import { Route as ApiPublicDomainsCallbackRouteImport } from './routes/api/public/domains/callback'
@@ -214,6 +215,7 @@ import { Route as ApiPublicOauthTokenRouteImport } from './routes/api/public/oau
 import { Route as ApiPublicPaymentsProviderRouteImport } from './routes/api/public/payments/$provider'
 import { Route as ApiPublicPaymentsReturnRouteImport } from './routes/api/public/payments/return'
 import { Route as ApiPublicPhSplatRouteImport } from './routes/api/public/ph.$'
+import { Route as ApiPublicSupportStreamRouteImport } from './routes/api/public/support/stream'
 import { Route as ApiPublicV1SplatRouteImport } from './routes/api/public/v1/$'
 import { Route as StoreSlugBlogIndexRouteImport } from './routes/store.$slug.blog.index'
 import { Route as StoreSlugBlogSlugRouteImport } from './routes/store.$slug.blog.$slug'
@@ -1281,6 +1283,12 @@ const ApiPublicCronSupportRoute = ApiPublicCronSupportRouteImport.update({
   path: '/api/public/cron/support',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronSupportRevisionRoute =
+  ApiPublicCronSupportRevisionRouteImport.update({
+    id: '/api/public/cron/support-revision',
+    path: '/api/public/cron/support-revision',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronThemesRoute = ApiPublicCronThemesRouteImport.update({
   id: '/api/public/cron/themes',
   path: '/api/public/cron/themes',
@@ -1348,6 +1356,11 @@ const ApiPublicPaymentsReturnRoute = ApiPublicPaymentsReturnRouteImport.update({
 const ApiPublicPhSplatRoute = ApiPublicPhSplatRouteImport.update({
   id: '/api/public/ph/$',
   path: '/api/public/ph/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicSupportStreamRoute = ApiPublicSupportStreamRouteImport.update({
+  id: '/api/public/support/stream',
+  path: '/api/public/support/stream',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicV1SplatRoute = ApiPublicV1SplatRouteImport.update({
@@ -1606,6 +1619,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/purge': typeof ApiPublicCronPurgeRoute
   '/api/public/cron/search-console': typeof ApiPublicCronSearchConsoleRoute
   '/api/public/cron/support': typeof ApiPublicCronSupportRoute
+  '/api/public/cron/support-revision': typeof ApiPublicCronSupportRevisionRoute
   '/api/public/cron/themes': typeof ApiPublicCronThemesRoute
   '/api/public/cron/webhooks': typeof ApiPublicCronWebhooksRoute
   '/api/public/domains/callback': typeof ApiPublicDomainsCallbackRoute
@@ -1619,6 +1633,7 @@ export interface FileRoutesByFullPath {
   '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
   '/api/public/ph/$': typeof ApiPublicPhSplatRoute
+  '/api/public/support/stream': typeof ApiPublicSupportStreamRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
   '/store/$slug/blog/$slug': typeof StoreSlugBlogSlugRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
@@ -1823,6 +1838,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/purge': typeof ApiPublicCronPurgeRoute
   '/api/public/cron/search-console': typeof ApiPublicCronSearchConsoleRoute
   '/api/public/cron/support': typeof ApiPublicCronSupportRoute
+  '/api/public/cron/support-revision': typeof ApiPublicCronSupportRevisionRoute
   '/api/public/cron/themes': typeof ApiPublicCronThemesRoute
   '/api/public/cron/webhooks': typeof ApiPublicCronWebhooksRoute
   '/api/public/domains/callback': typeof ApiPublicDomainsCallbackRoute
@@ -1836,6 +1852,7 @@ export interface FileRoutesByTo {
   '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
   '/api/public/ph/$': typeof ApiPublicPhSplatRoute
+  '/api/public/support/stream': typeof ApiPublicSupportStreamRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
   '/store/$slug/blog/$slug': typeof StoreSlugBlogSlugRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
@@ -2044,6 +2061,7 @@ export interface FileRoutesById {
   '/api/public/cron/purge': typeof ApiPublicCronPurgeRoute
   '/api/public/cron/search-console': typeof ApiPublicCronSearchConsoleRoute
   '/api/public/cron/support': typeof ApiPublicCronSupportRoute
+  '/api/public/cron/support-revision': typeof ApiPublicCronSupportRevisionRoute
   '/api/public/cron/themes': typeof ApiPublicCronThemesRoute
   '/api/public/cron/webhooks': typeof ApiPublicCronWebhooksRoute
   '/api/public/domains/callback': typeof ApiPublicDomainsCallbackRoute
@@ -2057,6 +2075,7 @@ export interface FileRoutesById {
   '/api/public/payments/$provider': typeof ApiPublicPaymentsProviderRoute
   '/api/public/payments/return': typeof ApiPublicPaymentsReturnRoute
   '/api/public/ph/$': typeof ApiPublicPhSplatRoute
+  '/api/public/support/stream': typeof ApiPublicSupportStreamRoute
   '/api/public/v1/$': typeof ApiPublicV1SplatRoute
   '/store/$slug/blog/$slug': typeof StoreSlugBlogSlugRoute
   '/store/$slug/c/$collectionSlug': typeof StoreSlugCCollectionSlugRoute
@@ -2265,6 +2284,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/purge'
     | '/api/public/cron/search-console'
     | '/api/public/cron/support'
+    | '/api/public/cron/support-revision'
     | '/api/public/cron/themes'
     | '/api/public/cron/webhooks'
     | '/api/public/domains/callback'
@@ -2278,6 +2298,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/$provider'
     | '/api/public/payments/return'
     | '/api/public/ph/$'
+    | '/api/public/support/stream'
     | '/api/public/v1/$'
     | '/store/$slug/blog/$slug'
     | '/store/$slug/c/$collectionSlug'
@@ -2482,6 +2503,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/purge'
     | '/api/public/cron/search-console'
     | '/api/public/cron/support'
+    | '/api/public/cron/support-revision'
     | '/api/public/cron/themes'
     | '/api/public/cron/webhooks'
     | '/api/public/domains/callback'
@@ -2495,6 +2517,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/$provider'
     | '/api/public/payments/return'
     | '/api/public/ph/$'
+    | '/api/public/support/stream'
     | '/api/public/v1/$'
     | '/store/$slug/blog/$slug'
     | '/store/$slug/c/$collectionSlug'
@@ -2702,6 +2725,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/purge'
     | '/api/public/cron/search-console'
     | '/api/public/cron/support'
+    | '/api/public/cron/support-revision'
     | '/api/public/cron/themes'
     | '/api/public/cron/webhooks'
     | '/api/public/domains/callback'
@@ -2715,6 +2739,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/$provider'
     | '/api/public/payments/return'
     | '/api/public/ph/$'
+    | '/api/public/support/stream'
     | '/api/public/v1/$'
     | '/store/$slug/blog/$slug'
     | '/store/$slug/c/$collectionSlug'
@@ -2819,6 +2844,7 @@ export interface RootRouteChildren {
   ApiPublicCronPurgeRoute: typeof ApiPublicCronPurgeRoute
   ApiPublicCronSearchConsoleRoute: typeof ApiPublicCronSearchConsoleRoute
   ApiPublicCronSupportRoute: typeof ApiPublicCronSupportRoute
+  ApiPublicCronSupportRevisionRoute: typeof ApiPublicCronSupportRevisionRoute
   ApiPublicCronThemesRoute: typeof ApiPublicCronThemesRoute
   ApiPublicCronWebhooksRoute: typeof ApiPublicCronWebhooksRoute
   ApiPublicDomainsCallbackRoute: typeof ApiPublicDomainsCallbackRoute
@@ -2832,6 +2858,7 @@ export interface RootRouteChildren {
   ApiPublicPaymentsProviderRoute: typeof ApiPublicPaymentsProviderRoute
   ApiPublicPaymentsReturnRoute: typeof ApiPublicPaymentsReturnRoute
   ApiPublicPhSplatRoute: typeof ApiPublicPhSplatRoute
+  ApiPublicSupportStreamRoute: typeof ApiPublicSupportStreamRoute
   ApiPublicV1SplatRoute: typeof ApiPublicV1SplatRoute
   StoreSlugBlogSlugRoute: typeof StoreSlugBlogSlugRoute
   StoreSlugCCollectionSlugRoute: typeof StoreSlugCCollectionSlugRoute
@@ -4192,6 +4219,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/support-revision': {
+      id: '/api/public/cron/support-revision'
+      path: '/api/public/cron/support-revision'
+      fullPath: '/api/public/cron/support-revision'
+      preLoaderRoute: typeof ApiPublicCronSupportRevisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/themes': {
       id: '/api/public/cron/themes'
       path: '/api/public/cron/themes'
@@ -4281,6 +4315,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/ph/$'
       fullPath: '/api/public/ph/$'
       preLoaderRoute: typeof ApiPublicPhSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/support/stream': {
+      id: '/api/public/support/stream'
+      path: '/api/public/support/stream'
+      fullPath: '/api/public/support/stream'
+      preLoaderRoute: typeof ApiPublicSupportStreamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/v1/$': {
@@ -4785,6 +4826,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronPurgeRoute: ApiPublicCronPurgeRoute,
   ApiPublicCronSearchConsoleRoute: ApiPublicCronSearchConsoleRoute,
   ApiPublicCronSupportRoute: ApiPublicCronSupportRoute,
+  ApiPublicCronSupportRevisionRoute: ApiPublicCronSupportRevisionRoute,
   ApiPublicCronThemesRoute: ApiPublicCronThemesRoute,
   ApiPublicCronWebhooksRoute: ApiPublicCronWebhooksRoute,
   ApiPublicDomainsCallbackRoute: ApiPublicDomainsCallbackRoute,
@@ -4798,6 +4840,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicPaymentsProviderRoute: ApiPublicPaymentsProviderRoute,
   ApiPublicPaymentsReturnRoute: ApiPublicPaymentsReturnRoute,
   ApiPublicPhSplatRoute: ApiPublicPhSplatRoute,
+  ApiPublicSupportStreamRoute: ApiPublicSupportStreamRoute,
   ApiPublicV1SplatRoute: ApiPublicV1SplatRoute,
   StoreSlugBlogSlugRoute: StoreSlugBlogSlugRoute,
   StoreSlugCCollectionSlugRoute: StoreSlugCCollectionSlugRoute,

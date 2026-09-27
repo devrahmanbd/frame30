@@ -228,6 +228,21 @@ export const CRON_JOBS: CronJobDefinition[] = [
     touchesThirdParty: false,
   },
   {
+    key: "support-revision",
+    label: "Support answer revision",
+    description:
+      "Re-scores recent support answers with Inkling, escalates hallucinations and drafts KB candidates.",
+    schedule: "30 3 * * *",
+    timezone: "UTC",
+    timeoutMs: 55_000,
+    slaMaxDurationMs: 30_000,
+    alertAfterFailures: 4,
+    maxOverdueSeconds: 10_800,
+    severity: "info",
+    components: ["support"],
+    touchesThirdParty: true,
+  },
+  {
     key: "domains",
     label: "Custom domain sweep",
     description:

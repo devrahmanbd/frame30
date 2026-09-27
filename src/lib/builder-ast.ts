@@ -2648,6 +2648,17 @@ const BASE_CATALOG: CatalogEntry[] = [
       imageUrl: "",
       imageAlt: "",
       flip: false,
+      // Renderer: songoskriti.tsx SongoskritiSplitFeature. Dual-image
+      // editorial (primary + secondary) with two CTAs and a layout switch.
+      // The core apparel renderer ignores these keys; the Songoskriti
+      // renderer ignores imageUrl/imageAlt/flip — both spellings are
+      // declared so parseAst preserves either.
+      primaryImage: "",
+      secondaryImage: "",
+      ctaUrl: "",
+      ctaLabel2: "",
+      ctaUrl2: "",
+      layout: "image_left",
     },
     fields: [
       text("eyebrow", "Eyebrow", 60),
@@ -2658,6 +2669,21 @@ const BASE_CATALOG: CatalogEntry[] = [
       url("imageUrl", "Image"),
       text("imageAlt", "Image alt", 160),
       bool("flip", "Image on the right"),
+      url("primaryImage", "Primary image"),
+      url("secondaryImage", "Secondary image"),
+      url("ctaUrl", "Primary link URL"),
+      text("ctaLabel2", "Second link label", 40),
+      url("ctaUrl2", "Second link URL"),
+      {
+        key: "layout",
+        label: "Layout",
+        kind: "select",
+        panel: "layout",
+        options: [
+          { value: "image_left", label: "Image left" },
+          { value: "image_right", label: "Image right" },
+        ],
+      },
     ],
   },
   {
@@ -2691,9 +2717,22 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "commerce",
     slots: ["main", "footer"],
     heading: false,
-    defaults: { heading: "As worn by you", limit: 6, collection: "", note: "" },
+    // Renderer: songoskriti.tsx SongoskritiUgcGallery reads heading +
+    // subhead + a comma-separated `images` string; the core apparel
+    // renderer reads limit + collection + note from live rows. Both shapes
+    // are declared so parseAst preserves either.
+    defaults: {
+      heading: "As worn by you",
+      subhead: "",
+      images: "",
+      limit: 6,
+      collection: "",
+      note: "",
+    },
     fields: [
       text("heading", "Heading", 80),
+      text("subhead", "Subhead", 80),
+      area("images", "Images (comma separated URLs)", 2000),
       num("limit", "Max tiles (2-12)"),
       text("collection", "Collection handle", 120),
       text("note", "Caption", 160),
@@ -4762,6 +4801,17 @@ const BASE_CATALOG: CatalogEntry[] = [
       o2Href: "/c/wedding",
       o3Label: "Gifting",
       o3Href: "/c/gifting",
+      // Renderer: songoskriti.tsx FinderRow supports up to 7 occasions
+      // (o1–o7); the Songoskriti homepage emits all seven. Extra slots
+      // default to empty so existing three-occasion sections are unchanged.
+      o4Label: "",
+      o4Href: "",
+      o5Label: "",
+      o5Href: "",
+      o6Label: "",
+      o6Href: "",
+      o7Label: "",
+      o7Href: "",
       buttonLabel: "",
       buttonHref: "",
     },
@@ -4774,6 +4824,14 @@ const BASE_CATALOG: CatalogEntry[] = [
       url("o2Href", "Occasion 2 link"),
       text("o3Label", "Occasion 3 label", 40),
       url("o3Href", "Occasion 3 link"),
+      text("o4Label", "Occasion 4 label", 40),
+      url("o4Href", "Occasion 4 link"),
+      text("o5Label", "Occasion 5 label", 40),
+      url("o5Href", "Occasion 5 link"),
+      text("o6Label", "Occasion 6 label", 40),
+      url("o6Href", "Occasion 6 link"),
+      text("o7Label", "Occasion 7 label", 40),
+      url("o7Href", "Occasion 7 link"),
       text("buttonLabel", "Button label", 40),
       url("buttonHref", "Button link"),
     ],
@@ -5424,9 +5482,16 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   editorial_hero: ["eyebrow", "heading", "body", "ctaLabel"],
   lookbook: ["heading", "i1Alt", "i2Alt", "i3Alt", "i4Alt"],
   shoppable_image: ["heading", "altText"],
-  split_feature: ["eyebrow", "heading", "body", "ctaLabel", "imageAlt"],
+  split_feature: [
+    "eyebrow",
+    "heading",
+    "body",
+    "ctaLabel",
+    "ctaLabel2",
+    "imageAlt",
+  ],
   collection_story: ["eyebrow", "heading", "body", "ctaLabel"],
-  ugc_gallery: ["heading", "note"],
+  ugc_gallery: ["heading", "subhead", "note"],
   social_strip: ["heading"],
   store_locator: [
     "heading",
@@ -5681,6 +5746,10 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
     "o1Label",
     "o2Label",
     "o3Label",
+    "o4Label",
+    "o5Label",
+    "o6Label",
+    "o7Label",
     "buttonLabel",
   ],
   // Heritage / apparel restoration pack. Row-level twins (items,

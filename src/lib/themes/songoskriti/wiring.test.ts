@@ -8,6 +8,8 @@ import { HOMEPAGE_SECTION_TYPES } from "./types";
 
 describe("songoskriti wiring", () => {
   it("locks brand tokens", () => {
+    // Ink-black editorial rebrand (fashion-catalog rebuild): brand and ink
+    // share the charcoal key, surface is editorial ivory.
     expect(SONGOSKRITI_TOKENS.brand).toBe("#1a1a1a");
     expect(SONGOSKRITI_TOKENS.surface).toBe("#faf9f7");
   });
@@ -26,12 +28,13 @@ describe("songoskriti wiring", () => {
     ]);
   });
 
-  it("homepage builds 10 sections, every type resolvable in the catalog", () => {
+  it("homepage builds 20 sections, every type resolvable in the catalog", () => {
     const s = (type: string, props = {}) =>
       ({ id: type, type, props }) as never;
     const sections = buildHomepageMain(s as never);
-    // SECTION-track blueprint doubles the rail (new arrivals + festive
-    // bestsellers). With the redesign, there are now 20 sections.
+    // Fashion-catalog rebuild: 20 sections opening on the hero carousel —
+    // signature sarees lead, campaign splits and craft stories interleave,
+    // trust + flagship outlets close. No announcement bar, no circles.
     expect(sections).toHaveLength(20);
     for (const section of sections) {
       expect(
@@ -39,10 +42,32 @@ describe("songoskriti wiring", () => {
         `${section.type} must exist in the catalog`,
       ).toBeDefined();
     }
-
-    const types = sections.map((n) => n.type);
-    expect(types.includes("hero_carousel")).toBe(true);
-    expect(types.includes("product_rail")).toBe(true);
+    // Task 2: builders emit the intended names directly — no stand-ins.
+    expect(sections.map((n) => n.type)).toEqual([
+      "hero_carousel",
+      "department_grid",
+      "product_rail",
+      "craft_story",
+      "product_rail",
+      "split_feature",
+      "product_rail",
+      "finder_row",
+      "split_feature",
+      "product_rail",
+      "product_rail",
+      "split_feature",
+      "collection_story",
+      "product_rail",
+      "craft_story",
+      "ugc_gallery",
+      "testimonials",
+      "split_feature",
+      "trust_footer",
+      "store_locator",
+    ]);
+    // Retired Task-2 stand-ins stay gone. collection_story is NOT listed:
+    // the rebuild promotes it to a first-class heritage-weaves grid and it
+    // resolves in the catalog (pinned above).
     for (const retired of [
       "editorial_hero",
       "filter_chips",
@@ -68,15 +93,20 @@ describe("songoskriti wiring", () => {
   });
 
   it("footer fallback columns carry no duplicate links (browser-verified 2026-09-24)", () => {
-    // "Contact us" rendered under both Customer Care and About. It lives in
-    // Customer Care only now; this pins the dedupe across every column.
+    // "Contact" lives in Customer Care only now (the Contact column carries
+    // store/phone rows instead); this pins the dedupe across every column
+    // of the 28-link fallback set.
     const labels = FALLBACK_COLUMNS.flatMap((col) =>
       col.links
         .split(/[\r\n]+/)
         .map((row) => row.split("|")[0]!.trim())
         .filter(Boolean),
     );
+    // Merge reconciliation: both lanes' fallback labels survive — "Stores"
+    // (flagship outlets) and "Contact" (customer care) across 28 links.
     expect(labels).toContain("Stores");
+    expect(labels).toContain("Contact");
+    expect(labels).toHaveLength(28);
     expect(new Set(labels).size).toBe(labels.length);
   });
 

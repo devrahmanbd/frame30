@@ -1,0 +1,75 @@
+/**
+ * Starter theme skin sheets — token-only by rule.
+ *
+ * Every value reads `var(--theme-*)`, keyed off the renderer's
+ * `[data-widget]` + `[data-skin]` attributes. Washes use `color-mix()`
+ * over theme tokens, so a merchant re-tint re-skins every rule
+ * automatically; motion rules collapse under `prefers-reduced-motion`.
+ * No hex literals, no raw color utilities — the suite pins this.
+ */
+
+/* ------------------------------------------------- hero_carousel: minimal */
+
+[data-widget="hero_carousel"][data-skin="minimal"] {
+  background: var(--theme-surface);
+  color: var(--theme-ink);
+  padding-block: var(--theme-space);
+}
+
+[data-widget="hero_carousel"][data-skin="minimal"] h1,
+[data-widget="hero_carousel"][data-skin="minimal"] h2 {
+  font-family: var(--theme-font-display);
+  color: var(--theme-ink);
+  letter-spacing: 0.02em;
+}
+
+/* -------------------------------------------------- product_rail: compact */
+
+[data-widget="product_rail"][data-skin="compact"] {
+  background: var(--theme-surface);
+  padding-block: var(--theme-space);
+}
+
+[data-widget="product_rail"][data-skin="compact"] h2 {
+  font-family: var(--theme-font-body);
+  font-size: 1.125rem;
+  color: var(--theme-ink);
+  border-block-end: 2px solid var(--theme-accent);
+  padding-block-end: calc(var(--theme-space) * 0.5);
+}
+
+/* --------------------------------------------------- testimonials: single */
+
+[data-widget="testimonials"][data-skin="single"] {
+  background: color-mix(in srgb, var(--theme-brand) 6%, var(--theme-surface));
+  color: var(--theme-ink);
+  padding-block: calc(var(--theme-space) * 2);
+}
+
+[data-widget="testimonials"][data-skin="single"] blockquote {
+  border-inline-start: 3px solid var(--theme-brand);
+  padding-inline-start: var(--theme-space);
+}
+
+/* ----------------------------------------------------- product_grid: cards */
+
+[data-widget="product_grid"][data-skin="cards"] {
+  background: var(--theme-surface);
+}
+
+[data-widget="product_grid"][data-skin="cards"] article {
+  border: 1px solid color-mix(in srgb, var(--theme-ink) 12%, transparent);
+  border-radius: var(--theme-radius);
+  box-shadow: var(--theme-shadow);
+}
+
+/* Motion collapses for reduced-motion visitors. */
+@media (prefers-reduced-motion: reduce) {
+  [data-widget="hero_carousel"][data-skin="minimal"] *,
+  [data-widget="product_rail"][data-skin="compact"] *,
+  [data-widget="testimonials"][data-skin="single"] *,
+  [data-widget="product_grid"][data-skin="cards"] * {
+    animation: none;
+    transition: none;
+  }
+}

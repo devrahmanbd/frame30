@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { WIDGET_BY_KEY, newWidgetNode } from "./catalog";
 import { contentControls } from "./controls";
+import {
+  DEFAULT_WIDGET_SKIN,
+  STYLE_FIELDS,
+  catalogEntry,
+  type SectionType,
+} from "@/lib/builder-ast";
 
 /**
  * Ported theme widgets: every control key must exist in the widget
@@ -817,5 +823,79 @@ describe("ported theme widgets", () => {
       gap: 24,
       maxW: "container",
     });
+  });
+});
+
+/**
+ * Studio twin-parity contract (REPORT-THEMES §7 item 2, documented in
+ * `studio/catalog.ts`): every BASE_CATALOG entry resolves in the studio
+ * catalogue with BASE-mirroring content defaults (style-layer keys
+ * excluded — the studio has its own style tab). Only intentional
+ * exclusions: `page_content` (context slot, zero fields) and
+ * `plugin_block` (covered by the `app-block` twin).
+ */
+describe("studio twin parity", () => {
+  it("every SECTION_CATALOG type resolves in WIDGET_BY_KEY", async () => {
+    const { SECTION_CATALOG } = await import("@/lib/builder-ast");
+    const EXCLUDED = new Set(["page_content", "plugin_block"]);
+    const missing = SECTION_CATALOG.map((entry) => entry.type).filter(
+      (type) => !EXCLUDED.has(type) && !WIDGET_BY_KEY[type],
+    );
+    expect(missing).toEqual([]);
+  });
+
+  it("account twins mirror BASE content defaults incl. bitext", () => {
+    expect(WIDGET_BY_KEY.orders_list).toBeDefined();
+    expect(WIDGET_BY_KEY.orders_list!.category).toBe("commerce");
+    expect(WIDGET_BY_KEY.orders_list!.defaults).toMatchObject({
+      heading: "Your orders",
+      heading_bn: "",
+      emptyText: "No orders yet.",
+      emptyText_bn: "",
+    });
+    expect(WIDGET_BY_KEY.profile_card).toBeDefined();
+    expect(WIDGET_BY_KEY.profile_card!.category).toBe("commerce");
+    expect(WIDGET_BY_KEY.profile_card!.defaults).toMatchObject({
+      heading: "Your profile",
+      heading_bn: "",
+    });
+    expect(newWidgetNode("orders_list").el).toBe("orders_list");
+    expect(newWidgetNode("profile_card").el).toBe("profile_card");
+  });
+
+  it("thin twins carry the full BASE content schema", () => {
+    const styleKeys = new Set(STYLE_FIELDS.map((field) => field.key));
+    const thin = [
+      "finder_row",
+      "testimonials",
+      "trust_footer",
+      "trust_marquee",
+      "price_buckets",
+      "occasion_matrix",
+      "urgency_rail",
+      "orders_list",
+      "profile_card",
+    ];
+    for (const key of thin) {
+      const base = catalogEntry(key as SectionType);
+      expect(base, `${key}: no BASE entry`).toBeDefined();
+      const twin = WIDGET_BY_KEY[key];
+      expect(twin, `${key}: no studio twin`).toBeDefined();
+      for (const prop of Object.keys(base!.defaults)) {
+        if (styleKeys.has(prop)) continue;
+        expect(
+          Object.hasOwn(twin!.defaults, prop),
+          `${key}: twin default missing BASE prop ${prop}`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("skinnable thin twins carry the documented default skin", () => {
+    for (const key of ["testimonials", "urgency_rail"] as const) {
+      expect(WIDGET_BY_KEY[key]!.defaults.skin).toBe(
+        DEFAULT_WIDGET_SKIN[key],
+      );
+    }
   });
 });

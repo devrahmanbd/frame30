@@ -1,3 +1,7 @@
+> **Superseded (2026-09-26):** authoritative guides are
+> [Builder README](../../04-builder/README.md) and
+> [Theme authoring](../../themes/creation.md). Kept as history; do not edit.
+
 # Songoskriti Heritage Theme — Design Spec (rev 2)
 
 **Status:** owner-approved Approach A; reviewer round 1 (16 findings) addressed below.

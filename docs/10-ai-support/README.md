@@ -22,7 +22,7 @@ Surfaces (same assistant, different channels):
 
 Services:
 
-- **RAG** — embeddings (Bengali-capable ONNX / dim TBD), docs + FAQ index; retrieval on merchant/buyer question; corpora are merchant-scoped.
+- **RAG** — embeddings (`nvidia/nemotron-3-embed-1b:free`, 1024-d deterministic fallback; legacy vl-1b-v2 honored), docs + FAQ index via Postgres/Supabase hybrid search; retrieval on merchant/buyer question; corpora are merchant-scoped.
 - **Agent** — tool calls pin to a pattern where policy allows (pricing, order status, refund, stock); only answer from a known source; if unknown → "Contact us" with a ticket.
 - **Human handoff** — ticket, agent inbox in `02`, SLA alerts; two consecutive unsure turns or an explicit user request escalate.
 - **Channels** — chat widget storefront, WhatsApp (via gateway), admin "help" panel.
@@ -32,7 +32,7 @@ Services:
 | Table              | Notes                                                                              |
 | ------------------ | ---------------------------------------------------------------------------------- |
 | `kb_docs`          | merchant-scoped knowledge-base documents + docs index; source of provenance tags   |
-| `faq_chunks`       | chunked, embedded FAQ corpus; embeddings in the `ai.vector_index` TBD (see §13)    |
+| `faq_chunks`       | chunked, embedded FAQ corpus; embeddings per `ai.vector_index` (DONE §13: Nemotron embed-1b, 1024-d, Postgres hybrid)    |
 | `ai_conversations` | session log per tenant; PII-minimal; kept only within the session log window       |
 | `ai_tool_calls`    | every pinned tool invocation + result, for audit and "matches source table" checks |
 | `escalations`      | handoff rows linking to the ticket and the auto-filled order id                    |
@@ -125,10 +125,11 @@ All events are tenant-scoped and PII-minimal.
 
 ## 7. Vendors / swap-out
 
-- **LLM provider is swappable behind an interface** (`LLMService` contract). A mock provider ships in dev per the repo pattern (same as the mock MFS sandbox); the production vendor pick is a named TBD (`ai.model_picker`, §13). No phase doc may assume the vendor is permanent.
-- **Embedding model + vector store**: Bengali-capable ONNX embeddings; vector store host is a drop-in behind the retrieval interface; the concrete model/dimension/host is a named TBD (`ai.vector_index`, §13).
+- **LLM provider is swappable behind an interface** (`LLMService` contract). A mock provider ships in dev per the repo pattern (same as the mock MFS sandbox). Production vendor (DONE, TODO-8): OpenRouter behind `OpenRouterLLMService` — primary `nvidia/nemotron-3-ultra-550b-a55b:free`, fallback `nvidia/nemotron-3.5-lightning:free`; reasoning effort passthrough + streaming contract in `support-llm.server.ts`. The interface stays vendor-blind (`setLLM` swap point); no phase doc may assume the vendor is permanent.
+- **Embedding model + vector store** (DONE, TODO-8): `nvidia/nemotron-3-embed-1b:free` (`DEFAULT_EMBEDDING_MODEL` in `support-embed.server.ts`; legacy `nvidia/llama-nemotron-embed-vl-1b-v2:free` honored for stored rows until backfill). Local deterministic fallback vectors are 1024-wide (`DETERMINISTIC_FALLBACK_DIM`). Store is Postgres/Supabase hybrid retrieval (`support_kb_search` RPC: `tsvector` full-text + `double precision[]` cosine similarity with RRF; see `support-kb.server.ts` + `supabase/migrations/20260910000000_phase9_support_kb_hybrid_search.sql`). Retrieval stays behind the KB interface so the store remains a drop-in.
+- **Gateway secret is env-only** (DONE, TODO-8): `OPENROUTER_API_KEY` comes from the server environment. `platform_dynamic_config.ai.gateway` hot-swaps non-secret routing only (chat/fallback/embed models + gateway URL) and stores an env-reference pointer (`env:OPENROUTER_API_KEY`, vault-pointer allowed); raw keys are rejected by `updateAiGatewayConfigFn`, and the settings probe tests both chat (`nemotron-3-ultra-550b-a55b:free`) and embed (`nemotron-3-embed-1b:free`) models.
 - **WhatsApp/MFB(?) channel**: gateway adapter behind the channel interface; pick is a named TBD (`ai.whatsapp_channel`, §13).
-- **Data export**: escalation logs and transcripts export via the shared exporter (`docs/13-export-sdk`) with consent filters; no third party receives raw support transcripts with PII.
+- **Data export**: escalation logs and transcripts export via the shared exporter (`docs/13-export-sdk`) with consent filters; transcripts leaving the trust boundary redact PII by default (mandatory for non-admin; see `resolveExportRedaction` in `support-export.ts`); no third party receives raw support transcripts with PII.
 
 ## 8. Consent & privacy
 
@@ -208,11 +209,14 @@ Mapping against `docs/00-meta/audit-verdict.md`: AI support is not a summary-tab
 
 | Item                                                                                       | Owner   |
 | ------------------------------------------------------------------------------------------ | ------- |
-| `ai.vector_index` — embedding model + dimension (Bengali-capable ONNX) + vector store host | **TBD** |
-| `ai.model_picker` — production LLM vendor behind the `LLMService` interface (mock in dev)  | **TBD** |
-| `ai.whatsapp_channel` — WhatsApp/MFB(?) gateway adapter and channel enablement             | **TBD** |
-| `ai.escalation_sla` — human-handoff SLA threshold for the escalation alerts                | **TBD** |
-| `e2e_ai_support_loop` — suite registered in `docs/15-e2e`; ops owner + release gate        | **TBD** |
+| `ai.vector_index` — DONE (TODO-8): embed `nvidia/nemotron-3-embed-1b:free` (legacy `llama-nemotron-embed-vl-1b-v2:free` honored), 1024-d deterministic fallback, Postgres/Supabase hybrid (`tsvector` + cosine RRF) | done |
+| `ai.model_picker` — DONE (TODO-8): OpenRouter `OpenRouterLLMService` (primary `nemotron-3-ultra-550b-a55b:free`, fallback `nemotron-3.5-lightning:free`) behind `LLMService`; mock in dev  | done |
+| `ai.gateway_env_only` — DONE (TODO-8): `OPENROUTER_API_KEY` env-only; `ai.gateway` DB slot hot-swaps non-secret routing with env-reference pointer; probe covers chat + embed | done |
+| `ai.export_redact` — DONE (TODO-8): mandatory redact for transcripts leaving the boundary (default-on for non-admin) via `resolveExportRedaction` | done |
+| `ai.harness_plus` — DONE (TODO-8): benchmark adds model-intent routing + base64/roleplay jailbreak-evasion + low-CSAT reopen; RL weights unchanged (CSAT 0.45, no misweighting proven) | done |
+| `ai.whatsapp_channel` — WhatsApp/MFB(?) gateway adapter and channel enablement             | **TBD — owner: channels lane (support-channels.server.ts)** |
+| `ai.escalation_sla` — human-handoff SLA threshold for the escalation alerts                | **TBD — owner: SLA lane (support-sla.ts)** |
+| `e2e_ai_support_loop` — suite registered in `docs/15-e2e`; ops owner + release gate        | **TBD — owner: e2e/ops lane (docs/15-e2e)** |
 
 ---
 

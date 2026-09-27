@@ -28,6 +28,8 @@ import {
   supportStatusFn,
   supportThreadFn,
 } from "@/lib/ai-support.functions";
+import type { ExportFormat } from "@/lib/support-export";
+import { exportConversationTranscript } from "@/lib/support-export";
 import { Page, Badge } from "@/components/console/kit";
 
 export const Route = createFileRoute("/_authenticated/dashboard/ai/assistant")({
@@ -120,6 +122,9 @@ function AssistantConsole() {
   >([]);
   const [inboxDraft, setInboxDraft] = useState("");
   const [inboxFilter, setInboxFilter] = useState<string>("all");
+  // TODO-8 export boundary: transcripts leaving the UI default to redacted.
+  const [exportFormat, setExportFormat] = useState<ExportFormat>("markdown");
+  const [exportRedact, setExportRedact] = useState(true);
 
   // Auto-scroll chat to bottom on new message
   useEffect(() => {
@@ -217,6 +222,53 @@ function AssistantConsole() {
     await supportStatusFn({ data: { conversationId: activeThreadId, status } });
     await router.invalidate();
     toast.success(`Conversation marked as ${status}.`);
+  }
+
+  function handleExportTranscript() {
+    if (!activeThreadId) return;
+    const conv = initial.conversations.find((c) => c.id === activeThreadId);
+    try {
+      const result = exportConversationTranscript(
+        {
+          id: activeThreadId,
+          merchantId: initial.merchantId,
+          channel: conv?.channel ?? "widget",
+          status: conv?.status ?? "open",
+          createdAt: new Date().toISOString(),
+        },
+        threadMessages.map((m) => ({
+          id: m.id,
+          role: m.role,
+          body: m.body,
+          createdAt: m.created_at,
+        })),
+        exportFormat,
+        {
+          // Boundary default: non-admin exports redact PII unless explicitly
+          // unchecked. Admin audit can uncheck for internal review.
+          redactPii: exportRedact,
+          isAdmin: false,
+          forExternalBoundary: true,
+          includeInternalNotes: false,
+        },
+      );
+      const blob = new Blob([result.content], { type: result.contentType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = result.filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success(
+        exportRedact
+          ? "Redacted transcript exported."
+          : "Transcript exported WITHOUT redaction (admin override).",
+      );
+    } catch (err) {
+      toast.error(`Export failed: ${(err as Error).message}`);
+    }
   }
 
   const filteredConversations = useMemo(() => {
@@ -663,6 +715,40 @@ function AssistantConsole() {
                         Escalate
                       </button>
                     </div>
+                  </div>
+
+                  {/* Export Boundary Bar (TODO-8: redact default-on) */}
+                  <div className="flex flex-wrap items-center gap-2 border-b border-border p-3 bg-muted/10 text-xs">
+                    <span className="font-semibold text-muted-foreground uppercase tracking-wider text-[11px]">
+                      Export transcript
+                    </span>
+                    <select
+                      value={exportFormat}
+                      onChange={(e) =>
+                        setExportFormat(e.target.value as ExportFormat)
+                      }
+                      className="rounded-fq-md border border-border bg-background px-2 py-1 text-xs"
+                    >
+                      <option value="markdown">Markdown</option>
+                      <option value="jsonl">JSONL</option>
+                      <option value="csv">CSV</option>
+                    </select>
+                    <label className="inline-flex items-center gap-1.5 text-xs text-foreground">
+                      <input
+                        type="checkbox"
+                        checked={exportRedact}
+                        onChange={(e) => setExportRedact(e.target.checked)}
+                        className="size-3.5 accent-current"
+                      />
+                      Redact PII (default-on leaving boundary)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleExportTranscript}
+                      className="rounded-fq-md border border-border bg-background px-2.5 py-1 text-xs font-medium hover:bg-muted transition-colors"
+                    >
+                      Download
+                    </button>
                   </div>
 
                   {/* Messages Canvas */}

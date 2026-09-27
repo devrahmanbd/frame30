@@ -9,6 +9,7 @@
 import { sendMail, type MailResult } from "./mailer.server";
 import { ORG_NAP } from "./nap";
 import { log, incr, withSpan } from "./observability.server";
+import { redactPii, screenOutbound } from "./support-guardrails";
 
 export type SupportNotificationInput = {
   merchantId: string;
@@ -36,7 +37,37 @@ export type SupportNotificationResult = {
   customerResult: MailResult | null;
   adminRecipient: string;
   customerRecipient: string;
+  /** Union of PII classes scrubbed from the free-text bodies (e.g. "email"). */
+  piiRedacted: string[];
+  /** Outbound-filter rules that forced a body to be withheld, if any. */
+  withheldRules: string[];
 };
+
+export type MailBodySafety = {
+  text: string;
+  piiHits: string[];
+  withheldRule: string | null;
+};
+
+/**
+ * PII + outbound safety gate for every free-text body that leaves the platform
+ * by email. `redactPii` replaces raw identifiers (email, phone, NID,
+ * card, …) with stable placeholders; `screenOutbound` then blocks anything
+ * redactPii cannot fix (secrets, code leaks, authority claims) by withholding
+ * the body behind a desk pointer instead of leaking it.
+ */
+export function sanitiseMailBody(raw: string): MailBodySafety {
+  const { text: redacted, hits } = redactPii(raw ?? "");
+  const verdict = screenOutbound(redacted, { pinned: true });
+  if (!verdict.allowed) {
+    return {
+      text: `[Withheld by outbound safety filter (${verdict.rule}). See the admin support desk for the full transcript.]`,
+      piiHits: hits,
+      withheldRule: verdict.rule,
+    };
+  }
+  return { text: redacted, piiHits: hits, withheldRule: null };
+}
 
 type Db = {
   from: (table: string) => {
@@ -121,6 +152,8 @@ export async function sendSupportNotifications(
         customerResult: null,
         adminRecipient: "",
         customerRecipient: email,
+        piiRedacted: [],
+        withheldRules: [],
       };
     }
 
@@ -128,7 +161,32 @@ export async function sendSupportNotifications(
     const customerName = input.customerName.trim() || "Customer";
     const timestamp = new Date().toISOString();
     const convId = input.conversationId ?? "unassigned";
-    const digest = messageDigest(`${input.userMessage}:${input.agentReply}`);
+    // Free-text bodies are untrusted: scrub PII and screen outbound before
+    // either message leaves the boundary. Structured contact fields above stay
+    // intact — the desk needs them to answer.
+    const safeUser = sanitiseMailBody(input.userMessage);
+    const safeAgent = sanitiseMailBody(input.agentReply);
+    const userMessage = safeUser.text;
+    const agentReply = safeAgent.text;
+    const piiRedacted = [...new Set([...safeUser.piiHits, ...safeAgent.piiHits])];
+    const withheldRules = [safeUser.withheldRule, safeAgent.withheldRule].filter(
+      (r): r is string => r !== null,
+    );
+    if (withheldRules.length > 0) {
+      log("warn", "support.mail_body_withheld", {
+        conversationId: convId,
+        rules: withheldRules,
+      });
+      incr("framique_support_mail_withheld_total", {
+        rule: withheldRules[0] as string,
+      });
+    }
+    if (piiRedacted.length > 0) {
+      incr("framique_support_mail_redacted_total", {
+        classes: piiRedacted.slice(0, 3).join(","),
+      });
+    }
+    const digest = messageDigest(`${userMessage}:${agentReply}`);
 
     // ─────────────────────────────────────────────────────────────────────────
     // 1. Admin Notification Message
@@ -158,10 +216,10 @@ export async function sendSupportNotifications(
       input.callbackId ? `Callback ID: ${input.callbackId}` : null,
       "",
       `--- Customer Message ---`,
-      input.userMessage,
+      userMessage,
       "",
       `--- Agent Response ---`,
-      input.agentReply,
+      agentReply,
       "",
       `View in Admin Desk: https://${input.slug === "platform" ? "store.framique.com" : `${input.slug}.framique.com`}/admin/support`,
     ]
@@ -182,11 +240,11 @@ export async function sendSupportNotifications(
   </table>
   <div style="margin-bottom: 16px;">
     <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: #6b7280; margin-bottom: 4px;">Customer Question:</div>
-    <div style="background-color: #f3f4f6; padding: 12px; border-radius: 6px; font-size: 14px; color: #1f2937; white-space: pre-wrap;">${escapeHtml(input.userMessage)}</div>
+    <div style="background-color: #f3f4f6; padding: 12px; border-radius: 6px; font-size: 14px; color: #1f2937; white-space: pre-wrap;">${escapeHtml(userMessage)}</div>
   </div>
   <div style="margin-bottom: 20px;">
     <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: #6b7280; margin-bottom: 4px;">Agent Response:</div>
-    <div style="background-color: #eff6ff; border-left: 3px solid #3b82f6; padding: 12px; border-radius: 4px; font-size: 14px; color: #1e3a8a; white-space: pre-wrap;">${escapeHtml(input.agentReply)}</div>
+    <div style="background-color: #eff6ff; border-left: 3px solid #3b82f6; padding: 12px; border-radius: 4px; font-size: 14px; color: #1e3a8a; white-space: pre-wrap;">${escapeHtml(agentReply)}</div>
   </div>
 </div>`;
 
@@ -223,10 +281,10 @@ export async function sendSupportNotifications(
       customerIntro,
       "",
       `--- Your Question ---`,
-      input.userMessage,
+      userMessage,
       "",
       `--- Support Response ---`,
-      input.agentReply,
+      agentReply,
       "",
       input.ticketRef
         ? isBn
@@ -250,11 +308,11 @@ export async function sendSupportNotifications(
   <p style="font-size: 14px; color: #374151; margin: 0 0 16px 0;">${escapeHtml(customerIntro)}</p>
   <div style="margin-bottom: 16px;">
     <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: #6b7280; margin-bottom: 4px;">${isBn ? "আপনার প্রশ্ন:" : "Your Question:"}</div>
-    <div style="background-color: #f3f4f6; padding: 12px; border-radius: 6px; font-size: 14px; color: #1f2937; white-space: pre-wrap;">${escapeHtml(input.userMessage)}</div>
+    <div style="background-color: #f3f4f6; padding: 12px; border-radius: 6px; font-size: 14px; color: #1f2937; white-space: pre-wrap;">${escapeHtml(userMessage)}</div>
   </div>
   <div style="margin-bottom: 16px;">
     <div style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: #6b7280; margin-bottom: 4px;">${isBn ? "সাপোর্ট উত্তর:" : "Support Response:"}</div>
-    <div style="background-color: #f0fdf4; border-left: 3px solid #22c55e; padding: 12px; border-radius: 4px; font-size: 14px; color: #14532d; white-space: pre-wrap;">${escapeHtml(input.agentReply)}</div>
+    <div style="background-color: #f0fdf4; border-left: 3px solid #22c55e; padding: 12px; border-radius: 4px; font-size: 14px; color: #14532d; white-space: pre-wrap;">${escapeHtml(agentReply)}</div>
   </div>
   ${input.ticketRef ? `<div style="margin-bottom: 16px; padding: 10px; background-color: #eff6ff; border-radius: 6px; font-size: 13px; color: #1e40af;"><strong>${isBn ? "টিকিট রেফারেন্স:" : "Ticket Reference:"}</strong> ${escapeHtml(input.ticketRef)}</div>` : ""}
   <p style="font-size: 13px; color: #6b7280; margin: 16px 0 12px 0;">${escapeHtml(customerFooter)}</p>
@@ -324,6 +382,8 @@ export async function sendSupportNotifications(
       customerResult,
       adminRecipient: adminEmail,
       customerRecipient: email,
+      piiRedacted,
+      withheldRules,
     };
   });
 }

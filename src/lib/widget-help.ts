@@ -735,6 +735,22 @@ export const PROP_HINTS: Record<string, BiText> = {
     en: "Where the button goes. Use a /relative path for pages in this store.",
     bn: "বাটন কোথায় যাবে। নিজের স্টোরের পেজে /relative পাথ দিন।",
   },
+  ctaUrl: {
+    en: "Where the button goes. Use a /relative path for pages in this store.",
+    bn: "বাটন কোথায় যাবে। নিজের স্টোরের পেজে /relative পাথ দিন।",
+  },
+  ctaUrl2: {
+    en: "Where the second button goes. Use a /relative path for pages in this store.",
+    bn: "দ্বিতীয় বাটন কোথায় যাবে। নিজের স্টোরের পেজে /relative পাথ দিন।",
+  },
+  primaryImage: {
+    en: "Primary editorial image, picked from your media library.",
+    bn: "প্রধান এডিটোরিয়াল ইমেজ — মিডিয়া লাইব্রেরি থেকে নিন।",
+  },
+  secondaryImage: {
+    en: "Secondary editorial image, picked from your media library.",
+    bn: "দ্বিতীয় এডিটোরিয়াল ইমেজ — মিডিয়া লাইব্রেরি থেকে নিন।",
+  },
   href: {
     en: "Destination link. Relative paths keep the shopper on this store.",
     bn: "গন্তব্য লিংক — relative পাথ হলে ক্রেতা স্টোরেই থাকে।",

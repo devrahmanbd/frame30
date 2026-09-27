@@ -1,9 +1,14 @@
 /**
  * OpenRouter Dense Vector Embedding Service.
  *
- * Grounded on NVIDIA Llama-Nemotron Embed:
- * Model: nvidia/llama-nemotron-embed-vl-1b-v2:free
+ * Grounded on NVIDIA Nemotron Embed:
+ * Model: nvidia/nemotron-3-embed-1b:free
  * Endpoint: https://openrouter.ai/api/v1/embeddings
+ *
+ * The previous default (`nvidia/llama-nemotron-embed-vl-1b-v2:free`) is kept
+ * as LEGACY_EMBEDDING_MODEL so stored vectors and explicit per-call overrides
+ * keep working until the RAG backfill refreshes them (see support-kb.server
+ * backfillKbEmbeddings + supabase/pending/support_kb_embedding_version.sql).
  *
  * Dynamically resolves credentials from `platform_dynamic_config` ('ai.gateway' slot)
  * with zero client-side secret exposure and resilient offline fallback.
@@ -20,11 +25,19 @@ export type AiGatewayConfig = {
   gatewayUrl?: string;
 };
 
+export const DEFAULT_EMBEDDING_MODEL = "nvidia/nemotron-3-embed-1b:free";
+export const LEGACY_EMBEDDING_MODEL =
+  "nvidia/llama-nemotron-embed-vl-1b-v2:free";
+/** Suffix recorded when the deterministic offline vector stands in for `model`. */
+export const DETERMINISTIC_FALLBACK_SUFFIX = "+deterministic-fallback";
+/** Local-projected fallback vectors are always 1024-wide (see generateDeterministicEmbedding). */
+export const DETERMINISTIC_FALLBACK_DIM = 1024;
+
 export const DEFAULT_AI_GATEWAY_CONFIG: AiGatewayConfig = {
   apiKey: process.env["OPENROUTER_API_KEY"] || "sk-or-v1-REDACTED",
   chatModel: "nvidia/nemotron-3-ultra-550b-a55b:free",
   fallbackChatModel: "nvidia/nemotron-3.5-lightning:free",
-  embeddingModel: "nvidia/llama-nemotron-embed-vl-1b-v2:free",
+  embeddingModel: DEFAULT_EMBEDDING_MODEL,
   gatewayUrl: "https://openrouter.ai/api/v1",
 };
 
@@ -169,9 +182,62 @@ export function generateDeterministicEmbedding(
 }
 
 /**
- * Generate dense vector embedding for a single string using OpenRouter Llama-Nemotron.
+ * Resolve the embedding model for a single call: explicit per-call override
+ * wins, then the dynamic gateway config, then the compiled default.
+ * A stored legacy id is honoured as-is so pre-migration rows keep working.
  */
-export async function generateEmbedding(
+export function resolveEmbeddingModel(
+  explicit?: string | null,
+  configured?: string | null,
+): string {
+  const trimmed = explicit?.trim() || configured?.trim();
+  return trimmed || DEFAULT_EMBEDDING_MODEL;
+}
+
+/** A vector plus the audit trail needed to version it in storage. */
+export type EmbeddingResult = {
+  embedding: number[];
+  /** Model that produced the vector, or `<attempted>${DETERMINISTIC_FALLBACK_SUFFIX}` offline. */
+  model: string;
+  /** Width of `embedding` (recorded as `embedding_dim`). */
+  dim: number;
+  /** True when `embedding` is the deterministic offline projection. */
+  fallback: boolean;
+};
+
+export function toFallbackResult(
+  attemptedModel: string,
+  embedding: number[],
+): EmbeddingResult {
+  return {
+    embedding,
+    model: `${attemptedModel}${DETERMINISTIC_FALLBACK_SUFFIX}`,
+    dim: embedding.length,
+    fallback: true,
+  };
+}
+
+/**
+ * True when a stored `embedding_model` id needs a refresh: never embedded,
+ * produced by the legacy model, produced by the offline fallback, or produced
+ * by a different model than `current`. Unknown/empty counts as stale so the
+ * backfill converges instead of skipping silent gaps.
+ */
+export function isEmbeddingModelStale(
+  storedModel: string | null | undefined,
+  current: string = DEFAULT_EMBEDDING_MODEL,
+): boolean {
+  if (!storedModel || !storedModel.trim()) return true;
+  const s = storedModel.trim();
+  if (s.endsWith(DETERMINISTIC_FALLBACK_SUFFIX)) return true;
+  return s !== current.trim();
+}
+
+/**
+ * Generate dense vector embedding for a single string using OpenRouter Nemotron,
+ * recording which model produced the vector.
+ */
+export async function generateEmbeddingWithMeta(
   text: string,
   options?: {
     apiKey?: string;
@@ -179,11 +245,11 @@ export async function generateEmbedding(
     timeoutMs?: number;
     allowDeterministicFallback?: boolean;
   },
-): Promise<number[]> {
+): Promise<EmbeddingResult> {
   const started = Date.now();
   const cfg = await getAiGatewayConfig();
   const apiKey = options?.apiKey || cfg.apiKey;
-  const model = options?.model || cfg.embeddingModel;
+  const model = resolveEmbeddingModel(options?.model, cfg.embeddingModel);
   const baseUrl =
     cfg.gatewayUrl?.replace(/\/+$/, "") || "https://openrouter.ai/api/v1";
   const url = `${baseUrl}/embeddings`;
@@ -192,7 +258,13 @@ export async function generateEmbedding(
 
   const sanitized = text.slice(0, 4000).trim();
   if (!sanitized || isPlaceholderApiKey(apiKey)) {
-    return generateDeterministicEmbedding(sanitized || "", 1024);
+    return toFallbackResult(
+      model,
+      generateDeterministicEmbedding(
+        sanitized || "",
+        DETERMINISTIC_FALLBACK_DIM,
+      ),
+    );
   }
 
   try {
@@ -234,7 +306,7 @@ export async function generateEmbedding(
     incr("framique_ai_embed_total", { outcome: "ok", model });
     observe("framique_ai_embed_latency_ms", elapsed, { model });
 
-    return embedding;
+    return { embedding, model, dim: embedding.length, fallback: false };
   } catch (err) {
     const elapsed = Date.now() - started;
     incr("framique_ai_embed_total", { outcome: "fallback", model });
@@ -245,10 +317,30 @@ export async function generateEmbedding(
     });
 
     if (allowFallback) {
-      return generateDeterministicEmbedding(sanitized, 1024);
+      return toFallbackResult(
+        model,
+        generateDeterministicEmbedding(sanitized, DETERMINISTIC_FALLBACK_DIM),
+      );
     }
     throw err;
   }
+}
+
+/**
+ * Generate dense vector embedding for a single string (vector only).
+ * Prefer generateEmbeddingWithMeta when the caller persists the vector so the
+ * producing model id is recorded alongside it.
+ */
+export async function generateEmbedding(
+  text: string,
+  options?: {
+    apiKey?: string;
+    model?: string;
+    timeoutMs?: number;
+    allowDeterministicFallback?: boolean;
+  },
+): Promise<number[]> {
+  return (await generateEmbeddingWithMeta(text, options)).embedding;
 }
 
 /**
@@ -259,4 +351,12 @@ export async function batchGenerateEmbeddings(
   options?: { apiKey?: string; model?: string },
 ): Promise<number[][]> {
   return Promise.all(texts.map((t) => generateEmbedding(t, options)));
+}
+
+/** Batch variant that records the producing model id per embedding. */
+export async function batchGenerateEmbeddingsWithMeta(
+  texts: string[],
+  options?: { apiKey?: string; model?: string },
+): Promise<EmbeddingResult[]> {
+  return Promise.all(texts.map((t) => generateEmbeddingWithMeta(t, options)));
 }

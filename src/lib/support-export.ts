@@ -14,7 +14,62 @@ export type ExportFormat = "markdown" | "jsonl" | "csv";
 export type ExportOptions = {
   redactPii?: boolean;
   includeInternalNotes?: boolean;
+  /**
+   * TODO-8 env-only boundary contract: who is receiving this transcript.
+   * - `isAdmin: false` (non-admin / external consumer) forces redaction on:
+   *   transcripts leaving the trust boundary must never carry raw PII.
+   * - `isAdmin: true` preserves the legacy explicit opt-out for internal
+   *   admin audit (`redactPii: false`).
+   * - Omitted `isAdmin` keeps legacy behaviour (respect `redactPii`, default
+   *   off) so existing admin callers and tests keep working.
+   */
+  isAdmin?: boolean;
+  /**
+   * Set true when the transcript leaves the trust boundary (download,
+   * third-party handoff, external audit). Redaction is mandatory there:
+   * only an explicit admin opt-out (`isAdmin: true` + `redactPii: false`)
+   * may produce raw PII.
+   */
+  forExternalBoundary?: boolean;
 };
+
+/**
+ * Resolve whether PII redaction applies.
+ *
+ * - Explicit `redactPii: true` always redacts.
+ * - `isAdmin: false` (non-admin) always redacts (default-on + mandatory).
+ * - `forExternalBoundary: true` redacts unless the caller is an admin that
+ *   explicitly passed `redactPii: false`.
+ * - Otherwise (admin or unspecified caller, internal use) respect the
+ *   explicit flag, defaulting to off for backward compatibility.
+ */
+export function resolveExportRedaction(options: ExportOptions = {}): boolean {
+  if (options.redactPii === true) return true;
+  if (options.isAdmin === false) return true;
+  if (options.forExternalBoundary === true) {
+    if (options.isAdmin === true && options.redactPii === false) return false;
+    return true;
+  }
+  return options.redactPii ?? false;
+}
+
+/**
+ * Guard for callers crossing the trust boundary: returns an error message
+ * when the export would leave the boundary without redaction, null when the
+ * resolved options are boundary-safe.
+ */
+export function checkExternalExportSafety(
+  options: ExportOptions = {},
+): string | null {
+  const normalized: ExportOptions = {
+    ...options,
+    forExternalBoundary: true,
+  };
+  if (!resolveExportRedaction(normalized)) {
+    return "external_transcript_requires_redact: non-admin exports leaving the boundary must redact PII.";
+  }
+  return null;
+}
 
 export type ExportConversationMetadata = {
   id: string;
@@ -52,6 +107,7 @@ export function exportToMarkdown(
 ): string {
   const conv = normalizeConv(rawConv);
   const messages = rawMessages.map(normalizeMessage);
+  const shouldRedact = resolveExportRedaction(options);
 
   const sla = computeSlaMetrics({
     priority: conv.priority,
@@ -88,7 +144,7 @@ export function exportToMarkdown(
 
   for (const m of filtered) {
     let body = m.body;
-    if (options.redactPii) {
+    if (shouldRedact) {
       body = redactPii(body).text;
     }
     const d = new Date(m.createdAt);
@@ -122,7 +178,7 @@ export function exportToMarkdown(
 
   if (options.includeInternalNotes && conv.operatorNotes) {
     let notes = conv.operatorNotes;
-    if (options.redactPii) {
+    if (shouldRedact) {
       notes = redactPii(notes).text;
     }
     lines.push(`---`);
@@ -145,6 +201,7 @@ export function exportToJsonl(
 ): string {
   const conv = normalizeConv(rawConv);
   const messages = rawMessages.map(normalizeMessage);
+  const shouldRedact = resolveExportRedaction(options);
 
   const filtered = options.includeInternalNotes
     ? messages
@@ -154,7 +211,7 @@ export function exportToJsonl(
 
   for (const m of filtered) {
     let body = m.body;
-    if (options.redactPii) {
+    if (shouldRedact) {
       body = redactPii(body).text;
     }
     lines.push(
@@ -205,6 +262,7 @@ export function exportToCsv(
 ): string {
   const conv = normalizeConv(rawConv);
   const messages = rawMessages.map(normalizeMessage);
+  const shouldRedact = resolveExportRedaction(options);
 
   const filtered = options.includeInternalNotes
     ? messages
@@ -215,7 +273,7 @@ export function exportToCsv(
 
   for (const m of filtered) {
     let body = m.body;
-    if (options.redactPii) {
+    if (shouldRedact) {
       body = redactPii(body).text;
     }
     rows.push(
@@ -272,6 +330,11 @@ function normalizeMessage(m: any): ExportMessageItem {
 
 /**
  * Unified export runner.
+ *
+ * Boundary contract (TODO-8): pass `isAdmin: false` for any transcript that
+ * leaves the trust boundary — redaction is then mandatory and default-on via
+ * resolveExportRedaction. Internal admin audit may pass `isAdmin: true` with
+ * an explicit `redactPii: false` to retain raw PII.
  */
 export function exportConversationTranscript(
   conv: ExportConversationMetadata | Record<string, unknown>,

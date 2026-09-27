@@ -99,8 +99,14 @@ export function summarise(tickets: TicketLike[], now = Date.now()): SlaSummary {
   const minutes = (a: string, b: string) =>
     (new Date(b).getTime() - new Date(a).getTime()) / 60_000;
   return {
-    open: tickets.filter((t) => t.status === "open" || t.status === "pending")
-      .length,
+    // pending_approval tickets are unactioned work: they count as open until
+    // an operator approves (→ open) or rejects (→ closed) them.
+    open: tickets.filter(
+      (t) =>
+        t.status === "open" ||
+        t.status === "pending" ||
+        t.status === "pending_approval",
+    ).length,
     breached: tickets.filter((t) => slaState(t, now) === "breached").length,
     atRisk: tickets.filter((t) => slaState(t, now) === "at_risk").length,
     firstResponseP50Minutes: median(

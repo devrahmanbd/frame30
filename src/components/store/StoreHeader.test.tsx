@@ -48,19 +48,44 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
   };
 });
 
-import { StoreHeader } from "./StoreHeader";
+import { StoreHeader, songoskritiMenuLabel } from "./StoreHeader";
+import type { MenuNode, StoreMenus } from "@/lib/menus/menu";
+import { LanguageProvider } from "@/lib/i18n";
 
 const HEADER_SRC = () =>
   readFileSync("src/components/store/StoreHeader.tsx", "utf8");
 
+function dbNode(
+  over: Partial<MenuNode> & Pick<MenuNode, "id" | "label" | "url">,
+): MenuNode {
+  return {
+    parentId: null,
+    position: 0,
+    kind: "custom",
+    refId: null,
+    titleAttr: "",
+    newTab: false,
+    cssClass: "",
+    depth: 0,
+    children: [],
+    ...over,
+  };
+}
+
 function renderHeader({
   slug = "demo",
+  name = "Demo",
   wishlistItems,
   pathname = "/store/demo",
+  menus,
+  initialLang = "en",
 }: {
   slug?: string;
+  name?: string;
   wishlistItems?: Array<{ variantId: string }>;
   pathname?: string;
+  menus?: Pick<StoreMenus, "header" | "mobile">;
+  initialLang?: "en" | "bn";
 } = {}) {
   mockPathname.current = pathname;
   const client = new QueryClient();
@@ -75,7 +100,9 @@ function renderHeader({
   }
   const ui: ReactElement = (
     <QueryClientProvider client={client}>
-      <StoreHeader slug={slug} name="Demo" />
+      <LanguageProvider initialLang={initialLang}>
+        <StoreHeader slug={slug} name={name} menus={menus} />
+      </LanguageProvider>
     </QueryClientProvider>
   );
   return renderToStaticMarkup(ui);
@@ -129,5 +156,108 @@ describe("StoreHeader wishlist link", () => {
     expect(cardSrc).toMatch(/enabled:\s*signedIn\s*===\s*true/);
     const css = readFileSync("src/styles.css", "utf8");
     expect(css).toContain("@keyframes fq-badge-pop");
+  });
+});
+
+describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", () => {
+  it("falls back to the hardcoded tree for songoskriti-shaped stores with no dashboard menu", () => {
+    const html = renderHeader({ slug: "songoskriti", name: "Songoskriti" });
+    expect(html).toContain("Women");
+    expect(html).toContain("/store/songoskriti/c/women");
+    expect(html).toContain("New Arrivals");
+  });
+
+  it("dashboard header menus win over the fallback on songoskriti stores", () => {
+    const menus = {
+      header: [dbNode({ id: "db-1", label: "Dashboard Custom", url: "/c/custom" })],
+      mobile: [],
+    };
+    const html = renderHeader({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      menus,
+    });
+    expect(html).toContain("Dashboard Custom");
+    expect(html).toContain("/store/songoskriti/c/custom");
+    // Fallback top-level entries are gone once a location is claimed.
+    expect(html).not.toContain("/store/songoskriti/c/women");
+    expect(html).not.toContain("Jewellery");
+  });
+
+  it("generic stores render nothing when no menu claims the location", () => {
+    const html = renderHeader({ slug: "demo", name: "Demo" });
+    expect(html).not.toContain("/c/women");
+    expect(html).not.toContain("Women");
+  });
+
+  it("generic stores render dashboard menus as-authored, even in বাংলা", () => {
+    const menus = {
+      header: [dbNode({ id: "db-men", label: "Men", url: "/c/men" })],
+      mobile: [],
+    };
+    const html = renderHeader({
+      slug: "demo",
+      name: "Demo",
+      menus,
+      initialLang: "bn",
+    });
+    // The বাংলা fallback table must never leak into generic stores.
+    expect(html).toContain(">Men<");
+    expect(html).not.toContain("পুরুষ");
+  });
+
+  it("dashboard nodes on songoskriti stores render as-authored in বাংলা", () => {
+    const menus = {
+      header: [dbNode({ id: "db-men", label: "Men", url: "/c/men" })],
+      mobile: [],
+    };
+    const html = renderHeader({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      menus,
+      initialLang: "bn",
+    });
+    expect(html).toContain(">Men<");
+    expect(html).not.toContain("পুরুষ");
+  });
+
+  it("fallback tree localizes in বাংলা (bn/en everywhere)", () => {
+    const html = renderHeader({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      initialLang: "bn",
+    });
+    expect(html).toContain("মহিলা");
+    expect(html).toContain("পুরুষ");
+  });
+
+  it("songoskritiMenuLabel resolves twins and falls back to English", () => {
+    expect(songoskritiMenuLabel("Women", (en) => en)).toBe("Women");
+    expect(songoskritiMenuLabel("Women", (en, bn) => (bn ? bn : en))).toBe(
+      "মহিলা",
+    );
+    // Missing keys fall back to English, never blank.
+    expect(
+      songoskritiMenuLabel("Unmapped Label", (en, bn) => (bn ? bn : en)),
+    ).toBe("Unmapped Label");
+  });
+
+  it("keeps the songoskriti chrome: announcement bar, image panel, mobile accordion, 44px targets", () => {
+    const src = HEADER_SRC();
+    expect(src).toContain("EASY 7-DAY EXCHANGE");
+    expect(src).toContain("expandedMobileMenu");
+    expect(src).toContain("min-h-[44px]");
+    expect(src).toContain("motion-safe:");
+    expect(src).toContain("motion-reduce:transition-none");
+    const html = renderHeader({ slug: "songoskriti", name: "Songoskriti" });
+    expect(html).toContain("EASY 7-DAY EXCHANGE");
+    // Header fallback renders the mega panel affordance for entries with children.
+    expect(html).toContain("Shop Women");
+    const bnHtml = renderHeader({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      initialLang: "bn",
+    });
+    expect(bnHtml).toContain("কেনাকাটা");
   });
 });

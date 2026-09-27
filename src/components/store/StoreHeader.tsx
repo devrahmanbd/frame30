@@ -179,6 +179,67 @@ export const SONGOSKRITI_MEGA_MENU = [
   },
 ];
 
+/**
+ * বাংলা twins for the hardcoded fallback tree above, keyed by the English
+ * label. A missing key falls back to English (flagged, never blank).
+ * Dashboard-designed menus (MenuItem) carry no `_bn` field, so they render
+ * as-authored — this table only covers the fallback.
+ */
+export const SONGOSKRITI_MENU_BN: Record<string, string> = {
+  Women: "মহিলা",
+  Sarees: "শাড়ি",
+  Jamdani: "জামদানি",
+  Tangail: "টাঙ্গাইল",
+  Muslin: "মসলিন",
+  Silk: "সিল্ক",
+  Handloom: "হ্যান্ডলুম",
+  Cotton: "সুতি",
+  "Festive Sarees": "উৎসবের শাড়ি",
+  Occasion: "উপলক্ষ",
+  Eid: "ঈদ",
+  Wedding: "বিয়ে",
+  Everyday: "প্রতিদিনের",
+  Party: "পার্টি",
+  Featured: "বিশেষ",
+  "New Arrivals": "নতুন সংগ্রহ",
+  Bestsellers: "সর্বাধিক বিক্রীত",
+  Men: "পুরুষ",
+  Panjabi: "পাঞ্জাবি",
+  "Premium Panjabi": "প্রিমিয়াম পাঞ্জাবি",
+  Festive: "উৎসব",
+  Casual: "ক্যাজুয়াল",
+  Sets: "সেট",
+  "Panjabi & Pajama": "পাঞ্জাবি ও পাজামা",
+  "Family Matching": "পরিবারের মিল",
+  Kids: "শিশু",
+  Boys: "ছেলেরা",
+  Girls: "মেয়েরা",
+  Dresses: "পোশাক",
+  Lehengas: "লেহেঙ্গা",
+  Collections: "কালেকশন",
+  "Signature Sarees": "সিগনেচার শাড়ি",
+  "The Modern Panjabi": "আধুনিক পাঞ্জাবি",
+  "Everyday Heritage": "প্রতিদিনের ঐতিহ্য",
+  Occasions: "উপলক্ষসমূহ",
+  Mehendi: "মেহেদি",
+  Sangeet: "সংগীত",
+  Puja: "পূজা",
+  Gifting: "উপহার",
+  Heritage: "ঐতিহ্য",
+  "Weaves & Craft": "বুনন ও কারুকাজ",
+  "Rajshahi Silk": "রাজশাহী সিল্ক",
+  "Nakshi Kantha": "নকশি কাঁথা",
+  "Artisan Stories": "কারিগরের গল্প",
+};
+
+/** Resolve a header node's display label (fallback tree is bilingual). */
+export function songoskritiMenuLabel(
+  label: string,
+  t: (en: string, bn?: string) => string,
+): string {
+  return t(label, SONGOSKRITI_MENU_BN[label]);
+}
+
 export function StoreHeader({
   slug,
   name,
@@ -200,19 +261,22 @@ export function StoreHeader({
   const { location } = useRouterState();
   const custom = isCustomHostPath(location.pathname);
   const base = custom ? "" : `/store/${slug}`;
+  const isSongoskriti = slug === "songoskriti" || name?.toLowerCase() === "songoskriti";
 
-  const isSongoskriti =
-    slug === "songoskriti" || name?.toLowerCase() === "songoskriti";
-
-  const headerMenu = isSongoskriti
-    ? SONGOSKRITI_MEGA_MENU
-    : (menus?.header ?? []);
-  const mobileMenu = isSongoskriti
-    ? SONGOSKRITI_MEGA_MENU
-    : menus
-      ? selectMobileMenu(menus)
-      : [];
-
+  // Data-driven selection: dashboard-designed menus win whenever a location
+  // is claimed; the hardcoded tree is the fallback for songoskriti-shaped
+  // stores only (demo/preview safety). Generic stores keep today's behavior
+  // exactly — empty when no menu claims the location.
+  const dbHeader = menus?.header ?? [];
+  const dbMobile = menus ? selectMobileMenu(menus) : [];
+  const headerMenu = dbHeader.length > 0 ? dbHeader : (isSongoskriti ? SONGOSKRITI_MEGA_MENU : []);
+  const mobileMenu = dbMobile.length > 0 ? dbMobile : (isSongoskriti ? SONGOSKRITI_MEGA_MENU : []);
+  // The বাংলা table covers the hardcoded fallback tree only. Dashboard nodes
+  // (MenuItem) carry no `_bn` field and render as-authored in every locale;
+  // generic stores never localize, so their output is byte-identical to
+  // before.
+  const headerFallback = isSongoskriti && dbHeader.length === 0;
+  const mobileFallback = isSongoskriti && dbMobile.length === 0;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -260,15 +324,13 @@ export function StoreHeader({
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-250 ease-out bg-[#FAF9F7] ${
+      className={`sticky top-0 z-40 w-full transition-all duration-250 ease-out bg-[#FAF9F7]${isSongoskriti ? " motion-reduce:transition-none" : ""} ${
         scrolled ? "shadow-sm border-b border-[#eaeaea]" : ""
       }`}
     >
       {/* ── Announcement Bar ── */}
       {isSongoskriti && (
-        <div
-          className={`w-full overflow-hidden transition-all duration-250 ease-out border-b border-[#eaeaea] ${scrolled ? "h-0 opacity-0 border-transparent" : "h-[36px] opacity-100"}`}
-        >
+        <div className={`w-full overflow-hidden transition-all duration-250 ease-out motion-reduce:transition-none border-b border-[#eaeaea] ${scrolled ? "h-0 opacity-0 border-transparent" : "h-[36px] opacity-100"}`}>
           <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10">
             <div className="hidden sm:block text-[10px] font-medium tracking-wide text-[#1a1a1a]/60 w-1/3 text-left">
               EASY 7-DAY EXCHANGE
@@ -343,63 +405,57 @@ export function StoreHeader({
                     <HeaderMenuLink
                       node={node as MenuNode}
                       base={base}
+                      localize={headerFallback}
                       className="inline-flex items-center py-[24px] text-[11px] font-medium uppercase tracking-[0.2em] text-[#1a1a1a]/80 hover:text-[#1a1a1a] transition-colors"
                     />
-                    {isSongoskriti &&
-                      node.children &&
-                      node.children.length > 0 && (
-                        <div className="fixed left-0 w-full top-full pt-0 hidden group-hover:block group-focus-within:block z-50">
-                          <div className="w-full bg-[#FAF9F7] shadow-xl border-t border-[#eaeaea] max-h-[85vh] overflow-y-auto">
-                            <div className="mx-auto flex max-w-[1440px] px-10 py-12 gap-16">
-                              <ul className="flex-1 grid grid-cols-4 gap-x-8 gap-y-10">
-                                {node.children.map((child: any) => (
-                                  <li key={child.id}>
-                                    <HeaderMenuLink
-                                      node={child}
-                                      base={base}
-                                      className="block font-serif text-[16px] font-normal text-[#1a1a1a] hover:text-[#1a1a1a]/70 transition-colors text-left mb-4"
-                                    />
-                                    {child.children &&
-                                      child.children.length > 0 && (
-                                        <ul className="space-y-3">
-                                          {child.children.map(
-                                            (grandchild: any) => (
-                                              <li key={grandchild.id}>
-                                                <HeaderMenuLink
-                                                  node={grandchild}
-                                                  base={base}
-                                                  className="block font-sans text-[13px] text-[#1a1a1a]/60 hover:text-[#1a1a1a] transition-colors text-left"
-                                                />
-                                              </li>
-                                            ),
-                                          )}
-                                        </ul>
-                                      )}
-                                  </li>
-                                ))}
-                              </ul>
-                              {(node as any).image && (
-                                <div className="w-[320px] shrink-0">
-                                  <div className="aspect-[3/4] w-full overflow-hidden bg-[#f0f0f0]">
-                                    <img
-                                      src={(node as any).image}
-                                      alt={node.label}
-                                      className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                                    />
-                                  </div>
-                                  <div className="mt-4 flex items-center gap-2">
-                                    <span className="font-sans text-[11px] font-medium uppercase tracking-[0.2em] text-[#1a1a1a]">
-                                      Shop {node.label}
-                                    </span>
-                                    <span className="text-[#1a1a1a] text-xs">
-                                      →
-                                    </span>
-                                  </div>
+                    {isSongoskriti && node.children && node.children.length > 0 && (
+                      <div className="fixed left-0 w-full top-full pt-0 hidden group-hover:block group-focus-within:block z-50">
+                        <div className="w-full bg-[#FAF9F7] shadow-xl border-t border-[#eaeaea] max-h-[85vh] overflow-y-auto">
+                          <div className="mx-auto flex max-w-[1440px] px-10 py-12 gap-16">
+                            <ul className="flex-1 grid grid-cols-4 gap-x-8 gap-y-10">
+                              {node.children.map((child: any) => (
+                                <li key={child.id}>
+                                  <HeaderMenuLink
+                                    node={child}
+                                    base={base}
+                                    localize={headerFallback}
+                                    className="flex min-h-[44px] items-center font-serif text-[16px] font-normal text-[#1a1a1a] hover:text-[#1a1a1a]/70 motion-safe:transition-colors text-left mb-4"
+                                  />
+                                  {child.children && child.children.length > 0 && (
+                                    <ul className="space-y-3">
+                                      {child.children.map((grandchild: any) => (
+                                        <li key={grandchild.id}>
+                                          <HeaderMenuLink
+                                            node={grandchild}
+                                            base={base}
+                                            localize={headerFallback}
+                                            className="flex min-h-[44px] items-center font-sans text-[13px] text-[#1a1a1a]/60 hover:text-[#1a1a1a] motion-safe:transition-colors text-left"
+                                          />
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  )}
+                                </li>
+                              ))}
+                            </ul>
+                            {(node as any).image && (
+                              <div className="w-[320px] shrink-0">
+                                <div className="aspect-[3/4] w-full overflow-hidden bg-[#f0f0f0]">
+                                  <img 
+                                    src={(node as any).image} 
+                                    alt={headerFallback ? songoskritiMenuLabel(node.label, t) : node.label} 
+                                    className="h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-1000 group-hover:scale-105" 
+                                  />
                                 </div>
-                              )}
-                            </div>
+                                <div className="mt-4 flex min-h-[44px] items-center gap-2">
+                                  <span className="font-sans text-[11px] font-medium uppercase tracking-[0.2em] text-[#1a1a1a]">{t("Shop", "কেনাকাটা")} {headerFallback ? songoskritiMenuLabel(node.label, t) : node.label}</span>
+                                  <span className="text-[#1a1a1a] text-xs">→</span>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
+                      </div>
                       )}
                     {!isSongoskriti &&
                       node.children &&
@@ -471,7 +527,7 @@ export function StoreHeader({
             <Link
               to="/account"
               search={{ tab: "wishlist" }}
-              aria-label={`${t("Wishlist", "উইশলিস্ট")}, ${wishlistCount}`}
+              aria-label={`${t("Wishlist","উইশলিস্ট")}, ${wishlistCount}`}
               className={`${iconLinkCls} relative hidden sm:grid`}
             >
               <Heart className="size-[20px]" strokeWidth={1} aria-hidden />
@@ -489,7 +545,7 @@ export function StoreHeader({
               to="/store/$slug/account"
               params={{ slug }}
               search={{ tab: "wishlist" }}
-              aria-label={`${t("Wishlist", "উইশলিস্ট")}, ${wishlistCount}`}
+              aria-label={`${t("Wishlist","উইশলিস্ট")}, ${wishlistCount}`}
               className={`${iconLinkCls} relative hidden sm:grid`}
             >
               <Heart className="size-[20px]" strokeWidth={1} aria-hidden />
@@ -560,6 +616,7 @@ export function StoreHeader({
                   <HeaderMenuLink
                     node={node}
                     base={base}
+                    localize={mobileFallback}
                     onNavigate={() => setMobileOpen(false)}
                     className="block py-5 text-[13px] font-semibold uppercase tracking-wide text-[#1a1a1a] flex-1"
                   />
@@ -580,27 +637,27 @@ export function StoreHeader({
                     </button>
                   )}
                 </div>
-                {node.children &&
-                  node.children.length > 0 &&
-                  expandedMobileMenu === node.id && (
-                    <ul className="ml-4 my-2 pb-4 space-y-1 border-t border-transparent">
-                      {node.children.map((child: any) => (
-                        <li key={child.id}>
-                          <HeaderMenuLink
-                            node={child}
-                            base={base}
-                            onNavigate={() => setMobileOpen(false)}
-                            className="block py-3 text-[15px] font-medium text-[#1a1a1a]/80"
-                          />
-                          {child.children && child.children.length > 0 && (
-                            <ul className="ml-4 mt-2 mb-4 space-y-2 border-l border-[#eaeaea] pl-4">
-                              {child.children.map((gc: any) => (
-                                <li key={gc.id}>
+                {node.children && node.children.length > 0 && expandedMobileMenu === node.id && (
+                  <ul className="ml-4 my-2 pb-4 space-y-1 border-t border-transparent">
+                    {node.children.map((child: any) => (
+                      <li key={child.id}>
+                        <HeaderMenuLink
+                          node={child}
+                          base={base}
+                          localize={mobileFallback}
+                          onNavigate={() => setMobileOpen(false)}
+                          className={`block py-3 text-[15px] font-medium text-[#1a1a1a]/80${isSongoskriti ? " min-h-[44px]" : ""}`}
+                        />
+                        {child.children && child.children.length > 0 && (
+                          <ul className="ml-4 mt-2 mb-4 space-y-2 border-l border-[#eaeaea] pl-4">
+                            {child.children.map((gc: any) => (
+                               <li key={gc.id}>
                                   <HeaderMenuLink
                                     node={gc}
                                     base={base}
+                                    localize={mobileFallback}
                                     onNavigate={() => setMobileOpen(false)}
-                                    className="block py-1.5 text-[14px] text-[#1a1a1a]/60"
+                                    className={`block py-1.5 text-[14px] text-[#1a1a1a]/60${isSongoskriti ? " min-h-[44px]" : ""}`}
                                   />
                                 </li>
                               ))}
@@ -624,12 +681,17 @@ function HeaderMenuLink({
   base,
   className,
   onNavigate,
+  localize,
 }: {
   node: MenuNode;
   base: string;
   className?: string;
   onNavigate?: () => void;
+  /** True only for hardcoded fallback-tree nodes: resolves the বাংলা twin.
+   * Dashboard nodes and generic stores always render the authored label. */
+  localize?: boolean;
 }) {
+  const { t } = useLang();
   if (!node.label) return null;
   return (
     <a
@@ -639,7 +701,7 @@ function HeaderMenuLink({
       {...(node.newTab ? { target: "_blank", rel: "noreferrer" } : {})}
       className={className}
     >
-      {node.label}
+      {localize ? songoskritiMenuLabel(node.label, t) : node.label}
     </a>
   );
 }

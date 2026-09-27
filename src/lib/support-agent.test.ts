@@ -27,7 +27,12 @@
  */
 
 import { describe, expect, it, beforeEach } from "vitest";
-import { detectIntent } from "./ai-support.server";
+import {
+  detectIntent,
+  classifyIntent,
+  analyzeSentiment,
+  LOW_INTENT_CONFIDENCE_THRESHOLD,
+} from "./ai-support.server";
 import {
   validateBdPhone,
   normaliseBdPhone,
@@ -1201,5 +1206,145 @@ describe("Phase 12.5 — Bot Suppression Middleware for Human Takeover", () => {
       expect(ratingResult.ok).toBe(true);
       expect(ratingResult.rating).toBe(5);
     });
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TODO-3 — Agent brain: ML intent + sentiment + memory (adjacent coverage)
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("TODO-3 — Model-backed intent classification (fast path)", () => {
+  it("classifies billing EN + BN + code-mixed with keyword source", () => {
+    for (const phrase of [
+      "My bKash payment failed but money was deducted",
+      "I was charged twice on my card",
+      "বিল বেশি এসেছে, টাকা কেটে নিয়েছে",
+      "taka kete niyeche payment hoyni",
+    ]) {
+      const c = classifyIntent(phrase);
+      expect(c.primary).toBe("billing");
+      expect(c.source).toBe("keyword");
+      expect(c.confidence).toBeGreaterThanOrEqual(0.8);
+    }
+  });
+
+  it("routes angry delivery turns to complaint, not the shipping FAQ", () => {
+    const c = classifyIntent("Your delivery man was rude, this is a scam");
+    expect(c.primary).toBe("complaint");
+    expect(c.multi).toBe(true);
+    expect(c.intents.map((i) => i.intent)).toContain("faq_shipping");
+  });
+
+  it("classifies technical bug reports incl. code-mixed", () => {
+    expect(
+      classifyIntent("website login hocche na error dicche").primary,
+    ).toBe("technical");
+    expect(classifyIntent("checkout shows an error 500").primary).toBe(
+      "technical",
+    );
+  });
+
+  it("classifies sales-lead intent EN + BN + code-mixed", () => {
+    expect(
+      classifyIntent("I want to open my own store, dealership pricing please")
+        .primary,
+    ).toBe("lead");
+    expect(classifyIntent("dokan khulte chai paikari dam").primary).toBe(
+      "lead",
+    );
+  });
+
+  it("returns multi-intent for refund + order turns, primary = refund", () => {
+    const c = classifyIntent("I want a refund for order 1001");
+    expect(c.primary).toBe("refund");
+    expect(c.multi).toBe(true);
+    expect(c.intents.map((i) => i.intent)).toContain("order_status");
+  });
+
+  it("falls back to other below the low-confidence threshold", () => {
+    const c = classifyIntent("what is the meaning of life");
+    expect(c.primary).toBe("other");
+    expect(c.source).toBe("fallback");
+    expect(c.confidence).toBeLessThan(LOW_INTENT_CONFIDENCE_THRESHOLD);
+    expect(c.multi).toBe(false);
+  });
+
+  it("keeps detectIntent backward compatible (refund before order_status)", () => {
+    expect(detectIntent("I want a refund for order 1001")).toBe("refund");
+    expect(detectIntent("Where is my order?")).toBe("order_status");
+    expect(detectIntent("I was charged twice on my card")).toBe("billing");
+  });
+});
+
+describe("TODO-3 — Sentiment/urgency scoring → priority fast-lane", () => {
+  it("fast-lanes furious threats: angry + urgent + needsAgent, never a promise", () => {
+    const v = analyzeSentiment("This is a SCAM! You cheaters! I will SUE you!!!");
+    expect(v.sentiment).toBe("angry");
+    expect(v.urgency).toBe("urgent");
+    expect(v.priority).toBe("urgent");
+    expect(v.needsAgent).toBe(true);
+    expect(v.score).toBeLessThan(0);
+    expect(v.signals).toContain("threat");
+  });
+
+  it("flags caps shouting as negative with human handoff", () => {
+    const v = analyzeSentiment("WHERE IS MY ORDER I HAVE WAITED TEN DAYS");
+    expect(v.signals).toContain("caps_shouting");
+    expect(v.needsAgent).toBe(true);
+    expect(["negative", "angry"]).toContain(v.sentiment);
+  });
+
+  it("treats code-mixed urgency as handoff even when sentiment is neutral", () => {
+    const v = analyzeSentiment("taka kete niyeche, ekhuni refund din!");
+    expect(v.urgency).toBe("high");
+    expect(v.needsAgent).toBe(true);
+    expect(v.signals).toContain("urgent_mixed");
+  });
+
+  it("scores delayed-parcel disappointment as negative/high-priority", () => {
+    const v = analyzeSentiment("My parcel is 5 days late, very disappointed");
+    expect(v.sentiment).toBe("negative");
+    expect(v.priority).toBe("high");
+    expect(v.needsAgent).toBe(true);
+  });
+
+  it("scores gratitude as positive/low with no handoff", () => {
+    const v = analyzeSentiment("ধন্যবাদ, great service!");
+    expect(v.sentiment).toBe("positive");
+    expect(v.priority).toBe("low");
+    expect(v.needsAgent).toBe(false);
+    expect(v.score).toBeGreaterThan(0);
+  });
+});
+
+describe("TODO-3 — Server-side conversation memory", () => {
+  it("keeps the anchor turn inside the bounded budget", async () => {
+    const agent = await import("./support-agent.server");
+    agent.clearConversationMemory();
+    agent.updateConversationMemory("mem-todo3-1", {
+      role: "customer",
+      message: "Where is my order ORD-1001?",
+      intent: "order_status",
+      sentiment: "neutral",
+    });
+    for (let i = 0; i < 10; i++) {
+      agent.updateConversationMemory("mem-todo3-1", {
+        role: i % 2 ? "bot" : "customer",
+        message: `follow-up detail number ${i} about delivery timing`,
+      });
+    }
+    const mem = agent.getConversationMemory("mem-todo3-1");
+    expect(mem).not.toBeNull();
+    expect(mem!.turnCount).toBe(11);
+    expect(mem!.lastIntent).toBe("order_status");
+    expect(mem!.summary.startsWith("C1(order_status)")).toBe(true);
+    expect(mem!.summary.length).toBeLessThanOrEqual(
+      agent.MEMORY_CONTEXT_BUDGET + 1,
+    );
+    const preamble = agent.buildMemoryContext("mem-todo3-1");
+    expect(preamble.startsWith("Conversation so far:")).toBe(true);
+    expect(agent.buildMemoryContext("mem-unknown-id")).toBe("");
+    agent.clearConversationMemory();
+    expect(agent.getConversationMemory("mem-todo3-1")).toBeNull();
   });
 });

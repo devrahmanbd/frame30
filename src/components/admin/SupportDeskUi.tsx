@@ -93,3 +93,32 @@ export function Empty({ children }: { children: ReactNode }) {
     <p className="py-6 text-center text-sm text-muted-foreground">{children}</p>
   );
 }
+
+/**
+ * TODO-5 — Presence-gated routing hint banner for the HITL approval queue.
+ * Prop-driven (no hooks): the route resolves the hint via
+ * `getApprovalRoutingHint` on the server and passes the strings down.
+ */
+export function RoutingHint({
+  channel,
+  hint,
+}: {
+  channel: "live_queue" | "async_task";
+  hint: string;
+}) {
+  return (
+    <p
+      role="status"
+      className={`flex flex-wrap items-center gap-2 rounded-fq-md border px-3 py-2 text-xs ${
+        channel === "live_queue"
+          ? "border-primary/30 bg-primary/5 text-foreground"
+          : "border-amber-500/30 bg-amber-500/10 text-foreground"
+      }`}
+    >
+      <Pill tone={channel === "live_queue" ? "ok" : "warn"}>
+        {channel === "live_queue" ? "live queue" : "async task"}
+      </Pill>
+      <span>{hint}</span>
+    </p>
+  );
+}

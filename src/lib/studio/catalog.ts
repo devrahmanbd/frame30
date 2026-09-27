@@ -2415,6 +2415,42 @@ export const WIDGETS: WidgetDef[] = [
       bg: "none",
     },
   },
+  // Twin-parity contract (REPORT-THEMES §7 item 2): every BASE_CATALOG
+  // entry in `builder-ast` (SECTION_CATALOG) must resolve here in
+  // WIDGET_BY_KEY so it stays editable in the studio. Defaults mirror the
+  // BASE defaults 1:1 — including the `skin` default for skinnable types
+  // (first-option convention, see DEFAULT_WIDGET_SKIN) and an empty `_bn`
+  // twin for every BITEXT_FIELDS key. Intentional exclusions only:
+  // `page_content` (context slot, zero fields) and `plugin_block` (covered
+  // by the `app-block` twin). Pinned by `catalog.test.ts` "studio twin
+  // parity".
+  // Account-template twins: context-gated `orders_list` / `profile_card`
+  // (BASE group "commerce", templates ["account"]). Bitext kinds mirror the
+  // BASE `bitext` fields; neither type is skinnable, so no `skin` key.
+  {
+    key: "orders_list",
+    label: "Order history",
+    category: "commerce",
+    icon: "Receipt",
+    keywords: ["orders", "history", "account", "purchases", "shopper"],
+    defaults: {
+      heading: "Your orders",
+      heading_bn: "",
+      emptyText: "No orders yet.",
+      emptyText_bn: "",
+    },
+  },
+  {
+    key: "profile_card",
+    label: "Shopper profile",
+    category: "commerce",
+    icon: "User",
+    keywords: ["profile", "account", "shopper", "customer", "details"],
+    defaults: {
+      heading: "Your profile",
+      heading_bn: "",
+    },
+  },
   // Songoskriti heritage gap pack: defaults mirror builder-ast 1:1, with
   // empty বাংলা twins for every theme-authored string.
   {
@@ -2437,6 +2473,18 @@ export const WIDGETS: WidgetDef[] = [
       o3Label: "Gifting",
       o3Label_bn: "",
       o3Href: "/c/gifting",
+      o4Label: "",
+      o4Label_bn: "",
+      o4Href: "",
+      o5Label: "",
+      o5Label_bn: "",
+      o5Href: "",
+      o6Label: "",
+      o6Label_bn: "",
+      o6Href: "",
+      o7Label: "",
+      o7Label_bn: "",
+      o7Href: "",
       buttonLabel: "",
       buttonLabel_bn: "",
       buttonHref: "",
@@ -2468,7 +2516,7 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "MessagesSquare",
     keywords: ["testimonials", "reviews", "quotes", "carousel", "customers"],
-    defaults: { testimonials: [], autoAdvanceMs: 6000 },
+    defaults: { testimonials: [], autoAdvanceMs: 6000, skin: "carousel" },
   },
   {
     key: "trust_footer",
@@ -2572,6 +2620,7 @@ export const WIDGETS: WidgetDef[] = [
       lowStockAt: 5,
       promise: "",
       promise_bn: "",
+      skin: "editorial",
     },
   },
   {

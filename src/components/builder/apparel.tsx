@@ -442,7 +442,7 @@ const StoreLocator: WidgetComponent = (ctx) => {
     >
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         {str("heading") && (
-          <Heading className="mb-12 text-center text-[11px] font-medium fq-caps tracking-[0.25em] text-foreground">
+          <Heading className="mb-12 text-center text-[11px] font-medium tracking-[0.25em] text-foreground fq-caps">
             {str("heading")}
           </Heading>
         )}
@@ -461,7 +461,7 @@ const StoreLocator: WidgetComponent = (ctx) => {
                 </p>
               )}
               {store.hours && (
-                <p className="mt-3 text-[10px] font-medium fq-caps tracking-[0.2em] text-foreground/50">
+                <p className="mt-3 text-[10px] font-medium tracking-[0.2em] text-foreground/50 fq-caps">
                   {store.hours}
                 </p>
               )}

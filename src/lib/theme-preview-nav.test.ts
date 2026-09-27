@@ -56,12 +56,33 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     expect(preset).not.toBeNull();
     expect(preset!.key).toBe("songoskriti");
     expect(preset!.tokens.brand).toBe("#1a1a1a");
-    // The SECTION-track blueprint intentionally doubles the rail (new
-    // arrivals + festive bestsellers); franchise updates reorder sections
-    // and add flagship outlets — this pins the authored order, whatever
-    // the theme builders produce.
-    expect(preset!.templates.index.main.length).toEqual(20);
+    // Fashion-catalog rebuild: 20 sections, hero_carousel first (no
+    // announcement bar). Full order pinned in wiring.test.ts; the header
+    // blueprint stays empty (StoreHeader owns search/account/cart chrome),
+    // so the preview index header carries no sections.
     expect(preset!.templates.index.header.length).toEqual(0);
+    expect(preset!.templates.index.main.map((s) => s.type)).toEqual([
+      "hero_carousel",
+      "department_grid",
+      "product_rail",
+      "craft_story",
+      "product_rail",
+      "split_feature",
+      "product_rail",
+      "finder_row",
+      "split_feature",
+      "product_rail",
+      "product_rail",
+      "split_feature",
+      "collection_story",
+      "product_rail",
+      "craft_story",
+      "ugc_gallery",
+      "testimonials",
+      "split_feature",
+      "trust_footer",
+      "store_locator",
+    ]);
     expect(preset!.templates.index.footer.length).toBeGreaterThan(0);
   });
 
@@ -99,8 +120,9 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       expect(ast.header.length, `${key} header`).toBeGreaterThanOrEqual(0);
       expect(ast.main.length, `${key} main`).toBeGreaterThan(0);
       expect(ast.footer.length, `${key} footer`).toBeGreaterThan(0);
-      // Main opens with a heading (index opens with its hero_carousel)
-      // so every preview sub-page owns the page h1.
+      // Main opens with a heading — except the index (hero carousel) and
+      // the collection (category_header breadcrumb/title/subnav) templates,
+      // which own the page h1 through their dedicated openers.
       expect(ast.main[0]!.type, `${key} first section`).toBe(
         key === "index"
           ? "hero_carousel"

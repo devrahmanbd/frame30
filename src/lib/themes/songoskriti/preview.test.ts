@@ -27,7 +27,32 @@ describe("songoskritiPreviewSource", () => {
     expect(source.header(s).length).toEqual(0);
     expect(source.footer(s).length).toBeGreaterThan(0);
     const index = source.main("index", s)!;
-    expect(index.length).toEqual(20);
+    // Fashion-catalog rebuild: 20 sections, hero_carousel first (no
+    // announcement bar). Full order pinned in wiring.test.ts; here we pin
+    // the head, the length, and the close so a builder regression fails
+    // fast at the source.
+    expect(index.map((x) => x.type)).toEqual([
+      "hero_carousel",
+      "department_grid",
+      "product_rail",
+      "craft_story",
+      "product_rail",
+      "split_feature",
+      "product_rail",
+      "finder_row",
+      "split_feature",
+      "product_rail",
+      "product_rail",
+      "split_feature",
+      "collection_story",
+      "product_rail",
+      "craft_story",
+      "ugc_gallery",
+      "testimonials",
+      "split_feature",
+      "trust_footer",
+      "store_locator",
+    ]);
   });
 
   it("authors demo bodies with proven renderers", () => {

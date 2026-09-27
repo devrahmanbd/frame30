@@ -160,3 +160,133 @@ describe("phase 3.2 — parse round-trips", () => {
     expect((partial.main[0] as Section).ab).toBeUndefined();
   });
 });
+
+describe("lane D3 — theme-emitted sections survive parse→serialize→parse", () => {
+  // REPORT-THEMES.md §7 item 3: themes emit props the catalog did not
+  // declare, so parseAst stripped them on persist round-trips. Every prop
+  // below is read by its renderer (songoskriti.tsx FinderRow /
+  // SongoskritiSplitFeature / SongoskritiUgcGallery, or the generic
+  // SectionRenderer skin chrome for urgency_rail).
+  const themeAst = () => ({
+    header: [],
+    main: [
+      {
+        id: "finder",
+        type: "finder_row",
+        props: {
+          heading: "SHOP BY OCCASION",
+          heading_bn: "উপলক্ষ অনুযায়ী কিনুন",
+          body: "Pick a moment.",
+          body_bn: "আপনার উপলক্ষ বেছে নিন।",
+          o1Label: "EID & FESTIVE",
+          o1Href: "/c/festive",
+          o2Label: "WEDDING",
+          o2Href: "/c/wedding",
+          o3Label: "MEHENDI",
+          o3Href: "/c/mehendi",
+          o4Label: "SANGEET",
+          o4Label_bn: "সংগীত",
+          o4Href: "/c/sangeet",
+          o5Label: "GIFTING",
+          o5Href: "/c/gifting",
+          o6Label: "EVERYDAY",
+          o6Href: "/c/everyday",
+          o7Label: "FAMILY MATCHING",
+          o7Href: "/c/family",
+          buttonLabel: "BROWSE ALL OCCASIONS",
+          buttonLabel_bn: "সব উপলক্ষ দেখুন",
+          buttonHref: "/c/occasions",
+        },
+      },
+      {
+        id: "split",
+        type: "split_feature",
+        props: {
+          heading: "THE FESTIVE EDIT",
+          heading_bn: "উৎসবের সাজ",
+          body: "Jamdani drapes.",
+          body_bn: "জামদানি।",
+          ctaLabel: "SHOP WOMEN",
+          ctaUrl: "/c/women",
+          ctaLabel2: "SHOP MEN",
+          ctaLabel2_bn: "পুরুষদের কেনাকাটা",
+          ctaUrl2: "/c/men",
+          primaryImage: "/ph/songoskriti/edit-festive-main.png",
+          secondaryImage: "/ph/songoskriti/cat-men.png",
+          layout: "image_left",
+        },
+      },
+      {
+        id: "ugc",
+        type: "ugc_gallery",
+        props: {
+          heading: "WORN BY YOU",
+          heading_bn: "আপনার পরিধানে",
+          subhead: "SONGOSKRITI IN THE WORLD",
+          subhead_bn: "সংস্কৃতি সারা দুনিয়ায়",
+          images: "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png",
+        },
+      },
+      {
+        id: "rail",
+        type: "urgency_rail",
+        props: {
+          heading: "New arrivals",
+          heading_bn: "নতুন এসেছে",
+          limit: 8,
+          source: "collection",
+          collection: "new-in",
+          skin: "compact",
+        },
+      },
+    ],
+    footer: [],
+  });
+
+  it("keeps every theme-emitted prop through one parse", () => {
+    const ast = parseAst(themeAst());
+    const byId = Object.fromEntries(ast.main.map((s) => [s.id, s]));
+    const finder = byId["finder"]!.props as Record<string, unknown>;
+    expect(finder["o4Label"]).toBe("SANGEET");
+    expect(finder["o4Label_bn"]).toBe("সংগীত");
+    expect(finder["o4Href"]).toBe("/c/sangeet");
+    expect(finder["o5Label"]).toBe("GIFTING");
+    expect(finder["o5Href"]).toBe("/c/gifting");
+    expect(finder["o6Label"]).toBe("EVERYDAY");
+    expect(finder["o6Href"]).toBe("/c/everyday");
+    expect(finder["o7Label"]).toBe("FAMILY MATCHING");
+    expect(finder["o7Href"]).toBe("/c/family");
+    expect(finder["buttonLabel"]).toBe("BROWSE ALL OCCASIONS");
+    expect(finder["buttonHref"]).toBe("/c/occasions");
+    const split = byId["split"]!.props as Record<string, unknown>;
+    expect(split["primaryImage"]).toBe(
+      "/ph/songoskriti/edit-festive-main.png",
+    );
+    expect(split["secondaryImage"]).toBe("/ph/songoskriti/cat-men.png");
+    expect(split["ctaUrl"]).toBe("/c/women");
+    expect(split["ctaLabel2"]).toBe("SHOP MEN");
+    expect(split["ctaLabel2_bn"]).toBe("পুরুষদের কেনাকাটা");
+    expect(split["ctaUrl2"]).toBe("/c/men");
+    expect(split["layout"]).toBe("image_left");
+    const ugc = byId["ugc"]!.props as Record<string, unknown>;
+    expect(ugc["subhead"]).toBe("SONGOSKRITI IN THE WORLD");
+    expect(ugc["subhead_bn"]).toBe("সংস্কৃতি সারা দুনিয়ায়");
+    expect(ugc["images"]).toBe(
+      "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png",
+    );
+    const rail = byId["rail"]!.props as Record<string, unknown>;
+    expect(rail["skin"]).toBe("compact");
+    expect(rail["collection"]).toBe("new-in");
+  });
+
+  it("keeps props intact through parse→serialize→parse", () => {
+    const once = parseAst(themeAst());
+    const twice = parseAst(JSON.parse(JSON.stringify(once)));
+    expect(twice.main.map((s) => s.id)).toEqual(
+      once.main.map((s) => s.id),
+    );
+    for (const [first, second] of once.main.map((s, i) => [s, twice.main[i]!])) {
+      expect(second!.props, second!.id).toEqual(first!.props);
+    }
+  });
+});

@@ -1,9 +1,15 @@
 # Creating a Framique theme (author guide)
 
-This is the end-to-end guide for shipping a complete storefront theme.
-It describes only what exists in this repo — every section links to the
-source it came from. The integrator reference (server functions, tables,
-registry pipeline, error codes) lives in `./sdk.md`.
+This is the end-to-end guide for shipping a complete storefront theme —
+the single authoring reference for tokens, skins, homepage builders,
+`skins.css`, preview sources, and the theme test suite. It describes only
+what exists in this repo — every section links to the source it came from.
+Runtime theory (token channel, preview engine, persist shape, twin parity)
+lives in [the builder runtime guide](../04-builder/README.md); the
+integrator contract (server functions, tables, registry pipeline, error
+codes) lives in [the theme SDK](./sdk.md); the third-party package gates
+live in [the theme package spec](./packages.md). This guide links to those
+references instead of restating them.
 
 ## 1. What a complete theme is (definition of done)
 
@@ -76,8 +82,40 @@ Designed dark sets are plain objects on `tokens.dark`, e.g. Atelier
 (`src/lib/theme-blueprints.ts:643-648`) and Circuit
 (`src/lib/theme-blueprints.ts:1248-1253`). Globals are the merchant-editable
 palette: `DEFAULT_GLOBALS` (`src/lib/theme-globals.ts:32-48`) seeds four
-colours + two fonts; bindings are stored as `var(--fq-g-<id>)`
+colors + two fonts; bindings are stored as `var(--fq-g-<id>)`
 (`src/lib/theme-globals.ts:50-63`).
+
+`ThemeTokens` carries 19 required keys plus 2 optional ones (`timezone`,
+`allowCustomerTimezone`) (`src/lib/builder-ast.ts:6021-6055`). The two
+shipped themes lock the values below — copy one column verbatim as the
+starting point, then change brand/accent/surface/ink plus layout knobs:
+
+| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Somvabona (`src/lib/themes/somvabona/tokens.ts:14`) |
+| ----------------- | ------------------------------------------------------ | --------------------------------------------------- |
+| `brand`           | `#1a1a1a`                                              | `#7C2A1A`                                           |
+| `accent`          | `#8B4513`                                              | `#B95A38`                                           |
+| `surface`         | `#faf9f7`                                              | `#FBF6EE`                                           |
+| `ink`             | `#1a1a1a`                                              | `#2E2620`                                           |
+| `radius`          | `0px` (sharp, fashion-editorial)                       | `4px`                                               |
+| `fontDisplay`     | `Playfair Display`                                     | `Playfair Display` (campaign headlines only)        |
+| `fontBody`        | `Inter`                                                | `Inter`                                             |
+| `container`       | `1320px`                                               | `1320px`                                            |
+| `density`         | `comfortable`                                          | `comfortable`                                       |
+| `typeScale`       | `default`                                              | `default`                                           |
+| `spaceUnit`       | `16px`                                                 | `16px`                                              |
+| `shadow`          | `soft`                                                 | `soft`                                              |
+| `motion`          | `subtle`                                               | `subtle`                                            |
+| `digits`          | `latin`                                                | `latin`                                             |
+| `locale`          | `en`                                                   | `en`                                                |
+| `currencyDisplay` | `symbol`                                               | `symbol`                                            |
+| `fontPairing`     | `editorial-serif`                                      | `editorial-serif`                                   |
+| `dark`            | `null` (light-only)                                    | `null` (light-only)                                 |
+| `globals`         | `DEFAULT_GLOBALS`                                      | `DEFAULT_GLOBALS`                                   |
+
+Both themes keep bilingual EN/BN inline props on every user-facing string
+and a BDT-first money display (symbol, Latin digits). How published tokens
+reach the storefront as CSS variables is runtime theory — see [the builder
+token reference](../04-builder/README.md).
 
 ### 2.2 Templates per key
 
@@ -163,6 +201,34 @@ tokens, templates }`. `SPECS` (`:421-778`) + `SHIPPED_BLUEPRINTS`
   `rating`/`installs` are honest zeros until marketplace telemetry exists
   (file header `:1-11`); `catalogMeta()` falls back to `FALLBACK`
   (`:235-247`).
+
+### 2.5 Homepage builder pattern
+
+Build the homepage as one function returning `Section[]`, wrapped so theme
+skin defaults merge **under** authored props (merchant inspector values
+always win):
+
+- Songoskriti: `buildHomepageMain()` (`src/lib/themes/songoskriti/homepage.ts:23`)
+  wrapped in `withSongoskritiDefaults()` (`src/lib/themes/songoskriti/skins.ts:109`).
+  Ships a 20-section homepage with `hero_carousel` first: `hero_carousel`,
+  `department_grid`, `product_rail`, `craft_story`, `product_rail`,
+  `split_feature`, `product_rail`, `finder_row`, `split_feature`,
+  `product_rail`, `product_rail`, `split_feature`, `collection_story`,
+  `product_rail`, `craft_story`, `ugc_gallery`, `testimonials`,
+  `split_feature`, `trust_footer`, `store_locator`.
+- Somvabona: `buildHomepageMain()` (`src/lib/themes/somvabona/homepage.ts:22`)
+  wrapped in `withSomvabonaWidgetDefaults()` (`src/lib/themes/somvabona/skins.ts:111`).
+  Ships an 11-section homepage on 10 distinct types (the urgency rail
+  doubles): `announcement_bar`, `hero_carousel`, `trust_marquee`,
+  `circle_categories`, `price_buckets`, `urgency_rail` × 2, `occasion_matrix`,
+  `store_locator`, `craft_story`, `testimonials`.
+
+Pattern rules for new themes: first section owns the H1 claim (a
+`hero_carousel` up front, matching the full composition lists in [the
+builder homepage reference](../04-builder/README.md));
+every user-facing string carries its `_bn` twin inline; rail sections read
+from `collection` sources with explicit `limit` values; never invent
+metrics, ratings, or addresses in demo copy.
 
 ## 3. Building step-by-step
 
@@ -362,42 +428,20 @@ This file is the metadata floor — SQL rows override it at runtime
 
 ### Step 6 — Registry seed
 
-```bash
-# Regenerate the seed migration from code presets (curated keys inside
-# scripts/seed-theme-registry.ts:16), review, then apply live as supabase_admin.
-bun scripts/seed-theme-registry.ts > supabase/migrations/<timestamp>_theme_registry_seed.sql
-```
-
-Semantics: `INSERT ... ON CONFLICT (key) DO UPDATE`
-(`scripts/seed-theme-registry.ts:46-51`); current seed keys are
-`supershop` + `clothing-heritage` (`:16`). Generated migrations look like
-`supabase/migrations/20260922090000_theme_registry_seed.sql:15-16`.
+Generate the seed migration from code presets and apply it live — the exact
+commands, curated keys, and `INSERT ... ON CONFLICT` semantics live in
+[the SDK registry pipeline](./sdk.md).
+Authors only need to know: the registry is the catalogue source demo
+imports read from, so seed before testing imports.
 
 ### Step 7 — Install / publish / activate lifecycle
 
-```ts
-// Appearance desk (merchant scope). Permission: themes.update except where noted.
-import {
-  themeInstallFn,
-  themeActivateFn,
-} from "@/lib/themes/appearance.functions";
-import { builderPublishFn, builderInstallFn } from "@/lib/themes.functions";
-
-// 1. Install a catalogue theme -> NEW INACTIVE row + v1 published + draft
-//    + ledger row (src/lib/themes/appearance.server.ts:174-297).
-await themeInstallFn({ key: "my-theme" });
-
-// 2. Edit the draft (autosave/commit), then publish. Publish blocks on
-//    lint errors + <90% বাংলা + font/contrast gates
-//    (src/lib/themes.server.ts:382-448).
-await builderPublishFn({ themeId, templates, tokens, note: "First release" });
-
-// 3. Activate. The guard adopts the valid published pointer, else the newest
-//    published version — never a draft (src/lib/themes/appearance.server.ts:310-349).
-await themeActivateFn({ id: themeId });
-```
-
-Full function inventory with input shapes is in `./sdk.md` §1.
+Install, publish, and activate through the Appearance-desk and builder
+functions documented in [the SDK marketplace flow](./sdk.md)
+(copy-pasteable sequence included there). Publishing is gated on lint,
+Bengali coverage, fonts, and contrast — see the publishing checklist in §7
+below, and [the builder runtime guide](../04-builder/README.md) for the
+state machine behind it.
 
 ## 4. Widgets with presets
 
@@ -420,6 +464,48 @@ Full function inventory with input shapes is in `./sdk.md` §1.
 - Containers only: `children` is accepted solely on catalogue entries
   flagged `container: true` (`src/lib/builder-ast.ts:261-265`); trees cap
   at `MAX_TREE_DEPTH`/`MAX_NODES_PER_TEMPLATE` (`:252-254`).
+
+### Skins — closed vocabularies and theme defaults
+
+The core lane owns the `skin` prop: every skinnable widget gains a **Skin**
+select field in the style panel via `SKIN_FIELD`
+(`src/lib/builder-ast.ts:648`), with the closed vocabulary in
+`WIDGET_SKINS` (`src/lib/builder-ast.ts:599`) and the core default in
+`DEFAULT_WIDGET_SKIN` (`src/lib/builder-ast.ts:617`). The first option is
+the documented default. Unknown or empty values resolve to the widget
+default — never a crash, never empty.
+
+| Widget          | Core vocab (first = core default) | Songoskriti default | Somvabona default |
+| --------------- | --------------------------------- | ------------------- | ----------------- |
+| `product_rail`  | `editorial`, `compact`, `minimal` | `editorial`         | `compact`         |
+| `hero_carousel` | `split`, `fullbleed`, `minimal`   | `split`             | `fullbleed`       |
+| `testimonials`  | `carousel`, `wall`, `single`      | `wall`              | `carousel`        |
+| `product_grid`  | `cards`, `rows`                   | `cards`             | `rows`            |
+| `urgency_rail`  | `editorial`, `compact`, `minimal` | — (core default)    | `compact`         |
+
+Theme-side sets: `SONGOSKRITI_SKIN_SETS`
+(`src/lib/themes/songoskriti/skins.ts:35`), `SONGOSKRITI_WIDGET_DEFAULTS`
+(`src/lib/themes/songoskriti/skins.ts:52`), `SOMVABONA_WIDGET_DEFAULTS`
+(`src/lib/themes/somvabona/skins.ts:40`). Wire them with
+`withSongoskritiDefaults()` (`src/lib/themes/songoskriti/skins.ts:109`) or
+`withSomvabonaWidgetDefaults()` (`src/lib/themes/somvabona/skins.ts:111`):
+defaults merge **under** authored props, so an explicit `skin` in the
+inspector always wins. Skin values are style keys, never copy, so they
+carry no `_bn` twins (bilingual props are declared per widget in
+`BITEXT_FIELDS`, `src/lib/builder-ast.ts:5311`).
+
+### `skins.css` — token-only rule
+
+Theme skin stylesheets are token-only: every value reads `var(--theme-*)`,
+keyed off the renderer's `[data-widget]` + `[data-skin]` attributes.
+Washes use `color-mix()` over theme tokens, so a merchant re-tint re-skins
+every rule automatically; motion rules collapse under
+`prefers-reduced-motion`. See `src/lib/themes/songoskriti/skins.css` and
+`src/lib/themes/somvabona/skins.css`. The gate is enforced per theme by
+test: `stays token-driven: theme vars only, no hex literals` in
+`src/lib/themes/songoskriti/skins.test.ts:182`, and `is token-driven: no
+hex literals or raw colour utilities` in
+`src/lib/themes/somvabona/skins.test.ts:167`.
 
 ## 5. Forms + auth pages
 
@@ -450,34 +536,22 @@ locale, honeypot?, renderedAt? }`.
 
 ## 6. Demo data
 
-Granular, idempotent import RPCs read blueprints from `theme_registry`
-(`scripts/seed-theme-registry.ts:4-7` — an empty registry makes every demo
-import a noop):
+Granular, idempotent import RPCs read blueprints from `theme_registry` —
+an empty registry makes every demo import a noop, so seed first (§3 step
+6). What authors need to know:
 
-| Step                                                                                                                                               | Server fn (`src/lib/themes.functions.ts`)                                   | Service (`src/lib/theme-imports.server.ts`)      | SQL                                                                                                                                  |
-| -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Preflight (read-only conflicts)                                                                                                                    | `importPreflightFn` (`:208-217`) `{ themeKey }`                             | `importPreflight` (`:108-159`)                   | —                                                                                                                                    |
-| Slides (hero_carousel; `hero` fallback for repeater-shaped blueprints — themes whose hero is a `hero` repeater widget rather than `hero_carousel`) | `importThemeSlidesFn` (`:219-228`)                                          | `importThemeSlides` (`:273-309`)                 | `import_theme_slides` (`supabase/migrations/20260920_import_rpcs.sql:15-150`, amended `20260922090100_import_slides_hero.sql:8-190`) |
-| Media                                                                                                                                              | `importThemeMediaFn` (`:230-239`) `{ themeKey, overwrite? }`                | `importThemeMedia` (`:315-360`)                  | `import_theme_media`                                                                                                                 |
-| Products (+variants, collections link)                                                                                                             | `importThemeProductsFn` (`:241-258`) `{ themeKey, overwrite? }` (+ catalog) | `importThemeProducts` (`:367-414`)               | `import_theme_products`                                                                                                              |
-| Posts (articles + storefront pages)                                                                                                                | `importThemePostsFn` (`:260-269`) `{ themeKey, overwrite? }`                | `importThemePosts` (`:420-465`)                  | `import_theme_posts`                                                                                                                 |
-| All four in order                                                                                                                                  | `importThemeAllFn` (`:271-280`) `{ themeKey, overwrite? }`                  | `importThemeAll` (`:471-522`)                    | slides → media → products → posts                                                                                                    |
-| Legacy one-shot                                                                                                                                    | `builderDemoImportFn` (`:192-201`) `{ themeKey }`                           | `importDemoContent` (`src/lib/themes.server.ts`) | blueprint-dependent                                                                                                                  |
-| Purge demo rows                                                                                                                                    | `builderDemoPurgeFn` (`:282-288`)                                           | `purgeDemoContent` (`src/lib/themes.server.ts`)  | `is_demo` flags (`supabase/migrations/20260917210000_phase2e_theme_engine.sql:7-10`)                                                 |
-
-Preflight + overwrite rules:
-
-- Preflight compares demo slugs against live `products`, `collections`,
-  `storefront_pages`, `articles` slugs and `media_assets` file names
-  (`src/lib/theme-imports.server.ts:42-52`, `:108-159`); conflicts are a
-  sorted intersection (`matchConflicts`, `:64-79`).
+- Imports run in order: slides → media → products → posts. Slides come
+  from `hero_carousel` (with a `hero` repeater fallback); each sub-import
+  noops independently when its data already exists (`status: "noop"`).
+- Before overwriting anything, run the read-only preflight: it compares
+  demo slugs against live products, collections, pages, articles, and
+  media file names and returns the sorted collision set.
 - `overwrite: true` first deletes **only** colliding rows in FK order
-  (links → variants → products → collections/categories, then pages/posts/
-  media) via `removeImportConflicts()` (`:185-267`); non-colliding merchant
-  rows are never touched.
-- Without `overwrite`, each sub-import noops independently when its data
-  already exists (`status: "noop"`, reasons like `slides_already_exist`,
-  `blueprint_not_found`, `no_theme`).
+  (links → variants → products → collections/categories, then
+  pages/posts/media); non-colliding merchant rows are never touched.
+
+The full function inventory, service mapping, and SQL references live in
+[the SDK demo-imports section](./sdk.md).
 
 ## 7. Publishing checklist + common pitfalls
 
@@ -641,7 +715,7 @@ approved, build, export, submit, respond to review.
 
 ### 9.2 What review checks
 
-The full gate definitions live in `./packages.md`. In one glance:
+The full gate definitions live in [the theme package spec](./packages.md). In one glance:
 
 1. **Size** — the file is at most 2 MB.
 2. **Budget** — at most 200 sections per template, header + main + footer
@@ -699,3 +773,67 @@ a `hero_carousel` claiming the one H1, a `product_rail` for
 merchandising, and a footer `newsletter` signup, every authored string
 twinned in বাংলা. Copy its manifest shape verbatim and grow from there:
 add template keys one at a time, keep the twin discipline, export often.
+
+Staff-side handling after approval (listing, install ledger, activation,
+audit) is integrator work — see [the theme SDK](./sdk.md).
+
+## 10. Preview-source wiring
+
+Theme previews render through a theme-agnostic engine: the theme only
+implements the `PreviewThemeSource` port, and the registry wires it in.
+
+- Implement `songoskritiPreviewSource()` in
+  `src/lib/themes/songoskriti/preview.ts` (Somvabona mirrors it in
+  `src/lib/themes/somvabona/preview.ts`): `{ key, themeName, author,
+tokens, header, footer, main }`, where `main(template, s)` returns the
+  authored demo body per template key or `null` for templates the theme
+  does not author. The port type lives in
+  `src/lib/theme-preview-nav.ts:283`.
+- Register the source in `src/lib/preview-sources.ts:14-19` — that map is
+  the only place that names themes for preview. The engine never imports a
+  theme module directly.
+- In-preview navigation maps demo links onto the preview's own template
+  tabs, and focus links use the `?focus=` contract (never `?slug=`).
+  Engine behavior, blocked paths, and demo-focus resolution are runtime
+  theory — see [the builder preview reference](../04-builder/README.md).
+
+## 11. Test files to update
+
+A theme change is done when these suites stay green — update them
+alongside the theme, not after:
+
+| Suite                                   | What it pins                                                        |
+| --------------------------------------- | ------------------------------------------------------------------- |
+| `src/lib/themes/<name>/wiring.test.ts`  | Header/footer/homepage builders emit the locked composition (§2.5)  |
+| `src/lib/themes/<name>/skins.test.ts`   | Skin defaults resolve; `skins.css` stays token-driven (§4)          |
+| `src/lib/themes/<name>/preview.test.ts` | Preview source covers every authored template (§10)                 |
+| `src/lib/studio/catalog.test.ts:837`    | Studio twin parity — every catalogue entry stays editable in studio |
+| `src/lib/theme-preview-nav.test.ts`     | Preview engine resolves theme sources and blocks account paths      |
+| `src/lib/theme-preview.test.ts`         | Preview route renders the resolved preset                           |
+
+Skin defaults must survive both the in-memory builders and a
+persist/parse round trip (`parseSection` drops undeclared props — a new
+`skin` value needs its catalogue field first). Preview sources must return
+`null`, not empty arrays, for unauthored templates so the engine can
+synthesize the generic demo body.
+
+## 12. WordPress handbook map
+
+Authors coming from WordPress will recognize the shape; the vocabulary
+differs. [The archived handbook index](./wordpress-handbook-index.md)
+records the September 2026 WordPress chapter list for reference — the
+table below is the only mapping this guide maintains:
+
+| WordPress concept                       | Framique equivalent (this guide)                                             |
+| --------------------------------------- | ---------------------------------------------------------------------------- |
+| `theme.json` global settings and styles | `ThemeTokens` + `DEFAULT_GLOBALS` (§2.1)                                     |
+| Template hierarchy                      | `TEMPLATE_KEYS` with fixed slot arrays (§2.2)                                |
+| Block patterns                          | Catalogue widgets with `defaults` presets (§4)                               |
+| Style variations                        | Skins: closed vocabularies + theme defaults (§4)                             |
+| Customizer controls                     | Builder inspector: catalogue fields, **Skin** select in the style panel (§4) |
+| Theme review guidelines                 | Package gates and the closed rejection list (§9.2–§9.4)                      |
+| Submitting and updating themes          | **Export package** → **Themes** screen submit, semver bumps (§9.1, §9.3)     |
+
+Framique has no PHP layer, no `functions.php`, and no child-theme
+mechanism: merchant edits live in drafts and versions, and theme upgrades
+arrive through the registry, not file overrides.

@@ -106,6 +106,26 @@ export async function ingestChannelEvent(input: ChannelIntake): Promise<{
     );
 
     const payloadDigest = await digest(input.rawBody);
+
+    // Verify BEFORE the idempotency insert: unauthenticated traffic must not
+    // consume replay slots or cost a write, otherwise a bad-signature flood
+    // poisons the dedupe window for the legitimate retry that follows it.
+    if (
+      input.secret &&
+      !(await verifySignature(
+        input.secret,
+        input.rawBody,
+        input.signature ?? "",
+      ))
+    ) {
+      incr("framique_ai_channel_total", {
+        channel: input.channel,
+        outcome: "rejected",
+      });
+      log("warn", "support.channel_bad_signature", { channel: input.channel });
+      return { outcome: "rejected" as const };
+    }
+
     const base = {
       merchant_id: channel.merchant_id,
       channel_id: channel.id,
@@ -141,18 +161,6 @@ export async function ingestChannelEvent(input: ChannelIntake): Promise<{
     if (!channel.enabled) {
       await settle("disabled");
       return { outcome: "disabled" as const };
-    }
-    if (
-      input.secret &&
-      !(await verifySignature(
-        input.secret,
-        input.rawBody,
-        input.signature ?? "",
-      ))
-    ) {
-      await settle("rejected", "bad_signature");
-      log("warn", "support.channel_bad_signature", { channel: input.channel });
-      return { outcome: "rejected" as const };
     }
 
     const { data: merchant } = await db

@@ -162,7 +162,9 @@ export const supportTicketUpdateFn = createServerFn({ method: "POST" })
     z
       .object({
         ticketId: z.string().uuid(),
-        status: z.enum(["open", "pending", "resolved", "closed"]).optional(),
+        status: z
+          .enum(["open", "pending", "pending_approval", "resolved", "closed"])
+          .optional(),
         priority: priority.optional(),
         assigneeId: z.string().uuid().nullable().optional(),
         note: z.string().trim().max(500).optional(),
@@ -174,6 +176,34 @@ export const supportTicketUpdateFn = createServerFn({ method: "POST" })
     const { updateTicket } = await import("./support-tickets.server");
     const merchantId = await merchantOf(context);
     return updateTicket(context.supabase, merchantId, context.userId, data);
+  });
+
+/**
+ * Operator confirm path for `pending_approval` tickets (sensitive
+ * side-effects: refunds, PII disclosure). Approve opens the ticket for normal
+ * handling; reject closes it. Refuses any ticket that is not awaiting
+ * approval so the gate cannot be bypassed or double-applied.
+ */
+export const supportTicketConfirmFn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        ticketId: z.string().uuid(),
+        decision: z.enum(["approve", "reject"]),
+        note: z.string().trim().max(500).optional(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { confirmPendingTicket } = await import("./support-tickets.server");
+    const merchantId = await merchantOf(context);
+    return confirmPendingTicket(
+      context.supabase,
+      merchantId,
+      context.userId,
+      data,
+    );
   });
 
 export const supportTicketCreateFn = createServerFn({ method: "POST" })
@@ -326,7 +356,9 @@ const widgetTicketSchema = z.object({
 export const createSupportTicketWidgetFn = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => widgetTicketSchema.parse(d))
   .handler(async ({ data }) => {
-    const { createTicket } = await import("./support-tickets.server");
+    const { createTicket, needsApprovalReview } = await import(
+      "./support-tickets.server"
+    );
     const { enforceRateLimit } = await import("./rate-limit.server");
 
     // Resolve merchant by storefront slug
@@ -367,6 +399,14 @@ export const createSupportTicketWidgetFn = createServerFn({ method: "POST" })
 
     const priority = data.priority ?? "normal";
 
+    // Sensitive side-effects (refund intent, high-sensitivity PII in the
+    // body) must not fire autonomously: hold for operator confirmation while
+    // the plain auto-ticket flow below keeps working unchanged.
+    const review = needsApprovalReview({
+      subject: data.subject,
+      body: data.body ?? null,
+    });
+
     try {
       const ticket = await createTicket({
         merchantId: merchant.id,
@@ -379,11 +419,17 @@ export const createSupportTicketWidgetFn = createServerFn({ method: "POST" })
         requesterHash: data.phone
           ? Buffer.from(data.phone).toString("base64").slice(0, 24)
           : null,
-        reason: "support.agent_escalation",
+        reason: review.required
+          ? "support.sensitive_side_effect_review"
+          : "support.agent_escalation",
+        ...(review.required ? { requiresApproval: true } : {}),
       });
 
       const ticketRef = `#TKT-${ticket.id.slice(-8).toUpperCase()}`;
-      const slaMsg = `Your ticket **${ticketRef}** has been created with **${priority}** priority. Our team will respond within the SLA window. Status: ${ticket.status}.`;
+      const pendingApproval = ticket.status === "pending_approval";
+      const slaMsg = pendingApproval
+        ? `Your request has been queued for operator review as ticket **${ticketRef}** (${priority} priority). A specialist will confirm the next step here shortly — nothing has been actioned yet.`
+        : `Your ticket **${ticketRef}** has been created with **${priority}** priority. Our team will respond within the SLA window. Status: ${ticket.status}.`;
 
       return {
         ok: true as const,
@@ -392,10 +438,14 @@ export const createSupportTicketWidgetFn = createServerFn({ method: "POST" })
         subject: ticket.subject,
         priority: ticket.priority,
         status: ticket.status,
+        pendingApproval,
+        reviewSignals: review.signals,
         firstResponseDueAt: ticket.first_response_due_at,
         conversationId: data.conversationId ?? null,
         agentMessage: slaMsg,
-        agentMessageBn: `আপনার সাপোর্ট টিকিট **${ticketRef}** সফলভাবে তৈরি হয়েছে (অগ্রাধিকার: **${priority}**)। আমাদের দল শীঘ্রই যোগাযোগ করবে।`,
+        agentMessageBn: pendingApproval
+          ? `আপনার অনুরোধটি অপারেটর পর্যালোচনার জন্য **${ticketRef}** টিকিট হিসেবে রাখা হয়েছে। একজন বিশেষজ্ঞ শীঘ্রই পরবর্তী পদক্ষেপ নিশ্চিত করবেন — এখনো কোনো ব্যবস্থা নেওয়া হয়নি।`
+          : `আপনার সাপোর্ট টিকিট **${ticketRef}** সফলভাবে তৈরি হয়েছে (অগ্রাধিকার: **${priority}**)। আমাদের দল শীঘ্রই যোগাযোগ করবে।`,
       };
     } catch {
       return {

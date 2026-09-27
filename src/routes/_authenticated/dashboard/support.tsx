@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
+import { createServerFn, useServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { toast } from "sonner";
 import {
   Loader2,
@@ -17,12 +18,14 @@ import { useLang } from "@/lib/i18n";
 import {
   getCsatAnalyticsFn,
   listCallbacksFn,
+  recordOperatorPresenceFn,
   supportAuditFn,
   supportChannelSaveFn,
   supportDeskFn,
   supportKbDeleteFn,
   supportKbSaveFn,
   supportSlaSaveFn,
+  supportTicketConfirmFn,
   supportTicketCreateFn,
   supportTicketEventsFn,
   supportTicketUpdateFn,
@@ -32,6 +35,7 @@ import { DEFAULT_SLA, type Priority } from "@/lib/support-sla";
 import {
   Empty,
   Pill,
+  RoutingHint,
   SLA_TONE,
   Section,
   Stat,
@@ -82,6 +86,32 @@ type ChannelPatch = {
 
 const PRIORITIES: Priority[] = ["urgent", "high", "normal", "low"];
 const STATUSES = ["open", "pending", "resolved", "closed"] as const;
+const APPROVAL_STATUS = "pending_approval" as const;
+
+/**
+ * TODO-5 — presence-gated routing hint for the HITL approval queue.
+ * Defined here (not in support.functions.ts, which is owned by another
+ * lane) so the desk can read `getApprovalRoutingHint` without touching
+ * shared server-fn modules.
+ */
+const supportPresenceRoutingFn = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { currentMerchantId } = await import("@/lib/marketing.server");
+    const merchantId = await currentMerchantId(
+      context.supabase as never,
+      context.userId,
+    );
+    const { getApprovalRoutingHint } = await import(
+      "@/lib/support-presence.server"
+    );
+    return getApprovalRoutingHint(merchantId);
+  });
+
+type RoutingHintData = {
+  channel: "live_queue" | "async_task";
+  hint: string;
+} | null;
 
 const field =
   "w-full rounded-fq-md border border-input bg-background px-2 py-1.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring";
@@ -95,6 +125,8 @@ function SupportDesk() {
   const qc = useQueryClient();
   const loadDesk = useServerFn(supportDeskFn);
   const loadAudit = useServerFn(supportAuditFn);
+  const recordPresence = useServerFn(recordOperatorPresenceFn);
+  const loadRouting = useServerFn(supportPresenceRoutingFn);
   const [tab, setTab] = useState<Tab>("tickets");
 
   const desk = useQuery({
@@ -108,9 +140,32 @@ function SupportDesk() {
     enabled: tab === "trust",
   });
 
+  // The open desk is itself an operator heartbeat: viewing it marks the
+  // merchant's operator online for presence-gated routing.
+  useEffect(() => {
+    recordPresence().catch(() => undefined);
+  }, [recordPresence]);
+  const routing = useQuery({
+    queryKey: ["support-presence-routing"],
+    queryFn: () => loadRouting(),
+    staleTime: 30_000,
+  });
+
   const refresh = () =>
     void qc.invalidateQueries({ queryKey: ["support-desk"] });
   const summary = desk.data?.summary;
+
+  const approvals = useMemo(
+    () =>
+      (desk.data?.tickets ?? []).filter((r) => r.status === APPROVAL_STATUS),
+    [desk.data],
+  );
+  const routingHint: RoutingHintData = routing.data
+    ? {
+        channel: routing.data.channel,
+        hint: t(routing.data.hintEn, routing.data.hintBn),
+      }
+    : null;
 
   const tabs: { key: Tab; label: string; Icon: typeof LifeBuoy }[] = [
     { key: "tickets", label: t("Tickets", "টিকিট"), Icon: LifeBuoy },
@@ -141,6 +196,11 @@ function SupportDesk() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Stat label={t("Open", "চলমান")} value={String(summary?.open ?? 0)} />
+        <Stat
+          label={t("Awaiting approval", "অনুমোদন বাকি")}
+          value={String(approvals.length)}
+          hint={t("Sensitive tickets held", "সংবেদনশীল টিকিট আটকে আছে")}
+        />
         <Stat
           label={t("Breached", "এসএলএ ভঙ্গ")}
           value={String(summary?.breached ?? 0)}
@@ -193,7 +253,11 @@ function SupportDesk() {
       ) : (
         <>
           {tab === "tickets" ? (
-            <Tickets rows={desk.data?.tickets ?? []} onDone={refresh} />
+            <Tickets
+              rows={desk.data?.tickets ?? []}
+              onDone={refresh}
+              routingHint={routingHint}
+            />
           ) : null}
           {tab === "callbacks" ? <CallbacksQueue /> : null}
           {tab === "kb" ? (
@@ -209,6 +273,9 @@ function SupportDesk() {
             <Trust
               guardrails={audit.data?.guardrails ?? []}
               tools={audit.data?.tools ?? []}
+              approvals={approvals}
+              routingHint={routingHint}
+              onDone={refresh}
             />
           ) : null}
         </>
@@ -223,14 +290,23 @@ type Ticket = NonNullable<
   Awaited<ReturnType<typeof supportDeskFn>>
 >["tickets"][number];
 
-function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
+function Tickets({
+  rows,
+  onDone,
+  routingHint,
+}: {
+  rows: Ticket[];
+  onDone: () => void;
+  routingHint: RoutingHintData;
+}) {
   const { t } = useLang();
   const update = useServerFn(supportTicketUpdateFn);
+  const confirm = useServerFn(supportTicketConfirmFn);
   const create = useServerFn(supportTicketCreateFn);
   const events = useServerFn(supportTicketEventsFn);
-  const [filter, setFilter] = useState<"all" | (typeof STATUSES)[number]>(
-    "open",
-  );
+  const [filter, setFilter] = useState<
+    "all" | (typeof STATUSES)[number] | typeof APPROVAL_STATUS
+  >("open");
   const [openId, setOpenId] = useState<string | null>(null);
   const [subject, setSubject] = useState("");
   const [note, setNote] = useState("");
@@ -257,6 +333,31 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
       toast.error(t("Could not update the ticket", "টিকিট আপডেট করা যায়নি")),
   });
 
+  // TODO-5 — HITL confirm path for `pending_approval` tickets (sensitive
+  // side-effects). Approve opens the ticket; reject closes it. The server
+  // refuses any ticket that is not awaiting approval.
+  const decide = useMutation({
+    mutationFn: (input: {
+      ticketId: string;
+      decision: "approve" | "reject";
+      note?: string;
+    }) => confirm({ data: input }),
+    onSuccess: (res, input) => {
+      toast.success(
+        input.decision === "approve"
+          ? t("Approved — ticket opened", "অনুমোদিত — টিকিট খোলা হয়েছে")
+          : t("Rejected — ticket closed", "প্রত্যাখ্যাত — টিকিট বন্ধ হয়েছে"),
+      );
+      setNote("");
+      setOpenId(res.status === "open" ? input.ticketId : null);
+      onDone();
+    },
+    onError: () =>
+      toast.error(
+        t("Could not confirm the ticket", "টিকিট নিশ্চিত করা যায়নি"),
+      ),
+  });
+
   const open = useMutation({
     mutationFn: () =>
       create({ data: { subject: subject.trim(), priority: "normal" } }),
@@ -281,7 +382,7 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
         )}
         action={
           <div className="flex flex-wrap gap-1">
-            {(["all", ...STATUSES] as const).map((s) => (
+            {(["all", ...STATUSES, APPROVAL_STATUS] as const).map((s) => (
               <button
                 key={s}
                 type="button"
@@ -294,6 +395,14 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
           </div>
         }
       >
+        {routingHint ? (
+          <div className="mb-3">
+            <RoutingHint
+              channel={routingHint.channel}
+              hint={routingHint.hint}
+            />
+          </div>
+        ) : null}
         <form
           className="mb-4 flex gap-2"
           onSubmit={(e) => {
@@ -403,6 +512,53 @@ function Tickets({ rows, onDone }: { rows: Ticket[]; onDone: () => void }) {
                 className={`mt-1 ${field}`}
               />
             </label>
+
+            {active.status === APPROVAL_STATUS ? (
+              <div className="rounded-fq-md border border-amber-500/40 bg-amber-500/5 p-3">
+                <p className="text-xs font-medium">
+                  {t(
+                    "Awaiting operator approval",
+                    "অপারেটর অনুমোদনের অপেক্ষায়",
+                  )}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {t(
+                    "Sensitive side-effect held for human confirm. Approve opens the ticket; reject closes it. Customer replies stay advisory-only until then.",
+                    "সংবেদনশীল কাজ মানব নিশ্চিতকরণের জন্য আটকে আছে। অনুমোদন করলে টিকিট খুলবে; প্রত্যাখ্যান করলে বন্ধ হবে।",
+                  )}
+                </p>
+                <div className="mt-2 flex flex-wrap gap-1">
+                  <button
+                    type="button"
+                    className={btnGhost}
+                    disabled={decide.isPending}
+                    onClick={() =>
+                      decide.mutate({
+                        ticketId: active.id,
+                        decision: "approve",
+                        note: note || undefined,
+                      })
+                    }
+                  >
+                    {t("Approve", "অনুমোদন")}
+                  </button>
+                  <button
+                    type="button"
+                    className={btnGhost}
+                    disabled={decide.isPending}
+                    onClick={() =>
+                      decide.mutate({
+                        ticketId: active.id,
+                        decision: "reject",
+                        note: note || undefined,
+                      })
+                    }
+                  >
+                    {t("Reject", "প্রত্যাখ্যান")}
+                  </button>
+                </div>
+              </div>
+            ) : null}
 
             <div className="flex flex-wrap gap-1">
               <button
@@ -1018,12 +1174,21 @@ function SlaPolicies({
 function Trust({
   guardrails,
   tools,
+  approvals,
+  routingHint,
+  onDone,
 }: {
   guardrails: AuditData["guardrails"];
   tools: AuditData["tools"];
+  approvals: Ticket[];
+  routingHint: RoutingHintData;
+  onDone: () => void;
 }) {
   const { t } = useLang();
+  const qc = useQueryClient();
   const getCsat = useServerFn(getCsatAnalyticsFn);
+  const confirmFn = useServerFn(supportTicketConfirmFn);
+  const createTicketFn = useServerFn(supportTicketCreateFn);
   const csat = useQuery({
     queryKey: ["support-csat-analytics"],
     queryFn: () => getCsat(),
@@ -1039,8 +1204,181 @@ function Trust({
 
   const total = Math.max(1, csatData.totalRatings);
 
+  // TODO-5 — HITL confirm path, surfaced in Trust alongside the guardrail
+  // feed so approvals are audited where operators already watch.
+  const decide = useMutation({
+    mutationFn: (input: { ticketId: string; decision: "approve" | "reject" }) =>
+      confirmFn({ data: input }),
+    onSuccess: (_, input) => {
+      toast.success(
+        input.decision === "approve"
+          ? t("Approved — ticket opened", "অনুমোদিত — টিকিট খোলা হয়েছে")
+          : t("Rejected — ticket closed", "প্রত্যাখ্যাত — টিকিট বন্ধ হয়েছে"),
+      );
+      onDone();
+      void qc.invalidateQueries({ queryKey: ["support-audit"] });
+    },
+    onError: () =>
+      toast.error(
+        t("Could not confirm the ticket", "টিকিট নিশ্চিত করা যায়নি"),
+      ),
+  });
+
+  // TODO-5 — low-CSAT tasking: rating 1–2 becomes a high-priority
+  // follow-up ticket so an operator calls back (operator notice via toast).
+  // Conversation-level auto-reopen lives in `flagLowCsatForReopen`
+  // (support-moderation.server.ts) until the agent lane wires it into
+  // `rateConversation`; the `rateSupportFn` signature is untouched.
+  const taskFollowUp = useMutation({
+    mutationFn: (rev: {
+      id: string;
+      rating: number;
+      review: string | null;
+      createdAt: string;
+    }) =>
+      createTicketFn({
+        data: {
+          subject: `Low-CSAT follow-up (${rev.rating}/5)`,
+          body: `Customer feedback ${rev.id} rated ${rev.rating}/5 on ${rev.createdAt}.${rev.review ? ` Review: "${rev.review.slice(0, 500)}"` : ""} Operator callback tasked from the Trust tab.`,
+          priority: "high",
+        },
+      }),
+    onSuccess: () => {
+      toast.success(
+        t(
+          "Follow-up task created for the operator",
+          "অপারেটরের জন্য ফলো-আপ টাস্ক তৈরি হয়েছে",
+        ),
+      );
+      onDone();
+    },
+    onError: () =>
+      toast.error(
+        t("Could not create the follow-up task", "ফলো-আপ টাস্ক তৈরি করা যায়নি"),
+      ),
+  });
+
+  const lowCsat = (csatData.recentReviews ?? []).filter(
+    (r) => r.rating <= 2,
+  );
+
   return (
     <div className="space-y-4">
+      {/* TODO-5 — pending approvals, surfaced where trust is watched */}
+      <Section
+        title={t("Pending approvals", "মুলতুবি অনুমোদন")}
+        description={t(
+          "Sensitive tickets held for human confirm. Approve opens them; reject closes them.",
+          "সংবেদনশীল টিকিট মানব নিশ্চিতকরণের জন্য আটকে আছে।",
+        )}
+      >
+        {routingHint ? (
+          <div className="mb-3">
+            <RoutingHint
+              channel={routingHint.channel}
+              hint={routingHint.hint}
+            />
+          </div>
+        ) : null}
+        {approvals.length === 0 ? (
+          <Empty>
+            {t("No tickets awaiting approval.", "অনুমোদনের অপেক্ষায় নেই।")}
+          </Empty>
+        ) : (
+          <ul className="divide-y divide-border">
+            {approvals.map((ticket) => (
+              <li
+                key={ticket.id}
+                className="flex flex-wrap items-center justify-between gap-2 py-2"
+              >
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">
+                    {ticket.subject}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {ticket.priority} ·{" "}
+                    {new Date(ticket.created_at).toLocaleString()}
+                    {ticket.order_number ? ` · #${ticket.order_number}` : ""}
+                  </p>
+                </div>
+                <div className="flex shrink-0 gap-1">
+                  <button
+                    type="button"
+                    className={btnGhost}
+                    disabled={decide.isPending}
+                    onClick={() =>
+                      decide.mutate({
+                        ticketId: ticket.id,
+                        decision: "approve",
+                      })
+                    }
+                  >
+                    {t("Approve", "অনুমোদন")}
+                  </button>
+                  <button
+                    type="button"
+                    className={btnGhost}
+                    disabled={decide.isPending}
+                    onClick={() =>
+                      decide.mutate({
+                        ticketId: ticket.id,
+                        decision: "reject",
+                      })
+                    }
+                  >
+                    {t("Reject", "প্রত্যাখ্যান")}
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Section>
+
+      {/* TODO-5 — low-CSAT follow-ups: rating 1–2 tasked to an operator */}
+      <Section
+        title={t("Low-CSAT follow-ups", "কম সন্তুষ্টি ফলো-আপ")}
+        description={t(
+          "Ratings of 1–2 become a high-priority task so an operator calls back.",
+          "১–২ রেটিং উচ্চ-অগ্রাধিকার টাস্ক হয় যাতে অপারেটর কলব্যাক করেন।",
+        )}
+      >
+        {lowCsat.length === 0 ? (
+          <Empty>
+            {t("No low ratings to follow up.", "ফলো-আপের মতো কম রেটিং নেই।")}
+          </Empty>
+        ) : (
+          <ul className="space-y-2">
+            {lowCsat.map((rev) => (
+              <li
+                key={rev.id}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-fq-md border border-border/60 p-2.5 text-xs"
+              >
+                <div className="min-w-0">
+                  <p className="font-medium">
+                    {rev.rating} ★ ·{" "}
+                    {new Date(rev.createdAt).toLocaleDateString()}
+                  </p>
+                  {rev.review ? (
+                    <p className="mt-0.5 italic text-foreground/80">
+                      "{rev.review}"
+                    </p>
+                  ) : null}
+                </div>
+                <button
+                  type="button"
+                  className={btnGhost}
+                  disabled={taskFollowUp.isPending}
+                  onClick={() => taskFollowUp.mutate(rev)}
+                >
+                  {t("Task operator", "অপারেটরকে টাস্ক করুন")}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Section>
+
       {/* CSAT Analytics & Satisfaction Breakdown */}
       <Section
         title={t(

@@ -8,6 +8,7 @@
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { readFileSync } from "node:fs";
 import {
   catalogEntry,
   newSection,
@@ -16,7 +17,11 @@ import {
 } from "@/lib/builder-ast";
 import { WIDGET_BY_KEY } from "@/lib/studio/catalog";
 import { HERITAGE_WIDGETS } from "./heritage";
-import { SONGOSKRITI_WIDGETS } from "./songoskriti";
+import {
+  buildSongoskritiFallbackEntries,
+  MEGA_PANEL_COLS,
+  SONGOSKRITI_WIDGETS,
+} from "./songoskriti";
 import { MERCH_WIDGETS } from "./merch";
 import { APPAREL_WIDGETS } from "./apparel";
 import type { WidgetRow } from "@/lib/widget-data";
@@ -379,6 +384,146 @@ describe("songoskriti product_rail rhythm (browser-verified 2026-09-24)", () => 
         pending: false,
       }),
     ).toBe("");
+  });
+});
+
+describe("songoskriti mega_menu live-data tiers (REPORT-THEMES §4/§7.1)", () => {
+  const Mega = SONGOSKRITI_WIDGETS["mega_menu"];
+
+  const menuSection = (props: Record<string, unknown>): Section => ({
+    ...newSection("mega_menu"),
+    props: {
+      label: "Shop",
+      label_bn: "",
+      limit: 8,
+      columns: 4,
+      ...props,
+    },
+  });
+
+  function renderMega(
+    section: Section,
+    opts: {
+      locale?: "en" | "bn";
+      data?: WidgetCtx["data"];
+      slot?: React.ReactNode;
+    } = {},
+  ) {
+    const ctx: WidgetCtx = {
+      ...ctxFor(section, opts.locale ?? "en"),
+      data: opts.data,
+      ...(opts.slot !== undefined ? { slot: opts.slot } : {}),
+    };
+    return renderToStaticMarkup(
+      createElement(Mega as (p: WidgetCtx) => React.ReactElement, ctx),
+    );
+  }
+
+  const taxRows = (n: number): WidgetRow[] =>
+    Array.from({ length: n }, (_, i) => ({
+      id: `tax-${i}`,
+      title: `Dept ${i}`,
+      href: `/c/dept-${i}`,
+    }));
+
+  it("tier (b): taxonomy rows win as plain top-level links honoring limit", () => {
+    const html = renderMega(menuSection({ limit: 2 }), {
+      data: { rows: taxRows(5), pending: false },
+    });
+    expect(html).toContain("Dept 0");
+    expect(html).toContain("Dept 1");
+    expect(html).not.toContain("Dept 2");
+    // Flat taxonomy rows carry no children: no dropdown panel is invented.
+    expect(html).not.toContain("SHOP ALL");
+    expect(html).not.toContain("সব দেখুন");
+  });
+
+  it("names the nav landmark from label, honoring label_bn", () => {
+    const en = renderMega(menuSection({ label: "Shop" }), {
+      data: { rows: taxRows(2), pending: false },
+    });
+    expect(en).toContain('aria-label="Shop"');
+    const bn = renderMega(
+      menuSection({ label: "Shop", label_bn: "কেনাকাটা" }),
+      { locale: "bn", data: { rows: taxRows(2), pending: false } },
+    );
+    expect(bn).toContain('aria-label="কেনাকাটা"');
+  });
+
+  it("columns prop sizes the dropdown panel grid from the closed set", () => {
+    // The panel itself is hover-gated (no hover in static markup), so pin
+    // the contract at the source: a closed Tailwind map keyed by the
+    // clamped `columns` prop, with panel-bearing fallback entries to act on.
+    expect(MEGA_PANEL_COLS).toEqual({
+      1: "grid-cols-1",
+      2: "grid-cols-2",
+      3: "grid-cols-3",
+      4: "grid-cols-4",
+    });
+    const src = readFileSync(
+      "src/components/builder/songoskriti.tsx",
+      "utf8",
+    );
+    expect(src).toContain("MEGA_PANEL_COLS[columns]");
+    const withPanels = buildSongoskritiFallbackEntries("en").filter(
+      (entry) => entry.sections.length > 0,
+    );
+    expect(withPanels.length).toBeGreaterThan(0);
+  });
+
+  it("keeps the image-panel dropdown design (featured image + shop-all)", () => {
+    // Hover-gated like the grid above: pin the design at the source so a
+    // refactor cannot silently drop the panel's signature elements.
+    const src = readFileSync(
+      "src/components/builder/songoskriti.tsx",
+      "utf8",
+    );
+    expect(src).toContain("featuredImage");
+    expect(src).toContain("shopAllHref");
+    expect(src).toContain("SHOP ALL");
+    expect(src).toContain("aspect-[3/4]");
+  });
+
+  it("tier (c): no rows renders the hardcoded bilingual fallback tree", () => {
+    const en = renderMega(menuSection({ limit: 10 }), { data: undefined });
+    expect(en).toContain("Women");
+    expect(en).toContain("/c/women");
+    expect(en).toContain("New Arrivals");
+    const bn = renderMega(menuSection({ limit: 10 }), {
+      locale: "bn",
+      data: { rows: [], pending: false },
+    });
+    expect(bn).toContain("মহিলা");
+    expect(bn).toContain("শাড়ি");
+    expect(bn).toContain("নতুন সংগ্রহ");
+  });
+
+  it("pending renders a skeleton, never a bare bar", () => {
+    const html = renderMega(menuSection({}), {
+      data: { rows: undefined, pending: true },
+    });
+    expect(html).toContain("animate-pulse");
+    expect(html).toContain("motion-reduce:animate-none");
+    expect(html).not.toContain("Women");
+  });
+
+  it("tier (a): a host-provided slot wins over every other tier", () => {
+    const html = renderMega(menuSection({}), {
+      data: { rows: taxRows(3), pending: false },
+      slot: createElement("nav", { "aria-label": "Host menu" }, "host"),
+    });
+    expect(html).toContain("Host menu");
+    expect(html).not.toContain("Dept 0");
+  });
+
+  it("keeps 44px targets, reduced-motion gating, and a named landmark", () => {
+    const html = renderMega(menuSection({}), { data: undefined });
+    expect(html).toContain("<nav");
+    expect(html).toContain("aria-label=");
+    expect(html).toContain("min-h-[44px]");
+    expect(html).toContain("motion-safe:");
+    // Entries with panels announce the dropdown relationship.
+    expect(html).toContain('aria-haspopup="true"');
   });
 });
 

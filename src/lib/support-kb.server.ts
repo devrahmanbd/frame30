@@ -2,7 +2,10 @@
  * Knowledge Base Engine: Ingest, Vector Embeddings, Hybrid Semantic Search.
  *
  * Combines full-text search (`tsvector`) with dense vector embeddings
- * (NVIDIA Llama-Nemotron Embed `nvidia/llama-nemotron-embed-vl-1b-v2:free`)
+ * (NVIDIA Nemotron Embed `nvidia/nemotron-3-embed-1b:free`; legacy vectors
+ * `nvidia/llama-nemotron-embed-vl-1b-v2:free` are honoured until the RAG
+ * backfill refreshes them — see backfillKbEmbeddings and
+ * supabase/pending/support_kb_embedding_version.sql)
  * using Reciprocal Rank Fusion (RRF).
  *
  * Grounded on Framique Cloud Commerce CMS:
@@ -21,8 +24,14 @@ import { enforceRateLimit } from "./rate-limit.server";
 import { chunkDocument, snippet } from "./support-kb";
 import {
   cosineSimilarity,
+  DEFAULT_EMBEDDING_MODEL,
+  DETERMINISTIC_FALLBACK_DIM,
+  DETERMINISTIC_FALLBACK_SUFFIX,
   generateDeterministicEmbedding,
   generateEmbedding,
+  generateEmbeddingWithMeta,
+  isEmbeddingModelStale,
+  type EmbeddingResult,
 } from "./support-embed.server";
 
 type Client = SupabaseClient<Database>;
@@ -43,6 +52,8 @@ export type KbHit = {
   combined_score?: number;
   text_rank?: number;
   vector_sim?: number;
+  /** Producing model of the matched chunk vector (present once the version migration lands). */
+  embedding_model?: string | null;
 };
 
 export type SaveDocInput = {
@@ -65,7 +76,16 @@ type InMemoryChunk = {
   body: string;
   source_url: string | null;
   embedding: number[];
+  embedding_model: string;
+  embedding_dim: number;
 };
+
+/** Model id recorded for locally projected (offline) vectors. */
+function deterministicChunkModel(
+  attempted: string = DEFAULT_EMBEDDING_MODEL,
+): string {
+  return `${attempted}${DETERMINISTIC_FALLBACK_SUFFIX}`;
+}
 
 const IN_MEMORY_KB_CHUNKS: InMemoryChunk[] = [];
 
@@ -296,6 +316,7 @@ export async function searchKbHybrid(
             combined_score: number;
             text_rank: number;
             vector_sim: number;
+            embedding_model?: string | null;
           }>
         ).map((h) => ({
           doc_id: h.doc_id,
@@ -306,6 +327,7 @@ export async function searchKbHybrid(
           combined_score: h.combined_score,
           text_rank: h.text_rank,
           vector_sim: h.vector_sim,
+          embedding_model: h.embedding_model ?? null,
         }));
       }
     } catch {
@@ -508,6 +530,8 @@ export function ensureCanonicalSeeded() {
         body: `${doc.body} [Keywords: ${doc.tags.join(", ")}]`,
         source_url: doc.sourceUrl ?? null,
         embedding: vec,
+        embedding_model: deterministicChunkModel(),
+        embedding_dim: vec.length,
       });
     }
   }
@@ -524,6 +548,8 @@ export function ensureCanonicalSeeded() {
         body: `${doc.body} [Keywords: ${doc.tags.join(", ")}]`,
         source_url: doc.sourceUrl ?? null,
         embedding: vec,
+        embedding_model: deterministicChunkModel(),
+        embedding_dim: vec.length,
       });
     }
   }
@@ -540,6 +566,8 @@ export function ensureCanonicalSeeded() {
         body: `${doc.body} [Keywords: ${doc.tags.join(", ")}]`,
         source_url: doc.sourceUrl ?? null,
         embedding: vec,
+        embedding_model: deterministicChunkModel(),
+        embedding_dim: vec.length,
       });
     }
   }
@@ -548,14 +576,26 @@ export function ensureCanonicalSeeded() {
 /**
  * Query coverage gate — the single-stem false-positive killer.
  *
- * A hit only qualifies as citable when it accounts for EVERY distinctive
- * query word (same tokenization + stemming the scorer uses). "How to
+ * A hit only qualifies as citable when it accounts for enough distinctive
+ * query words (same tokenization + stemming the scorer uses). "How to
  * integrate ERP?" against the Pathao article scores 0.5 ("erp" matches
  * nothing) and is disqualified, no matter how high its text/vector scores
  * look. Returns covered / total in [0, 1]; 0 when the query has no
  * content tokens.
+ *
+ * Calibrated at 0.6 (was 1.0): measured on the repo's own fixtures —
+ *   ERP adversarial query ............ 0.50 → still disqualified
+ *   Martian out-of-domain ............ 0.33 → still disqualified
+ *   bKash paraphrase ("accept … on my store?"
+ *     vs "supports … merchants") ..... 0.60 → admitted (was wrongly refused)
+ *   shipping natural phrasing ........ 0.75 → admitted (was wrongly refused)
+ *   exact/technical queries .......... 1.00 → admitted
+ * Short 2-token queries still need full coverage (1/2 = 0.5 < 0.6), so the
+ * ERP-class false positive stays dead while 4+ token natural phrasing may
+ * miss one synonym. Precision contracts (coverage gate + confidenceOf +
+ * enforceGroundedReply) are unchanged — only the gate threshold moved.
  */
-export const MIN_QUERY_COVERAGE = 1;
+export const MIN_QUERY_COVERAGE = 0.6;
 
 function coverageVariants(tok: string): string[] {
   const out = [tok, `${tok}s`];
@@ -824,6 +864,7 @@ export function registerInMemoryDoc(
   merchantId: string,
   doc: { id: string; title: string; body: string; sourceUrl?: string | null },
   embedding?: number[],
+  meta?: { embeddingModel?: string; embeddingDim?: number },
 ) {
   const vec =
     embedding ||
@@ -835,6 +876,8 @@ export function registerInMemoryDoc(
     body: doc.body,
     source_url: doc.sourceUrl ?? null,
     embedding: vec,
+    embedding_model: meta?.embeddingModel || deterministicChunkModel(),
+    embedding_dim: meta?.embeddingDim || vec.length,
   });
 }
 
@@ -921,22 +964,33 @@ export async function saveDoc(
         .eq("doc_id", docId);
 
       if (chunks.length) {
-        // Generate vector embeddings for chunks
-        const embeddings = await Promise.all(
-          chunks.map((c) =>
-            generateEmbedding(`${row.title}\n${c.body}`).catch(() =>
-              generateDeterministicEmbedding(`${row.title}\n${c.body}`, 1024),
-            ),
-          ),
+        // Generate vector embeddings for chunks, recording the producing
+        // model id per embedding so the RAG backfill can refresh stale rows.
+        const metas = await Promise.all(
+          chunks.map((c): Promise<EmbeddingResult> => {
+            const text = `${row.title}\n${c.body}`;
+            return generateEmbeddingWithMeta(text).catch(() => ({
+              embedding: generateDeterministicEmbedding(
+                text,
+                DETERMINISTIC_FALLBACK_DIM,
+              ),
+              model: deterministicChunkModel(),
+              dim: DETERMINISTIC_FALLBACK_DIM,
+              fallback: true,
+            }));
+          }),
         );
 
-        await db.from("support_kb_chunks").insert(
+        await insertKbChunksFeatureDetected(
+          db,
+          merchantId,
+          docId!,
           chunks.map((c, i) => ({
-            merchant_id: merchantId,
-            doc_id: docId!,
             ordinal: c.ordinal,
             body: c.body,
-            embedding: embeddings[i],
+            embedding: metas[i].embedding,
+            embedding_model: metas[i].model,
+            embedding_dim: metas[i].dim,
           })),
         );
       }
@@ -998,4 +1052,254 @@ export async function deleteDoc(
   invalidate(`kb_hybrid:${merchantId}:`);
   incr("framique_ai_kb_doc_total", { action: "deleted" });
   return { ok: true as const };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Embedding versioning + RAG backfill (Nemotron-3 migration)
+//
+// support_kb_chunks gains `embedding_model` (text) + `embedding_dim` (int)
+// via supabase/pending/support_kb_embedding_version.sql (UNAPPLIED — the code
+// below feature-detects the columns and works with and without them).
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type VersionedChunkRow = {
+  ordinal: number;
+  body: string;
+  embedding: number[];
+  embedding_model: string;
+  embedding_dim: number;
+};
+
+/** True when the failure is "the version columns don't exist yet" — never for real errors. */
+export function isMissingEmbeddingVersionColumnError(err: unknown): boolean {
+  const msg = err instanceof Error ? err.message : String(err ?? "");
+  if (!/embedding_model|embedding_dim/i.test(msg)) return false;
+  return /column|schema cache|PGRST204|42703|does not exist/i.test(msg);
+}
+
+/**
+ * Insert chunk rows, storing embedding_model/dim when the schema allows it.
+ * Optimistic versioned insert first; on missing-column failure retry bare.
+ * Real errors are rethrown — only the absent-migration case degrades.
+ */
+export async function insertKbChunksFeatureDetected(
+  db: Client,
+  merchantId: string,
+  docId: string,
+  rows: VersionedChunkRow[],
+): Promise<{ versioned: boolean }> {
+  const base = rows.map((r) => ({
+    merchant_id: merchantId,
+    doc_id: docId,
+    ordinal: r.ordinal,
+    body: r.body,
+    embedding: r.embedding,
+  }));
+  try {
+    await db
+      .from("support_kb_chunks")
+      .insert(
+        rows.map((r, i) => ({
+          ...base[i],
+          embedding_model: r.embedding_model,
+          embedding_dim: r.embedding_dim,
+        })),
+      );
+    return { versioned: true };
+  } catch (err) {
+    if (!isMissingEmbeddingVersionColumnError(err)) throw err;
+    await db.from("support_kb_chunks").insert(base);
+    log("warn", "support.kb_chunks_version_columns_missing", {
+      merchant_id: merchantId,
+      doc_id: docId,
+    });
+    return { versioned: false };
+  }
+}
+
+async function updateChunkEmbeddingFeatureDetected(
+  db: Client,
+  id: string,
+  embedding: number[],
+  model: string,
+  dim: number,
+  assumeVersioned = true,
+): Promise<{ versioned: boolean }> {
+  if (assumeVersioned) {
+    try {
+      await db
+        .from("support_kb_chunks")
+        .update({ embedding, embedding_model: model, embedding_dim: dim })
+        .eq("id", id);
+      return { versioned: true };
+    } catch (err) {
+      if (!isMissingEmbeddingVersionColumnError(err)) throw err;
+    }
+  }
+  await db.from("support_kb_chunks").update({ embedding }).eq("id", id);
+  return { versioned: false };
+}
+
+type BackfillRow = {
+  id: string;
+  doc_id: string;
+  body: string;
+  embedding: unknown;
+  embedding_model?: unknown;
+  embedding_dim?: unknown;
+};
+
+function rowEmbeddingEmpty(embedding: unknown): boolean {
+  return (
+    embedding == null ||
+    (Array.isArray(embedding) && embedding.length === 0)
+  );
+}
+
+function rowNeedsRefresh(
+  row: BackfillRow,
+  model: string,
+  versioned: boolean,
+): boolean {
+  if (!versioned) return rowEmbeddingEmpty(row.embedding);
+  if (rowEmbeddingEmpty(row.embedding)) return true;
+  if (
+    isEmbeddingModelStale(
+      typeof row.embedding_model === "string" ? row.embedding_model : null,
+      model,
+    )
+  ) {
+    return true;
+  }
+  return (
+    typeof row.embedding_dim === "number" &&
+    Array.isArray(row.embedding) &&
+    row.embedding_dim !== row.embedding.length
+  );
+}
+
+export type KbBackfillSummary = {
+  model: string;
+  versioned: boolean;
+  scanned: number;
+  stale: number;
+  refreshed: number;
+  skippedFresh: number;
+  skippedOfflineFallback: number;
+  dryRun: boolean;
+};
+
+/**
+ * RAG backfill: re-embed chunks whose stored vector is missing, legacy, or
+ * offline-fallback so recall converges on `model` after the migration.
+ *
+ * Safety rules:
+ * - Works with and without the version columns (feature-detected per read and
+ *   per write; pre-migration DBs only refill null/empty vectors).
+ * - Never overwrites a real stored vector with a deterministic offline
+ *   projection (offline runs only fill gaps, and record the fallback id).
+ * - dryRun reports stale counts without writing.
+ * - `embed` is injectable so tests can run the whole loop without network.
+ */
+export async function backfillKbEmbeddings(
+  db: Client,
+  merchantId: string,
+  options?: {
+    batchSize?: number;
+    dryRun?: boolean;
+    model?: string;
+    embed?: (text: string, model: string) => Promise<EmbeddingResult>;
+  },
+): Promise<KbBackfillSummary> {
+  const model = options?.model?.trim() || DEFAULT_EMBEDDING_MODEL;
+  const batchSize = Math.min(Math.max(options?.batchSize ?? 50, 1), 200);
+  const dryRun = options?.dryRun ?? false;
+  const embed =
+    options?.embed ??
+    ((text: string, m: string) => generateEmbeddingWithMeta(text, { model: m }));
+  const summary: KbBackfillSummary = {
+    model,
+    versioned: true,
+    scanned: 0,
+    stale: 0,
+    refreshed: 0,
+    skippedFresh: 0,
+    skippedOfflineFallback: 0,
+    dryRun,
+  };
+
+  let rows: BackfillRow[] = [];
+  try {
+    const { data } = await db
+      .from("support_kb_chunks")
+      .select("id, doc_id, body, embedding, embedding_model, embedding_dim")
+      .eq("merchant_id", merchantId)
+      .limit(batchSize * 4);
+    rows = (Array.isArray(data) ? data : []) as BackfillRow[];
+  } catch (err) {
+    if (!isMissingEmbeddingVersionColumnError(err)) throw err;
+    summary.versioned = false;
+    const { data } = await db
+      .from("support_kb_chunks")
+      .select("id, doc_id, body, embedding")
+      .eq("merchant_id", merchantId)
+      .limit(batchSize * 4);
+    rows = (Array.isArray(data) ? data : []) as BackfillRow[];
+  }
+
+  const titles = new Map<string, string>();
+  try {
+    const { data } = await db
+      .from("support_kb_docs")
+      .select("id, title")
+      .eq("merchant_id", merchantId)
+      .limit(500);
+    for (const d of (Array.isArray(data) ? data : []) as Array<{
+      id: string;
+      title: string;
+    }>) {
+      titles.set(d.id, d.title);
+    }
+  } catch {
+    // Titles are a nicety (better embed text); chunks re-embed from body alone.
+  }
+
+  for (const row of rows) {
+    if (!dryRun && summary.refreshed >= batchSize) break;
+    if (dryRun && summary.stale >= batchSize) break;
+    summary.scanned++;
+    if (!rowNeedsRefresh(row, model, summary.versioned)) {
+      summary.skippedFresh++;
+      continue;
+    }
+    summary.stale++;
+    const text = `${titles.get(row.doc_id) ?? ""}\n${row.body ?? ""}`.trim();
+    if (!text) {
+      summary.skippedOfflineFallback++;
+      continue;
+    }
+    if (dryRun) continue;
+    const result = await embed(text, model);
+    if (result.fallback && !rowEmbeddingEmpty(row.embedding)) {
+      // Offline run: never clobber a real vector with a projection.
+      summary.skippedOfflineFallback++;
+      continue;
+    }
+    const up = await updateChunkEmbeddingFeatureDetected(
+      db,
+      row.id,
+      result.embedding,
+      result.model,
+      result.dim,
+      summary.versioned,
+    );
+    if (!up.versioned) summary.versioned = false;
+    summary.refreshed++;
+  }
+
+  log("info", "support.kb_backfill", {
+    merchant_id: merchantId,
+    ...summary,
+  });
+  return summary;
 }

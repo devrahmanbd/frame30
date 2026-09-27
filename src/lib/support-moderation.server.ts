@@ -667,6 +667,123 @@ export async function verifyPhase12Schema(): Promise<SchemaVerificationResult> {
 }
 
 // ---------------------------------------------------------------------------
+// 8. Low-CSAT Auto-Reopen (TODO-5 — Human desk + HITL approvals UI)
+//
+// A rating of 1–2 reopens the conversation for operator follow-up: the
+// conversation goes back to `open`, is flagged for a human agent, and an
+// operator notice is prepended to the private operator notes (existing
+// notes are preserved below it). Ratings 3–5 are a no-op.
+//
+// NOTE: wiring this into `rateConversation` (support-agent.server.ts) belongs
+// to the agent lane — this module only owns the desk-side reopen primitive.
+// The admin desk surfaces low-CSAT reviews in its Trust tab with a
+// "task operator" action until that wiring lands.
+// ---------------------------------------------------------------------------
+
+/** Ratings at or below this threshold reopen the conversation. */
+export const LOW_CSAT_REOPEN_THRESHOLD = 2;
+
+export type LowCsatReopenResult = {
+  reopened: boolean;
+  conversationId: string;
+  rating: number;
+  operatorNoticeEn: string;
+  operatorNoticeBn: string;
+};
+
+/** Pure decision gate: does this rating need an operator reopen? */
+export function shouldReopenOnLowCsat(rating: number): boolean {
+  return Math.round(rating) <= LOW_CSAT_REOPEN_THRESHOLD;
+}
+
+function lowCsatNotice(
+  rating: number,
+  review: string | null | undefined,
+  locale: "en" | "bn",
+): string {
+  const snippet =
+    review && review.trim().length > 0
+      ? ` — "${review.trim().slice(0, 200)}"`
+      : "";
+  return locale === "bn"
+    ? `কম সন্তুষ্টি ফলো-আপ: গ্রাহক ${rating}/5 রেটিং দিয়েছেন${snippet}। কথোপকথন পুনরায় খোলা হয়েছে — অপারেটর কলব্যাক করুন।`
+    : `Low-CSAT follow-up: customer rated ${rating}/5${snippet}. Conversation reopened — operator callback tasked.`;
+}
+
+export async function flagLowCsatForReopen(
+  conversationId: string,
+  rating: number,
+  review?: string | null,
+): Promise<LowCsatReopenResult> {
+  const value = Math.min(5, Math.max(1, Math.round(rating)));
+  const operatorNoticeEn = lowCsatNotice(value, review ?? null, "en");
+  const operatorNoticeBn = lowCsatNotice(value, review ?? null, "bn");
+
+  if (!shouldReopenOnLowCsat(value)) {
+    return {
+      reopened: false,
+      conversationId,
+      rating: value,
+      operatorNoticeEn,
+      operatorNoticeBn,
+    };
+  }
+
+  // In-memory update (offline dev & vitest path)
+  const conv = mockConversations.get(conversationId);
+  if (conv) {
+    conv.status = "open";
+    conv.needsHumanAgent = true;
+    conv.resolvedAt = null;
+    const prior = conv.operatorNotes?.trim() ? `\n${conv.operatorNotes}` : "";
+    conv.operatorNotes = `${operatorNoticeEn}${prior}`.slice(0, 4000);
+    conv.updatedAt = new Date().toISOString();
+    mockConversations.set(conversationId, conv);
+  }
+
+  incr("framique_support_low_csat_reopen_total", { rating: String(value) });
+  log("info", "support_moderation.low_csat_reopened", {
+    conversationId,
+    rating: value,
+  });
+
+  // Production: best-effort reopen via RPC, then direct update. The
+  // security-definer RPC is owned by the agent/migration lane; until it
+  // exists this falls through to the direct update and offline paths below.
+  try {
+    const db = await admin();
+    const { error } = await db.rpc("reopen_conversation_for_followup" as never, {
+      _conversation_id: conversationId,
+      _notice: operatorNoticeEn,
+    } as never);
+    if (error) throw error;
+  } catch {
+    try {
+      const db = await admin();
+      const existing = conv?.operatorNotes ?? operatorNoticeEn;
+      await db
+        .from("ai_conversations")
+        .update({
+          status: "open",
+          operator_notes: existing,
+          updated_at: new Date().toISOString(),
+        } as never)
+        .eq("id", conversationId);
+    } catch {
+      // Offline mode — in-memory only
+    }
+  }
+
+  return {
+    reopened: true,
+    conversationId,
+    rating: value,
+    operatorNoticeEn,
+    operatorNoticeBn,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Helper utilities
 // ---------------------------------------------------------------------------
 

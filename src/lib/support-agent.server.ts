@@ -26,13 +26,16 @@ import {
 import { searchKb, searchKbHybrid, type KbHit } from "./support-kb.server";
 import { queryCoverage, MIN_QUERY_COVERAGE } from "./support-kb.server";
 import { draftAnswer } from "./support-llm.server";
-import { createTicket } from "./support-tickets.server";
+import { createTicket, needsApprovalReview } from "./support-tickets.server";
 import {
-  detectIntent,
+  analyzeSentiment,
+  classifyIntent,
   hashPhone,
   lookupOrder,
   SupportError,
+  LOW_INTENT_CONFIDENCE_THRESHOLD,
   type Intent,
+  type SentimentVerdict,
 } from "./ai-support.server";
 import {
   detectTrajectoryLoop,
@@ -413,6 +416,230 @@ export function clearConversationRecentTurns() {
   CONVERSATION_RECENT_TURNS.clear();
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// TODO-3 — Server-side conversation memory: rolling summary + ticket history.
+//
+// Design:
+// - Source of record is the DB (ai_messages / support_tickets); the Maps below
+//   are a hot cache only. On a cache miss we rebuild from ai_messages, so a
+//   restarted server or a second replica still recovers recent context.
+// - The rolling summary is extractive + bounded (never sent wholesale to the
+//   model): anchor (first customer turn) + last few turns, each truncated.
+// - Ticket-history injection is bounded (≤3 tickets, truncated) and is used
+//   for escalation context only — never as KB provenance.
+// - Cross-session linkage (same phone_hash, other conversations) happens ONLY
+//   when an explicit consented identifier exists (granted row in
+//   customer_consents). Otherwise memory is strictly per-conversation.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Max chars of rolling summary injected into the draft question. */
+export const MEMORY_CONTEXT_BUDGET = 600;
+/** Max chars of ticket-history context attached to escalation. */
+export const TICKET_HISTORY_BUDGET = 500;
+
+export type ConversationMemory = {
+  summary: string;
+  turnCount: number;
+  lastIntent: Intent | null;
+  lastSentiment: SentimentVerdict["sentiment"] | null;
+  updatedAt: string;
+};
+
+const CONVERSATION_MEMORIES = new Map<string, ConversationMemory>();
+
+export function clearConversationMemory() {
+  CONVERSATION_MEMORIES.clear();
+}
+
+export function getConversationMemory(
+  conversationId: string,
+): ConversationMemory | null {
+  return CONVERSATION_MEMORIES.get(conversationId) ?? null;
+}
+
+function truncateSnippet(text: string, max = 140): string {
+  const oneLine = text.replace(/\s+/g, " ").trim();
+  return oneLine.length > max ? `${oneLine.slice(0, max)}…` : oneLine;
+}
+
+/**
+ * Extractive rolling-summary update. Keeps the conversation anchor plus the
+ * most recent turns inside MEMORY_CONTEXT_BUDGET. Deterministic (no model
+ * call) so offline/CI behaviour is stable; the reasoning model still sees the
+ * summary via the draft question preamble.
+ */
+export function updateConversationMemory(
+  conversationId: string,
+  turn: {
+    role: "customer" | "bot";
+    message: string;
+    intent?: Intent | null;
+    sentiment?: SentimentVerdict["sentiment"] | null;
+  },
+): ConversationMemory {
+  const prev = CONVERSATION_MEMORIES.get(conversationId);
+  const safe = redactPii(turn.message).text;
+  const snippet = truncateSnippet(safe);
+  const label =
+    turn.role === "customer"
+      ? `C${(prev?.turnCount ?? 0) + 1}${turn.intent ? `(${turn.intent})` : ""}: ${snippet}`
+      : `A: ${snippet}`;
+  const anchor = prev?.summary.split(" ‖ ")[0] ?? null;
+  const turns = prev ? prev.summary.split(" ‖ ").slice(1) : [];
+  // First customer turn becomes the anchor and is never evicted.
+  const base = anchor ?? (turn.role === "customer" ? label : null);
+  const rest = anchor ? [...turns, label] : turn.role === "customer" ? [] : [label];
+  let summary = [base, ...rest].filter(Boolean).join(" ‖ ");
+  // Evict oldest non-anchor turns until inside budget.
+  while (summary.length > MEMORY_CONTEXT_BUDGET && rest.length > 1) {
+    rest.shift();
+    summary = [base, ...rest].filter(Boolean).join(" ‖ ");
+  }
+  if (summary.length > MEMORY_CONTEXT_BUDGET) {
+    summary = `${summary.slice(0, MEMORY_CONTEXT_BUDGET)}…`;
+  }
+  const next: ConversationMemory = {
+    summary,
+    turnCount: (prev?.turnCount ?? 0) + 1,
+    lastIntent: turn.intent ?? prev?.lastIntent ?? null,
+    lastSentiment: turn.sentiment ?? prev?.lastSentiment ?? null,
+    updatedAt: new Date().toISOString(),
+  };
+  CONVERSATION_MEMORIES.set(conversationId, next);
+  return next;
+}
+
+/** Bounded memory preamble for the draft question (KB sources untouched). */
+export function buildMemoryContext(conversationId: string): string {
+  const mem = CONVERSATION_MEMORIES.get(conversationId);
+  if (!mem?.summary) return "";
+  const trimmed =
+    mem.summary.length > MEMORY_CONTEXT_BUDGET
+      ? `${mem.summary.slice(0, MEMORY_CONTEXT_BUDGET)}…`
+      : mem.summary;
+  return `Conversation so far: ${trimmed}`;
+}
+
+/**
+ * Rebuild hot-cache memory from the server-side message store (best-effort).
+ * Called on cache miss so memory survives process restarts.
+ */
+export async function hydrateMemoryFromHistory(
+  merchantId: string,
+  conversationId: string,
+): Promise<ConversationMemory | null> {
+  if (CONVERSATION_MEMORIES.has(conversationId)) {
+    return CONVERSATION_MEMORIES.get(conversationId)!;
+  }
+  try {
+    const db = await admin();
+    const { data } = await db
+      .from("ai_messages")
+      .select("role, body")
+      .eq("merchant_id", merchantId)
+      .eq("conversation_id", conversationId)
+      .order("created_at", { ascending: false })
+      .limit(8);
+    const rows = (data ?? []) as Array<{ role: string; body: string }>;
+    if (!rows.length) return null;
+    for (const row of rows.reverse()) {
+      updateConversationMemory(conversationId, {
+        role: row.role === "customer" ? "customer" : "bot",
+        message: String(row.body ?? "").slice(0, 500),
+      });
+    }
+    return CONVERSATION_MEMORIES.get(conversationId) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Explicit consented identifier for cross-session memory: a granted consent
+ * row for this subject hash. Absent/refused → per-conversation memory only.
+ */
+export async function hasConsentedCrossSession(
+  merchantId: string,
+  subjectHash: string | null,
+): Promise<boolean> {
+  if (!subjectHash) return false;
+  try {
+    const db = await admin();
+    const { data } = await db
+      .from("customer_consents")
+      .select("id")
+      .eq("merchant_id", merchantId)
+      .eq("subject_hash", subjectHash)
+      .eq("granted", true)
+      .limit(1)
+      .maybeSingle();
+    return Boolean(data);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Bounded ticket-history context for escalation (same conversation always;
+ * same requester across sessions ONLY when consented). Truncated bodies,
+ * newest first, never used as answer provenance.
+ */
+export async function getTicketHistoryContext(
+  merchantId: string,
+  opts: {
+    conversationId: string;
+    requesterHash?: string | null;
+    consented?: boolean;
+    limit?: number;
+  },
+): Promise<string> {
+  try {
+    const db = await admin();
+    const limit = Math.min(opts.limit ?? 3, 3);
+    const { data } = await db
+      .from("support_tickets")
+      .select("subject, status, priority")
+      .eq("merchant_id", merchantId)
+      .eq("conversation_id", opts.conversationId)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+    const lines: string[] = ((data ?? []) as Array<{
+      subject: string;
+      status: string;
+      priority: string;
+    }>).map(
+      (t) =>
+        `• [${t.status}/${t.priority}] ${truncateSnippet(String(t.subject ?? ""), 80)}`,
+    );
+    // Cross-session: same requester's other tickets only with consent.
+    if (opts.consented && opts.requesterHash) {
+      const { data: cross } = await db
+        .from("support_tickets")
+        .select("subject, status, priority")
+        .eq("merchant_id", merchantId)
+        .eq("requester_hash", opts.requesterHash)
+        .order("created_at", { ascending: false })
+        .limit(limit);
+      for (const t of ((cross ?? []) as Array<{
+        subject: string;
+        status: string;
+        priority: string;
+      }>).slice(0, limit)) {
+        const line = `• [${t.status}/${t.priority}] ${truncateSnippet(String(t.subject ?? ""), 80)} (prior session)`;
+        if (!lines.includes(line)) lines.push(line);
+        if (lines.length >= limit) break;
+      }
+    }
+    if (!lines.length) return "";
+    const joined = `Prior tickets:\n${lines.join("\n")}`;
+    return joined.length > TICKET_HISTORY_BUDGET
+      ? `${joined.slice(0, TICKET_HISTORY_BUDGET)}…`
+      : joined;
+  } catch {
+    return "";
+  }
+}
+
 async function appendMessage(
   merchantId: string,
   conversationId: string,
@@ -649,6 +876,10 @@ export function getFallbackReply(
   const keyMap: Record<Intent, string> = {
     order_status: "support.ask_order_details",
     refund: "support.faq.refund",
+    billing: "support.faq.refund",
+    technical: "support.faq.other",
+    complaint: "support.ticket_prompt",
+    lead: "support.faq.product",
     faq_shipping: "support.faq.shipping",
     faq_hours: "support.faq.hours",
     product: "support.faq.product",
@@ -663,6 +894,10 @@ export function getFallbackReply(
 const FALLBACK: Record<Intent, string> = {
   order_status: en("support.ask_order_details"),
   refund: en("support.faq.refund"),
+  billing: en("support.faq.refund"),
+  technical: en("support.faq.other"),
+  complaint: en("support.ticket_prompt"),
+  lead: en("support.faq.product"),
   faq_shipping: en("support.faq.shipping"),
   faq_hours: en("support.faq.hours"),
   product: en("support.faq.product"),
@@ -928,8 +1163,62 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       };
     }
 
-    const intent = detectIntent(input.message);
-    const steps: Array<Record<string, unknown>> = [{ step: "intent", intent }];
+    // TODO-3 — Agent brain: confidence-scored intent + sentiment/urgency.
+    // Keyword fast path (sync) keeps every turn cheap; the async embedding
+    // fallback only fires for unsure turns inside classifyIntentModel — the
+    // orchestrator stays on the sync path here to preserve turn latency, and
+    // low confidence itself becomes an escalation signal below.
+    const classified = classifyIntent(input.message);
+    const intent = classified.primary;
+    const sentiment = analyzeSentiment(input.message);
+    const steps: Array<Record<string, unknown>> = [
+      {
+        step: "intent",
+        intent,
+        confidence: classified.confidence,
+        source: classified.source,
+        intents: classified.intents,
+        multi: classified.multi,
+      },
+      {
+        step: "sentiment",
+        sentiment: sentiment.sentiment,
+        urgency: sentiment.urgency,
+        score: sentiment.score,
+        signals: sentiment.signals,
+        priority: sentiment.priority,
+      },
+    ];
+
+    // Server-side memory: hydrate the rolling summary from the message store
+    // on cache miss, then refresh the preamble for this turn.
+    await hydrateMemoryFromHistory(merchant.id, conversationId).catch(
+      () => null,
+    );
+    updateConversationMemory(conversationId, {
+      role: "customer",
+      message: input.message,
+      intent,
+      sentiment: sentiment.sentiment,
+    });
+    const memoryPreamble = buildMemoryContext(conversationId);
+    const consented = await hasConsentedCrossSession(
+      merchant.id,
+      subjectHash,
+    ).catch(() => false);
+    const ticketHistoryContext = await getTicketHistoryContext(merchant.id, {
+      conversationId,
+      requesterHash: subjectHash,
+      consented,
+    }).catch(() => "");
+    if (memoryPreamble || ticketHistoryContext) {
+      steps.push({
+        step: "memory",
+        summaryChars: memoryPreamble.length,
+        ticketHistoryChars: ticketHistoryContext.length,
+        crossSession: consented,
+      });
+    }
 
     // 3. Pinned tool call: an order figure may only come from the order table.
     let pinned: { reply: string; source: Source } | null = null;
@@ -1007,7 +1296,10 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
       intent === "faq_shipping" ||
       intent === "faq_hours" ||
       intent === "product" ||
-      intent === "order_status";
+      intent === "order_status" ||
+      intent === "billing" ||
+      intent === "technical" ||
+      intent === "lead";
 
     const isGreeting =
       /^(hi|hello|hey|salam|assalamu\s*alaikum|greetings|help|howdy|good\s*(morning|afternoon|evening))\b/i.test(
@@ -1167,8 +1459,16 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         reply = `${degradedBanner(locale)}\n${reply}`;
       }
     } else if (!pinned && hits.length) {
+      // Memory injection is conversational context only: it rides in the
+      // question preamble (bounded) while provenance stays strictly KB, so
+      // the grounded-answer kernel below is unaffected.
+      const draftQuestion =
+        memoryPreamble &&
+        `${memoryPreamble}\nCurrent question: ${input.message}`.length < 1200
+          ? `${memoryPreamble}\nCurrent question: ${input.message}`
+          : input.message;
       const draft = await draftAnswer({
-        question: input.message,
+        question: draftQuestion,
         context: hits.map((h) => ({ title: h.title, body: h.body })),
         locale,
       });
@@ -1247,6 +1547,7 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         !hits.length) ||
       !outbound.allowed;
     await appendMessage(merchant.id, conversationId, "bot", reply, flagged);
+    updateConversationMemory(conversationId, { role: "bot", message: reply });
 
     // 6. Action tools: ticket creation and callback request.
     //
@@ -1256,18 +1557,34 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     //  (c) refund intent — auto-escalate as high-priority ticket
     //  (d) outbound guardrail blocked — auto-escalate to prevent agent looping
     //  (e) ≥ 2 consecutive unsure bot turns — auto-escalate (consecutive low-confidence)
+    //  (f) TODO-3 angry fast-lane — angry sentiment auto-tickets high priority
+    //  (g) TODO-3 complaint + urgency — urgent complaints are tracked
     //
     // Only ONE tool fires per turn. Priority: create_ticket > request_callback > auto-escalate.
 
     const unsureStreak = flagged
       ? await consecutiveUnsure(merchant.id, conversationId)
       : 0;
+    // TODO-3 brain escalation: low-confidence intent, negative/angry
+    // sentiment, high urgency, or an explicit complaint all hand to a human.
+    // Angry turns are fast-laned (high priority) but never auto-promised —
+    // the outbound authority guard above already stripped any promise copy.
+    const lowConfidenceIntent =
+      classified.confidence < LOW_INTENT_CONFIDENCE_THRESHOLD;
+    const negativeSentiment =
+      sentiment.sentiment === "negative" || sentiment.sentiment === "angry";
+    const urgentTurn =
+      sentiment.urgency === "high" || sentiment.urgency === "urgent";
     const needsAgent =
       !outbound.allowed ||
       effectiveConfidence === "unsure" ||
       intent === "refund" ||
       intent === "create_ticket" ||
       intent === "request_callback" ||
+      intent === "complaint" ||
+      lowConfidenceIntent ||
+      negativeSentiment ||
+      urgentTurn ||
       unsureStreak >= 2;
 
     let ticketId: string | null = null;
@@ -1276,13 +1593,19 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
     let cta: AskResult["cta"] = "none";
 
     // ── Tool: create_support_ticket ───────────────────────────────────────────
+    const angryFastLane = sentiment.sentiment === "angry";
+    const urgentComplaint = intent === "complaint" && urgentTurn;
     const shouldCreateTicket =
       !outbound.allowed ||
       intent === "refund" ||
       intent === "create_ticket" ||
+      angryFastLane ||
+      urgentComplaint ||
       unsureStreak >= 2;
 
     if (shouldCreateTicket) {
+      const rank = (p: string) =>
+        p === "urgent" ? 3 : p === "high" ? 2 : p === "normal" ? 1 : 0;
       const db = await admin();
       try {
         await db
@@ -1290,27 +1613,40 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
           .update({
             status: "needs_agent",
             order_number: input.orderNumber ?? null,
-          })
+            // Angry fast-lane buys queue position (priority only, never a promise).
+            ...((angryFastLane || urgentComplaint) && rank(sentiment.priority) > rank("normal")
+              ? { priority: sentiment.priority }
+              : {}),
+          } as never)
           .eq("merchant_id", merchant.id)
           .eq("id", conversationId);
       } catch {
         // ignore update error
       }
 
-      const priority =
-        intent === "refund"
+      const basePriority =
+        intent === "refund" || intent === "complaint"
           ? "high"
           : intent === "create_ticket"
             ? "normal"
             : "normal";
+      // Angry fast-lane never lowers priority, only raises it.
+      const elevated =
+        angryFastLane || urgentComplaint ? sentiment.priority : basePriority;
+      const priority =
+        rank(elevated) > rank(basePriority) ? elevated : basePriority;
       const reason =
         intent === "create_ticket"
           ? "support.explicit_ticket_request"
           : intent === "refund"
             ? "support.refund_escalation"
-            : !outbound.allowed
-              ? "support.guardrail_block"
-              : "support.consecutive_unsure";
+            : angryFastLane
+              ? "support.angry_customer_fastlane"
+              : urgentComplaint
+                ? "support.complaint_escalation"
+                : !outbound.allowed
+                  ? "support.guardrail_block"
+                  : "support.consecutive_unsure";
 
       const toolStart = Date.now();
       // Chatwoot parity: ticket prefilled from full transcript, not just the last turn.
@@ -1320,9 +1656,16 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         .map((t) => `${t.role}: ${t.message}`)
         .join("\n")
         .slice(0, 3500);
+      // Pending-approval screen: refunds / sensitive-PII bodies must not fire
+      // autonomously — they land in `pending_approval` for an operator.
+      const ticketSubject = input.message.slice(0, 120) || "Support request";
+      const approvalScreen = needsApprovalReview({
+        subject: ticketSubject,
+        body: transcriptText || redactPii(input.message).text,
+      });
       const ticket = await createTicket({
         merchantId: merchant.id,
-        subject: input.message.slice(0, 120) || "Support request",
+        subject: ticketSubject,
         body: transcriptText || redactPii(input.message).text,
         priority,
         channel,
@@ -1330,6 +1673,7 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         orderNumber: input.orderNumber ?? null,
         requesterHash: subjectHash,
         reason,
+        requiresApproval: approvalScreen.required,
       }).catch(() => null);
 
       const toolLatency = Date.now() - toolStart;
@@ -1349,6 +1693,25 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         if (intent === "create_ticket" && reply) {
           reply = `${reply}\n\nYour support ticket **#TKT-${ticketId.slice(-8).toUpperCase()}** has been created. Our team will respond within the SLA window.`;
         }
+        // Pending-approval lane: the request is held for operator review —
+        // advisory copy only, never a completion or refund promise.
+        if (ticket!.status === "pending_approval" && reply) {
+          const pendingNote =
+            locale === "bn"
+              ? `\n\nআপনার অনুরোধটি গৃহীত হয়েছে (রেফারেন্স **#TKT-${ticketId.slice(-8).toUpperCase()}**) এবং বর্তমানে পর্যালোচনাধীন রয়েছে। পর্যালোচনা শেষ হলেই আমরা জানিয়ে দেব — এখনো কোনো রিফান্ড ইস্যু করা হয়নি।`
+              : `\n\nYour request has been received (reference **#TKT-${ticketId.slice(-8).toUpperCase()}**) and is under operator review. We will update you as soon as the review is complete — no refund has been issued yet.`;
+          if (!reply.includes(ticketId.slice(-8).toUpperCase())) {
+            reply = `${reply}${pendingNote}`;
+          }
+        }
+        // Angry fast-lane: acknowledge the frustration + human handoff without
+        // promising any outcome.
+        if (angryFastLane && reply && !/specialist|human|review/i.test(reply)) {
+          reply =
+            locale === "bn"
+              ? `${reply}\n\nআপনার অসুবিধার জন্য আমরা দুঃখিত। একজন সাপোর্ট স্পেশালিস্ট শীঘ্রই আপনার সাথে যোগাযোগ করবেন।`
+              : `${reply}\n\nWe're sorry for the trouble — a support specialist will follow up with you shortly.`;
+        }
       } else {
         cta = "ticket";
       }
@@ -1357,7 +1720,15 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         merchantId: merchant.id,
         conversationId,
         tool: "create_support_ticket",
-        args: { priority, reason, order_number: input.orderNumber ?? null },
+        args: {
+          priority,
+          reason,
+          order_number: input.orderNumber ?? null,
+          requires_approval: approvalScreen.required,
+          signals: approvalScreen.signals,
+          sentiment: sentiment.sentiment,
+          urgency: sentiment.urgency,
+        },
         sourceTable: "support_tickets",
         ok: Boolean(ticketId),
         latencyMs: toolLatency,
@@ -1370,6 +1741,7 @@ export async function askSupport(input: AskInput): Promise<AskResult> {
         ok: Boolean(ticketId),
         priority,
         reason,
+        requiresApproval: approvalScreen.required,
       });
     }
 

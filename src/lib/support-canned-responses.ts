@@ -6,7 +6,16 @@
  *
  * Supports variable interpolation ({{orderNumber}}, {{merchantName}}, {{operatorName}}),
  * fuzzy keyword searching, category taxonomy, and shortcut expansion (/greeting, /order, etc.).
+ *
+ * TODO-5: the /refund macro is advisory-only. Its EN/BN bodies are the shared
+ * guardrail templates (ADVISORY_REFUND_TEMPLATE_EN/BN) so operator copy can
+ * never promise an initiated refund; it always points at a support ticket.
  */
+
+import {
+  ADVISORY_REFUND_TEMPLATE_BN,
+  ADVISORY_REFUND_TEMPLATE_EN,
+} from "./support-guardrails";
 
 export type MacroCategory =
   | "greetings"
@@ -35,6 +44,7 @@ export type MacroContext = {
   merchantName?: string | null;
   orderNumber?: string | null;
   operatorName?: string | null;
+  ticketId?: string | null;
   channel?: string | null;
   courierName?: string | null;
   trackingCode?: string | null;
@@ -90,17 +100,14 @@ export const STANDARD_CANNED_RESPONSES: CannedResponse[] = [
   {
     id: "macro_refund_procedure",
     shortcut: "/refund",
-    title: "bKash / Nagad Refund Procedure",
-    titleBn: "বিকাশ/নগদ রিফান্ড নিয়ম",
+    title: "Refund Status Advisory (Ticket-Based)",
+    titleBn: "রিফান্ড পরামর্শ (টিকিট-ভিত্তিক)",
     category: "refunds_returns",
-    templateEn:
-      "We have initiated a refund for order #{{orderNumber}}. Once inspected, the funds will be credited to your original payment method (bKash/Nagad/Card) within {{refundTimeline}}.",
-    templateBn:
-      "অর্ডার #{{orderNumber}} এর রিফান্ড প্রক্রিয়া শুরু করা হয়েছে। পণ্য যাচাইয়ের পর {{refundTimeline}} এর মধ্যে আপনার বিকাশ/নগদ/কার্ডে টাকা পৌঁছে যাবে।",
-    body: "We have initiated a refund for order #{{orderNumber}}. Once inspected, the funds will be credited to your original payment method (bKash/Nagad/Card) within {{refundTimeline}}.",
-    bodyBn:
-      "অর্ডার #{{orderNumber}} এর রিফান্ড প্রক্রিয়া শুরু করা হয়েছে। পণ্য যাচাইয়ের পর {{refundTimeline}} এর মধ্যে আপনার বিকাশ/নগদ/কার্ডে টাকা পৌঁছে যাবে।",
-    variables: ["orderNumber", "refundTimeline"],
+    templateEn: ADVISORY_REFUND_TEMPLATE_EN,
+    templateBn: ADVISORY_REFUND_TEMPLATE_BN,
+    body: ADVISORY_REFUND_TEMPLATE_EN,
+    bodyBn: ADVISORY_REFUND_TEMPLATE_BN,
+    variables: ["ticketId", "orderNumber"],
   },
   {
     id: "macro_shipping_delay_apology",
@@ -178,6 +185,8 @@ export function interpolateMacro(
         return "[Tracking Code]";
       case "refundTimeline":
         return "3–5 business days";
+      case "ticketId":
+        return "[Ticket #]";
       default:
         return `[${key}]`;
     }
