@@ -372,7 +372,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       subhead: "SONGOSKRITI IN THE WORLD",
       subhead_bn: "সংস্কৃতি সারা দুনিয়ায়",
       images:
-        "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png, /ph/songoskriti/ugc-3.png, /ph/songoskriti/ugc-4.png",
+        "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png, /ph/songoskriti/ugc-3.png, /ph/songoskriti/ugc-4.png, /ph/songoskriti/ugc-5.jpg, /ph/songoskriti/ugc-6.jpg",
     }),
 
     // ────────────────────────────────────────────────────────────────────
