@@ -20,8 +20,7 @@ import {
 } from "./support-llm.server";
 
 vi.mock("./support-embed.server", async (importOriginal) => {
-  const orig =
-    await importOriginal<typeof import("./support-embed.server")>();
+  const orig = await importOriginal<typeof import("./support-embed.server")>();
   return {
     ...orig,
     getAiGatewayConfig: async () => ({
@@ -167,11 +166,11 @@ describe("handoff completeness (Chatwoot parity)", () => {
 
 describe("thinking-model reasoning hygiene (TODO-2)", () => {
   it("stripReasoningTokens removes think blocks, unclosed openers, control tokens", () => {
-    expect(stripReasoningTokens("<think>hidden plan</think>Clean answer.")).toBe(
-      "Clean answer.",
-    );
     expect(
-      stripReasoningTokens("A<THINK EFFORT=\"high\">\nmulti\nline\n</think>B"),
+      stripReasoningTokens("<think>hidden plan</think>Clean answer."),
+    ).toBe("Clean answer.");
+    expect(
+      stripReasoningTokens('A<THINK EFFORT="high">\nmulti\nline\n</think>B'),
     ).toBe("AB");
     expect(
       stripReasoningTokens("Visible <thinking>truncated tail with no closer"),
@@ -321,7 +320,9 @@ describe("SSE streaming draft (TODO-2)", () => {
             choices: [{ delta: { content: "From our help article <think>" } }],
           }),
           sseFrame({
-            choices: [{ delta: { content: "covert analysis</think>— SteadFast." } }],
+            choices: [
+              { delta: { content: "covert analysis</think>— SteadFast." } },
+            ],
           }),
           sseFrame({
             usage: { completion_tokens_details: { reasoning_tokens: 7 } },
