@@ -57,8 +57,10 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     expect(preset!.key).toBe("songoskriti");
     expect(preset!.tokens.brand).toBe("#1a1a1a");
     // Fashion-catalog rebuild: 20 sections, hero_carousel first (no
-    // announcement bar). Full order pinned in wiring.test.ts; this pins the
-    // authored order, whatever the theme builders produce.
+    // announcement bar). Full order pinned in wiring.test.ts; the header
+    // blueprint stays empty (StoreHeader owns search/account/cart chrome),
+    // so the preview index header carries no sections.
+    expect(preset!.templates.index.header.length).toEqual(0);
     expect(preset!.templates.index.main.map((s) => s.type)).toEqual([
       "hero_carousel",
       "department_grid",
@@ -81,7 +83,6 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       "trust_footer",
       "store_locator",
     ]);
-    expect(preset!.templates.index.header.length).toBeGreaterThan(0);
     expect(preset!.templates.index.footer.length).toBeGreaterThan(0);
   });
 
@@ -116,13 +117,18 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       "search",
     ] as const) {
       const ast = preset.templates[key];
-      expect(ast.header.length, `${key} header`).toBeGreaterThan(0);
+      expect(ast.header.length, `${key} header`).toBeGreaterThanOrEqual(0);
       expect(ast.main.length, `${key} main`).toBeGreaterThan(0);
       expect(ast.footer.length, `${key} footer`).toBeGreaterThan(0);
-      // Main opens with a heading (index opens with its hero carousel)
-      // so every preview sub-page owns the page h1.
+      // Main opens with a heading — except the index (hero carousel) and
+      // the collection (category_header breadcrumb/title/subnav) templates,
+      // which own the page h1 through their dedicated openers.
       expect(ast.main[0]!.type, `${key} first section`).toBe(
-        key === "index" ? "hero_carousel" : "heading",
+        key === "index"
+          ? "hero_carousel"
+          : key === "collection"
+            ? "category_header"
+            : "heading",
       );
     }
     // Spot-check demo bodies use proven renderers.
@@ -226,8 +232,19 @@ describe("demo focus (slug-aware collection preview)", () => {
   });
 
   it("focus keeps authored _bn twins", () => {
-    const sections = [{ id: "h", type: "heading", props: { text: "New in", text_bn: "নতুন এসেছে" } }];
-    const out = applyDemoFocus(sections as never, { template: "collection", slug: "festive", title: "Eid & Festive", collection: "festive" });
+    const sections = [
+      {
+        id: "h",
+        type: "heading",
+        props: { text: "New in", text_bn: "নতুন এসেছে" },
+      },
+    ];
+    const out = applyDemoFocus(sections as never, {
+      template: "collection",
+      slug: "festive",
+      title: "Eid & Festive",
+      collection: "festive",
+    });
     expect(out[0].props.text).toBe("Eid & Festive");
     expect(out[0].props.text_bn).toBe("নতুন এসেছে"); // currently blanked
   });
@@ -401,7 +418,9 @@ describe("resolveDemoFocus categories", () => {
     expect(f.collection).toBe("women");
   });
   it("unknown slugs still fall back to new-in", () => {
-    expect(resolveDemoFocus("songoskriti", "collection", "nope-xyz")?.collection).toBe("new-in");
+    expect(
+      resolveDemoFocus("songoskriti", "collection", "nope-xyz")?.collection,
+    ).toBe("new-in");
   });
 });
 

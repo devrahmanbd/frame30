@@ -1,33 +1,33 @@
 # Biba.in Competitive Audit — What They Have (Sept 25, 2026)
 
 > **Method**: subagent sweep of 18 live pages on `https://www.biba.in/` (ROW locale, `/row`).
-> Static HTML + markdown fetch (no browser). Effects marked *(inferred)* are strongly
+> Static HTML + markdown fetch (no browser). Effects marked _(inferred)_ are strongly
 > implied by library + markup; everything else was observed directly. Nothing invented.
 > **Why this report exists**: our storefront reads as static HTML+CSS — no transitions,
 > hover choreography, marquee, or gradients. This is the gap inventory.
 
 ## 1. Page inventory (18 visited, 0 blocked)
 
-| # | URL | Purpose |
-|---|-----|---------|
-| 1 | `/` → `/row` | Homepage: brand hub + Einstein recommendation rails |
-| 2 | `/row/kurtas-and-tops/kurtas/` | Listing: Kurtas, 670 products, filter/sort lab |
-| 3 | `/row/salwar-kameez/` | Listing: Salwar Kameez, 1,462 products, 8-tile subcategory nav |
-| 4 | `/row/collections/saree/` | Listing: Sarees (pre-draped), 10 products, premium pricing |
-| 5 | `/row/salwar-kameez/lehenga-and-skirts-sets/` | Listing: Lehengas, 42 products, $155–$888 |
-| 6 | `/row/sale/` | Clearance, 2,579 products, deepest facet set |
-| 7 | `/row/new-arrival/` | New arrivals AW'26, 434 products |
-| 8 | `/row/collections/wedding/` | Wedding Splendor edit, 574 products |
-| 9 | `/row/off-white-cotton-…/IKT21579SS26OWHT.html` | PDP: kurta, $77.70 (30% off) |
-| 10 | `/row/cart/` | Cart (empty state observed) |
-| 11 | `/row/checkout/?stage=customer` | 3-step checkout: Cart → Address → Payment |
-| 12 | `/row/login/` | OTP-first auth + password + signup + reset modals |
-| 13 | `/row/wishlist/` | Gated wishlist |
-| 14 | `/row/contact-us/` | Contact + form + corporate block |
-| 15 | `/row/about-us.html` | Editorial brand story |
-| 16 | `/row/stores/?showMap=true` | Store locator (**map broken** — literal "obtain a google maps api key" string) |
-| 17 | `/row/shipping-policy.html` | Per-region shipping rates + tariff disclaimers |
-| 18 | `/row/return-policy.html` | No-intl-returns, cancel-before-packed policy |
+| #   | URL                                             | Purpose                                                                        |
+| --- | ----------------------------------------------- | ------------------------------------------------------------------------------ |
+| 1   | `/` → `/row`                                    | Homepage: brand hub + Einstein recommendation rails                            |
+| 2   | `/row/kurtas-and-tops/kurtas/`                  | Listing: Kurtas, 670 products, filter/sort lab                                 |
+| 3   | `/row/salwar-kameez/`                           | Listing: Salwar Kameez, 1,462 products, 8-tile subcategory nav                 |
+| 4   | `/row/collections/saree/`                       | Listing: Sarees (pre-draped), 10 products, premium pricing                     |
+| 5   | `/row/salwar-kameez/lehenga-and-skirts-sets/`   | Listing: Lehengas, 42 products, $155–$888                                      |
+| 6   | `/row/sale/`                                    | Clearance, 2,579 products, deepest facet set                                   |
+| 7   | `/row/new-arrival/`                             | New arrivals AW'26, 434 products                                               |
+| 8   | `/row/collections/wedding/`                     | Wedding Splendor edit, 574 products                                            |
+| 9   | `/row/off-white-cotton-…/IKT21579SS26OWHT.html` | PDP: kurta, $77.70 (30% off)                                                   |
+| 10  | `/row/cart/`                                    | Cart (empty state observed)                                                    |
+| 11  | `/row/checkout/?stage=customer`                 | 3-step checkout: Cart → Address → Payment                                      |
+| 12  | `/row/login/`                                   | OTP-first auth + password + signup + reset modals                              |
+| 13  | `/row/wishlist/`                                | Gated wishlist                                                                 |
+| 14  | `/row/contact-us/`                              | Contact + form + corporate block                                               |
+| 15  | `/row/about-us.html`                            | Editorial brand story                                                          |
+| 16  | `/row/stores/?showMap=true`                     | Store locator (**map broken** — literal "obtain a google maps api key" string) |
+| 17  | `/row/shipping-policy.html`                     | Per-region shipping rates + tariff disclaimers                                 |
+| 18  | `/row/return-policy.html`                       | No-intl-returns, cancel-before-packed policy                                   |
 
 Gaps in Biba's own IA: no standalone size-guide page (PDP modal only), no countdown/lookbook/video page.
 

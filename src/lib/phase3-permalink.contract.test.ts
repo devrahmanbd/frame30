@@ -89,7 +89,9 @@ describe("canonical guard", () => {
     expect(canonicalRedirect(moved, "collection", "women", "/c/women")).toBe(
       "/shop/women",
     );
-    expect(canonicalRedirect(moved, "collection", "women", "/shop/women")).toBeNull();
+    expect(
+      canonicalRedirect(moved, "collection", "women", "/shop/women"),
+    ).toBeNull();
   });
 
   it("serves root post-name URLs without redirecting", () => {

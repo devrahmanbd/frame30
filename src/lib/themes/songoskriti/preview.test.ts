@@ -24,7 +24,7 @@ describe("songoskritiPreviewSource", () => {
       type,
       props: { ...props },
     });
-    expect(source.header(s).length).toBeGreaterThan(0);
+    expect(source.header(s).length).toEqual(0);
     expect(source.footer(s).length).toBeGreaterThan(0);
     const index = source.main("index", s)!;
     // Fashion-catalog rebuild: 20 sections, hero_carousel first (no
@@ -66,6 +66,10 @@ describe("songoskritiPreviewSource", () => {
     const types = (t: Parameters<typeof source.main>[0]) =>
       source.main(t, s)!.map((x) => x.type);
     expect(types("collection")).toContain("product_rail");
+    // Collection template now opens with category_header (breadcrumb +
+    // title + subnav) and result_toolbar (filter/sort bar), not a bare heading.
+    expect(types("collection")).toContain("category_header");
+    expect(types("collection")).toContain("result_toolbar");
     expect(types("product")).toContain("product_media");
     expect(types("account")).toEqual([
       "heading",

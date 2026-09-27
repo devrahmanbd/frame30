@@ -69,7 +69,7 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "Panjabi|/c/panjabi",
       "Festive|/c/festive",
       "Wedding|/c/wedding",
-      "Jewellery|/c/jewellery"
+      "Jewellery|/c/jewellery",
     ].join("\n"),
     links_bn: [
       "নতুন এসেছে|/c/new-in",
@@ -80,7 +80,7 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "পাঞ্জাবি|/c/panjabi",
       "উৎসব|/c/festive",
       "বিয়ে|/c/wedding",
-      "গহনা|/c/jewellery"
+      "গহনা|/c/jewellery",
     ].join("\n"),
   },
   {
@@ -93,7 +93,7 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "Returns & Exchanges|/pages/returns",
       "Cancellation|/pages/cancellation",
       "FAQ|/pages/faq",
-      "Contact|/pages/contact"
+      "Contact|/pages/contact",
     ].join("\n"),
     links_bn: [
       "সাইজ গাইড|/pages/size-guide",
@@ -102,7 +102,7 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "রিটার্ন ও বদল|/pages/returns",
       "বাতিলকরণ|/pages/cancellation",
       "সাধারণ জিজ্ঞাসা|/pages/faq",
-      "যোগাযোগ|/pages/contact"
+      "যোগাযোগ|/pages/contact",
     ].join("\n"),
   },
   {
@@ -114,7 +114,7 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "Handloom Heritage|/blog/handloom",
       "Artisan Partnerships|/pages/artisans",
       "Journal|/blog",
-      "Stores|/pages/stores"
+      "Stores|/pages/stores",
     ].join("\n"),
     links_bn: [
       "আমাদের গল্প|/pages/about",
@@ -122,7 +122,7 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "হাতে বোনা ঐতিহ্য|/blog/handloom",
       "তাঁতি অংশীদারিত্ব|/pages/artisans",
       "জার্নাল|/blog",
-      "স্টোরসমূহ|/pages/stores"
+      "স্টোরসমূহ|/pages/stores",
     ].join("\n"),
   },
   {
@@ -134,7 +134,7 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "Uttara Flagship|/pages/stores#uttara",
       "Gulshan Flagship|/pages/stores#gulshan",
       "Chattogram Flagship|/pages/stores#chattogram",
-      "Support: 10AM - 9PM|/pages/contact"
+      "Support: 10AM - 9PM|/pages/contact",
     ].join("\n"),
     links_bn: [
       "ফোন: +৮৮০ ৯৬ ১২৩৪ ৫৬৭৮|/pages/contact",
@@ -142,11 +142,10 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
       "উত্তরা ফ্ল্যাগশিপ|/pages/stores#uttara",
       "গুলশান ফ্ল্যাগশিপ|/pages/stores#gulshan",
       "চট্টগ্রাম ফ্ল্যাগশিপ|/pages/stores#chattogram",
-      "সাপোর্ট: সকাল ১০টা - রাত ৯টা|/pages/contact"
+      "সাপোর্ট: সকাল ১০টা - রাত ৯টা|/pages/contact",
     ].join("\n"),
   },
 ];
-
 
 export const PAYMENTS_HEADING = "Payment methods";
 export const PAYMENTS_HEADING_BN = "পেমেন্ট মাধ্যম";
@@ -173,24 +172,6 @@ export const COLOPHON = {
  */
 export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
   return [
-    s("split_feature", {
-      heading: STATEMENT.heading,
-      heading_bn: STATEMENT.heading_bn,
-      body: STATEMENT.body,
-      body_bn: STATEMENT.body_bn,
-      primaryImage: "/ph/songoskriti/songoskriti_artisan.jpg",
-      layout: "image_right",
-    }),
-    s("newsletter", {
-      heading: NEWSLETTER.heading,
-      heading_bn: NEWSLETTER.heading_bn,
-      body: NEWSLETTER.body,
-      body_bn: NEWSLETTER.body_bn,
-      buttonLabel: NEWSLETTER.buttonLabel,
-      buttonLabel_bn: NEWSLETTER.buttonLabel_bn,
-      consentText: NEWSLETTER.consentText,
-      consentText_bn: NEWSLETTER.consentText_bn,
-    }),
     s("footer_sitemap", {
       c1Title: FALLBACK_COLUMNS[0]!.title,
       c1Title_bn: FALLBACK_COLUMNS[0]!.title_bn,
@@ -208,16 +189,6 @@ export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
       c4Title_bn: FALLBACK_COLUMNS[3]!.title_bn,
       c4Links: FALLBACK_COLUMNS[3]!.links,
       c4Links_bn: FALLBACK_COLUMNS[3]!.links_bn,
-    }),
-    s("payment_icons", {
-      heading: PAYMENTS_HEADING,
-      heading_bn: PAYMENTS_HEADING_BN,
-      marks: PAYMENT_MARKS,
-    }),
-    s("rich_text", {
-      heading: "",
-      body: COLOPHON.body,
-      body_bn: COLOPHON.body_bn,
     }),
   ];
 }

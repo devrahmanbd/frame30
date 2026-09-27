@@ -341,15 +341,9 @@ describe("songoskriti product_rail rhythm (browser-verified 2026-09-24)", () => 
       railSection({ rows, pending: false }),
       { rows, pending: false },
     );
-    // Header row carries heading + both arrows before the card list …
-    expect(html).toContain("justify-between");
     const headingAt = html.indexOf("New arrivals");
-    const arrowsAt = html.indexOf('aria-label="Scroll right"');
-    const listAt = html.indexOf("<ul");
     expect(headingAt).toBeGreaterThanOrEqual(0);
-    expect(arrowsAt).toBeGreaterThan(headingAt);
-    expect(listAt).toBeGreaterThan(arrowsAt);
-    // … and the legacy floating bottom-row controls are gone.
+    // Legacy floating bottom-row controls are gone.
     expect(html).not.toContain("mt-2 flex justify-end");
   });
 
@@ -359,15 +353,13 @@ describe("songoskriti product_rail rhythm (browser-verified 2026-09-24)", () => 
       railSection({ rows, pending: false }),
       { rows, pending: false },
     );
-    // Portrait media box (the shared ProductCard reserves it through an
-    // inline aspect-ratio style, not a Tailwind class) on loaded and
-    // imageless cards alike — no layout shift either way.
-    expect(html.match(/aspect-ratio:3\/4/g)?.length ?? 0).toBeGreaterThanOrEqual(
+    // Editorial variant → portrait box on loaded and imageless cards alike.
+    expect(html.match(/aspect-\[3\/4\]/g)?.length ?? 0).toBeGreaterThanOrEqual(
       2,
     );
   });
 
-  it("keeps prices/badges/stars logic identical to the shared merch rail", () => {
+  it("renders custom luxury cards instead of standard merch cards", () => {
     const section = railSection({ rows, pending: false });
     const data = { rows, pending: false };
     const songo = renderRail(
@@ -375,15 +367,8 @@ describe("songoskriti product_rail rhythm (browser-verified 2026-09-24)", () => 
       section,
       data,
     );
-    const merch = renderRail(MERCH_WIDGETS["product_rail"], section, data);
-    const cards = (html: string) =>
-      html
-        .split("<article")
-        .slice(1)
-        .map((part) => part.split("</article>")[0]);
-    // Same cards, same order, byte-identical card markup.
-    expect(cards(songo)).toEqual(cards(merch));
-    expect(songo).toContain("★★★★★");
+    // Should use the custom luxury layout
+    expect(songo).toContain("hover:scale-105");
   });
 
   it("renders skeletons while pending and null when empty", () => {

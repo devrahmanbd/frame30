@@ -239,7 +239,7 @@ function Notice({ str, bool }: WidgetCtx) {
   );
 }
 
-  function MegaMenu({ str, int, data, link }: WidgetCtx) {
+function MegaMenu({ str, int, data, link }: WidgetCtx) {
   const [open, setOpen] = useState(false);
   const rows = data?.rows ?? [];
   const label = str("label") || "Shop";
@@ -467,9 +467,7 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
 
   const hasList = hits !== null && hits.length > 0;
   const safeActive =
-    hasList && activeIndex >= 0 && activeIndex < hits.length
-      ? activeIndex
-      : -1;
+    hasList && activeIndex >= 0 && activeIndex < hits.length ? activeIndex : -1;
   const activeId =
     safeActive >= 0 && hits
       ? `${listId}-opt-${hits[safeActive]!.id}`
@@ -535,9 +533,7 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
     goTo(viewAllHref);
   };
 
-  const handleInputKeyDown = (
-    event: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
+  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown" && hasList && hits) {
       event.preventDefault();
       setActiveIndex((prev) => (prev + 1) % hits.length);
@@ -550,12 +546,7 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
     } else if (event.key === "End" && hasList && hits) {
       event.preventDefault();
       setActiveIndex(hits.length - 1);
-    } else if (
-      event.key === "Enter" &&
-      hasList &&
-      safeActive >= 0 &&
-      hits
-    ) {
+    } else if (event.key === "Enter" && hasList && safeActive >= 0 && hits) {
       event.preventDefault();
       const hit = hits[safeActive]!;
       goTo(storeSlug ? `${base}/p/${hit.slug}` : "#");
@@ -578,9 +569,7 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
         className="inline-flex min-h-11 w-full items-center gap-2.5 rounded-full border border-border bg-muted px-4 text-sm text-muted-foreground transition-colors motion-safe:transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:w-72"
       >
         <Search className="size-4 shrink-0" aria-hidden />
-        <span className="min-w-0 flex-1 truncate text-left">
-          {placeholder}
-        </span>
+        <span className="min-w-0 flex-1 truncate text-left">{placeholder}</span>
       </button>
       <OverlayHost
         open={open}
@@ -628,9 +617,7 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
           <div aria-live="polite" className="min-h-24">
             {pending && (
               <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  {searchingText}
-                </p>
+                <p className="text-sm text-muted-foreground">{searchingText}</p>
                 <ul aria-hidden="true" className="space-y-2">
                   {[0, 1, 2].map((i) => (
                     <li
@@ -654,9 +641,7 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
                     ? `“${q}” এর জন্য কিছু পাওয়া যায়নি।`
                     : `No matches for “${q}”.`}
                 </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {tryOther}
-                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{tryOther}</p>
               </div>
             )}
             {!pending && hasList && hits && (
@@ -668,9 +653,7 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
                   className="max-h-[min(50vh,20rem)] divide-y divide-border overflow-auto"
                 >
                   {hits.map((hit, index) => {
-                    const href = storeSlug
-                      ? `${base}/p/${hit.slug}`
-                      : "#";
+                    const href = storeSlug ? `${base}/p/${hit.slug}` : "#";
                     const selected = index === safeActive;
                     return (
                       <li key={hit.id} role="presentation">
@@ -704,9 +687,7 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
                   className="flex min-h-11 items-center justify-center border-t border-border bg-muted/50 px-3 text-sm font-medium transition-colors motion-safe:transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
                 >
                   {viewAllLabel}
-                  <span className="sr-only">
-                    {q ? ` — ${q}` : ""}
-                  </span>
+                  <span className="sr-only">{q ? ` — ${q}` : ""}</span>
                 </a>
               </div>
             )}

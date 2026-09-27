@@ -21,12 +21,8 @@ rec.holder = recorder;
 vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./rate-limit.server", () => allowAllRateLimits());
 
-const {
-  loadFunnel,
-  loadCohorts,
-  loadTraffic,
-  loadPipelineHealth,
-} = await import("./analytics-warehouse.server");
+const { loadFunnel, loadCohorts, loadTraffic, loadPipelineHealth } =
+  await import("./analytics-warehouse.server");
 
 const MERCHANT = "77777777-7777-7777-7777-777777777777";
 

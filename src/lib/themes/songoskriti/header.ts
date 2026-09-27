@@ -16,13 +16,5 @@ import type { SectionBuilder } from "./types";
  */
 export function buildHeaderMain(s: SectionBuilder): Section[] {
   s = withSongoskritiDefaults(s);
-  return [
-    s("mega_menu", {
-      label: "Shop",
-      label_bn: "কেনাকাটা",
-      limit: 8,
-      columns: 4,
-      advClass: "sticky top-[94px] z-20",
-    }),
-  ];
+  return [];
 }

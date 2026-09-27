@@ -97,4 +97,33 @@ describe("isLiveInstallStatus", () => {
     expect(isLiveInstallStatus("removed")).toBe(false);
     expect(isLiveInstallStatus("rolled_back")).toBe(false);
   });
+
+  it("treats uninstalling/purged as terminal (never an Installed badge)", () => {
+    expect(isLiveInstallStatus("uninstalling")).toBe(false);
+    expect(isLiveInstallStatus("purged")).toBe(false);
+  });
+});
+
+describe("B2 badge tails (paused dispute + source divergence)", () => {
+  it("paused ledger + no row resolves to installed, never active (WP parity: paused = present-but-inactive)", () => {
+    expect(
+      resolveThemeBadge("classic", {
+        themeStates: [],
+        installs: [{ theme_id: "listing-1", status: "paused" }],
+        listingId: "listing-1",
+      }),
+    ).toBe("installed");
+  });
+
+  it("catalog installs write theme_id NULL — a slug-matching live ledger row still counts as installed", () => {
+    expect(
+      resolveThemeBadge("classic", {
+        themeStates: [],
+        installs: [
+          { theme_id: null, listing_slug: "classic", status: "installed" },
+        ],
+        listingId: "catalog-row-id-that-never-matches-theme-id",
+      }),
+    ).toBe("installed");
+  });
 });

@@ -154,7 +154,9 @@
 
 /* CTA row: surface button on the scrim, 44px targets preserved */
 [data-widget="hero_carousel"][data-skin="fullbleed"] [data-part="caption"] a,
-[data-widget="hero_carousel"][data-skin="fullbleed"] [data-part="caption"] button {
+[data-widget="hero_carousel"][data-skin="fullbleed"]
+  [data-part="caption"]
+  button {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -243,7 +245,7 @@
 
 /* ---------- interaction + motion guards (all skins) ---------- */
 [data-widget][data-skin] a,
-[data-widget][data-skin] button {
+[data-widget][data-skin] button:not([data-part="wishlist"]) {
   min-height: 44px;
 }
 

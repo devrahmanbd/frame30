@@ -54,7 +54,10 @@ function render(
   data?: WidgetCtx["data"],
 ) {
   return renderToStaticMarkup(
-    createElement(Cmp as (p: WidgetCtx) => React.ReactElement, ctxFor(section, locale, data)),
+    createElement(
+      Cmp as (p: WidgetCtx) => React.ReactElement,
+      ctxFor(section, locale, data),
+    ),
   );
 }
 
@@ -178,7 +181,9 @@ describe("B2-3 data-part hooks (attributes only)", () => {
       ...base,
       props: {
         ...base.props,
-        testimonials: [{ quote: "Drapes beautifully.", author: "Nasrin", role: "Dhaka" }],
+        testimonials: [
+          { quote: "Drapes beautifully.", author: "Nasrin", role: "Dhaka" },
+        ],
       },
     };
     const html = render(WIDGET_COMPONENTS.testimonials, section);
@@ -206,12 +211,10 @@ describe("B2-3 data-part hooks (attributes only)", () => {
       ...base,
       props: { ...base.props, promise: "Ships in 24h" },
     };
-    const html = render(
-      WIDGET_COMPONENTS.urgency_rail,
-      section,
-      "en",
-      { rows: [{ ...ROWS[0]!, count: 2 }], pending: false },
-    );
+    const html = render(WIDGET_COMPONENTS.urgency_rail, section, "en", {
+      rows: [{ ...ROWS[0]!, count: 2 }],
+      pending: false,
+    });
     expect(html).toContain('data-part="title"');
     expect(html).toContain('data-part="price"');
     expect(html).toContain('data-part="badge"');

@@ -15,6 +15,7 @@ export type DemoVariant = {
   price: number;
   compare_at?: number;
   stock?: number;
+  images?: string[];
 };
 
 export type DemoProduct = {
@@ -26,6 +27,8 @@ export type DemoProduct = {
   tags?: string[];
   variants: DemoVariant[];
   image_url?: string;
+  /** Ordered gallery images, one per variant ideally (for variant→gallery binding). */
+  images?: string[];
   /** Convenience list price in minor units; falls back to first variant. */
   price?: number;
 };
@@ -35,6 +38,7 @@ export type DemoCatalog = {
   collections: { slug: string; name: string; description?: string }[];
   products: DemoProduct[];
 };
+
 
 /** apparel — sizes, colourways, fabric and model measurements in the copy. */
 const APPAREL: DemoCatalog = {
@@ -2619,6 +2623,15 @@ const SONGOSKRITI: DemoCatalog = {
       collections: ["new-in", "festive", "wedding"],
       tags: ["jamdani", "saree", "silk", "handloom"],
       image_url: "/ph/songoskriti/prod-saree.png",
+      images: [
+        "/ph/songoskriti/prod-saree.png",
+        "/ph/songoskriti/hero-festive.png",
+        "/ph/songoskriti/hero-weaves.png",
+        "/ph/songoskriti/cat-women.png",
+        "/ph/songoskriti/hero-artisans.png",
+        "/ph/songoskriti/edit-festive-main.png",
+      ],
+
       variants: [
         {
           name: "Emerald & Rose Gold",
@@ -2626,12 +2639,41 @@ const SONGOSKRITI: DemoCatalog = {
           price: 1850000,
           compare_at: 2200000,
           stock: 5,
+          images: [
+            "/ph/songoskriti/prod-saree.png",
+            "/ph/songoskriti/hero-festive.png",
+            "/ph/songoskriti/hero-weaves.png",
+          ],
         },
         {
           name: "Crimson & Gold",
           sku: "SNK-JAM-CRM",
           price: 1850000,
           stock: 4,
+          images: [
+            "/ph/songoskriti/cat-women.png",
+            "/ph/songoskriti/hero-artisans.png",
+            "/ph/songoskriti/edit-festive-main.png",
+          ],
+        },
+      ],
+    },
+    {
+      slug: "muslin-floral-festive-saree",
+      title: "Handwoven Muslin Floral Saree",
+      description:
+        "Ultra-lightweight fine muslin saree with delicate floral motifs woven directly into the fabric. Perfect for summer festivities.",
+      category: "women",
+      collections: ["new-in", "festive"],
+      tags: ["muslin", "saree", "cotton", "handloom"],
+      image_url: "/ph/songoskriti/cat-women.png",
+      variants: [
+        {
+          name: "Powder Blue",
+          sku: "SNK-MSL-PBL",
+          price: 950000,
+          compare_at: 1100000,
+          stock: 12,
         },
       ],
     },
@@ -2644,6 +2686,12 @@ const SONGOSKRITI: DemoCatalog = {
       collections: ["bestsellers", "festive"],
       tags: ["khadi", "kurta", "cotton", "handloom"],
       image_url: "/ph/songoskriti/cat-men.png",
+      images: [
+        "/ph/songoskriti/cat-men.png",
+        "/ph/songoskriti/prod-panjabi.png",
+        "/ph/songoskriti/campaign-men.png",
+        "/ph/songoskriti/hero-artisans.png",
+      ],
       variants: [
         {
           name: "Size M - Natural Off-White",
@@ -2661,6 +2709,7 @@ const SONGOSKRITI: DemoCatalog = {
         },
       ],
     },
+
     {
       slug: "jessore-nakshi-kantha-quilt",
       title: "Jessore Nakshi Kantha Quilt",

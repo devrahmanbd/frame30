@@ -277,14 +277,10 @@ function PriceFacet({ ctx }: { ctx: WidgetCtx }) {
   const parsedMax = Number(max);
   const ceiling =
     max !== "" && Number.isFinite(parsedMax) && parsedMax > 0
-      ? Math.max(
-          PRICE_CEILING_FLOOR,
-          Math.ceil(parsedMax / 5000) * 5000,
-        )
+      ? Math.max(PRICE_CEILING_FLOOR, Math.ceil(parsedMax / 5000) * 5000)
       : PRICE_CEILING_FLOOR;
   const hi = max === "" ? ceiling : Math.min(parsedMax, ceiling);
-  const lo =
-    min === "" ? 0 : Math.max(0, Math.min(Number(min) || 0, hi));
+  const lo = min === "" ? 0 : Math.max(0, Math.min(Number(min) || 0, hi));
   const loPct = Math.min(100, (lo / ceiling) * 100);
   const hiPct = Math.min(100, (hi / ceiling) * 100);
   const minLabel = locale === "bn" ? "সর্বনিম্ন দাম" : "Minimum price";

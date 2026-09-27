@@ -86,7 +86,6 @@ describe("songoskriti wiring", () => {
       ({ id: type, type, props }) as never;
     const header = buildHeaderMain(s as never);
     const footer = buildFooterMain(s as never);
-    expect(header.length).toBeGreaterThan(0);
     expect(footer.length).toBeGreaterThan(0);
     for (const section of [...header, ...footer]) {
       expect(catalogEntry(section.type)).toBeDefined();
@@ -103,6 +102,9 @@ describe("songoskriti wiring", () => {
         .map((row) => row.split("|")[0]!.trim())
         .filter(Boolean),
     );
+    // Merge reconciliation: both lanes' fallback labels survive — "Stores"
+    // (flagship outlets) and "Contact" (customer care) across 28 links.
+    expect(labels).toContain("Stores");
     expect(labels).toContain("Contact");
     expect(labels).toHaveLength(28);
     expect(new Set(labels).size).toBe(labels.length);
@@ -119,14 +121,12 @@ describe("songoskriti wiring", () => {
   });
   it("never duplicates the StoreHeader chrome (browser-verified 2026-09-24)", () => {
     // The storefront masthead (`StoreHeader`, live + preview) already owns
-    // search, account and cart actions: blueprint sections for them rendered
-    // a second search bar and account row beneath the masthead. The header
-    // blueprint keeps the menubar only; the homepage main carries no chrome
-    // types at all (it never did — this pins that invariant).
+    // search, account, cart actions, AND the menubar. The header blueprint
+    // is empty so it does not duplicate chrome types.
     const s = (type: string, props = {}) =>
       ({ id: type, type, props }) as never;
     const headerTypes = buildHeaderMain(s as never).map((n) => n.type);
-    expect(headerTypes).toContain("mega_menu");
+    expect(headerTypes).not.toContain("mega_menu");
     expect(headerTypes).not.toContain("search_command");
     expect(headerTypes).not.toContain("account_cart");
     const mainTypes = buildHomepageMain(s as never).map((n) => n.type);

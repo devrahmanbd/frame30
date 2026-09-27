@@ -310,7 +310,14 @@ export function SectionRenderer({
         productSlot={productSlot}
         collectionSlot={collectionSlot}
         link={(href: string) => {
-          if (!href || href.startsWith("http") || href.startsWith("mailto:") || href.startsWith("tel:") || href === "#") return href;
+          if (
+            !href ||
+            href.startsWith("http") ||
+            href.startsWith("mailto:") ||
+            href.startsWith("tel:") ||
+            href === "#"
+          )
+            return href;
           const h = href.startsWith("/") ? href : `/${href}`;
           return linkBase ? `${linkBase}${h}` : h;
         }}

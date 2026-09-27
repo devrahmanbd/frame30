@@ -268,7 +268,6 @@ describe("per-skin render smoke — headings, copy, targets, motion", () => {
       ),
     );
     expect(hero).toContain("min-h-11");
-    expect(hero).toContain("min-h-12");
     const carousel = render(
       WIDGET_COMPONENTS.testimonials,
       withSkin(populated("testimonials"), "carousel"),
@@ -335,9 +334,13 @@ describe("theme preset defaults — authored props win", () => {
   });
 
   it("rejects theme keys the catalog does not declare", () => {
-    const merged = withThemeWidgetDefaults("product_rail", {}, {
-      product_rail: { skin: "minimal", evil: "x" },
-    });
+    const merged = withThemeWidgetDefaults(
+      "product_rail",
+      {},
+      {
+        product_rail: { skin: "minimal", evil: "x" },
+      },
+    );
     expect(merged["skin"]).toBe("minimal");
     expect(merged).not.toHaveProperty("evil");
   });

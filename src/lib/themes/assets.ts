@@ -529,8 +529,12 @@ function skinRefMatches(
     if (skin.value !== null) return ctx.skins.has(skin.value);
     return ctx.used.size > 0;
   }
-  if (widget) return widget.value !== null ? ctx.types.has(widget.value) : ctx.used.size > 0;
-  if (skin) return skin.value !== null ? ctx.skins.has(skin.value) : ctx.used.size > 0;
+  if (widget)
+    return widget.value !== null
+      ? ctx.types.has(widget.value)
+      : ctx.used.size > 0;
+  if (skin)
+    return skin.value !== null ? ctx.skins.has(skin.value) : ctx.used.size > 0;
   return false;
 }
 

@@ -143,6 +143,74 @@ describe("third-party install materialization", () => {
   });
 });
 
+describe("B2 install-click idempotency (double-click replay)", () => {
+  function replayDb() {
+    return fakeDb({
+      tables: {
+        marketplace_themes: [
+          {
+            id: LISTING,
+            name: "Seller theme",
+            slug: "seller-theme",
+            version: "1.0.0",
+            status: "active",
+            seller_merchant_id: "seller",
+            price_minor_int: 0,
+            currency_code: "BDT",
+            trial_allowed: false,
+            compatible_versions: [],
+            manifest: {
+              templates: { index: { header: [], main: [], footer: [] } },
+              tokens: {},
+            },
+          },
+        ],
+        marketplace_versions: [],
+        marketplace_installs: [],
+        store_themes: [],
+        theme_versions: [],
+        theme_drafts: [],
+      },
+    });
+  }
+
+  /**
+   * The install-click handler mints ONE idempotency key per consent dialog
+   * (crypto.randomUUID, reused across retries — see the index route) and the
+   * Date.now() at marketplace-install.server.ts:138 is the trial expiry,
+   * not key minting. A double-click with the same key replays the original
+   * install instead of stacking ledger/theme rows.
+   */
+  it("replays a double-click with the same idempotency key", async () => {
+    const db = replayDb();
+    const input = {
+      kind: "theme" as const,
+      listingId: LISTING,
+      trial: false,
+      idempotencyKey: "stable-consent-key",
+      versionId: null,
+      grantedScopes: ["render_storefront"],
+      consentedBy: null,
+    };
+    const first: InstallResult = await installListing(
+      db.asClient(),
+      MERCHANT,
+      input,
+    );
+    const second: InstallResult = await installListing(
+      db.asClient(),
+      MERCHANT,
+      input,
+    );
+    expect(first.replayed).toBe(false);
+    expect(second.replayed).toBe(true);
+    expect(second.installId).toBe(first.installId);
+    expect(db.rows("marketplace_installs")).toHaveLength(1);
+    expect(db.rows("store_themes")).toHaveLength(1);
+    expect(db.rows("theme_versions")).toHaveLength(1);
+  });
+});
+
 describe("activateTheme with draft-only versions", () => {
   it("materializes from the draft instead of refusing with theme.unpublished", async () => {
     const db = fakeDb({

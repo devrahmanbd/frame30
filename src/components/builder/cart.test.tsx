@@ -10,7 +10,11 @@
 import { describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
-import { newSection, type SectionType, type TemplateKey } from "@/lib/builder-ast";
+import {
+  newSection,
+  type SectionType,
+  type TemplateKey,
+} from "@/lib/builder-ast";
 import { SectionRenderer } from "./SectionRenderer";
 
 // Cart widgets read the store base off the TanStack router (same as the
@@ -242,10 +246,10 @@ describe("OverlayHost — cart-adjacent primitive fixes", () => {
   });
 
   it("keeps focus/Escape/scroll behaviour byte-identical", () => {
-    expect(OVERLAY_SRC).toContain("restoreRef.current = (document.activeElement");
     expect(OVERLAY_SRC).toContain(
-      'document.body.style.overflow = "hidden"',
+      "restoreRef.current = (document.activeElement",
     );
+    expect(OVERLAY_SRC).toContain('document.body.style.overflow = "hidden"');
     expect(OVERLAY_SRC).toContain("event.stopPropagation()");
     expect(OVERLAY_SRC).toContain("if (!open) return null;");
   });

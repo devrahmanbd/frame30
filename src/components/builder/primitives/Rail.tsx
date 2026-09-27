@@ -116,13 +116,15 @@ export function Rail({
   return (
     <div
       className="relative"
-      onMouseEnter={() => { hovered.current = true; }}
-      onMouseLeave={() => { hovered.current = false; }}
+      onMouseEnter={() => {
+        hovered.current = true;
+      }}
+      onMouseLeave={() => {
+        hovered.current = false;
+      }}
     >
       {heading !== undefined && (
-        <div className="mb-8 sm:mb-10 text-center">
-          {heading}
-        </div>
+        <div className="mb-8 sm:mb-10 text-center">{heading}</div>
       )}
       <ul
         ref={ref}
@@ -137,10 +139,16 @@ export function Rail({
             nudge(-1);
           } else if (event.key === "Home") {
             event.preventDefault();
-            ref.current?.scrollTo({ left: 0, behavior: reduced ? "auto" : "smooth" });
+            ref.current?.scrollTo({
+              left: 0,
+              behavior: reduced ? "auto" : "smooth",
+            });
           } else if (event.key === "End") {
             event.preventDefault();
-            ref.current?.scrollTo({ left: ref.current.scrollWidth, behavior: reduced ? "auto" : "smooth" });
+            ref.current?.scrollTo({
+              left: ref.current.scrollWidth,
+              behavior: reduced ? "auto" : "smooth",
+            });
           }
         }}
         onScroll={updateEdges}
@@ -148,27 +156,56 @@ export function Rail({
         className="flex snap-x snap-mandatory gap-6 sm:gap-8 overflow-x-auto scroll-px-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
         {children.map((child, i) => (
-          <li
-            key={i}
-            className={`shrink-0 snap-start ${itemClassName}`}
-          >
+          <li key={i} className={`shrink-0 snap-start ${itemClassName}`}>
             {child}
           </li>
         ))}
       </ul>
 
-      {/* Subtle fade edges — visual cue that there's more to scroll, no buttons */}
+      {/* Scroll controls */}
       {canLeft && (
-        <div
-          className="pointer-events-none absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-background/80 to-transparent"
-          aria-hidden="true"
-        />
+        <button
+          type="button"
+          data-part="rail-nav"
+          aria-label="Scroll left"
+          onClick={() => nudge(-1)}
+          className="absolute left-2 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm ring-1 ring-foreground/5 backdrop-blur transition-all hover:scale-105 hover:bg-background focus:outline-none focus-visible:ring-2 focus-visible:ring-primary z-10"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+        </button>
       )}
       {canRight && (
-        <div
-          className="pointer-events-none absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-background/80 to-transparent"
-          aria-hidden="true"
-        />
+        <button
+          type="button"
+          data-part="rail-nav"
+          aria-label="Scroll right"
+          onClick={() => nudge(1)}
+          className="absolute right-2 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm ring-1 ring-foreground/5 backdrop-blur transition-all hover:scale-105 hover:bg-background focus:outline-none focus-visible:ring-2 focus-visible:ring-primary z-10"
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="m9 18 6-6-6-6" />
+          </svg>
+        </button>
       )}
     </div>
   );

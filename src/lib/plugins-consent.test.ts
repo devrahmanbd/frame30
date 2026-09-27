@@ -86,7 +86,8 @@ describe("R2-1 consent evidence (upsertPlugin)", () => {
     expect(db.rows("plugin_state")[0]!.scopes).toEqual([]);
   });
 
-  it("writes a plugin.scopes_granted audit with manifest_version", async () => {    const db = pluginDb();
+  it("writes a plugin.scopes_granted audit with manifest_version", async () => {
+    const db = pluginDb();
     await upsertPlugin(db.asClient(), MERCHANT, {
       manifest: MANIFEST,
       grantedScopes: ["read_shop", "render_storefront"],

@@ -27,9 +27,7 @@ describe("candidateStoreSlugs", () => {
   it("falls back for short or empty names", () => {
     expect(candidateStoreSlugs("AB")[0]).toBe("store");
     // Unusable names fall back to slugify's unique item-xxx, still valid.
-    expect(candidateStoreSlugs("!!!")[0]).toMatch(
-      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
-    );
+    expect(candidateStoreSlugs("!!!")[0]).toMatch(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
   });
 
   it("keeps every candidate within length bounds", () => {

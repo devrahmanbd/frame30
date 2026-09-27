@@ -19,12 +19,12 @@ WordPress `theme.json` `settings` + `styles.blocks`
 Each skinnable widget gains a `skin` prop whose values are a closed,
 per-widget set, e.g.:
 
-| Widget | Skins |
-|---|---|
-| `product_rail` | `editorial` (default), `compact`, `minimal` |
-| `hero_carousel` | `split`, `fullbleed`, `minimal` |
-| `testimonials` | `wall`, `carousel`, `single` |
-| `product_grid` | `cards`, `rows` |
+| Widget          | Skins                                       |
+| --------------- | ------------------------------------------- |
+| `product_rail`  | `editorial` (default), `compact`, `minimal` |
+| `hero_carousel` | `split`, `fullbleed`, `minimal`             |
+| `testimonials`  | `wall`, `carousel`, `single`                |
+| `product_grid`  | `cards`, `rows`                             |
 
 Generalizes the existing `cardVariant` precedent into a system. Catalog
 entry gets a `skin` select field (style panel) so the builder exposes it
@@ -42,7 +42,9 @@ only presentation forks. Keeps the closed-map gate green.
 Themes ship skin sheets keyed by attribute selectors:
 
 ```css
-[data-widget="product_rail"][data-skin="minimal"] { /* … */ }
+[data-widget="product_rail"][data-skin="minimal"] {
+  /* … */
+}
 ```
 
 Renderer emits `data-widget` + `data-skin` attributes (already have

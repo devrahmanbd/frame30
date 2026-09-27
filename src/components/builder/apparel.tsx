@@ -255,7 +255,10 @@ const ShoppableImage: WidgetComponent = (ctx) => {
                     className="w-14 shrink-0 rounded-fq-sm"
                   />
                   <span className="min-w-0">
-                    <span data-part="title" className="block truncate text-sm font-medium">
+                    <span
+                      data-part="title"
+                      className="block truncate text-sm font-medium"
+                    >
                       {pin.row.title}
                     </span>
                     {pin.row.priceMinor !== undefined && (
@@ -434,7 +437,7 @@ const StoreLocator: WidgetComponent = (ctx) => {
   if (stores.length === 0) return null;
   return (
     <section
-      className="w-full border-t border-[var(--theme-border)] py-16 sm:py-20"
+      className="w-full border-t border-border py-16 sm:py-20"
       aria-label={str("heading") || t(locale, "Stores", "দোকান")}
     >
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
@@ -443,7 +446,7 @@ const StoreLocator: WidgetComponent = (ctx) => {
             {str("heading")}
           </Heading>
         )}
-        <ul className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[var(--theme-border)]">
+        <ul className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-border">
           {stores.map((store) => (
             <li
               key={store.name}

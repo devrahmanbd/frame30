@@ -6,7 +6,7 @@ import {
   ShoppingBag,
   User,
   X,
-  Heart
+  Heart,
 } from "@/components/icons/tabler";
 import { useCart } from "@/lib/cart";
 import { useWishlistHeader } from "@/lib/wishlist-card";
@@ -23,105 +23,159 @@ import { TimezoneToggle } from "./TimezoneToggle";
 
 export const SONGOSKRITI_MEGA_MENU = [
   {
-    id: "women", label: "Women", url: "/c/women",
+    id: "women",
+    label: "Women",
+    url: "/c/women",
     image: "/ph/songoskriti/cat-women.png",
     children: [
-      { id: "w-sarees", label: "Sarees", url: "/c/sarees", children: [
-        { id: "ws-jamdani", label: "Jamdani", url: "/c/jamdani" },
-        { id: "ws-tangail", label: "Tangail", url: "/c/tangail" },
-        { id: "ws-muslin", label: "Muslin", url: "/c/muslin" },
-        { id: "ws-silk", label: "Silk", url: "/c/silk" },
-        { id: "ws-handloom", label: "Handloom", url: "/c/handloom" },
-        { id: "ws-cotton", label: "Cotton", url: "/c/cotton" },
-        { id: "ws-festive", label: "Festive Sarees", url: "/c/festive" },
-      ] },
-      { id: "w-occasion", label: "Occasion", url: "/c/occasion", children: [
-        { id: "wo-eid", label: "Eid", url: "/c/eid" },
-        { id: "wo-wedding", label: "Wedding", url: "/c/wedding" },
-        { id: "wo-everyday", label: "Everyday", url: "/c/everyday" },
-        { id: "wo-party", label: "Party", url: "/c/party" },
-      ] },
-      { id: "w-featured", label: "Featured", url: "/c/featured", children: [
-        { id: "wf-new", label: "New Arrivals", url: "/c/new-in" },
-        { id: "wf-best", label: "Bestsellers", url: "/c/bestsellers" },
-      ] },
-    ]
+      {
+        id: "w-sarees",
+        label: "Sarees",
+        url: "/c/sarees",
+        children: [
+          { id: "ws-jamdani", label: "Jamdani", url: "/c/jamdani" },
+          { id: "ws-tangail", label: "Tangail", url: "/c/tangail" },
+          { id: "ws-muslin", label: "Muslin", url: "/c/muslin" },
+          { id: "ws-silk", label: "Silk", url: "/c/silk" },
+          { id: "ws-handloom", label: "Handloom", url: "/c/handloom" },
+          { id: "ws-cotton", label: "Cotton", url: "/c/cotton" },
+          { id: "ws-festive", label: "Festive Sarees", url: "/c/festive" },
+        ],
+      },
+      {
+        id: "w-occasion",
+        label: "Occasion",
+        url: "/c/occasion",
+        children: [
+          { id: "wo-eid", label: "Eid", url: "/c/eid" },
+          { id: "wo-wedding", label: "Wedding", url: "/c/wedding" },
+          { id: "wo-everyday", label: "Everyday", url: "/c/everyday" },
+          { id: "wo-party", label: "Party", url: "/c/party" },
+        ],
+      },
+      {
+        id: "w-featured",
+        label: "Featured",
+        url: "/c/featured",
+        children: [
+          { id: "wf-new", label: "New Arrivals", url: "/c/new-in" },
+          { id: "wf-best", label: "Bestsellers", url: "/c/bestsellers" },
+        ],
+      },
+    ],
   },
   {
-    id: "men", label: "Men", url: "/c/men",
+    id: "men",
+    label: "Men",
+    url: "/c/men",
     image: "/ph/songoskriti/cat-men.png",
     children: [
-      { id: "m-panjabi", label: "Panjabi", url: "/c/panjabi", children: [
-        { id: "mp-premium", label: "Premium Panjabi", url: "/c/premium-panjabi" },
-        { id: "mp-silk", label: "Silk", url: "/c/silk-panjabi" },
-        { id: "mp-handloom", label: "Handloom", url: "/c/handloom-panjabi" },
-        { id: "mp-festive", label: "Festive", url: "/c/festive-panjabi" },
-        { id: "mp-casual", label: "Casual", url: "/c/casual-panjabi" },
-      ] },
-      { id: "m-sets", label: "Sets", url: "/c/sets", children: [
-        { id: "ms-set", label: "Panjabi & Pajama", url: "/c/panjabi-sets" },
-        { id: "ms-family", label: "Family Matching", url: "/c/family" },
-      ] },
-    ]
+      {
+        id: "m-panjabi",
+        label: "Panjabi",
+        url: "/c/panjabi",
+        children: [
+          {
+            id: "mp-premium",
+            label: "Premium Panjabi",
+            url: "/c/premium-panjabi",
+          },
+          { id: "mp-silk", label: "Silk", url: "/c/silk-panjabi" },
+          { id: "mp-handloom", label: "Handloom", url: "/c/handloom-panjabi" },
+          { id: "mp-festive", label: "Festive", url: "/c/festive-panjabi" },
+          { id: "mp-casual", label: "Casual", url: "/c/casual-panjabi" },
+        ],
+      },
+      {
+        id: "m-sets",
+        label: "Sets",
+        url: "/c/sets",
+        children: [
+          { id: "ms-set", label: "Panjabi & Pajama", url: "/c/panjabi-sets" },
+          { id: "ms-family", label: "Family Matching", url: "/c/family" },
+        ],
+      },
+    ],
   },
   {
-    id: "kids", label: "Kids", url: "/c/kids",
+    id: "kids",
+    label: "Kids",
+    url: "/c/kids",
     image: "/ph/songoskriti/cat-kids.png",
     children: [
-      { id: "k-boys", label: "Boys", url: "/c/boys", children: [
-        { id: "kb-panjabi", label: "Panjabi", url: "/c/boys-panjabi" },
-        { id: "kb-sets", label: "Sets", url: "/c/boys-sets" },
-      ] },
-      { id: "k-girls", label: "Girls", url: "/c/girls", children: [
-        { id: "kg-saree", label: "Sarees", url: "/c/girls-sarees" },
-        { id: "kg-dresses", label: "Dresses", url: "/c/girls-dresses" },
-        { id: "kg-lehenga", label: "Lehengas", url: "/c/girls-lehengas" },
-      ] },
-    ]
+      {
+        id: "k-boys",
+        label: "Boys",
+        url: "/c/boys",
+        children: [
+          { id: "kb-panjabi", label: "Panjabi", url: "/c/boys-panjabi" },
+          { id: "kb-sets", label: "Sets", url: "/c/boys-sets" },
+        ],
+      },
+      {
+        id: "k-girls",
+        label: "Girls",
+        url: "/c/girls",
+        children: [
+          { id: "kg-saree", label: "Sarees", url: "/c/girls-sarees" },
+          { id: "kg-dresses", label: "Dresses", url: "/c/girls-dresses" },
+          { id: "kg-lehenga", label: "Lehengas", url: "/c/girls-lehengas" },
+        ],
+      },
+    ],
   },
   {
-    id: "collections", label: "Collections", url: "/c",
-    image: "/ph/songoskriti/hero-weaves.png",
-    children: [
-      { id: "c-featured", label: "Featured", url: "/c/featured", children: [
-        { id: "cf-signature", label: "Signature Sarees", url: "/c/signature" },
-        { id: "cf-modern", label: "The Modern Panjabi", url: "/c/modern-panjabi" },
-        { id: "cf-everyday", label: "Everyday Heritage", url: "/c/everyday" },
-      ] }
-    ]
-  },
-  {
-    id: "festive", label: "Festive", url: "/c/festive",
+    id: "festive",
+    label: "Festive",
+    url: "/c/festive",
     image: "/ph/songoskriti/hero-festive.png",
     children: [
-      { id: "f-occ", label: "Occasions", url: "/c/festive", children: [
-        { id: "fo-eid", label: "Eid", url: "/c/eid" },
-        { id: "fo-wedding", label: "Wedding", url: "/c/wedding" },
-        { id: "fo-mehendi", label: "Mehendi", url: "/c/mehendi" },
-        { id: "fo-sangeet", label: "Sangeet", url: "/c/sangeet" },
-        { id: "fo-puja", label: "Puja", url: "/c/puja" },
-        { id: "fo-gifting", label: "Gifting", url: "/c/gifting" },
-      ] }
-    ]
+      {
+        id: "f-occ",
+        label: "Occasions",
+        url: "/c/festive",
+        children: [
+          { id: "fo-eid", label: "Eid", url: "/c/eid" },
+          { id: "fo-wedding", label: "Wedding", url: "/c/wedding" },
+          { id: "fo-mehendi", label: "Mehendi", url: "/c/mehendi" },
+          { id: "fo-sangeet", label: "Sangeet", url: "/c/sangeet" },
+          { id: "fo-puja", label: "Puja", url: "/c/puja" },
+          { id: "fo-gifting", label: "Gifting", url: "/c/gifting" },
+        ],
+      },
+    ],
   },
   {
-    id: "heritage", label: "Heritage", url: "/c/heritage",
+    id: "heritage",
+    label: "Heritage",
+    url: "/c/heritage",
     image: "/ph/songoskriti/hero-artisans.png",
     children: [
-      { id: "h-weaves", label: "Weaves & Craft", url: "/c/heritage", children: [
-        { id: "hw-jamdani", label: "Jamdani", url: "/c/jamdani" },
-        { id: "hw-tangail", label: "Tangail", url: "/c/tangail" },
-        { id: "hw-silk", label: "Rajshahi Silk", url: "/c/silk" },
-        { id: "hw-kantha", label: "Nakshi Kantha", url: "/c/kantha" },
-        { id: "hw-handloom", label: "Handloom", url: "/c/handloom" },
-        { id: "hw-artisan", label: "Artisan Stories", url: "/blog/artisan-story" },
-      ] }
-    ]
+      {
+        id: "h-weaves",
+        label: "Weaves & Craft",
+        url: "/c/heritage",
+        children: [
+          { id: "hw-jamdani", label: "Jamdani", url: "/c/jamdani" },
+          { id: "hw-tangail", label: "Tangail", url: "/c/tangail" },
+          { id: "hw-silk", label: "Rajshahi Silk", url: "/c/silk" },
+          { id: "hw-kantha", label: "Nakshi Kantha", url: "/c/kantha" },
+          { id: "hw-handloom", label: "Handloom", url: "/c/handloom" },
+          {
+            id: "hw-artisan",
+            label: "Artisan Stories",
+            url: "/blog/artisan-story",
+          },
+        ],
+      },
+    ],
   },
   {
-    id: "new-in", label: "New Arrivals", url: "/c/new-in",
+    id: "new-in",
+    label: "New Arrivals",
+    url: "/c/new-in",
     image: "/ph/songoskriti/cat-newin.png",
-    children: []
+    children: [],
   },
 ];
 
@@ -207,7 +261,6 @@ export function StoreHeader({
   const { location } = useRouterState();
   const custom = isCustomHostPath(location.pathname);
   const base = custom ? "" : `/store/${slug}`;
-  
   const isSongoskriti = slug === "songoskriti" || name?.toLowerCase() === "songoskriti";
 
   // Data-driven selection: dashboard-designed menus win whenever a location
@@ -224,18 +277,19 @@ export function StoreHeader({
   // before.
   const headerFallback = isSongoskriti && dbHeader.length === 0;
   const mobileFallback = isSongoskriti && dbMobile.length === 0;
-  
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll(); 
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(null);
+  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     if (mobileOpen) {
@@ -244,7 +298,9 @@ export function StoreHeader({
       document.body.style.overflow = "";
       setExpandedMobileMenu(null);
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
   const logoNode = isSongoskriti ? (
@@ -254,14 +310,17 @@ export function StoreHeader({
       className="h-[34px] w-auto object-contain transition-all duration-300"
     />
   ) : null;
-  
+
   const textLogoNode = (
-    <span className={`font-bangla-display block truncate text-xl font-semibold tracking-tight ${isSongoskriti ? 'hidden' : ''} text-[#1a1a1a]`}>
+    <span
+      className={`font-bangla-display block truncate text-xl font-semibold tracking-tight ${isSongoskriti ? "hidden" : ""} text-[#1a1a1a]`}
+    >
       {name}
     </span>
   );
 
-  const iconLinkCls = "grid size-10 shrink-0 place-items-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95 text-[#1a1a1a]/70 hover:text-[#1a1a1a]";
+  const iconLinkCls =
+    "grid size-10 shrink-0 place-items-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95 text-[#1a1a1a]/70 hover:text-[#1a1a1a]";
 
   return (
     <header
@@ -277,7 +336,10 @@ export function StoreHeader({
               EASY 7-DAY EXCHANGE
             </div>
             <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#1a1a1a] w-full sm:w-1/3 text-center">
-              {t("Free delivery across Bangladesh on orders over BDT 5000", "৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি")}
+              {t(
+                "Free delivery across Bangladesh on orders over BDT 5000",
+                "৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি",
+              )}
             </div>
             <div className="hidden sm:flex justify-end w-1/3">
               <LanguageToggle />
@@ -285,22 +347,31 @@ export function StoreHeader({
           </div>
         </div>
       )}
-      
-      {/* ── Main bar ── */}
-      <div className={`relative mx-auto flex transition-all duration-250 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 ${scrolled ? "h-[64px]" : "h-[72px]"}`}>
 
+      {/* ── Main bar ── */}
+      <div
+        className={`relative mx-auto flex transition-all duration-250 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 ${scrolled ? "h-[64px]" : "h-[72px]"}`}
+      >
         {/* ── LEFT: Logo + Mobile Hamburger ── */}
-        <div className="flex items-center gap-4 flex-1">
+        <div className="flex items-center gap-4 shrink-0">
           {mobileMenu.length > 0 && (
             <button
               type="button"
               aria-expanded={mobileOpen}
               aria-controls="store-mobile-menu"
-              aria-label={mobileOpen ? t("Close menu", "মেনু বন্ধ করুন") : t("Open menu", "মেনু খুলুন")}
+              aria-label={
+                mobileOpen
+                  ? t("Close menu", "মেনু বন্ধ করুন")
+                  : t("Open menu", "মেনু খুলুন")
+              }
               onClick={() => setMobileOpen((open) => !open)}
               className={`${iconLinkCls} md:hidden -ml-2`}
             >
-              {mobileOpen ? <X className="size-[22px]" strokeWidth={1} aria-hidden /> : <MenuIcon className="size-[22px]" strokeWidth={1} aria-hidden />}
+              {mobileOpen ? (
+                <X className="size-[22px]" strokeWidth={1} aria-hidden />
+              ) : (
+                <MenuIcon className="size-[22px]" strokeWidth={1} aria-hidden />
+              )}
             </button>
           )}
 
@@ -310,7 +381,11 @@ export function StoreHeader({
               {textLogoNode}
             </Link>
           ) : (
-            <Link to="/store/$slug" params={{ slug }} className="flex items-center">
+            <Link
+              to="/store/$slug"
+              params={{ slug }}
+              className="flex items-center"
+            >
               {logoNode}
               {textLogoNode}
             </Link>
@@ -318,12 +393,15 @@ export function StoreHeader({
         </div>
 
         {/* ── CENTER: Desktop Navigation ── */}
-        <div className="hidden md:flex flex-1 justify-center pointer-events-auto">
+        <div className="hidden md:flex flex-1 min-w-0 justify-center pointer-events-auto">
           {headerMenu.length > 0 && (
             <nav aria-label={t("Store menu", "স্টোর মেনু")} className="h-full">
-              <ul className="flex items-center gap-7 lg:gap-9">
+              <ul className="flex items-center justify-center flex-wrap gap-x-4 lg:gap-x-9 gap-y-1">
                 {headerMenu.map((node) => (
-                  <li key={node.id} className="group relative h-full flex items-center">
+                  <li
+                    key={node.id}
+                    className="group relative h-full flex items-center"
+                  >
                     <HeaderMenuLink
                       node={node as MenuNode}
                       base={base}
@@ -378,9 +456,11 @@ export function StoreHeader({
                           </div>
                         </div>
                       </div>
-                    )}
-                    {!isSongoskriti && node.children && node.children.length > 0 && (
-                       <div className="absolute left-1/2 -translate-x-1/2 min-w-[200px] top-[100%] pt-0 hidden group-hover:block group-focus-within:block z-50">
+                      )}
+                    {!isSongoskriti &&
+                      node.children &&
+                      node.children.length > 0 && (
+                        <div className="absolute left-1/2 -translate-x-1/2 min-w-[200px] top-[100%] pt-0 hidden group-hover:block group-focus-within:block z-50">
                           <ul className="bg-white py-4 shadow-xl border border-gray-100 rounded-sm">
                             {node.children.map((child: any) => (
                               <li key={child.id}>
@@ -392,8 +472,8 @@ export function StoreHeader({
                               </li>
                             ))}
                           </ul>
-                       </div>
-                    )}
+                        </div>
+                      )}
                   </li>
                 ))}
               </ul>
@@ -402,41 +482,78 @@ export function StoreHeader({
         </div>
 
         {/* ── RIGHT: utility icons ── */}
-        <div className="flex items-center justify-end gap-1 flex-1">
+        <div className="flex items-center justify-end gap-1 shrink-0">
           {custom ? (
-            <Link to="/search" search={{}} aria-label={t("Search", "খুঁজুন")} className={iconLinkCls}>
+            <Link
+              to="/search"
+              search={{}}
+              aria-label={t("Search", "খুঁজুন")}
+              className={iconLinkCls}
+            >
               <Search className="size-[20px]" strokeWidth={1} aria-hidden />
             </Link>
           ) : (
-            <Link to="/store/$slug/search" params={{ slug }} search={{}} aria-label={t("Search", "খুঁজুন")} className={iconLinkCls}>
+            <Link
+              to="/store/$slug/search"
+              params={{ slug }}
+              search={{}}
+              aria-label={t("Search", "খুঁজুন")}
+              className={iconLinkCls}
+            >
               <Search className="size-[20px]" strokeWidth={1} aria-hidden />
             </Link>
           )}
 
           {custom ? (
-            <Link to="/account" aria-label={t("Your account", "আপনার অ্যাকাউন্ট")} className={`${iconLinkCls} hidden sm:grid`}>
+            <Link
+              to="/account"
+              aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
+              className={`${iconLinkCls} hidden sm:grid`}
+            >
               <User className="size-[20px]" strokeWidth={1} aria-hidden />
             </Link>
           ) : (
-            <Link to="/store/$slug/account" params={{ slug }} aria-label={t("Your account", "আপনার অ্যাকাউন্ট")} className={`${iconLinkCls} hidden sm:grid`}>
+            <Link
+              to="/store/$slug/account"
+              params={{ slug }}
+              aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
+              className={`${iconLinkCls} hidden sm:grid`}
+            >
               <User className="size-[20px]" strokeWidth={1} aria-hidden />
             </Link>
           )}
-          
+
           {custom ? (
-            <Link to="/account" search={{ tab: "wishlist" }} aria-label={`${t("Wishlist","উইশলিস্ট")}, ${wishlistCount}`} className={`${iconLinkCls} relative hidden sm:grid`}>
+            <Link
+              to="/account"
+              search={{ tab: "wishlist" }}
+              aria-label={`${t("Wishlist","উইশলিস্ট")}, ${wishlistCount}`}
+              className={`${iconLinkCls} relative hidden sm:grid`}
+            >
               <Heart className="size-[20px]" strokeWidth={1} aria-hidden />
-              {wishlistCount>0 && (
-                <span key={wishlistCount} className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]">
+              {wishlistCount > 0 && (
+                <span
+                  key={wishlistCount}
+                  className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]"
+                >
                   {wishlistCount}
                 </span>
               )}
             </Link>
           ) : (
-            <Link to="/store/$slug/account" params={{ slug }} search={{ tab: "wishlist" }} aria-label={`${t("Wishlist","উইশলিস্ট")}, ${wishlistCount}`} className={`${iconLinkCls} relative hidden sm:grid`}>
+            <Link
+              to="/store/$slug/account"
+              params={{ slug }}
+              search={{ tab: "wishlist" }}
+              aria-label={`${t("Wishlist","উইশলিস্ট")}, ${wishlistCount}`}
+              className={`${iconLinkCls} relative hidden sm:grid`}
+            >
               <Heart className="size-[20px]" strokeWidth={1} aria-hidden />
-              {wishlistCount>0 && (
-                <span key={wishlistCount} className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]">
+              {wishlistCount > 0 && (
+                <span
+                  key={wishlistCount}
+                  className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]"
+                >
                   {wishlistCount}
                 </span>
               )}
@@ -446,8 +563,16 @@ export function StoreHeader({
           {!isSongoskriti && <LanguageToggle />}
 
           {custom ? (
-            <Link to="/checkout" aria-label={`${t("Cart", "কার্ট")}, ${hydrated ? count : 0}`} className={`${iconLinkCls} relative`}>
-              <ShoppingBag className="size-[20px]" strokeWidth={1} aria-hidden />
+            <Link
+              to="/checkout"
+              aria-label={`${t("Cart", "কার্ট")}, ${hydrated ? count : 0}`}
+              className={`${iconLinkCls} relative`}
+            >
+              <ShoppingBag
+                className="size-[20px]"
+                strokeWidth={1}
+                aria-hidden
+              />
               {hydrated && count > 0 && (
                 <span className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white">
                   {count}
@@ -455,8 +580,17 @@ export function StoreHeader({
               )}
             </Link>
           ) : (
-            <Link to="/store/$slug/checkout" params={{ slug }} aria-label={`${t("Cart", "কার্ট")}, ${hydrated ? count : 0}`} className={`${iconLinkCls} relative`}>
-              <ShoppingBag className="size-[20px]" strokeWidth={1} aria-hidden />
+            <Link
+              to="/store/$slug/checkout"
+              params={{ slug }}
+              aria-label={`${t("Cart", "কার্ট")}, ${hydrated ? count : 0}`}
+              className={`${iconLinkCls} relative`}
+            >
+              <ShoppingBag
+                className="size-[20px]"
+                strokeWidth={1}
+                aria-hidden
+              />
               {hydrated && count > 0 && (
                 <span className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white">
                   {count}
@@ -489,11 +623,17 @@ export function StoreHeader({
                   {node.children && node.children.length > 0 && (
                     <button
                       type="button"
-                      onClick={() => setExpandedMobileMenu(expandedMobileMenu === node.id ? null : node.id)}
+                      onClick={() =>
+                        setExpandedMobileMenu(
+                          expandedMobileMenu === node.id ? null : node.id,
+                        )
+                      }
                       className="p-4 -mr-4 text-[#1a1a1a]"
                       aria-expanded={expandedMobileMenu === node.id}
                     >
-                      <span className="text-xl leading-none">{expandedMobileMenu === node.id ? "−" : "+"}</span>
+                      <span className="text-xl leading-none">
+                        {expandedMobileMenu === node.id ? "−" : "+"}
+                      </span>
                     </button>
                   )}
                 </div>
@@ -512,21 +652,21 @@ export function StoreHeader({
                           <ul className="ml-4 mt-2 mb-4 space-y-2 border-l border-[#eaeaea] pl-4">
                             {child.children.map((gc: any) => (
                                <li key={gc.id}>
-                                 <HeaderMenuLink
+                                  <HeaderMenuLink
                                     node={gc}
                                     base={base}
                                     localize={mobileFallback}
                                     onNavigate={() => setMobileOpen(false)}
                                     className={`block py-1.5 text-[14px] text-[#1a1a1a]/60${isSongoskriti ? " min-h-[44px]" : ""}`}
                                   />
-                               </li>
-                            ))}
-                          </ul>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
               </li>
             ))}
           </ul>
