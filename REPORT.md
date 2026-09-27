@@ -1,4 +1,9 @@
-# Biba.in Competitive Audit — What They Have (Sept 25, 2026)
+# Framique Reports — competitive audit + compliance audit (Sept 2026)
+
+> Part 1 (Biba) and Part 2 (misconduct audit) are independent reports kept in
+> one file for a single reading order. Methods and dates are stated per part.
+
+# Part 1 — Biba.in Competitive Audit — What They Have (Sept 25, 2026)
 
 > **Method**: subagent sweep of 18 live pages on `https://www.biba.in/` (ROW locale, `/row`).
 > Static HTML + markdown fetch (no browser). Effects marked _(inferred)_ are strongly
@@ -97,3 +102,147 @@ occasional outdoor backdrops. No flat-lay, no ghost-mannequin.
 8. OTP-first login + guest-checkout escape hatch.
 9. Minicart popover + badge (AJAX, no reload).
 10. SHOP BY COLOR swatch tiles as playful facet entry.
+
+---
+
+# Part 2 — Misconduct Audit v2 — measured against AGENTS.md + SYSTEM.md
+
+Date: 2026-09-26. Scope: `c26f30e` (Phase 1b, 8 files), `1dc51f8` (docs-only),
+theme static/broken check, known system weaknesses. Method: full-diff read,
+rule-by-rule compliance sweep, gate re-run, fresh deploy + live smoke.
+No code changed in this audit.
+
+Rulebooks: `AGENTS.md` (WordPress-parity program; architecture rules §92-99;
+testing; CircleCI-only) and `SYSTEM.md` §7 (tokens-only, palette, typography,
+money helpers, WCAG 2.2 AA, mobile-first).
+
+## Verdict
+
+**No malicious misconduct, no security/design-system sabotage.** What exists is
+ordinary rule drift: **1 SYSTEM.md violation, 1 real UX defect, and pre-existing
+violations the commit copied rather than created.** Themes are **dynamic, not
+static**; the system has **known weaknesses, no hidden breaks**. Details below.
+
+## Deploy state (verified live)
+
+Pulled `1dc51f8`, deployed via `ops/deploy-from-git.sh main`: **DEPLOY OK, all
+gates green** (incl. `flamelancer.com` first try). Smoke: `account?tab=wishlist`
+200, `cart` 200, Somvabona BN 200.
+
+## A. Agent faults in `c26f30e`, graded by rule
+
+### A1. FAULT — Tokens-only violation (SYSTEM.md §7, exact-match breach)
+
+`StoreHeader.tsx` badge, ×2 (custom + slug branches):
+`bg-[#1a1a1a]` + `text-white`. The rule names these patterns verbatim
+("No `text-white`, no `bg-[#...]`, no hardcoded hex in components").
+Visually consistent (songoskriti brand token is `#1a1a1a`) but breaks dark
+mode and per-merchant theming. Fix: token classes.
+
+### A2. FAULT — tab state ignores URL after mount (UX defect)
+
+Both `routes/account.tsx` and `routes/store.$slug.account.tsx`:
+`useState(initialAccountTab(search.tab))` reads `?tab=` on first paint only.
+Back/forward or in-app navigation to another `?tab=` does nothing until
+remount — the same bug class as the preview-frame sync fix. Fix: `useEffect`
+syncing state from `search.tab`.
+
+### A3. Minor — duplicated badge JSX
+
+Custom-host vs slug branches duplicate the full Link + Heart + badge block;
+only `to`/`params` differ. Copy-paste that will diverge (and already did —
+it duplicated the A1 violation twice).
+
+### Clean (explicitly checked, no fault)
+
+- **No client-trusted decisions** (AGENTS.md §92.1): count is display-only;
+  wishlist read/toggle go through `customerWishlistFn` / server fns. Session
+  probe is client-side `getSession()` gating fetch only — server enforces auth.
+- **Money / secrets / RLS / audit**: untouched. No PII beyond a count.
+- **`validateSearch` allow-lists tabs**, invalid → `undefined` → `orders`
+  default; arrays rejected. Safe.
+- **No `server-only` import** (§92.5); ESM; `@/*` alias respected.
+- **No dead buttons** (WP-parity rule §27): the commit *removes* a dead
+  `<button>` and wires a working Link. Compliant improvement.
+- **No fabricated counts** (§27): badge renders live server count, `>0` gated.
+- **Tests required**: colocated suites added (9 new tests, all green here;
+  commit's 66/66 claim stands). Note: `StoreHeader.test.tsx` leans on
+  source-assert style (openly documented) — weak but honest, not gaming.
+- **CircleCI task-finish rule**: no `.circleci` change, but `unit-contract`
+  runs `bun run test` (full auto-discovery), so the new suites are exercised
+  with nothing to wire. Compliant in effect.
+
+## B. Pre-existing faults found while auditing (not this commit's doing)
+
+- **B1. Shared header already violates Tokens-only**: `StoreHeader.tsx:186`
+  `text-[#1a1a1a]`, `:196-198` `bg-[#FAF9F7]` / `border-[#eaeaea]`, announcement
+  bar `text-[#1a1a1a]` variants. A1 copied the file's own idiom — the file,
+  not just the commit, needs tokenizing.
+- **B2. Theme-gating inside a shared component (design smell)**:
+  `StoreHeader.tsx:150` `slug === "songoskriti"` forks logo, menus, toggle
+  placement and child-menu rendering. Themes should plug in via tokens +
+  builders, not per-slug conditionals in shared chrome — every new theme
+  multiplies these branches. (Checked: songoskriti DOES get a toggle, in its
+  announcement bar `:210` — no missing-toggle bug.)
+- **B3. `skins.css` raw hex + `!important`** (`songoskriti/skins.css:388-404`):
+  borderline vs Tokens-only; theme skin sheets are the gray zone — decide once
+  whether skins may carry raw brand hex or must reference tokens.
+
+## C. Are the themes static or broken? Neither.
+
+Spot-verified against the "fully dynamic" claim: token-driven palettes
+(`tokens.ts` hex is the legitimate definition site), builder + catalog +
+renderer + studio twins resolve, EN/BN renders single-locale live on both
+themes after the locale fixes. **Known weaknesses, not breaks**: one EN
+eyebrow twin gap in new 7f419d4 content ("OUR STORES"); payment marks are
+EN-only brand literals (documented choice); menus are the weakest axis
+(songoskriti hard-overrides navigation, no widget consumes dashboard menus —
+see REPORT-THEMES.md); no per-theme blog templates (generic fallback).
+
+## D. System-design weaknesses (confirmed, out of this audit's fix scope)
+
+1. Edge per-replica cert store → custom-domain SNI flapping (runbook in
+   DEPLOY.md; needs edge SSH to execute the sync).
+2. `parseSection` drops `items` for 7 repeater types (needs catalog
+   array-field declarations).
+3. No shared tab-URL-sync pattern (A2 is the second instance).
+4. WP-parity P0: Activate/Delete/Live Preview all present in `ThemesScreen`
+   (UI level); server-path depth not audited here.
+
+## Follow-ups (non-blocking)
+
+1. Tokenize badge colors (A1) + shared header hex (B1).
+2. Sync account tab state from URL (A2).
+3. Deduplicate badge JSX (A3).
+4. Decide B3 (skin raw-hex policy) + B2 (theme-plug-in pattern for header).
+
+## Post-audit gate + redeploy (same day)
+
+Pre-deploy checks caught **2 stale test expectations** in
+`src/lib/theme-preview-nav.test.ts`: the `7f419d4` songoskriti redesign
+changed brand `#8A3B1F` → `#1a1a1a` and reordered the homepage
+(hero-first, 20 sections) without updating the pins. Updated to the locked
+theme values → **100/100 green**, committed, pushed, deployed as `0b7d4eb`:
+**DEPLOY OK, all gates green first try**. No prod-code change needed — the
+theme values are deliberate; only the tests lagged. Lesson: theme redesigns
+must update preview pins in the same commit.
+- Live BN smoke of the redesigned songoskriti homepage: locale machinery
+  holds (BN where twins exist), but the new content ships many EN-only
+  strings (menu labels, badges, promises, testimonials, journal links).
+  Theme-content twin debt — same class as fixed before, owned by theme author.
+
+## Post-audit incident: main did not build (fixed same day)
+
+During the pull/push/deploy cycle, `origin/main` (`4039d51`) failed `bun run
+build`: `fb042b2` had `RevisionReviewUi.tsx` (client) statically importing
+`support-revision-fns.server.ts`, which the TanStack import-protection plugin
+denies — a direct breach of AGENTS.md §92.5 (`*.functions.ts` is the RPC
+boundary; `*.server.ts` naming *instead* of `server-only` imports).
+Fix (`6ef5305`, deployed, DEPLOY OK all gates): moved the four
+`createServerFn` handles into new `support-revision.functions.ts` with
+dynamic in-handler imports (repo convention), deleted the orphan server
+module, UI imports the boundary. Re-export alone does NOT satisfy the plugin
+(it follows the chain) — verified by a second failed build before the move.
+Tests 46/46, typecheck/lint clean on touched files; support-desk route 200 live.
+Lesson: the `unit-contract` job doesn't build; a build-breaking merge can land
+green. Consider a blocking `bun run build` job on every PR.
