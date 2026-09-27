@@ -13,6 +13,12 @@
  */
 import type { PropValue, Section, SectionType } from "../../builder-ast";
 import type { Extras } from "../../theme-section";
+import {
+  COLOPHON,
+  NEWSLETTER,
+  PAYMENT_MARKS,
+  STATEMENT,
+} from "../../footer-copy";
 import { withSongoskritiDefaults } from "./skins";
 import type { SectionBuilder } from "./types";
 
@@ -25,26 +31,7 @@ export type FooterSectionBuilder = (
 export const BRAND_NAME = "Songoskriti";
 export const BRAND_NAME_BN = "সংস্কৃতি";
 
-export const STATEMENT = {
-  heading: "Woven in Bangladesh, worn everywhere",
-  heading_bn: "বাংলাদেশে বোনা, পরা হয় সর্বত্র",
-  body: "Songoskriti keeps Tangail, Jamdani and Nakshi Kantha weaving alive through fair artisan partnerships.",
-  body_bn:
-    "ন্যায্য তাঁতি অংশীদারিত্বে টাঙ্গাইল, জামদানি ও নকশি কাঁথার বুনন বাঁচিয়ে রাখে সংস্কৃতি।",
-} as const;
-
-export const NEWSLETTER = {
-  heading: "First to the festive drops",
-  heading_bn: "উৎসবের ড্রপ সবার আগে",
-  body: "One letter per drop. Weaves, restocks and artisan stories — never spam.",
-  body_bn:
-    "প্রতি ড্রপে একটি চিঠি। বুনন, রিস্টক ও তাঁতিদের গল্প — কোনো স্প্যাম নয়।",
-  buttonLabel: "Join the list",
-  buttonLabel_bn: "তালিকায় যোগ দিন",
-  consentText: "We email only for festive drops. Unsubscribe anytime.",
-  consentText_bn:
-    "শুধু উৎসবের ড্রপের জন্য ইমেইল পাঠাই। যেকোনো সময় আনসাবস্ক্রাইব করুন।",
-} as const;
+export { COLOPHON, NEWSLETTER, PAYMENT_MARKS, STATEMENT };
 
 export type FallbackColumn = {
   title: string;
@@ -149,8 +136,6 @@ export const FALLBACK_COLUMNS: FallbackColumn[] = [
 
 export const PAYMENTS_HEADING = "Payment methods";
 export const PAYMENTS_HEADING_BN = "পেমেন্ট মাধ্যম";
-export const PAYMENT_MARKS =
-  "bKash, Nagad, Rocket, Visa, Mastercard, Cash on Delivery";
 export const PAYMENTS_LIST = [
   "bKash",
   "Nagad",
@@ -159,11 +144,6 @@ export const PAYMENTS_LIST = [
   "Mastercard",
   "Cash on Delivery",
 ];
-
-export const COLOPHON = {
-  body: "Flagships: Uttara · Gulshan · Chattogram — open 10am to 9pm.",
-  body_bn: "ফ্ল্যাগশিপ: উত্তরা · গুলশান · চট্টগ্রাম — সকাল ১০টা থেকে রাত ৯টা।",
-} as const;
 
 /**
  * Statement + newsletter (the single CTA) + link columns + payments +
