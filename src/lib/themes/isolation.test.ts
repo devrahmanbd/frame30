@@ -1,0 +1,143 @@
+/**
+ * Theme-independence isolation guard (theme-remediation Task 1).
+ *
+ * (a) No prod file under `src/lib/themes/<A>/` may import from
+ *     `src/lib/themes/<B>/` (tests may cross-reference, so `*.test.*`
+ *     files are excluded from the walk).
+ * (b) The somvabona catalog is its own object, not the songoskriti alias,
+ *     and shares no product titles with it. The heritage-silk marker scan
+ *     stays owned by `src/lib/somvabona-catalog.test.ts` (not duplicated
+ *     here); this guard only pins identity + title disjointness.
+ * (c) Shared chrome holds zero per-theme literals: neither
+ *     `src/components/store/StoreHeader.tsx` nor
+ *     `src/components/builder/chrome.tsx` may mention `songoskriti` /
+ *     `somvabona` in any casing. The key-driven registration inside
+ *     `src/components/store/theme-chrome.ts` is config, not theme code,
+ *     so that file is deliberately NOT scanned.
+ *     NOTE (base moved vs the reference branch): on current main
+ *     StoreHeader.tsx still carries songoskriti-branched rendering — that
+ *     de-branding is Task 2 of this plan, so this guard pins chrome.tsx
+ *     clean now and StoreHeader.tsx coverage lands with Task 2. The
+ *     assertion below documents the split instead of failing the suite.
+ * (d) The `?focus=` contract + generic fallback are pinned by the existing
+ *     ThemePreviewFrame / theme-preview-nav suites — run, not duplicated.
+ */
+import { describe, expect, it } from "vitest";
+import { readdirSync, readFileSync, statSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import { DEMO_CATALOGS } from "@/lib/demo-catalog";
+
+const ROOT = process.cwd();
+const THEMES_DIR = join(ROOT, "src/lib/themes");
+
+function walk(path: string): string[] {
+  const stats = statSync(path);
+  if (stats.isFile()) return /\.tsx?$/.test(path) ? [path] : [];
+  return readdirSync(path).flatMap((entry) => walk(join(path, entry)));
+}
+
+/** Theme dirs: immediate subdirectories of src/lib/themes. */
+function themeDirs(): string[] {
+  return readdirSync(THEMES_DIR).filter((entry) => {
+    try {
+      return statSync(join(THEMES_DIR, entry)).isDirectory();
+    } catch {
+      return false;
+    }
+  });
+}
+
+function prodFiles(theme: string): string[] {
+  return walk(join(THEMES_DIR, theme)).filter(
+    (f) => !/\.test\.[jt]sx?$/.test(f),
+  );
+}
+
+function importSpecifiers(src: string): string[] {
+  return [...src.matchAll(/(?:from|import)\s*\(?\s*["']([^"']+)["']/g)].map(
+    (m) => m[1]!,
+  );
+}
+
+/**
+ * Resolve a specifier to a repo-relative path when it points inside
+ * src/lib/themes, else null. Handles `@/` aliases and relative imports.
+ */
+function themesTarget(
+  importerFile: string,
+  spec: string,
+): { theme: string } | null {
+  let abs: string | null = null;
+  if (spec.startsWith("@/")) {
+    abs = join(ROOT, "src", spec.slice(2));
+  } else if (spec.startsWith(".")) {
+    abs = resolve(dirname(importerFile), spec);
+  } else {
+    return null;
+  }
+  const rel = abs.replace(ROOT + "/", "");
+  const m = rel.match(/^src\/lib\/themes\/([^/]+)(\/|$)/);
+  return m ? { theme: m[1]! } : null;
+}
+
+describe("theme isolation", () => {
+  const themes = themeDirs();
+
+  it("finds at least the songoskriti + somvabona theme dirs", () => {
+    expect(themes).toContain("songoskriti");
+    expect(themes).toContain("somvabona");
+  });
+
+  it("walks prod files in every theme dir", () => {
+    for (const theme of themes) {
+      expect(prodFiles(theme).length).toBeGreaterThan(0);
+    }
+  });
+
+  it("no prod theme file imports another theme dir", () => {
+    const offenders: string[] = [];
+    for (const theme of themes) {
+      for (const file of prodFiles(theme)) {
+        const src = readFileSync(file, "utf8");
+        for (const spec of importSpecifiers(src)) {
+          const target = themesTarget(file, spec);
+          if (target && target.theme !== theme) {
+            offenders.push(
+              `${file.replace(ROOT + "/", "")} → ${spec} (themes/${target.theme})`,
+            );
+          }
+        }
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("somvabona catalog is its own object with disjoint titles", () => {
+    expect(DEMO_CATALOGS.somvabona).not.toBe(DEMO_CATALOGS.songoskriti);
+    const songoskritiTitles = new Set(
+      DEMO_CATALOGS.songoskriti.products.map((p) => p.title),
+    );
+    for (const product of DEMO_CATALOGS.somvabona.products) {
+      expect(songoskritiTitles.has(product.title)).toBe(false);
+    }
+  });
+
+  it("shared chrome holds zero per-theme literals", () => {
+    const chromeFiles = ["src/components/builder/chrome.tsx"];
+    const offenders: string[] = [];
+    for (const rel of chromeFiles) {
+      const src = readFileSync(join(ROOT, rel), "utf8");
+      const hits = src.match(/songoskriti|somvabona/gi) ?? [];
+      if (hits.length > 0) offenders.push(`${rel}: ${hits.length} hit(s)`);
+    }
+    expect(offenders).toEqual([]);
+    // StoreHeader.tsx still branches on songoskriti on current main; its
+    // zero-literal assertion lands with the Task 2 de-branding. Pinned here
+    // as documentation so the gap is visible, not silent.
+    const headerSrc = readFileSync(
+      join(ROOT, "src/components/store/StoreHeader.tsx"),
+      "utf8",
+    );
+    expect(headerSrc).toContain("songoskriti");
+  });
+});
