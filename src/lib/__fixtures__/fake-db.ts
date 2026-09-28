@@ -23,7 +23,15 @@ export type FakeDbOptions = {
   tables?: Record<string, Row[]>;
   /** Handler for `rpc(fn, args)`. Defaults to "function not found". */
   rpc?: RpcHandler;
+  /**
+   * Opt-in unique backstops enforced on `insert` (Postgres NULL semantics:
+   * a row with any NULL/undefined key column never conflicts). A violation
+   * returns a `23505` error like PostgREST, without storing the row.
+   */
+  unique?: UniqueSpec[];
 };
+
+export type UniqueSpec = { table: string; columns: string[] };
 
 export type Call =
   | { kind: "rpc"; fn: string; args: Record<string, unknown> }
@@ -85,12 +93,14 @@ export class FakeDb {
   readonly tables: Record<string, Row[]>;
   readonly calls: Call[] = [];
   private readonly rpcHandler: RpcHandler;
+  private readonly uniqueSpecs: UniqueSpec[];
 
   constructor(options: FakeDbOptions = {}) {
     this.tables = {};
     for (const [name, rows] of Object.entries(options.tables ?? {})) {
       this.tables[name] = rows.map((r) => ({ ...r }));
     }
+    this.uniqueSpecs = options.unique ?? [];
     this.rpcHandler =
       options.rpc ??
       ((fn) => ({ data: null, error: { message: `rpc_not_stubbed:${fn}` } }));
@@ -99,6 +109,24 @@ export class FakeDb {
   rows(table: string): Row[] {
     this.tables[table] ??= [];
     return this.tables[table] as Row[];
+  }
+
+  /**
+   * Name of the unique backstop `row` would violate on `table`, or null.
+   * Test support for race tests: mirrors the named Postgres unique index the
+   * migration under test installs (NULL key columns never conflict).
+   */
+  findUniqueHit(table: string, row: Row): string | null {
+    for (const spec of this.uniqueSpecs) {
+      if (spec.table !== table) continue;
+      if (spec.columns.some((c) => row[c] === null || row[c] === undefined))
+        continue;
+      const clash = this.rows(table).some((r) =>
+        spec.columns.every((c) => r[c] === row[c]),
+      );
+      if (clash) return `${table}_${spec.columns.join("_")}_uidx`;
+    }
+    return null;
   }
 
   /** Every call of one kind, in order — the audit assertion surface. */
@@ -259,6 +287,17 @@ class Query implements PromiseLike<{ data: any; error: any; count?: number }> {
         table: this.table,
         rows: this.payload,
       });
+      for (const row of this.payload) {
+        const hit = this.db.findUniqueHit(this.table, row);
+        if (hit)
+          return {
+            data: null,
+            error: {
+              code: "23505",
+              message: `duplicate key value violates unique constraint "${hit}"`,
+            },
+          };
+      }
       store.push(...this.payload.map((r) => ({ ...r })));
       return { data: this.payload, error: null };
     }

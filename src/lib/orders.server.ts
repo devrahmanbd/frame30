@@ -6,6 +6,7 @@ import {
   type PaymentMethod,
 } from "./pricing.server";
 import { consumeStock, releaseStock, reserveStock } from "./checkout.server";
+import { CouponError } from "./coupons.server";
 import { incr, log, observe, tenantLabel } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
 
@@ -42,6 +43,50 @@ function orderNumber() {
   const stamp = `${now.getUTCFullYear()}${String(now.getUTCMonth() + 1).padStart(2, "0")}${String(now.getUTCDate()).padStart(2, "0")}`;
   const rand = Math.random().toString(36).slice(2, 7).toUpperCase();
   return `FQ-${stamp}-${rand}`;
+}
+
+/** PostgREST unique-violation shape (code 23505), with a message fallback. */
+function isUniqueViolation(error: {
+  code?: string;
+  message?: string;
+}): boolean {
+  if (error?.code === "23505") return true;
+  return /duplicate key|unique constraint/i.test(error?.message ?? "");
+}
+
+/** Untyped RPC surface for SQL helpers not present in the generated types. */
+type SlotRpc = {
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{
+    data: { slot_coupon_id: string }[] | null;
+    error: { message?: string } | null;
+  }>;
+};
+
+/**
+ * Best-effort release of pre-reserved coupon slots. Compensation must never
+ * mask the original failure, so per-slot errors are logged and swallowed.
+ */
+async function releaseCouponSlots(
+  admin: unknown,
+  couponIds: string[],
+  merchantId: string,
+) {
+  for (const couponId of couponIds) {
+    const { error } = await (admin as unknown as SlotRpc).rpc(
+      "release_coupon_slot",
+      { _coupon_id: couponId },
+    );
+    if (error) {
+      log("warn", "coupon.slot_release_failed", {
+        merchantId,
+        couponId,
+        reason: (error.message ?? "unknown").slice(0, 160),
+      });
+    }
+  }
 }
 
 export async function createOrder(
@@ -110,14 +155,118 @@ export async function createOrder(
     throw new Error("order_blocked_risk");
   }
 
+  // Coupon slots are reserved BEFORE any write, while the cap can still be
+  // denied cleanly: a denied coupon leaves no order/items/stock/payment
+  // rows behind to compensate. Every reservation is released on any later
+  // failure, including losing the same-key race below.
+  const reservedCouponIds: string[] = [];
+  try {
+    for (const applied of totals.coupons) {
+      const { data: slot, error: slotError } = await (
+        supabaseAdmin as unknown as SlotRpc
+      ).rpc("redeem_coupon_slot", { _coupon_id: applied.id });
+      if (slotError) {
+        incr("framique_coupon_redeem_total", { outcome: "error" });
+        log("error", "coupon.slot_failed", {
+          merchantId: merchant.id,
+          couponId: applied.id,
+          reason: (slotError.message ?? "unknown").slice(0, 160),
+        });
+        throw new Error("coupon_redeem_failed");
+      }
+      if (!slot || slot.length === 0) {
+        incr("framique_coupon_redeem_total", { outcome: "rejected" });
+        log("warn", "coupon.usage_exhausted", {
+          merchantId: merchant.id,
+          couponId: applied.id,
+        });
+        throw new CouponError(
+          "coupon_usage_limit",
+          "Coupon usage limit has been reached",
+        );
+      }
+      reservedCouponIds.push(applied.id);
+    }
+  } catch (error) {
+    await releaseCouponSlots(supabaseAdmin, reservedCouponIds, merchant.id);
+    throw error;
+  }
+
   // Reserve stock before writing anything; a losing shopper never gets an order row.
+  // Guarded: slots were already reserved above, so a reserve throw must give
+  // them back (plus release any partial take) instead of leaking the cap.
   const checkoutToken = input.checkoutToken ?? `${input.idempotencyKey}-hold`;
-  await reserveStock(
-    merchant.id,
-    checkoutToken,
-    totals.lines.map((l) => ({ variantId: l.variantId, quantity: l.quantity })),
-    subject,
-  );
+  try {
+    await reserveStock(
+      merchant.id,
+      checkoutToken,
+      totals.lines.map((l) => ({
+        variantId: l.variantId,
+        quantity: l.quantity,
+      })),
+      subject,
+    );
+  } catch (error) {
+    await releaseStock(checkoutToken);
+    await releaseCouponSlots(supabaseAdmin, reservedCouponIds, merchant.id);
+    throw error;
+  }
+
+  /**
+   * Void a half-written order so no LIVE discounted order survives a
+   * write failure after the insert: the row is cancelled (lines stay
+   * attached for the ops trail, fulfilment gates on status), the stock
+   * hold is released when still unconsumed (still unconsumed at every
+   * pre-consume call site), the pre-reserved coupon slots go back, and
+   * the void itself is audited.
+   *
+   * Post-consume callers pass `{ consumed: true }`: consumed holds are
+   * invisible to `releaseStock` (it only restores unconsumed holds), so
+   * the taken quantities are restored directly from the order lines.
+   */
+  const voidHalfWrittenOrder = async (
+    orderId: string,
+    reason: string,
+    opts?: { consumed?: boolean },
+  ) => {
+    await supabaseAdmin
+      .from("orders")
+      .update({ status: "cancelled" })
+      .eq("id", orderId);
+    try {
+      await supabaseAdmin.from("order_events").insert({
+        order_id: orderId,
+        merchant_id: merchant.id,
+        event_type: "order.cancelled",
+        note: reason.slice(0, 200),
+      });
+    } catch {
+      /* audit is best effort; the throw below is the signal */
+    }
+    await releaseStock(checkoutToken);
+    if (opts?.consumed) {
+      for (const l of totals.lines) {
+        const { data: cur } = await supabaseAdmin
+          .from("product_variants")
+          .select("stock_quantity")
+          .eq("id", l.variantId)
+          .maybeSingle();
+        const qty = Number(
+          (cur as unknown as { stock_quantity: number } | null)
+            ?.stock_quantity ?? 0,
+        );
+        await supabaseAdmin
+          .from("product_variants")
+          .update({ stock_quantity: qty + l.quantity })
+          .eq("id", l.variantId);
+      }
+    }
+    await releaseCouponSlots(
+      supabaseAdmin,
+      totals.coupons.map((c) => c.id),
+      merchant.id,
+    );
+  };
 
   // Associate order with customer (authenticated user or guest by phone)
   const { resolveRequestUserId } = await import("./identity.server");
@@ -175,8 +324,6 @@ export async function createOrder(
     }
   }
 
-  // T1 (audit fix): online orders stay unpaid until a verified settlement
-  // moves them to `paid` (applySignedReturn). COD keeps its confirmed path.
   const status =
     input.paymentMethod === "cod" ? "confirmed" : "payment_pending";
   // The orders table defaults access_token to '' — generate it here so the
@@ -214,6 +361,37 @@ export async function createOrder(
     .select("id, order_number, access_token")
     .single();
   if (error) {
+    // This attempt reserved coupon slots before the insert: give them back
+    // whether the insert lost the race or failed outright.
+    await releaseCouponSlots(supabaseAdmin, reservedCouponIds, merchant.id);
+    // Lost the same-key race: a concurrent submit won the insert (unique
+    // backstop `orders_merchant_idem_key_uidx`). Release this attempt's
+    // stock hold exactly once, then replay the winner like a normal
+    // duplicate — the shopper sees their order, not a 500.
+    if (isUniqueViolation(error)) {
+      const { data: winner } = await supabaseAdmin
+        .from("orders")
+        .select("id, order_number, access_token")
+        .eq("merchant_id", merchant.id)
+        .eq("idempotency_key", input.idempotencyKey)
+        .maybeSingle();
+      if (winner) {
+        await releaseStock(checkoutToken);
+        incr("framique_orders_total", {
+          outcome: "replayed",
+          tenant: tenantLabel(merchant.id),
+        });
+        log("info", "order.replayed_on_conflict", {
+          merchantId: merchant.id,
+          orderId: winner.id,
+        });
+        return {
+          orderId: winner.id,
+          orderNumber: winner.order_number,
+          accessToken: winner.access_token,
+        };
+      }
+    }
     await releaseStock(checkoutToken);
     incr("framique_orders_total", {
       outcome: "failed",
@@ -240,30 +418,17 @@ export async function createOrder(
     })),
   );
   if (itemsError) {
-    await releaseStock(checkoutToken);
+    await voidHalfWrittenOrder(
+      order.id,
+      `items failed: ${itemsError.message.slice(0, 160)}`,
+    );
     throw itemsError;
   }
 
-  // Holds become the single source of the decrement — never a read-modify-write.
-  await consumeStock(checkoutToken, order.id);
-
-  // T1: no payment row exists before settlement for online rails. The
-  // settlement path (applySignedReturn) inserts the single paid row; a
-  // premature MOCK-reference row here would also shadow it on the shared
-  // idempotency key. COD keeps its pending row (reconciled at the door).
-  if (input.paymentMethod === "cod") {
-    await supabaseAdmin.from("payments").insert({
-      merchant_id: merchant.id,
-      order_id: order.id,
-      payment_provider: input.paymentMethod,
-      payment_status: "pending",
-      currency_code: totals.currency,
-      amount_minor_int: totals.totalMinor,
-      provider_reference: null,
-      idempotency_key: input.idempotencyKey,
-    });
-  }
-
+  // Coupon redemptions are RECORDED here; the slots were already reserved
+  // atomically before the order insert, so a deny there never leaves a
+  // half-written order. A recording failure still voids the order (plus
+  // slot release) so the discount is never granted without a record.
   for (const applied of totals.coupons) {
     const { error: redeemError } = await supabaseAdmin
       .from("coupon_redemptions")
@@ -275,22 +440,100 @@ export async function createOrder(
         amount_minor_int: applied.discountMinor,
         currency_code: totals.currency,
       });
-    if (redeemError) continue;
-    const { data: current } = await supabaseAdmin
-      .from("coupons")
-      .select("redeemed_count")
-      .eq("id", applied.id)
-      .single();
-    await supabaseAdmin
-      .from("coupons")
-      .update({ redeemed_count: (current?.redeemed_count ?? 0) + 1 })
-      .eq("id", applied.id);
+    if (redeemError) {
+      // A redemption that cannot be recorded must never silently grant the
+      // discount: fail loudly (metric + error log + audit attempt), void
+      // the half-written order, and release the pre-reserved slots.
+      incr("framique_coupon_redeem_total", { outcome: "error" });
+      log("error", "coupon.redeem_failed", {
+        merchantId: merchant.id,
+        orderId: order.id,
+        couponId: applied.id,
+        reason: redeemError.message,
+      });
+      try {
+        await supabaseAdmin.from("order_events").insert({
+          order_id: order.id,
+          merchant_id: merchant.id,
+          event_type: "coupon.redeem_failed",
+          note: `${applied.code} — recording failed: ${redeemError.message.slice(0, 160)}`,
+        });
+      } catch {
+        /* audit is best effort; the throw below is the signal */
+      }
+      await voidHalfWrittenOrder(
+        order.id,
+        `${applied.code} — recording failed`,
+      );
+      throw new Error("coupon_redeem_failed");
+    }
     await supabaseAdmin.from("order_events").insert({
       order_id: order.id,
       merchant_id: merchant.id,
       event_type: "coupon.redeemed",
       note: `${applied.code} — ${applied.discountMinor} ${totals.currency} minor units`,
     });
+  }
+
+  // Holds become the single source of the decrement — never a read-modify-write.
+  // Guarded: a consume throw must void the half-written order (stock is
+  // still unconsumed here, so the void's hold-release restores it).
+  try {
+    await consumeStock(checkoutToken, order.id);
+  } catch (error) {
+    incr("framique_orders_total", {
+      outcome: "failed",
+      tenant: tenantLabel(merchant.id),
+    });
+    log("error", "order.consume_failed", {
+      merchantId: merchant.id,
+      orderId: order.id,
+      reason: String((error as Error)?.message ?? error).slice(0, 160),
+    });
+    await voidHalfWrittenOrder(
+      order.id,
+      `consume failed: ${String((error as Error)?.message ?? error).slice(0, 160)}`,
+    );
+    throw error;
+  }
+
+  // Guarded: a payments write failure must void the order. T1: no payment
+  // row exists before settlement for online rails — the settlement path
+  // (applySignedReturn) inserts the single paid row; a premature
+  // MOCK-reference row here would also shadow it on the shared idempotency
+  // key. COD keeps its pending row (reconciled at the door). Holds are
+  // already consumed here, so the void compensates the taken stock
+  // directly (`{ consumed: true }`) instead of relying on hold-release.
+  if (input.paymentMethod === "cod") {
+    const { error: paymentsError } = await supabaseAdmin
+      .from("payments")
+      .insert({
+        merchant_id: merchant.id,
+        order_id: order.id,
+        payment_provider: input.paymentMethod,
+        payment_status: "pending",
+        currency_code: totals.currency,
+        amount_minor_int: totals.totalMinor,
+        provider_reference: null,
+        idempotency_key: input.idempotencyKey,
+      });
+    if (paymentsError) {
+      incr("framique_orders_total", {
+        outcome: "failed",
+        tenant: tenantLabel(merchant.id),
+      });
+      log("error", "order.payment_failed", {
+        merchantId: merchant.id,
+        orderId: order.id,
+        reason: paymentsError.message.slice(0, 160),
+      });
+      await voidHalfWrittenOrder(
+        order.id,
+        `payments failed: ${paymentsError.message.slice(0, 160)}`,
+        { consumed: true },
+      );
+      throw paymentsError;
+    }
   }
 
   await supabaseAdmin.from("order_events").insert([
