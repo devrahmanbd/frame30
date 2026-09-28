@@ -15,6 +15,11 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { money } from "./money";
 import { ONLINE_METHOD_KEYS } from "./payment-rails";
+import {
+  buildRetryKey,
+  isLiveIntentStatus,
+  isRetryKeyForOrder,
+} from "./payment-keys";
 import { postLedgerEntry } from "./ledger.server";
 import { incr, log, tenantLabel, withSpan } from "./observability.server";
 import { assertPaymentsNotFrozen } from "./owner-ops.server";
@@ -99,6 +104,52 @@ export function returnSignatureMatches(
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
+// ------------------------------------------------- retry key canonicalisation
+/**
+ * Collapse every retry key for an order onto the current attempt (T5).
+ *
+ * Legacy clients mint `retry-<orderId>-<Date.now()>` per click, so a
+ * double-click arrives as two distinct keys. Rules, in order:
+ *  1. the exact key is already on a live (`initiated`/`pending`) intent →
+ *     replay it (the normal double-submit path);
+ *  2. another live intent exists under a different key (a second click
+ *     minted fresh while the first attempt is still authorisable) → reuse
+ *     its key, so concurrent clicks share one intent;
+ *  3. otherwise → canonical `retry-<orderId>-<maxAttempt+1>`, so a retry
+ *     after a terminal intent opens exactly one fresh attempt.
+ *
+ * Concurrent first-clicks both read the same pre-insert state and derive
+ * the same key; the idempotent open below replays the second onto the
+ * first row. Non-retry (initial checkout `chg-*`) keys never reach here.
+ */
+export async function resolveRetryKey(
+  db: Client,
+  orderId: string,
+  idempotencyKey: string,
+): Promise<string> {
+  const { data } = await db
+    .from("charge_intents")
+    .select("id, attempt, idempotency_key, status")
+    .eq("order_id", orderId);
+  const rows = (data ?? []) as Array<
+    Pick<ChargeIntent, "id" | "attempt" | "idempotency_key" | "status">
+  >;
+  // Exact replay of a still-live intent (the normal double-submit path).
+  const exact = rows.find((r) => r.idempotency_key === idempotencyKey);
+  if (exact && isLiveIntentStatus(String(exact.status))) {
+    return exact.idempotency_key;
+  }
+  // A live intent under any other key (a second click minted a fresh legacy
+  // key while the first attempt is still authorisable) replays onto it.
+  const live = rows.find((r) => isLiveIntentStatus(String(r.status)));
+  if (live && live.idempotency_key) return live.idempotency_key;
+  const maxAttempt = rows.reduce(
+    (m, r) => Math.max(m, Number(r.attempt ?? 0) || 0),
+    0,
+  );
+  return buildRetryKey(orderId, maxAttempt + 1);
+}
+
 // ------------------------------------------------------------------ charge open
 export type OpenChargeResult = {
   intentId: string;
@@ -148,9 +199,15 @@ export async function openCharge(
   return withSpan(
     "payments.open_charge",
     async () => {
+      // Retry keys collapse onto the current attempt before the idempotent
+      // open, so a double-click (two distinct legacy keys) replays one
+      // intent instead of opening parallel settable ones.
+      const resolvedKey = isRetryKeyForOrder(idempotencyKey, orderId)
+        ? await resolveRetryKey(db, orderId, idempotencyKey)
+        : idempotencyKey;
       const { data, error } = await db.rpc("charge_intent_open", {
         _order_id: orderId,
-        _idempotency_key: idempotencyKey,
+        _idempotency_key: resolvedKey,
         _ttl_seconds: 1800,
       });
       if (error) {

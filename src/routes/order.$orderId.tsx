@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { getOrder } from "@/lib/storefront.functions";
 import { startCharge } from "@/lib/payments.functions";
+import { buildRetryKey } from "@/lib/payment-keys";
 import { fmtMinor } from "@/lib/money";
 import { useLang } from "@/lib/i18n";
 
@@ -68,11 +69,21 @@ function OrderConfirmation() {
   const currency = order.currency_code;
   const [retrying, setRetrying] = useState(false);
   const [retryError, setRetryError] = useState("");
+  // Deterministic attempt per mount; the in-flight guard collapses a
+  // double-click onto one call, and the server canonicalises the key onto
+  // the current attempt (replay when live, +1 after terminal).
+  const retryAttempt = useRef(1);
+  const retryInflight = useRef(false);
   const unpaid =
     order.status === "pending" || order.status === "payment_pending";
 
-  // A new attempt opens a fresh intent; the previous one stays on record.
+  // A retry reuses the live attempt's intent; only a new attempt opens a
+  // fresh intent, and the previous one stays on record.
   async function retryPayment() {
+    if (retryInflight.current) return;
+    retryInflight.current = true;
+    const attempt = retryAttempt.current;
+    retryAttempt.current += 1;
     setRetrying(true);
     setRetryError("");
     try {
@@ -80,7 +91,7 @@ function OrderConfirmation() {
         data: {
           slug,
           orderId: order.id,
-          idempotencyKey: `retry-${order.id}-${Date.now()}`,
+          idempotencyKey: buildRetryKey(order.id, attempt),
         },
       });
       if (charge.redirectUrl) window.location.assign(charge.redirectUrl);
@@ -100,6 +111,7 @@ function OrderConfirmation() {
       );
     } finally {
       setRetrying(false);
+      retryInflight.current = false;
     }
   }
 
