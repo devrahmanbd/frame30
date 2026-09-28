@@ -8,24 +8,33 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
-  SONGOSKRITI_DESKTOP_MIN,
-  SONGOSKRITI_HERO_DEFAULTS,
+  HERO_SELECTOR,
+  REVEAL_SELECTOR,
+  DESKTOP_MIN,
+  HERO_DEFAULTS,
   createCarouselController,
   findRevealScroller,
   findRevealScrollerNode,
   heroTimelinePlan,
   resolveRevealMode,
-  resolveSongoskritiBranch,
+  resolveMotionBranch,
   revealBatchOptions,
   type RevealScrollNode,
 } from "./songoskriti-motion";
+
+describe("theme-neutral motion selectors", () => {
+  it("exposes generic reveal + hero hooks (no brand prefix)", () => {
+    expect(REVEAL_SELECTOR).toBe("[data-reveal]");
+    expect(HERO_SELECTOR).toBe("[data-hero]");
+  });
+});
 
 describe("hero timeline plan", () => {
   it("builds the spec timeline at full intent", () => {
     const plan = heroTimelinePlan("full");
     expect(plan).not.toBeNull();
     expect(plan!.defaults).toEqual({ duration: 0.6, ease: "power2.out" });
-    expect(SONGOSKRITI_HERO_DEFAULTS).toEqual({
+    expect(HERO_DEFAULTS).toEqual({
       duration: 0.6,
       ease: "power2.out",
     });
@@ -148,19 +157,19 @@ describe("findRevealScroller (DOM adapter)", () => {
   });
 });
 
-describe("resolveSongoskritiBranch", () => {
+describe("resolveMotionBranch", () => {
   it("picks desktop vs mobile at the 768px breakpoint", () => {
-    expect(SONGOSKRITI_DESKTOP_MIN).toBe(768);
-    expect(resolveSongoskritiBranch("full", 1024)).toBe("desktop");
-    expect(resolveSongoskritiBranch("full", 768)).toBe("desktop");
-    expect(resolveSongoskritiBranch("full", 767)).toBe("mobile");
-    expect(resolveSongoskritiBranch("full", 375)).toBe("mobile");
+    expect(DESKTOP_MIN).toBe(768);
+    expect(resolveMotionBranch("full", 1024)).toBe("desktop");
+    expect(resolveMotionBranch("full", 768)).toBe("desktop");
+    expect(resolveMotionBranch("full", 767)).toBe("mobile");
+    expect(resolveMotionBranch("full", 375)).toBe("mobile");
   });
 
   it("goes static under reduced motion at any width", () => {
-    expect(resolveSongoskritiBranch("reduced", 1024)).toBe("static");
-    expect(resolveSongoskritiBranch("reduced", 375)).toBe("static");
-    expect(resolveSongoskritiBranch("off", 1024)).toBe("static");
+    expect(resolveMotionBranch("reduced", 1024)).toBe("static");
+    expect(resolveMotionBranch("reduced", 375)).toBe("static");
+    expect(resolveMotionBranch("off", 1024)).toBe("static");
   });
 });
 

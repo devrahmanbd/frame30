@@ -5,7 +5,13 @@
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { newSection, type Section } from "@/lib/builder-ast";
+import {
+  newSection,
+  parseAst,
+  type Section,
+  type SectionType,
+  type Slot,
+} from "@/lib/builder-ast";
 import { CHROME_WIDGETS } from "./chrome";
 import { PDP_WIDGETS } from "./pdp";
 import { APPAREL_WIDGETS } from "./apparel";
@@ -272,4 +278,138 @@ describe("spec_table items-row locale parity", () => {
     expect(html).toContain("Capacity");
     expect(html).toContain("5000mAh");
   });
+});
+
+describe("repeater parse round-trip preserves items + _bn twins", () => {
+  const CASES: Array<{
+    type: SectionType;
+    slot: Slot;
+    props: Record<string, unknown>;
+  }> = [
+    {
+      type: "hero",
+      slot: "main",
+      props: {
+        items: [
+          {
+            heading: "Welcome",
+            heading_bn: "স্বাগতম",
+            image: "/hero.jpg",
+            subheading: "New season",
+            subheading_bn: "নতুন সিজন",
+            ctaLabel: "Shop",
+            ctaLabel_bn: "কেনাকাটা",
+            ctaHref: "/c",
+          },
+        ],
+      },
+    },
+    {
+      type: "faq",
+      slot: "main",
+      props: {
+        items: [
+          {
+            question: "Size?",
+            question_bn: "সাইজ?",
+            answer: "Runs large.",
+            answer_bn: "বড় সাইজ।",
+          },
+        ],
+      },
+    },
+    {
+      type: "product_qna",
+      slot: "main",
+      props: {
+        items: [
+          {
+            question: "Wash?",
+            question_bn: "ধোয়া?",
+            answer: "Cold wash.",
+            answer_bn: "ঠান্ডা পানিতে ধুন।",
+          },
+        ],
+      },
+    },
+    {
+      type: "trust_bar",
+      slot: "header",
+      props: {
+        items: [
+          {
+            icon: "delivery",
+            title: "Fast delivery",
+            title_bn: "দ্রুত ডেলিভারি",
+            body: "In 48 hours",
+            body_bn: "৪৮ ঘণ্টায়",
+          },
+        ],
+      },
+    },
+    {
+      type: "announcement_bar",
+      slot: "header",
+      props: {
+        items: [
+          { text: "Sale!", text_bn: "ছাড়!" },
+          { text: "New in", text_bn: "নতুন এসেছে" },
+        ],
+      },
+    },
+    {
+      type: "lookbook",
+      slot: "main",
+      props: {
+        items: [{ image: "/a.jpg", alt: "Look 1", alt_bn: "লুক ১", href: "" }],
+      },
+    },
+    {
+      type: "spec_table",
+      slot: "main",
+      props: {
+        items: [
+          {
+            group: "Battery",
+            group_bn: "ব্যাটারি",
+            label: "Capacity",
+            label_bn: "ধারণক্ষমতা",
+            value: "5000mAh",
+            value_bn: "৫০০০এমএএইচ",
+          },
+        ],
+      },
+    },
+    {
+      type: "footer_sitemap",
+      slot: "footer",
+      props: {
+        items: [
+          {
+            title: "Shop",
+            title_bn: "কেনাকাটা",
+            links: "New in|/",
+            links_bn: "নতুন|/",
+          },
+        ],
+      },
+    },
+  ];
+
+  for (const c of CASES) {
+    it(`${c.type} keeps items rows and twins through parse→serialize`, () => {
+      const ast = {
+        header: [],
+        main: [],
+        footer: [],
+        [c.slot]: [{ id: `rt-${c.type}`, type: c.type, props: c.props }],
+      };
+      const roundTripped = parseAst(JSON.parse(JSON.stringify(ast)));
+      const section = (
+        roundTripped[c.slot] as unknown as Section[]
+      )[0] as Section;
+      expect(section?.type).toBe(c.type);
+      expect(section?.props.items).toEqual(c.props.items);
+    });
+  }
 });

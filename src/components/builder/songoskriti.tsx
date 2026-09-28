@@ -46,10 +46,7 @@ import type {
 } from "@/lib/builder-ast";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
 import { resolveSkin } from "@/lib/builder-ast";
-import {
-  useSongoskritiCarousel,
-  useSongoskritiReveals,
-} from "./songoskriti-motion";
+import { useCarouselCycle, useScrollReveals } from "./songoskriti-motion";
 import { MediaFrame } from "./primitives/MediaFrame";
 import { ProductCard, ProductCardSkeleton, WishlistHeart } from "./primitives/ProductCard";
 import { cardVariantOf } from "./merch";
@@ -108,7 +105,7 @@ const FinderRow: WidgetComponent = ({
     { label: str("o7Label"), href: str("o7Href") },
   ].filter((o) => o.label);
   const scope = useRef<HTMLElement | null>(null);
-  useSongoskritiReveals(scope, true);
+  useScrollReveals(scope, true);
   if (!str("heading") && occasions.length === 0) {
     return editing ? (
       <p className="text-xs text-muted-foreground">
@@ -123,7 +120,7 @@ const FinderRow: WidgetComponent = ({
   return (
     <section
       ref={scope}
-      data-songoskriti-reveal
+      data-reveal
       className="w-full py-16 sm:py-24 border-t border-[var(--theme-border)] bg-[var(--theme-surface)]"
     >
       <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
@@ -201,7 +198,7 @@ const CraftStory: WidgetComponent = ({
   const ctaHref = str("ctaHref") || str("buttonHref");
   // Task 5 motion: once-only batch reveal at full intent; static otherwise.
   const scope = useRef<HTMLElement | null>(null);
-  useSongoskritiReveals(scope, true);
+  useScrollReveals(scope, true);
   if (!headline && !body) {
     return editing ? (
       <p className="text-xs text-muted-foreground">
@@ -216,7 +213,7 @@ const CraftStory: WidgetComponent = ({
   return (
     <section
       ref={scope}
-      data-songoskriti-reveal
+      data-reveal
       className="relative w-full h-[70vh] min-h-[500px] flex flex-col items-center justify-center overflow-hidden"
     >
       {/* Fixed background for pure CSS parallax effect */}
@@ -286,10 +283,10 @@ const Testimonials: WidgetComponent = ({
     goTo,
     pause,
     resume,
-  } = useSongoskritiCarousel(testimonials.length, autoAdvanceMs);
+  } = useCarouselCycle(testimonials.length, autoAdvanceMs);
 
   const scope = useRef<HTMLElement | null>(null);
-  useSongoskritiReveals(scope, true);
+  useScrollReveals(scope, true);
 
   if (testimonials.length === 0) {
     return editing ? (
@@ -308,7 +305,7 @@ const Testimonials: WidgetComponent = ({
     return (
       <section
         ref={scope}
-        data-songoskriti-reveal
+        data-reveal
         className="w-full py-20 sm:py-28"
         aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
       >
@@ -357,7 +354,7 @@ const Testimonials: WidgetComponent = ({
     return (
       <section
         ref={scope}
-        data-songoskriti-reveal
+        data-reveal
         className="w-full py-20 sm:py-28"
         aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
       >
@@ -397,7 +394,7 @@ const Testimonials: WidgetComponent = ({
   return (
     <section
       ref={scope}
-      data-songoskriti-reveal
+      data-reveal
       className="w-full bg-[var(--theme-surface)] py-16 sm:py-20"
       aria-label={t(locale, "Testimonials", "প্রশংসাপত্র")}
       onMouseEnter={() => pause()}
@@ -496,7 +493,7 @@ const TRUST_FOOTER_ICON = {
 const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
   // Task 5 motion: once-only batch reveal at full intent; static otherwise.
   const scope = useRef<HTMLDivElement | null>(null);
-  useSongoskritiReveals(scope, true);
+  useScrollReveals(scope, true);
   // Repeater-first (trust_bar precedent): studio `items` rows win when
   // present, scalar i1–i4 triples remain as the fallback for
   // theme-authored sections.
@@ -527,7 +524,7 @@ const TrustFooter: WidgetComponent = ({ str, section, locale, editing }) => {
   return (
     <div
       ref={scope}
-      data-songoskriti-reveal
+      data-reveal
       className="w-full border-t border-[var(--theme-border)]"
     >
       <ul className="mx-auto grid max-w-[var(--fq-container,1440px)] grid-cols-2 lg:grid-cols-4 divide-x divide-[var(--theme-border)] px-0">
@@ -1239,7 +1236,7 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
     .filter((d) => d.title && d.href);
 
   const scope = useRef<HTMLElement | null>(null);
-  useSongoskritiReveals(scope, true);
+  useScrollReveals(scope, true);
 
   if (departments.length === 0) return null;
 
@@ -1252,7 +1249,7 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
   const grid = departments.slice(2);
 
   return (
-    <section ref={scope} data-songoskriti-reveal className="py-16 sm:py-20 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
+    <section ref={scope} data-reveal className="py-16 sm:py-20 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="flex items-center justify-between mb-10">
           <h2 className="font-serif text-[22px] sm:text-[28px] font-light tracking-[0.04em] text-[var(--theme-ink)] uppercase">
@@ -1943,10 +1940,10 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
         ];
 
   const scope = useRef<HTMLElement | null>(null);
-  useSongoskritiReveals(scope, true);
+  useScrollReveals(scope, true);
 
   return (
-    <section ref={scope} data-songoskriti-reveal className="py-20 sm:py-32 bg-[var(--theme-surface)] overflow-hidden border-t border-[var(--theme-border)]">
+    <section ref={scope} data-reveal className="py-20 sm:py-32 bg-[var(--theme-surface)] overflow-hidden border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-12 sm:mb-20 text-center flex flex-col items-center">
         {subhead && (
           <p className="text-[10px] sm:text-[12px] font-semibold uppercase tracking-[0.3em] text-[var(--theme-ink)]/50 mb-4 sm:mb-6">
@@ -2031,12 +2028,12 @@ const SongoskritiStoreLocator: WidgetComponent = ({ str, locale }) => {
     .map((s) => ({ ...s, image: imageFor(s.n, s.name) }));
 
   const scope = useRef<HTMLElement | null>(null);
-  useSongoskritiReveals(scope, true);
+  useScrollReveals(scope, true);
 
   if (stores.length === 0) return null;
 
   return (
-    <section ref={scope} data-songoskriti-reveal className="py-16 sm:py-24 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
+    <section ref={scope} data-reveal className="py-16 sm:py-24 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="text-center mb-14">
           <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--theme-ink)]/40 mb-3">

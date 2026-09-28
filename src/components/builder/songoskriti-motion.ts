@@ -1,5 +1,6 @@
 /**
- * Songoskriti motion controller (spec §3, client-only).
+ * Theme motion controller (spec §3, client-only). Shared by every theme
+ * renderer — hook and selector names carry no brand prefix.
  *
  * Hero load timeline (defaults + labels + position params), ScrollTrigger
  * batch reveals (once), snap+buttons carousel controller, and
@@ -37,19 +38,19 @@ import type { MotionIntent } from "@/lib/motion-policy";
 
 /* ------------------------------------------------------------------ tokens */
 
-export const SONGOSKRITI_HERO_DEFAULTS = {
+export const HERO_DEFAULTS = {
   duration: 0.6,
   ease: "power2.out",
 } as const;
 
 /** Desktop branch at ≥768px; below is the single-column mobile branch. */
-export const SONGOSKRITI_DESKTOP_MIN = 768;
+export const DESKTOP_MIN = 768;
 
-/** Reveal targets — stamped on songoskriti section roots. */
-export const SONGOSKRITI_REVEAL_SELECTOR = "[data-songoskriti-reveal]";
+/** Reveal targets — stamped on theme section roots. */
+export const REVEAL_SELECTOR = "[data-reveal]";
 
 /** Hero scope — stamped on the hero carousel section root. */
-export const SONGOSKRITI_HERO_SELECTOR = "[data-songoskriti-hero]";
+export const HERO_SELECTOR = "[data-hero]";
 
 /* ---------------------------------------------------------- hero timeline */
 
@@ -86,7 +87,7 @@ export function heroTimelinePlan(
 ): HeroTimelinePlan | null {
   if (intent !== "full") return null;
   return {
-    defaults: { ...SONGOSKRITI_HERO_DEFAULTS },
+    defaults: { ...HERO_DEFAULTS },
     labels: ["hero-start", "hero-copy", "hero-art"],
     steps: [
       {
@@ -214,19 +215,19 @@ export function findRevealScroller(
 
 /* --------------------------------------------------------- branch decision */
 
-export type SongoskritiBranch = "desktop" | "mobile" | "static";
+export type MotionBranch = "desktop" | "mobile" | "static";
 
 /**
  * Pure branch decision shared by the hook and the tests: any non-full
  * intent (reduced motion, Save-Data, SSR) goes static; full intent splits
  * on the 768px breakpoint.
  */
-export function resolveSongoskritiBranch(
+export function resolveMotionBranch(
   intent: MotionIntent,
   viewportWidthPx: number,
-): SongoskritiBranch {
+): MotionBranch {
   if (intent !== "full") return "static";
-  return viewportWidthPx >= SONGOSKRITI_DESKTOP_MIN ? "desktop" : "mobile";
+  return viewportWidthPx >= DESKTOP_MIN ? "desktop" : "mobile";
 }
 
 /* ----------------------------------------------------- carousel controller */
@@ -334,7 +335,7 @@ function scopeTargets(scope: HTMLElement, selector: string): HTMLElement[] {
  * scoped to `scopeRef`; `ctx.revert()` on cleanup kills every tween,
  * matchMedia branch, and off-screen trigger the setup created.
  */
-export function useSongoskritiHero(
+export function useHeroMotion(
   scopeRef: { readonly current: HTMLElement | null },
   enabled: boolean,
 ) {
@@ -405,7 +406,7 @@ export function useSongoskritiHero(
 
         // Desktop branch: full labeled timeline + pointer drift via
         // quickTo (transform-only, desktop-with-cursor affordance).
-        mm.add(`(min-width: ${SONGOSKRITI_DESKTOP_MIN}px)`, () => {
+        mm.add(`(min-width: ${DESKTOP_MIN}px)`, () => {
           const tl = gsap.timeline({
             defaults: { ...plan.defaults },
           });
@@ -466,7 +467,7 @@ export function useSongoskritiHero(
         });
 
         // Mobile branch: same story, no pointer drift.
-        mm.add(`(max-width: ${SONGOSKRITI_DESKTOP_MIN - 1}px)`, () => {
+        mm.add(`(max-width: ${DESKTOP_MIN - 1}px)`, () => {
           const tl = gsap.timeline({
             defaults: { ...plan.defaults },
           });
@@ -507,7 +508,7 @@ export function useSongoskritiHero(
 }
 
 /**
- * ScrollTrigger.batch reveals for `[data-songoskriti-reveal]` nodes under
+ * ScrollTrigger.batch reveals for `[data-reveal]` nodes under
  * `scopeRef`. Once-only, play-and-hold toggle actions, scoped to the real
  * scroll container (nested `overflow-auto` preview/dialog hosts included —
  * viewport-aimed triggers never fire there), refresh after setup and after
@@ -515,7 +516,7 @@ export function useSongoskritiHero(
  * Non-full intents — and scopes whose scroller cannot be resolved — render
  * settled content with no observer at all (see `resolveRevealMode`).
  */
-export function useSongoskritiReveals(
+export function useScrollReveals(
   scopeRef: { readonly current: HTMLElement | null },
   enabled: boolean,
 ) {
@@ -527,7 +528,7 @@ export function useSongoskritiReveals(
     if (!scope || typeof window === "undefined") return;
     // Progressive enhancement: reduced/off intents stay settled-visible.
     if (resolveRevealMode(intent, true) !== "animate") return;
-    const targets = scopeTargets(scope, SONGOSKRITI_REVEAL_SELECTOR);
+    const targets = scopeTargets(scope, REVEAL_SELECTOR);
     if (targets.length === 0) return;
     // Scroller lookup failure also stays settled-visible: hiding targets
     // whose triggers could never fire would strand them at opacity 0.
@@ -585,7 +586,7 @@ export function useSongoskritiReveals(
  * into React state via `onIndex`, arms the timer only at full intent
  * (reduced/off stay on the static first slide), and stops it on unmount.
  */
-export function useSongoskritiCarousel(count: number, autoAdvanceMs = 6000) {
+export function useCarouselCycle(count: number, autoAdvanceMs = 6000) {
   const intent = useMotionIntent();
   const [index, setIndex] = useState(0);
   const controller = useMemo(
