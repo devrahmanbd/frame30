@@ -4,7 +4,12 @@ import { MAX_WIDGET_REQUESTS } from "./widget-data";
 
 const paramValue = z.union([z.string().max(120), z.number(), z.boolean()]);
 
-const requestSchema = z.object({
+/**
+ * Full WidgetDataSource union (see widget-registry.ts) — client-initiated
+ * refetches for product-detail/account widgets must validate exactly like the
+ * SSR batch serves them.
+ */
+export const widgetDataRequestSchema = z.object({
   key: z.string().min(1).max(300),
   source: z.enum([
     "collection",
@@ -13,9 +18,19 @@ const requestSchema = z.object({
     "reviews",
     "facets",
     "taxonomy",
+    "variants",
+    "qna",
+    "order",
+    "specs",
+    "finance",
+    "product",
+    "orders",
+    "profile",
   ]),
   params: z.record(z.string().max(40), paramValue),
 });
+
+const requestSchema = widgetDataRequestSchema;
 
 /**
  * The single storefront data call. Every data widget on a page is resolved by
