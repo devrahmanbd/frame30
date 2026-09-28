@@ -6803,8 +6803,27 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
   // Phase 3.2: `group` fields are presentation-only, so their sub-fields are
   // flattened here and keep storing flat props.
   const fields = flattenFields(entry.fields);
+  // Legacy repeater rows can sit at node level (`items` / `sections` beside
+  // `props`) instead of inside props — the upgrader keeps them there
+  // untouched, so array fields fall back to them when props has no array.
+  const top = raw as unknown as Record<string, unknown>;
+  const legacyRows = (key: string): unknown => {
+    for (const candidate of [top[key], top["items"], top["sections"]]) {
+      if (!Array.isArray(candidate)) continue;
+      // Node-shaped rows are structure, not repeater data; they belong in
+      // `children` and must never become item rows.
+      const data = candidate.filter((row) => !isNodeShaped(row));
+      if (data.length) return data;
+    }
+    return undefined;
+  };
   for (const field of fields) {
-    const coerced = coerceProp(field, source[field.key]);
+    let value = source[field.key];
+    if (field.kind === "array" && !Array.isArray(value)) {
+      const fallback = legacyRows(field.key);
+      if (fallback !== undefined) value = fallback;
+    }
+    const coerced = coerceProp(field, value);
     props[field.key] =
       coerced === null
         ? (entry.defaults[field.key] ?? (field.kind === "array" ? [] : ""))
@@ -7035,6 +7054,18 @@ export function parseAst(input: unknown): ThemeAst {
 }
 
 /**
+ * True when a legacy `items` / `sections` row looks like a widget node rather
+ * than repeater data. Studio nodes carry `el`, builder sections carry `type`;
+ * repeater data rows (hero slides, faq rows, footer link columns, …) carry
+ * neither. Only node-shaped rows may be promoted to `children`.
+ */
+function isNodeShaped(value: unknown): boolean {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const record = value as Record<string, unknown>;
+  return typeof record["type"] === "string" || typeof record["el"] === "string";
+}
+
+/**
  * AST v2 → v3 upgrader. Pure: it never mutates the input and always returns a
  * slot-shaped plain object that `parseAst` can consume.
  *
@@ -7042,7 +7073,11 @@ export function parseAst(input: unknown): ThemeAst {
  *  - a flat `sections` array instead of header/main/footer slots,
  *  - containers that stored their subtree under `items` / `sections`,
  *  - no `children` key at all (every node was a leaf).
- * A v3 document passes through unchanged (idempotent).
+ * A v3 document passes through unchanged (idempotent) — repeater data rows
+ * (hero slides, faq rows, footer link columns, …) stored under node-level
+ * `items` / `sections` are left exactly where they are so `parseSection` can
+ * coerce them (with their `_bn` twins) into props. Only container subtrees
+ * and node-shaped rows are promoted to `children`.
  */
 export function upgradeAstV2ToV3(input: unknown): Record<string, unknown> {
   const raw = (input ?? {}) as Record<string, unknown>;
@@ -7054,15 +7089,38 @@ export function upgradeAstV2ToV3(input: unknown): Record<string, unknown> {
     // Cycle guard: a self-referencing payload must not recurse forever.
     if (stack.has(node as object)) return undefined;
     const source = node as Record<string, unknown>;
-    const kidsRaw = source["children"] ?? source["items"] ?? source["sections"];
     const out: Record<string, unknown> = { ...source };
-    delete out["items"];
-    delete out["sections"];
+    const next = new Set(stack).add(node as object);
+    const kidsRaw = source["children"];
+    // Legacy v2 container keys. Promoted to `children` only when they hold a
+    // widget subtree: the parent is a container type, or every row looks
+    // like a node. Repeater data rows pass through untouched under their own
+    // key — deleting them here used to drop hero/faq/footer items (and their
+    // `_bn` twins) on every parse round-trip.
+    const legacyRaw = source["items"] ?? source["sections"];
+    const legacyIsSubtree =
+      Array.isArray(legacyRaw) &&
+      (typeof source["type"] === "string" &&
+      CATALOG.get(source["type"] as SectionType)?.container === true
+        ? true
+        : legacyRaw.every(isNodeShaped));
     if (Array.isArray(kidsRaw)) {
-      const next = new Set(stack).add(node as object);
       out["children"] = kidsRaw
         .map((kid) => upgradeNode(kid, next))
         .filter((kid) => kid !== undefined);
+      // v3 children already carry the subtree, so a legacy structural key
+      // alongside them is dropped (previous behavior); data rows are kept
+      // for the repeater fallback in `parseSection`.
+      if (legacyIsSubtree) {
+        delete out["items"];
+        delete out["sections"];
+      }
+    } else if (legacyIsSubtree) {
+      out["children"] = (legacyRaw as unknown[])
+        .map((kid) => upgradeNode(kid, next))
+        .filter((kid) => kid !== undefined);
+      delete out["items"];
+      delete out["sections"];
     }
     return out;
   };

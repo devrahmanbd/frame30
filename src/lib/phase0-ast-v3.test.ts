@@ -128,3 +128,108 @@ describe("AST v2 → v3 migration", () => {
     expect(node["children"]).toHaveLength(1);
   });
 });
+
+describe("AST v2 repeater-safe upgrade (audit T2)", () => {
+  const heroRows = [
+    {
+      heading: "Welcome",
+      heading_bn: "স্বাগতম",
+      image: "/hero.jpg",
+      subheading: "New season",
+      subheading_bn: "নতুন সিজন",
+      ctaLabel: "Shop",
+      ctaLabel_bn: "কেনাকাটা",
+      ctaHref: "/c",
+    },
+  ];
+  const faqRows = [
+    {
+      question: "Size?",
+      question_bn: "সাইজ?",
+      answer: "Runs large.",
+      answer_bn: "বড় সাইজ।",
+    },
+  ];
+  const footerRows = [
+    {
+      title: "Shop",
+      title_bn: "কেনাকাটা",
+      links: "New in|/",
+      links_bn: "নতুন|/",
+    },
+  ];
+
+  // Legacy shape: repeater rows stored at node level (outside props), as v2
+  // documents and early studio payloads wrote them.
+  const legacyDoc = () =>
+    JSON.parse(
+      JSON.stringify({
+        header: [],
+        main: [
+          { id: "hero-1", type: "hero", props: {}, items: heroRows },
+          { id: "faq-1", type: "faq", props: {}, items: faqRows },
+        ],
+        footer: [
+          {
+            id: "foot-1",
+            type: "footer_sitemap",
+            props: {},
+            items: footerRows,
+          },
+        ],
+      }),
+    );
+
+  it("leaves repeater data rows under items (never promotes to children)", () => {
+    const v3 = upgradeAstV2ToV3(legacyDoc());
+    for (const slot of ["main", "footer"] as const) {
+      for (const node of v3[slot] as Record<string, unknown>[]) {
+        expect(node["children"]).toBeUndefined();
+        expect(node["items"]).toBeDefined();
+      }
+    }
+    const hero = (v3["main"] as Record<string, unknown>[])[0]!;
+    expect(hero["items"]).toEqual(heroRows);
+  });
+
+  it("parseAst preserves hero/faq/footer items + _bn twins", () => {
+    const ast = parseAst(legacyDoc());
+    expect(ast.main.find((s) => s.id === "hero-1")?.props.items).toEqual(
+      heroRows,
+    );
+    expect(ast.main.find((s) => s.id === "faq-1")?.props.items).toEqual(
+      faqRows,
+    );
+    expect(ast.footer.find((s) => s.id === "foot-1")?.props.items).toEqual(
+      footerRows,
+    );
+  });
+
+  it("parse→serialize→parse is stable for repeater items", () => {
+    const once = parseAst(legacyDoc());
+    const twice = parseAst(JSON.parse(JSON.stringify(once)));
+    expect(twice).toEqual(once);
+    expect(once.main.find((s) => s.id === "hero-1")?.props.items).toHaveLength(
+      1,
+    );
+  });
+
+  it("still promotes v2 container sections to children", () => {
+    const doc = {
+      main: [
+        {
+          id: "c",
+          type: "container",
+          props: {},
+          sections: [{ id: "h", type: "heading", props: { text: "Hi" } }],
+        },
+      ],
+    };
+    const v3 = upgradeAstV2ToV3(JSON.parse(JSON.stringify(doc)));
+    const node = (v3["main"] as Record<string, unknown>[])[0]!;
+    expect(node["sections"]).toBeUndefined();
+    expect(node["children"]).toHaveLength(1);
+    const ast = parseAst(doc);
+    expect(ast.main[0]?.children?.[0]?.id).toBe("h");
+  });
+});
