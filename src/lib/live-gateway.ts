@@ -150,7 +150,7 @@ export type SessionInput = {
 
 export type SessionRequest = {
   url: string;
-  method: "POST";
+  method: "POST" | "GET";
   headers: Record<string, string>;
   body: string;
   /** `form` bodies are urlencoded, `json` bodies are JSON. */
@@ -363,9 +363,9 @@ function minor(value: unknown): number | null {
 }
 
 /**
- * Read a provider callback body into a verdict. This never decides `paid` on a
- * rail's word alone for SSLCommerz/bKash — the server half re-validates against
- * the provider API and compares the amount before any order is marked paid.
+ * Read a provider callback body into a verdict. This never settles `paid` on a
+ * rail's word alone — the server half re-validates every contracted rail
+ * against the provider API (and matches the amount) before any order is paid.
  */
 export function readCallback(
   provider: LiveProvider,
@@ -493,6 +493,55 @@ export function piprapayVerifyRequest(
       "mh-piprapay-api-key": creds.apiKey ?? "",
     },
     body: JSON.stringify({ transaction_id: providerReference }),
+    encoding: "json",
+  };
+}
+
+/**
+ * aamarPay's transaction-check call: the only answer trusted about a charge.
+ * `request_id` is the merchant transaction id, which is always our intent id
+ * (see `buildSessionRequest`: `tran_id` carries the intent).
+ */
+export function aamarpayVerifyRequest(
+  baseUrl: string,
+  creds: LiveCredentials,
+  intentId: string,
+): SessionRequest {
+  const url = new URL(`${baseUrl}/api/v1/trxcheck/request.php`);
+  url.searchParams.set("request_id", intentId);
+  url.searchParams.set("store_id", creds.storeId ?? "");
+  url.searchParams.set("signature_key", creds.storePassword ?? "");
+  url.searchParams.set("type", "json");
+  return {
+    url: url.toString(),
+    method: "GET",
+    headers: { accept: "application/json" },
+    body: "",
+    encoding: "json",
+  };
+}
+
+/**
+ * bKash tokenized-checkout execute call: the step that confirms (and captures)
+ * a payment the shopper approved. Runs with a fresh grant token, which the
+ * server half fetches immediately before this request.
+ */
+export function bkashExecuteRequest(
+  baseUrl: string,
+  idToken: string,
+  creds: LiveCredentials,
+  paymentID: string,
+): SessionRequest {
+  return {
+    url: `${baseUrl}/v1.2.0-beta/tokenized/checkout/execute`,
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      accept: "application/json",
+      authorization: idToken,
+      "x-app-key": creds.storeId ?? "",
+    },
+    body: JSON.stringify({ paymentID }),
     encoding: "json",
   };
 }
