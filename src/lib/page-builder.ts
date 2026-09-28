@@ -265,12 +265,60 @@ export function serializeBuilderBody(doc: BuilderDoc): string {
 // ── rendering ────────────────────────────────────────────────────────
 
 /** Minimal attribute/text escaper for merchant-sourced strings. */
-function esc(value: string): string {
-  return value
+function esc(value: unknown): string {
+  return String(value ?? "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+/**
+ * Fail-closed URL gates for merchant-sourced URLs. Browsers strip ASCII
+ * whitespace/control characters before the scheme check, so the gate must
+ * too — otherwise `"  javascript:…"` or `"java\tscript:…"` slips through.
+ * Anything not explicitly allowed falls back to an inert value.
+ */
+
+// Browsers strip ASCII whitespace/control characters before the scheme
+// check — the gate must too, otherwise `"  javascript:…"` slips through.
+// (Built via a string so no literal control characters appear in source.)
+// eslint-disable-next-line no-control-regex -- intentional: must strip NUL–SP like browsers do before scheme checks
+const SCHEME_STRIP = new RegExp("[\\u0000-\\u0020\\u007f]+", "g");
+
+/** Anchor hrefs: http(s), site-relative, fragments, mailto/tel. */
+function safeHref(raw: unknown): string {
+  const s = String(raw ?? "");
+  const compact = s.replace(SCHEME_STRIP, "");
+  const m = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.exec(compact);
+  if (!m) return s === "" ? "#" : s;
+  const scheme = m[0].toLowerCase();
+  if (
+    scheme === "http:" ||
+    scheme === "https:" ||
+    scheme === "mailto:" ||
+    scheme === "tel:"
+  )
+    return s;
+  return "#";
+}
+
+/** Image sources: http(s), site-relative, plus inert raster data-URIs. */
+function safeSrc(raw: unknown): string {
+  const s = String(raw ?? "");
+  const compact = s.replace(SCHEME_STRIP, "");
+  const m = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.exec(compact);
+  if (!m) return s;
+  const scheme = m[0].toLowerCase();
+  if (scheme === "http:" || scheme === "https:") return s;
+  // Raster data-URIs are inert pixels; svg+xml is scriptable — blocked.
+  if (
+    scheme === "data:" &&
+    /^data:image\/(png|jpe?g|gif|webp|avif);base64,/i.test(compact)
+  )
+    return s;
+  return "";
 }
 
 function renderProducts(w: Widget, products: ProductData): string {
@@ -282,7 +330,7 @@ function renderProducts(w: Widget, products: ProductData): string {
         p.priceMinor != null
           ? `<span class="pb-product-price">${(p.priceMinor / 100).toFixed(2)} ${esc(p.currency)}</span>`
           : "";
-      return `<a class="pb-product" href="${esc(p.href)}"><img src="${esc(p.imageUrl ?? "")}" alt="" loading="lazy" /><span class="pb-product-title">${esc(p.title)}</span>${price}</a>`;
+      return `<a class="pb-product" href="${esc(safeHref(p.href))}"><img src="${esc(safeSrc(p.imageUrl ?? ""))}" alt="" loading="lazy" /><span class="pb-product-title">${esc(p.title)}</span>${price}</a>`;
     })
     .join("");
   return `<div class="pb-products">${items}</div>`;
@@ -294,29 +342,51 @@ function renderWidget(w: Widget, products: ProductData): string {
   const s = (w.settings ?? w) as WidgetSettings;
   switch (kind) {
     case "heading": {
-      const level = s.level ?? 2;
-      return `<h${level}>${s.text ?? ""}</h${level}>`;
+      // Level rides inside the tag name — coerce to 1–6 so a crafted value
+      // cannot inject attributes or elements. Text is escaped as plain text.
+      const n = Number(s.level);
+      const level = Number.isInteger(n) && n >= 1 && n <= 6 ? n : 2;
+      return `<h${level}>${esc(s.text ?? "")}</h${level}>`;
     }
     case "text":
-      return `<div>${s.html ?? s.text ?? ""}</div>`;
+      // Plain-text widget: even the legacy `html` field is escaped, never
+      // passed through. Rich HTML has no allow-list sanitizer on this path
+      // (see the `html` case below), so fail closed here too.
+      return `<div>${esc(s.html ?? s.text ?? "")}</div>`;
     case "image":
-      return `<img src="${s.src ?? s.url ?? ""}" alt="${s.alt ?? ""}" loading="lazy" />`;
+      return `<img src="${esc(safeSrc(s.src ?? s.url ?? ""))}" alt="${esc(s.alt ?? "")}" loading="lazy" />`;
     case "button":
-      return `<a class="btn" href="${s.href ?? "#"}">${s.label ?? "Button"}</a>`;
+      return `<a class="btn" href="${esc(safeHref(s.href ?? "#"))}">${esc(s.label ?? "Button")}</a>`;
     case "divider":
       return `<hr />`;
-    case "spacer":
-      return `<div style="height:${s.height ?? 24}px"></div>`;
+    case "spacer": {
+      // Height rides inside a style attribute — coerce to a finite number so
+      // a crafted string cannot break out of the declaration.
+      const n = Number(s.height);
+      const height = Number.isFinite(n) && n >= 0 && n <= 2000 ? n : 24;
+      return `<div style="height:${height}px"></div>`;
+    }
     case "html":
-      return String(s.code ?? s.html ?? "");
+      // POLICY (T1, pinned by page-builder-xss.test.ts): raw `html`/`code`
+      // widgets are BLOCKED on the shopper render path. Rationale: no HTML
+      // sanitizer exists in the dependency set and the project constraint
+      // forbids new deps, so sanitize-at-render is not available; a
+      // hand-rolled allow-list sanitizer is unsafe to own, and
+      // permission-gating still serves attacker HTML to shoppers. Fail
+      // closed: emit an inert comment (auditable in view-source, nothing in
+      // the DOM) instead of merchant markup. Merchants keep authoring raw
+      // HTML in the dashboard canvas — only storefront/shopper output and
+      // the dashboard HTML preview change. Revisit when a sanitizer dep is
+      // approved; the tests pin this behavior until then.
+      return `<!-- widget:html:blocked -->`;
     case "products":
       return renderProducts(w, products);
     case "product_card":
-      return `<div class="product-card" data-product-id="${String(s.productId ?? "")}"></div>`;
+      return `<div class="product-card" data-product-id="${esc(s.productId ?? "")}"></div>`;
     case "plugin": {
       // Mount point, not a render: the key + settings ride as data so the
       // client island (or a future hydrator) can resolve the exact block.
-      const key = String(w.pluginKey ?? s.pluginKey ?? "");
+      const key = esc(w.pluginKey ?? s.pluginKey ?? "");
       const settings = w.settings ?? {};
       const encoded = JSON.stringify(settings)
         .replace(/</g, "\\u003c")
@@ -324,7 +394,7 @@ function renderWidget(w: Widget, products: ProductData): string {
       return `<div class="plugin-mount" data-plugin-widget="${key}" data-plugin-settings='${encoded}'></div>`;
     }
     default:
-      return `<!-- widget:${kind} -->`;
+      return `<!-- widget:${esc(kind)} -->`;
   }
 }
 
@@ -336,11 +406,18 @@ export function renderBuilderHtml(
   return doc.sections
     .map(
       (sec) =>
-        `<section data-id="${sec.id}" class="pb-section">${sec.columns
-          .map(
-            (col) =>
-              `<div class="pb-col" style="flex:${col.width ?? (col.span ? col.span / 12 : 1)}">${col.widgets.map((w) => renderWidget(w, products)).join("")}</div>`,
-          )
+        `<section data-id="${esc(sec.id)}" class="pb-section">${sec.columns
+          .map((col) => {
+            // Flex weight rides inside a style attribute — coerce to a finite
+            // number so crafted section/column JSON cannot break out of it.
+            const width = Number(col.width);
+            const flex = Number.isFinite(width)
+              ? width
+              : col.span
+                ? col.span / 12
+                : 1;
+            return `<div class="pb-col" style="flex:${flex}">${col.widgets.map((w) => renderWidget(w, products)).join("")}</div>`;
+          })
           .join("")}</section>`,
     )
     .join("\n");
