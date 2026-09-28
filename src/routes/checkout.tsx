@@ -152,9 +152,11 @@ function CheckoutPage() {
 
   useEffect(() => {
     return () => {
-      void releaseCheckout({ data: { checkoutToken } }).catch(() => undefined);
+      void releaseCheckout({ data: { checkoutToken, slug } }).catch(
+        () => undefined,
+      );
     };
-  }, [checkoutToken]);
+  }, [checkoutToken, slug]);
 
   const beaconRef = useRef({
     startedAt: Date.now(),

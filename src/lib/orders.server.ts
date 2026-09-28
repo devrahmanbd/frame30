@@ -207,7 +207,7 @@ export async function createOrder(
       subject,
     );
   } catch (error) {
-    await releaseStock(checkoutToken);
+    await releaseStock(checkoutToken, merchant.id);
     await releaseCouponSlots(supabaseAdmin, reservedCouponIds, merchant.id);
     throw error;
   }
@@ -243,7 +243,7 @@ export async function createOrder(
     } catch {
       /* audit is best effort; the throw below is the signal */
     }
-    await releaseStock(checkoutToken);
+    await releaseStock(checkoutToken, merchant.id);
     if (opts?.consumed) {
       for (const l of totals.lines) {
         const { data: cur } = await supabaseAdmin
@@ -376,7 +376,7 @@ export async function createOrder(
         .eq("idempotency_key", input.idempotencyKey)
         .maybeSingle();
       if (winner) {
-        await releaseStock(checkoutToken);
+        await releaseStock(checkoutToken, merchant.id);
         incr("framique_orders_total", {
           outcome: "replayed",
           tenant: tenantLabel(merchant.id),
@@ -392,7 +392,7 @@ export async function createOrder(
         };
       }
     }
-    await releaseStock(checkoutToken);
+    await releaseStock(checkoutToken, merchant.id);
     incr("framique_orders_total", {
       outcome: "failed",
       tenant: tenantLabel(merchant.id),

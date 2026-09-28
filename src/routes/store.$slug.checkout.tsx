@@ -132,9 +132,11 @@ function CheckoutPage() {
 
   useEffect(() => {
     return () => {
-      void releaseCheckout({ data: { checkoutToken } }).catch(() => undefined);
+      void releaseCheckout({ data: { checkoutToken, slug } }).catch(
+        () => undefined,
+      );
     };
-  }, [checkoutToken]);
+  }, [checkoutToken, slug]);
 
   // Passive bot-signal beacon: interaction counters only, no fingerprinting.
   const beaconRef = useRef({

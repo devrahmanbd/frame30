@@ -110,11 +110,15 @@ export async function reserveStock(
       if (wanted.size === 0) fail("stock_hold.variant_not_found");
       const variantIds = [...wanted.keys()];
 
-      // Live (unconsumed, unreleased) holds for this token.
+      // Live (unconsumed, unreleased) holds for this token AND merchant.
+      // Tokens are client-generated predictable strings, so the merchant
+      // scope is what stops one shopper's token from converging another
+      // merchant's holds.
       const { data: heldRows } = await supabaseAdmin
         .from("stock_holds")
         .select("variant_id, quantity")
         .eq("checkout_token", checkoutToken)
+        .eq("merchant_id", merchantId)
         .is("consumed_at", null)
         .is("released_at", null);
       const held = new Map<string, number>(
@@ -143,6 +147,7 @@ export async function reserveStock(
           .from("stock_holds")
           .delete()
           .eq("checkout_token", checkoutToken)
+          .eq("merchant_id", merchantId)
           .eq("variant_id", variantId)
           .is("consumed_at", null);
       }
@@ -158,6 +163,7 @@ export async function reserveStock(
             .from("stock_holds")
             .update({ expires_at: expiresAt })
             .eq("checkout_token", checkoutToken)
+            .eq("merchant_id", merchantId)
             .eq("variant_id", variantId)
             .is("consumed_at", null);
           continue;
@@ -191,6 +197,7 @@ export async function reserveStock(
             .from("stock_holds")
             .update({ quantity: qty, expires_at: expiresAt })
             .eq("checkout_token", checkoutToken)
+            .eq("merchant_id", merchantId)
             .eq("variant_id", variantId)
             .is("consumed_at", null);
         } else {
@@ -216,7 +223,7 @@ export async function reserveStock(
             );
             await supabaseAdmin
               .from("product_variants")
-              .update({ stock_quantity: curStock - delta })
+              .update({ stock_quantity: curStock + delta })
               .eq("id", variantId);
             fail(holdError.message);
           }
@@ -285,7 +292,28 @@ export async function consumeStock(checkoutToken: string, orderId: string) {
   );
 }
 
-export async function releaseStock(checkoutToken: string) {
+/**
+ * Release live holds for a token, restoring the taken stock.
+ *
+ * `merchantId` is REQUIRED and scopes the release: checkout tokens are
+ * client-generated predictable strings (`<slug>-hold-<rand>`), so
+ * token-only matching lets any shopper who guesses a token release
+ * another merchant's holds. Callers must resolve the merchant server-side
+ * (from the store slug, or the order's merchant) and pass it here.
+ *
+ * Fail-closed: a missing/empty scope is rejected as a no-op (returns
+ * false, touches no rows) and logged (`checkout.release_unscoped`) with a
+ * rejection metric, so cutover abuse stays visible. There is no
+ * token-only fallback path.
+ */
+export async function releaseStock(checkoutToken: string, merchantId: string) {
+  if (!merchantId) {
+    log("warn", "checkout.release_unscoped", {
+      reason: "rejected: missing merchant scope; no rows touched",
+    });
+    incr("framique_checkout_release_rejected_total", { reason: "unscoped" });
+    return false;
+  }
   try {
     const { supabaseAdmin } =
       await import("@/integrations/supabase/client.server");
@@ -293,6 +321,7 @@ export async function releaseStock(checkoutToken: string) {
       .from("stock_holds")
       .select("variant_id, quantity")
       .eq("checkout_token", checkoutToken)
+      .eq("merchant_id", merchantId)
       .is("consumed_at", null);
     for (const h of (held ?? []) as {
       variant_id: string;
@@ -316,6 +345,7 @@ export async function releaseStock(checkoutToken: string) {
       .from("stock_holds")
       .update({ released_at: new Date().toISOString() })
       .eq("checkout_token", checkoutToken)
+      .eq("merchant_id", merchantId)
       .is("consumed_at", null);
   } catch (error) {
     log("warn", "checkout.release_failed", {

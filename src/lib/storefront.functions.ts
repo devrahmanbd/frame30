@@ -224,11 +224,39 @@ export const reserveCheckout = createServerFn({ method: "POST" })
 
 export const releaseCheckout = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
-    z.object({ checkoutToken: z.string().min(8).max(80) }).parse(d),
+    z
+      .object({
+        checkoutToken: z.string().min(8).max(80),
+        // Store slug lets the server bind the token to its merchant.
+        // REQUIRED (fail-closed): a missing slug is a validation error and
+        // an unknown slug throws below — no bare-token release path exists.
+        slug: z.string().min(1).max(120),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     const { releaseStock } = await import("./checkout.server");
-    return releaseStock(data.checkoutToken);
+    const { publicClient } = await import("./pricing.server");
+    const { data: merchant } = await publicClient()
+      .from("merchants")
+      .select("id")
+      .eq("slug", data.slug)
+      .eq("status", "active")
+      .maybeSingle();
+    if (!merchant) {
+      const { log, incr } = await import("./observability.server");
+      log("warn", "checkout.release_unscoped", {
+        reason: "rejected: unknown store slug; no rows touched",
+      });
+      incr("framique_checkout_release_rejected_total", {
+        reason: "unknown_slug",
+      });
+      throw new Error("checkout_release_unknown_store");
+    }
+    return releaseStock(
+      data.checkoutToken,
+      (merchant as unknown as { id: string }).id,
+    );
   });
 
 export const getOrder = createServerFn({ method: "GET" })
