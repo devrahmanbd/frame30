@@ -9,7 +9,7 @@ import { useLang } from "@/lib/i18n";
 import { flattenAst } from "@/lib/builder-ast";
 import { rebaseMenuHref } from "@/lib/menus/menu";
 import { isCustomHostPath } from "@/lib/storefront-url";
-import { SONGOSKRITI_MEGA_MENU } from "@/components/store/StoreHeader";
+import { SONGOSKRITI_MEGA_MENU } from "@/lib/themes/songoskriti/header-fallback";
 import { SlidersHorizontal, ChevronDown, X } from "lucide-react";
 import { buildCollectionArchetype } from "@/lib/themes/songoskriti/archetypes";
 import type { getStoreCollection } from "@/lib/storefront.functions";
@@ -31,6 +31,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     siteKit,
     menus,
     installedPlugins,
+    themeKey,
   } = data;
   const slug = merchant.slug;
   const categories = menus?.header?.slice(0, 10) ?? [];
@@ -50,8 +51,10 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     };
   }, [filterOpen]);
 
-  const isSongoskriti =
-    slug === "songoskriti" || merchant.name?.toLowerCase() === "songoskriti";
+  // Theme-remediation Task 3: brand follows the installed theme key,
+  // never the store slug or display name. A foreign theme on a
+  // theme-named slug gets generic category navigation, not theme chrome.
+  const isSongoskriti = themeKey === "songoskriti";
 
   // 1. Configuration based on collection
   let collectionType: "curated" | "department" | "category" | "campaign" =
@@ -65,17 +68,25 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
   } else if (["women", "men", "kids"].includes(collection.slug)) {
     collectionType = "department";
     hasSubnav = true;
-    showHero = true;
-    if (collection.slug === "women")
-      heroImage = "/ph/songoskriti/songoskriti-hero.jpg";
-    if (collection.slug === "men") heroImage = "/ph/songoskriti/cat-men.png";
+    // Fix round: the songoskriti brand heroes follow the installed theme
+    // key — a foreign theme on these slugs gets the generic grid, never
+    // theme art. (kids sets no image either way; showHero stays false.)
+    if (isSongoskriti) {
+      showHero = true;
+      if (collection.slug === "women")
+        heroImage = "/ph/songoskriti/songoskriti-hero.jpg";
+      if (collection.slug === "men") heroImage = "/ph/songoskriti/cat-men.png";
+    }
   } else if (
     ["festive", "wedding", "eid", "heritage"].includes(collection.slug)
   ) {
     collectionType = "campaign";
     hasSubnav = true;
-    showHero = true;
-    heroImage = "/ph/songoskriti/hero-festive.png";
+    // Fix round: same key gate as above — campaign art is theme-owned.
+    if (isSongoskriti) {
+      showHero = true;
+      heroImage = "/ph/songoskriti/hero-festive.png";
+    }
   } else {
     // normal category like sarees, panjabi
     hasSubnav = true; // might have sibling/children
@@ -407,6 +418,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
         ast={dynamicAst}
         tokens={tokens}
         storeSlug={slug}
+        themeKey={themeKey ?? null}
         merchantId={merchant.id}
         siteKit={siteKit}
         ownsPrimary={custom}
@@ -417,6 +429,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
               name={merchant.name}
               tagline={settings?.tagline}
               menus={menus}
+              themeKey={themeKey ?? null}
             />
             {subnavItems.length > 0 && (
               <div className="bg-background border-b border-border/40 sticky top-[64px] z-30">

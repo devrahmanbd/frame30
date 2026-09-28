@@ -30,6 +30,7 @@ export function PageView({ data }: { data: PagePayload }) {
     menus,
     studioNodes,
     installedPlugins,
+    themeKey,
   } = data;
   const slug = merchant.slug;
 
@@ -140,13 +141,21 @@ export function PageView({ data }: { data: PagePayload }) {
       <ThemeChrome
         template="page"
         storeSlug={slug}
+        themeKey={themeKey ?? null}
         merchantId={merchant.id}
         ast={ast}
         tokens={tokens}
         siteKit={siteKit}
         customCss={customCss}
         ownsPrimary={custom}
-        chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}
+        chrome={
+          <StoreHeader
+            slug={slug}
+            name={merchant.name}
+            menus={menus}
+            themeKey={themeKey ?? null}
+          />
+        }
         contextSlots={{ breadcrumb, page_content: content }}
         containerClassName="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1fr_15rem]"
         fallback={

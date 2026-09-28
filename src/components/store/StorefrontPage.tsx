@@ -44,6 +44,7 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
     siteKit,
     preview,
     menus,
+    themeKey,
   } = data;
 
   const slug = merchant.slug;
@@ -294,6 +295,7 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
         ast={ast}
         tokens={tokens}
         storeSlug={slug}
+        themeKey={themeKey ?? null}
         merchantId={merchant.id}
         siteKit={siteKit}
         chrome={
@@ -306,6 +308,7 @@ export function StorefrontPage({ data }: { data: StorefrontPayload }) {
               storeTimezone={tokens?.timezone}
               allowCustomerTimezone={tokens?.allowCustomerTimezone}
               menus={menus}
+              themeKey={themeKey ?? null}
             />
             {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
             {/* <SupportWidget slug={slug} /> */}

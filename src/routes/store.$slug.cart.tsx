@@ -58,7 +58,7 @@ function CartMissing() {
 function CartPage() {
   const { t } = useLang();
   const { slug } = Route.useParams();
-  const { merchant, ast, tokens, siteKit, menus, installedPlugins } =
+  const { merchant, ast, tokens, siteKit, menus, installedPlugins, themeKey } =
     Route.useLoaderData();
 
   return (
@@ -66,13 +66,19 @@ function CartPage() {
       <ThemeChrome
         template="cart"
         storeSlug={slug}
+        themeKey={themeKey ?? null}
         merchantId={merchant.id}
         ast={ast}
         tokens={tokens}
         siteKit={siteKit}
         chrome={
           <>
-            <StoreHeader slug={slug} name={merchant.name} menus={menus} />
+            <StoreHeader
+              slug={slug}
+              name={merchant.name}
+              menus={menus}
+              themeKey={themeKey ?? null}
+            />
             {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
             {/* <SupportWidget slug={slug} /> */}
           </>

@@ -511,6 +511,7 @@ function SearchPage() {
       <ThemeChrome
         template="search"
         storeSlug={slug}
+        themeKey={chrome?.themeKey ?? null}
         merchantId={chrome?.merchant.id ?? null}
         ast={chrome?.ast ?? null}
         tokens={chrome?.tokens ?? null}
@@ -521,6 +522,7 @@ function SearchPage() {
               slug={slug}
               name={chrome?.merchant.name ?? slug}
               menus={chrome?.menus}
+              themeKey={chrome?.themeKey ?? null}
             />
             {/* Storefront AI support disabled as of now — active on /dashboard and platform front pages */}
             {/* <SupportWidget slug={slug} /> */}

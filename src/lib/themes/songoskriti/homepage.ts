@@ -371,6 +371,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       heading_bn: "আপনার পরিধানে",
       subhead: "SONGOSKRITI IN THE WORLD",
       subhead_bn: "সংস্কৃতি সারা দুনিয়ায়",
+      handleLabel: "Follow @SONGOSKRITI",
+      handleHref: "https://instagram.com",
       images:
         "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png, /ph/songoskriti/ugc-3.png, /ph/songoskriti/ugc-4.png, /ph/songoskriti/ugc-5.jpg, /ph/songoskriti/ugc-6.jpg",
     }),
@@ -460,6 +462,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("store_locator", {
       heading: "VISIT SONGOSKRITI",
       heading_bn: "সংস্কৃতি দেখুন",
+      images:
+        "/ph/songoskriti/cat-women.png, /ph/songoskriti/cat-men.png, /ph/songoskriti/hero-festive.png",
       s1Name: "Uttara Flagship",
       s1Hours: "Open 10am – 9pm daily",
       s2Name: "Gulshan Showroom",

@@ -36,6 +36,7 @@ export function StoreHomepage({
     menus,
     studioNodes,
     installedPlugins,
+    themeKey,
   } = home;
 
   // Studio-authored pages are self-composed (hero/headings live inside
@@ -87,13 +88,21 @@ export function StoreHomepage({
       <ThemeChrome
         template="page"
         storeSlug={slug}
+        themeKey={themeKey ?? null}
         merchantId={merchant.id}
         ast={ast}
         tokens={tokens}
         siteKit={siteKit}
         customCss={customCss}
         ownsPrimary
-        chrome={<StoreHeader slug={slug} name={merchant.name} menus={menus} />}
+        chrome={
+          <StoreHeader
+            slug={slug}
+            name={merchant.name}
+            menus={menus}
+            themeKey={themeKey ?? null}
+          />
+        }
         contextSlots={{ page_content: content }}
         containerClassName="mx-auto max-w-6xl px-4 py-8"
         fallback={<div>{content}</div>}

@@ -48,6 +48,12 @@ type Props = {
   /** Store slug — namespaces channel state and server bundle quotes. */
   storeSlug?: string;
   /**
+   * Theme-remediation Task 3: explicit merchant theme key driving
+   * per-theme widget resolution in every section below. Null/undefined
+   * keeps the legacy unkeyed composition, byte-identical.
+   */
+  themeKey?: string | null;
+  /**
    * Phase 4.4: when supplied, this page view reports field vitals (LCP/CLS/
    * INP) for the store. Absent in the studio preview, where lab numbers would
    * pollute a merchant's real-user data.
@@ -108,6 +114,7 @@ export function ThemeChrome({
   productSlot,
   collectionSlot,
   storeSlug,
+  themeKey,
   storeName,
   merchantId,
   siteKit,
@@ -204,6 +211,7 @@ export function ThemeChrome({
               section={section}
               template={template}
               storeSlug={storeSlug}
+              themeKey={themeKey}
               contextSlots={contextSlots}
               linkBase={base}
             />
@@ -220,6 +228,7 @@ export function ThemeChrome({
                   section={section}
                   template={template}
                   storeSlug={storeSlug}
+                  themeKey={themeKey}
                   contextSlots={contextSlots}
                   linkBase={base}
                 />
@@ -235,6 +244,7 @@ export function ThemeChrome({
                 section={section}
                 template={template}
                 storeSlug={storeSlug}
+                themeKey={themeKey}
                 contextSlots={contextSlots}
                 productSlot={productSlot}
                 collectionSlot={collectionSlot}
@@ -256,6 +266,7 @@ export function ThemeChrome({
                 section={section}
                 template={template}
                 storeSlug={storeSlug}
+                themeKey={themeKey}
                 contextSlots={contextSlots}
                 linkBase={base}
               />

@@ -74,6 +74,7 @@ function CollectionPage() {
     siteKit,
     menus,
     installedPlugins,
+    themeKey,
   } = Route.useLoaderData();
   const slug = merchant.slug;
   const categories = menus?.header?.slice(0, 10) ?? [];
@@ -189,6 +190,7 @@ function CollectionPage() {
         ast={ast}
         tokens={tokens}
         storeSlug={slug}
+        themeKey={themeKey ?? null}
         merchantId={merchant.id}
         siteKit={siteKit}
         ownsPrimary
@@ -198,6 +200,7 @@ function CollectionPage() {
             name={merchant.name}
             tagline={settings?.tagline}
             menus={menus}
+            themeKey={themeKey ?? null}
           />
         }
         productSlot={grid}

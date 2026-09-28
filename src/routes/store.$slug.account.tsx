@@ -480,6 +480,7 @@ function AccountPage() {
         ast={chrome?.ast ?? null}
         tokens={chrome?.tokens ?? null}
         storeSlug={slug}
+        themeKey={chrome?.themeKey ?? null}
         merchantId={chrome?.merchant.id ?? null}
         siteKit={chrome?.siteKit ?? null}
         ownsPrimary
@@ -488,6 +489,7 @@ function AccountPage() {
           <StoreHeader
             slug={slug}
             name={chrome?.merchant.name ?? store?.name ?? slug}
+            themeKey={chrome?.themeKey ?? null}
           />
         }
         containerClassName="mx-auto max-w-[var(--fq-container,1280px)] px-4 py-12 sm:px-6 lg:px-8"

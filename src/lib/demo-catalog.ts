@@ -39,7 +39,6 @@ export type DemoCatalog = {
   products: DemoProduct[];
 };
 
-
 /** apparel — sizes, colourways, fabric and model measurements in the copy. */
 const APPAREL: DemoCatalog = {
   categories: [
@@ -2884,6 +2883,322 @@ const SONGOSKRITI: DemoCatalog = {
   ],
 };
 
+/** somvabona — everyday-cotton storefront demo: combed-cotton panjabis, kurtas, sarees and kids sets plus cotton home textiles. BDT minor units; image refs point at public/ph/somvabona/* final paths. Own catalog — never an alias of SONGOSKRITI. */
+const SOMVABONA: DemoCatalog = {
+  categories: [
+    {
+      slug: "women",
+      name: "Women",
+      description:
+        "Breathable combed-cotton sarees, kurtis and shalwar sets for everyday wear.",
+    },
+    {
+      slug: "men",
+      name: "Men",
+      description:
+        "Everyday cotton panjabis, short kurtas and summer fotuas cut for comfort.",
+    },
+    {
+      slug: "kids",
+      name: "Kids",
+      description: "Soft cotton festive sets sized for young celebrations.",
+    },
+    {
+      slug: "living",
+      name: "Home & Living",
+      description:
+        "Block-print cotton bedsheets, quilts and cushions for easy homes.",
+    },
+  ],
+  collections: [
+    {
+      slug: "new-in",
+      name: "New In",
+      description: "This week's fresh cotton drops.",
+    },
+    {
+      slug: "festive",
+      name: "Festive",
+      description: "Easy cotton dressing for Eid and family occasions.",
+    },
+    {
+      slug: "wedding",
+      name: "Wedding",
+      description: "Cotton outfits and home picks for wedding season.",
+    },
+    {
+      slug: "gifting",
+      name: "Gifting",
+      description: "Everyday cotton staples, ready to gift.",
+    },
+  ],
+  products: [
+    {
+      slug: "everyday-tangail-cotton-saree",
+      title: "Everyday Tangail-Weave Cotton Saree",
+      description:
+        "Woven in Tangail from 100% combed cotton with a narrow contrast border. Light enough for all-day wear, softer with every wash. Includes 80cm unstitched blouse piece. Model is 168cm.",
+      category: "women",
+      collections: ["new-in", "festive"],
+      tags: ["saree", "cotton", "tangail", "everyday"],
+      image_url: "/ph/somvabona/prod-cotton-saree.png",
+      variants: [
+        {
+          name: "Teal & Ivory",
+          sku: "SMV-SAR-TEL",
+          price: 245000,
+          compare_at: 290000,
+          stock: 22,
+        },
+        {
+          name: "Mustard & Rust",
+          sku: "SMV-SAR-MUS",
+          price: 245000,
+          compare_at: 290000,
+          stock: 16,
+        },
+      ],
+    },
+    {
+      slug: "combed-cotton-everyday-kurti",
+      title: "Combed Cotton Everyday Kurti",
+      description:
+        "Cut from 160gsm combed cotton with side slits, three-quarter sleeves and coconut-shell buttons. Pre-shrunk and pre-washed. Model is 170cm and wears size M.",
+      category: "women",
+      collections: ["new-in", "gifting"],
+      tags: ["kurti", "cotton", "everyday", "womens"],
+      image_url: "/ph/somvabona/prod-cotton-kurti.png",
+      variants: [
+        {
+          name: "Size S - Sage",
+          sku: "SMV-KRT-SSG",
+          price: 145000,
+          compare_at: 175000,
+          stock: 25,
+        },
+        {
+          name: "Size M - Sage",
+          sku: "SMV-KRT-MSG",
+          price: 145000,
+          compare_at: 175000,
+          stock: 30,
+        },
+        {
+          name: "Size M - Terracotta",
+          sku: "SMV-KRT-MTC",
+          price: 145000,
+          stock: 18,
+        },
+      ],
+    },
+    {
+      slug: "brushed-cotton-shalwar-set",
+      title: "Brushed Cotton Shalwar Kameez Set",
+      description:
+        "Two-piece brushed-cotton kameez with a straight-cut shalwar and elasticated waist. Breathable weave with block-print yoke detail. Model is 172cm and wears size M.",
+      category: "women",
+      collections: ["festive", "wedding"],
+      tags: ["shalwar", "kameez", "cotton", "festive"],
+      image_url: "/ph/somvabona/prod-cotton-shalwar.png",
+      variants: [
+        {
+          name: "Size M - Indigo Print",
+          sku: "SMV-SHL-MIN",
+          price: 285000,
+          compare_at: 340000,
+          stock: 14,
+        },
+        {
+          name: "Size L - Indigo Print",
+          sku: "SMV-SHL-LIN",
+          price: 285000,
+          compare_at: 340000,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "everyday-cotton-panjabi",
+      title: "Everyday Cotton Panjabi",
+      description:
+        "Our signature daily panjabi in breathable combed cotton with a band collar, coconut-shell buttons and a relaxed straight cut. Model is 180cm and wears size 40.",
+      category: "men",
+      collections: ["new-in", "festive", "wedding"],
+      tags: ["panjabi", "cotton", "everyday", "mens"],
+      image_url: "/ph/somvabona/prod-cotton-panjabi.png",
+      variants: [
+        {
+          name: "Size 40 - White",
+          sku: "SMV-PNJ-40W",
+          price: 195000,
+          compare_at: 230000,
+          stock: 28,
+        },
+        {
+          name: "Size 42 - White",
+          sku: "SMV-PNJ-42W",
+          price: 195000,
+          compare_at: 230000,
+          stock: 24,
+        },
+        {
+          name: "Size 42 - Sky Melange",
+          sku: "SMV-PNJ-42S",
+          price: 195000,
+          stock: 16,
+        },
+      ],
+    },
+    {
+      slug: "slub-cotton-short-kurta",
+      title: "Slub Cotton Short Kurta",
+      description:
+        "Short casual kurta in textured slub cotton with a mandarin collar and single chest pocket. Garment-washed for a lived-in hand-feel. Model is 178cm and wears size M.",
+      category: "men",
+      collections: ["new-in"],
+      tags: ["kurta", "cotton", "casual", "mens"],
+      image_url: "/ph/somvabona/prod-cotton-kurta.png",
+      variants: [
+        {
+          name: "Size M - Olive",
+          sku: "SMV-KTA-MOL",
+          price: 165000,
+          compare_at: 195000,
+          stock: 20,
+        },
+        {
+          name: "Size L - Olive",
+          sku: "SMV-KTA-LOL",
+          price: 165000,
+          compare_at: 195000,
+          stock: 18,
+        },
+      ],
+    },
+    {
+      slug: "cotton-summer-fotua",
+      title: "Cotton Summer Fotua",
+      description:
+        "Airy short-sleeved fotua in lightweight plain-weave cotton with a band collar and coconut-shell buttons. Cut loose for hot days. Model is 176cm and wears size L.",
+      category: "men",
+      collections: ["new-in", "gifting"],
+      tags: ["fotua", "cotton", "summer", "mens"],
+      image_url: "/ph/somvabona/prod-cotton-fotua.png",
+      variants: [
+        {
+          name: "Size L - Sand",
+          sku: "SMV-FOT-LSD",
+          price: 125000,
+          compare_at: 150000,
+          stock: 32,
+        },
+        {
+          name: "Size XL - Sand",
+          sku: "SMV-FOT-XSD",
+          price: 125000,
+          stock: 20,
+        },
+      ],
+    },
+    {
+      slug: "boys-cotton-panjabi-set",
+      title: "Boys Cotton Panjabi & Pajama Set",
+      description:
+        "Two-piece festive set for boys: a soft combed-cotton panjabi with shell buttons and a drawstring cotton pajama. Machine washable. Sized by age.",
+      category: "kids",
+      collections: ["festive", "wedding"],
+      tags: ["kids", "panjabi", "cotton", "boys", "festive"],
+      image_url: "/ph/somvabona/prod-kids-panjabi.png",
+      variants: [
+        {
+          name: "Age 4-6 Yrs - Mint",
+          sku: "SMV-KID-46MN",
+          price: 135000,
+          compare_at: 160000,
+          stock: 18,
+        },
+        {
+          name: "Age 8-10 Yrs - Mint",
+          sku: "SMV-KID-810MN",
+          price: 145000,
+          compare_at: 170000,
+          stock: 15,
+        },
+      ],
+    },
+    {
+      slug: "girls-cotton-festive-set",
+      title: "Girls Cotton Festive Ghagra Set",
+      description:
+        "Flared cotton ghagra skirt with a matching short kurti top and lightweight cotton dupatta. Soft elastic waist, twirl-approved. Sized by age.",
+      category: "kids",
+      collections: ["festive", "gifting"],
+      tags: ["kids", "ghagra", "cotton", "girls", "festive"],
+      image_url: "/ph/somvabona/prod-kids-ghagra.png",
+      variants: [
+        {
+          name: "Age 4-6 Yrs - Coral",
+          sku: "SMV-KID-46CR",
+          price: 155000,
+          compare_at: 185000,
+          stock: 16,
+        },
+        {
+          name: "Age 8-10 Yrs - Coral",
+          sku: "SMV-KID-810CR",
+          price: 165000,
+          compare_at: 195000,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "hand-quilted-cotton-throw",
+      title: "Hand-Quilted Cotton Throw",
+      description:
+        "Layered natural-cotton throw with hand running-stitch quilting by Jessore craftswomen. Single size, 60 x 84 in. Gets softer with every wash.",
+      category: "living",
+      collections: ["new-in", "gifting"],
+      tags: ["quilt", "throw", "cotton", "living", "handcrafted"],
+      image_url: "/ph/somvabona/prod-cotton-throw.png",
+      variants: [
+        {
+          name: "Single - Indigo Patch",
+          sku: "SMV-THR-IND",
+          price: 185000,
+          compare_at: 220000,
+          stock: 14,
+        },
+      ],
+    },
+    {
+      slug: "block-print-cotton-bedsheet-set",
+      title: "Block-Print Cotton Bedsheet Set",
+      description:
+        "King-size bedsheet in 200TC combed cotton with hand block-print motifs and two matching pillow covers. Colourfast reactive dyes. 108 x 108 in.",
+      category: "living",
+      collections: ["gifting", "wedding"],
+      tags: ["bedsheet", "cotton", "blockprint", "living"],
+      image_url: "/ph/somvabona/prod-cotton-bedsheet.png",
+      variants: [
+        {
+          name: "King - Terracotta Motif",
+          sku: "SMV-BED-TRC",
+          price: 155000,
+          compare_at: 185000,
+          stock: 20,
+        },
+        {
+          name: "King - Indigo Motif",
+          sku: "SMV-BED-IND",
+          price: 155000,
+          stock: 15,
+        },
+      ],
+    },
+  ],
+};
+
 export const DEMO_CATALOGS = {
   apparel: APPAREL,
   marketplace: MARKETPLACE,
@@ -2892,7 +3207,7 @@ export const DEMO_CATALOGS = {
   beauty: BEAUTY,
   general: SUPERSHOP_CATALOG,
   songoskriti: SONGOSKRITI,
-  somvabona: SONGOSKRITI,
+  somvabona: SOMVABONA,
 } as const satisfies Record<string, DemoCatalog>;
 
 export type DemoCatalogKey = keyof typeof DEMO_CATALOGS;

@@ -141,6 +141,23 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
       (f) => f.endsWith(".tsx") && !f.includes(".test."),
     )) {
       const src = readFileSync(join(dir, file), "utf8");
+      if (file === "SectionRenderer.tsx") {
+        // Theme-remediation Task 3 composition root: the renderer accepts
+        // the explicit theme key ONLY to forward it to the theme-keyed
+        // registry (`resolveWidgetComponent`) — it must never branch on
+        // the key or name a theme.
+        expect(src, `${file} declares the theme key`).toMatch(/themeKey\?:/);
+        expect(src, `${file} compares the theme key`).not.toMatch(
+          /themeKey\s*(===|!==|==|!=)/,
+        );
+        expect(src, `${file} switches on the theme key`).not.toMatch(
+          /switch\s*\([^)]*themeKey/,
+        );
+        expect(src, `${file} names a theme`).not.toMatch(
+          /songoskriti|somvabona/i,
+        );
+        continue;
+      }
       // No renderer may take a theme identity as a prop.
       expect(src, `${file} threads a theme key`).not.toMatch(/themeKey\s*[?:]/);
     }
