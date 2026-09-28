@@ -97,6 +97,11 @@ function RootDocument() {
         <HeadContent />
         <script
           nonce={currentNonce()}
+          // Nonce is per-request and read from the csp-nonce meta on the
+          // client; the parse-time value (server bytes) is what CSP enforces.
+          // Suppress the hydration attribute warning — a client/server nonce
+          // difference is never patched and never re-executes the script.
+          suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: `
               try {

@@ -18,11 +18,7 @@ import {
   resolveEffectiveHost,
 } from "./lib/storefront-host.server";
 import { consoleSecurityHeaders, isConsolePath } from "./lib/console-headers";
-import {
-  resolveTierFromSignals,
-  resolvePolicy,
-  type RiskTier,
-} from "./lib/risk-tier";
+import { resolveTierFromSignals, type RiskTier } from "./lib/risk-tier";
 import { getMerchantRiskContext } from "./lib/risk-tier.server";
 import { buildCsp, newNonce } from "./lib/custom-code";
 import { setCurrentNonce, getCurrentNonce } from "./lib/ssr-nonce";
@@ -183,27 +179,25 @@ export function withSecurityHeaders(
     "camera=(), microphone=(), geolocation=(), payment=()",
   );
 
-  // Emit tier-aware CSP header using pre-generated nonce from request phase
-  const policy = resolvePolicy(riskTier);
+  // Emit CSP header with a per-document nonce. The nonce is unconditional:
+  // TanStack Start SSR always emits executable inline scripts (scroll
+  // restoration, $tsr stream barrier/bootstrap) plus our theme boot script,
+  // so a `script-src 'self'` document can never hydrate (live 2026-09-28:
+  // 3× CSP blocks → missing window.$_TSR → invariant + uncaught promise on
+  // `/` and `/theme-preview/*`). Nonce + strict-dynamic is narrowly scoped
+  // (no `unsafe-inline`); merchant code stays gated via risk-tier features,
+  // frame-src/connect-src below stay tiered.
   // connect-src must cover the Supabase backend: auth/token, REST, storage
   // and realtime all run on a different origin (framebase.qubickle.com).
   // Without it the browser blocks sign-in with a CSP violation (seen live
   // 2026-09-19: connect to .../auth/v1/token blocked by "connect-src 'self'").
   const connectOrigins = cspConnectOrigins();
-  let nonce = "";
-  if (policy.csp.nonce) {
-    nonce = getCurrentNonce() || newNonce();
-    headers.set(
-      "content-security-policy",
-      buildCsp(nonce, { connect: connectOrigins }, riskTier),
-    );
-  } else {
-    // medium / high: no nonce, strict script-src 'self'
-    headers.set(
-      "content-security-policy",
-      buildCsp("", { connect: connectOrigins }, riskTier),
-    );
-  }
+  const nonce = getCurrentNonce() || newNonce();
+  setCurrentNonce(nonce);
+  headers.set(
+    "content-security-policy",
+    buildCsp(nonce, { connect: connectOrigins }, riskTier),
+  );
 
   if (isEditorPreviewHost(request)) {
     headers.delete("x-frame-options");
@@ -859,14 +853,15 @@ export default {
       // Resolve risk tier per-request for CSP header emission
       const { tier: riskTier } = await resolveRequestTier(merchantId);
 
-      // Generate nonce BEFORE SSR so TanStack Router can inject it into <script> tags
-      const policy = resolvePolicy(riskTier);
-      if (policy.csp.nonce) {
-        const nonce = newNonce();
-        // Make nonce available to getRouter() during SSR via module-level store
-        setCurrentNonce(nonce);
-        request.headers.set("x-csp-nonce", nonce);
-      }
+      // Generate nonce BEFORE SSR so TanStack Router can inject it into <script> tags.
+      // Unconditional (live 2026-09-28): every document needs the nonce or
+      // hydration/bootstrap scripts are CSP-blocked. Clear first so a prior
+      // request's value can never leak into this document's scripts/header.
+      setCurrentNonce("");
+      const nonce = newNonce();
+      // Make nonce available to getRouter() during SSR via module-level store
+      setCurrentNonce(nonce);
+      request.headers.set("x-csp-nonce", nonce);
 
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
