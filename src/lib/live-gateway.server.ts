@@ -150,7 +150,9 @@ async function send(req: SessionRequest): Promise<unknown> {
     const res = await fetch(req.url, {
       method: req.method,
       headers: req.headers,
-      body: req.body,
+      // GET verification calls carry everything in the query string; fetch
+      // rejects a body on GET, so only POST carries one.
+      ...(req.method === "GET" ? {} : { body: req.body }),
       signal: controller.signal,
     });
     const text = await res.text();
@@ -240,16 +242,101 @@ export async function openLiveSession(
   );
 }
 
+/** An unverifiable `paid` claim: hold for ops review + provider retry, never settle. */
+function holdPending(
+  account: LiveAccount,
+  verdict: CallbackVerdict,
+): CallbackVerdict {
+  incr("framique_live_callback_total", {
+    provider: account.provider,
+    outcome: "unverified",
+  });
+  log("warn", "live_gateway.callback_unverified", {
+    intentId: verdict.intentId,
+    provider: account.provider,
+  });
+  return { ...verdict, status: "pending", reason: "provider_unverified" };
+}
+
 /**
  * SSLCommerz hands back a `val_id` the merchant must validate server-side; the
- * callback body alone is forgeable. bKash needs the same for tokenized execute.
- * PipraPay — a self-hosted community plugin — is verified the same way against
- * the merchant's own server, so a forged webhook can never settle an order.
+ * callback body alone is forgeable. aamarPay offers the same via its
+ * transaction-check API, and bKash needs an execute call to confirm (and
+ * capture) a tokenized payment. PipraPay — a self-hosted community plugin —
+ * is verified the same way against the merchant's own server, so a forged
+ * webhook can never settle an order.
+ *
+ * A `paid` verdict is only ever returned after the provider confirms it. Any
+ * verification failure — missing reference, provider denial, unreachable rail,
+ * malformed answer — holds the callback at `pending` for ops review and
+ * provider retry. Non-paid verdicts pass through untouched.
  */
-async function validateWithProvider(
+export async function validateWithProvider(
   account: LiveAccount,
   verdict: CallbackVerdict,
 ): Promise<CallbackVerdict> {
+  if (account.provider === "aamarpay") {
+    if (verdict.status !== "paid") return verdict;
+    if (!verdict.intentId) return { ...verdict, status: "pending" };
+    const { aamarpayVerifyRequest } = await import("./live-gateway");
+    try {
+      const body = (await send(
+        aamarpayVerifyRequest(
+          account.baseUrl,
+          account.credentials,
+          verdict.intentId,
+        ),
+      )) as Record<string, unknown>;
+      const checked = readCallback("aamarpay", {
+        ...body,
+        opt_a: verdict.intentId,
+      });
+      if (checked.status !== "paid") return holdPending(account, verdict);
+      return {
+        ...verdict,
+        status: "paid",
+        amountMinorInt: checked.amountMinorInt ?? verdict.amountMinorInt,
+      };
+    } catch {
+      return holdPending(account, verdict);
+    }
+  }
+  if (account.provider === "bkash") {
+    if (verdict.status !== "paid") return verdict;
+    if (!verdict.intentId || !verdict.providerReference)
+      return { ...verdict, status: "pending" };
+    const { bkashExecuteRequest } = await import("./live-gateway");
+    try {
+      const grant = (await send(
+        bkashGrantRequest(account.baseUrl, account.credentials),
+      )) as Record<string, unknown>;
+      const token =
+        typeof grant["id_token"] === "string" ? grant["id_token"] : null;
+      if (!token) return holdPending(account, verdict);
+      const body = (await send(
+        bkashExecuteRequest(
+          account.baseUrl,
+          token,
+          account.credentials,
+          verdict.providerReference,
+        ),
+      )) as Record<string, unknown>;
+      const checked = readCallback("bkash", {
+        ...body,
+        payerReference: verdict.intentId,
+      });
+      if (checked.status !== "paid") return holdPending(account, verdict);
+      return {
+        ...verdict,
+        status: "paid",
+        providerReference:
+          checked.providerReference ?? verdict.providerReference,
+        amountMinorInt: checked.amountMinorInt ?? verdict.amountMinorInt,
+      };
+    } catch {
+      return holdPending(account, verdict);
+    }
+  }
   if (account.provider === "piprapay") {
     if (!verdict.providerReference) return { ...verdict, status: "pending" };
     const { piprapayVerifyRequest } = await import("./live-gateway");
