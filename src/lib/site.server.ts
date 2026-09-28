@@ -1,19 +1,29 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 
-function publicClient() {
+export function publicClient() {
+  // Runtime env wins: deploy builds must not depend on VITE_ vars being
+  // baked at build time. Missing env fails loudly (pricing.server pattern),
+  // never as a client against a dead placeholder host.
   const url =
     process.env["SUPABASE_URL"] ||
     process.env["VITE_SUPABASE_URL"] ||
     (import.meta as unknown as { env?: Record<string, string> }).env
-      ?.VITE_SUPABASE_URL ||
-    "https://placeholder.supabase.co";
+      ?.VITE_SUPABASE_URL;
   const key =
     process.env["SUPABASE_PUBLISHABLE_KEY"] ||
     process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
     (import.meta as unknown as { env?: Record<string, string> }).env
-      ?.VITE_SUPABASE_PUBLISHABLE_KEY ||
-    "placeholder-key";
+      ?.VITE_SUPABASE_PUBLISHABLE_KEY;
+  if (!url || !key) {
+    const missing = [
+      ...(!url ? ["SUPABASE_URL"] : []),
+      ...(!key ? ["SUPABASE_PUBLISHABLE_KEY"] : []),
+    ];
+    throw new Error(
+      `Missing Supabase environment variable(s): ${missing.join(", ")}. Please set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY.`,
+    );
+  }
 
   return createClient<Database>(url, key, {
     auth: {

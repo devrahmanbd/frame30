@@ -144,7 +144,16 @@ const EMITTERS: Record<string, (value: PropValue | undefined) => Decl[]> = {
     ];
   },
   ratio: (v) => {
-    const r = oneOf(v, ["auto", "1-1", "4-3", "16-9"] as const);
+    // Both catalog spellings: slash (`16/9`, image/product_media selects) and
+    // dash (`16-9`, style-layer select), plus the portrait options and auto.
+    const r = oneOf(String(v ?? "").replace("/", "-"), [
+      "auto",
+      "1-1",
+      "4-3",
+      "16-9",
+      "4-5",
+      "3-4",
+    ] as const);
     if (r === null) return [];
     if (r === "auto") return [["aspect-ratio", "auto"]];
     return [["aspect-ratio", r.replace("-", " / ")]];
