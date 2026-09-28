@@ -1189,15 +1189,6 @@ GRANT EXECUTE ON FUNCTION public.purchase_order_receive(uuid, jsonb) TO authenti
 -- Phase 2.5 — Billing, Platform Charges & Gift Cards Routines
 -- =====================================================================
 
--- NOTE (T3 2026-09-28): this `migration/` snapshot is a generated pg_dump
--- export, NOT a live apply path — Supabase applies only
--- `supabase/migrations/` (see migration-linter + contract tests, which scan
--- that dir exclusively; no script applies `migration/*.sql`). The canonical
--- charge-key scoping fix lives in
--- `supabase/migrations/20260928000001_platform_charges_merchant_key_scope.sql`.
--- This copy is synced below to match its semantics (scoped lookup + scoped
--- uniqueness) so the snapshot never contradicts the live schema.
-
 -- Ensure platform_charges table exists
 create table if not exists public.platform_charges (
   id uuid primary key default gen_random_uuid(),
@@ -1208,7 +1199,7 @@ create table if not exists public.platform_charges (
   currency_code text not null default 'BDT',
   status text not null default 'created',
   attempt integer not null default 1,
-  idempotency_key text not null,
+  idempotency_key text not null unique,
   provider_reference text,
   return_nonce text not null default encode(gen_random_bytes(16), 'hex'),
   failure_code text,
@@ -1220,9 +1211,6 @@ create table if not exists public.platform_charges (
 );
 create index if not exists idx_platform_charges_invoice on public.platform_charges(invoice_id);
 create index if not exists idx_platform_charges_merchant on public.platform_charges(merchant_id);
--- T3: uniqueness is scoped per merchant (matches canonical migration above).
-create unique index if not exists platform_charges_merchant_key_uidx
-  on public.platform_charges (merchant_id, idempotency_key);
 
 -- 1. platform_charge_open
 create or replace function public.platform_charge_open(
@@ -1239,8 +1227,7 @@ declare
   v_attempt int;
   v_charge record;
 begin
-  -- T3: lookup scoped per merchant (canonical: 20260928000001).
-  select * into v_existing from public.platform_charges where merchant_id = _merchant_id and idempotency_key = _idempotency_key;
+  select * into v_existing from public.platform_charges where idempotency_key = _idempotency_key;
   if v_existing.id is not null then
     return to_jsonb(v_existing);
   end if;

@@ -38,6 +38,14 @@
 --   - `\d public.platform_charges` shows unique index
 --     `platform_charges_merchant_key_uidx (merchant_id, idempotency_key)`
 --     and no `platform_charges_idempotency_key_key` constraint.
+--
+-- Snapshot note: `migration/0010_phase2_all_rpc_routines.sql` is a generated
+-- pg_dump export that still contains the pre-fix shape (bare `UNIQUE
+-- (idempotency_key)`, unscoped lookup). It is intentionally left untouched:
+-- `scripts/db-migrate.mjs` records a sha256 per applied file and hard-errors
+-- on any post-apply edit, so the fix lives ONLY here (this file). Fresh
+-- environments applying `migration/` first then this file converge to the
+-- scoped shape via the guarded drop + scoped index below.
 -- =====================================================================
 
 -- 1. Drop the global unique constraint on the bare key (guarded).
