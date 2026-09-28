@@ -175,7 +175,10 @@ export async function createOrder(
     }
   }
 
-  const status = input.paymentMethod === "cod" ? "confirmed" : "paid";
+  // T1 (audit fix): online orders stay unpaid until a verified settlement
+  // moves them to `paid` (applySignedReturn). COD keeps its confirmed path.
+  const status =
+    input.paymentMethod === "cod" ? "confirmed" : "payment_pending";
   // The orders table defaults access_token to '' — generate it here so the
   // receipt page (which requires ≥16 chars) always has a token to load.
   const accessToken = [...crypto.getRandomValues(new Uint8Array(16))]
@@ -244,19 +247,22 @@ export async function createOrder(
   // Holds become the single source of the decrement — never a read-modify-write.
   await consumeStock(checkoutToken, order.id);
 
-  await supabaseAdmin.from("payments").insert({
-    merchant_id: merchant.id,
-    order_id: order.id,
-    payment_provider: input.paymentMethod,
-    payment_status: input.paymentMethod === "cod" ? "pending" : "paid",
-    currency_code: totals.currency,
-    amount_minor_int: totals.totalMinor,
-    provider_reference:
-      input.paymentMethod === "cod"
-        ? null
-        : `MOCK-${input.paymentMethod.toUpperCase()}-${order.order_number}`,
-    idempotency_key: input.idempotencyKey,
-  });
+  // T1: no payment row exists before settlement for online rails. The
+  // settlement path (applySignedReturn) inserts the single paid row; a
+  // premature MOCK-reference row here would also shadow it on the shared
+  // idempotency key. COD keeps its pending row (reconciled at the door).
+  if (input.paymentMethod === "cod") {
+    await supabaseAdmin.from("payments").insert({
+      merchant_id: merchant.id,
+      order_id: order.id,
+      payment_provider: input.paymentMethod,
+      payment_status: "pending",
+      currency_code: totals.currency,
+      amount_minor_int: totals.totalMinor,
+      provider_reference: null,
+      idempotency_key: input.idempotencyKey,
+    });
+  }
 
   for (const applied of totals.coupons) {
     const { error: redeemError } = await supabaseAdmin
@@ -297,11 +303,13 @@ export async function createOrder(
       order_id: order.id,
       merchant_id: merchant.id,
       event_type:
-        input.paymentMethod === "cod" ? "order.cod_confirmed" : "order.paid",
+        input.paymentMethod === "cod"
+          ? "order.cod_confirmed"
+          : "order.payment_pending",
       note:
         input.paymentMethod === "cod"
           ? "Cash on delivery confirmed"
-          : "Mobile payment captured (sandbox)",
+          : "Awaiting online payment",
     },
   ]);
 
@@ -326,28 +334,33 @@ export async function createOrder(
 
   // Last funnel step. Recorded here, server-side, so the paid count and its
   // value come from the order we just wrote rather than from the browser.
+  // T1: only COD (confirmed, first-class tender) reports paid at placement;
+  // online rails report paid from the verified settlement path instead, so an
+  // unpaid order never counts as paid.
   // Failure is swallowed: telemetry may never fail a shopper's order.
   try {
-    const { ingestBeacons } = await import("./analytics-warehouse.server");
-    const { requestGeo } = await import("./geo.server");
-    const { getRequest } = await import("@tanstack/react-start/server");
-    const req = getRequest();
-    const geo = req ? await requestGeo(req) : {};
-    await ingestBeacons(
-      supabaseAdmin as never,
-      merchant.id,
-      [
-        {
-          entity: "order",
-          action: "paid",
-          valueMinorInt: totals.totalMinor,
-          currencyCode: totals.currency,
-          dedupeKey: `order:paid:${order.id}`,
-          payload: { method: input.paymentMethod },
-        },
-      ],
-      geo,
-    );
+    if (input.paymentMethod === "cod") {
+      const { ingestBeacons } = await import("./analytics-warehouse.server");
+      const { requestGeo } = await import("./geo.server");
+      const { getRequest } = await import("@tanstack/react-start/server");
+      const req = getRequest();
+      const geo = req ? await requestGeo(req) : {};
+      await ingestBeacons(
+        supabaseAdmin as never,
+        merchant.id,
+        [
+          {
+            entity: "order",
+            action: "paid",
+            valueMinorInt: totals.totalMinor,
+            currencyCode: totals.currency,
+            dedupeKey: `order:paid:${order.id}`,
+            payload: { method: input.paymentMethod },
+          },
+        ],
+        geo,
+      );
+    }
   } catch {
     /* analytics is best effort */
   }

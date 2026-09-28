@@ -374,6 +374,29 @@ export async function applySignedReturn(
           .update({ status: "paid" })
           .eq("id", intent.order_id)
           .in("status", ["pending", "payment_pending", "confirmed"]);
+        // T1: the funnel's paid signal fires at verified capture, never at
+        // placement. Same dedupe key the placement path used, best effort.
+        try {
+          const { ingestBeacons } =
+            await import("./analytics-warehouse.server");
+          await ingestBeacons(
+            db as never,
+            intent.merchant_id,
+            [
+              {
+                entity: "order",
+                action: "paid",
+                valueMinorInt: Number(intent.amount_minor_int),
+                currencyCode: intent.currency_code,
+                dedupeKey: `order:paid:${intent.order_id}`,
+                payload: { method: intent.method },
+              },
+            ],
+            {},
+          );
+        } catch {
+          /* analytics is best effort */
+        }
       }
 
       const { data: order } = await db

@@ -222,7 +222,12 @@ export function nextAction(order: {
   status: string;
   payment_method: string;
 }): NextAction {
-  if (order.status === "payment_pending")
+  // T1: an online order waits in payment_pending (never paid at placement),
+  // so a pending non-COD order still needs its payment completed.
+  if (
+    order.status === "payment_pending" ||
+    (order.status === "pending" && order.payment_method !== "cod")
+  )
     return {
       code: "pay",
       en: "Complete your payment",
