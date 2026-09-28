@@ -810,6 +810,7 @@ alongside the theme, not after:
 | `src/lib/studio/catalog.test.ts:837`    | Studio twin parity — every catalogue entry stays editable in studio |
 | `src/lib/theme-preview-nav.test.ts`     | Preview engine resolves theme sources and blocks account paths      |
 | `src/lib/theme-preview.test.ts`         | Preview route renders the resolved preset                           |
+| `src/lib/themes/isolation.test.ts`     | No theme imports another theme; shared chrome holds no theme names  |
 
 Skin defaults must survive both the in-memory builders and a
 persist/parse round trip (`parseSection` drops undeclared props — a new
@@ -837,3 +838,29 @@ table below is the only mapping this guide maintains:
 Framique has no PHP layer, no `functions.php`, and no child-theme
 mechanism: merchant edits live in drafts and versions, and theme upgrades
 arrive through the registry, not file overrides.
+
+## 13. Theme isolation (the Elementor rule — read before touching widgets)
+
+A theme **calls** engine widgets; it never **forks** them. Concretely:
+
+1. **One renderer per widget key.** Generic keys (`product_rail`,
+   `footer_sitemap`, `store_locator`, …) have exactly one renderer in the
+   shared packs. A theme that wants a different look registers a **skin**
+   (`WIDGET_SKINS` + `skins.css` + theme defaults, §4) or ships a **new
+   widget key** — it must never override a generic key in the global merge,
+   because last-write-wins then restyles every other theme.
+2. **No brand content in shared renderers.** Renderers read props, tokens
+   and demo data. A theme name, slogan, copyright line or flagship list
+   hardcoded in a shared renderer prints on every theme that uses the
+   section (incident 2026-09-27: Songoskriti's footer statement rendered on
+   Somvabona's page). Brand copy lives in theme builders and section props.
+3. **No cross-theme imports.** Nothing under `src/lib/themes/<A>/` imports
+   from `src/lib/themes/<B>/`; shared chrome holds no theme-name branches
+   (use the per-key config port pattern). Enforced by
+   `src/lib/themes/isolation.test.ts` and the `no-restricted-imports` lint
+   layer — both fail fast, see §11.
+4. **Own data.** Every theme ships its own demo catalog. Aliasing another
+   theme's catalog makes two themes sell the same products.
+
+Violating any of the four is a catalogue rejection for new themes and a
+must-fix for shipped ones.

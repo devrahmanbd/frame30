@@ -78,6 +78,19 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   build → rsync `.output` → restart → live verify). Never build in the
   live tree, never `git stash` a shared clone.
 
+### Fixed
+
+- **Theme-independence violation (our mistake, indexed so it never repeats):**
+  Songoskriti's renderers overrode generic widget keys globally
+  (`SONGOSKRITI_WIDGETS` spread after `CHROME_WIDGETS` in
+  `WIDGET_COMPONENTS`), and `SongoskritiFooterSitemap` rendered hardcoded
+  Songoskriti brand content (`STATEMENT`, `© 2026 Songoskriti`) on every
+  theme's sections — Somvabona's live page showed Songoskriti's footer.
+  Rule cut in `docs/themes/creation.md` §13 (the Elementor rule): one
+  renderer per key, brand copy in builders/props only, no cross-theme
+  imports, own demo catalog per theme. Tracked for remediation; guard tests
+  + lint layer to enforce.
+
 ### Verification (live, https://framique.qubickle.com)
 
 - `/store/<slug>` (+ deep paths, fake slugs, case variants) → 404.
