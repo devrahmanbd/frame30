@@ -23,7 +23,7 @@ const recorder = metricRecorder();
 rec.holder = recorder;
 
 const priceCartMock = vi.hoisted(() => vi.fn());
-const ingestBeaconsMock = vi.hoisted(() => vi.fn(async () => ({})));
+const ingestBeaconsMock = vi.hoisted(() => vi.fn(async (..._args: unknown[]) => ({})));
 const listInstalledPluginsMock = vi.hoisted(() => vi.fn(async () => []));
 const runHookMock = vi.hoisted(() => vi.fn(async () => []));
 const adminHolder = vi.hoisted(() => ({ db: null as unknown }));
@@ -177,7 +177,7 @@ describe("T1 placement: online orders stay unpaid until settlement", () => {
     expect(events).toContain("order.placed");
     expect(events).not.toContain("order.paid");
     const paidBeacons = ingestBeaconsMock.mock.calls.filter((call) =>
-      (call[2] as { action: string }[]).some((b) => b.action === "paid"),
+      (call[2] as unknown as { action: string }[]).some((b) => b.action === "paid"),
     );
     expect(paidBeacons).toHaveLength(0);
   });
@@ -302,7 +302,7 @@ describe("T1 settlement: verified return settles, forged return is denied", () =
     expect(ledger[0].source).toBe("order.captured");
 
     const paidBeacons = ingestBeaconsMock.mock.calls.filter((call) =>
-      (call[2] as { action: string }[]).some((b) => b.action === "paid"),
+      (call[2] as unknown as { action: string }[]).some((b) => b.action === "paid"),
     );
     expect(paidBeacons).toHaveLength(1);
     expect(paidBeacons[0][2]).toMatchObject([{ dedupeKey: "order:paid:o1" }]);
