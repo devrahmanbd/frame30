@@ -23,6 +23,7 @@ const { installCatalogTheme, installUploadedTheme } =
 type CatalogResult = Awaited<ReturnType<typeof installCatalogTheme>>;
 type UploadResult = Awaited<ReturnType<typeof installUploadedTheme>>;
 import { MAX_THEME_UPLOAD_BYTES } from "./themes/appearance";
+import { buildTestZip } from "./__fixtures__/test-zip";
 
 const MERCHANT = "22222222-2222-2222-2222-222222222222";
 
@@ -121,8 +122,17 @@ describe("installCatalogTheme completeness", () => {
  * (row + version + draft + ledger link + audit). [A] burden applies:
  * deny + replay + audit, not just the happy path.
  */
-function zipB64(bytes: number[] = [0x50, 0x4b, 0x03, 0x04, 0x0a, 0x00]) {
-  return Buffer.from(bytes).toString("base64");
+function zipB64(manifestName = "my-shop") {
+  // QUBICKLE H6: uploads must carry a parseable central directory + root
+  // manifest — bare magic bytes are no longer a valid archive.
+  return Buffer.from(
+    buildTestZip([
+      {
+        name: "theme.json",
+        content: JSON.stringify({ name: manifestName, version: "1.0.0" }),
+      },
+    ]),
+  ).toString("base64");
 }
 
 function uploadDb() {
@@ -223,6 +233,22 @@ describe("installUploadedTheme (upload server path)", () => {
     expect(db.rows("store_themes")).toHaveLength(0);
     expect(db.rows("marketplace_installs")).toHaveLength(0);
     expect(db.rows("theme_audit")).toHaveLength(0);
+  });
+
+  it("deny: rejects magic-only bytes without a central directory", async () => {
+    const db = uploadDb();
+    const bare = Buffer.from([0x50, 0x4b, 0x03, 0x04, 0x0a, 0x00]).toString(
+      "base64",
+    );
+    const err = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      { fileName: "bare.zip", fileBase64: bare, idempotencyKey: "k-x" },
+      "user-9",
+    ).catch((e) => e);
+    expect(err?.code).toBe("theme.upload_corrupt");
+    expect(db.rows("store_themes")).toHaveLength(0);
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
   });
 
   it("deny: rejects oversized archives without writing anything", async () => {

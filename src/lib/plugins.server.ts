@@ -43,7 +43,11 @@ export async function listInstalledPlugins(
     .select(COLUMNS)
     .eq("merchant_id", merchantId);
 
-  if (error || !data) return [];
+  // QUBICKLE M2 (Rule 4): a failed plugin read throws — callers that need a
+  // storefront-safe fallback (listStorefrontPlugins) catch explicitly. A
+  // silent [] here would masquerade as "no plugins installed".
+  if (error) throw error;
+  if (!data) return [];
   const out: InstalledPlugin[] = [];
   for (const row of (data as any[]) ?? []) {
     const verdict = parseManifest(row.manifest);

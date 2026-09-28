@@ -9,6 +9,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { inflateRawSync } from "node:zlib";
 import {
   listRegistry,
   installRegistryTheme,
@@ -36,10 +37,85 @@ export class ThemeDeskError extends Error {
   }
 }
 
+/**
+ * QUBICKLE C2 (Rule 15): compensating deletes are tenant-scoped
+ * (merchant_id predicate, never id-alone) and the affected-row count is
+ * asserted. A compensation that removes zero rows — the link already gone,
+ * or an id that is not ours — emits `theme.compensation_missed` instead of
+ * silently succeeding. Always throws the original error.
+ */
+async function compensateThemeDelete(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+  original: unknown,
+): Promise<never> {
+  const { data, error } = await db
+    .from("store_themes")
+    .delete()
+    .eq("merchant_id", merchantId)
+    .eq("id", themeId)
+    .select("id");
+  if (error || !data || (data as unknown[]).length === 0) {
+    try {
+      const { incr, log } = await import("../observability.server");
+      incr("framique_theme_compensation_total", { outcome: "missed" });
+      log("warn", "theme.compensation_missed", { merchantId, themeId });
+    } catch {
+      // Observability must never break compensation.
+    }
+  }
+  throw original;
+}
+
+function isDuplicateKey(error: unknown): boolean {
+  const msg = (error as { message?: string } | null)?.message ?? "";
+  return msg.includes("duplicate key");
+}
+
+/**
+ * QUBICKLE H1/H2 (Rule 8): key-driven replay for catalog installs. The
+ * ledger idempotency key (`catalog:<merchant>:<key>`) is the replay
+ * identity — not the slug. Returns the linked theme when the key already
+ * committed, throws `market_install_conflict` when the key committed but
+ * its theme row is missing (crash between the two writes, or a racing
+ * double-click still in flight), and returns null when the key is fresh.
+ */
+async function resolveCatalogReplay(
+  db: Client,
+  merchantId: string,
+  ledgerKey: string,
+): Promise<{ id: string; alreadyInstalled: true } | null> {
+  const { data: keyed } = await db
+    .from("marketplace_installs")
+    .select("id, status")
+    .eq("merchant_id", merchantId)
+    .eq("idempotency_key", ledgerKey)
+    .maybeSingle();
+  if (!keyed) return null;
+  const hit = keyed as { id: string };
+  const { data: linked } = await db
+    .from("store_themes")
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("source_install_id", hit.id)
+    .maybeSingle();
+  if (linked)
+    return { id: (linked as { id: string }).id, alreadyInstalled: true };
+  throw new ThemeDeskError(
+    "market_install_conflict",
+    "That install is already recorded but its theme row is missing. Wait a moment and try again.",
+  );
+}
+
 type Row = {
   id: string;
   name: string;
   is_active: boolean;
+  /** Ledger linkage (the delete-cascade key). QUBICKLE C1: this column MUST
+   * stay in SELECT — without it the link is invisible and deletes fall back
+   * to a slug-sweep that retires unrelated installs sharing the slug. */
+  source_install_id: string | null;
   source_listing_slug: string | null;
   source_version: string | null;
   screenshot_url: string | null;
@@ -55,7 +131,7 @@ type Row = {
 };
 
 const SELECT =
-  "id, name, is_active, source_listing_slug, source_version, screenshot_url, author, description, tags, auto_update, favourite, published_version_id, installed_at";
+  "id, name, is_active, source_install_id, source_listing_slug, source_version, screenshot_url, author, description, tags, auto_update, favourite, published_version_id, installed_at";
 
 function toInstalled(row: Row, latest: Map<string, string>): InstalledTheme {
   const key = row.source_listing_slug;
@@ -100,7 +176,10 @@ async function favouriteKeys(
     .from("theme_catalog_favourites")
     .select("theme_key")
     .eq("merchant_id", merchantId);
-  if (error) return new Set();
+  // QUBICKLE M2 (Rule 4): a failed favourites read must throw, never masquerade
+  // as "no favourites" — an empty set here would silently clear the UI's
+  // Favourites tab and hide the outage.
+  if (error) throw error;
   return new Set((data ?? []).map((row) => row.theme_key));
 }
 
@@ -189,6 +268,12 @@ export async function installCatalogTheme(
   );
   if (existing) return { id: existing.id, alreadyInstalled: true };
 
+  // Key-first replay: a committed ledger key with no linked theme refuses
+  // (orphaned first attempt) instead of stacking a duplicate pair.
+  const ledgerKey = `catalog:${merchantId}:${key}`;
+  const keyed = await resolveCatalogReplay(db, merchantId, ledgerKey);
+  if (keyed) return keyed;
+
   const pkg = registryPackage(key);
   const meta = catalogMeta(key);
   const { data, error } = await db
@@ -232,10 +317,12 @@ export async function installCatalogTheme(
     .select("id")
     .single();
   if (versionError || !version) {
-    await db.from("store_themes").delete().eq("id", themeId);
-    throw (
+    await compensateThemeDelete(
+      db,
+      merchantId,
+      themeId,
       versionError ??
-      new ThemeDeskError("theme.install_failed", "Install failed.")
+        new ThemeDeskError("theme.install_failed", "Install failed."),
     );
   }
 
@@ -248,8 +335,7 @@ export async function installCatalogTheme(
     updated_by: actorId ?? null,
   });
   if (draftError) {
-    await db.from("store_themes").delete().eq("id", themeId);
-    throw draftError;
+    await compensateThemeDelete(db, merchantId, themeId, draftError);
   }
 
   const { data: ledger, error: ledgerError } = await db
@@ -271,10 +357,28 @@ export async function installCatalogTheme(
     .select("id")
     .single();
   if (ledgerError || !ledger) {
-    await db.from("store_themes").delete().eq("id", themeId);
-    throw (
+    if (isDuplicateKey(ledgerError)) {
+      // A racing double-click committed the ledger row first: drop OUR
+      // half-built theme row (tenant-scoped), then resolve the winner's
+      // replay — or throw market_install_conflict while it is in flight.
+      await db
+        .from("store_themes")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .eq("id", themeId);
+      const replayed = await resolveCatalogReplay(db, merchantId, ledgerKey);
+      if (replayed) return replayed;
+      throw (
+        ledgerError ??
+        new ThemeDeskError("theme.install_failed", "Install failed.")
+      );
+    }
+    await compensateThemeDelete(
+      db,
+      merchantId,
+      themeId,
       ledgerError ??
-      new ThemeDeskError("theme.install_failed", "Install failed.")
+        new ThemeDeskError("theme.install_failed", "Install failed."),
     );
   }
 
@@ -346,6 +450,190 @@ function decodeUploadBytes(fileBase64: string): Buffer {
   return bytes;
 }
 
+/**
+ * QUBICKLE H6 (Rule 16): server-side archive validation. Magic bytes only
+ * prove the first four bytes are `PK..` — a hostile or corrupt archive sails
+ * through. The central directory is parsed and every entry validated before
+ * any row is written; nothing is extracted except the small root manifest,
+ * so a bomb has no room to detonate. No dependency — the parser reads the
+ * EOCD + central directory by hand (local headers only at manifest
+ * extraction), which also keeps hostile archives out of any third-party
+ * extractor's edge cases.
+ */
+export const MAX_THEME_UPLOAD_ENTRIES = 1000;
+export const MAX_THEME_UPLOAD_INFLATED_BYTES = 100 * 1024 * 1024;
+export const MAX_THEME_UPLOAD_ENTRY_BYTES = 50 * 1024 * 1024;
+export const MAX_THEME_UPLOAD_MANIFEST_BYTES = 1024 * 1024;
+
+type ZipEntry = {
+  name: string;
+  method: number;
+  compSize: number;
+  uncompSize: number;
+  localHeaderOffset: number;
+};
+
+function corruptUpload(message: string): ThemeDeskError {
+  return new ThemeDeskError("theme.upload_corrupt", message);
+}
+
+function bombUpload(message: string): ThemeDeskError {
+  return new ThemeDeskError("theme.upload_bomb", message);
+}
+
+function assertSafeEntryPath(name: string): void {
+  const unsafe =
+    !name ||
+    name.startsWith("/") ||
+    name.includes("\\") ||
+    name.split("/").some((segment) => segment === ".." || segment === "");
+  if (unsafe) {
+    throw new ThemeDeskError(
+      "theme.upload_path",
+      `Unsafe entry path in theme package: ${name.slice(0, 80)}`,
+    );
+  }
+}
+
+function parseZipCentralDirectory(bytes: Uint8Array): ZipEntry[] {
+  if (bytes.length < 22)
+    throw corruptUpload("Archive is too small to be a zip file.");
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  // The EOCD record may sit up to 64KB of comment + 22 bytes from the end.
+  let eocd = -1;
+  const floor = Math.max(0, bytes.length - 22 - 65557);
+  for (let i = bytes.length - 22; i >= floor; i--) {
+    if (view.getUint32(i, true) === 0x06054b50) {
+      eocd = i;
+      break;
+    }
+  }
+  if (eocd < 0)
+    throw corruptUpload("End-of-central-directory record not found.");
+  const count = view.getUint16(eocd + 10, true);
+  const centralSize = view.getUint32(eocd + 12, true);
+  const centralOffset = view.getUint32(eocd + 16, true);
+  if (count > MAX_THEME_UPLOAD_ENTRIES)
+    throw bombUpload(
+      `Theme package lists ${count} entries (max ${MAX_THEME_UPLOAD_ENTRIES}).`,
+    );
+  if (centralOffset + centralSize > bytes.length)
+    throw corruptUpload("Central directory runs past the end of the file.");
+  const entries: ZipEntry[] = [];
+  let off = centralOffset;
+  let totalInflated = 0;
+  for (let n = 0; n < count; n++) {
+    if (off + 46 > bytes.length)
+      throw corruptUpload("Central directory entry is truncated.");
+    if (view.getUint32(off, true) !== 0x02014b50)
+      throw corruptUpload("Central directory entry signature mismatch.");
+    const method = view.getUint16(off + 10, true);
+    const compSize = view.getUint32(off + 20, true);
+    const uncompSize = view.getUint32(off + 24, true);
+    const nameLen = view.getUint16(off + 28, true);
+    const extraLen = view.getUint16(off + 30, true);
+    const commentLen = view.getUint16(off + 32, true);
+    const localHeaderOffset = view.getUint32(off + 42, true);
+    if (off + 46 + nameLen > bytes.length)
+      throw corruptUpload("Central directory entry name is truncated.");
+    const name = new TextDecoder("utf-8", { fatal: false }).decode(
+      bytes.subarray(off + 46, off + 46 + nameLen),
+    );
+    // Directories (trailing slash) carry the trailing empty segment; strip
+    // it before the traversal check, then require the rest to be safe.
+    assertSafeEntryPath(name.endsWith("/") ? name.slice(0, -1) : name);
+    if (method !== 0 && method !== 8)
+      throw new ThemeDeskError(
+        "theme.upload_method",
+        "Theme package uses an unsupported compression method.",
+      );
+    if (uncompSize > MAX_THEME_UPLOAD_ENTRY_BYTES)
+      throw bombUpload(
+        `Theme package entry exceeds ${MAX_THEME_UPLOAD_ENTRY_BYTES / (1024 * 1024)} MB inflated.`,
+      );
+    totalInflated += uncompSize;
+    if (totalInflated > MAX_THEME_UPLOAD_INFLATED_BYTES)
+      throw bombUpload(
+        `Theme package inflates past ${MAX_THEME_UPLOAD_INFLATED_BYTES / (1024 * 1024)} MB.`,
+      );
+    entries.push({ name, method, compSize, uncompSize, localHeaderOffset });
+    off += 46 + nameLen + extraLen + commentLen;
+  }
+  return entries;
+}
+
+/**
+ * Extract-or-reject: the archive must carry a root `theme.json` (or legacy
+ * `manifest.json`) that parses as a JSON object with a non-empty `name`.
+ * Only this one small file is ever inflated — never the whole archive.
+ */
+function extractUploadManifest(
+  bytes: Uint8Array,
+  entries: ZipEntry[],
+): { name: string; version: string } {
+  const manifest =
+    entries.find((e) => e.name === "theme.json") ??
+    entries.find((e) => e.name === "manifest.json");
+  if (!manifest)
+    throw new ThemeDeskError(
+      "theme.upload_manifest",
+      "Theme package must contain a root theme.json manifest.",
+    );
+  if (
+    manifest.compSize > MAX_THEME_UPLOAD_MANIFEST_BYTES ||
+    manifest.uncompSize > MAX_THEME_UPLOAD_MANIFEST_BYTES
+  )
+    throw bombUpload("Theme manifest exceeds the 1 MB limit.");
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const lh = manifest.localHeaderOffset;
+  if (lh + 30 > bytes.length || view.getUint32(lh, true) !== 0x04034b50)
+    throw corruptUpload("Manifest local header is missing or corrupt.");
+  if (view.getUint16(lh + 8, true) !== manifest.method)
+    throw corruptUpload("Manifest local header disagrees with the directory.");
+  const dataOff =
+    lh + 30 + view.getUint16(lh + 26, true) + view.getUint16(lh + 28, true);
+  if (dataOff + manifest.compSize > bytes.length)
+    throw corruptUpload("Manifest data runs past the end of the file.");
+  const raw = bytes.subarray(dataOff, dataOff + manifest.compSize);
+  let inflated: Uint8Array;
+  try {
+    inflated = manifest.method === 8 ? inflateRawSync(raw) : raw;
+  } catch {
+    throw corruptUpload("Manifest entry could not be decompressed.");
+  }
+  if (inflated.length > MAX_THEME_UPLOAD_MANIFEST_BYTES)
+    throw bombUpload("Theme manifest exceeds the 1 MB limit.");
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(new TextDecoder().decode(inflated));
+  } catch {
+    throw new ThemeDeskError(
+      "theme.upload_manifest",
+      "Theme manifest is not valid JSON.",
+    );
+  }
+  const name =
+    parsed && typeof parsed === "object"
+      ? (parsed as { name?: unknown }).name
+      : undefined;
+  if (typeof name !== "string" || !name.trim())
+    throw new ThemeDeskError(
+      "theme.upload_manifest",
+      "Theme manifest must be a JSON object with a name.",
+    );
+  const version =
+    parsed && typeof parsed === "object"
+      ? (parsed as { version?: unknown }).version
+      : undefined;
+  return {
+    name: name.trim().slice(0, 80),
+    version:
+      typeof version === "string" && version.trim()
+        ? version.trim().slice(0, 20)
+        : "1.0.0",
+  };
+}
+
 export async function installUploadedTheme(
   db: Client,
   merchantId: string,
@@ -378,6 +666,11 @@ export async function installUploadedTheme(
       "That file is not a valid zip archive.",
     );
   }
+  // QUBICKLE H6: parse the central directory and extract the manifest BEFORE
+  // the replay lookup or any write — a reused key must never smuggle hostile
+  // bytes past the archive checks, and hostile bytes must never reach a row.
+  const entries = parseZipCentralDirectory(bytes);
+  const manifest = extractUploadManifest(bytes, entries);
 
   const { data: replayed } = await db
     .from("marketplace_installs")
@@ -403,8 +696,15 @@ export async function installUploadedTheme(
     .replace(/\.zip$/iu, "")
     .trim()
     .slice(0, 80);
-  const name = base || "Uploaded theme";
-  const listingSlug = `upload:${slugifyUploadName(base || "theme")}`;
+  // Identity comes from the extracted manifest; the slug carries a random
+  // suffix so two uploads of the same file never share ledger identity
+  // (QUBICKLE H6/M1: upload slugs are unique per install, never per-slug).
+  // Templates/tokens still seed from the default shell — the archive's own
+  // templates stay follow-up work paired with the media-library packaging
+  // lane — but the row installed here is manifest-bound and inert until
+  // Activate flips it.
+  const name = manifest.name || base || "Uploaded theme";
+  const listingSlug = `upload:${slugifyUploadName(base || manifest.name || "theme")}-${crypto.randomUUID().replace(/-/g, "").slice(0, 8)}`;
   // Default shell until the packaging lane extracts the archive's own
   // manifest: an inert, valid theme the merchant customizes after install.
   const pkg = registryPackage("__upload__");
@@ -414,7 +714,7 @@ export async function installUploadedTheme(
       merchant_id: merchantId,
       name,
       source_listing_slug: null,
-      source_version: "1.0.0",
+      source_version: manifest.version,
       is_active: false,
       installed_at: new Date().toISOString(),
     })
@@ -442,10 +742,12 @@ export async function installUploadedTheme(
     .select("id")
     .single();
   if (versionError || !version) {
-    await db.from("store_themes").delete().eq("id", themeId);
-    throw (
+    await compensateThemeDelete(
+      db,
+      merchantId,
+      themeId,
       versionError ??
-      new ThemeDeskError("theme.install_failed", "Install failed.")
+        new ThemeDeskError("theme.install_failed", "Install failed."),
     );
   }
 
@@ -458,8 +760,7 @@ export async function installUploadedTheme(
     updated_by: actorId ?? null,
   });
   if (draftError) {
-    await db.from("store_themes").delete().eq("id", themeId);
-    throw draftError;
+    await compensateThemeDelete(db, merchantId, themeId, draftError);
   }
 
   const { data: ledger, error: ledgerError } = await db
@@ -471,7 +772,7 @@ export async function installUploadedTheme(
       widget_id: null,
       listing_slug: listingSlug,
       listing_name: name,
-      version: "1.0.0",
+      version: manifest.version,
       price_minor_int: 0,
       currency_code: "BDT",
       is_trial: false,
@@ -481,10 +782,12 @@ export async function installUploadedTheme(
     .select("id")
     .single();
   if (ledgerError || !ledger) {
-    await db.from("store_themes").delete().eq("id", themeId);
-    throw (
+    await compensateThemeDelete(
+      db,
+      merchantId,
+      themeId,
       ledgerError ??
-      new ThemeDeskError("theme.install_failed", "Install failed.")
+        new ThemeDeskError("theme.install_failed", "Install failed."),
     );
   }
 
@@ -723,22 +1026,27 @@ export async function deleteTheme(
     .eq("merchant_id", merchantId)
     .eq("theme_id", themeId);
 
-  // Update marketplace ledger row to terminal status
-  const sourceInstallId = (row as { source_install_id?: string | null })
-    .source_install_id;
-  if (sourceInstallId) {
-    await db
+  // Update marketplace ledger row to terminal status.
+  //
+  // QUBICKLE C1 (Rule 15): retire by the install-id link ONLY. A
+  // slug-sweep (`listing_slug = row.slug`) retires EVERY install sharing the
+  // slug — deleting a spare copy would silently kill the live copy's ledger
+  // row. When the row carries marketplace identity (a slug) but no link, fail
+  // closed with theme.unlinked instead of guessing: retiring the wrong row
+  // is worse than refusing. Pure builder rows (no slug, no link) have no
+  // ledger identity to retire, so they delete without touching the ledger.
+  if (row.source_install_id) {
+    const { error: ledgerError } = await db
       .from("marketplace_installs")
       .update({ status: "removed" })
       .eq("merchant_id", merchantId)
-      .eq("id", sourceInstallId);
+      .eq("id", row.source_install_id);
+    if (ledgerError) throw ledgerError;
   } else if (row.source_listing_slug) {
-    await db
-      .from("marketplace_installs")
-      .update({ status: "removed" })
-      .eq("merchant_id", merchantId)
-      .eq("listing_slug", row.source_listing_slug)
-      .eq("kind", "theme");
+    throw new ThemeDeskError(
+      "theme.unlinked",
+      "That theme is not linked to a marketplace install and cannot be retired safely.",
+    );
   }
 
   const { error } = await db
