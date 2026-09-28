@@ -16,6 +16,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   newSection,
+  catalogEntry,
   type PropValue,
   type Section,
   type SectionType,
@@ -355,5 +356,41 @@ describe("Task 2 cross-theme live-DOM — somvabona carries zero songoskriti cop
     const bnHtml = render(Cmp, section, "bn");
     expectNoCrossBrand(bnHtml);
     expect(bnHtml).toContain("ফ্ল্যাগশিপ");
+  });
+});
+
+describe("Task 2 studio catalog — de-brand props are authorable", () => {
+  const FOOTER_ZONE_KEYS = [
+    "statementHeading",
+    "statementBody",
+    "storyHref",
+    "storyLabel",
+    "newsletterHeading",
+    "newsletterButton",
+    "newsletterConsent",
+    "brandName",
+    "paymentsMarks",
+    "paymentsHeading",
+  ];
+
+  it("footer_sitemap declares the brand-zone fields", () => {
+    const entry = catalogEntry("footer_sitemap");
+    expect(entry).toBeDefined();
+    const keys = new Set((entry?.fields ?? []).map((f) => f.key));
+    for (const key of FOOTER_ZONE_KEYS) {
+      expect(keys.has(key), `footer_sitemap missing field ${key}`).toBe(true);
+    }
+    for (const key of FOOTER_ZONE_KEYS) {
+      expect(entry?.defaults).toHaveProperty(key);
+    }
+  });
+
+  it("ugc_gallery declares the handle fields", () => {
+    const entry = catalogEntry("ugc_gallery");
+    expect(entry).toBeDefined();
+    const keys = new Set((entry?.fields ?? []).map((f) => f.key));
+    for (const key of ["handleLabel", "handleHref"]) {
+      expect(keys.has(key), `ugc_gallery missing field ${key}`).toBe(true);
+    }
   });
 });

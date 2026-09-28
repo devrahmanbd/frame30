@@ -1813,6 +1813,18 @@ const BASE_CATALOG: CatalogEntry[] = [
       c3Links: "",
       c4Title: "",
       c4Links: "",
+      // De-brand brand zones (songoskriti.tsx SongoskritiFooterSitemap):
+      // empty by default so a bare section renders generic chrome only.
+      statementHeading: "",
+      statementBody: "",
+      storyHref: "",
+      storyLabel: "",
+      newsletterHeading: "",
+      newsletterButton: "",
+      newsletterConsent: "",
+      brandName: "",
+      paymentsMarks: "",
+      paymentsHeading: "",
     },
     fields: [
       text("c1Title", "Column 1 title", 40),
@@ -1823,6 +1835,16 @@ const BASE_CATALOG: CatalogEntry[] = [
       area("c3Links", "Column 3 links (Label|/href, …)", 600),
       text("c4Title", "Column 4 title", 40),
       area("c4Links", "Column 4 links (Label|/href, …)", 600),
+      text("statementHeading", "Statement heading", 80),
+      area("statementBody", "Statement body", 300),
+      url("storyHref", "Story link"),
+      text("storyLabel", "Story link label", 40),
+      text("newsletterHeading", "Newsletter heading", 80),
+      text("newsletterButton", "Newsletter button label", 40),
+      area("newsletterConsent", "Newsletter consent line", 200),
+      text("brandName", "Brand name", 60),
+      area("paymentsMarks", "Payment marks (comma separated)", 300),
+      text("paymentsHeading", "Payment heading", 40),
     ],
   },
   {
@@ -2734,6 +2756,10 @@ const BASE_CATALOG: CatalogEntry[] = [
       limit: 6,
       collection: "",
       note: "",
+      // De-brand handle (songoskriti.tsx SongoskritiUgcGallery): empty by
+      // default so a bare section falls back to the generic handle.
+      handleLabel: "",
+      handleHref: "",
     },
     fields: [
       text("heading", "Heading", 80),
@@ -2742,6 +2768,8 @@ const BASE_CATALOG: CatalogEntry[] = [
       num("limit", "Max tiles (2-12)"),
       text("collection", "Collection handle", 120),
       text("note", "Caption", 160),
+      text("handleLabel", "Social handle label", 40),
+      url("handleHref", "Social handle link"),
     ],
   },
   {

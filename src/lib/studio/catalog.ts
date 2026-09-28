@@ -692,6 +692,18 @@ export const WIDGETS: WidgetDef[] = [
       c4Title: "",
       c4Links: "",
       items: [],
+      // De-brand brand zones (builder-ast footer_sitemap fields): empty so a
+      // freshly dropped footer renders generic chrome until authored.
+      statementHeading: "",
+      statementBody: "",
+      storyHref: "",
+      storyLabel: "",
+      newsletterHeading: "",
+      newsletterButton: "",
+      newsletterConsent: "",
+      brandName: "",
+      paymentsMarks: "",
+      paymentsHeading: "",
     },
   },
   {
@@ -2262,7 +2274,14 @@ export const WIDGETS: WidgetDef[] = [
     category: "media",
     icon: "Images",
     keywords: ["ugc", "customer", "gallery", "worn", "photos", "community"],
-    defaults: { heading: "As worn by you", limit: 6, collection: "", note: "" },
+    defaults: {
+      heading: "As worn by you",
+      limit: 6,
+      collection: "",
+      note: "",
+      handleLabel: "",
+      handleHref: "",
+    },
   },
   {
     key: "trade_in",
