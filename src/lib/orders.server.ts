@@ -6,6 +6,7 @@ import {
   type PaymentMethod,
 } from "./pricing.server";
 import { consumeStock, releaseStock, reserveStock } from "./checkout.server";
+import { CouponError } from "./coupons.server";
 import { incr, log, observe, tenantLabel } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
 
@@ -43,6 +44,26 @@ function orderNumber() {
   const rand = Math.random().toString(36).slice(2, 7).toUpperCase();
   return `FQ-${stamp}-${rand}`;
 }
+
+/** PostgREST unique-violation shape (code 23505), with a message fallback. */
+function isUniqueViolation(error: {
+  code?: string;
+  message?: string;
+}): boolean {
+  if (error?.code === "23505") return true;
+  return /duplicate key|unique constraint/i.test(error?.message ?? "");
+}
+
+/** Untyped RPC surface for SQL helpers not present in the generated types. */
+type SlotRpc = {
+  rpc: (
+    fn: string,
+    args: Record<string, unknown>,
+  ) => Promise<{
+    data: { slot_coupon_id: string }[] | null;
+    error: { message?: string } | null;
+  }>;
+};
 
 export async function createOrder(
   input: PlaceOrderInput,
@@ -211,6 +232,34 @@ export async function createOrder(
     .select("id, order_number, access_token")
     .single();
   if (error) {
+    // Lost the same-key race: a concurrent submit won the insert (unique
+    // backstop `orders_merchant_idem_key_uidx`). Release this attempt's
+    // stock hold exactly once, then replay the winner like a normal
+    // duplicate — the shopper sees their order, not a 500.
+    if (isUniqueViolation(error)) {
+      const { data: winner } = await supabaseAdmin
+        .from("orders")
+        .select("id, order_number, access_token")
+        .eq("merchant_id", merchant.id)
+        .eq("idempotency_key", input.idempotencyKey)
+        .maybeSingle();
+      if (winner) {
+        await releaseStock(checkoutToken);
+        incr("framique_orders_total", {
+          outcome: "replayed",
+          tenant: tenantLabel(merchant.id),
+        });
+        log("info", "order.replayed_on_conflict", {
+          merchantId: merchant.id,
+          orderId: winner.id,
+        });
+        return {
+          orderId: winner.id,
+          orderNumber: winner.order_number,
+          accessToken: winner.access_token,
+        };
+      }
+    }
     await releaseStock(checkoutToken);
     incr("framique_orders_total", {
       outcome: "failed",
@@ -269,16 +318,63 @@ export async function createOrder(
         amount_minor_int: applied.discountMinor,
         currency_code: totals.currency,
       });
-    if (redeemError) continue;
-    const { data: current } = await supabaseAdmin
-      .from("coupons")
-      .select("redeemed_count")
-      .eq("id", applied.id)
-      .single();
-    await supabaseAdmin
-      .from("coupons")
-      .update({ redeemed_count: (current?.redeemed_count ?? 0) + 1 })
-      .eq("id", applied.id);
+    if (redeemError) {
+      // A redemption that cannot be recorded must never silently grant the
+      // discount: fail loudly (metric + error log + audit attempt) instead
+      // of skipping, so ops sees every dropped coupon write.
+      incr("framique_coupon_redeem_total", { outcome: "error" });
+      log("error", "coupon.redeem_failed", {
+        merchantId: merchant.id,
+        orderId: order.id,
+        couponId: applied.id,
+        reason: redeemError.message,
+      });
+      try {
+        await supabaseAdmin.from("order_events").insert({
+          order_id: order.id,
+          merchant_id: merchant.id,
+          event_type: "coupon.redeem_failed",
+          note: `${applied.code} — recording failed: ${redeemError.message.slice(0, 160)}`,
+        });
+      } catch {
+        /* audit is best effort; the throw below is the signal */
+      }
+      throw new Error("coupon_redeem_failed");
+    }
+    // Atomic slot reservation: one guarded UPDATE inside
+    // `redeem_coupon_slot` — never read-modify-write. Zero rows means the
+    // cap was hit between quote and write: roll back this attempt's
+    // redemption row and deny loudly instead of overshooting usage_limit.
+    const { data: slot, error: slotError } = await (
+      supabaseAdmin as unknown as SlotRpc
+    ).rpc("redeem_coupon_slot", { _coupon_id: applied.id });
+    if (slotError) {
+      incr("framique_coupon_redeem_total", { outcome: "error" });
+      log("error", "coupon.slot_failed", {
+        merchantId: merchant.id,
+        orderId: order.id,
+        couponId: applied.id,
+        reason: slotError.message ?? "unknown",
+      });
+      throw new Error("coupon_redeem_failed");
+    }
+    if (!slot || slot.length === 0) {
+      await supabaseAdmin
+        .from("coupon_redemptions")
+        .delete()
+        .eq("coupon_id", applied.id)
+        .eq("order_id", order.id);
+      incr("framique_coupon_redeem_total", { outcome: "rejected" });
+      log("warn", "coupon.usage_exhausted", {
+        merchantId: merchant.id,
+        orderId: order.id,
+        couponId: applied.id,
+      });
+      throw new CouponError(
+        "coupon_usage_limit",
+        "Coupon usage limit has been reached",
+      );
+    }
     await supabaseAdmin.from("order_events").insert({
       order_id: order.id,
       merchant_id: merchant.id,
