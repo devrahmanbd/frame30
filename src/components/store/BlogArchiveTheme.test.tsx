@@ -78,4 +78,25 @@ describe("BlogArchiveTheme", () => {
     expect(html).toContain("/blog/how-jamdani-is-woven");
     expect(html).not.toContain("No articles published yet.");
   });
+
+  it("forwards themeKey to ThemeChrome with zero behavioral change (generic by design)", () => {
+    // Fix round: the prop was accepted but dropped. It is now forwarded;
+    // with a null AST the blog has no themed sections, so every key —
+    // including songoskriti — renders byte-identical generic markup.
+    const render = (themeKey?: string | null) =>
+      renderToStaticMarkup(
+        <BlogArchiveTheme
+          feed={feed}
+          header={<h1>Blog</h1>}
+          empty={<p>No articles published yet.</p>}
+          themeKey={themeKey}
+        />,
+      );
+    const unkeyed = render();
+    const themed = render("songoskriti");
+    const foreign = render("bazaar");
+    expect(themed).toBe(unkeyed);
+    expect(foreign).toBe(unkeyed);
+    expect(themed).toContain("How a jamdani saree is woven");
+  });
 });

@@ -23,7 +23,8 @@ import { useCartContext } from "./CartContext";
 import { useExperiments, useExposure } from "./ExperimentContext";
 import { useHydrated } from "./reveal";
 import { useReveal } from "./reveal";
-import { WIDGET_COMPONENTS, widgetReader } from "./widgets";
+import { widgetReader } from "./widgets";
+import { resolveWidgetComponent } from "./theme-widgets";
 import { useNodeData } from "./WidgetDataContext";
 import { WidgetBoundary } from "./WidgetBoundary";
 import { WidgetIsland } from "./WidgetIsland";
@@ -49,6 +50,14 @@ type Props = {
    * and is the slug the bundle/total contract quotes against.
    */
   storeSlug?: string;
+  /**
+   * Theme-remediation Task 3: explicit theme key driving per-theme widget
+   * resolution (`resolveWidgetComponent`). Null/undefined keeps the legacy
+   * unkeyed composition (studio + existing tests), byte-identical. Live
+   * storefront hosts pass the merchant theme key; the preview frame passes
+   * its blueprint key.
+   */
+  themeKey?: string | null;
   /** The page's primary heading. Exactly one section per page may claim it. */
   primary?: boolean;
   /** Editor preview only: shows placeholders and hidden widgets. */
@@ -97,6 +106,7 @@ export function SectionRenderer({
   contextSlots,
   template,
   storeSlug,
+  themeKey,
   primary = false,
   editing = false,
   device,
@@ -232,7 +242,7 @@ export function SectionRenderer({
     );
 
   const entry = catalogEntry(section.type);
-  const Widget = WIDGET_COMPONENTS[section.type];
+  const Widget = resolveWidgetComponent(themeKey, section.type);
   if (!entry || !Widget) {
     return editing ? (
       <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">
@@ -274,6 +284,7 @@ export function SectionRenderer({
         contextSlots={contextSlots}
         template={template}
         storeSlug={storeSlug}
+        themeKey={themeKey}
         editing={editing}
         device={device}
         locale={locale}

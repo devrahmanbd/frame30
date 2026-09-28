@@ -18,7 +18,7 @@ import type {
 import type { WidgetComponent, WidgetCtx } from "./widgets";
 import { resolveSkin } from "@/lib/builder-ast";
 import { placeholderSeed } from "@/lib/placeholder";
-import { useSongoskritiHero } from "./songoskriti-motion";
+import { useHeroMotion } from "./songoskriti-motion";
 
 /* ---------------------------------------------------------------- helpers */
 
@@ -406,7 +406,7 @@ const HeroCarousel: WidgetComponent = ({
   // (effects never run under renderToStaticMarkup) and static under
   // reduced motion — the hook no-ops unless intent is full.
   const heroScope = useRef<HTMLElement | null>(null);
-  useSongoskritiHero(heroScope, true);
+  useHeroMotion(heroScope, true);
 
   const count = slides.length;
   const goTo = useCallback(
@@ -448,7 +448,7 @@ const HeroCarousel: WidgetComponent = ({
   return (
     <section
       ref={heroScope}
-      data-songoskriti-hero
+      data-hero
       role="region"
       aria-roledescription="carousel"
       aria-label={t(locale, "Hero carousel", "হিরো ক্যারোজেল")}

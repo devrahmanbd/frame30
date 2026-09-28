@@ -436,8 +436,12 @@ function seedFooterSitemapItems(node: StudioNode): void {
     seeded.push({
       title: t,
       links: l,
-      ...(typeof titleBn === "string" && titleBn ? { title_bn: titleBn } : {}),
-      ...(typeof linksBn === "string" && linksBn ? { links_bn: linksBn } : {}),
+      ...(typeof titleBn === "string" && titleBn.trim()
+        ? { title_bn: titleBn }
+        : {}),
+      ...(typeof linksBn === "string" && linksBn.trim()
+        ? { links_bn: linksBn }
+        : {}),
     });
   }
   if (seeded.length > 0) {
@@ -474,9 +478,15 @@ function seedSpecItems(node: StudioNode): void {
       group: typeof group === "string" ? group : "",
       label,
       value: typeof value === "string" ? value : "",
-      ...(typeof groupBn === "string" && groupBn ? { group_bn: groupBn } : {}),
-      ...(typeof labelBn === "string" && labelBn ? { label_bn: labelBn } : {}),
-      ...(typeof valueBn === "string" && valueBn ? { value_bn: valueBn } : {}),
+      ...(typeof groupBn === "string" && groupBn.trim()
+        ? { group_bn: groupBn }
+        : {}),
+      ...(typeof labelBn === "string" && labelBn.trim()
+        ? { label_bn: labelBn }
+        : {}),
+      ...(typeof valueBn === "string" && valueBn.trim()
+        ? { value_bn: valueBn }
+        : {}),
     });
   }
   if (seeded.length > 0) {
@@ -509,8 +519,8 @@ function seedQaItems(node: StudioNode): void {
       seeded.push({
         question: q,
         answer: typeof a === "string" ? a : "",
-        ...(typeof qBn === "string" && qBn ? { question_bn: qBn } : {}),
-        ...(typeof aBn === "string" && aBn ? { answer_bn: aBn } : {}),
+        ...(typeof qBn === "string" && qBn.trim() ? { question_bn: qBn } : {}),
+        ...(typeof aBn === "string" && aBn.trim() ? { answer_bn: aBn } : {}),
       });
     }
   }
@@ -534,7 +544,7 @@ function seedAnnouncementItems(node: StudioNode): void {
       const mBn = s[`m${i}_bn`];
       seeded.push({
         text: m,
-        ...(typeof mBn === "string" && mBn ? { text_bn: mBn } : {}),
+        ...(typeof mBn === "string" && mBn.trim() ? { text_bn: mBn } : {}),
       });
     }
   }
@@ -556,7 +566,7 @@ function seedHeroItems(node: StudioNode): void {
   const text = (v: unknown): string => (typeof v === "string" ? v : "");
   const twin = (key: string): Record<string, string> => {
     const v = s[`${key}_bn`];
-    return typeof v === "string" && v ? { [`${key}_bn`]: v } : {};
+    return typeof v === "string" && v.trim() ? { [`${key}_bn`]: v } : {};
   };
   const slide0 = {
     heading: text(s.heading),
@@ -576,7 +586,7 @@ function seedHeroItems(node: StudioNode): void {
     return {
       heading,
       image,
-      ...(typeof v === "string" && v ? { heading_bn: v } : {}),
+      ...(typeof v === "string" && v.trim() ? { heading_bn: v } : {}),
     };
   };
   const ctaLabel = text(s.ctaLabel);
@@ -630,7 +640,7 @@ function seedLookbookItems(node: StudioNode): void {
         image,
         alt: typeof alt === "string" ? alt : "",
         href: typeof href === "string" ? href : "",
-        ...(typeof altBn === "string" && altBn ? { alt_bn: altBn } : {}),
+        ...(typeof altBn === "string" && altBn.trim() ? { alt_bn: altBn } : {}),
       });
     }
   }
@@ -665,10 +675,12 @@ function seedTrustItems(node: StudioNode): void {
         icon: typeof icon === "string" ? icon : "",
         title,
         body: typeof body === "string" ? body : "",
-        ...(typeof titleBn === "string" && titleBn
+        ...(typeof titleBn === "string" && titleBn.trim()
           ? { title_bn: titleBn }
           : {}),
-        ...(typeof bodyBn === "string" && bodyBn ? { body_bn: bodyBn } : {}),
+        ...(typeof bodyBn === "string" && bodyBn.trim()
+          ? { body_bn: bodyBn }
+          : {}),
       });
     }
   }

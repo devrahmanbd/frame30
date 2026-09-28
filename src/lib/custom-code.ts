@@ -742,13 +742,22 @@ export function newNonce(): string {
 }
 
 /**
- * Strict storefront CSP. `unsafe-inline` is never emitted: every inline script
- * we ship (hydration payload, custom JS island) carries the request nonce.
+ * Strict storefront CSP. `unsafe-inline` is never emitted for scripts: every
+ * inline script we ship (hydration payload, scroll restoration, stream
+ * barrier/bootstrap, theme boot, custom JS island) carries the request nonce.
  *
- * The optional `tier` parameter adjusts the policy via `resolvePolicy`:
- *   - low / lower_medium: nonce + strict-dynamic + full frame-src
- *   - medium: script-src 'self' only, no nonce, self-only frame
- *   - high: script-src 'self', no frame-src at all
+ * The optional `tier` parameter adjusts frame/connect/feature gates via
+ * `resolvePolicy`, but script-src ALWAYS carries the nonce when one is
+ * supplied — even on medium/high. Rationale (live 2026-09-28: 3× CSP blocks
+ * + TanStack `window.$_TSR` bootstrap invariant on `/` and
+ * `/theme-preview/*`): TanStack Start SSR unconditionally emits executable
+ * inline scripts, so a `script-src 'self'` document can never hydrate. Nonce
+ * + `strict-dynamic` is narrowly scoped (per-request, no `unsafe-inline`) and
+ * merchant untrusted code stays gated via `features.customJs` + sandbox, not
+ * via the document script-src.
+ *
+ * Callers that pass an empty nonce get strict `script-src 'self'` (fail
+ * closed, no weakening).
  */
 export function buildCsp(
   nonce: string,
@@ -764,7 +773,7 @@ export function buildCsp(
   const frame =
     policy.csp.frameSrc.length > 0 ? policy.csp.frameSrc.join(" ") : "'none'";
 
-  const scriptSrc = policy.csp.nonce
+  const scriptSrc = nonce
     ? `'self' 'nonce-${nonce}' 'strict-dynamic'`
     : "'self'";
 

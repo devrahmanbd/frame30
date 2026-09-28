@@ -96,9 +96,12 @@ describe("widget registry — closed enum", () => {
 describe("widget renderers — theme independence", () => {
   it("has a renderer for every registered widget", () => {
     for (const type of WIDGET_TYPES) {
-      // The map is a closed Record at type level; assert it at runtime too.
+      // The renderer reads the registry — the legacy closed map or, since
+      // theme-remediation Task 3, the theme-keyed resolver (generic =
+      // fallback). Either way no per-widget branch lives in the renderer.
       expect(
-        RENDERER_SRC.includes("WIDGET_COMPONENTS"),
+        RENDERER_SRC.includes("WIDGET_COMPONENTS") ||
+          RENDERER_SRC.includes("resolveWidgetComponent"),
         "renderer reads the registry map",
       ).toBe(true);
       expect(

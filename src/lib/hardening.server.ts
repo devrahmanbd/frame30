@@ -24,8 +24,26 @@ export async function auditAction(
   changed: Record<string, unknown> = {},
   resourceId: string | null = null,
 ) {
+  // QUBICKLE H7 (Rule 17): audit is transport best-effort — a dead audit
+  // table must never fail the merchant's action — but a dropped audit must
+  // never be silent either. Surface it to observability (no secrets, no
+  // high-cardinality labels) so the failure is diagnosable.
+  const observe = async (message: string) => {
+    const { incr, log } = await import("./observability.server");
+    incr("framique_audit_total", {
+      outcome: "dropped",
+      action,
+      resource_type: resourceType,
+    });
+    log("error", "audit.write_failed", {
+      action,
+      resourceType,
+      merchantId,
+      message,
+    });
+  };
   try {
-    await db.from("activity_log").insert({
+    const { data, error } = await db.from("activity_log").insert({
       merchant_id: merchantId,
       actor,
       action,
@@ -33,8 +51,12 @@ export async function auditAction(
       resource_id: resourceId,
       changed: changed as unknown as Json,
     });
-  } catch {
-    // Audit is best-effort at the transport level; the DB is the record.
+    if (error)
+      await observe((error as { message?: string }).message ?? "unknown");
+    return { data, error };
+  } catch (e) {
+    await observe(e instanceof Error ? e.message : "unknown");
+    return { data: null, error: e };
   }
 }
 

@@ -52,7 +52,9 @@ export function ProductInfo({
 }: {
   product: ProductPayload["product"];
 }) {
-  const shortDesc = product.description?.split("\n").filter((l) => l.trim().length > 0)[0];
+  const shortDesc = product.description
+    ?.split("\n")
+    .filter((l) => l.trim().length > 0)[0];
   return (
     <div className="space-y-4">
       <h1 className="font-serif text-[32px] sm:text-[40px] font-medium tracking-tight text-foreground leading-[1.1]">
@@ -71,12 +73,14 @@ export function PriceBlock({
   variant,
   currencyCode,
 }: {
-  variant: NonNullable<ProductPayload["product"]["product_variants"]>[number] | undefined;
+  variant:
+    | NonNullable<ProductPayload["product"]["product_variants"]>[number]
+    | undefined;
   currencyCode: string;
 }) {
   const price = variant?.price_amount_minor_int ?? 0;
   const compareAt = variant?.compare_at_amount_minor_int;
-  
+
   return (
     <div className="flex flex-col border-b border-border pb-6 mt-6">
       <div className="flex items-baseline gap-3">
@@ -142,7 +146,9 @@ export function AddToCart({
   setAdded,
   settings,
 }: {
-  variant: NonNullable<ProductPayload["product"]["product_variants"]>[number] | undefined;
+  variant:
+    | NonNullable<ProductPayload["product"]["product_variants"]>[number]
+    | undefined;
   merchant: ProductPayload["merchant"];
   custom: boolean;
   add: (id: string, qty: number) => void;
@@ -203,7 +209,11 @@ export function AddToCart({
           {t("Add to cart", "কার্টে যোগ করুন")}
         </button>
         <div className="h-14 w-14 flex items-center justify-center border border-border group/btn cursor-pointer hover:border-foreground transition-colors">
-          <WishlistHeart storeSlug={merchant.slug} variantId={variant?.id} locale="en" />
+          <WishlistHeart
+            storeSlug={merchant.slug}
+            variantId={variant?.id}
+            locale="en"
+          />
         </div>
       </div>
       <p
@@ -217,18 +227,24 @@ export function AddToCart({
         {(settings?.shipping_flat_minor_int ?? 0) > 0 && (
           <div className="flex gap-2">
             <span className="font-semibold text-foreground">Delivery:</span>
-            <span className="text-muted-foreground">Nationwide shipping available.</span>
+            <span className="text-muted-foreground">
+              Nationwide shipping available.
+            </span>
           </div>
         )}
         {(settings?.cod_enabled ?? true) && (
           <div className="flex gap-2">
             <span className="font-semibold text-foreground">Payment:</span>
-            <span className="text-muted-foreground">Cash on Delivery accepted.</span>
+            <span className="text-muted-foreground">
+              Cash on Delivery accepted.
+            </span>
           </div>
         )}
         <div className="flex gap-2">
           <span className="font-semibold text-foreground">Returns:</span>
-          <span className="text-muted-foreground">7-day easy returns policy.</span>
+          <span className="text-muted-foreground">
+            7-day easy returns policy.
+          </span>
         </div>
       </div>
     </div>
@@ -261,7 +277,9 @@ export function ProductDetails({
         >
           <summary className="flex cursor-pointer items-center justify-between py-5 text-sm font-semibold uppercase tracking-wider text-foreground hover:text-foreground/80">
             {t("Details", "বিস্তারিত")}
-            <ChevronDown className={`size-4 transition-transform duration-300 ${openDetails ? "rotate-180" : ""}`} />
+            <ChevronDown
+              className={`size-4 transition-transform duration-300 ${openDetails ? "rotate-180" : ""}`}
+            />
           </summary>
           <div className="pb-6">
             <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground mb-4">
@@ -271,14 +289,22 @@ export function ProductDetails({
               <div className="grid grid-cols-2 gap-4 text-sm mt-6 border-t pt-4">
                 {product.category_id && (
                   <div>
-                    <span className="block font-medium text-foreground mb-1">Category</span>
-                    <span className="text-muted-foreground capitalize">{product.category_id.replace(/-/g, ' ')}</span>
+                    <span className="block font-medium text-foreground mb-1">
+                      Category
+                    </span>
+                    <span className="text-muted-foreground capitalize">
+                      {product.category_id.replace(/-/g, " ")}
+                    </span>
                   </div>
                 )}
                 {product.tags && product.tags.length > 0 && (
                   <div>
-                    <span className="block font-medium text-foreground mb-1">Attributes</span>
-                    <span className="text-muted-foreground capitalize">{product.tags.join(', ')}</span>
+                    <span className="block font-medium text-foreground mb-1">
+                      Attributes
+                    </span>
+                    <span className="text-muted-foreground capitalize">
+                      {product.tags.join(", ")}
+                    </span>
                   </div>
                 )}
               </div>
@@ -297,11 +323,14 @@ export function ProductDetails({
       >
         <summary className="flex cursor-pointer items-center justify-between py-5 text-sm font-semibold uppercase tracking-wider text-foreground hover:text-foreground/80">
           {t("Care Instructions", "যত্ন")}
-          <ChevronDown className={`size-4 transition-transform duration-300 ${openCare ? "rotate-180" : ""}`} />
+          <ChevronDown
+            className={`size-4 transition-transform duration-300 ${openCare ? "rotate-180" : ""}`}
+          />
         </summary>
         <div className="pb-6">
           <p className="whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
-            Dry clean only. Store in a cool, dry place. Keep away from direct sunlight.
+            Dry clean only. Store in a cool, dry place. Keep away from direct
+            sunlight.
           </p>
         </div>
       </details>
@@ -311,17 +340,27 @@ export function ProductDetails({
 
 export function ProductCraftStory({
   description,
+  themeKey = null,
 }: {
   description: string | null;
+  themeKey?: string | null;
 }) {
   const { t } = useLang();
-  
+
   if (!description) return null;
-  
+
   // Only show craft story if the product description mentions handloom/jamdani/silk
   const descLower = description.toLowerCase();
-  const hasCraft = ["jamdani", "handloom", "heritage", "silk"].some(word => descLower.includes(word));
+  const hasCraft = ["jamdani", "handloom", "heritage", "silk"].some((word) =>
+    descLower.includes(word),
+  );
   if (!hasCraft) return null;
+
+  // Theme-remediation Task 4: the artisan brand art is songoskriti-owned —
+  // it follows the installed theme key, never renders for foreign themes
+  // (same brand-art class as the CollectionView hero gate). Generic keys
+  // keep the section copy with a neutral placeholder block.
+  const isSongoskriti = themeKey === "songoskriti";
 
   return (
     <section className="mt-24 mb-12 border-t border-border pt-16">
@@ -331,22 +370,30 @@ export function ProductCraftStory({
             {t("The Weave", "বুনন")}
           </h2>
           <p className="text-base text-muted-foreground leading-relaxed">
-            Authentic hand-loomed heritage, crafted by master artisans over hundreds of hours. 
-            Each piece carries the legacy of traditional weaving techniques, utilizing fine mulberry 
-            silk and precise geometric motifs that have been passed down through generations.
+            Authentic hand-loomed heritage, crafted by master artisans over
+            hundreds of hours. Each piece carries the legacy of traditional
+            weaving techniques, utilizing fine mulberry silk and precise
+            geometric motifs that have been passed down through generations.
           </p>
         </div>
         <div className="order-1 md:order-2">
           <div className="aspect-[4/5] bg-[var(--theme-surface)] overflow-hidden">
-            <img 
-              src="/ph/songoskriti/hero_artisans_1790373071919.jpg" 
-              alt="Artisan weaving jamdani" 
-              className="w-full h-full object-cover grayscale opacity-90 mix-blend-multiply"
-              onError={(e) => {
-                // Fallback if image not found in public dir
-                e.currentTarget.style.display = 'none';
-              }}
-            />
+            {isSongoskriti ? (
+              <img
+                src="/ph/songoskriti/hero_artisans_1790373071919.jpg"
+                alt="Artisan weaving jamdani"
+                className="w-full h-full object-cover grayscale opacity-90 mix-blend-multiply"
+                onError={(e) => {
+                  // Fallback if image not found in public dir
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+            ) : (
+              <div
+                aria-hidden="true"
+                className="h-full w-full bg-[var(--theme-surface)]"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -380,8 +427,9 @@ export function ProductView({ data }: { data: ProductPayload }) {
     menus,
     installedPlugins,
     settings,
+    themeKey,
   } = data;
-  
+
   const variants = product.product_variants ?? [];
   const [variantId, setVariantId] = useState(() => variants[0]?.id ?? "");
   const variant = variants.find((v) => v.id === variantId) ?? variants[0];
@@ -389,10 +437,10 @@ export function ProductView({ data }: { data: ProductPayload }) {
   const { add } = useCart(merchant.slug);
 
   const variantChannel = useSectionChannel(merchant.slug, "variant");
-  
+
   useEffect(() => {
     if (!variants || variants.length === 0) return;
-    const variantIndex = variants.findIndex(v => v.id === variantId);
+    const variantIndex = variants.findIndex((v) => v.id === variantId);
     variantChannel.clear();
     if (variantIndex >= 0) {
       variantChannel.push(variantIndex.toString());
@@ -410,21 +458,41 @@ export function ProductView({ data }: { data: ProductPayload }) {
         item_name: product.title,
       },
     });
-  }, [merchant.currency_code, product.id, product.title, variant?.price_amount_minor_int]);
+  }, [
+    merchant.currency_code,
+    product.id,
+    product.title,
+    variant?.price_amount_minor_int,
+  ]);
 
-  const hasPriceBlock = ast?.main?.some((s) => s.type === "price_block") ?? false;
+  const hasPriceBlock =
+    ast?.main?.some((s) => s.type === "price_block") ?? false;
 
   const media = <ProductGallery product={product} />;
 
-  const priceBlock = <PriceBlock variant={variant} currencyCode={merchant.currency_code} />;
+  const priceBlock = (
+    <PriceBlock variant={variant} currencyCode={merchant.currency_code} />
+  );
 
   const meta = <ProductInfo product={product} />;
-  
-  const pageContent = <ProductDetails product={{ description: product.description, tags: (product as any).tags, category_id: (product as any).category_id }} />;
+
+  const pageContent = (
+    <ProductDetails
+      product={{
+        description: product.description,
+        tags: (product as any).tags,
+        category_id: (product as any).category_id,
+      }}
+    />
+  );
 
   const addToCart = (
     <div>
-      <VariantSelector variants={variants} variantId={variantId} setVariantId={setVariantId} />
+      <VariantSelector
+        variants={variants}
+        variantId={variantId}
+        setVariantId={setVariantId}
+      />
       <AddToCart
         variant={variant}
         merchant={merchant}
@@ -456,7 +524,10 @@ export function ProductView({ data }: { data: ProductPayload }) {
           {merchant.name}
         </Link>
       )}
-      <span aria-hidden className="mx-2"> / </span>
+      <span aria-hidden className="mx-2">
+        {" "}
+        /{" "}
+      </span>
       <span className="text-foreground">{product.title}</span>
     </nav>
   );
@@ -481,7 +552,10 @@ export function ProductView({ data }: { data: ProductPayload }) {
           {pageContent}
         </div>
       </div>
-      <ProductCraftStory description={product.description} />
+      <ProductCraftStory
+        description={product.description}
+        themeKey={themeKey ?? null}
+      />
     </div>
   );
 
@@ -491,6 +565,7 @@ export function ProductView({ data }: { data: ProductPayload }) {
         <ThemeChrome
           template="product"
           storeSlug={merchant.slug}
+          themeKey={themeKey ?? null}
           merchantId={merchant.id}
           ast={ast}
           tokens={tokens}
@@ -501,6 +576,7 @@ export function ProductView({ data }: { data: ProductPayload }) {
               slug={merchant.slug}
               name={merchant.name}
               menus={menus}
+              themeKey={themeKey ?? null}
             />
           }
           contextSlots={{

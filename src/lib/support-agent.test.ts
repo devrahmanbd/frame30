@@ -45,6 +45,11 @@ import {
 import { createTicket } from "./support-tickets.server";
 import { resetRateLimitCircuitBreaker } from "./rate-limit.server";
 
+// QUBICKLE Rule 4/5: the support lane fails closed without a service key.
+// These suites exercise the anonymous widget path offline, so they opt in to
+// the explicit test-only DB proxy (never used in production).
+process.env.FRAMIQUE_ALLOW_TEST_DB_PROXY = "1";
+
 beforeEach(() => {
   resetRateLimitCircuitBreaker();
 });
@@ -1118,7 +1123,7 @@ describe("Phase 12.5 — Bot Suppression Middleware for Human Takeover", () => {
     });
 
     it("reinforces DeepWiki edge weights when customer rates a conversation with 5 stars", async () => {
-      const convId = "conv-deepwiki-feedback-test";
+      const convId = "11111111-1111-4111-8111-111111111111";
       const res = await runSupportAgentTurn({
         slug: "demo",
         conversationId: convId,

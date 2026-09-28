@@ -1,10 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createFileRoute, notFound, useNavigate, Link } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  useNavigate,
+  Link,
+} from "@tanstack/react-router";
 import { ThemeChrome } from "@/components/store/ThemeChrome";
 import { PluginLayer } from "@/components/store/PluginLayer";
 import { getStoreChrome } from "@/lib/storefront.functions";
 import { useMutation } from "@tanstack/react-query";
-import { StoreHeader, MinimalCheckoutHeader } from "@/components/store/StoreHeader";
+import {
+  StoreHeader,
+  MinimalCheckoutHeader,
+} from "@/components/store/StoreHeader";
 import {
   placeOrder,
   quoteCart,
@@ -66,7 +74,7 @@ export const Route = createFileRoute("/store/$slug/checkout")({
 function CheckoutPage() {
   const { t, lang } = useLang();
   const { slug } = Route.useParams();
-  const { merchant, ast, tokens, siteKit, installedPlugins } =
+  const { merchant, ast, tokens, siteKit, installedPlugins, themeKey } =
     Route.useLoaderData();
   const navigate = useNavigate();
   const { lines, setQuantity, clear, hydrated } = useCart(slug);
@@ -230,6 +238,7 @@ function CheckoutPage() {
       <ThemeChrome
         template="checkout"
         storeSlug={slug}
+        themeKey={themeKey ?? null}
         merchantId={merchant.id}
         // The checkout form is hand-built (server-quoted totals, live rails), so
         // the theme contributes the tokens only. We drop the normal header and footer.
@@ -237,13 +246,23 @@ function CheckoutPage() {
         tokens={tokens}
         siteKit={siteKit}
         ownsPrimary
-        chrome={<MinimalCheckoutHeader slug={slug} name={merchant.name} />}
+        chrome={
+          <MinimalCheckoutHeader
+            slug={slug}
+            name={merchant.name}
+            themeKey={themeKey ?? null}
+          />
+        }
         containerClassName="bg-muted/10 min-h-screen pb-24"
         fallback={
           <div className="mx-auto grid max-w-[var(--fq-container,1280px)] gap-12 px-4 py-8 lg:grid-cols-[1.5fr_1fr] lg:gap-16 sm:px-6 lg:px-8">
             <section className="order-2 lg:order-1 pt-4">
               <nav className="mb-10 flex items-center gap-3 text-[11px] font-bold fq-caps tracking-widest text-muted-foreground">
-                <Link to="/store/$slug/cart" params={{ slug }} className="hover:text-foreground transition-colors">
+                <Link
+                  to="/store/$slug/cart"
+                  params={{ slug }}
+                  className="hover:text-foreground transition-colors"
+                >
                   {t("Cart", "কার্ট")}
                 </Link>
                 <span className="text-border">/</span>
@@ -295,12 +314,20 @@ function CheckoutPage() {
                       required
                       className="sm:col-span-2"
                     />
-                    <Field name="city" label={t("City", "শহর / City")} required />
+                    <Field
+                      name="city"
+                      label={t("City", "শহর / City")}
+                      required
+                    />
                     <Field
                       name="postcode"
                       label={t("Postcode", "পোস্টকোড / Postcode")}
                     />
-                    <Field name="note" label={t("Note", "নোট / Note")} className="sm:col-span-2" />
+                    <Field
+                      name="note"
+                      label={t("Note", "নোট / Note")}
+                      className="sm:col-span-2"
+                    />
                   </div>
                 </div>
 
@@ -432,7 +459,7 @@ function CheckoutPage() {
                 <h2 className="text-[16px] font-semibold tracking-tight text-foreground mb-6">
                   {t("Order Summary", "সারসংক্ষেপ")}
                 </h2>
-                
+
                 {!hydrated ? null : lines.length === 0 ? (
                   <p className="mt-4 text-[13.5px] text-muted-foreground">
                     Your cart is empty.
@@ -452,7 +479,10 @@ function CheckoutPage() {
                             {l.variantName}
                           </p>
                           <div className="mt-2 flex items-center gap-2">
-                            <label className="sr-only" htmlFor={`qty-${l.variantId}`}>
+                            <label
+                              className="sr-only"
+                              htmlFor={`qty-${l.variantId}`}
+                            >
                               Quantity
                             </label>
                             <input
@@ -466,9 +496,14 @@ function CheckoutPage() {
                               }
                               className="h-8 w-14 rounded border border-border/60 bg-transparent text-center text-[13px] font-medium focus:border-foreground focus:outline-none transition-colors"
                             />
-                            <span className="text-[12px] text-muted-foreground">×</span>
+                            <span className="text-[12px] text-muted-foreground">
+                              ×
+                            </span>
                             <span className="money text-[13px] font-medium text-foreground">
-                               {fmtMinor(Math.round(l.lineTotalMinor / l.quantity), totals?.currency)}
+                              {fmtMinor(
+                                Math.round(l.lineTotalMinor / l.quantity),
+                                totals?.currency,
+                              )}
                             </span>
                           </div>
                         </div>
@@ -483,11 +518,17 @@ function CheckoutPage() {
                 <dl className="space-y-3.5 text-sm">
                   <Row
                     label="Subtotal"
-                    value={fmtMinor(totals?.subtotalMinor ?? 0, totals?.currency)}
+                    value={fmtMinor(
+                      totals?.subtotalMinor ?? 0,
+                      totals?.currency,
+                    )}
                   />
                   <Row
                     label="Delivery"
-                    value={fmtMinor(totals?.shippingMinor ?? 0, totals?.currency)}
+                    value={fmtMinor(
+                      totals?.shippingMinor ?? 0,
+                      totals?.currency,
+                    )}
                   />
                   {(totals?.codSurchargeMinor ?? 0) > 0 && (
                     <Row

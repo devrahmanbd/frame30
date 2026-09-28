@@ -4,6 +4,14 @@ import { z } from "zod";
 /**
  * Public SSE streaming route for the storefront support widget.
  *
+ * ANONYMOUS_PUBLIC_THREAT_MODEL (Rule 1/2): this lane is intentionally
+ * unauthenticated. Reads stay open by design (published KB only). Writes
+ * (rate-limited turns, escalation tickets) are bound to the resolved merchant
+ * id + a per-client fingerprint (Origin/UA/IP hash) — never a bare `anon`
+ * bucket shared across all visitors. Cross-slug conversation-UUID swaps are
+ * rejected (403). Fingerprint throttling is the minimum viable binding until
+ * widget tokens land.
+ *
  * Probed by `SupportWidget` as `POST /api/public/support/stream` with
  * `Accept: text/event-stream`. Frames are `data:` JSON payloads:
  *   `{"delta": "..."}`   — reasoning-stripped draft text (NOT screened,
@@ -161,7 +169,8 @@ export const Route = createFileRoute("/api/public/support/stream")({
         const locale = body.locale ?? "en";
         const conversationId = body.conversationId ?? null;
 
-        // Merchant lookup (cached, framique fallback) — mirrors askSupport.
+        // Merchant lookup (cached) — mirrors askSupport. No magic platform
+        // id: the platform merchant must be a real merchants row (fail closed).
         const { cached } = await import("@/lib/cache.server");
         const { supabaseAdmin } =
           await import("@/integrations/supabase/client.server");
@@ -196,16 +205,7 @@ export const Route = createFileRoute("/api/public/support/stream")({
                 .select("id, name, slug")
                 .eq("slug", querySlug)
                 .maybeSingle();
-              if (!data) {
-                if (body.slug === "framique" || body.slug === "platform") {
-                  return {
-                    id: "00000000-0000-4000-8000-000000000001",
-                    name: "Framique",
-                    slug: "framique",
-                  };
-                }
-                return null;
-              }
+              if (!data) return null;
               return data;
             },
           );
@@ -219,28 +219,91 @@ export const Route = createFileRoute("/api/public/support/stream")({
           );
         }
         const merch = merchant;
+        const correlationId =
+          request.headers.get("x-request-id") ??
+          request.headers.get("x-correlation-id") ??
+          null;
+        // Per-client fingerprint: Origin + UA + IP hash. Binds anonymous
+        // writes so one abusive client cannot exhaust the merchant's shared
+        // `anon` bucket, and cross-client bursts are throttled per fingerprint.
+        const origin = request.headers.get("origin") ?? "";
+        const ua = request.headers.get("user-agent") ?? "";
+        const ip =
+          request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "";
+        let fingerprint = "nofp";
+        try {
+          const { digest } = await import("@/lib/support-guardrails");
+          fingerprint = (await digest(`${origin}|${ua}|${ip}`)).slice(0, 32);
+        } catch {
+          const rawFp = `${origin.slice(0, 32)}:${ip.slice(0, 32)}`;
+          fingerprint = rawFp === ":" ? "nofp" : rawFp;
+        }
+        // Rule 22: cross-slug conversation-UUID swap is rejected before any work.
+        if (conversationId) {
+          try {
+            const { data: owner } = await (
+              supabaseAdmin as unknown as {
+                from: (t: string) => {
+                  select: (c: string) => {
+                    eq: (
+                      col: string,
+                      v: string,
+                    ) => {
+                      maybeSingle: () => Promise<{
+                        data: { merchant_id?: string } | null;
+                      }>;
+                    };
+                  };
+                };
+              }
+            )
+              .from("ai_conversations")
+              .select("merchant_id")
+              .eq("id", conversationId)
+              .maybeSingle();
+            if (owner?.merchant_id && owner.merchant_id !== merch.id) {
+              return Response.json(
+                { error: "cross_tenant" },
+                { status: 403, headers: NO_STORE },
+              );
+            }
+          } catch {
+            // Lookup unavailable → fall through to scoped lane checks.
+          }
+        }
 
         // Rate limit IDENTICAL to support.ask: same bucket, same subject key
-        // (phone hash → conversation → anon). A blocked verdict is delivered
-        // as a screened final frame so the widget applies its normal
-        // cooldown path and keeps the stream probe alive.
+        // (phone hash → conversation → per-fingerprint anon). A blocked verdict
+        // is delivered as a screened final frame so the widget applies its
+        // normal cooldown path and keeps the stream probe alive.
         const { rateLimit, rateLimitHeaders } =
           await import("@/lib/rate-limit.server");
-        let subject = conversationId ?? "anon";
+        let subject = conversationId ?? `anon:${fingerprint}`;
         try {
           if (body.phone?.trim()) {
             const { hashPhone } = await import("@/lib/ai-support.server");
             subject = await hashPhone(body.phone.trim());
           }
         } catch {
-          subject = conversationId ?? "anon";
+          subject = conversationId ?? `anon:${fingerprint}`;
         }
         const verdict = await rateLimit(
           "support.ask",
           `${merch.id}:${subject}`,
         );
-        const rlHeaders = { ...rateLimitHeaders(verdict), ...NO_STORE };
-        if (!verdict.allowed) {
+        // Minimum viable write binding: a second per-fingerprint bucket so a
+        // single abusive client cannot burn the merchant's shared budget.
+        const fpVerdict = await rateLimit(
+          "support.ask",
+          `${merch.id}:fp:${fingerprint}`,
+        );
+        const blocked = !verdict.allowed || !fpVerdict.allowed;
+        const effectiveVerdict = !verdict.allowed ? verdict : fpVerdict;
+        const rlHeaders = {
+          ...rateLimitHeaders(effectiveVerdict),
+          ...NO_STORE,
+        };
+        if (blocked) {
           const { en } = await import("@/lib/i18n-dict");
           const limited: StreamFinal = {
             conversationId,
@@ -250,7 +313,7 @@ export const Route = createFileRoute("/api/public/support/stream")({
             confidence: "unsure",
             needsAgent: false,
             cta: "ticket",
-            retryAfter: verdict.reset_at,
+            retryAfter: effectiveVerdict.reset_at,
           };
           return singleFrameResponse({ final: limited }, rlHeaders);
         }
@@ -312,13 +375,17 @@ export const Route = createFileRoute("/api/public/support/stream")({
                   const state = await getConversationTakeoverState(
                     merch.id,
                     conversationId,
+                    { correlationId },
                   );
                   if (state?.takeoverMode === "human_takeover") {
                     sendErrorAndClose("human_takeover_suppressed");
                     return;
                   }
                 } catch {
-                  // Best effort only; the fallback path still suppresses.
+                  // Fail-closed: on lookup failure suppress the stream; the
+                  // non-streaming fallback owns the suppression reply.
+                  sendErrorAndClose("human_takeover_suppressed");
+                  return;
                 }
               }
 
@@ -329,9 +396,14 @@ export const Route = createFileRoute("/api/public/support/stream")({
                   await import("@/lib/support-agent.server");
                 if (isGreetingMessage(body.message)) {
                   const greeting = buildGreetingReply(merch.name, locale);
+                  const { screenOutbound } =
+                    await import("@/lib/support-guardrails");
+                  const screened = screenOutbound(greeting, { pinned: false });
                   sendFinal({
                     conversationId,
-                    reply: greeting,
+                    reply: screened.allowed
+                      ? greeting
+                      : "Welcome! How can I help you today?",
                     provenance: null,
                     sources: [],
                     confidence: "grounded",
@@ -573,8 +645,10 @@ export const Route = createFileRoute("/api/public/support/stream")({
                       0,
                       3500,
                     );
-                  const ticketSubject =
-                    body.message.slice(0, 120) || "Support request";
+                  // Subject carries customer text — redact PII like the body.
+                  const { buildTicketSubject } =
+                    await import("@/lib/support-agent.server");
+                  const ticketSubject = buildTicketSubject(body.message);
                   const review = needsApprovalReview({
                     subject: ticketSubject,
                     body: transcript,
@@ -619,9 +693,12 @@ export const Route = createFileRoute("/api/public/support/stream")({
                       transcript: [
                         {
                           role: "customer",
-                          body: body.message.slice(0, 2000),
+                          body: redactPii(body.message).text.slice(0, 2000),
                         },
-                        { role: "bot", body: replyOut.slice(0, 2000) },
+                        {
+                          role: "bot",
+                          body: redactPii(replyOut).text.slice(0, 2000),
+                        },
                       ],
                       confidence: "unsure",
                       provenance: null,

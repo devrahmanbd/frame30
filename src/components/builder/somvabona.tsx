@@ -23,7 +23,7 @@ import type {
   SectionType,
 } from "@/lib/builder-ast";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
-import { useSongoskritiReveals } from "./songoskriti-motion";
+import { useScrollReveals } from "./songoskriti-motion";
 import { MediaFrame } from "./primitives/MediaFrame";
 import { Rail } from "./primitives/Rail";
 import { ProductCard, ProductCardSkeleton } from "./primitives/ProductCard";
@@ -164,7 +164,7 @@ const PriceBuckets: WidgetComponent = ({
     }))
     .filter((b) => b.label && b.href && b.maxPrice > 0);
   const scope = useRef<HTMLElement | null>(null);
-  useSongoskritiReveals(scope, true);
+  useScrollReveals(scope, true);
   if (!str("heading") && buckets.length === 0) {
     return editing ? (
       <p className="text-xs text-muted-foreground">
@@ -180,7 +180,7 @@ const PriceBuckets: WidgetComponent = ({
   return (
     <section
       ref={scope}
-      data-songoskriti-reveal
+      data-reveal
       className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 py-12 sm:px-8 sm:py-24"
     >
       {str("heading") && (
@@ -246,7 +246,7 @@ const OccasionMatrix: WidgetComponent = ({
     }))
     .filter((col) => col.title && col.href);
   const scope = useRef<HTMLElement | null>(null);
-  useSongoskritiReveals(scope, true);
+  useScrollReveals(scope, true);
   if (!str("heading") && occasions.length === 0 && collections.length === 0) {
     return editing ? (
       <p className="text-xs text-muted-foreground">
@@ -261,7 +261,7 @@ const OccasionMatrix: WidgetComponent = ({
   return (
     <section
       ref={scope}
-      data-songoskriti-reveal
+      data-reveal
       className="w-full border-t border-border/60 py-12 sm:py-24"
     >
       <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8">

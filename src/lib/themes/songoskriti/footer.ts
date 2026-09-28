@@ -149,10 +149,35 @@ export const PAYMENTS_LIST = [
  * Statement + newsletter (the single CTA) + link columns + payments +
  * colophon. The newsletter keeps the only button-label prop in the footer;
  * support tiles are deliberately absent — they competed with the signup.
+ *
+ * Brand zones live here as authored props (with `_bn` twins): the shared
+ * `footer_sitemap` renderer is prop-driven and hardcodes no brand content,
+ * so these same strings must be passed explicitly to keep the storefront
+ * output identical. Prop names avoid the bare `buttonLabel` key on purpose —
+ * the wiring contract reserves that key for the standalone `newsletter`
+ * section (exactly one newsletter CTA).
  */
 export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
   return [
     s("footer_sitemap", {
+      statementHeading: STATEMENT.heading,
+      statementHeading_bn: STATEMENT.heading_bn,
+      statementBody: STATEMENT.body,
+      statementBody_bn: STATEMENT.body_bn,
+      storyHref: "/pages/about",
+      storyLabel: "OUR STORY →",
+      storyLabel_bn: "আমাদের গল্প →",
+      newsletterHeading: NEWSLETTER.heading,
+      newsletterHeading_bn: NEWSLETTER.heading_bn,
+      newsletterButton: NEWSLETTER.buttonLabel,
+      newsletterButton_bn: NEWSLETTER.buttonLabel_bn,
+      newsletterConsent: NEWSLETTER.consentText,
+      newsletterConsent_bn: NEWSLETTER.consentText_bn,
+      brandName: BRAND_NAME,
+      brandName_bn: BRAND_NAME_BN,
+      paymentsHeading: PAYMENTS_HEADING,
+      paymentsHeading_bn: PAYMENTS_HEADING_BN,
+      paymentsMarks: PAYMENT_MARKS,
       c1Title: FALLBACK_COLUMNS[0]!.title,
       c1Title_bn: FALLBACK_COLUMNS[0]!.title_bn,
       c1Links: FALLBACK_COLUMNS[0]!.links,

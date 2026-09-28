@@ -76,7 +76,9 @@ export const builderPublishFn = createServerFn({ method: "POST" })
   });
 
 export const builderRollbackFn = createServerFn({ method: "POST" })
-  .middleware([requirePermission("themes.update")])
+  // Rule 14 (authz, human-review): rollback flips live content, so it
+  // requires themes.publish — update-only roles cannot restore versions.
+  .middleware([requirePermission("themes.publish")])
   .inputValidator((d: unknown) =>
     z.object({ versionId: z.string().uuid() }).parse(d),
   )
@@ -87,7 +89,9 @@ export const builderRollbackFn = createServerFn({ method: "POST" })
   });
 
 export const builderScheduleFn = createServerFn({ method: "POST" })
-  .middleware([requirePermission("themes.update")])
+  // Rule 14 (authz, human-review): scheduling publish AND unpublish changes
+  // live serving time, so both actions require themes.publish.
+  .middleware([requirePermission("themes.publish")])
   .inputValidator((d: unknown) =>
     z
       .object({

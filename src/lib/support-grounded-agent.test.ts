@@ -5,6 +5,10 @@ import {
 } from "./support-agent.server";
 import { resetRateLimitCircuitBreaker } from "./rate-limit.server";
 
+// QUBICKLE Rule 4/5: offline widget suites opt in to the explicit test-only
+// DB proxy (never used in production).
+process.env.FRAMIQUE_ALLOW_TEST_DB_PROXY = "1";
+
 beforeEach(() => {
   resetRateLimitCircuitBreaker();
   clearConversationRecentTurns();

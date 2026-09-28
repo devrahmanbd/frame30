@@ -19,6 +19,24 @@
  *   Catalog installs write `theme_id: NULL` on the ledger row, so matching
  *   ledger rows by `theme_id` alone misses every catalog install — the slug
  *   fallback below is the coherent read path, not a second source of truth.
+ *
+ * QUBICKLE M1 — single-writer contract for the ledger NULL divergence
+ * (Rule 11/13, Sept 2026). Exactly one writer owns each nullable ledger
+ * pointer, and readers must respect the pairing:
+ * - Third-party installs (marketplace-install.server.ts `installListing`)
+ *   write `theme_id = listing.id` / `widget_id = listing.id`.
+ * - Catalog installs (themes/appearance.server.ts `installCatalogTheme`)
+ *   write `theme_id = NULL`, `widget_id = NULL`; identity lives ONLY in
+ *   `listing_slug`, linkage ONLY in `store_themes.source_install_id`.
+ * - Upload installs write a synthetic `listing_slug = upload:<slug>-<rand>`
+ *   unique per install; identity is per-row, never per-slug.
+ * - Builtin widget installs write `theme_id = NULL`, `widget_id = NULL`
+ *   with the builtin id in `listing_slug`.
+ * Readers: badge Installed matches `theme_id = listingId OR
+ * `listing_slug = slug` (see hasLiveLedger); deletes resolve by
+ * `source_install_id` and NEVER by slug-sweep (C1). Any new writer that
+ * adds a third NULL convention must update this contract, not silently
+ * extend it.
  */
 
 export type ThemeStateRef = {
@@ -37,6 +55,24 @@ export type InstallRef = {
 /** Ledger rows in these states count as "installed" for badges and actions. */
 export function isLiveInstallStatus(status: string): boolean {
   return status === "installed" || status === "trial" || status === "paused";
+}
+
+/**
+ * QUBICKLE H5 — status is not enough: an expired trial is lapsed, never
+ * live, even while its row still reads `trial` (lazy-lapse in
+ * marketplace-install.server.ts parks it on terminal `lapsed`; this helper
+ * is the read-side guard for callers that already hold the row).
+ */
+export function isInstallLive(
+  status: string,
+  expiresAt: string | null | undefined,
+  nowMs: number = Date.now(),
+): boolean {
+  if (!isLiveInstallStatus(status)) return false;
+  if (status !== "trial" || !expiresAt) return true;
+  const expiry = Date.parse(expiresAt);
+  if (Number.isNaN(expiry)) return false;
+  return expiry > nowMs;
 }
 
 function hasLiveLedger(

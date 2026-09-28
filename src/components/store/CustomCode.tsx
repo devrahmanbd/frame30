@@ -53,9 +53,13 @@ export function CustomCodeScript({ code, consented = false }: Props) {
       el.type = "text/javascript";
       el.defer = true;
       el.dataset["fqCustomJs"] = "";
-      // Read the per-request CSP nonce from the <meta> tag injected during SSR
-      // by withSecurityHeaders(). This allows the script to pass the CSP check.
-      const meta = document.querySelector('meta[name="csp-nonce"]');
+      // Read the per-request CSP nonce from the csp-nonce meta tag. TanStack
+      // emits property="csp-nonce", our server gate emits name="csp-nonce";
+      // accept either — React prunes server-injected head nodes during
+      // hydration, so the surviving tag varies by route.
+      const meta = document.querySelector(
+        'meta[name="csp-nonce"], meta[property="csp-nonce"]',
+      );
       if (meta) el.nonce = meta.getAttribute("content") || "";
       el.textContent = code.js;
       document.body.appendChild(el);

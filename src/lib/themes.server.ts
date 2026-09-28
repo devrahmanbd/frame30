@@ -453,6 +453,23 @@ export async function rollbackVersion(
   versionId: string,
 ) {
   await rateLimit("builder.publish", merchantId);
+  // Rule 15: merchant predicate BEFORE the RPC so a cross-merchant versionId
+  // replays fail closed here even if the RPC membership check is bypassed.
+  // (RPC signature unchanged — no migration — defense in depth at the app
+  // layer; the RPC still enforces membership on v_merchant. Human-review:
+  // ideal is _merchant_id in the RPC with equality enforcement in SQL.)
+  const { data: owned } = await db
+    .from("theme_versions")
+    .select("id")
+    .eq("id", versionId)
+    .eq("merchant_id", merchantId)
+    .maybeSingle();
+  if (!owned) {
+    throw new BuilderError(
+      "builder.version_missing",
+      "Version not found for this merchant",
+    );
+  }
   const newId = await rpc<string>(db, "theme_rollback", {
     _version_id: versionId,
   });
@@ -462,6 +479,7 @@ export async function rollbackVersion(
     .from("theme_versions")
     .select("theme_id")
     .eq("id", versionId)
+    .eq("merchant_id", merchantId)
     .maybeSingle();
   if (target?.theme_id) {
     await restoreCustomCode(db, merchantId, target.theme_id, versionId).catch(
@@ -488,6 +506,37 @@ export async function scheduleTheme(
   },
 ) {
   await rateLimit("builder.schedule", merchantId);
+  // Rule 15: verify theme (+ version, when pinned) belongs to the caller
+  // before queueing. RPC derives merchant from the theme row and checks
+  // membership, but without an explicit caller-merchant predicate a replay
+  // across merchants the actor co-belongs to would pass — fail closed here.
+  const { data: theme } = await db
+    .from("store_themes")
+    .select("id")
+    .eq("id", input.themeId)
+    .eq("merchant_id", merchantId)
+    .maybeSingle();
+  if (!theme) {
+    throw new BuilderError(
+      "builder.theme_missing",
+      "Theme not found for this merchant",
+    );
+  }
+  if (input.versionId) {
+    const { data: version } = await db
+      .from("theme_versions")
+      .select("id")
+      .eq("id", input.versionId)
+      .eq("merchant_id", merchantId)
+      .eq("theme_id", input.themeId)
+      .maybeSingle();
+    if (!version) {
+      throw new BuilderError(
+        "builder.version_missing",
+        "Version not found for this merchant",
+      );
+    }
+  }
   const id = await rpc<string>(db, "theme_schedule_set", {
     _theme_id: input.themeId,
     _version_id: input.versionId,
@@ -503,6 +552,20 @@ export async function cancelSchedule(
   scheduleId: string,
 ) {
   await rateLimit("builder.schedule", merchantId);
+  // Rule 15: merchant predicate before cancel — cross-merchant scheduleId
+  // replays fail closed here (RPC also checks membership on s.merchant_id).
+  const { data: owned } = await db
+    .from("theme_schedules")
+    .select("id")
+    .eq("id", scheduleId)
+    .eq("merchant_id", merchantId)
+    .maybeSingle();
+  if (!owned) {
+    throw new BuilderError(
+      "builder.schedule_missing",
+      "Schedule not found for this merchant",
+    );
+  }
   await rpc<boolean>(db, "theme_schedule_cancel", { _schedule_id: scheduleId });
   return { ok: true };
 }

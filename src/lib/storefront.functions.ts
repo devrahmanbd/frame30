@@ -30,9 +30,25 @@ export const getStorefront = createServerFn({ method: "GET" })
         const { verifyPreviewToken, previewSecret } =
           await import("./theme-preview.server");
         preview = verifyPreviewToken(previewSecret(), data.previewToken);
+        if (!preview) {
+          // Rule 17: unverifiable tokens are observable (counter), but still
+          // fail closed to the published theme below.
+          const { incr } = await import("./observability.server");
+          incr("framique_preview_token_verify_failed_total", {
+            reason: "invalid",
+          });
+        }
       } catch {
-        // Unverifiable token: fall through to the published theme below.
+        // Unverifiable token: fail closed to published + count.
         preview = null;
+        try {
+          const { incr } = await import("./observability.server");
+          incr("framique_preview_token_verify_failed_total", {
+            reason: "error",
+          });
+        } catch {
+          // Observability must never break the storefront.
+        }
       }
     }
     const found = await loadStorefront(data.slug, preview);
@@ -289,6 +305,25 @@ export const resolveStorefrontHostFn = createServerFn({
 }).handler(async () => {
   const { resolveStorefrontHost } = await import("./storefront-host.server");
   return resolveStorefrontHost();
+});
+
+/**
+ * System-domain-only theme preview gate (Sept 2026 security fix).
+ *
+ * The `/theme-preview/$key` route loader calls this and throws notFound()
+ * when denied. Reads the live request host server-side, so client-side SPA
+ * navigation on a merchant host is denied exactly like direct hits (which
+ * the `server.ts` edge gate already 404s before SSR). Fail closed: any
+ * resolution failure denies.
+ */
+export const themePreviewHostGateFn = createServerFn({
+  method: "GET",
+}).handler(async () => {
+  // Rule 28 shared path: loopback-aware preview host (not the strict
+  // custom-domain normalizer), with trusted XFH handling. Fail closed.
+  const { currentPreviewHost, isThemePreviewHostAllowed } =
+    await import("./storefront-host.server");
+  return { allowed: isThemePreviewHostAllowed(currentPreviewHost()) };
 });
 
 /**

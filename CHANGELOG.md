@@ -68,6 +68,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - DeepWiki integration removed (dataset stubbed, copilot on live KB).
 - mem0.ai changelog mirror (policy/cutover/theme/deploy/gaps/ci).
 
+### Security
+
+- Theme preview is system-domain-only: `/theme-preview/*` on merchant/custom
+  hosts now answers bare 404 (edge gate in `server.ts` + route-loader gate
+  for client-side SPA navigation). Previously the route SSR'd publicly on
+  mapped merchant hosts (proven live: identical 200/160243B on
+  flamelancer.com and framique.qubickle.com). Builder `?preview_theme_id=`
+  and signed split previews unaffected. Pinned by `theme-preview-gate` unit
+  + contract tests (17 tests).
+
 ### Changed
 
 - **CI moved GitHub Actions → CircleCI** (`.circleci/config.yml` owns

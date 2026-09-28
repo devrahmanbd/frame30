@@ -31,7 +31,10 @@ import { DEMO_CATALOGS } from "@/lib/demo-catalog";
 import { ThemeSurface } from "@/components/builder/ThemeSurface";
 import { CheckoutMock } from "@/components/store/CheckoutMock";
 import { OrderConfirmationMock } from "@/components/store/OrderConfirmationMock";
-import { StoreHeader, MinimalCheckoutHeader } from "@/components/store/StoreHeader";
+import {
+  StoreHeader,
+  MinimalCheckoutHeader,
+} from "@/components/store/StoreHeader";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { WidgetDataProvider } from "@/components/builder/WidgetDataContext";
 import {
@@ -64,7 +67,6 @@ import {
   resolveDemoFocus,
 } from "@/lib/theme-preview-nav";
 import { useSectionChannel } from "@/components/builder/useSectionChannel";
-
 
 /* Click routing (block checks, href parsing, click/submit interception) lives in
    @/lib/theme-preview-nav — the single source. This frame only imports it. */
@@ -115,12 +117,23 @@ function DemoProductMediaGallery({
   variants?: any[];
 }) {
   const variantChannel = useSectionChannel(blueprintKey, "variant");
-  const selectedVariantIndex = !isNaN(parseInt(variantChannel.ids[0] || "", 10)) ? parseInt(variantChannel.ids[0] as string, 10) : 0;
+  const selectedVariantIndex = !isNaN(parseInt(variantChannel.ids[0] || "", 10))
+    ? parseInt(variantChannel.ids[0] as string, 10)
+    : 0;
 
   const selectedVariant = variants[selectedVariantIndex];
-  const validImages = (selectedVariant?.images?.length > 0 ? selectedVariant.images : images).filter(Boolean);
-  console.log("DemoProductMediaGallery validImages:", validImages, "variants:", variants, "selectedVariantIndex:", selectedVariantIndex);
-  
+  const validImages = (
+    selectedVariant?.images?.length > 0 ? selectedVariant.images : images
+  ).filter(Boolean);
+  console.log(
+    "DemoProductMediaGallery validImages:",
+    validImages,
+    "variants:",
+    variants,
+    "selectedVariantIndex:",
+    selectedVariantIndex,
+  );
+
   const [index, setIndex] = useState(0);
 
   // Reset index to 0 when the image set changes due to variant change
@@ -129,11 +142,14 @@ function DemoProductMediaGallery({
   }, [selectedVariantIndex]);
 
   if (validImages.length === 0) {
-    return <div className="relative w-full aspect-[4/5] bg-muted rounded-lg max-h-[70vh]" />;
+    return (
+      <div className="relative w-full aspect-[4/5] bg-muted rounded-lg max-h-[70vh]" />
+    );
   }
 
   const active = Math.min(index, validImages.length - 1);
-  const step = (delta: number) => setIndex((i) => (i + delta + validImages.length) % validImages.length);
+  const step = (delta: number) =>
+    setIndex((i) => (i + delta + validImages.length) % validImages.length);
 
   return (
     <section
@@ -208,19 +224,21 @@ function DemoProductMediaGallery({
 }
 
 function useMockProductSlots(
-
   template: TemplateKey,
   demoFocus: any,
   themeName: string,
-  blueprintKey: string
+  blueprintKey: string,
 ) {
   const [variantId, setVariantId] = useState<string>("");
   const [added, setAdded] = useState(false);
 
   // If not product template or no demo product, return undefined so it falls back
-  const demoProduct = template === "product" && demoFocus 
-    ? DEMO_CATALOGS[blueprintKey as keyof typeof DEMO_CATALOGS]?.products.find((p: any) => p.slug === demoFocus.slug) 
-    : null;
+  const demoProduct =
+    template === "product" && demoFocus
+      ? DEMO_CATALOGS[
+          blueprintKey as keyof typeof DEMO_CATALOGS
+        ]?.products.find((p: any) => p.slug === demoFocus.slug)
+      : null;
 
   const mappedVariants = demoProduct
     ? demoProduct.variants.map((v: any) => ({
@@ -229,15 +247,18 @@ function useMockProductSlots(
         sku: v.sku,
         price_amount_minor_int: v.price,
         compare_at_amount_minor_int: v.compare_at,
-        stock_quantity: v.stock ?? 10
+        stock_quantity: v.stock ?? 10,
       }))
     : [];
 
   // Initialize variant on product change
   useEffect(() => {
     if (demoProduct) {
-      setVariantId((demoProduct.variants[0] as any)?.id ?? demoProduct.variants[0]?.name ?? "");
-
+      setVariantId(
+        (demoProduct.variants[0] as any)?.id ??
+          demoProduct.variants[0]?.name ??
+          "",
+      );
     }
   }, [demoProduct?.slug]);
 
@@ -250,7 +271,7 @@ function useMockProductSlots(
     if (idx >= 0) {
       variantChannel.push(idx.toString());
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [variantId, blueprintKey]);
 
   if (!demoProduct) return undefined;
@@ -264,27 +285,35 @@ function useMockProductSlots(
     tags: demoProduct.tags ?? [],
     category_id: demoProduct.category ?? null,
   };
-  
+
   const merchantPayload = {
     id: "demo",
     name: themeName,
     slug: blueprintKey,
-    currency_code: "BDT"
+    currency_code: "BDT",
   };
-  
+
   const settingsPayload = {
     shipping_flat_minor_int: 6000,
     cod_enabled: true,
     mfs_enabled: true,
-    free_shipping_threshold_minor_int: null
+    free_shipping_threshold_minor_int: null,
   };
-  
-  const mappedVariant = mappedVariants.find((v: any) => v.id === variantId) ?? mappedVariants[0] ?? null;
+
+  const mappedVariant =
+    mappedVariants.find((v: any) => v.id === variantId) ??
+    mappedVariants[0] ??
+    null;
 
   const breadcrumb = (
     <nav className="text-xs font-medium uppercase tracking-wider text-muted-foreground mb-6">
-      <span className="hover:text-foreground transition-colors cursor-pointer">{themeName}</span>
-      <span aria-hidden className="mx-2"> / </span>
+      <span className="hover:text-foreground transition-colors cursor-pointer">
+        {themeName}
+      </span>
+      <span aria-hidden className="mx-2">
+        {" "}
+        /{" "}
+      </span>
       <span className="text-foreground">{demoProduct.title}</span>
     </nav>
   );
@@ -293,17 +322,24 @@ function useMockProductSlots(
   // the gallery using the images injected by applyDemoFocus, and the channel push above
   // drives variant→gallery binding reactively.
   const meta = <ProductInfo product={productPayload as any} />;
-  const priceBlock = mappedVariant ? <PriceBlock variant={mappedVariant as any} currencyCode="BDT" /> : null;
+  const priceBlock = mappedVariant ? (
+    <PriceBlock variant={mappedVariant as any} currencyCode="BDT" />
+  ) : null;
 
-  
   const addToCart = mappedVariant ? (
     <div>
-      <VariantSelector variants={mappedVariants as any} variantId={variantId} setVariantId={setVariantId} />
+      <VariantSelector
+        variants={mappedVariants as any}
+        variantId={variantId}
+        setVariantId={setVariantId}
+      />
       <AddToCart
         variant={mappedVariant as any}
         merchant={merchantPayload as any}
         custom={false}
-        add={(id, qty) => { console.log("Mock add to cart", id, qty); }}
+        add={(id, qty) => {
+          console.log("Mock add to cart", id, qty);
+        }}
         added={added}
         setAdded={setAdded}
         settings={settingsPayload as any}
@@ -311,15 +347,20 @@ function useMockProductSlots(
     </div>
   ) : null;
 
-  
   const pageContent = (
     <>
       <ProductDetails product={productPayload as any} />
-      <ProductCraftStory description={demoProduct.description} />
+      <ProductCraftStory
+        description={demoProduct.description}
+        themeKey={blueprintKey}
+      />
     </>
   );
 
-  const productImages = demoFocus?.images ?? demoProduct?.images ?? (demoProduct?.image_url ? [demoProduct.image_url] : []);
+  const productImages =
+    demoFocus?.images ??
+    demoProduct?.images ??
+    (demoProduct?.image_url ? [demoProduct.image_url] : []);
   if (typeof window !== "undefined") {
     (window as any).__DEBUG_PRODUCT = demoProduct;
     (window as any).__DEBUG_FOCUS = demoFocus;
@@ -338,10 +379,9 @@ function useMockProductSlots(
     product_meta: meta,
     price_block: priceBlock,
     add_to_cart: addToCart,
-    page_content: pageContent
+    page_content: pageContent,
   };
 }
-
 
 export function ThemePreviewFrame({
   themeName,
@@ -459,7 +499,12 @@ export function ThemePreviewFrame({
   const { lang } = useLang();
   // Account center is context-gated: feed the merchant sections demo rows
   // so the account tab renders instead of parking on skeletons.
-  const productSlots = useMockProductSlots(template, demoFocus, themeName, blueprintKey);
+  const productSlots = useMockProductSlots(
+    template,
+    demoFocus,
+    themeName,
+    blueprintKey,
+  );
   const accountSlots = useMemo(() => {
     if (template !== "account") return undefined;
     const sections = [...ast.header, ...ast.main, ...ast.footer];
@@ -486,13 +531,16 @@ export function ThemePreviewFrame({
     };
   }, [template, ast, previewData, lang, blueprintKey]);
 
-  const cartSlots = template === "cart" ? {
-    cart_lines: null,
-    cart_summary: null,
-    cart_drawer: null,
-    checkout_steps: null,
-    payment_methods: null,
-  } : undefined;
+  const cartSlots =
+    template === "cart"
+      ? {
+          cart_lines: null,
+          cart_summary: null,
+          cart_drawer: null,
+          checkout_steps: null,
+          payment_methods: null,
+        }
+      : undefined;
 
   return (
     <div
@@ -544,6 +592,7 @@ export function ThemePreviewFrame({
                   template={template}
                   editing={false}
                   storeSlug={blueprintKey}
+                  themeKey={blueprintKey}
                   contextSlots={accountSlots || productSlots || undefined}
                 />
               ))}
@@ -551,10 +600,19 @@ export function ThemePreviewFrame({
             {/* Wordmark row, as on a live storefront — the blueprint's
                 navigation sections render beneath it. */}
             {template === "checkout" ? (
-              <CheckoutMock slug={blueprintKey} themeName={themeName} />
+              <CheckoutMock
+                slug={blueprintKey}
+                themeName={themeName}
+                themeKey={blueprintKey}
+              />
             ) : (
               <>
-                <StoreHeader slug={blueprintKey} name={themeName} menus={null} />
+                <StoreHeader
+                  slug={blueprintKey}
+                  name={themeName}
+                  menus={null}
+                  themeKey={blueprintKey}
+                />
                 <WidgetDataProvider
                   bundle={previewData.bundle}
                   map={previewData.map}
@@ -569,13 +627,22 @@ export function ThemePreviewFrame({
                         template={template}
                         editing={false}
                         storeSlug={blueprintKey}
-                        contextSlots={{ ...accountSlots, ...productSlots, ...cartSlots }}
+                        themeKey={blueprintKey}
+                        contextSlots={{
+                          ...accountSlots,
+                          ...productSlots,
+                          ...cartSlots,
+                        }}
                       />
                     ))}
 
                   {/* main slot */}
                   {mockOrder ? (
-                    <OrderConfirmationMock slug={blueprintKey} themeName={themeName} status={mockOrder} />
+                    <OrderConfirmationMock
+                      slug={blueprintKey}
+                      themeName={themeName}
+                      status={mockOrder}
+                    />
                   ) : focusedMain.length > 0 ? (
                     <main className="space-y-12 sm:space-y-16 pb-16 [&>[data-fq-node^='announcement_bar']]:!mt-0 [&>[data-fq-node^='announcement_bar']+*]:!mt-0">
                       {focusedMain.map((section) => (
@@ -585,7 +652,12 @@ export function ThemePreviewFrame({
                           template={template}
                           editing={false}
                           storeSlug={blueprintKey}
-                          contextSlots={{ ...accountSlots, ...productSlots, ...cartSlots }}
+                          themeKey={blueprintKey}
+                          contextSlots={{
+                            ...accountSlots,
+                            ...productSlots,
+                            ...cartSlots,
+                          }}
                           primary={section.id === primaryId}
                         />
                       ))}
@@ -606,7 +678,12 @@ export function ThemePreviewFrame({
                             section={section}
                             template={template}
                             editing={false}
-                            contextSlots={{ ...accountSlots, ...productSlots, ...cartSlots }}
+                            themeKey={blueprintKey}
+                            contextSlots={{
+                              ...accountSlots,
+                              ...productSlots,
+                              ...cartSlots,
+                            }}
                           />
                         ))}
                       </div>

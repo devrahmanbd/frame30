@@ -1,3 +1,23 @@
+/**
+ * Marketplace installs — the write side of the install ledger.
+ *
+ * QUBICKLE C3 ARCHITECTURAL DECISION (Rules 3/12/13 — HUMAN REVIEW REQUIRED,
+ * Sept 2026): this module writes the theme tables (store_themes,
+ * theme_versions, theme_drafts) directly through tenant RLS, which
+ * CONTRADICTS supabase/migrations/20260923_retire_themes.sql (RESTRICTIVE
+ * deny-write policies on every theme table). DECISION: adopt the un-retire
+ * path — supabase/migrations/20260924_theme_write_restore.sql drops every
+ * RESTRICTIVE policy and restores merchant-scoped write policies, and it
+ * sorts after the retire migration, so tenant RLS is the single active
+ * contract. Rationale: the purge was rescoped (only old preset packs stay
+ * removed; the theme engine is live again), tenant RLS already bounds every
+ * write to is_merchant_member(merchant_id), and a privileged service-role
+ * bypass would trade an auditable DB boundary for app-only authorization
+ * (weaker under Rule 3). There is exactly ONE contract — no silent dual
+ * path. Pinned by src/lib/marketplace-qubickle-contract.test.ts
+ * ("C3/M4 migration contract"); any future retire/restore must update that
+ * test in the same change.
+ */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { money } from "./money";
@@ -30,6 +50,11 @@ function split(gross: number) {
   return { seller, platform: gross - seller };
 }
 
+function isDuplicateKey(error: unknown): boolean {
+  const msg = (error as { message?: string } | null)?.message ?? "";
+  return msg.includes("duplicate key");
+}
+
 async function loadListing(db: Client, kind: Kind, id: string) {
   const { data } = await db
     .from(table(kind))
@@ -48,25 +73,104 @@ function impactedNodes(manifest: unknown) {
   return Array.isArray(m.breaking_nodes) ? m.breaking_nodes.map(String) : [];
 }
 
+/**
+ * QUBICKLE H5 — lazy trial lapse. There is no sweep cron in this lane
+ * (ops-owned), so every install read/write path parks past-due trials on
+ * terminal `lapsed` before doing anything else. Each lapse is audited with a
+ * null actor (system transition, not a merchant click).
+ */
+export async function lapseExpiredTrials(
+  db: Client,
+  merchantId: string,
+  nowMs: number = Date.now(),
+) {
+  const nowIso = new Date(nowMs).toISOString();
+  const { data: expired } = await db
+    .from("marketplace_installs")
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("status", "trial")
+    .lte("expires_at", nowIso);
+  const ids = ((expired ?? []) as { id: string }[]).map((r) => r.id);
+  if (!ids.length) return { lapsed: [] as string[] };
+  const { error } = await db
+    .from("marketplace_installs")
+    .update({ status: "lapsed" })
+    .eq("merchant_id", merchantId)
+    .in("id", ids);
+  if (error) throw new Error("market_lapse_failed");
+  const { auditAction } = await import("./hardening.server");
+  for (const id of ids) {
+    await auditAction(
+      db,
+      merchantId,
+      null,
+      "market.trial_lapsed",
+      "install",
+      {
+        expired: true,
+      },
+      id,
+    );
+  }
+  return { lapsed: ids };
+}
+
+type ReplayHit = {
+  id: string;
+  status: string;
+  kind: string;
+  theme_id: string | null;
+  widget_id: string | null;
+  listing_slug: string;
+};
+
+/**
+ * QUBICKLE H1/H2 (Rule 8): a replay binds the FULL
+ * (merchant, key, kind, listing) tuple. A reused key with a different kind
+ * or listing is `market_idempotency_conflict` — never a silent replay of
+ * someone else's install. A lapsed (expired-trial) row never replays live.
+ */
+function boundReplay(
+  hit: ReplayHit,
+  input: InstallInput,
+  listingSlug: string,
+): { installId: string; replayed: true; impacted: string[] } {
+  if (hit.status === "lapsed") throw new Error("market_trial_expired");
+  const sameKind = hit.kind === input.kind;
+  const sameListing =
+    input.kind === "theme"
+      ? hit.theme_id === input.listingId || hit.listing_slug === listingSlug
+      : hit.widget_id === input.listingId || hit.listing_slug === listingSlug;
+  if (!sameKind || !sameListing) throw new Error("market_idempotency_conflict");
+  return { installId: hit.id, replayed: true, impacted: [] };
+}
+
 export async function installListing(
   db: Client,
   merchantId: string,
   input: InstallInput,
 ) {
+  // H5: park expired trials before any install state is read.
+  await lapseExpiredTrials(db, merchantId);
+
   const { data: existingKey } = await db
     .from("marketplace_installs")
-    .select("id, status")
+    .select("id, status, kind, theme_id, widget_id, listing_slug")
     .eq("merchant_id", merchantId)
     .eq("idempotency_key", input.idempotencyKey)
     .maybeSingle();
-  if (existingKey)
-    return {
-      installId: existingKey.id,
-      replayed: true,
-      impacted: [] as string[],
-    };
-
+  // A reused key with a different kind is a conflict on its face — no
+  // listing load needed (and a bogus listing id must not mask it).
+  if (existingKey && (existingKey as unknown as ReplayHit).kind !== input.kind)
+    throw new Error("market_idempotency_conflict");
   const listing = await loadListing(db, input.kind, input.listingId);
+  if (existingKey)
+    return boundReplay(
+      existingKey as unknown as ReplayHit,
+      input,
+      listing.slug,
+    );
   if (input.trial && !listing.trial_allowed)
     throw new Error("market_trial_not_allowed");
 
@@ -142,7 +246,59 @@ export async function installListing(
     })
     .select("id")
     .single();
-  if (error || !install) throw new Error("market_install_failed");
+  if (error || !install) {
+    // H2: a racing double-submit won the unique (merchant, key) race — the
+    // loser replays the winner instead of stacking a second install.
+    if (isDuplicateKey(error)) {
+      const { data: raced } = await db
+        .from("marketplace_installs")
+        .select("id, status, kind, theme_id, widget_id, listing_slug")
+        .eq("merchant_id", merchantId)
+        .eq("idempotency_key", input.idempotencyKey)
+        .maybeSingle();
+      if (raced)
+        return boundReplay(raced as unknown as ReplayHit, input, listing.slug);
+    }
+    throw new Error("market_install_failed");
+  }
+
+  // H7: the install itself is audited — actor, displaced snapshot, new shape.
+  const { auditAction: installAudit } = await import("./hardening.server");
+  await installAudit(
+    db,
+    merchantId,
+    input.consentedBy ?? null,
+    "market.installed",
+    input.kind,
+    {
+      before: previous,
+      after: {
+        listing: listing.slug,
+        version: pinned?.version ?? listing.version,
+        trial: input.trial,
+        charge_minor_int: charge,
+        currency: listing.currency_code,
+      },
+    },
+    install.id,
+  );
+
+  // H3: materialize BEFORE any money moves, so a theme-row failure
+  // compensates with just the install row — never an orphan charge.
+  // materializeListingTheme returns null for legit ledger-only manifests
+  // (no usable AST) and THROWS on DB/parse failure.
+  if (input.kind === "theme") {
+    try {
+      await materializeListingTheme(db, merchantId, install.id, listing);
+    } catch {
+      await db
+        .from("marketplace_installs")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .eq("id", install.id);
+      throw new Error("market_install_failed");
+    }
+  }
 
   if (charge > 0) {
     const { seller, platform } = split(charge);
@@ -163,7 +319,11 @@ export async function installListing(
         memo: `${listing.name} v${listing.version}`,
       });
     } catch {
-      await db.from("marketplace_installs").delete().eq("id", install.id);
+      await db
+        .from("marketplace_installs")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .eq("id", install.id);
       throw new Error("market_payment_failed");
     }
   }
@@ -172,16 +332,6 @@ export async function installListing(
     .from(table(input.kind))
     .update({ install_count: listing.install_count + 1 })
     .eq("id", listing.id);
-
-  // Third-party themes materialize their own inactive theme row (same shape
-  // as builtin installs) so Activate/Delete/badges work uniformly. Listings
-  // whose manifest carries no usable AST stay ledger-only, as before. The
-  // theme is never applied here — install is inert until Activate flips it.
-  if (input.kind === "theme") {
-    await materializeListingTheme(db, merchantId, install.id, listing).catch(
-      () => null,
-    );
-  }
 
   return {
     installId: install.id,
@@ -194,8 +344,15 @@ export async function installListing(
 }
 
 /**
- * Best-effort theme row for a third-party install. Returns null (leaving the
- * install ledger-only) when the manifest has no usable templates — never throws.
+ * Best-effort theme row for a third-party install.
+ *
+ * QUBICKLE H3 (Rule 4): two outcomes, never conflated —
+ * - `null`: the manifest carries no usable AST, so the install is
+ *   LEGITIMATELY ledger-only (unchanged historical behavior).
+ * - THROW (`market_materialize_failed`): templates failed to parse, or any
+ *   theme/version/draft/link write failed. Partial rows are compensated
+ *   tenant-scoped before throwing, so a half-materialized theme can never
+ *   strand the install behind a success response.
  */
 async function materializeListingTheme(
   db: Client,
@@ -203,68 +360,105 @@ async function materializeListingTheme(
   installId: string,
   listing: { id: string; slug: string; name: string; manifest: unknown },
 ): Promise<string | null> {
+  const manifest = (listing.manifest ?? {}) as {
+    templates?: unknown;
+    tokens?: unknown;
+  };
+  if (!manifest.templates || typeof manifest.templates !== "object")
+    return null;
+  const { parseTemplates, parseTokens } = await import("./builder-ast");
+  let templates: Record<string, unknown>;
+  let tokens: unknown;
   try {
-    const manifest = (listing.manifest ?? {}) as {
-      templates?: unknown;
-      tokens?: unknown;
-    };
-    if (!manifest.templates || typeof manifest.templates !== "object")
-      return null;
-    const { parseTemplates, parseTokens } = await import("./builder-ast");
-    const templates = parseTemplates(manifest.templates);
-    if (!Object.values(templates).some((t) => t && typeof t === "object"))
-      return null;
-    const tokens = parseTokens(manifest.tokens ?? {});
-    const { data: theme, error: themeError } = await db
-      .from("store_themes")
-      // No DB default on installed_at; NULL breaks the installed-list sort.
-      .insert({
-        merchant_id: merchantId,
-        name: listing.name,
-        is_active: false,
-        installed_at: new Date().toISOString(),
-      })
-      .select("id")
-      .single();
-    if (themeError || !theme) return null;
-    const themeId = (theme as { id: string }).id;
-    const { data: version, error: versionError } = await db
-      .from("theme_versions")
-      .insert({
-        merchant_id: merchantId,
-        theme_id: themeId,
-        version: 1,
-        status: "draft",
-        label: listing.slug,
-        templates: templates as never,
-        tokens: tokens as never,
-        created_by: null,
-      })
-      .select("id")
-      .single();
-    if (versionError || !version) {
-      await db.from("store_themes").delete().eq("id", themeId);
-      return null;
+    templates = parseTemplates(manifest.templates) as Record<string, unknown>;
+    tokens = parseTokens(manifest.tokens ?? {});
+  } catch {
+    throw new Error("market_materialize_failed");
+  }
+  if (!Object.values(templates).some((t) => t && typeof t === "object"))
+    return null;
+
+  const fail = async (cleanup: () => PromiseLike<unknown>): Promise<never> => {
+    try {
+      await cleanup();
+    } catch {
+      // Compensation itself failed — loud, never silent.
+      const { incr, log } = await import("./observability.server");
+      incr("framique_market_materialize_total", {
+        outcome: "compensation_failed",
+      });
+      log("error", "market.materialize_compensation_failed", {
+        merchantId,
+        installId,
+      });
     }
-    await db.from("theme_drafts").insert({
+    throw new Error("market_materialize_failed");
+  };
+
+  const { data: theme, error: themeError } = await db
+    .from("store_themes")
+    // No DB default on installed_at; NULL breaks the installed-list sort.
+    .insert({
       merchant_id: merchantId,
-      theme_id: themeId,
-      revision: 1,
-      templates: templates as never,
-      tokens: tokens as never,
-    });
+      name: listing.name,
+      is_active: false,
+      installed_at: new Date().toISOString(),
+    })
+    .select("id")
+    .single();
+  if (themeError || !theme) throw new Error("market_materialize_failed");
+  const themeId = (theme as { id: string }).id;
+  const dropTheme = async () => {
     await db
       .from("store_themes")
-      .update({
-        source_install_id: installId,
-        source_listing_slug: listing.slug,
-      })
+      .delete()
       .eq("merchant_id", merchantId)
       .eq("id", themeId);
-    return themeId;
-  } catch {
-    return null;
-  }
+  };
+  const dropVersionAndTheme = async () => {
+    await db
+      .from("theme_versions")
+      .delete()
+      .eq("merchant_id", merchantId)
+      .eq("theme_id", themeId);
+    await dropTheme();
+  };
+
+  const { data: version, error: versionError } = await db
+    .from("theme_versions")
+    .insert({
+      merchant_id: merchantId,
+      theme_id: themeId,
+      version: 1,
+      status: "draft",
+      label: listing.slug,
+      templates: templates as never,
+      tokens: tokens as never,
+      created_by: null,
+    })
+    .select("id")
+    .single();
+  if (versionError || !version) await fail(dropTheme);
+
+  const { error: draftError } = await db.from("theme_drafts").insert({
+    merchant_id: merchantId,
+    theme_id: themeId,
+    revision: 1,
+    templates: templates as never,
+    tokens: tokens as never,
+  });
+  if (draftError) await fail(dropVersionAndTheme);
+
+  const { error: linkError } = await db
+    .from("store_themes")
+    .update({
+      source_install_id: installId,
+      source_listing_slug: listing.slug,
+    })
+    .eq("merchant_id", merchantId)
+    .eq("id", themeId);
+  if (linkError) await fail(dropVersionAndTheme);
+  return themeId;
 }
 
 async function snapshotCurrent(db: Client, merchantId: string, kind: Kind) {
@@ -287,6 +481,8 @@ export async function setInstallStatus(
   status: "paused" | "installed" | "rolled_back",
   actorId?: string | null,
 ) {
+  // H5: park expired trials before reading install state.
+  await lapseExpiredTrials(db, merchantId);
   const { data: row } = await db
     .from("marketplace_installs")
     .select("id, status, is_trial, kind, listing_slug")
@@ -294,6 +490,9 @@ export async function setInstallStatus(
     .eq("id", installId)
     .maybeSingle();
   if (!row) throw new Error("market_install_not_found");
+  // H5: an expired (lapsed) trial can never be resumed — fail closed with an
+  // explicit error, never a silent no-op or a live trial again.
+  if (row.status === "lapsed") throw new Error("market_trial_expired");
   if (row.status === "rolled_back")
     throw new Error("market_install_rolled_back");
 
@@ -360,7 +559,9 @@ export async function saveListing(
     trialAllowed: boolean;
     manifest: Record<string, unknown>;
   },
+  actorId?: string | null,
 ) {
+  const { auditAction } = await import("./hardening.server");
   const payload = {
     seller_merchant_id: merchantId,
     name: input.name,
@@ -374,12 +575,36 @@ export async function saveListing(
     manifest: input.manifest as never,
   };
   if (input.id) {
+    const { data: before } = await db
+      .from(table(input.kind))
+      .select("name, slug, version, price_minor_int, status")
+      .eq("id", input.id)
+      .eq("seller_merchant_id", merchantId)
+      .maybeSingle();
+    if (!before) throw new Error("market_listing_not_found");
     const { error } = await db
       .from(table(input.kind))
       .update(payload)
       .eq("id", input.id)
       .eq("seller_merchant_id", merchantId);
     if (error) throw new Error("market_listing_save_failed");
+    await auditAction(
+      db,
+      merchantId,
+      actorId ?? null,
+      "market.listing_saved",
+      input.kind,
+      {
+        before,
+        after: {
+          name: input.name,
+          slug: input.slug,
+          version: input.version,
+          price_minor_int: input.priceMinor,
+        },
+      },
+      input.id,
+    );
     return { ok: true, id: input.id };
   }
   const { data, error } = await db
@@ -388,6 +613,23 @@ export async function saveListing(
     .select("id")
     .single();
   if (error || !data) throw new Error("market_listing_save_failed");
+  await auditAction(
+    db,
+    merchantId,
+    actorId ?? null,
+    "market.listing_saved",
+    input.kind,
+    {
+      before: null,
+      after: {
+        name: input.name,
+        slug: input.slug,
+        version: input.version,
+        price_minor_int: input.priceMinor,
+      },
+    },
+    (data as { id: string }).id,
+  );
   return { ok: true, id: data.id };
 }
 
@@ -405,6 +647,7 @@ export async function sellerTransition(
   kind: Kind,
   id: string,
   next: string,
+  actorId?: string | null,
 ) {
   const { data } = await db
     .from(table(kind))
@@ -421,6 +664,19 @@ export async function sellerTransition(
     .eq("id", id)
     .eq("seller_merchant_id", merchantId);
   if (error) throw new Error("market_transition_failed");
+  const { auditAction } = await import("./hardening.server");
+  await auditAction(
+    db,
+    merchantId,
+    actorId ?? null,
+    "market.listing_transition",
+    kind,
+    {
+      before: { status: data.status },
+      after: { status: next },
+    },
+    id,
+  );
   return { ok: true, status: next };
 }
 
@@ -429,10 +685,11 @@ export async function moderate(
   kind: Kind,
   id: string,
   next: "active" | "paused" | "draft",
+  actorId?: string | null,
 ) {
   const { data } = await db
     .from(table(kind))
-    .select("id, status")
+    .select("id, status, seller_merchant_id")
     .eq("id", id)
     .maybeSingle();
   if (!data) throw new Error("market_listing_not_found");
@@ -442,7 +699,141 @@ export async function moderate(
     .update({ status: next })
     .eq("id", id);
   if (error) throw new Error("market_moderation_failed");
+  const { auditAction } = await import("./hardening.server");
+  await auditAction(
+    db,
+    (data as { seller_merchant_id: string }).seller_merchant_id,
+    actorId ?? null,
+    "market.moderated",
+    kind,
+    { before: { status: data.status }, after: { status: next } },
+    id,
+  );
   return { ok: true, status: next };
+}
+
+/**
+ * QUBICKLE H1/H2/H4 — builtin widget install as a testable server unit
+ * (extracted from marketInstallFn so the attack paths are directly covered).
+ *
+ * - Key-driven: a committed idempotency key replays, never stacks.
+ * - The ledger write is checked BEFORE the plugin row: a ledger failure
+ *   throws `market_install_failed` (duplicate-key races reselect + replay),
+ *   so upsertPlugin can never run without its ledger row.
+ * - H4: if upsertPlugin throws, the ledger row is compensated
+ *   tenant-scoped before the error surfaces — no orphan ledger rows.
+ */
+export async function installBuiltinWidget(
+  db: Client,
+  merchantId: string,
+  kind: Kind,
+  pluginId: string,
+  idempotencyKey: string,
+  actorId?: string | null,
+) {
+  const { getBuiltinPlugin } = await import("./builtin-plugins");
+  const pluginDef = getBuiltinPlugin(pluginId);
+  if (!pluginDef) throw new Error("market_listing_not_found");
+
+  const { data: existing } = await db
+    .from("marketplace_installs")
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("idempotency_key", idempotencyKey)
+    .maybeSingle();
+  if (existing) {
+    const hit = existing as unknown as { id: string };
+    return {
+      installId: hit.id,
+      replayed: true,
+      impacted: [] as string[],
+      appVersion: APP_VERSION,
+      themeApplied: null,
+      themeNoticeKey: null,
+    };
+  }
+
+  const { data: installRecord, error: ledgerError } = await db
+    .from("marketplace_installs")
+    .insert({
+      merchant_id: merchantId,
+      kind,
+      theme_id: null,
+      widget_id: null,
+      listing_slug: pluginId,
+      listing_name: pluginDef.manifest.name,
+      version: pluginDef.manifest.version,
+      price_minor_int: 0,
+      currency_code: "BDT",
+      is_trial: false,
+      status: "installed",
+      idempotency_key: idempotencyKey,
+    })
+    .select("id")
+    .single();
+  if (ledgerError || !installRecord) {
+    if (isDuplicateKey(ledgerError)) {
+      const { data: raced } = await db
+        .from("marketplace_installs")
+        .select("id")
+        .eq("merchant_id", merchantId)
+        .eq("idempotency_key", idempotencyKey)
+        .maybeSingle();
+      if (raced) {
+        const hit = raced as unknown as { id: string };
+        return {
+          installId: hit.id,
+          replayed: true,
+          impacted: [] as string[],
+          appVersion: APP_VERSION,
+          themeApplied: null,
+          themeNoticeKey: null,
+        };
+      }
+    }
+    throw new Error("market_install_failed");
+  }
+  const installId = (installRecord as unknown as { id: string }).id;
+
+  const { upsertPlugin } = await import("./plugins.server");
+  try {
+    await upsertPlugin(db, merchantId, {
+      manifest: pluginDef.manifest,
+      grantedScopes: pluginDef.manifest.permissions,
+      installId,
+      actorId: actorId ?? null,
+    });
+  } catch (e) {
+    await db
+      .from("marketplace_installs")
+      .delete()
+      .eq("merchant_id", merchantId)
+      .eq("id", installId);
+    throw e;
+  }
+
+  const { auditAction: builtinAudit } = await import("./hardening.server");
+  await builtinAudit(
+    db,
+    merchantId,
+    actorId ?? null,
+    "market.installed",
+    kind,
+    {
+      before: null,
+      after: { listing: pluginId, builtin: true, trial: false },
+    },
+    installId,
+  );
+
+  return {
+    installId,
+    replayed: false,
+    impacted: [] as string[],
+    appVersion: APP_VERSION,
+    themeApplied: null,
+    themeNoticeKey: null,
+  };
 }
 
 /**

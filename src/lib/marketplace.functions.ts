@@ -56,6 +56,32 @@ export const marketInstallFn = createServerFn({ method: "POST" })
     // Themes screen drives Activate / Live Preview / Delete.
     if (builtinSlug) {
       if (data.trial) throw new Error("market_trial_not_allowed");
+      // QUBICKLE H1/H2: key-driven replay FIRST — the idempotency key is the
+      // event identity. A reused key with a different builtin is a conflict,
+      // never a silent replay of the wrong install.
+      const { data: keyed } = await context.supabase
+        .from("marketplace_installs")
+        .select("id, kind, listing_slug")
+        .eq("merchant_id", merchantId)
+        .eq("idempotency_key", data.idempotencyKey)
+        .maybeSingle();
+      if (keyed) {
+        const hit = keyed as unknown as {
+          id: string;
+          kind: string;
+          listing_slug: string;
+        };
+        if (hit.kind !== data.kind || hit.listing_slug !== builtinSlug)
+          throw new Error("market_idempotency_conflict");
+        return {
+          installId: hit.id,
+          replayed: true,
+          impacted: [] as string[],
+          appVersion: APP_VERSION,
+          themeApplied: null,
+          themeNoticeKey: null,
+        };
+      }
       // Re-clicks and retries replay the original install instead of
       // stacking duplicate ledger rows (third-party installs get this
       // from the idempotency_key check inside installListing).
@@ -84,48 +110,20 @@ export const marketInstallFn = createServerFn({ method: "POST" })
       }
     }
     if (data.kind === "widget" && builtinSlug) {
-      const pluginId = builtinSlug;
-      const { getBuiltinPlugin } = await import("./builtin-plugins");
-      const pluginDef = getBuiltinPlugin(pluginId);
-      if (!pluginDef) throw new Error("market_listing_not_found");
-
-      // Record in marketplace_installs
-      const { data: installRecord } = await context.supabase
-        .from("marketplace_installs")
-        .insert({
-          merchant_id: merchantId,
-          kind: "widget",
-          theme_id: null,
-          widget_id: null,
-          listing_slug: pluginId,
-          listing_name: pluginDef.manifest.name,
-          version: pluginDef.manifest.version,
-          price_minor_int: 0,
-          currency_code: "BDT",
-          is_trial: false,
-          status: "installed",
-          idempotency_key: data.idempotencyKey,
-        })
-        .select("id")
-        .maybeSingle();
-
-      // Activate into plugin_state for the storefront and builder
-      const { upsertPlugin } = await import("./plugins.server");
-      await upsertPlugin(context.supabase, merchantId, {
-        manifest: pluginDef.manifest,
-        grantedScopes: pluginDef.manifest.permissions,
-        installId: installRecord?.id ?? null,
-        actorId: context.userId,
-      });
-
-      return {
-        installId: installRecord?.id ?? pluginId,
-        replayed: false,
-        impacted: [] as string[],
-        appVersion: APP_VERSION,
-        themeApplied: null,
-        themeNoticeKey: null,
-      };
+      // QUBICKLE H1/H4: the builtin widget path lives in
+      // marketplace-install.server.ts `installBuiltinWidget` — key-driven
+      // replay, ledger-checked before the plugin write, ledger compensated
+      // when the plugin write fails.
+      const { installBuiltinWidget } =
+        await import("./marketplace-install.server");
+      return installBuiltinWidget(
+        context.supabase,
+        merchantId,
+        data.kind,
+        builtinSlug,
+        data.idempotencyKey,
+        context.userId,
+      );
     }
     const { installListing } = await import("./marketplace-install.server");
     return installListing(context.supabase, merchantId, {
@@ -278,11 +276,16 @@ export const marketSaveListingFn = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { saveListing } = await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
-    return saveListing(context.supabase, merchantId, {
-      ...data,
-      id: data.id ?? null,
-      description: data.description ?? null,
-    });
+    return saveListing(
+      context.supabase,
+      merchantId,
+      {
+        ...data,
+        id: data.id ?? null,
+        description: data.description ?? null,
+      },
+      context.userId,
+    );
   });
 
 export const marketListingStatusFn = createServerFn({ method: "POST" })
@@ -305,6 +308,7 @@ export const marketListingStatusFn = createServerFn({ method: "POST" })
       data.kind,
       data.id,
       data.status,
+      context.userId,
     );
   });
 
@@ -334,7 +338,13 @@ export const marketModerateFn = createServerFn({ method: "POST" })
     const { moderate } = await import("./marketplace-install.server");
     if (!(await isPlatformAdmin(context.supabase, context.userId)))
       throw new Error("market_forbidden");
-    return moderate(context.supabase, data.kind, data.id, data.status);
+    return moderate(
+      context.supabase,
+      data.kind,
+      data.id,
+      data.status,
+      context.userId,
+    );
   });
 
 // ------------------------------------------------------------- §3.3 ecosystem
@@ -444,7 +454,12 @@ export const marketAppBlocksFn = createServerFn({ method: "GET" })
   .middleware([requirePermission("themes.read")])
   .handler(async ({ context }) => {
     const { entitledBlocks } = await import("./marketplace-vault.server");
+    const { lapseExpiredTrials } = await import("./marketplace-install.server");
     const merchantId = await scope(context.supabase, context.userId);
+    // QUBICKLE H5: entitledBlocks (vault-owned, untouched here) only admits
+    // installed/trial rows — parking expired trials on terminal `lapsed`
+    // first is what enforces expiry on this read path.
+    await lapseExpiredTrials(context.supabase, merchantId);
     return {
       merchantId,
       ...(await entitledBlocks(context.supabase, merchantId)),

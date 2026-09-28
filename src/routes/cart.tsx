@@ -84,13 +84,19 @@ function CartPage() {
       <ThemeChrome
         template="cart"
         storeSlug={slug}
+        themeKey={data.themeKey ?? null}
         merchantId={merchant.id}
         ast={data.ast}
         tokens={data.tokens}
         siteKit={data.siteKit}
         chrome={
           <>
-            <StoreHeader slug={slug} name={merchant.name} menus={data.menus} />
+            <StoreHeader
+              slug={slug}
+              name={merchant.name}
+              menus={data.menus}
+              themeKey={data.themeKey ?? null}
+            />
           </>
         }
         contextSlots={{

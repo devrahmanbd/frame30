@@ -306,14 +306,25 @@ export function resolveTierFromSignals(input: {
     return { tier: "lower_medium", reasons };
   }
 
-  // Official everything → low
+  // Official everything → low (explicitly trusted provenance)
+  let official = false;
   if (input.themeSource === "marketplace") {
     reasons.push("official_theme");
+    official = true;
   }
-  if (input.pluginSources?.every((s) => s === "marketplace")) {
+  if (
+    input.pluginSources !== undefined &&
+    input.pluginSources.length > 0 &&
+    input.pluginSources.every((s) => s === "marketplace")
+  ) {
     reasons.push("official_plugin");
+    official = true;
   }
 
-  // Fallback to stored tier or low
-  return { tier: input.storedTier ?? "low", reasons };
+  // Stored tier wins when present; otherwise official provenance → low,
+  // and an unestablished tier (no signals at all) fails closed to medium
+  // (Rule 5 restrictive default — must not grant low-tier privileges).
+  if (input.storedTier) return { tier: input.storedTier, reasons };
+  if (official) return { tier: "low", reasons };
+  return { tier: "medium", reasons };
 }

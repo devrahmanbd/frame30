@@ -127,9 +127,10 @@ describe("risk-tier", () => {
       expect(result.tier).toBe("medium");
     });
 
-    it("falls back to low when no signals and no stored tier", () => {
+    it("falls back to medium (restrictive) when no signals and no stored tier", () => {
+      // Rule 5: an unestablished tier must not grant low-tier privileges.
       const result = resolveTierFromSignals({});
-      expect(result.tier).toBe("low");
+      expect(result.tier).toBe("medium");
     });
   });
 
@@ -223,11 +224,15 @@ describe("buildCsp with risk tiers", () => {
     );
   });
 
-  it("removes nonce and strict-dynamic for medium tier", () => {
+  it("keeps nonce + strict-dynamic on medium tier when a nonce is supplied (live 2026-09-28)", () => {
+    // Documents always carry TanStack bootstrap inline scripts; a bare
+    // `script-src 'self'` can never hydrate (3× CSP blocks → missing
+    // window.$_TSR). Nonce + strict-dynamic is scoped, never unsafe-inline;
+    // tier still restricts frame-src/features.
     const csp = buildCsp("test-nonce", {}, "medium");
-    expect(csp).not.toContain("test-nonce");
-    expect(csp).not.toContain("'strict-dynamic'");
-    expect(csp).toContain("script-src 'self'");
+    expect(csp).toContain("'nonce-test-nonce'");
+    expect(csp).toContain("'strict-dynamic'");
+    expect(csp).not.toMatch(/script-src[^;]*'unsafe-inline'/);
   });
 
   it("removes all frame-src for high tier", () => {

@@ -97,7 +97,7 @@ export const Route = createFileRoute("/checkout")({
 
 function CheckoutPage() {
   const { t, lang } = useLang();
-  const { slug, merchant, ast, tokens, siteKit, installedPlugins } =
+  const { slug, merchant, ast, tokens, siteKit, installedPlugins, themeKey } =
     Route.useLoaderData();
   const navigate = useNavigate();
   const { lines, setQuantity, clear, hydrated } = useCart(slug);
@@ -250,12 +250,19 @@ function CheckoutPage() {
       <ThemeChrome
         template="checkout"
         storeSlug={slug}
+        themeKey={themeKey ?? null}
         merchantId={merchant.id}
         ast={ast ? { header: ast.header, main: [], footer: ast.footer } : null}
         tokens={tokens}
         siteKit={siteKit}
         ownsPrimary
-        chrome={<StoreHeader slug={slug} name={merchant.name} />}
+        chrome={
+          <StoreHeader
+            slug={slug}
+            name={merchant.name}
+            themeKey={themeKey ?? null}
+          />
+        }
         containerClassName=""
         fallback={
           <div className="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-[1.2fr_1fr]">
