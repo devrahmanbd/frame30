@@ -243,17 +243,33 @@ function parkOrderInserts(db: FakeDb) {
 }
 
 /**
- * In-test model of the `redeem_coupon_slot` SQL function the migration
- * installs: single synchronous check-and-increment, so it is atomic under
- * JS interleaving exactly like the guarded UPDATE is under Postgres.
- * Returns zero rows when the cap is hit (the deny signal).
+ * In-test model of the coupon-slot SQL functions the migration installs:
+ * single synchronous check-and-increment (redeem) / guarded decrement
+ * (release, floored at zero), so both are atomic under JS interleaving
+ * exactly like the guarded UPDATEs are under Postgres.
+ * Redeem returns zero rows when the cap is hit (the deny signal).
  */
 function couponSlotRpc(db: FakeDb) {
   return (fn: string, args: Record<string, unknown>) => {
-    if (fn !== "redeem_coupon_slot")
+    if (fn !== "redeem_coupon_slot" && fn !== "release_coupon_slot")
       return { data: null, error: { message: `rpc_not_stubbed:${fn}` } };
     const coupon = db.rows("coupons").find((r) => r.id === args._coupon_id);
     if (!coupon) return { data: null, error: { message: "coupon_not_found" } };
+    if (fn === "release_coupon_slot") {
+      coupon.redeemed_count = Math.max(
+        0,
+        Number(coupon.redeemed_count ?? 0) - 1,
+      );
+      return {
+        data: [
+          {
+            slot_coupon_id: coupon.id,
+            slot_redeemed: coupon.redeemed_count,
+          },
+        ],
+        error: null,
+      };
+    }
     const limit =
       coupon.usage_limit === null || coupon.usage_limit === undefined
         ? null
@@ -393,6 +409,30 @@ describe("T4 — coupon counters are atomic and loud", () => {
     expect(
       db.rows("coupon_redemptions").filter((r) => r.coupon_id === "c1"),
     ).toHaveLength(1);
+    // The denied submit reserved its slot BEFORE any write, so denial leaves
+    // no order row at all: exactly one order (the winner) survives.
+    expect(db.rows("orders")).toHaveLength(1);
+    expect(
+      db.rows("orders").filter((r) => r.status === "cancelled"),
+    ).toHaveLength(0);
+    expect(db.rows("payments")).toHaveLength(1);
+    // Deny observability: rejected metric + usage_exhausted log.
+    expect(
+      recorder.of("framique_coupon_redeem_total", ["outcome", "rejected"])
+        .length,
+    ).toBeGreaterThanOrEqual(1);
+    expect(
+      recorder.logs.some((l) => l.event === "coupon.usage_exhausted"),
+    ).toBe(true);
+    // Audit row: the surviving order carries its coupon.redeemed event.
+    expect(
+      db
+        .rows("order_events")
+        .filter(
+          (r) =>
+            r.order_id === first.orderId && r.event_type === "coupon.redeemed",
+        ),
+    ).toHaveLength(1);
   });
 
   it("a failed redemption insert fails loudly, never grants a silent discount", async () => {
@@ -412,12 +452,94 @@ describe("T4 — coupon counters are atomic and loud", () => {
     await expect(
       createOrder(input("idem-coupon-loud", "ctok-loud"), "s"),
     ).rejects.toThrow("coupon_redeem_failed");
-    // No phantom count for a redemption that never recorded.
+    // No phantom count for a redemption that never recorded: the
+    // pre-reserved slot is released on the way out.
     expect(
       (db.rows("coupons").find((r) => r.id === "c1") as Row).redeemed_count,
     ).toBe(0);
+    // No live discounted order survives: the half-written order is voided
+    // (cancelled), its payment never written, its stock hold released.
+    expect(
+      db.rows("orders").filter((r) => r.status !== "cancelled"),
+    ).toHaveLength(0);
+    expect(
+      db.rows("orders").filter((r) => r.status === "cancelled"),
+    ).toHaveLength(1);
+    expect(db.rows("payments")).toHaveLength(0);
+    expect(
+      (db.rows("product_variants").find((r) => r.id === "v1") as Row)
+        .stock_quantity,
+    ).toBe(10);
+    // Loud-failure observability: error metric + error log + audit row.
+    expect(
+      recorder.of("framique_coupon_redeem_total", ["outcome", "error"]).length,
+    ).toBeGreaterThanOrEqual(1);
+    expect(recorder.logs.some((l) => l.event === "coupon.redeem_failed")).toBe(
+      true,
+    );
+    const failedOrderId = (db.rows("orders")[0] as Row).id as string;
+    expect(
+      db
+        .rows("order_events")
+        .filter(
+          (r) =>
+            r.order_id === failedOrderId &&
+            r.event_type === "coupon.redeem_failed",
+        ),
+    ).toHaveLength(1);
   });
 
+  it("a slot RPC failure releases earlier reservations and writes nothing", async () => {
+    const holder: { db: FakeDb | null } = { db: null };
+    const db = orderDb(
+      {
+        coupons: [
+          { id: "c1", usage_limit: 10, redeemed_count: 0 },
+          { id: "c2", usage_limit: 10, redeemed_count: 0 },
+        ],
+      },
+      (fn, args) => {
+        // The second coupon's slot call blows up AFTER the first reserved.
+        if (fn === "redeem_coupon_slot" && args._coupon_id === "c2")
+          return { data: null, error: { message: "slot_boom" } };
+        return holder.db
+          ? couponSlotRpc(holder.db)(fn, args)
+          : { data: null, error: { message: "db_not_ready" } };
+      },
+    );
+    holder.db = db;
+    adminHolder.db = db.asClient<FakeDb>();
+    seedPricing([
+      { ...COUPON },
+      { ...COUPON, id: "c2", code: "SAVE2", discountMinor: 50 },
+    ]);
+
+    await expect(
+      createOrder(input("idem-coupon-slotfail", "ctok-slotfail"), "s"),
+    ).rejects.toThrow("coupon_redeem_failed");
+
+    // c1's pre-reserved slot is released; c2 never consumed; no order,
+    // redemption, or payment row escapes; the stock take is returned.
+    expect(
+      (db.rows("coupons").find((r) => r.id === "c1") as Row).redeemed_count,
+    ).toBe(0);
+    expect(
+      (db.rows("coupons").find((r) => r.id === "c2") as Row).redeemed_count,
+    ).toBe(0);
+    expect(db.rows("orders")).toHaveLength(0);
+    expect(db.rows("coupon_redemptions")).toHaveLength(0);
+    expect(db.rows("payments")).toHaveLength(0);
+    expect(
+      (db.rows("product_variants").find((r) => r.id === "v1") as Row)
+        .stock_quantity,
+    ).toBe(10);
+    expect(
+      recorder.of("framique_coupon_redeem_total", ["outcome", "error"]).length,
+    ).toBeGreaterThanOrEqual(1);
+    expect(recorder.logs.some((l) => l.event === "coupon.slot_failed")).toBe(
+      true,
+    );
+  });
   it("happy path records the coupon.redeemed audit event (audit case)", async () => {
     const db = couponDb([{ id: "c1", usage_limit: 10, redeemed_count: 0 }]);
     adminHolder.db = db.asClient<FakeDb>();
@@ -447,9 +569,28 @@ describe("T4 — migration contract (static pin)", () => {
       "create unique index if not exists orders_merchant_idem_key_uidx",
     );
     expect(sql).toContain("(merchant_id, idempotency_key)");
-    // Dedupe keeps the earliest row per tuple — never a blind wipe.
-    expect(sql).toMatch(/keep earliest|EARLIEST/i);
+    // Report-first dedupe: the migration itself never rewrites order history
+    // — duplicates are surfaced by scripts/audit-orders-idempotency.mjs for a
+    // human to disposition BEFORE any constrained delete.
+    expect(sql).not.toMatch(/^\s*delete\s+from\s+public\.orders/m);
+    expect(sql).toMatch(/audit-orders-idempotency/);
     expect(sql).toContain("redeem_coupon_slot");
     expect(sql).toMatch(/redeemed_count\s*<\s*usage_limit/);
+    // SECURITY DEFINER without a PUBLIC revoke lets any anon client burn
+    // coupon caps: lock both slot routines to the service role.
+    expect(sql).toMatch(
+      /revoke\s+execute\s+on\s+function\s+public\.redeem_coupon_slot\(uuid\)\s+from\s+public/i,
+    );
+    expect(sql).toMatch(
+      /grant\s+execute\s+on\s+function\s+public\.redeem_coupon_slot\(uuid\)\s+to\s+service_role/i,
+    );
+    // Compensating release for pre-reserved slots (deny/retry paths).
+    expect(sql).toContain("release_coupon_slot");
+    expect(sql).toMatch(
+      /revoke\s+execute\s+on\s+function\s+public\.release_coupon_slot\(uuid\)\s+from\s+public/i,
+    );
+    expect(sql).toMatch(
+      /grant\s+execute\s+on\s+function\s+public\.release_coupon_slot\(uuid\)\s+to\s+service_role/i,
+    );
   });
 });

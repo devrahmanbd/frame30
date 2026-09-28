@@ -65,6 +65,30 @@ type SlotRpc = {
   }>;
 };
 
+/**
+ * Best-effort release of pre-reserved coupon slots. Compensation must never
+ * mask the original failure, so per-slot errors are logged and swallowed.
+ */
+async function releaseCouponSlots(
+  admin: unknown,
+  couponIds: string[],
+  merchantId: string,
+) {
+  for (const couponId of couponIds) {
+    const { error } = await (admin as unknown as SlotRpc).rpc(
+      "release_coupon_slot",
+      { _coupon_id: couponId },
+    );
+    if (error) {
+      log("warn", "coupon.slot_release_failed", {
+        merchantId,
+        couponId,
+        reason: (error.message ?? "unknown").slice(0, 160),
+      });
+    }
+  }
+}
+
 export async function createOrder(
   input: PlaceOrderInput,
   subject = "anonymous",
@@ -131,6 +155,43 @@ export async function createOrder(
     throw new Error("order_blocked_risk");
   }
 
+  // Coupon slots are reserved BEFORE any write, while the cap can still be
+  // denied cleanly: a denied coupon leaves no order/items/stock/payment
+  // rows behind to compensate. Every reservation is released on any later
+  // failure, including losing the same-key race below.
+  const reservedCouponIds: string[] = [];
+  try {
+    for (const applied of totals.coupons) {
+      const { data: slot, error: slotError } = await (
+        supabaseAdmin as unknown as SlotRpc
+      ).rpc("redeem_coupon_slot", { _coupon_id: applied.id });
+      if (slotError) {
+        incr("framique_coupon_redeem_total", { outcome: "error" });
+        log("error", "coupon.slot_failed", {
+          merchantId: merchant.id,
+          couponId: applied.id,
+          reason: (slotError.message ?? "unknown").slice(0, 160),
+        });
+        throw new Error("coupon_redeem_failed");
+      }
+      if (!slot || slot.length === 0) {
+        incr("framique_coupon_redeem_total", { outcome: "rejected" });
+        log("warn", "coupon.usage_exhausted", {
+          merchantId: merchant.id,
+          couponId: applied.id,
+        });
+        throw new CouponError(
+          "coupon_usage_limit",
+          "Coupon usage limit has been reached",
+        );
+      }
+      reservedCouponIds.push(applied.id);
+    }
+  } catch (error) {
+    await releaseCouponSlots(supabaseAdmin, reservedCouponIds, merchant.id);
+    throw error;
+  }
+
   // Reserve stock before writing anything; a losing shopper never gets an order row.
   const checkoutToken = input.checkoutToken ?? `${input.idempotencyKey}-hold`;
   await reserveStock(
@@ -139,6 +200,36 @@ export async function createOrder(
     totals.lines.map((l) => ({ variantId: l.variantId, quantity: l.quantity })),
     subject,
   );
+
+  /**
+   * Void a half-written order so no LIVE discounted order survives a
+   * write failure after the insert: the row is cancelled (lines stay
+   * attached for the ops trail, fulfilment gates on status), the stock
+   * hold is released (still unconsumed at every call site), the
+   * pre-reserved coupon slots go back, and the void itself is audited.
+   */
+  const voidHalfWrittenOrder = async (orderId: string, reason: string) => {
+    await supabaseAdmin
+      .from("orders")
+      .update({ status: "cancelled" })
+      .eq("id", orderId);
+    try {
+      await supabaseAdmin.from("order_events").insert({
+        order_id: orderId,
+        merchant_id: merchant.id,
+        event_type: "order.cancelled",
+        note: reason.slice(0, 200),
+      });
+    } catch {
+      /* audit is best effort; the throw below is the signal */
+    }
+    await releaseStock(checkoutToken);
+    await releaseCouponSlots(
+      supabaseAdmin,
+      totals.coupons.map((c) => c.id),
+      merchant.id,
+    );
+  };
 
   // Associate order with customer (authenticated user or guest by phone)
   const { resolveRequestUserId } = await import("./identity.server");
@@ -232,6 +323,9 @@ export async function createOrder(
     .select("id, order_number, access_token")
     .single();
   if (error) {
+    // This attempt reserved coupon slots before the insert: give them back
+    // whether the insert lost the race or failed outright.
+    await releaseCouponSlots(supabaseAdmin, reservedCouponIds, merchant.id);
     // Lost the same-key race: a concurrent submit won the insert (unique
     // backstop `orders_merchant_idem_key_uidx`). Release this attempt's
     // stock hold exactly once, then replay the winner like a normal
@@ -286,8 +380,61 @@ export async function createOrder(
     })),
   );
   if (itemsError) {
-    await releaseStock(checkoutToken);
+    await voidHalfWrittenOrder(
+      order.id,
+      `items failed: ${itemsError.message.slice(0, 160)}`,
+    );
     throw itemsError;
+  }
+
+  // Coupon redemptions are RECORDED here; the slots were already reserved
+  // atomically before the order insert, so a deny there never leaves a
+  // half-written order. A recording failure still voids the order (plus
+  // slot release) so the discount is never granted without a record.
+  for (const applied of totals.coupons) {
+    const { error: redeemError } = await supabaseAdmin
+      .from("coupon_redemptions")
+      .insert({
+        merchant_id: merchant.id,
+        coupon_id: applied.id,
+        order_id: order.id,
+        customer_key: input.customer.phone,
+        amount_minor_int: applied.discountMinor,
+        currency_code: totals.currency,
+      });
+    if (redeemError) {
+      // A redemption that cannot be recorded must never silently grant the
+      // discount: fail loudly (metric + error log + audit attempt), void
+      // the half-written order, and release the pre-reserved slots.
+      incr("framique_coupon_redeem_total", { outcome: "error" });
+      log("error", "coupon.redeem_failed", {
+        merchantId: merchant.id,
+        orderId: order.id,
+        couponId: applied.id,
+        reason: redeemError.message,
+      });
+      try {
+        await supabaseAdmin.from("order_events").insert({
+          order_id: order.id,
+          merchant_id: merchant.id,
+          event_type: "coupon.redeem_failed",
+          note: `${applied.code} — recording failed: ${redeemError.message.slice(0, 160)}`,
+        });
+      } catch {
+        /* audit is best effort; the throw below is the signal */
+      }
+      await voidHalfWrittenOrder(
+        order.id,
+        `${applied.code} — recording failed`,
+      );
+      throw new Error("coupon_redeem_failed");
+    }
+    await supabaseAdmin.from("order_events").insert({
+      order_id: order.id,
+      merchant_id: merchant.id,
+      event_type: "coupon.redeemed",
+      note: `${applied.code} — ${applied.discountMinor} ${totals.currency} minor units`,
+    });
   }
 
   // Holds become the single source of the decrement — never a read-modify-write.
@@ -306,82 +453,6 @@ export async function createOrder(
         : `MOCK-${input.paymentMethod.toUpperCase()}-${order.order_number}`,
     idempotency_key: input.idempotencyKey,
   });
-
-  for (const applied of totals.coupons) {
-    const { error: redeemError } = await supabaseAdmin
-      .from("coupon_redemptions")
-      .insert({
-        merchant_id: merchant.id,
-        coupon_id: applied.id,
-        order_id: order.id,
-        customer_key: input.customer.phone,
-        amount_minor_int: applied.discountMinor,
-        currency_code: totals.currency,
-      });
-    if (redeemError) {
-      // A redemption that cannot be recorded must never silently grant the
-      // discount: fail loudly (metric + error log + audit attempt) instead
-      // of skipping, so ops sees every dropped coupon write.
-      incr("framique_coupon_redeem_total", { outcome: "error" });
-      log("error", "coupon.redeem_failed", {
-        merchantId: merchant.id,
-        orderId: order.id,
-        couponId: applied.id,
-        reason: redeemError.message,
-      });
-      try {
-        await supabaseAdmin.from("order_events").insert({
-          order_id: order.id,
-          merchant_id: merchant.id,
-          event_type: "coupon.redeem_failed",
-          note: `${applied.code} — recording failed: ${redeemError.message.slice(0, 160)}`,
-        });
-      } catch {
-        /* audit is best effort; the throw below is the signal */
-      }
-      throw new Error("coupon_redeem_failed");
-    }
-    // Atomic slot reservation: one guarded UPDATE inside
-    // `redeem_coupon_slot` — never read-modify-write. Zero rows means the
-    // cap was hit between quote and write: roll back this attempt's
-    // redemption row and deny loudly instead of overshooting usage_limit.
-    const { data: slot, error: slotError } = await (
-      supabaseAdmin as unknown as SlotRpc
-    ).rpc("redeem_coupon_slot", { _coupon_id: applied.id });
-    if (slotError) {
-      incr("framique_coupon_redeem_total", { outcome: "error" });
-      log("error", "coupon.slot_failed", {
-        merchantId: merchant.id,
-        orderId: order.id,
-        couponId: applied.id,
-        reason: slotError.message ?? "unknown",
-      });
-      throw new Error("coupon_redeem_failed");
-    }
-    if (!slot || slot.length === 0) {
-      await supabaseAdmin
-        .from("coupon_redemptions")
-        .delete()
-        .eq("coupon_id", applied.id)
-        .eq("order_id", order.id);
-      incr("framique_coupon_redeem_total", { outcome: "rejected" });
-      log("warn", "coupon.usage_exhausted", {
-        merchantId: merchant.id,
-        orderId: order.id,
-        couponId: applied.id,
-      });
-      throw new CouponError(
-        "coupon_usage_limit",
-        "Coupon usage limit has been reached",
-      );
-    }
-    await supabaseAdmin.from("order_events").insert({
-      order_id: order.id,
-      merchant_id: merchant.id,
-      event_type: "coupon.redeemed",
-      note: `${applied.code} — ${applied.discountMinor} ${totals.currency} minor units`,
-    });
-  }
 
   await supabaseAdmin.from("order_events").insert([
     {
