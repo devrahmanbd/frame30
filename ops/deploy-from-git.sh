@@ -49,6 +49,14 @@ if grep -rq "createClient(void 0" "$WORK/.output/server/" 2>/dev/null; then
   echo "BUILD REJECTED: VITE_* not baked (missing .env at build time)"
   exit 1
 fi
+# Dummy-URL guard: a tracked .env.local once shadowed the real .env and baked
+# https://dummy.supabase.co into the client bundle (auth fired at a dead host
+# and died on CSP). .env.local must never be tracked (see .gitignore) — fail
+# the build if the marker ever ships again.
+if grep -rq "dummy.supabase.co" "$WORK/.output/public/" 2>/dev/null; then
+  echo "BUILD REJECTED: dummy Supabase URL baked into client bundle"
+  exit 1
+fi
 rsync -a --delete "$WORK/.output/" "$REPO/.output/"
 systemctl restart framique.service
 sleep 8
