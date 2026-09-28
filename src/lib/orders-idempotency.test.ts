@@ -192,6 +192,7 @@ const tick = () => new Promise<void>((r) => setTimeout(r, 0));
  */
 type ProcQuery = {
   insert(rows: unknown): ProcQuery;
+  update(patch: Record<string, unknown>): ProcQuery;
   single(): Promise<unknown>;
   then(onF?: unknown, onR?: unknown): Promise<unknown>;
   failWith(message: string): ProcQuery;
@@ -487,6 +488,14 @@ describe("T4 — coupon counters are atomic and loud", () => {
             r.event_type === "coupon.redeem_failed",
         ),
     ).toHaveLength(1);
+    expect(
+      db
+        .rows("order_events")
+        .filter(
+          (r) =>
+            r.order_id === failedOrderId && r.event_type === "order.cancelled",
+        ),
+    ).toHaveLength(1);
   });
 
   it("a slot RPC failure releases earlier reservations and writes nothing", async () => {
@@ -556,6 +565,187 @@ describe("T4 — coupon counters are atomic and loud", () => {
       .map((r) => r.event_type);
     expect(events).toContain("order.placed");
     expect(events).toContain("coupon.redeemed");
+  });
+});
+
+describe("T4 round 2 — reserve/consume/payments windows void cleanly", () => {
+  /** Fail only the consume update (patch carries consumed_at); release reads/patches pass through. */
+  function failConsumeUpdate(db: FakeDb) {
+    const innerFrom = db.from.bind(db);
+    (db as unknown as { from: FakeDb["from"] }).from = ((table: string) => {
+      const q = innerFrom(table) as unknown as ProcQuery;
+      if (table !== "stock_holds") return q;
+      const origUpdate = q.update.bind(q);
+      q.update = (patch: Record<string, unknown>) => {
+        const next = origUpdate(patch);
+        if ("consumed_at" in patch) next.failWith("consume_boom");
+        return next;
+      };
+      return q;
+    }) as unknown as FakeDb["from"];
+  }
+
+  function paymentFailDb(table: "payments" | "order_items", message: string) {
+    const holder: { db: FakeDb | null } = { db: null };
+    const db = orderDb(
+      { coupons: [{ id: "c1", usage_limit: 10, redeemed_count: 0 }] },
+      (fn, args) =>
+        holder.db
+          ? couponSlotRpc(holder.db)(fn, args)
+          : { data: null, error: { message: "db_not_ready" } },
+    );
+    holder.db = db;
+    const innerFrom = db.from.bind(db);
+    (db as unknown as { from: FakeDb["from"] }).from = ((t: string) => {
+      const q = innerFrom(t) as unknown as ProcQuery;
+      if (t === table) return q.failWith(message);
+      return q;
+    }) as unknown as FakeDb["from"];
+    return db;
+  }
+
+  it("reserveStock failure releases pre-reserved coupon slots and writes nothing", async () => {
+    const holder: { db: FakeDb | null } = { db: null };
+    const db = orderDb(
+      {
+        coupons: [{ id: "c1", usage_limit: 10, redeemed_count: 0 }],
+        product_variants: [
+          { id: "v1", merchant_id: MERCHANT, stock_quantity: 0 },
+        ],
+      },
+      (fn, args) =>
+        holder.db
+          ? couponSlotRpc(holder.db)(fn, args)
+          : { data: null, error: { message: "db_not_ready" } },
+    );
+    holder.db = db;
+    adminHolder.db = db.asClient<FakeDb>();
+    seedPricing([{ ...COUPON }]);
+
+    await expect(
+      createOrder(input("idem-reserve-fail", "ctok-rf"), "s"),
+    ).rejects.toThrow("Not enough stock");
+
+    // The pre-reserved slot goes back; no order/redemption/payment escapes.
+    expect(
+      (db.rows("coupons").find((r) => r.id === "c1") as Row).redeemed_count,
+    ).toBe(0);
+    expect(db.rows("orders")).toHaveLength(0);
+    expect(db.rows("coupon_redemptions")).toHaveLength(0);
+    expect(db.rows("payments")).toHaveLength(0);
+    expect(
+      recorder.of("framique_checkout_reserve_total", ["outcome", "rejected"])
+        .length,
+    ).toBeGreaterThanOrEqual(1);
+  });
+
+  it("consumeStock failure voids the order and restores stock and slots", async () => {
+    const db = couponDb([{ id: "c1", usage_limit: 10, redeemed_count: 0 }]);
+    failConsumeUpdate(db);
+    adminHolder.db = db.asClient<FakeDb>();
+    seedPricing([{ ...COUPON }]);
+
+    await expect(
+      createOrder(input("idem-consume-fail", "ctok-cf"), "s"),
+    ).rejects.toThrow("stock sync failed");
+
+    expect(
+      db.rows("orders").filter((r) => r.status !== "cancelled"),
+    ).toHaveLength(0);
+    expect(
+      db.rows("orders").filter((r) => r.status === "cancelled"),
+    ).toHaveLength(1);
+    const failedOrderId = (db.rows("orders")[0] as Row).id as string;
+    expect(
+      db
+        .rows("order_events")
+        .filter(
+          (r) =>
+            r.order_id === failedOrderId && r.event_type === "order.cancelled",
+        ),
+    ).toHaveLength(1);
+    expect(db.rows("payments")).toHaveLength(0);
+    expect(
+      (db.rows("product_variants").find((r) => r.id === "v1") as Row)
+        .stock_quantity,
+    ).toBe(10);
+    expect(
+      (db.rows("coupons").find((r) => r.id === "c1") as Row).redeemed_count,
+    ).toBe(0);
+    expect(
+      recorder.of("framique_checkout_consume_total", ["outcome", "error"])
+        .length,
+    ).toBeGreaterThanOrEqual(1);
+  });
+
+  it("payments insert failure voids the consumed order and compensates stock", async () => {
+    const db = paymentFailDb("payments", "payments_boom");
+    adminHolder.db = db.asClient<FakeDb>();
+    seedPricing([{ ...COUPON }]);
+
+    await expect(
+      createOrder(input("idem-payments-fail", "ctok-pf"), "s"),
+    ).rejects.toThrow("payments_boom");
+
+    // Holds were already consumed, so the void must compensate the taken
+    // stock directly — releaseStock alone is a post-consume no-op.
+    expect(
+      db.rows("orders").filter((r) => r.status !== "cancelled"),
+    ).toHaveLength(0);
+    expect(
+      db.rows("orders").filter((r) => r.status === "cancelled"),
+    ).toHaveLength(1);
+    const failedOrderId = (db.rows("orders")[0] as Row).id as string;
+    expect(
+      db
+        .rows("order_events")
+        .filter(
+          (r) =>
+            r.order_id === failedOrderId && r.event_type === "order.cancelled",
+        ),
+    ).toHaveLength(1);
+    expect(db.rows("payments")).toHaveLength(0);
+    expect(
+      (db.rows("product_variants").find((r) => r.id === "v1") as Row)
+        .stock_quantity,
+    ).toBe(10);
+    expect(
+      (db.rows("coupons").find((r) => r.id === "c1") as Row).redeemed_count,
+    ).toBe(0);
+  });
+
+  it("items insert failure voids the order with an order.cancelled audit row", async () => {
+    const db = paymentFailDb("order_items", "items_boom");
+    adminHolder.db = db.asClient<FakeDb>();
+    seedPricing([{ ...COUPON }]);
+
+    await expect(
+      createOrder(input("idem-items-fail", "ctok-if"), "s"),
+    ).rejects.toThrow("items_boom");
+
+    expect(
+      db.rows("orders").filter((r) => r.status !== "cancelled"),
+    ).toHaveLength(0);
+    expect(
+      db.rows("orders").filter((r) => r.status === "cancelled"),
+    ).toHaveLength(1);
+    const failedOrderId = (db.rows("orders")[0] as Row).id as string;
+    expect(
+      db
+        .rows("order_events")
+        .filter(
+          (r) =>
+            r.order_id === failedOrderId && r.event_type === "order.cancelled",
+        ),
+    ).toHaveLength(1);
+    expect(db.rows("payments")).toHaveLength(0);
+    expect(
+      (db.rows("product_variants").find((r) => r.id === "v1") as Row)
+        .stock_quantity,
+    ).toBe(10);
+    expect(
+      (db.rows("coupons").find((r) => r.id === "c1") as Row).redeemed_count,
+    ).toBe(0);
   });
 });
 

@@ -193,22 +193,42 @@ export async function createOrder(
   }
 
   // Reserve stock before writing anything; a losing shopper never gets an order row.
+  // Guarded: slots were already reserved above, so a reserve throw must give
+  // them back (plus release any partial take) instead of leaking the cap.
   const checkoutToken = input.checkoutToken ?? `${input.idempotencyKey}-hold`;
-  await reserveStock(
-    merchant.id,
-    checkoutToken,
-    totals.lines.map((l) => ({ variantId: l.variantId, quantity: l.quantity })),
-    subject,
-  );
+  try {
+    await reserveStock(
+      merchant.id,
+      checkoutToken,
+      totals.lines.map((l) => ({
+        variantId: l.variantId,
+        quantity: l.quantity,
+      })),
+      subject,
+    );
+  } catch (error) {
+    await releaseStock(checkoutToken);
+    await releaseCouponSlots(supabaseAdmin, reservedCouponIds, merchant.id);
+    throw error;
+  }
 
   /**
    * Void a half-written order so no LIVE discounted order survives a
    * write failure after the insert: the row is cancelled (lines stay
    * attached for the ops trail, fulfilment gates on status), the stock
-   * hold is released (still unconsumed at every call site), the
-   * pre-reserved coupon slots go back, and the void itself is audited.
+   * hold is released when still unconsumed (still unconsumed at every
+   * pre-consume call site), the pre-reserved coupon slots go back, and
+   * the void itself is audited.
+   *
+   * Post-consume callers pass `{ consumed: true }`: consumed holds are
+   * invisible to `releaseStock` (it only restores unconsumed holds), so
+   * the taken quantities are restored directly from the order lines.
    */
-  const voidHalfWrittenOrder = async (orderId: string, reason: string) => {
+  const voidHalfWrittenOrder = async (
+    orderId: string,
+    reason: string,
+    opts?: { consumed?: boolean },
+  ) => {
     await supabaseAdmin
       .from("orders")
       .update({ status: "cancelled" })
@@ -224,6 +244,23 @@ export async function createOrder(
       /* audit is best effort; the throw below is the signal */
     }
     await releaseStock(checkoutToken);
+    if (opts?.consumed) {
+      for (const l of totals.lines) {
+        const { data: cur } = await supabaseAdmin
+          .from("product_variants")
+          .select("stock_quantity")
+          .eq("id", l.variantId)
+          .maybeSingle();
+        const qty = Number(
+          (cur as unknown as { stock_quantity: number } | null)
+            ?.stock_quantity ?? 0,
+        );
+        await supabaseAdmin
+          .from("product_variants")
+          .update({ stock_quantity: qty + l.quantity })
+          .eq("id", l.variantId);
+      }
+    }
     await releaseCouponSlots(
       supabaseAdmin,
       totals.coupons.map((c) => c.id),
@@ -438,9 +475,31 @@ export async function createOrder(
   }
 
   // Holds become the single source of the decrement — never a read-modify-write.
-  await consumeStock(checkoutToken, order.id);
+  // Guarded: a consume throw must void the half-written order (stock is
+  // still unconsumed here, so the void's hold-release restores it).
+  try {
+    await consumeStock(checkoutToken, order.id);
+  } catch (error) {
+    incr("framique_orders_total", {
+      outcome: "failed",
+      tenant: tenantLabel(merchant.id),
+    });
+    log("error", "order.consume_failed", {
+      merchantId: merchant.id,
+      orderId: order.id,
+      reason: String((error as Error)?.message ?? error).slice(0, 160),
+    });
+    await voidHalfWrittenOrder(
+      order.id,
+      `consume failed: ${String((error as Error)?.message ?? error).slice(0, 160)}`,
+    );
+    throw error;
+  }
 
-  await supabaseAdmin.from("payments").insert({
+  // Guarded: a payments write failure must void the order. Holds are
+  // already consumed here, so the void compensates the taken stock
+  // directly (`{ consumed: true }`) instead of relying on hold-release.
+  const { error: paymentsError } = await supabaseAdmin.from("payments").insert({
     merchant_id: merchant.id,
     order_id: order.id,
     payment_provider: input.paymentMethod,
@@ -453,6 +512,23 @@ export async function createOrder(
         : `MOCK-${input.paymentMethod.toUpperCase()}-${order.order_number}`,
     idempotency_key: input.idempotencyKey,
   });
+  if (paymentsError) {
+    incr("framique_orders_total", {
+      outcome: "failed",
+      tenant: tenantLabel(merchant.id),
+    });
+    log("error", "order.payment_failed", {
+      merchantId: merchant.id,
+      orderId: order.id,
+      reason: paymentsError.message.slice(0, 160),
+    });
+    await voidHalfWrittenOrder(
+      order.id,
+      `payments failed: ${paymentsError.message.slice(0, 160)}`,
+      { consumed: true },
+    );
+    throw paymentsError;
+  }
 
   await supabaseAdmin.from("order_events").insert([
     {
