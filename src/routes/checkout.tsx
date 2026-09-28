@@ -21,6 +21,10 @@ import {
   reserveCheckout,
 } from "@/lib/storefront.functions";
 import { startCharge } from "@/lib/payments.functions";
+import {
+  clearCheckoutSessionKey,
+  getCheckoutSessionKey,
+} from "@/lib/payment-keys";
 import { fmtMinor } from "@/lib/money";
 import { useCart } from "@/lib/cart";
 import { useLang } from "@/lib/i18n";
@@ -113,11 +117,10 @@ function CheckoutPage() {
       `${slug}-hold-${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`,
     [slug],
   );
-  const idempotencyKey = useMemo(
-    () =>
-      `${slug}-${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`,
-    [slug],
-  );
+  // One order key per checkout session: persisted in sessionStorage so a
+  // remount or refresh resubmits the SAME key (server replays) instead of
+  // minting a duplicate order. Rotated on successful placement below.
+  const [idempotencyKey] = useState(() => getCheckoutSessionKey(slug));
 
   useEffect(() => {
     if (hydrated && lines.length > 0) {
@@ -210,6 +213,9 @@ function CheckoutPage() {
 
     onSuccess: async (res) => {
       clear();
+      // The order is placed: retire the session key so the next checkout in
+      // this tab cannot replay this order's idempotency key.
+      clearCheckoutSessionKey(slug);
       if (method !== "cod") {
         try {
           const charge = await startCharge({
