@@ -51,7 +51,8 @@ export async function auditAction(
       resource_id: resourceId,
       changed: changed as unknown as Json,
     });
-    if (error) await observe((error as { message?: string }).message ?? "unknown");
+    if (error)
+      await observe((error as { message?: string }).message ?? "unknown");
     return { data, error };
   } catch (e) {
     await observe(e instanceof Error ? e.message : "unknown");

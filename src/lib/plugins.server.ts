@@ -21,6 +21,17 @@ import {
 
 type Client = SupabaseClient<Database>;
 
+type PluginRow = {
+  id: string;
+  plugin_id: string;
+  manifest: unknown;
+  scopes: string[] | null;
+  settings: unknown;
+  enabled: boolean | null;
+  auto_updates: boolean | null;
+  suspended: boolean | null;
+};
+
 const COLUMNS =
   "id, plugin_id, manifest, scopes, settings, enabled, auto_updates, suspended, suspended_reason, suspended_at, version_pin, consented_by, manifest_version";
 
@@ -49,7 +60,7 @@ export async function listInstalledPlugins(
   if (error) throw error;
   if (!data) return [];
   const out: InstalledPlugin[] = [];
-  for (const row of (data as any[]) ?? []) {
+  for (const row of (data as unknown as PluginRow[] | null) ?? []) {
     const verdict = parseManifest(row.manifest);
     if (!verdict.ok) continue;
     const killed = await killSwitchOn(db, row.plugin_id);
@@ -63,7 +74,7 @@ export async function listInstalledPlugins(
         row.settings ?? defaultSettings(schema),
       ).values,
       enabled: !killed && row.enabled !== false && row.suspended !== true,
-      autoUpdates: (row as any).auto_updates === true,
+      autoUpdates: row.auto_updates === true,
     });
   }
   return out;
@@ -134,7 +145,7 @@ export async function upsertPlugin(
     .maybeSingle();
 
   const diff = permissionDiff(
-    (existing as any)?.scopes ?? [],
+    (existing as unknown as PluginRow | null)?.scopes ?? [],
     manifest.permissions,
   );
   // Added permissions always require a fresh consent screen at update time:
@@ -143,8 +154,10 @@ export async function upsertPlugin(
     throw new Error(`plugin_consent_required:${diff.added.join(",")}`);
   }
   const settings = existing
-    ? validateSettings(manifest.settings, (existing as any).settings ?? {})
-        .values
+    ? validateSettings(
+        manifest.settings,
+        (existing as unknown as PluginRow).settings ?? {},
+      ).values
     : defaultSettings(manifest.settings);
 
   const payload = {
@@ -153,7 +166,7 @@ export async function upsertPlugin(
     manifest: manifest as unknown as Json,
     scopes: granted,
     settings: settings as unknown as Json,
-    enabled: (existing as any)?.enabled ?? true,
+    enabled: (existing as unknown as PluginRow | null)?.enabled ?? true,
     updated_at: new Date().toISOString(),
     consented_by: (input.actorId ?? null) as never,
     manifest_version: manifest.version as never,
