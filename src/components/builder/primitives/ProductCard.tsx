@@ -245,7 +245,7 @@ export function WishlistHeart({
       onClick={onClick}
       className={
         className ||
-        `relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--theme-surface)]/90 text-[var(--theme-ink)] shadow-sm backdrop-blur-sm transition-all duration-300 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 group/btn`
+        `relative inline-flex h-11 w-11 items-center justify-center rounded-full bg-[var(--theme-surface)]/90 text-[var(--theme-ink)] shadow-sm backdrop-blur-sm transition-all duration-300 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 group/btn`
       }
     >
       <Heart

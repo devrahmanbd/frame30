@@ -1982,8 +1982,8 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 scale-100" 
                 loading="lazy" 
               />
-              <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-500 flex items-center justify-center opacity-0 hover:opacity-100">
-                 <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30 transform translate-y-4 hover:translate-y-0 transition-all duration-500">
+              <div className="absolute inset-0 bg-foreground/0 hover:bg-foreground/10 transition-colors duration-500 flex items-center justify-center opacity-0 hover:opacity-100">
+                 <div className="w-12 h-12 rounded-full bg-background/20 backdrop-blur-md flex items-center justify-center text-background border border-background/30 transform translate-y-4 hover:translate-y-0 transition-all duration-500">
                   <svg
                     className="w-5 h-5"
                     fill="currentColor"
