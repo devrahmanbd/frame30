@@ -224,11 +224,31 @@ export const reserveCheckout = createServerFn({ method: "POST" })
 
 export const releaseCheckout = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
-    z.object({ checkoutToken: z.string().min(8).max(80) }).parse(d),
+    z
+      .object({
+        checkoutToken: z.string().min(8).max(80),
+        // Store slug lets the server bind the token to its merchant.
+        // Optional during the cutover so in-flight bare-token clients keep
+        // working (server falls back to token-only with a warn log).
+        slug: z.string().min(1).max(120).optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     const { releaseStock } = await import("./checkout.server");
-    return releaseStock(data.checkoutToken);
+    if (!data.slug) return releaseStock(data.checkoutToken);
+    const { publicClient } = await import("./pricing.server");
+    const { data: merchant } = await publicClient()
+      .from("merchants")
+      .select("id")
+      .eq("slug", data.slug)
+      .eq("status", "active")
+      .maybeSingle();
+    if (!merchant) return releaseStock(data.checkoutToken);
+    return releaseStock(
+      data.checkoutToken,
+      (merchant as unknown as { id: string }).id,
+    );
   });
 
 export const getOrder = createServerFn({ method: "GET" })

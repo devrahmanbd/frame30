@@ -211,7 +211,7 @@ export async function createOrder(
     .select("id, order_number, access_token")
     .single();
   if (error) {
-    await releaseStock(checkoutToken);
+    await releaseStock(checkoutToken, merchant.id);
     incr("framique_orders_total", {
       outcome: "failed",
       tenant: tenantLabel(merchant.id),
@@ -237,7 +237,7 @@ export async function createOrder(
     })),
   );
   if (itemsError) {
-    await releaseStock(checkoutToken);
+    await releaseStock(checkoutToken, merchant.id);
     throw itemsError;
   }
 
