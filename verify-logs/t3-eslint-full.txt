@@ -1,0 +1,4 @@
+$ eslint src/lib/platform-charge-scope.test.ts
+date: 2026-09-28T20:59:23Z
+v9.39.5
+eslint_exit=0

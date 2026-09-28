@@ -1,0 +1,60 @@
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+INSERT 0 2
+INSERT 0 2
+CREATE TABLE
+DO
+=== FIRST APPLY (expect NOTICE: dropping global unique) ===
+psql:/tmp/opencode/fixloop-charge/supabase/migrations/20260928000001_platform_charges_merchant_key_scope.sql:71: NOTICE:  T3: dropping global unique constraint platform_charges_idempotency_key_key on platform_charges(idempotency_key)
+DO
+CREATE INDEX
+CREATE FUNCTION
+GRANT
+=== SAME KEY, TWO MERCHANTS -> MUST ISOLATE (two distinct rows) ===
+                 a_id                 |                 b_id                 | isolated 
+--------------------------------------+--------------------------------------+----------
+ a1430eb1-cac3-4751-98db-d30e152d9fb1 | c6954f1a-cf38-4843-9740-5e9f631abf3e | t
+(1 row)
+
+                  id                  |             merchant_id              | idempotency_key 
+--------------------------------------+--------------------------------------+-----------------
+ a1430eb1-cac3-4751-98db-d30e152d9fb1 | 11111111-1111-1111-1111-111111111111 | shared-key
+ c6954f1a-cf38-4843-9740-5e9f631abf3e | 22222222-2222-2222-2222-222222222222 | shared-key
+(2 rows)
+
+ total_rows | distinct_rows | merchants 
+------------+---------------+-----------
+          2 |             2 |         2
+(1 row)
+
+=== SAME MERCHANT REPLAY -> MUST RETURN SAME ROW ===
+ replay_same_row 
+-----------------
+ t
+(1 row)
+
+=== CONSTRAINT / INDEX STATE (no single-col unique; scoped index present) ===
+ conname | def 
+---------+-----
+(0 rows)
+
+             indexname              
+------------------------------------
+ platform_charges_merchant_key_uidx
+(1 row)
+
+=== SECOND APPLY (expect NOTICE: skipping drop; must not error) ===
+psql:/tmp/opencode/fixloop-charge/supabase/migrations/20260928000001_platform_charges_merchant_key_scope.sql:71: NOTICE:  T3: no single-column unique constraint on platform_charges(idempotency_key); skipping drop
+DO
+psql:/tmp/opencode/fixloop-charge/supabase/migrations/20260928000001_platform_charges_merchant_key_scope.sql:86: NOTICE:  relation "platform_charges_merchant_key_uidx" already exists, skipping
+CREATE INDEX
+CREATE FUNCTION
+GRANT
+=== POST-RERUN ISOLATION STILL HOLDS ===
+ total_rows 
+------------
+          2
+(1 row)
+
+DO
