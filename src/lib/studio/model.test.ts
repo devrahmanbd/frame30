@@ -718,6 +718,80 @@ describe("repeater _bn twin carry (footer precedent)", () => {
   });
 });
 
+describe("seed drops whitespace-only _bn twins (resolveBiText parity)", () => {
+  function docOf(el: string, settings: Record<string, unknown>): StudioDoc {
+    return {
+      version: 2,
+      root: [{ id: "n1", el, settings: settings as never }],
+      page: defaultPageSettings(),
+    };
+  }
+  const itemsOf = (parsed: ReturnType<typeof parseStudioBody>) =>
+    (parsed?.root[0]?.settings as Record<string, unknown>).items as Array<
+      Record<string, unknown>
+    >;
+
+  // The renderer (resolveBiText) treats a whitespace-only twin as absent
+  // and falls back to English, so seeding must not store the phantom twin.
+  const CASES: Array<{
+    el: string;
+    settings: Record<string, unknown>;
+    twin: string;
+  }> = [
+    {
+      el: "faq",
+      settings: { q1: "Size?", q1_bn: "   ", a1: "Runs large." },
+      twin: "question_bn",
+    },
+    {
+      el: "product_qna",
+      settings: { q1: "Wash?", a1: "Cold.", a1_bn: "\t " },
+      twin: "answer_bn",
+    },
+    {
+      el: "trust_bar",
+      settings: { i1Title: "Fast", i1Title_bn: "  " },
+      twin: "title_bn",
+    },
+    {
+      el: "announcement_bar",
+      settings: { m1: "Sale!", m1_bn: "   " },
+      twin: "text_bn",
+    },
+    {
+      el: "lookbook",
+      settings: { i1Image: "/a.jpg", i1Alt: "Look", i1Alt_bn: "  " },
+      twin: "alt_bn",
+    },
+    {
+      el: "hero",
+      settings: { heading: "Hi", heading_bn: "  ", image: "/h.jpg" },
+      twin: "heading_bn",
+    },
+    {
+      el: "footer_sitemap",
+      settings: { c1Title: "Shop", c1Title_bn: "   ", c1Links: "A|/" },
+      twin: "title_bn",
+    },
+    {
+      el: "spec_table",
+      settings: { r1Label: "Size", r1Label_bn: " ", r1Value: "6in" },
+      twin: "label_bn",
+    },
+  ];
+
+  for (const c of CASES) {
+    it(`${c.el} drops a whitespace-only ${c.twin}`, () => {
+      const parsed = parseStudioBody(
+        serializeStudioBody(docOf(c.el, c.settings)),
+      );
+      const rows = itemsOf(parsed);
+      expect(rows.length).toBeGreaterThan(0);
+      expect(rows[0]).not.toHaveProperty(c.twin);
+    });
+  }
+});
+
 describe("studio slots (header / main / footer)", () => {
   const node = (id: string, slot?: StudioNode["slot"]): StudioNode => ({
     id,
