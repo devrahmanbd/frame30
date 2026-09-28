@@ -40,24 +40,48 @@
 --     and no `platform_charges_idempotency_key_key` constraint.
 -- =====================================================================
 
--- 1. Drop the global unique constraint on the bare key (guarded: the
---    auto-generated name depends on how the table was created).
+-- 1. Drop the global unique constraint on the bare key (guarded).
+--    Matcher uses column identity (pg_constraint.conkey → pg_attribute),
+--    not an exact `pg_get_constraintdef` string, so it survives formatting /
+--    naming differences in how the table was created. The single-column
+--    predicate (`array_length(conkey,1)=1`) inherently protects the scoped
+--    (merchant_id, idempotency_key) constraint/index added below.
 do $$
 declare
   v_conname text;
 begin
-  select conname into v_conname from pg_constraint
-  where conrelid = 'public.platform_charges'::regclass
-    and contype = 'u'
-    and pg_get_constraintdef(oid) = 'UNIQUE (idempotency_key)';
+  select c.conname into v_conname
+  from pg_constraint c
+  join pg_attribute a
+    on a.attrelid = c.conrelid
+   and a.attnum = any (c.conkey)
+  where c.conrelid = 'public.platform_charges'::regclass
+    and c.contype = 'u'
+    and a.attname = 'idempotency_key'
+    and array_length(c.conkey, 1) = 1
+  limit 1;
   if v_conname is not null then
+    raise notice 'T3: dropping global unique constraint % on platform_charges(idempotency_key)', v_conname;
     execute format(
       'alter table public.platform_charges drop constraint %I', v_conname
     );
+  else
+    raise notice 'T3: no single-column unique constraint on platform_charges(idempotency_key); skipping drop';
   end if;
 end $$;
 
 -- 2. Merchant-scoped uniqueness backstop (race-safe replay boundary).
+--    Lock plan: plain CREATE INDEX (non-CONCURRENTLY) takes a short
+--    SHARE lock blocking writes. Supabase migrations run inside a
+--    transaction block where CONCURRENTLY is disallowed, so plain build is
+--    the only in-migration option. platform_charges is a young,
+--    low-volume table (≤10 attempts/invoice, keyed opens); the build scans
+--    few rows and holds the lock briefly. No dedupe backfill needed: the
+--    old global UNIQUE(idempotency_key) implies scoped uniqueness for all
+--    pre-existing rows, so the build cannot fail on duplicates. If this
+--    table ever grows large, build the index CONCURRENTLY out-of-band
+--    (with lock_timeout + statement_timeout set) before dropping the
+--    global constraint, instead of relying on this statement.
 create unique index if not exists platform_charges_merchant_key_uidx
   on public.platform_charges (merchant_id, idempotency_key);
 
