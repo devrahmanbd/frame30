@@ -22,6 +22,7 @@
 import { execFile } from "node:child_process";
 import { X509Certificate } from "node:crypto";
 import { readFile } from "node:fs/promises";
+import { certCoversHost } from "./edge-cert-identity.server";
 import { incr, log } from "./observability.server";
 
 /** Pinned system path. Never configurable per-request — see module doc. */
@@ -87,6 +88,39 @@ export function shouldProvisionNow(
 export type ProvisionResult =
   { ok: true; expiresAt: string } | { ok: false; error: string };
 
+export type ProvisionedPem =
+  { ok: true; expiresAt: string } | { ok: false; error: string };
+
+/**
+ * Inspect a provisioned PEM bundle before it can flip a domain `active`.
+ *
+ * The issue script only asserts the bundle parses and is unexpired
+ * (`openssl checkend`), so a valid-but-misnamed bundle (wrong SAN — the
+ * local analogue of replica skew) would otherwise mark the wrong hostname
+ * live on dates alone. This check is pure-local (parse + compare, no
+ * network, no ACME order) so it can never trip LE rate limits.
+ */
+export function inspectProvisionedPem(
+  pem: string,
+  hostname: string,
+): ProvisionedPem {
+  let expires: number;
+  try {
+    expires = new Date(new X509Certificate(pem).validTo).getTime();
+  } catch {
+    return { ok: false, error: "edge.pem_unreadable" };
+  }
+  if (!Number.isFinite(expires) || expires <= Date.now()) {
+    return { ok: false, error: "edge.bad_pem_dates" };
+  }
+  if (!certCoversHost(pem, hostname.toLowerCase())) {
+    log("warn", "domain.pem_wrong_host", { domain: hostname.toLowerCase() });
+    incr("framique_domain_provision_total", { outcome: "wrong_host" });
+    return { ok: false, error: "edge.pem_wrong_host" };
+  }
+  return { ok: true, expiresAt: new Date(expires).toISOString() };
+}
+
 function execFileAsync(
   file: string,
   args: string[],
@@ -148,12 +182,12 @@ export async function runProvisionOrder(
   }
   try {
     const pem = await readFile(`${EDGE_CERT_DIR}/${host}.pem`, "utf8");
-    const expires = new Date(new X509Certificate(pem).validTo).getTime();
-    if (!Number.isFinite(expires) || expires <= Date.now()) {
-      return { ok: false, error: "edge.bad_pem_dates" };
+    const inspected = inspectProvisionedPem(pem, host);
+    if (!inspected.ok) {
+      return { ok: false, error: inspected.error };
     }
     incr("framique_domain_provision_total", { outcome: "ok" });
-    return { ok: true, expiresAt: new Date(expires).toISOString() };
+    return { ok: true, expiresAt: inspected.expiresAt };
   } catch {
     return { ok: false, error: "edge.pem_unreadable" };
   }

@@ -1,31 +1,88 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { reconcileIssuance, refreshActiveExpiry } from "./domains.server";
+import {
+  observeEdgeCertificate,
+  reconcileIssuance,
+  refreshActiveExpiry,
+} from "./domains.server";
 
-type TlsMode = "valid" | "refused" | "untrusted";
+type TlsMode = "valid" | "refused" | "untrusted" | "wrongcert";
 let tlsMode: TlsMode = "valid";
 
+/** Faithful-enough stand-in for Node's checkServerIdentity (SAN-first, CN fallback). */
+function mockCheckServerIdentity(
+  host: string,
+  cert: { subject?: { CN?: unknown }; subjectAltName?: unknown },
+): Error | undefined {
+  const sans =
+    typeof cert.subjectAltName === "string"
+      ? cert.subjectAltName
+          .split(",")
+          .map((p) => p.trim())
+          .filter((p) => p.startsWith("DNS:"))
+          .map((p) => p.slice(4).toLowerCase())
+      : [];
+  const names =
+    sans.length > 0
+      ? sans
+      : typeof cert.subject?.CN === "string"
+        ? [cert.subject.CN.toLowerCase()]
+        : [];
+  const h = host.toLowerCase();
+  if (names.some((n) => n === h)) return undefined;
+  return new Error("ERR_TLS_CERT_ALTNAME_INVALID");
+}
+
+const DEFAULT_CERT_CN = "bitcart.ghostmaster.shop";
+
 vi.mock("node:tls", () => ({
-  connect: vi.fn(() => {
+  checkServerIdentity: vi.fn(mockCheckServerIdentity),
+  connect: vi.fn((opts?: { servername?: string; host?: string }) => {
+    const host = opts?.servername ?? opts?.host ?? "shop.example.com";
     const handlers: Record<string, ((...a: never[]) => void)[]> = {};
+    const validCert = () => ({
+      valid_from: "Sep  1 00:00:00 2026 GMT",
+      valid_to: "Dec  1 00:00:00 2026 GMT",
+      subject: { CN: host },
+    });
+    const defaultCert = () => ({
+      valid_from: "Sep  1 00:00:00 2026 GMT",
+      valid_to: "Dec  1 00:00:00 2026 GMT",
+      subject: { CN: DEFAULT_CERT_CN },
+      subjectAltName: `DNS:${DEFAULT_CERT_CN}`,
+    });
+    let peer = validCert;
     const sock = {
       on: (ev: string, fn: (...a: never[]) => void) => {
         (handlers[ev] ??= []).push(fn);
         return sock;
       },
       destroy: vi.fn(),
-      getPeerCertificate: () =>
-        tlsMode === "valid"
-          ? {
-              valid_from: "Sep  1 00:00:00 2026 GMT",
-              valid_to: "Dec  1 00:00:00 2026 GMT",
-              subject: { CN: "shop.example.com" },
-            }
-          : {},
+      getPeerCertificate: () => (tlsMode === "valid" ? validCert() : {}),
     };
     queueMicrotask(() => {
       if (tlsMode === "valid")
         for (const fn of handlers["secureConnect"] ?? []) fn();
-      else
+      else if (tlsMode === "wrongcert") {
+        // Chain validates (real LE default cert) but the name mismatches:
+        // Node runs checkServerIdentity and fails the handshake.
+        peer = defaultCert;
+        (sock as { getPeerCertificate: () => unknown }).getPeerCertificate =
+          defaultCert;
+        const check = (
+          opts as unknown as {
+            checkServerIdentity?: (h: string, c: unknown) => Error | undefined;
+          }
+        )?.checkServerIdentity;
+        const err =
+          typeof check === "function"
+            ? check(host, defaultCert())
+            : new Error("ERR_TLS_CERT_ALTNAME_INVALID");
+        if (err) {
+          for (const fn of handlers["error"] ?? []) fn(err as never);
+          return;
+        }
+        for (const fn of handlers["secureConnect"] ?? []) fn();
+      } else
         for (const fn of handlers["error"] ?? [])
           fn(
             new Error(
@@ -140,6 +197,30 @@ describe("reconcileIssuance (edge cert observation)", () => {
     expect(flipped).toBe(false);
     expect(rows.get("d1")?.["status"]).toBe("pending_dns");
   });
+
+  it("names the served cert on wrong-cert (replica skew is distinguishable)", async () => {
+    tlsMode = "wrongcert";
+    const seen = await observeEdgeCertificate("shop.example.com");
+    expect(seen.ok).toBe(false);
+    if (!seen.ok) {
+      expect(seen.error).toBe("tls.wrong_cert:bitcart.ghostmaster.shop");
+    }
+  });
+
+  it("records wrong-cert evidence without flipping (alert, not state change)", async () => {
+    seed("issuing_cert");
+    tlsMode = "wrongcert";
+    const flipped = await reconcileIssuance("shop.example.com");
+    expect(flipped).toBe(false);
+    expect(rows.get("d1")?.["status"]).toBe("issuing_cert");
+    expect(String(rows.get("d1")?.["cert_error"])).toBe(
+      "cert.wrong_cert_served:bitcart.ghostmaster.shop",
+    );
+    expect(events.some((e) => e["reason"] === "cert.served_mismatch")).toBe(
+      true,
+    );
+    expect(events.some((e) => e["reason"] === "cert.issued")).toBe(false);
+  });
 });
 
 describe("verifyDomain full loop (manual Check now + sweep share one path)", () => {
@@ -252,5 +333,16 @@ describe("refreshActiveExpiry (stale cert_expires_at on live rows)", () => {
     const refreshed = await refreshActiveExpiry("shop.example.com");
     expect(refreshed).toBe(false);
     expect(rows.get("d1")?.["status"]).toBe("issuing_cert");
+  });
+
+  it("flags an active row serving the default cert (evidence, no state change)", async () => {
+    seedActive("2026-12-01T00:00:00.000Z");
+    tlsMode = "wrongcert";
+    const refreshed = await refreshActiveExpiry("shop.example.com");
+    expect(refreshed).toBe(false);
+    expect(rows.get("d1")?.["status"]).toBe("active");
+    expect(String(rows.get("d1")?.["cert_error"])).toBe(
+      "cert.wrong_cert_served:bitcart.ghostmaster.shop",
+    );
   });
 });

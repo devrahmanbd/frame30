@@ -105,6 +105,30 @@ if [ -n "$PRIMARY_HOST" ]; then
       sleep 10
     fi
   done
+  if [ -n "$primary_ok" ]; then
+    # Cert-subject assertion: a 200 may have hit the healthy replica while a
+    # skewed one still serves the shared default cert (per-replica ACME
+    # storage — DEPLOY.md edge runbook). Sample the served identity 8×; ANY
+    # sample that does not cover PRIMARY_HOST fails the gate. Subject + SANs
+    # both checked (modern LE certs often carry an empty subject CN).
+    skew=0
+    for _ in $(seq 1 8); do
+      cert_text=$(echo | openssl s_client -connect "$PRIMARY_HOST:443" -servername "$PRIMARY_HOST" 2>/dev/null | openssl x509 -noout -subject -ext subjectAltName 2>/dev/null) || cert_text=""
+      case "$cert_text" in
+        *"$PRIMARY_HOST"*) ;;
+        *)
+          skew=1
+          echo "VERIFY SKEW: served identity does not cover $PRIMARY_HOST: '${cert_text:-unreadable}'"
+          break
+          ;;
+      esac
+    done
+    if [ "$skew" -ne 0 ]; then
+      fail=1
+    else
+      echo "VERIFY OK: cert identity covers $PRIMARY_HOST (8/8 samples)"
+    fi
+  fi
 else
   echo "SKIP custom-host checks: no active primary (merchant mid-rename)"
 fi

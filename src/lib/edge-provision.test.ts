@@ -1,7 +1,9 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   CERT_SCRIPT,
   buildIssueCommand,
+  inspectProvisionedPem,
   isProvisionableHost,
   shouldProvisionNow,
 } from "./edge-provision.server";
@@ -64,5 +66,27 @@ describe("provision single-flight + cooldown", () => {
 
   it("script path is the pinned system path", () => {
     expect(CERT_SCRIPT).toBe("/usr/local/bin/framique-cert-issue.sh");
+  });
+});
+
+describe("inspectProvisionedPem (PEM must cover the hostname, not just parse)", () => {
+  const PEM = readFileSync(
+    new URL("./fixtures/skew-test-cert.pem", import.meta.url),
+    "utf8",
+  );
+
+  it("accepts a fresh PEM covering the hostname", () => {
+    const r = inspectProvisionedPem(PEM, "shop.example.com");
+    expect(r.ok).toBe(true);
+  });
+
+  it("rejects a valid PEM issued for a different name (never mark active)", () => {
+    const r = inspectProvisionedPem(PEM, "flamelancer.com");
+    expect(r).toEqual({ ok: false, error: "edge.pem_wrong_host" });
+  });
+
+  it("rejects garbage without throwing", () => {
+    const r = inspectProvisionedPem("not-a-pem", "shop.example.com");
+    expect(r).toEqual({ ok: false, error: "edge.pem_unreadable" });
   });
 });
