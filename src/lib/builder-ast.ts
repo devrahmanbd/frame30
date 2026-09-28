@@ -924,6 +924,9 @@ const BASE_CATALOG: CatalogEntry[] = [
       s2Image: "",
       s3Heading: "",
       s3Image: "",
+      // Repeater-first (widgets.tsx HeroWidget): studio `items` rows win
+      // when present; scalars stay as the theme-authored fallback.
+      items: [],
     },
     fields: [
       text("heading", "Heading"),
@@ -935,6 +938,24 @@ const BASE_CATALOG: CatalogEntry[] = [
       url("s2Image", "Slide 2 image"),
       text("s3Heading", "Slide 3 heading"),
       url("s3Image", "Slide 3 image"),
+      {
+        key: "items",
+        label: "Slides",
+        kind: "array",
+        panel: "content",
+        itemLabel: "heading",
+        maxRows: 5,
+        fields: [
+          text("heading", "Slide heading", 120),
+          text("heading_bn", "Slide heading (বাংলা)", 120),
+          url("image", "Slide image"),
+          text("subheading", "Slide subheading", 160),
+          text("subheading_bn", "Slide subheading (বাংলা)", 160),
+          text("ctaLabel", "Slide button label", 40),
+          text("ctaLabel_bn", "Slide button label (বাংলা)", 40),
+          url("ctaHref", "Slide button link"),
+        ],
+      },
       ALIGN,
       ATMOSPHERE,
     ],
@@ -1116,6 +1137,9 @@ const BASE_CATALOG: CatalogEntry[] = [
       a2: "",
       q3: "",
       a3: "",
+      // Repeater-first (widgets.tsx faq): studio `items` rows win when
+      // present; scalar q/a pairs stay as the theme-authored fallback.
+      items: [],
     },
     fields: [
       text("heading", "Heading"),
@@ -1125,6 +1149,20 @@ const BASE_CATALOG: CatalogEntry[] = [
       area("a2", "Answer 2", 600),
       text("q3", "Question 3"),
       area("a3", "Answer 3", 600),
+      {
+        key: "items",
+        label: "Questions",
+        kind: "array",
+        panel: "content",
+        itemLabel: "question",
+        maxRows: 12,
+        fields: [
+          text("question", "Question", 160),
+          text("question_bn", "Question (বাংলা)", 160),
+          area("answer", "Answer", 600),
+          area("answer_bn", "Answer (বাংলা)", 600),
+        ],
+      },
     ],
   },
   {
@@ -1483,6 +1521,9 @@ const BASE_CATALOG: CatalogEntry[] = [
       r6Group: "",
       r6Label: "",
       r6Value: "",
+      // Repeater-first (electronics.tsx SpecTable): studio `items` rows sit
+      // between live resolved rows and the scalar r1..r6 fallback.
+      items: [],
     },
     fields: [
       text("caption", "Caption", 160),
@@ -1507,6 +1548,22 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("r6Group", "Row 6 group", 60),
       text("r6Label", "Row 6 label", 80),
       text("r6Value", "Row 6 value", 160),
+      {
+        key: "items",
+        label: "Spec rows",
+        kind: "array",
+        panel: "content",
+        itemLabel: "label",
+        maxRows: 12,
+        fields: [
+          text("group", "Group", 60),
+          text("group_bn", "Group (বাংলা)", 60),
+          text("label", "Label", 80),
+          text("label_bn", "Label (বাংলা)", 80),
+          text("value", "Value", 160),
+          text("value_bn", "Value (বাংলা)", 160),
+        ],
+      },
     ],
   },
   {
@@ -1664,6 +1721,9 @@ const BASE_CATALOG: CatalogEntry[] = [
       href: "",
       dismissible: true,
       rotateMs: 6000,
+      // Repeater-first (chrome.tsx AnnouncementBar): studio `items` text
+      // rows win when present; scalar m1/m2/m3 stay as the fallback.
+      items: [],
     },
     fields: [
       text("m1", "Message 1", 160),
@@ -1672,6 +1732,18 @@ const BASE_CATALOG: CatalogEntry[] = [
       url("href", "Link"),
       bool("dismissible", "Dismissible"),
       num("rotateMs", "Rotation in ms (0 = off)"),
+      {
+        key: "items",
+        label: "Messages",
+        kind: "array",
+        panel: "content",
+        itemLabel: "text",
+        maxRows: 6,
+        fields: [
+          text("text", "Message", 160),
+          text("text_bn", "Message (বাংলা)", 160),
+        ],
+      },
     ],
   },
   {
@@ -1720,6 +1792,9 @@ const BASE_CATALOG: CatalogEntry[] = [
       i4Icon: "support",
       i4Title: "",
       i4Body: "",
+      // Repeater-first (chrome.tsx TrustBar): studio `items` rows win when
+      // present; scalar i1..i4 triples stay as the fallback.
+      items: [],
     },
     fields: [
       text("i1Icon", "Item 1 icon key", 20),
@@ -1734,6 +1809,21 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("i4Icon", "Item 4 icon key", 20),
       text("i4Title", "Item 4 title"),
       text("i4Body", "Item 4 body", 120),
+      {
+        key: "items",
+        label: "Trust items",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 6,
+        fields: [
+          text("icon", "Icon key", 20),
+          text("title", "Title"),
+          text("title_bn", "Title (বাংলা)"),
+          text("body", "Body", 120),
+          text("body_bn", "Body (বাংলা)", 120),
+        ],
+      },
     ],
   },
   {
@@ -1845,6 +1935,23 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("brandName", "Brand name", 60),
       area("paymentsMarks", "Payment marks (comma separated)", 300),
       text("paymentsHeading", "Payment heading", 40),
+      {
+        // Repeater-first (chrome.tsx + songoskriti.tsx footers): studio
+        // `items` column rows win when present; scalar c1..c4 pairs stay
+        // as the theme-authored fallback. Twins switch locale per row.
+        key: "items",
+        label: "Link columns",
+        kind: "array",
+        panel: "content",
+        itemLabel: "title",
+        maxRows: 6,
+        fields: [
+          text("title", "Column title", 40),
+          text("title_bn", "Column title (বাংলা)", 40),
+          area("links", "Links (Label|/href, …)", 600),
+          area("links_bn", "Links (বাংলা, Label|/href, …)", 600),
+        ],
+      },
     ],
   },
   {
@@ -2195,6 +2302,9 @@ const BASE_CATALOG: CatalogEntry[] = [
       a2: "",
       q3: "",
       a3: "",
+      // Repeater-first (pdp.tsx ProductQna): studio `items` rows win when
+      // present; scalar q/a pairs stay as the theme-authored fallback.
+      items: [],
     },
     fields: [
       text("handle", "Product handle", 120),
@@ -2207,6 +2317,20 @@ const BASE_CATALOG: CatalogEntry[] = [
       area("a2", "Answer 2", 600),
       text("q3", "Question 3", 160),
       area("a3", "Answer 3", 600),
+      {
+        key: "items",
+        label: "Questions",
+        kind: "array",
+        panel: "content",
+        itemLabel: "question",
+        maxRows: 12,
+        fields: [
+          text("question", "Question", 160),
+          text("question_bn", "Question (বাংলা)", 160),
+          area("answer", "Answer", 600),
+          area("answer_bn", "Answer (বাংলা)", 600),
+        ],
+      },
     ],
   },
   {
@@ -2606,6 +2730,9 @@ const BASE_CATALOG: CatalogEntry[] = [
       i4Alt: "",
       i4Href: "",
       offset: true,
+      // Repeater-first (apparel.tsx Lookbook): studio `items` rows win
+      // when present; scalar i1..i4 triples stay as the fallback.
+      items: [],
     },
     fields: [
       text("heading", "Heading", 80),
@@ -2622,6 +2749,20 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("i4Alt", "Image 4 alt", 120),
       url("i4Href", "Image 4 link"),
       bool("offset", "Offset alignment"),
+      {
+        key: "items",
+        label: "Looks",
+        kind: "array",
+        panel: "content",
+        itemLabel: "alt",
+        maxRows: 8,
+        fields: [
+          url("image", "Image"),
+          text("alt", "Alt text", 120),
+          text("alt_bn", "Alt text (বাংলা)", 120),
+          url("href", "Link"),
+        ],
+      },
     ],
   },
   {
