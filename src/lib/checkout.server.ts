@@ -295,33 +295,34 @@ export async function consumeStock(checkoutToken: string, orderId: string) {
 /**
  * Release live holds for a token, restoring the taken stock.
  *
- * `merchantId` scopes the release: checkout tokens are client-generated
- * predictable strings (`<slug>-hold-<rand>`), so token-only matching lets
- * any shopper who guesses a token release another merchant's holds.
- * Callers must resolve the merchant server-side (from the store slug, or
- * the order's merchant) and pass it here.
+ * `merchantId` is REQUIRED and scopes the release: checkout tokens are
+ * client-generated predictable strings (`<slug>-hold-<rand>`), so
+ * token-only matching lets any shopper who guesses a token release
+ * another merchant's holds. Callers must resolve the merchant server-side
+ * (from the store slug, or the order's merchant) and pass it here.
  *
- * Backward compatibility: `merchantId` is optional so in-flight clients
- * that still call releaseCheckout with a bare token keep working during
- * the cutover. Unscoped calls are logged (`checkout.release_unscoped`)
- * and will become rejected once all clients send `slug` — see T6 report.
+ * Fail-closed: a missing/empty scope is rejected as a no-op (returns
+ * false, touches no rows) and logged (`checkout.release_unscoped`) with a
+ * rejection metric, so cutover abuse stays visible. There is no
+ * token-only fallback path.
  */
-export async function releaseStock(checkoutToken: string, merchantId?: string) {
+export async function releaseStock(checkoutToken: string, merchantId: string) {
+  if (!merchantId) {
+    log("warn", "checkout.release_unscoped", {
+      reason: "rejected: missing merchant scope; no rows touched",
+    });
+    incr("framique_checkout_release_rejected_total", { reason: "unscoped" });
+    return false;
+  }
   try {
     const { supabaseAdmin } =
       await import("@/integrations/supabase/client.server");
-    if (!merchantId) {
-      log("warn", "checkout.release_unscoped", {
-        reason: "missing merchant scope; token-only fallback",
-      });
-    }
-    let heldQuery = supabaseAdmin
+    const { data: held } = await supabaseAdmin
       .from("stock_holds")
       .select("variant_id, quantity")
       .eq("checkout_token", checkoutToken)
+      .eq("merchant_id", merchantId)
       .is("consumed_at", null);
-    if (merchantId) heldQuery = heldQuery.eq("merchant_id", merchantId);
-    const { data: held } = await heldQuery;
     for (const h of (held ?? []) as {
       variant_id: string;
       quantity: number;
@@ -340,13 +341,12 @@ export async function releaseStock(checkoutToken: string, merchantId?: string) {
         .update({ stock_quantity: qty + Number(h.quantity ?? 0) })
         .eq("id", h.variant_id);
     }
-    let releaseQuery = supabaseAdmin
+    await supabaseAdmin
       .from("stock_holds")
       .update({ released_at: new Date().toISOString() })
       .eq("checkout_token", checkoutToken)
+      .eq("merchant_id", merchantId)
       .is("consumed_at", null);
-    if (merchantId) releaseQuery = releaseQuery.eq("merchant_id", merchantId);
-    await releaseQuery;
   } catch (error) {
     log("warn", "checkout.release_failed", {
       reason: String((error as Error)?.message ?? error).slice(0, 160),

@@ -131,4 +131,36 @@ describe("T6 release scoping", () => {
     expect(Number(db.rows("product_variants")[0]!.stock_quantity)).toBe(10);
     expect(db.rows("stock_holds")[0]!.released_at).not.toBe(null);
   });
+
+  it("bare-token release (no merchant scope) is rejected and changes nothing", async () => {
+    const db = twoMerchantDb();
+    adminHolder.db = db.asClient();
+    await expect(
+      releaseStock("tok-shared", undefined as unknown as string),
+    ).resolves.toBe(false);
+    expect(Number(db.rows("product_variants")[0]!.stock_quantity)).toBe(8);
+    expect(db.rows("stock_holds")[0]!.released_at).toBe(null);
+    const { log } = await import("./observability.server");
+    expect(vi.mocked(log)).toHaveBeenCalledWith(
+      "warn",
+      "checkout.release_unscoped",
+      expect.anything(),
+    );
+  });
+
+  it("empty-string merchant scope is rejected and changes nothing", async () => {
+    const db = twoMerchantDb();
+    adminHolder.db = db.asClient();
+    await expect(releaseStock("tok-shared", "")).resolves.toBe(false);
+    expect(Number(db.rows("product_variants")[0]!.stock_quantity)).toBe(8);
+    expect(db.rows("stock_holds")[0]!.released_at).toBe(null);
+  });
+
+  it("bogus merchant scope matches no holds and changes nothing", async () => {
+    const db = twoMerchantDb();
+    adminHolder.db = db.asClient();
+    await releaseStock("tok-shared", "m-bogus");
+    expect(Number(db.rows("product_variants")[0]!.stock_quantity)).toBe(8);
+    expect(db.rows("stock_holds")[0]!.released_at).toBe(null);
+  });
 });
