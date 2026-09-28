@@ -132,5 +132,12 @@ workflows:
       - unit-contract
       - scan
       - build
-      - e2e-critical
+      # build is a HARD gate: e2e-critical never starts unless the production
+      # build succeeds. Without this `requires` edge every job fans out in
+      # parallel, so a broken build still burns the large browsers executor on
+      # E2E while its own red signal races the other jobs. A failed `build`
+      # now fails the workflow with e2e-critical left `blocked` (never run).
+      - e2e-critical:
+          requires:
+            - build
       - plugin-storefront-gate
