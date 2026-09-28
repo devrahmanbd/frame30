@@ -80,7 +80,11 @@ function stubBuilder<T>(): T {
 
 /** The footer_sitemap section the songoskriti blueprint authors. */
 function songoskritiFooterSection(): Section {
-  return buildSongoskritiFooter(stubBuilder<FooterSectionBuilder>())[0]!;
+  const section = buildSongoskritiFooter(
+    stubBuilder<FooterSectionBuilder>(),
+  ).find((n) => n.type === "footer_sitemap")!;
+  if (!section) throw new Error("blueprint must author a footer_sitemap");
+  return section;
 }
 
 function songoskritiHomepage(): Section[] {
