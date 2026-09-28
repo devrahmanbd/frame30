@@ -19,6 +19,12 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
 import { connect } from "node:tls";
 import { cached } from "./cache.server";
+import {
+  parseSubjectAltName,
+  servedIdentityMatches,
+  summariseIdentity,
+  type PresentedIdentity,
+} from "./edge-cert-identity.server";
 import { incr, log, observe, withSpan } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
 import {
@@ -1010,8 +1016,33 @@ export async function applyCertResult(input: {
  * callback that may never come, the sweep performs a real TLS handshake with
  * full chain validation (`rejectUnauthorized`). Staging, self-signed and
  * expired certs fail validation inherently and can never flip a domain.
+ *
+ * Replica-skew distinction: when the validating handshake fails, one extra
+ * handshake with chain validation off reads WHICH certificate the edge is
+ * actually serving. If it is a valid cert for a different name (the shared
+ * default cert — diagnosed 2026-09-25/28, per-replica ACME storage, no edge
+ * SSH), the error names it (`tls.wrong_cert:<served>`) so metrics and alerts
+ * can tell an edge fault from an app fault. The probe is a plain TCP+TLS
+ * read — no ACME order, no LE load.
  */
 export async function observeEdgeCertificate(
+  hostname: string,
+): Promise<{ ok: true; expiresAt: string } | { ok: false; error: string }> {
+  const host = hostname.toLowerCase();
+  const first = await tlsHandshake(host);
+  if (first.ok) return first;
+  const presented = await readPresentedIdentity(host);
+  if (presented && !servedIdentityMatches(host, presented)) {
+    return {
+      ok: false,
+      error: `tls.wrong_cert:${summariseIdentity(presented)}`,
+    };
+  }
+  return first;
+}
+
+/** Validating TLS handshake (chain + hostname enforced by the platform). */
+function tlsHandshake(
   hostname: string,
 ): Promise<{ ok: true; expiresAt: string } | { ok: false; error: string }> {
   return new Promise((resolve) => {
@@ -1077,6 +1108,127 @@ export async function observeEdgeCertificate(
 }
 
 /**
+ * Read the certificate identity the edge presents for `hostname`, without
+ * validating it. Returns null when nothing answers or no identity is
+ * readable. Never throws.
+ */
+async function readPresentedIdentity(
+  hostname: string,
+): Promise<PresentedIdentity | null> {
+  return new Promise((resolve) => {
+    let done = false;
+    let sock: ReturnType<typeof connect> | null = null;
+    const finish = (r: PresentedIdentity | null) => {
+      if (done) return;
+      done = true;
+      clearTimeout(timer);
+      try {
+        sock?.destroy();
+      } catch {
+        /* ignore */
+      }
+      resolve(r);
+    };
+    const timer = setTimeout(() => finish(null), 8000);
+    try {
+      sock = connect({
+        host: hostname,
+        port: 443,
+        servername: hostname,
+        rejectUnauthorized: false,
+        checkServerIdentity: () => undefined,
+      });
+    } catch {
+      finish(null);
+      return;
+    }
+    sock.on("secureConnect", () => {
+      try {
+        finish(peerIdentity(sock?.getPeerCertificate()));
+      } catch {
+        finish(null);
+      }
+    });
+    sock.on("error", () => finish(null));
+  });
+}
+
+/**
+ * Extract a comparable identity from a peer certificate. Handles Node's
+ * lowercase `subjectaltname` as well as camelCase stand-ins. Returns null
+ * when no usable identity is present.
+ */
+function peerIdentity(cert: unknown): PresentedIdentity | null {
+  if (!cert || typeof cert !== "object") return null;
+  const c = cert as {
+    subject?: unknown;
+    subjectaltname?: unknown;
+    subjectAltName?: unknown;
+  };
+  let cn: unknown;
+  if (c.subject && typeof c.subject === "object") {
+    cn = (c.subject as { CN?: unknown }).CN;
+  }
+  const alt =
+    typeof c.subjectaltname === "string"
+      ? c.subjectaltname
+      : typeof c.subjectAltName === "string"
+        ? c.subjectAltName
+        : undefined;
+  const sans = parseSubjectAltName(alt);
+  if (sans.length === 0 && typeof cn !== "string") return null;
+  return { subject: { CN: cn }, sans };
+}
+
+/** Runbook reference attached to every wrong-cert log/alert. */
+const WRONG_CERT_RUNBOOK =
+  "DEPLOY.md#edge-custom-cert-flapping-runbook-diagnosed-2026-09-25";
+
+/**
+ * Record wrong-cert evidence WITHOUT changing domain status. Same pattern as
+ * the provision-failure branch of `provisionAndApply`: a plain update plus a
+ * manual `domain_events` row (no `transition()`, which guards state edges),
+ * a dedicated metric for the alert, and a warn log carrying the runbook.
+ */
+async function recordServedMismatch(input: {
+  row: { id: unknown; merchant_id: unknown; status: unknown };
+  hostname: string;
+  served: string;
+}): Promise<void> {
+  const service = supabaseAdmin;
+  const now = new Date().toISOString();
+  await service
+    .from("merchant_domains")
+    .update({
+      cert_error: `cert.wrong_cert_served:${input.served}`,
+      last_checked_at: now,
+    })
+    .eq("id", input.row.id);
+  await service.from("domain_events").insert({
+    domain_id: input.row.id,
+    merchant_id: input.row.merchant_id,
+    from_status: input.row.status,
+    to_status: input.row.status,
+    reason: "cert.served_mismatch",
+    detail: { served: input.served, hostname: input.hostname },
+  });
+  incr("framique_domain_wrong_cert_total", { served: input.served });
+  log("warn", "domain.served_mismatch", {
+    hostname: input.hostname,
+    served: input.served,
+    runbook: WRONG_CERT_RUNBOOK,
+  });
+}
+
+/** Split a `tls.wrong_cert:<served>` error into the served name, if any. */
+function wrongCertServed(error: string): string | null {
+  const prefix = "tls.wrong_cert:";
+  if (!error.startsWith(prefix)) return null;
+  const served = error.slice(prefix.length).trim();
+  return served ? served : null;
+}
+
+/**
  * Reconcile one hostname against the publicly served certificate. Flips
  * `dns_verified`/`issuing_cert` to `active` (via the audited `applyCertResult`
  * path) when — and only when — a valid public cert is observed. Never throws;
@@ -1095,7 +1247,15 @@ export async function reconcileIssuance(hostname: string): Promise<boolean> {
     const status = row.status as DomainStatus;
     if (status !== "dns_verified" && status !== "issuing_cert") return false;
     const seen = await observeEdgeCertificate(host);
-    if (!seen.ok) return false;
+    if (!seen.ok) {
+      // Replica skew is evidence, not a state change: name the served cert
+      // for the alert/runbook path and leave the status for the next sweep.
+      const served = wrongCertServed(seen.error);
+      if (served) {
+        await recordServedMismatch({ row, hostname: host, served });
+      }
+      return false;
+    }
     if (status === "dns_verified") {
       // Bridge through issuing_cert: the edge demonstrably placed the order
       // (a valid cert exists), so record that before marking issued.
@@ -1140,7 +1300,29 @@ export async function refreshActiveExpiry(hostname: string): Promise<boolean> {
       .maybeSingle();
     if (!row || (row.status as DomainStatus) !== "active") return false;
     const seen = await observeEdgeCertificate(host);
-    if (!seen.ok) return false;
+    if (!seen.ok) {
+      // A live row serving the default cert is replica skew, not expiry:
+      // flag it for the alert/runbook path without touching live status.
+      const served = wrongCertServed(seen.error);
+      if (served) {
+        const service = supabaseAdmin;
+        const { error } = await service
+          .from("merchant_domains")
+          .update({
+            cert_error: `cert.wrong_cert_served:${served}`,
+            last_checked_at: new Date().toISOString(),
+          })
+          .eq("id", row.id);
+        if (error) return false;
+        incr("framique_domain_wrong_cert_total", { served });
+        log("warn", "domain.served_mismatch", {
+          hostname: host,
+          served,
+          runbook: WRONG_CERT_RUNBOOK,
+        });
+      }
+      return false;
+    }
     const current = (row as { cert_expires_at?: unknown }).cert_expires_at;
     const currentMs =
       typeof current === "string" ? new Date(current).getTime() : NaN;

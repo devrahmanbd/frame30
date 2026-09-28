@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeAll } from "vitest";
+import { describe, expect, it, vi, beforeAll, beforeEach } from "vitest";
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -6,6 +6,63 @@ import { join } from "node:path";
 import { provisionAndApply } from "./domains.server";
 
 let PEM = "";
+type TlsMode = "valid" | "wrongcert";
+let tlsMode: TlsMode = "valid";
+
+const WRONG_CN = "bitcart.ghostmaster.shop";
+
+vi.mock("node:tls", () => ({
+  checkServerIdentity: vi.fn(
+    (host: string, cert: { subject?: { CN?: unknown } }): Error | undefined =>
+      typeof cert.subject?.CN === "string" &&
+      cert.subject.CN.toLowerCase() === host.toLowerCase()
+        ? undefined
+        : new Error("ERR_TLS_CERT_ALTNAME_INVALID"),
+  ),
+  connect: vi.fn((opts?: { servername?: string; host?: string }) => {
+    const host = opts?.servername ?? opts?.host ?? "shop.example.com";
+    const handlers: Record<string, ((...a: never[]) => void)[]> = {};
+    const cert =
+      tlsMode === "valid"
+        ? {
+            valid_from: "Sep  1 00:00:00 2026 GMT",
+            valid_to: "Dec  1 00:00:00 2028 GMT",
+            subject: { CN: host },
+          }
+        : {
+            valid_from: "Sep  1 00:00:00 2026 GMT",
+            valid_to: "Dec  1 00:00:00 2028 GMT",
+            subject: { CN: WRONG_CN },
+            subjectAltName: `DNS:${WRONG_CN}`,
+          };
+    const sock = {
+      on: (ev: string, fn: (...a: never[]) => void) => {
+        (handlers[ev] ??= []).push(fn);
+        return sock;
+      },
+      destroy: vi.fn(),
+      getPeerCertificate: () => cert,
+    };
+    queueMicrotask(() => {
+      if (tlsMode === "valid") {
+        for (const fn of handlers["secureConnect"] ?? []) fn();
+        return;
+      }
+      const check = (
+        opts as unknown as {
+          checkServerIdentity?: (h: string, c: unknown) => Error | undefined;
+        }
+      )?.checkServerIdentity;
+      const err =
+        typeof check === "function"
+          ? check(host, cert)
+          : new Error("ERR_TLS_CERT_ALTNAME_INVALID");
+      if (err) for (const fn of handlers["error"] ?? []) fn(err as never);
+      else for (const fn of handlers["secureConnect"] ?? []) fn();
+    });
+    return sock;
+  }),
+}));
 
 vi.mock("node:child_process", async (importOriginal) => {
   const actual = await importOriginal<typeof import("node:child_process")>();
@@ -91,10 +148,14 @@ describe("provisionAndApply (local ACME order)", () => {
   beforeAll(() => {
     const out = join(tmpdir(), `wa-test-${Date.now()}.pem`);
     execSync(
-      `openssl req -x509 -newkey rsa:2048 -keyout /dev/null -out "${out}" -days 2 -nodes -subj "/CN=shop.example.com"`,
+      `openssl req -x509 -newkey rsa:2048 -keyout /dev/null -out "${out}" -days 2 -nodes -subj "/CN=shop.example.com" -addext "subjectAltName=DNS:shop.example.com,DNS:skew.example.com"`,
     );
     PEM = readFileSync(out, "utf8");
     expect(PEM).toContain("BEGIN CERTIFICATE");
+  });
+
+  beforeEach(() => {
+    tlsMode = "valid";
   });
 
   it("flips issuing_cert to active through the audited path", async () => {

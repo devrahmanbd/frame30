@@ -553,6 +553,15 @@ groups:
           runbook: "docs/14-operations/runbooks.md#domain-dns-lookup-errors"
           summary: "DNS-over-HTTPS resolution failing for domain checks"
 
+      - alert: DomainEdgeWrongCert
+        expr: sum(rate(framique_domain_wrong_cert_total[30m])) > 0
+        for: 15m
+        labels: { severity: ticket, team: platform, slo: custom-domains }
+        annotations:
+          runbook: "DEPLOY.md#edge-custom-cert-flapping-runbook-diagnosed-2026-09-25"
+          summary: "Edge serving wrong certificate for custom domains (replica skew)"
+          description: "A TLS replica is serving the shared default cert instead of the domain cert. No app fix applies — re-run issuance on each edge terminator per the runbook."
+
   # ---------------------------------------------------------------------------
   # Phase 4 — treasury. Money leaving the platform, the provider sign-off gate
   # and the FX table that prices USD orders. Every rule here maps to a §4.1
