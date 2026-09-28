@@ -1,4 +1,0 @@
-$ npx tsc --noEmit
-date: 2026-09-28T20:57:23Z
-Version 5.9.3
-tsc_exit=0
