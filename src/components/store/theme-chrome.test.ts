@@ -2,7 +2,7 @@
  * Key-driven theme header chrome (theme-remediation Task 3).
  *
  * RED-first contract: header chrome resolves by explicit theme key — never
- * by slug sniffing. This subsumes the interim `theme-header.ts` lookup,
+ * by slug sniffing. This subsumes the interim `theme-chrome.ts` lookup,
  * which is deleted; `themeChromeFor` is the single key-driven port.
  */
 import { describe, expect, it } from "vitest";

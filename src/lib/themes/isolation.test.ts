@@ -13,7 +13,7 @@
  *     `src/components/builder/chrome.tsx` may mention `songoskriti` /
  *     `somvabona` in any casing. The key-driven registration inside
  *     `src/components/store/theme-chrome.ts` (and the Task 2 lookup in
- *     `src/components/store/theme-header.ts`) is config, not theme code,
+ *     `src/components/store/theme-chrome.ts`) is config, not theme code,
  *     so those files are deliberately NOT scanned. Theme-owned fallback
  *     data lives under `src/lib/themes/<theme>/` and reaches shared
  *     chrome only through that config.

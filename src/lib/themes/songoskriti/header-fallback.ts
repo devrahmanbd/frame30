@@ -5,7 +5,7 @@
  * renderers carry zero brand content: the fallback mega-menu tree, its
  * বাংলা twin table, the logo lockup, and the announcement-bar copy live
  * here, authored by the theme. The shared header resolves them through the
- * key-driven config in `components/store/theme-header.ts` (config, not
+ * key-driven config in `components/store/theme-chrome.ts` (config, not
  * theme code) — never by branching on brand literals itself.
  *
  * Data only: no React, no network.
