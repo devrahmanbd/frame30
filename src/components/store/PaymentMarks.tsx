@@ -479,7 +479,6 @@ export function matchPaymentMark(mark: string): string | null {
  * text chip for marks without artwork (Cash on Delivery, Upay, …).
  */
 export function PaymentMark({ mark }: { mark: string }) {
-  if (mark.trim().toLowerCase() === "cash on delivery") return null;
   const key = matchPaymentMark(mark);
   if (key && ART[key]) {
     const { label, art } = ART[key]!;

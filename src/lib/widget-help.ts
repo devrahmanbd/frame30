@@ -698,6 +698,10 @@ export const PROP_HINTS: Record<string, BiText> = {
     en: "Hero wash tinted from the theme brand. None removes it entirely.",
     bn: "থিম ব্র্যান্ড থেকে হিরো ওয়াশ — None দিলে পুরোপুরি সরে যায়।",
   },
+  asymmetrical: {
+    en: "60/40 split for two-column rows on desktop; off keeps equal columns.",
+    bn: "ডেস্কটপে দুই-কলাম সারির ৬০/৪০ ভাগ — বন্ধ রাখলে সমান কলাম থাকে।",
+  },
   surface: {
     en: "Banner surface: flat card or elevated theme-tinted glass.",
     bn: "ব্যানার সারফেস — ফ্ল্যাট কার্ড বা থিম-টিন্টেড গ্লাস।",

@@ -430,7 +430,7 @@ function FooterSitemap({ str, section, link, locale }: WidgetCtx) {
   return (
     <div className="w-full">
       {/* Top Row: 4 Social Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y divide-[var(--theme-border)] sm:divide-y-0 sm:divide-x border-b border-[var(--theme-border)] mb-10 sm:mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y divide-border sm:divide-y-0 sm:divide-x border-b border-border mb-10 sm:mb-12">
         {SOCIAL_LINKS.map((item) => (
           <a
             key={item.name}
@@ -438,15 +438,15 @@ function FooterSitemap({ str, section, link, locale }: WidgetCtx) {
             onClick={(e) => {
               if (item.href === "#") e.preventDefault();
             }}
-            className="group flex min-h-[58px] items-center justify-between px-6 py-4 text-sm font-medium text-[var(--theme-ink)]/80 transition-colors hover:bg-[var(--theme-ink)]/5 hover:text-[var(--theme-ink)] cursor-pointer"
+            className="group flex min-h-[58px] items-center justify-between px-6 py-4 text-sm font-medium text-foreground/80 transition-colors hover:bg-muted hover:text-foreground cursor-pointer"
           >
             <span className="flex items-center gap-3">
-              <span className="text-[var(--theme-ink)]/70 transition-colors group-hover:text-[var(--theme-ink)]">
+              <span className="text-muted-foreground transition-colors group-hover:text-foreground">
                 {item.icon}
               </span>
               <span className="tracking-tight">{item.name}</span>
             </span>
-            <ArrowRight className="size-4 text-[var(--theme-ink)]/50 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-[var(--theme-ink)]" />
+            <ArrowRight className="size-4 text-muted-foreground/70 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-foreground" />
           </a>
         ))}
       </div>
@@ -457,7 +457,7 @@ function FooterSitemap({ str, section, link, locale }: WidgetCtx) {
       >
         {columns.map((col) => (
           <div key={col.title}>
-            <p className="text-[11px] font-medium tracking-[0.2em] text-[var(--theme-ink)] mb-6 fq-caps">
+            <p className="text-[11px] font-medium tracking-[0.2em] text-foreground mb-6 fq-caps">
               {col.title}
             </p>
             <ul className="space-y-4">
@@ -465,7 +465,7 @@ function FooterSitemap({ str, section, link, locale }: WidgetCtx) {
                 <li key={`${col.title}-${linkItem.label}`}>
                   <a
                     href={link(linkItem.href)}
-                    className="font-serif text-[15px] font-light text-[var(--theme-ink)]/70 hover:text-[var(--theme-ink)] transition-colors"
+                    className="font-serif text-[15px] font-light text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {linkItem.label}
                   </a>

@@ -1211,6 +1211,40 @@ paths:
           description: "Lease unavailable."
         "504":
           description: "Job exceeded its wall-clock budget."
+  /api/public/cron/support-revision:
+    x-source-file: src/routes/api/public/cron/support-revision.ts
+    get:
+      operationId: cronSupportRevisionGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronSupportRevision
+      summary: "Daily Inkling revision pass (scores recent answers, escalates, drafts KB candidates)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
   /api/public/cron/themes:
     x-source-file: src/routes/api/public/cron/themes.ts
     get:
@@ -1947,6 +1981,51 @@ paths:
           description: "Body over 16 KiB."
         "503":
           description: "NEWSLETTER_WEBHOOK_SECRET not configured — nothing is processed."
+  /api/public/support/stream:
+    x-source-file: src/routes/api/public/support/stream.ts
+    get:
+      operationId: supportStreamMethodNotAllowed
+      summary: "Rejected — the streaming lane is POST-only"
+      tags:
+        - support
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: supportStream
+      summary: "Storefront support widget SSE stream (reasoning-stripped deltas, screened final, [DONE] terminal frame)"
+      tags:
+        - support
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - slug
+                - message
+              properties:
+                slug:
+                  type: string
+                  maxLength: 80
+                message:
+                  type: string
+                  minLength: 1
+                  maxLength: 1000
+      responses:
+        "200":
+          description: "text/event-stream — data: delta frames, one screened final frame, then [DONE]."
+        "400":
+          description: "invalid_payload or unreadable_body."
+        "403":
+          description: "cross_tenant conversation-UUID swap rejected."
+        "404":
+          description: "store_not_found."
+        "413":
+          description: "payload_too_large (16 KiB cap)."
+        "429":
+          description: "rate_limited (per store and per-fingerprint buckets, delivered as a final frame)."
   /api/public/domains/verify-sni:
     x-source-file: src/routes/api/public/domains/verify-sni.ts
     get:
