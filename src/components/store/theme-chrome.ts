@@ -1,6 +1,6 @@
 /**
  * Key-driven theme header chrome (theme-remediation Task 3 — subsumes the
- * interim slug-sniffing `theme-chrome.ts`, now deleted).
+ * interim slug-sniffing `theme-header.ts`, now deleted).
  *
  * The shared `StoreHeader` carries zero per-theme literals: it never names
  * a brand. Theme-owned fallback chrome (menu tree, বাংলা twins, logo,
