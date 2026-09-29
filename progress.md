@@ -19,6 +19,7 @@
 - [ ] Mega-menu: full-width panel, category columns + rotating campaign photo per menu.
 - [ ] Hero carousel: autoplay 6s, swipe, dots, Ken Burns on active slide (no video yet).
 - [ ] Dismissible single-message promo bar (slide-up entrance, like Biba's campaign banner).
+- F2 AI imagery drop-in — DONE 2026-09-29 (commit 43a989b): 6 fresh MAI-Image-2.6-Flash photos generated live in owner-authenticated playground session (MeiGen-structured prompts: subject+style+lighting+palette+composition, no text), same filenames = zero rewiring (hero-newin, hero-wedding, craft-loom, occ-women/men/kids, JPEG q85); SOURCES.txt provenance updated; originals backed up in /tmp/somvabona-orig/; theme suites 51/51 green post-swap.
 
 ## Phase 3 — Rails, PDP, cart
 
