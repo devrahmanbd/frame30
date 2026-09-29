@@ -1,9 +1,10 @@
-Somvabona theme placeholder art — free to use under the Unsplash License
-(https://unsplash.com/license). hero-festive.jpg is merchant-generated art.
+Somvabona theme art — Unsplash License (https://unsplash.com/license) except
+rows marked MERCHANT-AI (generated 2026-09-29 via MAI-Image-2.6-Flash for
+Framique, merchant-owned). hero-festive.jpg is merchant-generated art.
 Replace with real catalog photography before production launch.
 
-hero-newin.jpg ....... woman-poses-elegantly-in-a-traditional-white-saree-mv4l_XPeiko
-hero-wedding.jpg ..... bride-and-groom-in-traditional-indian-wedding-attire-Ui4Imq3m5Ao
+hero-newin.jpg ....... MERCHANT-AI: woman in white cotton kurti holding folded kurtis, store setting
+hero-wedding.jpg ..... MERCHANT-AI: Bangladeshi wedding couple in bridal boutique
 cat-women.jpg ........ woman-in-red-and-blue-sari-dress-Xqa_NWl4xEY
 cat-men.jpg .......... man-in-traditional-gray-kurta-with-blurred-lights-background-n-6nUywZ2Uc
 cat-kids.jpg ......... young-boy-in-traditional-indian-attire-YrommNEMLXY
@@ -13,10 +14,10 @@ cat-newin.jpg ........ a-young-man-in-a-white-kurta-stands-outdoors-Kw6Vpdy-OyM
 bucket-999.jpg ....... woman-in-pink-and-white-sari-dress-EmlZ6WRD-80
 bucket-1999.jpg ...... a-woman-in-a-purple-and-gold-sari-wcgCFUi_Zws
 bucket-2999.jpg ...... a-woman-in-a-yellow-and-red-sari-standing-next-to-a-tree-sRP0vuFnn0s
-occ-women.jpg ........ a-beautiful-woman-in-a-colorful-sari-dCuCMZ9XnHg
-occ-men.jpg .......... man-in-yellow-vest-and-white-kurta-zSLpDXqnSYk
-occ-kids.jpg ......... a-group-of-young-girls-dressed-in-traditional-indian-garb-QSkZps33HE4
-craft-loom.jpg ....... woman-weaving-fabric-on-a-traditional-loom-G1vTTwnqYcU
+occ-women.jpg ........ MERCHANT-AI: woman in teal jamdani saree, boutique
+occ-men.jpg .......... MERCHANT-AI: man in rust-orange panjabi, menswear boutique
+occ-kids.jpg ......... MERCHANT-AI: girl in mustard frock twirling, kids boutique
+craft-loom.jpg ....... MERCHANT-AI: woman artisan at wooden handloom, documentary
 testi-1.jpg .......... a-woman-in-a-sari-poses-for-a-picture-0GZ3OTNL1hg
 testi-2.jpg .......... young-man-in-white-kurta-looking-away-from-camera-bUeNPdFZQcc
 testi-3.jpg .......... a-woman-in-a-white-and-red-sari-j7Ljsqhnwag
