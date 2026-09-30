@@ -97,6 +97,7 @@ bun run a11y:gate                 # axe-core, >= 90 score
 4. **RLS on every public table** plus explicit `GRANT`s per role.
 5. **No `server-only` import** — use `*.server.ts` naming instead (ESLint enforced).
 6. **Append-only audit rows** for every `[A]` action (actor, before, after, reason).
+7. **No shared components in themes**: prod files under `src/lib/themes/<theme>/` import engine lib only (`@/lib/*`), never `@/components/*`. Themes are data + lib-only builders; shared chrome reaches theme data exclusively through key-driven config (`components/store/theme-chrome.ts`, `src/lib/preview-sources.ts`). Enforced by `src/lib/themes/isolation.test.ts`; see `docs/internal/theme-isolation.md`.
 
 ## Testing
 

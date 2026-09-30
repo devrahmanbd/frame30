@@ -1,4 +1,9 @@
-# Themes Dynamic-Compatibility Report — Songoskriti vs Somvabona
+# Themes Dynamic-Compatibility Report — Songoskriti vs retired second theme
+
+> Retired 2026-09-30: the second theme covered here was removed from the
+> tree; this dated audit is preserved for its engine-level findings only.
+> "Theme B" = the retired theme. Its folder paths are redacted.
+
 Date: 2026-09-26. Method: read-only subagent audits of code + live schema; nothing invented. File:line refs included.
 
 ## Verdict in one paragraph
@@ -7,17 +12,17 @@ Both themes are **fully dynamic** (tokens, skins, preset defaults, no hardcoded 
 
 ## 1. Dynamic — both themes: YES
 
-| Capability | Songoskriti | Somvabona |
+| Capability | Songoskriti | Theme B |
 |---|---|---|
-| ThemeTokens (18 keys) | ✅ brand `#1a1a1a`, accent `#8B4513`, radius `0px` sharp | ✅ brand `#7C2A1A`, accent `#B95A38`, radius `4px` |
-| Skin vocabs + defaults | ✅ editorial/split/wall/cards (`skins.ts:35-68`) | ✅ compact/fullbleed/carousel/rows (`skins.ts:40-73`) |
+| ThemeTokens (18 keys) | ✅ brand `#1a1a1a`, accent `#8B4513`, radius `0px` sharp | ✅ deep maroon brand, warm paper surface, radius `4px` |
+| Skin vocabs + defaults | ✅ editorial/split/wall/cards | ✅ compact/fullbleed/carousel/rows |
 | Skin stylesheets | ✅ token-only, reduced-motion gated | ✅ token-only, reduced-motion gated |
 | Responsive bp overrides | ⚠️ engine supports, neither theme authors any | ⚠️ same |
 | Motion | `subtle` tokens + 5–6s auto-advance carousels | `subtle` + same pattern |
 
 ## 2. Page builder / editor — YES with 4 exceptions
 
-All 21 songoskriti + 18 somvabona emitted types resolve (catalog → renderer → studio twin → inspector). Exceptions:
+All songoskriti + theme-B emitted types resolve (catalog → renderer → studio twin → inspector). Exceptions:
 1. `profile_card` / `orders_list`: no studio twin — uneditable in studio (`studio/catalog.ts` has zero keys).
 2. Thin studio twins (no skin control, minimal schema): `testimonials`, `finder_row`, `trust_footer/marquee`, `price_buckets`, `occasion_matrix`, `urgency_rail`.
 3. Prop-shape over-emit stripped on persist: songoskriti `finder_row` o4–o7, `split_feature` dual-image/CTA props, `ugc_gallery images` string.
@@ -30,7 +35,7 @@ Sandboxed `plugin:*` islands (null-origin iframe, no net/img/font egress, allow-
 ## 4. Menus — weakest axis
 
 - Dashboard menus (Content › Menus, 3-level, bilingual chrome) exist and serve generic stores via `StoreHeader`.
-- **Songoskriti ignores them completely**: hardcoded `NAV_ITEMS` tree + `label_bn` unread; any store on this theme cannot use dashboard menus. Somvabona uses the generic taxonomy path (fine, but plain — no images/columns).
+- **Songoskriti ignores them completely**: hardcoded `NAV_ITEMS` tree + `label_bn` unread; any store on this theme cannot use dashboard menus. Theme B uses the generic taxonomy path (fine, but plain — no images/columns).
 - `mega_menu` widget never consumes dashboard menus; `columns`/`label_bn` props are dead everywhere; `department_strip` has no binding and no studio preview.
 - A plugin **cannot** replace menu rendering (closed map, no menu hook/scope/slot) — adjacent header blocks only.
 
@@ -58,5 +63,6 @@ No per-theme blog templates or article skins; shared `ArticleView`, full SEO (JS
 6. **Menu replacement API** (new slot/hook/scope) — only if "better menu" becomes a product bet.
 
 ---
+
 **Living guides (2026-09-26):** [Builder README](docs/04-builder/README.md),
 [Theme authoring](docs/themes/creation.md). This report stays a dated audit.

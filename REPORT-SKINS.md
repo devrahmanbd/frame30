@@ -1,7 +1,11 @@
 # Why Both Themes Wear the Same Skin — Analysis Report
 
+> Retired 2026-09-30: the second theme covered here was removed from the
+> tree; this dated audit is preserved for its engine-level findings only.
+> "Theme B" = the retired theme. Its folder/asset paths are redacted.
+
 Date: 2026-09-26. Method: token/skin/renderer/blueprint comparison of
-`songoskriti` vs `somvabona` + live DOM inspection of both previews.
+`songoskriti` vs the retired theme + live DOM inspection of both previews.
 File:line refs against `origin/main`. No code changed.
 
 ## Verdict in one paragraph
@@ -10,21 +14,21 @@ The themes differ **on paper** (tokens, copy, section lists) but render
 **identically** because the look lives in three places themes don't control:
 (1) the one token that actually differs — `brand` — is consumed **0 times**
 by any builder component, while everything visual keys off `--theme-ink`,
-which is near-identical (`#1a1a1a` vs `#2E2620`); (2) layout, typography and
+which is near-identical on both; (2) layout, typography and
 spacing are hardcoded Tailwind classes inside **shared renderers**, and
-Songoskriti's renderers override the generic ones **globally**, so Somvabona
+Songoskriti's renderers override the generic ones **globally**, so Theme B
 is painted by Songoskriti's components; (3) both homepages speak the same
 section grammar in the same order. "Theme" today means *copy + tint*, not
 *skin*. Details below.
 
 ## 1. Tokens: different values, same pixels
 
-| Token | Songoskriti | Somvabona | Rendered? |
+| Token | Songoskriti | Theme B | Rendered? |
 |---|---|---|---|
-| brand | `#1a1a1a` | `#7C2A1A` (maroon) | **0 uses** in `components/builder/*.tsx` — dead difference |
-| accent | `#8B4513` | `#B95A38` | ~unused (same pattern) |
-| ink | `#1a1a1a` | `#2E2620` | **104 uses** — everything keys off this; visually identical |
-| surface | `#faf9f7` ivory | `#FBF6EE` warmer paper | negligible delta at a glance |
+| brand | `#1a1a1a` | deep maroon | **0 uses** in `components/builder/*.tsx` — dead difference |
+| accent | `#8B4513` | warm terracotta | ~unused (same pattern) |
+| ink | `#1a1a1a` | near-black warm grey | **104 uses** — everything keys off this; visually identical |
+| surface | `#faf9f7` ivory | warmer paper | negligible delta at a glance |
 | fontDisplay/fontBody | Playfair Display / Inter | Playfair Display / Inter | **identical** |
 | fontPairing | `editorial-serif` | `editorial-serif` | identical |
 | density/container/space | comfortable / 1320px / 16px | comfortable / 1320px / 16px | identical |
@@ -33,7 +37,7 @@ section grammar in the same order. "Theme" today means *copy + tint*, not
 Pipeline itself works (`tokensToCss`, `builder-ast.ts:6274` → CSS vars via
 `ThemeSurface`). The problem is *which* tokens vary and *which* get consumed:
 CTAs, prices, badges and headings all resolve to ink/surface/muted. The maroon
-brand that should scream "Somvabona" never reaches a pixel.
+brand that should scream Theme B never reaches a pixel.
 
 Evidence: `grep -rn "theme-brand" src/components/builder/*.tsx` → zero hits;
 `theme-ink` → 104 hits. Live: both themes' buttons/headlines render near-black.
@@ -53,19 +57,19 @@ first, `:1675` SONGOSKRITI spread later — last write wins for **all** themes):
 |---|---|
 | product_rail, product_grid, rich_text, newsletter, footer_sitemap, payment_icons, department_grid, mega_menu, store_locator (+7 more) | Songoskriti's renderer |
 
-Somvabona defines only 5 unique widgets (`trust_marquee`, `price_buckets`,
+Theme B defines only 5 unique widgets (`trust_marquee`, `price_buckets`,
 `occasion_matrix`, `urgency_rail`, `rating_stars`). Everything else it "renders"
-is Songoskriti's component in Somvabona's colors.
+is Songoskriti's component in Theme B's colors.
 
-## 3. Brand leakage: Songoskriti prints itself on Somvabona's page (live proof)
+## 3. Brand leakage: Songoskriti prints itself on Theme B's page (live proof)
 
 `SongoskritiFooterSitemap` imports `STATEMENT, NEWSLETTER, PAYMENT_MARKS,
-COLOPHON` from `@/lib/themes/songoskriti/footer` (`songoskriti.tsx:62-65`)
+COLOPHON` from the songoskriti theme footer module (`songoskriti.tsx:62-65`)
 and renders them around whatever columns it's given. Live DOM on
-`/theme-preview/somvabona` shows `data-fq-node="footer_sitemap-3-index"`
+Theme B's preview tab shows the sitemap node
 rendering *"Woven in Bangladesh, worn everywhere… Songoskriti… © 2026
-Songoskriti"*. Same for `store_locator`: hardcoded `/ph/songoskriti/*`
-imagery + `useSongoskritiReveals` motion for any theme that uses the section.
+Songoskriti"*. Same for `store_locator`: hardcoded songoskriti
+imagery + songoskriti motion hooks for any theme that uses the section.
 
 Bonus find: Songoskriti's **own** page renders its footer statement +
 newsletter **twice** (theme authors standalone sections AND the renderer
@@ -73,8 +77,8 @@ hardcodes the same zones) — brand coupling hurts the owner too.
 
 ## 4. Same data, same rhythm
 
-- `demo-catalog.ts:2895`: `somvabona: SONGOSKRITI` alias — Somvabona's rails
-  show silk/jamdani products (own-catalog fix exists, unmerged).
+- The retired theme's rails showed songoskriti-catalog products (demo-catalog
+  alias — its rails sold heritage-silk titles; own-catalog fix exists, unmerged).
 - Homepage grammar, both themes: hero → trust → category circles → product
   rails → store locator → craft story → testimonials → statement → newsletter
   → sitemap. Different counts (20 vs 11 sections), same sentence structure.

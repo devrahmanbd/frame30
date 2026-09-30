@@ -90,5 +90,5 @@ what makes "same widget, better look" automatic per theme.
 1. Core: `skin` prop + branches for product_rail, hero_carousel,
    testimonials, product_grid (+ catalog fields).
 2. Songoskriti skin sheet + preset defaults.
-3. Somvabona skin sheet + preset defaults.
+3. Oceanblue skin sheet + preset defaults.
 4. Preview matrix check → deploy.

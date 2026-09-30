@@ -14,8 +14,8 @@ OpenAPI: audit → generate from code → hand-maintain as contract with tests.
 - Authoritative post-merge guides: `docs/04-builder/README.md` (runtime),
   `docs/themes/creation.md` (authoring). History: `docs/themes/sdk.md`,
   `packages.md`, `wordpress-handbook-index.md`, 4 `theme-plan-*` files.
-- Theme tests exist per theme (`wiring`, `skins`, `preview`, `widgets` for
-  `songoskriti` + `somvabona`). Plugin tests exist (`plugin-lifecycle`,
+- Theme tests exist per theme (`wiring`, `skins`, `preview`, plus `widgets` for
+  `songoskriti`) for `songoskriti` + `oceanblue`. Plugin tests exist (`plugin-lifecycle`,
   `plugin-acceptance`, `plugins-consent`, `plugin-bundle-gate`,
   `plugin-emission`, studio `plugin-tray`, `ThemeChrome.plugins`,
   `StudioNodes.plugins`).

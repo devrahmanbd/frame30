@@ -52,7 +52,7 @@ describe("platform-shell CSP — medium/high documents must carry a nonce (live 
 
   it("high tier emits a nonce-based script-src (framework bootstrap must run)", async () => {
     setCurrentNonce("");
-    const req = new Request("http://localhost:3000/theme-preview/somvabona");
+    const req = new Request("http://localhost:3000/theme-preview/songoskriti");
     const res = withSecurityHeaders(req, docResponse(HTML), "high");
     const csp = res.headers.get("content-security-policy") ?? "";
     const scriptSrc =

@@ -29,7 +29,7 @@
 
 **Files:** NONE modified. Report to `/tmp/opencode/theme-separation/.ws-reports/separation-audit.md` (create dir).
 
-- [ ] Map every theme-specific symbol in shared files (`components/builder/*.tsx`, `components/store/*`, `lib/builder-ast.ts`): songoskriti/somvabona branches, renderers, skins hooks.
+- [ ] Map every theme-specific symbol in shared files (`components/builder/*.tsx`, `components/store/*`, `lib/builder-ast.ts`): songoskriti/oceanblue branches, renderers, skins hooks.
 - [ ] Map theme-owned dirs (`lib/themes/<name>/`, skins, tokens, preview sources) and what they already override cleanly (defaults, skins, builders).
 - [ ] Propose Elementor-like target: engine widget registry + base widgets; per-theme renderer registration; what moves file-by-file; effort/risk; explicit DO-NOT-MOVE list.
 - [ ] Report only. No commits.

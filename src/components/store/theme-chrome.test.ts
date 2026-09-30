@@ -33,7 +33,6 @@ describe("themeChromeFor", () => {
     // chrome even with a foreign theme installed, and dressed renamed
     // lookalikes via substring. Key-driven resolution ends both: only the
     // exact theme key earns the lockup.
-    expect(themeChromeFor("somvabona")).toBeNull();
     expect(themeChromeFor("demo")).toBeNull();
     expect(themeChromeFor("songoskriti-2")).toBeNull();
     expect(themeChromeFor("Songoskriti")).toBeNull();

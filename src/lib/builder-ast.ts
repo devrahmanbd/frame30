@@ -267,8 +267,7 @@ export type SectionType =
   | "craft_story"
   | "testimonials"
   | "trust_footer"
-  // Somvabona everyday-ethnic pack (spec 2026-09-25 §3). Renderers live in
-  // somvabona.tsx; studio defs mirror these defaults 1:1. urgency_rail
+  // Everyday-ethnic pack (spec 2026-09-25 §3). urgency_rail
   // reuses the product_rail data shape (collection source + limit).
   | "trust_marquee"
   | "price_buckets"
@@ -620,7 +619,7 @@ export const DEFAULT_WIDGET_SKIN: Record<SkinnableWidgetType, string> = {
   testimonials: "carousel",
   product_grid: "cards",
   // B2-3: core default mirrors product_rail (editorial preserves current
-  // urgency_rail markup); Somvabona overrides to compact via theme defaults.
+  // urgency_rail markup); themes may override via theme defaults.
   urgency_rail: "editorial",
 };
 
@@ -5129,7 +5128,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     ],
   },
   {
-    // Renderer: somvabona.tsx TrustMarquee. Looping proof strip — items[]
+    // Renderer: TrustMarquee. Looping proof strip — items[]
     // rows only, qualitative badges (no counts, no ratings, no invented
     // numbers). Freezes under prefers-reduced-motion.
     type: "trust_marquee",
@@ -5171,7 +5170,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     ],
   },
   {
-    // Renderer: somvabona.tsx PriceBuckets. Navigational tiles — label +
+    // Renderer: PriceBuckets. Navigational tiles — label +
     // integer minor-unit bound + verified href + image. Bounds only, never
     // computed prices; empty buckets are omitted, never rendered blank.
     type: "price_buckets",
@@ -5208,7 +5207,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     ],
   },
   {
-    // Renderer: somvabona.tsx OccasionMatrix. Collection × occasion grid —
+    // Renderer: OccasionMatrix. Collection × occasion grid —
     // occasion links plus collection tiles, all verified hrefs.
     type: "occasion_matrix",
     label: "Occasion matrix",
@@ -5257,12 +5256,12 @@ const BASE_CATALOG: CatalogEntry[] = [
     ],
   },
   {
-    // Renderer: somvabona.tsx UrgencyRail. product_rail data shape plus
+    // Renderer: UrgencyRail. product_rail data shape plus
     // computed sale badges (% off from real minor units), real stock hints
     // (row.count against lowStockAt — absent counts show no hint) and the
     // ratings row. Never typed discounts, never "only few left" without a flag.
     // B2-3 skin: reuses the product_rail skin vocabulary (same cards, same
-    // rail) with an editorial core default; Somvabona overrides to compact.
+    // rail) with an editorial core default; themes may override to compact.
     type: "urgency_rail",
     label: "Urgency rail",
     group: "commerce",
@@ -5306,7 +5305,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     ],
   },
   {
-    // Renderer: somvabona.tsx RatingStars. Display-only stars from real
+    // Renderer: RatingStars. Display-only stars from real
     // review aggregates — renders nothing with no data, never fake 4.8s.
     type: "rating_stars",
     label: "Rating stars",
@@ -5990,7 +5989,7 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
     "i4Title",
     "i4Body",
   ],
-  // Somvabona pack. Row-level twins (items, buckets, occasions,
+  // Everyday-ethnic pack. Row-level twins (items, buckets, occasions,
   // collections) are read directly by their renderers, so only scalar
   // theme-authored copy is listed here.
   price_buckets: ["heading"],

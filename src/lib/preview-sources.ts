@@ -9,11 +9,11 @@
 import type { PreviewThemeSource } from "./theme-preview-nav";
 import type { TemplateKey } from "./builder-ast";
 import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
-import { somvabonaPreviewSource } from "./themes/somvabona/preview";
+import { oceanbluePreviewSource } from "./themes/oceanblue/preview";
 
 const SOURCES: Record<string, () => PreviewThemeSource> = {
   songoskriti: songoskritiPreviewSource,
-  somvabona: somvabonaPreviewSource,
+  oceanblue: oceanbluePreviewSource,
 };
 
 export function previewSourceFor(key: string): PreviewThemeSource | null {

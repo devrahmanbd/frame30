@@ -34,16 +34,16 @@ Tokens are the only styling channel. The shape is `ThemeTokens` in
 `DEFAULT_TOKENS` in `src/lib/builder-ast.ts:6076`, then lock the two
 shipped themes' columns as reference:
 
-| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Somvabona (`src/lib/themes/somvabona/tokens.ts:14`) |
+| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Oceanblue (`src/lib/themes/oceanblue/tokens.ts:14`) |
 | ----------------- | ------------------------------------------------------ | --------------------------------------------------- |
-| `brand`           | `#1a1a1a`                                              | `#7C2A1A`                                           |
-| `accent`          | `#8B4513`                                              | `#B95A38`                                           |
-| `surface`         | `#faf9f7`                                              | `#FBF6EE`                                           |
-| `ink`             | `#1a1a1a`                                              | `#2E2620`                                           |
-| `radius`          | `0px` (sharp, fashion-editorial)                       | `4px`                                               |
-| `fontDisplay`     | `Playfair Display`                                     | `Playfair Display` (campaign headlines only)        |
+| `brand`           | `#1a1a1a`                                              | `#0B3A5B`                                           |
+| `accent`          | `#8B4513`                                              | `#C08A3E`                                           |
+| `surface`         | `#faf9f7`                                              | `#FFFFFF`                                           |
+| `ink`             | `#1a1a1a`                                              | `#0F1E2E`                                           |
+| `radius`          | `0px` (sharp, fashion-editorial)                       | `8px`                                               |
+| `fontDisplay`     | `Playfair Display`                                     | `Inter`                                             |
 | `fontBody`        | `Inter`                                                | `Inter`                                             |
-| `container`       | `1320px`                                               | `1320px`                                            |
+| `container`       | `1320px`                                               | `1280px`                                            |
 | `density`         | `comfortable`                                          | `comfortable`                                       |
 | `typeScale`       | `default`                                              | `default`                                           |
 | `spaceUnit`       | `16px`                                                 | `16px`                                              |
@@ -52,12 +52,13 @@ shipped themes' columns as reference:
 | `digits`          | `latin`                                                | `latin`                                             |
 | `locale`          | `en`                                                   | `en`                                                |
 | `currencyDisplay` | `symbol`                                               | `symbol`                                            |
-| `fontPairing`     | `editorial-serif`                                      | `editorial-serif`                                   |
+| `fontPairing`     | `editorial-serif`                                      | `bengali-classic`                                   |
 | `dark`            | `null` (light-only)                                    | `null` (light-only)                                 |
 | `globals`         | `DEFAULT_GLOBALS`                                      | `DEFAULT_GLOBALS`                                   |
 
-Both themes keep `fontPairing: editorial-serif` from `FONT_PAIRINGS` in
-`src/lib/builder-ast.ts:6058`, and both seed `globals` from
+Oceanblue keeps `fontPairing: bengali-classic` (shared pairing, Bangla-safe)
+from `FONT_PAIRINGS` in `src/lib/builder-ast.ts:6058`, and both themes seed
+`globals` from `DEFAULT_GLOBALS` in `src/lib/theme-globals.ts:32`.
 `DEFAULT_GLOBALS` in `src/lib/theme-globals.ts:32`. Globals are the
 merchant-editable palette; bindings are stored as `var(--fq-g-<id>)`
 references built by `globalRef` in `src/lib/theme-globals.ts:58` and
@@ -78,23 +79,23 @@ widget default through `resolveSkin` in
 `src/lib/builder-ast.ts:638` — never a crash, never empty. Skin values
 are style keys, never copy, so they carry no `_bn` twins.
 
-| Widget          | Core vocab (first = core default) | Songoskriti default | Somvabona default |
+| Widget          | Core vocab (first = core default) | Songoskriti default | Oceanblue default |
 | --------------- | --------------------------------- | ------------------- | ----------------- |
-| `product_rail`  | `editorial`, `compact`, `minimal` | `editorial`         | `compact`         |
-| `hero_carousel` | `split`, `fullbleed`, `minimal`   | `split`             | `fullbleed`       |
-| `testimonials`  | `carousel`, `wall`, `single`      | `wall`              | `carousel`        |
-| `product_grid`  | `cards`, `rows`                   | `cards`             | `rows`            |
-| `urgency_rail`  | `editorial`, `compact`, `minimal` | — (core default)    | `compact`         |
+| `product_rail`  | `editorial`, `compact`, `minimal` | `editorial`         | `minimal`         |
+| `hero_carousel` | `split`, `fullbleed`, `minimal`   | `split`             | `split`           |
+| `testimonials`  | `carousel`, `wall`, `single`      | `wall`              | `single`          |
+| `product_grid`  | `cards`, `rows`                   | `cards`             | `cards`           |
+| `urgency_rail`  | `editorial`, `compact`, `minimal` | — (core default)    | `minimal`         |
 
 Theme-side sets live in `SONGOSKRITI_SKIN_SETS` in
 `src/lib/themes/songoskriti/skins.ts:35` with defaults in
 `src/lib/themes/songoskriti/skins.ts:52`, and in
-`SOMVABONA_WIDGET_DEFAULTS` in
-`src/lib/themes/somvabona/skins.ts:40`. Wire them with
+`OCEANBLUE_WIDGET_DEFAULTS` in
+`src/lib/themes/oceanblue/skins.ts:52`. Wire them with
 `withSongoskritiDefaults` in
 `src/lib/themes/songoskriti/skins.ts:109` or
-`withSomvabonaWidgetDefaults` in
-`src/lib/themes/somvabona/skins.ts:111`: defaults merge **under**
+`withOceanblueDefaults` in
+`src/lib/themes/oceanblue/skins.ts:109`: defaults merge **under**
 authored props, so an explicit `skin` in the inspector always wins. The
 shared helper behind both is `withThemeWidgetDefaults` in
 `src/lib/builder-ast.ts:734`, which only merges catalogue-known keys so
@@ -106,10 +107,11 @@ Build the homepage as one function returning `Section[]`, wrapped so
 theme skin defaults merge under authored props. Songoskriti builds
 `buildHomepageMain` in `src/lib/themes/songoskriti/homepage.ts:23`
 (first section at `src/lib/themes/songoskriti/homepage.ts:31`) and
-ships a 20-section homepage opening on `hero_carousel`; Somvabona
+ships a 20-section homepage opening on `hero_carousel`; Oceanblue
 builds `buildHomepageMain` in
-`src/lib/themes/somvabona/homepage.ts:22` and ships an 11-section
-homepage on 10 distinct types. The section shape is `Section` in
+`src/lib/themes/oceanblue/homepage.ts:23` and ships a 14-section
+homepage (announcement → hero → discovery rails → trust → locator →
+newsletter → footer). The section shape is `Section` in
 `src/lib/builder-ast.ts:305`, built through the `SectionBuilder`
 callback in `src/lib/builder-ast.ts:335`; always construct through the
 shared factory `sectionFactory` in `src/lib/theme-section.ts:61` so ids
@@ -144,11 +146,11 @@ renderer's `[data-widget]` + `[data-skin]` attributes. Washes use
 `color-mix()` over theme tokens, so a merchant re-tint re-skins every
 rule automatically; motion rules collapse under
 `prefers-reduced-motion`. See `src/lib/themes/songoskriti/skins.css`
-and `src/lib/themes/somvabona/skins.css`. The gate is enforced per
+and `src/lib/themes/oceanblue/skins.css`. The gate is enforced per
 theme by test: `stays token-driven: theme vars only, no hex literals`
-in `src/lib/themes/songoskriti/skins.test.ts:182`, and `is
-token-driven: no hex literals or raw colour utilities` in
-`src/lib/themes/somvabona/skins.test.ts:167`. A submission whose
+in `src/lib/themes/songoskriti/skins.test.ts:182`, and `stays
+token-driven: theme vars only, no hex literals` in
+`src/lib/themes/oceanblue/skins.test.ts`. A submission whose
 stylesheet contains a hex literal fails the gate.
 
 ## Mirror every widget in the studio catalog
@@ -179,8 +181,8 @@ Theme previews render through a theme-agnostic engine: the theme only
 implements the `PreviewThemeSource` port in
 `src/lib/theme-preview-nav.ts:283`, and the registry wires it in.
 Implement `songoskritiPreviewSource()` in
-`src/lib/themes/songoskriti/preview.ts:40` (Somvabona mirrors it in
-`src/lib/themes/somvabona/preview.ts:20`): `{ key, themeName, author,
+`src/lib/themes/songoskriti/preview.ts:40` (Oceanblue mirrors it in
+`src/lib/themes/oceanblue/preview.ts`): `{ key, themeName, author,
 tokens, header, footer, main }`, where `main(template, s)` returns the
 authored demo body per template key or `null` for templates the theme
 does not author. The port type lives in

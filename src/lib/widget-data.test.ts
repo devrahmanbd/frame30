@@ -34,7 +34,7 @@ describe("widget data collection", () => {
     );
   });
 
-  it("wires the somvabona urgency rail to the collection batch", () => {
+  it("wires the urgency rail to the collection batch", () => {
     // Regression: urgency_rail rendered skeletons forever in preview AND on
     // storefronts because it never declared `data` in the registry override.
     const request = requestForSection({

@@ -40,7 +40,7 @@ import { BASIC_WIDGETS } from "./basics";
 import { BLOG_WIDGETS } from "./blog";
 import { HERITAGE_WIDGETS } from "./heritage";
 import { SONGOSKRITI_WIDGETS } from "./songoskriti";
-import { SOMVABONA_WIDGETS } from "./somvabona";
+import { DISCOVERY_WIDGETS } from "./discovery";
 import {
   ProductCard,
   ProductCardSkeleton,
@@ -1161,8 +1161,10 @@ const BASE_WIDGETS: Record<string, WidgetComponent> = {
   ...APPAREL_WIDGETS,
   // Phase 9 — Heritage (clothing).
   ...HERITAGE_WIDGETS,
-  // Somvabona everyday-ethnic pack (spec 2026-09-25 §3).
-  ...SOMVABONA_WIDGETS,
+  // Discovery pack — generic engine widgets (trust marquee, price buckets,
+  // occasion matrix, urgency rail, rating stars). Theme-neutral by rule:
+  // token classes only, no theme imports.
+  ...DISCOVERY_WIDGETS,
 
   container: Container,
   columns: Container,

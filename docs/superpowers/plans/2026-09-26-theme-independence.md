@@ -21,7 +21,7 @@
 
 ## Review Focus
 
-- Somvabona preview/catalog rows read as everyday-cotton, never heritage-silk titles.
+- Retired second-theme preview/catalog rows read as everyday-cotton, never heritage-silk titles.
 - Songoskriti BN renders zero EN user strings in hero/menus/badges/promises/testimonials/journal/footer (brand literals like "Cash on Delivery" exempt if documented in-test).
 - Shared StoreHeader output byte-identical for non-theme paths (existing tests + new regression pins).
 - Account `?tab=` deep link + back/forward switch tabs on both account routes.
@@ -38,12 +38,12 @@
 - [ ] Step 3: Author `_bn` twins for every flagged user string (menus, badges, promises, testimonials incl. names/roles Ajax? names are proper nouns — twin roles/quotes only where real Bangla exists; quote bodies need translation — author them).
 - [ ] Step 4: GREEN. Step 5: commit `fix(i18n): songoskriti twin gaps` + push.
 
-### Task 2: Somvabona own catalog (drop SONGOSKRITI alias)
+### Task 2: Retired second-theme own catalog (dropped with the theme; kept as history)
 
-**Files:** Modify `src/lib/demo-catalog.ts` (add `SOMVABONA` catalog, everyday-cotton positioning: cotton panjabi/kurta/saree/baby lines, collections new-in/festive/wedding/gifting + categories women/men/kids/living); register in `DEMO_CATALOGS` replacing alias. Test: extend catalog/preview tests asserting somvabona rows carry no heritage-silk titles and resolve women/festive/wedding.
+**Files:** Modify `src/lib/demo-catalog.ts` (add second-theme catalog, everyday-cotton positioning: cotton panjabi/kurta/saree/baby lines, collections new-in/festive/wedding/gifting + categories women/men/kids/living); register in `DEMO_CATALOGS` replacing alias. Test: extend catalog/preview tests asserting retired-theme rows carry no heritage-silk titles and resolve women/festive/wedding.
 
-- [ ] Step 1: Failing test (somvabona rows ≠ songoskriti titles; women category resolves).
-- [ ] Step 2: RED. Step 3: catalog with ≥8 products across women/men/kids/living, BDT minor units, `/ph/somvabona/*` art paths. Step 4: GREEN (incl. existing preview suites). Step 5: commit + push.
+- [ ] Step 1: Failing test (retired-theme rows ≠ songoskriti titles; women category resolves).
+- [ ] Step 2: RED. Step 3: catalog with ≥8 products across women/men/kids/living, BDT minor units, retired-theme art paths. Step 4: GREEN (incl. existing preview suites). Step 5: commit + push.
 
 ### Task 3: De-gate shared StoreHeader + tokenize badge
 
@@ -68,5 +68,5 @@
 
 ### Task 5: Isolation guard + verify
 
-**Files:** New `src/lib/themes/isolation.test.ts`: (a) walk theme dirs, fail on any prod import of another theme dir; (b) assert somvabona catalog object identity ≠ songoskriti; (c) assert no `songoskriti`/`somvabona` string literals in shared `StoreHeader.tsx`/`chrome.tsx` — REQUIRED: repoint `CollectionView.tsx` import to `./theme-chrome` and drop the `SONGOSKRITI_MEGA_MENU` re-export (deferred from Task 3); (d) assert `?focus=` contract + generic fallback intact via existing suites.
+**Files:** New `src/lib/themes/isolation.test.ts`: (a) walk theme dirs, fail on any prod import of another theme dir; (b) assert retired-theme catalog object identity ≠ songoskriti; (c) assert no `songoskriti`/retired-theme string literals in shared `StoreHeader.tsx`/`chrome.tsx` — REQUIRED: repoint `CollectionView.tsx` import to `./theme-chrome` and drop the `SONGOSKRITI_MEGA_MENU` re-export (deferred from Task 3); (d) assert `?focus=` contract + generic fallback intact via existing suites.
 - [ ] Steps 1-5 standard. Then final: full touched suites GREEN, zero-new-violations, branch pushed == HEAD.

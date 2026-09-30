@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Fix `/theme-preview/somvabona` and `/theme-preview/songoskriti` so internal links show the correct collection/product/page content with URL sync instead of always showing the generic New Arrivals page with unchanged URL.
+**Goal:** Fix `/theme-preview/<key>` (`songoskriti` + second theme) so internal links show the correct collection/product/page content with URL sync instead of always showing the generic New Arrivals page with unchanged URL.
 
-**Architecture:** Unify preview nav parsing into `src/lib/theme-preview-nav.ts` as single source of truth returning `{template, slug, query}`; make `ThemePreviewFrame` slug-aware (dynamic collection heading + filtered rails, dynamic product lookup) and URL-synced via `?template=&slug=`; remove duplicated parser in frame; add missing `somvabona` demo catalog alias.
+**Architecture:** Unify preview nav parsing into `src/lib/theme-preview-nav.ts` as single source of truth returning `{template, slug, query}`; make `ThemePreviewFrame` slug-aware (dynamic collection heading + filtered rails, dynamic product lookup) and URL-synced via `?template=&slug=`; remove duplicated parser in frame; add missing second-theme demo catalog alias.
 
 **Tech Stack:** TanStack Start + TanStack Router (`createFileRoute`, `useNavigate`, `useSearch`), React `useState`, Vitest, TypeScript ESM (`@/*` alias to `./src/*`), Bun runtime.
 
@@ -203,7 +203,7 @@ git -C /tmp/opencode/theme-preview-fix commit -m "fix(preview): slug-aware previ
 
 **Files:**
 - Modify: `/tmp/opencode/theme-preview-fix/src/lib/theme-preview-nav.ts:buildPreset` (same file, resolver section)
-- Modify: `/tmp/opencode/theme-preview-fix/src/lib/demo-catalog.ts:2836-2855` (add somvabona alias)
+- Modify: `/tmp/opencode/theme-preview-fix/src/lib/demo-catalog.ts:2836-2855` (add second-theme alias)
 - Test: `/tmp/opencode/theme-preview-fix/src/lib/theme-preview-nav.test.ts` (append resolver tests)
 
 **Interfaces:**
@@ -258,20 +258,20 @@ export const DEMO_CATALOGS = {
   beauty: BEAUTY,
   general: SUPERSHOP_CATALOG,
   songoskriti: SONGOSKRITI,
-  somvabona: SONGOSKRITI,
+  secondTheme: SONGOSKRITI,
 } as const satisfies Record<string, DemoCatalog>;
 ```
 
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `bun run test src/lib/theme-preview-nav.test.ts src/lib/demo-catalog.test.ts 2>&1 | tail -10`
-Expected: PASS — display-name tests green; somvabona catalog now resolves to songoskriti spread (not marketplace fallback)
+Expected: PASS — display-name tests green; second-theme catalog now resolves to songoskriti spread (not marketplace fallback)
 
 - [ ] **Step 5: Commit**
 
 ```bash
 git -C /tmp/opencode/theme-preview-fix add src/lib/theme-preview-nav.ts src/lib/demo-catalog.ts src/lib/theme-preview-nav.test.ts
-git -C /tmp/opencode/theme-preview-fix commit -m "fix(preview): collection display names + somvabona catalog alias"
+git -C /tmp/opencode/theme-preview-fix commit -m "fix(preview): collection display names + second-theme catalog alias"
 ```
 
 ---

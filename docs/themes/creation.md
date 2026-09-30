@@ -90,16 +90,16 @@ colors + two fonts; bindings are stored as `var(--fq-g-<id>)`
 shipped themes lock the values below — copy one column verbatim as the
 starting point, then change brand/accent/surface/ink plus layout knobs:
 
-| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Somvabona (`src/lib/themes/somvabona/tokens.ts:14`) |
+| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Oceanblue (`src/lib/themes/oceanblue/tokens.ts:14`) |
 | ----------------- | ------------------------------------------------------ | --------------------------------------------------- |
-| `brand`           | `#1a1a1a`                                              | `#7C2A1A`                                           |
-| `accent`          | `#8B4513`                                              | `#B95A38`                                           |
-| `surface`         | `#faf9f7`                                              | `#FBF6EE`                                           |
-| `ink`             | `#1a1a1a`                                              | `#2E2620`                                           |
-| `radius`          | `0px` (sharp, fashion-editorial)                       | `4px`                                               |
-| `fontDisplay`     | `Playfair Display`                                     | `Playfair Display` (campaign headlines only)        |
+| `brand`           | `#1a1a1a`                                              | `#0B3A5B`                                           |
+| `accent`          | `#8B4513`                                              | `#C08A3E`                                           |
+| `surface`         | `#faf9f7`                                              | `#FFFFFF`                                           |
+| `ink`             | `#1a1a1a`                                              | `#0F1E2E`                                           |
+| `radius`          | `0px` (sharp, fashion-editorial)                       | `8px`                                               |
+| `fontDisplay`     | `Playfair Display`                                     | `Inter`                                             |
 | `fontBody`        | `Inter`                                                | `Inter`                                             |
-| `container`       | `1320px`                                               | `1320px`                                            |
+| `container`       | `1320px`                                               | `1280px`                                            |
 | `density`         | `comfortable`                                          | `comfortable`                                       |
 | `typeScale`       | `default`                                              | `default`                                           |
 | `spaceUnit`       | `16px`                                                 | `16px`                                              |
@@ -108,7 +108,7 @@ starting point, then change brand/accent/surface/ink plus layout knobs:
 | `digits`          | `latin`                                                | `latin`                                             |
 | `locale`          | `en`                                                   | `en`                                                |
 | `currencyDisplay` | `symbol`                                               | `symbol`                                            |
-| `fontPairing`     | `editorial-serif`                                      | `editorial-serif`                                   |
+| `fontPairing`     | `editorial-serif`                                      | `bengali-classic`                                   |
 | `dark`            | `null` (light-only)                                    | `null` (light-only)                                 |
 | `globals`         | `DEFAULT_GLOBALS`                                      | `DEFAULT_GLOBALS`                                   |
 
@@ -216,12 +216,12 @@ always win):
   `product_rail`, `product_rail`, `split_feature`, `collection_story`,
   `product_rail`, `craft_story`, `ugc_gallery`, `testimonials`,
   `split_feature`, `trust_footer`, `store_locator`.
-- Somvabona: `buildHomepageMain()` (`src/lib/themes/somvabona/homepage.ts:22`)
-  wrapped in `withSomvabonaWidgetDefaults()` (`src/lib/themes/somvabona/skins.ts:111`).
-  Ships an 11-section homepage on 10 distinct types (the urgency rail
-  doubles): `announcement_bar`, `hero_carousel`, `trust_marquee`,
-  `circle_categories`, `price_buckets`, `urgency_rail` × 2, `occasion_matrix`,
-  `store_locator`, `craft_story`, `testimonials`.
+- Oceanblue: `buildHomepageMain()` (`src/lib/themes/oceanblue/homepage.ts:23`)
+  wrapped in `withOceanblueDefaults()` (`src/lib/themes/oceanblue/skins.ts:109`).
+  Ships a 14-section homepage: `announcement_bar`, `hero_carousel`,
+  `circle_categories`, `product_rail`, `split_feature`, `product_rail`,
+  `circle_categories`, `trust_marquee`, `collection_story`, `testimonials`,
+  `store_locator`, `newsletter`, `footer_sitemap`, `payment_icons`.
 
 Pattern rules for new themes: first section owns the H1 claim (a
 `hero_carousel` up front, matching the full composition lists in [the
@@ -475,20 +475,20 @@ select field in the style panel via `SKIN_FIELD`
 the documented default. Unknown or empty values resolve to the widget
 default — never a crash, never empty.
 
-| Widget          | Core vocab (first = core default) | Songoskriti default | Somvabona default |
+| Widget          | Core vocab (first = core default) | Songoskriti default | Oceanblue default |
 | --------------- | --------------------------------- | ------------------- | ----------------- |
-| `product_rail`  | `editorial`, `compact`, `minimal` | `editorial`         | `compact`         |
-| `hero_carousel` | `split`, `fullbleed`, `minimal`   | `split`             | `fullbleed`       |
-| `testimonials`  | `carousel`, `wall`, `single`      | `wall`              | `carousel`        |
-| `product_grid`  | `cards`, `rows`                   | `cards`             | `rows`            |
-| `urgency_rail`  | `editorial`, `compact`, `minimal` | — (core default)    | `compact`         |
+| `product_rail`  | `editorial`, `compact`, `minimal` | `editorial`         | `minimal`         |
+| `hero_carousel` | `split`, `fullbleed`, `minimal`   | `split`             | `split`           |
+| `testimonials`  | `carousel`, `wall`, `single`      | `wall`              | `single`          |
+| `product_grid`  | `cards`, `rows`                   | `cards`             | `cards`           |
+| `urgency_rail`  | `editorial`, `compact`, `minimal` | — (core default)    | `minimal`         |
 
 Theme-side sets: `SONGOSKRITI_SKIN_SETS`
 (`src/lib/themes/songoskriti/skins.ts:35`), `SONGOSKRITI_WIDGET_DEFAULTS`
-(`src/lib/themes/songoskriti/skins.ts:52`), `SOMVABONA_WIDGET_DEFAULTS`
-(`src/lib/themes/somvabona/skins.ts:40`). Wire them with
+(`src/lib/themes/songoskriti/skins.ts:52`), `OCEANBLUE_WIDGET_DEFAULTS`
+(`src/lib/themes/oceanblue/skins.ts:52`). Wire them with
 `withSongoskritiDefaults()` (`src/lib/themes/songoskriti/skins.ts:109`) or
-`withSomvabonaWidgetDefaults()` (`src/lib/themes/somvabona/skins.ts:111`):
+`withOceanblueDefaults()` (`src/lib/themes/oceanblue/skins.ts:109`):
 defaults merge **under** authored props, so an explicit `skin` in the
 inspector always wins. Skin values are style keys, never copy, so they
 carry no `_bn` twins (bilingual props are declared per widget in
@@ -501,11 +501,11 @@ keyed off the renderer's `[data-widget]` + `[data-skin]` attributes.
 Washes use `color-mix()` over theme tokens, so a merchant re-tint re-skins
 every rule automatically; motion rules collapse under
 `prefers-reduced-motion`. See `src/lib/themes/songoskriti/skins.css` and
-`src/lib/themes/somvabona/skins.css`. The gate is enforced per theme by
+`src/lib/themes/oceanblue/skins.css`. The gate is enforced per theme by
 test: `stays token-driven: theme vars only, no hex literals` in
-`src/lib/themes/songoskriti/skins.test.ts:182`, and `is token-driven: no
-hex literals or raw colour utilities` in
-`src/lib/themes/somvabona/skins.test.ts:167`.
+`src/lib/themes/songoskriti/skins.test.ts:182`, and `stays token-driven:
+theme vars only, no hex literals` in
+`src/lib/themes/oceanblue/skins.test.ts`.
 
 ## 5. Forms + auth pages
 
@@ -783,8 +783,8 @@ Theme previews render through a theme-agnostic engine: the theme only
 implements the `PreviewThemeSource` port, and the registry wires it in.
 
 - Implement `songoskritiPreviewSource()` in
-  `src/lib/themes/songoskriti/preview.ts` (Somvabona mirrors it in
-  `src/lib/themes/somvabona/preview.ts`): `{ key, themeName, author,
+  `src/lib/themes/songoskriti/preview.ts` (Oceanblue mirrors it in
+  `src/lib/themes/oceanblue/preview.ts`): `{ key, themeName, author,
 tokens, header, footer, main }`, where `main(template, s)` returns the
   authored demo body per template key or `null` for templates the theme
   does not author. The port type lives in
@@ -853,7 +853,7 @@ A theme **calls** engine widgets; it never **forks** them. Concretely:
    and demo data. A theme name, slogan, copyright line or flagship list
    hardcoded in a shared renderer prints on every theme that uses the
    section (incident 2026-09-27: Songoskriti's footer statement rendered on
-   Somvabona's page). Brand copy lives in theme builders and section props.
+   a second theme's page). Brand copy lives in theme builders and section props.
 3. **No cross-theme imports.** Nothing under `src/lib/themes/<A>/` imports
    from `src/lib/themes/<B>/`; shared chrome holds no theme-name branches
    (use the per-key config port pattern). Enforced by

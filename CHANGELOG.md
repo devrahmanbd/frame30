@@ -95,7 +95,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   (`SONGOSKRITI_WIDGETS` spread after `CHROME_WIDGETS` in
   `WIDGET_COMPONENTS`), and `SongoskritiFooterSitemap` rendered hardcoded
   Songoskriti brand content (`STATEMENT`, `© 2026 Songoskriti`) on every
-  theme's sections — Somvabona's live page showed Songoskriti's footer.
+  theme's sections — the second theme's live page showed Songoskriti's footer.
   Rule cut in `docs/themes/creation.md` §13 (the Elementor rule): one
   renderer per key, brand copy in builders/props only, no cross-theme
   imports, own demo catalog per theme. Tracked for remediation; guard tests

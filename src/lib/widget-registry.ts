@@ -224,7 +224,7 @@ const OVERRIDES: Partial<Record<SectionType, Partial<WidgetMeta>>> = {
     seo: { jsonLd: "ItemList", heading: false },
   },
   urgency_rail: {
-    // Somvabona's urgency rails are product rails under the hood (same
+    // Urgency rails are product rails under the hood (same
     // ProductCard/Rail primitives, same collection batch). Without this
     // entry requestForSection returned null, the preview/provider never
     // collected rows, and UrgencyRail skeleton-spun forever — Phase 1

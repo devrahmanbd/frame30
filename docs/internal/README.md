@@ -11,6 +11,9 @@ the [third-party developer index](../developers/README.md).
   copy-pasteable gate commands, green criteria, human checklist,
   approval steps, kill-switch procedure, and resubmission path that
   a reviewer follows with only that document plus gate output.
+- [Theme isolation](theme-isolation.md) — normative
+  no-shared-components-in-themes rule (AGENTS.md rule 7): allowed vs
+  refused imports, incident history, and the reviewer checklist.
 
 Authoritative code-adjacent references (read-only from this
 folder's perspective):

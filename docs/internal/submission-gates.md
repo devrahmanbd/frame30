@@ -19,7 +19,7 @@ twin parity); the second exercises the third-party scaffold that
 mirrors those gates.
 
 ```bash
-npx vitest run src/lib/themes/songoskriti src/lib/themes/somvabona src/lib/studio/catalog.test.ts
+npx vitest run src/lib/themes/songoskriti src/lib/themes/oceanblue src/lib/studio/catalog.test.ts
 ```
 
 ```bash
@@ -34,9 +34,9 @@ Gate entry points, one per suite:
 | Songoskriti skins          | `stays token-driven` test                  | `src/lib/themes/songoskriti/skins.test.ts:182`    |
 | Songoskriti preview        | `describe("songoskritiPreviewSource")`     | `src/lib/themes/songoskriti/preview.test.ts:12`   |
 | Songoskriti widget audit   | `describe("songoskriti widget gap audit")` | `src/lib/themes/songoskriti/widgets.test.ts:11`   |
-| Somvabona scaffold         | `describe("somvabona scaffold")`           | `src/lib/themes/somvabona/wiring.test.ts:8`       |
-| Somvabona skins            | `describe("SOMVABONA_WIDGET_DEFAULTS")`    | `src/lib/themes/somvabona/skins.test.ts:35`       |
-| Somvabona skins token gate | `is token-driven` test                     | `src/lib/themes/somvabona/skins.test.ts:167`      |
+| Oceanblue scaffold         | `describe("oceanblue wiring")`                 | `src/lib/themes/oceanblue/wiring.test.ts`             |
+| Oceanblue skins            | `describe("OCEANBLUE_WIDGET_DEFAULTS")`        | `src/lib/themes/oceanblue/skins.test.ts`              |
+| Oceanblue skins token gate | `stays token-driven` test                     | `src/lib/themes/oceanblue/skins.test.ts`              |
 | Studio twin parity         | `describe("studio twin parity")`           | `src/lib/studio/catalog.test.ts:837`              |
 | Starter theme (5 gates)    | `locks brand tokens` test                  | `examples/starter-theme/starter-theme.test.ts:44` |
 

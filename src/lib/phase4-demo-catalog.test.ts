@@ -15,7 +15,7 @@ function slugs(cat: DemoCatalog) {
 }
 
 describe("per-vertical demo catalogues", () => {
-  it("ships the eight vertical catalogues", () => {
+  it("ships the seven vertical catalogues", () => {
     expect(keys.sort()).toEqual(
       [
         "apparel",
@@ -24,7 +24,6 @@ describe("per-vertical demo catalogues", () => {
         "general",
         "handloom",
         "marketplace",
-        "somvabona",
         "songoskriti",
       ].sort(),
     );

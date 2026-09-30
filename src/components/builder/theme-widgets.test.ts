@@ -33,14 +33,13 @@ const THEME_ONLY_KEYS = (
 describe("theme widget registry", () => {
   it("registers one entry per theme (preview-sources.ts style)", () => {
     expect(themeWidgetKeys()).toContain("songoskriti");
-    expect(themeWidgetKeys()).toContain("somvabona");
   });
 
-  it("two themes resolve the same key to different renderers by theme key", () => {
+  it("theme and generic resolve the same key to different renderers", () => {
     expect(OVERRIDDEN_KEYS.length).toBeGreaterThan(0);
     for (const key of OVERRIDDEN_KEYS) {
       const themed = resolveWidgetComponent("songoskriti", key);
-      const generic = resolveWidgetComponent("somvabona", key);
+      const generic = resolveWidgetComponent("no-such-theme", key);
       expect(themed).toBe(
         SONGOSKRITI_WIDGETS[key as keyof typeof SONGOSKRITI_WIDGETS],
       );
@@ -57,7 +56,7 @@ describe("theme widget registry", () => {
     expect(resolveWidgetComponent("no-such-theme", "newsletter")).toBe(
       GENERIC_WIDGETS.newsletter,
     );
-    expect(resolveWidgetComponent("somvabona", "newsletter")).toBe(
+    expect(resolveWidgetComponent("retired-theme", "newsletter")).toBe(
       GENERIC_WIDGETS.newsletter,
     );
     expect(resolveWidgetComponent(null, "newsletter")).toBe(
@@ -73,7 +72,7 @@ describe("theme widget registry", () => {
       );
       // No generic renderer exists and no brand may leak: other themes
       // get nothing, so the section renders the unavailable placeholder.
-      expect(resolveWidgetComponent("somvabona", key)).toBeUndefined();
+      expect(resolveWidgetComponent("retired-theme", key)).toBeUndefined();
     }
   });
 

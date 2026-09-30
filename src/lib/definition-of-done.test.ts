@@ -153,9 +153,7 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
         expect(src, `${file} switches on the theme key`).not.toMatch(
           /switch\s*\([^)]*themeKey/,
         );
-        expect(src, `${file} names a theme`).not.toMatch(
-          /songoskriti|somvabona/i,
-        );
+        expect(src, `${file} names a theme`).not.toMatch(/songoskriti/i);
         continue;
       }
       // No renderer may take a theme identity as a prop.

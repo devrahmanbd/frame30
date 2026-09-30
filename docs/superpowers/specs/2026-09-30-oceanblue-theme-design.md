@@ -2,7 +2,7 @@
 
 **Status:** approved for implementation · **Date:** 2026-09-30
 **Key:** `oceanblue` — new standalone theme (premium clean minimal, big-catalog discovery).
-Songoskriti untouched. Prerequisite: Somvabona removal completes first (deletions already staged in worktree; remaining src comments + docs references cleaned in the same branch before Oceanblue lands, so `rg -i somvabona` returns zero hits outside `.git`).
+Songoskriti untouched. Prerequisite: retired-theme removal completed first (deletions staged in worktree; remaining src comments + docs references cleaned in the same branch before Oceanblue landed, so a case-insensitive search for the retired key returns zero hits outside `.git`).
 
 ## 1. Identity & scope
 
@@ -38,12 +38,12 @@ Out of scope for v1: PDP widget rebuilds (existing PDP widgets carry it), multi-
 
 Contrast gates that publish enforces (4.5:1 text, 3:1 chrome) pass by construction on brand/ink; gold never appears in a text role so it cannot trip the gate.
 
-## 3. Homepage rhythm (approved, 14 sections)
+## 3. Homepage rhythm (approved, 14 experience sections; 11 in homepage main)
 
 `buildHomepageMain()` in `src/lib/themes/oceanblue/homepage.ts`, wrapped in `withOceanblueDefaults()` (`src/lib/themes/oceanblue/skins.ts`), built only through `sectionFactory` so ids stay unique and `_bn` twins fill from the theme dictionary:
 
-1. `announcement_bar` — shipping/offer line, bilingual, dismissible
-2. Header — `mega_menu` (8 top items: Salwar Kameez, Kurtas & Tops, Dresses, Bottoms, Girls, Jewellery, Collections, Sale; each with Category + Collection columns) + `search_command` + `account_cart`
+1. `announcement_bar` — shipping/offer line, bilingual **[chrome-delivered, not a main section: the widget is header/footer-slotted only and `StoreHeader` already renders the chrome announcement, so the copy lives in `header-fallback.ts` — authoring it in main goes invalid]**
+2. Header — redesigned campaign strip: one rotating `announcement_bar` (new season / wedding edit / exchange assurance, dismissible, 6s, evergreen copy — no fabricated discounts) rendered below the masthead; the chrome strip above keeps the service promise. Masthead proper (logo/nav/icons) stays shared chrome — `mega_menu`/`search_command`/`account_cart` never enter theme sections (no-double-chrome lesson). Mega-menu tree (8 top items, Category + Collection columns) lives in `header-fallback.ts` (`OCEANBLUE_MEGA_MENU`), dashboard menus win at render
 3. `hero_carousel` skin `split`, 3 slides (New Arrival / Lehenga & Wedding / Girls & NXT), H1 claimed by slide 1, `autoAdvanceMs: 5000`, `atmosphere: none` (clean, no wash)
 4. `circle_categories` — 8 visual category tiles (Biba-style image discovery)
 5. `product_rail` skin `minimal` — Most Loved (collection source + limit, real counts only)
@@ -73,7 +73,7 @@ Core vocabularies in `WIDGET_SKINS` are reused unchanged; Oceanblue defaults:
 | `product_grid` | `cards`, `rows` | `cards` |
 | `urgency_rail` | `editorial`, `compact`, `minimal` | `minimal` |
 
-Wired via `withOceanblueDefaults()` merging under authored props through the shared `withThemeWidgetDefaults` helper, so inspector values always win and only catalog-known keys persist. `skins.css` is token-only (`var(--theme-*)`, `color-mix` washes, `pointer-events-none` on wash layers, reduced-motion gates) and pinned by a `stays token-driven` test matching the Songoskriti/Somvabona gate pattern.
+Wired via `withOceanblueDefaults()` merging under authored props through the shared `withThemeWidgetDefaults` helper, so inspector values always win and only catalog-known keys persist. `skins.css` is token-only (`var(--theme-*)`, `color-mix` washes, `pointer-events-none` on wash layers, reduced-motion gates) and pinned by a `stays token-driven` test matching the Songoskriti gate pattern.
 
 ## 5. Templates (creation.md 12-area definition of done)
 

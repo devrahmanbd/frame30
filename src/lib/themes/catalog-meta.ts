@@ -196,9 +196,9 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     rating: 0,
     installs: 0,
   },
-  somvabona: {
+  oceanblue: {
     author: "Framique",
-    subjects: ["fashion", "home"],
+    subjects: ["fashion", "marketplace"],
     features: [
       ...BASE_FEATURES,
       "mega menu",
@@ -206,8 +206,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
       "wishlist",
       "reviews",
     ],
-    layouts: ["grid", "full width", "editorial"],
-    tags: ["somvabona", "everyday", "cotton", "festive", "budget"],
+    layouts: ["grid", "full width", "minimal"],
+    tags: ["oceanblue", "minimal", "ethnic", "marketplace", "festive"],
     rating: 0,
     installs: 0,
   },

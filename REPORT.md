@@ -127,7 +127,7 @@ static**; the system has **known weaknesses, no hidden breaks**. Details below.
 
 Pulled `1dc51f8`, deployed via `ops/deploy-from-git.sh main`: **DEPLOY OK, all
 gates green** (incl. `flamelancer.com` first try). Smoke: `account?tab=wishlist`
-200, `cart` 200, Somvabona BN 200.
+200, `cart` 200, second-theme BN 200.
 
 ## A. Agent faults in `c26f30e`, graded by rule
 

@@ -1,0 +1,169 @@
+/**
+ * Oceanblue widget skin sheets (spec §4 — theme-owned skin CSS).
+ *
+ * Keyed by the renderer's `data-widget` + `data-skin` attributes. Until the
+ * core lane emits those attributes these selectors match nothing — the
+ * sheet is inert by design, never a crash, never an unstyled flash.
+ *
+ * TOKEN POLICY: every value reads `var(--theme-*)` (ocean brand, white
+ * surface, Inter faces all arrive through the ThemeSurface bridge).
+ * Literals are allowed ONLY for artwork — this sheet uses none: depth
+ * comes from borders and spacing, so a merchant re-tint re-skins every
+ * rule automatically. Gold (`--theme-accent`) appears only as a hairline
+ * rule accent, never as text.
+ *
+ * ACCESSIBILITY: interactive descendants keep 44px targets; motion rules
+ * collapse under `prefers-reduced-motion`; multi-column skins collapse to a
+ * single column below 768px. Headings stay h1-safe (style only, no level
+ * changes) and copy stays bn/en (no content here at all).
+ */
+
+/* --------------------------------------------------- product_rail: minimal */
+
+[data-widget="product_rail"][data-skin="minimal"] {
+  background: var(--theme-surface);
+  padding-block: calc(var(--theme-space) * 2);
+}
+
+/* Quiet rail heading: display face, generous tracking, no rule — the
+   whitespace carries the hierarchy, not decoration. */
+[data-widget="product_rail"][data-skin="minimal"] h1,
+[data-widget="product_rail"][data-skin="minimal"] h2 {
+  font-family: var(--theme-font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  color: var(--theme-ink);
+  padding-block-end: calc(var(--theme-space) * 0.5);
+}
+
+/* Delivery promise line in muted ink; cards frameless on white. */
+[data-widget="product_rail"][data-skin="minimal"] [data-promise] {
+  color: var(--theme-muted-ink);
+}
+[data-widget="product_rail"][data-skin="minimal"] article {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+[data-widget="product_rail"][data-skin="minimal"] button[data-part="rail-nav"] {
+  min-height: 44px;
+  min-width: 44px;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius);
+}
+
+/* -------------------------------------------------- hero_carousel: split */
+
+[data-widget="hero_carousel"][data-skin="split"] {
+  background: var(--theme-surface);
+}
+
+/* Split hero: copy left on white, media right. Headline in display face
+   at calm weight; CTA is the single ocean button per viewport. */
+[data-widget="hero_carousel"][data-skin="split"] h1,
+[data-widget="hero_carousel"][data-skin="split"] h2 {
+  font-family: var(--theme-font-display);
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--theme-ink);
+}
+[data-widget="hero_carousel"][data-skin="split"] [data-part="hero-cta"] {
+  background: var(--theme-brand);
+  color: var(--theme-on-brand);
+  border-radius: var(--theme-radius);
+  min-height: 44px;
+}
+[data-widget="hero_carousel"][data-skin="split"] [data-part="hero-dot"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* ---------------------------------------------------- testimonials: single */
+
+[data-widget="testimonials"][data-skin="single"] {
+  background: var(--theme-surface);
+  padding-block: calc(var(--theme-space) * 2);
+  text-align: center;
+}
+
+/* One voice at a time: quote in display face, attribution muted. */
+[data-widget="testimonials"][data-skin="single"] blockquote {
+  font-family: var(--theme-font-display);
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--theme-ink);
+  max-width: 44rem;
+  margin-inline: auto;
+}
+[data-widget="testimonials"][data-skin="single"] [data-part="author"] {
+  color: var(--theme-muted-ink);
+}
+
+/* ----------------------------------------------------- product_grid: cards */
+
+[data-widget="product_grid"][data-skin="cards"] {
+  background: var(--theme-surface);
+}
+
+/* Cards carry a hairline border on white; grid collapses to one column
+   below 768px through the renderer's own responsive rules. */
+[data-widget="product_grid"][data-skin="cards"] article {
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius);
+  box-shadow: none;
+}
+
+/* ---------------------------------------------------- urgency_rail: minimal */
+
+[data-widget="urgency_rail"][data-skin="minimal"] {
+  background: var(--theme-surface);
+  padding-block: calc(var(--theme-space) * 2);
+}
+[data-widget="urgency_rail"][data-skin="minimal"] h1,
+[data-widget="urgency_rail"][data-skin="minimal"] h2 {
+  font-family: var(--theme-font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  color: var(--theme-ink);
+}
+[data-widget="urgency_rail"][data-skin="minimal"] article {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* Sale badges use the campaign tone tokens, never raw color. */
+[data-widget="urgency_rail"][data-skin="minimal"] [data-part="badge"] {
+  min-height: 44px;
+}
+
+/* ------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-widget="product_rail"][data-skin="minimal"] *,
+  [data-widget="hero_carousel"][data-skin="split"] *,
+  [data-widget="testimonials"][data-skin="single"] *,
+  [data-widget="product_grid"][data-skin="cards"] *,
+  [data-widget="urgency_rail"][data-skin="minimal"] * {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ------------------------------------------------------------- mobile */
+
+@media (max-width: 767px) {
+  [data-widget="product_rail"][data-skin="minimal"] h1,
+  [data-widget="product_rail"][data-skin="minimal"] h2,
+  [data-widget="urgency_rail"][data-skin="minimal"] h1,
+  [data-widget="urgency_rail"][data-skin="minimal"] h2 {
+    font-size: 1.25rem;
+  }
+  [data-widget="testimonials"][data-skin="single"] blockquote {
+    font-size: 1.125rem;
+  }
+}

@@ -23,6 +23,12 @@ import {
   SONGOSKRITI_MEGA_MENU,
   songoskritiMenuLabel,
 } from "@/lib/themes/songoskriti/header-fallback";
+import {
+  OCEANBLUE_HEADER_ANNOUNCEMENT,
+  OCEANBLUE_HEADER_LOGO,
+  OCEANBLUE_MEGA_MENU,
+  oceanblueMenuLabel,
+} from "@/lib/themes/oceanblue/header-fallback";
 
 export type ThemeHeaderChrome = {
   /** Fallback menu tree for theme-shaped stores with no dashboard menu. */
@@ -44,6 +50,14 @@ const CHROME: Record<string, () => ThemeHeaderChrome> = {
     labelFor: (label, t) => songoskritiMenuLabel(label, t),
     logo: { ...SONGOSKRITI_HEADER_LOGO },
     announcement: { ...SONGOSKRITI_HEADER_ANNOUNCEMENT },
+  }),
+  oceanblue: () => ({
+    // Same opaque-cast containment as above: the fallback tree is
+    // authoring-shaped, render sites treat fallback nodes opaquely.
+    fallbackMenu: OCEANBLUE_MEGA_MENU as unknown as MenuNode[],
+    labelFor: (label, t) => oceanblueMenuLabel(label, t),
+    logo: { ...OCEANBLUE_HEADER_LOGO },
+    announcement: { ...OCEANBLUE_HEADER_ANNOUNCEMENT },
   }),
 };
 

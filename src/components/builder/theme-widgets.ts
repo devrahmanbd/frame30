@@ -22,14 +22,12 @@ import {
   type WidgetComponent,
 } from "./widgets";
 import { SONGOSKRITI_WIDGETS } from "./songoskriti";
-import { SOMVABONA_WIDGETS } from "./somvabona";
 
 const THEME_WIDGETS: Record<
   string,
   () => Partial<Record<SectionType, WidgetComponent>>
 > = {
   songoskriti: () => SONGOSKRITI_WIDGETS,
-  somvabona: () => SOMVABONA_WIDGETS,
 };
 
 /** Registered theme keys, for routes and diagnostics. */

@@ -8,7 +8,7 @@
 
 **Tech Stack:** Markdown, prettier (`bun run prettier --write`), ripgrep verification, vitest theme gate (regression check only).
 
-**Spec:** This plan + REPORT-THEMES.md (audited code reality: ink-black `#1a1a1a` / somvabona `#7C2A1A`, 20-section homepage hero_carousel-first, studio twins at `src/lib/studio/catalog.ts:2418-2429`, persist-shape in `src/lib/builder-ast.ts`, dashboard-driven songoskriti menus, token-only CSS) + docs-write skill (audience-first, descriptive links, American spelling).
+**Spec:** This plan + REPORT-THEMES.md (audited code reality: ink-black `#1a1a1a` / retired-theme maroon, 20-section homepage hero_carousel-first, studio twins at `src/lib/studio/catalog.ts:2418-2429`, persist-shape in `src/lib/builder-ast.ts`, dashboard-driven songoskriti menus, token-only CSS) + docs-write skill (audience-first, descriptive links, American spelling).
 
 ## Global Constraints
 
@@ -81,7 +81,7 @@ git commit -m "docs: merge 04-builder theme guides into authoritative README"
 **Files:**
 - Modify: `docs/themes/creation.md`
 - Read-only refs: `docs/themes/sdk.md:1-267`, `docs/themes/packages.md:1-37`, `docs/themes/wordpress-handbook-index.md:1-190`
-- Code refs: `src/lib/themes/songoskriti/tokens.ts:1-34`, `src/lib/themes/somvabona/tokens.ts:1-38`, `src/lib/themes/songoskriti/skins.ts`, `src/lib/plugin-manifest.ts:18-70`
+- Code refs: `src/lib/themes/songoskriti/tokens.ts:1-34`, `src/lib/themes/oceanblue/tokens.ts`, `src/lib/themes/songoskriti/skins.ts`, `src/lib/plugin-manifest.ts:18-70`
 
 **Interfaces:**
 - Consumes: Task 1 README (link, do not duplicate runtime contract).
@@ -161,7 +161,7 @@ Current broken (verified 2026-09-26): `00-meta/design-system.md`, `00-meta/audit
 
 - [ ] **Step 3: Run final gates**
 
-Run: `python3 <link-checker from audit> ` (zero broken), `grep -rn "#8A3B1F" docs/04-builder/README.md docs/themes/creation.md` (zero hits), `bun run prettier --check docs/04-builder/README.md docs/themes/creation.md docs/13-export-sdk/README.md`, `bun x vitest run src/lib/themes/songoskriti/ src/lib/themes/somvabona/ src/lib/theme-preview-nav.test.ts` (all pass — proves docs edit broke no code).
+Run: `python3 <link-checker from audit> ` (zero broken), `grep -rn "#8A3B1F" docs/04-builder/README.md docs/themes/creation.md` (zero hits), `bun run prettier --check docs/04-builder/README.md docs/themes/creation.md docs/13-export-sdk/README.md`, `bun x vitest run src/lib/themes/songoskriti/ src/lib/themes/oceanblue/ src/lib/theme-preview-nav.test.ts` (all pass — proves docs edit broke no code).
 Expected: all green.
 
 - [ ] **Step 4: Commit + push**

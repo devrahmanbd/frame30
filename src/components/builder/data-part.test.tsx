@@ -2,7 +2,7 @@
  * LANE B2-3 — data-part hooks + urgency_rail skin vocabulary.
  *
  * - urgency_rail reuses the product_rail skin vocabulary (same cards, same
- *   rail); core default is editorial, Somvabona overrides to compact.
+ *   rail); core default is editorial.
  * - Renderers emit stable `data-part` hooks theme skin sheets key on:
  *   price / title / promise / caption / author (+ badge where a badge
  *   element exists). Attributes only — no class, style or copy change.

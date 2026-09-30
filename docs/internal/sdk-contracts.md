@@ -29,8 +29,8 @@ breaks on violation. No tutorial prose; third-party narrative lives in
   [Songoskriti tokens](../../src/lib/themes/songoskriti/tokens.ts)
   `src/lib/themes/songoskriti/tokens.ts:10` pin brand `#1a1a1a`, surface
   `#faf9f7`;
-  [Somvabona tokens](../../src/lib/themes/somvabona/tokens.ts)
-  `src/lib/themes/somvabona/tokens.ts:15` pins brand `#7C2A1A`. Breaks: the
+  [Oceanblue tokens](../../src/lib/themes/oceanblue/tokens.ts)
+  `src/lib/themes/oceanblue/tokens.ts:14` pins brand `#0B3A5B`. Breaks: the
   wiring suites below fail (`wiring.test.ts`, `preview.test.ts`).
 - Invariant: font faces change only through the closed
   [font pairing table](../../src/lib/builder-ast.ts)
@@ -61,13 +61,13 @@ breaks on violation. No tutorial prose; third-party narrative lives in
   `src/lib/builder-ast.ts:734`, `withThemeWidgetDefaults`). Songoskriti wraps
   builders with [its defaults](../../src/lib/themes/songoskriti/skins.ts)
   `src/lib/themes/songoskriti/skins.ts:109` (`withSongoskritiDefaults`,
-  defaults at `src/lib/themes/songoskriti/skins.ts:52`, resolver at
-  `src/lib/themes/songoskriti/skins.ts:75`); Somvabona wraps with
-  [its defaults](../../src/lib/themes/somvabona/skins.ts)
-  `src/lib/themes/somvabona/skins.ts:111` (`withSomvabonaWidgetDefaults`,
-  defaults at `src/lib/themes/somvabona/skins.ts:40`, merge at
-  `src/lib/themes/somvabona/skins.ts:96`, resolver at
-  `src/lib/themes/somvabona/skins.ts:80`). Breaks: a theme override clobbers
+   defaults at `src/lib/themes/songoskriti/skins.ts:52`, resolver at
+  `src/lib/themes/songoskriti/skins.ts:75`); Oceanblue wraps with
+  [its defaults](../../src/lib/themes/oceanblue/skins.ts)
+  `src/lib/themes/oceanblue/skins.ts:109` (`withOceanblueDefaults`,
+  defaults at `src/lib/themes/oceanblue/skins.ts:52`, merge at
+  `src/lib/themes/oceanblue/skins.ts:96`, resolver at
+  `src/lib/themes/oceanblue/skins.ts:75`). Breaks: a theme override clobbers
   merchant inspector values or smuggles unknown props onto a node.
 - Invariant: skin sheets load only for skins the page uses
   ([usage collector](../../src/lib/builder-ast.ts)
@@ -153,8 +153,8 @@ breaks on violation. No tutorial prose; third-party narrative lives in
 - Invariant: every template renders non-empty. Authored mains come from the
   [Songoskriti source](../../src/lib/themes/songoskriti/preview.ts)
   `src/lib/themes/songoskriti/preview.ts:40` and the
-  [Somvabona source](../../src/lib/themes/somvabona/preview.ts)
-  `src/lib/themes/somvabona/preview.ts:20`; unauthored templates synthesize
+  [Oceanblue source](../../src/lib/themes/oceanblue/preview.ts)
+  `src/lib/themes/oceanblue/preview.ts:40`; unauthored templates synthesize
   the [generic demo body](../../src/lib/theme-preview-nav.ts)
   `src/lib/theme-preview-nav.ts:322` (`genericDemoMain`), assembled with
   template-scoped ids by the
@@ -190,9 +190,10 @@ breaks on violation. No tutorial prose; third-party narrative lives in
 - Invariant: Songoskriti homepage is 20 sections opening on `hero_carousel`
   ([homepage builder](../../src/lib/themes/songoskriti/homepage.ts)
   `src/lib/themes/songoskriti/homepage.ts:31`; pinned by wiring and preview
-  suites, see §8); Somvabona homepage is 11 sections on 10 distinct types per
-  the [Somvabona rhythm doc](../../src/lib/themes/somvabona/homepage.ts)
-  `src/lib/themes/somvabona/homepage.ts:24`. Breaks: homepage-order
+  suites, see §8); Oceanblue homepage is 14 sections opening on
+  `announcement_bar` + `hero_carousel` per the
+  [Oceanblue design spec](../../docs/superpowers/specs/2026-09-30-oceanblue-theme-design.md)
+  `src/lib/themes/oceanblue/homepage.ts:23`. Breaks: homepage-order
   regressions slip past review.
 
 ## 6. Dashboard-menu data flow
@@ -285,7 +286,7 @@ breaks on violation. No tutorial prose; third-party narrative lives in
 | `src/lib/themes/songoskriti/wiring.test.ts:13`                              | §1 + §5: `#1a1a1a` brand lock, 20-section `hero_carousel`-first order                                |
 | `src/lib/themes/songoskriti/preview.test.ts:16`                             | §5: preview source identity, homepage head/length/close                                              |
 | `src/lib/themes/songoskriti/skins.test.ts:32`                               | §2: editorial defaults, vocabulary containment, merge precedence, token-driven CSS                   |
-| `src/lib/themes/somvabona/skins.test.ts:35`                                 | §2: retail defaults (`fullbleed` hero, `compact` rails, `rows` grid), divergence from Songoskriti    |
+| `src/lib/themes/oceanblue/skins.test.ts` (`OCEANBLUE_WIDGET_DEFAULTS`)      | §2: minimal defaults (`split` hero, `minimal` rails, `cards` grid, `single` wall), divergence from Songoskriti |
 | `src/lib/theme-preview-nav.test.ts:16`                                      | §5: href mapping, demo bodies for every template, focus resolution/application, `?focus=` round-trip |
 | `src/lib/theme-preview.test.ts`                                             | §5: `resolveThemePreview` per key, unknown key returns null                                          |
 | `src/lib/page-builder-widgets.test.ts`                                      | §3: widget defaults, field shapes, persist-shape truncation                                          |

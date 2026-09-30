@@ -154,16 +154,16 @@ optional `timezone` / `allowCustomerTimezone`). Published tokens reach the
 storefront as CSS variables on the store root, and theme CSS may only read
 `var(--theme-*)` (see the token-only CSS gate below).
 
-| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Somvabona (`src/lib/themes/somvabona/tokens.ts:14`) |
+| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Oceanblue (`src/lib/themes/oceanblue/tokens.ts:14`) |
 | ----------------- | ------------------------------------------------------ | --------------------------------------------------- |
-| `brand`           | `#1a1a1a`                                              | `#7C2A1A`                                           |
-| `accent`          | `#8B4513`                                              | `#B95A38`                                           |
-| `surface`         | `#faf9f7`                                              | `#FBF6EE`                                           |
-| `ink`             | `#1a1a1a`                                              | `#2E2620`                                           |
-| `radius`          | `0px` (sharp, fashion-editorial)                       | `4px`                                               |
-| `fontDisplay`     | `Playfair Display`                                     | `Playfair Display` (campaign headlines only)        |
+| `brand`           | `#1a1a1a`                                              | `#0B3A5B`                                           |
+| `accent`          | `#8B4513`                                              | `#C08A3E`                                           |
+| `surface`         | `#faf9f7`                                              | `#FFFFFF`                                           |
+| `ink`             | `#1a1a1a`                                              | `#0F1E2E`                                           |
+| `radius`          | `0px` (sharp, fashion-editorial)                       | `8px`                                               |
+| `fontDisplay`     | `Playfair Display`                                     | `Inter`                                             |
 | `fontBody`        | `Inter`                                                | `Inter`                                             |
-| `container`       | `1320px`                                               | `1320px`                                            |
+| `container`       | `1320px`                                               | `1280px`                                            |
 | `density`         | `comfortable`                                          | `comfortable`                                       |
 | `typeScale`       | `default`                                              | `default`                                           |
 | `spaceUnit`       | `16px`                                                 | `16px`                                              |
@@ -172,7 +172,7 @@ storefront as CSS variables on the store root, and theme CSS may only read
 | `digits`          | `latin`                                                | `latin`                                             |
 | `locale`          | `en`                                                   | `en`                                                |
 | `currencyDisplay` | `symbol`                                               | `symbol`                                            |
-| `fontPairing`     | `editorial-serif`                                      | `editorial-serif`                                   |
+| `fontPairing`     | `editorial-serif`                                      | `bengali-classic`                                   |
 | `dark`            | `null` (light-only)                                    | `null` (light-only)                                 |
 | `globals`         | `DEFAULT_GLOBALS`                                      | `DEFAULT_GLOBALS`                                   |
 
@@ -190,21 +190,21 @@ never empty. Skin values are style keys, never copy, so they carry no `_bn`
 twins (bilingual props are declared per widget in `BITEXT_FIELDS`,
 `src/lib/builder-ast.ts:5311`).
 
-| Widget          | Core vocab (first = core default) | Songoskriti default                           | Somvabona default |
+| Widget          | Core vocab (first = core default) | Songoskriti default                           | Oceanblue default |
 | --------------- | --------------------------------- | --------------------------------------------- | ----------------- |
-| `product_rail`  | `editorial`, `compact`, `minimal` | `editorial`                                   | `compact`         |
-| `hero_carousel` | `split`, `fullbleed`, `minimal`   | `split`                                       | `fullbleed`       |
-| `testimonials`  | `carousel`, `wall`, `single`      | `wall`                                        | `carousel`        |
-| `product_grid`  | `cards`, `rows`                   | `cards`                                       | `rows`            |
-| `urgency_rail`  | `editorial`, `compact`, `minimal` | — (shares the `product_rail` shape by design) | `compact`         |
+| `product_rail`  | `editorial`, `compact`, `minimal` | `editorial`                                   | `minimal`         |
+| `hero_carousel` | `split`, `fullbleed`, `minimal`   | `split`                                       | `split`           |
+| `testimonials`  | `carousel`, `wall`, `single`      | `wall`                                        | `single`          |
+| `product_grid`  | `cards`, `rows`                   | `cards`                                       | `cards`           |
+| `urgency_rail`  | `editorial`, `compact`, `minimal` | — (shares the `product_rail` shape by design) | `minimal`         |
 
 Theme defaults merge **under** authored props: merchant inspector values always
 win (`withSongoskritiDefaults` in `src/lib/themes/songoskriti/skins.ts:109`,
-`withSomvabonaWidgetDefaults` in `src/lib/themes/somvabona/skins.ts:111`).
+`withOceanblueDefaults` in `src/lib/themes/oceanblue/skins.ts:109`).
 Theme-side vocab sets: `SONGOSKRITI_SKIN_SETS`
 (`src/lib/themes/songoskriti/skins.ts:35`), `SONGOSKRITI_WIDGET_DEFAULTS`
-(`src/lib/themes/songoskriti/skins.ts:52`), `SOMVABONA_WIDGET_DEFAULTS`
-(`src/lib/themes/somvabona/skins.ts:40`).
+(`src/lib/themes/songoskriti/skins.ts:52`), `OCEANBLUE_WIDGET_DEFAULTS`
+(`src/lib/themes/oceanblue/skins.ts:52`).
 
 ### Homepage composition — what ships
 
@@ -216,11 +216,12 @@ Songoskriti ships a 20-section homepage with `hero_carousel` first
 `product_rail`, `craft_story`, `ugc_gallery`, `testimonials`,
 `split_feature`, `trust_footer`, `store_locator`.
 
-Somvabona ships an 11-section homepage on 10 distinct types (the urgency rail
-doubles): `announcement_bar`, `hero_carousel`, `trust_marquee`,
-`circle_categories`, `price_buckets`, `urgency_rail` × 2, `occasion_matrix`,
-`store_locator`, `craft_story`, `testimonials`
-(`src/lib/themes/somvabona/homepage.ts:29`–`279`).
+Oceanblue ships a 14-section homepage (`src/lib/themes/oceanblue/homepage.ts:23`):
+`announcement_bar`, `hero_carousel` (split, 3 slides), `circle_categories`,
+`product_rail` (minimal, Most Loved), `split_feature` (festive campaign),
+`product_rail` (minimal, Bestsellers), `circle_categories` (Shop by Color),
+`trust_marquee`, `collection_story`, `testimonials` (single),
+`store_locator`, `newsletter`, `footer_sitemap` + `payment_icons`.
 
 ### Studio twin parity contract
 
@@ -302,8 +303,8 @@ Enforced per theme by test:
 - Songoskriti: `stays token-driven: theme vars only, no hex literals` in
   `src/lib/themes/songoskriti/skins.test.ts:182` (every default skin keyed off
   `[data-widget]` + `[data-skin]`, reduced-motion asserted alongside).
-- Somvabona: `is token-driven: no hex literals or raw colour utilities` in
-  `src/lib/themes/somvabona/skins.test.ts:167` (asserts `var(--theme-brand)`,
+- Oceanblue: `stays token-driven: theme vars only, no hex literals` in
+  `src/lib/themes/oceanblue/skins.test.ts` (asserts `var(--theme-brand)`,
   `var(--theme-surface)`, `var(--theme-ink)`, `var(--theme-accent)`).
 
 ### History map — where each superseded doc went

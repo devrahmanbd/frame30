@@ -19,7 +19,7 @@
 - [ ] Mega-menu: full-width panel, category columns + rotating campaign photo per menu.
 - [ ] Hero carousel: autoplay 6s, swipe, dots, Ken Burns on active slide (no video yet).
 - [ ] Dismissible single-message promo bar (slide-up entrance, like Biba's campaign banner).
-- F2 AI imagery drop-in — DONE 2026-09-29 (commit 43a989b): 6 fresh MAI-Image-2.6-Flash photos generated live in owner-authenticated playground session (MeiGen-structured prompts: subject+style+lighting+palette+composition, no text), same filenames = zero rewiring (hero-newin, hero-wedding, craft-loom, occ-women/men/kids, JPEG q85); SOURCES.txt provenance updated; originals backed up in /tmp/somvabona-orig/; theme suites 51/51 green post-swap.
+- F2 AI imagery drop-in — DONE 2026-09-29 (commit 43a989b): 6 fresh MAI-Image-2.6-Flash photos generated live in owner-authenticated playground session (MeiGen-structured prompts: subject+style+lighting+palette+composition, no text), same filenames = zero rewiring (hero-newin, hero-wedding, craft-loom, occ-women/men/kids, JPEG q85); SOURCES.txt provenance updated; originals backed up in /tmp/retired-theme-orig/; theme suites 51/51 green post-swap.
 
 ## Phase 3 — Rails, PDP, cart
 
@@ -78,3 +78,24 @@
 `bun run typecheck` → `bun run test` → eslint on touched files → Chrome MCP verify
 (snapshot + screenshot + no console errors) → commit + push + deploy → verify live on
 flamelancer.com. No phase marked done without screenshot evidence.
+
+---
+
+# Phase 7 — v2 rebuild in isolated worktree (2026-09-30, branch theme-v2 @ ~/frame30-v2)
+
+Reason: main tree is a battleground (concurrent lane reverting/deleting mid-work, origin/main rewound to a015ea7). Rebuilt off origin/main in an isolated worktree. Commits: 9e3bf17 (full v2) + 28d13ec (contract-test alignment).
+Scope: tokens/homepage/chrome/preview/skins/skins.css/index/types + mega.tsx + locator.tsx + 5 test files + theme-widgets override + nav test blocks. Gates: tsgo 0, full suite 4841 green, contracts 258, eslint clean, 17/17 composition render. :3001 HTTP preview 404 is environmental (old-base dev server lacks Supabase env; untouched songoskriti + root fail identically) — NOT a theme defect. NOT PUSHED (standing rule).
+
+---
+
+# Phase 8 — v2 rebuild complete in isolated worktree (2026-09-30)
+
+Branch theme-v2 @ ~/frame30-v2 (NOT /tmp — /tmp worktree was wiped with
+uncommitted work inside; never keep uncommitted work there). Commits 9e3bf17
++ 28d13ec + 534f1ee. Main tree untouched (theme stays deleted there).
+Gates on final state: tsgo 0, full suite 4841 passed / 0 failed (372 files),
+contracts 258, eslint clean, 18/18 sections render via production
+SectionRenderer. :3001 HTTP preview 404 is environmental (old-base dev
+server lacks Supabase env; untouched songoskriti + root fail identically).
+NOT PUSHED (standing rule) — needs explicit push permission, then deploy +
+live eyeball (desktop + 390px mobile) + mobile viewport pass.

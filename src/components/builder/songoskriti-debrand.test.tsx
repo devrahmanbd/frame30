@@ -34,8 +34,6 @@ import {
   type FooterSectionBuilder,
 } from "@/lib/themes/songoskriti/footer";
 import { buildHomepageMain as buildSongoskritiHomepage } from "@/lib/themes/songoskriti/homepage";
-import { buildFooterMain as buildSomvabonaFooter } from "@/lib/themes/somvabona/chrome";
-import { buildHomepageMain as buildSomvabonaHomepage } from "@/lib/themes/somvabona/homepage";
 
 function ctxFor(
   section: Section,
@@ -91,14 +89,6 @@ function songoskritiHomepage(): Section[] {
   return buildSongoskritiHomepage(stubBuilder<never>());
 }
 
-function somvabonaFooter(): Section[] {
-  return buildSomvabonaFooter(stubBuilder<never>());
-}
-
-function somvabonaHomepage(): Section[] {
-  return buildSomvabonaHomepage(stubBuilder<never>());
-}
-
 const FooterSitemap = SONGOSKRITI_WIDGETS["footer_sitemap"];
 const StoreLocator = SONGOSKRITI_WIDGETS["store_locator"];
 const UgcGallery = SONGOSKRITI_WIDGETS["ugc_gallery"];
@@ -115,36 +105,9 @@ const BRAND_STRINGS = [
   "logo-lockup",
 ];
 
-/**
- * Cross-theme markers: bare `সংস্কৃতি` is a common Bangla word (somvabona
- * legitimately authors "সুতি সংস্কৃতি" — cotton culture), so the live-DOM
- * proof uses songoskriti-specific strings only.
- */
-const CROSS_THEME_STRINGS = [
-  "Songoskriti",
-  "SONGOSKRITI",
-  "Woven in Bangladesh",
-  "festive drops",
-  "care@songoskriti",
-  "/ph/songoskriti",
-  "logo-lockup",
-  "VISIT SONGOSKRITI",
-  "বাংলাদেশে বোনা",
-  "উৎসবের ড্রপ সবার আগে",
-  "শুধু উৎসবের ড্রপের জন্য",
-  "সংস্কৃতি দেখুন",
-  "Follow @SONGOSKRITI",
-];
-
 function expectNoBrand(html: string) {
   for (const marker of BRAND_STRINGS) {
     expect(html, `brand leak: ${marker}`).not.toContain(marker);
-  }
-}
-
-function expectNoCrossBrand(html: string) {
-  for (const marker of CROSS_THEME_STRINGS) {
-    expect(html, `cross-brand leak: ${marker}`).not.toContain(marker);
   }
 }
 
@@ -332,34 +295,6 @@ describe("Task 2 no-brand renderers — props/tokens/demo-data only", () => {
     expect(html).toContain("Community");
     expect(html).toContain("Follow us");
     expectNoBrand(html);
-  });
-});
-
-/* ------------------------------------------------- cross-theme live-DOM */
-
-describe("Task 2 cross-theme live-DOM — somvabona carries zero songoskriti copy", () => {
-  it("somvabona footer sections render brand-free through the shared map", () => {
-    for (const locale of ["en", "bn"] as const) {
-      for (const section of somvabonaFooter()) {
-        const Cmp = WIDGET_COMPONENTS[section.type];
-        expect(Cmp, `renderer for ${section.type}`).toBeDefined();
-        expectNoCrossBrand(render(Cmp, section, locale as Locale));
-      }
-    }
-  });
-
-  it("somvabona store_locator renders brand-free through the shared map", () => {
-    const section = somvabonaHomepage().find(
-      (s) => s.type === "store_locator",
-    )!;
-    expect(section).toBeDefined();
-    const Cmp = WIDGET_COMPONENTS[section.type];
-    const enHtml = render(Cmp, section, "en");
-    expectNoCrossBrand(enHtml);
-    expect(enHtml).toContain("flagship");
-    const bnHtml = render(Cmp, section, "bn");
-    expectNoCrossBrand(bnHtml);
-    expect(bnHtml).toContain("ফ্ল্যাগশিপ");
   });
 });
 
