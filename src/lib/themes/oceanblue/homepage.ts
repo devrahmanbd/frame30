@@ -72,7 +72,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         },
       ],
       autoAdvanceMs: 5000,
-      atmosphere: "none",
+      atmosphere: "wash",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -81,6 +81,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("circle_categories", {
       heading: "Shop by Category",
       heading_bn: "ক্যাটাগরি দেখুন",
+      reveal: "rise",
       c1Title: "Salwar Kameez",
       c1Href: `${c}/salwar-kameez`,
       c2Title: "Kurtas & Tops",
@@ -112,6 +113,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       promise: "Free delivery · 7-day exchange",
       promise_bn: "ফ্রি ডেলিভারি · ৭ দিনের বদল",
       skin: "minimal",
+      reveal: "rise",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -130,6 +132,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       ctaLabel2_bn: "সেল দেখুন",
       ctaUrl2: `${c}/sale`,
       layout: "image_left",
+      reveal: "rise",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -145,6 +148,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       promise: "Picked for this season",
       promise_bn: "এই সিজনের বাছাই",
       skin: "minimal",
+      reveal: "rise",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -153,6 +157,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     s("circle_categories", {
       heading: "Shop by Color",
       heading_bn: "রঙ দেখুন",
+      reveal: "rise",
       c1Title: "White",
       c1Href: `${c}/white`,
       c2Title: "Pink",
@@ -217,6 +222,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       ctaHref: "/pages/about",
       imageUrl: "",
       scrim: false,
+      reveal: "fade",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -235,6 +241,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       ],
       autoAdvanceMs: 6000,
       skin: "single",
+      reveal: "fade",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -252,6 +259,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       s2Name_bn: "স্টোর — চট্টগ্রাম",
       s2Hours: "Open 10am – 9pm",
       s2Hours_bn: "সকাল ১০টা – রাত ৯টা",
+      reveal: "rise",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -268,6 +276,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       consentText: "We email only for drops and sales. Unsubscribe anytime.",
       consentText_bn:
         "শুধু ড্রপ ও সেলের জন্য ইমেইল পাঠাই। যেকোনো সময় আনসাবস্ক্রাইব করুন।",
+      reveal: "fade",
     }),
   ];
 }

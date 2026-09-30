@@ -143,4 +143,30 @@ describe("skins.css token gate", () => {
     expect(css).toContain("var(--theme-ink)");
     expect(css).toContain("prefers-reduced-motion");
   });
+
+  it("ships the polish layer: motion, pattern, focus", () => {
+    const css = readFileSync(
+      "src/lib/themes/oceanblue/skins.css",
+      "utf8",
+    );
+    // Scroll-smooth rails, card lift, dot-pattern band, visible focus.
+    expect(css).toContain("scroll-behavior");
+    expect(css).toContain("translateY(-4px)");
+    expect(css).toContain("radial-gradient");
+    expect(css).toContain(":focus-visible");
+    // Polish never escapes its skins: every rule is scoped under a
+    // [data-widget][data-skin] selector.
+    const rules = css.split("}");
+    const scoped = rules.filter((r) => r.includes("[data-widget="));
+    const unscoped = rules.filter(
+      (r) =>
+        r.trim() &&
+        !r.includes("[data-widget=") &&
+        !r.includes("@media") &&
+        !r.includes("prefers-reduced-motion") &&
+        !r.includes("max-width"),
+    );
+    expect(scoped.length).toBeGreaterThan(0);
+    expect(unscoped).toEqual([]);
+  });
 });

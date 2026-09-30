@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { catalogEntry, lintTemplate } from "../../builder-ast";
+import { catalogEntry, lintTemplate, type PropValue } from "../../builder-ast";
 import { buildFooterMain, FALLBACK_COLUMNS } from "./footer";
 import { buildHeaderMain } from "./header";
 import { buildHomepageMain } from "./homepage";
@@ -67,6 +67,37 @@ describe("oceanblue wiring", () => {
         sections.map((n) => n.type),
         `${retired} stand-in must be gone`,
       ).not.toContain(retired);
+    }
+  });
+
+  it("authors scroll motion through persist-safe props", () => {
+    // `reveal` (universal style prop) + hero `atmosphere` survive parse;
+    // `advAnimation` does not (inspector-only layer), so themes must not
+    // author it. Trust marquee carries its own motion.
+    const s = (type: string, props = {}) =>
+      ({ id: type, type, props }) as never;
+    const byType = new Map<string, Record<string, PropValue>>(
+      buildHomepageMain(s as never).map((n) => [n.type, n.props] as const),
+    );
+    const rising = [
+      "circle_categories",
+      "product_rail",
+      "split_feature",
+      "store_locator",
+    ];
+    for (const t of rising) {
+      expect(byType.get(t)!.reveal, `${t} reveal`).toBe("rise");
+    }
+    for (const t of ["collection_story", "testimonials", "newsletter"]) {
+      expect(byType.get(t)!.reveal, `${t} reveal`).toBe("fade");
+    }
+    expect(byType.get("hero_carousel")!.atmosphere).toBe("wash");
+    const all = buildHomepageMain(s as never);
+    for (const n of all) {
+      expect(
+        Object.keys(n.props).filter((k) => k.startsWith("adv")),
+        `${n.type} must not author inspector-only adv props`,
+      ).toEqual([]);
     }
   });
 
