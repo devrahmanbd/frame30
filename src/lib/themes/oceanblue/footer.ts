@@ -1,18 +1,19 @@
 /**
  * Oceanblue footer — clean minimal brand-standard blueprint.
  *
- * Statement archetype (not the 4-column-link default): a brand statement
- * leads, one newsletter CTA follows, link columns carry the sitemap, and a
- * colophon row (payments + support hours + copyright) closes. Bilingual
- * EN/BN ships inline via explicit `_bn` props so no dictionary entry is
- * required. Exactly one button-styled CTA exists: the newsletter submit.
+ * Link columns carry the sitemap; a payments row + colophon (support
+ * hours + copyright) close it. There is deliberately NO footer newsletter:
+ * every content page owns a main-slot `newsletter` section (homepage §11,
+ * blog, journal, search), so a footer copy would double the signup on
+ * every page. Bilingual EN/BN ships inline via explicit `_bn` props so no
+ * dictionary entry is required. No `buttonLabel` CTA exists in the footer.
  *
- * Brand zones live here as authored props (with `_bn` twins): the shared
- * `footer_sitemap` renderer is prop-driven and hardcodes no brand content,
- * so these same strings must be passed explicitly to keep the storefront
- * output identical. Prop names avoid the bare `buttonLabel` key on purpose —
- * the wiring contract reserves that key for the standalone `newsletter`
- * section (exactly one newsletter CTA).
+ * Brand zones live here as authored props (with `_bn` twins) for renderers
+ * that consume them (songoskriti reads statement/story); the chrome
+ * `footer_sitemap` renderer only consumes `items`, `c1..c4*` and
+ * `socials`. Prop names avoid the bare `buttonLabel` key on purpose —
+ * the wiring contract reserves that key for the main-slot `newsletter`
+ * section.
  */
 import type { PropValue, Section, SectionType } from "../../builder-ast";
 import type { Extras } from "../../theme-section";
@@ -35,19 +36,6 @@ export const STATEMENT = {
   body: "Oceanblue brings festive shelves to everyday doors — honest prices, easy exchange, cash on delivery.",
   body_bn:
     "উৎসবের তাক এখন প্রতিদিনের দোরগোড়ায় — সৎ দাম, সহজ বদল, ক্যাশ অন ডেলিভারি।",
-} as const;
-
-export const NEWSLETTER = {
-  heading: "New drops, first inbox",
-  heading_bn: "নতুন ড্রপ, সবার আগে ইনবক্সে",
-  body: "New arrivals, restocks and sale alerts. One useful letter — never spam.",
-  body_bn:
-    "নতুন সংগ্রহ, রিস্টক ও সেল অ্যালার্ট। একটি কাজের চিঠি — কোনো স্প্যাম নয়।",
-  buttonLabel: "Subscribe",
-  buttonLabel_bn: "সাবস্ক্রাইব",
-  consentText: "We email only for drops and sales. Unsubscribe anytime.",
-  consentText_bn:
-    "শুধু ড্রপ ও সেলের জন্য ইমেইল পাঠাই। যেকোনো সময় আনসাবস্ক্রাইব করুন।",
 } as const;
 
 /** Manual fallback when no dashboard menu claims the footer location. */
@@ -153,24 +141,15 @@ export const COLOPHON = {
 } as const;
 
 /**
- * Newsletter (the single CTA) + link columns + payments + colophon.
- * NOTE: no `split_feature` statement block here — it is main-slotted
- * only, so authoring it in the footer AST parses to an `illegal_slot`
+ * Link columns + payments + colophon — no newsletter CTA here (page
+ * main owns the signup; see the header note).
+ * NOTE: no `split_feature` statement block — it is main-slotted only,
+ * so authoring it in the footer AST parses to an `illegal_slot`
  * placeholder. The statement voice is carried instead by the
  * `footer_sitemap` brand props below (same strings, slot-legal).
  */
 export function buildOceanblueFooter(s: FooterSectionBuilder): Section[] {
   return [
-    s("newsletter", {
-      heading: NEWSLETTER.heading,
-      heading_bn: NEWSLETTER.heading_bn,
-      body: NEWSLETTER.body,
-      body_bn: NEWSLETTER.body_bn,
-      buttonLabel: NEWSLETTER.buttonLabel,
-      buttonLabel_bn: NEWSLETTER.buttonLabel_bn,
-      consentText: NEWSLETTER.consentText,
-      consentText_bn: NEWSLETTER.consentText_bn,
-    }),
     s("footer_sitemap", {
       statementHeading: STATEMENT.heading,
       statementHeading_bn: STATEMENT.heading_bn,
@@ -179,12 +158,6 @@ export function buildOceanblueFooter(s: FooterSectionBuilder): Section[] {
       storyHref: "/pages/about",
       storyLabel: "OUR STORY →",
       storyLabel_bn: "আমাদের গল্প →",
-      newsletterHeading: NEWSLETTER.heading,
-      newsletterHeading_bn: NEWSLETTER.heading_bn,
-      newsletterButton: NEWSLETTER.buttonLabel,
-      newsletterButton_bn: NEWSLETTER.buttonLabel_bn,
-      newsletterConsent: NEWSLETTER.consentText,
-      newsletterConsent_bn: NEWSLETTER.consentText_bn,
       brandName: BRAND_NAME,
       brandName_bn: BRAND_NAME_BN,
       paymentsHeading: PAYMENTS_HEADING,

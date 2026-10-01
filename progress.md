@@ -129,8 +129,15 @@ live eyeball (desktop + 390px mobile) + mobile viewport pass.
       SHOP FESTIVE→/c/festive, 1 CTA. Lint: chrome.tsx 4 errors→0
       (warnings +9 from react-refresh branch flip, informational only;
       siblings carry same warnings).
-- [ ] P9-2 Double newsletter: main §11 + footer contentinfo render identical
+- [x] P9-2 Double newsletter: main §11 + footer contentinfo render identical
       "New drops, first inbox" forms → keep one.
+      Shipped: removed footer newsletter section + newsletter* sitemap props
+      + NEWSLETTER const (footer.ts); rewrote wiring.test footer pins to
+      zero CTAs / ["footer_sitemap","payment_icons","rich_text"]; registry
+      embed regenerated as post-parse live shape (68308→60494 bytes, exact
+      7814 = 9 footers × newsletter block). Gates: typecheck, 4830 tests,
+      258 contracts, eslint touched files 0/0. Live: heading+form+email input
+      1 in <main>, 0 in contentinfo, no console errors.
 - [ ] P9-3 Preview rails show grocery/electronics (cookware, basmati, earbuds,
       fan) → oceanblue ethnic demo catalog (BDT minor units, marked demo).
 - [ ] P9-4 Banner hero skin (spec docs/superpowers/specs/2026-10-01-*.md,

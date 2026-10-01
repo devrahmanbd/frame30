@@ -147,14 +147,22 @@ describe("oceanblue wiring", () => {
     expect(new Set(labels).size).toBe(labels.length);
   });
 
-  it("footer keeps exactly one newsletter CTA", () => {
+  it("footer carries no newsletter CTA — page main owns signup", () => {
     const s = (type: string, props = {}) =>
       ({ id: type, type, props }) as never;
     const footer = buildFooterMain(s as never);
     const ctas = footer.filter(
       (n) => typeof n.props.buttonLabel === "string" && n.props.buttonLabel,
     );
-    expect(ctas.map((n) => n.type)).toEqual(["newsletter"]);
+    // P9-2 audit: every content page (homepage §11, blog, journal, search)
+    // renders a main-slot newsletter — a footer copy doubled the signup on
+    // every page, so the footer must carry no `buttonLabel` CTA at all.
+    expect(ctas.map((n) => n.type)).toEqual([]);
+    expect(footer.map((n) => n.type)).toEqual([
+      "footer_sitemap",
+      "payment_icons",
+      "rich_text",
+    ]);
   });
 
   it("never duplicates the StoreHeader chrome", () => {
