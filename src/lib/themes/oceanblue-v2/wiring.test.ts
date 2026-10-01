@@ -10,6 +10,7 @@ import type { PropValue, Section, SectionType } from "../../builder-ast";
 import { buildFooterMain } from "./footer";
 import { buildHeaderMain } from "./header";
 import { buildHomepageMain } from "./homepage";
+import { buildSecondaryMain } from "./secondary";
 
 type Stub = (type: SectionType, props?: Record<string, PropValue>) => Section;
 
@@ -153,6 +154,55 @@ describe("oceanblue-v2 homepage main", () => {
         expect(t.props[`c${i}Title`]).toBeTruthy();
         expect(String(t.props[`c${i}Href`]).startsWith("/c/")).toBe(true);
       }
+    }
+  });
+});
+
+describe("oceanblue-v2 secondary templates", () => {
+  const KINDS = [
+    "product",
+    "collection",
+    "cart",
+    "checkout",
+    "search",
+    "account",
+    "page",
+    "blog",
+  ] as const;
+
+  it("returns a non-empty valid main for every secondary kind", () => {
+    for (const kind of KINDS) {
+      const main = buildSecondaryMain(stub, kind);
+      expect(main.length, kind).toBeGreaterThan(0);
+      for (const s of main) {
+        expect(s.type, kind).toBeTruthy();
+        expect(s.id, kind).toBeTruthy();
+      }
+      expect(JSON.stringify(main), kind).not.toContain("#");
+    }
+  });
+
+  it("keeps the sticky buy bar PDP-only", () => {
+    const product = buildSecondaryMain(stub, "product");
+    expect(
+      product.filter((s) => s.type === "sticky_buy_bar"),
+    ).toHaveLength(1);
+    for (const kind of KINDS.filter((k) => k !== "product")) {
+      expect(
+        buildSecondaryMain(stub, kind).filter(
+          (s) => s.type === "sticky_buy_bar",
+        ),
+        kind,
+      ).toHaveLength(0);
+    }
+  });
+
+  it("gives listing templates filter + sort controls", () => {
+    for (const kind of ["collection", "search"] as const) {
+      const types = buildSecondaryMain(stub, kind).map((s) => s.type);
+      expect(types, kind).toContain("filter_chips");
+      expect(types, kind).toContain("result_toolbar");
+      expect(types, kind).toContain("product_grid");
     }
   });
 });
