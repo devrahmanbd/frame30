@@ -9,6 +9,7 @@ import { describe, expect, it } from "vitest";
 import type { PropValue, Section, SectionType } from "../../builder-ast";
 import { buildFooterMain } from "./footer";
 import { buildHeaderMain } from "./header";
+import { buildHomepageMain } from "./homepage";
 
 type Stub = (type: SectionType, props?: Record<string, PropValue>) => Section;
 
@@ -67,5 +68,91 @@ describe("oceanblue-v2 footer chrome", () => {
     expect(sitemap.props.statementHeading_bn).toBeTruthy();
     expect(sitemap.props.c1Title).toBeTruthy();
     expect(sitemap.props.c1Title_bn).toBeTruthy();
+  });
+});
+
+describe("oceanblue-v2 homepage main", () => {
+  const MAIN_ORDER = [
+    "hero_carousel",
+    "circle_categories",
+    "product_rail",
+    "split_feature",
+    "product_rail",
+    "circle_categories",
+    "trust_marquee",
+    "collection_story",
+    "testimonials",
+    "store_locator",
+    "newsletter",
+  ];
+
+  it("emits 11 main sections in spec-§3 order", () => {
+    const main = buildHomepageMain(stub);
+    expect(main.map((s) => s.type)).toEqual(MAIN_ORDER);
+  });
+
+  it("claims the h1 exactly once: a 4-slide banner hero, H1 on slide 1", () => {
+    const main = buildHomepageMain(stub);
+    expect(main.filter((s) => s.type === "hero_carousel")).toHaveLength(1);
+    const hero = main.find((s) => s.type === "hero_carousel")!;
+    expect(hero.props.skin).toBe("banner");
+    expect(hero.props.autoAdvanceMs).toBe(5000);
+    const slides = hero.props.slides as Array<Record<string, unknown>>;
+    expect(slides).toHaveLength(4);
+    expect(slides[0]!.headline).toBeTruthy();
+    expect(slides[0]!.headline_bn).toBeTruthy();
+    for (const slide of slides) {
+      expect(slide.ctaUrl).toBeTruthy();
+    }
+  });
+
+  it("resolves every CTA to a real permalink (zero dead links)", () => {
+    const main = buildHomepageMain(stub);
+    const raw = JSON.stringify(main);
+    expect(raw).not.toContain("#");
+    for (const s of main) {
+      for (const key of ["ctaUrl", "ctaHref", "href", "storyHref"]) {
+        const v = s.props[key];
+        if (typeof v === "string" && v !== "") {
+          expect(v.startsWith("/"), `${s.type}.${key}=${v}`).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("keeps rails honest: limits ≤ 10, real sources, ratings on loved", () => {
+    const main = buildHomepageMain(stub);
+    const rails = main.filter((s) => s.type === "product_rail");
+    expect(rails).toHaveLength(2);
+    for (const rail of rails) {
+      expect(rail.props.limit as number).toBeLessThanOrEqual(10);
+      expect(["collection", "bestsellers", "recommended"]).toContain(
+        rail.props.source,
+      );
+    }
+    expect(rails[0]!.props.source).toBe("bestsellers");
+    expect(rails[0]!.props.showRating).toBe(true);
+    expect(rails[1]!.props.source).toBe("recommended");
+  });
+
+  it("mounts exactly one newsletter across the full page", () => {
+    const page = [
+      ...buildHeaderMain(stub),
+      ...buildHomepageMain(stub),
+      ...buildFooterMain(stub),
+    ];
+    expect(page.filter((s) => s.type === "newsletter")).toHaveLength(1);
+  });
+
+  it("fills 8 category tiles and color tiles with real hrefs", () => {
+    const main = buildHomepageMain(stub);
+    const tiles = main.filter((s) => s.type === "circle_categories");
+    expect(tiles).toHaveLength(2);
+    for (const t of tiles) {
+      for (let i = 1; i <= 6; i++) {
+        expect(t.props[`c${i}Title`]).toBeTruthy();
+        expect(String(t.props[`c${i}Href`]).startsWith("/c/")).toBe(true);
+      }
+    }
   });
 });
