@@ -124,6 +124,38 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   degrades to 202 on missing warehouse schema (owner migration pending);
   hydration nonce mismatch fixed (empty-coerce + csp-nonce meta read).
 
+## [2026-10-01] — oceanblue Phase 9 Batch 1 preview closeout (`f91b57c`, deployed)
+
+- Branch `feat/oceanblue-theme`, 3 commits atop the theme ship:
+  `2db4078` P9-1 wired the festive CTA + dropped dead footer socials;
+  `102a74d` P9-2 collapsed the double newsletter (footer signup gone,
+  page-main §11 signup is the only one; registry embed regen'd
+  68308→60494 bytes); `f91b57c` P9-3 replaced the marketplace
+  grocery/electronics preview data (cookware, basmati, earbuds, fan)
+  with a marked-demo `OCEANBLUE` catalogue in `demo-catalog.ts` — 52
+  products, 8 categories mirroring the circle-tile departments 1:1,
+  8 collections, whole-taka BDT poisha prices, unique `OB-*` SKUs, no
+  `image_url` so cards render dept-tinted monogram SVGs
+  (`/api/public/ph/<dept>/<slug>.svg`), registered as the 8th
+  `DEMO_CATALOGS` key (`demoCatalogFor("oceanblue")` → ethnic rows
+  instead of the marketplace fallback).
+- Gates (exact pre-push tree): typecheck clean; 4834 unit (+4
+  phase4 oceanblue assertions: eight-key pin, domain regex, dedicated
+  describe for tiles/≥50 products/`%100` prices/no grocery residue) +
+  258 contract green; prettier clean; eslint touched 0/0, repo
+  824→823 errors (splice removed the stray `prettier/prettier` blank
+  at demo-catalog old L2886).
+- Deploy: `ops/deploy-from-git.sh feat/oceanblue-theme` on
+  88.99.250.99 → `DEPLOY OK: feat/oceanblue-theme live`, every
+  `VERIFY OK` gate passed; `origin/feat/oceanblue-theme` ==
+  pushed `f91b57c`. Note: `/opt/frame28` main checkout sat on another
+  lane's `fix/audit-stock-scope` during the deploy (known shared-clone
+  churn — left untouched); built artifact proven by live content
+  instead: Tangail/Jamdani/Khadi products + ৳ prices + 20 monogram
+  SVGs, zero grocery hits, zero console errors on
+  framique.qubickle.com/theme-preview/oceanblue. Excluded:
+  `ops/routing/*.conf` (build-timestamp churn only).
+
 ## [2026-10-01] — oceanblue theme shipped + deployed (`1b06337`, deployed)
 
 - Branch `feat/oceanblue-theme` (spec
