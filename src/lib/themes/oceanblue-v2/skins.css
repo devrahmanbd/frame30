@@ -1,0 +1,597 @@
+/**
+ * Oceanblue-v2 widget skin sheets (spec §2–§3 — theme-owned skin CSS).
+ *
+ * Keyed by the renderer's `data-widget` + `data-skin` attributes, which the
+ * core SectionRenderer emits for the five skinnable widget types — this
+ * sheet is live on every oceanblue-v2 storefront render (preview included).
+ *
+ * DOM HOOKS (verified against the renderers + P9-4 banner spec):
+ * `[data-hero]`, `[data-hero-eyebrow]`, `[data-hero-headline]`,
+ * `[data-hero-sub]`, `[data-hero-cta]` (its CTA anchor is a direct child
+ * `a`), `button[role="tab"]` dot pagination, `button:not([role="tab"])`
+ * banner arrows, `button[data-part="rail-nav"]`, `[data-part="promise"]`,
+ * `[data-part="badge"]`, `[data-part="author"]`, the `.snap-x` rail
+ * scroller, and `article` cards. Style only hooks that exist —
+ * skins.test.ts pins the hook vocabulary so a renderer rename fails loudly.
+ *
+ * TOKEN POLICY: every value reads `var(--theme-*)` (maroon brand, white
+ * surface, serif faces all arrive through the ThemeSurface bridge).
+ * Literals are allowed ONLY for artwork — this sheet uses none: the blush
+ * wash is a NAMED variable mixed from brand + surface
+ * (`--theme-blush`), so a merchant re-tint re-skins every rule
+ * automatically. Accent (maroon-plum) appears only as hover depth, rules
+ * and glyphs, never as small body text.
+ *
+ * TYPE DISCIPLINE: display headers stay roman (weight + color carry
+ * emphasis, never italics); eyebrows/labels use the body grotesque with
+ * tracking — no caps-only display classes anywhere in new storefront CSS.
+ *
+ * ACCESSIBILITY: interactive descendants keep 44px targets; motion rules
+ * collapse under `prefers-reduced-motion`; multi-column skins collapse to a
+ * single column below 768px. Headings stay h1-safe (style only, no level
+ * changes) and copy stays bn/en (no content here at all).
+ */
+
+/* Hallmark · pre-emit critique: P5 H4 E5 S4 R5 V5 */
+
+/* -------------------------------------------- theme scope page guard */
+
+.fq-theme-scope {
+  overflow-x: clip;
+}
+
+/* Blush festive wash — named, token-mixed, zero literals. */
+.fq-theme-scope {
+  --theme-blush: color-mix(in oklab, var(--theme-brand) 7%, var(--theme-surface));
+}
+
+/* ------------------------------------------- product_rail: minimal */
+
+[data-widget="product_rail"][data-skin="minimal"] {
+  background: var(--theme-surface);
+  padding-block: calc(var(--theme-space) * 2);
+}
+
+/* Quiet rail heading: display serif face, generous tracking; the maroon
+   hairline lands in the polish layer below. */
+[data-widget="product_rail"][data-skin="minimal"] h1,
+[data-widget="product_rail"][data-skin="minimal"] h2 {
+  font-family: var(--theme-font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  color: var(--theme-ink);
+  overflow-wrap: anywhere;
+  min-width: 0;
+  padding-block-end: calc(var(--theme-space) * 0.5);
+}
+
+/* Delivery promise line in muted ink; cards frameless on white. */
+[data-widget="product_rail"][data-skin="minimal"] [data-part="promise"] {
+  color: var(--theme-muted-ink);
+}
+[data-widget="product_rail"][data-skin="minimal"] article {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+[data-widget="product_rail"][data-skin="minimal"]
+  button[data-part="rail-nav"] {
+  min-height: 44px;
+  min-width: 44px;
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius);
+}
+
+/* ------------------------------------------ hero_carousel: banner */
+
+[data-widget="hero_carousel"][data-skin="banner"] {
+  background: var(--theme-surface);
+  overflow-x: clip;
+}
+
+/* Banner overlay type: roman serif headline, grotesque eyebrow with
+   tracking (label voice without a caps-only class). */
+[data-widget="hero_carousel"][data-skin="banner"] h1,
+[data-widget="hero_carousel"][data-skin="banner"] h2 {
+  font-family: var(--theme-font-display);
+  font-weight: 700;
+  letter-spacing: 0;
+  color: var(--theme-surface);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+[data-widget="hero_carousel"][data-skin="banner"] [data-hero-eyebrow] {
+  font-family: var(--theme-font-body);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--theme-surface);
+  border-inline-start: 2px solid var(--theme-surface);
+  padding-inline-start: calc(var(--theme-space) * 0.75);
+}
+[data-widget="hero_carousel"][data-skin="banner"] [data-hero-sub] {
+  color: var(--theme-surface);
+}
+
+/* Scrim carries legibility, so the CTA stays a solid maroon button on
+   any photo — same pattern the split CTA already relies on. */
+[data-widget="hero_carousel"][data-skin="banner"] [data-hero-cta] a {
+  background: var(--theme-brand);
+  color: var(--theme-brand-ink);
+  border-radius: var(--theme-radius);
+  min-height: 44px;
+}
+
+/* Banner controls: edge arrows + dot tablist, all 44px targets. */
+[data-widget="hero_carousel"][data-skin="banner"] [role="tab"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+[data-widget="hero_carousel"][data-skin="banner"]
+  button:not([role="tab"]) {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* ------------------------------------------- testimonials: single */
+
+[data-widget="testimonials"][data-skin="single"] {
+  background: var(--theme-blush);
+  padding-block: calc(var(--theme-space) * 2);
+  text-align: center;
+}
+
+/* One voice at a time: quote in display face, attribution muted. */
+[data-widget="testimonials"][data-skin="single"] blockquote {
+  font-family: var(--theme-font-display);
+  font-weight: 400;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--theme-ink);
+  max-width: 44rem;
+  margin-inline: auto;
+}
+[data-widget="testimonials"][data-skin="single"] [data-part="author"] {
+  color: var(--theme-muted-ink);
+}
+
+/* -------------------------------------------- product_grid: cards */
+
+[data-widget="product_grid"][data-skin="cards"] {
+  background: var(--theme-surface);
+}
+
+/* Cards carry a hairline border on white; the grid track uses minmax so
+   image children can never force horizontal scroll. */
+[data-widget="product_grid"][data-skin="cards"] {
+  grid-template-columns: repeat(auto-fill, minmax(0, 1fr));
+}
+[data-widget="product_grid"][data-skin="cards"] article {
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius);
+  box-shadow: none;
+  min-width: 0;
+}
+
+/* ------------------------------------------- urgency_rail: minimal */
+
+[data-widget="urgency_rail"][data-skin="minimal"] {
+  background: var(--theme-surface);
+  padding-block: calc(var(--theme-space) * 2);
+}
+[data-widget="urgency_rail"][data-skin="minimal"] h1,
+[data-widget="urgency_rail"][data-skin="minimal"] h2 {
+  font-family: var(--theme-font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  color: var(--theme-ink);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+[data-widget="urgency_rail"][data-skin="minimal"] article {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* Sale badges use the campaign tone tokens, never raw color. */
+[data-widget="urgency_rail"][data-skin="minimal"] [data-part="badge"] {
+  min-height: 44px;
+}
+
+/* ---------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-widget="product_rail"][data-skin="minimal"] *,
+  [data-widget="hero_carousel"][data-skin="banner"] *,
+  [data-widget="testimonials"][data-skin="single"] *,
+  [data-widget="product_grid"][data-skin="cards"] *,
+  [data-widget="urgency_rail"][data-skin="minimal"] * {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* -------------------------------------------------------- mobile */
+
+@media (max-width: 767px) {
+  [data-widget="product_rail"][data-skin="minimal"] h1,
+  [data-widget="product_rail"][data-skin="minimal"] h2,
+  [data-widget="urgency_rail"][data-skin="minimal"] h1,
+  [data-widget="urgency_rail"][data-skin="minimal"] h2 {
+    font-size: 1.25rem;
+  }
+  [data-widget="testimonials"][data-skin="single"] blockquote {
+    font-size: 1.125rem;
+  }
+  /* Section heads collapse to one column on mobile, every skin. */
+  [data-widget="product_rail"][data-skin="minimal"],
+  [data-widget="hero_carousel"][data-skin="banner"],
+  [data-widget="testimonials"][data-skin="single"],
+  [data-widget="product_grid"][data-skin="cards"],
+  [data-widget="urgency_rail"][data-skin="minimal"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ============================================================
+   POLISH LAYER — the dress pass: wash, gradient, pattern, motion.
+   Everything below is progressive enhancement over token values:
+   compositor-friendly transforms/opacity only, always paired with a
+   reduced-motion collapse. Transitions only — no keyframes here; depth
+   comes from token-mixed shadows, texture from token-mixed gradients.
+   ============================================================ */
+
+/* ------------------------ hero banner: wash, gradient headline, CTA */
+
+[data-widget="hero_carousel"][data-skin="banner"] [data-hero] {
+  background:
+    radial-gradient(
+      90% 70% at 78% 14%,
+      color-mix(in oklab, var(--theme-brand) 10%, transparent),
+      transparent 62%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--theme-brand) 6%, var(--theme-surface)),
+      var(--theme-surface) 58%
+    );
+}
+
+/* Display headline in a maroon gradient; forced-colors keeps it legible. */
+[data-widget="hero_carousel"][data-skin="banner"] [data-hero-headline] {
+  background: linear-gradient(
+    112deg,
+    var(--theme-brand) 6%,
+    color-mix(in oklab, var(--theme-brand) 70%, var(--theme-surface)) 94%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+@media (forced-colors: active) {
+  [data-widget="hero_carousel"][data-skin="banner"] [data-hero-headline] {
+    background: none;
+    color: var(--theme-ink);
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+/* CTA: maroon gradient, lift, press, and a shine sweep that rides behind
+   the label (isolated stacking context keeps the order deterministic). */
+[data-widget="hero_carousel"][data-skin="banner"] [data-hero-cta] a {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(
+    105deg,
+    var(--theme-brand),
+    color-mix(in oklab, var(--theme-brand) 82%, var(--theme-accent))
+  );
+  transition:
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 220ms ease,
+    opacity 220ms ease;
+}
+[data-widget="hero_carousel"][data-skin="banner"] [data-hero-cta] a:hover {
+  transform: translateY(-2px);
+  opacity: 1;
+  box-shadow: 0 14px 30px -12px
+    color-mix(in oklab, var(--theme-brand) 60%, transparent);
+}
+[data-widget="hero_carousel"][data-skin="banner"] [data-hero-cta] a:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+[data-widget="hero_carousel"][data-skin="banner"] [data-hero-cta] a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    color-mix(in oklab, var(--theme-brand-ink) 42%, transparent) 50%,
+    transparent 70%
+  );
+  transform: translateX(-130%);
+  transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+[data-widget="hero_carousel"][data-skin="banner"]
+  [data-hero-cta]
+  a:hover::before {
+  transform: translateX(130%);
+}
+
+/* Dots: nudge on hover, selected dot in maroon (width still carries
+   the state, so color is never the only signal). */
+[data-widget="hero_carousel"][data-skin="banner"] [role="tab"] {
+  transition: transform 200ms ease;
+}
+[data-widget="hero_carousel"][data-skin="banner"] [role="tab"]:hover {
+  transform: scale(1.15);
+}
+[data-widget="hero_carousel"][data-skin="banner"]
+  [role="tab"][aria-selected="true"]
+  span {
+  background: var(--theme-brand);
+}
+
+/* Arrows: translucent ink, calm hover. */
+[data-widget="hero_carousel"][data-skin="banner"]
+  button:not([role="tab"]):hover {
+  transform: scale(1.08);
+}
+
+/* ------------------------ rails: smooth scroll, edge fade, heading rule */
+
+/* The scroller glides under nav clicks and fades at both edges so the
+   carousel reads as continuous; the nav buttons sit outside the scroller
+   and stay crisp. */
+[data-widget="product_rail"][data-skin="minimal"] .snap-x,
+[data-widget="urgency_rail"][data-skin="minimal"] .snap-x {
+  scroll-behavior: smooth;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    var(--theme-ink) 24px,
+    var(--theme-ink) calc(100% - 24px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    var(--theme-ink) 24px,
+    var(--theme-ink) calc(100% - 24px),
+    transparent 100%
+  );
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+/* Maroon hairline under the rail headings (headings sit centered, so the
+   rule centers itself). */
+[data-widget="product_rail"][data-skin="minimal"] h1::after,
+[data-widget="product_rail"][data-skin="minimal"] h2::after,
+[data-widget="urgency_rail"][data-skin="minimal"] h1::after,
+[data-widget="urgency_rail"][data-skin="minimal"] h2::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 2px;
+  margin: calc(var(--theme-space) * 0.6) auto 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--theme-brand),
+    color-mix(in oklab, var(--theme-brand) 12%, transparent)
+  );
+}
+
+/* Cards lift with focus as well as hover; images ease their zoom. */
+[data-widget="product_rail"][data-skin="minimal"] article,
+[data-widget="urgency_rail"][data-skin="minimal"] article {
+  transition:
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 240ms ease;
+}
+[data-widget="product_rail"][data-skin="minimal"] article:hover,
+[data-widget="product_rail"][data-skin="minimal"] article:focus-within,
+[data-widget="urgency_rail"][data-skin="minimal"] article:hover,
+[data-widget="urgency_rail"][data-skin="minimal"] article:focus-within {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -16px
+    color-mix(in oklab, var(--theme-ink) 28%, transparent);
+}
+[data-widget="product_rail"][data-skin="minimal"] article img,
+[data-widget="urgency_rail"][data-skin="minimal"] article img {
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-widget="product_rail"][data-skin="minimal"] article:hover img,
+[data-widget="product_rail"][data-skin="minimal"] article:focus-within img,
+[data-widget="urgency_rail"][data-skin="minimal"] article:hover img,
+[data-widget="urgency_rail"][data-skin="minimal"] article:focus-within img {
+  transform: scale(1.04);
+}
+[data-widget="product_rail"][data-skin="minimal"]
+  button[data-part="rail-nav"],
+[data-widget="urgency_rail"][data-skin="minimal"]
+  button[data-part="rail-nav"] {
+  transition:
+    transform 200ms ease,
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+[data-widget="product_rail"][data-skin="minimal"]
+  button[data-part="rail-nav"]:hover,
+[data-widget="urgency_rail"][data-skin="minimal"]
+  button[data-part="rail-nav"]:hover {
+  transform: scale(1.08);
+  border-color: var(--theme-brand);
+}
+
+/* ------------------------ grids: woven dot field + card calm + hover */
+
+[data-widget="product_grid"][data-skin="cards"] {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--theme-brand) 6%, transparent) 1px,
+    transparent 1.6px
+  );
+  background-size: 26px 26px;
+  background-position: center;
+}
+[data-widget="product_grid"][data-skin="cards"] article {
+  transition:
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 240ms ease,
+    border-color 240ms ease;
+}
+[data-widget="product_grid"][data-skin="cards"] article:hover,
+[data-widget="product_grid"][data-skin="cards"] article:focus-within {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklab, var(--theme-brand) 40%, transparent);
+  box-shadow: 0 16px 32px -20px
+    color-mix(in oklab, var(--theme-ink) 30%, transparent);
+}
+[data-widget="product_grid"][data-skin="cards"] article img {
+  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-widget="product_grid"][data-skin="cards"] article:hover img,
+[data-widget="product_grid"][data-skin="cards"] article:focus-within img {
+  transform: scale(1.04);
+}
+
+/* ------------------------ testimonials: blush band, quote cards, glyph */
+
+[data-widget="testimonials"][data-skin="single"] {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--theme-brand) 10%, transparent) 1px,
+    transparent 1.5px
+  );
+  background-size: 22px 22px;
+  background-position: center;
+}
+
+/* Each quote sits on its own card — the whole item (glyph, quote,
+   attribution) lifts together. */
+[data-widget="testimonials"][data-skin="single"] li {
+  background: var(--theme-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius);
+  padding: calc(var(--theme-space) * 1.5) calc(var(--theme-space) * 1.75);
+  box-shadow: 0 20px 44px -30px
+    color-mix(in oklab, var(--theme-ink) 35%, transparent);
+  transition:
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 240ms ease;
+}
+[data-widget="testimonials"][data-skin="single"] li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 52px -30px
+    color-mix(in oklab, var(--theme-brand) 50%, transparent);
+}
+
+/* Decorative quote glyph in maroon; attribution carries a short hairline. */
+[data-widget="testimonials"][data-skin="single"]
+  li
+  > span[aria-hidden="true"] {
+  color: var(--theme-brand);
+  font-size: 3.5rem;
+  line-height: 1;
+}
+[data-widget="testimonials"][data-skin="single"] [data-part="author"]::before {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 2px;
+  margin:
+    calc(var(--theme-space) * 0.9) auto
+    calc(var(--theme-space) * 0.45);
+  border-radius: 999px;
+  background: var(--theme-brand);
+}
+
+/* ------------------------ section entrances: richer travel per skin */
+
+[data-widget="product_rail"][data-skin="minimal"].fq-reveal,
+[data-widget="hero_carousel"][data-skin="banner"].fq-reveal,
+[data-widget="testimonials"][data-skin="single"].fq-reveal,
+[data-widget="product_grid"][data-skin="cards"].fq-reveal,
+[data-widget="urgency_rail"][data-skin="minimal"].fq-reveal {
+  animation-duration: calc(var(--theme-motion-duration, 420ms) * 1.5);
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  --theme-motion-rise: 22px;
+}
+
+/* ------------------------ focus visibility (all skins) */
+
+[data-widget="product_rail"][data-skin="minimal"] a:focus-visible,
+[data-widget="product_rail"][data-skin="minimal"] button:focus-visible,
+[data-widget="hero_carousel"][data-skin="banner"] a:focus-visible,
+[data-widget="hero_carousel"][data-skin="banner"] button:focus-visible,
+[data-widget="testimonials"][data-skin="single"] a:focus-visible,
+[data-widget="testimonials"][data-skin="single"] button:focus-visible,
+[data-widget="product_grid"][data-skin="cards"] a:focus-visible,
+[data-widget="product_grid"][data-skin="cards"] button:focus-visible,
+[data-widget="urgency_rail"][data-skin="minimal"] a:focus-visible,
+[data-widget="urgency_rail"][data-skin="minimal"] button:focus-visible {
+  outline: 2px solid var(--theme-brand);
+  outline-offset: 3px;
+}
+
+/* ------------------------ polish reduced-motion collapse */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-widget="product_rail"][data-skin="minimal"] .snap-x,
+  [data-widget="urgency_rail"][data-skin="minimal"] .snap-x {
+    scroll-behavior: auto;
+  }
+  [data-widget="product_rail"][data-skin="minimal"] a,
+  [data-widget="product_rail"][data-skin="minimal"] button,
+  [data-widget="product_rail"][data-skin="minimal"] article,
+  [data-widget="product_rail"][data-skin="minimal"] article img,
+  [data-widget="hero_carousel"][data-skin="banner"] [data-hero-cta] a,
+  [data-widget="hero_carousel"][data-skin="banner"] [role="tab"],
+  [data-widget="hero_carousel"][data-skin="banner"] [data-hero-art] > div img,
+  [data-widget="hero_carousel"][data-skin="banner"] [data-hero-art] > div svg,
+  [data-widget="testimonials"][data-skin="single"] li,
+  [data-widget="product_grid"][data-skin="cards"] article,
+  [data-widget="product_grid"][data-skin="cards"] article img,
+  [data-widget="urgency_rail"][data-skin="minimal"] article,
+  [data-widget="urgency_rail"][data-skin="minimal"] article img {
+    transition: none;
+  }
+  [data-widget="product_rail"][data-skin="minimal"] article:hover,
+  [data-widget="product_rail"][data-skin="minimal"] article:focus-within,
+  [data-widget="product_rail"][data-skin="minimal"] article:hover img,
+  [data-widget="product_rail"][data-skin="minimal"] article:focus-within img,
+  [data-widget="product_rail"][data-skin="minimal"]
+    button[data-part="rail-nav"]:hover,
+  [data-widget="urgency_rail"][data-skin="minimal"] article:hover,
+  [data-widget="urgency_rail"][data-skin="minimal"] article:focus-within,
+  [data-widget="urgency_rail"][data-skin="minimal"] article:hover img,
+  [data-widget="urgency_rail"][data-skin="minimal"] article:focus-within img,
+  [data-widget="urgency_rail"][data-skin="minimal"]
+    button[data-part="rail-nav"]:hover,
+  [data-widget="product_grid"][data-skin="cards"] article:hover,
+  [data-widget="product_grid"][data-skin="cards"] article:focus-within,
+  [data-widget="product_grid"][data-skin="cards"] article:hover img,
+  [data-widget="product_grid"][data-skin="cards"] article:focus-within img,
+  [data-widget="hero_carousel"][data-skin="banner"] [data-hero-cta] a:hover,
+  [data-widget="hero_carousel"][data-skin="banner"] [data-hero-cta] a:active,
+  [data-widget="hero_carousel"][data-skin="banner"] [role="tab"]:hover,
+  [data-widget="testimonials"][data-skin="single"] li:hover {
+    transform: none;
+    box-shadow: none;
+  }
+  [data-widget="hero_carousel"][data-skin="banner"] [data-hero-cta] a::before {
+    display: none;
+  }
+}
