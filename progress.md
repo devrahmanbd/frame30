@@ -166,6 +166,20 @@ live eyeball (desktop + 390px mobile) + mobile viewport pass.
 - [ ] P9-10 Gates per item: typecheck → test → contracts → eslint touched →
       chrome snapshot (screenshot best-effort) → commit.
 
+# Phase 10 — oceanblue-v2 full-storefront rebuild (2026-10-02, branch feat/oceanblue-theme)
+
+> User-approved (approach A, one pass). New `oceanblue-v2` key from zero; v1
+> untouched. Spec: docs/superpowers/specs/2026-10-02-oceanblue-v2-design.md.
+> Method: hallmark studied-DNA (biba.in); OpenDesign MCP/daemon absent —
+> chrome-devtools verification instead. Subagent executes autonomously:
+> implement → gates → :3000 preview → commit (no push/deploy without word).
+
+- [x] P10-0 Spec written + self-reviewed + committed (this file updated).
+- [ ] P10-1 writing-plans implementation plan.
+- [ ] P10-2 Scaffold: tokens/skins/homepage/secondary/header/footer/preset/preview.
+- [ ] P10-3 Wiring: preview-sources, theme-chrome, catalog-meta, nav resolve, registry migration.
+- [ ] P10-4 Gates + :3000 rebuild + chrome verify (desktop + 390px, 0 console errors) + commit.
+
 ## Out of theme scope (shared-track decisions needed)
 
 - Mega-menu in StoreHeader (masthead owns nav; themes can't touch it).
