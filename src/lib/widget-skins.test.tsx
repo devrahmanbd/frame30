@@ -390,3 +390,64 @@ describe("skin-stylesheet loading contract", () => {
     expect(css).not.toContain("editorial");
   });
 });
+
+describe("hero_carousel/banner skin (biba-style banner, spec 2026-10-01)", () => {
+  function bannerSection() {
+    const base = populated("hero_carousel");
+    return {
+      ...base,
+      props: {
+        ...base.props,
+        skin: "banner",
+        slides: [
+          ...HERO_SLIDES,
+          { ...HERO_SLIDES[0]!, headline: "Second drop" },
+        ],
+      },
+    };
+  }
+
+  it('resolveSkin passes "banner" through; global default stays "split"', () => {
+    expect(resolveSkin("hero_carousel", "banner")).toBe("banner");
+    expect(DEFAULT_WIDGET_SKIN.hero_carousel).toBe("split");
+    expect(WIDGET_SKINS.hero_carousel).toEqual([
+      "split",
+      "fullbleed",
+      "minimal",
+      "banner",
+    ]);
+  });
+
+  it("banner renders track, aspect classes, arrows, dots and no aurora", () => {
+    const html = render(WIDGET_COMPONENTS.hero_carousel, bannerSection());
+    expect(html).toContain("aspect-[4/5]");
+    expect(html).toContain("md:aspect-[2/1]");
+    expect(html).toContain("translateX(-0%)");
+    expect(html).toContain("Previous slide");
+    expect(html).toContain("Next slide");
+    expect(html).toContain('role="tablist"');
+    expect(html).toContain('role="tab"');
+    expect(html).toContain("bg-gradient-to-t");
+    expect(html).toContain("data-hero-headline");
+    expect(html).toContain("data-hero-cta");
+    expect(html).not.toContain("fq-theme-aurora");
+  });
+
+  it("banner hides controls for a single slide", () => {
+    const html = render(
+      WIDGET_COMPONENTS.hero_carousel,
+      withSkin(populated("hero_carousel"), "banner"),
+    );
+    expect(html).not.toContain('role="tablist"');
+    expect(html).not.toContain("Previous slide");
+  });
+
+  it("split keeps its wash; other skins keep no arrows", () => {
+    const split = render(
+      WIDGET_COMPONENTS.hero_carousel,
+      withSkin(populated("hero_carousel"), "split"),
+    );
+    expect(split).toContain("fq-theme-aurora");
+    expect(split).not.toContain("Previous slide");
+  });
+});

@@ -176,6 +176,84 @@ function HeroSlideControls({
 }
 
 /**
+ * `banner` hero controls (biba-style full-bleed banner skin only).
+ * Prev/next arrows pinned to the left/right edges + dot pagination.
+ * Dots sit bottom-right on mobile (clear of bottom-left copy on the 4:5
+ * crop) and bottom-center from md: up. 44px targets, bilingual labels,
+ * split-proven tablist/tab a11y pattern. Rendered only when slides > 1.
+ */
+function BannerControls({
+  count,
+  current,
+  goTo,
+  next,
+  prev,
+  prevLabel,
+  nextLabel,
+  locale,
+}: {
+  count: number;
+  current: number;
+  goTo: (i: number) => void;
+  next: () => void;
+  prev: () => void;
+  prevLabel: string;
+  nextLabel: string;
+  locale: string;
+}) {
+  return (
+    <>
+      <button
+        type="button"
+        onClick={prev}
+        aria-label={prevLabel}
+        className="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-[var(--theme-ink)]/45 text-[var(--theme-surface)] backdrop-blur transition-opacity hover:bg-[var(--theme-ink)]/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-surface)] focus-visible:ring-offset-2"
+      >
+        <span aria-hidden="true" className="text-lg leading-none">
+          ‹
+        </span>
+      </button>
+      <button
+        type="button"
+        onClick={next}
+        aria-label={nextLabel}
+        className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-[var(--theme-ink)]/45 text-[var(--theme-surface)] backdrop-blur transition-opacity hover:bg-[var(--theme-ink)]/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-surface)] focus-visible:ring-offset-2"
+      >
+        <span aria-hidden="true" className="text-lg leading-none">
+          ›
+        </span>
+      </button>
+      <div
+        role="tablist"
+        aria-label={t(locale, "Slides", "স্লাইড")}
+        className="absolute bottom-4 right-4 z-20 flex items-center gap-2 md:bottom-6 md:left-1/2 md:right-auto md:-translate-x-1/2"
+      >
+        {Array.from({ length: count }, (_, i) => (
+          <button
+            key={i}
+            type="button"
+            role="tab"
+            onClick={() => goTo(i)}
+            aria-selected={i === current}
+            aria-label={`${t(locale, "Slide", "স্লাইড")} ${i + 1} / ${count}`}
+            className="flex min-h-11 min-w-11 items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--theme-surface)] focus-visible:ring-offset-2"
+          >
+            <span
+              aria-hidden="true"
+              className={`block h-2 rounded-full transition-all duration-500 ease-out ${
+                i === current
+                  ? "w-8 bg-[var(--theme-surface)]"
+                  : "w-2 bg-[var(--theme-surface)]/45 hover:bg-[var(--theme-surface)]/75"
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/**
  * `fullbleed` + `minimal` hero skins. Same slide data, same carousel shell
  * (region, keyboard, touch, autoplay gate, live position, 44px CTA and
  * controls, bn/en copy) — only the composition forks. `split` keeps its
@@ -393,10 +471,11 @@ const HeroCarousel: WidgetComponent = ({
   }));
   const autoAdvanceMs = int("autoAdvanceMs", 5000, 1000, 15000);
   const atmosphere = str("atmosphere") || "wash";
-  // Widget skin (spec 2026-09-25): split (default, current asymmetric
-  // editorial grid), fullbleed (art-bleed overlay) and minimal (centred,
-  // quiet). Autoplay gates, keyboard, touch, live region, 44px targets and
-  // bn/en copy stay common — only presentation forks.
+  // Widget skin (spec 2026-09-25 + banner 2026-10-01): split (default,
+  // current asymmetric editorial grid), fullbleed (art-bleed overlay),
+  // minimal (centred, quiet) and banner (biba-style full-bleed track with
+  // arrows + dots). Autoplay gates, keyboard, touch, live region, 44px
+  // targets and bn/en copy stay common — only presentation forks.
   const skin = resolveSkin("hero_carousel", str("skin"));
   const reducedMotion = useCarouselReducedMotion();
   const [current, setCurrent] = useState(0);
@@ -418,6 +497,48 @@ const HeroCarousel: WidgetComponent = ({
   );
   const next = useCallback(() => goTo(current + 1), [current, goTo]);
   const prev = useCallback(() => goTo(current - 1), [current, goTo]);
+  // Banner-skin seamless wrap (biba-style): forward wrap travels through a
+  // trailing clone of slide 1, then snaps back to index 0 with the
+  // transition disabled. Reduced-motion always takes the plain modulo path.
+  // Backward wrap (prev from 0) is the plain modulo jump (acceptable
+  // fallback per the banner spec §8 — visually a single step back).
+  const [bannerClone, setBannerClone] = useState(false);
+  const [bannerStatic, setBannerStatic] = useState(false);
+  const snapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => {
+      if (snapTimer.current) clearTimeout(snapTimer.current);
+    };
+  }, []);
+  const bannerNext = useCallback(() => {
+    if (count <= 1) return;
+    if (reducedMotion || current < count - 1) {
+      setBannerClone(false);
+      goTo(current + 1);
+      return;
+    }
+    setBannerClone(true);
+    if (snapTimer.current) clearTimeout(snapTimer.current);
+    snapTimer.current = setTimeout(() => {
+      setBannerStatic(true);
+      setCurrent(0);
+      setBannerClone(false);
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => setBannerStatic(false)),
+      );
+    }, 550);
+  }, [count, current, goTo, reducedMotion]);
+  const bannerPrev = useCallback(() => {
+    setBannerClone(false);
+    prev();
+  }, [prev]);
+  const bannerGoTo = useCallback(
+    (i: number) => {
+      setBannerClone(false);
+      goTo(i);
+    },
+    [goTo],
+  );
 
   useEffect(() => {
     // Autoplay never arms under reduced motion; manual dots/arrows/swipe
@@ -457,18 +578,21 @@ const HeroCarousel: WidgetComponent = ({
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
       onKeyDown={(event) => {
+        const fwd = skin === "banner" ? bannerNext : next;
+        const back = skin === "banner" ? bannerPrev : prev;
+        const goto = skin === "banner" ? bannerGoTo : goTo;
         if (event.key === "ArrowRight") {
           event.preventDefault();
-          next();
+          fwd();
         } else if (event.key === "ArrowLeft") {
           event.preventDefault();
-          prev();
+          back();
         } else if (event.key === "Home") {
           event.preventDefault();
-          goTo(0);
+          goto(0);
         } else if (event.key === "End") {
           event.preventDefault();
-          goTo(count - 1);
+          goto(count - 1);
         }
       }}
       onTouchStart={(event) => {
@@ -481,8 +605,8 @@ const HeroCarousel: WidgetComponent = ({
         const end = event.changedTouches[0]?.clientX ?? start;
         const delta = end - start;
         if (Math.abs(delta) < 40) return;
-        if (delta < 0) next();
-        else prev();
+        if (delta < 0) (skin === "banner" ? bannerNext : next)();
+        else (skin === "banner" ? bannerPrev : prev)();
       }}
       className={`relative overflow-hidden bg-background ${skin === "fullbleed" ? "-mt-[68px]" : ""}`}
     >
@@ -495,7 +619,105 @@ const HeroCarousel: WidgetComponent = ({
       <p className="sr-only" role="status">
         {t(locale, "Slide", "স্লাইড")} {current + 1} / {count}
       </p>
-      {skin !== "split" ? (
+      {skin === "banner" ? (
+        <div className="relative w-full overflow-hidden aspect-[4/5] md:aspect-[2/1] bg-background">
+          <div
+            className={`flex h-full w-full ${reducedMotion || bannerStatic ? "" : "transition-transform duration-500 ease-out"}`}
+            style={{
+              transform: `translateX(-${(bannerClone ? count : current) * 100}%)`,
+            }}
+          >
+            {(count > 1 ? [...slides, slides[0]!] : slides).map((s, i) => {
+              const logical = i % count;
+              const first = i === 0;
+              const art =
+                s.image && !s.image.startsWith("/api/public/ph/") ? (
+                  <img
+                    src={s.image}
+                    alt={s.headline}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loading={first ? "eager" : "lazy"}
+                    fetchPriority={first ? "high" : "auto"}
+                    decoding="async"
+                  />
+                ) : (
+                  <WeaveMotif
+                    seed={s.headline || "heritage"}
+                    className="absolute inset-0 h-full w-full text-primary"
+                  />
+                );
+              return (
+                <div
+                  key={i}
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={`${t(locale, "Slide", "স্লাইড")} ${logical + 1} / ${count}`}
+                  aria-hidden={i !== (bannerClone ? count : current)}
+                  className="relative h-full w-full shrink-0"
+                >
+                  <div data-hero-art className="absolute inset-0">
+                    {art}
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/70 via-[var(--theme-ink)]/25 to-transparent"
+                  />
+                  <div className="absolute bottom-0 left-0 z-10 w-full max-w-xl p-6 pb-16 md:p-10 md:pb-20">
+                    {s.caption && (
+                      <p
+                        data-hero-eyebrow
+                        data-part="caption"
+                        className="text-xs font-semibold tracking-widest text-[var(--theme-surface)]/80 fq-caps"
+                      >
+                        {locale === "bn" && s.captionBn ? s.captionBn : s.caption}
+                      </p>
+                    )}
+                    <Heading
+                      data-hero-headline
+                      {...(locale === "bn" && s.headlineBn ? { lang: "bn" } : {})}
+                      className="mt-2 min-w-0 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-[var(--theme-surface)] break-words sm:text-5xl"
+                    >
+                      {locale === "bn" && s.headlineBn ? s.headlineBn : s.headline}
+                    </Heading>
+                    {s.subhead && (
+                      <p
+                        data-hero-sub
+                        className="mt-3 max-w-lg text-base leading-relaxed text-[var(--theme-surface)]/85"
+                      >
+                        {locale === "bn" && s.subheadBn ? s.subheadBn : s.subhead}
+                      </p>
+                    )}
+                    {s.ctaLabel && (
+                      <div data-hero-cta className="mt-6 flex flex-wrap gap-3">
+                        <a
+                          href={s.ctaUrl || "#"}
+                          className="inline-flex min-h-12 items-center whitespace-nowrap bg-foreground px-8 text-[11px] font-bold fq-caps tracking-widest text-background transition-transform hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                        >
+                          {locale === "bn" && s.ctaLabelBn
+                            ? s.ctaLabelBn
+                            : s.ctaLabel}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {count > 1 && (
+            <BannerControls
+              count={count}
+              current={current}
+              goTo={bannerGoTo}
+              next={bannerNext}
+              prev={bannerPrev}
+              prevLabel={prevLabel}
+              nextLabel={nextLabel}
+              locale={locale}
+            />
+          )}
+        </div>
+      ) : skin !== "split" ? (
         <HeroSkinSlide
           skin={skin}
           slide={slide}

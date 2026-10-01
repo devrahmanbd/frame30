@@ -152,6 +152,41 @@ describe("heritage contract dual-read", () => {
     expect(html).not.toContain("fq-heritage-aurora");
   });
 
+  it("hero_carousel banner renders scrim + overlay parts, no wash", () => {
+    const base = newSection("hero_carousel");
+    const section = {
+      ...base,
+      props: {
+        ...base.props,
+        skin: "banner",
+        slides: [
+          {
+            headline: "Festive Drop",
+            subhead: "Cotton sarees.",
+            ctaLabel: "Shop festive",
+            ctaUrl: "/c/festive",
+            caption: "New season",
+          },
+          { headline: "Second drop" },
+        ],
+      },
+    };
+    const Cmp = HERITAGE_WIDGETS["hero_carousel"];
+    const html = renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        ctxFor(section),
+      ),
+    );
+    expect(html).toContain("bg-gradient-to-t");
+    expect(html).toContain("data-hero-eyebrow");
+    expect(html).toContain("data-hero-headline");
+    expect(html).toContain("data-hero-sub");
+    expect(html).toContain("data-hero-cta");
+    expect(html).toContain("translateX(-0%)");
+    expect(html).not.toContain("fq-theme-aurora");
+  });
+
   it("editorial_banner applies glass surface when surface is glass", () => {
     const base = newSection("editorial_banner");
     const section = {

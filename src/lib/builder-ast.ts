@@ -597,7 +597,7 @@ const CARD_VARIANT: Field = {
  */
 export const WIDGET_SKINS = {
   product_rail: ["editorial", "compact", "minimal"],
-  hero_carousel: ["split", "fullbleed", "minimal"],
+  hero_carousel: ["split", "fullbleed", "minimal", "banner"],
   // NB: carousel first — the first option is the documented default
   // (ATMOSPHERE precedent) and carousel preserves current behaviour.
   testimonials: ["carousel", "wall", "single"],

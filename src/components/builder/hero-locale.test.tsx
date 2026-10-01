@@ -91,4 +91,30 @@ describe("hero_carousel locale gating", () => {
     expect(html).toContain(">Shop festive<");
     expect(html).toContain(">Festive drop<");
   });
+
+  it("banner branch gates bn/en per slide (all slides in the DOM)", () => {
+    const base = newSection("hero_carousel");
+    const section = {
+      ...base,
+      props: { ...base.props, skin: "banner", slides: [SLIDE] },
+    };
+    const Cmp = HERITAGE_WIDGETS["hero_carousel"];
+    const bn = renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        ctxForLocale(section, "bn"),
+      ),
+    );
+    expect(bn).toContain("উৎসবের পোশাক");
+    expect(bn).toContain("উৎসবের কেনাকাটা");
+    expect(bn).not.toContain(">Festive wear, ready to ship<");
+    const en = renderToStaticMarkup(
+      createElement(
+        Cmp as (p: WidgetCtx) => React.ReactElement,
+        ctxForLocale(section, "en"),
+      ),
+    );
+    expect(en).toContain("Festive wear, ready to ship");
+    expect(en).toContain(">Shop festive<");
+  });
 });
