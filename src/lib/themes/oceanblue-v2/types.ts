@@ -32,5 +32,4 @@ export const HOMEPAGE_V2_SECTION_TYPES = [
   "payment_icons",
 ] as const;
 
-export type IntendedHomepageV2Type =
-  (typeof HOMEPAGE_V2_SECTION_TYPES)[number];
+export type IntendedHomepageV2Type = (typeof HOMEPAGE_V2_SECTION_TYPES)[number];

@@ -167,7 +167,13 @@ describe("heritage contract dual-read", () => {
             ctaUrl: "/c/festive",
             caption: "New season",
           },
-          { headline: "Second drop" },
+          {
+            headline: "Second drop",
+            subhead: "",
+            ctaLabel: "",
+            ctaUrl: "",
+            caption: "",
+          },
         ],
       },
     };

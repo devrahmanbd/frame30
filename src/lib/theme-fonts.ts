@@ -61,6 +61,22 @@ export const FONT_FAMILIES: Record<string, FontFamilyMeta> = {
     fallback: "Playfair Display Fallback",
     generic: "serif",
   },
+  // Oceanblue-v2 studied-DNA pairing (spec 2026-10-02 §2): editorial serif
+  // display + grotesque body. Latin-only like Playfair — বাংলা cover comes
+  // from the resolved stack's SCRIPT_DEFAULT (Noto Sans Bengali, loaded by
+  // the global sheet), never from these faces.
+  "Crimson Pro": {
+    scripts: ["latin"],
+    weights: [400, 500, 600, 700],
+    fallback: "Crimson Pro Fallback",
+    generic: "serif",
+  },
+  "Work Sans": {
+    scripts: ["latin"],
+    weights: [400, 500, 600, 700],
+    fallback: "Work Sans Fallback",
+    generic: "sans-serif",
+  },
 };
 
 /** Every family a script can fall back to when the primary does not cover it. */

@@ -184,9 +184,7 @@ describe("oceanblue-v2 secondary templates", () => {
 
   it("keeps the sticky buy bar PDP-only", () => {
     const product = buildSecondaryMain(stub, "product");
-    expect(
-      product.filter((s) => s.type === "sticky_buy_bar"),
-    ).toHaveLength(1);
+    expect(product.filter((s) => s.type === "sticky_buy_bar")).toHaveLength(1);
     for (const kind of KINDS.filter((k) => k !== "product")) {
       expect(
         buildSecondaryMain(stub, kind).filter(

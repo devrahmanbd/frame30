@@ -21,8 +21,16 @@ export const OCEANBLUE_V2_MEGA_MENU = [
         label: "Category",
         url: "/c/salwar-kameez",
         children: [
-          { id: "sk-straight", label: "Straight Sets", url: "/c/straight-sets" },
-          { id: "sk-anarkali", label: "Anarkali Sets", url: "/c/anarkali-sets" },
+          {
+            id: "sk-straight",
+            label: "Straight Sets",
+            url: "/c/straight-sets",
+          },
+          {
+            id: "sk-anarkali",
+            label: "Anarkali Sets",
+            url: "/c/anarkali-sets",
+          },
           { id: "sk-flared", label: "Flared Sets", url: "/c/flared-sets" },
           { id: "sk-fusion", label: "Fusion Sets", url: "/c/fusion-sets" },
           {
@@ -145,7 +153,11 @@ export const OCEANBLUE_V2_MEGA_MENU = [
         children: [
           { id: "gr-suits", label: "Suit Sets", url: "/c/girls-suits" },
           { id: "gr-tops", label: "Tops & Tunics", url: "/c/girls-tops" },
-          { id: "gr-frocks", label: "Frocks & Dresses", url: "/c/girls-frocks" },
+          {
+            id: "gr-frocks",
+            label: "Frocks & Dresses",
+            url: "/c/girls-frocks",
+          },
           { id: "gr-lehenga", label: "Lehenga Sets", url: "/c/girls-lehenga" },
         ],
       },

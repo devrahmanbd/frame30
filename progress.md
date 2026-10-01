@@ -176,9 +176,24 @@ live eyeball (desktop + 390px mobile) + mobile viewport pass.
 
 - [x] P10-0 Spec written + self-reviewed + committed (this file updated).
 - [x] P10-1 writing-plans implementation plan (`docs/superpowers/plans/2026-10-02-oceanblue-v2.md`, self-reviewed, committed).
-- [ ] P10-2 Scaffold: tokens/skins/homepage/secondary/header/footer/preset/preview.
-- [ ] P10-3 Wiring: preview-sources, theme-chrome, catalog-meta, nav resolve, registry migration.
-- [ ] P10-4 Gates + :3000 rebuild + chrome verify (desktop + 390px, 0 console errors) + commit.
+- [x] P10-2 Scaffold: tokens/skins/homepage/secondary/header/footer/preset/preview
+      (ef210bc, a7c510f, dfa5b91, a022de8, b8c06b0, 44c665d).
+- [x] P10-3 Wiring: preview-sources, theme-chrome, catalog-meta, nav resolve,
+      registry migration (44c665d) + banner skin append (cbf2581).
+- [x] P10-4 Gates + :3000 rebuild + chrome verify (desktop + 390px, 0 console
+      errors) + commit — see closeout below.
+
+## Phase 10 closeout (2026-10-02, Task 8 verification)
+
+- typecheck clean; unit 4881 passed/2 skipped (377 files, +47 vs P9-3);
+  contracts 258 green.
+- eslint: v2 dir + touched shared files 0 errors (23 prettier auto-fixed via
+  --fix; 12 react-refresh warnings informational, same family as siblings).
+  Repo-wide 846 errors/251 warnings pre-existing — net delta not claimed.
+- Local :3000 rebuilt + restarted: /theme-preview/oceanblue-v2 → 200.
+- Fresh-browser DOM: 50 ethnic hits / 8 families, BDT prices, grocery null,
+  newsletter ×1, 156 links 0 dead, 4 banner dots + seamless-wrap clone,
+  0 console errors; 390px no-overflow, hero visible.
 
 ## Out of theme scope (shared-track decisions needed)
 

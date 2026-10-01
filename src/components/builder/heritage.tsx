@@ -669,22 +669,30 @@ const HeroCarousel: WidgetComponent = ({
                         data-part="caption"
                         className="text-xs font-semibold tracking-widest text-[var(--theme-surface)]/80 fq-caps"
                       >
-                        {locale === "bn" && s.captionBn ? s.captionBn : s.caption}
+                        {locale === "bn" && s.captionBn
+                          ? s.captionBn
+                          : s.caption}
                       </p>
                     )}
                     <Heading
                       data-hero-headline
-                      {...(locale === "bn" && s.headlineBn ? { lang: "bn" } : {})}
+                      {...(locale === "bn" && s.headlineBn
+                        ? { lang: "bn" }
+                        : {})}
                       className="mt-2 min-w-0 font-bangla-display text-3xl font-bold leading-[1.1] tracking-tight text-[var(--theme-surface)] break-words sm:text-5xl"
                     >
-                      {locale === "bn" && s.headlineBn ? s.headlineBn : s.headline}
+                      {locale === "bn" && s.headlineBn
+                        ? s.headlineBn
+                        : s.headline}
                     </Heading>
                     {s.subhead && (
                       <p
                         data-hero-sub
                         className="mt-3 max-w-lg text-base leading-relaxed text-[var(--theme-surface)]/85"
                       >
-                        {locale === "bn" && s.subheadBn ? s.subheadBn : s.subhead}
+                        {locale === "bn" && s.subheadBn
+                          ? s.subheadBn
+                          : s.subhead}
                       </p>
                     )}
                     {s.ctaLabel && (

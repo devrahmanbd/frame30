@@ -110,8 +110,7 @@ export function withOceanblueV2Defaults(s: SectionBuilder): SectionBuilder {
     props: Record<string, PropValue> = {},
   ): Section => {
     const defaults = OCEANBLUE_V2_WIDGET_DEFAULTS[type] as
-      | Record<string, PropValue>
-      | undefined;
+      Record<string, PropValue> | undefined;
     if (!defaults) return s(type, props);
     return s(type, { ...defaults, ...stripUndefined(props) });
   };

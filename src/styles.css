@@ -163,6 +163,27 @@
   line-gap-override: 0%;
 }
 
+/* Oceanblue-v2 studied-DNA pairing (spec 2026-10-02 §2) — same contract as
+   every catalogue family above: a metric-matched local fallback so the
+   pre-swap box matches and the swap costs no shift. */
+@font-face {
+  font-family: "Crimson Pro Fallback";
+  src: local("Georgia"), local("Times New Roman"), local("Liberation Serif");
+  size-adjust: 108%;
+  ascent-override: 94%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: "Work Sans Fallback";
+  src: local("Helvetica Neue"), local("Arial"), local("Liberation Sans");
+  size-adjust: 103%;
+  ascent-override: 94%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
 /*
  * Phase 10.6 — the marketing surface needed the same treatment, and not having
  * it was the single biggest source of layout shift on the public pages.

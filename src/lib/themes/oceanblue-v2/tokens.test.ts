@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { fontStylesheetUrl } from "../../theme-fonts";
 import { OCEANBLUE_V2_TOKENS } from "./tokens";
 import { HOMEPAGE_V2_SECTION_TYPES } from "./types";
 
@@ -14,5 +15,11 @@ describe("oceanblue-v2 tokens", () => {
   it("declares 14 homepage sections starting with the hero", () => {
     expect(HOMEPAGE_V2_SECTION_TYPES).toHaveLength(14);
     expect(HOMEPAGE_V2_SECTION_TYPES[0]).toBe("hero_carousel");
+  });
+  it("loads both studied-DNA faces (never an empty-family sheet)", () => {
+    const url = fontStylesheetUrl(OCEANBLUE_V2_TOKENS);
+    expect(url).toContain("family=Crimson+Pro");
+    expect(url).toContain("family=Work+Sans");
+    expect(url).not.toContain("css2?&");
   });
 });

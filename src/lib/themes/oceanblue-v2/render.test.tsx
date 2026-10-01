@@ -58,13 +58,19 @@ function render(section: Section, locale: Locale): string {
       ctxFor(section, locale),
     ),
   );
-  expect(html.trim().length, `${section.type} must render markup`).toBeGreaterThan(0);
+  expect(
+    html.trim().length,
+    `${section.type} must render markup`,
+  ).toBeGreaterThan(0);
   return html;
 }
 
 describe("oceanblue-v2 SSR render", () => {
   it("renders every homepage + footer section in EN and BN", () => {
-    const sections = [...buildHomepageMain(s as never), ...buildFooterMain(s as never)];
+    const sections = [
+      ...buildHomepageMain(s as never),
+      ...buildFooterMain(s as never),
+    ];
     expect(sections.length).toBeGreaterThan(0);
     for (const section of sections) {
       for (const locale of ["en", "bn"] as const) {
