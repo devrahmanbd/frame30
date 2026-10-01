@@ -416,6 +416,56 @@ describe("oceanblue has no topbar band", () => {
   });
 });
 
+describe("nav fits the masthead — breakpoint + no-clip guard", () => {
+  // Regression: the desktop nav column rendered from md (768px) inside a
+  // fixed h-[72px] bar, but the 8-item menu needs 751px of single-line
+  // width — so the flex-wrap ul spilled to 2 rows, row 1 clipped above the
+  // viewport and row 2 hung below the masthead. The nav column must stay
+  // hidden until the row provably fits (1300px ⇒ 824px of center width),
+  // and the bar must grow instead of clip if a wide dashboard menu ever
+  // overflows anyway.
+  it("desktop nav column only renders from min-[1300px] (never from md)", () => {
+    const html = renderHeader({ slug: "oceanblue", themeKey: "oceanblue" });
+    expect(html).toContain("hidden min-[1300px]:flex flex-1 min-w-0");
+    expect(html).not.toContain("hidden md:flex");
+  });
+
+  it("burger menu replaces the desktop nav below 1300px", () => {
+    const html = renderHeader({ slug: "oceanblue", themeKey: "oceanblue" });
+    expect(html).toContain("min-[1300px]:hidden -ml-2");
+    expect(html).not.toContain("md:hidden -ml-2");
+  });
+
+  it("mobile slide-in panel stays reachable up to 1300px", () => {
+    const src = HEADER_SRC();
+    expect(src).toContain("min-[1300px]:hidden overflow-y-auto max-h-");
+    expect(src).not.toContain(
+      'className="border-t border-[#eaeaea] bg-[#FAF9F7] md:hidden',
+    );
+  });
+
+  it("nav row keeps compact gaps until the bar can afford the wide gaps", () => {
+    const html = renderHeader({ slug: "oceanblue", themeKey: "oceanblue" });
+    expect(html).toContain("gap-x-4 min-[1500px]:gap-x-9");
+    expect(html).not.toContain("lg:gap-x-9");
+  });
+
+  it("masthead bar grows (min-h) instead of clipping an overflow row", () => {
+    const html = renderHeader({ slug: "oceanblue", themeKey: "oceanblue" });
+    // Unscrolled state renders inline; the scrolled state lives in the source.
+    expect(html).toContain("min-h-[72px]");
+    const src = HEADER_SRC();
+    expect(src).toContain('scrolled ? "min-h-[64px]" : "min-h-[72px]"');
+    expect(src).not.toContain('scrolled ? "h-[64px]" : "h-[72px]"');
+  });
+
+  it("mobile panel offset tracks the band: 72px with no band, 108px with a band", () => {
+    const src = HEADER_SRC();
+    expect(src).toContain('scrolled ? "64px" : showBand ? "108px" : "72px"');
+    expect(src).not.toContain('scrolled ? "64px" : "108px"');
+  });
+});
+
 describe("themeChromeFor identity edge — key-driven, never slug or name", () => {
   it("key match wins regardless of slug or display name", () => {
     expect(themeChromeFor("songoskriti")).not.toBeNull();

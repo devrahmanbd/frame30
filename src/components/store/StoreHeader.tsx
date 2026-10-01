@@ -207,7 +207,7 @@ export function StoreHeader({
 
       {/* ── Main bar ── */}
       <div
-        className={`relative mx-auto flex transition-all duration-250 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 ${scrolled ? "h-[64px]" : "h-[72px]"}`}
+        className={`relative mx-auto flex transition-all duration-250 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 ${scrolled ? "min-h-[64px]" : "min-h-[72px]"}`}
       >
         {/* ── LEFT: Logo + Mobile Hamburger ── */}
         <div className="flex items-center gap-4 shrink-0">
@@ -222,7 +222,7 @@ export function StoreHeader({
                   : t("Open menu", "মেনু খুলুন")
               }
               onClick={() => setMobileOpen((open) => !open)}
-              className={`${iconLinkCls} md:hidden -ml-2`}
+              className={`${iconLinkCls} min-[1300px]:hidden -ml-2`}
             >
               {mobileOpen ? (
                 <X className="size-[22px]" strokeWidth={1} aria-hidden />
@@ -250,10 +250,10 @@ export function StoreHeader({
         </div>
 
         {/* ── CENTER: Desktop Navigation ── */}
-        <div className="hidden md:flex flex-1 min-w-0 justify-center pointer-events-auto">
+        <div className="hidden min-[1300px]:flex flex-1 min-w-0 justify-center pointer-events-auto">
           {headerMenu.length > 0 && (
             <nav aria-label={t("Store menu", "স্টোর মেনু")} className="h-full">
-              <ul className="flex items-center justify-center flex-wrap gap-x-4 lg:gap-x-9 gap-y-1">
+              <ul className="flex items-center justify-center flex-wrap gap-x-4 min-[1500px]:gap-x-9 gap-y-1">
                 {headerMenu.map((node) => (
                   <li
                     key={node.id}
@@ -481,8 +481,8 @@ export function StoreHeader({
         <nav
           id="store-mobile-menu"
           aria-label={t("Store menu", "স্টোর মেনু")}
-          className="border-t border-[#eaeaea] bg-[#FAF9F7] md:hidden overflow-y-auto max-h-[calc(100vh-[64px])] fixed left-0 w-full z-40 bottom-0"
-          style={{ top: scrolled ? "64px" : "108px" }}
+          className="border-t border-[#eaeaea] bg-[#FAF9F7] min-[1300px]:hidden overflow-y-auto max-h-[calc(100vh-[64px])] fixed left-0 w-full z-40 bottom-0"
+          style={{ top: scrolled ? "64px" : showBand ? "108px" : "72px" }}
         >
           <ul className="px-4 py-2 pb-24">
             {mobileMenu.map((node: any) => (
