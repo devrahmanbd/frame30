@@ -15,7 +15,7 @@ function slugs(cat: DemoCatalog) {
 }
 
 describe("per-vertical demo catalogues", () => {
-  it("ships the seven vertical catalogues", () => {
+  it("ships the eight vertical catalogues", () => {
     expect(keys.sort()).toEqual(
       [
         "apparel",
@@ -24,6 +24,7 @@ describe("per-vertical demo catalogues", () => {
         "general",
         "handloom",
         "marketplace",
+        "oceanblue",
         "songoskriti",
       ].sort(),
     );
@@ -83,9 +84,47 @@ describe("per-vertical demo catalogues", () => {
     expect(text("beauty")).toMatch(/Step \d|shade/i);
     expect(text("handloom")).toMatch(/handloom|jamdani|silk|taant|khadi/i);
     expect(text("songoskriti")).toMatch(/jamdani|panjabi|kantha|handloom/i);
+    expect(text("oceanblue")).toMatch(/salwar|kameez|kurti|jamdani|khadi/i);
     expect(text("general")).toMatch(/fresh|organic|rice|kg|harvest|farm/i);
     expect(DEMO_CATALOGS.marketplace.categories.length).toBeGreaterThanOrEqual(
       3,
     );
+  });
+});
+
+describe("oceanblue demo catalogue", () => {
+  const ob = DEMO_CATALOGS.oceanblue;
+
+  it("covers the eight circle-tile departments with fifty-plus products", () => {
+    expect(ob.categories.map((c) => c.slug).sort()).toEqual(
+      [
+        "bottoms",
+        "collections",
+        "dresses",
+        "girls",
+        "jewellery",
+        "kurtas-tops",
+        "salwar-kameez",
+        "sale",
+      ].sort(),
+    );
+    expect(ob.products.length).toBeGreaterThanOrEqual(50);
+  });
+
+  it("backs the preview data sources and keeps prices whole-taka BDT", () => {
+    for (const slug of ["new-in", "festive"]) {
+      expect(ob.products.some((p) => p.collections.includes(slug))).toBe(true);
+    }
+    for (const p of ob.products) {
+      for (const v of p.variants) expect(v.price % 100).toBe(0);
+      if (p.image_url !== undefined)
+        expect(p.image_url.startsWith("/")).toBe(true);
+    }
+  });
+
+  it("shows no grocery residue from the marketplace fallback", () => {
+    const text = JSON.stringify(ob);
+    expect(text).not.toMatch(/cookware|basmati|earbuds|\bfan\b/i);
+    expect(text).toMatch(/salwar|kameez|jamdani|khadi|kurti/i);
   });
 });

@@ -138,8 +138,17 @@ live eyeball (desktop + 390px mobile) + mobile viewport pass.
       7814 = 9 footers × newsletter block). Gates: typecheck, 4830 tests,
       258 contracts, eslint touched files 0/0. Live: heading+form+email input
       1 in <main>, 0 in contentinfo, no console errors.
-- [ ] P9-3 Preview rails show grocery/electronics (cookware, basmati, earbuds,
+- [x] P9-3 Preview rails show grocery/electronics (cookware, basmati, earbuds,
       fan) → oceanblue ethnic demo catalog (BDT minor units, marked demo).
+      New `OCEANBLUE` const in demo-catalog.ts (52 products / 8 categories
+      mirroring circle tiles / 8 collections, SKUs OB-*, whole-taka poisha,
+      no image_url → dept-tinted monograms, registered as 8th DEMO_CATALOGS
+      key). phase4 test: eight keys + oceanblue domain regex + dedicated
+      describe (tiles, ≥50 products, new-in/festive backed, %100 prices, no
+      grocery residue). Gates: typecheck, 4834 tests (+4), 258 contracts,
+      eslint touched 0/0, repo 824→823 (splice removed stray prettier blank).
+      Live local: ethnic titles, ৳ prices, /api/public/ph monograms, zero
+      grocery hits, 0 console errors.
 - [ ] P9-4 Banner hero skin (spec docs/superpowers/specs/2026-10-01-*.md,
       commit da18691) — biba-style full-bleed image+overlay hero.
 - [ ] P9-5 Honest copy: footer helpline + care@oceanblue.example are

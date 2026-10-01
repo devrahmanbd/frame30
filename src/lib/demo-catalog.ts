@@ -2883,6 +2883,1056 @@ const SONGOSKRITI: DemoCatalog = {
   ],
 };
 
+/**
+ * OCEANBLUE demo catalogue — MARKED DEMO data for the oceanblue theme
+ * preview and the merchant-less storefront fallback. Prices are BDT minor
+ * units (poisha; 249900 = BDT 2,499). Products carry no image_url so the
+ * preview renders deterministic department-tinted monogram SVGs via
+ * /api/public/ph/<dept>/<slug>.svg. The eight categories mirror the
+ * homepage circle-category tiles 1:1 so every /c/<slug> link resolves to
+ * a real category page. Original copy, no third-party brand text, no
+ * merchant telemetry, no remote URLs.
+ */
+const OCEANBLUE: DemoCatalog = {
+  categories: [
+    {
+      slug: "salwar-kameez",
+      name: "Salwar Kameez",
+      description:
+        "Two- and three-piece sets in cotton, khadi and festive silk blends.",
+    },
+    {
+      slug: "kurtas-tops",
+      name: "Kurtas & Tops",
+      description:
+        "Straight kurtis, shirt kurtas and easy tops for work and weekends.",
+    },
+    {
+      slug: "dresses",
+      name: "Dresses",
+      description:
+        "Handloom and cotton dresses cut for warm days and long evenings.",
+    },
+    {
+      slug: "bottoms",
+      name: "Bottoms",
+      description:
+        "Palazzos, churidars and trousers that pair with every kurta.",
+    },
+    {
+      slug: "girls",
+      name: "Girls",
+      description: "Festive frocks and everyday sets sized for growing years.",
+    },
+    {
+      slug: "jewellery",
+      name: "Jewellery",
+      description:
+        "Brass, silver and mirror work from small-scale artisan workshops.",
+    },
+    {
+      slug: "collections",
+      name: "Collections",
+      description:
+        "Season capsules: festive, wedding and Eid edits in one place.",
+    },
+    {
+      slug: "sale",
+      name: "Sale",
+      description: "Past-season pieces at honest markdowns, same stitching.",
+    },
+  ],
+  collections: [
+    {
+      slug: "new-in",
+      name: "New In",
+      description: "Fresh drops from the current month's studio run.",
+    },
+    {
+      slug: "festive",
+      name: "Festive Edit",
+      description:
+        "Celebration-weight pieces for pujas, parties and family functions.",
+    },
+    {
+      slug: "bestsellers",
+      name: "Most Loved",
+      description: "The pieces customers reorder across seasons.",
+    },
+    {
+      slug: "office-edit",
+      name: "Office Edit",
+      description: "Structured cotton for desk days and commutes.",
+    },
+    {
+      slug: "wedding",
+      name: "Wedding Season",
+      description: "Guest and ceremony dressing from jamdani to sharara.",
+    },
+    {
+      slug: "eid",
+      name: "Eid Mornings",
+      description: "Light silk-blends and pastels for prayer and visits.",
+    },
+    {
+      slug: "kids",
+      name: "Girls Edit",
+      description:
+        "Playground-tough cotton and festive sets for growing years.",
+    },
+    {
+      slug: "sale-picks",
+      name: "Sale Picks",
+      description: "Past-season colours at honest markdowns.",
+    },
+  ],
+  products: [
+    {
+      slug: "tangail-cotton-salwar-kameez",
+      title: "Tangail Cotton Salwar Kameez",
+      description:
+        "Three-piece salwar kameez in fine Tangail cotton with a woven contrast border. Breathable through humid days, shirt cut runs true to size.",
+      category: "salwar-kameez",
+      collections: ["new-in", "bestsellers"],
+      tags: ["salwar-kameez", "cotton", "tangail"],
+      variants: [
+        {
+          name: "Indigo",
+          sku: "OB-SWK-01",
+          price: 249900,
+          compare_at: 299900,
+          stock: 24,
+        },
+        {
+          name: "Ecru",
+          sku: "OB-SWK-01B",
+          price: 249900,
+          stock: 18,
+        },
+      ],
+    },
+    {
+      slug: "jamdani-buti-salwar-suit",
+      title: "Jamdani Buti Salwar Suit",
+      description:
+        "Jamdani buti motifs hand-drawn on a jacquard loom base — festive weight without the stiffness. The kameez arrives fully lined.",
+      category: "salwar-kameez",
+      collections: ["festive", "bestsellers"],
+      tags: ["salwar-kameez", "jamdani", "festive"],
+      variants: [
+        {
+          name: "Ecru",
+          sku: "OB-SWK-02",
+          price: 499900,
+          stock: 9,
+        },
+        {
+          name: "Navy",
+          sku: "OB-SWK-02B",
+          price: 499900,
+          stock: 7,
+        },
+      ],
+    },
+    {
+      slug: "khadi-pocket-salwar-set",
+      title: "Khadi Pocket Salwar Set",
+      description:
+        "Spun khadi cotton with patch pockets and an easy straight cut. Softens wash after wash and reads office-appropriate from day one.",
+      category: "salwar-kameez",
+      collections: ["office-edit", "new-in"],
+      tags: ["salwar-kameez", "khadi", "office"],
+      variants: [
+        {
+          name: "Sand",
+          sku: "OB-SWK-03",
+          price: 199900,
+          stock: 30,
+        },
+      ],
+    },
+    {
+      slug: "threadwork-party-salwar-kameez",
+      title: "Threadwork Party Salwar Kameez",
+      description:
+        "Resham threadwork along the neckline and cuffs with a matte finish — party dressing that still moves. Ships with a matching churidar.",
+      category: "salwar-kameez",
+      collections: ["festive", "wedding"],
+      tags: ["salwar-kameez", "threadwork", "festive"],
+      variants: [
+        {
+          name: "Maroon",
+          sku: "OB-SWK-04",
+          price: 349900,
+          compare_at: 399900,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "alpona-print-salwar-set",
+      title: "Alpona Print Salwar Set",
+      description:
+        "Alpona folk-motif screen print on soft cotton. Two colourways, half sleeves and side slits for all-day comfort.",
+      category: "salwar-kameez",
+      collections: ["office-edit"],
+      tags: ["salwar-kameez", "print", "cotton"],
+      variants: [
+        {
+          name: "Sky",
+          sku: "OB-SWK-05",
+          price: 179900,
+          stock: 22,
+        },
+        {
+          name: "Olive",
+          sku: "OB-SWK-05B",
+          price: 179900,
+          stock: 15,
+        },
+      ],
+    },
+    {
+      slug: "monsoon-linen-salwar-kameez",
+      title: "Monsoon Linen Salwar Kameez",
+      description:
+        "Linen-blend kameez cut for monsoon humidity — quick-dry, crease-forgiving and ankle-length with side vents.",
+      category: "salwar-kameez",
+      collections: ["new-in"],
+      tags: ["salwar-kameez", "linen", "monsoon"],
+      variants: [
+        {
+          name: "Teal",
+          sku: "OB-SWK-06",
+          price: 279900,
+          stock: 16,
+        },
+      ],
+    },
+    {
+      slug: "gota-eid-salwar-suit",
+      title: "Gota Eid Salwar Suit",
+      description:
+        "Gota patti trim on a silk-blend suit for Eid mornings. Includes a soft dupatta and runs relaxed through the shoulders.",
+      category: "salwar-kameez",
+      collections: ["eid", "festive"],
+      tags: ["salwar-kameez", "gota", "eid"],
+      variants: [
+        {
+          name: "Rose",
+          sku: "OB-SWK-07",
+          price: 399900,
+          compare_at: 449900,
+          stock: 11,
+        },
+      ],
+    },
+    {
+      slug: "straight-office-salwar-set",
+      title: "Straight Office Salwar Set",
+      description:
+        "Sharp straight salwar set in structured cotton for desk days. Minimal placket, no-fuss collar and full-length sleeves.",
+      category: "salwar-kameez",
+      collections: ["office-edit", "bestsellers"],
+      tags: ["salwar-kameez", "office", "cotton"],
+      variants: [
+        {
+          name: "Charcoal",
+          sku: "OB-SWK-08",
+          price: 229900,
+          stock: 26,
+        },
+      ],
+    },
+    {
+      slug: "tangail-taant-straight-kurti",
+      title: "Tangail Taant Straight Kurti",
+      description:
+        "Taant-loom straight kurti with a contrast placket — the Tangail summer staple woven in indigo. Pairs with a palazzo or jeans.",
+      category: "kurtas-tops",
+      collections: ["new-in", "bestsellers"],
+      tags: ["kurti", "taant", "handloom"],
+      variants: [
+        {
+          name: "Indigo",
+          sku: "OB-KRT-01",
+          price: 169900,
+          stock: 28,
+        },
+        {
+          name: "Rust",
+          sku: "OB-KRT-01B",
+          price: 169900,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "ecru-blockprint-cotton-kurta",
+      title: "Ecru Blockprint Cotton Kurta",
+      description:
+        "Hand-blockprinted cotton kurta in ecru with a wooden-button placket. Unisex straight cut that washes soft and keeps its shape.",
+      category: "kurtas-tops",
+      collections: ["office-edit"],
+      tags: ["kurta", "blockprint", "unisex"],
+      variants: [
+        {
+          name: "Ecru",
+          sku: "OB-KRT-02",
+          price: 219900,
+          stock: 20,
+        },
+      ],
+    },
+    {
+      slug: "chikankari-embroidered-kurti",
+      title: "Chikankari Embroidered Kurti",
+      description:
+        "White-on-white chikankari embroidery on cotton mul — festive enough for gatherings, light enough for summer heat.",
+      category: "kurtas-tops",
+      collections: ["festive", "new-in"],
+      tags: ["kurti", "embroidery", "festive"],
+      variants: [
+        {
+          name: "White",
+          sku: "OB-KRT-03",
+          price: 289900,
+          compare_at: 329900,
+          stock: 14,
+        },
+      ],
+    },
+    {
+      slug: "linen-office-kurta",
+      title: "Linen Office Kurta",
+      description:
+        "Structured linen kurta with a band collar and side slits — an office layer that stays sharp past lunch.",
+      category: "kurtas-tops",
+      collections: ["office-edit"],
+      tags: ["kurta", "linen", "office"],
+      variants: [
+        {
+          name: "Olive",
+          sku: "OB-KRT-04",
+          price: 249900,
+          stock: 19,
+        },
+        {
+          name: "Charcoal",
+          sku: "OB-KRT-04B",
+          price: 249900,
+          stock: 11,
+        },
+      ],
+    },
+    {
+      slug: "silk-blend-festive-kurta",
+      title: "Silk Blend Festive Kurta",
+      description:
+        "Silk-blend men's kurta with a tonal jacquard weave for festive evenings, cut relaxed through the chest.",
+      category: "kurtas-tops",
+      collections: ["festive", "eid"],
+      tags: ["kurta", "silk", "festive"],
+      variants: [
+        {
+          name: "Wine",
+          sku: "OB-KRT-05",
+          price: 329900,
+          stock: 13,
+        },
+      ],
+    },
+    {
+      slug: "aari-work-kurti",
+      title: "Aari Work Kurti",
+      description:
+        "Aari hook embroidery traces the yoke and sleeves — a kurti that reads dressy without the weight.",
+      category: "kurtas-tops",
+      collections: ["wedding", "festive"],
+      tags: ["kurti", "aari", "festive"],
+      variants: [
+        {
+          name: "Black",
+          sku: "OB-KRT-06",
+          price: 299900,
+          stock: 10,
+        },
+      ],
+    },
+    {
+      slug: "ombre-handloom-cotton-top",
+      title: "Ombre Handloom Cotton Top",
+      description:
+        "Handloom cotton top dip-dyed in a rust ombré with an easy pull-on cut, round neck and short sleeves.",
+      category: "kurtas-tops",
+      collections: ["new-in"],
+      tags: ["top", "handloom", "ombre"],
+      variants: [
+        {
+          name: "Rust",
+          sku: "OB-KRT-07",
+          price: 149900,
+          stock: 25,
+        },
+      ],
+    },
+    {
+      slug: "tiered-everyday-kurta",
+      title: "Tiered Everyday Kurta",
+      description:
+        "Tiered cotton kurta that skims the waist — the everyday kurti for school runs, errands and slow Sundays.",
+      category: "kurtas-tops",
+      collections: ["bestsellers"],
+      tags: ["kurta", "everyday", "cotton"],
+      variants: [
+        {
+          name: "Mustard",
+          sku: "OB-KRT-08",
+          price: 159900,
+          compare_at: 189900,
+          stock: 27,
+        },
+      ],
+    },
+    {
+      slug: "jamdani-panel-handloom-dress",
+      title: "Jamdani Panel Handloom Dress",
+      description:
+        "Jamdani panel inset at the bodice of a handloom cotton dress. Knee length with side pockets and a concealed zip.",
+      category: "dresses",
+      collections: ["wedding", "festive"],
+      tags: ["dress", "jamdani", "handloom"],
+      variants: [
+        {
+          name: "Ecru",
+          sku: "OB-DRS-01",
+          price: 449900,
+          compare_at: 499900,
+          stock: 8,
+        },
+      ],
+    },
+    {
+      slug: "cotton-anarkali-dress",
+      title: "Cotton Anarkali Dress",
+      description:
+        "Flared cotton Anarkali with a fitted yoke and gota edging — festive volume without a heavy lining.",
+      category: "dresses",
+      collections: ["festive", "bestsellers"],
+      tags: ["dress", "anarkali", "cotton"],
+      variants: [
+        {
+          name: "Maroon",
+          sku: "OB-DRS-02",
+          price: 379900,
+          compare_at: 429900,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "khadi-shirt-dress",
+      title: "Khadi Shirt Dress",
+      description:
+        "Khadi shirt dress with a half placket and drawstring waist. Wear it open as a light layer over trousers.",
+      category: "dresses",
+      collections: ["office-edit", "new-in"],
+      tags: ["dress", "khadi", "shirt"],
+      variants: [
+        {
+          name: "Sand",
+          sku: "OB-DRS-03",
+          price: 259900,
+          stock: 17,
+        },
+      ],
+    },
+    {
+      slug: "mirrorwork-festive-dress",
+      title: "Mirrorwork Festive Dress",
+      description:
+        "Hand-pasted mirror work along the neckline catches the light at evening functions. Fully lined bodice.",
+      category: "dresses",
+      collections: ["festive"],
+      tags: ["dress", "mirrorwork", "festive"],
+      variants: [
+        {
+          name: "Navy",
+          sku: "OB-DRS-04",
+          price: 399900,
+          stock: 11,
+        },
+      ],
+    },
+    {
+      slug: "linen-wrap-dress",
+      title: "Linen Wrap Dress",
+      description:
+        "True-wrap linen dress with a self tie — a forgiving fit across sizes that creases beautifully.",
+      category: "dresses",
+      collections: ["new-in"],
+      tags: ["dress", "linen", "wrap"],
+      variants: [
+        {
+          name: "Olive",
+          sku: "OB-DRS-05",
+          price: 279900,
+          stock: 15,
+        },
+      ],
+    },
+    {
+      slug: "kantha-stitch-midi-dress",
+      title: "Kantha Stitch Midi Dress",
+      description:
+        "Running-stitch kantha panels bring quilt craft into a midi silhouette; each panel varies slightly by hand.",
+      category: "dresses",
+      collections: ["wedding"],
+      tags: ["dress", "kantha", "handloom"],
+      variants: [
+        {
+          name: "Indigo",
+          sku: "OB-DRS-06",
+          price: 349900,
+          stock: 9,
+        },
+      ],
+    },
+    {
+      slug: "poplin-day-dress",
+      title: "Poplin Day Dress",
+      description:
+        "Crisp cotton poplin day dress with pockets and a modest round neck — ready for school functions and picnics.",
+      category: "dresses",
+      collections: ["bestsellers"],
+      tags: ["dress", "poplin", "cotton"],
+      variants: [
+        {
+          name: "Sky",
+          sku: "OB-DRS-07",
+          price: 189900,
+          stock: 24,
+        },
+      ],
+    },
+    {
+      slug: "handloom-cotton-palazzo",
+      title: "Handloom Cotton Palazzo",
+      description:
+        "Wide-leg palazzo woven on a handloom cotton for warm commutes, with an elastic back and a pressed front.",
+      category: "bottoms",
+      collections: ["new-in", "bestsellers"],
+      tags: ["bottoms", "palazzo", "handloom"],
+      variants: [
+        {
+          name: "Ecru",
+          sku: "OB-BTM-01",
+          price: 149900,
+          stock: 30,
+        },
+        {
+          name: "Indigo",
+          sku: "OB-BTM-01B",
+          price: 149900,
+          stock: 14,
+        },
+      ],
+    },
+    {
+      slug: "churidar-leggings-2pack",
+      title: "Churidar Leggings 2-Pack",
+      description:
+        "Two-pack of cotton-stretch churidars that hold their gather at the ankle, opaque through the leg.",
+      category: "bottoms",
+      collections: ["office-edit"],
+      tags: ["bottoms", "churidar", "basics"],
+      variants: [
+        {
+          name: "Black",
+          sku: "OB-BTM-02",
+          price: 99900,
+          stock: 40,
+        },
+      ],
+    },
+    {
+      slug: "straight-fit-womens-trousers",
+      title: "Straight Fit Trousers",
+      description:
+        "Straight-fit trousers with a mid rise and a pressed crease; structured cotton keeps its line all day.",
+      category: "bottoms",
+      collections: ["office-edit"],
+      tags: ["bottoms", "trousers", "office"],
+      variants: [
+        {
+          name: "Charcoal",
+          sku: "OB-BTM-03",
+          price: 179900,
+          stock: 21,
+        },
+      ],
+    },
+    {
+      slug: "blockprint-cotton-skirt",
+      title: "Blockprint Cotton Skirt",
+      description:
+        "A-line skirt in blockprinted cotton hitting mid-calf, with a side zip, lined waistband and deep pockets.",
+      category: "bottoms",
+      collections: ["new-in"],
+      tags: ["bottoms", "skirt", "blockprint"],
+      variants: [
+        {
+          name: "Rust",
+          sku: "OB-BTM-04",
+          price: 159900,
+          stock: 18,
+        },
+      ],
+    },
+    {
+      slug: "festive-sharara-bottom",
+      title: "Festive Sharara Bottom",
+      description:
+        "Sparkle-thread sharara bottom that flares from the knee — pairs with short kurtis for wedding functions.",
+      category: "bottoms",
+      collections: ["festive", "wedding"],
+      tags: ["bottoms", "sharara", "festive"],
+      variants: [
+        {
+          name: "Wine",
+          sku: "OB-BTM-05",
+          price: 229900,
+          compare_at: 259900,
+          stock: 10,
+        },
+      ],
+    },
+    {
+      slug: "linen-culottes",
+      title: "Linen Culottes",
+      description:
+        "Knee-grazing linen culottes with a wide leg and pull-on waist — halfway between a skirt and a trouser.",
+      category: "bottoms",
+      collections: ["bestsellers"],
+      tags: ["bottoms", "linen", "culottes"],
+      variants: [
+        {
+          name: "Sand",
+          sku: "OB-BTM-06",
+          price: 169900,
+          stock: 23,
+        },
+      ],
+    },
+    {
+      slug: "girls-silk-festive-frock",
+      title: "Girls Silk Festive Frock",
+      description:
+        "Silk-blend festive frock with a gathered skirt and shell buttons — twirl-tested for family functions.",
+      category: "girls",
+      collections: ["kids", "festive"],
+      tags: ["girls", "frock", "festive"],
+      variants: [
+        {
+          name: "Rose",
+          sku: "OB-GLS-01",
+          price: 199900,
+          compare_at: 239900,
+          stock: 14,
+        },
+      ],
+    },
+    {
+      slug: "girls-cotton-salwar-set",
+      title: "Girls Cotton Salwar Set",
+      description:
+        "Two-piece cotton salwar set for girls with an elastic waist and a printed kameez, grow-room built into the seams.",
+      category: "girls",
+      collections: ["kids"],
+      tags: ["girls", "salwar-kameez", "cotton"],
+      variants: [
+        {
+          name: "Sky",
+          sku: "OB-GLS-02",
+          price: 149900,
+          stock: 26,
+        },
+      ],
+    },
+    {
+      slug: "girls-blockprint-pinafore",
+      title: "Girls Blockprint Pinafore",
+      description:
+        "Blockprint pinafore worn over a plain tee — playground-tough cotton with straps that adjust as she grows.",
+      category: "girls",
+      collections: ["kids", "new-in"],
+      tags: ["girls", "pinafore", "blockprint"],
+      variants: [
+        {
+          name: "Mustard",
+          sku: "OB-GLS-03",
+          price: 119900,
+          stock: 29,
+        },
+      ],
+    },
+    {
+      slug: "girls-kantha-yoke-dress",
+      title: "Girls Kantha Yoke Dress",
+      description:
+        "Kantha-stitched yoke on a cotton dress — hand-look embroidery with everyday durability.",
+      category: "girls",
+      collections: ["kids", "festive"],
+      tags: ["girls", "kantha", "dress"],
+      variants: [
+        {
+          name: "Indigo",
+          sku: "OB-GLS-04",
+          price: 169900,
+          stock: 16,
+        },
+      ],
+    },
+    {
+      slug: "girls-party-sharara-set",
+      title: "Girls Party Sharara Set",
+      description:
+        "Three-piece sharara set for wedding days: short kameez, flared bottom and a sheer dupatta.",
+      category: "girls",
+      collections: ["kids", "wedding"],
+      tags: ["girls", "sharara", "wedding"],
+      variants: [
+        {
+          name: "Maroon",
+          sku: "OB-GLS-05",
+          price: 219900,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "girls-everyday-kurta-leggings",
+      title: "Girls Everyday Kurta Leggings",
+      description:
+        "Everyday kurta and leggings pair in soft cotton — the school-ready combo that survives the weekly wash.",
+      category: "girls",
+      collections: ["kids", "bestsellers"],
+      tags: ["girls", "kurta", "everyday"],
+      variants: [
+        {
+          name: "Olive",
+          sku: "OB-GLS-06",
+          price: 129900,
+          stock: 32,
+        },
+        {
+          name: "Sky",
+          sku: "OB-GLS-06B",
+          price: 129900,
+          stock: 15,
+        },
+      ],
+    },
+    {
+      slug: "dhamrai-brass-jhumka",
+      title: "Dhamrai Brass Jhumka",
+      description:
+        "Hand-cast brass jhumkas from Dhamrai metalworkers with an antique finish and a soft swing.",
+      category: "jewellery",
+      collections: ["festive", "bestsellers"],
+      tags: ["jewellery", "brass", "jhumka"],
+      variants: [
+        {
+          name: "Antique Brass",
+          sku: "OB-JWL-01",
+          price: 89900,
+          stock: 35,
+        },
+      ],
+    },
+    {
+      slug: "rongpur-silver-filigree-earrings",
+      title: "Rongpur Silver Filigree Earrings",
+      description:
+        "Fine silver filigree drops made by Rongpur artisans — lightweight enough for a full wedding day.",
+      category: "jewellery",
+      collections: ["wedding"],
+      tags: ["jewellery", "silver", "filigree"],
+      variants: [
+        {
+          name: "Oxidized Silver",
+          sku: "OB-JWL-02",
+          price: 129900,
+          compare_at: 149900,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "hilsa-motif-brass-pendant",
+      title: "Hilsa Motif Brass Pendant",
+      description:
+        "A playful hilsa motif stamped into brass on an adjustable cord — a conversation starter for fish lovers.",
+      category: "jewellery",
+      collections: ["new-in"],
+      tags: ["jewellery", "brass", "pendant"],
+      variants: [
+        {
+          name: "Brass",
+          sku: "OB-JWL-03",
+          price: 79900,
+          stock: 40,
+        },
+      ],
+    },
+    {
+      slug: "temple-finish-long-jhumka",
+      title: "Temple Finish Long Jhumka",
+      description:
+        "Long temple-finish jhumkas with layered drops — festive weight that stays light because the casting is hollow.",
+      category: "jewellery",
+      collections: ["festive", "eid"],
+      tags: ["jewellery", "jhumka", "festive"],
+      variants: [
+        {
+          name: "Gold Tone",
+          sku: "OB-JWL-04",
+          price: 99900,
+          stock: 18,
+        },
+      ],
+    },
+    {
+      slug: "mirror-statement-earrings",
+      title: "Mirror Statement Earrings",
+      description:
+        "Mirror discs set in silver-tone frames catch the light at evening functions; posts keep them secure.",
+      category: "jewellery",
+      collections: ["festive"],
+      tags: ["jewellery", "mirror", "earrings"],
+      variants: [
+        {
+          name: "Silver Mirror",
+          sku: "OB-JWL-05",
+          price: 69900,
+          stock: 27,
+        },
+      ],
+    },
+    {
+      slug: "handloom-thread-bangle-set",
+      title: "Handloom Thread Bangle Set",
+      description:
+        "Set of six bangles wrapped in handloom thread remnants — zero-waste colour for everyday wrists.",
+      category: "jewellery",
+      collections: ["bestsellers"],
+      tags: ["jewellery", "bangles", "handloom"],
+      variants: [
+        {
+          name: "Multicolour",
+          sku: "OB-JWL-06",
+          price: 59900,
+          stock: 45,
+        },
+      ],
+    },
+    {
+      slug: "festive-gota-work-suit",
+      title: "Festive Gota Work Suit",
+      description:
+        "Festive capsule hero: gota-work kameez with silk trousers and an organza dupatta, boxed as one set.",
+      category: "collections",
+      collections: ["festive", "new-in"],
+      tags: ["salwar-kameez", "festive", "capsule"],
+      variants: [
+        {
+          name: "Cream",
+          sku: "OB-COL-01",
+          price: 499900,
+          stock: 10,
+        },
+      ],
+    },
+    {
+      slug: "wedding-dhakai-jamdani-saree",
+      title: "Wedding Dhakai Jamdani Saree",
+      description:
+        "Dhakai jamdani saree with a woven floral field — the wedding-season heirloom, unstitched blouse piece included.",
+      category: "collections",
+      collections: ["wedding"],
+      tags: ["saree", "jamdani", "wedding"],
+      variants: [
+        {
+          name: "Red",
+          sku: "OB-COL-02",
+          price: 1299900,
+          compare_at: 1499900,
+          stock: 4,
+        },
+      ],
+    },
+    {
+      slug: "eid-morning-silk-kurta-set",
+      title: "Eid Morning Silk Kurta Set",
+      description:
+        "Mint silk-blend kurta and trousers for Eid mornings — light, calm and ready for prayer and visits.",
+      category: "collections",
+      collections: ["eid", "festive"],
+      tags: ["kurta", "silk", "eid"],
+      variants: [
+        {
+          name: "Mint",
+          sku: "OB-COL-03",
+          price: 449900,
+          stock: 9,
+        },
+      ],
+    },
+    {
+      slug: "festive-sharara-cape-set",
+      title: "Festive Sharara Cape Set",
+      description:
+        "Teal sharara with a cape-style kameez — the wedding-guest set that photographs from every angle.",
+      category: "collections",
+      collections: ["festive", "wedding"],
+      tags: ["sharara", "festive", "wedding"],
+      variants: [
+        {
+          name: "Teal",
+          sku: "OB-COL-04",
+          price: 549900,
+          compare_at: 599900,
+          stock: 6,
+        },
+      ],
+    },
+    {
+      slug: "winter-kantha-shawl-jacket",
+      title: "Winter Kantha Shawl Jacket",
+      description:
+        "Kantha-quilted shawl jacket for winter weddings — reversible, hand-stitched and warm without bulk.",
+      category: "collections",
+      collections: ["new-in"],
+      tags: ["kantha", "jacket", "winter"],
+      variants: [
+        {
+          name: "Indigo",
+          sku: "OB-COL-05",
+          price: 399900,
+          stock: 8,
+        },
+      ],
+    },
+    {
+      slug: "eos-cotton-salwar-set",
+      title: "End of Season Cotton Salwar Set",
+      description:
+        "End-of-season cotton salwar set at an honest markdown — same stitching, past colourway.",
+      category: "sale",
+      collections: ["sale-picks"],
+      tags: ["salwar-kameez", "sale", "cotton"],
+      variants: [
+        {
+          name: "Sky",
+          sku: "OB-SAL-01",
+          price: 149900,
+          compare_at: 219900,
+          stock: 15,
+        },
+      ],
+    },
+    {
+      slug: "last-size-printed-kurti",
+      title: "Last Size Printed Kurti",
+      description:
+        "Last available size of a printed cotton kurti — final piece in the run, no restock planned.",
+      category: "sale",
+      collections: ["sale-picks"],
+      tags: ["kurti", "sale", "print"],
+      variants: [
+        {
+          name: "Mustard",
+          sku: "OB-SAL-02",
+          price: 99900,
+          compare_at: 149900,
+          stock: 3,
+        },
+      ],
+    },
+    {
+      slug: "clearance-linen-dress",
+      title: "Clearance Linen Dress",
+      description:
+        "Clearance linen dress from the summer edit — a few storage creases, full length and deep pockets.",
+      category: "sale",
+      collections: ["sale-picks"],
+      tags: ["dress", "linen", "sale"],
+      variants: [
+        {
+          name: "Olive",
+          sku: "OB-SAL-03",
+          price: 179900,
+          compare_at: 259900,
+          stock: 7,
+        },
+      ],
+    },
+    {
+      slug: "past-edit-festive-kurta",
+      title: "Past Edit Festive Kurta",
+      description:
+        "Festive kurta from the last celebration edit, priced to move with the same silk-blend hand-feel.",
+      category: "sale",
+      collections: ["sale-picks", "festive"],
+      tags: ["kurta", "festive", "sale"],
+      variants: [
+        {
+          name: "Wine",
+          sku: "OB-SAL-04",
+          price: 199900,
+          compare_at: 279900,
+          stock: 9,
+        },
+      ],
+    },
+    {
+      slug: "clearance-palazzo",
+      title: "Clearance Palazzo",
+      description:
+        "Clearance wide-leg palazzo in ecru — one wash and it behaves like new.",
+      category: "sale",
+      collections: ["sale-picks"],
+      tags: ["bottoms", "palazzo", "sale"],
+      variants: [
+        {
+          name: "Ecru",
+          sku: "OB-SAL-05",
+          price: 89900,
+          compare_at: 129900,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "archive-blockprint-skirt",
+      title: "Archive Blockprint Skirt",
+      description:
+        "Archive blockprint skirt in rust — a retired motif that is still fully serviceable.",
+      category: "sale",
+      collections: ["sale-picks"],
+      tags: ["bottoms", "skirt", "sale"],
+      variants: [
+        {
+          name: "Rust",
+          sku: "OB-SAL-06",
+          price: 109900,
+          compare_at: 159900,
+          stock: 6,
+        },
+      ],
+    },
+  ],
+};
 
 export const DEMO_CATALOGS = {
   apparel: APPAREL,
@@ -2892,6 +3942,7 @@ export const DEMO_CATALOGS = {
   beauty: BEAUTY,
   general: SUPERSHOP_CATALOG,
   songoskriti: SONGOSKRITI,
+  oceanblue: OCEANBLUE,
 } as const satisfies Record<string, DemoCatalog>;
 
 export type DemoCatalogKey = keyof typeof DEMO_CATALOGS;
