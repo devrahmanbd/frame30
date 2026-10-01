@@ -247,3 +247,38 @@ git commit -m "feat(theme): oceanblue-v2 skins + token-driven CSS"
 1. **Spec coverage:** §1 scope → Tasks 0–8 (nine templates in Task 6; v1 untouched — no task edits v1 paths). §2 tokens → Task 1 (+ tint rule fixed inline). §3 homepage → Task 4. §4 secondary → Task 5. §5 data reuse → Task 6 (no catalog edits). §6 wiring checklist → Task 6 file-for-file. §7 honesty → asserted in Tasks 3–4 tests. §8 gates → Task 8.
 2. **Placeholder scan:** no TBD/TODO/"similar to" — big-file tasks point at the Task 0 pin table + v1 mirror files with exact paths, which is scaffolding folded into the consuming task per this skill's right-sizing rule.
 3. **Type consistency:** `OCEANBLUE_V2_*` / `oceanblueV2*` / `HOMEPAGE_V2_SECTION_TYPES` / `IntendedHomepageV2Type` used uniformly across tasks; `makeSection("oceanblue-v2", …)` matches hyphenated-key precedent (`heavy-shop`).
+
+---
+
+## Interface Pins (Task 0 — verified 2026-10-02 against v1 + builder-ast)
+
+`makeSection(key, type, props, extras = {}, dict = {}) => Section`
+(`src/lib/theme-section.ts:44`); curried via `sectionFactory(dict)(key, type, props, extras)`.
+`SectionBuilder = (type: SectionType, props?: Record<string, PropValue>) => Section`
+(`builder-ast.ts:334`). Nine `ThemeTemplates` keys (`TEMPLATE_KEYS`, `builder-ast.ts:45`):
+`index, product, collection, account, page, blog, cart, checkout, search`.
+`ThemeTokens` (`builder-ast.ts:6224`) has **no `tint` slot** — blush `#F9EFEF` lives as a
+named `skins.css` variable only. Wiring mirrors v1: `preview-sources.ts:14-17`
+(`oceanblue: oceanbluePreviewSource`), `theme-chrome.ts:65-72` (chrome entry),
+`catalog-meta.ts:199-213` (meta, honest zeros), `theme-preview-nav.ts` resolver.
+v1 registry-row generator: see header of
+`supabase/migrations/20260930120000_oceanblue_registry_row.sql`
+(`bun -e` import of the preset module, embed emitted JSON, never hand-write).
+
+| Section type | Exact prop names (v1-verified) |
+| --- | --- |
+| `hero_carousel` | `skin`, `slides[{image, headline, headline_bn, subhead, subhead_bn, ctaLabel, ctaLabel_bn, ctaUrl, caption, caption_bn}]`, `autoAdvanceMs`, `atmosphere` (`WIDGET_SKINS.hero_carousel = ["split","fullbleed","minimal"]`, `builder-ast.ts:600`; v2 default `banner` lands with Task 7) |
+| `circle_categories` | `heading`, `heading_bn`, `reveal`, `c1Title..c8Title`, `c1Href..c8Href` (empty `c7/c8` allowed) |
+| `product_rail` | `heading`, `heading_bn`, `limit` (≤10 homepage), `source`, `collection?`, `cardVariant`, `showRating`, `promise?`, `promise_bn?`, `skin`, `reveal?` |
+| `split_feature` | `heading`, `heading_bn`, `body`, `body_bn`, `ctaLabel`, `ctaLabel_bn`, `ctaHref`, `reveal?` |
+| `trust_marquee` | `items[{icon, title, title_bn, body, body_bn}]`, `speed` |
+| `collection_story` | `eyebrow`, `eyebrow_bn`, `heading`, `heading_bn`, `body`, `body_bn`, `ctaLabel`, `ctaLabel_bn`, `ctaHref`, `imageUrl`, `scrim`, `reveal?` |
+| `testimonials` | `testimonials[{quote, quote_bn, author, author_bn, role, role_bn}]`, `autoAdvanceMs`, `skin`, `reveal?` |
+| `store_locator` | `heading`, `heading_bn`, `s1Name`, `s1Name_bn`, `s1Hours`, `s1Hours_bn`, `s2Name`, `s2Name_bn`, `s2Hours`, `s2Hours_bn`, `reveal?` |
+| `newsletter` | `heading`, `heading_bn`, `body`, `body_bn`, `buttonLabel`, `buttonLabel_bn`, `consentText`, `consentText_bn`, `reveal?` |
+| `footer_sitemap` | `statementHeading(_bn)`, `statementBody(_bn)`, `storyHref`, `storyLabel(_bn)`, `brandName(_bn)`, `paymentsHeading(_bn)`, `paymentsMarks`, `c1Title(_bn)`, `c1Links(_bn)` … `c4Title(_bn)`, `c4Links(_bn)` |
+| `payment_icons` | `heading`, `heading_bn`, `marks` |
+| `social_strip` | `heading`, `href`, `i1Image..i6Image` (catalog defaults `studio/catalog.ts:881`; footer omits when handles unconfigured — no `href="#"`) |
+| `rich_text` | `heading`, `heading_bn?`, `body`, `body_bn` |
+| `announcement_bar` | `m1`, `m1_bn`, `href`, `dismissible`, `rotateMs`, `items[{text, text_bn}]` (header-slot only) |
+| secondary-only | `result_toolbar{sortDefault}`, `product_grid{heading, limit, columns, source, collection, skin}`, `breadcrumb{homeLabel(_bn)}`, `product_media{ratio}`, `product_meta{}`, `price_block{showCompareAt?}`, `add_to_cart{label(_bn)?, showQuantity?}`, `cart_lines{heading(_bn)?}`, `cart_summary{heading(_bn)?, showCoupon, showCta, showFreeShipping}`, `checkout_steps{heading?, step1..step4, activeStep}`, `payment_methods{heading(_bn)?}`, `profile_card{}`, `orders_list{}`, `page_content{}`, `blog_terms{heading?, style, showCounts}`, `blog_archive{heading?, layout, columns, limit, showCover, showExcerpt, showMeta, emptyText(_bn)?}`, `blog_pager{align}`, `columns{columns, asymmetrical, gap, padY?}`, `container{}`, `category_header{heading(_bn)?, body(_bn)?, showCount?, showBreadcrumb?, homeLabel?}`, `heading{text(_bn)?}` |
