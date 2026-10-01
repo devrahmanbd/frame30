@@ -106,6 +106,11 @@ export function StoreHeader({
   // menu claims the location.
   const headerChrome = themeChromeFor(themeKey);
   const isLuxury = headerChrome !== null;
+  // The band above the masthead renders only when the theme asks for a
+  // split strip; `variant: "none"` puts the masthead at the top of the
+  // page. Generic stores (null) also render no band.
+  const showBand =
+    headerChrome !== null && headerChrome.announcement.variant !== "none";
 
   // Data-driven selection: dashboard-designed menus win whenever a location
   // is claimed; the theme fallback tree covers theme-shaped stores only
@@ -179,80 +184,24 @@ export function StoreHeader({
       }`}
     >
       {/* ── Announcement Bar (luxury variant, theme-authored copy) ── */}
-      {headerChrome && (
+      {headerChrome && showBand && (
         <div
           className={`w-full overflow-hidden transition-all duration-250 ease-out motion-reduce:transition-none border-b border-[#eaeaea] ${scrolled ? "h-0 opacity-0 border-transparent" : "h-[36px] opacity-100"}`}
         >
-          {headerChrome.announcement.variant === "ticker" ? (
-            /* Theme-authored marquee strip: brand-tinted band scrolling the
-               theme's `items` (or the center copy as a single-item fallback).
-               Duplicate copy is aria-hidden; marquee is gated by motion-safe
-               and pauses on hover; language toggle sits in a local
-               foreground override so it stays legible on the dark band. */
-            <div
-              className="relative flex h-full w-full items-center overflow-hidden"
-              style={{
-                background: "var(--theme-brand, #1a1a1a)",
-                color: "var(--theme-brand-ink, #FAF9F7)",
-              }}
-            >
-              <div className="min-w-0 flex-1 overflow-hidden">
-                <div
-                  className="flex w-max motion-safe:animate-[fq-marquee_var(--fq-marquee)_linear_infinite] motion-safe:hover:[animation-play-state:paused]"
-                  style={{ ["--fq-marquee" as string]: "46s" }}
-                >
-                  {[0, 1].map((copy) => (
-                    <span
-                      key={copy}
-                      aria-hidden={copy === 1 || undefined}
-                      className="flex shrink-0 items-center"
-                    >
-                      {(headerChrome.announcement.items ?? [
-                        {
-                          text: headerChrome.announcement.center,
-                          bn: headerChrome.announcement.center_bn,
-                        },
-                      ]).map((item, i) => (
-                        <span key={i} className="flex items-center">
-                          <span className="whitespace-nowrap px-5 text-[10px] font-semibold uppercase tracking-[0.22em]">
-                            {t(item.text, item.bn)}
-                          </span>
-                          <span
-                            aria-hidden
-                            className="size-1 shrink-0 rounded-full bg-current opacity-50"
-                          />
-                        </span>
-                      ))}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div
-                className="hidden shrink-0 pr-3 pl-4 sm:block"
-                style={{
-                  ["--color-foreground" as string]:
-                    "var(--theme-brand-ink, #FAF9F7)",
-                }}
-              >
-                <LanguageToggle />
-              </div>
+          <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10">
+            <div className="hidden sm:block text-[10px] font-medium tracking-wide text-[#1a1a1a]/60 w-1/3 text-left">
+              {headerChrome.announcement.left}
             </div>
-          ) : (
-            <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10">
-              <div className="hidden sm:block text-[10px] font-medium tracking-wide text-[#1a1a1a]/60 w-1/3 text-left">
-                {headerChrome.announcement.left}
-              </div>
-              <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#1a1a1a] w-full sm:w-1/3 text-center">
-                {t(
-                  headerChrome.announcement.center,
-                  headerChrome.announcement.center_bn,
-                )}
-              </div>
-              <div className="hidden sm:flex justify-end w-1/3">
-                <LanguageToggle />
-              </div>
+            <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#1a1a1a] w-full sm:w-1/3 text-center">
+              {t(
+                headerChrome.announcement.center,
+                headerChrome.announcement.center_bn,
+              )}
             </div>
-          )}
+            <div className="hidden sm:flex justify-end w-1/3">
+              <LanguageToggle />
+            </div>
+          </div>
         </div>
       )}
 
@@ -486,7 +435,7 @@ export function StoreHeader({
             </Link>
           )}
 
-          {!isLuxury && <LanguageToggle />}
+          {!showBand && <LanguageToggle />}
 
           {custom ? (
             <Link

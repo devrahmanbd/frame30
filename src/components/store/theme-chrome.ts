@@ -44,13 +44,11 @@ export type ThemeHeaderChrome = {
     center_bn: string;
     /**
      * Presentation variant, theme-authored: "split" (the default 3-column
-     * strip) or "ticker" (a marquee of `items` across the full width).
-     * Absent means "split" — songoskriti and generic chrome keep the
-     * existing strip untouched.
+     * strip) or "none" (no band above the masthead at all — the masthead
+     * is the top of the page). Absent means "split" — songoskriti and
+     * generic chrome keep the existing strip untouched.
      */
-    variant?: "split" | "ticker";
-    /** Ticker copy (used when `variant === "ticker"`). */
-    items?: ReadonlyArray<{ text: string; bn?: string }>;
+    variant?: "split" | "none";
   };
 };
 

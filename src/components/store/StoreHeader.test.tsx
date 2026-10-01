@@ -365,38 +365,43 @@ describe("StoreHeader songoskriti chrome resolves through themeChromeFor", () =>
   });
 });
 
-describe("oceanblue ticker announcement strip", () => {
-  it("renders the marquee ticker with theme items (not the split bar)", () => {
-    const chrome = themeChromeFor("oceanblue")!;
+describe("oceanblue has no topbar band", () => {
+  it("renders no band above the masthead (no marquee, no split shell)", () => {
     const html = renderHeader({
       slug: "oceanblue",
       name: "Oceanblue",
       themeKey: "oceanblue",
     });
-    // Marquee motion: fq-marquee track carrying the theme's own items.
-    expect(html).toContain("motion-safe:animate-[fq-marquee_var(--fq-marquee)_linear_infinite]");
-    for (const item of chrome.announcement.items ?? []) {
-      expect(html).toContain(item.text);
-    }
-    // Duplicate track is aria-hidden; the first copy is not.
-    expect(html).toContain('aria-hidden="true"');
-    // Brand band: theme token background with a neutral fallback.
-    expect(html).toContain("var(--theme-brand, #1a1a1a)");
-    // Ticker path must not render the split bar's 3-column shell.
+    // No ticker marquee, no split-strip 3-column shell, no band shell.
+    expect(html).not.toContain("fq-marquee");
     expect(html).not.toContain("w-1/3 text-center");
+    expect(html).not.toContain("h-[36px]");
+    // Ticker copy is gone from config entirely.
+    expect(html).not.toContain("CASH ON DELIVERY NATIONWIDE");
+    // Masthead itself still renders (theme logo lockup present).
+    expect(html).toContain("logo-lockup");
   });
 
-  it("renders the বাংলা ticker copy under the bn locale", () => {
-    const chrome = themeChromeFor("oceanblue")!;
-    const bnHtml = renderHeader({
+  it("falls the language toggle back to the header action cluster", () => {
+    const html = renderHeader({
+      slug: "oceanblue",
+      name: "Oceanblue",
+      themeKey: "oceanblue",
+    });
+    // LanguageToggle's group label — with the band gone, this can only
+    // come from the header cluster slot.
+    expect(html).toContain('aria-label="Language / ভাষা"');
+  });
+
+  it("renders the same no-band header under the bn locale", () => {
+    const html = renderHeader({
       slug: "oceanblue",
       name: "Oceanblue",
       themeKey: "oceanblue",
       initialLang: "bn",
     });
-    const first = (chrome.announcement.items ?? [])[0];
-    expect(first?.bn).toBeTruthy();
-    expect(bnHtml).toContain(first!.bn!);
+    expect(html).not.toContain("fq-marquee");
+    expect(html).toContain('aria-label="Language / ভাষা"');
   });
 
   it("songoskriti keeps the split strip — no marquee in its markup", () => {
@@ -407,6 +412,7 @@ describe("oceanblue ticker announcement strip", () => {
     });
     expect(html).not.toContain("fq-marquee");
     expect(html).toContain("w-1/3 text-center");
+    expect(html).toContain('aria-label="Language / ভাষা"');
   });
 });
 
