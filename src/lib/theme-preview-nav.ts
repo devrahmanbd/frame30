@@ -414,14 +414,23 @@ const humanizeSlug = (slug: string): string =>
  * Known catalog slugs render their own rows under their own name; unknown
  * slugs fall back to new-in rows under a humanized title, so the page
  * always changes with the link instead of repeating one static demo.
+ *//**
+ * Demo-catalog key for a preview theme key. Themes that ship no catalog of
+ * their own reuse a sibling's rows here (never a new DEMO_CATALOGS entry,
+ * never the generic fallback): oceanblue-v2 renders the shared OCEANBLUE
+ * ethnic catalog (BDT minor units, OB-* SKUs), not marketplace groceries.
  */
+export function themeDemoCatalogKey(themeKey: string): string {
+  return themeKey === "oceanblue-v2" ? "oceanblue" : themeKey;
+}
+
 export function resolveDemoFocus(
   themeKey: string,
   template: TemplateKey,
   slug: string | null | undefined,
 ): DemoFocus | null {
   if (!slug) return null;
-  const catalog = demoCatalogFor(themeKey);
+  const catalog = demoCatalogFor(themeDemoCatalogKey(themeKey));
   if (template === "collection") {
     const match = catalog.collections.find((c) => c.slug === slug);
     if (match) return { template, slug, title: match.name, collection: slug };

@@ -211,6 +211,21 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     rating: 0,
     installs: 0,
   },
+  "oceanblue-v2": {
+    author: "Framique",
+    subjects: ["fashion", "marketplace"],
+    features: [
+      ...BASE_FEATURES,
+      "mega menu",
+      "quick view",
+      "wishlist",
+      "reviews",
+    ],
+    layouts: ["grid", "full width", "minimal"],
+    tags: ["oceanblue-v2", "maroon", "ethnic", "marketplace", "festive"],
+    rating: 0,
+    installs: 0,
+  },
 };
 
 const FALLBACK: CatalogMeta = {

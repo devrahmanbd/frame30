@@ -7,6 +7,7 @@
  * store-shaped hrefs.
  */
 import { demoCatalogFor } from "./demo-catalog";
+import { themeDemoCatalogKey } from "./theme-preview-nav";
 import { placeholderSeed } from "./placeholder";
 import type { WidgetDataBundle, WidgetDataMap, WidgetRow } from "./widget-data";
 
@@ -48,7 +49,7 @@ export function previewDemoMap(
   bundle: WidgetDataBundle,
   themeKey: string,
 ): WidgetDataMap {
-  const catalog = demoCatalogFor(themeKey);
+  const catalog = demoCatalogFor(themeDemoCatalogKey(themeKey));
   const base: WidgetRow[] = catalog.products.map((p, i) => ({
     id: p.slug,
     title: p.title,
