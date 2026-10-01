@@ -37,50 +37,50 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       slides: [
         {
           image: "",
-          headline: "NEW SEASON, EVERYDAY ETHNIC",
+          headline: "New Season, Everyday Ethnic",
           headline_bn: "নতুন সিজন, প্রতিদিনের এথনিক",
           subhead: "Salwar sets, kurtas and sarees for workdays and weddings.",
           subhead_bn: "অফিস ও বিয়ে — সব উপলক্ষে সালোয়ার সেট, কুর্তা ও শাড়ি।",
-          ctaLabel: "SHOP NEW ARRIVAL",
+          ctaLabel: "Shop New Arrivals",
           ctaLabel_bn: "নতুন সংগ্রহ দেখুন",
           ctaUrl: `${c}/new-in`,
-          caption: "AW'26 IS HERE",
+          caption: "AW'26 is here",
           caption_bn: "নতুন সিজন এসেছে",
         },
         {
           image: "",
-          headline: "THE WEDDING EDIT",
+          headline: "The Wedding Edit",
           headline_bn: "বিয়ের বিশেষ সংগ্রহ",
           subhead: "Lehengas, anarkalis and jewellery sets for the big day.",
           subhead_bn: "বড় দিনের জন্য লেহেঙ্গা, আনারকলি ও গহনার সেট।",
-          ctaLabel: "SHOP WEDDING",
+          ctaLabel: "Shop Wedding",
           ctaLabel_bn: "বিয়ের সংগ্রহ",
           ctaUrl: `${c}/wedding`,
-          caption: "WEDDING SPLENDOR",
+          caption: "Wedding splendor",
           caption_bn: "বিয়ের জাঁকজমক",
         },
         {
           image: "",
-          headline: "GIRLS, FESTIVE & BRIGHT",
+          headline: "Girls, Festive & Bright",
           headline_bn: "মেয়েদের উৎসবমুখর সংগ্রহ",
           subhead: "Festive minis, girls' suits and bright young fits.",
           subhead_bn: "উৎসবের মিনি, মেয়েদের স্যুট ও উজ্জ্বল নতুন ফিট।",
-          ctaLabel: "SHOP GIRLS",
+          ctaLabel: "Shop Girls",
           ctaLabel_bn: "মেয়েদের সংগ্রহ",
           ctaUrl: `${c}/girls`,
-          caption: "YOUNG & FESTIVE",
+          caption: "Young & festive",
           caption_bn: "তরুণ ও উৎসবমুখর",
         },
         {
           image: "",
-          headline: "NXT: FRESH FITS, YOUNG MOOD",
+          headline: "Nxt: Fresh Fits, Young Mood",
           headline_bn: "এনএক্সটি — নতুন ফিট, তরুণ মেজাজ",
           subhead: "Easy co-ords, playful prints and everyday statements.",
           subhead_bn: "সহজ কো-অর্ড, মজার প্রিন্ট ও প্রতিদিনের স্টেটমেন্ট।",
-          ctaLabel: "SHOP NXT",
+          ctaLabel: "Shop Nxt",
           ctaLabel_bn: "এনএক্সটি দেখুন",
           ctaUrl: `${c}/nxt`,
-          caption: "JUST LANDED",
+          caption: "Just landed",
           caption_bn: "সদ্য এসেছে",
         },
       ],
@@ -117,7 +117,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 3. MOST LOVED — bestsellers source, minimal rail
     // ────────────────────────────────────────────────────────────────────
     s("product_rail", {
-      heading: "MOST LOVED",
+      heading: "Most Loved",
       heading_bn: "সবচেয়ে জনপ্রিয়",
       limit: 10,
       source: "bestsellers",
@@ -133,12 +133,12 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 4. MAROON SPLIT — campaign break, text-led, single real permalink
     // ────────────────────────────────────────────────────────────────────
     s("split_feature", {
-      heading: "THE FESTIVE EDIT",
+      heading: "The Festive Edit",
       heading_bn: "উৎসবের বিশেষ সংগ্রহ",
       body: "Two-piece sets, silk textures and easy festive kurtas — celebration dressing without the heavy price tag.",
       body_bn:
         "টু-পিস সেট, সিল্ক ও সহজ উৎসব কুর্তা — ভারী দাম ছাড়াই উৎসবের সাজ।",
-      ctaLabel: "SHOP FESTIVE",
+      ctaLabel: "Shop Festive",
       ctaLabel_bn: "উৎসব সংগ্রহ",
       ctaHref: `${c}/festive`,
       reveal: "rise",
@@ -148,7 +148,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 5. RECOMMENDED — recommendation source, minimal rail
     // ────────────────────────────────────────────────────────────────────
     s("product_rail", {
-      heading: "RECOMMENDED FOR YOU",
+      heading: "Recommended for You",
       heading_bn: "আপনার জন্য",
       limit: 10,
       source: "recommended",
@@ -179,10 +179,10 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       c5Href: `${c}/black`,
       c6Title: "Red",
       c6Href: `${c}/red`,
-      c7Title: "",
-      c7Href: "",
-      c8Title: "",
-      c8Href: "",
+      c7Title: "Maroon",
+      c7Href: `${c}/maroon`,
+      c8Title: "Gold",
+      c8Href: `${c}/gold`,
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -219,14 +219,14 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 8. BRAND STORY — single editorial block, text-led
     // ────────────────────────────────────────────────────────────────────
     s("collection_story", {
-      eyebrow: "OUR PROMISE",
+      eyebrow: "Our promise",
       eyebrow_bn: "আমাদের প্রতিশ্রুতি",
       heading: "Festive shelves, everyday doors",
       heading_bn: "উৎসবের তাক, প্রতিদিনের দরজায়",
       body: "Oceanblue curates ethnic wear for real calendars — office days, Eid mornings and wedding nights — at prices that stay honest.",
       body_bn:
         "অফিস, ঈদের সকাল ও বিয়ের রাত — আসল ক্যালেন্ডারের জন্য এথনিক পোশাক, সৎ দামে।",
-      ctaLabel: "OUR STORY",
+      ctaLabel: "Our story",
       ctaLabel_bn: "আমাদের গল্প",
       ctaHref: "/pages/about",
       imageUrl: "",
@@ -235,7 +235,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     }),
 
     // ────────────────────────────────────────────────────────────────────
-    // 9. TESTIMONIAL — single voice, clearly illustrative
+    // 9. TESTIMONIAL — single illustrative voice, honestly labelled
     // ────────────────────────────────────────────────────────────────────
     s("testimonials", {
       testimonials: [
@@ -244,8 +244,8 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           quote_bn: "দামের তুলনায় ভালো মান, আর বদলানো ছিল ঝামেলাহীন।",
           author: "A happy customer",
           author_bn: "একজন সন্তুষ্ট ক্রেতা",
-          role: "Verified buyer",
-          role_bn: "যাচাইকৃত ক্রেতা",
+          role: "Illustrative review",
+          role_bn: "নমুনা পর্যালোচনা",
         },
       ],
       autoAdvanceMs: 6000,

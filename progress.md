@@ -213,7 +213,45 @@ live eyeball (desktop + 390px mobile) + mobile viewport pass.
 - minor: trust strip static (marquee motion unverified live).
 - minor: single generic testimonial ("A HAPPY CUSTOMER").
 
+# Phase 11 — oceanblue-v2 premium copy + marquee tint (2026-10-02, branch feat/oceanblue-theme)
+
+> Hallmark redesign (in-place, IA/routes/brand preserved; studied maroon DNA).
+> Pre-flight: Tailwind v4 + React 19 + gsap (motion-on); fonts via theme tokens
+> (Crimson Pro + Work Sans); DESIGN.md = locked system. Inferred brief —
+> audience: BD ethnic shoppers + merchants; use: catalog discovery → /c/*;
+> tone: luxury-maroon editorial. Macrostructure unchanged (campaign rhythm);
+> voice + symmetry + honesty only. Isolation: prod files import zero
+> @/components (only render.test.tsx does — allowed, tests excluded).
+
+- [x] P11-1 Premium honest copy (homepage.ts, footer.ts, render.test.tsx):
+      headlines/CTAs/captions Title Case (Most Loved, The Festive Edit,
+      Shop Festive/Wedding/Girls/Nxt, Our promise/story); Shop-by-Color
+      c7/c8 filled (Maroon → /c/maroon, Gold → /c/gold — 8-tile symmetry,
+      renderer already filters empties); testimonial role "Verified buyer"
+      → "Illustrative review" (was fabricated); footer storyLabel likewise.
+- [x] P11-2 Trust-marquee brand tint (skins.css only, token vars, no motion
+      changes — core marquee + motion-reduce already live in discovery.tsx):
+      blush band + brand icon chips with brand-ink glyphs.
+- [x] P11-3 Gates: typecheck clean; oceanblue-v2 40/40; themes 183/183
+      (isolation green); contracts 258 green; eslint touched 0 errors;
+      registry migration regenerated via /tmp/gen_oceanblue_v2_row.ts
+      (json 61758 bytes).
+- [x] P11-4 Chrome: /theme-preview/oceanblue-v2 on :3000 (stale pre-edit
+      server) — 390px mobile, footer + logo intact, 0 console errors
+      (screenshot). :3001 fresh instance 404s on host-gate without Supabase
+      env (known environmental, same as Phase 10 closeout); new copy verified
+      via SSR render tests EN+BN instead. Copilot imagery still needs your
+      authenticated session — prompts below (v2 maroon note added).
+- [ ] P11-5 Follow-up: restart :3000 on this commit for live eyeball of new
+      copy + blush marquee; run Copilot prompts → drop into
+      public/ph/oceanblue-v2/; mobile 320/375/414 sweep + a11y gate.
+
 ## Copilot image prompts (MeiGen structure, no text in frame)
+
+> v2 note: art-direct every frame to deep maroon (#A72F30) + gold accents on
+> warm cream — matches OCEANBLUE_V2_TOKENS brand/accent. Portrait 4:5 heroes,
+> 1:1 tiles, 2:1 split. Drop finals into public/ph/oceanblue-v2/ (1:1 swap,
+> zero rewiring once wired).
 
 1. HERO new-in: "South Asian woman in everyday embroidered teal salwar kameez,
    sunlit Dhaka rooftop courtyard, soft morning light, deep-ocean teal and

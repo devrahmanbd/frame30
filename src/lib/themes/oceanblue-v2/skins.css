@@ -155,6 +155,19 @@
   color: var(--theme-muted-ink);
 }
 
+/* -------------------------------------------- trust marquee: brand tint */
+
+[data-widget="trust_marquee"] {
+  background: var(--theme-blush);
+}
+
+/* Icon chips carry the maroon brand so the proof strip reads as
+   campaign, not chrome; glyphs stay on brand-ink for contrast. */
+[data-widget="trust_marquee"] li > span:first-child {
+  background: var(--theme-brand);
+  color: var(--theme-brand-ink);
+}
+
 /* -------------------------------------------- product_grid: cards */
 
 [data-widget="product_grid"][data-skin="cards"] {

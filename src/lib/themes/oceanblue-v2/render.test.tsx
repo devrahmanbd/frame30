@@ -92,8 +92,8 @@ describe("oceanblue-v2 SSR render", () => {
       }
     }
     const joined = en.get("en")!.join("\n");
-    expect(joined).toContain("NEW SEASON");
-    expect(joined).toContain("MOST LOVED");
+    expect(joined).toContain("New Season");
+    expect(joined).toContain("Most Loved");
     expect(joined).toContain("Shop by Color");
     const bn = en.get("bn")!.join("\n");
     expect(bn).toContain("নতুন সিজন");

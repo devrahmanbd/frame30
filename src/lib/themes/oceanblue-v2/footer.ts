@@ -174,7 +174,7 @@ export function buildOceanblueV2Footer(s: FooterSectionBuilder): Section[] {
       statementBody: STATEMENT.body,
       statementBody_bn: STATEMENT.body_bn,
       storyHref: "/pages/about",
-      storyLabel: "OUR STORY",
+      storyLabel: "Our story",
       storyLabel_bn: "আমাদের গল্প",
       brandName: BRAND_NAME,
       brandName_bn: BRAND_NAME_BN,
