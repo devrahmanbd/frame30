@@ -124,6 +124,41 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   degrades to 202 on missing warehouse schema (owner migration pending);
   hydration nonce mismatch fixed (empty-coerce + csp-nonce meta read).
 
+## [2026-10-01] — oceanblue theme shipped + deployed (`1b06337`, deployed)
+
+- Branch `feat/oceanblue-theme` (spec
+  `docs/superpowers/specs/2026-09-30-oceanblue-theme-design.md`), 3
+  commits: `c638ef6` premium minimal marketplace theme (tokens, skins,
+  11-section homepage, route-safe secondary templates, registry
+  migration row, preview/render/isolation suites; Somvabona fully
+  removed), `ae7137e` motion polish (IO scroll reveals, skin-scoped
+  transitions, reduced-motion collapse, persist-safe channels only),
+  theme-isolation rule (AGENTS.md 7 + `docs/internal/theme-isolation.md`
+  + guard check e: no shared components in themes), theme-owned
+  campaign topbar strip, `1b06337` dress layer (token-only
+  `skins.css`: hero wash, `background-clip:text` headline, gold eyebrow
+  hairline, CTA gradient + shine, art frame, rail edge-mask, 13-assertion
+  skins gate with no-hex/chunk checks), GSAP ScrollTrigger rail
+  entrance (`Rail.motion.test` 6/6), ticker topbar variant
+  (`theme-chrome` `"ticker"`: motion-safe marquee, hover-pause,
+  bilingual items; songoskriti keeps the split strip),
+  GenericTestimonials added to `BASE_WIDGETS` (`fq-caps`, bilingual §2.2
+  no raw `uppercase`).
+- Deploy: `ops/deploy-from-git.sh feat/oceanblue-theme` on
+  88.99.250.99 → `DEPLOY OK: feat/oceanblue-theme live`, every
+  `VERIFY OK` gate passed (framique.qubickle.com 200/404 set,
+  flamelancer.com, microscrop.shop, cert sampling); built HEAD
+  `1b06337e89d1efcbd95878dfe437a9b5f48a1c03` == pushed
+  `origin/feat/oceanblue-theme`. Excluded from the commit:
+  `ops/routing/*.conf` (build-timestamp churn only).
+- Verified on the exact tree pre-push: typecheck clean, 4823 unit +
+  258 contract green, prod build, browser checks (zero console errors,
+  computed styles assert every skin rule incl. reduced-motion path).
+- Follow-up approved, pending: remove the ticker topbar entirely —
+  variant becomes `"split" | "none"`, delete the marquee branch +
+  `items`, LanguageToggle falls to the header action cluster (spec →
+  plan → implement).
+
 ## [2026-09-23] — Plugin Phase 2 runtime + contracts CLOSED (R2-0…R2-8)
 
 - Scope: `docs/superpowers/specs/2026-09-22-plugin-phase2-runtime-design.md`
