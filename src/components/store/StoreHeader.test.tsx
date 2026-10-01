@@ -365,6 +365,51 @@ describe("StoreHeader songoskriti chrome resolves through themeChromeFor", () =>
   });
 });
 
+describe("oceanblue ticker announcement strip", () => {
+  it("renders the marquee ticker with theme items (not the split bar)", () => {
+    const chrome = themeChromeFor("oceanblue")!;
+    const html = renderHeader({
+      slug: "oceanblue",
+      name: "Oceanblue",
+      themeKey: "oceanblue",
+    });
+    // Marquee motion: fq-marquee track carrying the theme's own items.
+    expect(html).toContain("motion-safe:animate-[fq-marquee_var(--fq-marquee)_linear_infinite]");
+    for (const item of chrome.announcement.items ?? []) {
+      expect(html).toContain(item.text);
+    }
+    // Duplicate track is aria-hidden; the first copy is not.
+    expect(html).toContain('aria-hidden="true"');
+    // Brand band: theme token background with a neutral fallback.
+    expect(html).toContain("var(--theme-brand, #1a1a1a)");
+    // Ticker path must not render the split bar's 3-column shell.
+    expect(html).not.toContain("w-1/3 text-center");
+  });
+
+  it("renders the বাংলা ticker copy under the bn locale", () => {
+    const chrome = themeChromeFor("oceanblue")!;
+    const bnHtml = renderHeader({
+      slug: "oceanblue",
+      name: "Oceanblue",
+      themeKey: "oceanblue",
+      initialLang: "bn",
+    });
+    const first = (chrome.announcement.items ?? [])[0];
+    expect(first?.bn).toBeTruthy();
+    expect(bnHtml).toContain(first!.bn!);
+  });
+
+  it("songoskriti keeps the split strip — no marquee in its markup", () => {
+    const html = renderHeader({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      themeKey: "songoskriti",
+    });
+    expect(html).not.toContain("fq-marquee");
+    expect(html).toContain("w-1/3 text-center");
+  });
+});
+
 describe("themeChromeFor identity edge — key-driven, never slug or name", () => {
   it("key match wins regardless of slug or display name", () => {
     expect(themeChromeFor("songoskriti")).not.toBeNull();

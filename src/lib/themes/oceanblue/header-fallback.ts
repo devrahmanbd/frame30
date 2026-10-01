@@ -300,4 +300,14 @@ export const OCEANBLUE_HEADER_ANNOUNCEMENT = {
   left: "EASY 7-DAY EXCHANGE",
   center: "Free delivery across Bangladesh on orders over BDT 2,000",
   center_bn: "২০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি",
+  // A full-width marquee strip — the shared header renders `items` as a
+  // scrolling ticker instead of the default 3-column split bar.
+  variant: "ticker",
+  items: [
+    { text: "EASY 7-DAY EXCHANGE", bn: "সহজ ৭ দিনের এক্সচেঞ্জ" },
+    { text: "FREE DELIVERY OVER BDT 2,000", bn: "২০০০ টাকার উপরে ফ্রি ডেলিভারি" },
+    { text: "CASH ON DELIVERY NATIONWIDE", bn: "সারা দেশে ক্যাশ অন ডেলিভারি" },
+    { text: "SECURE CHECKOUT, EVERY ORDER", bn: "প্রতিটি অর্ডারে সিকিউর চেকআউট" },
+    { text: "AW26 IS HERE", bn: "AW26 এসেছে" },
+  ],
 } as const;

@@ -169,4 +169,36 @@ describe("skins.css token gate", () => {
     expect(scoped.length).toBeGreaterThan(0);
     expect(unscoped).toEqual([]);
   });
+
+  it("targets the verified DOM hooks, not dead selectors", () => {
+    const css = readFileSync(
+      "src/lib/themes/oceanblue/skins.css",
+      "utf8",
+    );
+    // Live hooks (verified against heritage.tsx / widgets.tsx / ProductCard).
+    expect(css).toContain("[data-hero]");
+    expect(css).toContain("[data-hero-cta]");
+    expect(css).toContain('[role="tab"]');
+    expect(css).toContain('[data-part="promise"]');
+    // Dead strings from earlier drafts — must never come back.
+    expect(css).not.toContain('[data-part="hero-cta"]');
+    expect(css).not.toContain('[data-part="hero-dot"]');
+    expect(css).not.toContain("[data-promise]");
+    expect(css).not.toContain("--theme-on-brand");
+  });
+
+  it("ships gradient, mask, reveal bump, and focus fixes", () => {
+    const css = readFileSync(
+      "src/lib/themes/oceanblue/skins.css",
+      "utf8",
+    );
+    expect(css).toContain("background-clip: text");
+    expect(css).toContain("mask-image");
+    expect(css).toContain(".fq-reveal");
+    expect(css).toContain("button:focus-visible");
+    // No keyframes — entrance motion stays with GSAP / fq-reveal.
+    expect(css).not.toContain("@keyframes");
+    // Theme never invents an undefined token.
+    expect(css).not.toContain("var(--theme-on-brand");
+  });
 });

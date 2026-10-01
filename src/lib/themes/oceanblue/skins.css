@@ -1,16 +1,25 @@
 /**
  * Oceanblue widget skin sheets (spec §4 — theme-owned skin CSS).
  *
- * Keyed by the renderer's `data-widget` + `data-skin` attributes. Until the
- * core lane emits those attributes these selectors match nothing — the
- * sheet is inert by design, never a crash, never an unstyled flash.
+ * Keyed by the renderer's `data-widget` + `data-skin` attributes, which the
+ * core SectionRenderer emits for the five skinnable widget types — this
+ * sheet is live on every oceanblue storefront render (preview included).
+ *
+ * DOM HOOKS (verified against the renderers): `[data-hero]`,
+ * `[data-hero-eyebrow]`, `[data-hero-headline]`, `[data-hero-sub]`,
+ * `[data-hero-cta]` (its CTA anchor is a direct child `a`), `[data-hero-art]`
+ * (inner frame is a direct child `div`), `button[role="tab"]` slide bars,
+ * `button[data-part="rail-nav"]`, `[data-part="promise"]`,
+ * `[data-part="badge"]`, `[data-part="author"]`, the `.snap-x` rail
+ * scroller, and `article` cards. Style only hooks that exist —
+ * skins.test.ts pins the hook vocabulary so a renderer rename fails loudly.
  *
  * TOKEN POLICY: every value reads `var(--theme-*)` (ocean brand, white
  * surface, Inter faces all arrive through the ThemeSurface bridge).
- * Literals are allowed ONLY for artwork — this sheet uses none: depth
- * comes from borders and spacing, so a merchant re-tint re-skins every
- * rule automatically. Gold (`--theme-accent`) appears only as a hairline
- * rule accent, never as text.
+ * Literals are allowed ONLY for artwork — this sheet uses none: gradients,
+ * masks and depth come from token mixes, so a merchant re-tint re-skins
+ * every rule automatically. Gold (`--theme-accent`) appears only as a
+ * hairline accent (rules, bars, glyphs), never as body text.
  *
  * ACCESSIBILITY: interactive descendants keep 44px targets; motion rules
  * collapse under `prefers-reduced-motion`; multi-column skins collapse to a
@@ -25,8 +34,8 @@
   padding-block: calc(var(--theme-space) * 2);
 }
 
-/* Quiet rail heading: display face, generous tracking, no rule — the
-   whitespace carries the hierarchy, not decoration. */
+/* Quiet rail heading: display face, generous tracking; the gold hairline
+   lands in the polish layer below. */
 [data-widget="product_rail"][data-skin="minimal"] h1,
 [data-widget="product_rail"][data-skin="minimal"] h2 {
   font-family: var(--theme-font-display);
@@ -38,7 +47,7 @@
 }
 
 /* Delivery promise line in muted ink; cards frameless on white. */
-[data-widget="product_rail"][data-skin="minimal"] [data-promise] {
+[data-widget="product_rail"][data-skin="minimal"] [data-part="promise"] {
   color: var(--theme-muted-ink);
 }
 [data-widget="product_rail"][data-skin="minimal"] article {
@@ -46,7 +55,8 @@
   border: none;
   box-shadow: none;
 }
-[data-widget="product_rail"][data-skin="minimal"] button[data-part="rail-nav"] {
+[data-widget="product_rail"][data-skin="minimal"]
+  button[data-part="rail-nav"] {
   min-height: 44px;
   min-width: 44px;
   border: 1px solid var(--theme-border);
@@ -68,13 +78,13 @@
   letter-spacing: 0;
   color: var(--theme-ink);
 }
-[data-widget="hero_carousel"][data-skin="split"] [data-part="hero-cta"] {
+[data-widget="hero_carousel"][data-skin="split"] [data-hero-cta] a {
   background: var(--theme-brand);
-  color: var(--theme-on-brand);
+  color: var(--theme-brand-ink);
   border-radius: var(--theme-radius);
   min-height: 44px;
 }
-[data-widget="hero_carousel"][data-skin="split"] [data-part="hero-dot"] {
+[data-widget="hero_carousel"][data-skin="split"] [role="tab"] {
   min-height: 44px;
   min-width: 44px;
 }
@@ -153,6 +163,7 @@
     transition: none;
   }
 }
+
 /* ------------------------------------------------------------- mobile */
 
 @media (max-width: 767px) {
@@ -168,50 +179,186 @@
 }
 
 /* ============================================================
-   POLISH LAYER — motion, depth, pattern (spec: skin & dress).
+   POLISH LAYER — the dress pass: wash, gradient, pattern, motion.
    Everything below is progressive enhancement over token values:
    compositor-friendly transforms/opacity only, always paired with a
-   reduced-motion collapse. No hex literals anywhere.
+   reduced-motion collapse. Transitions only — no keyframes here; depth
+   comes from token-mixed shadows, texture from token-mixed gradients.
    ============================================================ */
 
-/* ------------------------- hero split: CTA physics + eyebrow rule */
+/* ------------------------- hero split: wash, gradient headline, CTA, art */
 
-[data-widget="hero_carousel"][data-skin="split"] [data-part="hero-cta"] {
-  transition:
-    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 200ms ease,
-    background-color 200ms ease;
+/* Ocean wash behind the split layout — beats the section own background. */
+[data-widget="hero_carousel"][data-skin="split"] [data-hero] {
+  background:
+    radial-gradient(
+      90% 70% at 78% 14%,
+      color-mix(in oklab, var(--theme-brand) 8%, transparent),
+      transparent 62%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklab, var(--theme-brand) 5%, var(--theme-surface)),
+      var(--theme-surface) 58%
+    );
 }
-[data-widget="hero_carousel"][data-skin="split"] [data-part="hero-cta"]:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px -12px
-    color-mix(in oklab, var(--theme-brand) 55%, transparent);
+
+/* Display headline in an ocean gradient; forced-colors keeps it legible. */
+[data-widget="hero_carousel"][data-skin="split"] [data-hero-headline] {
+  background: linear-gradient(
+    112deg,
+    var(--theme-brand) 6%,
+    color-mix(in oklab, var(--theme-brand) 70%, var(--theme-surface)) 94%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
 }
-[data-widget="hero_carousel"][data-skin="split"]
-  [data-part="hero-cta"]:active {
-  transform: translateY(0);
-  box-shadow: none;
+
+@media (forced-colors: active) {
+  [data-widget="hero_carousel"][data-skin="split"] [data-hero-headline] {
+    background: none;
+    color: var(--theme-ink);
+    -webkit-text-fill-color: currentColor;
+  }
 }
+
+/* Eyebrow on a gold hairline rail. */
 [data-widget="hero_carousel"][data-skin="split"] [data-hero-eyebrow] {
   border-inline-start: 2px solid var(--theme-accent);
   padding-inline-start: calc(var(--theme-space) * 0.75);
 }
-[data-widget="hero_carousel"][data-skin="split"] [data-part="hero-dot"] {
+
+/* CTA: ocean gradient, lift, press, and a shine sweep that rides behind
+   the label (isolated stacking context keeps the order deterministic). */
+[data-widget="hero_carousel"][data-skin="split"] [data-hero-cta] a {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(
+    105deg,
+    var(--theme-brand),
+    color-mix(in oklab, var(--theme-brand) 82%, var(--theme-accent))
+  );
   transition:
-    transform 200ms ease,
-    opacity 200ms ease;
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 220ms ease,
+    opacity 220ms ease;
+}
+[data-widget="hero_carousel"][data-skin="split"] [data-hero-cta] a:hover {
+  transform: translateY(-2px);
+  opacity: 1;
+  box-shadow: 0 14px 30px -12px
+    color-mix(in oklab, var(--theme-brand) 60%, transparent);
+}
+[data-widget="hero_carousel"][data-skin="split"] [data-hero-cta] a:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+[data-widget="hero_carousel"][data-skin="split"] [data-hero-cta] a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    color-mix(in oklab, var(--theme-brand-ink) 42%, transparent) 50%,
+    transparent 70%
+  );
+  transform: translateX(-130%);
+  transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
 }
 [data-widget="hero_carousel"][data-skin="split"]
-  [data-part="hero-dot"]:hover {
-  transform: scale(1.25);
+  [data-hero-cta]
+  a:hover::before {
+  transform: translateX(130%);
 }
 
-/* ------------------------- rails: smooth scroll + card lift */
+/* Slide bars: nudge on hover, selected bar in gold (width still carries
+   the state, so color is never the only signal). */
+[data-widget="hero_carousel"][data-skin="split"] [role="tab"] {
+  transition: transform 200ms ease;
+}
+[data-widget="hero_carousel"][data-skin="split"] [role="tab"]:hover {
+  transform: scale(1.15);
+}
+[data-widget="hero_carousel"][data-skin="split"]
+  [role="tab"][aria-selected="true"]
+  span {
+  background: var(--theme-accent);
+}
 
+/* Media frame: hairline, radius, soft ocean depth; slow zoom on hover. */
+[data-widget="hero_carousel"][data-skin="split"] [data-hero-art] > div {
+  border: 1px solid color-mix(in oklab, var(--theme-brand) 22%, transparent);
+  border-radius: var(--theme-radius);
+  box-shadow: 0 26px 60px -36px
+    color-mix(in oklab, var(--theme-brand) 55%, transparent);
+}
+[data-widget="hero_carousel"][data-skin="split"] [data-hero-art] > div img,
+[data-widget="hero_carousel"][data-skin="split"] [data-hero-art] > div svg {
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+[data-widget="hero_carousel"][data-skin="split"]
+  [data-hero-art]:hover
+  > div
+  img,
+[data-widget="hero_carousel"][data-skin="split"]
+  [data-hero-art]:hover
+  > div
+  svg {
+  transform: scale(1.04);
+}
+
+/* ------------------------- rails: smooth scroll, edge fade, heading rule */
+
+/* The scroller glides under nav clicks and fades at both edges so the
+   carousel reads as continuous; the nav buttons sit outside the scroller
+   and stay crisp. */
 [data-widget="product_rail"][data-skin="minimal"] .snap-x,
 [data-widget="urgency_rail"][data-skin="minimal"] .snap-x {
   scroll-behavior: smooth;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    var(--theme-ink) 24px,
+    var(--theme-ink) calc(100% - 24px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    var(--theme-ink) 24px,
+    var(--theme-ink) calc(100% - 24px),
+    transparent 100%
+  );
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
 }
+
+/* Gold hairline under the rail headings (headings sit centered, so the
+   rule centers itself). */
+[data-widget="product_rail"][data-skin="minimal"] h1::after,
+[data-widget="product_rail"][data-skin="minimal"] h2::after,
+[data-widget="urgency_rail"][data-skin="minimal"] h1::after,
+[data-widget="urgency_rail"][data-skin="minimal"] h2::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 2px;
+  margin: calc(var(--theme-space) * 0.6) auto 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--theme-accent),
+    color-mix(in oklab, var(--theme-accent) 12%, transparent)
+  );
+}
+
+/* Cards lift with focus as well as hover; images ease their zoom. */
 [data-widget="product_rail"][data-skin="minimal"] article,
 [data-widget="urgency_rail"][data-skin="minimal"] article {
   transition:
@@ -219,6 +366,8 @@
     box-shadow 240ms ease;
 }
 [data-widget="product_rail"][data-skin="minimal"] article:hover,
+[data-widget="product_rail"][data-skin="minimal"] article:focus-within,
+[data-widget="urgency_rail"][data-skin="minimal"] article:hover,
 [data-widget="urgency_rail"][data-skin="minimal"] article:focus-within {
   transform: translateY(-4px);
   box-shadow: 0 16px 32px -16px
@@ -229,10 +378,13 @@
   transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 [data-widget="product_rail"][data-skin="minimal"] article:hover img,
-[data-widget="urgency_rail"][data-skin="minimal"] article:hover img {
+[data-widget="product_rail"][data-skin="minimal"] article:focus-within img,
+[data-widget="urgency_rail"][data-skin="minimal"] article:hover img,
+[data-widget="urgency_rail"][data-skin="minimal"] article:focus-within img {
   transform: scale(1.04);
 }
-[data-widget="product_rail"][data-skin="minimal"] button[data-part="rail-nav"],
+[data-widget="product_rail"][data-skin="minimal"]
+  button[data-part="rail-nav"],
 [data-widget="urgency_rail"][data-skin="minimal"]
   button[data-part="rail-nav"] {
   transition:
@@ -248,8 +400,17 @@
   border-color: var(--theme-brand);
 }
 
-/* ------------------------- grids: card calm + hover */
+/* ------------------------- grids: woven dot field + card calm + hover */
 
+[data-widget="product_grid"][data-skin="cards"] {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--theme-brand) 6%, transparent) 1px,
+    transparent 1.6px
+  );
+  background-size: 26px 26px;
+  background-position: center;
+}
 [data-widget="product_grid"][data-skin="cards"] article {
   transition:
     transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -266,11 +427,12 @@
 [data-widget="product_grid"][data-skin="cards"] article img {
   transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
 }
-[data-widget="product_grid"][data-skin="cards"] article:hover img {
+[data-widget="product_grid"][data-skin="cards"] article:hover img,
+[data-widget="product_grid"][data-skin="cards"] article:focus-within img {
   transform: scale(1.04);
 }
 
-/* ------------------------- testimonials: dot pattern band */
+/* ------------------------- testimonials: dot band, quote cards, glyph */
 
 [data-widget="testimonials"][data-skin="single"] {
   background-image: radial-gradient(
@@ -281,23 +443,72 @@
   background-size: 22px 22px;
   background-position: center;
 }
-[data-widget="testimonials"][data-skin="single"] blockquote {
+
+/* Each quote sits on its own card — the whole item (glyph, quote,
+   attribution) lifts together. */
+[data-widget="testimonials"][data-skin="single"] li {
   background: var(--theme-surface);
-  padding: calc(var(--theme-space) * 1.5) calc(var(--theme-space) * 2);
-  border-radius: var(--theme-radius);
   border: 1px solid var(--theme-border);
+  border-radius: var(--theme-radius);
+  padding: calc(var(--theme-space) * 1.5) calc(var(--theme-space) * 1.75);
+  box-shadow: 0 20px 44px -30px
+    color-mix(in oklab, var(--theme-ink) 35%, transparent);
+  transition:
+    transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 240ms ease;
+}
+[data-widget="testimonials"][data-skin="single"] li:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 52px -30px
+    color-mix(in oklab, var(--theme-brand) 50%, transparent);
+}
+
+/* Decorative quote glyph in gold; attribution carries a short hairline. */
+[data-widget="testimonials"][data-skin="single"]
+  li
+  > span[aria-hidden="true"] {
+  color: var(--theme-accent);
+  font-size: 3.5rem;
+  line-height: 1;
+}
+[data-widget="testimonials"][data-skin="single"] [data-part="author"]::before {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 2px;
+  margin:
+    calc(var(--theme-space) * 0.9) auto
+    calc(var(--theme-space) * 0.45);
+  border-radius: 999px;
+  background: var(--theme-accent);
+}
+
+/* ------------------------- section entrances: richer travel per skin */
+
+[data-widget="product_rail"][data-skin="minimal"].fq-reveal,
+[data-widget="hero_carousel"][data-skin="split"].fq-reveal,
+[data-widget="testimonials"][data-skin="single"].fq-reveal,
+[data-widget="product_grid"][data-skin="cards"].fq-reveal,
+[data-widget="urgency_rail"][data-skin="minimal"].fq-reveal {
+  animation-duration: calc(var(--theme-motion-duration, 420ms) * 1.5);
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  --theme-motion-rise: 22px;
 }
 
 /* ------------------------- focus visibility (all skins) */
 
 [data-widget="product_rail"][data-skin="minimal"] a:focus-visible,
+[data-widget="product_rail"][data-skin="minimal"] button:focus-visible,
 [data-widget="hero_carousel"][data-skin="split"] a:focus-visible,
+[data-widget="hero_carousel"][data-skin="split"] button:focus-visible,
 [data-widget="testimonials"][data-skin="single"] a:focus-visible,
+[data-widget="testimonials"][data-skin="single"] button:focus-visible,
 [data-widget="product_grid"][data-skin="cards"] a:focus-visible,
-[data-widget="urgency_rail"][data-skin="minimal"] a:focus-visible {
+[data-widget="product_grid"][data-skin="cards"] button:focus-visible,
+[data-widget="urgency_rail"][data-skin="minimal"] a:focus-visible,
+[data-widget="urgency_rail"][data-skin="minimal"] button:focus-visible {
   outline: 2px solid var(--theme-brand);
   outline-offset: 3px;
-  border-radius: var(--theme-radius);
 }
 
 /* ------------------------- polish reduced-motion collapse */
@@ -307,15 +518,53 @@
   [data-widget="urgency_rail"][data-skin="minimal"] .snap-x {
     scroll-behavior: auto;
   }
+  [data-widget="product_rail"][data-skin="minimal"] a,
+  [data-widget="product_rail"][data-skin="minimal"] button,
+  [data-widget="product_rail"][data-skin="minimal"] article,
+  [data-widget="product_rail"][data-skin="minimal"] article img,
+  [data-widget="hero_carousel"][data-skin="split"] [data-hero-cta] a,
+  [data-widget="hero_carousel"][data-skin="split"] [role="tab"],
+  [data-widget="hero_carousel"][data-skin="split"] [data-hero-art] > div img,
+  [data-widget="hero_carousel"][data-skin="split"] [data-hero-art] > div svg,
+  [data-widget="testimonials"][data-skin="single"] li,
+  [data-widget="product_grid"][data-skin="cards"] article,
+  [data-widget="product_grid"][data-skin="cards"] article img,
+  [data-widget="urgency_rail"][data-skin="minimal"] article,
+  [data-widget="urgency_rail"][data-skin="minimal"] article img {
+    transition: none;
+  }
   [data-widget="product_rail"][data-skin="minimal"] article:hover,
+  [data-widget="product_rail"][data-skin="minimal"] article:focus-within,
   [data-widget="product_rail"][data-skin="minimal"] article:hover img,
+  [data-widget="product_rail"][data-skin="minimal"] article:focus-within img,
+  [data-widget="product_rail"][data-skin="minimal"]
+    button[data-part="rail-nav"]:hover,
   [data-widget="urgency_rail"][data-skin="minimal"] article:hover,
+  [data-widget="urgency_rail"][data-skin="minimal"] article:focus-within,
   [data-widget="urgency_rail"][data-skin="minimal"] article:hover img,
+  [data-widget="urgency_rail"][data-skin="minimal"] article:focus-within img,
+  [data-widget="urgency_rail"][data-skin="minimal"]
+    button[data-part="rail-nav"]:hover,
   [data-widget="product_grid"][data-skin="cards"] article:hover,
+  [data-widget="product_grid"][data-skin="cards"] article:focus-within,
   [data-widget="product_grid"][data-skin="cards"] article:hover img,
+  [data-widget="product_grid"][data-skin="cards"] article:focus-within img,
+  [data-widget="hero_carousel"][data-skin="split"] [data-hero-cta] a:hover,
+  [data-widget="hero_carousel"][data-skin="split"] [data-hero-cta] a:active,
   [data-widget="hero_carousel"][data-skin="split"]
-    [data-part="hero-cta"]:hover {
+    [data-hero-art]:hover
+    > div
+    img,
+  [data-widget="hero_carousel"][data-skin="split"]
+    [data-hero-art]:hover
+    > div
+    svg,
+  [data-widget="hero_carousel"][data-skin="split"] [role="tab"]:hover,
+  [data-widget="testimonials"][data-skin="single"] li:hover {
     transform: none;
     box-shadow: none;
+  }
+  [data-widget="hero_carousel"][data-skin="split"] [data-hero-cta] a::before {
+    display: none;
   }
 }

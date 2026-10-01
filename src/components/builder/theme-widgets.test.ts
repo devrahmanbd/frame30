@@ -7,8 +7,11 @@
  * per-theme look comes from the theme-keyed registry only.
  */
 import { describe, expect, it } from "vitest";
-import type { SectionType } from "@/lib/builder-ast";
-import { GENERIC_WIDGETS, WIDGET_COMPONENTS } from "./widgets";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import type { Locale } from "@/lib/bitext";
+import type { Section, SectionType } from "@/lib/builder-ast";
+import { GENERIC_WIDGETS, WIDGET_COMPONENTS, widgetReader } from "./widgets";
 import { SONGOSKRITI_WIDGETS } from "./songoskriti";
 import { resolveWidgetComponent, themeWidgetKeys } from "./theme-widgets";
 
@@ -100,5 +103,71 @@ describe("theme widget registry", () => {
         WIDGET_COMPONENTS[key],
       );
     }
+  });
+});
+
+describe("generic testimonials renderer", () => {
+  const section = (props: Record<string, unknown>): Section =>
+    ({ id: "t1", type: "testimonials", props }) as unknown as Section;
+
+  const render = (sec: Section, locale: Locale, editing: boolean): string => {
+    const Cmp = resolveWidgetComponent("oceanblue", "testimonials");
+    expect(Cmp, "testimonials must resolve for oceanblue").toBeDefined();
+    return renderToStaticMarkup(
+      createElement(Cmp as never, {
+        section: sec,
+        ...widgetReader(sec, undefined, locale),
+        Heading: "h2",
+        primary: false,
+        editing,
+        locale,
+        storeSlug: "test",
+        data: undefined,
+        renderChildren: () => null,
+        link: (href: string) => href,
+      } as never),
+    );
+  };
+
+  it("oceanblue gets a theme-neutral renderer, never songoskriti's", () => {
+    const generic = resolveWidgetComponent("oceanblue", "testimonials");
+    expect(generic).toBe(GENERIC_WIDGETS.testimonials);
+    expect(generic).not.toBe(SONGOSKRITI_WIDGETS.testimonials);
+  });
+
+  it("fail-closes: null on the storefront, a hint in the studio", () => {
+    const empty = section({ testimonials: [] });
+    expect(render(empty, "en", false)).toBe("");
+    expect(render(empty, "en", true)).toContain("add a quote");
+  });
+
+  it("renders quote and author hooks with bilingual twins", () => {
+    const sec = section({
+      testimonials: [
+        {
+          quote: "Exquisite weave.",
+          quote_bn: "দারুণ বোনা।",
+          author: "Nasrin",
+          author_bn: "নাসরিন",
+          role: "Dhaka",
+        },
+      ],
+    });
+    const en = render(sec, "en", false);
+    expect(en).toContain('data-part="author"');
+    expect(en).toContain("Exquisite weave.");
+    expect(en).toContain("Nasrin");
+    const bn = render(sec, "bn", false);
+    expect(bn).toContain("দারুণ বোনা।");
+    expect(bn).toContain("নাসরিন");
+  });
+
+  it("rows without a usable quote are dropped, never rendered blank", () => {
+    const sec = section({
+      testimonials: [{ author: "No quote here" }, { quote: "Kept quote." }],
+    });
+    const html = render(sec, "en", false);
+    expect(html).toContain("Kept quote.");
+    expect(html).not.toContain("No quote here");
   });
 });

@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import type {
   Breakpoint,
+  PropRow,
   PropValue,
   Section,
   SectionType,
@@ -1140,6 +1141,84 @@ const HeroWidget: WidgetComponent = ({ str, Heading, locale, section }) => {
   );
 };
 
+/* ------------------------------------------------------------ testimonials */
+
+function rowsOf(section: Section, key: string): PropRow[] {
+  const value: PropValue | undefined = section.props[key];
+  return Array.isArray(value) ? (value as PropRow[]) : [];
+}
+
+/**
+ * Theme-agnostic testimonials — quote grid with a `blockquote` and a
+ * `data-part="author"` attribution so per-theme skin sheets (oceanblue
+ * `single`, songoskriti-style walls) can restyle the markup without owning
+ * the renderer. Renders every row statically: no carousel in the generic
+ * layer (motion stays the theme/skin's channel), fail-closed to an editing
+ * placeholder or null when there are no usable quotes.
+ */
+const GenericTestimonials: WidgetComponent = ({
+  section,
+  locale,
+  editing,
+}) => {
+  const quotes = rowsOf(section, "testimonials")
+    .map((row) => ({
+      quote: textOf(row, "quote", locale).trim(),
+      author: textOf(row, "author", locale).trim(),
+      role: textOf(row, "role", locale).trim(),
+    }))
+    .filter((item) => item.quote);
+
+  if (quotes.length === 0) {
+    return editing ? (
+      <p className="text-xs text-muted-foreground">
+        {locale === "bn"
+          ? "প্রশংসাপত্র: একটি মতামত যোগ করুন।"
+          : "Testimonials: add a quote."}
+      </p>
+    ) : null;
+  }
+
+  return (
+    <section
+      className="w-full py-16 sm:py-20"
+      aria-label={locale === "bn" ? "প্রশংসাপত্র" : "Testimonials"}
+    >
+      <div className="mx-auto max-w-5xl px-4 sm:px-8">
+        <ul className="flex flex-col items-center gap-12 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-10">
+          {quotes.map((item) => (
+            <li
+              key={`${item.author}-${item.quote.slice(0, 24)}`}
+              className="flex w-full max-w-md flex-col items-center text-center sm:w-auto"
+            >
+              <span
+                aria-hidden="true"
+                className="mb-4 block font-serif text-5xl leading-none text-muted-foreground/50 select-none"
+              >
+                &ldquo;
+              </span>
+              <blockquote className="font-serif text-base leading-relaxed text-foreground/85">
+                {item.quote}
+              </blockquote>
+              <p
+                data-part="author"
+                className="mt-6 text-xs font-medium fq-caps tracking-[0.2em] text-muted-foreground"
+              >
+                {item.author}
+                {item.role && (
+                  <span className="ml-2 font-normal normal-case tracking-normal">
+                    · {item.role}
+                  </span>
+                )}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+};
+
 /**
  * The closed renderer map. `Record<SectionType, WidgetComponent>` means a new
  * widget type cannot compile until its renderer exists.
@@ -1499,6 +1578,8 @@ const BASE_WIDGETS: Record<string, WidgetComponent> = {
     </section>
   ),
 
+  testimonials: GenericTestimonials,
+
   spacer: ({ int }) => (
     <div aria-hidden="true" style={{ height: int("size", 32, 8, 160) }} />
   ),
@@ -1686,9 +1767,8 @@ const BASE_WIDGETS: Record<string, WidgetComponent> = {
  * songoskriti-default composition for the unkeyed studio/test path only).
  *
  * Partial by design: keys only a theme provides (finder_row, craft_story,
- * testimonials, trust_footer) have no generic renderer, so other themes
- * resolve them to undefined and render the unavailable placeholder
- * instead of leaking brand.
+ * trust_footer) have no generic renderer, so other themes resolve them to
+ * undefined and render the unavailable placeholder instead of leaking brand.
  */
 export const GENERIC_WIDGETS: Partial<Record<SectionType, WidgetComponent>> = {
   ...(BASE_WIDGETS as any),

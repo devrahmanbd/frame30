@@ -28,6 +28,28 @@ describe("themeChromeFor", () => {
     expect(chrome!.fallbackMenu.length).toBeGreaterThan(0);
   });
 
+  it("registers the oceanblue theme entry with a ticker announcement", () => {
+    expect(themeChromeKeys()).toContain("oceanblue");
+    const chrome = themeChromeFor("oceanblue");
+    expect(chrome).not.toBeNull();
+    expect(chrome!.announcement.variant).toBe("ticker");
+    expect(chrome!.announcement.items?.length).toBeGreaterThanOrEqual(2);
+    // Every ticker item carries an en + bn twin (bilingual storefront).
+    for (const item of chrome!.announcement.items ?? []) {
+      expect(item.text.length).toBeGreaterThan(0);
+      expect(item.bn && item.bn.length).toBeGreaterThan(0);
+    }
+    // Split-copy fallback stays present for aria/single-item rendering.
+    expect(chrome!.announcement.center.length).toBeGreaterThan(0);
+    expect(chrome!.announcement.center_bn.length).toBeGreaterThan(0);
+  });
+
+  it("songoskriti keeps the default split strip (no ticker config)", () => {
+    const chrome = themeChromeFor("songoskriti");
+    expect(chrome!.announcement.variant).toBeUndefined();
+    expect(chrome!.announcement.items).toBeUndefined();
+  });
+
   it("resolves by key, not by slug or name — lookalikes stay generic", () => {
     // The old slug-sniff dressed any "songoskriti"-slugged store in theme
     // chrome even with a foreign theme installed, and dressed renamed

@@ -38,7 +38,20 @@ export type ThemeHeaderChrome = {
   /** Logo lockup replacing the text wordmark. */
   logo: { src: string; alt: string };
   /** Announcement-bar copy for the luxury variant. */
-  announcement: { left: string; center: string; center_bn: string };
+  announcement: {
+    left: string;
+    center: string;
+    center_bn: string;
+    /**
+     * Presentation variant, theme-authored: "split" (the default 3-column
+     * strip) or "ticker" (a marquee of `items` across the full width).
+     * Absent means "split" — songoskriti and generic chrome keep the
+     * existing strip untouched.
+     */
+    variant?: "split" | "ticker";
+    /** Ticker copy (used when `variant === "ticker"`). */
+    items?: ReadonlyArray<{ text: string; bn?: string }>;
+  };
 };
 
 const CHROME: Record<string, () => ThemeHeaderChrome> = {

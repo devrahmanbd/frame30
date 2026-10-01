@@ -1,9 +1,11 @@
 /**
  * Oceanblue SSR render smoke — every authored homepage + footer section
- * resolves to a renderer through the legacy closed map (the unkeyed
- * studio/test path) and renders to static markup in EN + BN without
- * throwing. Theme-specific renderers are never required: Oceanblue
- * composes generic engine widgets only.
+ * resolves to a renderer through the themed storefront path
+ * (`resolveWidgetComponent("oceanblue", …)`) and renders non-empty static
+ * markup in EN + BN without throwing. Resolving via the legacy unkeyed
+ * map would hide a themed miss (a section resolving to undefined renders
+ * null on the storefront). Theme-specific renderers are never required:
+ * Oceanblue composes generic engine widgets only.
  */
 import { describe, expect, it } from "vitest";
 import { createElement } from "react";
@@ -12,10 +14,10 @@ import type { Locale } from "@/lib/bitext";
 import type { Section } from "@/lib/builder-ast";
 import {
   widgetReader,
-  WIDGET_COMPONENTS,
   type WidgetComponent,
   type WidgetCtx,
 } from "@/components/builder/widgets";
+import { resolveWidgetComponent } from "@/components/builder/theme-widgets";
 import { buildFooterMain } from "./footer";
 import { buildHeaderMain } from "./header";
 import { buildHomepageMain } from "./homepage";
@@ -45,16 +47,19 @@ function ctxFor(section: Section, locale: Locale): WidgetCtx {
 }
 
 function render(section: Section, locale: Locale): string {
-  const Cmp: WidgetComponent | undefined = (
-    WIDGET_COMPONENTS as Record<string, WidgetComponent>
-  )[section.type];
+  const Cmp = resolveWidgetComponent(
+    "oceanblue",
+    section.type as Parameters<typeof resolveWidgetComponent>[1],
+  ) as WidgetComponent | undefined;
   expect(Cmp, `${section.type} must resolve a renderer`).toBeDefined();
-  return renderToStaticMarkup(
+  const html = renderToStaticMarkup(
     createElement(
       Cmp as (p: WidgetCtx) => React.ReactElement,
       ctxFor(section, locale),
     ),
   );
+  expect(html.trim().length, `${section.type} must render markup`).toBeGreaterThan(0);
+  return html;
 }
 
 describe("oceanblue SSR render", () => {
