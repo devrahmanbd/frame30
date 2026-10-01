@@ -1914,6 +1914,8 @@ const BASE_CATALOG: CatalogEntry[] = [
       brandName: "",
       paymentsMarks: "",
       paymentsHeading: "",
+      // Merchant-authored social rows; empty = omit (no fabricated profiles).
+      socials: "",
     },
     fields: [
       text("c1Title", "Column 1 title", 40),
@@ -1934,6 +1936,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("brandName", "Brand name", 60),
       area("paymentsMarks", "Payment marks (comma separated)", 300),
       text("paymentsHeading", "Payment heading", 40),
+      area("socials", "Social links (Label|https://… one per line)", 600),
       {
         // Repeater-first (chrome.tsx + songoskriti.tsx footers): studio
         // `items` column rows win when present; scalar c1..c4 pairs stay

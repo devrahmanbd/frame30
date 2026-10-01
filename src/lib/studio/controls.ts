@@ -2328,6 +2328,15 @@ const CONTENT: Record<string, Control[]> = {
   ],
   footer_sitemap: [
     c({
+      key: "socials",
+      label: "Social links (one per line: Label|https://…)",
+      type: "textarea",
+      tab: "content",
+      section: "Social",
+      placeholder:
+        "YouTube|https://youtube.com/@yourbrand\nInstagram|https://instagram.com/yourbrand",
+    }),
+    c({
       key: "items",
       label: "Columns",
       type: "repeater",

@@ -704,6 +704,8 @@ export const WIDGETS: WidgetDef[] = [
       brandName: "",
       paymentsMarks: "",
       paymentsHeading: "",
+      // Merchant-authored social rows; empty = omit (no fabricated profiles).
+      socials: "",
     },
   },
   {

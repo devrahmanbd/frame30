@@ -127,11 +127,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         "টু-পিস সেট, সিল্ক ও সহজ উৎসব কুর্তা — ভারী দাম ছাড়াই উৎসবের সাজ।",
       ctaLabel: "SHOP FESTIVE",
       ctaLabel_bn: "উৎসব সংগ্রহ",
-      ctaUrl: `${c}/festive`,
-      ctaLabel2: "SHOP SALE",
-      ctaLabel2_bn: "সেল দেখুন",
-      ctaUrl2: `${c}/sale`,
-      layout: "image_left",
+      ctaHref: `${c}/festive`,
       reveal: "rise",
     }),
 

@@ -99,3 +99,89 @@ SectionRenderer. :3001 HTTP preview 404 is environmental (old-base dev
 server lacks Supabase env; untouched songoskriti + root fail identically).
 NOT PUSHED (standing rule) — needs explicit push permission, then deploy +
 live eyeball (desktop + 390px mobile) + mobile viewport pass.
+
+---
+
+# Phase 9 — Oceanblue premium rebuild (2026-10-01, branch feat/oceanblue-theme)
+
+> Goal: /editor-compatible, fully isolated, premium ethnic-marketplace theme.
+> Keep Oceanblue name + logo. Original work only — biba.in is DNA reference
+> (REPORT.md Part 1), never copy branding/text/assets/layouts.
+> Method: hallmark (loaded; DESIGN.md = locked system, oceanblue spec §2
+> palette preserved: deep-ocean #0B3A5B + gold #C08A3E decorative-only).
+> Loop protocol: /loop commands are plugin-handled (opencode-loop-local);
+> enacted manually in-session — batch ≤5, this file is the state.
+> OpenDesign MCP installed 2026-10-01, tools activate after opencode restart.
+> copilot.com/chat needs owner Microsoft login — prompts below are for the
+> user's authenticated session; drop finals into public/ph/oceanblue/.
+
+## Batch 1 (in progress)
+
+- [x] P9-0 Setup: OpenDesign MCP entry + smoke test; hallmark pre-flight;
+      live-snapshot audit of /theme-preview/oceanblue (see punch list below).
+- [x] P9-1 Dead CTAs: festive split primary CTA renders href="#" (ctaUrl
+      missing; only ctaUrl2=/sale wired) + footer socials (YouTube/X/IG/FB)
+      all href="#" → wire real permalinks or omit.
+      DONE 2026-10-01: split_feature ctaUrl→ctaHref=/c/festive, dropped
+      ctaLabel2/ctaUrl2; footer socials now omitted (socials area field
+      default "", icon lookups kept private as SOCIAL_ICONS). Registry
+      embed regenerated. Verified live: 0 social links, 0 hash anchors,
+      SHOP FESTIVE→/c/festive, 1 CTA. Lint: chrome.tsx 4 errors→0
+      (warnings +9 from react-refresh branch flip, informational only;
+      siblings carry same warnings).
+- [ ] P9-2 Double newsletter: main §11 + footer contentinfo render identical
+      "New drops, first inbox" forms → keep one.
+- [ ] P9-3 Preview rails show grocery/electronics (cookware, basmati, earbuds,
+      fan) → oceanblue ethnic demo catalog (BDT minor units, marked demo).
+- [ ] P9-4 Banner hero skin (spec docs/superpowers/specs/2026-10-01-*.md,
+      commit da18691) — biba-style full-bleed image+overlay hero.
+- [ ] P9-5 Honest copy: footer helpline + care@oceanblue.example are
+      fabricated → merchant-config placeholders; "A HAPPY CUSTOMER" flagged
+      illustrative; trim all-caps eyebrow spam.
+
+## Batch 2 (queued)
+
+- [ ] P9-6 Imagery drop-in (user runs prompts in authenticated Copilot).
+- [ ] P9-7 Trust-marquee motion + card hover crossfade/Quick View (Phase 1
+      carryover, theme-scoped skins only).
+- [ ] P9-8 /editor verify: oceanblue sections in studio palette +
+      SectionRenderer render + isolation.test.ts green.
+- [ ] P9-9 Mobile 320/375/414/768 + reduced-motion + a11y gates.
+- [ ] P9-10 Gates per item: typecheck → test → contracts → eslint touched →
+      chrome snapshot (screenshot best-effort) → commit.
+
+## Out of theme scope (shared-track decisions needed)
+
+- Mega-menu in StoreHeader (masthead owns nav; themes can't touch it).
+- Transparent→solid sticky header (shared chrome behavior).
+
+## Audit punch list (2026-10-01 live snapshot)
+
+- critical: dead festive CTA href="#" (homepage.ts split_feature ctaUrl).
+- critical: rails render non-ethnic demo products (preview wiring).
+- critical: fabricated footer contact (helpline + example email).
+- major: double newsletter (main §11 + footer).
+- major: imageless split hero vs biba full-bleed DNA (banner spec unbuilt).
+- major: all-caps eyebrow spam (8+ screaming headings).
+- major: footer socials href="#" (4 dead links).
+- minor: Shop-by-Color c7/c8 empty slots in config.
+- minor: trust strip static (marquee motion unverified live).
+- minor: single generic testimonial ("A HAPPY CUSTOMER").
+
+## Copilot image prompts (MeiGen structure, no text in frame)
+
+1. HERO new-in: "South Asian woman in everyday embroidered teal salwar kameez,
+   sunlit Dhaka rooftop courtyard, soft morning light, deep-ocean teal and
+   warm gold palette, full-body editorial, portrait 4:5, photorealistic."
+2. HERO wedding: "Bride in deep maroon lehenga with gold zari, jasmine in
+   hair, candlelit haveli interior bokeh, maroon and gold palette,
+   full-body editorial, portrait 4:5, photorealistic."
+3. HERO girls: "Teen girl twirling in mustard festive mini kurta set,
+   marigold market street, golden hour, mustard and cream palette,
+   motion joy, portrait 4:5, photorealistic."
+4. FESTIVE split: "Silk festive kurtas on brass rail, cream studio wall,
+   jasmine garland, side window light, cream gold and rust palette,
+   landscape 2:1, photorealistic e-commerce campaign."
+5. CATEGORY tiles (8): one garment flat-lay per tile — salwar, kurta, dress,
+   bottom, girls suit, jewellery set, festive collection, sale rail —
+   cream background, soft shadow, square 1:1, photorealistic.
