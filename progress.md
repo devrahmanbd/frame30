@@ -175,7 +175,7 @@ live eyeball (desktop + 390px mobile) + mobile viewport pass.
 > implement → gates → :3000 preview → commit (no push/deploy without word).
 
 - [x] P10-0 Spec written + self-reviewed + committed (this file updated).
-- [ ] P10-1 writing-plans implementation plan.
+- [x] P10-1 writing-plans implementation plan (`docs/superpowers/plans/2026-10-02-oceanblue-v2.md`, self-reviewed, committed).
 - [ ] P10-2 Scaffold: tokens/skins/homepage/secondary/header/footer/preset/preview.
 - [ ] P10-3 Wiring: preview-sources, theme-chrome, catalog-meta, nav resolve, registry migration.
 - [ ] P10-4 Gates + :3000 rebuild + chrome verify (desktop + 390px, 0 console errors) + commit.
