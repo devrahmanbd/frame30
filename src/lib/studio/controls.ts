@@ -70,6 +70,25 @@ const ALIGN_OPTIONS: ControlOption[] = [
 
 const c = (control: Control): Control => control;
 
+/**
+ * Skin select shared by skinnable widgets — options mirror WIDGET_SKINS in
+ * `builder-ast.ts` (product_rail, hero_carousel, testimonials, product_grid,
+ * urgency_rail). Studio keeps its own copy so the control schema stays
+ * decoupled from the builder catalog.
+ */
+const skinControl = (section: string, options: string[]): Control =>
+  c({
+    key: "skin",
+    label: "Skin",
+    type: "select",
+    tab: "style",
+    section,
+    options: options.map((value) => ({
+      value,
+      label: value.charAt(0).toUpperCase() + value.slice(1),
+    })),
+  });
+
 /* ------------------------------------------------------------------ */
 /* Shared tabs                                                         */
 /* ------------------------------------------------------------------ */
@@ -2185,6 +2204,8 @@ const CONTENT: Record<string, Control[]> = {
           tab: "content",
           section: "Slides",
         }),
+
+        skinControl("Slides", ["split", "fullbleed", "minimal"]),
       ],
     }),
     c({
@@ -4626,7 +4647,10 @@ const CONTENT: Record<string, Control[]> = {
       section: "Products",
       min: 2,
       max: 4,
+      responsive: true,
     }),
+
+    skinControl("Products", ["cards", "rows"]),
   ],
   product_rail: [
     c({
@@ -4652,6 +4676,8 @@ const CONTENT: Record<string, Control[]> = {
       tab: "content",
       section: "Rail",
     }),
+
+    skinControl("Rail", ["editorial", "compact", "minimal"]),
   ],
   product_media: [
     c({
@@ -4933,6 +4959,13 @@ const CONTENT: Record<string, Control[]> = {
       section: "Search",
       min: 1,
       max: 12,
+    }),
+    c({
+      key: "voiceEnabled",
+      label: "Voice input",
+      type: "switch",
+      tab: "content",
+      section: "Search",
     }),
   ],
   facet_sidebar: [
@@ -5608,6 +5641,28 @@ const CONTENT: Record<string, Control[]> = {
       section: "Mega menu",
       min: 1,
       max: 4,
+      responsive: true,
+    }),
+    c({
+      key: "promoImage",
+      label: "Promo image",
+      type: "image",
+      tab: "content",
+      section: "Promo panel",
+    }),
+    c({
+      key: "promoHref",
+      label: "Promo link",
+      type: "link",
+      tab: "content",
+      section: "Promo panel",
+    }),
+    c({
+      key: "promoTitle",
+      label: "Promo title",
+      type: "text",
+      tab: "content",
+      section: "Promo panel",
     }),
   ],
   buy_box: [
@@ -5820,6 +5875,26 @@ const CONTENT: Record<string, Control[]> = {
       key: "heading",
       label: "Heading",
       type: "text",
+      tab: "content",
+      section: "Categories",
+    }),
+    c({
+      key: "aspect",
+      label: "Tile aspect ratio",
+      type: "select",
+      tab: "content",
+      section: "Categories",
+      options: [
+        { value: "1/1", label: "Square" },
+        { value: "4/3", label: "4:3" },
+        { value: "4/5", label: "4:5" },
+        { value: "3/4", label: "3:4" },
+      ],
+    }),
+    c({
+      key: "imageFirst",
+      label: "Image-first tiles",
+      type: "switch",
       tab: "content",
       section: "Categories",
     }),
@@ -6434,6 +6509,8 @@ const CONTENT: Record<string, Control[]> = {
           tab: "content",
           section: "Testimonials",
         }),
+
+        skinControl("Testimonials", ["carousel", "wall", "single"]),
       ],
     }),
     c({
@@ -6739,6 +6816,21 @@ const CONTENT: Record<string, Control[]> = {
         { value: "editorial", label: "Editorial" },
       ],
     }),
+    c({
+      key: "endsAt",
+      label: "Sale ends (date/time)",
+      type: "text",
+      tab: "content",
+      section: "Countdown",
+    }),
+    c({
+      key: "endsLabel",
+      label: "Countdown label",
+      type: "text",
+      tab: "content",
+      section: "Countdown",
+    }),
+    skinControl("Rail", ["editorial", "compact", "minimal"]),
   ],
   rating_stars: [
     c({

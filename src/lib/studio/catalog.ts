@@ -1654,6 +1654,7 @@ export const WIDGETS: WidgetDef[] = [
       density: "comfortable",
       showRating: false,
       promise: "",
+      skin: "cards",
     },
   },
   {
@@ -1670,6 +1671,7 @@ export const WIDGETS: WidgetDef[] = [
       cardVariant: "compact",
       showRating: false,
       promise: "",
+      skin: "editorial",
     },
   },
   {
@@ -2135,7 +2137,16 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "Menu",
     keywords: ["mega", "menu", "navigation", "taxonomy", "header"],
-    defaults: { label: "Shop", limit: 8, columns: 4, menuId: "", promoImage: "", promoHref: "", promoTitle: "", promoTitle_bn: "" },
+    defaults: {
+      label: "Shop",
+      limit: 8,
+      columns: 4,
+      menuId: "",
+      promoImage: "",
+      promoHref: "",
+      promoTitle: "",
+      promoTitle_bn: "",
+    },
   },
   {
     key: "buy_box",
