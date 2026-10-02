@@ -11,6 +11,7 @@
  * as a placeholder instead of breaking the whole page render.
  */
 import { SIZES_LABEL, SIZES_PRESETS, altKey, sizesKey } from "./media";
+import { ADVANCED_FIELDS } from "./builder-advanced";
 import { biTextState, bnKey, readBiText, type Locale } from "./bitext";
 import { isTaxonomyValue, type TaxonomySource } from "./taxonomy";
 import { UNIT_KINDS, type UnitKind } from "./unit-format";
@@ -1872,11 +1873,14 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "content",
     slots: ["header"],
     heading: false,
-    defaults: { label: "Shop", limit: 8, columns: 4 },
+    defaults: { label: "Shop", limit: 8, columns: 4, promoImage: "", promoHref: "", promoTitle: "" },
     fields: [
       text("label", "Trigger label", 40),
       num("limit", "Max top-level entries"),
       cols("columns", "Columns (1-4)"),
+      url("promoImage", "Promo image"),
+      url("promoHref", "Promo link"),
+      text("promoTitle", "Promo title", 60),
     ],
   },
   {
@@ -1965,11 +1969,13 @@ const BASE_CATALOG: CatalogEntry[] = [
       placeholder: "Search products",
       buttonLabel: "Search",
       limit: 6,
+      voiceEnabled: false,
     },
     fields: [
       text("placeholder", "Placeholder", 60),
       text("buttonLabel", "Button label", 40),
       num("limit", "Max suggestions"),
+      bool("voiceEnabled", "Voice input"),
     ],
   },
   {
@@ -3205,6 +3211,8 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "Shop by Category",
+      aspect: "1/1",
+      imageFirst: true,
       c1Title: "Women's Sarees",
       c1Image: "",
       c1Href: "/collections/womens",
@@ -3232,6 +3240,19 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("heading", "Heading", 80),
+      {
+        key: "aspect",
+        label: "Tile aspect ratio",
+        kind: "select",
+        panel: "layout",
+        options: [
+          { value: "1/1", label: "Square" },
+          { value: "4/3", label: "4:3" },
+          { value: "4/5", label: "4:5" },
+          { value: "3/4", label: "3:4" },
+        ],
+      },
+      bool("imageFirst", "Image-first tiles"),
       text("c1Title", "Category 1 title", 60),
       url("c1Image", "Category 1 image"),
       url("c1Href", "Category 1 link"),
@@ -5279,6 +5300,8 @@ const BASE_CATALOG: CatalogEntry[] = [
       showStockHint: true,
       lowStockAt: 5,
       promise: "",
+      endsAt: "",
+      endsLabel: "",
       skin: "editorial",
     },
     fields: [
@@ -5301,6 +5324,8 @@ const BASE_CATALOG: CatalogEntry[] = [
       bool("showStockHint", "Show stock hints"),
       num("lowStockAt", "Low-stock threshold"),
       text("promise", "Delivery promise", 60),
+      text("endsAt", "Sale ends (date/time)", 40),
+      text("endsLabel", "Countdown label", 60),
       CARD_VARIANT,
       SKIN_FIELD("urgency_rail"),
     ],
@@ -5572,7 +5597,7 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   ],
   payment_icons: ["heading"],
   notice: ["text"],
-  mega_menu: ["label"],
+  mega_menu: ["label", "promoTitle"],
   department_strip: ["heading"],
   footer_sitemap: [
     "c1Title",
@@ -5995,7 +6020,8 @@ export const BITEXT_FIELDS: Partial<Record<SectionType, string[]>> = {
   // theme-authored copy is listed here.
   price_buckets: ["heading"],
   occasion_matrix: ["heading"],
-  urgency_rail: ["heading", "promise"],
+  urgency_rail: ["heading", "promise", "endsLabel"],
+  blog_archive: ["heading", "emptyText"],
 };
 
 /**
@@ -6860,6 +6886,17 @@ function parseSection(node: unknown, ctx: ParseCtx): Section | null {
             : ""
           : bnValue;
     }
+  }
+
+  // Advanced-tab props (adv* in builder-advanced.ts) are not catalog fields,
+  // but the renderer reads them via advancedAttrs — so they travel with the
+  // node through parse, coerced by their own specs. Without this they would
+  // silently drop on every save.
+  for (const field of ADVANCED_FIELDS) {
+    const value = (source as Record<string, unknown>)[field.key];
+    if (value === undefined) continue;
+    const coerced = coerceProp(field, value);
+    if (coerced !== null) props[field.key] = coerced;
   }
 
   const hidden = Array.isArray(raw.hidden)

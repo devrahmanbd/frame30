@@ -1822,6 +1822,7 @@ export const WIDGETS: WidgetDef[] = [
       placeholder: "Search products",
       buttonLabel: "Search",
       limit: 6,
+      voiceEnabled: false,
     },
   },
   {
@@ -2134,7 +2135,7 @@ export const WIDGETS: WidgetDef[] = [
     category: "general",
     icon: "Menu",
     keywords: ["mega", "menu", "navigation", "taxonomy", "header"],
-    defaults: { label: "Shop", limit: 8, columns: 4, menuId: "" },
+    defaults: { label: "Shop", limit: 8, columns: 4, menuId: "", promoImage: "", promoHref: "", promoTitle: "", promoTitle_bn: "" },
   },
   {
     key: "buy_box",
@@ -2220,6 +2221,8 @@ export const WIDGETS: WidgetDef[] = [
     keywords: ["circle", "categories", "collections", "shop by", "round"],
     defaults: {
       heading: "Shop by Category",
+      aspect: "1/1",
+      imageFirst: true,
       c1Title: "Women's Sarees",
       c1Image: "",
       c1Href: "/collections/womens",
@@ -2639,6 +2642,9 @@ export const WIDGETS: WidgetDef[] = [
       lowStockAt: 5,
       promise: "",
       promise_bn: "",
+      endsAt: "",
+      endsLabel: "",
+      endsLabel_bn: "",
       skin: "editorial",
     },
   },

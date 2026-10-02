@@ -190,3 +190,47 @@ describe("search template", () => {
     expect(TEMPLATE_KEYS).toContain("search");
   });
 });
+
+describe("advanced props persist through parse", () => {
+  it("keeps adv* props on parseAst round-trip", async () => {
+    const { parseAst } = await import("./builder-ast");
+    const ast = parseAst({
+      header: [],
+      main: [
+        {
+          id: "s1",
+          type: "heading",
+          props: {
+            text: "Hello",
+            advAnimation: "zoom",
+            advMarginTop: 24,
+            advId: "hero-title",
+          },
+        },
+      ],
+      footer: [],
+    });
+    const props = (ast.main[0] as { props: Record<string, unknown> }).props;
+    expect(props["advAnimation"]).toBe("zoom");
+    expect(props["advMarginTop"]).toBe(24);
+    expect(props["advId"]).toBe("hero-title");
+  });
+
+  it("drops unknown adv impostors and coerces out-of-range values", async () => {
+    const { parseAst } = await import("./builder-ast");
+    const ast = parseAst({
+      header: [],
+      main: [
+        {
+          id: "s1",
+          type: "heading",
+          props: { text: "Hi", advAnimation: "explode", advEvil: "x" },
+        },
+      ],
+      footer: [],
+    });
+    const props = (ast.main[0] as { props: Record<string, unknown> }).props;
+    expect(props).not.toHaveProperty("advAnimation");
+    expect(props).not.toHaveProperty("advEvil");
+  });
+});
