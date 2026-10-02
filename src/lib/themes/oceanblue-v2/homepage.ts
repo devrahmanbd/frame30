@@ -36,7 +36,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       skin: "banner",
       slides: [
         {
-          image: "",
+          image: "/ph/oceanblue-v2/hero-newin.jpg",
           headline: "New Season, Everyday Ethnic",
           headline_bn: "নতুন সিজন, প্রতিদিনের এথনিক",
           subhead: "Salwar sets, kurtas and sarees for workdays and weddings.",
@@ -48,7 +48,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           caption_bn: "নতুন সিজন এসেছে",
         },
         {
-          image: "",
+          image: "/ph/oceanblue-v2/hero-wedding.jpg",
           headline: "The Wedding Edit",
           headline_bn: "বিয়ের বিশেষ সংগ্রহ",
           subhead: "Lehengas, anarkalis and jewellery sets for the big day.",
@@ -60,7 +60,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
           caption_bn: "বিয়ের জাঁকজমক",
         },
         {
-          image: "",
+          image: "/ph/oceanblue-v2/hero-girls.jpg",
           headline: "Girls, Festive & Bright",
           headline_bn: "মেয়েদের উৎসবমুখর সংগ্রহ",
           subhead: "Festive minis, girls' suits and bright young fits.",

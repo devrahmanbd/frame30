@@ -254,9 +254,14 @@ live eyeball (desktop + 390px mobile) + mobile viewport pass.
       2:1, 8 category tiles 1:1 (salwar/kurta/dress/bottom/girls/
       jewellery/collections/sale flat-lays, cream bg). Then wire via
       /editor (builders stay imageless by convention — v1 precedent).
-- [ ] P11-5 Follow-up: restart :3000 on this commit for live eyeball of new
-      copy + blush marquee; run Copilot prompts → drop into
-      public/ph/oceanblue-v2/; mobile 320/375/414 sweep + a11y gate.
+- [x] P11-8 Wire batch-A heroes into v2 homepage (2026-10-02): slides 1–3
+      image → /ph/oceanblue-v2/hero-newin|wedding|girls.jpg; slide 4 (Nxt)
+      stays imageless until batch B. Registry embed regenerated
+      (json 61853 bytes). Gates: v2 40/40, typecheck clean, eslint clean.
+      NOTE: :3000 runs a 12h-old PRODUCTION build (.output/server) — it
+      still serves pre-Phase-11 copy with zero hero imgs (verified via DOM:
+      H1 all-caps, no carousel img). New slides + photos go live on next
+      rebuild/redeploy (needs explicit word per standing rule).
 
 ## Copilot image prompts (MeiGen structure, no text in frame)
 
