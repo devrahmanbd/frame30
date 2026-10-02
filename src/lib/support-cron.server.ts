@@ -20,9 +20,7 @@ export type SupportSweepResult = {
  * ledger or the gauges.
  */
 export function normaliseSweepResult(raw: unknown): SupportSweepResult {
-  const r = (raw ?? {}) as Partial<
-    Record<keyof SupportSweepResult, unknown>
-  >;
+  const r = (raw ?? {}) as Partial<Record<keyof SupportSweepResult, unknown>>;
   const num = (v: unknown) => {
     const n = Number(v ?? 0);
     return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;

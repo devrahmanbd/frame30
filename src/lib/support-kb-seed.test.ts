@@ -46,7 +46,9 @@ function stubFile(slug: string, overrides: Partial<CorpusDoc> = {}): CorpusDoc {
     tags: ["test"],
     sourceUrl: "/test",
     status: "published",
-    body: `Q: What is ${slug}? ` + "Answer body with enough words to pass the length gate. ".repeat(10),
+    body:
+      `Q: What is ${slug}? ` +
+      "Answer body with enough words to pass the length gate. ".repeat(10),
     ...overrides,
   };
 }
@@ -63,10 +65,13 @@ describe("R2 — public corpus validity", () => {
     for (const doc of docs) {
       expect(doc.title.length, `${doc.slug}:title`).toBeGreaterThan(0);
       expect(["en", "bn"], `${doc.slug}:locale`).toContain(doc.locale);
-      expect(["merchant", "developer", "platform"], `${doc.slug}:audience`).toContain(
-        doc.audience,
+      expect(
+        ["merchant", "developer", "platform"],
+        `${doc.slug}:audience`,
+      ).toContain(doc.audience);
+      expect(doc.slug.endsWith(`-${doc.locale}`), `${doc.slug}:suffix`).toBe(
+        true,
       );
-      expect(doc.slug.endsWith(`-${doc.locale}`), `${doc.slug}:suffix`).toBe(true);
       expect(doc.body.includes("?"), `${doc.slug}:question`).toBe(true);
       expect(doc.body.length, `${doc.slug}:length`).toBeGreaterThanOrEqual(200);
     }
@@ -103,11 +108,14 @@ describe("R2 — public corpus validity", () => {
   });
 
   it("parseCorpusFile rejects missing frontmatter and bad locale", () => {
-    expect(() => parseCorpusFile("x", "no frontmatter here")).toThrow(KbCorpusError);
+    expect(() => parseCorpusFile("x", "no frontmatter here")).toThrow(
+      KbCorpusError,
+    );
     expect(() =>
       parseCorpusFile(
         "x",
-        '---\ntitle: "T"\nlocale: fr\naudience: merchant\n---\n\n' + "b".repeat(300),
+        '---\ntitle: "T"\nlocale: fr\naudience: merchant\n---\n\n' +
+          "b".repeat(300),
       ),
     ).toThrow(KbCorpusError);
   });
@@ -135,7 +143,10 @@ describe("R2 — seedPublicKb idempotency + dryRun", () => {
   }
 
   it("dryRun reports would-create counts without calling saveDoc", async () => {
-    const dir = await makeDir({ "alpha-en.md": md("Alpha"), "beta-en.md": md("Beta") });
+    const dir = await makeDir({
+      "alpha-en.md": md("Alpha"),
+      "beta-en.md": md("Beta"),
+    });
     const saveDocFn = vi.fn(async () => ({ id: "x" }));
     const summary = await seedPublicKb(db, merchantId, {
       dir,
@@ -152,8 +163,14 @@ describe("R2 — seedPublicKb idempotency + dryRun", () => {
   });
 
   it("live run creates docs with source+version tags, re-run changes nothing", async () => {
-    const dir = await makeDir({ "alpha-en.md": md("Alpha"), "beta-en.md": md("Beta") });
-    const store = new Map<string, { id: string; body: string; tags: string[] }>();
+    const dir = await makeDir({
+      "alpha-en.md": md("Alpha"),
+      "beta-en.md": md("Beta"),
+    });
+    const store = new Map<
+      string,
+      { id: string; body: string; tags: string[] }
+    >();
     const impl: SaveDocFn = async (_db, _m, _u, input: SaveDocInput) => {
       const id = input.id ?? `id-${input.title}`;
       store.set(input.title, { id, body: input.body, tags: input.tags });
@@ -161,9 +178,18 @@ describe("R2 — seedPublicKb idempotency + dryRun", () => {
     };
     const saveDocFn = vi.fn(impl);
     const listExistingFn = async (): Promise<ExistingDoc[]> =>
-      [...store.entries()].map(([title, v]) => ({ id: v.id, title, body: v.body, tags: v.tags }));
+      [...store.entries()].map(([title, v]) => ({
+        id: v.id,
+        title,
+        body: v.body,
+        tags: v.tags,
+      }));
 
-    const first = await seedPublicKb(db, merchantId, { dir, saveDocFn, listExistingFn });
+    const first = await seedPublicKb(db, merchantId, {
+      dir,
+      saveDocFn,
+      listExistingFn,
+    });
     expect(first.created).toBe(2);
     expect(first.updated).toBe(0);
     expect(saveDocFn).toHaveBeenCalledTimes(2);
@@ -179,7 +205,11 @@ describe("R2 — seedPublicKb idempotency + dryRun", () => {
     expect(saveDocFn.mock.calls[0][2]).toBe("system:public-corpus-seed");
 
     saveDocFn.mockClear();
-    const second = await seedPublicKb(db, merchantId, { dir, saveDocFn, listExistingFn });
+    const second = await seedPublicKb(db, merchantId, {
+      dir,
+      saveDocFn,
+      listExistingFn,
+    });
     expect(second.created).toBe(0);
     expect(second.updated).toBe(0);
     expect(second.upToDate).toBe(2);
@@ -191,30 +221,62 @@ describe("R2 — seedPublicKb idempotency + dryRun", () => {
     const docs = await loadCorpusDocs(dir);
     const corpusBody = docs[0].body;
 
-    const store = new Map<string, { id: string; body: string; tags: string[] }>();
-    store.set("Alpha", { id: "id-Alpha", body: "stale body", tags: [KB_CORPUS_SOURCE_TAG] });
+    const store = new Map<
+      string,
+      { id: string; body: string; tags: string[] }
+    >();
+    store.set("Alpha", {
+      id: "id-Alpha",
+      body: "stale body",
+      tags: [KB_CORPUS_SOURCE_TAG],
+    });
     const impl: SaveDocFn = async (_d, _m, _u, input: SaveDocInput) => {
-      store.set(input.title, { id: input.id ?? "new", body: input.body, tags: [KB_CORPUS_SOURCE_TAG, KB_CORPUS_VERSION_TAG] });
+      store.set(input.title, {
+        id: input.id ?? "new",
+        body: input.body,
+        tags: [KB_CORPUS_SOURCE_TAG, KB_CORPUS_VERSION_TAG],
+      });
       return { id: input.id ?? "new" };
     };
     const saveDocFn = vi.fn(impl);
     const listExistingFn = async (): Promise<ExistingDoc[]> =>
-      [...store.entries()].map(([title, v]) => ({ id: v.id, title, body: v.body, tags: v.tags }));
+      [...store.entries()].map(([title, v]) => ({
+        id: v.id,
+        title,
+        body: v.body,
+        tags: v.tags,
+      }));
 
-    const stale = await seedPublicKb(db, merchantId, { dir, saveDocFn, listExistingFn });
+    const stale = await seedPublicKb(db, merchantId, {
+      dir,
+      saveDocFn,
+      listExistingFn,
+    });
     expect(stale.updated).toBe(1);
     expect(saveDocFn.mock.calls[0][3].id).toBe("id-Alpha");
     expect(store.get("Alpha")!.body).toBe(corpusBody);
 
     // Same body but missing the version tag -> exactly one attach update.
-    store.set("Alpha", { id: "id-Alpha", body: corpusBody, tags: [KB_CORPUS_SOURCE_TAG] });
+    store.set("Alpha", {
+      id: "id-Alpha",
+      body: corpusBody,
+      tags: [KB_CORPUS_SOURCE_TAG],
+    });
     saveDocFn.mockClear();
-    const attach = await seedPublicKb(db, merchantId, { dir, saveDocFn, listExistingFn });
+    const attach = await seedPublicKb(db, merchantId, {
+      dir,
+      saveDocFn,
+      listExistingFn,
+    });
     expect(attach.updated).toBe(1);
     expect(attach.created).toBe(0);
 
     saveDocFn.mockClear();
-    const clean = await seedPublicKb(db, merchantId, { dir, saveDocFn, listExistingFn });
+    const clean = await seedPublicKb(db, merchantId, {
+      dir,
+      saveDocFn,
+      listExistingFn,
+    });
     expect(clean.updated).toBe(0);
     expect(saveDocFn).not.toHaveBeenCalled();
   });
@@ -250,10 +312,23 @@ describe("R2 — seedPublicKb idempotency + dryRun", () => {
     const same = stubFile("same");
     const changed = stubFile("changed");
     const draft = stubFile("draft", { status: "draft" });
-    const plan = planSeed([live, same, changed, draft], [
-      { id: "1", title: same.title, body: same.body, tags: [KB_CORPUS_VERSION_TAG] },
-      { id: "2", title: changed.title, body: "old", tags: [KB_CORPUS_VERSION_TAG] },
-    ]);
+    const plan = planSeed(
+      [live, same, changed, draft],
+      [
+        {
+          id: "1",
+          title: same.title,
+          body: same.body,
+          tags: [KB_CORPUS_VERSION_TAG],
+        },
+        {
+          id: "2",
+          title: changed.title,
+          body: "old",
+          tags: [KB_CORPUS_VERSION_TAG],
+        },
+      ],
+    );
     expect(plan.create.map((d) => d.slug)).toEqual(["live"]);
     expect(plan.update.map((u) => u.doc.slug)).toEqual(["changed"]);
     expect(plan.skip.map((d) => d.slug)).toEqual(["same"]);

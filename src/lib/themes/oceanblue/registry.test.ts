@@ -64,9 +64,10 @@ describe("oceanblue registry preset", () => {
     expect(sql).toContain("('oceanblue'");
     const start = sql.indexOf("'{") + 1;
     const end = sql.lastIndexOf("}', true, 30)") + 1;
-    const embedded = JSON.parse(
-      sql.slice(start, end).replace(/''/g, "'"),
-    ) as { tokens: unknown; templates: unknown };
+    const embedded = JSON.parse(sql.slice(start, end).replace(/''/g, "'")) as {
+      tokens: unknown;
+      templates: unknown;
+    };
     const live = {
       tokens: parseTokens(JSON.parse(JSON.stringify(OCEANBLUE_PRESET.tokens))),
       templates: parseTemplates(

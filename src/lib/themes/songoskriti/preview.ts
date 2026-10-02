@@ -43,8 +43,10 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
     themeName: "Songoskriti",
     author: "Framique",
     tokens: SONGOSKRITI_TOKENS,
-    header: (template, s) => template === "checkout" ? [] : buildHeaderMain(s),
-    footer: (template, s) => template === "checkout" ? [] : buildFooterMain(s),
+    header: (template, s) =>
+      template === "checkout" ? [] : buildHeaderMain(s),
+    footer: (template, s) =>
+      template === "checkout" ? [] : buildFooterMain(s),
     main: (template, s) => {
       // Non-homepage templates author sections directly (not through the
       // homepage builder), so they get the same skin-default wrap here.
@@ -224,15 +226,11 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
               children: [
                 {
                   ...s("container", {}),
-                  children: [
-                    s("cart_lines", {}),
-                  ],
+                  children: [s("cart_lines", {})],
                 },
                 {
                   ...s("container", {}),
-                  children: [
-                    s("cart_summary", {}),
-                  ],
+                  children: [s("cart_summary", {})],
                 },
               ],
             },
@@ -263,23 +261,23 @@ export function songoskritiPreviewSource(): PreviewThemeSource {
                       heading: "Contact & Shipping",
                       heading_bn: "যোগাযোগ ও শিপিং",
                       body: "Provide your delivery address and contact details.",
-                      body_bn: "আপনার ডেলিভারি ঠিকানা এবং যোগাযোগের তথ্য প্রদান করুন।",
+                      body_bn:
+                        "আপনার ডেলিভারি ঠিকানা এবং যোগাযোগের তথ্য প্রদান করুন।",
                     }),
                     s("payment_icons", {
                       heading: "Payment Method",
                       heading_bn: "পেমেন্ট পদ্ধতি",
-                      marks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
+                      marks:
+                        "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
                     }),
                   ],
                 },
                 {
                   ...s("container", {}),
-                  children: [
-                    s("cart_summary", {}),
-                  ],
-                }
-              ]
-            }
+                  children: [s("cart_summary", {})],
+                },
+              ],
+            },
           ];
         case "account":
           return [

@@ -78,9 +78,7 @@ function recordingListDb(rows: Array<Record<string, unknown>>) {
         limit: () => q,
         then: (resolve: (v: unknown) => void) =>
           resolve({
-            data: rows.filter((r) =>
-              filters.every(([k, v]) => r[k] === v),
-            ),
+            data: rows.filter((r) => filters.every(([k, v]) => r[k] === v)),
             error: null,
           }),
       };
@@ -157,15 +155,16 @@ describe("persist + list — CRUD and tenant isolation", () => {
   it("scopes the DB list query by merchant_id + status (RLS-intent)", async () => {
     const rows: Array<Record<string, unknown>> = [
       { id: "r1", merchant_id: MERCHANT_A, status: "pending", turn_ref: "a-p" },
-      { id: "r2", merchant_id: MERCHANT_A, status: "approved", turn_ref: "a-a" },
+      {
+        id: "r2",
+        merchant_id: MERCHANT_A,
+        status: "approved",
+        turn_ref: "a-a",
+      },
       { id: "r3", merchant_id: MERCHANT_B, status: "pending", turn_ref: "b-p" },
     ];
     const db = recordingListDb(rows);
-    const out = await listRevisionReviews(
-      MERCHANT_A,
-      "pending",
-      db as never,
-    );
+    const out = await listRevisionReviews(MERCHANT_A, "pending", db as never);
     expect(out.map((r) => (r as RevisionReviewRow).turn_ref)).toEqual(["a-p"]);
     expect(db.seenEq).toContainEqual(["merchant_id", MERCHANT_A]);
     expect(db.seenEq).toContainEqual(["status", "pending"]);
@@ -198,7 +197,9 @@ describe("persist + list — CRUD and tenant isolation", () => {
 });
 
 describe("approve / reject lane", () => {
-  async function queued(over: Partial<Parameters<typeof persistRevisionReview>[0]> = {}) {
+  async function queued(
+    over: Partial<Parameters<typeof persistRevisionReview>[0]> = {},
+  ) {
     const res = await persistRevisionReview({
       merchantId: MERCHANT_A,
       turnRef: `t-${Math.random().toString(36).slice(2, 8)}`,
@@ -270,7 +271,12 @@ describe("approve / reject lane", () => {
 
 describe("isStyleOnly comparator", () => {
   it("accepts identical and tone-only rephrases", () => {
-    expect(isStyleOnly("Hello. Delivery takes 2 days.", "Hello. Delivery takes 2 days.")).toBe(true);
+    expect(
+      isStyleOnly(
+        "Hello. Delivery takes 2 days.",
+        "Hello. Delivery takes 2 days.",
+      ),
+    ).toBe(true);
     expect(
       isStyleOnly(
         "Delivery takes 2 days. Track it in your account.",
@@ -280,9 +286,14 @@ describe("isStyleOnly comparator", () => {
   });
 
   it("rejects changed numbers, new authority claims and URLs", () => {
-    expect(isStyleOnly("Delivery takes 2 days.", "Delivery takes 5 days.")).toBe(false);
     expect(
-      isStyleOnly("Delivery takes 2 days.", "Delivery takes 2 days and costs ৳60."),
+      isStyleOnly("Delivery takes 2 days.", "Delivery takes 5 days."),
+    ).toBe(false);
+    expect(
+      isStyleOnly(
+        "Delivery takes 2 days.",
+        "Delivery takes 2 days and costs ৳60.",
+      ),
     ).toBe(false);
     expect(
       isStyleOnly(
@@ -356,7 +367,8 @@ describe("applyApproved routing", () => {
       "Delivery takes 2 days.",
       "Delivery takes 5 days across all districts.",
     );
-    const saved: Array<{ merchantId: string; title: string; body: string }> = [];
+    const saved: Array<{ merchantId: string; title: string; body: string }> =
+      [];
     const out = await applyApproved(id, {
       merchantId: MERCHANT_A,
       saveKbDoc: async (a) => {
@@ -381,7 +393,9 @@ describe("applyApproved routing", () => {
       score: score(),
     });
     if (!p.ok) throw new Error("setup persist failed");
-    await expect(applyApproved(p.id, { merchantId: MERCHANT_A })).rejects.toMatchObject({
+    await expect(
+      applyApproved(p.id, { merchantId: MERCHANT_A }),
+    ).rejects.toMatchObject({
       code: "review_not_approved",
     });
   });

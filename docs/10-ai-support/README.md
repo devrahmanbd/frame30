@@ -29,14 +29,14 @@ Services:
 
 ## 3. Data model (+ RLS statement)
 
-| Table              | Notes                                                                              |
-| ------------------ | ---------------------------------------------------------------------------------- |
-| `kb_docs`          | merchant-scoped knowledge-base documents + docs index; source of provenance tags   |
-| `faq_chunks`       | chunked, embedded FAQ corpus; embeddings per `ai.vector_index` (DONE §13: Nemotron embed-1b, 1024-d, Postgres hybrid)    |
-| `ai_conversations` | session log per tenant; PII-minimal; kept only within the session log window       |
-| `ai_tool_calls`    | every pinned tool invocation + result, for audit and "matches source table" checks |
-| `escalations`      | handoff rows linking to the ticket and the auto-filled order id                    |
-| `ratings`          | "Answer OK?" thumbs feedback, per conversation                                     |
+| Table              | Notes                                                                                                                 |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `kb_docs`          | merchant-scoped knowledge-base documents + docs index; source of provenance tags                                      |
+| `faq_chunks`       | chunked, embedded FAQ corpus; embeddings per `ai.vector_index` (DONE §13: Nemotron embed-1b, 1024-d, Postgres hybrid) |
+| `ai_conversations` | session log per tenant; PII-minimal; kept only within the session log window                                          |
+| `ai_tool_calls`    | every pinned tool invocation + result, for audit and "matches source table" checks                                    |
+| `escalations`      | handoff rows linking to the ticket and the auto-filled order id                                                       |
+| `ratings`          | "Answer OK?" thumbs feedback, per conversation                                                                        |
 
 RLS is enforced on **every** tenant query — including every AI tool call and every RAG retrieval — so the assistant never sees another tenant's data:
 
@@ -207,16 +207,16 @@ Mapping against `docs/00-meta/audit-verdict.md`: AI support is not a summary-tab
 
 ## 13. Residual gaps
 
-| Item                                                                                       | Owner   |
-| ------------------------------------------------------------------------------------------ | ------- |
-| `ai.vector_index` — DONE (TODO-8): embed `nvidia/nemotron-3-embed-1b:free` (legacy `llama-nemotron-embed-vl-1b-v2:free` honored), 1024-d deterministic fallback, Postgres/Supabase hybrid (`tsvector` + cosine RRF) | done |
-| `ai.model_picker` — DONE (TODO-8): OpenRouter `OpenRouterLLMService` (primary `nemotron-3-ultra-550b-a55b:free`, fallback `nemotron-3.5-lightning:free`) behind `LLMService`; mock in dev  | done |
-| `ai.gateway_env_only` — DONE (TODO-8): `OPENROUTER_API_KEY` env-only; `ai.gateway` DB slot hot-swaps non-secret routing with env-reference pointer; probe covers chat + embed | done |
-| `ai.export_redact` — DONE (TODO-8): mandatory redact for transcripts leaving the boundary (default-on for non-admin) via `resolveExportRedaction` | done |
-| `ai.harness_plus` — DONE (TODO-8): benchmark adds model-intent routing + base64/roleplay jailbreak-evasion + low-CSAT reopen; RL weights unchanged (CSAT 0.45, no misweighting proven) | done |
-| `ai.whatsapp_channel` — WhatsApp/MFB(?) gateway adapter and channel enablement             | **TBD — owner: channels lane (support-channels.server.ts)** |
-| `ai.escalation_sla` — human-handoff SLA threshold for the escalation alerts                | **TBD — owner: SLA lane (support-sla.ts)** |
-| `e2e_ai_support_loop` — suite registered in `docs/15-e2e`; ops owner + release gate        | **TBD — owner: e2e/ops lane (docs/15-e2e)** |
+| Item                                                                                                                                                                                                                | Owner                                                       |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `ai.vector_index` — DONE (TODO-8): embed `nvidia/nemotron-3-embed-1b:free` (legacy `llama-nemotron-embed-vl-1b-v2:free` honored), 1024-d deterministic fallback, Postgres/Supabase hybrid (`tsvector` + cosine RRF) | done                                                        |
+| `ai.model_picker` — DONE (TODO-8): OpenRouter `OpenRouterLLMService` (primary `nemotron-3-ultra-550b-a55b:free`, fallback `nemotron-3.5-lightning:free`) behind `LLMService`; mock in dev                           | done                                                        |
+| `ai.gateway_env_only` — DONE (TODO-8): `OPENROUTER_API_KEY` env-only; `ai.gateway` DB slot hot-swaps non-secret routing with env-reference pointer; probe covers chat + embed                                       | done                                                        |
+| `ai.export_redact` — DONE (TODO-8): mandatory redact for transcripts leaving the boundary (default-on for non-admin) via `resolveExportRedaction`                                                                   | done                                                        |
+| `ai.harness_plus` — DONE (TODO-8): benchmark adds model-intent routing + base64/roleplay jailbreak-evasion + low-CSAT reopen; RL weights unchanged (CSAT 0.45, no misweighting proven)                              | done                                                        |
+| `ai.whatsapp_channel` — WhatsApp/MFB(?) gateway adapter and channel enablement                                                                                                                                      | **TBD — owner: channels lane (support-channels.server.ts)** |
+| `ai.escalation_sla` — human-handoff SLA threshold for the escalation alerts                                                                                                                                         | **TBD — owner: SLA lane (support-sla.ts)**                  |
+| `e2e_ai_support_loop` — suite registered in `docs/15-e2e`; ops owner + release gate                                                                                                                                 | **TBD — owner: e2e/ops lane (docs/15-e2e)**                 |
 
 ---
 

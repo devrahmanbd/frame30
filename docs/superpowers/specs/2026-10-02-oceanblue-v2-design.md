@@ -29,27 +29,27 @@ multi-currency (BDT only), dark set, retiring v1, any push/deploy (commit only).
 `OCEANBLUE_V2_TOKENS` in `src/lib/themes/oceanblue-v2/tokens.ts`, same
 `ThemeTokens` shape as v1 (`src/lib/themes/oceanblue/tokens.ts`) + `DEFAULT_GLOBALS`:
 
-| Token | Value | Note |
-| --- | --- | --- |
-| `brand` | `#A72F30` | Deep maroon (studied DNA); white text ≈ 7.5:1 |
-| `accent` | `#5C1A24` | Darker maroon-plum for hover/festive depth, never body text on white alone |
-| `surface` | `#FFFFFF` | White canvas |
-| `ink` | `#241318` | Maroon-black body ink |
-| `tint` | blush `#F9EFEF` | Festive band wash — verify `ThemeTokens` in `builder-ast` carries the slot; otherwise declare as a named `skins.css` variable and reference by name only |
-| `radius` | `10px` | Distinct from v1 `8px` |
-| `fontDisplay` | editorial serif stack | CrimsonPro role; Bengali falls back to Bangla stack in `styles.css`, zero negative tracking |
-| `fontBody` | grotesque stack | WorkSans role + Bangla fallback |
-| `fontLabel` | uppercase grotesque | Montserrat role, labels/eyebrows only |
-| `container` | `1280px` | |
-| `density` | `comfortable` | |
-| `shadow` | `soft` | |
-| `motion` | `subtle` | Collapses under `prefers-reduced-motion` |
-| `digits` | `latin` | |
-| `locale` | `en` | |
-| `currencyDisplay` | `symbol` | BDT-first |
-| `fontPairing` | `bengali-classic` | Shared pairing, Bangla-safe |
-| `dark` | `null` | Light-only |
-| `globals` | `DEFAULT_GLOBALS` | Merchant-editable palette via `TokenEditor` |
+| Token             | Value                 | Note                                                                                                                                                     |
+| ----------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `brand`           | `#A72F30`             | Deep maroon (studied DNA); white text ≈ 7.5:1                                                                                                            |
+| `accent`          | `#5C1A24`             | Darker maroon-plum for hover/festive depth, never body text on white alone                                                                               |
+| `surface`         | `#FFFFFF`             | White canvas                                                                                                                                             |
+| `ink`             | `#241318`             | Maroon-black body ink                                                                                                                                    |
+| `tint`            | blush `#F9EFEF`       | Festive band wash — verify `ThemeTokens` in `builder-ast` carries the slot; otherwise declare as a named `skins.css` variable and reference by name only |
+| `radius`          | `10px`                | Distinct from v1 `8px`                                                                                                                                   |
+| `fontDisplay`     | editorial serif stack | CrimsonPro role; Bengali falls back to Bangla stack in `styles.css`, zero negative tracking                                                              |
+| `fontBody`        | grotesque stack       | WorkSans role + Bangla fallback                                                                                                                          |
+| `fontLabel`       | uppercase grotesque   | Montserrat role, labels/eyebrows only                                                                                                                    |
+| `container`       | `1280px`              |                                                                                                                                                          |
+| `density`         | `comfortable`         |                                                                                                                                                          |
+| `shadow`          | `soft`                |                                                                                                                                                          |
+| `motion`          | `subtle`              | Collapses under `prefers-reduced-motion`                                                                                                                 |
+| `digits`          | `latin`               |                                                                                                                                                          |
+| `locale`          | `en`                  |                                                                                                                                                          |
+| `currencyDisplay` | `symbol`              | BDT-first                                                                                                                                                |
+| `fontPairing`     | `bengali-classic`     | Shared pairing, Bangla-safe                                                                                                                              |
+| `dark`            | `null`                | Light-only                                                                                                                                               |
+| `globals`         | `DEFAULT_GLOBALS`     | Merchant-editable palette via `TokenEditor`                                                                                                              |
 
 Contrast gates pass by construction on brand/ink; accent never sets small body text.
 

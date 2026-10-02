@@ -288,9 +288,7 @@ describe("demo focus (slug-aware collection preview)", () => {
       (s) => s.type === "product_media",
     )!;
     const out = applyDemoFocus(preset.templates.product.main, focus);
-    const media = flattenSections(out).find(
-      (s) => s.type === "product_media",
-    )!;
+    const media = flattenSections(out).find((s) => s.type === "product_media")!;
     // Static media stays untouched so the frame gallery owns focused art.
     expect(media.props).toMatchObject({ ...before.props });
     expect(media.props).not.toHaveProperty("image1");
@@ -307,9 +305,7 @@ describe("demo focus (slug-aware collection preview)", () => {
       "no-such-product-xyz",
     )!;
     const out = applyDemoFocus(preset.templates.product.main, focus);
-    const media = flattenSections(out).find(
-      (s) => s.type === "product_media",
-    )!;
+    const media = flattenSections(out).find((s) => s.type === "product_media")!;
     expect(media.props).toMatchObject({ ...before.props });
   });
 });

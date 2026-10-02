@@ -640,9 +640,8 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
 
   describe("Operator Macro Safety (filter layer)", () => {
     it("blocks legacy initiated-claim copy but allows the advisory-only /refund macro", async () => {
-      const { findMacroByShortcut, interpolateMacro } = await import(
-        "./support-canned-responses"
-      );
+      const { findMacroByShortcut, interpolateMacro } =
+        await import("./support-canned-responses");
       const { screenOutbound } = await import("./support-guardrails");
       // Pre-TODO-5 wording is still an unverified initiated-claim outbound.
       const legacy =
@@ -664,9 +663,7 @@ describe("Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Coll
       const scrubbed = redactPii(body);
       expect(scrubbed.text).not.toContain("1234567890123");
       expect(scrubbed.text).not.toContain("54321");
-      expect(scrubbed.hits).toEqual(
-        expect.arrayContaining(["nid", "pin_otp"]),
-      );
+      expect(scrubbed.hits).toEqual(expect.arrayContaining(["nid", "pin_otp"]));
     });
   });
 });
@@ -677,9 +674,8 @@ describe("TODO-5 — low-CSAT auto-reopen for operator follow-up", () => {
   });
 
   it("treats ratings 1–2 as reopen-worthy and 3–5 as a no-op", async () => {
-    const { shouldReopenOnLowCsat } = await import(
-      "./support-moderation.server"
-    );
+    const { shouldReopenOnLowCsat } =
+      await import("./support-moderation.server");
     expect(shouldReopenOnLowCsat(1)).toBe(true);
     expect(shouldReopenOnLowCsat(2)).toBe(true);
     expect(shouldReopenOnLowCsat(3)).toBe(false);
@@ -687,9 +683,8 @@ describe("TODO-5 — low-CSAT auto-reopen for operator follow-up", () => {
   });
 
   it("leaves satisfied conversations untouched", async () => {
-    const { flagLowCsatForReopen } = await import(
-      "./support-moderation.server"
-    );
+    const { flagLowCsatForReopen } =
+      await import("./support-moderation.server");
     seedMockConversation(makeConv({ id: "csat_happy" }));
 
     const res = await flagLowCsatForReopen("csat_happy", 5, "Great help!");
@@ -697,15 +692,13 @@ describe("TODO-5 — low-CSAT auto-reopen for operator follow-up", () => {
     expect(res.reopened).toBe(false);
     expect(res.rating).toBe(5);
     expect(
-      getMockConversations().find((c) => c.id === "csat_happy")
-        ?.operatorNotes,
+      getMockConversations().find((c) => c.id === "csat_happy")?.operatorNotes,
     ).toBeNull();
   });
 
   it("reopens a resolved conversation on rating 1–2 with an operator notice", async () => {
-    const { flagLowCsatForReopen } = await import(
-      "./support-moderation.server"
-    );
+    const { flagLowCsatForReopen } =
+      await import("./support-moderation.server");
     seedMockConversation(
       makeConv({
         id: "csat_unhappy",

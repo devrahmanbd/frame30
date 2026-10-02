@@ -41,7 +41,11 @@ describe("policyFor / dueDates — frozen-at-creation deadlines", () => {
   it("prefers the merchant policy row when present", () => {
     expect(
       policyFor("normal", [
-        { priority: "normal", first_response_minutes: 10, resolution_minutes: 60 },
+        {
+          priority: "normal",
+          first_response_minutes: 10,
+          resolution_minutes: 60,
+        },
       ]),
     ).toEqual({ first: 10, resolution: 60 });
   });
@@ -138,8 +142,10 @@ describe("computeSlaMetrics — live moderation thresholds", () => {
     };
     expect(computeSlaMetrics(base).slaStatus).toBe("pending");
     expect(
-      computeSlaMetrics({ ...base, now: new Date("2026-09-01T12:30:00.000Z").getTime() })
-        .slaStatus,
+      computeSlaMetrics({
+        ...base,
+        now: new Date("2026-09-01T12:30:00.000Z").getTime(),
+      }).slaStatus,
     ).toBe("breached");
   });
 

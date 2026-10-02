@@ -245,10 +245,7 @@ export function RevisionReviewUi({
         </div>
       ) : shown.length === 0 ? (
         <Empty>
-          {t(
-            "No revisions in this state.",
-            "এই অবস্থায় কোনো রিভিশন নেই।",
-          )}
+          {t("No revisions in this state.", "এই অবস্থায় কোনো রিভিশন নেই।")}
         </Empty>
       ) : (
         <ul className="space-y-4">
@@ -344,9 +341,7 @@ function ReviewCard({
               <dt className="text-muted-foreground">
                 {t("Clarity", "স্পষ্টতা")}:
               </dt>
-              <dd className="font-medium">
-                {formatScore(properness.clarity)}
-              </dd>
+              <dd className="font-medium">{formatScore(properness.clarity)}</dd>
             </div>
             <div className="flex gap-1">
               <dt className="text-muted-foreground">
@@ -483,9 +478,7 @@ function ReviewCard({
               className={btnGhost}
               disabled={busy !== null}
               onClick={() =>
-                run("reject", () =>
-                  onReject(review.id, reason.trim() || null),
-                )
+                run("reject", () => onReject(review.id, reason.trim() || null))
               }
             >
               {busy === "reject" ? (

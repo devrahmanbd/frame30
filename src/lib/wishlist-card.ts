@@ -80,7 +80,9 @@ export function useWishlistCard({
 
   const mutation = useMutation({
     mutationFn: () =>
-      toggleWishlist({ data: { slug, variantId: variantId!, stockAlert: false } }),
+      toggleWishlist({
+        data: { slug, variantId: variantId!, stockAlert: false },
+      }),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: WISHLIST_KEY });
       const previous = queryClient.getQueryData<WishlistCache>(WISHLIST_KEY);

@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- No shared component or import in themes: prod files under `src/lib/themes/<theme>/` import engine lib only (`@/lib/*`), never `@/components/*` (AGENTS.md rule 7). This plan edits shared chrome + theme *data* only — no new theme imports.
+- No shared component or import in themes: prod files under `src/lib/themes/<theme>/` import engine lib only (`@/lib/*`), never `@/components/*` (AGENTS.md rule 7). This plan edits shared chrome + theme _data_ only — no new theme imports.
 - `@keyframes fq-marquee` in `src/styles.css:349` **must stay** — shared by `discovery.tsx`, `heritage.tsx`, `widgets.tsx`.
 - No homepage prop changes → **no migration regen** (`supabase/migrations/20260930120000_oceanblue_registry_row.sql` untouched); `schema:check` unaffected.
 - Untouched surfaces: rotating campaign strip below the masthead (`src/lib/themes/oceanblue/header.ts` `announcement_bar`, incl. Wedding Edit), songoskriti split strip, skins/GSAP/GenericTestimonials, `wiring.test.ts` / `preview.test.ts` `["announcement_bar"]` expectations, `isLuxury`'s other jobs (wordmark, mega panel, 44px targets).
@@ -27,6 +27,7 @@
 The union change, data change, and render change are one typecheck unit: narrowing the union breaks `StoreHeader`'s `variant === "ticker"` / `.items` reads, and the data's `"ticker"` literal fails the narrowed union. They land in one commit with their tests.
 
 **Files:**
+
 - Modify: `src/components/store/theme-chrome.ts` (announcement type, ~lines 40–54)
 - Modify: `src/lib/themes/oceanblue/header-fallback.ts` (`OCEANBLUE_HEADER_ANNOUNCEMENT`, lines 298–314)
 - Modify: `src/components/store/StoreHeader.tsx` (~lines 103–108 `showBand`, ~182–259 band block, ~489 cluster toggle)
@@ -34,6 +35,7 @@ The union change, data change, and render change are one typecheck unit: narrowi
 - Test: `src/components/store/StoreHeader.test.tsx` (describe lines 368–407)
 
 **Interfaces:**
+
 - Consumes: `themeChromeFor(key)` returning `ThemeHeaderChrome | null`; existing `renderHeader({ slug, name, themeKey, pathname?, initialLang? })` test helper; `LanguageToggle` (unchanged).
 - Produces: `showBand: boolean` in `StoreHeader`; `announcement.variant?: "split" | "none"` on `ThemeHeaderChrome` with **no** `items` field; `OCEANBLUE_HEADER_ANNOUNCEMENT.variant === "none"`.
 
@@ -42,47 +44,47 @@ The union change, data change, and render change are one typecheck unit: narrowi
 In `src/components/store/theme-chrome.test.ts`, replace these two tests (current lines 31–51):
 
 ```ts
-  it("registers the oceanblue theme entry with a ticker announcement", () => {
-    expect(themeChromeKeys()).toContain("oceanblue");
-    const chrome = themeChromeFor("oceanblue");
-    expect(chrome).not.toBeNull();
-    expect(chrome!.announcement.variant).toBe("ticker");
-    expect(chrome!.announcement.items?.length).toBeGreaterThanOrEqual(2);
-    // Every ticker item carries an en + bn twin (bilingual storefront).
-    for (const item of chrome!.announcement.items ?? []) {
-      expect(item.text.length).toBeGreaterThan(0);
-      expect(item.bn && item.bn.length).toBeGreaterThan(0);
-    }
-    // Split-copy fallback stays present for aria/single-item rendering.
-    expect(chrome!.announcement.center.length).toBeGreaterThan(0);
-    expect(chrome!.announcement.center_bn.length).toBeGreaterThan(0);
-  });
+it("registers the oceanblue theme entry with a ticker announcement", () => {
+  expect(themeChromeKeys()).toContain("oceanblue");
+  const chrome = themeChromeFor("oceanblue");
+  expect(chrome).not.toBeNull();
+  expect(chrome!.announcement.variant).toBe("ticker");
+  expect(chrome!.announcement.items?.length).toBeGreaterThanOrEqual(2);
+  // Every ticker item carries an en + bn twin (bilingual storefront).
+  for (const item of chrome!.announcement.items ?? []) {
+    expect(item.text.length).toBeGreaterThan(0);
+    expect(item.bn && item.bn.length).toBeGreaterThan(0);
+  }
+  // Split-copy fallback stays present for aria/single-item rendering.
+  expect(chrome!.announcement.center.length).toBeGreaterThan(0);
+  expect(chrome!.announcement.center_bn.length).toBeGreaterThan(0);
+});
 
-  it("songoskriti keeps the default split strip (no ticker config)", () => {
-    const chrome = themeChromeFor("songoskriti");
-    expect(chrome!.announcement.variant).toBeUndefined();
-    expect(chrome!.announcement.items).toBeUndefined();
-  });
+it("songoskriti keeps the default split strip (no ticker config)", () => {
+  const chrome = themeChromeFor("songoskriti");
+  expect(chrome!.announcement.variant).toBeUndefined();
+  expect(chrome!.announcement.items).toBeUndefined();
+});
 ```
 
 with:
 
 ```ts
-  it("registers the oceanblue theme entry with no topbar band", () => {
-    expect(themeChromeKeys()).toContain("oceanblue");
-    const chrome = themeChromeFor("oceanblue");
-    expect(chrome).not.toBeNull();
-    expect(chrome!.announcement.variant).toBe("none");
-    // Split copy stays in config (type-required) but renders no band.
-    expect(chrome!.announcement.left.length).toBeGreaterThan(0);
-    expect(chrome!.announcement.center.length).toBeGreaterThan(0);
-    expect(chrome!.announcement.center_bn.length).toBeGreaterThan(0);
-  });
+it("registers the oceanblue theme entry with no topbar band", () => {
+  expect(themeChromeKeys()).toContain("oceanblue");
+  const chrome = themeChromeFor("oceanblue");
+  expect(chrome).not.toBeNull();
+  expect(chrome!.announcement.variant).toBe("none");
+  // Split copy stays in config (type-required) but renders no band.
+  expect(chrome!.announcement.left.length).toBeGreaterThan(0);
+  expect(chrome!.announcement.center.length).toBeGreaterThan(0);
+  expect(chrome!.announcement.center_bn.length).toBeGreaterThan(0);
+});
 
-  it("songoskriti keeps the default split strip (no variant override)", () => {
-    const chrome = themeChromeFor("songoskriti");
-    expect(chrome!.announcement.variant).toBeUndefined();
-  });
+it("songoskriti keeps the default split strip (no variant override)", () => {
+  const chrome = themeChromeFor("songoskriti");
+  expect(chrome!.announcement.variant).toBeUndefined();
+});
 ```
 
 - [ ] **Step 2: Rewrite the StoreHeader oceanblue tests (fail first)**
@@ -202,9 +204,15 @@ export const OCEANBLUE_HEADER_ANNOUNCEMENT = {
   variant: "ticker",
   items: [
     { text: "EASY 7-DAY EXCHANGE", bn: "সহজ ৭ দিনের এক্সচেঞ্জ" },
-    { text: "FREE DELIVERY OVER BDT 2,000", bn: "২০০০ টাকার উপরে ফ্রি ডেলিভারি" },
+    {
+      text: "FREE DELIVERY OVER BDT 2,000",
+      bn: "২০০০ টাকার উপরে ফ্রি ডেলিভারি",
+    },
     { text: "CASH ON DELIVERY NATIONWIDE", bn: "সারা দেশে ক্যাশ অন ডেলিভারি" },
-    { text: "SECURE CHECKOUT, EVERY ORDER", bn: "প্রতিটি অর্ডারে সিকিউর চেকআউট" },
+    {
+      text: "SECURE CHECKOUT, EVERY ORDER",
+      bn: "প্রতিটি অর্ডারে সিকিউর চেকআউট",
+    },
     { text: "AW26 IS HERE", bn: "AW26 এসেছে" },
   ],
 } as const;
@@ -232,42 +240,46 @@ Three edits in `src/components/store/StoreHeader.tsx`:
 **(a)** Immediately after `const isLuxury = headerChrome !== null;` (current line 108), add:
 
 ```ts
-  // The band above the masthead renders only when the theme asks for a
-  // split strip; `variant: "none"` puts the masthead at the top of the
-  // page. Generic stores (null) also render no band.
-  const showBand =
-    headerChrome !== null && headerChrome.announcement.variant !== "none";
+// The band above the masthead renders only when the theme asks for a
+// split strip; `variant: "none"` puts the masthead at the top of the
+// page. Generic stores (null) also render no band.
+const showBand =
+  headerChrome !== null && headerChrome.announcement.variant !== "none";
 ```
 
 **(b)** Band block (current lines 182–259): change the wrapper condition from `{headerChrome && (` to `{headerChrome && showBand && (`, then delete the ticker ternary — the condition line `{headerChrome.announcement.variant === "ticker" ? (`, the whole marquee `<div>` JSX (track, `--fq-marquee` style, aria-hidden duplicate, band-local `LanguageToggle`), the `) : (` separator, and the ternary's closing `)}` — so the split strip becomes the band's only child. Resulting band block:
 
 ```tsx
-      {headerChrome && showBand && (
-        <div
-          className={`w-full overflow-hidden transition-all duration-250 ease-out motion-reduce:transition-none border-b border-[#eaeaea] ${scrolled ? "h-0 opacity-0 border-transparent" : "h-[36px] opacity-100"}`}
-        >
-          <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10">
-            <div className="hidden sm:block text-[10px] font-medium tracking-wide text-[#1a1a1a]/60 w-1/3 text-left">
-              {headerChrome.announcement.left}
-            </div>
-            <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#1a1a1a] w-full sm:w-1/3 text-center">
-              {t(
-                headerChrome.announcement.center,
-                headerChrome.announcement.center_bn,
-              )}
-            </div>
-            <div className="hidden sm:flex justify-end w-1/3">
-              <LanguageToggle />
-            </div>
-          </div>
+{
+  headerChrome && showBand && (
+    <div
+      className={`w-full overflow-hidden transition-all duration-250 ease-out motion-reduce:transition-none border-b border-[#eaeaea] ${scrolled ? "h-0 opacity-0 border-transparent" : "h-[36px] opacity-100"}`}
+    >
+      <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10">
+        <div className="hidden sm:block text-[10px] font-medium tracking-wide text-[#1a1a1a]/60 w-1/3 text-left">
+          {headerChrome.announcement.left}
         </div>
-      )}
+        <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#1a1a1a] w-full sm:w-1/3 text-center">
+          {t(
+            headerChrome.announcement.center,
+            headerChrome.announcement.center_bn,
+          )}
+        </div>
+        <div className="hidden sm:flex justify-end w-1/3">
+          <LanguageToggle />
+        </div>
+      </div>
+    </div>
+  );
+}
 ```
 
 **(c)** Header-cluster toggle (current line 489): `{!isLuxury && <LanguageToggle />}` →
 
 ```tsx
-          {!showBand && <LanguageToggle />}
+{
+  !showBand && <LanguageToggle />;
+}
 ```
 
 (`isLuxury` itself is untouched — it keeps its other jobs.)
@@ -314,10 +326,12 @@ Expected: commit created on `feat/oceanblue-theme`.
 ### Task 2: Full verification + browser proof + docs commit
 
 **Files:**
+
 - Create: `docs/superpowers/specs/2026-10-01-topbar-removal-design.md` (already written during spec review — stage it)
 - Create: `docs/superpowers/plans/2026-10-01-topbar-removal.md` (this file — stage it)
 
 **Interfaces:**
+
 - Consumes: Task 1's shipped code (branch state after the feature commit).
 - Produces: green gate evidence + committed docs; ready for push.
 
@@ -331,6 +345,7 @@ Expected: all green; lint clean on touched files.
 ```bash
 VITE_SUPABASE_URL=http://dummy.supabase.co VITE_SUPABASE_PUBLISHABLE_KEY=dummy bun run build
 ```
+
 Expected: build completes (`.output/` written).
 
 - [ ] **Step 3: Browser proof on the local preview**
@@ -360,6 +375,7 @@ git commit -m "docs: topbar removal spec + implementation plan"
 ```bash
 git push origin feat/oceanblue-theme
 ```
+
 Expected: push succeeds. **Deployment and the dated CHANGELOG entry are a separate, explicitly-approved follow-up** (same pattern as `1b06337`: deploy only on request, then `## [date] — … (<hash>, deployed)` + mem0 memory).
 
 ---

@@ -61,7 +61,7 @@ breaks on violation. No tutorial prose; third-party narrative lives in
   `src/lib/builder-ast.ts:734`, `withThemeWidgetDefaults`). Songoskriti wraps
   builders with [its defaults](../../src/lib/themes/songoskriti/skins.ts)
   `src/lib/themes/songoskriti/skins.ts:109` (`withSongoskritiDefaults`,
-   defaults at `src/lib/themes/songoskriti/skins.ts:52`, resolver at
+  defaults at `src/lib/themes/songoskriti/skins.ts:52`, resolver at
   `src/lib/themes/songoskriti/skins.ts:75`); Oceanblue wraps with
   [its defaults](../../src/lib/themes/oceanblue/skins.ts)
   `src/lib/themes/oceanblue/skins.ts:109` (`withOceanblueDefaults`,
@@ -279,28 +279,28 @@ breaks on violation. No tutorial prose; third-party narrative lives in
 
 ## 8. Test-gate map
 
-| Suite                                                                       | What it pins (fail = contract broken)                                                                |
-| --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `src/lib/studio/catalog.test.ts:837` (`studio twin parity`)                 | §4: full catalog resolution, account-twin defaults, thin-twin schema, default skins                  |
-| `src/lib/widget-registry.test.ts:35` (closed enum; `tokens only` at `:121`) | §3 + §1: one registry entry per catalog widget, renderer for each, no theme imports, no raw colors   |
-| `src/lib/themes/songoskriti/wiring.test.ts:13`                              | §1 + §5: `#1a1a1a` brand lock, 20-section `hero_carousel`-first order                                |
-| `src/lib/themes/songoskriti/preview.test.ts:16`                             | §5: preview source identity, homepage head/length/close                                              |
-| `src/lib/themes/songoskriti/skins.test.ts:32`                               | §2: editorial defaults, vocabulary containment, merge precedence, token-driven CSS                   |
+| Suite                                                                       | What it pins (fail = contract broken)                                                                          |
+| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `src/lib/studio/catalog.test.ts:837` (`studio twin parity`)                 | §4: full catalog resolution, account-twin defaults, thin-twin schema, default skins                            |
+| `src/lib/widget-registry.test.ts:35` (closed enum; `tokens only` at `:121`) | §3 + §1: one registry entry per catalog widget, renderer for each, no theme imports, no raw colors             |
+| `src/lib/themes/songoskriti/wiring.test.ts:13`                              | §1 + §5: `#1a1a1a` brand lock, 20-section `hero_carousel`-first order                                          |
+| `src/lib/themes/songoskriti/preview.test.ts:16`                             | §5: preview source identity, homepage head/length/close                                                        |
+| `src/lib/themes/songoskriti/skins.test.ts:32`                               | §2: editorial defaults, vocabulary containment, merge precedence, token-driven CSS                             |
 | `src/lib/themes/oceanblue/skins.test.ts` (`OCEANBLUE_WIDGET_DEFAULTS`)      | §2: minimal defaults (`split` hero, `minimal` rails, `cards` grid, `single` wall), divergence from Songoskriti |
-| `src/lib/theme-preview-nav.test.ts:16`                                      | §5: href mapping, demo bodies for every template, focus resolution/application, `?focus=` round-trip |
-| `src/lib/theme-preview.test.ts`                                             | §5: `resolveThemePreview` per key, unknown key returns null                                          |
-| `src/lib/page-builder-widgets.test.ts`                                      | §3: widget defaults, field shapes, persist-shape truncation                                          |
-| `src/lib/menus/menu.test.ts:58`                                             | §6: handle slugging, tree build/flatten, depth limit, validation                                     |
-| `src/components/store/StoreHeader.test.tsx:163`                             | §6: dashboard-menus-win selection, Songoskriti fallback only                                         |
-| `src/lib/phase5-plugins.test.ts:81`                                         | §7: manifest accept/reject matrix, budget caps, key round-trip, placeholder downgrade                |
-| `src/lib/plugin-lifecycle.test.ts:76`                                       | §7: suspend/resume machine, idempotency, kill-switch fan-out                                         |
-| `src/lib/plugin-acceptance.test.ts:136`                                     | §7: hook-to-scope gate matrix, signed egress, replay idempotency, cross-merchant deny, audit rows    |
-| `src/lib/plugins-consent.test.ts:51`                                        | §7: superset-grant refusal, consent evidence, audit on grant                                         |
-| `src/lib/plugin-bundle-gate.test.ts:33`                                     | §7: oversized/dynamic-code/no-scope bundle rejection                                                 |
-| `src/lib/phase2-bilingual.test.ts:16`                                       | §3: `_bn` twin derivation, locale/digit token CSS                                                    |
-| `src/lib/phase3-theme.test.ts:59`                                           | §1: shadow/motion/dark token CSS mapping                                                             |
-| `src/lib/custom-code-xss.test.ts`                                           | §1: `--theme-*` redefinition refused, XSS stripped                                                   |
-| `src/lib/primary-section.test.ts`                                           | §3: single-h1 section preference (hero first) shared by host and preview                             |
+| `src/lib/theme-preview-nav.test.ts:16`                                      | §5: href mapping, demo bodies for every template, focus resolution/application, `?focus=` round-trip           |
+| `src/lib/theme-preview.test.ts`                                             | §5: `resolveThemePreview` per key, unknown key returns null                                                    |
+| `src/lib/page-builder-widgets.test.ts`                                      | §3: widget defaults, field shapes, persist-shape truncation                                                    |
+| `src/lib/menus/menu.test.ts:58`                                             | §6: handle slugging, tree build/flatten, depth limit, validation                                               |
+| `src/components/store/StoreHeader.test.tsx:163`                             | §6: dashboard-menus-win selection, Songoskriti fallback only                                                   |
+| `src/lib/phase5-plugins.test.ts:81`                                         | §7: manifest accept/reject matrix, budget caps, key round-trip, placeholder downgrade                          |
+| `src/lib/plugin-lifecycle.test.ts:76`                                       | §7: suspend/resume machine, idempotency, kill-switch fan-out                                                   |
+| `src/lib/plugin-acceptance.test.ts:136`                                     | §7: hook-to-scope gate matrix, signed egress, replay idempotency, cross-merchant deny, audit rows              |
+| `src/lib/plugins-consent.test.ts:51`                                        | §7: superset-grant refusal, consent evidence, audit on grant                                                   |
+| `src/lib/plugin-bundle-gate.test.ts:33`                                     | §7: oversized/dynamic-code/no-scope bundle rejection                                                           |
+| `src/lib/phase2-bilingual.test.ts:16`                                       | §3: `_bn` twin derivation, locale/digit token CSS                                                              |
+| `src/lib/phase3-theme.test.ts:59`                                           | §1: shadow/motion/dark token CSS mapping                                                                       |
+| `src/lib/custom-code-xss.test.ts`                                           | §1: `--theme-*` redefinition refused, XSS stripped                                                             |
+| `src/lib/primary-section.test.ts`                                           | §3: single-h1 section preference (hero first) shared by host and preview                                       |
 
 ## 9. Known source contradiction
 

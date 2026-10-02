@@ -893,9 +893,7 @@ describe("studio twin parity", () => {
 
   it("skinnable thin twins carry the documented default skin", () => {
     for (const key of ["testimonials", "urgency_rail"] as const) {
-      expect(WIDGET_BY_KEY[key]!.defaults.skin).toBe(
-        DEFAULT_WIDGET_SKIN[key],
-      );
+      expect(WIDGET_BY_KEY[key]!.defaults.skin).toBe(DEFAULT_WIDGET_SKIN[key]);
     }
   });
 });

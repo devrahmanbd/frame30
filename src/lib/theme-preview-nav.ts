@@ -271,8 +271,10 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
       typeof search.max === "string"
         ? (search.max as string).slice(0, PREVIEW_SEARCH_QUERY_LIMIT)
         : undefined,
-    mock_order: 
-      search.mock_order === "success" || search.mock_order === "pending" || search.mock_order === "failed"
+    mock_order:
+      search.mock_order === "success" ||
+      search.mock_order === "pending" ||
+      search.mock_order === "failed"
         ? search.mock_order
         : undefined,
   };
@@ -417,11 +419,10 @@ const humanizeSlug = (slug: string): string =>
  *//**
  * Demo-catalog key for a preview theme key. Themes that ship no catalog of
  * their own reuse a sibling's rows here (never a new DEMO_CATALOGS entry,
- * never the generic fallback): oceanblue-v2 renders the shared OCEANBLUE
  * ethnic catalog (BDT minor units, OB-* SKUs), not marketplace groceries.
  */
 export function themeDemoCatalogKey(themeKey: string): string {
-  return themeKey === "oceanblue-v2" ? "oceanblue" : themeKey;
+  return themeKey;
 }
 
 export function resolveDemoFocus(

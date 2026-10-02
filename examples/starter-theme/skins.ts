@@ -74,8 +74,7 @@ export function withStarterDefaults(s: SectionBuilder): SectionBuilder {
     props: Record<string, PropValue> = {},
   ): Section => {
     const defaults = STARTER_WIDGET_DEFAULTS[type] as
-      | Record<string, PropValue>
-      | undefined;
+      Record<string, PropValue> | undefined;
     if (!defaults) return s(type, props);
     const out: Record<string, PropValue> = {};
     for (const [key, value] of Object.entries(props)) {

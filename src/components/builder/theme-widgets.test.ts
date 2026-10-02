@@ -114,18 +114,21 @@ describe("generic testimonials renderer", () => {
     const Cmp = resolveWidgetComponent("oceanblue", "testimonials");
     expect(Cmp, "testimonials must resolve for oceanblue").toBeDefined();
     return renderToStaticMarkup(
-      createElement(Cmp as never, {
-        section: sec,
-        ...widgetReader(sec, undefined, locale),
-        Heading: "h2",
-        primary: false,
-        editing,
-        locale,
-        storeSlug: "test",
-        data: undefined,
-        renderChildren: () => null,
-        link: (href: string) => href,
-      } as never),
+      createElement(
+        Cmp as never,
+        {
+          section: sec,
+          ...widgetReader(sec, undefined, locale),
+          Heading: "h2",
+          primary: false,
+          editing,
+          locale,
+          storeSlug: "test",
+          data: undefined,
+          renderChildren: () => null,
+          link: (href: string) => href,
+        } as never,
+      ),
     );
   };
 

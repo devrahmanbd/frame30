@@ -460,10 +460,7 @@ describe("songoskriti mega_menu live-data tiers (REPORT-THEMES §4/§7.1)", () =
       3: "grid-cols-3",
       4: "grid-cols-4",
     });
-    const src = readFileSync(
-      "src/components/builder/songoskriti.tsx",
-      "utf8",
-    );
+    const src = readFileSync("src/components/builder/songoskriti.tsx", "utf8");
     expect(src).toContain("MEGA_PANEL_COLS[columns]");
     const withPanels = buildSongoskritiFallbackEntries("en").filter(
       (entry) => entry.sections.length > 0,
@@ -474,10 +471,7 @@ describe("songoskriti mega_menu live-data tiers (REPORT-THEMES §4/§7.1)", () =
   it("keeps the image-panel dropdown design (featured image + shop-all)", () => {
     // Hover-gated like the grid above: pin the design at the source so a
     // refactor cannot silently drop the panel's signature elements.
-    const src = readFileSync(
-      "src/components/builder/songoskriti.tsx",
-      "utf8",
-    );
+    const src = readFileSync("src/components/builder/songoskriti.tsx", "utf8");
     expect(src).toContain("featuredImage");
     expect(src).toContain("shopAllHref");
     expect(src).toContain("SHOP ALL");

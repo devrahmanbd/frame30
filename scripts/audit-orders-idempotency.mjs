@@ -39,7 +39,9 @@ const asJson = process.argv.includes("--json");
 const url = env("SUPABASE_URL") ?? env("VITE_SUPABASE_URL");
 const key = env("SUPABASE_SERVICE_ROLE_KEY");
 if (!url || !key) {
-  console.log("audit-orders-idempotency: no database credentials in env — skipping");
+  console.log(
+    "audit-orders-idempotency: no database credentials in env — skipping",
+  );
   process.exit(0);
 }
 
@@ -82,7 +84,10 @@ for (;;) {
     }
     g.count += 1;
     g.ids.push(r.id);
-    if (g.earliest_created_at === null || r.created_at < g.earliest_created_at) {
+    if (
+      g.earliest_created_at === null ||
+      r.created_at < g.earliest_created_at
+    ) {
       g.earliest_created_at = r.created_at;
       g.earliest_order_number = r.order_number;
     }

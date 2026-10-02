@@ -34,9 +34,9 @@ Gate entry points, one per suite:
 | Songoskriti skins          | `stays token-driven` test                  | `src/lib/themes/songoskriti/skins.test.ts:182`    |
 | Songoskriti preview        | `describe("songoskritiPreviewSource")`     | `src/lib/themes/songoskriti/preview.test.ts:12`   |
 | Songoskriti widget audit   | `describe("songoskriti widget gap audit")` | `src/lib/themes/songoskriti/widgets.test.ts:11`   |
-| Oceanblue scaffold         | `describe("oceanblue wiring")`                 | `src/lib/themes/oceanblue/wiring.test.ts`             |
-| Oceanblue skins            | `describe("OCEANBLUE_WIDGET_DEFAULTS")`        | `src/lib/themes/oceanblue/skins.test.ts`              |
-| Oceanblue skins token gate | `stays token-driven` test                     | `src/lib/themes/oceanblue/skins.test.ts`              |
+| Oceanblue scaffold         | `describe("oceanblue wiring")`             | `src/lib/themes/oceanblue/wiring.test.ts`         |
+| Oceanblue skins            | `describe("OCEANBLUE_WIDGET_DEFAULTS")`    | `src/lib/themes/oceanblue/skins.test.ts`          |
+| Oceanblue skins token gate | `stays token-driven` test                  | `src/lib/themes/oceanblue/skins.test.ts`          |
 | Studio twin parity         | `describe("studio twin parity")`           | `src/lib/studio/catalog.test.ts:837`              |
 | Starter theme (5 gates)    | `locks brand tokens` test                  | `examples/starter-theme/starter-theme.test.ts:44` |
 

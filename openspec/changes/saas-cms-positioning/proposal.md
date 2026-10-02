@@ -21,9 +21,11 @@ Nothing in this change alters runtime behavior. It produces:
 ## Capabilities
 
 ### New Capabilities
+
 - None (analysis-only change).
 
 ### Modified Capabilities
+
 - None (no requirement changes; deltas belong to follow-up changes).
 
 ## Impact

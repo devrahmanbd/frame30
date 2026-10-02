@@ -35,10 +35,12 @@
 ### Task 1: Clean worktree from origin/main
 
 **Files:**
+
 - Create: `/tmp/opencode/worktree-check` (scratch, git worktree list output)
 - Modify: none (git state only)
 
 **Interfaces:**
+
 - Consumes: `origin/main` remote ref
 - Produces: clean worktree at `/tmp/opencode/theme-preview-fix` on `origin/main` HEAD
 
@@ -76,10 +78,12 @@ git -C /tmp/opencode/theme-preview-fix status --short | head -5
 ### Task 2: Unify preview nav parser (single source, slug-aware)
 
 **Files:**
+
 - Modify: `/tmp/opencode/theme-preview-fix/src/lib/theme-preview-nav.ts:1-60`
 - Test: `/tmp/opencode/theme-preview-fix/src/lib/theme-preview-nav.test.ts`
 
 **Interfaces:**
+
 - Consumes: `TemplateKey` from `./builder-ast`
 - Produces: `export type PreviewTarget = { template: TemplateKey; slug: string | null; query: string | null }`, `export function previewTargetForHref(href: string): PreviewTarget | null`, `export function previewTemplateForHref(href: string): TemplateKey | null` (compat wrapper), `export function isPreviewBlockedHref(href: string): boolean`, `export function previewClickAction(href): {kind:blocked|switch|allow; target?: PreviewTarget}`
 
@@ -92,14 +96,30 @@ import { previewTargetForHref } from "./theme-preview-nav";
 
 describe("previewTargetForHref slug-aware", () => {
   it("preserves collection slug", () => {
-    expect(previewTargetForHref("/c/women")).toEqual({ template: "collection", slug: "women", query: null });
-    expect(previewTargetForHref("/c/WOMEN")).toEqual({ template: "collection", slug: "women", query: null });
+    expect(previewTargetForHref("/c/women")).toEqual({
+      template: "collection",
+      slug: "women",
+      query: null,
+    });
+    expect(previewTargetForHref("/c/WOMEN")).toEqual({
+      template: "collection",
+      slug: "women",
+      query: null,
+    });
   });
   it("preserves product slug", () => {
-    expect(previewTargetForHref("/p/dhakai-jamdani")).toEqual({ template: "product", slug: "dhakai-jamdani", query: null });
+    expect(previewTargetForHref("/p/dhakai-jamdani")).toEqual({
+      template: "product",
+      slug: "dhakai-jamdani",
+      query: null,
+    });
   });
   it("preserves search query", () => {
-    expect(previewTargetForHref("/search?max=99900")).toEqual({ template: "search", slug: null, query: "max=99900" });
+    expect(previewTargetForHref("/search?max=99900")).toEqual({
+      template: "search",
+      slug: null,
+      query: "max=99900",
+    });
   });
   it("maps account (was null in old lib)", () => {
     expect(previewTargetForHref("/account")?.template).toBe("account");
@@ -120,9 +140,14 @@ Expected: FAIL with "previewTargetForHref is not defined / not exported"
 ```typescript
 import type { TemplateKey } from "./builder-ast";
 
-export type PreviewTarget = { template: TemplateKey; slug: string | null; query: string | null };
+export type PreviewTarget = {
+  template: TemplateKey;
+  slug: string | null;
+  query: string | null;
+};
 
-const BLOCKED_HREF_RE = /(^|\/)(order|track|sign-?in|sign-?up|login|register)([\/?#]|$)/i;
+const BLOCKED_HREF_RE =
+  /(^|\/)(order|track|sign-?in|sign-?up|login|register)([\/?#]|$)/i;
 
 export function isPreviewBlockedHref(href: string): boolean {
   const path = href.split(/[?#]/, 1)[0] ?? "";
@@ -140,9 +165,15 @@ export function previewTargetForHref(href: string): PreviewTarget | null {
   if (/^https?:\/\//i.test(href)) {
     try {
       const u = new URL(href);
-      if (u.origin !== (typeof window !== "undefined" ? window.location.origin : u.origin)) return null;
+      if (
+        u.origin !==
+        (typeof window !== "undefined" ? window.location.origin : u.origin)
+      )
+        return null;
       href = u.pathname + u.search + u.hash;
-    } catch { return null; }
+    } catch {
+      return null;
+    }
   }
   if (!href.startsWith("/")) return null;
   if (isPreviewBlockedHref(href)) return null;
@@ -151,20 +182,30 @@ export function previewTargetForHref(href: string): PreviewTarget | null {
   const rest = path.replace(/^\/store\/[^/]+/, "") || "/";
   const query = queryRaw?.split("#", 1)[0] ?? null;
   let m: RegExpMatchArray | null;
-  if ((m = rest.match(/^\/p\/([^/?#]+)/))) return { template: "product", slug: m[1]!, query };
-  if ((m = rest.match(/^\/products?(?:\/([^/?#]+))?/))) return { template: "product", slug: m[1] ?? null, query };
-  if ((m = rest.match(/^\/c\/([^/?#]+)/))) return { template: "collection", slug: m[1]!, query };
-  if ((m = rest.match(/^\/collections?(?:\/([^/?#]+))?/))) return { template: "collection", slug: m[1] ?? null, query };
-  if (rest === "/search" || rest === "/search/") return { template: "search", slug: null, query };
-  if (rest === "/cart" || rest === "/cart/") return { template: "cart", slug: null, query };
-  if (rest === "/checkout" || rest === "/checkout/") return { template: "checkout", slug: null, query };
-  if (rest === "/account" || rest.startsWith("/account/")) return { template: "account", slug: null, query };
-  if ((m = rest.match(/^\/pages?\/([^/?#]+)/))) return { template: "page", slug: m[1]!, query };
+  if ((m = rest.match(/^\/p\/([^/?#]+)/)))
+    return { template: "product", slug: m[1]!, query };
+  if ((m = rest.match(/^\/products?(?:\/([^/?#]+))?/)))
+    return { template: "product", slug: m[1] ?? null, query };
+  if ((m = rest.match(/^\/c\/([^/?#]+)/)))
+    return { template: "collection", slug: m[1]!, query };
+  if ((m = rest.match(/^\/collections?(?:\/([^/?#]+))?/)))
+    return { template: "collection", slug: m[1] ?? null, query };
+  if (rest === "/search" || rest === "/search/")
+    return { template: "search", slug: null, query };
+  if (rest === "/cart" || rest === "/cart/")
+    return { template: "cart", slug: null, query };
+  if (rest === "/checkout" || rest === "/checkout/")
+    return { template: "checkout", slug: null, query };
+  if (rest === "/account" || rest.startsWith("/account/"))
+    return { template: "account", slug: null, query };
+  if ((m = rest.match(/^\/pages?\/([^/?#]+)/)))
+    return { template: "page", slug: m[1]!, query };
   if (rest === "/blog" || rest.startsWith("/blog/")) {
     const sm = rest.match(/^\/blog\/([^/?#]+)/);
     return { template: "blog", slug: sm?.[1] ?? null, query };
   }
-  if (rest === "/" || rest === "/index" || rest === "/home") return { template: "index", slug: null, query };
+  if (rest === "/" || rest === "/index" || rest === "/home")
+    return { template: "index", slug: null, query };
   return null;
 }
 
@@ -177,7 +218,9 @@ export type PreviewClickAction =
   | { kind: "switch"; target: PreviewTarget }
   | { kind: "allow" };
 
-export function previewClickAction(href: string | null | undefined): PreviewClickAction {
+export function previewClickAction(
+  href: string | null | undefined,
+): PreviewClickAction {
   if (!href || href.startsWith("#")) return { kind: "allow" };
   if (isPreviewBlockedHref(href)) return { kind: "blocked" };
   const target = previewTargetForHref(href);
@@ -202,11 +245,13 @@ git -C /tmp/opencode/theme-preview-fix commit -m "fix(preview): slug-aware previ
 ### Task 3: Slug-aware collection/product/page rendering in resolver
 
 **Files:**
+
 - Modify: `/tmp/opencode/theme-preview-fix/src/lib/theme-preview-nav.ts:buildPreset` (same file, resolver section)
 - Modify: `/tmp/opencode/theme-preview-fix/src/lib/demo-catalog.ts:2836-2855` (add second-theme alias)
 - Test: `/tmp/opencode/theme-preview-fix/src/lib/theme-preview-nav.test.ts` (append resolver tests)
 
 **Interfaces:**
+
 - Consumes: `PreviewTarget`, `demoCatalogFor`, `SONGOSKRITI` + `MARKETPLACE` catalogs
 - Produces: `export function collectionDisplayName(catalog, slug): string`, `export function buildCollectionTemplate(...)`, resolver still `resolveThemePreview(key)` unchanged signature (frame does slug overlay at render time — see Task 4)
 
@@ -216,7 +261,9 @@ git -C /tmp/opencode/theme-preview-fix commit -m "fix(preview): slug-aware previ
 describe("collectionDisplayName", () => {
   it("resolves known slugs, title-cases unknown", async () => {
     const { collectionDisplayName } = await import("./theme-preview-nav");
-    expect(collectionDisplayName("songoskriti", "festive")).toBe("Eid & Festive");
+    expect(collectionDisplayName("songoskriti", "festive")).toBe(
+      "Eid & Festive",
+    );
     expect(collectionDisplayName("songoskriti", "women")).toBe("Women");
     expect(collectionDisplayName("songoskriti", "nope-xyz")).toBe("Nope xyz");
   });
@@ -235,10 +282,16 @@ Expected: FAIL — "collectionDisplayName is not a function / not exported"
 import { demoCatalogFor } from "./demo-catalog";
 
 export function titleCaseSlug(slug: string): string {
-  return slug.split("-").map((w) => (w ? w[0]!.toUpperCase() + w.slice(1) : w)).join(" ");
+  return slug
+    .split("-")
+    .map((w) => (w ? w[0]!.toUpperCase() + w.slice(1) : w))
+    .join(" ");
 }
 
-export function collectionDisplayName(themeKey: string, slug: string | null): string {
+export function collectionDisplayName(
+  themeKey: string,
+  slug: string | null,
+): string {
   if (!slug) return "New in";
   const catalog = demoCatalogFor(themeKey);
   const found =
@@ -279,11 +332,13 @@ git -C /tmp/opencode/theme-preview-fix commit -m "fix(preview): collection displ
 ### Task 4: Frame uses shared parser, renders slug, syncs URL
 
 **Files:**
+
 - Modify: `/tmp/opencode/theme-preview-fix/src/components/store/ThemePreviewFrame.tsx:1-130` (imports + parser removal + props + click handler)
 - Modify: `/tmp/opencode/theme-preview-fix/src/routes/theme-preview.$key.tsx:28-60` (validateSearch slug, pass-through)
 - Test: `/tmp/opencode/theme-preview-fix/src/components/store/ThemePreviewFrame.test.tsx` (create)
 
 **Interfaces:**
+
 - Consumes: `previewTargetForHref`, `previewClickAction`, `handlePreviewCanvasClick`, `handlePreviewCanvasSubmit`, `collectionDisplayName`, `PreviewTarget` from `@/lib/theme-preview-nav`; `useNavigate`, `useSearch` from `@tanstack/react-router`
 - Produces: `ThemePreviewFrame` props `{ themeName, author, blueprintKey, tokens, templates, initialTemplate?, initialSlug?, onClose }` — clicking `/c/festive` sets template `collection` + slug `festive`, updates URL `?template=collection&slug=festive`, heading reads `Eid & Festive`
 
@@ -292,7 +347,10 @@ git -C /tmp/opencode/theme-preview-fix commit -m "fix(preview): collection displ
 ```tsx
 // src/components/store/ThemePreviewFrame.test.tsx
 import { describe, expect, it } from "vitest";
-import { previewTargetForHref, collectionDisplayName } from "@/lib/theme-preview-nav";
+import {
+  previewTargetForHref,
+  collectionDisplayName,
+} from "@/lib/theme-preview-nav";
 
 describe("preview frame slug contract", () => {
   it("collection click target carries slug for heading", () => {
@@ -301,7 +359,9 @@ describe("preview frame slug contract", () => {
     expect(collectionDisplayName("songoskriti", t.slug)).toBe("Eid & Festive");
   });
   it("product click target carries product slug", () => {
-    expect(previewTargetForHref("/p/jamdani-saree")?.slug).toBe("jamdani-saree");
+    expect(previewTargetForHref("/p/jamdani-saree")?.slug).toBe(
+      "jamdani-saree",
+    );
   });
 });
 ```
@@ -370,9 +430,18 @@ export type ThemePreviewFrameProps = {
   onClose: () => void;
 };
 
-export function ThemePreviewFrame({ themeName, blueprintKey, tokens, templates, initialTemplate, initialSlug }: ThemePreviewFrameProps) {
+export function ThemePreviewFrame({
+  themeName,
+  blueprintKey,
+  tokens,
+  templates,
+  initialTemplate,
+  initialSlug,
+}: ThemePreviewFrameProps) {
   const navigate = useNavigate();
-  const [template, setTemplate] = useState<TemplateKey>(initialTemplate ?? "index");
+  const [template, setTemplate] = useState<TemplateKey>(
+    initialTemplate ?? "index",
+  );
   const [slug, setSlug] = useState<string | null>(initialSlug ?? null);
 
   const switchTo = (t: TemplateKey, s: string | null, query: string | null) => {
@@ -381,7 +450,12 @@ export function ThemePreviewFrame({ themeName, blueprintKey, tokens, templates, 
     navigate({
       // @ts-expect-error typed route id
       to: ".",
-      search: (prev: Record<string, unknown>) => ({ ...prev, template: t, ...(s ? { slug: s } : { slug: undefined }), ...(query && t === "search" ? { q: query } : {}) }),
+      search: (prev: Record<string, unknown>) => ({
+        ...prev,
+        template: t,
+        ...(s ? { slug: s } : { slug: undefined }),
+        ...(query && t === "search" ? { q: query } : {}),
+      }),
       replace: false,
     } as never);
   };
@@ -391,11 +465,26 @@ export function ThemePreviewFrame({ themeName, blueprintKey, tokens, templates, 
     if (template !== "collection" || !slug) return base;
     const label = collectionDisplayName(blueprintKey, slug);
     const catalog = demoCatalogFor(blueprintKey);
-    const hasProducts = catalog.products.some((p) => p.collections?.includes(slug));
+    const hasProducts = catalog.products.some((p) =>
+      p.collections?.includes(slug),
+    );
     const main = base.main.map((section) => {
-      if (section.type === "heading") return { ...section, props: { ...section.props, text: label } };
-      if (section.type === "product_rail" && typeof (section.props as Record<string, unknown>)["collection"] === "string") {
-        return { ...section, props: { ...section.props, collection: hasProducts ? slug : (section.props as Record<string, unknown>)["collection"] } };
+      if (section.type === "heading")
+        return { ...section, props: { ...section.props, text: label } };
+      if (
+        section.type === "product_rail" &&
+        typeof (section.props as Record<string, unknown>)["collection"] ===
+          "string"
+      ) {
+        return {
+          ...section,
+          props: {
+            ...section.props,
+            collection: hasProducts
+              ? slug
+              : (section.props as Record<string, unknown>)["collection"],
+          },
+        };
       }
       return section;
     });
@@ -428,9 +517,11 @@ git -C /tmp/opencode/theme-preview-fix commit -m "fix(preview): slug-aware frame
 ### Task 5: Verify + push branch
 
 **Files:**
+
 - Modify: none (verification only)
 
 **Interfaces:**
+
 - Consumes: worktree at `/tmp/opencode/theme-preview-fix`
 - Produces: green `typecheck` + `test` + `lint`, branch `fix/theme-preview-slug-url` pushed
 

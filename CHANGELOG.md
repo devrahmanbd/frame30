@@ -76,7 +76,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   mapped merchant hosts (proven live: identical 200/160243B on
   flamelancer.com and framique.qubickle.com). Builder `?preview_theme_id=`
   and signed split previews unaffected. Pinned by `theme-preview-gate` unit
-  + contract tests (17 tests).
+  - contract tests (17 tests).
 
 ### Changed
 
@@ -99,7 +99,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   Rule cut in `docs/themes/creation.md` §13 (the Elementor rule): one
   renderer per key, brand copy in builders/props only, no cross-theme
   imports, own demo catalog per theme. Tracked for remediation; guard tests
-  + lint layer to enforce.
+  - lint layer to enforce.
 
 ### Verification (live, https://framique.qubickle.com)
 
@@ -166,16 +166,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   removed), `ae7137e` motion polish (IO scroll reveals, skin-scoped
   transitions, reduced-motion collapse, persist-safe channels only),
   theme-isolation rule (AGENTS.md 7 + `docs/internal/theme-isolation.md`
-  + guard check e: no shared components in themes), theme-owned
-  campaign topbar strip, `1b06337` dress layer (token-only
-  `skins.css`: hero wash, `background-clip:text` headline, gold eyebrow
-  hairline, CTA gradient + shine, art frame, rail edge-mask, 13-assertion
-  skins gate with no-hex/chunk checks), GSAP ScrollTrigger rail
-  entrance (`Rail.motion.test` 6/6), ticker topbar variant
-  (`theme-chrome` `"ticker"`: motion-safe marquee, hover-pause,
-  bilingual items; songoskriti keeps the split strip),
-  GenericTestimonials added to `BASE_WIDGETS` (`fq-caps`, bilingual §2.2
-  no raw `uppercase`).
+  - guard check e: no shared components in themes), theme-owned
+    campaign topbar strip, `1b06337` dress layer (token-only
+    `skins.css`: hero wash, `background-clip:text` headline, gold eyebrow
+    hairline, CTA gradient + shine, art frame, rail edge-mask, 13-assertion
+    skins gate with no-hex/chunk checks), GSAP ScrollTrigger rail
+    entrance (`Rail.motion.test` 6/6), ticker topbar variant
+    (`theme-chrome` `"ticker"`: motion-safe marquee, hover-pause,
+    bilingual items; songoskriti keeps the split strip),
+    GenericTestimonials added to `BASE_WIDGETS` (`fq-caps`, bilingual §2.2
+    no raw `uppercase`).
 - Deploy: `ops/deploy-from-git.sh feat/oceanblue-theme` on
   88.99.250.99 → `DEPLOY OK: feat/oceanblue-theme live`, every
   `VERIFY OK` gate passed (framique.qubickle.com 200/404 set,

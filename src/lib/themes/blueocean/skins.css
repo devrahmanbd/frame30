@@ -1,0 +1,145 @@
+/*
+ * BlueOcean widget skin sheets — premium ethnic-editorial voice.
+ *
+ * Keyed by the renderer's `data-widget` + `data-skin` attributes for the
+ * five skinnable widget types. Serif display headings with a marigold
+ * rule accent, calm white rhythm, softly rounded cards.
+ *
+ * TOKEN POLICY: every value reads `var(--theme-*)` — lagoon brand, white
+ * surface, serif/sans faces all arrive through the ThemeSurface bridge.
+ * Washes use `color-mix()` over theme tokens so a merchant re-tint
+ * re-skins every rule automatically. Marigold appears only as hairlines
+ * and glyphs, never body text.
+ *
+ * ACCESSIBILITY: interactive descendants keep 44px targets; motion rules
+ * collapse under `prefers-reduced-motion`; multi-column skins collapse to
+ * a single column below 768px. Style only — no heading-level changes.
+ */
+
+/* --------------------------------------------------- hero: fullbleed */
+
+[data-widget="hero_carousel"][data-skin="fullbleed"] {
+  background: var(--theme-ink);
+  color: var(--theme-surface);
+}
+
+[data-widget="hero_carousel"][data-skin="fullbleed"] [data-hero-eyebrow] {
+  font-family: var(--theme-font-body);
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--theme-accent);
+}
+
+[data-widget="hero_carousel"][data-skin="fullbleed"] [data-hero-headline] {
+  font-family: var(--theme-font-display);
+  font-weight: 600;
+  color: var(--theme-surface);
+}
+
+[data-widget="hero_carousel"][data-skin="fullbleed"] [data-hero-sub] {
+  color: var(--theme-surface);
+  opacity: 0.82;
+}
+
+[data-widget="hero_carousel"][data-skin="fullbleed"] [data-hero-cta] a {
+  min-height: 44px;
+  background: var(--theme-accent);
+  color: var(--theme-ink);
+}
+
+/* --------------------------------------------------- rails: editorial */
+
+[data-widget="product_rail"][data-skin="editorial"] {
+  background: var(--theme-surface);
+  padding-block: calc(var(--theme-space) * 2);
+}
+
+[data-widget="product_rail"][data-skin="editorial"] h1,
+[data-widget="product_rail"][data-skin="editorial"] h2 {
+  font-family: var(--theme-font-display);
+  font-weight: 600;
+  font-size: 1.75rem;
+  letter-spacing: 0.01em;
+  color: var(--theme-ink);
+  padding-block-end: calc(var(--theme-space) * 0.5);
+  border-block-end: 1px solid color-mix(in srgb, var(--theme-accent) 50%, transparent);
+}
+
+[data-widget="product_rail"][data-skin="editorial"] [data-part="promise"] {
+  color: var(--theme-muted-ink);
+}
+
+[data-widget="product_rail"][data-skin="editorial"] article {
+  background: var(--theme-surface);
+  border: 1px solid color-mix(in srgb, var(--theme-ink) 10%, transparent);
+}
+
+[data-widget="product_rail"][data-skin="editorial"] button[data-part="rail-nav"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* --------------------------------------------------- testimonials: wall */
+
+[data-widget="testimonials"][data-skin="wall"] {
+  background: color-mix(in srgb, var(--theme-brand) 5%, var(--theme-surface));
+}
+
+[data-widget="testimonials"][data-skin="wall"] [data-part="author"] {
+  color: var(--theme-muted-ink);
+}
+
+/* --------------------------------------------------- trust marquee */
+
+[data-widget="trust_marquee"] [data-part="badge"] {
+  color: var(--theme-ink);
+  border-block: 1px solid color-mix(in srgb, var(--theme-accent) 35%, transparent);
+}
+
+/* --------------------------------------------------- header + footer chrome */
+
+[data-widget="announcement_bar"] {
+  background: var(--theme-brand);
+  color: var(--theme-surface);
+}
+
+[data-widget="mega_menu"] {
+  background: var(--theme-surface);
+  border-block-end: 1px solid color-mix(in srgb, var(--theme-ink) 12%, transparent);
+}
+
+[data-widget="mega_menu"] nav a {
+  font-family: var(--theme-font-body);
+  font-weight: 600;
+  color: var(--theme-ink);
+}
+
+[data-widget="footer_sitemap"] {
+  background: var(--theme-surface);
+  color: var(--theme-ink);
+}
+
+[data-widget="newsletter"] {
+  background: color-mix(in srgb, var(--theme-brand) 6%, var(--theme-surface));
+  color: var(--theme-ink);
+}
+
+/* --------------------------------------------------- motion + responsive */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-widget="hero_carousel"] *,
+  [data-widget="product_rail"] *,
+  [data-widget="testimonials"] * {
+    animation: none;
+    transition: opacity 150ms ease-out;
+  }
+}
+
+@media (max-width: 768px) {
+  [data-widget="product_rail"][data-skin="editorial"] h1,
+  [data-widget="product_rail"][data-skin="editorial"] h2 {
+    font-size: 1.375rem;
+  }
+}

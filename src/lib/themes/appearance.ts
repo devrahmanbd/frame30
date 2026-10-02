@@ -260,14 +260,18 @@ export function catalogView(
 }
 
 /**
- * Operator-curated themes (Sept 2026): only these catalogue keys are
- * offered while the directory is being rebuilt. The active theme always
+ * Shipped directory (Oct 2026): the catalogue offers exactly the themes that
+ * are installable end-to-end — registry row + preset + preview source +
+ * header chrome + catalog metadata. Today that is `oceanblue` and
+ * `blueocean`. `songoskriti` stays out until it ships a registry row;
+ * retired marketplace packs stay out permanently. The active theme always
  * stays visible so the live storefront remains manageable — hiding it
  * would strand the merchant with no way to configure what shoppers see.
  */
-/** No curated offer: both marketplace themes were removed (Sept 2026).
- *  Only the active theme stays visible so live storefronts remain manageable. */
-export const VISIBLE_THEME_KEYS: ReadonlySet<string> = new Set([]);
+export const VISIBLE_THEME_KEYS: ReadonlySet<string> = new Set([
+  "oceanblue",
+  "blueocean",
+]);
 
 /** Installed grid: the live theme plus allowlisted keys (null-key rows hide). */
 export function visibleInstalled(themes: InstalledTheme[]): InstalledTheme[] {

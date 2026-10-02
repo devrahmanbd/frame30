@@ -26,15 +26,15 @@ brand-asset paths (guard checks b–d below).
 
 ## 2. What is allowed vs refused
 
-| Import in `src/lib/themes/<theme>/` | Verdict |
-| --- | --- |
-| `@/lib/builder-ast`, `@/lib/theme-section`, `@/lib/bitext`, `@/lib/footer-copy`, `@/lib/permalink`, `@/lib/menus/*` (engine lib) | Allowed — neutral ground |
-| `./tokens`, `./skins`, `./header-fallback` (own theme dir) | Allowed |
-| `./skins.css` (own stylesheet, token-only) | Allowed |
-| `@/components/*` or `../../components/*` (any shared component) | **Refused — fails check (e)** |
-| `../<other-theme>/*` (cross-theme import) | **Refused — fails check (a)** |
-| Hardcoded brand literals in shared chrome (`StoreHeader.tsx`, `chrome.tsx`) | **Refused — fails check (b)** |
-| Ungated `/ph/<theme>` asset literals in shared renderers | **Refused — fails check (d)** |
+| Import in `src/lib/themes/<theme>/`                                                                                              | Verdict                       |
+| -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `@/lib/builder-ast`, `@/lib/theme-section`, `@/lib/bitext`, `@/lib/footer-copy`, `@/lib/permalink`, `@/lib/menus/*` (engine lib) | Allowed — neutral ground      |
+| `./tokens`, `./skins`, `./header-fallback` (own theme dir)                                                                       | Allowed                       |
+| `./skins.css` (own stylesheet, token-only)                                                                                       | Allowed                       |
+| `@/components/*` or `../../components/*` (any shared component)                                                                  | **Refused — fails check (e)** |
+| `../<other-theme>/*` (cross-theme import)                                                                                        | **Refused — fails check (a)** |
+| Hardcoded brand literals in shared chrome (`StoreHeader.tsx`, `chrome.tsx`)                                                      | **Refused — fails check (b)** |
+| Ungated `/ph/<theme>` asset literals in shared renderers                                                                         | **Refused — fails check (d)** |
 
 Test files (`*.test.*`) are excluded from the walk: they must resolve
 renderers through `@/components/builder/widgets` to assert output

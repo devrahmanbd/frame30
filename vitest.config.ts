@@ -5,7 +5,12 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     environment: "node",
-    include: ["src/**/*.test.ts", "src/**/*.test.tsx", "openapi/**/*.test.ts", "examples/starter-theme/*.test.ts"],
+    include: [
+      "src/**/*.test.ts",
+      "src/**/*.test.tsx",
+      "openapi/**/*.test.ts",
+      "examples/starter-theme/*.test.ts",
+    ],
     passWithNoTests: true,
     testTimeout: 30_000,
   },

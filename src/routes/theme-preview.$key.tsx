@@ -81,7 +81,7 @@ function ThemePreviewRoute() {
     focus: initialFocus,
     mock_order: initialMockOrder,
   } = Route.useSearch();
-  const preset = resolveThemePreview(key);
+  console.log("THE KEY IS: ", key); const preset = resolveThemePreview(key);
 
   if (!preset) {
     return <ThemePreviewNotFound />;

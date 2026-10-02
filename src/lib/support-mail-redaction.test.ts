@@ -84,9 +84,7 @@ describe("sendSupportNotifications — redacted dispatch", () => {
 
     expect(res.ok).toBe(true);
     expect(sent.mails).toHaveLength(2);
-    expect(res.piiRedacted).toEqual(
-      expect.arrayContaining(["email", "phone"]),
-    );
+    expect(res.piiRedacted).toEqual(expect.arrayContaining(["email", "phone"]));
     expect(res.withheldRules).toEqual([]);
 
     const admin = sent.mails.find((m) => m.to !== "ayesha@example.com")!;

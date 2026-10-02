@@ -55,7 +55,9 @@ export function findPaidWithoutSettlement(orders, intents, payments) {
       totalMinor:
         typeof o.total_minor_int === "number" ? o.total_minor_int : null,
       createdAt: o.created_at ?? null,
-      reason: !hasIntent ? "no_paid_settlement_intent" : "no_settlement_payment_row",
+      reason: !hasIntent
+        ? "no_paid_settlement_intent"
+        : "no_settlement_payment_row",
     });
   }
   return out;
@@ -69,7 +71,8 @@ async function rest(base, key, path) {
       Accept: "application/json",
     },
   });
-  if (!res.ok) throw new Error(`GET ${path} -> ${res.status}: ${await res.text()}`);
+  if (!res.ok)
+    throw new Error(`GET ${path} -> ${res.status}: ${await res.text()}`);
   return res.json();
 }
 
@@ -100,7 +103,11 @@ async function main() {
   if (ids.length > 0) {
     const list = `in.(${ids.join(",")})`;
     [intents, payments] = await Promise.all([
-      rest(base, key, `charge_intents?select=order_id,status,method&order_id=${list}&limit=5000`),
+      rest(
+        base,
+        key,
+        `charge_intents?select=order_id,status,method&order_id=${list}&limit=5000`,
+      ),
       rest(
         base,
         key,
@@ -114,12 +121,18 @@ async function main() {
     console.log(JSON.stringify({ scanned: orders.length, suspects }, null, 2));
     return;
   }
-  console.log(`audit-paid-placement: scanned ${orders.length} paid online order(s)`);
+  console.log(
+    `audit-paid-placement: scanned ${orders.length} paid online order(s)`,
+  );
   if (suspects.length === 0) {
-    console.log("OK: every paid online order has a paid settlement intent + payment row.");
+    console.log(
+      "OK: every paid online order has a paid settlement intent + payment row.",
+    );
     return;
   }
-  console.log(`ACTION: ${suspects.length} suspect(s) need ops review (paid without settlement):`);
+  console.log(
+    `ACTION: ${suspects.length} suspect(s) need ops review (paid without settlement):`,
+  );
   for (const s of suspects) {
     console.log(
       ` - ${s.orderNumber ?? s.orderId} [${s.method}] total=${s.totalMinor ?? "?"} created=${s.createdAt ?? "?"} reason=${s.reason}`,

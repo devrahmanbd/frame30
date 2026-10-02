@@ -8,21 +8,22 @@ Date: 2026-09-26. Method: read-only subagent audits of code + live schema; nothi
 
 ## Verdict in one paragraph
 
-Both themes are **fully dynamic** (tokens, skins, preset defaults, no hardcoded copy beyond deliberate demo art) and **fully page-builder compatible** (every emitted widget has catalog + renderer + studio twin + inspector fields, with 4 noted exceptions). **Plugins work on both themes identically** through the sandboxed island model — but a plugin can only *supplement*, never *replace*, menus or article layouts. **Menus are the weakest axis**: Songoskriti hard-overrides navigation (ignores dashboard menus + taxonomy), and no widget consumes dashboard menus. **Blog is generic fallback** on both (no per-theme templates or skins). For third parties: extra widgets ✅, better menus ⚠️ (adjacent only), subscription-with-prorata ❌ (missing engine).
+Both themes are **fully dynamic** (tokens, skins, preset defaults, no hardcoded copy beyond deliberate demo art) and **fully page-builder compatible** (every emitted widget has catalog + renderer + studio twin + inspector fields, with 4 noted exceptions). **Plugins work on both themes identically** through the sandboxed island model — but a plugin can only _supplement_, never _replace_, menus or article layouts. **Menus are the weakest axis**: Songoskriti hard-overrides navigation (ignores dashboard menus + taxonomy), and no widget consumes dashboard menus. **Blog is generic fallback** on both (no per-theme templates or skins). For third parties: extra widgets ✅, better menus ⚠️ (adjacent only), subscription-with-prorata ❌ (missing engine).
 
 ## 1. Dynamic — both themes: YES
 
-| Capability | Songoskriti | Theme B |
-|---|---|---|
-| ThemeTokens (18 keys) | ✅ brand `#1a1a1a`, accent `#8B4513`, radius `0px` sharp | ✅ deep maroon brand, warm paper surface, radius `4px` |
-| Skin vocabs + defaults | ✅ editorial/split/wall/cards | ✅ compact/fullbleed/carousel/rows |
-| Skin stylesheets | ✅ token-only, reduced-motion gated | ✅ token-only, reduced-motion gated |
-| Responsive bp overrides | ⚠️ engine supports, neither theme authors any | ⚠️ same |
-| Motion | `subtle` tokens + 5–6s auto-advance carousels | `subtle` + same pattern |
+| Capability              | Songoskriti                                              | Theme B                                                |
+| ----------------------- | -------------------------------------------------------- | ------------------------------------------------------ |
+| ThemeTokens (18 keys)   | ✅ brand `#1a1a1a`, accent `#8B4513`, radius `0px` sharp | ✅ deep maroon brand, warm paper surface, radius `4px` |
+| Skin vocabs + defaults  | ✅ editorial/split/wall/cards                            | ✅ compact/fullbleed/carousel/rows                     |
+| Skin stylesheets        | ✅ token-only, reduced-motion gated                      | ✅ token-only, reduced-motion gated                    |
+| Responsive bp overrides | ⚠️ engine supports, neither theme authors any            | ⚠️ same                                                |
+| Motion                  | `subtle` tokens + 5–6s auto-advance carousels            | `subtle` + same pattern                                |
 
 ## 2. Page builder / editor — YES with 4 exceptions
 
 All songoskriti + theme-B emitted types resolve (catalog → renderer → studio twin → inspector). Exceptions:
+
 1. `profile_card` / `orders_list`: no studio twin — uneditable in studio (`studio/catalog.ts` has zero keys).
 2. Thin studio twins (no skin control, minimal schema): `testimonials`, `finder_row`, `trust_footer/marquee`, `price_buckets`, `occasion_matrix`, `urgency_rail`.
 3. Prop-shape over-emit stripped on persist: songoskriti `finder_row` o4–o7, `split_feature` dual-image/CTA props, `ugc_gallery images` string.
@@ -45,13 +46,13 @@ No per-theme blog templates or article skins; shared `ArticleView`, full SEO (JS
 
 ## 6. Can third parties build it?
 
-| Ask | Verdict |
-|---|---|
-| More widgets | ✅ Yes — manifest + sandbox + tray + review pipeline; 6 builtins prove it |
-| Better menu (replace nav) | ⚠️ Adjacent only — header-slot island, cannot override renderer/theme |
-| Subscription plugin with prorata | ❌ No recurring price model, no renewal cron, no install upgrade path, trial expiry inert. Platform day-proration RPCs exist but serve plans only, unwired to installs. Workaround: self-bill via `hooksUrl` |
-| Theme requires plugins | ❌ No dependency mechanism (deliberate decoupling) |
-| Monetize (one-time + trial + payout) | ✅ 70/30 split, idempotent ledger, payouts, reviews |
+| Ask                                  | Verdict                                                                                                                                                                                                      |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| More widgets                         | ✅ Yes — manifest + sandbox + tray + review pipeline; 6 builtins prove it                                                                                                                                    |
+| Better menu (replace nav)            | ⚠️ Adjacent only — header-slot island, cannot override renderer/theme                                                                                                                                        |
+| Subscription plugin with prorata     | ❌ No recurring price model, no renewal cron, no install upgrade path, trial expiry inert. Platform day-proration RPCs exist but serve plans only, unwired to installs. Workaround: self-bill via `hooksUrl` |
+| Theme requires plugins               | ❌ No dependency mechanism (deliberate decoupling)                                                                                                                                                           |
+| Monetize (one-time + trial + payout) | ✅ 70/30 split, idempotent ledger, payouts, reviews                                                                                                                                                          |
 
 ## 7. Recommended order (my ranking)
 

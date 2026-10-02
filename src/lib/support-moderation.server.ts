@@ -752,10 +752,13 @@ export async function flagLowCsatForReopen(
   // exists this falls through to the direct update and offline paths below.
   try {
     const db = await admin();
-    const { error } = await db.rpc("reopen_conversation_for_followup" as never, {
-      _conversation_id: conversationId,
-      _notice: operatorNoticeEn,
-    } as never);
+    const { error } = await db.rpc(
+      "reopen_conversation_for_followup" as never,
+      {
+        _conversation_id: conversationId,
+        _notice: operatorNoticeEn,
+      } as never,
+    );
     if (error) throw error;
   } catch {
     try {

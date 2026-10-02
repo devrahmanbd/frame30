@@ -14,27 +14,27 @@ Out of scope for v1: PDP widget rebuilds (existing PDP widgets carry it), multi-
 
 `OCEANBLUE_TOKENS` in `src/lib/themes/oceanblue/tokens.ts`, starting from `DEFAULT_TOKENS`:
 
-| Token | Value | Note |
-| --- | --- | --- |
-| `brand` | `#0B3A5B` | Deep ocean; white text 11.86:1 (AAA, verified) |
-| `accent` | `#C08A3E` | Muted gold; 3.02:1 on white — decorative fills/borders/large graphics only, never body text |
-| `surface` | `#FFFFFF` | Clean white canvas |
-| `ink` | `#0F1E2E` | 16.86:1 on white (AAA, verified) |
-| `radius` | `8px` | Soft minimal corners (vs Songoskriti sharp `0px`) |
-| `fontDisplay` | `Inter` | Clean grotesque headlines, no editorial serif |
-| `fontBody` | `Inter` | Bangla falls back to the Bangla stack in `styles.css` |
-| `container` | `1280px` | |
-| `density` | `comfortable` | |
-| `typeScale` | `default` | |
-| `spaceUnit` | `16px` | |
-| `shadow` | `soft` | |
-| `motion` | `subtle` | Collapses under `prefers-reduced-motion` |
-| `digits` | `latin` | |
-| `locale` | `en` | |
-| `currencyDisplay` | `symbol` | BDT-first |
-| `fontPairing` | `bengali-classic` | Shared pairing, Bangla-safe (zero negative tracking) |
-| `dark` | `null` | Light-only v1 |
-| `globals` | `DEFAULT_GLOBALS` | Merchant-editable palette via `TokenEditor` |
+| Token             | Value             | Note                                                                                        |
+| ----------------- | ----------------- | ------------------------------------------------------------------------------------------- |
+| `brand`           | `#0B3A5B`         | Deep ocean; white text 11.86:1 (AAA, verified)                                              |
+| `accent`          | `#C08A3E`         | Muted gold; 3.02:1 on white — decorative fills/borders/large graphics only, never body text |
+| `surface`         | `#FFFFFF`         | Clean white canvas                                                                          |
+| `ink`             | `#0F1E2E`         | 16.86:1 on white (AAA, verified)                                                            |
+| `radius`          | `8px`             | Soft minimal corners (vs Songoskriti sharp `0px`)                                           |
+| `fontDisplay`     | `Inter`           | Clean grotesque headlines, no editorial serif                                               |
+| `fontBody`        | `Inter`           | Bangla falls back to the Bangla stack in `styles.css`                                       |
+| `container`       | `1280px`          |                                                                                             |
+| `density`         | `comfortable`     |                                                                                             |
+| `typeScale`       | `default`         |                                                                                             |
+| `spaceUnit`       | `16px`            |                                                                                             |
+| `shadow`          | `soft`            |                                                                                             |
+| `motion`          | `subtle`          | Collapses under `prefers-reduced-motion`                                                    |
+| `digits`          | `latin`           |                                                                                             |
+| `locale`          | `en`              |                                                                                             |
+| `currencyDisplay` | `symbol`          | BDT-first                                                                                   |
+| `fontPairing`     | `bengali-classic` | Shared pairing, Bangla-safe (zero negative tracking)                                        |
+| `dark`            | `null`            | Light-only v1                                                                               |
+| `globals`         | `DEFAULT_GLOBALS` | Merchant-editable palette via `TokenEditor`                                                 |
 
 Contrast gates that publish enforces (4.5:1 text, 3:1 chrome) pass by construction on brand/ink; gold never appears in a text role so it cannot trip the gate.
 
@@ -65,13 +65,13 @@ No fabricated metrics, ratings, prices, or store addresses anywhere in defaults 
 
 Core vocabularies in `WIDGET_SKINS` are reused unchanged; Oceanblue defaults:
 
-| Widget | Core vocab (first = core default) | Oceanblue default |
-| --- | --- | --- |
-| `product_rail` | `editorial`, `compact`, `minimal` | `minimal` |
-| `hero_carousel` | `split`, `fullbleed`, `minimal` | `split` |
-| `testimonials` | `carousel`, `wall`, `single` | `single` |
-| `product_grid` | `cards`, `rows` | `cards` |
-| `urgency_rail` | `editorial`, `compact`, `minimal` | `minimal` |
+| Widget          | Core vocab (first = core default) | Oceanblue default |
+| --------------- | --------------------------------- | ----------------- |
+| `product_rail`  | `editorial`, `compact`, `minimal` | `minimal`         |
+| `hero_carousel` | `split`, `fullbleed`, `minimal`   | `split`           |
+| `testimonials`  | `carousel`, `wall`, `single`      | `single`          |
+| `product_grid`  | `cards`, `rows`                   | `cards`           |
+| `urgency_rail`  | `editorial`, `compact`, `minimal` | `minimal`         |
 
 Wired via `withOceanblueDefaults()` merging under authored props through the shared `withThemeWidgetDefaults` helper, so inspector values always win and only catalog-known keys persist. `skins.css` is token-only (`var(--theme-*)`, `color-mix` washes, `pointer-events-none` on wash layers, reduced-motion gates) and pinned by a `stays token-driven` test matching the Songoskriti gate pattern.
 

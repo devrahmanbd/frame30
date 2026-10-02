@@ -48,7 +48,11 @@ import type { WidgetComponent, WidgetCtx } from "./widgets";
 import { resolveSkin } from "@/lib/builder-ast";
 import { useCarouselCycle, useScrollReveals } from "./songoskriti-motion";
 import { MediaFrame } from "./primitives/MediaFrame";
-import { ProductCard, ProductCardSkeleton, WishlistHeart } from "./primitives/ProductCard";
+import {
+  ProductCard,
+  ProductCardSkeleton,
+  WishlistHeart,
+} from "./primitives/ProductCard";
 import { cardVariantOf } from "./merch";
 import { altKey, sizesAttr, sizesKey } from "@/lib/media";
 import { placeholderSeed } from "@/lib/placeholder";
@@ -152,7 +156,10 @@ const FinderRow: WidgetComponent = ({
                 className="m-0 grid grid-cols-1 sm:grid-cols-2 gap-0 p-0 list-none"
               >
                 {occasions.map((o) => (
-                  <li key={o.label} className="border-b border-[var(--theme-border)] last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0">
+                  <li
+                    key={o.label}
+                    className="border-b border-[var(--theme-border)] last:border-b-0 sm:[&:nth-last-child(-n+2)]:border-b-0"
+                  >
                     <a
                       href={link(o.href || "#")}
                       className="group flex min-h-[60px] items-center justify-between bg-transparent px-4 sm:px-6 text-[11px] sm:text-[12px] font-semibold tracking-[0.18em] uppercase transition-all hover:bg-[var(--theme-surface)]"
@@ -1249,7 +1256,11 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
   const grid = departments.slice(2);
 
   return (
-    <section ref={scope} data-reveal className="py-16 sm:py-20 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
+    <section
+      ref={scope}
+      data-reveal
+      className="py-16 sm:py-20 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]"
+    >
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="flex items-center justify-between mb-10">
           <h2 className="font-serif text-[22px] sm:text-[28px] font-light tracking-[0.04em] text-[var(--theme-ink)] uppercase">
@@ -1273,9 +1284,11 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
                 i < 2 ? "lg:row-span-1" : ""
               }`}
             >
-              <div className={`relative w-full overflow-hidden bg-[var(--theme-muted)] ${
-                i < 2 ? "aspect-[2/3]" : "aspect-[3/4]"
-              }`}>
+              <div
+                className={`relative w-full overflow-hidden bg-[var(--theme-muted)] ${
+                  i < 2 ? "aspect-[2/3]" : "aspect-[3/4]"
+                }`}
+              >
                 {dept.image ? (
                   <img
                     src={dept.image}
@@ -1430,7 +1443,14 @@ const megaSlug = (s: string) => `/c/${s.toLowerCase().replace(/\s+/g, "-")}`;
 // Tier-(c) fallback panels keep their image-panel design, but the art is a
 // neutral placeholder tile — never brand art. Taxonomy labels stay generic
 // fashion terms (owned by the fallback, localized via MEGA_MENU_FALLBACK_BN).
-const MEGA_MENU_DEFS: Record<string, { sections: Array<{ title: string; links: string[] }>; featuredImage?: string; shopAllHref: string }> = {
+const MEGA_MENU_DEFS: Record<
+  string,
+  {
+    sections: Array<{ title: string; links: string[] }>;
+    featuredImage?: string;
+    shopAllHref: string;
+  }
+> = {
   Women: {
     sections: [
       {
@@ -1733,9 +1753,7 @@ const SongoskritiMegaMenu: WidgetComponent = ({
       {showPanel && (
         <div
           className="absolute left-0 top-full z-50 w-full bg-[var(--theme-surface)]/98 backdrop-blur-2xl shadow-2xl border-t border-[var(--theme-border)]"
-          onMouseEnter={() =>
-            activeEntry && setActiveMenu(activeEntry.id)
-          }
+          onMouseEnter={() => activeEntry && setActiveMenu(activeEntry.id)}
         >
           <div className="mx-auto max-w-[var(--fq-container,1440px)] px-8 py-10 grid grid-cols-12 gap-8">
             {/* Left: subcategory columns */}
@@ -1775,7 +1793,10 @@ const SongoskritiMegaMenu: WidgetComponent = ({
             {/* Right: featured image */}
             {activeEntry.featuredImage && (
               <div className="col-span-4">
-                <a href={link(activeEntry.shopAllHref)} className="group block relative aspect-[3/4] overflow-hidden bg-[var(--theme-muted)]">
+                <a
+                  href={link(activeEntry.shopAllHref)}
+                  className="group block relative aspect-[3/4] overflow-hidden bg-[var(--theme-muted)]"
+                >
                   <img
                     src={activeEntry.featuredImage}
                     alt={activeEntry.label}
@@ -1784,8 +1805,12 @@ const SongoskritiMegaMenu: WidgetComponent = ({
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/60 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-6">
-                    <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--theme-surface)]/70 mb-1">{megaFallbackLabel("Featured", locale)}</p>
-                    <p className="font-serif text-[18px] font-light text-[var(--theme-surface)]">{activeEntry.label}</p>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--theme-surface)]/70 mb-1">
+                      {megaFallbackLabel("Featured", locale)}
+                    </p>
+                    <p className="font-serif text-[18px] font-light text-[var(--theme-surface)]">
+                      {activeEntry.label}
+                    </p>
                   </div>
                 </a>
               </div>
@@ -1806,14 +1831,30 @@ const SongoskritiSplitFeature: WidgetComponent = ({ str, locale, link }) => {
 
   return (
     <section className="bg-[var(--theme-surface)] py-16 sm:py-24">
-      <div className={`mx-auto flex flex-col md:flex-row max-w-[var(--fq-container,1440px)] gap-8 lg:gap-16 px-4 sm:px-8 items-center ${layout === "image_right" ? "md:flex-row-reverse" : ""}`}>
+      <div
+        className={`mx-auto flex flex-col md:flex-row max-w-[var(--fq-container,1440px)] gap-8 lg:gap-16 px-4 sm:px-8 items-center ${layout === "image_right" ? "md:flex-row-reverse" : ""}`}
+      >
         <div className="w-full md:w-1/2 flex gap-4">
           <div className="w-2/3 aspect-[3/4] overflow-hidden bg-[var(--theme-muted)]">
-            {primaryImage && <img src={primaryImage} className="w-full h-full object-cover" loading="lazy" alt="" />}
+            {primaryImage && (
+              <img
+                src={primaryImage}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                alt=""
+              />
+            )}
           </div>
           <div className="w-1/3 flex items-end">
             <div className="w-full aspect-[2/3] overflow-hidden bg-[var(--theme-muted)]">
-              {secondaryImage && <img src={secondaryImage} className="w-full h-full object-cover" loading="lazy" alt="" />}
+              {secondaryImage && (
+                <img
+                  src={secondaryImage}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                  alt=""
+                />
+              )}
             </div>
           </div>
         </div>
@@ -1886,7 +1927,11 @@ const SongoskritiCollectionStory: WidgetComponent = ({
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {collections.map((c, i) => (
-            <a key={i} href={link(c.href || "#")} className="group block text-center">
+            <a
+              key={i}
+              href={link(c.href || "#")}
+              className="group block text-center"
+            >
               <div className="w-full aspect-[4/5] overflow-hidden bg-[var(--theme-surface)] mb-6">
                 {c.image && (
                   <img
@@ -1943,7 +1988,11 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
   useScrollReveals(scope, true);
 
   return (
-    <section ref={scope} data-reveal className="py-20 sm:py-32 bg-[var(--theme-surface)] overflow-hidden border-t border-[var(--theme-border)]">
+    <section
+      ref={scope}
+      data-reveal
+      className="py-20 sm:py-32 bg-[var(--theme-surface)] overflow-hidden border-t border-[var(--theme-border)]"
+    >
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-12 sm:mb-20 text-center flex flex-col items-center">
         {subhead && (
           <p className="text-[10px] sm:text-[12px] font-semibold uppercase tracking-[0.3em] text-[var(--theme-ink)]/50 mb-4 sm:mb-6">
@@ -1962,8 +2011,18 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
           className="inline-flex items-center gap-2 text-[11px] sm:text-[13px] font-medium uppercase tracking-[0.15em] text-[var(--theme-ink)] border-b border-[var(--theme-ink)]/30 pb-1 hover:border-[var(--theme-ink)] transition-colors"
         >
           {handleLabel}
-          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          <svg
+            className="w-3 h-3"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M14 5l7 7m0 0l-7 7m7-7H3"
+            />
           </svg>
         </a>
       </div>
@@ -1972,26 +2031,26 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
         {/* Modern interactive flex gallery */}
         <div className="group flex flex-col sm:flex-row gap-2 sm:gap-4 h-auto sm:h-[500px] lg:h-[700px]">
           {displayImages.map((img, i) => (
-            <div 
-              key={`ugc-${i}`} 
+            <div
+              key={`ugc-${i}`}
               className="relative overflow-hidden bg-[var(--theme-muted)] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] flex-1 sm:hover:flex-[2.5] cursor-pointer h-[300px] sm:h-full w-full rounded-sm sm:rounded-md"
             >
-              <img 
-                src={img} 
-                alt="User generated content" 
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 scale-100" 
-                loading="lazy" 
+              <img
+                src={img}
+                alt="User generated content"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 scale-100"
+                loading="lazy"
               />
               <div className="absolute inset-0 bg-foreground/0 hover:bg-foreground/10 transition-colors duration-500 flex items-center justify-center opacity-0 hover:opacity-100">
-                 <div className="w-12 h-12 rounded-full bg-background/20 backdrop-blur-md flex items-center justify-center text-background border border-background/30 transform translate-y-4 hover:translate-y-0 transition-all duration-500">
+                <div className="w-12 h-12 rounded-full bg-background/20 backdrop-blur-md flex items-center justify-center text-background border border-background/30 transform translate-y-4 hover:translate-y-0 transition-all duration-500">
                   <svg
                     className="w-5 h-5"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                    </svg>
-                 </div>
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                  </svg>
+                </div>
               </div>
             </div>
           ))}
@@ -2033,7 +2092,11 @@ const SongoskritiStoreLocator: WidgetComponent = ({ str, locale }) => {
   if (stores.length === 0) return null;
 
   return (
-    <section ref={scope} data-reveal className="py-16 sm:py-24 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
+    <section
+      ref={scope}
+      data-reveal
+      className="py-16 sm:py-24 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]"
+    >
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="text-center mb-14">
           <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--theme-ink)]/40 mb-3">

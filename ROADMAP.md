@@ -151,17 +151,17 @@ gantt
 
 ## 📊 Priority Matrix & Status
 
-| Track         | Feature                                          | Priority | Complexity | Impact   |
-| ------------- | ------------------------------------------------ | -------- | ---------- | -------- |
-| **AI**        | Interactive Creative Prompt Chips                | **P0**   | Low        | High     |
-| **CMS**       | Page Builder 3-Tab Inspector (Content/Style/Adv) | **P0**   | Med        | High     |
-| **CMS**       | Inactive Theme Live Preview (HMAC Signed)        | **P0**   | Low        | High     |
-| **AI**        | "Build with AI" AST Section Generator            | **P1**   | Med        | High     |
-| **Logistics** | SteadFast / Pathao One-Click Consignment         | **P1**   | Med        | High     |
-| **CMS**       | Navigator Layer Tree & Revision Split            | **P1**   | Med        | Med      |
-| **Infra**     | Immutable `TenantContext` AsyncLocalStorage      | **P2**   | High       | Critical |
-| **Security**  | RLS Tier-2 Member Write-Side Policies            | **P2**   | Med        | High     |
-| **API**       | OpenAPI spec: map support-revision/support-stream| **P2**   | Low        | Med      |
+| Track         | Feature                                           | Priority | Complexity | Impact   |
+| ------------- | ------------------------------------------------- | -------- | ---------- | -------- |
+| **AI**        | Interactive Creative Prompt Chips                 | **P0**   | Low        | High     |
+| **CMS**       | Page Builder 3-Tab Inspector (Content/Style/Adv)  | **P0**   | Med        | High     |
+| **CMS**       | Inactive Theme Live Preview (HMAC Signed)         | **P0**   | Low        | High     |
+| **AI**        | "Build with AI" AST Section Generator             | **P1**   | Med        | High     |
+| **Logistics** | SteadFast / Pathao One-Click Consignment          | **P1**   | Med        | High     |
+| **CMS**       | Navigator Layer Tree & Revision Split             | **P1**   | Med        | Med      |
+| **Infra**     | Immutable `TenantContext` AsyncLocalStorage       | **P2**   | High       | Critical |
+| **Security**  | RLS Tier-2 Member Write-Side Policies             | **P2**   | Med        | High     |
+| **API**       | OpenAPI spec: map support-revision/support-stream | **P2**   | Low        | Med      |
 
 ---
 

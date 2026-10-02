@@ -267,7 +267,9 @@ async function findPendingDuplicate(
 ): Promise<CallbackRecord | null> {
   const { supabaseAdmin } =
     await import("@/integrations/supabase/client.server");
-  const cutoff = new Date(Date.now() - CALLBACK_DUPLICATE_WINDOW_MS).toISOString();
+  const cutoff = new Date(
+    Date.now() - CALLBACK_DUPLICATE_WINDOW_MS,
+  ).toISOString();
   const { data, error } = await supabaseAdmin
     .from("support_callbacks")
     .select(
@@ -289,7 +291,8 @@ function acknowledgement(
   customerName: string,
   duplicate: boolean,
 ) {
-  const windowInfo = CALLBACK_WINDOWS[record.preferred_window as CallbackTimeWindow];
+  const windowInfo =
+    CALLBACK_WINDOWS[record.preferred_window as CallbackTimeWindow];
   const description = windowInfo?.description ?? record.preferred_window;
   const label = windowInfo?.label ?? record.preferred_window;
   const labelBn = windowInfo?.labelBn ?? record.preferred_window;

@@ -3,19 +3,22 @@
 ## Context
 
 Audit sources (all verified in-repo this session): `src/lib/themes/`
-+ `appearance.server.ts` (~1115 lines), `themes.server.ts` (~1213 lines),
-`plugins.server.ts` + `plugin-lifecycle.server.ts`, `ProductCard.tsx`,
-`heritage.tsx` hero, `chrome.tsx` footer, `motion-runtime.ts`,
-`supabase/migrations/2026*`, `BUILD.md` tiers, live `:3000` DOM + console.
+
+- `appearance.server.ts` (~1115 lines), `themes.server.ts` (~1213 lines),
+  `plugins.server.ts` + `plugin-lifecycle.server.ts`, `ProductCard.tsx`,
+  `heritage.tsx` hero, `chrome.tsx` footer, `motion-runtime.ts`,
+  `supabase/migrations/2026*`, `BUILD.md` tiers, live `:3000` DOM + console.
 
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Score the codebase honestly on both axes with file:line evidence.
 - Rank gaps by merchant-facing impact, each with the precise missing piece.
 - Keep every claim checkable (`typecheck`/`test`/DOM), per project rules.
 
 **Non-Goals:**
+
 - No runtime, schema, or copy changes in this change.
 - No pricing/packaging decisions (owner-console territory).
 - No new themes, widgets, or payment rails.
@@ -57,7 +60,7 @@ Where the ideology is currently UI-deep or missing (ranked):
 
 1. **Empty theme directory (P0).** `VISIBLE_THEME_KEYS = new Set([])`
    (`appearance.ts:270`) + `presetCatalogue() = []` + `officialThemeKeys()
-   = []` (`themes.server.ts:589,641`) → installed grid shows the active
+= []` (`themes.server.ts:589,641`) → installed grid shows the active
    theme only; Add New shows 0 cards. WordPress without a theme directory
    is a file manager, not a CMS.
 2. **Footer drops the 5th column.** Both `footer_sitemap` renderers read
@@ -66,11 +69,11 @@ Where the ideology is currently UI-deep or missing (ranked):
    loss on every v2 install.
 3. **Motion tells on product cards.** `transition-all` + 1200ms image zoom
    (`ProductCard.tsx:326,336,356`) and triple-signal hover (lift + shadow
-   + zoom) read as template defaults next to biba.in-grade photography.
+   - zoom) read as template defaults next to biba.in-grade photography.
 4. **Imagery half-shipped.** 3/13 campaign photos placed (heroes 1–3);
    Nxt, festive split, and 8 tiles await Copilot quota reset.
 5. **Localhost CSP noise.** Supabase auth refresh blocked by `connect-src
-   'self'` on `:3000` preview — pre-existing, but a merchant screen-share
+'self'` on `:3000` preview — pre-existing, but a merchant screen-share
    with red console errors undermines the "it just works" story.
 6. **Secrets live only in memory.** No `.env` file; Supabase keys recovered
    from git history (`9eab798:.env`) to rebuild `:3000`. One lost shell =

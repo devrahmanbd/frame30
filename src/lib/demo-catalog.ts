@@ -3934,6 +3934,373 @@ const OCEANBLUE: DemoCatalog = {
   ],
 };
 
+/**
+ * BLUEOCEAN demo catalogue — MARKED DEMO data for the blueocean theme
+ * preview and the merchant-less storefront fallback. Prices are BDT minor
+ * units (poisha; 249900 = BDT 2,499). Products carry no image_url so the
+ * preview renders deterministic department-tinted monogram SVGs via
+ * /api/public/ph/<dept>/<slug>.svg. The eight taxonomy categories mirror
+ * the homepage circle-category tiles 1:1 so every tile link resolves to a
+ * real category page. Original copy, no third-party brand text, no
+ * merchant telemetry, no remote URLs.
+ */
+const BLUEOCEAN: DemoCatalog = {
+  categories: [
+    {
+      slug: "suit-sets",
+      name: "Suit Sets",
+      description:
+        "Two- and three-piece salwar sets in cotton, khadi and festive silk blends.",
+    },
+    {
+      slug: "kurtas",
+      name: "Kurtas",
+      description:
+        "Straight kurtis and easy tops for workdays and slow weekends.",
+    },
+    {
+      slug: "sarees",
+      name: "Sarees",
+      description:
+        "Handloom cottons and light silks that drape without the fuss.",
+    },
+    {
+      slug: "dresses",
+      name: "Dresses",
+      description: "Breezy dresses cut for warm days and long evenings.",
+    },
+    {
+      slug: "bottoms",
+      name: "Bottoms",
+      description: "Palazzos, churidars and trousers that pair with every kurta.",
+    },
+    {
+      slug: "girls",
+      name: "Girls",
+      description: "Playground-tough cotton and festive sets for growing years.",
+    },
+    {
+      slug: "jewellery",
+      name: "Jewellery",
+      description: "Light brass sets and drops that finish a festive look.",
+    },
+    {
+      slug: "sale",
+      name: "Sale",
+      description: "Past-season colours at honest markdowns.",
+    },
+    {
+      slug: "new-in",
+      name: "New In",
+      description: "Fresh drops from the current month's studio run.",
+    },
+    {
+      slug: "festive",
+      name: "Festive Edit",
+      description: "Celebration-weight pieces for pujas, parties and weddings.",
+    },
+    {
+      slug: "white",
+      name: "White",
+      description: "Crisp whites and ecrus across sets, kurtas and sarees.",
+    },
+    {
+      slug: "pink",
+      name: "Pink",
+      description: "Rose, blush and rani pinks for day and evening.",
+    },
+    {
+      slug: "blue",
+      name: "Blue",
+      description: "Indigo, lagoon and midnight blues in every weave.",
+    },
+    {
+      slug: "green",
+      name: "Green",
+      description: "Leaf, sage and deep greens for Eid mornings.",
+    },
+    {
+      slug: "black",
+      name: "Black",
+      description: "Evening blacks with gold-thread borders.",
+    },
+    {
+      slug: "red",
+      name: "Red",
+      description: "Bridal reds and maroons for the big day.",
+    },
+  ],
+  collections: [
+    {
+      slug: "new-in",
+      name: "New In",
+      description: "Fresh drops from the current month's studio run.",
+    },
+    {
+      slug: "festive",
+      name: "Festive Edit",
+      description: "Celebration-weight pieces for pujas, parties and weddings.",
+    },
+    {
+      slug: "bestsellers",
+      name: "Most Loved",
+      description: "The pieces customers reorder across seasons.",
+    },
+    {
+      slug: "wedding",
+      name: "Wedding Season",
+      description: "Guest and ceremony dressing from jamdani to sharara.",
+    },
+    {
+      slug: "eid",
+      name: "Eid Mornings",
+      description: "Light silk-blends and pastels for prayer and visits.",
+    },
+    {
+      slug: "office-edit",
+      name: "Office Edit",
+      description: "Structured cotton for desk days and commutes.",
+    },
+    {
+      slug: "girls-edit",
+      name: "Girls Edit",
+      description: "Festive minis and sturdy everyday sets.",
+    },
+    {
+      slug: "sale-picks",
+      name: "Sale Picks",
+      description: "Past-season colours at honest markdowns.",
+    },
+  ],
+  products: [
+    {
+      slug: "monsoon-cotton-suit-set",
+      title: "Monsoon Cotton Suit Set",
+      description:
+        "Three-piece suit set in combed monsoon cotton with a woven border. Breathable through humid days, straight cut runs true to size.",
+      category: "suit-sets",
+      collections: ["new-in", "bestsellers"],
+      tags: ["suit-sets", "cotton", "new-in"],
+      variants: [
+        {
+          name: "Indigo",
+          sku: "BO-SS-01",
+          price: 249900,
+          compare_at: 299900,
+          stock: 24,
+        },
+        {
+          name: "Ecru",
+          sku: "BO-SS-01B",
+          price: 249900,
+          stock: 18,
+        },
+      ],
+    },
+    {
+      slug: "jamdani-buti-festive-suit",
+      title: "Jamdani Buti Festive Suit",
+      description:
+        "Jamdani buti motifs hand-drawn on a jacquard loom base — festive weight without stiffness. The kameez arrives fully lined.",
+      category: "suit-sets",
+      collections: ["festive", "wedding"],
+      tags: ["suit-sets", "jamdani", "festive"],
+      variants: [
+        {
+          name: "Maroon",
+          sku: "BO-SS-02",
+          price: 549900,
+          stock: 9,
+        },
+      ],
+    },
+    {
+      slug: "workday-straight-kurta",
+      title: "Workday Straight Kurta",
+      description:
+        "A straight office kurta in pressed cotton with side slits and a mandarin collar. Pairs with every bottom in the drawer.",
+      category: "kurtas",
+      collections: ["office-edit", "bestsellers"],
+      tags: ["kurtas", "cotton", "workwear"],
+      variants: [
+        {
+          name: "White",
+          sku: "BO-KT-01",
+          price: 149900,
+          stock: 40,
+        },
+        {
+          name: "Sage",
+          sku: "BO-KT-01B",
+          price: 149900,
+          stock: 32,
+        },
+      ],
+    },
+    {
+      slug: "handloom-day-saree",
+      title: "Handloom Day Saree",
+      description:
+        "Six yards of soft handloom cotton with a narrow gold-thread border. Light enough for all-day wear, crisp enough for evenings.",
+      category: "sarees",
+      collections: ["new-in", "eid"],
+      tags: ["sarees", "handloom", "cotton"],
+      variants: [
+        {
+          name: "Leaf Green",
+          sku: "BO-SR-01",
+          price: 349900,
+          stock: 14,
+        },
+      ],
+    },
+    {
+      slug: "evening-silk-saree",
+      title: "Evening Silk Saree",
+      description:
+        "A light silk-blend saree with a marigold zari edge for wedding nights. Falls clean, photographs warm.",
+      category: "sarees",
+      collections: ["festive", "wedding"],
+      tags: ["sarees", "silk", "wedding"],
+      variants: [
+        {
+          name: "Midnight Blue",
+          sku: "BO-SR-02",
+          price: 649900,
+          stock: 7,
+        },
+      ],
+    },
+    {
+      slug: "breeze-line-dress",
+      title: "Breeze Line Dress",
+      description:
+        "A tiered mid-length dress in airy rayon with pockets. One-and-done dressing for hot months.",
+      category: "dresses",
+      collections: ["new-in", "sale-picks"],
+      tags: ["dresses", "rayon", "casual"],
+      variants: [
+        {
+          name: "Blush",
+          sku: "BO-DR-01",
+          price: 199900,
+          compare_at: 249900,
+          stock: 21,
+        },
+      ],
+    },
+    {
+      slug: "palazzo-pair-trouser",
+      title: "Palazzo Pair Trouser",
+      description:
+        "Wide-leg palazzo in crease-proof crepe with an elastic back waist. Sits right on the shoe.",
+      category: "bottoms",
+      collections: ["office-edit", "bestsellers"],
+      tags: ["bottoms", "palazzo", "workwear"],
+      variants: [
+        {
+          name: "Black",
+          sku: "BO-BT-01",
+          price: 129900,
+          stock: 36,
+        },
+        {
+          name: "Ecru",
+          sku: "BO-BT-01B",
+          price: 129900,
+          stock: 28,
+        },
+      ],
+    },
+    {
+      slug: "girls-festive-mini-set",
+      title: "Girls Festive Mini Set",
+      description:
+        "A twirl-approved two-piece mini set in soft festive cotton with reinforced seams for playground duty.",
+      category: "girls",
+      collections: ["festive", "girls-edit"],
+      tags: ["girls", "festive", "cotton"],
+      variants: [
+        {
+          name: "Rani Pink",
+          sku: "BO-GR-01",
+          price: 179900,
+          stock: 16,
+        },
+      ],
+    },
+    {
+      slug: "brass-drop-jewellery-set",
+      title: "Brass Drop Jewellery Set",
+      description:
+        "Featherlight brass drops with a matching pendant string. Nickel-safe plating, festive without the weight.",
+      category: "jewellery",
+      collections: ["festive", "wedding"],
+      tags: ["jewellery", "brass", "festive"],
+      variants: [
+        {
+          name: "Antique Gold",
+          sku: "BO-JW-01",
+          price: 99900,
+          stock: 30,
+        },
+      ],
+    },
+    {
+      slug: "eid-pastel-coord",
+      title: "Eid Pastel Co-ord",
+      description:
+        "A pastel two-piece co-ord in silk-blend with mother-of-pearl buttons. Made for Eid morning photos.",
+      category: "suit-sets",
+      collections: ["eid", "new-in"],
+      tags: ["suit-sets", "silk", "eid"],
+      variants: [
+        {
+          name: "Pastel Blue",
+          sku: "BO-SS-03",
+          price: 399900,
+          stock: 12,
+        },
+      ],
+    },
+    {
+      slug: "khadi-pocket-kurta",
+      title: "Khadi Pocket Kurta",
+      description:
+        "Spun khadi kurta with a chest pocket and an easy straight cut. Softens wash after wash.",
+      category: "kurtas",
+      collections: ["office-edit", "sale-picks"],
+      tags: ["kurtas", "khadi", "casual"],
+      variants: [
+        {
+          name: "Natural",
+          sku: "BO-KT-02",
+          price: 139900,
+          compare_at: 169900,
+          stock: 22,
+        },
+      ],
+    },
+    {
+      slug: "sharara-party-set",
+      title: "Sharara Party Set",
+      description:
+        "A flared sharara set with sequin-scatter yoke work for sangeet nights. Fully lined, dance-tested flare.",
+      category: "suit-sets",
+      collections: ["festive", "wedding"],
+      tags: ["suit-sets", "sharara", "party"],
+      variants: [
+        {
+          name: "Bottle Green",
+          sku: "BO-SS-04",
+          price: 599900,
+          stock: 6,
+        },
+      ],
+    },
+  ],
+};
+
 export const DEMO_CATALOGS = {
   apparel: APPAREL,
   marketplace: MARKETPLACE,
@@ -3943,6 +4310,7 @@ export const DEMO_CATALOGS = {
   general: SUPERSHOP_CATALOG,
   songoskriti: SONGOSKRITI,
   oceanblue: OCEANBLUE,
+  blueocean: BLUEOCEAN,
 } as const satisfies Record<string, DemoCatalog>;
 
 export type DemoCatalogKey = keyof typeof DEMO_CATALOGS;

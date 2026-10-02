@@ -259,9 +259,7 @@ describe("lane D3 — theme-emitted sections survive parse→serialize→parse",
     expect(finder["buttonLabel"]).toBe("BROWSE ALL OCCASIONS");
     expect(finder["buttonHref"]).toBe("/c/occasions");
     const split = byId["split"]!.props as Record<string, unknown>;
-    expect(split["primaryImage"]).toBe(
-      "/ph/songoskriti/edit-festive-main.png",
-    );
+    expect(split["primaryImage"]).toBe("/ph/songoskriti/edit-festive-main.png");
     expect(split["secondaryImage"]).toBe("/ph/songoskriti/cat-men.png");
     expect(split["ctaUrl"]).toBe("/c/women");
     expect(split["ctaLabel2"]).toBe("SHOP MEN");
@@ -282,10 +280,11 @@ describe("lane D3 — theme-emitted sections survive parse→serialize→parse",
   it("keeps props intact through parse→serialize→parse", () => {
     const once = parseAst(themeAst());
     const twice = parseAst(JSON.parse(JSON.stringify(once)));
-    expect(twice.main.map((s) => s.id)).toEqual(
-      once.main.map((s) => s.id),
-    );
-    for (const [first, second] of once.main.map((s, i) => [s, twice.main[i]!])) {
+    expect(twice.main.map((s) => s.id)).toEqual(once.main.map((s) => s.id));
+    for (const [first, second] of once.main.map((s, i) => [
+      s,
+      twice.main[i]!,
+    ])) {
       expect(second!.props, second!.id).toEqual(first!.props);
     }
   });

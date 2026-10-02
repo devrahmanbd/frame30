@@ -211,7 +211,7 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
     rating: 0,
     installs: 0,
   },
-  "oceanblue-v2": {
+  blueocean: {
     author: "Framique",
     subjects: ["fashion", "marketplace"],
     features: [
@@ -221,8 +221,8 @@ export const CATALOG_META: Record<string, CatalogMeta> = {
       "wishlist",
       "reviews",
     ],
-    layouts: ["grid", "full width", "minimal"],
-    tags: ["oceanblue-v2", "maroon", "ethnic", "marketplace", "festive"],
+    layouts: ["grid", "full width", "editorial"],
+    tags: ["blueocean", "editorial", "ethnic", "marketplace", "festive"],
     rating: 0,
     installs: 0,
   },

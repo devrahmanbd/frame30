@@ -33,11 +33,13 @@
 ### Task 1: Deduplicate click-routing (single source)
 
 **Files:**
+
 - Modify: `src/components/store/ThemePreviewFrame.tsx` (delete local `isPreviewBlockedHref`/`parsePreviewHref`/`previewClickAction`, import from `@/lib/theme-preview-nav`)
 - Modify: `src/lib/theme-preview-nav.ts` ONLY if needed to reconcile the `/products/`-list divergence (prefer nav-module behavior; pin with test)
 - Test: `src/lib/theme-preview-nav.test.ts` (add `/products/` list-form pin + Frame-import assertion is impossible — instead delete + typecheck)
 
 **Interfaces:**
+
 - Consumes: `previewClickAction`, `isPreviewBlockedHref`, `handlePreviewCanvasClick`, `handlePreviewCanvasSubmit`, `PREVIEW_DISABLED_MESSAGE` from `@/lib/theme-preview-nav`
 - Produces: Frame with zero local parser definitions (grep `parsePreviewHref` in Frame → 0 hits)
 
@@ -49,7 +51,9 @@ describe("click-routing single source", () => {
   it("maps /products/ list form exactly once", () => {
     expect(previewTemplateForHref("/products/")).toBe("product");
     expect(previewTargetForHref("/products/")).toEqual({
-      template: "product", slug: null, query: null,
+      template: "product",
+      slug: null,
+      query: null,
     });
   });
 });
@@ -82,10 +86,12 @@ git push origin fix/preview-fidelity-phase1
 ### Task 2: Category slugs resolve in demo focus
 
 **Files:**
+
 - Modify: `src/lib/theme-preview-nav.ts` (`resolveDemoFocus` collection branch ~:334-338)
 - Test: `src/lib/theme-preview-nav.test.ts`
 
 **Interfaces:**
+
 - Consumes: `demoCatalogFor(themeKey)` → `catalog.categories[]` (`{slug,name}`), `catalog.products[]` (`category`, `collections[]`)
 - Produces: `resolveDemoFocus("songoskriti","collection","women")` → `{ template:"collection", slug:"women", title:"Women", collection:<resolvable key>, category:"women" }` — extend `DemoFocus` with optional `category` ONLY if needed by previewDemoMap; prefer reusing `collection` field when the category has no dedicated collection (filter rows by `category`, same pattern as `preview-demo-data.ts:116-119`)
 
@@ -99,7 +105,9 @@ describe("resolveDemoFocus categories", () => {
     expect(f.slug).toBe("women");
   });
   it("unknown slugs still fall back to new-in", () => {
-    expect(resolveDemoFocus("songoskriti", "collection", "nope-xyz")?.collection).toBe("new-in");
+    expect(
+      resolveDemoFocus("songoskriti", "collection", "nope-xyz")?.collection,
+    ).toBe("new-in");
   });
 });
 ```
@@ -131,10 +139,12 @@ git push origin fix/preview-fidelity-phase1
 ### Task 3: Focus overlay keeps `_bn` twins
 
 **Files:**
+
 - Modify: `src/lib/theme-preview-nav.ts` (`applyDemoFocus` ~:357-390)
 - Test: `src/lib/theme-preview-nav.test.ts` (unit on section arrays) — check existing applyDemoFocus tests first
 
 **Interfaces:**
+
 - Consumes: `DemoFocus { title }`, section props possibly containing `text_bn`/`heading_bn`
 - Produces: focused heading keeps authored `text_bn`/`heading_bn` when present; humanized-slug titles leave `_bn` empty (falls back to EN per `resolveBiText`, never blank)
 
@@ -142,8 +152,19 @@ git push origin fix/preview-fidelity-phase1
 
 ```typescript
 it("focus keeps authored _bn twins", () => {
-  const sections = [{ id: "h", type: "heading", props: { text: "New in", text_bn: "নতুন এসেছে" } }];
-  const out = applyDemoFocus(sections as never, { template: "collection", slug: "festive", title: "Eid & Festive", collection: "festive" });
+  const sections = [
+    {
+      id: "h",
+      type: "heading",
+      props: { text: "New in", text_bn: "নতুন এসেছে" },
+    },
+  ];
+  const out = applyDemoFocus(sections as never, {
+    template: "collection",
+    slug: "festive",
+    title: "Eid & Festive",
+    collection: "festive",
+  });
   expect(out[0].props.text).toBe("Eid & Festive");
   expect(out[0].props.text_bn).toBe("নতুন এসেছে"); // currently blanked
 });
@@ -176,10 +197,12 @@ git push origin fix/preview-fidelity-phase1
 ### Task 4: Focused product feeds `product_media`
 
 **Files:**
+
 - Modify: `src/lib/theme-preview-nav.ts` (`applyDemoFocus`) and/or `src/components/store/ThemePreviewFrame.tsx` (whichever owns media override — check how product template is assembled in `songoskriti/preview.ts:81-87`)
 - Test: extend `src/lib/theme-preview-nav.test.ts` or frame test
 
 **Interfaces:**
+
 - Consumes: matched catalog product (`image_url`), `product_media` section props (`image1..image4`)
 - Produces: focused known product slug → media images from catalog; unknown slug → current static images unchanged
 
@@ -194,11 +217,13 @@ git push origin fix/preview-fidelity-phase1
 ### Task 5: Repeater item-row `_bn` reads
 
 **Files:**
+
 - Modify: hero/faq/trust/announcement/lookbook item-row mappers — locate via `widgets.tsx:861-871`, `widgets.tsx:1384-1397`, `chrome.tsx` trust/announcement/lookbook rows (same `row.key`/`row.key_bn` direct-read pattern as the landed footer fix in `chrome.tsx:360-377`)
 - Modify: `src/lib/studio/model.ts` ONLY the remaining `seed*Items` migrations that drop twins (footer already done — check `seedQaItems/seedHeroItems/seedTrustItems/seedAnnouncementItems/seedLookbookItems/seedSpecItems :454-604`)
 - Test: extend `hero-locale.test.tsx`-style coverage + model migration tests mirroring the footer precedent
 
 **Interfaces:**
+
 - Consumes: row objects possibly carrying `<key>_bn`
 - Produces: bn locale renders row `_bn` when present, EN fallback otherwise (never blank)
 

@@ -1,14 +1,3 @@
-/**
- * Oceanblue-v2 installable preset — single source of truth for the registry.
- *
- * Assembles `{ tokens, templates }` for all nine template keys from the
- * theme builders with stable unique ids (`makeSection`). The registry
- * migration embeds the JSON this module emits (generated, never
- * hand-written — see the command in the migration header); `registry.test.ts`
- * validates the emitted preset exactly as `listRegistry` + publish would:
- * `parseTokens` / `parseTemplates` accept it and `lintTemplate` reports
- * zero errors on every template.
- */
 import { makeSection } from "../../theme-section";
 import type {
   SectionBuilder,
@@ -19,16 +8,16 @@ import { buildFooterMain } from "./footer";
 import { buildHeaderMain } from "./header";
 import { buildHomepageMain } from "./homepage";
 import { buildSecondaryMain } from "./secondary";
-import { OCEANBLUE_V2_TOKENS } from "./tokens";
+import { BLUEOCEAN_TOKENS } from "./tokens";
 
 const s: SectionBuilder = (type, props = {}) =>
-  makeSection("oceanblue-v2", type, props);
+  makeSection("blueocean", type, props);
 
-export const OCEANBLUE_V2_PRESET: {
+export const BLUEOCEAN_PRESET: {
   tokens: ThemeTokens;
   templates: ThemeTemplates;
 } = {
-  tokens: OCEANBLUE_V2_TOKENS,
+  tokens: BLUEOCEAN_TOKENS,
   templates: {
     index: {
       header: buildHeaderMain(s),

@@ -162,7 +162,7 @@ it duplicated the A1 violation twice).
 - **`validateSearch` allow-lists tabs**, invalid → `undefined` → `orders`
   default; arrays rejected. Safe.
 - **No `server-only` import** (§92.5); ESM; `@/*` alias respected.
-- **No dead buttons** (WP-parity rule §27): the commit *removes* a dead
+- **No dead buttons** (WP-parity rule §27): the commit _removes_ a dead
   `<button>` and wires a working Link. Compliant improvement.
 - **No fabricated counts** (§27): badge renders live server count, `>0` gated.
 - **Tests required**: colocated suites added (9 new tests, all green here;
@@ -226,6 +226,7 @@ theme values → **100/100 green**, committed, pushed, deployed as `0b7d4eb`:
 **DEPLOY OK, all gates green first try**. No prod-code change needed — the
 theme values are deliberate; only the tests lagged. Lesson: theme redesigns
 must update preview pins in the same commit.
+
 - Live BN smoke of the redesigned songoskriti homepage: locale machinery
   holds (BN where twins exist), but the new content ships many EN-only
   strings (menu labels, badges, promises, testimonials, journal links).
@@ -237,7 +238,7 @@ During the pull/push/deploy cycle, `origin/main` (`4039d51`) failed `bun run
 build`: `fb042b2` had `RevisionReviewUi.tsx` (client) statically importing
 `support-revision-fns.server.ts`, which the TanStack import-protection plugin
 denies — a direct breach of AGENTS.md §92.5 (`*.functions.ts` is the RPC
-boundary; `*.server.ts` naming *instead* of `server-only` imports).
+boundary; `*.server.ts` naming _instead_ of `server-only` imports).
 Fix (`6ef5305`, deployed, DEPLOY OK all gates): moved the four
 `createServerFn` handles into new `support-revision.functions.ts` with
 dynamic in-handler imports (repo convention), deleted the orphan server

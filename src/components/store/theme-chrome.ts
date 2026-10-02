@@ -29,12 +29,6 @@ import {
   OCEANBLUE_MEGA_MENU,
   oceanblueMenuLabel,
 } from "@/lib/themes/oceanblue/header-fallback";
-import {
-  OCEANBLUE_V2_HEADER_ANNOUNCEMENT,
-  OCEANBLUE_V2_HEADER_LOGO,
-  OCEANBLUE_V2_MEGA_MENU,
-  oceanblueV2MenuLabel,
-} from "@/lib/themes/oceanblue-v2/header-fallback";
 
 export type ThemeHeaderChrome = {
   /** Fallback menu tree for theme-shaped stores with no dashboard menu. */
@@ -75,14 +69,6 @@ const CHROME: Record<string, () => ThemeHeaderChrome> = {
     labelFor: (label, t) => oceanblueMenuLabel(label, t),
     logo: { ...OCEANBLUE_HEADER_LOGO },
     announcement: { ...OCEANBLUE_HEADER_ANNOUNCEMENT },
-  }),
-  "oceanblue-v2": () => ({
-    // Same opaque-cast containment as above: the fallback tree is
-    // authoring-shaped, render sites treat fallback nodes opaquely.
-    fallbackMenu: OCEANBLUE_V2_MEGA_MENU as unknown as MenuNode[],
-    labelFor: (label, t) => oceanblueV2MenuLabel(label, t),
-    logo: { ...OCEANBLUE_V2_HEADER_LOGO },
-    announcement: { ...OCEANBLUE_V2_HEADER_ANNOUNCEMENT },
   }),
 };
 

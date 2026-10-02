@@ -43,11 +43,13 @@
 ### Task 1: Builder guide merge (04-builder authoritative README)
 
 **Files:**
+
 - Modify: `docs/04-builder/README.md`
 - Read-only refs: `docs/04-builder/theme-runtime.md:1-409`, `theme-registry.md:1-368`, `themes-catalog.md:1-311`, `theme-authoring-export.md:1-113`, `sections-templates.md:1-185`, `app-blocks.md:1-130`, `publishing.md:1-288`
 - Code refs: `src/lib/studio/catalog.ts:2418-2429`, `src/lib/builder-ast.ts` (SKIN_FIELD, BITEXT_FIELDS), `src/components/store/StoreHeader.tsx:150-200`, `src/lib/theme-preview-nav.ts`
 
 **Interfaces:**
+
 - Consumes: REPORT-THEMES.md sections 1-5 (code reality).
 - Produces: single authoritative builder guide other tasks link to.
 
@@ -55,6 +57,7 @@
 
 ```markdown
 # Builder, themes, and studio — authoritative guide (merged 2026-09-26)
+
 > Supersedes: theme-runtime.md, theme-registry.md, themes-catalog.md,
 > theme-authoring-export.md, sections-templates.md (kept as history).
 ```
@@ -79,11 +82,13 @@ git commit -m "docs: merge 04-builder theme guides into authoritative README"
 ### Task 2: Theme-authoring guide merge (themes/creation authoritative)
 
 **Files:**
+
 - Modify: `docs/themes/creation.md`
 - Read-only refs: `docs/themes/sdk.md:1-267`, `docs/themes/packages.md:1-37`, `docs/themes/wordpress-handbook-index.md:1-190`
 - Code refs: `src/lib/themes/songoskriti/tokens.ts:1-34`, `src/lib/themes/oceanblue/tokens.ts`, `src/lib/themes/songoskriti/skins.ts`, `src/lib/plugin-manifest.ts:18-70`
 
 **Interfaces:**
+
 - Consumes: Task 1 README (link, do not duplicate runtime contract).
 - Produces: single authoring guide (tokens → skins → homepage builders → skins.css → tests).
 
@@ -109,9 +114,11 @@ git commit -m "docs: merge themes authoring guides into creation.md"
 ### Task 3: Archive banners (plans + theme-plan-* + dated spec)
 
 **Files:**
+
 - Modify: `docs/04-builder/theme-plan-apparel.md`, `theme-plan-beauty.md`, `theme-plan-electronics.md`, `theme-plan-marketplace.md`, `docs/superpowers/specs/2026-09-23-songoskriti-design.md`, `docs/superpowers/plans/2026-09-23-songoskriti.md`
 
 **Interfaces:**
+
 - Consumes: Task 1 + 2 paths.
 - Produces: history preserved with pointers.
 
@@ -141,9 +148,11 @@ git commit -m "docs: mark superseded plans/specs with pointers"
 ### Task 4: Link repair + REPORT pointer + final gates
 
 **Files:**
+
 - Modify: `docs/13-export-sdk/README.md` (7 broken links), `REPORT-THEMES.md` (append pointer)
 
 **Interfaces:**
+
 - Consumes: Tasks 1-3 outputs.
 - Produces: zero-broken-link tree, prettier-clean, code gate still green.
 
@@ -155,6 +164,7 @@ Current broken (verified 2026-09-26): `00-meta/design-system.md`, `00-meta/audit
 
 ```markdown
 ---
+
 **Living guides (2026-09-26):** [Builder README](docs/04-builder/README.md),
 [Theme authoring](docs/themes/creation.md). This report stays a dated audit.
 ```

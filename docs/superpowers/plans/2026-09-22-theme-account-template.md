@@ -31,11 +31,13 @@
 ### Task 1: `account` template key end-to-end
 
 **Files:**
+
 - Modify: `src/lib/builder-ast.ts` (union ~L85, `TEMPLATE_KEYS` ~L46-59, slots, catalog gating)
 - Modify: `src/lib/builder-seo.ts`, docs list in `docs/themes/creation.md` areas 11–12
 - Test: extend `src/lib/theme-presets.test.ts`? No — add `src/lib/account-template.test.ts` (create)
 
 **Interfaces:**
+
 - Consumes: `SectionType`, `TemplateKey`, `TEMPLATE_KEYS`, slot arrays.
 - Produces: `account` accepted everywhere `collection` is (parse, lint, coverage, gates).
 
@@ -48,17 +50,11 @@ Record: exact `TEMPLATE_KEYS` tuple, which slot arrays gate `collection`, and ev
 
 ```ts
 import { describe, expect, it } from "vitest";
-import {
-  TEMPLATE_KEYS,
-  lintTemplate,
-  parseTemplates,
-} from "./builder-ast";
+import { TEMPLATE_KEYS, lintTemplate, parseTemplates } from "./builder-ast";
 
 describe("account template key", () => {
   it("is a known template key", () => {
-    expect((TEMPLATE_KEYS as readonly string[]).includes("account")).toBe(
-      true,
-    );
+    expect((TEMPLATE_KEYS as readonly string[]).includes("account")).toBe(true);
   });
 
   it("parses and lints an empty account template", () => {
@@ -93,12 +89,14 @@ git commit -m "feat(themes): account template key end-to-end"
 ### Task 2: Account context widgets (orders + profile)
 
 **Files:**
+
 - Modify: `src/lib/builder-ast.ts` (catalog entries: `orders_list`, `profile_card`)
 - Modify: `src/components/builder/` (new `account.tsx` renderers + registry wiring in `widgets.tsx`)
 - Modify: `src/lib/widget-data.ts` (sources), `src/lib/preview-demo-data.ts` (demo rows)
 - Test: `src/components/builder/account-widgets.test.tsx` (create)
 
 **Interfaces:**
+
 - Consumes: `WidgetCtx { str, data, locale, money }`, `WidgetRow` shape, `collectWidgetRequests` bundle.
 - Produces: `orders_list` (signed-in shopper's orders w/ status + totals) and `profile_card` (name/contact + sign-in prompt when signed out); preview resolves demo rows so nothing skeleton-spins.
 
@@ -178,11 +176,13 @@ git commit -m "feat(themes): account context widgets with demo rows"
 ### Task 3: ThemeChrome hosts the account routes (with fallback)
 
 **Files:**
+
 - Modify: `src/routes/account.tsx`, `src/routes/store.$slug.account.tsx`
 - Create: `src/lib/default-account-ast.ts` (fallback template)
 - Test: extend `src/lib/account-template.test.ts`
 
 **Interfaces:**
+
 - Consumes: `ThemeChrome` (`template`, `ast`, `fallback` props — same call shape as `c.$collectionSlug.tsx:154-173`), `templateOf(templates, "account")`.
 - Produces: account pages render theme `account` template when published, default AST otherwise; never blank, never 404 for signed-in shoppers.
 
@@ -225,10 +225,12 @@ git commit -m "feat(themes): account routes render theme templates with fallback
 ### Task 4: Gates, presets, and blast-radius proof
 
 **Files:**
+
 - Modify: blueprint `account` templates where cheap (optional — fallback covers all, so this task only wires gates)
 - Test: existing suites (no new file)
 
 **Interfaces:**
+
 - Consumes: publish-gate code paths, `theme-presets.test.ts`, definition-of-done lists.
 - Produces: green gates with the new key present; baseline-diffed full suite.
 

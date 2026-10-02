@@ -26,26 +26,26 @@
 
 New dir `src/lib/themes/oceanblue-v2/` (prod + tests), plus five wire-up edits and one shared-engine append:
 
-| File | Responsibility |
-| --- | --- |
-| `tokens.ts` | `OCEANBLUE_V2_TOKENS` (spec §2 table) |
-| `types.ts` | Re-export `SectionBuilder`; `HOMEPAGE_V2_SECTION_TYPES` (14 entries §3) |
-| `index.ts` | Public exports mirroring v1 `index.ts` |
-| `skins.ts` + `skins.css` | `OCEANBLUE_V2_SKIN_SETS`, `OCEANBLUE_V2_WIDGET_DEFAULTS`, `resolveOceanblueV2Skin`, `oceanblueV2DefaultsFor`, `withOceanblueV2Defaults`; maroon token-driven CSS |
-| `header.ts` / `header-fallback.ts` | Campaign strip AST + mega-menu config |
-| `footer.ts` | 5-column index footer, no newsletter, no dead socials |
-| `homepage.ts` | 14-section main per spec §3 |
-| `secondary.ts` | `buildSecondaryMain(s, kind)` for listing/PDP/cart/checkout/search/account/page/blog |
-| `preset.ts` | `OCEANBLUE_V2_PRESET` (`makeSection("oceanblue-v2", …)`, nine templates) |
-| `preview.ts` | `oceanblueV2PreviewSource` |
-| `*.test.ts(x)` | tokens/wiring/preview/render/registry/skins tests mirroring v1 names |
-| `src/lib/preview-sources.ts` | Add `oceanblue-v2` entry (modify) |
-| `src/components/store/theme-chrome.ts` | Add `oceanblue-v2` chrome entry (modify) |
-| `src/lib/themes/catalog-meta.ts` | Add `oceanblue-v2` meta, honest zeros (modify) |
-| `src/lib/theme-preview-nav.ts` | Resolve `oceanblue-v2` (modify) |
-| `supabase/migrations/<new>_oceanblue_v2_registry_row.sql` | Generated preset embed (create; generator command in v1 migration header) |
-| `src/lib/builder-ast.ts` | Append `"banner"` last to `WIDGET_SKINS.hero_carousel` (shared append) |
-| Renderer for `hero_carousel` (see P9-4 spec) | `banner` skin branch (shared append) |
+| File                                                      | Responsibility                                                                                                                                                   |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tokens.ts`                                               | `OCEANBLUE_V2_TOKENS` (spec §2 table)                                                                                                                            |
+| `types.ts`                                                | Re-export `SectionBuilder`; `HOMEPAGE_V2_SECTION_TYPES` (14 entries §3)                                                                                          |
+| `index.ts`                                                | Public exports mirroring v1 `index.ts`                                                                                                                           |
+| `skins.ts` + `skins.css`                                  | `OCEANBLUE_V2_SKIN_SETS`, `OCEANBLUE_V2_WIDGET_DEFAULTS`, `resolveOceanblueV2Skin`, `oceanblueV2DefaultsFor`, `withOceanblueV2Defaults`; maroon token-driven CSS |
+| `header.ts` / `header-fallback.ts`                        | Campaign strip AST + mega-menu config                                                                                                                            |
+| `footer.ts`                                               | 5-column index footer, no newsletter, no dead socials                                                                                                            |
+| `homepage.ts`                                             | 14-section main per spec §3                                                                                                                                      |
+| `secondary.ts`                                            | `buildSecondaryMain(s, kind)` for listing/PDP/cart/checkout/search/account/page/blog                                                                             |
+| `preset.ts`                                               | `OCEANBLUE_V2_PRESET` (`makeSection("oceanblue-v2", …)`, nine templates)                                                                                         |
+| `preview.ts`                                              | `oceanblueV2PreviewSource`                                                                                                                                       |
+| `*.test.ts(x)`                                            | tokens/wiring/preview/render/registry/skins tests mirroring v1 names                                                                                             |
+| `src/lib/preview-sources.ts`                              | Add `oceanblue-v2` entry (modify)                                                                                                                                |
+| `src/components/store/theme-chrome.ts`                    | Add `oceanblue-v2` chrome entry (modify)                                                                                                                         |
+| `src/lib/themes/catalog-meta.ts`                          | Add `oceanblue-v2` meta, honest zeros (modify)                                                                                                                   |
+| `src/lib/theme-preview-nav.ts`                            | Resolve `oceanblue-v2` (modify)                                                                                                                                  |
+| `supabase/migrations/<new>_oceanblue_v2_registry_row.sql` | Generated preset embed (create; generator command in v1 migration header)                                                                                        |
+| `src/lib/builder-ast.ts`                                  | Append `"banner"` last to `WIDGET_SKINS.hero_carousel` (shared append)                                                                                           |
+| Renderer for `hero_carousel` (see P9-4 spec)              | `banner` skin branch (shared append)                                                                                                                             |
 
 ---
 
@@ -66,12 +66,14 @@ Expected: PASS (repo baseline; unrelated errors pre-exist only if already presen
 ### Task 1: Tokens + types + index (TDD)
 
 **Files:**
+
 - Create: `src/lib/themes/oceanblue-v2/tokens.ts`
 - Create: `src/lib/themes/oceanblue-v2/types.ts`
 - Create: `src/lib/themes/oceanblue-v2/index.ts`
 - Test: `src/lib/themes/oceanblue-v2/tokens.test.ts`
 
 **Interfaces:**
+
 - Consumes: `ThemeTokens` from `../../builder-ast`; `DEFAULT_GLOBALS` from `../../theme-globals` (same imports as v1 `tokens.ts`).
 - Produces: `OCEANBLUE_V2_TOKENS`, `HOMEPAGE_V2_SECTION_TYPES`, `IntendedHomepageV2Type` for Tasks 2–5.
 
@@ -122,11 +124,13 @@ git commit -m "feat(theme): oceanblue-v2 tokens/types/index + Task 0 interface p
 ### Task 2: Skins + skins.css (TDD)
 
 **Files:**
+
 - Create: `src/lib/themes/oceanblue-v2/skins.ts`
 - Create: `src/lib/themes/oceanblue-v2/skins.css`
 - Test: `src/lib/themes/oceanblue-v2/skins.test.ts`
 
 **Interfaces:**
+
 - Consumes: `OCEANBLUE_V2_TOKENS` (Task 1); `Section/SectionBuilder/SectionType/PropValue` from `../../builder-ast`; Task 0 pin table for legal skin strings.
 - Produces: `OCEANBLUE_V2_SKIN_SETS`, `OCEANBLUE_V2_WIDGET_DEFAULTS`, `resolveOceanblueV2Skin`, `oceanblueV2DefaultsFor`, `withOceanblueV2Defaults` for Tasks 3–5. Defaults: `hero_carousel → banner` (lands with Task 7's shared append; until then tests pin the default string, renderer falls back per core convention), `product_rail → minimal`, `testimonials → single`, `product_grid → cards`.
 
@@ -156,12 +160,14 @@ git commit -m "feat(theme): oceanblue-v2 skins + token-driven CSS"
 ### Task 3: Header + footer chrome (TDD)
 
 **Files:**
+
 - Create: `src/lib/themes/oceanblue-v2/header.ts`
 - Create: `src/lib/themes/oceanblue-v2/header-fallback.ts`
 - Create: `src/lib/themes/oceanblue-v2/footer.ts`
 - Test: `src/lib/themes/oceanblue-v2/wiring.test.ts` (part 1: chrome asserts)
 
 **Interfaces:**
+
 - Consumes: `withOceanblueV2Defaults` (Task 2); Task 0 pins for `announcement_bar`, `footer_sitemap`, `payment_icons`, `social_strip`, `rich_text`.
 - Produces: `buildHeaderMain`, `buildFooterMain`, mega-menu config for Task 6's chrome entry.
 
@@ -176,10 +182,12 @@ git commit -m "feat(theme): oceanblue-v2 skins + token-driven CSS"
 ### Task 4: Homepage main (TDD)
 
 **Files:**
+
 - Create: `src/lib/themes/oceanblue-v2/homepage.ts`
 - Test: extend `src/lib/themes/oceanblue-v2/wiring.test.ts` (part 2: homepage asserts)
 
 **Interfaces:**
+
 - Consumes: Task 0 pins for all 14 section prop shapes; `withOceanblueV2Defaults`; `OCEANBLUE` demo key mapping stays in `preview-demo-data.ts` (no change — v2 reuses it in Task 6).
 - Produces: `buildHomepageMain` for Task 6's preset.
 
@@ -194,6 +202,7 @@ git commit -m "feat(theme): oceanblue-v2 skins + token-driven CSS"
 ### Task 5: Secondary templates (TDD)
 
 **Files:**
+
 - Create: `src/lib/themes/oceanblue-v2/secondary.ts`
 - Test: extend `wiring.test.ts` (part 3: `buildSecondaryMain(s, kind)` returns non-empty valid mains for `product`, `collection`, `cart`, `checkout`, `search`, `account`, `page`, `blog`; PDP includes `sticky_buy_bar`; listing includes filter + sort controls).
 
@@ -204,6 +213,7 @@ git commit -m "feat(theme): oceanblue-v2 skins + token-driven CSS"
 ### Task 6: Preset + preview + wiring + migration (TDD)
 
 **Files:**
+
 - Create: `src/lib/themes/oceanblue-v2/preset.ts` (`OCEANBLUE_V2_PRESET`, `makeSection("oceanblue-v2", …)`, nine templates mirroring v1 `preset.ts` lines 32–78)
 - Create: `src/lib/themes/oceanblue-v2/preview.ts` (`oceanblueV2PreviewSource`, reuse `OCEANBLUE` demo key)
 - Create: `src/lib/themes/oceanblue-v2/registry.test.ts`, `render.test.tsx`, `preview.test.ts` (mirror v1 names/asserts)
@@ -211,6 +221,7 @@ git commit -m "feat(theme): oceanblue-v2 skins + token-driven CSS"
 - Create: `supabase/migrations/<date>_oceanblue_v2_registry_row.sql` (embed generated via the v1 migration header command, never hand-written)
 
 **Interfaces:**
+
 - Consumes: `buildHeaderMain/buildFooterMain/buildHomepageMain/buildSecondaryMain` (Tasks 3–5).
 - Produces: registered theme rendering at `/theme-preview/oceanblue-v2`.
 
@@ -225,6 +236,7 @@ git commit -m "feat(theme): oceanblue-v2 skins + token-driven CSS"
 ### Task 7: Shared `banner` hero skin append
 
 **Files:**
+
 - Modify: `src/lib/builder-ast.ts` (append `"banner"` last to `WIDGET_SKINS.hero_carousel`), hero renderer branch per P9-4 spec, core test flips the P9-4 spec names (`skins.test.ts`, `widget-skins.test.tsx`, `heritage-contracts.test.tsx`, `hero-locale.test.tsx`).
 
 - [ ] **Step 1: Implement exactly per `docs/superpowers/specs/2026-10-01-oceanblue-banner-hero-design.md`** (commit `da18691` context), banner branch last, defaults of other themes untouched.
@@ -265,20 +277,20 @@ v1 registry-row generator: see header of
 `supabase/migrations/20260930120000_oceanblue_registry_row.sql`
 (`bun -e` import of the preset module, embed emitted JSON, never hand-write).
 
-| Section type | Exact prop names (v1-verified) |
-| --- | --- |
-| `hero_carousel` | `skin`, `slides[{image, headline, headline_bn, subhead, subhead_bn, ctaLabel, ctaLabel_bn, ctaUrl, caption, caption_bn}]`, `autoAdvanceMs`, `atmosphere` (`WIDGET_SKINS.hero_carousel = ["split","fullbleed","minimal"]`, `builder-ast.ts:600`; v2 default `banner` lands with Task 7) |
-| `circle_categories` | `heading`, `heading_bn`, `reveal`, `c1Title..c8Title`, `c1Href..c8Href` (empty `c7/c8` allowed) |
-| `product_rail` | `heading`, `heading_bn`, `limit` (≤10 homepage), `source`, `collection?`, `cardVariant`, `showRating`, `promise?`, `promise_bn?`, `skin`, `reveal?` |
-| `split_feature` | `heading`, `heading_bn`, `body`, `body_bn`, `ctaLabel`, `ctaLabel_bn`, `ctaHref`, `reveal?` |
-| `trust_marquee` | `items[{icon, title, title_bn, body, body_bn}]`, `speed` |
-| `collection_story` | `eyebrow`, `eyebrow_bn`, `heading`, `heading_bn`, `body`, `body_bn`, `ctaLabel`, `ctaLabel_bn`, `ctaHref`, `imageUrl`, `scrim`, `reveal?` |
-| `testimonials` | `testimonials[{quote, quote_bn, author, author_bn, role, role_bn}]`, `autoAdvanceMs`, `skin`, `reveal?` |
-| `store_locator` | `heading`, `heading_bn`, `s1Name`, `s1Name_bn`, `s1Hours`, `s1Hours_bn`, `s2Name`, `s2Name_bn`, `s2Hours`, `s2Hours_bn`, `reveal?` |
-| `newsletter` | `heading`, `heading_bn`, `body`, `body_bn`, `buttonLabel`, `buttonLabel_bn`, `consentText`, `consentText_bn`, `reveal?` |
-| `footer_sitemap` | `statementHeading(_bn)`, `statementBody(_bn)`, `storyHref`, `storyLabel(_bn)`, `brandName(_bn)`, `paymentsHeading(_bn)`, `paymentsMarks`, `c1Title(_bn)`, `c1Links(_bn)` … `c4Title(_bn)`, `c4Links(_bn)` |
-| `payment_icons` | `heading`, `heading_bn`, `marks` |
-| `social_strip` | `heading`, `href`, `i1Image..i6Image` (catalog defaults `studio/catalog.ts:881`; footer omits when handles unconfigured — no `href="#"`) |
-| `rich_text` | `heading`, `heading_bn?`, `body`, `body_bn` |
-| `announcement_bar` | `m1`, `m1_bn`, `href`, `dismissible`, `rotateMs`, `items[{text, text_bn}]` (header-slot only) |
-| secondary-only | `result_toolbar{sortDefault}`, `product_grid{heading, limit, columns, source, collection, skin}`, `breadcrumb{homeLabel(_bn)}`, `product_media{ratio}`, `product_meta{}`, `price_block{showCompareAt?}`, `add_to_cart{label(_bn)?, showQuantity?}`, `cart_lines{heading(_bn)?}`, `cart_summary{heading(_bn)?, showCoupon, showCta, showFreeShipping}`, `checkout_steps{heading?, step1..step4, activeStep}`, `payment_methods{heading(_bn)?}`, `profile_card{}`, `orders_list{}`, `page_content{}`, `blog_terms{heading?, style, showCounts}`, `blog_archive{heading?, layout, columns, limit, showCover, showExcerpt, showMeta, emptyText(_bn)?}`, `blog_pager{align}`, `columns{columns, asymmetrical, gap, padY?}`, `container{}`, `category_header{heading(_bn)?, body(_bn)?, showCount?, showBreadcrumb?, homeLabel?}`, `heading{text(_bn)?}` |
+| Section type        | Exact prop names (v1-verified)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `hero_carousel`     | `skin`, `slides[{image, headline, headline_bn, subhead, subhead_bn, ctaLabel, ctaLabel_bn, ctaUrl, caption, caption_bn}]`, `autoAdvanceMs`, `atmosphere` (`WIDGET_SKINS.hero_carousel = ["split","fullbleed","minimal"]`, `builder-ast.ts:600`; v2 default `banner` lands with Task 7)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `circle_categories` | `heading`, `heading_bn`, `reveal`, `c1Title..c8Title`, `c1Href..c8Href` (empty `c7/c8` allowed)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `product_rail`      | `heading`, `heading_bn`, `limit` (≤10 homepage), `source`, `collection?`, `cardVariant`, `showRating`, `promise?`, `promise_bn?`, `skin`, `reveal?`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `split_feature`     | `heading`, `heading_bn`, `body`, `body_bn`, `ctaLabel`, `ctaLabel_bn`, `ctaHref`, `reveal?`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `trust_marquee`     | `items[{icon, title, title_bn, body, body_bn}]`, `speed`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `collection_story`  | `eyebrow`, `eyebrow_bn`, `heading`, `heading_bn`, `body`, `body_bn`, `ctaLabel`, `ctaLabel_bn`, `ctaHref`, `imageUrl`, `scrim`, `reveal?`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `testimonials`      | `testimonials[{quote, quote_bn, author, author_bn, role, role_bn}]`, `autoAdvanceMs`, `skin`, `reveal?`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `store_locator`     | `heading`, `heading_bn`, `s1Name`, `s1Name_bn`, `s1Hours`, `s1Hours_bn`, `s2Name`, `s2Name_bn`, `s2Hours`, `s2Hours_bn`, `reveal?`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `newsletter`        | `heading`, `heading_bn`, `body`, `body_bn`, `buttonLabel`, `buttonLabel_bn`, `consentText`, `consentText_bn`, `reveal?`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `footer_sitemap`    | `statementHeading(_bn)`, `statementBody(_bn)`, `storyHref`, `storyLabel(_bn)`, `brandName(_bn)`, `paymentsHeading(_bn)`, `paymentsMarks`, `c1Title(_bn)`, `c1Links(_bn)` … `c4Title(_bn)`, `c4Links(_bn)`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `payment_icons`     | `heading`, `heading_bn`, `marks`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `social_strip`      | `heading`, `href`, `i1Image..i6Image` (catalog defaults `studio/catalog.ts:881`; footer omits when handles unconfigured — no `href="#"`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `rich_text`         | `heading`, `heading_bn?`, `body`, `body_bn`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `announcement_bar`  | `m1`, `m1_bn`, `href`, `dismissible`, `rotateMs`, `items[{text, text_bn}]` (header-slot only)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| secondary-only      | `result_toolbar{sortDefault}`, `product_grid{heading, limit, columns, source, collection, skin}`, `breadcrumb{homeLabel(_bn)}`, `product_media{ratio}`, `product_meta{}`, `price_block{showCompareAt?}`, `add_to_cart{label(_bn)?, showQuantity?}`, `cart_lines{heading(_bn)?}`, `cart_summary{heading(_bn)?, showCoupon, showCta, showFreeShipping}`, `checkout_steps{heading?, step1..step4, activeStep}`, `payment_methods{heading(_bn)?}`, `profile_card{}`, `orders_list{}`, `page_content{}`, `blog_terms{heading?, style, showCounts}`, `blog_archive{heading?, layout, columns, limit, showCover, showExcerpt, showMeta, emptyText(_bn)?}`, `blog_pager{align}`, `columns{columns, asymmetrical, gap, padY?}`, `container{}`, `category_header{heading(_bn)?, body(_bn)?, showCount?, showBreadcrumb?, homeLabel?}`, `heading{text(_bn)?}` |

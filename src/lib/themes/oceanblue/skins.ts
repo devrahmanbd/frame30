@@ -52,16 +52,14 @@ export const OCEANBLUE_WIDGET_DEFAULTS = {
 } satisfies Partial<Record<SectionType, Record<string, PropValue>>>;
 
 /** Default skin per skinnable widget (first entry of each set). */
-export const OCEANBLUE_SKIN_DEFAULTS: Record<
-  OceanblueSkinnableWidget,
-  string
-> = {
-  product_rail: "minimal",
-  hero_carousel: "split",
-  testimonials: "single",
-  product_grid: "cards",
-  urgency_rail: "minimal",
-};
+export const OCEANBLUE_SKIN_DEFAULTS: Record<OceanblueSkinnableWidget, string> =
+  {
+    product_rail: "minimal",
+    hero_carousel: "split",
+    testimonials: "single",
+    product_grid: "cards",
+    urgency_rail: "minimal",
+  };
 
 /**
  * Unknown → default fallback ("never a crash, never empty").
@@ -108,8 +106,7 @@ export function withOceanblueDefaults(s: SectionBuilder): SectionBuilder {
     props: Record<string, PropValue> = {},
   ): Section => {
     const defaults = OCEANBLUE_WIDGET_DEFAULTS[type] as
-      | Record<string, PropValue>
-      | undefined;
+      Record<string, PropValue> | undefined;
     if (!defaults) return s(type, props);
     return s(type, { ...defaults, ...stripUndefined(props) });
   };

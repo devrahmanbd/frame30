@@ -26,7 +26,12 @@ export function buildSecondaryMain(
     case "product":
       return [
         {
-          ...s("columns", { columns: 2, asymmetrical: true, gap: 64, padY: 16 }),
+          ...s("columns", {
+            columns: 2,
+            asymmetrical: true,
+            gap: 64,
+            padY: 16,
+          }),
           children: [
             {
               ...s("container", {}),
@@ -113,7 +118,8 @@ export function buildSecondaryMain(
           body_bn: "নতুন সংগ্রহ, রিস্টক ও সেল অ্যালার্ট।",
           buttonLabel: "Subscribe",
           buttonLabel_bn: "সাবস্ক্রাইব",
-          consentText: "We email only for drops and sales. Unsubscribe anytime.",
+          consentText:
+            "We email only for drops and sales. Unsubscribe anytime.",
           consentText_bn:
             "শুধু ড্রপ ও সেলের জন্য ইমেইল পাঠাই। যেকোনো সময় আনসাবস্ক্রাইব করুন।",
         }),
@@ -219,9 +225,6 @@ export function buildSecondaryMain(
         },
       ];
     case "account":
-      return [
-        s("profile_card", {}),
-        s("orders_list", {}),
-      ];
+      return [s("profile_card", {}), s("orders_list", {})];
   }
 }

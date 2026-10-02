@@ -212,12 +212,12 @@ describe("confirmPendingTicket — operator confirm path", () => {
 
 describe("approvalAdvisory — shared guardrail refund copy", () => {
   it("renders the advisory EN template with ticket + order refs", async () => {
-    const { ADVISORY_REFUND_TEMPLATE_EN } = await import(
-      "./support-guardrails"
-    );
+    const { ADVISORY_REFUND_TEMPLATE_EN } =
+      await import("./support-guardrails");
     const out = approvalAdvisory("#TKT-ABC123", "1002", "en");
     expect(out).toBe(
-      ADVISORY_REFUND_TEMPLATE_EN.split("{{ticketId}}").join("#TKT-ABC123")
+      ADVISORY_REFUND_TEMPLATE_EN.split("{{ticketId}}")
+        .join("#TKT-ABC123")
         .split("{{orderNumber}}")
         .join("1002"),
     );

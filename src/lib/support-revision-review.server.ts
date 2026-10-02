@@ -507,7 +507,8 @@ export async function approveRevision(
     return { ok: true, id, persisted: "db" };
   } catch (err) {
     if (err instanceof ReviewError) throw err;
-    if (!isStoreUnavailableError(err)) throw new ReviewError("review_approve_failed");
+    if (!isStoreUnavailableError(err))
+      throw new ReviewError("review_approve_failed");
     storeUnavailable("approve", { review_id: id });
     const mem = findMemoryReview(opts.merchantId, id);
     if (!mem) throw new ReviewError("review_not_found");
@@ -561,7 +562,8 @@ export async function rejectRevision(
     return { ok: true, id, persisted: "db" };
   } catch (err) {
     if (err instanceof ReviewError) throw err;
-    if (!isStoreUnavailableError(err)) throw new ReviewError("review_reject_failed");
+    if (!isStoreUnavailableError(err))
+      throw new ReviewError("review_reject_failed");
     storeUnavailable("reject", { review_id: id });
     const mem = findMemoryReview(opts.merchantId, id);
     if (!mem) throw new ReviewError("review_not_found");
@@ -689,7 +691,8 @@ export async function applyApproved(
     if (!row) throw new ReviewError("review_not_found");
   } catch (err) {
     if (err instanceof ReviewError) throw err;
-    if (!isStoreUnavailableError(err)) throw new ReviewError("review_apply_failed");
+    if (!isStoreUnavailableError(err))
+      throw new ReviewError("review_apply_failed");
     storeUnavailable("apply_load", { review_id: id });
     row = findMemoryReview(opts.merchantId, id);
     if (!row) throw new ReviewError("review_not_found");
@@ -708,11 +711,13 @@ export async function applyApproved(
   let action: ApplyApprovedResult["action"];
   let ref: string;
   if (!styleOnly) {
-    const save = opts.saveKbDoc ?? ((a) =>
-      defaultSaveKbDoc({
-        ...a,
-        actor: target.reviewer ?? "system:support-revision",
-      }));
+    const save =
+      opts.saveKbDoc ??
+      ((a) =>
+        defaultSaveKbDoc({
+          ...a,
+          actor: target.reviewer ?? "system:support-revision",
+        }));
     const doc = await save({
       merchantId: target.merchant_id,
       title: `Approved revision: ${target.turn_ref.slice(0, 80)}`,
@@ -732,11 +737,13 @@ export async function applyApproved(
         ? opts.fetchQuestion(target.turn_ref, target.conversation_id)
         : defaultFetchQuestion(target.turn_ref, target.merchant_id))) ??
       `Revision ${target.turn_ref}`;
-    const capture = opts.captureTraining ?? ((a) =>
-      defaultCaptureTraining({
-        ...a,
-        provenance: `revision-approved:${target.id} by ${target.reviewer ?? "unknown"}`,
-      }));
+    const capture =
+      opts.captureTraining ??
+      ((a) =>
+        defaultCaptureTraining({
+          ...a,
+          provenance: `revision-approved:${target.id} by ${target.reviewer ?? "unknown"}`,
+        }));
     const rec = await capture({
       merchantId: target.merchant_id,
       conversationId: target.conversation_id,
@@ -764,7 +771,8 @@ export async function applyApproved(
       const { error } = await q;
       if (error) throw error;
     } catch (err) {
-      if (!isStoreUnavailableError(err)) throw new ReviewError("review_apply_failed");
+      if (!isStoreUnavailableError(err))
+        throw new ReviewError("review_apply_failed");
       storeUnavailable("apply_mark", { review_id: id });
       persisted = "memory";
     }

@@ -58,7 +58,9 @@ function review(over: Partial<DisplayReview> = {}): DisplayReview {
   };
 }
 
-function props(over: Partial<RevisionReviewUiProps> = {}): RevisionReviewUiProps {
+function props(
+  over: Partial<RevisionReviewUiProps> = {},
+): RevisionReviewUiProps {
   return {
     reviews: [],
     status: "pending",

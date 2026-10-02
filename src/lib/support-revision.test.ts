@@ -22,11 +22,7 @@ import {
   type QaTurn,
   type RevisionScore,
 } from "./support-revision.server";
-import {
-  cadenceSeconds,
-  cronJob,
-  parseCron,
-} from "./cron-registry";
+import { cadenceSeconds, cronJob, parseCron } from "./cron-registry";
 
 const SAVED_KEY = process.env["OPENROUTER_API_KEY"];
 
@@ -160,9 +156,7 @@ describe("needsRevision / shouldEscalateTicket — routing gates", () => {
 describe("shouldPromoteToKb — never auto-publish", () => {
   it("promotes recurring unanswered poor answers only", () => {
     const poor = score({ unanswered: true, groundedness: 0.2 });
-    expect(
-      shouldPromoteToKb(poor, RECURRING_UNANSWERED_THRESHOLD),
-    ).toBe(true);
+    expect(shouldPromoteToKb(poor, RECURRING_UNANSWERED_THRESHOLD)).toBe(true);
     expect(shouldPromoteToKb(poor, RECURRING_UNANSWERED_THRESHOLD - 1)).toBe(
       false,
     );
@@ -426,12 +420,28 @@ describe("needsRevision — properness gating", () => {
     expect(PROPERNESS_THRESHOLD).toBe(0.5);
     expect(
       needsRevision(
-        score({ properness: { clarity: 0.2, courtesy: 0.9, bnFluency: 0.9, humility: 0.9, noOverclaim: 0.9 } }),
+        score({
+          properness: {
+            clarity: 0.2,
+            courtesy: 0.9,
+            bnFluency: 0.9,
+            humility: 0.9,
+            noOverclaim: 0.9,
+          },
+        }),
       ),
     ).toBe(true);
     expect(
       needsRevision(
-        score({ properness: { clarity: 0.9, courtesy: 0.9, bnFluency: 0.9, humility: 0.9, noOverclaim: 0.1 } }),
+        score({
+          properness: {
+            clarity: 0.9,
+            courtesy: 0.9,
+            bnFluency: 0.9,
+            humility: 0.9,
+            noOverclaim: 0.1,
+          },
+        }),
       ),
     ).toBe(true);
   });
@@ -439,7 +449,15 @@ describe("needsRevision — properness gating", () => {
   it("passes clean properness and keeps the legacy null path quiet", () => {
     expect(
       needsRevision(
-        score({ properness: { clarity: 0.9, courtesy: 0.9, bnFluency: 0.9, humility: 0.9, noOverclaim: 0.9 } }),
+        score({
+          properness: {
+            clarity: 0.9,
+            courtesy: 0.9,
+            bnFluency: 0.9,
+            humility: 0.9,
+            noOverclaim: 0.9,
+          },
+        }),
       ),
     ).toBe(false);
     expect(needsRevision(score())).toBe(false);
@@ -449,7 +467,13 @@ describe("needsRevision — properness gating", () => {
 describe("buildRevisionPrompt — properness rubric", () => {
   it("asks for all five properness dimensions with the rubric pin", () => {
     const prompt = buildRevisionPrompt("q?", "a.");
-    for (const axis of ["clarity", "courtesy", "bn_fluency", "humility", "no_overclaim"]) {
+    for (const axis of [
+      "clarity",
+      "courtesy",
+      "bn_fluency",
+      "humility",
+      "no_overclaim",
+    ]) {
       expect(prompt).toContain(axis);
     }
     expect(prompt).toContain(REVISION_RUBRIC_VERSION);
@@ -481,7 +505,11 @@ describe("runRevisionJob — review-store persist path", () => {
       apiKey: "test-key",
       fetchTurns: async () => [turn({ id: "t-severe" })],
       scorer: async () =>
-        score({ severity: "severe", isHallucination: true, revisedAnswer: null }),
+        score({
+          severity: "severe",
+          isHallucination: true,
+          revisedAnswer: null,
+        }),
       persistReviewFn: async () => {
         calls += 1;
       },
@@ -522,9 +550,8 @@ describe("runRevisionJob — review-store persist path", () => {
   });
 
   it("persists to the review store by default (memory fallback offline)", async () => {
-    const { clearInMemoryReviews, listRevisionReviews } = await import(
-      "./support-revision-review.server"
-    );
+    const { clearInMemoryReviews, listRevisionReviews } =
+      await import("./support-revision-review.server");
     clearInMemoryReviews();
     const res = await runRevisionJob("2026-09-27", {
       apiKey: "test-key",

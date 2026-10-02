@@ -92,13 +92,14 @@ Scope: tokens/homepage/chrome/preview/skins/skins.css/index/types + mega.tsx + l
 
 Branch theme-v2 @ ~/frame30-v2 (NOT /tmp — /tmp worktree was wiped with
 uncommitted work inside; never keep uncommitted work there). Commits 9e3bf17
-+ 28d13ec + 534f1ee. Main tree untouched (theme stays deleted there).
-Gates on final state: tsgo 0, full suite 4841 passed / 0 failed (372 files),
-contracts 258, eslint clean, 18/18 sections render via production
-SectionRenderer. :3001 HTTP preview 404 is environmental (old-base dev
-server lacks Supabase env; untouched songoskriti + root fail identically).
-NOT PUSHED (standing rule) — needs explicit push permission, then deploy +
-live eyeball (desktop + 390px mobile) + mobile viewport pass.
+
+- 28d13ec + 534f1ee. Main tree untouched (theme stays deleted there).
+  Gates on final state: tsgo 0, full suite 4841 passed / 0 failed (372 files),
+  contracts 258, eslint clean, 18/18 sections render via production
+  SectionRenderer. :3001 HTTP preview 404 is environmental (old-base dev
+  server lacks Supabase env; untouched songoskriti + root fail identically).
+  NOT PUSHED (standing rule) — needs explicit push permission, then deploy +
+  live eyeball (desktop + 390px mobile) + mobile viewport pass.
 
 ---
 
@@ -131,8 +132,7 @@ live eyeball (desktop + 390px mobile) + mobile viewport pass.
       siblings carry same warnings).
 - [x] P9-2 Double newsletter: main §11 + footer contentinfo render identical
       "New drops, first inbox" forms → keep one.
-      Shipped: removed footer newsletter section + newsletter* sitemap props
-      + NEWSLETTER const (footer.ts); rewrote wiring.test footer pins to
+      Shipped: removed footer newsletter section + newsletter* sitemap props + NEWSLETTER const (footer.ts); rewrote wiring.test footer pins to
       zero CTAs / ["footer_sitemap","payment_icons","rich_text"]; registry
       embed regenerated as post-parse live shape (68308→60494 bytes, exact
       7814 = 9 footers × newsletter block). Gates: typecheck, 4830 tests,

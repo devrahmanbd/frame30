@@ -810,7 +810,7 @@ alongside the theme, not after:
 | `src/lib/studio/catalog.test.ts:837`    | Studio twin parity — every catalogue entry stays editable in studio |
 | `src/lib/theme-preview-nav.test.ts`     | Preview engine resolves theme sources and blocks account paths      |
 | `src/lib/theme-preview.test.ts`         | Preview route renders the resolved preset                           |
-| `src/lib/themes/isolation.test.ts`     | No theme imports another theme; shared chrome holds no theme names  |
+| `src/lib/themes/isolation.test.ts`      | No theme imports another theme; shared chrome holds no theme names  |
 
 Skin defaults must survive both the in-memory builders and a
 persist/parse round trip (`parseSection` drops undeclared props — a new

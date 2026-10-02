@@ -50,8 +50,7 @@ function AiSettingsPage() {
   const [embeddingModel, setEmbeddingModel] = useState(initial.embeddingModel);
   const [gatewayUrl, setGatewayUrl] = useState(initial.gatewayUrl);
   const keySource =
-    (initial as { keySource?: string }).keySource ??
-    "env:OPENROUTER_API_KEY";
+    (initial as { keySource?: string }).keySource ?? "env:OPENROUTER_API_KEY";
   const envConfigured =
     (initial as { envConfigured?: boolean }).envConfigured ?? true;
 

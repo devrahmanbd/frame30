@@ -41,17 +41,13 @@ describe("OCEANBLUE_WIDGET_DEFAULTS", () => {
   });
 
   it("defaults stay inside each widget's closed vocabulary", () => {
-    for (const [type, defaults] of Object.entries(
-      OCEANBLUE_WIDGET_DEFAULTS,
-    )) {
+    for (const [type, defaults] of Object.entries(OCEANBLUE_WIDGET_DEFAULTS)) {
       const allowed = (
         OCEANBLUE_SKIN_SETS as Record<string, readonly string[]>
       )[type]!;
       expect(allowed, type).toContain(defaults.skin);
       expect(
-        OCEANBLUE_SKIN_DEFAULTS[
-          type as keyof typeof OCEANBLUE_SKIN_DEFAULTS
-        ],
+        OCEANBLUE_SKIN_DEFAULTS[type as keyof typeof OCEANBLUE_SKIN_DEFAULTS],
       ).toBe(defaults.skin);
     }
   });
@@ -72,9 +68,9 @@ describe("withOceanblueDefaults", () => {
 
   it("authored skin always wins over the default", () => {
     const build = withOceanblueDefaults(stub);
-    expect(
-      build("product_rail", { skin: "compact" }).props.skin,
-    ).toBe("compact");
+    expect(build("product_rail", { skin: "compact" }).props.skin).toBe(
+      "compact",
+    );
   });
 
   it("leaves non-skinnable types untouched", () => {
@@ -133,10 +129,7 @@ describe("preview source", () => {
 
 describe("skins.css token gate", () => {
   it("stays token-driven: theme vars only, no hex literals", () => {
-    const css = readFileSync(
-      "src/lib/themes/oceanblue/skins.css",
-      "utf8",
-    );
+    const css = readFileSync("src/lib/themes/oceanblue/skins.css", "utf8");
     expect(css.match(/#[0-9a-fA-F]{3,8}\b/g) ?? []).toEqual([]);
     expect(css).toContain("var(--theme-brand)");
     expect(css).toContain("var(--theme-surface)");
@@ -145,10 +138,7 @@ describe("skins.css token gate", () => {
   });
 
   it("ships the polish layer: motion, pattern, focus", () => {
-    const css = readFileSync(
-      "src/lib/themes/oceanblue/skins.css",
-      "utf8",
-    );
+    const css = readFileSync("src/lib/themes/oceanblue/skins.css", "utf8");
     // Scroll-smooth rails, card lift, dot-pattern band, visible focus.
     expect(css).toContain("scroll-behavior");
     expect(css).toContain("translateY(-4px)");
@@ -171,10 +161,7 @@ describe("skins.css token gate", () => {
   });
 
   it("targets the verified DOM hooks, not dead selectors", () => {
-    const css = readFileSync(
-      "src/lib/themes/oceanblue/skins.css",
-      "utf8",
-    );
+    const css = readFileSync("src/lib/themes/oceanblue/skins.css", "utf8");
     // Live hooks (verified against heritage.tsx / widgets.tsx / ProductCard).
     expect(css).toContain("[data-hero]");
     expect(css).toContain("[data-hero-cta]");
@@ -188,10 +175,7 @@ describe("skins.css token gate", () => {
   });
 
   it("ships gradient, mask, reveal bump, and focus fixes", () => {
-    const css = readFileSync(
-      "src/lib/themes/oceanblue/skins.css",
-      "utf8",
-    );
+    const css = readFileSync("src/lib/themes/oceanblue/skins.css", "utf8");
     expect(css).toContain("background-clip: text");
     expect(css).toContain("mask-image");
     expect(css).toContain(".fq-reveal");

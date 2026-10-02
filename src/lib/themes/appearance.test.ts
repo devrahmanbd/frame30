@@ -296,16 +296,15 @@ describe("catalogue honesty (no-fabrication rule)", () => {
   });
 });
 
-describe("curated visibility (offer removed Sept 2026)", () => {
+describe("shipped directory (offer: oceanblue)", () => {
   it("installed grid keeps the active theme plus allowlisted keys only", () => {
     const themes = [
-      inst({ id: "a", key: "atelier", isActive: true }),
-      inst({ id: "b", key: "classic" }),
+      inst({ id: "a", key: "oceanblue", isActive: true }),
       inst({ id: "c", key: null }),
       inst({ id: "d", key: "retired-pack-a" }),
-      inst({ id: "e", key: "retired-pack-b" }),
+      inst({ id: "e", key: "songoskriti" }),
     ];
-    expect(visibleInstalled(themes).map((t) => t.id)).toEqual(["a"]);
+    expect(visibleInstalled(themes).map((t) => t.id)).toEqual(["a", "b"]);
   });
 
   it("keeps a null-key active theme (live storefront never stranded)", () => {
@@ -316,13 +315,14 @@ describe("curated visibility (offer removed Sept 2026)", () => {
     expect(visibleInstalled(themes).map((t) => t.id)).toEqual(["live"]);
   });
 
-  it("catalogue is empty with no curated offer", () => {
+  it("catalogue offers shipped keys only", () => {
     const themes = [
+      cat({ key: "oceanblue" }),
       cat({ key: "retired-pack-a" }),
-      cat({ key: "retired-pack-b" }),
-      cat({ key: "classic" }),
-      cat({ key: "modern" }),
+      cat({ key: "songoskriti" }),
     ];
-    expect(visibleCatalogue(themes).map((t) => t.key)).toEqual([]);
+    expect(visibleCatalogue(themes).map((t) => t.key)).toEqual([
+      "oceanblue",
+    ]);
   });
 });

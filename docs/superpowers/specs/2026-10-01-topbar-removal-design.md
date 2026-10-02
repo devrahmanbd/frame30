@@ -50,11 +50,11 @@ announcement: {
 
 ### LanguageToggle placement matrix
 
-| Store shape | band | toggle location |
-| --- | --- | --- |
-| generic (`headerChrome: null`) | none | header cluster (today's behavior) |
+| Store shape                          | band        | toggle location                              |
+| ------------------------------------ | ----------- | -------------------------------------------- |
+| generic (`headerChrome: null`)       | none        | header cluster (today's behavior)            |
 | songoskriti (variant absent → split) | split strip | band slot, cluster hidden (today's behavior) |
-| oceanblue (variant `"none"`) | none | **header cluster (new)** |
+| oceanblue (variant `"none"`)         | none        | **header cluster (new)**                     |
 
 The cluster toggle has no responsive hiding (bare slot between wishlist and cart in the always-rendered right cluster), so oceanblue **gains an EN/বাং toggle at every viewport** — today its only toggles live in the band behind `hidden sm:`. This matches what generic themes already do on mobile; acceptable, flagged as an intentional side effect.
 

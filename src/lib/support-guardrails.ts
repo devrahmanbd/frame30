@@ -355,7 +355,7 @@ function foldBengaliNukta(value: string): string {
     /([\u09A1\u09A2\u09AF])\u09BC/g,
     (m, base: string) => NUKTA_FOLD_MAP[base] ?? m,
   );
-};
+}
 
 /** NFC + nukta folding for all Bengali-aware matching. */
 function canonicalBn(value: string): string {
@@ -423,10 +423,7 @@ function decodeHexRuns(text: string, into: Set<string>): void {
 function decodeBase64Runs(text: string, into: Set<string>): void {
   const runs = text.match(/[A-Za-z0-9+/\-_]{20,}={0,2}/g) ?? [];
   for (const run of runs) {
-    let clean = run
-      .replace(/\s+/g, "")
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
+    let clean = run.replace(/\s+/g, "").replace(/-/g, "+").replace(/_/g, "/");
     if (!/^[A-Za-z0-9+/]+={0,2}$/.test(clean)) continue;
     if (clean.length < 20 || clean.length % 4 === 1) continue;
     while (clean.length % 4 !== 0) clean += "=";

@@ -1,0 +1,1200 @@
+
+ RUN  v4.1.11 /Users/rahman/Documents/frame30
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > replicates Write-Ahead Log (WAL) segments to secondary durable mirror every 60 seconds
+{"ts":"2026-10-02T18:16:07.666Z","level":"info","event":"time_machine.wal_synced","service":"framique-dev","filesCount":3,"timestamp":"2026-10-02T18:16:07.653Z"}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > creates automated basebackup snapshots with Point-In-Time-Recovery (PITR) metadata and table checksums
+{"ts":"2026-10-02T18:16:07.686Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_050000","manifest":{"snapshotTag":"snap_hourly_20260910_050000","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.684Z","engine":"postgresql-15","walCheckpointLsn":"0/C9792CF4","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:21a45b34fbb218bee6eea14e50fa668646d27f3f66e64ff59625120e1b034110","orders":"sha256:031d187d3e2769acbb899fa92ba8dbf1f6ca45fd382b190cf482ae204f33d90c","aiTrainingConversations":"sha256:d6b0779c987c2955058b0776ddec5e399943f2747b55bc8e67bebef80cd9a888"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.690Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_001","manifest":{"snapshotTag":"snap_hourly_20260910_001","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.689Z","engine":"postgresql-15","walCheckpointLsn":"0/CB7EB4D0","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:a02c7cecac2781f8a3e2215eea3168d833f7356e322e8be747616792438b1dd4","orders":"sha256:91f8ed1b0ee5d37fb39539cb0534ccfd3409664c056f76a93b1beb3030f890ae","aiTrainingConversations":"sha256:7ac0751443bd1774cc7158a8cc7b581d1985ea400ec05b7673af8fdead20fd89"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.691Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_002","manifest":{"snapshotTag":"snap_hourly_20260910_002","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.690Z","engine":"postgresql-15","walCheckpointLsn":"0/C25E09A0","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:97ba5499c6d92f189e3656a9570ffa91318d2af1ff0d1af8a8ef01efba5c9555","orders":"sha256:0956a098bb71df5bb8f71b17b52f46e2bff906fbe20efe1fe09ff61885aadfa2","aiTrainingConversations":"sha256:79cd648690b9aa79c9198f801b42dde6b9181f5da44ffdc14be8f8e5e217dd0b"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.697Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_003","manifest":{"snapshotTag":"snap_hourly_20260910_003","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.692Z","engine":"postgresql-15","walCheckpointLsn":"0/36FD3F9A","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:061c5b1a5925ba112e255b8e18b9c47e89c7dd33d221903f9528d30f03e74aa8","orders":"sha256:88f6c7088db03e164996cac11324b30f7109e8ba7e29113950352253a4112891","aiTrainingConversations":"sha256:44b02f9578266f2a685ee99a44868bec33a8e1dffad2204a169a058973c72077"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.700Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_004","manifest":{"snapshotTag":"snap_hourly_20260910_004","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.699Z","engine":"postgresql-15","walCheckpointLsn":"0/A5AA0E82","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:5a4d0e58a45ad342c94c583c6791de65b30b4ad2c996a43c83b43ec65ba4cabc","orders":"sha256:d634b930f43a935b20539200335a607c009d8fa6b007e6c48362e8efd5857677","aiTrainingConversations":"sha256:007998d87874b5b17b5b3bcb36ae63cbc1c3710f40a52dc6af08721fc31fd8a6"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.704Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_005","manifest":{"snapshotTag":"snap_hourly_20260910_005","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.701Z","engine":"postgresql-15","walCheckpointLsn":"0/DBED052F","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:b7ea1f2d8c237cd3d886b8ee8972778b55c26c60445d21ad7cf1a0d33534a8c4","orders":"sha256:adcdf741d2a70adc605612f5f90aaed295cd3de8949d534683f0b2475ee9ce92","aiTrainingConversations":"sha256:a638e2c264ee284ec04de12c694caebe5ef1dd2245700ec5531a4509f2d91412"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.705Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_006","manifest":{"snapshotTag":"snap_hourly_20260910_006","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.704Z","engine":"postgresql-15","walCheckpointLsn":"0/4DC78539","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:36b502cfd24f678ca92a20be13075f0d4ec1c441374797269d87ddc9d28b0e78","orders":"sha256:fb7af6ad90b7fee8655abd5801e08b2ba0e7f6429fb15c2f4cc059a7e0a5c103","aiTrainingConversations":"sha256:79ee7d762d6b50c3bc1ad564cca61421b54c195c9b61d44a9d2efb818e84e8d2"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.706Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_007","manifest":{"snapshotTag":"snap_hourly_20260910_007","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.705Z","engine":"postgresql-15","walCheckpointLsn":"0/29DD3AA1","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:45ba8eab2e0714af3933648531a382d6b2d7bf3bcd1f4e4aa63ade6af77b5a6f","orders":"sha256:c3da0a7449048daf6fd78a79da0e0241a1bf1054eb8f8959d7be27cbaf3be465","aiTrainingConversations":"sha256:7e66dc28d11342024ae0a5d482eadd402ba1ed1ce0c9647540536fa0e01ea082"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.707Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_008","manifest":{"snapshotTag":"snap_hourly_20260910_008","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.706Z","engine":"postgresql-15","walCheckpointLsn":"0/47B001DA","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:1b125e0a5c6addbc3a471414f0d6640097edd6674661e05d7e0b07de7e2c547c","orders":"sha256:0de28ff20f8fd6bf6fd98caf700bffda58405b7e2d9fb9be6f316a83da390ea0","aiTrainingConversations":"sha256:eac4a9c350cfa30e05c71d88c44353993ae03caee7336204890290105f53eda4"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.707Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_009","manifest":{"snapshotTag":"snap_hourly_20260910_009","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.707Z","engine":"postgresql-15","walCheckpointLsn":"0/AC2D4C00","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:61be42877fe11bdf64b7cd1d922971ce00a73caa41e801527fc6f49ffc8413ce","orders":"sha256:6cf4c309eaae0c2a2f788706c2016585f15f07ea9a41a6dda5a4bd15b45647dd","aiTrainingConversations":"sha256:4e2d343505faacf31bfb0f16890bd2cd4e2884ed2dfac7ac34b83155146c443e"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.708Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_010","manifest":{"snapshotTag":"snap_hourly_20260910_010","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.708Z","engine":"postgresql-15","walCheckpointLsn":"0/B07F2A10","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:6013d2e102ddc90259390b8b09914b8f013a2426ff705fc0fe98e8e5ba4c6227","orders":"sha256:667e49eced2ea4531f984c444129f2dcb4cfb3be3e921bf8296335272f61e134","aiTrainingConversations":"sha256:a7f36c4de7866ee2337d32849f88f06ebccbb2d265f70e2f66fcfdc86efc5d96"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.709Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_011","manifest":{"snapshotTag":"snap_hourly_20260910_011","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.708Z","engine":"postgresql-15","walCheckpointLsn":"0/7783F61E","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:6f59443824efac58a4036504a8306231efed978082215f09591f611863820dcb","orders":"sha256:01d09e0bab87997eddb86113e68b8685a1edffd63aa08ea181b3d1cdf7017250","aiTrainingConversations":"sha256:63d91c654f846e40eeff6c6b1a972444b206926eec5a417043ba618463f95d05"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.714Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_012","manifest":{"snapshotTag":"snap_hourly_20260910_012","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.709Z","engine":"postgresql-15","walCheckpointLsn":"0/3A87A352","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:4543445beb7f53cf14ec2310578e0357b00ed62991a3e902a50873e6f50100f8","orders":"sha256:f30dfc2d0856dd638690b6e4d979128610f46f871c24a5e7cb3065ce30ed6c83","aiTrainingConversations":"sha256:b3377ec07a674c9e18a496a49c0af997db3cd3298233ba75479a74766f38ca87"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.719Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_013","manifest":{"snapshotTag":"snap_hourly_20260910_013","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.715Z","engine":"postgresql-15","walCheckpointLsn":"0/4B74947A","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:6c96d4999ce8626c62725b4c4a8fa0a29ade07359454dd7170e5c5cb2ff00977","orders":"sha256:310d919a8ad837ba205256b31fb87cd69a706585651c7eab199ec90f69b71905","aiTrainingConversations":"sha256:b42afed861a4498887957fda4e8c6798d20fa9356166c6b728e839609e083c27"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.720Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_014","manifest":{"snapshotTag":"snap_hourly_20260910_014","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.720Z","engine":"postgresql-15","walCheckpointLsn":"0/F14A7AF7","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:2c87a3fd81dfaaed4892f15aebf526192853375d87f3ff7678c6a67a6608e7d0","orders":"sha256:f967c6917a2f9903b7c60aebe06f1376ec02dbbbde2213ca503b35ddd307ab8e","aiTrainingConversations":"sha256:8b11a78bed3eb8f847956f558b734a2b9dcdc5d00ed33f5bfb860fc72c2bb393"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.723Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_015","manifest":{"snapshotTag":"snap_hourly_20260910_015","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.721Z","engine":"postgresql-15","walCheckpointLsn":"0/846E7A2C","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:2b5911e90d2a5d9430b5fc8cee73fb9cc5f4c3e693e783b2816653af2daa08ca","orders":"sha256:4c2cf033299772292cbfcdac4b3a049ae5a745006532be219873f2baba7ba676","aiTrainingConversations":"sha256:b7be8ebb5009aaadc841ec11fc0fcd2a18841116fb9a08e9de2574193500e76e"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.729Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_016","manifest":{"snapshotTag":"snap_hourly_20260910_016","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.728Z","engine":"postgresql-15","walCheckpointLsn":"0/224EC316","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:570125f16c69b0ae62b5fa4f1a3208ea7ce681d054586eec47817af2a503a292","orders":"sha256:0084497ecf440b986bdb5fca3020d02c42411c5497bc55f71dfe2a0a06291e41","aiTrainingConversations":"sha256:6e19726bdc7cc0db18cccb8f4068cbf61f51ec159b856947151392ab59d9c4ba"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.730Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_017","manifest":{"snapshotTag":"snap_hourly_20260910_017","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.729Z","engine":"postgresql-15","walCheckpointLsn":"0/F003E314","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:ad1b7deda9b763529690644d89e8ce4e2a77f9a41e1439bda40d15bde1bcbec8","orders":"sha256:c0ecb45107a877c625682cab3a83eb216e4ad36eedadd5f3d0148b811a950c13","aiTrainingConversations":"sha256:10eef04d5bd3bff61206b4f86496ac561e32cf11c2fbc931aff38398e65d326a"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.731Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_018","manifest":{"snapshotTag":"snap_hourly_20260910_018","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.730Z","engine":"postgresql-15","walCheckpointLsn":"0/03D6FE04","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:c82a931847f0b32af72b3c4513b3bf078dd963074641e331abc405da7f81d392","orders":"sha256:08b8db52f35f174d91cae1709d664fe0bd25ce51924ff28c1d47c47a707c410c","aiTrainingConversations":"sha256:49811711b5adc25c6664f353ca19f87bfaa7090553f011d5e376667ed14ccec9"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.731Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_019","manifest":{"snapshotTag":"snap_hourly_20260910_019","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.731Z","engine":"postgresql-15","walCheckpointLsn":"0/CABDBB8C","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:8da28395b5da3bf3efdbf0a1a37df12a0364fc77d9dcf7db2638673ef8d7735d","orders":"sha256:9515e45821c4d75604bfe0dc8af4f431eea362cfb0d4b14ac5980200e48782e7","aiTrainingConversations":"sha256:233cf562622b31fcd5c63949cb202a2d2a4bee97b41541da11c94c522491d8b9"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.734Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_020","manifest":{"snapshotTag":"snap_hourly_20260910_020","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.731Z","engine":"postgresql-15","walCheckpointLsn":"0/BB717453","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:a0db36815d858c4b27e2427d63aa283044f7478a566865a89fd6b91d2b7d39a3","orders":"sha256:28b22d964e74702928f3bca8784354d287961452a4408ba00e8c7f295a5f7018","aiTrainingConversations":"sha256:268ff26681539e689d08fb5621a96d19981940df77485154015c88a6a114d44d"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.734Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_021","manifest":{"snapshotTag":"snap_hourly_20260910_021","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.734Z","engine":"postgresql-15","walCheckpointLsn":"0/1D49E06F","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:f3833b83946bf42171feaa69e66959fcebc6193399938a44e0088769b5addd6a","orders":"sha256:ee5ead10cff3ac079b6964e77f038c27d9e0a91d95a9fd47b7c2ef7bbb879dd2","aiTrainingConversations":"sha256:d9c382ccff049c15a96cf2bdb511c67ea13eb888df174643a67c6959dd069381"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.736Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_022","manifest":{"snapshotTag":"snap_hourly_20260910_022","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.735Z","engine":"postgresql-15","walCheckpointLsn":"0/5AC2CF68","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:25909f209eca379f717f0edebb66edb32c6d4e16ec5ddb6da821f06cb181cc44","orders":"sha256:a75b42350ecf3735fe1b111e46dc687f818c8124074d278d370bf2f002dea8bb","aiTrainingConversations":"sha256:75f3e2b8a453779a28609066f581bc3c0a31dc3e9bb9ad6c7827378192fa389e"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.738Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_023","manifest":{"snapshotTag":"snap_hourly_20260910_023","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.736Z","engine":"postgresql-15","walCheckpointLsn":"0/99791245","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:7b172f7678325703b6fcd72c46e71a1a14cb36274c68441156f69cbd5edbfb8c","orders":"sha256:16736d2904ce6a2c8b0b5eab1009b3dede6932ca282b0af8dc53b6485f546238","aiTrainingConversations":"sha256:e146f81d07939814f6dc7b1df81cd12c2a8c81787910709ab1050845c898401f"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.739Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_024","manifest":{"snapshotTag":"snap_hourly_20260910_024","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.739Z","engine":"postgresql-15","walCheckpointLsn":"0/BB15CC25","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:16bf7bd72523c85e048621196f279ad46b278945d199d5c54049f119da17b043","orders":"sha256:61325d6c3dbe3bfb500e8654df89fb209d47d8c9b21ac6d2bbafab5ea9795f60","aiTrainingConversations":"sha256:4bc3cc43543a6f19c47c7c33cb265e77f2b811488d41dcd1fbcfdd3d55712b45"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.740Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_025","manifest":{"snapshotTag":"snap_hourly_20260910_025","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.739Z","engine":"postgresql-15","walCheckpointLsn":"0/21C6576B","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:4e49f370a30124ebd45def6d8049595d2c7829a7dd61eeb869b950a4a7285dd3","orders":"sha256:39c11625bbe7b44a27989c08944624ce30088d04e80d1a1dc5640367a0eedffb","aiTrainingConversations":"sha256:1719211dc5871a1b8e5a0e81a3e16d87295dd1e52757df290e9bdca53fc4670c"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.740Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_026","manifest":{"snapshotTag":"snap_hourly_20260910_026","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.740Z","engine":"postgresql-15","walCheckpointLsn":"0/876C0F22","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:cd26525e06d76924c6213578541a51cc264177475079e8fe47d678872858adba","orders":"sha256:ad57b0e2c5cd7a29fcd4fa721236fa796479815ac4a83027395da7c4c5ad360b","aiTrainingConversations":"sha256:8b649836ada0c906e1ef2e1730f1392013f436a341e07591ace05398ef381858"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.741Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_027","manifest":{"snapshotTag":"snap_hourly_20260910_027","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.740Z","engine":"postgresql-15","walCheckpointLsn":"0/94B39A7E","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:878d4f4c75c0efaad82270f471d00aa6e6ad35be9785cb6acf2aa2940fd89cc6","orders":"sha256:7c4bd22e404ea66b77c84182a1367f1450e066883bfea81e275739b2e78bde8f","aiTrainingConversations":"sha256:3ce1a830c048ab17571e0050e01e7a5f550ef95a14caf3d81d1fa1f1dad1c7c0"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.741Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_028","manifest":{"snapshotTag":"snap_hourly_20260910_028","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.741Z","engine":"postgresql-15","walCheckpointLsn":"0/9F8F1F31","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:c3da4118624fa768466d30fcb56aff030c45ac8a1637b2e51ebd36f9ad4c4d76","orders":"sha256:ee3cec9165a3e397bb417840dccb75208508e59188dff505ef4d68c2ce2f1b8e","aiTrainingConversations":"sha256:d4efe382ef53c885fe611b9d86b80546f00677979df2848e95de4ba9a5f81184"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.742Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_029","manifest":{"snapshotTag":"snap_hourly_20260910_029","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.742Z","engine":"postgresql-15","walCheckpointLsn":"0/78102C2F","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:f5db5ff5fb7866432cfdc25abb15798d5ad1103ef879e2bb2892faaf2d664094","orders":"sha256:5560720e260d9de008b8bd50ce7b0e8dd4c64dd21c59ff16d9510c2f98083776","aiTrainingConversations":"sha256:66deb60395fd21b2525bd0fff53354b305f19c3da30a298d684e5bf1bf0de018"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.748Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_030","manifest":{"snapshotTag":"snap_hourly_20260910_030","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.742Z","engine":"postgresql-15","walCheckpointLsn":"0/D70DF860","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:bcb907fcd104ab1c4d286bdb1a5fad35a57d55282a8f9170c7069dd53f6a6a48","orders":"sha256:6c625413993f31a49fe6b6d62f10cd6a3cb99853bb983a16b3238fbdd3bc8f6d","aiTrainingConversations":"sha256:b5e83b0ad32cd8ec02c67da7decddd8f40e33c523c4521d0a7221862e357fd29"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.750Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_031","manifest":{"snapshotTag":"snap_hourly_20260910_031","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.749Z","engine":"postgresql-15","walCheckpointLsn":"0/73B1D538","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:4b8d6badb5dd78a46c48e9f33d12859e8e643c5168c024323efa324cea69ab9b","orders":"sha256:e2aefdfc4e8c718eabc588723c73ad05790f6facdfe1c548618024858285cae6","aiTrainingConversations":"sha256:45a9136362d58762dbe35180f3d7d666fd233d7b67b8979e1271fb22c90be0f7"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.750Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_032","manifest":{"snapshotTag":"snap_hourly_20260910_032","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.750Z","engine":"postgresql-15","walCheckpointLsn":"0/DB17D870","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:0a079f67017c5216885bc102b36625fe65c59599aaeac944c490fdc16267f166","orders":"sha256:800f2071a8f6c266b5299c034132f4622cc5bcf7a8a996f57c7dfef9c4616bc7","aiTrainingConversations":"sha256:e806a0034d713ad346fea6ec366d85e1b9fad8207dcafb2799c88c44739a306b"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.751Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_033","manifest":{"snapshotTag":"snap_hourly_20260910_033","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.751Z","engine":"postgresql-15","walCheckpointLsn":"0/327F76F3","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:e32f0f60d3944c04ce777c4b16bcb01c391511db9f04fc02c6761b11c5c59c77","orders":"sha256:3a03aa2cdd801de93dd3b7ea3a25bd8114ce760e5a31489feebbccf0cbcfeb7d","aiTrainingConversations":"sha256:be3387c1ca79e48963288e06eacf6311119f5a78f90833216948157760338e05"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.752Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_034","manifest":{"snapshotTag":"snap_hourly_20260910_034","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.751Z","engine":"postgresql-15","walCheckpointLsn":"0/FF3D54C8","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:630163dfa05f2a00540e4e69f72aa825ae2635075abb09613dc2a243b0fa24f9","orders":"sha256:c312114deaa751b0fa75bcf1252c6cdb6c53ddf0864180574f43c83b75ff29ad","aiTrainingConversations":"sha256:fb1acea460fa0ed82bb9020eeb860882adc5fdf208ef7bd356de6e4bff0d565d"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.752Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_035","manifest":{"snapshotTag":"snap_hourly_20260910_035","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.752Z","engine":"postgresql-15","walCheckpointLsn":"0/7C1F858C","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:c6bfda006611385ae27699af0b321e488d016ed2e4d52819e21d3a12f0b7e623","orders":"sha256:5bb65a01a251feba02f5677d136aa49467a7326a34055f25ea6c3b7b38687ea8","aiTrainingConversations":"sha256:6e0ee2e07488684b0ec7d2f9d882fbf5f7a2e607ee6e4820af153f7889882526"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.755Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_036","manifest":{"snapshotTag":"snap_hourly_20260910_036","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.752Z","engine":"postgresql-15","walCheckpointLsn":"0/B9495E87","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:92ed20d13a3ea64357764fd3544cf8d6963683a12313b54f499201da93dcb979","orders":"sha256:58e56e35f65a758f9d9f0502ab131d30555fd4ad3027f3d2800c30bc21590bb3","aiTrainingConversations":"sha256:1c2d3c622999c268642eee0e6b0058541a5311fac4026a042c6805d4b042ec65"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.756Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_037","manifest":{"snapshotTag":"snap_hourly_20260910_037","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.755Z","engine":"postgresql-15","walCheckpointLsn":"0/9CC2C754","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:bb89f28f45e4a291b4adc75d343ed9cc88012ebb04df7bff567261c6da39a9e1","orders":"sha256:d2dcdd33fff49c31582eaa40404873acb2e07613fa248b381b6b4998f0f8aa5b","aiTrainingConversations":"sha256:cc5228a39d7e278c25013f606d68380b2d350ac3422d7b51acd39b0e27df42ac"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.767Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_038","manifest":{"snapshotTag":"snap_hourly_20260910_038","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.758Z","engine":"postgresql-15","walCheckpointLsn":"0/F3BB5C0C","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:a160f4f53baacffacdb3c5653df7a5cf0bfabc9fe5220731d4a9a636bfa6b48e","orders":"sha256:d036196b6bf4000072e8f001530b2e63d7989267667a60a80dccc37b6df7f23a","aiTrainingConversations":"sha256:8ea0e5f9299d1540721509777eeb8f91f13e9381e4bad59c8962719e9e1592a8"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.772Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_039","manifest":{"snapshotTag":"snap_hourly_20260910_039","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.768Z","engine":"postgresql-15","walCheckpointLsn":"0/FF775BEB","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:cfc84b89e1e9d23328a7ea7ef51f79826af88e74894d4010a4d9ccdb78fca82e","orders":"sha256:b0143f882291ec1d6e28747de9b6fc24c8f8f07383db0d009bc2be2d1a96c2d1","aiTrainingConversations":"sha256:c370f6a2f15e718a88618bd88adee2628b1a63de3765587714ee166ccc02b9a3"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.774Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_hourly_20260910_040","manifest":{"snapshotTag":"snap_hourly_20260910_040","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.773Z","engine":"postgresql-15","walCheckpointLsn":"0/3295280E","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:1694050fee6db2d782381a7b0d8854b1e3bdd5584e1e584f2358ada87707ccf8","orders":"sha256:4957dcf25631247d5121ac627da00aad41f157cf59c77c3533fb50465a2ac482","aiTrainingConversations":"sha256:0c8de78f09978c21b8a00e4e3bd91863a64ee9a116ccdc5b97a409e4c9c2ee75"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > enforces Grandfather-Father-Son retention policy (keeps 24 hourly, 7 daily, 4 weekly = 35 max)
+{"ts":"2026-10-02T18:16:07.784Z","level":"info","event":"time_machine.pruned_snapshots","service":"framique-dev","totalFound":40,"prunedCount":5,"retainedCount":35}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > executes automated Disaster Recovery Drill asserting simulated disk corruption restores with RPO = 0 and RTO < 15m
+{"ts":"2026-10-02T18:16:07.816Z","level":"info","event":"time_machine.basebackup_created","service":"framique-dev","tag":"snap_drill_candidate","manifest":{"snapshotTag":"snap_drill_candidate","type":"hourly_basebackup","createdAt":"2026-10-02T18:16:07.816Z","engine":"postgresql-15","walCheckpointLsn":"0/63B00085","rpoSeconds":0,"rtoMinutes":11,"tablesChecksum":{"merchants":"sha256:521f17d3a7e18b1b0b1722828e1b06d0a889122d312bbe5c5d788cf5e8c17003","orders":"sha256:08f5e19572e54c834d73ba1e4848895b32617efe287a8275f6950fa0d29e8c4c","aiTrainingConversations":"sha256:2aeacf9b7a912304c1e2a630133d6f6d4be7d571b3af4447ce2bd13d02e19546"},"status":"ready"}}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > executes automated Disaster Recovery Drill asserting simulated disk corruption restores with RPO = 0 and RTO < 15m
+{"ts":"2026-10-02T18:16:07.818Z","level":"info","event":"time_machine.wal_synced","service":"framique-dev","filesCount":1,"timestamp":"2026-10-02T18:16:07.818Z"}
+
+stdout | src/lib/time-machine-daemon.test.ts > Phase 11.4 — Time-Machine Continuous Archiving Daemon & Disaster Recovery Engine > executes automated Disaster Recovery Drill asserting simulated disk corruption restores with RPO = 0 and RTO < 15m
+{"ts":"2026-10-02T18:16:07.820Z","level":"info","event":"time_machine.dr_drill_completed","service":"framique-dev","report":{"drillTag":"dr_drill_1790964967819","executedAt":"2026-10-02T18:16:07.819Z","basebackupSource":"snap_drill_candidate","rpoSeconds":0,"rtoSeconds":1,"rtoSlaMet":true,"status":"PASSED","tableChecksums":{"merchants":"sha256:521f17d3a7e18b1b0b1722828e1b06d0a889122d312bbe5c5d788cf5e8c17003","orders":"sha256:08f5e19572e54c834d73ba1e4848895b32617efe287a8275f6950fa0d29e8c4c","aiTrainingConversations":"sha256:2aeacf9b7a912304c1e2a630133d6f6d4be7d571b3af4447ce2bd13d02e19546"},"mlDataImmunityShieldIntact":true,"recoveryTargetReached":true}}
+
+ ✓ src/lib/shipping-rates.test.ts (19 tests) 627ms
+     ✓ opens the circuit after repeated failures and fails fast  512ms
+ ✓ src/lib/time-machine-daemon.test.ts (7 tests) 3833ms
+     ✓ verifies shell daemon script ops/backup/time-machine-daemon.sh executes commands cleanly  3623ms
+stdout | src/lib/migration-backfill.test.ts > Phase 8.2 — Background Data Backfill Workers > executes non-blocking chunked backfill with correct batch sizing and cursor updates
+{"ts":"2026-10-02T18:16:11.889Z","level":"info","event":"backfill.started","service":"framique-dev","jobId":"test_chunked_backfill","tableName":"synthetic_orders","batchSize":250,"sleepMs":5,"resumedFromCursor":null,"dryRun":false}
+
+stdout | src/lib/migration-backfill.test.ts > Phase 8.2 — Background Data Backfill Workers > executes non-blocking chunked backfill with correct batch sizing and cursor updates
+{"ts":"2026-10-02T18:16:11.969Z","level":"info","event":"backfill.completed","service":"framique-dev","jobId":"test_chunked_backfill","tableName":"synthetic_orders","totalRows":1200,"totalBatches":5,"durationMs":90}
+
+stdout | src/lib/migration-backfill.test.ts > Phase 8.2 — Background Data Backfill Workers > handles concurrent live transactions without deadlocks or data loss
+{"ts":"2026-10-02T18:16:11.974Z","level":"info","event":"backfill.started","service":"framique-dev","jobId":"test_concurrent_checkout_backfill","tableName":"orders","batchSize":50,"sleepMs":10,"resumedFromCursor":null,"dryRun":false}
+
+ ✓ src/lib/semrush.contract.test.ts (13 tests) 4350ms
+     ✓ returns domain search rankings for framique.com  2654ms
+     ✓ tracks keyword positions in the Bangladesh commercial sector  378ms
+     ✓ evaluates competitor positions and relevance  1260ms
+stdout | src/lib/migration-backfill.test.ts > Phase 8.2 — Background Data Backfill Workers > handles concurrent live transactions without deadlocks or data loss
+{"ts":"2026-10-02T18:16:12.175Z","level":"info","event":"backfill.completed","service":"framique-dev","jobId":"test_concurrent_checkout_backfill","tableName":"orders","totalRows":500,"totalBatches":10,"durationMs":201}
+
+stdout | src/lib/migration-backfill.test.ts > Phase 8.2 — Background Data Backfill Workers > supports pausing and resuming from saved cursor checkpoint
+{"ts":"2026-10-02T18:16:12.342Z","level":"info","event":"backfill.started","service":"framique-dev","jobId":"test_resumable_job","tableName":"resumable_table","batchSize":50,"sleepMs":10,"resumedFromCursor":null,"dryRun":false}
+
+stdout | src/lib/migration-backfill.test.ts > Phase 8.2 — Background Data Backfill Workers > supports pausing and resuming from saved cursor checkpoint
+{"ts":"2026-10-02T18:16:12.406Z","level":"info","event":"backfill.started","service":"framique-dev","jobId":"test_resumable_job","tableName":"resumable_table","batchSize":50,"sleepMs":5,"resumedFromCursor":150,"dryRun":false}
+
+stdout | src/lib/migration-backfill.test.ts > Phase 8.2 — Background Data Backfill Workers > supports pausing and resuming from saved cursor checkpoint
+{"ts":"2026-10-02T18:16:12.433Z","level":"info","event":"backfill.completed","service":"framique-dev","jobId":"test_resumable_job","tableName":"resumable_table","totalRows":300,"totalBatches":6,"durationMs":27}
+
+ ✓ src/lib/migration-backfill.test.ts (3 tests) 560ms
+     ✓ handles concurrent live transactions without deadlocks or data loss  365ms
+ ✓ src/lib/support-qubickle-fix.test.ts (19 tests) 12453ms
+     ✓ missing SUPABASE_SERVICE_ROLE_KEY throws, never returns fake merchant  11386ms
+     ✓ saveDoc surfaces DB failure instead of ok:true  662ms
+ ✓ src/lib/immutable-artifact.test.ts (9 tests) 1541ms
+     ✓ generates immutable commit SHA tags and rejects mutable floating tags  841ms
+     ✓ constructs compliant OCI docker build command  657ms
+ ✓ src/lib/motion.contract.test.ts (22 tests) 2051ms
+     ✓ no module outside the engine loader imports gsap  1832ms
+ ✓ src/lib/marketplace-theme-lifecycle.test.ts (7 tests) 18270ms
+     ✓ pauses and resumes an inactive theme row without touching plugin_state  1826ms
+     ✓ delete cascades the linked theme and retires the ledger row  16399ms
+ ✓ src/lib/qubickle-attack-paths.test.ts (6 tests) 3225ms
+     ✓ rollbackVersion rejects cross-merchant versionId  3171ms
+ ✓ src/lib/store-href.test.ts (4 tests) 3557ms
+     ✓ picks root shape on custom hosts, path shape elsewhere  3529ms
+stdout | src/lib/support-agent.test.ts > Phase 9.4 — Callback Service: createCallback > creates callback and returns structured acknowledgement
+{"ts":"2026-10-02T18:16:30.859Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790964990859_2csrgs","preferred_window":"morning"}
+
+stdout | src/lib/support-agent.test.ts > Phase 9.4 — Callback Service: createCallback > stores callback in in-memory store with status=pending
+{"ts":"2026-10-02T18:16:31.099Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790964991099_ml5ibz","preferred_window":"evening"}
+
+stdout | src/lib/support-agent.test.ts > Phase 9.4 — Callback Service: createCallback > sanitizes customer name to 100 chars and note to 500 chars
+{"ts":"2026-10-02T18:16:31.109Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790964991109_7c34ot","preferred_window":"afternoon"}
+
+stdout | src/lib/support-agent.test.ts > Phase 9.4 — Callback Service: createCallback > generates unique callback IDs for concurrent requests
+{"ts":"2026-10-02T18:16:31.116Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790964991116_cs70ag","preferred_window":"morning"}
+
+stdout | src/lib/support-agent.test.ts > Phase 9.4 — Callback Service: createCallback > generates unique callback IDs for concurrent requests
+{"ts":"2026-10-02T18:16:31.145Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790964991145_xf8pcp","preferred_window":"afternoon"}
+
+stdout | src/lib/support-agent.test.ts > Phase 9.4 — Callback Service: createCallback > generates unique callback IDs for concurrent requests
+{"ts":"2026-10-02T18:16:31.151Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790964991151_dd5059","preferred_window":"evening"}
+
+stdout | src/lib/support-agent.test.ts > Phase 9.4 — Callback Service: createCallback > callbackRef follows #CB-XXXXXX format
+{"ts":"2026-10-02T18:16:31.187Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790964991186_zzn2gm","preferred_window":"morning"}
+
+stdout | src/lib/support-agent.test.ts > Phase 9.4 — Callback Service: createCallback > agentMessage contains callback reference and phone confirmation
+{"ts":"2026-10-02T18:16:31.212Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790964991212_lq14fr","preferred_window":"afternoon"}
+
+stdout | src/lib/support-agent.test.ts > Phase 9.4 — Callback Service: createCallback > stores multiple callbacks independently per merchant
+{"ts":"2026-10-02T18:16:31.230Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790964991230_1wdd42","preferred_window":"morning"}
+
+stdout | src/lib/support-agent.test.ts > Phase 9.4 — Callback Service: createCallback > stores multiple callbacks independently per merchant
+{"ts":"2026-10-02T18:16:31.245Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790964991245_qf1724","preferred_window":"evening"}
+
+stdout | src/lib/support-agent.test.ts > Phase 9.3 & 9.4 — AskResult Type Contract > CallbackAction shape is correct for callback tool response
+{"ts":"2026-10-02T18:16:31.368Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790964991368_oghfce","preferred_window":"morning"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Breaker > D. Circuit Breaker Execution via runSupportAgentTurn > triggers epistemic humility and refuses to hallucinate for an out-of-domain query
+{"ts":"2026-10-02T18:16:31.522Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Breaker > D. Circuit Breaker Execution via runSupportAgentTurn > triggers epistemic humility in Bangla for out-of-domain query
+{"ts":"2026-10-02T18:16:32.598Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Breaker > D. Circuit Breaker Execution via runSupportAgentTurn > triggers epistemic humility when a question yields 0 verified KB hits without hallucinating
+{"ts":"2026-10-02T18:16:33.048Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Breaker > D. Circuit Breaker Execution via runSupportAgentTurn > provides all 4 distinct proactive action paths upon epistemic humility activation
+{"ts":"2026-10-02T18:16:33.684Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Breaker > D. Circuit Breaker Execution via runSupportAgentTurn > welcomes customers on greetings without triggering epistemic humility circuit breaker
+{"ts":"2026-10-02T18:16:33.955Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Breaker > D. Circuit Breaker Execution via runSupportAgentTurn > welcomes customers on greetings without triggering epistemic humility circuit breaker
+{"ts":"2026-10-02T18:16:33.968Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Breaker > D. Circuit Breaker Execution via runSupportAgentTurn > constructively answers store shipping inquiries without triggering epistemic humility
+{"ts":"2026-10-02T18:16:33.971Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Breaker > D. Circuit Breaker Execution via runSupportAgentTurn > constructively answers store operating hours without triggering epistemic humility
+{"ts":"2026-10-02T18:16:34.053Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.4 — Agent Epistemic Humility & 'I Don't Know' Circuit Breaker > D. Circuit Breaker Execution via runSupportAgentTurn > refuses to answer from a single-stem match when the decisive word is uncovered (ERP)
+{"ts":"2026-10-02T18:16:34.292Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > strictly suppresses the LLM and automated bot replies when takeoverMode is explicitly human_takeover
+{"ts":"2026-10-02T18:16:34.474Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > strictly suppresses the LLM and automated bot replies when takeoverMode is explicitly human_takeover
+{"ts":"2026-10-02T18:16:34.475Z","level":"info","event":"support.human_takeover_customer_message","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","merchantId":"merchant-demo-123","conversationId":"conv-test-123","channel":"widget","correlation_id":null}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > strictly suppresses the LLM when conversation is stored in human_takeover mode in moderation store
+{"ts":"2026-10-02T18:16:34.476Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > strictly suppresses the LLM when conversation is stored in human_takeover mode in moderation store
+{"ts":"2026-10-02T18:16:34.477Z","level":"info","event":"support.human_takeover_customer_message","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","merchantId":"merchant-demo-123","conversationId":"conv-takeover-live-101","channel":"widget","correlation_id":null}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > delivers accurate localized Bengali indicators when in human_takeover mode
+{"ts":"2026-10-02T18:16:34.483Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > delivers accurate localized Bengali indicators when in human_takeover mode
+{"ts":"2026-10-02T18:16:34.489Z","level":"info","event":"support.human_takeover_customer_message","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","merchantId":"merchant-demo-123","conversationId":"conv-test-123","channel":"widget","correlation_id":null}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > allows standard AI ReAct execution when takeover_mode is ai
+{"ts":"2026-10-02T18:16:34.510Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > Phase 12.6 — DeepWiki Synthesis Engine & RL Integration > answers complex platform queries using DeepWiki RAG with citations
+{"ts":"2026-10-02T18:16:34.668Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > Phase 12.6 — DeepWiki Synthesis Engine & RL Integration > reinforces DeepWiki edge weights when customer rates a conversation with 5 stars
+{"ts":"2026-10-02T18:16:34.822Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > Phase 12.6 — DeepWiki Synthesis Engine & RL Integration > reinforces DeepWiki edge weights when customer rates a conversation with 5 stars
+{"ts":"2026-10-02T18:16:34.986Z","level":"info","event":"deepwiki.rl_feedback_applied","service":"framique-dev","queryId":"dw_ed41450b629770df","csat":5,"newReward":0.54,"edgesUpdated":11}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > Phase 12.7 — Customer Identity & Mail Notifications via askSupport > accepts customerName and customerEmail and completes turn with email notifications dispatched
+{"ts":"2026-10-02T18:16:35.007Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > Phase 12.8 — Intelligent Admin Online Transfer, Callback Routing & RL+Atropos > advises waiting for online admin transfer when operator heartbeat is active
+{"ts":"2026-10-02T18:16:35.162Z","level":"info","event":"support.operator_heartbeat_recorded","service":"framique-dev","merchantId":"merchant-demo-123","operatorId":"op-1","timestamp":"2026-10-02T18:16:35.162Z"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > Phase 12.8 — Intelligent Admin Online Transfer, Callback Routing & RL+Atropos > advises waiting for online admin transfer when operator heartbeat is active
+{"ts":"2026-10-02T18:16:35.162Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > Phase 12.8 — Intelligent Admin Online Transfer, Callback Routing & RL+Atropos > advises callback & email follow-up when admin is offline
+{"ts":"2026-10-02T18:16:35.375Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-agent.test.ts > Phase 12.5 — Bot Suppression Middleware for Human Takeover > Phase 12.8 — Intelligent Admin Online Transfer, Callback Routing & RL+Atropos > steps Atropos RL environment and updates reward when rating with isResolved
+{"ts":"2026-10-02T18:16:35.403Z","level":"info","event":"deepwiki.rl_feedback_applied","service":"framique-dev","queryId":"dw_417f803fb48b930d","csat":5,"newReward":0.42,"edgesUpdated":0}
+
+ ✓ src/lib/definition-of-done.test.ts (11 tests) 1694ms
+     ✓ formats integer minor units and never accepts client math  890ms
+     ✓ has no renderer that takes a theme identity  353ms
+ ✓ src/lib/support-agent.test.ts (139 tests) 5418ms
+     ✓ creates ticket with required fields and returns structured response  385ms
+       ✓ triggers epistemic humility and refuses to hallucinate for an out-of-domain query  1181ms
+       ✓ triggers epistemic humility in Bangla for out-of-domain query  406ms
+       ✓ triggers epistemic humility when a question yields 0 verified KB hits without hallucinating  633ms
+stdout | src/lib/support-grounded-agent.test.ts > grounded super-agent > deny: null-context → handoff not FAQ
+{"ts":"2026-10-02T18:16:42.410Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-nahid-repro.test.ts > Nahid repro — greeting first > askSupport('Hi') greets in normal mode — no refusal, no degraded banner
+{"ts":"2026-10-02T18:16:43.211Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-nahid-repro.test.ts > Nahid repro — greeting first > askSupport('Hi') greets in degraded mode too — never refuse a greeting
+{"ts":"2026-10-02T18:16:44.401Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-grounded-agent.test.ts > grounded super-agent > deny: unverified contact never exposes fake phones
+{"ts":"2026-10-02T18:16:44.697Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-grounded-agent.test.ts > grounded super-agent > honest degraded mode: placeholder key banners with lowered confidence
+{"ts":"2026-10-02T18:16:44.777Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-grounded-agent.test.ts > grounded super-agent > handoff payload is complete (transcript + provenance + sources)
+{"ts":"2026-10-02T18:16:45.043Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-grounded-agent.test.ts > grounded super-agent > replay: same transcript → same handoff prefill
+{"ts":"2026-10-02T18:16:45.078Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-grounded-agent.test.ts > grounded super-agent > replay: same transcript → same handoff prefill
+{"ts":"2026-10-02T18:16:45.109Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-nahid-repro.test.ts > Nahid repro — relevance floor (ERP vs logistics) > askSupport never presents the wrong-topic logistics answer for ERP
+{"ts":"2026-10-02T18:16:45.068Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-nahid-repro.test.ts > Nahid repro — tiered compact fallback > POS gap refusal is tiered/compact with suggestions
+{"ts":"2026-10-02T18:16:45.103Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+ ✓ src/lib/support-grounded-agent.test.ts (5 tests) 2748ms
+     ✓ deny: null-context → handoff not FAQ  2304ms
+ ✓ src/lib/support-nahid-repro.test.ts (9 tests) 2269ms
+     ✓ askSupport('Hi') greets in normal mode — no refusal, no degraded banner  1276ms
+     ✓ raw retrieval top-1 for ERP is the logistics article (the mismatch source)  305ms
+ ✓ src/components/builder/primitives/ProductCard.test.tsx (33 tests) 814ms
+     ✓ renders two stacked secondary layers for a multi-image row  528ms
+ ✓ src/components/store/StoreHeader.test.tsx (30 tests) 1075ms
+stdout | src/lib/support-helpful-first.test.ts > helpful-first — POS general answer (not a refusal wall) > POS: helpful general answer with concepts + pointers + verify note
+{"ts":"2026-10-02T18:16:48.180Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+ ✓ src/lib/concurrency-and-caching.contract.test.ts (18 tests) 399ms
+stdout | src/lib/support-helpful-first.test.ts > helpful-first — ERP general answer (gap named, no courier mixup) > ERP: helpful general answer without presenting logistics as ERP
+{"ts":"2026-10-02T18:16:48.742Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-helpful-first.test.ts > helpful-first — greeting stays green > Hi still greets, never refused
+{"ts":"2026-10-02T18:16:48.758Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+ ✓ src/lib/widget-skins.test.tsx (54 tests) 382ms
+stdout | src/lib/support-helpful-first.test.ts > helpful-first — high-stakes warm single-step (not a wall) > exact fees with no KB coverage: warm single-step redirect
+{"ts":"2026-10-02T18:16:48.865Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-helpful-first.test.ts > helpful-first — no-fabrication in general answers > general answer never contains Framique-specific prices/fees
+{"ts":"2026-10-02T18:16:48.870Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+stdout | src/lib/support-helpful-first.test.ts > helpful-first — no-fabrication in general answers > general answer never contains Framique-specific prices/fees
+{"ts":"2026-10-02T18:16:48.872Z","level":"info","event":"support.ask_start","service":"framique-dev","tenant_id":"merchant-demo-123","merchant_id":"merchant-demo-123","correlation_id":null,"channel":"widget"}
+
+ ✓ src/lib/support-helpful-first.test.ts (5 tests) 714ms
+     ✓ POS: helpful general answer with concepts + pointers + verify note  575ms
+stdout | src/lib/domains-provision.test.ts > provisionAndApply (local ACME order) > flips issuing_cert to active through the audited path
+{"ts":"2026-10-02T18:16:49.358Z","level":"info","event":"domain.transition","service":"framique-dev","domain":"d1","from":"issuing_cert","to":"active","reason":"cert.issued"}
+
+ ✓ src/lib/domains-provision.test.ts (2 tests) 1226ms
+ ✓ src/lib/copy-quality.contract.test.ts (26 tests) 1409ms
+     ✓ is deterministic and sorted by key  897ms
+ ✓ src/lib/phase2-theme-agnostic.test.tsx (175 tests) 3667ms
+     ✓ nav_menu renders with no theme installed  359ms
+     ✓ uses only radius utilities the token layer actually defines  448ms
+ ✓ src/lib/phase4-perf.contract.test.ts (24 tests) 1807ms
+     ✓ exposes the whole table sorted heaviest first  751ms
+     ✓ classifies every widget into a policy class with allowed modes  528ms
+ ✓ src/lib/payments-stable-keys.test.ts (5 tests) 3613ms
+     ✓ a double-click with legacy timestamped keys opens ONE intent  3551ms
+ ✓ src/lib/phase9-a11y.test.ts (10 tests) 997ms
+     ✓ quotes the same vitals budget the app uses  972ms
+ ✓ src/lib/root-isolation.test.ts (3 tests) 5115ms
+     ✓ keeps the owner shell and dialog exclusive to /root  5039ms
+ ✓ src/lib/phase5-plugins.test.ts (30 tests) 869ms
+     ✓ calls only subscribers and returns their result  359ms
+ ✓ src/lib/support-rl-harness.test.ts (10 tests) 379ms
+     ✓ executes simulated benchmark scenario and outputs composite scorecard  370ms
+ ✓ src/lib/themes/appearance.test.ts (24 tests) 142ms
+ ✓ src/lib/seo-analysis.contract.test.ts (18 tests) 581ms
+     ✓ analyses a 5k-word body inside the worker budget  320ms
+ ✓ src/lib/widget-registry.test.ts (8 tests) 597ms
+     ✓ declares typed inspector fields for every widget — no free-form JSON editing  388ms
+stdout | src/lib/deploy-preflight.test.ts > Phase 6.2 — Automated Pre-Flight Health, Smoke & DB Probes > Pre-Flight Suite Orchestration & Blue Isolation > returns PROCEED_TO_CANARY when all 3 tiers pass
+{"ts":"2026-10-02T18:17:05.238Z","level":"info","event":"deploy.preflight_passed","service":"framique-dev","targetUrl":"http://green-pod:3000","durationMs":0}
+
+ ✓ src/lib/deploy-preflight.test.ts (8 tests) 551ms
+       ✓ passes when target /api/healthz returns 200 OK with healthy status  334ms
+ ✓ src/lib/phase2-beauty.test.ts (17 tests) 160ms
+ ✓ src/lib/migration-linter.test.ts (10 tests) 315ms
+stdout | src/lib/support-revision.test.ts > runRevisionJob — severe escalation path > records a guardrail event and opens a pending_approval ticket on severe
+{"ts":"2026-10-02T18:17:07.306Z","level":"info","event":"support.revision_completed","service":"framique-dev","date":"2026-09-27","reviewed":1,"revised":0,"hallucinations":1,"escalatedTickets":1,"kbCandidates":0,"persistedReviews":1}
+
+stdout | src/lib/support-revision.test.ts > runRevisionJob — severe escalation path > does NOT escalate clean turns
+{"ts":"2026-10-02T18:17:07.316Z","level":"info","event":"support.revision_completed","service":"framique-dev","date":"2026-09-27","reviewed":1,"revised":0,"hallucinations":0,"escalatedTickets":0,"kbCandidates":0,"persistedReviews":0}
+
+stdout | src/lib/support-revision.test.ts > runRevisionJob — severe escalation path > counts scorer failures as errors and continues
+{"ts":"2026-10-02T18:17:07.317Z","level":"info","event":"support.revision_completed","service":"framique-dev","date":"2026-09-27","reviewed":0,"revised":0,"hallucinations":0,"escalatedTickets":0,"kbCandidates":0,"persistedReviews":0}
+
+stdout | src/lib/support-revision.test.ts > runRevisionJob — KB candidate gating > saves recurring unanswered questions as drafts, never published
+{"ts":"2026-10-02T18:17:07.319Z","level":"info","event":"support.revision_completed","service":"framique-dev","date":"2026-09-27","reviewed":2,"revised":0,"hallucinations":0,"escalatedTickets":0,"kbCandidates":2,"persistedReviews":0}
+
+stdout | src/lib/support-revision.test.ts > runRevisionJob — CSAT-linked training rows > touches training rows for rated turns only
+{"ts":"2026-10-02T18:17:07.321Z","level":"info","event":"support.revision_completed","service":"framique-dev","date":"2026-09-27","reviewed":2,"revised":0,"hallucinations":0,"escalatedTickets":0,"kbCandidates":0,"persistedReviews":0}
+
+stdout | src/lib/support-revision.test.ts > runRevisionJob — review-store persist path > queues poor revisions via the injected persist fn
+{"ts":"2026-10-02T18:17:07.465Z","level":"info","event":"support.revision_revised","service":"framique-dev","turn_id":"t-poor","conversation_id":"conv-1","groundedness":0.2,"tone":0.9}
+
+stdout | src/lib/support-revision.test.ts > runRevisionJob — review-store persist path > queues poor revisions via the injected persist fn
+{"ts":"2026-10-02T18:17:07.466Z","level":"info","event":"support.revision_completed","service":"framique-dev","date":"2026-09-27","reviewed":1,"revised":1,"hallucinations":0,"escalatedTickets":0,"kbCandidates":0,"persistedReviews":1}
+
+ ✓ src/components/builder/songoskriti.test.tsx (36 tests) 776ms
+stdout | src/lib/support-revision.test.ts > runRevisionJob — review-store persist path > queues severe turns even without a revised draft
+{"ts":"2026-10-02T18:17:07.895Z","level":"info","event":"support.revision_completed","service":"framique-dev","date":"2026-09-27","reviewed":1,"revised":0,"hallucinations":1,"escalatedTickets":1,"kbCandidates":0,"persistedReviews":1}
+
+stdout | src/lib/support-revision.test.ts > runRevisionJob — review-store persist path > skips the store for clean turns
+{"ts":"2026-10-02T18:17:07.895Z","level":"info","event":"support.revision_completed","service":"framique-dev","date":"2026-09-27","reviewed":1,"revised":0,"hallucinations":0,"escalatedTickets":0,"kbCandidates":0,"persistedReviews":0}
+
+stdout | src/lib/support-revision.test.ts > runRevisionJob — review-store persist path > keeps job-result behaviour when the persist fn throws
+{"ts":"2026-10-02T18:17:07.897Z","level":"info","event":"support.revision_revised","service":"framique-dev","turn_id":"t-poor","conversation_id":"conv-1","groundedness":0.1,"tone":0.9}
+
+stdout | src/lib/support-revision.test.ts > runRevisionJob — review-store persist path > keeps job-result behaviour when the persist fn throws
+{"ts":"2026-10-02T18:17:07.897Z","level":"info","event":"support.revision_completed","service":"framique-dev","date":"2026-09-27","reviewed":1,"revised":1,"hallucinations":0,"escalatedTickets":0,"kbCandidates":0,"persistedReviews":0}
+
+stdout | src/lib/support-revision.test.ts > runRevisionJob — review-store persist path > persists to the review store by default (memory fallback offline)
+{"ts":"2026-10-02T18:17:07.899Z","level":"info","event":"support.revision_revised","service":"framique-dev","turn_id":"t-default","conversation_id":"conv-1","groundedness":0.1,"tone":0.9}
+
+stdout | src/lib/support-revision.test.ts > runRevisionJob — review-store persist path > persists to the review store by default (memory fallback offline)
+{"ts":"2026-10-02T18:17:07.900Z","level":"info","event":"support.revision_completed","service":"framique-dev","date":"2026-09-27","reviewed":1,"revised":1,"hallucinations":0,"escalatedTickets":0,"kbCandidates":0,"persistedReviews":1}
+
+ ✓ src/lib/support-revision.test.ts (34 tests) 1029ms
+     ✓ records a guardrail event and opens a pending_approval ticket on severe  411ms
+     ✓ queues severe turns even without a revised draft  429ms
+stdout | src/lib/support-mail.test.ts > Support Mail Notifications (support-mail.server) > successfully dispatches admin notification and customer reply in English
+{"ts":"2026-10-02T18:17:08.249Z","level":"info","event":"support.mail_notifications_dispatched","service":"framique-dev","conversationId":"conv-456","adminEmail":"[redacted]","customerEmail":"[redacted]","adminOk":true,"customerOk":true}
+
+stdout | src/lib/support-mail.test.ts > Support Mail Notifications (support-mail.server) > formats Bengali customer email correctly when locale is bn
+{"ts":"2026-10-02T18:17:08.264Z","level":"info","event":"support.mail_notifications_dispatched","service":"framique-dev","conversationId":"conv-789","adminEmail":"[redacted]","customerEmail":"[redacted]","adminOk":true,"customerOk":true}
+
+ ✓ src/lib/support-mail.test.ts (4 tests) 285ms
+ ✓ src/components/builder/sliders.test.tsx (17 tests) 406ms
+ ✓ src/components/store/ThemePreviewFrame.test.tsx (53 tests) 489ms
+ ✓ src/lib/support-kb-search.test.ts (6 tests) 313ms
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Human Takeover Mode Management > switches conversation from AI mode to human_takeover and assigns operator
+{"ts":"2026-10-02T18:17:09.747Z","level":"info","event":"support_moderation.takeover_set","service":"framique-dev","conversationId":"conv_takeover_01","mode":"human_takeover","operatorId":"operator_alice"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Human Takeover Mode Management > hands conversation back to AI and clears assigned operator
+{"ts":"2026-10-02T18:17:09.854Z","level":"info","event":"support_moderation.takeover_set","service":"framique-dev","conversationId":"conv_takeover_02","mode":"ai"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Human Takeover Mode Management > sets last_operator_message_at when entering human_takeover mode
+{"ts":"2026-10-02T18:17:09.854Z","level":"info","event":"support_moderation.takeover_set","service":"framique-dev","conversationId":"conv_takeover_03","mode":"human_takeover","operatorId":"op_01"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Priority Triage Queue Management > escalates a conversation from normal to urgent and updates priorityRank to 4
+{"ts":"2026-10-02T18:17:09.855Z","level":"info","event":"support_moderation.priority_set","service":"framique-dev","conversationId":"conv_prio_01","priority":"urgent"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Priority Triage Queue Management > de-escalates a conversation from high to low and updates priorityRank to 1
+{"ts":"2026-10-02T18:17:09.856Z","level":"info","event":"support_moderation.priority_set","service":"framique-dev","conversationId":"conv_prio_02","priority":"low"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Private Operator Notes > saves operator notes for a conversation
+{"ts":"2026-10-02T18:17:09.857Z","level":"info","event":"support_moderation.notes_saved","service":"framique-dev","conversationId":"conv_notes_01","length":59}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Private Operator Notes > overwrites existing operator notes
+{"ts":"2026-10-02T18:17:09.857Z","level":"info","event":"support_moderation.notes_saved","service":"framique-dev","conversationId":"conv_notes_02","length":40}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Operator Message Injection > injects a human operator message into the conversation stream
+{"ts":"2026-10-02T18:17:09.858Z","level":"info","event":"support_moderation.operator_message_sent","service":"framique-dev","conversationId":"conv_msg_01"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Operator Message Injection > marks a message as an internal note — not visible to merchant or customer
+{"ts":"2026-10-02T18:17:09.863Z","level":"info","event":"support_moderation.operator_message_sent","service":"framique-dev","conversationId":"conv_msg_02","isInternalNote":true}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Operator Message Injection > multiple operator messages accumulate in the message store
+{"ts":"2026-10-02T18:17:09.909Z","level":"info","event":"support_moderation.operator_message_sent","service":"framique-dev","conversationId":"conv_msg_03"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Operator Message Injection > multiple operator messages accumulate in the message store
+{"ts":"2026-10-02T18:17:09.914Z","level":"info","event":"support_moderation.operator_message_sent","service":"framique-dev","conversationId":"conv_msg_03"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > Conversation Lifecycle Closure > closes a moderated conversation, clears takeover and sets resolved_at
+{"ts":"2026-10-02T18:17:09.915Z","level":"info","event":"support_moderation.conversation_closed","service":"framique-dev","conversationId":"conv_close_01"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > End-to-End Escalation Scenario > executes a complete triage lifecycle: arrive → escalate → takeover → respond → close
+{"ts":"2026-10-02T18:17:10.047Z","level":"info","event":"support_moderation.priority_set","service":"framique-dev","conversationId":"conv_e2e","priority":"urgent"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > End-to-End Escalation Scenario > executes a complete triage lifecycle: arrive → escalate → takeover → respond → close
+{"ts":"2026-10-02T18:17:10.048Z","level":"info","event":"support_moderation.takeover_set","service":"framique-dev","conversationId":"conv_e2e","mode":"human_takeover","operatorId":"operator_zara"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > End-to-End Escalation Scenario > executes a complete triage lifecycle: arrive → escalate → takeover → respond → close
+{"ts":"2026-10-02T18:17:10.048Z","level":"info","event":"support_moderation.notes_saved","service":"framique-dev","conversationId":"conv_e2e","length":70}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > End-to-End Escalation Scenario > executes a complete triage lifecycle: arrive → escalate → takeover → respond → close
+{"ts":"2026-10-02T18:17:10.049Z","level":"info","event":"support_moderation.operator_message_sent","service":"framique-dev","conversationId":"conv_e2e"}
+
+stdout | src/lib/support-moderation.test.ts > Phase 12.1 — Support Chat Moderation, Human Takeover & Operator Collaboration > End-to-End Escalation Scenario > executes a complete triage lifecycle: arrive → escalate → takeover → respond → close
+{"ts":"2026-10-02T18:17:10.049Z","level":"info","event":"support_moderation.conversation_closed","service":"framique-dev","conversationId":"conv_e2e"}
+
+stdout | src/lib/support-widget-abuse.test.ts > createCallback — duplicate collapse (abuse sink) > collapses an immediate repeat onto the original request
+{"ts":"2026-10-02T18:17:10.069Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790965030069_56wjkn","preferred_window":"morning"}
+
+stdout | src/lib/support-widget-abuse.test.ts > createCallback — duplicate collapse (abuse sink) > keeps distinct phones as distinct requests
+{"ts":"2026-10-02T18:17:10.086Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790965030086_66ztqy","preferred_window":"morning"}
+
+stdout | src/lib/support-widget-abuse.test.ts > createCallback — duplicate collapse (abuse sink) > keeps distinct phones as distinct requests
+{"ts":"2026-10-02T18:17:10.088Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790965030088_uzacq1","preferred_window":"morning"}
+
+stdout | src/lib/support-widget-abuse.test.ts > createCallback — duplicate collapse (abuse sink) > allows a fresh request after the 30-minute window expires
+{"ts":"2026-09-01T10:00:00.000Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1788256800000_siqx52","preferred_window":"morning"}
+
+stdout | src/lib/support-widget-abuse.test.ts > createCallback — duplicate collapse (abuse sink) > allows a fresh request after the 30-minute window expires
+{"ts":"2026-09-01T10:31:00.000Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1788258660000_ivw4bd","preferred_window":"morning"}
+
+stdout | src/lib/support-widget-abuse.test.ts > createCallback — duplicate collapse (abuse sink) > allows a fresh request once the earlier one is no longer pending
+{"ts":"2026-10-02T18:17:10.098Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790965030098_a4xjp4","preferred_window":"morning"}
+
+stdout | src/lib/support-widget-abuse.test.ts > createCallback — duplicate collapse (abuse sink) > allows a fresh request once the earlier one is no longer pending
+{"ts":"2026-10-02T18:17:10.100Z","level":"info","event":"support.callback_created","service":"framique-dev","merchant_id":"[redacted][redacted]","callback_id":"cb_1790965030099_b8sh5c","preferred_window":"morning"}
+
+ ✓ src/lib/support-widget-abuse.test.ts (10 tests) 374ms
+     ✓ collapses an immediate repeat onto the original request  343ms
+stdout | src/lib/support-moderation.test.ts > TODO-5 — low-CSAT auto-reopen for operator follow-up > reopens a resolved conversation on rating 1–2 with an operator notice
+{"ts":"2026-10-02T18:17:10.435Z","level":"info","event":"support_moderation.low_csat_reopened","service":"framique-dev","conversationId":"csat_unhappy","rating":2}
+
+ ✓ src/lib/support-moderation.test.ts (32 tests) 706ms
+       ✓ blocks legacy initiated-claim copy but allows the advisory-only /refund macro  378ms
+ ✓ src/components/builder/account-widgets.test.tsx (8 tests) 291ms
+ ✓ src/components/store/ProductTileArt.test.tsx (13 tests) 68ms
+stdout | src/lib/deepwiki-engine.test.ts > DeepWiki Engine: Multi-Hop RAG, RL & Atropos > 5. Reinforcement Learning (RL) Feedback & Q-Value Weight Updates > strengthens edge weights upon receiving high CSAT positive feedback
+{"ts":"2026-10-02T18:17:11.584Z","level":"info","event":"deepwiki.rl_feedback_applied","service":"framique-dev","queryId":"dw_f2b205e7e1cba33f","csat":5,"newReward":0.54,"edgesUpdated":7}
+
+stdout | src/lib/deepwiki-engine.test.ts > DeepWiki Engine: Multi-Hop RAG, RL & Atropos > 5. Reinforcement Learning (RL) Feedback & Q-Value Weight Updates > dampens edge weights upon receiving poor rating (stimulating RL exploration)
+{"ts":"2026-10-02T18:17:11.596Z","level":"info","event":"deepwiki.rl_feedback_applied","service":"framique-dev","queryId":"dw_390c32b66b5a105f","csat":1,"newReward":-0.39,"edgesUpdated":7}
+
+ ✓ src/lib/deepwiki-engine.test.ts (13 tests) 237ms
+ ✓ src/lib/plugin-acceptance.test.ts (20 tests) 403ms
+ ✓ src/lib/query-discipline.contract.test.ts (12 tests) 60613ms
+     ✓ really is large, and is deterministic  7552ms
+     ✓ issues a constant number of bounded reads at any catalogue size  8850ms
+     ✓ never fans out into a per-entity override lookup  6644ms
+     ✓ caps the page size at 100 however large a page the caller asks for  6106ms
+     ✓ costs the same number of queries on page 1 and page 20  6073ms
+     ✓ keeps query count constant as the tenant grows  2058ms
+     ✓ reads at most 5 000 rows and emits at most 50 000 URLs per shard  18534ms
+     ✓ does not issue one query per URL as the catalogue grows  1953ms
+     ✓ scans a bounded order window, not the tenant's history  1353ms
+     ✓ keeps the same query count at both scales  1378ms
+ ✓ src/lib/merchant-admin.test.ts (3 tests) 244ms
+ ✓ src/lib/builder-style.test.ts (8 tests) 271ms
+stdout | src/lib/support-revision-review.test.ts > applyApproved routing > routes style-only revisions to a DPO training row
+{"ts":"2026-10-02T18:17:13.551Z","level":"info","event":"support.revision_review_applied","service":"framique-dev","merchant_id":"[redacted][redacted]","review_id":"rev_1790965033546_0pu6qb","action":"dpo_pair"}
+
+stdout | src/lib/support-revision-review.test.ts > applyApproved routing > routes factual revisions to a published KB doc
+{"ts":"2026-10-02T18:17:13.554Z","level":"info","event":"support.revision_review_applied","service":"framique-dev","merchant_id":"[redacted][redacted]","review_id":"rev_1790965033552_knbndc","action":"kb_published"}
+
+ ✓ src/lib/support-revision-review.test.ts (21 tests) 516ms
+     ✓ persists a poor revision as pending and lists it back  452ms
+ ✓ src/lib/support-kb-seed.test.ts (10 tests) 60ms
+stdout | src/lib/support-tickets-approval.test.ts > confirmPendingTicket — operator confirm path > approve moves pending_approval → open with an audit row
+{"ts":"2026-10-02T18:17:13.865Z","level":"info","event":"support.ticket_confirmed","service":"framique-dev","merchant_id":"[redacted][redacted]","ticket_id":"[redacted][redacted]","decision":"approve","status":"open"}
+
+stdout | src/lib/support-tickets-approval.test.ts > confirmPendingTicket — operator confirm path > reject moves pending_approval → closed with a note
+{"ts":"2026-10-02T18:17:13.867Z","level":"info","event":"support.ticket_confirmed","service":"framique-dev","merchant_id":"[redacted][redacted]","ticket_id":"[redacted][redacted]","decision":"reject","status":"closed"}
+
+ ✓ src/lib/support-tickets-approval.test.ts (15 tests) 246ms
+ ✓ src/lib/themes/oceanblue/render.test.tsx (3 tests) 597ms
+stdout | src/lib/support-grounding.test.ts > thinking-model reasoning hygiene (TODO-2) > draft() sends reasoning effort, strips CoT, keeps [Doc] contract
+{"ts":"2026-10-02T18:17:14.595Z","level":"info","event":"ai.reasoning_usage","service":"framique-dev","model":"nvidia/nemotron-3-ultra-550b-a55b:free","mode":"once","reasoningTokens":12}
+
+ ✓ src/lib/themes/oceanblue-v2/render.test.tsx (3 tests) 335ms
+stdout | src/lib/support-grounding.test.ts > SSE streaming draft (TODO-2) > streams cleaned deltas: reasoning channel dropped, split <think> withheld
+{"ts":"2026-10-02T18:17:14.687Z","level":"info","event":"ai.reasoning_usage","service":"framique-dev","model":"nvidia/nemotron-3-ultra-550b-a55b:free","mode":"stream","reasoningTokens":7}
+
+ ✓ src/lib/support-grounding.test.ts (20 tests) 209ms
+stdout | src/lib/tenant-canary.test.ts > Phase 7.2 — Tenant-Level Canary Cohorts (Dogfooding & Pilot Rollouts) > verifies requests for Beta Store A route to GREEN while Standard Store B routes to BLUE
+{"ts":"2026-10-02T18:17:14.962Z","level":"debug","event":"tenant_canary.routed","service":"framique-dev","identifier":"beta-partner-1","cohortTier":1,"activeRolloutTier":1,"targetSlot":"green"}
+
+stdout | src/lib/tenant-canary.test.ts > Phase 7.2 — Tenant-Level Canary Cohorts (Dogfooding & Pilot Rollouts) > verifies requests for Beta Store A route to GREEN while Standard Store B routes to BLUE
+{"ts":"2026-10-02T18:17:14.978Z","level":"debug","event":"tenant_canary.routed","service":"framique-dev","identifier":"standard-global-shop","cohortTier":4,"activeRolloutTier":1,"targetSlot":"blue"}
+
+stdout | src/lib/tenant-canary.test.ts > Phase 7.2 — Tenant-Level Canary Cohorts (Dogfooding & Pilot Rollouts) > routes internal dogfood store to GREEN while beta store remains on BLUE in Rollout Tier 0
+{"ts":"2026-10-02T18:17:14.979Z","level":"debug","event":"tenant_canary.routed","service":"framique-dev","identifier":"dogfood-store","cohortTier":0,"activeRolloutTier":0,"targetSlot":"green"}
+
+stdout | src/lib/tenant-canary.test.ts > Phase 7.2 — Tenant-Level Canary Cohorts (Dogfooding & Pilot Rollouts) > routes internal dogfood store to GREEN while beta store remains on BLUE in Rollout Tier 0
+{"ts":"2026-10-02T18:17:14.979Z","level":"debug","event":"tenant_canary.routed","service":"framique-dev","identifier":"beta-partner-1","cohortTier":1,"activeRolloutTier":0,"targetSlot":"blue"}
+
+stdout | src/lib/tenant-canary.test.ts > Phase 7.2 — Tenant-Level Canary Cohorts (Dogfooding & Pilot Rollouts) > routes all stores to BLUE when active rollout tier is -1 (disabled)
+{"ts":"2026-10-02T18:17:14.980Z","level":"debug","event":"tenant_canary.routed","service":"framique-dev","identifier":"framique-hq","cohortTier":0,"activeRolloutTier":-1,"targetSlot":"blue"}
+
+ ✓ src/lib/tenant-canary.test.ts (10 tests) 357ms
+ ✓ src/components/store/BlogArchiveTheme.test.tsx (2 tests) 212ms
+ ✓ src/lib/orders-idempotency.test.ts (11 tests) 158ms
+ ✓ src/components/builder/repeater-locale.test.tsx (23 tests) 170ms
+ ✓ src/lib/phase4-demo-catalog.test.ts (15 tests) 93ms
+ ✓ src/components/admin/RevisionReviewUi.test.tsx (12 tests) 142ms
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > maintains CLOSED status under normal, healthy traffic metrics
+{"ts":"2026-10-02T18:17:16.268Z","level":"info","event":"canary.circuit_breaker_reset","service":"framique-dev","status":"CLOSED"}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > maintains CLOSED status under normal, healthy traffic metrics
+{"ts":"2026-10-02T18:17:16.270Z","level":"info","event":"canary.stage_shifted","service":"framique-dev","stage":2,"stageName":"Stage 2 (5% - Core Journey Soak)","canaryWeight":5,"candidateSlot":"green","soakDurationMs":900000}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > trips circuit breaker and instantly rolls back to BLUE when HTTP 5xx error rate > 0.5%
+{"ts":"2026-10-02T18:17:16.272Z","level":"info","event":"canary.circuit_breaker_reset","service":"framique-dev","status":"CLOSED"}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > trips circuit breaker and instantly rolls back to BLUE when HTTP 5xx error rate > 0.5%
+{"ts":"2026-10-02T18:17:16.272Z","level":"info","event":"canary.stage_shifted","service":"framique-dev","stage":2,"stageName":"Stage 2 (5% - Core Journey Soak)","canaryWeight":5,"candidateSlot":"green","soakDurationMs":900000}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > trips circuit breaker when p99 latency exceeds 800ms for 2 consecutive cycles
+{"ts":"2026-10-02T18:17:16.391Z","level":"info","event":"canary.circuit_breaker_reset","service":"framique-dev","status":"CLOSED"}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > trips circuit breaker when p99 latency exceeds 800ms for 2 consecutive cycles
+{"ts":"2026-10-02T18:17:16.395Z","level":"info","event":"canary.stage_shifted","service":"framique-dev","stage":2,"stageName":"Stage 2 (5% - Core Journey Soak)","canaryWeight":5,"candidateSlot":"green","soakDurationMs":900000}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > resets consecutive latency breaches if latency recovers in the next cycle
+{"ts":"2026-10-02T18:17:16.402Z","level":"info","event":"canary.circuit_breaker_reset","service":"framique-dev","status":"CLOSED"}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > resets consecutive latency breaches if latency recovers in the next cycle
+{"ts":"2026-10-02T18:17:16.402Z","level":"info","event":"canary.stage_shifted","service":"framique-dev","stage":2,"stageName":"Stage 2 (5% - Core Journey Soak)","canaryWeight":5,"candidateSlot":"green","soakDurationMs":900000}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > trips circuit breaker when unhandled exceptions count exceeds 10
+{"ts":"2026-10-02T18:17:16.403Z","level":"info","event":"canary.circuit_breaker_reset","service":"framique-dev","status":"CLOSED"}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > trips circuit breaker when unhandled exceptions count exceeds 10
+{"ts":"2026-10-02T18:17:16.403Z","level":"info","event":"canary.stage_shifted","service":"framique-dev","stage":2,"stageName":"Stage 2 (5% - Core Journey Soak)","canaryWeight":5,"candidateSlot":"green","soakDurationMs":900000}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > processes Prometheus Alertmanager webhook and triggers immediate rollback
+{"ts":"2026-10-02T18:17:16.409Z","level":"info","event":"canary.circuit_breaker_reset","service":"framique-dev","status":"CLOSED"}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > processes Prometheus Alertmanager webhook and triggers immediate rollback
+{"ts":"2026-10-02T18:17:16.412Z","level":"info","event":"canary.stage_shifted","service":"framique-dev","stage":2,"stageName":"Stage 2 (5% - Core Journey Soak)","canaryWeight":5,"candidateSlot":"green","soakDurationMs":900000}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > resets circuit breaker back to CLOSED upon operational clearance
+{"ts":"2026-10-02T18:17:16.417Z","level":"info","event":"canary.circuit_breaker_reset","service":"framique-dev","status":"CLOSED"}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > resets circuit breaker back to CLOSED upon operational clearance
+{"ts":"2026-10-02T18:17:16.418Z","level":"info","event":"canary.stage_shifted","service":"framique-dev","stage":2,"stageName":"Stage 2 (5% - Core Journey Soak)","canaryWeight":5,"candidateSlot":"green","soakDurationMs":900000}
+
+stdout | src/lib/circuit-breaker.test.ts > Phase 7.4 — Automated Circuit Breaker & Instant Rollback > resets circuit breaker back to CLOSED upon operational clearance
+{"ts":"2026-10-02T18:17:16.423Z","level":"info","event":"canary.circuit_breaker_reset","service":"framique-dev","status":"CLOSED"}
+
+ ✓ src/components/store/CollectionView.test.tsx (5 tests) 280ms
+ ✓ src/lib/ops-cron.contract.test.ts (23 tests) 184ms
+ ✓ src/lib/circuit-breaker.test.ts (7 tests) 160ms
+ ✓ src/components/builder/songoskriti-debrand.test.tsx (13 tests) 170ms
+ ✓ openapi/openapi.spec.test.ts (13 tests) 99ms
+ ✓ src/lib/plugin-emission.test.ts (14 tests) 101ms
+ ✓ src/lib/studio/catalog.test.ts (422 tests) 143ms
+ ✓ src/components/builder/cart.test.tsx (24 tests) 173ms
+ ✓ src/components/builder/beauty-home.test.tsx (12 tests) 169ms
+ ✓ src/lib/builtin-whatsapp.test.ts (11 tests) 103ms
+ ✓ src/lib/support-guardrails.test.ts (35 tests) 184ms
+ ✓ src/components/builder/data-part.test.tsx (10 tests) 134ms
+ ✓ src/lib/timezone.test.ts (13 tests) 124ms
+ ✓ src/lib/phase3-permalink.contract.test.ts (39 tests) 88ms
+ ✓ src/lib/themes-install-catalog.test.ts (11 tests) 159ms
+ ✓ src/lib/phase3-section.test.ts (13 tests) 146ms
+stdout | src/lib/tenant-cohort-rollout.test.ts > Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Radius Watchdog > initiates progressive rollout at Cohort 0 with candidate GREEN and primary BLUE
+{"ts":"2026-10-02T18:17:18.991Z","level":"info","event":"cohort_rollout.started","service":"framique-dev","tier":0,"name":"[redacted]","candidateSlot":"green","soakExpiresAt":"2026-10-02T18:27:18.990Z"}
+
+stdout | src/lib/tenant-cohort-rollout.test.ts > Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Radius Watchdog > enforces soak duration gate before allowing progression to the next ring
+{"ts":"2026-10-02T18:17:18.991Z","level":"info","event":"cohort_rollout.started","service":"framique-dev","tier":0,"name":"[redacted]","candidateSlot":"green","soakExpiresAt":"2026-10-02T18:27:18.991Z"}
+
+stdout | src/lib/tenant-cohort-rollout.test.ts > Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Radius Watchdog > advances sequentially through all 5 rings when forced or soak completes
+{"ts":"2026-10-02T18:17:18.992Z","level":"info","event":"cohort_rollout.started","service":"framique-dev","tier":0,"name":"[redacted]","candidateSlot":"green","soakExpiresAt":"2026-10-02T18:27:18.992Z"}
+
+stdout | src/lib/tenant-cohort-rollout.test.ts > Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Radius Watchdog > advances sequentially through all 5 rings when forced or soak completes
+{"ts":"2026-10-02T18:17:18.992Z","level":"info","event":"cohort_rollout.advanced","service":"framique-dev","fromTier":0,"toTier":1,"name":"[redacted]","soakExpiresAt":"2026-10-02T18:32:18.992Z"}
+
+stdout | src/lib/tenant-cohort-rollout.test.ts > Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Radius Watchdog > advances sequentially through all 5 rings when forced or soak completes
+{"ts":"2026-10-02T18:17:18.993Z","level":"info","event":"cohort_rollout.advanced","service":"framique-dev","fromTier":1,"toTier":2,"name":"[redacted]","soakExpiresAt":"2026-10-02T18:47:18.993Z"}
+
+stdout | src/lib/tenant-cohort-rollout.test.ts > Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Radius Watchdog > advances sequentially through all 5 rings when forced or soak completes
+{"ts":"2026-10-02T18:17:18.993Z","level":"info","event":"cohort_rollout.advanced","service":"framique-dev","fromTier":2,"toTier":3,"name":"[redacted]","soakExpiresAt":"2026-10-02T19:17:18.993Z"}
+
+stdout | src/lib/tenant-cohort-rollout.test.ts > Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Radius Watchdog > advances sequentially through all 5 rings when forced or soak completes
+{"ts":"2026-10-02T18:17:18.993Z","level":"info","event":"cohort_rollout.advanced","service":"framique-dev","fromTier":3,"toTier":4,"name":"[redacted]","soakExpiresAt":"2026-10-02T20:17:18.993Z"}
+
+stdout | src/lib/tenant-cohort-rollout.test.ts > Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Radius Watchdog > advances sequentially through all 5 rings when forced or soak completes
+{"ts":"2026-10-02T18:17:18.993Z","level":"info","event":"cohort_rollout.completed","service":"framique-dev"}
+
+stdout | src/lib/tenant-cohort-rollout.test.ts > Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Radius Watchdog > Blast Radius Watchdog: Customer #17 courier failure at Cohort 1 halts rollout and triggers instant rollback
+{"ts":"2026-10-02T18:17:18.994Z","level":"info","event":"cohort_rollout.started","service":"framique-dev","tier":1,"name":"[redacted]","candidateSlot":"green","soakExpiresAt":"2026-10-02T18:32:18.994Z"}
+
+ ✓ src/lib/builder-seo.test.ts (21 tests) 137ms
+stdout | src/lib/tenant-cohort-rollout.test.ts > Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Radius Watchdog > Blast Radius Watchdog: Customer #17 courier failure at Cohort 1 halts rollout and triggers instant rollback
+{"ts":"2026-10-02T18:17:19.163Z","level":"debug","event":"tenant_canary.routed","service":"framique-dev","identifier":"customer-17","cohortTier":1,"activeRolloutTier":-1,"targetSlot":"blue"}
+
+stdout | src/lib/tenant-cohort-rollout.test.ts > Phase 11.2 — Progressive Tenant Cohort Rollout Controller & Blast Radius Watchdog > evaluates cohort health report with violations when error budgets are exceeded
+{"ts":"2026-10-02T18:17:19.164Z","level":"info","event":"cohort_rollout.started","service":"framique-dev","tier":0,"name":"[redacted]","candidateSlot":"green","soakExpiresAt":"2026-10-02T18:27:19.164Z"}
+
+ ✓ src/lib/tenant-cohort-rollout.test.ts (7 tests) 183ms
+ ✓ src/lib/healthz.test.ts (3 tests) 200ms
+ ✓ src/lib/widget-metadata.test.ts (9 tests) 238ms
+stdout | src/lib/ml-data-preservation-worker.test.ts > Phase 11.5 — ML Training Flywheel Decoupling & GDPR Tombstone Unlink Worker > Merchant Deletion & ML Data Immunity Shield > purges merchant personal data while permanently preserving ML training turns under cohort hash
+{"ts":"2026-10-02T18:17:19.836Z","level":"info","event":"gdpr_worker.started","service":"framique-dev","requestId":"gdpr_96f9744e6658","request":{"targetType":"merchant","targetId":"merchant_dhaka_fashion_88","reason":"tenant_churn","requestedBy":"platform_admin"}}
+
+stdout | src/lib/ml-data-preservation-worker.test.ts > Phase 11.5 — ML Training Flywheel Decoupling & GDPR Tombstone Unlink Worker > Merchant Deletion & ML Data Immunity Shield > purges merchant personal data while permanently preserving ML training turns under cohort hash
+{"ts":"2026-10-02T18:17:19.839Z","level":"info","event":"ML Data Immunity Shield: Disassociated tenant from ML training records","service":"framique-dev","merchantId":"merchant_dhaka_fashion_88","unlinkedCount":1,"cohortHash":"1c6bf63e73df3c8b4da0cb1958e16623"}
+
+stdout | src/lib/ml-data-preservation-worker.test.ts > Phase 11.5 — ML Training Flywheel Decoupling & GDPR Tombstone Unlink Worker > Merchant Deletion & ML Data Immunity Shield > purges merchant personal data while permanently preserving ML training turns under cohort hash
+{"ts":"2026-10-02T18:17:19.840Z","level":"info","event":"gdpr_worker.completed","service":"framique-dev","result":{"success":true,"requestId":"gdpr_96f9744e6658","targetType":"merchant","targetId":"merchant_dhaka_fashion_88","reason":"tenant_churn","purgedRecords":{"merchantsPurged":1,"customersAnonymized":0,"ordersAnonymized":1,"credentialsRevoked":1},"preservedMl":{"trainingTurnsUnlinked":1,"feedbackUnlinked":1,"cohortHash":"1c6bf63e73df3c8b4da0cb1958e16623","zeroPiiVerified":true},"durationMs":4,"completedAt":"2026-10-02T18:17:19.839Z"}}
+
+stdout | src/lib/ml-data-preservation-worker.test.ts > Phase 11.5 — ML Training Flywheel Decoupling & GDPR Tombstone Unlink Worker > Customer GDPR 'Right to Erasure' Anonymization > anonymizes customer personal records and order addresses while leaving anonymized ML telemetry intact
+{"ts":"2026-10-02T18:17:19.841Z","level":"info","event":"gdpr_worker.started","service":"framique-dev","requestId":"gdpr_68fe3a160e76","request":{"targetType":"customer","targetId":"cust_tanvir_99","merchantId":"merchant_shop_01","reason":"gdpr_right_to_erasure"}}
+
+stdout | src/lib/ml-data-preservation-worker.test.ts > Phase 11.5 — ML Training Flywheel Decoupling & GDPR Tombstone Unlink Worker > Customer GDPR 'Right to Erasure' Anonymization > anonymizes customer personal records and order addresses while leaving anonymized ML telemetry intact
+{"ts":"2026-10-02T18:17:19.841Z","level":"info","event":"gdpr_worker.completed","service":"framique-dev","result":{"success":true,"requestId":"gdpr_68fe3a160e76","targetType":"customer","targetId":"cust_tanvir_99","reason":"gdpr_right_to_erasure","purgedRecords":{"merchantsPurged":0,"customersAnonymized":1,"ordersAnonymized":1,"credentialsRevoked":0},"preservedMl":{"trainingTurnsUnlinked":0,"feedbackUnlinked":0,"cohortHash":"1d70e2ead0fdbf117d77996960c1fdb6","zeroPiiVerified":true},"durationMs":1,"completedAt":"2026-10-02T18:17:19.841Z"}}
+
+stdout | src/lib/ml-data-preservation-worker.test.ts > Phase 11.5 — ML Training Flywheel Decoupling & GDPR Tombstone Unlink Worker > Webhook Integration > handles incoming merchant deletion webhook and triggers decoupling pipeline
+{"ts":"2026-10-02T18:17:19.842Z","level":"info","event":"gdpr_worker.started","service":"framique-dev","requestId":"gdpr_f896e424857f","request":{"targetType":"merchant","targetId":"merchant_webhook_test_55","merchantId":"merchant_webhook_test_55","reason":"tenant_churn","requestedAt":"2026-10-02T18:17:19.841Z","requestedBy":"webhook_dispatcher"}}
+
+stdout | src/lib/ml-data-preservation-worker.test.ts > Phase 11.5 — ML Training Flywheel Decoupling & GDPR Tombstone Unlink Worker > Webhook Integration > handles incoming merchant deletion webhook and triggers decoupling pipeline
+{"ts":"2026-10-02T18:17:19.842Z","level":"info","event":"ML Data Immunity Shield: Disassociated tenant from ML training records","service":"framique-dev","merchantId":"merchant_webhook_test_55","unlinkedCount":0,"cohortHash":"0f72a5c760500b10412f679c7ff90822"}
+
+stdout | src/lib/ml-data-preservation-worker.test.ts > Phase 11.5 — ML Training Flywheel Decoupling & GDPR Tombstone Unlink Worker > Webhook Integration > handles incoming merchant deletion webhook and triggers decoupling pipeline
+{"ts":"2026-10-02T18:17:19.843Z","level":"info","event":"gdpr_worker.completed","service":"framique-dev","result":{"success":true,"requestId":"gdpr_f896e424857f","targetType":"merchant","targetId":"merchant_webhook_test_55","reason":"tenant_churn","purgedRecords":{"merchantsPurged":1,"customersAnonymized":0,"ordersAnonymized":0,"credentialsRevoked":1},"preservedMl":{"trainingTurnsUnlinked":0,"feedbackUnlinked":0,"cohortHash":"0f72a5c760500b10412f679c7ff90822","zeroPiiVerified":true},"durationMs":1,"completedAt":"2026-10-02T18:17:19.843Z"}}
+
+ ✓ src/lib/ml-data-preservation-worker.test.ts (5 tests) 131ms
+ ✓ src/lib/support-channels-hardening.test.ts (9 tests) 50ms
+ ✓ src/lib/marketplace-qubickle-upload.test.ts (7 tests) 129ms
+ ✓ src/lib/phase3-theme.test.ts (8 tests) 132ms
+ ✓ src/components/store/support-chat-session.test.ts (11 tests) 41ms
+ ✓ src/lib/phase1.test.ts (15 tests) 193ms
+stdout | src/lib/ai-training-data.test.ts > Phase 9.5 & 9.6 — Continuous Training Data Collection Pipeline (RLHF & SFT/DPO) > Phase 10.2 — ML Data Immunity & Decoupling Shield > preserves ML training data and cohort hash when merchant is deleted or unlinked
+{"ts":"2026-10-02T18:17:20.734Z","level":"info","event":"ML Data Immunity Shield: Disassociated tenant from ML training records","service":"framique-dev","merchantId":"[redacted][redacted]","unlinkedCount":1,"cohortHash":"47cb26e7f3f5ad938d42dc4617d36573"}
+
+ ✓ src/lib/ai-training-data.test.ts (8 tests) 193ms
+ ✓ src/lib/oauth-reuse.test.ts (13 tests) 170ms
+ ✓ src/lib/builder-phase6.test.ts (18 tests) 91ms
+ ✓ src/lib/builder-version-picker.test.tsx (3 tests) 130ms
+ ✓ src/lib/pricing-env.test.ts (2 tests) 94ms
+ ✓ src/lib/rest-gateway.test.ts (3 tests) 83ms
+ ❯ src/lib/site.server.test.ts (3 tests | 1 failed) 797ms
+     × throws a guarded missing-env error, never a placeholder client 123ms
+     ✓ uses runtime process.env when present 2ms
+     ✓ publicPlans still fails soft to default plans when env is missing  652ms
+ ✓ src/lib/media/library.test.ts (29 tests) 40ms
+ ✓ src/components/builder/rupaboti-voices.test.tsx (13 tests) 90ms
+ ✓ src/lib/analytics-pipeline.test.ts (18 tests) 145ms
+ ✓ src/lib/commerce-desk.test.ts (20 tests) 122ms
+ ✓ src/components/store/ThemeChrome.skins.test.tsx (5 tests) 103ms
+ ✓ src/lib/marketplace-vault.test.ts (14 tests) 98ms
+ ✓ src/lib/support-export.test.ts (5 tests) 92ms
+ ✓ src/lib/revenue.test.ts (11 tests) 117ms
+ ✓ src/lib/phase7-seo.test.ts (18 tests) 78ms
+ ✓ src/lib/seo/seo-meta.test.ts (16 tests) 77ms
+ ✓ src/components/builder/editor-sliders.test.tsx (11 tests) 175ms
+stdout | src/lib/disaster-recovery-drill.test.ts > Phase 8.4 — Disaster Recovery & Blue Instant Rollback Drill > executes end-to-end disaster recovery drill meeting RTO < 5s and RPO = 0 SLAs
+{"ts":"2026-10-02T18:17:23.531Z","level":"info","event":"canary.stage_shifted","service":"framique-dev","stage":4,"stageName":"Stage 4 (100% - Full Promotion)","canaryWeight":100,"candidateSlot":"green","soakDurationMs":3600000}
+
+stdout | src/lib/disaster-recovery-drill.test.ts > Phase 8.4 — Disaster Recovery & Blue Instant Rollback Drill > executes end-to-end disaster recovery drill meeting RTO < 5s and RPO = 0 SLAs
+{"ts":"2026-10-02T18:17:23.533Z","level":"info","event":"topology.cutover_completed","service":"framique-dev","previousSlot":"blue","activeSlot":"green","durationMs":1}
+
+ ✓ src/lib/editor/editor-doc.test.ts (27 tests) 39ms
+ ✓ src/lib/cache-warmup.test.ts (5 tests) 135ms
+stdout | src/lib/disaster-recovery-drill.test.ts > Phase 8.4 — Disaster Recovery & Blue Instant Rollback Drill > executes end-to-end disaster recovery drill meeting RTO < 5s and RPO = 0 SLAs
+{"ts":"2026-10-02T18:17:23.699Z","level":"info","event":"topology.cutover_completed","service":"framique-dev","previousSlot":"green","activeSlot":"blue","durationMs":1}
+
+stdout | src/lib/disaster-recovery-drill.test.ts > Phase 8.4 — Disaster Recovery & Blue Instant Rollback Drill > executes end-to-end disaster recovery drill meeting RTO < 5s and RPO = 0 SLAs
+{"ts":"2026-10-02T18:17:23.699Z","level":"info","event":"disaster_recovery.drill_passed","service":"framique-dev","drillId":"dr_drill_1790965043529","rtoSeconds":0.166,"rpoLossCount":0,"orderCount":25,"preservedCount":25,"withinRtoSla":true,"withinRpoSla":true,"completedAt":"2026-10-02T18:17:23.699Z"}
+
+ ✓ src/lib/disaster-recovery-drill.test.ts (1 test) 186ms
+ ✓ src/components/builder/heritage-rewards.test.tsx (3 tests) 18ms
+ ✓ src/lib/platform-charge-scope.test.ts (3 tests) 119ms
+ ✓ src/lib/phase1-cms.contract.test.ts (20 tests) 219ms
+ ✓ src/lib/search-backend.test.ts (20 tests) 64ms
+ ✓ src/lib/marketplace-uninstall-widget.test.ts (6 tests) 32ms
+ ✓ src/lib/plugin-purge.test.ts (6 tests) 23ms
+stdout | src/lib/support-mail-redaction.test.ts > sendSupportNotifications — redacted dispatch > scrubs PII from admin + customer bodies (text and HTML)
+{"ts":"2026-10-02T18:17:25.226Z","level":"info","event":"support.mail_notifications_dispatched","service":"framique-dev","conversationId":"conv-pii-1","adminEmail":"[redacted]","customerEmail":"[redacted]","adminOk":true,"customerOk":true}
+
+stdout | src/lib/support-mail-redaction.test.ts > sendSupportNotifications — redacted dispatch > withholds secret-leaking replies instead of emailing them
+{"ts":"2026-10-02T18:17:25.230Z","level":"info","event":"support.mail_notifications_dispatched","service":"framique-dev","conversationId":"conv-pii-1","adminEmail":"[redacted]","customerEmail":"[redacted]","adminOk":true,"customerOk":true}
+
+stdout | src/lib/support-mail-redaction.test.ts > sendSupportNotifications — redacted dispatch > keeps the clean-path contract (no redactions, no withholds)
+{"ts":"2026-10-02T18:17:25.231Z","level":"info","event":"support.mail_notifications_dispatched","service":"framique-dev","conversationId":"conv-pii-1","adminEmail":"[redacted]","customerEmail":"[redacted]","adminOk":true,"customerOk":true}
+
+ ✓ src/lib/support-mail-redaction.test.ts (7 tests) 69ms
+ ✓ src/lib/marketing-seo.contract.test.ts (43 tests) 47ms
+ ✓ src/components/store/account-slots.test.ts (5 tests) 150ms
+ ✓ src/components/builder/theme-widgets.test.ts (10 tests) 40ms
+ ✓ src/lib/money.test.ts (11 tests) 122ms
+ ✓ src/components/builder/studio/interaction.test.ts (18 tests) 15ms
+ ✓ src/lib/phase7-runtime.test.ts (11 tests) 78ms
+ ✓ src/lib/phase5-responsive.contract.test.ts (24 tests) 70ms
+ ✓ src/components/builder/songoskriti-snapshots.test.tsx (10 tests) 176ms
+ ✓ src/lib/content-desk.test.ts (25 tests) 78ms
+ ✓ src/lib/console-a11y.test.ts (10 tests) 62ms
+ ✓ src/lib/studio/model.test.ts (57 tests) 92ms
+ ✓ src/lib/transactional-mailer.contract.test.ts (5 tests) 120ms
+ ✓ src/components/builder/WidgetIsland.test.tsx (6 tests) 45ms
+ ✓ src/lib/discount-codes.test.ts (9 tests) 85ms
+ ✓ src/lib/content-health.contract.test.ts (32 tests) 218ms
+ ✓ src/lib/phase8-architecture.test.ts (12 tests) 155ms
+ ✓ src/lib/themes/oceanblue/registry.test.ts (4 tests) 131ms
+ ✓ src/lib/gift-cards.test.ts (12 tests) 68ms
+ ✓ src/components/builder/heritage-contracts.test.tsx (8 tests) 158ms
+ ✓ src/components/builder/hero-locale.test.tsx (6 tests) 76ms
+ ✓ src/lib/loyalty.test.ts (25 tests) 81ms
+ ✓ src/lib/mfa-recovery.test.ts (9 tests) 26ms
+ ✓ src/lib/payouts.test.ts (15 tests) 109ms
+ ✓ src/lib/themes/activation-latency.test.ts (4 tests) 60ms
+ ✓ src/lib/builder-seo.contract.test.ts (13 tests) 87ms
+ ✓ src/lib/phase6-responsive.test.ts (10 tests) 96ms
+ ✓ src/lib/marketplace-activate-delete.test.ts (5 tests) 92ms
+ ✓ src/lib/catalog-rename-collection.test.ts (5 tests) 23ms
+ ✓ src/lib/marketplace-bulk.test.ts (8 tests) 62ms
+ ✓ src/lib/inventory.test.ts (7 tests) 25ms
+ ✓ src/lib/domains.test.ts (18 tests) 121ms
+stdout | src/lib/domains-issuance.test.ts > reconcileIssuance (edge cert observation) > flips dns_verified to active when a valid public cert is served
+{"ts":"2026-10-02T18:17:30.404Z","level":"info","event":"domain.transition","service":"framique-dev","domain":"d1","from":"dns_verified","to":"issuing_cert","reason":"cert.edge_observed_order"}
+
+stdout | src/lib/domains-issuance.test.ts > reconcileIssuance (edge cert observation) > flips dns_verified to active when a valid public cert is served
+{"ts":"2026-10-02T18:17:30.406Z","level":"info","event":"domain.transition","service":"framique-dev","domain":"d1","from":"issuing_cert","to":"active","reason":"cert.issued"}
+
+stdout | src/lib/domains-issuance.test.ts > verifyDomain full loop (manual Check now + sweep share one path) > pending_dns + good DNS + live edge cert ends active in one pass
+{"ts":"2026-10-02T18:17:30.415Z","level":"info","event":"domain.transition","service":"framique-dev","domain":"d1","from":"pending_dns","to":"verifying","reason":"domain.check_started"}
+
+stdout | src/lib/domains-issuance.test.ts > verifyDomain full loop (manual Check now + sweep share one path) > pending_dns + good DNS + live edge cert ends active in one pass
+{"ts":"2026-10-02T18:17:30.417Z","level":"info","event":"domain.transition","service":"framique-dev","domain":"d1","from":"verifying","to":"dns_verified","reason":"domain.dns_ok"}
+
+stdout | src/lib/domains-issuance.test.ts > verifyDomain full loop (manual Check now + sweep share one path) > pending_dns + good DNS + live edge cert ends active in one pass
+{"ts":"2026-10-02T18:17:30.419Z","level":"info","event":"domain.transition","service":"framique-dev","domain":"d1","from":"dns_verified","to":"issuing_cert","reason":"cert.edge_observed_order"}
+
+stdout | src/lib/domains-issuance.test.ts > verifyDomain full loop (manual Check now + sweep share one path) > pending_dns + good DNS + live edge cert ends active in one pass
+{"ts":"2026-10-02T18:17:30.419Z","level":"info","event":"domain.transition","service":"framique-dev","domain":"d1","from":"issuing_cert","to":"active","reason":"cert.issued"}
+
+stdout | src/lib/domains-issuance.test.ts > verifyDomain full loop (manual Check now + sweep share one path) > pending_dns + good DNS + no edge cert yet stays dns_verified awaiting edge
+{"ts":"2026-10-02T18:17:30.421Z","level":"info","event":"domain.transition","service":"framique-dev","domain":"d1","from":"pending_dns","to":"verifying","reason":"domain.check_started"}
+
+stdout | src/lib/domains-issuance.test.ts > verifyDomain full loop (manual Check now + sweep share one path) > pending_dns + good DNS + no edge cert yet stays dns_verified awaiting edge
+{"ts":"2026-10-02T18:17:30.421Z","level":"info","event":"domain.transition","service":"framique-dev","domain":"d1","from":"verifying","to":"dns_verified","reason":"domain.dns_ok"}
+
+ ✓ src/lib/domains-issuance.test.ts (13 tests) 29ms
+ ✓ src/lib/motion-policy.test.ts (25 tests) 140ms
+ ✓ src/lib/themes/oceanblue-v2/registry.test.ts (4 tests) 114ms
+ ✓ src/components/icons/storefront.test.tsx (5 tests) 72ms
+ ✓ src/components/builder/phase7-failsafe.test.tsx (5 tests) 20ms
+ ✓ src/lib/design-exit.test.ts (48 tests) 77ms
+ ✓ src/components/builder/heritage-occasions.test.tsx (4 tests) 35ms
+ ✓ src/lib/themes/assets.test.ts (30 tests) 106ms
+ ✓ src/lib/marketplace-qubickle-idempotency.test.ts (5 tests) 22ms
+ ✓ src/lib/seo-analysis.test.ts (10 tests) 93ms
+ ✓ src/lib/plugin-sidecar.server.test.ts (4 tests) 18ms
+ ✓ src/lib/themes/isolation.test.ts (6 tests) 63ms
+ ✓ src/lib/footer-sitemap-bitext.test.ts (3 tests) 11ms
+ ✓ src/components/store/StudioNodes.test.tsx (5 tests) 28ms
+ ✓ src/lib/should-retry-query.test.ts (4 tests) 4ms
+ ✓ src/lib/theme-preview-nav.test.ts (35 tests) 67ms
+ ✓ src/components/builder/studio/plugin-tray.test.ts (17 tests) 31ms
+ ✓ src/lib/phase5-seo.test.ts (13 tests) 138ms
+ ✓ src/lib/dynamic-config.test.ts (5 tests) 55ms
+ ✓ src/lib/marketplace-qubickle-c1c2.test.ts (5 tests) 37ms
+ ✓ src/lib/permalink-seo-roots.test.ts (11 tests) 11ms
+ ✓ src/lib/phase7-schema.test.ts (15 tests) 83ms
+ ✓ src/components/store/PluginLayer.test.tsx (3 tests) 173ms
+ ✓ src/lib/newsletter.test.ts (36 tests) 92ms
+ ✓ src/lib/webhook-signing.test.ts (9 tests) 82ms
+ ✓ src/lib/phase0-ast-v3.test.ts (14 tests) 82ms
+ ✓ src/lib/marketplace-qubickle-trial.test.ts (5 tests) 26ms
+ ✓ src/lib/dynamic-tenant-channel.test.ts (3 tests) 46ms
+stdout | src/lib/blue-green-topology.test.ts > Phase 6.4 — Active / Standby Blue/Green Environment Topology > executes topology cutover without error and persists new slot
+{"ts":"2026-10-02T18:17:34.420Z","level":"info","event":"topology.cutover_completed","service":"framique-dev","previousSlot":"blue","activeSlot":"green","durationMs":1}
+
+stdout | src/lib/blue-green-topology.test.ts > Phase 6.4 — Active / Standby Blue/Green Environment Topology > executes topology cutover without error and persists new slot
+{"ts":"2026-10-02T18:17:34.422Z","level":"info","event":"topology.cutover_completed","service":"framique-dev","previousSlot":"green","activeSlot":"blue","durationMs":0}
+
+ ✓ src/lib/blue-green-topology.test.ts (9 tests) 16ms
+ ✓ src/lib/builder-authoring.contract.test.ts (17 tests) 25ms
+ ✓ src/components/builder/chrome-search.test.tsx (12 tests) 32ms
+ ✓ src/lib/phase4-custom-code.test.ts (16 tests) 157ms
+ ✓ src/components/store/ThemeChrome.plugins.test.tsx (3 tests) 59ms
+ ✓ src/lib/phase2-atelier.test.ts (13 tests) 38ms
+ ✓ src/components/store/StudioNodes.plugins.test.tsx (2 tests) 104ms
+ ✓ src/lib/support-loop-detector.test.ts (7 tests) 11ms
+ ✓ src/components/builder/footer-locale.test.tsx (4 tests) 20ms
+ ✓ src/components/marketplace/WidgetSandbox.test.tsx (6 tests) 95ms
+ ✓ src/lib/orders-paid-placement.test.ts (5 tests) 98ms
+ ✓ src/components/builder/whatsapp-button.test.tsx (4 tests) 24ms
+stdout | src/lib/support-cron-sweep.test.ts > runSupportSweep — sweep + alerting contract > returns zeroed counters on an empty sweep
+{"ts":"2026-10-02T18:17:37.084Z","level":"info","event":"support.sweep","service":"framique-dev","breached_first_response":0,"breached_resolution":0,"stale_conversations":0,"retried_events":0,"subject":"test"}
+
+ ✓ src/lib/support-cron-sweep.test.ts (6 tests) 36ms
+ ✓ src/components/store/PaymentMarks.test.tsx (5 tests) 42ms
+ ✓ src/lib/support-canned-responses.test.ts (8 tests) 52ms
+stdout | src/lib/migration-pipeline.test.ts > Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automation > Release 1 (Expand) Gatekeeper Validation > permits safe additive schema changes (nullable columns, defaults, new tables)
+{"ts":"2026-10-02T18:17:37.248Z","level":"info","event":"migration_pipeline.evaluated","service":"framique-dev","stage":1,"allowed":true,"violationsCount":0,"warningsCount":0}
+
+stdout | src/lib/migration-pipeline.test.ts > Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automation > Release 3 (Read-New & Backfill Verification) Gatekeeper Validation > approves Release 3 when 100% of historical rows are verified as backfilled
+{"ts":"2026-10-02T18:17:37.330Z","level":"info","event":"migration_pipeline.evaluated","service":"framique-dev","stage":3,"allowed":true,"violationsCount":0,"warningsCount":0}
+
+stdout | src/lib/migration-pipeline.test.ts > Phase 11.3 — 4-Release Expand-and-Contract Migration Pipeline Automation > Release 4 (Contract) Gatekeeper Validation > permits DROP COLUMN in Release 4 when annotated, documented, and backfilled
+{"ts":"2026-10-02T18:17:37.341Z","level":"info","event":"migration_pipeline.evaluated","service":"framique-dev","stage":4,"allowed":true,"violationsCount":0,"warningsCount":0}
+
+ ✓ src/lib/migration-pipeline.test.ts (15 tests) 130ms
+ ✓ src/lib/platform-shell-csp.test.ts (5 tests) 99ms
+ ✓ src/lib/job-queue.test.ts (28 tests) 44ms
+ ✓ src/lib/media.server.test.ts (1 test) 21ms
+ ✓ src/lib/domains-rename.test.ts (1 test) 26ms
+ ✓ src/lib/phase9-guardrails.test.ts (9 tests) 23ms
+ ✓ src/lib/server-csp.test.ts (4 tests) 61ms
+ ✓ src/lib/marketplace-qubickle-audit.test.ts (3 tests) 17ms
+ ✓ src/lib/marketplace-qubickle-rule22.test.ts (3 tests) 36ms
+ ✓ src/lib/phase2-circuit.test.ts (11 tests) 36ms
+ ✓ src/lib/phase3-fonts.test.ts (15 tests) 14ms
+ ✓ src/lib/snapshots.test.ts (15 tests) 113ms
+ ✓ src/components/store/StoreWelcome.test.tsx (3 tests) 114ms
+ ✓ src/components/store/ProductView.test.tsx (6 tests) 62ms
+ ✓ src/lib/fraud-engine.test.ts (14 tests) 12ms
+ ✓ src/lib/returns.test.ts (11 tests) 14ms
+ ✓ src/lib/phase2-bilingual.test.ts (15 tests) 53ms
+ ✓ src/lib/phase7-vitals.test.ts (14 tests) 14ms
+ ✓ src/lib/seo-weight.contract.test.ts (6 tests) 56ms
+ ✓ src/lib/error-tracking.test.ts (22 tests) 14ms
+ ✓ src/lib/motion-choreography.test.ts (36 tests) 93ms
+ ✓ src/lib/seo-answers.test.ts (18 tests) 32ms
+ ✓ src/components/store/PluginFooterMounts.test.tsx (9 tests) 99ms
+ ✓ src/lib/marketplace-bridge.test.ts (5 tests) 33ms
+ ✓ src/components/builder/songoskriti-motion.test.ts (19 tests) 54ms
+ ✓ src/lib/phase2-chrome.test.ts (8 tests) 9ms
+ ✓ src/lib/phase8-islands.test.ts (11 tests) 95ms
+ ✓ src/lib/cms-authz.contract.test.ts (11 tests) 19ms
+ ✓ src/lib/plugins-consent.test.ts (6 tests) 16ms
+ ✓ src/lib/marketplace-scopes.test.ts (13 tests) 54ms
+ ✓ src/lib/theme-sandbox.test.ts (10 tests) 44ms
+ ✓ examples/starter-theme/starter-theme.test.ts (5 tests) 22ms
+ ✓ src/lib/redis.contract.test.ts (21 tests) 14ms
+ ✓ src/lib/ops-capacity.test.ts (7 tests) 11ms
+ ✓ src/lib/menus/menu.test.ts (27 tests) 25ms
+ ✓ src/lib/virtual-delivery.test.ts (23 tests) 59ms
+ ✓ src/lib/plugin-bundle-gate.test.ts (5 tests) 14ms
+ ✓ src/lib/support-contact.test.ts (5 tests) 16ms
+ ✓ src/lib/site-rhythm.test.ts (27 tests) 93ms
+ ✓ src/lib/support-moderation-console.test.ts (37 tests) 11ms
+ ✓ src/components/public/PublicFooter.test.tsx (2 tests) 40ms
+ ✓ src/lib/widget-data.test.ts (17 tests) 14ms
+ ✓ src/lib/browser-support.test.ts (6 tests) 15ms
+ ✓ src/lib/observability-coverage.test.ts (47 tests) 62ms
+ ✓ src/lib/lifecycle-audit.test.ts (6 tests) 14ms
+ ✓ src/lib/live-gateway-reval.server.test.ts (10 tests) 14ms
+ ✓ src/components/store/StoreWelcome.test.ts (1 test) 12ms
+ ✓ src/lib/custom-code-xss.test.ts (10 tests) 11ms
+ ✓ src/lib/conversion.test.ts (13 tests) 10ms
+ ✓ src/lib/plugin-lifecycle.test.ts (8 tests) 83ms
+ ✓ src/lib/openresty-acme.test.ts (20 tests) 11ms
+ ✓ src/lib/phase6-gates.test.ts (9 tests) 11ms
+ ✓ src/lib/studio/templates.test.ts (3 tests) 77ms
+stdout | src/lib/dual-version-db.test.ts > Phase 8.3 — Dual-Version Database Compatibility Test Suite > executes 1,000 concurrent interleaved transactions between Version N and Version N+1 with 0 errors
+{"ts":"2026-10-02T18:17:44.790Z","level":"info","event":"dual_version_db.simulation_completed","service":"framique-dev","total":1000,"versionNOps":500,"versionNPlusOneOps":500,"readSuccesses":1000,"writeSuccesses":1000,"crossVersionReadSuccesses":1000,"failures":0,"durationMs":3}
+
+ ✓ src/lib/dual-version-db.test.ts (4 tests) 12ms
+ ✓ src/lib/payment-rails.test.ts (14 tests) 11ms
+ ✓ src/lib/search-console.contract.test.ts (18 tests) 14ms
+ ✓ src/lib/integrations.test.ts (18 tests) 11ms
+ ✓ src/lib/themes/oceanblue/wiring.test.ts (9 tests) 31ms
+ ✓ src/lib/checkout-stock-scope.test.ts (6 tests) 58ms
+ ✓ src/lib/support-stream-coldpath.test.ts (7 tests) 11ms
+ ✓ src/lib/themes/songoskriti/wiring.test.ts (7 tests) 55ms
+ ✓ src/lib/phase3-content.test.ts (15 tests) 15ms
+ ✓ src/components/builder/WidgetBoundary.test.tsx (3 tests) 34ms
+ ✓ src/lib/phase2-merch.test.ts (10 tests) 10ms
+ ✓ src/routes/api/admin/merchant.$id/risk-tier.test.ts (8 tests) 11ms
+ ✓ src/lib/edge-provision.test.ts (8 tests) 16ms
+ ✓ src/lib/account-template.test.ts (4 tests) 18ms
+stdout | src/lib/canary-weights.test.ts > Phase 7.1 — Weighted Canary Traffic Shifting (1% → 5% → 25% → 100%) > persists and advances canary rollout states cleanly
+{"ts":"2026-10-02T18:17:46.079Z","level":"info","event":"canary.stage_shifted","service":"framique-dev","stage":1,"stageName":"Stage 1 (1% - Initial Soak)","canaryWeight":1,"candidateSlot":"green","soakDurationMs":600000}
+
+stdout | src/lib/canary-weights.test.ts > Phase 7.1 — Weighted Canary Traffic Shifting (1% → 5% → 25% → 100%) > persists and advances canary rollout states cleanly
+{"ts":"2026-10-02T18:17:46.080Z","level":"info","event":"canary.stage_shifted","service":"framique-dev","stage":2,"stageName":"Stage 2 (5% - Core Journey Soak)","canaryWeight":5,"candidateSlot":"green","soakDurationMs":900000}
+
+ ✓ src/lib/canary-weights.test.ts (8 tests) 29ms
+ ✓ src/lib/observability-stack.test.ts (19 tests) 11ms
+ ✓ src/lib/support-kb-chunks-rls.test.ts (10 tests) 15ms
+ ✓ src/lib/analytics-live-shape.test.ts (5 tests) 12ms
+ ✓ src/lib/payments-gate.test.ts (19 tests) 10ms
+ ✓ src/lib/theme-developers.test.ts (1 test) 10ms
+ ✓ src/lib/theme-seo.test.ts (15 tests) 10ms
+ ✓ src/lib/themes/activation-guard.test.ts (4 tests) 13ms
+ ✓ src/lib/observability.test.ts (18 tests) 9ms
+ ✓ src/lib/payment-keys.test.ts (4 tests) 10ms
+ ✓ src/lib/contact.test.ts (15 tests) 8ms
+ ✓ src/lib/store-blog-functions.test.ts (15 tests) 27ms
+ ✓ src/lib/themes/songoskriti/skins.test.ts (15 tests) 14ms
+ ✓ src/lib/blog-reader.test.ts (4 tests) 10ms
+ ✓ src/lib/themes/oceanblue/skins.test.ts (13 tests) 15ms
+ ✓ src/lib/support-sla.test.ts (15 tests) 10ms
+ ✓ src/lib/backup-drill.test.ts (15 tests) 54ms
+ ✓ src/lib/risk-tier.test.ts (25 tests) 26ms
+ ✓ src/lib/url-resolve-scope.test.ts (8 tests) 10ms
+ ✓ src/components/builder/section-effects.test.tsx (8 tests) 10ms
+ ✓ src/lib/smtp.test.ts (4 tests) 18ms
+ ✓ src/lib/live-gateway.test.ts (16 tests) 11ms
+ ✓ src/lib/console-nav-builder.test.ts (5 tests) 17ms
+ ✓ src/lib/path-storefront-block.contract.test.ts (14 tests) 9ms
+ ✓ src/lib/page-builder-xss.test.ts (21 tests) 14ms
+ ✓ src/lib/feature-flags.test.ts (7 tests) 11ms
+ ✓ src/lib/store-blog.test.ts (4 tests) 10ms
+ ✓ src/lib/marketplace-qubickle-contract.test.ts (5 tests) 13ms
+ ✓ src/lib/ad-fraud.test.ts (17 tests) 10ms
+ ✓ src/components/admin/editor/shell-publish.test.ts (5 tests) 9ms
+ ✓ src/lib/disaster-proof-backup.contract.test.ts (7 tests) 12ms
+ ✓ src/lib/support-session.test.ts (10 tests) 9ms
+ ✓ src/lib/ops.test.ts (9 tests) 9ms
+ ✓ src/lib/console-nav-tabs.test.ts (5 tests) 8ms
+ ✓ src/lib/phase0-editor-parity.test.ts (11 tests) 9ms
+ ✓ src/lib/newsletter.contract.test.ts (24 tests) 16ms
+stdout | src/lib/support-presence.test.ts > Support Presence & Operator Online Tracking > registers operator heartbeat and returns online
+{"ts":"2026-10-02T18:17:48.292Z","level":"info","event":"support.operator_heartbeat_recorded","service":"framique-dev","merchantId":"[redacted][redacted]","operatorId":"op-user-1","timestamp":"2026-10-02T18:17:48.291Z"}
+
+stdout | src/lib/support-presence.test.ts > Support Presence & Operator Online Tracking > isolates operator presence across different merchants
+{"ts":"2026-10-02T18:17:48.294Z","level":"info","event":"support.operator_heartbeat_recorded","service":"framique-dev","merchantId":"[redacted][redacted]","operatorId":"op-1","timestamp":"2026-10-02T18:17:48.294Z"}
+
+stdout | src/lib/support-presence.test.ts > TODO-5 — presence-gated approval routing hints > routes approvals to the live queue when an operator heartbeat is active
+{"ts":"2026-10-02T18:17:48.295Z","level":"info","event":"support.operator_heartbeat_recorded","service":"framique-dev","merchantId":"[redacted][redacted]","operatorId":"op-1","timestamp":"2026-10-02T18:17:48.295Z"}
+
+ ✓ src/lib/support-presence.test.ts (6 tests) 9ms
+ ✓ src/lib/api-scopes.test.ts (10 tests) 7ms
+ ✓ src/lib/image-transform.test.ts (20 tests) 10ms
+ ✓ src/lib/image-cdn.test.ts (7 tests) 11ms
+ ✓ src/lib/themes/oceanblue/preview.test.ts (3 tests) 15ms
+ ✓ src/lib/themes/songoskriti/preview.test.ts (3 tests) 12ms
+ ✓ src/lib/themes/oceanblue-v2/wiring.test.ts (15 tests) 14ms
+ ✓ src/lib/phase7-url-lifecycle.test.ts (12 tests) 8ms
+ ✓ src/lib/edge-cert-identity.test.ts (11 tests) 9ms
+ ✓ src/lib/contact.contract.test.ts (12 tests) 13ms
+ ✓ src/lib/placeholder.test.ts (8 tests) 9ms
+ ✓ src/lib/phase2-pdp.test.ts (14 tests) 9ms
+ ✓ src/lib/phase2-collection.test.ts (11 tests) 13ms
+ ✓ src/lib/builder-tree.test.ts (12 tests) 8ms
+ ✓ src/lib/storefront-host.contract.test.ts (19 tests) 10ms
+ ✓ src/lib/store-sitemap.test.ts (2 tests) 24ms
+ ✓ src/lib/catalog.test.ts (7 tests) 13ms
+ ✓ src/lib/storefront-url.test.ts (7 tests) 6ms
+ ✓ src/lib/domains-edgeless.test.ts (1 test) 9ms
+ ✓ src/lib/responsive-css.test.ts (12 tests) 29ms
+ ✓ src/lib/themes/oceanblue-v2/skins.test.ts (13 tests) 13ms
+ ✓ src/lib/store-limits.test.ts (3 tests) 4ms
+ ✓ src/lib/widget-data.functions.test.ts (15 tests) 36ms
+ ✓ src/components/store/theme-chrome.test.ts (5 tests) 7ms
+ ✓ src/lib/marketplace-badges.test.ts (11 tests) 6ms
+ ✓ src/lib/scope-adapter.test.ts (4 tests) 8ms
+ ✓ src/lib/plugin-permissions.test.ts (3 tests) 8ms
+ ✓ src/hooks/use-merchant-slug.test.ts (6 tests) 36ms
+ ✓ src/lib/account-tab.test.ts (4 tests) 11ms
+ ✓ src/lib/courier-adapters.test.ts (5 tests) 11ms
+ ✓ src/lib/nomad-specs.test.ts (5 tests) 13ms
+ ✓ src/lib/experiments.test.ts (7 tests) 11ms
+ ✓ src/lib/hardening.contract.test.ts (8 tests) 9ms
+ ✓ src/lib/load-drive.test.ts (12 tests) 13ms
+ ✓ src/lib/risk-tier.server.test.ts (3 tests) 14ms
+ ✓ src/lib/edge-hosts.test.ts (3 tests) 8ms
+ ✓ src/lib/paid-settlement-audit.test.ts (5 tests) 10ms
+ ✓ src/lib/feature-gate.test.ts (5 tests) 9ms
+ ✓ src/lib/plugin-state-ddl.test.ts (4 tests) 25ms
+ ✓ src/lib/phase2-cart.test.ts (10 tests) 19ms
+ ✓ src/lib/marketplace-songoskriti.test.ts (5 tests) 19ms
+ ✓ src/lib/host-trust-qubickle.test.ts (13 tests) 12ms
+ ✓ src/lib/theme-preview.test.ts (5 tests) 17ms
+ ✓ src/lib/primary-section.test.ts (6 tests) 7ms
+ ✓ src/lib/studio/autosave.test.ts (8 tests) 19ms
+ ✓ src/lib/themes/oceanblue-v2/preview.test.ts (3 tests) 14ms
+ ✓ src/lib/preview-demo-data.test.ts (3 tests) 10ms
+ ✓ src/lib/theme-preview-gate.test.ts (11 tests) 11ms
+stdout | src/lib/zero-downtime-release.test.ts > Phase 11.1 — Enterprise Zero-Downtime Release Orchestrator > executes the full Canary Blue/Green release sequence in dry-run mode
+================================================================================
+Framique Enterprise Zero-Downtime Release Orchestrator
+Git Commit SHA     : testsha123
+Target Candidate   : GREEN (http://127.0.0.1:3000)
+Standby Cluster    : BLUE (Serving 100% Traffic until Canary Gate)
+Execution Mode     : DRY-RUN (Simulated)
+================================================================================
+
+[STEP 1/7] Verifying Immutable Docker Artifact...
+  ✓ Image Tag Verified: framique:sha-testsha123
+
+[STEP 2/7] Triggering Pre-Deployment Time-Machine Snapshot Hook...
+  [DRY-RUN] Snapshot snap_pre_deploy_testsha123_1790965073647 recorded in simulated storage.
+
+[STEP 3/7] Probing Candidate GREEN Pods (Readiness, Smoke, DB Schema)...
+  [DRY-RUN] Preflight probes simulated successfully.
+
+[STEP 4/7] Hydrating Redis L2 Cache Pre-Warming...
+
+[STEP 5/7] Initiating Progressive Canary Traffic Shifting...
+
+  -> Advancing to Stage 1 (1% Traffic / Internal Team)...
+     [DRY-RUN] Simulated traffic split: GREEN=1%, BLUE=99%
+
+  -> Advancing to Stage 2 (5% Traffic / 10 Beta Merchants)...
+     [DRY-RUN] Simulated traffic split: GREEN=5%, BLUE=95%
+
+  -> Advancing to Stage 3 (25% Traffic / 100 Early Adopters)...
+     [DRY-RUN] Simulated traffic split: GREEN=25%, BLUE=75%
+
+  -> Advancing to Stage 4 (100% Traffic / Global Promotion)...
+     [DRY-RUN] Simulated traffic split: GREEN=100%, BLUE=0%
+
+[STEP 6/7] Retaining BLUE Alive on Warm Standby...
+  ✓ BLUE cluster kept warm for 60-minute rollback safety window.
+  ✓ Instant rollback circuit breaker active (< 500ms trigger).
+
+[STEP 7/7] Release Successful!
+================================================================================
+RESULT: [32mSUCCESSFUL ZERO-DOWNTIME CANARY RELEASE[0m
+Active Production Image: framique:sha-testsha123
+Time-Machine Snapshot  : snap_pre_deploy_testsha123_1790965073647
+================================================================================
+
+stdout | src/lib/zero-downtime-release.test.ts > Phase 11.1 — Enterprise Zero-Downtime Release Orchestrator > creates a valid snapshot tag and honors the rollback safety standby
+================================================================================
+Framique Enterprise Zero-Downtime Release Orchestrator
+Git Commit SHA     : release99
+Target Candidate   : GREEN (http://green-pod:3000)
+Standby Cluster    : BLUE (Serving 100% Traffic until Canary Gate)
+Execution Mode     : DRY-RUN (Simulated)
+================================================================================
+
+[STEP 1/7] Verifying Immutable Docker Artifact...
+  ✓ Image Tag Verified: framique:sha-release99
+
+[STEP 2/7] Triggering Pre-Deployment Time-Machine Snapshot Hook...
+  [DRY-RUN] Snapshot snap_pre_deploy_release99_1790965073650 recorded in simulated storage.
+
+[STEP 3/7] Probing Candidate GREEN Pods (Readiness, Smoke, DB Schema)...
+  [DRY-RUN] Preflight probes simulated successfully.
+
+[STEP 4/7] Hydrating Redis L2 Cache Pre-Warming...
+
+[STEP 5/7] Initiating Progressive Canary Traffic Shifting...
+
+  -> Advancing to Stage 1 (1% Traffic / Internal Team)...
+     [DRY-RUN] Simulated traffic split: GREEN=1%, BLUE=99%
+
+  -> Advancing to Stage 2 (5% Traffic / 10 Beta Merchants)...
+     [DRY-RUN] Simulated traffic split: GREEN=5%, BLUE=95%
+
+  -> Advancing to Stage 3 (25% Traffic / 100 Early Adopters)...
+     [DRY-RUN] Simulated traffic split: GREEN=25%, BLUE=75%
+
+  -> Advancing to Stage 4 (100% Traffic / Global Promotion)...
+     [DRY-RUN] Simulated traffic split: GREEN=100%, BLUE=0%
+
+[STEP 6/7] Retaining BLUE Alive on Warm Standby...
+  ✓ BLUE cluster kept warm for 60-minute rollback safety window.
+  ✓ Instant rollback circuit breaker active (< 500ms trigger).
+
+[STEP 7/7] Release Successful!
+================================================================================
+RESULT: [32mSUCCESSFUL ZERO-DOWNTIME CANARY RELEASE[0m
+Active Production Image: framique:sha-release99
+Time-Machine Snapshot  : snap_pre_deploy_release99_1790965073650
+================================================================================
+
+ ✓ src/lib/zero-downtime-release.test.ts (2 tests) 9ms
+ ✓ src/lib/storefront-host-path.test.ts (10 tests) 8ms
+ ✓ src/lib/snapshots-schema.test.ts (3 tests) 874ms
+     ✓ names a primary key that exists on every table  870ms
+ ✓ src/lib/storefront-variants.test.ts (3 tests) 12ms
+ ✓ src/lib/auth-mode.test.ts (6 tests) 18ms
+ ✓ src/lib/storefront-cache.test.ts (5 tests) 14ms
+ ✓ src/lib/editor/editor.server.test.ts (7 tests) 18ms
+ ✓ src/lib/csrf.server.test.ts (10 tests) 46ms
+ ✓ src/lib/merchant-scope.test.ts (6 tests) 39ms
+ ✓ src/lib/theme-preview-gate.contract.test.ts (6 tests) 38ms
+ ✓ src/lib/drip-sequences.contract.test.ts (2 tests) 11ms
+ ✓ src/lib/theme-update.test.ts (4 tests) 10ms
+ ✓ src/components/builder/primitives/Rail.motion.test.ts (6 tests) 8ms
+ ✓ src/lib/preview-sources.test.ts (3 tests) 90ms
+ ✓ src/lib/single-store-dedup.test.ts (2 tests) 65ms
+ ✓ src/lib/merchant-ai.test.ts (4 tests) 161ms
+ ✓ src/lib/remove-rupaboti-beauty.test.ts (2 tests) 29ms
+ ✓ src/components/builder/dnd.test.ts (3 tests) 7ms
+ ✓ src/components/builder/moment-entrance.test.ts (3 tests) 11ms
+ ✓ src/lib/content-editors.test.ts (5 tests) 4ms
+ ✓ src/lib/commerce-vat.test.ts (5 tests) 26ms
+ ✓ src/lib/risk-tier-iframe.test.ts (7 tests) 18ms
+ ✓ src/components/marketplace/WidgetSandbox.bridge.test.tsx (5 tests) 7ms
+ ✓ src/lib/phase2l-ddl.test.ts (2 tests) 9ms
+ ✓ src/routes/checkout.session-key.test.ts (3 tests) 4ms
+ ✓ src/lib/sitemap-noindex.test.ts (6 tests) 14ms
+ ✓ src/lib/themes/songoskriti/widgets.test.ts (18 tests) 7ms
+ ✓ src/lib/builder-publish-gate.test.ts (3 tests) 10ms
+ ✓ src/lib/phase2m-ddl.test.ts (2 tests) 5ms
+ ✓ src/lib/themes/oceanblue-final/wiring.test.ts (2 tests) 6ms
+ ✓ src/lib/page-builder-widgets.test.ts (2 tests) 10ms
+ ✓ src/lib/phase2n-ddl.test.ts (1 test) 5ms
+ ✓ src/lib/themes/oceanblue-final/skins.test.ts (2 tests) 6ms
+ ✓ src/lib/import-preflight.test.ts (3 tests) 7ms
+ ✓ src/lib/themes/oceanblue-v2/tokens.test.ts (3 tests) 6ms
+ ✓ src/lib/studio/useStudio.test.ts (3 tests) 4ms
+ ✓ src/lib/analytics-deltas.test.ts (2 tests) 6ms
+ ✓ src/lib/themes/oceanblue-final/preview.test.ts (1 test) 3ms
+ ↓ src/lib/schema-keys.test.ts (1 test | 1 skipped)
+ ✓ src/components/store/ThemeChrome.themeless.test.ts (1 test) 2ms
+
+ Test Files  1 failed | 378 passed | 1 skipped (380)
+      Tests  1 failed | 4887 passed | 1 skipped (4889)
+   Start at  00:16:01
+   Duration  120.64s (transform 142.85s, setup 0ms, import 322.68s, tests 174.99s, environment 100ms)
+

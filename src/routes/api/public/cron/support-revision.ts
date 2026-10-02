@@ -7,7 +7,8 @@ export const Route = createFileRoute("/api/public/cron/support-revision")({
     handlers: {
       GET: cronGet,
       POST: cronPost("support-revision", async (ctx) => {
-        const { runRevisionJob } = await import("@/lib/support-revision.server");
+        const { runRevisionJob } =
+          await import("@/lib/support-revision.server");
         return runRevisionJob(new Date().toISOString().slice(0, 10), {
           limit: ctx.num("limit", 50, 200),
         });

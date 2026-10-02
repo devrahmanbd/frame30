@@ -69,4 +69,5 @@
 ### Task 5: Isolation guard + verify
 
 **Files:** New `src/lib/themes/isolation.test.ts`: (a) walk theme dirs, fail on any prod import of another theme dir; (b) assert retired-theme catalog object identity ≠ songoskriti; (c) assert no `songoskriti`/retired-theme string literals in shared `StoreHeader.tsx`/`chrome.tsx` — REQUIRED: repoint `CollectionView.tsx` import to `./theme-chrome` and drop the `SONGOSKRITI_MEGA_MENU` re-export (deferred from Task 3); (d) assert `?focus=` contract + generic fallback intact via existing suites.
+
 - [ ] Steps 1-5 standard. Then final: full touched suites GREEN, zero-new-violations, branch pushed == HEAD.

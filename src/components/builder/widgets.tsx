@@ -1156,11 +1156,7 @@ function rowsOf(section: Section, key: string): PropRow[] {
  * layer (motion stays the theme/skin's channel), fail-closed to an editing
  * placeholder or null when there are no usable quotes.
  */
-const GenericTestimonials: WidgetComponent = ({
-  section,
-  locale,
-  editing,
-}) => {
+const GenericTestimonials: WidgetComponent = ({ section, locale, editing }) => {
   const quotes = rowsOf(section, "testimonials")
     .map((row) => ({
       quote: textOf(row, "quote", locale).trim(),

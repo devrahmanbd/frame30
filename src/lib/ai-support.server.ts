@@ -240,15 +240,12 @@ const INTENT_PROTOTYPES: Record<Exclude<Intent, "other">, string[]> = {
 
 const prototypeEmbeddingCache = new Map<string, number[]>();
 
-async function prototypeEmbedding(
-  phrase: string,
-): Promise<number[] | null> {
+async function prototypeEmbedding(phrase: string): Promise<number[] | null> {
   const cached = prototypeEmbeddingCache.get(phrase);
   if (cached) return cached;
   try {
-    const { generateEmbeddingWithMeta } = await import(
-      "./support-embed.server"
-    );
+    const { generateEmbeddingWithMeta } =
+      await import("./support-embed.server");
     const res = await generateEmbeddingWithMeta(phrase, {
       timeoutMs: 4000,
       allowDeterministicFallback: true,
@@ -289,9 +286,8 @@ export async function classifyIntentModel(
   if (fast.primary !== "other" && fast.confidence >= 0.6) return fast;
   if (latinTokenCount(text) < 2) return fast;
   try {
-    const { generateEmbeddingWithMeta, cosineSimilarity } = await import(
-      "./support-embed.server"
-    );
+    const { generateEmbeddingWithMeta, cosineSimilarity } =
+      await import("./support-embed.server");
     const query = await generateEmbeddingWithMeta(text, {
       timeoutMs: 4000,
       allowDeterministicFallback: true,
@@ -363,29 +359,56 @@ export type SentimentVerdict = {
 };
 
 const ANGRY_PATTERNS: Array<[string, RegExp]> = [
-  ["angry_word", /(furious|enraged|outraged|disgust|hate|terrible|horrible|awful|pathetic|worst|atrocious|rude|scam|fraud|cheat|liar|lying|shameless|useless|nonsense|hell|damn|idiot|stupid|dumb|fool)/i],
-  ["angry_bn", /(রাগ|ফালতু|চোর|বাটপার|ধোকা|প্রতারণা|ঘৃণা|জঘন্য|নিকৃষ্ট|মিথ্যাবাদী|বদমাশ|বিরক্ত)/],
-  ["angry_mixed", /\b(faltu|chor|batpar|dhoka|protarona|birokto|joghonno|mittha|bodmash|baje|chiting)\b/i],
-  ["threat", /(sue\b|lawsuit|court|police|consumer\s*(rights?|court)|case\s*(korbo|korbo)|report\s*you|social\s*media|facebook\s*(post|live)|viral|ভোক্তা\s*অধিকার|মামলা)/i],
+  [
+    "angry_word",
+    /(furious|enraged|outraged|disgust|hate|terrible|horrible|awful|pathetic|worst|atrocious|rude|scam|fraud|cheat|liar|lying|shameless|useless|nonsense|hell|damn|idiot|stupid|dumb|fool)/i,
+  ],
+  [
+    "angry_bn",
+    /(রাগ|ফালতু|চোর|বাটপার|ধোকা|প্রতারণা|ঘৃণা|জঘন্য|নিকৃষ্ট|মিথ্যাবাদী|বদমাশ|বিরক্ত)/,
+  ],
+  [
+    "angry_mixed",
+    /\b(faltu|chor|batpar|dhoka|protarona|birokto|joghonno|mittha|bodmash|baje|chiting)\b/i,
+  ],
+  [
+    "threat",
+    /(sue\b|lawsuit|court|police|consumer\s*(rights?|court)|case\s*(korbo|korbo)|report\s*you|social\s*media|facebook\s*(post|live)|viral|ভোক্তা\s*অধিকার|মামলা)/i,
+  ],
 ];
 
 const NEGATIVE_PATTERNS: Array<[string, RegExp]> = [
-  ["negative_word", /(disappoint|unhappy|upset|worried|sad|angry|late|delay|damaged|broken|wrong|missing|lost|never|bad|poor|slow|expensive|overcharg|problem|issue|defect|fault|cancel)/i],
-  ["negative_bn", /(দুঃখিত|হতাশ|চিন্তিত|সমস্যা|দেরি|ভাঙা|নষ্ট|ভুল|হারিয়ে|খারাপ|ধীর)/],
+  [
+    "negative_word",
+    /(disappoint|unhappy|upset|worried|sad|angry|late|delay|damaged|broken|wrong|missing|lost|never|bad|poor|slow|expensive|overcharg|problem|issue|defect|fault|cancel)/i,
+  ],
+  [
+    "negative_bn",
+    /(দুঃখিত|হতাশ|চিন্তিত|সমস্যা|দেরি|ভাঙা|নষ্ট|ভুল|হারিয়ে|খারাপ|ধীর)/,
+  ],
   ["negative_mixed", /\b(deri|nosto|bhanga|bhul|hariye|kharap|noshto)\b/i],
 ];
 
 const POSITIVE_PATTERNS: Array<[string, RegExp]> = [
-  ["positive_word", /(thank|thanks|grateful|great|excellent|awesome|love|perfect|helpful|satisfied|happy|nice|good\s*(service|job|work)|appreciated)/i],
+  [
+    "positive_word",
+    /(thank|thanks|grateful|great|excellent|awesome|love|perfect|helpful|satisfied|happy|nice|good\s*(service|job|work)|appreciated)/i,
+  ],
   ["positive_bn", /(ধন্যবাদ|ভালো|চমৎকার|দারুণ|সন্তুষ্ট|খুশি)/],
   ["positive_mixed", /\b(dhonnobad|bhalo|darun|khushi)\b/i],
 ];
 
 const URGENCY_PATTERNS: Array<[string, RegExp]> = [
-  ["urgent_word", /(urgent|asap|immediately|right\s*now|emergency|hurry|at\s*once|within\s*today|today\s*itself|out\s*of\s*time)/i],
+  [
+    "urgent_word",
+    /(urgent|asap|immediately|right\s*now|emergency|hurry|at\s*once|within\s*today|today\s*itself|out\s*of\s*time)/i,
+  ],
   ["urgent_bn", /(এখনই|তাড়াতাড়ি|জরুরি|দ্রুত|একক্ষ?ুনি|আজই)/],
   ["urgent_mixed", /\b(ekhuni|ekhon\s*i|taratari|joruri|druto|aaj\s*i)\b/i],
-  ["wait_duration", /(\d+\s*(days?|din|hours?|ghonta|weeks?)\s*(late|deri|holo|hoye|par|dhore))/i],
+  [
+    "wait_duration",
+    /(\d+\s*(days?|din|hours?|ghonta|weeks?)\s*(late|deri|holo|hoye|par|dhore))/i,
+  ],
 ];
 
 export function analyzeSentiment(text: string): SentimentVerdict {
@@ -445,7 +468,9 @@ export function analyzeSentiment(text: string): SentimentVerdict {
   }
 
   const raw = pos > 0 && neg === 0 ? pos : neg - pos;
-  const score = Number(Math.max(-1, Math.min(1, pos > 0 && neg === 0 ? raw : -raw)).toFixed(3));
+  const score = Number(
+    Math.max(-1, Math.min(1, pos > 0 && neg === 0 ? raw : -raw)).toFixed(3),
+  );
 
   let sentiment: SentimentLabel;
   if (neg >= 0.6) sentiment = "angry";

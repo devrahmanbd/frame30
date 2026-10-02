@@ -31,7 +31,11 @@ export const KB_CORPUS_DIR_NAME = "knowledgebase";
 export const KB_CORPUS_LOCALES = ["en", "bn"] as const;
 export type CorpusLocale = (typeof KB_CORPUS_LOCALES)[number];
 
-export const KB_CORPUS_AUDIENCES = ["merchant", "developer", "platform"] as const;
+export const KB_CORPUS_AUDIENCES = [
+  "merchant",
+  "developer",
+  "platform",
+] as const;
 export type CorpusAudience = (typeof KB_CORPUS_AUDIENCES)[number];
 
 export type CorpusDoc = {
@@ -53,7 +57,10 @@ export type ExistingDoc = {
 };
 
 export class KbCorpusError extends Error {
-  constructor(readonly file: string, message: string) {
+  constructor(
+    readonly file: string,
+    message: string,
+  ) {
     super(`${file}: ${message}`);
     this.name = "KbCorpusError";
   }
@@ -68,7 +75,8 @@ export function parseCorpusFile(slug: string, raw: string): CorpusDoc {
   for (const line of (front ?? "").split(/\r?\n/)) {
     if (!line.trim() || line.trim().startsWith("#")) continue;
     const colon = line.indexOf(":");
-    if (colon < 0) throw new KbCorpusError(slug, `bad frontmatter line: ${line}`);
+    if (colon < 0)
+      throw new KbCorpusError(slug, `bad frontmatter line: ${line}`);
     fields.set(
       line.slice(0, colon).trim().toLowerCase(),
       line.slice(colon + 1).trim(),
@@ -88,9 +96,15 @@ export function parseCorpusFile(slug: string, raw: string): CorpusDoc {
       "frontmatter audience must be merchant, developer, or platform",
     );
   }
-  const statusRaw = (fields.get("status") ?? "published").replace(/^["']|["']$/g, "");
+  const statusRaw = (fields.get("status") ?? "published").replace(
+    /^["']|["']$/g,
+    "",
+  );
   if (statusRaw !== "draft" && statusRaw !== "published") {
-    throw new KbCorpusError(slug, "frontmatter status must be draft or published");
+    throw new KbCorpusError(
+      slug,
+      "frontmatter status must be draft or published",
+    );
   }
   const tagsRaw = (fields.get("tags") ?? "").replace(/^\[|\]$/g, "");
   const tags = tagsRaw
@@ -101,7 +115,10 @@ export function parseCorpusFile(slug: string, raw: string): CorpusDoc {
   const sourceRaw = (fields.get("source") ?? "").replace(/^["']|["']$/g, "");
   const body = (bodyRaw ?? "").replace(/\r\n/g, "\n").trim();
   if (body.length < 200) {
-    throw new KbCorpusError(slug, "body too short to be self-contained (<200 chars)");
+    throw new KbCorpusError(
+      slug,
+      "body too short to be self-contained (<200 chars)",
+    );
   }
   return {
     slug,
@@ -142,7 +159,10 @@ export type SeedPlan = {
 };
 
 /** Pure diff: match desired docs against existing rows by title. */
-export function planSeed(desired: CorpusDoc[], existing: ExistingDoc[]): SeedPlan {
+export function planSeed(
+  desired: CorpusDoc[],
+  existing: ExistingDoc[],
+): SeedPlan {
   const plan: SeedPlan = { create: [], update: [], skip: [], drafts: [] };
   const byTitle = new Map<string, ExistingDoc>();
   for (const row of existing) {
@@ -159,7 +179,8 @@ export function planSeed(desired: CorpusDoc[], existing: ExistingDoc[]): SeedPla
       continue;
     }
     const sameBody = normBody(row.body ?? "") === normBody(doc.body);
-    const tagged = Array.isArray(row.tags) && row.tags.includes(KB_CORPUS_VERSION_TAG);
+    const tagged =
+      Array.isArray(row.tags) && row.tags.includes(KB_CORPUS_VERSION_TAG);
     if (sameBody && tagged) plan.skip.push(doc);
     else plan.update.push({ doc, id: row.id });
   }
@@ -199,7 +220,10 @@ function toSaveInput(doc: CorpusDoc, id?: string | null): SaveDocInput {
     body: doc.body,
     locale: doc.locale,
     status: "published",
-    tags: [...doc.tags, KB_CORPUS_SOURCE_TAG, KB_CORPUS_VERSION_TAG].slice(0, 12),
+    tags: [...doc.tags, KB_CORPUS_SOURCE_TAG, KB_CORPUS_VERSION_TAG].slice(
+      0,
+      12,
+    ),
     sourceUrl: doc.sourceUrl,
   };
 }
@@ -239,7 +263,8 @@ export async function seedPublicKb(
   const dryRun = options?.dryRun ?? false;
   const userId = options?.userId ?? KB_SEED_USER_ID;
   const save: SaveDocFn = options?.saveDocFn ?? saveDoc;
-  const listExisting: ListExistingFn = options?.listExistingFn ?? defaultListExisting;
+  const listExisting: ListExistingFn =
+    options?.listExistingFn ?? defaultListExisting;
 
   const docs = await loadCorpusDocs(options?.dir);
   const existing = await listExisting(db, merchantId);

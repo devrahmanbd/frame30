@@ -1,8 +1,12 @@
 import fs from "fs";
 
-let content = fs.readFileSync("src/components/store/ThemePreviewFrame.tsx", "utf-8");
+let content = fs.readFileSync(
+  "src/components/store/ThemePreviewFrame.tsx",
+  "utf-8",
+);
 
-const importMarker = 'import { ThemeSurface } from "@/components/builder/ThemeSurface";';
+const importMarker =
+  'import { ThemeSurface } from "@/components/builder/ThemeSurface";';
 const newImports = `import {
   ProductGallery,
   PriceBlock,
@@ -110,24 +114,44 @@ function MockProductWrapper({
 }
 `;
 
-content = content.replace('export function ThemePreviewFrame(', wrapperStr + '\nexport function ThemePreviewFrame(');
+content = content.replace(
+  "export function ThemePreviewFrame(",
+  wrapperStr + "\nexport function ThemePreviewFrame(",
+);
 
 // Replace the return of ThemePreviewFrame to inject the wrapper dynamically if it's a product
-const returnBlockStart = '  return (\n    <div';
-content = content.replace(returnBlockStart, `
+const returnBlockStart = "  return (\n    <div";
+content = content.replace(
+  returnBlockStart,
+  `
   const demoProduct = template === "product" && demoFocus 
     ? DEMO_CATALOGUES[blueprintKey as keyof typeof DEMO_CATALOGUES]?.products.find((p: any) => p.slug === demoFocus.slug) 
     : null;
 
   const renderContent = (productSlots: Record<string, React.ReactNode> = {}) => (
-    <div`);
-    
-content = content.replace('contextSlots={contextSlots}', 'contextSlots={{...contextSlots, ...productSlots}}');
-content = content.replace('contextSlots={contextSlots}', 'contextSlots={{...contextSlots, ...productSlots}}');
-content = content.replace('contextSlots={contextSlots}', 'contextSlots={{...contextSlots, ...productSlots}}');
-content = content.replace('contextSlots={contextSlots}', 'contextSlots={{...contextSlots, ...productSlots}}');
+    <div`,
+);
 
-content = content.replace('  );\n}\n', `  );
+content = content.replace(
+  "contextSlots={contextSlots}",
+  "contextSlots={{...contextSlots, ...productSlots}}",
+);
+content = content.replace(
+  "contextSlots={contextSlots}",
+  "contextSlots={{...contextSlots, ...productSlots}}",
+);
+content = content.replace(
+  "contextSlots={contextSlots}",
+  "contextSlots={{...contextSlots, ...productSlots}}",
+);
+content = content.replace(
+  "contextSlots={contextSlots}",
+  "contextSlots={{...contextSlots, ...productSlots}}",
+);
+
+content = content.replace(
+  "  );\n}\n",
+  `  );
   
   if (demoProduct) {
     return (
@@ -138,15 +162,24 @@ content = content.replace('  );\n}\n', `  );
   }
   return renderContent();
 }
-`);
+`,
+);
 
 const slotsStartStr = '    if (template === "product") {';
-const slotsEndStr = '    return slots;\n  }, [template, ast, previewData, lang, blueprintKey, demoFocus]);';
+const slotsEndStr =
+  "    return slots;\n  }, [template, ast, previewData, lang, blueprintKey, demoFocus]);";
 const newSlotsCode = `    if (template === "product") {
       // product slots are dynamically injected via MockProductWrapper
     }
     return slots;
   }, [template, ast, previewData, lang, blueprintKey, demoFocus]);`;
-content = content.replace(new RegExp(slotsStartStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[\\s\\S]*?' + slotsEndStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), newSlotsCode);
+content = content.replace(
+  new RegExp(
+    slotsStartStr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+      "[\\s\\S]*?" +
+      slotsEndStr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+  ),
+  newSlotsCode,
+);
 
 fs.writeFileSync("src/components/store/ThemePreviewFrame.tsx", content);

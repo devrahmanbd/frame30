@@ -44,8 +44,10 @@ export function oceanbluePreviewSource(): PreviewThemeSource {
     themeName: "Oceanblue",
     author: "Framique",
     tokens: OCEANBLUE_TOKENS,
-    header: (template, s) => template === "checkout" ? [] : buildHeaderMain(s),
-    footer: (template, s) => template === "checkout" ? [] : buildFooterMain(s),
+    header: (template, s) =>
+      template === "checkout" ? [] : buildHeaderMain(s),
+    footer: (template, s) =>
+      template === "checkout" ? [] : buildFooterMain(s),
     main: (template, s) => {
       // Non-homepage templates author sections directly (not through the
       // homepage builder), so they get the same skin-default wrap here.
@@ -173,7 +175,8 @@ export function oceanbluePreviewSource(): PreviewThemeSource {
               body_bn: "নতুন সংগ্রহ, রিস্টক ও সেল অ্যালার্ট।",
               buttonLabel: "Subscribe",
               buttonLabel_bn: "সাবস্ক্রাইব",
-              consentText: "We email only for drops and sales. Unsubscribe anytime.",
+              consentText:
+                "We email only for drops and sales. Unsubscribe anytime.",
               consentText_bn:
                 "শুধু ড্রপ ও সেলের জন্য ইমেইল পাঠাই। যেকোনো সময় আনসাবস্ক্রাইব করুন।",
             }),
@@ -208,15 +211,11 @@ export function oceanbluePreviewSource(): PreviewThemeSource {
               children: [
                 {
                   ...s("container", {}),
-                  children: [
-                    s("cart_lines", {}),
-                  ],
+                  children: [s("cart_lines", {})],
                 },
                 {
                   ...s("container", {}),
-                  children: [
-                    s("cart_summary", {}),
-                  ],
+                  children: [s("cart_summary", {})],
                 },
               ],
             },
@@ -247,23 +246,23 @@ export function oceanbluePreviewSource(): PreviewThemeSource {
                       heading: "Contact & Shipping",
                       heading_bn: "যোগাযোগ ও শিপিং",
                       body: "Provide your delivery address and contact details.",
-                      body_bn: "আপনার ডেলিভারি ঠিকানা এবং যোগাযোগের তথ্য প্রদান করুন।",
+                      body_bn:
+                        "আপনার ডেলিভারি ঠিকানা এবং যোগাযোগের তথ্য প্রদান করুন।",
                     }),
                     s("payment_icons", {
                       heading: "Payment Method",
                       heading_bn: "পেমেন্ট পদ্ধতি",
-                      marks: "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
+                      marks:
+                        "bKash, Nagad, Rocket, Visa, Mastercard, Cash on delivery",
                     }),
                   ],
                 },
                 {
                   ...s("container", {}),
-                  children: [
-                    s("cart_summary", {}),
-                  ],
-                }
-              ]
-            }
+                  children: [s("cart_summary", {})],
+                },
+              ],
+            },
           ];
         case "account":
           return [

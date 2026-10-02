@@ -1,9 +1,13 @@
 import fs from "fs";
 
-let content = fs.readFileSync("src/components/store/ThemePreviewFrame.tsx", "utf-8");
+let content = fs.readFileSync(
+  "src/components/store/ThemePreviewFrame.tsx",
+  "utf-8",
+);
 
 // Insert the imports
-const importMarker = 'import { ThemeSurface } from "@/components/builder/ThemeSurface";';
+const importMarker =
+  'import { ThemeSurface } from "@/components/builder/ThemeSurface";';
 const newImports = `import {
   ProductGallery,
   PriceBlock,
@@ -116,12 +120,13 @@ function MockProductWrapper({
 `;
 
 // Insert the MockProductWrapper right before ThemePreviewFrame
-const componentMarker = 'export function ThemePreviewFrame(';
+const componentMarker = "export function ThemePreviewFrame(";
 content = content.replace(componentMarker, providerCode + componentMarker);
 
 // Update contextSlots in ThemePreviewFrame
 const slotsStartStr = '    if (template === "product") {';
-const slotsEndStr = '    return slots;\n  }, [template, ast, previewData, lang, blueprintKey, demoFocus]);';
+const slotsEndStr =
+  "    return slots;\n  }, [template, ast, previewData, lang, blueprintKey, demoFocus]);";
 
 const newSlotsCode = `    if (template === "product") {
       // the product slots are dynamically injected via MockProductWrapper below instead.
@@ -129,11 +134,18 @@ const newSlotsCode = `    if (template === "product") {
     return slots;
   }, [template, ast, previewData, lang, blueprintKey, demoFocus]);`;
 
-content = content.replace(new RegExp(slotsStartStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[\\s\\S]*?' + slotsEndStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), newSlotsCode);
+content = content.replace(
+  new RegExp(
+    slotsStartStr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+      "[\\s\\S]*?" +
+      slotsEndStr.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+  ),
+  newSlotsCode,
+);
 
 // Wrap SectionRenderer with MockProductWrapper if template === "product"
-const renderMarker = '        <SectionRenderer';
-const renderEndMarker = '        />';
+const renderMarker = "        <SectionRenderer";
+const renderEndMarker = "        />";
 
 // We need to carefully replace the SectionRenderer block inside the return statement
 content = content.replace(
@@ -160,7 +172,7 @@ content = content.replace(
             template={template}
             contextSlots={contextSlots}
           />
-        )}`
+        )}`,
 );
 
 fs.writeFileSync("src/components/store/ThemePreviewFrame.tsx", content);
