@@ -120,3 +120,49 @@ Social/payment/footer rows omit when unconfigured.
 net delta, never claim clean) → rebuild `:3000` + chrome-devtools verify
 (snapshot asserts, 0 console errors, desktop + 390px) → commit. No push, no
 deploy without explicit user word. `ops/routing/*` never staged.
+
+## 9. Amendment A — Phase 11 premium pass (2026-10-02, commits ec5cc61, 9de242b, 84c5581)
+
+Copy voice: headlines/CTAs/captions Title Case across hero, rails, split,
+story, footer (`Most Loved`, `The Festive Edit`, `Shop Festive/Wedding/Girls/
+Nxt`, `Our promise/story`); testimonial role `Verified buyer` →
+`Illustrative review` (was fabricated). Shop-by-Color filled to 8 tiles
+(Maroon → `/c/maroon`, Gold → `/c/gold`; renderer filters empties so 6-tile
+was safe, 8-tile restores grid symmetry). Trust marquee: blush band + brand
+icon chips (theme-scoped `skins.css`, token vars only, zero literals).
+
+Imagery batch A (Copilot, owner session): `public/ph/oceanblue-v2/hero-
+newin|wedding|girls.jpg` (JPEG q85, 1024×1536, maroon/gold on cream, no
+text — eyeballed) wired into hero slides 1–3; slide 4 (Nxt) stays imageless
+until batch B. Safety note: prompts with minors in festive wear get blocked —
+keep subjects adult. Copilot daily quota exhausts after ~3 generations;
+batch B (hero-nxt single adult, festive split 2:1, 8 tiles 1:1) queued.
+
+Deploy: `:3000` rebuilt from this spec + restarted (Supabase env recovered
+from git history `9eab798:.env`; live keys stay out of the repo). Verified
+live: H1 title-case, 3 hero imgs + wrap clone, 8 color tiles, illustrative
+role, marquee present, 390px clean. Residual console noise is pre-existing
+CSP `connect-src` auth-refresh blocks, not theme motion.
+
+## 10. Amendment B — Hallmark motion audit backlog (2026-10-02, not yet implemented)
+
+Against `motion.md` + `microinteractions.md` canon (genre: luxury-maroon
+editorial, motion-cut with campaign exceptions):
+
+- **Critical:** `footer_sitemap` renderers (`chrome.tsx:440`,
+  `studio/renderers.tsx:1700`) read only `c1..c4` — v2's authored `c5`
+  Contact column renders nowhere. Fix: migrate v2 footer to `items` rows
+  (both renderers prefer them) or extend fallback to `c5`.
+- **Critical:** `transition-all` on product images (`ProductCard.tsx:326,336`,
+  1200ms), Shop Now overlay (`:356`, 500ms), wishlist (`:248,252`) — banned
+  tell; split into explicit `transform`/`opacity` ≤500ms.
+- **Major:** banner track uses Tailwind default easing (`heritage.tsx:625`);
+  switch to exponential `(0.16,1,0.3,1)` token. Card hover fires three
+  signals at once (lift + shadow + zoom) — keep one. Marquee lacks
+  pause-on-hover. Title color-fade (`ProductCard.tsx:450`) is purposeless.
+- **Minor:** skeleton/body alignment drift; stagger budget; `animate-pulse`
+  without minimum-visible-time guard.
+
+Already-conforming (do not regress): carousel a11y package, shared
+observer/rAF/budget runtime, `focus-within` + `hover:none` fallbacks,
+gsap dynamically loaded per contract, static footer.
