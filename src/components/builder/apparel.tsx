@@ -879,8 +879,11 @@ const WishlistButton: WidgetComponent = (ctx) => {
 
 /* --------------------------------------------------- circle_categories */
 
-const CircleCategories: WidgetComponent = ({ str, Heading }) => {
+const CircleCategories: WidgetComponent = ({ str, bool, section, Heading }) => {
   const heading = str("heading");
+  const aspect = str("aspect") || "1/1";
+  // Catalog default is image-first; absent means true (unit fixtures bypass parse defaults).
+  const imageFirst = section.props["imageFirst"] !== false;
   const categories = [1, 2, 3, 4, 5, 6, 7, 8]
     .map((n) => ({
       title: str(`c${n}Title`),
@@ -901,24 +904,30 @@ const CircleCategories: WidgetComponent = ({ str, Heading }) => {
         </div>
       )}
       <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-2 pt-1 sm:grid sm:grid-cols-4 md:grid-cols-8 sm:gap-4 sm:overflow-visible sm:p-0">
-        {categories.map((c, idx) => (
+        {categories.map((c, idx) => {
+          const showImage = imageFirst && c.imageUrl;
+          const round = aspect === "1/1";
+          return (
           <a
             key={idx}
             href={c.href}
             className="group flex flex-col items-center text-center snap-start shrink-0 w-20 sm:w-auto transition-transform duration-200 hover:-translate-y-1"
           >
-            <div className="relative size-18 sm:size-22 md:size-24 rounded-full overflow-hidden p-0.5 ring-2 ring-primary/30 ring-offset-2 ring-offset-background transition-all duration-300 group-hover:ring-primary group-hover:shadow-md bg-muted">
-              {c.imageUrl ? (
+            <div
+              className={`relative size-18 sm:size-22 md:size-24 overflow-hidden p-0.5 ring-2 ring-primary/30 ring-offset-2 ring-offset-background transition-all duration-300 group-hover:ring-primary group-hover:shadow-md bg-muted ${round ? "rounded-full" : "rounded-fq-lg w-full"}`}
+              style={round ? undefined : { aspectRatio: aspect }}
+            >
+              {showImage ? (
                 <img
                   src={c.imageUrl}
                   // Decorative: the adjacent label names the link, so a
                   // titled alt would announce "Women Women".
                   alt=""
-                  className="size-full rounded-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className={`size-full ${round ? "rounded-full" : "rounded-fq-md"} object-cover transition-transform duration-500 group-hover:scale-110`}
                   loading="lazy"
                 />
               ) : (
-                <div className="size-full rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-base sm:text-lg">
+                <div className={`size-full ${round ? "rounded-full" : "rounded-fq-md"} bg-primary/10 flex items-center justify-center font-bold text-primary text-base sm:text-lg`}>
                   {c.title.charAt(0)}
                 </div>
               )}
@@ -927,7 +936,8 @@ const CircleCategories: WidgetComponent = ({ str, Heading }) => {
               {c.title}
             </span>
           </a>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

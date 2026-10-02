@@ -23,6 +23,7 @@ import {
   SONGOSKRITI_WIDGETS,
 } from "./songoskriti";
 import { MERCH_WIDGETS } from "./merch";
+import { SOMVABONA_WIDGETS } from "./somvabona";
 import { APPAREL_WIDGETS } from "./apparel";
 import type { WidgetRow } from "@/lib/widget-data";
 import {
@@ -586,5 +587,76 @@ describe("songoskriti categories rhythm (browser-verified 2026-09-24)", () => {
     expect(html).toContain("justify-center");
     expect(html).toContain("font-theme-display");
     expect(html).not.toContain("font-serif");
+  });
+});
+
+describe("lane B renderer paths", () => {
+  it("mega_menu wires widget promo props into the panel (hover-gated: pinned at source)", () => {
+    const src = readFileSync(
+      "src/components/builder/songoskriti.tsx",
+      "utf8",
+    );
+    expect(src).toContain('str("promoImage")');
+    expect(src).toContain('str("promoHref")');
+    expect(src).toContain('str("promoTitle")');
+    expect(src).toContain("promoImage ? (");
+  });
+
+  it("generic MegaMenu renders the promo tile when set", () => {
+    const src = readFileSync("src/components/builder/chrome.tsx", "utf8");
+    expect(src).toContain('str("promoImage")');
+    expect(src).toContain('str("promoHref")');
+    expect(src).toContain('str("promoTitle")');
+  });
+
+  it("urgency_rail renders a countdown when endsAt is set", () => {
+    const html = render(SOMVABONA_WIDGETS["urgency_rail"], {
+      ...newSection("urgency_rail"),
+      props: {
+        heading: "Sale",
+        limit: 4,
+        endsAt: "2099-01-01T00:00:00Z",
+        endsLabel: "Ends in",
+      },
+    });
+    expect(html).toContain("Ends in");
+  });
+
+  it("urgency_rail omits the countdown when endsAt is unset", () => {
+    const html = render(SOMVABONA_WIDGETS["urgency_rail"], {
+      ...newSection("urgency_rail"),
+      props: { heading: "Sale", limit: 4, endsAt: "", endsLabel: "" },
+    });
+    expect(html).not.toContain("Ends in");
+  });
+
+  it("circle_categories honors a non-square aspect", () => {
+    const base = {
+      ...newSection("circle_categories"),
+      props: {
+        heading: "Shop",
+        aspect: "4/5",
+        imageFirst: true,
+        c1Title: "Women",
+        c1Image: "/ph/w.png",
+        c1Href: "/c/women",
+      },
+    };
+    const html = render(APPAREL_WIDGETS["circle_categories"], base);
+    expect(html).toContain("aspect-ratio:4/5");
+    expect(html).not.toContain("rounded-full object-cover");
+  });
+
+  it("circle_categories stays circular by default", () => {
+    const html = render(APPAREL_WIDGETS["circle_categories"], {
+      ...newSection("circle_categories"),
+      props: {
+        heading: "Shop",
+        c1Title: "Women",
+        c1Image: "/ph/w.png",
+        c1Href: "/c/women",
+      },
+    });
+    expect(html).toContain("rounded-full object-cover");
   });
 });

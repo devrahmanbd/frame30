@@ -298,6 +298,9 @@ function MegaMenu({ str, int, data, link }: WidgetCtx) {
   if (visible.length === 0) return null;
   const inline = visible.slice(0, 6);
   const overflow = visible.slice(6);
+  const promoImage = str("promoImage");
+  const promoHref = str("promoHref") || "#";
+  const promoTitle = str("promoTitle");
   return (
     <div className="bg-background">
       <nav
@@ -348,6 +351,24 @@ function MegaMenu({ str, int, data, link }: WidgetCtx) {
                     </li>
                   ))}
                 </ul>
+                {promoImage && (
+                  <a
+                    href={link(promoHref)}
+                    className="mt-2 flex min-h-[44px] items-center gap-3 rounded-fq-md border border-border bg-muted p-2 hover:border-primary"
+                  >
+                    <img
+                      src={promoImage}
+                      alt=""
+                      className="h-12 w-12 shrink-0 rounded-fq-sm object-cover"
+                      loading="lazy"
+                    />
+                    {promoTitle && (
+                      <span className="text-sm font-semibold text-foreground">
+                        {promoTitle}
+                      </span>
+                    )}
+                  </a>
+                )}
               </div>
             )}
           </div>

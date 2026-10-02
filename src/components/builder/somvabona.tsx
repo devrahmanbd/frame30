@@ -24,6 +24,7 @@ import type {
 } from "@/lib/builder-ast";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
 import { useScrollReveals } from "./songoskriti-motion";
+import { Countdown } from "./primitives/Countdown";
 import { MediaFrame } from "./primitives/MediaFrame";
 import { Rail } from "./primitives/Rail";
 import { ProductCard, ProductCardSkeleton } from "./primitives/ProductCard";
@@ -349,8 +350,17 @@ const UrgencyRail: WidgetComponent = (ctx) => {
   ) : null;
   // An empty rail leaves no hole: null, not a padded empty shell.
   if (rows !== undefined && rows.length === 0 && !data?.pending) return null;
+  const endsAt = str("endsAt");
+  const showCountdown = !Number.isNaN(Date.parse(endsAt));
+  const endsLabel =
+    str("endsLabel") || (locale === "bn" ? "অফার শেষ হতে" : "Sale ends in");
   return (
     <section className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 py-12 sm:px-8 sm:py-24 [&_article]:border-none [&_article]:bg-transparent [&_article]:shadow-none">
+      {showCountdown && (
+        <div className="mb-4 flex justify-start">
+          <Countdown endsAt={endsAt} label={endsLabel} locale={locale} />
+        </div>
+      )}
       {data?.pending || rows === undefined ? (
         <Rail label={label} heading={heading ?? undefined}>
           {Array.from({ length: 6 }, (_, i) => (

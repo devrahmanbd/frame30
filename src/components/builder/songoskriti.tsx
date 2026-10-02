@@ -1655,6 +1655,11 @@ const SongoskritiMegaMenu: WidgetComponent = ({
   const label = str("label") || megaFallbackLabel("Shop", locale);
   const limit = int("limit", 8, 1, 24);
   const columns = int("columns", 4, 1, 4);
+  // Widget-level promo (catalog promoImage/promoHref/promoTitle): shows only
+  // when the active entry brings no featured image of its own.
+  const promoImage = str("promoImage");
+  const promoHref = str("promoHref") || "#";
+  const promoTitle = str("promoTitle");
 
   // Tier (b): live taxonomy rows win when the batch resolved any.
   const rows = data?.rows ?? [];
@@ -1740,7 +1745,7 @@ const SongoskritiMegaMenu: WidgetComponent = ({
           <div className="mx-auto max-w-[var(--fq-container,1440px)] px-8 py-10 grid grid-cols-12 gap-8">
             {/* Left: subcategory columns */}
             <div
-              className={`${activeEntry.featuredImage ? "col-span-8" : "col-span-12"} grid gap-8 ${MEGA_PANEL_COLS[columns] ?? MEGA_PANEL_COLS[4]!}`}
+              className={`${activeEntry.featuredImage || promoImage ? "col-span-8" : "col-span-12"} grid gap-8 ${MEGA_PANEL_COLS[columns] ?? MEGA_PANEL_COLS[4]!}`}
             >
               {activeEntry.sections.map((section) => (
                 <div key={section.title}>
@@ -1772,8 +1777,8 @@ const SongoskritiMegaMenu: WidgetComponent = ({
                 </div>
               ))}
             </div>
-            {/* Right: featured image */}
-            {activeEntry.featuredImage && (
+            {/* Right: featured image (entry art wins, widget promo fallback) */}
+            {activeEntry.featuredImage ? (
               <div className="col-span-4">
                 <a href={link(activeEntry.shopAllHref)} className="group block relative aspect-[3/4] overflow-hidden bg-[var(--theme-muted)]">
                   <img
@@ -1789,7 +1794,23 @@ const SongoskritiMegaMenu: WidgetComponent = ({
                   </div>
                 </a>
               </div>
-            )}
+            ) : promoImage ? (
+              <div className="col-span-4">
+                <a href={link(promoHref)} className="group block relative aspect-[3/4] overflow-hidden bg-[var(--theme-muted)]">
+                  <img
+                    src={promoImage}
+                    alt={promoTitle || activeEntry.label}
+                    className="absolute inset-0 w-full h-full object-cover motion-safe:transition-transform motion-safe:duration-[1200ms] motion-safe:ease-out group-hover:scale-[1.04]"
+                    loading="eager"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--theme-ink)]/60 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 p-6">
+                    <p className="text-[9px] font-bold uppercase tracking-[0.25em] text-[var(--theme-surface)]/70 mb-1">{megaFallbackLabel("Featured", locale)}</p>
+                    <p className="font-serif text-[18px] font-light text-[var(--theme-surface)]">{promoTitle || activeEntry.label}</p>
+                  </div>
+                </a>
+              </div>
+            ) : null}
           </div>
         </div>
       )}
