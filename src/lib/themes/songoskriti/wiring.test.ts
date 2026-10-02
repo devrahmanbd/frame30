@@ -32,10 +32,11 @@ describe("songoskriti wiring", () => {
     const s = (type: string, props = {}) =>
       ({ id: type, type, props }) as never;
     const sections = buildHomepageMain(s as never);
-    // Fashion-catalog rebuild: 20 sections opening on the hero carousel —
+    // Fashion-catalog rebuild: 21 sections opening on the hero carousel —
     // signature sarees lead, campaign splits and craft stories interleave,
     // trust + flagship outlets close. No announcement bar, no circles.
-    expect(sections).toHaveLength(20);
+    // MOST LOVED carries a mobile bp override + a recently-viewed re-entry.
+    expect(sections).toHaveLength(21);
     for (const section of sections) {
       expect(
         catalogEntry(section.type),
@@ -51,6 +52,7 @@ describe("songoskriti wiring", () => {
       "product_rail",
       "split_feature",
       "product_rail",
+      "recently_viewed",
       "finder_row",
       "split_feature",
       "product_rail",

@@ -27,7 +27,7 @@ describe("songoskritiPreviewSource", () => {
     expect(source.header("index", s).length).toEqual(0);
     expect(source.footer("index", s).length).toBeGreaterThan(0);
     const index = source.main("index", s)!;
-    // Fashion-catalog rebuild: 20 sections, hero_carousel first (no
+    // Fashion-catalog rebuild: 21 sections, hero_carousel first (no
     // announcement bar). Full order pinned in wiring.test.ts; here we pin
     // the head, the length, and the close so a builder regression fails
     // fast at the source.
@@ -39,6 +39,7 @@ describe("songoskritiPreviewSource", () => {
       "product_rail",
       "split_feature",
       "product_rail",
+      "recently_viewed",
       "finder_row",
       "split_feature",
       "product_rail",

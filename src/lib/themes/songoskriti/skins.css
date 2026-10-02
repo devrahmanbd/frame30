@@ -409,3 +409,24 @@ footer button[type="submit"] {
   background-color: var(--theme-surface) !important;
   color: var(--theme-ink) !important;
 }
+
+/* ------------------------------------------------- article: editorial blog skin
+   Per-theme article treatment (the active theme owns article styles — no
+   scoping attribute needed). Serif display headline with terracotta rule,
+   relaxed measure for long reads. Token-only: re-tints follow merchants. */
+article h1 {
+  font-family: var(--theme-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  border-top: 2px solid var(--theme-brand);
+  padding-top: var(--theme-space);
+}
+article .article-body, article p {
+  line-height: 1.8;
+  max-width: 68ch;
+}
+article a {
+  color: var(--theme-brand);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}

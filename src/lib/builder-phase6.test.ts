@@ -234,3 +234,28 @@ describe("advanced props persist through parse", () => {
     expect(props).not.toHaveProperty("advEvil");
   });
 });
+
+describe("per-device overrides persist through parse", () => {
+  it("keeps bp layers for responsive fields, drops them for fixed fields", async () => {
+    const { parseAst } = await import("./builder-ast");
+    const ast = parseAst({
+      header: [],
+      main: [
+        {
+          id: "s1",
+          type: "product_rail",
+          props: { heading: "Rail", limit: 10 },
+          bp: { mobile: { limit: 4, heading: "Tiny" } },
+        },
+      ],
+      footer: [],
+    });
+    const sec = ast.main[0] as {
+      props: Record<string, unknown>;
+      bp?: Record<string, Record<string, unknown>>;
+    };
+    expect(sec.props["limit"]).toBe(10);
+    expect(sec.bp?.["mobile"]?.["limit"]).toBe(4);
+    expect(sec.bp?.["mobile"]?.["heading"]).toBeUndefined();
+  });
+});

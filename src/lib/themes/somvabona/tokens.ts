@@ -29,6 +29,11 @@ export const SOMVABONA_TOKENS: ThemeTokens = {
   locale: "en",
   currencyDisplay: "symbol",
   fontPairing: "editorial-serif",
-  dark: null,
+  dark: {
+    brand: "#D9966E",
+    accent: "#C4714A",
+    surface: "#221A14",
+    ink: "#F4EBDF",
+  },
   globals: DEFAULT_GLOBALS,
 };

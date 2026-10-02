@@ -185,20 +185,32 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     }),
 
     // ────────────────────────────────────────────────────────────────────
-    // 7. MOST LOVED — bestsellers with rating
-    // ────────────────────────────────────────────────────────────────────
-    s("product_rail", {
-      heading: "MOST LOVED",
-      heading_bn: "সবচেয়ে জনপ্রিয়",
-      subhead: "Pieces our customers return to.",
-      subhead_bn: "যে পণ্যগুলো বারবার ফিরে আসে।",
-      limit: 10,
-      source: "collection",
-      collection: "festive",
-      cardVariant: "standard",
-      showRating: false,
-      badgeLabel: "BESTSELLER",
-      promise: "Free delivery across Bangladesh",
+    // 7. MOST LOVED — bestsellers with rating.
+    // Reference per-device override (mobile merchandising): 10 across on
+    // desktop, 4 on phones. The bp layer only accepts responsive fields.
+    {
+      ...s("product_rail", {
+        heading: "MOST LOVED",
+        heading_bn: "সবচেয়ে জনপ্রিয়",
+        subhead: "Pieces our customers return to.",
+        subhead_bn: "যে পণ্যগুলো বারবার ফিরে আসে।",
+        limit: 10,
+        source: "collection",
+        collection: "festive",
+        cardVariant: "standard",
+        showRating: false,
+        badgeLabel: "BESTSELLER",
+        promise: "Free delivery across Bangladesh",
+      }),
+      bp: { mobile: { limit: 4 } },
+    },
+
+    // 7b. RECENTLY VIEWED — personal shelf (Biba-style re-entry point).
+    s("recently_viewed", {
+      heading: "Recently viewed",
+      heading_bn: "সম্প্রতি দেখা",
+      limit: 6,
+      showClear: true,
     }),
 
     // ────────────────────────────────────────────────────────────────────

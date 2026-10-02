@@ -242,6 +242,17 @@ export function buildHomepageMain(s: SomvabonaBuilder): Section[] {
         },
       ],
     }),
+    // 7b. Recently viewed — personal re-entry shelf after discovery.
+    // Reference per-device override: fewer tiles on phones.
+    {
+      ...t("recently_viewed", {
+        heading: "Recently viewed",
+        heading_bn: "সম্প্রতি দেখা",
+        limit: 6,
+        showClear: true,
+      }),
+      bp: { mobile: { limit: 4 } },
+    },
     // 8. Flagship outlets — franchise proof. Names + hours only, never
     // invented street addresses or phone numbers.
     t("store_locator", {

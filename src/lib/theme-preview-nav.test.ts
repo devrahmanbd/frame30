@@ -57,7 +57,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
     expect(preset).not.toBeNull();
     expect(preset!.key).toBe("songoskriti");
     expect(preset!.tokens.brand).toBe("#1a1a1a");
-    // Fashion-catalog rebuild: 20 sections, hero_carousel first (no
+    // Fashion-catalog rebuild: 21 sections, hero_carousel first (no
     // announcement bar). Full order pinned in wiring.test.ts; the header
     // blueprint stays empty (StoreHeader owns search/account/cart chrome),
     // so the preview index header carries no sections.
@@ -70,6 +70,7 @@ describe("resolveThemePreview (Task 5: restored preview route)", () => {
       "product_rail",
       "split_feature",
       "product_rail",
+      "recently_viewed",
       "finder_row",
       "split_feature",
       "product_rail",
@@ -328,7 +329,7 @@ describe("demo focus (slug-aware collection preview)", () => {
 });
 
 describe("resolveThemePreview (somvabona)", () => {
-  it("resolves the somvabona key with its tokens and 11-section homepage", () => {
+  it("resolves the somvabona key with its tokens and 12-section homepage", () => {
     const preset = resolveThemePreview("somvabona");
     expect(preset).not.toBeNull();
     expect(preset!.key).toBe("somvabona");
@@ -342,6 +343,7 @@ describe("resolveThemePreview (somvabona)", () => {
       "urgency_rail",
       "urgency_rail",
       "occasion_matrix",
+      "recently_viewed",
       "store_locator",
       "craft_story",
       "testimonials",

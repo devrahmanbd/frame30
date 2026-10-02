@@ -29,11 +29,11 @@ describe("somvabona scaffold", () => {
     ]);
   });
 
-  it("builds 11 homepage sections with the urgency rail doubled", () => {
+  it("builds 12 homepage sections with the urgency rail doubled", () => {
     const s = (type: string, props = {}) =>
       ({ id: type, type, props }) as never;
     const sections = buildHomepageMain(s as never);
-    expect(sections).toHaveLength(11);
+    expect(sections).toHaveLength(12);
     expect(sections.map((n) => n.type)).toEqual([
       "announcement_bar",
       "hero_carousel",
@@ -43,6 +43,7 @@ describe("somvabona scaffold", () => {
       "urgency_rail",
       "urgency_rail",
       "occasion_matrix",
+      "recently_viewed",
       "store_locator",
       "craft_story",
       "testimonials",
