@@ -22,6 +22,7 @@ export const ADVANCED_KEYS = [
   "advId",
   "advClass",
   "advAnimation",
+  "advMotion",
   "advCss",
 ] as const;
 
@@ -42,6 +43,38 @@ export const ADVANCED_ANIMATIONS = [
   "zoom",
 ] as const;
 export type AdvancedAnimation = (typeof ADVANCED_ANIMATIONS)[number];
+
+/**
+ * Theme-motion manifest (closed vocabulary). A theme requests a named effect
+ * via `advMotion`; the engine executes it — themes never touch shared
+ * renderer code (isolation rule). Only CSS-executable effects are listed:
+ * scroll-linked scenes and animated numerals need JS executors (phase 2).
+ * Every effect collapses under `prefers-reduced-motion` and `motion: none`.
+ */
+export const MOTION_EFFECTS = [
+  "none",
+  "fade",
+  "rise",
+  "zoom",
+  "stagger-grid",
+  "marquee",
+  "line-reveal",
+] as const;
+export type MotionEffect = (typeof MOTION_EFFECTS)[number];
+
+/** Unknown or empty values resolve to `none` — never a crash, never empty. */
+export function motionEffectOf(value: unknown): MotionEffect {
+  return (MOTION_EFFECTS as readonly string[]).includes(
+    typeof value === "string" ? value : "",
+  )
+    ? (value as MotionEffect)
+    : "none";
+}
+
+/** Entrance-type effects park until the shared observer reports on-screen. */
+export function isEntranceEffect(effect: MotionEffect): boolean {
+  return effect !== "none" && effect !== "marquee";
+}
 
 export const ADVANCED_FIELDS: Field[] = [
   {
@@ -113,6 +146,21 @@ export const ADVANCED_FIELDS: Field[] = [
       { value: "slide-left", label: "Slide from left" },
       { value: "slide-right", label: "Slide from right" },
       { value: "zoom", label: "Zoom" },
+    ],
+  },
+  {
+    key: "advMotion",
+    label: "Motion effect",
+    kind: "select",
+    panel: "advanced",
+    options: [
+      { value: "none", label: "None" },
+      { value: "fade", label: "Fade in" },
+      { value: "rise", label: "Rise" },
+      { value: "zoom", label: "Zoom" },
+      { value: "stagger-grid", label: "Staggered grid" },
+      { value: "marquee", label: "Marquee loop" },
+      { value: "line-reveal", label: "Line reveal" },
     ],
   },
   {

@@ -13,7 +13,7 @@ import {
   resolveSkin,
   sectionStyle,
 } from "@/lib/builder-ast";
-import { advancedAttrs } from "@/lib/builder-advanced";
+import { advancedAttrs, isEntranceEffect, motionEffectOf } from "@/lib/builder-advanced";
 import { resolveDynamicProps } from "@/lib/dynamic-tags";
 import { useDynamicContext } from "./DynamicContext";
 import type { Locale } from "@/lib/bitext";
@@ -191,6 +191,11 @@ export function SectionRenderer({
   // entrance animation, applied to the same wrapper so a widget never has to
   // know about them.
   const advanced = advancedAttrs(resolved);
+  // Theme-motion manifest: a theme requests a named effect via advMotion and
+  // the engine executes it here — no renderer fork, no theme import.
+  // Entrance effects park behind the shared observer like reveals do.
+  const fx = motionEffectOf(resolved["advMotion"]);
+  const fxParked = fx !== "none" && isEntranceEffect(fx) && !reveal.shown;
   // In the studio every node carries a handle so a click anywhere on the
   // canvas can select the deepest widget under the pointer, Webflow-style.
   const selected = editing && !!selectedIds?.includes(section.id);
@@ -210,6 +215,8 @@ export function SectionRenderer({
       ? `fq-anim fq-anim-${advanced.animation}`
       : "",
     revealMode !== "none" && !reveal.shown ? "fq-reveal-pending" : "",
+    fx !== "none" ? `fq-fx fq-fx-${fx}` : "",
+    fxParked ? "fq-reveal-pending" : "",
     editing ? "relative" : "",
     selected ? "outline outline-2 outline-primary" : "",
     // Studio only: a conditional section that would be hidden right now is
@@ -232,6 +239,7 @@ export function SectionRenderer({
         {...(advanced.id ? { id: advanced.id } : {})}
         data-fq-node={section.id}
         {...(skin ? { "data-widget": section.type, "data-skin": skin } : {})}
+        {...(fx !== "none" ? { "data-motion-effect": fx } : {})}
         {...(locale === "bn" ? { lang: "bn" } : {})}
         {...(editing ? { "data-node-id": section.id } : {})}
       >

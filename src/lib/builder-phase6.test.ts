@@ -259,3 +259,36 @@ describe("per-device overrides persist through parse", () => {
     expect(sec.bp?.["mobile"]?.["heading"]).toBeUndefined();
   });
 });
+
+describe("theme-motion manifest", () => {
+  it("resolves known effects and collapses unknown to none", async () => {
+    const { motionEffectOf, isEntranceEffect } = await import(
+      "./builder-advanced"
+    );
+    expect(motionEffectOf("stagger-grid")).toBe("stagger-grid");
+    expect(motionEffectOf("marquee")).toBe("marquee");
+    expect(motionEffectOf("line-reveal")).toBe("line-reveal");
+    expect(motionEffectOf("explode")).toBe("none");
+    expect(motionEffectOf(undefined)).toBe("none");
+    expect(isEntranceEffect("stagger-grid")).toBe(true);
+    expect(isEntranceEffect("marquee")).toBe(false);
+    expect(isEntranceEffect("none")).toBe(false);
+  });
+
+  it("keeps advMotion through parseAst round-trip", async () => {
+    const { parseAst } = await import("./builder-ast");
+    const ast = parseAst({
+      header: [],
+      main: [
+        {
+          id: "s1",
+          type: "heading",
+          props: { text: "Hi", advMotion: "stagger-grid" },
+        },
+      ],
+      footer: [],
+    });
+    const props = (ast.main[0] as { props: Record<string, unknown> }).props;
+    expect(props["advMotion"]).toBe("stagger-grid");
+  });
+});

@@ -23,6 +23,7 @@ import {
   SONGOSKRITI_WIDGETS,
 } from "./songoskriti";
 import { MERCH_WIDGETS } from "./merch";
+import { SectionRenderer } from "./SectionRenderer";
 import { SOMVABONA_WIDGETS } from "./somvabona";
 import { APPAREL_WIDGETS } from "./apparel";
 import type { WidgetRow } from "@/lib/widget-data";
@@ -658,5 +659,29 @@ describe("lane B renderer paths", () => {
       },
     });
     expect(html).toContain("rounded-full object-cover");
+  });
+});
+
+describe("theme-motion manifest execution", () => {
+  const renderNode = (props: Record<string, unknown>) =>
+    renderToStaticMarkup(
+      createElement(SectionRenderer, {
+        section: { ...newSection("heading"), props },
+        editing: false,
+        locale: "en",
+        template: "index",
+      }),
+    );
+
+  it("emits fq-fx classes and data hook for a requested effect", () => {
+    const html = renderNode({ text: "Hi", advMotion: "stagger-grid" });
+    expect(html).toContain("fq-fx fq-fx-stagger-grid");
+    expect(html).toContain('data-motion-effect="stagger-grid"');
+  });
+
+  it("emits no motion hook when no effect is requested", () => {
+    const html = renderNode({ text: "Hi" });
+    expect(html).not.toContain("fq-fx");
+    expect(html).not.toContain("data-motion-effect");
   });
 });
