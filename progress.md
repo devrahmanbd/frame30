@@ -240,8 +240,20 @@ live eyeball (desktop + 390px mobile) + mobile viewport pass.
       server) — 390px mobile, footer + logo intact, 0 console errors
       (screenshot). :3001 fresh instance 404s on host-gate without Supabase
       env (known environmental, same as Phase 10 closeout); new copy verified
-      via SSR render tests EN+BN instead. Copilot imagery still needs your
-      authenticated session — prompts below (v2 maroon note added).
+      via SSR render tests EN+BN instead.
+- [x] P11-6 Copilot imagery batch A (2026-10-02, owner Admin session via
+      chrome-devtools): 3/13 downloaded to public/ph/oceanblue-v2/ as
+      JPEG q85 (~600KB each, 1024×1536, eyeballed: on-palette, no text) —
+      hero-newin.jpg (maroon salwar, rooftop), hero-wedding.jpg (maroon
+      lehenga, haveli), hero-girls.jpg (mustard kurta, marigold market;
+      prompt auto-adapted teen→adult by safety filter). LIMIT HIT:
+      Copilot daily image quota exhausted ("can't generate any more images
+      today") — hero-nxt, festive split + 8 tiles queued.
+- [ ] P11-7 Imagery batch B (when quota resets): hero-nxt (retry single
+      adult woman, two-person comps stall the generator), festive split
+      2:1, 8 category tiles 1:1 (salwar/kurta/dress/bottom/girls/
+      jewellery/collections/sale flat-lays, cream bg). Then wire via
+      /editor (builders stay imageless by convention — v1 precedent).
 - [ ] P11-5 Follow-up: restart :3000 on this commit for live eyeball of new
       copy + blush marquee; run Copilot prompts → drop into
       public/ph/oceanblue-v2/; mobile 320/375/414 sweep + a11y gate.
