@@ -80,8 +80,11 @@ function ThemePreviewRoute() {
     template: initialTemplate,
     focus: initialFocus,
     mock_order: initialMockOrder,
+    variation: variationKey,
   } = Route.useSearch();
-  const preset = resolveThemePreview(key);
+  // Theme variation deep-link (`?variation=minimal`): unknown keys fall
+  // back to the base theme inside the resolver — never a 404.
+  const preset = resolveThemePreview(key, variationKey);
 
   if (!preset) {
     return <ThemePreviewNotFound />;

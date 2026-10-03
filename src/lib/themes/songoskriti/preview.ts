@@ -1,7 +1,11 @@
 import type { SectionBuilder } from "./types";
 import type { PreviewThemeSource } from "../../theme-preview-nav";
 import { withSongoskritiDefaults } from "./skins";
-import { SONGOSKRITI_TOKENS } from "./tokens";
+import {
+  SONGOSKRITI_VARIATIONS,
+  songoskritiTokensFor,
+  withSongoskritiVariation,
+} from "./variations";
 import { buildHeaderMain } from "./header";
 import { buildFooterMain } from "./footer";
 import { buildHomepageMain } from "./homepage";
@@ -37,18 +41,27 @@ const rail = (
     promise_bn,
   });
 
-export function songoskritiPreviewSource(): PreviewThemeSource {
+export function songoskritiPreviewSource(
+  variationKey?: string,
+): PreviewThemeSource {
   return {
     key: "songoskriti",
     themeName: "Songoskriti",
     author: "Framique",
-    tokens: SONGOSKRITI_TOKENS,
+    tokens: songoskritiTokensFor(variationKey),
+    variations: SONGOSKRITI_VARIATIONS,
     header: (template, s) => template === "checkout" ? [] : buildHeaderMain(s),
     footer: (template, s) => template === "checkout" ? [] : buildFooterMain(s),
     main: (template, s) => {
       // Non-homepage templates author sections directly (not through the
       // homepage builder), so they get the same skin-default wrap here.
-      s = withSongoskritiDefaults(s);
+      // The variation layer sits OUTSIDE the base wrap: base < variation <
+      // authored. The homepage builder wraps internally the same way, so it
+      // receives the variation-layered builder directly.
+      s = withSongoskritiVariation(
+        withSongoskritiDefaults(s),
+        variationKey,
+      );
       switch (template) {
         case "index":
           return buildHomepageMain(s);

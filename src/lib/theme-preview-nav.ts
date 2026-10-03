@@ -24,6 +24,13 @@ import type {
 import { TEMPLATE_KEYS } from "./builder-ast";
 import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
+import {
+  MAX_VARIATION_KEY_LENGTH,
+  VARIATION_KEY_RE,
+  applyVariationTokens,
+  variationForKey,
+  type ThemeVariation,
+} from "./theme-variations";
 
 export type PreviewTarget = {
   template: TemplateKey;
@@ -248,6 +255,7 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
   focus: string | undefined;
   q: string | undefined;
   max: string | undefined;
+  variation?: string | undefined;
   mock_order?: "success" | "pending" | "failed";
 } {
   const template =
@@ -271,6 +279,14 @@ export function validateThemePreviewSearch(search: Record<string, unknown>): {
       typeof search.max === "string"
         ? (search.max as string).slice(0, PREVIEW_SEARCH_QUERY_LIMIT)
         : undefined,
+    // Theme variation deep-link (`?variation=minimal`): slug-shaped only;
+    // unknown keys resolve to the base theme downstream (default fallback).
+    variation:
+      typeof search.variation === "string" &&
+      search.variation.length <= MAX_VARIATION_KEY_LENGTH &&
+      VARIATION_KEY_RE.test(search.variation)
+        ? search.variation
+        : undefined,
     mock_order: 
       search.mock_order === "success" || search.mock_order === "pending" || search.mock_order === "failed"
         ? search.mock_order
@@ -290,6 +306,11 @@ export type PreviewThemeSource = {
   themeName: string;
   author: string;
   tokens: ThemeTokens;
+  /**
+   * Merchant-pickable theme variations (Track T): token + default-skin
+   * overlays only. Absent/empty means the theme ships the base look alone.
+   */
+  variations?: ThemeVariation[];
   header: (template: TemplateKey, s: SectionBuilder) => Section[];
   footer: (template: TemplateKey, s: SectionBuilder) => Section[];
   /**
@@ -305,6 +326,10 @@ export type ThemePreviewPreset = {
   author: string;
   tokens: ThemeTokens;
   templates: Record<TemplateKey, ThemeAst>;
+  /** Active theme variation (null = base theme, the default fallback). */
+  variation: ThemeVariation | null;
+  /** Every variation the theme ships (empty when it ships none). */
+  variations: ThemeVariation[];
 };
 
 const GENERIC_TITLES: Record<TemplateKey, [string, string]> = {
@@ -374,15 +399,25 @@ export function assemblePreviewTemplates(
   return templates;
 }
 
-export function resolveThemePreview(key: string): ThemePreviewPreset | null {
-  const source = previewSourceFor(key);
+export function resolveThemePreview(
+  key: string,
+  variationKey?: string | null,
+): ThemePreviewPreset | null {
+  const source = previewSourceFor(key, variationKey ?? undefined);
   if (!source) return null;
+  // The source factory already builds with the variation applied; the
+  // metadata lookup + idempotent token merge here keep resolvers that
+  // bypass the factory honest. Unknown keys fall back to the base theme.
+  const variations = source.variations ?? [];
+  const variation = variationForKey(variations, variationKey);
   return {
     key: source.key,
     themeName: source.themeName,
     author: source.author,
-    tokens: source.tokens,
+    tokens: applyVariationTokens(source.tokens, variation),
     templates: assemblePreviewTemplates(source),
+    variation,
+    variations,
   };
 }
 

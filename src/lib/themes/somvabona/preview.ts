@@ -1,9 +1,13 @@
 import type { PreviewThemeSource } from "../../theme-preview-nav";
 import type { Section, SectionBuilder } from "../../builder-ast";
-import { SOMVABONA_TOKENS } from "./tokens";
 import { buildHeaderMain, buildFooterMain } from "./chrome";
 import { buildHomepageMain } from "./homepage";
 import { withSomvabonaWidgetDefaults } from "./skins";
+import {
+  SOMVABONA_VARIATIONS,
+  somvabonaTokensFor,
+  withSomvabonaVariation,
+} from "./variations";
 
 /**
  * Somvabona's preview source — theme-owned demo content for the
@@ -17,23 +21,32 @@ import { withSomvabonaWidgetDefaults } from "./skins";
  * The loose SomvabonaBuilder adapts to the shared SectionBuilder the same
  * way the theme's own tests do (`as never` — see types.ts).
  */
-export function somvabonaPreviewSource(): PreviewThemeSource {
+export function somvabonaPreviewSource(
+  variationKey?: string,
+): PreviewThemeSource {
   const adapt = (build: (s: never) => Section[]) => (s: SectionBuilder) =>
     build(s as never);
   return {
     key: "somvabona",
     themeName: "Somvabona",
     author: "Framique",
-    tokens: SOMVABONA_TOKENS,
+    tokens: somvabonaTokensFor(variationKey),
+    variations: SOMVABONA_VARIATIONS,
     header: (template, s) => adapt(buildHeaderMain)(s),
     footer: (template, s) => adapt(buildFooterMain)(s),
     main: (template, s) => {
       // Skin defaults merge under authored props here too (skins.ts), so
       // the collection demo rail carries the Somvabona compact treatment.
-      const t = withSomvabonaWidgetDefaults(s);
+      // The variation layer sits OUTSIDE the base wrap: base < variation <
+      // authored.
+      const layered = withSomvabonaVariation(
+        withSomvabonaWidgetDefaults(s),
+        variationKey,
+      );
+      const t = layered;
       switch (template) {
         case "index":
-          return buildHomepageMain(s as never);
+          return buildHomepageMain(layered as never);
         case "collection":
           return [
             t("heading", { text: "New in", text_bn: "নতুন এসেছে" }),

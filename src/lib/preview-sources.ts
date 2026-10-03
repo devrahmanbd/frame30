@@ -11,14 +11,17 @@ import type { TemplateKey } from "./builder-ast";
 import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
 import { somvabonaPreviewSource } from "./themes/somvabona/preview";
 
-const SOURCES: Record<string, () => PreviewThemeSource> = {
-  songoskriti: songoskritiPreviewSource,
-  somvabona: somvabonaPreviewSource,
+const SOURCES: Record<string, (variationKey?: string) => PreviewThemeSource> = {
+  songoskriti: (variationKey) => songoskritiPreviewSource(variationKey),
+  somvabona: (variationKey) => somvabonaPreviewSource(variationKey),
 };
 
-export function previewSourceFor(key: string): PreviewThemeSource | null {
+export function previewSourceFor(
+  key: string,
+  variationKey?: string,
+): PreviewThemeSource | null {
   const factory = SOURCES[key];
-  return factory ? factory() : null;
+  return factory ? factory(variationKey) : null;
 }
 
 /** Registered preview keys, for routes and diagnostics. */
