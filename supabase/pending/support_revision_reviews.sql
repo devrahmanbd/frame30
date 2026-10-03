@@ -45,16 +45,16 @@ alter table public.support_revision_reviews enable row level security;
 drop policy if exists support_revision_reviews_tenant_read on public.support_revision_reviews;
 create policy support_revision_reviews_tenant_read on public.support_revision_reviews
   for select using (
-    public.has_merchant_role(merchant_id, auth.uid(), 'viewer'::public.merchant_role)
+    public.is_merchant_member(merchant_id, auth.uid())
   );
 
 drop policy if exists support_revision_reviews_tenant_write on public.support_revision_reviews;
 create policy support_revision_reviews_tenant_write on public.support_revision_reviews
   for all using (
-    public.has_merchant_role(merchant_id, auth.uid(), 'editor'::public.merchant_role)
+    public.is_merchant_admin(merchant_id, auth.uid())
   )
   with check (
-    public.has_merchant_role(merchant_id, auth.uid(), 'editor'::public.merchant_role)
+    public.is_merchant_admin(merchant_id, auth.uid())
   );
 
 grant select, insert, update on public.support_revision_reviews to authenticated;

@@ -186,7 +186,6 @@ async function defaultListExisting(
     .from("support_kb_docs")
     .select("id, title, body, tags")
     .eq("merchant_id", merchantId)
-    .is("deleted_at", null)
     .limit(500);
   if (error) throw error;
   return (Array.isArray(data) ? data : []) as ExistingDoc[];

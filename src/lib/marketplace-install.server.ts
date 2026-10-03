@@ -241,7 +241,12 @@ export async function installListing(
   if (unknown.length)
     throw new Error(`plugin_consent_required:${unknown.join(",")}`);
 
-  const charge = input.trial ? 0 : listing.price_minor_int;
+  const purchaseInterval = isInterval(input.billingInterval)
+    ? input.billingInterval
+    : "one_time";
+  const charge = input.trial
+    ? 0
+    : resolveListingTermPrice(listing, purchaseInterval);
   const previous = await snapshotCurrent(db, merchantId, input.kind);
 
   const { data: install, error } = await db
@@ -597,13 +602,19 @@ export async function saveListing(
     category: string;
     version: string;
     priceMinor: number;
+    /** Per-interval price for monthly renewals/conversions. Absent/null falls back to priceMinor. */
+    priceMonthlyMinor?: number | null;
+    /** Per-interval price for annual renewals/conversions. Absent/null falls back to priceMinor. */
+    priceAnnualMinor?: number | null;
     trialAllowed: boolean;
     manifest: Record<string, unknown>;
   },
   actorId?: string | null,
 ) {
+  validateListingTermPrice(input.priceMonthlyMinor);
+  validateListingTermPrice(input.priceAnnualMinor);
   const { auditAction } = await import("./hardening.server");
-  const payload = {
+  const basePayload = {
     seller_merchant_id: merchantId,
     name: input.name,
     slug: input.slug,
@@ -615,6 +626,20 @@ export async function saveListing(
     trial_allowed: input.trialAllowed,
     manifest: input.manifest as never,
   };
+  const termPayload: Record<string, unknown> = {};
+  if (input.priceMonthlyMinor !== undefined)
+    termPayload.price_monthly_minor_int = input.priceMonthlyMinor;
+  if (input.priceAnnualMinor !== undefined)
+    termPayload.price_annual_minor_int = input.priceAnnualMinor;
+  const hasTerms = Object.keys(termPayload).length > 0;
+  const termAudit = {
+    ...(input.priceMonthlyMinor !== undefined
+      ? { price_monthly_minor_int: input.priceMonthlyMinor }
+      : {}),
+    ...(input.priceAnnualMinor !== undefined
+      ? { price_annual_minor_int: input.priceAnnualMinor }
+      : {}),
+  };
   if (input.id) {
     const { data: before } = await db
       .from(table(input.kind))
@@ -623,12 +648,37 @@ export async function saveListing(
       .eq("seller_merchant_id", merchantId)
       .maybeSingle();
     if (!before) throw new Error("market_listing_not_found");
-    const { error } = await db
-      .from(table(input.kind))
-      .update(payload)
-      .eq("id", input.id)
-      .eq("seller_merchant_id", merchantId);
-    if (error) throw new Error("market_listing_save_failed");
+    // PRICING lane: the term columns may not exist yet (pending migration).
+    // Optimistic write first, then retry without terms — a seller can always
+    // save the base listing; term prices backfill after the migration.
+    let wrote = false;
+    if (hasTerms) {
+      try {
+        const { error } = await db
+          .from(table(input.kind))
+          .update({ ...basePayload, ...termPayload } as never)
+          .eq("id", input.id)
+          .eq("seller_merchant_id", merchantId);
+        if (error) throw error;
+        wrote = true;
+      } catch (err) {
+        if (!isMissingTermColumnError(err))
+          throw new Error("market_listing_save_failed");
+        const { log } = await import("./observability.server");
+        log("warn", "market.listing_terms_columns_missing", {
+          merchantId,
+          listingId: input.id,
+        });
+      }
+    }
+    if (!wrote) {
+      const { error } = await db
+        .from(table(input.kind))
+        .update(basePayload)
+        .eq("id", input.id)
+        .eq("seller_merchant_id", merchantId);
+      if (error) throw new Error("market_listing_save_failed");
+    }
     await auditAction(
       db,
       merchantId,
@@ -642,15 +692,58 @@ export async function saveListing(
           slug: input.slug,
           version: input.version,
           price_minor_int: input.priceMinor,
+          ...termAudit,
         },
       },
       input.id,
     );
     return { ok: true, id: input.id };
   }
+  // PRICING lane: same optimistic-term-write pattern as the update path.
+  if (hasTerms) {
+    try {
+      const { data, error } = await db
+        .from(table(input.kind))
+        .insert({ ...basePayload, status: "draft", ...termPayload } as never)
+        .select("id")
+        .single();
+      if (error || !data)
+        throw error ?? new Error("market_listing_save_failed");
+      await auditAction(
+        db,
+        merchantId,
+        actorId ?? null,
+        "market.listing_saved",
+        input.kind,
+        {
+          before: null,
+          after: {
+            name: input.name,
+            slug: input.slug,
+            version: input.version,
+            price_minor_int: input.priceMinor,
+            ...termAudit,
+          },
+        },
+        (data as unknown as { id: string }).id,
+      );
+      return { ok: true, id: (data as unknown as { id: string }).id };
+    } catch (err) {
+      if (!isMissingTermColumnError(err)) {
+        if (err instanceof Error && err.message === "market_listing_save_failed")
+          throw err;
+        throw new Error("market_listing_save_failed");
+      }
+      const { log } = await import("./observability.server");
+      log("warn", "market.listing_terms_columns_missing", {
+        merchantId,
+        slug: input.slug,
+      });
+    }
+  }
   const { data, error } = await db
     .from(table(input.kind))
-    .insert({ ...payload, status: "draft" })
+    .insert({ ...basePayload, status: "draft" })
     .select("id")
     .single();
   if (error || !data) throw new Error("market_listing_save_failed");
@@ -667,6 +760,7 @@ export async function saveListing(
         slug: input.slug,
         version: input.version,
         price_minor_int: input.priceMinor,
+        ...termAudit,
       },
     },
     (data as { id: string }).id,
@@ -1104,6 +1198,133 @@ function isInterval(v: unknown): v is InstallBillingInterval {
   return v === "one_time" || v === "monthly" || v === "annual";
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// PRICING lane — per-interval listing term prices.
+//
+// Listings carry an optional price per recurring interval
+// (`price_monthly_minor_int` / `price_annual_minor_int` on both listing
+// tables, via supabase/pending/marketplace_listing_terms.sql — UNAPPLIED).
+// Every read/write below is feature-detected and runs with and without those
+// columns, same optimistic pattern as the install recurring columns above:
+//   - saveListing writes terms optimistically, retrying without them on a
+//     missing-column failure (base listing always saves).
+//   - loadListingPricing selects terms first, reselecting the base columns on
+//     a missing-column failure.
+// Absent (or invalid stored) term prices fall back: purchase/conversion fall
+// back to the listing base price_minor_int, renewal falls back to the
+// install-row price (its purchase-time behaviour).
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type ListingTermSource = {
+  price_minor_int: unknown;
+  price_monthly_minor_int?: unknown;
+  price_annual_minor_int?: unknown;
+};
+
+type ListingPricingRow = {
+  seller_merchant_id: string;
+  price_minor_int: number;
+  price_monthly_minor_int?: number | null;
+  price_annual_minor_int?: number | null;
+};
+
+const LISTING_TERM_PRICE_MAX = 100_000_000;
+
+/** True when the failure is "the listing term columns don't exist yet" — never for real errors. */
+export function isMissingTermColumnError(err: unknown): boolean {
+  const msg =
+    err instanceof Error ? err.message : (
+      (err as { message?: string } | null)?.message ?? String(err ?? "")
+    );
+  if (!/price_monthly_minor_int|price_annual_minor_int/i.test(msg))
+    return false;
+  return /column|schema cache|PGRST204|42703|does not exist/i.test(msg);
+}
+
+/**
+ * Rejects term amounts that could never be charged: non-integers,
+ * negatives, or absurd magnitudes. Absent (undefined/null) means "no term
+ * price" and is always valid. Throws `market_listing_terms_invalid`.
+ */
+export function validateListingTermPrice(value: unknown): void {
+  if (value === undefined || value === null) return;
+  if (
+    !Number.isInteger(value) ||
+    (value as number) < 0 ||
+    (value as number) > LISTING_TERM_PRICE_MAX
+  )
+    throw new Error("market_listing_terms_invalid");
+}
+
+/**
+ * The listing's price for one recurring interval, or null when the listing
+ * carries no usable term price (column absent, null, or an invalid stored
+ * value — negative stored values can never become a charge). One-time has
+ * no term price by definition.
+ */
+export function getListingTermPrice(
+  listing: ListingTermSource,
+  interval: InstallBillingInterval,
+): number | null {
+  if (!isInterval(interval) || interval === "one_time") return null;
+  const key =
+    interval === "monthly"
+      ? "price_monthly_minor_int"
+      : "price_annual_minor_int";
+  const raw = listing?.[key];
+  if (raw === undefined || raw === null) return null;
+  const term = Number(raw);
+  if (!Number.isInteger(term) || term < 0) return null;
+  return term;
+}
+
+/**
+ * Full-period price for an interval: the term price when the listing carries
+ * one, else the base price_minor_int. Throws `market_listing_terms_invalid`
+ * for unknown intervals.
+ */
+export function resolveListingTermPrice(
+  listing: ListingTermSource,
+  interval: InstallBillingInterval,
+): number {
+  if (!isInterval(interval)) throw new Error("market_listing_terms_invalid");
+  const base = Number(listing?.price_minor_int ?? 0);
+  return getListingTermPrice(listing, interval) ?? base;
+}
+
+/**
+ * Re-reads a listing's pricing by slug (never trusted from the install row).
+ * Selects the term columns first; on pre-migration DBs reselects the base
+ * columns so callers always get a usable row or null (delisted).
+ */
+async function loadListingPricing(
+  db: Client,
+  kind: Kind,
+  slug: string,
+): Promise<ListingPricingRow | null> {
+  try {
+    const { data, error } = await db
+      .from(table(kind))
+      .select(
+        "id, seller_merchant_id, price_minor_int, price_monthly_minor_int, price_annual_minor_int",
+      )
+      .eq("slug", slug)
+      .maybeSingle();
+    if (error) throw error;
+    return (data ?? null) as unknown as ListingPricingRow | null;
+  } catch (err) {
+    if (!isMissingTermColumnError(err)) throw err;
+    const { log } = await import("./observability.server");
+    log("warn", "market.listing_terms_columns_missing", { slug });
+    const { data } = await db
+      .from(table(kind))
+      .select("id, seller_merchant_id, price_minor_int")
+      .eq("slug", slug)
+      .maybeSingle();
+    return (data ?? null) as unknown as ListingPricingRow | null;
+  }
+}
+
 /** Next renewal instant anchored at `fromMs`. Null for one-time (no renewal). */
 export function computeRenewsAt(
   interval: InstallBillingInterval,
@@ -1245,8 +1466,20 @@ export async function processInstallRenewal(
   if (typeof row.renews_at !== "string" || row.renews_at > nowIso)
     return { renewed: false, installId, reason: "not_due" };
 
-  const price = Number(row.price_minor_int ?? 0);
   const interval = row.billing_interval;
+  const kind = row.kind === "theme" ? ("theme" as const) : ("widget" as const);
+  // PRICING lane: the period price comes from the listing's term price for
+  // the install's interval. Listings without term prices keep the install-row
+  // price (their purchase-time behaviour). Converted trials carry price 0 on
+  // the install row, so resolving here (before the free check) is what lets
+  // them renew at the listing term price instead of extending free forever.
+  const listing = await loadListingPricing(db, kind, row.listing_slug);
+  const seller = listing as unknown as ListingPricingRow | null;
+  if (!seller)
+    return { renewed: false, installId, reason: "listing_not_found" };
+  const price =
+    getListingTermPrice(seller, interval) ??
+    Number(row.price_minor_int ?? 0);
   // Free recurring installs extend without touching the ledger.
   if (!Number.isFinite(price) || price <= 0) {
     const renewsAt = computeRenewsAt(interval, nowMs) as string;
@@ -1269,20 +1502,9 @@ export async function processInstallRenewal(
     };
   }
 
-  // Seller split for the renewal mirrors the purchase split. The listing is
-  // re-read (never trusted from the install row) — a delisted plugin has
-  // nothing to renew against.
-  const kind = row.kind === "theme" ? ("theme" as const) : ("widget" as const);
-  const { data: listing } = await db
-    .from(table(kind))
-    .select("id, seller_merchant_id, price_minor_int")
-    .eq("slug", row.listing_slug)
-    .maybeSingle();
-  const seller = listing as unknown as {
-    seller_merchant_id: string;
-  } | null;
-  if (!seller) return { renewed: false, installId, reason: "listing_not_found" };
-
+  // The listing is re-read above (never trusted from the install row) — a
+  // delisted plugin has nothing to renew against. The seller split for the
+  // renewal mirrors the purchase split.
   const periodStart =
     typeof row.last_renewed_at === "string"
       ? row.last_renewed_at
@@ -1355,13 +1577,188 @@ export async function processInstallRenewal(
   return { renewed: true, installId, renewsAt, versioned: true, replayed };
 }
 
+/**
+ * LANE G follow-up — trial-to-paid conversion (the charge-success path).
+ *
+ * Trials store the billing interval with null renews_at by design — there is
+ * nothing to charge until the trial converts. Converting charges the
+ * listing's current full-period price through the ledger (idempotency
+ * `convert:<install>`, so charge-success retries replay instead of
+ * double-charging), flips the row to live `installed`, then opens the
+ * renewal schedule via setInstallBillingSchedule — the call that stamps
+ * renews_at. Free listings convert with no ledger row.
+ *
+ * A declined charge parks the install on `past_due` (terminal `lapsed`
+ * follows via lapseExpiredTrials once the window passes) and returns — never
+ * throws for money failures, mirroring processInstallRenewal. An already
+ * converted install replays as `already_paid` without charging.
+ */
+export type TrialConversionVerdict =
+  | {
+      converted: true;
+      installId: string;
+      renewsAt: string | null;
+      versioned: boolean;
+      replayed: boolean;
+    }
+  | {
+      converted: false;
+      installId: string;
+      reason: "already_paid" | "past_due" | "listing_not_found";
+    };
+
+type ConversionRow = {
+  id: string;
+  merchant_id: string;
+  kind: string;
+  status: string;
+  is_trial: boolean;
+  listing_slug: string;
+  listing_name: string;
+  currency_code: string;
+  billing_interval?: unknown;
+  expires_at?: unknown;
+};
+
+export async function convertTrialToPaid(
+  db: Client,
+  merchantId: string,
+  installId: string,
+  opts?: { nowMs?: number; actorId?: string | null },
+): Promise<TrialConversionVerdict> {
+  const nowMs = opts?.nowMs ?? Date.now();
+  // Expired trials park on terminal `lapsed` first — conversion below then
+  // fails closed instead of reviving a dead trial.
+  await lapseExpiredTrials(db, merchantId, nowMs);
+  const { data } = await db
+    .from("marketplace_installs")
+    .select(
+      "id, merchant_id, kind, status, is_trial, listing_slug, listing_name, currency_code, billing_interval, expires_at",
+    )
+    .eq("merchant_id", merchantId)
+    .eq("id", installId)
+    .maybeSingle();
+  const row = (data ?? null) as ConversionRow | null;
+  if (!row) throw new Error("market_install_not_found");
+  if (row.status === "lapsed") throw new Error("market_trial_expired");
+  if (row.status === "installed" && !row.is_trial)
+    return { converted: false, installId, reason: "already_paid" };
+  if (row.status !== "trial") throw new Error("market_install_not_found");
+
+  // Trial rows carry price 0 (nothing charged at trial start), so the
+  // conversion charge is re-derived from the listing — never trusted from
+  // the install row. A delisted plugin has nothing to convert against.
+  const kind = row.kind === "theme" ? ("theme" as const) : ("widget" as const);
+  const listing = await loadListingPricing(db, kind, row.listing_slug);
+  const seller = listing as unknown as ListingPricingRow | null;
+  if (!seller)
+    return { converted: false, installId, reason: "listing_not_found" };
+  const interval = isInterval(row.billing_interval)
+    ? row.billing_interval
+    : "one_time";
+  // PRICING lane: conversion charges the listing's term price for the
+  // trial's interval; listings without term prices fall back to the base
+  // price (the pre-lane behaviour).
+  const price =
+    getListingTermPrice(seller, interval) ??
+    Number(seller.price_minor_int ?? 0);
+
+  let replayed = false;
+  if (Number.isFinite(price) && price > 0) {
+    const { platform } = split(price);
+    const { postLedgerEntry } = await import("./ledger.server");
+    try {
+      const posted = await postLedgerEntry(db, {
+        merchantId,
+        counterpartyMerchantId: seller.seller_merchant_id,
+        source:
+          kind === "theme" ? "market.theme.installed" : "market.widget.installed",
+        referenceId: installId,
+        direction: "debit",
+        gross: money(price, row.currency_code),
+        platformFee: money(platform, row.currency_code),
+        idempotencyKey: `convert:${installId}`,
+        memo: `${row.listing_name} trial conversion`,
+      });
+      replayed = posted.replayed;
+    } catch {
+      await db
+        .from("marketplace_installs")
+        .update({ status: "past_due" })
+        .eq("merchant_id", merchantId)
+        .eq("id", installId);
+      const { auditAction } = await import("./hardening.server");
+      await auditAction(
+        db,
+        merchantId,
+        opts?.actorId ?? null,
+        "market.renewal_past_due",
+        row.kind,
+        { slug: row.listing_slug, price_minor_int: price },
+        installId,
+      );
+      return { converted: false, installId, reason: "past_due" };
+    }
+  }
+
+  const { error } = await db
+    .from("marketplace_installs")
+    .update({
+      status: "installed",
+      is_trial: false,
+      expires_at: null,
+    } as never)
+    .eq("merchant_id", merchantId)
+    .eq("id", installId);
+  if (error) throw new Error("market_conversion_failed");
+
+  // The renews_at stamp lives here: trials carry null by design, so the
+  // conversion opens the schedule. Best-effort like the purchase path — a
+  // schedule can be backfilled, a completed charge cannot be un-moved.
+  let renewsAt: string | null = null;
+  let versioned = true;
+  try {
+    const schedule = await setInstallBillingSchedule(db, installId, {
+      merchantId,
+      interval,
+      trial: false,
+      nowMs,
+    });
+    renewsAt = schedule.renewsAt;
+    versioned = schedule.versioned;
+  } catch (err) {
+    const { log } = await import("./observability.server");
+    log("error", "market.schedule_write_failed", {
+      merchantId,
+      installId,
+      message: err instanceof Error ? err.message.slice(0, 120) : "unknown",
+    });
+  }
+
+  const { auditAction: conversionAudit } = await import("./hardening.server");
+  await conversionAudit(
+    db,
+    merchantId,
+    opts?.actorId ?? null,
+    "market.converted",
+    row.kind,
+    {
+      slug: row.listing_slug,
+      charge_minor_int: price,
+      renews_at: renewsAt,
+      replayed,
+    },
+    installId,
+  );
+  return { converted: true, installId, renewsAt, versioned, replayed };
+}
+
 export type InstallProrationQuote = {
   remainingDays: number;
   periodDays: number;
   creditMinorInt: number;
   dueMinorInt: number;
 };
-
 /**
  * Day-based upgrade proration for recurring installs. Mirrors the
  * platform-plan upgrade policy documented at billing-desk.server.ts:179 —

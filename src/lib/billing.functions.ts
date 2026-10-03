@@ -52,12 +52,26 @@ export const billingClaimTrialFn = createServerFn({ method: "POST" })
       claims.phone,
       context.userId,
     ]);
-    return claimTrial(
+    const result = await claimTrial(
       context.supabase,
       merchantId,
       context.userId,
       fingerprint,
     );
+    // Onboarding follow-up: seed the public KB corpus once per new merchant.
+    // seedPublicKb is idempotent, so re-claims are no-ops. Best-effort — a
+    // seed failure must never fail provisioning, so log and continue.
+    try {
+      const { seedPublicKb } = await import("./support-kb-seed.server");
+      await seedPublicKb(context.supabase, merchantId);
+    } catch (err) {
+      const { log } = await import("./observability.server");
+      log("warn", "kb.seed_best_effort_failed", {
+        merchantId,
+        message: err instanceof Error ? err.message.slice(0, 120) : "unknown",
+      });
+    }
+    return result;
   });
 
 export const billingPayInvoiceFn = createServerFn({ method: "POST" })

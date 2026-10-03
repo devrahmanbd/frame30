@@ -19,8 +19,8 @@ for catalogue review.
 
 | #   | Area                 | What "done" means                                                                                                                                                                                          | Where it lives                                                                                                                                             |
 | --- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Layout               | `header` / `main` / `footer` slot arrays on every template; responsive `bp` overrides per section                                                                                                          | `src/lib/builder-ast.ts:79-83`, `src/lib/builder-ast.ts:256-279`                                                                                           |
-| 2   | Design system        | Full `ThemeTokens` set incl. light + designed `dark` set, `globals`, font pairing                                                                                                                          | `src/lib/builder-ast.ts:5085-5114`, `src/lib/theme-globals.ts:32-48`                                                                                       |
+| 1   | Layout               | `header` / `main` / `footer` slot arrays on every template; responsive `bp` overrides per section                                                                                                          | `src/lib/builder-ast.ts:79-83`, `src/lib/builder-ast.ts:306-329`                                                                                           |
+| 2   | Design system        | Full `ThemeTokens` set incl. light + designed `dark` set, `globals`, font pairing                                                                                                                          | `src/lib/builder-ast.ts:6329-6351`, `src/lib/theme-globals.ts:32-48`                                                                                       |
 | 3   | Homepage             | `index` template with hero, merchandising, trust and footer composition                                                                                                                                    | `src/lib/themes/songoskriti/homepage.ts:23`, `src/lib/themes/somvabona/homepage.ts:22`                                                                     |
 | 4   | Product pages        | `product` template: media, price, variant/size, buy box, delivery, reviews/Q&A, related                                                                                                                    | `src/lib/themes/songoskriti/preview.ts` (`product` case), `src/lib/builder-ast.ts` PDP widgets                                                             |
 | 5   | Collection pages     | `collection` template: category header, facets, toolbar, grid, pagination, empty state                                                                                                                     | `src/lib/themes/songoskriti/preview.ts` (`collection` case), `src/lib/builder-ast.ts` listing widgets                                                      |
@@ -48,11 +48,11 @@ at `src/lib/builder-ast.ts:46-60` with `main`-slot content and a route-supplied
 ### 2.1 Tokens (light / dark, globals)
 
 The token shape is `ThemeTokens` parsed by `parseTokens`
-(`src/lib/builder-ast.ts:5149-5216`). Defaults live at
-`src/lib/builder-ast.ts:5085-5107`:
+(`src/lib/builder-ast.ts:6396-6463`). Defaults live at
+`src/lib/builder-ast.ts:6329-6351`:
 
 ```ts
-// src/lib/builder-ast.ts:5085-5107
+// src/lib/builder-ast.ts:6329-6351
 export const DEFAULT_TOKENS: ThemeTokens = {
   brand: "#0F766E",
   accent: "#0D9488",
@@ -86,7 +86,7 @@ colors + two fonts; bindings are stored as `var(--fq-g-<id>)`
 (`src/lib/theme-globals.ts:50-63`).
 
 `ThemeTokens` carries 19 required keys plus 2 optional ones (`timezone`,
-`allowCustomerTimezone`) (`src/lib/builder-ast.ts:6021-6055`). The two
+`allowCustomerTimezone`) (`src/lib/builder-ast.ts:6274-6308`). The two
 shipped themes lock the values below — copy one column verbatim as the
 starting point, then change brand/accent/surface/ink plus layout knobs:
 
@@ -151,12 +151,12 @@ Reference compositions:
 
 ### 2.3 Sections (type + props)
 
-`Section` (`src/lib/builder-ast.ts:256-279`):
+`Section` (`src/lib/builder-ast.ts:306-329`):
 
 ```ts
 export type Section = {
   id: string; // globally unique, see §3
-  type: SectionType; // src/lib/builder-ast.ts:85-243
+  type: SectionType; // src/lib/builder-ast.ts:114-293
   props: Record<string, PropValue>;
   children?: Section[]; // only when catalogue flags container: true
   hidden?: Breakpoint[]; // per-breakpoint visibility
@@ -472,9 +472,9 @@ state machine behind it.
 
 The core lane owns the `skin` prop: every skinnable widget gains a **Skin**
 select field in the style panel via `SKIN_FIELD`
-(`src/lib/builder-ast.ts:648`), with the closed vocabulary in
-`WIDGET_SKINS` (`src/lib/builder-ast.ts:599`) and the core default in
-`DEFAULT_WIDGET_SKIN` (`src/lib/builder-ast.ts:617`). The first option is
+(`src/lib/builder-ast.ts:649`), with the closed vocabulary in
+`WIDGET_SKINS` (`src/lib/builder-ast.ts:600`) and the core default in
+`DEFAULT_WIDGET_SKIN` (`src/lib/builder-ast.ts:618`). The first option is
 the documented default. Unknown or empty values resolve to the widget
 default — never a crash, never empty.
 
@@ -491,11 +491,11 @@ Theme-side sets: `SONGOSKRITI_SKIN_SETS`
 (`src/lib/themes/songoskriti/skins.ts:52`), `SOMVABONA_WIDGET_DEFAULTS`
 (`src/lib/themes/somvabona/skins.ts:40`). Wire them with
 `withSongoskritiDefaults()` (`src/lib/themes/songoskriti/skins.ts:109`) or
-`withSomvabonaWidgetDefaults()` (`src/lib/themes/somvabona/skins.ts:111`):
+`withSomvabonaWidgetDefaults()` (`src/lib/themes/somvabona/skins.ts:113`):
 defaults merge **under** authored props, so an explicit `skin` in the
 inspector always wins. Skin values are style keys, never copy, so they
 carry no `_bn` twins (bilingual props are declared per widget in
-`BITEXT_FIELDS`, `src/lib/builder-ast.ts:5311`).
+`BITEXT_FIELDS`, `src/lib/builder-ast.ts:5545`).
 
 ### `skins.css` — token-only rule
 

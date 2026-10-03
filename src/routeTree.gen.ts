@@ -195,6 +195,7 @@ import { Route as ApiPublicCronCouriersRouteImport } from './routes/api/public/c
 import { Route as ApiPublicCronDomainsRouteImport } from './routes/api/public/cron/domains'
 import { Route as ApiPublicCronGrowthRouteImport } from './routes/api/public/cron/growth'
 import { Route as ApiPublicCronJobsRouteImport } from './routes/api/public/cron/jobs'
+import { Route as ApiPublicCronMarketplaceRenewalsRouteImport } from './routes/api/public/cron/marketplace-renewals'
 import { Route as ApiPublicCronNotificationsRouteImport } from './routes/api/public/cron/notifications'
 import { Route as ApiPublicCronOpsRouteImport } from './routes/api/public/cron/ops'
 import { Route as ApiPublicCronPayoutsRouteImport } from './routes/api/public/cron/payouts'
@@ -1251,6 +1252,12 @@ const ApiPublicCronJobsRoute = ApiPublicCronJobsRouteImport.update({
   path: '/api/public/cron/jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCronMarketplaceRenewalsRoute =
+  ApiPublicCronMarketplaceRenewalsRouteImport.update({
+    id: '/api/public/cron/marketplace-renewals',
+    path: '/api/public/cron/marketplace-renewals',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicCronNotificationsRoute =
   ApiPublicCronNotificationsRouteImport.update({
     id: '/api/public/cron/notifications',
@@ -1613,6 +1620,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/domains': typeof ApiPublicCronDomainsRoute
   '/api/public/cron/growth': typeof ApiPublicCronGrowthRoute
   '/api/public/cron/jobs': typeof ApiPublicCronJobsRoute
+  '/api/public/cron/marketplace-renewals': typeof ApiPublicCronMarketplaceRenewalsRoute
   '/api/public/cron/notifications': typeof ApiPublicCronNotificationsRoute
   '/api/public/cron/ops': typeof ApiPublicCronOpsRoute
   '/api/public/cron/payouts': typeof ApiPublicCronPayoutsRoute
@@ -1832,6 +1840,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/domains': typeof ApiPublicCronDomainsRoute
   '/api/public/cron/growth': typeof ApiPublicCronGrowthRoute
   '/api/public/cron/jobs': typeof ApiPublicCronJobsRoute
+  '/api/public/cron/marketplace-renewals': typeof ApiPublicCronMarketplaceRenewalsRoute
   '/api/public/cron/notifications': typeof ApiPublicCronNotificationsRoute
   '/api/public/cron/ops': typeof ApiPublicCronOpsRoute
   '/api/public/cron/payouts': typeof ApiPublicCronPayoutsRoute
@@ -2055,6 +2064,7 @@ export interface FileRoutesById {
   '/api/public/cron/domains': typeof ApiPublicCronDomainsRoute
   '/api/public/cron/growth': typeof ApiPublicCronGrowthRoute
   '/api/public/cron/jobs': typeof ApiPublicCronJobsRoute
+  '/api/public/cron/marketplace-renewals': typeof ApiPublicCronMarketplaceRenewalsRoute
   '/api/public/cron/notifications': typeof ApiPublicCronNotificationsRoute
   '/api/public/cron/ops': typeof ApiPublicCronOpsRoute
   '/api/public/cron/payouts': typeof ApiPublicCronPayoutsRoute
@@ -2278,6 +2288,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/domains'
     | '/api/public/cron/growth'
     | '/api/public/cron/jobs'
+    | '/api/public/cron/marketplace-renewals'
     | '/api/public/cron/notifications'
     | '/api/public/cron/ops'
     | '/api/public/cron/payouts'
@@ -2497,6 +2508,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/domains'
     | '/api/public/cron/growth'
     | '/api/public/cron/jobs'
+    | '/api/public/cron/marketplace-renewals'
     | '/api/public/cron/notifications'
     | '/api/public/cron/ops'
     | '/api/public/cron/payouts'
@@ -2719,6 +2731,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/domains'
     | '/api/public/cron/growth'
     | '/api/public/cron/jobs'
+    | '/api/public/cron/marketplace-renewals'
     | '/api/public/cron/notifications'
     | '/api/public/cron/ops'
     | '/api/public/cron/payouts'
@@ -2838,6 +2851,7 @@ export interface RootRouteChildren {
   ApiPublicCronDomainsRoute: typeof ApiPublicCronDomainsRoute
   ApiPublicCronGrowthRoute: typeof ApiPublicCronGrowthRoute
   ApiPublicCronJobsRoute: typeof ApiPublicCronJobsRoute
+  ApiPublicCronMarketplaceRenewalsRoute: typeof ApiPublicCronMarketplaceRenewalsRoute
   ApiPublicCronNotificationsRoute: typeof ApiPublicCronNotificationsRoute
   ApiPublicCronOpsRoute: typeof ApiPublicCronOpsRoute
   ApiPublicCronPayoutsRoute: typeof ApiPublicCronPayoutsRoute
@@ -4177,6 +4191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronJobsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/marketplace-renewals': {
+      id: '/api/public/cron/marketplace-renewals'
+      path: '/api/public/cron/marketplace-renewals'
+      fullPath: '/api/public/cron/marketplace-renewals'
+      preLoaderRoute: typeof ApiPublicCronMarketplaceRenewalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/notifications': {
       id: '/api/public/cron/notifications'
       path: '/api/public/cron/notifications'
@@ -4820,6 +4841,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronDomainsRoute: ApiPublicCronDomainsRoute,
   ApiPublicCronGrowthRoute: ApiPublicCronGrowthRoute,
   ApiPublicCronJobsRoute: ApiPublicCronJobsRoute,
+  ApiPublicCronMarketplaceRenewalsRoute: ApiPublicCronMarketplaceRenewalsRoute,
   ApiPublicCronNotificationsRoute: ApiPublicCronNotificationsRoute,
   ApiPublicCronOpsRoute: ApiPublicCronOpsRoute,
   ApiPublicCronPayoutsRoute: ApiPublicCronPayoutsRoute,

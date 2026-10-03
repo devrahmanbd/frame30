@@ -149,7 +149,7 @@ All values match HEAD; stale planning brand locks are void.
 
 ### Tokens — the only styling channel
 
-Shape: `ThemeTokens` in `src/lib/builder-ast.ts:6021` (19 required keys, plus
+Shape: `ThemeTokens` in `src/lib/builder-ast.ts:6274` (19 required keys, plus
 optional `timezone` / `allowCustomerTimezone`). Published tokens reach the
 storefront as CSS variables on the store root, and theme CSS may only read
 `var(--theme-*)` (see the token-only CSS gate below).
@@ -181,14 +181,14 @@ BDT-first money display (symbol, Latin digits).
 
 ### Skins — closed vocabularies and defaults
 
-Core vocabulary and core defaults live in `src/lib/builder-ast.ts:599`
-(`WIDGET_SKINS`) and `src/lib/builder-ast.ts:617` (`DEFAULT_WIDGET_SKIN`).
+Core vocabulary and core defaults live in `src/lib/builder-ast.ts:600`
+(`WIDGET_SKINS`) and `src/lib/builder-ast.ts:618` (`DEFAULT_WIDGET_SKIN`).
 Every skinnable widget gains a `skin` select field in the style panel via
-`SKIN_FIELD` (`src/lib/builder-ast.ts:648`); the first option is the documented
+`SKIN_FIELD` (`src/lib/builder-ast.ts:649`); the first option is the documented
 default. Unknown or empty values resolve to the widget default — never a crash,
 never empty. Skin values are style keys, never copy, so they carry no `_bn`
 twins (bilingual props are declared per widget in `BITEXT_FIELDS`,
-`src/lib/builder-ast.ts:5311`).
+`src/lib/builder-ast.ts:5545`).
 
 | Widget          | Core vocab (first = core default) | Songoskriti default                           | Somvabona default |
 | --------------- | --------------------------------- | --------------------------------------------- | ----------------- |
@@ -200,7 +200,7 @@ twins (bilingual props are declared per widget in `BITEXT_FIELDS`,
 
 Theme defaults merge **under** authored props: merchant inspector values always
 win (`withSongoskritiDefaults` in `src/lib/themes/songoskriti/skins.ts:109`,
-`withSomvabonaWidgetDefaults` in `src/lib/themes/somvabona/skins.ts:111`).
+`withSomvabonaWidgetDefaults` in `src/lib/themes/somvabona/skins.ts:113`).
 Theme-side vocab sets: `SONGOSKRITI_SKIN_SETS`
 (`src/lib/themes/songoskriti/skins.ts:35`), `SONGOSKRITI_WIDGET_DEFAULTS`
 (`src/lib/themes/songoskriti/skins.ts:52`), `SOMVABONA_WIDGET_DEFAULTS`
@@ -208,19 +208,19 @@ Theme-side vocab sets: `SONGOSKRITI_SKIN_SETS`
 
 ### Homepage composition — what ships
 
-Songoskriti ships a 20-section homepage with `hero_carousel` first
+Songoskriti ships a 21-section homepage with `hero_carousel` first
 (`src/lib/themes/songoskriti/homepage.ts:31`): `hero_carousel`,
 `department_grid`, `product_rail`, `craft_story`, `product_rail`,
-`split_feature`, `product_rail`, `finder_row`, `split_feature`,
-`product_rail`, `product_rail`, `split_feature`, `collection_story`,
-`product_rail`, `craft_story`, `ugc_gallery`, `testimonials`,
-`split_feature`, `trust_footer`, `store_locator`.
+`split_feature`, `product_rail`, `recently_viewed`, `finder_row`,
+`split_feature`, `product_rail`, `product_rail`, `split_feature`,
+`collection_story`, `product_rail`, `craft_story`, `ugc_gallery`,
+`testimonials`, `split_feature`, `trust_footer`, `store_locator`.
 
-Somvabona ships an 11-section homepage on 10 distinct types (the urgency rail
+Somvabona ships a 12-section homepage on 11 distinct types (the urgency rail
 doubles): `announcement_bar`, `hero_carousel`, `trust_marquee`,
 `circle_categories`, `price_buckets`, `urgency_rail` × 2, `occasion_matrix`,
-`store_locator`, `craft_story`, `testimonials`
-(`src/lib/themes/somvabona/homepage.ts:29`–`279`).
+`recently_viewed`, `store_locator`, `craft_story`, `testimonials`
+(`src/lib/themes/somvabona/homepage.ts:22`).
 
 ### Studio twin parity contract
 
@@ -246,11 +246,11 @@ key (`src/lib/studio/catalog.ts:2418`).
 Persisted props are rebuilt from catalog fields only — a theme or editor can
 never smuggle unknown props onto a node:
 
-- `parseSection` (`src/lib/builder-ast.ts:6569`) rebuilds the props object
-  field-by-field (`src/lib/builder-ast.ts:6619`); each value passes through
+- `parseSection` (`src/lib/builder-ast.ts:6822`) rebuilds the props object
+  field-by-field (`src/lib/builder-ast.ts:6890`); each value passes through
   `coerceProp` against its field schema, unknown keys are dropped, and
   breakpoint overrides accept only responsive-capable fields.
-- `withThemeWidgetDefaults` (`src/lib/builder-ast.ts:734`) merges theme
+- `withThemeWidgetDefaults` (`src/lib/builder-ast.ts:735`) merges theme
   defaults only for catalog-known keys (base defaults plus field keys).
 
 ### Dashboard-menu data flow

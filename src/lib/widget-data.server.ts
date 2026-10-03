@@ -101,6 +101,13 @@ function sortProducts(rows: ProductRow[], sort: string): ProductRow[] {
  * Same source key, zero theme changes: the `WidgetDataSource` stays
  * `collection` and the request key is untouched; only the in-memory order of
  * the already-fetched window changes.
+ *
+ * RPC-first follow-up: when `public.rail_behavior_scores`
+ * (supabase/pending/rail_behavior_scores.sql) is applied, the snapshot comes
+ * from one security-definer call whose weights/bounds mirror
+ * BEHAVIOR_WEIGHTS/BEHAVIOR_BOUNDS. Until then `loadBehaviorSignals`
+ * feature-detects the missing function and runs the inline reads below —
+ * same signals, same ranker.
  */
 
 /** Hard bounds on every behavior read — a busy store costs the same as a new one. */
@@ -116,7 +123,9 @@ export const BEHAVIOR_BOUNDS = {
   staleSeconds: 600,
 } as const;
 
-/** View < cart add < bought-together: intent strength, not money math. */
+/** View < cart add < bought-together: intent strength, not money math.
+ * Mirrored in SQL by supabase/pending/rail_behavior_scores.sql
+ * (_view_w/_cart_w/_co_w) — change both together. */
 export const BEHAVIOR_WEIGHTS = { view: 1, cart: 3, coPurchase: 5 } as const;
 
 export type BehaviorSignals = {
@@ -128,10 +137,22 @@ export type BehaviorSignals = {
   co: Map<string, number>;
   /** Product id → ordered units (bestseller velocity + cold fallback). */
   velocity: Map<string, number>;
+  /**
+   * Product id → RPC-weighted total (`rail_behavior_scores.score`).
+   * Populated only on the RPC path; the inline path leaves it empty and the
+   * ranker falls back to views/carts/co above.
+   */
+  scores: Map<string, number>;
 };
 
 export function emptyBehaviorSignals(): BehaviorSignals {
-  return { views: new Map(), carts: new Map(), co: new Map(), velocity: new Map() };
+  return {
+    views: new Map(),
+    carts: new Map(),
+    co: new Map(),
+    velocity: new Map(),
+    scores: new Map(),
+  };
 }
 
 /**
@@ -142,11 +163,15 @@ export function behaviorCacheKey(merchantId: string): string {
   return `rail:behavior:${merchantId}`;
 }
 
-/** Weighted intent score for one product. Pure, so ranking stays unit-testable. */
+/** Weighted intent score for one product. Pure, so ranking stays unit-testable.
+ * Prefers the RPC-weighted total when the snapshot came from
+ * `rail_behavior_scores`; otherwise combines the inline signal maps. */
 export function behaviorScore(
   signals: BehaviorSignals,
   productId: string,
 ): number {
+  const rpc = signals.scores.get(productId);
+  if (rpc !== undefined) return rpc;
   return (
     (signals.views.get(productId) ?? 0) * BEHAVIOR_WEIGHTS.view +
     (signals.carts.get(productId) ?? 0) * BEHAVIOR_WEIGHTS.cart +
@@ -154,7 +179,13 @@ export function behaviorScore(
   );
 }
 
-type BehaviorAdmin = { from: (table: string) => any };
+type BehaviorAdmin = {
+  from: (table: string) => any;
+  rpc?: (
+    fn: string,
+    args?: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: unknown }>;
+};
 
 async function behaviorAdmin(provided?: BehaviorAdmin): Promise<BehaviorAdmin> {
   if (provided) return provided;
@@ -171,9 +202,77 @@ async function behaviorAdmin(provided?: BehaviorAdmin): Promise<BehaviorAdmin> {
 }
 
 /**
+ * One row of `public.rail_behavior_scores` (supabase/pending/
+ * rail_behavior_scores.sql, UNAPPLIED). `velocity` rides along so the
+ * bestseller fallback keeps working on the RPC path.
+ */
+export type RailScoreRow = {
+  product_id: string;
+  score: number | string;
+  velocity?: number | string | null;
+};
+
+/** True when the failure is "rail_behavior_scores doesn't exist yet" — never for real errors. */
+export function isMissingRailScoresError(err: unknown): boolean {
+  const record =
+    typeof err === "object" && err !== null
+      ? (err as Record<string, unknown>)
+      : {};
+  const code = String(record["code"] ?? "");
+  const message =
+    typeof record["message"] === "string"
+      ? record["message"]
+      : String(err ?? "");
+  const haystack = `${code} ${message}`;
+  if (!/rail_behavior_scores/i.test(haystack)) return false;
+  return /does not exist|not found|schema cache|PGRST202|42883|Could not find the function/i.test(
+    haystack,
+  );
+}
+
+/**
+ * One merchant's behavior snapshot from the `rail_behavior_scores` RPC.
+ * Returns `null` when the RPC is unavailable (missing migration, no rpc
+ * surface, any error) or malformed so the caller falls back to the inline
+ * aggregate reads below. An empty-but-successful result is a real cold
+ * snapshot, not a miss — it returns empty signals without further reads.
+ */
+async function loadRpcBehaviorScores(
+  merchantId: string,
+  db: BehaviorAdmin,
+): Promise<BehaviorSignals | null> {
+  try {
+    if (typeof db.rpc !== "function") return null;
+    const { data, error } = await db.rpc("rail_behavior_scores", {
+      _merchant_id: merchantId,
+    });
+    if (error || !Array.isArray(data)) return null;
+    const signals = emptyBehaviorSignals();
+    for (const row of data as RailScoreRow[]) {
+      const raw = row?.product_id;
+      const id =
+        typeof raw === "string" ? raw : raw == null ? "" : String(raw);
+      if (!id) continue;
+      signals.scores.set(id, Math.max(0, Number(row.score) || 0));
+      const velocity = Math.max(0, Number(row.velocity) || 0);
+      if (velocity > 0) signals.velocity.set(id, velocity);
+    }
+    return signals;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * One merchant's behavior snapshot. Bounded (every read carries a limit),
  * merchant-scoped, and total on failure: a denied or missing table degrades
  * to empty signals, which the ranker treats as cold, never as an error.
+ *
+ * RPC-first: when the `rail_behavior_scores` migration has been applied the
+ * aggregates come from one security-definer call (SQL-pinned exposure: only
+ * product ids, scores and velocities cross the boundary). When the RPC is
+ * missing the snapshot falls back to the inline merchant-scoped reads below,
+ * so behavior rails keep working before and after the migration.
  */
 export async function loadBehaviorSignals(
   merchantId: string,
@@ -182,6 +281,10 @@ export async function loadBehaviorSignals(
   const signals = emptyBehaviorSignals();
   try {
     const db = await behaviorAdmin(admin);
+
+    // Feature-detect like the kb pattern: RPC when applied, inline before.
+    const viaRpc = await loadRpcBehaviorScores(merchantId, db);
+    if (viaRpc) return viaRpc;
 
     const [{ data: events }, { data: items }] = await Promise.all([
       db
