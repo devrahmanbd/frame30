@@ -14,7 +14,68 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-03] — Variation server persistence + live render + picker (`d3fc715d`)
+### Added
+- `parseUntrusted` preserves well-formed variation keys; workspace round-trips through autosave/commit/publish; `setVariation` picker seam; live published-version resolution (requested > persisted > base); builder theme-panel picker with `?variation=` preview links.
+### Verification
+- 305 wide + 67 spot tests green, `tsgo` clean.
+
+## [2026-10-03] — Variations system + preview + starters (`f809f70d`)
+### Added
+- `ThemeVariation` registry (tokens + skin defaults only), base < variation < authored precedence, `?variation=` preview, per-store persistence helpers, 2 starters per theme.
+### Known gaps
+- Server persistence wiring and onboarding picker landed separately (`d3fc715d`); live storefronts rendered base until then.
+
+## [2026-10-03] — Menu replacement API (`7e2cc57a`)
+### Added
+- `menu_bar` / `menu_dropdown` / `menu_drawer` plugin slots (rows in, markup out), full renderer swap behind review with fail-open fallback, menu permission scope.
+### Verification
+- 128 tests green, tsc clean.
+
+## [2026-10-03] — PDP variant pipeline fix (`ce127903`)
+### Fixed
+- Picker publishes on the variant channel; buy box consumes with default fallback; cart lines stamped with variant + options string (dashboard `variant_name` reads correctly); sold-out selection blocked bilingually. Root cause: themed buy box had no submit wiring and the picker never published.
+### Verification
+- 163 tests green, tsc clean.
+
+## [2026-10-03] — Creation.md pin pass (`eda123bf`, `1c0f3d61`)
+### Fixed
+- PropValue / FieldKind / CatalogEntry / layout pins corrected to HEAD lines; prettier clean.
+
+## [2026-10-03] — Revert currency switcher (`a54b0b09`)
+### Removed
+- `CurrencySwitcher.tsx`, its test, and the ThemeChrome mount. BD-only platform decision; fx snapshot stack stays dormant underneath.
+### Verification
+- ThemeChrome + StoreHeader suites green, tsc clean.
+
+## [2026-10-03] — Follow-ups round (`b0b2369f`)
+### Added
+- Trial-claim KB seeding + `convertTrialToPaid` with `renews_at`; `rail_behavior_scores` RPC with inline fallback; 33 semantic pin fixes; listing term prices; display-only currency switcher (later reverted in `a54b0b09`); zod validators threaded; renewal cron wired (18 jobs).
 ### Changed
+- Live DB: 6 migrations applied; 96 KB docs seeded (16 × 6 merchants).
+### Known gaps
+- OpenRouter free-tier quota exhausted at seed time (61 live vectors, 257 fallback); backfill rerun pending quota. Pre-existing trials: zero rows, no backfill needed.
+
+## [2026-10-03] — Lanes F–I (`d219a70b`)
+### Added
+- Docs re-pin + motion-semantics page + retirement note; install billing + renewal cron; behavior-ranked `recommended`; voice mic + suggestion ranking.
+
+## [2026-10-03] — Motion manifest (`1bb2cef6`)
+### Added
+- Closed `MOTION_EFFECTS` vocab, SectionRenderer `fq-fx` hook, CSS executors with reduced-motion + `motion:none` collapse, resolver + persist + engine tests.
+
+## [2026-10-03] — Lane D themes (`ab416bcf`)
+### Added
+- Recently-viewed rails + mobile `bp` references on both homepages (21/12 pins); per-theme blog skins; Somvabona dark reference set; rail `limit`/`collection` fields (themed limits were silently dropping).
+
+## [2026-10-03] — Lane C studio (`8e846c50`)
+### Added
+- Skin selects on 5 skinnable widgets; new-field controls (promo, countdown, aspect, voice); responsive column flags; twin skin defaults.
+
+## [2026-10-02] — Lanes A–B builder (`3fb7c609`, `664a8064`)
+### Added
+- `adv*` persist through parse (round-trip tested); mega promo fields; urgency `endsAt`; tile aspect variant; `emptyText` BN twins; voice flag; menu promo panels; urgency countdown (shared `Countdown` primitive); image-first tiles.
+
 
 - Page builder is the content editor URL (`/dashboard/content/editor`):
   full-window Elementor-style takeover (Elements/SEO tabs, flush canvas,
@@ -27,71 +88,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Dashboard "View store" resolves to the merchant's primary custom domain
   when one exists (`currentMerchantPrimaryHostFn`).
 
-### Added
-
-- Theme findings fix-all loop (lanes A–I, all green): `adv*` persist
-  through parse; mega-menu promo fields + panels; urgency `endsAt`
-  countdown; tile aspect variant; `emptyText` BN twins; voice flag;
-  rail `limit`/`collection` fields (themed limits were silently dropping);
-  studio skin selects + responsive flags; homepage recently-viewed rails +
-  mobile `bp` references; per-theme blog skins; Somvabona dark reference
-  set; theme-motion manifest (`MOTION_EFFECTS` + engine `fq-fx` hook);
-  `creation.md` phantom re-pin + motion-semantics page; install
-  subscriptions with renewal sweep + proration; behavior-ranked
-  `recommended` rail; voice search mic + suggestion ranking.
-- Menu replacement API: `menu_bar`/`menu_dropdown`/`menu_drawer` plugin
-  slots, full renderer swap behind review with fail-open fallback, menu
-  permission scope.
-- Theme variations end to end: registry + `?variation=` preview + server
-  persistence + live render + builder picker + 2 starters per theme.
-- PDP variant pipeline: picker publishes on the variant channel, buy box
-  consumes with default fallback, cart lines stamped, sold-out blocked
-  bilingually (fixes wrong-variant-in-cart + unreadable dashboard).
-- Support learning loop: daily Inkling revision (properness rubric) +
-  review/apply pipeline (style→DPO, factual→KB) + desk Revisions tab;
-  16-file public KB corpus seeded live (96 docs, 6 merchants).
-- Marketplace renewal cron (`30 2`, 18 jobs) + listing term prices +
-  trial-to-paid conversion with `renews_at`.
-
-- Buyer-critical URLs (order tracking + welcome CTAs, drip CTAs via
-  rebasing, sitemap/robots/llms rewrite coverage) resolve to the primary
-  custom domain; payments cancel uses request origin (already correct).
-- Custom-domain-aware merchant links: View-store, page preview/view,
-  quick-edit and document permalink prefixes, editor preview + SEO URLs,
-  sitemap link, and settings header all resolve to the primary custom
-  domain when one exists (`useStoreUrl` + pure builders in
-  `storefront-url.ts`, unit-tested). Onboarding no longer promises a path
-  URL. Blog paths untouched (platform routes, unaffected by the cutover).
-- Customizable homepage: set/remove-as-homepage list actions (published
-  pages only), stored in `setup_steps.homepage_page_id`, rendered at `/`
-  with theme-template fallback on path and custom hosts.
-- 17 ported widgets in the page editor: faq, marquee, countdown, banner,
-  trust_bar, announcement_bar, heritage_story, editorial_banner,
-  editorial_hero, lookbook, hero, textile_showcase, department_grid,
-  story_trunk, marquee_strip, hero_carousel, testimonial_carousel.
-- Universal template blocks: cart page, store header/footer, rich FAQ,
-  testimonial slider, split hero (+ `cart` library category).
-- Global blocks both directions in pages: insert as detached copies,
-  save-as-global-block from the node menu (`builder_global_blocks` table
-  created via migration with RLS + grants).
-- Structure panel parity: filter search, expand/collapse all, inline
-  duplicate/delete per row.
-- Anti-wipeout guard: page-builder saves that would blank authored content
-  abort with a visible error instead of persisting.
-- Route code splitting (components + loaders) for the client bundle.
-- CI migrated to CircleCI only (`.circleci/config.yml`); GitHub Actions
-  removed. E2E job auto-activates when `.e2e/playwright.config.ts` lands.
-- Heritage widgets (clothing-heritage parity): `rewards_club`,
-  `wedding_shop`, `gift_finder` — AST catalog + apparel renderers +
-  bilingual help + TDD suites (catalog 141 → 144).
-- Local SVG placeholder pipeline (`/api/public/ph/<seed>`, heritage
-  tokens, immutable cache); StoreImage/MediaFrame/heritage imageless slots
-  render it; all demo + blueprint Unsplash hotlinks replaced.
-- Theme preview demo-data injection (grids render products, no skeletons);
-  crop-safe monogram badge; hero slide default images.
-- DeepWiki integration removed (dataset stubbed, copilot on live KB).
-- mem0.ai changelog mirror (policy/cutover/theme/deploy/gaps/ci).
-
+### Changed
 ### Security
 
 - Theme preview is system-domain-only: `/theme-preview/*` on merchant/custom
@@ -113,13 +110,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   live tree, never `git stash` a shared clone.
 
 ### Fixed
-
-- Currency switcher removed (BD-only platform decision); fx snapshot
-  stack stays dormant underneath.
-- Songoskriti rule-break repairs without design change: ratio options
-  (`4/5`, `3/4`), checkout gate exemption (chromeless checkout stands),
-  recursive demo-focus; shared footer copy moved to neutral
-  `src/lib/footer-copy.ts` (theme-independence gate green).
 
 - **Theme-independence violation (our mistake, indexed so it never repeats):**
   Songoskriti's renderers overrode generic widget keys globally
