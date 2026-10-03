@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { MENU_SLOTS } from "../marketplace-scopes";
+import { BLOCK_SLOTS } from "../plugin-manifest";
 import {
   addItem,
   buildTree,
@@ -9,6 +11,7 @@ import {
   indentItem,
   isMenuValid,
   locationsLabel,
+  MENU_LOCATIONS,
   menuDirty,
   menuHandle,
   type MenuItem,
@@ -318,5 +321,27 @@ describe("menu href rebasing", () => {
     expect(next[0]!.label).toBe("A");
     // Input is not mutated.
     expect(nodes[0]!.url).toBe("/pages/about");
+  });
+});
+
+describe("TRACK M — plugin slot vocabulary separation", () => {
+  it("menu fill points collide with neither locations nor block slots", () => {
+    expect([...MENU_SLOTS]).toEqual([
+      "menu_bar",
+      "menu_dropdown",
+      "menu_drawer",
+    ]);
+    for (const slot of MENU_SLOTS) {
+      expect(MENU_LOCATIONS.map((entry) => entry.key)).not.toContain(slot);
+      expect([...BLOCK_SLOTS]).not.toContain(slot);
+    }
+  });
+
+  it("storefront shaping still keys on locations only", () => {
+    expect(Object.keys(EMPTY_STORE_MENUS).sort()).toEqual([
+      "footer",
+      "header",
+      "mobile",
+    ]);
   });
 });

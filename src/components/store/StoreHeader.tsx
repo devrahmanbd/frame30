@@ -18,6 +18,11 @@ import {
   type MenuNode,
   type StoreMenus,
 } from "@/lib/menus/menu";
+import {
+  resolveMenuSwapRows,
+  type MenuSlot,
+  type MenuSwapRequest,
+} from "@/lib/plugin-manifest";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { TimezoneToggle } from "./TimezoneToggle";
 import { themeChromeFor } from "./theme-chrome";
@@ -72,6 +77,18 @@ export function MinimalCheckoutHeader({
   );
 }
 
+/**
+ * TRACK M — StoreHeader mount points. `menu_bar` selects the desktop nav
+ * rows, `menu_drawer` the mobile slide-out rows. Rows only — the engine
+ * renders all nav markup; full-renderer gating lives in
+ * `decideMenuRenderer` (`@/lib/plugin-manifest`).
+ */
+export const STORE_HEADER_MENU_SLOT: MenuSlot = "menu_bar";
+export const STORE_DRAWER_MENU_SLOT: MenuSlot = "menu_drawer";
+
+/** Review-gated nav swap request for `StoreHeader` (`menuSwap` prop). */
+export type StoreMenuSwap = MenuSwapRequest<MenuNode>;
+
 export function StoreHeader({
   slug,
   name,
@@ -80,6 +97,7 @@ export function StoreHeader({
   allowCustomerTimezone,
   menus,
   themeKey,
+  menuSwap,
 }: {
   slug: string;
   name: string;
@@ -93,6 +111,14 @@ export function StoreHeader({
    * sniffs the slug or display name.
    */
   themeKey?: string | null;
+  /**
+   * TRACK M — optional nav renderer swap (review-gated). Absent keeps
+   * today's precedence exactly (dashboard rows, else theme fallback). An
+   * approved swap substitutes engine-rendered rows fail-open: unapproved,
+   * scope-denied or throwing swaps keep the theme rows and log through the
+   * shared resolver — shoppers never lose navigation.
+   */
+  menuSwap?: StoreMenuSwap;
 }) {
   const { count, hydrated } = useCart(slug);
   const { count: wishlistCount } = useWishlistHeader();
@@ -112,16 +138,30 @@ export function StoreHeader({
   // (demo/preview safety).
   const dbHeader = menus?.header ?? [];
   const dbMobile = menus ? selectMobileMenu(menus) : [];
-  const headerMenu =
+  const headerThemed =
     dbHeader.length > 0 ? dbHeader : (headerChrome?.fallbackMenu ?? []);
-  const mobileMenu =
+  const mobileThemed =
     dbMobile.length > 0 ? dbMobile : (headerChrome?.fallbackMenu ?? []);
+  // TRACK M mount points: `menu_bar` (desktop nav) and `menu_drawer`
+  // (mobile slide-out) resolve through the shared review gate. `null` swap
+  // (today: always, unless a caller passes `menuSwap`) returns the themed
+  // rows untouched — output is byte-identical to before.
+  const headerSwap = menuSwap
+    ? resolveMenuSwapRows(headerThemed, menuSwap, STORE_HEADER_MENU_SLOT)
+    : null;
+  const mobileSwap = menuSwap
+    ? resolveMenuSwapRows(mobileThemed, menuSwap, STORE_DRAWER_MENU_SLOT)
+    : null;
+  const headerMenu = headerSwap ? headerSwap.rows : headerThemed;
+  const mobileMenu = mobileSwap ? mobileSwap.rows : mobileThemed;
   // The theme twin table covers the fallback tree only. Dashboard nodes
   // (MenuItem) carry no `_bn` field and render as-authored in every locale;
   // generic stores never localize, so their output is byte-identical to
-  // before.
-  const headerFallback = isLuxury && dbHeader.length === 0;
-  const mobileFallback = isLuxury && dbMobile.length === 0;
+  // before. A winning plugin swap likewise renders as-authored.
+  const headerFallback =
+    headerSwap?.decision.kind !== "plugin" && isLuxury && dbHeader.length === 0;
+  const mobileFallback =
+    mobileSwap?.decision.kind !== "plugin" && isLuxury && dbMobile.length === 0;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 

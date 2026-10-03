@@ -49,6 +49,7 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 });
 
 import { MinimalCheckoutHeader, StoreHeader } from "./StoreHeader";
+import type { StoreMenuSwap } from "./StoreHeader";
 import { themeChromeFor } from "./theme-chrome";
 import { songoskritiMenuLabel } from "@/lib/themes/songoskriti/header-fallback";
 import type { MenuNode, StoreMenus } from "@/lib/menus/menu";
@@ -82,6 +83,7 @@ function renderHeader({
   pathname = "/store/demo",
   menus,
   initialLang = "en",
+  menuSwap,
 }: {
   slug?: string;
   name?: string;
@@ -90,6 +92,7 @@ function renderHeader({
   pathname?: string;
   menus?: Pick<StoreMenus, "header" | "mobile">;
   initialLang?: "en" | "bn";
+  menuSwap?: StoreMenuSwap;
 } = {}) {
   mockPathname.current = pathname;
   const client = new QueryClient();
@@ -110,6 +113,7 @@ function renderHeader({
           name={name}
           menus={menus}
           themeKey={themeKey}
+          menuSwap={menuSwap}
         />
       </LanguageProvider>
     </QueryClientProvider>
@@ -413,5 +417,106 @@ describe("themeChromeFor identity edge — key-driven, never slug or name", () =
     });
     expect(lookalike).not.toContain("logo-lockup");
     expect(lookalike).toContain("Songoskriti");
+  });
+});
+
+describe("StoreHeader menu swap — TRACK M review gate (fail-open, logged)", () => {
+  const base = {
+    slug: "songoskriti",
+    name: "Songoskriti",
+    themeKey: "songoskriti" as const,
+  };
+  const approvedClaim = {
+    pluginId: "nav-pro",
+    slot: "menu_bar" as const,
+    entry: "framique.mount(document.createTextNode('nav'))",
+    reviewApproved: true,
+  };
+  const pluginRows = [dbNode({ id: "plug-1", label: "Plugin Nav", url: "/c/plug" })];
+
+  it("an unapproved swap renders byte-identical markup to no swap", () => {
+    const plain = renderHeader(base);
+    const gated = renderHeader({
+      ...base,
+      menuSwap: {
+        claims: [{ ...approvedClaim, reviewApproved: false }],
+        grantedScopes: ["render_storefront", "replace_menus"],
+        pluginRows,
+      },
+    });
+    expect(gated).toBe(plain);
+    expect(gated).toContain("Women");
+    expect(gated).not.toContain("Plugin Nav");
+  });
+
+  it("an approved swap without the replace_menus scope keeps the theme default", () => {
+    const plain = renderHeader(base);
+    const gated = renderHeader({
+      ...base,
+      menuSwap: {
+        claims: [approvedClaim],
+        grantedScopes: ["render_storefront"],
+        pluginRows,
+      },
+    });
+    expect(gated).toBe(plain);
+    expect(gated).not.toContain("Plugin Nav");
+  });
+
+  it("an approved + scoped swap substitutes rows through engine markup", () => {
+    const html = renderHeader({
+      ...base,
+      menuSwap: {
+        claims: [approvedClaim],
+        grantedScopes: ["render_storefront", "replace_menus"],
+        pluginRows,
+      },
+    });
+    expect(html).toContain("Plugin Nav");
+    expect(html).toContain("/store/songoskriti/c/plug");
+    // The theme fallback tree is gone once the swap wins the slot.
+    expect(html).not.toContain("/store/songoskriti/c/women");
+  });
+
+  it("a throwing plugin renderer falls back to the theme default and reports", () => {
+    const onError = vi.fn();
+    const html = renderHeader({
+      ...base,
+      menuSwap: {
+        claims: [approvedClaim],
+        grantedScopes: ["render_storefront", "replace_menus"],
+        renderRows: () => {
+          throw new Error("renderer down");
+        },
+        onError,
+      },
+    });
+    // Fail-open: shoppers still get navigation, never a crash.
+    expect(html).toContain("Women");
+    expect(html).toContain("/store/songoskriti/c/women");
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect((onError.mock.calls[0]![0] as Error).message).toBe(
+      "renderer down",
+    );
+  });
+
+  it("dashboard rows still win over an unapproved swap on generic stores", () => {
+    const menus = {
+      header: [dbNode({ id: "db-1", label: "Dashboard Custom", url: "/c/custom" })],
+      mobile: [],
+    };
+    const plain = renderHeader({ slug: "demo", name: "Demo", menus });
+    const gated = renderHeader({
+      slug: "demo",
+      name: "Demo",
+      menus,
+      menuSwap: {
+        claims: [{ ...approvedClaim, reviewApproved: false }],
+        grantedScopes: ["render_storefront", "replace_menus"],
+        pluginRows,
+      },
+    });
+    expect(gated).toBe(plain);
+    expect(gated).toContain("Dashboard Custom");
   });
 });

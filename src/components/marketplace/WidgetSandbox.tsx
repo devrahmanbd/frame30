@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { authorizeWidgetCall, type WidgetCall } from "@/lib/marketplace-scopes";
+import {
+  authorizeWidgetCall,
+  isMenuSlot,
+  menuReadGranted,
+  type WidgetCall,
+} from "@/lib/marketplace-scopes";
 import { currentNonce } from "@/lib/ssr-nonce";
 import { useLang } from "@/lib/i18n";
 import { type RiskTier, resolvePolicy } from "@/lib/risk-tier";
@@ -17,11 +22,42 @@ export type SandboxHandler = (
   params: unknown,
 ) => Promise<unknown>;
 
+/** True for a well-formed `menus.list` bridge envelope (any scope state). */
+export function isMenusListCall(msg: unknown): boolean {
+  const m = msg as { v?: unknown; id?: unknown; method?: unknown } | null;
+  return (
+    !!m && m.v === 1 && typeof m.id === "string" && m.method === "menus.list"
+  );
+}
+
+/**
+ * Optional fill-point selector carried on `menus.list` params
+ * (`{ slot: "menu_bar" | ... }`). `undefined` means "no preference" — the
+ * host answers with the default rows. Presence is validated by the caller.
+ */
+export function menusListSlot(msg: unknown): unknown {
+  const params = (msg as { params?: unknown } | null)?.params;
+  if (!params || typeof params !== "object" || Array.isArray(params))
+    return undefined;
+  const slot = (params as Record<string, unknown>).slot;
+  return slot === undefined ? undefined : slot;
+}
+
 /**
  * Pure bridge decision: authorize the real frame message first, serve
  * `plugin.settings` from the mounted plugin's validated values, delegate
  * everything else to the host. Denial shapes match what the frame already
  * handles (`sandbox.<reason>`).
+ *
+ * TRACK M — menu fill points (`menu_bar` / `menu_dropdown` / `menu_drawer`):
+ * a well-formed `menus.list` request naming an unsanctioned fill point never
+ * reaches the host (`sandbox.unknown_slot`). Menus stay readable by default:
+ * when the single-scope allow-list denies `menus.list` but the install holds
+ * any storefront grant (`menuReadGranted` — `read_menus` or the
+ * `render_storefront` every widget contribution already requires), the call
+ * still delegates to the host. Replacement (a full renderer swap) is NOT a
+ * bridge method — it is gated by `replace_menus` + the review approval flag
+ * (`decideMenuRenderer` in `plugin-manifest.ts`).
  */
 export async function answerWidgetCall(
   msg: unknown,
@@ -31,8 +67,33 @@ export async function answerWidgetCall(
     onCall: SandboxHandler;
   },
 ): Promise<{ result: unknown } | { error: string }> {
+  if (isMenusListCall(msg)) {
+    const slot = menusListSlot(msg);
+    if (slot !== undefined && !isMenuSlot(slot))
+      return { error: "sandbox.unknown_slot" };
+  }
   const verdict = authorizeWidgetCall(msg, ctx.granted);
-  if (!verdict.allowed) return { error: `sandbox.${verdict.reason}` };
+  if (!verdict.allowed) {
+    if (
+      verdict.reason === "scope_denied" &&
+      isMenusListCall(msg) &&
+      menuReadGranted(ctx.granted)
+    ) {
+      try {
+        return {
+          result: await ctx.onCall(
+            "menus.list",
+            (msg as { params?: unknown }).params,
+          ),
+        };
+      } catch (err) {
+        return {
+          error: err instanceof Error ? err.message : "sandbox.host_error",
+        };
+      }
+    }
+    return { error: `sandbox.${verdict.reason}` };
+  }
   if (verdict.method === "plugin.settings") {
     return { result: { ...(ctx.settings ?? {}) } };
   }

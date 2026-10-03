@@ -1,17 +1,25 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   BUILDER_API_VERSION,
+  MENU_SLOTS,
   PLUGIN_BUDGET,
+  decideMenuRenderer,
   defaultSettings,
+  isMenuRendererClaim,
+  isMenuSlot,
   parseManifest,
   parsePluginWidgetKey,
   permissionDiff,
   pluginTrayEntries,
   pluginWidgetKey,
+  renderMenuWithFallback,
+  resolveMenuSwapRows,
   resolvePluginWidget,
   satisfiesApiRange,
+  selectMenuSwapRows,
   validateSettings,
   type InstalledPlugin,
+  type MenuRendererClaim,
 } from "./plugin-manifest";
 import { HOOK_TIMEOUT_MS, resetBreakers, runHook } from "./plugin-hooks.server";
 import { afterFailure, policyFor } from "./job-queue";
@@ -550,5 +558,270 @@ describe("queued hook delivery", () => {
     ).rejects.toThrow(/status_500/);
     const outcome = afterFailure(policyFor("plugins"), 6, "job-x", true);
     expect(outcome).toEqual({ next: "dead", runAfterSeconds: 0, dead: true });
+  });
+});
+
+describe("TRACK M — menu slot vocabulary (shape 1: fill)", () => {
+  const menuWidget = (slot: string) => ({
+    key: `nav_${slot}`,
+    label: `Nav ${slot}`,
+    slots: [slot],
+    entry: "framique.mount(document.createTextNode('nav'))",
+  });
+
+  it("sanctions exactly menu_bar, menu_dropdown and menu_drawer", () => {
+    expect([...MENU_SLOTS]).toEqual([
+      "menu_bar",
+      "menu_dropdown",
+      "menu_drawer",
+    ]);
+    for (const slot of MENU_SLOTS) expect(isMenuSlot(slot)).toBe(true);
+    expect(isMenuSlot("header")).toBe(false);
+    expect(isMenuSlot("sidebar")).toBe(false);
+  });
+
+  it("accepts menu slots in slot validation, alone and mixed with block slots", () => {
+    for (const slot of MENU_SLOTS) {
+      const verdict = parseManifest({ ...MANIFEST, widgets: [menuWidget(slot)] });
+      expect(verdict.ok, slot).toBe(true);
+    }
+    const mixed = parseManifest({
+      ...MANIFEST,
+      widgets: [
+        { ...menuWidget("menu_bar"), key: "nav_a", slots: ["main", "menu_bar"] },
+      ],
+    });
+    expect(mixed.ok).toBe(true);
+    if (mixed.ok)
+      expect(mixed.manifest.widgets[0]!.slots).toEqual(["main", "menu_bar"]);
+  });
+
+  it("still rejects invented slots without touching the menu vocabulary", () => {
+    const bad = parseManifest({
+      ...MANIFEST,
+      widgets: [menuWidget("sidebar")],
+    });
+    expect(bad.ok).toBe(false);
+    if (!bad.ok) expect(bad.errors).toContain("widgets[0].slots");
+  });
+
+  it("menu widgets still require render_storefront (sandboxed island rule)", () => {
+    const noScope = parseManifest({
+      ...MANIFEST,
+      permissions: ["read_shop", "read_menus"],
+      widgets: [menuWidget("menu_bar")],
+    });
+    expect(noScope.ok).toBe(false);
+    if (!noScope.ok)
+      expect(noScope.errors).toContain(
+        "permissions.render_storefront_required",
+      );
+  });
+
+  it("lists tray entries for menu slots and resolves them like block widgets", () => {
+    const verdict = parseManifest({
+      ...MANIFEST,
+      widgets: [menuWidget("menu_bar")],
+    });
+    expect(verdict.ok).toBe(true);
+    if (!verdict.ok) return;
+    const plugin: InstalledPlugin = {
+      installId: "install-nav",
+      manifest: verdict.manifest,
+      grantedScopes: verdict.manifest.permissions,
+      settings: {},
+      enabled: true,
+    };
+    expect(pluginTrayEntries([plugin], "menu_bar")).toHaveLength(1);
+    expect(pluginTrayEntries([plugin], "menu_drawer")).toHaveLength(0);
+    expect(pluginTrayEntries([plugin], "main")).toHaveLength(0);
+    const res = resolvePluginWidget("plugin:loyalty-lite/nav_menu_bar", [
+      plugin,
+    ]);
+    expect(res.ok).toBe(true);
+  });
+
+  it("adds no server hook for menus", async () => {
+    const { SERVER_HOOKS } = await import("./plugin-manifest");
+    expect([...SERVER_HOOKS]).toEqual([
+      "cart.calculate",
+      "checkout.validate",
+      "order.created",
+      "product.saved",
+    ]);
+  });
+});
+
+describe("TRACK M — full renderer swap (shape 2: review-gated, fail-open)", () => {
+  const claim = (over: Partial<MenuRendererClaim> = {}): MenuRendererClaim => ({
+    pluginId: "nav-pro",
+    slot: "menu_bar",
+    entry: "framique.mount(document.createTextNode('nav'))",
+    reviewApproved: true,
+    ...over,
+  });
+
+  it("validates claim shape without deciding approval", () => {
+    expect(isMenuRendererClaim(claim())).toBe(true);
+    expect(isMenuRendererClaim(claim({ reviewApproved: false }))).toBe(true);
+    expect(isMenuRendererClaim({ ...claim(), slot: "sidebar" })).toBe(false);
+    expect(isMenuRendererClaim({ ...claim(), entry: "" })).toBe(false);
+    expect(isMenuRendererClaim(null)).toBe(false);
+  });
+
+  it("gates the swap: approval AND replace_menus scope, first claim wins", () => {
+    const granted = ["render_storefront", "replace_menus"];
+    expect(
+      decideMenuRenderer([claim()], "menu_bar", granted),
+    ).toEqual({ kind: "plugin", pluginId: "nav-pro", slot: "menu_bar" });
+    // No claim for the slot → theme default.
+    expect(decideMenuRenderer([claim()], "menu_drawer", granted)).toEqual({
+      kind: "theme_default",
+      reason: "not_claimed",
+    });
+    // Unapproved → theme default, plugin named for the review queue.
+    expect(
+      decideMenuRenderer([claim({ reviewApproved: false })], "menu_bar", granted),
+    ).toEqual({
+      kind: "theme_default",
+      reason: "not_approved",
+      pluginId: "nav-pro",
+    });
+    // Approved but scope missing → theme default.
+    expect(
+      decideMenuRenderer([claim()], "menu_bar", ["render_storefront"]),
+    ).toEqual({
+      kind: "theme_default",
+      reason: "scope_denied",
+      pluginId: "nav-pro",
+    });
+    // Malformed inputs fail open, never throw.
+    expect(decideMenuRenderer(null, "menu_bar", granted)).toEqual({
+      kind: "theme_default",
+      reason: "not_claimed",
+    });
+    expect(
+      decideMenuRenderer("junk" as never, "menu_bar", "junk" as never),
+    ).toEqual({ kind: "theme_default", reason: "not_claimed" });
+  });
+
+  it("never attempts the plugin renderer under a theme_default decision", () => {
+    const decision = decideMenuRenderer([], "menu_bar", []);
+    let attempted = false;
+    const out = renderMenuWithFallback(
+      decision,
+      () => {
+        attempted = true;
+        throw new Error("must not run");
+      },
+      () => "theme",
+    );
+    expect(out).toBe("theme");
+    expect(attempted).toBe(false);
+  });
+
+  it("falls back to the theme renderer when the plugin renderer throws", () => {
+    const decision = decideMenuRenderer(
+      [claim()],
+      "menu_bar",
+      ["replace_menus"],
+    );
+    expect(decision.kind).toBe("plugin");
+    const seen: unknown[] = [];
+    const out = renderMenuWithFallback(
+      decision,
+      () => {
+        throw new Error("boom");
+      },
+      () => "theme",
+      (error, failed) => {
+        seen.push([error, failed]);
+      },
+    );
+    expect(out).toBe("theme");
+    expect(seen).toHaveLength(1);
+    expect((seen[0] as [Error, { reason: string }])[0].message).toBe("boom");
+    expect((seen[0] as [unknown, { kind: string; reason: string }])[1]).toEqual({
+      kind: "theme_default",
+      reason: "renderer_failed",
+      pluginId: "nav-pro",
+    });
+  });
+
+  it("logs a tagged console.error by default on renderer failure", () => {
+    const errorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    try {
+      const decision = decideMenuRenderer(
+        [claim()],
+        "menu_bar",
+        ["replace_menus"],
+      );
+      const out = renderMenuWithFallback(
+        decision,
+        () => {
+          throw new Error("kaboom");
+        },
+        () => "theme",
+      );
+      expect(out).toBe("theme");
+      expect(errorSpy).toHaveBeenCalledTimes(1);
+      expect(String(errorSpy.mock.calls[0]![0])).toContain(
+        "menu_renderer_failed:nav-pro",
+      );
+    } finally {
+      errorSpy.mockRestore();
+    }
+  });
+
+  it("resolveMenuSwapRows keeps theme rows unless a plugin decision carries rows", () => {
+    const theme = ["a", "b"];
+    // Theme decision → identical ref, plugin render never runs.
+    const idle = resolveMenuSwapRows(theme, null, "menu_bar");
+    expect(idle.rows).toBe(theme);
+    expect(idle.decision).toEqual({
+      kind: "theme_default",
+      reason: "not_claimed",
+    });
+    // Plugin decision with rows → plugin rows.
+    const won = resolveMenuSwapRows(theme, {
+      claims: [claim()],
+      grantedScopes: ["replace_menus"],
+      pluginRows: ["p1"],
+    }, "menu_bar");
+    expect(won.rows).toEqual(["p1"]);
+    // Approved but empty → theme rows (never blanks navigation).
+    const empty = resolveMenuSwapRows(theme, {
+      claims: [claim()],
+      grantedScopes: ["replace_menus"],
+      pluginRows: [],
+    }, "menu_bar");
+    expect(empty.rows).toBe(theme);
+    // Throwing renderRows → theme rows + onError.
+    const onError = vi.fn();
+    const failed = resolveMenuSwapRows(theme, {
+      claims: [claim()],
+      grantedScopes: ["replace_menus"],
+      renderRows: () => {
+        throw new Error("render down");
+      },
+      onError,
+    }, "menu_bar");
+    expect(failed.rows).toBe(theme);
+    expect(onError).toHaveBeenCalledTimes(1);
+  });
+
+  it("selectMenuSwapRows never blanks navigation on empty plugin rows", () => {
+    const theme = ["a"];
+    expect(
+      selectMenuSwapRows(theme, [], { kind: "plugin", pluginId: "x", slot: "menu_bar" }),
+    ).toBe(theme);
+    expect(
+      selectMenuSwapRows(theme, ["p"], { kind: "plugin", pluginId: "x", slot: "menu_bar" }),
+    ).toEqual(["p"]);
+    expect(
+      selectMenuSwapRows(theme, ["p"], { kind: "theme_default", reason: "not_approved" }),
+    ).toBe(theme);
   });
 });

@@ -1,15 +1,21 @@
 import { describe, it, expect } from "vitest";
 import {
+  MENU_SLOTS,
+  WIDGET_API,
   authorizeWidgetCall,
+  canReplaceMenu,
   canonicalJson,
   compareSemver,
   highestRisk,
   isBlockKey,
   isBreakingChange,
   isForwardVersion,
+  isMenuSlot,
+  menuReadGranted,
   missingScopes,
   normalizeScopes,
   parseSemver,
+  scopeDef,
   validateBundle,
 } from "./marketplace-scopes";
 
@@ -134,5 +140,67 @@ describe("widget API authorization", () => {
       method: "shop.info",
       write: false,
     });
+  });
+});
+
+describe("TRACK M — menu scopes and fill vocabulary", () => {
+  it("registers read_menus (low) and replace_menus (high) in the catalogue", () => {
+    const read = scopeDef("read_menus");
+    const replace = scopeDef("replace_menus");
+    expect(read?.risk).toBe("low");
+    expect(replace?.risk).toBe("high");
+    expect(highestRisk(["read_menus"])).toBe("low");
+    expect(highestRisk(["read_menus", "replace_menus"])).toBe("high");
+  });
+
+  it("normalises the new scopes and still rejects invented ones", () => {
+    const r = normalizeScopes(["read_menus", "replace_menus", "drain_wallet"]);
+    expect(r.scopes).toEqual(["read_menus", "replace_menus"]);
+    expect(r.unknown).toEqual(["drain_wallet"]);
+  });
+
+  it("exposes menus.list as a read-only bridge method behind read_menus", () => {
+    expect(WIDGET_API["menus.list"]).toEqual({
+      scope: "read_menus",
+      write: false,
+    });
+    expect(
+      authorizeWidgetCall({ v: 1, id: "1", method: "menus.list" }, [
+        "read_menus",
+      ]),
+    ).toEqual({ allowed: true, method: "menus.list", write: false });
+    expect(
+      authorizeWidgetCall({ v: 1, id: "1", method: "menus.list" }, [
+        "read_shop",
+      ]),
+    ).toMatchObject({ allowed: false, reason: "scope_denied" });
+  });
+
+  it("keeps menus readable by default for any storefront plugin", () => {
+    expect(menuReadGranted(["read_menus"])).toBe(true);
+    // Every widget contribution already requires render_storefront, so
+    // existing installs read menus with no fresh consent screen.
+    expect(menuReadGranted(["render_storefront"])).toBe(true);
+    expect(menuReadGranted(["read_orders"])).toBe(false);
+    expect(menuReadGranted([])).toBe(false);
+  });
+
+  it("requires BOTH the replace scope and the review flag for replacement", () => {
+    expect(canReplaceMenu(["replace_menus"], true)).toBe(true);
+    expect(canReplaceMenu(["replace_menus"], false)).toBe(false);
+    expect(canReplaceMenu(["render_storefront"], true)).toBe(false);
+    expect(canReplaceMenu([], true)).toBe(false);
+    expect(canReplaceMenu(["replace_menus"], undefined as never)).toBe(false);
+  });
+
+  it("sanctions exactly the three menu fill points", () => {
+    expect([...MENU_SLOTS]).toEqual([
+      "menu_bar",
+      "menu_dropdown",
+      "menu_drawer",
+    ]);
+    for (const slot of MENU_SLOTS) expect(isMenuSlot(slot)).toBe(true);
+    expect(isMenuSlot("header")).toBe(false);
+    expect(isMenuSlot(undefined)).toBe(false);
   });
 });

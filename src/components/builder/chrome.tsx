@@ -30,6 +30,13 @@ import { openCartDrawer } from "./CartContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { searchStorefrontFn } from "@/lib/storefront-search.functions";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
+import type { WidgetRow } from "@/lib/widget-data";
+import {
+  isMenuSwapRequest,
+  resolveMenuSwapRows,
+  type MenuSlot,
+  type MenuSwapRequest,
+} from "@/lib/plugin-manifest";
 import { OverlayHost } from "./primitives/OverlayHost";
 import { MediaFrame } from "./primitives/MediaFrame";
 
@@ -281,11 +288,54 @@ function Notice({ str, bool }: WidgetCtx) {
   );
 }
 
+/**
+ * TRACK M — MegaMenu mount points. `menu_bar` selects the menubar rows,
+ * `menu_dropdown` the overflow/mega panel (same winning rows, engine-owned
+ * panel markup). A swap arrives as `data.menuSwap` (no producer today, so
+ * `readMegaMenuSwap` returns `undefined` and output is byte-identical);
+ * the variations track supplies it. Rows only — plugins never inject nav
+ * markup; full-renderer gating lives in `decideMenuRenderer`.
+ */
+export const MEGA_MENU_SLOT: MenuSlot = "menu_bar";
+export const MEGA_DROPDOWN_SLOT: MenuSlot = "menu_dropdown";
+
+export type MegaMenuSwap = MenuSwapRequest<WidgetRow>;
+
+/** Validated swap read: anything malformed is "no swap", never a throw. */
+export function readMegaMenuSwap(
+  data: WidgetCtx["data"],
+): MegaMenuSwap | undefined {
+  const raw = (data as { menuSwap?: unknown } | undefined)?.menuSwap;
+  if (!isMenuSwapRequest(raw)) return undefined;
+  const r = raw as unknown as Record<string, unknown>;
+  const out: MegaMenuSwap = {
+    claims: raw.claims,
+    grantedScopes: (raw.grantedScopes as unknown[]).map(String),
+  };
+  if (Array.isArray(r.pluginRows))
+    out.pluginRows = r.pluginRows as WidgetRow[];
+  if (typeof r.renderRows === "function")
+    out.renderRows = r.renderRows as MegaMenuSwap["renderRows"];
+  if (typeof r.onError === "function")
+    out.onError = r.onError as MegaMenuSwap["onError"];
+  return out;
+}
+
 function MegaMenu({ str, int, data, link }: WidgetCtx) {
   const [open, setOpen] = useState(false);
   const rows = data?.rows ?? [];
+  // TRACK M mount point: `menu_bar` owns these menubar rows, and the
+  // overflow panel below (`menu_dropdown`) renders from the same winning
+  // rows through engine-owned panel markup — layout/a11y never leave the
+  // engine. No `menuSwap` on `data` (today: always) keeps today's rows
+  // exactly; an approved swap substitutes rows fail-open (theme rows on any
+  // denial or throw, failure logged by the shared resolver).
+  const menuSwap = readMegaMenuSwap(data);
+  const effectiveRows = menuSwap
+    ? resolveMenuSwapRows(rows, menuSwap, MEGA_MENU_SLOT).rows
+    : rows;
   const label = str("label") || "Shop";
-  const visible = rows.slice(0, int("limit", 8, 1, 24));
+  const visible = effectiveRows.slice(0, int("limit", 8, 1, 24));
 
   if (data?.pending) {
     return (

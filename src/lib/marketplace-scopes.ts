@@ -86,6 +86,22 @@ export const SCOPES: readonly ScopeDef[] = [
     effectEn: "Mounts sandboxed UI inside your published theme.",
     effectBn: "আপনার থিমে স্যান্ডবক্সড UI বসাবে।",
   },
+  {
+    id: "read_menus",
+    en: "Read navigation menus",
+    bn: "নেভিগেশন মেনু পড়া",
+    risk: "low",
+    effectEn: "Menu labels and links the engine renders into navigation.",
+    effectBn: "নেভিগেশনে ইঞ্জিন যে মেনু লেবেল ও লিঙ্ক দেখায়।",
+  },
+  {
+    id: "replace_menus",
+    en: "Replace navigation rendering",
+    bn: "নেভিগেশন রেন্ডারিং বদলানো",
+    risk: "high",
+    effectEn: "Can swap the full navigation renderer; reviewed before activation.",
+    effectBn: "পুরো নেভিগেশন রেন্ডারার বদলাতে পারবে; চালুর আগে পর্যালোচনা হবে।",
+  },
 ] as const;
 
 const SCOPE_IDS = new Set(SCOPES.map((s) => s.id));
@@ -251,7 +267,65 @@ export const WIDGET_API: Record<string, { scope: string; write: boolean }> = {
   "cart.add": { scope: "write_cart", write: true },
   "cart.remove": { scope: "write_cart", write: true },
   "analytics.track": { scope: "write_analytics", write: true },
+  /**
+   * TRACK M — menu fill read. The engine owns nav layout/a11y and renders
+   * every pixel of the landmark; plugins only ever supply rows (data
+   * contract: rows in, markup out). Reads stay review-free; replacing the
+   * renderer additionally needs `replace_menus` + the review approval flag
+   * (see `canReplaceMenu` below and `decideMenuRenderer` in
+   * `plugin-manifest.ts`). Theme-only formal override stays roadmap.
+   */
+  "menus.list": { scope: "read_menus", write: false },
 };
+
+/**
+ * TRACK M — sanctioned plugin fill points inside navigation (canonical).
+ *
+ * `menu_bar` mounts the top-level menubar, `menu_dropdown` the overflow /
+ * mega panel, `menu_drawer` the mobile slide-out. The engine keeps
+ * layout/a11y control at every point: a plugin contributes rows through the
+ * `menus.list` bridge, never markup. Re-exported by `plugin-manifest.ts`
+ * (manifest slot validation) and the sandbox bridge — one literal, three
+ * readers, no drift.
+ */
+export const MENU_SLOTS = ["menu_bar", "menu_dropdown", "menu_drawer"] as const;
+export type MenuSlot = (typeof MENU_SLOTS)[number];
+
+export function isMenuSlot(value: unknown): value is MenuSlot {
+  return (
+    typeof value === "string" &&
+    (MENU_SLOTS as readonly string[]).includes(value)
+  );
+}
+
+/** Scope behind `menus.list`. Low risk: menu reads never need review. */
+export const MENU_READ_SCOPE = "read_menus";
+/** Scope behind a full nav renderer swap. High risk: review flag also required. */
+export const MENU_REPLACE_SCOPE = "replace_menus";
+
+/**
+ * Menus are readable by default: any storefront plugin (`render_storefront`,
+ * which every widget contribution already requires) may read menu rows, as
+ * may any plugin explicitly granted `read_menus`. The sandbox bridge
+ * consults this (not just `WIDGET_API`) so existing installs gain menu
+ * reads without a fresh consent screen.
+ */
+export function menuReadGranted(granted: readonly string[]): boolean {
+  return (
+    granted.includes(MENU_READ_SCOPE) || granted.includes("render_storefront")
+  );
+}
+
+/**
+ * Replacement requires BOTH the `replace_menus` scope AND an explicit review
+ * approval flag. Either one alone keeps the theme default renderer.
+ */
+export function canReplaceMenu(
+  granted: readonly string[],
+  reviewApproved: boolean,
+): boolean {
+  return reviewApproved === true && granted.includes(MENU_REPLACE_SCOPE);
+}
 
 export type WidgetCall = { v: 1; id: string; method: string; params?: unknown };
 

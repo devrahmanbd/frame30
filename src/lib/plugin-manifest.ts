@@ -11,8 +11,15 @@
  * renderer branch.
  */
 
-import { normalizeScopes } from "./marketplace-scopes";
+import {
+  MENU_REPLACE_SCOPE,
+  MENU_SLOTS,
+  isMenuSlot,
+  normalizeScopes,
+  type MenuSlot,
+} from "./marketplace-scopes";
 import { compareSemver, parseSemver } from "./marketplace-scopes";
+export { MENU_SLOTS, isMenuSlot, type MenuSlot };
 
 /** Builder API version plugins declare compatibility against (AST v3 line). */
 export const BUILDER_API_VERSION = "3.1.0";
@@ -31,6 +38,190 @@ export type ServerHook = (typeof SERVER_HOOKS)[number];
 
 export const BLOCK_SLOTS = ["header", "main", "footer"] as const;
 export type BlockSlot = (typeof BLOCK_SLOTS)[number];
+
+/**
+ * TRACK M — menu replacement API (approved shapes 1+2; theme-only formal
+ * override stays roadmap/untouched).
+ *
+ * Shape 1 (fill): a widget may target `menu_bar` / `menu_dropdown` /
+ * `menu_drawer`. Data contract is rows in, markup out — the engine keeps
+ * layout/a11y control at every fill point and renders all nav markup itself;
+ * the plugin only supplies rows through the `menus.list` sandbox bridge
+ * (see `marketplace-scopes.ts`). No new server hook exists for menus:
+ * `SERVER_HOOKS` above is unchanged by design.
+ *
+ * Shape 2 (swap): a plugin may register a complete nav renderer, but it
+ * only wins behind BOTH `replace_menus` scope AND an explicit review
+ * approval flag (`decideMenuRenderer`). Any failure renders the theme
+ * default (fail-open, logged via `renderMenuWithFallback`).
+ */
+
+/** A plugin's claim to replace one nav slot's renderer. */
+export type MenuRendererClaim = {
+  pluginId: string;
+  slot: MenuSlot;
+  /** Sandboxed bundle entry — never raw HTML into the nav landmark. */
+  entry: string;
+  /** Explicit review approval. `false`/absent keeps the theme default. */
+  reviewApproved: boolean;
+};
+
+export function isMenuRendererClaim(value: unknown): value is MenuRendererClaim {
+  const r = (value ?? {}) as Record<string, unknown>;
+  return (
+    typeof r.pluginId === "string" &&
+    r.pluginId.length > 0 &&
+    isMenuSlot(r.slot) &&
+    typeof r.entry === "string" &&
+    r.entry.length > 0 &&
+    typeof r.reviewApproved === "boolean"
+  );
+}
+
+export type MenuRendererDecision =
+  | {
+      kind: "plugin";
+      pluginId: string;
+      slot: MenuSlot;
+    }
+  | {
+      kind: "theme_default";
+      reason: "not_claimed" | "not_approved" | "scope_denied" | "renderer_failed";
+      pluginId?: string;
+    };
+
+/**
+ * Review gate for a full nav renderer swap. First claim for the slot wins;
+ * it renders only when review-approved AND the install grants
+ * `replace_menus`. Every other outcome is the theme default (fail-open).
+ */
+export function decideMenuRenderer(
+  claims: readonly MenuRendererClaim[] | null | undefined,
+  slot: MenuSlot,
+  granted: readonly string[] | null | undefined,
+): MenuRendererDecision {
+  // Fail-open on malformed input too: anything unexpected is the theme default.
+  const list = Array.isArray(claims) ? claims : [];
+  const scopes = Array.isArray(granted) ? granted : [];
+  const claim = list.find((c) => c?.slot === slot);
+  if (!claim) return { kind: "theme_default", reason: "not_claimed" };
+  if (claim.reviewApproved !== true)
+    return {
+      kind: "theme_default",
+      reason: "not_approved",
+      pluginId: claim.pluginId,
+    };
+  if (!scopes.includes(MENU_REPLACE_SCOPE))
+    return {
+      kind: "theme_default",
+      reason: "scope_denied",
+      pluginId: claim.pluginId,
+    };
+  return { kind: "plugin", pluginId: claim.pluginId, slot };
+}
+
+/**
+ * Fail-open menu render. The theme renderer runs whenever the decision is
+ * not `plugin` (the plugin renderer is never attempted then), and again
+ * when the plugin renderer throws — the failure is reported through
+ * `onFail` (default: one tagged `console.error` line, mirroring
+ * `reportWidgetError`) and the shopper still gets navigation.
+ */
+export function renderMenuWithFallback<T>(
+  decision: MenuRendererDecision,
+  renderPlugin: () => T,
+  renderTheme: () => T,
+  onFail?: (error: unknown, decision: MenuRendererDecision) => void,
+): T {
+  if (decision.kind !== "plugin") return renderTheme();
+  try {
+    return renderPlugin();
+  } catch (error) {
+    const failed: MenuRendererDecision = {
+      kind: "theme_default",
+      reason: "renderer_failed",
+      pluginId: decision.pluginId,
+    };
+    if (onFail) onFail(error, failed);
+    else if (typeof console !== "undefined") {
+      console.error(
+        new Error(
+          `menu_renderer_failed:${decision.pluginId}: ${(error as Error)?.message ?? String(error)}`,
+          { cause: error },
+        ),
+      );
+    }
+    return renderTheme();
+  }
+}
+
+/**
+ * Row selection for a swapped slot. Plugin rows win only under a `plugin`
+ * decision (and when non-empty); everything else keeps the theme rows, so
+ * an approved-but-empty plugin can never blank the navigation.
+ */
+export function selectMenuSwapRows<T>(
+  themeRows: readonly T[],
+  pluginRows: readonly T[] | null | undefined,
+  decision: MenuRendererDecision,
+): readonly T[] {
+  if (decision.kind !== "plugin") return themeRows;
+  return pluginRows && pluginRows.length > 0 ? pluginRows : themeRows;
+}
+
+/**
+ * What a renderer mount point accepts for a slot swap. `claims` carries the
+ * review approval flag, `grantedScopes` the install's scopes; rows flow
+ * through the engine-owned markup either as `pluginRows` or from a
+ * `renderRows` seam (the review/test harness — throwing keeps the theme
+ * rows, fail-open). `onError` overrides the default tagged `console.error`.
+ */
+export type MenuSwapRequest<T> = {
+  claims: readonly MenuRendererClaim[];
+  grantedScopes: readonly string[];
+  pluginRows?: readonly T[];
+  renderRows?: () => readonly T[];
+  onError?: (error: unknown) => void;
+};
+
+/** Light shape guard for swap requests arriving over loosely-typed pipes. */
+export function isMenuSwapRequest(value: unknown): value is MenuSwapRequest<unknown> {
+  const r = (value ?? {}) as Record<string, unknown>;
+  return (
+    Array.isArray(r.claims) &&
+    r.claims.length > 0 &&
+    r.claims.every(isMenuRendererClaim) &&
+    Array.isArray(r.grantedScopes)
+  );
+}
+
+/**
+ * One tested path for every menu mount point: gate the swap, then resolve
+ * rows fail-open. Non-`plugin` decisions never invoke `renderRows` and
+ * return the theme rows untouched.
+ */
+export function resolveMenuSwapRows<T>(
+  themeRows: readonly T[],
+  swap: MenuSwapRequest<T> | null | undefined,
+  slot: MenuSlot,
+): { rows: readonly T[]; decision: MenuRendererDecision } {
+  const decision = decideMenuRenderer(swap?.claims, slot, swap?.grantedScopes);
+  if (decision.kind !== "plugin") return { rows: themeRows, decision };
+  const rows = renderMenuWithFallback(
+    decision,
+    () => {
+      const out =
+        typeof swap?.renderRows === "function"
+          ? swap.renderRows()
+          : swap?.pluginRows;
+      const list = Array.isArray(out) ? out : [];
+      return list.length > 0 ? list : themeRows;
+    },
+    () => themeRows,
+    swap?.onError,
+  );
+  return { rows, decision };
+}
 
 export type SettingKind =
   | "text"
@@ -55,7 +246,8 @@ export type SettingField = {
 export type PluginWidgetDef = {
   key: string;
   label: string;
-  slots: BlockSlot[];
+  /** Block slots plus the sanctioned menu fill points (`MENU_SLOTS`). */
+  slots: (BlockSlot | MenuSlot)[];
   /** Sandboxed bundle entry evaluated inside the island's null-origin frame. */
   entry: string;
   height?: number;
@@ -230,8 +422,12 @@ export function parseManifest(input: unknown): ManifestVerdict {
     }
     const slots = (Array.isArray(r.slots) ? r.slots : [])
       .map(String)
-      .filter((s): s is BlockSlot =>
-        (BLOCK_SLOTS as readonly string[]).includes(s),
+      .filter(
+        (
+          s,
+        ): s is BlockSlot | MenuSlot =>
+          (BLOCK_SLOTS as readonly string[]).includes(s) ||
+          (MENU_SLOTS as readonly string[]).includes(s),
       );
     if (slots.length === 0) {
       errors.push(`widgets[${i}].slots`);
@@ -466,7 +662,7 @@ export function resolvePluginWidget(
 /** Tray entries: every widget an installed, compatible plugin contributes. */
 export function pluginTrayEntries(
   installed: readonly InstalledPlugin[],
-  slot: BlockSlot,
+  slot: BlockSlot | MenuSlot,
   api = BUILDER_API_VERSION,
 ) {
   const out: { key: string; label: string; pluginName: string }[] = [];
