@@ -14,6 +14,44 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-03] — Phase 5 trust docs (`5b14a892`)
+### Added
+- `review-policy.md` (no-plugin-territory rule with 5 locked rejection reasons + review process with semver resubmission and appeal path); `theme-updates.md` (versioning + rollback promise + override story).
+### Verification
+- 73/73 pins resolve; prettier clean. Open TBDs marked in-doc (reviewer SLA, appeal queue, rollback retention, Restore click-path).
+
+## [2026-10-03] — Phase 4 picker bindings (`d95316b6`)
+### Added
+- Picked-rows bindings (menu/product/article/page/search) with `parsePickedHandles` normaliser; renderers prefer picks, degrade to empty states.
+### Verification
+- 4465 lib tests green (2 pre-existing reds proven via stashed-tree check), tsc clean.
+
+## [2026-10-03] — Phase 3 motion ceiling (`827065a2`)
+### Added
+- `count-up` + `scroll-scrub` JS executors (lazy, IO-gated, reduced-motion static); per-theme motion budgets blocking in publish gate; slide/zoom reveal vocab mapping.
+### Verification
+- 254 tests green, `tsgo` clean.
+
+## [2026-10-03] — Phase 2b Globals (`6f47a9ef`)
+### Added
+- `global_ref` studio twin + renderer branch; merchant Globals editor bound to `var(--fq-g-*)`.
+### Verification
+- 591 tests green, tsc clean.
+
+## [2026-10-03] — Phase 2a templates+zones (`a58fcb48`)
+### Added
+- Template suffix + fallback chain; named zones as data; `global_ref` section type; widget prop hints for lane fields.
+### Verification
+- 29 new + 873 adjacent tests green, tsc clean.
+
+## [2026-10-03] — Phase 1 trust gates (`149dec58`)
+### Added
+- Blocking a11y gates + reduced-motion gate wiring; Theme Security page + `advCss`/html lint (caught real sanitizer residuals); 10 responsive flags (17→27 catalog); openspec/ extracted from the oceanblue branch (scratch left behind).
+### Verification
+- Phase suites green, `tsgo`/`tsc` clean.
+### Corrections
+- No dep-deny module or SRI rule exist; gsap is the required single engine (policy sentence only). Responsive rail-limit mirrors added post-lane.
+
 ## [2026-10-03] — Variation server persistence + live render + picker (`d3fc715d`)
 ### Added
 - `parseUntrusted` preserves well-formed variation keys; workspace round-trips through autosave/commit/publish; `setVariation` picker seam; live published-version resolution (requested > persisted > base); builder theme-panel picker with `?variation=` preview links.
