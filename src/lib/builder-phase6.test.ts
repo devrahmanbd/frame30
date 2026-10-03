@@ -370,4 +370,39 @@ describe("theme-motion manifest", () => {
     const props = (ast.main[0] as { props: Record<string, unknown> }).props;
     expect(props["advMotion"]).toBe("stagger-grid");
   });
+
+  it("resolves the JS-executor effects and classifies them", async () => {
+    const { motionEffectOf, isEntranceEffect, isJsEffect } = await import(
+      "./builder-advanced"
+    );
+    expect(motionEffectOf("count-up")).toBe("count-up");
+    expect(motionEffectOf("scroll-scrub")).toBe("scroll-scrub");
+    expect(isJsEffect("count-up")).toBe(true);
+    expect(isJsEffect("scroll-scrub")).toBe(true);
+    expect(isJsEffect("rise")).toBe(false);
+    expect(isJsEffect("marquee")).toBe(false);
+    // count-up parks on entry like a reveal; scroll-scrub is scroll-linked.
+    expect(isEntranceEffect("count-up")).toBe(true);
+    expect(isEntranceEffect("scroll-scrub")).toBe(false);
+  });
+
+  it("maps legacy entrance names into the reveal vocabulary (B3)", async () => {
+    const { motionEffectOf } = await import("./builder-advanced");
+    // The horizontal entrances have no fq-fx counterpart, so they normalise
+    // to the platform rise token instead of collapsing to none.
+    expect(motionEffectOf("slide-left")).toBe("rise");
+    expect(motionEffectOf("slide-right")).toBe("rise");
+    expect(motionEffectOf("zoom")).toBe("zoom");
+    expect(motionEffectOf("none")).toBe("none");
+    expect(motionEffectOf("fade")).toBe("fade");
+    expect(motionEffectOf("rise")).toBe("rise");
+  });
+
+  it("declares the JS effects in the advMotion inspector options", async () => {
+    const { ADVANCED_FIELDS } = await import("./builder-advanced");
+    const values = ADVANCED_FIELDS.find((f) => f.key === "advMotion")
+      ?.options?.map((o) => o.value);
+    expect(values).toContain("count-up");
+    expect(values).toContain("scroll-scrub");
+  });
 });

@@ -687,4 +687,24 @@ describe("theme-motion manifest execution", () => {
     expect(html).not.toContain("fq-fx");
     expect(html).not.toContain("data-motion-effect");
   });
+
+  it("emits hooks for the JS-executor effects with settled content", () => {
+    for (const effect of ["count-up", "scroll-scrub"]) {
+      const html = renderNode({ text: "Hi", advMotion: effect });
+      expect(html).toContain(`fq-fx fq-fx-${effect}`);
+      expect(html).toContain(`data-motion-effect="${effect}"`);
+      // Settled by default: no parked (invisible) state without a reveal,
+      // and the final content is in the DOM before any engine loads.
+      expect(html).not.toContain("fq-reveal-pending");
+      expect(html).toContain("Hi");
+    }
+  });
+
+  it("resolves legacy slide entrances into the reveal vocabulary", () => {
+    for (const slide of ["slide-left", "slide-right"]) {
+      const html = renderNode({ text: "Hi", advMotion: slide });
+      expect(html).toContain("fq-fx fq-fx-rise");
+      expect(html).toContain('data-motion-effect="rise"');
+    }
+  });
 });

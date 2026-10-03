@@ -47,9 +47,11 @@ export type AdvancedAnimation = (typeof ADVANCED_ANIMATIONS)[number];
 /**
  * Theme-motion manifest (closed vocabulary). A theme requests a named effect
  * via `advMotion`; the engine executes it — themes never touch shared
- * renderer code (isolation rule). Only CSS-executable effects are listed:
- * scroll-linked scenes and animated numerals need JS executors (phase 2).
- * Every effect collapses under `prefers-reduced-motion` and `motion: none`.
+ * renderer code (isolation rule). CSS-executable effects run from the
+ * stylesheet; `count-up` and `scroll-scrub` need JS executors and run behind
+ * the lazy engine loader (`src/components/builder/motion-fx.ts`), gated by
+ * the shared observer exactly like reveals. Every effect collapses under
+ * `prefers-reduced-motion` and `motion: none`.
  */
 export const MOTION_EFFECTS = [
   "none",
@@ -59,21 +61,47 @@ export const MOTION_EFFECTS = [
   "stagger-grid",
   "marquee",
   "line-reveal",
+  "count-up",
+  "scroll-scrub",
 ] as const;
 export type MotionEffect = (typeof MOTION_EFFECTS)[number];
 
+/**
+ * B3: entrance-animation names that predate the motion manifest, resolved into
+ * the reveal vocabulary. `zoom`/`none`/`fade`/`rise` are already members, so
+ * they pass through untouched; the horizontal entrances have no `fq-fx`
+ * counterpart (the CSS contract for this phase is keyframes only), so they
+ * normalise to the platform entrance token — a 16px rise — instead of
+ * collapsing to `none` and silently dropping the merchant's motion. The full
+ * directional tween stays available through `advAnimation` (`fq-anim-*`),
+ * which already ships both slide keyframes.
+ */
+const FX_ALIAS: Record<string, MotionEffect> = {
+  "slide-left": "rise",
+  "slide-right": "rise",
+};
+
 /** Unknown or empty values resolve to `none` — never a crash, never empty. */
 export function motionEffectOf(value: unknown): MotionEffect {
-  return (MOTION_EFFECTS as readonly string[]).includes(
-    typeof value === "string" ? value : "",
-  )
-    ? (value as MotionEffect)
+  const name = typeof value === "string" ? value : "";
+  const aliased = FX_ALIAS[name] ?? name;
+  return (MOTION_EFFECTS as readonly string[]).includes(aliased)
+    ? (aliased as MotionEffect)
     : "none";
 }
 
 /** Entrance-type effects park until the shared observer reports on-screen. */
 export function isEntranceEffect(effect: MotionEffect): boolean {
-  return effect !== "none" && effect !== "marquee";
+  return effect !== "none" && effect !== "marquee" && effect !== "scroll-scrub";
+}
+
+/**
+ * Effects that cannot run from CSS and need a JS executor behind the engine
+ * loader. `count-up` tweens a numeral on entry; `scroll-scrub` drives a
+ * scroll-linked drift while its node crosses the viewport.
+ */
+export function isJsEffect(effect: MotionEffect): boolean {
+  return effect === "count-up" || effect === "scroll-scrub";
 }
 
 export const ADVANCED_FIELDS: Field[] = [
@@ -161,6 +189,8 @@ export const ADVANCED_FIELDS: Field[] = [
       { value: "stagger-grid", label: "Staggered grid" },
       { value: "marquee", label: "Marquee loop" },
       { value: "line-reveal", label: "Line reveal" },
+      { value: "count-up", label: "Count up" },
+      { value: "scroll-scrub", label: "Scroll scrub" },
     ],
   },
   {

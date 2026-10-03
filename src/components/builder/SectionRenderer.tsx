@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import type {
   Breakpoint,
   Section,
@@ -23,6 +23,7 @@ import { useCartContext } from "./CartContext";
 import { useExperiments, useExposure } from "./ExperimentContext";
 import { useHydrated } from "./reveal";
 import { useReveal } from "./reveal";
+import { useMotionFx } from "./motion-fx";
 import { widgetReader } from "./widgets";
 import { resolveWidgetComponent } from "./theme-widgets";
 import { useNodeData } from "./WidgetDataContext";
@@ -196,6 +197,20 @@ export function SectionRenderer({
   // Entrance effects park behind the shared observer like reveals do.
   const fx = motionEffectOf(resolved["advMotion"]);
   const fxParked = fx !== "none" && isEntranceEffect(fx) && !reveal.shown;
+  // JS-executed motion (count-up, scroll-scrub) runs through the shared
+  // executor: IntersectionObserver-gated, engine-lazy, settled by default.
+  const motionFx = useMotionFx(fx, !editing);
+  // Both observers share one wrapper node, so both refs attach here. The
+  // ref objects are stable, keeping this callback stable too.
+  const wrapRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      (reveal.ref as React.MutableRefObject<HTMLElement | null>).current =
+        node;
+      (motionFx.ref as React.MutableRefObject<HTMLElement | null>).current =
+        node;
+    },
+    [reveal.ref, motionFx.ref],
+  );
   // In the studio every node carries a handle so a click anywhere on the
   // canvas can select the deepest widget under the pointer, Webflow-style.
   const selected = editing && !!selectedIds?.includes(section.id);
@@ -233,7 +248,7 @@ export function SectionRenderer({
   const wrap = (node: React.ReactNode) =>
     editing || wrapperClass || hasStyle || skin ? (
       <div
-        ref={reveal.ref as React.Ref<HTMLDivElement>}
+        ref={wrapRef}
         className={wrapperClass}
         style={{ ...chrome.style, ...advanced.style } as React.CSSProperties}
         {...(advanced.id ? { id: advanced.id } : {})}

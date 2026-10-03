@@ -14,8 +14,10 @@ import { DEFAULT_DARK_TOKENS, DEFAULT_TOKENS } from "./builder-ast";
 import { LIGHTHOUSE_BUDGET, VITALS_BUDGET } from "./web-vitals";
 import {
   interactiveGate,
+  motionBudgetGate,
   reducedMotionGate,
   statusGate,
+  MOTION_THEME_BUDGET,
 } from "./publish-gates";
 import {
   newSection,
@@ -324,5 +326,80 @@ describe("Phase 1A — status is never colour-only", () => {
     ]);
     expect(gate.ok).toBe(true);
     expect(gate.a11y?.ok).toBe(true);
+  });
+});
+
+describe("B6 — per-theme motion budgets", () => {
+  it("passes a quiet theme", () => {
+    expect(
+      motionBudgetGate(
+        tree([
+          node("hero", "h1", { advMotion: "rise" }),
+          node("hero", "h2", { advMotion: "count-up" }),
+        ]),
+      ),
+    ).toEqual([]);
+  });
+
+  it("passes one lively loop but fails two", () => {
+    expect(
+      motionBudgetGate(tree([node("hero", "h1", { advMotion: "marquee" })])),
+    ).toEqual([]);
+    const failures = motionBudgetGate(
+      tree([
+        node("hero", "h1", { advMotion: "marquee" }),
+        node("hero", "h2", { advMotion: "marquee" }),
+      ]),
+    );
+    expect(failures.some((f) => f.code === "motion.budget.loops")).toBe(true);
+  });
+
+  it("fails beyond the concurrent-tween ceiling and passes at it", () => {
+    const over = Array.from(
+      { length: MOTION_THEME_BUDGET.maxAnimatedNodes + 1 },
+      (_, i) => node("heading", `n${i}`, { advMotion: "fade" }),
+    );
+    expect(
+      motionBudgetGate(tree(over)).some(
+        (f) => f.code === "motion.budget.tweens",
+      ),
+    ).toBe(true);
+    expect(
+      motionBudgetGate(tree(over.slice(0, MOTION_THEME_BUDGET.maxAnimatedNodes))),
+    ).toEqual([]);
+  });
+
+  it("counts JS-executor effects toward the same ceiling", () => {
+    const mixed = Array.from(
+      { length: MOTION_THEME_BUDGET.maxAnimatedNodes + 1 },
+      (_, i) =>
+        node("heading", `m${i}`, {
+          advMotion: i % 2 === 0 ? "count-up" : "scroll-scrub",
+        }),
+    );
+    expect(
+      motionBudgetGate(tree(mixed)).some(
+        (f) => f.code === "motion.budget.tweens",
+      ),
+    ).toBe(true);
+  });
+
+  it("fails the publish on motion budget breaches — blocking, not advisory", () => {
+    const main = Array.from(
+      { length: MOTION_THEME_BUDGET.maxAnimatedNodes + 1 },
+      (_, i) => node("heading", `p${i}`, { advMotion: "fade" }),
+    );
+    const gate = gateFor(main);
+    expect(gate.ok).toBe(false);
+    expect(
+      gate.failures.some((f) => f.code === "motion.budget.tweens"),
+    ).toBe(true);
+    expect(
+      gate.warnings.some((w) => w.code.startsWith("motion.budget")),
+    ).toBe(false);
+  });
+
+  it("skips the budget when no AST is supplied", () => {
+    expect(composePublishGate({ tokens: DEFAULT_TOKENS }).ok).toBe(true);
   });
 });

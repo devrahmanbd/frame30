@@ -27,6 +27,7 @@ import {
   auditMotionPage,
   type MotionPageMeasurement,
 } from "./motion-choreography";
+import { motionEffectOf } from "./builder-advanced";
 import type {
   Section,
   SectionType,
@@ -649,6 +650,69 @@ export function reducedMotionGate(
 }
 
 /**
+ * B6: per-theme motion budgets, decided from the AST alone so they run on the
+ * publish path with no browser — the static half of the motion ceiling whose
+ * runtime half is `MotionBudget` (`motion-policy.ts`) + `auditBudget`
+ * (`motion-choreography.ts`).
+ *
+ * Two ceilings, both blocking (failures, never warnings — matching the
+ * `perf.weight` convention where a breached budget fails the publish and only
+ * a near-miss is advisory):
+ *
+ *  - `motion.budget.tweens` — at most `maxAnimatedNodes` nodes may request a
+ *    motion effect. A fast scroll fires every entrance together, so the
+ *    declared worst case must fit inside the runtime's concurrent-animation
+ *    budget (`new MotionBudget(12)` default; the page holds 14 with room for
+ *    chrome). Count-up and scroll-scrub nodes count the same as CSS ones:
+ *    they hold a tween, a budget slot and the engine chunk.
+ *  - `motion.budget.loops` — at most `maxLoopLayers` lively (infinite)
+ *    layer. Loops never settle, so each one is a permanent compositor tax;
+ *    one marquee per theme is the allowance.
+ */
+export const MOTION_THEME_BUDGET = {
+  maxAnimatedNodes: 12,
+  maxLoopLayers: 1,
+} as const;
+
+/** Effects that never settle on their own — the page pays for them forever. */
+const LOOP_EFFECTS: ReadonlySet<string> = new Set(["marquee"]);
+
+export function motionBudgetGate(ast: ThemeAst): GateFailure[] {
+  const failures: GateFailure[] = [];
+  let animated = 0;
+  let loops = 0;
+  let firstLoopWhere = "";
+  for (const section of flattenSections(ast)) {
+    if (section.invalid) continue;
+    const effect = motionEffectOf(
+      (section.props as Record<string, unknown>)["advMotion"],
+    );
+    if (effect === "none") continue;
+    animated += 1;
+    if (LOOP_EFFECTS.has(effect)) {
+      loops += 1;
+      if (!firstLoopWhere) firstLoopWhere = `${section.type} (${section.id})`;
+    }
+  }
+  if (animated > MOTION_THEME_BUDGET.maxAnimatedNodes) {
+    failures.push({
+      code: "motion.budget.tweens",
+      message:
+        `motion: ${animated} nodes request motion effects against a ceiling of ` +
+        `${MOTION_THEME_BUDGET.maxAnimatedNodes} concurrent tweens — a fast scroll fires them together and drops frames on a mid-range phone.`,
+    });
+  }
+  if (loops > MOTION_THEME_BUDGET.maxLoopLayers) {
+    failures.push({
+      code: "motion.budget.loops",
+      message:
+        `motion: ${loops} lively loop layers against a ceiling of ${MOTION_THEME_BUDGET.maxLoopLayers} — loops never settle, so each one is a permanent compositor tax (first: ${firstLoopWhere}).`,
+    });
+  }
+  return failures;
+};
+
+/**
  * Browser-side gates. They cannot run inside a server function, so publish
  * cannot block on them — they block the release instead, and are declared here
  * so `bun run gates:release` and this module can never disagree.
@@ -753,6 +817,13 @@ export function composePublishGate(input: {
   const motionPages =
     input.motion === false || !input.motion ? null : input.motion.pages;
   const motionFailures = motionPages ? reducedMotionGate(motionPages) : null;
+  // B6: per-theme motion budgets ride the same AST the responsive gate audits,
+  // so a publish never checks motion against a different tree. Token-only
+  // callers (no AST) skip it exactly like the responsive gate does.
+  const motionBudgetAst = responsiveAst ?? a11yAst;
+  const motionBudgetFailures = motionBudgetAst
+    ? motionBudgetGate(motionBudgetAst)
+    : null;
   const failures: GateFailure[] = [
     ...(input.lint ?? []).map((message) => ({ code: "lint", message })),
     ...(input.translation ?? []).map((message) => ({
@@ -772,6 +843,7 @@ export function composePublishGate(input: {
     })),
     ...(a11yFailures ?? []),
     ...(motionFailures ?? []),
+    ...(motionBudgetFailures ?? []),
   ];
   const warnings: GateFailure[] = [
     ...(perf?.warnings ?? []).map((f) => ({
