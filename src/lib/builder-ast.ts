@@ -583,6 +583,43 @@ export type MenuItem = {
   mega?: { enabled: boolean; columns: number };
 };
 
+/**
+ * Phase 4 — picker bindings for product / article / page / menu / search rows.
+ *
+ * Convention (follows the `kind: "brand"` taxonomy-kind precedent and the
+ * `collection`-handle precedent): a picker stores a stable key, never a
+ * label — a single id/handle (`menuId`, `query`) or a comma-separated pick
+ * list (`handles`, `pages`). The dashboard picker writes it, `parseAst`
+ * preserves it like any text prop, and it resolves at render-data time
+ * against the widget's batch rows (or feed rows): unknown / missing picks
+ * are dropped and zero survivors render the widget's existing empty state —
+ * never a crash. Empty binding = unbound = today's collection / taxonomy /
+ * manual fallback, so stored ASTs need no migration.
+ *
+ * `parsePickedHandles` is the one shared normaliser for pick lists: split on
+ * commas, trim, lowercase (slugs are stored lowercase, same as `taxonomy`
+ * coercion), keep URL-safe slug chars only, drop empties, dedupe, cap at
+ * MAX_ARRAY_ROWS. Renderers call it on the raw prop; it never throws.
+ */
+export function parsePickedHandles(raw: unknown, max = MAX_ARRAY_ROWS): string[] {
+  if (typeof raw !== "string") return [];
+  const cap = Math.min(Math.max(1, Math.trunc(max)), MAX_ARRAY_ROWS);
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const token of raw.split(",")) {
+    const slug = token
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, "")
+      .replace(/^-+|-+$/g, "");
+    if (!slug || seen.has(slug)) continue;
+    seen.add(slug);
+    out.push(slug);
+    if (out.length >= cap) break;
+  }
+  return out;
+}
+
 export type CatalogEntry = {
   type: SectionType;
   label: string;
@@ -2014,7 +2051,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     group: "content",
     slots: ["header"],
     heading: false,
-    defaults: { label: "Shop", limit: 8, columns: 4, promoImage: "", promoHref: "", promoTitle: "" },
+    defaults: { label: "Shop", limit: 8, columns: 4, menuId: "", promoImage: "", promoHref: "", promoTitle: "" },
     fields: [
       text("label", "Trigger label", 40),
       num("limit", "Max top-level entries"),
@@ -2022,6 +2059,10 @@ const BASE_CATALOG: CatalogEntry[] = [
       url("promoImage", "Promo image"),
       url("promoHref", "Promo link"),
       text("promoTitle", "Promo title", 60),
+      // Phase 4 menu picker: dashboard menu id/handle (Content › Menus).
+      // Blank keeps the live-taxonomy rows; mirrors the studio twin default
+      // and the existing studio `menuId` control so parse preserves the pick.
+      text("menuId", "Menu ID or handle", 80),
     ],
   },
   {
@@ -2069,6 +2110,11 @@ const BASE_CATALOG: CatalogEntry[] = [
       brandName: "",
       paymentsMarks: "",
       paymentsHeading: "",
+      // Phase 4 page picker: explicitly picked page slugs, comma separated.
+      // Blank keeps the authored columns; the renderer appends one extra
+      // "Pages" column of /pages/<slug> links (unparseable input appends
+      // nothing, so the footer never breaks).
+      pages: "",
     },
     fields: [
       text("c1Title", "Column 1 title", 40),
@@ -2089,6 +2135,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("brandName", "Brand name", 60),
       area("paymentsMarks", "Payment marks (comma separated)", 300),
       text("paymentsHeading", "Payment heading", 40),
+      text("pages", "Picked pages (comma-separated slugs)", 400),
       {
         // Repeater-first (chrome.tsx + songoskriti.tsx footers): studio
         // `items` column rows win when present; scalar c1..c4 pairs stay
@@ -2120,12 +2167,18 @@ const BASE_CATALOG: CatalogEntry[] = [
       buttonLabel: "Search",
       limit: 6,
       voiceEnabled: false,
+      // Phase 4 search-driven rows: picked default query. Blank keeps the
+      // empty box; a picked query prefills the term so opening the palette
+      // immediately drives suggestion rows (missing index still degrades to
+      // the existing unavailable/empty copy, never a crash).
+      query: "",
     },
     fields: [
       text("placeholder", "Placeholder", 60),
       text("buttonLabel", "Button label", 40),
       num("limit", "Max suggestions"),
       bool("voiceEnabled", "Voice input"),
+      text("query", "Default search query", 120),
     ],
   },
   {
@@ -2271,6 +2324,11 @@ const BASE_CATALOG: CatalogEntry[] = [
       caption: "Compare products",
       limit: 4,
       collection: "",
+      // Phase 4 product picker: explicitly picked product handles, comma
+      // separated, in display order. Blank keeps the collection rows; the
+      // renderer filters/orders batch rows by these picks and drops unknown
+      // handles (zero survivors render the existing empty state).
+      handles: "",
       r1Label: "Price",
       r2Label: "Availability",
       r3Label: "",
@@ -2278,6 +2336,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("caption", "Caption", 120),
+      text("handles", "Picked products (comma-separated handles)", 400),
       text("r1Label", "Row 1 label", 60),
       text("r2Label", "Row 2 label", 60),
       text("r3Label", "Row 3 label", 60),
@@ -4602,6 +4661,10 @@ const BASE_CATALOG: CatalogEntry[] = [
     heading: false,
     defaults: {
       heading: "",
+      // Phase 4 menu picker: dashboard menu id/handle (Content › Menus).
+      // Blank keeps the manual `items`; mirrors the studio twin default and
+      // the existing studio `menuId` control so parse preserves the pick.
+      menuId: "",
       layout: "row",
       align: "left",
       items: [
@@ -4612,6 +4675,7 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("heading", "Heading (optional)", 60),
+      text("menuId", "Menu ID or handle", 80),
       menu("items", "Menu items"),
       {
         key: "layout",
@@ -4701,6 +4765,11 @@ const BASE_CATALOG: CatalogEntry[] = [
       showExcerpt: true,
       showMeta: true,
       emptyText: "No articles yet.",
+      // Phase 4 article picker: explicitly picked article slugs, comma
+      // separated, in display order. Blank keeps the route feed; the renderer
+      // filters feed rows by these picks and drops unknown slugs (zero
+      // survivors render the existing empty-state copy).
+      handles: "",
     },
     fields: [
       text("heading", "Heading (optional)"),
@@ -4729,6 +4798,7 @@ const BASE_CATALOG: CatalogEntry[] = [
       bool("showExcerpt", "Show excerpt"),
       bool("showMeta", "Show author and date"),
       text("emptyText", "Empty state text", 120),
+      text("handles", "Picked articles (comma-separated slugs)", 400),
     ],
   },
   {

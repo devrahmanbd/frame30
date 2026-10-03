@@ -942,3 +942,91 @@ describe("global_ref studio twin", () => {
     expect(node.children).toBeUndefined();
   });
 });
+
+/**
+ * Phase 4 — picker binding twin parity. The picked-rows bindings (menuId /
+ * handles / pages / query) follow the taxonomy-kind precedent: the BASE
+ * entry stores the pick, the studio twin mirrors the default, and a picker
+ * control edits it. This pins all three legs per bound widget so the
+ * twin-parity gate stays green as bindings grow.
+ */
+describe("picker binding twin parity", () => {
+  const PICKER_BOUND = [
+    "nav_menu",
+    "mega_menu",
+    "compare_table",
+    "blog_archive",
+    "footer_sitemap",
+    "search_command",
+  ] as const;
+  const PICKER_KEYS: Record<(typeof PICKER_BOUND)[number], string[]> = {
+    nav_menu: ["menuId"],
+    mega_menu: ["menuId"],
+    compare_table: ["handles"],
+    blog_archive: ["handles"],
+    footer_sitemap: ["pages"],
+    search_command: ["query"],
+  };
+
+  it("every BASE picker binding exists in the studio twin defaults", () => {
+    for (const key of PICKER_BOUND) {
+      const twin = WIDGET_BY_KEY[key];
+      expect(twin, `${key}: no studio twin`).toBeDefined();
+      for (const prop of PICKER_KEYS[key]) {
+        expect(
+          Object.hasOwn(twin!.defaults, prop),
+          `${key}: twin default missing picker prop ${prop}`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("bound twins carry the full BASE content schema", () => {
+    const styleKeys = new Set(STYLE_FIELDS.map((field) => field.key));
+    for (const key of PICKER_BOUND) {
+      const base = catalogEntry(key as SectionType);
+      expect(base, `${key}: no BASE entry`).toBeDefined();
+      const twin = WIDGET_BY_KEY[key];
+      for (const prop of Object.keys(base!.defaults)) {
+        if (styleKeys.has(prop)) continue;
+        // Derived siblings pre-date this lane and were never mirrored for
+        // these twins: `_bn` bitext twins (withBiText) and `_alt` / `_sizes`
+        // media keys (withMedia). Parity here covers the picker bindings
+        // plus the rest of the authored content schema.
+        if (
+          prop.endsWith("_bn") ||
+          prop.endsWith("_alt") ||
+          prop.endsWith("_sizes")
+        )
+          continue;
+        expect(
+          Object.hasOwn(twin!.defaults, prop),
+          `${key}: twin default missing BASE prop ${prop}`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("every picker binding has a studio control over a carried key", () => {
+    for (const key of PICKER_BOUND) {
+      const controlKeys = new Set(
+        contentControls(key).map((control) => control.key),
+      );
+      for (const prop of PICKER_KEYS[key]) {
+        expect(
+          controlKeys.has(prop),
+          `${key}: missing picker control ${prop}`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("picker bindings default to unbound", () => {
+    expect(WIDGET_BY_KEY.nav_menu!.defaults.menuId).toBe("");
+    expect(WIDGET_BY_KEY.mega_menu!.defaults.menuId).toBe("");
+    expect(WIDGET_BY_KEY.compare_table!.defaults.handles).toBe("");
+    expect(WIDGET_BY_KEY.blog_archive!.defaults.handles).toBe("");
+    expect(WIDGET_BY_KEY.footer_sitemap!.defaults.pages).toBe("");
+    expect(WIDGET_BY_KEY.search_command!.defaults.query).toBe("");
+  });
+});

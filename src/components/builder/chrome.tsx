@@ -25,6 +25,7 @@ import { textOf } from "@/lib/bitext";
 import { PaymentMark } from "@/components/store/PaymentMarks";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import type { SectionType } from "@/lib/builder-ast";
+import { parsePickedHandles } from "@/lib/builder-ast";
 import { useCart } from "@/lib/cart";
 import { openCartDrawer } from "./CartContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -490,7 +491,7 @@ function FooterSitemap({ str, section, link, locale }: WidgetCtx) {
         })
         .filter((col) => col.title || col.links.length > 0)
     : [];
-  const columns =
+  const baseColumns =
     itemRows.length > 0
       ? itemRows
       : [1, 2, 3, 4]
@@ -499,6 +500,27 @@ function FooterSitemap({ str, section, link, locale }: WidgetCtx) {
             links: parseLinkList(str(`c${n}Links`)),
           }))
           .filter((col) => col.title || col.links.length > 0);
+  // Phase 4 page picker: explicitly picked page slugs append one extra
+  // "Pages" column of /pages/<slug> links. Unparseable input appends
+  // nothing, so a bad binding degrades to today's columns, never a crash.
+  const pageSlugs = parsePickedHandles(str("pages"));
+  const columns =
+    pageSlugs.length === 0
+      ? baseColumns
+      : [
+          ...baseColumns,
+          {
+            title: locale === "bn" ? "পাতা" : "Pages",
+            links: pageSlugs.map((slug) => ({
+              label: slug
+                .split("-")
+                .filter(Boolean)
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" "),
+              href: `/pages/${slug}`,
+            })),
+          },
+        ];
   if (columns.length === 0) return null;
   return (
     <div className="w-full">
@@ -813,7 +835,10 @@ function SearchCommand({ str, int, bool, storeSlug, locale }: WidgetCtx) {
   const [open, setOpen] = useState(false);
   const { location } = useRouterState();
   const base = storeBase(storeSlug, location.pathname);
-  const [term, setTerm] = useState("");
+  // Phase 4 search-driven rows: a picked `query` prefills the term so
+  // opening the palette immediately drives suggestion rows for it. Blank
+  // keeps the empty box exactly as before.
+  const [term, setTerm] = useState(str("query"));
   const [hits, setHits] = useState<Suggestion[] | null>(null);
   const [pending, setPending] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);

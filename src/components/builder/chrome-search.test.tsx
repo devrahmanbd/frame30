@@ -72,6 +72,7 @@ describe("search_command catalog", () => {
       "buttonLabel",
       "limit",
       "placeholder",
+      "query",
       "voiceEnabled",
     ]);
   });
@@ -366,5 +367,28 @@ describe("search_command suggestion ranking (LANE I)", () => {
       "b",
       "a",
     ]);
+  });
+});
+
+describe("Phase 4 search-driven rows", () => {
+  it("a picked query prefills the search term", () => {
+    // The palette input mounts only when the dialog opens, so the binding
+    // is pinned at the source-contract level like the other cases here.
+    expect(SRC).toContain("useState(str(\"query\"))");
+  });
+
+  it("blank query keeps the empty-box initial state", () => {
+    expect(SRC).toContain("useState(str(\"query\"))");
+    expect(newSection("search_command").props["query"]).toBe("");
+  });
+
+  it("round-trips the query binding through parseAst", async () => {
+    const { parseAst } = await import("@/lib/builder-ast");
+    const ast = parseAst({
+      header: [
+        { id: "s1", type: "search_command", props: { query: "jamdani" } },
+      ],
+    });
+    expect(ast.header[0]!.props["query"]).toBe("jamdani");
   });
 });

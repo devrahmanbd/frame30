@@ -7,7 +7,7 @@
  * one widget set, four themes.
  */
 import type { SectionType } from "@/lib/builder-ast";
-import { resolveSkin } from "@/lib/builder-ast";
+import { parsePickedHandles, resolveSkin } from "@/lib/builder-ast";
 import { formatDisplayNumber } from "@/lib/money-display";
 import type { WidgetRow } from "@/lib/widget-data";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
@@ -359,7 +359,21 @@ const BrandRail: WidgetComponent = (ctx) => {
 
 /** Up to four SKUs side by side, on the shared DataTable primitive. */
 const CompareTable: WidgetComponent = ({ str, int, data, locale, money }) => {
-  const rows = (data?.rows ?? []).slice(0, Math.min(4, int("limit", 4, 1, 4)));
+  // Phase 4 product picker: when `handles` names explicit picks, the bound
+  // rows win in pick order and unknown handles are dropped (missing rows
+  // degrade to the existing empty state, never a crash). Blank keeps the
+  // collection rows exactly as before.
+  const pool = data?.rows ?? [];
+  const picks = parsePickedHandles(str("handles"));
+  const bound = picks.length
+    ? picks.flatMap((slug) => {
+        const hit = pool.find(
+          (row) => (row.handle ?? row.id).toLowerCase() === slug,
+        );
+        return hit ? [hit] : [];
+      })
+    : pool;
+  const rows = bound.slice(0, Math.min(4, int("limit", 4, 1, 4)));
   if (data?.pending) {
     return (
       <div className="space-y-2" aria-hidden="true">

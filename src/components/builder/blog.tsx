@@ -16,6 +16,7 @@ import { Link } from "@tanstack/react-router";
 import type { BlogCardData } from "@/components/store/BlogList";
 import { ArchiveRail, Pager } from "@/components/store/BlogList";
 import type { Paging, TermKind } from "@/lib/blog-taxonomy";
+import { parsePickedHandles } from "@/lib/builder-ast";
 import type { WidgetComponent } from "./widgets";
 
 export type BlogFeed = {
@@ -181,7 +182,21 @@ const BlogArchiveWidget: WidgetComponent = ({ str, bool, int }) => {
   const showCover = bool("showCover");
   const showExcerpt = bool("showExcerpt");
   const showMeta = bool("showMeta");
-  const articles = (feed?.articles ?? SAMPLE).slice(0, limit);
+  // Phase 4 article picker: when `handles` names explicit picks, the bound
+  // articles win in pick order and unknown slugs are dropped (missing rows
+  // degrade to the existing empty-state copy, never a crash). Blank keeps
+  // the route feed exactly as before.
+  const pool = feed?.articles ?? SAMPLE;
+  const picks = parsePickedHandles(str("handles"));
+  const bound = picks.length
+    ? picks.flatMap((slug) => {
+        const hit = pool.find(
+          (article) => article.slug.toLowerCase() === slug,
+        );
+        return hit ? [hit] : [];
+      })
+    : pool;
+  const articles = bound.slice(0, limit);
 
   const body = () => {
     if (!articles.length) {

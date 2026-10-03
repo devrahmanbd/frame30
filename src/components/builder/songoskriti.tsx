@@ -45,7 +45,7 @@ import type {
   SectionType,
 } from "@/lib/builder-ast";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
-import { resolveSkin } from "@/lib/builder-ast";
+import { parsePickedHandles, resolveSkin } from "@/lib/builder-ast";
 import { useCarouselCycle, useScrollReveals } from "./songoskriti-motion";
 import { MediaFrame } from "./primitives/MediaFrame";
 import { ProductCard, ProductCardSkeleton, WishlistHeart } from "./primitives/ProductCard";
@@ -1014,6 +1014,27 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
             links: parseLinkList(str(`c${n}Links`)),
           }))
           .filter((col) => col.title || col.links.length > 0);
+  // Phase 4 page picker: explicitly picked page slugs append one extra
+  // "Pages" column of /pages/<slug> links (same binding the generic chrome
+  // footer reads). Unparseable input appends nothing — never a crash.
+  const pageSlugs = parsePickedHandles(str("pages"));
+  const sitemapColumns =
+    pageSlugs.length === 0
+      ? columns
+      : [
+          ...columns,
+          {
+            title: locale === "bn" ? "পাতা" : "Pages",
+            links: pageSlugs.map((slug) => ({
+              label: slug
+                .split("-")
+                .filter(Boolean)
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" "),
+              href: `/pages/${slug}`,
+            })),
+          },
+        ];
   // Brand zones are theme-authored props (with `_bn` twins resolved through
   // `str`), never hardcoded imports: a bare section renders generic chrome
   // only. Each zone renders only when its heading prop is authored.
@@ -1133,7 +1154,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
 
           {/* CENTER & RIGHT: Navigation columns */}
           <div className="lg:col-span-8 grid grid-cols-1 min-[400px]:grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-4 lg:gap-12">
-            {columns.map((col) => (
+            {sitemapColumns.map((col) => (
               <div key={col.title}>
                 <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)] mb-6 sm:mb-8">
                   {col.title}

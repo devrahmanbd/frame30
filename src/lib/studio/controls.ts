@@ -2350,6 +2350,14 @@ const CONTENT: Record<string, Control[]> = {
   ],
   footer_sitemap: [
     c({
+      key: "pages",
+      label: "Picked pages (comma-separated slugs)",
+      type: "text",
+      tab: "content",
+      section: "Columns",
+      placeholder: "about, stores, size-guide",
+    }),
+    c({
       key: "items",
       label: "Columns",
       type: "repeater",
@@ -4251,6 +4259,14 @@ const CONTENT: Record<string, Control[]> = {
       section: "Compare",
     }),
     c({
+      key: "handles",
+      label: "Picked products (comma-separated handles)",
+      type: "text",
+      tab: "content",
+      section: "Compare",
+      placeholder: "silk-saree, jamdani-dupatta",
+    }),
+    c({
       key: "r1Label",
       label: "Row 1 label",
       type: "text",
@@ -4972,6 +4988,14 @@ const CONTENT: Record<string, Control[]> = {
       tab: "content",
       section: "Search",
     }),
+    c({
+      key: "query",
+      label: "Default search query",
+      type: "text",
+      tab: "content",
+      section: "Search",
+      placeholder: "jamdani saree",
+    }),
   ],
   facet_sidebar: [
     c({
@@ -5078,6 +5102,14 @@ const CONTENT: Record<string, Control[]> = {
       type: "text",
       tab: "content",
       section: "Archive",
+    }),
+    c({
+      key: "handles",
+      label: "Picked articles (comma-separated slugs)",
+      type: "text",
+      tab: "content",
+      section: "Archive",
+      placeholder: "eid-edit-2026, weave-guide-jamdani",
     }),
   ],
   blog_pager: [

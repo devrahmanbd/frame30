@@ -704,6 +704,7 @@ export const WIDGETS: WidgetDef[] = [
       brandName: "",
       paymentsMarks: "",
       paymentsHeading: "",
+      pages: "",
     },
   },
   {
@@ -1453,6 +1454,7 @@ export const WIDGETS: WidgetDef[] = [
       caption: "Compare products",
       limit: 4,
       collection: "",
+      handles: "",
       r1Label: "Price",
       r2Label: "Availability",
       r3Label: "",
@@ -1825,6 +1827,7 @@ export const WIDGETS: WidgetDef[] = [
       buttonLabel: "Search",
       limit: 6,
       voiceEnabled: false,
+      query: "",
     },
   },
   {
@@ -1893,6 +1896,7 @@ export const WIDGETS: WidgetDef[] = [
       showExcerpt: true,
       showMeta: true,
       emptyText: "No articles yet.",
+      handles: "",
     },
   },
   {
