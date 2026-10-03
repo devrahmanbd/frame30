@@ -140,6 +140,21 @@ export const CRON_JOBS: CronJobDefinition[] = [
     touchesThirdParty: false,
   },
   {
+    key: "marketplace-renewals",
+    label: "Marketplace install renewals",
+    description:
+      "Renews due plugin-install subscriptions, parks failed charges as past-due.",
+    schedule: "30 2 * * *",
+    timezone: "UTC",
+    timeoutMs: 55_000,
+    slaMaxDurationMs: 30_000,
+    alertAfterFailures: 1,
+    maxOverdueSeconds: 10_800,
+    severity: "critical",
+    components: ["billing"],
+    touchesThirdParty: false,
+  },
+  {
     key: "ops",
     label: "Reliability sweep",
     description:

@@ -666,7 +666,10 @@ describe("theme-motion manifest execution", () => {
   const renderNode = (props: Record<string, unknown>) =>
     renderToStaticMarkup(
       createElement(SectionRenderer, {
-        section: { ...newSection("heading"), props },
+        section: {
+          ...newSection("heading"),
+          props: props as Record<string, import("@/lib/builder-ast").PropValue>,
+        },
         editing: false,
         locale: "en",
         template: "index",

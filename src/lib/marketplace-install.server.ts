@@ -20,6 +20,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { daysBetween } from "./billing.server";
 import { money } from "./money";
 import {
   APP_VERSION,
@@ -43,6 +44,8 @@ export type InstallInput = {
   grantedScopes?: string[];
   /** Admin user who clicked approve on the consent screen. */
   consentedBy?: string | null;
+  /** Recurring cadence for paid installs. Defaults to `one_time`. */
+  billingInterval?: InstallBillingInterval;
 };
 
 function split(gross: number) {
@@ -78,6 +81,11 @@ function impactedNodes(manifest: unknown) {
  * (ops-owned), so every install read/write path parks past-due trials on
  * terminal `lapsed` before doing anything else. Each lapse is audited with a
  * null actor (system transition, not a merchant click).
+ *
+ * LANE G: past-due RECURRING installs whose renewal window has passed park
+ * on the same terminal `lapsed` through the same audit path. The renews_at
+ * filter is feature-detected — pre-migration DBs skip the past-due leg and
+ * report `recurringDegraded: true` instead of throwing.
  */
 export async function lapseExpiredTrials(
   db: Client,
@@ -92,7 +100,21 @@ export async function lapseExpiredTrials(
     .eq("status", "trial")
     .lte("expires_at", nowIso);
   const ids = ((expired ?? []) as { id: string }[]).map((r) => r.id);
-  if (!ids.length) return { lapsed: [] as string[] };
+  let recurringDegraded = false;
+  try {
+    const { data: pastDue, error } = await db
+      .from("marketplace_installs")
+      .select("id")
+      .eq("merchant_id", merchantId)
+      .eq("status", "past_due")
+      .lte("renews_at", nowIso);
+    if (error) throw error;
+    for (const row of ((pastDue ?? []) as { id: string }[])) ids.push(row.id);
+  } catch (err) {
+    if (!isMissingRecurringColumnError(err)) throw err;
+    recurringDegraded = true;
+  }
+  if (!ids.length) return { lapsed: [] as string[], recurringDegraded };
   const { error } = await db
     .from("marketplace_installs")
     .update({ status: "lapsed" })
@@ -113,7 +135,7 @@ export async function lapseExpiredTrials(
       id,
     );
   }
-  return { lapsed: ids };
+  return { lapsed: ids, recurringDegraded };
 }
 
 type ReplayHit = {
@@ -326,6 +348,25 @@ export async function installListing(
         .eq("id", install.id);
       throw new Error("market_payment_failed");
     }
+  }
+
+  // LANE G: paid recurring purchases open a renewal schedule. The write is
+  // feature-detected — pre-migration DBs keep one-time semantics. It runs
+  // after money moved and never fails the purchase: a schedule can be
+  // backfilled, a completed charge cannot be un-moved.
+  try {
+    await setInstallBillingSchedule(db, install.id, {
+      merchantId,
+      interval: input.billingInterval ?? "one_time",
+      trial: input.trial,
+    });
+  } catch (err) {
+    const { log } = await import("./observability.server");
+    log("error", "market.schedule_write_failed", {
+      merchantId,
+      installId: install.id,
+      message: err instanceof Error ? err.message.slice(0, 120) : "unknown",
+    });
   }
 
   await db
@@ -1027,4 +1068,456 @@ export async function bulkInstallStatus(
     }
   }
   return { results };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LANE G — recurring billing for plugin installs.
+//
+// marketplace_installs gains `billing_interval` (one_time|monthly|annual),
+// `renews_at` and `last_renewed_at` via
+// supabase/pending/marketplace_install_recurring.sql (UNAPPLIED — everything
+// below feature-detects the columns and works with and without them, same
+// optimistic-write-then-degrade pattern as the kb embedding-version columns
+// in support-kb.server.ts:insertKbChunksFeatureDetected).
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type InstallBillingInterval = "one_time" | "monthly" | "annual";
+
+const RENEWAL_PERIOD_DAYS: Record<
+  Exclude<InstallBillingInterval, "one_time">,
+  number
+> = { monthly: 30, annual: 365 };
+
+const DAY_MS = 86_400_000;
+
+/** True when the failure is "the recurring columns don't exist yet" — never for real errors. */
+export function isMissingRecurringColumnError(err: unknown): boolean {
+  const msg =
+    err instanceof Error ? err.message : (
+      (err as { message?: string } | null)?.message ?? String(err ?? "")
+    );
+  if (!/billing_interval|renews_at|last_renewed_at/i.test(msg)) return false;
+  return /column|schema cache|PGRST204|42703|does not exist/i.test(msg);
+}
+
+function isInterval(v: unknown): v is InstallBillingInterval {
+  return v === "one_time" || v === "monthly" || v === "annual";
+}
+
+/** Next renewal instant anchored at `fromMs`. Null for one-time (no renewal). */
+export function computeRenewsAt(
+  interval: InstallBillingInterval,
+  fromMs: number = Date.now(),
+): string | null {
+  if (interval === "one_time") return null;
+  return new Date(fromMs + RENEWAL_PERIOD_DAYS[interval] * DAY_MS).toISOString();
+}
+
+/**
+ * Opens (or re-opens) the renewal schedule for an install. Trials store the
+ * interval with a null renews_at — there is nothing to charge until the trial
+ * converts. Degrades to `{ versioned: false }` on pre-migration DBs; real
+ * errors throw `market_schedule_failed`.
+ */
+export async function setInstallBillingSchedule(
+  db: Client,
+  installId: string,
+  opts: {
+    merchantId: string;
+    interval: InstallBillingInterval;
+    trial: boolean;
+    nowMs?: number;
+  },
+): Promise<{ versioned: boolean; renewsAt: string | null }> {
+  if (!isInterval(opts.interval)) throw new Error("market_schedule_failed");
+  const renewsAt = opts.trial
+    ? null
+    : computeRenewsAt(opts.interval, opts.nowMs ?? Date.now());
+  try {
+    const { error } = await db
+      .from("marketplace_installs")
+      .update({
+        billing_interval: opts.interval,
+        renews_at: renewsAt,
+      } as never)
+      .eq("merchant_id", opts.merchantId)
+      .eq("id", installId);
+    if (error) throw error;
+  } catch (err) {
+    if (!isMissingRecurringColumnError(err))
+      throw new Error("market_schedule_failed");
+    const { log } = await import("./observability.server");
+    log("warn", "market.recurring_columns_missing", {
+      merchantId: opts.merchantId,
+      installId,
+    });
+    return { versioned: false, renewsAt: null };
+  }
+  return { versioned: true, renewsAt };
+}
+
+export type InstallRenewalVerdict =
+  | {
+      renewed: true;
+      installId: string;
+      renewsAt: string;
+      versioned: boolean;
+      replayed: boolean;
+    }
+  | {
+      renewed: false;
+      installId: string;
+      reason:
+        | "not_due"
+        | "one_time"
+        | "trial"
+        | "free"
+        | "status_not_renewable"
+        | "listing_not_found"
+        | "past_due"
+        | "recurring_columns_missing";
+    };
+
+type RenewalRow = {
+  id: string;
+  merchant_id: string;
+  kind: string;
+  status: string;
+  listing_slug: string;
+  listing_name: string;
+  price_minor_int: number | string;
+  currency_code: string;
+  billing_interval?: unknown;
+  renews_at?: unknown;
+  last_renewed_at?: unknown;
+  started_at?: unknown;
+};
+
+/**
+ * Renews one due install: charges the full period price through the ledger
+ * (reusing the install sources — renewal rows are distinguished by the
+ * `renew:` idempotency key and memo, so no ledger-source change is needed),
+ * then extends renews_at anchored at now.
+ *
+ * Idempotency: the ledger key derives from the PRE-renewal period
+ * (`renew:<install>:<periodStart>`), so a crash between charge and
+ * date-extension replays the ledger row instead of double-charging.
+ *
+ * A failed charge parks the install on `past_due` (terminal `lapsed` follows
+ * via lapseExpiredTrials once the window passes) and returns — never throws
+ * for money failures, so the cron sweep can isolate per-row outcomes.
+ */
+export async function processInstallRenewal(
+  db: Client,
+  merchantId: string,
+  installId: string,
+  opts?: { nowMs?: number; actorId?: string | null },
+): Promise<InstallRenewalVerdict> {
+  const nowMs = opts?.nowMs ?? Date.now();
+  const nowIso = new Date(nowMs).toISOString();
+  let row: RenewalRow | null;
+  try {
+    const { data, error } = await db
+      .from("marketplace_installs")
+      .select(
+        "id, merchant_id, kind, status, listing_slug, listing_name, price_minor_int, currency_code, billing_interval, renews_at, last_renewed_at, started_at",
+      )
+      .eq("merchant_id", merchantId)
+      .eq("id", installId)
+      .maybeSingle();
+    if (error) throw error;
+    row = (data ?? null) as RenewalRow | null;
+  } catch (err) {
+    if (!isMissingRecurringColumnError(err)) throw err;
+    return {
+      renewed: false,
+      installId,
+      reason: "recurring_columns_missing",
+    };
+  }
+  if (!row) throw new Error("market_install_not_found");
+  if (row.status === "trial")
+    return { renewed: false, installId, reason: "trial" };
+  if (row.status !== "installed" && row.status !== "past_due")
+    return { renewed: false, installId, reason: "status_not_renewable" };
+  if (!isInterval(row.billing_interval) || row.billing_interval === "one_time")
+    return { renewed: false, installId, reason: "one_time" };
+  if (typeof row.renews_at !== "string" || row.renews_at > nowIso)
+    return { renewed: false, installId, reason: "not_due" };
+
+  const price = Number(row.price_minor_int ?? 0);
+  const interval = row.billing_interval;
+  // Free recurring installs extend without touching the ledger.
+  if (!Number.isFinite(price) || price <= 0) {
+    const renewsAt = computeRenewsAt(interval, nowMs) as string;
+    const { error } = await db
+      .from("marketplace_installs")
+      .update({
+        status: "installed",
+        last_renewed_at: nowIso,
+        renews_at: renewsAt,
+      } as never)
+      .eq("merchant_id", merchantId)
+      .eq("id", installId);
+    if (error) throw new Error("market_renewal_failed");
+    return {
+      renewed: true,
+      installId,
+      renewsAt,
+      versioned: true,
+      replayed: false,
+    };
+  }
+
+  // Seller split for the renewal mirrors the purchase split. The listing is
+  // re-read (never trusted from the install row) — a delisted plugin has
+  // nothing to renew against.
+  const kind = row.kind === "theme" ? ("theme" as const) : ("widget" as const);
+  const { data: listing } = await db
+    .from(table(kind))
+    .select("id, seller_merchant_id, price_minor_int")
+    .eq("slug", row.listing_slug)
+    .maybeSingle();
+  const seller = listing as unknown as {
+    seller_merchant_id: string;
+  } | null;
+  if (!seller) return { renewed: false, installId, reason: "listing_not_found" };
+
+  const periodStart =
+    typeof row.last_renewed_at === "string"
+      ? row.last_renewed_at
+      : typeof row.started_at === "string"
+        ? row.started_at
+        : nowIso;
+  const { seller: sellerShare, platform } = split(price);
+  const { postLedgerEntry } = await import("./ledger.server");
+  let replayed = false;
+  try {
+    const posted = await postLedgerEntry(db, {
+      merchantId,
+      counterpartyMerchantId: seller.seller_merchant_id,
+      source:
+        kind === "theme" ? "market.theme.installed" : "market.widget.installed",
+      referenceId: installId,
+      direction: "debit",
+      gross: money(price, row.currency_code),
+      platformFee: money(platform, row.currency_code),
+      idempotencyKey: `renew:${installId}:${periodStart}`,
+      memo: `${row.listing_name} renewal`,
+    });
+    replayed = posted.replayed;
+    void sellerShare;
+  } catch {
+    await db
+      .from("marketplace_installs")
+      .update({ status: "past_due" })
+      .eq("merchant_id", merchantId)
+      .eq("id", installId);
+    const { auditAction } = await import("./hardening.server");
+    await auditAction(
+      db,
+      merchantId,
+      opts?.actorId ?? null,
+      "market.renewal_past_due",
+      row.kind,
+      { slug: row.listing_slug, price_minor_int: price },
+      installId,
+    );
+    return { renewed: false, installId, reason: "past_due" };
+  }
+
+  const renewsAt = computeRenewsAt(interval, nowMs) as string;
+  const { error } = await db
+    .from("marketplace_installs")
+    .update({
+      status: "installed",
+      last_renewed_at: nowIso,
+      renews_at: renewsAt,
+    } as never)
+    .eq("merchant_id", merchantId)
+    .eq("id", installId);
+  if (error) throw new Error("market_renewal_failed");
+  const { auditAction: renewalAudit } = await import("./hardening.server");
+  await renewalAudit(
+    db,
+    merchantId,
+    opts?.actorId ?? null,
+    "market.renewed",
+    row.kind,
+    {
+      slug: row.listing_slug,
+      charge_minor_int: price,
+      renews_at: renewsAt,
+      replayed,
+    },
+    installId,
+  );
+  return { renewed: true, installId, renewsAt, versioned: true, replayed };
+}
+
+export type InstallProrationQuote = {
+  remainingDays: number;
+  periodDays: number;
+  creditMinorInt: number;
+  dueMinorInt: number;
+};
+
+/**
+ * Day-based upgrade proration for recurring installs. Mirrors the
+ * platform-plan upgrade policy documented at billing-desk.server.ts:179 —
+ * credit for the unused remainder of the period (per-day value of the
+ * current price) deducted from the new price, floored at zero — reusing the
+ * shared day-math (`daysBetween` from billing.server, cycle-free: that
+ * module has no marketplace imports) instead of duplicating it. Whole-day
+ * granularity errs toward the merchant by at most one day.
+ */
+export function quoteInstallProration(opts: {
+  currentPriceMinorInt: number;
+  newPriceMinorInt: number;
+  renewsAt: string | null;
+  billingInterval: InstallBillingInterval;
+  nowMs?: number;
+}): InstallProrationQuote {
+  const now = opts.nowMs ?? Date.now();
+  const periodDays =
+    opts.billingInterval === "annual"
+      ? RENEWAL_PERIOD_DAYS.annual
+      : RENEWAL_PERIOD_DAYS.monthly;
+  const remainingDays = opts.renewsAt
+    ? Math.max(0, -(daysBetween(opts.renewsAt, now) ?? 0))
+    : 0;
+  const creditMinorInt = Math.max(
+    0,
+    Math.floor((opts.currentPriceMinorInt * remainingDays) / periodDays),
+  );
+  return {
+    remainingDays,
+    periodDays,
+    creditMinorInt,
+    dueMinorInt: Math.max(0, opts.newPriceMinorInt - creditMinorInt),
+  };
+}
+
+/**
+ * Applies an upgrade to a recurring install: charges the prorated net
+ * through the ledger (same idempotency-per-price-pair rule as renewals, so
+ * retries replay) and moves the price. The renewal date is preserved — the
+ * merchant keeps the period they are in, exactly like the platform-plan
+ * upgrade keeps its period. Downgrades that net to zero move the price with
+ * no ledger row.
+ */
+export async function applyInstallUpgrade(
+  db: Client,
+  merchantId: string,
+  installId: string,
+  opts: {
+    newPriceMinorInt: number;
+    newVersion?: string;
+    actorId?: string | null;
+    nowMs?: number;
+  },
+): Promise<{ ok: true } & InstallProrationQuote> {
+  const nowMs = opts.nowMs ?? Date.now();
+  let row: RenewalRow | null = null;
+  try {
+    const { data, error } = await db
+      .from("marketplace_installs")
+      .select(
+        "id, merchant_id, kind, status, listing_slug, listing_name, price_minor_int, currency_code, billing_interval, renews_at",
+      )
+      .eq("merchant_id", merchantId)
+      .eq("id", installId)
+      .maybeSingle();
+    if (error) throw error;
+    row = (data ?? null) as RenewalRow | null;
+  } catch (err) {
+    if (!isMissingRecurringColumnError(err)) throw err;
+    row = null;
+  }
+  if (!row) {
+    const { data } = await db
+      .from("marketplace_installs")
+      .select(
+        "id, merchant_id, kind, status, listing_slug, listing_name, price_minor_int, currency_code",
+      )
+      .eq("merchant_id", merchantId)
+      .eq("id", installId)
+      .maybeSingle();
+    if (!data) throw new Error("market_install_not_found");
+    row = data as RenewalRow;
+  }
+  if (row.status === "lapsed") throw new Error("market_trial_expired");
+  if (row.status !== "installed" && row.status !== "trial")
+    throw new Error("market_install_not_found");
+  const currentPrice = Number(row.price_minor_int ?? 0);
+  if (!Number.isInteger(opts.newPriceMinorInt) || opts.newPriceMinorInt < 0)
+    throw new Error("market_upgrade_failed");
+  const quote = quoteInstallProration({
+    currentPriceMinorInt: currentPrice,
+    newPriceMinorInt: opts.newPriceMinorInt,
+    renewsAt: typeof row.renews_at === "string" ? row.renews_at : null,
+    billingInterval: isInterval(row.billing_interval)
+      ? row.billing_interval
+      : "one_time",
+    nowMs,
+  });
+  if (quote.dueMinorInt > 0) {
+    const kind = row.kind === "theme" ? ("theme" as const) : ("widget" as const);
+    const { data: listing } = await db
+      .from(table(kind))
+      .select("id, seller_merchant_id")
+      .eq("slug", row.listing_slug)
+      .maybeSingle();
+    const seller = listing as unknown as {
+      seller_merchant_id: string;
+    } | null;
+    const { seller: sellerShare, platform } = split(quote.dueMinorInt);
+    const { postLedgerEntry } = await import("./ledger.server");
+    try {
+      await postLedgerEntry(db, {
+        merchantId,
+        counterpartyMerchantId: seller?.seller_merchant_id ?? null,
+        source:
+          kind === "theme"
+            ? "market.theme.installed"
+            : "market.widget.installed",
+        referenceId: installId,
+        direction: "debit",
+        gross: money(quote.dueMinorInt, row.currency_code),
+        platformFee: money(platform, row.currency_code),
+        idempotencyKey: `upgrade:${installId}:${currentPrice}:${opts.newPriceMinorInt}`,
+        memo: `${row.listing_name} upgrade`,
+      });
+      void sellerShare;
+    } catch {
+      throw new Error("market_payment_failed");
+    }
+  }
+  const patch: Record<string, unknown> = {
+    price_minor_int: opts.newPriceMinorInt,
+  };
+  if (opts.newVersion) patch["version"] = opts.newVersion;
+  const { error } = await db
+    .from("marketplace_installs")
+    .update(patch as never)
+    .eq("merchant_id", merchantId)
+    .eq("id", installId);
+  if (error) throw new Error("market_upgrade_failed");
+  const { auditAction } = await import("./hardening.server");
+  await auditAction(
+    db,
+    merchantId,
+    opts.actorId ?? null,
+    "market.upgraded",
+    row.kind,
+    {
+      slug: row.listing_slug,
+      before_minor_int: currentPrice,
+      after_minor_int: opts.newPriceMinorInt,
+      credit_minor_int: quote.creditMinorInt,
+      due_minor_int: quote.dueMinorInt,
+    },
+    installId,
+  );
+  return { ok: true, ...quote };
 }

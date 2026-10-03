@@ -21,15 +21,15 @@ for catalogue review.
 | --- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1   | Layout               | `header` / `main` / `footer` slot arrays on every template; responsive `bp` overrides per section                                                                                                          | `src/lib/builder-ast.ts:79-83`, `src/lib/builder-ast.ts:256-279`                                                                                           |
 | 2   | Design system        | Full `ThemeTokens` set incl. light + designed `dark` set, `globals`, font pairing                                                                                                                          | `src/lib/builder-ast.ts:5085-5114`, `src/lib/theme-globals.ts:32-48`                                                                                       |
-| 3   | Homepage             | `index` template with hero, merchandising, trust and footer composition                                                                                                                                    | `src/lib/theme-presets.ts:123-173`, `src/lib/theme-blueprints.ts:190-246`                                                                                  |
-| 4   | Product pages        | `product` template: media, price, variant/size, buy box, delivery, reviews/Q&A, related                                                                                                                    | `src/lib/theme-presets.ts:175-209`, `src/lib/theme-blueprints.ts:247-331`                                                                                  |
-| 5   | Collection pages     | `collection` template: category header, facets, toolbar, grid, pagination, empty state                                                                                                                     | `src/lib/theme-presets.ts:211-239`, `src/lib/theme-blueprints.ts:332-394`                                                                                  |
-| 6   | Posts / blog         | `blog` template: `blog_terms` + `blog_archive` + `blog_pager` + newsletter                                                                                                                                 | `src/lib/theme-presets.ts:291-325`, `src/lib/theme-blueprints.ts:431-463`                                                                                  |
-| 7   | Menus                | Header nav (`mega_menu`, `nav_menu`, `search_command`, `account_cart`) driven by taxonomy/menu data                                                                                                        | `src/lib/builder-ast.ts:1440-1519`, `src/lib/studio/catalog.ts:2029-2044`                                                                                  |
-| 8   | Footer               | `footer_sitemap`, `payment_icons`, `social_strip`/`support_strip`, about `rich_text`                                                                                                                       | `src/lib/theme-presets.ts:107-121`, `src/lib/theme-blueprints.ts:113-135`                                                                                  |
+| 3   | Homepage             | `index` template with hero, merchandising, trust and footer composition                                                                                                                                    | `src/lib/themes/songoskriti/homepage.ts:23`, `src/lib/themes/somvabona/homepage.ts:22`                                                                     |
+| 4   | Product pages        | `product` template: media, price, variant/size, buy box, delivery, reviews/Q&A, related                                                                                                                    | `src/lib/themes/songoskriti/preview.ts` (`product` case), `src/lib/builder-ast.ts` PDP widgets                                                             |
+| 5   | Collection pages     | `collection` template: category header, facets, toolbar, grid, pagination, empty state                                                                                                                     | `src/lib/themes/songoskriti/preview.ts` (`collection` case), `src/lib/builder-ast.ts` listing widgets                                                      |
+| 6   | Posts / blog         | `blog` template: `blog_terms` + `blog_archive` + `blog_pager` + newsletter                                                                                                                                 | `src/lib/themes/songoskriti/preview.ts` (`blog` case), per-theme article CSS in `skins.css`                                                                |
+| 7   | Menus                | Header nav (`mega_menu`, `nav_menu`, `search_command`, `account_cart`) driven by taxonomy/menu data                                                                                                        | `src/lib/builder-ast.ts:1440-1519`, `src/lib/studio/catalog.ts:2090-2107`                                                                                  |
+| 8   | Footer               | `footer_sitemap`, `payment_icons`, `social_strip`/`support_strip`, about `rich_text`                                                                                                                       | `src/lib/themes/songoskriti/footer.ts:160`, shared copy in `src/lib/footer-copy.ts`                                                                        |
 | 9   | Widgets with presets | Every widget the theme renders has catalogue defaults and bilingual props filled at build                                                                                                                  | `src/lib/theme-section.ts:44-68`, `src/lib/studio/catalog.ts:48-64`                                                                                        |
-| 10  | Forms                | Contact (`form`), newsletter, search, quiz/consult/trade-in submittable patterns (see §5)                                                                                                                  | `src/lib/studio/catalog.ts:2010-2027`, `src/lib/studio/catalog.ts:2046-2057`, `src/lib/contact.functions.ts:4-24`, `src/lib/newsletter.functions.ts:13-50` |
-| 11  | Sign in              | Storefront account entry: header `account_cart` link + `src/routes/store.$slug.account.tsx` + `src/routes/account.tsx`; there is **no** sign-in theme template — the theme's job is the link, not the form | `src/lib/studio/catalog.ts:1686-1692`, `src/routes/store.$slug.account.tsx`, `src/routes/account.tsx`                                                      |
+| 10  | Forms                | Contact (`form`), newsletter, search, quiz/consult/trade-in submittable patterns (see §5)                                                                                                                  | `src/lib/studio/catalog.ts:2071-2088`, `src/lib/studio/catalog.ts:2109-2120`, `src/lib/contact.functions.ts:4-24`, `src/lib/newsletter.functions.ts:13-50` |
+| 11  | Sign in              | Storefront account entry: header `account_cart` link + `src/routes/store.$slug.account.tsx` + `src/routes/account.tsx`; there is **no** sign-in theme template — the theme's job is the link, not the form | `src/lib/studio/catalog.ts:1737-1743`, `src/routes/store.$slug.account.tsx`, `src/routes/account.tsx`                                                      |
 | 12  | Sign up              | Same surface as sign in (merchant console auth at `src/routes/auth.tsx`); theme must not invent its own credential form                                                                                    | `src/routes/auth.tsx`                                                                                                                                      |
 
 Notes on areas 11–12: the template keys are fixed at
@@ -78,9 +78,9 @@ export const DEFAULT_TOKENS: ThemeTokens = {
 };
 ```
 
-Designed dark sets are plain objects on `tokens.dark`, e.g. Atelier
-(`src/lib/theme-blueprints.ts:643-648`) and Circuit
-(`src/lib/theme-blueprints.ts:1248-1253`). Globals are the merchant-editable
+Designed dark sets are plain objects on `tokens.dark`, e.g. Somvabona
+(`src/lib/themes/somvabona/tokens.ts:32-37`) — the reference dark set.
+Songoskriti is light-only (`dark: null`). Globals are the merchant-editable
 palette: `DEFAULT_GLOBALS` (`src/lib/theme-globals.ts:32-48`) seeds four
 colors + two fonts; bindings are stored as `var(--fq-g-<id>)`
 (`src/lib/theme-globals.ts:50-63`).
@@ -90,27 +90,27 @@ colors + two fonts; bindings are stored as `var(--fq-g-<id>)`
 shipped themes lock the values below — copy one column verbatim as the
 starting point, then change brand/accent/surface/ink plus layout knobs:
 
-| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Somvabona (`src/lib/themes/somvabona/tokens.ts:14`) |
-| ----------------- | ------------------------------------------------------ | --------------------------------------------------- |
-| `brand`           | `#1a1a1a`                                              | `#7C2A1A`                                           |
-| `accent`          | `#8B4513`                                              | `#B95A38`                                           |
-| `surface`         | `#faf9f7`                                              | `#FBF6EE`                                           |
-| `ink`             | `#1a1a1a`                                              | `#2E2620`                                           |
-| `radius`          | `0px` (sharp, fashion-editorial)                       | `4px`                                               |
-| `fontDisplay`     | `Playfair Display`                                     | `Playfair Display` (campaign headlines only)        |
-| `fontBody`        | `Inter`                                                | `Inter`                                             |
-| `container`       | `1320px`                                               | `1320px`                                            |
-| `density`         | `comfortable`                                          | `comfortable`                                       |
-| `typeScale`       | `default`                                              | `default`                                           |
-| `spaceUnit`       | `16px`                                                 | `16px`                                              |
-| `shadow`          | `soft`                                                 | `soft`                                              |
-| `motion`          | `subtle`                                               | `subtle`                                            |
-| `digits`          | `latin`                                                | `latin`                                             |
-| `locale`          | `en`                                                   | `en`                                                |
-| `currencyDisplay` | `symbol`                                               | `symbol`                                            |
-| `fontPairing`     | `editorial-serif`                                      | `editorial-serif`                                   |
-| `dark`            | `null` (light-only)                                    | `null` (light-only)                                 |
-| `globals`         | `DEFAULT_GLOBALS`                                      | `DEFAULT_GLOBALS`                                   |
+| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Somvabona (`src/lib/themes/somvabona/tokens.ts:14`)                                          |
+| ----------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `brand`           | `#1a1a1a`                                              | `#7C2A1A`                                                                                    |
+| `accent`          | `#8B4513`                                              | `#B95A38`                                                                                    |
+| `surface`         | `#faf9f7`                                              | `#FBF6EE`                                                                                    |
+| `ink`             | `#1a1a1a`                                              | `#2E2620`                                                                                    |
+| `radius`          | `0px` (sharp, fashion-editorial)                       | `4px`                                                                                        |
+| `fontDisplay`     | `Playfair Display`                                     | `Playfair Display` (campaign headlines only)                                                 |
+| `fontBody`        | `Inter`                                                | `Inter`                                                                                      |
+| `container`       | `1320px`                                               | `1320px`                                                                                     |
+| `density`         | `comfortable`                                          | `comfortable`                                                                                |
+| `typeScale`       | `default`                                              | `default`                                                                                    |
+| `spaceUnit`       | `16px`                                                 | `16px`                                                                                       |
+| `shadow`          | `soft`                                                 | `soft`                                                                                       |
+| `motion`          | `subtle`                                               | `subtle`                                                                                     |
+| `digits`          | `latin`                                                | `latin`                                                                                      |
+| `locale`          | `en`                                                   | `en`                                                                                         |
+| `currencyDisplay` | `symbol`                                               | `symbol`                                                                                     |
+| `fontPairing`     | `editorial-serif`                                      | `editorial-serif`                                                                            |
+| `dark`            | `null` (light-only)                                    | `{ brand, accent, surface, ink }` (designed set, `src/lib/themes/somvabona/tokens.ts:32-37`) |
+| `globals`         | `DEFAULT_GLOBALS`                                      | `DEFAULT_GLOBALS`                                                                            |
 
 Both themes keep bilingual EN/BN inline props on every user-facing string
 and a BDT-first money display (symbol, Latin digits). How published tokens
@@ -139,14 +139,12 @@ Each template is a `ThemeAst` (`src/lib/builder-ast.ts:281-286`):
 
 Reference compositions:
 
-- Code presets build all eight keys in `build()`
-  (`src/lib/theme-presets.ts:387-407`), with per-key builders at
-  `indexTemplate` (`:123`), `productTemplate` (`:175`),
-  `collectionTemplate` (`:211`), `searchTemplate` (`:246`),
-  `pageTemplate` (`:266`), `blogTemplate` (`:291`), `cartTemplate` (`:327`),
-  `checkoutTemplate` (`:353`).
-- Blueprints author six templates by hand and derive `search` from
-  `collection` via `withSearch()` (`src/lib/theme-blueprints.ts:56-80`).
+- Shipped themes build all eight template keys in `preview.ts`
+  (`src/lib/themes/songoskriti/preview.ts:40-48`,
+  `src/lib/themes/somvabona/preview.ts:25-40`): `index`, `product`,
+  `collection`, `search`, `page`, `blog`, `cart`, `checkout`.
+- Search reuses the collection listing pattern from the theme's own
+  `collection` case — do not duplicate the listing by hand.
 - Route-supplied `<h1>` templates (`product`, `collection`, `page`, `blog`,
   `search`) must NOT contain an h1-claiming widget; every other template
   must contain exactly one (`src/lib/builder-ast.ts:61-77`).
@@ -180,27 +178,34 @@ group | html | array | menu` (`src/lib/builder-ast.ts:299-316`).
   slots, `heading` (h1-claim), `templates` scope, `container`, `defaults`,
   `fields`.
 
-### 2.4 Presets vs blueprints
+### 2.4 Theme anatomy (what shipped themes actually contain)
 
-- **Preset** (`ThemePreset`, `src/lib/theme-presets.ts:37-50`): `{ key,
-nameEn, nameBn, summaryEn, summaryBn, category, version, api, sortOrder,
-tokens, templates }`. `SPECS` (`:421-778`) + `SHIPPED_BLUEPRINTS`
-  (`:785-788`) form `THEME_PRESETS`. Lookup: `presetByKey()`
-  (`:790-792`). Preset swap without content loss: `applyPreset()`
-  (`:824-850`).
-- **Blueprint** (`src/lib/theme-blueprints.ts:1-12`): vertical themes
-  (Bazaar, Atelier, Circuit, Rupaboti) built through the shared section
-  factory, plus the split-out `src/lib/themes/clothing-heritage/`
-  directory (`index.ts` wires `tokens/header/footer/homepage/secondary`;
-  shipped keys at `src/lib/theme-blueprints.ts:578` via
-  `SHIPPED_BLUEPRINT_KEYS`, re-exported into `THEME_PRESETS`
-  (`src/lib/theme-presets.ts:785-787`)). The curated offer ships
-  Supershop + Clothing Heritage.
-- **Catalogue metadata** (`src/lib/themes/catalog-meta.ts:13-21`):
-  `{ author, subjects, features, layouts, tags, rating, installs }`.
-  `rating`/`installs` are honest zeros until marketplace telemetry exists
-  (file header `:1-11`); `catalogMeta()` falls back to `FALLBACK`
-  (`:235-247`).
+A theme is a folder under `src/lib/themes/<key>/` — no registry, no preset
+table. The shipped themes (Songoskriti, Somvabona) each contain:
+
+- `tokens.ts` — the `ThemeTokens` override (brand/accent/surface/ink plus
+  layout knobs and an optional designed `dark` set).
+- `skins.ts` — skin vocabularies + `with<Theme>Defaults()` merger (defaults
+  merge **under** authored props; merchant inspector values always win).
+- `homepage.ts` — `buildHomepageMain()` returning `Section[]`.
+- `header.ts` / `footer.ts` — chrome builders (footer emits statement +
+  newsletter + sitemap + payments + colophon).
+- `preview.ts` — the `PreviewThemeSource` (demo bodies per template).
+- `skins.css` — token-only skin sheets + per-theme article rules.
+- `wiring.test.ts` / `skins.test.ts` / `preview.test.ts` — the pinned gates.
+
+Sections are built through the shared factory so ids stay unique and
+বাংলা props are filled (`src/lib/theme-section.ts:44-68`). Catalogue
+metadata lives beside the code (`src/lib/themes/catalog-meta.ts:13-21`):
+`{ author, subjects, features, layouts, tags, rating, installs }`.
+`rating`/`installs` are honest zeros until marketplace telemetry exists;
+`catalogMeta()` falls back to `FALLBACK` (`:216-227`).
+
+> Retired: an earlier preset/blueprint registry (`theme-presets.ts`,
+> `theme-blueprints.ts`) was removed. Guides referencing it are stale —
+> this section is the current architecture. Theme retirement convention:
+> land a migration deactivating the theme's registry rows (never delete
+> history), remove the theme directory, and note it in the guidelines.
 
 ### 2.5 Homepage builder pattern
 
@@ -210,18 +215,20 @@ always win):
 
 - Songoskriti: `buildHomepageMain()` (`src/lib/themes/songoskriti/homepage.ts:23`)
   wrapped in `withSongoskritiDefaults()` (`src/lib/themes/songoskriti/skins.ts:109`).
-  Ships a 20-section homepage with `hero_carousel` first: `hero_carousel`,
+  Ships a 21-section homepage with `hero_carousel` first: `hero_carousel`,
   `department_grid`, `product_rail`, `craft_story`, `product_rail`,
-  `split_feature`, `product_rail`, `finder_row`, `split_feature`,
-  `product_rail`, `product_rail`, `split_feature`, `collection_story`,
-  `product_rail`, `craft_story`, `ugc_gallery`, `testimonials`,
-  `split_feature`, `trust_footer`, `store_locator`.
+  `split_feature`, `product_rail`, `recently_viewed` (after the third product
+  rail), `finder_row`, `split_feature`, `product_rail`, `product_rail`,
+  `split_feature`, `collection_story`, `product_rail`, `craft_story`,
+  `ugc_gallery`, `testimonials`, `split_feature`, `trust_footer`,
+  `store_locator`.
 - Somvabona: `buildHomepageMain()` (`src/lib/themes/somvabona/homepage.ts:22`)
-  wrapped in `withSomvabonaWidgetDefaults()` (`src/lib/themes/somvabona/skins.ts:111`).
-  Ships an 11-section homepage on 10 distinct types (the urgency rail
+  wrapped in `withSomvabonaWidgetDefaults()` (`src/lib/themes/somvabona/skins.ts:113`).
+  Ships a 12-section homepage on 11 distinct types (the urgency rail
   doubles): `announcement_bar`, `hero_carousel`, `trust_marquee`,
   `circle_categories`, `price_buckets`, `urgency_rail` × 2, `occasion_matrix`,
-  `store_locator`, `craft_story`, `testimonials`.
+  `recently_viewed` (after the matrix), `store_locator`, `craft_story`,
+  `testimonials`.
 
 Pattern rules for new themes: first section owns the H1 claim (a
 `hero_carousel` up front, matching the full composition lists in [the
@@ -235,19 +242,18 @@ metrics, ratings, or addresses in demo copy.
 ### Step 1 — Tokens
 
 Start from `DEFAULT_TOKENS` and override brand/accent/surface/ink plus
-layout knobs. Copy an existing `tokens({...})` call, e.g. Atelier
-(`src/lib/theme-blueprints.ts:618-644`), heritage
-(`src/lib/themes/clothing-heritage/tokens.ts`), or a preset
-`Spec.tokens` (`src/lib/theme-presets.ts:432-444`). Heritage dark sets
-live beside the light set in the same file.
+layout knobs. Copy an existing tokens file, e.g. Songoskriti
+(`src/lib/themes/songoskriti/tokens.ts:9-29`) or Somvabona
+(`src/lib/themes/somvabona/tokens.ts:14-34`, with the reference designed
+`dark` set at `:32-37`). Songoskriti is light-only (`dark: null`).
 
 ### Step 2 — Templates
 
 Write one builder per template key returning `{ header, main, footer }`.
 Follow the slot discipline in §2.2 and keep the h1 rule
 (`src/lib/builder-ast.ts:67-77`). For search, reuse the collection listing
-via `withSearch()` (`src/lib/theme-blueprints.ts:56-80`) — do not duplicate
-the listing by hand.
+pattern from the theme's own `collection` case (see §2.5 reference
+compositions) — do not duplicate the listing by hand.
 
 ### Step 3 — Sections
 
@@ -255,15 +261,14 @@ Always build sections through the shared factory so ids stay unique and
 বাংলা props are filled (`src/lib/theme-section.ts:44-68`):
 
 ```ts
-// Minimal preset skeleton — copy, rename, extend.
+// Minimal theme skeleton — copy, rename, extend.
 import { DEFAULT_TOKENS } from "@/lib/builder-ast";
-import type { ThemePreset } from "@/lib/theme-presets";
 import { sectionFactory } from "@/lib/theme-section";
-import { PRESET_BN } from "@/lib/theme-presets.bn";
 
-const s = sectionFactory(PRESET_BN);
+const BN: Record<string, string> = {};
+const s = sectionFactory(BN);
 
-export function myTheme(): ThemePreset {
+export function myTheme() {
   const k = "my-theme";
   const header = () => [
     s(k, "banner", { text: "Free delivery over BDT 2,000", tone: "info" }),
@@ -276,15 +281,9 @@ export function myTheme(): ThemePreset {
     }),
   ];
   return {
-    key: k,
-    nameEn: "My theme",
-    nameBn: "মাই থিম",
-    summaryEn: "One-line English summary.",
-    summaryBn: "এক লাইনের বাংলা সারাংশ।",
-    category: "general",
-    version: "1.0.0",
-    api: "^3.0.0",
-    sortOrder: 140,
+    // In the shipped themes this becomes tokens.ts + preview.ts in
+    // src/lib/themes/<key>/ — no registry object. Kept together here so
+    // the example copies in one block.
     tokens: {
       ...DEFAULT_TOKENS,
       brand: "#0F766E",
@@ -404,22 +403,24 @@ export function myTheme(): ThemePreset {
 ```
 
 Prop names above are the catalogue `defaults` keys for each widget in
-`src/lib/builder-ast.ts` (e.g. `hero` `:581-610`, `cart_summary`
-`:987-1032`, `blog_archive` per `blogTemplate`
-`src/lib/theme-presets.ts:301-315`). Never invent a prop — copy the key
-from the catalogue entry.
+`src/lib/builder-ast.ts` (e.g. `hero` `:911-925`, `cart_summary`
+`:1366-1380`, `blog_archive` `:4517-4530`). Never invent a prop — copy
+the key from the catalogue entry.
 
-### Step 4 — `presets` entry
+### Step 4 — theme folder + preview source
 
-Add a `Spec` to `SPECS` (`src/lib/theme-presets.ts:421-778`) or a builder
-function merged into `THEME_PRESETS` (`:785-788`). Required fields:
-`key, nameEn, nameBn, summaryEn, summaryBn, category, sortOrder, tokens,
-banner, bannerTone, hero, sub, ctaLabel, about, columns, gridHeading,
-heroAlign, addToCartLabel, faq, trust` (type `Spec`, `:52-89`).
+Add `src/lib/themes/<key>/` with `tokens.ts`, `skins.ts`
+(`with<Theme>Defaults()` merger), `homepage.ts` (`buildHomepageMain()`),
+`header.ts` / `footer.ts`, `preview.ts` (the `PreviewThemeSource`), and
+`skins.css` (token-only), plus `wiring.test.ts` / `skins.test.ts` /
+`preview.test.ts` pinning the composition. Register the key in the theme
+registry so the catalogue, preview route, and installer see it — the exact
+functions, tables, and seed semantics live in [the SDK registry
+pipeline](./sdk.md). Then add the Step 5 `catalog-meta` entry below.
 
 ### Step 5 — `catalog-meta` entry
 
-Add the key to `CATALOG_META` (`src/lib/themes/catalog-meta.ts:30-233`).
+Add the key to `CATALOG_META` (`src/lib/themes/catalog-meta.ts:30-214`).
 Subjects/features/layouts drive the Feature filter drawer
 (`src/lib/themes/appearance.ts:67-116`); keep `rating: 0, installs: 0`
 until real telemetry exists (no-fabrication rule, file header `:1-11`).
@@ -451,19 +452,21 @@ state machine behind it.
   merchandising `:1521-1660`, PDP `:1661-1895`, collection/search
   `:1896-...`, cart/checkout, Atelier/Circuit/Rupaboti/heritage packs).
   The studio panel mirror is `WIDGETS` in `src/lib/studio/catalog.ts:48+`
-  with per-widget `defaults` (e.g. `form` `:2010-2027`, `nav_menu`
-  `:2029-2044`, `newsletter` `:2046-2057`).
+  with per-widget `defaults` (e.g. `form` `:2071-2088`, `nav_menu`
+  `:2090-2107`, `newsletter` `:2109-2120`).
 - Prop conventions: **flat scalars** (`string | number | boolean`) plus
   repeatable `PropRow[]` arrays (`src/lib/builder-ast.ts:245-250`).
   Bilingual text uses `bitext` fields with `${key}_bn` twins filled via
   `withBn()` at construction (`src/lib/theme-section.ts:23-39`) — pass the
-  theme dictionary (`PRESET_BN` / `BLUEPRINT_BN`) to `sectionFactory()`
+  theme dictionary (a `Record<string, string>`, empty is fine) to `sectionFactory()`
   (`src/lib/theme-section.ts:61-68`).
 - Responsive: `hidden: ["mobile"]` and `bp: { tablet: {...}, mobile: {...} }`
-  (`src/lib/theme-presets.ts:91-93`, `src/lib/theme-blueprints.ts:40-42`).
+  on any section (`src/lib/builder-ast.ts:317-324`); per-device layers only
+  accept responsive-flagged fields (see the per-device reference on the
+  shipped homepages: Songoskriti MOST LOVED, Somvabona recently-viewed).
 - Containers only: `children` is accepted solely on catalogue entries
-  flagged `container: true` (`src/lib/builder-ast.ts:261-265`); trees cap
-  at `MAX_TREE_DEPTH`/`MAX_NODES_PER_TEMPLATE` (`:252-254`).
+  flagged `container: true` (`src/lib/builder-ast.ts:311-314`); trees cap
+  at `MAX_TREE_DEPTH`/`MAX_NODES_PER_TEMPLATE` (`:303-304`).
 
 ### Skins — closed vocabularies and theme defaults
 
@@ -501,7 +504,14 @@ keyed off the renderer's `[data-widget]` + `[data-skin]` attributes.
 Washes use `color-mix()` over theme tokens, so a merchant re-tint re-skins
 every rule automatically; motion rules collapse under
 `prefers-reduced-motion`. See `src/lib/themes/songoskriti/skins.css` and
-`src/lib/themes/somvabona/skins.css`. The gate is enforced per theme by
+`src/lib/themes/somvabona/skins.css`. Per-theme article treatment lives at
+the tail of each sheet — the active theme owns article styles with no
+scoping attribute: Songoskriti editorial serif with a brand rule
+(`src/lib/themes/songoskriti/skins.css:413-432`), Somvabona compact with
+accent links (`src/lib/themes/somvabona/skins.css:276-293`). Both stay
+token-only (`var(--theme-*)`), so a merchant re-tint re-skins article
+headlines, body rhythm, and links automatically. The gate is enforced per
+theme by
 test: `stays token-driven: theme vars only, no hex literals` in
 `src/lib/themes/songoskriti/skins.test.ts:182`, and `is token-driven: no
 hex literals or raw colour utilities` in
@@ -512,24 +522,25 @@ hex literals or raw colour utilities` in
 Submittable patterns (server validates, client never decides):
 
 - **Contact**: fixed `form` widget defaults
-  (`src/lib/studio/catalog.ts:2010-2027`: heading/body/labels/button/
+  (`src/lib/studio/catalog.ts:2071-2088`: heading/body/labels/button/
   successText/consentText/showPhone) → `submitContactFn`
   (`src/lib/contact.functions.ts:4-24`) with
   `{ name, email, phone?, topic: "sales"|"support"|"migration", message,
 locale, honeypot?, renderedAt? }`.
 - **Newsletter**: `newsletter` widget (`src/lib/builder-ast.ts:827-845`,
-  `src/lib/studio/catalog.ts:2046-2057`) → `subscribeNewsletterFn` /
+  `src/lib/studio/catalog.ts:2109-2120`) → `subscribeNewsletterFn` /
   `verifyNewsletterFn` / `unsubscribeNewsletterFn`
   (`src/lib/newsletter.functions.ts:13-50`).
-- **Search**: `search_command` widget (`src/lib/builder-ast.ts:1489-1506`)
-  rendering into the `search` template (`src/lib/theme-presets.ts:246-264`).
+- **Search**: `search_command` widget (`src/lib/builder-ast.ts:1971`)
+  rendering into the `search` template (reuse the theme's `collection`
+  listing pattern — see §2.5).
 - **Other submittables**: `quiz`, `trade_in`, `back_in_stock`,
   `bundle_builder`/`bundle_offer`, `gift_builder`, `consult_cta` — each posts
   to its server path and renders the returned result (see catalogue
   `defaults` in `src/lib/builder-ast.ts` and the studio mirror in
   `src/lib/studio/catalog.ts`).
 - **Sign in / sign up pages**: required as _routes_, not templates. Ship the
-  header `account_cart` entry (`src/lib/studio/catalog.ts:1686-1692`) and
+  header `account_cart` entry (`src/lib/studio/catalog.ts:1737-1743`) and
   keep `src/routes/store.$slug.account.tsx`, `src/routes/account.tsx` and
   `src/routes/root/login.tsx` reachable. Do not author credential inputs
   inside theme sections.
@@ -687,6 +698,51 @@ This mirrors the scope fallback pattern (e.g.
    that invents a separate opt-out instead of reusing `data-motion` /
    the media query — is rejected.
 
+### 8.6 Motion semantics (tokens → manifest → engine)
+
+Theme motion has three layers: a token intent, a closed effect manifest,
+and engine execution. Themes request; the engine renders.
+
+`motion: "none" | "subtle" | "lively"`
+(`src/lib/builder-ast.ts:6290-6291`) defaults to `subtle`
+(`src/lib/builder-ast.ts:6342`), parses through `oneOf`
+(`src/lib/builder-ast.ts:6431-6435`), and maps to duration/rise variables
+(`src/lib/builder-ast.ts:6569-6580`). Pick by page role: `none` for a
+static storefront (behaves like `prefers-reduced-motion` everywhere —
+the catalogue default for text-heavy pages); `subtle` for the standard
+theme (420ms, 12px rise — entrances settle without drawing the eye);
+`lively` for campaign moments only (620ms, 20px rise — hero drops,
+festive takeovers, never the catalogue default). `ThemeSurface` publishes
+the intent as `data-motion`
+(`src/components/builder/ThemeSurface.tsx:102`), so every collapse gate
+below keys off one attribute.
+
+`MOTION_EFFECTS` is the closed vocabulary
+(`src/lib/builder-advanced.ts:54-63`): `none`, `fade`, `rise`, `zoom`,
+`stagger-grid`, `marquee`, `line-reveal`. A theme requests a named effect
+via the `advMotion` select (`src/lib/builder-advanced.ts:151-165`);
+unknown or empty values resolve to `none`
+(`src/lib/builder-advanced.ts:66-72`). `SectionRenderer` executes the
+request (`src/components/builder/SectionRenderer.tsx:194-198`), emitting
+`fq-fx fq-fx-<effect>`
+(`src/components/builder/SectionRenderer.tsx:218`) plus a
+`data-motion-effect` hook
+(`src/components/builder/SectionRenderer.tsx:242`); entrance effects park
+behind the shared observer until on-screen
+(`src/lib/builder-advanced.ts:75-77`). Themes never touch shared renderer
+code (isolation rule, §13). Only CSS-executable effects are listed —
+scroll-linked scenes and animated numerals need JS executors.
+
+Moment budget: one orchestrated moment per viewport (§8.1) — a single
+`marquee` loop (`src/styles.css:702-704`) or one `stagger-grid` with 60ms
+steps capped at 360ms past the sixth child (`src/styles.css:696-701`),
+never both competing in the same viewport. Everything collapses under
+`prefers-reduced-motion: reduce` (`src/styles.css:712-721`) and under
+`motion: none` (`src/styles.css:722-729`): animations drop to `none` with
+content left fully visible — a downgrade never hides anything. Any new
+animated variant must hook into these two blocks, never its own parallel
+mechanism.
+
 ## 9. External authors: from zero to submitted
 
 You need nothing installed — no checkout, no CLI, no repo access. If you
@@ -810,7 +866,7 @@ alongside the theme, not after:
 | `src/lib/studio/catalog.test.ts:837`    | Studio twin parity — every catalogue entry stays editable in studio |
 | `src/lib/theme-preview-nav.test.ts`     | Preview engine resolves theme sources and blocks account paths      |
 | `src/lib/theme-preview.test.ts`         | Preview route renders the resolved preset                           |
-| `src/lib/themes/isolation.test.ts`     | No theme imports another theme; shared chrome holds no theme names  |
+| `src/lib/themes/isolation.test.ts`      | No theme imports another theme; shared chrome holds no theme names  |
 
 Skin defaults must survive both the in-memory builders and a
 persist/parse round trip (`parseSection` drops undeclared props — a new

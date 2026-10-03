@@ -4,7 +4,9 @@
  * Bars, navigation, search and account/cart, all theme-neutral: they read
  * design tokens through semantic utility classes only and never import a theme
  * module. Navigation and search take their rows from the shared data layer or
- * the server search function — no client ranking, no client money math.
+ * the server search function — no client money math. Search suggestions get a
+ * reorder-only prefix boost over the fetched rows (LANE I voice lane); the
+ * server still owns relevance and no new source or score is introduced.
  */
 import { useEffect, useId, useRef, useState } from "react";
 import {
@@ -515,7 +517,249 @@ type Suggestion = {
   imageUrl: string | null;
 };
 
-function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
+/**
+ * LANE I — voice input (progressive enhancement).
+ *
+ * `voiceEnabled` is author opt-in (catalog default `false`); the Web Speech
+ * API is a browser capability check on top. When either is missing the mic
+ * button returns `null` — no reserved space, so there is no layout shift on
+ * browsers without `SpeechRecognition`. No speech code exists anywhere else;
+ * no new data flow and no new endpoint: a transcript fills the same `term`
+ * state as typed input and submits to the same view-all destination as the
+ * existing submit path.
+ */
+type SpeechResultLike = { transcript: string };
+type SpeechRecognitionEventLike = {
+  results: ArrayLike<ArrayLike<SpeechResultLike>>;
+};
+type SpeechRecognitionLike = {
+  lang: string;
+  interimResults: boolean;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+};
+type SpeechRecognitionCtor = new () => SpeechRecognitionLike;
+
+/**
+ * Browser capability probe: `SpeechRecognition` or the `webkit` prefix.
+ * SSR-safe (no `window` → `null`).
+ */
+export function getSpeechRecognitionCtor(): SpeechRecognitionCtor | null {
+  if (typeof window === "undefined") return null;
+  const w = window as unknown as Record<string, unknown>;
+  const Ctor = w["SpeechRecognition"] ?? w["webkitSpeechRecognition"];
+  return typeof Ctor === "function" ? (Ctor as SpeechRecognitionCtor) : null;
+}
+
+/** Voice UI gate: author opt-in AND a supporting browser. Absent → render nothing. */
+export function isVoiceInputAvailable(voiceEnabled: boolean): boolean {
+  return voiceEnabled && getSpeechRecognitionCtor() !== null;
+}
+
+/** Pulls the top transcript from a recognition result event; `""` when empty. */
+export function transcriptOf(event: SpeechRecognitionEventLike): string {
+  const first = event.results?.[0]?.[0];
+  return typeof first?.transcript === "string" ? first.transcript : "";
+}
+
+/**
+ * Starts one recognition pass and routes the first transcript to
+ * `onTranscript`. Returns a stop function, or `null` when the API is absent
+ * (the caller renders nothing). `lang` follows the render locale.
+ */
+export function startVoiceRecognition(options: {
+  lang: string;
+  onTranscript: (text: string) => void;
+  onSettle?: () => void;
+}): (() => void) | null {
+  const Ctor = getSpeechRecognitionCtor();
+  if (!Ctor) return null;
+  const rec = new Ctor();
+  rec.lang = options.lang;
+  rec.interimResults = false;
+  rec.onresult = (event) => {
+    const text = transcriptOf(event).trim();
+    if (text) options.onTranscript(text);
+  };
+  rec.onerror = () => options.onSettle?.();
+  rec.onend = () => options.onSettle?.();
+  try {
+    rec.start();
+  } catch {
+    options.onSettle?.();
+    return null;
+  }
+  return () => {
+    try {
+      rec.stop();
+    } catch {
+      // Already ended; the `onend` settle covers state.
+    }
+  };
+}
+
+/**
+ * View-all destination for a voice transcript — the same URL shape the
+ * existing submit path navigates to when no suggestion is active (see
+ * `handleSubmit` → `viewAllHref`). `null` mirrors the submit guard for
+ * queries shorter than 2 characters. No new endpoint.
+ */
+export function voiceSearchHref(
+  base: string,
+  transcript: string,
+): string | null {
+  const cleaned = transcript.trim();
+  if (cleaned.length < 2) return null;
+  return `${base}/search?q=${encodeURIComponent(cleaned)}`;
+}
+
+/**
+ * LANE I — suggestion ranking (reorder-only).
+ *
+ * Buckets by title match: prefix-match first, then substring, then the rest
+ * in server order. Popularity is a within-bucket tie-break ONLY when a
+ * numeric signal exists on the row data. DOCUMENTED: today's `SearchHit`
+ * rows carry no popularity field (id/title/slug/image only), so this
+ * resolves to prefix-first ordering with stable server order inside each
+ * bucket. If a numeric `popularity`/`orders`/`views` field ever lands on the
+ * row, rows carrying a signal sort above rows without one, then by signal
+ * descending — call sites stay unchanged.
+ */
+export type RankableSuggestion = {
+  id: string;
+  title: string;
+  slug: string;
+  imageUrl: string | null;
+  popularity?: number | null;
+  orders?: number | null;
+  views?: number | null;
+};
+
+function suggestionPopularity(item: RankableSuggestion): number | null {
+  const candidates = [item.popularity, item.orders, item.views];
+  for (const value of candidates) {
+    if (typeof value === "number" && Number.isFinite(value)) return value;
+  }
+  return null;
+}
+
+export function rankSearchSuggestions<T extends RankableSuggestion>(
+  hits: T[],
+  query: string,
+): T[] {
+  const q = query.trim().toLowerCase();
+  if (q.length === 0) return [...hits];
+  const usePopularity = hits.some(
+    (hit) => suggestionPopularity(hit) !== null,
+  );
+  return hits
+    .map((hit, index) => {
+      const title = hit.title.toLowerCase();
+      const bucket = title.startsWith(q) ? 0 : title.includes(q) ? 1 : 2;
+      return { hit, index, bucket };
+    })
+    .sort((a, b) => {
+      if (a.bucket !== b.bucket) return a.bucket - b.bucket;
+      if (usePopularity) {
+        const pa = suggestionPopularity(a.hit) ?? Number.NEGATIVE_INFINITY;
+        const pb = suggestionPopularity(b.hit) ?? Number.NEGATIVE_INFINITY;
+        if (pb !== pa) return pb - pa;
+      }
+      return a.index - b.index;
+    })
+    .map((entry) => entry.hit);
+}
+
+function MicGlyph({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12 2a3 3 0 0 1 3 3v6a3 3 0 0 1 -6 0v-6a3 3 0 0 1 3 -3z" />
+      <path d="M19 10v2a7 7 0 0 1 -14 0v-2" />
+      <path d="M12 19v3" />
+    </svg>
+  );
+}
+
+/**
+ * LANE I — mic affordance. Renders `null` unless `enabled` and the browser
+ * exposes the Web Speech API, so unsupported browsers see byte-identical
+ * markup to before (no layout shift). 44px target (`size-11`), bilingual
+ * label, token-only surface. The transcript flows to `onTranscript`, which
+ * fills the input and submits through the existing submit path.
+ */
+export function SearchVoiceButton({
+  enabled,
+  locale,
+  onTranscript,
+}: {
+  enabled: boolean;
+  locale: string;
+  onTranscript: (text: string) => void;
+}) {
+  const [listening, setListening] = useState(false);
+  const stopRef = useRef<(() => void) | null>(null);
+  const available = isVoiceInputAvailable(enabled);
+  const isBn = locale === "bn";
+  const idleLabel = isBn ? "ভয়েসে খুঁজুন" : "Voice search";
+  const activeLabel = isBn ? "শোনা হচ্ছে…" : "Listening…";
+
+  useEffect(() => {
+    return () => {
+      stopRef.current?.();
+      stopRef.current = null;
+    };
+  }, []);
+
+  if (!available) return null;
+
+  const toggle = () => {
+    if (listening) {
+      stopRef.current?.();
+      stopRef.current = null;
+      setListening(false);
+      return;
+    }
+    const stop = startVoiceRecognition({
+      lang: isBn ? "bn-BD" : "en-US",
+      onTranscript,
+      onSettle: () => {
+        stopRef.current = null;
+        setListening(false);
+      },
+    });
+    if (stop) {
+      stopRef.current = stop;
+      setListening(true);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-label={listening ? activeLabel : idleLabel}
+      aria-pressed={listening}
+      title={listening ? activeLabel : idleLabel}
+      className="absolute right-1 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-fq-md text-muted-foreground transition-colors motion-safe:transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+    >
+      <MicGlyph className="size-4" />
+    </button>
+  );
+}
+
+function SearchCommand({ str, int, bool, storeSlug, locale }: WidgetCtx) {
   const [open, setOpen] = useState(false);
   const { location } = useRouterState();
   const base = storeBase(storeSlug, location.pathname);
@@ -558,6 +802,8 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
       ? `${listId}-opt-${hits[safeActive]!.id}`
       : undefined;
   const viewAllHref = `${base}/search?q=${encodeURIComponent(q)}`;
+  const voiceOn = bool("voiceEnabled");
+  const voiceReady = isVoiceInputAvailable(voiceOn);
 
   useEffect(() => {
     setActiveIndex(-1);
@@ -578,13 +824,16 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
         .then((result) => {
           if (ticket !== seq.current) return;
           const list = result?.status === "ok" ? result.result.items : [];
-          const rows = list.slice(0, limit).map((hit) => ({
+          const rows = list.map((hit) => ({
             id: hit.id,
             title: hit.title,
             slug: hit.slug,
             imageUrl: hit.image_url ?? null,
           }));
-          setHits(rows);
+          // LANE I: reorder-only prefix boost over the fetched rows (the row
+          // data carries no popularity signal, so prefix-first ordering only);
+          // the server still owns relevance — see `rankSearchSuggestions`.
+          setHits(rankSearchSuggestions(rows, q).slice(0, limit));
         })
         .catch(() => {
           if (ticket === seq.current) setHits([]);
@@ -616,6 +865,17 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
       return;
     }
     goTo(viewAllHref);
+  };
+
+  const handleVoiceTranscript = (text: string) => {
+    const cleaned = text.trim();
+    // Fills the same `term` state as typed input, then submits through the
+    // existing submit path: a fresh transcript has no active suggestion row,
+    // so the destination is the view-all URL `handleSubmit` uses (same shape
+    // as `viewAllHref`, via `voiceSearchHref`). No new data flow, no endpoint.
+    setTerm(cleaned);
+    const href = voiceSearchHref(base, cleaned);
+    if (href) goTo(href);
   };
 
   const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -685,14 +945,21 @@ function SearchCommand({ str, int, storeSlug, locale }: WidgetCtx) {
               onChange={(event) => setTerm(event.target.value)}
               onKeyDown={handleInputKeyDown}
               placeholder={placeholder}
-              className="min-h-11 w-full rounded-fq-md border border-border bg-muted/50 py-3 pl-10 pr-11 text-base outline-none transition-colors motion-safe:transition-colors placeholder:text-muted-foreground focus:border-primary focus-visible:ring-2 focus-visible:ring-primary"
+              className={`min-h-11 w-full rounded-fq-md border border-border bg-muted/50 py-3 pl-10 text-base outline-none transition-colors motion-safe:transition-colors placeholder:text-muted-foreground focus:border-primary focus-visible:ring-2 focus-visible:ring-primary ${voiceReady ? "pr-24" : "pr-11"}`}
             />
+            {voiceReady && (
+              <SearchVoiceButton
+                enabled={voiceOn}
+                locale={locale}
+                onTranscript={handleVoiceTranscript}
+              />
+            )}
             {term.length > 0 && (
               <button
                 type="button"
                 onClick={clearTerm}
                 aria-label={clearLabel}
-                className="absolute right-1 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-fq-md text-muted-foreground transition-colors motion-safe:transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className={`absolute top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-fq-md text-muted-foreground transition-colors motion-safe:transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${voiceReady ? "right-12" : "right-1"}`}
               >
                 <X className="size-4" aria-hidden />
               </button>

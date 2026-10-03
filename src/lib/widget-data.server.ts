@@ -75,6 +75,290 @@ function sortProducts(rows: ProductRow[], sort: string): ProductRow[] {
 }
 
 /**
+ * Lane H — behavior ranking for `recommended` merch rails.
+ *
+ * A `product_rail` / `urgency_rail` whose `source` prop is `recommended` used
+ * to resolve exactly like `collection` (newest first): the merch `source`
+ * select offers collection / bestsellers / recommended, but the resolver
+ * ignored the value, so `recommended` had no ranking behind it. This section
+ * ranks the already-fetched product window by observed shopper behavior:
+ *
+ * - product views (`analytics_events` entity=product action=view,
+ *   `payload.item_id`) — weight 1,
+ * - cart adds (`analytics_events` entity=cart action=add,
+ *   `payload.variantId` mapped to its product) — weight 3,
+ * - order co-occurrence (`order_items` sharing an `order_id`, counted per
+ *   product through its variants) — weight 5.
+ *
+ * Every signal read is merchant-scoped and bounded (BEHAVIOR_BOUNDS), the
+ * snapshot is cached per merchant with no session key, visitor hash or other
+ * PII in the cache key, and the selected columns never include an identifier
+ * (no `visitor_hash`, `session_key`, email or phone). When every signal is
+ * cold the rail falls back to bestseller velocity (order quantities), and when
+ * that is cold too it keeps collection (newest) order — a rail never renders
+ * empty just because behavior is missing.
+ *
+ * Same source key, zero theme changes: the `WidgetDataSource` stays
+ * `collection` and the request key is untouched; only the in-memory order of
+ * the already-fetched window changes.
+ */
+
+/** Hard bounds on every behavior read — a busy store costs the same as a new one. */
+export const BEHAVIOR_BOUNDS = {
+  /** `analytics_events` rows scanned per merchant snapshot. */
+  events: 500,
+  /** `order_items` rows scanned per merchant snapshot. */
+  items: 1000,
+  /** Variant ids resolved to products per snapshot. */
+  variants: 2000,
+  /** Behavior answers change slowly; cache the snapshot per merchant. */
+  ttlSeconds: 300,
+  staleSeconds: 600,
+} as const;
+
+/** View < cart add < bought-together: intent strength, not money math. */
+export const BEHAVIOR_WEIGHTS = { view: 1, cart: 3, coPurchase: 5 } as const;
+
+export type BehaviorSignals = {
+  /** Product id → view count. */
+  views: Map<string, number>;
+  /** Product id → cart-add count. */
+  carts: Map<string, number>;
+  /** Product id → orders where it appeared alongside another product. */
+  co: Map<string, number>;
+  /** Product id → ordered units (bestseller velocity + cold fallback). */
+  velocity: Map<string, number>;
+};
+
+export function emptyBehaviorSignals(): BehaviorSignals {
+  return { views: new Map(), carts: new Map(), co: new Map(), velocity: new Map() };
+}
+
+/**
+ * Cache key for one merchant's behavior snapshot. Tenant id only — never a
+ * session key, visitor hash or any other shopper identifier.
+ */
+export function behaviorCacheKey(merchantId: string): string {
+  return `rail:behavior:${merchantId}`;
+}
+
+/** Weighted intent score for one product. Pure, so ranking stays unit-testable. */
+export function behaviorScore(
+  signals: BehaviorSignals,
+  productId: string,
+): number {
+  return (
+    (signals.views.get(productId) ?? 0) * BEHAVIOR_WEIGHTS.view +
+    (signals.carts.get(productId) ?? 0) * BEHAVIOR_WEIGHTS.cart +
+    (signals.co.get(productId) ?? 0) * BEHAVIOR_WEIGHTS.coPurchase
+  );
+}
+
+type BehaviorAdmin = { from: (table: string) => any };
+
+async function behaviorAdmin(provided?: BehaviorAdmin): Promise<BehaviorAdmin> {
+  if (provided) return provided;
+  // Product views, cart adds and order lines expose no public/anon SELECT
+  // policy (same reason `fetchPublicVariants` goes through the service role in
+  // `storefront.server.ts`): the anon storefront read would resolve to `[]`
+  // and every rail would look cold. Resolve through the service role with
+  // merchant-scoped, bounded aggregate reads. Exposure matches the intended
+  // public policy: only product ids and counts cross the boundary — never a
+  // session key, visitor hash, email or phone.
+  const { supabaseAdmin } =
+    await import("@/integrations/supabase/client.server");
+  return supabaseAdmin as unknown as BehaviorAdmin;
+}
+
+/**
+ * One merchant's behavior snapshot. Bounded (every read carries a limit),
+ * merchant-scoped, and total on failure: a denied or missing table degrades
+ * to empty signals, which the ranker treats as cold, never as an error.
+ */
+export async function loadBehaviorSignals(
+  merchantId: string,
+  admin?: BehaviorAdmin,
+): Promise<BehaviorSignals> {
+  const signals = emptyBehaviorSignals();
+  try {
+    const db = await behaviorAdmin(admin);
+
+    const [{ data: events }, { data: items }] = await Promise.all([
+      db
+        .from("analytics_events")
+        .select("entity, action, payload")
+        .eq("merchant_id", merchantId)
+        .in("entity", ["product", "cart"])
+        .order("occurred_at", { ascending: false })
+        .limit(BEHAVIOR_BOUNDS.events),
+      db
+        .from("order_items")
+        .select("order_id, variant_id, quantity")
+        .eq("merchant_id", merchantId)
+        .order("created_at", { ascending: false })
+        .limit(BEHAVIOR_BOUNDS.items),
+    ]);
+
+    const cartVariantIds: string[] = [];
+    for (const event of (events ?? []) as {
+      entity: string;
+      action: string;
+      payload?: Record<string, unknown> | null;
+    }[]) {
+      if (event.entity === "product" && event.action === "view") {
+        const id = (event.payload as Record<string, unknown> | null)?.[
+          "item_id"
+        ];
+        if (typeof id === "string" && id) {
+          signals.views.set(id, (signals.views.get(id) ?? 0) + 1);
+        }
+      } else if (event.entity === "cart" && event.action === "add") {
+        const id = (event.payload as Record<string, unknown> | null)?.[
+          "variantId"
+        ];
+        if (typeof id === "string" && id) cartVariantIds.push(id);
+      }
+    }
+
+    const itemRows = ((items ?? []) as {
+      order_id: string;
+      variant_id: string | null;
+      quantity: number | string | null;
+    }[]).filter((r) => typeof r.variant_id === "string" && r.variant_id);
+    const variantIds = [
+      ...new Set([
+        ...cartVariantIds,
+        ...itemRows.map((r) => r.variant_id as string),
+      ]),
+    ].slice(0, BEHAVIOR_BOUNDS.variants);
+
+    const variantToProduct = new Map<string, string>();
+    if (variantIds.length > 0) {
+      const { data: variants } = await db
+        .from("product_variants")
+        .select("id, product_id")
+        .eq("merchant_id", merchantId)
+        .in("id", variantIds)
+        .limit(Math.min(variantIds.length, BEHAVIOR_BOUNDS.variants));
+      for (const v of (variants ?? []) as {
+        id: string;
+        product_id: string;
+      }[]) {
+        if (v.id && v.product_id) variantToProduct.set(v.id, v.product_id);
+      }
+    }
+
+    for (const variantId of cartVariantIds) {
+      const productId = variantToProduct.get(variantId);
+      if (productId)
+        signals.carts.set(productId, (signals.carts.get(productId) ?? 0) + 1);
+    }
+
+    const orderProducts = new Map<string, Set<string>>();
+    for (const row of itemRows) {
+      const productId = variantToProduct.get(row.variant_id as string);
+      if (!productId) continue;
+      signals.velocity.set(
+        productId,
+        (signals.velocity.get(productId) ?? 0) +
+          Math.max(0, Number(row.quantity) || 0),
+      );
+      const set = orderProducts.get(row.order_id) ?? new Set<string>();
+      set.add(productId);
+      orderProducts.set(row.order_id, set);
+    }
+    for (const products of orderProducts.values()) {
+      if (products.size < 2) continue;
+      for (const productId of products)
+        signals.co.set(productId, (signals.co.get(productId) ?? 0) + 1);
+    }
+  } catch {
+    // Cold by default: the ranker falls back below.
+  }
+  return signals;
+}
+
+/**
+ * Cached behavior snapshot for one merchant's rails. The key carries the
+ * tenant id and nothing else — no session key, no visitor hash, no PII.
+ */
+export async function cachedBehaviorSignals(
+  merchantId: string,
+  admin?: BehaviorAdmin,
+): Promise<BehaviorSignals> {
+  const { cached } = await import("./cache.server");
+  try {
+    return await cached<BehaviorSignals>(
+      behaviorCacheKey(merchantId),
+      BEHAVIOR_BOUNDS.ttlSeconds,
+      () => loadBehaviorSignals(merchantId, admin),
+      { staleSeconds: BEHAVIOR_BOUNDS.staleSeconds },
+    );
+  } catch {
+    return emptyBehaviorSignals();
+  }
+}
+
+/**
+ * Reorders an already-fetched product window. Stable: ties and unscored rows
+ * keep their incoming (collection/newest) relative order, and the output
+ * never grows — the caller still slices to the requested limit.
+ *
+ * - `recommended`: behavior score first, bestseller velocity when behavior
+ *   is cold, collection order when both are cold.
+ * - `bestsellers`: velocity first, collection order when cold.
+ */
+export function rankRailRows<T extends { id: string }>(
+  rows: T[],
+  signals: BehaviorSignals,
+  kind: "recommended" | "bestsellers",
+): { rows: T[]; mode: "behavior" | "bestseller" | "collection" } {
+  const hasBehavior = rows.some((r) => behaviorScore(signals, r.id) > 0);
+  if (kind === "recommended" && hasBehavior) {
+    const decorated = rows.map((row, index) => ({ row, index }));
+    decorated.sort(
+      (a, b) =>
+        behaviorScore(signals, b.row.id) - behaviorScore(signals, a.row.id) ||
+        a.index - b.index,
+    );
+    return { rows: decorated.map((d) => d.row), mode: "behavior" };
+  }
+  const hasVelocity = rows.some((r) => (signals.velocity.get(r.id) ?? 0) > 0);
+  if (hasVelocity) {
+    const decorated = rows.map((row, index) => ({ row, index }));
+    decorated.sort(
+      (a, b) =>
+        (signals.velocity.get(b.row.id) ?? 0) -
+          (signals.velocity.get(a.row.id) ?? 0) || a.index - b.index,
+    );
+    return { rows: decorated.map((d) => d.row), mode: "bestseller" };
+  }
+  return { rows, mode: "collection" };
+}
+
+/**
+ * Merchant display currency for stamping collection-sourced rail rows. One
+ * bounded single-row read; `BDT` when the merchant row is missing so rails
+ * keep rendering instead of failing the batch.
+ */
+async function loadMerchantCurrency(
+  merchantId: string,
+  db: { from: (table: string) => any },
+): Promise<string> {
+  try {
+    const { data } = await db
+      .from("merchants")
+      .select("currency_code")
+      .eq("id", merchantId)
+      .maybeSingle();
+    const code = (data as { currency_code?: unknown } | null)?.currency_code;
+    return typeof code === "string" && code.trim() ? code.trim() : "BDT";
+  } catch {
+    return "BDT";
+  }
+}
+
+/**
  * Products for every `collection`-sourced widget. A single query fetches the
  * widest window any request asked for; per-request filtering, sorting and
  * slicing then happen in memory.
@@ -140,6 +424,24 @@ const loadCollectionSource: SourceLoader = async (
   }
   const out: Record<string, WidgetRow[]> = {};
 
+  // Lane H: the merch `source` prop (collection / bestsellers / recommended)
+  // travels as a request param. Only `recommended` / `bestsellers` need the
+  // behavior snapshot; plain collection rails skip those reads entirely.
+  // Currency stamps every row regardless: `ProductCard` already formats via
+  // `formatDisplayMoney` with `row.currency`, but collection-sourced rows
+  // never carried one, so non-BDT stores rendered ৳.
+  const needsRanking = requests.some(
+    (r) =>
+      r.params["source"] === "recommended" ||
+      r.params["source"] === "bestsellers",
+  );
+  const [currency, signals] = await Promise.all([
+    loadMerchantCurrency(merchantId, db),
+    needsRanking
+      ? cachedBehaviorSignals(merchantId)
+      : Promise.resolve(emptyBehaviorSignals()),
+  ]);
+
   for (const request of requests) {
     const limit = Math.min(
       MAX_WIDGET_ROWS,
@@ -157,10 +459,15 @@ const loadCollectionSource: SourceLoader = async (
           )
         : [];
     }
-    out[request.key] = sortProducts(
+    const merchSource = request.params["source"];
+    let ordered = sortProducts(
       scoped,
       String(request.params["sort"] ?? "newest"),
-    )
+    );
+    if (merchSource === "recommended" || merchSource === "bestsellers") {
+      ordered = rankRailRows(ordered, signals, merchSource).rows;
+    }
+    out[request.key] = ordered
       .slice(0, limit)
       .map((p) => {
         const variants = p.product_variants ?? [];
@@ -174,6 +481,7 @@ const loadCollectionSource: SourceLoader = async (
           href: storeHref(base, "product", p.slug),
           imageUrl: p.image_url,
           priceMinor: minPrice(variants),
+          currency,
           ...(compare.length ? { compareAtMinor: Math.max(...compare) } : {}),
           inStock: variants.some((v) => v.stock_quantity > 0),
           // Phase1-T1: total stock powers the low-stock chip; tags power the

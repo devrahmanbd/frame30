@@ -1,6 +1,6 @@
 # Documentation Guidelines for Contributors
 
-Last verified: 2026-09-26 @ 10fc35c
+Last verified: 2026-10-03 @ 1bb2cef6
 
 Living guide for anyone writing or editing documentation in this repository.
 Dated audits are different: they stay frozen and gain appended pointers (rule
@@ -109,3 +109,12 @@ A document that is not prettier-clean is not ready for review.
 7. Links are descriptive; UI text is **Bold**; code is in backticks.
 8. Spelling is American; prettier is clean; the header date and hash are
    current.
+
+## 10. Retirement convention
+
+Retiring a theme (or any registry-backed surface) is deactivation via
+migration, never deletion: land a migration that deactivates the theme's
+registry rows, remove the theme directory, and note the retirement here in
+the guidelines so the audit trail stays queryable — dated audits gain
+appended pointers and living guides keep their history (rule 8), and
+retired themes are no exception.
