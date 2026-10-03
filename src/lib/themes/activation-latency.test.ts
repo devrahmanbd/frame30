@@ -60,7 +60,17 @@ vi.mock("../cache.server", async (importOriginal) => {
 });
 
 const { activateTheme } = await import("./appearance.server");
-const { publishedTheme, purgeStorefront } = await import("../themes.server");
+const {
+  autosave,
+  loadWorkspace,
+  publishedTheme,
+  purgeStorefront,
+  resolveLiveVariation,
+  setVariation,
+} = await import("../themes.server");
+const { persistedVariationKeyFromSettings } = await import(
+  "../theme-variations"
+);
 const { invalidate } = await import("../cache.server");
 const { tenantCachePrefix } = await import("../storefront-cache");
 
@@ -255,5 +265,235 @@ describe("T6 purge is awaited, not fire-and-forget", () => {
     expect(db.rows("store_themes").find((r) => r.id === THEME)!.is_active).toBe(
       true,
     );
+  });
+});
+
+/* ---------------- variation follow-through (Track T): server persistence +
+ * live storefront. The key rides the settings document; the live path renders
+ * the active variation, never the base, with unknown/unset falling back. */
+
+function variationDb(
+  slug: string | null,
+  tokens: Record<string, unknown>,
+  main: Array<Record<string, unknown>> = [],
+): FakeDb {
+  return fakeDb({
+    tables: {
+      store_themes: [
+        {
+          id: THEME,
+          merchant_id: MERCHANT,
+          name: "Live",
+          is_active: true,
+          published_version_id: "v1",
+          source_listing_slug: slug,
+        },
+      ],
+      theme_versions: [
+        {
+          id: "v1",
+          merchant_id: MERCHANT,
+          theme_id: THEME,
+          version: 1,
+          status: "published",
+          templates: {
+            index: { header: [], main, footer: [] },
+          },
+          tokens,
+        },
+      ],
+      theme_drafts: [],
+      theme_audit: [],
+    },
+  });
+}
+
+describe("live theme variation follow-through", () => {
+  it("applies the persisted variation tokens over the merchant base", async () => {
+    const db = variationDb("songoskriti", {
+      brand: "#123456",
+      surface: "#123456",
+      variation: "minimal",
+    });
+    const live = await publishedTheme(db.asClient(), MERCHANT);
+    // Minimal overrides the surface; the merchant's own brand survives.
+    expect(live?.tokens.surface).toBe("#FFFFFF");
+    expect(live?.tokens.brand).toBe("#123456");
+    expect(live?.variationKey).toBe("minimal");
+  });
+
+  it("falls back to base tokens when no variation is persisted", async () => {
+    const db = variationDb("songoskriti", {
+      brand: "#123456",
+      surface: "#123456",
+    });
+    const live = await publishedTheme(db.asClient(), MERCHANT);
+    expect(live?.tokens.surface).toBe("#123456");
+    expect(live?.variationKey).toBeNull();
+  });
+
+  it("falls back to base tokens for an unknown persisted key", async () => {
+    const db = variationDb("songoskriti", {
+      brand: "#123456",
+      surface: "#123456",
+      variation: "nope",
+    });
+    const live = await publishedTheme(db.asClient(), MERCHANT);
+    expect(live?.tokens.surface).toBe("#123456");
+    expect(live?.variationKey).toBeNull();
+  });
+
+  it("fills unset skins with the variation default, authored choices win", async () => {
+    const db = variationDb(
+      "songoskriti",
+      { brand: "#123456", variation: "minimal" },
+      [
+        { id: "r1", type: "product_rail", props: { heading: "Sale" } },
+        {
+          id: "r2",
+          type: "product_rail",
+          props: { heading: "Sale", skin: "compact" },
+        },
+      ],
+    );
+    const live = await publishedTheme(db.asClient(), MERCHANT);
+    const main = live?.templates.index?.main ?? [];
+    // Unset skin takes the variation; the explicit compact stays merchant-set.
+    expect(main.find((s) => s.id === "r1")?.props["skin"]).toBe("minimal");
+    expect(main.find((s) => s.id === "r2")?.props["skin"]).toBe("compact");
+  });
+
+  it("leaves sections alone for themes that ship no variations", async () => {
+    const db = variationDb(
+      "custom-upload",
+      { brand: "#123456", variation: "minimal" },
+      [{ id: "r1", type: "product_rail", props: { heading: "Sale" } }],
+    );
+    const live = await publishedTheme(db.asClient(), MERCHANT);
+    const main = live?.templates.index?.main ?? [];
+    // No variation applies: the skin stays the catalog parse default, and the
+    // persisted key is dropped (unknown themes never resolve a variation).
+    expect(main.find((s) => s.id === "r1")?.props["skin"]).toBe("editorial");
+    expect(live?.variationKey).toBeNull();
+  });
+
+  it("resolveLiveVariation prefers request over persisted over base", () => {
+    expect(
+      resolveLiveVariation({ variation: "minimal" }, "songoskriti")
+        .variationKey,
+    ).toBe("minimal");
+    expect(
+      resolveLiveVariation(
+        { variation: "minimal" },
+        "songoskriti",
+        "festive",
+      ).variationKey,
+    ).toBe("festive");
+    expect(resolveLiveVariation({}, "songoskriti").variationKey).toBeNull();
+    expect(
+      resolveLiveVariation({ variation: "minimal" }, "unknown-theme")
+        .variationKey,
+    ).toBeNull();
+  });
+});
+
+describe("variation persistence through the builder write path", () => {
+  it("autosave preserves the variation key into the stored tokens", async () => {
+    const seen: Array<{ fn: string; args: Record<string, unknown> }> = [];
+    const db = fakeDb({
+      tables: {},
+      rpc: (fn, args) => {
+        seen.push({ fn, args });
+        if (fn === "theme_autosave")
+          return { data: { revision: 2, applied: true }, error: null };
+        return { data: null, error: { message: `rpc_not_stubbed:${fn}` } };
+      },
+    });
+    await autosave(db.asClient(), MERCHANT, {
+      themeId: THEME,
+      templates: {},
+      tokens: { brand: "#123456", variation: "minimal" },
+      revision: 1,
+    });
+    const call = seen.find((c) => c.fn === "theme_autosave");
+    expect(call).toBeDefined();
+    expect(
+      (call!.args._tokens as Record<string, unknown>).variation,
+    ).toBe("minimal");
+    expect((call!.args._tokens as Record<string, unknown>).brand).toBe(
+      "#123456",
+    );
+  });
+
+  function draftDb(tokens: Record<string, unknown>): FakeDb {
+    return fakeDb({
+      tables: {
+        store_themes: [
+          {
+            id: THEME,
+            merchant_id: MERCHANT,
+            name: "Live",
+            is_active: true,
+            published_version_id: null,
+            source_listing_slug: "songoskriti",
+          },
+        ],
+        theme_drafts: [
+          {
+            merchant_id: MERCHANT,
+            theme_id: THEME,
+            revision: 1,
+            templates: {},
+            tokens,
+            updated_at: new Date().toISOString(),
+          },
+        ],
+        theme_versions: [],
+        theme_schedules: [],
+        theme_audit: [],
+      },
+    });
+  }
+
+  it("setVariation persists the pick and the workspace round-trips it", async () => {
+    const db = draftDb({ brand: "#123456" });
+    const saved = await setVariation(db.asClient(), MERCHANT, {
+      themeId: THEME,
+      variation: "minimal",
+    });
+    expect(saved).toEqual({ id: THEME, variation: "minimal" });
+    const stored = db.rows("theme_drafts").find((r) => r.theme_id === THEME);
+    expect(stored!.tokens).toMatchObject({
+      brand: "#123456",
+      variation: "minimal",
+    });
+    const workspace = await loadWorkspace(db.asClient(), MERCHANT);
+    expect(persistedVariationKeyFromSettings(workspace.tokens)).toBe("minimal");
+  });
+
+  it("setVariation(null) clears only the variation field", async () => {
+    const db = draftDb({ brand: "#123456", variation: "minimal" });
+    await setVariation(db.asClient(), MERCHANT, {
+      themeId: THEME,
+      variation: null,
+    });
+    const stored = db.rows("theme_drafts").find((r) => r.theme_id === THEME);
+    expect(stored!.tokens).toEqual({ brand: "#123456" });
+  });
+
+  it("setVariation rejects malformed keys and foreign themes", async () => {
+    const db = draftDb({ brand: "#123456" });
+    await expect(
+      setVariation(db.asClient(), MERCHANT, {
+        themeId: THEME,
+        variation: "Minimal!",
+      }),
+    ).rejects.toMatchObject({ code: "builder.variation_invalid" });
+    await expect(
+      setVariation(db.asClient(), "99999999-9999-9999-9999-999999999999", {
+        themeId: THEME,
+        variation: "minimal",
+      }),
+    ).rejects.toMatchObject({ code: "builder.theme_missing" });
   });
 });

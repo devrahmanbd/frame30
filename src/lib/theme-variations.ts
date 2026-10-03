@@ -334,12 +334,11 @@ function stripUndefined(
  * as the `variation` field of that document; these helpers read and write
  * that field without touching any other setting.
  *
- * NOTE (server wiring follow-up): the builder write path parses tokens
- * through `parseTokens` (`themes.server.ts` `parseUntrusted`), which drops
- * unknown keys — so a variation saved only inside the tokens JSON does not
- * survive autosave/commit yet. Until the server preserves the field (or a
- * dedicated column/RPC lands), resolution below still defines the contract:
- * explicit request > persisted > base default.
+ * WIRED: `themes.server.ts` `parseUntrusted` re-attaches a well-formed key,
+ * `loadWorkspace` round-trips it through autosave/commit/publish, `setVariation`
+ * is the picker seam, and `resolveLiveVariation` applies it in the live
+ * published-version path. Resolution contract: explicit request > persisted
+ * > base default.
  */
 
 export const VARIATION_SETTINGS_KEY = "variation";

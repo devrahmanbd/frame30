@@ -2318,7 +2318,11 @@ function BuilderStudio() {
             )}
 
             {panel === "brand" && doc && (
-              <TokenEditor tokens={doc.tokens} onChange={editor.setTokens} />
+              <TokenEditor
+                tokens={doc.tokens}
+                themeKey={workspace.data?.theme?.sourceKey ?? null}
+                onChange={editor.setTokens}
+              />
             )}
 
             {panel === "history" && (

@@ -17,16 +17,32 @@ import {
   DEFAULT_TOKENS,
   TEMPLATE_KEYS,
   assertPayloadWithinLimits,
+  isSkinnableType,
   takeSanitiserRejects,
   lintTemplate,
   parseAst,
   parseTemplates,
   parseTokens,
   templateOf,
+  type PropValue,
+  type Section,
+  type SectionType,
   type TemplateKey,
   type ThemeTemplates,
   type ThemeTokens,
 } from "./builder-ast";
+import {
+  MAX_VARIATION_KEY_LENGTH,
+  VARIATION_KEY_RE,
+  applyVariationTokens,
+  persistedVariationKeyFromSettings,
+  resolveActiveVariationKey,
+  settingsWithVariationKey,
+  type ThemeVariation,
+} from "./theme-variations";
+import { previewSourceFor } from "./preview-sources";
+import { SONGOSKRITI_WIDGET_DEFAULTS } from "./themes/songoskriti/skins";
+import { SOMVABONA_WIDGET_DEFAULTS } from "./themes/somvabona/skins";
 import { PRESET_API_RANGE, checkApiCompatibility } from "./registry-version";
 import { translationGate } from "./builder-guardrails";
 import { translationCoverage } from "./translation-coverage";
@@ -216,6 +232,17 @@ export async function loadWorkspace(
       source = "empty";
     }
 
+    // Variation follow-through (builder round-trip): the persisted key rides
+    // the settings document, so re-attach it after parsing — the editor
+    // reads it back via `persistedVariationKeyFromSettings` and autosave
+    // carries it forward through `parseUntrusted` above.
+    const persistedKey = persistedVariationKeyFromSettings(
+      draft?.tokens ?? newest?.tokens,
+    );
+    if (persistedKey) {
+      tokens = settingsWithVariationKey(tokens, persistedKey) as ThemeTokens;
+    }
+
     const issues: BuilderWorkspace["issues"] = {};
     for (const key of TEMPLATE_KEYS)
       issues[key] = lintTemplate(templateOf(templates, key));
@@ -298,7 +325,16 @@ function parseUntrusted(
   }
   takeSanitiserRejects();
   const templates = parseTemplates(input.templates);
-  const tokens = parseTokens(input.tokens);
+  const baseTokens = parseTokens(input.tokens);
+  // Theme variation follow-through: the active variation key travels as the
+  // `variation` field of the theme settings document, but `parseTokens` only
+  // keeps known token keys — so a variation saved only inside the tokens JSON
+  // would not survive autosave/commit. Re-attach the well-formed key after
+  // parsing; malformed values stay dropped (base theme).
+  const variationKey = persistedVariationKeyFromSettings(input.tokens);
+  const tokens = (
+    variationKey ? settingsWithVariationKey(baseTokens, variationKey) : baseTokens
+  ) as ThemeTokens;
   const rejects = takeSanitiserRejects();
   if (rejects) {
     incr("framique_builder_sanitiser_rejects_total", { surface });
@@ -948,6 +984,185 @@ export async function applyThemeUpdate(
   });
 }
 
+/* ------------------------------------ theme variation follow-through
+ *
+ * Track T follow-through: the merchant-picked variation key persists as the
+ * `variation` field of the theme settings document (`theme_drafts.tokens` /
+ * `theme_versions.tokens`) and the live paths below resolve it to effective
+ * tokens + skin fills. Contract: explicit request > persisted > base default;
+ * unknown keys fall back to the base theme, never throw, never stick.
+ */
+
+/** Every variation the installed theme ships (empty when it ships none). */
+export function variationsForThemeKey(
+  themeKey: string | null | undefined,
+): ThemeVariation[] {
+  if (!themeKey) return [];
+  return previewSourceFor(themeKey)?.variations ?? [];
+}
+
+type WidgetDefaults = Partial<
+  Record<SectionType, Record<string, PropValue>>
+>;
+
+const VARIATION_BASE_DEFAULTS: Record<string, WidgetDefaults> = {
+  songoskriti: SONGOSKRITI_WIDGET_DEFAULTS,
+  somvabona: SOMVABONA_WIDGET_DEFAULTS,
+};
+
+/**
+ * Layer a variation's skin defaults onto merchant-authored sections for the
+ * live render. A section takes the variation skin only when it is unset or
+ * merely base-equal (same precedence as the builder wrap); an explicit
+ * merchant choice that differs from the base default always wins. Unknown
+ * types pass through untouched; references are preserved for untouched nodes.
+ */
+function fillVariationSkins(
+  templates: ThemeTemplates,
+  variation: ThemeVariation | null,
+  baseDefaults: WidgetDefaults,
+): ThemeTemplates {
+  if (!variation) return templates;
+  const skins = variation.skinDefaults ?? {};
+  if (Object.keys(skins).length === 0) return templates;
+  const fillSections = (sections: Section[]): Section[] => {
+    let dirty = false;
+    const out = sections.map((section) => {
+      let next = section;
+      const target = (skins as Record<string, unknown>)[section.type];
+      if (typeof target === "string" && isSkinnableType(section.type)) {
+        const authored = section.props["skin"];
+        const baseSkin = baseDefaults[section.type]?.["skin"];
+        if (authored === undefined || authored === baseSkin) {
+          next = { ...section, props: { ...section.props, skin: target } };
+        }
+      }
+      if (next.children?.length) {
+        const kids = fillSections(next.children);
+        if (kids !== next.children) next = { ...next, children: kids };
+      }
+      if (next !== section) dirty = true;
+      return next;
+    });
+    return dirty ? out : sections;
+  };
+  let out = templates;
+  let dirty = false;
+  for (const key of TEMPLATE_KEYS) {
+    const ast = templates[key];
+    if (!ast) continue;
+    const header = fillSections(ast.header);
+    const main = fillSections(ast.main);
+    const footer = fillSections(ast.footer);
+    if (header !== ast.header || main !== ast.main || footer !== ast.footer) {
+      out = { ...out, [key]: { header, main, footer } };
+      dirty = true;
+    }
+  }
+  return dirty ? out : templates;
+}
+
+export type LiveVariation = {
+  /** Effective tokens: base with the active variation merged over them. */
+  tokens: ThemeTokens;
+  /** Active variation key (null = base theme, the default fallback). */
+  variationKey: string | null;
+  /** Active variation (null = base theme). */
+  variation: ThemeVariation | null;
+};
+
+/**
+ * Resolve the active variation for a live render: the requested key when the
+ * theme ships it, else the persisted per-store key when the theme ships it,
+ * else null (base). Pure — the caller decides what "requested" means
+ * (preview deep-links stay on the preview path, not the live one).
+ */
+export function resolveLiveVariation(
+  rawSettings: unknown,
+  themeKey: string | null | undefined,
+  requested?: string | null,
+): LiveVariation {
+  const base = parseTokens(rawSettings);
+  const variations = variationsForThemeKey(themeKey);
+  const persisted = persistedVariationKeyFromSettings(rawSettings);
+  const variation = resolveActiveVariationKey(variations, {
+    requested,
+    persisted,
+  });
+  return {
+    tokens: applyVariationTokens(base, variation),
+    variationKey: variation?.key ?? null,
+    variation,
+  };
+}
+
+/**
+ * Persist the merchant's variation pick (Appearance / builder picker seam).
+ *
+ * Follows the `setThemeFlags` pattern: merchant predicate first (fail closed
+ * on cross-merchant themeIds), then a tenant-scoped write that touches only
+ * the `variation` field of the draft settings document. The key flows to the
+ * published version through the normal commit/publish path, which preserves
+ * it via `parseUntrusted`.
+ */
+export async function setVariation(
+  db: Client,
+  merchantId: string,
+  input: { themeId: string; variation: string | null },
+) {
+  // No dedicated `builder.variation` bucket exists (rate-limit keys are
+  // allowlisted in rate-limit.server.ts): theme-update writes share the
+  // `builder.update` budget, matching `applyThemeUpdate`.
+  await rateLimit("builder.update", merchantId);
+  const key = input.variation;
+  if (
+    key !== null &&
+    (typeof key !== "string" ||
+      key.length === 0 ||
+      key.length > MAX_VARIATION_KEY_LENGTH ||
+      !VARIATION_KEY_RE.test(key))
+  ) {
+    throw new BuilderError(
+      "builder.variation_invalid",
+      "Unknown theme variation.",
+    );
+  }
+  // Rule 15: merchant predicate BEFORE the write so a cross-merchant themeId
+  // replay fails closed here.
+  const { data: theme } = await db
+    .from("store_themes")
+    .select("id")
+    .eq("merchant_id", merchantId)
+    .eq("id", input.themeId)
+    .maybeSingle();
+  if (!theme) {
+    throw new BuilderError(
+      "builder.theme_missing",
+      "Theme not found for this merchant",
+    );
+  }
+  const { data: draft } = await db
+    .from("theme_drafts")
+    .select("tokens")
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", input.themeId)
+    .maybeSingle();
+  if (!draft) {
+    throw new BuilderError(
+      "builder.draft_missing",
+      "No draft for this theme yet.",
+    );
+  }
+  const tokens = settingsWithVariationKey(draft.tokens, key);
+  const { error } = await db
+    .from("theme_drafts")
+    .update({ tokens } as never)
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", input.themeId);
+  if (error) throw error;
+  return { id: input.themeId, variation: key };
+}
+
 /* -------------------------------------------------------- storefront runtime */
 
 export type PublishedTheme = {
@@ -957,6 +1172,8 @@ export type PublishedTheme = {
   themeKey: string | null;
   /** Immutable published version id — the cache-key and ETag dimension. */
   versionId: string;
+  /** Active theme variation key (null = base theme, the default fallback). */
+  variationKey: string | null;
 };
 
 /** Published layout + tokens for a store. Cached under a tenant-keyed prefix. */
@@ -1006,16 +1223,25 @@ export async function publishedTheme(
         .eq("status", "published") // B-13: status discipline — only published versions evaluate at runtime; drafts are preview-only
         .maybeSingle();
       if (!version) return null;
-      const templates = parseTemplates(
-        version.templates && Object.keys(version.templates as object).length
-          ? version.templates
-          : { index: parseAst(version.ast) },
+      const themeKey = theme.source_listing_slug ?? null;
+      // Variation follow-through: the persisted key rides the version's
+      // settings document — shoppers see the active variation, not the base.
+      const live = resolveLiveVariation(version.tokens, themeKey);
+      const templates = fillVariationSkins(
+        parseTemplates(
+          version.templates && Object.keys(version.templates as object).length
+            ? version.templates
+            : { index: parseAst(version.ast) },
+        ),
+        live.variation,
+        VARIATION_BASE_DEFAULTS[themeKey ?? ""] ?? {},
       );
       return {
         templates,
-        tokens: parseTokens(version.tokens),
-        themeKey: theme.source_listing_slug ?? null,
+        tokens: live.tokens,
+        themeKey,
         versionId,
+        variationKey: live.variationKey,
       };
     },
   );
@@ -1058,16 +1284,23 @@ export async function publishedThemeById(
         .eq("status", "published")
         .maybeSingle();
       if (!version) return null;
-      const templates = parseTemplates(
-        version.templates && Object.keys(version.templates as object).length
-          ? version.templates
-          : { index: parseAst(version.ast) },
+      const themeKey = theme.source_listing_slug ?? null;
+      const live = resolveLiveVariation(version.tokens, themeKey);
+      const templates = fillVariationSkins(
+        parseTemplates(
+          version.templates && Object.keys(version.templates as object).length
+            ? version.templates
+            : { index: parseAst(version.ast) },
+        ),
+        live.variation,
+        VARIATION_BASE_DEFAULTS[themeKey ?? ""] ?? {},
       );
       return {
         templates,
-        tokens: parseTokens(version.tokens),
-        themeKey: theme.source_listing_slug ?? null,
+        tokens: live.tokens,
+        themeKey,
         versionId: theme.published_version_id,
+        variationKey: live.variationKey,
       };
     },
   );
@@ -1090,6 +1323,7 @@ export async function previewTheme(
   templates: ThemeTemplates;
   tokens: ThemeTokens;
   themeKey: string | null;
+  variationKey: string | null;
   revision: number;
 } | null> {
   assertTenantId(merchantId, "previewTheme");
@@ -1106,10 +1340,15 @@ export async function previewTheme(
     .eq("theme_id", theme.id)
     .maybeSingle();
   if (!draft) return null;
+  const themeKey = theme.source_listing_slug ?? null;
+  // Draft preview follows the persisted pick so the merchant previews what
+  // shoppers would see; explicit `?variation=` stays on the blueprint path.
+  const live = resolveLiveVariation(draft.tokens, themeKey);
   return {
     templates: parseTemplates(draft.templates),
-    tokens: parseTokens(draft.tokens),
-    themeKey: theme.source_listing_slug ?? null,
+    tokens: live.tokens,
+    themeKey,
+    variationKey: live.variationKey,
     revision: draft.revision ?? 0,
   };
 }

@@ -10,11 +10,26 @@ import {
 } from "@/lib/builder-ast";
 import { useLang } from "@/lib/i18n";
 import { COMMON_TIMEZONES, DEFAULT_MERCHANT_TIMEZONE } from "@/lib/timezone";
+import {
+  persistedVariationKeyFromSettings,
+  settingsWithVariationKey,
+  type ThemeVariation,
+} from "@/lib/theme-variations";
+import { SONGOSKRITI_VARIATIONS } from "@/lib/themes/songoskriti/variations";
+import { SOMVABONA_VARIATIONS } from "@/lib/themes/somvabona/variations";
 import { CustomFontsPanel } from "./CustomFontsPanel";
 
 type Props = {
   tokens: ThemeTokens;
+  /** Registry key of the installed theme — drives the variation picker. */
+  themeKey?: string | null;
   onChange: (patch: Partial<ThemeTokens>) => void;
+};
+
+/** Merchant-pickable looks per theme (Track T), keyed by installed theme key. */
+const VARIATIONS_BY_THEME_KEY: Record<string, ThemeVariation[]> = {
+  songoskriti: SONGOSKRITI_VARIATIONS,
+  somvabona: SOMVABONA_VARIATIONS,
 };
 
 // Curated luxury & commerce color palettes for 1-click styling
@@ -192,11 +207,35 @@ function SwatchCard({
 const SELECT_CLASS =
   "w-full rounded-fq-md border border-border/80 bg-background px-3 py-2 text-xs font-medium text-foreground shadow-xs transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary";
 
-export function TokenEditor({ tokens, onChange }: Props) {
+export function TokenEditor({ tokens, themeKey, onChange }: Props) {
   const { t } = useLang();
   const [scheme, setScheme] = useState<"light" | "dark">("light");
   const dark: DarkTokens = tokens.dark ?? DEFAULT_DARK_TOKENS;
   const editingDark = scheme === "dark" && Boolean(tokens.dark);
+
+  // Theme variation picker (Track T follow-through): options come straight
+  // from the theme's variation registry (key/label/label_bn). The pick rides
+  // the settings document via `settingsWithVariationKey` and autosaves
+  // through the normal draft path — no dedicated RPC. Hidden for themes
+  // that ship no variations, so those panels render byte-identical.
+  const variations = themeKey
+    ? (VARIATIONS_BY_THEME_KEY[themeKey] ?? [])
+    : [];
+  const storedVariation = persistedVariationKeyFromSettings(tokens);
+  const activeVariation = variations.some((v) => v.key === storedVariation)
+    ? storedVariation
+    : null;
+  const setVariation = (key: string) => {
+    if (!key) {
+      // Clearing must explicitly drop the field: the editor merges patches,
+      // so an empty patch would leave a stale key behind.
+      onChange({ variation: undefined } as unknown as Partial<ThemeTokens>);
+      return;
+    }
+    onChange(
+      settingsWithVariationKey({}, key) as unknown as Partial<ThemeTokens>,
+    );
+  };
 
   const setDark = (patch: Partial<DarkTokens>) =>
     onChange({ dark: { ...dark, ...patch } });
@@ -205,6 +244,51 @@ export function TokenEditor({ tokens, onChange }: Props) {
 
   return (
     <div className="space-y-3 text-sm">
+      {/* 0. THEME VARIATION (only for themes that ship variations) */}
+      {variations.length > 0 ? (
+        <div className="rounded-fq-lg border border-border/80 bg-card/60 p-3.5 shadow-xs space-y-2">
+          <label
+            htmlFor="theme-variation"
+            className="block text-xs font-semibold text-foreground"
+          >
+            {t("Theme variation", "থিম ভ্যারিয়েশন")}
+          </label>
+          <select
+            id="theme-variation"
+            value={activeVariation ?? ""}
+            onChange={(e) => setVariation(e.target.value)}
+            className={SELECT_CLASS}
+          >
+            <option value="">{t("Base theme", "বেস থিম")}</option>
+            {variations.map((v) => (
+              <option key={v.key} value={v.key}>
+                {v.label} · {v.label_bn}
+              </option>
+            ))}
+          </select>
+          <p className="text-[11px] text-muted-foreground leading-normal">
+            {activeVariation && themeKey ? (
+              <>
+                {t("Preview this look:", "এই লুক প্রিভিউ করুন:")}{" "}
+                <a
+                  href={`/theme-preview/${themeKey}?variation=${activeVariation}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-foreground"
+                >
+                  {`/theme-preview/${themeKey}?variation=${activeVariation}`}
+                </a>
+              </>
+            ) : (
+              t(
+                "A curated preset of colours and widget skins. Unset or unknown variations show the base theme.",
+                "রং ও উইজেট স্কিনের তৈরি প্রিসেট। অনির্বাচিত বা অজানা ভ্যারিয়েশনে বেস থিম দেখায়।",
+              )
+            )}
+          </p>
+        </div>
+      ) : null}
+
       {/* 1. COLOR & BRAND PALETTE */}
       <SectionGroup
         title={t("Color Palette & Themes", "কালার প্যালেট ও থিম")}
