@@ -29,6 +29,30 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- Theme findings fix-all loop (lanes A–I, all green): `adv*` persist
+  through parse; mega-menu promo fields + panels; urgency `endsAt`
+  countdown; tile aspect variant; `emptyText` BN twins; voice flag;
+  rail `limit`/`collection` fields (themed limits were silently dropping);
+  studio skin selects + responsive flags; homepage recently-viewed rails +
+  mobile `bp` references; per-theme blog skins; Somvabona dark reference
+  set; theme-motion manifest (`MOTION_EFFECTS` + engine `fq-fx` hook);
+  `creation.md` phantom re-pin + motion-semantics page; install
+  subscriptions with renewal sweep + proration; behavior-ranked
+  `recommended` rail; voice search mic + suggestion ranking.
+- Menu replacement API: `menu_bar`/`menu_dropdown`/`menu_drawer` plugin
+  slots, full renderer swap behind review with fail-open fallback, menu
+  permission scope.
+- Theme variations end to end: registry + `?variation=` preview + server
+  persistence + live render + builder picker + 2 starters per theme.
+- PDP variant pipeline: picker publishes on the variant channel, buy box
+  consumes with default fallback, cart lines stamped, sold-out blocked
+  bilingually (fixes wrong-variant-in-cart + unreadable dashboard).
+- Support learning loop: daily Inkling revision (properness rubric) +
+  review/apply pipeline (style→DPO, factual→KB) + desk Revisions tab;
+  16-file public KB corpus seeded live (96 docs, 6 merchants).
+- Marketplace renewal cron (`30 2`, 18 jobs) + listing term prices +
+  trial-to-paid conversion with `renews_at`.
+
 - Buyer-critical URLs (order tracking + welcome CTAs, drip CTAs via
   rebasing, sitemap/robots/llms rewrite coverage) resolve to the primary
   custom domain; payments cancel uses request origin (already correct).
@@ -89,6 +113,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   live tree, never `git stash` a shared clone.
 
 ### Fixed
+
+- Currency switcher removed (BD-only platform decision); fx snapshot
+  stack stays dormant underneath.
+- Songoskriti rule-break repairs without design change: ratio options
+  (`4/5`, `3/4`), checkout gate exemption (chromeless checkout stands),
+  recursive demo-focus; shared footer copy moved to neutral
+  `src/lib/footer-copy.ts` (theme-independence gate green).
 
 - **Theme-independence violation (our mistake, indexed so it never repeats):**
   Songoskriti's renderers overrode generic widget keys globally
