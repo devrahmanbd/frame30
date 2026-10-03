@@ -19,7 +19,7 @@ for catalogue review.
 
 | #   | Area                 | What "done" means                                                                                                                                                                                          | Where it lives                                                                                                                                             |
 | --- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Layout               | `header` / `main` / `footer` slot arrays on every template; responsive `bp` overrides per section                                                                                                          | `src/lib/builder-ast.ts:79-83`, `src/lib/builder-ast.ts:306-329`                                                                                           |
+| 1   | Layout               | `header` / `main` / `footer` slot arrays on every template; responsive `bp` overrides per section                                                                                                          | `src/lib/builder-ast.ts:108`, `src/lib/builder-ast.ts:306-329`                                                                                           |
 | 2   | Design system        | Full `ThemeTokens` set incl. light + designed `dark` set, `globals`, font pairing                                                                                                                          | `src/lib/builder-ast.ts:6329-6351`, `src/lib/theme-globals.ts:32-48`                                                                                       |
 | 3   | Homepage             | `index` template with hero, merchandising, trust and footer composition                                                                                                                                    | `src/lib/themes/songoskriti/homepage.ts:23`, `src/lib/themes/somvabona/homepage.ts:22`                                                                     |
 | 4   | Product pages        | `product` template: media, price, variant/size, buy box, delivery, reviews/Q&A, related                                                                                                                    | `src/lib/themes/songoskriti/preview.ts` (`product` case), `src/lib/builder-ast.ts` PDP widgets                                                             |
@@ -168,13 +168,13 @@ export type Section = {
 ```
 
 - `PropValue = string | number | boolean | PropRow[]`
-  (`src/lib/builder-ast.ts:245-250`); repeatable rows cap at
-  `MAX_ARRAY_ROWS = 24` (`:250`); nesting caps at `MAX_TREE_DEPTH = 6`,
-  `MAX_NODES_PER_TEMPLATE = 300` (`:252-254`).
+  (`src/lib/builder-ast.ts:297-298`); repeatable rows cap at
+  `MAX_ARRAY_ROWS = 24` (`:300`); nesting caps at `MAX_TREE_DEPTH = 6`,
+  `MAX_NODES_PER_TEMPLATE = 300` (`:303-304`).
 - Field kinds for the inspector: `text | textarea | number | select | url |
 boolean | embed | bitext | color | range | image | taxonomy | unit |
-group | html | array | menu` (`src/lib/builder-ast.ts:299-316`).
-- `CatalogEntry` (`src/lib/builder-ast.ts:355-371`) declares label, group,
+group | html | array | menu` (`src/lib/builder-ast.ts:429-446`).
+- `CatalogEntry` (`src/lib/builder-ast.ts:485-502`) declares label, group,
   slots, `heading` (h1-claim), `templates` scope, `container`, `defaults`,
   `fields`.
 
