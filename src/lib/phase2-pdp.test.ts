@@ -8,8 +8,12 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import {
+  cartLineForVariant,
   defaultVariant,
+  resolveChannelVariant,
   variantAxes,
+  variantChannelIndex,
+  variantOptionLabel,
   reviewStats,
 } from "@/components/builder/pdp";
 import {
@@ -181,5 +185,95 @@ describe("sticky buy bar — cart-lane parity", () => {
     expect(region).not.toMatch(/aria-modal/);
     expect(region.match(/#[0-9a-fA-F]{3,8}\b/g) ?? []).toEqual([]);
     expect(region).not.toMatch(/theme|preset|bazaar|atelier|circuit|rupaboti/i);
+  });
+});
+
+describe("variant channel selection (Track V)", () => {
+  const rows = [
+    row("s", { options: "Size S", priceMinor: 1000, inStock: true }),
+    row("m", { options: "Size M", priceMinor: 1200, inStock: true }),
+    row("xl", { options: "Size XL / Red", priceMinor: 1500, inStock: true }),
+  ];
+
+  it("pick-XL-adds-XL: the published index resolves back to the picked variant", () => {
+    const published = String(variantChannelIndex(rows, "xl"));
+    expect(published).toBe("2");
+    expect(resolveChannelVariant(rows, [published])?.id).toBe("xl");
+  });
+
+  it("stamps variant_id plus the human-readable options string on the cart line", () => {
+    const picked = rows[2]!;
+    const line = cartLineForVariant(picked, 2);
+    expect(line.variantId).toBe("xl");
+    expect(line.quantity).toBe(2);
+    expect(line.variantName).toBe("Size XL / Red");
+    expect(variantOptionLabel(picked)).toBe("Size XL / Red");
+  });
+
+  it("no-selection-falls-back: empty and unknown payloads keep today's default", () => {
+    expect(resolveChannelVariant(rows, [])?.id).toBe(
+      defaultVariant(rows)?.id,
+    );
+    expect(resolveChannelVariant(rows, undefined)?.id).toBe(
+      defaultVariant(rows)?.id,
+    );
+    expect(resolveChannelVariant(rows, ["nope"])?.id).toBe(
+      defaultVariant(rows)?.id,
+    );
+    expect(resolveChannelVariant(rows, ["99"])?.id).toBe(
+      defaultVariant(rows)?.id,
+    );
+    expect(resolveChannelVariant([], ["0"])).toBeUndefined();
+    expect(resolveChannelVariant(undefined, ["0"])).toBeUndefined();
+  });
+
+  it("sold-out selection cannot be submitted, with bilingual product-variant copy", () => {
+    const src = readFileSync("src/components/builder/pdp.tsx", "utf8");
+    const buyBox = src.slice(
+      src.indexOf("const BuyBox"),
+      src.indexOf("const VariantPicker"),
+    );
+    const sticky = src.slice(src.indexOf("const StickyBuyBar"));
+    for (const region of [buyBox, sticky]) {
+      expect(region).toContain("resolveChannelVariant");
+      expect(region).toContain("cartLineForVariant");
+      expect(region).toContain("variant.inStock === false");
+      expect(region).toContain("disabled");
+      expect(region).toContain("This product variant is out of stock");
+      expect(region).toContain("এই প্রোডাক্ট ভ্যারিয়েন্টটি স্টকে নেই");
+    }
+    // Copy says product variant — never theme variation.
+    expect(src).not.toMatch(/theme variation/i);
+    expect(src).not.toMatch(/variation/i);
+  });
+
+  it("the picker publishes every selection mode on the variant channel", () => {
+    const src = readFileSync("src/components/builder/pdp.tsx", "utf8");
+    const picker = src.slice(
+      src.indexOf("const VariantPicker"),
+      src.indexOf("const DeliveryPromise"),
+    );
+    expect(picker).toContain('useSectionChannel(storeSlug ?? "demo", "variant")');
+    expect(picker).toContain("variantChannelIndex");
+    // dropdown, matrix, shade, swatch and chip all route through select():
+    // no event handler writes the raw state setter anymore.
+    expect(picker).toContain("const select = (id: string)");
+    expect(picker).not.toMatch(/=>\s*(match\s*&&\s*)?setSelected\(/);
+    expect(picker).not.toMatch(/onChange=\{\(e\) => setSelected/);
+  });
+
+  it("dashboard line shows the options string via the existing variant_name column", () => {
+    const pricing = readFileSync("src/lib/pricing.server.ts", "utf8");
+    const orders = readFileSync("src/lib/orders.server.ts", "utf8");
+    const dashboard = readFileSync(
+      "src/routes/_authenticated/dashboard/orders/$orderId.tsx",
+      "utf8",
+    );
+    // Quote resolves the human variant name by id…
+    expect(pricing).toContain("variantName: v.name");
+    // …orders persist it…
+    expect(orders).toContain("variant_name: l.variantName");
+    // …and the dashboard renders that column (read-only, inherits accuracy).
+    expect(dashboard).toContain("{i.variant_name}");
   });
 });

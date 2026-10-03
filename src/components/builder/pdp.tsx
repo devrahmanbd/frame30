@@ -6,14 +6,16 @@
  * rows from the single batched data call, formats money from integer minor
  * units, and imports no theme module — one PDP widget set, every theme.
  */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { textOf } from "@/lib/bitext";
+import { useCart } from "@/lib/cart";
 import type { WidgetRow } from "@/lib/widget-data";
 import type { SectionType } from "@/lib/builder-ast";
 import { formatDisplayNumber } from "@/lib/money-display";
 import { rowSwatch } from "./beauty";
 import { SkinToneBackdrop } from "./primitives/SkinToneBackdrop";
 import type { WidgetComponent, WidgetCtx } from "./widgets";
+import { useSectionChannel } from "./useSectionChannel";
 import {
   Stars,
   HistogramBar,
@@ -95,6 +97,71 @@ export function variantAxes(rows: WidgetRow[]): string[][] {
   return axes;
 }
 
+/**
+ * Track V — human-readable options path for one variant row, e.g.
+ * `Size XL / Red`. This is the string the shopper saw on the picker and the
+ * value the server quote resolves to `variantName` (orders persist it as
+ * `variant_name`). Shopper-facing copy always says product variant.
+ */
+export function variantOptionLabel(row: WidgetRow | undefined): string {
+  if (!row) return "";
+  return row.options || row.title;
+}
+
+/**
+ * Track V — index payload the picker publishes on the existing `variant`
+ * section channel. The gallery binding parses an integer index, so the
+ * channel carries positions, never ids.
+ */
+export function variantChannelIndex(
+  rows: WidgetRow[],
+  selectedId: string | null,
+): number {
+  if (selectedId) {
+    const at = rows.findIndex((row) => row.id === selectedId);
+    if (at >= 0) return at;
+  }
+  const fallback = defaultVariant(rows);
+  const at = fallback ? rows.findIndex((row) => row.id === fallback.id) : -1;
+  return at >= 0 ? at : 0;
+}
+
+/**
+ * Track V — resolve a `variant` channel payload to its row. A published id
+ * wins (exact), then a legacy integer index, then today's default — so no
+ * selection yet behaves exactly like before the picker published.
+ */
+export function resolveChannelVariant(
+  rows: WidgetRow[] | undefined,
+  ids: readonly string[] | undefined,
+): WidgetRow | undefined {
+  if (!rows || rows.length === 0) return undefined;
+  const first = ids?.[0];
+  if (first !== undefined) {
+    const byId = rows.find((row) => row.id === first);
+    if (byId) return byId;
+    const at = parseInt(first, 10);
+    if (!Number.isNaN(at) && at >= 0 && at < rows.length) return rows[at];
+  }
+  return defaultVariant(rows);
+}
+
+/**
+ * Track V — the cart-line stamp for one variant row: the `variantId` the
+ * server quotes (and orders persist as `variant_name` via the variant's
+ * name) paired with the human-readable options string the shopper chose.
+ */
+export function cartLineForVariant(
+  row: WidgetRow,
+  quantity: number,
+): { variantId: string; quantity: number; variantName: string } {
+  return {
+    variantId: row.id,
+    quantity: Math.max(1, Math.min(99, Math.floor(quantity) || 1)),
+    variantName: variantOptionLabel(row),
+  };
+}
+
 /** Aggregate published reviews into an average and a [1★…5★] histogram. */
 export function reviewStats(rows: WidgetRow[]): {
   average: number;
@@ -115,10 +182,15 @@ export function reviewStats(rows: WidgetRow[]): {
 /* ------------------------------------------------------------------ widgets */
 
 const BuyBox: WidgetComponent = (ctx) => {
-  const { str, bool, money, locale, data, slot } = ctx;
+  const { str, bool, money, locale, data, slot, storeSlug } = ctx;
   const rows = data?.rows;
-  const variant = defaultVariant(rows);
+  // Track V — the picker publishes on this channel; empty means no selection
+  // yet, which resolves to today's default.
+  const channel = useSectionChannel(storeSlug ?? "demo", "variant");
+  const { add } = useCart(storeSlug ?? "");
   const [qty, setQty] = useState(1);
+  const [addedId, setAddedId] = useState<string | null>(null);
+  const variant = resolveChannelVariant(rows, channel.ids);
   if (data?.pending) {
     return (
       <Panel label={locale === "bn" ? "কেনার প্যানেল" : "Buy box"}>
@@ -130,6 +202,7 @@ const BuyBox: WidgetComponent = (ctx) => {
   if (!variant && slot) return <Panel>{slot}</Panel>;
   const compareAt = bool("showCompareAt") ? variant?.compareAtMinor : undefined;
   const soldOut = variant?.inStock === false;
+  const justAdded = addedId !== null && addedId === variant?.id;
   return (
     <Panel label={locale === "bn" ? "কেনার প্যানেল" : "Buy box"}>
       <div className="flex flex-wrap items-baseline gap-2">
@@ -179,7 +252,13 @@ const BuyBox: WidgetComponent = (ctx) => {
         )}
         <button
           type="button"
-          disabled={soldOut}
+          disabled={soldOut || !variant}
+          onClick={() => {
+            if (!variant || variant.inStock === false) return;
+            const line = cartLineForVariant(variant, qty);
+            add(line.variantId, line.quantity);
+            setAddedId(variant.id);
+          }}
           className="h-11 flex-1 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
           {soldOut
@@ -189,6 +268,21 @@ const BuyBox: WidgetComponent = (ctx) => {
             : str("label") || "Add to cart"}
         </button>
       </div>
+      {soldOut ? (
+        <p role="status" className="mt-2 text-xs text-muted-foreground">
+          {locale === "bn"
+            ? "এই প্রোডাক্ট ভ্যারিয়েন্টটি স্টকে নেই"
+            : "This product variant is out of stock"}
+        </p>
+      ) : (
+        justAdded && (
+          <p role="status" className="mt-2 text-xs text-muted-foreground">
+            {locale === "bn"
+              ? `কার্টে যোগ হয়েছে: ${variantOptionLabel(variant)}`
+              : `Added to cart: ${variantOptionLabel(variant)}`}
+          </p>
+        )
+      )}
       {str("promise") && (
         <p data-part="promise" className="mt-3 text-xs text-muted-foreground">
           {str("promise")}
@@ -199,14 +293,35 @@ const BuyBox: WidgetComponent = (ctx) => {
 };
 
 const VariantPicker: WidgetComponent = (ctx) => {
-  const { str, locale, data } = ctx;
+  const { str, locale, data, storeSlug } = ctx;
   const rows = data?.rows ?? [];
   const mode = str("mode") || "chip";
+  const channel = useSectionChannel(storeSlug ?? "demo", "variant");
   const [selected, setSelected] = useState<string | null>(null);
   const axes = useMemo(() => variantAxes(rows), [rows]);
+  const rowsKey = rows.map((row) => row.id).join("|");
+  const validSelected =
+    selected && rows.some((row) => row.id === selected) ? selected : null;
+  // Track V — publish the picker's selection on the existing `variant`
+  // section channel so the buy box, sticky bar and media gallery follow the
+  // same product variant. The payload is the row index: the gallery binding
+  // parses integers. Runs on product change too, so a persisted channel from
+  // another product never leaks into this one.
+  useEffect(() => {
+    if (rows.length === 0) return;
+    channel.clear();
+    channel.push(String(variantChannelIndex(rows, validSelected)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rowsKey]);
+  const select = (id: string) => {
+    setSelected(id);
+    const at = rows.findIndex((row) => row.id === id);
+    channel.clear();
+    if (at >= 0) channel.push(String(at));
+  };
   if (data?.pending) return <Skeleton lines={2} />;
   if (rows.length === 0) return null;
-  const current = selected ?? defaultVariant(rows)?.id ?? rows[0]!.id;
+  const current = validSelected ?? defaultVariant(rows)?.id ?? rows[0]!.id;
   const labelOf = (row: WidgetRow) => row.options || row.title;
 
   if (mode === "dropdown") {
@@ -220,7 +335,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
           <select
             className="h-11 w-full rounded-fq-md border border-border bg-card px-3"
             value={current}
-            onChange={(e) => setSelected(e.target.value)}
+            onChange={(e) => select(e.target.value)}
           >
             {rows.map((row) => (
               <option
@@ -282,7 +397,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
                           type="button"
                           disabled={!match || match.inStock === false}
                           aria-pressed={match?.id === current}
-                          onClick={() => match && setSelected(match.id)}
+                          onClick={() => match && select(match.id)}
                           className={`min-h-11 w-full min-w-11 rounded-fq-md border px-2 text-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                             match?.id === current
                               ? "border-primary ring-1 ring-primary"
@@ -331,7 +446,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
               label={labelOf(row)}
               selected={row.id === current}
               disabled={row.inStock === false}
-              onSelect={() => setSelected(row.id)}
+              onSelect={() => select(row.id)}
             />
           ))}
         </div>
@@ -375,7 +490,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
               label={labelOf(row)}
               selected={row.id === current}
               disabled={row.inStock === false}
-              onSelect={() => setSelected(row.id)}
+              onSelect={() => select(row.id)}
             />
           ) : (
             <button
@@ -384,7 +499,7 @@ const VariantPicker: WidgetComponent = (ctx) => {
               role="radio"
               aria-checked={row.id === current}
               disabled={row.inStock === false}
-              onClick={() => setSelected(row.id)}
+              onClick={() => select(row.id)}
               className={`h-11 rounded-fq-md border px-3 text-sm transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                 row.id === current
                   ? "border-primary ring-1 ring-primary"
@@ -672,10 +787,15 @@ const SellerCard: WidgetComponent = (ctx) => {
 };
 
 const StickyBuyBar: WidgetComponent = (ctx) => {
-  const { str, bool, int, money, locale, data, editing } = ctx;
+  const { str, bool, int, money, locale, data, editing, storeSlug } = ctx;
   const docked = useDockedAfterScroll(int("dockAfter", 320, 0, 4000));
-  const variant = defaultVariant(data?.rows);
+  // Track V — follow the picker's `variant` channel; empty falls back to
+  // today's default so no selection yet changes nothing.
+  const channel = useSectionChannel(storeSlug ?? "demo", "variant");
+  const { add } = useCart(storeSlug ?? "");
+  const variant = resolveChannelVariant(data?.rows, channel.ids);
   if (data?.pending || !variant) return null;
+  const soldOut = variant.inStock === false;
   // In the studio the bar is shown inline so it can be selected and edited.
   const content = (
     <>
@@ -699,15 +819,32 @@ const StickyBuyBar: WidgetComponent = (ctx) => {
       )}
       <button
         type="button"
-        disabled={variant.inStock === false}
+        disabled={soldOut}
+        aria-describedby={soldOut ? "fq-sticky-variant-stock" : undefined}
+        onClick={() => {
+          if (soldOut) return;
+          const line = cartLineForVariant(variant, 1);
+          add(line.variantId, line.quantity);
+        }}
         className="h-11 shrink-0 rounded-fq-md bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90 motion-safe:transition-transform motion-safe:active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50"
       >
-        {variant.inStock === false
+        {soldOut
           ? locale === "bn"
             ? "স্টক নেই"
             : "Sold out"
           : str("label") || "Add to cart"}
       </button>
+      {soldOut && (
+        <p
+          id="fq-sticky-variant-stock"
+          role="status"
+          className="sr-only"
+        >
+          {locale === "bn"
+            ? "এই প্রোডাক্ট ভ্যারিয়েন্টটি স্টকে নেই"
+            : "This product variant is out of stock"}
+        </p>
+      )}
     </>
   );
   if (editing) {

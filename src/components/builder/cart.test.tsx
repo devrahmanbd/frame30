@@ -96,6 +96,15 @@ describe("cart lines — optimistic, bilingual, 44px targets", () => {
     expect(CART_SRC).toContain("Continue shopping");
     expect(CART_SRC).toContain("কেনাকাটা চালিয়ে যান");
   });
+
+  it("shows the server variant options string on every line (Track V)", () => {
+    // The demo quote carries variantName per line; the picker stamps the
+    // variant id at add time and the server resolves the human string, so
+    // the line reads e.g. Medium — never a bare title.
+    const html = render("cart_lines", "en");
+    expect(html).toContain("Medium");
+    expect(html).toContain("Sample product");
+  });
 });
 
 describe("cart drawer — slide-over with sticky checkout footer", () => {
