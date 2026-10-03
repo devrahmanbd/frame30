@@ -21,8 +21,12 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
 import {
   assertPayloadWithinLimits,
+  isGlobalRef,
   parseAst,
+  resolveGlobalRef,
+  type GlobalRefBlock,
   type Section,
+  type ThemeAst,
 } from "./builder-ast";
 import { assertTenantId } from "./tenant-scope";
 import { incr, log, withSpan } from "./observability.server";
@@ -293,4 +297,92 @@ export async function deleteGlobalBlock(
     );
     return { id };
   });
+}
+
+/* ------------------------------------------ Phase 2B global_ref render join */
+
+/**
+ * Phase 2B — render-data join for `global_ref` placements.
+ *
+ * A `GlobalRefBlock` row is what `resolveGlobalRef` (builder-ast) matches a
+ * placement against, by id first then case-insensitive name. The row carries
+ * `revision`/`updatedAt` on top so the Globals editor can show them reusing
+ * the `global-blocks.ts` conventions — it stays assignable to
+ * `GlobalRefBlock` (extra fields are fine), so the pure resolver accepts
+ * these rows unchanged.
+ *
+ * Staleness note: unlike linked container placements (`__gbId`/`__gbRev`),
+ * a `global_ref` pointer stores no revision — it resolves live at render-data
+ * time, so there is no stale state to display. A pointer with no readable
+ * block resolves to the `invalid: "global_ref.missing"` placeholder copy,
+ * never a crash and never an empty hole.
+ */
+export type GlobalRefBlockRow = GlobalRefBlock & {
+  revision: number;
+  updatedAt: string;
+};
+
+/**
+ * Server-fetched blocks for `global_ref` resolution. Same tenancy, RLS,
+ * sanitise-on-read and rate-limit posture as `listGlobalBlocks` (it delegates
+ * to it) — the only difference is the row shape. Read path only; the
+ * create/update/delete paths above are untouched.
+ */
+export async function listGlobalRefBlocks(
+  db: Client,
+  merchantId: string,
+  themeId: string | null = null,
+): Promise<GlobalRefBlockRow[]> {
+  const blocks = await listGlobalBlocks(db, merchantId, themeId);
+  return blocks.map((block) => ({
+    id: block.id,
+    name: block.name,
+    nodes: block.nodes,
+    revision: block.revision,
+    updatedAt: block.updatedAt,
+  }));
+}
+
+/**
+ * Expand every `global_ref` placement in a slot list via `resolveGlobalRef`,
+ * splicing each block's grafted copies in place of the placement. Pure: the
+ * input tree and the stored blocks are never mutated. Missing/blank pointers
+ * stay in place as `invalid: "global_ref.missing"` copies (their placement
+ * ids are collected, so the host can log or badge them) — the renderer shows
+ * a labelled box, never a crash.
+ */
+export function resolveGlobalRefSlots(
+  sections: Section[],
+  blocks: readonly GlobalRefBlock[],
+): { sections: Section[]; missing: string[] } {
+  const missing: string[] = [];
+  const walk = (nodes: Section[]): Section[] =>
+    nodes.flatMap((node) => {
+      if (isGlobalRef(node)) {
+        const out = resolveGlobalRef(node, blocks);
+        if (out.missing) missing.push(node.id);
+        return out.sections;
+      }
+      return node.children?.length
+        ? [{ ...node, children: walk(node.children) }]
+        : [node];
+    });
+  return { sections: walk(sections), missing };
+}
+
+/** Slot-level expansion across a whole template AST. Pure. */
+export function resolveGlobalRefAst(
+  ast: ThemeAst,
+  blocks: readonly GlobalRefBlock[],
+): { ast: ThemeAst; missing: string[] } {
+  const missing: string[] = [];
+  const run = (sections: Section[]): Section[] => {
+    const out = resolveGlobalRefSlots(sections, blocks);
+    missing.push(...out.missing);
+    return out.sections;
+  };
+  return {
+    ast: { header: run(ast.header), main: run(ast.main), footer: run(ast.footer) },
+    missing,
+  };
 }

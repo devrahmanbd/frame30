@@ -2667,6 +2667,31 @@ export const WIDGETS: WidgetDef[] = [
     keywords: ["rating", "stars", "reviews", "aggregate"],
     defaults: { rating: 0, reviewCount: 0 },
   },
+  // Phase 2B — studio twin for the `global_ref` pointer type (builder-ast
+  // GLOBAL_REF_ENTRY). Palette decision: VISIBLE in Advanced, mirroring the
+  // `app-block` pointer-twin precedent — searchable via "global/shared", but
+  // the primary insert path stays the Globals tab/link flow in the builder.
+  // The header/footer slot lint (`illegal_slot` in main) remains the guard
+  // against misplaced drops. Defaults mirror the BASE content schema 1:1
+  // (`ref` only — a pointer carries no bitext/media keys and is not
+  // skinnable, so no `skin` or `_bn` keys); style-layer keys stay excluded
+  // per the twin-parity contract above.
+  {
+    key: "global_ref",
+    label: "Global block",
+    category: "advanced",
+    icon: "Layers",
+    keywords: [
+      "global",
+      "shared",
+      "synced",
+      "reference",
+      "block",
+      "header",
+      "footer",
+    ],
+    defaults: { ref: "" },
+  },
 ];
 
 export const WIDGET_BY_KEY: Record<string, WidgetDef> = WIDGETS.reduce<

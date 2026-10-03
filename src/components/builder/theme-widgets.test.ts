@@ -102,4 +102,21 @@ describe("theme widget registry", () => {
       );
     }
   });
+
+  it("global_ref resolves to the generic branch on every theme key", () => {
+    expect(WIDGET_COMPONENTS.global_ref).toBeDefined();
+    expect(resolveWidgetComponent(null, "global_ref")).toBe(
+      WIDGET_COMPONENTS.global_ref,
+    );
+    expect(resolveWidgetComponent("no-such-theme", "global_ref")).toBe(
+      GENERIC_WIDGETS.global_ref,
+    );
+    // No theme overrides the pointer: every theme renders the same branch.
+    expect(resolveWidgetComponent("songoskriti", "global_ref")).toBe(
+      GENERIC_WIDGETS.global_ref,
+    );
+    expect(resolveWidgetComponent("somvabona", "global_ref")).toBe(
+      GENERIC_WIDGETS.global_ref,
+    );
+  });
 });

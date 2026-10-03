@@ -1615,6 +1615,29 @@ const BASE_WIDGETS: Record<string, WidgetComponent> = {
   add_to_cart: ContextSlot,
   product_meta: ContextSlot,
   page_content: ContextSlot,
+
+  // Phase 2B — global block reference. Server render-data joins expand
+  // placements through `resolveGlobalRef` before render (see
+  // `listGlobalRefBlocks` / `resolveGlobalRefSlots` in
+  // `global-blocks.server`); this branch never fetches. An expanded node
+  // renders its grafted children; an unexpanded or missing node renders the
+  // invalid placeholder in the editor and nothing on the storefront —
+  // never a crash, never an empty hole in the editor.
+  global_ref: ({ section, str, editing, renderChildren }) => {
+    if ((section.children ?? []).length > 0) return <>{renderChildren()}</>;
+    if (!editing) return null;
+    const target = str("ref");
+    return (
+      <div
+        role="note"
+        className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground"
+      >
+        {target
+          ? `Global block “${target}” is missing — re-link it or remove this block.`
+          : "Pick a global block to show here."}
+      </div>
+    );
+  },
 };
 
 /**

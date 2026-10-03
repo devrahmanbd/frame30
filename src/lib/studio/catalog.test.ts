@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { WIDGET_BY_KEY, newWidgetNode } from "./catalog";
+import { WIDGET_BY_KEY, newWidgetNode, searchWidgets } from "./catalog";
 import { contentControls } from "./controls";
 import {
   DEFAULT_WIDGET_SKIN,
@@ -897,5 +897,48 @@ describe("studio twin parity", () => {
         DEFAULT_WIDGET_SKIN[key],
       );
     }
+  });
+});
+
+/**
+ * Phase 2B — `global_ref` studio twin. The pointer type stays out of
+ * SECTION_CATALOG (header/footer-only placement), so the contract above is
+ * untouched; this twin is additive. Palette decision: visible in Advanced
+ * (mirrors the `app-block` pointer-twin precedent), primary insert path
+ * stays the builder Globals tab/link flow.
+ */
+describe("global_ref studio twin", () => {
+  it("resolves in WIDGET_BY_KEY as an advanced pointer twin", () => {
+    const twin = WIDGET_BY_KEY["global_ref"];
+    expect(twin).toBeDefined();
+    expect(twin!.label).toBe("Global block");
+    expect(twin!.category).toBe("advanced");
+    expect(twin!.defaults).toEqual({ ref: "" });
+  });
+
+  it("mirrors the BASE content schema (style-layer keys excluded)", () => {
+    const styleKeys = new Set(STYLE_FIELDS.map((field) => field.key));
+    const base = catalogEntry("global_ref" as SectionType);
+    expect(base, "global_ref: no BASE entry").toBeDefined();
+    for (const prop of Object.keys(base!.defaults)) {
+      if (styleKeys.has(prop)) continue;
+      expect(
+        Object.hasOwn(WIDGET_BY_KEY["global_ref"]!.defaults, prop),
+        `twin default missing BASE prop ${prop}`,
+      ).toBe(true);
+    }
+  });
+
+  it("is searchable as a shared block and instantiates empty", () => {
+    expect(searchWidgets("global").map((widget) => widget.key)).toContain(
+      "global_ref",
+    );
+    expect(searchWidgets("shared").map((widget) => widget.key)).toContain(
+      "global_ref",
+    );
+    const node = newWidgetNode("global_ref");
+    expect(node.el).toBe("global_ref");
+    expect(node.settings).toEqual({ ref: "" });
+    expect(node.children).toBeUndefined();
   });
 });
