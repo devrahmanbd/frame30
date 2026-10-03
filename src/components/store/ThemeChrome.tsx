@@ -12,7 +12,6 @@ import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { CartProvider, useLiveCart } from "@/components/builder/CartContext";
 import { VitalsReporter } from "@/components/store/VitalsReporter";
 import { TrafficReporter } from "@/components/store/TrafficReporter";
-import { CurrencySwitcher } from "@/components/store/CurrencySwitcher";
 import {
   SiteKitSurface,
   type StorefrontSiteKit,
@@ -218,14 +217,6 @@ export function ThemeChrome({
             />
           ))}
       {chrome}
-      {/* SWITCHER lane: display-currency selector beside the header chrome.
-          ThemeChrome owns no account/cart cluster of its own — the cluster is
-          StoreHeader's RIGHT utility icons (read-only this lane) — so the
-          switcher mounts as a header-adjacent utility strip. Display-
-          conversion only; checkout still charges the merchant currency. */}
-      <div className="mx-auto flex max-w-7xl justify-end px-4 pt-2 sm:px-6 lg:px-8">
-        <CurrencySwitcher />
-      </div>
       {chromeAst &&
         chromeAst.header.some((section) => section.type !== "subbrand_bar") && (
           <div className="mx-auto max-w-7xl space-y-2 px-4 sm:px-6 lg:px-8 pt-4">
