@@ -642,10 +642,33 @@ export const WIDGET_HELP: Record<SectionType, BiText> = {
     en: "Floating WhatsApp chat button that opens a prefilled message to the store's support number.",
     bn: "হোয়াটসঅ্যাপ চ্যাট বাটন — স্টোর সাপোর্ট নম্বরে আগে থেকে লেখা বার্তা নিয়ে চ্যাট খোলে।",
   },
+  // Phase 2A: reference placement for a builder_global_blocks row (resolved
+  // by id/handle at render-data time). Help-corpus totality over SectionType
+  // requires this entry; the studio twin lands in the Globals-editor lane.
+  global_ref: {
+    en: "A shared global block placed by reference — editing the block updates every page that shows it.",
+    bn: "রেফারেন্সে বসানো শেয়ার্ড গ্লোবাল ব্লক — ব্লকটি বদলালে যেসব পেজে আছে সবখানে বদলায়।",
+  },
 };
 
 /** Exact prop-key hints. Keys are catalog `Field.key`s. */
 export const PROP_HINTS: Record<string, BiText> = {
+  promoImage: {
+    en: "Promo panel image in the menu dropdown. Blank hides the panel.",
+    bn: "মেনু ড্রপডাউনে প্রোমো ছবি। খালি রাখলে প্যানেল লুকানো থাকে।",
+  },
+  voiceEnabled: {
+    en: "Show the voice-input mic (Chrome/Edge only, elsewhere nothing renders).",
+    bn: "ভয়েস-ইনপুট মাইক দেখান (শুধু Chrome/Edge — অন্যত্র কিছু আসে না)।",
+  },
+  aspect: {
+    en: "Tile shape: square circles, or rounded rectangles at the chosen ratio.",
+    bn: "টাইলের আকৃতি — বর্গাকার বৃত্ত, বা অনুপাত অনুযায়ী গোলাকার আয়তক্ষেত্র।",
+  },
+  imageFirst: {
+    en: "Image-led tiles on, text-led initial tiles off.",
+    bn: "চালু থাকলে ছবি-প্রধান টাইল, বন্ধ থাকলে লেখা-প্রধান টাইল।",
+  },
   showCover: {
     en: "Show each post's cover image.",
     bn: "প্রতিটি পোস্টের কভার ইমেজ দেখান।",

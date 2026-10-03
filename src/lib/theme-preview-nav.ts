@@ -18,10 +18,12 @@ import type {
   Section,
   SectionBuilder,
   TemplateKey,
+  TemplateMatch,
   ThemeAst,
+  ThemeTemplates,
   ThemeTokens,
 } from "./builder-ast";
-import { TEMPLATE_KEYS } from "./builder-ast";
+import { TEMPLATE_KEYS, resolveTemplate } from "./builder-ast";
 import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
 import {
@@ -419,6 +421,25 @@ export function resolveThemePreview(
     variation,
     variations,
   };
+}
+
+/* --------------------------- Phase 2A — preview fallback resolution ---------
+ *
+ * A preview target resolves through the shared suffix → base → generic
+ * chain (builder-ast `resolveTemplate`), so the frame never lands on an
+ * empty page: a row suffix wins first, then the clicked slug's variant
+ * (`page_<slug>` keeps old theme-package per-page ASTs working), then the
+ * base template, then generic `page`, then `index`.
+ */
+export function resolvePreviewAst(
+  templates: ThemeTemplates,
+  target: PreviewTarget,
+  opts: { suffix?: unknown } = {},
+): { key: string; ast: ThemeAst; match: TemplateMatch } {
+  return resolveTemplate(templates, target.template, {
+    suffix: opts.suffix,
+    slug: target.slug,
+  });
 }
 
 /* --------------------------------------- demo focus (slug-aware preview) */

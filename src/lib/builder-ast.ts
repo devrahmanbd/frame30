@@ -108,6 +108,104 @@ export function primarySectionId(ast: ThemeAst | null): string | null {
 export const SLOTS = ["header", "main", "footer"] as const;
 export type Slot = (typeof SLOTS)[number];
 
+/* ----------------- Phase 2A — named zones (advisory allowlist, as data) -------
+ *
+ * Zones are places a section may be assigned beyond the three layout slots:
+ * overlay chrome (sidebar / drawer / popup) and page-level surfaces
+ * (not_found / password / coming_soon / thank_you). They are advisory for
+ * the editor drop path — `canDrop` (builder-tree.ts) enforces depth and node
+ * counts only and never consults slots or zones — and per-template extras
+ * live in TEMPLATE_ZONES below, not in per-template conditionals.
+ */
+export const NAMED_ZONES = [
+  "sidebar",
+  "drawer",
+  "popup",
+  "not_found",
+  "password",
+  "coming_soon",
+  "thank_you",
+] as const;
+export type NamedZone = (typeof NAMED_ZONES)[number];
+
+/** Any place a section may be assigned: layout slots plus named zones. */
+export type Zone = Slot | NamedZone;
+
+export function isNamedZone(value: unknown): value is NamedZone {
+  return (
+    typeof value === "string" &&
+    (NAMED_ZONES as readonly string[]).includes(value)
+  );
+}
+
+export function isZone(value: unknown): value is Zone {
+  return isSlot(value) || isNamedZone(value);
+}
+
+/**
+ * Per-template zone allowlist. Layout slots are allowed everywhere; overlay
+ * and page zones are allowlisted per base template. `not_found` and the
+ * `account` template are covered first: the 404 body renders on the generic
+ * canvases (index / page) and the account surface, `password` /
+ * `coming_soon` gate the generic canvases, and `thank_you` (post-purchase)
+ * belongs to checkout. Popups stay off checkout so they can never cover a
+ * payment step. Extend by editing this table — never by branching per
+ * template at the call site.
+ */
+const OVERLAY_ZONES: readonly Zone[] = ["sidebar", "drawer", "popup"];
+export const TEMPLATE_ZONES: Record<TemplateKey, readonly Zone[]> = {
+  index: [
+    "header",
+    "main",
+    "footer",
+    ...OVERLAY_ZONES,
+    "not_found",
+    "password",
+    "coming_soon",
+  ],
+  product: ["header", "main", "footer", ...OVERLAY_ZONES],
+  collection: ["header", "main", "footer", ...OVERLAY_ZONES],
+  account: [
+    "header",
+    "main",
+    "footer",
+    ...OVERLAY_ZONES,
+    "not_found",
+    "thank_you",
+  ],
+  page: [
+    "header",
+    "main",
+    "footer",
+    ...OVERLAY_ZONES,
+    "not_found",
+    "password",
+    "coming_soon",
+  ],
+  blog: ["header", "main", "footer", ...OVERLAY_ZONES],
+  cart: ["header", "main", "footer", "sidebar", "drawer", "popup"],
+  checkout: ["header", "main", "footer", "thank_you"],
+  search: [
+    "header",
+    "main",
+    "footer",
+    ...OVERLAY_ZONES,
+    "not_found",
+  ],
+};
+
+/** Zones a base template may host. Unknown templates host nothing. */
+export function zonesFor(template: unknown): readonly Zone[] {
+  if (typeof template !== "string") return [];
+  return (TEMPLATE_ZONES as Record<string, readonly Zone[]>)[template] ?? [];
+}
+
+/** Allowlist check for zone assignment. Unknown zones/templates are denied. */
+export function zoneAllowed(template: unknown, zone: unknown): boolean {
+  if (!isZone(zone)) return false;
+  return zonesFor(template).includes(zone);
+}
+
 export const BREAKPOINTS = ["desktop", "tablet", "mobile"] as const;
 export type Breakpoint = (typeof BREAKPOINTS)[number];
 
@@ -290,7 +388,10 @@ export type SectionType =
   | "story_trunk"
   | "rewards_club"
   | "wedding_shop"
-  | "gift_finder";
+  | "gift_finder"
+  // Phase 2A: reference to a builder_global_blocks row, resolved by
+  // id/handle at render-data time (never stored inline, never migrated).
+  | "global_ref";
 
 export type PropScalar = string | number | boolean;
 /** A repeatable row (Phase 3.2 `array` fields). Always JSON-safe. */
@@ -6310,7 +6411,122 @@ export function sectionStyle(props: Record<string, PropValue>): {
   return { className, style };
 }
 
-const CATALOG = new Map(SECTION_CATALOG.map((entry) => [entry.type, entry]));
+/**
+ * Phase 2A — global block reference (header/footer/global placement).
+ *
+ * A `global_ref` node stores only a pointer (`ref`: a builder_global_blocks
+ * id or name) and no children of its own. At render-data time
+ * `resolveGlobalRef` grafts detached copies of the block's nodes under it, so
+ * editing the block updates every placement while previously detached copies
+ * (plain nodes with no `ref`) keep rendering untouched — no migration of
+ * existing content. A pointer with no readable block resolves to a
+ * placeholder (`invalid: "global_ref.missing"`), never a crash.
+ *
+ * Runs through the same bitext/media/style pipeline as every palette widget
+ * so its props survive parse identically; it stays out of SECTION_CATALOG
+ * (see CATALOG below) until the Globals-editor lane adds the studio twin.
+ */
+const GLOBAL_REF_BASE: CatalogEntry = {
+  type: "global_ref",
+  label: "Global block",
+  group: "content",
+  slots: ["header", "footer"],
+  heading: false,
+  defaults: { ref: "" },
+  fields: [text("ref", "Global block id or name", 120)],
+};
+
+export const GLOBAL_REF_ENTRY: CatalogEntry = withStyleLayer(
+  withMedia(withBiText(GLOBAL_REF_BASE)),
+);
+
+/** True when the node is a global block reference placement. */
+export function isGlobalRef(section: Section): boolean {
+  return section.type === "global_ref";
+}
+
+/** `invalid` marker on a global_ref whose block cannot be read. */
+export const GLOBAL_REF_MISSING = "global_ref.missing";
+
+/**
+ * The stored pointer of a global_ref node: a builder_global_blocks id or
+ * name. Blank / non-string pointers are null (treated as missing, not as a
+ * wildcard — a ref never resolves to "any block").
+ */
+export function globalRefTarget(section: Section): string | null {
+  if (!isGlobalRef(section)) return null;
+  const raw = section.props["ref"];
+  if (typeof raw !== "string") return null;
+  const target = raw.trim().slice(0, 120);
+  return target ? target : null;
+}
+
+/** Minimal block shape the pure resolver needs (server rows map onto this). */
+export type GlobalRefBlock = {
+  id: string;
+  name: string;
+  nodes: Section[];
+};
+
+/**
+ * Resolve one global_ref node against readable blocks, matching by id first
+ * then by case-insensitive name. Pure: block nodes are grafted as detached
+ * copies with `${section.id}~${node.id}` ids (the resolveGlobalBlocks
+ * convention), so the input tree and the stored block are never mutated.
+ * A missing/blank pointer returns the node as a placeholder copy carrying
+ * `invalid: "global_ref.missing"` — the renderer shows a labelled box,
+ * never a crash and never an empty hole.
+ */
+export function resolveGlobalRef(
+  section: Section,
+  blocks: readonly GlobalRefBlock[],
+): { sections: Section[]; missing: boolean } {
+  const target = globalRefTarget(section);
+  const block = target
+    ? blocks.find(
+        (candidate) =>
+          candidate.id === target ||
+          candidate.name.toLowerCase() === target.toLowerCase(),
+      )
+    : undefined;
+  if (!block) {
+    return {
+      sections: [
+        {
+          ...section,
+          props: { ...section.props },
+          invalid: GLOBAL_REF_MISSING,
+        },
+      ],
+      missing: true,
+    };
+  }
+  // Mark the placeholder lineage on the grafted copies without touching the
+  // placement itself: copies are plain nodes the editor may detach freely.
+  const graft = (nodes: Section[], placementId: string): Section[] =>
+    nodes.map((node) => {
+      const copy: Section = {
+        ...node,
+        id: `${placementId}~${node.id}`,
+        props: { ...node.props },
+      };
+      if (node.children?.length)
+        copy.children = graft(node.children, placementId);
+      return copy;
+    });
+  return { sections: graft(block.nodes, section.id), missing: false };
+}
+
+const CATALOG = new Map<SectionType, CatalogEntry>([
+  ...SECTION_CATALOG.map(
+    (entry): [SectionType, CatalogEntry] => [entry.type, entry],
+  ),
+  // Phase 2A: the global_ref entry is registered for parsing/render-data
+  // resolution but stays out of SECTION_CATALOG (the widget palette), so the
+  // studio twin-parity contract is untouched. The studio twin + palette
+  // entry land in the Globals-editor lane.
+  [GLOBAL_REF_ENTRY.type, GLOBAL_REF_ENTRY],
+]);
 
 export function catalogEntry(type: SectionType) {
   return CATALOG.get(type);
@@ -7292,13 +7508,22 @@ export function upgradeAstV2ToV3(input: unknown): Record<string, unknown> {
   };
 }
 
-export function parseTemplates(input: unknown): ThemeTemplates {
+export function parseTemplates(input: unknown): TemplateMap {
   const raw = (input ?? {}) as Record<string, unknown>;
-  const out: ThemeTemplates = {};
+  const out: TemplateMap = {};
   // Only the known template keys are read; anything else in the payload is
   // dropped rather than carried into storage or the renderer.
   for (const key of TEMPLATE_KEYS) {
     if (raw[key] !== undefined) out[key] = parseAst(raw[key]);
+  }
+  // Phase 2A: per-row variant keys (`<base>_<suffix>`, incl. the old
+  // theme-package `page_<slug>` shape) ride the same record so suffixed
+  // templates survive the round-trip. Keys with an unknown base prefix or
+  // outside the variant shape are still dropped.
+  for (const [key, value] of Object.entries(raw)) {
+    if (isTemplateKey(key)) continue;
+    if (!isVariantTemplateKey(key)) continue;
+    if (out[key] === undefined) out[key] = parseAst(value);
   }
   if (!out.index) out.index = parseAst(raw["ast"] ?? EMPTY_AST);
   return out;
@@ -7309,6 +7534,142 @@ export function templateOf(
   key: TemplateKey,
 ): ThemeAst {
   return templates[key] ?? EMPTY_AST;
+}
+
+/* ---------------- Phase 2A — template suffix + fallback chain ----------------
+ *
+ * Where the suffix lives: pages and posts already carry a per-row `template`
+ * override column (storefront_pages / articles `template`); products and
+ * collections have no per-row override column yet. The pure layer therefore
+ * takes the suffix on the theme-assignment path — `resolveTemplate(…, {
+ * suffix })` — and `templateSuffixFromOverride` derives it from whatever
+ * override string a row carries (`"summer"` or `"product_summer"`; `"default"`
+ * and blanks mean "no override"). When a products/collections override column
+ * lands, it feeds the same parameter with no resolver change.
+ *
+ * Fallback order, most-specific → generic:
+ *   `<base>_<suffix>` → `<base>_<slug>` → `page_<slug>` → `<base>` →
+ *   `page` → `index` → empty.
+ * `page_<slug>` is the old theme-package per-page shape; it stays a
+ * first-class candidate so old packages render unchanged. Unknown suffixes
+ * simply miss every variant candidate and fall through — never a crash, never
+ * a blank page while a more generic template exists. A present-but-empty
+ * variant does NOT shadow its base (an empty AST means "not authored").
+ */
+
+/** Templates plus per-row variant keys (`product_<suffix>`, `page_<slug>`). */
+export type TemplateMap = ThemeTemplates & Partial<Record<string, ThemeAst>>;
+
+/** `<base>_<suffix>` with a known base (`product_summer`, `page_about_us`). */
+export function isVariantTemplateKey(value: unknown): boolean {
+  if (typeof value !== "string") return false;
+  const sep = value.indexOf("_");
+  if (sep < 1) return false;
+  const base = value.slice(0, sep);
+  const suffix = value.slice(sep + 1);
+  return (
+    isTemplateKey(base) &&
+    suffix.length >= 1 &&
+    suffix.length <= 64 &&
+    /^[a-z0-9_]+$/.test(suffix)
+  );
+}
+
+/**
+ * Clean a row-level suffix override for key building: lowercase, hyphens to
+ * underscores (`"Summer-Sale"` → `"summer_sale"`). Returns null for blank,
+ * over-long or otherwise unusable input — the caller then resolves as if no
+ * suffix was given.
+ */
+export function normalizeTemplateSuffix(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const clean = raw.trim().toLowerCase().replace(/-/g, "_");
+  if (!clean || clean.length > 64 || !/^[a-z0-9_]+$/.test(clean)) return null;
+  return clean;
+}
+
+/**
+ * Derive the fallback-chain suffix from a row's `template` override value.
+ * Accepts a bare suffix (`"summer"`) or a full variant key
+ * (`"product_summer"`); `"default"`, blank and malformed values mean "no
+ * override" (null) so the base template renders.
+ */
+export function templateSuffixFromOverride(
+  base: TemplateKey,
+  override: unknown,
+): string | null {
+  if (typeof override !== "string") return null;
+  const clean = override.trim().toLowerCase();
+  if (!clean || clean === "default") return null;
+  const prefix = `${base}_`;
+  const raw = clean.startsWith(prefix) ? clean.slice(prefix.length) : clean;
+  return normalizeTemplateSuffix(raw);
+}
+
+export type TemplateMatch =
+  | "suffix"
+  | "slug"
+  | "base"
+  | "page"
+  | "index"
+  | "empty";
+
+/** Ordered candidate keys for (base, suffix, slug), most-specific first. */
+export function resolveTemplateCandidates(
+  base: TemplateKey,
+  opts: { suffix?: unknown; slug?: unknown } = {},
+): string[] {
+  const out: string[] = [];
+  const push = (key: string): void => {
+    if (!out.includes(key)) out.push(key);
+  };
+  const suffix = normalizeTemplateSuffix(opts.suffix);
+  if (suffix) push(`${base}_${suffix}`);
+  const slug = normalizeTemplateSuffix(opts.slug);
+  if (slug) {
+    push(`${base}_${slug}`);
+    // Old theme-package shape: per-page ASTs keyed `page_<slug>`.
+    if (base !== "page") push(`page_${slug}`);
+  }
+  push(base);
+  if (base !== "page") push("page");
+  push("index");
+  return out;
+}
+
+function isAuthored(ast: ThemeAst | undefined): ast is ThemeAst {
+  return (
+    !!ast &&
+    (ast.header.length > 0 || ast.main.length > 0 || ast.footer.length > 0)
+  );
+}
+
+/**
+ * Resolve the AST for a row: suffix variant → slug variant → base → generic
+ * `page` → `index`. Never throws and never returns a blank page while a more
+ * generic template is authored; reports which level won via `match` (or
+ * `"empty"` with EMPTY_AST when nothing is authored at all).
+ */
+export function resolveTemplate(
+  templates: ThemeTemplates,
+  base: TemplateKey,
+  opts: { suffix?: unknown; slug?: unknown } = {},
+): { key: string; ast: ThemeAst; match: TemplateMatch } {
+  const bag = templates as Record<string, ThemeAst | undefined>;
+  const suffix = normalizeTemplateSuffix(opts.suffix);
+  for (const candidate of resolveTemplateCandidates(base, opts)) {
+    const ast = bag[candidate];
+    if (!isAuthored(ast)) continue;
+    let match: TemplateMatch;
+    if (candidate === base) match = "base";
+    else if (candidate === "page") match = "page";
+    else if (candidate === "index") match = "index";
+    else if (suffix !== null && candidate === `${base}_${suffix}`)
+      match = "suffix";
+    else match = "slug";
+    return { key: candidate, ast, match };
+  }
+  return { key: "index", ast: EMPTY_AST, match: "empty" };
 }
 
 /** Stable content hash used for autosave dedupe and version idempotency. */
