@@ -2069,6 +2069,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Grid",
       min: 2,
       max: 6,
+      responsive: true,
     }),
   ],
   story_trunk: [
@@ -4638,6 +4639,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Products",
       min: 1,
       max: 48,
+      responsive: true,
     }),
     c({
       key: "columns",
@@ -4668,6 +4670,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Rail",
       min: 1,
       max: 24,
+      responsive: true,
     }),
     c({
       key: "collection",
@@ -4801,6 +4804,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Collections",
       min: 1,
       max: 24,
+      responsive: true,
     }),
     c({
       key: "columns",
@@ -4810,6 +4814,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Collections",
       min: 2,
       max: 4,
+      responsive: true,
     }),
   ],
   account_cart: [
@@ -5055,6 +5060,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Archive",
       min: 1,
       max: 24,
+      responsive: true,
     }),
     c({
       key: "columns",
@@ -5064,6 +5070,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Archive",
       min: 1,
       max: 4,
+      responsive: true,
     }),
     c({
       key: "emptyText",
@@ -5164,6 +5171,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "History",
       min: 1,
       max: 12,
+      responsive: true,
     }),
   ],
   wishlist_button: [
@@ -5854,6 +5862,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Complete the look",
       min: 2,
       max: 6,
+      responsive: true,
     }),
     c({
       key: "collection",
@@ -5977,6 +5986,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Gallery",
       min: 2,
       max: 12,
+      responsive: true,
     }),
     c({
       key: "collection",
@@ -6290,6 +6300,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Quick view",
       min: 1,
       max: 24,
+      responsive: true,
     }),
   ],
   department_strip: [
@@ -6308,6 +6319,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Departments",
       min: 1,
       max: 24,
+      responsive: true,
     }),
   ],
   columns: [
@@ -6765,6 +6777,7 @@ const CONTENT: Record<string, Control[]> = {
       section: "Rail",
       min: 1,
       max: 24,
+      responsive: true,
     }),
     c({
       key: "showRating",

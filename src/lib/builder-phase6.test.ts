@@ -258,6 +258,85 @@ describe("per-device overrides persist through parse", () => {
     expect(sec.bp?.["mobile"]?.["limit"]).toBe(4);
     expect(sec.bp?.["mobile"]?.["heading"]).toBeUndefined();
   });
+
+  // Phase 1C — responsive field coverage: every newly-flagged layout field
+  // keeps its mobile override through parse, while a neighbouring content
+  // string in the same layer is still dropped.
+  it.each([
+    { type: "divider", key: "padY", base: 24, mobile: 8, drop: "label" },
+    { type: "product_grid", key: "limit", base: 12, mobile: 4, drop: "heading" },
+    {
+      type: "collection_grid",
+      key: "limit",
+      base: 8,
+      mobile: 4,
+      drop: "heading",
+    },
+    { type: "spacer", key: "size", base: 32, mobile: 16, drop: undefined },
+    { type: "quick_view", key: "limit", base: 6, mobile: 3, drop: "heading" },
+    {
+      type: "department_strip",
+      key: "limit",
+      base: 12,
+      mobile: 6,
+      drop: "heading",
+    },
+    {
+      type: "ugc_gallery",
+      key: "limit",
+      base: 6,
+      mobile: 3,
+      drop: "heading",
+    },
+    {
+      type: "complete_the_look",
+      key: "limit",
+      base: 4,
+      mobile: 2,
+      drop: "heading",
+    },
+    {
+      type: "department_grid",
+      key: "columns",
+      base: 4,
+      mobile: 2,
+      drop: undefined,
+    },
+    {
+      type: "blog_archive",
+      key: "limit",
+      base: 9,
+      mobile: 4,
+      drop: "heading",
+    },
+  ])(
+    "keeps the mobile $key override on $type",
+    async ({ type, key, base, mobile, drop }) => {
+      const { parseAst, resolveProps } = await import("./builder-ast");
+      const layer: Record<string, unknown> = { [key]: mobile };
+      if (drop) layer[drop] = "Tiny";
+      const ast = parseAst({
+        header: [],
+        main: [
+          {
+            id: "s1",
+            type,
+            props: { [key]: base },
+            bp: { mobile: layer },
+          },
+        ],
+        footer: [],
+      });
+      const sec = ast.main[0]!;
+      expect(sec.props[key]).toBe(base);
+      expect(sec.bp?.["mobile"]?.[key]).toBe(mobile);
+      if (drop) expect(sec.bp?.["mobile"]?.[drop]).toBeUndefined();
+      // The cascade resolves the override for the narrow device and keeps
+      // the base value where no layer applies.
+      expect(resolveProps(sec, "mobile")[key]).toBe(mobile);
+      expect(resolveProps(sec)[key]).toBe(base);
+    },
+  );
 });
 
 describe("theme-motion manifest", () => {

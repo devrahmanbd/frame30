@@ -1,0 +1,42 @@
+schema: spec-driven
+
+# Project context (constraints an agent cannot infer by reading the code)
+context: |
+  Verification order: typecheck, test, test:contracts, schema:check, gates:release.
+  Money in integer minor units only. Secrets in *.server.ts only.
+  Themes are data + lib-only builders: never import @/components/* from src/lib/themes/<theme>/.
+  No fabricated counts, ratings, prices, or copy. Every action button needs a working server path.
+  CI is CircleCI only; never create or edit anything under .github/.
+  Never stage ops/routing/*.
+  Live preview: http://localhost:3000/theme-preview/<key>. No push/deploy without explicit user word.
+
+# Project context (optional)
+# Add only constraints that should guide OpenSpec artifacts and workflows.
+# Include constraints an agent cannot infer by reading the code.
+# Keep general project documentation and discoverable codebase facts out.
+# Example:
+#   context: |
+#     Designs and tasks must cover Windows, macOS, and Linux
+#     Write all artifacts in Spanish
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always state what is out of scope
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing

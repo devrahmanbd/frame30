@@ -23,7 +23,16 @@ import { WIDGET_REGISTRY, WIDGET_TYPES } from "./widget-registry";
 import { skeletonSpec } from "./widget-skeletons";
 import { perfGate, type PerfGateReport } from "./widget-weight";
 import { responsiveGate, type ResponsiveGateReport } from "./responsive-lint";
-import type { SectionType, TemplateKey, ThemeAst } from "./builder-ast";
+import {
+  auditMotionPage,
+  type MotionPageMeasurement,
+} from "./motion-choreography";
+import type {
+  Section,
+  SectionType,
+  TemplateKey,
+  ThemeAst,
+} from "./builder-ast";
 
 /** WCAG floors. Body copy is AA text; a control's own edge is a UI component. */
 export const CONTRAST_FLOOR = { text: 4.5, ui: 3 } as const;
@@ -209,6 +218,437 @@ export function skeletonParityGate(
 }
 
 /**
+ * Phase 1A — trust gates: blocking a11y + reduced-motion publish gates.
+ *
+ * Two theme-side rules graduate from advisory to blocking here, decided from
+ * the AST alone so they run on the publish path with no browser:
+ *
+ *  - every interactive element is reachable and named (`interactiveGate`);
+ *  - status is never carried by colour alone (`statusGate`).
+ *
+ * And one browser-side rule gets wired in (`reducedMotionGate`): the
+ * reduced-motion verdicts from `motion-choreography.ts` (no running animation
+ * under reduced intent, counters at their final value) fail the publish when
+ * the caller supplies reduced-intent measurements — typically the CI motion
+ * sweep's output. Full-intent pages are never assessed here; that auditor
+ * owns that pass.
+ *
+ * All three report `GateFailure` with stable machine codes and land in the
+ * `failures` (blocking) list of `composePublishGate`, never in `warnings`.
+ */
+
+/** Every node in the tree, so container children count as first-class. */
+function flattenSections(ast: ThemeAst): Section[] {
+  const out: Section[] = [];
+  const walk = (nodes: Section[]): void => {
+    for (const node of nodes) {
+      out.push(node);
+      if (node.children?.length) walk(node.children);
+    }
+  };
+  walk([...ast.header, ...ast.main, ...ast.footer]);
+  return out;
+}
+
+const textOf = (value: unknown): string =>
+  typeof value === "string" ? value.trim() : "";
+
+/**
+ * Label/target pairs: when the target is authored, the label is the control's
+ * accessible name, so an empty label is an unnamed control. `split_feature`
+ * spells its links `ctaUrl`/`ctaUrl2`; everything else uses `*Href`.
+ */
+const LABEL_HREF_PAIRS: [label: string, href: string][] = [
+  ["ctaLabel", "ctaHref"],
+  ["ctaLabel", "ctaUrl"],
+  ["ctaLabel2", "ctaUrl2"],
+  ["label", "href"],
+  ["buttonLabel", "buttonHref"],
+  ["linkLabel", "linkHref"],
+  ["askLabel", "askHref"],
+  ["l1Label", "l1Href"],
+  ["l2Label", "l2Href"],
+  ["l3Label", "l3Href"],
+  ["b1Name", "b1Href"],
+  ["b2Name", "b2Href"],
+  ["b3Name", "b3Href"],
+  ["b4Name", "b4Href"],
+  ["b5Name", "b5Href"],
+  ["d1Label", "d1Href"],
+  ["d2Label", "d2Href"],
+  ["d3Label", "d3Href"],
+  ["d4Label", "d4Href"],
+  ["c1Title", "c1Href"],
+  ["c2Title", "c2Href"],
+  ["c3Title", "c3Href"],
+  ["c4Title", "c4Href"],
+  ["c5Title", "c5Href"],
+];
+
+/** Type-scoped pairs for link keys that do not end in `Href`. */
+const TYPE_LINK_PAIRS: Record<string, [label: string, href: string][]> = {
+  // The verification link is a `url` field named `source`; `product_rail`
+  // reuses the key for a non-URL select, so this pair must stay type-scoped.
+  authenticity_badge: [["label", "source"]],
+};
+
+/**
+ * Controls that always render (submit buttons, inputs, toggles): unnamed even
+ * with no target. `button` renders a real `<button>`; an empty label is an
+ * empty control, not an absent one.
+ */
+const REQUIRED_LABELS: Record<string, string[]> = {
+  newsletter: ["buttonLabel"],
+  form: ["nameLabel", "emailLabel", "messageLabel", "buttonLabel"],
+  search_command: ["placeholder", "buttonLabel"],
+  back_in_stock: ["buttonLabel"],
+  bundle_offer: ["buttonLabel"],
+  bundle_builder: ["buttonLabel"],
+  combo_card: ["buttonLabel"],
+  complete_the_look: ["buttonLabel"],
+  buy_box: ["label"],
+  add_to_cart: ["label"],
+  sticky_buy_bar: ["label"],
+  wishlist_button: ["addLabel", "savedLabel"],
+  quick_view: ["buttonLabel"],
+  account_cart: ["accountLabel", "cartLabel"],
+  quiz: ["resultLabel"],
+  button: ["label"],
+};
+
+/**
+ * Labels required only while their control is switched on. A coupon button
+ * with no label blocks publish when the coupon field is shown; when the
+ * field is hidden the label is dead copy, not an unnamed control.
+ */
+const CONDITIONAL_LABELS: {
+  type: string;
+  key: string;
+  unless: { key: string; is: unknown };
+}[] = [
+  { type: "form", key: "phoneLabel", unless: { key: "showPhone", is: false } },
+  { type: "cart_summary", key: "ctaLabel", unless: { key: "showCta", is: false } },
+  {
+    type: "cart_summary",
+    key: "couponApplyLabel",
+    unless: { key: "showCoupon", is: false },
+  },
+];
+
+/** Prop keys that count as naming text for the generic link fallback. */
+const NAMING_KEY =
+  /(label|name|title|text|heading|message|note|prefix|suffix|caption|alt|aria-label)$/i;
+const NAMING_EXACT = new Set(["m1", "m2", "m3", "text"]);
+
+/**
+ * Types excluded from unnamed-link checks. `logo` ships a `href: "/"`
+ * default with empty text/image/alt (placeholder state), and `image` links
+ * are already covered by the blocking alt-text lint — flagging either here
+ * would turn defaults into publish blockers. Logo naming belongs to the
+ * image-alt lint family, not this gate.
+ */
+const UNNAMED_FALLBACK_EXEMPT = new Set(["logo", "image"]);
+
+/**
+ * Widgets whose controls always render, for the unreachable check: a node of
+ * one of these types hidden on every breakpoint removes working controls from
+ * the tab order, not just copy.
+ */
+const ALWAYS_INTERACTIVE = new Set([
+  "form",
+  "newsletter",
+  "search_command",
+  "quiz",
+  "nav_menu",
+  "account_cart",
+  "variant_picker",
+  "filter_chips",
+  "facet_sidebar",
+  "pagination",
+  "size_selector",
+  "wishlist_button",
+  "back_in_stock",
+  "add_to_cart",
+  "buy_box",
+  "bundle_offer",
+  "bundle_builder",
+  "combo_card",
+  "complete_the_look",
+  "quick_view",
+  "button",
+  "tabs",
+  "accordion",
+  "faq",
+  "product_qna",
+  "consult_cta",
+  "gift_builder",
+  "sample_picker",
+  "emi_calculator",
+  "shade_finder",
+  "skin_quiz",
+]);
+
+const ALL_BREAKPOINTS = ["mobile", "tablet", "desktop"] as const;
+
+function hasLinkTarget(section: Section): boolean {
+  const props = section.props as Record<string, unknown>;
+  for (const key of Object.keys(props)) {
+    if (/href$/i.test(key) && textOf(props[key])) return true;
+  }
+  if (
+    section.type === "authenticity_badge" &&
+    textOf(props["source"])
+  )
+    return true;
+  return false;
+}
+
+/**
+ * C1, first half: every interactive element is reachable and named.
+ *
+ *  - `a11y.interactive.unnamed` — a rendered link/button/input whose
+ *    accessible name is empty: a target with no label, an always-rendered
+ *    control with no label, or a menu/slide row linking nowhere-nameable.
+ *  - `a11y.interactive.unreachable` — an interactive node hidden on every
+ *    breakpoint: its controls leave the tab order entirely.
+ *
+ * Base props only; per-breakpoint label overrides stay presentation-only and
+ * `invalid` nodes are already errors elsewhere, so both are out of scope.
+ */
+export function interactiveGate(ast: ThemeAst): GateFailure[] {
+  const failures: GateFailure[] = [];
+  for (const section of flattenSections(ast)) {
+    if (section.invalid) continue;
+    const props = section.props as Record<string, unknown>;
+    const at = `${section.type} (${section.id})`;
+
+    for (const [labelKey, hrefKey] of [
+      ...LABEL_HREF_PAIRS,
+      ...(TYPE_LINK_PAIRS[section.type] ?? []),
+    ]) {
+      // Placeholder-state types are exempt (see UNNAMED_FALLBACK_EXEMPT).
+      if (
+        UNNAMED_FALLBACK_EXEMPT.has(section.type) &&
+        labelKey === "label" &&
+        hrefKey === "href"
+      )
+        continue;
+      if (textOf(props[hrefKey]) && !textOf(props[labelKey])) {
+        failures.push({
+          code: "a11y.interactive.unnamed",
+          message: `a11y: ${at} links to "${textOf(props[hrefKey])}" with no ${labelKey} — a screen reader announces an unnamed link.`,
+        });
+      }
+    }
+
+    // Repeater rows that carry links: menu items and hero slides.
+    const rows = props["items"];
+    if (Array.isArray(rows)) {
+      for (const row of rows) {
+        if (typeof row !== "object" || row === null) continue;
+        const cell = (key: string) =>
+          textOf((row as Record<string, unknown>)[key]);
+        for (const [labelKey, hrefKey] of [
+          ["label", "href"],
+          ["ctaLabel", "ctaHref"],
+        ] as const) {
+          if (cell(hrefKey) && !cell(labelKey)) {
+            failures.push({
+              code: "a11y.interactive.unnamed",
+              message: `a11y: ${at} has a row linking to "${cell(hrefKey)}" with no ${labelKey} — a screen reader announces an unnamed link.`,
+            });
+          }
+        }
+      }
+    }
+
+    // Generic fallback for link keys outside the pair table: a target with
+    // no naming text anywhere on the node.
+    if (!UNNAMED_FALLBACK_EXEMPT.has(section.type)) {
+      const hrefKeys = Object.keys(props).filter(
+        (key) =>
+          /href$/i.test(key) &&
+          !LABEL_HREF_PAIRS.some(([, href]) => href === key) &&
+          textOf(props[key]),
+      );
+      if (hrefKeys.length > 0) {
+        const named = Object.entries(props).some(
+          ([key, value]) =>
+            (NAMING_KEY.test(key) || NAMING_EXACT.has(key)) &&
+            textOf(value),
+        );
+        if (!named) {
+          failures.push({
+            code: "a11y.interactive.unnamed",
+            message: `a11y: ${at} links to "${textOf(props[hrefKeys[0]])}" with no accessible name on the node.`,
+          });
+        }
+      }
+    }
+
+    for (const key of REQUIRED_LABELS[section.type] ?? []) {
+      if (!textOf(props[key])) {
+        failures.push({
+          code: "a11y.interactive.unnamed",
+          message: `a11y: ${at} renders a control with no ${key} — the control has no accessible name.`,
+        });
+      }
+    }
+    for (const rule of CONDITIONAL_LABELS) {
+      if (rule.type !== section.type) continue;
+      if (props[rule.unless.key] === rule.unless.is) continue;
+      if (!textOf(props[rule.key])) {
+        failures.push({
+          code: "a11y.interactive.unnamed",
+          message: `a11y: ${at} renders a control with no ${rule.key} — the control has no accessible name.`,
+        });
+      }
+    }
+
+    const hiddenEverywhere =
+      Array.isArray(section.hidden) &&
+      ALL_BREAKPOINTS.every((bp) =>
+        (section.hidden as string[]).includes(bp),
+      );
+    if (
+      hiddenEverywhere &&
+      (hasLinkTarget(section) || ALWAYS_INTERACTIVE.has(section.type))
+    ) {
+      failures.push({
+        code: "a11y.interactive.unreachable",
+        message: `a11y: ${at} is hidden on every breakpoint but carries interactive controls — nothing on it can be reached by keyboard.`,
+      });
+    }
+  }
+  return failures;
+}
+
+/**
+ * C1, second half: status is never carried by colour alone.
+ *
+ * Each rule pairs a status signal with the text that must accompany it: a
+ * toned banner with no message, progress stages with no stage names, a chart
+ * with no text alternative, a progress bar with no copy, a claim source with
+ * no claim, a verified badge with no label. In every case the sighted visitor
+ * gets the state from colour/position while assistive tech gets silence.
+ */
+export function statusGate(ast: ThemeAst): GateFailure[] {
+  const failures: GateFailure[] = [];
+  for (const section of flattenSections(ast)) {
+    if (section.invalid) continue;
+    const props = section.props as Record<string, unknown>;
+    const at = `${section.type} (${section.id})`;
+
+    if (section.type === "banner" && !textOf(props["text"])) {
+      failures.push({
+        code: "a11y.status.color_only",
+        message: `a11y: ${at} carries a ${textOf(props["tone"]) || "toned"} banner with no message — status is conveyed by colour alone.`,
+      });
+    }
+
+    if (
+      section.type === "checkout_steps" ||
+      section.type === "order_tracker"
+    ) {
+      const empty = ["heading", "step1", "step2", "step3", "step4"].filter(
+        (key) => !textOf(props[key]),
+      );
+      if (empty.length > 0) {
+        failures.push({
+          code: "a11y.status.color_only",
+          message: `a11y: ${at} has progress stages with no text (${empty.join(", ")}) — the current stage is shown by highlight alone.`,
+        });
+      }
+    }
+
+    if (
+      section.type === "free_shipping_bar" &&
+      !textOf(props["freeShippingLabel"]) &&
+      !textOf(props["freeShippingSuffix"]) &&
+      !textOf(props["freeShippingDone"])
+    ) {
+      failures.push({
+        code: "a11y.status.color_only",
+        message: `a11y: ${at} renders a shipping progress bar with no copy — progress is conveyed by fill alone.`,
+      });
+    }
+
+    if (section.type === "price_sparkline" && !textOf(props["summary"])) {
+      failures.push({
+        code: "a11y.status.color_only",
+        message: `a11y: ${at} renders a price chart with no text alternative — the trend is visible only to sighted visitors.`,
+      });
+    }
+
+    if (section.type === "sustain_badge") {
+      for (const n of [1, 2, 3]) {
+        if (
+          textOf(props[`c${n}Source`]) &&
+          !textOf(props[`c${n}Label`])
+        ) {
+          failures.push({
+            code: "a11y.status.color_only",
+            message: `a11y: ${at} cites a source for claim ${n} with no claim text — the badge signals trust by colour alone.`,
+          });
+        }
+      }
+    }
+
+    if (
+      section.type === "authenticity_badge" &&
+      props["verified"] !== false &&
+      !textOf(props["label"])
+    ) {
+      failures.push({
+        code: "a11y.status.color_only",
+        message: `a11y: ${at} shows a verified mark with no label — trust is conveyed by the icon alone.`,
+      });
+    }
+  }
+  return failures;
+}
+
+export type MotionGateReport = {
+  ok: boolean;
+  failures: GateFailure[];
+  /** Reduced-intent pages assessed. Full/SSR passes are never assessed here. */
+  pages: number;
+};
+
+/**
+ * B7: the reduced-motion verdicts from `motion-choreography.ts`, as publish
+ * failures. Under reduced intent nothing may hold a running animation
+ * (`motion.reduced.loop`, `motion.reduced.duration`, `motion.reduced.property`)
+ * and every counter must already read its final value
+ * (`motion.reduced.counter`); a node parked invisible by the downgrade
+ * (`motion.fold.pending`) fails for the same reason. Advisory motion findings
+ * (drift windows, stagger budgets) stay out — blocking a deploy on 60ms of
+ * easing is how gates get switched off.
+ */
+export function reducedMotionGate(
+  pages: MotionPageMeasurement[] = [],
+): GateFailure[] {
+  const failures: GateFailure[] = [];
+  for (const page of pages) {
+    if (page.intent !== "reduced") continue;
+    const { findings } = auditMotionPage(page);
+    for (const finding of findings) {
+      if (finding.severity !== "error") continue;
+      if (
+        finding.code === "motion.fold.pending" ||
+        finding.code.startsWith("motion.reduced.")
+      ) {
+        failures.push({
+          code: finding.code,
+          message: `reduced motion: ${finding.message} (${finding.where})`,
+        });
+      }
+    }
+  }
+  return failures;
+}
+
+/**
  * Browser-side gates. They cannot run inside a server function, so publish
  * cannot block on them — they block the release instead, and are declared here
  * so `bun run gates:release` and this module can never disagree.
@@ -276,12 +716,27 @@ export function composePublishGate(input: {
    * tree and responsiveness against another.
    */
   responsive?: { ast: ThemeAst } | false;
+  /**
+   * Phase 1A: the template's trust audit — every interactive element reachable
+   * and named, status never colour-only. Takes the same tree as `responsive`
+   * when the caller passes one explicitly; there is no implicit fallback, so
+   * token-only callers keep working unchanged.
+   */
+  a11y?: { ast: ThemeAst } | false;
+  /**
+   * Phase 1A: reduced-intent motion measurements (typically the CI motion
+   * sweep's output). Reduced-motion verdicts from `motion-choreography.ts`
+   * block the publish; full-intent pages in the same batch are ignored.
+   */
+  motion?: { pages: MotionPageMeasurement[] } | false;
 }): {
   ok: boolean;
   failures: GateFailure[];
   warnings: GateFailure[];
   perf: PerfGateReport | null;
   responsive: ResponsiveGateReport | null;
+  a11y: { ok: boolean; failures: GateFailure[] } | null;
+  motion: MotionGateReport | null;
 } {
   const perf = input.perf
     ? perfGate({ ast: input.perf.ast, template: input.perf.template ?? null })
@@ -291,6 +746,13 @@ export function composePublishGate(input: {
       ? null
       : (input.responsive?.ast ?? input.perf?.ast ?? null);
   const responsive = responsiveAst ? responsiveGate(responsiveAst) : null;
+  const a11yAst = input.a11y === false ? null : (input.a11y?.ast ?? null);
+  const a11yFailures = a11yAst
+    ? [...interactiveGate(a11yAst), ...statusGate(a11yAst)]
+    : null;
+  const motionPages =
+    input.motion === false || !input.motion ? null : input.motion.pages;
+  const motionFailures = motionPages ? reducedMotionGate(motionPages) : null;
   const failures: GateFailure[] = [
     ...(input.lint ?? []).map((message) => ({ code: "lint", message })),
     ...(input.translation ?? []).map((message) => ({
@@ -308,6 +770,8 @@ export function composePublishGate(input: {
       code: f.code,
       message: f.message,
     })),
+    ...(a11yFailures ?? []),
+    ...(motionFailures ?? []),
   ];
   const warnings: GateFailure[] = [
     ...(perf?.warnings ?? []).map((f) => ({
@@ -319,5 +783,21 @@ export function composePublishGate(input: {
       message: f.message,
     })),
   ];
-  return { ok: failures.length === 0, failures, warnings, perf, responsive };
+  return {
+    ok: failures.length === 0,
+    failures,
+    warnings,
+    perf,
+    responsive,
+    a11y: a11yFailures
+      ? { ok: a11yFailures.length === 0, failures: a11yFailures }
+      : null,
+    motion: motionFailures
+      ? {
+          ok: motionFailures.length === 0,
+          failures: motionFailures,
+          pages: motionPages?.filter((p) => p.intent === "reduced").length ?? 0,
+        }
+      : null,
+  };
 }

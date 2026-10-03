@@ -904,7 +904,13 @@ const BASE_CATALOG: CatalogEntry[] = [
     defaults: { label: "", padY: 24 },
     fields: [
       text("label", "Label (optional)", 60),
-      num("padY", "Vertical padding in px (0-96)"),
+      {
+        key: "padY",
+        label: "Vertical padding in px (0-96)",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
     ],
   },
   {
@@ -1044,7 +1050,13 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("heading", "Heading"),
-      num("limit", "Max products"),
+      {
+        key: "limit",
+        label: "Max products",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
       cols("columns", "Columns (2-4)"),
       text("promise", "Delivery promise", 60),
       bool("showRating", "Show rating"),
@@ -1068,7 +1080,13 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("heading", "Heading"),
-      num("limit", "Max collections"),
+      {
+        key: "limit",
+        label: "Max collections",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
       cols("columns", "Columns (2-4)"),
       bool("showCount", "Show product counts"),
       CARD_VARIANT,
@@ -1222,7 +1240,15 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["header", "main", "footer"],
     heading: false,
     defaults: { size: 32 },
-    fields: [num("size", "Height in px (8-160)")],
+    fields: [
+      {
+        key: "size",
+        label: "Height in px (8-160)",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
+    ],
   },
   {
     type: "html",
@@ -1644,7 +1670,13 @@ const BASE_CATALOG: CatalogEntry[] = [
     fields: [
       text("heading", "Heading"),
       text("buttonLabel", "Button label", 40),
-      num("limit", "Max products"),
+      {
+        key: "limit",
+        label: "Max products",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
     ],
   },
   {
@@ -1898,7 +1930,16 @@ const BASE_CATALOG: CatalogEntry[] = [
     slots: ["header", "main"],
     heading: false,
     defaults: { heading: "", limit: 12 },
-    fields: [text("heading", "Heading"), num("limit", "Max departments")],
+    fields: [
+      text("heading", "Heading"),
+      {
+        key: "limit",
+        label: "Max departments",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
+    ],
   },
   {
     type: "footer_sitemap",
@@ -2930,7 +2971,13 @@ const BASE_CATALOG: CatalogEntry[] = [
       text("heading", "Heading", 80),
       text("subhead", "Subhead", 80),
       area("images", "Images (comma separated URLs)", 2000),
-      num("limit", "Max tiles (2-12)"),
+      {
+        key: "limit",
+        label: "Max tiles (2-12)",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
       text("collection", "Collection handle", 120),
       text("note", "Caption", 160),
       text("handleLabel", "Social handle label", 40),
@@ -3197,7 +3244,13 @@ const BASE_CATALOG: CatalogEntry[] = [
     },
     fields: [
       text("heading", "Heading", 80),
-      num("limit", "Max items (2-6)"),
+      {
+        key: "limit",
+        label: "Max items (2-6)",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
       text("collection", "Collection handle", 120),
       text("buttonLabel", "Add-all label", 40),
     ],
@@ -4564,7 +4617,13 @@ const BASE_CATALOG: CatalogEntry[] = [
         ],
       },
       cols("columns", "Columns (1-4)"),
-      num("limit", "Articles shown (1-24)"),
+      {
+        key: "limit",
+        label: "Articles shown (1-24)",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
       bool("showCover", "Show cover image"),
       bool("showExcerpt", "Show excerpt"),
       bool("showMeta", "Show author and date"),
@@ -4845,7 +4904,13 @@ const BASE_CATALOG: CatalogEntry[] = [
           text("href", "Link URL", 200),
         ],
       },
-      num("columns", "Columns"),
+      {
+        key: "columns",
+        label: "Columns",
+        kind: "number",
+        panel: "layout",
+        responsive: true,
+      },
     ],
   },
   {
@@ -7285,6 +7350,71 @@ function blankHeading(section: Section): boolean {
   return false;
 }
 
+/* --------------------------- security lint (XSS surfaces, Phase 1B) */
+
+/**
+ * Editor-time XSS findings for the two merchant-authored surfaces the
+ * parse-time sanitiser lets through structurally. `coerceProp` (the `html`
+ * branch) strips `<script>` and `on*=` handlers at parse, and `scopedCss`
+ * (`src/lib/builder-advanced.ts`) strips CSS escape vectors at render — but
+ * both strip silently. These checks reuse the same patterns so the strip
+ * becomes a publish-blocking finding with an actionable message instead of
+ * vanishing content. The vectors that survive parsing entirely
+ * (`javascript:` URLs in markup, insecure frame sources, CSS
+ * `expression()` / `@import`) are the ones this lint genuinely catches on
+ * the parsed AST; script/handler findings are defense-in-depth for ASTs
+ * that bypassed the parser (registry seeds, constructed previews).
+ */
+function advCssSecurityIssues(value: unknown): string[] {
+  if (typeof value !== "string" || !value.trim()) return [];
+  const out: string[] = [];
+  if (/<\s*script\b/i.test(value))
+    out.push("Custom CSS must not contain <script> tags.");
+  if (/\son[a-z]+\s*=/i.test(value))
+    out.push(
+      "Custom CSS must not contain inline event handlers (such as onclick=).",
+    );
+  if (/javascript\s*:/i.test(value))
+    out.push(
+      "Custom CSS must not contain javascript: URLs — they are dropped at render.",
+    );
+  if (/expression\s*\(/i.test(value))
+    out.push("Custom CSS must not use expression() — it is dropped at render.");
+  if (/@import\b/i.test(value))
+    out.push(
+      "Custom CSS must not use @import — it is dropped at render; use the head snippet for fonts.",
+    );
+  if (/-moz-binding\s*:/i.test(value))
+    out.push("Custom CSS must not use -moz-binding.");
+  if (/\bbehavior\s*:/i.test(value))
+    out.push("Custom CSS must not use behavior:.");
+  return out;
+}
+
+function htmlMarkupSecurityIssues(value: unknown): string[] {
+  if (typeof value !== "string" || !value.trim()) return [];
+  const out: string[] = [];
+  if (/<\s*script\b/i.test(value))
+    out.push(
+      "Custom HTML must not contain <script> tags — merchant scripts never execute in the sandbox frame.",
+    );
+  if (/\son[a-z]+\s*=/i.test(value))
+    out.push(
+      "Custom HTML must not contain inline event handlers (such as onclick= or onerror=).",
+    );
+  if (
+    /=\s*["']?\s*(javascript|vbscript)\s*:|=\s*["']?\s*data\s*:\s*text\/html/i.test(
+      value,
+    )
+  )
+    out.push(
+      "Custom HTML must not contain javascript:, vbscript:, or data:text/html URLs.",
+    );
+  if (/<\s*iframe[^>]*src\s*=\s*["']?\s*(?!https:)/i.test(value))
+    out.push("Custom HTML embeds must load over https://.");
+  return out;
+}
+
 export function lintTemplate(
   ast: ThemeAst,
   template?: TemplateKey,
@@ -7548,6 +7678,20 @@ export function lintTemplate(
         sectionId: section.id,
         message: "Countdown has no valid end time.",
       });
+    }
+    // Phase 1B: XSS lint for the sandboxed surfaces. The parse-time
+    // sanitiser strips scripts and handlers silently and the renderer
+    // strips CSS escape vectors silently — these findings make the strip
+    // visible and publish-blocking. `advCss` rides on every widget type,
+    // so it is checked regardless of section type; `markup` only exists
+    // on the `html` widget.
+    if (section.type === "html") {
+      for (const message of htmlMarkupSecurityIssues(section.props["markup"])) {
+        issues.push({ level: "error", sectionId: section.id, message });
+      }
+    }
+    for (const message of advCssSecurityIssues(section.props["advCss"])) {
+      issues.push({ level: "error", sectionId: section.id, message });
     }
     // Phase 1.1: translation coverage. বাংলা-only copy is blocking (an English
     // page would render বাংলা); missing বাংলা is a warning (it falls back).

@@ -365,3 +365,147 @@ describe("Phase 5 — publish and release wiring", () => {
     expect(entry?.npm).toBe("responsive:sweep");
   });
 });
+
+describe("Phase 1A — reduced-motion verdicts block publish", () => {
+  const page = (
+    over: Partial<
+      import("./motion-choreography").MotionPageMeasurement
+    > = {},
+  ): import("./motion-choreography").MotionPageMeasurement => ({
+    route: "home",
+    viewportPx: 1440,
+    viewportHeightPx: 900,
+    locale: "en",
+    intent: "reduced",
+    hydrated: true,
+    reveals: [],
+    drifts: [],
+    magnetics: [],
+    counters: [],
+    lcp: null,
+    ...over,
+  });
+
+  it("fails when a counter has not settled under reduced intent", () => {
+    const gate = composePublishGate({
+      tokens: DEFAULT_TOKENS,
+      motion: {
+        pages: [
+          page({
+            counters: [{ label: "orders", rendered: "12,004", settled: "128,400" }],
+          }),
+        ],
+      },
+    });
+    expect(gate.ok).toBe(false);
+    expect(gate.failures.map((f) => f.code)).toEqual([
+      "motion.reduced.counter",
+    ]);
+    expect(gate.motion?.ok).toBe(false);
+    expect(gate.motion?.pages).toBe(1);
+  });
+
+  it("fails when animation keeps running under reduced intent", () => {
+    const gate = composePublishGate({
+      tokens: DEFAULT_TOKENS,
+      motion: {
+        pages: [
+          page({
+            drifts: [
+              {
+                label: "hero aurora",
+                durationMs: 31_000,
+                iterationCount: "infinite",
+                properties: ["transform"],
+                aboveFold: true,
+              },
+            ],
+            reveals: [
+              {
+                label: "card",
+                state: "settled",
+                durationMs: 480,
+                delayMs: 0,
+                properties: ["opacity", "transform"],
+                translatePx: 0,
+                topPx: 2_000,
+              },
+            ],
+          }),
+        ],
+      },
+    });
+    expect(gate.ok).toBe(false);
+    const codes = new Set(gate.failures.map((f) => f.code));
+    expect(codes).toContain("motion.reduced.loop");
+    expect(codes).toContain("motion.reduced.duration");
+    // Blocking, never advisory.
+    expect(
+      gate.warnings.some((w) => w.code.startsWith("motion.")),
+    ).toBe(false);
+  });
+
+  it("passes a clean reduced pass and ignores full-intent pages", () => {
+    const clean = composePublishGate({
+      tokens: DEFAULT_TOKENS,
+      motion: {
+        pages: [
+          page({
+            reveals: [
+              {
+                label: "card",
+                state: "settled",
+                durationMs: 180,
+                delayMs: 0,
+                properties: ["opacity"],
+                translatePx: 0,
+                topPx: 2_000,
+              },
+            ],
+            counters: [
+              { label: "orders", rendered: "128,400", settled: "128,400" },
+            ],
+          }),
+        ],
+      },
+    });
+    expect(clean.ok).toBe(true);
+    expect(clean.motion?.ok).toBe(true);
+
+    // The same running content on a full-intent pass is not a reduced-motion
+    // verdict — the reduced auditor owns that pass, not this gate.
+    const full = composePublishGate({
+      tokens: DEFAULT_TOKENS,
+      motion: {
+        pages: [
+          page({
+            intent: "full",
+            drifts: [
+              {
+                label: "hero aurora",
+                durationMs: 31_000,
+                iterationCount: "infinite",
+                properties: ["transform"],
+                aboveFold: true,
+              },
+            ],
+          }),
+        ],
+      },
+    });
+    expect(full.ok).toBe(true);
+    expect(full.motion?.pages).toBe(0);
+  });
+
+  it("leaves motion out of the verdict when unprovided or skipped", () => {
+    const gate = composePublishGate({ tokens: DEFAULT_TOKENS });
+    expect(gate.ok).toBe(true);
+    expect(gate.motion).toBeNull();
+    const skipped = composePublishGate({
+      tokens: DEFAULT_TOKENS,
+      motion: false,
+    });
+    expect(skipped.ok).toBe(true);
+    expect(skipped.motion).toBeNull();
+  });
+});

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   AST_LIMITS,
   assertPayloadWithinLimits,
+  lintTemplate,
   parseAst,
   parseTemplates,
   safeEmbedUrl,
@@ -137,5 +138,130 @@ describe("theme sandbox — structural limits", () => {
       main: [{ id: "s1", type: "evil_widget", props: {} }],
     });
     expect(unknown.main[0]?.invalid).toContain("unknown_widget");
+  });
+});
+
+describe("theme lint — advCss and html widget XSS (Phase 1B)", () => {
+  // End-to-end: content goes through the parse-time sanitiser first, then
+  // the lint — so these prove the vectors that SURVIVE parsing are caught.
+  // (Scripts/handlers are stripped at parse; that stripping is pinned by
+  // the "keeps markup but removes scripts and handlers" case in
+  // phase4-custom-code.test.ts.)
+  const lintErrors = (ast: ReturnType<typeof parseAst>) =>
+    lintTemplate(ast).filter(
+      (i) => i.level === "error" && /Custom (HTML|CSS)/.test(i.message),
+    );
+
+  it("flags a javascript: href in html markup after parsing", () => {
+    const ast = parseAst({
+      main: [
+        {
+          id: "s1",
+          type: "html",
+          props: { markup: '<a href="javascript:alert(1)">x</a>' },
+        },
+      ],
+    });
+    // The sanitiser keeps markup structurally: the URL survives parsing.
+    expect(String(ast.main[0]?.props["markup"])).toContain("javascript:");
+    const errors = lintErrors(ast);
+    expect(errors.some((i) => /javascript/.test(i.message))).toBe(true);
+  });
+
+  it("flags an insecure iframe source in html markup after parsing", () => {
+    const ast = parseAst({
+      main: [
+        {
+          id: "s1",
+          type: "html",
+          props: { markup: '<iframe src="http://evil.test/x"></iframe>' },
+        },
+      ],
+    });
+    const errors = lintErrors(ast);
+    expect(errors.some((i) => /https/.test(i.message))).toBe(true);
+  });
+
+  it("flags CSS expression() in advCss after parsing", () => {
+    const ast = parseAst({
+      main: [
+        {
+          id: "s1",
+          type: "hero",
+          props: { advCss: "selector{width:expression(alert(1))}" },
+        },
+      ],
+    });
+    const errors = lintErrors(ast);
+    expect(errors.some((i) => /expression/.test(i.message))).toBe(true);
+  });
+
+  it("flags @import and javascript: url() in advCss after parsing", () => {
+    const ast = parseAst({
+      main: [
+        {
+          id: "s1",
+          type: "hero",
+          props: {
+            advCss: '@import url("https://evil.test/x.css");selector{}',
+          },
+        },
+        {
+          id: "s2",
+          type: "hero",
+          props: { advCss: "selector{background:url(javascript:alert(1))}" },
+        },
+      ],
+    });
+    const errors = lintErrors(ast);
+    expect(errors.some((i) => /@import/.test(i.message))).toBe(true);
+    expect(errors.some((i) => /javascript/.test(i.message))).toBe(true);
+  });
+
+  it("flags scripts and handlers on ASTs that bypassed the parser", () => {
+    // Defense-in-depth: parse strips these, so a raw AST literal stands in
+    // for registry seeds and constructed previews that never saw the parser.
+    const raw = {
+      header: [],
+      main: [
+        {
+          id: "s1",
+          type: "html",
+          props: { markup: '<div onclick="steal()">ok</div>' },
+        },
+        {
+          id: "s2",
+          type: "html",
+          props: { markup: "<script>bad()</script>" },
+        },
+      ],
+      footer: [],
+    } as never;
+    const errors = lintTemplate(raw).filter(
+      (i) => i.level === "error" && /Custom HTML/.test(i.message),
+    );
+    expect(errors.some((i) => /event handler/.test(i.message))).toBe(true);
+    expect(errors.some((i) => /<script>/.test(i.message))).toBe(true);
+  });
+
+  it("stays clean on benign markup and benign advCss", () => {
+    const ast = parseAst({
+      main: [
+        {
+          id: "s1",
+          type: "html",
+          props: {
+            markup:
+              '<p>Visit <a href="https://example.test/x">our store</a></p>',
+          },
+        },
+        {
+          id: "s2",
+          type: "hero",
+          props: { advCss: "selector{color:red;margin-top:8px}" },
+        },
+      ],
+    });
+    expect(lintErrors(ast)).toEqual([]);
   });
 });
