@@ -21,7 +21,14 @@ import { CustomFontsPanel } from "./CustomFontsPanel";
 
 type Props = {
   tokens: ThemeTokens;
-  /** Registry key of the installed theme — drives the variation picker. */
+  /**
+   * Registry key of the installed theme — drives the variation picker ONLY.
+   * Studio editor chrome, never a storefront renderer (DoD 5 exempts this
+   * file explicitly): the key is an opaque catalog lookup
+   * (`VARIATIONS_BY_THEME_KEY[themeKey] ?? []`, never compared or
+   * switched on), unknown keys hide the picker, and no widget resolution
+   * happens here.
+   */
   themeKey?: string | null;
   onChange: (patch: Partial<ThemeTokens>) => void;
 };

@@ -26,6 +26,7 @@ import { useReveal } from "./reveal";
 import { useMotionFx } from "./motion-fx";
 import { widgetReader } from "./widgets";
 import { resolveWidgetComponent } from "./theme-widgets";
+import { resolveThemePresentation } from "@/lib/theme-presentations";
 import { useNodeData } from "./WidgetDataContext";
 import { WidgetBoundary } from "./WidgetBoundary";
 import { WidgetIsland } from "./WidgetIsland";
@@ -265,7 +266,14 @@ export function SectionRenderer({
     );
 
   const entry = catalogEntry(section.type);
-  const Widget = resolveWidgetComponent(themeKey, section.type);
+  // Per-widget theme presentations (REGISTRY CORE): a registered
+  // themeKey × widgetType presentation wins; unregistered pairs fall back
+  // to the existing theme-keyed resolution — byte-identical behavior.
+  const Widget = resolveThemePresentation(
+    themeKey,
+    section.type,
+    resolveWidgetComponent(themeKey, section.type),
+  );
   if (!entry || !Widget) {
     return editing ? (
       <div className="rounded-fq-md border border-dashed border-border p-4 text-sm text-muted-foreground">

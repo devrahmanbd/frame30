@@ -3,26 +3,29 @@
  * interim slug-sniffing `theme-header.ts`, now deleted).
  *
  * The shared `StoreHeader` carries zero per-theme literals: it never names
- * a brand. Theme-owned fallback chrome (menu tree, বাংলা twins, logo,
- * announcement copy) lives in `lib/themes/<theme>/header-fallback`, and
- * this module is the single key-driven lookup that hands it to the shared
- * header. The isolation guard deliberately does not scan this file — same
- * rationale as the widget registry: key-driven wiring is config, not
- * theme code.
+ * a brand. Fallback chrome (menu tree, বাংলা twins, logo, announcement
+ * copy) lives in the neutral `lib/header-copy` module — the
+ * `footer-copy.ts` precedent — and this module is the single key-driven
+ * lookup that hands it to the shared header. This file imports no theme
+ * module and names no theme: the key binding arrives as data
+ * (`DEFAULT_HEADER_CHROME_KEY`), so the record below is config, not theme
+ * code. Per-theme header *presentations* (canonical dropdown / drawer
+ * modes) are theme-owned `header-presentation` modules claiming their
+ * `mega_menu` pair through `registerThemePresentation`.
  *
- * Resolution is by explicit merchant theme key (listing slug, e.g.
- * "songoskriti") — never by store slug or display name. A renamed slug,
- * a lookalike name, or a foreign theme installed on a theme-named slug
- * all resolve to null (generic header), which is exactly the
- * theme-independence contract.
+ * Resolution is by explicit merchant theme key — never by store slug or
+ * display name. A renamed slug, a lookalike name, or a foreign theme
+ * installed on a theme-named slug all resolve to null (generic header),
+ * which is exactly the theme-independence contract.
  */
 import type { MenuNode } from "@/lib/menus/menu";
 import {
-  SONGOSKRITI_HEADER_ANNOUNCEMENT,
-  SONGOSKRITI_HEADER_LOGO,
-  SONGOSKRITI_MEGA_MENU,
-  songoskritiMenuLabel,
-} from "@/lib/themes/songoskriti/header-fallback";
+  DEFAULT_HEADER_CHROME_KEY,
+  HEADER_ANNOUNCEMENT,
+  HEADER_FALLBACK_MENU,
+  HEADER_LOGO,
+  headerMenuLabel,
+} from "@/lib/header-copy";
 
 export type ThemeHeaderChrome = {
   /** Fallback menu tree for theme-shaped stores with no dashboard menu. */
@@ -36,14 +39,14 @@ export type ThemeHeaderChrome = {
 };
 
 const CHROME: Record<string, () => ThemeHeaderChrome> = {
-  songoskriti: () => ({
+  [DEFAULT_HEADER_CHROME_KEY]: () => ({
     // The fallback tree is authoring-shaped, not MenuNode-shaped (no
     // dashboard metadata); render sites already treat fallback nodes
     // opaquely, so the opaque cast is contained here.
-    fallbackMenu: SONGOSKRITI_MEGA_MENU as unknown as MenuNode[],
-    labelFor: (label, t) => songoskritiMenuLabel(label, t),
-    logo: { ...SONGOSKRITI_HEADER_LOGO },
-    announcement: { ...SONGOSKRITI_HEADER_ANNOUNCEMENT },
+    fallbackMenu: HEADER_FALLBACK_MENU as unknown as MenuNode[],
+    labelFor: (label, t) => headerMenuLabel(label, t),
+    logo: { ...HEADER_LOGO },
+    announcement: { ...HEADER_ANNOUNCEMENT },
   }),
 };
 

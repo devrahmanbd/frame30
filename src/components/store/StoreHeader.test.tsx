@@ -60,6 +60,17 @@ import {
 } from "./StoreHeader";
 import type { StoreMenuSwap } from "./StoreHeader";
 import { themeChromeFor } from "./theme-chrome";
+import { resolveThemePresentation } from "@/lib/theme-presentations";
+import { SongoskritiHeaderPresentation } from "@/lib/themes/songoskriti/header-presentation";
+import { SomvabonaHeaderPresentation } from "@/lib/themes/somvabona/header-presentation";
+import { resolveWidgetComponent } from "@/components/builder/theme-widgets";
+import { SectionRenderer } from "@/components/builder/SectionRenderer";
+import { newSection, type Section } from "@/lib/builder-ast";
+import {
+  widgetReader,
+  type WidgetCtx,
+} from "@/components/builder/widgets";
+import type { WidgetRow } from "@/lib/widget-data";
 import { songoskritiMenuLabel } from "@/lib/themes/songoskriti/header-fallback";
 import type {
   CanonicalMenuItem,
@@ -857,5 +868,141 @@ describe("T4.1 canonical presentation modes", () => {
     expect(renderToStaticMarkup(<CanonicalMobileDrawer items={[]} />)).toBe(
       "",
     );
+  });
+});
+
+describe("header presentations — theme-owned canonical modes (HEADER DE-THEMING)", () => {
+  const proofRows: WidgetRow[] = [
+    {
+      id: "r-women",
+      title: "Women",
+      href: "/c/women",
+      imageUrl: "/ph/promo-women.jpg",
+    },
+    { id: "r-men", title: "Men", href: "/c/men" },
+  ];
+
+  function proofSection(): Section {
+    const base = newSection("mega_menu");
+    return {
+      ...base,
+      id: "header-proof-mega-menu",
+      props: { ...base.props, label: "Shop", limit: 8 },
+    };
+  }
+
+  function proofCtx(section: Section, locale: "en" | "bn" = "en"): WidgetCtx {
+    return {
+      section,
+      ...widgetReader(section, undefined, locale),
+      Heading: "h2",
+      primary: false,
+      editing: false,
+      locale,
+      storeSlug: "test",
+      data: { rows: proofRows, pending: false },
+      renderChildren: () => null,
+      link: (href: string) => href,
+    };
+  }
+
+  function renderPresentation(
+    themeKey: string,
+    locale: "en" | "bn" = "en",
+  ): string {
+    const section = proofSection();
+    const fallback = resolveWidgetComponent(themeKey, section.type)!;
+    const Presentation = resolveThemePresentation(
+      themeKey,
+      section.type,
+      fallback,
+    )!;
+    return renderToStaticMarkup(Presentation(proofCtx(section, locale)));
+  }
+
+  it("both themes claim mega_menu with distinct components", () => {
+    expect(resolveThemePresentation("songoskriti", "mega_menu")).toBe(
+      SongoskritiHeaderPresentation,
+    );
+    expect(resolveThemePresentation("somvabona", "mega_menu")).toBe(
+      SomvabonaHeaderPresentation,
+    );
+    expect(SongoskritiHeaderPresentation).not.toBe(
+      SomvabonaHeaderPresentation,
+    );
+  });
+
+  it("same section data renders distinct header markup with identical content", () => {
+    const songo = renderPresentation("songoskriti");
+    const somva = renderPresentation("somvabona");
+    // Same canonical content in both.
+    for (const html of [songo, somva]) {
+      expect(html).toContain("Women");
+      expect(html).toContain("Men");
+      expect(html).toContain('href="/c/women"');
+      expect(html).toContain('href="/c/men"');
+      expect(html).toContain('aria-label="Shop"');
+    }
+    // Distinct presentations: per-theme markers and chrome differ.
+    expect(songo).toContain('data-header-presentation="songoskriti"');
+    expect(somva).toContain('data-header-presentation="somvabona"');
+    expect(songo).not.toContain('data-header-presentation="somvabona"');
+    expect(somva).not.toContain('data-header-presentation="songoskriti"');
+    expect(songo).not.toBe(somva);
+  });
+
+  it("canonical modes render through both presentations (dropdown + drawer)", () => {
+    for (const themeKey of ["songoskriti", "somvabona"]) {
+      const html = renderPresentation(themeKey);
+      // Desktop dropdown over the canonical items…
+      expect(html).toContain('href="/c/women"');
+      expect(html).toContain('href="/c/men"');
+      // …and the mobile drawer carries the same items under the same
+      // section label, collapsed by default. (Nested promo tiles live one
+      // level down the canonical modes and are pinned by the T4.1 suite;
+      // flat live rows carry no children, so neither mode opens a panel
+      // here.)
+      expect(html.match(/aria-label="Shop"/g)?.length).toBe(2);
+      // Drawer-specific link geometry proves the drawer mode rendered
+      // (flat rows have no children, so no accordion buttons exist here —
+      // the expanded/collapsed accordion is pinned by the T4.1 suite).
+      expect(html).toContain("block flex-1 py-5");
+    }
+  });
+
+  it("engine composes presentations over resolveWidgetComponent; unknown themes passthrough byte-identical", () => {
+    const section = proofSection();
+    const songo = renderToStaticMarkup(
+      <SectionRenderer section={section} themeKey="songoskriti" locale="en" />,
+    );
+    const somva = renderToStaticMarkup(
+      <SectionRenderer section={section} themeKey="somvabona" locale="en" />,
+    );
+    expect(songo).toContain('data-header-presentation="songoskriti"');
+    expect(somva).toContain('data-header-presentation="somvabona"');
+    expect(songo).not.toBe(somva);
+    // Unregistered pairs passthrough byte-identical: the unknown theme
+    // resolves to the existing resolution, never another theme's brand.
+    const existing = resolveWidgetComponent("mystery-theme", section.type);
+    expect(
+      resolveThemePresentation("mystery-theme", section.type, existing),
+    ).toBe(existing);
+    const mystery = renderToStaticMarkup(
+      <SectionRenderer section={section} themeKey="mystery-theme" locale="en" />,
+    );
+    expect(mystery).not.toContain("data-header-presentation");
+  });
+
+  it("unknown theme keys keep the generic header (null chrome, text wordmark)", () => {
+    expect(themeChromeFor("mystery-theme")).toBeNull();
+    const html = renderHeader({
+      slug: "demo",
+      name: "Demo",
+      themeKey: "mystery-theme",
+    });
+    expect(html).toContain("Demo");
+    expect(html).not.toContain("logo-lockup");
+    expect(html).not.toContain("EASY 7-DAY EXCHANGE");
+    expect(html).not.toContain("/c/women");
   });
 });

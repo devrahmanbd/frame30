@@ -161,48 +161,99 @@ requires.
 The sections below replace the overlapping planning docs listed in the banner.
 All values match HEAD; stale planning brand locks are void.
 
-### Tokens — the only styling channel
+### Mental model — Widget is capability, Theme is presentation
 
-Shape: `ThemeTokens` in `src/lib/builder-ast.ts:6274` (19 required keys, plus
+- **Widget = capability.** The closed `SectionType` registry is shared by
+  every theme: `WidgetMeta` carries no theme field, so a widget authored
+  for one vertical drops into any theme. Pinned by the DoD 5 suite in
+  `src/lib/definition-of-done.test.ts:102`.
+- **Theme = presentation, claimed through the registry.** A theme never
+  forks the renderer. It claims `themeKey × widgetType` pairs with
+  `registerThemePresentation` (`src/lib/theme-presentations.ts:35`); the
+  engine (`SectionRenderer`) resolves the registered presentation first
+  and falls back to the existing `resolveWidgetComponent` result when
+  nothing is registered (`src/components/builder/SectionRenderer.tsx:272`,
+  over `src/components/builder/theme-widgets.ts:45`). Unregistered pairs
+  render byte-identical to before — zero behavior change.
+- **Tokens + skins are one layer.** Together they are the single base
+  presentation layer every registry presentation renders on: tokens feed
+  CSS variables, `skin` picks a style key inside a closed vocabulary.
+  Per-widget markup differences belong to the registry, not to new
+  tokens or new skins.
+
+### Presentation registry — the theme system
+
+`src/lib/theme-presentations.ts` is an opaque two-level Map
+(`themeKey → widgetType → Component`) that names no theme and branches
+on no theme (pinned by `src/lib/theme-presentations.test.tsx:194`):
+
+- **Claim** (`:35`): theme modules call `registerThemePresentation`
+  (typically from their own module init). First registration wins —
+  duplicates warn and are ignored (`:57`). Registration never throws;
+  invalid input warns and returns.
+- **Resolve** (`:72`): `resolveThemePresentation(themeKey, widgetType,
+fallback)` returns the registered presentation or the
+  caller-supplied fallback. Unknown, null, and missing keys fall back
+  instead of leaking another theme's brand (`:78`); resolution never
+  throws. Test-only reset at `:86` (isolates suites).
+- **Proof** (`src/lib/theme-presentations.test.tsx:137`, `:162`): the
+  same section object renders through two registered presentations with
+  different markup and identical data — directly and through the
+  `SectionRenderer` lookup path — without mutating the shared section.
+
+Studio note: the builder token panel takes the installed theme key for
+one purpose only — offering that theme's merchant-pickable variation
+list (`src/components/builder/TokenEditor.tsx:229`, fed by the studio
+host in `src/routes/_authenticated/dashboard/builder.tsx:2323`). It is
+editor chrome, not a renderer, and carries the same no-compare /
+no-switch / no-widget-resolution guardrails
+(`src/lib/definition-of-done.test.ts:169`).
+
+### Tokens — base layer, styling channel (not a theme system)
+
+Shape: `ThemeTokens` in `src/lib/builder-ast.ts:6629` (19 required keys, plus
 optional `timezone` / `allowCustomerTimezone`). Published tokens reach the
 storefront as CSS variables on the store root, and theme CSS may only read
 `var(--theme-*)` (see the token-only CSS gate below).
 
-| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Somvabona (`src/lib/themes/somvabona/tokens.ts:14`) |
-| ----------------- | ------------------------------------------------------ | --------------------------------------------------- |
-| `brand`           | `#1a1a1a`                                              | `#7C2A1A`                                           |
-| `accent`          | `#8B4513`                                              | `#B95A38`                                           |
-| `surface`         | `#faf9f7`                                              | `#FBF6EE`                                           |
-| `ink`             | `#1a1a1a`                                              | `#2E2620`                                           |
-| `radius`          | `0px` (sharp, fashion-editorial)                       | `4px`                                               |
-| `fontDisplay`     | `Playfair Display`                                     | `Playfair Display` (campaign headlines only)        |
-| `fontBody`        | `Inter`                                                | `Inter`                                             |
-| `container`       | `1320px`                                               | `1320px`                                            |
-| `density`         | `comfortable`                                          | `comfortable`                                       |
-| `typeScale`       | `default`                                              | `default`                                           |
-| `spaceUnit`       | `16px`                                                 | `16px`                                              |
-| `shadow`          | `soft`                                                 | `soft`                                              |
-| `motion`          | `subtle`                                               | `subtle`                                            |
-| `digits`          | `latin`                                                | `latin`                                             |
-| `locale`          | `en`                                                   | `en`                                                |
-| `currencyDisplay` | `symbol`                                               | `symbol`                                            |
-| `fontPairing`     | `editorial-serif`                                      | `editorial-serif`                                   |
-| `dark`            | `null` (light-only)                                    | `null` (light-only)                                 |
-| `globals`         | `DEFAULT_GLOBALS`                                      | `DEFAULT_GLOBALS`                                   |
+| Token             | Songoskriti (`src/lib/themes/songoskriti/tokens.ts:9`) | Somvabona (`src/lib/themes/somvabona/tokens.ts:14`)    |
+| ----------------- | ------------------------------------------------------ | ------------------------------------------------------ |
+| `brand`           | `#1a1a1a`                                              | `#7C2A1A`                                              |
+| `accent`          | `#8B4513`                                              | `#B95A38`                                              |
+| `surface`         | `#faf9f7`                                              | `#FBF6EE`                                              |
+| `ink`             | `#1a1a1a`                                              | `#2E2620`                                              |
+| `radius`          | `0px` (sharp, fashion-editorial)                       | `4px`                                                  |
+| `fontDisplay`     | `Playfair Display`                                     | `Playfair Display` (campaign headlines only)           |
+| `fontBody`        | `Inter`                                                | `Inter`                                                |
+| `container`       | `1320px`                                               | `1320px`                                               |
+| `density`         | `comfortable`                                          | `comfortable`                                          |
+| `typeScale`       | `default`                                              | `default`                                              |
+| `spaceUnit`       | `16px`                                                 | `16px`                                                 |
+| `shadow`          | `soft`                                                 | `soft`                                                 |
+| `motion`          | `subtle`                                               | `subtle`                                               |
+| `digits`          | `latin`                                                | `latin`                                                |
+| `locale`          | `en`                                                   | `en`                                                   |
+| `currencyDisplay` | `symbol`                                               | `symbol`                                               |
+| `fontPairing`     | `editorial-serif`                                      | `editorial-serif`                                      |
+| `dark`            | `null` (light-only)                                    | designed set (`src/lib/themes/somvabona/tokens.ts:32`) |
+| `globals`         | `DEFAULT_GLOBALS`                                      | `DEFAULT_GLOBALS`                                      |
 
 Both themes keep bilingual EN/BN inline props on every user-facing string and a
 BDT-first money display (symbol, Latin digits).
 
-### Skins — closed vocabularies and defaults
+### Skins — base layer, style keys (not a second theme system)
 
-Core vocabulary and core defaults live in `src/lib/builder-ast.ts:600`
-(`WIDGET_SKINS`) and `src/lib/builder-ast.ts:618` (`DEFAULT_WIDGET_SKIN`).
+Skins are the second half of the same base layer: a closed style-key
+vocabulary on top of tokens, never a parallel theme system. Core
+vocabulary and core defaults live in `src/lib/builder-ast.ts:738`
+(`WIDGET_SKINS`) and `src/lib/builder-ast.ts:756` (`DEFAULT_WIDGET_SKIN`).
 Every skinnable widget gains a `skin` select field in the style panel via
-`SKIN_FIELD` (`src/lib/builder-ast.ts:649`); the first option is the documented
-default. Unknown or empty values resolve to the widget default — never a crash,
+`SKIN_FIELD` (`src/lib/builder-ast.ts:787`); the first option is the documented
+default. Unknown or empty values resolve to the widget default through
+`resolveSkin` (`src/lib/builder-ast.ts:777`) — never a crash,
 never empty. Skin values are style keys, never copy, so they carry no `_bn`
 twins (bilingual props are declared per widget in `BITEXT_FIELDS`,
-`src/lib/builder-ast.ts:5545`).
+`src/lib/builder-ast.ts:5781`).
 
 | Widget          | Core vocab (first = core default) | Songoskriti default                           | Somvabona default |
 | --------------- | --------------------------------- | --------------------------------------------- | ----------------- |

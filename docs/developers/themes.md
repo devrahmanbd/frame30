@@ -100,6 +100,39 @@ shared helper behind both is `withThemeWidgetDefaults` in
 `src/lib/builder-ast.ts:735`, which only merges catalogue-known keys so
 a theme can never smuggle unknown props onto a node.
 
+## Claim widget presentations through the registry
+
+Tokens and skins above are one base layer — they change how every
+widget looks, never what markup a widget emits. When a theme needs
+different markup for a widget, it claims a `themeKey × widgetType`
+presentation through the registry instead of forking the renderer:
+
+- Claim pairs from the theme's own module init with
+  `registerThemePresentation` in
+  `src/lib/theme-presentations.ts:35`. First registration wins;
+  duplicates warn and are ignored
+  (`src/lib/theme-presentations.ts:57`). Registration never throws.
+- The engine resolves the presentation first and falls back to the
+  existing `resolveWidgetComponent` result when nothing is registered
+  (`src/components/builder/SectionRenderer.tsx:272`, over
+  `src/components/builder/theme-widgets.ts:45`), so unregistered
+  pairs render exactly as before.
+- Resolution never throws and never leaks another theme's brand:
+  unknown, null, and missing keys return the fallback
+  (`src/lib/theme-presentations.ts:72`, fallback at
+  `src/lib/theme-presentations.ts:78`). The same-section /
+  two-presentations proof lives in
+  `src/lib/theme-presentations.test.tsx:137` (direct) and
+  `src/lib/theme-presentations.test.tsx:162` (engine path).
+- Shared code names no theme and branches on no theme
+  (`src/lib/theme-presentations.test.tsx:194`), and the DoD suite pins
+  the same rule for every builder renderer
+  (`src/lib/definition-of-done.test.ts:138`). The one exemption is the
+  studio token panel, which takes the installed theme key only to offer
+  that theme's variation list
+  (`src/components/builder/TokenEditor.tsx:229`) — editor chrome, never
+  a storefront fork.
+
 ## Compose the homepage hero-first
 
 Build the homepage as one function returning `Section[]`, wrapped so
