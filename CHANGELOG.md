@@ -14,6 +14,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-05] — Gate repairs (`a85d2f2b`)
+### Fixed
+- OpenAPI spec covers the renewal cron route (18/18); `global_ref` graduated to the palette now its twin exists (157 entries); stale graduation comments updated.
+### Verification
+- 642 spot green, tsc clean. Remaining reds (`definition-of-done` theme identity, `scope-adapter`) are pre-existing/sibling-owned, proven by stashed-tree runs.
+
 ## [2026-10-05 13:57 UTC] (v0.5-beta — c219cab8) — Lane 4 menu+capability+contracts
 ### Added
 - Canonical menu type (bitext, children, badge, promo) + dropdown/drawer modes (additive, unwired); builder capability API (`capabilitiesFor`); presentation-primitives doc; 32 contract tests (lifecycle, themes, chrome).
