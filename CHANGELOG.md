@@ -14,6 +14,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-05 23:19 UTC] (v0.5-beta — 711b03cb) — Presentation runtime finish
+### Added
+- Header shells delegate via registry (songoskriti mega/accordion vs somvabona dropdown/disclosure); announcement theme presentations with hook-owned behavior; footer canonical path; plugin menu replacement end to end (cross-slot fix, fail-open boundary); repeater round-trip suite (20 widgets); two-theme acceptance (12 tests, all surfaces).
+### Verification
+- Acceptance green with zero implementation edits; tsc repo-wide clean.
+### Follow-ups
+- menu_dropdown presentation replacement (by design, engine rows only); mixed-template dual drivers; drawer-failure SSR limit; R5 repeater tsc cast owned and fixed here.
 ## [2026-10-05 20:15 UTC] (v0.5-beta — d3bc2aa5) — Presentation runtime v2
 ### Added
 - Theme-owned header nav markup per theme (structurally distinct, shared keeps data+behavior); Class A/B community widget contract (plugin declares, theme dresses, island fallback, sandbox untouched); menu renderer replacement end to end (fail-open to theme default); announcement + footer per-theme proof tests.
