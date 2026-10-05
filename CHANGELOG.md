@@ -14,37 +14,61 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
-## [2026-10-03] — Phase 5 trust docs (`5b14a892`)
+## [2026-10-05 13:57 UTC] (v0.5-beta — c219cab8) — Lane 4 menu+capability+contracts
+### Added
+- Canonical menu type (bitext, children, badge, promo) + dropdown/drawer modes (additive, unwired); builder capability API (`capabilitiesFor`); presentation-primitives doc; 32 contract tests (lifecycle, themes, chrome).
+### Verification
+- 550 spot green, tsc clean. Follow-ups: dashboard menu columns need migration; mode plumbing; live publishVersion in-chain.
+
+## [2026-10-05 13:48 UTC] (v0.5-beta — 0ca8b815) — Lane 3 chrome splits
+### Added
+- Header 3-layer split (identical output); standalone announcement surface (dismiss persisted, bn, reduced-motion); footer split + global-block control; 24 structural localization tests.
+### Verification
+- 103 spot green, tsc clean.
+
+## [2026-10-05 13:39 UTC] (v0.5-beta — 00b58b8c) — Lane 2 recovery+acceptance
+### Added
+- Last-good auto-serve (prior pin else $fallback, audited); DemoProductWidget two-theme proof (via product_rail); 7-link chained plugin acceptance.
+### Verification
+- Spot suites green, tsc clean.
+
+## [2026-10-05 13:29 UTC] (v0.5-beta — 5aa546f3) — Lane 1 tokens+proof+tiers
+### Added
+- StoreHeader tokenized (31 swaps, parity pinned); hero 5-item repeater proof; core/community tier vocabulary.
+### Verification
+- 87 spot green, tsc clean.
+
+## [2026-10-03 16:20 UTC] (v0.5-beta — 5b14a892) — Phase 5 trust docs
 ### Added
 - `review-policy.md` (no-plugin-territory rule with 5 locked rejection reasons + review process with semver resubmission and appeal path); `theme-updates.md` (versioning + rollback promise + override story).
 ### Verification
 - 73/73 pins resolve; prettier clean. Open TBDs marked in-doc (reviewer SLA, appeal queue, rollback retention, Restore click-path).
 
-## [2026-10-03] — Phase 4 picker bindings (`d95316b6`)
+## [2026-10-03 16:16 UTC] (v0.5-beta — d95316b6) — Phase 4 picker bindings
 ### Added
 - Picked-rows bindings (menu/product/article/page/search) with `parsePickedHandles` normaliser; renderers prefer picks, degrade to empty states.
 ### Verification
 - 4465 lib tests green (2 pre-existing reds proven via stashed-tree check), tsc clean.
 
-## [2026-10-03] — Phase 3 motion ceiling (`827065a2`)
+## [2026-10-03 15:57 UTC] (v0.5-beta — 827065a2) — Phase 3 motion ceiling
 ### Added
 - `count-up` + `scroll-scrub` JS executors (lazy, IO-gated, reduced-motion static); per-theme motion budgets blocking in publish gate; slide/zoom reveal vocab mapping.
 ### Verification
 - 254 tests green, `tsgo` clean.
 
-## [2026-10-03] — Phase 2b Globals (`6f47a9ef`)
+## [2026-10-03 15:50 UTC] (v0.5-beta — 6f47a9ef) — Phase 2b Globals
 ### Added
 - `global_ref` studio twin + renderer branch; merchant Globals editor bound to `var(--fq-g-*)`.
 ### Verification
 - 591 tests green, tsc clean.
 
-## [2026-10-03] — Phase 2a templates+zones (`a58fcb48`)
+## [2026-10-03 15:37 UTC] (v0.5-beta — a58fcb48) — Phase 2a templates+zones
 ### Added
 - Template suffix + fallback chain; named zones as data; `global_ref` section type; widget prop hints for lane fields.
 ### Verification
 - 29 new + 873 adjacent tests green, tsc clean.
 
-## [2026-10-03] — Phase 1 trust gates (`149dec58`)
+## [2026-10-03 15:11 UTC] (v0.5-beta — 149dec58) — Phase 1 trust gates
 ### Added
 - Blocking a11y gates + reduced-motion gate wiring; Theme Security page + `advCss`/html lint (caught real sanitizer residuals); 10 responsive flags (17→27 catalog); openspec/ extracted from the oceanblue branch (scratch left behind).
 ### Verification
@@ -52,65 +76,45 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Corrections
 - No dep-deny module or SRI rule exist; gsap is the required single engine (policy sentence only). Responsive rail-limit mirrors added post-lane.
 
-## [2026-10-03] — Lane 4 menu+capability+contracts (`c219cab8`)
-### Added
-- Canonical menu type (bitext, children, badge, promo) + dropdown/drawer modes (additive, unwired); builder capability API (`capabilitiesFor`); presentation-primitives doc; 32 contract tests (lifecycle, themes, chrome).
-### Verification
-- 550 spot green, tsc clean. Follow-ups: dashboard menu columns need migration; mode plumbing; live publishVersion in-chain.
-
-## [2026-10-03] — Lane 3 chrome splits (`0ca8b815`)
-### Added
-- Header 3-layer split (identical output); standalone announcement surface (dismiss persisted, bn, reduced-motion); footer split + global-block control; 24 structural localization tests.
-### Verification
-- 103 spot green, tsc clean.
-
-## [2026-10-03] — Lane 2 recovery+acceptance (`00b58b8c`)
-### Added
-- Last-good auto-serve (prior pin else $fallback, audited); DemoProductWidget two-theme proof (via product_rail); 7-link chained plugin acceptance.
-### Verification
-- Spot suites green, tsc clean.
-
-## [2026-10-03] — Lane 1 tokens+proof+tiers (`5aa546f3`)
-### Added
-- StoreHeader tokenized (31 swaps, parity pinned); hero 5-item repeater proof; core/community tier vocabulary.
-### Verification
-- 87 spot green, tsc clean.
-
-## [2026-10-03] — Variation server persistence + live render + picker (`d3fc715d`)
+## [2026-10-03 12:29 UTC] (v0.5-beta — d3fc715d) — Variation server persistence + live render + picker
 ### Added
 - `parseUntrusted` preserves well-formed variation keys; workspace round-trips through autosave/commit/publish; `setVariation` picker seam; live published-version resolution (requested > persisted > base); builder theme-panel picker with `?variation=` preview links.
 ### Verification
 - 305 wide + 67 spot tests green, `tsgo` clean.
 
-## [2026-10-03] — Variations system + preview + starters (`f809f70d`)
+## [2026-10-03 10:06 UTC] (v0.5-beta — f809f70d) — Variations system + preview + starters
 ### Added
 - `ThemeVariation` registry (tokens + skin defaults only), base < variation < authored precedence, `?variation=` preview, per-store persistence helpers, 2 starters per theme.
 ### Known gaps
 - Server persistence wiring and onboarding picker landed separately (`d3fc715d`); live storefronts rendered base until then.
 
-## [2026-10-03] — Menu replacement API (`7e2cc57a`)
+## [2026-10-03 09:56 UTC] (v0.5-beta — 7e2cc57a) — Menu replacement API
 ### Added
 - `menu_bar` / `menu_dropdown` / `menu_drawer` plugin slots (rows in, markup out), full renderer swap behind review with fail-open fallback, menu permission scope.
 ### Verification
 - 128 tests green, tsc clean.
 
-## [2026-10-03] — PDP variant pipeline fix (`ce127903`)
+## [2026-10-03 09:43 UTC] (v0.5-beta — ce127903) — PDP variant pipeline fix
 ### Fixed
 - Picker publishes on the variant channel; buy box consumes with default fallback; cart lines stamped with variant + options string (dashboard `variant_name` reads correctly); sold-out selection blocked bilingually. Root cause: themed buy box had no submit wiring and the picker never published.
 ### Verification
 - 163 tests green, tsc clean.
 
-## [2026-10-03] — Creation.md pin pass (`eda123bf`, `1c0f3d61`)
+## [2026-10-03 08:31 UTC] (v0.5-beta — 1c0f3d61) — Creation.md prettier
+### Fixed
+- Prettier clean.
+
+## [2026-10-03 08:31 UTC] (v0.5-beta — eda123bf) — Creation.md pin pass
 ### Fixed
 - PropValue / FieldKind / CatalogEntry / layout pins corrected to HEAD lines; prettier clean.
 
-## [2026-10-03] — Revert currency switcher (`a54b0b09`)
+## [2026-10-03 08:15 UTC] (v0.5-beta — a54b0b09) — Revert currency switcher
 ### Removed
 - `CurrencySwitcher.tsx`, its test, and the ThemeChrome mount. BD-only platform decision; fx snapshot stack stays dormant underneath.
 ### Verification
 - ThemeChrome + StoreHeader suites green, tsc clean.
 
-## [2026-10-03] — Follow-ups round (`b0b2369f`)
+## [2026-10-03 06:41 UTC] (v0.5-beta — b0b2369f) — Follow-ups round
 ### Added
 - Trial-claim KB seeding + `convertTrialToPaid` with `renews_at`; `rail_behavior_scores` RPC with inline fallback; 33 semantic pin fixes; listing term prices; display-only currency switcher (later reverted in `a54b0b09`); zod validators threaded; renewal cron wired (18 jobs).
 ### Changed
@@ -118,25 +122,29 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Known gaps
 - OpenRouter free-tier quota exhausted at seed time (61 live vectors, 257 fallback); backfill rerun pending quota. Pre-existing trials: zero rows, no backfill needed.
 
-## [2026-10-03] — Lanes F–I (`d219a70b`)
+## [2026-10-03 03:05 UTC] (v0.5-beta — d219a70b) — Lanes F–I
 ### Added
 - Docs re-pin + motion-semantics page + retirement note; install billing + renewal cron; behavior-ranked `recommended`; voice mic + suggestion ranking.
 
-## [2026-10-03] — Motion manifest (`1bb2cef6`)
+## [2026-10-02 22:10 UTC] (v0.5-beta — 1bb2cef6) — Motion manifest
 ### Added
 - Closed `MOTION_EFFECTS` vocab, SectionRenderer `fq-fx` hook, CSS executors with reduced-motion + `motion:none` collapse, resolver + persist + engine tests.
 
-## [2026-10-03] — Lane D themes (`ab416bcf`)
+## [2026-10-02 22:07 UTC] (v0.5-beta — ab416bcf) — Lane D themes
 ### Added
 - Recently-viewed rails + mobile `bp` references on both homepages (21/12 pins); per-theme blog skins; Somvabona dark reference set; rail `limit`/`collection` fields (themed limits were silently dropping).
 
-## [2026-10-03] — Lane C studio (`8e846c50`)
+## [2026-10-02 22:01 UTC] (v0.5-beta — 8e846c50) — Lane C studio
 ### Added
 - Skin selects on 5 skinnable widgets; new-field controls (promo, countdown, aspect, voice); responsive column flags; twin skin defaults.
 
-## [2026-10-02] — Lanes A–B builder (`3fb7c609`, `664a8064`)
+## [2026-10-02 21:53 UTC] (v0.5-beta — 3fb7c609) — Lane A catalog+parse core, Lane B promo/countdown/tile renderers
 ### Added
-- `adv*` persist through parse (round-trip tested); mega promo fields; urgency `endsAt`; tile aspect variant; `emptyText` BN twins; voice flag; menu promo panels; urgency countdown (shared `Countdown` primitive); image-first tiles.
+- Lane A catalog+parse core; lane B promo/countdown/tile renderers; menu promo panels; urgency countdown (shared `Countdown` primitive); image-first tiles.
+
+## [2026-10-02 21:38 UTC] (v0.5-beta — 664a8064) — Builder ADV persist passthrough + promo/countdown/tile fields
+### Added
+- `adv*` persist through parse (round-trip tested); mega promo fields; urgency `endsAt`; tile aspect variant; `emptyText` BN twins; voice flag.
 
 
 - Page builder is the content editor URL (`/dashboard/content/editor`):
@@ -207,7 +215,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   degrades to 202 on missing warehouse schema (owner migration pending);
   hydration nonce mismatch fixed (empty-coerce + csp-nonce meta read).
 
-## [2026-09-23] — Plugin Phase 2 runtime + contracts CLOSED (R2-0…R2-8)
+## [2026-09-22 20:07 UTC] (v0.5-beta — ffead66b) — Plugin Phase 2 runtime + contracts CLOSED (R2-0…R2-8)
 
 - Scope: `docs/superpowers/specs/2026-09-22-plugin-phase2-runtime-design.md`
   R2-0…R2-8 + plan `docs/superpowers/plans/2026-09-22-plugin-phase2-runtime.md`
@@ -308,7 +316,7 @@ found`); via `bunx tsgo`: 218 errors, all pre-existing, ZERO in phase
   fabricated); `ops/routing/*.conf` working-tree edits seen during Task 10
   belong to another session — left untouched, NOT in this phase's commits.
 
-## [2026-09-22] — Plugin Phase 1 core rebuild CLOSED (P1-0…P1-5)
+## [2026-09-22 12:30 UTC] (v0.5-beta — ae2bfbae) — Plugin Phase 1 core rebuild CLOSED (P1-0…P1-5)
 
 - Scope: `docs/superpowers/specs/2026-09-22-plugin-system-rebuild-design.md`
   §2 + §7 gates (TDD, deny/replay/audit on every `[A]` mutation, prod
@@ -349,7 +357,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
   policy); `/dashboard/plugins` production pass still needs an
   authenticated session (UNPROVEN, never fabricated).
 
-## [2026-09-22] — auth tab bounce fix (`2aeb88e`, deployed)
+## [2026-09-22 10:10 UTC] (v0.5-beta — 2aeb88e) — auth tab bounce fix (deployed)
 
 - Bug: on `/auth?mode=signup`, clicking the Sign In tab focused but the
   form bounced back to Create Account. Root cause: tab handlers set local
@@ -365,7 +373,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
 - Verified on production: signin↔signup tabs, forgot-password→reset, all
   URL updates confirmed, no console errors.
 
-## [2026-09-22] — WordPress Theme Handbook index (`adb49e5`)
+## [2026-09-22 07:26 UTC] (v0.5-beta — adb49e5) — WordPress Theme Handbook index
 
 - `docs/themes/wordpress-handbook-index.md`: 137 pages, 11 chapters
   (Getting Started, Core Concepts, Templates, Patterns, theme.json,
@@ -382,7 +390,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
 - Operator decrees recorded in progress.md: verify on production only,
   push to GitHub, path storefronts removed, shared-clone hazard noted.
 
-## [2026-09-21] — 84-widget port batch (`4153d77`)
+## [2026-09-21 10:03 UTC] (v0.5-beta — 4153d77) — 84-widget port batch
 
 - Slices A/B/C/D: 20 layout chrome + 20 trust/commerce + 20 guides/advisors
   - 24 data-backed placeholders → catalog + controls + renderers.
@@ -394,7 +402,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
 - Rebased onto `c6caaf9` (heritage-cutover merge); progress.md rewritten as
   compact loop state, other session's placeholder-pipeline note preserved.
 
-## [2026-09-21] — final-4 port + audits (`476da4b`)
+## [2026-09-21 10:22 UTC] (v0.5-beta — 476da4b) — final-4 port + audits
 
 - add_to_cart, rewards_club, wedding_shop, gift_finder → catalog +
   controls + canvas renderers + parity expects. Contract 316/316.
@@ -405,7 +413,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
   on storefront; repeater conversion plan ranked (faq first, 8 total).
 - tsc clean on touched files; model.ts/PageBuilder errors pre-existing.
 
-## [2026-09-21] — parity-3 port (`02ef60d`)
+## [2026-09-21 10:51 UTC] (v0.5-beta — 02ef60d) — parity-3 port
 
 - 24 widgets (2 porter agents × 12): all theme defaults verified verbatim
   against builder-ast.ts; newsletter canvas uses static mock (no live
@@ -416,7 +424,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
 - Contract 388/388 (new MEDIA/LAYOUT category sets); tsc clean on all
   touched ranges (upgradeWidget/widgetHtml/Section drifts pre-existing).
 
-## [2026-09-21] — faq repeater conversion (`4925edd`)
+## [2026-09-21 11:09 UTC] (v0.5-beta — 4925edd) — faq repeater conversion
 
 - TDD: failing contract + migration tests first, then minimal GREEN.
 - faq defaults gain `items: []`; panel uses one repeater (q1-a3 controls
@@ -429,7 +437,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
 - Icon registry gains CircleHelp. Known gap: repeater rows lack `_bn`
   bilingual siblings (scalars keep theirs).
 
-## [2026-09-21] — product_qna repeater conversion (`5d4d96d`)
+## [2026-09-21 11:46 UTC] (v0.5-beta — 5d4d96d) — product_qna repeater conversion
 
 - TDD + swarm: porter agent's pdp diff verified line-exact, applied as
   specified; consumer audit replaced direct greps after agent infra
@@ -438,7 +446,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
   byte-identical; loadQnaSource still stubbed so scalars stay live path.
 - Contract 400/400, studio suite 414/414, tsc clean on touched ranges.
 
-## [2026-09-21] — trust_bar repeater conversion (`04684d4`)
+## [2026-09-21 12:11 UTC] (v0.5-beta — 04684d4) — trust_bar repeater conversion
 
 - TDD + swarm: porter diff applied line-exact; audit via direct greps
   (second agent hit provider overload twice running).
@@ -446,7 +454,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
   canvas STUDIO_TRUST_ICON table unchanged, unknown keys still "•".
 - Contract 402/402, studio 416/416, chrome+seo adjacent 26/26.
 
-## [2026-09-21] — announcement_bar repeater conversion (`8c0ddd8`)
+## [2026-09-21 12:28 UTC] (v0.5-beta — 8c0ddd8) — announcement_bar repeater conversion
 
 - TDD + swarm: both recon agents landed (theme spec + 9-area audit).
 - Row shape is {text} objects, not strings: PropValue admits PropRow[]
@@ -455,7 +463,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
   export invisibility pre-exists and is unchanged.
 - Contract 404/404, studio+chrome 426/426, tsc clean on touched ranges.
 
-## [2026-09-21] — lookbook repeater conversion (`4195642`)
+## [2026-09-21 12:37 UTC] (v0.5-beta — 4195642) — lookbook repeater conversion
 
 - TDD + swarm: both recon agents landed with exact line refs.
 - Ratio alternation is index-based in both paths, so items rows paint
@@ -464,7 +472,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
   widgetHtml/export untouched (zero consumers; fallback covers).
 - Contract 406/406, studio+atelier 433/433, tsc clean on touched ranges.
 
-## [2026-09-21] — hero repeater conversion (`cd2b57b`)
+## [2026-09-21 12:46 UTC] (v0.5-beta — cd2b57b) — hero repeater conversion
 
 - TDD + swarm: theme spec (with seed rule + leftover disposition) and
   9-area audit both landed; spec applied line-exact after verification.
@@ -474,7 +482,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
   when any slide has content).
 - Contract 408/408, studio+hero-adjacent 464/464, tsc clean on ranges.
 
-## [2026-09-21] — footer_sitemap + spec_table repeaters (`f512bc1`)
+## [2026-09-21 13:03 UTC] (v0.5-beta — f512bc1) — footer_sitemap + spec_table repeaters
 
 - TDD + swarm: one spec+audit agent per widget, both landed.
 - footer: {title, links:textarea} rows (nested repeater unproven in all
@@ -484,7 +492,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
 - Icon registry gains FolderTree + Table. Repeaters 8/8 complete.
 - Contract 412/412, 463 incl. adjacent suites, tsc clean on ranges.
 
-## [2026-09-21] — Clothing Heritage activated on microscrop.shop
+## [2026-09-21 15:09 UTC] (v0.5-beta — 075c550a) — Clothing Heritage activated on microscrop.shop
 
 - Operator-ordered: Flame Fashion BD (owner nahid52flame@gmail.com, not
   flamedev7's Akira) switched Rupaboti → Clothing Heritage via
@@ -495,7 +503,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
 - Server state: HEAD 933c059, fresh 16:02 CEST build+start, no errors;
   disk 94% flagged. Registry draft refresh skipped (rendering-safe).
 
-## [2026-09-21] — onboarding trap + dead-link fixes (`53e1896`, deployed)
+## [2026-09-21 15:50 UTC] (v0.5-beta — 53e1896) — onboarding trap + dead-link fixes (deployed)
 
 - fix(auth): post-login always lands /dashboard; dual-gate membership
   race bounced store owners to /onboarding (row proven returned).
@@ -505,21 +513,21 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
 - RLS audit (live): writes clean; public reads uneven (products +
   store_themes world-readable incl. drafts; variants properly gated).
 
-## [2026-09-21] — curated two-theme offer (`f5f0a36`, deployed)
+## [2026-09-21 16:28 UTC] (v0.5-beta — f5f0a36) — curated two-theme offer (deployed)
 
 - Appearance grids show Supershop + Clothing Heritage only; active
   theme exempt so the live storefront stays manageable. Reversible.
 - Contract: 23/23 appearance suite (2 new). tsc: only pre-existing
   drift. Deploy contract green.
 
-## [2026-09-21] — merchant AI control removed (`1c28cca`, deployed)
+## [2026-09-21 17:31 UTC] (v0.5-beta — 1c28cca) — merchant AI control removed (deployed)
 
 - Gateway config, copilot, AI triage inbox: hidden from nav, routes
   redirect, RPCs denied server-side. askAssistantFn (public widget)
   and /dashboard/support intentionally untouched.
 - Contract: 4 new gate tests green. Deploy contract green.
 
-## [2026-09-21] — marketplace curated offer + infra incident (`2b07c60`)
+## [2026-09-21 17:43 UTC] (v0.5-beta — 2b07c60) — marketplace curated offer + infra incident
 
 - listCatalog filters themes server-side (same allowlist); widgets and
   installs untouched. Bridge tests updated (10/10).
@@ -529,7 +537,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
 - Deploy gap found: silent fetch failure built stale bundle; re-deploy
   - live catalogue check ("2 Themes") closed it.
 
-## [2026-09-21] — cross-tenant path guard (`e5e0b06`, deployed)
+## [2026-09-21 19:03 UTC] (v0.5-beta — e5e0b06) — cross-tenant path guard (deployed)
 
 - Root cause: host-resolution miss (DB outage + cached nulls) funneled
   /cart into featured-store redirect, and custom hosts never checked
@@ -538,7 +546,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
   token/loopback/platform semantics preserved).
 - Contract 36/36 (5 new). Live verified: foreign 404, own 200s.
 
-## [2026-09-21] — API tenant audit fixes (`b8e5b53`, deployed)
+## [2026-09-21 19:54 UTC] (v0.5-beta — b8e5b53) — API tenant audit fixes (deployed)
 
 - market_review_submit: ownership enforced (was open + broken column);
   verified live forbidden/requires_install/success paths.
@@ -547,7 +555,7 @@ false`, enum gains `purged`, 3 policies intact, RLS on.
 - Swarm audits: console mostly CLEAN; storefront CLEAN except oracles
   and global blog namespace (logged as follow-ups).
 
-## [2026-09-21] — Studio pages render on storefront + activation fix
+## [2026-09-21 22:44 UTC] (v0.5-beta — f02278a7) — Studio pages render on storefront + activation fix
 
 - Builder-authored pages served starter/empty (read path stub-only,
   export fallback empty for heritage). getStorePageFn now passes
