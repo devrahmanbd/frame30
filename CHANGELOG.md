@@ -14,6 +14,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-05 18:41 UTC] (v0.5-beta — 390aa330) — True independence residuals
+### Added
+- Prod registration wiring (theme preview entries re-export header presentations); header-fallback consolidated to neutral `header-copy.ts` re-export shim; CollectionView on the neutral path; TokenEditor variation map moved to the studio host (`variations[]` prop, themeKey preview-link-only).
+### Verification
+- Spot suites green (DoD 11, variations 37, CollectionView incl. new pins), tsc clean.
+### Follow-ups
+- Residual shared→theme edge: `CollectionView.tsx` archetypes import (archetype lane's property); `header-fallback.ts` shim removable once importers migrate.
+
 ## [2026-10-05] — Gate repairs (`a85d2f2b`)
 ### Fixed
 - OpenAPI spec covers the renewal cron route (18/18); `global_ref` graduated to the palette now its twin exists (157 entries); stale graduation comments updated.
