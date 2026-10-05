@@ -31,7 +31,7 @@ describe("Phase 2 exit gate — widget metadata", () => {
     expect(missing.map((e) => e.type)).toEqual([]);
     // Catalog grows as widget packs land (140 at the WhatsApp commit);
     // this pins the count so silent additions/removals fail loudly.
-    expect(SECTION_CATALOG.length).toBe(156);
+    expect(SECTION_CATALOG.length).toBe(157);
   });
 
   it("every data widget declares an editor empty state", () => {

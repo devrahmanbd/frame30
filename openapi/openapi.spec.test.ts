@@ -171,11 +171,11 @@ describe("endpoint spot-checks", () => {
     ).toEqual(["200"]);
   });
 
-  it("all seventeen cron jobs expose GET(405-ref) + POST", () => {
+  it("all eighteen cron jobs expose GET(405-ref) + POST", () => {
     const cronPaths = Object.keys(doc.paths ?? {}).filter((p) =>
       p.startsWith("/api/public/cron/"),
     );
-    expect(cronPaths.length).toBe(17);
+    expect(cronPaths.length).toBe(18);
     for (const path of cronPaths) {
       expect(ops(path).sort(), path).toEqual(["get", "post"]);
       const post = doc.paths?.[path]?.post;

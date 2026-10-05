@@ -1245,6 +1245,40 @@ paths:
           description: "Lease unavailable."
         "504":
           description: "Job exceeded its wall-clock budget."
+  /api/public/cron/marketplace-renewals:
+    x-source-file: src/routes/api/public/cron/marketplace-renewals.ts
+    get:
+      operationId: cronMarketplaceRenewalsGet405
+      summary: "Rejected — scheduled endpoints are POST-only"
+      tags:
+        - cron
+      responses:
+        "405":
+          description: "Method not allowed (Allow: POST)."
+    post:
+      operationId: cronMarketplaceRenewals
+      summary: "Marketplace install renewals (charges due subscriptions, parks failed charges as past-due)"
+      tags:
+        - cron
+      security:
+        - CronBearer: []
+      parameters:
+        - $ref: "#/components/parameters/CronTrigger"
+      responses:
+        "200":
+          $ref: "#/components/responses/CronRun"
+        "401":
+          description: "Missing or invalid scheduler bearer credential."
+        "409":
+          description: "Job already leased by another runner (recorded as skip)."
+        "429":
+          description: "Throttled by the job's own rate bucket (recorded as skip)."
+        "500":
+          description: "Job failed or is not registered."
+        "503":
+          description: "Lease unavailable."
+        "504":
+          description: "Job exceeded its wall-clock budget."
   /api/public/cron/themes:
     x-source-file: src/routes/api/public/cron/themes.ts
     get:

@@ -6388,9 +6388,41 @@ export function imageKeysOf(type: SectionType): string[] {
     .map((f) => f.key);
 }
 
-export const SECTION_CATALOG: CatalogEntry[] = BASE_CATALOG.map(withBiText)
-  .map(withMedia)
-  .map(withStyleLayer);
+/**
+ * Phase 2A — global block reference (header/footer/global placement).
+ *
+ * A `global_ref` node stores only a pointer (`ref`: a builder_global_blocks
+ * id or name) and no children of its own. At render-data time
+ * `resolveGlobalRef` grafts detached copies of the block's nodes under it, so
+ * editing the block updates every placement while previously detached copies
+ * (plain nodes with no `ref`) keep rendering untouched — no migration of
+ * existing content. A pointer with no readable block resolves to a
+ * placeholder (`invalid: "global_ref.missing"`), never a crash.
+ *
+ * Runs through the same bitext/media/style pipeline as every palette widget.
+ * Graduated to SECTION_CATALOG in Phase 2B (studio twin landed); the palette
+ * entry below keeps it editable alongside every other widget.
+ */
+const GLOBAL_REF_BASE: CatalogEntry = {
+  type: "global_ref",
+  label: "Global block",
+  group: "content",
+  slots: ["header", "footer"],
+  heading: false,
+  defaults: { ref: "" },
+  fields: [text("ref", "Global block id or name", 120)],
+};
+
+export const GLOBAL_REF_ENTRY: CatalogEntry = withStyleLayer(
+  withMedia(withBiText(GLOBAL_REF_BASE)),
+);
+
+export const SECTION_CATALOG: CatalogEntry[] = [
+  ...BASE_CATALOG.map(withBiText).map(withMedia).map(withStyleLayer),
+  // Phase 2B: global_ref graduated to the palette — studio twin landed,
+  // so the twin-parity contract covers it like every other widget.
+  GLOBAL_REF_ENTRY,
+];
 
 /* ------------------------------------------- style props → rendered chrome */
 
@@ -6481,34 +6513,7 @@ export function sectionStyle(props: Record<string, PropValue>): {
   return { className, style };
 }
 
-/**
- * Phase 2A — global block reference (header/footer/global placement).
- *
- * A `global_ref` node stores only a pointer (`ref`: a builder_global_blocks
- * id or name) and no children of its own. At render-data time
- * `resolveGlobalRef` grafts detached copies of the block's nodes under it, so
- * editing the block updates every placement while previously detached copies
- * (plain nodes with no `ref`) keep rendering untouched — no migration of
- * existing content. A pointer with no readable block resolves to a
- * placeholder (`invalid: "global_ref.missing"`), never a crash.
- *
- * Runs through the same bitext/media/style pipeline as every palette widget
- * so its props survive parse identically; it stays out of SECTION_CATALOG
- * (see CATALOG below) until the Globals-editor lane adds the studio twin.
- */
-const GLOBAL_REF_BASE: CatalogEntry = {
-  type: "global_ref",
-  label: "Global block",
-  group: "content",
-  slots: ["header", "footer"],
-  heading: false,
-  defaults: { ref: "" },
-  fields: [text("ref", "Global block id or name", 120)],
-};
 
-export const GLOBAL_REF_ENTRY: CatalogEntry = withStyleLayer(
-  withMedia(withBiText(GLOBAL_REF_BASE)),
-);
 
 /** True when the node is a global block reference placement. */
 export function isGlobalRef(section: Section): boolean {
@@ -6591,10 +6596,9 @@ const CATALOG = new Map<SectionType, CatalogEntry>([
   ...SECTION_CATALOG.map(
     (entry): [SectionType, CatalogEntry] => [entry.type, entry],
   ),
-  // Phase 2A: the global_ref entry is registered for parsing/render-data
-  // resolution but stays out of SECTION_CATALOG (the widget palette), so the
-  // studio twin-parity contract is untouched. The studio twin + palette
-  // entry land in the Globals-editor lane.
+  // Phase 2B: global_ref graduated to SECTION_CATALOG (palette + twin
+  // parity covered); the explicit registration below is now redundant but
+  // harmless (Map overwrite with the identical entry).
   [GLOBAL_REF_ENTRY.type, GLOBAL_REF_ENTRY],
 ]);
 
