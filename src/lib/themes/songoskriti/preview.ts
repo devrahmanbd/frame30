@@ -9,6 +9,11 @@ import {
 import { buildHeaderMain } from "./header";
 import { buildFooterMain } from "./footer";
 import { buildHomepageMain } from "./homepage";
+// Live-rendering activation (HEADER DE-THEMING lane): this preview entry
+// is in the prod import graph (preview-sources → preview, dynamically
+// imported by storefront routes), so re-exporting the header presentation
+// runs its `registerThemePresentation` side effect for live rendering.
+export { SongoskritiHeaderPresentation } from "./header-presentation";
 
 /**
  * Songoskriti's preview source — theme-owned demo content for the

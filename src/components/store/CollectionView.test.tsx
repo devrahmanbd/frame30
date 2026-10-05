@@ -141,3 +141,37 @@ describe("CollectionView hero images follow the theme key, never the slug", () =
     expect(html).toContain("Women");
   });
 });
+
+describe("CollectionView header-fallback de-theming (HEADER DE-THEMING lane)", () => {
+  it("resolves the fallback menu through the neutral copy module, never a theme import", () => {
+    // Extends the theme-chrome.test.ts no-theme-import scan to this shared
+    // renderer: the only header-fallback edge allowed here is the neutral
+    // `@/lib/header-copy` path. (The archetypes edge on line 14 is owned by
+    // the archetype lane and is deliberately out of scope here.)
+    const src = readFileSync("src/components/store/CollectionView.tsx", "utf8");
+    expect(src).toContain("@/lib/header-copy");
+    expect(src).not.toContain("themes/songoskriti/header-fallback");
+    expect(src).not.toContain("themes/somvabona/header-fallback");
+    expect(src).not.toContain("SONGOSKRITI_MEGA_MENU");
+  });
+
+  it("prod preview entries activate both header presentations for live rendering", async () => {
+    // This file never imports a header-presentation module directly, so a
+    // defined resolution here proves the prod import graph reaches
+    // registration: preview-sources → theme preview entries →
+    // header-presentation side effects (storefront routes dynamically
+    // import preview-sources in prod).
+    await import("@/lib/preview-sources");
+    const { resolveThemePresentation } = await import(
+      "@/lib/theme-presentations"
+    );
+    expect(
+      resolveThemePresentation("songoskriti", "mega_menu"),
+      "songoskriti mega_menu must be registered via the prod graph",
+    ).toBeDefined();
+    expect(
+      resolveThemePresentation("somvabona", "mega_menu"),
+      "somvabona mega_menu must be registered via the prod graph",
+    ).toBeDefined();
+  });
+});

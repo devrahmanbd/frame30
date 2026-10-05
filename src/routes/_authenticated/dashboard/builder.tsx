@@ -118,6 +118,19 @@ import {
   builderScheduleFn,
   builderWorkspaceFn,
 } from "@/lib/builder-workspace.functions";
+import type { ThemeVariation } from "@/lib/theme-variations";
+import { SONGOSKRITI_VARIATIONS } from "@/lib/themes/songoskriti/variations";
+import { SOMVABONA_VARIATIONS } from "@/lib/themes/somvabona/variations";
+
+/**
+ * Merchant-pickable looks per theme (Track T), keyed by installed theme key.
+ * Resolved here in the studio host so shared builder chrome stays
+ * theme-import-free: `TokenEditor` receives the list as data.
+ */
+const VARIATIONS_BY_THEME_KEY: Record<string, ThemeVariation[]> = {
+  songoskriti: SONGOSKRITI_VARIATIONS,
+  somvabona: SOMVABONA_VARIATIONS,
+};
 
 export const Route = createFileRoute("/_authenticated/dashboard/builder")({
   // Route gate aligns with the Builder nav tabs (all themes.read): viewing
@@ -2320,6 +2333,11 @@ function BuilderStudio() {
             {panel === "brand" && doc && (
               <TokenEditor
                 tokens={doc.tokens}
+                variations={
+                  VARIATIONS_BY_THEME_KEY[
+                    workspace.data?.theme?.sourceKey ?? ""
+                  ] ?? []
+                }
                 themeKey={workspace.data?.theme?.sourceKey ?? null}
                 onChange={editor.setTokens}
               />

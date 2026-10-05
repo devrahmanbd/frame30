@@ -9,7 +9,7 @@ import { useLang } from "@/lib/i18n";
 import { flattenAst } from "@/lib/builder-ast";
 import { rebaseMenuHref } from "@/lib/menus/menu";
 import { isCustomHostPath } from "@/lib/storefront-url";
-import { SONGOSKRITI_MEGA_MENU } from "@/lib/themes/songoskriti/header-fallback";
+import { HEADER_FALLBACK_MENU } from "@/lib/header-copy";
 import { SlidersHorizontal, ChevronDown, X } from "lucide-react";
 import { buildCollectionArchetype } from "@/lib/themes/songoskriti/archetypes";
 import type { getStoreCollection } from "@/lib/storefront.functions";
@@ -107,7 +107,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
       return null;
     };
 
-    const node = findInMenu(SONGOSKRITI_MEGA_MENU, `/c/${collection.slug}`);
+    const node = findInMenu(HEADER_FALLBACK_MENU, `/c/${collection.slug}`);
     if (node && node.children && node.children.length > 0) {
       subnavItems = node.children;
     } else {

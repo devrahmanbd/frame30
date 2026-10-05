@@ -289,12 +289,10 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
   });
 
   it("keeps the luxury chrome: announcement bar, image panel, mobile accordion, 44px targets", () => {
-    // Brand copy lives in the theme-owned header-fallback module; the
-    // shared header resolves it through key-driven config.
-    const fallbackSrc = readFileSync(
-      "src/lib/themes/songoskriti/header-fallback.ts",
-      "utf8",
-    );
+    // Fallback copy lives in the neutral header-copy module (consolidated
+    // out of the theme-owned header-fallback shim); the shared header
+    // resolves it through key-driven config.
+    const fallbackSrc = readFileSync("src/lib/header-copy.ts", "utf8");
     expect(fallbackSrc).toContain("EASY 7-DAY EXCHANGE");
     const src = HEADER_SRC();
     expect(src).toContain("expandedMobileMenu");

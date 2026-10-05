@@ -15,28 +15,25 @@ import {
   settingsWithVariationKey,
   type ThemeVariation,
 } from "@/lib/theme-variations";
-import { SONGOSKRITI_VARIATIONS } from "@/lib/themes/songoskriti/variations";
-import { SOMVABONA_VARIATIONS } from "@/lib/themes/somvabona/variations";
 import { CustomFontsPanel } from "./CustomFontsPanel";
 
 type Props = {
   tokens: ThemeTokens;
   /**
-   * Registry key of the installed theme — drives the variation picker ONLY.
-   * Studio editor chrome, never a storefront renderer (DoD 5 exempts this
-   * file explicitly): the key is an opaque catalog lookup
-   * (`VARIATIONS_BY_THEME_KEY[themeKey] ?? []`, never compared or
-   * switched on), unknown keys hide the picker, and no widget resolution
-   * happens here.
+   * Merchant-pickable variation list for the installed theme, resolved by
+   * the studio host (`VARIATIONS_BY_THEME_KEY` in `builder.tsx`) and passed
+   * down as data. Studio editor chrome, never a storefront renderer (DoD 5
+   * exempts this file explicitly): an empty/unknown list hides the picker,
+   * and no widget resolution happens here.
+   */
+  variations?: ThemeVariation[];
+  /**
+   * Registry key of the installed theme — preview link ONLY
+   * (`/theme-preview/${themeKey}?variation=...`, never compared or
+   * switched on). Unknown keys simply render no preview link.
    */
   themeKey?: string | null;
   onChange: (patch: Partial<ThemeTokens>) => void;
-};
-
-/** Merchant-pickable looks per theme (Track T), keyed by installed theme key. */
-const VARIATIONS_BY_THEME_KEY: Record<string, ThemeVariation[]> = {
-  songoskriti: SONGOSKRITI_VARIATIONS,
-  somvabona: SOMVABONA_VARIATIONS,
 };
 
 // Curated luxury & commerce color palettes for 1-click styling
@@ -214,20 +211,22 @@ function SwatchCard({
 const SELECT_CLASS =
   "w-full rounded-fq-md border border-border/80 bg-background px-3 py-2 text-xs font-medium text-foreground shadow-xs transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary";
 
-export function TokenEditor({ tokens, themeKey, onChange }: Props) {
+export function TokenEditor({
+  tokens,
+  variations = [],
+  themeKey,
+  onChange,
+}: Props) {
   const { t } = useLang();
   const [scheme, setScheme] = useState<"light" | "dark">("light");
   const dark: DarkTokens = tokens.dark ?? DEFAULT_DARK_TOKENS;
   const editingDark = scheme === "dark" && Boolean(tokens.dark);
 
-  // Theme variation picker (Track T follow-through): options come straight
-  // from the theme's variation registry (key/label/label_bn). The pick rides
+  // Theme variation picker (Track T follow-through): options arrive as data
+  // from the studio host (resolved per installed theme key). The pick rides
   // the settings document via `settingsWithVariationKey` and autosaves
-  // through the normal draft path — no dedicated RPC. Hidden for themes
-  // that ship no variations, so those panels render byte-identical.
-  const variations = themeKey
-    ? (VARIATIONS_BY_THEME_KEY[themeKey] ?? [])
-    : [];
+  // through the normal draft path — no dedicated RPC. Hidden when the host
+  // passes no variations, so those panels render byte-identical.
   const storedVariation = persistedVariationKeyFromSettings(tokens);
   const activeVariation = variations.some((v) => v.key === storedVariation)
     ? storedVariation
