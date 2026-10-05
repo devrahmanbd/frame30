@@ -1176,6 +1176,35 @@ export type PublishedTheme = {
   variationKey: string | null;
 };
 
+/**
+ * T2.1 — last-good auto-serve (live path only).
+ *
+ * Most recent prior published pin for this merchant+theme, excluding the
+ * dangling pointer target. Ordered by the monotonic `version` counter, newest
+ * first, so a bad publish falls back to what shoppers last saw good. Returns
+ * null when no prior pin exists — the caller keeps the existing crash contract
+ * (null → $fallback builtin). Never used by the explicit rollbackVersion()
+ * path.
+ */
+async function lastGoodVersion(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+  brokenVersionId: string,
+) {
+  const { data } = await db
+    .from("theme_versions")
+    .select("id, ast, templates, tokens")
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", themeId)
+    .eq("status", "published")
+    .neq("id", brokenVersionId)
+    .order("version", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return data ?? null;
+}
+
 /** Published layout + tokens for a store. Cached under a tenant-keyed prefix. */
 export async function publishedTheme(
   db: Client,
@@ -1199,7 +1228,7 @@ export async function publishedTheme(
     async () => {
       const { data } = await db
         .from("store_themes")
-        .select("published_version_id, source_listing_slug")
+        .select("id, published_version_id, source_listing_slug")
         .eq("merchant_id", merchantId)
         .eq("is_active", true)
         .maybeSingle();
@@ -1222,16 +1251,53 @@ export async function publishedTheme(
         .eq("merchant_id", merchantId)
         .eq("status", "published") // B-13: status discipline — only published versions evaluate at runtime; drafts are preview-only
         .maybeSingle();
-      if (!version) return null;
+      // T2.1 last-good auto-serve: a dangling pointer (version row deleted,
+      // unpublished, or never visible to this merchant) serves the most recent
+      // prior published pin for this merchant+theme instead of blanking the
+      // storefront. No prior pin → null, the existing crash contract
+      // ($fallback builtin). The explicit rollbackVersion() path is untouched.
+      let row = version;
+      let servedVersionId = versionId;
+      if (!row) {
+        const prior =
+          theme.id != null
+            ? await lastGoodVersion(db, merchantId, theme.id, versionId)
+            : null;
+        const via = prior ? "prior_pin" : "builtin";
+        log("warn", "theme.serve_fallback", {
+          merchant_id: merchantId,
+          theme_id: theme.id,
+          broken_version_id: versionId,
+          fallback_version_id: prior?.id ?? null,
+          via,
+        });
+        incr("framique_theme_serve_fallback", { result: via });
+        try {
+          await db.from("theme_audit").insert({
+            merchant_id: merchantId,
+            theme_id: theme.id,
+            actor: null,
+            action: "theme.serve_fallback",
+            before: { version_id: versionId },
+            after: { version_id: prior?.id ?? null, via },
+          });
+        } catch {
+          // Best-effort: the live path never fails on its audit trail (the
+          // storefront reads with a public client whose RLS may deny writes).
+        }
+        if (!prior) return null;
+        servedVersionId = prior.id;
+        row = prior;
+      }
       const themeKey = theme.source_listing_slug ?? null;
       // Variation follow-through: the persisted key rides the version's
       // settings document — shoppers see the active variation, not the base.
-      const live = resolveLiveVariation(version.tokens, themeKey);
+      const live = resolveLiveVariation(row.tokens, themeKey);
       const templates = fillVariationSkins(
         parseTemplates(
-          version.templates && Object.keys(version.templates as object).length
-            ? version.templates
-            : { index: parseAst(version.ast) },
+          row.templates && Object.keys(row.templates as object).length
+            ? row.templates
+            : { index: parseAst(row.ast) },
         ),
         live.variation,
         VARIATION_BASE_DEFAULTS[themeKey ?? ""] ?? {},
@@ -1240,7 +1306,7 @@ export async function publishedTheme(
         templates,
         tokens: live.tokens,
         themeKey,
-        versionId,
+        versionId: servedVersionId,
         variationKey: live.variationKey,
       };
     },

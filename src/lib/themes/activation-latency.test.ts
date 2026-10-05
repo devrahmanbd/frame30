@@ -497,3 +497,165 @@ describe("variation persistence through the builder write path", () => {
     ).rejects.toMatchObject({ code: "builder.theme_missing" });
   });
 });
+
+/* ---------------- T2.1 last-good auto-serve: a dangling published pointer
+ * serves the most recent prior published pin for the same merchant+theme;
+ * with no prior pin the live path keeps the crash contract (null → $fallback
+ * builtin). Every fallback choice is audit-logged (log + metric + audit row).
+ * The explicit rollbackVersion() path is untouched (see qubickle predicates).
+ */
+
+function lastGoodDb(): FakeDb {
+  return fakeDb({
+    tables: {
+      store_themes: [
+        {
+          id: THEME,
+          merchant_id: MERCHANT,
+          name: "Live",
+          is_active: true,
+          published_version_id: "v-broken", // dangling: no such row
+          source_listing_slug: null,
+        },
+      ],
+      theme_versions: [
+        {
+          id: "v1",
+          merchant_id: MERCHANT,
+          theme_id: THEME,
+          version: 1,
+          status: "published",
+          templates: { index: { header: [], main: [], footer: [] } },
+          tokens: { brand: "#111111" },
+        },
+        {
+          id: "v2",
+          merchant_id: MERCHANT,
+          theme_id: THEME,
+          version: 2,
+          status: "published",
+          templates: { index: { header: [], main: [], footer: [] } },
+          tokens: { brand: "#222222" },
+        },
+        // Not servable priors: a newer draft and another theme's pin.
+        {
+          id: "v3",
+          merchant_id: MERCHANT,
+          theme_id: THEME,
+          version: 3,
+          status: "draft",
+          templates: { index: { header: [], main: [], footer: [] } },
+          tokens: { brand: "#333333" },
+        },
+        {
+          id: "v9",
+          merchant_id: MERCHANT,
+          theme_id: OTHER,
+          version: 9,
+          status: "published",
+          templates: { index: { header: [], main: [], footer: [] } },
+          tokens: { brand: "#999999" },
+        },
+      ],
+      theme_drafts: [],
+      theme_audit: [],
+    },
+  });
+}
+
+function noPriorDb(): FakeDb {
+  return fakeDb({
+    tables: {
+      store_themes: [
+        {
+          id: THEME,
+          merchant_id: MERCHANT,
+          name: "Live",
+          is_active: true,
+          published_version_id: "v-broken",
+          source_listing_slug: null,
+        },
+      ],
+      theme_versions: [],
+      theme_drafts: [],
+      theme_audit: [],
+    },
+  });
+}
+
+describe("T2.1 last-good auto-serve", () => {
+  it("serves the newest prior published pin when the pointer dangles", async () => {
+    const db = lastGoodDb();
+    const live = await publishedTheme(db.asClient(), MERCHANT);
+    // v3 is newer but a draft, v9 belongs to another theme: v2 wins.
+    expect(live?.versionId).toBe("v2");
+    expect(live?.tokens.brand).toBe("#222222");
+  });
+
+  it("audit-logs the fallback choice (log + metric + audit row)", async () => {
+    const db = lastGoodDb();
+    const live = await publishedTheme(db.asClient(), MERCHANT);
+    expect(live?.versionId).toBe("v2");
+
+    const events = recorder.logs.filter((l) => l.event === "theme.serve_fallback");
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({
+      level: "warn",
+      fields: expect.objectContaining({
+        merchant_id: MERCHANT,
+        theme_id: THEME,
+        broken_version_id: "v-broken",
+        fallback_version_id: "v2",
+        via: "prior_pin",
+      }),
+    });
+    expect(recorder.of("framique_theme_serve_fallback", ["result", "prior_pin"]))
+      .toHaveLength(1);
+
+    const audits = db
+      .rows("theme_audit")
+      .filter((r) => r.action === "theme.serve_fallback");
+    expect(audits).toHaveLength(1);
+    expect(audits[0]).toMatchObject({
+      merchant_id: MERCHANT,
+      theme_id: THEME,
+      action: "theme.serve_fallback",
+      before: { version_id: "v-broken" },
+      after: { version_id: "v2", via: "prior_pin" },
+    });
+  });
+
+  it("falls through to the crash contract (null) with no prior pin", async () => {
+    const db = noPriorDb();
+    const live = await publishedTheme(db.asClient(), MERCHANT);
+    expect(live).toBeNull();
+
+    const events = recorder.logs.filter((l) => l.event === "theme.serve_fallback");
+    expect(events).toHaveLength(1);
+    expect(events[0]?.fields).toMatchObject({
+      broken_version_id: "v-broken",
+      fallback_version_id: null,
+      via: "builtin",
+    });
+    expect(recorder.of("framique_theme_serve_fallback", ["result", "builtin"]))
+      .toHaveLength(1);
+    const audits = db
+      .rows("theme_audit")
+      .filter((r) => r.action === "theme.serve_fallback");
+    expect(audits).toHaveLength(1);
+    expect(audits[0]?.after).toEqual({ version_id: null, via: "builtin" });
+  });
+
+  it("healthy pointer serves the pin with no fallback audit", async () => {
+    const db = pointerDb();
+    const live = await publishedTheme(db.asClient(), MERCHANT);
+    expect(live?.versionId).toBe("v1");
+    expect(
+      recorder.logs.filter((l) => l.event === "theme.serve_fallback"),
+    ).toHaveLength(0);
+    expect(recorder.of("framique_theme_serve_fallback")).toHaveLength(0);
+    expect(
+      db.rows("theme_audit").filter((r) => r.action === "theme.serve_fallback"),
+    ).toHaveLength(0);
+  });
+});
