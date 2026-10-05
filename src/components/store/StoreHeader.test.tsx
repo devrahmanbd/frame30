@@ -49,6 +49,13 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 });
 
 import { MinimalCheckoutHeader, StoreHeader } from "./StoreHeader";
+import {
+  HeaderAnnouncementBar,
+  HeaderDesktopNav,
+  ThemeHeaderRenderer,
+  assembleHeaderData,
+  useHeaderBehavior,
+} from "./StoreHeader";
 import type { StoreMenuSwap } from "./StoreHeader";
 import { themeChromeFor } from "./theme-chrome";
 import { songoskritiMenuLabel } from "@/lib/themes/songoskriti/header-fallback";
@@ -548,5 +555,181 @@ describe("StoreHeader theme-token chrome (T1.1 — no raw hex)", () => {
     expect(html).toContain("bg-[var(--theme-surface)]");
     expect(html).toContain("text-[var(--theme-ink)]");
     expect(html).not.toMatch(/#1a1a1a|#FAF9F7|#eaeaea|#f0f0f0/);
+  });
+});
+
+describe("StoreHeader T3.1 layer boundaries (HeaderData + Behavior + Renderer)", () => {
+  const enT = (en: string) => en;
+  const bnT = (en: string, bn?: string) => bn ?? en;
+
+  it("HeaderData: dashboard header rows win over the theme fallback", () => {
+    const menus = {
+      header: [dbNode({ id: "db-1", label: "Dashboard Custom", url: "/c/custom" })],
+      mobile: [],
+    };
+    const data = assembleHeaderData({
+      slug: "songoskriti",
+      menus,
+      themeKey: "songoskriti",
+      pathname: "/store/songoskriti",
+      t: enT,
+    });
+    expect(data.headerMenu.map((n) => n.label)).toEqual(["Dashboard Custom"]);
+    expect(data.headerFallback).toBe(false);
+    expect(data.isLuxury).toBe(true);
+  });
+
+  it("HeaderData: theme fallback covers luxury stores with no dashboard menu", () => {
+    const data = assembleHeaderData({
+      slug: "songoskriti",
+      menus: { header: [], mobile: [] },
+      themeKey: "songoskriti",
+      pathname: "/store/songoskriti",
+      t: enT,
+    });
+    expect(data.headerMenu.length).toBeGreaterThan(0);
+    expect(data.headerFallback).toBe(true);
+    expect(data.mobileFallback).toBe(true);
+  });
+
+  it("HeaderData: generic stores assemble empty menus and never localize", () => {
+    const data = assembleHeaderData({
+      slug: "demo",
+      menus: { header: [], mobile: [] },
+      themeKey: null,
+      pathname: "/store/demo",
+      t: bnT,
+    });
+    expect(data.headerMenu).toEqual([]);
+    expect(data.mobileMenu).toEqual([]);
+    expect(data.isLuxury).toBe(false);
+    expect(data.headerFallback).toBe(false);
+    expect(data.fallbackLabel("Men")).toBe("Men");
+  });
+
+  it("HeaderData: routing base follows the custom-host path, chrome follows the key", () => {
+    const storeBase = assembleHeaderData({
+      slug: "demo",
+      menus: null,
+      themeKey: null,
+      pathname: "/store/demo",
+      t: enT,
+    });
+    expect(storeBase.custom).toBe(false);
+    expect(storeBase.base).toBe("/store/demo");
+    const customBase = assembleHeaderData({
+      slug: "demo",
+      menus: null,
+      themeKey: null,
+      pathname: "/",
+      t: enT,
+    });
+    expect(customBase.custom).toBe(true);
+    expect(customBase.base).toBe("");
+    // Key-driven chrome: a theme-named slug with a foreign key stays generic.
+    const foreign = assembleHeaderData({
+      slug: "songoskriti",
+      menus: { header: [], mobile: [] },
+      themeKey: "bazaar",
+      pathname: "/store/songoskriti",
+      t: enT,
+    });
+    expect(foreign.headerChrome).toBeNull();
+    expect(foreign.headerMenu).toEqual([]);
+    // Same slug with the theme key gets the fallback tree.
+    const keyed = assembleHeaderData({
+      slug: "renamed-slug",
+      menus: { header: [], mobile: [] },
+      themeKey: "songoskriti",
+      pathname: "/store/renamed-slug",
+      t: enT,
+    });
+    expect(keyed.headerChrome).not.toBeNull();
+    expect(keyed.headerMenu.length).toBeGreaterThan(0);
+  });
+
+  it("HeaderBehavior: hook owns scroll, drawer, and accordion state", () => {
+    expect(typeof useHeaderBehavior).toBe("function");
+    const src = HEADER_SRC();
+    expect(src).toContain("useHeaderBehavior");
+    expect(src).toContain("mobileOpen");
+    expect(src).toContain("setMobileOpen");
+    expect(src).toContain("expandedMobileMenu");
+    expect(src).toContain("window.scrollY > 40");
+    expect(src).toContain("document.body.style.overflow");
+  });
+
+  it("split design: three layers with one parameterized renderer, no slug checks", () => {
+    const src = HEADER_SRC();
+    expect(src).toContain("assembleHeaderData");
+    expect(src).toContain("useHeaderBehavior");
+    expect(src).toContain("ThemeHeaderRenderer");
+    expect(src).toContain("HeaderDesktopNav");
+    expect(src).toContain("HeaderUtilityIcons");
+    expect(src).toContain("HeaderMobileDrawer");
+    expect(src).toContain("HeaderAnnouncementBar");
+    // No theme slug or name sniffing anywhere in the header.
+    expect(src).not.toMatch(/slug\s*===?\s*["']/);
+    expect(src).not.toMatch(/name\s*===?\s*["']/);
+    expect(src).not.toContain('"songoskriti"');
+    expect(src).not.toContain("'songoskriti'");
+    // Single top-level renderer: one ThemeHeaderRenderer definition and no
+    // per-theme header duplication (minimal checkout + shared header only).
+    expect(src.match(/export function ThemeHeaderRenderer/g)?.length).toBe(1);
+    expect(src.match(/<header/g)?.length).toBe(2);
+  });
+
+  it("ThemeHeaderRenderer: luxury mega geometry vs generic dropdown geometry", () => {
+    const chrome = themeChromeFor("songoskriti")!;
+    const luxuryParent = chrome.fallbackMenu.find(
+      (n) => n.children && n.children.length > 0,
+    )!;
+    expect(luxuryParent).toBeDefined();
+    const luxuryHtml = renderToStaticMarkup(
+      <HeaderDesktopNav
+        headerMenu={[luxuryParent]}
+        base="/store/songoskriti"
+        headerFallback
+        fallbackLabel={(label) => chrome.labelFor(label, (en) => en)}
+        isLuxury
+        t={(en) => en}
+      />,
+    );
+    expect(luxuryHtml).toContain("fixed left-0 w-full top-full");
+    expect(luxuryHtml).toContain("grid-cols-4");
+    const genericParent = dbNode({ id: "g-1", label: "Shop", url: "/c/shop" });
+    (genericParent as unknown as { children: MenuNode[] }).children = [
+      dbNode({ id: "g-2", label: "Sub", url: "/c/sub" }),
+    ];
+    const genericHtml = renderToStaticMarkup(
+      <HeaderDesktopNav
+        headerMenu={[genericParent]}
+        base="/store/demo"
+        headerFallback={false}
+        fallbackLabel={(label) => label}
+        isLuxury={false}
+        t={(en) => en}
+      />,
+    );
+    expect(genericHtml).toContain("absolute left-1/2 -translate-x-1/2");
+    expect(genericHtml).not.toContain("fixed left-0 w-full top-full");
+  });
+
+  it("ThemeHeaderRenderer: announcement bar renders only for luxury chrome", () => {
+    const chrome = themeChromeFor("songoskriti")!;
+    const luxuryHtml = renderToStaticMarkup(
+      <HeaderAnnouncementBar
+        headerChrome={chrome}
+        scrolled={false}
+        t={(en) => en}
+      />,
+    );
+    expect(luxuryHtml).toContain(chrome.announcement.left);
+    expect(luxuryHtml).toContain(chrome.announcement.center);
+    const genericHtml = renderToStaticMarkup(
+      <HeaderAnnouncementBar headerChrome={null} scrolled={false} t={enT} />,
+    );
+    expect(genericHtml).toBe("");
+    expect(ThemeHeaderRenderer).toBeDefined();
   });
 });

@@ -20,6 +20,14 @@ import {
   X,
   ArrowRight,
 } from "@/components/icons/tabler";
+import {
+  AnnouncementBar as AnnouncementBarSurface,
+  announcementAlignOf,
+  announcementMotionOf,
+  announcementSizeOf,
+  announcementToneOf,
+  type AnnouncementItem,
+} from "@/components/store/AnnouncementBar";
 import { useRouterState } from "@tanstack/react-router";
 import { textOf } from "@/lib/bitext";
 import { PaymentMark } from "@/components/store/PaymentMarks";
@@ -113,57 +121,48 @@ export const SOCIAL_LINKS = [
   },
 ] as const;
 
-function AnnouncementBar({ str, bool, int, section, locale }: WidgetCtx) {
-  // Repeater-first (faq/trust_bar precedent): studio `items` text rows win
-  // when present, scalar m1/m2/m3 remain as the fallback for
-  // theme-authored sections. Rotation/dismiss below apply to both.
-  const itemRows = Array.isArray(section.props.items)
-    ? section.props.items
-        .map((row) => textOf(row, "text", locale).trim())
-        .filter(Boolean)
+function AnnouncementBar({ str, bool, int, section, locale, link }: WidgetCtx) {
+  // T3.2 — thin adapter over the standalone surface
+  // (`@/components/store/AnnouncementBar`): repeater-first `items` rows
+  // (with `_bn` twins) win when present, scalar m1/m2/m3 (+ twins) remain
+  // the fallback for theme-authored sections. Rotation, persisted
+  // dismissal, locale, reduced-motion and theme presentation all live in
+  // the surface, which renders with zero header dependency.
+  const rawRows = Array.isArray(section.props.items)
+    ? (section.props.items as Record<string, unknown>[])
     : [];
-  const messages =
-    itemRows.length > 0
-      ? itemRows
-      : [str("m1"), str("m2"), str("m3")].filter(Boolean);
-  const rotateMs = int("rotateMs", 6000, 0, 60000);
-  const [index, setIndex] = useState(0);
-  const [dismissed, setDismissed] = useState(false);
-
-  useEffect(() => {
-    if (rotateMs < 1000 || messages.length < 2) return;
-    const id = window.setInterval(
-      () => setIndex((i) => (i + 1) % messages.length),
-      rotateMs,
-    );
-    return () => window.clearInterval(id);
-  }, [rotateMs, messages.length]);
-
-  if (dismissed || messages.length === 0) return null;
-  const message = messages[Math.min(index, messages.length - 1)] as string;
-  const href = str("href");
+  const rowItems: AnnouncementItem[] = rawRows
+    .map((row) => ({
+      text: typeof row.text === "string" ? row.text : "",
+      text_bn: typeof row.text_bn === "string" ? row.text_bn : undefined,
+    }))
+    .filter((row) => row.text.trim() || (row.text_bn ?? "").trim());
+  const props = section.props as Record<string, unknown>;
+  const scalarItems: AnnouncementItem[] = ["m1", "m2", "m3"]
+    .map((key) => {
+      const en = typeof props[key] === "string" ? (props[key] as string) : "";
+      const bnRaw = props[`${key}_bn`];
+      const textBn = typeof bnRaw === "string" ? bnRaw : "";
+      return en.trim() || textBn.trim()
+        ? { text: en, ...(textBn ? { text_bn: textBn } : {}) }
+        : null;
+    })
+    .filter((row): row is AnnouncementItem => row !== null);
+  const items = rowItems.length > 0 ? rowItems : scalarItems;
   return (
-    <div className="flex items-center justify-center gap-3 bg-primary px-4 py-2 text-center text-xs font-medium text-primary-foreground">
-      <p aria-live="polite" className="min-w-0 truncate">
-        {href ? (
-          <a href={href} className="underline underline-offset-2">
-            {message}
-          </a>
-        ) : (
-          message
-        )}
-      </p>
-      {bool("dismissible") && (
-        <button
-          type="button"
-          onClick={() => setDismissed(true)}
-          aria-label="Dismiss announcement"
-          className="shrink-0 rounded-fq-sm px-1 leading-none"
-        >
-          ×
-        </button>
-      )}
-    </div>
+    <AnnouncementBarSurface
+      items={items}
+      locale={locale}
+      href={str("href") || undefined}
+      dismissible={bool("dismissible")}
+      rotateMs={int("rotateMs", 6000, 0, 60000)}
+      motion={announcementMotionOf(str("motion")) ?? "rotating"}
+      align={announcementAlignOf(str("align")) ?? "center"}
+      size={announcementSizeOf(str("size")) ?? "md"}
+      tone={announcementToneOf(str("tone")) ?? "brand"}
+      link={link}
+      storageKey={`fq-announcement:${section.id}`}
+    />
   );
 }
 
