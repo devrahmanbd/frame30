@@ -14,6 +14,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-05 20:15 UTC] (v0.5-beta — d3bc2aa5) — Presentation runtime v2
+### Added
+- Theme-owned header nav markup per theme (structurally distinct, shared keeps data+behavior); Class A/B community widget contract (plugin declares, theme dresses, island fallback, sandbox untouched); menu renderer replacement end to end (fail-open to theme default); announcement + footer per-theme proof tests.
+### Verification
+- Spot suites green (143 incl. new proofs), tsc clean except sibling-owned footer-presentation.tsx error (parked, not ours).
+### Follow-ups
+- Prod registration wiring for proof modules; footer module winner (proof vs sibling draft); CollectionView archetypes edge; TokenEditor variation map move.
 ## [2026-10-05 18:41 UTC] (v0.5-beta — 390aa330) — True independence residuals
 ### Added
 - Prod registration wiring (theme preview entries re-export header presentations); header-fallback consolidated to neutral `header-copy.ts` re-export shim; CollectionView on the neutral path; TokenEditor variation map moved to the studio host (`variations[]` prop, themeKey preview-link-only).
