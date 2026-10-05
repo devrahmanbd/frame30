@@ -679,3 +679,35 @@ export function pluginTrayEntries(
   }
   return out;
 }
+
+/* ---------------------------------------------- tier vocabulary (T1.3)
+ *
+ * Core/community tier vocabulary. Vocabulary only: this block adds no
+ * branches, no exports, no behavior; every mechanism claim pins its source.
+ *
+ * - Core tier: the closed `SectionType` enum
+ *   (`src/lib/builder-ast.ts:212`). Core widgets render through native theme
+ *   branches and take the active theme's token-driven presentation (gated by
+ *   `stays token-driven` in `src/lib/themes/songoskriti/skins.test.ts:182`).
+ *   Third-party code never adds a core branch: `plugin_block` is the only
+ *   plugin branch, rendered through the one sandboxed island
+ *   (`src/components/builder/PluginBlock.tsx:11-16`).
+ * - Community tier: every widget addressed `plugin:{pluginId}/{widget}`
+ *   (`pluginWidgetKey` / `parsePluginWidgetKey` above) and mounted inside
+ *   the published theme (`render_storefront` in
+ *   `src/lib/marketplace-scopes.ts:82-88`). The bundle runs in the
+ *   null-origin `WidgetSandbox` frame and reaches the app only through the
+ *   scoped `postMessage` bridge (`authorizeWidgetCall` in
+ *   `src/lib/marketplace-scopes.ts:341-360`); every failure renders a
+ *   labeled placeholder, never a crash (`PluginResolution` above).
+ *
+ * Rule: plugins provide functionality, themes dress them — a community
+ * widget mounted under Theme A renders Theme A's presentation, and the same
+ * install under Theme B renders Theme B's. Theme tokens reach the bundle
+ * through `shop.info` behind `read_shop`
+ * (`src/lib/marketplace-scopes.ts:26-32`).
+ *
+ * TBD (aspiration, not mechanism): the frame isolates bundle DOM and CSS,
+ * so a theme cannot restyle inside a community widget today. See the tier
+ * section in `docs/developers/review-policy.md` for the gap.
+ */

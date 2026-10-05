@@ -520,3 +520,33 @@ describe("StoreHeader menu swap — TRACK M review gate (fail-open, logged)", ()
     expect(gated).toContain("Dashboard Custom");
   });
 });
+
+describe("StoreHeader theme-token chrome (T1.1 — no raw hex)", () => {
+  it("sources chrome colors from var(--theme-*) tokens only", () => {
+    const src = HEADER_SRC();
+    expect(src).toContain("var(--theme-ink)");
+    expect(src).toContain("var(--theme-surface)");
+    expect(src).toContain("var(--theme-border)");
+    expect(src).toContain("var(--theme-muted)");
+    // No raw-hex color literals remain in header class strings.
+    expect(src).not.toMatch(/#[0-9a-fA-F]{3,}/);
+  });
+
+  it("preserves opacity modifiers on token colors", () => {
+    const src = HEADER_SRC();
+    expect(src).toContain("text-[var(--theme-ink)]/70");
+    expect(src).toContain("text-[var(--theme-ink)]/60");
+    expect(src).toContain("text-[var(--theme-ink)]/80");
+  });
+
+  it("renders token classes in static markup (luxury chrome)", () => {
+    const html = renderHeader({
+      slug: "songoskriti",
+      name: "Songoskriti",
+      themeKey: "songoskriti",
+    });
+    expect(html).toContain("bg-[var(--theme-surface)]");
+    expect(html).toContain("text-[var(--theme-ink)]");
+    expect(html).not.toMatch(/#1a1a1a|#FAF9F7|#eaeaea|#f0f0f0/);
+  });
+});

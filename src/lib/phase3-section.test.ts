@@ -290,3 +290,90 @@ describe("lane D3 — theme-emitted sections survive parse→serialize→parse",
     }
   });
 });
+
+describe("lane T1.2 — hero 5-item repeater round-trip", () => {
+  // Vehicle choice (verified in src/lib/builder-ast.ts): hero `items` is an
+  // `array` field with maxRows 5 — the only 5-cap repeater with bilingual
+  // twins — while hero_carousel `slides` caps at 3 by design (not under test
+  // here). nav_menu `items` is kind `menu`, not `array`, so it is out of lane.
+  const rows = Array.from({ length: 5 }, (_, i) => {
+    const n = i + 1;
+    return {
+      heading: `Slide ${n} heading`,
+      heading_bn: `স্লাইড ${n} শিরোনাম`,
+      image: `/ph/slide-${n}.png`,
+      subheading: `Sub ${n}`,
+      subheading_bn: `উপ ${n}`,
+      ctaLabel: `Shop ${n}`,
+      ctaLabel_bn: `কিনুন ${n}`,
+      ctaHref: `/c/slide-${n}`,
+    };
+  });
+
+  const doc = () => ({
+    header: [],
+    main: [
+      {
+        id: "hero5",
+        type: "hero",
+        props: {
+          heading: "Welcome to our store",
+          items: rows.map((row, i) =>
+            // An undeclared sub-key rides along on one row to pin the
+            // allowlist contract below; it must never take the row down.
+            i === 2 ? { ...row, bogusRow: "should-drop" } : { ...row },
+          ),
+          // Undeclared top-level prop: same contract, must drop cleanly.
+          bogusTop: "should-drop",
+        },
+      },
+    ],
+    footer: [],
+  });
+
+  const itemsOf = (ast: { main: Section[] }) =>
+    (ast.main[0] as Section).props["items"] as Record<string, unknown>[];
+
+  it("keeps all 5 repeater rows with props and _bn twins through one parse", () => {
+    const ast = parseAst(doc());
+    const items = itemsOf(ast);
+    expect(items).toHaveLength(5);
+    items.forEach((row, i) => {
+      // Declared repeater fields (incl. _bn twins) survive verbatim.
+      expect(row).toEqual(rows[i]);
+    });
+  });
+
+  it("keeps all 5 rows intact through parse→serialize→parse", () => {
+    const once = parseAst(doc());
+    const twice = parseAst(JSON.parse(JSON.stringify(once)));
+    const first = itemsOf(once);
+    const second = itemsOf(twice);
+    expect(first).toHaveLength(5);
+    expect(second).toHaveLength(5);
+    expect(second).toEqual(first);
+    second.forEach((row, i) => {
+      expect(row).toEqual(rows[i]);
+      expect(row["heading_bn"]).toBe(rows[i]!.heading_bn);
+      expect(row["subheading_bn"]).toBe(rows[i]!.subheading_bn);
+      expect(row["ctaLabel_bn"]).toBe(rows[i]!.ctaLabel_bn);
+    });
+  });
+
+  it("documents the allowlist contract: unknown fields drop, declared repeater fields never drop", () => {
+    const ast = parseAst(doc());
+    const section = ast.main[0] as Section;
+    // Actual behavior (read-only lane: asserted, not changed): parseSection
+    // keeps catalog-declared keys and drops undeclared ones — top-level and,
+    // via coerceRow, inside array rows.
+    expect(section.props).not.toHaveProperty("bogusTop");
+    const items = itemsOf(ast);
+    expect(items).toHaveLength(5);
+    for (const row of items) {
+      expect(row).not.toHaveProperty("bogusRow");
+    }
+    // The repeated fields themselves are never dropped alongside the junk.
+    expect(items[2]!["heading"]).toBe("Slide 3 heading");
+    expect(items[2]!["heading_bn"]).toBe("স্লাইড 3 শিরোনাম");
+  });
+});

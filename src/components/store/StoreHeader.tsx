@@ -203,31 +203,31 @@ export function StoreHeader({
 
   const textLogoNode = (
     <span
-      className={`font-bangla-display block truncate text-xl font-semibold tracking-tight ${isLuxury ? "hidden" : ""} text-[#1a1a1a]`}
+      className={`font-bangla-display block truncate text-xl font-semibold tracking-tight ${isLuxury ? "hidden" : ""} text-[var(--theme-ink)]`}
     >
       {name}
     </span>
   );
 
   const iconLinkCls =
-    "grid size-10 shrink-0 place-items-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95 text-[#1a1a1a]/70 hover:text-[#1a1a1a]";
+    "grid size-10 shrink-0 place-items-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95 text-[var(--theme-ink)]/70 hover:text-[var(--theme-ink)]";
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-250 ease-out bg-[#FAF9F7]${isLuxury ? " motion-reduce:transition-none" : ""} ${
-        scrolled ? "shadow-sm border-b border-[#eaeaea]" : ""
+      className={`sticky top-0 z-40 w-full transition-all duration-250 ease-out bg-[var(--theme-surface)]${isLuxury ? " motion-reduce:transition-none" : ""} ${
+        scrolled ? "shadow-sm border-b border-[var(--theme-border)]" : ""
       }`}
     >
       {/* ── Announcement Bar (luxury variant, theme-authored copy) ── */}
       {headerChrome && (
         <div
-          className={`w-full overflow-hidden transition-all duration-250 ease-out motion-reduce:transition-none border-b border-[#eaeaea] ${scrolled ? "h-0 opacity-0 border-transparent" : "h-[36px] opacity-100"}`}
+          className={`w-full overflow-hidden transition-all duration-250 ease-out motion-reduce:transition-none border-b border-[var(--theme-border)] ${scrolled ? "h-0 opacity-0 border-transparent" : "h-[36px] opacity-100"}`}
         >
           <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10">
-            <div className="hidden sm:block text-[10px] font-medium tracking-wide text-[#1a1a1a]/60 w-1/3 text-left">
+            <div className="hidden sm:block text-[10px] font-medium tracking-wide text-[var(--theme-ink)]/60 w-1/3 text-left">
               {headerChrome.announcement.left}
             </div>
-            <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#1a1a1a] w-full sm:w-1/3 text-center">
+            <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)] w-full sm:w-1/3 text-center">
               {t(
                 headerChrome.announcement.center,
                 headerChrome.announcement.center_bn,
@@ -298,11 +298,11 @@ export function StoreHeader({
                       node={node as MenuNode}
                       base={base}
                       localizeLabel={headerFallback ? fallbackLabel : undefined}
-                      className="inline-flex items-center py-[24px] text-[11px] font-medium uppercase tracking-[0.2em] text-[#1a1a1a]/80 hover:text-[#1a1a1a] transition-colors"
+                      className="inline-flex items-center py-[24px] text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]/80 hover:text-[var(--theme-ink)] transition-colors"
                     />
                     {isLuxury && node.children && node.children.length > 0 && (
                       <div className="fixed left-0 w-full top-full pt-0 hidden group-hover:block group-focus-within:block z-50">
-                        <div className="w-full bg-[#FAF9F7] shadow-xl border-t border-[#eaeaea] max-h-[85vh] overflow-y-auto">
+                        <div className="w-full bg-[var(--theme-surface)] shadow-xl border-t border-[var(--theme-border)] max-h-[85vh] overflow-y-auto">
                           <div className="mx-auto flex max-w-[1440px] px-10 py-12 gap-16">
                             <ul className="flex-1 grid grid-cols-4 gap-x-8 gap-y-10">
                               {node.children.map((child: any) => (
@@ -313,7 +313,7 @@ export function StoreHeader({
                                     localizeLabel={
                                       headerFallback ? fallbackLabel : undefined
                                     }
-                                    className="flex min-h-[44px] items-center font-serif text-[16px] font-normal text-[#1a1a1a] hover:text-[#1a1a1a]/70 motion-safe:transition-colors text-left mb-4"
+                                    className="flex min-h-[44px] items-center font-serif text-[16px] font-normal text-[var(--theme-ink)] hover:text-[var(--theme-ink)]/70 motion-safe:transition-colors text-left mb-4"
                                   />
                                   {child.children &&
                                     child.children.length > 0 && (
@@ -329,7 +329,7 @@ export function StoreHeader({
                                                     ? fallbackLabel
                                                     : undefined
                                                 }
-                                                className="flex min-h-[44px] items-center font-sans text-[13px] text-[#1a1a1a]/60 hover:text-[#1a1a1a] motion-safe:transition-colors text-left"
+                                                className="flex min-h-[44px] items-center font-sans text-[13px] text-[var(--theme-ink)]/60 hover:text-[var(--theme-ink)] motion-safe:transition-colors text-left"
                                               />
                                             </li>
                                           ),
@@ -341,7 +341,7 @@ export function StoreHeader({
                             </ul>
                             {(node as any).image && (
                               <div className="w-[320px] shrink-0">
-                                <div className="aspect-[3/4] w-full overflow-hidden bg-[#f0f0f0]">
+                                <div className="aspect-[3/4] w-full overflow-hidden bg-[var(--theme-muted)]">
                                   <img
                                     src={(node as any).image}
                                     alt={
@@ -353,13 +353,13 @@ export function StoreHeader({
                                   />
                                 </div>
                                 <div className="mt-4 flex min-h-[44px] items-center gap-2">
-                                  <span className="font-sans text-[11px] font-medium uppercase tracking-[0.2em] text-[#1a1a1a]">
+                                  <span className="font-sans text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]">
                                     {t("Shop", "কেনাকাটা")}{" "}
                                     {headerFallback
                                       ? fallbackLabel(node.label)
                                       : node.label}
                                   </span>
-                                  <span className="text-[#1a1a1a] text-xs">
+                                  <span className="text-[var(--theme-ink)] text-xs">
                                     →
                                   </span>
                                 </div>
@@ -444,7 +444,7 @@ export function StoreHeader({
               {wishlistCount > 0 && (
                 <span
                   key={wishlistCount}
-                  className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]"
+                  className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[var(--theme-ink)] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]"
                 >
                   {wishlistCount}
                 </span>
@@ -462,7 +462,7 @@ export function StoreHeader({
               {wishlistCount > 0 && (
                 <span
                   key={wishlistCount}
-                  className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]"
+                  className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[var(--theme-ink)] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]"
                 >
                   {wishlistCount}
                 </span>
@@ -484,7 +484,7 @@ export function StoreHeader({
                 aria-hidden
               />
               {hydrated && count > 0 && (
-                <span className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white">
+                <span className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[var(--theme-ink)] text-[9px] font-bold text-white">
                   {count}
                 </span>
               )}
@@ -502,7 +502,7 @@ export function StoreHeader({
                 aria-hidden
               />
               {hydrated && count > 0 && (
-                <span className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[#1a1a1a] text-[9px] font-bold text-white">
+                <span className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[var(--theme-ink)] text-[9px] font-bold text-white">
                   {count}
                 </span>
               )}
@@ -516,19 +516,19 @@ export function StoreHeader({
         <nav
           id="store-mobile-menu"
           aria-label={t("Store menu", "স্টোর মেনু")}
-          className="border-t border-[#eaeaea] bg-[#FAF9F7] md:hidden overflow-y-auto max-h-[calc(100vh-[64px])] fixed left-0 w-full z-40 bottom-0"
+          className="border-t border-[var(--theme-border)] bg-[var(--theme-surface)] md:hidden overflow-y-auto max-h-[calc(100vh-[64px])] fixed left-0 w-full z-40 bottom-0"
           style={{ top: scrolled ? "64px" : "108px" }}
         >
           <ul className="px-4 py-2 pb-24">
             {mobileMenu.map((node: any) => (
-              <li key={node.id} className="border-b border-[#eaeaea]">
+              <li key={node.id} className="border-b border-[var(--theme-border)]">
                 <div className="flex justify-between items-center w-full">
                   <HeaderMenuLink
                     node={node}
                     base={base}
                     localizeLabel={mobileFallback ? fallbackLabel : undefined}
                     onNavigate={() => setMobileOpen(false)}
-                    className="block py-5 text-[13px] font-semibold uppercase tracking-wide text-[#1a1a1a] flex-1"
+                    className="block py-5 text-[13px] font-semibold uppercase tracking-wide text-[var(--theme-ink)] flex-1"
                   />
                   {node.children && node.children.length > 0 && (
                     <button
@@ -538,7 +538,7 @@ export function StoreHeader({
                           expandedMobileMenu === node.id ? null : node.id,
                         )
                       }
-                      className="p-4 -mr-4 text-[#1a1a1a]"
+                      className="p-4 -mr-4 text-[var(--theme-ink)]"
                       aria-expanded={expandedMobileMenu === node.id}
                     >
                       <span className="text-xl leading-none">
@@ -560,10 +560,10 @@ export function StoreHeader({
                               mobileFallback ? fallbackLabel : undefined
                             }
                             onNavigate={() => setMobileOpen(false)}
-                            className={`block py-3 text-[15px] font-medium text-[#1a1a1a]/80${isLuxury ? " min-h-[44px]" : ""}`}
+                            className={`block py-3 text-[15px] font-medium text-[var(--theme-ink)]/80${isLuxury ? " min-h-[44px]" : ""}`}
                           />
                           {child.children && child.children.length > 0 && (
-                            <ul className="ml-4 mt-2 mb-4 space-y-2 border-l border-[#eaeaea] pl-4">
+                            <ul className="ml-4 mt-2 mb-4 space-y-2 border-l border-[var(--theme-border)] pl-4">
                               {child.children.map((gc: any) => (
                                 <li key={gc.id}>
                                   <HeaderMenuLink
@@ -573,7 +573,7 @@ export function StoreHeader({
                                       mobileFallback ? fallbackLabel : undefined
                                     }
                                     onNavigate={() => setMobileOpen(false)}
-                                    className={`block py-1.5 text-[14px] text-[#1a1a1a]/60${isLuxury ? " min-h-[44px]" : ""}`}
+                                    className={`block py-1.5 text-[14px] text-[var(--theme-ink)]/60${isLuxury ? " min-h-[44px]" : ""}`}
                                   />
                                 </li>
                               ))}

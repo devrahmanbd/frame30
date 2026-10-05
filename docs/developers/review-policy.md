@@ -99,3 +99,97 @@ by someone who did not make the original decision
 
 TBD: whether marketplace listing rejections share that ticket thread or a
 dedicated appeal queue is not pinned in code — do not assume either.
+
+## 3. Core/community tier vocabulary (T1.3)
+
+Two tiers name where a widget comes from and what review owes it. No file
+used this vocabulary before this section; the mechanism pins below are the
+normative definitions.
+
+### Core tier: closed registry, theme-dressed
+
+The core tier is the closed `SectionType` enum
+(`src/lib/builder-ast.ts:212`): every core widget renders through a native
+theme branch, and `plugin_block` is the only branch plugins may ever use —
+third-party code adds no new core renderer branch
+(`src/lib/plugin-manifest.ts:8-11`,
+`src/components/builder/PluginBlock.tsx:11-16`).
+
+Core widgets take the active theme's token-driven presentation: skin
+stylesheets read only `var(--theme-*)` off `[data-widget]` + `[data-skin]`
+attributes, and a hex literal fails the gate (`stays token-driven` in
+`src/lib/themes/songoskriti/skins.test.ts:182`). Every catalog entry must
+resolve in the studio `WIDGET_BY_KEY` map
+(`src/lib/studio/catalog.ts:2701`) so it stays editable; the `studio twin
+parity` suite (`src/lib/studio/catalog.test.ts:837`) pins it, with
+`plugin_block` intentionally covered by the `app-block` twin
+(`src/lib/studio/catalog.ts:362`).
+
+What the core tier may and must do:
+
+- May ship with the platform and render natively, without a sandbox frame
+  or install consent.
+- Must stay inside the closed enum; new surface ships as a catalogued type
+  with a studio twin, never as an unregistered branch.
+
+Review implications: core changes are platform-owned — reviewers check the
+enum, the twin, and the token-only skins, not a manifest.
+
+### Community tier: namespaced, sandboxed, theme-dressed
+
+The community tier is every widget addressed as `plugin:{pluginId}/{widget}`
+(`pluginWidgetKey` and `parsePluginWidgetKey` in
+`src/lib/plugin-manifest.ts:285-296`). The builder renders each one through
+the single `plugin_block` renderer inside the null-origin `WidgetSandbox`
+frame (`src/components/builder/PluginBlock.tsx:11-16`), which carries
+sandbox tokens without `allow-same-origin` and a frame-level policy of
+`default-src 'none'` (`src/components/marketplace/WidgetSandbox.tsx:127-155`,
+applied at `src/components/marketplace/WidgetSandbox.tsx:237`). The bundle
+reaches the app only through the scoped `postMessage` bridge: every message
+is authorized by `authorizeWidgetCall`
+(`src/lib/marketplace-scopes.ts:341-360`) against the scopes the merchant
+granted at install time, and denials surface as a blocked-call notice under
+the frame (`src/components/marketplace/WidgetSandbox.tsx:249-260`) rather
+than a crash.
+
+Every resolution failure renders a labeled placeholder — never a crash —
+in exactly five ways (`src/lib/plugin-manifest.ts:627-639`): `bad_key`,
+`not_installed`, `unknown_widget`, `incompatible`, `disabled`.
+
+What the community tier may and must do:
+
+- May contribute widgets to declared block slots (`header`, `main`,
+  `footer`) and sanctioned menu fill points, call only allow-listed bridge
+  methods (`WIDGET_API` in `src/lib/marketplace-scopes.ts:260-279`), and
+  subscribe to the four documented server hooks.
+- Must pass the single manifest gate (`parseManifest` in
+  `src/lib/plugin-manifest.ts:383`), request the minimum scopes the feature
+  needs, stay inside `PLUGIN_BUDGET`, and localize user-facing strings in
+  both English and Bangla. A widget contribution requires
+  `render_storefront` (`src/lib/plugin-manifest.ts:461-466`); a full nav
+  renderer swap additionally needs the `replace_menus` scope plus the review
+  approval flag (`decideMenuRenderer` in
+  `src/lib/plugin-manifest.ts:98-121`).
+
+Review implications: community submissions are reviewed as manifests plus
+scope requests — reviewers verify the gate passes, each scope is justified,
+and a staging install shows no `sandbox.scope_denied` verdicts. For the
+build path read [the plugin guide](plugins.md); for the bridge allow-list
+read [the SDK guide](sdk.md).
+
+### The presentation rule
+
+Plugins provide functionality; themes dress them. A community widget mounted
+under Theme A renders Theme A's presentation, and the same install under
+Theme B renders Theme B's — the widget mounts inside the published theme
+(`render_storefront` in `src/lib/marketplace-scopes.ts:82-88`) and reads
+theme tokens through `shop.info` behind `read_shop`
+(`src/lib/marketplace-scopes.ts:26-32`).
+
+TBD: full theme-dressing of community widgets is aspiration, not mechanism.
+The frame isolates bundle DOM and CSS
+(`src/components/marketplace/WidgetSandbox.tsx:15-18`), so a theme cannot
+restyle inside a community widget today, and token flow depends on the
+plugin requesting `read_shop`. Until a theme-adapter contract lands in
+code, do not promise merchants that switching themes re-skins installed
+plugin widgets.
