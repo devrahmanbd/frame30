@@ -13,8 +13,12 @@ import { useWishlistHeader } from "@/lib/wishlist-card";
 import { useLang } from "@/lib/i18n";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import {
+  canonicalHref,
+  canonicalLabel,
+  canonicalPromoTitle,
   rebaseMenuHref,
   selectMobileMenu,
+  type CanonicalMenuItem,
   type MenuNode,
   type StoreMenus,
 } from "@/lib/menus/menu";
@@ -674,6 +678,296 @@ export function HeaderMobileDrawer({
               )}
           </li>
         ))}
+      </ul>
+    </nav>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * T4.1 — canonical presentation modes (additive options).
+ *
+ * Both modes render `CanonicalMenuItem` trees (see `@/lib/menus/menu`):
+ * bitext labels resolve per locale, nested children nest, `badge`
+ * renders beside the label, `metadata` wires link affordances
+ * (`title`, `_blank` target), and the optional image/promo ref renders
+ * a panel tile. The existing theme renderers above are untouched —
+ * these modes are opt-in alternatives, never replacements.
+ * ───────────────────────────────────────────────────────────── */
+
+export type CanonicalMenuPresentationProps = {
+  items: readonly CanonicalMenuItem[];
+  base?: string;
+  locale?: string;
+  label?: string;
+};
+
+function CanonicalMenuLink({
+  item,
+  base,
+  locale,
+  className,
+  onNavigate,
+}: {
+  item: CanonicalMenuItem;
+  base: string;
+  locale: string;
+  className?: string;
+  onNavigate?: () => void;
+}) {
+  if (!item.label) return null;
+  const newTab = item.metadata?.["target"] === "_blank";
+  return (
+    <a
+      href={canonicalHref(item, base)}
+      title={item.metadata?.["title"] || undefined}
+      onClick={onNavigate}
+      {...(newTab ? { target: "_blank", rel: "noreferrer" } : {})}
+      className={className}
+    >
+      {canonicalLabel(item, locale)}
+      {item.badge ? (
+        <span className="ml-2 inline-flex min-h-5 items-center rounded-full bg-[var(--theme-muted)] px-2 text-[11px] font-semibold text-[var(--theme-ink)]">
+          {item.badge}
+        </span>
+      ) : null}
+    </a>
+  );
+}
+
+function CanonicalMenuPromoTile({
+  item,
+  base,
+  locale,
+}: {
+  item: CanonicalMenuItem;
+  base: string;
+  locale: string;
+}) {
+  if (item.image) {
+    return (
+      <div className="overflow-hidden rounded-sm bg-[var(--theme-muted)]">
+        <img
+          src={item.image}
+          alt={canonicalLabel(item, locale)}
+          className="h-full w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+  const promo = item.promo;
+  if (!promo) return null;
+  return (
+    <a
+      href={canonicalHref(promo, base)}
+      className="flex min-h-[44px] items-center gap-3 rounded-sm border border-[var(--theme-border)] bg-[var(--theme-muted)] p-2"
+    >
+      <img
+        src={promo.image}
+        alt=""
+        className="h-12 w-12 shrink-0 rounded-sm object-cover"
+        loading="lazy"
+      />
+      <span className="text-sm font-semibold text-[var(--theme-ink)]">
+        {canonicalPromoTitle(promo, locale)}
+      </span>
+    </a>
+  );
+}
+
+function CanonicalDropdownChild({
+  item,
+  base,
+  locale,
+}: {
+  item: CanonicalMenuItem;
+  base: string;
+  locale: string;
+}) {
+  return (
+    <li>
+      <CanonicalMenuLink
+        item={item}
+        base={base}
+        locale={locale}
+        className="block px-6 py-2.5 text-left font-sans text-[13px] text-[var(--theme-ink)]/70 transition-colors hover:bg-[var(--theme-muted)] hover:text-[var(--theme-ink)]"
+      />
+      {item.children && item.children.length > 0 && (
+        <ul className="ml-6 space-y-0.5 border-l border-[var(--theme-border)] py-1 pl-2">
+          {item.children.map((grandchild) => (
+            <CanonicalDropdownChild
+              key={grandchild.id}
+              item={grandchild}
+              base={base}
+              locale={locale}
+            />
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+}
+
+/** T4.1 dropdown mode — desktop hover panel over canonical items. */
+export function CanonicalDropdownMenu({
+  items,
+  base = "",
+  locale = "en",
+  label,
+}: CanonicalMenuPresentationProps) {
+  if (items.length === 0) return null;
+  return (
+    <nav
+      aria-label={label ?? (locale === "bn" ? "মেনু" : "Menu")}
+      className="w-full"
+    >
+      <ul className="flex flex-wrap items-center gap-x-6 gap-y-1">
+        {items.map((item) => (
+          <li key={item.id} className="group relative">
+            <CanonicalMenuLink
+              item={item}
+              base={base}
+              locale={locale}
+              className="inline-flex min-h-10 items-center py-2 text-[13px] font-semibold tracking-wide text-[var(--theme-ink)]/80 transition-colors hover:text-[var(--theme-ink)]"
+            />
+            {item.children && item.children.length > 0 && (
+              <div className="absolute left-0 top-full z-50 hidden min-w-52 pt-1 group-hover:block group-focus-within:block">
+                <div className="space-y-2 rounded-sm border border-[var(--theme-border)] bg-[var(--theme-surface)] py-2 shadow-xl">
+                  <ul>
+                    {item.children.map((child) => (
+                      <CanonicalDropdownChild
+                        key={child.id}
+                        item={child}
+                        base={base}
+                        locale={locale}
+                      />
+                    ))}
+                  </ul>
+                  <div className="px-2">
+                    <CanonicalMenuPromoTile
+                      item={item}
+                      base={base}
+                      locale={locale}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
+function CanonicalDrawerSubtree({
+  nodes,
+  base,
+  locale,
+  onNavigate,
+}: {
+  nodes: readonly CanonicalMenuItem[];
+  base: string;
+  locale: string;
+  onNavigate?: () => void;
+}) {
+  return (
+    <ul className="ml-4 space-y-1 border-l border-[var(--theme-border)] py-2 pl-4">
+      {nodes.map((node) => (
+        <li key={node.id}>
+          <CanonicalMenuLink
+            item={node}
+            base={base}
+            locale={locale}
+            onNavigate={onNavigate}
+            className="block min-h-[44px] py-2.5 text-[15px] font-medium text-[var(--theme-ink)]/80"
+          />
+          {node.children && node.children.length > 0 && (
+            <CanonicalDrawerSubtree
+              nodes={node.children}
+              base={base}
+              locale={locale}
+              onNavigate={onNavigate}
+            />
+          )}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/**
+ * T4.1 drawer mode — mobile accordion over canonical items. Collapsed by
+ * default; `defaultExpandedId` pins one open panel (tests, deep links).
+ */
+export function CanonicalMobileDrawer({
+  items,
+  base = "",
+  locale = "en",
+  label,
+  defaultExpandedId = null,
+  onNavigate,
+}: CanonicalMenuPresentationProps & {
+  defaultExpandedId?: string | null;
+  onNavigate?: () => void;
+}) {
+  const [expanded, setExpanded] = useState<string | null>(defaultExpandedId);
+  if (items.length === 0) return null;
+  return (
+    <nav aria-label={label ?? (locale === "bn" ? "স্টোর মেনু" : "Store menu")}>
+      <ul>
+        {items.map((item) => {
+          const kids = item.children ?? [];
+          const open = expanded === item.id;
+          return (
+            <li
+              key={item.id}
+              className="border-b border-[var(--theme-border)]"
+            >
+              <div className="flex w-full items-center justify-between">
+                <CanonicalMenuLink
+                  item={item}
+                  base={base}
+                  locale={locale}
+                  onNavigate={onNavigate}
+                  className="block flex-1 py-5 text-[13px] font-semibold uppercase tracking-wide text-[var(--theme-ink)]"
+                />
+                {kids.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setExpanded(open ? null : item.id)}
+                    className="min-h-[44px] min-w-[44px] p-4 text-[var(--theme-ink)]"
+                    aria-expanded={open}
+                    aria-label={`${canonicalLabel(item, locale)} submenu`}
+                  >
+                    <span className="text-xl leading-none">
+                      {open ? "−" : "+"}
+                    </span>
+                  </button>
+                )}
+              </div>
+              {open && kids.length > 0 && (
+                <div className="pb-4">
+                  <CanonicalDrawerSubtree
+                    nodes={kids}
+                    base={base}
+                    locale={locale}
+                    onNavigate={onNavigate}
+                  />
+                  {(item.image || item.promo) && (
+                    <div className="ml-4 mt-2 pr-4">
+                      <CanonicalMenuPromoTile
+                        item={item}
+                        base={base}
+                        locale={locale}
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );

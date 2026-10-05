@@ -50,6 +50,8 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 
 import { MinimalCheckoutHeader, StoreHeader } from "./StoreHeader";
 import {
+  CanonicalDropdownMenu,
+  CanonicalMobileDrawer,
   HeaderAnnouncementBar,
   HeaderDesktopNav,
   ThemeHeaderRenderer,
@@ -59,7 +61,11 @@ import {
 import type { StoreMenuSwap } from "./StoreHeader";
 import { themeChromeFor } from "./theme-chrome";
 import { songoskritiMenuLabel } from "@/lib/themes/songoskriti/header-fallback";
-import type { MenuNode, StoreMenus } from "@/lib/menus/menu";
+import type {
+  CanonicalMenuItem,
+  MenuNode,
+  StoreMenus,
+} from "@/lib/menus/menu";
 import { LanguageProvider } from "@/lib/i18n";
 
 const HEADER_SRC = () =>
@@ -731,5 +737,125 @@ describe("StoreHeader T3.1 layer boundaries (HeaderData + Behavior + Renderer)",
     );
     expect(genericHtml).toBe("");
     expect(ThemeHeaderRenderer).toBeDefined();
+  });
+});
+
+describe("T4.1 canonical presentation modes", () => {
+  const canonicalItems: CanonicalMenuItem[] = [
+    {
+      id: "shop",
+      label: "Shop",
+      label_bn: "কেনাকাটা",
+      href: "/c/shop",
+      badge: "New",
+      children: [
+        {
+          id: "sarees",
+          label: "Sarees",
+          label_bn: "শাড়ি",
+          href: "/c/sarees",
+          children: [
+            {
+              id: "jamdani",
+              label: "Jamdani",
+              label_bn: "জামদানি",
+              href: "/c/jamdani",
+            },
+          ],
+        },
+      ],
+      promo: {
+        image: "/ph/promo.jpg",
+        href: "/c/festive",
+        title: "Festive",
+        title_bn: "উৎসব",
+      },
+    },
+    { id: "about", label: "About", href: "/pages/about" },
+  ];
+
+  it("dropdown renders nested children with rebased hrefs", () => {
+    const html = renderToStaticMarkup(
+      <CanonicalDropdownMenu items={canonicalItems} base="/store/demo" />,
+    );
+    expect(html).toContain(">Shop<");
+    expect(html).toContain(">Sarees<");
+    expect(html).toContain(">Jamdani<");
+    expect(html).toContain('href="/store/demo/c/shop"');
+    expect(html).toContain('href="/store/demo/c/sarees"');
+    expect(html).toContain('href="/store/demo/c/jamdani"');
+    expect(html).toContain('href="/store/demo/pages/about"');
+  });
+
+  it("dropdown renders বাংলা labels, badge and the promo ref", () => {
+    const html = renderToStaticMarkup(
+      <CanonicalDropdownMenu
+        items={canonicalItems}
+        base="/store/demo"
+        locale="bn"
+      />,
+    );
+    expect(html).toContain("কেনাকাটা");
+    expect(html).toContain("শাড়ি");
+    expect(html).toContain("জামদানি");
+    expect(html).toContain("New");
+    expect(html).toContain('src="/ph/promo.jpg"');
+    expect(html).toContain("উৎসব");
+    expect(html).toContain('href="/store/demo/c/festive"');
+  });
+
+  it("dropdown renders nothing for an empty menu", () => {
+    expect(renderToStaticMarkup(<CanonicalDropdownMenu items={[]} />)).toBe(
+      "",
+    );
+  });
+
+  it("drawer hides nested children and the promo until expanded", () => {
+    const html = renderToStaticMarkup(
+      <CanonicalMobileDrawer items={canonicalItems} base="/store/demo" />,
+    );
+    expect(html).toContain(">Shop<");
+    expect(html).toContain(">About<");
+    expect(html).not.toContain(">Jamdani<");
+    expect(html).not.toContain("/ph/promo.jpg");
+    expect(html).toContain('aria-expanded="false"');
+  });
+
+  it("drawer shows nested children, badge and promo for the open panel", () => {
+    const html = renderToStaticMarkup(
+      <CanonicalMobileDrawer
+        items={canonicalItems}
+        base="/store/demo"
+        defaultExpandedId="shop"
+      />,
+    );
+    expect(html).toContain(">Sarees<");
+    expect(html).toContain(">Jamdani<");
+    expect(html).toContain('href="/store/demo/c/jamdani"');
+    expect(html).toContain("New");
+    expect(html).toContain('src="/ph/promo.jpg"');
+    expect(html).toContain(">Festive<");
+    expect(html).toContain('aria-expanded="true"');
+  });
+
+  it("drawer renders বাংলা labels and promo titles", () => {
+    const html = renderToStaticMarkup(
+      <CanonicalMobileDrawer
+        items={canonicalItems}
+        base="/store/demo"
+        locale="bn"
+        defaultExpandedId="shop"
+      />,
+    );
+    expect(html).toContain("কেনাকাটা");
+    expect(html).toContain("শাড়ি");
+    expect(html).toContain("জামদানি");
+    expect(html).toContain("উৎসব");
+  });
+
+  it("drawer renders nothing for an empty menu", () => {
+    expect(renderToStaticMarkup(<CanonicalMobileDrawer items={[]} />)).toBe(
+      "",
+    );
   });
 });

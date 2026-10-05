@@ -489,3 +489,135 @@ export function menuDirty(
 ): boolean {
   return JSON.stringify(normalise(saved)) !== JSON.stringify(normalise(draft));
 }
+
+/* --------------------------------------- T4.1 canonical presentation shape */
+
+/**
+ * Phase 16 T4.1 — the canonical menu item shared by every renderer.
+ *
+ * Dashboard `MenuItem` is the flat editor shape (parentId/position); theme
+ * fallbacks are ad-hoc trees. Both convert into this nested presentation
+ * shape, so the dropdown (desktop) and drawer (mobile) modes render one
+ * contract: bitext labels, nested children, badge/metadata, and an optional
+ * image/promo ref. Additive only — the editor shape above is untouched.
+ */
+export type MenuPresentationMode = "dropdown" | "drawer";
+
+export const MENU_PRESENTATION_MODES: readonly MenuPresentationMode[] = [
+  "dropdown",
+  "drawer",
+];
+
+/** Additive mode option: unknown strings fall back, never throw. */
+export function isMenuPresentationMode(
+  value: unknown,
+): value is MenuPresentationMode {
+  return value === "dropdown" || value === "drawer";
+}
+
+export type CanonicalMenuPromo = {
+  image: string;
+  href: string;
+  title: string;
+  title_bn?: string | null;
+};
+
+export type CanonicalMenuItem = {
+  id: string;
+  label: string;
+  label_bn?: string | null;
+  href: string;
+  children?: CanonicalMenuItem[];
+  badge?: string | null;
+  metadata?: Record<string, string>;
+  image?: string | null;
+  promo?: CanonicalMenuPromo | null;
+};
+
+/** বাংলা twin wins when requested and present; English otherwise. */
+export function canonicalLabel(
+  item: Pick<CanonicalMenuItem, "label" | "label_bn">,
+  locale: string,
+): string {
+  if (locale === "bn") {
+    const bn = item.label_bn?.trim();
+    if (bn) return bn;
+  }
+  return item.label;
+}
+
+/** Promo tile title follows the same twin rule as the item label. */
+export function canonicalPromoTitle(
+  promo: Pick<CanonicalMenuPromo, "title" | "title_bn">,
+  locale: string,
+): string {
+  if (locale === "bn") {
+    const bn = promo.title_bn?.trim();
+    if (bn) return bn;
+  }
+  return promo.title;
+}
+
+/** Href rebased onto a path host; absolute/hash/contact hrefs pass through. */
+export function canonicalHref(item: Pick<CanonicalMenuItem, "href">, base: string): string {
+  return rebaseMenuHref(item.href, base);
+}
+
+function toCanonicalPromo(value: unknown): CanonicalMenuPromo | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const raw = value as Record<string, unknown>;
+  if (
+    typeof raw["image"] !== "string" ||
+    typeof raw["href"] !== "string" ||
+    typeof raw["title"] !== "string"
+  ) {
+    return null;
+  }
+  const titleBn = raw["title_bn"];
+  return {
+    image: raw["image"] as string,
+    href: raw["href"] as string,
+    title: raw["title"] as string,
+    title_bn: typeof titleBn === "string" ? titleBn : null,
+  };
+}
+
+function toCanonicalNode(node: MenuNode): CanonicalMenuItem {
+  // Dashboard rows carry none of the enrichment fields today; theme
+  // fallbacks carry `image`. Both flow through when present so renderers
+  // never branch on the source shape.
+  const extra = node as unknown as Record<string, unknown>;
+  const labelBn = extra["label_bn"];
+  const badge = extra["badge"];
+  const image = extra["image"];
+  const carried = extra["metadata"];
+  const metadata: Record<string, string> = {};
+  if (node.titleAttr.trim()) metadata["title"] = node.titleAttr.trim();
+  if (node.newTab) metadata["target"] = "_blank";
+  if (node.cssClass.trim()) metadata["class"] = node.cssClass.trim();
+  if (carried && typeof carried === "object" && !Array.isArray(carried)) {
+    for (const [key, value] of Object.entries(
+      carried as Record<string, unknown>,
+    )) {
+      if (typeof value === "string") metadata[key] = value;
+    }
+  }
+  return {
+    id: node.id,
+    label: node.label,
+    label_bn: typeof labelBn === "string" ? labelBn : null,
+    href: node.url,
+    children: (node.children ?? []).map(toCanonicalNode),
+    badge: typeof badge === "string" && badge.trim() ? badge : null,
+    metadata,
+    image: typeof image === "string" && image ? image : null,
+    promo: toCanonicalPromo(extra["promo"]),
+  };
+}
+
+/** Deep map of a dashboard/theme tree into the canonical shape. */
+export function toCanonicalMenu(
+  nodes: readonly MenuNode[],
+): CanonicalMenuItem[] {
+  return nodes.map(toCanonicalNode);
+}

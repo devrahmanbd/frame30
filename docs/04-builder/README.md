@@ -90,6 +90,20 @@ Own drag-and-drop page builder (Elementor-style) over a JSON AST engine. Merchan
 
 - builder_loop E2E must pass: draft → autosave → preview → publish → rollback, plus the invalid-widget placeholder path.
 - Theme-registry validation failure → last-good fallback verified in `docs/15-e2e/theme_registry.md`.
+- §21 contract suites (T4.3, contract-level vitest — no Playwright, no `.e2e/`
+  infra exists in this repo) must pass alongside the adjacent suites:
+  - lifecycle (`src/lib/builder-lifecycle.contract.test.tsx:35`, `:108`, `:144`) —
+    built-in widget builder→save→preview→publish→render, authored-data round
+    trip, broken widget → placeholder with siblings intact.
+  - themes (`src/lib/builder-themes.contract.test.tsx:82`, `:132`, `:185`) —
+    community `plugin_block` install→persist→render→switch, `product_grid`
+    A/B extending the `DemoProductWidget` proof pattern
+    (`src/components/builder/demo-widget-proof.test.tsx:2`), broken theme →
+    generic fallback + server last-good pin (`src/lib/themes.server.ts:1189`).
+  - chrome (`src/lib/builder-chrome.contract.test.tsx:79`, `:128`, `:158`,
+    `:197`, `:239`, `:282`) — menu assign→render, header locale switch
+    geometry-intact, announcement→all templates, footer global→all templates,
+    mobile-width structure (`src/lib/responsive.ts:11`, `:154`), bn integrity.
 
 ### Audit verdict — checklist
 

@@ -6,14 +6,21 @@ import {
   buildTree,
   canIndent,
   canOutdent,
+  canonicalHref,
+  canonicalLabel,
+  canonicalPromoTitle,
   EMPTY_STORE_MENUS,
   flatten,
   indentItem,
+  isMenuPresentationMode,
   isMenuValid,
   locationsLabel,
   MENU_LOCATIONS,
+  MENU_PRESENTATION_MODES,
   menuDirty,
   menuHandle,
+  type CanonicalMenuItem,
+  type CanonicalMenuPromo,
   type MenuItem,
   type MenuNode,
   type NavMenu,
@@ -30,6 +37,7 @@ import {
   sourceToItem,
   subtreeIds,
   toggleLocation,
+  toCanonicalMenu,
   uniqueHandle,
   updateItem,
   validateMenu,
@@ -343,5 +351,181 @@ describe("TRACK M — plugin slot vocabulary separation", () => {
       "header",
       "mobile",
     ]);
+  });
+});
+
+describe("T4.1 canonical menu type", () => {
+  const promo: CanonicalMenuPromo = {
+    image: "/ph/promo.jpg",
+    href: "/c/festive",
+    title: "Festive",
+    title_bn: "উৎসব",
+  };
+  const entry: CanonicalMenuItem = {
+    id: "shop",
+    label: "Shop",
+    label_bn: "কেনাকাটা",
+    href: "/c/shop",
+    badge: "New",
+    metadata: { title: "Shop all", target: "_blank" },
+    image: null,
+    promo,
+    children: [
+      {
+        id: "sarees",
+        label: "Sarees",
+        label_bn: "শাড়ি",
+        href: "/c/sarees",
+        children: [
+          {
+            id: "jamdani",
+            label: "Jamdani",
+            label_bn: "জামদানি",
+            href: "/c/jamdani",
+          },
+        ],
+      },
+    ],
+  };
+
+  it("resolves bitext labels per locale with English fallback", () => {
+    expect(canonicalLabel(entry, "en")).toBe("Shop");
+    expect(canonicalLabel(entry, "bn")).toBe("কেনাকাটা");
+    expect(canonicalLabel({ label: "Shop", label_bn: "  " }, "bn")).toBe(
+      "Shop",
+    );
+    expect(canonicalLabel({ label: "Shop" }, "bn")).toBe("Shop");
+  });
+
+  it("resolves promo titles per locale with English fallback", () => {
+    expect(canonicalPromoTitle(promo, "en")).toBe("Festive");
+    expect(canonicalPromoTitle(promo, "bn")).toBe("উৎসব");
+    expect(
+      canonicalPromoTitle({ title: "Festive", title_bn: null }, "bn"),
+    ).toBe("Festive");
+  });
+
+  it("keeps nested children, badge, metadata and the promo ref", () => {
+    expect(entry.children?.map((c) => c.id)).toEqual(["sarees"]);
+    expect(entry.children?.[0]?.children?.map((c) => c.id)).toEqual([
+      "jamdani",
+    ]);
+    expect(entry.badge).toBe("New");
+    expect(entry.metadata).toEqual({ title: "Shop all", target: "_blank" });
+    expect(entry.promo?.image).toBe("/ph/promo.jpg");
+  });
+
+  it("rebases canonical hrefs onto a path host", () => {
+    expect(canonicalHref(entry, "/store/demo")).toBe("/store/demo/c/shop");
+    expect(canonicalHref({ href: "#top" }, "/store/demo")).toBe("#top");
+    expect(
+      canonicalHref({ href: "https://example.com/x" }, "/store/demo"),
+    ).toBe("https://example.com/x");
+  });
+
+  it("sanctions exactly the dropdown and drawer presentation modes", () => {
+    expect([...MENU_PRESENTATION_MODES]).toEqual(["dropdown", "drawer"]);
+    expect(isMenuPresentationMode("dropdown")).toBe(true);
+    expect(isMenuPresentationMode("drawer")).toBe(true);
+    expect(isMenuPresentationMode("mega")).toBe(false);
+    expect(isMenuPresentationMode(undefined)).toBe(false);
+  });
+});
+
+describe("T4.1 toCanonicalMenu", () => {
+  function node(
+    id: string,
+    over: Partial<MenuNode> = {},
+  ): MenuNode {
+    return {
+      id,
+      parentId: null,
+      position: 0,
+      kind: "custom",
+      label: id.toUpperCase(),
+      url: `/c/${id}`,
+      refId: null,
+      titleAttr: "",
+      newTab: false,
+      cssClass: "",
+      depth: 0,
+      children: [],
+      ...over,
+    };
+  }
+
+  it("maps dashboard trees to canonical items with nested children", () => {
+    const tree = buildTree([
+      item("a", { position: 0 }),
+      item("b", { position: 1 }),
+      item("b1", { parentId: "b", position: 0 }),
+    ]);
+    const canonical = toCanonicalMenu(tree);
+    expect(canonical.map((c) => c.id)).toEqual(["a", "b"]);
+    expect(canonical.map((c) => c.href)).toEqual(["/x", "/x"]);
+    expect(canonical[1]!.children?.map((c) => c.id)).toEqual(["b1"]);
+    // Dashboard rows carry no enrichment today: explicit nulls, not garbage.
+    expect(canonical[0]).toMatchObject({
+      label_bn: null,
+      badge: null,
+      image: null,
+      promo: null,
+    });
+    expect(canonical[0]!.metadata).toEqual({});
+  });
+
+  it("derives link metadata from title, new-tab and css class", () => {
+    const [one] = toCanonicalMenu([
+      node("a", { titleAttr: "Shop all", newTab: true, cssClass: "hot" }),
+    ]);
+    expect(one!.metadata).toEqual({
+      title: "Shop all",
+      target: "_blank",
+      class: "hot",
+    });
+  });
+
+  it("carries enrichment through when the source node has it", () => {
+    const enriched = node("a", {
+      label: "Shop",
+      url: "/c/shop",
+      children: [node("b", { label: "Sarees", url: "/c/sarees" })],
+    }) as unknown as MenuNode;
+    (enriched as unknown as Record<string, unknown>)["label_bn"] =
+      "কেনাকাটা";
+    (enriched as unknown as Record<string, unknown>)["badge"] = "New";
+    (enriched as unknown as Record<string, unknown>)["image"] = "/ph/nav.jpg";
+    (enriched as unknown as Record<string, unknown>)["promo"] = {
+      image: "/ph/promo.jpg",
+      href: "/c/festive",
+      title: "Festive",
+      title_bn: "উৎসব",
+    };
+    const [one] = toCanonicalMenu([enriched]);
+    expect(one!.label_bn).toBe("কেনাকাটা");
+    expect(one!.badge).toBe("New");
+    expect(one!.image).toBe("/ph/nav.jpg");
+    expect(one!.promo).toEqual({
+      image: "/ph/promo.jpg",
+      href: "/c/festive",
+      title: "Festive",
+      title_bn: "উৎসব",
+    });
+    expect(canonicalLabel(one!, "bn")).toBe("কেনাকাটা");
+    expect(canonicalPromoTitle(one!.promo!, "bn")).toBe("উৎসব");
+  });
+
+  it("drops malformed promos instead of rendering broken tiles", () => {
+    const bad = node("a") as unknown as Record<string, unknown>;
+    bad["promo"] = { image: "/ph/promo.jpg", title: "No href" };
+    const [one] = toCanonicalMenu([bad as unknown as MenuNode]);
+    expect(one!.promo).toBeNull();
+  });
+
+  it("never mutates the input tree", () => {
+    const tree = buildTree([item("a"), item("b", { position: 1 })]);
+    const before = JSON.stringify(tree);
+    toCanonicalMenu(tree);
+    expect(JSON.stringify(tree)).toBe(before);
   });
 });

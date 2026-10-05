@@ -7017,3 +7017,134 @@ export function sectionsForPanelTab(
   }
   return out;
 }
+
+/* ------------------------------------------------------------------ */
+/* T4.2 — builder capability discovery                                 */
+/* ------------------------------------------------------------------ */
+
+/**
+ * T4.2 — builder capability discovery: what the builder may ask per widget.
+ *
+ * The inspector edits data and behavior through the controlled schema below
+ * — never theme markup internals. A widget that wants a theme-composed look
+ * registers a closed-vocabulary switch (`skin`, `cardVariant`, …); the theme
+ * answers by composing its skins/tokens over that value. No free-form CSS or
+ * markup handle is ever exposed per widget: theme-specific presentation
+ * options travel via controlled `select`/`choice` controls only.
+ *
+ * The four capabilities:
+ * - `theme`: a controlled theme-presentation switch is present (a `skin`
+ *   select, built by `skinControl`, mirroring the engine `WIDGET_SKINS`
+ *   vocabularies without importing them — studio stays decoupled from the
+ *   builder catalog by design, see the `skinControl` note above).
+ * - `responsive`: per-breakpoint presentation overrides are available (any
+ *   `responsive: true` control). Universally true today: the shared style
+ *   and advanced tabs always carry responsive controls, so every widget —
+ *   including the unknown-element fallback — supports responsive
+ *   presentation. Pinned so a future refactor of the shared tabs cannot
+ *   silently drop it.
+ * - `variant`: a closed-option treatment switch is present (`cardVariant`,
+ *   `variant`, `size`, `style`, `tone`, `ratio` as `select`/`choice`).
+ *   Layout-variant (`columns`, `layout`, `direction`) and alignment
+ *   (`align`, `textAlign`) are separate primitives with their own controls
+ *   and do not set this flag. Engine-side switches with no studio mirror
+ *   yet (`density`, `surface`, `atmosphere` in `builder-ast`) are
+ *   intentionally absent here — they reach the inspector only once a twin
+ *   control lands, per the twin-parity contract.
+ * - `slot`: the widget hosts slot composition, i.e. it accepts child nodes
+ *   (`container` / `grid` — the two elements mapped to `CONTAINER_CONTROLS`
+ *   above). Root placement in `header` / `main` / `footer` is universal for
+ *   every widget via `StudioNode.slot` (`studio/model.ts` `STUDIO_SLOTS`);
+ *   this flag answers the only per-widget-varying question.
+ *
+ * All answers derive from the control tables in this file — no new source
+ * of truth, no behavior change to existing exports. Controls nested inside
+ * repeater `fields` (e.g. the `skin` switches inside the `hero_carousel`
+ * slides and `testimonials` rows) count: the walk recurses.
+ */
+export type WidgetCapabilities = {
+  theme: boolean;
+  responsive: boolean;
+  variant: boolean;
+  slot: boolean;
+};
+
+/** Capability keys, in `WidgetCapabilities` order. */
+export type PresentationCapability = keyof WidgetCapabilities;
+
+/**
+ * Studio-owned vocabulary of closed-option treatment switches. These keys
+ * are owned by this file's `CONTENT` tables (not the engine catalog), so
+ * listing them here duplicates nothing — a key only matches when a control
+ * with that key exists below as `select`/`choice`.
+ */
+const VARIANT_SWITCH_KEYS = new Set([
+  "cardVariant",
+  "variant",
+  "size",
+  "style",
+  "tone",
+  "ratio",
+]);
+
+/**
+ * Elements that host child nodes. Mirrors the `CONTENT` mapping to
+ * `CONTAINER_CONTROLS` above — extend both together if a new host lands.
+ */
+const SLOT_HOST_ELS = new Set(["container", "grid"]);
+
+function walkControlTree(
+  controls: Control[],
+  visit: (control: Control) => void,
+): void {
+  for (const control of controls) {
+    visit(control);
+    if (control.fields?.length) walkControlTree(control.fields, visit);
+  }
+}
+
+/** Full inspector control set for one element — same composition as `controlsFor`. */
+function allControlsForEl(el: string): Control[] {
+  return [...contentControls(el), ...STYLE_CONTROLS, ...ADVANCED_CONTROLS];
+}
+
+/** Capability answers for one widget element key (unknown keys get the generic fallback). */
+export function capabilitiesFor(el: string): WidgetCapabilities {
+  let theme = false;
+  let responsive = false;
+  let variant = false;
+  walkControlTree(allControlsForEl(el), (control) => {
+    const closed = control.type === "select" || control.type === "choice";
+    if (control.key === "skin" && closed) theme = true;
+    if (control.responsive) responsive = true;
+    if (VARIANT_SWITCH_KEYS.has(control.key) && closed) variant = true;
+  });
+  return { theme, responsive, variant, slot: SLOT_HOST_ELS.has(el) };
+}
+
+/** Single-capability query over `capabilitiesFor`. */
+export function supportsCapability(
+  el: string,
+  capability: PresentationCapability,
+): boolean {
+  return capabilitiesFor(el)[capability];
+}
+
+/**
+ * Controlled theme-presentation options for one widget: the `skin` switch
+ * plus any treatment switch, in content order. Every entry is a
+ * closed-vocabulary `select`/`choice` — the inspector renders these and
+ * nothing else for theme presentation, so a theme can only ever receive
+ * values from its published vocabulary (unknown values resolve to defaults
+ * engine-side, never a crash, never empty).
+ */
+export function presentationControlsFor(el: string): Control[] {
+  const out: Control[] = [];
+  walkControlTree(contentControls(el), (control) => {
+    const closed = control.type === "select" || control.type === "choice";
+    if (!closed) return;
+    if (control.key === "skin" || VARIANT_SWITCH_KEYS.has(control.key))
+      out.push(control);
+  });
+  return out;
+}

@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { WIDGET_BY_KEY, newWidgetNode, searchWidgets } from "./catalog";
-import { contentControls } from "./controls";
+import {
+  capabilitiesFor,
+  contentControls,
+  presentationControlsFor,
+  supportsCapability,
+  type PresentationCapability,
+} from "./controls";
 import {
   DEFAULT_WIDGET_SKIN,
   STYLE_FIELDS,
@@ -1028,5 +1034,148 @@ describe("picker binding twin parity", () => {
     expect(WIDGET_BY_KEY.blog_archive!.defaults.handles).toBe("");
     expect(WIDGET_BY_KEY.footer_sitemap!.defaults.pages).toBe("");
     expect(WIDGET_BY_KEY.search_command!.defaults.query).toBe("");
+  });
+});
+
+/**
+ * T4.2 — builder capability discovery (`studio/controls.ts` §T4.2
+ * appendix; contract `docs/themes/presentation-primitives.md` §10).
+ * The inspector edits data/behavior through `contentControls`, and theme
+ * presentation only through `presentationControlsFor` — closed-vocabulary
+ * selects, never markup handles. Capabilities derive from the control
+ * tables, so these cases pin derivation, not a second registry.
+ */
+describe("builder capability discovery (T4.2)", () => {
+  it("exposes theme presentation exactly on the skinnable studio controls", () => {
+    for (const key of [
+      "product_grid",
+      "product_rail",
+      "urgency_rail",
+      "hero_carousel",
+      "testimonials",
+    ]) {
+      expect(capabilitiesFor(key).theme, `${key}: theme`).toBe(true);
+    }
+    for (const key of [
+      "button",
+      "rating_stars",
+      "container",
+      "heading",
+      "nope-unknown-widget",
+    ]) {
+      expect(capabilitiesFor(key).theme, `${key}: theme`).toBe(false);
+    }
+  });
+
+  it("finds repeater-nested skin switches (carousel slides, testimonial rows)", () => {
+    expect(capabilitiesFor("hero_carousel").theme).toBe(true);
+    expect(capabilitiesFor("testimonials").theme).toBe(true);
+  });
+
+  it("keeps responsive presentation universal via the shared tabs", () => {
+    for (const key of [
+      "button",
+      "rating_stars",
+      "container",
+      "heading",
+      "nope-unknown-widget",
+    ]) {
+      expect(capabilitiesFor(key).responsive, `${key}: responsive`).toBe(true);
+    }
+  });
+
+  it("exposes variant presentation on treatment switches, not layout/alignment", () => {
+    for (const key of [
+      "button",
+      "urgency_rail",
+      "video",
+      "alert",
+      "blog_terms",
+      "divider",
+    ]) {
+      expect(capabilitiesFor(key).variant, `${key}: variant`).toBe(true);
+    }
+    // Layout-variant (columns/layout/direction), alignment (level/textAlign)
+    // and meter widgets carry no treatment switch.
+    for (const key of ["container", "grid", "heading", "rating_stars"]) {
+      expect(capabilitiesFor(key).variant, `${key}: variant`).toBe(false);
+    }
+  });
+
+  it("reports slot hosting only for containers", () => {
+    expect(capabilitiesFor("container").slot).toBe(true);
+    expect(capabilitiesFor("grid").slot).toBe(true);
+    for (const key of [
+      "product_rail",
+      "heading",
+      "button",
+      "nope-unknown-widget",
+    ]) {
+      expect(capabilitiesFor(key).slot, `${key}: slot`).toBe(false);
+    }
+  });
+
+  it("answers single-capability queries consistently", () => {
+    const keys: PresentationCapability[] = [
+      "theme",
+      "responsive",
+      "variant",
+      "slot",
+    ];
+    for (const el of ["product_rail", "button", "container", "heading"]) {
+      const all = capabilitiesFor(el);
+      for (const key of keys) {
+        expect(supportsCapability(el, key), `${el}.${key}`).toBe(all[key]);
+      }
+    }
+  });
+
+  it("funnels theme presentation options through closed schema only", () => {
+    const rail = presentationControlsFor("product_rail");
+    expect(rail.map((c) => c.key)).toEqual(["skin"]);
+    expect(rail[0]!.options?.map((o) => o.value)).toEqual([
+      "editorial",
+      "compact",
+      "minimal",
+    ]);
+
+    const urgency = presentationControlsFor("urgency_rail");
+    expect(urgency.map((c) => c.key)).toContain("cardVariant");
+    expect(urgency.map((c) => c.key)).toContain("skin");
+
+    const button = presentationControlsFor("button");
+    expect(button.map((c) => c.key)).toEqual(
+      expect.arrayContaining(["variant", "size"]),
+    );
+    expect(button.map((c) => c.key)).not.toContain("skin");
+
+    expect(presentationControlsFor("rating_stars")).toEqual([]);
+    expect(presentationControlsFor("nope-unknown-widget")).toEqual([]);
+
+    // Closed schema: every theme-presentation option is a select/choice
+    // with a non-empty vocabulary — never a free-text or markup handle.
+    for (const el of [
+      "product_rail",
+      "urgency_rail",
+      "hero_carousel",
+      "testimonials",
+      "product_grid",
+      "button",
+      "video",
+      "alert",
+      "blog_terms",
+      "divider",
+    ]) {
+      for (const control of presentationControlsFor(el)) {
+        expect(
+          ["select", "choice"].includes(control.type),
+          `${el}.${control.key}: closed type`,
+        ).toBe(true);
+        expect(
+          (control.options?.length ?? 0) > 0,
+          `${el}.${control.key}: non-empty vocabulary`,
+        ).toBe(true);
+      }
+    }
   });
 });
