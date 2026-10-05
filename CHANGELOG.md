@@ -52,6 +52,30 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Corrections
 - No dep-deny module or SRI rule exist; gsap is the required single engine (policy sentence only). Responsive rail-limit mirrors added post-lane.
 
+## [2026-10-03] — Lane 4 menu+capability+contracts (`c219cab8`)
+### Added
+- Canonical menu type (bitext, children, badge, promo) + dropdown/drawer modes (additive, unwired); builder capability API (`capabilitiesFor`); presentation-primitives doc; 32 contract tests (lifecycle, themes, chrome).
+### Verification
+- 550 spot green, tsc clean. Follow-ups: dashboard menu columns need migration; mode plumbing; live publishVersion in-chain.
+
+## [2026-10-03] — Lane 3 chrome splits (`0ca8b815`)
+### Added
+- Header 3-layer split (identical output); standalone announcement surface (dismiss persisted, bn, reduced-motion); footer split + global-block control; 24 structural localization tests.
+### Verification
+- 103 spot green, tsc clean.
+
+## [2026-10-03] — Lane 2 recovery+acceptance (`00b58b8c`)
+### Added
+- Last-good auto-serve (prior pin else $fallback, audited); DemoProductWidget two-theme proof (via product_rail); 7-link chained plugin acceptance.
+### Verification
+- Spot suites green, tsc clean.
+
+## [2026-10-03] — Lane 1 tokens+proof+tiers (`5aa546f3`)
+### Added
+- StoreHeader tokenized (31 swaps, parity pinned); hero 5-item repeater proof; core/community tier vocabulary.
+### Verification
+- 87 spot green, tsc clean.
+
 ## [2026-10-03] — Variation server persistence + live render + picker (`d3fc715d`)
 ### Added
 - `parseUntrusted` preserves well-formed variation keys; workspace round-trips through autosave/commit/publish; `setVariation` picker seam; live published-version resolution (requested > persisted > base); builder theme-panel picker with `?variation=` preview links.
