@@ -26,6 +26,16 @@ import { afterFailure, policyFor } from "./job-queue";
 import { verifySignature } from "./webhook-signing";
 import { SECTION_CATALOG } from "./builder-ast";
 import { WIDGET_REGISTRY } from "./widget-registry";
+import { createElement, type ReactElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import {
+  clearMenuRenderers,
+  PluginMenuBoundary,
+  registerMenuRenderer,
+  resolveMenuRenderer,
+  selectPluginMenuRenderer,
+  type PluginMenuRendererProps,
+} from "./plugin-menu-renderers";
 
 const enqueueJobMock = vi.hoisted(() => vi.fn());
 vi.mock("./job-queue.server", () => ({ enqueueJob: enqueueJobMock }));
@@ -823,5 +833,215 @@ describe("TRACK M — full renderer swap (shape 2: review-gated, fail-open)", ()
     expect(
       selectMenuSwapRows(theme, ["p"], { kind: "theme_default", reason: "not_approved" }),
     ).toBe(theme);
+  });
+});
+
+describe("MENU RUNTIME — plugin renderer replacement (registry + boundary)", () => {
+  afterEach(() => clearMenuRenderers());
+
+  const claim = (over: Partial<MenuRendererClaim> = {}): MenuRendererClaim => ({
+    pluginId: "nav-pro",
+    slot: "menu_bar",
+    entry: "framique.mount(document.createTextNode('nav'))",
+    reviewApproved: true,
+    ...over,
+  });
+  const granted = ["render_storefront", "replace_menus"];
+
+  const PluginNav = ({ rows, pluginId }: PluginMenuRendererProps<string>) =>
+    createElement(
+      "nav",
+      { "data-plugin-nav": pluginId },
+      rows.join("|"),
+    );
+
+  it("approved + scoped swaps resolve the registered renderer with the winning rows", () => {
+    registerMenuRenderer("nav-pro", "menu_bar", PluginNav);
+    const decision = decideMenuRenderer([claim()], "menu_bar", granted);
+    expect(decision.kind).toBe("plugin");
+    const Selected = selectPluginMenuRenderer(decision, "menu_bar");
+    expect(Selected).toBe(PluginNav);
+    // The renderer receives the winning rows (theme rows unless the swap
+    // carried rows) — the plugin owns presentation, never row selection.
+    const { rows } = resolveMenuSwapRows(["a", "b"], {
+      claims: [claim()],
+      grantedScopes: granted,
+      pluginRows: ["p1"],
+    }, "menu_bar");
+    const html = renderToStaticMarkup(
+      createElement(Selected!, {
+        rows,
+        slot: "menu_bar",
+        pluginId: "nav-pro",
+      }) as ReactElement,
+    );
+    expect(html).toContain('data-plugin-nav="nav-pro"');
+    expect(html).toContain("p1");
+  });
+
+  it("unapproved swaps never resolve a renderer even when registered", () => {
+    registerMenuRenderer("nav-pro", "menu_bar", PluginNav);
+    const decision = decideMenuRenderer(
+      [claim({ reviewApproved: false })],
+      "menu_bar",
+      granted,
+    );
+    expect(decision).toEqual({
+      kind: "theme_default",
+      reason: "not_approved",
+      pluginId: "nav-pro",
+    });
+    expect(selectPluginMenuRenderer(decision, "menu_bar")).toBeUndefined();
+  });
+
+  it("scope-denied swaps never resolve a renderer even when registered", () => {
+    registerMenuRenderer("nav-pro", "menu_bar", PluginNav);
+    const decision = decideMenuRenderer([claim()], "menu_bar", [
+      "render_storefront",
+    ]);
+    expect(decision).toEqual({
+      kind: "theme_default",
+      reason: "scope_denied",
+      pluginId: "nav-pro",
+    });
+    expect(selectPluginMenuRenderer(decision, "menu_bar")).toBeUndefined();
+  });
+
+  it("approved + scoped but unregistered keeps rows swapping through theme markup", () => {
+    const decision = decideMenuRenderer([claim()], "menu_bar", granted);
+    expect(decision.kind).toBe("plugin");
+    // No renderer registered → no replacement; rows still resolve fail-open.
+    expect(selectPluginMenuRenderer(decision, "menu_bar")).toBeUndefined();
+    const { rows } = resolveMenuSwapRows(["a"], {
+      claims: [claim()],
+      grantedScopes: granted,
+      pluginRows: ["p1"],
+    }, "menu_bar");
+    expect(rows).toEqual(["p1"]);
+  });
+
+  it("registration is first-wins and never throws on invalid input", () => {
+    const Other = () => createElement("nav", null, "other");
+    registerMenuRenderer("nav-pro", "menu_bar", PluginNav);
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      registerMenuRenderer("nav-pro", "menu_bar", Other);
+      expect(warnSpy).toHaveBeenCalled();
+    } finally {
+      warnSpy.mockRestore();
+    }
+    const decision = decideMenuRenderer([claim()], "menu_bar", granted);
+    expect(selectPluginMenuRenderer(decision, "menu_bar")).toBe(PluginNav);
+    expect(() =>
+      registerMenuRenderer("", "menu_bar", PluginNav),
+    ).not.toThrow();
+    expect(() =>
+      registerMenuRenderer("nav-pro", "sidebar" as never, PluginNav),
+    ).not.toThrow();
+    expect(() =>
+      registerMenuRenderer("nav-pro", "menu_drawer", null as never),
+    ).not.toThrow();
+    expect(selectPluginMenuRenderer(null, "menu_bar")).toBeUndefined();
+    expect(
+      selectPluginMenuRenderer("junk" as never, "menu_bar"),
+    ).toBeUndefined();
+  });
+
+  it("resolveMenuRenderer falls back instead of leaking another registration", () => {
+    registerMenuRenderer("nav-pro", "menu_bar", PluginNav);
+    const Fallback = () => createElement("nav", null, "theme");
+    expect(resolveMenuRenderer("nav-pro", "menu_bar")).toBe(PluginNav);
+    // Unknown plugin, null key and other slots all fall back — never
+    // another plugin's renderer, never a throw.
+    expect(resolveMenuRenderer("stranger", "menu_bar", Fallback)).toBe(
+      Fallback,
+    );
+    expect(resolveMenuRenderer(null, "menu_bar", Fallback)).toBe(Fallback);
+    expect(resolveMenuRenderer("nav-pro", "menu_drawer", Fallback)).toBe(
+      Fallback,
+    );
+    expect(resolveMenuRenderer("stranger", "menu_bar")).toBeUndefined();
+  });
+
+  it("a failed boundary renders the theme default fallback, not the plugin", () => {
+    expect(
+      PluginMenuBoundary.getDerivedStateFromError(new Error("boom")),
+    ).toEqual({ failed: true });
+    const themeNav = createElement(
+      "nav",
+      { "aria-label": "Store menu" },
+      "Women",
+    );
+    const pluginEl = createElement(PluginNav, {
+      rows: ["p1"],
+      slot: "menu_bar",
+      pluginId: "nav-pro",
+    });
+    const props = {
+      pluginId: "nav-pro",
+      slot: "menu_bar" as const,
+      fallback: themeNav,
+      children: pluginEl,
+    };
+    // Healthy: the plugin presentation renders.
+    const healthy = new PluginMenuBoundary(props);
+    expect(renderToStaticMarkup(healthy.render() as ReactElement)).toContain(
+      'data-plugin-nav="nav-pro"',
+    );
+    // Failed: shoppers get the theme navigation, never a crash or blank.
+    const failed = new PluginMenuBoundary(props);
+    failed.state = PluginMenuBoundary.getDerivedStateFromError(
+      new Error("renderer down"),
+    );
+    const html = renderToStaticMarkup(failed.render() as ReactElement);
+    expect(html).toContain('aria-label="Store menu"');
+    expect(html).toContain("Women");
+    expect(html).not.toContain("data-plugin-nav");
+  });
+
+  it("boundary failures report tagged lines and never break reporting", () => {
+    const onError = vi.fn();
+    const boundary = new PluginMenuBoundary({
+      pluginId: "nav-pro",
+      slot: "menu_bar",
+      fallback: createElement("nav", null, "theme"),
+      onError,
+      children: createElement("nav", null, "plugin"),
+    });
+    boundary.componentDidCatch(new Error("renderer down"), {} as never);
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect((onError.mock.calls[0]![0] as Error).message).toBe(
+      "renderer down",
+    );
+    // Default seam: one tagged console.error line, mirroring the sync gate.
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const fallback = new PluginMenuBoundary({
+        pluginId: "nav-pro",
+        slot: "menu_bar",
+        fallback: createElement("nav", null, "theme"),
+        children: createElement("nav", null, "plugin"),
+      });
+      fallback.componentDidCatch(new Error("kaboom"), {} as never);
+      expect(errorSpy).toHaveBeenCalledTimes(1);
+      expect(String(errorSpy.mock.calls[0]![0])).toContain(
+        "menu_renderer_failed:nav-pro",
+      );
+    } finally {
+      errorSpy.mockRestore();
+    }
+    // A throwing reporter never breaks navigation.
+    const fragile = new PluginMenuBoundary({
+      pluginId: "nav-pro",
+      slot: "menu_bar",
+      fallback: createElement("nav", null, "theme"),
+      onError: () => {
+        throw new Error("telemetry down");
+      },
+      children: createElement("nav", null, "plugin"),
+    });
+    expect(() =>
+      fragile.componentDidCatch(new Error("renderer down"), {} as never),
+    ).not.toThrow();
   });
 });

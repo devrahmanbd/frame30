@@ -1,5 +1,9 @@
 import { useCallback } from "react";
 import { resolvePluginWidget } from "@/lib/plugin-manifest";
+import {
+  resolveCommunityPresentation,
+  resolveCommunityRender,
+} from "@/lib/plugin-theme-contract";
 import { WIDGET_API, type WidgetCall } from "@/lib/marketplace-scopes";
 import { useLang } from "@/lib/i18n";
 import { WidgetSandbox } from "@/components/marketplace/WidgetSandbox";
@@ -13,15 +17,27 @@ import { useInstalledPlugins } from "./PluginContext";
  * through the scoped postMessage bridge. Any resolution failure — not
  * installed, disabled by the kill switch, incompatible builder API, unknown
  * widget key — renders a labelled placeholder so the page always renders.
+ *
+ * Community classes: Class A (isolated, no `themeable` contract) always
+ * takes the sandbox island below. Class B (themeable) renders the theme's
+ * registered presentation when the active theme dresses this widget, and
+ * the same generic sandboxed island otherwise — the sandbox path is
+ * identical either way.
  */
 export function PluginBlock({
   pluginKey,
   height,
   editing,
+  themeKey,
 }: {
   pluginKey: string;
   height: number;
   editing: boolean;
+  /**
+   * Active theme key for Class B dressing. Absent/null keeps the legacy
+   * behavior byte-identical (sandbox island, even for themeable widgets).
+   */
+  themeKey?: string | null;
 }) {
   const { t } = useLang();
   const plugins = useInstalledPlugins();
@@ -68,6 +84,29 @@ export function PluginBlock({
   }
 
   const { plugin, widget } = resolved;
+  // Class B dressed: the theme owns every pixel — the bundle never
+  // executes, so sandboxing is never weakened. Every other outcome
+  // (Class A, undressed Class B, raced registry) falls through to the
+  // generic sandboxed island below, unchanged.
+  if (
+    resolveCommunityRender(resolved, { themeKey, pluginKey }).kind === "theme"
+  ) {
+    const Presentation = resolveCommunityPresentation(
+      themeKey ?? "",
+      pluginKey,
+    );
+    if (Presentation) {
+      return (
+        <div data-plugin={plugin.manifest.id} data-plugin-widget={widget.key}>
+          <Presentation
+            pluginId={plugin.manifest.id}
+            widgetKey={pluginKey}
+            data={{ ...plugin.settings }}
+          />
+        </div>
+      );
+    }
+  }
   return (
     <div data-plugin={plugin.manifest.id} data-plugin-widget={widget.key}>
       <WidgetSandbox

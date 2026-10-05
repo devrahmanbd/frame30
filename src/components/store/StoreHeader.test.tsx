@@ -12,7 +12,7 @@ import { describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import type { ReactElement } from "react";
+import { createElement, type ReactElement } from "react";
 
 // Router mock: hoisted pathname drives custom vs store variant; Link renders
 // a plain <a> capturing to/params/search for assertions.
@@ -50,10 +50,9 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 
 import { MinimalCheckoutHeader, StoreHeader } from "./StoreHeader";
 import {
-  CanonicalDropdownMenu,
-  CanonicalMobileDrawer,
   HeaderAnnouncementBar,
   HeaderDesktopNav,
+  STORE_DRAWER_MENU_SLOT,
   ThemeHeaderRenderer,
   assembleHeaderData,
   useHeaderBehavior,
@@ -62,8 +61,20 @@ import type { StoreMenuSwap } from "./StoreHeader";
 import { themeChromeFor } from "./theme-chrome";
 import { resolveThemePresentation } from "@/lib/theme-presentations";
 import { SongoskritiHeaderPresentation } from "@/lib/themes/songoskriti/header-presentation";
+import {
+  SongoskritiDesktopNav,
+  SongoskritiMobileDrawer,
+} from "@/lib/themes/songoskriti/header-presentation";
 import { SomvabonaHeaderPresentation } from "@/lib/themes/somvabona/header-presentation";
+import {
+  SomvabonaDesktopNav,
+  SomvabonaMobileDrawer,
+} from "@/lib/themes/somvabona/header-presentation";
 import { resolveWidgetComponent } from "@/components/builder/theme-widgets";
+import {
+  clearMenuRenderers,
+  registerMenuRenderer,
+} from "@/lib/plugin-menu-renderers";
 import { SectionRenderer } from "@/components/builder/SectionRenderer";
 import { newSection, type Section } from "@/lib/builder-ast";
 import {
@@ -541,6 +552,120 @@ describe("StoreHeader menu swap — TRACK M review gate (fail-open, logged)", ()
     expect(gated).toBe(plain);
     expect(gated).toContain("Dashboard Custom");
   });
+
+  it("an approved + scoped swap with a registered renderer replaces the nav presentation", () => {
+    registerMenuRenderer("nav-pro", "menu_bar", ({ rows }) =>
+      createElement(
+        "nav",
+        { "data-plugin-nav": "nav-pro" },
+        rows.map((row: MenuNode) => row.label).join("|"),
+      ),
+    );
+    try {
+      const html = renderHeader({
+        ...base,
+        menuSwap: {
+          claims: [approvedClaim],
+          grantedScopes: ["render_storefront", "replace_menus"],
+          pluginRows,
+        },
+      });
+      // The plugin owns the presentation and receives the winning rows.
+      expect(html).toContain('data-plugin-nav="nav-pro"');
+      expect(html).toContain("Plugin Nav");
+      // The theme presentation is gone (its nav landmark with it).
+      expect(html).not.toContain('aria-label="Store menu"');
+      expect(html).not.toContain("/store/songoskriti/c/women");
+    } finally {
+      clearMenuRenderers();
+    }
+  });
+
+  it("a registered renderer without approval never replaces the presentation", () => {
+    registerMenuRenderer("nav-pro", "menu_bar", ({ rows }) =>
+      createElement(
+        "nav",
+        { "data-plugin-nav": "nav-pro" },
+        rows.map((row: MenuNode) => row.label).join("|"),
+      ),
+    );
+    try {
+      const plain = renderHeader(base);
+      const gated = renderHeader({
+        ...base,
+        menuSwap: {
+          claims: [{ ...approvedClaim, reviewApproved: false }],
+          grantedScopes: ["render_storefront", "replace_menus"],
+          pluginRows,
+        },
+      });
+      expect(gated).toBe(plain);
+      expect(gated).not.toContain("data-plugin-nav");
+      expect(gated).toContain("Women");
+    } finally {
+      clearMenuRenderers();
+    }
+  });
+
+  it("an approved drawer swap with a registered renderer replaces the drawer content", () => {
+    registerMenuRenderer("nav-pro", STORE_DRAWER_MENU_SLOT, ({ rows }) =>
+      createElement(
+        "nav",
+        { "data-plugin-drawer": "nav-pro" },
+        rows.map((row: MenuNode) => row.label).join("|"),
+      ),
+    );
+    try {
+      const data = assembleHeaderData({
+        slug: "songoskriti",
+        menus: { header: [], mobile: [] },
+        themeKey: "songoskriti",
+        menuSwap: {
+          claims: [{ ...approvedClaim, slot: STORE_DRAWER_MENU_SLOT }],
+          grantedScopes: ["render_storefront", "replace_menus"],
+          pluginRows,
+        },
+        pathname: "/store/songoskriti",
+        t: (en: string) => en,
+      });
+      const html = renderToStaticMarkup(
+        <ThemeHeaderRenderer
+          slug="songoskriti"
+          name="Songoskriti"
+          custom={false}
+          data={data}
+          behavior={{
+            mobileOpen: true,
+            setMobileOpen: (() => {}) as never,
+            scrolled: false,
+            expandedMobileMenu: null,
+            setExpandedMobileMenu: (() => {}) as never,
+          }}
+          wishlistCount={0}
+          cartCount={0}
+          cartHydrated={false}
+          t={(en: string) => en}
+        />,
+      );
+      expect(html).toContain('data-plugin-drawer="nav-pro"');
+      expect(html).toContain("Plugin Nav");
+      expect(html).not.toContain('id="store-mobile-menu"');
+    } finally {
+      clearMenuRenderers();
+    }
+  });
+
+  it("wraps the plugin presentation in the fail-open boundary over the theme markup", () => {
+    // Render-time throws escape static markup, so the boundary half is
+    // pinned where it lives (registry unit tests render the failed
+    // boundary's fallback); here the mount point keeps its contract:
+    // plugin presentation inside the boundary, theme markup as fallback.
+    const src = HEADER_SRC();
+    expect(src).toContain("selectPluginMenuRenderer");
+    expect(src).toContain("PluginMenuBoundary");
+    expect(src).toContain("fallback={themeDesktopNav}");
+    expect(src).toContain("fallback={themeMobileDrawer}");
+  });
 });
 
 describe("StoreHeader theme-token chrome (T1.1 — no raw hex)", () => {
@@ -749,7 +874,7 @@ describe("StoreHeader T3.1 layer boundaries (HeaderData + Behavior + Renderer)",
   });
 });
 
-describe("T4.1 canonical presentation modes", () => {
+describe("theme-owned nav modes (HEADER OWNERSHIP — canonical row model, per-theme markup)", () => {
   const canonicalItems: CanonicalMenuItem[] = [
     {
       id: "shop",
@@ -783,45 +908,48 @@ describe("T4.1 canonical presentation modes", () => {
     { id: "about", label: "About", href: "/pages/about" },
   ];
 
-  it("dropdown renders nested children with rebased hrefs", () => {
-    const html = renderToStaticMarkup(
-      <CanonicalDropdownMenu items={canonicalItems} base="/store/demo" />,
-    );
-    expect(html).toContain(">Shop<");
-    expect(html).toContain(">Sarees<");
-    expect(html).toContain(">Jamdani<");
-    expect(html).toContain('href="/store/demo/c/shop"');
-    expect(html).toContain('href="/store/demo/c/sarees"');
-    expect(html).toContain('href="/store/demo/c/jamdani"');
-    expect(html).toContain('href="/store/demo/pages/about"');
+  it("desktops render nested children with rebased hrefs", () => {
+    for (const Desktop of [SongoskritiDesktopNav, SomvabonaDesktopNav]) {
+      const html = renderToStaticMarkup(
+        <Desktop items={canonicalItems} base="/store/demo" />,
+      );
+      expect(html).toContain(">Shop<");
+      expect(html).toContain(">Sarees<");
+      expect(html).toContain(">Jamdani<");
+      expect(html).toContain('href="/store/demo/c/shop"');
+      expect(html).toContain('href="/store/demo/c/sarees"');
+      expect(html).toContain('href="/store/demo/c/jamdani"');
+      expect(html).toContain('href="/store/demo/pages/about"');
+    }
   });
 
-  it("dropdown renders বাংলা labels, badge and the promo ref", () => {
-    const html = renderToStaticMarkup(
-      <CanonicalDropdownMenu
-        items={canonicalItems}
-        base="/store/demo"
-        locale="bn"
-      />,
-    );
-    expect(html).toContain("কেনাকাটা");
-    expect(html).toContain("শাড়ি");
-    expect(html).toContain("জামদানি");
-    expect(html).toContain("New");
-    expect(html).toContain('src="/ph/promo.jpg"');
-    expect(html).toContain("উৎসব");
-    expect(html).toContain('href="/store/demo/c/festive"');
+  it("desktops render বাংলা labels, badge and the promo ref", () => {
+    for (const Desktop of [SongoskritiDesktopNav, SomvabonaDesktopNav]) {
+      const html = renderToStaticMarkup(
+        <Desktop items={canonicalItems} base="/store/demo" locale="bn" />,
+      );
+      expect(html).toContain("কেনাকাটা");
+      expect(html).toContain("শাড়ি");
+      expect(html).toContain("জামদানি");
+      expect(html).toContain("New");
+      expect(html).toContain('src="/ph/promo.jpg"');
+      expect(html).toContain("উৎসব");
+      expect(html).toContain('href="/store/demo/c/festive"');
+    }
   });
 
-  it("dropdown renders nothing for an empty menu", () => {
-    expect(renderToStaticMarkup(<CanonicalDropdownMenu items={[]} />)).toBe(
+  it("desktops render nothing for an empty menu", () => {
+    expect(
+      renderToStaticMarkup(<SongoskritiDesktopNav items={[]} />),
+    ).toBe("");
+    expect(renderToStaticMarkup(<SomvabonaDesktopNav items={[]} />)).toBe(
       "",
     );
   });
 
-  it("drawer hides nested children and the promo until expanded", () => {
+  it("songoskriti drawer hides nested children and the promo until expanded", () => {
     const html = renderToStaticMarkup(
-      <CanonicalMobileDrawer items={canonicalItems} base="/store/demo" />,
+      <SongoskritiMobileDrawer items={canonicalItems} base="/store/demo" />,
     );
     expect(html).toContain(">Shop<");
     expect(html).toContain(">About<");
@@ -830,9 +958,9 @@ describe("T4.1 canonical presentation modes", () => {
     expect(html).toContain('aria-expanded="false"');
   });
 
-  it("drawer shows nested children, badge and promo for the open panel", () => {
+  it("songoskriti drawer shows nested children, badge and promo for the open panel", () => {
     const html = renderToStaticMarkup(
-      <CanonicalMobileDrawer
+      <SongoskritiMobileDrawer
         items={canonicalItems}
         base="/store/demo"
         defaultExpandedId="shop"
@@ -847,25 +975,116 @@ describe("T4.1 canonical presentation modes", () => {
     expect(html).toContain('aria-expanded="true"');
   });
 
-  it("drawer renders বাংলা labels and promo titles", () => {
-    const html = renderToStaticMarkup(
-      <CanonicalMobileDrawer
+  it("somvabona drawer pins the open panel through the disclosure attribute", () => {
+    const collapsed = renderToStaticMarkup(
+      <SomvabonaMobileDrawer items={canonicalItems} base="/store/demo" />,
+    );
+    expect(collapsed).toContain(">Shop<");
+    expect(collapsed).toContain(">About<");
+    expect(collapsed).toContain("<details");
+    expect(collapsed).not.toMatch(/<details[^>]*open/);
+    const open = renderToStaticMarkup(
+      <SomvabonaMobileDrawer
+        items={canonicalItems}
+        base="/store/demo"
+        defaultExpandedId="shop"
+      />,
+    );
+    expect(open).toMatch(/<details[^>]*open/);
+    expect(open).toContain(">Sarees<");
+    expect(open).toContain(">Jamdani<");
+    expect(open).toContain('href="/store/demo/c/jamdani"');
+    expect(open).toContain("New");
+    expect(open).toContain('src="/ph/promo.jpg"');
+    expect(open).toContain(">Festive<");
+  });
+
+  it("drawers render বাংলা labels and promo titles", () => {
+    const songo = renderToStaticMarkup(
+      <SongoskritiMobileDrawer
         items={canonicalItems}
         base="/store/demo"
         locale="bn"
         defaultExpandedId="shop"
       />,
     );
-    expect(html).toContain("কেনাকাটা");
-    expect(html).toContain("শাড়ি");
-    expect(html).toContain("জামদানি");
-    expect(html).toContain("উৎসব");
+    const somva = renderToStaticMarkup(
+      <SomvabonaMobileDrawer
+        items={canonicalItems}
+        base="/store/demo"
+        locale="bn"
+        defaultExpandedId="shop"
+      />,
+    );
+    for (const html of [songo, somva]) {
+      expect(html).toContain("কেনাকাটা");
+      expect(html).toContain("শাড়ি");
+      expect(html).toContain("জামদানি");
+      expect(html).toContain("উৎসব");
+    }
   });
 
-  it("drawer renders nothing for an empty menu", () => {
-    expect(renderToStaticMarkup(<CanonicalMobileDrawer items={[]} />)).toBe(
+  it("drawers render nothing for an empty menu", () => {
+    expect(
+      renderToStaticMarkup(<SongoskritiMobileDrawer items={[]} />),
+    ).toBe("");
+    expect(renderToStaticMarkup(<SomvabonaMobileDrawer items={[]} />)).toBe(
       "",
     );
+  });
+
+  it("same menu renders two markups with identical links, labels and hrefs", () => {
+    const songoDesktop = renderToStaticMarkup(
+      <SongoskritiDesktopNav items={canonicalItems} base="/store/demo" />,
+    );
+    const somvaDesktop = renderToStaticMarkup(
+      <SomvabonaDesktopNav items={canonicalItems} base="/store/demo" />,
+    );
+    // Same links/labels/hrefs in both.
+    for (const html of [songoDesktop, somvaDesktop]) {
+      expect(html).toContain(">Shop<");
+      expect(html).toContain(">Sarees<");
+      expect(html).toContain(">Jamdani<");
+      expect(html).toContain('href="/store/demo/c/shop"');
+      expect(html).toContain('href="/store/demo/c/jamdani"');
+      expect(html).toContain('href="/store/demo/pages/about"');
+    }
+    // Structurally distinct: luxury mega panel vs compact dropdown column.
+    expect(songoDesktop).toContain('data-nav="songoskriti-desktop"');
+    expect(songoDesktop).toContain('data-mega="songoskriti"');
+    expect(songoDesktop).toContain("grid-cols-4");
+    expect(somvaDesktop).toContain('data-nav="somvabona-desktop"');
+    expect(somvaDesktop).toContain('data-drop="somvabona"');
+    expect(somvaDesktop).toContain("min-w-52");
+    expect(somvaDesktop).not.toContain("data-mega");
+    expect(songoDesktop).not.toContain("data-drop");
+    expect(songoDesktop).not.toBe(somvaDesktop);
+    const songoDrawer = renderToStaticMarkup(
+      <SongoskritiMobileDrawer
+        items={canonicalItems}
+        base="/store/demo"
+        defaultExpandedId="shop"
+      />,
+    );
+    const somvaDrawer = renderToStaticMarkup(
+      <SomvabonaMobileDrawer
+        items={canonicalItems}
+        base="/store/demo"
+        defaultExpandedId="shop"
+      />,
+    );
+    for (const html of [songoDrawer, somvaDrawer]) {
+      expect(html).toContain(">Shop<");
+      expect(html).toContain(">Jamdani<");
+      expect(html).toContain('href="/store/demo/c/jamdani"');
+    }
+    // Structurally distinct drawers: accordion buttons vs disclosures.
+    expect(songoDrawer).toContain('data-nav="songoskriti-drawer"');
+    expect(songoDrawer).toContain('aria-expanded="true"');
+    expect(somvaDrawer).toContain('data-nav="somvabona-drawer"');
+    expect(somvaDrawer).toContain("<details");
+    expect(somvaDrawer).not.toContain("aria-expanded");
+    expect(songoDrawer).not.toBe(somvaDrawer);
   });
 });
 
@@ -949,23 +1168,29 @@ describe("header presentations — theme-owned canonical modes (HEADER DE-THEMIN
     expect(songo).not.toBe(somva);
   });
 
-  it("canonical modes render through both presentations (dropdown + drawer)", () => {
-    for (const themeKey of ["songoskriti", "somvabona"]) {
-      const html = renderPresentation(themeKey);
-      // Desktop dropdown over the canonical items…
+  it("theme-owned nav renders through both presentations (desktop + drawer)", () => {
+    const songo = renderPresentation("songoskriti");
+    const somva = renderPresentation("somvabona");
+    for (const html of [songo, somva]) {
+      // Desktop nav over the canonical items…
       expect(html).toContain('href="/c/women"');
       expect(html).toContain('href="/c/men"');
       // …and the mobile drawer carries the same items under the same
-      // section label, collapsed by default. (Nested promo tiles live one
-      // level down the canonical modes and are pinned by the T4.1 suite;
-      // flat live rows carry no children, so neither mode opens a panel
-      // here.)
+      // section label. (Nested promo tiles live one level down the
+      // theme-owned navs and are pinned by the nav-modes suite; flat live
+      // rows carry no children, so neither mode opens a panel here.)
       expect(html.match(/aria-label="Shop"/g)?.length).toBe(2);
-      // Drawer-specific link geometry proves the drawer mode rendered
-      // (flat rows have no children, so no accordion buttons exist here —
-      // the expanded/collapsed accordion is pinned by the T4.1 suite).
-      expect(html).toContain("block flex-1 py-5");
     }
+    // Per-theme nav structures prove the theme-owned modes rendered
+    // (flat rows have no children, so no accordion/disclosure exists
+    // here — the expanded/collapsed behavior is pinned by the
+    // nav-modes suite).
+    expect(songo).toContain('data-nav="songoskriti-desktop"');
+    expect(songo).toContain('data-nav="songoskriti-drawer"');
+    expect(songo).toContain("block flex-1 py-5");
+    expect(somva).toContain('data-nav="somvabona-desktop"');
+    expect(somva).toContain('data-nav="somvabona-drawer"');
+    expect(somva).toContain("flex-1 items-center");
   });
 
   it("engine composes presentations over resolveWidgetComponent; unknown themes passthrough byte-identical", () => {

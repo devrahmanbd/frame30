@@ -19,6 +19,10 @@ import {
   type MenuSlot,
 } from "./marketplace-scopes";
 import { compareSemver, parseSemver } from "./marketplace-scopes";
+import {
+  normalizeThemeContract,
+  type PluginThemeContract,
+} from "./plugin-theme-contract";
 export { MENU_SLOTS, isMenuSlot, type MenuSlot };
 
 /** Builder API version plugins declare compatibility against (AST v3 line). */
@@ -250,6 +254,12 @@ export type PluginWidgetDef = {
   slots: (BlockSlot | MenuSlot)[];
   /** Sandboxed bundle entry evaluated inside the island's null-origin frame. */
   entry: string;
+  /**
+   * Class B (themeable): the versioned theme-safe contract
+   * (schema/data/actions/slots/states) the theme dresses. Absent means
+   * Class A (isolated): the bundle owns arbitrary UI in the sandbox frame.
+   */
+  themeable?: PluginThemeContract;
   height?: number;
   /**
    * Floating widgets (chat bubbles) are hosted by the parent in a
@@ -442,6 +452,18 @@ export function parseManifest(input: unknown): ManifestVerdict {
       errors.push(`widgets[${i}].entry.dynamic_code`);
       return;
     }
+    // Class B (themeable): the declaration is optional, but when present it
+    // must be a well-formed v1 contract — malformed declarations fail the
+    // gate instead of silently rendering as Class A.
+    let themeable: PluginThemeContract | undefined;
+    if (r.themeable !== undefined) {
+      const contract = normalizeThemeContract(r.themeable);
+      if (!contract) {
+        errors.push(`widgets[${i}].themeable`);
+        return;
+      }
+      themeable = contract;
+    }
     if (widgets.some((x) => x.key === key)) {
       errors.push(`widgets[${i}].duplicate`);
       return;
@@ -451,6 +473,7 @@ export function parseManifest(input: unknown): ManifestVerdict {
       label: String(r.label ?? key).slice(0, 60),
       slots,
       entry,
+      ...(themeable ? { themeable } : {}),
       height:
         typeof r.height === "number"
           ? Math.min(1200, Math.max(80, r.height))

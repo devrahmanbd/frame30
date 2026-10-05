@@ -42,10 +42,15 @@ import type { WidgetComponent, WidgetCtx } from "./widgets";
 import type { WidgetRow } from "@/lib/widget-data";
 import {
   isMenuSwapRequest,
+  renderMenuWithFallback,
   resolveMenuSwapRows,
   type MenuSlot,
   type MenuSwapRequest,
 } from "@/lib/plugin-manifest";
+import {
+  PluginMenuBoundary,
+  selectPluginMenuRenderer,
+} from "@/lib/plugin-menu-renderers";
 import { OverlayHost } from "./primitives/OverlayHost";
 import { MediaFrame } from "./primitives/MediaFrame";
 
@@ -293,8 +298,12 @@ function Notice({ str, bool }: WidgetCtx) {
  * `menu_dropdown` the overflow/mega panel (same winning rows, engine-owned
  * panel markup). A swap arrives as `data.menuSwap` (no producer today, so
  * `readMegaMenuSwap` returns `undefined` and output is byte-identical);
- * the variations track supplies it. Rows only — plugins never inject nav
- * markup; full-renderer gating lives in `decideMenuRenderer`.
+ * the variations track supplies it. Rows resolve through the shared review
+ * gate (`resolveMenuSwapRows`); an approved + scoped swap with a registered
+ * plugin renderer (`registerMenuRenderer`) replaces the engine markup below
+ * with the plugin presentation, fail-open to the engine markup on any
+ * failure. Plugins never inject nav markup except through that registered
+ * renderer; full-renderer gating lives in `decideMenuRenderer`.
  */
 export const MEGA_MENU_SLOT: MenuSlot = "menu_bar";
 export const MEGA_DROPDOWN_SLOT: MenuSlot = "menu_dropdown";
@@ -326,14 +335,22 @@ function MegaMenu({ str, int, data, link }: WidgetCtx) {
   const rows = data?.rows ?? [];
   // TRACK M mount point: `menu_bar` owns these menubar rows, and the
   // overflow panel below (`menu_dropdown`) renders from the same winning
-  // rows through engine-owned panel markup — layout/a11y never leave the
-  // engine. No `menuSwap` on `data` (today: always) keeps today's rows
+  // rows through engine-owned panel markup — unless an approved plugin swap
+  // replaces the whole presentation below (fail-open to this markup).
+  // No `menuSwap` on `data` (today: always) keeps today's rows
   // exactly; an approved swap substitutes rows fail-open (theme rows on any
   // denial or throw, failure logged by the shared resolver).
   const menuSwap = readMegaMenuSwap(data);
-  const effectiveRows = menuSwap
-    ? resolveMenuSwapRows(rows, menuSwap, MEGA_MENU_SLOT).rows
-    : rows;
+  const swapResult = menuSwap
+    ? resolveMenuSwapRows(rows, menuSwap, MEGA_MENU_SLOT)
+    : null;
+  const effectiveRows = swapResult ? swapResult.rows : rows;
+  const decision = swapResult ? swapResult.decision : null;
+  // MENU RUNTIME replacement: an approved + scoped swap whose plugin
+  // registered a renderer renders the plugin presentation with the winning
+  // rows. Anything else (unapproved, scope-denied, unregistered) keeps the
+  // engine markup below — byte-identical to before.
+  const PluginNav = selectPluginMenuRenderer(decision, MEGA_MENU_SLOT);
   const label = str("label") || "Shop";
   const visible = effectiveRows.slice(0, int("limit", 8, 1, 24));
 
@@ -353,7 +370,10 @@ function MegaMenu({ str, int, data, link }: WidgetCtx) {
   const promoImage = str("promoImage");
   const promoHref = str("promoHref") || "#";
   const promoTitle = str("promoTitle");
-  return (
+  // The theme default markup doubles as the plugin fail-open fallback: an
+  // approved renderer replaces it below, but any failure (unregistered,
+  // denied, or a throwing plugin caught by the boundary) renders this.
+  const engineNav = (
     <div className="bg-background">
       <nav
         aria-label={label}
@@ -428,6 +448,32 @@ function MegaMenu({ str, int, data, link }: WidgetCtx) {
       </nav>
     </div>
   );
+  // MENU RUNTIME replacement: the approved + scoped plugin owns this slot's
+  // presentation and receives the winning rows. Element creation is guarded
+  // by the sync gate and render-time throws by the boundary — either way the
+  // shopper falls back to the engine markup above, never a blank menubar.
+  if (PluginNav && decision && decision.kind === "plugin") {
+    return renderMenuWithFallback(
+      decision,
+      () => (
+        <PluginMenuBoundary
+          pluginId={decision.pluginId}
+          slot={MEGA_MENU_SLOT}
+          fallback={engineNav}
+          onError={menuSwap?.onError}
+        >
+          <PluginNav
+            rows={visible}
+            slot={MEGA_MENU_SLOT}
+            pluginId={decision.pluginId}
+          />
+        </PluginMenuBoundary>
+      ),
+      () => engineNav,
+      (error) => menuSwap?.onError?.(error),
+    );
+  }
+  return engineNav;
 }
 
 function DepartmentStrip({ str, int, data, Heading }: WidgetCtx) {

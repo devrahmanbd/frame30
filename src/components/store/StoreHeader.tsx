@@ -13,20 +13,21 @@ import { useWishlistHeader } from "@/lib/wishlist-card";
 import { useLang } from "@/lib/i18n";
 import { isCustomHostPath } from "@/lib/storefront-url";
 import {
-  canonicalHref,
-  canonicalLabel,
-  canonicalPromoTitle,
   rebaseMenuHref,
   selectMobileMenu,
-  type CanonicalMenuItem,
   type MenuNode,
   type StoreMenus,
 } from "@/lib/menus/menu";
 import {
   resolveMenuSwapRows,
+  type MenuRendererDecision,
   type MenuSlot,
   type MenuSwapRequest,
 } from "@/lib/plugin-manifest";
+import {
+  PluginMenuBoundary,
+  selectPluginMenuRenderer,
+} from "@/lib/plugin-menu-renderers";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { TimezoneToggle } from "./TimezoneToggle";
 import { themeChromeFor, type ThemeHeaderChrome } from "./theme-chrome";
@@ -83,9 +84,12 @@ export function MinimalCheckoutHeader({
 
 /**
  * TRACK M — StoreHeader mount points. `menu_bar` selects the desktop nav
- * rows, `menu_drawer` the mobile slide-out rows. Rows only — the engine
- * renders all nav markup; full-renderer gating lives in
- * `decideMenuRenderer` (`@/lib/plugin-manifest`).
+ * rows, `menu_drawer` the mobile slide-out rows. Rows resolve through the
+ * shared review gate; an approved + scoped swap whose plugin registered a
+ * renderer (`registerMenuRenderer`) additionally replaces the nav
+ * presentation below, fail-open to the theme markup on any failure.
+ * Full-renderer gating lives in `decideMenuRenderer`
+ * (`@/lib/plugin-manifest`).
  */
 export const STORE_HEADER_MENU_SLOT: MenuSlot = "menu_bar";
 export const STORE_DRAWER_MENU_SLOT: MenuSlot = "menu_drawer";
@@ -122,6 +126,15 @@ export type HeaderData = {
   headerFallback: boolean;
   mobileFallback: boolean;
   fallbackLabel: (label: string) => string;
+  /**
+   * TRACK M review verdicts per slot (`null` without a `menuSwap`).
+   * `ThemeHeaderRenderer` resolves the registered plugin presentation from
+   * these — rows above stay the winning rows either way.
+   */
+  headerDecision: MenuRendererDecision | null;
+  mobileDecision: MenuRendererDecision | null;
+  /** Row/renderer failure seam from the swap request (boundary reporting). */
+  menuOnError?: (error: unknown) => void;
 };
 
 /**
@@ -192,6 +205,9 @@ export function assembleHeaderData({
     headerFallback,
     mobileFallback,
     fallbackLabel,
+    headerDecision: headerSwap ? headerSwap.decision : null,
+    mobileDecision: mobileSwap ? mobileSwap.decision : null,
+    menuOnError: menuSwap?.onError,
   };
 }
 
@@ -683,295 +699,10 @@ export function HeaderMobileDrawer({
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
- * T4.1 — canonical presentation modes (additive options).
- *
- * Both modes render `CanonicalMenuItem` trees (see `@/lib/menus/menu`):
- * bitext labels resolve per locale, nested children nest, `badge`
- * renders beside the label, `metadata` wires link affordances
- * (`title`, `_blank` target), and the optional image/promo ref renders
- * a panel tile. The existing theme renderers above are untouched —
- * these modes are opt-in alternatives, never replacements.
- * ───────────────────────────────────────────────────────────── */
-
-export type CanonicalMenuPresentationProps = {
-  items: readonly CanonicalMenuItem[];
-  base?: string;
-  locale?: string;
-  label?: string;
-};
-
-function CanonicalMenuLink({
-  item,
-  base,
-  locale,
-  className,
-  onNavigate,
-}: {
-  item: CanonicalMenuItem;
-  base: string;
-  locale: string;
-  className?: string;
-  onNavigate?: () => void;
-}) {
-  if (!item.label) return null;
-  const newTab = item.metadata?.["target"] === "_blank";
-  return (
-    <a
-      href={canonicalHref(item, base)}
-      title={item.metadata?.["title"] || undefined}
-      onClick={onNavigate}
-      {...(newTab ? { target: "_blank", rel: "noreferrer" } : {})}
-      className={className}
-    >
-      {canonicalLabel(item, locale)}
-      {item.badge ? (
-        <span className="ml-2 inline-flex min-h-5 items-center rounded-full bg-[var(--theme-muted)] px-2 text-[11px] font-semibold text-[var(--theme-ink)]">
-          {item.badge}
-        </span>
-      ) : null}
-    </a>
-  );
-}
-
-function CanonicalMenuPromoTile({
-  item,
-  base,
-  locale,
-}: {
-  item: CanonicalMenuItem;
-  base: string;
-  locale: string;
-}) {
-  if (item.image) {
-    return (
-      <div className="overflow-hidden rounded-sm bg-[var(--theme-muted)]">
-        <img
-          src={item.image}
-          alt={canonicalLabel(item, locale)}
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
-      </div>
-    );
-  }
-  const promo = item.promo;
-  if (!promo) return null;
-  return (
-    <a
-      href={canonicalHref(promo, base)}
-      className="flex min-h-[44px] items-center gap-3 rounded-sm border border-[var(--theme-border)] bg-[var(--theme-muted)] p-2"
-    >
-      <img
-        src={promo.image}
-        alt=""
-        className="h-12 w-12 shrink-0 rounded-sm object-cover"
-        loading="lazy"
-      />
-      <span className="text-sm font-semibold text-[var(--theme-ink)]">
-        {canonicalPromoTitle(promo, locale)}
-      </span>
-    </a>
-  );
-}
-
-function CanonicalDropdownChild({
-  item,
-  base,
-  locale,
-}: {
-  item: CanonicalMenuItem;
-  base: string;
-  locale: string;
-}) {
-  return (
-    <li>
-      <CanonicalMenuLink
-        item={item}
-        base={base}
-        locale={locale}
-        className="block px-6 py-2.5 text-left font-sans text-[13px] text-[var(--theme-ink)]/70 transition-colors hover:bg-[var(--theme-muted)] hover:text-[var(--theme-ink)]"
-      />
-      {item.children && item.children.length > 0 && (
-        <ul className="ml-6 space-y-0.5 border-l border-[var(--theme-border)] py-1 pl-2">
-          {item.children.map((grandchild) => (
-            <CanonicalDropdownChild
-              key={grandchild.id}
-              item={grandchild}
-              base={base}
-              locale={locale}
-            />
-          ))}
-        </ul>
-      )}
-    </li>
-  );
-}
-
-/** T4.1 dropdown mode — desktop hover panel over canonical items. */
-export function CanonicalDropdownMenu({
-  items,
-  base = "",
-  locale = "en",
-  label,
-}: CanonicalMenuPresentationProps) {
-  if (items.length === 0) return null;
-  return (
-    <nav
-      aria-label={label ?? (locale === "bn" ? "মেনু" : "Menu")}
-      className="w-full"
-    >
-      <ul className="flex flex-wrap items-center gap-x-6 gap-y-1">
-        {items.map((item) => (
-          <li key={item.id} className="group relative">
-            <CanonicalMenuLink
-              item={item}
-              base={base}
-              locale={locale}
-              className="inline-flex min-h-10 items-center py-2 text-[13px] font-semibold tracking-wide text-[var(--theme-ink)]/80 transition-colors hover:text-[var(--theme-ink)]"
-            />
-            {item.children && item.children.length > 0 && (
-              <div className="absolute left-0 top-full z-50 hidden min-w-52 pt-1 group-hover:block group-focus-within:block">
-                <div className="space-y-2 rounded-sm border border-[var(--theme-border)] bg-[var(--theme-surface)] py-2 shadow-xl">
-                  <ul>
-                    {item.children.map((child) => (
-                      <CanonicalDropdownChild
-                        key={child.id}
-                        item={child}
-                        base={base}
-                        locale={locale}
-                      />
-                    ))}
-                  </ul>
-                  <div className="px-2">
-                    <CanonicalMenuPromoTile
-                      item={item}
-                      base={base}
-                      locale={locale}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-}
-
-function CanonicalDrawerSubtree({
-  nodes,
-  base,
-  locale,
-  onNavigate,
-}: {
-  nodes: readonly CanonicalMenuItem[];
-  base: string;
-  locale: string;
-  onNavigate?: () => void;
-}) {
-  return (
-    <ul className="ml-4 space-y-1 border-l border-[var(--theme-border)] py-2 pl-4">
-      {nodes.map((node) => (
-        <li key={node.id}>
-          <CanonicalMenuLink
-            item={node}
-            base={base}
-            locale={locale}
-            onNavigate={onNavigate}
-            className="block min-h-[44px] py-2.5 text-[15px] font-medium text-[var(--theme-ink)]/80"
-          />
-          {node.children && node.children.length > 0 && (
-            <CanonicalDrawerSubtree
-              nodes={node.children}
-              base={base}
-              locale={locale}
-              onNavigate={onNavigate}
-            />
-          )}
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-/**
- * T4.1 drawer mode — mobile accordion over canonical items. Collapsed by
- * default; `defaultExpandedId` pins one open panel (tests, deep links).
- */
-export function CanonicalMobileDrawer({
-  items,
-  base = "",
-  locale = "en",
-  label,
-  defaultExpandedId = null,
-  onNavigate,
-}: CanonicalMenuPresentationProps & {
-  defaultExpandedId?: string | null;
-  onNavigate?: () => void;
-}) {
-  const [expanded, setExpanded] = useState<string | null>(defaultExpandedId);
-  if (items.length === 0) return null;
-  return (
-    <nav aria-label={label ?? (locale === "bn" ? "স্টোর মেনু" : "Store menu")}>
-      <ul>
-        {items.map((item) => {
-          const kids = item.children ?? [];
-          const open = expanded === item.id;
-          return (
-            <li
-              key={item.id}
-              className="border-b border-[var(--theme-border)]"
-            >
-              <div className="flex w-full items-center justify-between">
-                <CanonicalMenuLink
-                  item={item}
-                  base={base}
-                  locale={locale}
-                  onNavigate={onNavigate}
-                  className="block flex-1 py-5 text-[13px] font-semibold uppercase tracking-wide text-[var(--theme-ink)]"
-                />
-                {kids.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setExpanded(open ? null : item.id)}
-                    className="min-h-[44px] min-w-[44px] p-4 text-[var(--theme-ink)]"
-                    aria-expanded={open}
-                    aria-label={`${canonicalLabel(item, locale)} submenu`}
-                  >
-                    <span className="text-xl leading-none">
-                      {open ? "−" : "+"}
-                    </span>
-                  </button>
-                )}
-              </div>
-              {open && kids.length > 0 && (
-                <div className="pb-4">
-                  <CanonicalDrawerSubtree
-                    nodes={kids}
-                    base={base}
-                    locale={locale}
-                    onNavigate={onNavigate}
-                  />
-                  {(item.image || item.promo) && (
-                    <div className="ml-4 mt-2 pr-4">
-                      <CanonicalMenuPromoTile
-                        item={item}
-                        base={base}
-                        locale={locale}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
-  );
-}
+/* Nav markup for mega_menu presentations is theme-owned (each theme's
+ * header-presentation module renders its own desktop nav plus mobile
+ * drawer from the canonical row model). Shared code keeps HeaderData,
+ * HeaderBehavior, and the canonical row model in `@/lib/menus/menu`. */
 
 export function ThemeHeaderRenderer({
   slug,
@@ -1003,6 +734,51 @@ export function ThemeHeaderRenderer({
     setExpandedMobileMenu,
   } = behavior;
   const iconLinkCls = headerIconLinkCls;
+  // MENU RUNTIME replacement: an approved + scoped swap whose plugin
+  // registered a renderer owns the slot's presentation and receives the
+  // winning rows. Anything else (unapproved, scope-denied, unregistered)
+  // keeps the theme markup — the renderer never runs without a `plugin`
+  // verdict, so output is byte-identical to before.
+  const HeaderPluginNav = selectPluginMenuRenderer(
+    data.headerDecision,
+    STORE_HEADER_MENU_SLOT,
+  );
+  const headerPluginId =
+    data.headerDecision?.kind === "plugin"
+      ? data.headerDecision.pluginId
+      : null;
+  const DrawerPluginNav = selectPluginMenuRenderer(
+    data.mobileDecision,
+    STORE_DRAWER_MENU_SLOT,
+  );
+  const drawerPluginId =
+    data.mobileDecision?.kind === "plugin"
+      ? data.mobileDecision.pluginId
+      : null;
+  const themeDesktopNav = (
+    <HeaderDesktopNav
+      headerMenu={headerMenu}
+      base={base}
+      headerFallback={data.headerFallback}
+      fallbackLabel={data.fallbackLabel}
+      isLuxury={isLuxury}
+      t={t}
+    />
+  );
+  const themeMobileDrawer = (
+    <HeaderMobileDrawer
+      mobileMenu={mobileMenu}
+      base={base}
+      mobileFallback={data.mobileFallback}
+      fallbackLabel={data.fallbackLabel}
+      isLuxury={isLuxury}
+      scrolled={scrolled}
+      expandedMobileMenu={expandedMobileMenu}
+      setExpandedMobileMenu={setExpandedMobileMenu}
+      setMobileOpen={setMobileOpen}
+      t={t}
+    />
+  );
   return (
     <header
       className={`sticky top-0 z-40 w-full transition-all duration-250 ease-out bg-[var(--theme-surface)]${isLuxury ? " motion-reduce:transition-none" : ""} ${
@@ -1068,14 +844,22 @@ export function ThemeHeaderRenderer({
 
         {/* ── CENTER: Desktop Navigation ── */}
         <div className="hidden md:flex flex-1 min-w-0 justify-center pointer-events-auto">
-          <HeaderDesktopNav
-            headerMenu={headerMenu}
-            base={base}
-            headerFallback={data.headerFallback}
-            fallbackLabel={data.fallbackLabel}
-            isLuxury={isLuxury}
-            t={t}
-          />
+          {HeaderPluginNav && headerPluginId ? (
+            <PluginMenuBoundary
+              pluginId={headerPluginId}
+              slot={STORE_HEADER_MENU_SLOT}
+              fallback={themeDesktopNav}
+              onError={data.menuOnError}
+            >
+              <HeaderPluginNav
+                rows={headerMenu}
+                slot={STORE_HEADER_MENU_SLOT}
+                pluginId={headerPluginId}
+              />
+            </PluginMenuBoundary>
+          ) : (
+            themeDesktopNav
+          )}
         </div>
 
         {/* ── RIGHT: utility icons ── */}
@@ -1091,20 +875,24 @@ export function ThemeHeaderRenderer({
       </div>
 
       {/* ── Mobile full-height slide-in menu ── */}
-      {mobileOpen && mobileMenu.length > 0 && (
-        <HeaderMobileDrawer
-          mobileMenu={mobileMenu}
-          base={base}
-          mobileFallback={data.mobileFallback}
-          fallbackLabel={data.fallbackLabel}
-          isLuxury={isLuxury}
-          scrolled={scrolled}
-          expandedMobileMenu={expandedMobileMenu}
-          setExpandedMobileMenu={setExpandedMobileMenu}
-          setMobileOpen={setMobileOpen}
-          t={t}
-        />
-      )}
+      {mobileOpen &&
+        mobileMenu.length > 0 &&
+        (DrawerPluginNav && drawerPluginId ? (
+          <PluginMenuBoundary
+            pluginId={drawerPluginId}
+            slot={STORE_DRAWER_MENU_SLOT}
+            fallback={themeMobileDrawer}
+            onError={data.menuOnError}
+          >
+            <DrawerPluginNav
+              rows={mobileMenu}
+              slot={STORE_DRAWER_MENU_SLOT}
+              pluginId={drawerPluginId}
+            />
+          </PluginMenuBoundary>
+        ) : (
+          themeMobileDrawer
+        ))}
     </header>
   );
 }
@@ -1134,9 +922,11 @@ export function StoreHeader({
   /**
    * TRACK M — optional nav renderer swap (review-gated). Absent keeps
    * today's precedence exactly (dashboard rows, else theme fallback). An
-   * approved swap substitutes engine-rendered rows fail-open: unapproved,
-   * scope-denied or throwing swaps keep the theme rows and log through the
-   * shared resolver — shoppers never lose navigation.
+   * approved swap substitutes engine-rendered rows fail-open, and — when the
+   * plugin registered a renderer for the slot — replaces the nav
+   * presentation too: unapproved, scope-denied, unregistered or throwing
+   * renderers keep the theme markup and log through the shared
+   * resolver/boundary — shoppers never lose navigation.
    */
   menuSwap?: StoreMenuSwap;
 }) {
