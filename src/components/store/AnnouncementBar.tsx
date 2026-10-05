@@ -1,10 +1,29 @@
 /**
- * T3.2 — standalone announcement surface.
+ * T3.2 — standalone announcement surface (R2: platform owns data/state).
  *
  * `AnnouncementBar` is the first-class global announcement surface. It owns
  * data (items), state (rotation index, dismissal), persisted dismissal
  * (localStorage, SSR-safe), locale (en/bn twins with English fallback, never
  * blank), and link/action (per-item href with a global href fallback).
+ *
+ * R2 split — platform owns data/state, themes own presentation:
+ * - Pure data helpers (`resolveAnnouncementItems`,
+ *   `headerChromeAnnouncementItems`, `readDismissedIds`,
+ *   `announcementItemsOf`) plus the headless `useAnnouncementState` hook
+ *   are the platform contract. They import only `react` and the pure
+ *   bilingual layer (`@/lib/bitext`) — never `StoreHeader`,
+ *   `theme-chrome`, or any theme module.
+ * - Per-theme markup (typography, spacing, color, alignment, motion,
+ *   mobile layout) lives in theme-owned `announcement-presentation`
+ *   modules registered per themeKey × `announcement_bar` through
+ *   `registerThemePresentation`. Those presentations consume
+ *   `useAnnouncementState` (same rotation/dismissal/locale/link behavior,
+ *   same bilingual labels) and render fully owned markup — they never
+ *   inherit the default presentation below.
+ * - The `AnnouncementBar` component itself is the neutral DEFAULT
+ *   presentation for unregistered pairs (the generic `announcement_bar`
+ *   widget adapter renders it directly). Its tone/align/size/variant knobs
+ *   are token classes only — no theme literals, no theme branches.
  *
  * Theme control (no marquee forcing — the theme chooses):
  * - height/typography via `size` (`sm` | `md`)
@@ -195,33 +214,108 @@ export function usePrefersReducedMotion(): boolean {
   return reduced;
 }
 
-const TONE_CLASS: Record<AnnouncementTone, string> = {
-  brand: "bg-primary text-primary-foreground",
-  muted: "bg-muted text-foreground",
-  ink: "bg-foreground text-background",
+/**
+ * Section-props → surface items (platform data contract, R2).
+ *
+ * Repeater-first read, verbatim with the generic `announcement_bar`
+ * adapter: studio `items` rows (with `_bn` twins) win when present,
+ * scalar m1/m2/m3 (+ twins) remain the fallback for theme-authored
+ * sections. Theme presentations call this instead of duplicating the
+ * row read, so identical sections resolve identical data in every theme.
+ * Pure — never mutates its input.
+ */
+export function announcementItemsOf(
+  props: Record<string, unknown>,
+): AnnouncementItem[] {
+  const rawRows = Array.isArray(props.items)
+    ? (props.items as Record<string, unknown>[])
+    : [];
+  const rowItems: AnnouncementItem[] = rawRows
+    .map((row) => ({
+      text: typeof row.text === "string" ? row.text : "",
+      text_bn: typeof row.text_bn === "string" ? row.text_bn : undefined,
+    }))
+    .filter((row) => row.text.trim() || (row.text_bn ?? "").trim());
+  const scalarItems: AnnouncementItem[] = ["m1", "m2", "m3"]
+    .map((key) => {
+      const en = typeof props[key] === "string" ? (props[key] as string) : "";
+      const bnRaw = props[`${key}_bn`];
+      const textBn = typeof bnRaw === "string" ? bnRaw : "";
+      return en.trim() || textBn.trim()
+        ? { text: en, ...(textBn ? { text_bn: textBn } : {}) }
+        : null;
+    })
+    .filter((row): row is AnnouncementItem => row !== null);
+  return rowItems.length > 0 ? rowItems : scalarItems;
+}
+
+/** Bilingual region/control labels for announcement markup. */
+export type AnnouncementLabels = {
+  region: string;
+  dismiss: string;
+  prev: string;
+  next: string;
 };
 
-const ALIGN_CLASS: Record<AnnouncementAlign, string> = {
-  left: "justify-start text-left",
-  center: "justify-center text-center",
-  right: "justify-end text-right",
+export type UseAnnouncementStateOptions = {
+  items: AnnouncementItem[];
+  locale?: Locale;
+  /** Global link fallback when an item carries no own `href`. */
+  href?: string;
+  dismissible?: boolean;
+  /** ms between messages. `< 1000` disables rotation (static). */
+  rotateMs?: number;
+  /** Rotation behavior. Reduced-motion always forces static. */
+  motion?: AnnouncementMotion;
+  /** localStorage namespace for persisted dismissal. */
+  storageKey?: string;
+  /** SSR/test injection of already-persisted dismissed ids. */
+  initialDismissedIds?: string[];
+  /** Rebase a root-relative URL for the host environment. */
+  link?: (href: string) => string;
 };
 
-export function AnnouncementBar({
+/**
+ * Headless announcement state (platform-owned, R2).
+ *
+ * Owns resolution, rotation index, dismissal (+ persistence),
+ * reduced-motion gating, locale labels and link resolution. Theme
+ * presentations render owned markup from this view model; the default
+ * `AnnouncementBar` presentation below is one consumer. `active` is null
+ * when nothing is visible (all blank or all dismissed) — presentations
+ * render nothing in that case.
+ */
+export type AnnouncementState = {
+  locale: Locale;
+  isBn: boolean;
+  resolved: ResolvedAnnouncement[];
+  visible: ResolvedAnnouncement[];
+  active: ResolvedAnnouncement | null;
+  index: number;
+  step: (delta: number) => void;
+  dismiss: (id: string) => void;
+  dismissible: boolean;
+  dismissedIds: string[];
+  reducedMotion: boolean;
+  canRotate: boolean;
+  labels: AnnouncementLabels;
+  /** Resolved link target (item href, else global href, else ""). */
+  target: string;
+  /** `link`-rebased `target` (the actual anchor href). */
+  linkHref: string;
+};
+
+export function useAnnouncementState({
   items,
   locale = "en",
   href,
   dismissible = false,
   rotateMs = 0,
   motion = "rotating",
-  align = "center",
-  size = "md",
-  tone = "brand",
-  variant = "bar",
   storageKey = DEFAULT_STORAGE_KEY,
   initialDismissedIds,
   link,
-}: AnnouncementBarProps) {
+}: UseAnnouncementStateOptions): AnnouncementState {
   const resolved = resolveAnnouncementItems(items, locale);
   const [dismissedIds, setDismissedIds] = useState<string[]>(() =>
     readDismissedIds(storageKey, initialDismissedIds),
@@ -250,10 +344,9 @@ export function AnnouncementBar({
     return () => window.clearInterval(id);
   }, [canRotate, rotateEvery, visible.length]);
 
-  if (visible.length === 0) return null;
-  const active = visible[Math.min(index, visible.length - 1)]!;
+  const active = visible.length === 0 ? null : visible[Math.min(index, visible.length - 1)]!;
   const globalHref = (href ?? "").trim();
-  const target = active.href || globalHref;
+  const target = active ? active.href || globalHref : "";
   const linkHref = link ? link(target) : target;
   const isBn = locale === "bn";
 
@@ -269,10 +362,78 @@ export function AnnouncementBar({
       (i) => (((i + delta) % visible.length) + visible.length) % visible.length,
     );
 
-  const regionLabel = isBn ? "ঘোষণা" : "Announcement";
-  const dismissLabel = isBn ? "ঘোষণা বন্ধ করুন" : "Dismiss announcement";
-  const prevLabel = isBn ? "আগের ঘোষণা" : "Previous announcement";
-  const nextLabel = isBn ? "পরের ঘোষণা" : "Next announcement";
+  return {
+    locale,
+    isBn,
+    resolved,
+    visible,
+    active,
+    index,
+    step,
+    dismiss,
+    dismissible,
+    dismissedIds,
+    reducedMotion,
+    canRotate,
+    labels: {
+      region: isBn ? "ঘোষণা" : "Announcement",
+      dismiss: isBn ? "ঘোষণা বন্ধ করুন" : "Dismiss announcement",
+      prev: isBn ? "আগের ঘোষণা" : "Previous announcement",
+      next: isBn ? "পরের ঘোষণা" : "Next announcement",
+    },
+    target,
+    linkHref,
+  };
+}
+const TONE_CLASS: Record<AnnouncementTone, string> = {
+  brand: "bg-primary text-primary-foreground",
+  muted: "bg-muted text-foreground",
+  ink: "bg-foreground text-background",
+};
+
+const ALIGN_CLASS: Record<AnnouncementAlign, string> = {
+  left: "justify-start text-left",
+  center: "justify-center text-center",
+  right: "justify-end text-right",
+};
+
+export function AnnouncementBar({
+  items,
+  locale = "en",
+  href,
+  dismissible = false,
+  rotateMs = 0,
+  motion = "rotating",
+  align = "center",
+  size = "md",
+  tone = "brand",
+  variant = "bar",
+  storageKey = DEFAULT_STORAGE_KEY,
+  initialDismissedIds,
+  link,
+}: AnnouncementBarProps) {
+  // Default (neutral) presentation over the shared headless state. The
+  // tone/align/size/variant knobs below are token classes only — theme
+  // presentations registered in the registry render their own markup from
+  // `useAnnouncementState` instead of inheriting this.
+  const state = useAnnouncementState({
+    items,
+    locale,
+    href,
+    dismissible,
+    rotateMs,
+    motion,
+    storageKey,
+    initialDismissedIds,
+    link,
+  });
+  const { visible, dismissible: canDismiss } = state;
+  if (visible.length === 0) return null;
+  const active = state.active!;
+  const { target, linkHref } = state;
+  const { step, dismiss } = state;
+  const { region: regionLabel, dismiss: dismissLabel } = state.labels;
+  const { prev: prevLabel, next: nextLabel } = state.labels;
   const stepperBtn =
     "flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-fq-sm text-base leading-none motion-safe:transition-colors hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current";
 
@@ -320,7 +481,7 @@ export function AnnouncementBar({
           <span aria-hidden="true">›</span>
         </button>
       )}
-      {dismissible && (
+      {canDismiss && (
         <button
           type="button"
           onClick={() => dismiss(active.id)}

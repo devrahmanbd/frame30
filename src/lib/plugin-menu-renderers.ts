@@ -112,8 +112,9 @@ export function clearMenuRenderers(): void {
 /**
  * Renderer half of the swap gate: returns the registered Component only
  * when the review gate already approved this slot for this plugin
- * (`decision.kind === "plugin"`). Every other outcome — unapproved,
- * scope-denied, unclaimed, malformed — is undefined, so the caller renders
+ * (`decision.kind === "plugin"` AND `decision.slot === slot`). Every other
+ * outcome — unapproved, scope-denied, unclaimed, malformed, or approved
+ * for a different slot — is undefined, so the caller renders
  * the theme default (fail-open). Never throws.
  */
 export function selectPluginMenuRenderer(
@@ -124,6 +125,9 @@ export function selectPluginMenuRenderer(
     if (!decision || typeof decision !== "object") return undefined;
     if (decision.kind !== "plugin") return undefined;
     if (!isMenuSlot(slot)) return undefined;
+    // Slot-scoped approval: a verdict for another slot never unlocks this
+    // slot's renderer, even for the same plugin.
+    if (decision.slot !== slot) return undefined;
     return RENDERERS.get(decision.pluginId)?.get(slot);
   } catch {
     return undefined;

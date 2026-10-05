@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   Menu as MenuIcon,
@@ -28,6 +28,15 @@ import {
   PluginMenuBoundary,
   selectPluginMenuRenderer,
 } from "@/lib/plugin-menu-renderers";
+import { resolveThemePresentation } from "@/lib/theme-presentations";
+import type {
+  WidgetComponent,
+  WidgetCtx,
+} from "@/components/builder/widgets";
+import {
+  AnnouncementBar as AnnouncementBarSurface,
+  headerChromeAnnouncementItems,
+} from "./AnnouncementBar";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { TimezoneToggle } from "./TimezoneToggle";
 import { themeChromeFor, type ThemeHeaderChrome } from "./theme-chrome";
@@ -264,45 +273,169 @@ export function useHeaderBehavior(): HeaderBehavior {
 }
 
 /* ─────────────────────────────────────────────────────────────
- * LAYER 3 — ThemeHeaderRenderer: single theme-parameterized
- * presentation (no per-theme JSX duplication, no slug checks).
+ * LAYER 3 — HeaderShell: theme-owned header presentation contract.
+ * Menu data + header state + active theme resolve through the existing
+ * per-widget presentation registry (`resolveThemePresentation` over the
+ * `mega_menu` pair — the same pair the theme widget presentations claim,
+ * so no new registry and no new registration path). Each theme attaches
+ * its shell as a static on its registered presentation; unknown or
+ * shell-less themes fall back to the generic shell below. The lookup is
+ * opaque (no theme key literal, no slug or name check here) and never
+ * throws — resolution failure renders the generic shell.
+ * Swap resolution stays untouched: decisions flow inside `HeaderData`
+ * and each shell wires the same plugin boundary around its own nav.
+ * ───────────────────────────────────────────────────────────── */
+
+export type HeaderShellProps = {
+  slug: string;
+  name: string;
+  custom: boolean;
+  data: HeaderData;
+  behavior: HeaderBehavior;
+  wishlistCount: number;
+  cartCount: number;
+  cartHydrated: boolean;
+  /** BCP-47-ish locale for theme canonical labels (`en` | `bn`). */
+  locale: string;
+  t: (en: string, bn?: string) => string;
+};
+
+export type HeaderShellComponent = (
+  props: HeaderShellProps,
+) => React.ReactNode;
+
+/** Registered presentation carrying a store-header shell (theme-owned). */
+type HeaderShellCarrier = WidgetComponent & {
+  HeaderShell?: HeaderShellComponent;
+};
+
+/**
+ * Active theme shell via the existing registry, generic fallback.
+ * Opaque lookup: names no theme, branches on no theme.
+ */
+export function resolveHeaderShell(
+  themeKey: string | null | undefined,
+): HeaderShellComponent {
+  const Presentation = resolveThemePresentation(
+    themeKey,
+    "mega_menu",
+  ) as unknown as HeaderShellCarrier | undefined;
+  return Presentation?.HeaderShell ?? GenericHeaderShell;
+}
+
+/* ─────────────────────────────────────────────────────────────
+ * LAYER 3b — GenericHeaderShell: theme-agnostic fallback presentation.
  * Owns logo placement, nav geometry, desktop and mobile layout,
- * mega presentation, icons, sticky behavior, typography, spacing.
- * One renderer serves every theme via isLuxury plus chrome tokens;
- * token-only classes preserved throughout.
+ * dropdown/mega geometry, icons, sticky behavior, typography, spacing
+ * for stores whose theme registers no header shell. Parameterized only
+ * by chrome tokens plus the luxury flag — no per-theme literals, no
+ * slug or name checks. Token-only classes preserved throughout.
  * ───────────────────────────────────────────────────────────── */
 
 const headerIconLinkCls =
   "grid size-10 shrink-0 place-items-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95 text-[var(--theme-ink)]/70 hover:text-[var(--theme-ink)]";
 
 export function HeaderAnnouncementBar({
+  themeKey,
   headerChrome,
   scrolled,
+  locale = "en",
+  link,
+  slug,
   t,
 }: {
+  themeKey?: string | null;
   headerChrome: ThemeHeaderChrome | null;
   scrolled: boolean;
-  t: (en: string, bn?: string) => string;
+  /** BCP-47-ish locale driving theme copy (`en` | `bn`). */
+  locale?: string;
+  /** Rebase a root-relative href for the host environment. */
+  link?: (href: string) => string;
+  /** Store slug namespacing persisted dismissal. */
+  slug?: string;
+  /** Kept for backward compat with direct callers; copy now resolves via `locale`. */
+  t?: (en: string, bn?: string) => string;
 }) {
+  void t;
   if (!headerChrome) return null;
-  return (
-    <div
-      className={`w-full overflow-hidden transition-all duration-250 ease-out motion-reduce:transition-none border-b border-[var(--theme-border)] ${scrolled ? "h-0 opacity-0 border-transparent" : "h-[36px] opacity-100"}`}
-    >
-      <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10">
-        <div className="hidden sm:block text-[10px] font-medium tracking-wide text-[var(--theme-ink)]/60 w-1/3 text-left">
-          {headerChrome.announcement.left}
-        </div>
-        <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)] w-full sm:w-1/3 text-center">
-          {t(
-            headerChrome.announcement.center,
-            headerChrome.announcement.center_bn,
-          )}
-        </div>
-        <div className="hidden sm:flex justify-end w-1/3">
-          <LanguageToggle />
-        </div>
+  // Platform data contract: header-chrome `{ center, center_bn }` maps to
+  // surface items (`left` is layout chrome, never message copy). Blank maps
+  // to no announcement, same as the standalone surface.
+  const items = headerChromeAnnouncementItems(headerChrome.announcement);
+  if (items.length === 0) return null;
+  const normLocale = locale === "bn" ? "bn" : "en";
+  const rebase = link ?? ((href: string) => href);
+  const storageKey = `fq-announcement:header:${slug ?? themeKey ?? "generic"}`;
+  // Theme-owned presentation via the existing per-widget registry
+  // (`themeKey × announcement_bar` — the same pair the theme widget
+  // presentations claim, so no new registry). Opaque lookup, never throws;
+  // unregistered pairs fall through to the neutral platform surface below.
+  // No final announcement markup lives here: the collapse wrapper below is
+  // generic sticky behavior (same border/transition tokens as before),
+  // while typography, alignment and chrome come from the theme or the
+  // neutral fallback.
+  const Presentation = resolveThemePresentation(
+    themeKey,
+    "announcement_bar",
+  ) as unknown as WidgetComponent | undefined;
+  const wrapperCls = `w-full overflow-hidden transition-all duration-250 ease-out motion-reduce:transition-none border-b border-[var(--theme-border)] ${scrolled ? "h-0 opacity-0 border-transparent" : "opacity-100"}`;
+  if (Presentation) {
+    // Synthetic widget context from the header-chrome copy: repeater-first
+    // `items` rows win (verbatim with `announcementItemsOf`), static +
+    // non-dismissible to preserve today's header behavior (single message,
+    // no rotation, no close affordance). Rotation, dismissal, locale and
+    // reduced-motion gating all come from the shared headless state inside
+    // the theme presentation, so behavior matches the widget path.
+    const section = {
+      id: `header-announcement:${slug ?? themeKey ?? "generic"}`,
+      type: "announcement_bar",
+      props: {
+        items: items.map((item) => ({ ...item })),
+        href: "",
+        dismissible: false,
+        rotateMs: 0,
+        motion: "static",
+      },
+    } as unknown as WidgetCtx["section"];
+    const ctx: WidgetCtx = {
+      section,
+      str: (key: string) =>
+        key === "motion" ? "static" : key === "href" ? "" : "",
+      bool: () => false,
+      int: () => 0,
+      money: () => "",
+      link: rebase,
+      Heading: "h2",
+      primary: false,
+      editing: false,
+      locale: normLocale,
+      storeSlug: slug,
+      renderChildren: () => null,
+    };
+    return (
+      <div className={wrapperCls}>
+        {createElement(
+          Presentation as (p: WidgetCtx) => React.ReactElement,
+          ctx,
+        )}
       </div>
+    );
+  }
+  // Generic fallback: neutral platform surface (token classes only, no
+  // luxury three-column, no language toggle — shells own toggle placement).
+  // Same data, labels and links as every theme; dismissal/locale/link and
+  // reduced-motion gating come from the shared hook.
+  return (
+    <div className={wrapperCls}>
+      <AnnouncementBarSurface
+        items={items}
+        locale={normLocale}
+        dismissible={false}
+        rotateMs={0}
+        motion="static"
+        link={rebase}
+        storageKey={storageKey}
+      />
     </div>
   );
 }
@@ -704,7 +837,7 @@ export function HeaderMobileDrawer({
  * drawer from the canonical row model). Shared code keeps HeaderData,
  * HeaderBehavior, and the canonical row model in `@/lib/menus/menu`. */
 
-export function ThemeHeaderRenderer({
+export function GenericHeaderShell({
   slug,
   name,
   custom,
@@ -713,18 +846,9 @@ export function ThemeHeaderRenderer({
   wishlistCount,
   cartCount,
   cartHydrated,
+  locale,
   t,
-}: {
-  slug: string;
-  name: string;
-  custom: boolean;
-  data: HeaderData;
-  behavior: HeaderBehavior;
-  wishlistCount: number;
-  cartCount: number;
-  cartHydrated: boolean;
-  t: (en: string, bn?: string) => string;
-}) {
+}: HeaderShellProps) {
   const { headerChrome, isLuxury, base, headerMenu, mobileMenu } = data;
   const {
     mobileOpen,
@@ -781,14 +905,18 @@ export function ThemeHeaderRenderer({
   );
   return (
     <header
+      data-header-shell="generic"
       className={`sticky top-0 z-40 w-full transition-all duration-250 ease-out bg-[var(--theme-surface)]${isLuxury ? " motion-reduce:transition-none" : ""} ${
         scrolled ? "shadow-sm border-b border-[var(--theme-border)]" : ""
       }`}
     >
-      {/* ── Announcement Bar (luxury variant, theme-authored copy) ── */}
+      {/* ── Announcement slot: generic fallback (theme shells own theirs
+          via the same registry; no luxury markup lives here) ── */}
       <HeaderAnnouncementBar
         headerChrome={headerChrome}
         scrolled={scrolled}
+        locale={locale}
+        slug={slug}
         t={t}
       />
 
@@ -897,6 +1025,57 @@ export function ThemeHeaderRenderer({
   );
 }
 
+/* ─────────────────────────────────────────────────────────────
+ * LAYER 4 — ThemeHeaderRenderer: delegation only (no markup).
+ * Resolves the active theme shell through `resolveHeaderShell` and
+ * renders it with the assembled data plus behavior. Shell-less themes
+ * (including null keys) render the generic shell — output identical to
+ * the pre-delegation renderer. Swap boundaries live inside the shells
+ * around their own nav markup; this layer owns no presentation.
+ * ───────────────────────────────────────────────────────────── */
+
+export function ThemeHeaderRenderer({
+  slug,
+  name,
+  custom,
+  data,
+  behavior,
+  wishlistCount,
+  cartCount,
+  cartHydrated,
+  locale = "en",
+  t,
+  themeKey,
+}: {
+  slug: string;
+  name: string;
+  custom: boolean;
+  data: HeaderData;
+  behavior: HeaderBehavior;
+  wishlistCount: number;
+  cartCount: number;
+  cartHydrated: boolean;
+  locale?: string;
+  t: (en: string, bn?: string) => string;
+  themeKey?: string | null;
+}) {
+  const Shell = resolveHeaderShell(themeKey);
+  return (
+    <Shell
+      slug={slug}
+      name={name}
+      custom={custom}
+      data={data}
+      behavior={behavior}
+      wishlistCount={wishlistCount}
+      cartCount={cartCount}
+      cartHydrated={cartHydrated}
+      locale={locale}
+      t={t}
+    />
+  );
+}
+
 export function StoreHeader({
   slug,
   name,
@@ -935,7 +1114,7 @@ export function StoreHeader({
   void allowCustomerTimezone;
   const { count, hydrated } = useCart(slug);
   const { count: wishlistCount } = useWishlistHeader();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { location } = useRouterState();
   // LAYER 1 — HeaderData: pure assembly from hook inputs plus props.
   const data = assembleHeaderData({
@@ -948,7 +1127,7 @@ export function StoreHeader({
   });
   // LAYER 2 — HeaderBehavior: shared interactions.
   const behavior = useHeaderBehavior();
-  // LAYER 3 — ThemeHeaderRenderer: single parameterized presentation.
+  // LAYER 4 — ThemeHeaderRenderer: delegation to the active theme shell.
   return (
     <ThemeHeaderRenderer
       slug={slug}
@@ -959,7 +1138,9 @@ export function StoreHeader({
       wishlistCount={wishlistCount}
       cartCount={count}
       cartHydrated={hydrated}
+      locale={lang}
       t={t}
+      themeKey={themeKey}
     />
   );
 }

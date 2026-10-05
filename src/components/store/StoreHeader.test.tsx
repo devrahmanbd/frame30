@@ -50,22 +50,36 @@ vi.mock("@tanstack/react-router", async (importOriginal) => {
 
 import { MinimalCheckoutHeader, StoreHeader } from "./StoreHeader";
 import {
+  GenericHeaderShell,
   HeaderAnnouncementBar,
   HeaderDesktopNav,
   STORE_DRAWER_MENU_SLOT,
   ThemeHeaderRenderer,
   assembleHeaderData,
+  resolveHeaderShell,
   useHeaderBehavior,
 } from "./StoreHeader";
+import {
+  SongoskritiHeaderPresentation,
+  SongoskritiHeaderShell,
+} from "@/lib/themes/songoskriti/header-presentation";
+import {
+  SomvabonaHeaderPresentation,
+  SomvabonaHeaderShell,
+} from "@/lib/themes/somvabona/header-presentation";
 import type { StoreMenuSwap } from "./StoreHeader";
 import { themeChromeFor } from "./theme-chrome";
-import { resolveThemePresentation } from "@/lib/theme-presentations";
-import { SongoskritiHeaderPresentation } from "@/lib/themes/songoskriti/header-presentation";
+import {
+  clearThemePresentations,
+  registerThemePresentation,
+  resolveThemePresentation,
+} from "@/lib/theme-presentations";
+import { SongoskritiAnnouncementPresentation } from "@/lib/themes/songoskriti/announcement-presentation";
+import { SomvabonaAnnouncementPresentation } from "@/lib/themes/somvabona/announcement-presentation";
 import {
   SongoskritiDesktopNav,
   SongoskritiMobileDrawer,
 } from "@/lib/themes/songoskriti/header-presentation";
-import { SomvabonaHeaderPresentation } from "@/lib/themes/somvabona/header-presentation";
 import {
   SomvabonaDesktopNav,
   SomvabonaMobileDrawer,
@@ -315,7 +329,12 @@ describe("StoreHeader songoskriti data-driven menus (REPORT-THEMES §4/§7.1)", 
       name: "Songoskriti",
       themeKey: "songoskriti",
     });
-    expect(html).toContain("EASY 7-DAY EXCHANGE");
+    // R1b: header announcement routes through the theme-owned
+    // `announcement_bar` presentation (registry) with the generic surface as
+    // fallback. Message copy (`center`) renders; `left` is layout chrome,
+    // never message copy, so it stays out (see `headerChromeAnnouncementItems`).
+    expect(html).toContain("Free delivery across Bangladesh on orders over BDT 5000");
+    expect(html).not.toContain("w-1/3 text-left");
     // Header fallback renders the mega panel affordance for entries with children.
     expect(html).toContain("Shop Women");
     const bnHtml = renderHeader({
@@ -378,10 +397,12 @@ describe("StoreHeader songoskriti chrome resolves through themeChromeFor", () =>
     });
     // Values flow through the key-driven lookup: assert the resolved
     // values, so a theme copy change fails here instead of silently
-    // passing against stale literals.
+    // passing against stale literals. R1b: `center` renders through the
+    // theme-owned announcement presentation (registry/fallback); `left`
+    // stays out (layout chrome, not message copy).
     expect(html).toContain(chrome.logo.src);
     expect(html).toContain(`alt="${chrome.logo.alt}"`);
-    expect(html).toContain(chrome.announcement.left);
+    expect(html).not.toContain(chrome.announcement.left);
     expect(html).toContain(chrome.announcement.center);
     const bnHtml = renderHeader({
       slug: "songoskriti",
@@ -864,8 +885,11 @@ describe("StoreHeader T3.1 layer boundaries (HeaderData + Behavior + Renderer)",
         t={(en) => en}
       />,
     );
-    expect(luxuryHtml).toContain(chrome.announcement.left);
+    // R1b: generic fallback renders message copy with the platform labels;
+    // `left` layout chrome stays out.
+    expect(luxuryHtml).not.toContain(chrome.announcement.left);
     expect(luxuryHtml).toContain(chrome.announcement.center);
+    expect(luxuryHtml).toContain('aria-label="Announcement"');
     const genericHtml = renderToStaticMarkup(
       <HeaderAnnouncementBar headerChrome={null} scrolled={false} t={enT} />,
     );
@@ -1227,5 +1251,457 @@ describe("header presentations — theme-owned canonical modes (HEADER DE-THEMIN
     expect(html).not.toContain("logo-lockup");
     expect(html).not.toContain("EASY 7-DAY EXCHANGE");
     expect(html).not.toContain("/c/women");
+  });
+});
+
+describe("header theme presentation runtime (R1 — same menu + state → distinct markup)", () => {
+  function proofMenus(): Pick<StoreMenus, "header" | "mobile"> {
+    const jamdani = dbNode({ id: "m-jamdani", label: "Jamdani", url: "/c/jamdani" });
+    // Nested dashboard tree: shells read the nested shape (never the flat
+    // editor rows) and render as-authored labels in every locale.
+    const tree: MenuNode[] = [
+      {
+        ...dbNode({ id: "m-shop", label: "Shop", url: "/c/shop" }),
+        children: [
+          {
+            ...dbNode({ id: "m-sarees", label: "Sarees", url: "/c/sarees" }),
+            children: [jamdani],
+          },
+        ],
+      },
+      dbNode({ id: "m-about", label: "About", url: "/pages/about" }),
+    ];
+    return { header: tree, mobile: tree };
+  }
+
+  function renderShell(
+    Shell: typeof SongoskritiHeaderShell,
+    {
+      themeKey,
+      locale = "en",
+      scrolled = false,
+      custom = false,
+      mobileOpen = true,
+      expandedMobileMenu = "m-shop",
+    }: {
+      themeKey?: string | null;
+      locale?: "en" | "bn";
+      scrolled?: boolean;
+      custom?: boolean;
+      mobileOpen?: boolean;
+      expandedMobileMenu?: string | null;
+    } = {},
+  ) {
+    const t =
+      locale === "bn"
+        ? (en: string, bn?: string) => bn ?? en
+        : (en: string) => en;
+    const data = assembleHeaderData({
+      slug: "demo",
+      menus: proofMenus(),
+      themeKey,
+      pathname: custom ? "/" : "/store/demo",
+      t,
+    });
+    const ui: ReactElement = (
+      <LanguageProvider initialLang={locale}>
+        <Shell
+          slug="demo"
+          name="Demo"
+          custom={custom}
+          data={data}
+          behavior={{
+            mobileOpen,
+            setMobileOpen: (() => {}) as never,
+            scrolled,
+            expandedMobileMenu,
+            setExpandedMobileMenu: (() => {}) as never,
+          }}
+          wishlistCount={2}
+          cartCount={3}
+          cartHydrated
+          locale={locale}
+          t={t}
+        />
+      </LanguageProvider>
+    );
+    return renderToStaticMarkup(ui);
+  }
+
+  it("resolves distinct shells per theme through the existing registry with generic fallback", () => {
+    expect(resolveHeaderShell("songoskriti")).toBe(SongoskritiHeaderShell);
+    expect(resolveHeaderShell("somvabona")).toBe(SomvabonaHeaderShell);
+    expect(SongoskritiHeaderShell).not.toBe(SomvabonaHeaderShell);
+    // Unknown / missing themes never leak another theme's presentation.
+    expect(resolveHeaderShell("mystery-theme")).toBe(GenericHeaderShell);
+    expect(resolveHeaderShell(null)).toBe(GenericHeaderShell);
+    expect(resolveHeaderShell(undefined)).toBe(GenericHeaderShell);
+  });
+
+  it("same menu + same header state renders materially different markup with identical content", () => {
+    const songo = renderShell(SongoskritiHeaderShell, {
+      themeKey: "songoskriti",
+    });
+    const somva = renderShell(SomvabonaHeaderShell, {
+      themeKey: "somvabona",
+    });
+    // Per-theme shell markers, never crossed.
+    expect(songo).toContain('data-header-shell="songoskriti"');
+    expect(somva).toContain('data-header-shell="somvabona"');
+    expect(songo).not.toContain('data-header-shell="somvabona"');
+    expect(somva).not.toContain('data-header-shell="songoskriti"');
+    expect(songo).not.toBe(somva);
+    // Identical content: same labels, same rebased hrefs, same landmark.
+    for (const html of [songo, somva]) {
+      expect(html).toContain(">Shop<");
+      expect(html).toContain(">Sarees<");
+      expect(html).toContain(">Jamdani<");
+      expect(html).toContain(">About<");
+      expect(html).toContain('href="/store/demo/c/shop"');
+      expect(html).toContain('href="/store/demo/c/sarees"');
+      expect(html).toContain('href="/store/demo/c/jamdani"');
+      expect(html).toContain('href="/store/demo/pages/about"');
+      expect(html).toContain('aria-label="Store menu"');
+    }
+    // Structurally distinct desktop: mega panel vs compact dropdown.
+    expect(songo).toContain('data-mega="songoskriti"');
+    expect(songo).toContain("grid-cols-4");
+    expect(somva).toContain('data-drop="somvabona"');
+    expect(somva).toContain("min-w-52");
+    expect(songo).not.toContain("data-drop");
+    expect(somva).not.toContain("data-mega");
+    // Structurally distinct mobile: accordion buttons vs disclosures.
+    expect(songo).toContain('data-nav="songoskriti-drawer"');
+    expect(songo).toContain('aria-expanded="true"');
+    expect(songo).not.toContain("<details");
+    expect(somva).toContain('data-nav="somvabona-drawer"');
+    expect(somva).toContain("<details");
+    // The disclosure drawer carries no accordion state (the header
+    // hamburger toggle above it still owns its own aria-expanded).
+    expect(somva).not.toMatch(/<details[^>]*aria-expanded/);
+  });
+
+  it("covers the language switch plus localized labels in both locales", () => {
+    for (const locale of ["en", "bn"] as const) {
+      const songo = renderShell(SongoskritiHeaderShell, {
+        themeKey: "songoskriti",
+        locale,
+      });
+      const somva = renderShell(SomvabonaHeaderShell, {
+        themeKey: "somvabona",
+        locale,
+      });
+      // The switch itself renders in both shells (announcement vs icons).
+      for (const html of [songo, somva]) {
+        expect(html).toContain("EN");
+        expect(html).toContain("বাং");
+        expect(html).toContain('aria-pressed="true"');
+      }
+      // Dashboard rows render as-authored in every locale, never blank.
+      for (const html of [songo, somva]) {
+        expect(html).toContain(">Shop<");
+        expect(html).toContain(">Jamdani<");
+      }
+    }
+    const songoBn = renderShell(SongoskritiHeaderShell, {
+      themeKey: "songoskriti",
+      locale: "bn",
+    });
+    const somvaBn = renderShell(SomvabonaHeaderShell, {
+      themeKey: "somvabona",
+      locale: "bn",
+    });
+    // Localised nav landmark in both shells.
+    expect(songoBn).toContain('aria-label="স্টোর মেনু"');
+    expect(somvaBn).toContain('aria-label="স্টোর মেনু"');
+    // Luxury announcement copy localises; the everyday shell ships none.
+    expect(songoBn).toContain("৫০০০ টাকার উপরে অর্ডারে সারা দেশে ফ্রি ডেলিভারি");
+    expect(somvaBn).not.toContain("EASY 7-DAY EXCHANGE");
+  });
+
+  it("covers sticky state plus cart/account/search controls per theme", () => {
+    for (const Shell of [SongoskritiHeaderShell, SomvabonaHeaderShell]) {
+      const themeKey =
+        Shell === SongoskritiHeaderShell ? "songoskriti" : "somvabona";
+      const expanded = renderShell(Shell, { themeKey, scrolled: false });
+      const stuck = renderShell(Shell, { themeKey, scrolled: true });
+      // Sticky shrink: full chrome at rest, compact + shadow when stuck.
+      expect(expanded).toContain("h-[72px]");
+      expect(stuck).toContain("h-[64px]");
+      expect(stuck).toContain("shadow-sm");
+      expect(expanded).not.toContain("shadow-sm");
+      // Drawer offset follows the compact state.
+      expect(expanded).toContain("top:108px");
+      expect(stuck).toContain("top:64px");
+      // Controls: live counts in accessible labels with badges.
+      for (const html of [expanded, stuck]) {
+        expect(html).toContain('aria-label="Wishlist, 2"');
+        expect(html).toContain('aria-label="Cart, 3"');
+        expect(html).toMatch(/>2</);
+        expect(html).toMatch(/>3</);
+        expect(html).toContain('data-link-to="/store/$slug/search"');
+        expect(html).toContain('data-link-to="/store/$slug/account"');
+        expect(html).toContain('data-link-to="/store/$slug/cart"');
+      }
+      // Custom hosts link at the root instead of under the store path.
+      const customHtml = renderShell(Shell, { themeKey, custom: true });
+      expect(customHtml).toContain('data-link-to="/search"');
+      expect(customHtml).toContain('data-link-to="/account"');
+      expect(customHtml).toContain('data-link-to="/cart"');
+      expect(customHtml).toContain('href="/c/shop"');
+    }
+    // Luxury announcement collapses on scroll; everyday chrome has none.
+    const songoStuck = renderShell(SongoskritiHeaderShell, {
+      themeKey: "songoskriti",
+      scrolled: true,
+    });
+    expect(songoStuck).toContain("h-0 opacity-0");
+  });
+
+  it("StoreHeader delegates end-to-end: shell marker follows the theme key", () => {
+    const menus = proofMenus();
+    const songo = renderHeader({
+      slug: "demo",
+      name: "Demo",
+      themeKey: "songoskriti",
+      menus,
+    });
+    const somva = renderHeader({
+      slug: "demo",
+      name: "Demo",
+      themeKey: "somvabona",
+      menus,
+    });
+    expect(songo).toContain('data-header-shell="songoskriti"');
+    expect(somva).toContain('data-header-shell="somvabona"');
+    expect(songo).not.toBe(somva);
+    for (const html of [songo, somva]) {
+      expect(html).toContain(">Shop<");
+      expect(html).toContain(">Jamdani<");
+      expect(html).toContain("/store/demo/c/jamdani");
+    }
+    // Unknown themes keep the generic shell with the text wordmark.
+    const mystery = renderHeader({
+      slug: "demo",
+      name: "Demo",
+      themeKey: "mystery-theme",
+      menus,
+    });
+    expect(mystery).toContain('data-header-shell="generic"');
+    expect(mystery).toContain("Demo");
+    expect(mystery).not.toContain("data-header-shell=\"songoskriti\"");
+    expect(mystery).not.toContain("data-header-shell=\"somvabona\"");
+  });
+});
+
+describe("header announcement via theme-owned presentations (R1b)", () => {
+  const chrome = () => themeChromeFor("songoskriti")!;
+
+  function barHtml(
+    themeKey: string | null | undefined,
+    opts: {
+      scrolled?: boolean;
+      locale?: "en" | "bn";
+      slug?: string;
+    } = {},
+  ): string {
+    return renderToStaticMarkup(
+      <HeaderAnnouncementBar
+        themeKey={themeKey}
+        headerChrome={chrome()}
+        scrolled={opts.scrolled ?? false}
+        locale={opts.locale ?? "en"}
+        slug={opts.slug ?? "demo"}
+        t={(en, bn) => (opts.locale === "bn" ? (bn ?? en) : en)}
+      />,
+    );
+  }
+
+  it("no final luxury markup lives in the shared header", () => {
+    const src = HEADER_SRC();
+    // The old three-column luxury bar (left copy + toggle layout) is gone
+    // from shared code; shells own announcement chrome via the registry and
+    // the shared bar is the generic fallback.
+    expect(src).not.toContain("w-1/3 text-left");
+    expect(src).not.toContain("EASY 7-DAY EXCHANGE");
+    expect(src).toContain("resolveThemePresentation");
+    expect(src).toContain('"announcement_bar"');
+    expect(src).toContain("headerChromeAnnouncementItems");
+  });
+
+  it("unregistered pairs fall back to the neutral surface with identical data", () => {
+    clearThemePresentations();
+    try {
+      const html = barHtml("songoskriti");
+      expect(html).toContain(chrome().announcement.center);
+      expect(html).not.toContain(chrome().announcement.left);
+      expect(html).toContain('aria-label="Announcement"');
+      expect(html).toContain('aria-live="polite"');
+      // Neutral fallback tokens only — no theme presentation marker.
+      expect(html).not.toContain("data-announcement-presentation");
+      expect(html).toContain("bg-primary");
+      const bn = barHtml("songoskriti", { locale: "bn" });
+      expect(bn).toContain(chrome().announcement.center_bn);
+      expect(bn).not.toContain(chrome().announcement.center);
+      expect(bn).toContain('aria-label="ঘোষণা"');
+    } finally {
+      // Restore shell registrations (mega_menu pair) for the remaining
+      // header suites in this file.
+      clearThemePresentations();
+      registerThemePresentation(
+        "songoskriti",
+        "mega_menu",
+        SongoskritiHeaderPresentation,
+      );
+      registerThemePresentation(
+        "somvabona",
+        "mega_menu",
+        SomvabonaHeaderPresentation,
+      );
+    }
+  });
+
+  it("header renders the active theme announcement presentation per themeKey", () => {
+    clearThemePresentations();
+    registerThemePresentation(
+      "songoskriti",
+      "mega_menu",
+      SongoskritiHeaderPresentation,
+    );
+    registerThemePresentation(
+      "somvabona",
+      "mega_menu",
+      SomvabonaHeaderPresentation,
+    );
+    registerThemePresentation(
+      "songoskriti",
+      "announcement_bar",
+      SongoskritiAnnouncementPresentation,
+    );
+    registerThemePresentation(
+      "somvabona",
+      "announcement_bar",
+      SomvabonaAnnouncementPresentation,
+    );
+    try {
+      const songo = barHtml("songoskriti");
+      const somva = barHtml("somvabona");
+      // Same header-chrome data in, theme-owned chrome out.
+      for (const html of [songo, somva]) {
+        expect(html).toContain(chrome().announcement.center);
+        expect(html).toContain('aria-label="Announcement"');
+      }
+      expect(songo).toContain('data-announcement-presentation="songoskriti"');
+      expect(somva).toContain('data-announcement-presentation="somvabona"');
+      expect(songo).not.toBe(somva);
+      // Heritage bar vs everyday strip stay structurally distinct.
+      expect(songo).toContain("font-serif");
+      expect(somva).toContain("font-sans");
+      // bn twins resolve through the shared headless state in both themes.
+      const songoBn = barHtml("songoskriti", { locale: "bn" });
+      const somvaBn = barHtml("somvabona", { locale: "bn" });
+      for (const html of [songoBn, somvaBn]) {
+        expect(html).toContain(chrome().announcement.center_bn);
+        expect(html).toContain('aria-label="ঘোষণা"');
+      }
+      // Scrolled collapse is generic behavior around either presentation.
+      expect(barHtml("songoskriti", { scrolled: true })).toContain(
+        "h-0 opacity-0",
+      );
+      expect(barHtml("somvabona", { scrolled: true })).toContain(
+        "h-0 opacity-0",
+      );
+      // Null chrome renders nothing for every theme.
+      for (const themeKey of ["songoskriti", "somvabona", null]) {
+        expect(
+          renderToStaticMarkup(
+            <HeaderAnnouncementBar
+              themeKey={themeKey}
+              headerChrome={null}
+              scrolled={false}
+              t={(en) => en}
+            />,
+          ),
+        ).toBe("");
+      }
+    } finally {
+      clearThemePresentations();
+      registerThemePresentation(
+        "songoskriti",
+        "mega_menu",
+        SongoskritiHeaderPresentation,
+      );
+      registerThemePresentation(
+        "somvabona",
+        "mega_menu",
+        SomvabonaHeaderPresentation,
+      );
+    }
+  });
+
+  it("songoskriti shell owns its announcement slot; somvabona ships none", () => {
+    clearThemePresentations();
+    registerThemePresentation(
+      "songoskriti",
+      "mega_menu",
+      SongoskritiHeaderPresentation,
+    );
+    registerThemePresentation(
+      "somvabona",
+      "mega_menu",
+      SomvabonaHeaderPresentation,
+    );
+    registerThemePresentation(
+      "songoskriti",
+      "announcement_bar",
+      SongoskritiAnnouncementPresentation,
+    );
+    registerThemePresentation(
+      "somvabona",
+      "announcement_bar",
+      SomvabonaAnnouncementPresentation,
+    );
+    try {
+      const menus = {
+        header: [],
+        mobile: [],
+      };
+      const songo = renderHeader({
+        slug: "songoskriti",
+        name: "Songoskriti",
+        themeKey: "songoskriti",
+        menus,
+      });
+      const somva = renderHeader({
+        slug: "demo",
+        name: "Demo",
+        themeKey: "somvabona",
+        menus,
+      });
+      expect(songo).toContain('data-header-shell="songoskriti"');
+      expect(songo).toContain('data-announcement-presentation="songoskriti"');
+      expect(songo).toContain(chrome().announcement.center);
+      expect(somva).toContain('data-header-shell="somvabona"');
+      // Everyday shell ships no header announcement (null chrome).
+      expect(somva).not.toContain("data-announcement-presentation");
+      expect(somva).not.toContain(chrome().announcement.center);
+      // Both shells keep the language switch (songoskriti via icons now).
+      for (const html of [songo, somva]) {
+        expect(html).toContain("EN");
+        expect(html).toContain("বাং");
+      }
+    } finally {
+      clearThemePresentations();
+      registerThemePresentation(
+        "songoskriti",
+        "mega_menu",
+        SongoskritiHeaderPresentation,
+      );
+      registerThemePresentation(
+        "somvabona",
+        "mega_menu",
+        SomvabonaHeaderPresentation,
+      );
+    }
   });
 });

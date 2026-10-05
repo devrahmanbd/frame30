@@ -16,18 +16,38 @@
  * (capped at the `limit` prop), else from the section's own trigger label
  * plus its widget-level promo props. Hrefs are pre-rebased through the
  * context `link` (host-aware), so the nav renders with an empty base.
- * Somvabona keeps the generic text wordmark: no header chrome is
- * registered here, so `themeChromeFor("somvabona")` stays null. Imports
- * nothing from the shared header — no theme branch lives here: this
- * module names only its own key.
+ * The store-header shell below renders over the shared header contract
+ * (type-only plus slot constants — never another theme's markup):
+ * this module still names only its own key.
  */
 import {
   canonicalHref,
   canonicalLabel,
   canonicalPromoTitle,
   type CanonicalMenuItem,
+  type MenuNode,
 } from "@/lib/menus/menu";
 import { registerThemePresentation } from "@/lib/theme-presentations";
+import { Link } from "@tanstack/react-router";
+import {
+  Menu as MenuIcon,
+  Search,
+  ShoppingBag,
+  User,
+  X,
+  Heart,
+} from "@/components/icons/tabler";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import {
+  STORE_DRAWER_MENU_SLOT,
+  STORE_HEADER_MENU_SLOT,
+  type HeaderShellComponent,
+  type HeaderShellProps,
+} from "@/components/store/StoreHeader";
+import {
+  PluginMenuBoundary,
+  selectPluginMenuRenderer,
+} from "@/lib/plugin-menu-renderers";
 import type { WidgetComponent } from "@/components/builder/widgets";
 
 export type SomvabonaNavProps = {
@@ -383,6 +403,354 @@ export const SomvabonaHeaderPresentation: WidgetComponent = (ctx) => {
       </div>
     </div>
   );
+};
+
+/* ─────────────────────────────────────────────────────────────
+ * Store header shell (R1 header theme presentation runtime).
+ *
+ * Theme-owned full-header renderer over the shared header contract
+ * (`HeaderData` + `HeaderBehavior` + control counts from StoreHeader):
+ * text-wordmark brand, compact dropdown desktop nav, icon controls with
+ * the language switch, sticky shrink, and the disclosure mobile drawer.
+ * Same menu rows and header state as every theme — only this markup
+ * differs. Attached as a static on the registered `mega_menu`
+ * presentation so StoreHeader resolves it through the existing
+ * registry with the generic shell as fallback.
+ *
+ * Menu rows arrive as dashboard/theme `MenuNode`s (fallback nodes are
+ * partial — no dashboard metadata), so the adapter below builds the
+ * canonical items defensively and twin-resolves fallback labels through
+ * the header chrome labeler. Swap wiring mirrors the shared boundary
+ * exactly (resolution itself stays in StoreHeader): a `plugin` verdict
+ * with a registered renderer owns the slot, fail-open to this markup.
+ * ───────────────────────────────────────────────────────────── */
+
+function toShellItems(
+  nodes: readonly MenuNode[],
+  localize: ((label: string) => string) | null,
+): CanonicalMenuItem[] {
+  return nodes.map((node) => {
+    const extra = node as unknown as Record<string, unknown>;
+    const rawKids = Array.isArray(node.children) ? node.children : [];
+    const metadata: Record<string, string> = {};
+    if (typeof node.titleAttr === "string" && node.titleAttr.trim()) {
+      metadata["title"] = node.titleAttr.trim();
+    }
+    if (node.newTab) metadata["target"] = "_blank";
+    if (typeof node.cssClass === "string" && node.cssClass.trim()) {
+      metadata["class"] = node.cssClass.trim();
+    }
+    const carried = extra["metadata"];
+    if (carried && typeof carried === "object" && !Array.isArray(carried)) {
+      for (const [key, value] of Object.entries(
+        carried as Record<string, unknown>,
+      )) {
+        if (typeof value === "string") metadata[key] = value;
+      }
+    }
+    const label = typeof node.label === "string" ? node.label : "";
+    const href = typeof node.url === "string" && node.url ? node.url : "#";
+    const badgeRaw = extra["badge"];
+    const imageRaw = extra["image"];
+    return {
+      id: node.id,
+      label: localize ? localize(label) : label,
+      href,
+      children: toShellItems(rawKids as MenuNode[], localize),
+      badge:
+        typeof badgeRaw === "string" && badgeRaw.trim() ? badgeRaw : null,
+      metadata,
+      image:
+        typeof imageRaw === "string" && imageRaw ? imageRaw : null,
+      promo: null,
+    };
+  });
+}
+
+const shellIconLinkCls =
+  "grid size-10 shrink-0 place-items-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:scale-95 text-[var(--theme-ink)]/70 hover:text-[var(--theme-ink)]";
+
+export function SomvabonaHeaderShell({
+  slug,
+  name,
+  custom,
+  data,
+  behavior,
+  wishlistCount,
+  cartCount,
+  cartHydrated,
+  locale,
+  t,
+}: HeaderShellProps) {
+  const { base, headerMenu, mobileMenu } = data;
+  const { mobileOpen, setMobileOpen, scrolled, expandedMobileMenu } = behavior;
+  const navLabel = t("Store menu", "স্টোর মেনু");
+  const headerItems = toShellItems(
+    headerMenu,
+    data.headerFallback ? data.fallbackLabel : null,
+  );
+  const drawerItems = toShellItems(
+    mobileMenu,
+    data.mobileFallback ? data.fallbackLabel : null,
+  );
+  const HeaderPluginNav = selectPluginMenuRenderer(
+    data.headerDecision,
+    STORE_HEADER_MENU_SLOT,
+  );
+  const headerPluginId =
+    data.headerDecision?.kind === "plugin"
+      ? data.headerDecision.pluginId
+      : null;
+  const DrawerPluginNav = selectPluginMenuRenderer(
+    data.mobileDecision,
+    STORE_DRAWER_MENU_SLOT,
+  );
+  const drawerPluginId =
+    data.mobileDecision?.kind === "plugin"
+      ? data.mobileDecision.pluginId
+      : null;
+  const desktopThemeNav = (
+    <SomvabonaDesktopNav
+      items={headerItems}
+      base={base}
+      locale={locale}
+      label={navLabel}
+    />
+  );
+  const drawerThemeNav = (
+    <SomvabonaMobileDrawer
+      items={drawerItems}
+      base={base}
+      locale={locale}
+      label={navLabel}
+      defaultExpandedId={expandedMobileMenu}
+      onNavigate={() => setMobileOpen(false)}
+    />
+  );
+  return (
+    <header
+      data-header-shell="somvabona"
+      className={`sticky top-0 z-40 w-full transition-all duration-250 ease-out bg-[var(--theme-surface)] motion-reduce:transition-none ${
+        scrolled ? "shadow-sm border-b border-[var(--theme-border)]" : ""
+      }`}
+    >
+      <div
+        className={`relative mx-auto flex transition-all duration-250 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 ${scrolled ? "h-[64px]" : "h-[72px]"}`}
+      >
+        <div className="flex items-center gap-4 shrink-0">
+          {mobileMenu.length > 0 && (
+            <button
+              type="button"
+              aria-expanded={mobileOpen}
+              aria-controls="store-mobile-menu"
+              aria-label={
+                mobileOpen
+                  ? t("Close menu", "মেনু বন্ধ করুন")
+                  : t("Open menu", "মেনু খুলুন")
+              }
+              onClick={() => setMobileOpen((open) => !open)}
+              className={`${shellIconLinkCls} md:hidden -ml-2`}
+            >
+              {mobileOpen ? (
+                <X className="size-[22px]" strokeWidth={1} aria-hidden />
+              ) : (
+                <MenuIcon className="size-[22px]" strokeWidth={1} aria-hidden />
+              )}
+            </button>
+          )}
+
+          {custom ? (
+            <Link to="/" className="flex items-center">
+              <span className="font-bangla-display block truncate text-xl font-semibold tracking-tight text-[var(--theme-ink)]">
+                {name}
+              </span>
+            </Link>
+          ) : (
+            <Link
+              to="/store/$slug"
+              params={{ slug }}
+              className="flex items-center"
+            >
+              <span className="font-bangla-display block truncate text-xl font-semibold tracking-tight text-[var(--theme-ink)]">
+                {name}
+              </span>
+            </Link>
+          )}
+        </div>
+
+        <div className="hidden md:flex flex-1 min-w-0 justify-center pointer-events-auto">
+          {HeaderPluginNav && headerPluginId ? (
+            <PluginMenuBoundary
+              pluginId={headerPluginId}
+              slot={STORE_HEADER_MENU_SLOT}
+              fallback={desktopThemeNav}
+              onError={data.menuOnError}
+            >
+              <HeaderPluginNav
+                rows={headerMenu}
+                slot={STORE_HEADER_MENU_SLOT}
+                pluginId={headerPluginId}
+              />
+            </PluginMenuBoundary>
+          ) : (
+            desktopThemeNav
+          )}
+        </div>
+
+        <div className="flex items-center justify-end gap-1 shrink-0">
+          {custom ? (
+            <Link
+              to="/search"
+              search={{}}
+              aria-label={t("Search", "খুঁজুন")}
+              className={shellIconLinkCls}
+            >
+              <Search className="size-[20px]" strokeWidth={1} aria-hidden />
+            </Link>
+          ) : (
+            <Link
+              to="/store/$slug/search"
+              params={{ slug }}
+              search={{}}
+              aria-label={t("Search", "খুঁজুন")}
+              className={shellIconLinkCls}
+            >
+              <Search className="size-[20px]" strokeWidth={1} aria-hidden />
+            </Link>
+          )}
+
+          {custom ? (
+            <Link
+              to="/account"
+              aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
+              className={`${shellIconLinkCls} hidden sm:grid`}
+            >
+              <User className="size-[20px]" strokeWidth={1} aria-hidden />
+            </Link>
+          ) : (
+            <Link
+              to="/store/$slug/account"
+              params={{ slug }}
+              aria-label={t("Your account", "আপনার অ্যাকাউন্ট")}
+              className={`${shellIconLinkCls} hidden sm:grid`}
+            >
+              <User className="size-[20px]" strokeWidth={1} aria-hidden />
+            </Link>
+          )}
+
+          {custom ? (
+            <Link
+              to="/account"
+              search={{ tab: "wishlist" }}
+              aria-label={`${t("Wishlist", "উইশলিস্ট")}, ${wishlistCount}`}
+              className={`${shellIconLinkCls} relative hidden sm:grid`}
+            >
+              <Heart className="size-[20px]" strokeWidth={1} aria-hidden />
+              {wishlistCount > 0 && (
+                <span
+                  key={wishlistCount}
+                  className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[var(--theme-ink)] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]"
+                >
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+          ) : (
+            <Link
+              to="/store/$slug/account"
+              params={{ slug }}
+              search={{ tab: "wishlist" }}
+              aria-label={`${t("Wishlist", "উইশলিস্ট")}, ${wishlistCount}`}
+              className={`${shellIconLinkCls} relative hidden sm:grid`}
+            >
+              <Heart className="size-[20px]" strokeWidth={1} aria-hidden />
+              {wishlistCount > 0 && (
+                <span
+                  key={wishlistCount}
+                  className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[var(--theme-ink)] text-[9px] font-bold text-white motion-safe:animate-[fq-badge-pop_180ms_ease-out]"
+                >
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+          )}
+
+          <LanguageToggle />
+
+          {custom ? (
+            <Link
+              to="/cart"
+              aria-label={`${t("Cart", "কার্ট")}, ${cartHydrated ? cartCount : 0}`}
+              className={`${shellIconLinkCls} relative`}
+            >
+              <ShoppingBag
+                className="size-[20px]"
+                strokeWidth={1}
+                aria-hidden
+              />
+              {cartHydrated && cartCount > 0 && (
+                <span className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[var(--theme-ink)] text-[9px] font-bold text-white">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+          ) : (
+            <Link
+              to="/store/$slug/cart"
+              params={{ slug }}
+              aria-label={`${t("Cart", "কার্ট")}, ${cartHydrated ? cartCount : 0}`}
+              className={`${shellIconLinkCls} relative`}
+            >
+              <ShoppingBag
+                className="size-[20px]"
+                strokeWidth={1}
+                aria-hidden
+              />
+              {cartHydrated && cartCount > 0 && (
+                <span className="absolute right-1 top-1.5 flex h-[16px] w-[16px] items-center justify-center rounded-full bg-[var(--theme-ink)] text-[9px] font-bold text-white">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {mobileOpen && mobileMenu.length > 0 && (
+        <div
+          id="store-mobile-menu"
+          className="border-t border-[var(--theme-border)] bg-[var(--theme-surface)] md:hidden overflow-y-auto max-h-[calc(100vh-[64px])] fixed left-0 w-full z-40 bottom-0"
+          style={{ top: scrolled ? "64px" : "108px" }}
+        >
+          <div className="px-4 py-2 pb-24">
+            {DrawerPluginNav && drawerPluginId ? (
+              <PluginMenuBoundary
+                pluginId={drawerPluginId}
+                slot={STORE_DRAWER_MENU_SLOT}
+                fallback={drawerThemeNav}
+                onError={data.menuOnError}
+              >
+                <DrawerPluginNav
+                  rows={mobileMenu}
+                  slot={STORE_DRAWER_MENU_SLOT}
+                  pluginId={drawerPluginId}
+                />
+              </PluginMenuBoundary>
+            ) : (
+              drawerThemeNav
+            )}
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
+
+(SomvabonaHeaderPresentation as unknown as HeaderShellCarrier).HeaderShell =
+  SomvabonaHeaderShell;
+
+type HeaderShellCarrier = WidgetComponent & {
+  HeaderShell?: HeaderShellComponent;
 };
 
 registerThemePresentation(

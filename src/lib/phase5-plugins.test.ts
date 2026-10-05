@@ -907,6 +907,23 @@ describe("MENU RUNTIME — plugin renderer replacement (registry + boundary)", (
     expect(selectPluginMenuRenderer(decision, "menu_bar")).toBeUndefined();
   });
 
+  it("an approval for one slot never unlocks another slot's renderer", () => {
+    registerMenuRenderer("nav-pro", "menu_bar", PluginNav);
+    registerMenuRenderer("nav-pro", "menu_drawer", PluginNav);
+    const barDecision = decideMenuRenderer([claim()], "menu_bar", granted);
+    expect(barDecision.kind).toBe("plugin");
+    // Same plugin, same registry — but the verdict approved menu_bar, so
+    // the drawer slot stays on the theme default (fail-open, no bleed).
+    expect(selectPluginMenuRenderer(barDecision, "menu_drawer")).toBeUndefined();
+    expect(selectPluginMenuRenderer(barDecision, "menu_bar")).toBe(PluginNav);
+    // And the mirror: a drawer verdict never unlocks the desktop slot.
+    const drawerClaim = { ...claim(), slot: "menu_drawer" as const };
+    const drawerDecision = decideMenuRenderer([drawerClaim], "menu_drawer", granted);
+    expect(drawerDecision.kind).toBe("plugin");
+    expect(selectPluginMenuRenderer(drawerDecision, "menu_bar")).toBeUndefined();
+    expect(selectPluginMenuRenderer(drawerDecision, "menu_drawer")).toBe(PluginNav);
+  });
+
   it("approved + scoped but unregistered keeps rows swapping through theme markup", () => {
     const decision = decideMenuRenderer([claim()], "menu_bar", granted);
     expect(decision.kind).toBe("plugin");

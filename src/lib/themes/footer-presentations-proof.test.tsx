@@ -251,3 +251,123 @@ describe("same footer data, two theme presentations", () => {
     expect(JSON.stringify(section)).toBe(before);
   });
 });
+
+describe("R3 canonical footer presentation path", () => {
+  it("keeps the canonical presentation when a duplicate claims the same pair", () => {
+    // Consolidation guard: the untracked sibling draft
+    // (`songoskriti/footer-presentation.tsx`) claims the same
+    // `songoskriti × footer_sitemap` pair as the canonical proof module.
+    // Registration is first-wins, so even if that draft is ever imported,
+    // the canonical presentation keeps the pair on both themes.
+    const Duplicate: WidgetComponent = () => null;
+    registerThemePresentation("songoskriti", "footer_sitemap", Duplicate);
+    registerThemePresentation("somvabona", "footer_sitemap", Duplicate);
+    expect(resolveThemePresentation("songoskriti", "footer_sitemap")).toBe(
+      SongoskritiFooterProofPresentation,
+    );
+    expect(resolveThemePresentation("somvabona", "footer_sitemap")).toBe(
+      SomvabonaFooterProofPresentation,
+    );
+  });
+
+  it("lays out identical data with different structures per theme", () => {
+    const data = proofFooterData();
+
+    const songoskriti = renderToStaticMarkup(
+      <SongoskritiFooterProof data={data} label={LABEL} />,
+    );
+    const somvabona = renderToStaticMarkup(
+      <SomvabonaFooterProof data={data} label={LABEL} />,
+    );
+
+    // Heritage grid: one <section> per column inside the grid wrapper.
+    expect(songoskriti).toContain('data-footer-presentation="songoskriti-proof"');
+    expect(songoskriti.match(/<section/g) ?? []).toHaveLength(
+      data.columns.length,
+    );
+    expect(songoskriti).toContain("grid");
+    // Everyday stack: columns are list rows inside stacked <ul> groups,
+    // never grid sections.
+    expect(somvabona).toContain('data-footer-presentation="somvabona-proof"');
+    expect(somvabona).toContain("<ul");
+    expect(somvabona).not.toContain("<section");
+    expect(somvabona).not.toContain("grid max-w-6xl gap-12");
+    // Markers never leak across themes.
+    expect(songoskriti).not.toContain("somvabona-proof");
+    expect(somvabona).not.toContain("songoskriti-proof");
+  });
+
+  it("propagates one global section edit to every theme template", () => {
+    // A global footer edit (one block update → every template): the same
+    // edited section re-renders under both themes with the new content.
+    const section = proofSection();
+    const edited: Section = {
+      ...section,
+      props: {
+        ...section.props,
+        items: [
+          { title: "Sale", links: "Clearance|/c/clearance" },
+          { title: "Help", links: "Contact|/pages/contact" },
+        ],
+        pages: "about, stores",
+      },
+    };
+
+    const songoskriti = renderDirect(
+      resolveThemePresentation("songoskriti", "footer_sitemap")!,
+      edited,
+    );
+    const somvabona = renderDirect(
+      resolveThemePresentation("somvabona", "footer_sitemap")!,
+      edited,
+    );
+
+    // The global update lands everywhere: new column, new link, and the
+    // appended Pages column from the picked slugs.
+    for (const html of [songoskriti, somvabona]) {
+      expect(html).toContain("Sale");
+      expect(html).toContain('href="/c/clearance"');
+      expect(html).toContain("Pages");
+      expect(html).toContain('href="/pages/about"');
+      expect(html).toContain('href="/pages/stores"');
+      // Retired content is gone from every template.
+      expect(html).not.toContain("Best sellers");
+    }
+    // Still exactly one path per theme: structures stay distinct.
+    expect(songoskriti).toContain('data-footer-presentation="songoskriti-proof"');
+    expect(somvabona).toContain('data-footer-presentation="somvabona-proof"');
+    expect(songoskriti).not.toBe(somvabona);
+  });
+
+  it("defaults the mobile accordion to collapsed and renders every column", () => {
+    // Accordion state lives in data so every presentation agrees; no footer
+    // renderer consumes `expandedId` yet, so collapsed renders the full
+    // column set and a set id changes nothing (reserved, no divergence).
+    const data = proofFooterData();
+    expect(data.mobileAccordion).toEqual({ expandedId: null });
+
+    const collapsedSongoskriti = renderToStaticMarkup(
+      <SongoskritiFooterProof data={data} label={LABEL} />,
+    );
+    const collapsedSomvabona = renderToStaticMarkup(
+      <SomvabonaFooterProof data={data} label={LABEL} />,
+    );
+    expectPureContent(collapsedSongoskriti);
+    expectPureContent(collapsedSomvabona);
+
+    const expanded: typeof data = {
+      ...data,
+      mobileAccordion: { expandedId: "shop" },
+    };
+    expect(
+      renderToStaticMarkup(
+        <SongoskritiFooterProof data={expanded} label={LABEL} />,
+      ),
+    ).toBe(collapsedSongoskriti);
+    expect(
+      renderToStaticMarkup(
+        <SomvabonaFooterProof data={expanded} label={LABEL} />,
+      ),
+    ).toBe(collapsedSomvabona);
+  });
+});

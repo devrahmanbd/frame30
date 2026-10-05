@@ -19,12 +19,14 @@ import type { Locale } from "@/lib/bitext";
 import {
   AnnouncementBar,
   announcementAlignOf,
+  announcementItemsOf,
   announcementMotionOf,
   announcementSizeOf,
   announcementToneOf,
   headerChromeAnnouncementItems,
   readDismissedIds,
   resolveAnnouncementItems,
+  useAnnouncementState,
 } from "./AnnouncementBar";
 import { CHROME_WIDGETS } from "@/components/builder/chrome";
 import {
@@ -364,5 +366,86 @@ describe("announcement_bar widget branch — uses the standalone surface", () =>
     const html = widgetHtml({ m1: "T", tone: "muted", align: "left" });
     expect(html).toContain("bg-muted");
     expect(html).toContain("justify-start");
+  });
+});
+
+describe("announcement platform data contract (R2 — shared by every theme)", () => {
+  it("announcementItemsOf is repeater-first with scalar m1/m2/m3 fallback", () => {
+    expect(
+      announcementItemsOf({
+        items: [{ text: "Row", text_bn: "সারি" }],
+        m1: "Scalar",
+      }),
+    ).toEqual([{ text: "Row", text_bn: "সারি" }]);
+    expect(
+      announcementItemsOf({ items: [], m1: "Hello", m1_bn: "হ্যালো", m2: "", m3: "" }),
+    ).toEqual([{ text: "Hello", text_bn: "হ্যালো" }]);
+    expect(announcementItemsOf({ items: [], m1: "", m2: "", m3: "" })).toEqual(
+      [],
+    );
+  });
+
+  it("announcementItemsOf never mutates its input", () => {
+    const props = { items: [{ text: "A" }], m1: "B" };
+    const before = JSON.stringify(props);
+    announcementItemsOf(props);
+    expect(JSON.stringify(props)).toBe(before);
+  });
+});
+
+describe("announcement headless state (R2 — theme presentations consume this)", () => {
+  function stateHtml(
+    props: React.ComponentProps<typeof AnnouncementBar>,
+  ): string {
+    function Probe(p: React.ComponentProps<typeof AnnouncementBar>) {
+      const state = useAnnouncementState(p);
+      if (!state.active) return null;
+      return createElement(
+        "p",
+        {
+          "data-region": state.labels.region,
+          "data-dismiss": state.labels.dismiss,
+          "data-count": state.visible.length,
+        },
+        `${state.active.text}|${state.linkHref}`,
+      );
+    }
+    return renderToStaticMarkup(createElement(Probe, props));
+  }
+
+  it("exposes the same resolved copy, labels and links as the default presentation", () => {
+    const html = stateHtml({
+      items: [{ text: "Sale", href: "/sale" }],
+      link: (href) => `/store/demo${href}`,
+    });
+    expect(html).toContain("Sale|/store/demo/sale");
+    expect(html).toContain('data-region="Announcement"');
+    expect(html).toContain('data-dismiss="Dismiss announcement"');
+    expect(html).toContain('data-count="1"');
+  });
+
+  it("resolves bn twins with bilingual labels through the hook", () => {
+    const html = stateHtml({
+      items: [{ text: "Sale!", text_bn: "ছাড়!" }],
+      locale: "bn",
+    });
+    expect(html).toContain("ছাড়!");
+    expect(html).toContain('data-region="ঘোষণা"');
+    expect(html).toContain('data-dismiss="ঘোষণা বন্ধ করুন"');
+  });
+
+  it("honors persisted dismissal injection through the hook", () => {
+    expect(
+      stateHtml({
+        items: [{ text: "Gone" }],
+        initialDismissedIds: ["Gone"],
+      }),
+    ).toBe("");
+    const html = stateHtml({
+      items: [{ text: "Keep" }, { text: "Drop" }],
+      initialDismissedIds: ["Drop"],
+    });
+    expect(html).toContain("Keep");
+    expect(html).not.toContain("Drop");
   });
 });
