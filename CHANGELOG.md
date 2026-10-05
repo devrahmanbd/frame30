@@ -29,7 +29,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Follow-ups
 - Residual shared→theme edge: `CollectionView.tsx` archetypes import (archetype lane's property); `header-fallback.ts` shim removable once importers migrate.
 
-## [2026-10-05] — Gate repairs (`a85d2f2b`)
+## [2026-10-05 18:32 UTC] (v0.5-beta — 6f6f2ea2) — Theme presentation registry + header de-theming + DoD green
+### Added
+- Per-widget theme presentation registry (`theme-presentations.ts`, first-wins, never throws) composed over component resolution; header de-themed (neutral `header-copy.ts`, both themes registered, canonical modes wired); docs reframed (tokens/skins one layer); DoD 11/11 via documented TokenEditor exemption.
+### Verification
+- Spot suites green, tsc clean.
+### Follow-ups
+- Prod registration wiring, header-fallback consolidation, CollectionView archetypes edge, TokenEditor variation map move.
+
+## [2026-10-05 17:33 UTC] (v0.5-beta — a85d2f2b) — Gate repairs
 ### Fixed
 - OpenAPI spec covers the renewal cron route (18/18); `global_ref` graduated to the palette now its twin exists (157 entries); stale graduation comments updated.
 ### Verification
