@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-06 21:36 UTC] (v0.5-beta — 313be8b9) — Gallery + publish artifact payload
+### Added
+- Theme gallery lists installed keys alongside source keys; publishVersion consumes installed artifacts with source fallback. Joint lane (shared tree, verified together).
+### Verification
+- 69 spot green, tsc clean.
 ## [2026-10-06 20:16 UTC] (v0.5-beta — 74b22584) — Switchover to installed artifacts
 ### Changed
 - Strict manifest validators are the pipeline default; marketplace distributes exact-ZIP artifacts; builder discovers installed packages; preview resolves installed artifacts; packages.md gates honestly split (enforced/elsewhere/aspirational).
