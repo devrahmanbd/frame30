@@ -734,6 +734,206 @@ import {
 import { artifactIdFor } from "./package-install.server";
 import { validateBundle } from "./marketplace-scopes";
 
+/* ------------------------------------------------- PLUGIN UPLOAD lane
+ *
+ * PLUGIN UPLOAD — server fn + admin surface (cases only): the plugins desk
+ * drop-zone had validation messaging with zero server path. `installUploadedPlugin`
+ * (behind `pluginUploadFn`) is the server path: authoritative archive checks
+ * (extension, size, magic bytes), then the bytes ride the NORMAL
+ * `installPackage` pipeline (kind "plugin", strict `pkg1PluginValidator`) plus
+ * the host projection (`upsertPlugin`), so uploads render and toggle like any
+ * pipeline install. [A] burden applies: deny + replay + enable, not just the
+ * happy path.
+ */
+import {
+  installUploadedPlugin,
+  MAX_PLUGIN_UPLOAD_BYTES,
+} from "./plugins.functions";
+
+const toB64 = (bytes: Uint8Array) => Buffer.from(bytes).toString("base64");
+
+function uploadPlugin(
+  db: ReturnType<typeof fakeDb>,
+  merchant: string,
+  opts: {
+    fileName?: string;
+    fileBase64?: string;
+    key?: string;
+    manifest?: Record<string, unknown>;
+  } = {},
+) {
+  const bytes = opts.fileBase64
+    ? opts.fileBase64
+    : toB64(customZip(opts.manifest ?? customManifest()));
+  return installUploadedPlugin(
+    db.asClient(),
+    merchant,
+    {
+      fileName: opts.fileName ?? "acme-reviews.zip",
+      fileBase64: bytes,
+      idempotencyKey: opts.key ?? key(),
+    },
+    ACTOR,
+  );
+}
+
+describe("PLUGIN UPLOAD installs through the pipeline + host projection", () => {
+  it("installs a valid zip: ledger row + namespaced assets + host row, enabled", async () => {
+    const db = pkgDb();
+    const out = await uploadPlugin(db, MERCHANT_A);
+    expect(out.alreadyInstalled).toBe(false);
+    expect(out.slug).toBe("acme-reviews");
+    expect(out.version).toBe("1.0.0");
+
+    const ledger = db.rows("marketplace_installs");
+    expect(ledger).toHaveLength(1);
+    expect(ledger[0]).toMatchObject({
+      id: out.installId,
+      kind: "widget",
+      listing_slug: "acme-reviews",
+      status: "installed",
+      idempotency_key: expect.any(String),
+    });
+    expect(
+      db
+        .rows("theme_assets")
+        .every((a) => (a.name as string).startsWith("plugins/acme-reviews/")),
+    ).toBe(true);
+
+    // Host projection: the upload renders + toggles like any pipeline install.
+    const installed = await listInstalledPlugins(
+      db.asClient() as never,
+      MERCHANT_A,
+    );
+    const found = installed.find((p) => p.manifest.id === "acme-reviews")!;
+    expect(found.enabled).toBe(true);
+    expect(
+      resolvePluginWidget("plugin:acme-reviews/reviews", installed).ok,
+    ).toBe(true);
+  });
+
+  it("deny: rejects a non-zip extension without writing anything", async () => {
+    const db = pkgDb();
+    const err = await uploadPlugin(db, MERCHANT_A, {
+      fileName: "plugin.tar.gz",
+    }).catch((e) => e);
+    expect(err?.code).toBe("plugin.upload_name");
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+    expect(db.rows("theme_assets")).toHaveLength(0);
+    expect(db.rows("plugin_state")).toHaveLength(0);
+  });
+
+  it("deny: rejects empty bytes without writing anything", async () => {
+    const db = pkgDb();
+    const err = await installUploadedPlugin(
+      db.asClient(),
+      MERCHANT_A,
+      { fileName: "empty.zip", fileBase64: "", idempotencyKey: key() },
+      ACTOR,
+    ).catch((e) => e);
+    expect(err?.code).toBe("plugin.upload_empty");
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+    expect(db.rows("plugin_state")).toHaveLength(0);
+  });
+
+  it("deny: rejects bytes without the zip magic without writing anything", async () => {
+    const db = pkgDb();
+    const notZip = Buffer.from("hello world, not a zip").toString("base64");
+    const err = await installUploadedPlugin(
+      db.asClient(),
+      MERCHANT_A,
+      { fileName: "evil.zip", fileBase64: notZip, idempotencyKey: key() },
+      ACTOR,
+    ).catch((e) => e);
+    expect(err?.code).toBe("plugin.upload_magic");
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+    expect(db.rows("theme_assets")).toHaveLength(0);
+    expect(db.rows("plugin_state")).toHaveLength(0);
+  });
+
+  it("deny: rejects a manifest-invalid zip without writing anything", async () => {
+    const db = pkgDb();
+    const err = await uploadPlugin(db, MERCHANT_A, {
+      manifest: { ...customManifest(), id: "bad!!" },
+    }).catch((e) => e);
+    expect(err?.code).toBe("package.manifest_invalid");
+    const badVersion = await uploadPlugin(db, MERCHANT_A, {
+      manifest: { ...customManifest(), version: "banana" },
+    }).catch((e) => e);
+    expect(badVersion?.code).toBe("package.bad_version");
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+    expect(db.rows("theme_assets")).toHaveLength(0);
+    expect(db.rows("plugin_state")).toHaveLength(0);
+  });
+
+  it("deny: rejects oversized archives without writing anything", async () => {
+    const db = pkgDb();
+    const big = Buffer.alloc(MAX_PLUGIN_UPLOAD_BYTES + 1).toString("base64");
+    const err = await installUploadedPlugin(
+      db.asClient(),
+      MERCHANT_A,
+      { fileName: "huge.zip", fileBase64: big, idempotencyKey: key() },
+      ACTOR,
+    ).catch((e) => e);
+    expect(err?.code).toBe("plugin.upload_too_large");
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+    expect(db.rows("theme_assets")).toHaveLength(0);
+    expect(db.rows("plugin_state")).toHaveLength(0);
+  });
+
+  it("replay: the same idempotency key returns the original install, never a duplicate", async () => {
+    const db = pkgDb();
+    const k = key();
+    const first = await uploadPlugin(db, MERCHANT_A, { key: k });
+    const second = await uploadPlugin(db, MERCHANT_A, { key: k });
+    expect(second.alreadyInstalled).toBe(true);
+    expect(second.installId).toBe(first.installId);
+    expect(second.slug).toBe("acme-reviews");
+    expect(db.rows("marketplace_installs")).toHaveLength(1);
+    expect(
+      db.rows("plugin_state").filter((r) => r.merchant_id === MERCHANT_A),
+    ).toHaveLength(1);
+  });
+
+  it("enable: the upload travels the shared enable path after install", async () => {
+    const db = pkgDb();
+    const out = await uploadPlugin(db, MERCHANT_A);
+    const paused = await setPluginPackageEnabled(
+      db.asClient(),
+      MERCHANT_A,
+      out.installId,
+      false,
+      ACTOR,
+    );
+    expect(paused.status).toBe("paused");
+    expect(
+      db.rows("marketplace_installs").find((r) => r.id === out.installId)
+        ?.status,
+    ).toBe("paused");
+    const enabled = await setPluginPackageEnabled(
+      db.asClient(),
+      MERCHANT_A,
+      out.installId,
+      true,
+      ACTOR,
+    );
+    expect(enabled.status).toBe("installed");
+  });
+
+  it("deny: a foreign merchant's rows are untouched (tenant isolation)", async () => {
+    const db = pkgDb();
+    const mine = await uploadPlugin(db, MERCHANT_A, { key: key() });
+    await uploadPlugin(db, MERCHANT_B, { key: key() });
+    expect(
+      db.rows("marketplace_installs").filter((r) => r.merchant_id === MERCHANT_A),
+    ).toHaveLength(1);
+    expect(
+      db.rows("marketplace_installs").find((r) => r.id === mine.installId)
+        ?.merchant_id,
+    ).toBe(MERCHANT_A);
+  });
+});
+
 describe("K1 official plugin catalogue shape", () => {
   it("names exactly the three official keys, nothing else", () => {
     expect([...OFFICIAL_PLUGIN_KEYS]).toEqual([

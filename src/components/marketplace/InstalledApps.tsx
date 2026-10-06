@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link, useRouter } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -10,16 +10,23 @@ import {
   XCircle,
   ExternalLink,
   ShieldCheck,
+  UploadCloud,
 } from "@/components/icons/tabler";
 import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
 import {
+  MAX_PLUGIN_UPLOAD_BYTES,
   pluginListFn,
   pluginSettingsSaveFn,
   pluginToggleFn,
   pluginAutoUpdatesFn,
   pluginUninstallFn,
+  pluginUploadFn,
+  validatePluginUpload,
+  type PluginUploadInput,
+  type PluginUploadResult,
 } from "@/lib/plugins.functions";
+import { formatBytes } from "@/lib/themes/appearance";
 import { marketUninstallWidgetFn } from "@/lib/marketplace.functions";
 import {
   satisfiesApiRange,
@@ -47,6 +54,7 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
   const autoUpdates = useServerFn(pluginAutoUpdatesFn);
   const uninstallWidget = useServerFn(marketUninstallWidgetFn);
   const uninstallPlugin = useServerFn(pluginUninstallFn);
+  const uploadPlugin = useServerFn(pluginUploadFn);
 
   const [statusFilter, setStatusFilter] = useState<
     "all" | "active" | "inactive"
@@ -148,6 +156,33 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
       setConfirmDelete(null);
       setConfirmBulkDelete(false);
     },
+  });
+
+  // PLUGIN UPLOAD lane: wires the drop-zone below to the server upload path
+  // (`pluginUploadFn` → `installUploadedPlugin` → pipeline install + host
+  // projection). Uploads land rendered and toggleable where Activate /
+  // Deactivate / Delete already work.
+  const uploadMutation = useMutation({
+    mutationFn: (vars: PluginUploadInput) =>
+      uploadPlugin({ data: vars }) as Promise<PluginUploadResult>,
+    onSuccess: (result) => {
+      toast.success(
+        result.alreadyInstalled
+          ? t("That plugin is already installed", "সেই প্লাগইন আগেই ইনস্টল আছে")
+          : t(
+              "Plugin uploaded — find it in the list below",
+              "প্লাগইন আপলোড হয়েছে — নিচের তালিকায় দেখুন",
+            ),
+      );
+      refresh();
+    },
+    onError: () =>
+      toast.error(
+        t(
+          "That plugin could not be uploaded",
+          "সেই প্লাগইন আপলোড করা যায়নি",
+        ),
+      ),
   });
 
   async function onSaveSettings(pluginId: string, values: SettingsValues) {
@@ -256,6 +291,11 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
           <span>{t("Add New Plugin", "নতুন প্লাগইন যোগ করুন")}</span>
         </Link>
       </div>
+
+      {/* Upload plugin (ZIP lane): validated drop-zone → server pipeline. */}
+      <PluginUploadDropzone
+        onUploadPlugin={(input) => uploadMutation.mutateAsync(input)}
+      />
 
       {/* Filter Tabs & Bulk Actions Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
@@ -708,4 +748,188 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
 
 function isLiveStatus(status: string) {
   return status === "installed" || status === "trial" || status === "paused";
+}
+
+/**
+ * PLUGIN UPLOAD lane: validated `.zip` files upload through the server path
+ * (`pluginUploadFn` → `installUploadedPlugin` → pipeline install + host
+ * projection) instead of stopping at client messaging. Without
+ * `onUploadPlugin` the drop-zone keeps its validation-only message.
+ * Mirrors the theme `UploadDropzone` in `AddThemeScreen` (read-only
+ * template): per-pick idempotency key, uploading/success/replay/error
+ * states, input reset so re-picking the same file re-fires.
+ */
+function PluginUploadDropzone({
+  onUploadPlugin,
+}: {
+  onUploadPlugin?: (input: PluginUploadInput) => Promise<PluginUploadResult>;
+}) {
+  const { t } = useLang();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [state, setState] = useState<
+    | { ok: true; message: string }
+    | { ok: false; message: string }
+    | { ok: "busy"; message: string }
+    | null
+  >(null);
+  const [over, setOver] = useState(false);
+
+  const readAsBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("read_failed"));
+      reader.onload = () => {
+        const url = String(reader.result ?? "");
+        const comma = url.indexOf(",");
+        resolve(comma >= 0 ? url.slice(comma + 1) : url);
+      };
+      reader.readAsDataURL(file);
+    });
+
+  const accept = (file: File | undefined) => {
+    if (!file) return;
+    const check = validatePluginUpload(file);
+    if (!check.ok) {
+      setState({ ok: false, message: check.reason });
+      return;
+    }
+    if (!onUploadPlugin) {
+      setState({
+        ok: true,
+        message: `${check.name} (${formatBytes(file.size)}) ${t(
+          "is ready. Plugin packaging installs land with the extension directory.",
+          "প্রস্তুত।",
+        )}`,
+      });
+      return;
+    }
+    // One idempotency key per file-pick, held across retries/double-clicks —
+    // the server replays the original install instead of stacking duplicates.
+    const picked = { name: file.name, size: file.size };
+    const idempotencyKey =
+      typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    setState({
+      ok: "busy",
+      message: `${t("Uploading", "আপলোড হচ্ছে")} ${picked.name} (${formatBytes(picked.size)})…`,
+    });
+    void readAsBase64(file).then(
+      (fileBase64) =>
+        onUploadPlugin({
+          fileName: picked.name,
+          fileBase64,
+          idempotencyKey,
+        }).then(
+          (result) => {
+            setState({
+              ok: true,
+              message: result.alreadyInstalled
+                ? t(
+                    `${picked.name} is already installed — find it in the list below.`,
+                    `${picked.name} আগেই ইনস্টল আছে — নিচের তালিকায় দেখুন।`,
+                  )
+                : t(
+                    `${picked.name} installed — find it in the list below, ready to activate.`,
+                    `${picked.name} ইনস্টল হয়েছে — নিচের তালিকায় দেখুন।`,
+                  ),
+            });
+          },
+          () => {
+            setState({
+              ok: false,
+              message: t(
+                `${picked.name} could not be uploaded. Check the file is a valid plugin .zip and try again.`,
+                `${picked.name} আপলোড করা যায়নি। ফাইলটি বৈধ প্লাগইন .zip কিনা দেখুন।`,
+              ),
+            });
+          },
+        ),
+      () => {
+        setState({
+          ok: false,
+          message: t(
+            `${picked.name} could not be read in this browser. Try again.`,
+            `${picked.name} এই ব্রাউজারে পড়া যায়নি। আবার চেষ্টা করুন।`,
+          ),
+        });
+      },
+    );
+  };
+
+  const busy = state?.ok === "busy";
+
+  return (
+    <div className="space-y-2 rounded-fq-lg border border-border bg-card p-3.5 shadow-xs">
+      <h2 className="text-sm font-semibold text-foreground">
+        {t("Upload plugin", "প্লাগইন আপলোড")}
+      </h2>
+      <div
+        onDragOver={(event) => {
+          event.preventDefault();
+          setOver(true);
+        }}
+        onDragLeave={() => setOver(false)}
+        onDrop={(event) => {
+          event.preventDefault();
+          setOver(false);
+          accept(event.dataTransfer.files?.[0]);
+        }}
+        className={`grid place-items-center gap-2 rounded-fq-md border border-dashed px-6 py-8 text-center transition-colors ${
+          over ? "border-primary bg-primary/5" : "border-border bg-muted/20"
+        }`}
+      >
+        <UploadCloud className="size-6 text-muted-foreground" aria-hidden />
+        <p className="text-sm font-medium text-foreground">
+          {t("Drop your plugin .zip here", "প্লাগইন .zip এখানে দিন")}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {t(
+            `Maximum size ${formatBytes(MAX_PLUGIN_UPLOAD_BYTES)}`,
+            `সর্বোচ্চ ${formatBytes(MAX_PLUGIN_UPLOAD_BYTES)}`,
+          )}
+        </p>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => inputRef.current?.click()}
+          className="rounded-fq-md border border-border bg-muted/40 px-3 py-1 text-xs font-medium text-foreground hover:bg-muted disabled:opacity-40 transition-colors cursor-pointer"
+        >
+          {busy
+            ? t("Uploading…", "আপলোড হচ্ছে…")
+            : t("Select file", "ফাইল নির্বাচন")}
+        </button>
+        <input
+          ref={inputRef}
+          type="file"
+          accept=".zip"
+          className="sr-only"
+          aria-label={t("Plugin package", "প্লাগইন প্যাকেজ")}
+          disabled={busy}
+          onChange={(event) => {
+            accept(event.currentTarget.files?.[0] ?? undefined);
+            // Reset so picking the same file again re-fires the upload.
+            event.currentTarget.value = "";
+          }}
+        />
+      </div>
+      {state ? (
+        state.ok === true || state.ok === "busy" ? (
+          <p
+            className="rounded-fq-md border border-border bg-muted px-3 py-2 text-sm text-foreground"
+            aria-live="polite"
+          >
+            {state.message}
+          </p>
+        ) : (
+          <p
+            className="rounded-fq-md border border-destructive/40 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+            role="alert"
+          >
+            {state.message}
+          </p>
+        )
+      ) : null}
+    </div>
+  );
 }
