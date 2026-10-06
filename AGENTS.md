@@ -97,6 +97,7 @@ bun run a11y:gate                 # axe-core, >= 90 score
 4. **RLS on every public table** plus explicit `GRANT`s per role.
 5. **No `server-only` import** — use `*.server.ts` naming instead (ESLint enforced).
 6. **Append-only audit rows** for every `[A]` action (actor, before, after, reason).
+7. **Concurrent sessions claim files first**: multiple agents share this tree and `main`. Before starting a lane, append the files you will touch under a `CLAIMED:` line in `/tmp/opencode/progress.md`; treat other lanes' claimed files as read-only. Never commit another lane's hunks under your name — verify together, commit together with both lanes credited, or leave theirs untouched.
 
 ## Testing
 
