@@ -293,7 +293,8 @@ describe("chrome-localization: header structural guards (no fixed widths, wrap, 
   it("compact-state switching exists (scroll-driven heights + drawer offset)", () => {
     const src = HEADER_SRC();
     expect(src).toContain("window.scrollY > 40");
-    expect(src).toContain('h-[36px]');
+    // Announcement collapse lives in shared code; expanded heights are
+    // theme-owned since R1b (no fixed h-[36px] in shared chrome).
     expect(src).toContain('h-0 opacity-0');
     expect(src).toContain('h-[72px]');
     expect(src).toContain('h-[64px]');
@@ -305,7 +306,7 @@ describe("chrome-localization: header structural guards (no fixed widths, wrap, 
       themeKey: "songoskriti",
     });
     expect(html).toContain("h-[72px]");
-    expect(html).toContain("h-[36px]");
+    expect(html).not.toContain("h-0 opacity-0");
   });
 
   it("header root stays sticky + full-width so long labels never lose chrome", () => {

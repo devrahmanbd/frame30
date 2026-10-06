@@ -158,9 +158,27 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
         );
         continue;
       }
-      // No renderer may take a theme identity as a prop, with one
-      // documented exception: TokenEditor is studio editor chrome, never
-      // a storefront renderer. It takes the installed theme key ONLY to
+      // No renderer may take a theme identity as a prop, with two
+      // documented exceptions: TokenEditor is studio editor chrome (see
+      // below), and PluginBlock forwards the key opaquely to
+      // resolveCommunityRender for Class B theme dressing — it must never
+      // compare, switch, or name a theme (asserted below).
+      if (file === "PluginBlock.tsx") {
+        expect(src, `${file} declares the theme key`).toMatch(/themeKey\?:/);
+        expect(src, `${file} compares the theme key`).not.toMatch(
+          /themeKey\s*(===|!==|==|!=)/,
+        );
+        expect(src, `${file} switches on the theme key`).not.toMatch(
+          /switch\s*\([^)]*themeKey/,
+        );
+        expect(src, `${file} names a theme`).not.toMatch(
+          /songoskriti|somvabona/i,
+        );
+        continue;
+      }
+      if (file === "TokenEditor.tsx") {
+        // Studio editor chrome, never a storefront renderer. It takes the
+        // installed theme key ONLY to
       // build a preview link (`/theme-preview/${themeKey}?variation=...`,
       // fed by the studio host in `builder.tsx:2323`) while the
       // merchant-pickable variation list arrives as data (`variations[]`,
@@ -168,7 +186,6 @@ describe("DoD 5 — ≥70% shared registry, no theme-exclusive renderer branches
       // chrome holds zero theme imports). Empty/unknown lists hide the
       // picker, and it must never fork rendering on the key nor resolve
       // storefront widgets.
-      if (file === "TokenEditor.tsx") {
         expect(src, `${file} declares the theme key`).toMatch(/themeKey\?:/);
         expect(src, `${file} compares the theme key`).not.toMatch(
           /themeKey\s*(===|!==|==|!=)/,
