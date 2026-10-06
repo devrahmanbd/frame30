@@ -4,9 +4,14 @@
  * path (`listInstalledPlugins`) already folds it into `enabled`, which gates
  * hooks, widgets AND sidecar workers — no second kill switch.
  *
- * "Replay" on resume: queued `plugins` job rows were never cancelled, so
- * resume re-enqueues nothing — deliveries drain naturally (idempotency keys
- * prevent doubles). The resume audit row records the event.
+ * "Replay" on resume: rows still `queued` at resume time deliver normally
+ * (idempotency keys prevent doubles), so resume re-enqueues nothing. But a
+ * retry that FIRES while suspended never POSTs: `deliverQueuedHook`
+ * re-resolves install state before every POST and parks the row
+ * (disabled/suspended/killed/unsubscribed/scope_revoked/hooks_url_rotated)
+ * instead of delivering a PII-bearing body to a stale endpoint. Parked rows
+ * are cancelled, not deferred — resume does not replay them. The resume
+ * audit row records the event.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";

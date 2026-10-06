@@ -22,7 +22,12 @@ export const JOB_HANDLERS: Record<string, JobHandler> = {
 
   "plugin.hook.deliver": async (job: ClaimedJob) => {
     const { deliverQueuedHook } = await import("./plugin-hooks.server");
-    return deliverQueuedHook(job.payload);
+    // Install-state recheck lives in deliverQueuedHook; the worker's job is
+    // to hand it the admin client (jobs carry merchantId:null, the payload's
+    // installId resolves the row). Without this the retry would POST blind.
+    const { supabaseAdmin } =
+      await import("@/integrations/supabase/client.server");
+    return deliverQueuedHook(job.payload, { db: supabaseAdmin as never });
   },
 
   "plugin.purge": async (job: ClaimedJob) => {

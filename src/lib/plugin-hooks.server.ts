@@ -9,7 +9,12 @@
  */
 
 import { incr, log, observe } from "./observability.server";
-import type { InstalledPlugin, ServerHook } from "./plugin-manifest";
+import {
+  isAllowedHooksUrl,
+  parseManifest,
+  type InstalledPlugin,
+  type ServerHook,
+} from "./plugin-manifest";
 import {
   computeSignature,
   signatureHeader,
@@ -106,6 +111,19 @@ async function callOne(
       status: "skipped:scope",
       ms: 0,
     };
+  }
+  // Egress guard (defense in depth behind the manifest gate): a stored
+  // install predating the gate — or a row written around it — must still
+  // never POST to literal-IP / private-range / metadata / wildcard-DNS
+  // hosts. Refused without fetch and without queueing (no retry).
+  const egress = isAllowedHooksUrl(plugin.manifest.hooksUrl);
+  if (!egress.ok) {
+    log("warn", "plugin.hook.egress_denied", {
+      hook,
+      plugin: plugin.manifest.id,
+      reason: egress.reason,
+    });
+    return { pluginId: plugin.manifest.id, hook, status: "skipped", ms: 0 };
   }
   // R2-3: an unset secret is loud, never silent. Always warn + metric;
   // outside tests fail closed so no unsigned callback ever leaves us.
@@ -227,14 +245,145 @@ export async function runHook(
 }
 
 /** Dequeues one previously timed-out/failed delivery. Breaker still gates. */
-export async function deliverQueuedHook(payload: Record<string, unknown>) {
+export type QueuedParkReason =
+  | "not_installed"
+  | "disabled"
+  | "suspended"
+  | "killed"
+  | "unsubscribed"
+  | "scope_revoked"
+  | "hooks_url_rotated";
+
+/**
+ * Minimal install-state source for the queued-delivery recheck. The queue
+ * worker always passes the admin client; it is optional only so unit tests
+ * can assert the raw redelivery contract without install state.
+ */
+export type QueuedHookDb = {
+  from: (table: string) => any;
+};
+
+export type DeliverQueuedHookDeps = {
+  db?: QueuedHookDb | null;
+};
+
+type QueuedInstallRow = {
+  id: string;
+  plugin_id: string;
+  manifest: unknown;
+  scopes: string[] | null;
+  enabled: boolean | null;
+  suspended: boolean | null;
+};
+
+/**
+ * Re-resolves install state before a queued POST. Jobs carry
+ * `merchantId: null`, so the row is resolved by the queued `installId`
+ * (`plugin_state.id`) — never by `pluginId` alone when an `installId` is
+ * present, otherwise a retry could POST one merchant's PII-bearing body to
+ * another merchant's install of the same plugin.
+ *
+ * Definitive policy denials park the row (`ok:false` + reason: the worker
+ * marks the job done WITHOUT a POST and WITHOUT a retry). Transient DB
+ * failures throw so the queue retries later — never fail open, never drop.
+ */
+async function recheckQueuedDelivery(
+  db: QueuedHookDb,
+  opts: {
+    pluginId: string;
+    installId: string;
+    hook: ServerHook;
+    hooksUrl: string;
+  },
+): Promise<{ ok: true; hooksUrl: string } | { ok: false; reason: QueuedParkReason }> {
+  let row: QueuedInstallRow | null = null;
+  if (opts.installId) {
+    const { data } = await db
+      .from("plugin_state")
+      .select("id, plugin_id, manifest, scopes, enabled, suspended")
+      .eq("id", opts.installId)
+      .maybeSingle();
+    row = (data as QueuedInstallRow | null) ?? null;
+    // The exact install is gone (uninstalled, purged, or never existed):
+    // cancel. Falling back to another merchant's row would cross PII.
+    if (!row) return { ok: false, reason: "not_installed" };
+  } else {
+    // Legacy rows without an installId: single-row match only.
+    const { data } = await db
+      .from("plugin_state")
+      .select("id, plugin_id, manifest, scopes, enabled, suspended")
+      .eq("plugin_id", opts.pluginId)
+      .maybeSingle();
+    row = (data as QueuedInstallRow | null) ?? null;
+    if (!row) return { ok: false, reason: "not_installed" };
+  }
+  if (row.enabled === false) return { ok: false, reason: "disabled" };
+  if (row.suspended === true) return { ok: false, reason: "suspended" };
+  // Kill switch is authoritative even if the per-merchant suspend loop lagged.
+  const { data: kill } = await db
+    .from("plugin_kill_switch")
+    .select("disabled")
+    .eq("plugin_id", row.plugin_id || opts.pluginId)
+    .maybeSingle();
+  if ((kill as { disabled?: unknown } | null)?.disabled === true)
+    return { ok: false, reason: "killed" };
+  const verdict = parseManifest(row.manifest);
+  if (!verdict.ok) return { ok: false, reason: "not_installed" };
+  const manifest = verdict.manifest;
+  if (!manifest.hooks.includes(opts.hook))
+    return { ok: false, reason: "unsubscribed" };
+  if (!hookAllowed(opts.hook, row.scopes ?? []))
+    return { ok: false, reason: "scope_revoked" };
+  const currentUrl = (manifest.hooksUrl ?? "").trim();
+  // The endpoint rotated since enqueue: never POST PII to the stale URL.
+  if (!currentUrl || currentUrl !== opts.hooksUrl)
+    return { ok: false, reason: "hooks_url_rotated" };
+  return { ok: true, hooksUrl: currentUrl };
+}
+
+export async function deliverQueuedHook(
+  payload: Record<string, unknown>,
+  deps: DeliverQueuedHookDeps = {},
+) {
   const hook = payload["hook"] as Parameters<typeof callOne>[1];
   const body = String(payload["body"] ?? "");
   const hooksUrl = String(payload["hooksUrl"] ?? "");
   const pluginId = String(payload["pluginId"] ?? "");
   const installId = String(payload["installId"] ?? "");
   if (!hooksUrl || !hook) return { ok: false, reason: "malformed" };
+  // Egress guard for queued redelivery: same decision as the live path and
+  // the manifest gate. Refused without fetch (no throw, so no retry).
+  const egress = isAllowedHooksUrl(hooksUrl);
+  if (!egress.ok) {
+    log("warn", "plugin.hook.egress_denied", {
+      hook,
+      plugin: pluginId,
+      reason: egress.reason,
+    });
+    return { ok: false, reason: "egress_denied" };
+  }
   if (breakerOpen(pluginId, hook)) return { ok: false, reason: "breaker_open" };
+  // Security recheck: disable / suspend / kill-switch / unsubscribe /
+  // scope-narrow / hooksUrl rotation after enqueue must park the retry —
+  // the queued body may carry PII and the queued URL may be stale.
+  let targetUrl = hooksUrl;
+  if (deps.db) {
+    const recheck = await recheckQueuedDelivery(deps.db, {
+      pluginId,
+      installId,
+      hook,
+      hooksUrl,
+    });
+    if (!recheck.ok) {
+      incr("framique_plugin_hook_total", {
+        hook,
+        status: "parked",
+        reason: recheck.reason,
+      });
+      return { ok: false, reason: recheck.reason };
+    }
+    targetUrl = recheck.hooksUrl;
+  }
   // R2-8: the retry carries the ORIGINAL delivery id when the queue row has
   // one (enqueue path always sets it); rows enqueued before this field
   // existed fall back to recomputing from the stored bytes — same function,
@@ -256,7 +405,7 @@ export async function deliverQueuedHook(payload: Record<string, unknown>) {
   const signature = secret
     ? signatureHeader(ts, [await computeSignature(secret, ts, body)])
     : "";
-  const res = await fetch(hooksUrl, {
+  const res = await fetch(targetUrl, {
     method: "POST",
     headers: {
       "content-type": "application/json",

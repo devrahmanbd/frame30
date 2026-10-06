@@ -132,6 +132,24 @@ describe("plugin manifest", () => {
     expect(badUrl.ok).toBe(false);
   });
 
+  it("refuses literal-IP / private-range / wildcard-DNS / metadata hooksUrl at the manifest gate", () => {
+    const blocked = [
+      "https://127.0.0.1/hooks",
+      "https://192.168.1.20/hooks",
+      "https://10.0.0.5/hooks",
+      "https://169.254.169.254/latest/meta-data",
+      "https://127.0.0.1.xip.io/hooks",
+      "https://metadata.google.internal/hooks",
+      "https://instance-data.compute.internal/hooks",
+    ];
+    for (const hooksUrl of blocked) {
+      const verdict = parseManifest({ ...MANIFEST, hooksUrl });
+      expect(verdict.ok, hooksUrl).toBe(false);
+      if (!verdict.ok) expect(verdict.errors).toContain("hooksUrl");
+    }
+    expect(parseManifest(MANIFEST).ok).toBe(true);
+  });
+
   it("caps the per-plugin JS and main-thread budget", () => {
     const over = parseManifest({
       ...MANIFEST,
@@ -472,6 +490,29 @@ describe("server hooks", () => {
       runHook(plugins, "order.created", { id: "x" }),
     ).resolves.toBeTruthy();
   });
+
+  it("refuses egress-denied hooksUrl at live delivery without fetch (defense in depth)", async () => {
+    const fetchMock = vi.fn(async () => new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const blocked = [
+      "https://127.0.0.1/hooks",
+      "https://192.168.1.20/hooks",
+      "https://127.0.0.1.xip.io/hooks",
+      "https://metadata.google.internal/hooks",
+    ];
+    for (const hooksUrl of blocked) {
+      resetBreakers();
+      const base = installed({ grantedScopes: ["read_orders"] });
+      const plugin = {
+        ...base,
+        manifest: { ...base.manifest, hooksUrl },
+      };
+      const out = await runHook([plugin], "order.created", { id: "o1" });
+      expect(out[0].status, hooksUrl).toBe("skipped");
+    }
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(enqueueJobMock).not.toHaveBeenCalled();
+  });
 });
 
 describe("queued hook delivery", () => {
@@ -568,6 +609,30 @@ describe("queued hook delivery", () => {
     ).rejects.toThrow(/status_500/);
     const outcome = afterFailure(policyFor("plugins"), 6, "job-x", true);
     expect(outcome).toEqual({ next: "dead", runAfterSeconds: 0, dead: true });
+  });
+
+  it("refuses egress-denied hooksUrl in queued redelivery without fetch", async () => {
+    const fetchMock = vi.fn(async () => new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+    const { deliverQueuedHook } = await import("./plugin-hooks.server");
+    const blocked = [
+      "https://127.0.0.1/hooks",
+      "https://192.168.1.20/hooks",
+      "https://127.0.0.1.xip.io/hooks",
+      "https://metadata.google.internal/hooks",
+    ];
+    for (const hooksUrl of blocked) {
+      await expect(
+        deliverQueuedHook({
+          pluginId: "loyalty-lite",
+          installId: "install-1",
+          hook: "order.created",
+          body: "{}",
+          hooksUrl,
+        }),
+      ).resolves.toEqual({ ok: false, reason: "egress_denied" });
+    }
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });
 

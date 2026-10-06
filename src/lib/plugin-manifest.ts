@@ -389,6 +389,112 @@ function settingField(
   };
 }
 
+// --------------------------------------------- hooksUrl egress guard
+export type HooksUrlVerdict =
+  | { ok: true; url: URL }
+  | { ok: false; reason: string };
+
+/**
+ * Server-egress guard for plugin hooksUrl.
+ * Mirrors isAllowedSource (image-transform.ts:145-169) — https-only, no
+ * credentials, literal-IP block — extended for open-egress webhooks with
+ * private-range, localhost/metadata and wildcard-DNS blocks. The shape is
+ * duplicated (not imported) because isAllowedSource enforces a host
+ * allowlist while hooks allow any public host; the manifest gate and the
+ * delivery guard share this one decision via import (no second copy).
+ */
+export function isAllowedHooksUrl(rawUrl: string): HooksUrlVerdict {
+  let url: URL;
+  try {
+    url = new URL(String(rawUrl).trim());
+  } catch {
+    return { ok: false, reason: "bad_url" };
+  }
+  if (url.protocol !== "https:")
+    return { ok: false, reason: "not_https" };
+  if (url.username || url.password)
+    return { ok: false, reason: "credentials_in_url" };
+  const rawHost = url.hostname.toLowerCase().replace(/\.+$/, "");
+  // Node keeps brackets in hostname for IPv6 ([::1]) — strip for checks.
+  const host = rawHost.replace(/^\[|\]$/g, "");
+  if (!host) return { ok: false, reason: "bad_url" };
+  // IPv6 literals (loopback ::1, link-local fe80::, unique-local fc00::).
+  if (host.includes(":")) return { ok: false, reason: "literal_ip" };
+  // IPv4 literals — all refused; private/loopback/link-local get own reason.
+  const v4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(host);
+  if (v4) {
+    const o = [v4[1], v4[2], v4[3], v4[4]].map(Number);
+    if (o.every((n) => Number.isInteger(n) && n >= 0 && n <= 255)) {
+      const a = o[0] as number;
+      const b = o[1] as number;
+      if (
+        a === 10 ||
+        a === 127 ||
+        (a === 172 && b >= 16 && b <= 31) ||
+        (a === 192 && b === 168) ||
+        (a === 169 && b === 254) ||
+        a === 0
+      )
+        return { ok: false, reason: "private_range" };
+      return { ok: false, reason: "literal_ip" };
+    }
+    return { ok: false, reason: "literal_ip" };
+  }
+  // Decimal/hex integer hosts and digit-dot shorthands (URL bypass attempts).
+  if (
+    /^\d+$/.test(host) ||
+    /^0x[0-9a-f]+$/i.test(host) ||
+    /^[0-9.]+$/.test(host)
+  )
+    return { ok: false, reason: "literal_ip" };
+  // Single-label hosts never egress (localhost, metadata, intranet names).
+  if (!host.includes(".")) return { ok: false, reason: "local_host" };
+  if (host === "localhost" || host.endsWith(".localhost"))
+    return { ok: false, reason: "local_host" };
+  const labels = host.split(".");
+  if (
+    labels.some(
+      (l) => l === "metadata" || l === "instance-data" || l === "instance-metadata",
+    )
+  )
+    return { ok: false, reason: "metadata_host" };
+  if (
+    host === "host.docker.internal" ||
+    host.endsWith(".host.docker.internal")
+  )
+    return { ok: false, reason: "metadata_host" };
+  const PRIVATE_SUFFIXES = [
+    ".internal",
+    ".local",
+    ".lan",
+    ".home",
+    ".corp",
+    ".intranet",
+    ".invalid",
+    ".localdomain",
+    ".home.arpa",
+  ];
+  if (PRIVATE_SUFFIXES.some((s) => host.endsWith(s)))
+    return { ok: false, reason: "private_range" };
+  // Wildcard-DNS rebinding services (xip.io style embeds the target IP).
+  const WILDCARD_SUFFIXES = [
+    "xip.io",
+    "nip.io",
+    "sslip.io",
+    "localtest.me",
+    "lvh.me",
+  ];
+  if (WILDCARD_SUFFIXES.some((s) => host === s || host.endsWith(`.${s}`)))
+    return { ok: false, reason: "wildcard_dns" };
+  // Embedded IPv4 in hostname (dotted or dashed), e.g. 127.0.0.1.evil.com.
+  if (
+    /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/.test(host) ||
+    /\d{1,3}-\d{1,3}-\d{1,3}-\d{1,3}/.test(host)
+  )
+    return { ok: false, reason: "wildcard_dns" };
+  return { ok: true, url };
+}
+
 /** The single gate the review pipeline, install flow and host all run. */
 export function parseManifest(input: unknown): ManifestVerdict {
   const errors: string[] = [];
@@ -418,8 +524,10 @@ export function parseManifest(input: unknown): ManifestVerdict {
   }
 
   const hooksUrl = typeof raw.hooksUrl === "string" ? raw.hooksUrl.trim() : "";
-  if (hooks.length && !/^https:\/\/[^\s]+$/.test(hooksUrl))
-    errors.push("hooksUrl");
+  if (hooks.length) {
+    if (!/^https:\/\/[^\s]+$/.test(hooksUrl)) errors.push("hooksUrl");
+    else if (!isAllowedHooksUrl(hooksUrl).ok) errors.push("hooksUrl");
+  }
 
   const widgets: PluginWidgetDef[] = [];
   const rawWidgets = Array.isArray(raw.widgets) ? raw.widgets : [];

@@ -582,3 +582,160 @@ describe("R2-8 step 7 — suspend/resume transition matrix (pure guard)", () => 
     );
   });
 });
+
+describe("queued retry recheck — disable/suspend/kill/rotation park without POST", () => {
+  const HOOK = "order.created" as const;
+  const HOOKS_URL = "https://apps.example.com/hooks";
+  const INSTALL_ROW = "install-r28";
+
+  function manifestDoc(over: Record<string, unknown> = {}) {
+    const verdict = parseManifest({
+      id: "r2-8-probe",
+      name: "R2-8 Probe",
+      version: "1.0.0",
+      api: "^3.0.0",
+      permissions: [...HOOK_SCOPE[HOOK]],
+      widgets: [],
+      hooks: [HOOK],
+      hooksUrl: HOOKS_URL,
+      settings: [],
+      i18n: { en: {}, bn: {} },
+      ...over,
+    });
+    if (!verdict.ok) throw new Error(verdict.errors.join(","));
+    return verdict.manifest;
+  }
+
+  function hookDb() {
+    const db = fakeDb({
+      tables: {
+        plugin_state: [
+          {
+            id: INSTALL_ROW,
+            merchant_id: MERCHANT,
+            plugin_id: "r2-8-probe",
+            manifest: manifestDoc(),
+            scopes: [...HOOK_SCOPE[HOOK]],
+            settings: {},
+            enabled: true,
+            suspended: false,
+          },
+        ],
+        plugin_kill_switch: [],
+        job_queue: [],
+        activity_log: [],
+      },
+    });
+    queueDb.db = db.asClient();
+    return db;
+  }
+
+  function stateRow(db: ReturnType<typeof fakeDb>) {
+    const row = db
+      .rows("plugin_state")
+      .find((r) => r["id"] === INSTALL_ROW) as Record<string, unknown>;
+    if (!row) throw new Error("state row missing");
+    return row;
+  }
+
+  // Fail the live attempt so the PII-bearing body lands on the queue, then
+  // hand back the stored payload exactly as the worker would claim it.
+  async function queuedPayload(db: ReturnType<typeof fakeDb>) {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response("boom", { status: 500 })),
+    );
+    const out = await runHook([subscriber(HOOK, HOOK_SCOPE[HOOK])], HOOK, {
+      id: "pii-1",
+    });
+    expect(out[0].status).toBe("queued");
+    const jobs = db.rows("job_queue");
+    expect(jobs).toHaveLength(1);
+    expect(jobs[0]["merchant_id"]).toBeNull();
+    return jobs[0]["payload"] as Record<string, unknown>;
+  }
+
+  async function deliverQuietly(
+    db: ReturnType<typeof fakeDb>,
+    payload: Record<string, unknown>,
+  ) {
+    const fetchMock = vi.fn(
+      async (_url: string, _init?: RequestInit) =>
+        new Response("{}", { status: 200 }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    const res = await deliverQueuedHook(payload, {
+      db: db.asClient() as never,
+    });
+    return { res, fetchMock };
+  }
+
+  it("fail→queue→disable→deliver parks with disabled, zero POST", async () => {
+    const db = hookDb();
+    const payload = await queuedPayload(db);
+    stateRow(db)["enabled"] = false;
+    const { res, fetchMock } = await deliverQuietly(db, payload);
+    expect(res).toEqual({ ok: false, reason: "disabled" });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("fail→queue→suspend→deliver parks with suspended, zero POST", async () => {
+    const db = hookDb();
+    const payload = await queuedPayload(db);
+    stateRow(db)["suspended"] = true;
+    const { res, fetchMock } = await deliverQuietly(db, payload);
+    expect(res).toEqual({ ok: false, reason: "suspended" });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("fail→queue→kill-switch→deliver parks with killed, zero POST", async () => {
+    const db = hookDb();
+    const payload = await queuedPayload(db);
+    db.rows("plugin_kill_switch").push({
+      plugin_id: "r2-8-probe",
+      disabled: true,
+    });
+    const { res, fetchMock } = await deliverQuietly(db, payload);
+    expect(res).toEqual({ ok: false, reason: "killed" });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("fail→queue→hooksUrl rotation→deliver parks with hooks_url_rotated, zero POST to the stale URL", async () => {
+    const db = hookDb();
+    const payload = await queuedPayload(db);
+    expect(payload["hooksUrl"]).toBe(HOOKS_URL);
+    stateRow(db)["manifest"] = manifestDoc({
+      hooksUrl: "https://apps.example.com/hooks-v2",
+    });
+    const { res, fetchMock } = await deliverQuietly(db, payload);
+    expect(res).toEqual({ ok: false, reason: "hooks_url_rotated" });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("fail→queue→scope narrowing→deliver parks with scope_revoked, zero POST", async () => {
+    const db = hookDb();
+    const payload = await queuedPayload(db);
+    stateRow(db)["scopes"] = [];
+    const { res, fetchMock } = await deliverQuietly(db, payload);
+    expect(res).toEqual({ ok: false, reason: "scope_revoked" });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("fail→queue→uninstall (row gone)→deliver parks with not_installed, zero POST", async () => {
+    const db = hookDb();
+    const payload = await queuedPayload(db);
+    db.tables["plugin_state"] = [];
+    const { res, fetchMock } = await deliverQuietly(db, payload);
+    expect(res).toEqual({ ok: false, reason: "not_installed" });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("unchanged install still delivers to the current hooksUrl", async () => {
+    const db = hookDb();
+    const payload = await queuedPayload(db);
+    const { res, fetchMock } = await deliverQuietly(db, payload);
+    expect(res).toEqual({ ok: true, installId: INSTALL_ROW });
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock.mock.calls[0]![0]).toBe(HOOKS_URL);
+  });
+});
