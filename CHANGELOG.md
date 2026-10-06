@@ -14,6 +14,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-06 19:26 UTC] (v0.5-beta — 654b9d7c) — Package pipeline gaps closed
+### Fixed
+- Version-row tokens passthrough (official tokens reach theme_versions); 32MB archive cap (Songoskriti installs under defaults); parity tests assert fixed behavior.
+- Committed the full package program (manifest validators, exporters, acceptance suites) that was green-but-uncommitted.
+### Verification
+- 189 package tests green, tsc clean.
 ## [2026-10-06 17:32 UTC] (v0.5-beta — 0300b017) — Docs follow-up completion
 ### Changed
 - app-blocks per-bullet planned qualifiers; blueprint files verified bannered-historical (bodies untouched); internal guides re-pinned (~70 pins, headers bumped).
