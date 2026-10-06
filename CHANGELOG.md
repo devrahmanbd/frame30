@@ -14,6 +14,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-06 02:22 UTC] (v0.5-beta — 0218c4d6) — Final docs synchronization
+### Changed
+- Internal docs synced to final architecture (registry model, chrome surfaces, no-branches rule); superseded docs explicitly bannered; 10-guide public developer path built; sdk/packages/plugins pins corrected to HEAD; footer pins repointed to canonical proof modules.
+### Verification
+- 329 pins verified (135 + 55 + 139 + spot fixes); prettier clean; examples compile against source.
+### Known gaps
+- app-blocks planned-markers need per-bullet qualifiers; theme-plan blueprints out of scope; internal/superpowers digit drift untouched.
 ## [2026-10-06 02:20 UTC] (v0.5-beta — 8b8b015a) — Final verification sweep
 ### Fixed
 - DoD PluginBlock exemption (opaque themeKey forward documented + asserted); localization compact-state test updated to theme-owned announcement heights.
