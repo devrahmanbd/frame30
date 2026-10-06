@@ -1,17 +1,27 @@
 # Theme Packages (third-party developer spec)
 
-> **DEPRECATED — planned, not built.** The validator module
-> (`src/lib/theme-package.ts` / `validateThemePackage`) does not exist at
-> HEAD; package installs flow through `parseTokens`/`parseTemplates`
+> **NOTE — validator built; spec field names mapped below.** The validator
+> module now exists (`src/lib/theme-package.ts`): the canonical gate is
+> `validateThemeManifest`, and the spec name `validateThemePackage` is a
+> true alias of it (one implementation). Package installs flow through
+> `parseTokens`/`parseTemplates`
 > (`src/lib/builder-ast.ts`) at
 > `marketplace-install.server.ts:415-420`. Everything below is the
-> preserved design spec for that future module — do not treat field
-> rules here as enforced today. For the live install path, see
+> preserved design spec for that module — field rules here use the
+> spec names; the enforced manifest fields are mapped under Manifest
+> fields. For the live install path, see
 > [the SDK registry pipeline](./sdk.md).
 
 Third-party themes ship as JSON packages: `tokens` + `templates` + manifest.
 Packages are validated by `validateThemePackage` (`src/lib/theme-package.ts`),
 which reuses the in-repo guards byte-identically — no raw HTML ever executes.
+
+Spec → manifest field mapping (enforced names): `nameEn` → `name`
+(required), `nameBn` → `nameBn` (required), `summaryEn` → `description`
+(optional), `summaryBn` → `descriptionBn` (optional). `category`,
+`sortOrder`, and `tokens` have no manifest counterpart (curation-only
+metadata). The `templates` row below is the design-spec template map; the
+enforced field is the declared template-key subset (`templates`).
 
 ## Manifest fields
 

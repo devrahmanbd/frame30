@@ -1,0 +1,710 @@
+/**
+ * PKG-4 — plugin ZIP parity + full lifecycle acceptance (cases only).
+ *
+ * Same lifecycle proof for plugins as themes get: an official plugin ZIP
+ * (materialised by `exportBuiltinPluginZip`) and a custom plugin ZIP travel
+ * the IDENTICAL pipeline — `installPackage(kind: "plugin")` → enable →
+ * render — then update/rollback/uninstall, every rejection, and tenant
+ * isolation. No network, no real database: persistence is the in-memory
+ * fakeDb and every archive is hand-built (exporter output or the repo's
+ * `buildTestZip` fixture — no npm zip libraries).
+ *
+ * Index:
+ * - exporter parity ............... THIS FILE (official ZIP shape + gate)
+ * - official install/enable/render . THIS FILE
+ * - custom install/enable/render ... THIS FILE (+ host projection)
+ * - update v1→v2 + consent ......... THIS FILE
+ * - rollback (re-enable v1) ........ THIS FILE
+ * - uninstall isolation ............ THIS FILE
+ * - invalid ZIP / zip-slip ......... THIS FILE
+ * - missing dep / bad api .......... THIS FILE
+ * - broken presentation/asset/ver .. THIS FILE
+ * - tenant A/B isolation ........... THIS FILE
+ */
+import { describe, expect, it } from "vitest";
+import { fakeDb } from "./__fixtures__/fake-db";
+import { buildTestZip } from "./__fixtures__/test-zip";
+import {
+  exportBuiltinPluginZip,
+  exportPluginManifestZip,
+  officialPluginIds,
+  pkg1PluginValidator,
+  PluginPackageError,
+} from "./plugin-package";
+import {
+  installPackage,
+  setPluginPackageEnabled,
+  uninstallPluginPackage,
+  type ManifestValidator,
+} from "./package-install.server";
+import {
+  defaultSettings,
+  parseManifest,
+  pluginTrayEntries,
+  resolvePluginWidget,
+} from "./plugin-manifest";
+import { listInstalledPlugins, upsertPlugin } from "./plugins.server";
+import { getBuiltinPlugin } from "./builtin-plugins";
+import {
+  parseZip,
+  extractPackageFiles,
+  validatePackageLayout,
+} from "./package-zip";
+
+const MERCHANT_A = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+const MERCHANT_B = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+const ACTOR = "99999999-9999-4999-8999-999999999999";
+
+function pkgDb() {
+  return fakeDb({
+    tables: {
+      store_themes: [],
+      theme_versions: [],
+      theme_drafts: [],
+      theme_assets: [],
+      marketplace_installs: [],
+      theme_audit: [],
+      plugin_state: [],
+      plugin_kill_switch: [],
+      activity_log: [],
+    },
+  });
+}
+
+let keySeq = 0;
+const key = () => `pkg4-key-${(keySeq += 1)}`;
+
+async function codeOf(promise: Promise<unknown>): Promise<string> {
+  try {
+    await promise;
+  } catch (e) {
+    return (e as { code?: string }).code ?? (e as Error)?.message ?? "threw";
+  }
+  return "no_throw";
+}
+
+function installPlugin(
+  db: ReturnType<typeof fakeDb>,
+  merchant: string,
+  bytes: Uint8Array,
+  opts: { fileName?: string; key?: string; validator?: ManifestValidator } = {},
+) {
+  return installPackage(
+    db.asClient(),
+    merchant,
+    {
+      kind: "plugin",
+      fileName: opts.fileName ?? "plugin.zip",
+      bytes,
+      idempotencyKey: opts.key ?? key(),
+      validator: opts.validator as ManifestValidator | undefined,
+    },
+    ACTOR,
+  );
+}
+
+function customManifest(
+  version = "1.0.0",
+  extra: Record<string, unknown> = {},
+) {
+  return {
+    id: "acme-reviews",
+    name: "Acme Reviews",
+    version,
+    api: "^3.0.0",
+    permissions: ["read_shop", "render_storefront"],
+    widgets: [
+      {
+        key: "reviews",
+        label: "Customer Reviews",
+        slots: ["main"],
+        entry: "framique.mount(document.createElement('div'))",
+      },
+    ],
+    hooks: [],
+    settings: [
+      { key: "title", label: "Title", kind: "text", default: "Reviews" },
+    ],
+    i18n: { en: { title: "Title" }, bn: { title: "শিরোনাম" } },
+    budget: { jsKb: 10, mainThreadMs: 5 },
+    ...extra,
+  };
+}
+
+function customZip(
+  manifest: Record<string, unknown>,
+  extra: { name: string; content: string }[] = [],
+): Uint8Array {
+  return buildTestZip([
+    { name: "plugin.json", content: JSON.stringify(manifest) },
+    ...extra,
+  ]);
+}
+
+/* ------------------------------------------------------- exporter parity */
+
+describe("PKG-4 exporter parity (official ZIP shape)", () => {
+  it("exports a layout-valid ZIP whose manifest passes the real gate", () => {
+    expect(officialPluginIds()).toContain("loyalty-lite");
+    const bytes = exportBuiltinPluginZip("loyalty-lite");
+    const entries = parseZip(bytes);
+    expect(entries.map((e) => e.name)).toEqual([
+      "plugin.json",
+      "locales/en.json",
+      "locales/bn.json",
+    ]);
+    const files = extractPackageFiles(bytes, entries);
+    const layout = validatePackageLayout(files, "plugin");
+    expect(layout.manifest).toMatchObject({ name: "Loyalty Lite" });
+    expect(parseManifest(layout.manifest).ok).toBe(true);
+    // Manifest + settings data only: no code file survives the layout gate.
+    expect(
+      entries.some((e) => /\.(js|ts|jsx|tsx|exe|sh|py|php)$/i.test(e.name)),
+    ).toBe(false);
+  });
+
+  it("round-trips a custom manifest through export → layout → gate", () => {
+    const bytes = exportPluginManifestZip(customManifest("2.0.0"));
+    const files = extractPackageFiles(bytes, parseZip(bytes));
+    const layout = validatePackageLayout(files, "plugin");
+    const verdict = parseManifest(layout.manifest);
+    expect(verdict.ok).toBe(true);
+    if (verdict.ok) {
+      expect(verdict.manifest.version).toBe("2.0.0");
+      expect(verdict.manifest.settings).toHaveLength(1);
+    }
+  });
+
+  it("refuses unknown official ids and ungateable manifests", () => {
+    expect(() => exportBuiltinPluginZip("ghost-plugin")).toThrowError(
+      PluginPackageError,
+    );
+    try {
+      exportBuiltinPluginZip("ghost-plugin");
+    } catch (e) {
+      expect((e as PluginPackageError).code).toBe("plugin.unknown_builtin");
+    }
+    expect(() =>
+      exportPluginManifestZip({ id: "bad!!", version: "banana" }),
+    ).toThrowError(PluginPackageError);
+    try {
+      exportPluginManifestZip({ id: "bad!!", version: "banana" });
+    } catch (e) {
+      expect((e as PluginPackageError).code).toBe("plugin.manifest_invalid");
+    }
+  });
+});
+
+/* ------------------------------------------- official install/enable/render */
+
+describe("PKG-4 official plugin ZIP → install → enable → render", () => {
+  it("installs, enables, and renders the official loyalty-lite ZIP", async () => {
+    const db = pkgDb();
+    const bytes = exportBuiltinPluginZip("loyalty-lite");
+    const res = await installPlugin(db, MERCHANT_A, bytes, {
+      fileName: "loyalty-lite.zip",
+    });
+    expect(res.alreadyInstalled).toBe(false);
+    expect(res.version).toBe("1.2.0");
+    expect(res.artifactId).toHaveLength(64);
+
+    const ledger = db.rows("marketplace_installs");
+    expect(ledger).toHaveLength(1);
+    expect(ledger[0]).toMatchObject({
+      kind: "widget",
+      listing_slug: "loyalty-lite",
+      status: "installed",
+    });
+    // Namespaced assets, never the global tree.
+    expect(
+      db
+        .rows("theme_assets")
+        .every((a) => (a.name as string).startsWith("plugins/")),
+    ).toBe(true);
+
+    const enabled = await setPluginPackageEnabled(
+      db.asClient(),
+      MERCHANT_A,
+      res.packageId,
+      true,
+      ACTOR,
+    );
+    expect(enabled.status).toBe("installed");
+
+    // Render proof through the real manifest gate (sandbox island, Class A).
+    await upsertPlugin(db.asClient() as never, MERCHANT_A, {
+      manifest: getBuiltinPlugin("loyalty-lite")!.manifest,
+      grantedScopes: ["read_shop", "render_storefront"],
+      actorId: ACTOR,
+    });
+    const installed = await listInstalledPlugins(
+      db.asClient() as never,
+      MERCHANT_A,
+    );
+    const found = installed.find((p) => p.manifest.id === "loyalty-lite")!;
+    expect(found.enabled).toBe(true);
+    const resolved = resolvePluginWidget(
+      "plugin:loyalty-lite/points_bar",
+      installed,
+    );
+    expect(resolved.ok).toBe(true);
+    expect(
+      pluginTrayEntries(installed, "main").some(
+        (e) => e.key === "plugin:loyalty-lite/points_bar",
+      ),
+    ).toBe(true);
+  });
+
+  it("replays an idempotency key without stacking ledger rows", async () => {
+    const db = pkgDb();
+    const bytes = exportBuiltinPluginZip("social-proof");
+    const k = key();
+    const first = await installPlugin(db, MERCHANT_A, bytes, { key: k });
+    const second = await installPlugin(db, MERCHANT_A, bytes, { key: k });
+    expect(second.alreadyInstalled).toBe(true);
+    expect(second.packageId).toBe(first.packageId);
+    expect(db.rows("marketplace_installs")).toHaveLength(1);
+  });
+});
+
+/* --------------------------------------------- custom install/enable/render */
+
+describe("PKG-4 custom plugin ZIP → install → enable → render", () => {
+  it("installs, disables/enables, and renders a custom plugin", async () => {
+    const db = pkgDb();
+    const res = await installPlugin(
+      db,
+      MERCHANT_A,
+      customZip(customManifest()),
+    );
+    expect(res.version).toBe("1.0.0");
+
+    // Disabled installs resolve to a labelled placeholder, never a crash.
+    const verdict = parseManifest(customManifest());
+    if (!verdict.ok) throw new Error("fixture manifest rejected");
+    const hostRow = {
+      installId: res.packageId,
+      manifest: verdict.manifest,
+      grantedScopes: ["read_shop", "render_storefront"],
+      settings: defaultSettings(verdict.manifest.settings),
+      enabled: false,
+    };
+    expect(
+      resolvePluginWidget("plugin:acme-reviews/reviews", [hostRow]),
+    ).toEqual({
+      ok: false,
+      reason: "disabled",
+      pluginId: "acme-reviews",
+    });
+
+    const disabled = await setPluginPackageEnabled(
+      db.asClient(),
+      MERCHANT_A,
+      res.packageId,
+      false,
+      ACTOR,
+    );
+    expect(disabled.status).toBe("paused");
+    const enabled = await setPluginPackageEnabled(
+      db.asClient(),
+      MERCHANT_A,
+      res.packageId,
+      true,
+      ACTOR,
+    );
+    expect(enabled.status).toBe("installed");
+
+    await upsertPlugin(db.asClient() as never, MERCHANT_A, {
+      manifest: customManifest(),
+      grantedScopes: ["read_shop", "render_storefront"],
+      actorId: ACTOR,
+    });
+    const installed = await listInstalledPlugins(
+      db.asClient() as never,
+      MERCHANT_A,
+    );
+    const ok = resolvePluginWidget("plugin:acme-reviews/reviews", installed);
+    expect(ok.ok).toBe(true);
+    if (ok.ok) {
+      expect(ok.widget.key).toBe("reviews");
+      expect(ok.plugin.manifest.version).toBe("1.0.0");
+      expect(ok.plugin.settings).toMatchObject({ title: "Reviews" });
+    }
+    // Unknown widgets and incompatible APIs fail closed with reasons.
+    expect(
+      resolvePluginWidget("plugin:acme-reviews/ghost", installed),
+    ).toMatchObject({ ok: false, reason: "unknown_widget" });
+    expect(
+      resolvePluginWidget("plugin:acme-reviews/reviews", installed, "2.0.0"),
+    ).toMatchObject({ ok: false, reason: "incompatible" });
+  });
+});
+
+/* ---------------------------------------------------------- update + rollback */
+
+describe("PKG-4 plugin update v1→v2 + rollback", () => {
+  it("installs v2 as a new ledger row and renders the new manifest", async () => {
+    const db = pkgDb();
+    const v1 = await installPlugin(
+      db,
+      MERCHANT_A,
+      customZip(customManifest("1.0.0")),
+    );
+    const v2manifest = {
+      ...customManifest("1.1.0"),
+      settings: [
+        { key: "title", label: "Title", kind: "text", default: "Reviews" },
+        {
+          key: "limit",
+          label: "Limit",
+          kind: "number",
+          min: 1,
+          max: 20,
+          default: 6,
+        },
+      ],
+    };
+    const v2 = await installPlugin(db, MERCHANT_A, customZip(v2manifest));
+    expect(v2.packageId).not.toBe(v1.packageId);
+    expect(v2.version).toBe("1.1.0");
+    // Plugin history is successive ledger rows (not theme_versions).
+    expect(
+      db
+        .rows("marketplace_installs")
+        .filter((r) => r.listing_slug === "acme-reviews"),
+    ).toHaveLength(2);
+
+    // Permission-widening updates need fresh consent — refused without it.
+    const widened = {
+      ...customManifest("1.2.0"),
+      permissions: ["read_shop", "read_products", "render_storefront"],
+    };
+    await upsertPlugin(db.asClient() as never, MERCHANT_A, {
+      manifest: customManifest("1.0.0"),
+      grantedScopes: ["read_shop", "render_storefront"],
+      actorId: ACTOR,
+    });
+    await expect(
+      upsertPlugin(db.asClient() as never, MERCHANT_A, {
+        manifest: widened,
+        grantedScopes: ["read_shop", "render_storefront"],
+        actorId: ACTOR,
+      }),
+    ).rejects.toThrow(/plugin_consent_required:read_products/);
+    await upsertPlugin(db.asClient() as never, MERCHANT_A, {
+      manifest: widened,
+      grantedScopes: ["read_shop", "read_products", "render_storefront"],
+      reconsented: true,
+      actorId: ACTOR,
+    });
+    const installed = await listInstalledPlugins(
+      db.asClient() as never,
+      MERCHANT_A,
+    );
+    expect(
+      installed.find((p) => p.manifest.id === "acme-reviews")?.manifest.version,
+    ).toBe("1.2.0");
+  });
+
+  it("rolls back by re-enabling v1 and re-projecting its manifest", async () => {
+    const db = pkgDb();
+    const v1 = await installPlugin(
+      db,
+      MERCHANT_A,
+      customZip(customManifest("1.0.0")),
+    );
+    const v2 = await installPlugin(
+      db,
+      MERCHANT_A,
+      customZip(customManifest("1.1.0")),
+    );
+    await upsertPlugin(db.asClient() as never, MERCHANT_A, {
+      manifest: customManifest("1.1.0"),
+      grantedScopes: ["read_shop", "render_storefront"],
+      actorId: ACTOR,
+    });
+
+    // Rollback = ledger flip (v2 paused, v1 live) + v1 manifest re-projected.
+    await setPluginPackageEnabled(
+      db.asClient(),
+      MERCHANT_A,
+      v2.packageId,
+      false,
+      ACTOR,
+    );
+    await setPluginPackageEnabled(
+      db.asClient(),
+      MERCHANT_A,
+      v1.packageId,
+      true,
+      ACTOR,
+    );
+    await upsertPlugin(db.asClient() as never, MERCHANT_A, {
+      manifest: customManifest("1.0.0"),
+      grantedScopes: ["read_shop", "render_storefront"],
+      actorId: ACTOR,
+    });
+    const ledger = db.rows("marketplace_installs");
+    expect(ledger.find((r) => r.id === v1.packageId)?.status).toBe("installed");
+    expect(ledger.find((r) => r.id === v2.packageId)?.status).toBe("paused");
+    const installed = await listInstalledPlugins(
+      db.asClient() as never,
+      MERCHANT_A,
+    );
+    const active = installed.find((p) => p.manifest.id === "acme-reviews")!;
+    expect(active.manifest.version).toBe("1.0.0");
+    expect(
+      resolvePluginWidget("plugin:acme-reviews/reviews", installed).ok,
+    ).toBe(true);
+  });
+});
+
+/* ----------------------------------------------------------------- uninstall */
+
+describe("PKG-4 plugin uninstall isolation", () => {
+  it("wipes one plugin's namespace without touching siblings", async () => {
+    const db = pkgDb();
+    const official = await installPlugin(
+      db,
+      MERCHANT_A,
+      exportBuiltinPluginZip("loyalty-lite"),
+    );
+    const custom = await installPlugin(
+      db,
+      MERCHANT_A,
+      customZip(customManifest(), [
+        { name: "assets/icon.png", content: "icon" },
+      ]),
+    );
+    const out = await uninstallPluginPackage(
+      db.asClient(),
+      MERCHANT_A,
+      custom.packageId,
+      ACTOR,
+    );
+    expect(out.ok).toBe(true);
+    expect(out.removedAssets).toBeGreaterThan(0);
+    const assets = db.rows("theme_assets");
+    expect(assets.length).toBeGreaterThan(0);
+    expect(
+      assets.every((a) =>
+        (a.name as string).startsWith("plugins/loyalty-lite/"),
+      ),
+    ).toBe(true);
+    const ledger = db.rows("marketplace_installs");
+    expect(ledger.find((r) => r.id === custom.packageId)?.status).toBe(
+      "removed",
+    );
+    expect(ledger.find((r) => r.id === official.packageId)?.status).toBe(
+      "installed",
+    );
+  });
+});
+
+/* ---------------------------------------------------------------- rejections */
+
+describe("PKG-4 plugin rejections", () => {
+  it("rejects non-zip bytes and non-zip names without writing anything", async () => {
+    const db = pkgDb();
+    expect(
+      await codeOf(
+        installPackage(db.asClient(), MERCHANT_A, {
+          kind: "plugin",
+          fileName: "plugin.zip",
+          bytes: new TextEncoder().encode("not a zip"),
+          idempotencyKey: key(),
+        }),
+      ),
+    ).toBe("zip.malformed");
+    expect(
+      await codeOf(
+        installPlugin(db, MERCHANT_A, customZip(customManifest()), {
+          fileName: "plugin.tar.gz",
+        }),
+      ),
+    ).toBe("package.bad_name");
+    expect(
+      await codeOf(
+        installPackage(db.asClient(), MERCHANT_A, {
+          kind: "plugin",
+          fileName: "plugin.zip",
+          bytes: new Uint8Array(),
+          idempotencyKey: key(),
+        }),
+      ),
+    ).toBe("zip.malformed");
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+
+  it("rejects zip-slip entries end-to-end", async () => {
+    const db = pkgDb();
+    for (const bad of ["../../evil.json", "/abs.json", "C:/evil.json"]) {
+      const zip = buildTestZip([
+        { name: "plugin.json", content: JSON.stringify(customManifest()) },
+        { name: bad, content: "{}" },
+      ]);
+      expect(await codeOf(installPlugin(db, MERCHANT_A, zip))).toBe(
+        "zip.unsafe_path",
+      );
+    }
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+
+  it("rejects missing dependencies, then installs once satisfied", async () => {
+    const db = pkgDb();
+    const zip = customZip(
+      customManifest("1.0.0", { dependencies: ["ghost-dep"] }),
+    );
+    expect(await codeOf(installPlugin(db, MERCHANT_A, zip))).toBe(
+      "package.missing_dependency",
+    );
+    db.rows("marketplace_installs").push({
+      id: "dep-1",
+      merchant_id: MERCHANT_A,
+      kind: "widget",
+      listing_slug: "ghost-dep",
+      status: "installed",
+    });
+    const res = await installPlugin(db, MERCHANT_A, zip);
+    expect(res.alreadyInstalled).toBe(false);
+  });
+
+  it("rejects unsupported builder APIs", async () => {
+    const db = pkgDb();
+    const zip = customZip(customManifest("1.0.0", { api: "^99.0.0" }));
+    expect(await codeOf(installPlugin(db, MERCHANT_A, zip))).toBe(
+      "package.api_incompatible",
+    );
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+
+  it("rejects broken presentation refs, executable assets, and bad versions", async () => {
+    const db = pkgDb();
+    const brokenRef = customZip(customManifest(), [
+      {
+        name: "templates/index.json",
+        content: JSON.stringify({ hero: "assets/missing.png" }),
+      },
+    ]);
+    expect(await codeOf(installPlugin(db, MERCHANT_A, brokenRef))).toBe(
+      "package.broken_ref",
+    );
+    // Executable asset anywhere in the archive is refused (no sandbox weakening).
+    const evilAsset = customZip(customManifest(), [
+      { name: "assets/app.js", content: "evil()" },
+    ]);
+    expect(await codeOf(installPlugin(db, MERCHANT_A, evilAsset))).toBe(
+      "zip.blocked_extension",
+    );
+    // Dynamic-code widget entries never reach the sandbox island: the real
+    // plugin gate (via the pipeline `validator` seam) refuses them at the
+    // package boundary.
+    const evilEntry = customZip(
+      customManifest("1.0.0", {
+        widgets: [
+          {
+            key: "x",
+            label: "X",
+            slots: ["main"],
+            entry: "eval('evil')",
+          },
+        ],
+      }),
+    );
+    expect(
+      await codeOf(
+        installPlugin(db, MERCHANT_A, evilEntry, {
+          validator: pkg1PluginValidator as ManifestValidator,
+        }),
+      ),
+    ).toBe("package.manifest_invalid");
+    const badVersion = customZip(customManifest("banana"));
+    expect(await codeOf(installPlugin(db, MERCHANT_A, badVersion))).toBe(
+      "package.bad_version",
+    );
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+
+  it("accepts a well-formed manifest through the real plugin gate (seam)", async () => {
+    const db = pkgDb();
+    const gated = await installPlugin(
+      db,
+      MERCHANT_A,
+      customZip(customManifest()),
+      {
+        validator: pkg1PluginValidator as ManifestValidator,
+      },
+    );
+    expect(gated.version).toBe("1.0.0");
+    expect(
+      db.rows("marketplace_installs").find((r) => r.id === gated.packageId)
+        ?.listing_slug,
+    ).toBe("acme-reviews");
+    // Missing-dependency declarations ride the stub-compatible key.
+    const withDep = customZip(
+      customManifest("1.0.0", { dependencies: ["ghost-dep"] }),
+    );
+    expect(
+      await codeOf(
+        installPlugin(db, MERCHANT_A, withDep, {
+          validator: pkg1PluginValidator as ManifestValidator,
+        }),
+      ),
+    ).toBe("package.missing_dependency");
+  });
+});
+
+/* ---------------------------------------------------------- tenant isolation */
+
+describe("PKG-4 plugin tenant A/B isolation", () => {
+  it("scopes every plugin step to the owning merchant", async () => {
+    const db = pkgDb();
+    const res = await installPlugin(
+      db,
+      MERCHANT_A,
+      customZip(customManifest()),
+    );
+    expect(
+      await codeOf(
+        setPluginPackageEnabled(
+          db.asClient(),
+          MERCHANT_B,
+          res.packageId,
+          false,
+          ACTOR,
+        ),
+      ),
+    ).toBe("package.not_found");
+    expect(
+      await codeOf(
+        uninstallPluginPackage(db.asClient(), MERCHANT_B, res.packageId, ACTOR),
+      ),
+    ).toBe("package.not_found");
+    // A's rows untouched by B's attempts.
+    expect(
+      db.rows("marketplace_installs").find((r) => r.id === res.packageId)
+        ?.status,
+    ).toBe("installed");
+    // B installing the same bytes gets fully separate rows + assets.
+    const bRes = await installPlugin(
+      db,
+      MERCHANT_B,
+      customZip(customManifest()),
+    );
+    expect(bRes.packageId).not.toBe(res.packageId);
+    await uninstallPluginPackage(
+      db.asClient(),
+      MERCHANT_B,
+      bRes.packageId,
+      ACTOR,
+    );
+    expect(
+      db
+        .rows("marketplace_installs")
+        .filter((r) => r.merchant_id === MERCHANT_A),
+    ).toHaveLength(1);
+    expect(
+      db.rows("theme_assets").every((a) => a.merchant_id === MERCHANT_A),
+    ).toBe(true);
+  });
+});

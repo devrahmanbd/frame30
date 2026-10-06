@@ -1,0 +1,210 @@
+/**
+ * PKG-2 — versioned package storage.
+ *
+ * Reuse, not new tables: package blobs live as `theme_assets` rows (the
+ * table already exists with `merchant_id` + nullable `theme_id`), addressed
+ * by a per-version namespace baked into the row `name`:
+ *
+ *   themes:  `themes/<version-id>/assets/<rel-path>`
+ *   plugins: `plugins/<slug>/<artifact8>/assets/<rel-path>`
+ *
+ * Public URLs carry the same namespace plus a content-hash query (`?v=`), so
+ * two versions of the same relative path never collide and nothing is ever
+ * copied into `public/` or the source tree. All reads/writes are
+ * merchant-scoped; callers pass the tenant id explicitly.
+ */
+
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+import { assertTenantId } from "./tenant-scope";
+
+type Client = SupabaseClient<Database>;
+
+export class PackageStoreError extends Error {
+  constructor(
+    readonly code: string,
+    message: string,
+  ) {
+    super(message);
+    this.name = "PackageStoreError";
+  }
+}
+
+export type StoredAsset = {
+  id: string;
+  name: string;
+  relPath: string;
+  kind: string;
+  bytes: number;
+  url: string | null;
+};
+
+export function themeVersionPrefix(versionId: string): string {
+  if (!versionId || versionId.includes("/") || versionId.includes("..")) {
+    throw new PackageStoreError("package.bad_version_id", "Bad version id.");
+  }
+  return `themes/${versionId}/assets/`;
+}
+
+export function pluginVersionPrefix(slug: string, artifact8: string): string {
+  if (!slug || slug.includes("/") || slug.includes("..")) {
+    throw new PackageStoreError("package.bad_slug", "Bad package slug.");
+  }
+  if (!/^[0-9a-f]{8}$/.test(artifact8)) {
+    throw new PackageStoreError("package.bad_artifact", "Bad artifact id.");
+  }
+  return `plugins/${slug}/${artifact8}/assets/`;
+}
+
+/** Collision-safe versioned URL: namespace + content hash, no fs copies. */
+export function versionedAssetUrl(
+  merchantId: string,
+  assetName: string,
+  contentHash8: string,
+): string {
+  const safe = assetName
+    .split("/")
+    .map((s) => encodeURIComponent(s))
+    .join("/");
+  return `/pkg/${encodeURIComponent(merchantId)}/${safe}?v=${contentHash8}`;
+}
+
+export function assetKindForPath(path: string): string {
+  const lower = path.toLowerCase();
+  if (lower.endsWith(".css")) return "css";
+  if (/\.(woff2?|ttf|otf|eot)$/.test(lower)) return "font";
+  if (/\.(png|jpe?g|gif|webp|avif|svg|ico)$/.test(lower)) return "image";
+  return "json";
+}
+
+export type SaveAssetFile = {
+  relPath: string;
+  bytes: Uint8Array;
+  text?: string | null;
+};
+
+function shortHash(bytes: Uint8Array): string {
+  // FNV-1a 32-bit — a cache-buster, not a security digest (the artifact
+  // identity hash lives in the install pipeline on node:crypto sha256).
+  let h = 0x811c9dc5;
+  for (const b of bytes) {
+    h ^= b;
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16).padStart(8, "0");
+}
+
+export async function saveVersionAssets(
+  db: Client,
+  merchantId: string,
+  opts: {
+    themeId: string | null;
+    prefix: string;
+    files: SaveAssetFile[];
+  },
+): Promise<StoredAsset[]> {
+  assertTenantId(merchantId, "saveVersionAssets");
+  const out: StoredAsset[] = [];
+  for (const file of opts.files) {
+    const name = `${opts.prefix}${file.relPath}`;
+    const hash8 = shortHash(file.bytes);
+    const row = {
+      merchant_id: merchantId,
+      theme_id: opts.themeId,
+      kind: assetKindForPath(file.relPath),
+      name,
+      content: file.text ?? null,
+      url: versionedAssetUrl(merchantId, name, hash8),
+      bytes: file.bytes.length,
+      enabled: true,
+    };
+    const { data, error } = await (db as unknown as SupabaseClient<never>)
+      .from("theme_assets")
+      .insert(row as never)
+      .select("id, name, kind, bytes, url")
+      .single();
+    if (error || !data) {
+      throw new PackageStoreError(
+        "package.asset_save_failed",
+        (error as { message?: string } | null)?.message ?? "Asset save failed.",
+      );
+    }
+    const saved = data as unknown as {
+      id: string;
+      name: string;
+      kind: string;
+      bytes: number;
+      url: string | null;
+    };
+    out.push({
+      id: saved.id,
+      name: saved.name,
+      relPath: file.relPath,
+      kind: saved.kind,
+      bytes: Number(saved.bytes ?? 0),
+      url: saved.url,
+    });
+  }
+  return out;
+}
+
+export async function listVersionAssets(
+  db: Client,
+  merchantId: string,
+  prefix: string,
+): Promise<StoredAsset[]> {
+  assertTenantId(merchantId, "listVersionAssets");
+  const { data, error } = await (db as unknown as SupabaseClient<never>)
+    .from("theme_assets")
+    .select("id, name, kind, bytes, url")
+    .eq("merchant_id", merchantId)
+    .limit(1000);
+  if (error) {
+    throw new PackageStoreError(
+      "package.asset_read_failed",
+      (error as { message?: string } | null)?.message ?? "Asset read failed.",
+    );
+  }
+  const rows = ((data ?? []) as unknown as {
+    id: string;
+    name: string;
+    kind: string;
+    bytes: number;
+    url: string | null;
+  }[]).filter((r) => r.name.startsWith(prefix));
+  return rows.map((r) => ({
+    id: r.id,
+    name: r.name,
+    relPath: r.name.slice(prefix.length),
+    kind: r.kind,
+    bytes: Number(r.bytes ?? 0),
+    url: r.url,
+  }));
+}
+
+/**
+ * Remove exactly one version namespace, tenant-scoped per row. Returns the
+ * removed count so callers can distinguish "nothing there" from a real wipe.
+ */
+export async function deleteVersionAssets(
+  db: Client,
+  merchantId: string,
+  prefix: string,
+): Promise<{ removed: number }> {
+  assertTenantId(merchantId, "deleteVersionAssets");
+  const rows = await listVersionAssets(db, merchantId, prefix);
+  for (const row of rows) {
+    const { error } = await (db as unknown as SupabaseClient<never>)
+      .from("theme_assets")
+      .delete()
+      .eq("merchant_id", merchantId)
+      .eq("id", row.id);
+    if (error) {
+      throw new PackageStoreError(
+        "package.asset_delete_failed",
+        (error as { message?: string } | null)?.message ?? "Asset delete failed.",
+      );
+    }
+  }
+  return { removed: rows.length };
+}
