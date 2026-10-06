@@ -1,6 +1,15 @@
 # 04 — Builder: Theme Registry (S1)
 
-Status: Planning · Slice: S1 · Gate: approved ("go")
+> **PARTLY DEPRECATED — historical planning doc with as-built appendices.**
+> Canonical contract: `docs/04-builder/README.md` (authoritative theme
+> reference + history map). §§1–9 below are the pre-build Tenant006 plan
+> (SQL tables, RPC names, purge decision) — kept as history only; where they
+> contradict HEAD, HEAD wins. The as-built lifecycle (§“Install / update /
+> rollback lifecycle”) and the no-code contract below stay current and are
+> pinned to HEAD.
+
+Status: **Deprecated §§1–9 (historical)** · As-built appendices stay current ·
+Gate: approved ("go")
 Owners: builder/runtime · storefront · marketplace(consumer)
 References: `04-builder/README.md` (data model), `theme-runtime.md` (TR-1…TR-12, E2E contract),
 `12-marketplace/README.md` (catalog/pins), `00-meta/design-system.md` §2–§3 (semantic tokens),
@@ -48,6 +57,75 @@ merchant, seeded from the package's AST until the merchant edits. Widgets: the g
 Marketplace explorer/checkout flows (`12`), the builder editor SPA and widget sandbox (S7), the
 storefront edge service (S1) + CDN, custom merchant fonts (runtime open item 5), SDK `code` hook
 (open item 6), analytics/consent pipeline, and any `.e2e` implementation (P4 — `docs/15-e2e`).
+
+---
+
+## §0. Final architecture pointer (HEAD — registries, chrome, menu swap)
+
+Final split: **Widget = functionality/data/state/actions; Builder =
+composition + props + placement; Theme = presentation; Plugin = extension;
+Runtime = platform services.** Three opaque registries (all first-wins,
+never throw, unknown keys fall back — never another theme's brand):
+
+- **themeKey × widgetType** — `registerThemePresentation`
+  (`src/lib/theme-presentations.ts:35`, duplicates warn at `:57`) /
+  `resolveThemePresentation` (`src/lib/theme-presentations.ts:72`, fallback
+  at `:78`); engine entry `src/components/builder/SectionRenderer.tsx:272`.
+- **themeKey × pluginKey (Class B community)** — `registerCommunityPresentation`
+  (`src/lib/plugin-theme-contract.ts:165`) /
+  `resolveCommunityPresentation` (`src/lib/plugin-theme-contract.ts:208`);
+  one decision point `resolveCommunityRender`
+  (`src/lib/plugin-theme-contract.ts:266`): blocked → placeholder, Class A →
+  `sandbox`, Class B undressed → `island`, Class B dressed → `theme`.
+  Contract version `PLUGIN_THEME_CONTRACT_VERSION = 1`
+  (`src/lib/plugin-theme-contract.ts:36`); class via `pluginWidgetClass`
+  (`src/lib/plugin-theme-contract.ts:66`).
+- **themeKey × chrome surface** — header shell via the existing
+  `mega_menu` pair: `resolveHeaderShell`
+  (`src/components/store/StoreHeader.tsx:316`), mount slots
+  `STORE_HEADER_MENU_SLOT` / `STORE_DRAWER_MENU_SLOT`
+  (`src/components/store/StoreHeader.tsx:103`); announcement via the
+  `announcement_bar` pair in `HeaderAnnouncementBar`
+  (`src/components/store/StoreHeader.tsx:338`); footer via the
+  `footer_sitemap` pair (`src/lib/themes/songoskriti/footer-proof-presentation.tsx:215`);
+  shared chrome lookup `themeChromeFor`
+  (`src/components/store/theme-chrome.ts:63`) over neutral copy keyed by
+  `DEFAULT_HEADER_CHROME_KEY` (`src/lib/header-copy.ts:19`).
+- **No-theme-branches rule:** `SectionRenderer` forwards `themeKey` opaquely
+  (never compares/switches/names a theme) and only
+  `src/components/builder/theme-widgets.ts` names themes for resolution
+  (`src/lib/definition-of-done.test.ts:102`); `TokenEditor` (studio chrome,
+  `:179`) and `PluginBlock` (opaque forward, `:166`) are the only documented
+  exceptions.
+- **Menu replacement (permission / review / resolution / fail-open):**
+  permission scope `replace_menus` (`src/lib/marketplace-scopes.ts:304`,
+  slots at `:291`); review gate `decideMenuRenderer`
+  (`src/lib/plugin-manifest.ts:102`, both scope AND `reviewApproved`
+  required); row resolution `resolveMenuSwapRows`
+  (`src/lib/plugin-manifest.ts:207`, empty plugin rows keep theme rows);
+  renderer swap `selectPluginMenuRenderer`
+  (`src/lib/plugin-menu-renderers.ts:120`, non-`plugin` verdicts → undefined)
+  with throwing renderers caught by `PluginMenuBoundary`
+  (`src/lib/plugin-menu-renderers.ts:179`) — shoppers never lose navigation.
+- **Round-trip guarantee:** builder → save → reload → preview → publish →
+  storefront preserves items/nested/bilingual/presentation/responsive
+  (`src/lib/builder-lifecycle.contract.test.tsx:35`,
+  `src/lib/builder-lifecycle.contract.test.tsx:108`); chrome twins survive
+  the same path (`src/lib/builder-chrome.contract.test.tsx:282`).
+- **Install path (HEAD):** `installRegistryTheme`
+  (`src/lib/themes.server.ts:710`) validates + lints the typed package from
+  `registryPackage` (`src/lib/themes.server.ts:682`) before forking the
+  editable draft; `publishedTheme` (`src/lib/themes.server.ts:1209`) serves
+  with tenant-scoped last-good fallback (`src/lib/themes.server.ts:1189`).
+
+> Historical note: §§1–9 below describe `theme_versions` as global
+> creator-owned artifacts, `store_themes` pin rows, and `app.theme_*` RPCs.
+> HEAD serves merchant-scoped `theme_versions` + `store_themes` pointer rows
+> via `publishedTheme` (`src/lib/themes.server.ts:1209`); there is no
+> `theme.yaml` manifest artifact. The §6 purge decision (revision-keyed URLs
+>
+> - Redis pub/sub + CDN purge) was never built as specified — HEAD caches
+>   under a tenant-keyed prefix with a 4s pointer TTL + 300s immutable bodies.
 
 ## 3. Schema (Tenant006)
 
@@ -313,32 +391,37 @@ One `is_builtin` package `framique/fallback` v1:
 
 ---
 
-## Install / update / rollback lifecycle (Phase D — as built)
+## Install / update / rollback lifecycle (Phase D — as built; pins at HEAD)
 
-- **Install forks, never overwrites.** `theme_install_preset` writes both an
-  immutable draft version and the editable `theme_drafts` row. When a draft
-  already exists the RPC raises `builder.draft_exists`; the studio asks for
-  confirmation and only then replays with `_overwrite_draft = true`.
-- **Semantic versions.** Provenance lives on `store_themes.source_listing_slug`
-  / `source_version` and on every `theme_versions` row
-  (`source_registry_key`, `source_registry_version`). The registry version of
-  record is the typed preset, so SQL and runtime cannot drift.
-- **Update preview.** `previewThemeUpdate` diffs the merchant's live draft
-  against the package section-by-section, per template: `added`, `changed`,
-  `removed` (merchant-only), plus a token-change flag.
-- **Two merge modes.** `adopt` bases on the new package and keeps merchant-only
-  sections; `keep_mine` keeps the merchant tree and appends only genuinely new
-  sections. Tokens follow the mode. The merge is linted before it is stored and
-  lands as a draft, never as a publish.
-- **Concurrency.** The preview's draft revision is passed back to
-  `theme_update_apply`; a mismatch raises `builder.update_conflict` so a second
-  editor's work is never merged away silently.
-- **Rollback** reuses the immutable version chain (`rollback_of`) and records
-  actor and both version ids in `theme_audit`.
-- **Guards.** `builder.install` 10/h and `builder.update` 20/h per merchant;
-  spans `builder.install`, `builder.update_preview`, `builder.update`; counters
-  `framique_theme_install_total{result}` and `framique_theme_update_total{result}`;
-  every mutation writes a `theme_audit` row.
+- **Install forks, never overwrites.** `installRegistryTheme`
+  (`src/lib/themes.server.ts:710`) validates + lints the typed package from
+  `registryPackage` (`src/lib/themes.server.ts:682`) and forks the editable
+  draft via the `theme_install_preset` RPC with `_overwrite_draft`
+  (`src/lib/themes.server.ts:739`). Rate limit `builder.install` per merchant
+  (`src/lib/themes.server.ts:716`); spans `builder.install` (`:717`) and
+  counters `framique_theme_install_total{result}`
+  (`src/lib/themes.server.ts:729`).
+- **Semantic versions.** The registry version of record is the typed preset,
+  so SQL and runtime cannot drift (`registryPackage`,
+  `src/lib/themes.server.ts:682`).
+- **Update preview + apply.** `previewThemeUpdate`
+  (`src/lib/themes.server.ts:895`) diffs the live draft against the package;
+  apply goes through the `theme_update_apply` RPC
+  (`src/lib/themes.server.ts:964`) under rate limit `builder.update`
+  (`src/lib/themes.server.ts:939`), span `builder.update_preview` / merge
+  counters `framique_theme_update_total{result}`
+  (`src/lib/themes.server.ts:900`, `src/lib/themes.server.ts:955`).
+  (The `builder.draft_exists` / `builder.update_conflict` codes named in an
+  earlier draft of this section are **unverified at HEAD** — no non-test
+  source references them; do not build on them.)
+- **Rollback** reuses the immutable version chain with last-good auto-serve
+  on the live path (`lastGoodVersion`, `src/lib/themes.server.ts:1189`;
+  `publishedTheme`, `src/lib/themes.server.ts:1209`) and records actor and
+  version ids in `theme_audit`.
+- **Guards.** Spans `builder.install`, `builder.update_preview`,
+  `builder.update`; counters `framique_theme_install_total{result}` and
+  `framique_theme_update_total{result}`; every mutation writes a
+  `theme_audit` row.
 
 ---
 
@@ -360,9 +443,21 @@ A theme that requires code to change any of these is not shippable.
 | Copy          | Every string, in English and বাংলা                                   | bilingual props (`*_bn`); publish blocks below 90% বাংলা coverage                                                               |
 | SEO copy      | Title/description templates per template kind                        | `seo_templates`, seeded per vertical on install, never overwriting merchant edits                                               |
 
-Two invariants make this contract hold:
+Two invariants make this contract hold (both pinned at HEAD):
 
 1. **No theme-exclusive widgets.** `WidgetMeta` carries no theme field, so any widget authored
-   for one vertical can be placed in any theme. Asserted in `definition-of-done.test.ts`.
+   for one vertical can be placed in any theme. Asserted in
+   `src/lib/definition-of-done.test.ts:102` (tray reads the registry, never a
+   per-theme allow list).
 2. **No `themeKey` branches.** Renderers read tokens and props, never the active theme's identity.
    A theme is a composition, so anything one theme can do, every theme can do.
+   Asserted in `src/lib/definition-of-done.test.ts:102` (`SectionRenderer`
+   forwards `themeKey` opaquely; only
+   `src/components/builder/theme-widgets.ts:45` names themes).
+
+> Note: individual rows above (90% বাংলা gate, font family/weight budgets,
+> `seo_templates` seeding) are contract aspirations — only the rows with
+> suites named in `04-builder/README.md` §“Testing gates”
+> (`src/lib/builder-lifecycle.contract.test.tsx:35`,
+> `src/lib/builder-themes.contract.test.tsx:82`,
+> `src/lib/builder-chrome.contract.test.tsx:79`) are verified behavior.

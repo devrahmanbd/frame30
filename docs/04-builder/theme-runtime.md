@@ -1,12 +1,64 @@
 # 04-builder — Theme Runtime Contract (theme-runtime.md)
 
-Status: Planning · Slices S1 (skeleton) / S2 (runtime v1 + themes proto) / S7 (marketplace packaging) ·
-Reference: `/plan.md` §3.3–3.4 (storefront, builder), 7 (themes) · `03-storefront/README.md` (theme runtime, data flow) ·
-`12-marketplace/README.md` (themes catalog, versioning, review gate) · `00-meta/design-system.md` (token layers, theming rule)
+> **DEPRECATED — historical planning doc. Do not build from this file.**
+> The canonical contract is `docs/04-builder/README.md`
+> (authoritative theme reference + history map), with the publishing
+> contract in `docs/04-builder/publishing.md` and the widget catalog
+> contract in `docs/04-builder/app-blocks.md`.
+> Everything below §§1–8 is the pre-build plan (TR-1…TR-12, S1/S2/S7 slices);
+> it is kept as history only. Where it contradicts HEAD, HEAD wins.
+
+Status: **Deprecated (historical)** · Superseded by `04-builder/README.md`
+(see its banner + §"History map"). Pre-build slices S1/S2/S7 below never
+describe HEAD; the shipped runtime is the registry + `SectionRenderer`
+resolution path (§0).
 
 ---
 
-## Purpose
+## §0. Final architecture pointer (HEAD — the only buildable claims)
+
+Final split: **Widget = functionality/data/state/actions; Builder =
+composition + props + placement; Theme = presentation; Plugin = extension;
+Runtime = platform services.** Runtime flow: AST → widget/plugin contract →
+active theme → theme presentation → storefront.
+
+- **Registry (themeKey × widgetType):** `registerThemePresentation`
+  (`src/lib/theme-presentations.ts:35`, first-wins at `:57`) /
+  `resolveThemePresentation` (`src/lib/theme-presentations.ts:72`, fallback
+  at `:78`); engine resolves registered presentation first, else the
+  `resolveWidgetComponent` result (`src/components/builder/SectionRenderer.tsx:272`).
+  Module names no theme and branches on no theme.
+- **Renderer fallback chain:** explicit theme key → that theme's map →
+  per-key `GENERIC_WIDGETS` fallback; unknown keys never leak another brand
+  (`src/components/builder/theme-widgets.ts:45`).
+- **Last-good/fallback serving:** dangling pointer serves the most recent
+  prior published pin, else the `$fallback` builtin
+  (`src/lib/themes.server.ts:1189`, `src/lib/themes.server.ts:1266`).
+- **Failure containment:** throwing widgets are contained per node
+  (`src/components/builder/WidgetBoundary.tsx`, wired in `SectionRenderer`);
+  unknown widgets parse to `invalid` placeholders, never crashes
+  (`src/lib/builder-lifecycle.contract.test.tsx:144`).
+- **Round trip:** builder → save → reload → preview → publish → storefront
+  preserves items/nested/bilingual/presentation/responsive
+  (`src/lib/builder-lifecycle.contract.test.tsx:35`,
+  `src/lib/builder-lifecycle.contract.test.tsx:108`).
+- **Chrome surfaces** (header shell, menu, announcement, footer) and the
+  **menu replacement** gate (permission/review/resolution/fail-open) live in
+  `theme-registry.md` §0 and `app-blocks.md` §§7–8 — not duplicated here.
+- **Internal-only:** the sandbox capability list and island hydration notes
+  below (§§“Sandbox capability list”, “Island hydration”) describe
+  internal enforcement; merchants only see placeholders + lint errors.
+
+> Historical note: §§1–8 below pre-date the registry. `theme.yaml`
+> packages, the `__FRAMIQUE_DATA__` payload shape, the five bridge verbs,
+> the 60s edge cache, and the TR-12 budget numbers (JS ≤ 100KB, LCP < 2.5s)
+> were planning targets — HEAD has no `theme.yaml` artifact
+> (`registryPackage` builds from `resolveThemePreview`,
+> `src/lib/themes.server.ts:682`), and the plugin budget is
+> `{ jsKb: 120, mainThreadMs: 50 }` (`src/lib/plugin-manifest.ts:32`).
+> Treat every MUST below as historical unless §0 re-pins it.
+
+## Purpose (historical — see §0 and `README.md`)
 
 Define the **artifact boundary** between Builder (04) and Storefront (03): what a theme _is_ (package format), how the
 storefront runtime _consumes_ it (render pipeline, sandbox, data surface), and how it _moves_ through states
@@ -64,7 +116,12 @@ marketplace packaging, 8–10 themes, widget API, version pinning.
 
 ---
 
-## 1. Theme package format
+## 1. Theme package format (historical — no `theme.yaml` at HEAD)
+
+> Historical: this package layout was never built. HEAD installs official
+> themes from typed presets via `registryPackage`
+> (`src/lib/themes.server.ts:682`) and `installRegistryTheme`
+> (`src/lib/themes.server.ts:710`).
 
 ```
 theme/
@@ -144,7 +201,13 @@ registry-registered artifacts (installed count = `widgets` table); their JS runs
 
 ---
 
-## 2. Runtime contract (storefront side)
+## 2. Runtime contract (historical — storefront side)
+
+> Historical: the SSR payload shape and bridge-verb list below were never
+> built as specified. The shipped data path is per-node server data via
+> `WidgetDataContext` + `resolveThemePresentation`
+> (`src/components/builder/SectionRenderer.tsx:272`); the plugin bridge is
+> the scoped `postMessage` allowlist (`src/lib/marketplace-scopes.ts:341`).
 
 ### SSR data payload
 
@@ -300,7 +363,10 @@ Additions to the canonical suites (AGENTS.md loop inventory unchanged); `store_l
 
 ---
 
-## 8. Open items
+## 8. Open items (historical — planning questions, not a backlog)
+
+> Historical: items 1–6 were S1/S2 planning questions. Do not treat them as
+> the current roadmap; the shipped subset is §0 above.
 
 1. **Runtime API versioning granularity** — one `framique-runtime` major vs per-widget API versions; decides the
    S7 "Requires" compat check shape. Needed before marketplace opens.
@@ -355,10 +421,12 @@ there rather than by convention.
   (YouTube, youtube-nocookie, Vimeo player). Every other host is rejected, both
   in the parser and again in the renderer. Frames keep `sandbox`,
   `referrerpolicy=strict-origin-when-cross-origin`, and a narrow `allow` list.
-- **Structural limits (`AST_LIMITS`):** 60 sections per slot, 512k characters
-  per payload, 12 levels of nesting. Oversized or over-deep documents are
-  rejected before parsing with `builder.payload_too_large` /
-  `builder.payload_too_deep`.
+- **Structural limits (internal):** 60 sections per slot, 512k payload chars,
+  raw-JSON depth 48 (`src/lib/builder-ast.ts:7416`,
+  `src/lib/builder-ast.ts:7419`); widget-tree nesting capped at
+  `MAX_TREE_DEPTH = 6` with 300 nodes per template
+  (`src/lib/builder-ast.ts:404`). (The older “12 levels” phrasing elsewhere
+  in this file is superseded by these pins.)
 - **Template keys:** only the known `TEMPLATE_KEYS` are read; unknown or
   malformed keys are dropped. Unknown widgets degrade to a labelled placeholder
   and a blocking lint error, never a crash and never a raw render.

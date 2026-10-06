@@ -1,6 +1,19 @@
 # 04-builder — Theme Authoring, Fonts, Global Widgets, Export & Theme SDK
 
-Status: **Executable TODO (Phase 11)** · Companions: `theme-runtime.md`, `theme-registry.md`, `theme-plan-apparel.md`, `publishing.md`, `../12-marketplace/themes.md`
+> **TODO companion — not a built contract. Do not build from unchecked items.**
+> Canonical contract: `docs/04-builder/README.md` (authoritative theme
+> reference; its history map keeps this file as the TODO companion for
+> fonts/export/coded-theme SDK). The shipped subset is: global widgets,
+> token-only styling, no `themeKey` branches. Every `[ ]` below is
+> **planned, not implemented**; the single `[x]` is pinned to HEAD in §2.
+
+Status: **Executable TODO (Phase 11)** · Companions: `theme-runtime.md` (deprecated), `theme-registry.md` §0 (registries), `theme-plan-apparel.md`, `publishing.md`, `../12-marketplace/themes.md`
+
+Final split reminder: **Widget = functionality/data/state/actions; Theme =
+presentation.** A theme dresses widgets through the registries
+(`src/lib/theme-presentations.ts:35`,
+`src/lib/plugin-theme-contract.ts:165`); it never forks a renderer
+(`src/lib/definition-of-done.test.ts:102`).
 
 Model to match: WordPress + Elementor. Widgets are **global**; the _theme_ supplies colour, type,
 spacing and per-widget default styling. Fonts are chosen **per theme, in the builder**, not in code.
@@ -11,11 +24,15 @@ Legend: `[ ]` todo · `[x]` already true in the codebase · `[!]` publish-blocki
 
 ---
 
-## 1. Per-theme Google Fonts, managed in the builder
+## 1. Per-theme Google Fonts, managed in the builder (planned — not implemented)
 
-Current state: `FONT_PAIRINGS` (5 keys incl. `custom`) in `builder-ast.ts`; `FONT_PRELOAD.stylesheet`
-in `web-vitals.ts` is a **hardcoded constant** (Noto Sans Bengali + Inter); the token editor exposes
-pairing only.
+Current state at HEAD: `FONT_PAIRINGS` keys incl. `custom` set both faces
+from a closed pairing table; there are no per-widget font pickers
+(`src/lib/builder-ast.ts:6629` `ThemeTokens.fontPairing`; pairings table in
+`builder-ast`). The `fonts` block, Google catalogue snapshot
+(`src/lib/google-fonts.ts`), `themeFontStylesheet`, the `theme-fonts`
+bucket, and `font_spec_invalid` below are all **planned** — none exists at
+HEAD. Do not cite them as behavior.
 
 - [ ] Extend `ThemeTokens` with a `fonts` block: `{ display: FontSpec, body: FontSpec }` where
       `FontSpec = { family, source: "google" | "custom" | "system", weights: number[], subsets: ("latin"|"bengali")[] }`.
@@ -43,26 +60,48 @@ pairing only.
 
 ---
 
-## 2. All widgets global + per-theme default styling
+## 2. All widgets global + per-theme default styling (one claim shipped, rest planned)
 
-- [x] `WidgetMeta` carries no `themeKey`; no renderer branches on a theme key (asserted in
-      `definition-of-done.test.ts`).
+- [x] `WidgetMeta` carries no `themeKey`; no renderer branches on a theme key —
+      **verified at HEAD** (`src/lib/definition-of-done.test.ts:102`: the
+      `WidgetMeta` block has no theme field; the tray never matches
+      `theme(Key)? ===`; `SectionRenderer` never compares/switches on `themeKey`
+      and names no theme). Theme defaults merge **under** authored props for
+      catalog-known keys only (`src/lib/builder-ast.ts:873`).
 - [ ] Rename the "vertical" registry comment groups (Atelier / Circuit / Rupaboti) to capability
       groups (`editorial`, `spec-heavy`, `beauty-fit`) so nothing _reads_ theme-exclusive; every widget
       stays listed in the tray for every theme.
 - [!] Each of the 117 widgets ships a **theme-neutral default style** driven by tokens only: no
   hardcoded colour utilities, no per-widget font pickers, no inline `transition`/`animation` in
-  preset `html` blocks. Lint rule + test.
+  preset `html` blocks. Lint rule + test. **(planned — the “117” count is unverified at HEAD)**
 - [ ] `themeStyleOverrides`: an optional token-only style map on the theme
       (`{ [widgetType]: { surface?, ink?, radius?, density?, reveal? } }`) merged **under** section-level
       props, so a theme can restyle any widget without touching its renderer.
+      **(planned — HEAD instead uses per-theme skin defaults, e.g.
+      `src/lib/themes/songoskriti/skins.ts:52` and
+      `src/lib/themes/somvabona/skins.ts:40`, merged under authored props at
+      `src/lib/builder-ast.ts:873`)**
 - [ ] Per-theme visual pass: each preset sets colour/spacing/motion + `themeStyleOverrides` so the
       same widget looks native in Bazaar, Atelier, Circuit and Rupaboti.
+      **(planned — HEAD ships two themes: `songoskriti`
+      (`src/lib/themes/songoskriti/tokens.ts:9`) and `somvabona`
+      (`src/lib/themes/somvabona/tokens.ts:14`))**
 - [!] A widget that renders differently based on anything other than tokens/props fails review.
+  **(contract — enforced by the no-`themeKey`-branch gate
+  (`src/lib/definition-of-done.test.ts:102`); Class B community widgets are
+  dressed only through the versioned theme-safe contract
+  (`src/lib/plugin-theme-contract.ts:36`), with the generic sandboxed island
+  as fallback (`src/components/builder/PluginBlock.tsx:92`))**
 
 ---
 
-## 3. Design export — `.zip` (`design.json` + `images/`)
+## 3. Design export — `.zip` (`design.json` + `images/`) (planned — not implemented)
+
+> Planned: `exportDesign` / `importDesign`, the Worker-safe zip writer, and
+> the `builder.design_export` / `builder.design_import` rate limits do not
+> exist at HEAD. The persist-shape rule that an import path must respect is
+> shipped: catalog-fields-only rebuild (`src/lib/builder-ast.ts:7177`
+> `parseSection`, via `src/lib/builder-ast.ts:7463` `parseAst`).
 
 - [ ] `exportDesign(merchantId)` server fn produces:
       `text
@@ -85,7 +124,15 @@ README.txt           # provenance: store, theme key/version, exported_at
 
 ---
 
-## 4. Coded theme development (TanStack stack) + full export
+## 4. Coded theme development (TanStack stack) + full export (planned — not implemented)
+
+> Planned: `theme-sdk`, `npx framique-theme`, `exportCodedTheme`, and the
+> `theme.yaml` artifact do not exist at HEAD. The gates a coded theme would
+> have to satisfy are shipped: API-range checks via `satisfiesApiRange`
+> against `BUILDER_API_VERSION` (`src/lib/plugin-manifest.ts:29`,
+> range check at `src/lib/plugin-manifest.ts:311`), the manifest gate
+> `parseManifest` (`src/lib/plugin-manifest.ts:393`), and the resource
+> ceiling `PLUGIN_BUDGET` (`src/lib/plugin-manifest.ts:32`).
 
 - [ ] `theme-sdk`: typed authoring surface (`defineTheme({ key, tokens, fonts, templates, demo })`)
       re-exporting `Section`/`ThemeTokens`/registry types so a theme is a typed TS module.
@@ -102,7 +149,17 @@ README.txt           # provenance: store, theme key/version, exported_at
 
 ---
 
-## 5. Cross-checks to keep green
+## 5. Cross-checks to keep green (planned gates — only pinned rows verified)
+
+> Only the rows pinned below to HEAD suites are verified behavior; the rest
+> are planned gates. Verified: widgets — every registry type reachable in
+> every theme with no `themeKey` branch
+> (`src/lib/definition-of-done.test.ts:102`); plugins — manifest parse,
+> permission diff, `PLUGIN_BUDGET`, `api` range gate
+> (`src/lib/plugin-manifest.ts:393`, `src/lib/plugin-manifest.ts:554`,
+> `src/lib/plugin-manifest.ts:32`, `src/lib/plugin-manifest.ts:311`).
+> Round-trip byte-stability of serialise→parse→serialise incl. twins is
+> pinned separately (`src/lib/builder-lifecycle.contract.test.tsx:108`).
 
 - [!] Fonts: pairing × locale resolver, weight/family/subset budget, fallback faces present, per-theme
   stylesheet derived (never hardcoded on storefront routes).

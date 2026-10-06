@@ -156,6 +156,47 @@ verdict and never a second effect.
 - Observability never takes a request down — transport failures are swallowed,
   sends are budgeted, label values bounded.
 
+### 4.6 Storefront composition (Widget / Builder / Theme / Plugin / Runtime)
+
+- **Widget = functionality/data/state/actions.** The closed `SectionType`
+  registry is shared by every theme: `WidgetMeta` carries no theme field, so
+  a widget authored for one vertical drops into any theme
+  (`src/lib/widget-registry.ts:68`, pinned by
+  `src/lib/definition-of-done.test.ts:102`).
+- **Builder = composition + props + placement.** `parseAst`
+  (`src/lib/builder-ast.ts:7463`) rebuilds persisted props field-by-field
+  through `coerceProp` (`src/lib/builder-ast.ts:7251`), drops unknown keys,
+  and accepts only responsive-capable breakpoint overrides; theme defaults
+  merge under authored props via `withThemeWidgetDefaults`
+  (`src/lib/builder-ast.ts:873`). Save → reload is byte-stable
+  (`src/lib/builder-lifecycle.contract.test.tsx:108`).
+- **Theme = presentation.** Three registries, all first-wins / never-throw /
+  fallback-safe: `themeKey × widgetType` (`registerThemePresentation` in
+  `src/lib/theme-presentations.ts:35`, resolved in
+  `src/components/builder/SectionRenderer.tsx:272`); `themeKey × pluginKey`
+  for themeable community widgets (`registerCommunityPresentation` in
+  `src/lib/plugin-theme-contract.ts:165`); chrome surfaces (header shell via
+  the `mega_menu` pair in `src/components/store/StoreHeader.tsx:316` with
+  `GenericHeaderShell` fallback in `src/components/store/StoreHeader.tsx:840`,
+  announcement in `src/components/store/StoreHeader.tsx:338`, menu rows via
+  `src/lib/menus/menu.ts:427`, footer global blocks via
+  `src/lib/builder-ast.ts:6555`). Theme CSS is token-only (`var(--theme-*)`,
+  gated in `src/lib/themes/songoskriti/skins.test.ts:182`).
+- **Plugin = extension.** Class A (isolated) renders in the sandboxed island
+  and never dresses; Class B (themeable) declares the versioned
+  schema/data/actions/slots/states contract and renders through the theme
+  presentation when dressed, the generic island when not
+  (`src/lib/plugin-theme-contract.ts:6`, `:58`, `:266`). Menu swaps need both
+  `replace_menus` scope and review approval and fail open to theme markup
+  (`decideMenuRenderer` in `src/lib/plugin-manifest.ts:102`,
+  `selectPluginMenuRenderer` in `src/lib/plugin-menu-renderers.ts:120`).
+- **Runtime = platform services.** Flow: AST → widget/plugin contract →
+  active theme → theme presentation → storefront. No theme branches in shared
+  code: registries name no theme and branch on no theme
+  (`src/lib/theme-presentations.ts:18`,
+  `src/lib/theme-presentations.test.tsx:194`), enforced alongside the renderer
+  gate in `src/lib/definition-of-done.test.ts:138`.
+
 ---
 
 ## 5. Observability (self-hosted)

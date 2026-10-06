@@ -25,19 +25,19 @@ it locally means passing it everywhere.
 
 Field rules:
 
-| Field             | Rule                                                                                   | Enforced at                        |
-| ----------------- | -------------------------------------------------------------------------------------- | ---------------------------------- |
-| `id`              | Lowercase, starts with a letter, 3–40 chars: `^[a-z][a-z0-9-]{2,39}$`                  | `src/lib/plugin-manifest.ts:90`    |
-| `version`         | Strict semver `major.minor.patch` digits only, e.g. `1.0.0`                            | `src/lib/plugin-manifest.ts:201`   |
-| `api`             | `^3.0.0` or `>=3.0.0 <4.0.0`. Anything else (`latest`, `*`) is rejected                | `src/lib/plugin-manifest.ts:109`   |
-| `permissions`     | Only the 8 scopes in the table below. Unknown scopes fail the install                  | `src/lib/marketplace-scopes.ts:24` |
-| `widgets[].key`   | Lowercase, 2–40 chars: `^[a-z][a-z0-9_-]{1,39}$`, unique per manifest                  | `src/lib/plugin-manifest.ts:91`    |
-| `widgets[].slots` | At least one of `header`, `main`, `footer`. Anything else is dropped, then empty fails | `src/lib/plugin-manifest.ts:32`    |
-| `widgets[].entry` | Non-empty JS with no `eval(`, `import(`, or `new Function`                             | `src/lib/plugin-manifest.ts:245`   |
-| `hooks`           | Only `cart.calculate`, `checkout.validate`, `order.created`, `product.saved`           | `src/lib/plugin-manifest.ts:24`    |
-| `hooksUrl`        | Required when `hooks` is non-empty. HTTPS only                                         | `src/lib/plugin-manifest.ts:219`   |
-| `budget`          | `jsKb` ≤ 120 and `mainThreadMs` ≤ 50. Over either limit fails validation               | `src/lib/plugin-manifest.ts:302`   |
-| `settings`        | Keys follow the widget-key pattern. `select` kinds need a non-empty `options` list     | `src/lib/plugin-manifest.ts:136`   |
+| Field             | Rule                                                                                                                                                | Enforced at                          |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `id`              | Lowercase, starts with a letter, 3–40 chars: `^[a-z][a-z0-9-]{2,39}$`                                                                               | `src/lib/plugin-manifest.ts:292,401` |
+| `version`         | Strict semver `major.minor.patch` digits only, e.g. `1.0.0`                                                                                         | `src/lib/plugin-manifest.ts:311,404` |
+| `api`             | `^3.0.0` or `>=3.0.0 <4.0.0`. Anything else (`latest`, `*`) is rejected                                                                             | `src/lib/plugin-manifest.ts:311`     |
+| `permissions`     | Only the 10 scopes in the table below. Unknown scopes fail the install                                                                              | `src/lib/marketplace-scopes.ts:24`   |
+| `widgets[].key`   | Lowercase, 2–40 chars: `^[a-z][a-z0-9_-]{1,39}$`, unique per manifest                                                                               | `src/lib/plugin-manifest.ts:293`     |
+| `widgets[].slots` | At least one of `header`, `main`, `footer`, or a menu slot (`menu_bar`, `menu_dropdown`, `menu_drawer`). Anything else is dropped, then empty fails | `src/lib/plugin-manifest.ts:26,43`   |
+| `widgets[].entry` | Non-empty JS with no `eval(`, `import(`, or `new Function`                                                                                          | `src/lib/plugin-manifest.ts:446-452` |
+| `hooks`           | Only `cart.calculate`, `checkout.validate`, `order.created`, `product.saved`                                                                        | `src/lib/plugin-manifest.ts:35`      |
+| `hooksUrl`        | Required when `hooks` is non-empty. HTTPS only                                                                                                      | `src/lib/plugin-manifest.ts:421`     |
+| `budget`          | `jsKb` ≤ 120 and `mainThreadMs` ≤ 50. Over either limit fails validation                                                                            | `src/lib/plugin-manifest.ts:32`      |
+| `settings`        | Keys follow the widget-key pattern. `select` kinds need a non-empty `options` list                                                                  | `src/lib/plugin-manifest.ts:136`     |
 
 Two cross-field rules catch most first submissions: a manifest with widgets
 must request `render_storefront` (`src/lib/plugin-manifest.ts:265`), and the
@@ -49,16 +49,18 @@ Request the minimum scopes the feature needs. Reviewers reject display widgets
 that ask for `read_customers`, and every extra scope costs conversion on the
 consent screen.
 
-| Scope               | Risk   | Unlocks                                    |
-| ------------------- | ------ | ------------------------------------------ |
-| `read_shop`         | low    | `shop.info` — store name, currency, locale |
-| `read_products`     | low    | `products.list` — catalog and prices       |
-| `write_analytics`   | low    | `analytics.track` — PII-minimal events     |
-| `read_orders`       | medium | `orders.list` — totals and line items      |
-| `write_cart`        | medium | `cart.add`, `cart.remove`                  |
-| `render_storefront` | medium | Mount widgets; read `plugin.settings`      |
-| `read_customers`    | high   | `customers.get` — names, phones, addresses |
-| `write_products`    | high   | `products.update` — prices and stock       |
+| Scope               | Risk   | Unlocks                                       |
+| ------------------- | ------ | --------------------------------------------- |
+| `read_shop`         | low    | `shop.info` — store name, currency, locale    |
+| `read_products`     | low    | `products.list` — catalog and prices          |
+| `write_analytics`   | low    | `analytics.track` — PII-minimal events        |
+| `read_menus`        | low    | `menus.list` — menu labels and links          |
+| `read_orders`       | medium | `orders.list` — totals and line items         |
+| `write_cart`        | medium | `cart.add`, `cart.remove`                     |
+| `render_storefront` | medium | Mount widgets; read `plugin.settings`         |
+| `read_customers`    | high   | `customers.get` — names, phones, addresses    |
+| `write_products`    | high   | `products.update` — prices and stock          |
+| `replace_menus`     | high   | Full nav renderer swap; needs review approval |
 
 ## Keep widget code inside the sandbox
 
@@ -85,6 +87,7 @@ grant:
 | `cart.add`        | `write_cart`        | yes    |
 | `cart.remove`     | `write_cart`        | yes    |
 | `analytics.track` | `write_analytics`   | yes    |
+| `menus.list`      | `read_menus`        | no     |
 
 Design for denial: `plugin.settings` answers from the merchant's validated
 values, everything else delegates to the host, and a `sandbox.scope_denied`
@@ -130,7 +133,7 @@ placeholder copy for that reason.
 ## Subscribe to server hooks that cannot break checkout
 
 Server hooks are queued outbound POSTs to `hooksUrl`, never in-process code.
-Four hooks exist (`src/lib/plugin-manifest.ts:24`):
+Four hooks exist (`src/lib/plugin-manifest.ts:35`):
 
 | Hook                | Fires at                          | Merchant must grant               |
 | ------------------- | --------------------------------- | --------------------------------- |

@@ -1,12 +1,23 @@
 # App blocks (widget catalog & sandbox)
 
-Status: Planning · Slices S3/S7 · Reference: `/plan.md` §3.4 (widget API), 3.9 (marketplace/plugins)
-Plans: `theme-registry.md` (widgets install list) · `theme-runtime.md` (TR-8 render contract) · `sections-templates.md` (slot allowlists) · E2E: `docs/15-e2e/theme_registry.md`
-Schema: 💾 additive `widget_catalog` + `widgets` columns (Tenant009; Tenant007 marketing, Tenant008 publishing)
+> Stays current — widget catalog contract companion to
+> `docs/04-builder/README.md` (canonical). Final split: **Widget =
+> functionality/data/state/actions; Builder = composition + props +
+> placement; Theme = presentation; Plugin = extension.** A theme never forks
+> a renderer; it claims presentations through the registries (§7).
+
+Status: **Current (contract)** · Reference: `04-builder/README.md`
+(authoritative theme reference) · `theme-registry.md` §0 (registries,
+chrome, menu swap) · `sections-templates.md` (slot allowlists)
 
 ## 1. Purpose
 
-Own a single, governed definition of every widget a merchant can drop on a page — the **block catalog**: kind names, JSON-schema'ed props/styles, rendering kind, and sandbox rules for community widgets. The page AST (`{ widget, instance, props, styles }`) is validated against the catalog and nothing else; the editor, storefront runtime, and marketplace all read the same catalog. Logic that decides what a widget may render — kind, props, sandbox, entitlement — that lives outside the catalog is a defect.
+Own a single, governed definition of every widget a merchant can drop on a page — the **block catalog**: kind names, props, rendering kind, and sandbox rules for community widgets. The page AST is validated against the catalog and nothing else; the editor, storefront runtime, and marketplace all read the same catalog. Logic that decides what a widget may render — kind, props, sandbox, entitlement — that lives outside the catalog is a defect.
+
+Final architecture: the widget provides functionality/data/state/actions;
+the builder composes nodes with props + placement; the theme supplies
+presentation only, via the registries (§7) — never a renderer fork
+(`src/lib/definition-of-done.test.ts:102`).
 
 ## 2. Scope
 
@@ -23,23 +34,47 @@ Out of scope:
 - The render pipeline (`theme-runtime.md` TR-2) and slot rules (`sections-templates.md`) — this doc gates widget kinds, not layout.
 - Editor UI chrome; only design guidelines ride here.
 
-## 3. Block model — how one block connects everywhere
+## 3. Block model — how one block connects everywhere (HEAD shape)
 
-A **block** is the canonical definition of one widget kind. In the page AST it appears unchanged from today: `{ "widget": "<slug>", "instance": "<uid>", "props": {}, "styles": {} }` (sections-templates.md §3). Every catalog row:
+A **block** is the canonical definition of one widget kind. A node in the
+page AST is a `Section` (`src/lib/builder-ast.ts:407`):
 
-| Field               | Meaning                                                                               |
-| ------------------- | ------------------------------------------------------------------------------------- |
-| `slug`              | stable kind key — the AST `widget` value (e.g. `product_grid`)                        |
-| `label`, `label_bn` | editor tray labels (EN keys; Bangla strings are fine in code, AGENTS.md §7)           |
-| `schema`            | JSON Schema of `props` + `styles`; the authoritative validator                        |
-| `kind`              | `core` (ships with builder) or `community` (marketplace)                              |
-| `status`            | `verified` (servable), `draft` (submitted, not yet reviewed), `blocked` (never loads) |
-| `sandbox`           | community only: entry module + capability allowlist (§7)                              |
-| `min_plan`          | plan family gate; matched server-side, never client-side                              |
+```ts
+{ id, type, props, children?, hidden?, bp?, invalid?, when?, ab? }
+```
 
-Catalog rows are written by the registry service only (mirror of `theme_versions` in theme-registry.md §3.1). Everyone else — editor, runtime, marketplace — reads through RPCs: `app.widget_catalog()` (anon-safe, verified + core only) and `app.widget_installed()` (owner scope).
+There is no `instance` field (identity is `id`) and no top-level `styles`
+object — the universal style layer (spacing, background, radius, reveal) is
+applied once by the engine from props
+(`src/components/builder/SectionRenderer.tsx:182`). Skin rides the chrome
+wrapper as `[data-widget][data-skin]` for skinnable types only
+(`src/lib/builder-ast.ts:738`, resolved at `:777`).
 
-## 4. v0 catalog (built-in, `kind = core`)
+Every catalog entry (`catalogEntry`, `src/lib/builder-ast.ts:6605`):
+
+| Field               | Meaning (HEAD)                                                                                            |
+| ------------------- | --------------------------------------------------------------------------------------------------------- |
+| `type`              | stable kind key — the AST `type` value (e.g. `product_grid`)                                              |
+| `label`, `defaults` | editor tray label + base defaults (bitext twins listed in `BITEXT_FIELDS`, `src/lib/builder-ast.ts:5781`) |
+| `fields`            | prop schema; the authoritative validator via `coerceProp` (`src/lib/builder-ast.ts:7051`)                 |
+| `kind`              | `core` (ships with builder); community arrives namespaced (see §7)                                        |
+
+> Planned (not at HEAD): a `widget_catalog` SQL table and the
+> `app.widget_catalog()` / `app.widget_installed()` RPCs named in an earlier
+> draft of this section do not exist — no non-test source references them.
+> Catalog reads go through `catalogEntry` (`src/lib/builder-ast.ts:6605`)
+> and the studio twin map (see `README.md` §“Studio twin parity contract”,
+> pinned at `src/lib/studio/catalog.test.ts:843`).
+
+## 4. v0 catalog (planning — slot allowlists live in `sections-templates.md`)
+
+> Planning: the slot table below pre-dates the closed `SectionType` registry
+> and per-template context gating (`isContextMismatch` in
+> `src/components/builder/SectionRenderer.tsx:288`). Do not build new
+> allowlists from it. HEAD rule: slot-level allowlists stay per template
+> (`sections-templates.md`); the catalog constrains widget kinds, and
+> context widgets render live only on the templates that own their data
+> (else a labelled placeholder, never a crash).
 
 | slug                                                 | allowed slots (slot schemas live in theme-registry.md) |
 | ---------------------------------------------------- | ------------------------------------------------------ |
@@ -50,25 +85,101 @@ Catalog rows are written by the registry service only (mirror of `theme_versions
 
 Deferred to the S7 marketplace extension (plan.md §3.4): `slider`, `testimonial`, `review`, `action_button` — they arrive as new catalog rows under the same schema/sandbox rules as any other widget. Slot-level allowlists stay per template (sections-templates.md); the catalog only constrains widget kinds.
 
-## 5. Server-side validation (write path)
+## 5. Server-side validation (write path — HEAD)
 
-Every `props`/`styles` object is validated at AST write time on the server:
+Every `props` object is validated at AST write time on the server through
+the parser — the client never decides what a widget may render:
 
 ```
-write_page(p_ast, p_page_id)
-  → per widget: catalog.schema validates props + styles
-  → any violation aborts the entire write (atomic), returns
-    ast_invalid + the offending { widget, instance } pair
+parseAst / parseTemplates
+  → per node: parseSection rebuilds props field-by-field from the catalog
+    (src/lib/builder-ast.ts:7177), each value through coerceProp (:7051);
+    unknown keys dropped; bilingual twins preserved (BITEXT_FIELDS, :5781);
+    duplicate ids re-suffixed; unknown types → invalid placeholder, never a crash
+  → lintTemplate gates publish: errors block, warnings stay advisory
+    (src/lib/builder-ast.ts:7853)
 ```
 
-No validation by-pass exists: a failing widget JSON never lands in a page revision. Editor-side checks are comfort only; the server is the decision point (hard rule: no client-trusted decisions). This is separate from render-time failure (TR-8 skip + placeholder, §10) — write validation rejects, render failure degrades.
+Pinned: smuggled props dropped + duplicate ids re-suffixed
+(`src/lib/builder-lifecycle.contract.test.tsx:126`); serialise→parse→
+serialise byte-stable incl. twins (`:109` in the same file — suite at
+`src/lib/builder-lifecycle.contract.test.tsx:108`); unknown widget →
+`invalid` placeholder with siblings intact (`:144`).
 
-## 6. Entitlements
+No validation by-pass exists: a failing widget never lands in a published
+revision. Editor-side checks are comfort only; the server is the decision
+point. Render-time failure degrades per node (placeholder), never blanking
+the page (`WidgetBoundary`, exercised at
+`src/lib/builder-lifecycle.contract.test.tsx:180`).
+
+## 6. Entitlements (planned — not enforced at HEAD)
+
+> Planned: per-widget plan gates (`min_plan`, a `widget_custom` entitlement
+> for `custom_html` + community, `plan_limit_exceeded`, `widget.blocked`
+> events, `widget_snapshot()` RPC) do not exist at HEAD — no non-test source
+> references them. The shipped gates are the plugin manifest gate
+> (`parseManifest`, `src/lib/plugin-manifest.ts:393`), the resource ceiling
+> (`PLUGIN_BUDGET`, `src/lib/plugin-manifest.ts:32`), the sandbox island
+> (§7), and the publish lint gate
+> (`src/lib/builder-lifecycle.contract.test.tsx:84`).
 
 - `custom_html` and `kind = community` rows are not free-tier surfaces: install and render both require `check_entitlement(merchant_id, 'widget_custom')`; a plan deficit returns `plan_limit_exceeded` (same pattern as sections-templates.md limits).
 - The snapshot RPC (`app.widget_snapshot()`) reports `blocked` status to the merchant's editor so the merchant knows why a widget stopped rendering — an uninstall or cleanup decision needs that code owner.
 
-## 7. Versioned sandbox (community widgets)
+## 7. Community widgets — Class A/B + theme dressing (HEAD)
+
+One renderer for every plugin-contributed widget: `PluginBlock`
+(`src/components/builder/PluginBlock.tsx`). The core widget registry stays a
+closed enum; plugins contribute in a namespaced tier
+(`plugin:{pluginId}/{widget}` via `pluginWidgetKey` /
+`parsePluginWidgetKey`, `src/lib/plugin-manifest.ts:295`), mounted through
+the one sandboxed island — never a new core renderer branch.
+
+- **Class A (`isolated`):** no `themeable` contract — the bundle owns
+  arbitrary UI inside the null-origin `WidgetSandbox` frame
+  (`src/components/builder/PluginBlock.tsx:112`), reaching the app only
+  through the scoped `postMessage` bridge
+  (`src/lib/marketplace-scopes.ts:341`).
+- **Class B (`themeable`):** declares the versioned theme-safe contract
+  (schema/data/actions/slots/states, `PLUGIN_THEME_CONTRACT_VERSION = 1`,
+  `src/lib/plugin-theme-contract.ts:36`; class via `pluginWidgetClass` at
+  `:66`; malformed declarations fail the manifest gate at
+  `src/lib/plugin-manifest.ts:459`). The theme dresses it through the
+  community presentation registry: `registerCommunityPresentation`
+  (`src/lib/plugin-theme-contract.ts:165`) /
+  `resolveCommunityPresentation` (`:208`); the generic sandboxed island is
+  the fallback when undressed. Data rule (v1, internal): the presentation
+  receives the install's validated settings as `data` — the bundle never
+  executes on the dressed path.
+- **One decision point:** `resolveCommunityRender`
+  (`src/lib/plugin-theme-contract.ts:266`) — blocked → labelled placeholder
+  (five modes: `bad_key`, `not_installed`, `unknown_widget`,
+  `incompatible`, `disabled`); Class A → `sandbox`; Class B undressed →
+  `island`; Class B dressed → `theme`
+  (`src/components/builder/PluginBlock.tsx:92`). Never throws; malformed
+  input degrades to the island.
+- **Manifest + compat:** `parseManifest` (`src/lib/plugin-manifest.ts:393`)
+  is the single gate (review pipeline, install flow, host); API range via
+  `satisfiesApiRange` (`:311`) against `BUILDER_API_VERSION`
+  (`src/lib/plugin-manifest.ts:29`); ceiling `PLUGIN_BUDGET`
+  (`src/lib/plugin-manifest.ts:32`).
+- **Menu fill/swap (plugin nav):** widgets may target menu slots
+  (`MENU_SLOTS`, `src/lib/marketplace-scopes.ts:291`); a full-renderer swap
+  additionally needs the `replace_menus` scope (`:304`) AND review approval
+  (`decideMenuRenderer`, `src/lib/plugin-manifest.ts:102`); rows resolve
+  fail-open (`resolveMenuSwapRows`, `:207`); renderer selection fails open
+  (`selectPluginMenuRenderer`, `src/lib/plugin-menu-renderers.ts:120`) with
+  throwing renderers caught by `PluginMenuBoundary` (`:179`). Detail lives in
+  `theme-registry.md` §0 — not duplicated here.
+- **Chrome surfaces** (header shell, menu, announcement, footer) are
+  themeKey × surface claims on the same registry shape — see
+  `theme-registry.md` §0 (`src/components/store/StoreHeader.tsx:316`,
+  `:338`; `src/components/store/theme-chrome.ts:63`).
+
+> Historical: the “versioned sandbox” numbered contract below (bundle
+> `bundle_sha256` pins, `sandbox_denied` verb, `widget.blocked` daemon) was
+> planning — HEAD enforces via the manifest gate + island + decision point
+> above. Failing validation still means the widget is never loaded.
 
 Deployed with the marketplace (S7) — the contract is pinned here from day 1 (guardrail 4):
 
@@ -79,14 +190,31 @@ Deployed with the marketplace (S7) — the contract is pinned here from day 1 (g
 
 The storefront never executes untrusted JS outside this sandbox; theme upgrades that pull a blocked widget keep serving the last-good bundle (theme-registry.md §8 pattern).
 
-## 8. Events & audit
+## 8. Events & audit (planned — see note)
+
+> Planned: `widget.installed` / `widget.blocked` daemon events and the
+> `theme_audit` widget rows below do not exist at HEAD. Shipped telemetry:
+> install/update spans + counters (`builder.install`, `builder.update_preview`,
+> `framique_theme_install_total{result}`,
+> `src/lib/themes.server.ts:716`, `src/lib/themes.server.ts:900`,
+> `src/lib/themes.server.ts:729`) and render metrics per
+> `04-builder/README.md` §“Testing gates”. All events stay tenant-scoped and
+> PII-minimal when built.
 
 - `widget.installed` — install, version change, removal (the install list row is the source of truth).
 - `theme.updated` — unchanged existing event on page-save mutations.
 - `widget.blocked` — new; fires on §7.4 with the reason enum.
 - All events tenant-scoped, PII-minimal, raw retention 90 days (AGENTS.md §6); audit rows live in the registry `theme_audit` table.
 
-## 9. Persistence (additive, Tenant009)
+## 9. Persistence (planned — no `widget_catalog` table at HEAD)
+
+> Planned: the `widget_catalog` global table and the `widgets`
+> per-merchant install-list shape below do not exist at HEAD. Plugin installs
+> resolve at render time via `resolvePluginWidget`
+> (`src/lib/plugin-manifest.ts:665`) against installed manifests; tray
+> entries via `pluginTrayEntries` (`:686`). Merchant theme state persists via
+> `store_themes` pointer + merchant-scoped `theme_versions`
+> (`src/lib/themes.server.ts:1209`).
 
 `widget_catalog` — global, write:service-only, no direct tenant writes:
 `id, slug unique, label, label_bn, kind, schema jsonb, sandbox jsonb, min_plan text null, status text default 'verified', bundle_url, bundle_sha256, created_at, updated_at`
@@ -96,11 +224,22 @@ The storefront never executes untrusted JS outside this sandbox; theme upgrades 
 
 - RLS: `merchant_id` scoping on `widgets` mandatory; catalog rows are readable by tenants only through the RPC views (mirror of `theme_versions`).
 
-## 10. Failure & recovery
+## 10. Failure & recovery (HEAD)
 
-- Unknown/removed widget slug on page load → skip + placeholder (TR-8: one bad widget never breaks a page).
-- Bundle 404 / hash mismatch at render → placeholder this paint, retry next; staleness heals via the snapshot RPC.
-- Version conflict: an installed pin stays on its pinned version; a breaking change is a new catalog row, never an in-place upgrade of a live install.
+- Unknown/removed widget slug on page load → parses to an `invalid`
+  placeholder; production skips the node, siblings render
+  (`src/lib/builder-lifecycle.contract.test.tsx:144`); editor shows an
+  inline “Unsupported widget” note instead of blanking.
+- Throwing widget → contained to its own node with a space-reserving
+  placeholder; page markup around it untouched
+  (`src/lib/builder-lifecycle.contract.test.tsx:180`).
+- Community resolution failure (`bad_key` in production renders nothing;
+  every other mode renders a labelled bilingual placeholder) — never a crash
+  (`src/components/builder/PluginBlock.tsx:27`).
+- Version conflict: an installed pin stays on its pinned version; breaking
+  changes are new manifests gated by `satisfiesApiRange`
+  (`src/lib/plugin-manifest.ts:311`), resolving to `incompatible`
+  placeholders, never silent upgrades.
 
 ## 11. Design guidelines — widget tray, inspector, placeholder
 
@@ -114,17 +253,41 @@ The storefront never executes untrusted JS outside this sandbox; theme upgrades 
 - Performance: only requested widget kinds load (lazy catalog fetch), ETag-cached snapshot reads.
 - Anti-slop: hand-drawn-style widget glyphs (consistent with builder README), Bangla tray labels, and one empty state: "এক-ক্লিকে উইজেট যোগ করুন"।
 
-## 12. Testing gates
+## 12. Testing gates (HEAD — contract-level vitest, no Playwright)
 
-- Per-kind schema validation suite: valid/invalid props matrix; a single invalid offender aborts the write with `ast_invalid`.
-- Sandbox regression test: a bundle that attempts direct `fetch` must fail sandbox validation and never load.
-- E2E (contract-first, `.e2e` once the storefront harness exists — see sections-templates.md §12): install → drop → publish; blocked-widget flow shows placeholder and an audit row.
-- Lighthouse a11y ≥ 90 on the widget tray surface.
+- Persist shape: smuggled props dropped, duplicate ids re-suffixed,
+  serialise→parse→serialise byte-stable incl. twins
+  (`src/lib/builder-lifecycle.contract.test.tsx:108` — cases at `:109` and
+  `:126`).
+- Broken widget → placeholder with siblings intact + boundary containment
+  (`src/lib/builder-lifecycle.contract.test.tsx:144`, `:180`).
+- Community install→persist→render→switch with no brand leak
+  (`src/lib/builder-themes.contract.test.tsx:82`); A/B same-data-two-
+  presentations (`:132`); unknown theme → generic fallback
+  (`:185`).
+- Sandbox regression: bundle entries using `import(`/`eval(`/`new Function`
+  fail the manifest gate (`src/lib/plugin-manifest.ts:452`); dangerous
+  schemes/hosts rejected in parser + renderer (`src/lib/builder-ast.ts:6965`,
+  `EMBED_HOSTS` at `:6997`), covered by `src/lib/theme-sandbox.test.ts`.
+- No `.e2e/` Playwright infra exists in this repo — contract suites above
+  are the gate (same adaptation note as `04-builder/README.md` §“Testing
+  gates”).
 
-## 13. Residual v0 gaps
+## 13. Residual gaps (HEAD — planned, not implemented)
 
-- Community marketplace storefront and third-party onboarding land with S7 (`12-marketplace`); this doc pins the catalog contract they plug into.
-- Review/approval for community submissions (catalog `status = draft`) is the marketplace operator flow — routed to the review facility in spec 6 — not yet built.
-- Per-widget entitlements beyond `widget_custom` (custom_html + community) come with a native `check_entitlement` matrix later.
-- `widget.blocked` daemon-event push is v0-polled via snapshot RPC; a pub/sub event bus arrives with the runtime events work.
-- `slider`, `testimonial`, `review`, `action_button` kinds remain on the S7 backlog until a release theme needs them (plan.md §3.4/7).
+- Community marketplace storefront and third-party onboarding (S7);
+  `widget_catalog` table + `app.widget_*` RPCs (§§3, 9) remain unbuilt.
+- Review/approval for community submissions is the marketplace operator flow
+  — routed to the review facility, not yet built. The review-approved flag
+  the menu swap depends on (`reviewApproved`,
+  `src/lib/plugin-manifest.ts:70`) is the same gate mechanism.
+- Per-widget entitlements beyond the manifest/budget gates (§6) come with a
+  native `check_entitlement` matrix later.
+- `slider`, `testimonial`, `review`, `action_button` kinds remain on the S7
+  backlog (unchanged).
+- **Round-trip guarantee (shipped):** builder → save → reload → preview →
+  publish → storefront preserves items/nested/bilingual/presentation/
+  responsive (`src/lib/builder-lifecycle.contract.test.tsx:35`,
+  `:108`); chrome/bitext twins survive the same path
+  (`src/lib/builder-chrome.contract.test.tsx:282`); responsive ranges pinned
+  (`src/lib/responsive.ts:11`, `src/lib/responsive.ts:154`).

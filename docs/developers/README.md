@@ -26,6 +26,16 @@ one line below; open the guide for the full contract.
 - [OpenAPI contract](../../openapi/openapi.yaml) — the
   machine-readable endpoint reference; normative wherever prose
   guides summarize it.
+- [Getting started](getting-started.md) — path map and starter-first workflow.
+- [Concepts](concepts.md) — Widget vs Theme, registries, Class A vs B, public vs internal.
+- [Widget development](widget-development.md) — built-in model and theme-never-replaces-logic.
+- [Community plugins](community-plugins.md) — Class A path, manifest, tray, failure modes.
+- [Themeable widgets](themeable-widgets.md) — Class B contract and theme dressing.
+- [Menu extensions](menu-extensions.md) — data, fill points, replacement, fail-open.
+- [Global chrome](global-chrome.md) — header, announcement, footer theme presentation.
+- [Security and sandbox](security-sandbox.md) — frame, bridge, bundle and scope rules.
+- [Versioning and publishing](versioning-publishing.md) — semver, validation, failure behavior.
+- [Examples](examples.md) — minimal snippets pinned to real APIs.
 
 The internal counterpart is the
 [internal docs index](../internal/README.md), which is staff-only

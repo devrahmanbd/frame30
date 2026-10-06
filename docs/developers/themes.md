@@ -130,7 +130,7 @@ presentation through the registry instead of forking the renderer:
   (`src/lib/definition-of-done.test.ts:138`). The one exemption is the
   studio token panel, which takes the installed theme key only to offer
   that theme's variation list
-  (`src/components/builder/TokenEditor.tsx:229`) — editor chrome, never
+  (`src/routes/_authenticated/dashboard/builder.tsx:130`, map passed as `variations[]` to `TokenEditor`) — editor chrome, never
   a storefront fork.
 
 ## Compose the homepage hero-first
@@ -181,7 +181,7 @@ and `src/lib/themes/somvabona/skins.css`. The gate is enforced per
 theme by test: `stays token-driven: theme vars only, no hex literals`
 in `src/lib/themes/songoskriti/skins.test.ts:182`, and `is
 token-driven: no hex literals or raw colour utilities` in
-`src/lib/themes/somvabona/skins.test.ts:167`. A submission whose
+`src/lib/themes/somvabona/skins.test.ts:166`. A submission whose
 stylesheet contains a hex literal fails the gate.
 
 ## Mirror every widget in the studio catalog
@@ -191,8 +191,8 @@ in `src/lib/studio/catalog.ts:2636` so it stays editable in the
 studio. Defaults mirror the base defaults 1:1, including the `skin`
 default for skinnable types and an empty `_bn` twin for every
 `BITEXT_FIELDS` key. The contract is documented at
-`src/lib/studio/catalog.ts:2418` and pinned by the `studio twin
-parity` suite in `src/lib/studio/catalog.test.ts:837`. Intentional
+`src/lib/studio/catalog.ts:2455` and pinned by the `studio twin
+parity` suite in `src/lib/studio/catalog.test.ts:843`. Intentional
 exclusions only: `page_content` (context slot, zero fields) and
 `plugin_block` (covered by the `app-block` twin). Before submitting,
 resolve every type the theme emits through `catalogEntry` — an

@@ -515,7 +515,7 @@ theme by
 test: `stays token-driven: theme vars only, no hex literals` in
 `src/lib/themes/songoskriti/skins.test.ts:182`, and `is token-driven: no
 hex literals or raw colour utilities` in
-`src/lib/themes/somvabona/skins.test.ts:167`.
+`src/lib/themes/somvabona/skins.test.ts:166`.
 
 ## 5. Forms + auth pages
 
@@ -863,7 +863,7 @@ alongside the theme, not after:
 | `src/lib/themes/<name>/wiring.test.ts`  | Header/footer/homepage builders emit the locked composition (§2.5)  |
 | `src/lib/themes/<name>/skins.test.ts`   | Skin defaults resolve; `skins.css` stays token-driven (§4)          |
 | `src/lib/themes/<name>/preview.test.ts` | Preview source covers every authored template (§10)                 |
-| `src/lib/studio/catalog.test.ts:837`    | Studio twin parity — every catalogue entry stays editable in studio |
+| `src/lib/studio/catalog.test.ts:843`    | Studio twin parity — every catalogue entry stays editable in studio |
 | `src/lib/theme-preview-nav.test.ts`     | Preview engine resolves theme sources and blocks account paths      |
 | `src/lib/theme-preview.test.ts`         | Preview route renders the resolved preset                           |
 | `src/lib/themes/isolation.test.ts`      | No theme imports another theme; shared chrome holds no theme names  |

@@ -103,37 +103,35 @@ drafts + versions and retires the ledger row (`:492-551`).
 
 ## 3. Registry + seed pipeline
 
-1. **Author in code.** Presets in `src/lib/theme-presets.ts` (`SPECS`
-   `:421-778`, `THEME_PRESETS` `:785-788`); blueprints in
-   `src/lib/theme-blueprints.ts`; metadata floor in
-   `src/lib/themes/catalog-meta.ts:30-233`.
-2. **Generate the migration** (never hand-edit the output):
-   ```bash
-   bun scripts/seed-theme-registry.ts > supabase/migrations/<timestamp>_theme_registry_seed.sql
-   ```
-   Generator: `scripts/seed-theme-registry.ts:1-55`; curated keys at `:16`
-   (`supershop`, `clothing-heritage`).
-3. **Apply live as `supabase_admin`** (script header `:11-12`). The
-   generated migration enforces a unique key then upserts
-   (`supabase/migrations/20260922090000_theme_registry_seed.sql:5-17`):
-   ```sql
-   INSERT INTO public.theme_registry
-     (key, name_en, name_bn, summary_en, summary_bn, category, version, preset, active, sort_order)
-   VALUES (...) ON CONFLICT (key) DO UPDATE SET ...;
-   ```
-4. **Runtime read** (`src/lib/themes.server.ts:553-601`): cached
+> Historical note: an earlier preset/blueprint registry
+> (`theme-presets.ts`, `theme-blueprints.ts`, `scripts/seed-theme-registry.ts`)
+> was removed; references to `SPECS`, `THEME_PRESETS`, `SHIPPED_BLUEPRINTS`,
+> and curated `supershop`/`clothing-heritage` keys below describe that
+> retired system, not HEAD. Current state:
+
+1. **Author in code.** Themes are folders under `src/lib/themes/<key>/`
+   (`tokens.ts`, `skins.ts`, `homepage.ts`, `preview.ts`); catalogue
+   metadata floor in `src/lib/themes/catalog-meta.ts:30-214`.
+2. **Runtime read** (`src/lib/themes.server.ts`): `listRegistry` (`:629`)
+   cached (`theme-registry:v3`, 300s); validated packages via
+   `registryPackage` (`:682`), which resolves live theme previews
+   (version `"1.0.0"`); `officialThemeKeys()` (`:677`) returns `[]` and
+   `VISIBLE_THEME_KEYS` is empty (`src/lib/themes/appearance.ts:270`) —
+   no curated offer ships at HEAD.
+3. **Package validation** (`registryPackage`, `:682-700`): unknown keys
+   fall back to a safe default package (empty index, `DEFAULT_TOKENS`).
+4. **Runtime read (legacy note):** cached
    (`theme-registry:v3`, 300s); code presets are the floor, SQL rows
    override metadata of keys they name; empty/unreachable registry degrades
    to the floor — except demo imports, which need SQL rows.
-5. **Package validation** (`registryPackage`, `:609-639`): lint errors or
-   builder-API incompatibility (`PRESET_API_RANGE`,
-   `checkApiCompatibility`) reject the install with
+5. **Package validation (legacy note):** lint errors or
+   builder-API incompatibility reject installs with
    `builder.registry_invalid`.
 
-Current curated offer: only `supershop` + `clothing-heritage` are listed —
-enforced in `listCatalog` (`src/lib/marketplace.server.ts:103-116`, sellers always see their own listings via the `mine` exemption) and in
-`VISIBLE_THEME_KEYS` (`src/lib/themes/appearance.ts:268-271`), with the
-active theme always exempt (`visibleInstalled`, `:274-278`).
+Current curated offer: none — `VISIBLE_THEME_KEYS` is empty and both
+marketplace themes were removed (Sept 2026); sellers see their own
+listings via the `mine` exemption, and the active theme is always exempt
+(`visibleInstalled`, `src/lib/themes/appearance.ts:273-278`).
 
 ## 4. Marketplace flow (listing → install ledger → activate → audit)
 

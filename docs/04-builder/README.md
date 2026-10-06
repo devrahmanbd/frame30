@@ -140,19 +140,31 @@ Published tokens reach the storefront as CSS variables on the store root
 
 ## Phase C — official theme packages
 
-Ten official themes now ship a complete template hierarchy (`index`, `product`,
-`collection`, `page`, `blog`, `cart`, `checkout`), each with header/main/footer
-slots, responsive breakpoint overrides and the context widgets the template
-requires.
+Two built theme packages ship the complete template hierarchy (`index`,
+`product`, `collection`, `page`, `blog`, `cart`, `checkout`), each with
+header/main/footer slots, responsive breakpoint overrides and the context
+widgets the template requires: `songoskriti` and `somvabona` (the ten-name
+`CATALOG_META` table in `src/lib/themes/catalog-meta.ts:1` is picker-floor
+metadata only — SQL rows override it; only the two built packages resolve
+through `registryPackage`).
 
-- Source of truth: `src/lib/theme-presets.ts` (typed, version `2.0.0`).
-  `theme_registry` holds catalogue metadata only, so SQL and runtime cannot drift.
-- Install path: `theme_install_preset(_merchant_id, _key, _preset)` — the server
-  parses and lints the package before the RPC writes a draft version; any lint
-  error rejects the install and the merchant keeps their last-good theme.
-- Guard rails: `src/lib/theme-presets.test.ts` asserts token validity, template
-  completeness, lossless AST parsing, unique section ids and a clean lint for
-  every theme and every template.
+- Source of truth: the built packages behind `registryPackage` in
+  `src/lib/themes.server.ts:682` (version `1.0.0`), assembled from the
+  theme preview sources (`resolveThemePreview` in
+  `src/lib/theme-preview-nav.ts:404`). `theme_registry` holds catalogue
+  metadata only, so SQL and runtime cannot drift.
+- Install path: `installRegistryTheme` validates and lints the package
+  server-side, then calls the `theme_install_preset` RPC with
+  `(_merchant_id, _key, _preset, _overwrite_draft)`
+  (`src/lib/themes.server.ts:732`); the RPC writes a draft version, so any
+  lint error rejects the install and the merchant keeps their last-good theme.
+  The server keeps the last-good pin with a builtin fallback
+  (`lastGoodVersion` in `src/lib/themes.server.ts:1189`, asserted in
+  `src/lib/builder-themes.contract.test.tsx:212`).
+- Guard rails: per-theme wiring suites assert token validity and template
+  completeness (`src/lib/themes/songoskriti/wiring.test.ts:1`,
+  `src/lib/themes/somvabona/wiring.test.ts:1`), and
+  `src/lib/theme-presets.test.ts` does not exist — no such suite is claimed.
 
 ---
 
@@ -163,18 +175,42 @@ All values match HEAD; stale planning brand locks are void.
 
 ### Mental model — Widget is capability, Theme is presentation
 
-- **Widget = capability.** The closed `SectionType` registry is shared by
-  every theme: `WidgetMeta` carries no theme field, so a widget authored
-  for one vertical drops into any theme. Pinned by the DoD 5 suite in
+- **Widget = functionality / data / state / actions.** The closed
+  `SectionType` registry is shared by every theme: `WidgetMeta` carries no
+  theme field (`src/lib/widget-registry.ts:68`), so a widget authored for one
+  vertical drops into any theme. Pinned by the DoD 5 suite in
   `src/lib/definition-of-done.test.ts:102`.
-- **Theme = presentation, claimed through the registry.** A theme never
+- **Builder = composition + props + placement.** Merchants arrange sections,
+  set props, and place them in header/main/footer slots; the engine owns
+  parsing (`parseAst` in `src/lib/builder-ast.ts:7463`), validation, and the
+  single batched data call. Save → reload is byte-stable
+  (`src/lib/builder-lifecycle.contract.test.tsx:108`).
+- **Theme = presentation, claimed through the registries.** A theme never
   forks the renderer. It claims `themeKey × widgetType` pairs with
-  `registerThemePresentation` (`src/lib/theme-presentations.ts:35`); the
-  engine (`SectionRenderer`) resolves the registered presentation first
-  and falls back to the existing `resolveWidgetComponent` result when
-  nothing is registered (`src/components/builder/SectionRenderer.tsx:272`,
-  over `src/components/builder/theme-widgets.ts:45`). Unregistered pairs
-  render byte-identical to before — zero behavior change.
+  `registerThemePresentation` (`src/lib/theme-presentations.ts:35`);
+  themeable community widgets with `themeKey × pluginKey` through
+  `registerCommunityPresentation`
+  (`src/lib/plugin-theme-contract.ts:165`); chrome surfaces (header shell,
+  menu, announcement, footer) through the same widget registry plus the
+  header-shell lookup (`resolveHeaderShell` in
+  `src/components/store/StoreHeader.tsx:316`, generic fallback in
+  `src/components/store/StoreHeader.tsx:840`). The engine
+  (`SectionRenderer`) resolves the registered presentation first and falls
+  back to the existing `resolveWidgetComponent` result when nothing is
+  registered (`src/components/builder/SectionRenderer.tsx:272`, over
+  `src/components/builder/theme-widgets.ts:45`). Unregistered pairs render
+  byte-identical to before — zero behavior change.
+- **Plugin = extension.** Class A (isolated) renders in the sandboxed island
+  and never dresses; Class B (themeable) declares the versioned
+  schema/data/actions/slots/states contract and renders through the theme
+  presentation when dressed, the generic island when not
+  (`src/lib/plugin-theme-contract.ts:6`, `:58`, `:266`).
+- **Runtime = platform services.** Flow: AST → widget/plugin contract →
+  active theme → theme presentation → storefront. No theme branches in shared
+  code: registries name no theme and branch on no theme
+  (`src/lib/theme-presentations.ts:18`), pinned by
+  `src/lib/theme-presentations.test.tsx:194` and
+  `src/lib/definition-of-done.test.ts:138`.
 - **Tokens + skins are one layer.** Together they are the single base
   presentation layer every registry presentation renders on: tokens feed
   CSS variables, `skin` picks a style key inside a closed vocabulary.
@@ -203,11 +239,81 @@ fallback)` returns the registered presentation or the
 
 Studio note: the builder token panel takes the installed theme key for
 one purpose only — offering that theme's merchant-pickable variation
-list (`src/components/builder/TokenEditor.tsx:229`, fed by the studio
-host in `src/routes/_authenticated/dashboard/builder.tsx:2323`). It is
+list (`src/components/builder/TokenEditor.tsx:225`, fed by the studio
+host's `VARIATIONS_BY_THEME_KEY` in
+`src/routes/_authenticated/dashboard/builder.tsx:130`, passed at
+`src/routes/_authenticated/dashboard/builder.tsx:2337`). It is
 editor chrome, not a renderer, and carries the same no-compare /
 no-switch / no-widget-resolution guardrails
-(`src/lib/definition-of-done.test.ts:169`).
+(`src/lib/definition-of-done.test.ts:179`).
+
+### Community registry — Class A sandboxed, Class B themeable
+
+`src/lib/plugin-theme-contract.ts` is the theme-safe contract (Class B),
+mirroring the widget registry's first-wins / never-throw / fallback-safe
+rules (`src/lib/plugin-theme-contract.ts:22`):
+
+- **Class A (`isolated`):** the widget declares no `themeable` contract. Its
+  bundle owns arbitrary UI inside the null-origin `WidgetSandbox` frame;
+  resolution returns `sandbox` and the PluginBlock renders the exact same
+  island (`src/lib/plugin-theme-contract.ts:6`,
+  `src/lib/plugin-manifest.ts:258`).
+- **Class B (`themeable`):** the plugin declares the versioned contract
+  (schema/data/actions/slots/states,
+  `src/lib/plugin-theme-contract.ts:38`); the theme dresses it through
+  `registerCommunityPresentation`
+  (`src/lib/plugin-theme-contract.ts:165`), resolved by
+  `resolveCommunityPresentation` (`:208`) and decided at the single
+  `resolveCommunityRender` point (`:266`): blocked → placeholder, Class A →
+  `sandbox`, themeable + dressed → `theme`, themeable + undressed → generic
+  sandboxed `island`. Unknown themes never resolve to another theme's brand.
+  Pinned by `src/lib/plugin-theme-contract.test.tsx:249` (Class A stays
+  sandbox), `:261` (undressed → island), `:285` (dressed → theme).
+- **Round-trip:** a `plugin_block` install persists through save without loss
+  and renders on both themes without brand leak
+  (`src/lib/builder-themes.contract.test.tsx:82`).
+
+### Chrome surfaces — header shell, menu, announcement, footer
+
+Chrome is presentation claimed through the same registries, not a second
+theme system:
+
+- **Header shell:** each theme attaches its shell as a static on its
+  registered `mega_menu` presentation
+  (`src/lib/themes/songoskriti/header-presentation.tsx:777`,
+  `src/lib/themes/somvabona/header-presentation.tsx:749`);
+  `resolveHeaderShell` (`src/components/store/StoreHeader.tsx:316`) returns
+  it, or `GenericHeaderShell` (`src/components/store/StoreHeader.tsx:840`)
+  when the theme registers none. Unknown theme keys fall back to generic,
+  never to another brand
+  (`src/lib/platform-acceptance.test.tsx:487`).
+- **Menu:** dashboard-designed menus win whenever a location is claimed;
+  `shapeStoreMenus` (`src/lib/menus/menu.ts:427`) resolves first-claimant
+  wins, `selectMobileMenu` (`:446`) falls back to header, `rebaseMenuHref`
+  (`:458`) rebases onto the path host, `toggleLocation` (`:476`) drives
+  assign/unassign. The fallback tree and its বাংলা twin table live in
+  neutral shared code (`HEADER_FALLBACK_MENU` in
+  `src/lib/header-copy.ts:21`, `HEADER_MENU_BN` in `:185`) and cover the
+  fallback only — dashboard nodes render as-authored in every locale.
+  Pinned by `src/lib/builder-chrome.contract.test.tsx:79` (assign → render),
+  `:282` (bn integrity).
+- **Announcement / footer:** the shared header slot carries one announcement
+  edit to every template (`:158`); one global footer block resolves into
+  every template footer via `resolveGlobalRef`
+  (`src/lib/builder-ast.ts:6555`), degrading to a labelled placeholder when
+  deleted (`src/lib/builder-chrome.contract.test.tsx:197`). Header language
+  switch is geometry-intact (`:128`); mobile widths pin the breakpoint ranges
+  (`src/lib/responsive.ts:11`, `:154`, asserted in
+  `src/lib/builder-chrome.contract.test.tsx:239-246`).
+- **Menu replacement contract:** a plugin may fill rows (Shape 1) or swap a
+  slot's full nav renderer (Shape 2), but the swap wins only behind BOTH the
+  `replace_menus` scope AND explicit review approval (`decideMenuRenderer`
+  in `src/lib/plugin-manifest.ts:102`); every other outcome — unclaimed,
+  unapproved, scope-denied, renderer throw — renders the theme default
+  fail-open (`renderMenuWithFallback` in `:134`, `resolveMenuSwapRows` in
+  `:207`, `selectPluginMenuRenderer` in
+  `src/lib/plugin-menu-renderers.ts:120` with the `PluginMenuBoundary`
+  fallback in `:179`).
 
 ### Tokens — base layer, styling channel (not a theme system)
 
@@ -290,13 +396,14 @@ doubles): `announcement_bar`, `hero_carousel`, `trust_marquee`,
 ### Studio twin parity contract
 
 Every `SECTION_CATALOG` entry in `builder-ast` must resolve in the studio
-`WIDGET_BY_KEY` map so it stays editable in the studio. Defaults mirror the
-base defaults 1:1 — including the `skin` default for skinnable types
-(first-option convention) and an empty `_bn` twin for every `BITEXT_FIELDS`
-key (`src/lib/studio/catalog.ts:2418`).
+`WIDGET_BY_KEY` map (`src/lib/studio/catalog.ts:2701`) so it stays editable in
+the studio. Defaults mirror the base defaults 1:1 — including the `skin`
+default for skinnable types (first-option convention) and an empty `_bn` twin
+for every `BITEXT_FIELDS` key (`src/lib/builder-ast.ts:5781`).
 
 - Intentional exclusions only: `page_content` (context slot, zero fields) and
-  `plugin_block` (covered by the `app-block` twin).
+  `plugin_block` (covered by the `app-block` twin) — see the exclusion note in
+  `src/lib/studio/catalog.ts:2457`.
 - Account-template twins are context-gated: `orders_list` and `profile_card`
   (base group `commerce`, template `account`), with bitext kinds mirroring the
   base fields; neither type is skinnable, so neither carries a `skin` key.
@@ -304,35 +411,39 @@ key (`src/lib/studio/catalog.ts:2418`).
   `price_buckets`, `occasion_matrix`, `urgency_rail`, plus the account twins)
   carry the full base content schema and the documented default skin where
   skinnable.
-- Pinned by the `studio twin parity` suite in `src/lib/studio/catalog.test.ts:837`.
+- Pinned by the `studio twin parity` suite in `src/lib/studio/catalog.test.ts:843`.
 
 ### Persist-shape rule
 
 Persisted props are rebuilt from catalog fields only — a theme or editor can
 never smuggle unknown props onto a node:
 
-- `parseSection` (`src/lib/builder-ast.ts:6822`) rebuilds the props object
-  field-by-field (`src/lib/builder-ast.ts:6890`); each value passes through
-  `coerceProp` against its field schema, unknown keys are dropped, and
-  breakpoint overrides accept only responsive-capable fields.
-- `withThemeWidgetDefaults` (`src/lib/builder-ast.ts:735`) merges theme
+- `parseSection` (`src/lib/builder-ast.ts:7177`) rebuilds the props object
+  field-by-field (`coerceProp` in `src/lib/builder-ast.ts:7251`); each value
+  passes through `coerceProp` against its field schema, unknown keys are
+  dropped, and breakpoint overrides accept only responsive-capable fields
+  (`src/lib/builder-ast.ts:7289`).
+- `withThemeWidgetDefaults` (`src/lib/builder-ast.ts:873`) merges theme
   defaults only for catalog-known keys (base defaults plus field keys).
 
 ### Dashboard-menu data flow
 
-Dashboard-designed menus win whenever a menu location is claimed; the hardcoded
-tree is the fallback for songoskriti-shaped stores only
-(`src/components/store/StoreHeader.tsx:213`–`219`):
+Dashboard-designed menus win whenever a menu location is claimed; the shared
+fallback tree covers theme-shaped stores only, and generic stores keep prior
+behavior exactly — empty when no menu claims the location
+(`assembleHeaderData` in `src/components/store/StoreHeader.tsx:156`,
+fallback selection in `:172`):
 
 - `menus.header` / `selectMobileMenu(menus)` (mobile selection in
-  `src/lib/menus/menu.ts:446`) are preferred; the fallback is
-  `SONGOSKRITI_MEGA_MENU` (`src/components/store/StoreHeader.tsx:24`).
-  Generic stores keep prior behavior exactly — empty when no menu claims the
-  location.
-- The Bangla table `SONGOSKRITI_MENU_BN`
-  (`src/components/store/StoreHeader.tsx:134`) covers the hardcoded fallback
-  tree only. Dashboard nodes carry no `_bn` field and render as-authored in
-  every locale.
+  `src/lib/menus/menu.ts:446`) are preferred; the fallback is the neutral
+  `HEADER_FALLBACK_MENU` (`src/lib/header-copy.ts:21`, re-exported for
+  compatibility as `SONGOSKRITI_MEGA_MENU` from
+  `src/lib/themes/songoskriti/header-fallback.ts:16`). Generic stores keep
+  prior behavior exactly — empty when no menu claims the location.
+- The Bangla twin table `HEADER_MENU_BN`
+  (`src/lib/header-copy.ts:185`, via `headerMenuLabel` in `:233`) covers the
+  fallback tree only. Dashboard nodes carry no `_bn` field and render
+  as-authored in every locale.
 
 ### Preview engine and focus links
 
@@ -341,21 +452,21 @@ every tap shows authored demo content; the module is theme-agnostic by design
 (it never names a theme — themes plug in through the `PreviewThemeSource`
 port). Key entry points in `src/lib/theme-preview-nav.ts`:
 
-- `previewTargetForHref` (`:42`) and `previewTemplateForHref` (`:91`) resolve a
-  link to a template tab; `previewClickAction` (`:100`) and
-  `handlePreviewCanvasClick` (`:134`) keep taps inside the frame, while
+- `previewTargetForHref` (`:51`) and `previewTemplateForHref` (`:100`) resolve a
+  link to a template tab; `previewClickAction` (`:109`) and
+  `handlePreviewCanvasClick` (`:143`) keep taps inside the frame, while
   unmapped links (external, `tel:`, `mailto:`, anchors) keep default browser
-  behavior. Account/sign-in paths are blocked (`isPreviewBlockedHref`, `:37`).
+  behavior. Account/sign-in paths are blocked (`isPreviewBlockedHref`, `:46`).
 - Focus links use the `?focus=` contract — never `?slug=`
-  (`:219`) — parsed by `validateThemePreviewSearch` (`:246`), which also
+  (`:228`) — parsed by `validateThemePreviewSearch` (`:255`), which also
   carries the template plus the raw search query for tab switches
-  (`previewSearchForSwitch`, `:225`).
-- `resolveDemoFocus` (`:411`) matches the focus slug against the demo catalog
-  (collections, categories, products); `applyDemoFocus` (`:451`) retargets the
+  (`previewSearchForSwitch`, `:234`).
+- `resolveDemoFocus` (`:474`) matches the focus slug against the demo catalog
+  (collections, categories, products); `applyDemoFocus` (`:515`) retargets the
   first heading, the first collection-sourced rail, and known-art product
   media, leaving the authored AST untouched. Templates a theme does not author
   get a generic engine-synthesized demo body (`assemblePreviewTemplates`,
-  `:345`; `resolveThemePreview`, `:372`), so no link lands on an empty page.
+  `:377`; `resolveThemePreview`, `:404`), so no link lands on an empty page.
 
 ### Token-only CSS gate
 
@@ -368,7 +479,7 @@ Enforced per theme by test:
   `src/lib/themes/songoskriti/skins.test.ts:182` (every default skin keyed off
   `[data-widget]` + `[data-skin]`, reduced-motion asserted alongside).
 - Somvabona: `is token-driven: no hex literals or raw colour utilities` in
-  `src/lib/themes/somvabona/skins.test.ts:167` (asserts `var(--theme-brand)`,
+  `src/lib/themes/somvabona/skins.test.ts:166` (asserts `var(--theme-brand)`,
   `var(--theme-surface)`, `var(--theme-ink)`, `var(--theme-accent)`).
 
 ### History map — where each superseded doc went

@@ -28,7 +28,23 @@ Three layers, emitted as CSS custom properties (runtime-agnostic — themes cons
 | **Semantic**  | `--fq-bg-canvas`, `--fq-bg-surface`, `--fq-text-primary`, `--fq-text-muted`, `--fq-border`, `--fq-accent`, `--fq-accent-fg`, `--fq-success`, `--fq-warning`, `--fq-danger`, `--fq-info`, `--fq-focus-ring`, `--fq-overlay`, status chips, input states | Mapped per theme (light/dark; storefront theme overrides) |
 | **Component** | button/input/card/table/stepper/kbd/modal variants consuming semantic tokens                                                                                                                                                                           | Per-theme tweaks only                                     |
 
-Theming rule: **merchant admin themes and storefront themes only ever override semantic + component layers.** Storefront theme authors get a documented subset (brand palette → semantic mapping) — see 03-storefront and 04-builder.
+Theming rule: **merchant admin and storefront themes only ever override
+semantic + component layers — never the renderer.** Per-widget presentation is
+claimed through the `themeKey × widgetType` registry
+(`registerThemePresentation` in `src/lib/theme-presentations.ts:35`, resolved in
+`src/components/builder/SectionRenderer.tsx:272`); themeable community widgets
+through `themeKey × pluginKey` (`registerCommunityPresentation` in
+`src/lib/plugin-theme-contract.ts:165`); chrome (header shell, menu,
+announcement, footer) through the same registry plus the header-shell lookup
+(`resolveHeaderShell` in `src/components/store/StoreHeader.tsx:316`, generic
+fallback in `src/components/store/StoreHeader.tsx:840`). Shared code names no
+theme and branches on no theme (`src/lib/theme-presentations.ts:18`, pinned by
+`src/lib/theme-presentations.test.tsx:194` and
+`src/lib/definition-of-done.test.ts:138`). Theme stylesheets are token-only —
+every value reads `var(--theme-*)` (gated in
+`src/lib/themes/songoskriti/skins.test.ts:182`) — so a merchant re-tint
+re-skins every rule. Storefront theme authors get a documented subset (brand
+palette → semantic mapping) — see 03-storefront and 04-builder.
 
 ---
 
@@ -116,7 +132,10 @@ Adapted from the design-taste/hallmark/frontend-design practices — **every pag
 5. Micro-interactions exist (focus states, hover lifts, loading shimmer) but nothing animated without purpose.
 6. Real content previews (Bengali text, BDT prices, actual product names) — never Lorem Ipsum in mockups.
 7. Consistent radius/space/elevation from tokens — no bespoke values.
-8. Dark mode exists for admin + every official theme ships light+dark.
+8. Dark mode exists for admin; official storefront themes declare their own
+   coverage — Songoskriti is light-only (`dark: null` in
+   `src/lib/themes/songoskriti/tokens.ts:27`), Somvabona ships a designed dark
+   set (`src/lib/themes/somvabona/tokens.ts:32`).
 9. Mobile layout is designed, not a CSS afterthought.
 10. Accessibility auto-checks (axe) run in CI on every page snapshot.
 

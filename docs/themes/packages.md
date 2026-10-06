@@ -1,5 +1,14 @@
 # Theme Packages (third-party developer spec)
 
+> **DEPRECATED — planned, not built.** The validator module
+> (`src/lib/theme-package.ts` / `validateThemePackage`) does not exist at
+> HEAD; package installs flow through `parseTokens`/`parseTemplates`
+> (`src/lib/builder-ast.ts`) at
+> `marketplace-install.server.ts:415-420`. Everything below is the
+> preserved design spec for that future module — do not treat field
+> rules here as enforced today. For the live install path, see
+> [the SDK registry pipeline](./sdk.md).
+
 Third-party themes ship as JSON packages: `tokens` + `templates` + manifest.
 Packages are validated by `validateThemePackage` (`src/lib/theme-package.ts`),
 which reuses the in-repo guards byte-identically — no raw HTML ever executes.

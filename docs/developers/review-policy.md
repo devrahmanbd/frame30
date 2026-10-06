@@ -121,7 +121,7 @@ attributes, and a hex literal fails the gate (`stays token-driven` in
 `src/lib/themes/songoskriti/skins.test.ts:182`). Every catalog entry must
 resolve in the studio `WIDGET_BY_KEY` map
 (`src/lib/studio/catalog.ts:2701`) so it stays editable; the `studio twin
-parity` suite (`src/lib/studio/catalog.test.ts:837`) pins it, with
+parity` suite (`src/lib/studio/catalog.test.ts:843`) pins it, with
 `plugin_block` intentionally covered by the `app-block` twin
 (`src/lib/studio/catalog.ts:362`).
 
@@ -193,3 +193,8 @@ restyle inside a community widget today, and token flow depends on the
 plugin requesting `read_shop`. Until a theme-adapter contract lands in
 code, do not promise merchants that switching themes re-skins installed
 plugin widgets.
+
+> Status update: Class B themeable widgets now implement this — a plugin
+> declares the theme-safe contract and the active theme dresses it via the
+> community presentation registry, with the sandboxed island as fallback
+> (see `themeable-widgets.md`). Class A widgets remain as described above.
