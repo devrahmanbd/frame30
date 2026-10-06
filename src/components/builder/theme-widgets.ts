@@ -14,8 +14,17 @@
  * - known theme key: that theme's overrides, falling back per key to
  *   `GENERIC_WIDGETS`.
  * - unknown theme key: pure `GENERIC_WIDGETS` — never brand.
+ *
+ * SWITCHOVER-3 — installed package discovery: merchant-installed packages
+ * carry no components (widgets are code), so an installed-only key resolves
+ * exactly like an unknown key — generic widgets, never brand, never a throw.
+ * Discovery still lists it: `themeWidgetKeys(installed)` returns the union
+ * (source keys first, installed-only keys after), mirroring
+ * `preview-sources.ts`. A removed row stops being passed, so its key
+ * disappears from the list while resolution keeps its no-crash fallback.
  */
 import type { SectionType } from "@/lib/builder-ast";
+import type { InstalledThemeRef } from "@/lib/preview-sources";
 import {
   GENERIC_WIDGETS,
   WIDGET_COMPONENTS,
@@ -32,9 +41,28 @@ const THEME_WIDGETS: Record<
   somvabona: () => SOMVABONA_WIDGETS,
 };
 
-/** Registered theme keys, for routes and diagnostics. */
-export function themeWidgetKeys(): string[] {
-  return Object.keys(THEME_WIDGETS);
+/**
+ * Registered theme keys: built-in source keys first, then installed-only
+ * keys. Garbage entries (null, blank, non-string keys) are ignored —
+ * discovery never throws on untrusted input.
+ */
+export function themeWidgetKeys(
+  installed?: readonly InstalledThemeRef[] | null,
+): string[] {
+  const keys = Object.keys(THEME_WIDGETS);
+  if (!installed) return keys;
+  const seen = new Set(keys);
+  for (const entry of installed) {
+    const raw =
+      typeof entry === "string"
+        ? entry
+        : (entry as { key?: unknown } | null | undefined)?.key;
+    const key = typeof raw === "string" ? raw.trim() : "";
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    keys.push(key);
+  }
+  return keys;
 }
 
 /**

@@ -26,8 +26,10 @@ import {
   APP_VERSION,
   SELLER_SHARE_BASIS_POINTS,
   TRIAL_DAYS,
+  buildListingArtifact,
   isCompatible,
   table,
+  type BuiltListingArtifact,
   type Kind,
 } from "./marketplace.server";
 
@@ -157,7 +159,12 @@ function boundReplay(
   hit: ReplayHit,
   input: InstallInput,
   listingSlug: string,
-): { installId: string; replayed: true; impacted: string[] } {
+): {
+  installId: string;
+  replayed: true;
+  impacted: string[];
+  artifact: null;
+} {
   if (hit.status === "lapsed") throw new Error("market_trial_expired");
   const sameKind = hit.kind === input.kind;
   const sameListing =
@@ -165,7 +172,33 @@ function boundReplay(
       ? hit.theme_id === input.listingId || hit.listing_slug === listingSlug
       : hit.widget_id === input.listingId || hit.listing_slug === listingSlug;
   if (!sameKind || !sameListing) throw new Error("market_idempotency_conflict");
-  return { installId: hit.id, replayed: true, impacted: [] };
+  // Only the call that WRITES rows reports the artifact; replays carry null
+  // (the listing-level artifact stays readable via listCatalog).
+  return { installId: hit.id, replayed: true, impacted: [], artifact: null };
+}
+
+/**
+ * SWITCHOVER-2 — resolve the exact ZIP bytes a widget install must run.
+ *
+ * A pinned vault version's `source` wins when it is a full plugin manifest
+ * (the exact bytes the seller published); otherwise the listing manifest is
+ * rebuilt. Anything else (bundle-shaped `{ entry, permissions }` manifests,
+ * empty manifests, vault bundle sources) resolves to null — the LEGACY
+ * fallback: the historical ledger-only install, documented, never a crash.
+ */
+function resolveWidgetArtifact(
+  listing: { slug: string; manifest: unknown },
+  pinned: { id: string; source: unknown } | null,
+): BuiltListingArtifact | null {
+  if (pinned && pinned.source && typeof pinned.source === "object") {
+    const fromVersion = buildListingArtifact(
+      pinned.source,
+      listing.slug,
+      `version:${pinned.id}`,
+    );
+    if (fromVersion) return fromVersion;
+  }
+  return buildListingArtifact(listing.manifest, listing.slug);
 }
 
 export async function installListing(
@@ -211,11 +244,16 @@ export async function installListing(
   // Consent gate: an install may never receive more scopes than the merchant
   // saw and approved, and never fewer than the pinned version requires.
   const granted = Array.from(new Set(input.grantedScopes ?? [])).sort();
-  let pinned: { id: string; version: string; scopes: string[] } | null = null;
+  let pinned: {
+    id: string;
+    version: string;
+    scopes: string[];
+    source: unknown;
+  } | null = null;
   if (input.versionId) {
     const { data: version } = await db
       .from("marketplace_versions")
-      .select("id, version, scopes, status, listing_id, kind")
+      .select("id, version, scopes, status, listing_id, kind, source")
       .eq("id", input.versionId)
       .maybeSingle();
     if (!version) throw new Error("market_version_not_found");
@@ -231,6 +269,7 @@ export async function installListing(
       id: version.id,
       version: version.version,
       scopes: version.scopes ?? [],
+      source: (version as { source?: unknown }).source ?? null,
     };
   }
 
@@ -249,34 +288,53 @@ export async function installListing(
     : resolveListingTermPrice(listing, purchaseInterval);
   const previous = await snapshotCurrent(db, merchantId, input.kind);
 
-  const { data: install, error } = await db
-    .from("marketplace_installs")
-    .insert({
-      merchant_id: merchantId,
-      kind: input.kind,
-      theme_id: input.kind === "theme" ? listing.id : null,
-      widget_id: input.kind === "widget" ? listing.id : null,
-      listing_slug: listing.slug,
-      listing_name: listing.name,
-      version: pinned?.version ?? listing.version,
-      price_minor_int: charge,
-      currency_code: listing.currency_code,
-      is_trial: input.trial,
-      status: input.trial ? "trial" : "installed",
-      idempotency_key: input.idempotencyKey,
-      previous_snapshot: previous as never,
-      expires_at: input.trial
-        ? new Date(Date.now() + TRIAL_DAYS * 86_400_000).toISOString()
-        : null,
-      granted_scopes: granted as never,
-      consented_by: (input.consentedBy ?? null) as never,
-    })
-    .select("id")
-    .single();
-  if (error || !install) {
-    // H2: a racing double-submit won the unique (merchant, key) race — the
-    // loser replays the winner instead of stacking a second install.
-    if (isDuplicateKey(error)) {
+  // SWITCHOVER-2 — install-via-pipeline. A widget listing that resolves to an
+  // exact ZIP installs through the package pipeline (`installPackage`, kind
+  // "plugin") with the SAME idempotency key, so marketplace and direct upload
+  // converge on one ledger row + one asset namespace. `null` is the legacy
+  // fallback: the historical ledger-only install below, unchanged.
+  const widgetArtifact =
+    input.kind === "widget" ? resolveWidgetArtifact(listing, pinned) : null;
+  let installId: string;
+  let installedArtifact: {
+    checksum: string;
+    version: string;
+    fileName: string;
+    pinned: string;
+  } | null = null;
+
+  if (widgetArtifact) {
+    const { installPackage } = await import("./package-install.server");
+    let pkg: {
+      packageId: string;
+      version: string;
+      artifactId: string;
+      alreadyInstalled: boolean;
+    };
+    try {
+      pkg = await installPackage(
+        db,
+        merchantId,
+        {
+          kind: "plugin",
+          fileName: widgetArtifact.fileName,
+          bytes: widgetArtifact.bytes,
+          idempotencyKey: input.idempotencyKey,
+        },
+        input.consentedBy ?? null,
+      );
+    } catch (e) {
+      // The bytes passed the marketplace bundle gate but the package gate
+      // refused them (drift between the two gates): fail closed with the
+      // pipeline code attached, never a silent ledger-only install.
+      const code =
+        (e as { code?: string })?.code ??
+        (e instanceof Error ? e.message : "unknown");
+      throw new Error(`market_install_failed:${code}`);
+    }
+    if (pkg.alreadyInstalled) {
+      // Lost the unique-key race after the top-of-function check: the winner
+      // owns this key. Replay under the marketplace binding, never stack.
       const { data: raced } = await db
         .from("marketplace_installs")
         .select("id, status, kind, theme_id, widget_id, listing_slug")
@@ -285,8 +343,133 @@ export async function installListing(
         .maybeSingle();
       if (raced)
         return boundReplay(raced as unknown as ReplayHit, input, listing.slug);
+      throw new Error("market_install_failed");
     }
-    throw new Error("market_install_failed");
+    // Exactness is structural (these same bytes were just hashed), but a
+    // sibling-lane pipeline change must never strand a mismatched row: loud,
+    // compensated, never silent.
+    if (pkg.artifactId !== widgetArtifact.checksum) {
+      try {
+        const { deleteVersionAssets, pluginVersionPrefix } = await import(
+          "./package-store.server"
+        );
+        await deleteVersionAssets(
+          db,
+          merchantId,
+          pluginVersionPrefix(
+            widgetArtifact.manifestSlug,
+            widgetArtifact.checksum.slice(0, 8),
+          ),
+        );
+      } catch {
+        /* compensation is best-effort; the mismatch error below is the signal */
+      }
+      await db
+        .from("marketplace_installs")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .eq("id", pkg.packageId);
+      throw new Error("market_artifact_mismatch");
+    }
+    // The pipeline wrote the ledger row with upload defaults; patch it to the
+    // marketplace shape (listing identity, price, trial, consent evidence).
+    // Marketplace identity stays on the listing slug — the asset namespace
+    // keeps the manifest slug (pipeline truth).
+    const { error: patchError } = await db
+      .from("marketplace_installs")
+      .update({
+        widget_id: listing.id,
+        listing_slug: listing.slug,
+        listing_name: listing.name,
+        version: pinned?.version ?? listing.version,
+        price_minor_int: charge,
+        currency_code: listing.currency_code,
+        is_trial: input.trial,
+        status: input.trial ? "trial" : "installed",
+        previous_snapshot: previous,
+        expires_at: input.trial
+          ? new Date(Date.now() + TRIAL_DAYS * 86_400_000).toISOString()
+          : null,
+        granted_scopes: granted,
+        consented_by: input.consentedBy ?? null,
+      } as never)
+      .eq("merchant_id", merchantId)
+      .eq("id", pkg.packageId);
+    if (patchError) {
+      try {
+        const { deleteVersionAssets, pluginVersionPrefix } = await import(
+          "./package-store.server"
+        );
+        await deleteVersionAssets(
+          db,
+          merchantId,
+          pluginVersionPrefix(
+            widgetArtifact.manifestSlug,
+            widgetArtifact.checksum.slice(0, 8),
+          ),
+        );
+      } catch {
+        /* compensation is best-effort; the install error below is the signal */
+      }
+      await db
+        .from("marketplace_installs")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .eq("id", pkg.packageId);
+      throw new Error("market_install_failed");
+    }
+    installId = pkg.packageId;
+    installedArtifact = {
+      checksum: widgetArtifact.checksum,
+      version: pkg.version,
+      fileName: widgetArtifact.fileName,
+      pinned: widgetArtifact.pinned,
+    };
+  } else {
+    const { data: install, error } = await db
+      .from("marketplace_installs")
+      .insert({
+        merchant_id: merchantId,
+        kind: input.kind,
+        theme_id: input.kind === "theme" ? listing.id : null,
+        widget_id: input.kind === "widget" ? listing.id : null,
+        listing_slug: listing.slug,
+        listing_name: listing.name,
+        version: pinned?.version ?? listing.version,
+        price_minor_int: charge,
+        currency_code: listing.currency_code,
+        is_trial: input.trial,
+        status: input.trial ? "trial" : "installed",
+        idempotency_key: input.idempotencyKey,
+        previous_snapshot: previous as never,
+        expires_at: input.trial
+          ? new Date(Date.now() + TRIAL_DAYS * 86_400_000).toISOString()
+          : null,
+        granted_scopes: granted as never,
+        consented_by: (input.consentedBy ?? null) as never,
+      })
+      .select("id")
+      .single();
+    if (error || !install) {
+      // H2: a racing double-submit won the unique (merchant, key) race — the
+      // loser replays the winner instead of stacking a second install.
+      if (isDuplicateKey(error)) {
+        const { data: raced } = await db
+          .from("marketplace_installs")
+          .select("id, status, kind, theme_id, widget_id, listing_slug")
+          .eq("merchant_id", merchantId)
+          .eq("idempotency_key", input.idempotencyKey)
+          .maybeSingle();
+        if (raced)
+          return boundReplay(
+            raced as unknown as ReplayHit,
+            input,
+            listing.slug,
+          );
+      }
+      throw new Error("market_install_failed");
+    }
+    installId = (install as { id: string }).id;
   }
 
   // H7: the install itself is audited — actor, displaced snapshot, new shape.
@@ -307,7 +490,7 @@ export async function installListing(
         currency: listing.currency_code,
       },
     },
-    install.id,
+    installId,
   );
 
   // H3: materialize BEFORE any money moves, so a theme-row failure
@@ -316,13 +499,13 @@ export async function installListing(
   // (no usable AST) and THROWS on DB/parse failure.
   if (input.kind === "theme") {
     try {
-      await materializeListingTheme(db, merchantId, install.id, listing);
+      await materializeListingTheme(db, merchantId, installId, listing);
     } catch {
       await db
         .from("marketplace_installs")
         .delete()
         .eq("merchant_id", merchantId)
-        .eq("id", install.id);
+        .eq("id", installId);
       throw new Error("market_install_failed");
     }
   }
@@ -338,7 +521,7 @@ export async function installListing(
           input.kind === "theme"
             ? "market.theme.installed"
             : "market.widget.installed",
-        referenceId: install.id,
+        referenceId: installId,
         direction: "debit",
         gross: money(seller + platform, listing.currency_code),
         platformFee: money(platform, listing.currency_code),
@@ -350,7 +533,7 @@ export async function installListing(
         .from("marketplace_installs")
         .delete()
         .eq("merchant_id", merchantId)
-        .eq("id", install.id);
+        .eq("id", installId);
       throw new Error("market_payment_failed");
     }
   }
@@ -360,7 +543,7 @@ export async function installListing(
   // after money moved and never fails the purchase: a schedule can be
   // backfilled, a completed charge cannot be un-moved.
   try {
-    await setInstallBillingSchedule(db, install.id, {
+    await setInstallBillingSchedule(db, installId, {
       merchantId,
       interval: input.billingInterval ?? "one_time",
       trial: input.trial,
@@ -369,7 +552,7 @@ export async function installListing(
     const { log } = await import("./observability.server");
     log("error", "market.schedule_write_failed", {
       merchantId,
-      installId: install.id,
+      installId,
       message: err instanceof Error ? err.message.slice(0, 120) : "unknown",
     });
   }
@@ -380,12 +563,15 @@ export async function installListing(
     .eq("id", listing.id);
 
   return {
-    installId: install.id,
+    installId,
     replayed: false,
     impacted: impactedNodes(listing.manifest),
     appVersion: APP_VERSION,
     themeApplied: null,
     themeNoticeKey: null,
+    // Exact bytes this call installed (checksum + pinned manifest version);
+    // null for legacy ledger-only installs and for replays.
+    artifact: installedArtifact,
   };
 }
 
@@ -885,6 +1071,7 @@ export async function installBuiltinWidget(
       appVersion: APP_VERSION,
       themeApplied: null,
       themeNoticeKey: null,
+      artifact: null,
     };
   }
 
@@ -923,6 +1110,7 @@ export async function installBuiltinWidget(
           appVersion: APP_VERSION,
           themeApplied: null,
           themeNoticeKey: null,
+          artifact: null,
         };
       }
     }
@@ -961,6 +1149,31 @@ export async function installBuiltinWidget(
     installId,
   );
 
+  // SWITCHOVER-2 — report the exact artifact without changing behaviour: the
+  // builtin manifest is the single source the pipeline ZIP exporter
+  // (`exportBuiltinPluginZip`) materialises, so this checksum is identical to
+  // a direct-upload install of the same preset (PKG-4 parity). Informational
+  // only — a failure here must never fail the install.
+  let builtinArtifact: {
+    checksum: string;
+    version: string;
+    fileName: string;
+    pinned: string;
+  } | null = null;
+  try {
+    const { exportBuiltinPluginZip } = await import("./plugin-package");
+    const { artifactIdFor } = await import("./package-install.server");
+    const bytes = exportBuiltinPluginZip(pluginId);
+    builtinArtifact = {
+      checksum: artifactIdFor(bytes),
+      version: pluginDef.manifest.version,
+      fileName: `${pluginId}.zip`,
+      pinned: `builtin:${pluginId}`,
+    };
+  } catch {
+    builtinArtifact = null;
+  }
+
   return {
     installId,
     replayed: false,
@@ -968,6 +1181,7 @@ export async function installBuiltinWidget(
     appVersion: APP_VERSION,
     themeApplied: null,
     themeNoticeKey: null,
+    artifact: builtinArtifact,
   };
 }
 

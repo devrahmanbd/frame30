@@ -15,17 +15,16 @@
  *
  * --- PKG-1 boundary (manifest validators) ---
  * The PKG-1 theme lane (`src/lib/theme-package.ts`, read-only import below)
- * has landed; the plugin-manifest lane (`parseManifest`) predates it. Until
- * both lanes agree on one package-manifest shape, manifests are checked by
- * `stubManifestValidator` (shape + semver + api-string + dependency list
- * only). The seam is explicit:
- *   1. per-call `validator` option (tests + callers use this), else
- *   2. a process-wide override via `setPackageManifestValidator()` — call
- *      it with `pkg1ThemeValidator` at startup to enforce the real PKG-1
- *      theme gate, else
- *   3. the stub below.
- * TODO(PKG-1): flip the default to `pkg1ThemeValidator` (themes) once the
- * plugin-manifest shape converges, then delete `stubManifestValidator`.
+ * has landed, and the plugin-manifest lane (`parseManifest`, adapted via
+ * `pkg1PluginValidator` in `src/lib/plugin-package.ts`) has converged on the
+ * same install-pipeline `validator` seam. Strict validation is now the
+ * mandatory default: `resolveValidator` dispatches per kind to
+ * `pkg1ThemeValidator` (themes) / `pkg1PluginValidator` (plugins) unless a
+ * caller passes an explicit per-call `validator` or a process-wide override
+ * was registered via `setPackageManifestValidator()` (tests use this seam).
+ * `stubManifestValidator` is retained only as an explicit opt-in for tests
+ * and as the non-theme fallback inside `pkg1ThemeValidator` — it is no
+ * longer on the default path.
  */
 
 import { createHash } from "node:crypto";
@@ -34,6 +33,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { assertTenantId } from "./tenant-scope";
 import { checkApiCompatibility } from "./registry-version";
 import { validateThemeManifest } from "./theme-package";
+import { pkg1PluginValidator } from "./plugin-package";
 import {
   collectBrokenAssetRefs,
   extractPackageFiles,
@@ -96,7 +96,7 @@ export function slugifyPackageName(name: string): string {
   return slug || "package";
 }
 
-/** Minimal shape gate until the PKG-1 validators land (see header TODO). */
+/** Legacy shape gate — explicit opt-in only (tests); no longer the default. */
 export function stubManifestValidator(
   manifest: unknown,
   _kind: PackageKind,
@@ -152,7 +152,9 @@ export function setPackageManifestValidator(fn: ManifestValidator | null): void 
  * (`validateThemeManifest` in `src/lib/theme-package.ts`, never edited here).
  * Maps `key` → slug and `plugin:` refs (`plugin:{id}` / `plugin:{id}/{w}`) →
  * bare slugs the dependency checker resolves against the install ledger.
- * Plugin packages stay on the stub until the manifest shapes converge.
+ * Plugin packages run the real plugin gate by default (see
+ * `defaultStrictValidator`); the stub fallback below only applies when this
+ * adapter itself is invoked directly with a non-theme kind.
  */
 export function pkg1ThemeValidator(
   manifest: unknown,
@@ -185,7 +187,24 @@ export function pkg1ThemeValidator(
 }
 
 function resolveValidator(explicit?: ManifestValidator): ManifestValidator {
-  return explicit ?? globalValidator ?? stubManifestValidator;
+  return explicit ?? globalValidator ?? defaultStrictValidator;
+}
+
+/**
+ * SWITCHOVER-1: strict-by-default dispatcher. Themes run the real PKG-1
+ * theme gate, plugins run the real plugin gate (`parseManifest` adapter).
+ * Kept as a named `ManifestValidator` so the explicit per-call `validator`
+ * option and the `setPackageManifestValidator()` process-wide override keep
+ * working as opt-out seams (tests rely on both).
+ */
+function defaultStrictValidator(
+  manifest: unknown,
+  kind: PackageKind,
+): ReturnType<ManifestValidator> {
+  if (kind === "plugin") {
+    return (pkg1PluginValidator as ManifestValidator)(manifest, kind);
+  }
+  return pkg1ThemeValidator(manifest, kind);
 }
 
 /* ------------------------------------------------------------------ helpers */

@@ -448,6 +448,77 @@ describe("resolveDemoFocus categories", () => {
   });
 });
 
+describe("resolveThemePreview installed packages (SWITCHOVER-4)", () => {
+  const ARTIFACT = {
+    key: "acme-pack",
+    themeName: "Acme Pack",
+    author: "Acme",
+    tokens: { surface: "#112233" },
+    templates: {
+      index: {
+        header: [],
+        main: [{ id: "s1", type: "heading", props: { text: "Acme home" } }],
+        footer: [],
+      },
+    },
+    variations: [
+      {
+        key: "minimal",
+        label: "Minimal",
+        label_bn: "মিনিমাল",
+        tokenOverrides: { surface: "#FFFFFF" },
+        skinDefaults: {},
+      },
+    ],
+  };
+
+  it("installed rows resolve to their artifact content", () => {
+    const preset = resolveThemePreview("acme-pack", undefined, [ARTIFACT])!;
+    expect(preset).not.toBeNull();
+    expect(preset.key).toBe("acme-pack");
+    expect(preset.themeName).toBe("Acme Pack");
+    expect(preset.tokens.surface).toBe("#112233");
+    expect(preset.templates.index.main[0]!.props["text"]).toBe("Acme home");
+    // Un-authored templates synthesize the generic demo body, never empty.
+    expect(preset.templates.product.main.length).toBeGreaterThan(0);
+    expect(preset.templates.product.main[0]!.type).toBe("heading");
+  });
+
+  it("uninstalled keys fall back to null, sources intact", () => {
+    expect(resolveThemePreview("acme-pack")).toBeNull();
+    expect(resolveThemePreview("acme-pack", undefined, [])).toBeNull();
+    expect(resolveThemePreview("acme-pack", "minimal", [])).toBeNull();
+    // Source keys still resolve with an installed set present.
+    expect(
+      resolveThemePreview("songoskriti", undefined, [ARTIFACT])!.key,
+    ).toBe("songoskriti");
+  });
+
+  it("removal disappears from resolution without crashing", () => {
+    expect(
+      resolveThemePreview("acme-pack", undefined, [ARTIFACT]),
+    ).not.toBeNull();
+    expect(resolveThemePreview("acme-pack", undefined, [])).toBeNull();
+    expect(resolveThemePreview("acme-pack", undefined, undefined)).toBeNull();
+    expect(resolveThemePreview("acme-pack", undefined, null)).toBeNull();
+  });
+
+  it("source keys win over installed rows with the same key", () => {
+    const shadow = { ...ARTIFACT, key: "songoskriti", themeName: "Shadow" };
+    const preset = resolveThemePreview("songoskriti", undefined, [shadow])!;
+    expect(preset.themeName).not.toBe("Shadow");
+  });
+
+  it("installed variations apply over stored base tokens, unknown falls back", () => {
+    expect(
+      resolveThemePreview("acme-pack", "minimal", [ARTIFACT])!.tokens.surface,
+    ).toBe("#FFFFFF");
+    expect(
+      resolveThemePreview("acme-pack", "nope", [ARTIFACT])!.tokens.surface,
+    ).toBe("#112233");
+  });
+});
+
 describe("preview search query round-trip", () => {
   it("parses raw in-canvas query into separate keys", () => {
     expect(parsePreviewSearchQuery("max=99900")).toEqual({ max: "99900" });

@@ -23,8 +23,10 @@
  * Usage: /theme-preview/songoskriti
  */
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 import { ArrowLeft } from "@/components/icons/tabler";
 import { cn } from "@/lib/utils";
+import type { Database, Json } from "@/integrations/supabase/types";
 import { themePreviewHostGateFn } from "@/lib/storefront.functions";
 import {
   resolveThemePreview,
@@ -33,6 +35,123 @@ import {
 import { ThemePreviewFrame } from "@/components/store/ThemePreviewFrame";
 
 type RouteParams = { key: string };
+
+/**
+ * SWITCHOVER-4 — merchant installed rows for preview resolution.
+ *
+ * Optional-auth server fn (the route stays public): when the visitor carries
+ * a session it resolves their merchant and returns one artifact per installed
+ * theme (`store_themes` row + latest `theme_versions` row, keyed by
+ * `source_listing_slug`); anonymous visitors and every failure mode return
+ * `[]` so built-in source previews keep working — never a 500, never a leak
+ * across merchants (tenant-scoped reads on the caller's own token).
+ */
+/**
+ * Serializable installed row for preview resolution. `tokens` / `templates`
+ * ride as `Json` (the version-row column type) so the server-fn
+ * serializability gate accepts them; the shape stays assignable to
+ * `InstalledPreviewArtifact` downstream.
+ */
+type ThemePreviewInstalledRow = {
+  key: string;
+  themeName: string | null;
+  author: string | null;
+  tokens?: Json | null;
+  templates?: Json | null;
+};
+
+const themePreviewInstalledFn = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ThemePreviewInstalledRow[]> => {
+    try {
+      const { getRequest } = await import("@tanstack/react-start/server");
+      const token = (() => {
+        try {
+          const header = getRequest()?.headers.get("authorization");
+          if (!header?.startsWith("Bearer ")) return null;
+          const value = header.slice("Bearer ".length);
+          return value.split(".").length === 3 ? value : null;
+        } catch {
+          return null;
+        }
+      })();
+      if (!token) return [];
+      const url = process.env["SUPABASE_URL"];
+      const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+      if (!url || !key) return [];
+      const { createClient } = await import("@supabase/supabase-js");
+      const supabase = createClient<Database>(url, key, {
+        global: {
+          headers: { Authorization: `Bearer ${token}`, apikey: key },
+        },
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+      const { data: claimsData, error: claimsError } =
+        await supabase.auth.getClaims(token);
+      const userId = claimsData?.claims?.sub;
+      if (claimsError || !userId) return [];
+      const { currentMerchantId } = await import("@/lib/marketing.server");
+      let merchantId: string;
+      try {
+        merchantId = await currentMerchantId(
+          supabase as never,
+          userId as string,
+        );
+      } catch {
+        return [];
+      }
+      const { data: themes } = await supabase
+        .from("store_themes")
+        .select("id, name, author, source_listing_slug")
+        .eq("merchant_id", merchantId)
+        .not("source_listing_slug", "is", null)
+        .limit(100);
+      const rows = ((themes ?? []) as {
+        id: string;
+        name: string;
+        author: string | null;
+        source_listing_slug: string | null;
+      }[]).filter((t) => t.source_listing_slug?.trim());
+      if (!rows.length) return [];
+      const { data: versions } = await supabase
+        .from("theme_versions")
+        .select("theme_id, version, templates, tokens")
+        .eq("merchant_id", merchantId)
+        .in(
+          "theme_id",
+          rows.map((t) => t.id),
+        )
+        .order("version", { ascending: false })
+        .limit(500);
+      const latest = new Map<string, { templates: Json; tokens: Json }>();
+      for (const v of ((versions ?? []) as {
+        theme_id: string;
+        templates: Json;
+        tokens: Json;
+      }[])) {
+        if (!latest.has(v.theme_id))
+          latest.set(v.theme_id, { templates: v.templates, tokens: v.tokens });
+      }
+      return rows.flatMap((t) => {
+        const key = t.source_listing_slug!.trim();
+        if (!key) return [];
+        const v = latest.get(t.id);
+        // A theme row with no version row yet carries no artifact content:
+        // pass the keyed ref so discovery lists it, resolution falls back.
+        return [
+          {
+            key,
+            themeName: t.name,
+            author: t.author,
+            tokens: v?.tokens ?? null,
+            templates: v?.templates ?? null,
+          } satisfies ThemePreviewInstalledRow,
+        ];
+      });
+    } catch {
+      return [];
+    }
+  },
+);
 
 export const Route = createFileRoute("/theme-preview/$key")({
   // Template + focus (?focus= is the contract merchant-less redirects use)
@@ -67,7 +186,16 @@ export const Route = createFileRoute("/theme-preview/$key")({
       allowed = false;
     }
     if (!allowed) throw notFound();
-    return null;
+    // Installed rows join preview resolution as data (source fallback
+    // preserved): best-effort, fail-open to [] — anonymous visitors keep
+    // built-in previews, never a 500.
+    let installed: ThemePreviewInstalledRow[] = [];
+    try {
+      installed = await themePreviewInstalledFn();
+    } catch {
+      installed = [];
+    }
+    return { installed };
   },
   component: ThemePreviewRoute,
   errorComponent: ThemePreviewError,
@@ -82,9 +210,12 @@ function ThemePreviewRoute() {
     mock_order: initialMockOrder,
     variation: variationKey,
   } = Route.useSearch();
+  // Merchant-installed packages preview through the installed set the loader
+  // threaded in (SWITCHOVER-4); absent/anonymous stays source-only.
   // Theme variation deep-link (`?variation=minimal`): unknown keys fall
   // back to the base theme inside the resolver — never a 404.
-  const preset = resolveThemePreview(key, variationKey);
+  const { installed } = Route.useLoaderData();
+  const preset = resolveThemePreview(key, variationKey, installed);
 
   if (!preset) {
     return <ThemePreviewNotFound />;

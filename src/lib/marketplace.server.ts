@@ -1,6 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { BUILTIN_PREFIX, builtinWidgets } from "./builtin-plugins";
+import { artifactIdFor } from "./package-install.server";
+import {
+  exportBuiltinPluginZip,
+  exportPluginManifestZip,
+  gateExportManifest,
+} from "./plugin-package";
 
 type Client = SupabaseClient<Database>;
 
@@ -26,6 +32,142 @@ export function isCompatible(compatible: unknown) {
   const list = Array.isArray(compatible) ? compatible.map(String) : [];
   if (list.length === 0) return true;
   return list.includes(APP_MAJOR) || list.includes(APP_VERSION);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SWITCHOVER-2 — listings reference the exact ZIP artifact they install.
+//
+// A listing distributes ONE immutable byte string: the plugin ZIP the package
+// pipeline (`installPackage`, kind "plugin") installs and hashes. The catalog
+// exposes that identity per listing as `artifact` so a buyer can pin/verify
+// the bytes BEFORE installing, and the install path installs THOSE bytes
+// (never a re-render of the manifest), so marketplace and direct upload
+// converge on the same artifact id.
+//
+// Where the bytes come from, in order:
+//   1. built-ins: `exportBuiltinPluginZip(slug)` — the same exporter the
+//      direct-upload parity suite (PKG-4) installs through the pipeline.
+//   2. DB rows whose manifest is a full plugin manifest: rebuilt with
+//      `exportPluginManifestZip` (deterministic: same manifest ⇒ same bytes).
+//   3. a seller-published pin (`manifest.artifact = { checksum, version }`)
+//      when the bytes cannot be rebuilt locally — informational only, never
+//      trusted for the install (the install always hashes what it installs).
+//   4. legacy rows (bundle-shaped manifests like `{ entry, permissions }`,
+//      empty manifests, nulls): `artifact: null`. The install path takes the
+//      historical ledger-only behaviour for these — documented fallback, never
+//      a crash.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Serializable artifact identity surfaced on catalog listings. */
+export type ListingArtifactRef = {
+  /** sha256 hex of the exact ZIP the pipeline installs. */
+  checksum: string;
+  /** Manifest version pinned inside that ZIP. */
+  version: string;
+  /** Archive name handed to the pipeline (`<listing-slug>.zip`). */
+  fileName: string;
+  /**
+   * What pins it: `builtin:<id>` for official presets, `manifest` for a
+   * listing-manifest rebuild, `version:<id>` for a pinned vault version,
+   * `pin` for a seller-published `manifest.artifact` reference.
+   */
+  pinned: string;
+};
+
+/** Full build output: the catalog ref plus the bytes (server-side only). */
+export type BuiltListingArtifact = ListingArtifactRef & {
+  /** Exact bytes handed to `installPackage`. Never leaves the server. */
+  bytes: Uint8Array;
+  /** Plugin id inside the ZIP (asset namespace + ledger slug basis). */
+  manifestSlug: string;
+};
+
+const CHECKSUM_RE = /^[a-f0-9]{64}$/;
+
+/**
+ * Deterministically rebuild the install ZIP for a listing manifest.
+ * Returns null for legacy manifests that are not full plugin manifests —
+ * the caller falls back to the historical ledger-only install path.
+ */
+export function buildListingArtifact(
+  manifest: unknown,
+  listingSlug: string,
+  pinnedLabel = "manifest",
+): BuiltListingArtifact | null {
+  try {
+    if (!manifest || typeof manifest !== "object") return null;
+    const gated = gateExportManifest(manifest);
+    const bytes = exportPluginManifestZip(manifest);
+    return {
+      bytes,
+      checksum: artifactIdFor(bytes),
+      version: gated.version,
+      fileName: `${listingSlug}.zip`,
+      pinned: pinnedLabel,
+      manifestSlug: gated.id,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Seller-published artifact pin contract (`manifest.artifact`). Read-only and
+ * feature-detected: absent or malformed pins read as null, never a throw.
+ * A future publish lane can stamp this at review time; the install path
+ * always hashes what it installs rather than trusting the pin.
+ */
+export function storedArtifactPin(
+  manifest: unknown,
+  listingSlug: string,
+): ListingArtifactRef | null {
+  try {
+    const art = (manifest as { artifact?: unknown } | null)?.artifact as {
+      checksum?: unknown;
+      version?: unknown;
+    } | null;
+    if (!art || typeof art !== "object") return null;
+    const checksum = String(art.checksum ?? "");
+    const version = String(art.version ?? "");
+    if (!CHECKSUM_RE.test(checksum) || !version) return null;
+    return {
+      checksum,
+      version,
+      fileName: `${listingSlug}.zip`,
+      pinned: "pin",
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Catalog ref for a DB listing row: rebuilt bytes first, stored pin, legacy null. */
+export function catalogArtifactForRow(row: {
+  slug: string;
+  manifest: unknown;
+}): ListingArtifactRef | null {
+  return (
+    buildListingArtifact(row.manifest, row.slug) ??
+    storedArtifactPin(row.manifest, row.slug)
+  );
+}
+
+/** Catalog ref for an official built-in: always exact (exporter is total). */
+export function builtinCatalogArtifact(entry: {
+  slug: string;
+  version: string;
+}): ListingArtifactRef | null {
+  try {
+    const bytes = exportBuiltinPluginZip(entry.slug);
+    return {
+      checksum: artifactIdFor(bytes),
+      version: entry.version,
+      fileName: `${entry.slug}.zip`,
+      pinned: `builtin:${entry.slug}`,
+    };
+  } catch {
+    return null;
+  }
 }
 
 /** Retired theme listing shape (Sept 2026 purge): kept so historical
@@ -74,10 +216,13 @@ export async function listCatalog(db: Client, merchantId: string) {
     // The key stays as an empty list so historical callers keep their shape.
     themes: [] as RetiredThemeListing[],
     widgets: [
-      ...builtinWidgets(),
-      ...decorate(widgets.data, "widget").filter(
-        (r) => r.status === "active" || r.mine,
-      ),
+      ...builtinWidgets().map((b) => ({
+        ...b,
+        artifact: builtinCatalogArtifact(b),
+      })),
+      ...decorate(widgets.data, "widget")
+        .filter((r) => r.status === "active" || r.mine)
+        .map((r) => ({ ...r, artifact: catalogArtifactForRow(r) })),
     ],
     installs: installs.data ?? [],
   };

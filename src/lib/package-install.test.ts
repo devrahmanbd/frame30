@@ -22,6 +22,7 @@ import {
   setPluginPackageEnabled,
   setPackageManifestValidator,
   pkg1ThemeValidator,
+  stubManifestValidator,
   type ManifestValidator,
 } from "./package-install.server";
 import { themeVersionPrefix } from "./package-store.server";
@@ -146,6 +147,41 @@ function installTheme(
 
 const MANIFEST_V1 = { name: "Test Theme", version: "1.0.0" };
 
+/**
+ * SWITCHOVER-1: strict-shape theme manifest — passes `pkg1ThemeValidator`
+ * (the pipeline default). `MANIFEST_V1` above is the legacy stub shape:
+ * accepted by `stubManifestValidator`, rejected by the strict gate (see the
+ * strict-by-default cases in the PKG-1 boundary suite).
+ */
+function strictTheme(
+  version = "1.0.0",
+  extra: Record<string, unknown> = {},
+): Record<string, unknown> {
+  return {
+    key: "test-theme",
+    name: "Test Theme",
+    nameBn: "টেস্ট থিম",
+    version,
+    api: "^3.0.0",
+    templates: ["index"],
+    presentationSurfaces: ["widget"],
+    locales: ["en"],
+    capabilities: ["render_storefront"],
+    ...extra,
+  };
+}
+
+const STRICT_THEME_V1 = strictTheme();
+
+/** Strict-shape plugin manifest — passes `pkg1PluginValidator` (default). */
+function strictPlugin(
+  id: string,
+  version = "1.0.0",
+  extra: Record<string, unknown> = {},
+): Record<string, unknown> {
+  return { id, name: id, version, api: "^3.0.0", ...extra };
+}
+
 beforeEach(() => {
   setPackageManifestValidator(null);
 });
@@ -155,7 +191,7 @@ beforeEach(() => {
 describe("PKG-2 valid install", () => {
   it("registers theme + version + draft + namespaced assets + ledger + audit", async () => {
     const db = pkgDb();
-    const zip = themeZip(MANIFEST_V1, [
+    const zip = themeZip(STRICT_THEME_V1, [
       { name: "styles/main.css", content: "a{color:red}" },
       { name: "assets/logo.png", content: "png-bytes" },
       { name: "locales/en.json", content: "{}" },
@@ -191,7 +227,7 @@ describe("PKG-2 valid install", () => {
 
   it("replays an idempotency key without stacking rows", async () => {
     const db = pkgDb();
-    const zip = themeZip(MANIFEST_V1);
+    const zip = themeZip(STRICT_THEME_V1);
     const k = key();
     const first = await installTheme(db, MERCHANT_A, zip, { key: k });
     const second = await installTheme(db, MERCHANT_A, zip, { key: k });
@@ -203,7 +239,7 @@ describe("PKG-2 valid install", () => {
 
   it("previews an owned version without touching the live pointer", async () => {
     const db = pkgDb();
-    const res = await installTheme(db, MERCHANT_A, themeZip(MANIFEST_V1));
+    const res = await installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
     const preview = await previewPackage(db.asClient(), MERCHANT_A, res.versionId);
     expect(preview.packageId).toBe(res.packageId);
     expect(preview.assets.length).toBeGreaterThan(0);
@@ -214,7 +250,7 @@ describe("PKG-2 valid install", () => {
 
   it("activates a version onto the live pointer", async () => {
     const db = pkgDb();
-    const res = await installTheme(db, MERCHANT_A, themeZip(MANIFEST_V1));
+    const res = await installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
     const out = await activatePackage(
       db.asClient(),
       MERCHANT_A,
@@ -307,21 +343,39 @@ describe("PKG-2 rejections", () => {
     expect(db.rows("store_themes")).toHaveLength(0);
   });
 
-  it("rejects incompatible api ranges", async () => {
+  it("rejects incompatible api ranges at the strict gate", async () => {
     const db = pkgDb();
-    const zip = themeZip({ name: "Test Theme", version: "1.0.0", api: "^99.0.0" });
+    // Strict default catches the out-of-range builder API at the manifest
+    // gate (same `satisfiesApiRange` rule the downstream check enforces, so
+    // the validator reports it first).
+    const zip = themeZip(strictTheme("1.0.0", { api: "^99.0.0" }));
     expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe(
-      "package.api_incompatible",
+      "package.manifest_invalid",
     );
+    // The explicit stub seam still reaches the downstream API check, proving
+    // the override path is intact.
+    expect(
+      await codeOf(
+        installPackage(db.asClient(), MERCHANT_A, {
+          kind: "theme",
+          fileName: "theme.zip",
+          bytes: themeZip({ name: "Test Theme", version: "1.0.0", api: "^99.0.0" }),
+          idempotencyKey: key(),
+          validator: stubManifestValidator,
+        }),
+      ),
+    ).toBe("package.api_incompatible");
   });
 
   it("rejects missing dependencies, then installs once satisfied", async () => {
     const db = pkgDb();
-    const zip = themeZip({
-      name: "Needs Chat",
-      version: "1.0.0",
-      dependencies: ["chat-widget"],
-    });
+    const zip = themeZip(
+      strictTheme("1.0.0", {
+        key: "needs-chat",
+        name: "Needs Chat",
+        pluginDependencies: [{ ref: "plugin:chat-widget", version: "1.0.0" }],
+      }),
+    );
     expect(await codeOf(installTheme(db, MERCHANT_A, zip))).toBe(
       "package.missing_dependency",
     );
@@ -339,7 +393,7 @@ describe("PKG-2 rejections", () => {
   it("rejects broken presentation refs", async () => {
     const db = pkgDb();
     const zip = themeZip(
-      MANIFEST_V1,
+      STRICT_THEME_V1,
       [{ name: "styles/main.css", content: "a{}" }],
       { templates: { hero: "assets/missing.png" } },
     );
@@ -355,14 +409,14 @@ describe("PKG-2 update v1→v2 + rollback v2→v1", () => {
     const v1 = await installTheme(
       db,
       MERCHANT_A,
-      themeZip({ name: "Test Theme", version: "1.0.0" }, [
+      themeZip(strictTheme("1.0.0"), [
         { name: "assets/logo.png", content: "v1-logo" },
       ]),
     );
     const v2 = await installTheme(
       db,
       MERCHANT_A,
-      themeZip({ name: "Test Theme", version: "1.1.0" }, [
+      themeZip(strictTheme("1.1.0"), [
         { name: "assets/logo.png", content: "v2-logo" },
       ]),
     );
@@ -386,10 +440,10 @@ describe("PKG-2 update v1→v2 + rollback v2→v1", () => {
 
   it("refuses a downgrade as a bad version", async () => {
     const db = pkgDb();
-    await installTheme(db, MERCHANT_A, themeZip({ name: "T", version: "1.1.0" }));
+    await installTheme(db, MERCHANT_A, themeZip(strictTheme("1.1.0")));
     expect(
       await codeOf(
-        installTheme(db, MERCHANT_A, themeZip({ name: "T", version: "1.0.0" })),
+        installTheme(db, MERCHANT_A, themeZip(strictTheme("1.0.0"))),
       ),
     ).toBe("package.bad_version");
   });
@@ -424,7 +478,7 @@ describe("PKG-2 update v1→v2 + rollback v2→v1", () => {
 describe("PKG-2 uninstall isolation", () => {
   it("refuses to uninstall the active package", async () => {
     const db = pkgDb();
-    const res = await installTheme(db, MERCHANT_A, themeZip(MANIFEST_V1));
+    const res = await installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
     await activatePackage(db.asClient(), MERCHANT_A, res.packageId, res.versionId, ACTOR);
     expect(
       await codeOf(uninstallPackage(db.asClient(), MERCHANT_A, res.packageId, ACTOR)),
@@ -436,16 +490,18 @@ describe("PKG-2 uninstall isolation", () => {
     const first = await installTheme(
       db,
       MERCHANT_A,
-      themeZip({ name: "Alpha", version: "1.0.0" }, [
-        { name: "assets/a.png", content: "a" },
-      ]),
+      themeZip(
+        strictTheme("1.0.0", { key: "alpha", name: "Alpha", nameBn: "আলফা" }),
+        [{ name: "assets/a.png", content: "a" }],
+      ),
     );
     const second = await installTheme(
       db,
       MERCHANT_A,
-      themeZip({ name: "Beta", version: "2.0.0" }, [
-        { name: "assets/b.png", content: "b" },
-      ]),
+      themeZip(
+        strictTheme("2.0.0", { key: "beta", name: "Beta", nameBn: "বিটা" }),
+        [{ name: "assets/b.png", content: "b" }],
+      ),
     );
     await activatePackage(db.asClient(), MERCHANT_A, second.packageId, second.versionId, ACTOR);
     const out = await uninstallPackage(db.asClient(), MERCHANT_A, first.packageId, ACTOR);
@@ -468,7 +524,7 @@ describe("PKG-2 uninstall isolation", () => {
 describe("PKG-2 tenant A/B isolation", () => {
   it("scopes every step to the owning merchant", async () => {
     const db = pkgDb();
-    const res = await installTheme(db, MERCHANT_A, themeZip(MANIFEST_V1));
+    const res = await installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
     // B cannot see or mutate A's package through any entry point.
     expect(await codeOf(previewPackage(db.asClient(), MERCHANT_B, res.versionId))).toBe(
       "package.not_found",
@@ -489,7 +545,7 @@ describe("PKG-2 tenant A/B isolation", () => {
     // A's rows are untouched by B's attempts.
     expect(db.rows("store_themes")).toHaveLength(1);
     // B installing the same bytes gets fully separate rows.
-    const bRes = await installTheme(db, MERCHANT_B, themeZip(MANIFEST_V1));
+    const bRes = await installTheme(db, MERCHANT_B, themeZip(STRICT_THEME_V1));
     expect(bRes.packageId).not.toBe(res.packageId);
     expect(db.rows("store_themes")).toHaveLength(2);
     const names = db.rows("theme_assets").map((a) => a.name as string);
@@ -519,7 +575,7 @@ describe("PKG-2 plugin packages", () => {
       {
         kind: "plugin",
         fileName: "other.zip",
-        bytes: pluginZip({ name: "Other", version: "1.0.0" }),
+        bytes: pluginZip(strictPlugin("other", "1.0.0", { name: "Other" })),
         idempotencyKey: key(),
       },
       ACTOR,
@@ -530,7 +586,7 @@ describe("PKG-2 plugin packages", () => {
       {
         kind: "plugin",
         fileName: "chat.zip",
-        bytes: pluginZip({ name: "Chat", version: "1.0.0" }, [
+        bytes: pluginZip(strictPlugin("chat", "1.0.0", { name: "Chat" }), [
           { name: "assets/icon.png", content: "icon" },
         ]),
         idempotencyKey: key(),
@@ -592,16 +648,90 @@ describe("PKG-2 plugin packages", () => {
 /* ---------------------------------------------------------- PKG-1 seam */
 
 describe("PKG-2 PKG-1 validator boundary", () => {
-  it("falls back to the stub when no validator is registered", async () => {
-    const db = pkgDb();
-    // Minimal manifest passes the stub; a nameless one does not.
-    const ok = await installTheme(db, MERCHANT_A, themeZip(MANIFEST_V1));
-    expect(ok.version).toBe("1.0.0");
-    expect(
-      await codeOf(
-        installTheme(db, MERCHANT_A, themeZip({ version: "1.0.0" } as never)),
-      ),
-    ).toBe("package.manifest_invalid");
+  it("enforces strict gates by default; stub opt-in via explicit seam", async () => {
+    // 1. Legacy stub-shape theme (name + version only) fails the default path.
+    {
+      const db = pkgDb();
+      expect(
+        await codeOf(installTheme(db, MERCHANT_A, themeZip(MANIFEST_V1))),
+      ).toBe("package.manifest_invalid");
+      expect(db.rows("store_themes")).toHaveLength(0);
+    }
+    // 2. The same bytes pass through the explicit stub seam (opt-out intact).
+    {
+      const db = pkgDb();
+      const res = await installPackage(
+        db.asClient(),
+        MERCHANT_A,
+        {
+          kind: "theme",
+          fileName: "theme.zip",
+          bytes: themeZip(MANIFEST_V1),
+          idempotencyKey: key(),
+          validator: stubManifestValidator,
+        },
+        ACTOR,
+      );
+      expect(res.version).toBe("1.0.0");
+    }
+    // 3. Strict theme shape installs with no explicit validator (default path).
+    {
+      const db = pkgDb();
+      const res = await installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
+      expect(res.version).toBe("1.0.0");
+    }
+    // 4. Plugin lane mirrors: stub-shape plugin (no id/api) rejected by
+    // default, strict shape accepted.
+    {
+      const db = pkgDb();
+      expect(
+        await codeOf(
+          installPackage(
+            db.asClient(),
+            MERCHANT_A,
+            {
+              kind: "plugin",
+              fileName: "chat.zip",
+              bytes: pluginZip({ name: "Chat", version: "1.0.0" }),
+              idempotencyKey: key(),
+            },
+            ACTOR,
+          ),
+        ),
+      ).toBe("package.manifest_invalid");
+      const res = await installPackage(
+        db.asClient(),
+        MERCHANT_A,
+        {
+          kind: "plugin",
+          fileName: "chat.zip",
+          bytes: pluginZip(strictPlugin("chat", "1.0.0", { name: "Chat" })),
+          idempotencyKey: key(),
+        },
+        ACTOR,
+      );
+      expect(res.version).toBe("1.0.0");
+    }
+    // 5. A nameless manifest fails even the explicit stub (stub still validates).
+    {
+      const db = pkgDb();
+      expect(
+        await codeOf(
+          installPackage(
+            db.asClient(),
+            MERCHANT_A,
+            {
+              kind: "theme",
+              fileName: "theme.zip",
+              bytes: themeZip({ version: "1.0.0" } as never),
+              idempotencyKey: key(),
+              validator: stubManifestValidator,
+            },
+            ACTOR,
+          ),
+        ),
+      ).toBe("package.manifest_invalid");
+    }
   });
 
   it("prefers an explicitly injected validator (fake PKG-1)", async () => {

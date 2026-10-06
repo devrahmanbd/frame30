@@ -120,3 +120,41 @@ describe("theme widget registry", () => {
     );
   });
 });
+
+describe("installed package discovery (SWITCHOVER-3)", () => {
+  it("unions installed slugs after source keys, sources intact and first", () => {
+    const keys = themeWidgetKeys(["acme-pack"]);
+    expect(keys[0]).toBe("songoskriti");
+    expect(keys[1]).toBe("somvabona");
+    expect(keys).toContain("acme-pack");
+    // Source keys survive as installed refs without duplicating.
+    expect(themeWidgetKeys(["songoskriti", "acme-pack"])).toEqual(keys);
+    expect(themeWidgetKeys([{ key: "acme-pack" }])).toEqual(keys);
+  });
+
+  it("removal disappears from the tray list while source keys stay intact", () => {
+    expect(themeWidgetKeys(["acme-pack"])).toContain("acme-pack");
+    expect(themeWidgetKeys()).not.toContain("acme-pack");
+    expect(themeWidgetKeys([])).not.toContain("acme-pack");
+    expect(themeWidgetKeys()).toContain("songoskriti");
+    expect(themeWidgetKeys()).toContain("somvabona");
+  });
+
+  it("installed-only keys resolve generic widgets, never brand", () => {
+    expect(resolveWidgetComponent("acme-pack", "product_grid")).toBe(
+      GENERIC_WIDGETS.product_grid,
+    );
+    expect(resolveWidgetComponent("acme-pack", "newsletter")).toBe(
+      GENERIC_WIDGETS.newsletter,
+    );
+    // Theme-only keys still render the unavailable placeholder for
+    // installed packages — no brand ever leaks across packages.
+    expect(resolveWidgetComponent("acme-pack", "finder_row")).toBeUndefined();
+  });
+
+  it("garbage installed inputs never crash discovery", () => {
+    const garbage = [null, undefined, "", "   ", 42, {}, { key: 7 }] as never[];
+    expect(themeWidgetKeys(garbage)).toEqual(themeWidgetKeys());
+    expect(themeWidgetKeys(null)).toEqual(themeWidgetKeys());
+  });
+});

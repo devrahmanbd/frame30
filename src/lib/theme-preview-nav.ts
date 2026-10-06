@@ -26,6 +26,7 @@ import type {
 import { TEMPLATE_KEYS, resolveTemplate } from "./builder-ast";
 import { demoCatalogFor } from "./demo-catalog";
 import { previewSourceFor } from "./preview-sources";
+import type { InstalledThemeRef } from "./preview-sources";
 import {
   MAX_VARIATION_KEY_LENGTH,
   VARIATION_KEY_RE,
@@ -401,11 +402,20 @@ export function assemblePreviewTemplates(
   return templates;
 }
 
+/**
+ * Resolve a preview preset by key. Built-in source keys resolve from the
+ * static registry; merchant-installed packages (uploaded zips whose content
+ * lives in `store_themes` / `theme_versions` rows) resolve from the
+ * `installed` set the route loader threads through (SWITCHOVER-4). Source
+ * keys always win on collision; an uninstalled/removed key resolves to null
+ * (route renders 404) — never a crash.
+ */
 export function resolveThemePreview(
   key: string,
   variationKey?: string | null,
+  installed?: readonly InstalledThemeRef[] | null,
 ): ThemePreviewPreset | null {
-  const source = previewSourceFor(key, variationKey ?? undefined);
+  const source = previewSourceFor(key, variationKey ?? undefined, installed);
   if (!source) return null;
   // The source factory already builds with the variation applied; the
   // metadata lookup + idempotent token merge here keep resolvers that
