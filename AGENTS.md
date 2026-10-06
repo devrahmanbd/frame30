@@ -130,3 +130,14 @@ bun run a11y:gate                 # axe-core, >= 90 score
 - `DESIGN.md` — design system tokens and component specs
 - `TODO.md` — active execution plan
 - `docs/` — per-area planning specs (18 directories)
+
+## Backups — where they live and how long (dev server policy)
+
+- **Location:** `/var/backups/framique/`
+  - `YYYYMMDDTHHMMSSZ/` — nightly logical sets from `framique-backup.service` (`db.dump` + `configs.tar.zst` + `redis.rdb`).
+  - `base/` — `pg_basebackup` sets (`base.tar.gz`) for point-in-time recovery.
+  - `wal/` — Postgres WAL archive (`archive_command` ships every segment; `archive_timeout = 15min` caps idle churn).
+- **Retention (2-day rollback window):** keep the last 2 dated sets + last 2 `base/` sets. Enforced daily by `framique-backup-expiry.timer` → `/usr/local/bin/framique-backup-expiry.sh`.
+- **No WAL retention (dev-server decision, 2026-10-06):** WAL archiving is neutralized (`archive_command = /bin/true`, segments recycled by postgres, no restart needed). RPO is therefore the nightly dump (24h), not 300s — PITR between dumps is unavailable by policy. Re-enable archiving + expiry window if this box ever hosts non-dev workloads.
+- **Restore order:** latest dated `db.dump` for logic-level rollback; `base/` set for full snapshot restore. Anything older is expired by policy — do not expect it.
+- 2026-10-04 cleanup: 184G → ~164G WAL after disk hit 96%. 2026-10-06: WAL dropped entirely (168G freed, disk 54%); `archive_timeout` 1min → 15min earlier had already cut generation ~15x.
