@@ -48,7 +48,97 @@ export type CatalogTheme = {
   /** Installed *and* active. */
   active: boolean;
   favourite: boolean;
+  /**
+   * B2 — catalogue provenance. `official` = Framique-built (Songoskriti,
+   * Somvabona) installed through the normal `installPackage` pipeline
+   * against the internally-built artifact; `community` = registry / third
+   * party. The catalogue renders them as separate sections.
+   */
+  provenance: ThemeProvenance;
 };
+
+/* ------------------------------------------------- catalogue provenance (B2)
+ *
+ * Official / Community / Upload model (proposal
+ * `official-packages-builtin-model`): the catalogue has an Official
+ * section (exactly the two built themes — no third vapor theme exists),
+ * a Community section, and an Upload Theme entry. Official entries carry
+ * an artifact ref (checksum + `official:<key>` pin); the bytes behind
+ * the ref stay server-side and are never downloadable.
+ */
+
+/** Framique-built themes. Exactly these two — no OceanBlue source exists. */
+export const OFFICIAL_THEME_KEYS = [
+  "songoskriti",
+  "somvabona",
+] as const;
+
+export type OfficialThemeKey = (typeof OFFICIAL_THEME_KEYS)[number];
+
+export type ThemeProvenance = "official" | "community";
+
+/** Ledger/catalogue pin for an official artifact: `official:<key>`. */
+export const OFFICIAL_PIN_PREFIX = "official:";
+
+export function officialPinFor(key: string): string {
+  return `${OFFICIAL_PIN_PREFIX}${key}`;
+}
+
+/** True for the two official keys only — a third catalogue key is never official. */
+export function isOfficialThemeKey(key: string): key is OfficialThemeKey {
+  return (OFFICIAL_THEME_KEYS as readonly string[]).includes(key);
+}
+
+/**
+ * Serializable artifact identity surfaced on official catalogue entries.
+ * Mirrors the plugin `ListingArtifactRef` contract: checksum of the exact
+ * ZIP the pipeline installs, the manifest version pinned inside it, the
+ * archive name handed to `installPackage`, and the `official:<key>` pin.
+ * The bytes themselves stay server-side (build-lane owned, never exposed).
+ */
+export type OfficialArtifactRef = {
+  checksum: string;
+  version: string;
+  fileName: string;
+  pinned: string;
+};
+
+export function officialArtifactRef(
+  key: OfficialThemeKey,
+  version: string,
+  checksum: string,
+): OfficialArtifactRef {
+  return {
+    checksum,
+    version,
+    fileName: `${key}.zip`,
+    pinned: officialPinFor(key),
+  };
+}
+
+export type CatalogSections = {
+  official: CatalogTheme[];
+  community: CatalogTheme[];
+};
+
+/**
+ * Split a catalogue into its Official / Community sections. Official
+ * entries come first in `OFFICIAL_THEME_KEYS` order (Songoskriti, then
+ * Somvabona); community keeps catalogue order. Either section may be
+ * empty — an empty official section renders the graceful "not built yet"
+ * empty-state, never a hole in the screen.
+ */
+export function sectionCatalogue(themes: CatalogTheme[]): CatalogSections {
+  const official = themes
+    .filter((t) => t.provenance === "official")
+    .sort(
+      (a, b) =>
+        OFFICIAL_THEME_KEYS.indexOf(a.key as OfficialThemeKey) -
+        OFFICIAL_THEME_KEYS.indexOf(b.key as OfficialThemeKey),
+    );
+  const community = themes.filter((t) => t.provenance !== "official");
+  return { official, community };
+}
 
 export type ThemesWorkspace = {
   installed: InstalledTheme[];
@@ -260,25 +350,23 @@ export function catalogView(
 }
 
 /**
- * Operator-curated themes (Sept 2026): only these catalogue keys are
- * offered while the directory is being rebuilt. The active theme always
- * stays visible so the live storefront remains manageable — hiding it
- * would strand the merchant with no way to configure what shoppers see.
+ * Catalogue curation, retired with the B2 Official/Community model.
+ *
+ * The install screen now sections the catalogue by provenance (official
+ * vs community) instead of an allowlist: registry rows are DB-curated and
+ * official entries arrive only with their built artifact. Every catalogue
+ * entry passes through, so an installed theme is always manageable.
  */
-/** No curated offer: both marketplace themes were removed (Sept 2026).
- *  Only the active theme stays visible so live storefronts remain manageable. */
 export const VISIBLE_THEME_KEYS: ReadonlySet<string> = new Set([]);
 
-/** Installed grid: the live theme plus allowlisted keys (null-key rows hide). */
+/** Installed grid: every installed row stays manageable (never strand). */
 export function visibleInstalled(themes: InstalledTheme[]): InstalledTheme[] {
-  return themes.filter(
-    (t) => t.isActive || (t.key !== null && VISIBLE_THEME_KEYS.has(t.key)),
-  );
+  return themes.slice();
 }
 
 /** Catalogue: allowlisted keys only. */
 export function visibleCatalogue(themes: CatalogTheme[]): CatalogTheme[] {
-  return themes.filter((t) => VISIBLE_THEME_KEYS.has(t.key));
+  return themes.slice();
 }
 
 /* ------------------------------------------------------- gallery keys

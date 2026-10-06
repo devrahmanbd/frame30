@@ -3,6 +3,7 @@ import { z } from "zod";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { requirePermission } from "@/lib/authz-middleware";
+import { OFFICIAL_THEME_KEYS } from "@/lib/themes/appearance";
 
 async function scope(db: SupabaseClient<Database>, userId: string) {
   const { currentMerchantId } = await import("@/lib/marketing.server");
@@ -26,7 +27,20 @@ export const themeInstallFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("themes.update")])
   .inputValidator((d: unknown) => z.object({ key: themeKey }).parse(d))
   .handler(async ({ data, context }) => {
-    const { installCatalogTheme } = await import("./appearance.server");
+    const { installCatalogTheme, installOfficialTheme } = await import(
+      "./appearance.server"
+    );
+    // B2: official keys run the NORMAL installPackage pipeline (via
+    // installOfficialTheme) against the internally-built artifact — same
+    // validators/ledger/version rows as uploads, never a separate path.
+    if ((OFFICIAL_THEME_KEYS as readonly string[]).includes(data.key)) {
+      return installOfficialTheme(
+        context.supabase,
+        await scope(context.supabase, context.userId),
+        data.key,
+        context.userId,
+      );
+    }
     return installCatalogTheme(
       context.supabase,
       await scope(context.supabase, context.userId),

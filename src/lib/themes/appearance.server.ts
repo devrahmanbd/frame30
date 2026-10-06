@@ -19,9 +19,12 @@ import { catalogMeta } from "./catalog-meta";
 import {
   isNewerVersion,
   MAX_THEME_UPLOAD_BYTES,
+  OFFICIAL_THEME_KEYS,
+  officialPinFor,
   orderInstalled,
   type CatalogTheme,
   type InstalledTheme,
+  type OfficialThemeKey,
   type ThemesWorkspace,
 } from "./appearance";
 
@@ -183,44 +186,84 @@ async function favouriteKeys(
   return new Set((data ?? []).map((row) => row.theme_key));
 }
 
-/** Installed list + catalogue, with install/active/favourite flags resolved. */
+/** Installed list + catalogue, with install/active/favourite flags resolved.
+ *
+ * B2 catalogue semantics: official entries (Songoskriti, Somvabona) come
+ * from internally-built artifacts when the build lane has run — with a
+ * graceful empty official section when it hasn't — and every other
+ * registry row lists as community. Registry rows colliding with an
+ * official key are skipped so no theme ever shows two Install buttons.
+ */
 export async function loadThemesWorkspace(
   db: Client,
   merchantId: string,
 ): Promise<ThemesWorkspace> {
-  const [registry, installedRows, favourites] = await Promise.all([
+  const [registry, official, installedRows, favourites] = await Promise.all([
     listRegistry(db),
+    listOfficialCatalog(),
     rows(db, merchantId),
     favouriteKeys(db, merchantId),
   ]);
-  const latest = new Map(registry.map((entry) => [entry.key, entry.version]));
+  const latest = new Map<string, string>([
+    ...registry.map((entry) => [entry.key, entry.version] as const),
+    ...official.map((entry) => [entry.key, entry.version] as const),
+  ]);
   const installed = orderInstalled(
     installedRows.map((row) => toInstalled(row, latest)),
   );
   const byKey = new Map(installed.filter((t) => t.key).map((t) => [t.key!, t]));
 
-  const catalogue: CatalogTheme[] = registry.map((entry) => {
-    const meta = catalogMeta(entry.key);
-    const local = byKey.get(entry.key);
-    return {
-      key: entry.key,
-      name: entry.nameEn,
-      summary: entry.summaryEn,
-      author: meta.author,
-      category: entry.category,
-      version: entry.version,
-      screenshotUrl: local?.screenshotUrl ?? null,
-      tags: meta.tags,
-      subjects: meta.subjects,
-      features: meta.features,
-      layouts: meta.layouts,
-      rating: meta.rating,
-      installs: meta.installs,
-      installed: Boolean(local),
-      active: Boolean(local?.isActive),
-      favourite: favourites.has(entry.key),
-    };
-  });
+  const officialKeys = new Set(official.map((entry) => entry.key));
+  const catalogue: CatalogTheme[] = [
+    ...official.map((entry) => {
+      const meta = catalogMeta(entry.key);
+      const local = byKey.get(entry.key);
+      return {
+        key: entry.key,
+        name: entry.nameEn,
+        summary: entry.summaryEn,
+        author: meta.author,
+        category: entry.category,
+        version: entry.version,
+        screenshotUrl: local?.screenshotUrl ?? null,
+        tags: meta.tags,
+        subjects: meta.subjects,
+        features: meta.features,
+        layouts: meta.layouts,
+        rating: meta.rating,
+        installs: meta.installs,
+        installed: Boolean(local),
+        active: Boolean(local?.isActive),
+        favourite: favourites.has(entry.key),
+        provenance: "official" as const,
+      };
+    }),
+    ...registry
+      .filter((entry) => !officialKeys.has(entry.key))
+      .map((entry) => {
+        const meta = catalogMeta(entry.key);
+        const local = byKey.get(entry.key);
+        return {
+          key: entry.key,
+          name: entry.nameEn,
+          summary: entry.summaryEn,
+          author: meta.author,
+          category: entry.category,
+          version: entry.version,
+          screenshotUrl: local?.screenshotUrl ?? null,
+          tags: meta.tags,
+          subjects: meta.subjects,
+          features: meta.features,
+          layouts: meta.layouts,
+          rating: meta.rating,
+          installs: meta.installs,
+          installed: Boolean(local),
+          active: Boolean(local?.isActive),
+          favourite: favourites.has(entry.key),
+          provenance: "community" as const,
+        };
+      }),
+  ];
 
   return { installed, catalogue };
 }
@@ -242,8 +285,169 @@ async function requireRow(
   return data as unknown as Row;
 }
 
+/* -------------------------------- B2 — official catalogue + install (shared pipeline)
+ *
+ * Official themes (Songoskriti, Somvabona) install through the NORMAL
+ * `installPackage` pipeline — same validators, same ledger, same version
+ * rows as merchant uploads — against the internally-built artifact. There
+ * is no separate official install path anywhere in this module.
+ *
+ * Artifact-build seam (owned by the artifact-build lane): the build lane
+ * publishes each official theme's exact install bytes plus catalogue
+ * metadata through `setOfficialArtifactProvider`. Until it does, the
+ * provider is null: the official catalogue section is gracefully empty
+ * and official installs refuse with `theme.official_unavailable` without
+ * writing anything. Catalogue entries carry the serializable artifact ref
+ * only (`official:<key>` pin); the bytes never leave the server, and
+ * there is no downloadable official artifact.
+ */
+
+export type OfficialCatalogArtifact = {
+  /** sha256 hex of the exact ZIP the pipeline installs. */
+  checksum: string;
+  /** Manifest version pinned inside that ZIP. */
+  version: string;
+  /** Archive name handed to `installPackage` (`<key>.zip`). */
+  fileName: string;
+  /** Provenance marker: `official:<key>`. */
+  pinned: string;
+};
+
+export type OfficialCatalogEntry = {
+  key: string;
+  nameEn: string;
+  nameBn: string;
+  summaryEn: string;
+  summaryBn: string;
+  category: string;
+  version: string;
+  artifact: OfficialCatalogArtifact;
+  /** Exact install bytes. Server-side only — never serialized to clients. */
+  bytes: Uint8Array;
+};
+
+export type OfficialArtifactProvider = (
+  key: OfficialThemeKey,
+) => Promise<OfficialCatalogEntry | null>;
+
+let officialArtifactProvider: OfficialArtifactProvider | null = null;
+
+/**
+ * Seam for the artifact-build lane (and tests). The build lane calls this
+ * once with a provider that serves internally-built official artifacts;
+ * tests inject fixture bytes the same way.
+ */
+export function __setOfficialArtifactProviderForTests(
+  provider: OfficialArtifactProvider | null,
+): void {
+  officialArtifactProvider = provider;
+}
+
+/** Official catalogue entries, or [] when the build hasn't run. Never throws. */
+export async function listOfficialCatalog(): Promise<OfficialCatalogEntry[]> {
+  if (!officialArtifactProvider) return [];
+  const entries: OfficialCatalogEntry[] = [];
+  for (const key of OFFICIAL_THEME_KEYS) {
+    try {
+      const entry = await officialArtifactProvider(key);
+      if (entry) entries.push(entry);
+    } catch {
+      // A broken build for one key hides that key, never the section.
+    }
+  }
+  return entries;
+}
+
+async function resolveOfficialArtifact(
+  key: string,
+): Promise<OfficialCatalogEntry> {
+  if (!(OFFICIAL_THEME_KEYS as readonly string[]).includes(key)) {
+    throw new ThemeDeskError(
+      "theme.unknown",
+      "That theme is not in the catalogue.",
+    );
+  }
+  const entry = officialArtifactProvider
+    ? await officialArtifactProvider(key as OfficialThemeKey).catch(() => null)
+    : null;
+  if (!entry) {
+    throw new ThemeDeskError(
+      "theme.official_unavailable",
+      "That official theme is not built yet. Try again later.",
+    );
+  }
+  return entry;
+}
+
+/**
+ * Install an official theme through the NORMAL package pipeline.
+ *
+ * Literally `installPackage` with the internally-built artifact bytes and
+ * the strict PKG-1 theme validator — the same call shape as a merchant ZIP
+ * upload — so validators, ledger, version rows, drafts and audit are
+ * identical. The only official-specific touch is the ledger provenance
+ * marker (`official:<key>` instead of `upload`), stamped after the
+ * pipeline commits; if the stamp fails the install still stands and the
+ * miss is logged (same degrade pattern as the SEO seed on the legacy
+ * registry path).
+ */
+export async function installOfficialTheme(
+  db: Client,
+  merchantId: string,
+  key: string,
+  actorId?: string | null,
+) {
+  const entry = await resolveOfficialArtifact(key);
+  const { installPackage, pkg1ThemeValidator } = await import(
+    "../package-install.server"
+  );
+  const out = await installPackage(
+    db,
+    merchantId,
+    {
+      kind: "theme",
+      fileName: entry.artifact.fileName,
+      bytes: entry.bytes,
+      idempotencyKey: `official:${merchantId}:${entry.key}`,
+      validator: pkg1ThemeValidator,
+    },
+    actorId,
+  );
+  try {
+    const { data: ledger } = await db
+      .from("marketplace_installs")
+      .select("id")
+      .eq("merchant_id", merchantId)
+      .eq("idempotency_key", `official:${merchantId}:${entry.key}`)
+      .maybeSingle();
+    const ledgerId = (ledger as { id: string } | null)?.id;
+    if (ledgerId) {
+      await db
+        .from("marketplace_installs")
+        .update({
+          artifact_pinned: officialPinFor(entry.key),
+        } as never)
+        .eq("merchant_id", merchantId)
+        .eq("id", ledgerId);
+    }
+  } catch {
+    try {
+      const { log } = await import("../observability.server");
+      log("warn", "theme.official_pin_missed", { key: entry.key });
+    } catch {
+      // Observability must never fail an install that already committed.
+    }
+  }
+  return out;
+}
+
 /**
  * Add a catalogue theme to the installed list (idempotent per key).
+ *
+ * Community path only: official keys (`songoskriti`, `somvabona`) always
+ * install through the shared `installPackage` pipeline via
+ * `installOfficialTheme` — never here. There is no separate official
+ * install path.
  *
  * A complete install, like the marketplace path: theme row + version 1 +
  * draft + ledger row + linkage + audit. A bare theme row is invisible to
@@ -256,6 +460,12 @@ export async function installCatalogTheme(
   key: string,
   actorId?: string | null,
 ) {
+  if ((OFFICIAL_THEME_KEYS as readonly string[]).includes(key)) {
+    throw new ThemeDeskError(
+      "theme.official_path",
+      "Official themes install through the shared package pipeline.",
+    );
+  }
   const registry = await listRegistry(db);
   const entry = registry.find((theme) => theme.key === key);
   if (!entry)

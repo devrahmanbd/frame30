@@ -21,6 +21,7 @@ import {
   MAX_THEME_UPLOAD_BYTES,
   catalogView,
   formatBytes,
+  sectionCatalogue,
   selectionCount,
   validateThemeUpload,
   type CatalogTab,
@@ -58,12 +59,16 @@ export function AddThemeScreen({
   const [query, setQuery] = useState("");
   const [selection, setSelection] = useState<FeatureSelection>(EMPTY_SELECTION);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [uploadOpen, setUploadOpen] = useState(false);
 
   const view = useMemo(
     () => catalogView(catalogue, { query, selection, tab }),
     [catalogue, query, selection, tab],
   );
+  // B2 — Official / Community / Upload sections. Search, filter and tabs
+  // narrow the whole catalogue first; the surviving rows are then split by
+  // provenance so each section keeps its own Install buttons and its own
+  // empty-state (an unbuilt official artifact is a message, never a hole).
+  const sections = useMemo(() => sectionCatalogue(view), [view]);
 
   return (
     <div className="space-y-4">
@@ -77,17 +82,7 @@ export function AddThemeScreen({
             {catalogue.length}
           </span>
         </h2>
-        <button
-          type="button"
-          className={cn(btnGhost, "ml-auto")}
-          aria-expanded={uploadOpen}
-          onClick={() => setUploadOpen((value) => !value)}
-        >
-          <UploadCloud className="size-4" aria-hidden /> Upload theme
-        </button>
       </div>
-
-      {uploadOpen ? <UploadDropzone /> : null}
 
       <div className="fq-edge-inner flex flex-wrap items-center gap-2 rounded-fq-lg border border-border bg-card/80 p-2 backdrop-blur">
         <div
@@ -160,20 +155,81 @@ export function AddThemeScreen({
           }
         />
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {view.map((theme) => (
-            <li key={theme.key}>
-              <CatalogCard
-                theme={theme}
-                busy={busyKey === theme.key}
-                onInstall={() => onInstall(theme)}
-                onActivate={() => onActivate(theme)}
-                onPreview={() => onPreview(theme)}
-                onToggleFavourite={() => onToggleFavourite(theme)}
-              />
-            </li>
-          ))}
-        </ul>
+        <div className="space-y-6">
+          <section aria-labelledby="catalog-official">
+            <h3
+              id="catalog-official"
+              className="mb-2 text-sm font-semibold text-foreground"
+            >
+              Official{" "}
+              <span className="font-normal fq-sub">
+                · Framique-built, installs like any other theme
+              </span>
+            </h3>
+            {sections.official.length === 0 ? (
+              <p className="rounded-fq-md border border-border bg-card/40 px-3 py-4 text-sm fq-sub">
+                Official themes are being prepared and will appear here for
+                one-click install. Community themes and uploads below work
+                right now.
+              </p>
+            ) : (
+              <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {sections.official.map((theme) => (
+                  <li key={theme.key}>
+                    <CatalogCard
+                      theme={theme}
+                      busy={busyKey === theme.key}
+                      onInstall={() => onInstall(theme)}
+                      onActivate={() => onActivate(theme)}
+                      onPreview={() => onPreview(theme)}
+                      onToggleFavourite={() => onToggleFavourite(theme)}
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section aria-labelledby="catalog-community">
+            <h3
+              id="catalog-community"
+              className="mb-2 text-sm font-semibold text-foreground"
+            >
+              Community
+            </h3>
+            {sections.community.length === 0 ? (
+              <p className="rounded-fq-md border border-border bg-card/40 px-3 py-4 text-sm fq-sub">
+                No community themes yet. Upload a theme package below to
+                install your own.
+              </p>
+            ) : (
+              <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {sections.community.map((theme) => (
+                  <li key={theme.key}>
+                    <CatalogCard
+                      theme={theme}
+                      busy={busyKey === theme.key}
+                      onInstall={() => onInstall(theme)}
+                      onActivate={() => onActivate(theme)}
+                      onPreview={() => onPreview(theme)}
+                      onToggleFavourite={() => onToggleFavourite(theme)}
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+
+          <section aria-labelledby="catalog-upload">
+            <h3
+              id="catalog-upload"
+              className="mb-2 text-sm font-semibold text-foreground"
+            >
+              Upload theme
+            </h3>
+            <UploadDropzone />
+          </section>
+        </div>
       )}
 
       <FeatureFilterDrawer

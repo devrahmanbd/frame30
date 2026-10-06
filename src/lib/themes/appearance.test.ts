@@ -1,17 +1,22 @@
 import { describe, expect, it } from "vitest";
 import {
   EMPTY_SELECTION,
+  OFFICIAL_THEME_KEYS,
   catalogView,
   filterCatalog,
   formatBytes,
   galleryKeys,
   isNewerVersion,
+  isOfficialThemeKey,
   neighbourTheme,
+  officialArtifactRef,
+  officialPinFor,
   orderInstalled,
   previewUrl,
   screenshotPlate,
   searchCatalog,
   searchInstalled,
+  sectionCatalogue,
   selectionCount,
   sortCatalog,
   themeInitials,
@@ -40,6 +45,7 @@ function cat(overrides: Partial<CatalogTheme> & { key: string }): CatalogTheme {
     installed: false,
     active: false,
     favourite: false,
+    provenance: "community",
     ...overrides,
   };
 }
@@ -297,33 +303,72 @@ describe("catalogue honesty (no-fabrication rule)", () => {
   });
 });
 
-describe("curated visibility (offer removed Sept 2026)", () => {  it("installed grid keeps the active theme plus allowlisted keys only", () => {
+describe("B2 catalogue sections (Official / Community / Upload)", () => {
+  it("names exactly the two built themes — no third vapor theme", () => {
+    expect([...OFFICIAL_THEME_KEYS]).toEqual(["songoskriti", "somvabona"]);
+    expect(isOfficialThemeKey("songoskriti")).toBe(true);
+    expect(isOfficialThemeKey("somvabona")).toBe(true);
+    expect(isOfficialThemeKey("vapor")).toBe(false);
+    expect(isOfficialThemeKey("classic")).toBe(false);
+    expect(isOfficialThemeKey("")).toBe(false);
+  });
+
+  it("pins official artifacts as official:<key>", () => {
+    expect(officialPinFor("songoskriti")).toBe("official:songoskriti");
+    expect(
+      officialArtifactRef("somvabona", "1.0.0", "ab".repeat(32)),
+    ).toMatchObject({
+      version: "1.0.0",
+      fileName: "somvabona.zip",
+      pinned: "official:somvabona",
+    });
+  });
+
+  it("splits official first (curated order) then community", () => {
     const themes = [
-      inst({ id: "a", key: "atelier", isActive: true }),
+      cat({ key: "acme-pack", provenance: "community" }),
+      cat({ key: "somvabona", provenance: "official" }),
+      cat({ key: "songoskriti", provenance: "official" }),
+    ];
+    const sections = sectionCatalogue(themes);
+    expect(sections.official.map((t) => t.key)).toEqual([
+      "songoskriti",
+      "somvabona",
+    ]);
+    expect(sections.community.map((t) => t.key)).toEqual(["acme-pack"]);
+  });
+
+  it("leaves either section empty without throwing (unbuilt official)", () => {
+    expect(sectionCatalogue([])).toEqual({ official: [], community: [] });
+    const onlyCommunity = sectionCatalogue([cat({ key: "acme-pack" })]);
+    expect(onlyCommunity.official).toEqual([]);
+    expect(onlyCommunity.community.map((t) => t.key)).toEqual(["acme-pack"]);
+  });
+
+  it("installed grid keeps every installed row (never strand)", () => {
+    const themes = [
+      inst({ id: "a", key: "songoskriti" }),
       inst({ id: "b", key: "classic" }),
       inst({ id: "c", key: null }),
-      inst({ id: "d", key: "retired-pack-a" }),
-      inst({ id: "e", key: "retired-pack-b" }),
-    ];
-    expect(visibleInstalled(themes).map((t) => t.id)).toEqual(["a"]);
-  });
-
-  it("keeps a null-key active theme (live storefront never stranded)", () => {
-    const themes = [
       inst({ id: "live", key: null, isActive: true }),
-      inst({ id: "dead", key: null }),
     ];
-    expect(visibleInstalled(themes).map((t) => t.id)).toEqual(["live"]);
+    expect(visibleInstalled(themes).map((t) => t.id)).toEqual([
+      "a",
+      "b",
+      "c",
+      "live",
+    ]);
   });
 
-  it("catalogue is empty with no curated offer", () => {
+  it("catalogue passes official + community through (no allowlist hole)", () => {
     const themes = [
-      cat({ key: "retired-pack-a" }),
-      cat({ key: "retired-pack-b" }),
-      cat({ key: "classic" }),
-      cat({ key: "modern" }),
+      cat({ key: "songoskriti", provenance: "official" }),
+      cat({ key: "acme-pack", provenance: "community" }),
     ];
-    expect(visibleCatalogue(themes).map((t) => t.key)).toEqual([]);
+    expect(visibleCatalogue(themes).map((t) => t.key)).toEqual([
+      "songoskriti",
+      "acme-pack",
+    ]);
   });
 });
 
