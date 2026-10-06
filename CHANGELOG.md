@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-07 01:04 UTC] (v0.5-beta — 013bdb0c) — Package completion rivalry
+### Added
+- Official plugin catalogue via normal pipeline; source fallback removed (installed authoritative, fail-closed); plugin rollback equivalence + atomicity proof; conflict detection + dependency ranges; lifecycle contract proof; canonical package docs; upload wiring (theme) + plugin upload fn/surface.
+### Verification
+- Lane suites green across all batches, tsc clean.
 ## [2026-10-07 00:04 UTC] (v0.5-beta — d0f57cc3) — Songoskriti ported to package model
 ### Added
 - Trial-claim seeds songoskriti 1.0.0 via normal installer (best-effort, never blocks); live proof: installed artifact serves index/product identical to source render.
