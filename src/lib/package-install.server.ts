@@ -25,6 +25,16 @@
  * `stubManifestValidator` is retained only as an explicit opt-in for tests
  * and as the non-theme fallback inside `pkg1ThemeValidator` — it is no
  * longer on the default path.
+ *
+ * --- CONFLICT lane (namespace + dependency-range gates) ---
+ * Claim extraction + pairwise scan live in `src/lib/package-conflicts.ts`
+ * (pure, read-only import): plugin installs run `assertNoNamespaceConflicts`
+ * before any side effect and `setPluginPackageEnabled` re-scans on enable;
+ * `assertDependencies` enforces carried version ranges (proven mismatch =
+ * `package.dependency_conflict`). Theme installs/activations skip the
+ * namespace scan by design (no globally-exclusive theme surface —
+ * single-active invariant, themeKey-scoped presentations, per-version
+ * asset namespaces).
  */
 
 import { createHash } from "node:crypto";
@@ -51,6 +61,14 @@ import {
   saveVersionAssets,
   themeVersionPrefix,
 } from "./package-store.server";
+import {
+  checkDependencyRanges,
+  extractFileClaims,
+  extractPluginClaims,
+  mergeClaims,
+  scanNamespaceConflicts,
+  type ConflictPackage,
+} from "./package-conflicts";
 
 export type { PackageKind };
 
@@ -69,7 +87,17 @@ export class PackageInstallError extends Error {
 
 /* ------------------------------------------------- PKG-1 validator boundary */
 
-export type PackageDependency = { slug: string; kind?: string };
+export type PackageDependency = {
+  slug: string;
+  kind?: string;
+  /**
+   * CONFLICT lane: wanted version range (exact `1.2.0`, caret `^1.2.0` or
+   * pair `>=1.2.0 <2.0.0`). Absent = presence suffices (legacy). Carried
+   * from `pluginDependencies[].version` (themes) and `{ slug, version }`
+   * objects (plugins); enforced in `assertDependencies`.
+   */
+  version?: string;
+};
 
 export type ValidatedPackageManifest = {
   slug: string;
@@ -125,7 +153,11 @@ export function stubManifestValidator(
           errors.push("dependencies.slug");
           break;
         }
-        dependencies.push({ slug });
+        const version =
+          typeof (dep as { version?: unknown } | null)?.version === "string"
+            ? String((dep as { version: unknown }).version).trim()
+            : "";
+        dependencies.push(version ? { slug, version } : { slug });
       }
     }
   }
@@ -170,7 +202,9 @@ export function pkg1ThemeValidator(
       .replace(/^plugin:/, "")
       .split("/")[0]!
       .trim();
-    if (slug) dependencies.push({ slug });
+    // CONFLICT lane: carry the declared range — `assertDependencies`
+    // enforces it against the ledger (proven mismatch fails closed).
+    if (slug) dependencies.push({ slug, version: dep.version });
   }
   const raw = (manifest ?? {}) as Record<string, unknown>;
   return {
@@ -765,26 +799,120 @@ export async function installPackage(
   };
 }
 
+/**
+ * CONFLICT lane — presence + version-range gate over the install ledger.
+ * One query for every wanted slug (live rows only); `checkDependencyRanges`
+ * decides. Absent = `package.missing_dependency` (message unchanged);
+ * parseably out-of-range = `package.dependency_conflict` (fail closed).
+ * Legacy rows without a version never mismatch (presence suffices).
+ */
 async function assertDependencies(
   db: Client,
   merchantId: string,
   deps: PackageDependency[],
 ): Promise<void> {
-  for (const dep of deps) {
-    const { data } = await db
-      .from("marketplace_installs")
-      .select("id")
-      .eq("merchant_id", merchantId)
-      .eq("listing_slug", dep.slug)
-      .in("status", ["installed", "trial"])
-      .limit(1)
-      .maybeSingle();
-    if (!data) {
-      throw new PackageInstallError(
-        "package.missing_dependency",
-        `Missing dependency: ${dep.slug}`,
-      );
-    }
+  if (!deps.length) return;
+  const slugs = [...new Set(deps.map((d) => d.slug))];
+  const { data } = await db
+    .from("marketplace_installs")
+    .select("listing_slug, version")
+    .eq("merchant_id", merchantId)
+    .in("listing_slug", slugs)
+    .in("status", ["installed", "trial"]);
+  const installed = ((data ?? []) as unknown as { listing_slug: string; version: string }[]).map(
+    (r) => ({ slug: r.listing_slug, version: r.version }),
+  );
+  const verdict = checkDependencyRanges(deps, installed);
+  if (verdict.ok) return;
+  if (verdict.missing.length) {
+    throw new PackageInstallError(
+      "package.missing_dependency",
+      `Missing dependency: ${verdict.missing[0]}`,
+    );
+  }
+  const m = verdict.mismatched[0]!;
+  throw new PackageInstallError(
+    "package.dependency_conflict",
+    `Dependency version conflict: ${m.slug} wants ${m.want} (installed ${m.got}) [dependency.version:${m.slug}]`,
+  );
+}
+
+/* --------------------------------------- CONFLICT lane — namespace scan */
+
+type ProjectedPluginRow = {
+  plugin_id: string;
+  manifest: unknown;
+  enabled?: boolean | null;
+  suspended?: boolean | null;
+};
+
+/** True when the failure is "plugin_state is not migrated yet" — scan skips, never blocks legacy DBs. */
+function isMissingProjectionTableError(err: unknown): boolean {
+  const msg =
+    err instanceof Error ? err.message : ((err as { message?: string } | null)?.message ?? String(err ?? ""));
+  if (!/plugin_state/i.test(msg)) return false;
+  return /column|schema cache|PGRST204|42703|does not exist|relation.*not exist/i.test(msg);
+}
+
+function claimsOfProjected(row: ProjectedPluginRow, versionFallback: string): ConflictPackage | null {
+  try {
+    if (!row || typeof row.plugin_id !== "string" || !row.plugin_id) return null;
+    const raw = (row.manifest ?? {}) as Record<string, unknown>;
+    const version =
+      typeof raw.version === "string" && raw.version.trim() ? raw.version.trim() : versionFallback;
+    return { slug: row.plugin_id, kind: "plugin", version, claims: extractPluginClaims(raw) };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Fail-closed namespace scan for plugin installs/enables. Candidate claims
+ * (manifest + files) are checked against the merchant's projected plugin
+ * manifests (`plugin_state`, the reviewed-manifest projection — invalid rows
+ * degrade to empty claims, never throw). Paused/suspended holders are
+ * inert and excluded here; the enable path re-scans on every flip, so two
+ * swap/holder plugins can never both go live. Direct-pipeline installs
+ * without a projected row contribute no claims (their install-path scan +
+ * consent already covered them); a missing `plugin_state` table degrades to
+ * no holders (legacy DBs install unimpeded). Anything else failing on the
+ * read fails the install (`package.install_failed`) — the scan must prove
+ * safety, never assume it.
+ *
+ * Theme installs/activations intentionally skip this scan: themes hold no
+ * globally-exclusive surface (templates/routes overlap under the
+ * single-active invariant; presentations are themeKey-scoped; assets are
+ * per-version namespaced; dressing refs are not ownership).
+ */
+async function assertNoNamespaceConflicts(
+  db: Client,
+  merchantId: string,
+  candidate: ConflictPackage,
+): Promise<void> {
+  let rows: ProjectedPluginRow[];
+  try {
+    const { data, error } = await (db as unknown as Loose)
+      .from("plugin_state")
+      .select("plugin_id, manifest, enabled, suspended")
+      .eq("merchant_id", merchantId);
+    if (error) throw error;
+    rows = ((data ?? []) as unknown as ProjectedPluginRow[]).filter(
+      (r) => r && typeof r.plugin_id === "string",
+    );
+  } catch (err) {
+    if (isMissingProjectionTableError(err)) return;
+    throw new PackageInstallError("package.install_failed", "Plugin projection read failed.");
+  }
+  const installed = rows
+    .filter((r) => r.plugin_id !== candidate.slug && r.enabled !== false && r.suspended !== true)
+    .map((r) => claimsOfProjected(r, ""))
+    .filter((c): c is ConflictPackage => c !== null);
+  const verdict = scanNamespaceConflicts(candidate, installed);
+  if (!verdict.ok) {
+    throw new PackageInstallError(
+      "package.namespace_conflict",
+      `Namespace conflict: ${verdict.conflicts.map((c) => c.code).join(",")} (held by ${[...new Set(verdict.conflicts.map((c) => c.holder))].join(",")})`,
+    );
   }
 }
 
@@ -829,6 +957,15 @@ async function installPluginPackage(
   const api = checkApiCompatibility(manifest.api);
   if (!api.ok) throw new PackageInstallError("package.api_incompatible", api.message);
   await assertDependencies(db, merchantId, manifest.dependencies);
+  // CONFLICT lane: candidate (manifest + file claims) vs live projected
+  // holders. Runs before any side effect (assets/ledger below) — a
+  // conflicting swap/hook claim fails here with zero partial state.
+  await assertNoNamespaceConflicts(db, merchantId, {
+    slug: manifest.slug,
+    kind: "plugin",
+    version: manifest.version,
+    claims: mergeClaims(extractPluginClaims(manifest.raw), extractFileClaims(files)),
+  });
   const broken = collectBrokenAssetRefs(files);
   if (broken.length) {
     throw new PackageInstallError(
@@ -955,6 +1092,28 @@ export async function setPluginPackageEnabled(
   const row = data as unknown as { id: string; kind: string; listing_slug: string } | null;
   if (!row || row.kind !== "widget") {
     throw new PackageInstallError("package.not_found", "Plugin install not found for this merchant.");
+  }
+  // CONFLICT lane (activate): enabling re-scans — the candidate's projected
+  // manifest (when the marketplace lane projected one via upsertPlugin)
+  // against every other live holder. Disables never conflict. Installs
+  // without a projected row skip (install-path scan + consent covered them).
+  if (enabled) {
+    const projected = await (async (): Promise<ConflictPackage | null> => {
+      try {
+        const { data: prow, error } = await (db as unknown as Loose)
+          .from("plugin_state")
+          .select("plugin_id, manifest, enabled, suspended")
+          .eq("merchant_id", merchantId)
+          .eq("plugin_id", row.listing_slug)
+          .maybeSingle();
+        if (error) throw error;
+        return claimsOfProjected((prow ?? null) as unknown as ProjectedPluginRow, "");
+      } catch (err) {
+        if (isMissingProjectionTableError(err)) return null;
+        throw new PackageInstallError("package.install_failed", "Plugin projection read failed.");
+      }
+    })();
+    if (projected) await assertNoNamespaceConflicts(db, merchantId, projected);
   }
   const status = enabled ? "installed" : "paused";
   const { error } = await db

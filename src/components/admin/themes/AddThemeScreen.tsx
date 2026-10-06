@@ -38,6 +38,16 @@ import {
 import { ThemeScreenshot } from "./ThemeScreenshot";
 import { FeatureFilterDrawer } from "./FeatureFilterDrawer";
 
+export type ThemeUploadInput = {
+  fileName: string;
+  fileBase64: string;
+  idempotencyKey: string;
+};
+
+export type ThemeUploadResult = {
+  alreadyInstalled: boolean;
+};
+
 export function AddThemeScreen({
   catalogue,
   busyKey,
@@ -46,6 +56,7 @@ export function AddThemeScreen({
   onActivate,
   onPreview,
   onToggleFavourite,
+  onUploadTheme,
 }: {
   catalogue: CatalogTheme[];
   busyKey: string | null;
@@ -54,6 +65,12 @@ export function AddThemeScreen({
   onActivate: (theme: CatalogTheme) => void;
   onPreview: (theme: CatalogTheme) => void;
   onToggleFavourite: (theme: CatalogTheme) => void;
+  /**
+   * LIFECYCLE lane: when provided, the drop-zone uploads through this server
+   * path (`themeUploadFn` → `installUploadedTheme`) instead of showing the
+   * packaging-lane placeholder. Absent = client-validation messaging only.
+   */
+  onUploadTheme?: (input: ThemeUploadInput) => Promise<ThemeUploadResult>;
 }) {
   const [tab, setTab] = useState<CatalogTab>("popular");
   const [query, setQuery] = useState("");
@@ -169,8 +186,8 @@ export function AddThemeScreen({
             {sections.official.length === 0 ? (
               <p className="rounded-fq-md border border-border bg-card/40 px-3 py-4 text-sm fq-sub">
                 Official themes are being prepared and will appear here for
-                one-click install. Community themes and uploads below work
-                right now.
+                one-click install. Community themes and uploads below work right
+                now.
               </p>
             ) : (
               <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -199,8 +216,8 @@ export function AddThemeScreen({
             </h3>
             {sections.community.length === 0 ? (
               <p className="rounded-fq-md border border-border bg-card/40 px-3 py-4 text-sm fq-sub">
-                No community themes yet. Upload a theme package below to
-                install your own.
+                No community themes yet. Upload a theme package below to install
+                your own.
               </p>
             ) : (
               <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -227,7 +244,7 @@ export function AddThemeScreen({
             >
               Upload theme
             </h3>
-            <UploadDropzone />
+            <UploadDropzone onUploadTheme={onUploadTheme} />
           </section>
         </div>
       )}
@@ -357,24 +374,91 @@ function CatalogCard({
   );
 }
 
-/** Client-side `.zip` validation; packaging upload lands with the media library. */
-function UploadDropzone() {
+/**
+ * LIFECYCLE lane: validated `.zip` files upload through the server path
+ * (`themeUploadFn` → `installUploadedTheme` → inactive row the console can
+ * Activate / Preview / Delete) instead of stopping at client messaging.
+ * Without `onUploadTheme` the drop-zone keeps its validation-only message.
+ */
+function UploadDropzone({
+  onUploadTheme,
+}: {
+  onUploadTheme?: (input: ThemeUploadInput) => Promise<ThemeUploadResult>;
+}) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [state, setState] = useState<{ ok: boolean; message: string } | null>(
-    null,
-  );
+  const [state, setState] = useState<
+    | { ok: true; message: string }
+    | { ok: false; message: string }
+    | { ok: "busy"; message: string }
+    | null
+  >(null);
   const [over, setOver] = useState(false);
+
+  const readAsBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("read_failed"));
+      reader.onload = () => {
+        const url = String(reader.result ?? "");
+        const comma = url.indexOf(",");
+        resolve(comma >= 0 ? url.slice(comma + 1) : url);
+      };
+      reader.readAsDataURL(file);
+    });
 
   const accept = (file: File | undefined) => {
     if (!file) return;
     const check = validateThemeUpload(file);
-    setState(
-      check.ok
-        ? {
-            ok: true,
-            message: `${check.name} (${formatBytes(file.size)}) is ready. Theme packaging installs land with the media library.`,
-          }
-        : { ok: false, message: check.reason },
+    if (!check.ok) {
+      setState({ ok: false, message: check.reason });
+      return;
+    }
+    if (!onUploadTheme) {
+      setState({
+        ok: true,
+        message: `${check.name} (${formatBytes(file.size)}) is ready. Theme packaging installs land with the media library.`,
+      });
+      return;
+    }
+    // One idempotency key per file-pick, held across retries/double-clicks —
+    // the server replays the original row instead of stacking duplicates.
+    const picked = { name: file.name, size: file.size };
+    const idempotencyKey =
+      typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    setState({
+      ok: "busy",
+      message: `Uploading ${picked.name} (${formatBytes(picked.size)})…`,
+    });
+    void readAsBase64(file).then(
+      (fileBase64) =>
+        onUploadTheme({
+          fileName: picked.name,
+          fileBase64,
+          idempotencyKey,
+        }).then(
+          (result) => {
+            setState({
+              ok: true,
+              message: result.alreadyInstalled
+                ? `${picked.name} is already installed — find it under Installed themes.`
+                : `${picked.name} installed — find it under Installed themes, ready to preview or activate.`,
+            });
+          },
+          () => {
+            setState({
+              ok: false,
+              message: `${picked.name} could not be uploaded. Check the file is a valid theme .zip and try again.`,
+            });
+          },
+        ),
+      () => {
+        setState({
+          ok: false,
+          message: `${picked.name} could not be read in this browser. Try again.`,
+        });
+      },
     );
   };
 
@@ -383,6 +467,8 @@ function UploadDropzone() {
     setOver(false);
     accept(event.dataTransfer.files?.[0]);
   };
+
+  const busy = state?.ok === "busy";
 
   return (
     <div className="space-y-2">
@@ -408,9 +494,10 @@ function UploadDropzone() {
         <button
           type="button"
           className={btnGhost}
+          disabled={busy}
           onClick={() => inputRef.current?.click()}
         >
-          Select file
+          {busy ? "Uploading…" : "Select file"}
         </button>
         <input
           ref={inputRef}
@@ -418,14 +505,20 @@ function UploadDropzone() {
           accept=".zip"
           className="sr-only"
           aria-label="Theme package"
-          onChange={(event) =>
-            accept(event.currentTarget.files?.[0] ?? undefined)
-          }
+          disabled={busy}
+          onChange={(event) => {
+            accept(event.currentTarget.files?.[0] ?? undefined);
+            // Reset so picking the same file again re-fires the upload.
+            event.currentTarget.value = "";
+          }}
         />
       </div>
       {state ? (
-        state.ok ? (
-          <p className="rounded-fq-md border border-border bg-muted px-3 py-2 text-sm text-foreground">
+        state.ok === true || state.ok === "busy" ? (
+          <p
+            className="rounded-fq-md border border-border bg-muted px-3 py-2 text-sm text-foreground"
+            aria-live="polite"
+          >
             {state.message}
           </p>
         ) : (

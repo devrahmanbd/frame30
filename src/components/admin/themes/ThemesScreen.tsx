@@ -44,6 +44,7 @@ import {
   themesWorkspaceFn,
 } from "@/lib/themes/appearance.functions";
 import { importThemeAllFn } from "@/lib/themes.functions";
+import { themeUploadFn } from "@/lib/marketplace.functions";
 import { AddThemeCard, ThemeCard } from "./ThemeCard";
 import { ThemeDetailsModal } from "./ThemeDetailsModal";
 import { AddThemeScreen } from "./AddThemeScreen";
@@ -157,6 +158,25 @@ export function ThemesScreen() {
     },
     onError: () =>
       toast.error("Activate another theme before deleting this one"),
+  });
+
+  /**
+   * LIFECYCLE lane: wires the Add-theme drop-zone to the server upload path
+   * (`themeUploadFn` → `installUploadedTheme`). Uploads land as inactive rows
+   * where Activate / Preview / Delete already work — the drop-zone is no
+   * longer validation messaging only.
+   */
+  const upload = useMutation({
+    mutationFn: useServerFn(themeUploadFn),
+    onSuccess: (result: { alreadyInstalled: boolean }) => {
+      toast.success(
+        result.alreadyInstalled
+          ? "That theme is already installed"
+          : "Theme uploaded — find it under Installed themes",
+      );
+      refresh();
+    },
+    onError: () => toast.error("That theme could not be uploaded"),
   });
 
   const flags = useMutation({
@@ -314,6 +334,7 @@ export function ThemesScreen() {
           busyKey={busy}
           onBack={() => setMode("installed")}
           onInstall={(theme) => install.mutate({ data: { key: theme.key } })}
+          onUploadTheme={(input) => upload.mutateAsync({ data: input })}
           onActivate={(theme) => {
             const local = (workspace.data?.installed ?? []).find(
               (entry) => entry.key === theme.key,
@@ -411,8 +432,8 @@ export function ThemesScreen() {
             <Card title="Theme gallery">
               <p className="text-sm fq-sub">
                 Every previewable theme in one place — official sources plus
-                your installed packages. Removed themes disappear from this
-                list automatically.
+                your installed packages. Removed themes disappear from this list
+                automatically.
               </p>
               <ul className="mt-2 flex flex-wrap gap-2">
                 {gallery.map((key) => {
@@ -439,7 +460,9 @@ export function ThemesScreen() {
             </Card>
           ) : null}
 
-          <Card title="How themes work">            <p className="text-sm fq-sub">
+          <Card title="How themes work">
+            {" "}
+            <p className="text-sm fq-sub">
               Activating a theme replaces your storefront layout with that
               theme&apos;s templates and colours. Switching themes never touches
               your content — but importing demo data overwrites any products,
