@@ -14,6 +14,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-06 02:20 UTC] (v0.5-beta — 8b8b015a) — Final verification sweep
+### Fixed
+- DoD PluginBlock exemption (opaque themeKey forward documented + asserted); localization compact-state test updated to theme-owned announcement heights.
+### Verification
+- Full suite 5403/5405 (scope-adapter sibling-owned; see below), tsc repo-wide clean.
+### Known gaps
+- scope-adapter.test.ts red — sibling session's uncommitted work, not ours.
 ## [2026-10-05 23:19 UTC] (v0.5-beta — 711b03cb) — Presentation runtime finish
 ### Added
 - Header shells delegate via registry (songoskriti mega/accordion vs somvabona dropdown/disclosure); announcement theme presentations with hook-owned behavior; footer canonical path; plugin menu replacement end to end (cross-slot fix, fail-open boundary); repeater round-trip suite (20 widgets); two-theme acceptance (12 tests, all surfaces).
