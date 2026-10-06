@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-06 17:32 UTC] (v0.5-beta — 0300b017) — Docs follow-up completion
+### Changed
+- app-blocks per-bullet planned qualifiers; blueprint files verified bannered-historical (bodies untouched); internal guides re-pinned (~70 pins, headers bumped).
+### Verification
+- Prettier clean; pin spot-checks pass. Blueprint 117-widget count left stale by design (banner covers it).
 ## [2026-10-06 02:22 UTC] (v0.5-beta — 0218c4d6) — Final docs synchronization
 ### Changed
 - Internal docs synced to final architecture (registry model, chrome surfaces, no-branches rule); superseded docs explicitly bannered; 10-guide public developer path built; sdk/packages/plugins pins corrected to HEAD; footer pins repointed to canonical proof modules.
