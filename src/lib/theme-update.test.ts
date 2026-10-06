@@ -136,61 +136,50 @@ function publishedDb() {
   });
 }
 
-describe("publish payload resolution (installed artifact in-chain)", () => {
+describe("publish payload resolution (installed artifact authoritative, K2)", () => {
   const artifact = {
     templates: { index: { header: [], main: [], footer: [] } },
     tokens: { ...DEFAULT_TOKENS },
   };
-  const source = {
-    templates: { index: { header: [], main: [], footer: [] } },
-    tokens: { surface: "#ffffff" },
-  };
 
-  it("explicit input wins over artifact and source", () => {
+  it("explicit input wins over artifact", () => {
     const out = resolvePublishPayload(
       { templates: { index: null }, tokens: { surface: "#1" } },
       artifact,
-      source,
     );
     expect(out.templates).toEqual({ index: null });
     expect(out.tokens).toEqual({ surface: "#1" });
     expect(out.origin).toBe("input");
   });
 
-  it("omitted fields fall back to the artifact, then the source", () => {
-    const out = resolvePublishPayload({}, artifact, source);
+  it("omitted fields fall back to the artifact (never source)", () => {
+    const out = resolvePublishPayload({}, artifact);
     expect(out.templates).toEqual(artifact.templates);
     expect(out.tokens).toEqual(artifact.tokens);
     expect(out.origin).toBe("artifact");
-    const mixed = resolvePublishPayload(
-      { templates: { index: null } },
-      artifact,
-      source,
-    );
+    const mixed = resolvePublishPayload({ templates: { index: null } }, artifact);
     expect(mixed.templates).toEqual({ index: null });
     expect(mixed.tokens).toEqual(artifact.tokens);
     expect(mixed.origin).toBe("input");
   });
 
-  it("no usable artifact falls back to the source package, never empty", () => {
-    const out = resolvePublishPayload({}, null, source);
-    expect(out.templates).toEqual(source.templates);
-    expect(out.origin).toBe("source");
-    const bare = resolvePublishPayload({}, null, null);
-    expect(bare.templates).toEqual({});
-    expect(bare.tokens).toEqual({});
-    expect(bare.origin).toBe("source");
+  it("no usable artifact fails closed with an explicit reason (never source, never empty)", () => {
+    try {
+      resolvePublishPayload({}, null);
+      expect.unreachable();
+    } catch (err) {
+      expect((err as { code?: string }).code).toBe("builder.artifact_missing");
+      expect((err as Error).message).toMatch(/Install the theme first/);
+    }
   });
 
-  it("malformed artifact payloads fall back, never throw", () => {
-    const out = resolvePublishPayload(
-      {},
-      { templates: "nope", tokens: [1, 2] } as never,
-      source,
-    );
-    expect(out.templates).toEqual(source.templates);
-    expect(out.tokens).toEqual(source.tokens);
-    expect(out.origin).toBe("source");
+  it("malformed artifact payloads fail closed, never fall back", () => {
+    try {
+      resolvePublishPayload({}, { templates: "nope", tokens: [1, 2] } as never);
+      expect.unreachable();
+    } catch (err) {
+      expect((err as { code?: string }).code).toBe("builder.artifact_missing");
+    }
   });
 });
 

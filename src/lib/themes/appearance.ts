@@ -371,16 +371,15 @@ export function visibleCatalogue(themes: CatalogTheme[]): CatalogTheme[] {
 
 /* ------------------------------------------------------- gallery keys
  *
- * FOLLOW-UP — gallery listing of installed keys.
+ * K2 — installed artifact authoritative.
  *
- * The preview gallery lists built-in source keys plus merchant-installed
- * package keys as one union: catalogue keys first in curated order, then
- * installed-only keys. A removed/uninstalled row is simply not passed, so
- * its key disappears; malformed rows (null, blank, non-string keys, even a
- * non-array container) are skipped — the listing never throws on untrusted
- * input. Mirrors `previewSourceKeys` union semantics for the dashboard
- * gallery surface (that module stays the preview-resolution owner; this is
- * the listing vocabulary the Themes screens share).
+ * The preview gallery lists merchant-installed package keys ONLY when the
+ * caller passes a merchant installed set (array, even empty): uninstalled
+ * catalogue/source keys fail closed (disappear, never a silent wrong-theme
+ * link). Legacy null/undefined callers with no merchant context (build
+ * tooling, merchant-less fallbacks) list catalogue keys. Malformed rows
+ * (null, blank, non-string keys, even a non-array container) are skipped —
+ * the listing never throws on untrusted input.
  */
 export function galleryKeys(
   catalogue: readonly unknown[] | null | undefined,
@@ -399,8 +398,14 @@ export function galleryKeys(
     seen.add(key);
     keys.push(key);
   };
+  // K2: merchant context (installed array, even empty) lists installed ONLY —
+  // catalogue/source keys fail closed. Legacy null/undefined installed lists
+  // catalogue keys for build tooling / merchant-less fallbacks.
+  if (Array.isArray(installed)) {
+    for (const entry of installed) push(entry);
+    return keys;
+  }
   for (const entry of Array.isArray(catalogue) ? catalogue : []) push(entry);
-  for (const entry of Array.isArray(installed) ? installed : []) push(entry);
   return keys;
 }
 

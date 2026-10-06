@@ -484,14 +484,20 @@ describe("resolveThemePreview installed packages (SWITCHOVER-4)", () => {
     expect(preset.templates.product.main[0]!.type).toBe("heading");
   });
 
-  it("uninstalled keys fall back to null, sources intact", () => {
+  it("uninstalled keys fail closed to null (never silent wrong theme)", () => {
     expect(resolveThemePreview("acme-pack")).toBeNull();
     expect(resolveThemePreview("acme-pack", undefined, [])).toBeNull();
     expect(resolveThemePreview("acme-pack", "minimal", [])).toBeNull();
-    // Source keys still resolve with an installed set present.
-    expect(
-      resolveThemePreview("songoskriti", undefined, [ARTIFACT])!.key,
-    ).toBe("songoskriti");
+    // K2: source keys do NOT resolve when a merchant installed set is present
+    // but the key is not installed — fail closed, never source fallback.
+    expect(resolveThemePreview("songoskriti", undefined, [ARTIFACT])).toBeNull();
+    // Legacy: no merchant context (null/undefined) still resolves source statics.
+    expect(resolveThemePreview("songoskriti", undefined, undefined)?.key).toBe(
+      "songoskriti",
+    );
+    expect(resolveThemePreview("songoskriti", undefined, null)?.key).toBe(
+      "songoskriti",
+    );
   });
 
   it("removal disappears from resolution without crashing", () => {
@@ -503,10 +509,12 @@ describe("resolveThemePreview installed packages (SWITCHOVER-4)", () => {
     expect(resolveThemePreview("acme-pack", undefined, null)).toBeNull();
   });
 
-  it("source keys win over installed rows with the same key", () => {
+  it("installed rows win over source keys with the same key", () => {
+    // K2: installed artifact authoritative — colliding installed content shadows
+    // the static source, never the reverse.
     const shadow = { ...ARTIFACT, key: "songoskriti", themeName: "Shadow" };
     const preset = resolveThemePreview("songoskriti", undefined, [shadow])!;
-    expect(preset.themeName).not.toBe("Shadow");
+    expect(preset.themeName).toBe("Shadow");
   });
 
   it("installed variations apply over stored base tokens, unknown falls back", () => {

@@ -8,6 +8,12 @@
  *
  * No network, no real database: all persistence goes through the in-memory
  * fakeDb, and zips are hand-built (no npm zip libraries).
+ *
+ * K3 appends (cases only, additive): plugin `rollbackPluginPackage`
+ * (rollback-to-prior-artifact with an explicit previous/rollback record,
+ * theme-`rollbackPackage` parity) and a failure-injection suite proving
+ * atomic plugin install (a kill at each stage leaves clean state — no
+ * partial package becomes active).
  */
 import { describe, expect, it, beforeEach } from "vitest";
 import { deflateRawSync } from "node:zlib";
@@ -17,6 +23,7 @@ import {
   previewPackage,
   activatePackage,
   rollbackPackage,
+  rollbackPluginPackage,
   uninstallPackage,
   uninstallPluginPackage,
   setPluginPackageEnabled,
@@ -25,6 +32,8 @@ import {
   stubManifestValidator,
   type ManifestValidator,
 } from "./package-install.server";
+import { listInstalledPlugins, upsertPlugin } from "./plugins.server";
+import { resolvePluginWidget } from "./plugin-manifest";
 import { themeVersionPrefix } from "./package-store.server";
 
 const MERCHANT_A = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
@@ -1165,5 +1174,636 @@ describe("PKG-2 PKG-1 validator boundary", () => {
       validator: pkg1ThemeValidator,
     });
     expect(res.version).toBe("1.0.0");
+  });
+});
+
+/* ------------------------------------------------- K3 plugin rollback-to-prior-artifact
+ *
+ * Theme parity: `rollbackPackage` mints a NEW version row carrying the
+ * target's content with `rollback_of` set. Plugin history is successive
+ * ledger rows, so `rollbackPluginPackage` mints a NEW ledger row carrying
+ * the target's immutable artifact identity with `previous_snapshot
+ * .rollback_of` + a `package.rolled_back` audit row — never just an enable
+ * flip. Content equality holds structurally (content-addressed asset
+ * namespace is reused, never copied or mutated).
+ */
+
+function k3FullPluginManifest(
+  version = "1.0.0",
+  extra: Record<string, unknown> = {},
+): Record<string, unknown> {
+  return {
+    id: "acme-reviews",
+    name: "Acme Reviews",
+    version,
+    api: "^3.0.0",
+    permissions: ["read_shop", "render_storefront"],
+    widgets: [
+      {
+        key: "reviews",
+        label: "Customer Reviews",
+        slots: ["main"],
+        entry: "framique.mount(document.createElement('div'))",
+      },
+    ],
+    hooks: [],
+    settings: [
+      { key: "title", label: "Title", kind: "text", default: "Reviews" },
+    ],
+    i18n: { en: { title: "Title" }, bn: { title: "শিরোনাম" } },
+    budget: { jsKb: 10, mainThreadMs: 5 },
+    ...extra,
+  };
+}
+
+function k3InstallPluginVersion(
+  db: ReturnType<typeof fakeDb>,
+  version: string,
+  icon: string,
+  opts: { key?: string; manifest?: Record<string, unknown> } = {},
+) {
+  return installPackage(
+    db.asClient(),
+    MERCHANT_A,
+    {
+      kind: "plugin",
+      fileName: "acme.zip",
+      bytes: pluginZip(
+        opts.manifest ?? k3FullPluginManifest(version),
+        [{ name: "assets/icon.png", content: icon }],
+      ),
+      idempotencyKey: opts.key ?? key(),
+    },
+    ACTOR,
+  );
+}
+
+describe("K3 plugin rollback-to-prior-artifact", () => {
+  it("restores the v1 immutable artifact as a new ledger row with an explicit rollback record", async () => {
+    const db = pkgDb();
+    const v1 = await k3InstallPluginVersion(db, "1.0.0", "icon-v1-bytes");
+    const v2 = await k3InstallPluginVersion(db, "1.1.0", "icon-v2-bytes");
+    const v1row = db
+      .rows("marketplace_installs")
+      .find((r) => r.id === v1.packageId)!;
+    const v1a8 = v1.artifactId.slice(0, 8);
+    const v1prefix = `plugins/acme-reviews/${v1a8}/assets/`;
+    const v1assets = db
+      .rows("theme_assets")
+      .filter((a) => (a.name as string).startsWith(v1prefix));
+    expect(v1assets.length).toBeGreaterThan(0);
+
+    const rb = await rollbackPluginPackage(
+      db.asClient(),
+      MERCHANT_A,
+      v1.packageId,
+      ACTOR,
+      { idempotencyKey: "rb-key-1" },
+    );
+    expect(rb.rollbackOf).toBe(v1.packageId);
+    expect(rb.artifactId).toBe(v1row.artifact_checksum);
+    expect(rb.version).toBe("1.0.0");
+    expect(rb.packageId).not.toBe(v1.packageId);
+    expect(rb.packageId).not.toBe(v2.packageId);
+
+    // Append-only history: three rows, exactly one live — the restored one.
+    const rows = db
+      .rows("marketplace_installs")
+      .filter((r) => r.listing_slug === "acme-reviews");
+    expect(rows).toHaveLength(3);
+    const live = rows.filter((r) => r.status === "installed");
+    expect(live).toHaveLength(1);
+    expect(live[0]!.id).toBe(rb.packageId);
+    expect(live[0]!.idempotency_key).toBe("rb-key-1");
+    // Content equality: the live row carries v1's exact artifact identity.
+    expect(live[0]!.artifact_checksum).toBe(v1row.artifact_checksum);
+    expect(live[0]!.artifact_version).toBe("1.0.0");
+    expect(live[0]!.version).toBe("1.0.0");
+    // Explicit previous/rollback relationship — not just an enable flip.
+    expect(live[0]!.previous_snapshot.rollback_of).toBe(v1.packageId);
+    expect(
+      (live[0]!.previous_snapshot.rolled_from as { id: string }[]).map(
+        (s) => s.id,
+      ),
+    ).toEqual(expect.arrayContaining([v1.packageId, v2.packageId]));
+    expect(
+      rows.find((r) => r.id === v2.packageId)?.status,
+    ).toBe("paused");
+    expect(rb.superseded).toEqual(
+      expect.arrayContaining([v1.packageId, v2.packageId]),
+    );
+    // Audit record mirrors the theme lane's package.rolled_back shape.
+    const audits = db
+      .rows("theme_audit")
+      .filter((a) => a.action === "package.rolled_back");
+    expect(audits).toHaveLength(1);
+    expect(audits[0]!.after).toMatchObject({
+      slug: "acme-reviews",
+      from: v1.packageId,
+      to: rb.packageId,
+      rollback_of: v1.packageId,
+    });
+    // The immutable v1 asset namespace is byte-identical and untouched.
+    const after = db
+      .rows("theme_assets")
+      .filter((a) => (a.name as string).startsWith(v1prefix));
+    expect(after.map((a) => a.name).sort()).toEqual(
+      v1assets.map((a) => a.name).sort(),
+    );
+  });
+
+  it("re-projects the restored manifest so the storefront renders v1", async () => {
+    const db = pkgDb();
+    const v1 = await k3InstallPluginVersion(db, "1.0.0", "icon-v1-bytes");
+    await k3InstallPluginVersion(db, "1.1.0", "icon-v2-bytes");
+    await rollbackPluginPackage(db.asClient(), MERCHANT_A, v1.packageId, ACTOR);
+
+    await upsertPlugin(db.asClient() as never, MERCHANT_A, {
+      manifest: k3FullPluginManifest("1.0.0"),
+      grantedScopes: ["read_shop", "render_storefront"],
+      actorId: ACTOR,
+    });
+    const installed = await listInstalledPlugins(
+      db.asClient() as never,
+      MERCHANT_A,
+    );
+    const active = installed.find((p) => p.manifest.id === "acme-reviews")!;
+    expect(active.manifest.version).toBe("1.0.0");
+    expect(
+      resolvePluginWidget("plugin:acme-reviews/reviews", installed).ok,
+    ).toBe(true);
+  });
+
+  it("refuses cross-merchant and unknown targets without touching rows", async () => {
+    const db = pkgDb();
+    const v1 = await k3InstallPluginVersion(db, "1.0.0", "icon-v1-bytes");
+    const before = {
+      installs: db.rows("marketplace_installs").length,
+      assets: db.rows("theme_assets").length,
+      audits: db.rows("theme_audit").length,
+    };
+    expect(
+      await codeOf(
+        rollbackPluginPackage(db.asClient(), MERCHANT_B, v1.packageId, ACTOR),
+      ),
+    ).toBe("package.not_found");
+    expect(
+      await codeOf(
+        rollbackPluginPackage(db.asClient(), MERCHANT_A, "ghost-id", ACTOR),
+      ),
+    ).toBe("package.not_found");
+    expect(db.rows("marketplace_installs")).toHaveLength(before.installs);
+    expect(db.rows("theme_assets")).toHaveLength(before.assets);
+    expect(db.rows("theme_audit")).toHaveLength(before.audits);
+    expect(
+      db.rows("marketplace_installs").find((r) => r.id === v1.packageId)
+        ?.status,
+    ).toBe("installed");
+  });
+
+  it("rolls back legacy NULL-artifact rows best-effort (no crash, relationship kept)", async () => {
+    const db = pkgDb();
+    const v1 = await k3InstallPluginVersion(db, "1.0.0", "icon-v1-bytes");
+    await k3InstallPluginVersion(db, "1.1.0", "icon-v2-bytes");
+    // Pre-migration shape: no artifact identity was ever recorded.
+    const target = db
+      .rows("marketplace_installs")
+      .find((r) => r.id === v1.packageId)!;
+    delete target.artifact_checksum;
+    delete target.artifact_version;
+    delete target.artifact_pinned;
+
+    const rb = await rollbackPluginPackage(
+      db.asClient(),
+      MERCHANT_A,
+      v1.packageId,
+      ACTOR,
+    );
+    expect(rb.rollbackOf).toBe(v1.packageId);
+    expect(rb.artifactId).toBeNull();
+    const live = db
+      .rows("marketplace_installs")
+      .filter(
+        (r) =>
+          r.listing_slug === "acme-reviews" && r.status === "installed",
+      );
+    expect(live).toHaveLength(1);
+    expect(live[0]!.version).toBe("1.0.0");
+    expect(live[0]!.previous_snapshot.rollback_of).toBe(v1.packageId);
+  });
+});
+
+/* --------------------------------------- K3 atomic install (failure-injection)
+ *
+ * Each install stage is killed in turn and the merchant is left in clean
+ * state: no new ledger row (nothing partial becomes active), no orphaned
+ * asset namespace, no audit row, sibling + other-tenant rows untouched.
+ */
+
+/** Kill-proxy over fakeDb: fails one pipeline write leg like a mid-install crash. */
+function k3KillProxy(
+  db: ReturnType<typeof fakeDb>,
+  kill: { assetsAfter?: number; ledger?: boolean; auditThrows?: boolean },
+): never {
+  let assetInserts = 0;
+  const terminalError = (message: string): unknown =>
+    new Proxy(
+      {},
+      {
+        get(_t, prop) {
+          if (prop === "single" || prop === "maybeSingle")
+            return async () => ({ data: null, error: { message } });
+          if (prop === "then")
+            return (
+              resolve: (v: unknown) => unknown,
+              reject?: (e: unknown) => unknown,
+            ) =>
+              Promise.resolve({ data: null, error: { message } }).then(
+                resolve,
+                reject,
+              );
+          return (..._args: unknown[]) => terminalError(message);
+        },
+      },
+    );
+  const target = db as unknown as Record<string | symbol, unknown>;
+  return new Proxy(target, {
+    get(t, prop) {
+      if (prop !== "from") {
+        const v = t[prop];
+        return typeof v === "function"
+          ? (...args: never[]) => (v as (...a: never[]) => unknown)(...args)
+          : v;
+      }
+      return (table: string) => {
+        const q = (t.from as (table: string) => unknown)(table) as Record<
+          string,
+          (...args: never[]) => unknown
+        >;
+        if (table === "theme_assets" && kill.assetsAfter !== undefined) {
+          const after = kill.assetsAfter;
+          return new Proxy(q, {
+            get(qt: Record<string, (...args: never[]) => unknown>, qp: string | symbol) {
+              if (qp === "insert")
+                return (rows: unknown, ...rest: never[]) => {
+                  assetInserts += 1;
+                  if (assetInserts > after)
+                    return terminalError("injected_asset_failure");
+                  return (qt.insert as (...a: never[]) => unknown)(
+                    rows as never,
+                    ...(rest as never[]),
+                  );
+                };
+              const v = qt[qp as string];
+              return typeof v === "function" ? v.bind(qt) : v;
+            },
+          });
+        }
+        if (table === "marketplace_installs" && kill.ledger) {
+          return new Proxy(q, {
+            get(qt: Record<string, (...args: never[]) => unknown>, qp: string | symbol) {
+              if (qp === "insert" || qp === "upsert")
+                return () => terminalError("injected_ledger_failure");
+              const v = qt[qp as string];
+              return typeof v === "function" ? v.bind(qt) : v;
+            },
+          });
+        }
+        if (table === "theme_audit" && kill.auditThrows) {
+          return new Proxy(q, {
+            get(qt: Record<string, (...args: never[]) => unknown>, qp: string | symbol) {
+              if (qp === "insert")
+                return () => {
+                  throw new Error("injected_audit_throw");
+                };
+              const v = qt[qp as string];
+              return typeof v === "function" ? v.bind(qt) : v;
+            },
+          });
+        }
+        return q;
+      };
+    },
+  }) as never;
+}
+
+type K3Seed = {
+  installs: number;
+  assets: number;
+  audits: number;
+  siblingId: string;
+  siblingPrefix: string;
+};
+
+/** One live sibling plugin + one other-tenant row pair; returns baselines. */
+async function k3SeedSibling(db: ReturnType<typeof fakeDb>): Promise<K3Seed> {
+  const sib = await installPackage(
+    db.asClient(),
+    MERCHANT_A,
+    {
+      kind: "plugin",
+      fileName: "sibling.zip",
+      bytes: pluginZip(strictPlugin("sibling-widget", "1.0.0", { name: "Sib" }), [
+        { name: "assets/icon.png", content: "sib-icon" },
+      ]),
+      idempotencyKey: key(),
+    },
+    ACTOR,
+  );
+  db.rows("theme_assets").push({
+    id: "seed-tenant-b-asset",
+    merchant_id: MERCHANT_B,
+    theme_id: null,
+    kind: "json",
+    name: "plugins/acme-reviews/deadbeef/assets/widget.js",
+    content: null,
+    url: null,
+    bytes: 3,
+    enabled: true,
+  });
+  db.rows("marketplace_installs").push({
+    id: "seed-tenant-b-install",
+    merchant_id: MERCHANT_B,
+    kind: "widget",
+    listing_slug: "acme-reviews",
+    status: "installed",
+    idempotency_key: "seed-tenant-b-key",
+  });
+  return {
+    installs: db.rows("marketplace_installs").length,
+    assets: db.rows("theme_assets").length,
+    audits: db.rows("theme_audit").length,
+    siblingId: sib.packageId,
+    siblingPrefix: `plugins/sibling-widget/${sib.artifactId.slice(0, 8)}/`,
+  };
+}
+
+/** Clean state: nothing new, nothing partial active, neighbours intact. */
+function k3ExpectClean(
+  db: ReturnType<typeof fakeDb>,
+  seed: K3Seed,
+  attemptedKey: string,
+) {
+  expect(db.rows("marketplace_installs")).toHaveLength(seed.installs);
+  expect(db.rows("theme_assets")).toHaveLength(seed.assets);
+  expect(db.rows("theme_audit")).toHaveLength(seed.audits);
+  expect(db.rows("store_themes")).toHaveLength(0);
+  expect(db.rows("theme_versions")).toHaveLength(0);
+  if (attemptedKey) {
+    expect(
+      db
+        .rows("marketplace_installs")
+        .some((r) => r.idempotency_key === attemptedKey),
+    ).toBe(false);
+  }
+  // No partial namespace for the attempted slug either.
+  expect(
+    db
+      .rows("theme_assets")
+      .filter(
+        (a) =>
+          a.merchant_id === MERCHANT_A &&
+          (a.name as string).startsWith("plugins/acme-reviews/"),
+      ),
+  ).toHaveLength(0);
+  // Sibling install + namespace untouched; other tenant untouched.
+  expect(
+    db.rows("marketplace_installs").find((r) => r.id === seed.siblingId)
+      ?.status,
+  ).toBe("installed");
+  expect(
+    db
+      .rows("theme_assets")
+      .some((a) => (a.name as string).startsWith(seed.siblingPrefix)),
+  ).toBe(true);
+  expect(
+    db
+      .rows("marketplace_installs")
+      .find((r) => r.id === "seed-tenant-b-install")?.status,
+  ).toBe("installed");
+  expect(
+    db.rows("theme_assets").filter((a) => a.merchant_id === MERCHANT_B),
+  ).toHaveLength(1);
+}
+
+describe("K3 plugin install atomicity (failure-injection, each stage)", () => {
+  const SYMLINK = ((0xa000 | 0o777) << 16) >>> 0;
+  const VALIDATION_STAGES: {
+    stage: string;
+    fileName?: string;
+    key?: string;
+    bytes: () => Uint8Array;
+    code: string;
+  }[] = [
+    {
+      stage: "bad_name",
+      fileName: "plugin.tar.gz",
+      bytes: () =>
+        pluginZip(strictPlugin("acme-reviews", "1.0.0", { name: "Acme" })),
+      code: "package.bad_name",
+    },
+    {
+      stage: "bad_key",
+      key: "",
+      bytes: () =>
+        pluginZip(strictPlugin("acme-reviews", "1.0.0", { name: "Acme" })),
+      code: "package.bad_key",
+    },
+    {
+      stage: "malformed_archive",
+      bytes: () => new TextEncoder().encode("not a zip"),
+      code: "zip.malformed",
+    },
+    {
+      stage: "missing_manifest",
+      bytes: () =>
+        buildZip([{ name: "templates/index.json", content: "{}" }]),
+      code: "zip.missing_manifest",
+    },
+    {
+      stage: "unsafe_path",
+      bytes: () =>
+        buildZip([
+          {
+            name: "plugin.json",
+            content: JSON.stringify(
+              strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
+            ),
+          },
+          { name: "../../evil.json", content: "{}" },
+        ]),
+      code: "zip.unsafe_path",
+    },
+    {
+      stage: "symlink",
+      bytes: () =>
+        buildZip([
+          {
+            name: "plugin.json",
+            content: JSON.stringify(
+              strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
+            ),
+          },
+          { name: "link", content: "plugin.json", externalAttrs: SYMLINK },
+        ]),
+      code: "zip.symlink",
+    },
+    {
+      stage: "manifest_invalid",
+      bytes: () => pluginZip({ name: "Chat", version: "1.0.0" }),
+      code: "package.manifest_invalid",
+    },
+    {
+      stage: "bad_version",
+      bytes: () =>
+        pluginZip(strictPlugin("acme-reviews", "banana", { name: "Acme" })),
+      code: "package.bad_version",
+    },
+    {
+      stage: "api_incompatible",
+      bytes: () =>
+        pluginZip(
+          strictPlugin("acme-reviews", "1.0.0", {
+            name: "Acme",
+            api: "^99.0.0",
+          }),
+        ),
+      code: "package.api_incompatible",
+    },
+    {
+      stage: "missing_dependency",
+      bytes: () =>
+        pluginZip(
+          strictPlugin("acme-reviews", "1.0.0", {
+            name: "Acme",
+            dependencies: ["ghost-dep"],
+          }),
+        ),
+      code: "package.missing_dependency",
+    },
+    {
+      stage: "broken_ref",
+      bytes: () =>
+        pluginZip(strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }), [
+          {
+            name: "templates/index.json",
+            content: JSON.stringify({ hero: "assets/missing.png" }),
+          },
+        ]),
+      code: "package.broken_ref",
+    },
+    {
+      stage: "blocked_extension",
+      bytes: () =>
+        pluginZip(strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }), [
+          { name: "assets/app.js", content: "evil()" },
+        ]),
+      code: "zip.blocked_extension",
+    },
+  ];
+
+  it.each(VALIDATION_STAGES)(
+    "kill at $stage writes nothing and leaves clean state",
+    async (t) => {
+      const db = pkgDb();
+      const seed = await k3SeedSibling(db);
+      const k = t.key === undefined ? key() : t.key;
+      const got = await codeOf(
+        installPackage(db.asClient(), MERCHANT_A, {
+          kind: "plugin",
+          fileName: t.fileName ?? "plugin.zip",
+          bytes: t.bytes(),
+          idempotencyKey: k,
+        }),
+      );
+      expect(got).toBe(t.code);
+      k3ExpectClean(db, seed, k);
+    },
+  );
+
+  it("kill on the first asset file leaves no ledger and no partial namespace", async () => {
+    const db = pkgDb();
+    const seed = await k3SeedSibling(db);
+    const k = key();
+    const bytes = pluginZip(
+      strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
+      [
+        { name: "assets/a.png", content: "a" },
+        { name: "assets/b.png", content: "b" },
+        { name: "assets/c.png", content: "c" },
+      ],
+    );
+    const got = await codeOf(
+      installPackage(k3KillProxy(db, { assetsAfter: 0 }), MERCHANT_A, {
+        kind: "plugin",
+        fileName: "acme.zip",
+        bytes,
+        idempotencyKey: k,
+      }),
+    );
+    expect(got).toBe("package.asset_save_failed");
+    k3ExpectClean(db, seed, k);
+  });
+
+  it("kill mid-namespace (second asset file) compensates the partial prefix", async () => {
+    const db = pkgDb();
+    const seed = await k3SeedSibling(db);
+    const k = key();
+    const bytes = pluginZip(
+      strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
+      [
+        { name: "assets/a.png", content: "a" },
+        { name: "assets/b.png", content: "b" },
+        { name: "assets/c.png", content: "c" },
+      ],
+    );
+    const got = await codeOf(
+      installPackage(k3KillProxy(db, { assetsAfter: 1 }), MERCHANT_A, {
+        kind: "plugin",
+        fileName: "acme.zip",
+        bytes,
+        idempotencyKey: k,
+      }),
+    );
+    expect(got).toBe("package.asset_save_failed");
+    k3ExpectClean(db, seed, k);
+  });
+
+  it("kill on the ledger write compensates the stored assets", async () => {
+    const db = pkgDb();
+    const seed = await k3SeedSibling(db);
+    const k = key();
+    const got = await codeOf(
+      installPackage(k3KillProxy(db, { ledger: true }), MERCHANT_A, {
+        kind: "plugin",
+        fileName: "acme.zip",
+        bytes: pluginZip(
+          strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
+          [{ name: "assets/icon.png", content: "icon" }],
+        ),
+        idempotencyKey: k,
+      }),
+    );
+    expect(got).toBe("package.install_failed");
+    k3ExpectClean(db, seed, k);
+  });
+
+  it("kill on the audit write compensates ledger + assets (no live-but-unaudited row)", async () => {
+    const db = pkgDb();
+    const seed = await k3SeedSibling(db);
+    const k = key();
+    const got = await codeOf(
+      installPackage(k3KillProxy(db, { auditThrows: true }), MERCHANT_A, {
+        kind: "plugin",
+        fileName: "acme.zip",
+        bytes: pluginZip(
+          strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
+          [{ name: "assets/icon.png", content: "icon" }],
+        ),
+        idempotencyKey: k,
+      }),
+    );
+    expect(got).toBe("injected_audit_throw");
+    k3ExpectClean(db, seed, k);
   });
 });

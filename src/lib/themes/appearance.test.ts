@@ -372,14 +372,24 @@ describe("B2 catalogue sections (Official / Community / Upload)", () => {
   });
 });
 
-describe("gallery keys (installed packages listed alongside source keys)", () => {
-  it("unions installed-only keys after catalogue keys, in order", () => {
-    expect(
-      galleryKeys(["songoskriti", "somvabona"], [{ key: "acme-pack" }]),
-    ).toEqual(["songoskriti", "somvabona", "acme-pack"]);
+describe("gallery keys (installed authoritative, K2)", () => {
+  it("lists installed only when merchant context present (no source fallback)", () => {
+    // K2: installed array present → installed ONLY; catalogue/source fails closed.
+    expect(galleryKeys(["songoskriti", "somvabona"], [{ key: "acme-pack" }])).toEqual([
+      "acme-pack",
+    ]);
+    // Legacy: no merchant context (null/undefined installed) lists catalogue.
+    expect(galleryKeys(["songoskriti", "somvabona"], null)).toEqual([
+      "songoskriti",
+      "somvabona",
+    ]);
+    expect(galleryKeys(["songoskriti", "somvabona"], undefined)).toEqual([
+      "songoskriti",
+      "somvabona",
+    ]);
   });
 
-  it("accepts bare slugs and keyed rows in either list, without duplicating", () => {
+  it("accepts bare slugs and keyed rows in the installed list, without duplicating", () => {
     expect(
       galleryKeys(["songoskriti", { key: "somvabona" }], [
         "songoskriti",
@@ -394,7 +404,8 @@ describe("gallery keys (installed packages listed alongside source keys)", () =>
       "acme-pack",
     );
     expect(galleryKeys(["songoskriti"], [])).not.toContain("acme-pack");
-    expect(galleryKeys(["songoskriti"], [])).toEqual(["songoskriti"]);
+    // K2: merchant context with empty installed fails closed to [] (no source).
+    expect(galleryKeys(["songoskriti"], [])).toEqual([]);
   });
 
   it("never throws on malformed rows or containers", () => {
@@ -402,8 +413,9 @@ describe("gallery keys (installed packages listed alongside source keys)", () =>
     expect(galleryKeys(garbage, garbage)).toEqual([]);
     expect(galleryKeys(null, undefined)).toEqual([]);
     expect(galleryKeys("nope" as never, 42 as never)).toEqual([]);
-    expect(galleryKeys(["  songoskriti  "], [{ key: " " }])).toEqual([
-      "songoskriti",
-    ]);
+    // K2: installed array present (even all-blank) fails closed to [].
+    expect(galleryKeys(["  songoskriti  "], [{ key: " " }])).toEqual([]);
+    // Legacy catalogue trimming still holds without merchant context.
+    expect(galleryKeys(["  songoskriti  "], null)).toEqual(["songoskriti"]);
   });
 });

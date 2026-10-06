@@ -54,13 +54,18 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
     ],
   };
 
-  it("unions installed slugs after source keys, sources intact and first", () => {
-    const keys = previewSourceKeys([ARTIFACT]);
-    expect(keys[0]).toBe("songoskriti");
-    expect(keys[1]).toBe("somvabona");
-    expect(keys).toContain("acme-pack");
-    // Source keys survive as installed refs without duplicating.
-    expect(previewSourceKeys(["songoskriti", ARTIFACT])).toEqual(keys);
+  it("installed set is authoritative: lists installed only, never source fallback", () => {
+    // K2: merchant context (array, even empty) lists installed ONLY — source
+    // keys fail closed. Legacy null/undefined still lists source keys.
+    expect(previewSourceKeys([ARTIFACT])).toEqual(["acme-pack"]);
+    expect(previewSourceKeys(["songoskriti", ARTIFACT])).toEqual([
+      "songoskriti",
+      "acme-pack",
+    ]);
+    expect(previewSourceKeys([])).toEqual([]);
+    // Legacy: no merchant context still lists the source floor.
+    expect(previewSourceKeys()).toContain("songoskriti");
+    expect(previewSourceKeys(null)).toContain("somvabona");
   });
 
   it("installed versions resolve to their artifact content", () => {
@@ -81,12 +86,14 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
     expect(base.tokens.surface).toBe("#112233");
   });
 
-  it("source keys win over installed rows with the same key", () => {
+  it("installed rows win over source keys with the same key", () => {
+    // K2: installed artifact authoritative — a colliding installed row shadows
+    // the static source (never a silent wrong theme).
     const shadow = { ...ARTIFACT, key: "songoskriti", themeName: "Shadow" };
     expect(previewSourceFor("songoskriti", undefined, [shadow])?.themeName).toBe(
-      "Songoskriti",
+      "Shadow",
     );
-    expect(previewSourceKeys([shadow])).toEqual(previewSourceKeys());
+    expect(previewSourceKeys([shadow])).toEqual(["songoskriti"]);
   });
 
   it("removal disappears from lists and resolution without crashing", () => {
@@ -102,7 +109,8 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
 
   it("garbage installed inputs never crash discovery", () => {
     const garbage = [null, undefined, "", "   ", 42, {}, { key: 7 }] as never[];
-    expect(previewSourceKeys(garbage)).toEqual(previewSourceKeys());
+    // K2: merchant context (array) fails closed to [] on garbage — never source.
+    expect(previewSourceKeys(garbage)).toEqual([]);
     expect(previewSourceFor("acme-pack", undefined, garbage)).toBeNull();
     expect(previewSourceFor("acme-pack", undefined, [{ key: "acme-pack" }])).not.toBeNull();
   });

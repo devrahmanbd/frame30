@@ -708,3 +708,349 @@ describe("PKG-4 plugin tenant A/B isolation", () => {
     ).toBe(true);
   });
 });
+
+/* ---------------------------------------------------------------- K1 cases
+ *
+ * K1 — official plugin catalogue + parity (cases only): the three official
+ * entries (Reviews, Analytics, WhatsApp Orders) list as catalogue rows
+ * pointing at internally-built artifacts, and install through the NORMAL
+ * `installPackage` pipeline — same validators, same ledger, same asset
+ * namespace, same enable path as uploads. No downloadable artifacts, no
+ * separate official path.
+ */
+
+import {
+  OFFICIAL_PLUGIN_KEYS,
+  STORE_ANALYTICS_MANIFEST,
+  isOfficialPluginKey,
+  officialPluginPinFor,
+  officialPluginSource,
+} from "./official-plugins";
+import {
+  __setOfficialPluginArtifactProviderForTests,
+  installOfficialPlugin,
+  listOfficialPluginCatalog,
+} from "./official-plugins.server";
+import { artifactIdFor } from "./package-install.server";
+import { validateBundle } from "./marketplace-scopes";
+
+describe("K1 official plugin catalogue shape", () => {
+  it("names exactly the three official keys, nothing else", () => {
+    expect([...OFFICIAL_PLUGIN_KEYS]).toEqual([
+      "product-reviews",
+      "store-analytics",
+      "whatsapp-chat",
+    ]);
+    for (const key of OFFICIAL_PLUGIN_KEYS) {
+      expect(isOfficialPluginKey(key)).toBe(true);
+      expect(officialPluginPinFor(key)).toBe(`official:${key}`);
+    }
+    // Other builtins and unknown keys are community, never official.
+    for (const key of ["loyalty-lite", "social-proof", "vapor", ""]) {
+      expect(isOfficialPluginKey(key)).toBe(false);
+    }
+  });
+
+  it("backs Reviews + WhatsApp Orders in builtin manifest data", () => {
+    const reviews = officialPluginSource("product-reviews")!;
+    expect(reviews).toMatchObject({
+      key: "product-reviews",
+      author: "Framique",
+    });
+    expect(
+      (reviews.manifest as { id: string }).id,
+    ).toBe("product-reviews");
+    const wa = officialPluginSource("whatsapp-chat")!;
+    expect(
+      (wa.manifest as { id: string }).id,
+    ).toBe("whatsapp-chat");
+    expect(officialPluginSource("loyalty-lite")).toBeNull();
+    expect(officialPluginSource("vapor")).toBeNull();
+  });
+
+  it("lists official rows in order with artifact refs over exporter-built bytes", async () => {
+    const entries = await listOfficialPluginCatalog();
+    expect(entries.map((e) => e.row.key)).toEqual([
+      "product-reviews",
+      "store-analytics",
+      "whatsapp-chat",
+    ]);
+    for (const entry of entries) {
+      expect(entry.row.provenance).toBe("official");
+      expect(entry.row.artifact.pinned).toBe(`official:${entry.row.key}`);
+      expect(entry.row.artifact.checksum).toMatch(/^[a-f0-9]{64}$/);
+      expect(entry.row.artifact.fileName).toBe(`${entry.row.key}.zip`);
+      // The row points at the internally-built artifact: the checksum is the
+      // pipeline identity of the exact bytes the install will run.
+      expect(entry.row.artifact.checksum).toBe(artifactIdFor(entry.bytes));
+      expect(entry.row.version).toBe(entry.version);
+      expect(entry.bytes.length).toBeGreaterThan(0);
+    }
+    // Reviews + WhatsApp rows rebuild byte-identical from the builtin exporter.
+    const reviews = entries[0]!;
+    expect(artifactIdFor(reviews.bytes)).toBe(
+      artifactIdFor(exportBuiltinPluginZip("product-reviews")),
+    );
+    const analytics = entries[1]!;
+    expect(artifactIdFor(analytics.bytes)).toBe(
+      artifactIdFor(exportPluginManifestZip(STORE_ANALYTICS_MANIFEST)),
+    );
+  });
+
+  it("passes the authored Analytics source through the real install gates", () => {
+    const parsed = parseManifest(STORE_ANALYTICS_MANIFEST);
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) throw new Error("analytics manifest rejected");
+    expect(
+      validateBundle(STORE_ANALYTICS_MANIFEST, parsed.manifest.permissions).ok,
+    ).toBe(true);
+    const seam = pkg1PluginValidator(STORE_ANALYTICS_MANIFEST, "plugin");
+    expect(seam.ok).toBe(true);
+    if (seam.ok) expect(seam.manifest.slug).toBe("store-analytics");
+    const bytes = exportPluginManifestZip(STORE_ANALYTICS_MANIFEST);
+    const layout = validatePackageLayout(
+      extractPackageFiles(bytes, parseZip(bytes)),
+      "plugin",
+    );
+    expect(parseManifest(layout.manifest).ok).toBe(true);
+  });
+
+  it("a broken build for one key hides that key, never the section", async () => {
+    __setOfficialPluginArtifactProviderForTests(async (key) => {
+      if (key === "whatsapp-chat") throw new Error("build exploded");
+      const { exportBuiltinPluginZip: zip } = await import("./plugin-package");
+      const { artifactIdFor: hash } = await import("./package-install.server");
+      const source = officialPluginSource(key)!;
+      const bytes =
+        key === "store-analytics"
+          ? exportPluginManifestZip(source.manifest)
+          : zip(key);
+      const checksum = hash(bytes);
+      const gated = parseManifest(source.manifest) as {
+        ok: true;
+        manifest: { version: string };
+      };
+      return {
+        row: {
+          key,
+          name: source.nameEn,
+          summary: source.summaryEn,
+          author: source.author,
+          category: source.category,
+          version: gated.manifest.version,
+          provenance: "official" as const,
+          artifact: {
+            checksum,
+            version: gated.manifest.version,
+            fileName: `${key}.zip`,
+            pinned: officialPluginPinFor(key),
+          },
+        },
+        version: gated.manifest.version,
+        bytes,
+        manifest: source.manifest,
+        artifact: {
+          checksum,
+          version: gated.manifest.version,
+          fileName: `${key}.zip`,
+          pinned: officialPluginPinFor(key),
+        },
+      };
+    });
+    try {
+      const entries = await listOfficialPluginCatalog();
+      expect(entries.map((e) => e.row.key)).toEqual([
+        "product-reviews",
+        "store-analytics",
+      ]);
+    } finally {
+      __setOfficialPluginArtifactProviderForTests(null);
+    }
+  });
+
+  it("refuses unknown keys without writing anything", async () => {
+    const db = pkgDb();
+    expect(await codeOf(installOfficialPlugin(db.asClient(), MERCHANT_A, "vapor"))).toMatch(
+      /plugin\.official_unknown/,
+    );
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+    expect(db.rows("theme_assets")).toHaveLength(0);
+    expect(db.rows("plugin_state")).toHaveLength(0);
+  });
+});
+
+describe("K1 official install runs the normal installPackage pipeline", () => {
+  it("installs Reviews with ledger + namespaced assets + host row + official pin", async () => {
+    const db = pkgDb();
+    const out = await installOfficialPlugin(
+      db.asClient(),
+      MERCHANT_A,
+      "product-reviews",
+      ACTOR,
+    );
+    expect(out.alreadyInstalled).toBe(false);
+    expect(out.version).toBe("2.1.0");
+    expect(out.artifactId).toHaveLength(64);
+
+    const ledger = db.rows("marketplace_installs");
+    expect(ledger).toHaveLength(1);
+    expect(ledger[0]).toMatchObject({
+      kind: "widget",
+      listing_slug: "product-reviews",
+      listing_name: "Verified Product Reviews",
+      status: "installed",
+      // The pipeline hashed the exact official bytes…
+      artifact_checksum: artifactIdFor(
+        exportBuiltinPluginZip("product-reviews"),
+      ),
+      artifact_version: "2.1.0",
+      // …stamped with the official provenance marker, not `upload`.
+      artifact_pinned: "official:product-reviews",
+    });
+    // Namespaced assets, never the global tree.
+    const assets = db.rows("theme_assets");
+    expect(assets.length).toBeGreaterThan(0);
+    expect(
+      assets.every((a) =>
+        (a.name as string).startsWith("plugins/product-reviews/"),
+      ),
+    ).toBe(true);
+    // Same audit action as uploads.
+    expect(
+      db.rows("theme_audit").filter((r) => r.action === "package.installed"),
+    ).toHaveLength(1);
+    // Host projection: the install renders like any pipeline install.
+    const installed = await listInstalledPlugins(
+      db.asClient() as never,
+      MERCHANT_A,
+    );
+    const found = installed.find((p) => p.manifest.id === "product-reviews")!;
+    expect(found.enabled).toBe(true);
+    expect(
+      resolvePluginWidget("plugin:product-reviews/reviews_carousel", installed)
+        .ok,
+    ).toBe(true);
+  });
+
+  it("official install is indistinguishable from a custom install past the artifact source", async () => {
+    const db = pkgDb();
+    const bytes = exportBuiltinPluginZip("whatsapp-chat");
+    await installOfficialPlugin(db.asClient(), MERCHANT_A, "whatsapp-chat", ACTOR);
+    // Upload-equivalent: the same bytes through installPackage directly.
+    await installPackage(
+      db.asClient(),
+      MERCHANT_B,
+      {
+        kind: "plugin",
+        fileName: "whatsapp-chat.zip",
+        bytes,
+        idempotencyKey: "upload-equivalent-key",
+      },
+      ACTOR,
+    );
+    const ledger = db.rows("marketplace_installs");
+    expect(ledger).toHaveLength(2);
+    // Same audit action, same asset namespace family.
+    expect(
+      db.rows("theme_audit").filter((r) => r.action === "package.installed"),
+    ).toHaveLength(2);
+    expect(
+      db
+        .rows("theme_assets")
+        .every((a) => (a.name as string).startsWith("plugins/whatsapp-chat/")),
+    ).toBe(true);
+    // Same ledger shape; only identity + provenance marker differ.
+    const strip = (r: Record<string, unknown>) => {
+      const {
+        id,
+        idempotency_key,
+        artifact_pinned,
+        merchant_id,
+        created_at,
+        ...rest
+      } = r;
+      void id;
+      void idempotency_key;
+      void artifact_pinned;
+      void merchant_id;
+      void created_at;
+      return rest;
+    };
+    const [official, custom] = ledger as Record<string, unknown>[];
+    expect(strip(custom!)).toEqual(strip(official!));
+    expect(official!.artifact_pinned).toBe("official:whatsapp-chat");
+    expect(custom!.artifact_pinned).toBe("upload");
+    expect(official!.artifact_checksum).toBe(custom!.artifact_checksum);
+  });
+
+  it("installs Analytics end to end with its authored artifact", async () => {
+    const db = pkgDb();
+    const out = await installOfficialPlugin(
+      db.asClient(),
+      MERCHANT_A,
+      "store-analytics",
+      ACTOR,
+    );
+    expect(out.version).toBe("1.0.0");
+    expect(db.rows("marketplace_installs")[0]).toMatchObject({
+      listing_slug: "store-analytics",
+      status: "installed",
+      artifact_checksum: artifactIdFor(
+        exportPluginManifestZip(STORE_ANALYTICS_MANIFEST),
+      ),
+      artifact_pinned: "official:store-analytics",
+    });
+    const installed = await listInstalledPlugins(
+      db.asClient() as never,
+      MERCHANT_A,
+    );
+    expect(
+      resolvePluginWidget("plugin:store-analytics/sales_overview", installed).ok,
+    ).toBe(true);
+  });
+
+  it("replays the official ledger key instead of stacking rows", async () => {
+    const db = pkgDb();
+    const first = await installOfficialPlugin(
+      db.asClient(),
+      MERCHANT_A,
+      "product-reviews",
+      ACTOR,
+    );
+    const second = await installOfficialPlugin(
+      db.asClient(),
+      MERCHANT_A,
+      "product-reviews",
+      ACTOR,
+    );
+    expect(second.alreadyInstalled).toBe(true);
+    expect(second.packageId).toBe(first.packageId);
+    expect(db.rows("marketplace_installs")).toHaveLength(1);
+  });
+
+  it("travels the shared enable path after install", async () => {
+    const db = pkgDb();
+    const out = await installOfficialPlugin(
+      db.asClient(),
+      MERCHANT_A,
+      "whatsapp-chat",
+      ACTOR,
+    );
+    const paused = await setPluginPackageEnabled(
+      db.asClient(),
+      MERCHANT_A,
+      out.packageId,
+      false,
+      ACTOR,
+    );
+    expect(paused.status).toBe("paused");
+    const enabled = await setPluginPackageEnabled(
+      db.asClient(),
+      MERCHANT_A,
+      out.packageId,
+      true,
+      ACTOR,
+    );
+    expect(enabled.status).toBe("installed");
+  });
+});

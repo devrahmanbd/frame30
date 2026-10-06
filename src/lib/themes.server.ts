@@ -414,17 +414,18 @@ export function purgeStorefront(
   return invalidate(merchantId ? tenantCachePrefix(merchantId) : "storefront:");
 }
 
-/* ------------------------- installed package artifact publish (FOLLOW-UP)
+/* ------------------------- installed package artifact publish (K2)
  *
- * The live publish path consumes the installed package artifact: when the
- * caller omits templates/tokens, the newest `theme_versions` row for the
- * theme supplies them; when no usable row exists the official source
- * package (`registryPackage`) is the fallback — a publish never goes live
- * empty. Explicit input always wins (existing builder behaviour unchanged).
- * Re-publishing identical content replays the live version instead of
- * stacking a duplicate, and every publish (including replays) writes a
- * `theme_audit` row. Malformed artifact payloads fall back, never throw;
- * tenant scoping is merchant-predicated throughout.
+ * K2 — installed artifact authoritative: the live publish path consumes ONLY
+ * explicit input or the newest `theme_versions` row for the theme. The former
+ * official source package (`registryPackage`) fallback is removed — a publish
+ * with no usable input and no usable artifact fails closed with an explicit
+ * `builder.artifact_missing` reason, never a silent wrong theme and never an
+ * empty publish. Explicit input always wins (existing builder behaviour
+ * unchanged). Re-publishing identical content replays the live version instead
+ * of stacking a duplicate, and every publish (including replays) writes a
+ * `theme_audit` row. Malformed artifact payloads fail closed, never throw
+ * unexpected; tenant scoping is merchant-predicated throughout.
  */
 
 export type PublishArtifact = {
@@ -443,11 +444,10 @@ function isAuthoredRecord(value: unknown): boolean {
 export function resolvePublishPayload(
   input: { templates?: unknown; tokens?: unknown },
   artifact: Pick<PublishArtifact, "templates" | "tokens"> | null | undefined,
-  source: { templates?: unknown; tokens?: unknown } | null | undefined,
 ): {
   templates: unknown;
   tokens: unknown;
-  origin: "input" | "artifact" | "source";
+  origin: "input" | "artifact";
 } {
   const inputTemplates = isAuthoredRecord(input?.templates)
     ? input!.templates
@@ -459,15 +459,16 @@ export function resolvePublishPayload(
   const artifactTokens = isAuthoredRecord(artifact?.tokens)
     ? artifact!.tokens
     : null;
+  if (!inputTemplates && !inputTokens && !artifactTemplates && !artifactTokens) {
+    throw new BuilderError(
+      "builder.artifact_missing",
+      "No installed artifact for this theme. Install the theme first — publish never falls back to source.",
+    );
+  }
   return {
-    templates: inputTemplates ?? artifactTemplates ?? source?.templates ?? {},
-    tokens: inputTokens ?? artifactTokens ?? source?.tokens ?? {},
-    origin:
-      inputTemplates || inputTokens
-        ? "input"
-        : artifactTemplates || artifactTokens
-          ? "artifact"
-          : "source",
+    templates: inputTemplates ?? artifactTemplates ?? {},
+    tokens: inputTokens ?? artifactTokens ?? {},
+    origin: inputTemplates || inputTokens ? "input" : "artifact",
   };
 }
 
@@ -597,19 +598,12 @@ export async function publishVersion(
   },
 ) {
   await rateLimit("builder.publish", merchantId);
-  // Installed package artifact in-chain: omitted payloads resolve from the
-  // newest version row, then the source package — never empty, never a crash
-  // on malformed rows. Explicit input still wins field-by-field.
+  // K2: installed artifact authoritative — omitted payloads resolve ONLY from
+  // the newest version row; no source fallback. Missing/malformed rows fail
+  // closed with `builder.artifact_missing`. Explicit input still wins.
   const artifact = await loadPublishArtifact(db, merchantId, input.themeId)
     .catch(() => null);
-  let source: { templates: unknown; tokens: unknown } | null = null;
-  try {
-    const pkg = registryPackage(artifact?.themeKey ?? "__empty__");
-    source = { templates: pkg.templates, tokens: pkg.tokens };
-  } catch {
-    source = null;
-  }
-  const resolved = resolvePublishPayload(input, artifact, source);
+  const resolved = resolvePublishPayload(input, artifact);
   const { templates } = parseUntrusted(
     { templates: resolved.templates, tokens: resolved.tokens },
     "publish",

@@ -432,6 +432,7 @@ type PluginInstallRow = {
   id: string;
   kind: string;
   listing_slug: string;
+  listing_name?: string | null;
   version: string;
   status?: string;
   artifact_checksum?: string | null;
@@ -453,7 +454,7 @@ async function readPluginInstallRow(
     const { data, error } = await db
       .from("marketplace_installs")
       .select(
-        "id, kind, listing_slug, version, artifact_checksum, artifact_version, artifact_pinned",
+        "id, kind, listing_slug, listing_name, version, status, artifact_checksum, artifact_version, artifact_pinned",
       )
       .eq("merchant_id", merchantId)
       .eq("id", installId)
@@ -464,7 +465,7 @@ async function readPluginInstallRow(
     if (!isMissingArtifactColumnError(err)) throw err;
     const { data } = await db
       .from("marketplace_installs")
-      .select("id, kind, listing_slug, version")
+      .select("id, kind, listing_slug, listing_name, version, status")
       .eq("merchant_id", merchantId)
       .eq("id", installId)
       .maybeSingle();
@@ -857,17 +858,26 @@ async function installPluginPackage(
   }
 
   const prefix = pluginVersionPrefix(manifest.slug, artifactId.slice(0, 8));
-  await saveVersionAssets(
-    db,
-    merchantId,
-    {
-      themeId: null,
-      prefix,
-      files: files
-        .filter((f) => f.path !== manifestNameFor("plugin"))
-        .map((f) => ({ relPath: f.path, bytes: f.bytes, text: decodeText(f.bytes) })),
-    },
-  );
+  // K3 atomicity: assets land BEFORE the ledger row, so a mid-install kill
+  // must never strand a partial namespace. A failed asset save compensates
+  // the prefix it just wrote (best-effort) before the original stage error
+  // propagates — the failure-injection suite pins each stage to clean state.
+  try {
+    await saveVersionAssets(
+      db,
+      merchantId,
+      {
+        themeId: null,
+        prefix,
+        files: files
+          .filter((f) => f.path !== manifestNameFor("plugin"))
+          .map((f) => ({ relPath: f.path, bytes: f.bytes, text: decodeText(f.bytes) })),
+      },
+    );
+  } catch (e) {
+    await deleteVersionAssets(db, merchantId, prefix).catch(() => null);
+    throw e;
+  }
   let pluginLedgerId: string;
   try {
     ({ id: pluginLedgerId } = await insertInstallLedger(db, {
@@ -892,11 +902,30 @@ async function installPluginPackage(
     await deleteVersionAssets(db, merchantId, prefix).catch(() => null);
     throw new PackageInstallError("package.install_failed", "Ledger write failed.");
   }
-  await audit(db, merchantId, null, actorId, "package.installed", {
-    slug: manifest.slug,
-    version: manifest.version,
-    artifact: artifactId.slice(0, 12),
-  });
+  // K3 atomicity: the audit write is part of the install transaction. A
+  // thrown audit failure compensates ledger + assets so a surfaced error
+  // never masks a live-but-unaudited install (callers retry on throw; a
+  // standing row would double-install). Error-OBJECT audit failures stay
+  // best-effort under the pre-existing audit() contract (it never throws).
+  try {
+    await audit(db, merchantId, null, actorId, "package.installed", {
+      slug: manifest.slug,
+      version: manifest.version,
+      artifact: artifactId.slice(0, 12),
+    });
+  } catch (e) {
+    try {
+      await db
+        .from("marketplace_installs")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .eq("id", pluginLedgerId);
+    } catch {
+      /* compensation is best-effort; the audit error below is the signal */
+    }
+    await deleteVersionAssets(db, merchantId, prefix).catch(() => null);
+    throw e;
+  }
   return {
     packageId: pluginLedgerId,
     versionId: pluginLedgerId,
@@ -938,6 +967,176 @@ export async function setPluginPackageEnabled(
     slug: row.listing_slug,
   });
   return { ok: true, status };
+}
+
+/* ------------------------------------------------- plugin rollback (K3) */
+
+export type RollbackPluginResult = {
+  /** New ledger row id — the restored live row (append-only, like themes). */
+  packageId: string;
+  /** Same as packageId: plugin history versions ARE ledger rows. */
+  versionId: string;
+  /** Manifest version restored from the target artifact. */
+  version: string;
+  /** Restored artifact checksum — equals the target's by construction. */
+  artifactId: string | null;
+  /** Explicit previous/rollback relationship (not just an enable flip). */
+  rollbackOf: string;
+  /** Sibling rows parked to `paused` so exactly one row stays live. */
+  superseded: string[];
+};
+
+/**
+ * K3 — plugin rollback-to-prior-artifact (theme `rollbackPackage` parity).
+ *
+ * Plugin history is successive ledger rows, so — like the theme lane minting
+ * a new `theme_versions` row with `rollback_of` — a rollback mints a NEW
+ * ledger row carrying the target's immutable artifact identity
+ * (`artifact_checksum`/`artifact_version`; NULL stays NULL for legacy rows)
+ * and records the explicit relationship in TWO places, never just an enable
+ * flip: `previous_snapshot.rollback_of` on the new row plus a
+ * `package.rolled_back` audit row (`{ from, to, rollback_of }`).
+ *
+ * Content equality holds structurally: plugin assets are immutable under
+ * `plugins/<slug>/<artifact8>/…`, so the restored row addresses the exact
+ * bytes the target installed — nothing is copied or mutated.
+ *
+ * Activation: every other live (`installed`/`trial`) row for the same slug
+ * parks to `paused` (their prior statuses ride in
+ * `previous_snapshot.rolled_from` for forensics), leaving the new row the
+ * single live install. History stays append-only. The host projection
+ * (`plugin_state` via `upsertPlugin`) is the caller's next step, mirroring
+ * the theme lane's draft upsert.
+ *
+ * Atomicity matches the install path: a ledger failure restores parked
+ * siblings before throwing; an audit throw compensates the new row +
+ * restores siblings. Tenant-scoped throughout (`assertTenantId` + merchant
+ * predicates); cross-merchant targets read as `package.not_found`.
+ */
+export async function rollbackPluginPackage(
+  db: Client,
+  merchantId: string,
+  targetInstallId: string,
+  actorId?: string | null,
+  opts?: { idempotencyKey?: string },
+): Promise<RollbackPluginResult> {
+  assertTenantId(merchantId, "rollbackPluginPackage");
+  const target = await readPluginInstallRow(db, merchantId, targetInstallId);
+  if (!target || target.kind !== "widget") {
+    throw new PackageInstallError(
+      "package.not_found",
+      "Plugin install not found for this merchant.",
+    );
+  }
+  const slug = target.listing_slug;
+  const checksum =
+    typeof target.artifact_checksum === "string" &&
+    /^[a-f0-9]{64}$/i.test(target.artifact_checksum)
+      ? target.artifact_checksum.toLowerCase()
+      : null;
+
+  const { data: siblings } = await db
+    .from("marketplace_installs")
+    .select("id, status")
+    .eq("merchant_id", merchantId)
+    .eq("listing_slug", slug)
+    .eq("kind", "widget");
+  const live = ((siblings ?? []) as unknown as { id: string; status?: string }[]).filter(
+    (r) => r.status === "installed" || r.status === "trial",
+  );
+  const parkedPrior = live.map((r) => ({ id: r.id, status: r.status ?? null }));
+
+  if (live.length) {
+    const { error } = await db
+      .from("marketplace_installs")
+      .update({ status: "paused" } as never)
+      .eq("merchant_id", merchantId)
+      .eq("listing_slug", slug)
+      .eq("kind", "widget")
+      .in("status", ["installed", "trial"]);
+    if (error) throw new PackageInstallError("package.install_failed", error.message);
+  }
+
+  const restoreSiblings = async (): Promise<void> => {
+    for (const s of parkedPrior) {
+      try {
+        await db
+          .from("marketplace_installs")
+          .update({ status: s.status ?? "installed" } as never)
+          .eq("merchant_id", merchantId)
+          .eq("id", s.id);
+      } catch {
+        /* best-effort; the rollback error below is the signal */
+      }
+    }
+  };
+
+  let newId: string;
+  try {
+    ({ id: newId } = await insertInstallLedger(db, {
+      merchant_id: merchantId,
+      kind: "widget",
+      theme_id: null,
+      widget_id: null,
+      listing_slug: slug,
+      listing_name: target.listing_name ?? slug,
+      version: target.version,
+      price_minor_int: 0,
+      currency_code: "BDT",
+      is_trial: false,
+      status: "installed",
+      idempotency_key:
+        opts?.idempotencyKey ?? `rollback:${targetInstallId}:${Date.now()}`,
+      // Explicit previous/rollback relationship (the enable flip alone is
+      // not the record): rollback_of + the parked live rows + the exact
+      // artifact identity restored.
+      previous_snapshot: {
+        rollback_of: targetInstallId,
+        rolled_from: parkedPrior,
+        artifact_checksum: checksum,
+        artifact_version: target.artifact_version ?? null,
+        version: target.version,
+      } as never,
+      artifact_checksum: checksum,
+      artifact_version: target.artifact_version ?? null,
+      artifact_pinned: target.artifact_pinned ?? null,
+    }));
+  } catch (e) {
+    await restoreSiblings();
+    if (e instanceof PackageInstallError) throw e;
+    throw new PackageInstallError("package.install_failed", "Ledger write failed.");
+  }
+
+  try {
+    await audit(db, merchantId, null, actorId, "package.rolled_back", {
+      slug,
+      from: targetInstallId,
+      to: newId,
+      rollback_of: targetInstallId,
+      artifact: checksum ? checksum.slice(0, 12) : null,
+      superseded: parkedPrior.map((s) => s.id),
+    });
+  } catch (e) {
+    try {
+      await db
+        .from("marketplace_installs")
+        .delete()
+        .eq("merchant_id", merchantId)
+        .eq("id", newId);
+    } catch {
+      /* best-effort; the audit error below is the signal */
+    }
+    await restoreSiblings();
+    throw e;
+  }
+  return {
+    packageId: newId,
+    versionId: newId,
+    version: target.version,
+    artifactId: checksum,
+    rollbackOf: targetInstallId,
+    superseded: parkedPrior.map((s) => s.id),
+  };
 }
 
 /* ------------------------------------------------------------------ preview */

@@ -6,14 +6,12 @@
  * entry here. The engine (`theme-preview-nav`) never names a theme, and
  * themes never import engine behavior — they only implement its port type.
  *
- * SWITCHOVER-3 — installed package discovery: the static map below stays
- * the built-in floor (source keys). Merchant-installed packages (uploaded
- * zips whose content lives in `store_themes` / `theme_versions` rows) join
- * discovery as data, never as new static entries: callers pass the
- * installed set and the key lists below return the union (source keys
- * first, installed-only keys after). Source keys always win on collision;
- * a removed/uninstalled row simply stops being passed, so its key
- * disappears and resolution falls back to null — never a crash.
+ * K2 — installed artifact authoritative: when the caller passes a merchant
+ * installed set (array, even empty) resolution and listing come ONLY from
+ * that set and uninstalled/unknown keys fail closed to null (route 404s,
+ * never a silent wrong theme). The static map below remains ONLY for legacy
+ * null/undefined callers with no merchant context (build tooling / registry
+ * seed paths); merchant-aware callers MUST pass the installed set.
  */
 import type { PreviewThemeSource } from "./theme-preview-nav";
 import {
@@ -130,20 +128,27 @@ export function previewSourceFor(
   variationKey?: string,
   installed?: readonly InstalledThemeRef[] | null,
 ): PreviewThemeSource | null {
+  // K2: installed authoritative. Merchant context (array, even empty) resolves
+  // ONLY from the installed set — uninstalled keys fail closed to null, never
+  // the static source (no silent wrong theme). Legacy null/undefined (no
+  // merchant context, build tooling) resolves from the static source map.
+  if (installed !== null && installed !== undefined) {
+    const artifact = installedArtifactFor(installed, key);
+    return artifact ? installedPreviewSource(artifact, variationKey) : null;
+  }
   const factory = SOURCES[key];
   if (factory) return factory(variationKey);
-  if (!installed) return null;
-  const artifact = installedArtifactFor(installed, key);
-  return artifact ? installedPreviewSource(artifact, variationKey) : null;
+  return null;
 }
 
-/** Registered preview keys: built-in source keys first, then installed-only keys. */
+/** Installed keys when merchant context present; source keys for legacy null/undefined. */
 export function previewSourceKeys(
   installed?: readonly InstalledThemeRef[] | null,
 ): string[] {
-  const keys = Object.keys(SOURCES);
-  if (!installed) return keys;
-  const seen = new Set(keys);
+  if (installed === null || installed === undefined)
+    return Object.keys(SOURCES);
+  const keys: string[] = [];
+  const seen = new Set<string>();
   for (const entry of installed) {
     const key = installedThemeKeyOf(entry);
     if (!key || seen.has(key)) continue;

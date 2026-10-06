@@ -403,12 +403,11 @@ export function assemblePreviewTemplates(
 }
 
 /**
- * Resolve a preview preset by key. Built-in source keys resolve from the
- * static registry; merchant-installed packages (uploaded zips whose content
- * lives in `store_themes` / `theme_versions` rows) resolve from the
- * `installed` set the route loader threads through (SWITCHOVER-4). Source
- * keys always win on collision; an uninstalled/removed key resolves to null
- * (route renders 404) — never a crash.
+ * Resolve a preview preset by key. K2: installed artifact authoritative — when
+ * the caller passes the merchant `installed` set (array, even empty) the key
+ * resolves ONLY from that set and uninstalled/unknown keys fail closed to
+ * null (route renders 404, never a silent wrong theme). Legacy null/undefined
+ * (no merchant context, build tooling) resolves from the static registry.
  */
 export function resolveThemePreview(
   key: string,
