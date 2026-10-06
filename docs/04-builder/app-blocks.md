@@ -123,8 +123,8 @@ the page (`WidgetBoundary`, exercised at
 > (§7), and the publish lint gate
 > (`src/lib/builder-lifecycle.contract.test.tsx:84`).
 
-- `custom_html` and `kind = community` rows are not free-tier surfaces: install and render both require `check_entitlement(merchant_id, 'widget_custom')`; a plan deficit returns `plan_limit_exceeded` (same pattern as sections-templates.md limits).
-- The snapshot RPC (`app.widget_snapshot()`) reports `blocked` status to the merchant's editor so the merchant knows why a widget stopped rendering — an uninstall or cleanup decision needs that code owner.
+- (planned) `custom_html` and `kind = community` rows are not free-tier surfaces: install and render both require `check_entitlement(merchant_id, 'widget_custom')`; a plan deficit returns `plan_limit_exceeded` (same pattern as sections-templates.md limits).
+- (planned) The snapshot RPC (`app.widget_snapshot()`) reports `blocked` status to the merchant's editor so the merchant knows why a widget stopped rendering — an uninstall or cleanup decision needs that code owner.
 
 ## 7. Community widgets — Class A/B + theme dressing (HEAD)
 

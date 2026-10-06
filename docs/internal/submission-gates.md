@@ -1,6 +1,6 @@
 # Submission gates runbook (staff only)
 
-Last verified 2026-09-26.
+Last verified 2026-10-06.
 
 This runbook is the only document a reviewer needs besides the gate
 output itself. Follow it top to bottom for every third-party
@@ -36,7 +36,7 @@ Gate entry points, one per suite:
 | Songoskriti widget audit   | `describe("songoskriti widget gap audit")` | `src/lib/themes/songoskriti/widgets.test.ts:11`   |
 | Somvabona scaffold         | `describe("somvabona scaffold")`           | `src/lib/themes/somvabona/wiring.test.ts:8`       |
 | Somvabona skins            | `describe("SOMVABONA_WIDGET_DEFAULTS")`    | `src/lib/themes/somvabona/skins.test.ts:35`       |
-| Somvabona skins token gate | `is token-driven` test                     | `src/lib/themes/somvabona/skins.test.ts:167`      |
+| Somvabona skins token gate | `is token-driven` test                     | `src/lib/themes/somvabona/skins.test.ts:166`      |
 | Studio twin parity         | `describe("studio twin parity")`           | `src/lib/studio/catalog.test.ts:837`              |
 | Starter theme (5 gates)    | `locks brand tokens` test                  | `examples/starter-theme/starter-theme.test.ts:44` |
 
@@ -96,12 +96,12 @@ corresponding section of the [plugin guide](../developers/plugins.md).
 Plugin-specific red lines:
 
 - The manifest must pass `parseManifest`
-  (`src/lib/plugin-manifest.ts:191`). Unknown scopes, invented
+  (`src/lib/plugin-manifest.ts:393`). Unknown scopes, invented
   hooks, non-HTTPS `hooksUrl` values, and over-budget manifests
   fail there first.
 - The declared builder API must satisfy the running builder:
   `BUILDER_API_VERSION` is `3.1.0`
-  (`src/lib/plugin-manifest.ts:18`), so the manifest declares
+  (`src/lib/plugin-manifest.ts:29`), so the manifest declares
   `^3.0.0` and stays on major 3.
 - Requested scopes must be the minimum the feature needs. A display
   widget asking for `read_customers` is rejected on sight.
@@ -171,9 +171,9 @@ this human checklist before approving:
    reviewed version.
 4. For theme publishes, confirm the server-side publish checks ran
    clean: `lintTemplate` per key
-   (`src/lib/themes.server.ts:395`), the translation gate
-   (`src/lib/themes.server.ts:401`), then `composePublishGate`
-   (`src/lib/themes.server.ts:419`).
+   (`src/lib/themes.server.ts:431`), the translation gate
+   (`src/lib/themes.server.ts:437`), then `composePublishGate`
+   (`src/lib/themes.server.ts:456`).
 
 ## 6. Kill-switch and suspend procedure
 
@@ -188,7 +188,7 @@ breach, scope abuse, review regression, operator decision).
    idempotent and writes a `plugin.suspended` audit row.
 2. **Platform kill switch** when the blast radius is every install:
    `setPluginKillSwitch`
-   (`src/lib/plugins.server.ts:325`). Engaging it auto-suspends
+   (`src/lib/plugins.server.ts:342`). Engaging it auto-suspends
    every merchant install with reason `kill_switch`. Releasing it
    does not auto-resume; each merchant resumes individually through
    `resumePlugin` (`src/lib/plugin-lifecycle.server.ts:90`).
@@ -197,7 +197,7 @@ breach, scope abuse, review regression, operator decision).
    closed, so confirm the suspended state first.
 4. **Uninstall and purge** when the plugin must leave the store:
    `uninstallWidgetInstall`
-   (`src/lib/marketplace-install.server.ts:455`) parks the ledger
+   (`src/lib/marketplace-install.server.ts:981`) parks the ledger
    row on `uninstalling` and enqueues the durable `plugin.purge`
    job, which lands the ledger on terminal `purged` and writes
    exactly one `plugin.purged` audit row
