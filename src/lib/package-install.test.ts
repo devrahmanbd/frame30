@@ -645,6 +645,301 @@ describe("PKG-2 plugin packages", () => {
   });
 });
 
+/* --------------------------------- FOLLOW-UP artifact columns + GC (cases only) */
+
+/**
+ * Pre-migration DB shim (test-only): wraps fakeDb so any read/write
+ * referencing artifact_* columns fails the way PostgREST does on a DB without
+ * the artifact migration (an error object, never a throw), letting the
+ * feature-detected fallback legs run. Non-install tables pass through
+ * untouched; assertions still read the underlying real rows via `db.rows`.
+ */
+function preMigrationClient(db: ReturnType<typeof fakeDb>): never {
+  const ART = /artifact_(checksum|version|pinned)/;
+  const missing = () => ({
+    message: `column "artifact_checksum" does not exist`,
+  });
+  const failTerminal: unknown = new Proxy(
+    {},
+    {
+      get(_t, prop) {
+        if (prop === "maybeSingle" || prop === "single")
+          return async () => ({ data: null, error: missing() });
+        if (prop === "then")
+          return (resolve: (v: unknown) => unknown) =>
+            Promise.resolve({ data: null, error: missing() }).then(resolve);
+        return (..._args: unknown[]) => failTerminal;
+      },
+    },
+  );
+  const target = db as unknown as Record<string | symbol, unknown>;
+  return new Proxy(target, {
+    get(t, prop) {
+      if (prop === "from")
+        return (table: string) => {
+          const q = (t.from as (table: string) => unknown)(table) as Record<
+            string,
+            (...args: never[]) => unknown
+          >;
+          if (table !== "marketplace_installs") return q;
+          return new Proxy(q, {
+            get(qt: Record<string, (...args: never[]) => unknown>, qp: string | symbol) {
+              if (qp === "select")
+                return (cols?: string, ...rest: never[]) =>
+                  typeof cols === "string" && ART.test(cols)
+                    ? failTerminal
+                    : (qt.select as (...a: never[]) => unknown)(cols as never, ...(rest as never[]));
+              if (qp === "insert" || qp === "upsert")
+                return (rows: unknown, ...rest: never[]) =>
+                  ART.test(JSON.stringify(rows))
+                    ? failTerminal
+                    : (qt[qp as string] as (...a: never[]) => unknown)(rows as never, ...(rest as never[]));
+              if (qp === "update")
+                return (patch: unknown, ...rest: never[]) =>
+                  ART.test(JSON.stringify(patch))
+                    ? failTerminal
+                    : (qt.update as (...a: never[]) => unknown)(patch as never, ...(rest as never[]));
+              const v = qt[qp as string];
+              return typeof v === "function" ? v.bind(qt) : v;
+            },
+          });
+        };
+      const v = t[prop];
+      return typeof v === "function"
+        ? (...args: never[]) => (v as (...a: never[]) => unknown)(...args)
+        : v;
+    },
+  }) as never;
+}
+
+describe("FOLLOW-UP install artifact persistence", () => {
+  function pluginInstall(
+    db: ReturnType<typeof fakeDb>,
+    client: never,
+    manifest: Record<string, unknown>,
+  ) {
+    return installPackage(
+      client as never,
+      MERCHANT_A,
+      {
+        kind: "plugin",
+        fileName: "acme.zip",
+        bytes: pluginZip(manifest, [
+          { name: "assets/icon.png", content: "icon" },
+        ]),
+        idempotencyKey: key(),
+      },
+      ACTOR,
+    );
+  }
+
+  it("persists checksum/version/provenance on the plugin ledger row (present path)", async () => {
+    const db = pkgDb();
+    const res = await pluginInstall(
+      db,
+      db.asClient<never>(),
+      strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
+    );
+    const row = db.rows("marketplace_installs")[0]!;
+    expect(row.artifact_checksum).toBe(res.artifactId);
+    expect(row.artifact_version).toBe("1.0.0");
+    expect(row.artifact_pinned).toBe("upload");
+  });
+
+  it("persists checksum/version/provenance on the theme ledger row (present path)", async () => {
+    const db = pkgDb();
+    const res = await installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
+    const row = db.rows("marketplace_installs")[0]!;
+    expect(row.artifact_checksum).toBe(res.artifactId);
+    expect(row.artifact_version).toBe("1.0.0");
+    expect(row.artifact_pinned).toBe("upload");
+  });
+
+  it("plugin installs succeed on pre-migration DBs with legacy NULL identity (absent path)", async () => {
+    const db = pkgDb();
+    const proxy = preMigrationClient(db);
+    const res = await pluginInstall(
+      db,
+      proxy,
+      strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
+    );
+    expect(res.artifactId).toHaveLength(64);
+    expect(res.alreadyInstalled).toBe(false);
+    const row = db.rows("marketplace_installs")[0]!;
+    expect("artifact_checksum" in row).toBe(false);
+    expect("artifact_version" in row).toBe(false);
+    expect("artifact_pinned" in row).toBe(false);
+    // Assets still land under the pipeline namespace — only the columns degrade.
+    expect(
+      db
+        .rows("theme_assets")
+        .some((a) =>
+          (a.name as string).startsWith(
+            `plugins/acme-reviews/${res.artifactId.slice(0, 8)}/`,
+          ),
+        ),
+    ).toBe(true);
+  });
+
+  it("theme installs succeed on pre-migration DBs with legacy NULL identity (absent path)", async () => {
+    const db = pkgDb();
+    const res = await installPackage(
+      preMigrationClient(db),
+      MERCHANT_A,
+      {
+        kind: "theme",
+        fileName: "theme.zip",
+        bytes: themeZip(STRICT_THEME_V1),
+        idempotencyKey: key(),
+      },
+      ACTOR,
+    );
+    expect(res.versionNumber).toBe(1);
+    const row = db.rows("marketplace_installs")[0]!;
+    expect("artifact_checksum" in row).toBe(false);
+  });
+});
+
+describe("FOLLOW-UP plugin uninstall GC (manifest slug vs ledger listing slug)", () => {
+  /** Marketplace shape: manifest id `acme-reviews`, ledger listing slug `sticky-cart`. */
+  async function marketplaceShapedInstall(db: ReturnType<typeof fakeDb>) {
+    const res = await installPackage(
+      db.asClient(),
+      MERCHANT_A,
+      {
+        kind: "plugin",
+        fileName: "sticky-cart.zip",
+        bytes: pluginZip(strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }), [
+          { name: "assets/icon.png", content: "icon" },
+        ]),
+        idempotencyKey: key(),
+      },
+      ACTOR,
+    );
+    // The marketplace lane patches listing identity after the pipeline write.
+    db.rows("marketplace_installs")[0]!.listing_slug = "sticky-cart";
+    return res;
+  }
+
+  function seedIsolationRows(db: ReturnType<typeof fakeDb>) {
+    // A second artifact version minted under the LISTING slug (update history
+    // under listing identity) — must die with the install.
+    db.rows("theme_assets").push({
+      id: "seed-listing-slug",
+      merchant_id: MERCHANT_A,
+      theme_id: null,
+      kind: "json",
+      name: "plugins/sticky-cart/deadbeef/assets/widget.js",
+      content: null,
+      url: null,
+      bytes: 3,
+      enabled: true,
+    });
+    // Sibling plugin namespace — must survive.
+    db.rows("theme_assets").push({
+      id: "seed-sibling",
+      merchant_id: MERCHANT_A,
+      theme_id: null,
+      kind: "json",
+      name: "plugins/other/12345678/assets/widget.js",
+      content: null,
+      url: null,
+      bytes: 3,
+      enabled: true,
+    });
+    // Same names, other tenant — must survive (merchant predicate per row).
+    db.rows("theme_assets").push({
+      id: "seed-tenant",
+      merchant_id: MERCHANT_B,
+      theme_id: null,
+      kind: "json",
+      name: "plugins/sticky-cart/deadbeef/assets/widget.js",
+      content: null,
+      url: null,
+      bytes: 3,
+      enabled: true,
+    });
+  }
+
+  it("wipes BOTH namespaces when manifest slug != ledger listing slug, isolating siblings/tenants", async () => {
+    const db = pkgDb();
+    const res = await marketplaceShapedInstall(db);
+    const art8 = res.artifactId.slice(0, 8);
+    seedIsolationRows(db);
+    expect(db.rows("theme_assets")).toHaveLength(4);
+
+    const out = await uninstallPluginPackage(
+      db.asClient(),
+      MERCHANT_A,
+      res.packageId,
+      ACTOR,
+    );
+    expect(out.ok).toBe(true);
+    expect(out.removedAssets).toBe(2);
+
+    const names = db.rows("theme_assets").map((a) => a.name as string);
+    // Manifest-slug namespace gone (checksum-suffix attribution)…
+    expect(names.some((n) => n.includes(`acme-reviews/${art8}/`))).toBe(false);
+    // …and listing-slug namespace gone for this merchant (prefix wipe)…
+    expect(
+      db
+        .rows("theme_assets")
+        .filter(
+          (a) =>
+            a.merchant_id === MERCHANT_A &&
+            (a.name as string).startsWith("plugins/sticky-cart/"),
+        ),
+    ).toHaveLength(0);
+    // Sibling + other-tenant rows intact.
+    expect(names).toContain("plugins/other/12345678/assets/widget.js");
+    expect(
+      db
+        .rows("theme_assets")
+        .filter((a) => a.merchant_id === MERCHANT_B),
+    ).toHaveLength(1);
+    expect(db.rows("marketplace_installs")[0]!.status).toBe("removed");
+  });
+
+  it("legacy NULL-checksum rows keep the ledger-slug wipe only (best effort, never a crash)", async () => {
+    const db = pkgDb();
+    const res = await marketplaceShapedInstall(db);
+    seedIsolationRows(db);
+    // Pre-migration row: no artifact identity recorded.
+    const ledger = db.rows("marketplace_installs")[0]!;
+    delete ledger.artifact_checksum;
+    delete ledger.artifact_version;
+    delete ledger.artifact_pinned;
+
+    const out = await uninstallPluginPackage(
+      preMigrationClient(db),
+      MERCHANT_A,
+      res.packageId,
+      ACTOR,
+    );
+    expect(out.ok).toBe(true);
+    // Only the listing-slug seed is attributable without a checksum.
+    expect(out.removedAssets).toBe(1);
+    const names = db.rows("theme_assets").map((a) => a.name as string);
+    // Manifest-slug namespace survives (documented legacy best-effort)…
+    expect(
+      names.some((n) => n.startsWith(`plugins/acme-reviews/${res.artifactId.slice(0, 8)}/`)),
+    ).toBe(true);
+    // …listing-slug seed wiped, sibling + tenant intact.
+    expect(
+      db
+        .rows("theme_assets")
+        .filter((a) => a.merchant_id === MERCHANT_A)
+        .map((a) => a.name as string),
+    ).not.toContain("plugins/sticky-cart/deadbeef/assets/widget.js");
+    expect(names).toContain("plugins/other/12345678/assets/widget.js");
+    expect(
+      db
+        .rows("theme_assets")
+        .filter((a) => a.merchant_id === MERCHANT_B),
+    ).toHaveLength(1);
+  });
+});
+
 /* ---------------------------------------------------------- PKG-1 seam */
 
 describe("PKG-2 PKG-1 validator boundary", () => {

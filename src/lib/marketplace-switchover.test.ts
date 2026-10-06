@@ -31,6 +31,7 @@ vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./rate-limit.server", () => allowAllRateLimits());
 
 const { installListing } = await import("./marketplace-install.server");
+const { uninstallPluginPackage } = await import("./package-install.server");
 const { listCatalog } = await import("./marketplace.server");
 const { exportPluginManifestZip } = await import("./plugin-package");
 
@@ -386,5 +387,211 @@ describe("SWITCHOVER-2 catalog artifact refs", () => {
       (w) => (w as { slug?: string }).slug === "legacy-widget",
     ) as unknown as { artifact: null };
     expect(legacy.artifact).toBeNull();
+  });
+});
+
+/* -------------------------------- FOLLOW-UP install artifact persistence + GC (cases only) */
+
+/**
+ * Pre-migration DB shim (test-only, mirrors the package-install suite):
+ * any read/write referencing artifact_* columns on marketplace_installs fails
+ * the way PostgREST does pre-migration, exercising the legacy fallback legs.
+ */
+function preMigrationClient(db: ReturnType<typeof fakeDb>): never {
+  const ART = /artifact_(checksum|version|pinned)/;
+  const missing = () => ({
+    message: `column "artifact_checksum" does not exist`,
+  });
+  const failTerminal: unknown = new Proxy(
+    {},
+    {
+      get(_t, prop) {
+        if (prop === "maybeSingle" || prop === "single")
+          return async () => ({ data: null, error: missing() });
+        if (prop === "then")
+          return (resolve: (v: unknown) => unknown) =>
+            Promise.resolve({ data: null, error: missing() }).then(resolve);
+        return (..._args: unknown[]) => failTerminal;
+      },
+    },
+  );
+  const target = db as unknown as Record<string | symbol, unknown>;
+  return new Proxy(target, {
+    get(t, prop) {
+      if (prop === "from")
+        return (table: string) => {
+          const q = (t.from as (table: string) => unknown)(table) as Record<
+            string,
+            (...args: never[]) => unknown
+          >;
+          if (table !== "marketplace_installs") return q;
+          return new Proxy(q, {
+            get(
+              qt: Record<string, (...args: never[]) => unknown>,
+              qp: string | symbol,
+            ) {
+              if (qp === "select")
+                return (cols?: string, ...rest: never[]) =>
+                  typeof cols === "string" && ART.test(cols)
+                    ? failTerminal
+                    : (qt.select as (...a: never[]) => unknown)(
+                        cols as never,
+                        ...(rest as never[]),
+                      );
+              if (qp === "insert" || qp === "upsert")
+                return (rows: unknown, ...rest: never[]) =>
+                  ART.test(JSON.stringify(rows))
+                    ? failTerminal
+                    : (qt[qp as string] as (...a: never[]) => unknown)(
+                        rows as never,
+                        ...(rest as never[]),
+                      );
+              if (qp === "update")
+                return (patch: unknown, ...rest: never[]) =>
+                  ART.test(JSON.stringify(patch))
+                    ? failTerminal
+                    : (qt.update as (...a: never[]) => unknown)(
+                        patch as never,
+                        ...(rest as never[]),
+                      );
+              const v = qt[qp as string];
+              return typeof v === "function" ? v.bind(qt) : v;
+            },
+          });
+        };
+      const v = t[prop];
+      return typeof v === "function"
+        ? (...args: never[]) => (v as (...a: never[]) => unknown)(...args)
+        : v;
+    },
+  }) as never;
+}
+
+describe("FOLLOW-UP marketplace install artifact persistence", () => {
+  function exactInput(k: string) {
+    return {
+      kind: "widget" as const,
+      listingId: LISTING_EXACT,
+      trial: false,
+      idempotencyKey: k,
+      versionId: null,
+      grantedScopes: GRANTED,
+      consentedBy: ACTOR,
+    };
+  }
+
+  it("persists checksum/pinned-version/pin on the install row (present path)", async () => {
+    const db = shopDb([exactRow(), legacyRow()]);
+    const out = (await installListing(
+      db.asClient(),
+      MERCHANT,
+      exactInput("switch-key-artifact-present"),
+    )) as unknown as {
+      installId: string;
+      artifact: { checksum: string; version: string; pinned: string } | null;
+    };
+    expect(out.artifact?.checksum).toMatch(/^[a-f0-9]{64}$/);
+    const row = db.rows("marketplace_installs")[0]!;
+    expect(row.artifact_checksum).toBe(out.artifact?.checksum);
+    expect(row.artifact_version).toBe(out.artifact?.version);
+    expect(row.artifact_pinned).toBe(out.artifact?.pinned);
+    // Listing identity still patched (no regression on the base shape).
+    expect(row).toMatchObject({
+      widget_id: LISTING_EXACT,
+      listing_slug: "sticky-cart",
+      version: "1.0.0",
+      status: "installed",
+    });
+  });
+
+  it("succeeds with NULL artifact identity on pre-migration DBs (absent path)", async () => {
+    const db = shopDb([exactRow(), legacyRow()]);
+    const out = (await installListing(
+      preMigrationClient(db),
+      MERCHANT,
+      exactInput("switch-key-artifact-absent"),
+    )) as unknown as { installId: string; replayed: boolean; artifact: unknown };
+    expect(out.replayed).toBe(false);
+    // The in-memory artifact ref still reports (bytes were hashed); only the
+    // persisted columns degrade.
+    expect(out.artifact).not.toBeNull();
+    const row = db.rows("marketplace_installs")[0]!;
+    expect(row).toMatchObject({
+      widget_id: LISTING_EXACT,
+      listing_slug: "sticky-cart",
+      status: "installed",
+    });
+    expect("artifact_checksum" in row).toBe(false);
+    expect("artifact_version" in row).toBe(false);
+    expect("artifact_pinned" in row).toBe(false);
+    // Assets still land — only the columns degrade, never the install.
+    expect(db.rows("theme_assets").length).toBeGreaterThan(0);
+  });
+
+  it("uninstall of a marketplace install wipes the manifest-slug namespace too (GC integration)", async () => {
+    const db = shopDb([exactRow(), legacyRow()]);
+    const out = (await installListing(
+      db.asClient(),
+      MERCHANT,
+      exactInput("switch-key-artifact-gc"),
+    )) as unknown as { installId: string; artifact: { checksum: string } };
+    const art8 = out.artifact.checksum.slice(0, 8);
+    const prefix = `plugins/acme-reviews/${art8}/assets/`;
+    expect(
+      db.rows("theme_assets").every((a) => String(a.name).startsWith(prefix)),
+    ).toBe(true);
+
+    // Sibling listing install + foreign-tenant namespace must survive.
+    db.rows("theme_assets").push({
+      id: "sibling-asset",
+      merchant_id: MERCHANT,
+      theme_id: null,
+      kind: "json",
+      name: "plugins/other/12345678/assets/widget.js",
+      content: null,
+      url: null,
+      bytes: 3,
+      enabled: true,
+    });
+    db.rows("theme_assets").push({
+      id: "tenant-asset",
+      merchant_id: "99999999-9999-4999-8999-999999999999",
+      theme_id: null,
+      kind: "json",
+      name: `${prefix}widget.js`,
+      content: null,
+      url: null,
+      bytes: 3,
+      enabled: true,
+    });
+
+    const wiped = await uninstallPluginPackage(
+      db.asClient(),
+      MERCHANT,
+      out.installId,
+    );
+    expect(wiped.ok).toBe(true);
+    expect(wiped.removedAssets).toBeGreaterThan(0);
+    // No merchant asset left under either slug namespace…
+    expect(
+      db
+        .rows("theme_assets")
+        .filter(
+          (a) =>
+            a.merchant_id === MERCHANT &&
+            (String(a.name).startsWith(prefix) ||
+              String(a.name).startsWith("plugins/sticky-cart/")),
+        ),
+    ).toHaveLength(0);
+    // …sibling + other-tenant rows intact.
+    expect(
+      db.rows("theme_assets").some((a) => a.id === "sibling-asset"),
+    ).toBe(true);
+    expect(
+      db.rows("theme_assets").some((a) => a.id === "tenant-asset"),
+    ).toBe(true);
+    expect(
+      db.rows("marketplace_installs")[0]!.status,
+    ).toBe("removed");
   });
 });

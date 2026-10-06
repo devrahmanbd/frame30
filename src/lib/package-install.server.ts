@@ -365,6 +365,133 @@ async function audit(
   } as never);
 }
 
+/* --------------------------------------- artifact-column persistence (FOLLOW-UP) */
+
+/**
+ * Persisted artifact identity (see
+ * supabase/migrations/20260928000002_marketplace_install_artifacts.sql):
+ * the sha256 of the exact ZIP the pipeline installed, the manifest version
+ * pinned inside it, and a provenance label (`upload` for direct ZIP uploads;
+ * the marketplace lane overwrites with listing identity + `manifest` /
+ * `version:<id>` labels). NULL on any column = legacy fallback (ledger-only
+ * install or a pre-migration row) — readers treat NULL as "artifact unknown".
+ */
+
+/** True when the failure is "the artifact columns don't exist yet" — never for real errors. */
+export function isMissingArtifactColumnError(err: unknown): boolean {
+  const msg =
+    err instanceof Error ? err.message : (
+      (err as { message?: string } | null)?.message ?? String(err ?? "")
+    );
+  if (!/artifact_(checksum|version|pinned)/i.test(msg)) return false;
+  return /column|schema cache|PGRST204|42703|does not exist/i.test(msg);
+}
+
+function withoutArtifactColumns(
+  row: Record<string, unknown>,
+): Record<string, unknown> {
+  const out = { ...row };
+  delete out.artifact_checksum;
+  delete out.artifact_version;
+  delete out.artifact_pinned;
+  return out;
+}
+
+/**
+ * Optimistic ledger insert first, retry without artifact columns on a
+ * missing-column failure — installs succeed on pre-migration DBs with NULL
+ * (legacy) artifact identity, same degrade pattern as the recurring/term
+ * columns in marketplace-install.server.ts. Non-column errors rethrow so
+ * callers keep their compensation paths.
+ */
+async function insertInstallLedger(
+  db: Client,
+  row: Record<string, unknown>,
+): Promise<{ id: string; degraded: boolean }> {
+  try {
+    const { data, error } = await db
+      .from("marketplace_installs")
+      .insert(row as never)
+      .select("id")
+      .single();
+    if (error || !data) throw error ?? new Error("ledger insert failed");
+    return { id: (data as unknown as { id: string }).id, degraded: false };
+  } catch (err) {
+    if (!isMissingArtifactColumnError(err)) throw err;
+    const { data, error } = await db
+      .from("marketplace_installs")
+      .insert(withoutArtifactColumns(row) as never)
+      .select("id")
+      .single();
+    if (error || !data) throw error ?? new Error("ledger insert failed");
+    return { id: (data as unknown as { id: string }).id, degraded: true };
+  }
+}
+
+type PluginInstallRow = {
+  id: string;
+  kind: string;
+  listing_slug: string;
+  version: string;
+  status?: string;
+  artifact_checksum?: string | null;
+  artifact_version?: string | null;
+  artifact_pinned?: string | null;
+};
+
+/**
+ * Feature-detected install-row read: artifact columns when the migration has
+ * landed, legacy shape without them otherwise. Never throws for a missing
+ * column — a NULL artifact identity is the documented legacy fallback.
+ */
+async function readPluginInstallRow(
+  db: Client,
+  merchantId: string,
+  installId: string,
+): Promise<PluginInstallRow | null> {
+  try {
+    const { data, error } = await db
+      .from("marketplace_installs")
+      .select(
+        "id, kind, listing_slug, version, artifact_checksum, artifact_version, artifact_pinned",
+      )
+      .eq("merchant_id", merchantId)
+      .eq("id", installId)
+      .maybeSingle();
+    if (error) throw error;
+    return (data ?? null) as unknown as PluginInstallRow | null;
+  } catch (err) {
+    if (!isMissingArtifactColumnError(err)) throw err;
+    const { data } = await db
+      .from("marketplace_installs")
+      .select("id, kind, listing_slug, version")
+      .eq("merchant_id", merchantId)
+      .eq("id", installId)
+      .maybeSingle();
+    if (!data) return null;
+    return {
+      ...(data as unknown as PluginInstallRow),
+      artifact_checksum: null,
+      artifact_version: null,
+      artifact_pinned: null,
+    };
+  }
+}
+
+/**
+ * Segment-exact artifact8 match for a plugin asset name
+ * (`plugins/<slug>/<artifact8>/assets/...`). The slug segment is never
+ * inspected, so a manifest-slug namespace is attributable by checksum alone —
+ * and a slug that happens to contain hex text can never false-positive.
+ */
+function pluginAssetArtifact8(name: string): string | null {
+  const segs = name.split("/");
+  if (segs.length < 4 || segs[0] !== "plugins" || segs[3] !== "assets")
+    return null;
+  const candidate = segs[2] ?? "";
+  return /^[0-9a-f]{8}$/.test(candidate) ? candidate : null;
+}
+
 /* ------------------------------------------------------------------ install */
 
 export type InstallPackageInput = {
@@ -587,9 +714,9 @@ export async function installPackage(
     }));
   const stored = await saveVersionAssets(db, merchantId, { themeId, prefix, files: assetFiles });
 
-  const { data: ledger, error: ledgerError } = await db
-    .from("marketplace_installs")
-    .insert({
+  let ledgerId: string;
+  try {
+    ({ id: ledgerId } = await insertInstallLedger(db, {
       merchant_id: merchantId,
       kind: "theme",
       theme_id: null,
@@ -602,16 +729,20 @@ export async function installPackage(
       is_trial: false,
       status: "installed",
       idempotency_key: input.idempotencyKey,
-    })
-    .select("id")
-    .single();
-  if (ledgerError || !ledger) {
+      // Direct-upload provenance: the exact bytes just hashed. The
+      // marketplace lane overwrites these with listing identity + pin label;
+      // pre-migration DBs keep NULL (legacy fallback).
+      artifact_checksum: artifactId,
+      artifact_version: manifest.version,
+      artifact_pinned: "upload",
+    }));
+  } catch {
     throw new PackageInstallError("package.install_failed", "Ledger write failed.");
   }
   if (!prev) {
     await db
       .from("store_themes")
-      .update({ source_install_id: (ledger as unknown as { id: string }).id } as never)
+      .update({ source_install_id: ledgerId } as never)
       .eq("merchant_id", merchantId)
       .eq("id", themeId);
   }
@@ -737,9 +868,9 @@ async function installPluginPackage(
         .map((f) => ({ relPath: f.path, bytes: f.bytes, text: decodeText(f.bytes) })),
     },
   );
-  const { data: ledger, error } = await db
-    .from("marketplace_installs")
-    .insert({
+  let pluginLedgerId: string;
+  try {
+    ({ id: pluginLedgerId } = await insertInstallLedger(db, {
       merchant_id: merchantId,
       kind: "widget",
       theme_id: null,
@@ -752,10 +883,12 @@ async function installPluginPackage(
       is_trial: false,
       status: "installed",
       idempotency_key: input.idempotencyKey,
-    })
-    .select("id")
-    .single();
-  if (error || !ledger) {
+      // Direct-upload provenance (same contract as the theme path above).
+      artifact_checksum: artifactId,
+      artifact_version: manifest.version,
+      artifact_pinned: "upload",
+    }));
+  } catch {
     await deleteVersionAssets(db, merchantId, prefix).catch(() => null);
     throw new PackageInstallError("package.install_failed", "Ledger write failed.");
   }
@@ -765,8 +898,8 @@ async function installPluginPackage(
     artifact: artifactId.slice(0, 12),
   });
   return {
-    packageId: (ledger as unknown as { id: string }).id,
-    versionId: (ledger as unknown as { id: string }).id,
+    packageId: pluginLedgerId,
+    versionId: pluginLedgerId,
     version: manifest.version,
     versionNumber: 1,
     artifactId,
@@ -1001,29 +1134,40 @@ export async function uninstallPluginPackage(
   actorId?: string | null,
 ): Promise<{ ok: true; removedAssets: number }> {
   assertTenantId(merchantId, "uninstallPluginPackage");
-  const { data } = await db
-    .from("marketplace_installs")
-    .select("id, kind, listing_slug, version")
-    .eq("merchant_id", merchantId)
-    .eq("id", installId)
-    .maybeSingle();
-  const row = data as unknown as { id: string; kind: string; listing_slug: string; version: string } | null;
+  const row = await readPluginInstallRow(db, merchantId, installId);
   if (!row || row.kind !== "widget") {
     throw new PackageInstallError("package.not_found", "Plugin install not found for this merchant.");
   }
   if ((row as unknown as { status?: string }).status === "removed") {
     return { ok: true, removedAssets: 0 };
   }
-  // Wipe every asset namespace minted for this slug by this merchant. The
-  // prefix is slug-scoped, so sibling plugins (`plugins/<other>/…`) and
-  // other tenants are never matched.
+  // Wipe every asset namespace minted for this install by this merchant.
+  // Pipeline installs namespace by MANIFEST slug
+  // (`plugins/<manifest-slug>/<artifact8>/…`, see installPluginPackage) while
+  // the ledger carries the LISTING slug (marketplace-install.server.ts
+  // patches listing identity after the pipeline write) — the two diverge
+  // whenever a listing is published under a different slug than the plugin
+  // id. Both are covered: the ledger-slug prefix (every artifact version ever
+  // installed under this listing) plus the stored-checksum suffix (the exact
+  // manifest-slug namespace, attributable without knowing the slug). Legacy
+  // rows (NULL checksum) keep the ledger-slug wipe only — best effort, never
+  // a sibling or cross-tenant match (merchant_id predicates every row).
+  const checksum =
+    typeof row.artifact_checksum === "string" &&
+    /^[a-f0-9]{64}$/i.test(row.artifact_checksum)
+      ? row.artifact_checksum.toLowerCase()
+      : null;
+  const artifact8 = checksum ? checksum.slice(0, 8) : null;
+  const ledgerPrefix = `plugins/${row.listing_slug}/`;
   const { data: assets } = await (db as unknown as Loose)
     .from("theme_assets")
     .select("id, name")
     .eq("merchant_id", merchantId)
     .limit(1000);
-  const mine = ((assets ?? []) as unknown as { id: string; name: string }[]).filter((a) =>
-    a.name.startsWith(`plugins/${row.listing_slug}/`),
+  const mine = ((assets ?? []) as unknown as { id: string; name: string }[]).filter(
+    (a) =>
+      a.name.startsWith(ledgerPrefix) ||
+      (artifact8 !== null && pluginAssetArtifact8(a.name) === artifact8),
   );
   for (const a of mine) {
     await (db as unknown as Loose)

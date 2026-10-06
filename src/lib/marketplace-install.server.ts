@@ -201,6 +201,48 @@ function resolveWidgetArtifact(
   return buildListingArtifact(listing.manifest, listing.slug);
 }
 
+/**
+ * FOLLOW-UP — persists the installed artifact identity onto the install row
+ * (artifact_checksum/version/pinned, see
+ * supabase/migrations/20260928000002_marketplace_install_artifacts.sql).
+ * Feature-detected: pre-migration DBs keep the base marketplace shape with
+ * NULL artifact identity (legacy fallback) instead of failing the install.
+ */
+async function patchInstallMarketplaceShape(
+  db: Client,
+  merchantId: string,
+  installId: string,
+  shape: Record<string, unknown>,
+  artifact: Record<string, unknown>,
+): Promise<{ degraded: boolean }> {
+  const { isMissingArtifactColumnError } = await import(
+    "./package-install.server"
+  );
+  try {
+    const { error } = await db
+      .from("marketplace_installs")
+      .update({ ...shape, ...artifact } as never)
+      .eq("merchant_id", merchantId)
+      .eq("id", installId);
+    if (error) throw error;
+    return { degraded: false };
+  } catch (err) {
+    if (!isMissingArtifactColumnError(err)) throw err;
+    const { log } = await import("./observability.server");
+    log("warn", "market.install_artifact_columns_missing", {
+      merchantId,
+      installId,
+    });
+    const { error: baseError } = await db
+      .from("marketplace_installs")
+      .update(shape as never)
+      .eq("merchant_id", merchantId)
+      .eq("id", installId);
+    if (baseError) throw baseError;
+    return { degraded: true };
+  }
+}
+
 export async function installListing(
   db: Client,
   merchantId: string,
@@ -374,28 +416,38 @@ export async function installListing(
     // The pipeline wrote the ledger row with upload defaults; patch it to the
     // marketplace shape (listing identity, price, trial, consent evidence).
     // Marketplace identity stays on the listing slug — the asset namespace
-    // keeps the manifest slug (pipeline truth).
-    const { error: patchError } = await db
-      .from("marketplace_installs")
-      .update({
-        widget_id: listing.id,
-        listing_slug: listing.slug,
-        listing_name: listing.name,
-        version: pinned?.version ?? listing.version,
-        price_minor_int: charge,
-        currency_code: listing.currency_code,
-        is_trial: input.trial,
-        status: input.trial ? "trial" : "installed",
-        previous_snapshot: previous,
-        expires_at: input.trial
-          ? new Date(Date.now() + TRIAL_DAYS * 86_400_000).toISOString()
-          : null,
-        granted_scopes: granted,
-        consented_by: input.consentedBy ?? null,
-      } as never)
-      .eq("merchant_id", merchantId)
-      .eq("id", pkg.packageId);
-    if (patchError) {
+    // keeps the manifest slug (pipeline truth). The artifact columns persist
+    // the exact installed bytes (checksum + pinned version + pin label) so a
+    // later uninstall can attribute the manifest-slug namespace even though
+    // the ledger slug differs; pre-migration DBs keep NULL (legacy fallback).
+    try {
+      await patchInstallMarketplaceShape(
+        db,
+        merchantId,
+        pkg.packageId,
+        {
+          widget_id: listing.id,
+          listing_slug: listing.slug,
+          listing_name: listing.name,
+          version: pinned?.version ?? listing.version,
+          price_minor_int: charge,
+          currency_code: listing.currency_code,
+          is_trial: input.trial,
+          status: input.trial ? "trial" : "installed",
+          previous_snapshot: previous,
+          expires_at: input.trial
+            ? new Date(Date.now() + TRIAL_DAYS * 86_400_000).toISOString()
+            : null,
+          granted_scopes: granted,
+          consented_by: input.consentedBy ?? null,
+        },
+        {
+          artifact_checksum: widgetArtifact.checksum,
+          artifact_version: pkg.version,
+          artifact_pinned: widgetArtifact.pinned,
+        },
+      );
+    } catch {
       try {
         const { deleteVersionAssets, pluginVersionPrefix } = await import(
           "./package-store.server"
@@ -426,6 +478,9 @@ export async function installListing(
       pinned: widgetArtifact.pinned,
     };
   } else {
+    // Legacy ledger-only install: no installable bytes exist, so the artifact
+    // columns stay NULL (legacy fallback) — uninstall keeps the
+    // ledger-slug wipe only for these rows.
     const { data: install, error } = await db
       .from("marketplace_installs")
       .insert({
