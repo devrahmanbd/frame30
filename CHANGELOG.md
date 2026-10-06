@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-06 23:55 UTC] (v0.5-beta — a31d8121) — Official seed via normal installer
+### Fixed
+- Official seeder routes through installPackage (one installer for official + uploads); seed tests assert pipeline semantics (install never publishes).
+### Verification
+- 186 package tests green, tsc clean.
 ## [2026-10-06 21:36 UTC] (v0.5-beta — 313be8b9) — Gallery + publish artifact payload
 ### Added
 - Theme gallery lists installed keys alongside source keys; publishVersion consumes installed artifacts with source fallback. Joint lane (shared tree, verified together).
