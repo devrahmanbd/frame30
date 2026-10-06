@@ -14,6 +14,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-06 20:16 UTC] (v0.5-beta — 74b22584) — Switchover to installed artifacts
+### Changed
+- Strict manifest validators are the pipeline default; marketplace distributes exact-ZIP artifacts; builder discovers installed packages; preview resolves installed artifacts; packages.md gates honestly split (enforced/elsewhere/aspirational).
+### Verification
+- Spot suites green, tsc clean, prettier clean.
+### Follow-ups
+- DB migration for artifact columns; asset GC for marketplace installs; gallery listing of installed keys; live publishVersion in-chain.
 ## [2026-10-06 19:26 UTC] (v0.5-beta — 654b9d7c) — Package pipeline gaps closed
 ### Fixed
 - Version-row tokens passthrough (official tokens reach theme_versions); 32MB archive cap (Songoskriti installs under defaults); parity tests assert fixed behavior.
