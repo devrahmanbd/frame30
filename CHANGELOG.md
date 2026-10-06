@@ -18,7 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 - Trial-claim seeds songoskriti 1.0.0 via normal installer (best-effort, never blocks); live proof: installed artifact serves index/product identical to source render.
 ### Verification
-- 18 spot green, tsc clean. Assets stay namespaced (,  URLs) — nothing copied to global public/.
+- 18 spot green, tsc clean. Assets stay namespaced (`themes/<versionId>/assets/`, `?v=` URLs) — nothing copied to global public/.
 ## [2026-10-06 23:55 UTC] (v0.5-beta — a31d8121) — Official seed via normal installer
 ### Fixed
 - Official seeder routes through installPackage (one installer for official + uploads); seed tests assert pipeline semantics (install never publishes).
