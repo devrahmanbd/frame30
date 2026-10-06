@@ -414,6 +414,177 @@ export function purgeStorefront(
   return invalidate(merchantId ? tenantCachePrefix(merchantId) : "storefront:");
 }
 
+/* ------------------------- installed package artifact publish (FOLLOW-UP)
+ *
+ * The live publish path consumes the installed package artifact: when the
+ * caller omits templates/tokens, the newest `theme_versions` row for the
+ * theme supplies them; when no usable row exists the official source
+ * package (`registryPackage`) is the fallback — a publish never goes live
+ * empty. Explicit input always wins (existing builder behaviour unchanged).
+ * Re-publishing identical content replays the live version instead of
+ * stacking a duplicate, and every publish (including replays) writes a
+ * `theme_audit` row. Malformed artifact payloads fall back, never throw;
+ * tenant scoping is merchant-predicated throughout.
+ */
+
+export type PublishArtifact = {
+  templates: unknown;
+  tokens: unknown;
+  versionId: string | null;
+  themeKey: string | null;
+};
+
+function isAuthoredRecord(value: unknown): boolean {
+  if (!value || typeof value !== "object" || Array.isArray(value))
+    return false;
+  return Object.keys(value as Record<string, unknown>).length > 0;
+}
+
+export function resolvePublishPayload(
+  input: { templates?: unknown; tokens?: unknown },
+  artifact: Pick<PublishArtifact, "templates" | "tokens"> | null | undefined,
+  source: { templates?: unknown; tokens?: unknown } | null | undefined,
+): {
+  templates: unknown;
+  tokens: unknown;
+  origin: "input" | "artifact" | "source";
+} {
+  const inputTemplates = isAuthoredRecord(input?.templates)
+    ? input!.templates
+    : null;
+  const inputTokens = isAuthoredRecord(input?.tokens) ? input!.tokens : null;
+  const artifactTemplates = isAuthoredRecord(artifact?.templates)
+    ? artifact!.templates
+    : null;
+  const artifactTokens = isAuthoredRecord(artifact?.tokens)
+    ? artifact!.tokens
+    : null;
+  return {
+    templates: inputTemplates ?? artifactTemplates ?? source?.templates ?? {},
+    tokens: inputTokens ?? artifactTokens ?? source?.tokens ?? {},
+    origin:
+      inputTemplates || inputTokens
+        ? "input"
+        : artifactTemplates || artifactTokens
+          ? "artifact"
+          : "source",
+  };
+}
+
+/** Newest installed version row for an owned theme, plus its source key. */
+export async function loadPublishArtifact(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+): Promise<PublishArtifact | null> {
+  const { data: theme } = await db
+    .from("store_themes")
+    .select("id, source_listing_slug, published_version_id")
+    .eq("merchant_id", merchantId)
+    .eq("id", themeId)
+    .maybeSingle();
+  const row = theme as {
+    id: string;
+    source_listing_slug: string | null;
+    published_version_id: string | null;
+  } | null;
+  if (!row) return null;
+  const { data: latest } = await db
+    .from("theme_versions")
+    .select("id, templates, tokens")
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", themeId)
+    .order("version", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const v = latest as {
+    id: string;
+    templates: unknown;
+    tokens: unknown;
+  } | null;
+  return {
+    templates: v?.templates ?? null,
+    tokens: v?.tokens ?? null,
+    versionId: v?.id ?? null,
+    themeKey: row.source_listing_slug ?? null,
+  };
+}
+
+async function loadPublishedPayload(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+): Promise<{
+  versionId: string;
+  templates: unknown;
+  tokens: unknown;
+} | null> {
+  const { data: theme } = await db
+    .from("store_themes")
+    .select("id, published_version_id")
+    .eq("merchant_id", merchantId)
+    .eq("id", themeId)
+    .maybeSingle();
+  const pointer = (theme as { published_version_id: string | null } | null)
+    ?.published_version_id;
+  if (!pointer) return null;
+  const { data: version } = await db
+    .from("theme_versions")
+    .select("id, templates, tokens")
+    .eq("merchant_id", merchantId)
+    .eq("id", pointer)
+    .maybeSingle();
+  const v = version as {
+    id: string;
+    templates: unknown;
+    tokens: unknown;
+  } | null;
+  if (!v) return null;
+  return { versionId: v.id, templates: v.templates, tokens: v.tokens };
+}
+
+function publishPayloadsEqual(
+  a: { templates: unknown; tokens: unknown },
+  b: { templates: unknown; tokens: unknown },
+): boolean {
+  try {
+    return (
+      JSON.stringify(parseTemplates(a.templates)) ===
+        JSON.stringify(parseTemplates(b.templates)) &&
+      JSON.stringify(parseTokens(a.tokens)) ===
+        JSON.stringify(parseTokens(b.tokens))
+    );
+  } catch {
+    return false;
+  }
+}
+
+async function auditPublish(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+  beforeVersionId: string | null,
+  afterVersionId: string,
+  origin: string,
+): Promise<void> {
+  try {
+    await db.from("theme_audit").insert({
+      merchant_id: merchantId,
+      theme_id: themeId,
+      actor: null,
+      action: "theme.published",
+      before: { version_id: beforeVersionId },
+      after: { version_id: afterVersionId, origin },
+    } as never);
+  } catch {
+    // Best-effort: the publish already succeeded; never fail it on audit.
+    log("warn", "theme.publish_audit_failed", {
+      merchant_id: merchantId,
+      theme_id: themeId,
+    });
+  }
+}
+
 /** Publish blocks on lint errors: a broken page never reaches shoppers. */
 export async function publishVersion(
   db: Client,
@@ -426,7 +597,23 @@ export async function publishVersion(
   },
 ) {
   await rateLimit("builder.publish", merchantId);
-  const { templates } = parseUntrusted(input, "publish");
+  // Installed package artifact in-chain: omitted payloads resolve from the
+  // newest version row, then the source package — never empty, never a crash
+  // on malformed rows. Explicit input still wins field-by-field.
+  const artifact = await loadPublishArtifact(db, merchantId, input.themeId)
+    .catch(() => null);
+  let source: { templates: unknown; tokens: unknown } | null = null;
+  try {
+    const pkg = registryPackage(artifact?.themeKey ?? "__empty__");
+    source = { templates: pkg.templates, tokens: pkg.tokens };
+  } catch {
+    source = null;
+  }
+  const resolved = resolvePublishPayload(input, artifact, source);
+  const { templates } = parseUntrusted(
+    { templates: resolved.templates, tokens: resolved.tokens },
+    "publish",
+  );
   const lint = TEMPLATE_KEYS.flatMap((key) =>
     lintTemplate(templateOf(templates, key), key)
       .filter((issue) => issue.level === "error")
@@ -439,7 +626,7 @@ export async function publishVersion(
   );
   // Phase 3: a merchant-uploaded face without a licence attestation, or a
   // theme over the font loading budget, never reaches shoppers.
-  const tokens = parseTokens(input.tokens);
+  const tokens = parseTokens(resolved.tokens);
   const fonts: string[] = [];
   {
     const { licenceGate, checkFontBudget } = await import("./theme-fonts");
@@ -466,8 +653,35 @@ export async function publishVersion(
     );
   }
 
+  // Idempotent replay: identical content re-publishes the live version
+  // instead of stacking a duplicate — same versionId, still audited.
+  const published = await loadPublishedPayload(db, merchantId, input.themeId)
+    .catch(() => null);
+  if (published && publishPayloadsEqual(published, resolved)) {
+    await auditPublish(
+      db,
+      merchantId,
+      input.themeId,
+      published.versionId,
+      published.versionId,
+      `${resolved.origin}:replay`,
+    );
+    log("info", "theme.published", {
+      merchant_id: merchantId,
+      version_id: published.versionId,
+      replayed: true,
+    });
+    return {
+      versionId: published.versionId,
+      replayed: true as const,
+      origin: resolved.origin,
+    };
+  }
+
   const { versionId } = await commitVersion(db, merchantId, {
-    ...input,
+    themeId: input.themeId,
+    templates: resolved.templates,
+    tokens: resolved.tokens,
     note: input.note,
   });
   // Phase 4: custom code is versioned with the theme. A secret-scan or XSS
@@ -476,11 +690,19 @@ export async function publishVersion(
   await snapshotCustomCode(db, merchantId, input.themeId, versionId);
   await rpc<string>(db, "theme_publish", { _version_id: versionId });
   purgeStorefront("publish", merchantId);
+  await auditPublish(
+    db,
+    merchantId,
+    input.themeId,
+    published?.versionId ?? null,
+    versionId,
+    resolved.origin,
+  );
   log("info", "theme.published", {
     merchant_id: merchantId,
     version_id: versionId,
   });
-  return { versionId };
+  return { versionId, replayed: false as const, origin: resolved.origin };
 }
 
 export async function rollbackVersion(

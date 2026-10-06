@@ -4,6 +4,7 @@ import {
   catalogView,
   filterCatalog,
   formatBytes,
+  galleryKeys,
   isNewerVersion,
   neighbourTheme,
   orderInstalled,
@@ -296,8 +297,7 @@ describe("catalogue honesty (no-fabrication rule)", () => {
   });
 });
 
-describe("curated visibility (offer removed Sept 2026)", () => {
-  it("installed grid keeps the active theme plus allowlisted keys only", () => {
+describe("curated visibility (offer removed Sept 2026)", () => {  it("installed grid keeps the active theme plus allowlisted keys only", () => {
     const themes = [
       inst({ id: "a", key: "atelier", isActive: true }),
       inst({ id: "b", key: "classic" }),
@@ -324,5 +324,41 @@ describe("curated visibility (offer removed Sept 2026)", () => {
       cat({ key: "modern" }),
     ];
     expect(visibleCatalogue(themes).map((t) => t.key)).toEqual([]);
+  });
+});
+
+describe("gallery keys (installed packages listed alongside source keys)", () => {
+  it("unions installed-only keys after catalogue keys, in order", () => {
+    expect(
+      galleryKeys(["songoskriti", "somvabona"], [{ key: "acme-pack" }]),
+    ).toEqual(["songoskriti", "somvabona", "acme-pack"]);
+  });
+
+  it("accepts bare slugs and keyed rows in either list, without duplicating", () => {
+    expect(
+      galleryKeys(["songoskriti", { key: "somvabona" }], [
+        "songoskriti",
+        { key: "somvabona" },
+        { key: "acme-pack" },
+      ]),
+    ).toEqual(["songoskriti", "somvabona", "acme-pack"]);
+  });
+
+  it("removal disappears from the list (uninstalled rows are simply not passed)", () => {
+    expect(galleryKeys(["songoskriti"], [{ key: "acme-pack" }])).toContain(
+      "acme-pack",
+    );
+    expect(galleryKeys(["songoskriti"], [])).not.toContain("acme-pack");
+    expect(galleryKeys(["songoskriti"], [])).toEqual(["songoskriti"]);
+  });
+
+  it("never throws on malformed rows or containers", () => {
+    const garbage = [null, undefined, "", "   ", 42, {}, { key: 7 }] as never[];
+    expect(galleryKeys(garbage, garbage)).toEqual([]);
+    expect(galleryKeys(null, undefined)).toEqual([]);
+    expect(galleryKeys("nope" as never, 42 as never)).toEqual([]);
+    expect(galleryKeys(["  songoskriti  "], [{ key: " " }])).toEqual([
+      "songoskriti",
+    ]);
   });
 });

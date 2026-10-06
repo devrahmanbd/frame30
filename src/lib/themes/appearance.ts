@@ -281,6 +281,41 @@ export function visibleCatalogue(themes: CatalogTheme[]): CatalogTheme[] {
   return themes.filter((t) => VISIBLE_THEME_KEYS.has(t.key));
 }
 
+/* ------------------------------------------------------- gallery keys
+ *
+ * FOLLOW-UP — gallery listing of installed keys.
+ *
+ * The preview gallery lists built-in source keys plus merchant-installed
+ * package keys as one union: catalogue keys first in curated order, then
+ * installed-only keys. A removed/uninstalled row is simply not passed, so
+ * its key disappears; malformed rows (null, blank, non-string keys, even a
+ * non-array container) are skipped — the listing never throws on untrusted
+ * input. Mirrors `previewSourceKeys` union semantics for the dashboard
+ * gallery surface (that module stays the preview-resolution owner; this is
+ * the listing vocabulary the Themes screens share).
+ */
+export function galleryKeys(
+  catalogue: readonly unknown[] | null | undefined,
+  installed: readonly unknown[] | null | undefined,
+): string[] {
+  const keys: string[] = [];
+  const seen = new Set<string>();
+  const push = (entry: unknown) => {
+    const raw =
+      typeof entry === "string"
+        ? entry
+        : (entry as { key?: unknown } | null | undefined)?.key;
+    if (typeof raw !== "string") return;
+    const key = raw.trim();
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    keys.push(key);
+  };
+  for (const entry of Array.isArray(catalogue) ? catalogue : []) push(entry);
+  for (const entry of Array.isArray(installed) ? installed : []) push(entry);
+  return keys;
+}
+
 /** Active theme first, then favourites, then newest install. */
 export function orderInstalled(themes: InstalledTheme[]): InstalledTheme[] {
   // installedAt can be null for rows written before the column was reliably

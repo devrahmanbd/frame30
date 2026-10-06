@@ -25,6 +25,7 @@ import {
 } from "@/components/console/kit";
 import { useMerchant } from "@/hooks/use-merchant";
 import {
+  galleryKeys,
   neighbourTheme,
   orderInstalled,
   searchInstalled,
@@ -92,6 +93,34 @@ export function ThemesScreen() {
   );
   const details = installed.find((theme) => theme.id === detailsId) ?? null;
   const activeTheme = installed.find((theme) => theme.isActive) ?? null;
+
+  /**
+   * Preview gallery: source keys plus merchant-installed package keys as one
+   * union (catalogue order first, installed-only keys after). Installed rows
+   * hidden from the grid by curation still resolve via direct URL, so they
+   * are listed here with a preview link instead of being unreachable.
+   * galleryKeys skips null/blank keys — the list never throws on legacy rows.
+   */
+  const gallery = useMemo(
+    () =>
+      galleryKeys(
+        (workspace.data?.catalogue ?? []).map((theme) => theme.key),
+        (workspace.data?.installed ?? []).map((theme) => theme.key),
+      ),
+    [workspace.data],
+  );
+  const galleryMeta = useMemo(() => {
+    const installedByKey = new Map<string, InstalledTheme>();
+    for (const theme of workspace.data?.installed ?? []) {
+      if (theme.key && !installedByKey.has(theme.key))
+        installedByKey.set(theme.key, theme);
+    }
+    const catalogByKey = new Map<string, CatalogTheme>();
+    for (const theme of workspace.data?.catalogue ?? []) {
+      if (!catalogByKey.has(theme.key)) catalogByKey.set(theme.key, theme);
+    }
+    return { installedByKey, catalogByKey };
+  }, [workspace.data]);
 
   const activate = useMutation({
     mutationFn: useServerFn(themeActivateFn),
@@ -378,8 +407,39 @@ export function ThemesScreen() {
             </ul>
           )}
 
-          <Card title="How themes work">
-            <p className="text-sm fq-sub">
+          {gallery.length > 0 ? (
+            <Card title="Theme gallery">
+              <p className="text-sm fq-sub">
+                Every previewable theme in one place — official sources plus
+                your installed packages. Removed themes disappear from this
+                list automatically.
+              </p>
+              <ul className="mt-2 flex flex-wrap gap-2">
+                {gallery.map((key) => {
+                  const local = galleryMeta.installedByKey.get(key);
+                  const catalog = galleryMeta.catalogByKey.get(key);
+                  const label = local?.name ?? catalog?.name ?? key;
+                  return (
+                    <li key={key}>
+                      <a
+                        href={`/theme-preview/${key}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-border bg-card px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                      >
+                        {label}
+                        <span className="rounded-full bg-muted px-1.5 text-[11px] font-medium fq-sub">
+                          {local ? "Installed" : "Source"}
+                        </span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </Card>
+          ) : null}
+
+          <Card title="How themes work">            <p className="text-sm fq-sub">
               Activating a theme replaces your storefront layout with that
               theme&apos;s templates and colours. Switching themes never touches
               your content — but importing demo data overwrites any products,
