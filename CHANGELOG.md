@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-07 16:08 UTC] (v0.5-beta — cb3827e7) — Anonymous preview regression fix
+### Fixed
+- Anonymous visitors (no merchant context) resolve built-in previews via the legacy source floor again; only authenticated merchants with an installed set get fail-closed behavior.
+### Verification
+- Preview suites green (43), tsc clean.
 ## [2026-10-07 14:34 UTC] (v0.5-beta — 230f03f2) — Zero-gap sweep
 ### Fixed
 - scope-adapter red resolved (menus.read/write vocabulary + honest mapping); footer draft verified gone (backup retained); KB backfill 114 live vectors (204 await quota reset).
