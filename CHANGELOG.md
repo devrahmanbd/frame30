@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-07 18:57 UTC] (v0.5-beta — 5fef1e07) — Footer single newsletter, dedup payments
+### Fixed
+- Newsletter form back as exactly one in-sitemap zone (was duplicated, then removed entirely); standalone payment_icons section dropped (sitemap payment zone already covers it).
+### Verification
+- 140 theme tests green, tsc clean.
 ## [2026-10-07 17:27 UTC] (v0.5-beta — 0f9aedf8) — Slim songoskriti footer
 ### Removed
 - Footer statement + image, newsletter section, story link. Footer is link columns + payments + colophon only.
