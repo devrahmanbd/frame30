@@ -123,6 +123,12 @@ export function QuickViewBody({
         decoding="async"
         className="aspect-[3/4] w-full object-cover"
         style={{ backgroundColor: TILE_BASE }}
+        onError={(e) => {
+          // Missing demo/catalog art degrades to the tinted aspect box
+          // instead of a broken-image icon (rails use MediaFrame; the
+          // gallery mirrors that contract inline).
+          e.currentTarget.style.display = "none";
+        }}
       />
       <div className="flex flex-col gap-2">
         <p className="text-base font-medium">{data.product.title}</p>
