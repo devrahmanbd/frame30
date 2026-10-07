@@ -19,6 +19,8 @@ const WIDGET_TO_API: Record<string, readonly string[]> = {
   read_customers: ["customers.read"],
   write_cart: ["orders.write"],
   write_analytics: ["analytics.read"],
+  read_menus: ["menus.read"],
+  replace_menus: ["menus.write"],
   render_storefront: ["themes.write"],
 };
 
