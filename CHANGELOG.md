@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-07 19:39 UTC] (v0.5-beta — dccb9463) — 48h sweep: PDP gallery fallback
+### Fixed
+- PDP gallery hides broken images to the tinted aspect box (rails already had MediaFrame fallback). No new missing-image bugs from recent lanes; hex/uppercase gates green.
+### Verification
+- 186 tests green, tsc clean.
 ## [2026-10-07 19:30 UTC] (v0.5-beta — 046cadfb) — Footer legal bar restructure
 ### Changed
 - ZONE 4 is now brand | payments | legal grid (stacked centered on mobile); small text raised to 70pct ink; legal links have 44px targets, nav landmark, hover underline.
