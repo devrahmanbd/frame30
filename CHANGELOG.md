@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-07 09:36 UTC] (v0.5-beta — aee6e442) — Consent binding, idempotency parity, onCall contract
+### Fixed
+- Widening updates require fresh covering grant (stored-grant diff, timestamped record); direct pipeline idempotency bound to key/kind/slug; host delegates pinned data-free.
+### Verification
+- Consent/idempotency/onCall suites green, tsc clean.
 ## [2026-10-07 05:36 UTC] (v0.5-beta — 24d1120e) — Package hardening round
 ### Fixed
 - Asset serving route with tenant/traversal/CSP guards; theme upload unified onto pipeline (archive templates installed); lifecycle fixtures strict.
