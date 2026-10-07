@@ -61,7 +61,7 @@ type ThemePreviewInstalledRow = {
 };
 
 const themePreviewInstalledFn = createServerFn({ method: "GET" }).handler(
-  async (): Promise<ThemePreviewInstalledRow[]> => {
+  async (): Promise<ThemePreviewInstalledRow[] | null> => {
     try {
       const { getRequest } = await import("@tanstack/react-start/server");
       const token = (() => {
@@ -74,10 +74,10 @@ const themePreviewInstalledFn = createServerFn({ method: "GET" }).handler(
           return null;
         }
       })();
-      if (!token) return [];
+      if (!token) return null;
       const url = process.env["SUPABASE_URL"];
       const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
-      if (!url || !key) return [];
+      if (!url || !key) return null;
       const { createClient } = await import("@supabase/supabase-js");
       const supabase = createClient<Database>(url, key, {
         global: {
@@ -88,7 +88,7 @@ const themePreviewInstalledFn = createServerFn({ method: "GET" }).handler(
       const { data: claimsData, error: claimsError } =
         await supabase.auth.getClaims(token);
       const userId = claimsData?.claims?.sub;
-      if (claimsError || !userId) return [];
+      if (claimsError || !userId) return null;
       const { currentMerchantId } = await import("@/lib/marketing.server");
       let merchantId: string;
       try {
@@ -97,7 +97,7 @@ const themePreviewInstalledFn = createServerFn({ method: "GET" }).handler(
           userId as string,
         );
       } catch {
-        return [];
+        return null;
       }
       const { data: themes } = await supabase
         .from("store_themes")
@@ -189,7 +189,7 @@ export const Route = createFileRoute("/theme-preview/$key")({
     // Installed rows join preview resolution as data (source fallback
     // preserved): best-effort, fail-open to [] — anonymous visitors keep
     // built-in previews, never a 500.
-    let installed: ThemePreviewInstalledRow[] = [];
+    let installed: ThemePreviewInstalledRow[] | null = [];
     try {
       installed = await themePreviewInstalledFn();
     } catch {
