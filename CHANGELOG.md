@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-07 05:36 UTC] (v0.5-beta — 24d1120e) — Package hardening round
+### Fixed
+- Asset serving route with tenant/traversal/CSP guards; theme upload unified onto pipeline (archive templates installed); lifecycle fixtures strict.
+### Verification
+- Spot suites green, tsc clean.
 ## [2026-10-07 01:04 UTC] (v0.5-beta — 013bdb0c) — Package completion rivalry
 ### Added
 - Official plugin catalogue via normal pipeline; source fallback removed (installed authoritative, fail-closed); plugin rollback equivalence + atomicity proof; conflict detection + dependency ranges; lifecycle contract proof; canonical package docs; upload wiring (theme) + plugin upload fn/surface.
