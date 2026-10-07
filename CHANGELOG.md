@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-07 17:27 UTC] (v0.5-beta — 0f9aedf8) — Slim songoskriti footer
+### Removed
+- Footer statement + image, newsletter section, story link. Footer is link columns + payments + colophon only.
+### Verification
+- 584 theme tests green, tsc clean.
 ## [2026-10-07 16:08 UTC] (v0.5-beta — cb3827e7) — Anonymous preview regression fix
 ### Fixed
 - Anonymous visitors (no merchant context) resolve built-in previews via the legacy source floor again; only authenticated merchants with an installed set get fail-closed behavior.
