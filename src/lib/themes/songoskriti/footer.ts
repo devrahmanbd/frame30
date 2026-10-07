@@ -146,51 +146,16 @@ export const PAYMENTS_LIST = [
 ];
 
 /**
- * Statement + newsletter (the single CTA) + link columns + payments +
- * colophon. The newsletter keeps the only button-label prop in the footer;
- * support tiles are deliberately absent — they competed with the signup.
+ * Link columns + payments + colophon. Statement, newsletter, story link
+ * and brand imagery were removed from the footer by design — the footer
+ * is navigation and trust only.
  *
  * Brand zones live here as authored props (with `_bn` twins): the shared
- * `footer_sitemap` renderer is prop-driven and hardcodes no brand content,
- * so these same strings must be passed explicitly to keep the storefront
- * output identical. Prop names avoid the bare `buttonLabel` key on purpose —
- * the wiring contract reserves that key for the standalone `newsletter`
- * section (exactly one newsletter CTA).
+ * `footer_sitemap` renderer is prop-driven and hardcodes no brand content.
  */
 export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
   return [
-    s("split_feature", {
-      heading: STATEMENT.heading,
-      heading_bn: STATEMENT.heading_bn,
-      body: STATEMENT.body,
-      body_bn: STATEMENT.body_bn,
-      primaryImage: "/ph/songoskriti/hero-artisans.png",
-      layout: "image_right",
-    }),
-    s("newsletter", {
-      heading: NEWSLETTER.heading,
-      heading_bn: NEWSLETTER.heading_bn,
-      body: NEWSLETTER.body,
-      body_bn: NEWSLETTER.body_bn,
-      buttonLabel: NEWSLETTER.buttonLabel,
-      buttonLabel_bn: NEWSLETTER.buttonLabel_bn,
-      consentText: NEWSLETTER.consentText,
-      consentText_bn: NEWSLETTER.consentText_bn,
-    }),
     s("footer_sitemap", {
-      statementHeading: STATEMENT.heading,
-      statementHeading_bn: STATEMENT.heading_bn,
-      statementBody: STATEMENT.body,
-      statementBody_bn: STATEMENT.body_bn,
-      storyHref: "/pages/about",
-      storyLabel: "OUR STORY →",
-      storyLabel_bn: "আমাদের গল্প →",
-      newsletterHeading: NEWSLETTER.heading,
-      newsletterHeading_bn: NEWSLETTER.heading_bn,
-      newsletterButton: NEWSLETTER.buttonLabel,
-      newsletterButton_bn: NEWSLETTER.buttonLabel_bn,
-      newsletterConsent: NEWSLETTER.consentText,
-      newsletterConsent_bn: NEWSLETTER.consentText_bn,
       brandName: BRAND_NAME,
       brandName_bn: BRAND_NAME_BN,
       paymentsHeading: PAYMENTS_HEADING,

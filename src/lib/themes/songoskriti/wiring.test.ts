@@ -112,14 +112,14 @@ describe("songoskriti wiring", () => {
     expect(new Set(labels).size).toBe(labels.length);
   });
 
-  it("footer keeps exactly one newsletter CTA", () => {
+  it("footer carries no newsletter CTA", () => {
     const s = (type: string, props = {}) =>
       ({ id: type, type, props }) as never;
     const footer = buildFooterMain(s as never);
     const ctas = footer.filter(
       (n) => typeof n.props.buttonLabel === "string" && n.props.buttonLabel,
     );
-    expect(ctas.map((n) => n.type)).toEqual(["newsletter"]);
+    expect(ctas.map((n) => n.type)).toEqual([]);
   });
   it("never duplicates the StoreHeader chrome (browser-verified 2026-09-24)", () => {
     // The storefront masthead (`StoreHeader`, live + preview) already owns
