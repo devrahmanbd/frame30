@@ -1093,9 +1093,15 @@ export async function moderate(
  * (extracted from marketInstallFn so the attack paths are directly covered).
  *
  * - Key-driven: a committed idempotency key replays, never stacks.
+ * - CONSENT lane: the replay binds the FULL (merchant, key, kind, listing)
+ *   tuple via boundReplay (marketplace parity) — a reused key with a
+ *   different kind or listing is `market_idempotency_conflict`, never a
+ *   silent replay of someone else's install. A lapsed (expired-trial) row
+ *   never replays live.
  * - The ledger write is checked BEFORE the plugin row: a ledger failure
- *   throws `market_install_failed` (duplicate-key races reselect + replay),
- *   so upsertPlugin can never run without its ledger row.
+ *   throws `market_install_failed` (duplicate-key races reselect + replay
+ *   under the same binding), so upsertPlugin can never run without its
+ *   ledger row.
  * - H4: if upsertPlugin throws, the ledger row is compensated
  *   tenant-scoped before the error surfaces — no orphan ledger rows.
  */
@@ -1113,14 +1119,18 @@ export async function installBuiltinWidget(
 
   const { data: existing } = await db
     .from("marketplace_installs")
-    .select("id")
+    .select("id, status, kind, theme_id, widget_id, listing_slug")
     .eq("merchant_id", merchantId)
     .eq("idempotency_key", idempotencyKey)
     .maybeSingle();
   if (existing) {
-    const hit = existing as unknown as { id: string };
+    const replayed = boundReplay(
+      existing as unknown as ReplayHit,
+      { kind, listingId: pluginId, trial: false, idempotencyKey },
+      pluginId,
+    );
     return {
-      installId: hit.id,
+      installId: replayed.installId,
       replayed: true,
       impacted: [] as string[],
       appVersion: APP_VERSION,
@@ -1152,14 +1162,18 @@ export async function installBuiltinWidget(
     if (isDuplicateKey(ledgerError)) {
       const { data: raced } = await db
         .from("marketplace_installs")
-        .select("id")
+        .select("id, status, kind, theme_id, widget_id, listing_slug")
         .eq("merchant_id", merchantId)
         .eq("idempotency_key", idempotencyKey)
         .maybeSingle();
       if (raced) {
-        const hit = raced as unknown as { id: string };
+        const replayed = boundReplay(
+          raced as unknown as ReplayHit,
+          { kind, listingId: pluginId, trial: false, idempotencyKey },
+          pluginId,
+        );
         return {
-          installId: hit.id,
+          installId: replayed.installId,
           replayed: true,
           impacted: [] as string[],
           appVersion: APP_VERSION,

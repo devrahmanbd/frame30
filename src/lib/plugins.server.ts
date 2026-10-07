@@ -107,10 +107,28 @@ export type UpsertInput = {
   /**
    * Fresh consent-screen confirmation for permission-widening UPDATES.
    * Fresh installs never need it (the install grant is the consent);
-   * updates whose manifest adds permissions are refused without it.
+   * updates whose manifest adds permissions are refused without it, and the
+   * fresh grant must cover the widened manifest (a re-consent that still
+   * grants only the old subset is not consent to the new permissions).
    */
   reconsented?: boolean;
 };
+
+/**
+ * True when the failure is "the consent-timestamp column doesn't exist yet"
+ * (pre-migration DBs predate the server-side consent record) — never for
+ * real write errors. Mirrors the isMissingArtifactColumnError /
+ * isMissingRecurringColumnError optimistic-write pattern: the version +
+ * scopes + actor record still lands, and the timestamp rides the audit row.
+ */
+function isMissingConsentColumnError(err: unknown): boolean {
+  const msg =
+    err instanceof Error ? err.message : (
+      (err as { message?: string } | null)?.message ?? String(err ?? "")
+    );
+  if (!/consented_at/i.test(msg)) return false;
+  return /column|schema cache|PGRST204|42703|does not exist/i.test(msg);
+}
 
 /**
  * Install or update a plugin. A grant must be a subset of the manifest's
@@ -148,10 +166,23 @@ export async function upsertPlugin(
     (existing as unknown as PluginRow | null)?.scopes ?? [],
     manifest.permissions,
   );
-  // Added permissions always require a fresh consent screen at update time:
-  // without reconsent a silent auto-update could escalate a plugin's access.
-  if (existing && diff.requiresConsent && !input.reconsented) {
-    throw new Error(`plugin_consent_required:${diff.added.join(",")}`);
+  // CONSENT lane — the server-side consent record is the stored grant
+  // (scopes) + version (manifest_version) + actor (consented_by) + timestamp
+  // (consented_at). Added permissions always require a fresh consent screen
+  // at update time: without reconsent a silent auto-update could escalate a
+  // plugin's access. UPDATE-ONLY: fresh installs never need it (the install
+  // grant is the consent).
+  if (existing && diff.requiresConsent) {
+    if (!input.reconsented) {
+      throw new Error(`plugin_consent_required:${diff.added.join(",")}`);
+    }
+    // The fresh consent must actually cover the widened manifest — binding
+    // the re-consent to the new version + granted set, not just a boolean.
+    const missingFresh = manifest.permissions.filter(
+      (p) => !granted.includes(p),
+    );
+    if (missingFresh.length)
+      throw new Error(`plugin_consent_required:${missingFresh.join(",")}`);
   }
   const settings = existing
     ? validateSettings(
@@ -171,10 +202,22 @@ export async function upsertPlugin(
     consented_by: (input.actorId ?? null) as never,
     manifest_version: manifest.version as never,
   };
+  // The server-side consent record stamps when this version + granted set
+  // was approved. Optimistic write: pre-migration DBs without the column
+  // keep the version + scopes + actor record (timestamp on the audit row).
+  const stamped = {
+    ...payload,
+    consented_at: new Date().toISOString() as never,
+  };
 
-  const { error } = await db
+  let { error } = await db
     .from("plugin_state")
-    .upsert(payload, { onConflict: "merchant_id,plugin_id" });
+    .upsert(stamped, { onConflict: "merchant_id,plugin_id" });
+  if (error && isMissingConsentColumnError(error)) {
+    ({ error } = await db
+      .from("plugin_state")
+      .upsert(payload, { onConflict: "merchant_id,plugin_id" }));
+  }
   if (error) {
     console.error("plugin_save_failed db error:", error);
     throw new Error(`plugin_save_failed: ${error.message}`);

@@ -169,3 +169,91 @@ describe("R2-1 consent evidence (installListing)", () => {
     expect(row.consented_by).toBe(ACTOR);
   });
 });
+
+describe("CONSENT lane — server-side consent record checked on update", () => {
+  const V1 = { ...MANIFEST, version: "1.2.0" };
+  const V1_PATCH = { ...MANIFEST, version: "1.2.1" };
+  const WIDENED = {
+    ...MANIFEST,
+    version: "1.3.0",
+    permissions: ["read_shop", "render_storefront", "read_products"],
+  };
+  const FULL_GRANT = ["read_shop", "render_storefront"];
+
+  async function installedV1() {
+    const db = pluginDb();
+    await upsertPlugin(db.asClient(), MERCHANT, {
+      manifest: V1,
+      grantedScopes: FULL_GRANT,
+      actorId: ACTOR,
+    });
+    return db;
+  }
+
+  it("stamps the consent record (version + granted set + timestamp) on install", async () => {
+    const db = await installedV1();
+    const row = db.rows("plugin_state")[0]!;
+    expect(row.scopes).toEqual(["read_shop", "render_storefront"]);
+    expect(row.manifest_version).toBe("1.2.0");
+    expect(row.consented_by).toBe(ACTOR);
+    expect(typeof row.consented_at).toBe("string");
+  });
+
+  it("refuses a widening update without fresh consent and leaves the record untouched", async () => {
+    const db = await installedV1();
+    await expect(
+      upsertPlugin(db.asClient(), MERCHANT, {
+        manifest: WIDENED,
+        grantedScopes: FULL_GRANT,
+        actorId: ACTOR,
+      }),
+    ).rejects.toThrow(/plugin_consent_required:read_products/);
+    const row = db.rows("plugin_state")[0]!;
+    expect(row.scopes).toEqual(["read_shop", "render_storefront"]);
+    expect(row.manifest_version).toBe("1.2.0");
+  });
+
+  it("refuses a widening update whose re-consent still grants only the old subset", async () => {
+    const db = await installedV1();
+    await expect(
+      upsertPlugin(db.asClient(), MERCHANT, {
+        manifest: WIDENED,
+        grantedScopes: FULL_GRANT,
+        reconsented: true,
+        actorId: ACTOR,
+      }),
+    ).rejects.toThrow(/plugin_consent_required:read_products/);
+    expect(db.rows("plugin_state")[0]!.manifest_version).toBe("1.2.0");
+  });
+
+  it("accepts a widening update with a fresh grant covering the new scopes", async () => {
+    const db = await installedV1();
+    await upsertPlugin(db.asClient(), MERCHANT, {
+      manifest: WIDENED,
+      grantedScopes: ["read_shop", "render_storefront", "read_products"],
+      reconsented: true,
+      actorId: ACTOR,
+    });
+    const row = db.rows("plugin_state")[0]!;
+    expect(row.scopes).toEqual([
+      "read_products",
+      "read_shop",
+      "render_storefront",
+    ]);
+    expect(row.manifest_version).toBe("1.3.0");
+    expect(row.consented_by).toBe(ACTOR);
+    expect(typeof row.consented_at).toBe("string");
+  });
+
+  it("allows a non-widening update (patch version, narrowed grant) without reconsent", async () => {
+    const db = await installedV1();
+    await upsertPlugin(db.asClient(), MERCHANT, {
+      manifest: V1_PATCH,
+      grantedScopes: ["read_shop"],
+      actorId: ACTOR,
+    });
+    const row = db.rows("plugin_state")[0]!;
+    expect(row.manifest_version).toBe("1.2.1");
+    expect(row.scopes).toEqual(["read_shop"]);
+  });
+});

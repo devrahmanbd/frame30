@@ -249,3 +249,75 @@ describe("H1/H2 — replay binds (merchant, key, kind, listing)", () => {
     expect(db.rows("store_themes")).toHaveLength(0);
   });
 });
+
+describe("CONSENT lane — builtin direct pipeline binds (merchant, key, kind, listing)", () => {
+  it("same key, different builtin slug is a conflict, not a replay", async () => {
+    const db = shopDb();
+    const first = await installBuiltinWidget(
+      db.asClient(),
+      MERCHANT,
+      "widget",
+      "whatsapp-chat",
+      "builtin-shared-key",
+      ACTOR,
+    );
+    expect(first.replayed).toBe(false);
+    await expect(
+      installBuiltinWidget(
+        db.asClient(),
+        MERCHANT,
+        "widget",
+        "loyalty-lite",
+        "builtin-shared-key",
+        ACTOR,
+      ),
+    ).rejects.toThrow("market_idempotency_conflict");
+    expect(db.rows("marketplace_installs")).toHaveLength(1);
+  });
+
+  it("same key, different kind is a conflict", async () => {
+    const db = shopDb();
+    await installBuiltinWidget(
+      db.asClient(),
+      MERCHANT,
+      "widget",
+      "whatsapp-chat",
+      "builtin-kind-key",
+      ACTOR,
+    );
+    await expect(
+      installBuiltinWidget(
+        db.asClient(),
+        MERCHANT,
+        "theme",
+        "whatsapp-chat",
+        "builtin-kind-key",
+        ACTOR,
+      ),
+    ).rejects.toThrow("market_idempotency_conflict");
+    expect(db.rows("marketplace_installs")).toHaveLength(1);
+  });
+
+  it("same key, same builtin slug still replays", async () => {
+    const db = shopDb();
+    const first = await installBuiltinWidget(
+      db.asClient(),
+      MERCHANT,
+      "widget",
+      "whatsapp-chat",
+      "builtin-replay-key",
+      ACTOR,
+    );
+    const second = await installBuiltinWidget(
+      db.asClient(),
+      MERCHANT,
+      "widget",
+      "whatsapp-chat",
+      "builtin-replay-key",
+      ACTOR,
+    );
+    expect(second.replayed).toBe(true);
+    expect(second.installId).toBe(first.installId);
+    expect(db.rows("marketplace_installs")).toHaveLength(1);
+  });
+});
