@@ -52,6 +52,7 @@ import { Route as NewsletterVerifyRouteImport } from './routes/newsletter.verify
 import { Route as OrderOrderIdRouteImport } from './routes/order.$orderId'
 import { Route as PProductSlugRouteImport } from './routes/p.$productSlug'
 import { Route as PagesPageSlugRouteImport } from './routes/pages.$pageSlug'
+import { Route as PkgSplatRouteImport } from './routes/pkg.$'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as RootIndexRouteImport } from './routes/root/index'
 import { Route as RootAccessRouteImport } from './routes/root/access'
@@ -443,6 +444,11 @@ const PProductSlugRoute = PProductSlugRouteImport.update({
 const PagesPageSlugRoute = PagesPageSlugRouteImport.update({
   id: '/pages/$pageSlug',
   path: '/pages/$pageSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PkgSplatRoute = PkgSplatRouteImport.update({
+  id: '/pkg/$',
+  path: '/pkg/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
@@ -1482,6 +1488,7 @@ export interface FileRoutesByFullPath {
   '/order/$orderId': typeof OrderOrderIdRouteWithChildren
   '/p/$productSlug': typeof PProductSlugRoute
   '/pages/$pageSlug': typeof PagesPageSlugRoute
+  '/pkg/$': typeof PkgSplatRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -1702,6 +1709,7 @@ export interface FileRoutesByTo {
   '/order/$orderId': typeof OrderOrderIdRouteWithChildren
   '/p/$productSlug': typeof PProductSlugRoute
   '/pages/$pageSlug': typeof PagesPageSlugRoute
+  '/pkg/$': typeof PkgSplatRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -1926,6 +1934,7 @@ export interface FileRoutesById {
   '/order/$orderId': typeof OrderOrderIdRouteWithChildren
   '/p/$productSlug': typeof PProductSlugRoute
   '/pages/$pageSlug': typeof PagesPageSlugRoute
+  '/pkg/$': typeof PkgSplatRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/root/access': typeof RootAccessRoute
   '/root/ai': typeof RootAiRoute
@@ -2150,6 +2159,7 @@ export interface FileRouteTypes {
     | '/order/$orderId'
     | '/p/$productSlug'
     | '/pages/$pageSlug'
+    | '/pkg/$'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2370,6 +2380,7 @@ export interface FileRouteTypes {
     | '/order/$orderId'
     | '/p/$productSlug'
     | '/pages/$pageSlug'
+    | '/pkg/$'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2593,6 +2604,7 @@ export interface FileRouteTypes {
     | '/order/$orderId'
     | '/p/$productSlug'
     | '/pages/$pageSlug'
+    | '/pkg/$'
     | '/products/$productId'
     | '/root/access'
     | '/root/ai'
@@ -2815,6 +2827,7 @@ export interface RootRouteChildren {
   OrderOrderIdRoute: typeof OrderOrderIdRouteWithChildren
   PProductSlugRoute: typeof PProductSlugRoute
   PagesPageSlugRoute: typeof PagesPageSlugRoute
+  PkgSplatRoute: typeof PkgSplatRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   SitemapsKindRoute: typeof SitemapsKindRoute
   ThemePreviewKeyRoute: typeof ThemePreviewKeyRoute
@@ -3188,6 +3201,13 @@ declare module '@tanstack/react-router' {
       path: '/pages/$pageSlug'
       fullPath: '/pages/$pageSlug'
       preLoaderRoute: typeof PagesPageSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pkg/$': {
+      id: '/pkg/$'
+      path: '/pkg/$'
+      fullPath: '/pkg/$'
+      preLoaderRoute: typeof PkgSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products/$productId': {
@@ -4805,6 +4825,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrderOrderIdRoute: OrderOrderIdRouteWithChildren,
   PProductSlugRoute: PProductSlugRoute,
   PagesPageSlugRoute: PagesPageSlugRoute,
+  PkgSplatRoute: PkgSplatRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   SitemapsKindRoute: SitemapsKindRoute,
   ThemePreviewKeyRoute: ThemePreviewKeyRoute,

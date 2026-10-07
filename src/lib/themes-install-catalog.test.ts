@@ -122,6 +122,28 @@ describe("installCatalogTheme completeness", () => {
  * (row + version + draft + ledger link + audit). [A] burden applies:
  * deny + replay + audit, not just the happy path.
  */
+function strictUploadManifest(
+  name = "my-shop",
+  version = "1.0.0",
+  extra: Record<string, unknown> = {},
+): string {
+  // Strict PKG-1 shape: the upload path runs the SAME `pkg1ThemeValidator`
+  // gate as `installPackage`, so loose `{ name, version }` shells are
+  // rejected with `theme.upload_manifest` (see the forged-manifest cases).
+  return JSON.stringify({
+    key: "my-shop",
+    name,
+    nameBn: "আমার দোকান",
+    version,
+    api: "^3.0.0",
+    templates: ["index"],
+    presentationSurfaces: ["widget"],
+    locales: ["en"],
+    capabilities: ["render_storefront"],
+    ...extra,
+  });
+}
+
 function zipB64(manifestName = "my-shop") {
   // QUBICKLE H6: uploads must carry a parseable central directory + root
   // manifest — bare magic bytes are no longer a valid archive.
@@ -129,7 +151,7 @@ function zipB64(manifestName = "my-shop") {
     buildTestZip([
       {
         name: "theme.json",
-        content: JSON.stringify({ name: manifestName, version: "1.0.0" }),
+        content: strictUploadManifest(manifestName),
       },
     ]),
   ).toString("base64");
@@ -318,5 +340,155 @@ describe("installUploadedTheme (upload server path)", () => {
     expect(
       db.rows("marketplace_installs").filter((r) => r.merchant_id === MERCHANT),
     ).toHaveLength(1);
+  });
+
+  it("deny: rejects an executable entry (evil.js) without writing anything", async () => {
+    // Shared layout gate: executables are refused anywhere in the archive,
+    // so hostile content is never installed and can never render.
+    const db = uploadDb();
+    const zip = Buffer.from(
+      buildTestZip([
+        { name: "theme.json", content: strictUploadManifest() },
+        { name: "evil.js", content: "alert(1)" },
+      ]),
+    ).toString("base64");
+    const err = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      { fileName: "evil.zip", fileBase64: zip, idempotencyKey: "k-evil" },
+      "user-9",
+    ).catch((e) => e);
+    expect(err?.code).toBe("theme.upload_blocked");
+    expect(db.rows("store_themes")).toHaveLength(0);
+    expect(db.rows("theme_versions")).toHaveLength(0);
+    expect(db.rows("theme_drafts")).toHaveLength(0);
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+    expect(db.rows("theme_audit")).toHaveLength(0);
+  });
+
+  it("deny: rejects a root inject.json outside any package area", async () => {
+    // Only the manifest + README/LICENSE/screenshot extras may sit at the
+    // root; a stray JSON payload is a disallowed location, never installed.
+    const db = uploadDb();
+    const zip = Buffer.from(
+      buildTestZip([
+        { name: "theme.json", content: strictUploadManifest() },
+        { name: "inject.json", content: JSON.stringify({ evil: true }) },
+      ]),
+    ).toString("base64");
+    const err = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      { fileName: "inject.zip", fileBase64: zip, idempotencyKey: "k-inject" },
+      "user-9",
+    ).catch((e) => e);
+    expect(err?.code).toBe("theme.upload_blocked");
+    expect(db.rows("store_themes")).toHaveLength(0);
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+
+  it("deny: a forged version is rejected without writing anything", async () => {
+    const db = uploadDb();
+    const zip = Buffer.from(
+      buildTestZip([
+        {
+          name: "theme.json",
+          content: strictUploadManifest("my-shop", "not-a-version"),
+        },
+      ]),
+    ).toString("base64");
+    const err = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      { fileName: "my-shop.zip", fileBase64: zip, idempotencyKey: "k-forge-v" },
+      "user-9",
+    ).catch((e) => e);
+    expect(err?.code).toBe("theme.upload_manifest");
+    expect(db.rows("store_themes")).toHaveLength(0);
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+
+  it("deny: a forged (nameless) manifest is rejected without writing anything", async () => {
+    const db = uploadDb();
+    const zip = Buffer.from(
+      buildTestZip([
+        {
+          name: "theme.json",
+          content: strictUploadManifest("", "1.0.0"),
+        },
+      ]),
+    ).toString("base64");
+    const err = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      { fileName: "my-shop.zip", fileBase64: zip, idempotencyKey: "k-forge-n" },
+      "user-9",
+    ).catch((e) => e);
+    expect(err?.code).toBe("theme.upload_manifest");
+    expect(db.rows("store_themes")).toHaveLength(0);
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+
+  it("identity comes from the validated manifest, never the filename", async () => {
+    const db = uploadDb();
+    const out: UploadResult = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      {
+        fileName: "forged-name.zip",
+        fileBase64: Buffer.from(
+          buildTestZip([
+            {
+              name: "theme.json",
+              content: strictUploadManifest("True Name", "1.2.3"),
+            },
+          ]),
+        ).toString("base64"),
+        idempotencyKey: "k-identity",
+      },
+      "user-9",
+    );
+    expect(out.alreadyInstalled).toBe(false);
+    const theme = db.rows("store_themes")[0];
+    expect(theme).toMatchObject({ name: "True Name", source_version: "1.2.3" });
+    expect(db.rows("marketplace_installs")[0]).toMatchObject({
+      listing_name: "True Name",
+      version: "1.2.3",
+    });
+  });
+
+  it("installs archive templates/tokens, never the default shell", async () => {
+    const archived = { blocks: [{ type: "archived-hero" }] };
+    const db = uploadDb();
+    const out: UploadResult = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      {
+        fileName: "archived.zip",
+        fileBase64: Buffer.from(
+          buildTestZip([
+            {
+              name: "theme.json",
+              content: strictUploadManifest("Archived", "2.0.0", {
+                tokens: { brand: "#123456" },
+              }),
+            },
+            {
+              name: "templates/index.json",
+              content: JSON.stringify(archived),
+            },
+          ]),
+        ).toString("base64"),
+        idempotencyKey: "k-archived",
+      },
+      "user-9",
+    );
+    expect(out.alreadyInstalled).toBe(false);
+    const version = db.rows("theme_versions")[0];
+    expect(version.templates).toEqual({ index: archived });
+    expect(version.tokens).toEqual({ brand: "#123456" });
+    const draft = db.rows("theme_drafts")[0];
+    expect(draft.templates).toEqual({ index: archived });
+    expect(draft.tokens).toEqual({ brand: "#123456" });
   });
 });

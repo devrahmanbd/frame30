@@ -66,7 +66,17 @@ function upload(
   );
 }
 
-const MANIFEST = JSON.stringify({ name: "Hardened", version: "1.0.0" });
+const MANIFEST = JSON.stringify({
+  key: "hardened",
+  name: "Hardened",
+  nameBn: "হার্ডেনড",
+  version: "1.0.0",
+  api: "^3.0.0",
+  templates: ["index"],
+  presentationSurfaces: ["widget"],
+  locales: ["en"],
+  capabilities: ["render_storefront"],
+});
 
 /** Rejection-code assertion (ThemeDeskError carries the code on `.code`). */
 async function errorCode(promise: Promise<unknown>): Promise<string> {
@@ -159,7 +169,7 @@ describe("H6 — upload archive hardening", () => {
     const db = uploadDb();
     const zip = buildTestZip([
       { name: "theme.json", content: MANIFEST, method: 8 },
-      { name: "assets/logo.txt", content: "logo" },
+      { name: "assets/logo.png", content: "logo" },
     ]);
     const first = await upload(db, "same.zip", zip, "h6-unique-1");
     const second = await upload(db, "same.zip", zip, "h6-unique-2");

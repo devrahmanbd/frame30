@@ -9,7 +9,6 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { inflateRawSync } from "node:zlib";
 import {
   listRegistry,
   installRegistryTheme,
@@ -611,22 +610,31 @@ export async function installCatalogTheme(
 }
 
 /**
- * B2 — Upload Theme server path (M-04 / WF-23).
+ * B2 — Upload Theme server path (M-04 / WF-23), unified onto the package
+ * pipeline gates.
  *
  * The `Upload theme` drop-zone validated `.zip` files client-side only, with
  * zero server path — a dead button by the WP-parity rule. This is the server
- * half: authoritative archive checks (extension, decoded size, zip magic),
- * then a new INACTIVE `store_themes` row in the exact shape of catalog
- * installs (row + published v1 + draft + ledger link + audit), so Activate /
- * Live Preview / Delete work uniformly from the first byte.
+ * half: the SAME archive + manifest gates `installPackage` runs (shared
+ * central-directory parser with encrypted/zip64/spanned/symlink/local-header
+ * checks, root-`theme.json` layout + area + executable policy, the real PKG-1
+ * `pkg1ThemeValidator`, secret/CSS policy over surviving text files), then a
+ * new INACTIVE `store_themes` row in the exact shape of catalog installs
+ * (row + published v1 + draft + ledger link + audit), so Activate /
+ * Live Preview / Delete work uniformly from the first byte. Templates/tokens
+ * come from the ARCHIVE (never the default shell); styles/assets are
+ * gate-checked but not persisted — this lane writes no `theme_assets` rows.
  *
  * Source-divergence note (see marketplace-badges.ts): uploads have no
  * catalog entry, so `source_listing_slug` stays NULL and the ledger row is
  * linked by `source_install_id` only — the same key the delete cascade
- * (`uninstallThemeInstall`) resolves. Full manifest extraction from the zip
- * (templates/tokens parsed out of the archive instead of the default shell)
- * is follow-up work paired with the media-library packaging lane; the row
- * installed here is intentionally inert until Activate flips it.
+ * (`uninstallThemeInstall`) resolves. Persistence intentionally stays bespoke
+ * instead of delegating to `installPackage`: every upload is a NEW install
+ * with a unique `upload:<slug>-<rand>` ledger identity (two uploads of one
+ * file = two rows), while `installPackage` keys the package line by manifest
+ * slug (same slug + version refuses as `package.bad_version`). Version rows
+ * land `published` (not pipeline-`draft`) so the console can preview the
+ * inert row without a review step; the row stays inert until Activate flips it.
  *
  * Idempotency: the client mints ONE key per file-pick (crypto.randomUUID,
  * held for the retry/double-click lifetime) and reuses it. A replayed key
@@ -661,187 +669,121 @@ function decodeUploadBytes(fileBase64: string): Buffer {
 }
 
 /**
- * QUBICKLE H6 (Rule 16): server-side archive validation. Magic bytes only
- * prove the first four bytes are `PK..` — a hostile or corrupt archive sails
- * through. The central directory is parsed and every entry validated before
- * any row is written; nothing is extracted except the small root manifest,
- * so a bomb has no room to detonate. No dependency — the parser reads the
- * EOCD + central directory by hand (local headers only at manifest
- * extraction), which also keeps hostile archives out of any third-party
- * extractor's edge cases.
+ * UPLOAD lane — shared package-pipeline gates (no duplicate parser).
+ *
+ * The retired hand-rolled ZIP parser is gone: it sniffed magic bytes, skipped
+ * the encrypted / zip64 / spanned / symlink / local-header checks, and
+ * extracted only a loose `{ name, version }` manifest while installing the
+ * default shell. The upload path now runs the SAME gates `installPackage`
+ * runs — `parseZip` + `extractPackageFiles` + `validatePackageLayout`
+ * (`src/lib/package-zip.ts`, read-only import) and the real PKG-1 theme gate
+ * (`pkg1ThemeValidator`, the exact adapter `installPackage` installs with) —
+ * plus the secret/CSS content policy below. `UPLOAD_ZIP_LIMITS` keeps the old
+ * lane's caps (1000 entries, 100 MB total, 50 MB per entry, 1 MB manifest)
+ * so the H6 bomb cases pin unchanged behavior under the stricter parser.
  */
-export const MAX_THEME_UPLOAD_ENTRIES = 1000;
-export const MAX_THEME_UPLOAD_INFLATED_BYTES = 100 * 1024 * 1024;
-export const MAX_THEME_UPLOAD_ENTRY_BYTES = 50 * 1024 * 1024;
-export const MAX_THEME_UPLOAD_MANIFEST_BYTES = 1024 * 1024;
-
-type ZipEntry = {
-  name: string;
-  method: number;
-  compSize: number;
-  uncompSize: number;
-  localHeaderOffset: number;
+const UPLOAD_ZIP_LIMITS = {
+  maxArchiveBytes: MAX_THEME_UPLOAD_BYTES,
+  maxFiles: 1000,
+  maxEntryBytes: 50 * 1024 * 1024,
+  maxTotalBytes: 100 * 1024 * 1024,
+  maxManifestBytes: 1024 * 1024,
 };
 
-function corruptUpload(message: string): ThemeDeskError {
-  return new ThemeDeskError("theme.upload_corrupt", message);
-}
-
-function bombUpload(message: string): ThemeDeskError {
-  return new ThemeDeskError("theme.upload_bomb", message);
-}
-
-function assertSafeEntryPath(name: string): void {
-  const unsafe =
-    !name ||
-    name.startsWith("/") ||
-    name.includes("\\") ||
-    name.split("/").some((segment) => segment === ".." || segment === "");
-  if (unsafe) {
-    throw new ThemeDeskError(
-      "theme.upload_path",
-      `Unsafe entry path in theme package: ${name.slice(0, 80)}`,
-    );
+/**
+ * Map shared `zip.*` failures onto the pre-existing `theme.upload_*`
+ * surface so callers never see `package.*` codes. Two layout-policy
+ * refusals and two content-policy refusals are new codes (nothing else
+ * switches on upload codes): `theme.upload_blocked` (executables and
+ * disallowed locations), `theme.upload_secret` (possible credential in
+ * package text), `theme.upload_css` (stylesheet violates the CSS policy).
+ */
+function mapPackageZipError(err: unknown): ThemeDeskError | null {
+  const code = (err as { code?: unknown } | null)?.code;
+  if (typeof code !== "string" || !code.startsWith("zip.")) return null;
+  const message = err instanceof Error ? err.message : String(err);
+  switch (code) {
+    case "zip.unsafe_path":
+    case "zip.symlink":
+      return new ThemeDeskError("theme.upload_path", message);
+    case "zip.unsupported_method":
+    case "zip.encrypted":
+    case "zip.unsupported_feature":
+    case "zip.spanned":
+      // The retired parser silently ACCEPTED encrypted / zip64 / spanned
+      // archives, so these gates are strictly new — they share the
+      // unsupported-method code rather than masquerading as corruption.
+      return new ThemeDeskError("theme.upload_method", message);
+    case "zip.too_many_files":
+    case "zip.entry_too_large":
+    case "zip.total_too_large":
+    case "zip.archive_too_large":
+    case "zip.manifest_too_large":
+      return new ThemeDeskError("theme.upload_bomb", message);
+    case "zip.blocked_extension":
+    case "zip.disallowed_location":
+      return new ThemeDeskError("theme.upload_blocked", message);
+    case "zip.missing_manifest":
+    case "zip.manifest_invalid":
+      return new ThemeDeskError("theme.upload_manifest", message);
+    default:
+      return new ThemeDeskError("theme.upload_corrupt", message);
   }
 }
 
-function parseZipCentralDirectory(bytes: Uint8Array): ZipEntry[] {
-  if (bytes.length < 22)
-    throw corruptUpload("Archive is too small to be a zip file.");
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  // The EOCD record may sit up to 64KB of comment + 22 bytes from the end.
-  let eocd = -1;
-  const floor = Math.max(0, bytes.length - 22 - 65557);
-  for (let i = bytes.length - 22; i >= floor; i--) {
-    if (view.getUint32(i, true) === 0x06054b50) {
-      eocd = i;
-      break;
-    }
-  }
-  if (eocd < 0)
-    throw corruptUpload("End-of-central-directory record not found.");
-  const count = view.getUint16(eocd + 10, true);
-  const centralSize = view.getUint32(eocd + 12, true);
-  const centralOffset = view.getUint32(eocd + 16, true);
-  if (count > MAX_THEME_UPLOAD_ENTRIES)
-    throw bombUpload(
-      `Theme package lists ${count} entries (max ${MAX_THEME_UPLOAD_ENTRIES}).`,
-    );
-  if (centralOffset + centralSize > bytes.length)
-    throw corruptUpload("Central directory runs past the end of the file.");
-  const entries: ZipEntry[] = [];
-  let off = centralOffset;
-  let totalInflated = 0;
-  for (let n = 0; n < count; n++) {
-    if (off + 46 > bytes.length)
-      throw corruptUpload("Central directory entry is truncated.");
-    if (view.getUint32(off, true) !== 0x02014b50)
-      throw corruptUpload("Central directory entry signature mismatch.");
-    const method = view.getUint16(off + 10, true);
-    const compSize = view.getUint32(off + 20, true);
-    const uncompSize = view.getUint32(off + 24, true);
-    const nameLen = view.getUint16(off + 28, true);
-    const extraLen = view.getUint16(off + 30, true);
-    const commentLen = view.getUint16(off + 32, true);
-    const localHeaderOffset = view.getUint32(off + 42, true);
-    if (off + 46 + nameLen > bytes.length)
-      throw corruptUpload("Central directory entry name is truncated.");
-    const name = new TextDecoder("utf-8", { fatal: false }).decode(
-      bytes.subarray(off + 46, off + 46 + nameLen),
-    );
-    // Directories (trailing slash) carry the trailing empty segment; strip
-    // it before the traversal check, then require the rest to be safe.
-    assertSafeEntryPath(name.endsWith("/") ? name.slice(0, -1) : name);
-    if (method !== 0 && method !== 8)
-      throw new ThemeDeskError(
-        "theme.upload_method",
-        "Theme package uses an unsupported compression method.",
-      );
-    if (uncompSize > MAX_THEME_UPLOAD_ENTRY_BYTES)
-      throw bombUpload(
-        `Theme package entry exceeds ${MAX_THEME_UPLOAD_ENTRY_BYTES / (1024 * 1024)} MB inflated.`,
-      );
-    totalInflated += uncompSize;
-    if (totalInflated > MAX_THEME_UPLOAD_INFLATED_BYTES)
-      throw bombUpload(
-        `Theme package inflates past ${MAX_THEME_UPLOAD_INFLATED_BYTES / (1024 * 1024)} MB.`,
-      );
-    entries.push({ name, method, compSize, uncompSize, localHeaderOffset });
-    off += 46 + nameLen + extraLen + commentLen;
-  }
-  return entries;
-}
+type UploadContentDeps = {
+  scanSecrets: (
+    source: string,
+    field: "css" | "html",
+  ) => Array<{ level: "error" | "warn" }>;
+  scopeCss: (input: string) => {
+    findings: Array<{ level: "error" | "warn"; message: string }>;
+  };
+};
 
 /**
- * Extract-or-reject: the archive must carry a root `theme.json` (or legacy
- * `manifest.json`) that parses as a JSON object with a non-empty `name`.
- * Only this one small file is ever inflated — never the whole archive.
+ * Content policy over the surviving text files: `scanSecrets` everywhere,
+ * the full CSS policy on stylesheets. Error-level hits reject the upload
+ * before any write — hostile content is never installed, so it can never
+ * render. Images/fonts skip this gate (non-text areas are already confined
+ * to inert extensions by the layout gate).
  */
-function extractUploadManifest(
-  bytes: Uint8Array,
-  entries: ZipEntry[],
-): { name: string; version: string } {
-  const manifest =
-    entries.find((e) => e.name === "theme.json") ??
-    entries.find((e) => e.name === "manifest.json");
-  if (!manifest)
-    throw new ThemeDeskError(
-      "theme.upload_manifest",
-      "Theme package must contain a root theme.json manifest.",
-    );
-  if (
-    manifest.compSize > MAX_THEME_UPLOAD_MANIFEST_BYTES ||
-    manifest.uncompSize > MAX_THEME_UPLOAD_MANIFEST_BYTES
-  )
-    throw bombUpload("Theme manifest exceeds the 1 MB limit.");
-  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  const lh = manifest.localHeaderOffset;
-  if (lh + 30 > bytes.length || view.getUint32(lh, true) !== 0x04034b50)
-    throw corruptUpload("Manifest local header is missing or corrupt.");
-  if (view.getUint16(lh + 8, true) !== manifest.method)
-    throw corruptUpload("Manifest local header disagrees with the directory.");
-  const dataOff =
-    lh + 30 + view.getUint16(lh + 26, true) + view.getUint16(lh + 28, true);
-  if (dataOff + manifest.compSize > bytes.length)
-    throw corruptUpload("Manifest data runs past the end of the file.");
-  const raw = bytes.subarray(dataOff, dataOff + manifest.compSize);
-  let inflated: Uint8Array;
-  try {
-    inflated = manifest.method === 8 ? inflateRawSync(raw) : raw;
-  } catch {
-    throw corruptUpload("Manifest entry could not be decompressed.");
+function assertUploadContentPolicy(
+  files: Array<{ path: string; bytes: Uint8Array }>,
+  deps: UploadContentDeps,
+): void {
+  for (const file of files) {
+    const isCss =
+      file.path.startsWith("styles/") && file.path.endsWith(".css");
+    const isJsonText =
+      file.path === "theme.json" ||
+      file.path.startsWith("templates/") ||
+      file.path.startsWith("locales/");
+    if (!isCss && !isJsonText) continue;
+    let text: string;
+    try {
+      text = new TextDecoder("utf-8", { fatal: true }).decode(file.bytes);
+    } catch {
+      continue;
+    }
+    const secrets = deps.scanSecrets(text, isCss ? "css" : "html");
+    if (secrets.length > 0) {
+      throw new ThemeDeskError(
+        "theme.upload_secret",
+        `Theme package may contain a credential (${file.path.slice(0, 80)}).`,
+      );
+    }
+    if (isCss) {
+      const { findings } = deps.scopeCss(text);
+      const blocking = findings.find((f) => f.level === "error");
+      if (blocking) {
+        throw new ThemeDeskError(
+          "theme.upload_css",
+          `Theme stylesheet refused (${file.path.slice(0, 80)}): ${blocking.message}`,
+        );
+      }
+    }
   }
-  if (inflated.length > MAX_THEME_UPLOAD_MANIFEST_BYTES)
-    throw bombUpload("Theme manifest exceeds the 1 MB limit.");
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(new TextDecoder().decode(inflated));
-  } catch {
-    throw new ThemeDeskError(
-      "theme.upload_manifest",
-      "Theme manifest is not valid JSON.",
-    );
-  }
-  const name =
-    parsed && typeof parsed === "object"
-      ? (parsed as { name?: unknown }).name
-      : undefined;
-  if (typeof name !== "string" || !name.trim())
-    throw new ThemeDeskError(
-      "theme.upload_manifest",
-      "Theme manifest must be a JSON object with a name.",
-    );
-  const version =
-    parsed && typeof parsed === "object"
-      ? (parsed as { version?: unknown }).version
-      : undefined;
-  return {
-    name: name.trim().slice(0, 80),
-    version:
-      typeof version === "string" && version.trim()
-        ? version.trim().slice(0, 20)
-        : "1.0.0",
-  };
 }
 
 export async function installUploadedTheme(
@@ -876,11 +818,60 @@ export async function installUploadedTheme(
       "That file is not a valid zip archive.",
     );
   }
-  // QUBICKLE H6: parse the central directory and extract the manifest BEFORE
-  // the replay lookup or any write — a reused key must never smuggle hostile
-  // bytes past the archive checks, and hostile bytes must never reach a row.
-  const entries = parseZipCentralDirectory(bytes);
-  const manifest = extractUploadManifest(bytes, entries);
+  // Shared package-pipeline gates — archive + layout + manifest + content
+  // policy BEFORE the replay lookup or any write, so a reused key can never
+  // smuggle hostile bytes past the checks and hostile bytes never reach a
+  // row. Dynamic imports keep this lane on the exact modules `installPackage`
+  // runs (no copies, no cycles: the official-install path already imports
+  // `package-install.server` this way).
+  const { parseZip, extractPackageFiles, validatePackageLayout } =
+    await import("../package-zip");
+  const { pkg1ThemeValidator } = await import("../package-install.server");
+  const { scanSecrets, scopeCss } = await import("../custom-code");
+  let manifestName: string;
+  let manifestVersion: string;
+  let templates: Record<string, unknown>;
+  let tokens: Record<string, unknown>;
+  try {
+    const entries = parseZip(bytes, UPLOAD_ZIP_LIMITS);
+    const files = extractPackageFiles(bytes, entries, UPLOAD_ZIP_LIMITS);
+    const layout = validatePackageLayout(files, "theme", UPLOAD_ZIP_LIMITS);
+    const verdict = pkg1ThemeValidator(layout.manifest, "theme");
+    if (!verdict.ok) {
+      throw new ThemeDeskError(
+        "theme.upload_manifest",
+        `Theme manifest rejected: ${verdict.errors.join(", ")}.`,
+      );
+    }
+    assertUploadContentPolicy(files, { scanSecrets, scopeCss });
+    // Archive content, pipeline-shaped: `templates/*.json` parsed exactly
+    // like `installPackage` (unparseable file = null, never a throw — the
+    // row stays inert until Activate), manifest `tokens` object or {}.
+    templates = {};
+    for (const file of files) {
+      if (!file.path.startsWith("templates/") || !file.path.endsWith(".json"))
+        continue;
+      const key = file.path.slice("templates/".length, -".json".length);
+      try {
+        templates[key] = JSON.parse(new TextDecoder().decode(file.bytes));
+      } catch {
+        templates[key] = null;
+      }
+    }
+    const rawTokens = (verdict.manifest.raw as Record<string, unknown>)
+      ?.tokens;
+    tokens =
+      rawTokens !== null &&
+      typeof rawTokens === "object" &&
+      !Array.isArray(rawTokens)
+        ? (rawTokens as Record<string, unknown>)
+        : {};
+    manifestName = verdict.manifest.name;
+    manifestVersion = verdict.manifest.version;
+  } catch (err) {
+    if (err instanceof ThemeDeskError) throw err;
+    throw mapPackageZipError(err) ?? err;
+  }
 
   const { data: replayed } = await db
     .from("marketplace_installs")
@@ -906,25 +897,20 @@ export async function installUploadedTheme(
     .replace(/\.zip$/iu, "")
     .trim()
     .slice(0, 80);
-  // Identity comes from the extracted manifest; the slug carries a random
+  // Identity comes from the validated manifest; the slug carries a random
   // suffix so two uploads of the same file never share ledger identity
   // (QUBICKLE H6/M1: upload slugs are unique per install, never per-slug).
-  // Templates/tokens still seed from the default shell — the archive's own
-  // templates stay follow-up work paired with the media-library packaging
-  // lane — but the row installed here is manifest-bound and inert until
-  // Activate flips it.
-  const name = manifest.name || base || "Uploaded theme";
-  const listingSlug = `upload:${slugifyUploadName(base || manifest.name || "theme")}-${crypto.randomUUID().replace(/-/g, "").slice(0, 8)}`;
-  // Default shell until the packaging lane extracts the archive's own
-  // manifest: an inert, valid theme the merchant customizes after install.
-  const pkg = registryPackage("__upload__");
+  // Templates/tokens are the ARCHIVE's own (parsed above, pipeline-shaped) —
+  // the row installed here is manifest-bound and inert until Activate flips it.
+  const name = manifestName;
+  const listingSlug = `upload:${slugifyUploadName(base || manifestName || "theme")}-${crypto.randomUUID().replace(/-/g, "").slice(0, 8)}`;
   const { data, error } = await db
     .from("store_themes")
     .insert({
       merchant_id: merchantId,
       name,
       source_listing_slug: null,
-      source_version: manifest.version,
+      source_version: manifestVersion,
       is_active: false,
       installed_at: new Date().toISOString(),
     })
@@ -945,8 +931,8 @@ export async function installUploadedTheme(
       status: "published",
       published_at: new Date().toISOString(),
       label: listingSlug,
-      templates: pkg.templates as never,
-      tokens: pkg.tokens as never,
+      templates: templates as never,
+      tokens: tokens as never,
       created_by: actorId ?? null,
     })
     .select("id")
@@ -965,8 +951,8 @@ export async function installUploadedTheme(
     merchant_id: merchantId,
     theme_id: themeId,
     revision: 1,
-    templates: pkg.templates as never,
-    tokens: pkg.tokens as never,
+    templates: templates as never,
+    tokens: tokens as never,
     updated_by: actorId ?? null,
   });
   if (draftError) {
@@ -982,7 +968,7 @@ export async function installUploadedTheme(
       widget_id: null,
       listing_slug: listingSlug,
       listing_name: name,
-      version: manifest.version,
+      version: manifestVersion,
       price_minor_int: 0,
       currency_code: "BDT",
       is_trial: false,

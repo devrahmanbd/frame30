@@ -222,7 +222,20 @@ describe("C2 — compensating deletes are merchant-scoped", () => {
   it("upload install: draft failure compensates with a merchant predicate", async () => {
     const { buildTestZip } = await import("./__fixtures__/test-zip");
     const zip = buildTestZip([
-      { name: "theme.json", content: JSON.stringify({ name: "Up" }) },
+      {
+        name: "theme.json",
+        content: JSON.stringify({
+          key: "up",
+          name: "Up",
+          nameBn: "আপ",
+          version: "1.0.0",
+          api: "^3.0.0",
+          templates: ["index"],
+          presentationSurfaces: ["widget"],
+          locales: ["en"],
+          capabilities: ["render_storefront"],
+        }),
+      },
     ]);
     const foreignId = "store_themes-1";
     const db = fakeDb({

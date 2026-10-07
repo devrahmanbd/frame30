@@ -749,7 +749,17 @@ describe("LIFECYCLE uploaded theme shell: upload → preview → activate → de
       buildTestZip([
         {
           name: "theme.json",
-          content: JSON.stringify({ name: "My Shop", version: "1.0.0" }),
+          content: JSON.stringify({
+            key: "my-shop",
+            name: "My Shop",
+            nameBn: "আমার দোকান",
+            version: "1.0.0",
+            api: "^3.0.0",
+            templates: ["index"],
+            presentationSurfaces: ["widget"],
+            locales: ["en"],
+            capabilities: ["render_storefront"],
+          }),
         },
       ]);
 
