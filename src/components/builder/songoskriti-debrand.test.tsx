@@ -151,14 +151,12 @@ function expectNoCrossBrand(html: string) {
 /* ------------------------------------------------------- parity pins (pre) */
 
 describe("Task 2 parity pins — songoskriti default output", () => {
-  it("footer_sitemap renders the brand zones in English", () => {
+  it("footer_sitemap renders the slim footer in English", () => {
     const html = render(FooterSitemap, songoskritiFooterSection(), "en");
-    // ZONE 1: brand closing statement.
-    expect(html).toContain("Woven in Bangladesh, worn everywhere");
-    expect(html).toContain("Songoskriti keeps Tangail");
-    expect(html).toContain("OUR STORY →");
-    expect(html).toContain("/pages/about");
-    // ZONE 2: newsletter.
+    // No statement zone, no story link.
+    expect(html).not.toContain("Woven in Bangladesh");
+    expect(html).not.toContain("OUR STORY →");
+    // ZONE 2: single newsletter form.
     expect(html).toContain("First to the festive drops");
     expect(html).toContain("Join the list");
     expect(html).toContain("We email only for festive drops");
@@ -176,14 +174,14 @@ describe("Task 2 parity pins — songoskriti default output", () => {
     expect(html).toContain("Privacy");
   });
 
-  it("footer_sitemap renders the brand zones in বাংলা", () => {
+  it("footer_sitemap renders the slim footer in বাংলা", () => {
     const html = render(FooterSitemap, songoskritiFooterSection(), "bn");
-    expect(html).toContain("বাংলাদেশে বোনা, পরা হয় সর্বত্র");
+    expect(html).not.toContain("বাংলাদেশে বোনা, পরা হয় সর্বত্র");
+    expect(html).not.toContain("আমাদের গল্প →");
     expect(html).toContain("সংস্কৃতি");
     expect(html).toContain("উৎসবের ড্রপ সবার আগে");
     expect(html).toContain("তালিকায় যোগ দিন");
     expect(html).toContain("পেমেন্ট মাধ্যম");
-    expect(html).toContain("আমাদের গল্প →");
     expect(html).toContain("ইমেইল লিখুন");
   });
 

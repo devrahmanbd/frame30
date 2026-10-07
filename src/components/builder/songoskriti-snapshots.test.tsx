@@ -77,15 +77,6 @@ function stubBuilder<T>(): T {
 /* ------------------------------------------- fixed fixtures (literals) */
 
 const FIXED_FOOTER_PROPS: Record<string, PropValue> = {
-  statementHeading: "Woven in Bangladesh, worn everywhere",
-  statementHeading_bn: "বাংলাদেশে বোনা, পরা হয় সর্বত্র",
-  statementBody:
-    "Songoskriti keeps Tangail, Jamdani and Nakshi Kantha weaving alive through fair artisan partnerships.",
-  statementBody_bn:
-    "ন্যায্য তাঁতি অংশীদারিত্বে টাঙ্গাইল, জামদানি ও নকশি কাঁথার বুনন বাঁচিয়ে রাখে সংস্কৃতি।",
-  storyHref: "/pages/about",
-  storyLabel: "OUR STORY →",
-  storyLabel_bn: "আমাদের গল্প →",
   newsletterHeading: "First to the festive drops",
   newsletterHeading_bn: "উৎসবের ড্রপ সবার আগে",
   newsletterButton: "Join the list",
@@ -218,51 +209,19 @@ const UgcGallery = SONGOSKRITI_WIDGETS["ugc_gallery"];
 /* ---------------------------------- builder↔fixture equality (drift fails) */
 
 describe("Task 2 fix — builders still emit the pinned fixtures", () => {
-  it("buildSongoskritiFooter emits the statement archetype sections", () => {
-    // Blueprint (footer.ts header): a brand statement leads, one newsletter
-    // CTA follows, link columns carry the sitemap, and a colophon row
-    // (payments + flagship hours + copyright) closes. Exactly one
-    // button-styled CTA exists: the newsletter submit. The wiring contract
-    // (`wiring.test.ts`) reserves the bare `buttonLabel` key for the
-    // standalone `newsletter` section — the sitemap props deliberately avoid
-    // it — so the footer must emit all five sections, not one.
+  it("buildSongoskritiFooter emits the slim footer sections", () => {
+    // Footer is navigation + trust only: link columns carry the sitemap,
+    // one newsletter form lives in the sitemap zone, and a colophon row
+    // (payments + copyright) closes. No statement, no story link, no
+    // standalone newsletter or payment sections.
     const sections =
       buildSongoskritiFooter(stubBuilder<FooterSectionBuilder>());
     expect(sections.map((n) => n.type)).toEqual([
-      "split_feature",
-      "newsletter",
       "footer_sitemap",
-      "payment_icons",
       "rich_text",
     ]);
     const sitemap = sections.find((n) => n.type === "footer_sitemap")!;
     expect(sitemap.props).toEqual(FIXED_FOOTER_PROPS);
-    // Newsletter literals mirror NEWSLETTER in footer-copy (hand-written,
-    // never derived from the builder).
-    const newsletter = sections.find((n) => n.type === "newsletter")!;
-    expect(newsletter.props).toEqual({
-      heading: "First to the festive drops",
-      heading_bn: "উৎসবের ড্রপ সবার আগে",
-      body: "One letter per drop. Weaves, restocks and artisan stories — never spam.",
-      body_bn:
-        "প্রতি ড্রপে একটি চিঠি। বুনন, রিস্টক ও তাঁতিদের গল্প — কোনো স্প্যাম নয়।",
-      buttonLabel: "Join the list",
-      buttonLabel_bn: "তালিকায় যোগ দিন",
-      consentText: "We email only for festive drops. Unsubscribe anytime.",
-      consentText_bn:
-        "শুধু উৎসবের ড্রপের জন্য ইমেইল পাঠাই। যেকোনো সময় আনসাবস্ক্রাইব করুন।",
-    });
-    const statement = sections.find((n) => n.type === "split_feature")!;
-    expect(statement.props["heading"]).toBe(
-      "Woven in Bangladesh, worn everywhere",
-    );
-    expect(statement.props["primaryImage"]).toBe(
-      "/ph/songoskriti/hero-artisans.png",
-    );
-    const payments = sections.find((n) => n.type === "payment_icons")!;
-    expect(payments.props["marks"]).toBe(
-      "bKash, Nagad, Rocket, Visa, Mastercard, Cash on Delivery",
-    );
   });
 
   it("songoskriti homepage emits exactly the fixed store_locator props", () => {
