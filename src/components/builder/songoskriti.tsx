@@ -1177,12 +1177,17 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
         </div>
       </div>
 
-      {/* ZONE 4: Payments & Legal */}
+      {/* ZONE 4: Payments & Legal — three-part bar (brand | payments | legal),
+          stacked centered on mobile. Small text stays at 70% ink minimum
+          for contrast; links keep 44px targets. */}
       <div className="border-t border-[var(--theme-border)]">
-        <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 py-6 sm:py-8 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 py-8 sm:py-10 grid grid-cols-1 md:grid-cols-3 items-center gap-6">
+          <p className="text-[11px] font-medium uppercase tracking-[0.1em] text-[var(--theme-ink)]/70 text-center md:text-left">
+            © 2026{brandName ? ` ${brandName}` : ""}
+          </p>
           {paymentMarks.length > 0 && (
-            <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]/50">
+            <div className="flex flex-col items-center gap-3">
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]/70">
                 {paymentHeading}
               </span>
               <ul className="flex flex-wrap items-center justify-center gap-2">
@@ -1194,21 +1199,23 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
               </ul>
             </div>
           )}
-          <div className="flex flex-wrap items-center gap-4 sm:gap-8 text-[11px] font-medium uppercase tracking-[0.1em] text-[var(--theme-ink)]/50 w-full md:w-auto justify-center md:justify-end">
-            <span>© 2026{brandName ? ` ${brandName}` : ""}</span>
+          <nav
+            aria-label={locale === "bn" ? "আইনি" : "Legal"}
+            className="flex flex-wrap items-center justify-center md:justify-end gap-x-8 gap-y-2 text-[11px] font-medium uppercase tracking-[0.1em] text-[var(--theme-ink)]/70"
+          >
             <a
               href={link("/pages/terms")}
-              className="hover:text-[var(--theme-ink)] transition-colors"
+              className="inline-flex min-h-[44px] items-center hover:text-[var(--theme-ink)] hover:underline hover:underline-offset-4 transition-colors"
             >
               Terms
             </a>
             <a
               href={link("/pages/privacy")}
-              className="hover:text-[var(--theme-ink)] transition-colors"
+              className="inline-flex min-h-[44px] items-center hover:text-[var(--theme-ink)] hover:underline hover:underline-offset-4 transition-colors"
             >
               Privacy
             </a>
-          </div>
+          </nav>
         </div>
       </div>
     </section>
