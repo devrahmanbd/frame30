@@ -14,6 +14,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-07 14:34 UTC] (v0.5-beta — 230f03f2) — Zero-gap sweep
+### Fixed
+- scope-adapter red resolved (menus.read/write vocabulary + honest mapping); footer draft verified gone (backup retained); KB backfill 114 live vectors (204 await quota reset).
+### Verification
+- Full suite 5754/5756 → scope lane green; tsc clean.
+### Known gaps
+- OpenRouter quota exhausted again (429, 0 remaining) — 204 fallback rows await next reset; $10 credits recommended (shared with revision cron). Key rotation still pending (key verified working).
 ## [2026-10-07 09:36 UTC] (v0.5-beta — aee6e442) — Consent binding, idempotency parity, onCall contract
 ### Fixed
 - Widening updates require fresh covering grant (stored-grant diff, timestamped record); direct pipeline idempotency bound to key/kind/slug; host delegates pinned data-free.
