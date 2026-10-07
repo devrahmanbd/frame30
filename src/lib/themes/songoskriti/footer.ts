@@ -156,6 +156,12 @@ export const PAYMENTS_LIST = [
 export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
   return [
     s("footer_sitemap", {
+      newsletterHeading: NEWSLETTER.heading,
+      newsletterHeading_bn: NEWSLETTER.heading_bn,
+      newsletterButton: NEWSLETTER.buttonLabel,
+      newsletterButton_bn: NEWSLETTER.buttonLabel_bn,
+      newsletterConsent: NEWSLETTER.consentText,
+      newsletterConsent_bn: NEWSLETTER.consentText_bn,
       brandName: BRAND_NAME,
       brandName_bn: BRAND_NAME_BN,
       paymentsHeading: PAYMENTS_HEADING,
@@ -177,11 +183,6 @@ export function buildSongoskritiFooter(s: FooterSectionBuilder): Section[] {
       c4Title_bn: FALLBACK_COLUMNS[3]!.title_bn,
       c4Links: FALLBACK_COLUMNS[3]!.links,
       c4Links_bn: FALLBACK_COLUMNS[3]!.links_bn,
-    }),
-    s("payment_icons", {
-      heading: PAYMENTS_HEADING,
-      heading_bn: PAYMENTS_HEADING_BN,
-      marks: PAYMENT_MARKS,
     }),
     s("rich_text", {
       heading: "",
