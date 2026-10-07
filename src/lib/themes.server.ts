@@ -894,7 +894,12 @@ export function officialThemeKeys(): string[] {
   return [];
 }
 
-/** Validated official package, or a safe default package. */
+/** Validated official package, or a safe default package.
+ *
+ * Legacy source-backed helper: new runtime paths MUST use
+ * `loadRegistryPackage` (installed artifact authoritative) instead. This
+ * stays only until the remaining callers migrate (O2 follow-up).
+ */
 export function registryPackage(key: string): {
   templates: ThemeTemplates;
   tokens: ThemeTokens;
@@ -916,6 +921,65 @@ export function registryPackage(key: string): {
     version: "1.0.0",
   };
 }
+
+export type RegistryPackage = {
+  templates: ThemeTemplates;
+  tokens: ThemeTokens;
+  version: string;
+};
+
+/**
+ * O2 — installed artifact authoritative: runtime paths load the official
+ * package from the installed `theme_registry` row (curated upstream
+ * preset), never from theme source. Fail-closed: a missing/inactive row
+ * throws `builder.registry_missing`; a row with no usable preset content
+ * throws `builder.artifact_missing` — never a silent wrong theme.
+ */
+export async function loadRegistryPackage(
+  db: Client,
+  key: string,
+): Promise<RegistryPackage> {
+  const clean = typeof key === "string" ? key.trim() : "";
+  if (!clean) {
+    throw new BuilderError(
+      "builder.registry_missing",
+      "Theme not found in the registry",
+    );
+  }
+  const { data, error } = await db
+    .from("theme_registry")
+    .select("key, version, preset")
+    .eq("key", clean)
+    .eq("active", true)
+    .maybeSingle();
+  if (error || !data) {
+    throw new BuilderError(
+      "builder.registry_missing",
+      `Theme "${clean}" is not found in the registry`,
+    );
+  }
+  const row = data as {
+    key: string;
+    version: string | null;
+    preset: { tokens?: unknown; templates?: unknown } | null;
+  };
+  const preset = row.preset ?? {};
+  if (
+    !isAuthoredRecord(preset.templates) &&
+    !isAuthoredRecord(preset.tokens)
+  ) {
+    throw new BuilderError(
+      "builder.artifact_missing",
+      `No usable installed artifact for theme "${clean}" — refusing rather than falling back to source.`,
+    );
+  }
+  return {
+    templates: parseTemplates(preset.templates),
+    tokens: parseTokens(preset.tokens),
+    version:
+      typeof row.version === "string" && row.version ? row.version : "1.0.0",
+  };
+};
 
 /**
  * Install an official theme as a draft version *and* fork it into the editable
@@ -940,7 +1004,9 @@ export async function installRegistryTheme(
       );
     let pkg: { templates: ThemeTemplates; tokens: ThemeTokens };
     try {
-      pkg = registryPackage(key);
+      // O2: installed artifact authoritative — package content comes from the
+      // installed registry row, never theme source.
+      pkg = await loadRegistryPackage(db, key);
     } catch (err) {
       incr("framique_theme_install_total", { result: "rejected" });
       throw err;
@@ -1124,7 +1190,9 @@ export async function previewThemeUpdate(
         "builder.registry_missing",
         "Theme not found in the registry",
       );
-    const pkg = registryPackage(targetKey);
+    // O2: installed artifact authoritative — the upstream package comes
+    // from the installed registry row; missing rows fail closed, never source.
+    const pkg = await loadRegistryPackage(db, targetKey);
     const installedVersion =
       key && key !== workspace.theme.sourceKey
         ? null
@@ -1155,7 +1223,9 @@ export async function applyThemeUpdate(
   await rateLimit("builder.update", merchantId);
   return withSpan("builder.update", async () => {
     const workspace = await loadWorkspace(db, merchantId);
-    const pkg = registryPackage(input.key);
+    // O2: installed artifact authoritative — merge base comes from the
+    // installed registry row; missing rows fail closed, never source.
+    const pkg = await loadRegistryPackage(db, input.key);
     const templates = mergeTemplates(
       workspace.templates,
       pkg.templates,
@@ -1673,7 +1743,9 @@ export async function importDemoContent(
   assertTenantId(merchantId, "importDemoContent");
   await rateLimit("builder.demo_import", merchantId);
   return withSpan("builder.demo_import", async () => {
-    const pkg = registryPackage(themeKey);
+    // O2: installed artifact authoritative — demo layout comes from the
+    // installed registry row; missing rows fail closed, never source.
+    const pkg = await loadRegistryPackage(db, themeKey);
     const catalog = demoCatalogFor(themeKey);
     const raw = await rpc<unknown>(db, "theme_import_demo", {
       _merchant_id: merchantId,

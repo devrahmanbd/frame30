@@ -2,12 +2,23 @@
  * Preview sources registry — dynamic theme wiring, no hardcoding.
  */
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   defaultPreviewKey,
   demoPreviewTarget,
   previewSourceFor,
   previewSourceKeys,
+  registerStaticPreviewSource,
 } from "./preview-sources";
+import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
+import { somvabonaPreviewSource } from "./themes/somvabona/preview";
+
+// O2: static theme sources are build-time-only — this test file is a
+// build-time context, so it wires the factories explicitly. Production
+// runtime resolves merchant previews from installed artifacts instead.
+registerStaticPreviewSource("songoskriti", songoskritiPreviewSource);
+registerStaticPreviewSource("somvabona", somvabonaPreviewSource);
 
 describe("preview-sources registry", () => {
   it("registers keys without the engine naming themes", () => {
@@ -56,14 +67,15 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
 
   it("installed set is authoritative: lists installed only, never source fallback", () => {
     // K2: merchant context (array, even empty) lists installed ONLY — source
-    // keys fail closed. Legacy null/undefined still lists source keys.
+    // keys fail closed. Legacy null/undefined still lists the registered
+    // build-time sources.
     expect(previewSourceKeys([ARTIFACT])).toEqual(["acme-pack"]);
     expect(previewSourceKeys(["songoskriti", ARTIFACT])).toEqual([
       "songoskriti",
       "acme-pack",
     ]);
     expect(previewSourceKeys([])).toEqual([]);
-    // Legacy: no merchant context still lists the source floor.
+    // Legacy: no merchant context still lists the registered build-time floor.
     expect(previewSourceKeys()).toContain("songoskriti");
     expect(previewSourceKeys(null)).toContain("somvabona");
   });
@@ -102,7 +114,7 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
     expect(previewSourceKeys([])).not.toContain("acme-pack");
     expect(previewSourceFor("acme-pack")).toBeNull();
     expect(previewSourceFor("acme-pack", undefined, [])).toBeNull();
-    // Source keys stay intact after removal.
+    // Registered build-time keys stay intact after removal.
     expect(previewSourceKeys()).toContain("songoskriti");
     expect(previewSourceFor("songoskriti")?.key).toBe("songoskriti");
   });
@@ -124,5 +136,24 @@ describe("installed package discovery (SWITCHOVER-3)", () => {
     expect(
       source.main("index", ((t: string, p = {}) => ({ id: "x", type: t, props: p })) as never),
     ).toBeNull();
+  });
+
+  it("unregistered keys fail closed with no merchant context (never source)", () => {
+    // O2: nothing is registered for this key at build time, and no installed
+    // set is passed — resolution fails closed to null, never a wrong theme.
+    expect(previewSourceFor("never-built-xyz")).toBeNull();
+    expect(previewSourceFor("never-built-xyz", undefined, null)).toBeNull();
+    expect(previewSourceKeys()).not.toContain("never-built-xyz");
+  });
+
+  it("ships no static theme imports — static sources are build-time-only", () => {
+    // O2: the runtime module must never import theme source directly;
+    // build-time contexts wire factories through registerStaticPreviewSource.
+    const src = readFileSync(
+      join(process.cwd(), "src/lib/preview-sources.ts"),
+      "utf8",
+    );
+    expect(src).not.toMatch(/themes\/(songoskriti|somvabona)\/preview/);
+    expect(src).toMatch(/registerStaticPreviewSource/);
   });
 });

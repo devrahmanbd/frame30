@@ -15,6 +15,7 @@ import {
   registryPackage,
 } from "@/lib/themes.server";
 import { catalogMeta } from "./catalog-meta";
+import { bundledOfficialCatalogEntries } from "../official-artifact-bundle";
 import {
   isNewerVersion,
   MAX_THEME_UPLOAD_BYTES,
@@ -189,20 +190,29 @@ async function favouriteKeys(
  *
  * B2 catalogue semantics: official entries (Songoskriti, Somvabona) come
  * from internally-built artifacts when the build lane has run — with a
- * graceful empty official section when it hasn't — and every other
- * registry row lists as community. Registry rows colliding with an
- * official key are skipped so no theme ever shows two Install buttons.
+ * bundled fallback (deploy-time-built, checksummed rows, display only) when
+ * it hasn't — and every other registry row lists as community. Registry rows
+ * colliding with an official key are skipped so no theme ever shows two
+ * Install buttons.
  */
 export async function loadThemesWorkspace(
   db: Client,
   merchantId: string,
 ): Promise<ThemesWorkspace> {
-  const [registry, official, installedRows, favourites] = await Promise.all([
+  const [registry, builtOfficial, installedRows, favourites] = await Promise.all([
     listRegistry(db),
     listOfficialCatalog(),
     rows(db, merchantId),
     favouriteKeys(db, merchantId),
   ]);
+  // PROVIDER lane — bundled official section (display only): when the
+  // in-memory provider serves no install bytes, the checked-in bundle fills
+  // the official display from verified rows. Installs still require the
+  // provider (`installOfficialTheme` refuses when unbuilt).
+  const official =
+    builtOfficial.length > 0
+      ? builtOfficial
+      : bundledOfficialCatalogEntries();
   const latest = new Map<string, string>([
     ...registry.map((entry) => [entry.key, entry.version] as const),
     ...official.map((entry) => [entry.key, entry.version] as const),

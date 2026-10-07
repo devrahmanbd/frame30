@@ -204,19 +204,26 @@ describe("B2 official catalogue shape", () => {
     expect(requested).toEqual(["songoskriti", "somvabona"]);
   });
 
-  it("graceful empty-state when the build hasn't run: official empty, community intact", async () => {
+  it("bundled fallback when the build hasn't run: official display from the bundle, community intact", async () => {
+    // PROVIDER lane: with no in-memory provider the official section falls
+    // back to the deploy-time-built bundle (display only) instead of an
+    // empty hole. Install bytes still come from the provider alone.
     __setOfficialArtifactProviderForTests(null);
     expect(await listOfficialCatalog()).toEqual([]);
     const db = workspaceDb();
     const workspace = await loadThemesWorkspace(db.asClient(), MERCHANT);
     const sections = sectionCatalogue(workspace.catalogue);
-    expect(sections.official).toEqual([]);
-    // Registry rows (minus official collisions, which need artifacts) stay.
-    expect(sections.community.map((t) => t.key)).toEqual([
-      "acme-pack",
+    expect(sections.official.map((t) => t.key)).toEqual([
       "songoskriti",
+      "somvabona",
     ]);
-    expect(sections.community[1]).toMatchObject({ provenance: "community" });
+    for (const entry of sections.official) {
+      expect(entry).toMatchObject({ provenance: "official", version: "1.0.0" });
+    }
+    // Official-colliding registry rows stay skipped (no duplicate Install
+    // targets); unrelated community rows stay listed.
+    expect(sections.community.map((t) => t.key)).toEqual(["acme-pack"]);
+    expect(sections.community[0]).toMatchObject({ provenance: "community" });
   });
 
   it("a broken build for one key hides that key, never the section", async () => {
@@ -373,5 +380,37 @@ describe("B2 official install runs the normal installPackage pipeline", () => {
     expect(err?.code).toBe("theme.official_path");
     expect(db.rows("store_themes")).toHaveLength(0);
     expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+});
+
+/* ----------------- PROVIDER lane — bundled fallback (cases only) ------- */
+
+describe("bundled official fallback (no provider served)", () => {
+  it("provider-built entries win over the bundle when both exist", async () => {
+    const served = new Map([
+      ["songoskriti", officialEntry("songoskriti", "2.0.0")],
+      ["somvabona", officialEntry("somvabona", "2.0.0")],
+    ]);
+    __setOfficialArtifactProviderForTests(async (key) => served.get(key) ?? null);
+    const db = workspaceDb();
+    const workspace = await loadThemesWorkspace(db.asClient(), MERCHANT);
+    const sections = sectionCatalogue(workspace.catalogue);
+    expect(sections.official.map((t) => t.version)).toEqual([
+      "2.0.0",
+      "2.0.0",
+    ]);
+  });
+
+  it("refusing installs still holds with only the bundle (no bytes served)", async () => {
+    __setOfficialArtifactProviderForTests(null);
+    const db = installDb();
+    const err = await installOfficialTheme(
+      db.asClient(),
+      MERCHANT,
+      "songoskriti",
+      ACTOR,
+    ).catch((e) => e);
+    expect(err?.code ?? err?.message).toMatch(/official_unavailable/);
+    expect(db.rows("store_themes")).toHaveLength(0);
   });
 });

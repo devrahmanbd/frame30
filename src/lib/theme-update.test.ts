@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   diffTemplates,
   loadPublishArtifact,
+  loadRegistryPackage,
   mergeTemplates,
   publishVersion,
   resolvePublishPayload,
@@ -180,6 +181,106 @@ describe("publish payload resolution (installed artifact authoritative, K2)", ()
     } catch (err) {
       expect((err as { code?: string }).code).toBe("builder.artifact_missing");
     }
+  });
+});
+
+describe("loadRegistryPackage (installed registry row, O2)", () => {
+  const REGISTRY_TEMPLATES = {
+    index: {
+      header: [],
+      main: [
+        {
+          id: "s1",
+          type: "heading",
+          props: { text: "Upstream home", text_bn: "আপস্ট্রিম হোম" },
+        },
+      ],
+      footer: [],
+    },
+  };
+
+  function registryDb() {
+    return fakeDb({
+      tables: {
+        theme_registry: [
+          {
+            key: "acme-pack",
+            name_en: "Acme Pack",
+            name_bn: "",
+            summary_en: "A community theme",
+            summary_bn: "",
+            category: "general",
+            version: "2.0.0",
+            preset: {
+              tokens: { surface: "#112233" },
+              templates: REGISTRY_TEMPLATES,
+            },
+            active: true,
+            sort_order: 1,
+          },
+          {
+            key: "empty-pack",
+            name_en: "Empty Pack",
+            name_bn: "",
+            summary_en: "",
+            summary_bn: "",
+            category: "general",
+            version: "1.0.0",
+            preset: { tokens: {}, templates: {} },
+            active: true,
+            sort_order: 2,
+          },
+          {
+            key: "retired-pack",
+            name_en: "Retired Pack",
+            name_bn: "",
+            summary_en: "",
+            summary_bn: "",
+            category: "general",
+            version: "1.0.0",
+            preset: {
+              tokens: { surface: "#445566" },
+              templates: REGISTRY_TEMPLATES,
+            },
+            active: false,
+            sort_order: 3,
+          },
+        ],
+      },
+    });
+  }
+
+  it("resolves templates, tokens and version from the installed row", async () => {
+    const db = registryDb();
+    const pkg = await loadRegistryPackage(db.asClient(), "acme-pack");
+    expect(pkg.version).toBe("2.0.0");
+    expect(pkg.tokens.surface).toBe("#112233");
+    expect(pkg.templates.index?.main.map((s) => s.id)).toEqual(["s1"]);
+  });
+
+  it("missing rows fail closed with builder.registry_missing (never source)", async () => {
+    const db = registryDb();
+    const err = await loadRegistryPackage(db.asClient(), "vapor-pack").catch(
+      (e) => e,
+    );
+    expect(err?.code).toBe("builder.registry_missing");
+  });
+
+  it("inactive rows fail closed with builder.registry_missing", async () => {
+    const db = registryDb();
+    const err = await loadRegistryPackage(db.asClient(), "retired-pack").catch(
+      (e) => e,
+    );
+    expect(err?.code).toBe("builder.registry_missing");
+  });
+
+  it("empty presets fail closed with builder.artifact_missing (never source)", async () => {
+    const db = registryDb();
+    const err = await loadRegistryPackage(db.asClient(), "empty-pack").catch(
+      (e) => e,
+    );
+    expect(err?.code).toBe("builder.artifact_missing");
+    expect(String(err?.message)).toMatch(/empty-pack/);
   });
 });
 

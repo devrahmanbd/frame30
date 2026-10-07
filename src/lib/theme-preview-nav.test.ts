@@ -3,6 +3,9 @@
  */
 import { describe, expect, it } from "vitest";
 import { flattenSections } from "./builder-ast";
+import { registerStaticPreviewSource } from "./preview-sources";
+import { songoskritiPreviewSource } from "./themes/songoskriti/preview";
+import { somvabonaPreviewSource } from "./themes/somvabona/preview";
 import {
   applyDemoFocus,
   parsePreviewSearchQuery,
@@ -13,6 +16,12 @@ import {
   resolveThemePreview,
   validateThemePreviewSearch,
 } from "./theme-preview-nav";
+
+// O2: static theme sources are build-time-only — this test file is a
+// build-time context, so it wires the factories explicitly (legacy
+// null/undefined cases resolve from the registered table).
+registerStaticPreviewSource("songoskriti", songoskritiPreviewSource);
+registerStaticPreviewSource("somvabona", somvabonaPreviewSource);
 
 describe("previewTemplateForHref", () => {
   it("maps collection permalinks to the collection template", () => {
@@ -491,7 +500,8 @@ describe("resolveThemePreview installed packages (SWITCHOVER-4)", () => {
     // K2: source keys do NOT resolve when a merchant installed set is present
     // but the key is not installed — fail closed, never source fallback.
     expect(resolveThemePreview("songoskriti", undefined, [ARTIFACT])).toBeNull();
-    // Legacy: no merchant context (null/undefined) still resolves source statics.
+    // Legacy: no merchant context (null/undefined) still resolves the
+    // registered build-time statics.
     expect(resolveThemePreview("songoskriti", undefined, undefined)?.key).toBe(
       "songoskriti",
     );
