@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-07 21:14 UTC] (v0.5-beta — c40528f9) — Footer snapshot refresh
+### Changed
+- Snapshot/debrand suites re-pinned to the slim footer; snapshots regenerated.
+### Verification
+- Full theme gate green, tsc clean.
 ## [2026-10-07 20:50 UTC] (v0.5-beta — f09963b6) — Official artifact bundle + source fallback removal
 ### Added
 - Deploy-built official artifact bundle (checksummed, version-pinned) serving anonymous preview + catalogue; source fallback removed (fail-closed); official ZIP install parity proven.
