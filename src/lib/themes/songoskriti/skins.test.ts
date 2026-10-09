@@ -188,3 +188,36 @@ describe("skins.css", () => {
     expect(css).toMatch(/prefers-reduced-motion:\s*reduce/);
   });
 });
+
+describe("section-head scale + quiet eyebrow (lane B typographic voice)", () => {
+  const css = readFileSync(new URL("./skins.css", import.meta.url), "utf8");
+
+  it("keys a 3-step head scale on section role with a distinct size per step", () => {
+    // Step 1 display crowns the hero skins; Step 2 carries rails and grids.
+    expect(css).toMatch(/clamp\(2\.5rem[^;]*4\.5rem\)/);
+    expect(css).toMatch(/clamp\(1\.75rem[^;]*2\.75rem\)/);
+    // Step 3 utility stays parked at a small fixed size.
+    expect(css).toMatch(/font-size: 1\.25rem/);
+  });
+
+  it("gives each step a distinct weight (display 300 / section 400 / utility 500)", () => {
+    expect(css).toMatch(/font-weight: 300/);
+    expect(css).toMatch(/font-weight: 400/);
+    expect(css).toMatch(/font-weight: 500/);
+  });
+
+  it("reduces eyebrows to one quiet treatment (small, sentence-case, muted)", () => {
+    expect(css).toMatch(/\[data-eyebrow\]/);
+    expect(css).toMatch(/text-transform: none/);
+    expect(css).toMatch(/var\(--theme-muted-ink\)/);
+  });
+
+  it("keeps scaled heads at matra-safe leading (no clipping for bn)", () => {
+    expect(css).toMatch(/line-height: 1\.2/);
+    expect(css).not.toMatch(/line-height: 1\.15/);
+  });
+
+  it("leaves reduced-motion collapsing intact", () => {
+    expect(css).toMatch(/prefers-reduced-motion:\s*reduce/);
+  });
+});

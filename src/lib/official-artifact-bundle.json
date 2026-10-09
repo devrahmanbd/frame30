@@ -1,6 +1,6 @@
 {
   "bundleVersion": 1,
-  "builtAt": "2026-10-07T18:41:22.512Z",
+  "builtAt": "2026-10-09T23:41:08.002Z",
   "artifacts": [
     {
       "key": "songoskriti",
@@ -535,6 +535,7 @@
             {
               "id": "index.main.1.department_grid",
               "props": {
+                "advMotion": "rise",
                 "columns": 6,
                 "departments": [
                   {
@@ -582,7 +583,6 @@
                 "heading": "SIGNATURE SAREES",
                 "heading_bn": "সিগনেচার শাড়ি",
                 "limit": 10,
-                "promise": "Free delivery · 7-day exchange",
                 "showRating": false,
                 "skin": "editorial",
                 "source": "collection",
@@ -594,6 +594,7 @@
             {
               "id": "index.main.3.craft_story",
               "props": {
+                "advMotion": "fade",
                 "body": "Fine threads. Patient hands. A legacy that still moves forward.",
                 "body_bn": "সূক্ষ্ম সুতো। ধৈর্যশীল হাত। এক ঐতিহ্য যা এখনও এগিয়ে চলে।",
                 "ctaHref": "/c/jamdani",
@@ -611,12 +612,11 @@
               "id": "index.main.4.product_rail",
               "props": {
                 "badgeLabel": "NEW",
-                "cardVariant": "standard",
+                "cardVariant": "compact",
                 "collection": "new-in",
-                "heading": "NEW ARRIVALS",
+                "heading": "New arrivals",
                 "heading_bn": "নতুন এসেছে",
                 "limit": 10,
-                "promise": "Just arrived",
                 "showRating": false,
                 "skin": "editorial",
                 "source": "collection",
@@ -651,12 +651,11 @@
               "id": "index.main.6.product_rail",
               "props": {
                 "badgeLabel": "BESTSELLER",
-                "cardVariant": "standard",
+                "cardVariant": "editorial",
                 "collection": "festive",
-                "heading": "MOST LOVED",
+                "heading": "Most loved",
                 "heading_bn": "সবচেয়ে জনপ্রিয়",
                 "limit": 10,
-                "promise": "Free delivery across Bangladesh",
                 "showRating": false,
                 "skin": "editorial",
                 "source": "collection",
@@ -680,9 +679,7 @@
               "props": {
                 "body": "Pick a moment — we take you straight to matching weaves, silhouettes and collections.",
                 "body_bn": "আপনার উপলক্ষ বেছে নিন — আমরা আপনাকে সঠিক সংগ্রহে পৌঁছে দেব।",
-                "buttonHref": "/c/occasions",
-                "buttonLabel": "BROWSE ALL OCCASIONS",
-                "heading": "SHOP BY OCCASION",
+                "heading": "Shop by occasion",
                 "heading_bn": "উপলক্ষ অনুযায়ী কিনুন",
                 "o1Href": "/c/festive",
                 "o1Label": "EID & FESTIVE",
@@ -720,12 +717,11 @@
               "id": "index.main.10.product_rail",
               "props": {
                 "badgeLabel": "HERITAGE",
-                "cardVariant": "standard",
+                "cardVariant": "compact",
                 "collection": "panjabi",
-                "heading": "SHOP PANJABI",
+                "heading": "Shop Panjabi",
                 "heading_bn": "পাঞ্জাবি সংগ্রহ",
                 "limit": 8,
-                "promise": "Made with care",
                 "showRating": false,
                 "skin": "editorial",
                 "source": "collection",
@@ -739,10 +735,9 @@
               "props": {
                 "cardVariant": "standard",
                 "collection": "everyday",
-                "heading": "EVERYDAY HERITAGE",
+                "heading": "Everyday heritage",
                 "heading_bn": "দৈনন্দিন ঐতিহ্য",
                 "limit": 8,
-                "promise": "Wearable every day",
                 "showRating": false,
                 "skin": "editorial",
                 "source": "collection",
@@ -808,12 +803,11 @@
               "id": "index.main.14.product_rail",
               "props": {
                 "badgeLabel": "ARTISAN",
-                "cardVariant": "standard",
+                "cardVariant": "editorial",
                 "collection": "jewellery",
-                "heading": "COMPLETE THE LOOK",
+                "heading": "Complete the look",
                 "heading_bn": "সম্পূর্ণ করুন লুক",
                 "limit": 8,
-                "promise": "Handcrafted jewellery",
                 "showRating": false,
                 "skin": "editorial",
                 "source": "collection",
@@ -825,6 +819,7 @@
             {
               "id": "index.main.15.craft_story",
               "props": {
+                "advMotion": "line-reveal",
                 "body": "In Tangail, Sonargaon and across Bangladesh, generations of artisans carry techniques that cannot be mass-produced.",
                 "body_bn": "টাঙ্গাইল, সোনারগাঁয়ে প্রজন্মের পর প্রজন্ম তাঁতিরা সংরক্ষণ করছেন যে কৌশল।",
                 "ctaHref": "/blog/artisan-story",
@@ -911,23 +906,31 @@
                 "items": [
                   {
                     "body": "Verified artisan-made pieces — no factory substitutes",
+                    "body_bn": "যাচাইকৃত কারিগর-তৈরি পণ্য — কারখানার বিকল্প নয়",
                     "icon": "secure",
-                    "title": "AUTHENTIC CRAFT"
+                    "title": "AUTHENTIC CRAFT",
+                    "title_bn": "খাঁটি কারুশিল্প"
                   },
                   {
                     "body": "Reliable delivery across Bangladesh",
+                    "body_bn": "সারা বাংলাদেশে নির্ভরযোগ্য ডেলিভারি",
                     "icon": "delivery",
-                    "title": "NATIONWIDE DELIVERY"
+                    "title": "NATIONWIDE DELIVERY",
+                    "title_bn": "সারাদেশে ডেলিভারি"
                   },
                   {
                     "body": "Straightforward 7-day exchange policy",
+                    "body_bn": "সহজ ৭-দিনের বিনিময় নীতি",
                     "icon": "returns",
-                    "title": "EASY EXCHANGE"
+                    "title": "EASY EXCHANGE",
+                    "title_bn": "সহজ বিনিময়"
                   },
                   {
                     "body": "Real people, not automated walls",
+                    "body_bn": "সত্যিকারের মানুষ, স্বয়ংক্রিয় উত্তর নয়",
                     "icon": "support",
-                    "title": "HUMAN SUPPORT"
+                    "title": "HUMAN SUPPORT",
+                    "title_bn": "মানবিক সহায়তা"
                   }
                 ]
               },
@@ -1329,7 +1332,7 @@
           }
         }
       ],
-      "checksum": "a4e5150f0e5104610999bbd7ac1fd4d2a596ed07871956871b7fcc7ddba4076f"
+      "checksum": "d1fdcb81a98beabaab72786da3401dedc33c0ab2b038e2caf0851acc16625a18"
     },
     {
       "key": "somvabona",

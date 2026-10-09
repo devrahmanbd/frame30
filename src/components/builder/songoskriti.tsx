@@ -127,7 +127,7 @@ const FinderRow: WidgetComponent = ({
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
           <div className="min-w-0 lg:col-span-5">
             {str("heading") && (
-              <Heading className="font-serif text-[28px] sm:text-[36px] lg:text-[44px] font-light tracking-[0.01em] text-[var(--theme-ink)] leading-tight">
+              <Heading className="font-serif text-[28px] sm:text-[36px] lg:text-[44px] font-normal tracking-[0.01em] text-[var(--theme-ink)] leading-snug">
                 {str("heading")}
               </Heading>
             )}
@@ -232,11 +232,11 @@ const CraftStory: WidgetComponent = ({
 
       <div className="relative z-10 mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 flex flex-col items-center text-center">
         {eyebrow && (
-          <p className="mb-6 text-[10px] font-medium uppercase tracking-[0.35em] text-[var(--theme-surface)]/70">
+          <p className="mb-6 text-[11px] font-normal tracking-[0.08em] text-[var(--theme-surface)]/60">
             {eyebrow}
           </p>
         )}
-        <Heading className="font-serif text-3xl sm:text-5xl lg:text-[4rem] font-light tracking-wide leading-tight text-[var(--theme-surface)] max-w-4xl">
+        <Heading className="font-serif text-3xl sm:text-5xl lg:text-[4rem] font-light tracking-normal leading-[1.2] text-[var(--theme-surface)] max-w-4xl">
           {headline}
         </Heading>
         {body && (
@@ -629,7 +629,7 @@ const SongoskritiProductCard = ({ row, promise, badge }: any) => {
         {promise && (
           <p
             data-part="promise"
-            className="text-[10px] font-semibold uppercase tracking-wider text-[var(--theme-ink)]/50 mt-1"
+            className="text-[11px] font-medium text-[var(--theme-ink)]/50 mt-1"
           >
             {promise}
           </p>
@@ -744,14 +744,14 @@ const SongoskritiProductRail: WidgetComponent = (ctx) => {
     <div className="mb-8 flex items-center justify-between gap-3">
       <div className="min-w-0">
         {str("heading") ? (
-          <Heading className="font-serif text-[28px] sm:text-[36px] lg:text-[44px] font-light tracking-[0.01em] text-foreground">
+          <Heading className="font-serif text-[28px] sm:text-[36px] lg:text-[44px] font-normal tracking-[0.01em] text-foreground leading-snug">
             {str("heading")}
           </Heading>
         ) : (
           <span className="sr-only">{label}</span>
         )}
         {subhead && (
-          <p className="mt-3 font-serif text-[14px] sm:text-[16px] font-light text-foreground/50 italic">
+          <p className="mt-3 font-serif text-[14px] sm:text-[16px] font-light leading-relaxed text-foreground/50">
             {subhead}
           </p>
         )}
@@ -870,11 +870,11 @@ const SongoskritiProductGrid: WidgetComponent = (ctx) => {
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-8">
         {heading && (
           <div className="mb-16 flex flex-col items-center text-center">
-            <Heading className="font-serif text-[32px] sm:text-[40px] lg:text-[48px] font-light tracking-[0.01em] text-[var(--theme-ink)]">
+            <Heading className="font-serif text-[28px] sm:text-[36px] lg:text-[44px] font-normal tracking-[0.01em] text-[var(--theme-ink)] leading-snug">
               {heading}
             </Heading>
             {subhead && (
-              <p className="mt-4 font-serif text-[15px] sm:text-[16px] font-light text-[var(--theme-ink)]/50 italic max-w-xl">
+              <p className="mt-4 font-serif text-[15px] sm:text-[16px] font-light leading-relaxed text-[var(--theme-ink)]/50 max-w-xl">
                 {subhead}
               </p>
             )}
@@ -909,7 +909,7 @@ const SongoskritiProductGrid: WidgetComponent = (ctx) => {
 const SongoskritiNewsletter: WidgetComponent = ({ str, section, locale }) => (
   <section className="border-t border-[var(--theme-border)] py-16 sm:py-24 text-center px-4">
     <div className="mx-auto max-w-xl">
-      <h3 className="font-serif text-[24px] sm:text-[32px] font-light tracking-[0.02em] text-[var(--theme-ink)] mb-4">
+      <h3 className="font-serif text-[20px] sm:text-[28px] font-medium tracking-[0.02em] text-[var(--theme-ink)] leading-snug mb-4">
         {str("heading")}
       </h3>
       <p className="text-[13px] font-light leading-relaxed text-[var(--theme-ink)]/60 mb-8 max-w-sm mx-auto">
@@ -966,7 +966,7 @@ const SongoskritiRichText: WidgetComponent = ({ str }) => {
     <section className="py-16 sm:py-24 text-center px-4 border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-2xl">
         {heading && (
-          <h2 className="font-serif text-[28px] sm:text-[40px] font-light leading-tight tracking-[0.01em] text-[var(--theme-ink)] mb-6">
+          <h2 className="font-serif text-[28px] sm:text-[36px] font-normal leading-snug tracking-[0.01em] text-[var(--theme-ink)] mb-6">
             {heading}
           </h2>
         )}
@@ -1060,7 +1060,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
       {/* ZONE 1: Brand closing statement (theme-authored, skipped when empty) */}
       {statementHeading && (
         <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-16 sm:mb-24 flex flex-col md:flex-row items-start justify-between gap-8">
-          <h2 className="font-serif text-[40px] sm:text-[56px] lg:text-[72px] font-light leading-[1.1] tracking-[0.01em] text-[var(--theme-ink)] max-w-3xl">
+          <h2 className="font-serif text-[40px] sm:text-[56px] lg:text-[72px] font-light leading-[1.2] tracking-normal text-[var(--theme-ink)] max-w-3xl">
             {statementHeading}
           </h2>
           <div className="flex flex-col md:items-end text-left md:text-right max-w-xs mt-2 md:mt-4">
@@ -1084,7 +1084,7 @@ const SongoskritiFooterSitemap: WidgetComponent = ({
         <div className="mx-auto w-full max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-20 sm:mb-32">
           <div className="border-t border-b border-[var(--theme-border)] py-10 sm:py-16 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 lg:gap-16">
             <div className="w-full lg:w-1/2">
-              <h3 className="font-serif text-[24px] sm:text-[32px] font-light tracking-[0.02em] text-[var(--theme-ink)] uppercase">
+              <h3 className="font-serif text-[20px] sm:text-[28px] font-medium tracking-[0.02em] text-[var(--theme-ink)] leading-snug">
                 {newsletterHeading}
               </h3>
             </div>
@@ -1280,7 +1280,7 @@ const SongoskritiDepartmentGrid: WidgetComponent = ({
     <section ref={scope} data-reveal className="py-16 sm:py-20 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="flex items-center justify-between mb-10">
-          <h2 className="font-serif text-[22px] sm:text-[28px] font-light tracking-[0.04em] text-[var(--theme-ink)] uppercase">
+          <h2 className="font-serif text-[28px] sm:text-[36px] font-normal tracking-[0.01em] text-[var(--theme-ink)] leading-snug">
             {heading}
           </h2>
           <a
@@ -1868,7 +1868,7 @@ const SongoskritiSplitFeature: WidgetComponent = ({ str, locale, link }) => {
         </div>
         <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left mt-8 md:mt-0 px-4 md:px-12">
           {heading && (
-            <h2 className="font-serif text-[32px] sm:text-[44px] lg:text-[56px] font-light leading-tight tracking-[0.01em] text-[var(--theme-ink)] mb-6">
+            <h2 className="font-serif text-[32px] sm:text-[44px] lg:text-[56px] font-light leading-[1.2] tracking-normal text-[var(--theme-ink)] mb-6">
               {heading}
             </h2>
           )}
@@ -1923,7 +1923,7 @@ const SongoskritiCollectionStory: WidgetComponent = ({
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="text-center mb-16">
           {heading && (
-            <h2 className="font-serif text-[32px] sm:text-[48px] font-light text-[var(--theme-ink)] mb-4">
+            <h2 className="font-serif text-[28px] sm:text-[36px] lg:text-[44px] font-normal tracking-[0.01em] text-[var(--theme-ink)] leading-snug mb-4">
               {heading}
             </h2>
           )}
@@ -1947,7 +1947,7 @@ const SongoskritiCollectionStory: WidgetComponent = ({
                 )}
               </div>
               {c.subtitle && (
-                <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-[var(--theme-ink)]/40 mb-2">
+                <p className="text-[11px] font-normal tracking-[0.08em] text-[var(--theme-ink)]/50 mb-2">
                   {c.subtitle}
                 </p>
               )}
@@ -1995,12 +1995,12 @@ const SongoskritiUgcGallery: WidgetComponent = ({ str, section, locale }) => {
     <section ref={scope} data-reveal className="py-20 sm:py-32 bg-[var(--theme-surface)] overflow-hidden border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8 mb-12 sm:mb-20 text-center flex flex-col items-center">
         {subhead && (
-          <p className="text-[10px] sm:text-[12px] font-semibold uppercase tracking-[0.3em] text-[var(--theme-ink)]/50 mb-4 sm:mb-6">
+          <p className="text-[11px] font-normal tracking-[0.08em] text-[var(--theme-ink)]/50 mb-4 sm:mb-6">
             {subhead}
           </p>
         )}
         {heading && (
-          <h2 className="font-serif text-[32px] sm:text-[48px] lg:text-[56px] leading-[1.1] font-light text-[var(--theme-ink)] mb-6">
+          <h2 className="font-serif text-[32px] sm:text-[48px] lg:text-[56px] leading-[1.2] font-light tracking-normal text-[var(--theme-ink)] mb-6">
             {heading}
           </h2>
         )}
@@ -2085,10 +2085,10 @@ const SongoskritiStoreLocator: WidgetComponent = ({ str, locale }) => {
     <section ref={scope} data-reveal className="py-16 sm:py-24 bg-[var(--theme-surface)] border-t border-[var(--theme-border)]">
       <div className="mx-auto max-w-[var(--fq-container,1440px)] px-4 sm:px-8">
         <div className="text-center mb-14">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.3em] text-[var(--theme-ink)]/40 mb-3">
+          <p className="text-[11px] font-normal tracking-[0.08em] text-[var(--theme-ink)]/50 mb-3">
             {eyebrow}
           </p>
-          <h2 className="font-serif text-[28px] sm:text-[40px] font-light text-[var(--theme-ink)]">
+          <h2 className="font-serif text-[28px] sm:text-[36px] font-normal tracking-[0.01em] text-[var(--theme-ink)] leading-snug">
             {heading}
           </h2>
         </div>
@@ -2209,11 +2209,11 @@ const SongoskritiCategoryHeader: WidgetComponent = ({
 
       {/* Title + description */}
       <div className="mx-auto max-w-4xl px-4 sm:px-8 pb-16 sm:pb-24 flex flex-col items-center text-center">
-        <h1 className="font-serif text-[40px] sm:text-[56px] lg:text-[72px] font-light text-[var(--theme-ink)] leading-[1.1] tracking-[0.01em]">
+        <h1 className="font-serif text-[40px] sm:text-[56px] lg:text-[72px] font-light text-[var(--theme-ink)] leading-[1.2] tracking-normal">
           {displayTitle}
         </h1>
         {displayDesc && (
-          <p className="mt-5 font-serif text-[15px] sm:text-[18px] font-light italic leading-relaxed text-[var(--theme-ink)]/60 max-w-2xl">
+          <p className="mt-5 font-serif text-[15px] sm:text-[18px] font-light leading-relaxed text-[var(--theme-ink)]/60 max-w-2xl">
             {displayDesc}
           </p>
         )}

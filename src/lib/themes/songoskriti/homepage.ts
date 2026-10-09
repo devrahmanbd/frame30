@@ -83,6 +83,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       heading: "SHOP THE COLLECTION",
       heading_bn: "সংগ্রহ দেখুন",
       columns: 6,
+      advMotion: "rise",
       departments: [
         {
           title: "Sarees",
@@ -131,7 +132,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       cardVariant: "standard",
       showRating: false,
       badgeLabel: "HANDLOOM",
-      promise: "Free delivery · 7-day exchange",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -148,23 +148,23 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       ctaHref: `${c}/jamdani`,
       imageUrl: "/ph/songoskriti/hero-weaves.png",
       scrim: true,
+      advMotion: "fade",
     }),
 
     // ────────────────────────────────────────────────────────────────────
     // 5. NEW ARRIVALS — horizontal product carousel
     // ────────────────────────────────────────────────────────────────────
     s("product_rail", {
-      heading: "NEW ARRIVALS",
+      heading: "New arrivals",
       heading_bn: "নতুন এসেছে",
       subhead: "New pieces, fresh weaves, just in.",
       subhead_bn: "নতুন বুনন, সদ্য এসেছে।",
       limit: 10,
       source: "collection",
       collection: "new-in",
-      cardVariant: "standard",
+      cardVariant: "compact",
       showRating: false,
       badgeLabel: "NEW",
-      promise: "Just arrived",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -190,17 +190,16 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // desktop, 4 on phones. The bp layer only accepts responsive fields.
     {
       ...s("product_rail", {
-        heading: "MOST LOVED",
+        heading: "Most loved",
         heading_bn: "সবচেয়ে জনপ্রিয়",
         subhead: "Pieces our customers return to.",
         subhead_bn: "যে পণ্যগুলো বারবার ফিরে আসে।",
         limit: 10,
         source: "collection",
         collection: "festive",
-        cardVariant: "standard",
+        cardVariant: "editorial",
         showRating: false,
         badgeLabel: "BESTSELLER",
-        promise: "Free delivery across Bangladesh",
       }),
       bp: { mobile: { limit: 4 } },
     },
@@ -217,7 +216,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 8. SHOP BY OCCASION — expanded occasion grid (7 occasions)
     // ────────────────────────────────────────────────────────────────────
     s("finder_row", {
-      heading: "SHOP BY OCCASION",
+      heading: "Shop by occasion",
       heading_bn: "উপলক্ষ অনুযায়ী কিনুন",
       body: "Pick a moment — we take you straight to matching weaves, silhouettes and collections.",
       body_bn: "আপনার উপলক্ষ বেছে নিন — আমরা আপনাকে সঠিক সংগ্রহে পৌঁছে দেব।",
@@ -235,8 +234,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       o6Href: `${c}/everyday`,
       o7Label: "FAMILY MATCHING",
       o7Href: `${c}/family`,
-      buttonLabel: "BROWSE ALL OCCASIONS",
-      buttonHref: `${c}/occasions`,
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -258,24 +255,23 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 10. MEN'S PRODUCT RAIL — compact panjabi carousel beneath campaign
     // ────────────────────────────────────────────────────────────────────
     s("product_rail", {
-      heading: "SHOP PANJABI",
+      heading: "Shop Panjabi",
       heading_bn: "পাঞ্জাবি সংগ্রহ",
       subhead: "Handloom, cotton, silk — for every occasion.",
       subhead_bn: "হাতে বোনা, কটন, সিল্ক — প্রতিটি উপলক্ষের জন্য।",
       limit: 8,
       source: "collection",
       collection: "panjabi",
-      cardVariant: "standard",
+      cardVariant: "compact",
       showRating: false,
       badgeLabel: "HERITAGE",
-      promise: "Made with care",
     }),
 
     // ────────────────────────────────────────────────────────────────────
     // 11. EVERYDAY HERITAGE — lighter everyday wear section
     // ────────────────────────────────────────────────────────────────────
     s("product_rail", {
-      heading: "EVERYDAY HERITAGE",
+      heading: "Everyday heritage",
       heading_bn: "দৈনন্দিন ঐতিহ্য",
       subhead: "Cotton sarees, handloom staples and everyday ethnic pieces.",
       subhead_bn: "কটন শাড়ি, হাতে বোনা এবং দৈনন্দিন জাতিগত পোশাক।",
@@ -284,7 +280,6 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       collection: "everyday",
       cardVariant: "standard",
       showRating: false,
-      promise: "Wearable every day",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -345,17 +340,16 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
     // 14. JEWELLERY / COMPLETE THE LOOK
     // ────────────────────────────────────────────────────────────────────
     s("product_rail", {
-      heading: "COMPLETE THE LOOK",
+      heading: "Complete the look",
       heading_bn: "সম্পূর্ণ করুন লুক",
       subhead: "Jhumka, necklaces, bangles and heritage accessories.",
       subhead_bn: "ঝুমকা, নেকলেস, চুড়ি ও ঐতিহ্যবাহী গহনা।",
       limit: 8,
       source: "collection",
       collection: "jewellery",
-      cardVariant: "standard",
+      cardVariant: "editorial",
       showRating: false,
       badgeLabel: "ARTISAN",
-      promise: "Handcrafted jewellery",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -373,6 +367,7 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
       ctaHref: "/blog/artisan-story",
       imageUrl: "/ph/songoskriti/hero-artisans.png",
       scrim: true,
+      advMotion: "line-reveal",
     }),
 
     // ────────────────────────────────────────────────────────────────────
@@ -448,22 +443,30 @@ export function buildHomepageMain(s: SectionBuilder): Section[] {
         {
           icon: "secure",
           title: "AUTHENTIC CRAFT",
+          title_bn: "খাঁটি কারুশিল্প",
           body: "Verified artisan-made pieces — no factory substitutes",
+          body_bn: "যাচাইকৃত কারিগর-তৈরি পণ্য — কারখানার বিকল্প নয়",
         },
         {
           icon: "delivery",
           title: "NATIONWIDE DELIVERY",
+          title_bn: "সারাদেশে ডেলিভারি",
           body: "Reliable delivery across Bangladesh",
+          body_bn: "সারা বাংলাদেশে নির্ভরযোগ্য ডেলিভারি",
         },
         {
           icon: "returns",
           title: "EASY EXCHANGE",
+          title_bn: "সহজ বিনিময়",
           body: "Straightforward 7-day exchange policy",
+          body_bn: "সহজ ৭-দিনের বিনিময় নীতি",
         },
         {
           icon: "support",
           title: "HUMAN SUPPORT",
+          title_bn: "মানবিক সহায়তা",
           body: "Real people, not automated walls",
+          body_bn: "সত্যিকারের মানুষ, স্বয়ংক্রিয় উত্তর নয়",
         },
       ],
     }),

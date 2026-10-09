@@ -15,6 +15,19 @@
  * collapse under `prefers-reduced-motion`; multi-column skins collapse to a
  * single column below 768px. Headings stay h1-safe (style only, no level
  * changes) and copy stays bn/en (no content here at all).
+ *
+ * SECTION-HEAD SCALE (lane B — type rules only, no layout, no markup):
+ * Step 1 display/statement (hero skins, page statements):
+ *   clamp(2.5rem, 2rem + 3vw, 4.5rem), weight 300, untracked, leading 1.2.
+ * Step 2 rail/section (rails, grids, finder, department, collection, store):
+ *   clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem), weight 400, 0.01em, leading 1.25.
+ * Step 3 utility (compact/minimal rails, rows ledger, newsletter-class heads):
+ *   1.25rem, weight 500, 0.02em, leading 1.3.
+ * Leadings clear Bangla matras on their own; the global `[lang="bn"]` reset
+ * opens the line box further and neutralises tracking wherever bn renders.
+ * Eyebrows collapse to ONE quiet treatment (`[data-eyebrow]` + `[data-promise]`
+ * below): small, sentence-case, lightly tracked, muted — tracked caps stay
+ * reserved for CTAs and badge labels as rare emphasis.
  */
 
 /* ------------------------------------------------- product_rail: editorial */
@@ -25,13 +38,16 @@
 }
 
 /* Editorial serif moment: the rail heading sets in the display face with a
-   terracotta rule above it — the shelf reads like a magazine spread. */
+   terracotta rule above it — the shelf reads like a magazine spread.
+   Step 2 of the head scale (rail/section): regular weight, near-untracked,
+   matra-safe leading. */
 [data-widget="product_rail"][data-skin="editorial"] h1,
 [data-widget="product_rail"][data-skin="editorial"] h2 {
   font-family: var(--theme-font-display);
   font-weight: 400;
-  font-size: 2rem;
-  letter-spacing: 0.05em;
+  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
+  letter-spacing: 0.01em;
+  line-height: 1.25;
   color: var(--theme-ink);
   padding-block-start: calc(var(--theme-space) * 0.5);
   display: inline-block;
@@ -43,8 +59,11 @@
   color: var(--theme-muted-ink);
 }
 [data-widget="product_rail"][data-skin="editorial"] [data-promise] {
-  color: var(--theme-brand);
-  font-weight: 600;
+  color: var(--theme-muted-ink);
+  font-weight: 500;
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
 }
 
 /* Cards sit frameless on warm paper; the rail arrows stay 44px targets. */
@@ -78,9 +97,10 @@
 [data-widget="hero_carousel"][data-skin="split"] h1,
 [data-widget="hero_carousel"][data-skin="split"] h2 {
   font-family: var(--theme-font-display);
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  line-height: 1.15;
+  font-weight: 300;
+  font-size: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  letter-spacing: 0;
+  line-height: 1.2;
   color: var(--theme-ink);
   text-wrap: balance;
 }
@@ -201,8 +221,10 @@
 [data-widget="product_grid"][data-skin="cards"] h1,
 [data-widget="product_grid"][data-skin="cards"] h2 {
   font-family: var(--theme-font-display);
-  font-weight: 500;
-  letter-spacing: 0.02em;
+  font-weight: 400;
+  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
+  letter-spacing: 0.01em;
+  line-height: 1.25;
   color: var(--theme-ink);
 }
 
@@ -247,11 +269,15 @@
 /* Thin but intentional: every closed-vocabulary value has a distinct face
    so an inspector override never lands on an unstyled widget. */
 
-/* product_rail compact: tighter rhythm, smaller serif, no top rule. */
+/* product_rail compact: tighter rhythm, smaller serif, no top rule.
+   Step 3 of the head scale (utility): small, medium, faintly tracked. */
 [data-widget="product_rail"][data-skin="compact"] h1,
 [data-widget="product_rail"][data-skin="compact"] h2 {
   font-family: var(--theme-font-display);
-  font-size: 1.125rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
   color: var(--theme-ink);
 }
 [data-widget="product_rail"][data-skin="compact"] button[data-part="rail-nav"] {
@@ -267,6 +293,10 @@
 [data-widget="product_rail"][data-skin="minimal"] h1,
 [data-widget="product_rail"][data-skin="minimal"] h2 {
   font-family: var(--theme-font-body);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
   border: none;
   padding: 0;
 }
@@ -284,6 +314,10 @@
 [data-widget="hero_carousel"][data-skin="fullbleed"] h1,
 [data-widget="hero_carousel"][data-skin="fullbleed"] h2 {
   font-family: var(--theme-font-display);
+  font-weight: 300;
+  font-size: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  letter-spacing: 0;
+  line-height: 1.2;
   color: var(--theme-surface);
   text-wrap: balance;
 }
@@ -303,6 +337,10 @@
 [data-widget="hero_carousel"][data-skin="minimal"] h1,
 [data-widget="hero_carousel"][data-skin="minimal"] h2 {
   font-family: var(--theme-font-display);
+  font-weight: 300;
+  font-size: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  letter-spacing: 0;
+  line-height: 1.2;
   color: var(--theme-ink);
   max-width: 22ch;
   margin-inline: auto;
@@ -341,7 +379,17 @@
 }
 
 /* product_grid rows: ledger lines instead of cards — hairline dividers,
-   body-face titles, terracotta price at the row end. */
+   body-face titles, terracotta price at the row end. The rows head keeps the
+   rail/section step in the ledger voice (body face, regular, matra-safe). */
+[data-widget="product_grid"][data-skin="rows"] h1,
+[data-widget="product_grid"][data-skin="rows"] h2 {
+  font-family: var(--theme-font-body);
+  font-weight: 500;
+  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.75rem);
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  color: var(--theme-ink);
+}
 [data-widget="product_grid"][data-skin="rows"] article {
   background: transparent;
   border: none;
@@ -352,6 +400,21 @@
 [data-widget="product_grid"][data-skin="rows"] article [data-price] {
   color: var(--theme-brand);
   font-weight: 700;
+}
+
+/* ----------------------------------------------- eyebrow (one quiet voice) --- */
+/* A single quiet kicker treatment for every skinned widget: small,
+   sentence-case, lightly tracked, muted — never the tracked-caps shout, so
+   tracked caps keep reading as rare emphasis (CTAs, badge labels). Leading
+   1.5 clears Bangla matras; the global `[lang="bn"]` reset opens the line
+   box further and neutralises tracking wherever bn renders. */
+[data-widget][data-skin] [data-eyebrow] {
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+  text-transform: none;
+  color: var(--theme-muted-ink);
 }
 
 /* ----------------------------------------------- reduced motion ------ */

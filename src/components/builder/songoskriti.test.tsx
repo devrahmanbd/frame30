@@ -662,6 +662,141 @@ describe("lane B renderer paths", () => {
   });
 });
 
+describe("lane B typographic scale + quiet eyebrows", () => {
+  const railHtml = (heading: string) => {
+    const section = {
+      ...newSection("product_rail"),
+      props: { ...newSection("product_rail").props, heading, limit: 8 },
+    };
+    const rows: WidgetRow[] = [
+      {
+        id: "p1",
+        title: "Jamdani saree",
+        priceMinor: 12500_00,
+        currency: "BDT",
+        imageUrl: null,
+        inStock: true,
+      },
+    ];
+    const Cmp = SONGOSKRITI_WIDGETS["product_rail"];
+    return renderToStaticMarkup(
+      createElement(Cmp as (p: WidgetCtx) => React.ReactElement, {
+        ...ctxFor(section),
+        data: { rows, pending: false },
+      }),
+    );
+  };
+
+  it("section heads share one band (28→44, regular, barely tracked)", () => {
+    const finder = render(SONGOSKRITI_WIDGETS["finder_row"], {
+      ...newSection("finder_row"),
+      props: {
+        heading: "Shop by occasion",
+        o1Label: "Wedding",
+        o1Href: "/c/wedding",
+      },
+    });
+    for (const html of [finder, railHtml("New arrivals")]) {
+      expect(html).toContain("lg:text-[44px]");
+      expect(html).toContain("font-normal");
+      expect(html).toContain("tracking-[0.01em]");
+    }
+  });
+
+  it("display heads tower over the rail band (light, untracked, matra-safe)", () => {
+    const footer = render(SONGOSKRITI_WIDGETS["footer_sitemap"], {
+      ...newSection("footer_sitemap"),
+      props: {
+        statementHeading: "Heritage woven for today",
+        brandName: "Songoskriti",
+      },
+    });
+    expect(footer).toContain("lg:text-[72px]");
+    expect(footer).toContain("tracking-normal");
+    const craft = render(
+      SONGOSKRITI_WIDGETS["craft_story"],
+      newSection("craft_story"),
+    );
+    expect(craft).toContain("tracking-normal");
+    expect(craft).toContain("leading-[1.2]");
+  });
+
+  it("stays roman: no italic voice in rail, grid, or category heads", () => {
+    const grid = render(SONGOSKRITI_WIDGETS["product_grid"], {
+      ...newSection("product_grid"),
+      props: { heading: "The collection" },
+    });
+    const category = render(SONGOSKRITI_WIDGETS["category_header"], {
+      ...newSection("category_header"),
+      props: { title: "Festive" },
+    });
+    for (const html of [railHtml("New arrivals"), grid, category]) {
+      expect(html).not.toContain("italic");
+    }
+  });
+
+  it("quiets eyebrows to one treatment (small, untracked, muted)", () => {
+    const craft = render(
+      SONGOSKRITI_WIDGETS["craft_story"],
+      {
+        ...newSection("craft_story"),
+        props: {
+          headline: "Made slowly",
+          body: "Cotton.",
+          eyebrow: "Heritage",
+        },
+      },
+    );
+    expect(craft).toContain("tracking-[0.08em]");
+    expect(craft).not.toContain("tracking-[0.35em]");
+    const locator = render(SONGOSKRITI_WIDGETS["store_locator"], {
+      ...newSection("store_locator"),
+      props: {
+        heading: "Visit us",
+        eyebrow: "Our stores",
+        s1Name: "Uttara",
+        s1Hours: "Open daily",
+      },
+    });
+    expect(locator).toContain("tracking-[0.08em]");
+    expect(locator).not.toContain("tracking-[0.3em]");
+    const ugc = render(SONGOSKRITI_WIDGETS["ugc_gallery"], {
+      ...newSection("ugc_gallery"),
+      props: { heading: "Worn by you", subhead: "In the world" },
+    });
+    expect(ugc).toContain("tracking-[0.08em]");
+    expect(ugc).not.toContain("tracking-[0.3em]");
+  });
+
+  it("keeps bn heads unclipped (relaxed leading, bn copy intact)", () => {
+    const bn = render(
+      SONGOSKRITI_WIDGETS["craft_story"],
+      {
+        ...newSection("craft_story"),
+        props: {
+          headline: "Made slowly",
+          headline_bn: "ধীরে তৈরি",
+          body: "Cotton.",
+          eyebrow: "Heritage",
+        },
+      },
+      "bn",
+    );
+    expect(bn).toContain("ধীরে তৈরি");
+    expect(bn).toContain("leading-[1.2]");
+    expect(bn).not.toContain("leading-none");
+  });
+
+  it("parks utility heads a step below the rail band", () => {
+    const html = render(SONGOSKRITI_WIDGETS["newsletter"], {
+      ...newSection("newsletter"),
+      props: { heading: "First to the drops", body: "One email a month." },
+    });
+    expect(html).toContain("sm:text-[28px]");
+    expect(html).toContain("font-medium");
+  });
+});
+
 describe("theme-motion manifest execution", () => {
   const renderNode = (props: Record<string, unknown>) =>
     renderToStaticMarkup(
