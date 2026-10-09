@@ -14,6 +14,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
+## [2026-10-10 01:44 UTC] (v0.5-beta — c3811e9d) — Hallmark songoskriti voice pass
+### Changed
+- Section voices (editorial statements vs quiet utility heads), rail card-variant rhythm, promise single-sourced to trust zone, advMotion on 3 sections, 3-step type scale, quiet eyebrow, roman-only, bn-safe leadings.
+### Verification
+- Theme suites green, tsc clean, snapshots regenerated (class strings only).
 ## [2026-10-07 21:14 UTC] (v0.5-beta — c40528f9) — Footer snapshot refresh
 ### Changed
 - Snapshot/debrand suites re-pinned to the slim footer; snapshots regenerated.
