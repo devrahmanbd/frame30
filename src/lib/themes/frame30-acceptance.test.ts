@@ -10,6 +10,7 @@ import { describe, expect, it } from "vitest";
 import * as fs from "node:fs";
 
 const read = (f: string) => fs.readFileSync(`/opt/frame28/${f}`, "utf8");
+const exists = (f: string) => fs.existsSync(`/opt/frame28/${f}`);
 
 describe("frame30 acceptance", () => {
   it("1: official themes work from source without generating or installing ZIPs", async () => {
@@ -51,5 +52,29 @@ describe("frame30 acceptance", () => {
     ]) {
       expect(read(f)).not.toMatch(/from.*theme-export/);
     }
+  });
+  it("8b: official-only export/bundle modules are gone, merchant pipeline stays", () => {
+    for (const f of [
+      "src/lib/theme-export.ts",
+      "src/lib/official-artifacts.ts",
+      "src/lib/official-artifacts-seed.server.ts",
+      "src/lib/official-artifact-bundle.ts",
+      "src/lib/official-artifact-bundle.json",
+      "scripts/build-official-artifact-bundle.ts",
+    ]) {
+      expect(exists(f)).toBe(false);
+    }
+    // Merchant pipeline intact: reader, installer, store, plugin packaging.
+    for (const f of [
+      "src/lib/package-zip.ts",
+      "src/lib/package-install.server.ts",
+      "src/lib/package-store.server.ts",
+      "src/lib/plugin-package.ts",
+    ]) {
+      expect(exists(f)).toBe(true);
+    }
+    expect(read("src/lib/billing.functions.ts")).not.toMatch(
+      /official-artifacts/,
+    );
   });
 });
