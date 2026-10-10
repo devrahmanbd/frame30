@@ -4,6 +4,7 @@ import {
   toPackageRef,
   isSourceUrl,
   isPackageRef,
+  findPackageRefs,
 } from "./theme-asset-url";
 
 describe("theme-asset-url boundary", () => {
@@ -25,5 +26,16 @@ describe("theme-asset-url boundary", () => {
     );
     expect(toPackageRef("assets/cat-women.png")).toBe("assets/cat-women.png");
     expect(isSourceUrl(toSourceUrl("cat-women.png", "somvabona"))).toBe(true);
+  });
+  it("findPackageRefs reports bare assets/ refs and ignores source URLs", () => {
+    expect(
+      findPackageRefs({
+        hero: "/ph/songoskriti/hero-festive.png",
+        gallery: ["assets/hero-festive.png", "/ph/songoskriti/cat-men.png"],
+        nested: { deep: "assets/cat-women.png" },
+      }),
+    ).toEqual(["assets/hero-festive.png", "assets/cat-women.png"]);
+    expect(findPackageRefs({ hero: "/ph/somvabona/x.png" })).toEqual([]);
+    expect(findPackageRefs(null)).toEqual([]);
   });
 });

@@ -114,8 +114,7 @@ let officialPluginArtifactProvider: OfficialPluginArtifactProvider =
 
 /**
  * Seam for tests (fault injection: fixture bytes, throwing builds). Passing
- * null restores the default source-built provider. Mirrors
- * `__setOfficialArtifactProviderForTests` on the theme side.
+ * null restores the default source-built provider.
  */
 export function __setOfficialPluginArtifactProviderForTests(
   provider: OfficialPluginArtifactProvider | null,

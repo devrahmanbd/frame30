@@ -2,7 +2,7 @@
  * Theme-remediation Task 4 — ProductCraftStory brand-art gate.
  *
  * ProductCraftStory rendered the songoskriti brand image
- * (`/ph/songoskriti/hero_artisans_*.jpg`) unconditionally, so every
+ * (`/ph/songoskriti/hero-artisans.png`) unconditionally, so every
  * non-songoskriti storefront with a handloom/jamdani/silk product showed
  * songoskriti brand art — same brand-art class as the CollectionView hero
  * fix (key-gated in `fix/theme-remediation` @ 5d50c97). Brand follows the
@@ -55,7 +55,7 @@ describe("ProductCraftStory brand art follows the theme key", () => {
   it("songoskriti key keeps its craft art (gate must not blank the theme page)", () => {
     const html = renderStory("songoskriti");
     expect(html).toContain("The Weave");
-    expect(html).toContain("/ph/songoskriti/hero_artisans_");
+    expect(html).toContain("/ph/songoskriti/hero-artisans.png");
   });
 
   it("non-craft description renders null for every key (existing behavior)", () => {
@@ -75,6 +75,6 @@ describe("ProductCraftStory brand art follows the theme key", () => {
   it("source gates the brand art behind the songoskriti key", () => {
     const src = readFileSync("src/components/store/ProductView.tsx", "utf8");
     expect(src).toMatch(/themeKey === "songoskriti"|isSongoskriti/);
-    expect(src).toContain("/ph/songoskriti/hero_artisans_");
+    expect(src).toContain("/ph/songoskriti/hero-artisans.png");
   });
 });

@@ -306,12 +306,18 @@ export async function setPluginEnabled(
   enabled: boolean,
   actorId?: string | null,
 ) {
-  const { error } = await db
+  // Tenant-scoped with affected-row assertion: a toggle for a row that is
+  // not ours (or gone) fails closed instead of silently succeeding — the
+  // same pattern as compensating deletes (appearance.server.ts).
+  const { data, error } = await db
     .from("plugin_state")
     .update({ enabled })
     .eq("merchant_id", merchantId)
-    .eq("plugin_id", pluginId);
+    .eq("plugin_id", pluginId)
+    .select("plugin_id");
   if (error) throw new Error("plugin_toggle_failed");
+  if (!data || (data as unknown[]).length === 0)
+    throw new Error("plugin_not_found");
   await auditAction(
     db,
     merchantId,

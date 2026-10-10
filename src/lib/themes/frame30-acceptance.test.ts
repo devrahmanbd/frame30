@@ -22,9 +22,12 @@ describe("frame30 acceptance", () => {
   });
   it("3: official image URLs resolve source-form in preview rendering", async () => {
     const { registryPackage } = await import("../themes.server");
+    const { findPackageRefs } = await import("../theme-asset-url");
     for (const key of ["songoskriti", "somvabona"]) {
-      const blob = JSON.stringify(registryPackage(key).templates);
+      const pkg = registryPackage(key);
+      const blob = JSON.stringify(pkg.templates);
       expect(blob).toContain(`/ph/${key}/`);
+      expect(findPackageRefs(pkg.templates)).toEqual([]);
     }
   });
   it("4+5: custom ZIP packages still face the security pipeline", async () => {

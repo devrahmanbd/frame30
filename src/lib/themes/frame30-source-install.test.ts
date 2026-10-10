@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import * as fs from "node:fs";
+import { findPackageRefs } from "../theme-asset-url";
 
 describe("frame30 source-direct runtime", () => {
   it("registryPackage resolves songoskriti from source with /ph/ URLs", async () => {
@@ -7,7 +8,7 @@ describe("frame30 source-direct runtime", () => {
     const pkg = registryPackage("songoskriti");
     const blob = JSON.stringify(pkg.templates);
     expect(blob).toContain("/ph/songoskriti/");
-    expect(blob).not.toMatch(/"(assets\/[a-z0-9_.-]+)"/i);
+    expect(findPackageRefs(pkg.templates)).toEqual([]);
   });
   it("no runtime source file imports the bundle or exporter", () => {
     const runtimeFiles = [

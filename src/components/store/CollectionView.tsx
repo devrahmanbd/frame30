@@ -74,7 +74,7 @@ export function CollectionView({ data }: { data: CollectionPayload }) {
     if (isSongoskriti) {
       showHero = true;
       if (collection.slug === "women")
-        heroImage = "/ph/songoskriti/songoskriti-hero.jpg";
+        heroImage = "/ph/songoskriti/cat-women.png";
       if (collection.slug === "men") heroImage = "/ph/songoskriti/cat-men.png";
     }
   } else if (

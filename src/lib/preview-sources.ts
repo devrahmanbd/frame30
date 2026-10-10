@@ -1,25 +1,17 @@
 /**
  * Preview theme registry — the composition root for theme previews.
  *
- * This map is the composition root for theme previews: official themes
- * resolve from the single built-in registry (`themes/builtin-themes`,
- * trusted source modules). Adding a theme means a new folder under
- * `lib/themes` exporting a preview source plus one entry there. The engine
- * (`theme-preview-nav`) never names a theme, and themes never import engine
- * behavior — they only implement its port type.
+ * Official themes resolve from the single built-in registry
+ * (`themes/builtin-themes`, trusted source modules) for legacy callers
+ * without merchant context; `registerStaticPreviewSource` remains as a
+ * test/build-tooling override that joins (never replaces) the built-ins.
+ * The engine (`theme-preview-nav`) never names a theme, and themes never
+ * import engine behavior — they only implement its port type.
  *
  * K2 — installed artifact authoritative: when the caller passes a merchant
  * installed set (array, even empty) resolution and listing come ONLY from
  * that set and uninstalled/unknown keys fail closed to null (route 404s,
  * never a silent wrong theme).
- *
- * O2 — source-free runtime graph: this module never imports theme source.
- * The static table below holds ONLY build-time-registered factories —
- * build tooling and tests (build-time contexts) import theme preview
- * modules directly and publish their factories through
- * `registerStaticPreviewSource`. Legacy null/undefined callers with no
- * merchant context resolve from the registered table; unregistered keys
- * fail closed to null. Merchant-aware callers MUST pass the installed set.
  */
 import type { PreviewThemeSource } from "./theme-preview-nav";
 import { getBuiltinTheme, builtinThemeKeys } from "./themes/builtin-themes";
@@ -42,12 +34,10 @@ export type StaticPreviewSourceFactory = (
 ) => PreviewThemeSource;
 
 /**
- * Build-time-only static sources. Theme source modules are NEVER imported
- * here, so the runtime import graph stays source-free. Build tooling and
- * tests (build-time contexts) import theme preview modules directly and
- * publish their factories through `registerStaticPreviewSource`; production
- * runtime resolves merchant previews exclusively from installed artifacts
- * and unregistered keys fail closed to null.
+ * Static source overrides (tests/build tooling). Factories registered here
+ * take precedence over the built-in registry for legacy callers; merchant
+ * callers (installed set passed) never consult this table. Production
+ * runtime resolves official themes from source modules either way.
  */
 const STATIC_SOURCES: Record<string, StaticPreviewSourceFactory> = {};
 

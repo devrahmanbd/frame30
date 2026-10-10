@@ -140,6 +140,24 @@ describe("plugin lifecycle audit", () => {
     });
   });
 
+  it("setPluginEnabled refuses another merchant's row", async () => {
+    const OTHER = "33333333-3333-4333-8333-333333333333";
+    const db = fakeDb({
+      tables: {
+        plugin_state: [
+          { merchant_id: MERCHANT, plugin_id: "audit-probe", enabled: true },
+        ],
+        activity_log: [],
+      },
+    });
+    await expect(
+      setPluginEnabled(db.asClient(), OTHER, "audit-probe", false, ACTOR),
+    ).rejects.toThrow();
+    // Victim row untouched, and the failed toggle writes no audit.
+    expect(db.rows("plugin_state")[0]).toMatchObject({ enabled: true });
+    expect(db.rows("activity_log")).toHaveLength(0);
+  });
+
   it("setPluginEnabled records toggles", async () => {
     const db = fakeDb({
       tables: {

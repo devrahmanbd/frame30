@@ -549,6 +549,7 @@ export async function installCatalogTheme(
       source_install_id: (ledger as { id: string }).id,
       published_version_id: (version as { id: string }).id,
     })
+    .eq("merchant_id", merchantId)
     .eq("id", themeId);
   await db.from("theme_audit").insert({
     merchant_id: merchantId,
@@ -955,6 +956,7 @@ export async function installUploadedTheme(
       source_install_id: (ledger as { id: string }).id,
       published_version_id: (version as { id: string }).id,
     })
+    .eq("merchant_id", merchantId)
     .eq("id", themeId);
   await db.from("theme_audit").insert({
     merchant_id: merchantId,

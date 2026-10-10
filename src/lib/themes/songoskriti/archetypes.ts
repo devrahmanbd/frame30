@@ -24,7 +24,7 @@ export const SONGOSKRITI_COLLECTIONS: Record<string, CollectionConfig> = {
     type: "department",
     title: "Women",
     title_bn: "নারী",
-    heroImage: "/ph/songoskriti/songoskriti-hero.jpg",
+    heroImage: "/ph/songoskriti/cat-women.png",
     categories: [
       { iLabel: "Sarees", iHref: "/c/sarees" },
       { iLabel: "Jamdani", iHref: "/c/jamdani" },

@@ -30,9 +30,9 @@ export const themeInstallFn = createServerFn({ method: "POST" })
     const { installCatalogTheme, installOfficialTheme } = await import(
       "./appearance.server"
     );
-    // B2: official keys run the NORMAL installPackage pipeline (via
-    // installOfficialTheme) against the internally-built artifact — same
-    // validators/ledger/version rows as uploads, never a separate path.
+    // Frame30: official keys initialize from the built-in source registry
+    // (via installOfficialTheme); community keys install from DB rows.
+    // Either way the merchant's records are created tenant-scoped.
     if ((OFFICIAL_THEME_KEYS as readonly string[]).includes(data.key)) {
       return installOfficialTheme(
         context.supabase,
