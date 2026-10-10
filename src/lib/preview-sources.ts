@@ -1,12 +1,12 @@
 /**
  * Preview theme registry — the composition root for theme previews.
  *
- * This map is the ONLY place that names themes for preview. Adding a theme
- * means a new folder under `lib/themes` exporting a preview source plus one
- * `registerStaticPreviewSource` call from a build-time entry point (build
- * tooling / seed paths). The engine (`theme-preview-nav`) never names a
- * theme, and themes never import engine behavior — they only implement its
- * port type.
+ * This map is the composition root for theme previews: official themes
+ * resolve from the single built-in registry (`themes/builtin-themes`,
+ * trusted source modules). Adding a theme means a new folder under
+ * `lib/themes` exporting a preview source plus one entry there. The engine
+ * (`theme-preview-nav`) never names a theme, and themes never import engine
+ * behavior — they only implement its port type.
  *
  * K2 — installed artifact authoritative: when the caller passes a merchant
  * installed set (array, even empty) resolution and listing come ONLY from
@@ -22,6 +22,7 @@
  * fail closed to null. Merchant-aware callers MUST pass the installed set.
  */
 import type { PreviewThemeSource } from "./theme-preview-nav";
+import { getBuiltinTheme, builtinThemeKeys } from "./themes/builtin-themes";
 import {
   parseTemplates,
   parseTokens,
@@ -165,15 +166,26 @@ export function previewSourceFor(
   }
   const factory = STATIC_SOURCES[key];
   if (factory) return factory(variationKey);
+  // Frame30: official themes resolve from trusted source modules through the
+  // single built-in registry — no build-time registration or bundle needed.
+  const builtin = getBuiltinTheme(key);
+  if (builtin) return builtin.source(variationKey);
   return null;
 }
 
-/** Installed keys when merchant context present; registered static keys for legacy null/undefined. */
+/** Installed keys when merchant context present; built-in official keys for legacy null/undefined. */
 export function previewSourceKeys(
   installed?: readonly InstalledThemeRef[] | null,
 ): string[] {
-  if (installed === null || installed === undefined)
-    return Object.keys(STATIC_SOURCES);
+  if (installed === null || installed === undefined) {
+    // Frame30: built-in registry is authoritative for legacy callers; static
+    // overrides (tests/build tooling) join, never replace.
+    const keys = [...builtinThemeKeys()];
+    for (const k of Object.keys(STATIC_SOURCES)) {
+      if (!keys.includes(k as never)) keys.push(k);
+    }
+    return keys;
+  }
   const keys: string[] = [];
   const seen = new Set<string>();
   for (const entry of installed) {
