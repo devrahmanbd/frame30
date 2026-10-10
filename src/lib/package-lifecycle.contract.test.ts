@@ -7,10 +7,10 @@
  * - custom theme: pure `installPackage` pipeline (ZIP bytes in, version line
  *   out) through `previewPackage` / `activatePackage` / `rollbackPackage` /
  *   `uninstallPackage`.
- * - official theme: `installOfficialTheme` (internally-built artifact through
- *   the NORMAL pipeline) then the admin UI server fns (`activateTheme`,
- *   `deleteTheme`) on those pipeline rows — proving the console operates the
- *   pipeline rows it lists — with update/rollback through the pipeline fns.
+ * - official theme: `installOfficialTheme` (source-init rows from the
+ *   built-in registry, no ZIP) then the admin UI server fns (`activateTheme`,
+ *   `deleteTheme`) on those source rows — proving the console operates the
+ *   rows it lists.
  * - official plugin: `installOfficialPlugin` (real in-repo provider) →
  *   disable/enable → update → `rollbackPluginPackage` → uninstall, with host
  *   projection render proof.
@@ -57,7 +57,6 @@ const {
   installUploadedTheme,
   activateTheme,
   deleteTheme,
-  __setOfficialArtifactProviderForTests,
 } = await import("./themes/appearance.server");
 const { installOfficialPlugin } = await import("./official-plugins.server");
 const { listInstalledPlugins, upsertPlugin } = await import("./plugins.server");
@@ -158,39 +157,8 @@ function pluginZip(
   ]);
 }
 
-/* ------------------------------------------- official theme fixture (seam) */
-
-function officialEntry(key: "songoskriti", version = "1.0.0") {
-  const bytes = themeZip(strictTheme(key, version), "official-css");
-  return {
-    key,
-    nameEn: "Songoskriti",
-    nameBn: "সংস্কৃতি",
-    summaryEn: "Songoskriti official theme",
-    summaryBn: "",
-    category: "general",
-    version,
-    artifact: {
-      checksum: createHash("sha256").update(bytes).digest("hex"),
-      version,
-      fileName: `${key}.zip`,
-      pinned: `official:${key}`,
-    },
-    bytes,
-  };
-}
-
-function serveOfficialSongoskriti() {
-  const entry = officialEntry("songoskriti", "1.0.0");
-  __setOfficialArtifactProviderForTests(async (serveKey) =>
-    serveKey === "songoskriti" ? entry : null,
-  );
-  return entry;
-}
-
 beforeEach(() => {
   recorder.reset();
-  __setOfficialArtifactProviderForTests(null);
 });
 
 /* --------------------------------------- custom theme: full pipeline chain */
@@ -329,14 +297,13 @@ describe("LIFECYCLE custom theme: upload → preview → activate → update →
   });
 });
 
-/* ----------------- official theme: pipeline install, console operate chain */
+/* ----------------- official theme: source install, console operate chain */
 
-describe("LIFECYCLE official theme: pipeline install → console activate/preview/delete + update/rollback", () => {
-  it("installs through the normal pipeline and the admin fns operate those rows", async () => {
+describe("LIFECYCLE official theme: source install → console activate/delete", () => {
+  it("installs from source and the admin fns operate those rows", async () => {
     const db = lifecycleDb();
-    serveOfficialSongoskriti();
 
-    // 1. Official install: pipeline rows + official provenance pin.
+    // 1. Official install: source-init rows + official provenance pin (no ZIP).
     const v1 = await installOfficialTheme(
       db.asClient(),
       MERCHANT_A,
@@ -344,7 +311,6 @@ describe("LIFECYCLE official theme: pipeline install → console activate/previe
       ACTOR,
     );
     expect(v1.alreadyInstalled).toBe(false);
-    expect(v1.version).toBe("1.0.0");
     const ledger = db.rows("marketplace_installs");
     expect(ledger).toHaveLength(1);
     expect(ledger[0]).toMatchObject({
@@ -353,105 +319,51 @@ describe("LIFECYCLE official theme: pipeline install → console activate/previe
       status: "installed",
       artifact_pinned: "official:songoskriti",
     });
+    // Source templates land in the version row (servable /ph/ URLs).
+    const vrow = db.rows("theme_versions")[0]!;
+    expect(JSON.stringify(vrow)).toContain("/ph/songoskriti/");
 
-    // 2. Preview through the pipeline: inert until activated.
-    const preview = await previewPackage(
-      db.asClient(),
-      MERCHANT_A,
-      v1.versionId,
-    );
-    expect(preview.packageId).toBe(v1.packageId);
+    // 2. Activate through the ADMIN fn (the console path) — inert until here.
     expect(
-      db.rows("store_themes").find((r) => r.id === v1.packageId)?.is_active,
+      db.rows("store_themes").find((r) => r.id === v1.id)?.is_active,
     ).toBe(false);
-
-    // 3. Activate through the ADMIN fn (the console path), not the pipeline
-    // fn — the UI must operate pipeline rows.
     const activated = await activateTheme(
       db.asClient(),
       MERCHANT_A,
-      v1.packageId,
+      v1.id,
       ACTOR,
     );
-    expect(activated.id).toBe(v1.packageId);
+    expect(activated.id).toBe(v1.id);
     expect(
-      db.rows("store_themes").find((r) => r.id === v1.packageId)?.is_active,
+      db.rows("store_themes").find((r) => r.id === v1.id)?.is_active,
     ).toBe(true);
 
-    // 4. Update: v2 bytes on the same official line (same slug, new key).
-    const v2 = await installPackage(
+    // 3. Delete through the ADMIN fn: activate a spare line first (active
+    // rows are refused), then the source row is gone and its ledger line
+    // retires by install-id link (never a slug sweep).
+    const spare = await installOfficialTheme(
       db.asClient(),
       MERCHANT_A,
-      {
-        kind: "theme",
-        fileName: "songoskriti.zip",
-        bytes: themeZip(strictTheme("songoskriti", "1.1.0"), "official-v2"),
-        idempotencyKey: key(),
-      },
+      "somvabona",
       ACTOR,
     );
-    expect(v2.packageId).toBe(v1.packageId);
-    expect(v2.updated).toBe(true);
-    await activatePackage(
-      db.asClient(),
-      MERCHANT_A,
-      v2.packageId,
-      v2.versionId,
-      ACTOR,
-    );
-
-    // 5. Rollback to the official v1 content as a new live version.
-    const rolled = await rollbackPackage(
-      db.asClient(),
-      MERCHANT_A,
-      v1.packageId,
-      v1.versionId,
-      ACTOR,
-    );
-    const v3row = db
-      .rows("theme_versions")
-      .find((v) => v.id === rolled.versionId)!;
-    expect(v3row.rollback_of).toBe(v1.versionId);
-    expect(
-      db.rows("theme_audit").filter((a) => a.action === "package.rolled_back"),
-    ).toHaveLength(1);
-
-    // 6. Delete through the ADMIN fn: row gone, pipeline ledger retired by
-    // the install-id link (never a slug sweep).
-    const spare = await installPackage(
-      db.asClient(),
-      MERCHANT_A,
-      {
-        kind: "theme",
-        fileName: "spare.zip",
-        bytes: themeZip(strictTheme("lifecycle-second", "1.0.0")),
-        idempotencyKey: key(),
-      },
-      ACTOR,
-    );
-    await activatePackage(
-      db.asClient(),
-      MERCHANT_A,
-      spare.packageId,
-      spare.versionId,
-      ACTOR,
-    );
+    await activateTheme(db.asClient(), MERCHANT_A, spare.id, ACTOR);
     const deleted = await deleteTheme(
       db.asClient(),
       MERCHANT_A,
-      v1.packageId,
+      v1.id,
       ACTOR,
     );
-    expect(deleted.id).toBe(v1.packageId);
+    expect(deleted.id).toBe(v1.id);
     expect(
-      db.rows("store_themes").find((r) => r.id === v1.packageId),
+      db.rows("store_themes").find((r) => r.id === v1.id),
     ).toBeUndefined();
     expect(ledger[0]?.status).toBe("removed");
     expect(
       db.rows("theme_audit").filter((a) => a.action === "theme.deleted"),
     ).toHaveLength(1);
     // Spare line untouched.
-    expect(db.rows("store_themes").map((r) => r.id)).toEqual([spare.packageId]);
+    expect(db.rows("store_themes").map((r) => r.id)).toEqual([spare.id]);
   });
 });
 

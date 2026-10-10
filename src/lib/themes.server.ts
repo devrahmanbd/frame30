@@ -48,6 +48,7 @@ import { translationGate } from "./builder-guardrails";
 import { translationCoverage } from "./translation-coverage";
 import { demoCatalogFor } from "./demo-catalog";
 import { resolveThemePreview } from "./theme-preview-nav";
+import { builtinThemeKeys, isOfficialThemeKey } from "./themes/builtin-themes";
 
 type Client = SupabaseClient<Database>;
 
@@ -889,16 +890,17 @@ export async function listRegistry(db: Client): Promise<RegistryTheme[]> {
   });
 }
 
-/** Full template count shipped by the official themes, for docs and tests. */
+/** Official theme keys shipped from source. Single authority: `./themes/builtin-themes`. */
 export function officialThemeKeys(): string[] {
-  return [];
+  return builtinThemeKeys();
 }
 
-/** Validated official package, or a safe default package.
+/** Official package resolved from trusted source modules, or a safe default.
  *
- * Legacy source-backed helper: new runtime paths MUST use
- * `loadRegistryPackage` (installed artifact authoritative) instead. This
- * stays only until the remaining callers migrate (O2 follow-up).
+ * Frame30 source-direct helper: official themes render/install from source
+ * through the built-in registry — never from a generated bundle or ZIP.
+ * Custom (non-official) keys have no source and resolve to the safe default;
+ * installed custom rows load through `loadRegistryPackage` instead.
  */
 export function registryPackage(key: string): {
   templates: ThemeTemplates;
@@ -996,17 +998,19 @@ export async function installRegistryTheme(
   await rateLimit("builder.install", merchantId);
   return withSpan("builder.install", async () => {
     const catalogue = await listRegistry(db);
-    const entry = catalogue.find((t) => t.key === key);
-    if (!entry)
+    // Official keys install from source even when no DB catalogue row names
+    // them (fresh environments); community keys still require the row.
+    const official = isOfficialThemeKey(key);
+    if (!official && !catalogue.some((t) => t.key === key))
       throw new BuilderError(
         "builder.registry_missing",
         "Theme not found in the registry",
       );
     let pkg: { templates: ThemeTemplates; tokens: ThemeTokens };
     try {
-      // O2: installed artifact authoritative — package content comes from the
-      // installed registry row, never theme source.
-      pkg = await loadRegistryPackage(db, key);
+      // Frame30: the merchant's records initialize from the registered
+      // source definition — no ZIP is constructed on this path.
+      pkg = registryPackage(key);
     } catch (err) {
       incr("framique_theme_install_total", { result: "rejected" });
       throw err;

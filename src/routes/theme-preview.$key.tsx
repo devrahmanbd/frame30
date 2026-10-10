@@ -32,7 +32,6 @@ import {
   resolveThemePreview,
   validateThemePreviewSearch,
 } from "@/lib/theme-preview-nav";
-import { resolveBundledOfficialPreview } from "@/lib/official-artifact-bundle";
 import { ThemePreviewFrame } from "@/components/store/ThemePreviewFrame";
 
 type RouteParams = { key: string };
@@ -187,10 +186,10 @@ export const Route = createFileRoute("/theme-preview/$key")({
       allowed = false;
     }
     if (!allowed) throw notFound();
-    // Installed rows join preview resolution as data (bundled official
-    // fallback preserved for the merchant-less component below):
+    // Installed rows join preview resolution as data (built-in source
+    // fallback serves the merchant-less component below):
     // best-effort, fail-open to [] — anonymous visitors keep official
-    // previews via the bundle, never a 500.
+    // previews via source, never a 500.
     let installed: ThemePreviewInstalledRow[] | null = [];
     try {
       installed = await themePreviewInstalledFn();
@@ -215,9 +214,9 @@ function ThemePreviewRoute() {
   // Merchant-installed packages preview through the installed set the loader
   // threaded in (SWITCHOVER-4), authoritative when present. Merchant-less
   // visitors (anonymous `null`, or an empty installed set) fall back to the
-  // deploy-time-built official bundle ONLY (songoskriti/somvabona, versioned,
-  // checksummed — no source imports in this graph); merchants WITH installs
-  // never see the bundle (uninstalled keys fail closed to 404, K2).
+  // built-in source registry (Frame30: official themes render through their
+  // trusted source modules — no bundle, no ZIP); merchants WITH installs
+  // never see the fallback (uninstalled keys fail closed to 404, K2).
   // Theme variation deep-link (`?variation=minimal`): unknown keys fall
   // back to the base theme inside the resolver — never a 404.
   const { installed } = Route.useLoaderData();
@@ -228,7 +227,7 @@ function ThemePreviewRoute() {
     (Array.isArray(installed) && installed.length === 0);
   const preset =
     installedPreset ??
-    (merchantless ? resolveBundledOfficialPreview(key, variationKey) : null);
+    (merchantless ? resolveThemePreview(key, variationKey) : null);
 
   if (!preset) {
     return <ThemePreviewNotFound />;

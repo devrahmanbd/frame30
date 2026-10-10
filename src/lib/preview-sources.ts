@@ -180,9 +180,9 @@ export function previewSourceKeys(
   if (installed === null || installed === undefined) {
     // Frame30: built-in registry is authoritative for legacy callers; static
     // overrides (tests/build tooling) join, never replace.
-    const keys = [...builtinThemeKeys()];
+    const keys: string[] = [...builtinThemeKeys()];
     for (const k of Object.keys(STATIC_SOURCES)) {
-      if (!keys.includes(k as never)) keys.push(k);
+      if (!keys.includes(k)) keys.push(k);
     }
     return keys;
   }

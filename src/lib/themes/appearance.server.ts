@@ -15,7 +15,7 @@ import {
   registryPackage,
 } from "@/lib/themes.server";
 import { catalogMeta } from "./catalog-meta";
-import { bundledOfficialCatalogEntries } from "../official-artifact-bundle";
+import { builtinThemeMeta, getBuiltinTheme } from "./builtin-themes";
 import {
   isNewerVersion,
   MAX_THEME_UPLOAD_BYTES,
@@ -199,20 +199,15 @@ export async function loadThemesWorkspace(
   db: Client,
   merchantId: string,
 ): Promise<ThemesWorkspace> {
-  const [registry, builtOfficial, installedRows, favourites] = await Promise.all([
+  const [registry, official, installedRows, favourites] = await Promise.all([
     listRegistry(db),
     listOfficialCatalog(),
     rows(db, merchantId),
     favouriteKeys(db, merchantId),
   ]);
-  // PROVIDER lane — bundled official section (display only): when the
-  // in-memory provider serves no install bytes, the checked-in bundle fills
-  // the official display from verified rows. Installs still require the
-  // provider (`installOfficialTheme` refuses when unbuilt).
-  const official =
-    builtOfficial.length > 0
-      ? builtOfficial
-      : bundledOfficialCatalogEntries();
+  // Frame30 — `official` above is source-backed (built-in registry): the
+  // catalogue never depends on a build lane or a checked-in bundle.
+  // Installs initialize from source (see `installOfficialTheme`).
   const latest = new Map<string, string>([
     ...registry.map((entry) => [entry.key, entry.version] as const),
     ...official.map((entry) => [entry.key, entry.version] as const),
@@ -294,30 +289,26 @@ async function requireRow(
   return data as unknown as Row;
 }
 
-/* -------------------------------- B2 — official catalogue + install (shared pipeline)
+/* ----------------- (Frame30: B2 shared-pipeline model retired — see below) */
+
+/* ----------------- Frame30 — official catalogue + install (source model)
  *
- * Official themes (Songoskriti, Somvabona) install through the NORMAL
- * `installPackage` pipeline — same validators, same ledger, same version
- * rows as merchant uploads — against the internally-built artifact. There
- * is no separate official install path anywhere in this module.
- *
- * Artifact-build seam (owned by the artifact-build lane): the build lane
- * publishes each official theme's exact install bytes plus catalogue
- * metadata through `setOfficialArtifactProvider`. Until it does, the
- * provider is null: the official catalogue section is gracefully empty
- * and official installs refuse with `theme.official_unavailable` without
- * writing anything. Catalogue entries carry the serializable artifact ref
- * only (`official:<key>` pin); the bytes never leave the server, and
- * there is no downloadable official artifact.
+ * Official themes (Songoskriti, Somvabona) are source-owned: the catalogue
+ * section reads display metadata from the single built-in registry
+ * (`./builtin-themes`, trusted source modules) — never from build-lane
+ * bytes or a checked-in bundle. Installs initialize the merchant's theme
+ * records from the registered source definition through the SAME
+ * row-creation as catalogue installs below (row + published v1 + draft +
+ * ledger + linkage + audit), with the ledger provenance marker
+ * (`official:<key>`) distinguishing them. No ZIP is constructed, no
+ * `installPackage` archive runs, and there is no downloadable official
+ * artifact. Custom merchant ZIPs keep the `installPackage` pipeline
+ * (`package-install.server.ts`) exclusively.
  */
 
 export type OfficialCatalogArtifact = {
-  /** sha256 hex of the exact ZIP the pipeline installs. */
-  checksum: string;
-  /** Manifest version pinned inside that ZIP. */
+  /** Source version pinned for this catalogue entry (documented `1.0.0`). */
   version: string;
-  /** Archive name handed to `installPackage` (`<key>.zip`). */
-  fileName: string;
   /** Provenance marker: `official:<key>`. */
   pinned: string;
 };
@@ -331,74 +322,34 @@ export type OfficialCatalogEntry = {
   category: string;
   version: string;
   artifact: OfficialCatalogArtifact;
-  /** Exact install bytes. Server-side only — never serialized to clients. */
-  bytes: Uint8Array;
 };
 
-export type OfficialArtifactProvider = (
-  key: OfficialThemeKey,
-) => Promise<OfficialCatalogEntry | null>;
-
-let officialArtifactProvider: OfficialArtifactProvider | null = null;
-
-/**
- * Seam for the artifact-build lane (and tests). The build lane calls this
- * once with a provider that serves internally-built official artifacts;
- * tests inject fixture bytes the same way.
- */
-export function __setOfficialArtifactProviderForTests(
-  provider: OfficialArtifactProvider | null,
-): void {
-  officialArtifactProvider = provider;
-}
-
-/** Official catalogue entries, or [] when the build hasn't run. Never throws. */
+/** Official catalogue entries from source. Never throws, never empty. */
 export async function listOfficialCatalog(): Promise<OfficialCatalogEntry[]> {
-  if (!officialArtifactProvider) return [];
-  const entries: OfficialCatalogEntry[] = [];
+  const out: OfficialCatalogEntry[] = [];
   for (const key of OFFICIAL_THEME_KEYS) {
-    try {
-      const entry = await officialArtifactProvider(key);
-      if (entry) entries.push(entry);
-    } catch {
-      // A broken build for one key hides that key, never the section.
-    }
+    const meta = builtinThemeMeta(key);
+    if (!meta) continue;
+    out.push({
+      key: meta.key,
+      nameEn: meta.nameEn,
+      nameBn: meta.nameBn,
+      summaryEn: meta.summaryEn,
+      summaryBn: meta.summaryBn,
+      category: meta.category,
+      version: meta.version,
+      artifact: { version: meta.version, pinned: officialPinFor(meta.key) },
+    });
   }
-  return entries;
-}
-
-async function resolveOfficialArtifact(
-  key: string,
-): Promise<OfficialCatalogEntry> {
-  if (!(OFFICIAL_THEME_KEYS as readonly string[]).includes(key)) {
-    throw new ThemeDeskError(
-      "theme.unknown",
-      "That theme is not in the catalogue.",
-    );
-  }
-  const entry = officialArtifactProvider
-    ? await officialArtifactProvider(key as OfficialThemeKey).catch(() => null)
-    : null;
-  if (!entry) {
-    throw new ThemeDeskError(
-      "theme.official_unavailable",
-      "That official theme is not built yet. Try again later.",
-    );
-  }
-  return entry;
+  return out;
 }
 
 /**
- * Install an official theme through the NORMAL package pipeline.
+ * Install an official theme from its registered source definition.
  *
- * Literally `installPackage` with the internally-built artifact bytes and
- * the strict PKG-1 theme validator — the same call shape as a merchant ZIP
- * upload — so validators, ledger, version rows, drafts and audit are
- * identical. The only official-specific touch is the ledger provenance
- * marker (`official:<key>` instead of `upload`), stamped after the
- * pipeline commits; if the stamp fails the install still stands and the
- * miss is logged (same degrade pattern as the SEO seed on the legacy
- * registry path).
+ * Validates the key against the built-in registry, then runs the same
+ * initialization as catalogue installs (which resolves official keys from
+ * source — see `installCatalogTheme`). Returns the same shape.
  */
 export async function installOfficialTheme(
   db: Client,
@@ -406,57 +357,31 @@ export async function installOfficialTheme(
   key: string,
   actorId?: string | null,
 ) {
-  const entry = await resolveOfficialArtifact(key);
-  const { installPackage, pkg1ThemeValidator } = await import(
-    "../package-install.server"
-  );
-  const out = await installPackage(
-    db,
-    merchantId,
-    {
-      kind: "theme",
-      fileName: entry.artifact.fileName,
-      bytes: entry.bytes,
-      idempotencyKey: `official:${merchantId}:${entry.key}`,
-      validator: pkg1ThemeValidator,
-    },
-    actorId,
-  );
-  try {
-    const { data: ledger } = await db
-      .from("marketplace_installs")
-      .select("id")
-      .eq("merchant_id", merchantId)
-      .eq("idempotency_key", `official:${merchantId}:${entry.key}`)
-      .maybeSingle();
-    const ledgerId = (ledger as { id: string } | null)?.id;
-    if (ledgerId) {
-      await db
-        .from("marketplace_installs")
-        .update({
-          artifact_pinned: officialPinFor(entry.key),
-        } as never)
-        .eq("merchant_id", merchantId)
-        .eq("id", ledgerId);
-    }
-  } catch {
-    try {
-      const { log } = await import("../observability.server");
-      log("warn", "theme.official_pin_missed", { key: entry.key });
-    } catch {
-      // Observability must never fail an install that already committed.
-    }
+  if (!(OFFICIAL_THEME_KEYS as readonly string[]).includes(key)) {
+    throw new ThemeDeskError(
+      "theme.unknown",
+      "That theme is not in the catalogue.",
+    );
   }
-  return out;
+  // Belt-and-braces: the key must resolve in the built-in registry, not
+  // merely match a string in the UI list.
+  if (!getBuiltinTheme(key)) {
+    throw new ThemeDeskError(
+      "theme.unknown",
+      "That theme is not in the catalogue.",
+    );
+  }
+  return installCatalogTheme(db, merchantId, key, actorId);
 }
 
 /**
  * Add a catalogue theme to the installed list (idempotent per key).
  *
- * Community path only: official keys (`songoskriti`, `somvabona`) always
- * install through the shared `installPackage` pipeline via
- * `installOfficialTheme` — never here. There is no separate official
- * install path.
+ * Community keys resolve from the `theme_registry` rows; official keys
+ * (`songoskriti`, `somvabona`) resolve from the built-in source registry —
+ * the merchant's records are initialized from the registered source
+ * definition either way. No ZIP is constructed on this path (uploads use
+ * the upload lane, custom packages use `installPackage`).
  *
  * A complete install, like the marketplace path: theme row + version 1 +
  * draft + ledger row + linkage + audit. A bare theme row is invisible to
@@ -469,19 +394,29 @@ export async function installCatalogTheme(
   key: string,
   actorId?: string | null,
 ) {
-  if ((OFFICIAL_THEME_KEYS as readonly string[]).includes(key)) {
-    throw new ThemeDeskError(
-      "theme.official_path",
-      "Official themes install through the shared package pipeline.",
-    );
+  const official = (OFFICIAL_THEME_KEYS as readonly string[]).includes(key);
+  let entry: { nameEn: string; version: string; summaryEn: string };
+  if (official) {
+    // Source-defined: the merchant's records initialize from the
+    // registered source definition — never a constructed ZIP.
+    const meta = builtinThemeMeta(key);
+    if (!meta || !getBuiltinTheme(key)) {
+      throw new ThemeDeskError(
+        "theme.unknown",
+        "That theme is not in the catalogue.",
+      );
+    }
+    entry = { nameEn: meta.nameEn, version: meta.version, summaryEn: meta.summaryEn };
+  } else {
+    const registry = await listRegistry(db);
+    const found = registry.find((theme) => theme.key === key);
+    if (!found)
+      throw new ThemeDeskError(
+        "theme.unknown",
+        "That theme is not in the catalogue.",
+      );
+    entry = found;
   }
-  const registry = await listRegistry(db);
-  const entry = registry.find((theme) => theme.key === key);
-  if (!entry)
-    throw new ThemeDeskError(
-      "theme.unknown",
-      "That theme is not in the catalogue.",
-    );
   const existing = (await rows(db, merchantId)).find(
     (row) => row.source_listing_slug === key,
   );
@@ -489,7 +424,11 @@ export async function installCatalogTheme(
 
   // Key-first replay: a committed ledger key with no linked theme refuses
   // (orphaned first attempt) instead of stacking a duplicate pair.
-  const ledgerKey = `catalog:${merchantId}:${key}`;
+  // Official installs key their own ledger line so replays never collide
+  // with a community install of the same slug.
+  const ledgerKey = official
+    ? `official:${merchantId}:${key}`
+    : `catalog:${merchantId}:${key}`;
   const keyed = await resolveCatalogReplay(db, merchantId, ledgerKey);
   if (keyed) return keyed;
 
@@ -571,8 +510,11 @@ export async function installCatalogTheme(
       currency_code: "BDT",
       is_trial: false,
       status: "installed",
-      idempotency_key: `catalog:${merchantId}:${key}`,
-    })
+      idempotency_key: ledgerKey,
+      // Official installs stamp their provenance at insert so the catalogue
+      // can tell source installs from community rows without a second write.
+      ...(official ? { artifact_pinned: officialPinFor(key) } : {}),
+    } as never)
     .select("id")
     .single();
   if (ledgerError || !ledger) {
@@ -614,7 +556,7 @@ export async function installCatalogTheme(
     actor: actorId ?? null,
     action: "theme.installed",
     before: null,
-    after: { key, version_id: (version as { id: string }).id, via: "catalog" },
+    after: { key, version_id: (version as { id: string }).id, via: official ? "official" : "catalog" },
   });
   return { id: themeId, alreadyInstalled: false };
 }

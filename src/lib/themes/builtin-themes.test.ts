@@ -11,7 +11,7 @@ describe("builtin-themes single authority", () => {
   });
   it("resolves source modules without ZIP or JSON", () => {
     for (const key of OFFICIAL_THEME_KEYS) {
-      const entry = getBuiltinTheme(key);
+      const entry = getBuiltinTheme(key)!;
       expect(entry.key).toBe(key);
       expect(typeof entry.source).toBe("function");
       const src = entry.source();

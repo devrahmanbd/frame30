@@ -38,3 +38,46 @@ export function getBuiltinTheme(key: string): BuiltinThemeEntry | null {
 export function builtinThemeKeys(): BuiltinThemeKey[] {
   return [...OFFICIAL_THEME_KEYS];
 }
+
+/**
+ * Display metadata for the official catalogue section. Names come from the
+ * themes' own source modules (`BRAND_NAME*`); summaries describe the
+ * source-owned theme honestly (no installs/ratings — those stay honest
+ * zeros in `catalog-meta.ts`). Version is the documented source version:
+ * source has no version field, so the registry carries `1.0.0`.
+ */
+export type BuiltinThemeMeta = {
+  key: BuiltinThemeKey;
+  nameEn: string;
+  nameBn: string;
+  summaryEn: string;
+  summaryBn: string;
+  category: string;
+  version: string;
+};
+
+const META: Record<BuiltinThemeKey, BuiltinThemeMeta> = {
+  songoskriti: {
+    key: "songoskriti",
+    nameEn: "Songoskriti",
+    nameBn: "সংস্কৃতি",
+    summaryEn: "Official Framique heritage theme: jamdani, panjabi and festive craft.",
+    summaryBn: "অফিসিয়াল ফ্রামিক হেরিটেজ থিম।",
+    category: "general",
+    version: "1.0.0",
+  },
+  somvabona: {
+    key: "somvabona",
+    nameEn: "Somvabona",
+    nameBn: "সম্ভাবনা",
+    summaryEn: "Official Framique everyday theme: cotton, essentials and budget craft.",
+    summaryBn: "অফিসিয়াল ফ্রামিক দৈনন্দিন থিম।",
+    category: "general",
+    version: "1.0.0",
+  },
+};
+
+export function builtinThemeMeta(key: string): BuiltinThemeMeta | null {
+  if (!isOfficialThemeKey(key)) return null;
+  return META[key];
+}
