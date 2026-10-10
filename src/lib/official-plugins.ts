@@ -199,6 +199,19 @@ export function officialPluginSource(
   };
 }
 
+/**
+ * First-party registration for an official key: source manifest + display
+ * metadata, built from in-repo source. Carries NO install bytes — custom
+ * merchant ZIPs keep the `installPackage` pipeline exclusively, and the
+ * server builds official install material from this source at install time
+ * (never a checked-in or downloadable archive).
+ */
+export function getOfficialPlugin(
+  key: string,
+): OfficialPluginSource | null {
+  return officialPluginSource(key);
+}
+
 /* ------------------------------------------------- catalogue row shape */
 
 /**
