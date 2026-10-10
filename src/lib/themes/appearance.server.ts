@@ -776,7 +776,7 @@ export async function installUploadedTheme(
   // row. Dynamic imports keep this lane on the exact modules `installPackage`
   // runs (no copies, no cycles: the official-install path already imports
   // `package-install.server` this way).
-  const { parseZip, extractPackageFiles, validatePackageLayout } =
+  const { parseZip, extractPackageFiles, validatePackageLayout, collectBrokenAssetRefs } =
     await import("../package-zip");
   const { pkg1ThemeValidator } = await import("../package-install.server");
   const { scanSecrets, scopeCss } = await import("../custom-code");
@@ -796,6 +796,16 @@ export async function installUploadedTheme(
       );
     }
     assertUploadContentPolicy(files, { scanSecrets, scopeCss });
+    // Dangling asset refs fail closed like the installPackage lane: an
+    // archive whose templates point at files it does not ship is refused
+    // before the replay lookup or any write.
+    const broken = collectBrokenAssetRefs(files);
+    if (broken.length > 0) {
+      throw new ThemeDeskError(
+        "theme.upload_manifest",
+        `Theme references missing files: ${broken.slice(0, 5).join(", ")}.`,
+      );
+    }
     // Archive content, pipeline-shaped: `templates/*.json` parsed exactly
     // like `installPackage` (unparseable file = null, never a throw — the
     // row stays inert until Activate), manifest `tokens` object or {}.

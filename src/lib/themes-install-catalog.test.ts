@@ -215,6 +215,37 @@ describe("installUploadedTheme (upload server path)", () => {
     expect(audit[0].after).toMatchObject({ via: "upload" });
   });
 
+  it("deny: refuses archives with dangling assets/ refs, writing nothing", async () => {
+    const db = uploadDb();
+    const dangling = Buffer.from(
+      buildTestZip([
+        { name: "theme.json", content: strictUploadManifest() },
+        {
+          name: "templates/index.json",
+          content: JSON.stringify({
+            header: [],
+            main: [
+              { id: "m1", type: "hero", props: { image: "assets/missing.png" } },
+            ],
+            footer: [],
+          }),
+        },
+        { name: "locales/en.json", content: "{}" },
+      ]),
+    ).toString("base64");
+    const err = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      { fileName: "dangle.zip", fileBase64: dangling, idempotencyKey: "k-dangle" },
+      "user-9",
+    ).catch((e) => e);
+    expect(err?.code ?? err?.message).toMatch(/upload/);
+    expect(db.rows("store_themes")).toHaveLength(0);
+    expect(db.rows("theme_versions")).toHaveLength(0);
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+    expect(db.rows("theme_audit")).toHaveLength(0);
+  });
+
   it("deny: rejects a non-zip extension without writing anything", async () => {
     const db = uploadDb();
     const err = await installUploadedTheme(

@@ -1188,15 +1188,19 @@ export async function previewThemeUpdate(
     const targetKey = key ?? workspace.theme.sourceKey;
     if (!targetKey) return null;
     const catalogue = await listRegistry(db);
-    const entry = catalogue.find((t) => t.key === targetKey);
-    if (!entry)
+    // Official keys resolve from source even when no DB catalogue row names
+    // them (fresh environments); community keys still require the row.
+    const official = isOfficialThemeKey(targetKey);
+    if (!official && !catalogue.some((t) => t.key === targetKey))
       throw new BuilderError(
         "builder.registry_missing",
         "Theme not found in the registry",
       );
-    // O2: installed artifact authoritative — the upstream package comes
-    // from the installed registry row; missing rows fail closed, never source.
-    const pkg = await loadRegistryPackage(db, targetKey);
+    // Official upstream comes from the registered source definition;
+    // community upstream comes from the installed registry row.
+    const pkg = official
+      ? registryPackage(targetKey)
+      : await loadRegistryPackage(db, targetKey);
     const installedVersion =
       key && key !== workspace.theme.sourceKey
         ? null
@@ -1227,9 +1231,11 @@ export async function applyThemeUpdate(
   await rateLimit("builder.update", merchantId);
   return withSpan("builder.update", async () => {
     const workspace = await loadWorkspace(db, merchantId);
-    // O2: installed artifact authoritative — merge base comes from the
-    // installed registry row; missing rows fail closed, never source.
-    const pkg = await loadRegistryPackage(db, input.key);
+    // Official merge base comes from the registered source definition;
+    // community bases come from the installed registry row.
+    const pkg = isOfficialThemeKey(input.key)
+      ? registryPackage(input.key)
+      : await loadRegistryPackage(db, input.key);
     const templates = mergeTemplates(
       workspace.templates,
       pkg.templates,
