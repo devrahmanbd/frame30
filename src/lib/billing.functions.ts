@@ -12,8 +12,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 export const SONGOSKRITI_SEED_VERSION = "1.0.0";
 
 type SeedSongoskritiOutcome =
-  | { ok: true; created: boolean }
-  | { ok: false; reason: string };
+  { ok: true; created: boolean } | { ok: false; reason: string };
 
 /**
  * Songoskriti default content for new merchants (provisioning seed).
@@ -34,9 +33,7 @@ export async function seedSongoskritiBestEffort(
   merchantId: string,
 ): Promise<SeedSongoskritiOutcome> {
   try {
-    const { installOfficialTheme } = await import(
-      "./themes/appearance.server"
-    );
+    const { installOfficialTheme } = await import("./themes/appearance.server");
     const out = await installOfficialTheme(db, merchantId, "songoskriti");
     return { ok: true, created: !out.alreadyInstalled };
   } catch (err) {

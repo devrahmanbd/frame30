@@ -22,16 +22,20 @@ is a promise a reviewer can open the file and see the claim. Anything
 without a code pin is labeled **prose-only** or **TBD** and collected in
 [§13](#13-explicit-gaps-tbd-not-implementable-from-this-doc).
 
-## 0. What a package is
+## 0. What a package is — and what is not one
 
-A package is a `.zip` archive installed through one pipeline,
-`installPackage` (`src/lib/package-install.server.ts:535`), with kind
-`"theme"` or `"plugin"`. Official (Framique-built), community
-(third-party), and merchant-uploaded packages all install through the
-same pipeline — same validators, same ledger, same asset namespace.
-There is no separate official install path
-(`src/lib/themes/appearance.server.ts:394`,
-`src/lib/official-plugins.server.ts:177`).
+A custom package is a merchant/community `.zip` archive installed through
+one pipeline, `installPackage`
+(`src/lib/package-install.server.ts:535`), with kind `"theme"` or
+`"plugin"`. Official (Framique-built) themes and plugins are **not**
+packages: they are trusted source code in this repo, registered in
+`src/lib/themes/builtin-themes.ts:15` (themes) and
+`src/lib/official-plugins.ts:39` (plugins), installed from their source
+definitions with no ZIP construction and no archive transport. Both paths
+share runtime contracts — tenant authorization, ledger, audit, lifecycle
+guarantees — but never packaging internals
+(`installOfficialTheme`, `src/lib/themes/appearance.server.ts:354`;
+`installOfficialPlugin`, `src/lib/official-plugins.server.ts:182`).
 
 ## 1. Format (ZIP layout)
 
@@ -183,23 +187,31 @@ transactions (`src/lib/package-install.server.ts:905-928`).
 Plugin history is successive ledger rows, not `theme_versions`
 (`src/lib/package-install.server.ts:529-533`).
 
-### 3.3 Official catalogue (no separate path)
+### 3.3 Official catalogue (source model, separate path)
 
 - Official themes: exactly `songoskriti`, `somvabona`
-  (`OFFICIAL_THEME_KEYS`, `src/lib/themes/appearance.ts:71`).
+  (`OFFICIAL_THEME_KEYS`, `src/lib/themes/builtin-themes.ts:15`;
+  UI-order mirror at `src/lib/themes/appearance.ts:71`).
 - Official plugins: exactly `product-reviews`, `store-analytics`,
   `whatsapp-chat` (`OFFICIAL_PLUGIN_KEYS`,
   `src/lib/official-plugins.ts:39`).
-- Official theme install is literally `installPackage` (kind
-  `"theme"`, strict `pkg1ThemeValidator`) with internally-built bytes;
-  the only official touch is the post-commit `official:<key>` ledger
-  stamp (`installOfficialTheme`,
-  `src/lib/themes/appearance.server.ts:394`).
-- Official plugin install is literally `installPackage` (kind
-  `"plugin"`, `pkg1PluginValidator`) plus the same `official:<key>`
-  stamp and the host projection (`upsertPlugin`) with compensation on
-  failure (`installOfficialPlugin`,
-  `src/lib/official-plugins.server.ts:177`).
+- Official theme install initializes tenant rows from the registered
+  source definition through `installCatalogTheme`
+  (`src/lib/themes/appearance.server.ts:391`) — no ZIP, no
+  `installPackage`; the ledger carries the `official:<key>` provenance
+  pin at insert (`installOfficialTheme`,
+  `src/lib/themes/appearance.server.ts:354`).
+- Official plugin install is `installPackage` (kind `"plugin"`,
+  `pkg1PluginValidator`) over source-built bytes plus the same
+  `official:<key>` stamp and the host projection (`upsertPlugin`) with
+  compensation on failure (`installOfficialPlugin`,
+  `src/lib/official-plugins.server.ts:182`): the pipeline here is the
+  shared security contract (sandbox, capabilities, lifecycle), not a
+  shared distribution mechanism — no official plugin ZIP is checked in
+  or downloadable.
+- Artifact pins are `official:<key>`
+  (`officialPinFor`, `src/lib/themes/appearance.ts:83`;
+  `officialPluginPinFor`, `src/lib/official-plugins.ts:52`).
 - Artifact pins are `official:<key>`
   (`officialPinFor`, `src/lib/themes/appearance.ts:83`;
   `officialPluginPinFor`, `src/lib/official-plugins.ts:52`).

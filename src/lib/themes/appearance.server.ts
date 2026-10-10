@@ -406,7 +406,11 @@ export async function installCatalogTheme(
         "That theme is not in the catalogue.",
       );
     }
-    entry = { nameEn: meta.nameEn, version: meta.version, summaryEn: meta.summaryEn };
+    entry = {
+      nameEn: meta.nameEn,
+      version: meta.version,
+      summaryEn: meta.summaryEn,
+    };
   } else {
     const registry = await listRegistry(db);
     const found = registry.find((theme) => theme.key === key);
@@ -557,7 +561,11 @@ export async function installCatalogTheme(
     actor: actorId ?? null,
     action: "theme.installed",
     before: null,
-    after: { key, version_id: (version as { id: string }).id, via: official ? "official" : "catalog" },
+    after: {
+      key,
+      version_id: (version as { id: string }).id,
+      via: official ? "official" : "catalog",
+    },
   });
   return { id: themeId, alreadyInstalled: false };
 }
@@ -706,8 +714,7 @@ function assertUploadContentPolicy(
   deps: UploadContentDeps,
 ): void {
   for (const file of files) {
-    const isCss =
-      file.path.startsWith("styles/") && file.path.endsWith(".css");
+    const isCss = file.path.startsWith("styles/") && file.path.endsWith(".css");
     const isJsonText =
       file.path === "theme.json" ||
       file.path.startsWith("templates/") ||
@@ -777,8 +784,12 @@ export async function installUploadedTheme(
   // row. Dynamic imports keep this lane on the exact modules `installPackage`
   // runs (no copies, no cycles: the official-install path already imports
   // `package-install.server` this way).
-  const { parseZip, extractPackageFiles, validatePackageLayout, collectBrokenAssetRefs } =
-    await import("../package-zip");
+  const {
+    parseZip,
+    extractPackageFiles,
+    validatePackageLayout,
+    collectBrokenAssetRefs,
+  } = await import("../package-zip");
   const { pkg1ThemeValidator } = await import("../package-install.server");
   const { scanSecrets, scopeCss } = await import("../custom-code");
   let manifestName: string;
@@ -821,8 +832,7 @@ export async function installUploadedTheme(
         templates[key] = null;
       }
     }
-    const rawTokens = (verdict.manifest.raw as Record<string, unknown>)
-      ?.tokens;
+    const rawTokens = (verdict.manifest.raw as Record<string, unknown>)?.tokens;
     tokens =
       rawTokens !== null &&
       typeof rawTokens === "object" &&

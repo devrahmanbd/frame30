@@ -12,7 +12,8 @@ import {
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 
-const rec = vi.hoisted(() => ({ holder: null as any }));
+type Recorder = ReturnType<typeof metricRecorder>;
+const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
 const recorder = metricRecorder();
 rec.holder = recorder;
 

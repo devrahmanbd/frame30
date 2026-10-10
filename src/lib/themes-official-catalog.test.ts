@@ -10,7 +10,7 @@
  * `package-zip` / `package-install` / `themes-install-catalog` suites).
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { fakeDb } from "./__fixtures__/fake-db";
+import { fakeDb, type FakeDb } from "./__fixtures__/fake-db";
 import {
   metricRecorder,
   allowAllRateLimits,
@@ -30,9 +30,11 @@ const {
   listOfficialCatalog,
   loadThemesWorkspace,
 } = await import("./themes/appearance.server");
+const { previewTheme } = await import("./themes.server");
 const { sectionCatalogue } = await import("./themes/appearance");
 
 const MERCHANT = "33333333-3333-4333-8333-333333333333";
+const OTHER_MERCHANT = "55555555-5555-4555-8555-555555555555";
 const ACTOR = "user-official-1";
 
 function workspaceDb() {
@@ -246,5 +248,78 @@ describe("Frame30 official install initializes from source", () => {
       listing_slug: "somvabona",
       artifact_pinned: "official:somvabona",
     });
+  });
+
+  it("somvabona installs with source row shapes, never pipeline shapes", async () => {
+    const db = installDb();
+    await installOfficialTheme(db.asClient(), MERCHANT, "somvabona", ACTOR);
+    // Source init: published v1 labeled by key — not a draft pipeline row.
+    const versions = db.rows("theme_versions");
+    expect(versions).toHaveLength(1);
+    expect(versions[0]).toMatchObject({
+      status: "published",
+      label: "somvabona",
+    });
+    expect(JSON.stringify(versions[0])).toContain("/ph/somvabona/");
+    // No pipeline columns: no checksums, no blobs, no package audit action.
+    for (const row of [...versions, ...db.rows("marketplace_installs")]) {
+      expect("artifact_checksum" in row).toBe(false);
+      expect("artifactId" in row).toBe(false);
+    }
+    expect(db.rows("theme_audit").map((a) => a.action)).toEqual([
+      "theme.installed",
+    ]);
+  });
+
+  it("reinstall never overwrites merchant draft edits", async () => {
+    const db = installDb();
+    const first = await installOfficialTheme(
+      db.asClient(),
+      MERCHANT,
+      "songoskriti",
+      ACTOR,
+    );
+    // Merchant customizes: draft diverges from source.
+    const edited = {
+      index: {
+        header: [],
+        main: [{ id: "mine", type: "heading", props: {} }],
+        footer: [],
+      },
+    };
+    await db
+      .asClient<FakeDb>()
+      .from("theme_drafts")
+      .update({ templates: edited } as never)
+      .eq("theme_id", first.id);
+    const second = await installOfficialTheme(
+      db.asClient(),
+      MERCHANT,
+      "songoskriti",
+      ACTOR,
+    );
+    expect(second).toMatchObject({ id: first.id, alreadyInstalled: true });
+    expect(db.rows("store_themes")).toHaveLength(1);
+    expect(db.rows("theme_versions")).toHaveLength(1);
+    const drafts = db.rows("theme_drafts");
+    expect(drafts).toHaveLength(1);
+    expect((drafts[0] as { templates: unknown }).templates).toEqual(edited);
+  });
+
+  it("merchant preview reads the installed draft; foreigners get null", async () => {
+    const db = installDb();
+    const out = await installOfficialTheme(
+      db.asClient(),
+      MERCHANT,
+      "songoskriti",
+      ACTOR,
+    );
+    const preview = await previewTheme(db.asClient(), MERCHANT, out.id);
+    expect(preview).not.toBeNull();
+    expect(preview!.themeKey).toBe("songoskriti");
+    expect(JSON.stringify(preview!.templates)).toContain("/ph/songoskriti/");
+    expect(
+      await previewTheme(db.asClient(), OTHER_MERCHANT, out.id),
+    ).toBeNull();
   });
 });

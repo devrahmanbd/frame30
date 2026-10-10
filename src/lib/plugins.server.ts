@@ -123,9 +123,9 @@ export type UpsertInput = {
  */
 function isMissingConsentColumnError(err: unknown): boolean {
   const msg =
-    err instanceof Error ? err.message : (
-      (err as { message?: string } | null)?.message ?? String(err ?? "")
-    );
+    err instanceof Error
+      ? err.message
+      : ((err as { message?: string } | null)?.message ?? String(err ?? ""));
   if (!/consented_at/i.test(msg)) return false;
   return /column|schema cache|PGRST204|42703|does not exist/i.test(msg);
 }
