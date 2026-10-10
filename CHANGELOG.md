@@ -14,288 +14,529 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 > Coordinate deploy windows; after every deploy verify `git rev-parse HEAD`
 > AND a bundle marker before announcing; never reset shared history.
 
-## [2026-10-10 16:07 UTC] (v0.5-beta — c65ed3f6) — Bundle URL form fix
-### Fixed
-- Deploy bundle stores servable source-form image URLs (was package-form, 404ing in browsers); ZIP path unchanged. exportOfficialTheme gains urlForm option; source-leak gate honors it.
-### Verification
-- 257 tests green, tsc clean.
-## [2026-10-10 01:44 UTC] (v0.5-beta — c3811e9d) — Hallmark songoskriti voice pass
-### Changed
-- Section voices (editorial statements vs quiet utility heads), rail card-variant rhythm, promise single-sourced to trust zone, advMotion on 3 sections, 3-step type scale, quiet eyebrow, roman-only, bn-safe leadings.
-### Verification
-- Theme suites green, tsc clean, snapshots regenerated (class strings only).
-## [2026-10-07 21:14 UTC] (v0.5-beta — c40528f9) — Footer snapshot refresh
-### Changed
-- Snapshot/debrand suites re-pinned to the slim footer; snapshots regenerated.
-### Verification
-- Full theme gate green, tsc clean.
-## [2026-10-07 20:50 UTC] (v0.5-beta — f09963b6) — Official artifact bundle + source fallback removal
-### Added
-- Deploy-built official artifact bundle (checksummed, version-pinned) serving anonymous preview + catalogue; source fallback removed (fail-closed); official ZIP install parity proven.
-### Verification
-- Bundle/proof/parity suites green, tsc clean.
-## [2026-10-07 19:39 UTC] (v0.5-beta — dccb9463) — 48h sweep: PDP gallery fallback
-### Fixed
-- PDP gallery hides broken images to the tinted aspect box (rails already had MediaFrame fallback). No new missing-image bugs from recent lanes; hex/uppercase gates green.
-### Verification
-- 186 tests green, tsc clean.
-## [2026-10-07 19:30 UTC] (v0.5-beta — 046cadfb) — Footer legal bar restructure
-### Changed
-- ZONE 4 is now brand | payments | legal grid (stacked centered on mobile); small text raised to 70pct ink; legal links have 44px targets, nav landmark, hover underline.
-### Verification
-- 372 tests green, tsc clean.
-## [2026-10-07 18:57 UTC] (v0.5-beta — 5fef1e07) — Footer single newsletter, dedup payments
-### Fixed
-- Newsletter form back as exactly one in-sitemap zone (was duplicated, then removed entirely); standalone payment_icons section dropped (sitemap payment zone already covers it).
-### Verification
-- 140 theme tests green, tsc clean.
-## [2026-10-07 17:27 UTC] (v0.5-beta — 0f9aedf8) — Slim songoskriti footer
+## [Unreleased] (frame30) — Official source themes without ZIP distribution
+
 ### Removed
-- Footer statement + image, newsletter section, story link. Footer is link columns + payments + colophon only.
-### Verification
-- 584 theme tests green, tsc clean.
-## [2026-10-07 16:08 UTC] (v0.5-beta — cb3827e7) — Anonymous preview regression fix
-### Fixed
-- Anonymous visitors (no merchant context) resolve built-in previews via the legacy source floor again; only authenticated merchants with an installed set get fail-closed behavior.
-### Verification
-- Preview suites green (43), tsc clean.
-## [2026-10-07 14:34 UTC] (v0.5-beta — 230f03f2) — Zero-gap sweep
-### Fixed
-- scope-adapter red resolved (menus.read/write vocabulary + honest mapping); footer draft verified gone (backup retained); KB backfill 114 live vectors (204 await quota reset).
-### Verification
-- Full suite 5754/5756 → scope lane green; tsc clean.
-### Known gaps
-- OpenRouter quota exhausted again (429, 0 remaining) — 204 fallback rows await next reset; $10 credits recommended (shared with revision cron). Key rotation still pending (key verified working).
-## [2026-10-07 09:36 UTC] (v0.5-beta — aee6e442) — Consent binding, idempotency parity, onCall contract
-### Fixed
-- Widening updates require fresh covering grant (stored-grant diff, timestamped record); direct pipeline idempotency bound to key/kind/slug; host delegates pinned data-free.
-### Verification
-- Consent/idempotency/onCall suites green, tsc clean.
-## [2026-10-07 05:36 UTC] (v0.5-beta — 24d1120e) — Package hardening round
-### Fixed
-- Asset serving route with tenant/traversal/CSP guards; theme upload unified onto pipeline (archive templates installed); lifecycle fixtures strict.
-### Verification
-- Spot suites green, tsc clean.
-## [2026-10-07 01:04 UTC] (v0.5-beta — 013bdb0c) — Package completion rivalry
-### Added
-- Official plugin catalogue via normal pipeline; source fallback removed (installed authoritative, fail-closed); plugin rollback equivalence + atomicity proof; conflict detection + dependency ranges; lifecycle contract proof; canonical package docs; upload wiring (theme) + plugin upload fn/surface.
-### Verification
-- Lane suites green across all batches, tsc clean.
-## [2026-10-07 00:04 UTC] (v0.5-beta — d0f57cc3) — Songoskriti ported to package model
-### Added
-- Trial-claim seeds songoskriti 1.0.0 via normal installer (best-effort, never blocks); live proof: installed artifact serves index/product identical to source render.
-### Verification
-- 18 spot green, tsc clean. Assets stay namespaced (`themes/<versionId>/assets/`, `?v=` URLs) — nothing copied to global public/.
-## [2026-10-06 23:55 UTC] (v0.5-beta — a31d8121) — Official seed via normal installer
-### Fixed
-- Official seeder routes through installPackage (one installer for official + uploads); seed tests assert pipeline semantics (install never publishes).
-### Verification
-- 186 package tests green, tsc clean.
-## [2026-10-06 21:36 UTC] (v0.5-beta — 313be8b9) — Gallery + publish artifact payload
-### Added
-- Theme gallery lists installed keys alongside source keys; publishVersion consumes installed artifacts with source fallback. Joint lane (shared tree, verified together).
-### Verification
-- 69 spot green, tsc clean.
-## [2026-10-06 20:16 UTC] (v0.5-beta — 74b22584) — Switchover to installed artifacts
+
+- Official-only ZIP/export machinery: `theme-export.ts`, `official-artifacts.ts`, `official-artifacts-seed.server.ts`, `official-artifact-bundle.{ts,json}`, `scripts/build-official-artifact-bundle.ts` and their tests. `vite build` no longer generates a bundle first. Supersedes the c65ed3f6 "ZIP path unchanged" state: there is no official ZIP path anymore.
+
 ### Changed
-- Strict manifest validators are the pipeline default; marketplace distributes exact-ZIP artifacts; builder discovers installed packages; preview resolves installed artifacts; packages.md gates honestly split (enforced/elsewhere/aspirational).
-### Verification
-- Spot suites green, tsc clean, prettier clean.
-### Follow-ups
-- DB migration for artifact columns; asset GC for marketplace installs; gallery listing of installed keys; live publishVersion in-chain.
-## [2026-10-06 19:26 UTC] (v0.5-beta — 654b9d7c) — Package pipeline gaps closed
+
+- Official Songoskriti/Somvabona install, catalogue, anonymous/merchant preview, update-check and trial-claim seeding resolve from the built-in source registry (`builtin-themes.ts`) and initialize tenant rows directly — no `buildExportZip()`, no `installPackage()` on official paths (pinned by a suite that blocks the pipeline module and still installs).
+- `docs/packages/contract.md` §0/§3.3 corrected to the two-model boundary; `developers/themes.md` + `developers/plugins.md` describe official-source vs custom-ZIP.
+
+### Preserved
+
+- Custom merchant ZIP pipeline untouched: `package-zip.ts`, `package-install.server.ts`, `package-store.server.ts`, `plugin-package.ts`, upload lane (now also rejects dangling `assets/` refs), all archive-security suites green.
+
+## [2026-10-10 16:07 UTC] (v0.5-beta — c65ed3f6) — Bundle URL form fix
+
 ### Fixed
+
+- Deploy bundle stores servable source-form image URLs (was package-form, 404ing in browsers); ZIP path unchanged. exportOfficialTheme gains urlForm option; source-leak gate honors it.
+
+### Verification
+
+- 257 tests green, tsc clean.
+
+## [2026-10-10 01:44 UTC] (v0.5-beta — c3811e9d) — Hallmark songoskriti voice pass
+
+### Changed
+
+- Section voices (editorial statements vs quiet utility heads), rail card-variant rhythm, promise single-sourced to trust zone, advMotion on 3 sections, 3-step type scale, quiet eyebrow, roman-only, bn-safe leadings.
+
+### Verification
+
+- Theme suites green, tsc clean, snapshots regenerated (class strings only).
+
+## [2026-10-07 21:14 UTC] (v0.5-beta — c40528f9) — Footer snapshot refresh
+
+### Changed
+
+- Snapshot/debrand suites re-pinned to the slim footer; snapshots regenerated.
+
+### Verification
+
+- Full theme gate green, tsc clean.
+
+## [2026-10-07 20:50 UTC] (v0.5-beta — f09963b6) — Official artifact bundle + source fallback removal
+
+### Added
+
+- Deploy-built official artifact bundle (checksummed, version-pinned) serving anonymous preview + catalogue; source fallback removed (fail-closed); official ZIP install parity proven.
+
+### Verification
+
+- Bundle/proof/parity suites green, tsc clean.
+
+## [2026-10-07 19:39 UTC] (v0.5-beta — dccb9463) — 48h sweep: PDP gallery fallback
+
+### Fixed
+
+- PDP gallery hides broken images to the tinted aspect box (rails already had MediaFrame fallback). No new missing-image bugs from recent lanes; hex/uppercase gates green.
+
+### Verification
+
+- 186 tests green, tsc clean.
+
+## [2026-10-07 19:30 UTC] (v0.5-beta — 046cadfb) — Footer legal bar restructure
+
+### Changed
+
+- ZONE 4 is now brand | payments | legal grid (stacked centered on mobile); small text raised to 70pct ink; legal links have 44px targets, nav landmark, hover underline.
+
+### Verification
+
+- 372 tests green, tsc clean.
+
+## [2026-10-07 18:57 UTC] (v0.5-beta — 5fef1e07) — Footer single newsletter, dedup payments
+
+### Fixed
+
+- Newsletter form back as exactly one in-sitemap zone (was duplicated, then removed entirely); standalone payment_icons section dropped (sitemap payment zone already covers it).
+
+### Verification
+
+- 140 theme tests green, tsc clean.
+
+## [2026-10-07 17:27 UTC] (v0.5-beta — 0f9aedf8) — Slim songoskriti footer
+
+### Removed
+
+- Footer statement + image, newsletter section, story link. Footer is link columns + payments + colophon only.
+
+### Verification
+
+- 584 theme tests green, tsc clean.
+
+## [2026-10-07 16:08 UTC] (v0.5-beta — cb3827e7) — Anonymous preview regression fix
+
+### Fixed
+
+- Anonymous visitors (no merchant context) resolve built-in previews via the legacy source floor again; only authenticated merchants with an installed set get fail-closed behavior.
+
+### Verification
+
+- Preview suites green (43), tsc clean.
+
+## [2026-10-07 14:34 UTC] (v0.5-beta — 230f03f2) — Zero-gap sweep
+
+### Fixed
+
+- scope-adapter red resolved (menus.read/write vocabulary + honest mapping); footer draft verified gone (backup retained); KB backfill 114 live vectors (204 await quota reset).
+
+### Verification
+
+- Full suite 5754/5756 → scope lane green; tsc clean.
+
+### Known gaps
+
+- OpenRouter quota exhausted again (429, 0 remaining) — 204 fallback rows await next reset; $10 credits recommended (shared with revision cron). Key rotation still pending (key verified working).
+
+## [2026-10-07 09:36 UTC] (v0.5-beta — aee6e442) — Consent binding, idempotency parity, onCall contract
+
+### Fixed
+
+- Widening updates require fresh covering grant (stored-grant diff, timestamped record); direct pipeline idempotency bound to key/kind/slug; host delegates pinned data-free.
+
+### Verification
+
+- Consent/idempotency/onCall suites green, tsc clean.
+
+## [2026-10-07 05:36 UTC] (v0.5-beta — 24d1120e) — Package hardening round
+
+### Fixed
+
+- Asset serving route with tenant/traversal/CSP guards; theme upload unified onto pipeline (archive templates installed); lifecycle fixtures strict.
+
+### Verification
+
+- Spot suites green, tsc clean.
+
+## [2026-10-07 01:04 UTC] (v0.5-beta — 013bdb0c) — Package completion rivalry
+
+### Added
+
+- Official plugin catalogue via normal pipeline; source fallback removed (installed authoritative, fail-closed); plugin rollback equivalence + atomicity proof; conflict detection + dependency ranges; lifecycle contract proof; canonical package docs; upload wiring (theme) + plugin upload fn/surface.
+
+### Verification
+
+- Lane suites green across all batches, tsc clean.
+
+## [2026-10-07 00:04 UTC] (v0.5-beta — d0f57cc3) — Songoskriti ported to package model
+
+### Added
+
+- Trial-claim seeds songoskriti 1.0.0 via normal installer (best-effort, never blocks); live proof: installed artifact serves index/product identical to source render.
+
+### Verification
+
+- 18 spot green, tsc clean. Assets stay namespaced (`themes/<versionId>/assets/`, `?v=` URLs) — nothing copied to global public/.
+
+## [2026-10-06 23:55 UTC] (v0.5-beta — a31d8121) — Official seed via normal installer
+
+### Fixed
+
+- Official seeder routes through installPackage (one installer for official + uploads); seed tests assert pipeline semantics (install never publishes).
+
+### Verification
+
+- 186 package tests green, tsc clean.
+
+## [2026-10-06 21:36 UTC] (v0.5-beta — 313be8b9) — Gallery + publish artifact payload
+
+### Added
+
+- Theme gallery lists installed keys alongside source keys; publishVersion consumes installed artifacts with source fallback. Joint lane (shared tree, verified together).
+
+### Verification
+
+- 69 spot green, tsc clean.
+
+## [2026-10-06 20:16 UTC] (v0.5-beta — 74b22584) — Switchover to installed artifacts
+
+### Changed
+
+- Strict manifest validators are the pipeline default; marketplace distributes exact-ZIP artifacts; builder discovers installed packages; preview resolves installed artifacts; packages.md gates honestly split (enforced/elsewhere/aspirational).
+
+### Verification
+
+- Spot suites green, tsc clean, prettier clean.
+
+### Follow-ups
+
+- DB migration for artifact columns; asset GC for marketplace installs; gallery listing of installed keys; live publishVersion in-chain.
+
+## [2026-10-06 19:26 UTC] (v0.5-beta — 654b9d7c) — Package pipeline gaps closed
+
+### Fixed
+
 - Version-row tokens passthrough (official tokens reach theme_versions); 32MB archive cap (Songoskriti installs under defaults); parity tests assert fixed behavior.
 - Committed the full package program (manifest validators, exporters, acceptance suites) that was green-but-uncommitted.
+
 ### Verification
+
 - 189 package tests green, tsc clean.
+
 ## [2026-10-06 17:32 UTC] (v0.5-beta — 0300b017) — Docs follow-up completion
+
 ### Changed
+
 - app-blocks per-bullet planned qualifiers; blueprint files verified bannered-historical (bodies untouched); internal guides re-pinned (~70 pins, headers bumped).
+
 ### Verification
+
 - Prettier clean; pin spot-checks pass. Blueprint 117-widget count left stale by design (banner covers it).
+
 ## [2026-10-06 02:22 UTC] (v0.5-beta — 0218c4d6) — Final docs synchronization
+
 ### Changed
+
 - Internal docs synced to final architecture (registry model, chrome surfaces, no-branches rule); superseded docs explicitly bannered; 10-guide public developer path built; sdk/packages/plugins pins corrected to HEAD; footer pins repointed to canonical proof modules.
+
 ### Verification
+
 - 329 pins verified (135 + 55 + 139 + spot fixes); prettier clean; examples compile against source.
+
 ### Known gaps
+
 - app-blocks planned-markers need per-bullet qualifiers; theme-plan blueprints out of scope; internal/superpowers digit drift untouched.
+
 ## [2026-10-06 02:20 UTC] (v0.5-beta — 8b8b015a) — Final verification sweep
+
 ### Fixed
+
 - DoD PluginBlock exemption (opaque themeKey forward documented + asserted); localization compact-state test updated to theme-owned announcement heights.
+
 ### Verification
+
 - Full suite 5403/5405 (scope-adapter sibling-owned; see below), tsc repo-wide clean.
+
 ### Known gaps
+
 - scope-adapter.test.ts red — sibling session's uncommitted work, not ours.
+
 ## [2026-10-05 23:19 UTC] (v0.5-beta — 711b03cb) — Presentation runtime finish
+
 ### Added
+
 - Header shells delegate via registry (songoskriti mega/accordion vs somvabona dropdown/disclosure); announcement theme presentations with hook-owned behavior; footer canonical path; plugin menu replacement end to end (cross-slot fix, fail-open boundary); repeater round-trip suite (20 widgets); two-theme acceptance (12 tests, all surfaces).
+
 ### Verification
+
 - Acceptance green with zero implementation edits; tsc repo-wide clean.
+
 ### Follow-ups
+
 - menu_dropdown presentation replacement (by design, engine rows only); mixed-template dual drivers; drawer-failure SSR limit; R5 repeater tsc cast owned and fixed here.
+
 ## [2026-10-05 20:15 UTC] (v0.5-beta — d3bc2aa5) — Presentation runtime v2
+
 ### Added
+
 - Theme-owned header nav markup per theme (structurally distinct, shared keeps data+behavior); Class A/B community widget contract (plugin declares, theme dresses, island fallback, sandbox untouched); menu renderer replacement end to end (fail-open to theme default); announcement + footer per-theme proof tests.
+
 ### Verification
+
 - Spot suites green (143 incl. new proofs), tsc clean except sibling-owned footer-presentation.tsx error (parked, not ours).
+
 ### Follow-ups
+
 - Prod registration wiring for proof modules; footer module winner (proof vs sibling draft); CollectionView archetypes edge; TokenEditor variation map move.
+
 ## [2026-10-05 18:41 UTC] (v0.5-beta — 390aa330) — True independence residuals
+
 ### Added
+
 - Prod registration wiring (theme preview entries re-export header presentations); header-fallback consolidated to neutral `header-copy.ts` re-export shim; CollectionView on the neutral path; TokenEditor variation map moved to the studio host (`variations[]` prop, themeKey preview-link-only).
+
 ### Verification
+
 - Spot suites green (DoD 11, variations 37, CollectionView incl. new pins), tsc clean.
+
 ### Follow-ups
+
 - Residual shared→theme edge: `CollectionView.tsx` archetypes import (archetype lane's property); `header-fallback.ts` shim removable once importers migrate.
 
 ## [2026-10-05 18:32 UTC] (v0.5-beta — 6f6f2ea2) — Theme presentation registry + header de-theming + DoD green
+
 ### Added
+
 - Per-widget theme presentation registry (`theme-presentations.ts`, first-wins, never throws) composed over component resolution; header de-themed (neutral `header-copy.ts`, both themes registered, canonical modes wired); docs reframed (tokens/skins one layer); DoD 11/11 via documented TokenEditor exemption.
+
 ### Verification
+
 - Spot suites green, tsc clean.
+
 ### Follow-ups
+
 - Prod registration wiring, header-fallback consolidation, CollectionView archetypes edge, TokenEditor variation map move.
 
 ## [2026-10-05 17:33 UTC] (v0.5-beta — a85d2f2b) — Gate repairs
+
 ### Fixed
+
 - OpenAPI spec covers the renewal cron route (18/18); `global_ref` graduated to the palette now its twin exists (157 entries); stale graduation comments updated.
+
 ### Verification
+
 - 642 spot green, tsc clean. Remaining reds (`definition-of-done` theme identity, `scope-adapter`) are pre-existing/sibling-owned, proven by stashed-tree runs.
 
 ## [2026-10-05 13:57 UTC] (v0.5-beta — c219cab8) — Lane 4 menu+capability+contracts
+
 ### Added
+
 - Canonical menu type (bitext, children, badge, promo) + dropdown/drawer modes (additive, unwired); builder capability API (`capabilitiesFor`); presentation-primitives doc; 32 contract tests (lifecycle, themes, chrome).
+
 ### Verification
+
 - 550 spot green, tsc clean. Follow-ups: dashboard menu columns need migration; mode plumbing; live publishVersion in-chain.
 
 ## [2026-10-05 13:48 UTC] (v0.5-beta — 0ca8b815) — Lane 3 chrome splits
+
 ### Added
+
 - Header 3-layer split (identical output); standalone announcement surface (dismiss persisted, bn, reduced-motion); footer split + global-block control; 24 structural localization tests.
+
 ### Verification
+
 - 103 spot green, tsc clean.
 
 ## [2026-10-05 13:39 UTC] (v0.5-beta — 00b58b8c) — Lane 2 recovery+acceptance
+
 ### Added
+
 - Last-good auto-serve (prior pin else $fallback, audited); DemoProductWidget two-theme proof (via product_rail); 7-link chained plugin acceptance.
+
 ### Verification
+
 - Spot suites green, tsc clean.
 
 ## [2026-10-05 13:29 UTC] (v0.5-beta — 5aa546f3) — Lane 1 tokens+proof+tiers
+
 ### Added
+
 - StoreHeader tokenized (31 swaps, parity pinned); hero 5-item repeater proof; core/community tier vocabulary.
+
 ### Verification
+
 - 87 spot green, tsc clean.
 
 ## [2026-10-03 16:20 UTC] (v0.5-beta — 5b14a892) — Phase 5 trust docs
+
 ### Added
+
 - `review-policy.md` (no-plugin-territory rule with 5 locked rejection reasons + review process with semver resubmission and appeal path); `theme-updates.md` (versioning + rollback promise + override story).
+
 ### Verification
+
 - 73/73 pins resolve; prettier clean. Open TBDs marked in-doc (reviewer SLA, appeal queue, rollback retention, Restore click-path).
 
 ## [2026-10-03 16:16 UTC] (v0.5-beta — d95316b6) — Phase 4 picker bindings
+
 ### Added
+
 - Picked-rows bindings (menu/product/article/page/search) with `parsePickedHandles` normaliser; renderers prefer picks, degrade to empty states.
+
 ### Verification
+
 - 4465 lib tests green (2 pre-existing reds proven via stashed-tree check), tsc clean.
 
 ## [2026-10-03 15:57 UTC] (v0.5-beta — 827065a2) — Phase 3 motion ceiling
+
 ### Added
+
 - `count-up` + `scroll-scrub` JS executors (lazy, IO-gated, reduced-motion static); per-theme motion budgets blocking in publish gate; slide/zoom reveal vocab mapping.
+
 ### Verification
+
 - 254 tests green, `tsgo` clean.
 
 ## [2026-10-03 15:50 UTC] (v0.5-beta — 6f47a9ef) — Phase 2b Globals
+
 ### Added
+
 - `global_ref` studio twin + renderer branch; merchant Globals editor bound to `var(--fq-g-*)`.
+
 ### Verification
+
 - 591 tests green, tsc clean.
 
 ## [2026-10-03 15:37 UTC] (v0.5-beta — a58fcb48) — Phase 2a templates+zones
+
 ### Added
+
 - Template suffix + fallback chain; named zones as data; `global_ref` section type; widget prop hints for lane fields.
+
 ### Verification
+
 - 29 new + 873 adjacent tests green, tsc clean.
 
 ## [2026-10-03 15:11 UTC] (v0.5-beta — 149dec58) — Phase 1 trust gates
+
 ### Added
+
 - Blocking a11y gates + reduced-motion gate wiring; Theme Security page + `advCss`/html lint (caught real sanitizer residuals); 10 responsive flags (17→27 catalog); openspec/ extracted from the oceanblue branch (scratch left behind).
+
 ### Verification
+
 - Phase suites green, `tsgo`/`tsc` clean.
+
 ### Corrections
+
 - No dep-deny module or SRI rule exist; gsap is the required single engine (policy sentence only). Responsive rail-limit mirrors added post-lane.
 
 ## [2026-10-03 12:29 UTC] (v0.5-beta — d3fc715d) — Variation server persistence + live render + picker
+
 ### Added
+
 - `parseUntrusted` preserves well-formed variation keys; workspace round-trips through autosave/commit/publish; `setVariation` picker seam; live published-version resolution (requested > persisted > base); builder theme-panel picker with `?variation=` preview links.
+
 ### Verification
+
 - 305 wide + 67 spot tests green, `tsgo` clean.
 
 ## [2026-10-03 10:06 UTC] (v0.5-beta — f809f70d) — Variations system + preview + starters
+
 ### Added
+
 - `ThemeVariation` registry (tokens + skin defaults only), base < variation < authored precedence, `?variation=` preview, per-store persistence helpers, 2 starters per theme.
+
 ### Known gaps
+
 - Server persistence wiring and onboarding picker landed separately (`d3fc715d`); live storefronts rendered base until then.
 
 ## [2026-10-03 09:56 UTC] (v0.5-beta — 7e2cc57a) — Menu replacement API
+
 ### Added
+
 - `menu_bar` / `menu_dropdown` / `menu_drawer` plugin slots (rows in, markup out), full renderer swap behind review with fail-open fallback, menu permission scope.
+
 ### Verification
+
 - 128 tests green, tsc clean.
 
 ## [2026-10-03 09:43 UTC] (v0.5-beta — ce127903) — PDP variant pipeline fix
+
 ### Fixed
+
 - Picker publishes on the variant channel; buy box consumes with default fallback; cart lines stamped with variant + options string (dashboard `variant_name` reads correctly); sold-out selection blocked bilingually. Root cause: themed buy box had no submit wiring and the picker never published.
+
 ### Verification
+
 - 163 tests green, tsc clean.
 
 ## [2026-10-03 08:31 UTC] (v0.5-beta — 1c0f3d61) — Creation.md prettier
+
 ### Fixed
+
 - Prettier clean.
 
 ## [2026-10-03 08:31 UTC] (v0.5-beta — eda123bf) — Creation.md pin pass
+
 ### Fixed
+
 - PropValue / FieldKind / CatalogEntry / layout pins corrected to HEAD lines; prettier clean.
 
 ## [2026-10-03 08:15 UTC] (v0.5-beta — a54b0b09) — Revert currency switcher
+
 ### Removed
+
 - `CurrencySwitcher.tsx`, its test, and the ThemeChrome mount. BD-only platform decision; fx snapshot stack stays dormant underneath.
+
 ### Verification
+
 - ThemeChrome + StoreHeader suites green, tsc clean.
 
 ## [2026-10-03 06:41 UTC] (v0.5-beta — b0b2369f) — Follow-ups round
+
 ### Added
+
 - Trial-claim KB seeding + `convertTrialToPaid` with `renews_at`; `rail_behavior_scores` RPC with inline fallback; 33 semantic pin fixes; listing term prices; display-only currency switcher (later reverted in `a54b0b09`); zod validators threaded; renewal cron wired (18 jobs).
+
 ### Changed
+
 - Live DB: 6 migrations applied; 96 KB docs seeded (16 × 6 merchants).
+
 ### Known gaps
+
 - OpenRouter free-tier quota exhausted at seed time (61 live vectors, 257 fallback); backfill rerun pending quota. Pre-existing trials: zero rows, no backfill needed.
 
 ## [2026-10-03 03:05 UTC] (v0.5-beta — d219a70b) — Lanes F–I
+
 ### Added
+
 - Docs re-pin + motion-semantics page + retirement note; install billing + renewal cron; behavior-ranked `recommended`; voice mic + suggestion ranking.
 
 ## [2026-10-02 22:10 UTC] (v0.5-beta — 1bb2cef6) — Motion manifest
+
 ### Added
+
 - Closed `MOTION_EFFECTS` vocab, SectionRenderer `fq-fx` hook, CSS executors with reduced-motion + `motion:none` collapse, resolver + persist + engine tests.
 
 ## [2026-10-02 22:07 UTC] (v0.5-beta — ab416bcf) — Lane D themes
+
 ### Added
+
 - Recently-viewed rails + mobile `bp` references on both homepages (21/12 pins); per-theme blog skins; Somvabona dark reference set; rail `limit`/`collection` fields (themed limits were silently dropping).
 
 ## [2026-10-02 22:01 UTC] (v0.5-beta — 8e846c50) — Lane C studio
+
 ### Added
+
 - Skin selects on 5 skinnable widgets; new-field controls (promo, countdown, aspect, voice); responsive column flags; twin skin defaults.
 
 ## [2026-10-02 21:53 UTC] (v0.5-beta — 3fb7c609) — Lane A catalog+parse core, Lane B promo/countdown/tile renderers
+
 ### Added
+
 - Lane A catalog+parse core; lane B promo/countdown/tile renderers; menu promo panels; urgency countdown (shared `Countdown` primitive); image-first tiles.
 
 ## [2026-10-02 21:38 UTC] (v0.5-beta — 664a8064) — Builder ADV persist passthrough + promo/countdown/tile fields
-### Added
-- `adv*` persist through parse (round-trip tested); mega promo fields; urgency `endsAt`; tile aspect variant; `emptyText` BN twins; voice flag.
 
+### Added
+
+- `adv*` persist through parse (round-trip tested); mega promo fields; urgency `endsAt`; tile aspect variant; `emptyText` BN twins; voice flag.
 
 - Page builder is the content editor URL (`/dashboard/content/editor`):
   full-window Elementor-style takeover (Elements/SEO tabs, flush canvas,
@@ -309,6 +550,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   when one exists (`currentMerchantPrimaryHostFn`).
 
 ### Changed
+
 ### Security
 
 - Theme preview is system-domain-only: `/theme-preview/*` on merchant/custom
@@ -317,7 +559,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   mapped merchant hosts (proven live: identical 200/160243B on
   flamelancer.com and framique.qubickle.com). Builder `?preview_theme_id=`
   and signed split previews unaffected. Pinned by `theme-preview-gate` unit
-  + contract tests (17 tests).
+  - contract tests (17 tests).
 
 ### Changed
 
@@ -340,7 +582,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   Rule cut in `docs/themes/creation.md` §13 (the Elementor rule): one
   renderer per key, brand copy in builders/props only, no cross-theme
   imports, own demo catalog per theme. Tracked for remediation; guard tests
-  + lint layer to enforce.
+  - lint layer to enforce.
 
 ### Verification (live, https://framique.qubickle.com)
 
