@@ -2,6 +2,20 @@
 
 Last verified 2026-09-26.
 
+## Two distribution models (Frame30)
+
+- **Official plugins** (`product-reviews`, `store-analytics`,
+  `whatsapp-chat`, registered in `src/lib/official-plugins.ts`) are
+  first-party source in this repo. No ZIP is checked in or downloadable;
+  installs build deterministically from source and run the same pipeline
+  gates (validators, ledger, sandbox, capabilities, scope consent) as any
+  other install — built-in status never bypasses tenant authorization or
+  sensitive-operation checks.
+- **Custom plugins** (this guide) are merchant/community ZIP packages
+  through the `installPackage` pipeline with sandbox, capabilities, scope
+  consent, versioning, asset isolation and rollback. Failed installs never
+  touch other tenants.
+
 This guide takes you from an empty folder to a reviewed plugin listing: one
 namespaced widget, one signed server hook, one consent screen. Work through it
 in order. Each section points at the exact source that enforces the rule, so a

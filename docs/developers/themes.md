@@ -1,7 +1,26 @@
 # Build a third-party theme
 
 Last verified 2026-09-26 against HEAD. This guide covers the full path
-from a blank folder to an accepted theme submission. For authoring
+from a blank folder to an accepted theme submission.
+
+## Two distribution models (Frame30)
+
+Framique ships two distinct distribution models that share runtime
+contracts (tenant isolation, validation, audit) but not packaging:
+
+- **Official themes** (Songoskriti, Somvabona) are first-party source in
+  this repo, registered in `src/lib/themes/builtin-themes.ts` and rendered
+  through their trusted source modules. Installing one initializes the
+  merchant's theme records from the source definition — no ZIP is built,
+  installed, or downloadable. Image URLs stay source-form (`/ph/<theme>/`);
+  package-relative `assets/` refs exist only inside ZIP payloads.
+- **Custom themes** (this guide) are merchant/community ZIP packages:
+  Upload → archive validation → manifest/API validation → security checks
+  → isolated installation → sandboxed preview → merchant approval →
+  activation, enforced by `src/lib/package-zip.ts` and the install
+  pipeline. Failed uploads never touch the active theme or another tenant.
+
+For authoring
 internals read [the theme authoring reference](../themes/creation.md);
 for runtime behavior (token channel, preview engine, persist shape, twin
 parity) read [the builder runtime guide](../04-builder/README.md); for
