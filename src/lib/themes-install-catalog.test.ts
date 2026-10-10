@@ -558,3 +558,36 @@ describe("upload storage quota (threat-defense)", () => {
     expect(db.rows("theme_audit")).toHaveLength(0);
   });
 });
+
+describe("upload audit inventory (threat-defense)", () => {
+  it("records external URLs from the archive in the install audit", async () => {
+    const db = uploadDb();
+    const flagged = Buffer.from(
+      buildTestZip([
+        { name: "theme.json", content: strictUploadManifest() },
+        {
+          name: "templates/index.json",
+          content: JSON.stringify({
+            header: [],
+            main: [{ id: "m1", type: "hero", props: { pixel: "https://track.example.com/p.gif" } }],
+            footer: [],
+          }),
+        },
+        { name: "locales/en.json", content: "{}" },
+      ]),
+    ).toString("base64");
+    const out = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      { fileName: "shop.zip", fileBase64: flagged, idempotencyKey: "k-inv" },
+      "user-9",
+    );
+    expect(out.alreadyInstalled).toBe(false);
+    const audit = db.rows("theme_audit");
+    expect(audit).toHaveLength(1);
+    expect(audit[0].after).toMatchObject({
+      via: "upload",
+      externalUrls: ["https://track.example.com/p.gif"],
+    });
+  });
+});

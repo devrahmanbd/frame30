@@ -16,6 +16,8 @@ import {
 } from "@/lib/themes.server";
 import { catalogMeta } from "./catalog-meta";
 import { builtinThemeMeta, getBuiltinTheme } from "./builtin-themes";
+import type { PackageFile } from "../package-zip";
+import { inventoryExternalUrls } from "../package-review";
 import {
   isNewerVersion,
   MAX_THEME_UPLOAD_BYTES,
@@ -565,6 +567,12 @@ export async function installCatalogTheme(
       key,
       version_id: (version as { id: string }).id,
       via: official ? "official" : "catalog",
+      externalUrls: inventoryExternalUrls([
+        {
+          path: "templates.json",
+          bytes: new TextEncoder().encode(JSON.stringify(pkg.templates)),
+        },
+      ]),
     },
   });
   return { id: themeId, alreadyInstalled: false };
@@ -796,9 +804,10 @@ export async function installUploadedTheme(
   let manifestVersion: string;
   let templates: Record<string, unknown>;
   let tokens: Record<string, unknown>;
+  let files: PackageFile[];
   try {
     const entries = parseZip(bytes, UPLOAD_ZIP_LIMITS);
-    const files = extractPackageFiles(bytes, entries, UPLOAD_ZIP_LIMITS);
+    files = extractPackageFiles(bytes, entries, UPLOAD_ZIP_LIMITS);
     const layout = validatePackageLayout(files, "theme", UPLOAD_ZIP_LIMITS);
     const verdict = pkg1ThemeValidator(layout.manifest, "theme");
     if (!verdict.ok) {
@@ -997,6 +1006,7 @@ export async function installUploadedTheme(
       version_id: (version as { id: string }).id,
       via: "upload",
       bytes: bytes.length,
+      externalUrls: inventoryExternalUrls(files),
     },
   });
   return { id: themeId, alreadyInstalled: false };

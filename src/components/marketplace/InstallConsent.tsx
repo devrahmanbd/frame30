@@ -13,6 +13,8 @@ export type ConsentVersion = {
   changelog: string | null;
   content_hash: string;
   size_bytes: number;
+  /** Absolute http(s) URLs the version talks to (threat-defense inventory). */
+  externalUrls?: string[];
 };
 
 const RISK_STYLE: Record<string, string> = {
@@ -69,6 +71,22 @@ export function InstallConsent({
           <p className="mt-3 rounded-fq-md border border-border bg-muted p-3 text-sm">
             {version.changelog}
           </p>
+        )}
+
+        {(version?.externalUrls?.length ?? 0) > 0 && (
+          <div className="mt-3 rounded-fq-md border border-warning/50 bg-warning/10 p-3 text-sm">
+            <p className="font-medium">
+              {t(
+                "This version contacts these external addresses:",
+                "এই সংস্করণ এসব বাইরের ঠিকানায় যোগাযোগ করে:",
+              )}
+            </p>
+            <ul className="mt-1 list-disc pl-5 text-xs">
+              {version!.externalUrls!.map((url) => (
+                <li key={url}>{url}</li>
+              ))}
+            </ul>
+          </div>
         )}
 
         {required.length === 0 ? (
