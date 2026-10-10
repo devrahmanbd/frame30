@@ -135,7 +135,7 @@ export function assertSafePackagePath(rawName: string): string {
   if (rest.length === 0)
     fail("zip.unsafe_path", "Archive entry path resolves to nothing.");
   for (const seg of rest) {
-    if (seg === "" || seg === "." || seg === "..") {
+    if (seg === "" || seg === "." || seg === ".." || seg === "__MACOSX") {
       fail(
         "zip.unsafe_path",
         `Unsafe entry path in package: ${name.slice(0, 80)}`,
@@ -147,6 +147,8 @@ export function assertSafePackagePath(rawName: string): string {
 
 const UNIX_FILE_TYPE_MASK = 0xf000;
 const UNIX_SYMLINK = 0xa000;
+const UNIX_REGULAR = 0x8000;
+const UNIX_DIRECTORY = 0x4000;
 
 /**
  * Parse the central directory: entry list + security posture. Extracts
@@ -201,6 +203,7 @@ export function parseZip(bytes: Uint8Array, over?: ZipLimits): ZipEntry[] {
     fail("zip.malformed", "Central directory runs past the end of the file.");
 
   const entries: ZipEntry[] = [];
+  const seenPaths = new Set<string>();
   let off = centralOffset;
   let totalInflated = 0;
   for (let n = 0; n < count; n++) {
@@ -233,6 +236,32 @@ export function parseZip(bytes: Uint8Array, over?: ZipLimits): ZipEntry[] {
     const isDirectory = safeName.endsWith("/");
     if (((externalAttrs >>> 16) & UNIX_FILE_TYPE_MASK) === UNIX_SYMLINK) {
       fail("zip.symlink", `Symlink entry refused: ${safeName.slice(0, 80)}`);
+    }
+    // Device nodes, fifos and sockets never belong in a theme/plugin
+    // package: only regular files, directories, or absent mode bits
+    // (common from Windows packagers) are admitted.
+    const fileType = (externalAttrs >>> 16) & UNIX_FILE_TYPE_MASK;
+    if (
+      fileType !== 0 &&
+      fileType !== UNIX_REGULAR &&
+      fileType !== UNIX_DIRECTORY
+    ) {
+      fail(
+        "zip.special_file",
+        `Special file entry refused: ${safeName.slice(0, 80)}`,
+      );
+    }
+    // Exact-duplicate file entries make validate-vs-extract ambiguous
+    // (which copy wins); refuse instead of guessing. Duplicate directory
+    // entries are harmless noise — directories are never extracted.
+    if (!isDirectory) {
+      if (seenPaths.has(safeName)) {
+        fail(
+          "zip.duplicate_entry",
+          `Duplicate entry refused: ${safeName.slice(0, 80)}`,
+        );
+      }
+      seenPaths.add(safeName);
     }
     if (method !== 0 && method !== 8) {
       fail(
@@ -318,6 +347,10 @@ export function extractPackageFiles(
   let total = 0;
   for (const entry of entries) {
     if (entry.isDirectory) continue;
+    // Dotfiles (`.DS_Store`, `._*` resource forks) are packager noise, never
+    // package content: omit them so validators and installs never see them.
+    const base = entry.name.split("/").pop() ?? "";
+    if (base.startsWith(".")) continue;
     const data = extractEntry(bytes, entry, over);
     total += data.length;
     if (total > lim.maxTotalBytes) {

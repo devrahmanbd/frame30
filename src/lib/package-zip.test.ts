@@ -391,3 +391,66 @@ describe("PKG-2 broken presentation refs", () => {
 });
 
 export { codeOf };
+
+describe("PKG-2 hostile entry strictness (threat-defense)", () => {
+  it("refuses exact-duplicate file entries", () => {
+    const zip = buildRawZip([
+      { name: "theme.json", data: str("{}") },
+      { name: "theme.json", data: str("{}") },
+    ]);
+    expect(codeOfSync(() => parseZip(zip))).toBe("zip.duplicate_entry");
+  });
+
+  it("tolerates duplicate directory entries (never extracted)", () => {
+    const zip = buildRawZip([
+      { name: "assets/", data: new Uint8Array() },
+      { name: "assets/", data: new Uint8Array() },
+      { name: "theme.json", data: str("{}") },
+    ]);
+    expect(codeOfSync(() => parseZip(zip))).toBe("no_throw");
+  });
+
+  it("refuses macOS resource-fork packaging", () => {
+    const zip = buildRawZip([
+      { name: "__MACOSX/._theme.json", data: str("{}") },
+      { name: "theme.json", data: str("{}") },
+    ]);
+    expect(codeOfSync(() => parseZip(zip))).toBe("zip.unsafe_path");
+  });
+
+  it("skips dotfiles at extract instead of shipping them", () => {
+    const zip = buildRawZip([
+      { name: ".DS_Store", data: str("junk") },
+      { name: "theme.json", data: str("{}") },
+    ]);
+    const entries = parseZip(zip);
+    const files = extractPackageFiles(zip, entries);
+    expect(files.map((f) => f.path)).toEqual(["theme.json"]);
+  });
+
+  it("refuses fifo/char/block/socket mode bits", () => {
+    for (const mode of [0x1000, 0x2000, 0x6000, 0xc000]) {
+      const zip = buildRawZip([
+        {
+          name: "theme.json",
+          data: str("{}"),
+          externalAttrs: ((mode | 0o644) << 16) >>> 0,
+        },
+      ]);
+      expect(codeOfSync(() => parseZip(zip))).toBe("zip.special_file");
+    }
+  });
+
+  it("accepts regular, directory, and absent mode bits", () => {
+    for (const attrs of [
+      ((0x8000 | 0o644) << 16) >>> 0,
+      ((0x4000 | 0o755) << 16) >>> 0,
+      0,
+    ]) {
+      const zip = buildRawZip([
+        { name: "theme.json", data: str("{}"), externalAttrs: attrs },
+      ]);
+      expect(codeOfSync(() => parseZip(zip))).toBe("no_throw");
+    }
+  });
+});
