@@ -222,7 +222,14 @@ export function authoredTemplates(key: OfficialThemeKey): TemplateKey[] {
 
 const BN_SUFFIX = "_bn";
 
-/** Rewrite every `/ph/<theme>/` occurrence to the package form `assets/`. */
+/**
+ * Rewrite every `/ph/<theme>/` occurrence to the package form `assets/`.
+ *
+ * PACKAGE CONTEXT ONLY (Frame30): call for ZIP distribution payloads, never
+ * for HTTP preview/storefront rendering — a bare `assets/x` ref resolves
+ * against the page URL and 404s (Songoskriti preview regression). Runtime
+ * rendering keeps source-form `/ph/` URLs; see `theme-asset-url.ts`.
+ */
 export function rewriteThemeUrls<T>(value: T, key: OfficialThemeKey): T {
   const prefix = sourceAssetPrefix(key);
   const walk = (node: unknown): unknown => {
