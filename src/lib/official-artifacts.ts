@@ -244,7 +244,9 @@ export function buildOfficialArtifact(
     }
   }
   const serialized = stableStringify({ templates, locales }) + styles;
-  if (serialized.includes("/ph/")) {
+  // Source-form bundles (runtime serving) legitimately carry /ph/ URLs;
+  // only package-form payloads must be prefix-free.
+  if (input.urlForm !== "source" && serialized.includes("/ph/")) {
     fail(
       "official-artifact.source_leak",
       "Official payload still references the private source prefix.",

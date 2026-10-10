@@ -1,6 +1,6 @@
 {
   "bundleVersion": 1,
-  "builtAt": "2026-10-09T23:41:08.002Z",
+  "builtAt": "2026-10-10T14:05:29.083Z",
   "artifacts": [
     {
       "key": "songoskriti",
@@ -154,7 +154,7 @@
                 "alt": "Artisans weaving on a wooden loom",
                 "caption": "Artisan owned",
                 "ratio": "16/9",
-                "src": "assets/hero-artisans.png"
+                "src": "/ph/songoskriti/hero-artisans.png"
               },
               "type": "image"
             },
@@ -500,7 +500,7 @@
                     "ctaUrl": "/c/new-in",
                     "headline": "HERITAGE,\nWOVEN FOR TODAY",
                     "headline_bn": "ঐতিহ্য,\nআজকের জন্য বোনা",
-                    "image": "assets/hero-festive.png",
+                    "image": "/ph/songoskriti/hero-festive.png",
                     "subhead": "Contemporary silhouettes rooted in the craft of Bangladesh.",
                     "subhead_bn": "বাংলাদেশের কারুশিল্পে প্রোথিত আধুনিক সিলুয়েট।"
                   },
@@ -512,7 +512,7 @@
                     "ctaUrl": "/c/festive",
                     "headline": "THE FESTIVE\nEDIT",
                     "headline_bn": "উৎসবের\nবিশেষ সংগ্রহ",
-                    "image": "assets/edit-festive-main.png",
+                    "image": "/ph/songoskriti/edit-festive-main.png",
                     "subhead": "Jamdani drapes, silk textures and modern Panjabis made for celebrations.",
                     "subhead_bn": "উৎসবের জন্য জামদানি, সিল্ক ও আধুনিক পাঞ্জাবি।"
                   },
@@ -524,7 +524,7 @@
                     "ctaUrl": "/c/jamdani",
                     "headline": "THE ART OF\nJAMDANI",
                     "headline_bn": "জামদানির\nশিল্পকলা",
-                    "image": "assets/hero-weaves.png",
+                    "image": "/ph/songoskriti/hero-weaves.png",
                     "subhead": "Fine threads. Patient hands. A legacy that still moves forward.",
                     "subhead_bn": "সূক্ষ্ম সুতো। ধৈর্যশীল হাত। এক ঐতিহ্য যা এখনও এগিয়ে চলে।"
                   }
@@ -540,32 +540,32 @@
                 "departments": [
                   {
                     "href": "/c/sarees",
-                    "image": "assets/cat-women.png",
+                    "image": "/ph/songoskriti/cat-women.png",
                     "title": "Sarees"
                   },
                   {
                     "href": "/c/panjabi",
-                    "image": "assets/cat-men.png",
+                    "image": "/ph/songoskriti/cat-men.png",
                     "title": "Panjabi"
                   },
                   {
                     "href": "/c/festive",
-                    "image": "assets/hero-festive.png",
+                    "image": "/ph/songoskriti/hero-festive.png",
                     "title": "Festive"
                   },
                   {
                     "href": "/c/wedding",
-                    "image": "assets/edit-festive-main.png",
+                    "image": "/ph/songoskriti/edit-festive-main.png",
                     "title": "Wedding"
                   },
                   {
                     "href": "/c/jewellery",
-                    "image": "assets/cat-jewelry.png",
+                    "image": "/ph/songoskriti/cat-jewelry.png",
                     "title": "Jewellery"
                   },
                   {
                     "href": "/c/heritage",
-                    "image": "assets/hero-weaves.png",
+                    "image": "/ph/songoskriti/hero-weaves.png",
                     "title": "Heritage"
                   }
                 ],
@@ -603,7 +603,7 @@
                 "eyebrow_bn": "ঐতিহ্য সংগ্রহ",
                 "heading": "THE ART OF JAMDANI",
                 "heading_bn": "জামদানির শিল্পকলা",
-                "imageUrl": "assets/hero-weaves.png",
+                "imageUrl": "/ph/songoskriti/hero-weaves.png",
                 "scrim": true
               },
               "type": "craft_story"
@@ -637,8 +637,8 @@
                 "heading": "THE FESTIVE EDIT",
                 "heading_bn": "উৎসবের সাজ",
                 "layout": "image_left",
-                "primaryImage": "assets/edit-festive-main.png",
-                "secondaryImage": "assets/cat-men.png"
+                "primaryImage": "/ph/songoskriti/edit-festive-main.png",
+                "secondaryImage": "/ph/songoskriti/cat-men.png"
               },
               "type": "split_feature"
             },
@@ -708,8 +708,8 @@
                 "heading": "THE MODERN\nPANJABI",
                 "heading_bn": "আধুনিক\nপাঞ্জাবি",
                 "layout": "image_right",
-                "primaryImage": "assets/campaign-men.png",
-                "secondaryImage": "assets/cat-men.png"
+                "primaryImage": "/ph/songoskriti/campaign-men.png",
+                "secondaryImage": "/ph/songoskriti/cat-men.png"
               },
               "type": "split_feature"
             },
@@ -758,8 +758,8 @@
                 "heading": "THE WEDDING\nEDIT",
                 "heading_bn": "বিয়ের\nবিশেষ সংগ্রহ",
                 "layout": "image_left",
-                "primaryImage": "assets/edit-festive-main.png",
-                "secondaryImage": "assets/prod-saree.png"
+                "primaryImage": "/ph/songoskriti/edit-festive-main.png",
+                "secondaryImage": "/ph/songoskriti/prod-saree.png"
               },
               "type": "split_feature"
             },
@@ -769,25 +769,25 @@
                 "collections": [
                   {
                     "href": "/c/jamdani",
-                    "image": "assets/hero-weaves.png",
+                    "image": "/ph/songoskriti/hero-weaves.png",
                     "subtitle": "UNESCO Heritage",
                     "title": "Jamdani"
                   },
                   {
                     "href": "/c/silk",
-                    "image": "assets/prod-saree.png",
+                    "image": "/ph/songoskriti/prod-saree.png",
                     "subtitle": "Artisan crafted",
                     "title": "Rajshahi Silk"
                   },
                   {
                     "href": "/c/tangail",
-                    "image": "assets/cat-newin.png",
+                    "image": "/ph/songoskriti/cat-newin.png",
                     "subtitle": "Limited weave",
                     "title": "Tangail Handloom"
                   },
                   {
                     "href": "/c/kantha",
-                    "image": "assets/cat-living.png",
+                    "image": "/ph/songoskriti/cat-living.png",
                     "subtitle": "Master stitch",
                     "title": "Nakshi Kantha"
                   }
@@ -828,7 +828,7 @@
                 "eyebrow_bn": "বুননের পেছনের হাত",
                 "heading": "Made Slowly.\nWorn for Years.",
                 "heading_bn": "ধীরে তৈরি।\nবছরের পর বছর পরা।",
-                "imageUrl": "assets/hero-artisans.png",
+                "imageUrl": "/ph/songoskriti/hero-artisans.png",
                 "scrim": true
               },
               "type": "craft_story"
@@ -840,14 +840,7 @@
                 "handleLabel": "Follow @SONGOSKRITI",
                 "heading": "WORN BY YOU",
                 "heading_bn": "আপনার পরিধানে",
-                "images": [
-                  "assets/ugc-1.png",
-                  "assets/ugc-2.png",
-                  "assets/ugc-3.png",
-                  "assets/ugc-4.png",
-                  "assets/ugc-5.jpg",
-                  "assets/ugc-6.jpg"
-                ],
+                "images": "/ph/songoskriti/ugc-1.png, /ph/songoskriti/ugc-2.png, /ph/songoskriti/ugc-3.png, /ph/songoskriti/ugc-4.png, /ph/songoskriti/ugc-5.jpg, /ph/songoskriti/ugc-6.jpg",
                 "subhead": "SONGOSKRITI IN THE WORLD",
                 "subhead_bn": "সংস্কৃতি সারা দুনিয়ায়"
               },
@@ -895,8 +888,8 @@
                 "heading": "THE SONGOSKRITI\nJOURNAL",
                 "heading_bn": "সংস্কৃতির\nজার্নাল",
                 "layout": "image_right",
-                "primaryImage": "assets/hero-weaves.png",
-                "secondaryImage": "assets/hero-artisans.png"
+                "primaryImage": "/ph/songoskriti/hero-weaves.png",
+                "secondaryImage": "/ph/songoskriti/hero-artisans.png"
               },
               "type": "split_feature"
             },
@@ -941,11 +934,7 @@
               "props": {
                 "heading": "VISIT SONGOSKRITI",
                 "heading_bn": "সংস্কৃতি দেখুন",
-                "images": [
-                  "assets/cat-women.png",
-                  "assets/cat-men.png",
-                  "assets/hero-festive.png"
-                ],
+                "images": "/ph/songoskriti/cat-women.png, /ph/songoskriti/cat-men.png, /ph/songoskriti/hero-festive.png",
                 "s1Hours": "Open 10am – 9pm daily",
                 "s1Name": "Uttara Flagship",
                 "s2Hours": "Open 10am – 9pm daily",
@@ -1332,7 +1321,7 @@
           }
         }
       ],
-      "checksum": "d1fdcb81a98beabaab72786da3401dedc33c0ab2b038e2caf0851acc16625a18"
+      "checksum": "e932495f7d6e07be29c714ff5b1cb44f136697d722bfebc3d2661c41a1e690db"
     },
     {
       "key": "somvabona",
@@ -1557,7 +1546,7 @@
                     "ctaUrl": "/c/festive",
                     "headline": "Festive wear, ready to ship",
                     "headline_bn": "উৎসবের পোশাক, এখনই ডেলিভারি",
-                    "image": "assets/hero-festive.jpg",
+                    "image": "/ph/somvabona/hero-festive.jpg",
                     "subhead": "Cotton sarees and panjabis at honest prices.",
                     "subhead_bn": "সুতি শাড়ি ও পাঞ্জাবি, সৎ দামে।"
                   },
@@ -1569,7 +1558,7 @@
                     "ctaUrl": "/c/new-in",
                     "headline": "New cotton every week",
                     "headline_bn": "প্রতি সপ্তাহে নতুন সুতি",
-                    "image": "assets/hero-newin.jpg",
+                    "image": "/ph/somvabona/hero-newin.jpg",
                     "subhead": "Soft, breathable everyday ethnic.",
                     "subhead_bn": "নরম, আরামদায়ক প্রতিদিনের দেশি পোশাক।"
                   },
@@ -1581,7 +1570,7 @@
                     "ctaUrl": "/c/wedding",
                     "headline": "Wedding season edits",
                     "headline_bn": "বিয়ের মৌসুমের কালেকশন",
-                    "image": "assets/hero-wedding.jpg",
+                    "image": "/ph/somvabona/hero-wedding.jpg",
                     "subhead": "Silk and kantha picks for the big day.",
                     "subhead_bn": "বড় দিনের জন্য সিল্ক ও কাঁথা।"
                   }
@@ -1630,27 +1619,27 @@
               "id": "index.main.3.circle_categories",
               "props": {
                 "c1Href": "/c/women",
-                "c1Image": "assets/cat-women.jpg",
+                "c1Image": "/ph/somvabona/cat-women.jpg",
                 "c1Title": "Women",
                 "c1Title_bn": "নারী",
                 "c2Href": "/c/men",
-                "c2Image": "assets/cat-men.jpg",
+                "c2Image": "/ph/somvabona/cat-men.jpg",
                 "c2Title": "Men",
                 "c2Title_bn": "পুরুষ",
                 "c3Href": "/c/kids",
-                "c3Image": "assets/cat-kids.jpg",
+                "c3Image": "/ph/somvabona/cat-kids.jpg",
                 "c3Title": "Kids",
                 "c3Title_bn": "শিশু",
                 "c4Href": "/c/living",
-                "c4Image": "assets/cat-living.jpg",
+                "c4Image": "/ph/somvabona/cat-living.jpg",
                 "c4Title": "Home and living",
                 "c4Title_bn": "হোম ও লিভিং",
                 "c5Href": "/c/festive",
-                "c5Image": "assets/cat-festive.jpg",
+                "c5Image": "/ph/somvabona/cat-festive.jpg",
                 "c5Title": "Festive",
                 "c5Title_bn": "উৎসব",
                 "c6Href": "/c/new-in",
-                "c6Image": "assets/cat-newin.jpg",
+                "c6Image": "/ph/somvabona/cat-newin.jpg",
                 "c6Title": "New in",
                 "c6Title_bn": "নতুন এসেছে",
                 "c7Href": "",
@@ -1670,21 +1659,21 @@
                 "buckets": [
                   {
                     "href": "/search?max=99900",
-                    "image": "assets/bucket-999.jpg",
+                    "image": "/ph/somvabona/bucket-999.jpg",
                     "label": "Under ৳999",
                     "label_bn": "৯৯৯ টাকার নিচে",
                     "maxPrice": 99900
                   },
                   {
                     "href": "/search?max=199900",
-                    "image": "assets/bucket-1999.jpg",
+                    "image": "/ph/somvabona/bucket-1999.jpg",
                     "label": "Under ৳1,999",
                     "label_bn": "১,৯৯৯ টাকার নিচে",
                     "maxPrice": 199900
                   },
                   {
                     "href": "/search?max=299900",
-                    "image": "assets/bucket-2999.jpg",
+                    "image": "/ph/somvabona/bucket-2999.jpg",
                     "label": "Under ৳2,999",
                     "label_bn": "২,৯৯৯ টাকার নিচে",
                     "maxPrice": 299900
@@ -1737,19 +1726,19 @@
                 "collections": [
                   {
                     "href": "/c/women",
-                    "image": "assets/occ-women.jpg",
+                    "image": "/ph/somvabona/occ-women.jpg",
                     "title": "Women",
                     "title_bn": "নারী"
                   },
                   {
                     "href": "/c/men",
-                    "image": "assets/occ-men.jpg",
+                    "image": "/ph/somvabona/occ-men.jpg",
                     "title": "Men",
                     "title_bn": "পুরুষ"
                   },
                   {
                     "href": "/c/kids",
-                    "image": "assets/occ-kids.jpg",
+                    "image": "/ph/somvabona/occ-kids.jpg",
                     "title": "Kids",
                     "title_bn": "শিশু"
                   }
@@ -1823,7 +1812,7 @@
                 "eyebrow_bn": "প্রতিদিনের আরাম, সৎভাবে তৈরি",
                 "heading": "Cotton first, craft always",
                 "heading_bn": "সুতিই প্রথম, কারুকাজ সবসময়",
-                "imageUrl": "assets/craft-loom.jpg",
+                "imageUrl": "/ph/somvabona/craft-loom.jpg",
                 "scrim": true
               },
               "type": "craft_story"
@@ -1837,7 +1826,7 @@
                   {
                     "author": "Farhana Ahmed",
                     "author_bn": "ফারহানা আহমেদ",
-                    "image": "assets/testi-1.jpg",
+                    "image": "/ph/somvabona/testi-1.jpg",
                     "quote": "The cotton panjabi survived a whole summer of Fridays.",
                     "quote_bn": "সুতির পাঞ্জাবিটি গোটা গ্রীষ্মের শুক্রবার টিকে গেছে।",
                     "role": "Dhaka",
@@ -1846,7 +1835,7 @@
                   {
                     "author": "Tanvir Rahman",
                     "author_bn": "তানভীর রহমান",
-                    "image": "assets/testi-2.jpg",
+                    "image": "/ph/somvabona/testi-2.jpg",
                     "quote": "Ordered for Eid, delivered before the holidays began.",
                     "quote_bn": "ঈদের জন্য অর্ডার করেছিলাম, ছুটি শুরুর আগেই ডেলিভারি।",
                     "role": "Chattogram",
@@ -1855,7 +1844,7 @@
                   {
                     "author": "Nusrat Jahan",
                     "author_bn": "নুসরাত জাহান",
-                    "image": "assets/testi-3.jpg",
+                    "image": "/ph/somvabona/testi-3.jpg",
                     "quote": "Kids sizes actually fit kids. Rare and appreciated.",
                     "quote_bn": "বাচ্চাদের সাইজ আসলেই বাচ্চাদের মাপে। বিরল ও প্রশংসনীয়।",
                     "role": "Sylhet",
@@ -1958,9 +1947,9 @@
             {
               "id": "product.main.1.product_media",
               "props": {
-                "image1": "assets/festive-edit.jpg",
-                "image2": "assets/newin-edit.jpg",
-                "image3": "assets/gift-craft.jpg",
+                "image1": "/ph/somvabona/festive-edit.jpg",
+                "image2": "/ph/somvabona/newin-edit.jpg",
+                "image3": "/ph/somvabona/gift-craft.jpg",
                 "ratio": "4/5"
               },
               "type": "product_media"
@@ -2087,7 +2076,7 @@
           }
         }
       ],
-      "checksum": "2d4508708d4cfe0cd22549824ad6fa00ff10543d92b6f64c119b01dda88c3c9d"
+      "checksum": "c08799e38ee5ccbac61e2c7d229069397036c597b5776f2f4e92ec3e52bd158d"
     }
   ]
 }

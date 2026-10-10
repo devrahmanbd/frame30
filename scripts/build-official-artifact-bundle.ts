@@ -114,6 +114,9 @@ function themeInput(key: OfficialThemeKey): {
   version: string;
   cssText: string;
   assets: { file: string; bytes: Uint8Array }[];
+  // Runtime bundle serves over HTTP: keep servable source-form URLs.
+  // Package-form rewriting happens only in the ZIP distribution path.
+  urlForm: "source";
 } {
   const cssText = readFileSync(
     join(ROOT, "src", "lib", "themes", key, "skins.css"),
@@ -124,7 +127,7 @@ function themeInput(key: OfficialThemeKey): {
     .filter((f) => statSync(join(dir, f)).isFile())
     .sort()
     .map((file) => ({ file, bytes: readBytes(join(dir, file)) }));
-  return { key, version: OFFICIAL_BUNDLE_VERSION, cssText, assets };
+  return { key, version: OFFICIAL_BUNDLE_VERSION, cssText, assets, urlForm: "source" as const };
 }
 
 function cleanString(value: unknown, fallback = ""): string {

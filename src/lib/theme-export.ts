@@ -437,6 +437,12 @@ export type ExportOfficialThemeInput = {
   cssText: string;
   /** Raw bytes of `public/ph/<key>/*`, keyed by basename. */
   assets: ThemeAssetInput[];
+  /**
+   * URL form for template asset refs. `package` (default) rewrites
+   * `/ph/<theme>/` to `assets/` for ZIP distribution; `source` keeps
+   * servable `/ph/` URLs for runtime bundles served over HTTP.
+   */
+  urlForm?: "package" | "source";
 };
 
 export type ExportedPackageFile = {
@@ -475,15 +481,17 @@ export function exportOfficialTheme(
   if (!version) fail("theme-export.bad_version", "A version is required.");
   const warnings: string[] = [];
 
-  // 1. Render every authored template, rewrite to package URL form, then
-  // apply the asset-list normal form (comma strings → ref arrays).
+  // 1. Render every authored template, rewrite to package URL form (unless
+  // the caller asked for source form for runtime serving), then apply the
+  // asset-list normal form (comma strings → ref arrays).
+  const sourceForm = input.urlForm === "source";
   const rewritten = new Map<TemplateKey, ThemeAst>();
   for (const template of authoredTemplates(key)) {
     const ast = buildOfficialSections(key, template);
     if (!ast) continue;
     rewritten.set(
       template,
-      normalizeAssetLists(rewriteThemeUrls(ast, key)),
+      normalizeAssetLists(sourceForm ? ast : rewriteThemeUrls(ast, key)),
     );
   }
   if (rewritten.size === 0) {
@@ -495,10 +503,11 @@ export function exportOfficialTheme(
   for (const ast of rewritten.values()) {
     // Refs are collected from the pre-rewrite shape (same set either way —
     // the rewrite only swaps the prefix), so re-render is unnecessary:
-    // scan the rewritten AST for the package form instead.
+    // scan the rewritten AST for the package form instead. In source form
+    // the same scan runs against the source prefix.
+    const marker = sourceForm ? sourceAssetPrefix(key) : "assets/";
     const visit = (node: unknown): void => {
       if (typeof node === "string") {
-        const marker = "assets/";
         let i = node.indexOf(marker);
         while (i >= 0) {
           const rest = node.slice(i + marker.length);
