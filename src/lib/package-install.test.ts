@@ -1807,3 +1807,35 @@ describe("K3 plugin install atomicity (failure-injection, each stage)", () => {
     k3ExpectClean(db, seed, k);
   });
 });
+
+describe("PKG-2 storage quota (threat-defense)", () => {
+  it("refuses installs over the persisted-asset quota, writing nothing", async () => {
+    const { MERCHANT_ASSET_QUOTA_BYTES } = await import(
+      "./package-store.server"
+    );
+    const db = fakeDb({
+      tables: {
+        store_themes: [],
+        theme_versions: [],
+        theme_drafts: [],
+        theme_assets: [
+          {
+            merchant_id: MERCHANT_A,
+            name: "themes/old/x.png",
+            bytes: MERCHANT_ASSET_QUOTA_BYTES,
+          },
+        ],
+        marketplace_installs: [],
+        theme_audit: [],
+      },
+    });
+    const code = await codeOf(
+      installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1)),
+    );
+    expect(code).toBe("package.over_quota");
+    expect(db.rows("store_themes")).toHaveLength(0);
+    expect(db.rows("theme_versions")).toHaveLength(0);
+    expect(db.rows("theme_assets")).toHaveLength(1);
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+});

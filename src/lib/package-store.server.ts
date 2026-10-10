@@ -39,6 +39,39 @@ export type StoredAsset = {
   url: string | null;
 };
 
+/**
+ * Threat-defense — per-merchant persisted-asset storage quota.
+ *
+ * Flat and fail-closed (repo precedent: flat domain quotas): every byte
+ * persisted under `theme_assets` for the merchant counts — package version
+ * namespaces and merchant media alike. 1 GiB admits roughly ten max-size
+ * uploads while bounding storage exhaustion from repeated hostile uploads.
+ */
+export const MERCHANT_ASSET_QUOTA_BYTES = 1 << 30;
+
+/** Total persisted asset bytes for the merchant. Tenant-scoped read. */
+export async function merchantAssetBytes(
+  db: Client,
+  merchantId: string,
+): Promise<number> {
+  assertTenantId(merchantId, "merchantAssetBytes");
+  const { data, error } = await (db as unknown as SupabaseClient<never>)
+    .from("theme_assets")
+    .select("bytes")
+    .eq("merchant_id", merchantId);
+  if (error) {
+    throw new PackageStoreError(
+      "package.asset_read_failed",
+      (error as { message?: string } | null)?.message ?? "Asset read failed.",
+    );
+  }
+  let total = 0;
+  for (const row of ((data ?? []) as unknown as { bytes?: unknown }[])) {
+    total += Number(row.bytes ?? 0);
+  }
+  return total;
+}
+
 export function themeVersionPrefix(versionId: string): string {
   if (!versionId || versionId.includes("/") || versionId.includes("..")) {
     throw new PackageStoreError("package.bad_version_id", "Bad version id.");

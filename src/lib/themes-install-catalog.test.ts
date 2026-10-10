@@ -523,3 +523,38 @@ describe("installUploadedTheme (upload server path)", () => {
     expect(draft.tokens).toEqual({ brand: "#123456" });
   });
 });
+
+describe("upload storage quota (threat-defense)", () => {
+  it("deny: refuses uploads over the persisted-asset quota, writing nothing", async () => {
+    const { MERCHANT_ASSET_QUOTA_BYTES } = await import(
+      "./package-store.server"
+    );
+    const db = fakeDb({
+      tables: {
+        store_themes: [],
+        theme_versions: [],
+        theme_drafts: [],
+        theme_assets: [
+          {
+            merchant_id: MERCHANT,
+            name: "themes/old/x.png",
+            bytes: MERCHANT_ASSET_QUOTA_BYTES,
+          },
+        ],
+        marketplace_installs: [],
+        theme_audit: [],
+      },
+    });
+    const err = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      { fileName: "big.zip", fileBase64: zipB64(), idempotencyKey: "k-quota" },
+      "user-9",
+    ).catch((e) => e);
+    expect(err?.code).toBe("theme.upload_quota");
+    expect(db.rows("store_themes")).toHaveLength(0);
+    expect(db.rows("theme_versions")).toHaveLength(0);
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+    expect(db.rows("theme_audit")).toHaveLength(0);
+  });
+});

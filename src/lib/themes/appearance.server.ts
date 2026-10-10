@@ -818,6 +818,23 @@ export async function installUploadedTheme(
         `Theme references missing files: ${broken.slice(0, 5).join(", ")}.`,
       );
     }
+    // Storage quota (threat-defense): persisted usage plus the incoming
+    // inflated total must fit the merchant quota before the replay lookup
+    // or any write.
+    const { merchantAssetBytes, MERCHANT_ASSET_QUOTA_BYTES } = await import(
+      "../package-store.server"
+    );
+    {
+      let incoming = 0;
+      for (const f of files) incoming += f.bytes.length;
+      const used = await merchantAssetBytes(db, merchantId);
+      if (used + incoming > MERCHANT_ASSET_QUOTA_BYTES) {
+        throw new ThemeDeskError(
+          "theme.upload_quota",
+          "Merchant asset storage quota exceeded.",
+        );
+      }
+    }
     // Archive content, pipeline-shaped: `templates/*.json` parsed exactly
     // like `installPackage` (unparseable file = null, never a throw — the
     // row stays inert until Activate), manifest `tokens` object or {}.

@@ -57,6 +57,8 @@ import {
 import {
   deleteVersionAssets,
   listVersionAssets,
+  merchantAssetBytes,
+  MERCHANT_ASSET_QUOTA_BYTES,
   pluginVersionPrefix,
   saveVersionAssets,
   themeVersionPrefix,
@@ -82,6 +84,27 @@ export class PackageInstallError extends Error {
   ) {
     super(message);
     this.name = "PackageInstallError";
+  }
+}
+
+/**
+ * Threat-defense storage quota: persisted usage plus the incoming inflated
+ * file total must fit `MERCHANT_ASSET_QUOTA_BYTES`. Call only on paths that
+ * persist (replays skip it — they write nothing).
+ */
+async function assertStorageQuota(
+  db: Client,
+  merchantId: string,
+  files: PackageFile[],
+): Promise<void> {
+  let incoming = 0;
+  for (const f of files) incoming += f.bytes.length;
+  const used = await merchantAssetBytes(db, merchantId);
+  if (used + incoming > MERCHANT_ASSET_QUOTA_BYTES) {
+    throw new PackageInstallError(
+      "package.over_quota",
+      "Merchant asset storage quota exceeded.",
+    );
   }
 }
 
@@ -656,6 +679,13 @@ export async function installPackage(
   }
 
   // New version vs update: same manifest slug = same package line.
+  // Storage quota (threat-defense): replays above write nothing and skip
+  // this; fresh installs and updates persist `files`, so usage plus the
+  // incoming inflated total must fit the merchant quota first.
+  await assertStorageQuota(db, merchantId, files);
+  // Storage quota (threat-defense): replays above write nothing and skip
+  // this; fresh installs and updates persist `files`, so usage plus the
+  // incoming inflated total must fit the merchant quota first.
   const { data: existingTheme } = await db
     .from("store_themes")
     .select("id, name, is_active, source_install_id, source_listing_slug, source_version, published_version_id")
@@ -995,6 +1025,9 @@ async function installPluginPackage(
   }
 
   const prefix = pluginVersionPrefix(manifest.slug, artifactId.slice(0, 8));
+  // Storage quota (threat-defense): same rule as the theme flow — replays
+  // write nothing; fresh installs and updates must fit the quota first.
+  await assertStorageQuota(db, merchantId, files);
   // K3 atomicity: assets land BEFORE the ledger row, so a mid-install kill
   // must never strand a partial namespace. A failed asset save compensates
   // the prefix it just wrote (best-effort) before the original stage error
