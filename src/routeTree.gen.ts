@@ -113,6 +113,7 @@ import { Route as AuthenticatedDashboardPricingRouteImport } from './routes/_aut
 import { Route as AuthenticatedDashboardPurchasingRouteImport } from './routes/_authenticated/dashboard/purchasing'
 import { Route as AuthenticatedDashboardReturnsRouteImport } from './routes/_authenticated/dashboard/returns'
 import { Route as AuthenticatedDashboardReviewsRouteImport } from './routes/_authenticated/dashboard/reviews'
+import { Route as AuthenticatedDashboardSecurityApprovalsRouteImport } from './routes/_authenticated/dashboard/security-approvals'
 import { Route as AuthenticatedDashboardSettingsRouteImport } from './routes/_authenticated/dashboard/settings'
 import { Route as AuthenticatedDashboardShippingRouteImport } from './routes/_authenticated/dashboard/shipping'
 import { Route as AuthenticatedDashboardStaffRouteImport } from './routes/_authenticated/dashboard/staff'
@@ -783,6 +784,12 @@ const AuthenticatedDashboardReviewsRoute =
   AuthenticatedDashboardReviewsRouteImport.update({
     id: '/reviews',
     path: '/reviews',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardSecurityApprovalsRoute =
+  AuthenticatedDashboardSecurityApprovalsRouteImport.update({
+    id: '/security-approvals',
+    path: '/security-approvals',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardSettingsRoute =
@@ -1551,6 +1558,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/purchasing': typeof AuthenticatedDashboardPurchasingRoute
   '/dashboard/returns': typeof AuthenticatedDashboardReturnsRoute
   '/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
+  '/dashboard/security-approvals': typeof AuthenticatedDashboardSecurityApprovalsRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/shipping': typeof AuthenticatedDashboardShippingRoute
   '/dashboard/staff': typeof AuthenticatedDashboardStaffRoute
@@ -1772,6 +1780,7 @@ export interface FileRoutesByTo {
   '/dashboard/purchasing': typeof AuthenticatedDashboardPurchasingRoute
   '/dashboard/returns': typeof AuthenticatedDashboardReturnsRoute
   '/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
+  '/dashboard/security-approvals': typeof AuthenticatedDashboardSecurityApprovalsRoute
   '/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/dashboard/shipping': typeof AuthenticatedDashboardShippingRoute
   '/dashboard/staff': typeof AuthenticatedDashboardStaffRoute
@@ -1997,6 +2006,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/purchasing': typeof AuthenticatedDashboardPurchasingRoute
   '/_authenticated/dashboard/returns': typeof AuthenticatedDashboardReturnsRoute
   '/_authenticated/dashboard/reviews': typeof AuthenticatedDashboardReviewsRoute
+  '/_authenticated/dashboard/security-approvals': typeof AuthenticatedDashboardSecurityApprovalsRoute
   '/_authenticated/dashboard/settings': typeof AuthenticatedDashboardSettingsRoute
   '/_authenticated/dashboard/shipping': typeof AuthenticatedDashboardShippingRoute
   '/_authenticated/dashboard/staff': typeof AuthenticatedDashboardStaffRoute
@@ -2222,6 +2232,7 @@ export interface FileRouteTypes {
     | '/dashboard/purchasing'
     | '/dashboard/returns'
     | '/dashboard/reviews'
+    | '/dashboard/security-approvals'
     | '/dashboard/settings'
     | '/dashboard/shipping'
     | '/dashboard/staff'
@@ -2443,6 +2454,7 @@ export interface FileRouteTypes {
     | '/dashboard/purchasing'
     | '/dashboard/returns'
     | '/dashboard/reviews'
+    | '/dashboard/security-approvals'
     | '/dashboard/settings'
     | '/dashboard/shipping'
     | '/dashboard/staff'
@@ -2667,6 +2679,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/purchasing'
     | '/_authenticated/dashboard/returns'
     | '/_authenticated/dashboard/reviews'
+    | '/_authenticated/dashboard/security-approvals'
     | '/_authenticated/dashboard/settings'
     | '/_authenticated/dashboard/shipping'
     | '/_authenticated/dashboard/staff'
@@ -3630,6 +3643,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardReviewsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/security-approvals': {
+      id: '/_authenticated/dashboard/security-approvals'
+      path: '/security-approvals'
+      fullPath: '/dashboard/security-approvals'
+      preLoaderRoute: typeof AuthenticatedDashboardSecurityApprovalsRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/settings': {
       id: '/_authenticated/dashboard/settings'
       path: '/settings'
@@ -4492,6 +4512,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardPurchasingRoute: typeof AuthenticatedDashboardPurchasingRoute
   AuthenticatedDashboardReturnsRoute: typeof AuthenticatedDashboardReturnsRoute
   AuthenticatedDashboardReviewsRoute: typeof AuthenticatedDashboardReviewsRoute
+  AuthenticatedDashboardSecurityApprovalsRoute: typeof AuthenticatedDashboardSecurityApprovalsRoute
   AuthenticatedDashboardSettingsRoute: typeof AuthenticatedDashboardSettingsRoute
   AuthenticatedDashboardShippingRoute: typeof AuthenticatedDashboardShippingRoute
   AuthenticatedDashboardStaffRoute: typeof AuthenticatedDashboardStaffRoute
@@ -4595,6 +4616,8 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
       AuthenticatedDashboardPurchasingRoute,
     AuthenticatedDashboardReturnsRoute: AuthenticatedDashboardReturnsRoute,
     AuthenticatedDashboardReviewsRoute: AuthenticatedDashboardReviewsRoute,
+    AuthenticatedDashboardSecurityApprovalsRoute:
+      AuthenticatedDashboardSecurityApprovalsRoute,
     AuthenticatedDashboardSettingsRoute: AuthenticatedDashboardSettingsRoute,
     AuthenticatedDashboardShippingRoute: AuthenticatedDashboardShippingRoute,
     AuthenticatedDashboardStaffRoute: AuthenticatedDashboardStaffRoute,
