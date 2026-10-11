@@ -34,33 +34,182 @@ function breakerKey(pluginId: string, hook: ServerHook) {
   return `${pluginId}:${hook}`;
 }
 
-export function breakerOpen(
+/* Shared failure counts (multi-isolate aggregation).
+ *
+ * The local map above is per-isolate: on multi-isolate deployments each
+ * isolate counted its own 3 failures, so a hostile endpoint earned 3×N
+ * attempts. The shared counter fixes that without a migration, reusing the
+ * optional Redis client (`redis.server`: shared window across isolates, never
+ * a correctness dependency):
+ *
+ *  - Redis configured: every failure INCRs a shared key (one atomic Lua
+ *    INCR + PEXPIRE with a sliding 60s window, matching the local semantics
+ *    below) and every check also reads it. Either side reaching 3 opens the
+ *    breaker on every isolate. Redis faults degrade to the local map — they
+ *    never fail open.
+ *  - Redis unconfigured: the shared helpers return null and the local map
+ *    decides alone, byte-identical to the old behavior.
+ */
+const BREAKER_WINDOW_MS = OPEN_MS;
+const BREAKER_INCR_LUA = `
+local count = redis.call('INCR', KEYS[1])
+redis.call('PEXPIRE', KEYS[1], ARGV[1])
+return count
+`;
+
+async function sharedBreakerIncr(
+  pluginId: string,
+  hook: ServerHook,
+): Promise<number | null> {
+  try {
+    const { redisConfigured, redisEval, redisKey } =
+      await import("./redis.server");
+    if (!redisConfigured()) return null;
+    const res = await redisEval(
+      BREAKER_INCR_LUA,
+      [redisKey("plugin-hook-breaker", pluginId, hook)],
+      [BREAKER_WINDOW_MS],
+    );
+    if (!res.ok) return null;
+    const count = Number(res.value);
+    return Number.isFinite(count) ? count : null;
+  } catch {
+    return null;
+  }
+}
+
+async function sharedBreakerCount(
+  pluginId: string,
+  hook: ServerHook,
+): Promise<number | null> {
+  try {
+    const { redisConfigured, redisCommand, redisKey } =
+      await import("./redis.server");
+    if (!redisConfigured()) return null;
+    const res = await redisCommand([
+      "GET",
+      redisKey("plugin-hook-breaker", pluginId, hook),
+    ]);
+    if (!res.ok || res.value === null || res.value === undefined) return null;
+    const count = Number(res.value);
+    return Number.isFinite(count) ? count : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Milliseconds until the shared counter's window expires (`null` when the key
+ * is missing, has no expiry, or the store is unavailable). Because every
+ * failure refreshes the key's TTL to the full window, `lastFailure = now -
+ * (OPEN_MS - ttl)` — letting a fresh isolate reconstruct the exact window
+ * instead of anchoring it at first sight.
+ */
+async function sharedBreakerTtl(
+  pluginId: string,
+  hook: ServerHook,
+): Promise<number | null> {
+  try {
+    const { redisConfigured, redisCommand, redisKey } =
+      await import("./redis.server");
+    if (!redisConfigured()) return null;
+    const res = await redisCommand([
+      "PTTL",
+      redisKey("plugin-hook-breaker", pluginId, hook),
+    ]);
+    if (!res.ok) return null;
+    const ttl = Number(res.value);
+    return Number.isFinite(ttl) && ttl >= 0 ? ttl : null;
+  } catch {
+    return null;
+  }
+}
+
+async function sharedBreakerClear(
+  pluginId: string,
+  hook: ServerHook,
+): Promise<void> {
+  try {
+    const { redisConfigured, redisCommand, redisKey } =
+      await import("./redis.server");
+    if (!redisConfigured()) return;
+    await redisCommand([
+      "DEL",
+      redisKey("plugin-hook-breaker", pluginId, hook),
+    ]);
+  } catch {
+    // The local map below is already cleared; a leftover shared count stays
+    // fail-closed until its window expires.
+  }
+}
+
+export async function breakerOpen(
+  pluginId: string,
+  hook: ServerHook,
+  now = Date.now(),
+): Promise<boolean> {
+  const key = breakerKey(pluginId, hook);
+  const state = breakers.get(key);
+  if (state && state.failures >= FAILURE_THRESHOLD) {
+    if (now - state.openedAt > OPEN_MS) {
+      breakers.delete(key);
+    } else {
+      return true;
+    }
+  }
+  // Multi-isolate aggregation: another isolate may have tripped the shared
+  // counter while this one saw few (or no) failures. An unavailable shared
+  // store leaves the local verdict standing (identical to the old behavior).
+  const shared = await sharedBreakerCount(pluginId, hook);
+  if (shared !== null && shared >= FAILURE_THRESHOLD) {
+    const local = breakers.get(key);
+    // Anchor the open window to the shared counter's last failure (derived
+    // from its TTL), so every isolate observes the same 60s window. A missing
+    // TTL anchors at first sight instead (fail-closed, bounded by one window).
+    // Reads never slide the window: only recordFailure moves openedAt.
+    const ttl = await sharedBreakerTtl(pluginId, hook);
+    const sharedOpenedAt =
+      ttl !== null ? now - (OPEN_MS - Math.min(ttl, OPEN_MS)) : now;
+    const failures = Math.max(local?.failures ?? 0, shared);
+    const openedAt = local
+      ? Math.max(local.openedAt, sharedOpenedAt)
+      : sharedOpenedAt;
+    breakers.set(key, { failures, openedAt });
+    return true;
+  }
+  return false;
+}
+
+async function recordFailure(
   pluginId: string,
   hook: ServerHook,
   now = Date.now(),
 ) {
-  const state = breakers.get(breakerKey(pluginId, hook));
-  if (!state || state.failures < FAILURE_THRESHOLD) return false;
-  if (now - state.openedAt > OPEN_MS) {
-    breakers.delete(breakerKey(pluginId, hook));
-    return false;
-  }
-  return true;
-}
-
-function recordFailure(pluginId: string, hook: ServerHook, now = Date.now()) {
   const key = breakerKey(pluginId, hook);
   const state = breakers.get(key) ?? { failures: 0, openedAt: now };
   state.failures += 1;
   state.openedAt = now;
   breakers.set(key, state);
+  // Aggregate across isolates (best-effort). The local map above is already
+  // recorded, so a shared-store fault changes nothing locally. Reconciling
+  // the high-water mark keeps a degraded-then-recovered isolate fail-closed.
+  const shared = await sharedBreakerIncr(pluginId, hook);
+  if (shared !== null && shared > state.failures) state.failures = shared;
 }
 
-function recordSuccess(pluginId: string, hook: ServerHook) {
+async function recordSuccess(pluginId: string, hook: ServerHook) {
   breakers.delete(breakerKey(pluginId, hook));
+  // Reset the shared counter so the next failure starts from zero — the same
+  // reset the local map above just performed. Best-effort: a fault leaves the
+  // shared count in place (fail-closed) until its window expires.
+  await sharedBreakerClear(pluginId, hook);
 }
 
-/** Test seam — the breaker is process state, so suites must be able to reset. */
+/**
+ * Test seam — the local breaker map is process state, so suites must be able
+ * to reset it. Shared Redis counters expire via TTL; suites that double the
+ * shared store reset the double directly.
+ */
 export function resetBreakers() {
   breakers.clear();
 }
@@ -101,7 +250,7 @@ async function callOne(
   ) {
     return { pluginId: plugin.manifest.id, hook, status: "skipped", ms: 0 };
   }
-  if (breakerOpen(plugin.manifest.id, hook)) {
+  if (await breakerOpen(plugin.manifest.id, hook)) {
     return { pluginId: plugin.manifest.id, hook, status: "skipped", ms: 0 };
   }
   if (!hookAllowed(hook, plugin.grantedScopes)) {
@@ -171,7 +320,7 @@ async function callOne(
     ).response;
     if (!res.ok) throw new Error(`status_${res.status}`);
     const result = await res.json().catch(() => null);
-    recordSuccess(plugin.manifest.id, hook);
+    await recordSuccess(plugin.manifest.id, hook);
     return {
       pluginId: plugin.manifest.id,
       hook,
@@ -192,7 +341,7 @@ async function callOne(
       });
       return { pluginId: plugin.manifest.id, hook, status: "skipped", ms: 0 };
     }
-    recordFailure(plugin.manifest.id, hook);
+    await recordFailure(plugin.manifest.id, hook);
     const timedOut =
       (err as Error)?.name === "AbortError" ||
       (err instanceof EgressError && err.code === "egress_timeout");
@@ -376,7 +525,8 @@ export async function deliverQueuedHook(
     });
     return { ok: false, reason: "egress_denied" };
   }
-  if (breakerOpen(pluginId, hook)) return { ok: false, reason: "breaker_open" };
+  if (await breakerOpen(pluginId, hook))
+    return { ok: false, reason: "breaker_open" };
   // Security recheck: disable / suspend / kill-switch / unsubscribe /
   // scope-narrow / hooksUrl rotation after enqueue must park the retry —
   // the queued body may carry PII and the queued URL may be stale.
