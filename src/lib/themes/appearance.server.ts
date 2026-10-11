@@ -695,6 +695,7 @@ function mapPackageZipError(err: unknown): ThemeDeskError | null {
       return new ThemeDeskError("theme.upload_blocked", message);
     case "zip.missing_manifest":
     case "zip.manifest_invalid":
+    case "zip.content_mismatch":
       return new ThemeDeskError("theme.upload_manifest", message);
     default:
       return new ThemeDeskError("theme.upload_corrupt", message);
@@ -797,6 +798,7 @@ export async function installUploadedTheme(
     parseZip,
     extractPackageFiles,
     validatePackageLayout,
+    assertPackageContentAuthentic,
     collectBrokenAssetRefs,
   } = await import("../package-zip");
   const { pkg1ThemeValidator } = await import("../package-install.server");
@@ -810,6 +812,10 @@ export async function installUploadedTheme(
     const entries = parseZip(bytes, UPLOAD_ZIP_LIMITS);
     files = extractPackageFiles(bytes, entries, UPLOAD_ZIP_LIMITS);
     const layout = validatePackageLayout(files, "theme", UPLOAD_ZIP_LIMITS);
+    // Inner-file content authenticity (threat-defense): extension claims
+    // are cheap, bytes are truth. Runs BEFORE the replay lookup so a reused
+    // key can never smuggle hostile bytes past the check.
+    assertPackageContentAuthentic(files);
     const verdict = pkg1ThemeValidator(layout.manifest, "theme");
     if (!verdict.ok) {
       throw new ThemeDeskError(

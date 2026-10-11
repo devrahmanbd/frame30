@@ -15,6 +15,7 @@ import {
   extractPackageFiles,
   parseZip,
   validatePackageLayout,
+  assertPackageContentAuthentic,
   PackageZipError,
   type ZipEntry,
 } from "./package-zip";
@@ -452,5 +453,57 @@ describe("PKG-2 hostile entry strictness (threat-defense)", () => {
       ]);
       expect(codeOfSync(() => parseZip(zip))).toBe("no_throw");
     }
+  });
+});
+
+describe("PKG-2 inner-file content authenticity (threat-defense)", () => {
+  const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00]);
+  const HTML = new TextEncoder().encode("<!doctype html><script>alert(1)</script>");
+  const pagan = (path: string, bytes: Uint8Array) => ({ path, bytes });
+  it("rejects HTML masquerading as a PNG asset", () => {
+    expect(codeOfSync(() => assertPackageContentAuthentic([pagan("assets/logo.png", HTML)]))).toBe(
+      "zip.content_mismatch",
+    );
+  });
+  it("accepts real PNG bytes under a .png name", () => {
+    expect(() =>
+      assertPackageContentAuthentic([pagan("assets/logo.png", PNG)]),
+    ).not.toThrow();
+  });
+  it("rejects script text as a font file", () => {
+    expect(
+      codeOfSync(() =>
+        assertPackageContentAuthentic([
+          pagan("assets/face.woff2", new TextEncoder().encode("not a font")),
+        ]),
+      ),
+    ).toBe("zip.content_mismatch");
+  });
+  it("accepts wOFF/wOF2 magic under font names", () => {
+    for (const [name, magic] of [
+      ["assets/a.woff", "wOFF"],
+      ["assets/b.woff2", "wOF2"],
+    ] as const) {
+      const bytes = new Uint8Array([...new TextEncoder().encode(magic), 0, 0, 0, 0]);
+      expect(() => assertPackageContentAuthentic([pagan(name, bytes)])).not.toThrow();
+    }
+  });
+  it("rejects null bytes in text files", () => {
+    expect(
+      codeOfSync(() =>
+        assertPackageContentAuthentic([
+          pagan("styles/main.css", new Uint8Array([0x61, 0x00, 0x62])),
+        ]),
+      ),
+    ).toBe("zip.content_mismatch");
+  });
+  it("accepts valid UTF-8 CSS and JSON", () => {
+    const enc = new TextEncoder();
+    expect(() =>
+      assertPackageContentAuthentic([
+        pagan("styles/main.css", enc.encode("a{color:red}")),
+        pagan("templates/index.json", enc.encode('{"blocks":[]}')),
+      ]),
+    ).not.toThrow();
   });
 });

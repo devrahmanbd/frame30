@@ -50,17 +50,25 @@ const u32 = (v: number) => [
 
 type Entry = {
   name: string;
-  content: string;
+  content: string | Uint8Array;
   method?: 0 | 8;
   externalAttrs?: number;
 };
+
+/** Valid-PNG payload so image fixtures pass content-authenticity gates. */
+const png = (marker: string) =>
+  new Uint8Array([
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+    ...enc.encode(marker),
+  ]);
 
 function buildZip(entries: Entry[]): Uint8Array {
   const out: number[] = [];
   const central: number[] = [];
   for (const e of entries) {
     const nameBytes = Array.from(enc.encode(e.name));
-    const raw = enc.encode(e.content);
+    const raw =
+      typeof e.content === "string" ? enc.encode(e.content) : e.content;
     const method = e.method ?? 0;
     const payload = Array.from(method === 8 ? deflateRawSync(raw) : raw);
     const localOffset = out.length;
@@ -202,7 +210,7 @@ describe("PKG-2 valid install", () => {
     const db = pkgDb();
     const zip = themeZip(STRICT_THEME_V1, [
       { name: "styles/main.css", content: "a{color:red}" },
-      { name: "assets/logo.png", content: "png-bytes" },
+      { name: "assets/logo.png", content: png("logo") },
       { name: "locales/en.json", content: "{}" },
     ]);
     const res = await installTheme(db, MERCHANT_A, zip);
@@ -316,7 +324,7 @@ describe("PKG-2 rejections", () => {
   it("rejects oversized entries", async () => {
     const db = pkgDb();
     const zip = themeZip(MANIFEST_V1, [
-      { name: "assets/big.png", content: "0123456789" },
+      { name: "assets/big.png", content: png("0123456789") },
     ]);
     expect(
       await codeOf(
@@ -419,14 +427,14 @@ describe("PKG-2 update v1→v2 + rollback v2→v1", () => {
       db,
       MERCHANT_A,
       themeZip(strictTheme("1.0.0"), [
-        { name: "assets/logo.png", content: "v1-logo" },
+        { name: "assets/logo.png", content: png("v1") },
       ]),
     );
     const v2 = await installTheme(
       db,
       MERCHANT_A,
       themeZip(strictTheme("1.1.0"), [
-        { name: "assets/logo.png", content: "v2-logo" },
+        { name: "assets/logo.png", content: png("v2") },
       ]),
     );
     return { v1, v2 };
@@ -501,7 +509,7 @@ describe("PKG-2 uninstall isolation", () => {
       MERCHANT_A,
       themeZip(
         strictTheme("1.0.0", { key: "alpha", name: "Alpha", nameBn: "আলফা" }),
-        [{ name: "assets/a.png", content: "a" }],
+        [{ name: "assets/a.png", content: png("a") }],
       ),
     );
     const second = await installTheme(
@@ -509,7 +517,7 @@ describe("PKG-2 uninstall isolation", () => {
       MERCHANT_A,
       themeZip(
         strictTheme("2.0.0", { key: "beta", name: "Beta", nameBn: "বিটা" }),
-        [{ name: "assets/b.png", content: "b" }],
+        [{ name: "assets/b.png", content: png("b") }],
       ),
     );
     await activatePackage(db.asClient(), MERCHANT_A, second.packageId, second.versionId, ACTOR);
@@ -596,7 +604,7 @@ describe("PKG-2 plugin packages", () => {
         kind: "plugin",
         fileName: "chat.zip",
         bytes: pluginZip(strictPlugin("chat", "1.0.0", { name: "Chat" }), [
-          { name: "assets/icon.png", content: "icon" },
+          { name: "assets/icon.png", content: png("icon") },
         ]),
         idempotencyKey: key(),
       },
@@ -734,7 +742,7 @@ describe("FOLLOW-UP install artifact persistence", () => {
         kind: "plugin",
         fileName: "acme.zip",
         bytes: pluginZip(manifest, [
-          { name: "assets/icon.png", content: "icon" },
+          { name: "assets/icon.png", content: png("icon") },
         ]),
         idempotencyKey: key(),
       },
@@ -819,7 +827,7 @@ describe("FOLLOW-UP plugin uninstall GC (manifest slug vs ledger listing slug)",
         kind: "plugin",
         fileName: "sticky-cart.zip",
         bytes: pluginZip(strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }), [
-          { name: "assets/icon.png", content: "icon" },
+          { name: "assets/icon.png", content: png("icon") },
         ]),
         idempotencyKey: key(),
       },
@@ -1230,7 +1238,7 @@ function k3InstallPluginVersion(
       fileName: "acme.zip",
       bytes: pluginZip(
         opts.manifest ?? k3FullPluginManifest(version),
-        [{ name: "assets/icon.png", content: icon }],
+        [{ name: "assets/icon.png", content: png(icon) }],
       ),
       idempotencyKey: opts.key ?? key(),
     },
@@ -1504,7 +1512,7 @@ async function k3SeedSibling(db: ReturnType<typeof fakeDb>): Promise<K3Seed> {
       kind: "plugin",
       fileName: "sibling.zip",
       bytes: pluginZip(strictPlugin("sibling-widget", "1.0.0", { name: "Sib" }), [
-        { name: "assets/icon.png", content: "sib-icon" },
+        { name: "assets/icon.png", content: png("sib") },
       ]),
       idempotencyKey: key(),
     },
@@ -1728,9 +1736,9 @@ describe("K3 plugin install atomicity (failure-injection, each stage)", () => {
     const bytes = pluginZip(
       strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
       [
-        { name: "assets/a.png", content: "a" },
-        { name: "assets/b.png", content: "b" },
-        { name: "assets/c.png", content: "c" },
+        { name: "assets/a.png", content: png("a") },
+        { name: "assets/b.png", content: png("b") },
+        { name: "assets/c.png", content: png("c") },
       ],
     );
     const got = await codeOf(
@@ -1752,9 +1760,9 @@ describe("K3 plugin install atomicity (failure-injection, each stage)", () => {
     const bytes = pluginZip(
       strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
       [
-        { name: "assets/a.png", content: "a" },
-        { name: "assets/b.png", content: "b" },
-        { name: "assets/c.png", content: "c" },
+        { name: "assets/a.png", content: png("a") },
+        { name: "assets/b.png", content: png("b") },
+        { name: "assets/c.png", content: png("c") },
       ],
     );
     const got = await codeOf(
@@ -1779,7 +1787,7 @@ describe("K3 plugin install atomicity (failure-injection, each stage)", () => {
         fileName: "acme.zip",
         bytes: pluginZip(
           strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
-          [{ name: "assets/icon.png", content: "icon" }],
+          [{ name: "assets/icon.png", content: png("icon") }],
         ),
         idempotencyKey: k,
       }),
@@ -1798,7 +1806,7 @@ describe("K3 plugin install atomicity (failure-injection, each stage)", () => {
         fileName: "acme.zip",
         bytes: pluginZip(
           strictPlugin("acme-reviews", "1.0.0", { name: "Acme" }),
-          [{ name: "assets/icon.png", content: "icon" }],
+          [{ name: "assets/icon.png", content: png("icon") }],
         ),
         idempotencyKey: k,
       }),

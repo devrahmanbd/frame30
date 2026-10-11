@@ -28,7 +28,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { createHash } from "node:crypto";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { buildTestZip } from "./__fixtures__/test-zip";
+import { buildTestZip, pngBytes } from "./__fixtures__/test-zip";
 import {
   metricRecorder,
   allowAllRateLimits,
@@ -149,7 +149,7 @@ function strictPlugin(
 
 function pluginZip(
   manifest: Record<string, unknown>,
-  icon = "icon-bytes",
+  icon: Uint8Array = pngBytes("icon"),
 ): Uint8Array {
   return buildTestZip([
     { name: "plugin.json", content: JSON.stringify(manifest) },
@@ -483,7 +483,7 @@ describe("LIFECYCLE official plugin: install → enable → render → update �
       {
         kind: "plugin",
         fileName: "sibling.zip",
-        bytes: pluginZip(strictPlugin("sibling-widget", "1.0.0"), "sib"),
+        bytes: pluginZip(strictPlugin("sibling-widget", "1.0.0"), pngBytes("sib")),
         idempotencyKey: key(),
       },
       ACTOR,
@@ -529,7 +529,7 @@ describe("LIFECYCLE custom plugin: upload → disable → render → enable → 
       {
         kind: "plugin",
         fileName: "acme.zip",
-        bytes: pluginZip(strictPlugin("acme-reviews", "1.0.0"), "icon-v1"),
+        bytes: pluginZip(strictPlugin("acme-reviews", "1.0.0"), pngBytes("icon-v1")),
         idempotencyKey: key(),
       },
       ACTOR,
@@ -591,7 +591,7 @@ describe("LIFECYCLE custom plugin: upload → disable → render → enable → 
       {
         kind: "plugin",
         fileName: "acme.zip",
-        bytes: pluginZip(strictPlugin("acme-reviews", "1.1.0"), "icon-v2"),
+        bytes: pluginZip(strictPlugin("acme-reviews", "1.1.0"), pngBytes("icon-v2")),
         idempotencyKey: key(),
       },
       ACTOR,

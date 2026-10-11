@@ -23,7 +23,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { fakeDb } from "./__fixtures__/fake-db";
-import { buildTestZip } from "./__fixtures__/test-zip";
+import { buildTestZip, pngBytes } from "./__fixtures__/test-zip";
 import {
   exportBuiltinPluginZip,
   exportPluginManifestZip,
@@ -133,7 +133,7 @@ function customManifest(
 
 function customZip(
   manifest: Record<string, unknown>,
-  extra: { name: string; content: string }[] = [],
+  extra: { name: string; content: string | Uint8Array }[] = [],
 ): Uint8Array {
   return buildTestZip([
     { name: "plugin.json", content: JSON.stringify(manifest) },
@@ -473,7 +473,7 @@ describe("PKG-4 plugin uninstall isolation", () => {
       db,
       MERCHANT_A,
       customZip(customManifest(), [
-        { name: "assets/icon.png", content: "icon" },
+        { name: "assets/icon.png", content: pngBytes("icon") },
       ]),
     );
     const out = await uninstallPluginPackage(

@@ -45,6 +45,7 @@ import { checkApiCompatibility } from "./registry-version";
 import { validateThemeManifest } from "./theme-package";
 import { pkg1PluginValidator } from "./plugin-package";
 import {
+  assertPackageContentAuthentic,
   collectBrokenAssetRefs,
   extractPackageFiles,
   manifestNameFor,
@@ -624,6 +625,10 @@ export async function installPackage(
   const entries = parseZip(bytes, input.limits);
   const files = extractPackageFiles(bytes, entries, input.limits);
   const layout = validatePackageLayout(files, "theme", input.limits);
+  // Inner-file content authenticity (threat-defense): extension claims are
+  // cheap, bytes are truth. Runs BEFORE the replay lookup so a reused key
+  // can never smuggle hostile bytes past the check.
+  assertPackageContentAuthentic(files);
 
   // 3. manifest (PKG-1 seam) → 4. dependency/API → 5. presentation refs.
   const validator = resolveValidator(input.validator);
@@ -1012,6 +1017,9 @@ async function installPluginPackage(
   const entries = parseZip(bytes, input.limits);
   const files = extractPackageFiles(bytes, entries, input.limits);
   const layout = validatePackageLayout(files, "plugin", input.limits);
+  // Inner-file content authenticity (threat-defense): same anti-smuggling
+  // order as the theme flow — BEFORE the replay lookup.
+  assertPackageContentAuthentic(files);
   const validator = resolveValidator(input.validator);
   const verdict = validator(layout.manifest, "plugin");
   if (!verdict.ok) {

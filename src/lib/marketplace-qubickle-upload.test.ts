@@ -16,7 +16,7 @@ import {
   metricRecorder,
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
-import { buildTestZip } from "./__fixtures__/test-zip";
+import { buildTestZip, pngBytes } from "./__fixtures__/test-zip";
 
 type Recorder = ReturnType<typeof metricRecorder>;
 const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
@@ -169,7 +169,7 @@ describe("H6 — upload archive hardening", () => {
     const db = uploadDb();
     const zip = buildTestZip([
       { name: "theme.json", content: MANIFEST, method: 8 },
-      { name: "assets/logo.png", content: "logo" },
+      { name: "assets/logo.png", content: pngBytes("logo") },
     ]);
     const first = await upload(db, "same.zip", zip, "h6-unique-1");
     const second = await upload(db, "same.zip", zip, "h6-unique-2");

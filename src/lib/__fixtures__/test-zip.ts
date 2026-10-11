@@ -12,6 +12,18 @@ export type ZipEntryInput = {
   method?: 0 | 8;
 };
 
+/**
+ * Minimal valid PNG payload (magic header + marker text) for fixtures that
+ * need an image file passing content-authenticity gates. The marker keeps
+ * fixtures distinguishable (v1 vs v2) without affecting validity.
+ */
+export function pngBytes(marker: string): Uint8Array {
+  return new Uint8Array([
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+    ...new TextEncoder().encode(marker),
+  ]);
+}
+
 function crc32(data: Uint8Array): number {
   let table: number[] | null = (crc32 as { t?: number[] }).t ?? null;
   if (!table) {

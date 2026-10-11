@@ -476,6 +476,90 @@ export function validatePackageLayout(
   return { manifest: manifest as Record<string, unknown>, manifestRaw: manifestBytes, files };
 }
 
+import { validateMagicBytes } from "./media/library";
+
+/**
+ * Inner-file content authenticity (threat-defense): extension claims are
+ * cheap, bytes are truth. Images/SVG are checked against their magic
+ * signatures, fonts against theirs, and text files must decode as UTF-8
+ * with no null bytes — so a polyglot HTML script named `logo.png`, a
+ * script named `face.woff2`, or binary smuggled as `.css` fails here
+ * instead of persisting on an extension's word.
+ */
+const IMAGE_MIME_BY_EXT: Record<string, string> = {
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".webp": "image/webp",
+  ".avif": "image/avif",
+  ".svg": "image/svg+xml",
+};
+
+function fontMagicOk(bytes: Uint8Array): boolean {
+  const head = Array.from(bytes.slice(0, 4))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+  const ascii4 = (() => {
+    try {
+      return new TextDecoder("utf-8", { fatal: true }).decode(bytes.slice(0, 4));
+    } catch {
+      return "";
+    }
+  })();
+  return (
+    ascii4 === "wOFF" ||
+    ascii4 === "wOF2" ||
+    ascii4 === "OTTO" ||
+    ascii4 === "true" ||
+    ascii4 === "typ1" ||
+    head.startsWith("00010000")
+  );
+}
+
+function decodeTextStrict(bytes: Uint8Array): string | null {
+  try {
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    return text.includes("\0") ? null : text;
+  } catch {
+    return null;
+  }
+}
+
+export function assertPackageContentAuthentic(files: PackageFile[]): void {
+  for (const file of files) {
+    const ext = extOf(file.path);
+    const imageMime = IMAGE_MIME_BY_EXT[ext];
+    if (imageMime) {
+      const check = validateMagicBytes(file.bytes, imageMime);
+      if (!check.ok) {
+        fail(
+          "zip.content_mismatch",
+          `File content does not match its type (${file.path.slice(0, 80)}): ${check.message}`,
+        );
+      }
+      continue;
+    }
+    if (ext === ".woff" || ext === ".woff2" || ext === ".ttf" || ext === ".otf" || ext === ".eot") {
+      if (!fontMagicOk(file.bytes)) {
+        fail(
+          "zip.content_mismatch",
+          `File content does not look like a font: ${file.path.slice(0, 80)}`,
+        );
+      }
+      continue;
+    }
+    if (ext === ".json" || ext === ".css" || ext === ".md" || ext === ".txt" || ext === "") {
+      if (decodeTextStrict(file.bytes) === null) {
+        fail(
+          "zip.content_mismatch",
+          `Text file is not valid UTF-8: ${file.path.slice(0, 80)}`,
+        );
+      }
+    }
+  }
+}
+
 /**
  * Presentation references: template JSON string values that point at
  * `assets/...` must resolve to a file in the package. Returns the dangling
