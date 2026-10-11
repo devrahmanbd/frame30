@@ -112,3 +112,21 @@ export const themeCatalogFavouriteFn = createServerFn({ method: "POST" })
       data.favourite,
     );
   });
+
+export const themeApproveFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("themes.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ themeId, versionId: themeId }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { approveThemeVersion } = await import("./appearance.server");
+    // Rethrown as-is: ThemeDeskError carries `.code` for ownership/version
+    // refusals and must survive to the caller unwrapped.
+    return approveThemeVersion(
+      context.supabase,
+      await scope(context.supabase, context.userId),
+      data.themeId,
+      data.versionId,
+      context.userId,
+    );
+  });

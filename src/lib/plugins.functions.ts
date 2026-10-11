@@ -109,6 +109,25 @@ export const pluginUninstallFn = createServerFn({ method: "POST" })
     );
   });
 
+export const pluginApproveFn = createServerFn({ method: "POST" })
+  .middleware([requirePermission("plugins.update")])
+  .inputValidator((d: unknown) =>
+    z.object({ pluginId, manifestVersion: z.string().min(1).max(32) }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { approvePluginVersion } = await import("./plugins.server");
+    const merchantId = await scope(context.supabase, context.userId);
+    // Rethrown as-is: `plugin_not_found` / `plugin_version_mismatch` must
+    // survive to the caller unwrapped.
+    return approvePluginVersion(
+      context.supabase,
+      merchantId,
+      data.pluginId,
+      data.manifestVersion,
+      context.userId,
+    );
+  });
+
 /** Platform owner only — RLS rejects a merchant who tries. Kill switches are global per plugin. */
 export const pluginKillSwitchFn = createServerFn({ method: "POST" })
   .middleware([requirePermission("flags.write")])
