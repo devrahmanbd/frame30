@@ -204,15 +204,23 @@ describe("R2-4 cart.calculate emission (captureCart)", () => {
     expect(recorder.logs.map((l) => l.event)).toContain("plugin.hook.emitted");
   });
 
-  it("still captures when the subscriber 500s, with no PII in the payload", async () => {
+  it("still captures when the subscriber 500s, with no PII or bearer token in the payload", async () => {
     const fetchMock = stubFetch500();
     listInstalledPluginsMock.mockResolvedValue([subscriber("cart.calculate")]);
     const out = await captureCart(cartDb().asClient(), input);
     expect(out).toEqual({ id: "cart-1" });
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const body = fetchBody(fetchMock);
+    // Vendor-visible shape is exactly these fields: the guest cart token is
+    // a bearer secret for the abandoned_cart_capture upsert and must never
+    // reach subscribers.
+    expect(Object.keys(body.payload).sort()).toEqual([
+      "lineCount",
+      "merchantId",
+      "subtotalMinorInt",
+    ]);
     expect(body.payload.merchantId).toBe("m1");
-    expect(body.payload.cartToken).toBe("tok-1");
+    expect(body.payload).not.toHaveProperty("cartToken");
     expect(JSON.stringify(body.payload)).not.toContain("shopper@example.com");
   });
 });
@@ -246,7 +254,7 @@ describe("R2-4 checkout.validate emission (reserveStock)", () => {
     expect(recorder.logs.map((l) => l.event)).toContain("plugin.hook.emitted");
   });
 
-  it("still holds stock when the subscriber 500s", async () => {
+  it("still holds stock when the subscriber 500s, with no bearer token in the payload", async () => {
     const fetchMock = stubFetch500();
     const db = stockDb();
     adminHolder.db = db.asClient();
@@ -261,6 +269,15 @@ describe("R2-4 checkout.validate emission (reserveStock)", () => {
     );
     expect(out.token).toBe("tok-1");
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    const body = fetchBody(fetchMock);
+    // Vendor-visible shape is exactly these fields: the guest checkout token
+    // authorizes reserve/release/place calls and must never reach subscribers.
+    expect(Object.keys(body.payload).sort()).toEqual([
+      "lineCount",
+      "merchantId",
+    ]);
+    expect(body.payload.merchantId).toBe("m1");
+    expect(body.payload).not.toHaveProperty("checkoutToken");
   });
 });
 

@@ -241,7 +241,10 @@ export async function reserveStock(
         );
         const outcomes = await runHook(installed, "checkout.validate", {
           merchantId,
-          checkoutToken,
+          // NOTE: checkoutToken is intentionally absent — it authorizes
+          // reserve/release/place calls for the shopper's live session and
+          // must never reach vendors. Nothing consumes it downstream
+          // (verified Oct 2026).
           lineCount: lines.length,
         });
         log("info", "plugin.hook.emitted", {

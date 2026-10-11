@@ -67,7 +67,9 @@ export async function captureCart(
       const installed = await listInstalledPlugins(db, input.merchantId);
       const outcomes = await runHook(installed, "cart.calculate", {
         merchantId: input.merchantId,
-        cartToken: input.cartToken,
+        // NOTE: cartToken is intentionally absent — it is the bearer key for
+        // the (merchant, cart_token) capture upsert and must never reach
+        // vendors. Nothing consumes it downstream (verified Oct 2026).
         subtotalMinorInt: Math.max(0, Math.floor(input.subtotalMinorInt)),
         lineCount: input.lines.length,
       });
