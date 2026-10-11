@@ -16,6 +16,8 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import type { BillingPlanKey } from "./entitlements";
+import { PLAN_LADDER } from "./entitlements";
 import { assertTenantId } from "./tenant-scope";
 
 type Client = SupabaseClient<Database>;
@@ -40,14 +42,74 @@ export type StoredAsset = {
 };
 
 /**
- * Threat-defense — per-merchant persisted-asset storage quota.
+ * Threat-defense — per-merchant persisted-asset storage quota (launch tier).
  *
- * Flat and fail-closed (repo precedent: flat domain quotas): every byte
- * persisted under `theme_assets` for the merchant counts — package version
- * namespaces and merchant media alike. 1 GiB admits roughly ten max-size
- * uploads while bounding storage exhaustion from repeated hostile uploads.
+ * Plan-tiered and fail-closed: every byte persisted under `theme_assets` for
+ * the merchant counts — package version namespaces and merchant media alike.
+ * 1 GiB admits roughly ten max-size uploads while bounding storage exhaustion
+ * from repeated hostile uploads. Higher plans raise the cap via
+ * `ASSET_QUOTA_BY_PLAN`; enforcement reads `quotaForMerchant`.
  */
 export const MERCHANT_ASSET_QUOTA_BYTES = 1 << 30;
+
+/**
+ * Plan-tiered per-merchant persisted-asset storage quota.
+ *
+ * Owner-tunable values: adjust the byte caps here to change what each plan
+ * admits; enforcement reads through `quotaForMerchant`, never the raw map.
+ * `launch` stays `MERCHANT_ASSET_QUOTA_BYTES` (tests pin the const name).
+ */
+export const ASSET_QUOTA_BY_PLAN: Record<BillingPlanKey, number> = {
+  launch: MERCHANT_ASSET_QUOTA_BYTES,
+  growth: 5 * (1 << 30),
+  business: 20 * (1 << 30),
+  enterprise: 100 * (1 << 30),
+};
+
+/** Byte quota for a plan key. Unknown/blank input fails closed to launch. */
+export function assetQuotaForPlan(plan: string): number {
+  const key = (plan ?? "").trim();
+  if ((PLAN_LADDER as readonly string[]).includes(key)) {
+    return ASSET_QUOTA_BY_PLAN[key as BillingPlanKey];
+  }
+  return ASSET_QUOTA_BY_PLAN.launch;
+}
+
+/**
+ * Merchant plan lookup over `subscriptions` (house pattern: same select +
+ * fail-closed shape as the domain quota in `domains.server.ts`). Missing
+ * rows, unknown plans, and read failures all resolve to `"launch"`.
+ */
+export async function merchantPlanKey(
+  db: Client,
+  merchantId: string,
+): Promise<BillingPlanKey> {
+  try {
+    const { data: sub } = await (db as unknown as SupabaseClient<never>)
+      .from("subscriptions")
+      .select("plan")
+      .eq("merchant_id", merchantId)
+      .maybeSingle();
+    const subPlan = (sub as { plan?: unknown } | null)?.plan;
+    const plan = typeof subPlan === "string" ? subPlan : "launch";
+    const key = String(plan).trim();
+    if ((PLAN_LADDER as readonly string[]).includes(key)) {
+      return key as BillingPlanKey;
+    }
+    return "launch";
+  } catch {
+    return "launch";
+  }
+}
+
+/** Effective byte quota for the merchant's plan. Fail-closed to launch. */
+export async function quotaForMerchant(
+  db: Client,
+  merchantId: string,
+): Promise<number> {
+  const plan = await merchantPlanKey(db, merchantId);
+  return assetQuotaForPlan(plan);
+}
 
 /** Total persisted asset bytes for the merchant. Tenant-scoped read. */
 export async function merchantAssetBytes(

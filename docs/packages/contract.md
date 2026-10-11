@@ -75,18 +75,32 @@ Strict entries (`parseZip`, `src/lib/package-zip.ts:206-264`):
   and never reach validators or installs
   (`src/lib/package-zip.ts:353`).
 
-Per-merchant storage quota: persisted usage plus incoming bytes must
-fit `MERCHANT_ASSET_QUOTA_BYTES` (1 GiB,
-`src/lib/package-store.server.ts:50`), summed by `merchantAssetBytes`
-(`src/lib/package-store.server.ts:53`). Both `installPackage` lanes
-check before any write via `assertStorageQuota`
+Per-merchant storage quota is plan-tiered: persisted usage plus incoming
+bytes must fit the merchant's plan cap from `ASSET_QUOTA_BY_PLAN`
+(`src/lib/package-store.server.ts:62`), summed by `merchantAssetBytes`
+(`src/lib/package-store.server.ts:115`). The plan comes from
+`merchantPlanKey` (`src/lib/package-store.server.ts:83`, `subscriptions`
+lookup, missing/unknown reads as `launch`) via `assetQuotaForPlan`
+(`src/lib/package-store.server.ts:70`) and `quotaForMerchant`
+(`src/lib/package-store.server.ts:106`); plans are `BillingPlanKey`
+(`src/lib/entitlements.ts:24`). Both `installPackage` lanes check before
+any write via `assertStorageQuota`
 (`src/lib/package-install.server.ts:100-114`, failing with
-`package.over_quota`; theme lane at `:697`, plugin lane at `:1067`).
+`package.over_quota`; theme lane at `:698`, plugin lane at `:1068`).
 The upload lane refuses the same way with `theme.upload_quota`
-(`src/lib/themes/appearance.server.ts:840-843`) and refuses dangling
+(`src/lib/themes/appearance.server.ts:841-843`) and refuses dangling
 asset refs with `theme.upload_manifest`
-(`src/lib/themes/appearance.server.ts:824-828`). Replays write nothing
+(`src/lib/themes/appearance.server.ts:824-830`). Replays write nothing
 and skip the quota check.
+
+| Plan         | Asset quota (`ASSET_QUOTA_BY_PLAN`) | Pin                                 |
+| ------------ | ----------------------------------- | ----------------------------------- |
+| `launch`     | 1 GiB (`MERCHANT_ASSET_QUOTA_BYTES`, `src/lib/package-store.server.ts:53`) | `src/lib/package-store.server.ts:63` |
+| `growth`     | 5 GiB                               | `src/lib/package-store.server.ts:64` |
+| `business`   | 20 GiB                              | `src/lib/package-store.server.ts:65` |
+| `enterprise` | 100 GiB                             | `src/lib/package-store.server.ts:66` |
+
+Values are owner-tunable; unknown/blank plans fail closed to launch.
 
 External-URL inventory: `inventoryExternalUrls`
 (`src/lib/package-review.ts:50`) extracts the sorted unique absolute

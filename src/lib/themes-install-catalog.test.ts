@@ -525,10 +525,9 @@ describe("installUploadedTheme (upload server path)", () => {
 });
 
 describe("upload storage quota (threat-defense)", () => {
-  it("deny: refuses uploads over the persisted-asset quota, writing nothing", async () => {
-    const { MERCHANT_ASSET_QUOTA_BYTES } = await import(
-      "./package-store.server"
-    );
+  it("deny: refuses uploads over the plan quota, writing nothing (launch)", async () => {
+    const { MERCHANT_ASSET_QUOTA_BYTES } =
+      await import("./package-store.server");
     const db = fakeDb({
       tables: {
         store_themes: [],
@@ -543,6 +542,7 @@ describe("upload storage quota (threat-defense)", () => {
         ],
         marketplace_installs: [],
         theme_audit: [],
+        subscriptions: [{ merchant_id: MERCHANT, plan: "launch" }],
       },
     });
     const err = await installUploadedTheme(
@@ -556,6 +556,72 @@ describe("upload storage quota (threat-defense)", () => {
     expect(db.rows("theme_versions")).toHaveLength(0);
     expect(db.rows("marketplace_installs")).toHaveLength(0);
     expect(db.rows("theme_audit")).toHaveLength(0);
+  });
+
+  it("deny: missing subscription fails closed to launch", async () => {
+    const { MERCHANT_ASSET_QUOTA_BYTES } =
+      await import("./package-store.server");
+    const db = fakeDb({
+      tables: {
+        store_themes: [],
+        theme_versions: [],
+        theme_drafts: [],
+        theme_assets: [
+          {
+            merchant_id: MERCHANT,
+            name: "themes/old/x.png",
+            bytes: MERCHANT_ASSET_QUOTA_BYTES,
+          },
+        ],
+        marketplace_installs: [],
+        theme_audit: [],
+        subscriptions: [],
+      },
+    });
+    const err = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      {
+        fileName: "big.zip",
+        fileBase64: zipB64(),
+        idempotencyKey: "k-quota-closed",
+      },
+      "user-9",
+    ).catch((e) => e);
+    expect(err?.code).toBe("theme.upload_quota");
+    expect(db.rows("store_themes")).toHaveLength(0);
+  });
+
+  it("allow: growth plan fits 2 GiB of persisted usage", async () => {
+    const db = fakeDb({
+      tables: {
+        store_themes: [],
+        theme_versions: [],
+        theme_drafts: [],
+        theme_assets: [
+          {
+            merchant_id: MERCHANT,
+            name: "themes/old/x.png",
+            bytes: 2 * (1 << 30),
+          },
+        ],
+        marketplace_installs: [],
+        theme_audit: [],
+        subscriptions: [{ merchant_id: MERCHANT, plan: "growth" }],
+      },
+    });
+    const out: UploadResult = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      {
+        fileName: "big.zip",
+        fileBase64: zipB64(),
+        idempotencyKey: "k-quota-growth",
+      },
+      "user-9",
+    );
+    expect(out.alreadyInstalled).toBe(false);
+    expect(db.rows("store_themes")).toHaveLength(1);
   });
 });
 

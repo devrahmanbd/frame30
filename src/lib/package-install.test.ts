@@ -1809,11 +1809,9 @@ describe("K3 plugin install atomicity (failure-injection, each stage)", () => {
 });
 
 describe("PKG-2 storage quota (threat-defense)", () => {
-  it("refuses installs over the persisted-asset quota, writing nothing", async () => {
-    const { MERCHANT_ASSET_QUOTA_BYTES } = await import(
-      "./package-store.server"
-    );
-    const db = fakeDb({
+  const GIB = 1 << 30;
+  function quotaDb(usedBytes: number, plan?: string) {
+    return fakeDb({
       tables: {
         store_themes: [],
         theme_versions: [],
@@ -1822,13 +1820,21 @@ describe("PKG-2 storage quota (threat-defense)", () => {
           {
             merchant_id: MERCHANT_A,
             name: "themes/old/x.png",
-            bytes: MERCHANT_ASSET_QUOTA_BYTES,
+            bytes: usedBytes,
           },
         ],
         marketplace_installs: [],
         theme_audit: [],
+        subscriptions:
+          plan === undefined ? [] : [{ merchant_id: MERCHANT_A, plan }],
       },
     });
+  }
+
+  it("launch blocks at 1 GiB: refuses installs over the plan quota, writing nothing", async () => {
+    const { MERCHANT_ASSET_QUOTA_BYTES } =
+      await import("./package-store.server");
+    const db = quotaDb(MERCHANT_ASSET_QUOTA_BYTES, "launch");
     const code = await codeOf(
       installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1)),
     );
@@ -1837,6 +1843,31 @@ describe("PKG-2 storage quota (threat-defense)", () => {
     expect(db.rows("theme_versions")).toHaveLength(0);
     expect(db.rows("theme_assets")).toHaveLength(1);
     expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+
+  it("missing subscription fails closed to launch", async () => {
+    const { MERCHANT_ASSET_QUOTA_BYTES } =
+      await import("./package-store.server");
+    const db = quotaDb(MERCHANT_ASSET_QUOTA_BYTES);
+    const code = await codeOf(
+      installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1)),
+    );
+    expect(code).toBe("package.over_quota");
+    expect(db.rows("store_themes")).toHaveLength(0);
+  });
+
+  it("growth allows 2 GiB of persisted usage", async () => {
+    const db = quotaDb(2 * GIB, "growth");
+    const res = await installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
+    expect(res.packageId).toBeTruthy();
+    expect(res.alreadyInstalled).toBe(false);
+  });
+
+  it("enterprise allows 50 GiB of persisted usage", async () => {
+    const db = quotaDb(50 * GIB, "enterprise");
+    const res = await installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
+    expect(res.packageId).toBeTruthy();
+    expect(res.alreadyInstalled).toBe(false);
   });
 });
 

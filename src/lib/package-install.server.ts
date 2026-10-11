@@ -58,7 +58,7 @@ import {
   deleteVersionAssets,
   listVersionAssets,
   merchantAssetBytes,
-  MERCHANT_ASSET_QUOTA_BYTES,
+  quotaForMerchant,
   pluginVersionPrefix,
   saveVersionAssets,
   themeVersionPrefix,
@@ -94,8 +94,8 @@ export class PackageInstallError extends Error {
 
 /**
  * Threat-defense storage quota: persisted usage plus the incoming inflated
- * file total must fit `MERCHANT_ASSET_QUOTA_BYTES`. Call only on paths that
- * persist (replays skip it — they write nothing).
+ * file total must fit the merchant's plan-tiered quota (`quotaForMerchant`).
+ * Call only on paths that persist (replays skip it — they write nothing).
  */
 async function assertStorageQuota(
   db: Client,
@@ -105,7 +105,8 @@ async function assertStorageQuota(
   let incoming = 0;
   for (const f of files) incoming += f.bytes.length;
   const used = await merchantAssetBytes(db, merchantId);
-  if (used + incoming > MERCHANT_ASSET_QUOTA_BYTES) {
+  const quota = await quotaForMerchant(db, merchantId);
+  if (used + incoming > quota) {
     throw new PackageInstallError(
       "package.over_quota",
       "Merchant asset storage quota exceeded.",
