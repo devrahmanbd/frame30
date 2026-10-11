@@ -261,8 +261,40 @@ export async function reserveStock(
   );
 }
 
-/** Convert holds into real stock decrements. Called once, inside order creation. */
-export async function consumeStock(checkoutToken: string, orderId: string) {
+/** Convert holds into real stock decrements. Called once, inside order creation.
+ *
+ * `merchantId` is REQUIRED and scopes the consume: checkout tokens are
+ * client-generated strings, so token-only matching lets any shopper who
+ * guesses a token converge another merchant's holds onto their order.
+ * Callers must resolve the merchant server-side (the order's merchant) and
+ * pass it here.
+ *
+ * Fail-closed: a missing/empty scope, or a token with no live holds under
+ * this merchant, throws `stock_consume_failed` (the existing consume error
+ * vocabulary) having touched no rows — a cross-merchant consume is
+ * indistinguishable from a missing hold. The tenant lock stays per
+ * token+order (see the concurrency contract pin) so same-token consumes
+ * still serialize; the merchant scope is enforced on every row access.
+ */
+export async function consumeStock(
+  checkoutToken: string,
+  orderId: string,
+  merchantId: string,
+) {
+  const reject = (reason: string): never => {
+    incr("framique_checkout_consume_total", { outcome: "rejected" });
+    log("warn", "checkout.consume_unscoped", {
+      orderId,
+      reason: reason.slice(0, 160),
+    });
+    throw new CheckoutError(
+      "stock_consume_failed",
+      "Order placed but stock sync failed",
+    );
+  };
+  if (!checkoutToken || !merchantId) {
+    reject("rejected: missing token or merchant scope; no rows touched");
+  }
   return withTenantLock(
     checkoutToken,
     `stock:consume:${orderId}`,
@@ -272,10 +304,26 @@ export async function consumeStock(checkoutToken: string, orderId: string) {
       // hold rows to the order (same row-per-line shape, no RPC).
       const { supabaseAdmin } =
         await import("@/integrations/supabase/client.server");
+      // Fail closed BEFORE the update: only live holds for THIS merchant may
+      // converge. A foreign merchant's token matches zero rows here and is
+      // rejected below without touching anything.
+      const { data: live } = await supabaseAdmin
+        .from("stock_holds")
+        .select("variant_id")
+        .eq("checkout_token", checkoutToken)
+        .eq("merchant_id", merchantId)
+        .is("consumed_at", null);
+      const liveRows = (live ?? []) as { variant_id: string }[];
+      if (liveRows.length === 0) {
+        reject(
+          "rejected: no live holds for token+merchant scope; no rows touched",
+        );
+      }
       const { error } = await supabaseAdmin
         .from("stock_holds")
         .update({ order_id: orderId, consumed_at: new Date().toISOString() })
         .eq("checkout_token", checkoutToken)
+        .eq("merchant_id", merchantId)
         .is("consumed_at", null);
       if (error) {
         incr("framique_checkout_consume_total", { outcome: "error" });
@@ -289,7 +337,7 @@ export async function consumeStock(checkoutToken: string, orderId: string) {
         );
       }
       incr("framique_checkout_consume_total", { outcome: "ok" });
-      return 1;
+      return liveRows.length;
     },
     { retries: 3, retryDelayMs: 40 },
   );

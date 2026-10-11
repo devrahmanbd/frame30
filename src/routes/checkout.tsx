@@ -46,6 +46,23 @@ const GROUP_LABELS: Record<string, { en: string; bn: string }> = {
   aggregator: { en: "All methods in one", bn: "সব মেথড একসাথে" },
 };
 
+/** Legacy entropy for runtimes without WebCrypto randomUUID (see mintCheckoutToken). */
+function legacyHoldSuffix(): string {
+  return `${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
+}
+
+/**
+ * Unpredictable checkout-hold token. The `${slug}-hold-` prefix shape is
+ * kept (recognizable in logs; parsed by nothing — the server matches the
+ * full token AND the merchant scope), but the random part is
+ * `crypto.randomUUID` entropy (dash-stripped, per the payment-keys
+ * convention), never guessable `Math.random`+`Date.now`.
+ */
+export function mintCheckoutToken(slug: string): string {
+  const uuid = globalThis.crypto?.randomUUID?.();
+  return `${slug}-hold-${uuid ? uuid.replace(/-/g, "") : legacyHoldSuffix()}`;
+}
+
 /**
  * Custom-host checkout (`microscrop.shop/checkout`) + legacy redirector.
  *
@@ -112,11 +129,7 @@ function CheckoutPage() {
   > | null>(null);
   const [quoteError, setQuoteError] = useState<string | null>(null);
   const [holdExpiresAt, setHoldExpiresAt] = useState<string | null>(null);
-  const checkoutToken = useMemo(
-    () =>
-      `${slug}-hold-${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`,
-    [slug],
-  );
+  const checkoutToken = useMemo(() => mintCheckoutToken(slug), [slug]);
   // One order key per checkout session: persisted in sessionStorage so a
   // remount or refresh resubmits the SAME key (server replays) instead of
   // minting a duplicate order. Rotated on successful placement below.

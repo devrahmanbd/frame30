@@ -39,7 +39,8 @@ vi.mock("./redis-lock.server", () => ({
   ): Promise<T> => fn({} as never),
 }));
 
-const { reserveStock, releaseStock } = await import("./checkout.server");
+const { reserveStock, releaseStock, consumeStock } =
+  await import("./checkout.server");
 
 afterEach(() => {
   adminHolder.db = null;
@@ -162,5 +163,122 @@ describe("T6 release scoping", () => {
     await releaseStock("tok-shared", "m-bogus");
     expect(Number(db.rows("product_variants")[0]!.stock_quantity)).toBe(8);
     expect(db.rows("stock_holds")[0]!.released_at).toBe(null);
+  });
+});
+
+describe("consume scoping", () => {
+  function victimDb() {
+    return fakeDb({
+      tables: {
+        product_variants: [
+          { id: "v1", merchant_id: "m-victim", stock_quantity: 8 },
+        ],
+        stock_holds: [
+          {
+            checkout_token: "tok-shared",
+            merchant_id: "m-victim",
+            variant_id: "v1",
+            quantity: 2,
+            expires_at: new Date(Date.now() + 60_000).toISOString(),
+            consumed_at: null,
+            released_at: null,
+            order_id: null,
+          },
+        ],
+      },
+    });
+  }
+
+  it("consuming the victim token as a foreign merchant throws and changes nothing", async () => {
+    const db = victimDb();
+    adminHolder.db = db.asClient();
+    await expect(
+      consumeStock("tok-shared", "order-attacker", "m-other"),
+    ).rejects.toMatchObject({
+      code: "stock_consume_failed",
+    });
+    await expect(
+      consumeStock("tok-shared", "order-attacker", "m-other"),
+    ).rejects.toThrow("stock sync failed");
+    expect(db.rows("stock_holds")[0]!.consumed_at).toBe(null);
+    expect(db.rows("stock_holds")[0]!.order_id).toBe(null);
+    expect(Number(db.rows("product_variants")[0]!.stock_quantity)).toBe(8);
+    const { incr } = await import("./observability.server");
+    expect(vi.mocked(incr)).toHaveBeenCalledWith(
+      "framique_checkout_consume_total",
+      { outcome: "rejected" },
+    );
+  });
+
+  it("missing merchant scope throws without touching rows", async () => {
+    const db = victimDb();
+    adminHolder.db = db.asClient();
+    await expect(
+      consumeStock("tok-shared", "o1", undefined as unknown as string),
+    ).rejects.toMatchObject({ code: "stock_consume_failed" });
+    expect(db.rows("stock_holds")[0]!.consumed_at).toBe(null);
+    expect(db.rows("stock_holds")[0]!.order_id).toBe(null);
+    expect(Number(db.rows("product_variants")[0]!.stock_quantity)).toBe(8);
+  });
+
+  it("empty-string merchant scope throws without touching rows", async () => {
+    const db = victimDb();
+    adminHolder.db = db.asClient();
+    await expect(consumeStock("tok-shared", "o1", "")).rejects.toMatchObject({
+      code: "stock_consume_failed",
+    });
+    expect(db.rows("stock_holds")[0]!.consumed_at).toBe(null);
+    expect(db.rows("stock_holds")[0]!.order_id).toBe(null);
+    expect(Number(db.rows("product_variants")[0]!.stock_quantity)).toBe(8);
+  });
+
+  it("owning merchant consumes: holds link to the order", async () => {
+    const db = victimDb();
+    adminHolder.db = db.asClient();
+    const consumed = await consumeStock("tok-shared", "order-1", "m-victim");
+    expect(consumed).toBe(1);
+    expect(db.rows("stock_holds")[0]!.consumed_at).not.toBe(null);
+    expect(db.rows("stock_holds")[0]!.order_id).toBe("order-1");
+  });
+
+  it("same token held by two merchants: consuming as B touches only B's rows", async () => {
+    const db = fakeDb({
+      tables: {
+        product_variants: [
+          { id: "v1", merchant_id: "m-a", stock_quantity: 8 },
+          { id: "v2", merchant_id: "m-b", stock_quantity: 5 },
+        ],
+        stock_holds: [
+          {
+            checkout_token: "tok-shared",
+            merchant_id: "m-a",
+            variant_id: "v1",
+            quantity: 2,
+            expires_at: new Date(Date.now() + 60_000).toISOString(),
+            consumed_at: null,
+            released_at: null,
+            order_id: null,
+          },
+          {
+            checkout_token: "tok-shared",
+            merchant_id: "m-b",
+            variant_id: "v2",
+            quantity: 1,
+            expires_at: new Date(Date.now() + 60_000).toISOString(),
+            consumed_at: null,
+            released_at: null,
+            order_id: null,
+          },
+        ],
+      },
+    });
+    adminHolder.db = db.asClient();
+    await consumeStock("tok-shared", "order-b", "m-b");
+    const a = db.rows("stock_holds").find((r) => r.merchant_id === "m-a")!;
+    const b = db.rows("stock_holds").find((r) => r.merchant_id === "m-b")!;
+    expect(a.consumed_at).toBe(null);
+    expect(a.order_id).toBe(null);
+    expect(b.consumed_at).not.toBe(null);
+    expect(b.order_id).toBe("order-b");
   });
 });

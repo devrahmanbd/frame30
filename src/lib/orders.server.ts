@@ -479,7 +479,7 @@ export async function createOrder(
   // Guarded: a consume throw must void the half-written order (stock is
   // still unconsumed here, so the void's hold-release restores it).
   try {
-    await consumeStock(checkoutToken, order.id);
+    await consumeStock(checkoutToken, order.id, merchant.id);
   } catch (error) {
     incr("framique_orders_total", {
       outcome: "failed",
