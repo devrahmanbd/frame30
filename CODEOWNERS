@@ -44,3 +44,26 @@ src/routes/account.tsx @devrahmanbd
 src/routes/pages.$pageSlug.tsx @devrahmanbd
 src/routes/p.$productSlug.tsx @devrahmanbd
 src/routes/c.$collectionSlug.tsx @devrahmanbd
+
+# Security-sensitive paths — require INDEPENDENT review (a second pair of
+# eyes; the author must not be the sole approver here). These files decide
+# what third-party code can run, what a widget frame may touch, and who can
+# see whose rows — a quiet diff here bypasses every scanner. GitHub-side
+# enforcement (protected branches, required reviews, required CircleCI
+# checks) is an owner action; see docs/security/ci-gates.md.
+src/lib/package-zip.ts @devrahmanbd
+src/lib/package-scan.ts @devrahmanbd
+src/components/marketplace/WidgetSandbox.tsx @devrahmanbd
+src/lib/marketplace-scopes.ts @devrahmanbd
+src/lib/tenant-scope.ts @devrahmanbd
+
+# Auth + RLS migrations (explicit files, plus globs for future ones)
+supabase/migrations/20260909194000_phase0_security_fixes.sql @devrahmanbd
+supabase/migrations/20260918120000_p0_rls_lockdown.sql @devrahmanbd
+supabase/migrations/20260918130000_p0_rls_tier2.sql @devrahmanbd
+supabase/migrations/20260918160000_p0_integration_rls_fix.sql @devrahmanbd
+supabase/migrations/20260919020000_storage_and_taxonomy_rls_lockdown.sql @devrahmanbd
+supabase/migrations/20260928000001_fix_kb_chunks_tenant_rls.sql @devrahmanbd
+supabase/migrations/*rls* @devrahmanbd
+supabase/migrations/*security* @devrahmanbd
+supabase/migrations/*auth* @devrahmanbd

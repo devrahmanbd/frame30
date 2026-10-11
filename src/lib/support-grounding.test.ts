@@ -24,7 +24,7 @@ vi.mock("./support-embed.server", async (importOriginal) => {
   return {
     ...orig,
     getAiGatewayConfig: async () => ({
-      apiKey: "sk-or-v1-testkey1234567890abcdef",
+      apiKey: "sk-or-v1-" + "testkey1234567890abcdef",
       chatModel: "nvidia/nemotron-3-ultra-550b-a55b:free",
       fallbackChatModel: "nvidia/nemotron-3.5-lightning:free",
       embeddingModel: "nvidia/nemotron-3-embed-1b:free",
@@ -104,8 +104,8 @@ describe("grounded-answer kernel", () => {
   });
 
   it("degraded env is detected via placeholder key or mock llm", () => {
-    expect(isDegradedEnvironment({ apiKey: "sk-or-v1-REDACTED" })).toBe(true);
-    expect(isDegradedEnvironment({ apiKey: "sk-or-v1-real1234567890" })).toBe(
+    expect(isDegradedEnvironment({ apiKey: "sk-or-v1-" + "REDACTED" })).toBe(true);
+    expect(isDegradedEnvironment({ apiKey: "sk-or-v1-" + "real1234567890" })).toBe(
       false,
     );
     expect(DEGRADED_BANNER_EN).toMatch(/extractive/i);

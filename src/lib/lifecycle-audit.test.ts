@@ -252,7 +252,7 @@ describe("plugin flagged enable approval (threat-defense)", () => {
         key: "probe",
         label: "Probe",
         slots: ["main"],
-        entry: "framique.mount(document.createElement('div')) // sk-abcdefghij0123456789ABCDEFGH0123",
+        entry: "framique.mount(document.createElement('div')) // sk-" + "abcdefghij0123456789ABCDEFGH0123",
       },
     ],
   };

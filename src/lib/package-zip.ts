@@ -476,7 +476,8 @@ export function validatePackageLayout(
   return { manifest: manifest as Record<string, unknown>, manifestRaw: manifestBytes, files };
 }
 
-import { validateMagicBytes } from "./media/library";
+import { sanitiseSvg, validateMagicBytes } from "./media/library";
+import { gatePackageCss } from "./package-css-gate";
 
 /**
  * Inner-file content authenticity (threat-defense): extension claims are
@@ -529,6 +530,32 @@ function decodeTextStrict(bytes: Uint8Array): string | null {
 export function assertPackageContentAuthentic(files: PackageFile[]): void {
   for (const file of files) {
     const ext = extOf(file.path);
+    // SVG sanitize-or-reject: active markup is stripped and the sanitised
+    // bytes replace the file in place, so layout, validators, checksums and
+    // installs downstream all see the sanitised form; nothing
+    // merchant-visible is recorded. A file that sanitises to nothing was
+    // pure payload, so it is refused. Sanitising runs BEFORE the magic check
+    // so a script-only `.svg` reports `zip.svg_rejected` rather than a
+    // generic mismatch.
+    if (ext === ".svg") {
+      const text = new TextDecoder("utf-8", { fatal: false }).decode(
+        file.bytes,
+      );
+      const sanitised = sanitiseSvg(text);
+      if (!sanitised.svg.trim()) {
+        fail("zip.svg_rejected", `SVG refused: ${file.path.slice(0, 80)}`);
+      }
+      const svgCheck = validateMagicBytes(file.bytes, "image/svg+xml");
+      if (!svgCheck.ok) {
+        fail(
+          "zip.content_mismatch",
+          `File content does not match its type (${file.path.slice(0, 80)}): ${svgCheck.message}`,
+        );
+      }
+      if (sanitised.changed)
+        file.bytes = new TextEncoder().encode(sanitised.svg);
+      continue;
+    }
     const imageMime = IMAGE_MIME_BY_EXT[ext];
     if (imageMime) {
       const check = validateMagicBytes(file.bytes, imageMime);
@@ -550,11 +577,24 @@ export function assertPackageContentAuthentic(files: PackageFile[]): void {
       continue;
     }
     if (ext === ".json" || ext === ".css" || ext === ".md" || ext === ".txt" || ext === "") {
-      if (decodeTextStrict(file.bytes) === null) {
+      const text = decodeTextStrict(file.bytes);
+      if (text === null) {
         fail(
           "zip.content_mismatch",
           `Text file is not valid UTF-8: ${file.path.slice(0, 80)}`,
         );
+      }
+      // Package stylesheet gate (reject-only here: bytes stay as-is and
+      // scoping happens at render via `scopeCss`): any exfiltration attempt
+      // refuses the whole package with `zip.css_rejected`.
+      if (ext === ".css") {
+        const gate = gatePackageCss(text);
+        if (!gate.ok) {
+          fail(
+            "zip.css_rejected",
+            `Stylesheet rejected (${file.path.slice(0, 80)}): ${gate.errors.slice(0, 5).join(",")}`,
+          );
+        }
       }
     }
   }

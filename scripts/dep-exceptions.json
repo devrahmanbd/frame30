@@ -1,0 +1,14 @@
+{
+  "_note": "Reviewed dependency-audit exceptions. Each entry needs a non-exploitable-here justification, an owner, and an expiry date. CI fails on expired entries, entries with a missing owner, and malformed entries — and on any high/critical finding NOT covered below. Stale entries (matching no current advisory) warn. Never blanket-except: one entry per advisory, with why.",
+  "exceptions": [
+    {
+      "module": "source-map-js",
+      "advisory": "GHSA-68fv-2mgg-jv7q",
+      "severity": "high",
+      "reason": "Event-loop DoS via crafted indexed source-map section offsets (CVSS 7.5, installed 1.2.1 via @tailwindcss/node and postcss — build-time only). Not exploitable in this repo: source-map-js runs inside the Tailwind/Vite build over first-party CSS; no server or client path parses attacker-supplied source maps at runtime. Fix (>=1.2.2) exists — upgrade or re-triage on/before expiry.",
+      "owner": "@devrahmanbd",
+      "expires": "2027-01-09",
+      "added": "2026-10-11"
+    }
+  ]
+}

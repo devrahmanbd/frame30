@@ -73,8 +73,13 @@ jobs:
           name: Secret scan (blocking)
           command: bun run secrets:scan
       - run:
-          name: Dependency audit (advisory only)
-          command: bun run scan:deps || true
+          name: SAST suspicious-diff (blocking)
+          command: |
+            git fetch origin main:refs/remotes/origin/main --depth 50 || true
+            bun run sast:scan
+      - run:
+          name: Dependency audit (blocking, reviewed exceptions only)
+          command: bun run scan:deps
 
   build:
     executor: bun-executor
@@ -90,22 +95,21 @@ jobs:
     steps:
       - checkout
       - setup-bun
+      # Fail-closed: a missing Playwright harness must NOT read as a pass.
+      # `e2e:required` exits non-zero (writing a HARNESS-MISSING-NOT-VERIFIED
+      # marker) until `.e2e/playwright.config.ts` lands; only then do the
+      # browser install and the critical suites run. See
+      # docs/security/ci-gates.md. (This intentionally supersedes the old
+      # pass-by-design skip described in AGENTS.md.)
       - run:
-          name: Install Playwright Chromium (if harness present)
-          command: |
-            if [ -f .e2e/playwright.config.ts ]; then
-              bunx playwright install --with-deps chromium
-            else
-              echo "No .e2e/playwright.config.ts yet — skipping browser install (see AGENTS.md)."
-            fi
+          name: E2E harness required (fail-closed)
+          command: bun run e2e:required
       - run:
-          name: E2E critical suites (if harness present)
-          command: |
-            if [ -f .e2e/playwright.config.ts ]; then
-              bun run e2e:critical
-            else
-              echo "E2E harness not present yet — passing by design (see AGENTS.md)."
-            fi
+          name: Install Playwright Chromium
+          command: bunx playwright install --with-deps chromium
+      - run:
+          name: E2E critical suites
+          command: bun run e2e:critical
 
   plugin-storefront-gate:
     executor: bun-executor

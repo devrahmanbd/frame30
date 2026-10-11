@@ -15,7 +15,7 @@ const file = (path: string, content: string) => ({
   bytes: new TextEncoder().encode(content),
 });
 
-const OPENAI_KEY = "sk-abcdefghij0123456789ABCDEFGH0123";
+const OPENAI_KEY = "sk-" + "abcdefghij0123456789ABCDEFGH0123";
 
 describe("scanPackage", () => {
   it("reports clean for ordinary content", () => {

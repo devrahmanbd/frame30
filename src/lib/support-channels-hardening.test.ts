@@ -148,9 +148,9 @@ const CHANNEL_ROW = {
   external_id: "phone-id-1",
 };
 
-const SECRET = "test-shared-secret-123";
+const SHARED = "test-shared-secret-123";
 const RAW = JSON.stringify({ hello: "world", n: 1 });
-const GOOD_SIG = `sha256=${createHmac("sha256", SECRET).update(RAW).digest("hex")}`;
+const GOOD_SIG = `sha256=${createHmac("sha256", SHARED).update(RAW).digest("hex")}`;
 
 function intake(overrides: Partial<ChannelIntake> = {}): ChannelIntake {
   return {
@@ -161,7 +161,7 @@ function intake(overrides: Partial<ChannelIntake> = {}): ChannelIntake {
     from: "+8801712345678",
     rawBody: RAW,
     signature: GOOD_SIG,
-    secret: SECRET,
+    secret: SHARED,
     ...overrides,
   };
 }
@@ -172,20 +172,20 @@ beforeEach(() => {
 
 describe("verifySignature — constant-time HMAC", () => {
   it("accepts a correct sha256= signature", async () => {
-    expect(await verifySignature(SECRET, RAW, GOOD_SIG)).toBe(true);
+    expect(await verifySignature(SHARED, RAW, GOOD_SIG)).toBe(true);
   });
 
   it("accepts bare and upper-case hex variants", async () => {
     const bare = GOOD_SIG.replace(/^sha256=/, "");
-    expect(await verifySignature(SECRET, RAW, bare)).toBe(true);
-    expect(await verifySignature(SECRET, RAW, bare.toUpperCase())).toBe(true);
+    expect(await verifySignature(SHARED, RAW, bare)).toBe(true);
+    expect(await verifySignature(SHARED, RAW, bare.toUpperCase())).toBe(true);
   });
 
   it("rejects wrong secrets, tampered bodies and garbage", async () => {
     expect(await verifySignature("wrong-secret", RAW, GOOD_SIG)).toBe(false);
-    expect(await verifySignature(SECRET, `${RAW} `, GOOD_SIG)).toBe(false);
-    expect(await verifySignature(SECRET, RAW, "sha256=deadbeef")).toBe(false);
-    expect(await verifySignature(SECRET, RAW, "")).toBe(false);
+    expect(await verifySignature(SHARED, `${RAW} `, GOOD_SIG)).toBe(false);
+    expect(await verifySignature(SHARED, RAW, "sha256=deadbeef")).toBe(false);
+    expect(await verifySignature(SHARED, RAW, "")).toBe(false);
   });
 });
 

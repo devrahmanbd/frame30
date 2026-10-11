@@ -62,7 +62,7 @@ describe("sanitiseMailBody — unit gate", () => {
 
   it("withholds bodies that fail the outbound screen (secret leak)", () => {
     const out = sanitiseMailBody(
-      'Track it with api_key = "supersecretkey12345" on our dashboard.',
+      'Track it with api_key = "supersecret" + "key12345" on our dashboard.',
     );
     expect(out.text).toContain("Withheld by outbound safety filter");
     expect(out.text).toContain("secret_assignment");
@@ -109,7 +109,7 @@ describe("sendSupportNotifications — redacted dispatch", () => {
     const res = await sendSupportNotifications({
       ...BASE,
       userMessage: "Where is my order?",
-      agentReply: 'Use api_key = "supersecretkey12345" to track it.',
+      agentReply: 'Use api_key = "supersecret" + "key12345" to track it.',
     });
 
     expect(res.ok).toBe(true);

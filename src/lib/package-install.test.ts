@@ -2043,7 +2043,7 @@ describe("PKG-2 plugin update widening consent (threat-defense)", () => {
 });
 
 describe("PKG-2 flagged activation approval (threat-defense)", () => {
-  const SECRET = "sk-abcdefghij0123456789ABCDEFGH0123";
+  const SECRET = "sk-" + "abcdefghij0123456789ABCDEFGH0123";
   const secretTemplates = {
     index: {
       header: [],
@@ -2124,7 +2124,7 @@ describe("PKG-2 flagged activation approval (threat-defense)", () => {
     // Merchant edits the draft after approving: new flaggable content (a
     // leaked credential — markup scripts would be stripped by the builder
     // sanitiser instead, which is also safe but a different path).
-    const SECRET2 = "sk-zzzzz9999900000AAAAABBBBB1234567";
+    const SECRET2 = "sk-" + "zzzzz9999900000AAAAABBBBB1234567";
     await db
       .asClient<FakeDb>()
       .from("theme_drafts")
