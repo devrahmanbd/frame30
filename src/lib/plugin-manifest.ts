@@ -23,6 +23,7 @@ import {
   normalizeThemeContract,
   type PluginThemeContract,
 } from "./plugin-theme-contract";
+import { scanJsAst } from "./plugin-js-scan";
 export { MENU_SLOTS, isMenuSlot, type MenuSlot };
 
 /** Builder API version plugins declare compatibility against (AST v3 line). */
@@ -292,6 +293,14 @@ export type PluginManifest = {
 const ID_RE = /^[a-z][a-z0-9-]{2,39}$/;
 const KEY_RE = /^[a-z][a-z0-9_-]{1,39}$/;
 
+/**
+ * Structural dynamic-code pattern for manifest widget entries. Exported (not
+ * duplicated) so the AST deep check (`plugin-js-scan.ts`) reuses this exact
+ * pattern for its regex pre-pass; the gate below keeps testing it first.
+ */
+export const MANIFEST_ENTRY_DYNAMIC_CODE_RE =
+  /\bimport\s*\(|\beval\s*\(|new\s+Function|\bimport\b(?!\s*\()|\bexport\s+[^;]*\bfrom\s+['"]/;
+
 export function pluginWidgetKey(pluginId: string, widget: string) {
   return `plugin:${pluginId}/${widget}`;
 }
@@ -556,11 +565,13 @@ export function parseManifest(input: unknown): ManifestVerdict {
       errors.push(`widgets[${i}].entry`);
       return;
     }
-    if (
-      /\bimport\s*\(|\beval\s*\(|new\s+Function|\bimport\b(?!\s*\()|\bexport\s+[^;]*\bfrom\s+['"]/.test(
-        entry,
-      )
-    ) {
+    if (MANIFEST_ENTRY_DYNAMIC_CODE_RE.test(entry)) {
+      errors.push(`widgets[${i}].entry.dynamic_code`);
+      return;
+    }
+    if (!scanJsAst(entry).ok) {
+      // Second stage: AST deep check for aliased/obfuscated dynamic code the
+      // regex misses. Same failure code so every existing assertion holds.
       errors.push(`widgets[${i}].entry.dynamic_code`);
       return;
     }

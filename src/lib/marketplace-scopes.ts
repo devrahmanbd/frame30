@@ -1,3 +1,5 @@
+import { scanJsAst } from "./plugin-js-scan";
+
 /**
  * Marketplace ecosystem — pure rules shared by the vault, the consent screen
  * and the sandbox host.
@@ -204,6 +206,14 @@ export type BundleVerdict = {
   errors: string[];
 };
 
+/**
+ * Structural dynamic-code pattern for bundle entries. Exported (not
+ * duplicated) so the AST deep check (`plugin-js-scan.ts`) reuses this exact
+ * pattern for its regex pre-pass; the gate below keeps testing it first.
+ */
+export const BUNDLE_ENTRY_DYNAMIC_CODE_RE =
+  /\bimport\s*\(|eval\s*\(|new\s+Function|Function\s*\(|setTimeout\s*\(\s*["'`]|setInterval\s*\(\s*["'`]|\.innerHTML\s*=|document\.write\s*\(|\bimport\b(?!\s*\()|\bexport\s+[^;]*\bfrom\s+['"]/;
+
 /** Structural gate applied before anything is written to the vault. */
 export function validateBundle(
   source: unknown,
@@ -224,12 +234,11 @@ export function validateBundle(
     errors.push("bundle.entry_not_string");
   if (typeof entry === "string" && entry.length > 200_000)
     errors.push("bundle.entry_too_large");
-  if (
-    typeof entry === "string" &&
-    /\bimport\s*\(|eval\s*\(|new\s+Function|Function\s*\(|setTimeout\s*\(\s*["'`]|setInterval\s*\(\s*["'`]|\.innerHTML\s*=|document\.write\s*\(|\bimport\b(?!\s*\()|\bexport\s+[^;]*\bfrom\s+['"]/.test(
-      entry,
-    )
-  ) {
+  if (typeof entry === "string" && BUNDLE_ENTRY_DYNAMIC_CODE_RE.test(entry)) {
+    errors.push("bundle.dynamic_code");
+  } else if (typeof entry === "string" && !scanJsAst(entry).ok) {
+    // Second stage: AST deep check for aliased/obfuscated dynamic code the
+    // regex misses. Same failure code so every existing assertion holds.
     errors.push("bundle.dynamic_code");
   }
   if (scopes.length === 0) errors.push("bundle.no_scopes");
