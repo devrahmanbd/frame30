@@ -1,5 +1,11 @@
 # Proposal: WordPress-like official built-in package model
 
+> **SUPERSEDED by Frame30 + `openspec/changes/custom-theme-components/proposal.md`.**
+> This document describes installing official themes through the normal
+> ZIP pipeline — that architecture was replaced: official themes now
+> install from source definitions with no ZIP construction. Kept for
+> history; do not implement from this file.
+
 ## Why
 
 Framique needs the WordPress product experience — official themes/plugins
