@@ -344,8 +344,16 @@ never needs approval.
   `sandbox.scope_denied`) surface as a blocked-call notice, never a
   crash (`src/components/marketplace/WidgetSandbox.tsx:73-95`,
   `src/components/marketplace/WidgetSandbox.tsx:249-260`).
-- Bundle gates: no dynamic code (`bundle.dynamic_code`,
-  `src/lib/marketplace-scopes.ts:219-233`), bundle ≤ 512 KB
+- Flood caps: messages over 64 KiB are `sandbox.oversize`
+  (`src/lib/marketplace-scopes.ts:339-365`); per-frame 30 messages per
+  rolling 10 s plus duplicate-`id` rejection
+  (`sandbox.rate_limited`, `sandbox.duplicate_id`,
+  `src/lib/bridge-flood-guard.ts:15-59`,
+  wired in `src/components/marketplace/WidgetSandbox.tsx:125-260`).
+- Bundle gates: no dynamic code, including static `import`/`export…from`
+  forms (`bundle.dynamic_code`,
+  `src/lib/marketplace-scopes.ts:219-233`;
+  `widgets[i].entry.dynamic_code`, `src/lib/plugin-manifest.ts:559`),
   (`MAX_BUNDLE_BYTES`, `src/lib/marketplace-scopes.ts:199`), entry
   string ≤ 200 KB, and inside `PLUGIN_BUDGET`
   (`src/lib/plugin-manifest.ts:31-32`).
@@ -570,6 +578,12 @@ Pipeline codes (all thrown as `PackageInstallError`,
   (`src/lib/package-zip.ts:258-264`) |
 | `zip.special_file`           | device node, fifo, or socket entry
   (`src/lib/package-zip.ts:250`) |
+| `zip.content_mismatch`       | file bytes contradict the extension (HTML as
+  image, script as font, binary as text;
+  `src/lib/package-zip.ts:529`), enforced in both
+  `installPackage` lanes
+  (`src/lib/package-install.server.ts:631`, `:1022`) and the
+  upload lane (`src/lib/themes/appearance.server.ts:818`)) |
 
 Publish/builder reasons include `builder.artifact_missing`
 (`src/lib/themes.server.ts:444-464`), `builder.publish_blocked`,
