@@ -133,4 +133,28 @@ describe("endpoint validation", () => {
       reason: "invalid_url",
     });
   });
+
+  it("shares the hooks egress guard decision (converged semantics)", () => {
+    // Newly refused since convergence — each maps onto the legacy vocabulary.
+    const blocked = [
+      "https://metadata.google.internal/f",
+      "https://127.0.0.1.xip.io/f",
+      "https://10.0.0.1.evil.com/f",
+      "https://svc.internal/f",
+      "https://singlelabel/f",
+      "https://u:p@hooks.example.com/f",
+      "https://0.0.0.5/f",
+      "https://[::1]/f",
+      "https://localhost/f",
+    ];
+    for (const url of blocked) {
+      expect(validateEndpointUrl(url), url).toMatchObject({
+        ok: false,
+        reason: "private_host",
+      });
+    }
+    expect(validateEndpointUrl("https://hooks.example.com/f")).toMatchObject({
+      ok: true,
+    });
+  });
 });

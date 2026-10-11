@@ -26,6 +26,10 @@ import {
   type TransformSpec,
 } from "./image-transform";
 import { incr, log, observe } from "./observability.server";
+import { EgressError, fetchWithEgressGuard } from "./egress-fetch";
+
+/** Origin-fetch deadline (previously unbounded). Covers guard + redirects. */
+const IMAGE_FETCH_TIMEOUT_MS = 10_000;
 
 function hex(buf: ArrayBuffer) {
   return [...new Uint8Array(buf)]
@@ -158,6 +162,12 @@ export async function serveTransform(
   const transformer = process.env["IMGPROXY_URL"];
 
   try {
+    // The origin fetch is the attacker-influenced one (HMAC-signed source):
+    // it goes through the egress guard so a redirect at the origin to a
+    // non-allowlisted / private target is refused before connect. The
+    // imgproxy branch below is untouched — its target is operator-configured
+    // infrastructure, not a caller-influenced URL, and it cannot pass the
+    // source allow-list by design.
     const upstream = transformer
       ? await fetch(
           imgproxyUrl(transformer, spec, format, guard.url.toString()),
@@ -165,7 +175,12 @@ export async function serveTransform(
             headers: { accept: contentTypeFor(format) },
           },
         )
-      : await fetch(guard.url.toString());
+      : (
+          await fetchWithEgressGuard(guard.url.toString(), {
+            timeoutMs: IMAGE_FETCH_TIMEOUT_MS,
+            guard: (raw) => isAllowedSource(raw, allowedHosts()),
+          })
+        ).response;
 
     if (!upstream.ok || !upstream.body)
       return refuse(`upstream_${upstream.status}`, 502);
@@ -189,7 +204,9 @@ export async function serveTransform(
         },
       }),
     };
-  } catch {
+  } catch (err) {
+    if (err instanceof EgressError)
+      log("warn", "image.egress_denied", { reason: err.reason });
     return refuse("upstream_unreachable", 502);
   }
 }

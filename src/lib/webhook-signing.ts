@@ -154,29 +154,22 @@ export function nextDeliveryState(opts: {
   };
 }
 
+import { isAllowedHooksUrl } from "./plugin-manifest";
+
 /** Only https endpoints, no localhost/private hosts: webhooks must not be an SSRF probe. */
 export function validateEndpointUrl(
   raw: string,
 ): { ok: true; url: string } | { ok: false; reason: string } {
-  let parsed: URL;
-  try {
-    parsed = new URL(raw);
-  } catch {
-    return { ok: false, reason: "invalid_url" };
-  }
-  if (parsed.protocol !== "https:")
+  // Converged onto the plugin hooks egress guard: one decision for every
+  // server-side outbound POST, so webhooks get the same private-range,
+  // localhost/metadata, wildcard-DNS and embedded-IP blocks. The legacy
+  // reason vocabulary is preserved (`invalid_url` / `https_required` /
+  // `private_host`) so the registry API, the REST gateway and existing
+  // callers keep working unchanged.
+  const verdict = isAllowedHooksUrl(raw);
+  if (verdict.ok) return { ok: true, url: verdict.url.toString() };
+  if (verdict.reason === "bad_url") return { ok: false, reason: "invalid_url" };
+  if (verdict.reason === "not_https")
     return { ok: false, reason: "https_required" };
-  const host = parsed.hostname.toLowerCase();
-  const blocked =
-    host === "localhost" ||
-    host.endsWith(".localhost") ||
-    host === "0.0.0.0" ||
-    host === "::1" ||
-    /^127\./.test(host) ||
-    /^10\./.test(host) ||
-    /^192\.168\./.test(host) ||
-    /^169\.254\./.test(host) ||
-    /^172\.(1[6-9]|2\d|3[01])\./.test(host);
-  if (blocked) return { ok: false, reason: "private_host" };
-  return { ok: true, url: parsed.toString() };
+  return { ok: false, reason: "private_host" };
 }

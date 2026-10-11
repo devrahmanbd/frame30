@@ -15,6 +15,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
 import { incr, log, observe } from "./observability.server";
+import { fetchWithEgressGuard } from "./egress-fetch";
 import {
   newWebhookSecret,
   sealSecret,
@@ -367,9 +368,14 @@ async function attemptDelivery(endpoint: EndpointRow, delivery: DeliveryRow) {
   let status: number | null = null;
   let error: string | null = null;
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), DELIVERY_TIMEOUT_MS);
-    const res = await fetch(endpoint.url, {
+    // Delivery-time revalidation: the stored URL passed `validateEndpointUrl`
+    // at write time, but the guard runs again here (plus on every redirect
+    // hop) so a rotated DNS or a newly-redirecting receiver cannot turn a
+    // queued delivery into an SSRF probe. Refusals surface as EgressError and
+    // flow into the normal backoff/dead-letter path below.
+    const { response: res } = await fetchWithEgressGuard(endpoint.url, {
+      timeoutMs: DELIVERY_TIMEOUT_MS,
+      guard: (raw) => validateEndpointUrl(raw),
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -380,9 +386,7 @@ async function attemptDelivery(endpoint: EndpointRow, delivery: DeliveryRow) {
         "framique-attempt": String(delivery.attempt),
       },
       body,
-      signal: controller.signal,
     });
-    clearTimeout(timer);
     status = res.status;
     if (!res.ok)
       error =

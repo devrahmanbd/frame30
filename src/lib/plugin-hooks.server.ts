@@ -9,6 +9,7 @@
  */
 
 import { incr, log, observe } from "./observability.server";
+import { EgressError, fetchWithEgressGuard } from "./egress-fetch";
 import {
   isAllowedHooksUrl,
   parseManifest,
@@ -137,8 +138,6 @@ async function callOne(
     if (process.env.NODE_ENV !== "test" && !process.env.VITEST)
       throw new Error("plugin_hook_secret_missing");
   }
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
   let body = "";
   // R2-8: stable vendor-visible delivery identity. Computed from the exact
   // bytes POSTed so the live attempt, the queued retry, and any redelivery
@@ -155,18 +154,21 @@ async function callOne(
       const mac = await computeSignature(secret, ts, body);
       signature = signatureHeader(ts, [mac]);
     }
-    const res = await fetch(plugin.manifest.hooksUrl, {
-      method: "POST",
-      signal: controller.signal,
-      headers: {
-        "content-type": "application/json",
-        "x-framique-hook": hook,
-        "x-framique-plugin": plugin.manifest.id,
-        "x-framique-delivery": deliveryId,
-        ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
-      },
-      body,
-    });
+    const res = (
+      await fetchWithEgressGuard(plugin.manifest.hooksUrl, {
+        timeoutMs,
+        guard: (u) => isAllowedHooksUrl(u),
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-framique-hook": hook,
+          "x-framique-plugin": plugin.manifest.id,
+          "x-framique-delivery": deliveryId,
+          ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
+        },
+        body,
+      })
+    ).response;
     if (!res.ok) throw new Error(`status_${res.status}`);
     const result = await res.json().catch(() => null);
     recordSuccess(plugin.manifest.id, hook);
@@ -178,8 +180,22 @@ async function callOne(
       result,
     };
   } catch (err) {
+    // Deterministic egress refusals (redirect chains escaping to
+    // metadata/private hosts, DNS rebinding, redirect loops): no POST ever
+    // left us, so there is nothing to retry — skip like the pre-check above
+    // instead of enqueueing a job that could only refuse again.
+    if (err instanceof EgressError && err.code !== "egress_timeout") {
+      log("warn", "plugin.hook.egress_denied", {
+        hook,
+        plugin: plugin.manifest.id,
+        reason: err.reason,
+      });
+      return { pluginId: plugin.manifest.id, hook, status: "skipped", ms: 0 };
+    }
     recordFailure(plugin.manifest.id, hook);
-    const timedOut = (err as Error)?.name === "AbortError";
+    const timedOut =
+      (err as Error)?.name === "AbortError" ||
+      (err instanceof EgressError && err.code === "egress_timeout");
     try {
       const { enqueueJob } = await import("./job-queue.server");
       const key =
@@ -212,8 +228,6 @@ async function callOne(
         ms: Date.now() - started,
       };
     }
-  } finally {
-    clearTimeout(timer);
   }
 }
 
@@ -405,17 +419,37 @@ export async function deliverQueuedHook(
   const signature = secret
     ? signatureHeader(ts, [await computeSignature(secret, ts, body)])
     : "";
-  const res = await fetch(targetUrl, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-framique-hook": hook,
-      "x-framique-plugin": pluginId,
-      "x-framique-delivery": deliveryId,
-      ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
-    },
-    body,
-  });
+  // Same 800ms deadline as the live path (previously unbounded) plus the
+  // egress guard on the initial URL and every redirect hop.
+  let res: Response;
+  try {
+    ({ response: res } = await fetchWithEgressGuard(targetUrl, {
+      timeoutMs: HOOK_TIMEOUT_MS,
+      guard: (u) => isAllowedHooksUrl(u),
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-framique-hook": hook,
+        "x-framique-plugin": pluginId,
+        "x-framique-delivery": deliveryId,
+        ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
+      },
+      body,
+    }));
+  } catch (err) {
+    // Timeout (and any other network error): throw so the queue retries
+    // toward dead_letter, as before. Deterministic refusals park instead —
+    // no POST happened and a retry could only refuse again.
+    if (err instanceof EgressError && err.code !== "egress_timeout") {
+      log("warn", "plugin.hook.egress_denied", {
+        hook,
+        plugin: pluginId,
+        reason: err.reason,
+      });
+      return { ok: false, reason: err.code };
+    }
+    throw err;
+  }
   if (!res.ok)
     throw Object.assign(new Error(`status_${res.status}`), {
       status: res.status,

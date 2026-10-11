@@ -1,34 +1,17 @@
 /**
- * K1 — official plugin catalogue + install (shared pipeline), server layer.
+ * Official plugins are source-registered first-party components — not downloads.
  *
- * Distribution note (Frame30 §1/§4): official plugins (Reviews, Analytics,
- * WhatsApp Orders — see `src/lib/official-plugins.ts`) are source-registered
- * first-party components: catalogue rows resolve from in-repo source and no
- * ZIP is ever checked in or downloadable. Installs run through the NORMAL
- * `installPackage` pipeline — same validators, same ledger, same asset
- * namespace, same enable path as merchant uploads — against an artifact
- * built deterministically from that source at install time. The pipeline
- * here is the shared runtime contract (sandboxing, capabilities, scope
- * consent, Class A/B lifecycle), NOT a shared distribution mechanism:
- * plugin lifecycle lives entirely in the pipeline, so bypassing it would
- * redesign plugin execution and let built-in status bypass the gates it
- * must pass like any other install. There is no separate official install
- * path anywhere in this module.
- *
- * Artifact-build seam: the bytes behind each entry are rebuilt
- * deterministically from the catalogue source (`exportBuiltinPluginZip` for
- * the builtin-backed entries, `exportPluginManifestZip` over the authored
- * Analytics manifest — the same exporters a third-party author uses), so the
- * catalogue row and the installed bytes can never drift. The default
- * provider always builds from in-repo source; tests inject fixtures or
- * failures through `__setOfficialPluginArtifactProviderForTests` the same
- * way the theme suite does. Catalogue entries carry the serializable
- * artifact ref only (`official:<key>` pin); the bytes never leave the
- * server, and there is no downloadable official artifact.
- *
- * Read-only neighbours (imported/called, never modified): the
- * package-install pipeline (`installPackage`, kind "plugin"), the plugin
- * host (`upsertPlugin`), the scope/bundle gates, the sandbox.
+ * Install material is built deterministically from in-repo source at install
+ * time (`exportBuiltinPluginZip` / `exportPluginManifestZip` over the
+ * `official-plugins.ts` catalogue): no checked-in archive, no download
+ * endpoint, no merchant-supplied bytes on this path. It travels the shared
+ * `installPackage` pipeline because that pipeline IS the security contract —
+ * sandbox, capabilities, lifecycle, versioned assets — not a distribution
+ * mechanism; bypassing it would let built-in status dodge the gates every
+ * install must pass. Custom plugin ZIPs travel the identical pipeline with
+ * merchant bytes. Catalogue rows carry the serializable ref only
+ * (`official:<key>` pin); the bytes never leave the server. Tests inject
+ * fixtures via `__setOfficialPluginArtifactProviderForTests`.
  */
 
 import type { SupabaseClient } from "@supabase/supabase-js";
