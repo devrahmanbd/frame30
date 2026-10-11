@@ -92,6 +92,8 @@ Installs move through consent (grants must be a subset of the
 manifest's permissions; widening needs a fresh consent screen),
 enable/disable, suspend/resume with reason, platform kill switch
 per plugin id, and uninstall-to-purge ([Plugin guide](plugins.md#walk-the-install-consent-and-disable-lifecycle)).
+Enabling a scan-flagged install additionally needs a recorded
+approval (`plugin.approval_required` until `approvePluginVersion`).
 Suspend is idempotent; releasing the kill switch never auto-resumes.
 
 Next: [Versioning / Publishing](versioning-publishing.md).

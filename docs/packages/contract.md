@@ -63,6 +63,39 @@ Archive caps (`src/lib/package-zip.ts:33-37`):
 | Total uncompressed                        | 50 MB  | `src/lib/package-zip.ts:36` |
 | Manifest bytes (`PKG_MAX_MANIFEST_BYTES`) | 512 KB | `src/lib/package-zip.ts:37` |
 
+Strict entries (`parseZip`, `src/lib/package-zip.ts:206-264`):
+
+- `__MACOSX` path segments are `zip.unsafe_path`
+  (`src/lib/package-zip.ts:138`); symlinks are `zip.symlink`
+  (`src/lib/package-zip.ts:238`); device nodes, fifos, and sockets are
+  `zip.special_file` (`src/lib/package-zip.ts:250`).
+- Exact-duplicate file entries are `zip.duplicate_entry`
+  (`src/lib/package-zip.ts:258-264`).
+- Dotfiles (`.DS_Store`, `._*` resource forks) are omitted at extract
+  and never reach validators or installs
+  (`src/lib/package-zip.ts:353`).
+
+Per-merchant storage quota: persisted usage plus incoming bytes must
+fit `MERCHANT_ASSET_QUOTA_BYTES` (1 GiB,
+`src/lib/package-store.server.ts:50`), summed by `merchantAssetBytes`
+(`src/lib/package-store.server.ts:53`). Both `installPackage` lanes
+check before any write via `assertStorageQuota`
+(`src/lib/package-install.server.ts:100-114`, failing with
+`package.over_quota`; theme lane at `:697`, plugin lane at `:1067`).
+The upload lane refuses the same way with `theme.upload_quota`
+(`src/lib/themes/appearance.server.ts:840-843`) and refuses dangling
+asset refs with `theme.upload_manifest`
+(`src/lib/themes/appearance.server.ts:824-828`). Replays write nothing
+and skip the quota check.
+
+External-URL inventory: `inventoryExternalUrls`
+(`src/lib/package-review.ts:50`) extracts the sorted unique absolute
+`http(s)` URLs from package text files for consent screens and audit
+rows. Install audits carry it (`src/lib/themes/appearance.server.ts:571`
+for catalogue installs, `:1010` for uploads), and `InstallConsent`
+lists it (`src/components/marketplace/InstallConsent.tsx:17`,
+`:76-85`).
+
 A plugin ZIP built by the platform carries root `plugin.json` plus one
 data-only locale file per shipped dictionary
 (`exportPluginManifestZip`, `src/lib/plugin-package.ts:189`).
@@ -142,7 +175,7 @@ for the walkthrough):
 Permission widening is detected by `permissionDiff`
 (`src/lib/plugin-manifest.ts:554`) and needs a fresh consent screen.
 
-## 3. Lifecycle (one pipeline)
+## 3. Lifecycle (custom packages: one pipeline)
 
 ### 3.1 Theme install
 
@@ -171,6 +204,15 @@ Permission widening is detected by `permissionDiff`
    `src/lib/package-install.server.ts:317`) + per-version namespaced
    assets + ledger row + audit (`package.installed` /
    `package.updated`, `src/lib/package-install.server.ts:750`).
+9. Update re-consent: a new version that adds external hosts or
+   custom HTML over the installed line fails with
+   `package.consent_required` unless every addition is covered by
+   exact match in `consentScopes`
+   (`src/lib/package-install.server.ts:571`). Widening is
+   `diffCapabilities` (`src/lib/package-review.ts:168`), coverage is
+   `coversWidening` (`src/lib/package-review.ts:90`), enforced at
+   `src/lib/package-install.server.ts:730-738`. Fresh installs (no
+   previous version) and non-widening updates pass untouched.
 
 ### 3.2 Plugin install
 
@@ -186,6 +228,16 @@ transactions (`src/lib/package-install.server.ts:905-928`).
 
 Plugin history is successive ledger rows, not `theme_versions`
 (`src/lib/package-install.server.ts:529-533`).
+
+Update re-consent: a new version that adds manifest permissions over
+the installed `plugin_state` row fails with
+`package.consent_required` unless every addition (`perm:<scope>` by
+exact match) is covered in `consentScopes`
+(`src/lib/package-install.server.ts:571`). Widening is
+`diffCapabilities` (`src/lib/package-review.ts:168`), coverage is
+`coversWidening` (`src/lib/package-review.ts:90`), enforced at
+`src/lib/package-install.server.ts:1092-1100`. Fresh installs (no
+row) and non-widening updates pass untouched.
 
 ### 3.3 Official catalogue (source model, separate path)
 
@@ -232,6 +284,17 @@ Plugin history is successive ledger rows, not `theme_versions`
 `package.disabled`). Reads fold merchant flag, suspensions, and the
 platform kill switch into one `enabled` value
 (`src/lib/plugins.server.ts:76`).
+
+Flagged-enable approval: `setPluginEnabled`
+(`src/lib/plugins.server.ts:302-350`) scans the installed manifest
+with `scanPackage` (`src/lib/package-scan.ts:62`); a `flagged`
+verdict (secrets, script-bearing SVG) refuses enabling with
+`plugin.approval_required`
+(`src/lib/plugins.server.ts:346`) until the merchant records
+`approvePluginVersion` for that exact plugin id + manifest version
+(`src/lib/plugins.server.ts:383`), audited as `plugin.approved`
+(`src/lib/plugins.server.ts:404`). Disabling is always safe and
+never needs approval.
 
 ### 3.5 Consent, suspend, kill switch
 
@@ -337,7 +400,19 @@ theme.
 - Activation flips `is_active` plus the published pointer and audits
   (`activatePackage`, `src/lib/package-install.server.ts:1178`;
   theme lane `activateTheme`,
-  `src/lib/themes/appearance.server.ts:418-490`).
+  `src/lib/themes/appearance.server.ts:1227-1298`).
+- Flagged-activation approval: `activateTheme` scans the
+  about-to-go-live version with `scanPackage`
+  (`src/lib/package-scan.ts:62`) via `assertVersionApproved`
+  (`src/lib/themes/appearance.server.ts:1177`); a `flagged` verdict
+  (secrets, script-bearing SVG) refuses activation with
+  `theme.approval_required`
+  (`src/lib/themes/appearance.server.ts:1213`, wired at `:1243`)
+  until the merchant records `approveThemeVersion`
+  (`src/lib/themes/appearance.server.ts:1133`), audited as
+  `theme.approved` (`src/lib/themes/appearance.server.ts:1159`).
+  Approval binds to the version's template content hash, so changed
+  content needs fresh approval; clean versions pass untouched.
 
 Minimal install → publish → activate (theme):
 
@@ -464,6 +539,23 @@ Pipeline codes (all thrown as `PackageInstallError`,
 | `package.install_conflict`   | ledger replay without a package row                    |
 | `package.not_found`          | package / version / install not owned by this merchant |
 | `package.active`             | uninstall refused on the live theme                    |
+| `package.consent_required`   | update widens capabilities without covering consent
+  (`src/lib/package-install.server.ts:730-738` themes,
+  `:1092-1100` plugins) |
+| `package.over_quota`         | persisted + incoming bytes exceed
+  `MERCHANT_ASSET_QUOTA_BYTES`
+  (`src/lib/package-install.server.ts:100-114`) |
+| `theme.upload_quota`         | upload lane over the same quota
+  (`src/lib/themes/appearance.server.ts:840-843`) |
+| `theme.approval_required`    | flagged version needs a recorded `theme.approved`
+  audit before activation
+  (`src/lib/themes/appearance.server.ts:1213`) |
+| `plugin.approval_required`   | flagged manifest needs a recorded `plugin.approved`
+  audit before enabling (`src/lib/plugins.server.ts:346`) |
+| `zip.duplicate_entry`        | exact-duplicate file entry in the archive
+  (`src/lib/package-zip.ts:258-264`) |
+| `zip.special_file`           | device node, fifo, or socket entry
+  (`src/lib/package-zip.ts:250`) |
 
 Publish/builder reasons include `builder.artifact_missing`
 (`src/lib/themes.server.ts:444-464`), `builder.publish_blocked`,

@@ -773,9 +773,12 @@ approved, build, export, submit, respond to review.
 
 The full gate definitions live in [the theme package spec](./packages.md). In one glance:
 
-1. **Size** — the file is at most 2 MB.
-2. **Budget** — at most 200 sections per template, header + main + footer
-   counted together.
+1. **Size** — no per-submission megabyte cap exists in code. The
+   enforced ceilings are the archive caps plus `AST_LIMITS` (see [the
+   package contract](../packages/contract.md) §§1, 5).
+2. **Budget** — no sections-per-template budget exists in code. The
+   enforced section/node/depth ceilings are `AST_LIMITS` (same
+   source).
 3. **Clean lint** — zero error-level findings on every template the package
    defines.
 4. **One H1** — exactly one primary heading per page. Route-headed
@@ -788,6 +791,11 @@ The full gate definitions live in [the theme package spec](./packages.md). In on
 6. **No executable content** — no `html` widgets, no script markup, no
    `javascript:` / `data:` / `vbscript:` URLs anywhere in props.
 7. **API range** — `api` sits inside `^3.0.0`.
+8. **Upload gates** — the upload lane refuses dangling asset refs and
+   over-quota uploads, inventories external URLs into the install
+   audit, and capability-widening updates need re-consent while
+   scan-flagged versions need a recorded approval before activation
+   (see [the package contract](../packages/contract.md) §§1, 3, 6, 10).
 
 A human reader then spot-checks bilingual completeness — the gate counts
 twins, the reviewer reads them.
@@ -810,8 +818,10 @@ twins, the reviewer reads them.
 The closed list. A rejection always names one of these, each mapping to a
 gate in §9.2 or a rule in §9.3:
 
-1. Package over 2 MB.
-2. A template over the 200-section budget.
+1. Package over the enforced archive / payload ceilings ([package
+   contract](../packages/contract.md) §§1, 5) — no 2 MB / 200-section
+   caps exist in code.
+2. A template over the `AST_LIMITS` ceilings (same source).
 3. Lint errors (the note quotes the first; the builder shows the rest).
 4. Missing or duplicated primary heading.
 5. বাংলা coverage below 90%, or `_bn` twins with no বাংলা in them.

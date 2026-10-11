@@ -189,11 +189,22 @@ purged`, mirrored in the audit log at each step.
    `manifest_version`, granted scopes) lands on the install row plus a
    `plugin.scopes_granted` audit row. Updates that widen permissions need a
    fresh consent screen (`reconsented: true`) or they are refused
-   (`src/lib/plugins.server.ts:106`).
+   (`src/lib/plugins.server.ts:106`). The same rule holds on the ZIP
+   install lane: a version that adds manifest permissions fails with
+   `package.consent_required` unless `consentScopes` covers every
+   addition by exact match
+   (`src/lib/package-install.server.ts:1092-1100`). The consent screen
+   also lists the version's external-URL inventory when present
+   (`src/components/marketplace/InstallConsent.tsx:76-85`).
 3. **Enable.** Merchants pause and resume with an enabled flag. Reads fold the
    merchant flag, suspensions, and the platform kill switch into one `enabled`
    value (`src/lib/plugins.server.ts:61`), so one check gates widgets, hooks,
-   and sidecar workers.
+   and sidecar workers. Enabling a flagged install is refused with
+   `plugin.approval_required` until the merchant records approval for
+   that exact plugin id + manifest version (`approvePluginVersion`,
+   `src/lib/plugins.server.ts:383`, audited as `plugin.approved`);
+   the check lives in `setPluginEnabled`
+   (`src/lib/plugins.server.ts:302-350`). Disabling is always safe.
 4. **Suspend and resume.** `suspendPlugin` / `resumePlugin`
    (`src/lib/plugin-lifecycle.server.ts:42`) record a reason
    (`scope_revoked`, `envelope_breach`, `review_regression`, `kill_switch`,

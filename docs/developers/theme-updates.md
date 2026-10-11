@@ -119,6 +119,12 @@ concurrent editor cannot have their work silently merged away
 failing merge is rejected before anything is written
 (`src/lib/themes.server.ts:948-960`).
 
+> Note: the above covers the builder registry lane. ZIP-package updates
+> carry extra gates: capability-widening versions need re-consent
+> (`package.consent_required`) and scan-flagged versions need a recorded
+> approval before activation (`theme.approved`) — see [the package
+> contract](../packages/contract.md) (§§3, 6, 10).
+
 TBD: the **Restore** click path in the builder UI (which version-picker row
 maps to `builderRollbackFn`) is UI behavior not pinned here; the server
 contract above is what the button must call.

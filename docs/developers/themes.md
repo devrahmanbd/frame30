@@ -289,3 +289,12 @@ Publishing checks run server-side: clean `lintTemplate` per key in
 4. Confirm the persist round trip still keeps skins and `_bn` twins.
 5. Confirm the preview source still returns `null`, not empty arrays,
    for unauthored templates.
+6. Expect re-consent on widening updates: a version that adds
+   external hosts or custom HTML over the installed line fails with
+   `package.consent_required` unless the update covers every addition
+   (`src/lib/package-install.server.ts:730-738`).
+7. Expect an approval gate on flagged content: activation of a
+   scan-flagged version is refused with `theme.approval_required`
+   until the merchant records `approveThemeVersion`
+   (`src/lib/themes/appearance.server.ts:1133`), audited as
+   `theme.approved`.

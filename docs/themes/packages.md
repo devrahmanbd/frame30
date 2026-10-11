@@ -142,6 +142,39 @@ These run in the install / publish pipeline, never inside
   `:404`) — enforced by `assertPayloadWithinLimits` at `:7450-7461` and by
   truncation / slicing in `parseAst` (`:7466,7472`).
 
+## Archive / quota / scan gates — enforced elsewhere, NOT by the validator
+
+These run in `parseZip` / the install and upload lanes, never inside
+`validateThemeManifest`:
+
+- **Strict entries** (`parseZip`, `src/lib/package-zip.ts:206-264`):
+  `__MACOSX` segments are `zip.unsafe_path` (`:138`), symlinks are
+  `zip.symlink` (`:238`), device nodes / fifos / sockets are
+  `zip.special_file` (`:250`), exact-duplicate file entries are
+  `zip.duplicate_entry` (`:258-264`). Dotfiles (`.DS_Store`, `._*`
+  resource forks) are omitted at extract (`:353`).
+- **Storage quota:** persisted usage plus incoming bytes must fit
+  `MERCHANT_ASSET_QUOTA_BYTES` (1 GiB,
+  `src/lib/package-store.server.ts:50`), summed by `merchantAssetBytes`
+  (`:53`) and checked before any write (`assertStorageQuota`,
+  `src/lib/package-install.server.ts:100-114`, failing with
+  `package.over_quota`; upload lane refuses with `theme.upload_quota`,
+  `src/lib/themes/appearance.server.ts:840-843`). Dangling asset refs
+  fail the upload lane closed (`:824-828`).
+- **External-URL inventory:** `inventoryExternalUrls`
+  (`src/lib/package-review.ts:50`) feeds consent screens and install
+  audits (`src/lib/themes/appearance.server.ts:571,1010`).
+- **Update re-consent:** a version that adds external hosts or custom
+  HTML fails with `package.consent_required` unless `consentScopes`
+  covers every addition (`diffCapabilities`,
+  `src/lib/package-review.ts:168`; `coversWidening`, `:90`; enforced
+  at `src/lib/package-install.server.ts:730-738`).
+- **Flagged-activation approval:** a scan-flagged version
+  (`scanPackage`, `src/lib/package-scan.ts:62`) activates only with a
+  recorded `theme.approved` audit (`approveThemeVersion`,
+  `src/lib/themes/appearance.server.ts:1133`; gate at `:1243`),
+  else `theme.approval_required`.
+
 ## Aspirational — NOT enforced anywhere (do not cite as validator errors)
 
 No `MAX_PACKAGE_BYTES` (2 MB cap) and no `MAX_SECTIONS_PER_TEMPLATE`
@@ -160,4 +193,8 @@ pipeline](./sdk.md)). Staff approve or reject with a note. Validator
 rejections carry the `validateThemeManifest` reason codes; publish rejections
 carry the pipeline codes (`builder.publish_blocked`,
 `builder.registry_invalid`, `market_materialize_failed`) — the two sets are
-not 1:1.
+not 1:1. Install and activation carry their own gates on top:
+capability-widening updates need re-consent
+(`package.consent_required`) and scan-flagged versions need a recorded
+approval before activation (`theme.approval_required`) — see the
+section above.
