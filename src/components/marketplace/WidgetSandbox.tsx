@@ -6,9 +6,12 @@ import {
   type WidgetCall,
 } from "@/lib/marketplace-scopes";
 import {
+  answerWithTimeout,
   checkFloodGuard,
   createFloodGuard,
+  normalizeTimeoutMs,
   resetFloodGuard,
+  type BridgeTimers,
   type FloodGuardState,
 } from "@/lib/bridge-flood-guard";
 import { currentNonce } from "@/lib/ssr-nonce";
@@ -117,8 +120,12 @@ export async function answerWidgetCall(
  * Host-side gate in front of `answerWidgetCall`: per-frame rate limiting (max
  * 30 handled messages per rolling 10s window) and duplicate-`id` rejection
  * within the frame lifetime. Both rejections answer with a `sandbox.*` error
- * the frame already handles and never reach `onCall`. Pure except for the
- * clock (`now` injectable) so the flood/duplicate/oversize contract is
+ * the frame already handles and never reach `onCall`. Admitted calls race a
+ * per-call budget (`timeoutMs`, default 5000ms): a hung `onCall` answers
+ * `{error: "sandbox.timeout"}` and the timed-out id stays retired in the
+ * flood guard, so a late host resolution can never answer a recycled id.
+ * Pure except for the clock (`now` injectable) and the timeout timers
+ * (`timers` injectable) so the flood/duplicate/oversize/timeout contract is
  * unit-testable under node — the `useEffect` message listener below cannot be
  * driven without jsdom, so it delegates to this function.
  */
@@ -130,6 +137,10 @@ export async function handleSandboxMessage(
     onCall: SandboxHandler;
     guard: FloodGuardState;
     now?: number;
+    /** Per-call budget in ms; non-finite/negative falls back to the default. */
+    timeoutMs?: number;
+    /** Injectable clock for tests; defaults to the host setTimeout pair. */
+    timers?: BridgeTimers;
   },
 ): Promise<{ result: unknown } | { error: string }> {
   const gate = checkFloodGuard(
@@ -138,7 +149,11 @@ export async function handleSandboxMessage(
     ctx.now ?? Date.now(),
   );
   if (!gate.ok) return { error: gate.error };
-  return answerWidgetCall(msg, ctx);
+  return answerWithTimeout(
+    answerWidgetCall(msg, ctx),
+    normalizeTimeoutMs(ctx.timeoutMs),
+    ctx.timers,
+  );
 }
 
 /**
