@@ -829,16 +829,16 @@ export async function installUploadedTheme(
       );
     }
     // Storage quota (threat-defense): persisted usage plus the incoming
-    // inflated total must fit the merchant quota before the replay lookup
-    // or any write.
-    const { merchantAssetBytes, MERCHANT_ASSET_QUOTA_BYTES } = await import(
-      "../package-store.server"
-    );
+    // inflated total must fit the merchant's plan-tiered quota before the
+    // replay lookup or any write.
+    const { merchantAssetBytes, quotaForMerchant } =
+      await import("../package-store.server");
     {
       let incoming = 0;
       for (const f of files) incoming += f.bytes.length;
       const used = await merchantAssetBytes(db, merchantId);
-      if (used + incoming > MERCHANT_ASSET_QUOTA_BYTES) {
+      const quota = await quotaForMerchant(db, merchantId);
+      if (used + incoming > quota) {
         throw new ThemeDeskError(
           "theme.upload_quota",
           "Merchant asset storage quota exceeded.",
