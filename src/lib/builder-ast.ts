@@ -5072,7 +5072,11 @@ const BASE_CATALOG: CatalogEntry[] = [
         fields: [
           text("image", "Image URL", 200),
           text("title", "Title", 80),
-          text("href", "Link URL", 200),
+          // `href` renders raw into the tile anchor (heritage.tsx
+          // DepartmentGrid), so it takes the `url` kind: the SAFE_HREF
+          // allowlist rejects `javascript:`/`data:` at parse like every
+          // other link field, instead of `text` (tags-only strip).
+          url("href", "Link URL"),
         ],
       },
       {
