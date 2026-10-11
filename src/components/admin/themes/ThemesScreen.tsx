@@ -37,15 +37,19 @@ import {
 } from "@/lib/themes/appearance";
 import {
   themeActivateFn,
+  themeApproveFn,
   themeCatalogFavouriteFn,
   themeDeleteFn,
   themeFlagsFn,
   themeInstallFn,
   themesWorkspaceFn,
 } from "@/lib/themes/appearance.functions";
+import { approvalQueueFn } from "@/lib/approval-queue.functions";
+import type { ApprovalQueue } from "@/lib/approval-queue.server";
 import { importThemeAllFn } from "@/lib/themes.functions";
 import { themeUploadFn } from "@/lib/marketplace.functions";
 import { AddThemeCard, ThemeCard } from "./ThemeCard";
+import { ThemeApprovalBadge } from "./ThemeApproval";
 import { ThemeDetailsModal } from "./ThemeDetailsModal";
 import { AddThemeScreen } from "./AddThemeScreen";
 import { ThemePreviewSplit, type PreviewSubject } from "./ThemePreviewSplit";
@@ -59,6 +63,7 @@ export function ThemesScreen() {
   const queryClient = useQueryClient();
   const merchant = useMerchant();
   const loadWorkspace = useServerFn(themesWorkspaceFn);
+  const loadQueue = useServerFn(approvalQueueFn);
 
   const [mode, setMode] = useState<Mode>("installed");
   const [query, setQuery] = useState("");
@@ -74,8 +79,16 @@ export function ThemesScreen() {
     queryFn: () => loadWorkspace({} as never),
   });
 
+  const queue = useQuery<ApprovalQueue>({
+    queryKey: ["themes", "approval-queue"],
+    queryFn: () => loadQueue({} as never),
+  });
+
   const refresh = useCallback(() => {
     void queryClient.invalidateQueries({ queryKey: ["themes", "workspace"] });
+    void queryClient.invalidateQueries({
+      queryKey: ["themes", "approval-queue"],
+    });
   }, [queryClient]);
 
   const installed = useMemo(
@@ -94,6 +107,14 @@ export function ThemesScreen() {
   );
   const details = installed.find((theme) => theme.id === detailsId) ?? null;
   const activeTheme = installed.find((theme) => theme.isActive) ?? null;
+  const queueByTheme = useMemo(() => {
+    const map = new Map<
+      string,
+      { versionId: string; findings: { code: string }[] }
+    >();
+    for (const entry of queue.data?.themes ?? []) map.set(entry.themeId, entry);
+    return map;
+  }, [queue.data]);
 
   /**
    * Preview gallery: source keys plus merchant-installed package keys as one
@@ -131,6 +152,23 @@ export function ThemesScreen() {
       refresh();
     },
     onError: () => toast.error("That theme could not be activated"),
+    onSettled: () => setBusy(null),
+  });
+
+  /**
+   * Threat-defense approval lane: flagged installed themes badge through
+   * `approvalQueueFn` and approve here via the existing `themeApproveFn`,
+   * then refresh both queries so the badge clears.
+   */
+  const approve = useMutation({
+    mutationFn: useServerFn(themeApproveFn),
+    onMutate: (vars: { data: { themeId: string; versionId: string } }) =>
+      setBusy(vars.data.themeId),
+    onSuccess: () => {
+      toast.success("Theme approved");
+      refresh();
+    },
+    onError: () => toast.error("That theme could not be approved"),
     onSettled: () => setBusy(null),
   });
 
@@ -394,34 +432,51 @@ export function ThemesScreen() {
             />
           ) : (
             <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {installed.map((theme) => (
-                <li key={theme.id} className="space-y-2">
-                  <ThemeCard
-                    theme={theme}
-                    busy={busy === theme.id}
-                    onDetails={() => setDetailsId(theme.id)}
-                    onActivate={() =>
-                      activate.mutate({ data: { id: theme.id } })
-                    }
-                    onPreview={() => previewInstalled(theme)}
-                    onCustomize={openCustomize}
-                    onToggleFavourite={() =>
-                      flags.mutate({
-                        data: { id: theme.id, favourite: !theme.favourite },
-                      })
-                    }
-                  />
-                  {theme.key ? (
-                    <button
-                      type="button"
-                      onClick={() => openBlueprintPreview(theme)}
-                      className="w-full rounded-fq-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    >
-                      Blueprint preview
-                    </button>
-                  ) : null}
-                </li>
-              ))}
+              {installed.map((theme) => {
+                const approval = queueByTheme.get(theme.id);
+                return (
+                  <li key={theme.id} className="space-y-2">
+                    <ThemeCard
+                      theme={theme}
+                      busy={busy === theme.id}
+                      onDetails={() => setDetailsId(theme.id)}
+                      onActivate={() =>
+                        activate.mutate({ data: { id: theme.id } })
+                      }
+                      onPreview={() => previewInstalled(theme)}
+                      onCustomize={openCustomize}
+                      onToggleFavourite={() =>
+                        flags.mutate({
+                          data: { id: theme.id, favourite: !theme.favourite },
+                        })
+                      }
+                    />
+                    {approval ? (
+                      <ThemeApprovalBadge
+                        findings={approval.findings}
+                        busy={busy === theme.id}
+                        onApprove={() =>
+                          approve.mutate({
+                            data: {
+                              themeId: theme.id,
+                              versionId: approval.versionId,
+                            },
+                          })
+                        }
+                      />
+                    ) : null}
+                    {theme.key ? (
+                      <button
+                        type="button"
+                        onClick={() => openBlueprintPreview(theme)}
+                        className="w-full rounded-fq-md border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        Blueprint preview
+                      </button>
+                    ) : null}
+                  </li>
+                );
+              })}
               <li>
                 <AddThemeCard onClick={() => setMode("add")} />
               </li>

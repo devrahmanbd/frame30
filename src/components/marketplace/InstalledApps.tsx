@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useLang } from "@/lib/i18n";
 import {
   MAX_PLUGIN_UPLOAD_BYTES,
+  pluginApproveFn,
   pluginListFn,
   pluginSettingsSaveFn,
   pluginToggleFn,
@@ -26,6 +27,8 @@ import {
   type PluginUploadInput,
   type PluginUploadResult,
 } from "@/lib/plugins.functions";
+import { approvalQueueFn } from "@/lib/approval-queue.functions";
+import type { ApprovalQueue } from "@/lib/approval-queue.server";
 import { formatBytes } from "@/lib/themes/appearance";
 import { marketUninstallWidgetFn } from "@/lib/marketplace.functions";
 import {
@@ -34,6 +37,7 @@ import {
   type SettingsValues,
 } from "@/lib/plugin-manifest";
 import { PluginSettingsForm } from "./PluginSettingsForm";
+import { PluginApprovalBadge } from "./PluginApproval";
 import { ConfirmDialog } from "@/components/console/kit";
 
 type InstallRef = { id: string; listing_slug: string; status: string };
@@ -51,6 +55,8 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
   const list = useServerFn(pluginListFn);
   const save = useServerFn(pluginSettingsSaveFn);
   const toggle = useServerFn(pluginToggleFn);
+  const approve = useServerFn(pluginApproveFn);
+  const loadQueue = useServerFn(approvalQueueFn);
   const autoUpdates = useServerFn(pluginAutoUpdatesFn);
   const uninstallWidget = useServerFn(marketUninstallWidgetFn);
   const uninstallPlugin = useServerFn(pluginUninstallFn);
@@ -77,12 +83,28 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
     staleTime: 30_000,
   });
 
+  const queueQuery = useQuery<ApprovalQueue>({
+    queryKey: ["admin", "plugins", "approval-queue"],
+    queryFn: () => loadQueue({}),
+    staleTime: 30_000,
+  });
+
   const allPlugins = useMemo(
     () => pluginsQuery.data?.plugins ?? [],
     [pluginsQuery.data?.plugins],
   );
+  const queueByPlugin = useMemo(() => {
+    const map = new Map<
+      string,
+      { manifestVersion: string; findings: { code: string }[] }
+    >();
+    for (const entry of queueQuery.data?.plugins ?? [])
+      map.set(entry.pluginId, entry);
+    return map;
+  }, [queueQuery.data]);
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["admin", "plugins"] });
+    qc.invalidateQueries({ queryKey: ["admin", "plugins", "approval-queue"] });
     void router.invalidate();
   };
   const liveInstallFor = (pluginId: string) =>
@@ -113,6 +135,22 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
       toast.error(
         t("Failed to update plugin state", "প্লাগইন আপডেট করা যায়নি"),
       ),
+  });
+
+  /**
+   * Threat-defense approval lane: flagged installs badge through
+   * `approvalQueueFn` and approve here via the existing `pluginApproveFn`,
+   * then refresh so the badge clears.
+   */
+  const approveMutation = useMutation({
+    mutationFn: (vars: { pluginId: string; manifestVersion: string }) =>
+      approve({ data: vars }),
+    onSuccess: () => {
+      toast.success(t("Plugin approved", "প্লাগইন অনুমোদিত হয়েছে"));
+      refresh();
+    },
+    onError: () =>
+      toast.error(t("Failed to approve plugin", "প্লাগইন অনুমোদন করা যায়নি")),
   });
 
   const autoUpdatesMutation = useMutation({
@@ -411,6 +449,7 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
             {filteredPlugins.map((plugin) => {
               const compatible = satisfiesApiRange(plugin.manifest.api);
               const isChecked = selectedIds.has(plugin.manifest.id);
+              const approval = queueByPlugin.get(plugin.manifest.id);
 
               return (
                 <tr
@@ -439,6 +478,19 @@ export function InstalledApps({ installs = [] }: { installs?: InstallRef[] }) {
                         ⚠️ {t("Needs API update", "এপিআই আপডেট প্রয়োজন")}
                       </p>
                     )}
+
+                    {approval ? (
+                      <PluginApprovalBadge
+                        findings={approval.findings}
+                        busy={approveMutation.isPending}
+                        onApprove={() =>
+                          approveMutation.mutate({
+                            pluginId: plugin.manifest.id,
+                            manifestVersion: approval.manifestVersion,
+                          })
+                        }
+                      />
+                    ) : null}
 
                     {/* WP Action Links: Activate | Deactivate | Settings | Delete */}
                     <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
