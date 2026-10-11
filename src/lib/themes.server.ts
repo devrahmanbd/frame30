@@ -634,8 +634,17 @@ export async function publishVersion(
   }
   // Phase 6: parse clean + lint clean + ≥90% বাংলা + contrast in light/dark ×
   // EN/বাংলা + zero-CLS skeleton parity, composed in one place.
+  // No-plugin-territory (C6): the same templates run through the trust gate —
+  // payment collection, tracking pixels, credential forms and seo_meta
+  // writes refuse the publish with stable machine codes.
   const { composePublishGate } = await import("./publish-gates");
-  const gate = composePublishGate({ tokens, lint, translation, fonts });
+  const gate = composePublishGate({
+    tokens,
+    lint,
+    translation,
+    fonts,
+    trust: templates,
+  });
   if (!gate.ok) {
     const blocking = gate.failures.map((f) => f.message);
     log("warn", "theme.publish_blocked", {

@@ -3,7 +3,8 @@
  *
  * Aggregates content findings over package files into a verdict that drives
  * the activation/enable approval gates. Flagged (secrets, script-bearing
- * SVG) versions require explicit merchant approval with an audit record;
+ * SVG, no-plugin-territory theme content) versions require explicit merchant
+ * approval with an audit record;
  * clean versions flow through the existing paths untouched. External URLs
  * and permission inventories are informational here — update widening is
  * gated separately (`diffCapabilities`), consent screens already show
@@ -15,7 +16,7 @@
  */
 import { scanSecrets } from "./custom-code";
 import { isSvgSafe } from "./media/library";
-import { inventoryExternalUrls } from "./package-review";
+import { inventoryExternalUrls, scanThemeTrustContent } from "./package-review";
 
 export type ScanFile = {
   path: string;
@@ -80,6 +81,21 @@ export function scanPackage(
         severity: "high",
         detail: `${file.path}: SVG carries scriptable content the sanitizer would strip.`,
       });
+    }
+    // No-plugin-territory gates (C6 reasons 1-4): theme packages must never
+    // price/charge, plant tracking pixels, collect credentials, or touch
+    // `seo_meta`. High severity — the activation/enable approval gates refuse
+    // flagged versions without an explicit merchant approval bound to the
+    // exact content hash. Plugin manifests stay on the plugin rails (scoped
+    // bridge + consent ledger), so `plugin.json` is out of scope here.
+    if (file.path !== "plugin.json") {
+      for (const trust of scanThemeTrustContent(text)) {
+        findings.push({
+          code: trust.code,
+          severity: "high",
+          detail: `${file.path}: ${trust.detail}`,
+        });
+      }
     }
   }
   const urls = inventoryExternalUrls(files);

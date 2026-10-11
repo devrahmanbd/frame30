@@ -2146,3 +2146,40 @@ describe("PKG-2 flagged activation approval (threat-defense)", () => {
     ).toBe(false);
   });
 });
+
+describe("PKG-2 untrusted template content refusal (threat-defense)", () => {
+  const pixelTemplates = {
+    index: {
+      header: [],
+      main: [
+        { id: "p1", type: "html", props: { body: '<img src="https://track.example.com/p.gif" width="1" height="1">' } },
+      ],
+      footer: [],
+    },
+  };
+  it("refuses tracking pixels in templates, writing nothing", async () => {
+    const db = pkgDb();
+    const code = await codeOf(
+      installTheme(db, MERCHANT_A, themeZip(strictTheme("1.0.0"), [], { templates: pixelTemplates })),
+    );
+    expect(code).toBe("package.untrusted_content");
+    expect(db.rows("store_themes")).toHaveLength(0);
+    expect(db.rows("theme_versions")).toHaveLength(0);
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+  it("refuses payment-collection markup in templates", async () => {
+    const db = pkgDb();
+    const payTemplates = {
+      index: {
+        header: [],
+        main: [{ id: "p1", type: "html", props: { body: '<form action="https://pay.example.com/charge"><input name="card_number"></form>' } }],
+        footer: [],
+      },
+    };
+    const code = await codeOf(
+      installTheme(db, MERCHANT_A, themeZip(strictTheme("1.0.0"), [], { templates: payTemplates })),
+    );
+    expect(code).toBe("package.untrusted_content");
+    expect(db.rows("store_themes")).toHaveLength(0);
+  });
+});

@@ -834,6 +834,25 @@ export async function installUploadedTheme(
         `Theme references missing files: ${broken.slice(0, 5).join(", ")}.`,
       );
     }
+    // No-plugin-territory trust gate (threat-defense, C6): same refusal as
+    // the pipeline lane, before replay lookup or any write.
+    {
+      const decoder = new TextDecoder("utf-8", { fatal: false });
+      const { scanThemeTrustContent } = await import("../package-review");
+      const trustFindings = scanThemeTrustContent(
+        files
+          .filter(
+            (f) => f.path.startsWith("templates/") && f.path.endsWith(".json"),
+          )
+          .map((f) => decoder.decode(f.bytes)),
+      );
+      if (trustFindings.length > 0) {
+        throw new ThemeDeskError(
+          "theme.upload_content",
+          `Theme content refused: ${trustFindings.map((f) => f.code).join(", ")}.`,
+        );
+      }
+    }
     // Storage quota (threat-defense): persisted usage plus the incoming
     // inflated total must fit the merchant's plan-tiered quota before the
     // replay lookup or any write.

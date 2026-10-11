@@ -28,6 +28,7 @@ import {
   type MotionPageMeasurement,
 } from "./motion-choreography";
 import { motionEffectOf } from "./builder-advanced";
+import { scanThemeTrustContent } from "./package-review";
 import type {
   Section,
   SectionType,
@@ -713,6 +714,22 @@ export function motionBudgetGate(ast: ThemeAst): GateFailure[] {
 };
 
 /**
+ * No-plugin-territory trust gate (C6 reasons 1-4): the theme-side half of
+ * human review that is mechanical enough to refuse in code. Runs over the
+ * exact templates about to publish — payment collection, tracking pixels,
+ * credential collection, and `seo_meta` writes all block the publish with
+ * stable machine codes. Display copy never trips (the detectors fire on
+ * executable positions only), so legitimate account-link widgets, COD
+ * labels, and payment-icon marks pass untouched.
+ */
+export function trustGate(templates: unknown): GateFailure[] {
+  return scanThemeTrustContent(templates).map((finding) => ({
+    code: finding.code,
+    message: finding.detail,
+  }));
+}
+
+/**
  * Browser-side gates. They cannot run inside a server function, so publish
  * cannot block on them — they block the release instead, and are declared here
  * so `bun run gates:release` and this module can never disagree.
@@ -793,6 +810,12 @@ export function composePublishGate(input: {
    * block the publish; full-intent pages in the same batch are ignored.
    */
   motion?: { pages: MotionPageMeasurement[] } | false;
+  /**
+   * No-plugin-territory trust audit (C6 reasons 1-4): the parsed templates
+   * about to publish. Omitted by token-only callers, which keep working
+   * unchanged.
+   */
+  trust?: unknown;
 }): {
   ok: boolean;
   failures: GateFailure[];
@@ -824,6 +847,10 @@ export function composePublishGate(input: {
   const motionBudgetFailures = motionBudgetAst
     ? motionBudgetGate(motionBudgetAst)
     : null;
+  // No-plugin-territory trust audit: token-only callers pass nothing and
+  // skip it exactly like the responsive gate does.
+  const trustFailures =
+    input.trust === undefined ? null : trustGate(input.trust);
   const failures: GateFailure[] = [
     ...(input.lint ?? []).map((message) => ({ code: "lint", message })),
     ...(input.translation ?? []).map((message) => ({
@@ -844,6 +871,7 @@ export function composePublishGate(input: {
     ...(a11yFailures ?? []),
     ...(motionFailures ?? []),
     ...(motionBudgetFailures ?? []),
+    ...(trustFailures ?? []),
   ];
   const warnings: GateFailure[] = [
     ...(perf?.warnings ?? []).map((f) => ({

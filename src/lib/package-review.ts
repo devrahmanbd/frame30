@@ -184,3 +184,263 @@ export function diffCapabilities(
   removed.sort();
   return { widened: added.length > 0, added, removed };
 }
+
+/* ----------------- no-plugin-territory trust gates (C6 reasons 1-4) --------
+
+  Mechanical half of the human review policy (`docs/developers/review-policy.md`
+  §1): themes present the storefront and must never take over platform-owned
+  work. These four detectors refuse ACTION patterns only — display copy such
+  as "Cash on Delivery" labels, wallet brand names, or account-link labels
+  never fires. Pure: strings are scanned directly, every other value is
+  JSON-stringified first, so package files, parsed templates, and manifest
+  text all run through the same patterns.
+
+  Stable machine codes (`no-plugin-territory.*`) shared by the install lane
+  (`scanPackage`), the manifest gate (`validateThemeManifest`), and the
+  publish gate (`composePublishGate`). */
+
+export type ThemeTrustCode =
+  | "no-plugin-territory.payments"
+  | "no-plugin-territory.tracking-pixel"
+  | "no-plugin-territory.auth-form"
+  | "no-plugin-territory.seo-write";
+
+export type ThemeTrustFinding = {
+  code: ThemeTrustCode;
+  detail: string;
+};
+
+/**
+ * `PaymentRequest` constructor / `paymentRequest(` calls. Display copy names
+ * wallets ("bKash, Nagad…"), never this API, so the token alone is precise.
+ */
+const PAYMENT_REQUEST_RE = /\bPaymentRequest\b|paymentRequest\s*\(/;
+
+/**
+ * Wallet / payment deeplink schemes (`bkash://…`). The `://` is required:
+ * bare brand names ("Pay with bKash") and https links stay passing.
+ */
+const WALLET_SCHEME_RE =
+  /\b(bkash|nagad|rocket|upay|sslcommerz|shurjopay|amarpay|stripe|paypal|razorpay)\s*:\/\//i;
+
+/** A literal `<form` tag — executable position for collection markers. */
+const FORM_TAG_RE = /<\s*form\b/i;
+
+/**
+ * Payment-field markers. Gated behind `FORM_TAG_RE`: the same words as
+ * display copy ("card", "account") never fire on their own.
+ */
+const PAYMENT_FIELD_RE =
+  /\b(card[_-]?number|card[_-]?num|credit[_-]?card|debit[_-]?card|cvv2?|cvc2?|card[_-]?exp|expir(y|ation)|cardholder|card[_-]?token|payment[_-]?token|stripe[_-]?token|bank[_-]?account|account[_-]?number|routing[_-]?number)\b/i;
+
+/** True when theme content prices or charges (C6 reason 1). */
+export function hasPaymentCollectionMarkers(text: string): boolean {
+  if (PAYMENT_REQUEST_RE.test(text)) return true;
+  if (WALLET_SCHEME_RE.test(text)) return true;
+  // Forms are the only executable position themes have: a form carrying
+  // payment fields collects money, whatever its action is. Display copy
+  // never contains a literal `<form` tag, so requiring both is precise.
+  if (FORM_TAG_RE.test(text) && PAYMENT_FIELD_RE.test(text)) return true;
+  return false;
+}
+
+const IMG_TAG_RE = /<\s*img\b[^>]*>/gi;
+/** `width="1"` / `height="1"` (exact — `10`, `100`, `1%` never match). */
+const HIDDEN_STYLE_RE =
+  /style\s*=\s*["'][^"']*(display\s*:\s*none|visibility\s*:\s*hidden|opacity\s*:\s*0(\.0*)?)/i;
+const HIDDEN_ATTR_RE = /<\s*img\b[^>]*\bhidden\b/i;
+
+/**
+ * Pixel-specific hosts: analytics / ad-pixel endpoints only. Broad social
+ * hosts (`facebook.com`, `tiktok.com`) are deliberately absent — a theme
+ * linking the merchant's Facebook page is legitimate. Subdomains match via
+ * suffix, so `sub.connect.facebook.net` is covered too.
+ */
+const KNOWN_PIXEL_HOSTS = [
+  "connect.facebook.net",
+  "google-analytics.com",
+  "googletagmanager.com",
+  "googlesyndication.com",
+  "doubleclick.net",
+  "hotjar.com",
+  "hotjar.io",
+  "mixpanel.com",
+  "segment.com",
+  "segment.io",
+  "amplitude.com",
+  "analytics.tiktok.com",
+  "tr.snapchat.com",
+  "sc-static.net",
+  "ct.pinterest.com",
+  "px.ads.linkedin.com",
+  "analytics.twitter.com",
+  "static.ads-twitter.com",
+  "pixel.reddit.com",
+  "criteo.com",
+  "quantserve.com",
+  "scorecardresearch.com",
+  "taboola.com",
+  "outbrain.com",
+  "mouseflow.com",
+  "crazyegg.com",
+  "luckyorange.com",
+  "fullstory.com",
+  "mc.yandex.ru",
+  "hm.baidu.com",
+  "bat.bing.com",
+  "clarity.ms",
+];
+
+function isPixelHost(host: string): boolean {
+  const lower = host.toLowerCase();
+  return KNOWN_PIXEL_HOSTS.some(
+    (known) => lower === known || lower.endsWith(`.${known}`),
+  );
+}
+
+function hasPixelMarkup(text: string): boolean {
+  IMG_TAG_RE.lastIndex = 0;
+  for (const match of text.matchAll(IMG_TAG_RE)) {
+    const tag = match[0];
+    // A 1x1 (or 0x0) image, or any image hidden from shoppers, is a
+    // tracking pixel: pixel-sized images with a display purpose are
+    // merchant-visible anyway, so outright refusal has no legit cost.
+    // Attribute values must be exactly 0/1 — `10`, `100`, `1%` pass.
+    const widthAttr = tag.match(/\bwidth\s*=\s*["']?(\d+)(?=["'\s/>]|$)/i)?.[1];
+    const heightAttr = tag.match(
+      /\bheight\s*=\s*["']?(\d+)(?=["'\s/>]|$)/i,
+    )?.[1];
+    const tinyAttr =
+      (widthAttr === "0" || widthAttr === "1") &&
+      (heightAttr === "0" || heightAttr === "1");
+    const tinyStyle =
+      /width\s*:\s*(0|1)px/i.test(tag) && /height\s*:\s*(0|1)px/i.test(tag);
+    if (tinyAttr || tinyStyle) return true;
+    if (HIDDEN_STYLE_RE.test(tag) || HIDDEN_ATTR_RE.test(tag)) return true;
+  }
+  return false;
+}
+
+/** True when theme content carries a tracking pixel (C6 reason 3). */
+export function hasTrackingPixelMarkers(text: string): boolean {
+  if (hasPixelMarkup(text)) return true;
+  URL_RE.lastIndex = 0;
+  for (const match of text.matchAll(URL_RE)) {
+    const clean = cleanUrl(match[0]);
+    if (!clean) continue;
+    const host = hostOf(clean);
+    if (host && isPixelHost(host)) return true;
+  }
+  return false;
+}
+
+/** Password-type inputs never belong in theme content (platform owns auth). */
+const PASSWORD_INPUT_RE = /<\s*input\b[^>]*\btype\s*=\s*["']?password\b/i;
+/** Password/credential prop keys smuggled into raw template JSON. */
+const PASSWORD_PROP_RE =
+  /"[A-Za-z-]*(password|passwd|credential)[A-Za-z-]*"\s*:/i;
+/** `<form>…</form>` bodies — the only form positions themes can smuggle. */
+const FORM_BLOCK_RE = /<\s*form\b[^>]*>([\s\S]*?)<\/\s*form\s*>/gi;
+const PASSWORD_WORD_RE = /\bpassword\b/i;
+const AUTH_WORD_RE =
+  /\b(signin|sign-in|sign_in|signup|sign-up|sign_up|login|log-in|log_in|register|registration|credential|credentials|auth|authentication|otp)\b/i;
+const IDENTITY_FIELD_RE =
+  /\b(e-?mail|username|user[_-]?name|phone|mobile|otp)\b/i;
+
+/** True when theme content collects credentials (C6 reason 4). */
+export function hasAuthFormMarkers(text: string): boolean {
+  if (PASSWORD_INPUT_RE.test(text)) return true;
+  if (PASSWORD_PROP_RE.test(text)) return true;
+  FORM_BLOCK_RE.lastIndex = 0;
+  for (const match of text.matchAll(FORM_BLOCK_RE)) {
+    const body = match[1] ?? "";
+    if (PASSWORD_WORD_RE.test(body)) return true;
+    // An auth-labelled form collecting identity fields is sign-in, not
+    // marketing: newsletter/contact widgets carry no `<form>` block, so
+    // requiring the block keeps email-only widgets passing.
+    if (AUTH_WORD_RE.test(body) && IDENTITY_FIELD_RE.test(body)) return true;
+  }
+  return false;
+}
+
+/** Theme packages must never reference the merchant-owned table. */
+const SEO_META_RE = /\bseo_meta\b/i;
+
+/** True when package content touches `seo_meta` rows (C6 reason 2). */
+export function hasSeoWriteMarkers(text: string): boolean {
+  return SEO_META_RE.test(text);
+}
+
+function trustTextOf(input: unknown): string {
+  let text: string;
+  if (typeof input === "string") {
+    text = input;
+  } else {
+    try {
+      const raw = JSON.stringify(input);
+      if (typeof raw !== "string") return "";
+      text = raw;
+    } catch {
+      return "";
+    }
+  }
+  // JSON-encoded blobs escape quotes (`\"`) and slashes (`\/`) — raw file
+  // text carries the same escapes, and wrapping texts in an array escapes
+  // them twice; detection runs on the underlying markup in all cases, so
+  // unescape to a fixpoint. Detection-only — the scanned content is never
+  // modified.
+  let out = text;
+  for (let i = 0; i < 3; i++) {
+    const next = out.replace(/\\"/g, '"').replace(/\\\//g, "/");
+    if (next === out) break;
+    out = next;
+  }
+  return out;
+}
+
+const TRUST_MESSAGES: Record<ThemeTrustCode, string> = {
+  "no-plugin-territory.payments":
+    "no-plugin-territory: theme content collects payments — pricing and charging belong to the platform.",
+  "no-plugin-territory.tracking-pixel":
+    "no-plugin-territory: theme content carries a tracking pixel — third-party exfiltration needs merchant consent.",
+  "no-plugin-territory.auth-form":
+    "no-plugin-territory: theme content collects credentials — sign-in belongs to the platform.",
+  "no-plugin-territory.seo-write":
+    "no-plugin-territory: theme content writes seo_meta rows — search metadata is merchant-owned.",
+};
+
+/**
+ * All four C6 content gates over one blob: raw file text, parsed templates,
+ * or a manifest object. Never throws; unserializable input scans as empty.
+ * Empty findings = clean.
+ */
+export function scanThemeTrustContent(input: unknown): ThemeTrustFinding[] {
+  const text = trustTextOf(input);
+  if (!text) return [];
+  const findings: ThemeTrustFinding[] = [];
+  if (hasPaymentCollectionMarkers(text)) {
+    findings.push({
+      code: "no-plugin-territory.payments",
+      detail: TRUST_MESSAGES["no-plugin-territory.payments"],
+    });
+  }
+  if (hasTrackingPixelMarkers(text)) {
+    findings.push({
+      code: "no-plugin-territory.tracking-pixel",
+      detail: TRUST_MESSAGES["no-plugin-territory.tracking-pixel"],
+    });
+  }
+  if (hasAuthFormMarkers(text)) {
+    findings.push({
+      code: "no-plugin-territory.auth-form",
+      detail: TRUST_MESSAGES["no-plugin-territory.auth-form"],
+    });
+  }
+  if (hasSeoWriteMarkers(text)) {
+    findings.push({
+      code: "no-plugin-territory.seo-write",
+      detail: TRUST_MESSAGES["no-plugin-territory.seo-write"],
+    });
+  }
+  return findings;
+}

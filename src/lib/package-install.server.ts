@@ -67,6 +67,7 @@ import {
 import {
   coversWidening,
   diffCapabilities,
+  scanThemeTrustContent,
   themeSignals,
 } from "./package-review";
 import {
@@ -629,6 +630,26 @@ export async function installPackage(
   // cheap, bytes are truth. Runs BEFORE the replay lookup so a reused key
   // can never smuggle hostile bytes past the check.
   assertPackageContentAuthentic(files);
+  // No-plugin-territory trust gate (threat-defense, C6): payment collection,
+  // tracking pixels, auth forms and SEO writes are refused here too — same
+  // anti-smuggling order. Benign display copy and contact/newsletter forms
+  // pass (pinned by tests).
+  {
+    const decoder = new TextDecoder("utf-8", { fatal: false });
+    const trustFindings = scanThemeTrustContent(
+      files
+        .filter(
+          (f) => f.path.startsWith("templates/") && f.path.endsWith(".json"),
+        )
+        .map((f) => decoder.decode(f.bytes)),
+    );
+    if (trustFindings.length > 0) {
+      throw new PackageInstallError(
+        "package.untrusted_content",
+        `Theme content refused: ${trustFindings.map((f) => f.code).join(", ")}.`,
+      );
+    }
+  }
 
   // 3. manifest (PKG-1 seam) → 4. dependency/API → 5. presentation refs.
   const validator = resolveValidator(input.validator);
@@ -719,6 +740,8 @@ export async function installPackage(
   }
 
   const templates = templatesOf(files);
+  // (Trust gate runs pre-replay on raw template texts above; see
+  // `scanThemeTrustContent` call after content authenticity.)
   // Update widening consent (threat-defense): a new version that adds
   // external hosts or custom HTML over the installed line needs explicit
   // re-consent covering every addition. Fresh installs (no prev) and

@@ -44,6 +44,7 @@ import type { SectionType } from "./builder-ast";
 import { WIDGET_TYPES } from "./widget-registry";
 import { BUILDER_API_VERSION, satisfiesApiRange } from "./plugin-manifest";
 import { normalizeScopes, parseSemver } from "./marketplace-scopes";
+import { scanThemeTrustContent } from "./package-review";
 
 export { BUILDER_API_VERSION };
 
@@ -523,6 +524,17 @@ export function validateThemeManifest(input: unknown): ThemeVerdict {
       if (!capabilities.includes("render_storefront")) {
         errors.push("capabilities.render_storefront_required");
       }
+    }
+
+    // --- no-plugin-territory content gates (C6 reasons 1-4) ---
+    // The manifest (free text, tokens, any smuggled key) is the one package
+    // surface the install lanes validate through this gate, so ACTION
+    // patterns here refuse the install in both lanes (`package-install` and
+    // the appearance upload lane call this validator). Display copy never
+    // trips: the detectors fire on executable positions only.
+    for (const trust of scanThemeTrustContent(raw)) {
+      const suffix = trust.code.split(".")[1] ?? trust.code;
+      errors.push(`content.${suffix}`);
     }
 
     if (errors.length) return { ok: false, errors };

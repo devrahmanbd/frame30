@@ -657,3 +657,33 @@ describe("upload audit inventory (threat-defense)", () => {
     });
   });
 });
+
+describe("upload untrusted content refusal (threat-defense)", () => {
+  it("deny: refuses tracking pixels in uploaded templates, writing nothing", async () => {
+    const db = uploadDb();
+    const flagged = Buffer.from(
+      buildTestZip([
+        { name: "theme.json", content: strictUploadManifest() },
+        {
+          name: "templates/index.json",
+          content: JSON.stringify({
+            header: [],
+            main: [{ id: "m1", type: "html", props: { body: '<img src="https://track.example.com/p.gif" width="1" height="1">' } }],
+            footer: [],
+          }),
+        },
+        { name: "locales/en.json", content: "{}" },
+      ]),
+    ).toString("base64");
+    const err = await installUploadedTheme(
+      db.asClient(),
+      MERCHANT,
+      { fileName: "shop.zip", fileBase64: flagged, idempotencyKey: "k-trust" },
+      "user-9",
+    ).catch((e) => e);
+    expect(err?.code).toBe("theme.upload_content");
+    expect(db.rows("store_themes")).toHaveLength(0);
+    expect(db.rows("theme_versions")).toHaveLength(0);
+    expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+});
