@@ -306,6 +306,48 @@ export async function setPluginEnabled(
   enabled: boolean,
   actorId?: string | null,
 ) {
+  const { data: row } = await db
+    .from("plugin_state")
+    .select("manifest, manifest_version")
+    .eq("merchant_id", merchantId)
+    .eq("plugin_id", pluginId)
+    .maybeSingle();
+  if (!row) throw new Error("plugin_not_found");
+  // Threat-defense approval gate (enable path only — disabling is always
+  // safe): a flagged manifest needs a recorded approval for its exact
+  // version, else enabling is refused before any write.
+  if (enabled) {
+    const { scanPackage } = await import("./package-scan");
+    const manifestJson = JSON.stringify(
+      (row as { manifest?: unknown }).manifest ?? {},
+    );
+    const report = scanPackage([
+      { path: "plugin.json", bytes: new TextEncoder().encode(manifestJson) },
+    ]);
+    if (report.verdict === "flagged") {
+      const currentVersion = (row as { manifest_version?: unknown })
+        .manifest_version;
+      const { data: approvals } = await db
+        .from("activity_log")
+        .select("changed")
+        .eq("merchant_id", merchantId)
+        .eq("action", "plugin.approved");
+      const approved = ((approvals ?? []) as unknown as {
+        changed?: unknown;
+      }[]).some((a) => {
+        const changed = (a.changed ?? {}) as Record<string, unknown>;
+        return (
+          changed.plugin === pluginId &&
+          changed.manifest_version === currentVersion
+        );
+      });
+      if (!approved) {
+        throw new Error(
+          `plugin.approval_required:${report.findings.map((f) => f.code).join(",")}`,
+        );
+      }
+    }
+  }
   // Tenant-scoped with affected-row assertion: a toggle for a row that is
   // not ours (or gone) fails closed instead of silently succeeding — the
   // same pattern as compensating deletes (appearance.server.ts).
@@ -329,6 +371,42 @@ export async function setPluginEnabled(
     },
     null,
   );
+}
+
+/**
+ * Threat-defense — record explicit merchant approval of a flagged plugin
+ * version. The row must belong to the caller and the version must match the
+ * installed manifest; approval covers that exact version only (a later
+ * update needs its own approval). Returns, never throws for missing audit
+ * transport (audit best-effort per `auditAction`).
+ */
+export async function approvePluginVersion(
+  db: Client,
+  merchantId: string,
+  pluginId: string,
+  manifestVersion: string,
+  actorId?: string | null,
+) {
+  const { data: row } = await db
+    .from("plugin_state")
+    .select("manifest_version")
+    .eq("merchant_id", merchantId)
+    .eq("plugin_id", pluginId)
+    .maybeSingle();
+  if (!row) throw new Error("plugin_not_found");
+  const current = (row as { manifest_version?: unknown }).manifest_version;
+  if (current !== manifestVersion)
+    throw new Error("plugin_version_mismatch");
+  await auditAction(
+    db,
+    merchantId,
+    actorId ?? null,
+    "plugin.approved",
+    "plugin",
+    { plugin: pluginId, manifest_version: manifestVersion },
+    null,
+  );
+  return { ok: true };
 }
 
 export async function setPluginAutoUpdates(

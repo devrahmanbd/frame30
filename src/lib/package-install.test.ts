@@ -17,7 +17,7 @@
  */
 import { describe, expect, it, beforeEach } from "vitest";
 import { deflateRawSync } from "node:zlib";
-import { fakeDb } from "./__fixtures__/fake-db";
+import { fakeDb, type FakeDb } from "./__fixtures__/fake-db";
 import {
   installPackage,
   previewPackage,
@@ -1837,5 +1837,273 @@ describe("PKG-2 storage quota (threat-defense)", () => {
     expect(db.rows("theme_versions")).toHaveLength(0);
     expect(db.rows("theme_assets")).toHaveLength(1);
     expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+});
+
+describe("PKG-2 update widening consent (threat-defense)", () => {
+  const beaconTemplates = {
+    index: {
+      header: [],
+      main: [
+        { id: "m1", type: "hero", props: { pixel: "https://track.example.com/p.gif" } },
+      ],
+      footer: [],
+    },
+  };
+  async function installV1(db: ReturnType<typeof fakeDb>) {
+    return installTheme(db, MERCHANT_A, themeZip(STRICT_THEME_V1));
+  }
+  function v2zip(extraVersion = "1.1.0") {
+    return themeZip(strictTheme(extraVersion), [], { templates: beaconTemplates });
+  }
+  it("update adding external hosts requires consent, writing nothing", async () => {
+    const db = pkgDb();
+    await installV1(db);
+    const before = db.rows("theme_versions").length;
+    const code = await codeOf(
+      installPackage(
+        db.asClient(),
+        MERCHANT_A,
+        {
+          kind: "theme",
+          fileName: "theme.zip",
+          bytes: v2zip(),
+          idempotencyKey: key(),
+        },
+        ACTOR,
+      ),
+    );
+    expect(code).toBe("package.consent_required");
+    expect(db.rows("theme_versions")).toHaveLength(before);
+    expect(db.rows("marketplace_installs")).toHaveLength(1);
+  });
+  it("update with consent covering the additions succeeds", async () => {
+    const db = pkgDb();
+    await installV1(db);
+    const res = await installPackage(
+      db.asClient(),
+      MERCHANT_A,
+      {
+        kind: "theme",
+        fileName: "theme.zip",
+        bytes: v2zip(),
+        idempotencyKey: key(),
+        consentScopes: ["url:track.example.com"],
+      },
+      ACTOR,
+    );
+    expect(res.updated).toBe(true);
+    expect(res.versionNumber).toBe(2);
+  });
+  it("update without widening needs no consent", async () => {
+    const db = pkgDb();
+    await installV1(db);
+    const res = await installPackage(
+      db.asClient(),
+      MERCHANT_A,
+      {
+        kind: "theme",
+        fileName: "theme.zip",
+        bytes: themeZip(strictTheme("1.1.0")),
+        idempotencyKey: key(),
+      },
+      ACTOR,
+    );
+    expect(res.updated).toBe(true);
+  });
+});
+
+describe("PKG-2 plugin update widening consent (threat-defense)", () => {
+  const PLUGIN = "widen-probe";
+  function widenDb() {
+    const db = pkgDb();
+    return db;
+  }
+  it("update adding permissions requires consent, writing nothing new", async () => {
+    const db = widenDb();
+    await installPackage(
+      db.asClient(),
+      MERCHANT_A,
+      {
+        kind: "plugin",
+        fileName: "widen.zip",
+        bytes: pluginZip(
+          strictPlugin(PLUGIN, "1.0.0", { permissions: ["read_shop"] }),
+        ),
+        idempotencyKey: key(),
+      },
+      ACTOR,
+    );
+    // Simulate the host projection the marketplace lane runs on install.
+    const { upsertPlugin } = await import("./plugins.server");
+    await upsertPlugin(db.asClient(), MERCHANT_A, {
+      manifest: strictPlugin(PLUGIN, "1.0.0", { permissions: ["read_shop"] }),
+      grantedScopes: ["read_shop"],
+      actorId: ACTOR,
+    });
+    const installsBefore = db.rows("marketplace_installs").length;
+    const code = await codeOf(
+      installPackage(
+        db.asClient(),
+        MERCHANT_A,
+        {
+          kind: "plugin",
+          fileName: "widen.zip",
+          bytes: pluginZip(
+            strictPlugin(PLUGIN, "1.1.0", {
+              permissions: ["read_shop", "read_orders"],
+            }),
+          ),
+          idempotencyKey: key(),
+        },
+        ACTOR,
+      ),
+    );
+    expect(code).toBe("package.consent_required");
+    expect(db.rows("marketplace_installs")).toHaveLength(installsBefore);
+  });
+  it("update with consent covering the additions succeeds", async () => {
+    const db = widenDb();
+    await installPackage(
+      db.asClient(),
+      MERCHANT_A,
+      {
+        kind: "plugin",
+        fileName: "widen.zip",
+        bytes: pluginZip(
+          strictPlugin(PLUGIN, "1.0.0", { permissions: ["read_shop"] }),
+        ),
+        idempotencyKey: key(),
+      },
+      ACTOR,
+    );
+    const { upsertPlugin } = await import("./plugins.server");
+    await upsertPlugin(db.asClient(), MERCHANT_A, {
+      manifest: strictPlugin(PLUGIN, "1.0.0", { permissions: ["read_shop"] }),
+      grantedScopes: ["read_shop"],
+      actorId: ACTOR,
+    });
+    const res = await installPackage(
+      db.asClient(),
+      MERCHANT_A,
+      {
+        kind: "plugin",
+        fileName: "widen.zip",
+        bytes: pluginZip(
+          strictPlugin(PLUGIN, "1.1.0", {
+            permissions: ["read_shop", "read_orders"],
+          }),
+        ),
+        idempotencyKey: key(),
+        consentScopes: ["perm:read_orders"],
+      },
+      ACTOR,
+    );
+    expect(res.version).toBe("1.1.0");
+  });
+});
+
+describe("PKG-2 flagged activation approval (threat-defense)", () => {
+  const SECRET = "sk-abcdefghij0123456789ABCDEFGH0123";
+  const secretTemplates = {
+    index: {
+      header: [],
+      main: [{ id: "m1", type: "heading", props: { text: `leaked ${SECRET}` } }],
+      footer: [],
+    },
+  };
+  async function installFlagged(db: ReturnType<typeof fakeDb>) {
+    const { activateTheme, approveThemeVersion } = await import(
+      "./themes/appearance.server"
+    );
+    const res = await installTheme(
+      db,
+      MERCHANT_A,
+      themeZip(strictTheme("1.0.0"), [], { templates: secretTemplates }),
+    );
+    return { res, activateTheme, approveThemeVersion };
+  }
+  it("activation of a flagged version requires approval, staying inactive", async () => {
+    const db = pkgDb();
+    const { res, activateTheme } = await installFlagged(db);
+    const err = await activateTheme(
+      db.asClient(),
+      MERCHANT_A,
+      res.packageId,
+      ACTOR,
+    ).catch((e) => e);
+    expect(err?.code ?? err?.message).toMatch(/approval_required/);
+    expect(
+      db.rows("store_themes").find((r) => r.id === res.packageId)?.is_active,
+    ).toBe(false);
+  });
+  it("approval records audit, then activation succeeds", async () => {
+    const db = pkgDb();
+    const { res, activateTheme, approveThemeVersion } = await installFlagged(db);
+    const approval = await approveThemeVersion(
+      db.asClient(),
+      MERCHANT_A,
+      res.packageId,
+      res.versionId,
+      ACTOR,
+    );
+    expect(approval).toMatchObject({ ok: true });
+    const activated = await activateTheme(
+      db.asClient(),
+      MERCHANT_A,
+      res.packageId,
+      ACTOR,
+    );
+    expect(activated.id).toBe(res.packageId);
+    expect(
+      db.rows("store_themes").find((r) => r.id === res.packageId)?.is_active,
+    ).toBe(true);
+    expect(
+      db.rows("theme_audit").filter((a) => a.action === "theme.approved"),
+    ).toHaveLength(1);
+  });
+  it("foreign approval writes nothing", async () => {
+    const db = pkgDb();
+    const { res, approveThemeVersion } = await installFlagged(db);
+    await expect(
+      approveThemeVersion(db.asClient(), MERCHANT_B, res.packageId, res.versionId, ACTOR),
+    ).rejects.toThrow();
+    expect(
+      db.rows("theme_audit").filter((a) => a.action === "theme.approved"),
+    ).toHaveLength(0);
+  });
+  it("changed content after approval needs fresh approval", async () => {
+    const db = pkgDb();
+    const { res, activateTheme, approveThemeVersion } = await installFlagged(db);
+    await approveThemeVersion(
+      db.asClient(),
+      MERCHANT_A,
+      res.packageId,
+      res.versionId,
+      ACTOR,
+    );
+    // Merchant edits the draft after approving: new flaggable content (a
+    // leaked credential — markup scripts would be stripped by the builder
+    // sanitiser instead, which is also safe but a different path).
+    const SECRET2 = "sk-zzzzz9999900000AAAAABBBBB1234567";
+    await db
+      .asClient<FakeDb>()
+      .from("theme_drafts")
+      .update({
+        templates: {
+          index: { header: [], main: [{ id: "evil", type: "heading", props: { text: `token ${SECRET2}` } }], footer: [] },
+        },
+      } as never)
+      .eq("theme_id", res.packageId);
+    const err = await activateTheme(
+      db.asClient(),
+      MERCHANT_A,
+      res.packageId,
+      ACTOR,
+    ).catch((e) => e);
+    expect(err?.code ?? err?.message).toMatch(/approval_required/);
+    expect(
+      db.rows("store_themes").find((r) => r.id === res.packageId)?.is_active,
+    ).toBe(false);
   });
 });

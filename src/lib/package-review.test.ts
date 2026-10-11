@@ -59,3 +59,55 @@ describe("inventoryExternalUrls", () => {
     expect(urls).toEqual([]);
   });
 });
+
+describe("diffCapabilities", () => {
+  it("detects added plugin permissions", async () => {
+    const { diffCapabilities } = await import("./package-review");
+    const diff = diffCapabilities(
+      { permissions: ["read_shop"], externalHosts: [], customHtml: false },
+      { permissions: ["read_shop", "write_orders"], externalHosts: [], customHtml: false },
+    );
+    expect(diff.widened).toBe(true);
+    expect(diff.added).toEqual(["perm:write_orders"]);
+    expect(diff.removed).toEqual([]);
+  });
+
+  it("removals alone never count as widening", async () => {
+    const { diffCapabilities } = await import("./package-review");
+    const diff = diffCapabilities(
+      { permissions: ["read_shop", "write_orders"], externalHosts: ["a.example.com"], customHtml: true },
+      { permissions: ["read_shop"], externalHosts: [], customHtml: false },
+    );
+    expect(diff.widened).toBe(false);
+    expect(diff.removed).toContain("perm:write_orders");
+  });
+
+  it("detects new external hosts and custom-html arrival", async () => {
+    const { diffCapabilities, themeSignals } = await import("./package-review");
+    const oldS = themeSignals({ index: { main: [{ type: "heading", props: {} }] } });
+    const newS = themeSignals({
+      index: {
+        main: [
+          { type: "heading", props: {} },
+          { type: "html", props: { body: "<b>x</b><img src=\"https://new.example.com/p.png\">" } },
+        ],
+      },
+    });
+    expect(oldS).toEqual({ externalHosts: [], customHtml: false });
+    const diff = diffCapabilities(
+      { permissions: [], ...oldS },
+      { permissions: [], ...newS },
+    );
+    expect(diff.widened).toBe(true);
+    expect(diff.added).toEqual(["custom-html", "url:new.example.com"]);
+  });
+
+  it("identical signals are not widening", async () => {
+    const { diffCapabilities } = await import("./package-review");
+    const diff = diffCapabilities(
+      { permissions: ["a"], externalHosts: ["h.example.com"], customHtml: true },
+      { permissions: ["a"], externalHosts: ["h.example.com"], customHtml: true },
+    );
+    expect(diff).toEqual({ widened: false, added: [], removed: [] });
+  });
+});

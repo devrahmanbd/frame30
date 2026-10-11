@@ -64,6 +64,11 @@ import {
   themeVersionPrefix,
 } from "./package-store.server";
 import {
+  coversWidening,
+  diffCapabilities,
+  themeSignals,
+} from "./package-review";
+import {
   checkDependencyRanges,
   extractFileClaims,
   extractPluginClaims,
@@ -561,6 +566,13 @@ export type InstallPackageInput = {
   idempotencyKey: string;
   validator?: ManifestValidator;
   limits?: ZipLimits;
+  /**
+   * Threat-defense re-consent for updates that widen capabilities
+   * (see `diffCapabilities`): every added item must appear here by exact
+   * match, else the update fails with `package.consent_required`. Fresh
+   * installs never need it — the install itself is the consent.
+   */
+  consentScopes?: string[];
 };
 
 export type InstallPackageResult = {
@@ -701,6 +713,31 @@ export async function installPackage(
   }
 
   const templates = templatesOf(files);
+  // Update widening consent (threat-defense): a new version that adds
+  // external hosts or custom HTML over the installed line needs explicit
+  // re-consent covering every addition. Fresh installs (no prev) and
+  // non-widening updates pass untouched.
+  if (prev) {
+    const { data: latest } = await db
+      .from("theme_versions")
+      .select("templates")
+      .eq("merchant_id", merchantId)
+      .eq("theme_id", prev.id)
+      .order("version", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    const oldTemplates = (latest as { templates?: unknown } | null)?.templates;
+    const diff = diffCapabilities(
+      { permissions: [], ...themeSignals(oldTemplates) },
+      { permissions: [], ...themeSignals(templates) },
+    );
+    if (diff.widened && !coversWidening(diff.added, input.consentScopes)) {
+      throw new PackageInstallError(
+        "package.consent_required",
+        `Update adds capabilities requiring re-consent: ${diff.added.slice(0, 5).join(", ")}.`,
+      );
+    }
+  }
   // Official tokens ride inertly in theme.json (exporter writes them);
   // carry a plain-object snapshot into the version row, else default {}.
   const rawTokens = (manifest.raw as Record<string, unknown>)?.tokens;
@@ -1028,6 +1065,42 @@ async function installPluginPackage(
   // Storage quota (threat-defense): same rule as the theme flow — replays
   // write nothing; fresh installs and updates must fit the quota first.
   await assertStorageQuota(db, merchantId, files);
+  // Update widening consent (threat-defense): a new version that adds
+  // manifest permissions over the installed plugin_state row needs explicit
+  // re-consent. Fresh installs (no row) and non-widening updates pass.
+  // (The host projection in upsertPlugin enforces the same rule at enable
+  // time; this stops widened bytes from landing at all.)
+  {
+    const { data: installed } = await db
+      .from("plugin_state")
+      .select("manifest")
+      .eq("merchant_id", merchantId)
+      .eq("plugin_id", manifest.slug)
+      .maybeSingle();
+    const raw = (installed as { manifest?: unknown } | null)?.manifest as
+      | { permissions?: unknown }
+      | null
+      | undefined;
+    const oldPerms = Array.isArray(raw?.permissions)
+      ? raw.permissions.filter((p): p is string => typeof p === "string")
+      : null;
+    if (oldPerms !== null) {
+      const rawNew = manifest.raw as { permissions?: unknown };
+      const newPerms = Array.isArray(rawNew.permissions)
+        ? rawNew.permissions.filter((p): p is string => typeof p === "string")
+        : [];
+      const diff = diffCapabilities(
+        { permissions: oldPerms, externalHosts: [], customHtml: false },
+        { permissions: newPerms, externalHosts: [], customHtml: false },
+      );
+      if (diff.widened && !coversWidening(diff.added, input.consentScopes)) {
+        throw new PackageInstallError(
+          "package.consent_required",
+          `Update adds capabilities requiring re-consent: ${diff.added.slice(0, 5).join(", ")}.`,
+        );
+      }
+    }
+  }
   // K3 atomicity: assets land BEFORE the ledger row, so a mid-install kill
   // must never strand a partial namespace. A failed asset save compensates
   // the prefix it just wrote (best-effort) before the original stage error

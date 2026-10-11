@@ -362,6 +362,10 @@ export async function installListing(
           fileName: widgetArtifact.fileName,
           bytes: widgetArtifact.bytes,
           idempotencyKey: input.idempotencyKey,
+          // The merchant approved exactly `granted` on the consent screen
+          // for the pinned version: widened permissions are covered by
+          // construction (missing scopes already refused above).
+          consentScopes: granted,
         },
         input.consentedBy ?? null,
       );

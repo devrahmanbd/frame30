@@ -243,3 +243,65 @@ describe("plugin lifecycle audit", () => {
     expect(actions).toContain("plugin.auto_updates_enabled");
   });
 });
+
+describe("plugin flagged enable approval (threat-defense)", () => {
+  const SECRET_MANIFEST = {
+    ...MANIFEST,
+    widgets: [
+      {
+        key: "probe",
+        label: "Probe",
+        slots: ["main"],
+        entry: "framique.mount(document.createElement('div')) // sk-abcdefghij0123456789ABCDEFGH0123",
+      },
+    ],
+  };
+  async function installFlagged(db: ReturnType<typeof fakeDb>) {
+    const { approvePluginVersion } = await import("./plugins.server");
+    await upsertPlugin(db.asClient(), MERCHANT, {
+      manifest: SECRET_MANIFEST,
+      grantedScopes: ["render_storefront"],
+      actorId: ACTOR,
+    });
+    await setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", false, ACTOR);
+    return { approvePluginVersion };
+  }
+  it("enabling a flagged plugin requires approval, staying disabled", async () => {
+    const db = pluginDb();
+    await installFlagged(db);
+    await expect(
+      setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", true, ACTOR),
+    ).rejects.toThrow(/approval_required/);
+    expect(
+      db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")?.enabled,
+    ).toBe(false);
+  });
+  it("approval records audit, then enable succeeds", async () => {
+    const db = pluginDb();
+    const { approvePluginVersion } = await installFlagged(db);
+    await approvePluginVersion(db.asClient(), MERCHANT, "audit-probe", "1.0.0", ACTOR);
+    await setPluginEnabled(db.asClient(), MERCHANT, "audit-probe", true, ACTOR);
+    expect(
+      db.rows("plugin_state").find((r) => r.plugin_id === "audit-probe")?.enabled,
+    ).toBe(true);
+    expect(
+      db.rows("activity_log").filter((a) => a.action === "plugin.approved"),
+    ).toHaveLength(1);
+  });
+  it("foreign approval writes nothing", async () => {
+    const db = pluginDb();
+    const { approvePluginVersion } = await installFlagged(db);
+    await expect(
+      approvePluginVersion(
+        db.asClient(),
+        "33333333-3333-4333-8333-333333333333",
+        "audit-probe",
+        "1.0.0",
+        ACTOR,
+      ),
+    ).rejects.toThrow();
+    expect(
+      db.rows("activity_log").filter((a) => a.action === "plugin.approved"),
+    ).toHaveLength(0);
+  });
+});

@@ -9,6 +9,7 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { createHash } from "node:crypto";
 import {
   listRegistry,
   installRegistryTheme,
@@ -1121,6 +1122,101 @@ async function materializeLegacyVersion(
 }
 
 /**
+ * Threat-defense — record explicit merchant approval of flagged content.
+ *
+ * Approval binds to the version's template CONTENT hash, not its row id:
+ * activation materializes a separate published row from the draft, so an
+ * id-bound approval could never cover the row that actually goes live —
+ * while any content change (new hash) correctly needs fresh approval. The
+ * theme must belong to the caller and the version to the theme.
+ */
+export async function approveThemeVersion(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+  versionId: string,
+  actorId?: string | null,
+) {
+  await requireRow(db, merchantId, themeId);
+  const { data: version } = await db
+    .from("theme_versions")
+    .select("id, templates")
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", themeId)
+    .eq("id", versionId)
+    .maybeSingle();
+  if (!version) {
+    throw new ThemeDeskError(
+      "theme.version_missing",
+      "Version not found for this theme",
+    );
+  }
+  const templates = (version as { templates?: unknown }).templates;
+  await db.from("theme_audit").insert({
+    merchant_id: merchantId,
+    theme_id: themeId,
+    actor: actorId ?? null,
+    action: "theme.approved",
+    before: null,
+    after: { version_id: versionId, content_hash: contentHash(templates) },
+  });
+  return { ok: true };
+}
+
+function contentHash(value: unknown): string {
+  return createHash("sha256")
+    .update(JSON.stringify(value ?? {}))
+    .digest("hex");
+}
+
+/**
+ * Threat-defense approval check for activation: scan the about-to-go-live
+ * version; flagged content activates only with a recorded `theme.approved`
+ * audit for that exact version id. Read-only — never writes, never flips.
+ */
+async function assertVersionApproved(
+  db: Client,
+  merchantId: string,
+  themeId: string,
+  versionId: string,
+): Promise<void> {
+  const { data: version } = await db
+    .from("theme_versions")
+    .select("templates")
+    .eq("merchant_id", merchantId)
+    .eq("id", versionId)
+    .maybeSingle();
+  const templates = (version as { templates?: unknown } | null)?.templates;
+  const { scanPackage } = await import("../package-scan");
+  const report = scanPackage([
+    {
+      path: "templates.json",
+      bytes: new TextEncoder().encode(JSON.stringify(templates ?? {})),
+    },
+  ]);
+  if (report.verdict === "clean") return;
+  const { data: approvals } = await db
+    .from("theme_audit")
+    .select("after")
+    .eq("merchant_id", merchantId)
+    .eq("theme_id", themeId)
+    .eq("action", "theme.approved");
+  const approved = ((approvals ?? []) as unknown as {
+    after?: unknown;
+  }[]).some(
+    (a) =>
+      ((a.after ?? {}) as Record<string, unknown>).content_hash ===
+      contentHash(templates),
+  );
+  if (!approved) {
+    throw new ThemeDeskError(
+      "theme.approval_required",
+      `Version needs approval before activation: ${report.findings.map((f) => f.code).join(", ")}.`,
+    );
+  }
+}
+
+/**
  * Make a theme the live one. The flag flip and the package fork are separate
  * steps on purpose: the flag is what the console reads, the fork is what the
  * storefront renders, and a fork failure must not leave two active rows.
@@ -1141,6 +1237,10 @@ export async function activateTheme(
     row,
     actorId,
   );
+  // Threat-defense approval gate: a flagged version needs a recorded
+  // approval for its exact id before any flag flips. Clean versions pass
+  // untouched; the check reads, never writes.
+  await assertVersionApproved(db, merchantId, row.id, publishedVersionId);
 
   const { error: clearError } = await db
     .from("store_themes")
