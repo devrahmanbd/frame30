@@ -291,6 +291,8 @@ export function scopedCss(nodeId: string, css: PropValue | undefined): string {
     .replace(/@import[^;]*;?/gi, "")
     .replace(/javascript:/gi, "")
     .replace(/expression\s*\(/gi, "")
+    .replace(/-moz-binding\s*:[^;}]*;?/gi, "")
+    .replace(/behavior\s*:[^;}]*;?/gi, "")
     .replace(/url\(\s*(['"]?)\s*(?:javascript|data):[^)]*\)/gi, "url()")
     .trim();
   if (!cleaned) return "";

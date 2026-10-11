@@ -4,12 +4,14 @@
  * Everything else still flows to the host `onCall`, and every denial shape
  * from `authorizeWidgetCall` is preserved.
  */
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   answerWidgetCall,
+  handleSandboxMessage,
   isMenusListCall,
   menusListSlot,
 } from "./WidgetSandbox";
+import { createFloodGuard } from "@/lib/bridge-flood-guard";
 
 const SETTINGS = {
   phone_number: "8801712345678",
@@ -183,5 +185,70 @@ describe("menus.list bridge — TRACK M fill points", () => {
     );
     expect(menusListSlot(msg("menus.list"))).toBeUndefined();
     expect(menusListSlot(msg("menus.list", "junk"))).toBeUndefined();
+  });
+});
+
+describe("handleSandboxMessage — flood / duplicate / oversize", () => {
+  const ctxFor = (
+    onCall: (method: string, params: unknown) => Promise<unknown>,
+  ) => ({
+    granted: ["read_shop", "render_storefront"],
+    onCall,
+  });
+
+  it("answers the first 30 of a 40-message flood, rate-limits the rest", async () => {
+    const onCall = vi.fn(async (method: string) => ({ method }));
+    const guard = createFloodGuard();
+    const ctx = ctxFor(onCall);
+    const outs: ({ result: unknown } | { error: string })[] = [];
+    for (let i = 0; i < 40; i++) {
+      outs.push(
+        await handleSandboxMessage(
+          { v: 1, id: `flood-${i}`, method: "shop.info" },
+          { ...ctx, guard, now: 0 },
+        ),
+      );
+    }
+    expect(outs.slice(0, 30)).toEqual(
+      Array.from({ length: 30 }, () => ({ result: { method: "shop.info" } })),
+    );
+    expect(outs.slice(30)).toEqual(
+      Array.from({ length: 10 }, () => ({
+        error: "sandbox.rate_limited",
+      })),
+    );
+    expect(onCall).toHaveBeenCalledTimes(30);
+  });
+
+  it("rejects a duplicate id without touching onCall again", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    const guard = createFloodGuard();
+    const ctx = ctxFor(onCall);
+    const first = await handleSandboxMessage(
+      { v: 1, id: "7", method: "shop.info" },
+      { ...ctx, guard, now: 0 },
+    );
+    const dup = await handleSandboxMessage(
+      { v: 1, id: "7", method: "shop.info" },
+      { ...ctx, guard, now: 1 },
+    );
+    expect(first).toEqual({ result: { ok: true } });
+    expect(dup).toEqual({ error: "sandbox.duplicate_id" });
+    expect(onCall).toHaveBeenCalledTimes(1);
+  });
+
+  it("maps oversize params to sandbox.oversize without calling onCall", async () => {
+    const onCall = vi.fn(async () => ({ ok: true }));
+    const out = await handleSandboxMessage(
+      {
+        v: 1,
+        id: "big",
+        method: "shop.info",
+        params: { blob: "x".repeat(70 * 1024) },
+      },
+      { ...ctxFor(onCall), guard: createFloodGuard(), now: 0 },
+    );
+    expect(out).toEqual({ error: "sandbox.oversize" });
+    expect(onCall).not.toHaveBeenCalled();
   });
 });

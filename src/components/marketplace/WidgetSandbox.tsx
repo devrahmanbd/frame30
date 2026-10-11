@@ -5,6 +5,12 @@ import {
   menuReadGranted,
   type WidgetCall,
 } from "@/lib/marketplace-scopes";
+import {
+  checkFloodGuard,
+  createFloodGuard,
+  resetFloodGuard,
+  type FloodGuardState,
+} from "@/lib/bridge-flood-guard";
 import { currentNonce } from "@/lib/ssr-nonce";
 import { useLang } from "@/lib/i18n";
 import { type RiskTier, resolvePolicy } from "@/lib/risk-tier";
@@ -108,6 +114,34 @@ export async function answerWidgetCall(
 }
 
 /**
+ * Host-side gate in front of `answerWidgetCall`: per-frame rate limiting (max
+ * 30 handled messages per rolling 10s window) and duplicate-`id` rejection
+ * within the frame lifetime. Both rejections answer with a `sandbox.*` error
+ * the frame already handles and never reach `onCall`. Pure except for the
+ * clock (`now` injectable) so the flood/duplicate/oversize contract is
+ * unit-testable under node — the `useEffect` message listener below cannot be
+ * driven without jsdom, so it delegates to this function.
+ */
+export async function handleSandboxMessage(
+  msg: unknown,
+  ctx: {
+    settings?: Record<string, unknown>;
+    granted: readonly string[];
+    onCall: SandboxHandler;
+    guard: FloodGuardState;
+    now?: number;
+  },
+): Promise<{ result: unknown } | { error: string }> {
+  const gate = checkFloodGuard(
+    ctx.guard,
+    (msg as { id?: unknown } | null)?.id,
+    ctx.now ?? Date.now(),
+  );
+  if (!gate.ok) return { error: gate.error };
+  return answerWidgetCall(msg, ctx);
+}
+
+/**
  * Per-request CSP nonce for the frame script. srcdoc frames inherit the
  * parent page's script-src (nonce-based, no unsafe-inline), so the frame's
  * script tag must carry the same nonce or nothing inside the island ever
@@ -192,15 +226,27 @@ export function WidgetSandbox({
     [entry, origin, nonce],
   );
 
+  // Flood/duplicate state lives in a ref: the hot path must not re-render
+  // per message (only the existing denied-state pattern sets state). The
+  // guard is keyed to the mounted frame — a new `entry` is a new identity.
+  const floodRef = useRef<FloodGuardState | null>(null);
+  if (floodRef.current === null) floodRef.current = createFloodGuard();
+  useEffect(() => {
+    if (floodRef.current) resetFloodGuard(floodRef.current);
+  }, [entry]);
+
   useEffect(() => {
     async function onMessage(event: MessageEvent) {
       const frame = ref.current;
       if (!frame || event.source !== frame.contentWindow) return;
+      const guard = floodRef.current;
+      if (!guard) return;
       const msg = event.data as WidgetCall;
-      const ans = await answerWidgetCall(msg, {
+      const ans = await handleSandboxMessage(msg, {
         settings,
         granted: grantedScopes,
         onCall,
+        guard,
       });
       if ("error" in ans && ans.error === "sandbox.scope_denied") {
         const method = (msg as { method?: unknown })?.method;

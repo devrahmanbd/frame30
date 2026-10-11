@@ -556,7 +556,11 @@ export function parseManifest(input: unknown): ManifestVerdict {
       errors.push(`widgets[${i}].entry`);
       return;
     }
-    if (/\bimport\s*\(|\beval\s*\(|new\s+Function/.test(entry)) {
+    if (
+      /\bimport\s*\(|\beval\s*\(|new\s+Function|\bimport\b(?!\s*\()|\bexport\s+[^;]*\bfrom\s+['"]/.test(
+        entry,
+      )
+    ) {
       errors.push(`widgets[${i}].entry.dynamic_code`);
       return;
     }

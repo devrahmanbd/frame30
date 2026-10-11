@@ -94,6 +94,26 @@ describe("advanced controls", () => {
     expect(css).not.toContain("javascript:");
   });
 
+  it("strips -moz-binding and behavior: to match the install gate (frame30 TDD)", () => {
+    const css = scopedCss(
+      "abc",
+      "selector{color:red;-moz-binding:url(evil.xml);behavior:url(evil.htc);margin:0}",
+    );
+    expect(css).not.toMatch(/-moz-binding/i);
+    expect(css).not.toMatch(/behavior\s*:/i);
+    expect(css).toContain("color:red");
+    expect(css).toContain("margin:0");
+  });
+
+  it("strips case-obfuscated binding/behavior vectors (frame30 TDD)", () => {
+    const css = scopedCss(
+      "abc",
+      "selector{-MOZ-BINDING:url(x);BEHAVIOR:url(y)}",
+    );
+    expect(css).not.toMatch(/-moz-binding/i);
+    expect(css).not.toMatch(/behavior/i);
+  });
+
   it("caps the page stylesheet so one node cannot bloat every response", () => {
     const sections = Array.from({ length: 200 }, (_, i) =>
       node(`n${i}`, {

@@ -152,7 +152,7 @@ describe("theme lint — advCss and html widget XSS (Phase 1B)", () => {
       (i) => i.level === "error" && /Custom (HTML|CSS)/.test(i.message),
     );
 
-  it("flags a javascript: href in html markup after parsing", () => {
+  it("strips a javascript: href in html markup at parse time (frame30)", () => {
     const ast = parseAst({
       main: [
         {
@@ -162,10 +162,27 @@ describe("theme lint — advCss and html widget XSS (Phase 1B)", () => {
         },
       ],
     });
-    // The sanitiser keeps markup structurally: the URL survives parsing.
-    expect(String(ast.main[0]?.props["markup"])).toContain("javascript:");
-    const errors = lintErrors(ast);
-    expect(errors.some((i) => /javascript/.test(i.message))).toBe(true);
+    // The sanitiser neutralises the URL at parse: nothing executable survives.
+    expect(String(ast.main[0]?.props["markup"]).toLowerCase()).not.toContain(
+      "javascript:",
+    );
+    expect(String(ast.main[0]?.props["markup"])).toContain('href="#"');
+    // Defense-in-depth: the lint still flags the same payload on ASTs that
+    // bypassed the parser (registry seeds, constructed previews).
+    const raw = {
+      header: [],
+      main: [
+        {
+          id: "s1",
+          type: "html",
+          props: { markup: '<a href="javascript:alert(1)">x</a>' },
+        },
+      ],
+      footer: [],
+    } as never;
+    expect(lintErrors(raw).some((i) => /javascript/.test(i.message))).toBe(
+      true,
+    );
   });
 
   it("flags an insecure iframe source in html markup after parsing", () => {

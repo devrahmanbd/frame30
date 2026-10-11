@@ -150,4 +150,64 @@ describe("html widget markup", () => {
     expect(markup).not.toContain("onclick");
     expect(markup).not.toContain("<script");
   });
+
+  it("strips javascript: hrefs from html markup but keeps safe links (frame30 TDD)", () => {
+    const ast = parseAst({
+      main: [
+        {
+          id: "n2",
+          type: "html",
+          props: {
+            markup:
+              '<p>Visit <a href="javascript:alert(1)">x</a> and <a href="https://example.test/x">safe</a></p>',
+          },
+        },
+      ],
+    });
+    const markup = String(ast.main[0]?.props["markup"] ?? "");
+    expect(markup.toLowerCase()).not.toContain("javascript:");
+    expect(markup).toContain("https://example.test/x");
+  });
+
+  it("strips obfuscated javascript: hrefs in html markup (frame30 TDD)", () => {
+    for (const href of [
+      "  JaVaScRiPt:alert(1)",
+      "javascript&#58;alert(1)",
+      "JaVaScRiPt&#58;alert(1)",
+    ]) {
+      const ast = parseAst({
+        main: [
+          {
+            id: "n3",
+            type: "html",
+            props: { markup: `<a href="${href}">x</a>` },
+          },
+        ],
+      });
+      const markup = String(ast.main[0]?.props["markup"] ?? "");
+      expect(markup.toLowerCase()).not.toContain("javascript");
+      expect(markup).not.toContain("&#58;");
+    }
+  });
+
+  it("keeps allowlisted href schemes in html markup (frame30 TDD)", () => {
+    for (const href of [
+      "https://example.test/x",
+      "/collections",
+      "#top",
+      "mailto:a@b.test",
+      "tel:+8801",
+    ]) {
+      const ast = parseAst({
+        main: [
+          {
+            id: "n4",
+            type: "html",
+            props: { markup: `<a href="${href}">x</a>` },
+          },
+        ],
+      });
+      expect(String(ast.main[0]?.props["markup"] ?? "")).toContain(href);
+    }
+  });
 });

@@ -18,6 +18,7 @@ import {
   scopeDef,
   validateBundle,
 } from "./marketplace-scopes";
+import { parseManifest } from "./plugin-manifest";
 
 describe("scopes", () => {
   it("drops unknown scopes and de-duplicates", () => {
@@ -90,6 +91,16 @@ describe("content addressing", () => {
     );
   });
 
+  it.each([
+    "import x from 'evil'",
+    "import 'evil'",
+    "export { x } from 'evil'",
+  ])("rejects static import %s with dynamic_code", (entry) => {
+    expect(validateBundle({ entry }, ["read_shop"]).errors).toContain(
+      "bundle.dynamic_code",
+    );
+  });
+
   it("validates block keys", () => {
     expect(isBlockKey("hero-banner")).toBe(true);
     expect(isBlockKey("Hero")).toBe(false);
@@ -119,6 +130,23 @@ describe("widget API authorization", () => {
       "read_shop",
     ]);
     expect(v).toMatchObject({ allowed: false, reason: "scope_denied" });
+  });
+
+  it("rejects messages whose JSON size exceeds 64 KiB as oversize", () => {
+    const big = "x".repeat(70 * 1024);
+    const v = authorizeWidgetCall(
+      { v: 1, id: "big", method: "shop.info", params: { blob: big } },
+      ["read_shop"],
+    );
+    expect(v).toMatchObject({ allowed: false, reason: "oversize" });
+  });
+
+  it("allows messages just under the 64 KiB JSON size cap", () => {
+    const v = authorizeWidgetCall(
+      { v: 1, id: "s", method: "shop.info", params: { blob: "x".repeat(100) } },
+      ["read_shop"],
+    );
+    expect(v).toEqual({ allowed: true, method: "shop.info", write: false });
   });
 
   it("allows granted calls and marks writes", () => {
@@ -202,5 +230,39 @@ describe("TRACK M — menu scopes and fill vocabulary", () => {
     for (const slot of MENU_SLOTS) expect(isMenuSlot(slot)).toBe(true);
     expect(isMenuSlot("header")).toBe(false);
     expect(isMenuSlot(undefined)).toBe(false);
+  });
+});
+
+describe("manifest static-import gate via parseManifest (frame30 TDD)", () => {
+  const base = {
+    id: "static-import-probe",
+    name: "Static import probe",
+    version: "1.0.0",
+    api: "^3.0.0",
+    permissions: ["render_storefront", "read_shop"],
+    hooks: [],
+    settings: [],
+    i18n: { en: {}, bn: {} },
+  };
+  const withEntry = (entry: string) => ({
+    ...base,
+    widgets: [{ key: "w1", label: "W", slots: ["main"], entry }],
+  });
+
+  it.each([
+    "import x from 'evil'",
+    "import 'evil'",
+    "export { x } from 'evil'",
+  ])("rejects static import %s with dynamic_code", (entry) => {
+    const v = parseManifest(withEntry(entry));
+    expect(v.ok).toBe(false);
+    if (!v.ok) expect(v.errors.join(" ")).toContain("dynamic_code");
+  });
+
+  it("keeps benign export-default entries passing", () => {
+    const v = parseManifest(
+      withEntry("export default function Widget() { return null; }"),
+    );
+    expect(v.ok).toBe(true);
   });
 });

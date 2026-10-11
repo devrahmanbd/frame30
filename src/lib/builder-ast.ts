@@ -7106,9 +7106,21 @@ function coerceProp(field: Field, value: unknown): PropValue | null {
     // document — it is rendered inside a sandboxed iframe. Only the two things
     // that would leak out of that frame are removed here.
     const trimmed = value.slice(0, field.max ?? 8000);
-    const safe = trimmed
+    let safe = trimmed
       .replace(/<\s*script[\s\S]*?(?:<\/\s*script\s*>|$)/gi, "")
       .replace(/\s+on[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "");
+    // frame30: javascript: hrefs are executable even inside the sandbox frame,
+    // so any href/src/action value outside the url/image SAFE_HREF allowlist
+    // is neutralised to "#" (benign values pass through byte-identical).
+    safe = safe.replace(
+      /\s+(href|src|action|xlink:href)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi,
+      (m, name: string, dq?: string, sq?: string, bare?: string) => {
+        const val = dq ?? sq ?? bare ?? "";
+        if (SAFE_HREF.test(val.trim())) return m;
+        const q = dq !== undefined ? '"' : sq !== undefined ? "'" : '"';
+        return ` ${name}=${q}#${q}`;
+      },
+    );
     if (safe !== trimmed) sanitiserRejects += 1;
     return safe;
   }

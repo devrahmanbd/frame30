@@ -11,6 +11,7 @@ import {
   allowAllRateLimits,
 } from "./__fixtures__/test-doubles";
 import { validateBundle } from "./marketplace-scopes";
+import { parseManifest } from "./plugin-manifest";
 
 type Recorder = ReturnType<typeof metricRecorder>;
 const rec = vi.hoisted(() => ({ holder: null as Recorder | null }));
@@ -100,5 +101,54 @@ describe("install-path bundle gate (R2-7)", () => {
       db.callsOf("insert").filter((c) => c.table === "marketplace_installs"),
     ).toHaveLength(0);
     expect(db.rows("marketplace_installs")).toHaveLength(0);
+  });
+});
+
+describe("manifest static-import gate (frame30 TDD)", () => {
+  const base = {
+    id: "static-import-probe",
+    name: "Static import probe",
+    version: "1.0.0",
+    api: "^3.0.0",
+    permissions: ["render_storefront", "read_shop"],
+    hooks: [],
+    settings: [],
+    i18n: { en: {}, bn: {} },
+  };
+  const withEntry = (entry: string) => ({
+    ...base,
+    widgets: [{ key: "w1", label: "W", slots: ["main"], entry }],
+  });
+
+  it.each([
+    "import x from 'evil'",
+    'import { a } from "evil"',
+    "import 'evil'",
+    "import * as ns from 'evil'",
+    "export { x } from 'evil'",
+    'export * from "evil"',
+  ])("rejects static import %s with dynamic_code", (entry) => {
+    const v = parseManifest(withEntry(entry));
+    expect(v.ok).toBe(false);
+    if (!v.ok) expect(v.errors.join(" ")).toContain("dynamic_code");
+  });
+
+  it("keeps existing dynamic rejections identical", () => {
+    for (const entry of ["import('evil')", "eval('x')", "new Function('x')"]) {
+      const v = parseManifest(withEntry(entry));
+      expect(v.ok, entry).toBe(false);
+      if (!v.ok) expect(v.errors.join(" ")).toContain("dynamic_code");
+    }
+  });
+
+  it("still accepts benign entries without a from-import", () => {
+    for (const entry of [
+      "framique.mount(document.createElement('div'))",
+      "export default 1",
+      "export default function Widget() { return null; }",
+    ]) {
+      const v = parseManifest(withEntry(entry));
+      expect(v.ok, entry).toBe(true);
+    }
   });
 });

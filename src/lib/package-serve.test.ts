@@ -193,4 +193,22 @@ describe("pkg serving — content policy", () => {
     expect(pkgContentType("css")).toContain("text/css");
     expect(pkgContentType("json")).toContain("application/json");
   });
+
+  it("refuses every non-css/json kind with refused_kind (frame30 invariant)", () => {
+    for (const kind of ["svg", "image", "font", "html", "js"]) {
+      expect(isServablePkgKind(kind)).toBe(false);
+      const name =
+        kind === "svg"
+          ? "themes/ver-1/assets/assets/hero.svg"
+          : `themes/ver-1/assets/assets/file.${kind}`;
+      const url = `/pkg/${MERCHANT_A}/${name}?v=${VERSION}`;
+      expect(
+        resolvePkgAsset(
+          { merchantId: MERCHANT_A, name },
+          VERSION,
+          cssRow({ name, kind, content: "<svg></svg>", url }),
+        ),
+      ).toEqual({ status: 404, reason: "refused_kind" });
+    }
+  });
 });

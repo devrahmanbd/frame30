@@ -226,7 +226,7 @@ export function validateBundle(
     errors.push("bundle.entry_too_large");
   if (
     typeof entry === "string" &&
-    /\bimport\s*\(|eval\s*\(|new\s+Function|Function\s*\(|setTimeout\s*\(\s*["'`]|setInterval\s*\(\s*["'`]|\.innerHTML\s*=|document\.write\s*\(/.test(
+    /\bimport\s*\(|eval\s*\(|new\s+Function|Function\s*\(|setTimeout\s*\(\s*["'`]|setInterval\s*\(\s*["'`]|\.innerHTML\s*=|document\.write\s*\(|\bimport\b(?!\s*\()|\bexport\s+[^;]*\bfrom\s+['"]/.test(
       entry,
     )
   ) {
@@ -329,11 +329,20 @@ export function canReplaceMenu(
 
 export type WidgetCall = { v: 1; id: string; method: string; params?: unknown };
 
+/**
+ * Cap on the JSON-serialized size of a single widget bridge message.
+ * Frames are untrusted: without a bound one postMessage can force unbounded
+ * host memory (DoS). 64 KiB is far above any legitimate bridge payload
+ * (method + params are scalar rows/ids), so oversize messages are rejected
+ * before method lookup or scope checks.
+ */
+export const MAX_WIDGET_MESSAGE_BYTES = 64 * 1024;
+
 export type WidgetVerdict =
   | { allowed: true; method: string; write: boolean }
   | {
       allowed: false;
-      reason: "malformed" | "unknown_method" | "scope_denied";
+      reason: "malformed" | "unknown_method" | "scope_denied" | "oversize";
       method?: string;
     };
 
@@ -349,6 +358,14 @@ export function authorizeWidgetCall(
     typeof m.id !== "string" ||
     typeof m.method !== "string"
   ) {
+    return { allowed: false, reason: "malformed" };
+  }
+  try {
+    const raw = JSON.stringify(msg) ?? "";
+    if (new TextEncoder().encode(raw).length > MAX_WIDGET_MESSAGE_BYTES) {
+      return { allowed: false, reason: "oversize" };
+    }
+  } catch {
     return { allowed: false, reason: "malformed" };
   }
   const def = WIDGET_API[m.method];
