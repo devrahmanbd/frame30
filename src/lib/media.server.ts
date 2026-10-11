@@ -199,6 +199,16 @@ export async function createPresignedUploadUrl(
 ): Promise<{ path: string; signedUrl: string; token: string; url: string }> {
   if (!isAcceptedMime(contentType))
     throw new MediaError("bad_type", "Unsupported file type");
+  /* SVG can carry script and the presigned path uploads bytes straight to the
+   * bucket, bypassing the magic-bytes check and SVG sanitisation that the
+   * base64 path (`uploadMedia`) applies. SVG is the only active type in the
+   * presigned allowlist, so it is refused here and must go through the
+   * sanitising path instead — a signed URL for it must never exist. */
+  if (contentType.toLowerCase() === "image/svg+xml")
+    throw new MediaError(
+      "bad_type",
+      "SVG uploads must use the direct upload so they can be sanitised",
+    );
   if (declaredSize <= 0) throw new MediaError("empty", "File is empty");
   if (declaredSize > MEDIA_MAX_BYTES)
     throw new MediaError("too_large", "File is larger than 5 MB");
