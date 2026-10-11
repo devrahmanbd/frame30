@@ -302,6 +302,168 @@ describe("fetchWithEgressGuard", () => {
   });
 });
 
+describe("TOCTOU: connect-time DNS change", () => {
+  const allowAll = (raw: string) => ({
+    ok: true as const,
+    url: new URL(raw),
+  });
+
+  it("refuses when DNS flips public->loopback between guard-time and connect-time (no fetch)", async () => {
+    // Simulates a rebinding hostname: validated as PUBLIC_IP at guard time,
+    // re-resolving to 127.0.0.1 by connect time. The socket must never be
+    // opened against the connect-time answer.
+    let calls = 0;
+    const flappingLookup = async () => {
+      calls += 1;
+      return calls === 1 ? [PUBLIC_IP] : ["127.0.0.1"];
+    };
+    const fetchSpy = vi.fn(async () => new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchSpy);
+    const err = await egressCodeOf(
+      fetchWithEgressGuard("https://rebind.example.com/hook", {
+        timeoutMs: 500,
+        guard: allowAll,
+        lookup: flappingLookup,
+      }),
+    );
+    expect(err.code).toBe("egress_dns_blocked");
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("discards the response when DNS flips during connect (post-fetch re-verification)", async () => {
+    // Both pre-connect resolutions are public so the fetch is issued; the
+    // re-resolution after connect sees the metadata IP. The 200 body must be
+    // dropped, never handed to the caller (no exfiltration channel).
+    let calls = 0;
+    const flappingLookup = async () => {
+      calls += 1;
+      return calls <= 2 ? [PUBLIC_IP] : ["169.254.169.254"];
+    };
+    const fetchSpy = vi.fn(async () => new Response("secret", { status: 200 }));
+    vi.stubGlobal("fetch", fetchSpy);
+    const err = await egressCodeOf(
+      fetchWithEgressGuard("https://rebind.example.com/hook", {
+        timeoutMs: 500,
+        guard: allowAll,
+        lookup: flappingLookup,
+      }),
+    );
+    expect(err.code).toBe("egress_dns_blocked");
+    // Residual window, stated honestly: the request bytes already left the
+    // socket — only the response is contained, never delivered.
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("aborts on a public->public address-set change before connect", async () => {
+    let calls = 0;
+    const rotatingLookup = async () => {
+      calls += 1;
+      return calls === 1 ? [PUBLIC_IP] : ["93.184.216.35"];
+    };
+    const fetchSpy = vi.fn(async () => new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchSpy);
+    const err = await egressCodeOf(
+      fetchWithEgressGuard("https://rebind.example.com/hook", {
+        timeoutMs: 500,
+        guard: allowAll,
+        lookup: rotatingLookup,
+      }),
+    );
+    expect(err.code).toBe("egress_dns_blocked");
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("tolerates round-robin order rotation of a stable address set (no false positive)", async () => {
+    let calls = 0;
+    const roundRobinLookup = async () => {
+      calls += 1;
+      return calls % 2 === 1
+        ? [PUBLIC_IP, "93.184.216.35"]
+        : ["93.184.216.35", PUBLIC_IP];
+    };
+    const fetchSpy = vi.fn(async () => new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchSpy);
+    const out = await fetchWithEgressGuard("https://rebind.example.com/hook", {
+      timeoutMs: 500,
+      guard: allowAll,
+      lookup: roundRobinLookup,
+    });
+    expect(out.ok).toBe(true);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("stays fail-open when the resolver errors (plain network error downstream)", async () => {
+    // Double resolution must not turn a DNS outage into a refusal: both
+    // resolutions fail open, the fetch is still attempted, and the caller's
+    // retry semantics for plain network errors are preserved.
+    const failingLookup = async () => {
+      throw new Error("ENOTFOUND rebind.example.com");
+    };
+    const fetchSpy = vi.fn(async () => new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchSpy);
+    const out = await fetchWithEgressGuard("https://rebind.example.com/hook", {
+      timeoutMs: 500,
+      guard: allowAll,
+      lookup: failingLookup,
+    });
+    expect(out.ok).toBe(true);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("tolerates a public-only set change after connect (post gates on blocked, not stability)", async () => {
+    // Pre-connect answers agree so the fetch is issued; the post-connect
+    // answer rotates to a DIFFERENT public IP. That cannot reach the internal
+    // network, so the response is delivered (no false positive on pools that
+    // return rotating subsets per query).
+    let calls = 0;
+    const rotatingAfterConnect = async () => {
+      calls += 1;
+      return calls <= 2 ? [PUBLIC_IP] : ["93.184.216.35"];
+    };
+    const fetchSpy = vi.fn(async () => new Response("{}", { status: 200 }));
+    vi.stubGlobal("fetch", fetchSpy);
+    const out = await fetchWithEgressGuard("https://rebind.example.com/hook", {
+      timeoutMs: 500,
+      guard: allowAll,
+      lookup: rotatingAfterConnect,
+    });
+    expect(out.ok).toBe(true);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("contains a redirect hop whose DNS flips after connect (real sockets, body never surfaces)", async () => {
+    const b = await startServer((_req, res) => {
+      res.writeHead(200, { "content-type": "text/plain" });
+      res.end("evil-secret");
+    });
+    const a = await startServer((_req, res) => {
+      res.writeHead(302, { location: `http://127.0.0.1:${b.port}/secret` });
+      res.end();
+    });
+    // Hop A consumes 3 resolutions (pre x2 + post), the redirect-target
+    // check + hop B pre x2 consume calls 4-6 (all public, fetch issued to B),
+    // hop B post-connect (call 7) sees the metadata IP -> discard + refuse.
+    let calls = 0;
+    const flappingLookup = async () => {
+      calls += 1;
+      return calls <= 6 ? [PUBLIC_IP] : ["169.254.169.254"];
+    };
+    const seen: string[] = [];
+    spyOnRealFetch(seen);
+    const err = await egressCodeOf(
+      fetchWithEgressGuard(`http://127.0.0.1:${a.port}/first`, {
+        timeoutMs: 5_000,
+        guard: allowLocal,
+        lookup: flappingLookup,
+      }),
+    );
+    expect(err.code).toBe("egress_dns_blocked");
+    expect(a.hits()).toBe(1);
+    expect(b.hits()).toBe(1);
+    expect(seen).toHaveLength(2);
+  });
+});
+
 describe("rewired call sites", () => {
   it("live hook path skips (no queue) when the endpoint redirects to metadata", async () => {
     const { runHook, resetBreakers } = await import("./plugin-hooks.server");

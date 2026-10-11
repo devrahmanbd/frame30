@@ -16,6 +16,33 @@
  * FAILURE fails open (the connect then fails with a plain network error, as
  * before this guard existed); a lookup that RETURNS a blocked address fails
  * closed. An injectable `lookup` keeps this unit-testable without a network.
+ *
+ * TOCTOU hardening (mitigation, NOT elimination): a validated hostname can
+ * re-resolve to an internal IP in the gap between check and connect, and the
+ * module's HTTP client — the global `fetch` — accepts no `lookup`/dispatcher
+ * hook to pin the socket to the checked IP. Of the available options —
+ * (a) an undici `Agent` with a `connect` override (undici is NOT installed;
+ * adding it would be a new dependency), (b) reimplementing the guarded paths
+ * on `node:http(s).request` with `lookup` pinning (true socket pinning, but
+ * it reimplements fetch semantics — redirects, bodies, headers, TLS — and
+ * bypasses the stubbed-`fetch` seam the suites rely on), (c) re-resolving
+ * immediately before connect and aborting on change — (c) is the strongest
+ * option that adds no dependencies and keeps the fix minimal. Each hop
+ * therefore resolves TWICE before connect and aborts with
+ * `egress_dns_blocked` unless both answers agree as an order-insensitive set
+ * (round-robin reordering is tolerated; ANY set change — even
+ * public-to-public — aborts), then re-resolves once more AFTER the response
+ * arrives and DISCARDS the body instead of delivering it when the
+ * post-connect answer is blocked. Honest residual window: the request bytes
+ * may still reach a rebound target in the microseconds between the second
+ * resolution and socket connect — only the response channel is contained,
+ * never the request. Full elimination needs socket-level pinning (option (a)
+ * or (b) above).
+ *
+ * TLS note: the original hostname URL is passed to `fetch` unchanged, so SNI
+ * (`servername`) and certificate verification target the hostname as usual.
+ * Nothing here touches TLS options — `rejectUnauthorized: false` must NEVER
+ * appear on this path.
  */
 
 import { lookup as dnsLookup } from "node:dns/promises";
@@ -122,14 +149,14 @@ async function assertDnsAllowed(
   rawUrl: string,
   lookup: (host: string) => Promise<string[]>,
   signal: AbortSignal,
-): Promise<void> {
+): Promise<string[] | undefined> {
   let host = "";
   try {
     host = new URL(rawUrl).hostname.replace(/^\[|\]$/g, "");
   } catch {
-    return; // Unparseable — the guard already refused it before we got here.
+    return undefined; // Unparseable — the guard already refused it before we got here.
   }
-  if (!host) return;
+  if (!host) return undefined;
   let addresses: string[];
   // The chain deadline covers resolution too: a hanging resolver must not
   // outlive `timeoutMs`. The abort race rejects with a timeout; any other
@@ -152,7 +179,7 @@ async function assertDnsAllowed(
     if (err instanceof EgressError) throw err;
     // Fail open: an unresolvable host fails at connect with a plain network
     // error (retryable downstream), exactly as before this layer existed.
-    return;
+    return undefined;
   } finally {
     if (onAbort) signal.removeEventListener("abort", onAbort);
   }
@@ -160,6 +187,36 @@ async function assertDnsAllowed(
     if (isBlockedEgressIp(addr))
       throw new EgressError("egress_dns_blocked", "private_ip", rawUrl);
   }
+  return addresses;
+}
+
+/** Order-insensitive address-set comparison (round-robin reorder safe). */
+function sameAddressSet(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) return false;
+  const sa = a.map((s) => s.toLowerCase()).sort();
+  const sb = b.map((s) => s.toLowerCase()).sort();
+  return sa.every((v, i) => v === sb[i]);
+}
+
+/**
+ * Pre-connect double resolution: resolves twice back-to-back and aborts
+ * unless both answers agree as a set. Narrows the rebinding window to the
+ * microseconds between the SECOND resolution and socket connect — an
+ * attacker must flip the answer twice in that gap instead of once any time
+ * after a single check. Either resolution failing open (unresolvable host)
+ * preserves the pre-existing fail-open semantics: only two successful
+ * resolutions are compared, and the connect then fails downstream.
+ */
+async function assertDnsStable(
+  rawUrl: string,
+  lookup: (host: string) => Promise<string[]>,
+  signal: AbortSignal,
+): Promise<void> {
+  const first = await assertDnsAllowed(rawUrl, lookup, signal);
+  const second = await assertDnsAllowed(rawUrl, lookup, signal);
+  if (!first || !second) return;
+  if (!sameAddressSet(first, second))
+    throw new EgressError("egress_dns_blocked", "dns_changed", rawUrl);
 }
 
 /**
@@ -193,7 +250,7 @@ export async function fetchWithEgressGuard(
           verdict.reason ?? "guard_refused",
           current,
         );
-      await assertDnsAllowed(current, lookup, controller.signal);
+      await assertDnsStable(current, lookup, controller.signal);
       // The deadline may have fired while guarding/resolving (or a caller
       // passed an already-expired budget): never issue a fetch on an
       // aborted signal — stubs and some runtimes only reject on the abort
@@ -213,6 +270,29 @@ export async function fetchWithEgressGuard(
         if (controller.signal.aborted || (err as Error)?.name === "AbortError")
           throw new EgressError("egress_timeout", "timeout", current);
         throw err;
+      }
+      // Post-connect re-verification: the socket may have been opened against
+      // a rebound answer (the residual TOCTOU window). A blocked post-connect
+      // answer means the response may come from an internal host — cancel the
+      // body so it is never delivered to the caller. The check gates ONLY on
+      // blocked addresses, not set stability: a public-only rotation after
+      // connect cannot reach the internal network, and gating on it would
+      // false-positive against large round-robin pools returning subsets.
+      // Fail-open (unresolvable) and timeout semantics match the pre-connect
+      // layer: the former delivers the response, the latter throws.
+      let postErr: unknown = null;
+      try {
+        await assertDnsAllowed(current, lookup, controller.signal);
+      } catch (err) {
+        postErr = err;
+      }
+      if (postErr) {
+        try {
+          await res.body?.cancel();
+        } catch {
+          // Best effort — a failed cancel must not mask the refusal.
+        }
+        throw postErr;
       }
       if (!REDIRECT_STATUSES.has(res.status))
         return { ok: true, response: res };
