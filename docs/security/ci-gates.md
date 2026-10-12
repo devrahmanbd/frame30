@@ -37,6 +37,18 @@ trailing suppression with a mandatory reason, visible in the diff:
 spawnSync("git", args); // sast-allow: shell-exec -- one-shot probe, no user input
 ```
 
+Taint rules (`tainted-egress`, `tainted-redirect`, `tainted-fs`,
+`tainted-auth`, `tainted-url-attr`) close the variable-destination gap the
+literal rules cannot see: intra-file tracking (no deps) of request-derived
+data (`req.query/body/params`, route params, `FormData`/`URLSearchParams`
+reads, untyped `input|payload|body|query|params` params — typed params are
+declared contracts, not taint) and merchant/DB-controlled data (`db.` /
+`supabase` reads) into URL hosts, redirect targets, fs-write paths, auth
+decisions (request-provenance only), and `src=`/`href=` (request-only).
+Findings stay diff-scoped: taint is mapped whole-file, but only sinks on
+added lines report. Transparent forwarding (`fetch(input)` in a wrapper),
+same-origin relative URLs, and literal allowlisted hosts stay silent.
+
 ## Dependency audit (`scripts/dep-audit.mjs`)
 
 Runs `npm audit --omit=dev --json`, fails on high/critical without a reviewed
