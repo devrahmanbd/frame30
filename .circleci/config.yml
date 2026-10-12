@@ -150,6 +150,20 @@ jobs:
       - run:
           name: Dependency audit (blocking, reviewed exceptions only)
           command: bun run scan:deps
+      - run:
+          name: Attribution report (observability, non-blocking)
+          command: |
+            # NOT a gate: `|| true` is correct here because this step only
+            # assembles review context (SAST finding -> introducing commit ->
+            # PR actor/reviewers + package-report rows). A broken or empty
+            # assembly must never fail the build; the secret/SAST/dep gates
+            # above stay fail-closed. The artifact always exists afterwards
+            # (fallback stub) so store_artifacts never misses its path.
+            mkdir -p .artifacts
+            node scripts/attribution-report.mjs --out .artifacts/attribution.json || true
+            test -f .artifacts/attribution.json || printf '{"generatedAt":"%s","unresolved":"attribution-report did not emit"}\n' "$(date -u +%FT%TZ)" > .artifacts/attribution.json
+      - store_artifacts:
+          path: .artifacts/attribution.json
 
   build:
     executor: bun-executor

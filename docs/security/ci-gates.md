@@ -58,6 +58,22 @@ Findings stay diff-scoped: taint is mapped whole-file, but only sinks on
 added lines report. Transparent forwarding (`fetch(input)` in a wrapper),
 same-origin relative URLs, and literal allowlisted hosts stay silent.
 
+## Attribution report (`scripts/attribution-report.mjs`)
+
+Assembles the finding-to-actor linkage SAST and the package report leave
+apart: each SAST finding joined to its introducing commit (`git blame -L`
+on the flagged lines, never the whole file), that commit's PR author /
+reviewers (GitHub API only when `GITHUB_TOKEN`/`GH_TOKEN` exists —
+best-effort, cached, never fatal; offline runs read `pr: null` with a
+reason), plus optional `PackageSecurityReport`-shaped rows
+(`--packages-json`; field names mirror `packageSecurityReport`, join key
+`(package.kind, package.id, version, sha256)`). No new persistence, no npm
+deps. Every field is null-with-reason when unresolvable — never guessed.
+Attribution is evidence about **which account** introduced a change, not
+proof of intent (a git user.name is self-asserted). Observability only, not
+a gate: `node scripts/attribution-report.mjs --out
+.artifacts/attribution.json` always exits 0 on a completed assembly.
+
 ## Dependency audit (`scripts/dep-audit.mjs`)
 
 Runs `npm audit --omit=dev --json`, fails on high/critical without a reviewed
