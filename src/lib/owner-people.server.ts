@@ -14,6 +14,16 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { ownerGate, OwnerError } from "./owner-ops.server";
 
+/**
+ * Fallback credential material when the caller supplies no password.
+ * CSPRNG-backed (`crypto.randomUUID`, dash-stripped) with an `Aa1!` suffix
+ * preserving the complexity shape the old `Math.random` fallback had —
+ * never `Math.random`, which is guessable account-credential material.
+ */
+export function mintFallbackPassword(): string {
+  return `${crypto.randomUUID().replace(/-/g, "")}Aa1!`;
+}
+
 type Client = SupabaseClient<Database>;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type Loose = any;
@@ -139,8 +149,7 @@ export async function createAccount(
   if (!email || !email.includes("@")) {
     throw new OwnerError("people.invalid_email", "Valid email is required.");
   }
-  const password =
-    input.password?.trim() || Math.random().toString(36).slice(-10) + "Aa1!";
+  const password = input.password?.trim() || mintFallbackPassword();
 
   return ownerGate(
     db,

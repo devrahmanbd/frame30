@@ -113,8 +113,9 @@ export async function reserveStock(
       const variantIds = [...wanted.keys()];
 
       // Live (unconsumed, unreleased) holds for this token AND merchant.
-      // Tokens are client-generated predictable strings, so the merchant
-      // scope is what stops one shopper's token from converging another
+      // Hold tokens are client-minted UUID-backed strings (see
+      // mintCheckoutToken in the checkout routes), and the merchant scope
+      // is the second layer: even a leaked token cannot converge another
       // merchant's holds.
       const { data: heldRows } = await supabaseAdmin
         .from("stock_holds")
@@ -268,9 +269,10 @@ export async function reserveStock(
 
 /** Convert holds into real stock decrements. Called once, inside order creation.
  *
- * `merchantId` is REQUIRED and scopes the consume: checkout tokens are
- * client-generated strings, so token-only matching lets any shopper who
- * guesses a token converge another merchant's holds onto their order.
+ * `merchantId` is REQUIRED and scopes the consume: hold tokens are
+ * client-minted UUID-backed strings, and token-only matching would still let
+ * any shopper who learns a token converge another merchant's holds onto
+ * their order — so the merchant scope is enforced on every row access.
  * Callers must resolve the merchant server-side (the order's merchant) and
  * pass it here.
  *
@@ -351,10 +353,11 @@ export async function consumeStock(
 /**
  * Release live holds for a token, restoring the taken stock.
  *
- * `merchantId` is REQUIRED and scopes the release: checkout tokens are
- * client-generated predictable strings (`<slug>-hold-<rand>`), so
- * token-only matching lets any shopper who guesses a token release
- * another merchant's holds. Callers must resolve the merchant server-side
+ * `merchantId` is REQUIRED and scopes the release: hold tokens are
+ * client-minted UUID-backed strings (`<slug>-hold-<uuid32>`), and
+ * token-only matching would still let any shopper who learns a token
+ * release another merchant's holds. Callers must resolve the merchant
+ * server-side
  * (from the store slug, or the order's merchant) and pass it here.
  *
  * Fail-closed: a missing/empty scope is rejected as a no-op (returns

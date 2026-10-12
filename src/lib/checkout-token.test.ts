@@ -10,6 +10,14 @@
  * shape is kept (recognizable in logs; parsed by nothing — the server matches
  * the full token AND the merchant scope), the random part carries UUID
  * entropy, and every mint is unique.
+ *
+ * The remainder sweep (Oct 2026) verified every other session/hold/invite/
+ * reset/passwordless flow reachable by shoppers or merchants: order access
+ * tokens use CSPRNG bytes, the hold-token fallback derives from the
+ * UUID-backed idempotency key, `order_number` is display-only, every
+ * `stock_holds` token lookup is merchant-scoped, and `carts.server` mints
+ * nothing with `Math.random`. The "server token-strength pins" block below
+ * locks those properties in.
  */
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
@@ -85,5 +93,42 @@ describe("mint source pins", () => {
       expect(src).toContain("mintCheckoutToken(slug)");
       expect(src).toContain("${slug}-hold-");
     }
+  });
+});
+
+describe("server token-strength pins (frame30 remainder sweep)", () => {
+  const checkoutServer = readFileSync("src/lib/checkout.server.ts", "utf8");
+  const ordersServer = readFileSync("src/lib/orders.server.ts", "utf8");
+  const cartsServer = readFileSync("src/lib/carts.server.ts", "utf8");
+
+  it("every stock_holds token lookup is merchant-scoped", () => {
+    const tokenUses = [...checkoutServer.matchAll(/\.eq\("checkout_token"/g)];
+    expect(tokenUses.length).toBeGreaterThan(0);
+    for (const m of tokenUses) {
+      const window = checkoutServer.slice(m.index!, m.index! + 300);
+      expect(window).toContain('.eq("merchant_id"');
+    }
+  });
+
+  it("order access tokens use CSPRNG bytes, never Math.random", () => {
+    const mint = ordersServer.match(/const accessToken =[\s\S]*?;/);
+    expect(mint?.[0]).toBeTruthy();
+    expect(mint![0]).toContain("getRandomValues");
+    expect(mint![0]).not.toContain("Math.random");
+  });
+
+  it("hold-token fallback derives from the UUID-backed idempotency key", () => {
+    expect(ordersServer).toContain(
+      "input.checkoutToken ?? `${input.idempotencyKey}-hold`",
+    );
+  });
+
+  it("order_number is display-only: never a query filter, access gated by access_token", () => {
+    expect(ordersServer).not.toContain('.eq("order_number"');
+    expect(ordersServer).toContain("row.access_token !== accessToken");
+  });
+
+  it("carts.server mints no tokens with Math.random", () => {
+    expect(cartsServer).not.toContain("Math.random");
   });
 });
