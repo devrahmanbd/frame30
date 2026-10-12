@@ -59,7 +59,7 @@
  * Node builtins only (no npm deps). Test overrides for self-test isolation:
  *   HARNESS_REPO_ROOT, HARNESS_TASKS_DIR, HARNESS_TRACES_DIR.
  */
-import { spawn, spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process"; // sast-allow: shell-exec -- task runner must spawn git/verifiers; argv fixed or task-declared, never merchant input
 import crypto from "node:crypto";
 import fs from "node:fs";
 import net from "node:net";
@@ -268,7 +268,7 @@ function listValidTasks() {
 /* ------------------------------------------------------------------ */
 
 function git(repo, args) {
-  const r = spawnSync("git", ["-C", repo, ...args], { encoding: "utf8" });
+  const r = spawnSync("git", ["-C", repo, ...args], { encoding: "utf8" }); // sast-allow: shell-exec -- git plumbing with fixed subcommands, no shell
   if (r.status !== 0) {
     const detail = (r.stderr || r.stdout || r.error?.message || "").trim();
     throw new Error(`git ${args.join(" ")} failed: ${detail}`);
@@ -289,7 +289,8 @@ function armSignals() {
     process.on(sig, () => {
       for (const dir of [...activeWorktrees]) {
         try {
-          spawnSync("git", ["worktree", "remove", "--force", dir], {
+          // eslint-disable-next-line prettier/prettier -- keeps sast-allow on the finding line: prettier moves trailing comments inside open calls down and breaks SAST suppression
+          spawnSync("git", ["worktree", "remove", "--force", dir], { // sast-allow: shell-exec -- worktree cleanup with runner-generated path, no shell
             stdio: "ignore",
           });
         } catch {
@@ -473,7 +474,8 @@ async function runVerifier(task, envInfo) {
     os.tmpdir(),
     `harness-verifier-${process.pid}-${Date.now()}.log`,
   );
-  const child = spawn(resolved.exe, command.slice(1), {
+  // eslint-disable-next-line prettier/prettier -- keeps sast-allow on the finding line: prettier moves trailing comments inside open calls down and breaks SAST suppression
+  const child = spawn(resolved.exe, command.slice(1), { // sast-allow: shell-exec -- verifier execution is the runner's job; exe resolved from task-declared command, no shell
     cwd,
     env: { ...process.env, ...envInfo.env },
     stdio: ["ignore", "pipe", "pipe"],
@@ -802,7 +804,7 @@ function cmdList() {
 /* ------------------------------------------------------------------ */
 
 function sh(cmd, args, opts = {}) {
-  const r = spawnSync(cmd, args, { encoding: "utf8", ...opts });
+  const r = spawnSync(cmd, args, { encoding: "utf8", ...opts }); // sast-allow: shell-exec -- self-test fixture probes with fixed argv, no shell
   if (r.status !== 0) {
     const detail = (r.stderr || r.stdout || r.error?.message || "").trim();
     throw new Error(`${cmd} ${args.join(" ")} failed: ${detail}`);
@@ -811,7 +813,8 @@ function sh(cmd, args, opts = {}) {
 }
 
 function selfTestChild(args, extraEnv) {
-  return spawnSync(process.execPath, [SCRIPT_PATH, ...args], {
+  // eslint-disable-next-line prettier/prettier -- keeps sast-allow on the finding line: prettier moves trailing comments inside open calls down and breaks SAST suppression
+  return spawnSync(process.execPath, [SCRIPT_PATH, ...args], { // sast-allow: shell-exec -- self-test re-invokes this same script by absolute path, no shell
     encoding: "utf8",
     env: { ...process.env, ...extraEnv },
   });
