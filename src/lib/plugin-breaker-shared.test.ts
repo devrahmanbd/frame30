@@ -13,6 +13,11 @@
  * enforcement all stay in `plugin-hooks.server.ts` — nothing here skips it.
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+// Hermetic DNS: hook tests must never depend on wall-clock resolver
+// behavior under parallel load. Every default resolution answers public.
+vi.mock("node:dns/promises", () => ({
+  lookup: async () => [{ address: "93.184.216.34", family: 4 }],
+}));
 
 const sharedState = vi.hoisted(() => ({
   enabled: true,
@@ -112,13 +117,11 @@ function installed(): InstalledPlugin {
 
 function stubFetch500() {
   const mock = vi.fn(async () => new Response("boom", { status: 500 }));
-  vi.stubGlobal("fetch", mock);
   return mock;
 }
 
 function stubFetchOk() {
   const mock = vi.fn(async () => new Response("{}", { status: 200 }));
-  vi.stubGlobal("fetch", mock);
   return mock;
 }
 
@@ -143,19 +146,20 @@ describe("shared hook circuit breaker", () => {
     const fetchMock = stubFetch500();
     const plugins = [installed()];
     for (let i = 0; i < 3; i += 1) {
-      const out = await runHook(plugins, HOOK, {});
+      const out = await runHook(plugins, HOOK, {}, undefined, fetchMock);
       expect(out[0]!.status).toBe("error");
     }
     expect(await breakerOpen(PLUGIN_ID, HOOK)).toBe(true);
-    const out = await runHook(plugins, HOOK, {});
+    const out = await runHook(plugins, HOOK, {}, undefined, fetchMock);
     expect(out[0]!.status).toBe("skipped");
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 
   it("stays open for 60s, then closes", async () => {
-    stubFetch500();
+    const transport = stubFetch500();
     const plugins = [installed()];
-    for (let i = 0; i < 3; i += 1) await runHook(plugins, HOOK, {});
+    for (let i = 0; i < 3; i += 1)
+      await runHook(plugins, HOOK, {}, undefined, transport);
     const now = Date.now();
     expect(await breakerOpen(PLUGIN_ID, HOOK, now)).toBe(true);
     // The shared window expiring does not reopen anything early, and the
@@ -168,13 +172,13 @@ describe("shared hook circuit breaker", () => {
   });
 
   it("resets on success — shared and local counts clear", async () => {
-    stubFetch500();
+    const failTransport = stubFetch500();
     const plugins = [installed()];
-    await runHook(plugins, HOOK, {});
-    await runHook(plugins, HOOK, {});
+    await runHook(plugins, HOOK, {}, undefined, failTransport);
+    await runHook(plugins, HOOK, {}, undefined, failTransport);
     expect(await breakerOpen(PLUGIN_ID, HOOK)).toBe(false);
-    stubFetchOk();
-    const ok = await runHook(plugins, HOOK, {});
+    const okTransport = stubFetchOk();
+    const ok = await runHook(plugins, HOOK, {}, undefined, okTransport);
     expect(ok[0]!.status).toBe("ok");
     expect(await breakerOpen(PLUGIN_ID, HOOK)).toBe(false);
     // The success deleted the shared counter, not just the local map.
@@ -182,8 +186,8 @@ describe("shared hook circuit breaker", () => {
     // Two more failures must NOT trip: the count restarted from zero.
     const fetchMock = stubFetch500();
     fetchMock.mockClear();
-    const first = await runHook(plugins, HOOK, {});
-    const second = await runHook(plugins, HOOK, {});
+    const first = await runHook(plugins, HOOK, {}, undefined, fetchMock);
+    const second = await runHook(plugins, HOOK, {}, undefined, fetchMock);
     expect(first[0]!.status).toBe("error");
     expect(second[0]!.status).toBe("error");
     expect(await breakerOpen(PLUGIN_ID, HOOK)).toBe(false);
@@ -191,11 +195,11 @@ describe("shared hook circuit breaker", () => {
   });
 
   it("multi-instance counts aggregate: 2 failures here + 1 there trips", async () => {
-    stubFetch500();
+    const transport = stubFetch500();
     const plugins = [installed()];
     // Isolate A records two failures against the shared store.
-    await runHook(plugins, HOOK, {});
-    await runHook(plugins, HOOK, {});
+    await runHook(plugins, HOOK, {}, undefined, transport);
+    await runHook(plugins, HOOK, {}, undefined, transport);
     expect(await breakerOpen(PLUGIN_ID, HOOK)).toBe(false);
     // Simulate moving to a fresh isolate: process-local state is gone, the
     // shared store persists. resetBreakers() only clears the local map.
@@ -203,7 +207,7 @@ describe("shared hook circuit breaker", () => {
     expect(await breakerOpen(PLUGIN_ID, HOOK)).toBe(false);
     // Isolate B records the third failure. The old process-local breaker
     // would need two more; the shared breaker is already tripped.
-    const third = await runHook(plugins, HOOK, {});
+    const third = await runHook(plugins, HOOK, {}, undefined, transport);
     expect(third[0]!.status).toBe("error");
     expect(await breakerOpen(PLUGIN_ID, HOOK)).toBe(true);
     const counts = [...sharedState.store.values()].map((e) => e.count);
@@ -211,16 +215,17 @@ describe("shared hook circuit breaker", () => {
     // The next emission is skipped without touching the network.
     const fetchMock = stubFetch500();
     fetchMock.mockClear();
-    const out = await runHook(plugins, HOOK, {});
+    const out = await runHook(plugins, HOOK, {}, undefined, fetchMock);
     expect(out[0]!.status).toBe("skipped");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("a fresh isolate honors a shared trip within the same 60s window", async () => {
-    stubFetch500();
+    const transport = stubFetch500();
     const plugins = [installed()];
     // Isolate A trips the breaker on its own.
-    for (let i = 0; i < 3; i += 1) await runHook(plugins, HOOK, {});
+    for (let i = 0; i < 3; i += 1)
+      await runHook(plugins, HOOK, {}, undefined, transport);
     expect(await breakerOpen(PLUGIN_ID, HOOK)).toBe(true);
     // Isolate B starts with no local state at all, yet sees the open circuit
     // without recording a single local failure.
@@ -238,17 +243,17 @@ describe("shared hook circuit breaker", () => {
     const fetchMock = stubFetch500();
     const plugins = [installed()];
     for (let i = 0; i < 3; i += 1) {
-      const out = await runHook(plugins, HOOK, {});
+      const out = await runHook(plugins, HOOK, {}, undefined, fetchMock);
       expect(out[0]!.status).toBe("error");
     }
     expect(await breakerOpen(PLUGIN_ID, HOOK)).toBe(true);
-    const out = await runHook(plugins, HOOK, {});
+    const out = await runHook(plugins, HOOK, {}, undefined, fetchMock);
     expect(out[0]!.status).toBe("skipped");
     expect(fetchMock).toHaveBeenCalledTimes(3);
     // Recovery is local too: one success reopens the circuit.
-    stubFetchOk();
+    const okTransport = stubFetchOk();
     resetBreakers();
-    const ok = await runHook(plugins, HOOK, {});
+    const ok = await runHook(plugins, HOOK, {}, undefined, okTransport);
     expect(ok[0]!.status).toBe("ok");
   });
 });

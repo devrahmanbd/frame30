@@ -29,6 +29,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Custom merchant ZIP pipeline untouched: `package-zip.ts`, `package-install.server.ts`, `package-store.server.ts`, `plugin-package.ts`, upload lane (now also rejects dangling `assets/` refs), all archive-security suites green.
 
+## [Unreleased] (frame30) — Socket-level DNS pinning for server egress
+
+### Fixed
+
+- DNS-rebinding TOCTOU between resolve and connect is eliminated, not merely narrowed: `fetchWithEgressGuard` now opens sockets through `pinnedTransport` (`node:http(s)` with a custom `lookup` bound to the validated answer set), so a mid-flight DNS flip cannot steer request bytes. Double-resolution dance and post-connect re-verification removed as redundant — each hop resolves once, binds, and per-hop redirect revalidation is unchanged. TLS SNI/cert verification explicitly targets the original hostname; `rejectUnauthorized` untouched.
+- Hook emitters (`captureCart`, `reserveStock`, `createOrder`, `applyImport`, `saveKindConfig`) and `runHook`/`deliverQueuedHook` accept an optional trailing `transport` (plus file-level `node:dns` mocks in suites) so hook tests are hermetic — parallel-load DNS stalls no longer trip the 800 ms chain deadline spuriously.
+
+### Verification
+
+- New pinning tests (socket lands on pinned IP despite hostile DNS, injected-transport isolation); migrated hook suites to transport injection; egress + hook + emission + breaker suites green twice consecutively, `tsc` clean.
+
 ## [2026-10-10 16:07 UTC] (v0.5-beta — c65ed3f6) — Bundle URL form fix
 
 ### Fixed

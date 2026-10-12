@@ -22,6 +22,11 @@
  *   both halves.
  */
 import { describe, expect, it, vi, afterEach, beforeEach } from "vitest";
+// Hermetic DNS: hook tests must never depend on wall-clock resolver
+// behavior under parallel load. Every default resolution answers public.
+vi.mock("node:dns/promises", () => ({
+  lookup: async () => [{ address: "93.184.216.34", family: 4 }],
+}));
 import { fakeDb } from "./__fixtures__/fake-db";
 import {
   metricRecorder,
@@ -114,12 +119,10 @@ function subscriber(
 }
 
 function stubFetchOk() {
-  const mock = vi.fn(
+  return vi.fn(
     async (_url: string, _init?: RequestInit) =>
       new Response("{}", { status: 200 }),
   );
-  vi.stubGlobal("fetch", mock);
-  return mock;
 }
 
 async function auditCount(
@@ -140,7 +143,10 @@ describe("R2-8 step 2 — hook→scope gate matrix (full grant → delivered)", 
       const fetchMock = stubFetchOk();
       const out = await runHook([subscriber(hook, HOOK_SCOPE[hook])], hook, {
         merchantId: MERCHANT,
-      });
+        },
+        undefined,
+        fetchMock,
+      );
       expect(out).toHaveLength(1);
       expect(out[0].status).toBe("ok");
       expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -161,7 +167,10 @@ describe("R2-8 step 2 — hook→scope gate matrix (missing one scope → deny)"
         const granted = required.filter((s) => s !== dropped);
         const out = await runHook([subscriber(hook, granted)], hook, {
           merchantId: MERCHANT,
-        });
+          },
+          undefined,
+          fetchMock,
+        );
         expect(out).toHaveLength(1);
         expect(out[0].status).toBe("skipped:scope");
         expect(fetchMock).not.toHaveBeenCalled();
@@ -173,18 +182,17 @@ describe("R2-8 step 2 — hook→scope gate matrix (missing one scope → deny)"
 describe("R2-8 step 3 — signed egress + verify-side", () => {
   it("outbound live delivery ALWAYS attaches framique-signature when the secret is set", async () => {
     let seen: RequestInit | undefined;
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async (_url: string, init: RequestInit) => {
-        seen = init;
-        return new Response("{}", { status: 200 });
-      }),
-    );
+    const transport = vi.fn(async (_url: string, init: RequestInit) => {
+      seen = init;
+      return new Response("{}", { status: 200 });
+    });
     process.env.PLUGIN_HOOK_SECRET = "test-secret";
     const out = await runHook(
       [subscriber("order.created", HOOK_SCOPE["order.created"])],
       "order.created",
       { id: "o1" },
+      undefined,
+      transport,
     );
     expect(out[0].status).toBe("ok");
     const headers = seen?.headers as Record<string, string>;
@@ -200,27 +208,27 @@ describe("R2-8 step 3 — signed egress + verify-side", () => {
 
   it("queued retry delivery is signed too", async () => {
     let seen: RequestInit | undefined;
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async (_url: string, init: RequestInit) => {
-        seen = init;
-        return new Response("{}", { status: 200 });
-      }),
-    );
+    const transport = vi.fn(async (_url: string, init: RequestInit) => {
+      seen = init;
+      return new Response("{}", { status: 200 });
+    });
     process.env.PLUGIN_HOOK_SECRET = "test-secret";
     const body = JSON.stringify({
       hook: "order.created",
       payload: { id: "o1" },
       settings: {},
     });
-    const res = await deliverQueuedHook({
-      pluginId: PLUGIN,
-      installId: INSTALL,
-      hook: "order.created",
-      body,
-      hooksUrl: "https://apps.example.com/hooks",
-      deliveryId: "hook:loyalty-lite:order.created:abc123",
-    });
+    const res = await deliverQueuedHook(
+      {
+        pluginId: PLUGIN,
+        installId: INSTALL,
+        hook: "order.created",
+        body,
+        hooksUrl: "https://apps.example.com/hooks",
+        deliveryId: "hook:loyalty-lite:order.created:abc123",
+      },
+      { transport },
+    );
     expect(res).toEqual({ ok: true, installId: INSTALL });
     const headers = seen?.headers as Record<string, string>;
     expect(headers["framique-signature"]).toMatch(/^t=\d+,v1=[0-9a-f]{64}$/);
@@ -272,18 +280,17 @@ describe("R2-8 step 3 — signed egress + verify-side", () => {
 
   it("missing secret is LOUD in test env: warn + unsigned metric, still delivers unsigned", async () => {
     let seen: RequestInit | undefined;
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async (_url: string, init: RequestInit) => {
-        seen = init;
-        return new Response("{}", { status: 200 });
-      }),
-    );
+    const transport = vi.fn(async (_url: string, init: RequestInit) => {
+      seen = init;
+      return new Response("{}", { status: 200 });
+    });
     delete process.env.PLUGIN_HOOK_SECRET;
     const out = await runHook(
       [subscriber("order.created", HOOK_SCOPE["order.created"])],
       "order.created",
       { id: "o1" },
+      undefined,
+      transport,
     );
     expect(out[0].status).toBe("ok");
     const headers = seen?.headers as Record<string, string>;
@@ -304,7 +311,6 @@ describe("R2-8 step 3 — signed egress + verify-side", () => {
 
   it("missing secret fails closed outside tests: throws, never delivers", async () => {
     const fetchMock = vi.fn(async () => new Response("{}", { status: 200 }));
-    vi.stubGlobal("fetch", fetchMock);
     delete process.env.PLUGIN_HOOK_SECRET;
     const prevNode = process.env.NODE_ENV;
     const prevVitest = process.env.VITEST;
@@ -316,6 +322,8 @@ describe("R2-8 step 3 — signed egress + verify-side", () => {
           [subscriber("order.created", HOOK_SCOPE["order.created"])],
           "order.created",
           { id: "o1" },
+          undefined,
+          fetchMock,
         ),
       ).rejects.toThrow(/plugin_hook_secret_missing/);
       expect(fetchMock).not.toHaveBeenCalled();
@@ -330,13 +338,16 @@ describe("R2-8 step 3 — signed egress + verify-side", () => {
         recorder.of("framique_plugin_hook_total", ["status", "unsigned"]),
       ).toHaveLength(1);
       await expect(
-        deliverQueuedHook({
-          pluginId: PLUGIN,
-          installId: INSTALL,
-          hook: "order.created",
-          body: "{}",
-          hooksUrl: "https://apps.example.com/hooks",
-        }),
+        deliverQueuedHook(
+          {
+            pluginId: PLUGIN,
+            installId: INSTALL,
+            hook: "order.created",
+            body: "{}",
+            hooksUrl: "https://apps.example.com/hooks",
+          },
+          { transport: fetchMock },
+        ),
       ).rejects.toThrow(/plugin_hook_secret_missing/);
     } finally {
       if (prevNode === undefined) delete process.env.NODE_ENV;
@@ -351,14 +362,13 @@ describe("R2-8 step 4 — idempotent double-delivery (replay)", () => {
   it("failed live attempt queues deliveryId = idempotency key", async () => {
     const db = fakeDb({ tables: { job_queue: [] } });
     queueDb.db = db.asClient();
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async () => new Response("boom", { status: 500 })),
-    );
+    const transport = vi.fn(async () => new Response("boom", { status: 500 }));
     const out = await runHook(
       [subscriber("order.created", HOOK_SCOPE["order.created"])],
       "order.created",
       { id: "replay-1" },
+      undefined,
+      transport,
     );
     expect(out[0].status).toBe("queued");
     const jobs = db.rows("job_queue");
@@ -402,13 +412,10 @@ describe("R2-8 step 4 — idempotent double-delivery (replay)", () => {
 
   it("double deliverQueuedHook re-POSTs with the IDENTICAL vendor dedupe header (at-least-once)", async () => {
     const seen: RequestInit[] = [];
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async (_url: string, init: RequestInit) => {
-        seen.push(init);
-        return new Response("{}", { status: 200 });
-      }),
-    );
+    const transport = vi.fn(async (_url: string, init: RequestInit) => {
+      seen.push(init);
+      return new Response("{}", { status: 200 });
+    });
     const payload = {
       pluginId: PLUGIN,
       installId: INSTALL,
@@ -421,10 +428,14 @@ describe("R2-8 step 4 — idempotent double-delivery (replay)", () => {
       hooksUrl: "https://apps.example.com/hooks",
       deliveryId: "hook:loyalty-lite:order.created:cafef00d",
     };
-    await expect(deliverQueuedHook(payload)).resolves.toMatchObject({
+    await expect(
+      deliverQueuedHook(payload, { transport }),
+    ).resolves.toMatchObject({
       ok: true,
     });
-    await expect(deliverQueuedHook(payload)).resolves.toMatchObject({
+    await expect(
+      deliverQueuedHook(payload, { transport }),
+    ).resolves.toMatchObject({
       ok: true,
     });
     expect(seen).toHaveLength(2);
@@ -666,6 +677,7 @@ describe("queued retry recheck — disable/suspend/kill/rotation park without PO
     vi.stubGlobal("fetch", fetchMock);
     const res = await deliverQueuedHook(payload, {
       db: db.asClient() as never,
+      transport: fetchMock,
     });
     return { res, fetchMock };
   }

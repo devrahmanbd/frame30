@@ -9,6 +9,7 @@ import { incr, log, observe } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
 
 import { withTenantLock } from "./redis-lock.server";
+import type { EgressTransport } from "./plugin-hooks.server";
 
 export const HOLD_TTL_SECONDS = 900;
 
@@ -83,6 +84,7 @@ export async function reserveStock(
   checkoutToken: string,
   lines: HoldLine[],
   subject: string,
+  transport?: EgressTransport,
 ) {
   await enforceRateLimit("checkout.reserve", subject);
   return withTenantLock(
@@ -246,7 +248,10 @@ export async function reserveStock(
           // must never reach vendors. Nothing consumes it downstream
           // (verified Oct 2026).
           lineCount: lines.length,
-        });
+          },
+          undefined,
+          transport,
+        );
         log("info", "plugin.hook.emitted", {
           hook: "checkout.validate",
           merchantId,

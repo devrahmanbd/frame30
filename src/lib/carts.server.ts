@@ -11,6 +11,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { incr, log, withSpan } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
 import { CommerceError } from "./inventory.server";
+import type { EgressTransport } from "./plugin-hooks.server";
 
 type Client = SupabaseClient<Database>;
 
@@ -33,6 +34,7 @@ export async function captureCart(
     subtotalMinorInt: number;
     currencyCode?: string;
   },
+  transport?: EgressTransport,
 ) {
   return withSpan("commerce.cart_capture", async () => {
     await enforceRateLimit(
@@ -72,7 +74,10 @@ export async function captureCart(
         // vendors. Nothing consumes it downstream (verified Oct 2026).
         subtotalMinorInt: Math.max(0, Math.floor(input.subtotalMinorInt)),
         lineCount: input.lines.length,
-      });
+        },
+        undefined,
+        transport,
+      );
       log("info", "plugin.hook.emitted", {
         hook: "cart.calculate",
         merchantId: input.merchantId,

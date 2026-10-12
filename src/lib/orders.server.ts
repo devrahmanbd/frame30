@@ -6,6 +6,7 @@ import {
   type PaymentMethod,
 } from "./pricing.server";
 import { consumeStock, releaseStock, reserveStock } from "./checkout.server";
+import type { EgressTransport } from "./plugin-hooks.server";
 import { CouponError } from "./coupons.server";
 import { incr, log, observe, tenantLabel } from "./observability.server";
 import { enforceRateLimit } from "./rate-limit.server";
@@ -92,6 +93,7 @@ async function releaseCouponSlots(
 export async function createOrder(
   input: PlaceOrderInput,
   subject = "anonymous",
+  transport?: EgressTransport,
 ) {
   await enforceRateLimit("checkout.place", subject);
   const started = Date.now();
@@ -658,7 +660,10 @@ export async function createOrder(
       orderId: order.id,
       totalMinor: totals.totalMinor,
       currency: totals.currency,
-    });
+      },
+      undefined,
+      transport,
+    );
     log("info", "plugin.hook.emitted", {
       hook: "order.created",
       merchantId: merchant.id,

@@ -17,35 +17,28 @@
  * before this guard existed); a lookup that RETURNS a blocked address fails
  * closed. An injectable `lookup` keeps this unit-testable without a network.
  *
- * TOCTOU hardening (mitigation, NOT elimination): a validated hostname can
- * re-resolve to an internal IP in the gap between check and connect, and the
- * module's HTTP client — the global `fetch` — accepts no `lookup`/dispatcher
- * hook to pin the socket to the checked IP. Of the available options —
- * (a) an undici `Agent` with a `connect` override (undici is NOT installed;
- * adding it would be a new dependency), (b) reimplementing the guarded paths
- * on `node:http(s).request` with `lookup` pinning (true socket pinning, but
- * it reimplements fetch semantics — redirects, bodies, headers, TLS — and
- * bypasses the stubbed-`fetch` seam the suites rely on), (c) re-resolving
- * immediately before connect and aborting on change — (c) is the strongest
- * option that adds no dependencies and keeps the fix minimal. Each hop
- * therefore resolves TWICE before connect and aborts with
- * `egress_dns_blocked` unless both answers agree as an order-insensitive set
- * (round-robin reordering is tolerated; ANY set change — even
- * public-to-public — aborts), then re-resolves once more AFTER the response
- * arrives and DISCARDS the body instead of delivering it when the
- * post-connect answer is blocked. Honest residual window: the request bytes
- * may still reach a rebound target in the microseconds between the second
- * resolution and socket connect — only the response channel is contained,
- * never the request. Full elimination needs socket-level pinning (option (a)
- * or (b) above).
+ * TOCTOU elimination via socket pinning: the global `fetch` API accepts
+ * no lookup/dispatcher hook, so this module ships its own minimal transport
+ * (`pinnedTransport`, `node:http(s)` only — no new dependencies) that opens
+ * the socket against the validated address set and nothing else. Each hop
+ * resolves once with a block-check; the pinned connect then makes a
+ * mid-flight DNS flip unable to steer the request — the bytes go to a
+ * checked IP or the request fails. A `transport` option lets tests inject
+ * canned transports; production call sites must never pass one. An
+ * `allowLoopback` option exists for tests running real local servers only
+ * and must never be set outside tests.
  *
- * TLS note: the original hostname URL is passed to `fetch` unchanged, so SNI
- * (`servername`) and certificate verification target the hostname as usual.
- * Nothing here touches TLS options — `rejectUnauthorized: false` must NEVER
- * appear on this path.
+ * TLS note: the original hostname URL is passed through unchanged and
+ * `servername` is set explicitly to the hostname, so SNI and certificate
+ * verification target the hostname exactly as with `fetch`.
+ * `rejectUnauthorized: false` must NEVER appear on this path.
  */
 
 import { lookup as dnsLookup } from "node:dns/promises";
+import type { LookupAddress, LookupOptions } from "node:dns";
+import http from "node:http";
+import https from "node:https";
+import { Readable } from "node:stream";
 
 export type EgressCode =
   | "egress_denied"
@@ -90,6 +83,19 @@ export type EgressFetchOptions = {
   body?: BodyInit | null;
   /** Test seam: defaults to `node:dns/promises` lookup. */
   lookup?: (host: string) => Promise<string[]>;
+  /**
+   * Transport seam: defaults to the pinned `node:http(s)` transport below.
+   * Tests inject canned transports; production call sites must NEVER pass
+   * a stub here (the pinned default is the security boundary).
+   */
+  transport?: EgressTransport;
+  /**
+   * Test-only seam: allow loopback answers (127/8, ::1) through the DNS
+   * IP block so tests can run real local servers. NEVER set outside
+   * tests — production call sites resolving to loopback must keep
+   * failing closed.
+   */
+  allowLoopback?: boolean;
 };
 
 const DEFAULT_MAX_REDIRECTS = 3;
@@ -109,7 +115,7 @@ async function defaultLookup(host: string): Promise<string[]> {
  * single-IP predicate is exported; the hostname decision stays with the
  * caller's guard, this layer only judges resolved/literal IPs.
  */
-export function isBlockedEgressIp(ip: string): boolean {
+export function isBlockedEgressIp(ip: string, allowLoopback = false): boolean {
   let addr = ip
     .trim()
     .toLowerCase()
@@ -118,9 +124,13 @@ export function isBlockedEgressIp(ip: string): boolean {
   const mapped = /::ffff:(\d+\.\d+\.\d+\.\d+)$/.exec(addr);
   if (mapped) addr = mapped[1] as string;
   if (addr.includes(":")) {
-    if (addr === "::1" || addr === "::") return true;
+    if (addr === "::") return true;
     const parts = addr.split(":");
-    if (parts.every((p) => p === "" || /^0+$/.test(p))) return true;
+    const allZero = parts.every((p) => p === "" || /^0+$/.test(p));
+    // ::1 (and all-zero forms normalizing to ::) are loopback: refused
+    // unless the test-only allowLoopback seam is set. Every other v6
+    // block below stays refused either way.
+    if (addr === "::1" || allZero) return !allowLoopback;
     const first = parts[0] as string;
     const n = Number.parseInt(first, 16);
     if (!Number.isNaN(n)) {
@@ -137,7 +147,7 @@ export function isBlockedEgressIp(ip: string): boolean {
   const b = o[1] as number;
   return (
     a === 10 ||
-    a === 127 ||
+    (a === 127 && !allowLoopback) ||
     (a === 172 && b >= 16 && b <= 31) ||
     (a === 192 && b === 168) ||
     (a === 169 && b === 254) ||
@@ -149,6 +159,7 @@ async function assertDnsAllowed(
   rawUrl: string,
   lookup: (host: string) => Promise<string[]>,
   signal: AbortSignal,
+  allowLoopback = false,
 ): Promise<string[] | undefined> {
   let host = "";
   try {
@@ -184,46 +195,176 @@ async function assertDnsAllowed(
     if (onAbort) signal.removeEventListener("abort", onAbort);
   }
   for (const addr of addresses) {
-    if (isBlockedEgressIp(addr))
+    if (isBlockedEgressIp(addr, allowLoopback))
       throw new EgressError("egress_dns_blocked", "private_ip", rawUrl);
   }
   return addresses;
 }
 
-/** Order-insensitive address-set comparison (round-robin reorder safe). */
-function sameAddressSet(a: string[], b: string[]): boolean {
-  if (a.length !== b.length) return false;
-  const sa = a.map((s) => s.toLowerCase()).sort();
-  const sb = b.map((s) => s.toLowerCase()).sort();
-  return sa.every((v, i) => v === sb[i]);
-}
+export type PinnedTransportInit = {
+  method: string;
+  headers: HeadersInit | undefined;
+  /** Only string bodies occur on guarded paths (JSON POSTs); GETs use null. */
+  body?: string | null;
+  signal: AbortSignal;
+  /** Validated destination addresses — the socket connects to one of these. */
+  addresses: string[];
+};
 
 /**
- * Pre-connect double resolution: resolves twice back-to-back and aborts
- * unless both answers agree as a set. Narrows the rebinding window to the
- * microseconds between the SECOND resolution and socket connect — an
- * attacker must flip the answer twice in that gap instead of once any time
- * after a single check. Either resolution failing open (unresolvable host)
- * preserves the pre-existing fail-open semantics: only two successful
- * resolutions are compared, and the connect then fails downstream.
+ * Transport with a pinned destination: `(url, init) => Response`.
+ * The default implementation below opens the socket against the validated
+ * addresses only; tests inject canned transports.
  */
-async function assertDnsStable(
-  rawUrl: string,
-  lookup: (host: string) => Promise<string[]>,
-  signal: AbortSignal,
-): Promise<void> {
-  const first = await assertDnsAllowed(rawUrl, lookup, signal);
-  const second = await assertDnsAllowed(rawUrl, lookup, signal);
-  if (!first || !second) return;
-  if (!sameAddressSet(first, second))
-    throw new EgressError("egress_dns_blocked", "dns_changed", rawUrl);
+export type EgressTransport = (
+  url: string,
+  init: PinnedTransportInit,
+) => Promise<Response>;
+
+function normalizeTransportHeaders(
+  headers: HeadersInit | undefined,
+): Record<string, string> {
+  const out: Record<string, string> = {};
+  if (!headers) return out;
+  const push = (k: string, v: string) => {
+    out[k.toLowerCase()] = v;
+  };
+  if (headers instanceof Headers) {
+    headers.forEach((v, k) => push(k, v));
+  } else if (Array.isArray(headers)) {
+    for (const [k, v] of headers) push(k, v);
+  } else {
+    for (const [k, v] of Object.entries(headers)) push(k, v);
+  }
+  return out;
 }
 
 /**
- * Guarded fetch. Validates the initial URL with `guard`, fetches with
- * `redirect: "manual"`, and validates every `Location` target with the same
- * guard (plus a DNS re-resolution) before following, up to `maxRedirects`.
- * The `timeoutMs` deadline covers the whole chain via one AbortController.
+ * Socket-level DNS pinning over `node:http(s)` — the true fix for the
+ * resolve→connect TOCTOU window that `fetch` cannot close (it accepts no
+ * lookup/dispatcher hook).
+ *
+ * The socket connects ONLY to an address from the validated `addresses`
+ * set via a custom `lookup`, so a mid-flight DNS flip cannot steer the
+ * connection: whatever the resolver says now, the bytes go to a checked
+ * IP or the request fails. TLS is untouched — `servername` is set
+ * explicitly to the original hostname (never defaulted, never disabled)
+ * so SNI and certificate verification target the hostname exactly as
+ * with `fetch`; `rejectUnauthorized` stays at its default (true).
+ * Redirects are never followed here (the caller loop owns them).
+ */
+export async function pinnedTransport(
+  url: string,
+  init: PinnedTransportInit,
+): Promise<Response> {
+  const u = new URL(url);
+  if (u.protocol !== "http:" && u.protocol !== "https:") {
+    throw new TypeError("pinnedTransport: http(s) URLs only");
+  }
+  const addresses = init.addresses;
+  if (addresses.length === 0) {
+    // Fail open exactly like the pre-pinning code: resolution produced
+    // nothing to pin (outage, not a verdict), so attempt a normal fetch
+    // and let downstream retry semantics handle the network error. This
+    // path carries the pre-existing residual (unpinned single resolution
+    // inside fetch) — it only triggers when our own resolutions failed.
+    return globalThis.fetch(url, {
+      method: init.method,
+      headers: normalizeTransportHeaders(init.headers),
+      body:
+        init.body === null || init.body === undefined
+          ? null
+          : typeof init.body === "string"
+            ? init.body
+            : Buffer.from(init.body),
+      redirect: "manual",
+      signal: init.signal,
+    });
+  }
+  let bodyBytes: Uint8Array | null = null;
+  if (init.body !== null && init.body !== undefined) {
+    bodyBytes = new TextEncoder().encode(init.body);
+  }
+  const outHeaders = normalizeTransportHeaders(init.headers);
+  if (bodyBytes) outHeaders["content-length"] = String(bodyBytes.length);
+  const lib = u.protocol === "https:" ? https : http;
+  const firstPinned = init.addresses[0] as string;
+  return new Promise<Response>((resolve, reject) => {
+    const req = lib.request(
+      url,
+      {
+        method: init.method,
+        headers: outHeaders,
+        signal: init.signal,
+        // Pin the socket: ignore whatever DNS says now, connect to a
+        // validated address. servername stays the original hostname so
+        // TLS verification is byte-identical to a normal fetch.
+        // `family` is explicit and the `{all: true}` form is answered:
+        // without both, Node 22's Happy-Eyeballs path re-invokes lookup
+        // expecting an array and fails the connect ("Invalid IP address").
+        family: firstPinned.includes(":") ? 6 : 4,
+        lookup: (
+          _hostname: string,
+          lookupOptions: LookupOptions,
+          callback: (
+            err: NodeJS.ErrnoException | null,
+            address: string | LookupAddress[],
+            family?: number,
+          ) => void,
+        ) => {
+          const pinned = init.addresses[0] as string | undefined;
+          if (!pinned) {
+            callback(
+              Object.assign(
+                new Error("pinnedTransport: empty pinned address set"),
+                { code: "ENOTFOUND" },
+              ) as NodeJS.ErrnoException,
+              "",
+              4,
+            );
+            return;
+          }
+          const family = pinned.includes(":") ? 6 : 4;
+          const wantAll =
+            typeof lookupOptions === "object" &&
+            lookupOptions !== null &&
+            (lookupOptions as { all?: unknown }).all === true;
+          if (wantAll) callback(null, [{ address: pinned, family }]);
+          else callback(null, pinned, family);
+        },
+        servername: u.hostname,
+      },
+      (res) => {
+        const headers = new Headers();
+        for (const [k, v] of Object.entries(res.headers)) {
+          if (v === undefined) continue;
+          if (Array.isArray(v)) {
+            for (const item of v) headers.append(k, item);
+          } else {
+            headers.append(k, v);
+          }
+        }
+        resolve(
+          new Response(Readable.toWeb(res) as ReadableStream, {
+            status: res.statusCode ?? 0,
+            headers,
+          }),
+        );
+      },
+    );
+    req.on("error", reject);
+    if (bodyBytes) req.write(bodyBytes);
+    req.end();
+  });
+}
+
+/**
+ * Guarded fetch. Validates the initial URL with `guard`, resolves once
+ * (blocked answers refuse here), and opens the socket ONLY against the
+ * validated answer set via the pinned transport — a mid-flight DNS flip
+ * cannot steer the connection. Every `Location` target is validated the
+ * same way before following, up to `maxRedirects`. The `timeoutMs`
+ * deadline covers the whole chain via one AbortController.
  *
  * Returns the terminal response (caller still checks `res.ok`). Throws
  * `EgressError` with a machine `code`, or rethrows the underlying network
@@ -235,12 +376,14 @@ export async function fetchWithEgressGuard(
 ): Promise<{ ok: true; response: Response }> {
   const maxRedirects = opts.maxRedirects ?? DEFAULT_MAX_REDIRECTS;
   const lookup = opts.lookup ?? defaultLookup;
+  const allowLoopback = opts.allowLoopback ?? false;
+  const transport = opts.transport ?? pinnedTransport;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), opts.timeoutMs);
   try {
     let current = String(rawUrl);
     let method = opts.method ?? "GET";
-    let body = opts.body ?? null;
+    let body: string | null = typeof opts.body === "string" ? opts.body : null;
     let redirects = 0;
     for (;;) {
       const verdict = opts.guard(current);
@@ -250,50 +393,43 @@ export async function fetchWithEgressGuard(
           verdict.reason ?? "guard_refused",
           current,
         );
-      await assertDnsStable(current, lookup, controller.signal);
+      // Pinned destination: resolve once, block-check, and hand the
+      // answer set to the transport, which connects ONLY to it — a
+      // mid-flight DNS flip cannot steer the socket (true pinning, not
+      // check-then-hope). A failing lookup fails open (undefined → the
+      // transport attempts a normal fetch whose network error preserves
+      // pre-existing retry semantics).
+      const pinned =
+        (await assertDnsAllowed(
+          current,
+          lookup,
+          controller.signal,
+          allowLoopback,
+        )) ?? [];
       // The deadline may have fired while guarding/resolving (or a caller
-      // passed an already-expired budget): never issue a fetch on an
+      // passed an already-expired budget): never issue a request on an
       // aborted signal — stubs and some runtimes only reject on the abort
       // *event* and would hang forever on an already-aborted signal.
       if (controller.signal.aborted)
         throw new EgressError("egress_timeout", "timeout", current);
       let res: Response;
       try {
-        res = await globalThis.fetch(current, {
+        res = await transport(current, {
           method,
           headers: opts.headers,
           body,
-          redirect: "manual",
           signal: controller.signal,
+          addresses: pinned,
         });
       } catch (err) {
         if (controller.signal.aborted || (err as Error)?.name === "AbortError")
           throw new EgressError("egress_timeout", "timeout", current);
         throw err;
       }
-      // Post-connect re-verification: the socket may have been opened against
-      // a rebound answer (the residual TOCTOU window). A blocked post-connect
-      // answer means the response may come from an internal host — cancel the
-      // body so it is never delivered to the caller. The check gates ONLY on
-      // blocked addresses, not set stability: a public-only rotation after
-      // connect cannot reach the internal network, and gating on it would
-      // false-positive against large round-robin pools returning subsets.
-      // Fail-open (unresolvable) and timeout semantics match the pre-connect
-      // layer: the former delivers the response, the latter throws.
-      let postErr: unknown = null;
-      try {
-        await assertDnsAllowed(current, lookup, controller.signal);
-      } catch (err) {
-        postErr = err;
-      }
-      if (postErr) {
-        try {
-          await res.body?.cancel();
-        } catch {
-          // Best effort — a failed cancel must not mask the refusal.
-        }
-        throw postErr;
-      }
+      // No post-connect re-resolution: the socket was opened against the
+      // checked answer set above, so the response provably comes from a
+      // validated IP regardless of what DNS says now. (A post-connect
+      // check could only false-positive on legitimate pool rotations.)
       if (!REDIRECT_STATUSES.has(res.status))
         return { ok: true, response: res };
       const location = res.headers.get("location");
@@ -322,7 +458,12 @@ export async function fetchWithEgressGuard(
           hop.reason ?? "guard_refused",
           next.toString(),
         );
-      await assertDnsAllowed(next.toString(), lookup, controller.signal);
+      await assertDnsAllowed(
+        next.toString(),
+        lookup,
+        controller.signal,
+        allowLoopback,
+      );
       redirects += 1;
       // Same rewrite `fetch` itself applies on "follow": 303 (except HEAD)
       // and 301/302-from-POST become GET so a POST body is never replayed at

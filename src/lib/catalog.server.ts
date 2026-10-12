@@ -11,6 +11,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { enforceRateLimit } from "./rate-limit.server";
 import { incr, log, withSpan, captureError } from "./observability.server";
 import { cached, invalidate } from "./cache.server";
+import type { EgressTransport } from "./plugin-hooks.server";
 import {
   IMPORT_MAX_ROWS,
   normalizeRules,
@@ -195,6 +196,7 @@ export async function applyImport(
   supabase: Client,
   merchantId: string,
   jobId: string,
+  transport?: EgressTransport,
 ) {
   await assertStaff(supabase, merchantId);
   await enforceRateLimit("catalog.import", merchantId);
@@ -225,7 +227,10 @@ export async function applyImport(
       merchantId,
       jobId,
       replayed: result.replayed,
-    });
+      },
+      undefined,
+      transport,
+    );
     log("info", "plugin.hook.emitted", {
       hook: "product.saved",
       merchantId,
@@ -281,7 +286,11 @@ export type KindConfigInput = {
 };
 
 /** Persist the kind-specific configuration; the DB trigger normalises shipping. */
-export async function saveKindConfig(supabase: Client, input: KindConfigInput) {
+export async function saveKindConfig(
+  supabase: Client,
+  input: KindConfigInput,
+  transport?: EgressTransport,
+) {
   await assertStaff(supabase, input.merchantId);
 
   const { error: kindError } = await loose(supabase)
@@ -346,7 +355,10 @@ export async function saveKindConfig(supabase: Client, input: KindConfigInput) {
       merchantId: input.merchantId,
       productId: input.productId,
       kind: input.kind,
-    });
+      },
+      undefined,
+      transport,
+    );
     log("info", "plugin.hook.emitted", {
       hook: "product.saved",
       merchantId: input.merchantId,

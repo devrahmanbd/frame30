@@ -1,4 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+// Hermetic DNS: hook tests must never depend on wall-clock resolver
+// behavior (parallel load can stall real lookups past the 800ms chain
+// deadline). Every default resolution answers one public IP.
+vi.mock("node:dns/promises", () => ({
+  lookup: async () => [{ address: "93.184.216.34", family: 4 }],
+}));
 import {
   BUILDER_API_VERSION,
   MENU_SLOTS,
@@ -319,16 +325,15 @@ describe("server hooks", () => {
   });
 
   it("calls only subscribers and returns their result", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () => new Response(JSON.stringify({ ok: 1 }), { status: 200 }),
-      ),
+    const transport = vi.fn(
+      async () => new Response(JSON.stringify({ ok: 1 }), { status: 200 }),
     );
     const out = await runHook(
       [installed({ grantedScopes: ["read_orders"] })],
       "order.created",
       { id: "o1" },
+      undefined,
+      transport,
     );
     expect(out).toHaveLength(1);
     expect(out[0].status).toBe("ok");
@@ -337,31 +342,43 @@ describe("server hooks", () => {
         [installed({ grantedScopes: ["read_orders"] })],
         "cart.calculate",
         {},
+        undefined,
+        transport,
       ),
     ).toEqual([]);
   });
 
   it("survives a failing plugin and opens the breaker after repeated failures", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async () => new Response("nope", { status: 500 })),
-    );
+    const transport = vi.fn(async () => new Response("nope", { status: 500 }));
     const plugins = [installed({ grantedScopes: ["read_orders"] })];
     for (let i = 0; i < 3; i += 1) {
-      const out = await runHook(plugins, "order.created", {});
+      const out = await runHook(
+        plugins,
+        "order.created",
+        {},
+        undefined,
+        transport,
+      );
       expect(out[0].status).toBe("error");
     }
-    const out = await runHook(plugins, "order.created", {});
+    const out = await runHook(
+      plugins,
+      "order.created",
+      {},
+      undefined,
+      transport,
+    );
     expect(out[0].status).toBe("skipped");
   });
 
   it("skips disabled plugins entirely — the kill switch stops hook traffic", async () => {
     const fetchMock = vi.fn();
-    vi.stubGlobal("fetch", fetchMock);
     const out = await runHook(
       [installed({ enabled: false })],
       "order.created",
       {},
+      undefined,
+      fetchMock,
     );
     expect(out[0].status).toBe("skipped");
     expect(fetchMock).not.toHaveBeenCalled();
@@ -369,35 +386,32 @@ describe("server hooks", () => {
 
   it("bounds hook latency with a timeout", async () => {
     expect(HOOK_TIMEOUT_MS).toBeLessThanOrEqual(1000);
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        (_url: string, init: RequestInit) =>
-          new Promise((_resolve, reject) => {
-            init.signal?.addEventListener("abort", () =>
-              reject(
-                Object.assign(new Error("aborted"), { name: "AbortError" }),
-              ),
-            );
-          }),
-      ),
+    const transport = vi.fn(
+      (_url: string, init: RequestInit): Promise<Response> =>
+        new Promise((_resolve, reject) => {
+          init.signal?.addEventListener("abort", () =>
+            reject(Object.assign(new Error("aborted"), { name: "AbortError" })),
+          );
+        }),
     );
     const out = await runHook(
       [installed({ grantedScopes: ["read_orders"] })],
       "order.created",
       {},
       20,
+      transport,
     );
     expect(out[0].status).toBe("timeout");
   });
 
   it("skips when HOOK_SCOPE unsatisfied — no fetch (R2-0 deny)", async () => {
     const fetchMock = vi.fn();
-    vi.stubGlobal("fetch", fetchMock);
     const out = await runHook(
       [installed({ grantedScopes: ["read_shop"] })], // missing read_orders for order.created
       "order.created",
       { id: "o1" },
+      undefined,
+      fetchMock,
     );
     expect(out[0].status).toBe("skipped:scope");
     expect(fetchMock).not.toHaveBeenCalled();
@@ -405,18 +419,17 @@ describe("server hooks", () => {
 
   it("signs every callback with framique-signature t=,v1=", async () => {
     let seen: RequestInit | undefined;
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async (_url: string, init: RequestInit) => {
-        seen = init;
-        return new Response("{}", { status: 200 });
-      }),
-    );
+    const transport = vi.fn(async (_url: string, init: RequestInit) => {
+      seen = init;
+      return new Response("{}", { status: 200 });
+    });
     process.env.PLUGIN_HOOK_SECRET = "test-secret";
     const out = await runHook(
       [installed({ grantedScopes: ["read_orders"] })],
       "order.created",
       { id: "o1" },
+      undefined,
+      transport,
     );
     expect(out[0].status).toBe("ok");
     const headers = seen?.headers as Record<string, string>;
@@ -460,40 +473,57 @@ describe("server hooks", () => {
 
   it("keeps a stable idempotency key for identical payloads (R2-3)", async () => {
     enqueueJobMock.mockResolvedValue({ id: "job-1", duplicate: false });
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async () => new Response("nope", { status: 500 })),
-    );
+    const transport = vi.fn(async () => new Response("nope", { status: 500 }));
     const plugins = [installed({ grantedScopes: ["read_orders"] })];
-    await runHook(plugins, "order.created", { id: "same" });
-    await runHook(plugins, "order.created", { id: "same" });
+    await runHook(
+      plugins,
+      "order.created",
+      { id: "same" },
+      undefined,
+      transport,
+    );
+    await runHook(
+      plugins,
+      "order.created",
+      { id: "same" },
+      undefined,
+      transport,
+    );
     const keys = enqueueJobMock.mock.calls.map((c) => c[0].idempotencyKey);
     expect(keys).toHaveLength(2);
     expect(keys[0]).toBe(keys[1]);
     resetBreakers();
-    await runHook(plugins, "order.created", { id: "different" });
+    await runHook(
+      plugins,
+      "order.created",
+      { id: "different" },
+      undefined,
+      transport,
+    );
     const later = enqueueJobMock.mock.calls[2][0].idempotencyKey;
     expect(later).not.toBe(keys[0]);
   });
 
   it("runHook never rejects even when fetch and queue both fail", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(() => {
-        throw new TypeError("network down");
-      }),
-    );
+    const transport = vi.fn(() => {
+      throw new TypeError("network down");
+    });
     const plugins = [installed({ grantedScopes: ["read_orders"] })];
-    const out = await runHook(plugins, "order.created", { id: "x" });
+    const out = await runHook(
+      plugins,
+      "order.created",
+      { id: "x" },
+      undefined,
+      transport,
+    );
     expect(out[0].status).toBe("error");
     await expect(
-      runHook(plugins, "order.created", { id: "x" }),
+      runHook(plugins, "order.created", { id: "x" }, undefined, transport),
     ).resolves.toBeTruthy();
   });
 
   it("refuses egress-denied hooksUrl at live delivery without fetch (defense in depth)", async () => {
     const fetchMock = vi.fn(async () => new Response("{}", { status: 200 }));
-    vi.stubGlobal("fetch", fetchMock);
     const blocked = [
       "https://127.0.0.1/hooks",
       "https://192.168.1.20/hooks",
@@ -507,7 +537,13 @@ describe("server hooks", () => {
         ...base,
         manifest: { ...base.manifest, hooksUrl },
       };
-      const out = await runHook([plugin], "order.created", { id: "o1" });
+      const out = await runHook(
+        [plugin],
+        "order.created",
+        { id: "o1" },
+        undefined,
+        fetchMock,
+      );
       expect(out[0].status, hooksUrl).toBe("skipped");
     }
     expect(fetchMock).not.toHaveBeenCalled();
@@ -527,13 +563,10 @@ describe("queued hook delivery", () => {
 
   it("delivers a queued hook with HMAC and reports ok", async () => {
     let seen: RequestInit | undefined;
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async (_url: string, init: RequestInit) => {
-        seen = init;
-        return new Response("{}", { status: 200 });
-      }),
-    );
+    const transport = vi.fn(async (_url: string, init: RequestInit) => {
+      seen = init;
+      return new Response("{}", { status: 200 });
+    });
     process.env.PLUGIN_HOOK_SECRET = "test-secret";
     const { deliverQueuedHook } = await import("./plugin-hooks.server");
     const body = JSON.stringify({
@@ -541,13 +574,16 @@ describe("queued hook delivery", () => {
       payload: { id: "o1" },
       settings: {},
     });
-    const res = await deliverQueuedHook({
-      pluginId: "loyalty-lite",
-      installId: "install-1",
-      hook: "order.created",
-      body,
-      hooksUrl: "https://apps.example.com/hooks",
-    });
+    const res = await deliverQueuedHook(
+      {
+        pluginId: "loyalty-lite",
+        installId: "install-1",
+        hook: "order.created",
+        body,
+        hooksUrl: "https://apps.example.com/hooks",
+      },
+      { transport },
+    );
     expect(res).toEqual({ ok: true, installId: "install-1" });
     const headers = seen?.headers as Record<string, string>;
     expect(headers["framique-signature"]).toMatch(/^t=\d+,v1=[0-9a-f]{64}$/);
@@ -572,40 +608,40 @@ describe("queued hook delivery", () => {
   });
 
   it("returns breaker_open while the circuit is open (dead_letter via queue)", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async () => new Response("nope", { status: 500 })),
-    );
+    const transport = vi.fn(async () => new Response("nope", { status: 500 }));
     const plugins = [installed({ grantedScopes: ["read_orders"] })];
     for (let i = 0; i < 3; i += 1) {
-      await runHook(plugins, "order.created", {});
+      await runHook(plugins, "order.created", {}, undefined, transport);
     }
     const { deliverQueuedHook } = await import("./plugin-hooks.server");
     await expect(
-      deliverQueuedHook({
-        pluginId: "loyalty-lite",
-        installId: "install-1",
-        hook: "order.created",
-        body: "{}",
-        hooksUrl: "https://apps.example.com/hooks",
-      }),
+      deliverQueuedHook(
+        {
+          pluginId: "loyalty-lite",
+          installId: "install-1",
+          hook: "order.created",
+          body: "{}",
+          hooksUrl: "https://apps.example.com/hooks",
+        },
+        { transport },
+      ),
     ).resolves.toEqual({ ok: false, reason: "breaker_open" });
   });
 
   it("throws on non-2xx so the queue retries toward dead_letter", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(async () => new Response("boom", { status: 500 })),
-    );
+    const transport = vi.fn(async () => new Response("boom", { status: 500 }));
     const { deliverQueuedHook } = await import("./plugin-hooks.server");
     await expect(
-      deliverQueuedHook({
-        pluginId: "loyalty-lite",
-        installId: "install-1",
-        hook: "order.created",
-        body: "{}",
-        hooksUrl: "https://apps.example.com/hooks",
-      }),
+      deliverQueuedHook(
+        {
+          pluginId: "loyalty-lite",
+          installId: "install-1",
+          hook: "order.created",
+          body: "{}",
+          hooksUrl: "https://apps.example.com/hooks",
+        },
+        { transport },
+      ),
     ).rejects.toThrow(/status_500/);
     const outcome = afterFailure(policyFor("plugins"), 6, "job-x", true);
     expect(outcome).toEqual({ next: "dead", runAfterSeconds: 0, dead: true });
@@ -613,7 +649,6 @@ describe("queued hook delivery", () => {
 
   it("refuses egress-denied hooksUrl in queued redelivery without fetch", async () => {
     const fetchMock = vi.fn(async () => new Response("{}", { status: 200 }));
-    vi.stubGlobal("fetch", fetchMock);
     const { deliverQueuedHook } = await import("./plugin-hooks.server");
     const blocked = [
       "https://127.0.0.1/hooks",
@@ -623,13 +658,16 @@ describe("queued hook delivery", () => {
     ];
     for (const hooksUrl of blocked) {
       await expect(
-        deliverQueuedHook({
-          pluginId: "loyalty-lite",
-          installId: "install-1",
-          hook: "order.created",
-          body: "{}",
-          hooksUrl,
-        }),
+        deliverQueuedHook(
+          {
+            pluginId: "loyalty-lite",
+            installId: "install-1",
+            hook: "order.created",
+            body: "{}",
+            hooksUrl,
+          },
+          { transport: fetchMock },
+        ),
       ).resolves.toEqual({ ok: false, reason: "egress_denied" });
     }
     expect(fetchMock).not.toHaveBeenCalled();

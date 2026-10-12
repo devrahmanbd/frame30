@@ -10,6 +10,8 @@
 
 import { incr, log, observe } from "./observability.server";
 import { EgressError, fetchWithEgressGuard } from "./egress-fetch";
+import type { EgressTransport } from "./egress-fetch";
+export type { EgressTransport };
 import {
   isAllowedHooksUrl,
   parseManifest,
@@ -241,6 +243,7 @@ async function callOne(
   hook: ServerHook,
   payload: unknown,
   timeoutMs: number,
+  transport?: EgressTransport,
 ): Promise<HookOutcome> {
   const started = Date.now();
   if (
@@ -316,6 +319,7 @@ async function callOne(
           ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
         },
         body,
+        ...(transport ? { transport } : {}),
       })
     ).response;
     if (!res.ok) throw new Error(`status_${res.status}`);
@@ -391,11 +395,12 @@ export async function runHook(
   hook: ServerHook,
   payload: unknown,
   timeoutMs = HOOK_TIMEOUT_MS,
+  transport?: EgressTransport,
 ): Promise<HookOutcome[]> {
   const subscribers = installed.filter((p) => p.manifest.hooks.includes(hook));
   if (!subscribers.length) return [];
   const outcomes = await Promise.all(
-    subscribers.map((p) => callOne(p, hook, payload, timeoutMs)),
+    subscribers.map((p) => callOne(p, hook, payload, timeoutMs, transport)),
   );
   // Phase 8.7: timeout and skip rate per hook is how an operator sees a plugin
   // degrading before merchants report it.
@@ -428,6 +433,8 @@ export type QueuedHookDb = {
 
 export type DeliverQueuedHookDeps = {
   db?: QueuedHookDb | null;
+  /** Test seam: injected transport for the guarded POST. */
+  transport?: EgressTransport;
 };
 
 type QueuedInstallRow = {
@@ -585,6 +592,7 @@ export async function deliverQueuedHook(
         ...(signature ? { [SIGNATURE_HEADER]: signature } : {}),
       },
       body,
+      ...(deps.transport ? { transport: deps.transport } : {}),
     }));
   } catch (err) {
     // Timeout (and any other network error): throw so the queue retries

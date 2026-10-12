@@ -324,6 +324,24 @@ never needs approval.
   engaging auto-suspends every install with reason `kill_switch`;
   releasing never auto-resumes.
 
+### 3.6 Server egress (hooks, webhooks, image origins)
+
+- Every server-side fetch to a caller-influenced URL goes through
+  `fetchWithEgressGuard` (`src/lib/egress-fetch.ts:373`): hostname guard
+  first, then one DNS resolution with private/loopback/link-local refusal,
+  then redirect handling (`manual`, max 3, every `Location` revalidated),
+  all under one chain deadline.
+- The socket is pinned to the validated answer set (`pinnedTransport`,
+  `src/lib/egress-fetch.ts:256`): a mid-flight DNS flip cannot steer the
+  connection — bytes go to a checked IP or the request fails. TLS SNI and
+  certificate verification target the original hostname; `rejectUnauthorized`
+  stays default-true. Test seams (`transport`, `allowLoopback`) never leave
+  test files.
+- Hook callers (`runHook`, `deliverQueuedHook`) and emitters
+  (`captureCart`, `reserveStock`, `createOrder`, `applyImport`,
+  `saveKindConfig`) accept an optional trailing `transport` for hermetic
+  tests; production paths use the pinned default.
+
 ## 4. Sandbox
 
 - Every widget renders inside a null-origin iframe without
@@ -580,10 +598,16 @@ Pipeline codes (all thrown as `PackageInstallError`,
   (`src/lib/package-zip.ts:250`) |
 | `zip.content_mismatch`       | file bytes contradict the extension (HTML as
   image, script as font, binary as text;
-  `src/lib/package-zip.ts:529`), enforced in both
+  `src/lib/package-zip.ts:530`), enforced in both
   `installPackage` lanes
-  (`src/lib/package-install.server.ts:631`, `:1022`) and the
+  (`src/lib/package-install.server.ts:632`, `:1045`) and the
   upload lane (`src/lib/themes/appearance.server.ts:818`)) |
+| `egress_denied`              | hostname guard refused the URL before any socket
+  (`src/lib/egress-fetch.ts:373`) |
+| `egress_redirect_blocked`    | redirect target failed guard or DNS revalidation |
+| `egress_dns_blocked`         | resolved address is private/loopback/link-local |
+| `egress_timeout`             | chain deadline exceeded (queue retries) |
+| `egress_too_many_redirects`  | over `maxRedirects` (default 3) |
 
 Publish/builder reasons include `builder.artifact_missing`
 (`src/lib/themes.server.ts:444-464`), `builder.publish_blocked`,

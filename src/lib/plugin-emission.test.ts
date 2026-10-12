@@ -11,6 +11,11 @@
  * the subscriber 500s.
  */
 import { describe, expect, it, vi, afterEach } from "vitest";
+// Hermetic DNS: hook tests must never depend on wall-clock resolver
+// behavior under parallel load. Every default resolution answers public.
+vi.mock("node:dns/promises", () => ({
+  lookup: async () => [{ address: "93.184.216.34", family: 4 }],
+}));
 import { fakeDb } from "./__fixtures__/fake-db";
 import {
   metricRecorder,
@@ -126,21 +131,17 @@ function subscriber(hook: ServerHook): InstalledPlugin {
 }
 
 function stubFetchOk() {
-  const mock = vi.fn(
+  return vi.fn(
     async (_url: string, _init?: RequestInit) =>
       new Response("{}", { status: 200 }),
   );
-  vi.stubGlobal("fetch", mock);
-  return mock;
 }
 
 function stubFetch500() {
-  const mock = vi.fn(
+  return vi.fn(
     async (_url: string, _init?: RequestInit) =>
       new Response("boom", { status: 500 }),
   );
-  vi.stubGlobal("fetch", mock);
-  return mock;
 }
 
 function fetchBody(fetchMock: ReturnType<typeof stubFetchOk>) {
@@ -158,13 +159,19 @@ describe("R2-4 emission contract", () => {
   ] as const)(
     "runHook(%s) delivers to subscribers and never rejects",
     async (hook) => {
-      stubFetchOk();
+      const okTransport = stubFetchOk();
       const installed = [subscriber(hook)];
-      const out = await runHook(installed, hook, { merchantId: "m1" });
+      const out = await runHook(
+        installed,
+        hook,
+        { merchantId: "m1" },
+        undefined,
+        okTransport,
+      );
       expect(out[0]?.status).toBe("ok");
-      stubFetch500();
+      const errTransport = stubFetch500();
       await expect(
-        runHook(installed, hook, { merchantId: "m1" }),
+        runHook(installed, hook, { merchantId: "m1" }, undefined, errTransport),
       ).resolves.toBeTruthy();
     },
   );
@@ -198,7 +205,7 @@ describe("R2-4 cart.calculate emission (captureCart)", () => {
   it("fires cart.calculate and keeps the capture result", async () => {
     const fetchMock = stubFetchOk();
     listInstalledPluginsMock.mockResolvedValue([subscriber("cart.calculate")]);
-    const out = await captureCart(cartDb().asClient(), input);
+    const out = await captureCart(cartDb().asClient(), input, fetchMock);
     expect(out).toEqual({ id: "cart-1" });
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(recorder.logs.map((l) => l.event)).toContain("plugin.hook.emitted");
@@ -207,7 +214,7 @@ describe("R2-4 cart.calculate emission (captureCart)", () => {
   it("still captures when the subscriber 500s, with no PII or bearer token in the payload", async () => {
     const fetchMock = stubFetch500();
     listInstalledPluginsMock.mockResolvedValue([subscriber("cart.calculate")]);
-    const out = await captureCart(cartDb().asClient(), input);
+    const out = await captureCart(cartDb().asClient(), input, fetchMock);
     expect(out).toEqual({ id: "cart-1" });
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const body = fetchBody(fetchMock);
@@ -247,6 +254,7 @@ describe("R2-4 checkout.validate emission (reserveStock)", () => {
       "tok-1",
       [{ variantId: "v1", quantity: 2 }],
       "subject-1",
+      fetchMock,
     );
     expect(out.token).toBe("tok-1");
     expect(typeof out.expires_at).toBe("string");
@@ -266,6 +274,7 @@ describe("R2-4 checkout.validate emission (reserveStock)", () => {
       "tok-1",
       [{ variantId: "v1", quantity: 2 }],
       "subject-1",
+      fetchMock,
     );
     expect(out.token).toBe("tok-1");
     expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -352,7 +361,7 @@ describe("R2-4 order.created emission (createOrder)", () => {
     adminHolder.db = orderDb().asClient();
     seedPricing();
     listInstalledPluginsMock.mockResolvedValue([subscriber("order.created")]);
-    const out = await createOrder(input, "subject-1");
+    const out = await createOrder(input, "subject-1", fetchMock);
     expect(out.orderId).toBeTruthy();
     expect(out.orderNumber).toMatch(/^FQ-/);
     expect(out.accessToken).toBeTruthy();
@@ -369,6 +378,7 @@ describe("R2-4 order.created emission (createOrder)", () => {
     const out = await createOrder(
       { ...input, idempotencyKey: "idem-r24-2", checkoutToken: "ctok-r24-2" },
       "subject-1",
+      fetchMock,
     );
     expect(out.orderId).toBeTruthy();
     expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -398,7 +408,12 @@ describe("R2-4 product.saved emission (catalog)", () => {
   it("fires product.saved on applyImport and keeps the result", async () => {
     const fetchMock = stubFetchOk();
     listInstalledPluginsMock.mockResolvedValue([subscriber("product.saved")]);
-    const out = await applyImport(importDb().asClient(), "m1", "job-1");
+    const out = await applyImport(
+      importDb().asClient(),
+      "m1",
+      "job-1",
+      fetchMock,
+    );
     expect(out).toEqual({ replayed: false, summary: {} });
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(recorder.logs.map((l) => l.event)).toContain("plugin.hook.emitted");
@@ -407,7 +422,12 @@ describe("R2-4 product.saved emission (catalog)", () => {
   it("still applies the import when the subscriber 500s", async () => {
     const fetchMock = stubFetch500();
     listInstalledPluginsMock.mockResolvedValue([subscriber("product.saved")]);
-    const out = await applyImport(importDb().asClient(), "m1", "job-1");
+    const out = await applyImport(
+      importDb().asClient(),
+      "m1",
+      "job-1",
+      fetchMock,
+    );
     expect(out).toEqual({ replayed: false, summary: {} });
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
@@ -435,7 +455,9 @@ describe("R2-4 product.saved emission (catalog)", () => {
         maxDownloads: 3,
         expiryHours: 48,
       },
-    });
+      },
+      fetchMock,
+    );
     expect(out).toEqual({ ok: true });
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const body = fetchBody(fetchMock);
@@ -469,7 +491,9 @@ describe("R2-4 product.saved emission (catalog)", () => {
         maxDownloads: 3,
         expiryHours: 48,
       },
-    });
+      },
+      fetchMock,
+    );
     expect(out).toEqual({ ok: true });
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
