@@ -349,7 +349,10 @@ const RULES = [
 //     or chat messages (`m.role === "customer"`) are the normal auth/chat
 //     pattern; request-direct role reads (`req.query.role`) are the vuln.
 //   - tainted-url-attr uses req-provenance ONLY (see rule comment).
-// Known limits: file-global (no block scoping), no inter-procedural flow,
+// Known limits: file-global (no block scoping), one inter-procedural level
+//   (single-line declarations/calls/returns; methods, destructured params,
+//   and colliding param names out of scope), cross-file named imports from
+//   relative paths only (depth-capped; default/namespace/CommonJS deferred),
 //   member writes (`o.k = tainted`) do not taint the object, regex literals
 //   containing `//` may truncate analysis of that one line.
 // Deferred with reasons: tainted-html / tainted-shell — the base html-sink
@@ -609,16 +612,488 @@ function directReqOn(code) {
   return false;
 }
 
+// ---------------------------------------------------------------------------
+// Cross-boundary taint: intra-file inter-procedural + cross-file imports.
+// One level, bounded, no dependencies. Findings still fire only when taint
+// reaches a sink on a scanned line; the authority/provenance gates of the
+// sink checkers are unchanged.
+//   (a) arg->param: `load(u)` with request-tainted `u` taints `load`'s
+//       parameter when that parameter name is unique in the file (colliding
+//       names stay unpropagated — see benign-param.ts), so `fetch(param)`
+//       in the callee fires. DB-tainted args are NOT threaded (deferred:
+//       they flagged the benign same-origin `back(path)` URL builder in
+//       payments.server.ts). `called` records params with call-site
+//       evidence; the transparent-forwarding carve-out yields to it.
+//   (b) return->caller: `const u = getNext()` taints `u` when `getNext`
+//       unconditionally returns tainted data, or passes a tainted argument
+//       through positionally (param-derived returns).
+//   (c) cross-file: named imports from relative paths resolve `./x` plus
+//       extension and `/index` candidates (depth-capped, cached). An imported
+//       value alias inherits taint when the export is assigned from a tainted
+//       source at its definition; an imported function merges as a stub so
+//       (a)/(b) apply to its call sites. Re-exports (`export { x } from`)
+//       are followed one hop. Default/namespace/CommonJS imports, methods,
+//       destructured params, and multi-line declarations/calls/returns are
+//       out of scope (documented limits, each with a benign twin or reason).
+// ---------------------------------------------------------------------------
+function dirOf(p) {
+  const i = p.lastIndexOf("/");
+  return i === -1 ? "." : p.slice(0, i);
+}
+
+/** Positional params: simple identifiers by index; destructured slots are null. */
+function splitParams(paramStr) {
+  const names = [];
+  let rest = null;
+  for (const chunk0 of paramStr.split(",")) {
+    const c0 = chunk0.trim();
+    if (!c0) continue;
+    const isRest = c0.startsWith("...");
+    const chunk = (isRest ? c0.slice(3) : c0).trim();
+    if (!chunk) continue;
+    if (chunk[0] === "{" || chunk[0] === "[") {
+      if (!isRest) names.push(null);
+      continue;
+    }
+    const m = chunk.match(/^([A-Za-z_$][\w$]*)/);
+    if (!m) {
+      if (!isRest) names.push(null);
+      continue;
+    }
+    if (isRest) rest = m[1];
+    else names.push(m[1]);
+  }
+  return { names, rest };
+}
+
+const FUNC_DECL_RE =
+  /(?:^|[;{}])\s*(?:export\s+default\s+|export\s+)?(?:async\s+)?function\s*\*?\s*([A-Za-z_$][\w$]*)\s*\(([^()]*)\)/;
+const FUNC_ARROW_RE =
+  /(?:^|[;{}])\s*(?:export\s+)?(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:async\s+)?(?:function\s*\*?\s*\(([^()]*)\)|\(([^()]*)\)\s*=>|([A-Za-z_$][\w$]*)\s*=>)/;
+const RETURN_RE = /^\s*return\s+([^;]+?)\s*;?\s*$/;
+
+/** name -> { names, rest, returns[], start, end }: single-line declarators. */
+function buildFuncTable(codes) {
+  const table = new Map();
+  const n = codes.length;
+  for (let i = 0; i < n; i++) {
+    const code = codes[i];
+    let m = code.match(FUNC_DECL_RE);
+    let name = m?.[1];
+    let paramStr = m?.[2];
+    let after = m ? code.slice(m.index + m[0].length) : "";
+    if (!name) {
+      m = code.match(FUNC_ARROW_RE);
+      if (!m) continue;
+      name = m[1];
+      paramStr = m[2] ?? m[3] ?? m[4] ?? "";
+      after = code.slice(m.index + m[0].length);
+      if (m[2] === undefined && !after.trimStart().startsWith("{")) {
+        // Expression-bodied arrow: the body itself is the return value.
+        const expr = after.trim().replace(/;\s*$/, "");
+        if (!expr || table.has(name)) continue;
+        const { names, rest } = splitParams(paramStr);
+        table.set(name, { names, rest, returns: [expr], start: i, end: i });
+        continue;
+      }
+    }
+    if (!name || table.has(name)) continue;
+    const brace = after.indexOf("{");
+    if (brace === -1) continue; // overload signature / bodyless — skip
+    let start = -1;
+    let depth = 0;
+    let end = i;
+    for (let j = i; j < n && j < i + 400; j++) {
+      const line = codes[j];
+      const s0 = j === i ? m.index + m[0].length + brace : 0;
+      for (let k = s0; k < line.length; k++) {
+        const c = line[k];
+        if (c === "{") {
+          if (start === -1) start = j;
+          depth++;
+        } else if (c === "}") {
+          depth--;
+          if (depth === 0 && start !== -1) {
+            end = j;
+            break;
+          }
+        }
+      }
+      if (start !== -1 && depth === 0) break;
+    }
+    if (start === -1) continue;
+    const { names, rest } = splitParams(paramStr ?? "");
+    table.set(name, { names, rest, returns: [], start, end });
+  }
+  // Returns, excluding lines owned by a nested function body.
+  for (const entry of table.values()) {
+    if (entry.returns.length > 0) continue; // arrow-expr body already set
+    for (let j = entry.start; j <= entry.end; j++) {
+      let nested = false;
+      for (const [oname, o] of table) {
+        if (o === entry) continue;
+        if (j > o.start && j <= o.end) {
+          nested = true;
+          break;
+        }
+      }
+      if (nested) continue;
+      const rm = codes[j].match(RETURN_RE);
+      if (rm && rm[1].trim()) entry.returns.push(rm[1].trim());
+    }
+  }
+  return table;
+}
+
+const XBOUND_TARGET_BYTES = 500_000;
+const xboundCache = new Map(); // absPath -> summary | null (read-only after store)
+const xboundActive = new Set(); // cycle guard for recursive imports
+
+const IMPORT_RE = /import\s*\{([^}]*)\}\s*from\s*['"]([^'"]+)['"]/;
+const EXPORT_FROM_RE = /export\s*\{([^}]*)\}\s*from\s*['"]([^'"]+)['"]/;
+const EXPORT_STAR_RE = /export\s*\*\s*from\s*['"]([^'"]+)['"]/;
+const EXPORT_LOCAL_RE = /export\s*\{([^}]*)\}/;
+const CALL_RE = /(?<![.\w$])([A-Za-z_$][\w$]*)\s*\(/g;
+
+/** Read a relative import target: extension + `/index` candidates. */
+function readRelativeTarget(base, spec) {
+  const cands = [
+    spec,
+    `${spec}.ts`,
+    `${spec}.tsx`,
+    `${spec}.js`,
+    `${spec}.jsx`,
+    `${spec}.mjs`,
+    `${spec}.cjs`,
+    `${spec}/index.ts`,
+    `${spec}/index.tsx`,
+    `${spec}/index.js`,
+    `${spec}/index.jsx`,
+    `${spec}/index.mjs`,
+  ];
+  for (const cand of cands) {
+    try {
+      const abs = resolve(base, cand);
+      const content = readFileSync(abs, "utf8");
+      if (content.length > XBOUND_TARGET_BYTES) return null;
+      return { abs, content };
+    } catch {
+      // next candidate
+    }
+  }
+  return null;
+}
+
+/** Export map of raw lines: locals, re-exports, star-re-exports. */
+function parseExports(rawLines) {
+  const loc = new Map(); // exportName -> localName
+  const rem = new Map(); // exportName -> { spec, orig }
+  const star = [];
+  for (const line of rawLines) {
+    let m = line.match(EXPORT_FROM_RE);
+    if (m) {
+      if (m[2].startsWith(".")) {
+        for (const part of m[1].split(",")) {
+          const pm = part
+            .trim()
+            .match(/^([A-Za-z_$][\w$]*)(?:\s+as\s+([A-Za-z_$][\w$]*))?$/);
+          if (pm) rem.set(pm[2] ?? pm[1], { spec: m[2], orig: pm[1] });
+        }
+      }
+      continue;
+    }
+    m = line.match(EXPORT_STAR_RE);
+    if (m) {
+      if (m[1].startsWith(".")) star.push(m[1]);
+      continue;
+    }
+    m = line.match(EXPORT_LOCAL_RE);
+    if (m) {
+      for (const part of m[1].split(",")) {
+        const pm = part
+          .trim()
+          .match(/^([A-Za-z_$][\w$]*)(?:\s+as\s+([A-Za-z_$][\w$]*))?$/);
+        if (pm) loc.set(pm[2] ?? pm[1], pm[1]);
+      }
+      continue;
+    }
+    m = line.match(/export\s+(?:const|let|var)\s+([A-Za-z_$][\w$]*)/);
+    if (m) {
+      loc.set(m[1], m[1]);
+      continue;
+    }
+    m = line.match(
+      /export\s+default\s+(?:async\s+)?function\s*\*?\s*([A-Za-z_$][\w$]*)/,
+    );
+    if (m) {
+      loc.set(m[1], m[1]);
+      continue;
+    }
+    m = line.match(/export\s+(?:async\s+)?function\s*\*?\s*([A-Za-z_$][\w$]*)/);
+    if (m) {
+      loc.set(m[1], m[1]);
+      continue;
+    }
+    m = line.match(/export\s+default\s+([A-Za-z_$][\w$]*)\s*;?\s*$/);
+    if (m) loc.set("default", m[1]);
+  }
+  return { loc, rem, star };
+}
+
+/** Per-function return summary: unconditional req/db + passthrough slots. */
+function summarizeFunctions(funcTable, req, db) {
+  const fns = new Map();
+  for (const [name, e] of funcTable) {
+    if (e.stub) {
+      fns.set(name, {
+        params: e.names,
+        rest: e.rest,
+        reqRet: e.stubReqRet,
+        dbRet: e.stubDbRet,
+        flow: e.stubFlow,
+      });
+      continue;
+    }
+    const pset = new Set([
+      ...e.names.filter(Boolean),
+      ...(e.rest ? [e.rest] : []),
+    ]);
+    let reqRet = false;
+    let dbRet = false;
+    const flow = new Set();
+    for (const r of e.returns) {
+      const ids = [...readIdents(r)];
+      if (
+        directReqOn(r) ||
+        ids.some((id) => req.has(id) && !pset.has(id))
+      )
+        reqRet = true;
+      if (DB_SRC_RE.test(r) || ids.some((id) => db.has(id) && !pset.has(id)))
+        dbRet = true;
+      e.names.forEach((p, idx) => {
+        if (p && ids.includes(p)) flow.add(idx);
+      });
+      if (e.rest && ids.includes(e.rest)) flow.add(e.names.length);
+    }
+    fns.set(name, { params: e.names, rest: e.rest, reqRet, dbRet, flow });
+  }
+  return fns;
+}
+
+/** Cached, cycle-guarded taint summary of another file (depth-capped). */
+function analyzeFileTaint(absPath, depth) {
+  if (xboundCache.has(absPath)) return xboundCache.get(absPath);
+  if (depth > 2 || xboundActive.has(absPath)) return null;
+  let content;
+  try {
+    content = readFileSync(absPath, "utf8");
+  } catch {
+    return null;
+  }
+  if (content.length > XBOUND_TARGET_BYTES) {
+    xboundCache.set(absPath, null);
+    return null;
+  }
+  xboundActive.add(absPath);
+  try {
+    const rawLines = content.split("\n");
+    const inner = analyzeTaintInner(rawLines, dirOf(absPath), depth);
+    const summary = {
+      ...inner,
+      exports: parseExports(rawLines),
+      absPath,
+      depth,
+    };
+    xboundCache.set(absPath, summary);
+    return summary;
+  } finally {
+    xboundActive.delete(absPath);
+  }
+}
+
+/** Resolve an export name to a value/flow binding (one re-export hop). */
+function resolveExportBinding(t, orig) {
+  const seen = new Set();
+  let cur = t;
+  let name = orig;
+  while (cur) {
+    const key = `${cur.absPath}::${name}`;
+    if (seen.has(key)) return null;
+    seen.add(key);
+    const ex = cur.exports;
+    if (ex.loc.has(name)) {
+      const local = ex.loc.get(name);
+      if (cur.fns.has(local)) {
+        const f = cur.fns.get(local);
+        return {
+          kind: "fn",
+          params: f.params,
+          rest: f.rest,
+          reqRet: f.reqRet,
+          dbRet: f.dbRet,
+          flow: f.flow,
+        };
+      }
+      if (cur.req.has(local)) return { kind: "value", prov: "req" };
+      if (cur.any.has(local)) return { kind: "value", prov: "db" };
+      return null;
+    }
+    if (ex.rem.has(name)) {
+      if (cur.depth >= 2) return null;
+      const { spec, orig: o2 } = ex.rem.get(name);
+      const hit = readRelativeTarget(dirOf(cur.absPath), spec);
+      if (!hit) return null;
+      cur = analyzeFileTaint(hit.abs, cur.depth + 1);
+      name = o2;
+      continue;
+    }
+    for (const spec of ex.star) {
+      if (cur.depth >= 2) break;
+      const hit = readRelativeTarget(dirOf(cur.absPath), spec);
+      if (!hit) continue;
+      const t2 = analyzeFileTaint(hit.abs, cur.depth + 1);
+      if (!t2 || !t2.exports.loc.has(name)) continue;
+      const local = t2.exports.loc.get(name);
+      if (t2.fns.has(local)) {
+        const f = t2.fns.get(local);
+        return {
+          kind: "fn",
+          params: f.params,
+          rest: f.rest,
+          reqRet: f.reqRet,
+          dbRet: f.dbRet,
+          flow: f.flow,
+        };
+      }
+      if (t2.req.has(local)) return { kind: "value", prov: "req" };
+      if (t2.any.has(local)) return { kind: "value", prov: "db" };
+    }
+    return null;
+  }
+  return null;
+}
+
+/** Merge named relative imports: value taint + function stubs. */
+function mergeCrossFile(rawLines, baseDir, depth, funcTable, addReq, addDb) {
+  if (!baseDir || depth >= 2) return;
+  for (const line of rawLines) {
+    const m = line.match(IMPORT_RE);
+    if (!m || !m[2].startsWith(".")) continue;
+    const hit = readRelativeTarget(baseDir, m[2]);
+    if (!hit) continue;
+    const t = analyzeFileTaint(hit.abs, depth + 1);
+    if (!t) continue;
+    for (const part of m[1].split(",")) {
+      const pm = part
+        .trim()
+        .match(/^([A-Za-z_$][\w$]*)(?:\s+as\s+([A-Za-z_$][\w$]*))?$/);
+      if (!pm) continue;
+      const b = resolveExportBinding(t, pm[1]);
+      if (!b) continue;
+      const alias = pm[2] ?? pm[1];
+      if (b.kind === "value") {
+        if (b.prov === "req") addReq(alias);
+        else addDb(alias);
+      } else if (!funcTable.has(alias)) {
+        funcTable.set(alias, {
+          names: b.params,
+          rest: b.rest,
+          returns: [],
+          start: -1,
+          end: -1,
+          stub: true,
+          stubReqRet: b.reqRet,
+          stubDbRet: b.dbRet,
+          stubFlow: b.flow,
+        });
+      }
+    }
+  }
+}
+
+/** One sweep of call-site edges: arg->param (unique names) + return->LHS. */
+function sweepInterprocedural(codes, funcTable, useCount, s) {
+  const { req, db, addReq, addDb, called } = s;
+  const argReq = (a) =>
+    directReqOn(a) || [...readIdents(a)].some((id) => req.has(id));
+  const argDb = (a) =>
+    DB_SRC_RE.test(a) || [...readIdents(a)].some((id) => db.has(id));
+  const fns = summarizeFunctions(funcTable, req, db);
+  for (const code of codes) {
+    if (!code.trim() || !code.includes("(")) continue;
+    CALL_RE.lastIndex = 0;
+    let m;
+    while ((m = CALL_RE.exec(code)) !== null) {
+      const fname = m[1];
+      if (/(?:function|new)\s*$/.test(code.slice(0, m.index))) continue;
+      const entry = funcTable.get(fname);
+      const fn = fns.get(fname);
+      if (!entry || !fn) continue;
+      const openIdx = m.index + m[0].length - 1;
+      const args = callArgs(code, openIdx);
+      // (a) arg->param: stubs excluded (their params live in another file).
+      // Request-provenance ONLY: threading DB-tainted args into params
+      // flagged a benign same-origin builder (payments.server.ts
+      // `back(path)` — a DB-loaded provider enum interpolated into a
+      // relative path under `new URL(path, origin)`). DB cross-flow stays
+      // deferred; the sink checkers keep their own db handling.
+      if (!entry.stub) {
+        fn.params.forEach((p, idx) => {
+          if (!p || useCount.get(p) !== 1) return;
+          const a = (args[idx] ?? "").trim();
+          if (!a) return;
+          if (argReq(a)) {
+            addReq(p);
+            called.add(p);
+          }
+        });
+        if (fn.rest && useCount.get(fn.rest) === 1) {
+          const tail = args.slice(fn.params.length);
+          if (tail.some((a) => argReq(a.trim()))) {
+            addReq(fn.rest);
+            called.add(fn.rest);
+          }
+        }
+      }
+      // (b) return->caller LHS: unconditional first, then passthrough slots.
+      const split = splitAssignment(code);
+      if (!split) continue;
+      const lhs = boundIdents(split[0]);
+      if (lhs.length === 0) continue;
+      let prov = null;
+      if (fn.reqRet) prov = "req";
+      else if (fn.dbRet) prov = "db";
+      else {
+        for (const idx of fn.flow) {
+          const a =
+            idx < fn.params.length
+              ? (args[idx] ?? "")
+              : args.slice(idx).join(",");
+          if (!a.trim()) continue;
+          if (argReq(a)) {
+            prov = "req";
+            break;
+          }
+          if (argDb(a)) prov = "db";
+        }
+      }
+      if (prov === "req") for (const id of lhs) addReq(id);
+      else if (prov === "db") for (const id of lhs) addDb(id);
+    }
+  }
+}
+
 /**
  * Whole-file taint pre-pass. Returns { req, any, params }:
  * req = request-derived vars, any = req ∪ db-controlled vars,
  * params = all declared function-parameter names (forwarding carve-out).
  */
-function analyzeTaint(rawLines) {
+function analyzeTaintInner(rawLines, baseDir, depth) {
   const req = new Set();
   const db = new Set();
   const formish = new Set();
   const params = new Set();
+  const called = new Set();
   const codes = rawLines.map(codeOf);
 
   for (const code of codes) {
@@ -633,28 +1108,43 @@ function analyzeTaint(rawLines) {
     }
   }
 
+  let changed = false;
+  const addReq = (id) => {
+    if (!req.has(id)) {
+      req.add(id);
+      changed = true;
+    }
+  };
+  const addDb = (id) => {
+    if (!db.has(id)) {
+      db.add(id);
+      changed = true;
+    }
+  };
+  const hasReq = (ids) => {
+    for (const id of ids) if (req.has(id)) return true;
+    return false;
+  };
+  const hasDb = (ids) => {
+    for (const id of ids) if (db.has(id)) return true;
+    return false;
+  };
+
+  const funcTable = buildFuncTable(codes);
+  const useCount = new Map();
+  for (const e of funcTable.values()) {
+    if (e.stub) continue;
+    for (const p of [
+      ...e.names.filter(Boolean),
+      ...(e.rest ? [e.rest] : []),
+    ]) {
+      useCount.set(p, (useCount.get(p) ?? 0) + 1);
+    }
+  }
+  mergeCrossFile(rawLines, baseDir, depth, funcTable, addReq, addDb);
+
   for (let round = 0; round < 6; round++) {
-    let changed = false;
-    const addReq = (id) => {
-      if (!req.has(id)) {
-        req.add(id);
-        changed = true;
-      }
-    };
-    const addDb = (id) => {
-      if (!db.has(id)) {
-        db.add(id);
-        changed = true;
-      }
-    };
-    const hasReq = (ids) => {
-      for (const id of ids) if (req.has(id)) return true;
-      return false;
-    };
-    const hasDb = (ids) => {
-      for (const id of ids) if (db.has(id)) return true;
-      return false;
-    };
+    changed = false;
 
     for (const code of codes) {
       if (!code.trim()) continue;
@@ -711,9 +1201,36 @@ function analyzeTaint(rawLines) {
       if (taintReq || formGets) for (const id of lhs) addReq(id);
       if (taintDb) for (const id of lhs) addDb(id);
     }
+    sweepInterprocedural(codes, funcTable, useCount, {
+      req,
+      db,
+      addReq,
+      addDb,
+      called,
+    });
     if (!changed) break;
   }
-  return { req, any: new Set([...req, ...db]), params, codes };
+  const fns = summarizeFunctions(funcTable, req, db);
+  const anyRet = new Set();
+  const reqRet = new Set();
+  for (const [name, f] of fns) {
+    if (f.reqRet || f.dbRet) anyRet.add(name);
+    if (f.reqRet) reqRet.add(name);
+  }
+  return {
+    req,
+    any: new Set([...req, ...db]),
+    params,
+    codes,
+    called,
+    anyRet,
+    reqRet,
+    fns,
+  };
+}
+
+function analyzeTaint(rawLines, rel) {
+  return analyzeTaintInner(rawLines, rel ? dirOf(join(ROOT, rel)) : null, 0);
 }
 
 /** In-file definitions of a variable: masked RHS strings (assign + for-of/in). */
@@ -817,7 +1334,7 @@ function urlValueFinding(rawArg, taint, what, depth = 0) {
   const masked = codeOf(rawArg);
   const t = masked.trim();
   if (/^[A-Za-z_$][\w$]*$/.test(t)) {
-    if (taint.params.has(t)) return null; // transparent forwarding
+    if (taint.params.has(t) && !taint.called?.has(t)) return null; // transparent forwarding without call-site taint
     if (!taint.any.has(t)) return null;
     // Resolve through in-file definitions: a tainted alias of a safe
     // authority (`${base}/...`, env consts) is not attacker-steered.
@@ -827,6 +1344,9 @@ function urlValueFinding(rawArg, taint, what, depth = 0) {
       return `${what} from tainted variable \`${t}\``;
     for (const def of defs.slice(-3)) {
       const inner = def.trim();
+      const callee = inner.match(/^([A-Za-z_$][\w$]*)\s*\(/);
+      if (callee && taint.anyRet?.has(callee[1]))
+        return `${what} from tainted \`${callee[1]}()\` (via \`${t}\`)`;
       if (/^[A-Za-z_$][\w$]*$/.test(inner)) {
         if (inner === t) continue;
         const r = urlValueFinding(inner, taint, what, depth + 1);
@@ -1033,12 +1553,15 @@ function taintedUrlAttr(line, taint) {
   if (/^[A-Za-z_$][\w$]*$/.test(expr)) {
     // Bare alias: resolve through in-file definitions first, so a tainted
     // alias of a safe authority stays silent (mirrors tainted-egress).
-    if (!taint.req.has(expr) || taint.params.has(expr)) return null;
+    if (!taint.req.has(expr) || (taint.params.has(expr) && !taint.called?.has(expr))) return null;
     const defs = varDefs(taint.codes, expr);
     if (defs.length === 0)
       return `URL attribute from request-derived \`${expr}\``;
     for (const def of defs.slice(-3)) {
       const inner = def.trim();
+      const callee = inner.match(/^([A-Za-z_$][\w$]*)\s*\(/);
+      if (callee && taint.reqRet?.has(callee[1]))
+        return `URL attribute from request-derived \`${callee[1]}()\` (via \`${expr}\`)`;
       if (/^[A-Za-z_$][\w$]*$/.test(inner)) {
         if (inner !== expr && taint.req.has(inner))
           return `URL attribute from request-derived \`${inner}\` (via \`${expr}\`)`;
@@ -1053,7 +1576,7 @@ function taintedUrlAttr(line, taint) {
   if (directReqOn(head)) return "URL attribute from request-derived value";
   for (const id of readIdents(head)) {
     if (!taint.req.has(id)) continue; // db-provenance does not count here
-    if (taint.params.has(id)) continue; // transparent forwarding
+    if (taint.params.has(id) && !taint.called?.has(id)) continue; // transparent forwarding without call-site taint
     return `URL attribute from request-derived \`${id}\``;
   }
   return null;
@@ -1286,7 +1809,7 @@ for (const [rel, lines] of [...targets.entries()].sort()) {
   // Taint rules need whole-file context (sources live outside the diff),
   // but findings stay scoped to the scanned lines by the loop below.
   const taintScope = RULES.some((r) => r.id.startsWith("tainted-") && r.scope(rel));
-  const taint = taintScope ? analyzeTaint(content) : null;
+  const taint = taintScope ? analyzeTaint(content, rel) : null;
   for (const ln of [...lines].sort((a, b) => a - b)) {
     const line = content[ln - 1];
     if (line === undefined) continue; // line-number drift between diff and worktree

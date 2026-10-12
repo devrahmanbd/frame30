@@ -22,6 +22,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { daysBetween } from "./billing.server";
 import { money } from "./money";
+import { isOfficialPluginKey } from "./official-plugins";
 import {
   APP_VERSION,
   SELLER_SHARE_BASIS_POINTS,
@@ -1222,11 +1223,15 @@ export async function installBuiltinWidget(
     installId,
   );
 
-  // SWITCHOVER-2 — report the exact artifact without changing behaviour: the
-  // builtin manifest is the single source the pipeline ZIP exporter
-  // (`exportBuiltinPluginZip`) materialises, so this checksum is identical to
-  // a direct-upload install of the same preset (PKG-4 parity). Informational
-  // only — a failure here must never fail the install.
+  // SWITCHOVER-2 — report the install identity without changing behaviour.
+  // Official keys report the source fingerprint (the same identity the
+  // official catalogue stamps — see `official-plugins.server.ts`), computed
+  // from the validated manifest WITHOUT materializing anything: this lane
+  // never installs bytes, so building an archive just to hash it for an
+  // informational ref would reintroduce the exact bytes the official-path
+  // migration removes. Non-official builtins keep the historical byte-hash
+  // report (direct-upload parity). Informational only — a failure here must
+  // never fail the install.
   let builtinArtifact: {
     checksum: string;
     version: string;
@@ -1234,15 +1239,28 @@ export async function installBuiltinWidget(
     pinned: string;
   } | null = null;
   try {
-    const { exportBuiltinPluginZip } = await import("./plugin-package");
-    const { artifactIdFor } = await import("./package-install.server");
-    const bytes = exportBuiltinPluginZip(pluginId);
-    builtinArtifact = {
-      checksum: artifactIdFor(bytes),
-      version: pluginDef.manifest.version,
-      fileName: `${pluginId}.zip`,
-      pinned: `builtin:${pluginId}`,
-    };
+    if (isOfficialPluginKey(pluginId)) {
+      const { gateExportManifest } = await import("./plugin-package");
+      const { officialPluginFingerprint } =
+        await import("./official-plugins.server");
+      const gated = gateExportManifest(pluginDef.manifest);
+      builtinArtifact = {
+        checksum: officialPluginFingerprint(pluginDef.manifest),
+        version: gated.version,
+        fileName: `${pluginId}.zip`,
+        pinned: `builtin:${pluginId}`,
+      };
+    } else {
+      const { exportBuiltinPluginZip } = await import("./plugin-package");
+      const { artifactIdFor } = await import("./package-install.server");
+      const bytes = exportBuiltinPluginZip(pluginId);
+      builtinArtifact = {
+        checksum: artifactIdFor(bytes),
+        version: pluginDef.manifest.version,
+        fileName: `${pluginId}.zip`,
+        pinned: `builtin:${pluginId}`,
+      };
+    }
   } catch {
     builtinArtifact = null;
   }

@@ -11,9 +11,9 @@
  *   built-in registry, no ZIP) then the admin UI server fns (`activateTheme`,
  *   `deleteTheme`) on those source rows — proving the console operates the
  *   rows it lists.
- * - official plugin: `installOfficialPlugin` (real in-repo provider) →
- *   disable/enable → update → `rollbackPluginPackage` → uninstall, with host
- *   projection render proof.
+ * - official plugin: `installOfficialPlugin` (source-backed: registry-gated
+ *   manifest → ledger row with the `official:<key>` pin + source fingerprint
+ *   → host projection, no archive bytes) → disable/enable → update →
  * - custom plugin: `installPackage(kind: "plugin")` through the same steps,
  *   with host projection render proof.
  * - uploaded theme shell: `installUploadedTheme` (the drop-zone server
@@ -370,10 +370,10 @@ describe("LIFECYCLE official theme: source install → console activate/delete",
 /* ---------------------------------------- official plugin: full pipeline chain */
 
 describe("LIFECYCLE official plugin: install → enable → render → update → rollback → delete", () => {
-  it("walks the whole plugin pipeline with the real official artifact", async () => {
+  it("walks the whole plugin lifecycle from a source-backed install", async () => {
     const db = lifecycleDb();
 
-    // 1. Official install through the NORMAL pipeline (real in-repo bytes).
+    // 1. Official install from source (no archive bytes, no asset rows).
     const v1 = await installOfficialPlugin(
       db.asClient(),
       MERCHANT_A,
@@ -382,6 +382,8 @@ describe("LIFECYCLE official plugin: install → enable → render → update �
     );
     expect(v1.alreadyInstalled).toBe(false);
     expect(v1.version).toBe("2.1.0");
+    expect(v1.artifactId).toMatch(/^[a-f0-9]{64}$/);
+    expect(v1.versionId).toBe(v1.packageId);
     const row1 = db
       .rows("marketplace_installs")
       .find((r) => r.id === v1.packageId)!;
@@ -389,8 +391,10 @@ describe("LIFECYCLE official plugin: install → enable → render → update �
       kind: "widget",
       listing_slug: "product-reviews",
       status: "installed",
+      artifact_checksum: v1.artifactId,
       artifact_pinned: "official:product-reviews",
     });
+    expect(db.rows("theme_assets")).toHaveLength(0);
 
     // 2. Disable/enable flips the pipeline ledger row (the preview gate:
     // a paused plugin renders nothing until enabled).

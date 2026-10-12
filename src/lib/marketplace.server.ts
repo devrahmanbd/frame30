@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { BUILTIN_PREFIX, builtinWidgets } from "./builtin-plugins";
+import { isOfficialPluginKey, officialPluginSource } from "./official-plugins";
+import { officialPluginFingerprint } from "./official-plugins.server";
 import { artifactIdFor } from "./package-install.server";
 import {
   exportBuiltinPluginZip,
@@ -152,12 +154,26 @@ export function catalogArtifactForRow(row: {
   );
 }
 
-/** Catalog ref for an official built-in: always exact (exporter is total). */
+/** Catalog ref for an official built-in: source fingerprint, never bytes.
+ * Official keys bind the same manifest fingerprint the source-backed install
+ * stamps (`official-plugins.server.ts`), so catalogue identity and install
+ * identity agree without materializing an archive. Non-official builtins
+ * keep the historical byte-hash report. */
 export function builtinCatalogArtifact(entry: {
   slug: string;
   version: string;
 }): ListingArtifactRef | null {
   try {
+    if (isOfficialPluginKey(entry.slug)) {
+      const source = officialPluginSource(entry.slug);
+      if (!source) return null;
+      return {
+        checksum: officialPluginFingerprint(source.manifest),
+        version: entry.version,
+        fileName: `${entry.slug}.zip`,
+        pinned: `builtin:${entry.slug}`,
+      };
+    }
     const bytes = exportBuiltinPluginZip(entry.slug);
     return {
       checksum: artifactIdFor(bytes),

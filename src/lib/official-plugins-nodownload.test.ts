@@ -1,13 +1,14 @@
 /**
  * No-download invariant for official plugins (Frame30 decision (a)).
  *
- * Official plugins are source-registered: install bytes are built from
- * in-repo source at install time and travel the shared `installPackage`
- * pipeline because that pipeline IS the security contract — never as a
- * downloadable artifact. This suite pins three consequences:
+ * Official plugins are source-registered: merchant records initialize from
+ * in-repo source at install time through the source-backed official lane —
+ * never as a downloadable artifact, never through the archive lane. This
+ * suite pins three consequences:
  * (a) no route serves official plugin bytes (routes-tree source scan);
- * (b) official ZIP content carries no network URLs outside the allowlist;
- * (c) official installs stamp the `official:<key>` ledger pin.
+ * (b) official source content carries no network URLs outside the allowlist;
+ * (c) official installs stamp the `official:<key>` ledger pin with the
+ *     source fingerprint as the row identity.
  */
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import * as fs from "node:fs";
@@ -26,7 +27,8 @@ rec.holder = recorder;
 vi.mock("./observability.server", () => rec.holder!.observability);
 vi.mock("./rate-limit.server", () => allowAllRateLimits());
 
-const { installOfficialPlugin } = await import("./official-plugins.server");
+const { installOfficialPlugin, officialPluginFingerprint } =
+  await import("./official-plugins.server");
 const { OFFICIAL_PLUGIN_KEYS, officialPluginSource } =
   await import("./official-plugins");
 const { exportBuiltinPluginZip, exportPluginManifestZip } =
@@ -141,6 +143,32 @@ describe("official plugins have no downloadable artifact", () => {
       listing_slug: "product-reviews",
       status: "installed",
       artifact_pinned: "official:product-reviews",
+      // Source-bound identity: the fingerprint of the catalogue manifest,
+      // never a byte hash — the install materializes no archive.
+      artifact_checksum: officialPluginFingerprint(
+        officialPluginSource("product-reviews")!.manifest,
+      ),
     });
+    expect(out.artifactId).toBe(row.artifact_checksum);
+  });
+
+  it("(d) official catalogue refs carry the source fingerprint, never built bytes", async () => {
+    const { builtinCatalogArtifact } = await import("./marketplace.server");
+    for (const key of OFFICIAL_PLUGIN_KEYS) {
+      const source = officialPluginSource(key)!;
+      const manifest = source.manifest as { version: string };
+      const art = builtinCatalogArtifact({
+        slug: key,
+        version: manifest.version,
+      })!;
+      // Catalogue identity IS the install identity: same fingerprint the
+      // install stamps, computed without materializing any archive.
+      expect(art.checksum).toBe(officialPluginFingerprint(source.manifest));
+      expect(art.pinned).toBe(`builtin:${key}`);
+    }
+    // Unknown slugs still read as null (fail-soft catalogue lane).
+    expect(
+      builtinCatalogArtifact({ slug: "ghost-plugin", version: "1.0.0" }),
+    ).toBeNull();
   });
 });
