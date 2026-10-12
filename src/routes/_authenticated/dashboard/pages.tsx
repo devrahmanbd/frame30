@@ -524,7 +524,7 @@ function PagesDeskPage() {
             ) : (
               <div
                 className="fq-prose mt-3 space-y-3 text-sm"
-                dangerouslySetInnerHTML={{ __html: preview }}
+                dangerouslySetInnerHTML={{ __html: preview }} // sast-allow: html-sink -- renderPageMarkdown output (markdownToBlocks through parseInline plus blockToHtml), builder mode uses PageCanvas components
               />
             )}
           </div>

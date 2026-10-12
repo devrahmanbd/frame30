@@ -126,7 +126,7 @@ function Editable({
 
   useEffect(() => {
     const node = ref.current;
-    if (node && node.innerHTML !== seed) node.innerHTML = seed;
+    if (node && node.innerHTML !== seed) node.innerHTML = seed; // sast-allow: html-sink -- seed is inlineToHtml/blockEditableHtml output (escapeHtml plus safeUrl, parseInline model) and reads back through parseInline, admin-only contenteditable
     // Intentionally keyed on identity only: re-seeding on every `seed` change
     // would fight the user's caret while they type.
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -37,7 +37,7 @@ function env(name) {
 const asJson = process.argv.includes("--json");
 
 const url = env("SUPABASE_URL") ?? env("VITE_SUPABASE_URL");
-const key = env("SUPABASE_SERVICE_ROLE_KEY");
+const key = env("SUPABASE_SERVICE_ROLE_KEY"); // sast-allow: secret-access -- ops-only audit script: key from local env/.env used solely as Bearer header to operator-configured SUPABASE_URL for SELECT reads, never logged
 if (!url || !key) {
   console.log("audit-orders-idempotency: no database credentials in env — skipping");
   process.exit(0);

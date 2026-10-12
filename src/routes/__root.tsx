@@ -86,6 +86,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   },
 );
 
+// Static first-party theme boot script (localStorage + matchMedia only) —
+// no merchant or URL data. Hoisted so the sink below stays a single line.
+const THEME_BOOT_SCRIPT = `
+              try {
+                var stored = localStorage.getItem("fq_public_theme");
+                var theme = stored === "light" || stored === "dark" ? stored : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+                document.documentElement.setAttribute("data-theme", theme);
+                if (theme === "dark") {
+                  document.documentElement.classList.add("dark");
+                } else {
+                  document.documentElement.classList.remove("dark");
+                }
+              } catch (e) {}
+            `;
+
 function RootDocument() {
   // The router owns the QueryClient; the provider makes it reachable from
   // useQuery/useMutation in every route below.
@@ -102,20 +117,7 @@ function RootDocument() {
           // Suppress the hydration attribute warning — a client/server nonce
           // difference is never patched and never re-executes the script.
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                var stored = localStorage.getItem("fq_public_theme");
-                var theme = stored === "light" || stored === "dark" ? stored : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-                document.documentElement.setAttribute("data-theme", theme);
-                if (theme === "dark") {
-                  document.documentElement.classList.add("dark");
-                } else {
-                  document.documentElement.classList.remove("dark");
-                }
-              } catch (e) {}
-            `,
-          }}
+          dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} // sast-allow: html-sink -- THEME_BOOT_SCRIPT is the static first-party boot script above, nonce tag
         />
       </head>
       <body>

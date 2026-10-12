@@ -1290,7 +1290,7 @@ const BASE_WIDGETS: Record<string, WidgetComponent> = {
           loading="lazy"
           allow="accelerometer; encrypted-media; picture-in-picture"
           referrerPolicy="strict-origin-when-cross-origin"
-          sandbox="allow-scripts allow-same-origin allow-presentation"
+          sandbox="allow-scripts allow-same-origin allow-presentation" // sast-allow: csp-sandbox -- src double-gated by safeEmbedUrl to https EMBED_HOSTS (youtube/vimeo) at parse and render
           className="aspect-video w-full"
         />
       </div>

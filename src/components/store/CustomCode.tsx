@@ -37,7 +37,10 @@ export function CustomCodeBody({
   // The markup was allowlisted server-side: tags, attributes and URL schemes
   // are all filtered, and scripts can never survive the filter.
   return (
-    <div data-fq-snippet={slot} dangerouslySetInnerHTML={{ __html: html }} />
+    <div
+      data-fq-snippet={slot}
+      dangerouslySetInnerHTML={{ __html: html }} // sast-allow: html-sink -- compileCustomCode output filtered by sanitiseBodySnippet BODY_TAGS allowlist plus SAFE_URL, scripts and handlers stripped
+    />
   );
 }
 

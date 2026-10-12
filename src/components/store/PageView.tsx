@@ -83,7 +83,7 @@ export function PageView({ data }: { data: PagePayload }) {
               ? "fq-builder-page mt-6"
               : "fq-prose mt-6 space-y-4 text-sm leading-relaxed"
           }
-          dangerouslySetInnerHTML={{ __html: html }}
+          dangerouslySetInnerHTML={{ __html: html }} // sast-allow: html-sink -- getStorePageFn html is renderBuilderHtml (esc plus safeHref/safeSrc, html blocked) or renderPageMarkdown (parseInline plus blockToHtml)
         />
       )}
       <p className="mt-8 text-xs text-muted-foreground">

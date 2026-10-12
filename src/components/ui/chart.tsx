@@ -74,12 +74,11 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null;
   }
 
-  return (
-    <style
-      dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
+  // First-party dashboard chart config only (developer-authored id, keys and
+  // colors) — no merchant or shopper input reaches this sink.
+  const cssText = Object.entries(THEMES)
+    .map(
+      ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
@@ -91,9 +90,12 @@ ${colorConfig
   .join("\n")}
 }
 `,
-          )
-          .join("\n"),
-      }}
+    )
+    .join("\n");
+
+  return (
+    <style
+      dangerouslySetInnerHTML={{ __html: cssText }} // sast-allow: html-sink -- cssText is first-party chart config built above, no merchant or shopper input
     />
   );
 };

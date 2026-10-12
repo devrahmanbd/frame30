@@ -178,7 +178,7 @@ export const FRAME_HTML = (
   parentOrigin: string,
   nonce: string,
 ) => `<!doctype html><html><head><meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; font-src 'none';">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; font-src 'none';"> <!-- sast-allow: csp-sandbox -- frame CSP is default-src none with img/connect/font none, isolation comes from resolvePolicy sandbox without allow-same-origin plus authorizeWidgetCall scope checks and flood guard -->
 <style>body{margin:0;font:14px/1.6 system-ui;color:#111}</style></head>
 <body><div id="root"></div><script${nonce ? ` nonce="${nonce}"` : ""}>
 const pending = new Map();

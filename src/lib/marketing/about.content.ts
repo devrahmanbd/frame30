@@ -226,7 +226,7 @@ export const ENGINEERING_CARDS: EngineeringCard[] = [
   {
     id: "vendor-lock-in",
     title: "Zero vendor lock-in, by architecture rather than by promise",
-    body: "The application only ever reads SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, SUPABASE_SERVICE_ROLE_KEY and REDIS_URL — nothing in the codebase names a hosting provider. The same code path runs in a managed preview environment and on our own servers in production.",
+    body: "The application only ever reads SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, SUPABASE_SERVICE_ROLE_KEY and REDIS_URL — nothing in the codebase names a hosting provider. The same code path runs in a managed preview environment and on our own servers in production.", // sast-allow: secret-access -- static marketing prose listing env var names as architecture description, no process.env read and no secret value present
   },
   {
     id: "self-hostable",

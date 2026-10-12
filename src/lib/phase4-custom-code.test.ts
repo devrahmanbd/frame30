@@ -37,6 +37,59 @@ describe("css scoping", () => {
   });
 });
 
+describe("css scoping — tokenizer-view hardening", () => {
+  it("rejects an escaped url(javascript:) the browser would decode", () => {
+    const { css, findings } = scopeCss(
+      ".a { background: \\75 rl(javascript:window.__pwned=1) }",
+    );
+    expect(findings.some((f) => f.code === "css:js_url")).toBe(true);
+    expect(css).not.toContain("__pwned");
+  });
+
+  it("rejects an escaped expression()", () => {
+    const { findings } = scopeCss(".a { width: \\65xpression(alert(1)) }");
+    expect(findings.some((f) => f.code === "css:expression")).toBe(true);
+  });
+
+  it("rejects a comment-split javascript: (contiguous post-tokenization)", () => {
+    const { findings } = scopeCss(
+      ".a { background: url(java/*x*/script:alert(1)) }",
+    );
+    expect(findings.some((f) => f.code === "css:js_url")).toBe(true);
+  });
+
+  it("drops an escaped position:fixed without opt-in", () => {
+    const { css, findings } = scopeCss(".a { p\\6f sition: fixed }");
+    expect(findings.some((f) => f.code === "css:fixed")).toBe(true);
+    expect(css).not.toMatch(/fixed/i);
+  });
+
+  it("rejects an escaped behavior: declaration", () => {
+    const { findings } = scopeCss(".a { \\62 ehavior: url(x.htc) }");
+    expect(findings.some((f) => f.code === "css:behavior")).toBe(true);
+  });
+
+  it("rejects an escaped javascript: in @font-face src", () => {
+    const { css, findings } = scopeCss(
+      "@font-face { font-family: x; src: \\75 rl(javascript:alert(1)) }",
+    );
+    expect(findings.some((f) => f.level === "error")).toBe(true);
+    expect(css).not.toContain("alert");
+  });
+
+  it("treats an escaped theme-token redefinition as readonly", () => {
+    const { findings } = scopeCss(".a { --the\\6d e-ink: red }");
+    expect(findings.some((f) => f.code === "css:token_readonly")).toBe(true);
+  });
+
+  it("emits allowed data: URLs intact (no mid-token ;-split)", () => {
+    const { css } = scopeCss(
+      ".a { background: url(data:image/png;base64,iVBORw0KGgo=) }",
+    );
+    expect(css).toContain("data:image/png;base64,iVBORw0KGgo=");
+  });
+});
+
 describe("javascript review", () => {
   it("rejects document.write and eval", () => {
     expect(

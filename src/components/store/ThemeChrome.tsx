@@ -184,13 +184,13 @@ export function ThemeChrome({
       {responsive.css ? (
         <style
           data-fq-responsive={String(responsive.rules)}
-          dangerouslySetInnerHTML={{ __html: responsive.css }}
+          dangerouslySetInnerHTML={{ __html: responsive.css }} // sast-allow: html-sink -- compileResponsiveCss EMITTERS emit only clamped numbers and oneOf vocabulary values under generated selectors
         />
       ) : null}
       {pageCss ? (
         <style
           data-fq-theme-assets=""
-          dangerouslySetInnerHTML={{ __html: pageCss }}
+          dangerouslySetInnerHTML={{ __html: pageCss }} // sast-allow: html-sink -- storefrontThemeCss via combineThemeCss/sanitiseThemeCss strips code-loading CSS, filterSkinCss only drops rules
         />
       ) : null}
       <VitalsReporter

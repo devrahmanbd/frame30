@@ -105,7 +105,7 @@ export function ThemeSurface({ tokens, className, skinCss, children }: Props) {
         {skinCss ? (
           <style
             data-fq-skin-css=""
-            dangerouslySetInnerHTML={{ __html: skinCss }}
+            dangerouslySetInnerHTML={{ __html: skinCss }} // sast-allow: html-sink -- theme skin sheets joined by combineUsedSkinCss in a style element, merchant CSS stripped by sanitiseThemeCss upstream
           />
         ) : null}
         {children}

@@ -121,7 +121,7 @@ async function loadSpec() {
     new URL("../src/lib/design-exit.ts", import.meta.url).pathname,
   ).href;
   try {
-    return await import(url);
+    return await import(url); // sast-allow: dynamic-import -- specifier is pathToFileURL(new URL("../src/lib/design-exit.ts", import.meta.url)) fixed first-party path, no CLI/merchant input reaches it
   } catch (cause) {
     throw new Error(
       `Cannot load src/lib/design-exit.ts (${cause?.message ?? cause}). Run this gate with bun: "bun scripts/design-gate.mjs".`,
@@ -165,9 +165,8 @@ async function auditSeoCrawl(spec) {
   const seoUrl = pathToFileURL(
     new URL("../src/lib/marketing-seo.ts", import.meta.url).pathname,
   ).href;
-  const { MARKETING_ROUTES, buildGraph, buildMarketingHead } = await import(
-    seoUrl
-  );
+  // eslint-disable-next-line prettier/prettier -- keeps sast-allow on the import( finding line: prettier would move a trailing comment down and break SAST suppression
+  const { MARKETING_ROUTES, buildGraph, buildMarketingHead } = await import(seoUrl); // sast-allow: dynamic-import -- specifier seoUrl is pathToFileURL(new URL("../src/lib/marketing-seo.ts", import.meta.url)) fixed first-party path
   const findings = [];
 
   for (const r of MARKETING_ROUTES) {

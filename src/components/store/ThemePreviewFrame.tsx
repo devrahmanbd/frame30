@@ -578,7 +578,7 @@ export function ThemePreviewFrame({
             {responsive.css ? (
               <style
                 data-fq-responsive={String(responsive.rules)}
-                dangerouslySetInnerHTML={{ __html: responsive.css }}
+                dangerouslySetInnerHTML={{ __html: responsive.css }} // sast-allow: html-sink -- compileResponsiveCss EMITTERS emit only clamped numbers and oneOf vocabulary values under generated selectors
               />
             ) : null}
 

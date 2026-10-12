@@ -125,9 +125,10 @@ function stripCommentsFlat(css: string): string {
 /**
  * Detection view: what the browser sees. A comment-split `javascript:` and
  * a comment-split `@import` are contiguous post-tokenization, so hostile
- * scans run here; outputs keep the original text.
+ * scans run here; outputs keep the original text. Shared with `scopeCss`
+ * (`custom-code.ts`) — the render-time lane must judge the same bytes.
  */
-function neutralizeForScan(s: string): string {
+export function neutralizeForScan(s: string): string {
   return decodeCssEscapes(stripCommentsFlat(s));
 }
 
@@ -196,9 +197,10 @@ function pushUnique(errors: string[], code: string): void {
  * Split a rule body on `;` without breaking `url(...;...)` payloads: a naive
  * split truncates every `data:...;base64,...` URL mid-token, emitting corrupt
  * CSS (`background: url(data:image/png;`). Track `()` depth, quote state and
- * backslash escapes; split only on top-level, unquoted semicolons.
+ * backslash escapes; split only on top-level, unquoted semicolons. Shared
+ * with `scopeCss` for the same reason.
  */
-function splitDeclarations(body: string): string[] {
+export function splitDeclarations(body: string): string[] {
   const out: string[] = [];
   let depth = 0;
   let quote: string | null = null;

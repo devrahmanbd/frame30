@@ -626,7 +626,7 @@ function EmailTemplatesPage() {
                 title="Email Preview"
                 srcDoc={previewHtml}
                 className="w-full min-h-[580px] border-none bg-slate-50"
-                sandbox="allow-same-origin"
+                sandbox="allow-same-origin" // sast-allow: csp-sandbox -- previewHtml from renderEmailHtml with escapeHtml on every merchant field, sandbox omits allow-scripts so nothing executes
               />
             </div>
           </div>

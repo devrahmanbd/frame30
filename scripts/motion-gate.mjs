@@ -114,7 +114,7 @@ async function loadSpec() {
     new URL("../src/lib/motion-choreography.ts", import.meta.url).pathname,
   ).href;
   try {
-    return await import(url);
+    return await import(url); // sast-allow: dynamic-import -- specifier is pathToFileURL(new URL("../src/lib/motion-choreography.ts", import.meta.url)) fixed first-party path, no CLI/merchant input reaches it
   } catch (cause) {
     throw new Error(
       `Cannot load src/lib/motion-choreography.ts (${cause?.message ?? cause}). Run this gate with bun: "bun scripts/motion-gate.mjs".`,

@@ -13,6 +13,7 @@ the human review layer. Nothing here passes silently.
 | `scan` — dependency audit | `bun run scan:deps` (`scripts/dep-audit.mjs`) | Yes — fails on uncovered high/critical |
 | `e2e-critical` — harness gate | `bun run e2e:required` (`scripts/e2e-required.mjs`) | Yes — missing harness FAILS, never passes |
 | `e2e-critical` — critical suites | `bun run e2e:critical` | Yes (runs only after the harness gate) |
+| `e2e-security` — adversarial specs | `bun run e2e:security` (upload-adversarial, preview-isolation, preview-security, css-gate-differential, frame-cpu-recovery) | Yes (requires `build`, like e2e-critical) |
 | `plugin-storefront-gate` | plugin + storefront tripwire suites | Yes |
 
 ## SAST suspicious-diff (`scripts/sast-scan.mjs`)

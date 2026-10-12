@@ -80,10 +80,10 @@ async function main() {
   const merchant = mIdx >= 0 ? args[mIdx + 1] : null;
 
   const base = (process.env.SUPABASE_URL ?? "").replace(/\/$/, "");
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? ""; // sast-allow: secret-access -- ops-only read-only report: key from process.env sent solely as PostgREST apikey/Bearer header to operator SUPABASE_URL, never logged (logs carry only order ids/totals)
   if (!base || !key) {
     console.error(
-      "audit-paid-placement: set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (read-only report, no writes).",
+      "audit-paid-placement: set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (read-only report, no writes).", // sast-allow: secret-access -- usage-error string names the env vars, reads no secret value (the read is the process.env line above; this line only tells the operator which vars to set)
     );
     process.exit(2);
   }

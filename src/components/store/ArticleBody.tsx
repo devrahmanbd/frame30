@@ -192,7 +192,7 @@ export function ArticleBody({
     return (
       <div
         className={`fq-builder-page ${className}`}
-        dangerouslySetInnerHTML={{ __html: renderBuilderHtml(builderDoc) }}
+        dangerouslySetInnerHTML={{ __html: renderBuilderHtml(builderDoc) }} // sast-allow: html-sink -- renderBuilderHtml escapes via esc plus safeHref/safeSrc gates, raw html widget emits only an inert blocked comment
       />
     );
   const blocks = parseBody(body);

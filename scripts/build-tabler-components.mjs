@@ -311,7 +311,7 @@ function base(paths: string, props: IconProps): ReactElement {
       strokeLinecap="round"
       strokeLinejoin="round"
       {...rest}
-      dangerouslySetInnerHTML={{ __html: paths }}
+      dangerouslySetInnerHTML={{ __html: paths }} // sast-allow: html-sink -- codegen template text, not an executed sink here: emitted value is innerOf()-sanitized first-party Tabler SVG geometry (rejects script/javascript:/on*=) constrained by the MAP allowlist
     />
   );
 }

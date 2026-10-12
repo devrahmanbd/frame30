@@ -45,7 +45,7 @@ function base(paths: string, props: StorefrontIconProps): ReactElement {
       strokeLinecap="round"
       strokeLinejoin="round"
       {...rest}
-      dangerouslySetInnerHTML={{ __html: paths }}
+      dangerouslySetInnerHTML={{ __html: paths /* sast-allow: html-sink -- paths are first-party static literals only (SPACER plus hand-vendored geometry), no merchant or shopper data reaches this sink */ }}
     />
   );
 }

@@ -198,6 +198,25 @@ jobs:
               src/lib/plugin-acceptance.test.ts \
               src/lib/phase5-plugins.test.ts
 
+  # Adversarial browser specs: every file named here EXISTS and passes cold
+  # (unlike the aspirational *_loop suites in e2e:critical, which have docs
+  # but no Playwright implementation yet). Do not add a spec here until it
+  # passes from cold locally.
+  e2e-security:
+    executor: e2e-executor
+    steps:
+      - checkout
+      - setup-bun
+      - run:
+          name: E2E harness required (fail-closed)
+          command: bun run e2e:required
+      - run:
+          name: Install Playwright Chromium
+          command: bunx playwright install --with-deps chromium
+      - run:
+          name: E2E adversarial security specs
+          command: bun run e2e:security
+
 workflows:
   version: 2
   gates:
@@ -212,6 +231,11 @@ workflows:
       # E2E while its own red signal races the other jobs. A failed `build`
       # now fails the workflow with e2e-critical left `blocked` (never run).
       - e2e-critical:
+          requires:
+            - build
+      # Same hard gate as e2e-critical: never burn the browsers executor
+      # when the production build is broken.
+      - e2e-security:
           requires:
             - build
       - plugin-storefront-gate

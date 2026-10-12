@@ -124,7 +124,10 @@ export function scanSecrets(
 /* ------------------------------------------------------------------- CSS */
 
 function stripCssComments(css: string): string {
-  return css.replace(/\/\*[\s\S]*?\*\//g, " ");
+  // Removed entirely, never replaced with whitespace: that is what the
+  // browser tokenizer does, and a space would split `java/**/script:` into
+  // a false negative while the browser sees contiguous `javascript:`.
+  return css.replace(/\/\*[\s\S]*?\*\//g, "");
 }
 
 function scopeSelector(selector: string): string {
@@ -220,15 +223,20 @@ export function scopeCss(
   const out: string[] = [];
   const emitBlock = ({ selector, body }: Block, indent: string) => {
     const declarations: string[] = [];
-    for (const raw of body.split(";")) {
+    for (const raw of splitDeclarations(body)) {
       const decl = raw.trim();
       if (!decl) continue;
-      const banned = BANNED_DECLARATIONS.find((b) => b.re.test(decl));
+      // Bans and property/value identity are judged on the neutralized
+      // (escape-decoded, comment-free) view — the same bytes the browser
+      // tokenizer acts on. `\75 rl(javascript:…)`, `p\6f sition` and
+      // `java/*x*/script:` are what they decode to, not what they spell.
+      const scan = neutralizeForScan(decl);
+      const banned = BANNED_DECLARATIONS.find((b) => b.re.test(scan));
       if (banned) {
         findings.push(f("error", banned.code, banned.message, "css"));
         continue;
       }
-      const [prop = "", ...rest] = decl.split(":");
+      const [prop = "", ...rest] = scan.split(":");
       const name = prop.trim().toLowerCase();
       const value = rest.join(":").trim();
       if (TOKEN_VAR.test(name)) {
@@ -301,9 +309,10 @@ export function scopeCss(
       }
       if (name === "keyframes" || name === "font-face") {
         // Keyframes and font faces have no selector to escape through; the
-        // declaration guard above still applies to font-face sources.
+        // declaration guard above still applies to font-face sources. Judged
+        // neutralized so an escaped `javascript:` URL cannot smuggle past.
         const safe = !/url\(\s*['"]?\s*(javascript|data:text\/html)/i.test(
-          body,
+          neutralizeForScan(body),
         );
         if (!safe) {
           findings.push(
@@ -346,16 +355,16 @@ const JS_RULES: {
     message: "document.write() blocks rendering and is not allowed.",
   },
   {
-    re: /\beval\s*\(/,
+    re: /\beval\s*\(/, // sast-allow: dynamic-exec -- validator pattern as data: bans merchant eval(), never executed here
     level: "error",
     code: "js:eval",
-    message: "eval() is not allowed.",
+    message: "eval() is not allowed.", // sast-allow: dynamic-exec -- message text naming the banned pattern for merchants, never executed here
   },
   {
-    re: /new\s+Function\s*\(/,
+    re: /new\s+Function\s*\(/, // sast-allow: dynamic-exec -- validator pattern as data: bans merchant new Function(), never executed here
     level: "error",
     code: "js:new_function",
-    message: "new Function() is not allowed.",
+    message: "new Function() is not allowed.", // sast-allow: dynamic-exec -- message text naming the banned pattern for merchants, never executed here
   },
   {
     re: /\.innerHTML\s*=/,
@@ -731,6 +740,7 @@ export function reviewHtmlWidget(markup: string): Finding[] {
 /* ------------------------------------------------------------------- CSP */
 
 import { type RiskTier, resolvePolicy } from "./risk-tier";
+import { neutralizeForScan, splitDeclarations } from "./package-css-gate";
 
 /** Cryptographically random per-request nonce (base64url, 128 bits). */
 export function newNonce(): string {
@@ -784,7 +794,7 @@ export function buildCsp(
     // Merchant CSS is already prefix-scoped to .fq-theme-scope server-side,
     // and expression()/url(javascript:)/-moz-binding are banned by the sanitizer.
     // CSS-based data exfiltration remains a theoretical risk.
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", // sast-allow: csp-sandbox -- deliberate style-src (no script-src inline): merchant CSS is prefix-scoped + sanitized at both package and render lanes
     // Phase 3: merchant-uploaded faces are served from our own origin through
     // /api/public/font/*, so no third-party font origin is ever whitelisted
     // beyond the Google font CDN the theme stylesheet needs.

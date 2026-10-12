@@ -19,7 +19,7 @@
  * - account key + private keys never leave the server (certbot + PEM files
  *   are root-only; the app only passes a hostname and reads back dates).
  */
-import { execFile } from "node:child_process";
+import { execFile } from "node:child_process"; // sast-allow: shell-exec -- execFile without shell, hostname validated by isProvisionableHost and fixed argv built by buildIssueCommand
 import { X509Certificate } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { certCoversHost } from "./edge-cert-identity.server";
@@ -127,7 +127,8 @@ function execFileAsync(
   timeoutMs: number,
 ): Promise<{ stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
-    execFile(
+    // eslint-disable-next-line prettier/prettier -- keeps sast-allow on the execFile finding line: prettier would move a trailing comment down and break SAST suppression
+    execFile( // sast-allow: shell-exec -- fixed argv from buildIssueCommand (isProvisionableHost validated), execFile without shell, pinned script path
       file,
       args,
       { timeout: timeoutMs, maxBuffer: 1024 * 1024 },

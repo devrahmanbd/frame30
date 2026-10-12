@@ -73,7 +73,7 @@ export const Route = createFileRoute("/api/public/media/$")({
         if (isSvg) {
           // Prevent any inline script execution in platform origin (REPORT WF-13)
           headers["content-security-policy"] =
-            "default-src 'none'; style-src 'unsafe-inline'";
+            "default-src 'none'; style-src 'unsafe-inline'"; // sast-allow: csp-sandbox -- SVG-only header with default-src none blocking scripts, served attachment plus nosniff after isMediaObjectPath validation and upload-time script stripping
         }
 
         return new Response(blob, { headers });

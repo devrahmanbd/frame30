@@ -69,7 +69,7 @@ export function StoreHomepage({
           }
           // Rendered server-side through the allow-list renderer (builder) or
           // the escaped markdown renderer — never raw author HTML.
-          dangerouslySetInnerHTML={{ __html: html }}
+          dangerouslySetInnerHTML={{ __html: html }} // sast-allow: html-sink -- getStorePageFn html is renderBuilderHtml (esc plus safeHref/safeSrc, html blocked) or renderPageMarkdown (parseInline plus blockToHtml)
         />
       )}
       {!selfComposed && (

@@ -30,7 +30,7 @@ function env(name) {
 }
 
 const url = env("SUPABASE_URL") ?? env("VITE_SUPABASE_URL");
-const key = env("SUPABASE_SERVICE_ROLE_KEY");
+const key = env("SUPABASE_SERVICE_ROLE_KEY"); // sast-allow: secret-access -- ops-only drift guard: key from local env/.env used solely as apikey/Bearer header to operator-configured SUPABASE_URL for the schema_fingerprint rpc, never logged
 if (!url || !key) {
   console.log("schema-fingerprint: no database credentials in env — skipping");
   process.exit(0);

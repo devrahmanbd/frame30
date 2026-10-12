@@ -50,6 +50,7 @@
     "test:contracts": "node scripts/contract-gate.mjs",
     "contracts:verify": "node scripts/contract-gate.mjs --verify",
     "e2e:golden": "playwright test -c .e2e/playwright.config.ts golden_cms_loop",
+    "e2e:security": "playwright test -c .e2e/playwright.config.ts theme-upload-adversarial theme-preview-isolation theme-preview-security package-css-gate-differential frame-cpu-recovery",
     "synthetic:trade": "node scripts/synthetic-trading.mjs",
     "db:migrate": "node scripts/db-migrate.mjs",
     "db:migrate:check": "node scripts/db-migrate.mjs --check",

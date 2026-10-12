@@ -92,7 +92,7 @@ function isIgnored(rel) {
  * are checked key by key rather than the file being waved through.
  */
 const PUBLIC_ENV_KEY =
-  /^(?:VITE_)?SUPABASE_(?:URL|PROJECT_ID|PUBLISHABLE_KEY|ANON_KEY|SERVICE_ROLE_KEY)$/;
+  /^(?:VITE_)?SUPABASE_(?:URL|PROJECT_ID|PUBLISHABLE_KEY|ANON_KEY|SERVICE_ROLE_KEY)$/; // sast-allow: secret-access -- regex alternation naming env var names to classify committed .env keys key-by-key per the PUBLIC_ENV comment, reads no secret value
 function envFileFindings(rel, full) {
   const out = [];
   readFileSync(full, "utf8")

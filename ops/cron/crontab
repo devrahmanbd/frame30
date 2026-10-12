@@ -28,6 +28,9 @@ SHELL=/bin/sh
 # Marketplace install renewals
 30 2 * * * curl -sS -X POST -m 60 --retry 1 --retry-delay 5 -H "authorization: Bearer $BILLING_CRON_SECRET" -H "x-cron-trigger: supercronic" -o /dev/null -w 'cron marketplace-renewals status=%{http_code} t=%{time_total}s\n' "$APP_INTERNAL_URL/api/public/cron/marketplace-renewals"
 
+# Reliability sweep
+40 3 * * * curl -sS -X POST -m 60 --retry 1 --retry-delay 5 -H "authorization: Bearer $BILLING_CRON_SECRET" -H "x-cron-trigger: supercronic" -o /dev/null -w 'cron ops status=%{http_code} t=%{time_total}s\n' "$APP_INTERNAL_URL/api/public/cron/ops"
+
 # Data purge
 55 3 * * * curl -sS -X POST -m 60 --retry 1 --retry-delay 5 -H "authorization: Bearer $BILLING_CRON_SECRET" -H "x-cron-trigger: supercronic" -o /dev/null -w 'cron purge status=%{http_code} t=%{time_total}s\n' "$APP_INTERNAL_URL/api/public/cron/purge"
 
